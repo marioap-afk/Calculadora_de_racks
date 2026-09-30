@@ -439,7 +439,8 @@ clasificaciones). **POST-AUDIT PACKAGE BASELINE: PASS.**
 - **Artefactos de línea base, fase 2 (§210):** versiones V2 de BA-02..BA-11 (BA-02 dividido en BA-02a registro y BA-02b cobertura), micro-errata **V2.4** (RC-C1, texto preaprobado), vectores normativos de huella y evidencia cruda del análisis estático independiente contra `main` `3375aadb`. Todo BORRADOR; nada sellado; parámetros `UNSET`
   (decisiones del Owner Q-O1..Q-O5 preparadas, no preguntadas). `CT21D_AUTHORITY_BASELINE_READY = FALSE`, `CT21D_EXECUTION_READY = FALSE`, `CT21D_EXECUTION = NOT_AUTHORIZED`.
 - **Dictamen del Arquitecto sobre la fase 2 (§211): `CHANGES_REQUIRED`** (56 serios confirmados, 1 dividido, 1 refutado; 2 bloqueantes: pines del catálogo y lista de operaciones exigidas por el contrato). **Dictamen del Coordinador (§212): `REVISION`**; abierto el delta V3 (solo documentos y análisis estático).
-- **Siguiente gate: delta V3 de los artefactos de línea base (Implementador), luego revisión delta del Arquitecto y dictamen del Coordinador.** La rama sigue sin reconciliar con `main` (`1304101d`: 93 detrás / 130 delante).
+- **Delta V3 de los artefactos de línea base (§213):** versiones V3 de BA-02a..BA-11 y V2.4 revisión 2 (sección 1 intacta); análisis estáticos independientes con verificación adversarial en `docs/automation/evidence/I-52-ct21d-phase2-delta/`. Todo BORRADOR; nada candidato ni sellado.
+- **Siguiente gate: revisión delta del Arquitecto (V3 + V2.4 revisión 2), luego dictamen del Coordinador y verificación textual de V2.4.** La rama sigue sin reconciliar con `main` (`1304101d`: 93 detrás).
 
 **Congelación de V35 (§172).** El Coordinador aceptó V35-A2 (`86089886`) con consenso de arquitectura final.
 - `V35_FREEZE_SHA` = `86089886f37da05c2de5dcf9e237044a3deeada3`.

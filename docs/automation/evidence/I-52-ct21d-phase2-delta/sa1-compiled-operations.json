@@ -1,0 +1,2886 @@
+{
+ "operations": [
+  {
+   "id": "C-01",
+   "actor": "ORCH",
+   "operation": "Acquire and hold the document lock across PREPARE-R, the SL-5 import and every seam write; seams never take the lock themselves",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "no `LockDocument` | forbidden; the orchestrator holds the lock; static guard"
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "seams write only document-database objects under a held lock in the caller's transaction"
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "PREPARE-R computes the expected effective names under the lock"
+    }
+   ],
+   "notes": "Holding the lock is a control-plane precondition that gates every write. It is not a document-object write, so the kind is an approximation. The text does not say when the lock is acquired or released."
+  },
+  {
+   "id": "C-02",
+   "actor": "ORCH",
+   "operation": "Start exactly one MUTATION transaction T_M on the document Database's transaction manager. It is the only transaction that holds the logical rack's definitions and references",
+   "kind": "MUTATING",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "participation in one `MUTATION` transaction"
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "every definition and every reference of the logical rack is created inside `T_M`; no seam commits"
+    },
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "1, the orchestrator's `T_M` (`IsTopTransaction = YES`)"
+    }
+   ],
+   "notes": "Opening the write scope is classified as MUTATING (taxonomy approximation). T_M is owned by the orchestrator."
+  },
+  {
+   "id": "C-03",
+   "actor": "ORCH",
+   "operation": "Pass the document Database and the orchestrator's Transaction (T_M) to each creation seam (SL-1, SL-2, SL-4, and SL-3 if authorized)",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "the seam receives the document `Database`; it never opens a database of its own"
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "the seam receives the orchestrator's `Transaction`"
+    }
+   ],
+   "notes": "The inputs the seam receives. The kind is an approximation because the taxonomy has no 'supply input' kind."
+  },
+  {
+   "id": "C-04",
+   "actor": "ORCH",
+   "operation": "Commit T_M (the orchestrator is the only committer), and only after the PV checks pass",
+   "kind": "MUTATING",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "after `Commit()` returns, or after `Abort()` and disposal"
+    },
+    {
+     "fragment": "V2.2 PA-10",
+     "quote": "a member of the sealed set that the domain did not include is an inconsistency and aborts before `Commit()`."
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "no seam commits"
+    }
+   ],
+   "notes": "Commit by the orchestrator is presupposed. The fragments do not list its full set of preconditions."
+  },
+  {
+   "id": "C-05",
+   "actor": "ORCH",
+   "operation": "Abort and then dispose T_M whenever a seam call fails (PRE-WRITE or POST-WRITE) or the PV consistency check fails",
+   "kind": "MUTATING",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "a failed seam call leaves the caller obliged to abort"
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "a POST-WRITE failure obliges the caller to abort"
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "something may have been written; the caller must abort"
+    },
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "after `Commit()` returns, or after `Abort()` and disposal"
+    },
+    {
+     "fragment": "V2.2 PA-10",
+     "quote": "is an inconsistency and aborts before `Commit()`."
+    }
+   ],
+   "notes": "Abort discards the document writes. Disposal after the abort is needed so the count returns to 0."
+  },
+  {
+   "id": "C-06",
+   "actor": "ORCH/SL-1/SL-2/SL-3/SL-4",
+   "operation": "Expose top-transaction identity only through the typed authority IsTopTransaction(myTransaction), which returns YES/NO/UNKNOWN",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "The identity of the top transaction is exposed only through a typed authority equivalent to"
+    },
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "a **typed identity check** of the top transaction"
+    }
+   ],
+   "notes": "The fragments do not say who owns the implementation."
+  },
+  {
+   "id": "C-07",
+   "actor": "ORCH/SL-1/SL-2/SL-3/SL-4",
+   "operation": "In IsTopTransaction, compare live objects only: the native identity (UnmanagedObject) of the caller's transaction against that of the current top transaction at that instant",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "It compares **live objects only**"
+    },
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "it compares the native identity (`UnmanagedObject`) of the caller's transaction with that of the current top transaction **at that instant**."
+    }
+   ],
+   "notes": "The native identity is an internal implementation detail."
+  },
+  {
+   "id": "C-08",
+   "actor": "ORCH/SL-1/SL-2/SL-3/SL-4",
+   "operation": "IsTopTransaction rejects a disposed, null or stale wrapper by returning UNKNOWN (or NO), never YES for a different live transaction",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "It **rejects** a disposed, null or **stale** transaction wrapper (a wrapper whose transaction has ended): the result is `UNKNOWN` (or `NO`), **never `YES`**"
+    }
+   ],
+   "notes": "Stale = a wrapper whose transaction has ended."
+  },
+  {
+   "id": "C-09",
+   "actor": "ORCH/SL-1/SL-2/SL-3/SL-4",
+   "operation": "IsTopTransaction never compares with a stored value, and the native identity is never an identity the contract stores",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "it never compares with a stored value."
+    },
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "as an internal implementation detail (never an identity the contract stores)"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-10",
+   "actor": "ORCH/SL-1/SL-2/SL-3/SL-4",
+   "operation": "Never persist the native transaction pointer as a durable identity",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "The native pointer is **never persisted as a durable identity**"
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "No native pointer is persisted as an identity"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-11",
+   "actor": "ORCH",
+   "operation": "Never use the native transaction pointer as a log key",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "never used as a log key: a pointer value can be reused after a transaction ends."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-12",
+   "actor": "ORCH",
+   "operation": "Log each identity check as the boolean result plus a sequence number",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "The log records the boolean result and a sequence number."
+    }
+   ],
+   "notes": "The authority is three-valued but the log is boolean (see ambiguities)."
+  },
+  {
+   "id": "C-13",
+   "actor": "ORCH",
+   "operation": "Sample the number of active transactions on the document Database's transaction manager, counting the top-level transaction and nested ones (depth)",
+   "kind": "NON_MUTATING_READ",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "The number of active transactions of the **document database's** transaction manager"
+    },
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "transactions that are active on the document database's manager: the top-level one and nested ones (depth)."
+    }
+   ],
+   "notes": "The candidate instrument is the managed TransactionManager count."
+  },
+  {
+   "id": "C-14",
+   "actor": "ORCH",
+   "operation": "Log transactions of the library side database (AUTH-12 queries) and of the warm-up side database separately",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "Transactions of the library side database (AUTH-12 external queries) and of the warm-up side database (13.1) are **logged separately**"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-15",
+   "actor": "ORCH",
+   "operation": "Exclude side-database transactions from the document count. The count is scoped to the document Database's transaction manager",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "are **excluded** from the document count."
+    },
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "**Scope:** the transaction manager of the **document `Database`**."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-16",
+   "actor": "ORCH",
+   "operation": "Treat transaction start/end events only as an additional log, never as proof",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "Transaction start and end events of the transaction manager, if they exist, are an **additional log**, never proof."
+    }
+   ],
+   "notes": "Event subscription is optional."
+  },
+  {
+   "id": "C-17",
+   "actor": "ORCH",
+   "operation": "If no API with sufficient authority exists in the exact tuple, record it as an implementation/instrumentation requirement; E-06 stays unsatisfiable until it is met",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "this is an implementation / instrumentation requirement and E-06 stays unsatisfiable until it is met."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-18",
+   "actor": "ORCH",
+   "operation": "At sampling point P0, check that the document transaction count = 0",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "| P0 | 0 |"
+    }
+   ],
+   "notes": "P0 is not defined in the fragments."
+  },
+  {
+   "id": "C-19",
+   "actor": "ORCH",
+   "operation": "At sampling point PL, check that the document transaction count = 0",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "| PL | 0 |"
+    }
+   ],
+   "notes": "PL is not defined in the fragments."
+  },
+  {
+   "id": "C-20",
+   "actor": "ORCH",
+   "operation": "Immediately before each AUTH-12 call or SL-5 import, check that the document transaction count = 0",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "AUTH-12 call or import, **before** | 0"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-21",
+   "actor": "ORCH",
+   "operation": "Immediately after each AUTH-12 call or SL-5 import, check that the document transaction count = 0 (the callee's own execution is not sampled)",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "AUTH-12 call or import, **after** (the callee's own execution is not sampled) | 0"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-22",
+   "actor": "ORCH",
+   "operation": "At PS, check that the document transaction count = 1 (the orchestrator's T_M)",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "| PS | 1, the orchestrator's `T_M` (`IsTopTransaction = YES`) |"
+    }
+   ],
+   "notes": "PS is not defined beyond this row."
+  },
+  {
+   "id": "C-23",
+   "actor": "ORCH",
+   "operation": "At PV, check that the document transaction count = 1 with no nested transaction",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "| PV | 1, same, no nested transaction |"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-24",
+   "actor": "ORCH",
+   "operation": "At PS and at PV, check that IsTopTransaction(T_M) = YES",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "(`IsTopTransaction = YES`)"
+    },
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "| PV | 1, same, no nested transaction |"
+    }
+   ],
+   "notes": "'same' at PV is read as including the identity check."
+  },
+  {
+   "id": "C-25",
+   "actor": "ORCH",
+   "operation": "After Commit() returns, or after Abort() and disposal, check that the document transaction count = 0",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "after `Commit()` returns, or after `Abort()` and disposal"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-26",
+   "actor": "SL-6/ORCH",
+   "operation": "During VERIFY, for each read scope, open and close the verifier's own read transaction; the count must go 0 -> 1 -> 0 (or the reviewed equivalent)",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "VERIFY, per read scope | 0 → 1 → 0 (the verifier's own read transaction), or the exact equivalent the Architect reviews"
+    }
+   ],
+   "notes": "SL-6 uses its own read transaction; the orchestrator samples it."
+  },
+  {
+   "id": "C-27",
+   "actor": "ORCH",
+   "operation": "Report E-06 UNKNOWN when the instrument throws or is unavailable",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "The instrument throws or is unavailable"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-28",
+   "actor": "ORCH",
+   "operation": "Report E-06 UNKNOWN on a negative or impossible count value",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "a negative or impossible value"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-29",
+   "actor": "ORCH",
+   "operation": "Cross-check the count sources (counter, own bookkeeping, events) and report UNKNOWN if two disagree",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "two sources disagree (counter, own bookkeeping, events)"
+    }
+   ],
+   "notes": "Whether own bookkeeping is a mandatory source is not stated."
+  },
+  {
+   "id": "C-30",
+   "actor": "ORCH",
+   "operation": "When events are subscribed, report UNKNOWN if the count changes between two samples with no observed start or end event",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "the count changes between two samples with no observed start or end event when events are subscribed"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-31",
+   "actor": "ORCH",
+   "operation": "Take a sample at every required sampling point; a missing sample makes E-06 UNKNOWN",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "a sample is missing at a required point"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-32",
+   "actor": "ORCH",
+   "operation": "Report E-06 UNKNOWN when IsTopTransaction cannot decide",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "`IsTopTransaction` cannot decide."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-33",
+   "actor": "ORCH/SL-1/SL-2/SL-3/SL-4",
+   "operation": "The mirror path must never reach the OpenCloseTransaction in LateralHeaderDrawService.ReadBlockName",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "The product already uses an `OpenCloseTransaction` in `LateralHeaderDrawService.ReadBlockName` (section 15.1, F-6): the mirror path must not reach it (P-5)."
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "this excludes today's `ReadBlockName` from the mirror path, F-6"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-34",
+   "actor": "ORCH",
+   "operation": "Qualification control E6-C1: at rest inside a command the count is 0",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "at rest inside a command the count is 0"
+    }
+   ],
+   "notes": "Reliability control for the counter, part of the qualification of I-07 (section 4.3)."
+  },
+  {
+   "id": "C-35",
+   "actor": "ORCH",
+   "operation": "Qualification control E6-C2: the count is 1 after StartTransaction and 2 after a nested start, and returns as expected after commit, abort and dispose-without-commit",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "after `StartTransaction` the count is 1; after a nested start it is 2; after commit, abort, and dispose-without-commit it returns as expected"
+    }
+   ],
+   "notes": "Qualification control."
+  },
+  {
+   "id": "C-36",
+   "actor": "ORCH",
+   "operation": "Qualification control E6-C3: the count sees callee transactions of AUTH-12 queries and imports (0 -> 1 -> 0)",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "the count sees the callee transactions of AUTH-12 queries and imports (0 → 1 → 0)"
+    }
+   ],
+   "notes": "Qualification control."
+  },
+  {
+   "id": "C-37",
+   "actor": "ORCH",
+   "operation": "Qualification control E6-C4: characterize whether OpenCloseTransaction and a side-database transaction are visible to the count",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "whether `OpenCloseTransaction` and a side database transaction are visible to the count"
+    }
+   ],
+   "notes": "Qualification control (characterization)."
+  },
+  {
+   "id": "C-38",
+   "actor": "ORCH",
+   "operation": "Qualification control E6-C5: two independent sources agree on a scripted sequence of starts and ends",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "two independent sources agree on a scripted sequence of starts and ends"
+    }
+   ],
+   "notes": "Qualification control."
+  },
+  {
+   "id": "C-39",
+   "actor": "ORCH",
+   "operation": "Qualification control E6-C6: a deliberate second transaction started by an adversarial probe is detected at a sampling point",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "a deliberate violation (a second transaction started by an adversarial probe) is detected at a sampling point"
+    }
+   ],
+   "notes": "Qualification control."
+  },
+  {
+   "id": "C-40",
+   "actor": "ORCH",
+   "operation": "Qualification control E6-C7: IsTopTransaction returns YES for the live top, NO for another live transaction and UNKNOWN for a disposed one",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "`IsTopTransaction` returns YES for the live top, NO for another live transaction, UNKNOWN for a disposed one"
+    }
+   ],
+   "notes": "Qualification control."
+  },
+  {
+   "id": "C-41",
+   "actor": "ORCH",
+   "operation": "Qualification control E6-C8 (STALE_WRAPPER_CONTROL): the stale wrapper of a finished transaction A never yields YES for a new transaction B, even if the native pointers match",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 4.2",
+     "quote": "the old wrapper of A is queried with `IsTopTransaction`; the result is **never `YES`** for B (it is `NO` or `UNKNOWN`)"
+    }
+   ],
+   "notes": "Qualification control."
+  },
+  {
+   "id": "C-42",
+   "actor": "ORCH",
+   "operation": "In PREPARE-R, explicitly invalidate the library cache before the acquire",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "invalidate explicitly in PREPARE-R before the acquire"
+    }
+   ],
+   "notes": "In-process cache state, not a document write (taxonomy approximation)."
+  },
+  {
+   "id": "C-43",
+   "actor": "ORCH/SL-5",
+   "operation": "Acquire the original library source bytes exactly once per run into a private, run-scoped copy (the fresh acquire of the library)",
+   "kind": "NON_MUTATING_READ",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "acquire the original source bytes **once** into a **private, run-scoped copy**"
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "a fresh acquire of the library (outside `T_M`, under the lock)"
+    },
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "This is the **only** authoritative import source."
+    }
+   ],
+   "notes": "Writes a file outside the document, so it is non-mutating for the document. The ORCH/SL-5 split is not determined."
+  },
+  {
+   "id": "C-44",
+   "actor": "ORCH/SL-5",
+   "operation": "Open the original source for reading with write access denied to others, when the host allows it",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "(the source is opened for reading with write access denied to others when the host allows it)"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-45",
+   "actor": "ORCH/SL-5",
+   "operation": "Stream the bytes and compute SHA-256 over the same bytes as they are copied",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "streaming the bytes and computing the SHA-256 **over the same bytes** as they are copied"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-46",
+   "actor": "ORCH/SL-5",
+   "operation": "(V2.1 step 2, superseded by PA-6) Capture source size and last-write time (and, when cheap, a source hash) before and after streaming; a difference makes the acquisition UNKNOWN and refuses the run (O1)",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "size and last-write time (and, when cheap, a source hash) before and after the streaming; a difference means the acquisition is `UNKNOWN`"
+    },
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "the acquisition bracket differs"
+    },
+    {
+     "fragment": "V2.2 PA-6",
+     "quote": "Step 2 of V2.1 19.1 is replaced by the following"
+    }
+   ],
+   "notes": "PA-6 replaced this step, but the UNKNOWN row and the safeguards list still refer to the bracket. Its survival is ambiguous."
+  },
+  {
+   "id": "C-47",
+   "actor": "ORCH/SL-5",
+   "operation": "Perform the mandatory torn-acquisition check. Authority A: hold the source handle with writes denied for the entire streaming acquisition",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.2 PA-6",
+     "quote": "The check of a **torn acquisition is mandatory**."
+    },
+    {
+     "fragment": "V2.2 PA-6",
+     "quote": "the source handle is **held with writes denied** for the **entire streaming acquisition**"
+    }
+   ],
+   "notes": "One of two admissible authorities."
+  },
+  {
+   "id": "C-48",
+   "actor": "ORCH/SL-5",
+   "operation": "Authority B: after streaming, re-hash the original source (verification read); the hash must equal the private-copy acquisition hash",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.2 PA-6",
+     "quote": "after the streaming, the original source is **re-hashed** and the hash **must equal the hash of the private-copy acquisition**"
+    },
+    {
+     "fragment": "V2.2 PA-6",
+     "quote": "**ALLOWED** for the torn-read verification (authority B)"
+    }
+   ],
+   "notes": "The alternative to authority A."
+  },
+  {
+   "id": "C-49",
+   "actor": "ORCH/SL-5",
+   "operation": "Record the acquisition authority used (A or B) in the LibraryInputRecord as ACQUISITION_AUTHORITY",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.2 PA-6",
+     "quote": "the acquisition authority is **one of two**, recorded in the `LibraryInputRecord` as `ACQUISITION_AUTHORITY`"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-50",
+   "actor": "ORCH",
+   "operation": "If neither authority A nor B can be established, or B does not match, mark the acquisition UNKNOWN and refuse the run (O1)",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.2 PA-6",
+     "quote": "If neither A nor B can be established, or B does not match, the acquisition is `UNKNOWN` and the run is refused (O1)"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-51",
+   "actor": "ORCH/SL-5",
+   "operation": "Record in the LibraryInputRecord: normalized source path, source stat, SHA-256 of the copied bytes, copy path and generation id",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "record in the `LibraryInputRecord`: normalized source path, source stat, the SHA-256 of the **copied bytes**, the copy path and the generation id"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-52",
+   "actor": "ORCH/SL-5",
+   "operation": "Open the library Database from the private copy, fully read into memory",
+   "kind": "NON_MUTATING_READ",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "open the library `Database` **from the private copy**, fully read into memory, never from the source path"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-53",
+   "actor": "ORCH/SL-5",
+   "operation": "Never open the library Database from the original source path",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "open the library `Database` **from the private copy**, fully read into memory, never from the source path"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-54",
+   "actor": "ORCH/SL-5",
+   "operation": "Once the private copy exists, never read the original source for import (ORIGINAL_SOURCE_IMPORT_READ); any such read makes the authority AUTHORITY_INVALID",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.2 PA-6",
+     "quote": "**FORBIDDEN** once the authoritative private copy exists. Any such read is `AUTHORITY_INVALID` (V2.1 19.1)"
+    },
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "**Any reread of the original source for import makes the authority void: `AUTHORITY_INVALID`.**"
+    }
+   ],
+   "notes": "PA-6 narrows the 19.1 authority rule to import reads only."
+  },
+  {
+   "id": "C-55",
+   "actor": "ORCH",
+   "operation": "On AUTHORITY_INVALID, classify the run as non-governing (INVALID, with a mandatory ruling)",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "The run then cannot be governing (INVALID, with a mandatory ruling)"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-56",
+   "actor": "ORCH",
+   "operation": "On AUTHORITY_INVALID, record a PRODUCT_OR_SEAM_DEFECT finding",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "it is recorded as a `PRODUCT_OR_SEAM_DEFECT` finding"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-57",
+   "actor": "ORCH",
+   "operation": "On AUTHORITY_INVALID, never let the LibraryInputRecord support a PASS",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "the `LibraryInputRecord` cannot support a `PASS`."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-58",
+   "actor": "ORCH/SL-5",
+   "operation": "Retain the private copy against writes for the whole run with a handle that denies write and delete",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "**retain the private copy against writes** (a handle that denies write and delete) for the whole run"
+    },
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "the retention of the copy against writes"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-59",
+   "actor": "ORCH/SL-5",
+   "operation": "Key every library cache entry by the copy's hash and a generation id",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "key any cache entry by the **copy's hash** and a generation id incremented at every fill"
+    }
+   ],
+   "notes": "Replaces today's path/mtime/length key (F-5)."
+  },
+  {
+   "id": "C-60",
+   "actor": "ORCH/SL-5",
+   "operation": "Increment the generation id on every cache fill",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "key any cache entry by the **copy's hash** and a generation id incremented at every fill"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-61",
+   "actor": "ORCH",
+   "operation": "Observe the original source after acquisition for drift, using only ORIGINAL_SOURCE_VERIFICATION_READ",
+   "kind": "NON_MUTATING_READ",
+   "clauses": [
+    {
+     "fragment": "V2.2 PA-6",
+     "quote": "**ALLOWED** for the torn-read verification (authority B) and for the observation of drift after the acquisition"
+    }
+   ],
+   "notes": "Needed for the drift finding (C-63)."
+  },
+  {
+   "id": "C-62",
+   "actor": "ORCH/SL-5",
+   "operation": "Never let verification reads of the original source feed the library Database",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.2 PA-6",
+     "quote": "**Verification reads never feed the library `Database`.**"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-63",
+   "actor": "ORCH",
+   "operation": "Record any drift of the original source after acquisition as the informational finding SOURCE_DRIFT_AFTER_ACQUISITION",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "it is recorded as the finding `SOURCE_DRIFT_AFTER_ACQUISITION` and **does not stop the import**"
+    },
+    {
+     "fragment": "V2.2 PA-6",
+     "quote": "Drift of the original source after the authoritative acquisition remains **informational only**"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-64",
+   "actor": "ORCH",
+   "operation": "Do not stop the import because of source drift after the authoritative acquisition",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "it is recorded as the finding `SOURCE_DRIFT_AFTER_ACQUISITION` and **does not stop the import**"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-65",
+   "actor": "ORCH",
+   "operation": "Re-hash the private copy after the run",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "the post-run re-hash of the copy"
+    }
+   ],
+   "notes": "The consequence of a mismatch is not stated."
+  },
+  {
+   "id": "C-66",
+   "actor": "ORCH",
+   "operation": "Qualify the acquisition with SOURCE_SWAP_CONTROL (4.3.1)",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "| qualification | `SOURCE_SWAP_CONTROL` (4.3.1) |"
+    }
+   ],
+   "notes": "The control's definition (4.3.1) is not in the input."
+  },
+  {
+   "id": "C-67",
+   "actor": "ORCH",
+   "operation": "Disclose any source drift in the Owner Act 2 evidence",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "the disclosure of any drift in the Owner Act 2 evidence"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-68",
+   "actor": "ORCH/SL-5",
+   "operation": "Report the acquisition UNKNOWN when the file cannot be hashed or copied (locked, denied)",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "the file cannot be hashed or copied (locked, denied)"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-69",
+   "actor": "ORCH/SL-5",
+   "operation": "Report UNKNOWN when the copy hash differs from the recorded hash",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "the copy hash differs from the record"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-70",
+   "actor": "ORCH/SL-5",
+   "operation": "Report UNKNOWN when the acquire returns nothing or throws",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "the acquire returns nothing or throws"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-71",
+   "actor": "ORCH/SL-5",
+   "operation": "Implement the private-copy acquisition authority before CT-21D execution (BEFORE_CT21D_EXECUTION, EXEC-6)",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "designed here; **implemented before execution** (`BEFORE_CT21D_EXECUTION`, EXEC-6)"
+    }
+   ],
+   "notes": "A sequencing gate, not a runtime step."
+  },
+  {
+   "id": "C-72",
+   "actor": "ORCH",
+   "operation": "Record the PRE_COMMAND_STATE_RECORD before the command, including exact fingerprints of pre-existing homologue records",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "the exact fingerprints of the pre-existing homologues recorded in the `PRE_COMMAND_STATE_RECORD`"
+    }
+   ],
+   "notes": "Presupposed by the effect check and the re-observation. The phase and actor that produce it are not stated."
+  },
+  {
+   "id": "C-73",
+   "actor": "ORCH",
+   "operation": "In PREPARE-R, before any import, compute the static dependency closure from the private copy",
+   "kind": "NON_MUTATING_READ",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "Before any import, PREPARE-R computed the **static dependency closure** from the private copy (11.3)."
+    }
+   ],
+   "notes": "How the ADD set is derived is in 11.3, which is not in the input."
+  },
+  {
+   "id": "C-74",
+   "actor": "ORCH/SL-5",
+   "operation": "Import only what PREPARE-R decided is necessary",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "Only the imports that PREPARE-R decided are necessary."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-75",
+   "actor": "ORCH",
+   "operation": "Before the first import, re-observe the relevant elements of the PRE_COMMAND_STATE_RECORD and compare",
+   "kind": "NON_MUTATING_READ",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "re-observe the relevant elements of the `PRE_COMMAND_STATE_RECORD` and compare (V4 3.3)"
+    }
+   ],
+   "notes": "'Relevant elements' is not defined."
+  },
+  {
+   "id": "C-76",
+   "actor": "ORCH",
+   "operation": "On a mismatch at the pre-import re-observation, perform no import, return outcome O1 and leave the manifest empty",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "mismatch => no import, O1, empty manifest."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-77",
+   "actor": "ORCH",
+   "operation": "Do not start PREPARE-W unless the importer's declared cloning mode is on the allow-list",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "PREPARE-W does not start unless the declared mode is on the allow-list."
+    }
+   ],
+   "notes": "The timing relative to the importer's result is ambiguous."
+  },
+  {
+   "id": "C-78",
+   "actor": "ORCH/SL-5",
+   "operation": "Before each import, re-hash the private library copy and compare it with the LibraryInputRecord",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "re-hash the **private library copy** and compare with the `LibraryInputRecord`"
+    },
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "the re-hash of the **copy** immediately before each import"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-79",
+   "actor": "ORCH",
+   "operation": "If the copy re-hash before an import mismatches, stop the import with outcome O2 and the residue produced so far",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "(a mismatch stops the import: O2 with the residue produced so far)"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-80",
+   "actor": "ORCH/SL-5",
+   "operation": "Before each import, revalidate the generation id",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "revalidate the generation id (section 19.1)."
+    }
+   ],
+   "notes": "The consequence of a failed revalidation is not stated."
+  },
+  {
+   "id": "C-81",
+   "actor": "SL-5",
+   "operation": "Import into the document Database exactly the ADD set of the closure (PREPARE-W import)",
+   "kind": "MUTATING",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "PREPARE-W adds exactly the **ADD set** of that closure."
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "PREPARE-W **import** with a structured result and a fresh acquire of the library (outside `T_M`, under the lock)"
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "imports belong to SL-5 in PREPARE-W"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-82",
+   "actor": "SL-5",
+   "operation": "Use a verified non-replacing cloning mode for the import (today DuplicateRecordCloning.Ignore, or a proven equivalent)",
+   "kind": "MUTATING",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "The import must use a **verified non-replacing** cloning mode: today `DuplicateRecordCloning.Ignore`"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-83",
+   "actor": "SL-5",
+   "operation": "Never modify a pre-existing record; PREPARE-W only adds",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "**`MODIFY_PREEXISTING = PROHIBITED`.** PREPARE-W only **adds**."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-84",
+   "actor": "SL-5",
+   "operation": "Declare the cloning mode used in the importer's structured result",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "The importer must **declare** the mode it used in its structured result"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-85",
+   "actor": "ORCH",
+   "operation": "Set the cloning control to FAIL if the policy differs, or UNKNOWN if it cannot be verified",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "If the cloning policy differs or cannot be verified, the control is `FAIL` (differs) or `UNKNOWN` (cannot verify)"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-86",
+   "actor": "ORCH/SL-5",
+   "operation": "Never silently permit record replacement",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "**replacement is never silently permitted**"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-87",
+   "actor": "ORCH",
+   "operation": "Demonstrate the non-replacing behaviour with CLONE_NON_REPLACE_CONTROL, not by reading the code alone",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "The behaviour is shown by `CLONE_NON_REPLACE_CONTROL` (4.3.1), not by reading the code alone."
+    }
+   ],
+   "notes": "Qualification control; 4.3.1 is not in the input."
+  },
+  {
+   "id": "C-88",
+   "actor": "ORCH/SL-5",
+   "operation": "Read the import only from the opened Database of the per-run private copy. The importer receives that Database, never a path to the original source",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "The import reads **only** the opened `Database` of the per-run authoritative private library copy (19.1)."
+    },
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "The importer receives that `Database`, never a path to the original source."
+    },
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "**SL-5 receives the opened `Database`, not a path to the original source**"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-89",
+   "actor": "ORCH/SL-5",
+   "operation": "Run the SL-5 import outside T_M and under the document lock. Callee transactions are allowed (AUTH-12 pattern)",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "PREPARE-W **import** with a structured result and a fresh acquire of the library (outside `T_M`, under the lock)"
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "callee transactions allowed (AUTH-12 pattern)"
+    }
+   ],
+   "notes": "Prohibits running the import inside T_M. Consistent with count 0 before and after the import (C-20/C-21)."
+  },
+  {
+   "id": "C-90",
+   "actor": "SL-5",
+   "operation": "Return a structured result with explicit success; returning without a structured success makes the import UNKNOWN",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "PREPARE-W **import** with a structured result"
+    },
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "the importer returns without a structured success"
+    }
+   ],
+   "notes": "Replaces today's silent 0 on failure (F-5)."
+  },
+  {
+   "id": "C-91",
+   "actor": "ORCH/SL-5",
+   "operation": "Confirm each import result with a re-query of the document and a fingerprint; otherwise it is UNKNOWN",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 19.1",
+     "quote": "an import result not confirmed by a re-query and a fingerprint"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-92",
+   "actor": "ORCH/SL-5",
+   "operation": "After each import, compute and record the fingerprint of the imported definition",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "compute and record the fingerprint of the imported definition (section 28)"
+    }
+   ],
+   "notes": "The fingerprint algorithm (section 28) is not in the input."
+  },
+  {
+   "id": "C-93",
+   "actor": "ORCH",
+   "operation": "Admit a definition to the PREPARE_RESIDUE_MANIFEST only after its fingerprint is recorded",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "only then may it enter the `PREPARE_RESIDUE_MANIFEST`."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-94",
+   "actor": "ORCH",
+   "operation": "After each import, re-read the exact fingerprints of the pre-existing homologues recorded in the PRE_COMMAND_STATE_RECORD. Any difference is an unexpected mutation (ABORT-VERIFY decides O2 or O6)",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "After each import, the exact fingerprints of the pre-existing homologues recorded in the `PRE_COMMAND_STATE_RECORD` are re-read; any difference is an unexpected mutation"
+    },
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "(ABORT-VERIFY then decides O2 or O6)"
+    }
+   ],
+   "notes": "Includes a non-mutating re-read."
+  },
+  {
+   "id": "C-95",
+   "actor": "ORCH",
+   "operation": "After each import, check that the set of newly present records equals the ADD set; an extra record is unexpected",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "The set of newly present records must equal the ADD set; an extra record is unexpected."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-96",
+   "actor": "ORCH",
+   "operation": "List in the PREPARE_RESIDUE_MANIFEST every definition and dependency record added by the import, each with its exact fingerprint",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "The `PREPARE_RESIDUE_MANIFEST` lists the definitions and dependency records **added** by the import, each with its exact fingerprint"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-97",
+   "actor": "ORCH",
+   "operation": "Mark every pre-existing record that imported content binds to as REUSED_BOUND (pre-command fingerprint; not residue)",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "marks every pre-existing record the imported content binds to as `REUSED_BOUND` (pre-command fingerprint; not residue)."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-98",
+   "actor": "ORCH",
+   "operation": "Keep the manifest as the exact list of what PREPARE-W added (or changed); it may persist after an abort",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "The manifest is the exact list of what PREPARE-W added or changed and may persist after an abort"
+    }
+   ],
+   "notes": "'or changed' conflicts with MODIFY_PREEXISTING = PROHIBITED."
+  },
+  {
+   "id": "C-99",
+   "actor": "ORCH",
+   "operation": "On a failed or indeterminate import, keep the definition out of the manifest",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "**Import failure or indeterminate:** the definition does not enter the manifest"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-100",
+   "actor": "ORCH",
+   "operation": "Never treat a partially failed import as expected residue",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "A partially failed import never becomes expected residue (section 11.3)."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-101",
+   "actor": "ORCH",
+   "operation": "Stop the run on a failed or indeterminate import",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "the run stops"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-102",
+   "actor": "ORCH",
+   "operation": "In ABORT-VERIFY, compare the document against the PRE_COMMAND_STATE_RECORD plus the manifest of completed imports",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 7 and 7.1",
+     "quote": "ABORT-VERIFY compares against the record plus the manifest of completed imports (V4 3.4)."
+    }
+   ],
+   "notes": "Includes a non-mutating read. The O2/O6 decision rule is not in the input."
+  },
+  {
+   "id": "C-103",
+   "actor": "SL-1",
+   "operation": "Create the frontal view definition, one per depth k, in the caller's transaction",
+   "kind": "MUTATING",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "create the **frontal** view definition (one per depth `k`) in the caller's transaction"
+    }
+   ],
+   "notes": "Required by sealed scope V1."
+  },
+  {
+   "id": "C-104",
+   "actor": "SL-2",
+   "operation": "Create the planta (plan) view definition in the caller's transaction",
+   "kind": "MUTATING",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "create the **planta** view definition in the caller's transaction"
+    }
+   ],
+   "notes": "Required by sealed scope V1."
+  },
+  {
+   "id": "C-105",
+   "actor": "SL-3",
+   "operation": "(Retained contract only) Create the lateral view definition under its own Selective contract, to which all 15.3 clauses apply",
+   "kind": "MUTATING",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "the **lateral** view definition: its **own Selective contract** (below)"
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "The clauses of section 15.3 apply to it."
+    }
+   ],
+   "notes": "Not required by sealed scope V1 (lateral out of scope, V17 L-01)."
+  },
+  {
+   "id": "C-106",
+   "actor": "SL-4",
+   "operation": "Place the block reference in the caller's transaction from a computed transform (no jig)",
+   "kind": "MUTATING",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "**place the block reference** in the caller's transaction from a computed transform (no jig)"
+    }
+   ],
+   "notes": "Required by sealed scope V1."
+  },
+  {
+   "id": "C-107",
+   "actor": "SL-6",
+   "operation": "Act as the read-only verifier and the expected-versus-persisted comparator; perform no writes",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "the **read-only verifier** and the expected-versus-persisted comparator | read-only"
+    }
+   ],
+   "notes": "Required by sealed scope V1."
+  },
+  {
+   "id": "C-108",
+   "actor": "SL-3",
+   "operation": "Do not treat AUTH-15 as the authority of SL-3",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "**AUTH-15 is not the authority of SL-3.**"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-109",
+   "actor": "SL-3",
+   "operation": "Before AUTH-15 may implement SL-3, demonstrate EQ-1: the same plan type",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "AUTH-15 may later **implement** SL-3 only if **equivalence is demonstrated** for all of:"
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "| EQ-1 | the same plan type |"
+    }
+   ],
+   "notes": "A future prerequisite."
+  },
+  {
+   "id": "C-110",
+   "actor": "SL-3",
+   "operation": "Before AUTH-15 may implement SL-3, demonstrate EQ-2: the same dispatcher and path",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "| EQ-2 | the same dispatcher and path |"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-111",
+   "actor": "SL-3",
+   "operation": "Before AUTH-15 may implement SL-3, demonstrate EQ-3: the same caller-owned transaction semantics",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "| EQ-3 | the same caller-owned transaction semantics |"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-112",
+   "actor": "SL-3",
+   "operation": "Before AUTH-15 may implement SL-3, demonstrate EQ-4: exact Option-B host evidence on that path",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "| EQ-4 | exact Option-B host evidence on that path |"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-113",
+   "actor": "SL-3",
+   "operation": "Before AUTH-15 may implement SL-3, demonstrate EQ-5: the same relevant authored and persistence contract",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "| EQ-5 | the same relevant authored and persistence contract |"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-114",
+   "actor": "SL-3",
+   "operation": "Transfer no AUTH-15 evidence to SL-3 until equivalence is demonstrated",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "Until it is demonstrated, **no AUTH-15 evidence transfers** to SL-3."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-115",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Use only the received document Database; never open a database of its own",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "the seam receives the document `Database`; it never opens a database of its own"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-116",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Before writing, verify with IsTopTransaction(myTransaction) that the received Transaction is the live top transaction. NO or UNKNOWN is a PRE-WRITE failure (TransactionMismatch)",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "**verifies that it is the live top transaction through the typed authority `IsTopTransaction(myTransaction)`** (4.2); a `NO` or `UNKNOWN` is a PRE-WRITE failure."
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "`TransactionMismatch`, `InvalidPlan`, `InvalidBlockName`, `InvalidEnvelope` | PRE-WRITE | nothing was written"
+    }
+   ],
+   "notes": "The mapping to TransactionMismatch is inferred from the 15.4 table."
+  },
+  {
+   "id": "C-117",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Never call Commit internally",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "no internal `Commit` | forbidden; static guard"
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "no seam commits"
+    }
+   ],
+   "notes": "Enforced by a static guard."
+  },
+  {
+   "id": "C-118",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Never call Abort internally",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "no internal `Abort` | forbidden; static guard"
+    }
+   ],
+   "notes": "Enforced by a static guard."
+  },
+  {
+   "id": "C-119",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Never Dispose the caller's transaction",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "no `Dispose` of the caller transaction | forbidden; static guard"
+    }
+   ],
+   "notes": "Enforced by a static guard."
+  },
+  {
+   "id": "C-120",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Never call LockDocument (the orchestrator holds the lock)",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "no `LockDocument` | forbidden; the orchestrator holds the lock; static guard"
+    }
+   ],
+   "notes": "Enforced by a static guard."
+  },
+  {
+   "id": "C-121",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Never use an OpenCloseTransaction",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "no `OpenCloseTransaction`, no side database write | forbidden; static guard"
+    }
+   ],
+   "notes": "Enforced by a static guard. Excludes ReadBlockName (C-33)."
+  },
+  {
+   "id": "C-122",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Never write to a side database",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "no `OpenCloseTransaction`, no side database write | forbidden; static guard"
+    }
+   ],
+   "notes": "Enforced by a static guard."
+  },
+  {
+   "id": "C-123",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Provide static guards that enforce the prohibitions on internal Commit, Abort, Dispose of the caller transaction, LockDocument, OpenCloseTransaction and side-database writes",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "forbidden; static guard"
+    }
+   ],
+   "notes": "The mechanism and owner of the static guards are not specified."
+  },
+  {
+   "id": "C-124",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Produce a deterministic result: the same plan and block-table state give the same effective name, definition content and result",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "the same plan and the same block-table state give the same effective name, definition content and result"
+    }
+   ],
+   "notes": "A property. No verification procedure is given."
+  },
+  {
+   "id": "C-125",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Report failures as typed failures classified PRE-WRITE or POST-WRITE",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "typed failures split into PRE-WRITE and POST-WRITE (15.4)"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-126",
+   "actor": "ORCH",
+   "operation": "Compose the authored envelope (payload) for each sibling",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "the envelope is composed **by the caller** and written **verbatim**"
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "The seam receives the composed envelope and does not restamp it."
+    }
+   ],
+   "notes": "In-memory composition; the kind is an approximation."
+  },
+  {
+   "id": "C-127",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Write the caller-composed envelope verbatim",
+   "kind": "MUTATING",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "the envelope is composed **by the caller** and written **verbatim**"
+    }
+   ],
+   "notes": "The storage object is not specified. Whether SL-4 writes an envelope is ambiguous."
+  },
+  {
+   "id": "C-128",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Read the written envelope back",
+   "kind": "NON_MUTATING_READ",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "the seam reads it back and compares (AUTH-15 pattern)"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-129",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Compare the read-back envelope with the composed one; a mismatch is the POST-WRITE failure EnvelopeReadbackMismatch",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "the seam reads it back and compares (AUTH-15 pattern)"
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "`DefinitionWriteFailed`, `EnvelopeWriteFailed`, `ReferencePlacementFailed`, `EnvelopeReadbackMismatch` | POST-WRITE"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-130",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Never rewrite, restamp or reinterpret the envelope (including NewRackId)",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "it never rewrites, restamps or reinterprets"
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "The seam receives the composed envelope and does not restamp it."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-131",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Create every definition and every reference of the logical rack inside T_M, never outside it",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "every definition and every reference of the logical rack is created inside `T_M`; no seam commits"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-132",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Write only document-database objects, under the held lock, in the caller's transaction",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "seams write only document-database objects under a held lock in the caller's transaction"
+    }
+   ],
+   "notes": "The rollback-compatibility requirement (Option B)."
+  },
+  {
+   "id": "C-133",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Attempt no cleanup after a failure; rollback is the caller's abort",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "the seam claims no cleanup"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-134",
+   "actor": "ORCH",
+   "operation": "Declare in the plan the required library blocks",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "the plan declares its required library blocks"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-135",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Never import library content; imports belong only to SL-5 in PREPARE-W",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "SL-1, SL-2 and SL-4 (and SL-3 if it is ever authorized) **do not import**"
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "imports belong to SL-5 in PREPARE-W"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-136",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Detect a missing required library block and report the typed failure MissingLibraryBlocks: PRE-WRITE if detectable from the declared requirements, otherwise POST-WRITE",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "a missing required block is a typed failure"
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "PRE-WRITE if detectable from the declared requirements, otherwise POST-WRITE | required block absent"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-137",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Never report success over a partially written definition",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "a seam never reports success over a partially written definition"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-138",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Return a result carrying IsSuccess, DefinitionId, EffectiveBlockName, MissingInstances and Diagnostic",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "Result (working shape): `IsSuccess`, `DefinitionId`, `EffectiveBlockName`, `ReferenceId` (SL-4), the **handles of all created objects**"
+    }
+   ],
+   "notes": "A working shape. MissingInstances and Diagnostic are not defined."
+  },
+  {
+   "id": "C-139",
+   "actor": "SL-4",
+   "operation": "Return the ReferenceId of the placed block reference",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "`ReferenceId` (SL-4)"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-140",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Return the handles of all created objects, for the sealed list, the protected objects and the phase-A domain",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "the **handles of all created objects** (for the sealed list and the protected objects)"
+    },
+    {
+     "fragment": "V2.2 PA-10",
+     "quote": "**objects created inside `T_M`** (listed by handle in the seam results)."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-141",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Complete all PRE-WRITE validations before the first write, so that a PRE-WRITE failure means nothing was written",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "`TransactionMismatch`, `InvalidPlan`, `InvalidBlockName`, `InvalidEnvelope` | PRE-WRITE | nothing was written"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-142",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Validate the plan; an invalid plan is the PRE-WRITE failure InvalidPlan",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "`TransactionMismatch`, `InvalidPlan`, `InvalidBlockName`, `InvalidEnvelope` | PRE-WRITE | nothing was written"
+    }
+   ],
+   "notes": "Validity criteria are not defined."
+  },
+  {
+   "id": "C-143",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Validate the block name; an invalid name is the PRE-WRITE failure InvalidBlockName",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "`TransactionMismatch`, `InvalidPlan`, `InvalidBlockName`, `InvalidEnvelope` | PRE-WRITE | nothing was written"
+    }
+   ],
+   "notes": "The only stated criterion is a sanitizer-empty name (C-160)."
+  },
+  {
+   "id": "C-144",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Validate the received envelope; an invalid envelope is the PRE-WRITE failure InvalidEnvelope",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "`TransactionMismatch`, `InvalidPlan`, `InvalidBlockName`, `InvalidEnvelope` | PRE-WRITE | nothing was written"
+    }
+   ],
+   "notes": "Validity criteria are not defined."
+  },
+  {
+   "id": "C-145",
+   "actor": "SL-4",
+   "operation": "Accept only a transform with a strictly positive determinant; otherwise report the PRE-WRITE failure InvalidTransform",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "SL-4 accepts only a transform with **strictly positive determinant**"
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "`InvalidTransform` | PRE-WRITE | determinant not strictly positive"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-146",
+   "actor": "SL-4",
+   "operation": "Accept only a scale within the kind's declared tolerance, with no negative scale (ADR-0036); otherwise report InvalidTransform",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "scale within the kind's declared tolerance (no negative scale, ADR-0036)"
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "or scale outside the kind's declared tolerance (ADR-0036: no negative scale)"
+    }
+   ],
+   "notes": "The tolerance value is not given."
+  },
+  {
+   "id": "C-147",
+   "actor": "SL-4",
+   "operation": "Check that the target space can be opened for write in this transaction; otherwise report the PRE-WRITE failure TargetSpaceInvalid",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "`TargetSpaceInvalid` | PRE-WRITE | the target space cannot be opened for write in this transaction"
+    }
+   ],
+   "notes": "Attributed to SL-4 (placement in the target space). Whether SL-1/SL-2 also check a target space is not stated."
+  },
+  {
+   "id": "C-148",
+   "actor": "SL-1/SL-2/SL-3",
+   "operation": "On a failed definition write, report the POST-WRITE failure DefinitionWriteFailed (the caller must abort)",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "`DefinitionWriteFailed`, `EnvelopeWriteFailed`, `ReferencePlacementFailed`, `EnvelopeReadbackMismatch` | POST-WRITE | something may have been written; the caller must abort"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-149",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "On a failed envelope write, report the POST-WRITE failure EnvelopeWriteFailed",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "`DefinitionWriteFailed`, `EnvelopeWriteFailed`, `ReferencePlacementFailed`, `EnvelopeReadbackMismatch` | POST-WRITE"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-150",
+   "actor": "SL-4",
+   "operation": "On a failed reference placement, report the POST-WRITE failure ReferencePlacementFailed",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "`DefinitionWriteFailed`, `EnvelopeWriteFailed`, `ReferencePlacementFailed`, `EnvelopeReadbackMismatch` | POST-WRITE"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-151",
+   "actor": "ORCH",
+   "operation": "Mint NewRackId (a new GUID string) exactly once per logical mirrored rack",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "**`NewRackId`** is minted **once per logical mirrored rack** by the orchestrator (a new GUID string, as the editor's `EnsureId` does)"
+    }
+   ],
+   "notes": "An in-memory value."
+  },
+  {
+   "id": "C-152",
+   "actor": "ORCH",
+   "operation": "Ensure NewRackId never equals the source id",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "is never equal to the source id"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-153",
+   "actor": "ORCH",
+   "operation": "Ensure NewRackId is identical in the envelope of every sibling of the logical rack",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "is **identical in the envelope of every sibling** of that logical rack"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-154",
+   "actor": "ORCH",
+   "operation": "Ensure different logical racks get different NewRackIds",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "different logical racks get different ids"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-155",
+   "actor": "SL-1/SL-2/SL-3",
+   "operation": "Apply the family naming policy to obtain a unique effective block name for the created definition",
+   "kind": "MUTATING",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "The family policy gives a unique effective name"
+    }
+   ],
+   "notes": "Which actor applies the policy is not stated."
+  },
+  {
+   "id": "C-156",
+   "actor": "ORCH",
+   "operation": "In PREPARE-R, compute the expected effective names under the lock (deterministic for the current block-table state)",
+   "kind": "NON_MUTATING_READ",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "PREPARE-R computes the expected effective names under the lock (deterministic for the current block-table state) and records them"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-157",
+   "actor": "ORCH",
+   "operation": "Record the expected effective names computed in PREPARE-R",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "PREPARE-R computes the expected effective names under the lock (deterministic for the current block-table state) and records them"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-158",
+   "actor": "SL-1/SL-2/SL-3/SL-4",
+   "operation": "Return the effective name actually used (EffectiveBlockName)",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "the seam returns the effective name it used"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-159",
+   "actor": "ORCH",
+   "operation": "Use the effective names returned by the seams in the sealed list",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "**the sealed list uses the effective names**"
+    }
+   ],
+   "notes": "The fragments do not state a comparison of the returned name with the PREPARE-R expectation."
+  },
+  {
+   "id": "C-160",
+   "actor": "ORCH/SL-1/SL-2/SL-3",
+   "operation": "Treat a name that the sanitizer reduces to empty as a failure",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "A name that the sanitizer reduces to empty is a failure (AUTH-15 finding F-2)."
+    }
+   ],
+   "notes": "Neither the failure type nor the actor is specified."
+  },
+  {
+   "id": "C-161",
+   "actor": "ORCH",
+   "operation": "Supply SL-4 with the computed common transform (RACKMIRROR reflection, mu_k)",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "The orchestrator supplies the computed common transform (RACKMIRROR reflection, `mu_k`)."
+    }
+   ],
+   "notes": "An in-memory value."
+  },
+  {
+   "id": "C-162",
+   "actor": "SL-4",
+   "operation": "Set the reference's layer and properties from the plan",
+   "kind": "MUTATING",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "sets layer and properties from the plan"
+    }
+   ],
+   "notes": "The properties are not enumerated."
+  },
+  {
+   "id": "C-163",
+   "actor": "SL-4",
+   "operation": "Apply dynamic properties inside T_M",
+   "kind": "MUTATING",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "applies dynamic properties and `RecordGraphicsModified` **inside** `T_M`"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-164",
+   "actor": "SL-4",
+   "operation": "Call RecordGraphicsModified inside T_M",
+   "kind": "MUTATING",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "applies dynamic properties and `RecordGraphicsModified` **inside** `T_M`"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-165",
+   "actor": "SL-4",
+   "operation": "Create the block reference in the target space in the caller's transaction",
+   "kind": "MUTATING",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "creates the reference in the target space in the caller's transaction"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-166",
+   "actor": "SL-4",
+   "operation": "Use no jig",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "No jig, no interaction, no post-commit graphics writes."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-167",
+   "actor": "SL-4",
+   "operation": "Require no user interaction",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "No jig, no interaction, no post-commit graphics writes."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-168",
+   "actor": "SL-4",
+   "operation": "Perform no graphics writes after commit",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "No jig, no interaction, no post-commit graphics writes."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-169",
+   "actor": "SL-6",
+   "operation": "Enumerate siblings with RackBlockFinder.ScanEnvelopes (which skips layouts, anonymous and xref records)",
+   "kind": "NON_MUTATING_READ",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "SL-6 enumerates siblings with the existing `RackBlockFinder.ScanEnvelopes` (which skips layouts, anonymous and xref records)"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-170",
+   "actor": "SL-6",
+   "operation": "Read the persisted payloads with RackBlockData.Read",
+   "kind": "NON_MUTATING_READ",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "reads payloads with `RackBlockData.Read`."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-171",
+   "actor": "SL-6",
+   "operation": "Compare expected against persisted using the typed canonical form of the Selective design document",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "It compares **expected versus persisted** with a **new comparator independent of the writer and of `mu_k`**"
+    },
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "that uses the typed canonical form of the Selective design document."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-172",
+   "actor": "SL-6",
+   "operation": "The comparator must be new and independent of the writer and of mu_k",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "a **new comparator independent of the writer and of `mu_k`**"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-173",
+   "actor": "SL-6",
+   "operation": "Use SelectiveAuthoredAuthority.Resolve only as a secondary sibling-consistency check, never as the primary comparison",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "`SelectiveAuthoredAuthority.Resolve` may be used as a **secondary** sibling-consistency check only."
+    }
+   ],
+   "notes": "Optional use."
+  },
+  {
+   "id": "C-174",
+   "actor": "SL-6",
+   "operation": "Attest scan completeness by comparing the enumeration with the sealed list, not by trusting the scan",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "Completeness of the scan is attested by comparing the enumeration with the sealed list, not by trusting the scan."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-175",
+   "actor": "ORCH",
+   "operation": "Seal the list of created objects (effective names and handles from the seam results) and the PROTECTED_OBJECTS set",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 15.2-15.7",
+     "quote": "the **handles of all created objects** (for the sealed list and the protected objects)"
+    },
+    {
+     "fragment": "V2.2 PA-10",
+     "quote": "Phase A occurs **before** the sealed set exists"
+    },
+    {
+     "fragment": "V2.2 PA-10",
+     "quote": "**At PV** the sealed `PROTECTED_OBJECTS` is checked for **consistency with the earlier domain**"
+    }
+   ],
+   "notes": "The sealing moment is inferred (by PV) and not stated explicitly."
+  },
+  {
+   "id": "C-176",
+   "actor": "ORCH",
+   "operation": "Define the phase-A adjudication domain to include the protected objects determinable from the plan: source objects, relevant containers, and NOD entries the kind consumes",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.2 PA-10",
+     "quote": "the **protected objects determinable from the plan**: the source objects, the relevant containers, the NOD entries the kind consumes;"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-177",
+   "actor": "ORCH",
+   "operation": "Include in the phase-A domain every object created inside T_M, by handle from the seam results",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.2 PA-10",
+     "quote": "**objects created inside `T_M`** (listed by handle in the seam results)."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-178",
+   "actor": "ORCH",
+   "operation": "Adjudicate phase-A (MUTATION) host events whose targets fall within the domain",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.2 PA-10",
+     "quote": "| A. MUTATION | the domain above |"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-179",
+   "actor": "ORCH",
+   "operation": "Record phase-A events outside the domain without adjudicating them by themselves",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.2 PA-10",
+     "quote": "recorded, **not adjudicated** by itself (V3 4.2 row E)"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-180",
+   "actor": "ORCH",
+   "operation": "In phase C (W-SCAN), adjudicate events on PROTECTED_OBJECTS against an empty expected write set; record events outside, without adjudicating them",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.2 PA-10",
+     "quote": "| C. W-SCAN | events on `PROTECTED_OBJECTS` (expected write set = empty) | recorded, not adjudicated |"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-181",
+   "actor": "ORCH",
+   "operation": "At PV, check that the sealed PROTECTED_OBJECTS is consistent with the earlier domain; a member the domain did not include is an inconsistency and aborts before Commit()",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.2 PA-10",
+     "quote": "a member of the sealed set that the domain did not include is an inconsistency and aborts before `Commit()`."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-182",
+   "actor": "ORCH",
+   "operation": "Treat an event whose target cannot be resolved, or that matches more than one open entry, as ambiguous; fail closed",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.2 PA-10",
+     "quote": "An event whose **target cannot be resolved**, or that matches more than one open entry, remains **ambiguous** (V2.1 14.5) and fails closed."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-183",
+   "actor": "ORCH",
+   "operation": "During validation, classify an event category the frozen EVM does not explain as EVM_INCOMPLETE (not a host verdict), requiring a new model version, review and revalidation",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.2 PA-10",
+     "quote": "**During validation, an event category that the frozen EVM does not explain is `EVM_INCOMPLETE`**"
+    },
+    {
+     "fragment": "V2.2 PA-10",
+     "quote": "which requires a **new model version, review and revalidation** (V2.1 27.5). It is not a host verdict."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-184",
+   "actor": "ORCH",
+   "operation": "Build the seam operation inventory: every database-mutating primitive that SL-1, SL-2, SL-4 and SL-5 use",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 27.2",
+     "quote": "**seam operation inventory**: every database-mutating primitive that SL-1, SL-2, SL-4 and SL-5 use"
+    }
+   ],
+   "notes": "A control-plane/validation procedure. The category list is illustrative."
+  },
+  {
+   "id": "C-185",
+   "actor": "ORCH",
+   "operation": "Treat the inventory as a starting input only; it must pass the independent completeness review (27.7)",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 27.2",
+     "quote": "The inventory is a **starting input, not the completeness authority**; it must pass the independent completeness review (27.7)."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-186",
+   "actor": "SL-1/SL-2/SL-4/SL-5",
+   "operation": "Use no database-mutating primitive that has no micro-scenario",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 27.2",
+     "quote": "No primitive may be used that has no micro-scenario"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-187",
+   "actor": "ORCH",
+   "operation": "Execute each operation category in isolation in the controlled environment (manifest-attested, no adversarial probes) to map it to its host events",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 27.2",
+     "quote": "each operation category is executed **in isolation** in the controlled environment (manifest-attested, no adversarial probes) to map it to its host events"
+    }
+   ],
+   "notes": "Learning phase."
+  },
+  {
+   "id": "C-188",
+   "actor": "ORCH",
+   "operation": "Repeat each micro-scenario several times in isolation across independent sessions",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 27.2",
+     "quote": "several isolated repetitions across independent sessions"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-189",
+   "actor": "ORCH",
+   "operation": "Draft the event model with entries as in the EVM schema (27.6)",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 27.2",
+     "quote": "**draft model**: entries as in the EVM schema (27.6)"
+    }
+   ],
+   "notes": "The schema (27.6) is not in the input."
+  },
+  {
+   "id": "C-190",
+   "actor": "ORCH",
+   "operation": "Ensure every model entry carries an explanation of type PRODUCT_OPERATION, HOST_DOCUMENTED (with a citation) or HOST_OBSERVED_STABLE",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 27.2",
+     "quote": "every entry carries an explanation of one of three types: `PRODUCT_OPERATION`; `HOST_DOCUMENTED` (with a citation); or `HOST_OBSERVED_STABLE`."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-191",
+   "actor": "ORCH",
+   "operation": "Admit HOST_OBSERVED_STABLE only as a companion of a product operation, with raw evidence, a citation to stable isolated micro-scenarios, an Architect review and a risk label",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 27.2",
+     "quote": "**`HOST_OBSERVED_STABLE` may appear only as accompanying host behaviour associated with a product operation**"
+    },
+    {
+     "fragment": "V2.1 27.2",
+     "quote": "must carry raw evidence, a citation to the isolated micro-scenarios that show it stable across independent sessions, an Architect review and a **risk label**"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-192",
+   "actor": "ORCH",
+   "operation": "Never treat HOST_OBSERVED_STABLE as a free-standing permission",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 27.2",
+     "quote": "it is **never a free-standing permission**"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-193",
+   "actor": "ORCH",
+   "operation": "Record unexplained events as UNEXPLAINED_EVENTS; they block the freeze",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 27.2",
+     "quote": "**Unexplained events are recorded as `UNEXPLAINED_EVENTS` and block the freeze**; they are never admitted automatically"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-194",
+   "actor": "ORCH",
+   "operation": "Never admit unexplained events automatically",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 27.2",
+     "quote": "they are never admitted automatically"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-195",
+   "actor": "ORCH",
+   "operation": "Freeze the model with a version and a hash; status is DRAFT, UNDER_REVIEW or FROZEN(hash)",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.1 27.2",
+     "quote": "**freeze**: the model gets a version and a hash; status `DRAFT`, `UNDER_REVIEW` or `FROZEN(hash)`"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-196",
+   "actor": "ORCH",
+   "operation": "Use only FROZEN models in governing validation",
+   "kind": "PROHIBITION",
+   "clauses": [
+    {
+     "fragment": "V2.1 27.2",
+     "quote": "only `FROZEN` models are used by governing validation"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-197",
+   "actor": "ORCH",
+   "operation": "Run governing validation on fresh sessions and fresh fixtures, with plans structurally outside the learning corpus, applying the frozen model",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.1 27.2",
+     "quote": "governing runs on fresh sessions and fresh fixtures, with plans **structurally outside** the learning corpus (27.8), apply the frozen model"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-198",
+   "actor": "ORCH",
+   "operation": "Before the baseline, require the design-time seam-operation inventory (the reused product path at a bound SHA plus the operations the seam contract requires) to be STATIC_REVIEWED: PA-11 conditions 1, 2, 5, 6 and 7 satisfied",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.4 section 1",
+     "quote": "The baseline requires the seam-operation inventory to be `STATIC_REVIEWED`: conditions 1, 2, 5, 6 and 7 of V2.2 PA-11 satisfied for the design-time inventory"
+    },
+    {
+     "fragment": "V2.4 section 1",
+     "quote": "(the reused product path at a bound SHA plus the operations required by the seam contract)"
+    }
+   ],
+   "notes": "The PA-11 conditions are not in the input."
+  },
+  {
+   "id": "C-199",
+   "actor": "ORCH",
+   "operation": "Require approval of the dynamic-trace plan (PA-11 conditions 3 and 4) for STATIC_REVIEWED",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.4 section 1",
+     "quote": "and the dynamic-trace plan of conditions 3 and 4 approved."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-200",
+   "actor": "ORCH",
+   "operation": "Mark the inventory REVIEWED only after the dynamic trace covers every seam entry point and every plan-shape class on the implemented seams",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.4 section 1",
+     "quote": "The inventory becomes `REVIEWED` (complete) only after the dynamic trace covers every seam entry point and every plan-shape class on the implemented seams"
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-201",
+   "actor": "ORCH",
+   "operation": "Require REVIEWED before the first LEARNING run",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.4 section 1",
+     "quote": "and that is required before the first `LEARNING` run."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-202",
+   "actor": "ORCH",
+   "operation": "Report INVENTORY_COMPLETENESS = NOT_ESTABLISHED until the inventory is REVIEWED",
+   "kind": "RESULT_OR_REPORT",
+   "clauses": [
+    {
+     "fragment": "V2.4 section 1",
+     "quote": "`INVENTORY_COMPLETENESS = NOT_ESTABLISHED` until `REVIEWED`."
+    }
+   ],
+   "notes": ""
+  },
+  {
+   "id": "C-203",
+   "actor": "ORCH",
+   "operation": "Reopen the review of an operation class whenever the implemented seams add an operation after the design-time review",
+   "kind": "CHECK_OR_GUARD",
+   "clauses": [
+    {
+     "fragment": "V2.4 section 1",
+     "quote": "An operation added by the implemented seams after the design-time review reopens the review of its operation class."
+    }
+   ],
+   "notes": ""
+  }
+ ],
+ "ambiguities": [
+  "Kind taxonomy gap: several required operations fit no kind exactly. These are in-memory composition or supply of values (envelope composition C-126, NewRackId minting C-151, transform supply C-161, passing Database/Transaction C-03), lock holding (C-01), cache invalidation and keying (C-42, C-59), and starting a transaction (C-02). They were classified by the closest kind.",
+  "ORCH/SL-5 split in library acquisition and PREPARE-W is not determined. 15.2 gives SL-5 'a fresh acquire of the library', but 19.1 step 6 and 7.1 say SL-5/the importer 'receives the opened Database', which implies another actor opens it. No actor is assigned to the pre-import re-hash, generation-id revalidation, fingerprinting, effect check or manifest keeping.",
+  "PA-6 replaces V2.1 19.1 step 2 (the size/last-write stat bracket), yet PA-6 itself, the 19.1 UNKNOWN row ('the acquisition bracket differs') and the safeguards list ('the torn-acquisition bracket (step 2)') still cite step 2. It is unclear whether the stat bracket is still required on top of authority A/B. Step 3 still records 'source stat'.",
+  "PA-6 authority A vs 19.1 step 1: step 1 opens the source with write-deny only 'when the host allows it'. No preference order or selection rule between authority A and B is given. PA-6 authority A also resembles 19.1 'Alternative A' (allowed 'only through a reviewed amendment'), and the text does not state that PA-6 is that amendment.",
+  "Section 7 says the manifest lists what PREPARE-W 'added or changed', while 7.1 says MODIFY_PREEXISTING = PROHIBITED and 'PREPARE-W only adds'. The meaning of 'changed' is undetermined.",
+  "7.1: 'PREPARE-W does not start unless the declared mode is on the allow-list', but the mode is declared in the importer's structured result, which exists only after an import. When the check happens is undetermined. The allow-list contents beyond DuplicateRecordCloning.Ignore are not given.",
+  "Outcome codes O1, O2 and O6 and the ABORT-VERIFY rule for choosing O2 vs O6 are not defined in the fragments. Section 7 gives no outcome for a copy re-hash mismatch before an import (19.1 says O2 with residue). No outcome is given for a failed generation-id revalidation or a post-run copy re-hash mismatch.",
+  "Referenced sections are absent from the input, so operations they impose cannot be compiled: 11.3 (composition rule for pre-existing definitions W-5/TBD-13, derivation of the ADD set from the closure, partial failures), 28 (fingerprint definition), 4.3/4.3.1 (CLONE_NON_REPLACE_CONTROL, SOURCE_SWAP_CONTROL, qualification), 13.1 (warm-up side DB), 14.5, 20, 25, 27.5-27.8 (EVM schema, completeness review, corpus), V3 4.2, V4 3.3/3.4, V2.2 PA-11 conditions 1-7, ADR-0036 tolerance, P-5, NG-09.",
+  "'Relevant elements' of the PRE_COMMAND_STATE_RECORD are not defined. When and by which actor the record (including homologue fingerprints) is produced is not stated; C-72 is presupposed, not stated.",
+  "Sampling points P0, PL, PS and PV are not defined in the fragments beyond their expected counts. VERIFY allows 'or the exact equivalent the Architect reviews', which leaves the verifier's transaction pattern open.",
+  "Nested transactions inside T_M: PV requires 'no nested transaction' at sampling time, and 15.3 forbids only internal Commit/Abort/Dispose/LockDocument/OpenCloseTransaction. Whether a seam may start and end a nested transaction (StartTransaction) inside T_M is not determined; such transactions would fall into the declared blind spot.",
+  "E-06 sources: 'two sources disagree (counter, own bookkeeping, events)'. Whether own bookkeeping is a mandatory second source is not stated, and events are optional ('if they exist'). The qualification controls E6-C1..C8 belong to I-07 qualification (section 4.3); when they must run relative to a CT-21D run is not stated.",
+  "IsTopTransaction is three-valued (YES/NO/UNKNOWN), but 'The log records the boolean result'. How UNKNOWN is logged is undetermined. Who owns the typed authority's implementation (shared service or per seam) is not stated.",
+  "Envelope clause (exact authored payload) applies to SL-1..SL-4, but SL-4 creates a reference. Whether SL-4 writes and reads back an envelope is not determined, and the envelope's storage object is not specified. SL-6 scans 'records', which suggests envelopes live on definitions.",
+  "The 15.3 row 'fresh reread and comparator support | 15.7' is a requirement on SL-1..SL-4, but 15.7 describes only SL-6. What SL-1..SL-4 must do to 'support' fresh reread is not determined.",
+  "'Deterministic result' is stated as a property with no prescribed verification. The mechanism, location and owner of the 'static guard' are not specified.",
+  "Naming: which actor applies the family policy is not stated. The fragments have no explicit clause requiring the seam's returned effective name to be compared with the name PREPARE-R expected. The typed failure for a sanitizer-empty name (presumably InvalidBlockName) and the actor that detects it (PREPARE-R or seam) are not stated.",
+  "Validation criteria for InvalidPlan and InvalidEnvelope are undefined. For InvalidBlockName, only the sanitizer-empty criterion is given. Which seams have a 'target space' for TargetSpaceInvalid is not stated (SL-4 at least). Which missing blocks count as 'detectable from the declared requirements' (PRE-WRITE vs POST-WRITE MissingLibraryBlocks) is not determined.",
+  "The result shape is a 'working shape'. MissingInstances and Diagnostic have no defined semantics. Whether 'handles of all created objects' covers nested entities and envelope storage objects is not stated.",
+  "SL-4 'sets layer and properties from the plan' and 'applies dynamic properties'. The properties are not enumerated.",
+  "SL-3 is 'not required' by sealed scope V1 and is referred to as 'if it is ever authorized'. Whether the orchestrator is prohibited from invoking SL-3 in V1 is not explicitly stated.",
+  "When the created-object list and PROTECTED_OBJECTS are sealed is not stated. PA-10 implies after phase A and by PV.",
+  "'Option B' (rollback compatible with Option B; EQ-4 'Option-B host evidence') is not defined in the fragments. PA-10's 'relevant containers' and 'NOD entries the kind consumes' are not enumerated.",
+  "27.2 and the V2.4 inventory gates are control-plane/validation procedures with no runtime actor; they were assigned to ORCH (control plane). 27.2's primitive categories are illustrative ('any other explicit category the inventory shows'), and the text does not map categories to seams. 27.2 lists SL-1, SL-2, SL-4 and SL-5 only, and does not say whether ORCH's own mutations (commit/abort) or SL-3 fall under the inventory. The 'bound SHA' in V2.4 is not given.",
+  "SL-1 creates 'one per depth k'. How the set of depths is derived from the plan is not stated."
+ ]
+}
