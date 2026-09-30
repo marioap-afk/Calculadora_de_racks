@@ -68,6 +68,7 @@ namespace RackCad.Application.Views.Placement
             }
 
             // Projected: d_i = L_i · s_i is where the source +K axis points in the drawing (AUTH-05 axis map, AUTH-08 V2 linear part).
+            // G16 C16-07: between the elevations K is Height (+Y local in both), so rho = theta falls out of the same derivation.
             Vector2D firstTarget = Vector2D.Zero;
             var worlds = new List<Vector2D>(views.Count);
             foreach (var view in views)

@@ -248,6 +248,19 @@ namespace RackCad.Application.Views.Placement
                     continue;
                 }
 
+                // G16 C16-07: across classes, a rack that offers no view of the target class is a genuinely unsupported pair (a cabecera
+                // has no frontal); a class it offers whose variants the policy rejects stays TargetAddressUnavailable.
+                if (mode == RackProjectionMode.Orthographic
+                    && !RackProjectionClassMapping.OffersClass(outcome.AvailableTargetAddresses, request.TargetKind))
+                {
+                    availability.Add(Diagnostic(
+                        RackProjectionStage.Available,
+                        RackProjectionFailureCode.PairNotExposed,
+                        representative,
+                        systemKind));
+                    continue;
+                }
+
                 var target = mode == RackProjectionMode.Rigid
                     ? Candidate(representative.Address, systemKind, outcome)
                     : Canonical(request.TargetKind, systemKind, outcome);
@@ -522,7 +535,11 @@ namespace RackCad.Application.Views.Placement
                     var lowB = Math.Min(b.SourceCoordinate, b.SourceCoordinate + b.SpanLength);
                     var highB = Math.Max(b.SourceCoordinate, b.SourceCoordinate + b.SpanLength);
 
-                    if (Math.Min(highA, highB) - Math.Max(lowA, lowB) > GeometryTolerance.Length)
+                    // G16 C16-07: a floor-line span (Height, length 0) places both views on the same anchor when the coordinates coincide.
+                    var floorLines = Math.Abs(a.SpanLength) <= GeometryTolerance.Length && Math.Abs(b.SpanLength) <= GeometryTolerance.Length;
+                    if (floorLines
+                            ? Math.Abs(a.SourceCoordinate - b.SourceCoordinate) <= GeometryTolerance.Length
+                            : Math.Min(highA, highB) - Math.Max(lowA, lowB) > GeometryTolerance.Length)
                     {
                         yield return new RackProjectionWarning(
                             RackProjectionWarningCode.Overlap,

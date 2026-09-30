@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.Shared;
 
@@ -16,8 +18,10 @@ namespace RackCad.Application.Views.Placement
     }
 
     /// <summary>
-    /// Frozen class mapping (Owner decision OD-7.a A). Same class is Rigid; planta against elevations is
-    /// Orthographic; frontal against lateral is not exposed.
+    /// Closed class-pair policy. Same class is Rigid; planta against elevations is Orthographic (Owner decision OD-7.a A). G16
+    /// C16-07: the Owner revoked the «frontal against lateral is not exposed» clause; the two elevations are Orthographic on Height,
+    /// the only physical axis both AUTH-05 frames represent (Frontal = Run x Height, Lateral = Depth x Height). Whether a rack offers
+    /// the target class at all is a fact of its system (<see cref="OffersClass"/>), not of this table.
     /// </summary>
     public static class RackProjectionClassMapping
     {
@@ -52,9 +56,23 @@ namespace RackCad.Application.Views.Placement
                 return true;
             }
 
+            if (sourceKind == DimensionViewKind.Frontal && targetKind == DimensionViewKind.Lateral
+                || sourceKind == DimensionViewKind.Lateral && targetKind == DimensionViewKind.Frontal)
+            {
+                conservedAxis = RackPhysicalAxis.Height;
+                return true;
+            }
+
             conservedAxis = RackPhysicalAxis.Run;
             return false;
         }
+
+        /// <summary>
+        /// G16 C16-07: whether the rack offers any view of the target class (its resolved, physically available addresses). A cross-class
+        /// pair towards a class the system does not have (a cabecera has no frontal) is a genuinely unsupported combination.
+        /// </summary>
+        public static bool OffersClass(IEnumerable<RackViewAddress> availableTargetAddresses, DimensionViewKind targetKind)
+            => availableTargetAddresses != null && availableTargetAddresses.Any(address => address.Kind == targetKind);
 
         public static RackProjectionFamily FamilyOf(RackSystemKind systemKind)
             => systemKind == RackSystemKind.Cantilever

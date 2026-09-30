@@ -171,8 +171,8 @@ namespace RackCad.Application.Views.Placement
     }
 
     /// <summary>
-    /// Planta against elevations. Owner decision OD-7.e A froze the Relative Frame Window rule: the sense of the
-    /// common line is read from the source frame of the family, never from a majority of references.
+    /// Planta against elevations, and (G16 C16-07) elevation against elevation on Height. Owner decision OD-7.e A froze the Relative
+    /// Frame Window rule: the sense of the common line is read from the source frame of the family, never from a majority of references.
     /// </summary>
     public static class RackOrthographicPlacementPolicy
     {
@@ -299,11 +299,31 @@ namespace RackCad.Application.Views.Placement
                 projection.TargetRotationRadians);
         }
 
-        /// <summary>The conserved span is measured by whichever frame maps K onto its own local X.</summary>
+        /// <summary>
+        /// The conserved span is measured by whichever frame maps K onto its own local X. G16 C16-07: an axis that neither frame measures but
+        /// both represent (Height, the only one the two elevations share) collapses to the floor line, the physical height of the source
+        /// frame origin: both views are anchored at floor level and the span has length 0.
+        /// </summary>
         private static bool TrySpan(
             RackProjectionSourceView view, RackPhysicalAxis axis, out double min, out double max)
-            => RackViewFrameSemantics.TrySpanOn(view.TargetFrame, axis, out min, out max)
-                || RackViewFrameSemantics.TrySpanOn(view.SourceFrame, axis, out min, out max);
+        {
+            if (RackViewFrameSemantics.TrySpanOn(view.TargetFrame, axis, out min, out max)
+                || RackViewFrameSemantics.TrySpanOn(view.SourceFrame, axis, out min, out max))
+            {
+                return true;
+            }
+
+            if (axis == RackPhysicalAxis.Height
+                && RackViewFrameSemantics.TryAxisDirection(view.SourceFrame, axis, out _)
+                && RackViewFrameSemantics.TryAxisDirection(view.TargetFrame, axis, out _))
+            {
+                min = RackViewFrameSemantics.OriginOn(view.SourceFrame, axis);
+                max = min;
+                return true;
+            }
+
+            return false;
+        }
 
         /// <summary>Signed angle from one unit direction to another, canonicalised by the shared Transform2D.</summary>
         internal static double AngleFrom(Vector2D from, Vector2D to)
