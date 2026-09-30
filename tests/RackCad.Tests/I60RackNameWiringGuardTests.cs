@@ -42,7 +42,7 @@ namespace RackCad.Tests
         [Fact]
         public void I60_N6_CabeceraCreationResolvesWithTheTemplateRule()
         {
-            var body = Body(Code("src/RackCad.Plugin/RackCabeceraCommands.cs"), "internal static void DrawAndPlace(RackFrameConfiguration configuration");
+            var body = Body(Code("src/RackCad.Plugin/RackCabeceraCommands.cs"), "internal static void DrawAndPlace(");
 
             var resolve = body.IndexOf("RackNewRackName.Resolve(", StringComparison.Ordinal);
             Assert.True(resolve >= 0);
@@ -67,7 +67,7 @@ namespace RackCad.Tests
         [Fact]
         public void I60_N9_TheCabeceraInnerNameIsTheAssignedNameBeforeTheEnvelope()
         {
-            var body = Body(Code("src/RackCad.Plugin/RackCabeceraCommands.cs"), "internal static void DrawAndPlace(RackFrameConfiguration configuration");
+            var body = Body(Code("src/RackCad.Plugin/RackCabeceraCommands.cs"), "internal static void DrawAndPlace(");
 
             var assign = body.IndexOf("configuration.Name = ", StringComparison.Ordinal);
             Assert.True(assign >= 0, "the cabecera must carry its assigned name in its configuration (RACKEDITAR reloads it)");
