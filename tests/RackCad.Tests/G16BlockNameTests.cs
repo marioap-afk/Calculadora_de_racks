@@ -138,25 +138,23 @@ namespace RackCad.Tests
                 RackViewProductNames.Cantilever(RackViewAddress.Whole(DimensionViewKind.Planta), "Rack A"));
         }
 
-        // ================================================================ the unnamed rack in RACKLISTA (characterisation)
+        // ================================================================ the rack name in RACKLISTA (C16-05)
 
         [Fact]
-        public void G16_C05_AnUnnamedRackShowsAsSinNombreBeforeProjectionAndAsRackAfterAddingAProjectedView()
+        public void G16_C05_AnUnnamedRackStaysSinNombreAndANamedRackKeepsItsNameAfterAProjectedView()
         {
             var unnamed = new RackEmbedDocument { Id = "R", Kind = "selective", Name = "", View = "planta", Section = -1, Design = "{}" };
-            var before = RackListBuilder.Build(new[] { unnamed }).Single();
+            Assert.Equal("(sin nombre)", RackListBuilder.Build(new[] { unnamed }).Single().Name);
+            // An unnamed rack is not projectable: no linked view (and no name) is ever added to it.
+            Assert.Null(RackProjectionEnvelopeName.LogicalName(unnamed.Name, new[] { unnamed.Name }));
 
-            // The projected view the pure preparation produces for a rack that no view names (AUTH-15 refuses an empty Name).
-            var projectedName = RackProjectionEnvelopeName.LogicalName(unnamed.Name, new[] { unnamed.Name });
-            var projected = new RackEmbedDocument { Id = "R", Kind = "selective", Name = projectedName, View = "lateral", Section = 0, Design = "{}" };
-            var after = RackListBuilder.Build(new[] { unnamed, projected }).Single();
+            var named = new RackEmbedDocument { Id = "N", Kind = "selective", Name = "Rack A", View = "planta", Section = -1, Design = "{}" };
+            var projectedName = RackProjectionEnvelopeName.LogicalName(named.Name, new[] { named.Name });
+            var projected = new RackEmbedDocument { Id = "N", Kind = "selective", Name = projectedName, View = "lateral", Section = 0, Design = "{}" };
+            var after = RackListBuilder.Build(new[] { named, projected }).Single();
 
-            Assert.Equal("(sin nombre)", before.Name);
-            // KNOWN OBSERVABLE CHANGE of the same logical rack, recorded for the Owner's decision (C16-05): adding a linked view changes
-            // the name RACKLISTA shows for the rack.
-            Assert.Equal("Rack", after.Name);
-            Assert.NotEqual(before.Name, after.Name);
-            Assert.Equal(before.Id, after.Id);
+            Assert.Equal("Rack A", after.Name);
+            Assert.Equal(named.Name, projected.Name);
         }
 
         // ================================================================ where the choice is made

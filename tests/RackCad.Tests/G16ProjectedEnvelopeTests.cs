@@ -106,12 +106,13 @@ namespace RackCad.Tests
         // ================================================================ the fix: same rack, a name that AUTH-15 accepts
 
         [Fact]
-        public void G16_ID19_ABlankNamedRackProjectsWithTheEstablishedFallbackName()
+        public void G16_ID19_ABlankNamedRackIsNeverGivenASyntheticName()
         {
+            // C16-05: the plan refuses the rack before this point; if a blank source ever got here it stays blank (AUTH-15 refuses it).
             var product = Prepare(RackSystemKind.SelectiveRack, RackViewAddress.Whole(DimensionViewKind.Planta), "  ", composeName: true);
 
-            Assert.True(Auth15Accepts(product.Envelope));
-            Assert.Equal("Rack", product.Envelope.Name);
+            Assert.True(string.IsNullOrWhiteSpace(product.Envelope.Name));
+            Assert.False(Auth15Accepts(product.Envelope));
         }
 
         [Fact]
@@ -126,7 +127,7 @@ namespace RackCad.Tests
         public void G16_ID19_ABlankViewTakesTheNameOfASiblingViewOfTheSameRack()
         {
             Assert.Equal("Rack A", RackProjectionEnvelopeName.LogicalName(null, new[] { "", "  ", "Rack A", "Otro" }));
-            Assert.Equal("Rack", RackProjectionEnvelopeName.LogicalName("", new[] { null, " " }));
+            Assert.Null(RackProjectionEnvelopeName.LogicalName("", new[] { null, " " }));
             Assert.Equal("Propio", RackProjectionEnvelopeName.LogicalName(" Propio ", new[] { "Rack A" }));
         }
 
@@ -135,11 +136,11 @@ namespace RackCad.Tests
         {
             var source = Source(RackSystemKind.SelectiveRack, RackViewAddress.Whole(DimensionViewKind.Planta), "");
 
-            var copy = RackProjectionEnvelopeName.WithLogicalName(source, new[] { "" });
+            var copy = RackProjectionEnvelopeName.WithLogicalName(source, new[] { "", "Rack A" });
 
             Assert.NotSame(source, copy);
             Assert.Equal(string.Empty, source.Name);
-            Assert.Equal("Rack", copy.Name);
+            Assert.Equal("Rack A", copy.Name);
             Assert.Equal(source.Id, copy.Id);
             Assert.Equal(source.Design, copy.Design);
         }
@@ -156,11 +157,12 @@ namespace RackCad.Tests
 
         [Theory]
         [MemberData(nameof(SupportedTargets))]
-        public void G16_ID19_EveryProjectedEnvelopeSatisfiesAuth15ForABlankNamedRack(RackSystemKind kind, RackViewAddress target)
+        public void G16_ID19_NoSystemNorTargetInventsANameForABlankNamedRack(RackSystemKind kind, RackViewAddress target)
         {
+            // C16-05: the plan refuses the rack before this point; composition itself never fills the name.
             var product = Prepare(kind, target, "", composeName: true);
 
-            AssertProjected(product.Envelope, kind, target);
+            Assert.True(string.IsNullOrWhiteSpace(product.Envelope.Name));
         }
 
         [Theory]

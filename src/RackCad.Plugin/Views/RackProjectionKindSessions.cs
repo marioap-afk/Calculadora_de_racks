@@ -193,6 +193,12 @@ namespace RackCad.Plugin.Views
             return RackProjectionEditPreflight.Accepted;
         }
 
+        /// <summary>
+        /// The logical name of this rack: the one its own views carry, or null when none does (C16-05: no name is invented, the plan
+        /// refuses the rack). Reads the drawing facts of this rack only and writes nothing.
+        /// </summary>
+        public string LogicalName() => RackProjectionEnvelopeName.LogicalName(null, SiblingNames());
+
         /// <summary>The names the views of this rack carry, in stable order (the rack's own views, never another rack's).</summary>
         protected IEnumerable<string> SiblingNames()
             => Membership.MutableMembers

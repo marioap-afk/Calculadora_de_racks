@@ -11,14 +11,14 @@ namespace RackCad.Application.Views.Placement
     /// editors do not require one, and the list shows «(sin nombre)»), while AUTH-15 refuses to write an envelope without one.
     ///
     /// <para>
-    /// The rule is the one the product already has for a nameless logical rack: the name is the one the rack's views carry, and
-    /// when none carries one, the fallback of <see cref="RackDuplicationPlan"/> («Rack»), the only other place that writes a name
-    /// into the envelope of a nameless rack. No G15-only fallback exists.
+    /// The logical name is the one the rack's views carry. When none carries one the rack is NOT projectable (C16-05): no
+    /// synthetic name exists, so this type returns null and the plan refuses the rack before any point, import or write.
+    /// ID19 adds a linked view of the SAME rack; it does not create a new identity (unlike RACKDUPLICAR), so it may not name one.
     /// </para>
     /// </summary>
     public static class RackProjectionEnvelopeName
     {
-        /// <summary>The name of the logical rack the projected view belongs to.</summary>
+        /// <summary>The name of the logical rack the projected view belongs to, or null when no view of it carries one.</summary>
         public static string LogicalName(string ownName, IEnumerable<string> siblingNames)
         {
             if (!string.IsNullOrWhiteSpace(ownName))
@@ -27,17 +27,19 @@ namespace RackCad.Application.Views.Placement
             }
 
             var sibling = (siblingNames ?? Enumerable.Empty<string>()).FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
-            return string.IsNullOrWhiteSpace(sibling) ? RackDuplicationPlan.FallbackName : sibling.Trim();
+            return string.IsNullOrWhiteSpace(sibling) ? null : sibling.Trim();
         }
 
         /// <summary>
         /// The source envelope as the projection composes from it: identical in everything except a usable Name. It is an in-memory
-        /// copy for composition; the source envelope is never repaired in the drawing. A named source is returned as is.
+        /// copy for composition; the source envelope is never repaired in the drawing. A named source, and a source no view of
+        /// which carries a name (unprojectable, refused earlier), are returned as they are.
         /// </summary>
         public static RackEmbedDocument WithLogicalName(RackEmbedDocument source, IEnumerable<string> siblingNames)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
-            if (!string.IsNullOrWhiteSpace(source.Name))
+            var name = LogicalName(source.Name, siblingNames);
+            if (!string.IsNullOrWhiteSpace(source.Name) || name == null)
             {
                 return source;
             }
@@ -46,7 +48,7 @@ namespace RackCad.Application.Views.Placement
                 source,
                 source.Kind,
                 source.Id,
-                LogicalName(source.Name, siblingNames),
+                name,
                 source.View,
                 source.Section,
                 source.Design);

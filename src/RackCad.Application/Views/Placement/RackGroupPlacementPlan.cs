@@ -116,6 +116,12 @@ namespace RackCad.Application.Views.Placement
         public Func<string, RackProjectionAuthoredState> Authored { get; set; }
         public Func<string, RackProjectionPropertiesState> Properties { get; set; }
         public Func<string, RackProjectionEditPreflight> EditPreflight { get; set; }
+
+        /// <summary>
+        /// The client-facing name of the LOGICAL rack (the one its views carry; blank when none does). A blank name makes the rack
+        /// not projectable (G16 C16-05): the plan refuses it before any authority is read, and no name is ever invented.
+        /// </summary>
+        public Func<string, string> LogicalName { get; set; }
     }
 
     public sealed class RackProjectionRequest
