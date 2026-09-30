@@ -113,3 +113,13 @@ IMPLEMENTATION AUTHORIZED = YES (RED first; production only after RED is observe
 - **Produccion sin cambio entre ambas corridas:** `src` `29265f70…` y `tests` `3ea8617c…`, identicos a `7e7e9178`.
 - **Excepcion de identidad host → Candidato: NO ratificada.** Se decide tras formar el Candidato comparando los arboles de produccion (ver la evidencia §4). Esta sesion no la auto-ratifica.
 - El arnes temporal se retira en un commit propio antes del Candidato.
+
+## 8. Aceptacion del Candidato y cierre
+
+- **Ratificacion (Coordinator/Owner).** Candidato `8f7847ad5114aec9262bfc44012f56bfd1e6f966` ACEPTADO. **Excepcion de identidad host → Candidato: RATIFICADA** (arboles `src` `29265f70…` y `tests` `3ea8617c…` identicos a los probados en host; diferencias limitadas a retiro del arnes, docs, evidencia y `.gitattributes`).
+- **Corrida 1 (`579de1af`) sigue siendo VALID / UNKNOWN**: historica, no se reinterpreta ni se borra. La corrida canonica es la 2 (`b7ee683e`, VALID / PASS).
+- **Contrato congelado inmutable.** El archivo del contrato no se edita al cerrar (INITIATIVE_LIFECYCLE §6): su linea `Status` describe el momento del Freeze y el estado vivo se lee en el ROADMAP, el HANDOFF, la evidencia y el tag. La orden de cierre listaba ese archivo entre los «minimos a actualizar»;
+  no se actualiza porque hacerlo alteraria el blob congelado. No hay enmiendas A-n: ningun elemento congelado cambio.
+- **Estado escrito en el cierre.** Conforme a WORKFLOW §4.5.4 el commit de cierre marca la unidad `integrada` antes de que exista el merge. Esa afirmacion la respaldan las compuertas de despues del merge (CI de `main` sobre el `MERGE_SHA`, cobertura y tag). Si alguna fallara, la correccion se hace por la rama
+  y por una ronda completa, nunca directamente en `main`.
+- **Sin cambios de producto tras el Candidato.** El cierre es solo `docs/`; `src/` y `tests/` no cambian.
