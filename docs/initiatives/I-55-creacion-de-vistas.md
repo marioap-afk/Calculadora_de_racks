@@ -459,3 +459,17 @@ creando cada definicion con `RackDefinitionCreator.CreateInTransaction`; cualqui
 `Regen` ni purga ni lote parcial, y Flow Bed sigue rechazado. El recibo durable es
 [`I-55-g15-id19-command.md`](I-55-g15-id19-command.md). Foundation y esquema permanecen intactos. Owner Validation `OV-ID19` queda
 preparada y diferida al Candidato. **G15: COMPLETE. G16 (Candidato, validacion del Owner e integracion): OPEN.** G16 no se inicia en esta sesion.
+
+# Estado G16 (2026-09-30)
+
+G16 es el gate del Candidato final, la validacion del Owner y la integracion. Las rondas de Owner Validation 1..5 rechazaron los Candidatos
+`beb9597b`, `bc622f12`, `50f6c8bf`, `66a9a504` y `3f06994a` (registro en la [guia de validacion](I-55-g16-owner-validation.md) §8); sus correcciones
+C16-01, C16-02 y C16-04 estan RESUELTAS. Por decision de producto del Owner, **C16-05 queda SUPERSEDED / REMOVED**: `RACKPROYECTAR` proyecta racks
+heredados sin nombre y los conserva sin nombre, sobre AUTH-15 corregida por `I-52-AUTH15-C1` (integrada, `integration/I-52-AUTH15-C1`), a la que I-55 se
+reconcilio. **C16-06** entrega la orientacion de la vista proyectada ([diseño congelado](I-55-c16-06-projected-orientation.md)): la pregunta
+`Orientacion [PRoyectada/PREdeterminada] <PRoyectada>` tras la clase; **Proyectada** (por defecto) gira la referencia de bloque entera para que el eje que
+comparte con su vista origen apunte donde apunta en la fuente; **Predeterminada** conserva la presentacion normal de RackCad. La definicion de bloque,
+los planes, AUTH-15, la Foundation y el esquema no cambian.
+
+Producto final de I-55: **ID17** primera vista libre, **ID18** cola de vistas (varias vistas de una vez) e **ID19** `RACKPROYECTAR` / `RPY` (proyeccion de
+varios racks como vistas enlazadas, con orientacion Proyectada o Predeterminada y soporte de racks sin nombre). **G16: OWNER VALIDATION REQUIRED. I-55: NOT INTEGRATED.**

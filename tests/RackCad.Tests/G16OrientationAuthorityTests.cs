@@ -192,6 +192,25 @@ namespace RackCad.Tests
 
             Assert.True(a.IsAvailable, a.Failure.ToString());
             Assert.Equal(Normalize(b.Target.OrientationRadians), Normalize(a.Target.OrientationRadians), 9);
+            // phi_s carries the half turn too (R(phi_s)·s = d): both sources read as a 180° planta.
+            Assert.Equal(Normalize(Math.PI), Normalize(a.Source.OrientationRadians), 9);
+            Assert.Equal(Normalize(b.Source.OrientationRadians), Normalize(a.Source.OrientationRadians), 9);
+        }
+
+        [Fact]
+        public void C16_06_ParallelismIsCheckedBeforeTheSense()
+        {
+            // 0° / 180° are antiparallel, 90° is not parallel: the frozen order reports NonParallelSources, never the divergence.
+            var views = new[]
+            {
+                View("Selective", DimensionViewKind.Planta, DimensionViewKind.Frontal, 0.0),
+                View("Selective", DimensionViewKind.Planta, DimensionViewKind.Frontal, 180.0, x: 200.0, key: "REF-2"),
+                View("Selective", DimensionViewKind.Planta, DimensionViewKind.Frontal, 90.0, x: 400.0, key: "REF-3"),
+            };
+
+            var frames = RackProjectionOrientationResolver.ResolveOrthographic(views, RackPhysicalAxis.Run, RackProjectionOrientationMode.Projected);
+
+            Assert.Equal(RackProjectionFailureCode.NonParallelSources, frames.Failure);
         }
 
         [Theory]
@@ -282,6 +301,39 @@ namespace RackCad.Tests
 
             Assert.True(frames.IsAvailable);
             Assert.Equal(Normalize(Math.PI), Normalize(frames.Source.OrientationRadians), 9);
+        }
+
+        [Fact]
+        public void C16_06_SameClassCanonicalTreatsPiMinusPiAndTheNextDoubleAsOneRotation()
+        {
+            var views = new[]
+            {
+                View("Selective", DimensionViewKind.Planta, DimensionViewKind.Planta, 180.0),
+                View("Selective", DimensionViewKind.Planta, DimensionViewKind.Planta, -180.0, x: 300.0, key: "REF-2"),
+                View("Selective", DimensionViewKind.Planta, DimensionViewKind.Planta, Math.BitIncrement(Math.PI) * 180.0 / Math.PI, x: 600.0, key: "REF-3"),
+                View("Selective", DimensionViewKind.Planta, DimensionViewKind.Planta, 540.0, x: 900.0, key: "REF-4"),
+            };
+
+            var frames = RackProjectionOrientationResolver.ResolveRigid(views, RackProjectionOrientationMode.Canonical);
+
+            Assert.True(frames.IsAvailable, frames.Failure.ToString());
+        }
+
+        [Theory]
+        [InlineData(90.0)]
+        [InlineData(30.0)]
+        [InlineData(-45.0)]
+        public void C16_06_SameClassCanonicalRefusesNonParallelRotationsToo(double other)
+        {
+            var views = new[]
+            {
+                View("Selective", DimensionViewKind.Planta, DimensionViewKind.Planta, 0.0),
+                View("Selective", DimensionViewKind.Planta, DimensionViewKind.Planta, other, x: 300.0, key: "REF-2"),
+            };
+
+            var frames = RackProjectionOrientationResolver.ResolveRigid(views, RackProjectionOrientationMode.Canonical);
+
+            Assert.Equal(RackProjectionFailureCode.SourceRotationsDiffer, frames.Failure);
         }
 
         [Fact]

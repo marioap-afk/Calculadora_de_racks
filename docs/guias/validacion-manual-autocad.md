@@ -297,13 +297,22 @@ Planta— en qué **tipos** de vista se dibujan las cotas
 
 ### 5.9 Proyección con `RACKPROYECTAR`
 
-`RACKPROYECTAR` (alias `RPY`) crea vistas enlazadas de otra clase para racks ya dibujados. Recorre lo que el
-alcance exija (la matriz completa de escenarios OV-ID19 vive en el registro de la validación del gate):
+`RACKPROYECTAR` (alias `RPY`) crea vistas enlazadas de otra clase para racks ya dibujados. Tras la clase pregunta
+`Orientacion [PRoyectada/PREdeterminada] <PRoyectada>` (Enter = Proyectada). Recorre lo que el alcance exija (la
+matriz completa OV-ID19, OV-C16-06 y OV-UNNAMED vive en la guía de validación del gate G16 de I-55):
 
-- **Misma clase** (Planta → Planta): disposición y giros conservados, solo trasladados; `Origin ≠ 0` en la
-  definición fuente no desplaza la vista nueva.
+- **Orientación**: solo gira la referencia de bloque, entera (geometría, textos, cotas); la definición no cambia.
+  Proyectada: el eje compartido con la vista origen conserva su dirección y sentido en el dibujo (la vista nueva
+  puede quedar de lado o de cabeza). Predeterminada: la presentación normal de RackCad.
+- **Misma clase** (Planta → Planta): con Proyectada, disposición y giros conservados, solo trasladados; con
+  Predeterminada, el grupo se gira para dejar sus vistas sin girar (el punto base cae en el destino) y se rechaza
+  si los racks tienen giros distintos (`SourceRotationsDiffer`). `Origin ≠ 0` en la definición fuente no desplaza
+  la vista nueva.
 - **Planta → Frontal / Lateral** y **Frontal / Lateral → Planta**: las vistas quedan sobre una línea común con el
-  orden y la separación de la corrida; con racks girados 180° el sentido no depende de cuántos estén girados.
+  orden y la separación sobre el eje compartido. Con Predeterminada, con racks girados 180° el sentido no depende
+  de cuántos estén girados; con Proyectada, racks opuestos se rechazan antes del punto
+  (`SourceOrientationDivergent`).
+- **Racks sin nombre**: se proyectan y siguen sin nombre («(sin nombre)» en `RACKLISTA`).
 - **Frontal ↔ Lateral**: mensaje de no expuesto, sin escribir nada.
 - **Avisos antes del punto**: superposición entre vistas nuevas y cercanía al límite del sentido; no bloquean.
 - **Bloqueos antes del punto**, con todos los ofensores: mezclas de clases, xref, `MINSERT`, escala distinta de 1,

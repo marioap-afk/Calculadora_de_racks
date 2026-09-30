@@ -62,6 +62,29 @@ namespace RackCad.Tests
             Assert.All(port.Scopes.Placed, p => Assert.Equal(Normalize(Radians(180.0)), Normalize(p.RotationRadians), 9));
             // Planta at 90° has its Run along -X: the projected frontals lie on the horizontal line through the target point.
             Assert.All(port.Scopes.Placed, p => Assert.Equal(300.0, p.Position.Y, 6));
+
+            // Intervals: rack B starts 150 further along d = -X than rack A (its source run coordinate), whatever its offset across d.
+            var a = port.Scopes.Placed.Single(p => p.PhysicalKey == "REF-1");
+            var b = port.Scopes.Placed.Single(p => p.PhysicalKey == "REF-2");
+            Assert.Equal(500.0, a.Position.X, 6);
+            Assert.Equal(350.0, b.Position.X, 6);
+        }
+
+        [Fact]
+        public void C16_06_P18_AMajorityOfTurnedRacksDoesNotDecideTheProjectedSense()
+        {
+            // The Projected mirror of G14_V_A_MAJORITY: 0°, 180°, 180° have no common projected orientation, whatever the majority.
+            var scenario = Scenario(DimensionViewKind.Frontal, G14.Planta, RackProjectionOrientationMode.Projected);
+            scenario.AddRack(G14.RackA, "REF-1", 0, 0, rotation: Radians(0.0));
+            scenario.AddRack(G14.RackB, "REF-2", 200, 0, rotation: Radians(180.0));
+            scenario.AddRack(G14.RackC, "REF-3", 400, 0, rotation: Radians(180.0));
+            var port = scenario.NewPort(G15.Points());
+
+            var result = RackProjectionCommandRun.Execute(port);
+
+            Assert.Equal(RackProjectionCommandStatus.Blocked, result.Status);
+            Assert.All(result.PlanResult.Diagnostics, d => Assert.Equal(RackProjectionFailureCode.SourceOrientationDivergent, d.Code));
+            Assert.Equal(0, port.Scopes.Begun);
         }
 
         [Fact]
@@ -184,9 +207,43 @@ namespace RackCad.Tests
             var result = RackProjectionCommandRun.Execute(port);
 
             Assert.Equal(RackProjectionCommandStatus.Blocked, result.Status);
+            Assert.Equal(RackProjectionStage.Validate, result.PlanResult.FailedStage);
             Assert.All(result.PlanResult.Diagnostics, d => Assert.Equal(RackProjectionFailureCode.SourceRotationsDiffer, d.Code));
+            // One diagnostic per view of the operation, like every Validate failure.
+            Assert.Equal(new[] { "REF-1", "REF-2" }, result.PlanResult.Diagnostics.Select(d => d.PhysicalKey).OrderBy(x => x));
             Assert.DoesNotContain("pick-base", port.Events);
             Assert.Equal(0, port.Scopes.Begun);
+        }
+
+        [Fact]
+        public void C16_06_EscAtTheOrientationQuestionEndsTheCommandWithTheCancelledReport()
+        {
+            var port = new CancelledCapture();
+
+            var result = RackProjectionCommandRun.Execute(port);
+
+            Assert.Equal(RackProjectionCommandStatus.SnapshotFailed, result.Status);
+            var line = Assert.Single(port.Printed);
+            Assert.Contains("cancelado", line);
+            Assert.Contains("No se leyo el dibujo", line);
+            Assert.DoesNotContain("no se selecciono nada", line);
+        }
+
+        [Theory]
+        [InlineData(180.0, -180.0)]
+        [InlineData(180.0, 540.0)]
+        [InlineData(-180.0, 180.0)]
+        public void C16_06_SameClassCanonicalComparesRotationsModuloTwoPi(double first, double second)
+        {
+            var scenario = Scenario(DimensionViewKind.Planta, G14.Planta, RackProjectionOrientationMode.Canonical);
+            scenario.AddRack(G14.RackA, "REF-1", 0, 0, rotation: Radians(first));
+            scenario.AddRack(G14.RackB, "REF-2", 0, 200, rotation: Radians(second));
+            var port = scenario.NewPort(G15.Points());
+
+            var result = RackProjectionCommandRun.Execute(port);
+
+            Assert.True(result.IsCompleted, string.Join(" | ", port.Printed));
+            Assert.All(port.Scopes.Placed, p => Assert.Equal(0.0, Normalize(p.RotationRadians), 9));
         }
 
         [Fact]
@@ -332,6 +389,28 @@ namespace RackCad.Tests
         }
 
         private static double Radians(double degrees) => degrees * Math.PI / 180.0;
+
+        /// <summary>The port as the Plugin leaves it when the user presses Esc at the orientation question: no read, no point.</summary>
+        private sealed class CancelledCapture : IRackProjectionCommandPort
+        {
+            internal List<string> Printed { get; } = new List<string>();
+
+            public IRackProjectionWriteScopeFactory WriteScopes => throw new InvalidOperationException("no write expected");
+
+            public RackProjectionSnapshot Capture()
+                => RackProjectionSnapshot.Unavailable(RackProjectionSnapshotFailure.Cancelled, null);
+
+            public void Report(IReadOnlyList<string> lines) => Printed.AddRange(lines);
+
+            public void BeforeWrite() => throw new InvalidOperationException("no write expected");
+
+            public RackProjectionPick PickBasePoint() => throw new InvalidOperationException("no point expected");
+
+            public RackProjectionPick PickTargetPoint(Point3D basePoint) => throw new InvalidOperationException("no point expected");
+
+            public RackProjectionLibraryObservation ImportAndObserve(IReadOnlyList<LibraryBlockRequirement> requirements)
+                => throw new InvalidOperationException("no import expected");
+        }
 
         private static double Normalize(double radians)
         {

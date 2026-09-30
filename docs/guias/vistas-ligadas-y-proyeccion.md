@@ -79,12 +79,13 @@ de una fila de plantas de un layout.
 
 | Cuando proyectas… | Qué ocurre |
 |---|---|
-| **A la misma clase** (Planta → Planta, etc.) | Modo rígido: se reproduce la disposición de las vistas, solo trasladada; cada una conserva su giro y la variante de su vista origen. |
-| **Entre planta y una elevación** (Planta ↔ Frontal, Planta ↔ Lateral) | Modo ortográfico: las vistas quedan alineadas sobre una línea común, con el orden y la separación que tenían sobre la corrida, en la orientación natural de la vista destino. El sentido de la línea lo fija el marco de la vista origen, no el número de racks girados. |
+| **A la misma clase** (Planta → Planta, etc.) | Modo rígido: se reproduce la disposición de las vistas con la variante de su vista origen. Con orientación **Proyectada** (por defecto) solo se traslada y cada vista conserva su giro; con **Predeterminada** el grupo se gira para que sus vistas queden sin girar (ver 4.2.1). |
+| **Entre planta y una elevación** (Planta ↔ Frontal, Planta ↔ Lateral) | Modo ortográfico: las vistas quedan alineadas sobre una línea común, con el orden y la separación que tenían sobre el eje que comparten con la vista origen. Con **Proyectada** (por defecto) esa línea sigue a la vista origen y cada referencia gira para seguirla; con **Predeterminada** las vistas quedan en la orientación natural de la vista destino y el sentido de la línea lo fija el marco de la vista origen, no el número de racks girados (ver 4.2.1). |
 | **Frontal ↔ Lateral** | No se expone: el comando lo dice y no escribe nada. |
 
-Los rangos de cada rack sobre la corrida se conservan; no se recuperan coordenadas descartadas ni orientaciones
-en un viaje de ida y vuelta, salvo la traslación.
+Los rangos de cada rack sobre el eje compartido se conservan; no se recuperan coordenadas descartadas en un viaje
+de ida y vuelta. Con Predeterminada tampoco se recuperan las orientaciones (salvo la traslación); con Proyectada
+la vista de vuelta sigue a la de ida.
 
 ### 4.2.1 Orientación: Proyectada (por defecto) o Predeterminada
 
@@ -100,9 +101,10 @@ números no cambian. Lo único que cambia entre los dos modos es el **giro de la
   girada 90°; si giras la planta hasta que la corrida quede horizontal (con el poste 1 a la izquierda), la
   frontal proyectada sale en su posición normal.
   - En la **misma clase** (Planta → Planta, etc.) cada vista conserva el giro de su vista origen.
-  - Si en la selección hay racks paralelos pero **opuestos** (por ejemplo, espalda con espalda, uno girado 180°),
-    no existe una orientación proyectada común: la operación se rechaza antes de pedir puntos
-    (`SourceOrientationDivergent`). Proyecta cada sentido por separado o usa Predeterminada.
+  - Entre clases distintas, si en la selección hay racks paralelos pero **opuestos** (por ejemplo, espalda con
+    espalda, uno girado 180°), no existe una orientación proyectada común: la operación se rechaza antes de pedir
+    puntos (`SourceOrientationDivergent`). Proyecta cada sentido por separado o usa Predeterminada. (En la misma
+    clase no hay rechazo: se copia el giro de cada rack.)
 - **Predeterminada**: la presentación normal de RackCad, sea cual sea el giro de la vista origen. Entre clases
   distintas es exactamente el comportamiento anterior (vistas sin girar, en su orientación natural, alineadas sobre
   una línea común). En la misma clase el

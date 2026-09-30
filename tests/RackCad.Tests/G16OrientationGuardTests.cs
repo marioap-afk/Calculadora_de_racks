@@ -41,6 +41,15 @@ namespace RackCad.Tests
             Assert.Contains("RackProjectionSnapshot.Unavailable(RackProjectionSnapshotFailure.Cancelled, null)", port);
             // Only an explicit «PREdeterminada» selects Canonical; OK with the default and None are Projected.
             Assert.Contains("string.Equals(result.StringResult, CanonicalKeyword, StringComparison.OrdinalIgnoreCase)", port);
+
+            // The answer really reaches the read, and the mapping is exactly: OK + PREdeterminada -> Canonical, anything else -> Projected.
+            Assert.Contains("KindOf(kind.StringResult), OrientationOf(mode))", port);
+            var mapping = port.Substring(port.IndexOf("private static RackProjectionOrientationMode OrientationOf(", StringComparison.Ordinal));
+            mapping = mapping.Substring(0, mapping.IndexOf(';') + 1);
+            Assert.Contains("result.Status == PromptStatus.OK", mapping);
+            Assert.Contains("? RackProjectionOrientationMode.Canonical", mapping);
+            Assert.Contains(": RackProjectionOrientationMode.Projected;", mapping);
+            Assert.DoesNotContain("PromptStatus.None", mapping);
         }
 
         [Fact]
