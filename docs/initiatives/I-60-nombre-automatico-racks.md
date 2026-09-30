@@ -1,6 +1,7 @@
 # I-60 — Nombre lógico automático de los racks nuevos
 
-Status: Freeze `30c7ba0b`; RED `51711c84`; GREEN `f5104016`; Candidato declarado (decisiones §4); OWNER VALIDATION REQUIRED; NOT INTEGRATED
+Status: Freeze `270a625a` (rebasado; antes `30c7ba0b`) + enmienda A-1 (ruta de lote de I-55, decisiones §5); Candidato `541834b7` OBSOLETO; nuevo Candidato
+declarado (decisiones §5); OWNER VALIDATION REQUIRED; NOT INTEGRATED
 
 Workflow: V2 (unidad nueva posterior a `WORKFLOW_V2_EFFECTIVE_SHA`; base con el SHA efectivo; sin pausa: T4)
 

@@ -44,7 +44,13 @@ Hechos transversales:
 | Andamiaje inerte | `8366326e` |
 | RED (44 de 57 fallan) | `51711c8478a55362f3c5afb6a01fbb32ef50bcf9` |
 | GREEN | `f5104016` |
-| Candidato | el commit que contiene esta tabla; bloque §7.1 de [validacion-manual-autocad](../../guias/validacion-manual-autocad.md) en la entrega al Owner y en el cierre |
+| Candidato (OBSOLETO: construido antes de integrar I-55; no se valida ni integra) | `541834b70f362c6c0632216031810412b4010531` (tag `archive/i-60-pre-i55-integration-541834b`) |
+| Base nueva (`origin/main` con I-55 integrada) | `69daf03a35c630e453e1d9e98136f128bd0325a4` |
+| Reconciliado (rebase, range-diff 9/11 identicos) | `2ac2ead863a02301d9a6109e9bb4c13917b3aea0` |
+| A-1 (decisiones §5, Arquitecto AGREED) | `0b6409ae` |
+| RED de A-1 (11 de 82 fallan) | `aa89371d` |
+| GREEN de A-1 | `376708af` |
+| Candidato nuevo | el commit que contiene esta tabla; bloque §7.1 de [validacion-manual-autocad](../../guias/validacion-manual-autocad.md) en la entrega al Owner y en el cierre |
 
 ## 3. Matriz de validacion del Owner (OV-I60)
 
