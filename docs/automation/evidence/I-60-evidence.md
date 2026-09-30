@@ -84,3 +84,53 @@ SHA-256 antes de NETLOAD, guia §7.2). Un resultado por fila: PASS, FAIL o NOT E
 | N-21 | Menu RACKCAD / biblioteca «como nuevo» con un nombre escrito («Rack A») → cola de dos vistas | Ambas «Rack A»; con «Colocar nombre de rack» marcado, la anotacion muestra «Rack A» (y «X N» cuando el nombre fue automatico) |
 | N-22 | Rack heredado **sin nombre** → RACKEDITAR → «Insertar varias…» (lateral + planta) → RACKLISTA; guardar y reabrir | Sigue «(sin nombre)» en todas sus vistas |
 | N-23 | Rack heredado **sin nombre** → RACKPROYECTAR a otra clase; y un rack «Selectivo 3» → RACKPROYECTAR | El sin nombre sigue «(sin nombre)»; el nombrado conserva «Selectivo 3»; ningun numero nuevo consumido |
+
+## 4. Candidato final (§7.1 de la guia de validacion manual)
+
+```text
+FINAL_CANDIDATE_SHA:  ae628890c92a22de33a3c01b5a2a4e8de30ebec7
+Base (origin/main):   69daf03a35c630e453e1d9e98136f128bd0325a4 (I-55 integrada)
+Arbol limpio:         SI
+SDK resuelto:         8.0.423
+Core Full local:      PASS 12363/12363 (0 omitidas); I60 82/82
+UI Full local:        PASS 1636 correctas, 0 fallos, 17 omitidas historicas (sin omisiones nuevas)
+Debug UI build:       PASS (0 errores)
+Debug Plugin build:   PASS (0 errores, --no-incremental)
+Release Plugin build: PASS (0 errores)
+CI exact SHA:         GREEN (run 36736070843, event push, 4/4: Tests, UI Tests, Build UI, Build Plugin)
+Candidate coverage:   run 36736637016, event workflow_dispatch, measured_sha = ae628890c92a22de33a3c01b5a2a4e8de30ebec7,
+                      artifact rackcad-coverage-cobertura 11107333203 sha256:c08f01424188deb2ee6f6cdd12059f06b4c13746f82736ed0df38a2ca5327b32,
+                      lineas 90.87 %, ramas 79.30 %
+Owner validation:     APPROVED (2026-09-30)
+DLL validado:         ProductVersion 1.0.0+ae628890c92a22de33a3c01b5a2a4e8de30ebec7
+                      SHA-256 B91A33A9E7921455714788B845045DBE49E9D375BA3AC62E9D32293BA0167A72
+```
+
+Pruebas focalizadas sobre el Candidato: I60 82, ID17 108, ID18/lote 36, RACKLISTA 14, racks sin nombre 28, persistencia/ida y vuelta 445.
+
+## 5. Validacion del Owner
+
+**OWNER VALIDATION = APPROVED** sobre el Candidato exacto `ae628890c92a22de33a3c01b5a2a4e8de30ebec7` con el DLL de §4. Resultado reportado por el Owner:
+**N-01..N-23 = PASS** (numeracion automatica, huecos, mayusculas, nombres personalizados, las seis familias, biblioteca/rack nuevo, primera vista libre ID17,
+cola inicial de varias vistas ID18, mismo nombre logico en todas las vistas hermanas, legado sin nombre intacto, guardar/reabrir, RACKEDITAR, RACKPROYECTAR,
+RACKDUPLICAR/RACKLAYOUT sin cambios). No se registran observaciones por fila mas alla de ese resultado. El Candidato obsoleto `541834b7` nunca se valido.
+
+## 6. Comportamiento integrado
+
+Todo rack logico NUEVO recibe UN nombre automatico y editable en `RackEmbedDocument.Name`: «Selectivo N», «Dinámico N», «Push Back N», «Cantilever N»,
+«Cabecera N» o «Cama N»; N = el mayor N de los nombres del dibujo que siguen exactamente el patron de su familia + 1 (sin rellenar huecos, sin distinguir
+mayusculas; un nombre personalizado solo consume numero si sigue exactamente el patron). Un rack logico nuevo = UN RackId = UN nombre, compartido por todas sus
+vistas iniciales (tambien en la cola de varias vistas del menu). Los racks heredados sin nombre siguen sin nombre («(sin nombre)» en RACKLISTA) y no se nombran al
+abrir, guardar, RACKLISTA, RACKBOMTOTAL, RACKEDITAR, RACKPROYECTAR, insertar hermanas, layout ni duplicacion, salvo que el usuario edite el nombre.
+
+## 7. Residuales (no bloquean)
+
+- `RACKDUPLICAR` y `RACKLAYOUT` conservan sus nombres (fuera de alcance por autorizacion del Owner; una copia no recibe nombre automatico).
+- Solo las plantillas integradas de cabecera cuentan como «sin asignar»; una plantilla de usuario conserva su nombre (Freeze §4).
+- `RACKEDITAR` de la cama puede borrar el nombre (comportamiento vigente, fuera de alcance).
+- Hallazgo de I-55 fuera de alcance: los comandos directos ignoran la cola «Insertar varias» (colocan una sola vista); reportado como tarea aparte.
+
+## 8. Preparacion para integrar
+
+Candidato aprobado con CI y cobertura exactos; el commit de cierre es solo documental y lleva su propio Core/UI/builds/CI; `origin/main` esperado `69daf03a`.
+Merge `--no-ff` serial, CI posterior al merge con cobertura, tag `integration/I-60` y limpieza segun WORKFLOW §4.5 y §11.6.

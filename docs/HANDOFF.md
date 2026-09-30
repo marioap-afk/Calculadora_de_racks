@@ -12,6 +12,17 @@ RackCad es un plugin de AutoCAD 2025 (.NET 8, C#/WPF) para diseñar y dibujar ra
 con BOM. El trunk único es `main`; Domain y Application son puros, UI usa WPF sin AutoCAD y Plugin
 es el único adaptador de la API de AutoCAD.
 
+**I-60 — Nombre logico automatico de los racks nuevos — INTEGRADA** el **2026-09-30** (`feature/nombre-automatico-racks`, Workflow V2).
+Todo rack logico NUEVO recibe UN nombre automatico y editable en `RackEmbedDocument.Name`: «Selectivo N», «Dinámico N», «Push Back N», «Cantilever N»,
+«Cabecera N» o «Cama N»; N = el mayor N de los nombres del dibujo que siguen exactamente el patron de su familia + 1 (sin rellenar huecos, sin distinguir
+mayusculas; un nombre personalizado solo consume numero si sigue exactamente el patron). Un rack logico nuevo = UN RackId = UN nombre, compartido por todas sus
+vistas iniciales (tambien en la cola de varias vistas del menu). Los racks heredados sin nombre siguen sin nombre («(sin nombre)» en RACKLISTA) y no se nombran al
+abrir, guardar, RACKLISTA, RACKBOMTOTAL, RACKEDITAR, RACKPROYECTAR, insertar hermanas, layout ni duplicacion, salvo que el usuario edite el nombre.
+Autoridad pura `RackLogicalNameAllocator` (Application) y escaneo de solo lectura `RackNewRackName` (Plugin); la asignacion ocurre solo en las rutas de creacion
+de un rack nuevo (comandos directos y los casos de lote del menu RACKCAD, enmienda A-1 tras integrarse I-55). Owner Validation **APROBADA** sobre el Candidato
+`ae628890` (N-01..N-23 PASS). Sin cambios de AUTH-15, Foundation ni esquema. [Evidencia](automation/evidence/I-60-evidence.md), [decisiones](automation/decisions/I-60.md)
+y tag `integration/I-60` (SHAs de cierre y merge, CI posterior, cobertura y limpieza).
+
 **I-55 — View Placement & Projection (ID17 + ID18 + ID19) — INTEGRADA** el **2026-09-30** (`feature/creacion-de-vistas`, Workflow V1). **ID17** primera vista
 libre (un rack nuevo empieza por cualquier vista que su sistema soporte), **ID18** cola de vistas (varias vistas en una operacion, con redibujo atomico de
 hermanas) e **ID19** `RACKPROYECTAR` / `RPY` (proyecta racks ya dibujados como vistas enlazadas del mismo rack: mismo `RackId`, sin cambio de BOM; plan puro con
@@ -1471,6 +1482,10 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
+**I-60 (2026-09-30) — OWNER VALIDATION APPROVED.** Candidato `ae628890`: Core Full 12363/12363, UI Full 1636 (+17 omitidas historicas, 0 fallos), builds Debug de
+UI y Plugin y Release del Plugin con 0 errores, CI de push 4/4 (run 36736070843) y cobertura exacta (run 36736637016). AutoCAD 2025: N-01..N-23 PASS con el DLL
+`1.0.0+ae628890…` (SHA-256 `B91A33A9…7A72`). Ver la [evidencia](automation/evidence/I-60-evidence.md).
+
 **I-55 (2026-09-30) — OWNER VALIDATION APPROVED.** Candidato `6dcd6595`: Core Full 12281/12281, UI Full 1636 (+17 omitidas historicas, 0 fallos), builds Debug de
 UI y Plugin y Release del Plugin con 0 errores, CI de push 4/4 (run 36727291676) y cobertura exacta (run 36727916198). AutoCAD 2025: todos los grupos canonicos
 OV PASS con el DLL `1.0.0+6dcd6595…` (SHA-256 `8994E500…5FF7`). Ver la [evidencia](automation/evidence/I-55-evidence.md).
@@ -2016,10 +2031,12 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### I-60 (nombre automatico de racks nuevos) se reconcilia sobre el main con I-55
+### Sin trabajo activo de I-55 ni de I-60 (ambas integradas el 2026-09-30)
 
-Su Candidato `541834b7` quedo obsoleto al integrarse I-55: rebasar `feature/nombre-automatico-racks`, aplicar la enmienda prevista por su Freeze (la ruta de lote
-de ID18 con rack nuevo asigna UN nombre por rack, compartido por todas sus vistas iniciales), nuevo Candidato y validacion del Owner.
+Pendiente fuera de estas lineas: revisar el hallazgo de I-55 sobre los comandos directos (RACKSELECTIVO, RPB, RCT, RACKCABECERA) que ignoran la cola
+«Insertar varias» y colocan una sola vista; se reporto como tarea aparte y requiere su propia iniciativa.
+
+### (historico) I-60 se reconciliaba sobre el main con I-55 — hecho (enmienda A-1, Candidato `ae628890`, integrada)
 
 ### (historico) I-55 G16 se reconcilia sobre el nuevo main (I-52-AUTH15-C1 integrada)
 
@@ -3839,6 +3856,9 @@ visualmente** y no debe presentarse como tal.
 la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
+
+**Cierre de I-60 — 2026-09-30:** Candidato `ae628890` aprobado por el Owner con CI y cobertura exactos; el commit de cierre (solo documental) lleva sus propias
+suites, builds y CI; merge `--no-ff`, CI posterior al merge con cobertura y limpieza se registran en `integration/I-60`.
 
 **Cierre de I-55 — 2026-09-30:** Candidato `6dcd6595` aprobado por el Owner con CI y cobertura exactos; el commit de cierre (solo documental) lleva sus propias
 suites, builds y CI; merge `--no-ff`, CI posterior al merge con cobertura y limpieza se registran en `integration/I-55`.
