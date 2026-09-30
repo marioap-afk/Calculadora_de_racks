@@ -3,8 +3,8 @@
 Unit / Initiative / Workflow: `I-61` / I-61 / V2. Claim-Id `0e2923de-e1a7-41bf-b7db-50ec84217850`.
 Contrato: [I-61-protocolo-ejecucion-agentes.md](../../initiatives/I-61-protocolo-ejecucion-agentes.md). Decisiones: [I-61.md](../decisions/I-61.md).
 
-Estado de esta evidencia: **G0 (reclamo y bootstrap)**. No hay Discovery sustantivo, Freeze, piloto, Candidato ni GATE PASS. Lo no ejecutado
-figura como **PENDIENTE**.
+Estado de esta evidencia: **G0 (reclamo y bootstrap, GATE PASS del Coordinator sobre `6f1ef981`) y G1 (Discovery, §9)**. No hay Freeze, piloto, Candidato ni G1 GATE PASS.
+Lo no ejecutado figura como **PENDIENTE**.
 
 ## 1. Base de reclamo y clasificación de transición
 
@@ -82,3 +82,28 @@ Archivos nuevos: el contrato `docs/initiatives/I-61-protocolo-ejecucion-agentes.
 
 Métricas: UNKNOWN (sin gates funcionales). Conformidad: no aplica todavía. Owner Validation: no aplica a G0. Tag de integración: no existe
 (`integration/I-61` se crea solo tras la integración).
+
+## 9. G1 — Discovery (evidencia de este gate)
+
+Resultado: [I-61-discovery.md](../../initiatives/I-61-discovery.md). **No** es Proposal, Freeze, revisión del Architect ni G1 GATE PASS.
+
+| Hecho | Valor |
+|---|---|
+| Decisión del Coordinator | G0 = GATE PASS sobre `6f1ef9815ffa20f8bea946c55622efa165994f7c`; G1 autorizado ([decisiones](../decisions/I-61.md) §7) |
+| Preflight delta | `HEAD` = `origin/I-61` = `6f1ef981`; `origin/main` = `95690c28` (sin cambio); tip de I-52 = `65e465a7` (sin cambio); árbol limpio; sin operaciones Git; I-52 no toca documentos de proceso |
+| Transportes (re-medidos 2026-09-30) | `codex` 0.159.2 instalado y con sesión «ChatGPT», no en `PATH`; `claude` 2.1.270 instalado, **`loggedIn:false`**, no en `PATH`; **ningún worker invocado** |
+| Documentación oficial | Anthropic (modelos, effort, prompting, `claude -p`) y OpenAI/Codex (modelos, `codex exec`, mejores prácticas), consultadas 2026-09-30; fuentes y alcance en Discovery §13 |
+| Escrito | `docs/initiatives/I-61-discovery.md`; contrato, decisiones, estado y esta evidencia. Nada fuera de `docs/` ni de los archivos propios de I-61 |
+
+**Comprobaciones existentes ejecutadas (caracterización; no son evidencia de Candidato ni de un gate funcional).** SDK de usuario `dotnet` 8.0.423 sobre el árbol de `6f1ef981`, sin cambios de código:
+
+| Comando (resumido) | Resultado |
+|---|---|
+| `dotnet test tests/RackCad.UI.Tests --filter FullyQualifiedName~FlowBedEditorWindowTests` | 4 superadas / 0 fallos / 0 omitidas (selección > 0) |
+| `dotnet test tests/RackCad.Tests --filter I60RackLogicalNameTests \| I60RackNameWiringGuardTests \| CustomPropertiesEnvelopeGuardTests \| LegacyViewPayloadCompositionCharacterizationTests` | 87 superadas / 0 fallos / 0 omitidas (selección > 0) |
+
+No se ejecutaron Core/UI Full, builds del Plugin ni AutoCAD (no hay cambio de producto). Los resultados confirman que las pruebas que protegen el nombre en la **ventana** de la cama pasan; **no** reproducen ni descartan el defecto del piloto, que no
+está cubierto en la capa Plugin (Discovery §10).
+
+**Estado canónico.** `docs/automation/state/I-61.yml` mantiene `last_evidence_commit` en `6f1ef981` (el último commit publicado que respalda la fase anterior); el commit que publica G1 no puede autorreferenciarse. La CI exacta del SHA de G1 es un hecho
+posterior al commit y se entrega en el informe al Coordinator, no en este archivo (orden de G1: no encadenar commits solo para registrarla).

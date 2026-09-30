@@ -3,13 +3,15 @@ automation_state:
   initiative: I-61
   branch: architecture/protocolo-ejecucion-agentes
   claim_id: 0e2923de-e1a7-41bf-b7db-50ec84217850
-  current_phase: G0
-  state: claimed
+  current_phase: G1
+  state: waiting
   gate: owner-decision
   attempts: 0
-  next_action: Coordinator revisa el bootstrap G0 y autoriza el Discovery DC-01..09 (M-07 UNKNOWN; NEW ARCHITECTURE provisional); sin Freeze, piloto, Candidate ni merge.
-  last_evidence_commit: c701ff8f8cd3ee58f7dfab529e092d1f5e18190b
+  next_action: Coordinator revisa el Discovery G1 (DC-01..09, EXP, Q-01..Q-05, D-01..D-05) y decide el paso de diseño; sin Freeze, piloto, Candidate ni merge.
+  last_evidence_commit: 6f1ef9815ffa20f8bea946c55622efa165994f7c
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-protocolo-ejecucion-agentes
+  g0_gate_pass_by_coordinator: 6f1ef9815ffa20f8bea946c55622efa165994f7c
+  g1_discovery: docs/initiatives/I-61-discovery.md

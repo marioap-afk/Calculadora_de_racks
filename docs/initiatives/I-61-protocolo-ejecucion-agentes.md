@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-61
 title: Agent Execution, Model Routing & Prompting Protocol
 type: architecture
-status: bootstrap-g0
+status: discovery-g1
 workflow: V2
 conceptual_initiative: I-61
 delivery_unit: I-61
@@ -21,7 +21,7 @@ context_packs: [documentation-governance]
 consumes: [UNKNOWN]
 extends: [UNKNOWN]
 introduces: [UNKNOWN]
-discovery_ref:
+discovery_ref: docs/initiatives/I-61-discovery.md
 freeze_ref:
 freeze_delta_ref:
 amendment_refs: []
@@ -55,7 +55,9 @@ automation:
   ([`I-61-owner-mandate.txt`](../automation/decisions/I-61-owner-mandate.txt), una sola copia; no se reescribe aquí).
 - **Arquetipo: NEW ARCHITECTURE, provisional.** El mandato etiqueta FOUNDATION EVOLUTION; el Coordinator fijó la clasificación conservadora
   provisional mientras **M-07** siga UNKNOWN (C61-D0-04; [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §3: ante duda, el arquetipo superior).
-  Materialidad final, `Consumes/Extends/Introduces` y agrupación los resuelve Discovery; hasta entonces son `UNKNOWN`, no ausencia de evolución.
+  Materialidad final, `Consumes/Extends/Introduces` y agrupación las decide el Coordinator sobre el [Discovery G1](I-61-discovery.md); hasta entonces el frontmatter
+  conserva `UNKNOWN`. **Propuesta del Executor (no decisión):** I-61 **crea y modifica** (EXP-09 resuelta); M-01, M-02, M-04, M-06 y M-07 activados, M-03 UNKNOWN solo
+  para el piloto, M-05 a reevaluar y M-08 no activado; arquetipo **NEW ARCHITECTURE**; el proceso no consume ni extiende ninguna entrada de FOUNDATIONS (DC-08).
 - Modifica el **proceso de desarrollo** de RackCad; **no** la funcionalidad de producto salvo el piloto, que debe seguir siendo intencionalmente pequeño.
 
 ## 2. Objetivo
@@ -108,20 +110,21 @@ no autoridades integradas).
 ## 5. Fundaciones y evolución
 
 ```text
-Consumes: UNKNOWN (Discovery DC-08; p. ej. FOUNDATIONS, AUTOMATION_PLAN y PROMPT_TEMPLATES solo tras comprobación en la base)
-Extends: UNKNOWN
-Introduces: UNKNOWN (condicionado a M-07 y a EXP-09)
+Consumes: UNKNOWN en el frontmatter; Discovery G1 (DC-08) propone «ninguna entrada de FOUNDATIONS» para el proceso; pendiente de confirmación
+Extends: UNKNOWN; Discovery G1 propone «ninguna»
+Introduces: UNKNOWN; Discovery G1 propone mecanismos nuevos (delegación, handoff, enrutamiento, catálogo, perfiles), condicionado a Q-01 (M-07)
 ```
 
-Ninguna entrada se afirma sin la comprobación DC-08 de [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §4.1.
+Ninguna entrada se afirma sin la comprobación DC-08 de [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §4.1. El piloto, si consume Rack Identity / View Identity /
+Unknown-field Preservation / Custom Properties, lo verifica en su propio Discovery delta.
 
 ## 6. Discovery, decisiones y Freeze
 
-- Discovery: pendiente (plan abajo; no iniciado en G0).
+- Discovery: [I-61-discovery.md](I-61-discovery.md) (G1; DC-01..09 y EXP evaluadas; **no** es Proposal ni Freeze).
 - Freeze / Freeze delta / A-n: ninguno.
 - Decisiones: [I-61.md](../automation/decisions/I-61.md); mandato: [I-61-owner-mandate.txt](../automation/decisions/I-61-owner-mandate.txt).
 
-**Plan de Discovery** ([INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §4; aún no ejecutado): DC-01..09 sobre la base vigente, con:
+**Plan de Discovery** ([INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §4; ejecutado en G1 en [I-61-discovery.md](I-61-discovery.md), a revisar por el Coordinator): DC-01..09 sobre la base vigente, con:
 
 - **DC-07:** archivos calientes e intersecciones activas (ROADMAP, HANDOFF, índice ADR frente a I-52 y futuras normas).
 - **DC-09 / EXP-09:** M-01..M-08 (en particular **M-07**) y la distinción crear/modificar; decide arquetipo y agrupación.
@@ -148,8 +151,14 @@ Ninguna entrada se afirma sin la comprobación DC-08 de [INITIATIVE_LIFECYCLE](.
 
 ## 8. Gates funcionales
 
-G0 (este bootstrap): reclamo, contrato, fila, estado, decisiones y evidencia. Los gates posteriores (Discovery, revisión, Freeze, implementación,
-piloto) se definen tras el Freeze según [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §7; no se prometen aquí.
+Secuencia del ciclo ([INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §§4-7): **Discovery → revisión del Coordinator → diseño/Proposal → revisión del Architect → Consensus Freeze → gates funcionales de
+implementación y piloto → READY → Candidato**. Discovery y revisión **preceden** al Freeze; los gates funcionales se definen tras él y no se prometen aquí.
+
+- **G0 — admisión documental (reclamo y bootstrap):** reclamo, contrato, fila, estado, decisiones y evidencia. Decisión del Coordinator: GATE PASS sobre el SHA revisado (ver decisiones §7).
+  *Validación registrada* en la [evidencia](../automation/evidence/I-61-evidence.md) §6: comprobación mecánica de que el diff solo toca `docs/` y CI de `push` 4/4 `success` sobre el SHA exacto
+  (el CI ejecuta ambas suites y builds sobre ese SHA). G0 **no** es un gate funcional ([INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §7: no entrega un resultado conductual de producto) y **no crea una
+  exención general** por ser documental: los gates funcionales posteriores y el Candidato siguen [AGENTS.md](../../AGENTS.md) «Pruebas — definición de terminado» y [WORKFLOW](../WORKFLOW.md) §§4.5 y 11.5 sin excepción por clase de cambio.
+- **G1 — Discovery (este trabajo):** [I-61-discovery.md](I-61-discovery.md). No implementa; devuelve al Coordinator para decidir el paso de diseño. No declara G1 GATE PASS.
 
 ## 9. Owner Validation
 
@@ -172,10 +181,15 @@ Los 14 criterios de éxito del mandato («SUCCESS CRITERIA»), concretados por e
 ## 12. Condiciones para detenerse
 
 Las del mandato («STOP CONDITIONS») más: contradicción material de fuentes o de autoridad (se cita y se devuelve al Coordinator); EXP-01 clase A
-abierta; M UNKNOWN sin resolver; intersección activa no coordinada; cualquier paso que requiera autenticación, instalación, invocación de pago,
-recurrencia o subdelegación sin autorización expresa.
+abierta **antes del Freeze o de cualquier gate de implementación**; intersección activa no coordinada; cualquier paso que requiera autenticación, instalación,
+invocación de pago, recurrencia o subdelegación sin autorización expresa.
+
+**Materialidad UNKNOWN (precisión de G1):** una M en UNKNOWN **obliga a investigarla** (EXP-09) y cuenta como activada hasta resolverse, pero **no impide el Discovery** que debe
+resolverla. Sí impide el Freeze, la Proposal congelable y cualquier implementación mientras siga sin resolver; la UNKNOWN de M-07/Q-01 y de M-03 (piloto) se eleva al Coordinator.
 
 ## 13. Hallazgos fuera de alcance
 
 - Regla `-text`/fin de línea para copias byte-exactas de fuentes del Owner bajo `core.autocrlf=true` (tema de configuración; no se toca en G0).
+- 14 contratos V1 con `automation.enabled: true` sin ejecutor real, `.agent/` no ignorado por Git y prosa «Workflow V2 no efectivo» desactualizada: deuda preexistente registrada en el
+  [Discovery](I-61-discovery.md) (EXP-08/EXP-01); no se corrige en G1.
 - Observación pendiente de procedencia sobre la fila de I-57 en la rama de I-52 (decisiones §5).
