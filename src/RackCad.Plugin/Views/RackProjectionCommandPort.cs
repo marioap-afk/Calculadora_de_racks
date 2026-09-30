@@ -56,8 +56,22 @@ namespace RackCad.Plugin.Views
                 return RackProjectionSnapshot.Unavailable(RackProjectionSnapshotFailure.NoSelection, null);
             }
 
+            // G16 C16-06: the orientation, after the class and before any read or point. Enter takes the product default
+            // (Proyectada). Same keyword pattern as RACKCAMA (Keywords.Add + Default + AllowNone): AutoCAD appends the list. The two
+            // words of the Owner start with the same letter, so their shortcuts are PR and PRE (the capitals of each keyword).
+            var orientation = new PromptKeywordOptions("\nOrientacion") { AllowNone = true };
+            orientation.Keywords.Add(ProjectedKeyword);
+            orientation.Keywords.Add(CanonicalKeyword);
+            orientation.Keywords.Default = ProjectedKeyword;
+            var mode = editor.GetKeywords(orientation);
+            if (mode.Status != PromptStatus.OK && mode.Status != PromptStatus.None)
+            {
+                return RackProjectionSnapshot.Unavailable(RackProjectionSnapshotFailure.Cancelled, null);
+            }
+
             // SNAPSHOT: the one read.
-            return RackProjectionSnapshotReader.Read(document, selection.Value.GetObjectIds(), KindOf(kind.StringResult));
+            return RackProjectionSnapshotReader.Read(
+                document, selection.Value.GetObjectIds(), KindOf(kind.StringResult), OrientationOf(mode));
         }
 
         public void Report(IReadOnlyList<string> lines)
@@ -117,6 +131,16 @@ namespace RackCad.Plugin.Views
                     return RackProjectionPick.Error("PROMPT_STATUS_" + result.Status);
             }
         }
+
+        private const string ProjectedKeyword = "PRoyectada";
+        private const string CanonicalKeyword = "PREdeterminada";
+
+        /// <summary>Enter (None) and «Proyectada» are the product default; only «Predeterminada» selects the canonical mode.</summary>
+        private static RackProjectionOrientationMode OrientationOf(PromptResult result)
+            => result.Status == PromptStatus.OK
+               && string.Equals(result.StringResult, CanonicalKeyword, StringComparison.OrdinalIgnoreCase)
+                ? RackProjectionOrientationMode.Canonical
+                : RackProjectionOrientationMode.Projected;
 
         private static DimensionViewKind KindOf(string keyword)
         {

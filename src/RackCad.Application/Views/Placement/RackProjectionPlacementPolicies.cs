@@ -60,7 +60,10 @@ namespace RackCad.Application.Views.Placement
         public double Scale => 1.0;
     }
 
-    /// <summary>Same class: the anchor layout is reproduced with the single common transform (alpha = 0).</summary>
+    /// <summary>
+    /// Same class: the anchor layout is reproduced with the single common transform. Projected (and the frozen G14 contract):
+    /// alpha = 0. Canonical (G16 C16-06): alpha = -theta_0, so every view of a group with a common rotation presents rotation 0.
+    /// </summary>
     public static class RackRigidPlacementPolicy
     {
         public static RackProjectedPlacement Place(RackProjectionSourceView view, CommonTransform2D transform)

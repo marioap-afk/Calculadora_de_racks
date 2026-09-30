@@ -40,6 +40,7 @@ namespace RackCad.Application.Views.Placement
     {
         None,
         NoSelection,
+        Cancelled,
         NoRackMembers,
         ReadFailed
     }
@@ -262,7 +263,7 @@ namespace RackCad.Application.Views.Placement
                     RackProjectionCommandStatus.MaterializationFailed, planResult, materialization, lines);
             }
 
-            var done = RackProjectionReport.Completed(materialization);
+            var done = RackProjectionReport.Completed(materialization, plan.Orientation);
             port.Report(done);
             return new RackProjectionCommandResult(
                 RackProjectionCommandStatus.Completed, planResult, materialization, done);

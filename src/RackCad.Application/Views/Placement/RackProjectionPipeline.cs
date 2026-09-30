@@ -318,15 +318,43 @@ namespace RackCad.Application.Views.Placement
                     warnings);
             }
 
+            var rigidAlpha = 0.0;
+            if (mode == RackProjectionMode.Rigid)
+            {
+                // G16 C16-06: the same-class group frames (Projected: universal, alpha = 0; Canonical: phi_s = theta_0, phi_t = 0).
+                var rigid = RackProjectionOrientationResolver.ResolveRigid(views, request.Orientation);
+                if (!rigid.IsAvailable)
+                {
+                    return Failure(
+                        RackProjectionStage.Validate,
+                        views.Select(view => Diagnostic(
+                            RackProjectionStage.Validate, rigid.Failure, view)).ToList(),
+                        warnings);
+                }
+
+                rigidAlpha = rigid.Target.OrientationRadians - rigid.Source.OrientationRadians;
+            }
+
             RackOrthographicProjection orthographic = null;
             if (mode == RackProjectionMode.Orthographic)
             {
+                // G16 C16-06: the group frames come from the orientation authority (Canonical: universal; Projected: derived).
+                var frames = RackProjectionOrientationResolver.ResolveOrthographic(views, conservedAxis, request.Orientation);
+                if (!frames.IsAvailable)
+                {
+                    return Failure(
+                        RackProjectionStage.Validate,
+                        views.Select(view => Diagnostic(
+                            RackProjectionStage.Validate, frames.Failure, view)).ToList(),
+                        warnings);
+                }
+
                 var projection = RackOrthographicPlacementPolicy.Project(
                     views,
                     conservedAxis,
                     families[0],
-                    SourceGroupFrame.Universal(new Point3D(0, 0, 0)),
-                    TargetGroupFrame.Universal(new Point3D(0, 0, 0)));
+                    frames.Source,
+                    frames.Target);
 
                 if (!projection.IsAvailable)
                 {
@@ -399,7 +427,9 @@ namespace RackCad.Application.Views.Placement
                 planGroups,
                 views,
                 orthographic,
-                warnings);
+                warnings,
+                request.Orientation,
+                rigidAlpha);
 
             return new RackGroupPlacementPlanResult(plan, RackProjectionStage.Plans, Array.Empty<RackProjectionDiagnostic>(), warnings);
         }

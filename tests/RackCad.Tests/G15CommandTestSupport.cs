@@ -110,6 +110,12 @@ namespace RackCad.Tests
             internal G14.Services Services { get; }
             internal LibraryPieceAvailabilityFact[] Pieces { get; set; }
             internal RackViewAddress SourceAddress { get; set; } = G14.Planta;
+
+            /// <summary>
+            /// G16 C16-06. The frozen G14/G15 command tests run in Canonical: exactly the G14 contract across classes; their same-class
+            /// scenarios place the sources at 0°, where both orientations coincide. A rotated same-class scenario must set the mode.
+            /// </summary>
+            internal RackProjectionOrientationMode Orientation { get; set; } = RackProjectionOrientationMode.Canonical;
             internal IReadOnlyList<RackPhysicalDefinitionSnapshot> Definitions => definitions;
 
             internal void AddRack(string rackId, string referenceKey, double x, double y, double rotation = 0.0, double originX = 0.0, string name = "Rack")
@@ -161,7 +167,7 @@ namespace RackCad.Tests
 
                 var selection = G14.Selection(references, definitions);
                 return RackProjectionSnapshot.Available(
-                    new RackProjectionRequest(selection, TargetKind, facts, Services.Build()),
+                    new RackProjectionRequest(selection, TargetKind, facts, Services.Build(), Orientation),
                     Array.Empty<string>());
             }
 

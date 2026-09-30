@@ -46,6 +46,8 @@ namespace RackCad.Application.Views.Placement
         FrameUnavailable,
         FrameAxisMissing,
         NonParallelSources,
+        SourceOrientationDivergent,
+        SourceRotationsDiffer,
         SourceFactsNonFinite,
         SourceFactsDegenerate,
         SourceFactsInvalidTolerance,

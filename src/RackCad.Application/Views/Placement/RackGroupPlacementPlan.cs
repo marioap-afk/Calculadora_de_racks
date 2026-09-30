@@ -124,18 +124,23 @@ namespace RackCad.Application.Views.Placement
             RackPhysicalSelection selection,
             DimensionViewKind targetKind,
             IReadOnlyDictionary<string, RackSourceTransformFactsResult> sourceFacts,
-            RackProjectionServices services)
+            RackProjectionServices services,
+            RackProjectionOrientationMode orientation)
         {
             Selection = selection;
             TargetKind = targetKind;
             SourceFacts = sourceFacts;
             Services = services;
+            Orientation = orientation;
         }
 
         public RackPhysicalSelection Selection { get; }
         public DimensionViewKind TargetKind { get; }
         public IReadOnlyDictionary<string, RackSourceTransformFactsResult> SourceFacts { get; }
         public RackProjectionServices Services { get; }
+
+        /// <summary>G16 C16-06: how the placed references are oriented. The product default is Projected (the command asks).</summary>
+        public RackProjectionOrientationMode Orientation { get; }
     }
 
     public sealed class RackProjectionGroup
@@ -196,9 +201,13 @@ namespace RackCad.Application.Views.Placement
             IReadOnlyList<RackProjectionGroup> groups,
             IReadOnlyList<RackProjectionSourceView> views,
             RackOrthographicProjection orthographic,
-            IReadOnlyList<RackProjectionWarning> warnings)
+            IReadOnlyList<RackProjectionWarning> warnings,
+            RackProjectionOrientationMode orientation,
+            double rigidAlphaRadians)
         {
             TargetKind = targetKind;
+            Orientation = orientation;
+            RigidAlphaRadians = rigidAlphaRadians;
             Mode = mode;
             ConservedAxis = conservedAxis;
             Groups = groups;
@@ -209,6 +218,11 @@ namespace RackCad.Application.Views.Placement
 
         public DimensionViewKind TargetKind { get; }
         public RackProjectionMode Mode { get; }
+        public RackProjectionOrientationMode Orientation { get; }
+
+        /// <summary>alpha of a same-class operation: phi_t - phi_s of its group frames (0 Projected; -theta_0 Canonical).</summary>
+        public double RigidAlphaRadians { get; }
+
         public RackPhysicalAxis ConservedAxis { get; }
         public IReadOnlyList<RackProjectionGroup> Groups { get; }
         public IReadOnlyList<RackProjectionSourceView> Views { get; }
@@ -221,7 +235,7 @@ namespace RackCad.Application.Views.Placement
         /// <summary>Applies the single common transform of the operation to every accepted reference.</summary>
         public RackGroupPlacementResult Place(Point3D basePoint, Point3D targetPoint)
         {
-            var alpha = Mode == RackProjectionMode.Rigid ? 0.0 : Orthographic.AlphaRadians;
+            var alpha = Mode == RackProjectionMode.Rigid ? RigidAlphaRadians : Orthographic.AlphaRadians;
             var transform = CommonTransform2D.TryCreate(basePoint, targetPoint, alpha);
             if (!transform.IsAvailable)
             {

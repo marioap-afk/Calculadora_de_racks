@@ -409,7 +409,7 @@ namespace RackCad.Tests
                 ["REF-X"] = G14.Facts(x: 0, y: 200),
             };
 
-            return new RackProjectionRequest(selection, DimensionViewKind.Frontal, facts, services.Build());
+            return new RackProjectionRequest(selection, DimensionViewKind.Frontal, facts, services.Build(), RackProjectionOrientationMode.Canonical);
         }
     }
 }

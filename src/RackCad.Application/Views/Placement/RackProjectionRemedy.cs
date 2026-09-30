@@ -59,6 +59,18 @@ namespace RackCad.Application.Views.Placement
                         RackProjectionRemedyKind.NoAutomaticRemedy,
                         "Esta vista no tiene identidad de rack: no hay remedio automatico.");
 
+                case RackProjectionFailureCode.SourceOrientationDivergent:
+                    return Remedy(
+                        RackProjectionRemedyKind.ReviewSelection,
+                        "Las vistas de origen miran en sentidos opuestos y ninguna orientacion proyectada comun las representa: "
+                        + "proyecta por separado cada sentido o usa la orientacion Predeterminada.");
+
+                case RackProjectionFailureCode.SourceRotationsDiffer:
+                    return Remedy(
+                        RackProjectionRemedyKind.ReviewSelection,
+                        "Las vistas de origen tienen giros distintos y la orientacion Predeterminada no puede dejarlas todas sin girar en una sola operacion: "
+                        + "usa la orientacion Proyectada (conserva el giro de cada rack) o proyecta por separado cada grupo de igual giro.");
+
                 case RackProjectionFailureCode.UnsupportedMember:
                 case RackProjectionFailureCode.MixedSourceTypes:
                 case RackProjectionFailureCode.MultipleSourceDefinitions:

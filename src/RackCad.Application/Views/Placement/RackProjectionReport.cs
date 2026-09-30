@@ -27,6 +27,9 @@ namespace RackCad.Application.Views.Placement
                 case RackProjectionSnapshotFailure.NoSelection:
                     lines.Add(Prefix + "cancelado: no se selecciono nada. No se pidio ningun punto ni se escribio nada.");
                     break;
+                case RackProjectionSnapshotFailure.Cancelled:
+                    lines.Add(Prefix + "cancelado. No se leyo el dibujo, no se pidio ningun punto ni se escribio nada.");
+                    break;
                 case RackProjectionSnapshotFailure.NoRackMembers:
                     lines.Add(Prefix + "no encontro racks en la seleccion. No se pidio ningun punto ni se escribio nada.");
                     break;
@@ -118,6 +121,17 @@ namespace RackCad.Application.Views.Placement
                     + " definicion(es) nueva(s). Son vistas enlazadas del mismo rack, no copias: el BOM no cambia"
                     + " (para copiar, RACKDUPLICAR)."
             };
+
+        /// <summary>The completed report, naming the orientation mode used (G16 C16-06).</summary>
+        public static IReadOnlyList<string> Completed(
+            RackProjectionMaterializationResult result, RackProjectionOrientationMode orientation)
+        {
+            var lines = new List<string>(Completed(result));
+            lines.Add(orientation == RackProjectionOrientationMode.Projected
+                ? "  Orientacion Proyectada: cada referencia gira entera (geometria, textos y cotas) para seguir a su vista de origen."
+                : "  Orientacion Predeterminada: las referencias usan la presentacion normal de RackCad.");
+            return lines;
+        }
 
         private static string Describe(RackProjectionDiagnostic diagnostic)
         {

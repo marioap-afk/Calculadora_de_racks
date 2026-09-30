@@ -77,7 +77,7 @@ namespace RackCad.Tests
             };
 
             var result = RackGroupPlacementPlan.Create(
-                new RackProjectionRequest(selection, DimensionViewKind.Frontal, facts, services.Build()));
+                new RackProjectionRequest(selection, DimensionViewKind.Frontal, facts, services.Build(), RackProjectionOrientationMode.Canonical));
             Assert.True(result.IsAvailable);
             return result.Plan;
         }
@@ -117,7 +117,7 @@ namespace RackCad.Tests
             };
 
             var result = RackGroupPlacementPlan.Create(
-                new RackProjectionRequest(selection, DimensionViewKind.Frontal, facts, services.Build()));
+                new RackProjectionRequest(selection, DimensionViewKind.Frontal, facts, services.Build(), RackProjectionOrientationMode.Canonical));
 
             Assert.False(result.IsAvailable);
             Assert.Empty(services.ResolveCalls);

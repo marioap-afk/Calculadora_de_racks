@@ -27,7 +27,10 @@ namespace RackCad.Plugin.Views
             new RackSourceTransformTolerance(GeometryTolerance.Length, GeometryTolerance.Angle, GeometryTolerance.Length);
 
         internal static RackProjectionSnapshot Read(
-            Document document, IReadOnlyList<ObjectId> selectedIds, DimensionViewKind targetKind)
+            Document document,
+            IReadOnlyList<ObjectId> selectedIds,
+            DimensionViewKind targetKind,
+            RackProjectionOrientationMode orientation)
         {
             try
             {
@@ -158,7 +161,7 @@ namespace RackCad.Plugin.Views
                 };
 
                 return RackProjectionSnapshot.Available(
-                    new RackProjectionRequest(selection.Selection, targetKind, sourceFacts, services), notices);
+                    new RackProjectionRequest(selection.Selection, targetKind, sourceFacts, services, orientation), notices);
             }
             catch (System.Exception ex)
             {

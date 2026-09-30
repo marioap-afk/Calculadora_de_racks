@@ -172,7 +172,10 @@ namespace RackCad.Tests
             var port = Code("src/RackCad.Plugin/Views/RackProjectionCommandPort.cs");
 
             Assert.Equal(2, Count(port, "GetPoint("));
-            Assert.Equal(2, Count(port, "AllowNone = true"));
+            // Both point prompts allow None. (G16 C16-06 adds the orientation keyword prompt BEFORE them, whose AllowNone is the
+            // Enter = Proyectada default; it is counted apart in the C16-06 guard.)
+            var points = port.Substring(port.IndexOf("public RackProjectionPick PickBasePoint", StringComparison.Ordinal));
+            Assert.Equal(2, Count(points, "AllowNone = true"));
             Assert.Contains("PromptStatus.OK", port);
             Assert.Contains("RackProjectionPick.Ok(", port);
             Assert.Contains("PromptStatus.None", port);
