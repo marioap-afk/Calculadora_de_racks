@@ -414,7 +414,10 @@ clasificaciones). **POST-AUDIT PACKAGE BASELINE: PASS.**
   `Commit()` que lanza o es indeterminado = fallo de `T_M` (sin VERIFY; ABORT-VERIFY; O2 si coincide exactamente, O6 en otro caso), supuesto A-2 (eventos de escritura diferidos tras `V0`), una sola captura autoritativa de `PRE_COMMAND_STATE_RECORD` con re-observación
   antes del primer import, resumen del Acto 1 ampliado (sin rollback post-commit, residuo de PREPARE, falsos rechazos, admisión insatisfacible hoy, posible resultado negativo, degradación de clase B solo por enmienda), rulings RA-1..RA-6 y alcance de la regla de vocabulario.
   B3 propuesto `CLOSED_BY_V4_CONTRACT` (sujeto a comprobación del Arquitecto); B5 `REMAINS_BLOCKER_FOR_CT21D_DESIGN`; B6 `REMAINS_BLOCKER_FOR_ACT2`. `OWNER_DECISION_STATUS = NOT_YET`, `CT21D_STATUS = NOT_AUTHORIZED`, `CURRENTLY_ADMISSIBLE_KIND_SCOPE = NONE`.
-- **Siguiente gate: revisión del Coordinador de la Proposal ALT-21D V4**, seguida de la comprobación ítem a ítem del Arquitecto (C-1..C-4 y W-A). La rama sigue sin reconciliar con `main` (79 detrás / 122 delante).
+- **ALT-21D V5 (§203):** el Arquitecto hizo la comprobación ítem a ítem de V4 (`CHANGES_REQUIRED`, mínimo; C-1, C-3, W-A satisfechos, C-2 aceptable para el Acto 1, C-5 correcto, B3 `CLOSED_BY_V4_CONTRACT`). [Proposal ALT-21D V5](initiatives/I-52-alt21d-reduced-guarantee-proposal-v5.md)
+  aplica, sin reinterpretar, las erratas pre-aprobadas S-1 (O6 en el ítem 8 del resumen del Acto 1) y W-1..W-5 (punto de fijación de `T_M`, significado de «committed», referencia verbatim de E4 a V3 §1.2, `FINGERPRINT_METHOD` separado de TBD-10, regla de composición para definiciones preexistentes).
+  V1-V4 históricas, sin editar. Blockers sin cambio; `OWNER_DECISION_STATUS = NOT_YET` (la transición a `READY_FOR_SPONSORSHIP_DECISION` es dictamen del Coordinador), `CT21D_STATUS = NOT_AUTHORIZED`, `CURRENTLY_ADMISSIBLE_KIND_SCOPE = NONE`.
+- **Siguiente gate: verificación textual del Coordinador de la Proposal ALT-21D V5.** Si pasa, `OWNER_DECISION_STATUS = READY_FOR_SPONSORSHIP_DECISION` y el siguiente paso es preparar el Acto 1 del Owner. La rama sigue sin reconciliar con `main` (79 detrás / 123 delante).
 
 **Congelación de V35 (§172).** El Coordinador aceptó V35-A2 (`86089886`) con consenso de arquitectura final.
 - `V35_FREEZE_SHA` = `86089886f37da05c2de5dcf9e237044a3deeada3`.
