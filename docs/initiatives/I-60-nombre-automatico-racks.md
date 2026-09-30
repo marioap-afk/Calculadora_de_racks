@@ -1,6 +1,6 @@
 # I-60 — Nombre lógico automático de los racks nuevos
 
-Status: Discovery hecho; Freeze acordado por el Arquitecto (ver decisiones §3); implementacion tras el Freeze; NOT INTEGRATED
+Status: Freeze `30c7ba0b`; RED `51711c84`; GREEN `f5104016`; Candidato declarado (decisiones §4); OWNER VALIDATION REQUIRED; NOT INTEGRATED
 
 Workflow: V2 (unidad nueva posterior a `WORKFLOW_V2_EFFECTIVE_SHA`; base con el SHA efectivo; sin pausa: T4)
 
@@ -8,7 +8,7 @@ Initiative: I-60. Unit: `I-60`. Archetype: EXTENSION de producto (sin Foundation
 
 Branch: `feature/nombre-automatico-racks` (worktree `~/.codex/worktrees/feature-nombre-automatico-racks`)
 
-Decisiones: [`docs/automation/decisions/I-60.md`](../automation/decisions/I-60.md). Freeze: `docs/initiatives/I-60-freeze.md` (cuando exista).
+Decisiones: [`docs/automation/decisions/I-60.md`](../automation/decisions/I-60.md). Freeze: [`docs/initiatives/I-60-freeze.md`](I-60-freeze.md).
 
 ## Proposito (autorizacion del Owner)
 

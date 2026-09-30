@@ -35,11 +35,21 @@ Hechos transversales:
 
 ## 2. Identidades
 
-Pendiente: Freeze, RED, implementacion, Candidato.
+| Hito | SHA |
+|---|---|
+| Base (`origin/main`, I-52-AUTH15-C1 integrada) | `1304101d997b66748e21f4896ac203d6fdc6a1f1` |
+| Reclamo | `6a9c7d09` (`Claim-Id: fe03d635-bcd6-4445-ad4a-384ad1a0cda3`) |
+| Freeze acordado (R2) | `97fee74639232eaa2d9879775a58b9b068746cd3` (blob `678f73bb2a22bde770405a0e7287f433e3a61b9f`) |
+| Freeze (`Frozen: YES`) | `30c7ba0bd102c3005893fb3e6dd8185a3cc2a570` |
+| Andamiaje inerte | `8366326e` |
+| RED (44 de 57 fallan) | `51711c8478a55362f3c5afb6a01fbb32ef50bcf9` |
+| GREEN | `f5104016` |
+| Candidato | el commit que contiene esta tabla; bloque §7.1 de [validacion-manual-autocad](../../guias/validacion-manual-autocad.md) en la entrega al Owner y en el cierre |
 
 ## 3. Matriz de validacion del Owner (OV-I60)
 
-Preparacion: dibujo nuevo en pulgadas; el DLL del Candidato de I-60 (no el de I-55). Un resultado por fila: PASS, FAIL o NOT EXECUTED (motivo).
+Preparacion: dibujo nuevo en pulgadas; el DLL Debug del worktree de I-60 construido desde el Candidato (no el de I-55; verificar `ProductVersion` y
+SHA-256 antes de NETLOAD, guia §7.2). Un resultado por fila: PASS, FAIL o NOT EXECUTED (motivo). Ninguna fila esta ejecutada.
 
 | # | Pasos | Esperado |
 |---|---|---|
