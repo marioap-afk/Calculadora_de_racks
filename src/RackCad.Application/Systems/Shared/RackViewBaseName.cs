@@ -36,6 +36,14 @@ namespace RackCad.Application.Systems.Shared
                     system?.Bays?.Count ?? 0)
                 : rackName.Trim() + " - planta");
 
+        /// <summary>
+        /// The lateral section of a Selective rack: the rack name, or «Selectivo» when it has none, followed by the PHYSICAL post number
+        /// (<c>postIndex + 1</c>, never the position among the cuts). It is the name the historical insertion of a Selective lateral
+        /// composed itself, now owned here like the Dynamic and Push Back laterals' generated names.
+        /// </summary>
+        public static string SelectiveLateral(string rackName, int postIndex)
+            => LinkedLateral(string.IsNullOrWhiteSpace(rackName) ? "Selectivo" : rackName, postIndex);
+
         public static string DynamicLateral(DynamicRackSystem system, string rackName)
             => Standard(string.IsNullOrWhiteSpace(rackName)
                 ? string.Format(

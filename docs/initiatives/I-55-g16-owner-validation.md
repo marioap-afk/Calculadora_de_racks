@@ -161,3 +161,20 @@ rack del mismo tipo en el dibujo no abortaba, pero redibujaba ese rack con el di
 
 **Correccion:** el bloque de `RACKEDITAR` sale de `MutableMembers`; el Selectivo lateral lleva el poste 0 como el Dinamico; los modulos devuelven la peticion de
 la ventana. Ver el registro de la ronda 2 en la evidencia de cierre.
+
+### Ronda 2 — Candidato `bc622f129e7348175042dcd2cb672d10f6dc5fc1`: REJECTED (OV-ID19-01)
+
+OV-ID17 (smoke correctivo) y las secciones anteriores pasaron. `RACKPROYECTAR` no pudo materializar la primera definicion: AUTH-15 respondio
+`InvalidEnvelope: sobre ausente o sin Id/Kind/Name`. **Campo:** `Name` (Id y Kind salen de la intencion aceptada). **Causa:** el sobre proyectado se compone desde
+`source.Name`, el nombre visible del rack, que puede ser vacio; el nombre base del bloque es otra autoridad (AUTH-11) y no estaba vacio. **Correccion:**
+`RackProjectionEnvelopeName.WithLogicalName` compone desde una copia en memoria del sobre fuente con un nombre usable; el sobre del dibujo no se repara y AUTH-15 no cambia.
+
+### Ronda 3 — Candidato `50f6c8bff65944d3f62b62eec76ec0eaefe28d76`: REJECTED (OV-ID19-01)
+
+Selectivo Planta → Lateral: AUTH-15 respondio `InvalidBlockName: nombre de bloque vacio` con el sobre ya valido (`Name = Rack`) y el nombre base vacio.
+**Causa (C16-04):** para un rack sin nombre, `LinkedLateral(null, post)` devuelve null y la composicion del Selectivo no tenia el respaldo generado que si tienen el lateral
+del Dinamico y el de Push Back; la insercion historica funcionaba porque sustituia el literal «Selectivo» por su cuenta, en el Plugin. **Oraculo historico:** nombre base = nombre del rack
+o «Selectivo», seccion `LinkedLateral(base, pick − 1)` con `pick` el numero de poste FISICO (el corte se busca por `PostIndex == pick − 1`), por lo que el sufijo es `PostIndex + 1` y
+no la posicion entre los cortes. **Correccion:** `RackViewBaseName.SelectiveLateral` (autoridad AUTH-11) y las composiciones de nombre por sistema extraidas a
+`RackViewProductNames` (Application) para probarlas sin AutoCAD. **Observacion abierta (C16-05):** un rack sin nombre se ve como «(sin nombre)» en `RACKLISTA` y, al agregarle una
+vista proyectada cuyo sobre lleva el nombre «Rack» (AUTH-15 exige uno), pasa a verse como «Rack»; caracterizado por `G16_C05_…`, pendiente de decision del Owner.

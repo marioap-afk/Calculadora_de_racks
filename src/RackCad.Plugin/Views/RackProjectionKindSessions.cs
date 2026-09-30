@@ -403,10 +403,7 @@ namespace RackCad.Plugin.Views
                     (line, address) => RackViewBatchProducts.CantileverPlan(line, design, facts.Geometry(), address),
                     address => true,
                     RackBlockRequirementExtractors.Cantilever),
-                baseName: (line, address, name) => RackViewBaseName.CantileverGenerated(
-                    RackViewBatchProducts.CantileverKind(address),
-                    address.Variant.Kind == RackViewVariantKind.Station ? address.Variant.Index : -1,
-                    name),
+                baseName: (line, address, name) => RackViewProductNames.Cantilever(address, name),
                 extract: null,
                 setRackName: null);
         }
