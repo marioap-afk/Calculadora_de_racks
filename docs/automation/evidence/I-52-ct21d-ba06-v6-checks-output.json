@@ -1,0 +1,2156 @@
+{
+ "CHECKER": "docs/automation/evidence/I-52-ct21d-ba06-v6-checks.py",
+ "CHECKER_SHA256": "341c3288c004746facadef5954b3040e7917f500382ef543a69a563eed851f7a",
+ "ARTIFACT": "docs/initiatives/I-52-ct21d-baseline-ba-06-evm-preparation-v6.md",
+ "COMPARED_WITH": "docs/initiatives/I-52-ct21d-baseline-ba-06-evm-preparation-v5.md",
+ "COMPARED_WITH_BLOB": "e69a141d67f6af68578bd0243310b256852b1501",
+ "NOTE": "no hash of the V6 artifact is recorded here: the artifact binds this output by hash (section 14)",
+ "RESULTS": [
+  {
+   "ID": "BA06-C1",
+   "STATEMENT": "the columns of the coverage matrix of section 7, with the fondo counts dropped, are exactly the plan-shape classes of section 10.2",
+   "RESULT": "PASS",
+   "DETAIL": "columns ['SH-ANN', 'SH-DIM', 'SH-F1', 'SH-FALL', 'SH-FN', 'SH-FP', 'SH-IMP', 'SH-LAY-ADDED', 'SH-P']; classes ['SH-ANN', 'SH-DIM', 'SH-F1', 'SH-FALL', 'SH-FN', 'SH-FP', 'SH-IMP', 'SH-LAY-ADDED', 'SH-P']"
+  },
+  {
+   "ID": "BA06-C2",
+   "STATEMENT": "15 MUTATING rows; 14 map to a class of section 3.3; C-105 (SL-3) is n/a by the sealed scope",
+   "RESULT": "PASS",
+   "DETAIL": "MUTATING 15, mapped 14, C-105 class \"n/a (SL-3 not required by the sealed scope, V2.1 25.7)\""
+  },
+  {
+   "ID": "BA06-C3",
+   "STATEMENT": "every NON_MUTATING_READ row has a class; C-13 is marked as an instrument sample",
+   "RESULT": "PASS",
+   "DETAIL": "C-13=instrument (I-07 sample; not an operation class), C-43=OC-LIB-ACQ, C-52=OC-LIB-ACQ, C-61=OC-LIB-ACQ, C-73=OC-LIB-ACQ, C-75=OC-PREP-READ, C-128=OC-ENVELOPE, C-156=OC-PREP-READ, C-169=OC-VERIFY-READ, C-170=OC-VERIFY-READ"
+  },
+  {
+   "ID": "BA06-C4",
+   "STATEMENT": "every class cited in sections 3.2 and 3.2.5 is a class of section 3.3, and every class of 3.3 has its micro-scenario EV-L-<class> or a reasoned exclusion; 21 classes (16 and 5)",
+   "RESULT": "PASS",
+   "DETAIL": "classes 21 (micro-scenario 16, exclusion 5); cited not in 3.3: []"
+  },
+  {
+   "ID": "BA06-C5",
+   "STATEMENT": "the 203 rows of section 3.2 transcribe sa1-compiled-operations.json (id, actor, kind, operation, clause fragments), except the declared V4 amendment of C-98 and the declared V6 amendment of C-72 (AR5-03)",
+   "RESULT": "PASS",
+   "DETAIL": "rows 203; mismatches []"
+  },
+  {
+   "ID": "BA06-C6",
+   "STATEMENT": "DF-nn = DC-nn in order; every DC row transcribes its comparator difference and carries a disposition",
+   "RESULT": "PASS",
+   "DETAIL": "rows 51"
+  },
+  {
+   "ID": "BA06-C7",
+   "STATEMENT": "each of the 25 ambiguities is RESOLVED by a clause outside the compiler fragments, or is a CONTRACT QUESTION with an id of section 3.2.6",
+   "RESULT": "PASS",
+   "DETAIL": "none"
+  },
+  {
+   "ID": "BA06-C8",
+   "STATEMENT": "every fragment of sa1-contract-fragments.md is contained verbatim in the current V2.1, V2.2 or V2.4 text",
+   "RESULT": "PASS",
+   "DETAIL": "8 fragments; not found: []"
+  },
+  {
+   "ID": "BA06-C9",
+   "STATEMENT": "every SHA-256 of section 14, except the row of this output, equals the SHA-256 of the LF-normalized file; 32 rows, 4 of them new in V6 (the blind recompile, the Gate 2 evidence, this script and its output)",
+   "RESULT": "PASS",
+   "DETAIL": "rows 32; mismatches []; new in V6 ['docs/automation/evidence/I-52-ct21d-ba06-v6-blind-recompile.json', 'docs/automation/evidence/I-52-ct21d-ba06-v6-checks-output.json', 'docs/automation/evidence/I-52-ct21d-ba06-v6-checks.py', 'docs/automation/evidence/I-52-ct21d-gate2-relink-assessment.json']"
+  },
+  {
+   "ID": "BA06-C10",
+   "STATEMENT": "the published V4 task inputs are internally consistent and reproduce, from repository files, the checks TI-CRIT-A, TI-CRIT-B, TI-CRIT-CENSUS, TI-COMPILE and TI-LIST1",
+   "RESULT": "PASS",
+   "DETAIL": "hashes of the 15 task texts and bodies: PASS; critic REVIEW A = B1a: PASS; critic REVIEW B = B1b: PASS; census critic input = B2a..B2d entries: PASS; compiler body = prompts.json compile: PASS; comparator body = compare_template with LIST 1: PASS; all checks recorded at extraction PASS: PASS"
+  },
+  {
+   "ID": "BA06-C11",
+   "STATEMENT": "the residual table of section 5 cites no row of the superseded V2 R-list",
+   "RESULT": "PASS",
+   "DETAIL": "found []"
+  },
+  {
+   "ID": "BA06-C12",
+   "STATEMENT": "the header cites the git blob of the V5 file, the contract chain with V2.6 pending review, BOUND_PRODUCT_SHA 95690c28, sections 223 and 220, DEPENDS_ON = BA-01, BA-03, BA-05, BA-07, the BA-11 registry entry and the naming state, has no CANDIDATE_HASH or SEAL_HASH field, and the artifact ends with the Delta V6 section",
+   "RESULT": "PASS",
+   "DETAIL": "V5 blob e69a141d67f6af68578bd0243310b256852b1501; ARTIFACT_VERSION cites the git blob of the V5 file: PASS; AUTHORITY_CONTRACT: PASS; BOUND_PRODUCT_SHA: PASS; DELTA RULING APPLIED names sections 223 (AR6-01..AR6-07) and 220: PASS; DEPENDS_ON = BA-01, BA-03, BA-05, BA-07: PASS; STATUS AUTHORITY cites the BA-11 registry entry: PASS; I60_NAMING_FOR_RACKMIRROR = NOT_YET_ADOPTED: PASS; no CANDIDATE_HASH or SEAL_HASH: PASS; last section is Delta V6 (decisions 220 and 223): PASS"
+  },
+  {
+   "ID": "BA06-C13",
+   "STATEMENT": "the V5 file is the one AR5-01 carried STATIC_REVIEWED to (its git blob starts with the blob that the AR5-01 row of decisions section 220 states) and the one that the V6 header supersedes",
+   "RESULT": "PASS",
+   "DETAIL": "V5 blob e69a141d67f6af68578bd0243310b256852b1501; AR5-01 blob e69a141d"
+  },
+  {
+   "ID": "BA06-C14",
+   "STATEMENT": "FROZEN-PARTS CHECK (AR5-02, AR6-03): V6 differs from V5, over the inventory (3.1, 3.2, 3.2.5, 3.3, section 5 rows and \"affects\" cells, section 12 fields), the trace plan (section 7, 10.2, section 11) and the review records inside those spans (3.2.2, 4.1, 4.2, non-table lines), exactly by the declared changes, each with its kind (CONTENT, NON_CONTENT_RULING_ORDERED, RECORD, LABEL) and its ruling; the REPORT lists every changed row and line with its cell edits, and the new record subsections 3.1.1 and 3.4",
+   "RESULT": "PASS",
+   "DETAIL": "CONTENT 40, NON_CONTENT_RULING_ORDERED 3, RECORD 24, LABEL 6; problems []",
+   "REPORT": {
+    "LABELS": [
+     {
+      "V5": "BA-03 V4",
+      "V6": "BA-03 V5",
+      "KIND": "LABEL"
+     },
+     {
+      "V5": "BA-04 V5",
+      "V6": "BA-04 V6",
+      "KIND": "LABEL"
+     },
+     {
+      "V5": "BA-07 V5",
+      "V6": "BA-07 V6",
+      "KIND": "LABEL"
+     },
+     {
+      "V5": "BA-08 V5",
+      "V6": "BA-08 V6",
+      "KIND": "LABEL"
+     },
+     {
+      "V5": "BA-09 V5",
+      "V6": "BA-09 V6",
+      "KIND": "LABEL"
+     },
+     {
+      "V5": "BA-10 V5",
+      "V6": "BA-10 V6",
+      "KIND": "LABEL"
+     }
+    ],
+    "TABLES": {
+     "3.1": {
+      "HEADER_CHANGE": null,
+      "ROWS_V5": 42,
+      "ROWS_V6": 51,
+      "CHANGED_ROWS": [
+       {
+        "ROW": "U-02",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605): R1-only call site; location through EnsureForPlan; the R2/R3 site is U-45",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 4,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": " -> src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:26-40 (EnsureForPlan) -> src/RackCad.Application/Systems/Shared/LibraryBlockRequirements.cs:168-176"
+           }
+          ]
+         },
+         {
+          "COLUMN": 6,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": ". V6: R1 only; the R2 and R3 import call site is U-45"
+           }
+          ]
+         },
+         {
+          "COLUMN": 7,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; RC"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "U-03",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), RL-02: callee read tx under L1 (R1) or L0 (R2, R3)",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 6,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": " (R1, via U-02) or under L0 (R2, R3, via U-45; L0 is released before L1' and T_create', U-42, U-43)"
+           }
+          ]
+         },
+         {
+          "COLUMN": 7,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; RC"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "U-04",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), RL-02: L1 or L0",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 6,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": " (R1) or L0 (R2, R3; U-45)"
+           }
+          ]
+         },
+         {
+          "COLUMN": 7,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; RC"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "U-07",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), RL-02: L1 or L0",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 6,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": " (R1) or L0 (R2, R3)"
+           }
+          ]
+         },
+         {
+          "COLUMN": 7,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; RC"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "U-08",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), RL-02: the only PREPARE-W write under L0, released before T_create'",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 6,
+          "EDITS": [
+           {
+            "OP": "REPLACE",
+            "V5": ";",
+            "V6": ","
+           },
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": " (R1); under L0, which is released before L1' and T_create' open (R2, R3; U-45)"
+           },
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "or T_create' "
+           }
+          ]
+         },
+         {
+          "COLUMN": 7,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; RC"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "U-09",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR5-03 (class OC-PREP-READ, seam role) and AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605) (facts consumed on R2/R3; L0; new call site)",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 3,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": " on R1 (EnsureForPlan); on R2 and R3 they are consumed by the requirement report (RackSingleViewRequirementReporting"
+           },
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "ForHeaderPlan, src/RackCad.Plugin/Views/RackViewPlacement.cs:81-82)"
+           }
+          ]
+         },
+         {
+          "COLUMN": 4,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; V6 call site src/RackCad.Plugin/Views/RackViewPlacement.cs:76-77"
+           }
+          ]
+         },
+         {
+          "COLUMN": 5,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "V6 (AR5-03): the post-import AUTH-12 presence query (V2.1 6), an orchestrator read of class OC-PREP-READ, not an "
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "(post-import facts)",
+            "V6": "action"
+           }
+          ]
+         },
+         {
+          "COLUMN": 6,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": " (R1) or L0 (R2, R3)"
+           }
+          ]
+         },
+         {
+          "COLUMN": 7,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; RC"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "U-25",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605): second caller CreatePreparedBlock :54-57 (OC-ENVELOPE confirmation)",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 4,
+          "EDITS": [
+           {
+            "OP": "REPLACE",
+            "V5": "caller",
+            "V6": "callers"
+           },
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": " in CreateBlock, R1; V6: :54-57 in CreatePreparedBlock, R2 and R3"
+           }
+          ]
+         },
+         {
+          "COLUMN": 6,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": " (R1) or T_create' (R2, R3; U-43)"
+           },
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": " (on R2 and R3 the payload is never empty: RackEmbedStore"
+           },
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "Serialize at src/RackCad.Plugin/Views/RackViewPlacement.cs:114)"
+           }
+          ]
+         },
+         {
+          "COLUMN": 7,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; RC"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "U-26",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605): T_create' context, as U-25 (OC-ENVELOPE confirmation)",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 6,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": " or T_create' (U-43)"
+           }
+          ]
+         },
+         {
+          "COLUMN": 7,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; RC"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "U-28",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), RL-04: re-pinned to PlaceBlockWithJigStatus :237-238; R1 and R2/R3 entries",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 4,
+          "EDITS": [
+           {
+            "OP": "REPLACE",
+            "V5": "179",
+            "V6": "237"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "180",
+            "V6": "238 (PlaceBlockWithJigStatus :228-261; R1 via PlaceAndReport :38-66 -> PlaceBlockWithJig :219-226; R2, R3 via HeaderMaterializer.Place src/RackCad.Plugin/Views/RackViewPlacement.cs:126 -> PlaceDefinitionWithStatus :105-107)"
+           }
+          ]
+         },
+         {
+          "COLUMN": 6,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "(R1) or T_create' (R2, R3) "
+           }
+          ]
+         },
+         {
+          "COLUMN": 7,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; RC"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "U-29",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), RL-04: re-pinned",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 4,
+          "EDITS": [
+           {
+            "OP": "REPLACE",
+            "V5": "182",
+            "V6": "240"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "184",
+            "V6": "242"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "240",
+            "V6": "300"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "244",
+            "V6": "304"
+           }
+          ]
+         },
+         {
+          "COLUMN": 7,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; RC"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "U-30",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605): JigPlacementResult with the prompt status; R2/R3 status mapping",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 3,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "JigPlacementResult(status, "
+           },
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "): OK, None, Cancel and Error are kept (R1 reads only the null id; R2 and R3 map None to Stopped, Cancel to Cancelled and any other status to Failed, src/RackCad.Plugin/Views/RackViewPlacement.cs:127-133)"
+           }
+          ]
+         },
+         {
+          "COLUMN": 4,
+          "EDITS": [
+           {
+            "OP": "REPLACE",
+            "V5": "186",
+            "V6": "244"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "191",
+            "V6": "249; status mapping src/RackCad.Plugin/Views/RackViewPlacement.cs:127-133"
+           }
+          ]
+         },
+         {
+          "COLUMN": 7,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; RC"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "U-31",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), RL-04: re-pinned; the hook point U-48 precedes it (OC-REF-TOP confirmation)",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 4,
+          "EDITS": [
+           {
+            "OP": "REPLACE",
+            "V5": "193",
+            "V6": "253"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "194",
+            "V6": "254"
+           }
+          ]
+         },
+         {
+          "COLUMN": 6,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": " V6: preceded inside T_place by the hook point :251 (U-48, dormant in production)"
+           }
+          ]
+         },
+         {
+          "COLUMN": 7,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; RC"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "U-32",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), RL-04: re-pinned (OC-REF-TOP confirmation)",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 4,
+          "EDITS": [
+           {
+            "OP": "REPLACE",
+            "V5": "195",
+            "V6": "255"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "196",
+            "V6": "256"
+           }
+          ]
+         },
+         {
+          "COLUMN": 7,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; RC"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "U-33",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), RL-04: re-pinned",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 4,
+          "EDITS": [
+           {
+            "OP": "REPLACE",
+            "V5": "198",
+            "V6": "258"
+           }
+          ]
+         },
+         {
+          "COLUMN": 7,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; RC"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "U-34",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), RL-05, N-06: new cleanup triggers on every route; failure observable",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 4,
+          "EDITS": [
+           {
+            "OP": "REPLACE",
+            "V5": "37",
+            "V6": "182"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "42",
+            "V6": "215 (EraseUnreferencedDefinitionCore)"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "123",
+            "V6": "reached through TryCleanupDefinition :118"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "160",
+            "V6": "129 (exceptions caught, logged and returned as RackSingleViewCleanupResult) from: R1 PlaceAndReport :49-54 (jig not OK, via EraseUnreferencedDefinition :177-180) and :61-64 (an exception during the jig); R2, R3 HeaderMaterializer.Cleanup src/RackCad.Plugin/Views/RackViewPlacement.cs:135-136 <- AfterFailedPlacement src/RackCad.Application/Views/Placement/RackSingleViewPlacement.cs:221, 231, 252-261 (Cancelled, Stopped, Failed, or an exception in Place)"
+           }
+          ]
+         },
+         {
+          "COLUMN": 6,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "(or T_create') "
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "jig",
+            "V6": "a"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "not",
+            "V6": "trigger"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "OK",
+            "V6": "above"
+           },
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": " A CreatePreparedBlock failure yields DefinitionFailed with no cleanup (U-44)"
+           }
+          ]
+         },
+         {
+          "COLUMN": 7,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; RC"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "U-35",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605): call site moved to BlockPlacement.cs:213",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 4,
+          "EDITS": [
+           {
+            "OP": "REPLACE",
+            "V5": "162",
+            "V6": "213"
+           }
+          ]
+         },
+         {
+          "COLUMN": 7,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; RC"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "U-36",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605): re-pinned to BlockPlacement.cs:196-203",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 4,
+          "EDITS": [
+           {
+            "OP": "REPLACE",
+            "V5": "146",
+            "V6": "196"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "151",
+            "V6": "203"
+           }
+          ]
+         },
+         {
+          "COLUMN": 7,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; RC"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "U-37",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605): callers re-pinned (RSC :39, :84; RMC :33)",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 4,
+          "EDITS": [
+           {
+            "OP": "REPLACE",
+            "V5": "32",
+            "V6": "39"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "77",
+            "V6": " 84"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "29",
+            "V6": "33"
+           }
+          ]
+         },
+         {
+          "COLUMN": 7,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; RC"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "U-38",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605): callers re-pinned (RSC :45, :119; RMC :52)",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 4,
+          "EDITS": [
+           {
+            "OP": "REPLACE",
+            "V5": "38",
+            "V6": "45"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "112",
+            "V6": " 119"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "48",
+            "V6": "52"
+           }
+          ]
+         },
+         {
+          "COLUMN": 7,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; RC"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "U-39",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605): callers re-pinned; the batch lateral stays OUT (D-11)",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 4,
+          "EDITS": [
+           {
+            "OP": "REPLACE",
+            "V5": "461",
+            "V6": "554"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "464",
+            "V6": "557"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "588",
+            "V6": "681"
+           }
+          ]
+         },
+         {
+          "COLUMN": 6,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": ". V6: the batch chain can also build a Selective lateral (RackViewBatchProducts.SelectivePlan src/RackCad.Plugin/Views/RackViewBatchProducts.cs:153-165, created through U-42..U-44); the lateral stays OUT (D-11)"
+           }
+          ]
+         },
+         {
+          "COLUMN": 7,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; RC"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "U-40",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605): re-pinned; batch composition site",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 4,
+          "EDITS": [
+           {
+            "OP": "REPLACE",
+            "V5": "405",
+            "V6": "493"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "417",
+            "V6": "505"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "469",
+            "V6": "562"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "519",
+            "V6": "612"
+           },
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; V6 batch path: src/RackCad.Application/Views/Preparation/RackViewEnvelopeComposition.cs:26-33 -> RackEmbedComposer.Compose, serialized at src/RackCad.Plugin/Views/RackViewPlacement.cs:114"
+           }
+          ]
+         },
+         {
+          "COLUMN": 7,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": " RC"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "U-41",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), RL-01: replaced (the V5 preliminaries serve only Actualizar)",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 3,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "V6: InDocumentTransaction.Run for the picked block (LockDocument; StartTransaction; entity and envelope read; Commit); ReadProjectVariables (LockDocument; StartTransaction; RackBlockFinder.ScanEnvelopes and ProjectVariablesData.Read; Commit); then the edit chain U-50. The V5 preliminaries ("
+           },
+           {
+            "OP": "REPLACE",
+            "V5": ";",
+            "V6": ","
+           },
+           {
+            "OP": "DELETE",
+            "V5": "RackBlockRenamer.",
+            "V6": ""
+           },
+           {
+            "OP": "REPLACE",
+            "V5": ";",
+            "V6": ","
+           },
+           {
+            "OP": "REPLACE",
+            "V5": ";",
+            "V6": ","
+           },
+           {
+            "OP": "DELETE",
+            "V5": "Editor.",
+            "V6": ""
+           },
+           {
+            "OP": "REPLACE",
+            "V5": ";",
+            "V6": ")"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "ReadProjectVariables",
+            "V6": "now serve only 'Actualizar'"
+           }
+          ]
+         },
+         {
+          "COLUMN": 4,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "src/RackCad.Plugin/RackCommandSupport.cs:84-94 -> src/RackCad.Plugin/InDocumentTransaction.cs:22-28; "
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "185",
+            "V6": "74 "
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "191",
+            "V6": "> 386-406; the 'Insertar' branch :132-208 returns at :208"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "221-227,",
+            "V6": "so"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "238-241,",
+            "V6": "the"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "254,",
+            "V6": "V5"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "264,",
+            "V6": "creation"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "303-315",
+            "V6": "call at :367 is not reached by 'Insertar'"
+           }
+          ]
+         },
+         {
+          "COLUMN": 5,
+          "EDITS": [
+           {
+            "OP": "REPLACE",
+            "V5": "committed",
+            "V6": "reads"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": ":279",
+            "V6": "the edit chain U-50"
+           }
+          ]
+         },
+         {
+          "COLUMN": 6,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "read "
+           }
+          ]
+         },
+         {
+          "COLUMN": 7,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; RC"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "U-42",
+        "CHANGE": "ADDED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), N-01: new row (lock of CreatePreparedBlock; no class)"
+       },
+       {
+        "ROW": "U-43",
+        "CHANGE": "ADDED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), N-01: new row (T_create' and the drawer call; site of the same primitives)"
+       },
+       {
+        "ROW": "U-44",
+        "CHANGE": "ADDED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), N-01: new row (T_create' commit; no class)"
+       },
+       {
+        "ROW": "U-45",
+        "CHANGE": "ADDED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), N-02: new row (import call site under L0; class OC-IMPORT)"
+       },
+       {
+        "ROW": "U-46",
+        "CHANGE": "ADDED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), N-03: new row (I-60 name read; no class; NOT_YET_ADOPTED)"
+       },
+       {
+        "ROW": "U-47",
+        "CHANGE": "ADDED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), N-04: new row (TopTransaction null guard; no class)"
+       },
+       {
+        "ROW": "U-48",
+        "CHANGE": "ADDED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), N-07: new row (dormant hook point in T_place; watch item)"
+       },
+       {
+        "ROW": "U-49",
+        "CHANGE": "ADDED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), N-05: new row (regen; not a database operation)"
+       },
+       {
+        "ROW": "U-50",
+        "CHANGE": "ADDED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), N-08: new row (the Insertar edit chain; OUT, D-11)"
+       }
+      ]
+     },
+     "3.2": {
+      "HEADER_CHANGE": null,
+      "ROWS_V5": 203,
+      "ROWS_V6": 203,
+      "CHANGED_ROWS": [
+       {
+        "ROW": "C-72",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR5-03 (R1:BA06V4-N01): marked amendment of C-72",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 4,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": " **[V6 amendment (AR5-03; R1:BA06V4-N01): captured once by the orchestrator in PREPARE-R, at PR, inside the command after PL (V2.1 5 row PR, 6; AMB-09); the compiled text stays in the evidence file]**"
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     "3.2.2": {
+      "HEADER_CHANGE": null,
+      "ROWS_V5": 51,
+      "ROWS_V6": 51,
+      "CHANGED_ROWS": [
+       {
+        "ROW": "DC-18",
+        "CHANGE": "CHANGED",
+        "KIND": "RECORD",
+        "RULING": "AR5-03 (R2:BA06V4-N01): DC-18 disposition corrected",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 6,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": ". **V6 correction (AR5-03"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "no",
+            "V6": "R2:BA06V4-N01):** the top-level"
+           },
+           {
+            "OP": "DELETE",
+            "V5": "or transform check ",
+            "V6": ""
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "added",
+            "V6": "an element of the sealed list that the verifier reads and compares in pass 1 and pass 2 against the value that `ORACLE_SPEC` (BA-08 V6) computes independently of the writer and of `mu_k`"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "15",
+            "V6": "10"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "7",
+            "V6": "1,"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "has",
+            "V6": "10.2);"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "such",
+            "V6": "check"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "clause",
+            "V6": "derived from `mu_k` or from the writer is added; the reads are row X-05 (3.2.5"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "DC-41",
+        "CHANGE": "CHANGED",
+        "KIND": "RECORD",
+        "RULING": "AR5-03 (R1:BA06V4-N01): DC-41 aligned with the C-72 amendment",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 6,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": " **V6 (AR5-03):** aligned with the marked amendment of C-72, which states this capture point in the row; class unchanged"
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     "3.2.5": {
+      "HEADER_CHANGE": null,
+      "ROWS_V5": 4,
+      "ROWS_V6": 5,
+      "CHANGED_ROWS": [
+       {
+        "ROW": "X-05",
+        "CHANGE": "ADDED",
+        "KIND": "CONTENT",
+        "RULING": "AR5-03 (R2:BA06V4-N01): new row X-05, class OC-VERIFY-READ"
+       }
+      ]
+     },
+     "3.3": {
+      "HEADER_CHANGE": "LABEL",
+      "ROWS_V5": 21,
+      "ROWS_V6": 21,
+      "CHANGED_ROWS": [
+       {
+        "ROW": "`OC-PREP-READ`",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR5-03: U-09 joins",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 2,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": ", U-09 (V6, AR5-03)"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "`OC-IMPORT`",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR5-03 (U-09 leaves) and AR6-03 (U-45 joins)",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 2,
+          "EDITS": [
+           {
+            "OP": "REPLACE",
+            "V5": "09",
+            "V6": "45 (V6: the call site under L0, AR6-03)"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "`OC-TM-READ`",
+        "CHANGE": "LABEL_ONLY",
+        "KIND": "LABEL"
+       },
+       {
+        "ROW": "`OC-LAYER`",
+        "CHANGE": "CHANGED",
+        "KIND": "NON_CONTENT_RULING_ORDERED",
+        "RULING": "AR6-02, AR5-11: fixture-cell wording (legacy product state); no operation, member or fixture change (AQ-V6-BA06-04)",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 5,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "legacy-"
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "reachable",
+            "V6": "state"
+           },
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; AR5-11, AR6-02"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "`OC-VERIFY-READ`",
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR5-03: X-05 joins",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 2,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": ", X-05 (V6, AR5-03)"
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     "5": {
+      "HEADER_CHANGE": null,
+      "ROWS_V5": 17,
+      "ROWS_V6": 17,
+      "CHANGED_ROWS": [
+       {
+        "ROW": 2,
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), RL-06, RD-06: commit grouping of the batch and edit chains; \"affects\" adds U-42..U-45, U-50",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 1,
+          "EDITS": [
+           {
+            "OP": "REPLACE",
+            "V5": "these",
+            "V6": "the creation"
+           },
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": " (the edit chain U-50 also calls Abort explicitly)"
+           },
+           {
+            "OP": "DELETE",
+            "V5": "3 to 5 ",
+            "V6": ""
+           },
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": ": 3 to 5 on RACKSELECTIVO; on the batch entries, per view, the importer's callee read transactions, T_create' (U-43, U-44), T_place and, when triggered, T_cleanup and T_purge, each an independent committed unit (a later cancel does not erase the views placed before); RACKEDITAR 'Insertar' adds the scan, redraw, purge and rename transactions of U-50 before the batch"
+           }
+          ]
+         },
+         {
+          "COLUMN": 2,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": ", U-42..U-45, U-50"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": 3,
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), RL-06: new lock sites; \"affects\" adds U-42, U-45, U-46, U-50",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 1,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": " (V6: also the lock sites `SystemBlockWriter.cs:50`, `RackViewPlacement.cs:74`, `RackNewRackName.cs:35`, `RackSiblingScan.cs:102`, `AutoCadSiblingRedrawPort.cs:23, 31, 39` and the nested lock of `RackBlockRenamer.cs:32`)"
+           }
+          ]
+         },
+         {
+          "COLUMN": 2,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": ", U-42, U-45, U-46, U-50"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": 4,
+        "CHANGE": "LABEL_ONLY",
+        "KIND": "LABEL"
+       },
+       {
+        "ROW": 12,
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), RL-06: batch user answers; \"affects\" adds U-42..U-46",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 1,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; V6: the batch entries have no fondo prompt, the views come from the window's list, and the jig result keeps None, Cancel and Error apart, U-30"
+           }
+          ]
+         },
+         {
+          "COLUMN": 2,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": ", U-42..U-46"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": 15,
+        "CHANGE": "CHANGED",
+        "KIND": "CONTENT",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605), RL-06, N-05: batch regen; \"affects\" adds U-49",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 1,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": " (V6: RACKSELECTIVO performs no Regen; the batch entries place with regen false per view and run one Editor.Regen after the batch when at least one view was placed, U-49)"
+           }
+          ]
+         },
+         {
+          "COLUMN": 2,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "U-49, "
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     "7 sources": {
+      "HEADER_CHANGE": null,
+      "ROWS_V5": 5,
+      "ROWS_V6": 5,
+      "CHANGED_ROWS": [
+       {
+        "ROW": "T-4 `SCOPED_RECORD_COMPARISON` (BA-05 V5 section 4.1) before and after the dry run. Scope: the read-set records of BA-08 V6 section 6 (members of the `PRE_COMMAND_STATE_RECORD`) plus the `ENUMERATION` records of the covered containers, so an added or removed record shows as a change of its container's enumeration; result per member `EQUAL`, `DIFFERENT`, `ADDED`, `REMOVED` or `UNKNOWN`",
+        "CHANGE": "LABEL_ONLY",
+        "KIND": "LABEL"
+       }
+      ]
+     },
+     "7 matrix": {
+      "HEADER_CHANGE": null,
+      "ROWS_V5": 7,
+      "ROWS_V6": 7,
+      "CHANGED_ROWS": []
+     },
+     "10.2": {
+      "HEADER_CHANGE": "LABEL",
+      "ROWS_V5": 9,
+      "ROWS_V6": 9,
+      "CHANGED_ROWS": [
+       {
+        "ROW": "`SH-LAY-ADDED`",
+        "CHANGE": "CHANGED",
+        "KIND": "NON_CONTENT_RULING_ORDERED",
+        "RULING": "AR6-02, AR5-11 (FXB-01..FXB-07), MAIN95-02, RL-07: legacy-state wording; fixture and trace cells unchanged; NOT_YET_ADOPTED",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 2,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "reachable as a **legacy "
+           },
+           {
+            "OP": "REPLACE",
+            "V5": "-reachable",
+            "V6": " state**"
+           },
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": " (V6 wording, AR5-11 and AR6-02, FXB-01..FXB-07: at `95690c28` no path creates a blank-named new Selective rack, every new rack is named `Selectivo N` by I-60, but the exact build keeps a legacy blank name, which RACKEDITAR and the projection do not rename; `FX-ANN-BLANK` is therefore built by the declared `FIXTURE_CONSTRUCTION_BUILD` `69daf03a35c630e453e1d9e98136f128bd0325a4` (`1304101d` + I-55 without I-60), a third build role distinct from the `CHARACTERIZATION_BUILD` and from every build under test, with step 1 by RACKSELECTIVO on that build and the following RACKEDITAR 'Insertar' steps possibly on the exact build, BA-08 V6)"
+           },
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; `I60_NAMING_FOR_RACKMIRROR = NOT_YET_ADOPTED`"
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     "11": {
+      "HEADER_CHANGE": null,
+      "ROWS_V5": 12,
+      "ROWS_V6": 12,
+      "CHANGED_ROWS": [
+       {
+        "ROW": "q2",
+        "CHANGE": "LABEL_ONLY",
+        "KIND": "LABEL"
+       }
+      ]
+     },
+     "12": {
+      "HEADER_CHANGE": null,
+      "ROWS_V5": 12,
+      "ROWS_V6": 12,
+      "CHANGED_ROWS": [
+       {
+        "ROW": "`INVENTORY_REVIEW_RECORDS`",
+        "CHANGE": "LABEL_ONLY",
+        "KIND": "LABEL"
+       }
+      ]
+     },
+     "4.1": {
+      "HEADER_CHANGE": null,
+      "ROWS_V5": 16,
+      "ROWS_V6": 25,
+      "CHANGED_ROWS": [
+       {
+        "ROW": "D-01",
+        "CHANGE": "CHANGED",
+        "KIND": "RECORD",
+        "RULING": "AR6-04, RL-01, RL-03",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 5,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": ". **V6 (95690c28; Gate 2 RL-01, RL-03; AR6-04):** only RACKSELECTIVO/RS reaches `SystemBlockWriter.CreateBlock` + `BlockPlacement.PlaceAndReport`; RACKCAD/RK (Selective) and RACKEDITAR 'Insertar' reach the same drawer, envelope and placement primitives through the I-55 batch chain (U-42 to U-49; 'Insertar' after its edit chain U-50). RACKPROYECTAR/RPY is **not** an entry of the reused path: it projects linked views of an existing rack and does not create the new logical rack that RACKMIRROR reuses; it is an operation-class precedent only under AR2-38 (section 8, D-25), and no evidence transfers (P-8)"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "D-04",
+        "CHANGE": "CHANGED",
+        "KIND": "RECORD",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605) (U-46, U-47)",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 5,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": ". **V6:** U-46 (the I-60 logical-name read of R1 and R2, own lock and read transaction) and U-47 (the TopTransaction null guard of the batch driver) are added the same way, with no class; the mirror orchestrator does not call U-46 (`I60_NAMING_FOR_RACKMIRROR = NOT_YET_ADOPTED`)"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "D-11",
+        "CHANGE": "CHANGED",
+        "KIND": "RECORD",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605) (U-50)",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 5,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": ". **V6:** U-50 (the 'Insertar' edit chain) is OUT on the same basis; U-41 is restated"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "D-13",
+        "CHANGE": "CHANGED",
+        "KIND": "RECORD",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605) (TX-A', L0 variants)",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 5,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": ". **V6:** sites added at `95690c28`: TX-A' = U-42..U-44 (`CreatePreparedBlock`, the same primitive instances as TX-A, no import inside), the TX-B, TX-C and TX-D variants under L0 (U-45, released before TX-A'), TX-E at its new lines (U-28..U-33, `BlockPlacement.cs:237-258`), and the read transactions of U-46 and of the sibling scan of U-50; the single caller-owned transaction of RACKPROYECTAR is a precedent (section 8), not a site"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "ROW": "D-17",
+        "CHANGE": "ADDED",
+        "KIND": "RECORD",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605) / AR6-04: new difference D-17"
+       },
+       {
+        "ROW": "D-18",
+        "CHANGE": "ADDED",
+        "KIND": "RECORD",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605) / AR6-04: new difference D-18"
+       },
+       {
+        "ROW": "D-19",
+        "CHANGE": "ADDED",
+        "KIND": "RECORD",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605) / AR6-04: new difference D-19"
+       },
+       {
+        "ROW": "D-20",
+        "CHANGE": "ADDED",
+        "KIND": "RECORD",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605) / AR6-04: new difference D-20"
+       },
+       {
+        "ROW": "D-21",
+        "CHANGE": "ADDED",
+        "KIND": "RECORD",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605) / AR6-04: new difference D-21"
+       },
+       {
+        "ROW": "D-22",
+        "CHANGE": "ADDED",
+        "KIND": "RECORD",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605) / AR6-04: new difference D-22"
+       },
+       {
+        "ROW": "D-23",
+        "CHANGE": "ADDED",
+        "KIND": "RECORD",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605) / AR6-04: new difference D-23"
+       },
+       {
+        "ROW": "D-24",
+        "CHANGE": "ADDED",
+        "KIND": "RECORD",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605) / AR6-04: new difference D-24"
+       },
+       {
+        "ROW": "D-25",
+        "CHANGE": "ADDED",
+        "KIND": "RECORD",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605) / AR6-04: new difference D-25"
+       }
+      ]
+     },
+     "4.2": {
+      "HEADER_CHANGE": null,
+      "ROWS_V5": 21,
+      "ROWS_V6": 21,
+      "CHANGED_ROWS": [
+       {
+        "ROW": "NX-05",
+        "CHANGE": "LABEL_ONLY",
+        "KIND": "LABEL"
+       },
+       {
+        "ROW": "TX-A..TX-E (transaction sites)",
+        "CHANGE": "CHANGED",
+        "KIND": "RECORD",
+        "RULING": "AR6-03 (re-derived at 95690c28; Gate 2 RELINK-0605) (TX-A', L0)",
+        "CHANGED_CELLS": [
+         {
+          "COLUMN": 3,
+          "EDITS": [
+           {
+            "OP": "INSERT",
+            "V5": "",
+            "V6": "; V6: TX-A' = U-42..U-44 (D-17); TX-B, TX-C and TX-D also run under L0 (U-45, D-18)"
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "LINES": {
+     "3": [
+      {
+       "OP": "REPLACE",
+       "V6_LINE_START": "## 3. Design-time inventory (V6: re-derived at `95690c28`)",
+       "KIND": "RECORD",
+       "RULING": "AR6-01, AR6-03: heading",
+       "EDITS": [
+        {
+         "OP": "REPLACE",
+         "V5": "V4",
+         "V6": "(V6: re-derived at `95690c28`)"
+        }
+       ]
+      },
+      {
+       "OP": "REPLACE",
+       "V6_LINE_START": "**Composition (BA06V3-N04; V6).** The design-time inventory is: the reused product path at `95690c28",
+       "KIND": "RECORD",
+       "RULING": "AR6-03, AR5-03: composition names U-42..U-50, the C-72 amendment and X-05",
+       "EDITS": [
+        {
+         "OP": "INSERT",
+         "V5": "",
+         "V6": "; V6"
+        },
+        {
+         "OP": "INSERT",
+         "V5": "",
+         "V6": "at `95690c28` "
+        },
+        {
+         "OP": "INSERT",
+         "V5": "",
+         "V6": ": U-01..U-41, U-26x and, new in V6, U-42..U-50"
+        },
+        {
+         "OP": "INSERT",
+         "V5": "",
+         "V6": "and the V6 amendment of C-72 (AR5-03) "
+        },
+        {
+         "OP": "REPLACE",
+         "V5": "row",
+         "V6": "rows"
+        },
+        {
+         "OP": "REPLACE",
+         "V5": "04",
+         "V6": "05"
+        },
+        {
+         "OP": "INSERT",
+         "V5": "",
+         "V6": "; X-05 is new in V6, AR5-03"
+        },
+        {
+         "OP": "INSERT",
+         "V5": "",
+         "V6": ", 4.1, 4.4"
+        },
+        {
+         "OP": "REPLACE",
+         "V5": " and",
+         "V6": ","
+        },
+        {
+         "OP": "INSERT",
+         "V5": "",
+         "V6": "), the relink ledger (3.1.1) and the per-class carry table (3.4"
+        }
+       ]
+      },
+      {
+       "OP": "REPLACE",
+       "V6_LINE_START": "### 3.1 Reused product path at `BOUND_PRODUCT_SHA` `95690c28` (V6: re-derived, AR6-03)",
+       "KIND": "RECORD",
+       "RULING": "AR6-01, AR6-03: heading",
+       "EDITS": [
+        {
+         "OP": "REPLACE",
+         "V5": "(union adjudicated by the critic; evidence",
+         "V6": "at"
+        },
+        {
+         "OP": "REPLACE",
+         "V5": "critic_ops",
+         "V6": "BOUND_PRODUCT_SHA"
+        },
+        {
+         "OP": "REPLACE",
+         "V5": "T1;",
+         "V6": "`95690c28`"
+        },
+        {
+         "OP": "REPLACE",
+         "V5": "unchanged",
+         "V6": "(V6:"
+        },
+        {
+         "OP": "REPLACE",
+         "V5": "from",
+         "V6": "re-derived,"
+        },
+        {
+         "OP": "REPLACE",
+         "V5": "V2",
+         "V6": "AR6-03"
+        }
+       ]
+      },
+      {
+       "OP": "REPLACE",
+       "V6_LINE_START": "Paths of the repository at `95690c28` (`BOUND_PRODUCT_SHA`). `found_by`: `A` call-graph, `B` API swe",
+       "KIND": "RECORD",
+       "RULING": "AR6-01, AR6-03: intro (RC, routes R1..R3; RACKPROYECTAR not a route)",
+       "EDITS": [
+        {
+         "OP": "DELETE",
+         "V5": " relative to `src/`",
+         "V6": ""
+        },
+        {
+         "OP": "REPLACE",
+         "V5": "bound",
+         "V6": "repository"
+        },
+        {
+         "OP": "REPLACE",
+         "V5": "SHA",
+         "V6": "at `95690c28` (`BOUND_PRODUCT_SHA`)"
+        },
+        {
+         "OP": "INSERT",
+         "V5": "",
+         "V6": " (the V2 union at `3375aadb`, evidence `critic_ops` T1); **V6:** `RC` = the blind recompile at `95690c28` (section 4"
+        },
+        {
+         "OP": "INSERT",
+         "V5": "",
+         "V6": "4), cited on every row whose cells changed or that is new. Routes: **R1** = RACKSELECTIVO/RS (`DrawSelectiveView` -> `ViewBlockDraw` -> `SystemBlockWriter.CreateBlock` + `BlockPlacement.PlaceAndReport`); **R2** = RACKCAD/RK Selective (the I-55 batch chain: `RackViewBatchExecution.Run` -> `RackViewBatchDriver.Place` -> `RackViewPlacement.PlaceSelective`, i.e. `HeaderRequirements.Evaluate` + `HeaderMaterializer.Create` -> `SystemBlockWriter.CreatePreparedBlock` + `BlockPlacement.PlaceDefinitionWithStatus`); **R3** = RACKEDITAR 'Insertar' (the edit chain U-50, then the same batch chain as R2). A row without a route note holds on every route that reaches it. RACKPROYECTAR is not a route of this inventory (AR6-04, section 8)."
+        }
+       ]
+      },
+      {
+       "OP": "REPLACE",
+       "V6_LINE_START": "**Source.** The 203 rows below were compiled by the independent compiler directly from the verbatim ",
+       "KIND": "RECORD",
+       "RULING": "AR5-03: the Source paragraph names the V6 amendment of C-72",
+       "EDITS": [
+        {
+         "OP": "INSERT",
+         "V5": "",
+         "V6": " **V6 amendment (AR5-03):** C-72."
+        }
+       ]
+      },
+      {
+       "OP": "REPLACE",
+       "V6_LINE_START": "#### 3.2.5 Supplementary contract rows (V4; V6: X-05; clauses outside the fragments)",
+       "KIND": "RECORD",
+       "RULING": "AR5-03: heading",
+       "EDITS": [
+        {
+         "OP": "INSERT",
+         "V5": "",
+         "V6": "V6: X-05; "
+        }
+       ]
+      },
+      {
+       "OP": "REPLACE",
+       "V6_LINE_START": "The compiler's input did not contain V2.1 3.4, 5 or 8. These rows add the operations those clauses r",
+       "KIND": "RECORD",
+       "RULING": "AR5-03: intro names X-05",
+       "EDITS": [
+        {
+         "OP": "INSERT",
+         "V5": "",
+         "V6": " **V6 (AR5-03):** X-05 adds the SL-6 reads of V2.1 10.1 to 10.3, with the bounded re-review of `OC-VERIFY-READ` that AR5-03 orders."
+        }
+       ]
+      }
+     ],
+     "3.3": [
+      {
+       "OP": "INSERT",
+       "V6_LINE_START": "- **V6 (AR6-03; AR5-03).** The I-55 creation site `CreatePreparedBlock` (U-42..U-44) runs the same p",
+       "KIND": "RECORD",
+       "RULING": "AR6-03, AR5-03: bullet on the V6 class changes",
+       "EDITS": [
+        {
+         "OP": "INSERT",
+         "V5": "",
+         "V6": "- **V6 (AR6-03; AR5-03).** The I-55 creation site `CreatePreparedBlock` (U-42..U-44) runs the same primitive instances as `T_create` and adds no member to `OC-BT-OPEN` .. `OC-DIM` (D-13 site variant TX-A'); its envelope write relocates the call of U-25 and U-26 (`OC-ENVELOPE`, confirmation); U-45 joins `OC-IMPORT` and U-09 moves to `OC-PREP-READ` (U-03 stays in `OC-IMPORT`); X-05 joins `OC-VERIFY-READ`; U-46, U-47 and U-49 have no class (the D-04 pattern; U-47 is not the typed `IsTopTransaction` authority); U-48 is a dormant watch item inside `T_place` (`OC-REF-TOP`, confirmation); U-50 is the edit path (D-11). Section 3.4 gives the per-class carry."
+        }
+       ]
+      }
+     ],
+     "7": [
+      {
+       "OP": "REPLACE",
+       "V6_LINE_START": "**Coverage matrix.** Rows are the seam entry points, plus one row for the orchestrator operations (n",
+       "KIND": "NON_CONTENT_RULING_ORDERED",
+       "RULING": "AR6-02: FX-ANN-BLANK named a legacy-product-state fixture; no matrix cell changes",
+       "EDITS": [
+        {
+         "OP": "INSERT",
+         "V5": "",
+         "V6": ", a legacy-product-state fixture built by the declared `FIXTURE_CONSTRUCTION_BUILD`, AR6-02"
+        }
+       ]
+      }
+     ],
+     "10.2": [],
+     "11": [],
+     "5": [],
+     "12": []
+    },
+    "ADDED_SUBSECTIONS": [
+     {
+      "PART": "3",
+      "HEADING": "#### 3.1.1 Relink ledger at `95690c28` (record of the review; AR6-03)",
+      "LINES": 58,
+      "KIND": "RECORD",
+      "RULING": "AR6-03 (a record of the review, not an inventory row)"
+     },
+     {
+      "PART": "3.3",
+      "HEADING": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "LINES": 28,
+      "KIND": "RECORD",
+      "RULING": "AR6-03 (a record of the review, not an inventory row)"
+     }
+    ],
+    "SUMMARY_BY_KIND": {
+     "CONTENT": [
+      "3.1 U-02",
+      "3.1 U-03",
+      "3.1 U-04",
+      "3.1 U-07",
+      "3.1 U-08",
+      "3.1 U-09",
+      "3.1 U-25",
+      "3.1 U-26",
+      "3.1 U-28",
+      "3.1 U-29",
+      "3.1 U-30",
+      "3.1 U-31",
+      "3.1 U-32",
+      "3.1 U-33",
+      "3.1 U-34",
+      "3.1 U-35",
+      "3.1 U-36",
+      "3.1 U-37",
+      "3.1 U-38",
+      "3.1 U-39",
+      "3.1 U-40",
+      "3.1 U-41",
+      "3.1 U-42",
+      "3.1 U-43",
+      "3.1 U-44",
+      "3.1 U-45",
+      "3.1 U-46",
+      "3.1 U-47",
+      "3.1 U-48",
+      "3.1 U-49",
+      "3.1 U-50",
+      "3.2 C-72",
+      "3.2.5 X-05",
+      "3.3 `OC-PREP-READ`",
+      "3.3 `OC-IMPORT`",
+      "3.3 `OC-VERIFY-READ`",
+      "5 2",
+      "5 3",
+      "5 12",
+      "5 15"
+     ],
+     "RECORD": [
+      "3.2.2 DC-18",
+      "3.2.2 DC-41",
+      "4.1 D-01",
+      "4.1 D-04",
+      "4.1 D-11",
+      "4.1 D-13",
+      "4.1 D-17",
+      "4.1 D-18",
+      "4.1 D-19",
+      "4.1 D-20",
+      "4.1 D-21",
+      "4.1 D-22",
+      "4.1 D-23",
+      "4.1 D-24",
+      "4.1 D-25",
+      "4.2 TX-A..TX-E (transaction sites)",
+      "3 line \"## 3. Design-time inventory (V6: re-deri\"",
+      "3 line \"**Composition (BA06V3-N04; V6).** The de\"",
+      "3 line \"### 3.1 Reused product path at `BOUND_PR\"",
+      "3 line \"Paths of the repository at `95690c28` (`\"",
+      "3 line \"**Source.** The 203 rows below were comp\"",
+      "3 line \"#### 3.2.5 Supplementary contract rows (\"",
+      "3 line \"The compiler's input did not contain V2.\"",
+      "3.3 line \"- **V6 (AR6-03; AR5-03).** The I-55 crea\""
+     ],
+     "LABEL": [
+      "3.3 `OC-TM-READ`",
+      "5 4",
+      "7 sources T-4 `SCOPED_RECORD_COMPARISON` (BA-05 V5 section 4.1) before and after the dry run. Scope: the read-set records of BA-08 V6 section 6 (members of the `PRE_COMMAND_STATE_RECORD`) plus the `ENUMERATION` records of the covered containers, so an added or removed record shows as a change of its container's enumeration; result per member `EQUAL`, `DIFFERENT`, `ADDED`, `REMOVED` or `UNKNOWN`",
+      "11 q2",
+      "12 `INVENTORY_REVIEW_RECORDS`",
+      "4.2 NX-05"
+     ],
+     "NON_CONTENT_RULING_ORDERED": [
+      "3.3 `OC-LAYER`",
+      "10.2 `SH-LAY-ADDED`",
+      "7 line \"**Coverage matrix.** Rows are the seam e\""
+     ]
+    },
+    "PROBLEMS": []
+   }
+  },
+  {
+   "ID": "BA06-C15",
+   "STATEMENT": "section 7 declared limit (4) is present with the four elements of AR4-12 condition (1), and the declared-limits paragraph equals the V5 paragraph after the version labels",
+   "RESULT": "PASS",
+   "DETAIL": "same source SHA as the product build: True; every harness switch is off: True; every I-14 writer included: True; `RECORDED_NOT_ENFORCED` handling of the AR3-01 set: True; control-plane decisions only: True; both build identities: True; this attestation: True; only because of a harness difference: True; recorded as a finding, not added to the inventory: True"
+  },
+  {
+   "ID": "BA06-C16",
+   "STATEMENT": "section 4.4 assigns each of the 689 operations of the blind recompile (source SHA 95690c28, which did not read BA-06 V5 section 3 or the Gate 2 assessment) to exactly one V6 row or to ND; every MUTATING operation goes to a U-row; for every non-aggregate U-row, the file of each assigned operation is cited in the row's location cell; the counts column is exact",
+   "RESULT": "PASS",
+   "DETAIL": "header True; unassigned []; unknown []; duplicates []; MUTATING not on a U-row []; file not cited []; count mismatch []"
+  },
+  {
+   "ID": "BA06-C17",
+   "STATEMENT": "the Gate 2 evidence has the SHA-256 that decisions section 223 states, and every row of the relink ledger 3.1.1 (U-01..U-50 and U-26x) carries exactly the classification that the evidence gives to that fact (new rows by their Gate 2 id N-01..N-08)",
+   "RESULT": "PASS",
+   "DETAIL": "stated b7d4a570b6443a9297e84225291ae076d09d5b88794924061a951932905cbba4; rows 51; mismatches []"
+  },
+  {
+   "ID": "BA06-C18",
+   "STATEMENT": "the carry table 3.4 lists the classes of 3.3 in order with their members, the changed members computed by BA06-C14 and a status consistent with them (a carry candidate has no CONTENT change); the carry candidates are exactly the 16 classes that AR6-03 lists; OC-IMPORT full re-review, OC-REF-TOP and OC-ENVELOPE confirmation, OC-PREP-READ and OC-VERIFY-READ re-review",
+   "RESULT": "PASS",
+   "DETAIL": "candidates ['OC-ABV-READ', 'OC-BT-OPEN', 'OC-BTR-NESTED', 'OC-BTR-VIEW', 'OC-DIM', 'OC-DYN', 'OC-LAYER', 'OC-LAYER-PRESENT', 'OC-LIB-ACQ', 'OC-LOCK', 'OC-REF-ARRAY', 'OC-REF-PIECE', 'OC-TEXT', 'OC-TM', 'OC-TM-READ', 'OC-TOP-CHECK']; AR6-03 ['OC-ABV-READ', 'OC-BT-OPEN', 'OC-BTR-NESTED', 'OC-BTR-VIEW', 'OC-DIM', 'OC-DYN', 'OC-LAYER', 'OC-LAYER-PRESENT', 'OC-LIB-ACQ', 'OC-LOCK', 'OC-REF-ARRAY', 'OC-REF-PIECE', 'OC-TEXT', 'OC-TM', 'OC-TM-READ', 'OC-TOP-CHECK']; others {'OC-PREP-READ': 'RE-REVIEW (AR5-03, AR6-03)', 'OC-IMPORT': 'FULL RE-REVIEW (AR6-03)', 'OC-ENVELOPE': 'CONFIRMATION (AR6-03)', 'OC-REF-TOP': 'CONFIRMATION (AR6-03)', 'OC-VERIFY-READ': 'BOUNDED RE-REVIEW (AR5-03)'}; problems []"
+  },
+  {
+   "ID": "BA06-C19",
+   "STATEMENT": "every file of the identity table of section 2.1 has, in the checkout, the git blob of its 95690c28 column (so the checkout's src equals 95690c28 for those paths), and the Relation column agrees with the two blob columns",
+   "RESULT": "PASS",
+   "DETAIL": "rows 46; mismatches []"
+  },
+  {
+   "ID": "BA06-C20",
+   "STATEMENT": "the AR5-03 corrections are applied: C-72 amendment, DC-41 aligned, DC-18 corrected, row X-05 (class OC-VERIFY-READ), U-09 moved to OC-PREP-READ, U-03 kept in OC-IMPORT",
+   "RESULT": "PASS",
+   "DETAIL": "C-72 marked amendment: PASS; DC-41 aligned: PASS; DC-18 corrected: PASS; X-05 row, class OC-VERIFY-READ: PASS; U-09 in OC-PREP-READ, not in OC-IMPORT: PASS; U-03 stays in OC-IMPORT: PASS; X-05 in OC-VERIFY-READ: PASS"
+  },
+  {
+   "ID": "BA06-C21",
+   "STATEMENT": "AR6-04: section 8 and D-01 record RACKPROYECTAR as a precedent only with the exclusion reason; the V5 sentence \"no production caller\" is superseded; P-8 stays required; no inventory row cites the RACKPROYECTAR files",
+   "RESULT": "PASS",
+   "DETAIL": "section 8: the V5 sentence superseded, RACKPROYECTAR a precedent, P-8: PASS; D-01 excludes RACKPROYECTAR with the reason: PASS; D-25 precedent only: PASS; no other line says \"no production caller\" of AUTH-15: PASS; no 3.1 row cites RACKPROYECTAR files: PASS; lines []"
+  },
+  {
+   "ID": "BA06-C22",
+   "STATEMENT": "AR6-02: 3.3, section 7 and 10.2 state FX-ANN-BLANK as a legacy product state built by the declared FIXTURE_CONSTRUCTION_BUILD 69daf03a; the fixture cell stays FX-ANN-BLANK; no \"product-reachable\" outside the history",
+   "RESULT": "PASS",
+   "DETAIL": "3.3 OC-LAYER fixture cell: PASS; section 7 coverage-matrix sentence: PASS; 10.2 SH-LAY-ADDED: PASS; no \"product-reachable\" outside the history: PASS; lines []"
+  },
+  {
+   "ID": "BA06-C23",
+   "STATEMENT": "the naming state: I60_NAMING_FOR_RACKMIRROR = NOT_YET_ADOPTED in the header; U-46 records the I-60 read as a product fact that the mirror orchestrator does not call; the mirror name \"<base> - espejo\" is kept",
+   "RESULT": "PASS",
+   "DETAIL": "header: PASS; U-46: the mirror orchestrator does not call it: PASS; 10.2 mirror name kept: PASS; no mirror named Selectivo N: PASS"
+  },
+  {
+   "ID": "BA06-C24",
+   "STATEMENT": "outside the history of sections 15 to 17, no stale sibling label (BA-03 V4; BA-04, BA-07, BA-08, BA-09, BA-10 V5) and no BA-11 version label remain (BA-11 is cited by registry entry)",
+   "RESULT": "PASS",
+   "DETAIL": "lines []"
+  }
+ ],
+ "ALL_PASS": true
+}

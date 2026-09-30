@@ -1,0 +1,595 @@
+{
+ "reports": {
+  "compile": {
+   "file": "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba06-v6-blind-recompile.json",
+   "operations": 689,
+   "summary": "I compiled the list from source code only. I did not read BA-06 V5 section 3, the Gate 2 assessment or any other evidence file.\n\n**Source identity.** The worktree HEAD is a63c0527, not 95690c28. However, `git diff --quiet 95690c28 HEAD -- src` shows `src/` is identical, so every file:line in the output is valid at 95690c28dc6268e61dff32a0cbc33cc9fde3d47f. A script confirmed that all 689 file:line anchors point to existing, non-empty lines.\n\n**Output file.** The JSON has two parts:\n- A header with the task instructions verbatim, the SHA, the conventions used and the scope of each route.\n- An ordered `operations` list with 689 entries: R1 = 315, R2 = 116, R3 = 258. 162 are MUTATING and 527 are NON_MUTATING.\n\nEach entry gives: id, route, file_line, call, action, reads_writes, the lock (named by where it is taken), the transaction (named by its own StartTransaction, or \"none\"), MUTATING/NON_MUTATING, and a condition or note where one applies. Conditional sub-sequences are written out in full wherever they occur. Nothing is grouped into operation classes.\n\n**Condensed order per route:**\n\n- **R1 (RACKSELECTIVO/RS):**\n  1. Read dimension styles (lock + transaction, read-only).\n  2. Modal window; INSUNITS read.\n  3. Only if the name is blank: RackNewRackName envelope scan (lock + transaction, read-only).\n  4. By view:\n     - Frontal/planta go through ViewBlockDraw.DrawAndPlace. Load catalog, then SystemBlockWriter.CreateBlock:\n       - Lock at SystemBlockWriter.cs:23.\n       - EnsureForPlan: check transaction; File.Exists; side-database ReadDwgFile; WblockCloneObjects (MUTATING, no RackCad transaction open); query transaction.\n       - Start transaction (:27). CreateSystemBlock: BlockTable ForWrite; new header and system block definitions; DBText, dimensions, references and dynamic properties; layers RACKCAD_ANOTACIONES / RACKCAD_COTAS created if missing.\n       - RackBlockData.Write: extension dictionary and RACKCAD_SELECTIVE xrecord.\n       - Commit (:36).\n       - Jig (BlockPlacement.cs:237-260): lock + transaction around Editor.Drag. OK appends to ModelSpace and commits; cancel commits with nothing added.\n       - On cancel or throw: cleanup erases the unreferenced definition (:189-214) plus PurgeUnreferenced.\n     - Lateral uses the same steps through LateralHeaderDrawService.CreateBlock (:245-270).\n  5. No regen anywhere on R1.\n\n- **R2 (RACKCAD/RK Selective):**\n  1. Dimension styles; modal; INSUNITS; conditional name scan.\n  2. SelectiveNew and Prepare for every view are pure (no DB).\n  3. Per view:\n     - TopTransaction read (RackViewBatchDriver.cs:52).\n     - HeaderRequirements: lock at RackViewPlacement.cs:74, then import + query, then release; File.Exists.\n     - CreatePreparedBlock: lock at SystemBlockWriter.cs:50, start transaction, create definitions, write xrecord, commit. No import inside this lock.\n     - Jig.\n     - Cleanup if not placed.\n     - ApplyRegen(false).\n  4. One Editor.Regen if at least one view was placed (RackViewBatchExecution.cs:25).\n\n- **R3 (RACKEDITAR 'Insertar'):**\n  1. PickRackBlock read transaction.\n  2. ReadProjectVariables: named-objects-dictionary xrecord and envelope scan with reference counts.\n  3. Dimension styles; modal; INSUNITS.\n  4. RackSiblingScan: full BlockTable read with forceValidity:true, reference, owner and layer reads.\n  5. Pure gates and prepare.\n  6. Per sibling to redraw or erase, under the lock at AutoCadSiblingRedrawPort.cs:23: EnsureForPlan imports (MUTATING), plus a lateral block-name read in an open-close transaction.\n  7. If the disposition is MutateNow:\n     - One mutate transaction (SiblingRedrawTransaction.cs:18): RedefineSystemBlock erases and repopulates, RecordGraphicsModified on the references, xrecord update, and erase of obsolete definitions and their references.\n     - Commit, or abort on Discarded/exception.\n     - Post under a lock: PurgeUnreferenced, RackBlockRenamer.SyncName (commit only when a rename is needed), Editor.Regen.\n  8. If the disposition is DeferToFirstPlacement: the same Mutate and Post run immediately at RackSelectivoCommands.cs:182-188, before placement.\n  9. Batch with ExistingRack: per view, the same placement steps as R2.\n  10. One editor.Regen (:205).\n\n**Observations recorded in the header:**\n- In R3, SelectiveInsertPort.Place (the beforeCommit variant) is never invoked by EditSelective.\n- Library imports done during Prepare are not undone if the later mutate is discarded.\n- Batch placements commit independently; a later cancel or failure leaves earlier placed views in the drawing.\n- A CreatePreparedBlock failure returns DefinitionFailed without calling Cleanup.\n- Lines 355-369 of RackSelectivoCommands.cs cannot be reached for Insertar.\n\nThe summary above is condensed; the complete list of 689 operations is in the file. The generator script is outside the repo, in my session scratchpad (gen.py). Nothing was committed; the JSON is the only untracked file in the worktree."
+  },
+  "r26": {
+   "files_written": [
+    "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-authority-contract-v2.6.md",
+    "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-03-selective-scope-v5.md",
+    "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba03-v5-checks.json",
+    "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba03-v5-checks.py",
+    "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba03-v5-checks-output.json",
+    "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\gen_ba03v5.py"
+   ],
+   "done": [
+    {
+     "item": "V2.6 micro-errata DRAFT modelled on V2.5 (header, §0 what/precedence/contract-hash table, §1 text, §2 clauses affected, §3 deviations/notes, §4 status)",
+     "status": "DONE",
+     "where": "docs/initiatives/I-52-ct21d-authority-contract-v2.6.md (blob 828b83e1)",
+     "note": "Implementer text, since nothing was pre-approved verbatim (deviation D-2). DRAFT, pending the Architect's pre-approval and the Coordinator's textual verification."
+    },
+    {
+     "item": "Re-date V2.1 §0 environment-observer sentence at 95690c28",
+     "status": "DONE",
+     "where": "V2.6 §1.1",
+     "note": "Three TopTransaction reads: RDC:159, RackViewBatchDriver.cs:52, and RSII:164 (consumed by RackSiblingInsertRun.cs:117, which has no production caller). One DEBUG-only env-var read (SiblingRedrawDebugFaultInjection.cs:11; the file and its call site are both under #if DEBUG). No NumberOfActiveTransactions, GetSystemVariable, DocumentManager.Count, LongTransaction or event subscriptions (grep at 95690c28). Classification is CHANGED_BUT_CONTRACT_COMPATIBLE, taken from the Gate 2 evidence."
+    },
+    {
+     "item": "Re-date F-1 with the three Selective routes R1/R2/R3 plus RACKPROYECTAR as precedent (AR6-04), each with its lock/transaction shape verified in code",
+     "status": "DONE",
+     "where": "V2.6 §1.2",
+     "note": "R1 RACKSELECTIVO: I-60 name read in its own lock and transaction, then CreateBlock (SBW:18-40: lock, importer, transaction, commit), then the jig (BP:228-261). R2 RACKCAD/RK: once-per-batch name read; then, per view, import under its own lock (RVP:74-77), CreatePreparedBlock with its own lock and transaction and no importer (SBW:46-62), and the jig. R3 RACKEDITAR Insertar = G9b chain RSC:132-208: sibling scan and redraw, each in its own lock and transaction, then batch placement as in R2. RACKPROYECTAR: one caller-owned lock and transaction (RPWS:26/29), AUTH-15 overload A (RPWS:58), non-jig Position+Rotation (RPWS:98-102), one Commit (RPWS:108, called once at RackProjectionMaterialization.cs:287)."
+    },
+    {
+     "item": "Re-date F-2 / AR3-12: overload A now has the production caller RACKPROYECTAR",
+     "status": "DONE",
+     "where": "V2.6 §1.3",
+     "note": "RACKPROYECTAR materializes Selective planta, frontal per fondo and lateral through overload A. AUTH-15 still re-serializes the envelope (RDC:186), so it still fails 15.3/C-127. No creation form that meets 15.3 exists for SL-1, SL-2 or SL-4. Both are precedent only. No evidence transfers. P-8 is still required. AR3-12 is marked superseded only in its 'no production caller' statement."
+    },
+    {
+     "item": "Explicit statements: no normative clause changes (15.3, C-127, P-1..P-8, C/X rows), no evidence transfers, composite identity extended to V2.6, DRAFT pending Architect pre-approval and Coordinator verification",
+     "status": "DONE",
+     "where": "V2.6 header, §0 table, §2 'Unchanged' paragraph, §4",
+     "note": "The composite hash V2.1..V2.6 + V5 blob, computed by the BA-11 §1 procedure, is 0a08f6b9fa718c60b5cb649485f39da04d3ae7f25580c6d8c19e9df2e55b7b9a. It is informative and deliberately not written inside V2.6 (circular). The V2.5 composite e433cb13…5da3 was reproduced first."
+    },
+    {
+     "item": "V2.6 ends with 'Delta V6 (decisions 220 and 223)'",
+     "status": "DONE",
+     "where": "V2.6 §5"
+    },
+    {
+     "item": "BA-03 V5 generator copied from gen_ba03v4.py to gen_ba03v5.py",
+     "status": "DONE",
+     "where": "scratchpad/gen_ba03v5.py",
+     "note": "Carries the 54 V4 checks byte-identical from HEAD:…ba03-v4-checks.json (verified equal). Asserts every git fact it restates."
+    },
+    {
+     "item": "BA-03 V5 identities re-bound at 95690c28: CMD f8e514a0; add RackSelectivoInsertIntegration 308a42e5 and RackViewExposure 81c714ca with scoped checks",
+     "status": "DONE",
+     "where": "BA-03 V5 §2 and §3; ba03-v5-checks.json",
+     "note": "12 new checks: CMD_PARTIAL, CMDI_PARTIAL, CMDI_AVAIL_COUNT, CMDI_FRONTAL_FONDO_LT, CMDI_PREPARE_FONDO0, EXP_PRODUCT_ONLY, EXP_FOUR_OPS (the enum has exactly four members; near misses with five and three members), EXP_NO_MIRROR, EXP_SEL_ADDR, DEC223_FIXTURE_A, DEC223_FXB06, DEC223_NAMING. Added a DEC223 section source. Code sources became kind BOUND: resolved at bound_product_sha and at origin/main, and optionally at a build-source SHA (AR5-12)."
+    },
+    {
+     "item": "FXB-06 scope line: legacy blank logical Name IN SCOPE as legacy product state, distinct from V2.1 §25.4",
+     "status": "DONE",
+     "where": "BA-03 V5 §1 (row SEL-LEGACY-BLANK-NAME + paragraph) and §3 scope row"
+    },
+    {
+     "item": "G2-CR-02: RackViewExposure not a PA-14 change; NB-1 not reopened",
+     "status": "DONE",
+     "where": "BA-03 V5 §3 authority-status row 'product exposure of I-55', SEL-LATERAL NARROWER row, §6 condition 3"
+    },
+    {
+     "item": "BA-03 V5 runner run to exit 0 with no drift",
+     "status": "DONE",
+     "where": "docs/automation/evidence/I-52-ct21d-ba03-v5-checks-output.json",
+     "note": "Checks: 66. failed = [], identityDrift = [], boundProductSha ok. Re-ran it separately (exit 0). Negative tests: with build-source 69daf03a it exits 1 with drift [CMD], as expected under FXB-03; with no argument it exits 2."
+    },
+    {
+     "item": "BA-03 V5 header conventions and ending 'Delta V6 (decisions 220 and 223)'",
+     "status": "DONE",
+     "where": "BA-03 V5 header and §8",
+     "note": "ARTIFACT_VERSION = 5-DRAFT (supersedes 4-DRAFT, blob efadcdf6…). AUTHORITY_CONTRACT uses the prescribed wording. BOUND_PRODUCT_SHA and DELTA RULING APPLIED are set. Siblings are cited as BA-07 V6 and BA-08 V6, and BA-11 by its registry entry."
+    },
+    {
+     "item": "Older versions byte-identical; no git writes; no src/tests/host touched",
+     "status": "DONE",
+     "where": "git status: no tracked modifications",
+     "note": "Also present in the worktree but untracked and not written by me: …ba06-v6-blind-recompile.json, BA-07 V6, BA-10 V6."
+    }
+   ],
+   "summary": "I wrote the contract micro-errata V2.6 DRAFT and BA-03 V5. For BA-03 V5 I also wrote its checks spec, runner, candidate output and the scratchpad generator. The BA-03 V5 runner ran with exit 0: 66 checks, failed = [], identityDrift = [], bound SHA 95690c28 resolved and equal to origin/main.\n\nV2.6 does exactly what AR6-05 asks: it re-dates at 95690c28 only three things.\n- **§0 environment-observer sentence:** it now discloses three TopTransaction reads and one DEBUG-only environment variable.\n- **F-1:** it describes routes R1, R2 and R3, plus RACKPROYECTAR as a precedent under AR6-04, each with its lock and transaction shape and file:line and blob citations checked at 95690c28.\n- **F-2 and AR3-12:** overload A now has the production caller RACKPROYECTAR, and AUTH-15 still does not meet 15.3 (it re-serializes the envelope at RDC:186).\n\nV2.6 states that no normative clause changes and no evidence transfers. It extends the composite identity to V2.6, and its text is DRAFT pending the Architect's pre-approval and the Coordinator's textual verification. Classifications are those of the Gate 2 evidence.\n\nBA-03 V5:\n- Re-binds CMD to f8e514a0 and adds CMDI (308a42e5) and EXP (81c714ca), each with scoped checks. EXP_FOUR_OPS enforces the four-member enum asked for by G2-CR-02.\n- Carries the 54 V4 checks byte-identical.\n- Adds the FXB-06 scope row: a legacy blank logical Name is IN scope as a legacy product state, distinct from V2.1 §25.4.\n- Rewrites the identity rule for 3375aadb..95690c28 (89 src files changed). The old \"reused path untouched\" statement (AR2-46) is dropped.\n- Keeps the fixture build 69daf03a out of the precondition, per FXB-03.\n- Extends the runner, which fails closed. Code sources are resolved at both the bound SHA and origin/main. An optional build-source-SHA argument covers BA-03's part of the AR5-12 precondition.\n\nI60_NAMING_FOR_RACKMIRROR stays NOT_YET_ADOPTED, so the mirror name stays '<base> - espejo'.",
+   "counts": "V2.6: re-dated 3 of the contradicted code facts (§0 sentence, F-1, F-2/AR3-12), 0 normative clauses changed, 5 notes (V26-N1..N5), 2 deviations (D-1, D-2). BA-03 V5: 14 sources (6 BOUND code, 6 BRANCH/BLOB docs, 2 sections), 66 checks (54 carried + 12 new), 28 comparison rows (16 IDENTICAL, 5 NARROWER, 7 NO_STATEMENT, 0 CONFLICT), runner exit 0.",
+   "cross_artifact_notes": [
+    "BA-11 V6: the BA-03 row must list the V5 paths. Blobs: md 2fe7b789, spec 54f9dd58, runner 5d83969b, output f11561fe. SHA-256: spec c958cb20…c93c3, runner fad48597…7dd9 (the values recorded in the output). §3.2 needs BOUND_PRODUCT_SHA, and the BA-01 row needs V2.6 (blob 828b83e1) as the 6th contract document. The composite V2.1..V2.6 + V5 blob = 0a08f6b9fa718c60b5cb649485f39da04d3ae7f25580c6d8c19e9df2e55b7b9a (recompute after any V2.6 revision). BA-11 §1 names *Contract hash* precedence only up to V2.5 (V2.6 D-1, AR6-06).",
+    "BA-08 V6: BA-03 V5 §1 cites BA-08 V6 for the FX-ANN-BLANK construction route and conformance record, and cites BA-08 V6 section 12 for the rack-level fixture conditions. If BA-08 V6 renumbers §12, the BA-03 text must follow.",
+    "BA-07 V6: BA-03 V5 §6 names BA-07 V6 as the home of the ratification record. The runner's optional build-source-SHA output (the buildSourceSha field) is the BA-03 part of the AR5-12 record (G2-CR-03) that BA-07 V6 must give a home to.",
+    "BA-06 V6: V2.6 §1.2 describes the `beforeCommit` hook as inactive in production (its only user is reached only through RackSiblingInsertRun.Execute, which has no production caller; tests only). This is consistent with AR6-03, and BA-06 V6's N-rows should classify it the same way.",
+    "BA-04 V6 / BA-02b V6: no direct dependency on V2.6 text; CONTRACT header text should cite V2.6 (draft)."
+   ],
+   "open_questions": [
+    "AR6-05 says the batch route has 'sibling writes that can share the jig transaction'. In code the capability exists, but at 95690c28 it has no production caller, so V2.6 calls it inactive (note V26-N2). The Architect should confirm or correct that reading.",
+    "Route R3: the older Insertar branch at RSC:358-368 (DrawSelectiveViewFromAuthored) is unreachable when UpdateOnly is false, because the G9b branch at RSC:132-208 always returns first. V2.6 states this as a fact (V26-N3), not as a product finding. The Architect should confirm it is worth recording.",
+    "Debug-configuration builds contain the RACKCAD_DEBUG_FAIL_SIBLING_REDRAW_UNIT hook, and the project's validation guide uses Debug DLLs. V2.6 only discloses this (V26-N4) and adds no rule. The Architect or Coordinator may want a tuple or preflight rule for it.",
+    "BA-03 V5 adds a DEC223 section-hash identity (decisions §223). Any later edit to §223 would register as drift. The Coordinator should confirm that §223 is frozen text."
+   ]
+  },
+  "r06": {
+   "files_written": [
+    "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-06-evm-preparation-v6.md",
+    "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba06-v6-checks.py",
+    "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba06-v6-checks-output.json",
+    "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\gen_ba06v6.py",
+    "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\gen_ba06v6_base.py",
+    "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\gen_ba06v6_stage.py"
+   ],
+   "done": [
+    {
+     "item": "Header V6 (6-DRAFT supersedes 5-DRAFT blob e69a141d67f6af68578bd0243310b256852b1501; AUTHORITY_CONTRACT V2.1..V2.5 + V2.6 draft; BOUND_PRODUCT_SHA 95690c28; DELTA RULING 223 AR6-01..07 and 220 AR5-xx; I60 NOT_YET_ADOPTED; PREREQUISITES (1)-(4))",
+     "status": "DONE",
+     "where": "header; check BA06-C12"
+    },
+    {
+     "item": "AR6-01 bound SHA, no split binding; delta 3375aadb..95690c28 recorded; AR5-12 (path, blob) identity table (46 files, route vs precedent roles)",
+     "status": "DONE",
+     "where": "section 2 row 1, section 2.1; check BA06-C19 recomputes the 95690c28 column from the checkout"
+    },
+    {
+     "item": "AR6-03 re-derived inventory: U-02..U-04, U-07..U-09, U-25, U-26, U-28..U-41 restated; new rows U-42..U-44 (CreatePreparedBlock, TX-A'), U-45 (import under L0, class OC-IMPORT), U-46 (I-60 name read, no class), U-47 (TopTransaction guard, no class), U-48 (dormant beforeCommit hook), U-49 (regen), U-50 (Insertar G9b edit chain, OUT D-11)",
+     "status": "DONE",
+     "where": "3.1; relink ledger 3.1.1 carries the Gate 2 classification of every row (check BA06-C17)"
+    },
+    {
+     "item": "Blind recompile used as the product-part source, PA-11 conditions 1, 5, 6: all 689 operations assigned to one V6 row or ND, every MUTATING op on a U-row; difference log RD-01..RD-16 resolved; V6 limitations (framing, RACKPROYECTAR not compiled) declared",
+     "status": "DONE",
+     "where": "section 4.4, section 2 rows 5 and 6; check BA06-C16"
+    },
+    {
+     "item": "Per-class carry table: 16 carry candidates = AR6-03 list; OC-IMPORT full re-review; OC-REF-TOP and OC-ENVELOPE confirmation; OC-PREP-READ and OC-VERIFY-READ re-review per AR5-03",
+     "status": "DONE",
+     "where": "section 3.4; header INVENTORY_REVIEW_STATUS; check BA06-C18 recomputes it from the delta and 3.3"
+    },
+    {
+     "item": "AR5-03 corrections: C-72 marked amendment, DC-41 aligned, DC-18 corrected, new X-05 (OC-VERIFY-READ), U-09 moved to OC-PREP-READ, U-03 kept in OC-IMPORT",
+     "status": "DONE",
+     "where": "3.2, 3.2.2, 3.2.5, 3.3; check BA06-C5, BA06-C20"
+    },
+    {
+     "item": "AR6-04 RACKPROYECTAR precedent-only; 'no production caller' superseded; AR3-12 superseded; P-8 kept",
+     "status": "DONE",
+     "where": "section 8 (rewritten), D-01, D-25, RD-01; check BA06-C21"
+    },
+    {
+     "item": "AR6-02 / AR5-11 legacy-product-state wording for FX-ANN-BLANK (FIXTURE_CONSTRUCTION_BUILD 69daf03a), fixture and trace cells unchanged, mirror name '<base> - espejo' kept",
+     "status": "DONE",
+     "where": "3.3 OC-LAYER fixture cell, section 7 coverage-matrix sentence, 10.2 SH-LAY-ADDED; checks BA06-C22, BA06-C23"
+    },
+    {
+     "item": "Residual rows updated (commit grouping, lock nesting, run-time data/user answers, selectability without Regen) with 'affects' cells",
+     "status": "DONE",
+     "where": "section 5; declared CONTENT in BA06-C14"
+    },
+    {
+     "item": "D-01, D-04, D-11, D-13 restated; D-17..D-25 added; 4.2 TX row",
+     "status": "DONE",
+     "where": "sections 4.1, 4.2"
+    },
+    {
+     "item": "Mechanical frozen-parts check listing exactly which inventory/trace rows changed vs V5 and why",
+     "status": "DONE",
+     "where": "check BA06-C14: 40 CONTENT, 3 NON_CONTENT_RULING_ORDERED, 24 RECORD, 6 LABEL changes, each with its ruling and cell edits; fails on any undeclared or missing change"
+    },
+    {
+     "item": "Other applied rulings: AR5-04 (EVM_FROZEN on the characterization build), AR5-06 (a) (run-start anchor), AR5-08 (CHAR_RUNS = N_det + 1), census note at 95690c28",
+     "status": "DONE",
+     "where": "section 10.1, section 9, section 6 finding (8)"
+    },
+    {
+     "item": "Sibling labels (BA-02a V3, BA-03 V5, BA-05 V5, others V6); BA-11 cited by registry entry; history sections 15-17 kept verbatim with notes",
+     "status": "DONE",
+     "where": "whole file; check BA06-C24"
+    },
+    {
+     "item": "Section 14 binding (32 evidence rows incl. blind recompile, Gate 2 evidence, V6 checks and output) and ending 'Delta V6 (decisions 220 and 223)'",
+     "status": "DONE",
+     "where": "section 14, section 19; checks 24/24 PASS at a stable fixed point"
+    }
+   ],
+   "summary": "I wrote BA-06 V6 at docs/initiatives/I-52-ct21d-baseline-ba-06-evm-preparation-v6.md. It is new, LF-only, git blob 3065065069bc2eb04efac130dfef5426f35e8b3f. I also wrote its check script and the script's output. The V6 checks give 24/24 PASS at a stable fixed point, and section 14 binds the check output (SHA-256 69a8ad34…98cd3) and the check script (341c3288…1f7a).\n\nThe generator is scratchpad gen_ba06v6.py. It is gen_ba06v5.py unchanged, then a V6 stage appended; the base and stage pieces are also saved in the scratchpad. The generator first re-renders V5 and asserts the result is byte-equal to the committed V5 file (blob e69a141d). It then applies the V6 edits, each as an exact replacement that is asserted.\n\nMain content:\n- **Bound SHA (AR6-01):** every static fact is bound to 95690c28. Section 2.1 has an identity table of 46 files with their git blobs at both SHAs; this is BA-06's part of the AR5-12 precondition.\n- **Inventory (AR6-03):** 3.1 is re-derived. Rows U-02..U-04, U-07..U-09, U-25, U-26 and U-28..U-41 are restated.\n- **New rows U-42..U-50** (Gate 2 ids N-01..N-08):\n  - `CreatePreparedBlock` (TX-A').\n  - The import under a separate lock L0, which joins `OC-IMPORT`.\n  - The I-60 name read, with no class. The artifact states that the mirror does not call it (NOT_YET_ADOPTED).\n  - The TopTransaction guard, with no class.\n  - The dormant beforeCommit hook.\n  - The Regen.\n  - The 'Insertar' edit chain, out of scope under D-11.\n- **Blind recompile:** the ledger in 3.1.1 gives every row its Gate 2 classification. Section 4.4 assigns each of the 689 recompile operations to one row or to \"not a database operation\". Every mutating operation lands on a U-row. The differences RD-01..RD-16 are each resolved.\n- **Carry table (3.4):** the 16 carry candidates are exactly the AR6-03 list. `OC-IMPORT` gets a full re-review. `OC-REF-TOP` and `OC-ENVELOPE` get confirmation. `OC-PREP-READ` and `OC-VERIFY-READ` get re-review.\n- **AR5-03 corrections:** the C-72 amendment, DC-41 aligned, DC-18 corrected, the new row X-05, and U-09 moved to `OC-PREP-READ`.\n- **Other rulings:** AR6-04 (section 8 and D-01 make RACKPROYECTAR a precedent only), the AR6-02 legacy-state wording in 3.3, section 7 and 10.2, four residual rows restated, D-17..D-25, and AR5-04, AR5-06 and AR5-08.\n\nThe requested frozen-parts check is BA06-C14. It lists every changed row and line against V5 with its kind, its ruling and its cell edits: 40 content, 3 ruling-ordered non-content, 24 record and 6 label changes. It fails on any undeclared change and on any declared change that did not happen.\n\nI ran no git write commands and touched nothing under src/, tests, AutoCAD or the host. The blind recompile JSON I cite and bind is still untracked in the worktree. It has to be committed with this round, or prerequisite (2) and check BA06-C9 fail.",
+   "counts": "3.1 rows 51 (42 in V5 + 9 new); C-rows 203; X-rows 5; classes 21 (16 carry candidates, 5 re-review/confirm); recompile ops 689 mapped (0 unassigned); RD differences 16; D rows 25; evidence rows 32; checks 24/24 PASS; BA06-C14: CONTENT 40, NON_CONTENT_RULING_ORDERED 3, RECORD 24, LABEL 6",
+   "cross_artifact_notes": [
+    "BA-11 V6: the BA-06 row should record BOUND_PRODUCT_SHA 95690c28, V6 blob 3065065069bc2eb04efac130dfef5426f35e8b3f, and a STATIC_REVIEWED status of per-class carry pending the Architect's exact delta check (section 3.4).",
+    "The blind recompile docs/automation/evidence/I-52-ct21d-ba06-v6-blind-recompile.json (SHA-256 eebc4dfc0c5f75ca5f369ff200ebc9e298219f4b00f22ceaf65e3e1969c5eb23) is still untracked in the worktree. BA-06 V6 binds it in section 14, so it must be committed with this round.",
+    "BA-07 V6: BA-06 cites sections 5.1, 6.1, 6.2 (step 5(c)) and 7, and extends U5 to the reverse direction under AR5-04. I checked that these sections exist in the current BA-07 V6 draft.",
+    "BA-08 V6: DC-18 now points to the ORACLE_SPEC of BA-08 V6. RD-04: the 'Insertar' edit chain can clone library definitions under its own lock that are not rolled back when the mutation is discarded. This matters for FX-ANN-BLANK construction steps that run RACKEDITAR 'Insertar' on the exact build (FXB-05). Sections 4.1, 6 and 12.3 are cited and exist.",
+    "BA-10 V6: section 9 cites section 2.2 for CHAR_RUNS = N_det + 1 of EV-L-COMPOSED (AR5-08). BA-04 V6 is cited for EA2-DEFERRED-EVENTS (AR5-04).",
+    "BA-03 V5: section 10.2 relies on SEL-LEGACY-BLANK-NAME (a legacy state, FXB-06) and on SEL-PLANTA. Both are present in the current BA-03 V5 draft.",
+    "V2.6: sections 2.1 and 8 state that V2.1 15.1 F-1 and F-2 are contradicted at 95690c28 and re-dated by V2.6 (prerequisite (3)).",
+    "AR6-03 names PlaceDefinitionWithoutCleanup as the OC-REF-TOP relocation, but production R2 and R3 use PlaceDefinitionWithStatus. Both reach PlaceBlockWithJigStatus :228-261 (RD-02, AQ-V6-BA06-02)."
+   ],
+   "open_questions": [
+    "AQ-V6-BA06-01: U-45 (the R2/R3 import call site under L0) is in OC-IMPORT, while U-02 (the R1 call site) keeps its V5 placement with no class. Should both call sites be members, or neither? This is part of the OC-IMPORT full re-review.",
+    "AQ-V6-BA06-02: does the OC-REF-TOP confirmation cover both PlaceDefinitionWithStatus (production) and PlaceDefinitionWithoutCleanup(beforeCommit) (test-only caller)?",
+    "AQ-V6-BA06-03: AR6-03 says OC-PREP-READ is handled 'per AR5-03', and AR5-03 only moves U-09 into it. V6 proposes a re-review because U-09's context changed at 95690c28 (lock L0; facts consumed on R2/R3). Is that the intended scope?",
+    "AQ-V6-BA06-04: are the AR6-02 rewordings of the OC-LAYER fixture cell, section 7 and 10.2 SH-LAY-ADDED non-content under AR5-02, so that OC-LAYER carries?"
+   ]
+  },
+  "r0809": {
+   "summary": "I wrote BA-08 V6 and BA-09 V6 as new, untracked files, starting from the V5 texts. BA-08 V5 and BA-09 V5 are unchanged byte for byte. I ran no git write command and did not touch src/, tests, AutoCAD or the host.\n\nBA-08 V6 (blob 5c4d688f391ad32dfe483ffc5c47654c557885ac):\n- **Header:** 6-DRAFT, supersedes 5-DRAFT (blob d3f8bb5b…). The contract line reads V2.1..V2.5 plus V2.6 (draft, pending review). It separates BOUND_PRODUCT_SHA = 95690c28 (never a tuple value), EXACT BUILD and FIXTURE_CONSTRUCTION_BUILD. It sets I60_NAMING_FOR_RACKMIRROR = NOT_YET_ADOPTED, cites BA-11 by registry entry and cites sibling versions as V6, except BA-03 V5, BA-05 V5 and BA-02a V3.\n- **Routes:** R1 = RACKSELECTIVO, R2 = the RACKCAD menu, R3 = RACKEDITAR Insertar. RACKPROYECTAR is recorded as a precedent only (AR6-04).\n- **Section 2:** the product-path table now has one column per route, plus AUTH-15 and the mirror requirement. Each cell was re-read at 95690c28. AR3-12 is recorded as superseded, because RACKPROYECTAR calls AUTH-15 overload A (RackProjectionWriteScope.cs:58-59). The classification from the RELINK-038 dimension is kept: CONTRACT_UPDATE_REQUIRED, handled through V2.6 (AR6-05).\n- **Top-level reference:** the false V5 statement that it \"gets only Position\" now holds only for the jig routes (BP:302). The RACKPROYECTAR rotation is declared, and rotation 0 is pinned in section 12.2 (IMP-09).\n- **New section 3.2:** a code-identity table (path, blob at 3375aadb, 95690c28 and 69daf03a) with roles W (reused writer and helpers), C (fixture construction) and P (precedent). This is the BA-08 input to the AR5-12 precondition.\n- **New section 3.3:** each restated fact with its Gate 2 classification.\n- **Counts:** 37 [CommandMethod] and 40 LockDocument() sites, both re-derived.\n- **D4-05 (section 12.1):** the old rationale is withdrawn. Step 1 = R1, RACKSELECTIVO with 'Insertar frontal' (fondo prompt answered 1). Step 2 = R3 on the exact build: 'Insertar planta' when D = 1, and 'Insertar varias…' with Fondo(1..D-1), Whole(Planta) when D > 1, because 'Insertar frontal' in RACKEDITAR only yields Fondo(0).\n- **FX-ANN-BLANK:** built under AR6-02 with FXB-01..FXB-07. Step 1 runs on a FIXTURE_CONSTRUCTION_BUILD compiled from a clean checkout of 69daf03a; step 2 runs on the exact build. Expected block names are 'Selectivo' and 'Selectivo planta - 2 frentes'. The conformance record in section 12.6 checks both name copies, the construction-build identity, the build configuration and the Debug environment variable (IMP-10).\n- **Section 15:** records the naming ruling: PDC-2 governs, I-60 is out of scope, NOT_YET_ADOPTED, and the future guard NR-02.\n- **Other rulings:** AR5-04 (reverse build equivalence), AR5-05 (the -CB twins) and AR5-07 (HDM-5 and HDM-7 precisions) are applied. The new K-11 (AR5-12 precondition) and K-12 (Debug capture) are added.\n- **End:** \"## 17. Delta V6 (decisions 220 and 223)\".\n\nBA-09 V6 (blob 53383ab670f51e30996f614aca5dfbbf0848bc83):\n- The text is rebound to 95690c28. W-1 is unchanged in substance: the builders directory and the assets tree are byte-identical.\n- The FX-ANN-BLANK plan set comes from the authored source design with the name CT21D-WARMUP, so the blank name and the construction build do not enter W-1. This matches BA-08 V6.\n- New section 3.3 lists the Gate 2 classifications, including the new read-only static in RackProjectionSnapshotReader and the new identity of BlockPlacement.\n- AR5-05 is applied: WU-BOUNDARY plus WU-BOUNDARY-CB; W-10 and AQ-V5-02 are closed. AR5-09 (Q-I14-P admitted) and AR5-04 are applied. BA09V5-01 is fixed on the BA-09 side (six normative checks; aligning the catalog is BA-04's job).\n- It ends with \"## 9. Delta V6 (decisions 220 and 223)\".\n\nBoth files are UTF-8 with LF line endings and a final newline. The generator scripts are only in the scratchpad (make_ba08_v6*.py, make_ba09_v6.py).",
+   "files_written": [
+    "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-08-selective-kind-baseline-v6.md",
+    "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-09-warmup-v6.md"
+   ],
+   "done": [
+    {
+     "item": "BA-08: bound SHA (95690c28) and exact build separated",
+     "status": "DONE",
+     "where": "BA-08 V6 header (BOUND_PRODUCT_SHA, EXACT BUILD, FIXTURE_CONSTRUCTION_BUILD); section 12.1 first paragraph; section 16.3 K-11"
+    },
+    {
+     "item": "BA-08: product-path table with per-route columns R1/R2/R3",
+     "status": "DONE",
+     "where": "BA-08 V6 introduction (route labels) and section 2 table",
+     "note": "Columns: R1, R2, R3, AUTH-15 overload A, mirror requirement. Every cell was re-read at 95690c28, and the D-02 paragraph was rewritten per route."
+    },
+    {
+     "item": "BA-08: re-derived facts at 95690c28 (RSC, RSW, SBW, BP, RackViewBaseName, RackMenuCommands) with new identities",
+     "status": "DONE",
+     "where": "BA-08 V6 sections 2, 3, 3.1, 3.2 (identity table), 3.3 (classification), 12.1, 12.2",
+     "note": "Blobs come from git rev-parse at 3375aadb, 69daf03a and 95690c28. Line locators were read with git show at 95690c28."
+    },
+    {
+     "item": "BA-08: D4-05 construction sequence re-specified with the pinned route (AR6-02) and the route/addresses in the conformance record",
+     "status": "DONE",
+     "where": "BA-08 V6 section 12.1 (step table and 'Why these actions'); section 12.6 item 4",
+     "note": "The step-2 action ('Insertar varias…' for D>1) and the step-1 route for fixtures other than FX-ANN-BLANK are declared as this artifact's specification. Only step 1 of FX-ANN-BLANK was pinned by the Architect."
+    },
+    {
+     "item": "BA-08: FX-ANN-BLANK per AR6-02 with FXB-01..FXB-07 (third build role; both persisted name copies)",
+     "status": "DONE",
+     "where": "BA-08 V6 sections 4.1, 12.1 (conditions 1-7), 12.3, 12.4, 12.6 item 6, 13, 16.2 K-1, 11.2 HDM-3"
+    },
+    {
+     "item": "BA-08: AR3-12 recorded as superseded",
+     "status": "DONE",
+     "where": "BA-08 V6 section 2 paragraph 'AR3-12 superseded at the bound SHA'; section 3.3 row"
+    },
+    {
+     "item": "BA-08: false statement 'the top-level reference gets only Position' corrected",
+     "status": "DONE",
+     "where": "BA-08 V6 section 2 SL-4 row; section 3 row 'entity types'; section 3.1 row 'nested and top-level references'; section 12.2 'Drawing' (rotation 0 pinned)"
+    },
+    {
+     "item": "BA-08: naming ruling recorded (§15: PDC-2 governs; I-60 out of scope; NOT_YET_ADOPTED; future guard NR-02)",
+     "status": "DONE",
+     "where": "BA-08 V6 section 15 'Naming ruling'; header I60_NAMING_FOR_RACKMIRROR"
+    },
+    {
+     "item": "BA-08: AR5 rulings applicable to BA-08 (AR5-04, AR5-05, AR5-07, AR5-12, AR5-13, AR5-14)",
+     "status": "DONE",
+     "where": "BA-08 V6 section 11.2 HDM-5/HDM-7; section 16.3 K-10, K-11, K-12; section 16.5"
+    },
+    {
+     "item": "BA-08: ends with 'Delta V6 (decisions 220 and 223)'",
+     "status": "DONE",
+     "where": "BA-08 V6 section 17"
+    },
+    {
+     "item": "BA-09: text rebound to 95690c28, W-1 unchanged in substance, consistent with BA-08 V6 on FX-ANN-BLANK",
+     "status": "DONE",
+     "where": "BA-09 V6 header; section 3.1 row 1d; section 3.2 (source of the plans; 'FX-ANN-BLANK plan set'); section 3.3; section 8 W-1"
+    },
+    {
+     "item": "BA-09: AR5-05 / AQ-V5-02 closure and BA09V5-01",
+     "status": "DONE",
+     "where": "BA-09 V6 sections 5, 7, 8 (W-4, W-10), 8.1",
+     "note": "The six checks are kept as normative. Aligning the catalog's WU-BOUNDARY and WU-BOUNDARY-CB to six checks is BA-04 V6's job (cross-artifact)."
+    },
+    {
+     "item": "BA-09: ends with 'Delta V6 (decisions 220 and 223)'",
+     "status": "DONE",
+     "where": "BA-09 V6 section 9"
+    }
+   ],
+   "counts": "BA-08 V6: 149592 bytes, 17 sections, a 56-row code-identity table, and 34 rows in the Delta V6 table. BA-09 V6: 45438 bytes and 12 rows in the Delta V6 table.",
+   "cross_artifact_notes": [
+    "BA-04 V6 has to align WU-BOUNDARY and WU-BOUNDARY-CB to the six boundary checks that BA-09 V6 section 7 treats as normative (BA09V5-01).",
+    "BA-04 V6 needs to carry the FX-ANN-BLANK provenance: its step 1 is built by the FIXTURE_CONSTRUCTION_BUILD (69daf03a). HDM-CHAR-FXANNBLANK runs on the CHARACTERIZATION_BUILD and CL-CLEAN-FXANNBLANK-FP on the PRODUCT_BUILD, each over instances built that way.",
+    "BA-08 V6 section 3.2 lists the W and C (path, blob) pairs as its input to the AR5-12 precondition. AR5-12 gives the fail-closed detection to the BA-03 runner, so BA-03 V5 or its checks need to cover these pairs. I have not verified that BA-03 V5 does.",
+    "BA-07 V6 section 5.3 is cited for the custody of the build-equivalence record (AR5-04). I also cite the AR5-12 precondition record without a section number. Both match what BA-07 V6 currently contains.",
+    "Gate 2 classifies the AR3-12 / F-2 fact differently in two dimensions: CONTRACT_UPDATE_REQUIRED in RELINK-038 and CHANGED_BUT_CONTRACT_COMPATIBLE in CONTRACT. BA-08 V6 keeps the RELINK-038 classification for its own fact and notes that AR6-05 took the conservative reading. The V2.6 draft uses the CONTRACT classification."
+   ],
+   "open_questions": [
+    "The step-2 action for multi-fondo fixtures (RACKEDITAR 'Insertar varias…' with the ordered list) and the step-1 route R1 for fixtures other than FX-ANN-BLANK are this artifact's specification, following the default in the Gate 2 evidence. The Architect ruled only step 1 of FX-ANN-BLANK (AR6-02), so the Architect needs to confirm the rest.",
+    "BA-08 V6 reads AR5-12 as covering both the W and the C pairs of section 3.2. C includes editor and construction files such as RSW, RSC and RackMenuCommands. This is the fail-closed reading. A narrower set would need an Architect ruling.",
+    "The expected FX-ANN-BLANK block names ('Selectivo', 'Selectivo planta - 2 frentes') come from reading the code at 69daf03a and 95690c28. Only the conformance record from host work can confirm them."
+   ]
+  },
+  "r0710": {
+   "files_written": [
+    "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-07-manifest-custody-v6.md",
+    "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-10-parameter-sheet-v6.md",
+    "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\make_ba07v6.py",
+    "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\make_gen_ba10v6.py",
+    "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\gen_ba10v6.py",
+    "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\ba07v6_vecregen.json"
+   ],
+   "done": [
+    {
+     "item": "BA-07 V6 header (6-DRAFT supersedes 5-DRAFT blob 2410229c..., AUTHORITY_CONTRACT V2.1..V2.5 with rev.3/rev.2 textually verified + V2.6 draft pending, BOUND_PRODUCT_SHA = 95690c28 as non-tuple, DELTA RULING APPLIED 223/220)",
+     "status": "DONE",
+     "where": "BA-07 V6 header"
+    },
+    {
+     "item": "AR5-04 reverse-direction build equivalence: U5 extended to both directions; record method shows characterization-only assemblies are event-neutral (characterizationOnlyAssemblies with role + eventNeutralityEvidence); CATALOG_FOLDER hash sets of both profiles compared (catalogFolderFiles, catalogFolderSetsEqual); fail-closed without record; EA2 safeguard; RUN_PREREQUISITES/RUN_START pointer",
+     "status": "DONE",
+     "where": "BA-07 V6 sections 1(f), 4, 5.3, 7 U5, 10, 11.1"
+    },
+    {
+     "item": "AR5-06 readings (a)/(b)/(c) recorded as ruled; disclosure (defective consumed pin revocable, slot empty until new baseline version); 'consumed' completed for a pin used to derive another (cited in sourceEvidence), checked by 6.2 step 5(c) outside the vector model",
+     "status": "DONE",
+     "where": "BA-07 V6 section 5.1 (sourceEvidence, rule 3), 6.2 step 5(c) and Result, 10, 11.1"
+    },
+    {
+     "item": "AR5-12 record kind for the per-build blob-equality precondition (CT21D_BOUND_SHA_PRECONDITION), custodied as REVIEW_RECORD_ADDED, bound to the tuple by value and by run-log reference; new use precondition U6",
+     "status": "DONE",
+     "where": "BA-07 V6 sections 1(g), 2, 4, 5, 5.4, 6.1, 6.2, 7 U6, 10, 11",
+     "note": "The 'saved with the tuple' binding (no IN_USE/tuple field, so 6.2 cannot check U6) is this artifact's reading, raised as new open question AQ-V6-BA07-1."
+    },
+    {
+     "item": "AR6-02 FIXTURE_CONSTRUCTION_BUILD identity in the fixture conformance record (cited by the FIXTURE_INSTANCE@FX-ANN-BLANK pin sourceEvidence; no new pin field); third build role, excluded from manifest, profiles, equivalence and AR5-12 precondition (FXB-03), not substitutable (FXB-04)",
+     "status": "DONE",
+     "where": "BA-07 V6 sections 3, 5.1, 5.5, 7 U6, 10"
+    },
+    {
+     "item": "BA-07 JCS vector: schema covered by the vector unchanged, so no -v6 vector files; V5 generator re-run and output byte-identical (sha256 743302c7...8dff38), generator 9f9fd14f...4209",
+     "status": "DONE",
+     "where": "BA-07 V6 section 4.1; scratchpad ba07v6_vecregen.json"
+    },
+    {
+     "item": "BA-07 no product SHA re-cited in body; code facts: none (Gate 2 BA-07 relink row, not re-derived)",
+     "status": "DONE",
+     "where": "BA-07 V6 section 13 preamble",
+     "note": "95690c28 appears only in the header BOUND_PRODUCT_SHA line required by the round's header convention."
+    },
+    {
+     "item": "BA-07 ends with 'Delta V6 (decisions 220 and 223)'",
+     "status": "DONE",
+     "where": "BA-07 V6 section 13"
+    },
+    {
+     "item": "BA-10 V6 via gen_ba10v6.py (copied from gen_ba10v5.py by make_gen_ba10v6.py): AR5-08 wording verbatim (4 occurrences: 2.2 Fail-closed, Q-O1, 6.1, delta), P-L4 now inside fail-closed scope, CHAR_RUNS = N_det+1 ruled",
+     "status": "DONE",
+     "where": "BA-10 V6 sections 2.1, 2.2, 5, 6.1, 7"
+    },
+    {
+     "item": "BA-10 AR5-06/AR5-07 recorded (plus AR5-04, AR5-05, AR5-09, AR6-02/AR5-11 with no rule or count change)",
+     "status": "DONE",
+     "where": "BA-10 V6 sections 2.2, 4, 6.1, 7"
+    },
+    {
+     "item": "BA-10 labels re-pointed (BA-04 V6, BA-07 V6, BA-08 V6, BA-09 V6) and header contract status (G2-CR-05)",
+     "status": "PARTIAL",
+     "where": "BA-10 V6 header and body",
+     "note": "BA-04/08/09 V6 did not exist when written; section numbers are carried from V5 and declared as to be confirmed against the V6 bytes. BA-07 V6 numbers (5.1, 5.3) confirmed."
+    },
+    {
+     "item": "BA-10 cost memo V6",
+     "status": "NOT_APPLICABLE",
+     "where": "BA-10 V6 header COST MEMO and section 7",
+     "note": "Not assigned to me; header points to V5 memo and to the V6 memo listed in section 224."
+    },
+    {
+     "item": "Older versions byte-identical; no git write; no src/tests/host",
+     "status": "DONE",
+     "where": "git diff HEAD -- docs clean for tracked files"
+    }
+   ],
+   "summary": "I wrote BA-07 V6 by hand from V5, using a patch script in which every edit is checked. I wrote BA-10 V6 with gen_ba10v6.py, which is a copy of gen_ba10v5.py. Both files are UTF-8 with LF line endings and one final newline, no CR and no trailing spaces. The V5 files and all other tracked files are unchanged. I ran no git write commands.\n\nBA-07 V6 (blob 9cac4c6d, sha256 0ed93058...7544):\n- **AR5-04:** section 5.3 and U5 now cover both directions. The characterization-to-product direction stays. The new product-to-characterization direction covers the EVM_FROZEN pin consumed by governing CHARACTERIZATION_BUILD runs.\n- **AR5-04 record fields:** characterizationOnlyAssemblies (with a role) replaces switchAssemblies. The new eventNeutralityEvidence shows those assemblies add no event to the governed window unless a scenario names them. catalogFolderFiles and catalogFolderSetsEqual compare the CATALOG_FOLDER hash sets of both builds.\n- **AR5-04 use rules:** a record only counts when the catalog sets are equal and the neutrality evidence covers every characterization-only assembly. The rules also cover RUN_PREREQUISITES/RUN_START, the fail-closed case for E12A and E12C, and EA2-DEFERRED-EVENTS as the safeguard.\n- **AR5-06:** readings (a) and (c) keep their text and are now marked as ruled. Rule 3 now counts a pin as consumed when another recorded pin cites it in sourceEvidence. It adds the disclosure that a defective consumed pin can be revoked, but its slot stays empty until a new baseline version.\n- **AR5-12:** new section 5.4 defines the CT21D_BOUND_SHA_PRECONDITION record. Its outcome is EQUAL or DELTA_PROCESSED, with inventoryUnchanged recorded. It is kept in custody as a review record, and a new use rule U6 requires it for every governing run.\n- **AR6-02:** new section 5.5 defines FIXTURE_CONSTRUCTION_BUILD as a third build role. Its identity is in the fixture conformance record, which the FIXTURE_INSTANCE@FX-ANN-BLANK pin cites; the pin record gets no new field. It has no manifest, build profile, equivalence record, qualification or bound-SHA precondition record, and no other build can stand in for it.\n- **Vector:** the JCS vector needs no change because no schema it covers changed. I re-ran the V5 generator and its output is byte-identical (743302c7...8dff38), so no -v6 vector files were made.\n- **Code facts:** BA-07 states none, so none was re-classified. The product SHA 95690c28 appears only in the header's BOUND_PRODUCT_SHA line.\n\nBA-10 V6 (blob 66cc18b7, sha256 ce5e68fd...7544f5):\n- **AR5-08:** the fail-closed sentence is quoted word for word in four places. P-L4 is now inside the fail-closed scope, and CHAR_RUNS = N_det + 1 is marked as ruled.\n- **Other rulings recorded:** AR5-04, AR5-05 (the per-build twins), AR5-06, AR5-07, AR5-09 and AR6-02. None changes a rule or a count.\n- **Header and labels:** the header gives the new contract status and the BOUND_PRODUCT_SHA line. References now point to BA-04, BA-07, BA-08 and BA-09 V6. All values stay UNSET.\n- **Code facts:** none, as the Gate 2 evidence records.",
+   "counts": "BA-07: 2 new sections (5.4, 5.5); 5.3, 11 and 13 rewritten; use preconditions U5 extended and U6 added; 7 rows added or changed in section 10; 1 new open question (AQ-V6-BA07-1). BA-10: 189 lines changed against V5 (93 added, 96 removed); AR5-08 sentence appears 4 times; 6 V5 questions mapped to rulings. Vector files: 0 new; 1 re-run with matching hash.",
+   "cross_artifact_notes": [
+    "BA-04 V6 needs the RUN_PREREQUISITE token for the AR5-12 bound-SHA precondition record, required by every governing run (the second part of Gate 2 finding G2-CR-03). BA-07 V6 5.4/U6 names the record kind CT21D_BOUND_SHA_PRECONDITION, and BA-04 should use the same name.",
+    "BA-04 V6 must also list BUILD_EQUIVALENCE_RECORD in the RUN_PREREQUISITES and RUN_START of the governing CHARACTERIZATION_BUILD runs that consume EVM_FROZEN (AR5-04 (1)). BA-07 V6 U5(b) points to this.",
+    "BA-08 V6: the FX-ANN-BLANK fixture conformance record must carry the FIXTURE_CONSTRUCTION_BUILD identity: source SHA, Plugin and UI SHA-256, and the catalog and library hashes. BA-07 V6 5.5 relies on this and requires it before the pin's two ratifications are given. BA-10 V6 also cites 'BA-08 V6 HDM-7' for AR5-07; HDM-7 exists in BA-08 V5.",
+    "BA-10 V6 points to BA-04 V6 sections 1 and 3, BA-08 V6 sections 8, 10, 11.2 and HDM-5/HDM-7, and BA-09 V6 section 4, using the V5 section numbers. Those V6 files did not exist when I wrote BA-10, so the numbers must be checked against their bytes.",
+    "BA-11 V6: the BA-07 entry keeps the V5 vector files, unchanged, as its vector paths. The BA-07 DEPENDS_ON header line is still BA-01 only; mentions of BA-03 V5, BA-04 V6, BA-06 V6 and BA-08 V6 are informative pointers, not graph edges. BA-11 section 3.2 may want to register the bound-SHA precondition record and the construction-build identity field.",
+    "Cost memo over the V6 catalog (listed in decisions section 224): I did not produce it. The BA-10 V6 header points to the V5 memo and to a V6 memo still to be made. The V6 catalog's -CB twins from AR5-05 will change its counts.",
+    "Untracked files from sibling implementers were already in the worktree (contract V2.6, the BA-03 V5 checks script, the BA-06 V6 blind recompile). I did not touch them."
+   ],
+   "open_questions": [
+    "AQ-V6-BA07-1 (new, before BA-07 candidate): AR5-12 says the precondition result is 'saved with the tuple in the custody of BA-07'. BA-07 V6 reads this as a review record tied to the tuple by value and by its hash in the run log, with no tuple or IN_USE field. The alternative is an IN_USE field carrying the U5/U6 record hashes, so the log verifier (6.2 step 5) could check them from the custody log; that needs a new entry schema and a new -v6 vector.",
+    "Header convention conflict: the round header requires BOUND_PRODUCT_SHA = 95690c28, but the BA-07 instruction says no product SHA is re-cited. I kept the header line only, marked as a non-tuple item that BA-07 binds nothing to. The Coordinator may prefer to drop it from BA-07.",
+    "BA-07 V6 5.3 reading, not ruled: a build-equivalence record whose CATALOG_FOLDER sets differ, or whose neutrality evidence does not cover every characterization-only assembly, establishes no equivalence. BA-07 V6 5.1 also says a pin derived from a revoked pin is not revoked automatically; the ruling that records the revocation decides. Both are this artifact's readings of AR5-04 and AR5-06 and need Architect confirmation."
+   ]
+  },
+  "r04": {
+   "summary": "I produced BA-04 V6 (JSON and md), BA-02b V6, the published BA-04 V6 check with its output (75 of 75 checks PASS), and the cost memo V6 (.py and .md). All are new files in the worktree. No older version was touched: git diff is empty and only untracked files were added. I ran no git write command and did not touch src, tests, AutoCAD or the host.\n\nThe catalog grows from 425 to 437 scenarios (270 own scenarios and 167 dry runs). The 12 new scenarios are the 7 AR5-05 twins by content (PR-CLOSURE-COMPLETENESS-CB, WU-BOUNDARY-CB and PW-CLONE-{BASE,CASE,WRONG-TYPE,NESTED,SYMTAB}-CB) plus the dry runs of the 5 PW-CLONE twins. WU-BOUNDARY-CB is governing, group WU, DEFAULT: N_B, with no dry run. PR-CLOSURE-COMPLETENESS-CB is under K-8.\n\nAR5-04 is applied: BUILD_EQUIVALENCE_RECORD is now in RUN_PREREQUISITES of the 115 governing CHARACTERIZATION_BUILD scenarios that consume EVM_FROZEN. They cite it in RUN_START, and without it E12A/E12C cannot be PASS. The record is on 163 scenarios in total.\n\nAR5-12 / G2-CR-03: the new run prerequisite BOUND_SHA_PRECONDITION_RECORD (recordKind CT21D_BOUND_SHA_PRECONDITION, BA-07 V6 section 5.4, U6) is on all 245 governing scenarios on PRODUCT_BUILD or CHARACTERIZATION_BUILD.\n\nAR5-09: AQ-V5-08 is gone from BLOCKED_BY and from the vocabulary, which is now K-3 and K-8 only. The Q-I14-P evidence and procedural texts no longer mention a post-abort read.\n\nAR6-02 / FXB-01 / FXB-07: CL-CLEAN-FXANNBLANK-FP, HDM-CHAR-FXANNBLANK and WU-DRY-CL-CLEAN-FXANNBLANK-FP carry the provenance note in NOTE and INPUT_STATUS. The note says the FIXTURE_CONSTRUCTION_BUILD of 69daf03a builds step 1 and the exact build does step 2 (BA-08 V6 section 12.1). CL runs on the PRODUCT_BUILD; HDM and the dry run run on the CHARACTERIZATION_BUILD. The JSON has a FIXTURE_CONSTRUCTION_BUILD entry, and the FXB-07 label note is included ('Rack - espejo' under NOT_YET_ADOPTED; the V17 '<base> - espejo' clause is kept).\n\nBA09V5-01: WU-BOUNDARY and its twin now declare the six checks, and LP-WU-BOUNDARY records BOUNDARY_CHECK x6.\n\nCitations point to BA-06/07/08/09/10 V6, BA-03 V5, BA-05 V5 and BA-02a V3, and to BA-11 by registry entry. The headers carry ARTIFACT_VERSION 6-DRAFT with the V5 blobs, AUTHORITY_CONTRACT (V2.1..V2.5 verified + V2.6 draft), BOUND_PRODUCT_SHA 95690c28 (non-tuple; BA-04 has no code fact of its own per Gate 2) and DELTA RULING APPLIED (223 and 220). Both artifacts end with 'Delta V6 (decisions 220 and 223)'. Every SEALED_AT was recomputed (SCENARIO_VERSION is now 6-DRAFT).\n\nI raised one new Architect question, AQ-V6-BA04-1 (BA-04 V6 section 8.3): should the bound-SHA prerequisite also cover non-governing runs on a build? I followed BA-07 U6's reading (governing only).\n\nThe check was extended and not weakened. The V5 checks whose question section 220 closed were replaced by stricter ones, for example requiring the twins to exist and AQ-V5-08 to be absent. New checks cover bound SHA, reverse equivalence, FX-ANN-BLANK provenance (compared against the V5 JSON), the six boundary checks, stale sibling-version citations, section pointers that must exist in the V6 sibling bytes, the OC set against BA-06 V6 section 3.3, and the Delta V6 tables. P4 of BA-02b is now enumerated per build. A scratch mutation test detected all 15 injected mutations, and I hardened one crash on an orphan dry run.\n\nThe memo V6 was regenerated over the V6 catalog. All 437 REPETITION labels agree, and it reproduces the V5 memo rows exactly. Row1 is 10710 runs (+320: the twins +175 G and their dry runs +145 D). All files are UTF-8 with LF and a final newline.",
+   "files_written": [
+    "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-04-scenario-catalog-v6.json",
+    "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-04-scenario-catalog-v6.md",
+    "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-02b-coverage-matrix-v6.md",
+    "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba04-v6-checks.py",
+    "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba04-v6-checks-output.json",
+    "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-cost-memo-v6.py",
+    "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-cost-memo-v6.md",
+    "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\gen_catalog_v6.py",
+    "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\gen_costmemo_v6.py",
+    "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\mut_v6.py"
+   ],
+   "done": [
+    {
+     "item": "BA-04 V6 JSON + md from gen_catalog_v6.py (copy of gen_catalog_v5.py)",
+     "status": "DONE",
+     "where": "docs/initiatives/I-52-ct21d-baseline-ba-04-scenario-catalog-v6.{json,md}",
+     "note": "437 scenarios; blobs json c737e274, md 9964d4c8; SHA-256 (LF) json ee8d0f16...e06c, md edef6360...f5bc"
+    },
+    {
+     "item": "Header: ARTIFACT_VERSION 6-DRAFT (supersedes 5-DRAFT, V5 blobs), AUTHORITY_CONTRACT V2.1..V2.5 verified + V2.6 draft, BOUND_PRODUCT_SHA 95690c28, DELTA RULING APPLIED 223/220; BA-11 by registry entry; siblings by round versions",
+     "status": "DONE",
+     "where": "BA-04 V6 md header + JSON CONTRACT/BOUND_PRODUCT_SHA/DELTA_RULING_APPLIED; BA-02b V6 header",
+     "note": "BA-02a V3, BA-03 V5, BA-05 V5, BA-06..BA-10 V6"
+    },
+    {
+     "item": "AR5-04: BUILD_EQUIVALENCE_RECORD in RUN_PREREQUISITES (cited in RUN_START) of every governing CHARACTERIZATION_BUILD scenario consuming EVM_FROZEN",
+     "status": "DONE",
+     "where": "BA-04 V6 sections 1.1, 2.1, 2.2 step 6, 4; JSON BUILD_EQUIVALENCE, RUN_PREREQUISITE_VOCABULARY/RULE",
+     "note": "115 CB scenarios (163 in total with the 48 PRODUCT_BUILD ones); AR5-04 (3)(4)(5)(6) stated by pointer to BA-07 V6 5.3/U5"
+    },
+    {
+     "item": "AR5-05: twins PR-CLOSURE-COMPLETENESS-CB, WU-BOUNDARY-CB, PW-CLONE-*-CB for all five variants",
+     "status": "DONE",
+     "where": "BA-04 V6 JSON PER_BUILD_QUALIFICATION.twins_by_content_ar5_05; section 1.1; BA-02b V6 rows P1, P2, P4 (per build), P7, R17",
+     "note": "WU-BOUNDARY-CB governing, WU, DEFAULT: N_B, no dry run; PR-CLOSURE-COMPLETENESS-CB K-8; 5 PW-CLONE-*-CB dry runs added"
+    },
+    {
+     "item": "AR5-09: Q-I14-P admitted; AQ-V5-08 removed from BLOCKED_BY and vocabulary; evidence texts corrected",
+     "status": "DONE",
+     "where": "Q-I14-P EXPECTED_EVIDENCE_SET/EXPECTED_PROCEDURAL_RESULT/NOTE; JSON AR3_01_MODE; sections 1.1, 5.2, 7.1, 8.2",
+     "note": "Q-I14-P and WU-DRY-Q-I14-P keep K-8 (DRAFT)"
+    },
+    {
+     "item": "AR6-02: FX-ANN-BLANK provenance note (FIXTURE_CONSTRUCTION_BUILD 69daf03a) on CL-CLEAN-FXANNBLANK-FP, its dry run and HDM-CHAR-FXANNBLANK; fixture spec cites BA-08 V6",
+     "status": "DONE",
+     "where": "NOTE + INPUT_STATUS of the three scenarios; JSON FIXTURE_CONSTRUCTION_BUILD; section 1.1",
+     "note": "CL on PRODUCT_BUILD, HDM and WU-DRY on CHARACTERIZATION_BUILD; group/build/blockers/pins/plan unchanged vs V5 (checked); FXB-07 label note added"
+    },
+    {
+     "item": "AR5-12: run prerequisite for the per-build bound-SHA (blob-equality) record",
+     "status": "DONE",
+     "where": "RUN_PREREQUISITE_VOCABULARY.BOUND_SHA_PRECONDITION_RECORD; JSON BOUND_SHA_PRECONDITION; sections 1.1, 2.2 step 0, 4",
+     "note": "on all 245 governing scenarios on a build under test; scope raised as AQ-V6-BA04-1"
+    },
+    {
+     "item": "Re-point BA-03/05/06/07/08/09/10 citations to new versions and verify section numbers",
+     "status": "DONE",
+     "where": "whole catalog; check sibling_section_pointers_exist and no_stale_markers_and_equal_delta_ruling",
+     "note": "BA-05 stays V5 (not re-versioned per section 224)"
+    },
+    {
+     "item": "BA09V5-01: WU-BOUNDARY and WU-BOUNDARY-CB aligned to the six boundary checks of BA-09 V6 section 7",
+     "status": "DONE",
+     "where": "WU-BOUNDARY(-CB) EXPECTED_CONTROL_RESULTS/PROCEDURAL/AUTHORITY; LP-WU-BOUNDARY BOUNDARY_CHECK x6"
+    },
+    {
+     "item": "Recompute SEALED_AT for changed expectations",
+     "status": "DONE",
+     "where": "every scenario (SCENARIO_VERSION 6-DRAFT)",
+     "note": "check sealed_at_recomputes PASS"
+    },
+    {
+     "item": "Extend (never weaken) the check to ALL PASS",
+     "status": "DONE",
+     "where": "docs/automation/evidence/I-52-ct21d-ba04-v6-checks.py + -output.json",
+     "note": "75/75 PASS; checker SHA-256 (LF) eae605d2...a9aa, output 184f6ac5...73b9; scratch mutation test 15/15 detected"
+    },
+    {
+     "item": "BA-02b V6 regenerated",
+     "status": "DONE",
+     "where": "docs/initiatives/I-52-ct21d-baseline-ba-02b-coverage-matrix-v6.md",
+     "note": "blob 98c7a1cf; ends with Delta V6; section 0 binds the V6 check SHA"
+    },
+    {
+     "item": "Cost memo V6 (gen_costmemo_v6.py -> cost-memo-v6.{py,md})",
+     "status": "DONE",
+     "where": "docs/automation/evidence/I-52-ct21d-cost-memo-v6.{py,md}",
+     "note": "all 437 REPETITION labels agree; V5 memo rows reproduced exactly; row1 10710 (+320 vs V5)"
+    },
+    {
+     "item": "Each artifact ends with 'Delta V6 (decisions 220 and 223)'",
+     "status": "DONE",
+     "where": "BA-04 V6 section 9, BA-02b V6 section 7, memo section 6"
+    },
+    {
+     "item": "UTF-8, LF, final newline; older versions byte-identical; no git writes",
+     "status": "DONE",
+     "where": "worktree",
+     "note": "git diff empty; only untracked new files"
+    }
+   ],
+   "counts": "BA-04 V6: 437 scenarios (270 own, 167 WU-DRY); governing 257, non-governing-by-design 178, exploratory 2; builds PB 80, CB 345, NONE 12; status DRAFT 171, SEALED_PENDING_PIN_CANDIDATE 195, SEALED_CANDIDATE 69, EXPLORATORY 2; blockers K-3 138, K-8 45; run prerequisites BOUND_SHA_PRECONDITION_RECORD 245, BUILD_EQUIVALENCE_RECORD 163 (48 PB + 115 CB), REVIEWED_RECORD 17; twins 36 (29 Q/E6 + 7 AR5-05). Checks 75/75 PASS. Memo row1 10710 = G 5509 + D 5201 (rows 2-4: 5235, 2680, 1585).",
+   "cross_artifact_notes": [
+    "BA-11 V6: the BA-04 row lists json docs/initiatives/I-52-ct21d-baseline-ba-04-scenario-catalog-v6.json (blob c737e274399b4e391e762dcb7a1c7214d9b14018) and md ...-v6.md (blob 9964d4c8676a02af3a75b9f10759028af694a4da). The BA-02b row lists md ...ba-02b-coverage-matrix-v6.md (blob 98c7a1cf537b3868c0376cebfc9f8da91737c6c8) and, as its paths, the check docs/automation/evidence/I-52-ct21d-ba04-v6-checks.py (blob 4b0e53a6, SHA-256 LF eae605d21463c7b771ec6e7dad0a41cd18128a4fa8db90364a1a1e35326ea9aa) and its output ...-v6-checks-output.json (blob 22c8d45e, SHA-256 LF 184f6ac59be6ed385dafcdfbedb0e57eb8551c0697295b868ccadd9a3d6273b9). The memo V6 is not a registry entry: .py blob 5aa45bb1, SHA-256 a7a044a6...ebece; .md blob 91418763.",
+    "BA-07 V6: BA-04 V6 uses the run-prerequisite token BOUND_SHA_PRECONDITION_RECORD, which names recordKind CT21D_BOUND_SHA_PRECONDITION with the pointer 'BA-07 V6 sections 2, 4 and 5.4; U6'. It is on every governing scenario with BUILD_UNDER_TEST PRODUCT_BUILD or CHARACTERIZATION_BUILD. BUILD_EQUIVALENCE_RECORD also points to 5.3/U5 for both directions (AR5-04 (1)). This matches BA-07 V6 U5(b) and U6.",
+    "BA-10 V6: its header still points to the V5 memo and to a V6 memo 'to be made'. The V6 memo now exists (docs/automation/evidence/I-52-ct21d-cost-memo-v6.{py,md}), so the header should name it. BA-04 V6 keeps the numbering of sections 1 and 3 that BA-10 V6 cites. BA-04 V6 has 5 class-B-only DEFAULT scenarios (WU-BOUNDARY-CB added) and 132 governing mixed-class scenarios.",
+    "BA-08 V6: BA-04 V6 cites HDM-8 (for HDM-CHAR-FXANNBLANK) and sections 12.1 and 12.6 item 6 for the construction build. K-10 says the PW-CLONE twins are 'at least BASE and NESTED; preferably all five'; the catalog has all five.",
+    "BA-09 V6: WU-BOUNDARY and WU-BOUNDARY-CB now declare the six checks of section 7 (BA09V5-01 closed on the catalog side). The PW-CLONE-*-CB twins have dry runs under the one rule of section 4, so there are 167 dry runs.",
+    "New open Architect question AQ-V6-BA04-1 (BA-04 V6 section 8.3), before the candidate. It asks whether BOUND_SHA_PRECONDITION_RECORD should also cover the non-governing runs on a build: E4-LEARN-R1-*, LK-*, HDM-CHAR-*, EV-L-COMPOSED, WU-DRY-*, and the exploratory E6-C4. That is 180 scenarios and 5201 runs at row1; no run count moves. The catalog applies BA-07 V6 U6's reading (governing runs only).",
+    "The BA-04 V6 check reads the committed BA-04 V5 JSON to prove the FX-ANN-BLANK scenarios are unchanged except for their provenance. It also reads BA-06/07/08/09/10 V6 to confirm every section it points to. So those sibling V6 files must be committed with this round, or the check's inputs will be missing.",
+    "Untracked sibling files were already in the worktree (V2.6, BA-03 V5 and its checks, the BA-06 V6 checks and blind recompile, BA-07/08/09/10 V6). I did not modify them. Scratch generators: gen_catalog_v6.py, gen_costmemo_v6.py, mut_v6.py, and the edit_*.py and e*.py edit scripts."
+   ],
+   "open_questions": [
+    "AQ-V6-BA04-1 (new, recorded in BA-04 V6 section 8.3): does AR5-12's 'per build under test' precondition require BOUND_SHA_PRECONDITION_RECORD on non-governing runs too, or only on governing runs as BA-07 V6 U6 reads it?",
+    "AR5-04 (5) names EA2-DEFERRED-EVENTS as the catalog's safeguard. It is itself a governing CHARACTERIZATION_BUILD run that consumes EVM_FROZEN, so under AR5-04 (1) it names the BUILD_EQUIVALENCE_RECORD like the others. The catalog states both as the ruling reads; the Architect may want to confirm that this is intended."
+   ]
+  }
+ },
+ "critics": [
+  {
+   "summary": "I checked relink round V6 against decisions sections 220, 223 and 224 and the Gate 2 evidence (SHA-256 b7d4a570…cbba4, which matches the value stated in section 223). I re-ran every checker. BA-03 V5 exits 0 with 66 checks and no drift; given 69daf03a it exits 1 on CMD, as FXB-03 expects. BA-04 V6 passes 75/75 and BA-06 V6 passes 24/24, and both outputs are byte-equal to the committed ones. All evidence hashes bound in BA-06 §14 match the files.\n\n**V2.6.** It changes no normative clause: 15.2 to 15.8, C-127, P-1 to P-8, the C/X rows, PA-14 and the V2.5 §1 field are all declared unchanged, and no evidence transfers. It re-dates only §0, F-1 and F-2 with AR3-12, as AR6-05 orders. I spot-checked its code facts at 95690c28 and they hold: the three TopTransaction sites, the DEBUG-only environment variable, SBW:18-62, RVP:61-142, BP:100-130 and 228-261, RPWS:23-114, RDC:39, 83 and 186, RMC:98-110 and 153, and that RackSiblingInsertRun has no production caller.\n\n**BA-06 V6 against the blind recompile.** The §4.4 mapping partitions all 689 operations, and every MUTATING operation lands on a U-row. The rows sampled from U-42 to U-50 match the recompile's file:line, lock and transaction. RD-01 to RD-16 resolve the differences. The carry candidates equal the AR6-03 list exactly. The AR5-03 corrections are applied: C-72, DC-41, DC-18, X-05, U-09 moved to OC-PREP-READ, and U-03 kept in OC-IMPORT. AR6-04 and the AR6-02 wording are applied.\n\n**BA-08 V6.** It applies AR6-02 and FXB-01 to FXB-07, the D4-05 pinned route, the AR3-12 supersession, the rotation pin, the counts of 37 command methods and 40 LockDocument sites (verified by grep), the NR-03 locators and the §15 naming ruling. The FX-ANN-BLANK names 'Selectivo' and 'Selectivo planta - 2 frentes' agree with the code at 69daf03a and 95690c28.\n\n**BA-03 V5, BA-09 V6, BA-07 V6, BA-04 V6 and BA-02b V6.** Each applies the rulings assigned to it: the CMD, CMDI and EXP identities, FXB-06, G2-CR-02, RL-08, AR5-04, AR5-05, AR5-06, AR5-09 and the AR5-12 record.\n\nFive real gaps remain:\n1. BA-11 V6 was not produced.\n2. The fail-closed detection of AR5-12 covers only BA-03's own six code pairs, not the union of the pairs cited by BA-03, BA-06 and BA-08.\n3. V2.6 quotes only the CONTRACT dimension's classification of F-1 and F-2 while claiming fidelity to Gate 2, which also classified them CONTRACT_UPDATE_REQUIRED.\n4. BA-10 V6 still points to the V5 memo, says the V6 memo is not produced, and leaves section pointers \"to be confirmed\".\n5. V2.6's R3 row understates the redraw step's lock, transaction and import shape.",
+   "gaps": [
+    {
+     "artifact": "BA-11 V6 (hash registry)",
+     "ref": "decisions 223.4 row BA-11; 224 (2); AR6-06; AR5-14; Gate 2 CONTRACT artifact_relink BA-11; V2.6 deviation D-1; G2-CR-05",
+     "problem": "No BA-11 V6 exists. The worktree has only BA-11 V2 to V5, and none of the round's new files is a BA-11. Section 224 (2) lists BA-11 V6 among the artifacts to regenerate. 223.4 requires its §3, §3.2 and §5 corrected. AR6-06 requires the rule-5 agreement to name V2.6's precedence row. Without BA-11 V6 the registry still names BA-03 V4 as ready (BA11V5-01) and still lists V5 paths for BA-03, BA-04, BA-02b, BA-06, BA-07, BA-08, BA-09 and BA-10. It has no BOUND_PRODUCT_SHA item, no FIXTURE_CONSTRUCTION_BUILD entry and no bound-SHA precondition. The BA-01 row does not carry V2.6 as the sixth contract document, and the BA-01 row status still reads V2.5 as pending.",
+     "evidence": "`ls docs/initiatives | grep ba-11` gives v2, v3, v4, v5 and the unversioned file only. The r26, r06 and r04 cross-artifact notes list BA-11 V6 edits as still to be made: V5 paths and blobs, composite hash 0a08f6b9…b7b9a, the BA-06 per-class status, and the BA-04 and BA-02b paths.",
+     "required_fix": "Produce BA-11 V6. Update §3 rows to the round's paths and blobs: BA-03 V5 (md 2fe7b789, spec 54f9dd58, runner 5d83969b, output f11561fe), BA-04 V6 (json c737e274, md 9964d4c8), BA-02b V6 (98c7a1cf plus the V6 checker and its output), BA-06 V6 (3065065069…), BA-07 V6, BA-08 V6 (5c4d688f), BA-09 V6 (53383ab6) and BA-10 V6. Add to the BA-01 row V2.6 (blob 828b83e1) as the sixth document and the prerequisites: the bound-SHA decision, the AR5-13/AR6-05 record and the V2.6 verification. Add to §3.2 BOUND_PRODUCT_SHA = 95690c28 as a non-tuple item, FIXTURE_CONSTRUCTION_BUILD 69daf03a, and the CT21D_BOUND_SHA_PRECONDITION record kind. Correct §5 (BASE-12, BASE-5, BASE-1; BA11V5-01, -02, -05). Record the BA-06 per-class carry status. Extend §1 so the Contract-hash precedence names V2.6, keeping the rest byte-identical, and re-run the graph check against V6.",
+     "severity": "BLOCKING"
+    },
+    {
+     "artifact": "BA-03 V5 runner (I-52-ct21d-ba03-v5-checks.py/.json) together with BA-06 V6 §2.1 and BA-08 V6 §3.2",
+     "ref": "AR5-12 ('todo par (ruta, blob) de la ruta de producto reutilizada que citan BA-03, BA-06 y BA-08 … el runner de BA-03 lo detecta (falla cerrado)'); BA-07 V6 §5.4 field runnerOutput",
+     "problem": "AR5-12 makes the BA-03 runner the fail-closed detector for every reused-route (path, blob) pair that BA-03, BA-06 and BA-08 cite. The V5 runner resolves only BA-03's own six BOUND code sources: RVA, SDL, CMD, COD, CMDI and EXP. The BA-06 §2.1 route rows (about 38 paths, for example SystemBlockWriter, BlockPlacement, RackViewPlacement, RackViewBatchDriver, BlockLibraryImporter and LateralHeaderDrawer) and the BA-08 §3.2 W and C pairs (56 rows, including SelectiveFrontalDrawService, SelectivePlantaDrawService and RackNewRackName) are compared against a build-source SHA by no runner. BA06-C19 only recomputes the 95690c28 column from the checkout. BA-07 V6 §5.4 nevertheless records the BA-03 runnerOutput as the proof that 'the runner fails closed on a delta' for the union of citedPairs. Each implementer described their table as 'this artifact's part', and no one implemented the union.",
+     "evidence": "The BA-03 V5 spec sources are V17, V18, P57, FND, ADR, ADR0, DEC117, RVA, SDL, CMD, COD, CMDI, EXP and DEC223: six code paths. The runner docstring limits the build-SHA pass to 'the (path, blob) pairs of BA-03'. The r0809 note says: 'BA-03 V5 or its checks need to cover these pairs. I have not verified that BA-03 V5 does.' It does not.",
+     "required_fix": "Extend the BA-03 V5 specification and runner with a BOUND source set equal to the union of the reused-route (path, blob) pairs of BA-06 V6 §2.1 (the 'route' rows, precedent rows excluded) and BA-08 V6 §3.2 (W and C rows, or the set the Architect rules). Resolve each pair at the bound SHA and at the optional build-source SHA, and fail closed on any difference or absence. Alternatively, publish a dedicated precondition runner and re-point AR5-12's 'runner de BA-03' reading and BA-07 V6 §5.4 runnerOutput to it with an Architect ruling. Re-run and republish the output.",
+     "severity": "MAJOR"
+    },
+    {
+     "artifact": "CT-21D V2.6 draft (and its relation to BA-08 V6 §3.3)",
+     "ref": "V2.6 §1.2, §1.3, note V26-N1; Gate 2 dimensions RELINK-038 (fact 'AUTH-15 overload A … no production caller' = CONTRACT_UPDATE_REQUIRED) and RELINK-0605 (fact 'CT-21D V2.1 §15.1 F-1/F-2' = CONTRACT_UPDATE_REQUIRED); AR6-05 conservative reading",
+     "problem": "V2.6 labels F-1 and F-2/AR3-12 as 'Gate 2 classification: CHANGED_BUT_CONTRACT_COMPATIBLE'. V26-N1 asserts that every classification quoted is 'the one of the Gate 2 evidence'. The same evidence classifies the same facts CONTRACT_UPDATE_REQUIRED in two other dimensions, and AR6-05 adopted that conservative reading. V2.6 omits the conflict. BA-08 V6 §3.3 keeps CONTRACT_UPDATE_REQUIRED for AR3-12, so two round artifacts state different classifications for one fact without cross-reference.",
+     "evidence": "Gate 2 RELINK-038 fact for BA-08 V5: AUTH-15 overload A 'no production caller' is classification CONTRACT_UPDATE_REQUIRED. RELINK-0605 fact for 'CT-21D V2.1 §15.1 (dated code facts, AR5-13)' is CONTRACT_UPDATE_REQUIRED. The CONTRACT dimension gives CHANGED_BUT_CONTRACT_COMPATIBLE, and its no-V2.6 ruling was refuted by its verifier.",
+     "required_fix": "In V2.6 §1.2 and §1.3 (or V26-N1), state that Gate 2 classified F-1 and F-2/AR3-12 as CHANGED_BUT_CONTRACT_COMPATIBLE in the CONTRACT dimension and as CONTRACT_UPDATE_REQUIRED in RELINK-038 and RELINK-0605. State that AR6-05 adopted the latter reading, which is why V2.6 exists. Align BA-08 V6 §3.3 by citing the same two-dimension disclosure.",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "BA-10 V6 (parameter sheet)",
+     "ref": "decisions 224 (2) '(+ memo)'; Gate 2 CONTRACT artifact_relink BA-10 ('re-point the BA-08/BA-06 labels … confirm the section numbers'); r04 cross-artifact note",
+     "problem": "The BA-10 V6 header (lines 49-51) and the §7 row 'cost memo' say the V6 memo is not produced and point to I-52-ct21d-cost-memo-v5.md. The V6 memo now exists at docs/automation/evidence/I-52-ct21d-cost-memo-v6.{py,md}, generated over the 437-scenario catalog. The header (line 41) and the §7 'labels' row still say the BA-04, BA-08 and BA-09 V6 section numbers 'are confirmed against their V6 bytes by the review of the round'. That confirmation was never recorded in the artifact. I checked that the pointed sections exist: BA-04 V6 §1 and §3, BA-08 V6 §8, §10, §11.2 HDM-5 and HDM-7, and BA-09 V6 §4.",
+     "evidence": "BA-10 V6 lines 41 and 49-51, and §7 rows 'labels (223.4, row BA-10)' and 'cost memo'. The cost-memo-v6 files are present, untracked.",
+     "required_fix": "Regenerate BA-10 V6 (gen_ba10v6.py) so that the header and §5/§7 name docs/automation/evidence/I-52-ct21d-cost-memo-v6.md and .py, with their hashes. Replace the 'to be confirmed' wording with a statement that the cited section numbers were verified against the BA-04, BA-08 and BA-09 V6 bytes; that statement should be mechanically checked.",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "CT-21D V2.6 draft §1.2 row R3",
+     "ref": "AR6-05 ('describiendo las tres rutas de creación Selective'); blind recompile R3 and observations; BA-06 V6 U-50 and RD-04",
+     "problem": "The R3 row says the redraw of existing siblings runs 'in its own lock and own transaction before placement'. The recompile shows three separately locked phases before placement:\n(1) Prepare under the lock at AutoCadSiblingRedrawPort.cs:23, including MUTATING library imports (EnsureForPlan / WblockCloneObjects) outside any RackCad transaction, which are not undone if the mutation is later discarded.\n(2) Mutate under its own lock and transaction (SiblingRedrawTransaction:18), with commit or abort.\n(3) Post under its own lock: PurgeUnreferenced, RackBlockRenamer.SyncName and Editor.Regen.\nThese are dated fact text that the Architect is asked to pre-approve, and they understate the route's lock and write shape compared with BA-06 V6 U-50 and RD-04.",
+     "evidence": "Blind recompile summary: 'Per sibling to redraw or erase, under the lock at AutoCadSiblingRedrawPort.cs:23: EnsureForPlan imports (MUTATING)…; One mutate transaction (SiblingRedrawTransaction.cs:18)…; Post under a lock: PurgeUnreferenced, RackBlockRenamer.SyncName…, Editor.Regen'. Header observation: 'Library imports done during Prepare are not undone if the later mutate is discarded.'",
+     "required_fix": "Reword V2.6 §1.2 R3 (b) to describe prepare (own lock; library import outside any transaction, not rolled back on discard), mutate (own lock and transaction, commit or abort) and post (own lock; purge, rename, regen) as separate steps, citing AutoCadSiblingRedrawPort.cs and SiblingRedrawTransaction.cs lines at 95690c28. No normative clause changes.",
+     "severity": "MINOR"
+    }
+   ]
+  },
+  {
+   "summary": "Read-only critic of relink round V6 (I-52 CT-21D). I found no FAIL or UNKNOWN turned into PASS, and nothing breaks the round's limits. There is 1 MAJOR gap (AR5-12 fail-closed coverage) and 2 MINOR consistency gaps.\n\nWhat passed:\n- **Limits:**\n  - `git status` shows only untracked new files and no tracked modifications. V2.1..V2.5, older BA versions, src/ and tests are untouched. The worktree HEAD is a63c0527, and its src/ is identical to 95690c28.\n  - I60_NAMING_FOR_RACKMIRROR = NOT_YET_ADOPTED in V2.6, BA-03 V5, BA-04 V6, BA-06 V6 and BA-08 V6. Each keeps '<base> - espejo' / 'Rack - espejo', and none adopts I-60 naming.\n- **Runners re-run to a scratchpad copy:**\n  - BA-03 V5: exit 0, 66 checks, failed = [], identityDrift = [], bound SHA ok. The output equals the published one except runUtc.\n  - BA-04 V6: 75/75 PASS, output byte-identical.\n  - BA-06 V6: 24/24 PASS (C1..C24), output byte-identical.\n  - Memo V6: its stdout is embedded verbatim in the published .md, and the .py SHA-256 is a7a044a6 as bound.\n- **Check names:** BA-04 V6 dropped 4 V5 check names; each was replaced by a V6 counterpart. BA-06 kept C1..C18 and added C19..C24.\n- **DEPENDS_ON:** every header line is unchanged against V5 and the BA-11 V5 graph. I ran the BA-11 V5 graph check on a temp copy with the registry paths repointed to BA-03 V5 and the V6 files: ALL_PASS (acyclic, topological seal order, headers match cells, forbidden edges absent).\n- **Shared facts, consistent across artifacts:**\n  - BOUND_PRODUCT_SHA 95690c28 as a non-tuple value.\n  - FIXTURE_CONSTRUCTION_BUILD 69daf03a as a third role, outside AR5-12.\n  - Routes R1 (RACKSELECTIVO), R2 (RACKCAD menu) and R3 (RACKEDITAR Insertar, G9b chain). RACKPROYECTAR is a precedent only and AR3-12 is superseded.\n  - Per-class STATIC_REVIEWED: 16 carry candidates = the AR6-03 list; OC-IMPORT, OC-REF-TOP, OC-ENVELOPE, OC-PREP-READ and OC-VERIFY-READ are not carried.\n  - AR5-04 (163 BUILD_EQUIVALENCE_RECORD, of which 115 CB), AR5-05 (7 twins), AR5-09 (AQ-V5-08 removed) and the naming ruling.\n- **Code and hash facts:**\n  - V2.6 code facts re-verified at 95690c28: the three TopTransaction reads, the DEBUG-only environment variable, 37 [CommandMethod] and 40 LockDocument().\n  - The composite hash reproduces: e433cb13 for V2.1..V2.5 and 0a08f6b9 for V2.1..V2.6.\n  - All reported blobs and SHA-256 values match the bytes, including the blind recompile eebc4dfc and the BA-04 checker and output hashes cited in BA-02b V6.\n- **Section pointers:** those BA-10 V6 carried from V5 (BA-04 §1, §3; BA-08 §8, §10, §11.2, HDM-5, HDM-7; BA-09 §4) all exist in the V6 bytes.\n\nNot yet produced: BA-11 V6, which §224 lists.",
+   "gaps": [
+    {
+     "artifact": "BA-03 V5 (docs/initiatives/I-52-ct21d-baseline-ba-03-selective-scope-v5.md + docs/automation/evidence/I-52-ct21d-ba03-v5-checks.json/.py), with knock-on to BA-07 V6 §5.4 and BA-08 V6 §16.3 K-11",
+     "ref": "AR5-12 (decisions §220.2); BA-03 V5 line 258; BA-07 V6 line 260 (runnerOutput); BA-06 V6 §2.1 identity table; BA-08 V6 §3.2",
+     "problem": "AR5-12 is the precondition before each build under test. Every (path, blob) pair of the reused product route that BA-03, BA-06 AND BA-08 cite at the bound SHA must equal the pair at the build's source SHA, and 'el runner de BA-03 lo detecta (falla cerrado)'. The BA-03 V5 spec has only 6 BOUND code sources (RVA, SDL, CMD, COD, CMDI, EXP), and the runner's build-source-SHA argument checks only those. BA-03 V5 line 258 nevertheless says 'the BA-03 runner detects a drift of the reused (path, blob) pairs'. BA-07 V6 §5.4 uses that runner output as the fail-closed evidence of the CT21D_BOUND_SHA_PRECONDITION record. No script checks the BA-06 or BA-08 pairs against a build source SHA: BA06-C19 checks only the 95690c28 column against the checkout. So a build whose source differs in one of those uncovered files passes the precondition with runner exit 0.",
+     "evidence": "Read-only comparison. 37 of the 39 'route' rows in BA-06 V6 §2.1 have paths that are not BOUND sources of BA-03 V5, among them SystemBlockWriter.cs, BlockPlacement.cs, RackViewPlacement.cs, RackViewBatchDriver.cs, BlockLibraryImporter.cs, RackBlockData.cs and RackNewRackName.cs. 47 of the 52 W/C rows in BA-08 V6 §3.2 are not BOUND sources of BA-03 V5. Runner docstring lines 22-24: 'the part of the AR5-12 preparation precondition that concerns the (path, blob) pairs of BA-03'.",
+     "required_fix": "Pick one of these fixes.\n(a) Make the BA-03 runner fail closed on the full AR5-12 set. Either:\n- add every BA-06 V6 §2.1 'route' row and every BA-08 V6 §3.2 W/C row to the BA-03 V5 spec as BOUND sources with their 95690c28 blobs, and re-run to exit 0; or\n- have the runner parse those two tables from their pinned blobs and resolve each pair at the build source SHA.\nThen update BA-03 V5 §2 and §8 and the runner docstring.\n(b) Correct BA-03 V5 line 258 to say 'BA-03's six pairs only'. Record, as an open question for the Architect, that AR5-12 detection for the BA-06 and BA-08 pairs has no home. BA-07 V6 §5.4 must then not rely on runnerOutput alone for those pairs.",
+     "severity": "MAJOR"
+    },
+    {
+     "artifact": "BA-08 V6 (docs/initiatives/I-52-ct21d-baseline-ba-08-selective-kind-baseline-v6.md)",
+     "ref": "§12.1 condition 1 (line 483); §17 row FXB-03 (line 673); compare with BA-07 V6 §5.5 (line 276) and AR5-11",
+     "problem": "BA-08 V6 says FIXTURE_CONSTRUCTION_BUILD 'is recorded **only** in the FIXTURE_INSTANCE@FX-ANN-BLANK pin record'. BA-07 V6 §5.5 says the identity lives in the fixture conformance record, and that 'the pin-record schema gains no field'. The pin reaches the identity only through sourceEvidence. AR5-11 also places the identity in the conformance record, and BA-08 V6 §12.6 item 6 and BA-04 V6 both say 'conformance record'. BA-08 therefore contradicts itself and BA-07 on where this shared fact is stored.",
+     "evidence": "BA-08 V6 line 483: 'FIXTURE_CONSTRUCTION_BUILD is recorded **only** in the FIXTURE_INSTANCE@FX-ANN-BLANK pin record'. BA-07 V6 line 276: 'Where its identity lives. In the fixture conformance record ... The pin-record schema gains no field.'",
+     "required_fix": "In BA-08 V6 §12.1 condition 1 and the §17 FXB-03 row, replace 'recorded only in the FIXTURE_INSTANCE@FX-ANN-BLANK pin record' with 'recorded only in the fixture conformance record of FIXTURE_INSTANCE@FX-ANN-BLANK (section 12.6 item 6), which the pin cites in sourceEvidence (BA-07 V6 5.1, 5.5); the pin record gains no field'. Then re-run the BA-04 V6 check, which reads BA-08 V6 bytes, and regenerate its output and the BA-02b V6 binding if the input hashes change.",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "BA-10 V6 (docs/initiatives/I-52-ct21d-baseline-ba-10-parameter-sheet-v6.md)",
+     "ref": "header COST MEMO (lines 48-52); §7 row 'cost memo' (line 304)",
+     "problem": "BA-10 V6 says the latest memo is the V5 memo and that the V6 memo 'this artifact does not produce' is still to come. The V6 memo already exists at docs/automation/evidence/I-52-ct21d-cost-memo-v6.{py,md}, and it binds BA-10 V6 by SHA-256 ce5e68fd…. So BA-10 V6 points to a stale 'latest' memo, contradicting a file in the same round.",
+     "evidence": "BA-10 V6 lines 49-51: 'The latest memo, docs/automation/evidence/I-52-ct21d-cost-memo-v5.md and .py, was computed over the V5 catalog; the Coordinator lists a memo with the relink round ... which this artifact does not produce'. The cost-memo-v6.md header binds ce5e68fd156cdda01a0e727e21a756c9d7e0469097670dcb8f06137377b670f5 (BA-10 V6).",
+     "required_fix": "Change the BA-10 V6 header and the §7 'cost memo' row to name docs/automation/evidence/I-52-ct21d-cost-memo-v6.md and .py as the memo over the V6 catalog, by path only, with no hash, to avoid a cycle. Then re-run cost-memo-v6.py and update the BA-10 SHA-256 it binds. Re-run the BA-04 V6 check, which reads BA-10 V6, and refresh its output and the BA-02b V6 binding if they change.",
+     "severity": "MINOR"
+    }
+   ]
+  }
+ ]
+}
