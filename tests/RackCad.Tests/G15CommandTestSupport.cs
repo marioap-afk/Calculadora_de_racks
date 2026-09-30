@@ -116,7 +116,21 @@ namespace RackCad.Tests
             {
                 var definitionKey = "DEF-" + referenceKey;
                 references.Add(G14.Reference(referenceKey, definitionKey));
-                definitions.Add(G14.Definition(definitionKey, rackId, KindOf(Kind), name: name));
+                // The source view class is SourceAddress (Planta unless a test says otherwise), encoded by the Foundation codec. A kind
+                // the codec cannot encode there (the flow bed has no planta) keeps the historical planta envelope of these fakes.
+                var view = RackEmbedDocument.ViewPlanta;
+                var section = -1;
+                try
+                {
+                    var syntax = RackViewCodec.Encode(Kind, SourceAddress);
+                    view = syntax.View ?? view;
+                    section = syntax.Section;
+                }
+                catch (ArgumentException)
+                {
+                }
+
+                definitions.Add(G14.Definition(definitionKey, rackId, KindOf(Kind), view, section, name: name));
                 facts[referenceKey] = G14.Facts(x, y, rotation, originX: originX);
                 rackIds.Add(rackId);
                 Services.WithFrame(rackId, G14.Planta, G14.PlantaFrame());
