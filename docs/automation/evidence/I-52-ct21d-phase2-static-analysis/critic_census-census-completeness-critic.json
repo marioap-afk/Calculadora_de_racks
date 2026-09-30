@@ -1,0 +1,480 @@
+{
+ "facts": [
+  {
+   "id": "F01",
+   "topic": "method",
+   "statement": "Independent sweep of every .cs file in the three projects (Domain 61, Application 457, Plugin 70 = 588 files; the only other files are 3 .csproj; the extract has no obj/ or bin/). A comment- and string-stripping classifier assigned every declaration that carries the static modifier to one of: static class, method, operator, const, field (readonly or not), get-only auto-property, expression-bodied property, event or static constructor. Two independent greps then cross-checked the result.",
+   "evidence": "Classifier totals. Domain: 12 static classes, 16 methods, 1 prop{}, 1 prop=>. Application: 248 static classes, 2234 methods, 38 operators, 84 static readonly fields, 1 non-readonly field, 30 get-only props, 31 prop=>, 4 inline static lambdas (e.g. ProjectVariables/SelectiveLinkedProperties.cs:154). Plugin: 28 static classes, 210 methods, 3 static readonly fields, 4 non-readonly fields, 1 prop{}, 1 prop=>. Cross-check greps: 'static readonly' gives Domain 0, Application 84, Plugin 3. 'static ... { get; }' gives 1, 30, 1. Three classifier leftovers were read by hand and are methods or computed properties: Systems/PushBack/PushBackBedSlope.cs:33,37 and Systems/Shared/RackAuthoredComparator.cs:67-68.",
+   "status": "FACT"
+  },
+  {
+   "id": "F02",
+   "topic": "negative patterns",
+   "statement": "None of these three projects has any static constructor, [ModuleInitializer], [ThreadStatic], ThreadLocal, AsyncLocal, Lazy<, LazyInitializer, ConditionalWeakTable, MemoryCache, static event (no 'event' keyword at all), Interlocked, or static property with set/init. There are also no writes to HostApplicationServices.WorkingDatabase, no SetSystemVariable, no SetEnvironmentVariable, no CurrentCulture assignment and no AssemblyResolve hook. PluginInitializer (IExtensionApplication) has empty Initialize and Terminate methods.",
+   "evidence": "The classifier found 0 static ctors and 0 events. The grep for ThreadStatic|ThreadLocal|AsyncLocal|Lazy<|ModuleInitializer|static event|event |volatile|Interlocked|WorkingDatabase|SetSystemVariable|AssemblyResolve|SetEnvironmentVariable matched only src/RackCad.Application/Diagnostics/RackLog.cs:18 (volatile) and src/RackCad.Plugin/PluginInitializer.cs:5. PluginInitializer.cs:7-13 has empty bodies. The grep for 'static ... { get; (private )?set|init' returned no hits.",
+   "status": "FACT"
+  },
+  {
+   "id": "F03",
+   "topic": "non-readonly static fields",
+   "statement": "The three projects have exactly 5 non-readonly static fields: RackLog.sink, plus the 4 BlockLibraryDatabaseCache fields. All 5 are already in the census.",
+   "evidence": "src/RackCad.Application/Diagnostics/RackLog.cs:18; src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:12,13,14,15. A grep of 'static' lines excluding readonly, const, class, '(' and '=>' leaves only these 4 Plugin lines plus 3 method/property signatures. RackLog.cs:18 was dropped by that grep's '(' filter but was found by the classifier.",
+   "status": "FACT"
+  },
+  {
+   "id": "F04",
+   "topic": "static .*Instance",
+   "statement": "The only static member named Instance is RackHeaderPieceRequirementExtractorV2.Instance. It is in the census, and nothing in src calls it.",
+   "evidence": "src/RackCad.Application/Systems/Shared/LibraryPieceRequirementsV2.cs:153. A grep for 'RackHeaderPieceRequirementExtractorV2.Instance' outside its declaration returns nothing. RackBlockRequirementExtractors has a single caller, and it uses HeaderRun: src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:32.",
+   "status": "FACT"
+  },
+  {
+   "id": "F05",
+   "topic": "missing from census - mutable",
+   "statement": "No static member that is mutable (written at runtime) or mutable by type (latent) is missing from the census in Domain, Application or Plugin. Every one of the 5 non-readonly fields, the 2 ConcurrentDictionary caches, the 14 static JsonSerializerOptions, all 19 non-empty arrays, the 7 empty List/Dictionary sentinels, RackFrameTemplateCatalog.All and the 2 Cantilever policy singletons already appears in B2a-B2d.",
+   "evidence": "Classifier output reconciled one by one against the census JSON. See table 'Mutable static members (tiers A and B)'.",
+   "status": "FACT"
+  },
+  {
+   "id": "F06",
+   "topic": "missing from census - immutable",
+   "statement": "Application has 23 static object- or value-holding members, in 17 groups, that the census does not list. All are immutable: get-only or readonly, private constructors, no setters, readonly-struct or enum values, or zero-length backing arrays. None adds warm-up risk. Domain and Plugin have no omissions.",
+   "evidence": "See table 'Static members missing from the census'. Examples: Bom/RackBomOutputGate.cs:25 (RackBomOutputVerdict has get-only Allowed/Reason, :13-23); Geometry/Spatial3D.cs:139-140 (LocalFrame3D get-only props, :117-136; Point3D/Vector3D are readonly structs, :7,:38); StructuralSections/StructuralSectionProperties.cs:20 (every property is { get; init; }, no 'set;' in the file).",
+   "status": "FACT"
+  },
+  {
+   "id": "F07",
+   "topic": "computed static properties (not state)",
+   "statement": "The 33 expression-bodied static properties (Domain 1, Application 31, Plugin 1) hold no state. Each builds a new value, reads a constant, or delegates to another static on every access. Five of them read the environment or settings on every call and cache nothing: RackLog.LogDirectory, BlockLibrary.DefaultPath, UserSettingsStore.SettingsPath, UserTemplateStore.DefaultPath and BlockLibraryImporter.LibraryPath. RackFrameTemplateCatalog.Default (=> All[0]) is the one that exposes a shared mutable object, and that object is already covered by the census entry for All.",
+   "evidence": "src/RackCad.Domain/Systems/Cantilever/CantileverLineDesign.cs:318-319 (new CantileverPlantaVisibilityDesign on each call); Application/Diagnostics/RackLog.cs:21; Application/Catalogs/BlockLibrary.cs:16; Application/Settings/UserSettings.cs:61; Application/RackFrames/UserTemplateStore.cs:31; Plugin/Drawing/BlockLibraryImporter.cs:23; Application/RackFrames/RackFrameTemplateCatalog.cs:85.",
+   "status": "FACT"
+  },
+  {
+   "id": "F08",
+   "topic": "command-class instance state",
+   "statement": "Only one AutoCAD command class (a class with [CommandMethod]) declares instance fields or properties: RackVariablesCommands, with LastRegistry and LastEntries. B2d already lists both. Every other instance field in Plugin belongs to a per-call helper or result type, or to a draw service built with 'new' on each call.",
+   "evidence": "A depth-aware per-class scan of all 70 Plugin files. Instance members at command-class level exist only at src/RackCad.Plugin/RackVariablesCommands.cs:91,94. Other hits sit in nested helper types: RackDuplicarCommands.cs:341-376 (DuplicationSnapshot/SourceReference/...), RackLayoutCommands.cs:162-171 (PlantaSeed), RackInventarioCommands.BomTotal.cs:271-273 (ApprovedRack), Systems/Selective/SelectiveFrontalDrawService.cs:23-24 (the service is built per call at RackSelectivoCommands.cs:521).",
+   "status": "FACT"
+  },
+  {
+   "id": "F09",
+   "topic": "census verification - line numbers",
+   "statement": "Every census line reference that was spot-checked matches the extract.",
+   "evidence": "Checked: RackLog.cs:18,:36-41,:61,:65-69; RackCad.Application.csproj:11 (InternalsVisibleTo RackCad.Tests); RackDiagnosticsLog.cs:15-16,:44-48; JsonRackCatalogProvider.cs:48-49,:51-55,:67-70,:75,:77,:79-81,:85-86; CsvStructuralSectionCatalogProvider.cs:26-27,:42-46,:64,:76-77; BlockLibraryDatabaseCache.cs:11-15,:19,:25-30,:44-53; SafetyFacePiece.cs:28-32,:35,:38-39,:41,:44,:51-59; RackSelectivoCommands.cs:398,:413,:416,:429-432,:449,:469-470,:475,:519-521; RackDefinitionCreationResult.cs:53 (internal readonly struct),:55; CustomPropertiesExecutor.cs:127; RackCatalogLoader.cs:22,:28,:37.",
+   "status": "FACT"
+  },
+  {
+   "id": "F10",
+   "topic": "census verification - negative claims",
+   "statement": "These negative claims in the census hold. RackDefinitionCreator and RackDefinitionCreationResult have no production caller. AutoCadExternalLibraryBlockQuery is never instantiated. RackAuthoredComparatorPorts has no caller outside its own two files. NearFace/FarFace are written only by PushBackDefenseSides (and copied by DeepCopy). No KindHandlers handler declares a field. SystemDescriptor has no setters.",
+   "evidence": "Greps over src (all projects including UI). 'RackDefinitionCreator|RackDefinitionCreationResult' outside Systems/Shared/RackDefinitionCreat* returns nothing. 'AutoCadExternalLibraryBlockQuery' outside its file returns nothing. 'RackAuthoredComparatorPorts' matches only RackAuthoredComparator.cs:65 and RackAuthoredComparator.FourKinds.cs:12. '(NearFace|FarFace) =' matches only Application/Systems/PushBack/PushBackDefenseSides.cs:65-66 and Domain/Systems/Selective/SelectivePalletDesign.cs:605-606. The per-class field scan finds only KindHandlerRegistry.cs:28 (_dispatch) in KindHandlers. The setter grep on Application/Systems/Shared/SystemDescriptor.cs returns nothing.",
+   "status": "FACT"
+  },
+  {
+   "id": "F11",
+   "topic": "census correction - SelectiveAuthoredAuthority.ComparisonOptions",
+   "statement": "The code does not support the census value reachable_from_seam_paths=YES. The census bases YES on the task statement ('The task lists SelectiveAuthoredAuthority as a seam reader'). No call chain from RACKSELECTIVO -> DrawSelectiveView -> frontal/planta reaches SelectiveAuthoredAuthority. Every caller is on a BOM, duplication, project-variable, recovery or comparator path. Only :160 (Canonical) reads ComparisonOptions, and :160 is reached from Resolve or IsSameAuthority. The value should be NO for the create draw chain, or UNCERTAIN if the governed seam also covers those other commands.",
+   "evidence": "src/RackCad.Application/ProjectVariables/SelectiveAuthoredAuthority.cs:86,96,128,159-160. Callers: Bom/BomAuthoredAuthority.cs:112 (reached from Plugin/RackInventarioCommands.BomTotal.cs:150); Persistence/RackDuplicationPlan.cs:450; ProjectVariables/ProjectVariableConsumerDiscovery.cs:150,185; ProjectVariables/ProjectVariablesWorkspace.cs:492; ProjectVariables/RecoveryAssessment.cs:101,261,308; Systems/Shared/RackAuthoredComparator.cs:102 (no external caller, F10). The create chain RackSelectivoCommands.cs:398,413-416,429-521 calls SelectivePalletDesignStore, RackEmbedComposer and RackEmbedStore only.",
+   "status": "UNCERTAIN"
+  },
+  {
+   "id": "F12",
+   "topic": "census correction - SelectiveTargetPlan.NoCells reachability",
+   "statement": "The census marks SelectiveTargetPlan.NoCells as UNCERTAIN. The code shows it is NOT reachable from the Plugin draw chain. Its only reader is SelectiveTargetResolver, and SelectiveTargetResolver is referenced only by editor-scope Application files. No Plugin file and no Selective builder references it.",
+   "evidence": "Application/Systems/Selective/SelectiveTargetPlan.cs:127; readers only at Application/Systems/Selective/SelectiveTargetResolver.cs:74,104. A grep for SelectiveTargetResolver over Application, Plugin and Domain hits only SelectiveApplyScope.cs, SelectiveCellAddress.cs, SelectiveEditorState.cs, SelectiveFondoTargets.cs and the file itself. SelectiveFrontalBuilder.cs and SelectivePlantaBuilder.cs are not among them.",
+   "status": "FACT"
+  },
+  {
+   "id": "F13",
+   "topic": "census refinement - RackFrameTemplateCatalog.All",
+   "statement": "Two refinements. (1) The census says it is UNCERTAIN whether the UI mutates the shared templates. That can be narrowed: no member-access write to any RackFrameTemplate or TemplateHorizontal property exists anywhere in src, UI included. The UI horizontal edits write FrameHorizontal, which is a different type. (2) The census reachability list omits HardcodedStandardRackFrameService.cs:28 (off-seam: RackCabeceraCommands.cs:34, UI EditorModules.cs:193) and UI RackSelectiveWindow.xaml.cs:1305, which is on the RACKSELECTIVO path through the WPF window only. Neither changes the census verdict.",
+   "evidence": "A grep for '.(DefaultHeight|DefaultDepth|Horizontals|DefaultArrangement|DiagonalProfile|BraceStartConnectionPoint|BraceEndConnectionPoint) =' over src found nothing. The '.(Elevation|Quantity) =' hits are src/RackCad.UI/RackFrames/HorizontalEditorRow.cs:55,106 (field type FrameHorizontal, :15) and RackFrameConfiguratorViewModel.cs:1152-1171 (Action<FrameHorizontal>, :2076). Mutable type: Application/RackFrames/RackFrameTemplate.cs:9-11,23-36. The Frontal builder does not reach the catalog: SelectiveFrontalBuilder's collaborators (the Selective*Placement/Geometry/Annotations helpers and SelectiveDesviadorDrawing) use only the SelectiveLateralBuilder.LateralView name (SelectiveDesviadorDrawing.cs:44,51), never Cortes or FindStandardOrDefault.",
+   "status": "FACT"
+  },
+  {
+   "id": "F14",
+   "topic": "census refinement - RackLog.sink reachability",
+   "statement": "The RackLog.sink reachability chain leaves out two sites that the RACKSELECTIVO command reaches directly. RackCommandSupport.Report logs at :28 and is the catch handler at RackSelectivoCommands.cs:44. ReadDimensionStyleNames logs at :174 on failure and is called at RackSelectivoCommands.cs:32. Both sit in the command wrapper, not inside DrawSelectiveView, so a warm-up that calls DrawSelectiveView directly would not hit them. Other RackLog callers not in the census list are all off-seam (lateral, layout, BOM, properties, variables).",
+   "evidence": "src/RackCad.Plugin/RackCommandSupport.cs:23-28 and :165-174; RackSelectivoCommands.cs:32,44. Full caller list: CustomPropertiesData.cs:98, AutoCadExternalLibraryBlockQuery.cs:54, BlockLibraryDatabaseCache.cs:44, BlockLibraryImporter.cs:129, BlockPlacement.cs:168, LateralHeaderDrawer.cs:236, LateralHeaderDrawService.cs:287, RackBlockRenamer.cs:56, SelectiveKindHandler.cs:48, ProjectVariableMutationExecutor.cs:325, ProjectVariablesData.cs:93, RackCatalogLoader.cs:28,37, RackCommandSupport.cs:28,174, RackInventarioCommands.BomTotal.cs:263, RackLayoutCommands.cs:206, RackLayoutCommands.Fill.cs:247,301,426, Application CorruptFile.cs:16,38, UserTemplateStore.cs:75, UserSettings.cs:118,145.",
+   "status": "FACT"
+  },
+  {
+   "id": "F15",
+   "topic": "census refinement - JsonRackCatalogProvider.Cache entry mutation",
+   "statement": "The census calls mutation of individual cached catalog entries UNCERTAIN. A name-based grep narrows this. Across Application, Plugin and UI, the only member-access writes to any settable property name of RackCatalog, CatalogEntryBase subclasses or RackDefaults are in JsonRackCatalogProvider.CopyBase, which runs inside LoadUncached before the catalog is cached. Every other hit is a different type with the same property name. No downcast of a catalog list to List<> exists. Aliasing or reflection cannot be ruled out statically, so this stays UNCERTAIN, with no writer observed.",
+   "evidence": "src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs:204-216 (CopyBase) and :84 (LoadUncached). Same-name, different-type hits: Plugin/RackLayoutCommands.cs:198-199 (PlantaSeed, :162-171); Plugin/RackInventarioCommands.cs:129-130 (AutoCAD ViewTableRecord from GetCurrentView). A grep for '(List<...CatalogEntry>)' or 'as List<...CatalogEntry' returns nothing. RackCatalog setters: Catalogs/CatalogEntries.cs:266-294.",
+   "status": "UNCERTAIN"
+  },
+  {
+   "id": "F16",
+   "topic": "census consistency - KindHandlerRegistry.Default",
+   "statement": "For the create chain, the census verdict NO is correct. The RACKEDITAR edit path does reach it: RackMenuCommands.cs:141 -> KindHandlerDispatch -> SelectiveKindHandler.cs:20 -> RackSelectivoCommands.EditSelective. Other census entries (BlockLibraryDatabaseCache) do count the redraw paths as seam, so whether the seam includes edit/redraw is applied inconsistently. There is no risk either way, because the registry is immutable.",
+   "evidence": "src/RackCad.Plugin/RackMenuCommands.cs:77 (RACKCAD -> DrawSelectiveView, no registry) and :141; KindHandlers/KindHandlerDispatch.cs:22,36,51; KindHandlers/SelectiveKindHandler.cs:20; KindHandlers/KindHandlerRegistry.cs:28,55-63.",
+   "status": "UNCERTAIN"
+  },
+  {
+   "id": "F17",
+   "topic": "census minor - stateless singletons row",
+   "statement": "The census row for stateless service singletons includes RackBlockRequirementExtractors.Cantilever. That member has no caller in src. Only HeaderRun is used, and it is on the seam.",
+   "evidence": "src/RackCad.Application/Systems/Shared/LibraryBlockRequirements.cs:47-51. The only 'RackBlockRequirementExtractors.' use in src is src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:32 (HeaderRun).",
+   "status": "FACT"
+  },
+  {
+   "id": "F18",
+   "topic": "no census entry is wrong on mutability",
+   "statement": "No census entry labels an immutable member as mutable, and none labels a mutable member as immutable. The latent-mutable classifications (JsonSerializerOptions, non-empty arrays, List/Dictionary sentinels, RackFrameTemplateCatalog, Cantilever policies exposing an internal List) match the declared types.",
+   "evidence": "Cantilever policies: Application/Systems/Cantilever/CantileverArmSectionPolicy.cs:92,119-120,136 (Variants => _order List); CantileverColumnBaseSectionPolicy.cs:44-45,90-93,115,117. Sentinels: e.g. Systems/Selective/SelectiveEditorOpen.cs:70-71 (new Dictionary), Systems/PushBack/PushBackBootPlan.cs:82 (new List). ReadOnlyCollection wrappers (not latent-mutable): Expressions/ExpressionBinder.cs:14-15, ExpressionEvaluator.cs:38-39, RegistryEvaluationModels.cs:93-94,224-225.",
+   "status": "FACT"
+  },
+  {
+   "id": "F19",
+   "topic": "out of scope - UI",
+   "statement": "RackCad.UI is outside the census scope, but the RACKSELECTIVO command opens a UI window (RackSelectiveWindow) before it draws. That project has at least 4 non-readonly static fields, which tests or runtime code reassign. The UI project was NOT swept exhaustively.",
+   "evidence": "src/RackCad.UI/Shell/EditorClosePolicy.cs:51 (confirm; reassigned :70-71); src/RackCad.UI/Shell/ShellResources.cs:16 (dictionary; lazily set :29-31); src/RackCad.UI/Systems/Selective/SelectiveCabeceraHeightPrompt.cs:21-22 (confirmSevere/showInformative; reassigned :37-42). Also 169 'static readonly' lines in RackCad.UI (not reviewed). Window construction: src/RackCad.Plugin/RackSelectivoCommands.cs:31.",
+   "status": "FACT"
+  }
+ ],
+ "tables": [
+  {
+   "title": "Per-project count of static state-holding members (fields + get-only auto-properties; excludes const, methods, operators, static lambdas and computed => properties)",
+   "columns": [
+    "Project",
+    "cs files",
+    "Lines with word 'static' (incl. comments)",
+    "State-holding static members (fields + props)",
+    "Computed static props (=>, no state)",
+    "Tier A: written at runtime after init",
+    "Tier B: mutable by type, never written by repo code",
+    "Tier C: immutable",
+    "Strict mutable count (A)",
+    "Broad mutable count (A+B)"
+   ],
+   "rows": [
+    [
+     "RackCad.Domain",
+     "61",
+     "30",
+     "1 (0 fields + 1 prop)",
+     "1",
+     "0",
+     "0",
+     "1 (SafetyFacePiece.None)",
+     "0",
+     "0"
+    ],
+    [
+     "RackCad.Application",
+     "457",
+     "2678",
+     "115 (85 fields + 30 props)",
+     "31",
+     "3 (RackLog.sink; JsonRackCatalogProvider.Cache; CsvStructuralSectionCatalogProvider.Cache)",
+     "43",
+     "69",
+     "3",
+     "46"
+    ],
+    [
+     "RackCad.Plugin",
+     "70",
+     "248",
+     "8 (7 fields + 1 prop)",
+     "1",
+     "4 (BlockLibraryDatabaseCache.cachedPath/cachedWriteUtc/cachedLength/cachedLibrary)",
+     "0",
+     "4 (CacheGate, IsKnownKind, NoMissing, KindHandlerRegistry.Default)",
+     "4",
+     "4"
+    ],
+    [
+     "TOTAL",
+     "588",
+     "2956",
+     "124",
+     "33",
+     "7",
+     "43",
+     "74",
+     "7",
+     "50"
+    ]
+   ]
+  },
+  {
+   "title": "Mutable static members (tiers A and B), with census coverage",
+   "columns": [
+    "Tier",
+    "Member(s)",
+    "Location",
+    "Kind",
+    "In census?"
+   ],
+   "rows": [
+    [
+     "A",
+     "RackLog.sink",
+     "src/RackCad.Application/Diagnostics/RackLog.cs:18 (writes :39, :61)",
+     "STATIC_MUTABLE_FIELD (volatile)",
+     "YES (B2b)"
+    ],
+    [
+     "A",
+     "JsonRackCatalogProvider.Cache",
+     "src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs:48-49 (writes :75, :85-86)",
+     "LAZY_OR_CACHE",
+     "YES (B2b)"
+    ],
+    [
+     "A",
+     "CsvStructuralSectionCatalogProvider.Cache",
+     "src/RackCad.Application/StructuralSections/CsvStructuralSectionCatalogProvider.cs:26-27 (writes :64, :76-77)",
+     "LAZY_OR_CACHE",
+     "YES (B2b)"
+    ],
+    [
+     "A",
+     "BlockLibraryDatabaseCache.cachedPath / cachedWriteUtc / cachedLength / cachedLibrary",
+     "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:12-15 (writes :49-53)",
+     "STATIC_MUTABLE_FIELD / LAZY_OR_CACHE",
+     "YES (B2c)"
+    ],
+    [
+     "B",
+     "14 static readonly JsonSerializerOptions: JsonRackCatalogProvider.SerializerOptions, CatalogBlockManifest.JsonOptions, FlowBedConfigurationStore, ProjectVariablesStore, RackEmbedStore.Options, RackFrameProjectStore, RackProjectStore, SelectivePalletDesignStore, ProjectVariableCloning.Options, SelectiveAuthoredAuthority.ComparisonOptions, RackFrameTemplateProvider, UserTemplateStore, UserSettingsStore.Options, AuthoredRawReader.Options",
+     "Application: Catalogs/JsonRackCatalogProvider.cs:32; Catalogs/Validation/CatalogBlockManifest.cs:48; Persistence/FlowBedConfigurationStore.cs:17; Persistence/ProjectVariablesStore.cs:32; Persistence/RackEmbedDocument.cs:81; Persistence/RackFrameProjectStore.cs:19; Persistence/RackProjectStore.cs:24; Persistence/SelectivePalletDesignStore.cs:15; ProjectVariables/MutationPlan.cs:256; ProjectVariables/SelectiveAuthoredAuthority.cs:86; RackFrames/RackFrameTemplateProvider.cs:19; RackFrames/UserTemplateStore.cs:21; Settings/UserSettings.cs:55; Systems/Shared/AuthoredRawReader.cs:13",
+     "STATIC_READONLY_MUTABLE_OBJECT",
+     "YES (B2b)"
+    ],
+    [
+     "B",
+     "19 non-empty arrays: OperatorCharacters; CustomPropertiesStore.RootMembers/EntryMembers; RackEmbedComposer.DeclaredMembers; RetiredCantileverPunchMargins; VariableType.Supported; 9 StructuralSectionCsvSchema columns; StructuralSectionFamily.All; StructuralSectionSearch.Families; SectionProjectionCanonicalizer.Priority; DynamicSafetyDefaults.Families",
+     "Application: Expressions/OperatorInNameDetector.cs:32; Persistence/CustomPropertiesStore.cs:41-42; Persistence/RackEmbedComposer.cs:37; Persistence/RackProjectStore.cs:374; ProjectVariables/VariableType.cs:32; StructuralSections/StructuralSectionCsvSchema.cs:61,68,74,83,90,98,117,124,129; StructuralSections/StructuralSectionFamily.cs:56; StructuralSections/StructuralSectionSearch.cs:51; StructuralSections/Geometry/SectionProjectionCanonicalizer.cs:34; Systems/Dynamic/DynamicSafetyDefaults.cs:14",
+     "STATIC_READONLY_MUTABLE_OBJECT",
+     "YES (B2b)"
+    ],
+    [
+     "B",
+     "7 empty List/Dictionary sentinels: PushBackBootPlan.None, PushBackDefensePlan.None, PushBackDiverterPlan.NoDiverters, PushBackPalletProjection.None, RackLevelElevations.Empty/NoEnvelope, SelectiveEditorOpen.NoStates",
+     "Application: Systems/PushBack/PushBackBootPlan.cs:82; PushBackDefensePlan.cs:59; PushBackDiverterPlan.cs:80; PushBackPalletProjection.cs:100; Systems/Shared/RackLevelElevations.cs:13,72; Systems/Selective/SelectiveEditorOpen.cs:70",
+     "STATIC_READONLY_MUTABLE_OBJECT",
+     "YES (B2b)"
+    ],
+    [
+     "B",
+     "RackFrameTemplateCatalog.All (mutable RackFrameTemplate graph)",
+     "src/RackCad.Application/RackFrames/RackFrameTemplateCatalog.cs:21",
+     "STATIC_READONLY_MUTABLE_OBJECT",
+     "YES (B2b)"
+    ],
+    [
+     "B",
+     "CantileverArmSectionPolicy.Empty, CantileverColumnBaseSectionPolicy.Empty (expose an internal List through IReadOnlyList)",
+     "src/RackCad.Application/Systems/Cantilever/CantileverArmSectionPolicy.cs:119; CantileverColumnBaseSectionPolicy.cs:90",
+     "SINGLETON (latent-mutable)",
+     "YES (B2b)"
+    ]
+   ]
+  },
+  {
+   "title": "Static members missing from the census (all immutable; none adds warm-up risk)",
+   "columns": [
+    "Member",
+    "Location (relative to main2)",
+    "Kind",
+    "Why immutable (evidence)",
+    "Reachable from Selective create draw chain"
+   ],
+   "rows": [
+    [
+     "RackBomOutputVerdict.Allow",
+     "src/RackCad.Application/Bom/RackBomOutputGate.cs:25",
+     "SINGLETON (static readonly field)",
+     "private ctor, get-only Allowed/Reason (:13-23)",
+     "NO (only RackBomOutputGate.For :53,:58; caller Plugin/KindHandlers/PushBackKindHandler.cs:67)"
+    ],
+    [
+     "LocalFrame3D.World",
+     "src/RackCad.Application/Geometry/Spatial3D.cs:139-140",
+     "SINGLETON (get-only static prop)",
+     "private ctor, get-only props (:117-136); Point3D/Vector3D readonly structs (:7,:38)",
+     "NO (PrismaticSectionInstance.cs, SectionViewpoint.cs)"
+    ],
+    [
+     "CustomPropertiesStore.ParseOptions",
+     "src/RackCad.Application/Persistence/CustomPropertiesStore.cs:48",
+     "OTHER (internal static readonly JsonDocumentOptions)",
+     "struct-typed readonly field (JsonDocumentOptions is a .NET struct: framework fact, not visible in repo)",
+     "NO (used only in CustomPropertiesStore.cs)"
+    ],
+    [
+     "LinkedPropertyStageResult.Clean / .Ready",
+     "src/RackCad.Application/ProjectVariables/LinkedPropertyEditSession.cs:55,58",
+     "SINGLETON",
+     "private ctor, get-only Outcome/Error (:42-51)",
+     "NO (editor session only)"
+    ],
+    [
+     "LinkedPropertySource.Literal",
+     "src/RackCad.Application/ProjectVariables/LinkedPropertySource.cs:79-80",
+     "SINGLETON",
+     "private readonly fields (:40-41), get-only Kind (:50)",
+     "NO (LinkedPropertyEditState.cs only)"
+    ],
+    [
+     "RegistryMutation.None",
+     "src/RackCad.Application/ProjectVariables/MutationPlan.cs:60-61",
+     "SINGLETON",
+     "private ctor, get-only props (:46-58)",
+     "NO (project-variable mutation)"
+    ],
+    [
+     "MutationPlan.Empty",
+     "src/RackCad.Application/ProjectVariables/MutationPlan.cs:215",
+     "SINGLETON",
+     "get-only props (:206-210); holds zero-length NoRacks (:194), RegistryMutation.None, PlanReadSet.Empty",
+     "NO (VariableMutationPreflightResult.cs)"
+    ],
+    [
+     "PlanReadSet.Empty",
+     "src/RackCad.Application/ProjectVariables/PlanReadSet.cs:325",
+     "SINGLETON",
+     "ReadOnlyCollection over fresh arrays (:308-313), get-only (:322-323)",
+     "NO"
+    ],
+    [
+     "ProjectPropertyIds.SelectiveVerticalClearance / SelectivePalletTolerance",
+     "src/RackCad.Application/ProjectVariables/ProjectPropertyIds.cs:23,38",
+     "OTHER (static get-only readonly-struct value)",
+     "PropertyId is a readonly struct (ProjectVariables/PropertyId.cs:22)",
+     "NO (edit only: RackSelectivoCommands.cs:82; SelectivePalletDesignDocument.cs:334 inside WithDesign :326, used only when authored != null, not by From :210)"
+    ],
+    [
+     "StructuralSectionCatalog.Empty",
+     "src/RackCad.Application/StructuralSections/StructuralSectionCatalog.cs:61-62",
+     "SINGLETON",
+     "private readonly dictionaries (:30-34), get-only All/Sources over zero-length arrays",
+     "NO (no reference in src outside the file)"
+    ],
+    [
+     "StructuralSectionProperties.Empty",
+     "src/RackCad.Application/StructuralSections/StructuralSectionProperties.cs:20",
+     "SINGLETON (public static readonly)",
+     "every property is { get; init; } (e.g. :25-80); no 'set;' in file",
+     "NO (validator, CSV serializer, StructuralSectionDefinition)"
+    ],
+    [
+     "StructuralSectionUnits.PoundsPerFootToKilogramsPerMeter",
+     "src/RackCad.Application/StructuralSections/StructuralSectionUnits.cs:26",
+     "OTHER (static readonly double)",
+     "value type",
+     "NO"
+    ],
+    [
+     "SectionViewpoint.CrossSection / LongitudinalX / LongitudinalY / Isometric",
+     "src/RackCad.Application/StructuralSections/Geometry/SectionViewpoint.cs:57,64,70,79",
+     "SINGLETON",
+     "private ctor (:45), get-only Kind/Camera (:51,:54)",
+     "NO (StructuralSectionPlanBuilder.cs, CantileverViewPlanBuilder.cs)"
+    ],
+    [
+     "PushBackPlanComposer.Ic",
+     "src/RackCad.Application/Systems/PushBack/PushBackPlanComposer.cs:18",
+     "OTHER (static readonly StringComparison)",
+     "enum value",
+     "NO"
+    ],
+    [
+     "SelectiveFondoTargets.None",
+     "src/RackCad.Application/Systems/Selective/SelectiveFondoTargets.cs:39",
+     "SINGLETON",
+     "private readonly int[] (:25), zero length (Array.Empty)",
+     "NO (SelectiveTargetResolver.cs only)"
+    ],
+    [
+     "SelectiveTargetPreference.All / Current",
+     "src/RackCad.Application/Systems/Selective/SelectiveTargetPreference.cs:43-48",
+     "SINGLETON",
+     "get-only Mode/Fondos (:36,:40) over Array.Empty",
+     "NO (no reference in Application/Plugin/Domain outside the file)"
+    ],
+    [
+     "SelectiveTopology.Empty",
+     "src/RackCad.Application/Systems/Selective/SelectiveTopology.cs:35",
+     "SINGLETON",
+     "private readonly int[][] (:30), zero length",
+     "NO (SelectiveTargetResolver.cs only)"
+    ]
+   ]
+  },
+  {
+   "title": "Census entries judged wrong or incomplete",
+   "columns": [
+    "Census key / entry",
+    "Census claim",
+    "Finding",
+    "Evidence",
+    "Status"
+   ],
+   "rows": [
+    [
+     "B2b SelectiveAuthoredAuthority.ComparisonOptions",
+     "reachable_from_seam_paths = YES (because 'the task lists it as a seam reader')",
+     "No code path from RACKSELECTIVO/DrawSelectiveView reaches it. Callers are BOM, duplication, project-variables, recovery and the comparator ports, which have no caller. Should be NO for the create chain, or UNCERTAIN depending on the seam definition.",
+     "SelectiveAuthoredAuthority.cs:86,96,128,160; callers BomAuthoredAuthority.cs:112, RackDuplicationPlan.cs:450, ProjectVariableConsumerDiscovery.cs:150,185, ProjectVariablesWorkspace.cs:492, RecoveryAssessment.cs:101,261,308, RackAuthoredComparator.cs:102",
+     "UNCERTAIN"
+    ],
+    [
+     "B2b zero-length sentinels (SelectiveTargetPlan.NoCells)",
+     "reachability UNCERTAIN via SelectiveTargetResolver",
+     "Resolvable to NO for the Plugin draw chain.",
+     "SelectiveTargetPlan.cs:127; SelectiveTargetResolver.cs:74,104; resolver referenced only by SelectiveApplyScope/SelectiveCellAddress/SelectiveEditorState/SelectiveFondoTargets",
+     "FACT"
+    ],
+    [
+     "B2b RackFrameTemplateCatalog.All",
+     "UI mutation of shared templates UNCERTAIN; reachability list",
+     "No writer to RackFrameTemplate/TemplateHorizontal members anywhere in src, UI included (UI edits FrameHorizontal). The list omits HardcodedStandardRackFrameService.cs:28 (off-seam) and UI RackSelectiveWindow.xaml.cs:1305. The verdict does not change.",
+     "HorizontalEditorRow.cs:15,55,106; RackFrameConfiguratorViewModel.cs:2076; RackFrameTemplate.cs:9-36",
+     "FACT"
+    ],
+    [
+     "B2b RackLog.sink",
+     "reachability_chain list",
+     "Incomplete: omits RackCommandSupport.cs:28 (Report; RackSelectivoCommands.cs:44) and :174 (ReadDimensionStyleNames; RackSelectivoCommands.cs:32), both on the RACKSELECTIVO command wrapper. The YES verdict does not change.",
+     "RackCommandSupport.cs:23-28,165-174",
+     "FACT"
+    ],
+    [
+     "B2b JsonRackCatalogProvider.Cache",
+     "mutation of individual entries UNCERTAIN",
+     "Narrowed: the only member-access writes to catalog property names are in CopyBase during LoadUncached (before caching). All other hits are different types. Stays UNCERTAIN (aliasing/reflection).",
+     "JsonRackCatalogProvider.cs:84,204-216; RackLayoutCommands.cs:162-171,198-199; RackInventarioCommands.cs:124-130",
+     "UNCERTAIN"
+    ],
+    [
+     "B2c KindHandlerRegistry.Default",
+     "reachable NO",
+     "Correct for create. The RACKEDITAR edit/redraw path reaches it (SelectiveKindHandler.cs:20 -> EditSelective), while the BlockLibraryDatabaseCache entries count redraw paths as seam, so the seam scope is applied inconsistently. Immutable, so no risk.",
+     "RackMenuCommands.cs:141; KindHandlerDispatch.cs:22; SelectiveKindHandler.cs:20",
+     "UNCERTAIN"
+    ],
+    [
+     "B2b stateless singletons row",
+     "HeaderRun/.Cantilever listed together",
+     "RackBlockRequirementExtractors.Cantilever has no caller in src. Only HeaderRun is used.",
+     "LibraryBlockRequirements.cs:47-51; BlockLibraryImporter.cs:32",
+     "FACT"
+    ]
+   ]
+  }
+ ],
+ "limitations": [
+  "The sweep is static text analysis: a comment- and string-stripping line classifier plus greps. A declaration whose modifiers and type span unusual line breaks could be misparsed. Only 3 lines were unparsed, and all 3 were read by hand. Two independent greps agree with the counts (84/3 static readonly, 30/1/1 get-only static props, 5 non-readonly static fields).",
+  "The governed 'seam' was not defined in the task text I received. I traced reachability along RACKSELECTIVO/RACKCAD -> DrawSelectiveView -> SelectivePlantaDrawService/SelectiveFrontalDrawService -> ViewBlockDraw -> SystemBlockWriter -> BlockLibraryImporter (RackSelectivoCommands.cs:26-46,429-521). Entries whose YES/NO depends on edit, redraw, BOM or comparator paths are marked UNCERTAIN.",
+  "Writer searches for shared mutable objects (RackCatalog entries, RackFrameTemplate, arrays, sentinels) are name- and pattern-based. They cannot exclude writes through aliases, reflection, serializers populating existing instances, or casts written in forms the patterns do not match.",
+  "Framework behavior is not visible in the repo and is UNCERTAIN: System.Text.Json freezing and metadata caching on static JsonSerializerOptions, JsonDocumentOptions being a struct, AutoCAD per-document command-class instance lifetime, and Database handle retention.",
+  "RackCad.UI was out of scope and was not swept exhaustively. A quick check found at least 4 non-readonly static fields there (EditorClosePolicy.cs:51, ShellResources.cs:16, SelectiveCabeceraHeightPrompt.cs:21-22), and the RACKSELECTIVO command enters that project through RackSelectiveWindow (RackSelectivoCommands.cs:31).",
+  "Counts include members in all kinds (Cantilever, Dynamic, PushBack, etc.), not only those reachable from the Selective seam. Tier B means mutable by declared type with no writer found. It does not mean shown to be mutated at runtime.",
+  "No files were created or modified. All analysis ran as read-only shell/python-stdin commands against the main2 extract of commit 3375aadb."
+ ]
+}

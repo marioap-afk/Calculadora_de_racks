@@ -1,0 +1,238 @@
+{
+ "spec": "FPSPEC-V1",
+ "status": "NORMATIVE (as part of BA-05 V2 when sealed)",
+ "exactVectors": [
+  {
+   "id": "EV-01",
+   "purpose": "baseline coordinate (+0.0 components)",
+   "recordType": "TEST_COORD3",
+   "result": "DIGEST",
+   "stream": "FPSPEC-V1|EXACT|TEST_COORD3|x=3ff0000000000000\\ny=0000000000000000\\nz=0000000000000000\\n",
+   "sha256": "ba4e9ed7478785ce06e8e0010bfbd14970b9e87cbc923f63108fa6009acdae5e"
+  },
+  {
+   "id": "EV-02",
+   "purpose": "SIGNED ZERO: y = -0.0 must differ from EV-01",
+   "recordType": "TEST_COORD3",
+   "result": "DIGEST",
+   "stream": "FPSPEC-V1|EXACT|TEST_COORD3|x=3ff0000000000000\\ny=8000000000000000\\nz=0000000000000000\\n",
+   "sha256": "bc2cf0352fc258115745f43a0d7127011c2d692231696af4a25b4bd244626c11"
+  },
+  {
+   "id": "EV-03",
+   "purpose": "1 ulp above 1.0 must differ from EV-01",
+   "recordType": "TEST_COORD3",
+   "result": "DIGEST",
+   "stream": "FPSPEC-V1|EXACT|TEST_COORD3|x=3ff0000000000001\\ny=0000000000000000\\nz=0000000000000000\\n",
+   "sha256": "23ec89504f6f855fda794064fae9df813679bb4de17a347f9d36dce2d607c42d"
+  },
+  {
+   "id": "EV-04",
+   "purpose": "SUBNORMAL: smallest positive subnormal",
+   "recordType": "TEST_COORD3",
+   "result": "DIGEST",
+   "stream": "FPSPEC-V1|EXACT|TEST_COORD3|x=0000000000000001\\ny=0000000000000000\\nz=0000000000000000\\n",
+   "sha256": "e2a2a8b5b8faf7e5c36bedd923cf2a93af3a298c69abad649c7a1a7f8f7d09b0"
+  },
+  {
+   "id": "EV-05",
+   "purpose": "MAXIMUM FINITE double",
+   "recordType": "TEST_COORD3",
+   "result": "DIGEST",
+   "stream": "FPSPEC-V1|EXACT|TEST_COORD3|x=7fefffffffffffff\\ny=0000000000000000\\nz=0000000000000000\\n",
+   "sha256": "8443fcaab8e6744212cc983a39231e856c418cdc91e01695f9d4d0439187dffd"
+  },
+  {
+   "id": "EV-06",
+   "purpose": "NaN is unsupported: UNKNOWN, no digest",
+   "recordType": "TEST_COORD3",
+   "result": "UNKNOWN",
+   "reason": "non-finite double"
+  },
+  {
+   "id": "EV-07",
+   "purpose": "infinity is unsupported: UNKNOWN, no digest",
+   "recordType": "TEST_COORD3",
+   "result": "UNKNOWN",
+   "reason": "non-finite double"
+  },
+  {
+   "id": "EV-08",
+   "purpose": "string, exact case",
+   "recordType": "TEST_NAME",
+   "result": "DIGEST",
+   "stream": "FPSPEC-V1|EXACT|TEST_NAME|name=S8:Rack N 1\\n",
+   "sha256": "b625be899405392b55556bc8bff40e70a463190fbaf52e28460df64a91d9627a"
+  },
+  {
+   "id": "EV-09",
+   "purpose": "string, case differs from EV-08: must differ",
+   "recordType": "TEST_NAME",
+   "result": "DIGEST",
+   "stream": "FPSPEC-V1|EXACT|TEST_NAME|name=S8:rack N 1\\n",
+   "sha256": "80f92df041b0eddb78d33c471bd4b1fc0a815e2eb30dde3c0a4c47844945870f"
+  },
+  {
+   "id": "EV-10",
+   "purpose": "EMPTY STRING",
+   "recordType": "TEST_NAME",
+   "result": "DIGEST",
+   "stream": "FPSPEC-V1|EXACT|TEST_NAME|name=S0:\\n",
+   "sha256": "4ea81bbc8c2e91b3d939861286eb0b5713bc2310917bb6e33361f09a8b885924"
+  },
+  {
+   "id": "EV-11",
+   "purpose": "MULTIBYTE string (UTF-8, no normalization)",
+   "recordType": "TEST_NAME",
+   "result": "DIGEST",
+   "stream": "FPSPEC-V1|EXACT|TEST_NAME|name=S18:Ñandú 日本 €\\n",
+   "sha256": "1ae4a2037f5489626a3275ecaf007dd75373f89af1489347d58421404ab50ef3"
+  },
+  {
+   "id": "EV-12",
+   "purpose": "ABSENT value",
+   "recordType": "TEST_OPTIONAL",
+   "result": "DIGEST",
+   "stream": "FPSPEC-V1|EXACT|TEST_OPTIONAL|name=S4:Rack\\nlayer=~\\n",
+   "sha256": "45a510107508c65801adbfc9e5751725b90b4a4e44e066d028a0dabc97f6018c"
+  },
+  {
+   "id": "EV-13",
+   "purpose": "ORDERED SEQUENCE (draw order is state)",
+   "recordType": "TEST_SEQ",
+   "result": "DIGEST",
+   "stream": "FPSPEC-V1|EXACT|TEST_SEQ|items=[2\\nS1:b\\nS1:a\\n]\\n",
+   "sha256": "d7504a38b410755341ed7aa6b0c6950b3ecdb42bb2535d2908a6d846b9e51063"
+  },
+  {
+   "id": "EV-14",
+   "purpose": "ordered sequence in the other order: must differ from EV-13",
+   "recordType": "TEST_SEQ",
+   "result": "DIGEST",
+   "stream": "FPSPEC-V1|EXACT|TEST_SEQ|items=[2\\nS1:a\\nS1:b\\n]\\n",
+   "sha256": "01d971c4f2b3a0dd7d370bcf827d996985ae0f6707050a5b9407b687bf31f1e0"
+  },
+  {
+   "id": "EV-15",
+   "purpose": "UNORDERED container given as b,a: sorted by stored name",
+   "recordType": "TEST_SET",
+   "result": "DIGEST",
+   "stream": "FPSPEC-V1|EXACT|TEST_SET|names=[2\\nS1:a\\nS1:b\\n]\\n",
+   "sha256": "ab9751f8933fd5a2802d0309781c80b34161586758da7854cc1f47dba9a7c9de"
+  },
+  {
+   "id": "EV-16",
+   "purpose": "unordered container given as a,b: must EQUAL EV-15",
+   "recordType": "TEST_SET",
+   "result": "DIGEST",
+   "stream": "FPSPEC-V1|EXACT|TEST_SET|names=[2\\nS1:a\\nS1:b\\n]\\n",
+   "sha256": "ab9751f8933fd5a2802d0309781c80b34161586758da7854cc1f47dba9a7c9de"
+  },
+  {
+   "id": "EV-17",
+   "purpose": "NESTED record inline",
+   "recordType": "TEST_OUTER",
+   "result": "DIGEST",
+   "stream": "FPSPEC-V1|EXACT|TEST_OUTER|label=S5:outer\\ninner={TEST_COORD3\\nx=3ff0000000000000\\ny=4000000000000000\\nz=4008000000000000\\n}\\n",
+   "sha256": "920c68a4e5b093b413fe47ed18b1e8f2e92a43171f327b846ea71725813463ea"
+  },
+  {
+   "id": "EV-18",
+   "purpose": "NESTED definition referenced by name and digest",
+   "recordType": "TEST_REFHOLDER",
+   "result": "DIGEST",
+   "stream": "FPSPEC-V1|EXACT|TEST_REFHOLDER|ref=@S18:SEL_FRONTAL_Post_0#ba4e9ed7478785ce06e8e0010bfbd14970b9e87cbc923f63108fa6009acdae5e\\n",
+   "sha256": "b3bd691805fcf4e27a0db961be0da70e1fd5d90842dd484513eb4d13e6183164"
+  },
+  {
+   "id": "EV-19",
+   "purpose": "PAYLOAD_EXACT raw bytes, no unknown member",
+   "recordType": "PAYLOAD_EXACT",
+   "result": "DIGEST",
+   "stream": "FPSPEC-V1|EXACT|PAYLOAD_EXACT|bytes=B53:{\"Id\":\"g-1\",\"Kind\":\"selective\",\"SchemaVersion\":\"1.0\"}\\n",
+   "sha256": "94c92e2d6f8ca77ce4825dc71b4f49084374bee9de4b4dfb9791a6a13f74c9be"
+  },
+  {
+   "id": "EV-20",
+   "purpose": "PAYLOAD_EXACT with an UNKNOWN / FORWARD-COMPATIBLE member (ExtensionData): must differ from EV-19",
+   "recordType": "PAYLOAD_EXACT",
+   "result": "DIGEST",
+   "stream": "FPSPEC-V1|EXACT|PAYLOAD_EXACT|bytes=B70:{\"Id\":\"g-1\",\"Kind\":\"selective\",\"SchemaVersion\":\"1.0\",\"futureMember\":1}\\n",
+   "sha256": "c1e2600cd701c22ecdfd26f3e2db247083bf95a6f00794b7174fd07535b012c3"
+  }
+ ],
+ "semanticVectors": [
+  {
+   "id": "SV-01",
+   "layer": "SEMANTIC_COMPARISON",
+   "expected": "{\"Id\":\"g-1\",\"ExtensionData\":{\"futureKey\":1}}",
+   "persisted": "{\"ExtensionData\":{\"futureKey\":1},\"Id\":\"g-1\"}",
+   "result": "EQUAL",
+   "rule": "keys compared after canonical sorting; extension member present and equal"
+  },
+  {
+   "id": "SV-02",
+   "layer": "SEMANTIC_COMPARISON",
+   "expected": "{\"Id\":\"g-1\",\"ExtensionData\":{\"futureKey\":1}}",
+   "persisted": "{\"Id\":\"g-1\"}",
+   "result": "DIFFERENT",
+   "rule": "a writer that DROPS an unknown member must not pass (O4 through S-2/S-3)"
+  },
+  {
+   "id": "SV-03",
+   "layer": "SEMANTIC_COMPARISON",
+   "expected": "{\"Id\":\"g-1\",\"ExtensionData\":{\"futureKey\":1}}",
+   "persisted": "{\"Id\":\"g-1\",\"ExtensionData\":{\"futureKey\":2}}",
+   "result": "DIFFERENT",
+   "rule": "a writer that ALTERS an unknown member must not pass"
+  },
+  {
+   "id": "SV-04",
+   "layer": "SEMANTIC_COMPARISON",
+   "expected": "unknown member nested inside a known sub-object that has no ExtensionData (JsonExtensionData is not recursive, I-11)",
+   "persisted": "any",
+   "result": "UNKNOWN_MEMBER_UNSUPPORTED",
+   "rule": "surfaced explicitly, gives UNKNOWN (O5 path); never ignored, never treated as absent"
+  },
+  {
+   "id": "SV-05",
+   "layer": "SEMANTIC_COMPARISON",
+   "expected": "coordinate y = +0.0",
+   "persisted": "coordinate y = -0.0",
+   "result": "EQUAL",
+   "rule": "signed zero is domain-equivalent; secondary finding BIT_LEVEL_DIFFERENCE_DOMAIN_EQUIVALENT; the EXACT digests differ (EV-01 / EV-02)"
+  },
+  {
+   "id": "SV-06",
+   "layer": "SEMANTIC_COMPARISON",
+   "expected": "length 10.0 in",
+   "persisted": "length 10.0000000005 in",
+   "result": "EQUAL",
+   "rule": "within TOL_LENGTH = GeometryTolerance.Length (1e-9 in)"
+  },
+  {
+   "id": "SV-07",
+   "layer": "SEMANTIC_COMPARISON",
+   "expected": "length 10.0 in",
+   "persisted": "length 10.000000002 in",
+   "result": "DIFFERENT",
+   "rule": "outside TOL_LENGTH"
+  },
+  {
+   "id": "SV-08",
+   "layer": "SEMANTIC_COMPARISON",
+   "expected": "envelope SchemaVersion \"1.0\"",
+   "persisted": "envelope SchemaVersion \"9.0\" (unrecognized major)",
+   "result": "UNKNOWN",
+   "rule": "an unrecognized schema version is UNKNOWN"
+  },
+  {
+   "id": "SV-09",
+   "layer": "SEMANTIC_COMPARISON",
+   "expected": "entity of a type outside the supported list (proxy/custom)",
+   "persisted": "same",
+   "result": "UNKNOWN",
+   "rule": "unsupported type is UNKNOWN; in the closure it refuses the run (O1)"
+  }
+ ]
+}

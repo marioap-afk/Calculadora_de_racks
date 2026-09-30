@@ -1,0 +1,1123 @@
+{
+ "facts": [
+  {
+   "id": "F01",
+   "topic": "blocks.csv shape",
+   "statement": "blocks.csv has 94 data rows (30 FRONTAL, 35 LATERAL, 29 PLANTA), no duplicate (pieceId,view) pairs; every row has blank layer, scale 1, rotation 0. TARIMA_GENERICA is the only row whose blockName is not suffixed with the view (FRONTAL and LATERAL both map to 'TARIMA_GENERICA').",
+   "evidence": "assets/catalogs/blocks.csv:1-95 (awk count/dup check over the file); blocks.csv:49-50",
+   "status": "FACT"
+  },
+  {
+   "id": "F02",
+   "topic": "lookup",
+   "statement": "FindBlock returns the FIRST row whose PieceId and View both match OrdinalIgnoreCase; it returns null when the list is null or pieceId/view is blank. No trimming happens at lookup time, but the CSV reader trims every cell it assigns to a typed property.",
+   "evidence": "src/RackCad.Application/Catalogs/RackCatalogExtensions.cs:106-116; src/RackCad.Application/Catalogs/CsvCatalogReader.cs:80-87; CatalogValidator.cs:283 (duplicate warning says FindBlock only uses the first row)",
+   "status": "FACT"
+  },
+  {
+   "id": "F03",
+   "topic": "lookup",
+   "statement": "Every Selective builder resolves blocks through CatalogLookup.Block(catalog,pieceId,view) = catalog?.Blocks.FindBlock(pieceId,view)?.BlockName, or through a direct FindBlock call (planta largueros and separador). SelectiveFrontalBuilder memoizes the result per pieceId for one Build call and keeps first-match semantics.",
+   "evidence": "src/RackCad.Application/Catalogs/CatalogLookup.cs:19-20; SelectiveFrontalBuilder.cs:63-79,519-520; SelectivePlantaBuilder.cs:378,423; PlantaHeaderLayoutBuilder.cs:195-196",
+   "status": "FACT"
+  },
+  {
+   "id": "F04",
+   "topic": "views",
+   "statement": "The FRONTAL plan uses view 'FRONTAL' (SelectiveRackDefaults.View) for all lookups. The PLANTA plan uses 'PLANTA' for its block lookups; it still reads connection-layout geometry (INICIO_PERFIL) in FRONTAL, which does not affect block names.",
+   "evidence": "src/RackCad.Domain/Systems/Selective/SelectiveRackDefaults.cs:9; SelectiveFrontalBuilder.cs:47; SelectivePlantaBuilder.cs:26,154,387; PlantaHeaderLayoutBuilder.cs:25",
+   "status": "FACT"
+  },
+  {
+   "id": "F05",
+   "topic": "post id",
+   "statement": "Frontal posts (run posts and medio-frente intermediate posts) all use system.PostId, which comes from design.PostId. The UI offers catalog.PostProfiles and selects catalog.Defaults.Post by default. If a loaded design's id is not in the list, the UI falls back to the first item. The frontal ignores a custom cabecera's own post id.",
+   "evidence": "SelectiveGeometryResolver.cs:41; SelectiveFrontalBuilder.cs:53,103,150; src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs:236-238,3093-3094",
+   "status": "FACT"
+  },
+  {
+   "id": "F06",
+   "topic": "plate id (frontal)",
+   "statement": "The frontal base-plate id is the per-post custom cabecera's LeftBasePlate.PlateCatalogId, else catalog.Defaults.BasePlate (defaults.json basePlate; RackDefaults initializer = CatalogIds.BasePlate when the file is absent). Medio-frente intermediate posts always use the default. No plate is drawn when DrawBasePlate is false or the id is blank.",
+   "evidence": "SelectiveFrontalBuilder.cs:54,88,98-99,145,150,493-496; assets/catalogs/defaults.json:3; src/RackCad.Application/Catalogs/RackDefaults.cs:13",
+   "status": "FACT"
+  },
+  {
+   "id": "F07",
+   "topic": "plate id (planta)",
+   "statement": "Standard (non-custom) planta frames take the plate from the hard-coded built-in template STD-3P (CatalogIds.BasePlate), not from defaults.json. This is because RackFrameTemplateCatalog.FindStandardOrDefault searches only the static built-in list, and the factory prefers template.BasePlate over defaults.BasePlate. With the repository catalogs both resolve to the same id.",
+   "evidence": "SelectivePlantaBuilder.cs:50,136,166; RackFrameTemplateCatalog.cs:19,21-42,87-96; RackFrameConfigurationFactory.cs:70; CatalogIds.cs:11",
+   "status": "FACT"
+  },
+  {
+   "id": "F08",
+   "topic": "planta frame ids",
+   "statement": "Planta post id = FirstNonEmpty(config.LeftPost.PostCatalogId, Defaults.Post); the back post uses RightPost, else the front id. For standard frames the config post = FirstNonEmpty(system.PostId, template.Post, defaults.Post). The truss id is the first Horizontals ProfileId (standard: the template's horizontals[0].Profile = TRAVESANO), else the first BracingPanels DiagonalProfileId, else Defaults.HorizontalProfile/DiagonalProfile. Custom cabeceras (per fondo and post) supply their own ids, chosen in the configurator from catalog.PostProfiles, TrussProfiles and BasePlates.",
+   "evidence": "PlantaHeaderLayoutBuilder.cs:62-66,176-190; RackFrameConfigurationFactory.cs:69,97; RackFrameTemplateCatalog.cs:31; SelectivePlantaBuilder.cs:123,126-129; SelectiveCabeceraAuthority.cs:78-88; src/RackCad.UI/RackFrames/RackFrameConfiguratorViewModel.cs:82-88",
+   "status": "FACT"
+  },
+  {
+   "id": "F09",
+   "topic": "beam id",
+   "statement": "Beam ids come from the design cell (cell.BeamId → level.BeamId). The UI offers every catalog.BeamProfiles entry with no filter, so all 4 LARGUERO rows of secciones.csv can be chosen, including LARGUERO_IN_OUT_C6. The frontal requests the beam of every level; the planta requests only bays[i].Levels[0].BeamId per fondo, so a beam used only on upper levels is never looked up in PLANTA.",
+   "evidence": "SelectiveGeometryResolver.cs:342; RackSelectiveWindow.xaml.cs:240-242; src/RackCad.UI/UiSupport.cs:124-133; assets/catalogs/secciones.csv:6,8,9,10; SelectiveFrontalBuilder.cs:131,138,454-468; SelectivePlantaBuilder.cs:377-378",
+   "status": "FACT"
+  },
+  {
+   "id": "F10",
+   "topic": "id validation",
+   "statement": "No code in Application/Persistence or Application/Systems/Selective checks design PostId or BeamId against the catalog. A persisted id is passed straight to FindBlock.",
+   "evidence": "grep 'BeamProfiles|PostProfiles' in src/RackCad.Application/Persistence and src/RackCad.Application/Systems/Selective returned no match; SelectiveGeometryResolver.cs:41,342",
+   "status": "FACT"
+  },
+  {
+   "id": "F11",
+   "topic": "safety ids",
+   "statement": "A safety pieceId is the ElementId of the first persisted selection whose id is a catalog variant of that family's type (seguridad.csv column type; DECK is an alias of PARRILLA). A selection whose id is not in seguridad.csv is ignored. So safety candidates are bounded by the runtime seguridad.csv.",
+   "evidence": "SelectiveSafetyFamilies.cs:27-61; SelectiveRackDefaults.cs:106-114 (IsType); assets/catalogs/seguridad.csv:2-19",
+   "status": "FACT"
+  },
+  {
+   "id": "F12",
+   "topic": "safety gating",
+   "statement": "EnabledOfType (BOTA, LATERAL, TOPE, PARRILLA) returns an element only if the selection DrawsSomewhere() (general side, per-post side, or a bota request) AND the block for that view is non-blank. Otherwise the family is silently absent from the plan.",
+   "evidence": "SelectiveSafetyPlacement.cs:144-186; src/RackCad.Domain/Systems/Selective/SelectivePalletDesign.cs:360-377",
+   "status": "FACT"
+  },
+  {
+   "id": "F13",
+   "topic": "families not drawn",
+   "statement": "No Selective FRONTAL or PLANTA builder requests a GUIA or DEFENSA block; those types are used only by the Dynamic and PushBack builders. Ménsula blocks are never drawn by the Selective builders; ménsulas appear only in SelectiveBomBuilder.",
+   "evidence": "grep GuiaType/DefensaType across src (hits only in Dynamic/PushBack/CatalogBlockParameters/SelectiveSafetyFamilies); grep 'Mensula' in Systems/Selective hits only SelectiveBomBuilder.cs",
+   "status": "FACT"
+  },
+  {
+   "id": "F14",
+   "topic": "frontal-only / planta-only",
+   "statement": "Parrilla and tarima are drawn only by the frontal (the planta builder calls neither). Truss (travesaño) and separador are drawn only by the planta. The FRONTAL separador row (blocks.csv:11) is requested by the Selective LATERAL plan through DynamicRackDefaults.SeparatorView='FRONTAL', not by the FRONTAL plan.",
+   "evidence": "SelectiveFrontalBuilder.cs:154-158; SelectivePlantaBuilder.cs:179-183; SelectiveLateralBuilder.cs:287,314; DynamicRackDefaults.cs:48,51",
+   "status": "FACT"
+  },
+  {
+   "id": "F15",
+   "topic": "toggles",
+   "statement": "Frontal tope requires Selection.TopeFrontal and a non-empty BuildFrontal (TopeSpots needs Side != None). Frontal parrilla requires Selection.ParrillaFrontal. Planta tope has no view toggle. Tarima requires system.DrawPallets. Plates require DrawBasePlate. Separador requires DepthCount >= 2 and a positive gap. Desviador requires a DESVIADOR selection whose Side is Left, Right or Both (non-empty plan spots).",
+   "evidence": "SelectiveFrontalBuilder.cs:189-198,242-245,360-363,493; SelectiveTopePlan.cs:217-233; SelectiveSafetyPlacement.cs:93-96; SelectivePlantaBuilder.cs:292-295,418-421,463-473; SelectiveSeparadorPlan.cs:62-80; SelectiveDesviadorPlan.cs:105-128; SelectiveDesviadorDrawing.cs:77-97",
+   "status": "FACT"
+  },
+  {
+   "id": "F16",
+   "topic": "counts",
+   "statement": "With the repository catalogs, the Selective FRONTAL plan can require 23 distinct blockNames and the PLANTA plan 23. The two sets are disjoint, so the union is 46 (see table 2).",
+   "evidence": "derived from table 2 rows (blocks.csv lines 2,5,28,31,34,94,37,52,55,40,61,64,43,58,46,49,67,70,73,76,79,82,85 FRONTAL; 4,7,10,13,30,33,36,93,39,51,54,42,60,63,45,57,66,69,72,75,78,81,84 PLANTA)",
+   "status": "FACT"
+  },
+  {
+   "id": "F17",
+   "topic": "unreachable rows",
+   "statement": "FRONTAL rows the FRONTAL plan never requests: 7 (TRAVESANO, SEPARADOR, 3 MENSULAs, GUIA, DEFENSA). PLANTA rows the PLANTA plan never requests: 6 (3 MENSULAs, PARRILLA, GUIA, DEFENSA).",
+   "evidence": "assets/catalogs/blocks.csv:8,11,19,22,25,88,91 and :21,24,27,48,87,90; F13, F14",
+   "status": "FACT"
+  },
+  {
+   "id": "F18",
+   "topic": "missing row - emitted",
+   "statement": "When the lookup returns null for frontal Post, BasePlate or Beam, or for planta Post or BasePlate, the instance is still emitted with BlockName=null. The grouper keeps it loose; the drawer skips it and records it as missing (deduplicated by name|view). It is reported as '<display name> (sin bloque definido en blocks.csv para la vista X)' and summarized as 'Bloques no definidos en el dibujo (omitidos)'. Nothing is drawn for it and there is no fallback geometry.",
+   "evidence": "SelectiveFrontalBuilder.cs:480-491,499-513,457-468; PlantaHeaderLayoutBuilder.cs:80-83,128-167; HeaderInstanceGrouper.cs:37-43; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:293-303; src/RackCad.Plugin/Drawing/BlockPlacement.cs:98-118; src/RackCad.Plugin/RackCommandSupport.cs:202-204",
+   "status": "FACT"
+  },
+  {
+   "id": "F19",
+   "topic": "missing row - silent",
+   "statement": "These roles are silently omitted (never listed as missing) when the row is absent: all safety families (bota, lateral, tope, parrilla), the tarima, the desviador, the planta truss, the planta largueros and the planta separador.",
+   "evidence": "SelectiveSafetyPlacement.cs:179-185; SelectiveFrontalBuilder.cs:365-369; SelectiveDesviadorDrawing.cs:95-96; PlantaHeaderLayoutBuilder.cs:108; SelectivePlantaBuilder.cs:378-382,423-427",
+   "status": "FACT"
+  },
+  {
+   "id": "F20",
+   "topic": "row present, block absent",
+   "statement": "Before drawing, every non-blank BlockName in the plan (loose instances and group instances) becomes a library requirement. Names missing from the drawing are cloned from blocks-library.dwg (user-setting path, else next to the catalogs). If the file is missing, or the name is not in it, the import is silently skipped and the drawer reports '(falta el bloque '<name>' en el dibujo)'.",
+   "evidence": "src/RackCad.Application/Systems/Shared/LibraryBlockRequirements.cs:53-80; src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:25-39,50-132; src/RackCad.Application/Catalogs/BlockLibrary.cs:16-23; src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:24,57; BlockPlacement.cs:113-115",
+   "status": "FACT"
+  },
+  {
+   "id": "F21",
+   "topic": "layer/scale/rotation",
+   "statement": "The Selective draw path does not apply the blocks.csv layer, scale or rotation: the BlockReference gets Rotation = instance.RotationRadians (never set by the Selective builders) and ScaleFactors of ±1 from the mirror flags only.",
+   "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:308-314; src/RackCad.Application/Catalogs/CatalogEntries.cs:245-260",
+   "status": "FACT"
+  },
+  {
+   "id": "F22",
+   "topic": "layer/scale/rotation",
+   "statement": "No reader of BlockCatalogEntry.Layer/Scale/Rotation exists anywhere in src.",
+   "evidence": "grep for '.Layer|.Scale|.Rotation' in src found only unrelated members; pattern-based search, not a full semantic check",
+   "status": "UNCERTAIN"
+  },
+  {
+   "id": "F23",
+   "topic": "dynamic params application",
+   "statement": "Dynamic parameters are applied by case-insensitive name match to non-read-only properties, and only when the reference is a dynamic block. Names the block lacks are silently ignored. RecordGraphicsModified(true) is forced when any value is applied.",
+   "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:415-449",
+   "status": "FACT"
+  },
+  {
+   "id": "F24",
+   "topic": "catalog directory",
+   "statement": "The catalog folder resolves to '<folder of RackCad.Application.dll>\\catalogs' (typeof(CatalogDirectory).Assembly.Location), else AppContext.BaseDirectory\\catalogs, else that default path even if it does not exist. The Plugin, UI and RackFrameConfigurationFactory all load via JsonRackCatalogProvider.FromBaseDirectory(). No user setting overrides the catalog folder; UserSettings overrides only the DWG library path.",
+   "evidence": "src/RackCad.Application/Catalogs/CatalogDirectory.cs:19-58; JsonRackCatalogProvider.cs:67-70; src/RackCad.Plugin/RackCatalogLoader.cs:17-30; src/RackCad.UI/UiSupport.cs:84-94; RackFrameConfigurationFactory.cs:246-256; src/RackCad.Application/Settings/UserSettings.cs:10-13",
+   "status": "FACT"
+  },
+  {
+   "id": "F25",
+   "topic": "catalog provenance",
+   "statement": "The runtime blocks.csv is a copy of assets/catalogs. The Plugin build copies *.json, *.csv and *.dwg to output\\catalogs (CopyToOutputDirectory Always); publish copies them to RackCad.bundle\\Contents\\catalogs; the test projects copy *.json and *.csv.",
+   "evidence": "src/RackCad.Plugin/RackCad.Plugin.csproj:22-27,51-73; tests/RackCad.Tests/RackCad.Tests.csproj:29-32; tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj:30-33",
+   "status": "FACT"
+  },
+  {
+   "id": "F26",
+   "topic": "runtime divergence",
+   "statement": "The runtime blocks.csv can differ from the repository file. The provider re-reads the folder whenever any csv/json name, size or mtime changes (a documented live-edit workflow). blocks.csv takes priority over blocks.json, which is used only when blocks.csv is missing or blank. Decoding is strict UTF-8, then Latin-1. A load exception makes the Plugin work with an empty RackCatalog, so every block lookup returns null. Any edited, stale or legacy deployed folder therefore changes the reachable block names; candidate ids (PostProfiles, BeamProfiles, SafetyElements, Defaults) also come from that runtime folder.",
+   "evidence": "JsonRackCatalogProvider.cs:41-49,72-89,219-247,255-269,298-336,121-126; RackCatalogLoader.cs:24-30",
+   "status": "FACT"
+  },
+  {
+   "id": "F27",
+   "topic": "library DWG",
+   "statement": "No .dwg file exists in the extract. ADR-0002 evidence says blocks-library.dwg belongs to the owner and is not versioned, so it cannot be verified statically whether the 46 candidate blockNames exist in it or expose the expected parameters.",
+   "evidence": "find . -iname '*.dwg' returned nothing; docs/adr/0002-paso0-evidencia.md:143",
+   "status": "FACT"
+  },
+  {
+   "id": "F28",
+   "topic": "default beam",
+   "statement": "A fresh cell adopts state.DefaultBeamId = the first CellBeamBox option. Options are ordered by Label with CurrentCultureIgnoreCase, so the default beam id depends on the display names and the culture; it is probably LARGUERO_ESCALON_CAL14_3_REMACHES, but this was not executed.",
+   "evidence": "RackSelectiveWindow.xaml.cs:240-242; UiSupport.cs:130; SelectiveEditorState.cs:131",
+   "status": "UNCERTAIN"
+  },
+  {
+   "id": "F29",
+   "topic": "non-UI paths",
+   "statement": "Redraw paths that bypass the editor (batch, RACKPROYECTAR and similar) may draw designs whose persisted PostId, BeamId or cabecera ids are no longer in the runtime catalog. They would reach FindBlock unchanged (F10), but these call paths were not traced.",
+   "evidence": "F10; SelectiveGeometryResolver.cs:41,342",
+   "status": "UNCERTAIN"
+  },
+  {
+   "id": "F30",
+   "topic": "expected params manifest",
+   "statement": "CatalogBlockParameters.ExpectedParameters is the Application-side source of truth for the grips each (pieceId,view) should expose. Its role table matches the builder writes in table 3, e.g. Post FRONTAL = LONGITUD+PERALTE and PLANTA = PERALTE; Beam FRONTAL/PLANTA = LONGITUD+PERALTE; Tope = SAQUE (+LONGITUD in FRONTAL/PLANTA); Parrilla FRONTAL = FRENTE; Pallet = LONGITUD+ALTURA; lateral/desviador = LONGITUD; bota = none. It also adds the connection-layout paramX/paramY of that exact piece and view.",
+   "evidence": "src/RackCad.Application/Catalogs/CatalogBlockParameters.cs:39-76,98-223",
+   "status": "FACT"
+  }
+ ],
+ "tables": [
+  {
+   "title": "T1 - Roles, pieceId sources and candidates (repository catalogs)",
+   "columns": [
+    "Plan",
+    "Role",
+    "Builder site",
+    "pieceId source",
+    "Candidate pieceIds (repo)",
+    "Gate"
+   ],
+   "rows": [
+    [
+     "FRONTAL",
+     "Post (run + medio-frente intermediate)",
+     "SelectiveFrontalBuilder.cs:53,103,150,475-491",
+     "design field system.PostId ← design.PostId (SelectiveGeometryResolver.cs:41); UI options catalog.PostProfiles, default Defaults.Post (RackSelectiveWindow.xaml.cs:236-238)",
+     "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA (secciones.csv:2 only POSTE)",
+     "Height>0 && Bays>0 (:42-45)"
+    ],
+    [
+     "FRONTAL",
+     "BasePlate",
+     "SelectiveFrontalBuilder.cs:54,98-99,145,493-513",
+     "custom cabecera LeftBasePlate.PlateCatalogId, else catalog default Defaults.BasePlate (defaults.json:3; RackDefaults.cs:13)",
+     "PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16 (base-plates.csv:2 only)",
+     "DrawBasePlate && id non-blank (:493)"
+    ],
+    [
+     "FRONTAL",
+     "Beam (larguero)",
+     "SelectiveFrontalBuilder.cs:131,138,450-470",
+     "design cell field level.BeamId (SelectiveGeometryResolver.cs:342); UI options catalog.BeamProfiles unfiltered",
+     "LARGUERO_ESCALON_CAL14_3_REMACHES, LARGUERO_IN_OUT_C6, LARGUERO_ESCALON_INFINITO, LARGUERO_ESCALON_TROQUEL_REDONDO (secciones.csv:6,8,9,10)",
+     "every level of every bay / loaded tramo"
+    ],
+    [
+     "FRONTAL",
+     "Safety BOTA",
+     "SelectiveFrontalBuilder.cs:59,112-113; SelectiveSafetyPlacement.cs:144-186,204-251",
+     "safety selection ElementId ∈ seguridad type BOTA (SelectiveSafetyFamilies.cs:37-61)",
+     "PROTECTOR_BOTA_H_3_16_18, PROTECTOR_BOTA_C_4, PROTECTOR_BOTA_C_6 (seguridad.csv:2-4)",
+     "DrawsSomewhere; not at a post carrying a LATERAL (:106)"
+    ],
+    [
+     "FRONTAL",
+     "Safety LATERAL",
+     "SelectiveFrontalBuilder.cs:60,106-108",
+     "safety selection, type LATERAL",
+     "PROTECTOR_LATERAL_BOTA_H_3_16_18, _C_4, _C_6 (seguridad.csv:5-7)",
+     "DrawsAt(post)"
+    ],
+    [
+     "FRONTAL",
+     "Tope",
+     "SelectiveFrontalBuilder.cs:180-225; SelectiveTopePlacement.cs:77-99",
+     "safety selection, type TOPE",
+     "LARGUERO_ESCALON_TOPE_DE_3, POSTE_3_1_5_8_TOPE (seguridad.csv:8-9)",
+     "TopeFrontal toggle (:189) + Side!=None + active cells"
+    ],
+    [
+     "FRONTAL",
+     "Parrilla",
+     "SelectiveFrontalBuilder.cs:233-280; SelectiveParrillaPlacement.cs:176-210",
+     "safety selection, type PARRILLA/DECK",
+     "PARRILLA_GENERICA (seguridad.csv:10)",
+     "ParrillaFrontal toggle (:242), cell on, frente>0, count>0"
+    ],
+    [
+     "FRONTAL",
+     "Tarima (Pallet)",
+     "SelectiveFrontalBuilder.cs:356-441; SelectiveTarimaPlacement.cs:123-154",
+     "default constant SelectiveRackDefaults.PalletPieceId (SelectiveRackDefaults.cs:59)",
+     "TARIMA_GENERICA",
+     "DrawPallets (:360); pallet count/frente>0"
+    ],
+    [
+     "FRONTAL",
+     "Desviador",
+     "SelectiveFrontalBuilder.cs:154 → SelectiveDesviadorDrawing.cs:14-34,77-97",
+     "safety selection, type DESVIADOR",
+     "DESVIADOR_A_3, _A_4, _L_3, _L_3_5, _L_4, _L_4_5, _L_5 (seguridad.csv:11-17)",
+     "Side Left/Right/Both, enabled spots"
+    ],
+    [
+     "FRONTAL",
+     "Annotation / Dimension",
+     "SelectiveFrontalBuilder.cs:158,169,313-346; SelectiveDimensions.cs:307",
+     "none (DBText / RotatedDimension)",
+     "-",
+     "no block (LateralHeaderDrawer.cs:258-291)"
+    ],
+    [
+     "PLANTA",
+     "Post (front + mirrored back per frame; medio-frente frames)",
+     "SelectivePlantaBuilder.cs:129,136-137,166-167,287-304 → PlantaHeaderLayoutBuilder.cs:62,64,80,82,100,102,128-146",
+     "standard frame: FirstNonEmpty(system.PostId, template STD-3P Post, Defaults.Post) (RackFrameConfigurationFactory.cs:69); custom cabecera Left/RightPost (configurator options PostProfiles)",
+     "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA",
+     "every frame"
+    ],
+    [
+     "PLANTA",
+     "BasePlate",
+     "PlantaHeaderLayoutBuilder.cs:63,65,81,83,101,103,148-167; SelectivePlantaBuilder.cs:292-295",
+     "standard frame: hard-coded template.BasePlate=CatalogIds.BasePlate (RackFrameTemplateCatalog.cs:40; factory :70); custom Left/RightBasePlate; fallback Defaults.BasePlate",
+     "PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16",
+     "DrawBasePlate"
+    ],
+    [
+     "PLANTA",
+     "Truss (Horizontal, travesaño)",
+     "PlantaHeaderLayoutBuilder.cs:66,84,105-123,176-190",
+     "config Horizontals[0].ProfileId (standard: template = CatalogIds.TrussProfile), else panel diagonal, else Defaults.Horizontal/DiagonalProfile",
+     "TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14 (secciones.csv:5 only CELOSIA)",
+     "longitud>1e-6 && block non-blank (:108)"
+    ],
+    [
+     "PLANTA",
+     "Beam",
+     "SelectivePlantaBuilder.cs:353-408,505-520",
+     "bays[i].Levels[0].BeamId per fondo (first level only, :377)",
+     "same 4 LARGUERO ids",
+     "bay has levels; block non-blank"
+    ],
+    [
+     "PLANTA",
+     "Separador",
+     "SelectivePlantaBuilder.cs:416-452; SelectiveSeparadorPlacement.cs:232-245",
+     "constant DynamicRackDefaults.SeparatorCatalogId (DynamicRackDefaults.cs:48)",
+     "SEPARADOR_DE_CABECERA_FORMADA_DE_CINTA_CALIBRE_12",
+     "DepthCount>=2 and gap>0 (SelectiveSeparadorPlan.cs:62-80)"
+    ],
+    [
+     "PLANTA",
+     "Tope",
+     "SelectivePlantaBuilder.cs:461-503",
+     "safety selection, type TOPE",
+     "LARGUERO_ESCALON_TOPE_DE_3, POSTE_3_1_5_8_TOPE",
+     "no view toggle; spots from TopeSpots (Side!=None)"
+    ],
+    [
+     "PLANTA",
+     "Safety BOTA",
+     "SelectivePlantaBuilder.cs:58,104-106",
+     "safety selection, type BOTA",
+     "PROTECTOR_BOTA_H_3_16_18, _C_4, _C_6",
+     "frente reached; no LATERAL at frente"
+    ],
+    [
+     "PLANTA",
+     "Safety LATERAL",
+     "SelectivePlantaBuilder.cs:59,96-100",
+     "safety selection, type LATERAL",
+     "PROTECTOR_LATERAL_BOTA_H_3_16_18, _C_4, _C_6",
+     "DrawsAt(frente)"
+    ],
+    [
+     "PLANTA",
+     "Desviador",
+     "SelectivePlantaBuilder.cs:182 → SelectiveDesviadorDrawing.cs:55-75",
+     "safety selection, type DESVIADOR",
+     "7 DESVIADOR ids",
+     "Side Left/Right/Both"
+    ],
+    [
+     "PLANTA",
+     "Annotation / Dimension",
+     "SelectivePlantaBuilder.cs:183,203,324-343",
+     "none",
+     "-",
+     "no block"
+    ]
+   ]
+  },
+  {
+   "title": "T2 - blocks.csv rows a Selective FRONTAL or PLANTA plan CAN require (layer blank, scale 1, rotation 0 on every row)",
+   "columns": [
+    "blocks.csv line",
+    "pieceId",
+    "view",
+    "blockName",
+    "layer",
+    "scale",
+    "rotation",
+    "Role / builder",
+    "Reachable only when"
+   ],
+   "rows": [
+    [
+     "2",
+     "PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16",
+     "FRONTAL",
+     "PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16_FRONTAL",
+     "",
+     "1",
+     "0",
+     "BasePlate / SelectiveFrontalBuilder",
+     "DrawBasePlate"
+    ],
+    [
+     "5",
+     "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA",
+     "FRONTAL",
+     "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_FRONTAL",
+     "",
+     "1",
+     "0",
+     "Post / SelectiveFrontalBuilder",
+     "always (only post in catalog)"
+    ],
+    [
+     "28",
+     "LARGUERO_ESCALON_CAL14_3_REMACHES",
+     "FRONTAL",
+     "LARGUERO_ESCALON_CAL14_3_REMACHES_FRONTAL",
+     "",
+     "1",
+     "0",
+     "Beam / SelectiveFrontalBuilder",
+     "beam chosen in some cell"
+    ],
+    [
+     "31",
+     "LARGUERO_IN_OUT_C6",
+     "FRONTAL",
+     "LARGUERO_IN_OUT_C6_FRONTAL",
+     "",
+     "1",
+     "0",
+     "Beam / SelectiveFrontalBuilder",
+     "beam chosen in some cell"
+    ],
+    [
+     "34",
+     "LARGUERO_ESCALON_INFINITO",
+     "FRONTAL",
+     "LARGUERO_ESCALON_INFINITO_FRONTAL",
+     "",
+     "1",
+     "0",
+     "Beam / SelectiveFrontalBuilder",
+     "beam chosen in some cell"
+    ],
+    [
+     "94",
+     "LARGUERO_ESCALON_TROQUEL_REDONDO",
+     "FRONTAL",
+     "LARGUERO_ESCALON_TROQUEL_REDONDO_FRONTAL",
+     "",
+     "1",
+     "0",
+     "Beam / SelectiveFrontalBuilder",
+     "beam chosen in some cell"
+    ],
+    [
+     "37",
+     "PROTECTOR_BOTA_H_3_16_18",
+     "FRONTAL",
+     "PROTECTOR_BOTA_H_3_16_18_FRONTAL",
+     "",
+     "1",
+     "0",
+     "Safety BOTA / SelectiveSafetyPlacement",
+     "BOTA variant selected + DrawsSomewhere"
+    ],
+    [
+     "52",
+     "PROTECTOR_BOTA_C_4",
+     "FRONTAL",
+     "PROTECTOR_BOTA_C_4_FRONTAL",
+     "",
+     "1",
+     "0",
+     "Safety BOTA",
+     "BOTA variant selected"
+    ],
+    [
+     "55",
+     "PROTECTOR_BOTA_C_6",
+     "FRONTAL",
+     "PROTECTOR_BOTA_C_6_FRONTAL",
+     "",
+     "1",
+     "0",
+     "Safety BOTA",
+     "BOTA variant selected"
+    ],
+    [
+     "40",
+     "PROTECTOR_LATERAL_BOTA_H_3_16_18",
+     "FRONTAL",
+     "PROTECTOR_LATERAL_BOTA_H_3_16_18_FRONTAL",
+     "",
+     "1",
+     "0",
+     "Safety LATERAL",
+     "LATERAL variant selected + side at post"
+    ],
+    [
+     "61",
+     "PROTECTOR_LATERAL_BOTA_C_4",
+     "FRONTAL",
+     "PROTECTOR_LATERAL_BOTA_C_4_FRONTAL",
+     "",
+     "1",
+     "0",
+     "Safety LATERAL",
+     "LATERAL variant selected"
+    ],
+    [
+     "64",
+     "PROTECTOR_LATERAL_BOTA_C_6",
+     "FRONTAL",
+     "PROTECTOR_LATERAL_BOTA_C_6_FRONTAL",
+     "",
+     "1",
+     "0",
+     "Safety LATERAL",
+     "LATERAL variant selected"
+    ],
+    [
+     "43",
+     "LARGUERO_ESCALON_TOPE_DE_3",
+     "FRONTAL",
+     "LARGUERO_ESCALON_TOPE_DE_3_FRONTAL",
+     "",
+     "1",
+     "0",
+     "Tope / SelectiveFrontalBuilder.AddTopes",
+     "TOPE variant + TopeFrontal=true"
+    ],
+    [
+     "58",
+     "POSTE_3_1_5_8_TOPE",
+     "FRONTAL",
+     "POSTE_3_1_5_8_TOPE_FRONTAL",
+     "",
+     "1",
+     "0",
+     "Tope / SelectiveFrontalBuilder.AddTopes",
+     "TOPE variant + TopeFrontal=true"
+    ],
+    [
+     "46",
+     "PARRILLA_GENERICA",
+     "FRONTAL",
+     "PARRILLA_GENERICA_FRONTAL",
+     "",
+     "1",
+     "0",
+     "Parrilla / SelectiveFrontalBuilder.AddParrillas",
+     "PARRILLA selected + ParrillaFrontal=true"
+    ],
+    [
+     "49",
+     "TARIMA_GENERICA",
+     "FRONTAL",
+     "TARIMA_GENERICA",
+     "",
+     "1",
+     "0",
+     "Pallet / SelectiveFrontalBuilder.AddTarimas",
+     "DrawPallets=true"
+    ],
+    [
+     "67",
+     "DESVIADOR_A_3",
+     "FRONTAL",
+     "DESVIADOR_A_3_FRONTAL",
+     "",
+     "1",
+     "0",
+     "Desviador / SelectiveDesviadorDrawing.AppendFrontal",
+     "that DESVIADOR variant selected, Side!=None"
+    ],
+    [
+     "70",
+     "DESVIADOR_A_4",
+     "FRONTAL",
+     "DESVIADOR_A_4_FRONTAL",
+     "",
+     "1",
+     "0",
+     "Desviador",
+     "variant selected"
+    ],
+    [
+     "73",
+     "DESVIADOR_L_3",
+     "FRONTAL",
+     "DESVIADOR_L_3_FRONTAL",
+     "",
+     "1",
+     "0",
+     "Desviador",
+     "variant selected"
+    ],
+    [
+     "76",
+     "DESVIADOR_L_3_5",
+     "FRONTAL",
+     "DESVIADOR_L_3_5_FRONTAL",
+     "",
+     "1",
+     "0",
+     "Desviador",
+     "variant selected"
+    ],
+    [
+     "79",
+     "DESVIADOR_L_4",
+     "FRONTAL",
+     "DESVIADOR_L_4_FRONTAL",
+     "",
+     "1",
+     "0",
+     "Desviador",
+     "variant selected"
+    ],
+    [
+     "82",
+     "DESVIADOR_L_4_5",
+     "FRONTAL",
+     "DESVIADOR_L_4_5_FRONTAL",
+     "",
+     "1",
+     "0",
+     "Desviador",
+     "variant selected"
+    ],
+    [
+     "85",
+     "DESVIADOR_L_5",
+     "FRONTAL",
+     "DESVIADOR_L_5_FRONTAL",
+     "",
+     "1",
+     "0",
+     "Desviador",
+     "variant selected"
+    ],
+    [
+     "4",
+     "PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16",
+     "PLANTA",
+     "PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16_PLANTA",
+     "",
+     "1",
+     "0",
+     "BasePlate / PlantaHeaderLayoutBuilder",
+     "DrawBasePlate"
+    ],
+    [
+     "7",
+     "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA",
+     "PLANTA",
+     "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_PLANTA",
+     "",
+     "1",
+     "0",
+     "Post / PlantaHeaderLayoutBuilder",
+     "always"
+    ],
+    [
+     "10",
+     "TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14",
+     "PLANTA",
+     "TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14_PLANTA",
+     "",
+     "1",
+     "0",
+     "Truss (Horizontal) / PlantaHeaderLayoutBuilder",
+     "always (computed longitud>0)"
+    ],
+    [
+     "13",
+     "SEPARADOR_DE_CABECERA_FORMADA_DE_CINTA_CALIBRE_12",
+     "PLANTA",
+     "SEPARADOR_DE_CABECERA_FORMADA_DE_CINTA_CALIBRE_12_PLANTA",
+     "",
+     "1",
+     "0",
+     "Separator / SelectivePlantaBuilder.AddSeparadores",
+     "DepthCount>=2 with positive gap"
+    ],
+    [
+     "30",
+     "LARGUERO_ESCALON_CAL14_3_REMACHES",
+     "PLANTA",
+     "LARGUERO_ESCALON_CAL14_3_REMACHES_PLANTA",
+     "",
+     "1",
+     "0",
+     "Beam / SelectivePlantaBuilder.AddLargueros",
+     "it is the FIRST level's beam of some bay"
+    ],
+    [
+     "33",
+     "LARGUERO_IN_OUT_C6",
+     "PLANTA",
+     "LARGUERO_IN_OUT_C6_PLANTA",
+     "",
+     "1",
+     "0",
+     "Beam",
+     "first level's beam of some bay"
+    ],
+    [
+     "36",
+     "LARGUERO_ESCALON_INFINITO",
+     "PLANTA",
+     "LARGUERO_ESCALON_INFINITO_PLANTA",
+     "",
+     "1",
+     "0",
+     "Beam",
+     "first level's beam of some bay"
+    ],
+    [
+     "93",
+     "LARGUERO_ESCALON_TROQUEL_REDONDO",
+     "PLANTA",
+     "LARGUERO_ESCALON_TROQUEL_REDONDO_PLANTA",
+     "",
+     "1",
+     "0",
+     "Beam",
+     "first level's beam of some bay"
+    ],
+    [
+     "39",
+     "PROTECTOR_BOTA_H_3_16_18",
+     "PLANTA",
+     "PROTECTOR_BOTA_H_3_16_18_PLANTA",
+     "",
+     "1",
+     "0",
+     "Safety BOTA",
+     "BOTA variant selected"
+    ],
+    [
+     "51",
+     "PROTECTOR_BOTA_C_4",
+     "PLANTA",
+     "PROTECTOR_BOTA_C_4_PLANTA",
+     "",
+     "1",
+     "0",
+     "Safety BOTA",
+     "BOTA variant selected"
+    ],
+    [
+     "54",
+     "PROTECTOR_BOTA_C_6",
+     "PLANTA",
+     "PROTECTOR_BOTA_C_6_PLANTA",
+     "",
+     "1",
+     "0",
+     "Safety BOTA",
+     "BOTA variant selected"
+    ],
+    [
+     "42",
+     "PROTECTOR_LATERAL_BOTA_H_3_16_18",
+     "PLANTA",
+     "PROTECTOR_LATERAL_BOTA_H_3_16_18_PLANTA",
+     "",
+     "1",
+     "0",
+     "Safety LATERAL",
+     "LATERAL variant selected"
+    ],
+    [
+     "60",
+     "PROTECTOR_LATERAL_BOTA_C_4",
+     "PLANTA",
+     "PROTECTOR_LATERAL_BOTA_C_4_PLANTA",
+     "",
+     "1",
+     "0",
+     "Safety LATERAL",
+     "LATERAL variant selected"
+    ],
+    [
+     "63",
+     "PROTECTOR_LATERAL_BOTA_C_6",
+     "PLANTA",
+     "PROTECTOR_LATERAL_BOTA_C_6_PLANTA",
+     "",
+     "1",
+     "0",
+     "Safety LATERAL",
+     "LATERAL variant selected"
+    ],
+    [
+     "45",
+     "LARGUERO_ESCALON_TOPE_DE_3",
+     "PLANTA",
+     "LARGUERO_ESCALON_TOPE_DE_3_PLANTA",
+     "",
+     "1",
+     "0",
+     "Tope / SelectivePlantaBuilder.AddTopes",
+     "TOPE variant selected (no toggle)"
+    ],
+    [
+     "57",
+     "POSTE_3_1_5_8_TOPE",
+     "PLANTA",
+     "POSTE_3_1_5_8_TOPE_PLANTA",
+     "",
+     "1",
+     "0",
+     "Tope",
+     "TOPE variant selected"
+    ],
+    [
+     "66",
+     "DESVIADOR_A_3",
+     "PLANTA",
+     "DESVIADOR_A_3_PLANTA",
+     "",
+     "1",
+     "0",
+     "Desviador / SelectiveDesviadorDrawing.AppendPlanta",
+     "variant selected, Side!=None"
+    ],
+    [
+     "69",
+     "DESVIADOR_A_4",
+     "PLANTA",
+     "DESVIADOR_A_4_PLANTA",
+     "",
+     "1",
+     "0",
+     "Desviador",
+     "variant selected"
+    ],
+    [
+     "72",
+     "DESVIADOR_L_3",
+     "PLANTA",
+     "DESVIADOR_L_3_PLANTA",
+     "",
+     "1",
+     "0",
+     "Desviador",
+     "variant selected"
+    ],
+    [
+     "75",
+     "DESVIADOR_L_3_5",
+     "PLANTA",
+     "DESVIADOR_L_3_5_PLANTA",
+     "",
+     "1",
+     "0",
+     "Desviador",
+     "variant selected"
+    ],
+    [
+     "78",
+     "DESVIADOR_L_4",
+     "PLANTA",
+     "DESVIADOR_L_4_PLANTA",
+     "",
+     "1",
+     "0",
+     "Desviador",
+     "variant selected"
+    ],
+    [
+     "81",
+     "DESVIADOR_L_4_5",
+     "PLANTA",
+     "DESVIADOR_L_4_5_PLANTA",
+     "",
+     "1",
+     "0",
+     "Desviador",
+     "variant selected"
+    ],
+    [
+     "84",
+     "DESVIADOR_L_5",
+     "PLANTA",
+     "DESVIADOR_L_5_PLANTA",
+     "",
+     "1",
+     "0",
+     "Desviador",
+     "variant selected"
+    ]
+   ]
+  },
+  {
+   "title": "T2b - FRONTAL/PLANTA rows in blocks.csv NOT requested by the Selective FRONTAL/PLANTA plans",
+   "columns": [
+    "blocks.csv line",
+    "pieceId",
+    "view",
+    "Reason"
+   ],
+   "rows": [
+    [
+     "8",
+     "TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14",
+     "FRONTAL",
+     "frontal builder draws no truss"
+    ],
+    [
+     "11",
+     "SEPARADOR_DE_CABECERA_FORMADA_DE_CINTA_CALIBRE_12",
+     "FRONTAL",
+     "requested by the Selective LATERAL plan (SeparatorView=FRONTAL, SelectiveLateralBuilder.cs:287), not by the FRONTAL plan"
+    ],
+    [
+     "19,22,25",
+     "MENSULA_3_REMACHES_CAL_10 / MENSULA_TROQUEL_REDONDO_CAL_10 / MENSULA_AJUSTE_INFINITO_CAL_10",
+     "FRONTAL",
+     "ménsulas only in the BOM"
+    ],
+    [
+     "88",
+     "GUIA_ENTRADA",
+     "FRONTAL",
+     "GUIA never used by the Selective builders"
+    ],
+    [
+     "91",
+     "DEFENSA_MONTACARGAS",
+     "FRONTAL",
+     "DEFENSA never used by the Selective builders"
+    ],
+    [
+     "21,24,27",
+     "MENSULA_* (3)",
+     "PLANTA",
+     "ménsulas only in the BOM"
+    ],
+    [
+     "48",
+     "PARRILLA_GENERICA",
+     "PLANTA",
+     "planta builder draws no parrilla"
+    ],
+    [
+     "87",
+     "GUIA_ENTRADA",
+     "PLANTA",
+     "not used by Selective"
+    ],
+    [
+     "90",
+     "DEFENSA_MONTACARGAS",
+     "PLANTA",
+     "not used by Selective"
+    ]
+   ]
+  },
+  {
+   "title": "T3 - Dynamic-block parameters each role sets",
+   "columns": [
+    "Plan",
+    "Role",
+    "Parameters written",
+    "Value",
+    "Evidence"
+   ],
+   "rows": [
+    [
+     "FRONTAL",
+     "Post",
+     "LONGITUD, PERALTE",
+     "post height (custom cabecera Height else resolved); post peralte",
+     "SelectiveFrontalBuilder.cs:489-490; names SelectiveRackDefaults.cs:46,49"
+    ],
+    [
+     "FRONTAL",
+     "BasePlate",
+     "PERALTE (only if >0)",
+     "cabecera override ?? plate.StandardPeralte(postPeralte) = peralteBase + k*postPeralte",
+     "SelectiveFrontalBuilder.cs:101,146,508-511; CatalogEntries.cs:176"
+    ],
+    [
+     "FRONTAL",
+     "Beam",
+     "LONGITUD, PERALTE",
+     "bay.BeamLength or tramo.Length; level.BeamPeralte",
+     "SelectiveFrontalBuilder.cs:466-467"
+    ],
+    [
+     "FRONTAL",
+     "Safety BOTA",
+     "none",
+     "-",
+     "SelectiveFrontalBuilder.cs:112-113 (no longitud); SelectiveSafetyPlacement.cs:321-324"
+    ],
+    [
+     "FRONTAL",
+     "Safety LATERAL",
+     "LONGITUD (if >0)",
+     "total fondo depth",
+     "SelectiveFrontalBuilder.cs:61,108; SelectiveSafetyPlacement.cs:321-324"
+    ],
+    [
+     "FRONTAL",
+     "Tope",
+     "LONGITUD, SAQUE",
+     "tope Longitud; Selection.TopeSaque>0 else 3.0",
+     "SelectiveFrontalBuilder.cs:220-222; SelectiveTopePlacement.cs:66-67,92-97; SelectiveRackDefaults.cs:89,98"
+    ],
+    [
+     "FRONTAL",
+     "Parrilla",
+     "FRENTE",
+     "deck frente (override or tarima frente)",
+     "SelectiveFrontalBuilder.cs:279; SelectiveParrillaPlacement.cs:189,208; SelectiveRackDefaults.cs:92"
+    ],
+    [
+     "FRONTAL",
+     "Tarima",
+     "LONGITUD, ALTURA",
+     "pallet frente; pallet alto",
+     "SelectiveTarimaPlacement.cs:136-137; SelectiveRackDefaults.cs:64,68"
+    ],
+    [
+     "FRONTAL",
+     "Desviador",
+     "LONGITUD",
+     "plan.Longitud (selection DesviadorLongitud else 18)",
+     "SelectiveDesviadorDrawing.cs:126; SelectiveDesviadorPlan.cs:107; SelectiveRackDefaults.cs:101"
+    ],
+    [
+     "PLANTA",
+     "Post",
+     "PERALTE (only if >0); back post MirroredX",
+     "override (system per-post peralte) else config/profile width",
+     "PlantaHeaderLayoutBuilder.cs:72-73,140-143"
+    ],
+    [
+     "PLANTA",
+     "BasePlate",
+     "PERALTE (only if >0); back MirroredX",
+     "override ?? StandardPeralte",
+     "PlantaHeaderLayoutBuilder.cs:77-78,161-164"
+    ],
+    [
+     "PLANTA",
+     "Truss",
+     "LONGITUD, PERALTE",
+     "depth - 2*(troquelInset - celosia.X); postPeralte - 1",
+     "PlantaHeaderLayoutBuilder.cs:74,107,120-121"
+    ],
+    [
+     "PLANTA",
+     "Beam",
+     "LONGITUD, PERALTE (back one MirroredX)",
+     "bay.BeamLength or tramo.Length; Levels[0].BeamPeralte",
+     "SelectivePlantaBuilder.cs:393-394,403-404,517-518"
+    ],
+    [
+     "PLANTA",
+     "Separador",
+     "LONGITUD",
+     "gap length",
+     "SelectivePlantaBuilder.cs:449; SelectiveSeparadorPlacement.cs:243"
+    ],
+    [
+     "PLANTA",
+     "Tope",
+     "LONGITUD, SAQUE",
+     "segment.Longitud; saque",
+     "SelectivePlantaBuilder.cs:472,499"
+    ],
+    [
+     "PLANTA",
+     "Safety BOTA",
+     "none",
+     "-",
+     "SelectivePlantaBuilder.cs:104-106"
+    ],
+    [
+     "PLANTA",
+     "Safety LATERAL",
+     "LONGITUD (if >0); MirroredY for mirrored copy",
+     "frenteBack - frenteFront",
+     "SelectivePlantaBuilder.cs:100; SelectiveSafetyPlacement.cs:246-248,321-324"
+    ],
+    [
+     "PLANTA",
+     "Desviador",
+     "LONGITUD",
+     "plan.Longitud",
+     "SelectiveDesviadorDrawing.cs:73,126"
+    ]
+   ]
+  }
+ ],
+ "limitations": [
+  "Static reading of commit 3375aadb extract only; no code executed, so candidate sets are derived from code paths plus the repository CSVs, not observed from real plans.",
+  "blocks-library.dwg is absent from the extract (owner-held, not versioned per ADR-0002 evidence), so it cannot be verified that the 46 candidate blockNames exist there or expose the listed parameter names.",
+  "Candidate pieceIds reflect the repository catalogs (1 post, 1 plate, 1 truss, 4 beams, safety variants per seguridad.csv). A runtime catalog folder with edited or added rows changes both the candidate ids and the resolved blockNames.",
+  "Per-post copy logic (SelectiveSafetyEnds.BootCopiesForPost/CopiesForPost), SelectiveTopePlan/SelectiveParrillaPlan internals and SelectiveDesviadorPlan beyond line 140 were read only for gating, not for full placement semantics.",
+  "Non-editor redraw paths (batch, RACKPROYECTAR, duplication) were not traced; whether they can feed ids that are not in the catalog is marked UNCERTAIN.",
+  "The claim that nothing consumes blocks.csv layer/scale/rotation rests on a grep, not a semantic proof; the drawer lines themselves are FACT.",
+  "The UI default beam selection depends on culture-sensitive label ordering and was not executed."
+ ]
+}

@@ -1,0 +1,99 @@
+{
+ "scope": "Mutable static-state census of every .cs file under src/RackCad.Plugin/Drawing (14), src/RackCad.Plugin/Systems (15) and src/RackCad.Plugin/KindHandlers (9) at commit 3375aadb (extract root main2). Method: grep of every line with the `static` token (100 lines, all read), plus greps for event, ThreadStatic/ThreadLocal, Lazy, Random, Concurrent, StringBuilder, ModuleInitializer, static constructors, `partial` classes and settable properties. Each hit was then read in context. Reachability was traced through the seam files outside scope (RackSelectivoCommands.cs, RackMenuCommands.cs, Application LibraryBlockRequirements.cs, KindDispatch.cs, BlockLibrary.cs). Result: 7 static members in scope. Only one real piece of mutable state sits on a seam path: the 4-field block-library side-database cache in BlockLibraryDatabaseCache. No static events, [ThreadStatic]/ThreadLocal, static constructors, module initializers, Lazy<T>, Random, or partial classes exist in scope.",
+ "files_scanned": 38,
+ "entries": [
+  {
+   "member": "BlockLibraryDatabaseCache.cachedLibrary",
+   "location": "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:15",
+   "declared_type": "Autodesk.AutoCAD.DatabaseServices.Database (private static, non-readonly)",
+   "kind": "LAZY_OR_CACHE",
+   "written_at": "BlockLibraryDatabaseCache.cs:50 (cachedLibrary = fresh). The previous value is disposed at :49 (cachedLibrary?.Dispose()). A failed read disposes only the new instance (:45) and returns null (:46) without touching the cache. FACT: the file has no other method (only Acquire, :17-56), so there is no Clear/Reset. FACT: no CloseInput call anywhere in scope.",
+   "populated_when": "Lazily, on the first Acquire(path) call and again whenever the signature changes. The hit test at :25-28 requires: cachedLibrary != null, path equal to cachedPath (OrdinalIgnoreCase), FileInfo.LastWriteTimeUtc == cachedWriteUtc and Length == cachedLength. On a miss it does new Database(false,true) + ReadDwgFile(OpenForReadAndAllShare) (:33-40). Callers: BlockLibraryImporter.EnsureBlocks:96, reached only when at least one wanted block is missing from the TARGET db (:67-85) and File.Exists(path) (:87-91); and AutoCadExternalLibraryBlockQuery.Query:27, which has NO instantiation in src at this commit (FACT: only a source-text test, tests/RackCad.Tests/I59F3CorrectionTests.cs:66). Lives for the process lifetime.",
+   "reachable_from_seam_paths": "YES",
+   "reachability_chain": "RACKSELECTIVO (RackSelectivoCommands.cs:26,39) -> DrawSelectiveView (:429-432) -> DrawSelectiveViewFromAuthored (:449). Planta: SelectivePlantaDrawService.DrawAndPlace (:470; SelectivePlantaDrawService.cs:26-34). Frontal: InsertSelectiveFrontal (:475,:521; SelectiveFrontalDrawService.cs:31-39). Both -> ViewBlockDraw.DrawAndPlace (ViewBlockDraw.cs:49-51) -> SystemBlockWriter.CreateBlock (SystemBlockWriter.cs:25) -> BlockLibraryImporter.EnsureForPlan (BlockLibraryImporter.cs:32-37) -> LibraryBlockAvailabilityFlow.Observe (src/RackCad.Application/Systems/Shared/LibraryBlockRequirements.cs:175-176, only if requirements.Count>0 per :168) -> ImportAdapter.Ensure (BlockLibraryImporter.cs:140-141) -> EnsureRequirements (:45-47) -> EnsureBlocks (:96) -> BlockLibraryDatabaseCache.Acquire. Also reached by the redraw paths ViewBlockDraw.PrepareRedraw:86 and SystemBlockWriter.RedrawInPlace:59, and by the non-seam lateral LateralHeaderDrawService.cs:83,248. The cache key comes from BlockLibraryLocator.ResolvePath() (BlockLibraryImporter.cs:23,87), which reads UserSettingsStore.Load().BlockLibraryPath or DefaultPath (src/RackCad.Application/Catalogs/BlockLibrary.cs:19-22).",
+   "warmup_risk": "REAL (FACT from code). A warm-up that draws a Selective frontal/planta into a scratch side database missing any library block, with the library file present, runs ReadDwgFile once and keeps the parsed library Database for the rest of the process. The cache key does NOT include the target/side database (:25-28). A later governed run with the same resolved path and an unchanged file (same mtime and length) therefore gets a cache hit (:30). Consequences: (a) the governed run never runs ReadDwgFile, so the read-failure diagnostic RackLog.Exception at :44 cannot fire in it; (b) WblockCloneObjects (BlockLibraryImporter.cs:123) clones from the SAME Database instance the warm-up already used. UNCERTAIN whether earlier clones or paging change that instance in a way visible to later clones (AutoCAD API behavior, not in code); (c) the first-read cost moves out of the governed run. Neutral cases: if the governed target already has every needed block, the cache is never touched (BlockLibraryImporter.cs:82-85). If the resolved path differs (settings override changed between runs), the governed run disposes the warm-up instance (:49) and reads the file again. A file replaced with the same length and LastWriteTimeUtc would be served stale (FACT from the key; unlikely in practice). A failed read is not cached (:42-47). The EnsureBlocks return value does not depend on hit or miss. UNCERTAIN: whether the open side database keeps an OS handle on blocks-library.dwg without CloseInput (AutoCAD semantics)."
+  },
+  {
+   "member": "BlockLibraryDatabaseCache.cachedPath",
+   "location": "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:12",
+   "declared_type": "string (private static, non-readonly)",
+   "kind": "STATIC_MUTABLE_FIELD",
+   "written_at": "BlockLibraryDatabaseCache.cs:51 (only write)",
+   "populated_when": "Written together with cachedLibrary after a successful ReadDwgFile on a cache miss (:49-53). Null until the first successful Acquire.",
+   "reachable_from_seam_paths": "YES",
+   "reachability_chain": "Same chain as cachedLibrary, ending at BlockLibraryDatabaseCache.Acquire, called from BlockLibraryImporter.EnsureBlocks:96.",
+   "warmup_risk": "Part of the cache key (:26, OrdinalIgnoreCase). After a warm-up it holds the path resolved then (BlockLibraryLocator.ResolvePath -> UserSettingsStore). A governed run resolving to the same string hits the cache. See cachedLibrary."
+  },
+  {
+   "member": "BlockLibraryDatabaseCache.cachedWriteUtc",
+   "location": "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:13",
+   "declared_type": "System.DateTime (private static, non-readonly)",
+   "kind": "STATIC_MUTABLE_FIELD",
+   "written_at": "BlockLibraryDatabaseCache.cs:52 (only write)",
+   "populated_when": "On a cache miss after a successful read (:52), from FileInfo.LastWriteTimeUtc taken at :22. default(DateTime) before that.",
+   "reachable_from_seam_paths": "YES",
+   "reachability_chain": "Same chain as cachedLibrary (EnsureBlocks:96 -> Acquire).",
+   "warmup_risk": "Part of the cache key (:27). The file mtime captured during the warm-up decides whether the governed run reuses the warm-up's Database. See cachedLibrary."
+  },
+  {
+   "member": "BlockLibraryDatabaseCache.cachedLength",
+   "location": "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:14",
+   "declared_type": "long (private static, non-readonly)",
+   "kind": "STATIC_MUTABLE_FIELD",
+   "written_at": "BlockLibraryDatabaseCache.cs:53 (only write)",
+   "populated_when": "On a cache miss after a successful read (:53), from FileInfo.Length taken at :23. 0 before that.",
+   "reachable_from_seam_paths": "YES",
+   "reachability_chain": "Same chain as cachedLibrary (EnsureBlocks:96 -> Acquire).",
+   "warmup_risk": "Part of the cache key (:28). Same risk as cachedLibrary."
+  },
+  {
+   "member": "BlockLibraryDatabaseCache.CacheGate",
+   "location": "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:11",
+   "declared_type": "object (private static readonly, = new object())",
+   "kind": "OTHER",
+   "written_at": "Static field initializer only (:11). Used as a Monitor lock at :19.",
+   "populated_when": "Type initialization of BlockLibraryDatabaseCache.",
+   "reachable_from_seam_paths": "YES",
+   "reachability_chain": "Same chain as cachedLibrary. Every Acquire call takes lock(CacheGate) (:19).",
+   "warmup_risk": "None. A lock object with no settable state. The monitor is released when Acquire returns. FACT: the returned Database is used by callers outside the lock (BlockLibraryImporter.cs:103-123; AutoCadExternalLibraryBlockQuery.cs:34-48), but that is not state left behind by a warm-up."
+  },
+  {
+   "member": "KindHandlerRegistry.Default",
+   "location": "src/RackCad.Plugin/KindHandlers/KindHandlerRegistry.cs:55-63",
+   "declared_type": "KindHandlerRegistry (public static get-only auto-property; singleton wrapping KindDispatch<IRackKindHandler> with 2 Dictionary<string,IRackKindHandler> + ReadOnlyCollection)",
+   "kind": "SINGLETON",
+   "written_at": "Static auto-property initializer only (KindHandlerRegistry.cs:55-63; there is no setter). It builds 6 handler instances (:57-62). The inner state is filled only in the KindDispatch constructor (src/RackCad.Application/Persistence/KindDispatch.cs:39-68); _ordinal, _ignoreCase and _items are private readonly (:23-25) with no mutating members (:72-127). FACT: the 6 handlers declare no fields, only expression-bodied Kind/BomLabel properties (e.g. SelectiveKindHandler.cs:15,17; CabeceraKindHandler.cs:13,15). Their other declarations are locals (CabeceraKindHandler.cs:47, CantileverKindHandler.cs:83, SelectiveKindHandler.cs:39).",
+   "populated_when": "Type initialization of KindHandlerRegistry on first static access. UNCERTAIN exact moment: there is no static constructor, so the runtime may initialize the type before first use. Built once; construction fails fast on a duplicate or blank kind (KindDispatch.cs:45-61).",
+   "reachable_from_seam_paths": "NO",
+   "reachability_chain": "Not referenced by RackSelectivoCommands.cs (grep: no KindHandler/RackEnvelopeRestamp reference) or by the other seam classes checked (RackEmbedComposer, RackEmbedStore, SelectivePalletDesignStore, RackBlockFinder, RackViewCodec, SelectiveAuthoredAuthority, RackCatalogLoader). The type is internal to the Plugin (:26), so Application-layer builders cannot reach it. Its users are all off-seam: RACKEDITAR (RackMenuCommands.cs:141 -> KindHandlerDispatch.cs:22), RackEnvelopeRestamp.cs:105, RackDuplicarCommands.cs:71, RackLayoutCommands.cs:64, RackInventarioCommands.BomTotal.cs:134, and CustomPropertiesExecutor.cs:127 (that file holds its own static readonly Func over Default, outside scope). Note: RACKCAD also calls DrawSelectiveView (RackMenuCommands.cs:77) without the registry.",
+   "warmup_risk": "None. Immutable after construction and holds no per-drawing, per-path or per-database data. The only effect a warm-up could have is triggering the one-time type initialization earlier, which is deterministic."
+  },
+  {
+   "member": "RackDefinitionCreationResult.NoMissing",
+   "location": "src/RackCad.Plugin/Systems/Shared/RackDefinitionCreationResult.cs:55",
+   "declared_type": "IReadOnlyList<HeaderBlockInstance> backed by an array (private static readonly = new HeaderBlockInstance[0])",
+   "kind": "STATIC_READONLY_MUTABLE_OBJECT",
+   "written_at": "Static field initializer only (:55). Read at :69 and exposed through the MissingInstances property (:85). No element can be written because the array has length 0.",
+   "populated_when": "Type initialization of the RackDefinitionCreationResult readonly struct.",
+   "reachable_from_seam_paths": "NO",
+   "reachability_chain": "Only RackDefinitionCreator (AUTH-15; RackDefinitionCreator.cs:39,83) creates this struct. FACT: grep over src finds no production caller of RackDefinitionCreator or RackDefinitionCreationResult outside their own two files at this commit. Only guard tests reference them (tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs:43-487). It is not on the seam chain: SystemBlockWriter.CreateBlock uses drawer.CreateSystemBlock directly (SystemBlockWriter.cs:29).",
+   "warmup_risk": "None. A zero-length array shared as an empty sentinel carries no state that can change."
+  }
+ ],
+ "excluded_immutable_examples": [
+  "const strings/ints: LateralHeaderDrawer.cs:324 AnnotationLayer, :327 DimensionLayer; StructuralSectionMaterializer.cs:27 BlockNamePrefix, :37 AnnotationLayer; RackBlockData.cs:16 DictKey, :18 ChunkSize; local const at RackDefinitionCreator.cs:149",
+  "BlockLibraryImporter.LibraryPath (BlockLibraryImporter.cs:23): a static expression-bodied property with no backing store, recomputed on every access through BlockLibraryLocator.ResolvePath()",
+  "All other `static` hits (about 90 lines) are static methods or static class declarations with no fields, e.g. ViewBlockDraw, SystemBlockWriter, RackBlockData (Write :20, Read :54), BlockPlacement, RackBlockRenamer, RackDefinitionCreator (a guard test asserts it has no static fields: tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs:125), KindHandlerDispatch, CantileverViewMaterializer, StructuralSectionMaterializer",
+  "Instance readonly builder/drawer fields of the draw services (e.g. SelectiveFrontalDrawService.cs:23-24, SelectivePlantaDrawService.cs:23-24): every call site creates the service with `new` per call (RackSelectivoCommands.cs:470,521; RackDinamicoCommands.cs, RackPushBackCommands.cs etc.), so this is not static state. LateralHeaderDrawer declares only consts.",
+  "BlockPlacement.HeaderInsertionJig.position (BlockPlacement.cs:207): a mutable instance field on a jig created per placement (BlockPlacement.cs:183)",
+  "HeaderPlacementResult.PlacedId { get; set; } and ErrorMessage { get; private set; } (LateralHeaderDrawService.cs:320,323): instance properties on per-call result objects",
+  "StringBuilder locals (RackBlockData.cs:79, CantileverViewMaterializer.cs:291, StructuralSectionMaterializer.cs:139): method-local, not static"
+ ],
+ "limitations": [
+  "The census covers only the 38 .cs files in Drawing/, Systems/ and KindHandlers/. Seam-path callees outside those folders were read only to trace reachability, not censused: RackCatalogLoader.Load (called at ViewBlockDraw.cs:49,84,136 and LateralHeaderDrawService.cs:299), BlockLibraryLocator/UserSettingsStore.Load (BlockLibrary.cs:19-22), RackLog (in-scope calls at BlockLibraryDatabaseCache.cs:44, BlockLibraryImporter.cs:129, AutoCadExternalLibraryBlockQuery.cs:54, BlockPlacement.cs:168, LateralHeaderDrawer.cs:236, LateralHeaderDrawService.cs:287, RackBlockRenamer.cs:56, SelectiveKindHandler.cs:48), RackBlockRequirementExtractors, SelectiveFrontalBuilder/SelectivePlantaBuilder, RackViewBaseName, RackBlockFinder, RackEmbedComposer/RackEmbedStore, SelectivePalletDesignStore, RackViewCodec, SelectiveAuthoredAuthority. Any static caches or logger state inside those files are NOT reported here.",
+  "Out-of-scope static noted in passing but not analyzed: CustomPropertiesExecutor.cs:127 `private static readonly Func<string,bool> IsKnownKind` over KindHandlerRegistry.Default.",
+  "AutoCAD runtime behavior is UNCERTAIN because it is not visible in code: whether a Database read with ReadDwgFile(OpenForReadAndAllShare) and no CloseInput keeps the file handle open, and whether WblockCloneObjects changes the cached source Database's state between calls.",
+  "Static analysis only; nothing was built or run. Detection was grep-based on the `static` token plus the keyword greps listed in scope. State mutated through reflection or by AutoCAD itself would not be detected.",
+  "At this commit two in-scope code paths are dormant: AutoCadExternalLibraryBlockQuery (the second Acquire caller) is never instantiated, and RackDefinitionCreator (the only user of NoMissing) has no production caller. Later commits (e.g. RACKPROYECTAR / I-55) may wire them in and change the reachability verdicts."
+ ]
+}
