@@ -313,7 +313,9 @@ matriz completa OV-ID19, OV-C16-06 y OV-UNNAMED vive en la guía de validación 
   de cuántos estén girados; con Proyectada, racks opuestos se rechazan antes del punto
   (`SourceOrientationDivergent`).
 - **Racks sin nombre**: se proyectan y siguen sin nombre («(sin nombre)» en `RACKLISTA`).
-- **Frontal ↔ Lateral**: mensaje de no expuesto, sin escribir nada.
+- **Frontal ↔ Lateral** (C16-07): se proyecta sobre la altura; la vista nueva se alinea por su línea de suelo. Proyectada: la referencia conserva
+  el giro de la vista origen; Predeterminada: sin girar. La cabecera (sin frontal) se rechaza antes del punto (`PairNotExposed`); frontales opuestas
+  en Proyectada, con `SourceOrientationDivergent`.
 - **Avisos antes del punto**: superposición entre vistas nuevas y cercanía al límite del sentido; no bloquean.
 - **Bloqueos antes del punto**, con todos los ofensores: mezclas de clases, xref, `MINSERT`, escala distinta de 1,
   reflexión, un rack con varias definiciones, cama de rodamiento; una pieza requerida sin bloque o sin biblioteca.

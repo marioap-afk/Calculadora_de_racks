@@ -81,7 +81,7 @@ de una fila de plantas de un layout.
 |---|---|
 | **A la misma clase** (Planta → Planta, etc.) | Modo rígido: se reproduce la disposición de las vistas con la variante de su vista origen. Con orientación **Proyectada** (por defecto) solo se traslada y cada vista conserva su giro; con **Predeterminada** el grupo se gira para que sus vistas queden sin girar (ver 4.2.1). |
 | **Entre planta y una elevación** (Planta ↔ Frontal, Planta ↔ Lateral) | Modo ortográfico: las vistas quedan alineadas sobre una línea común, con el orden y la separación que tenían sobre el eje que comparten con la vista origen. Con **Proyectada** (por defecto) esa línea sigue a la vista origen y cada referencia gira para seguirla; con **Predeterminada** las vistas quedan en la orientación natural de la vista destino y el sentido de la línea lo fija el marco de la vista origen, no el número de racks girados (ver 4.2.1). |
-| **Frontal ↔ Lateral** | No se expone: el comando lo dice y no escribe nada. |
+| **Entre las dos elevaciones** (Frontal ↔ Lateral) | Modo ortográfico sobre la **altura**, el único eje que comparten: la vista nueva se alinea por su **línea de suelo** con la de la vista origen. Con **Proyectada** su altura queda paralela y en el mismo sentido que la de la vista origen (la referencia conserva el giro de la vista origen); con **Predeterminada** queda sin girar. Solo en los sistemas que tienen las dos clases: la cabecera no tiene frontal y el comando lo rechaza antes de pedir puntos (`PairNotExposed`). Si varias frontales de una misma fila comparten el suelo, sus laterales caen en el mismo lugar y se avisa de la superposición. |
 
 Los rangos de cada rack sobre el eje compartido se conservan; no se recuperan coordenadas descartadas en un viaje
 de ida y vuelta. Con Predeterminada tampoco se recuperan las orientaciones (salvo la traslación); con Proyectada
@@ -93,7 +93,8 @@ La definición de bloque de la vista nueva es **siempre la normal de RackCad**: 
 números no cambian. Lo único que cambia entre los dos modos es el **giro de la referencia de bloque** colocada.
 
 - **Proyectada** (por defecto): la vista nueva se comporta como una vista proyectada del dibujo. El eje del rack
-  que comparte con su vista origen (la corrida entre planta y frontal, el fondo entre planta y lateral) queda
+  que comparte con su vista origen (la corrida entre planta y frontal, el fondo entre planta y lateral, la altura entre
+  frontal y lateral) queda
   **paralelo y en el mismo sentido** que en la vista origen, y las vistas nuevas quedan alineadas sobre una recta
   que pasa por el punto de destino. Para lograrlo gira **toda** la referencia: geometría, textos, cotas y
   etiquetas giran con ella (puede quedar vertical o de cabeza; RackCad no endereza los textos). Por ejemplo, la

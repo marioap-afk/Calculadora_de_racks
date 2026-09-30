@@ -85,7 +85,7 @@ propia fila lo permite con «si el Owner dispone de uno»). Ningun escenario se 
 ## 6. OV-ID19 (`RACKPROYECTAR` / `RPY`)
 
 Decisiones aplicadas: misma clase = Rigid con `alpha = 0`; planta ↔ elevaciones = Orthographic con **Relative Frame Window** (nunca mayoria);
-Frontal ↔ Lateral no expuesto; superposicion = aviso; tipos fuente mezclados, varias definiciones de un `RackId` y familias mezcladas fallan; orientacion natural
+Frontal ↔ Lateral = Orthographic sobre la altura desde C16-07 (antes no expuesto; ver §6.3); superposicion = aviso; tipos fuente mezclados, varias definiciones de un `RackId` y familias mezcladas fallan; orientacion natural
 de las plantas proyectadas. Las filas 11, 22, 25 y 26 son las reescritas por el mapa V5.
 
 **Orientacion (C16-06).** `RACKPROYECTAR` pregunta ahora `Orientacion [PRoyectada/PREdeterminada] <PRoyectada>` despues de la clase. Las filas de esta
@@ -104,7 +104,7 @@ tabla describen la geometria congelada de G14, que es la orientacion **Predeterm
 | OV-ID19-06 | Layout de plantas **girado 30° con `ROTATE`** (la rejilla de `RACKLAYOUT` solo es correcta a 0/90/180/270) → Planta (rigido) y → Frontal (ortografico) | Rigido: layout y giros conservados; ortografico: frontales rectas con la separacion medida a lo largo de la corrida girada |
 | OV-ID19-07 | `RACKLAYOUT` enlazado 1 × 4 → Frontal | 4 referencias de una definicion nueva; 1 rack con 4 copias antes y despues (`RACKLISTA`, `RACKBOMTOTAL`) |
 | OV-ID19-08 | `RACKEDITAR` sobre una vista proyectada → Actualizar | Todas las vistas del rack cambian |
-| OV-ID19-09 | Frontal ↔ Lateral | No se expone: mensaje sin escribir |
+| OV-ID19-09 | Frontal ↔ Lateral | **Supersedida por C16-07** (decision del Owner): se proyecta; se valida en §6.3 OV-C16-07. *(Antes: «No se expone: mensaje sin escribir».)* |
 | OV-ID19-10 | Mezclas invalidas: plantas y una frontal; frontal y planta del mismo rack; Cama; MINSERT; escala ≠ 1 | Error explicito **sin pedir puntos** y sin escribir |
 | OV-ID19-11 | Vista con `View` desconocido; frontal de un fondo que ya no existe | Error con disposicion y el remedio de la tabla de la Proposal V5 §3.8 que corresponda (no siempre «RACKEDITAR»); nada escrito |
 | OV-ID19-12 | Rack con propiedades divergentes en la seleccion; y aparte un bloque ajeno no interpretable | Lo primero falla con remedio; lo segundo no bloquea |
@@ -189,6 +189,35 @@ lado o de cabeza es el comportamiento esperado.
 | U-01 | Selectivo **con nombre** → planta → `RACKPROYECTAR` → Lateral | PASS: se crea la definicion y la referencia; mismo `RackId`; la vista nueva lleva el **mismo nombre logico** (`RACKLISTA`) |
 | U-02 | Selectivo **sin nombre** (nombre en blanco en su editor, o un rack heredado sin nombre): `RACKLISTA` antes → `RACKPROYECTAR` planta → Lateral → `RACKLISTA` despues → guardar, cerrar y reabrir → `RACKLISTA` | Antes: «(sin nombre)». La proyeccion **se completa** (definicion y referencia creadas), mismo `RackId`, sin nombre inventado («Rack», «Selectivo», «Sin nombre»…). Despues y tras reabrir: sigue «(sin nombre)»; un solo rack; el nombre del **bloque** de AutoCAD no esta vacio |
 
+## 6.3 OV-C16-07 (proyeccion entre elevaciones: Frontal ↔ Lateral)
+
+Diseño congelado: [I-55-c16-07-elevation-projection.md](I-55-c16-07-elevation-projection.md). La Frontal y la Lateral solo comparten la **altura**: la vista
+nueva se alinea por su **linea de suelo** y su altura queda **paralela y en el mismo sentido** que la de la vista origen (Proyectada) o vertical hacia arriba
+(Predeterminada). Nada se gira dentro de la definicion; solo la referencia de bloque, entera. La variante destino es la canonica del rack: la lateral del
+**poste 1** (Cantilever: estacion 1) y la frontal del **fondo 1** (Dinamico: salida; Push Back: Entrada/Salida lado A).
+
+Como leer una fila: gira la vista fuente con `ROTATE` (angulo exacto, sobre su punto de insercion) **antes** de `RACKPROYECTAR`; elige como **punto base** un
+punto de la **linea de suelo** de la vista origen y un punto destino libre; mide con `LIST` la **rotacion** de la referencia nueva. Esperado de posicion: la linea de
+suelo de la vista nueva pasa por el punto destino; en Predeterminada ademas la cara del frente (fondo 0) de la lateral, o el eje del primer poste de la frontal, queda
+en la vertical del punto destino.
+
+| # | Pasos (Selectivo salvo que se diga) | Esperado |
+|---|---|---|
+| OV-C16-07-01 | Frontal sin girar (0°) → Lateral, **Proyectada** (`Enter`) | Se completa (ya no `PairNotExposed`). Lateral a **0°**: la vista normal, suelo alineado con el destino; un solo rack, mismo `RackId` |
+| OV-C16-07-02 | Lateral sin girar (0°) → Frontal, **Proyectada** | Frontal a **0°**, suelo alineado con el destino |
+| OV-C16-07-03 | Frontal **girada 90°** → Lateral, Proyectada | Lateral a **90°** (su altura apunta hacia donde apunta la de la frontal); repetir a 180° y 270°: lateral a **180°** y **270°** |
+| OV-C16-07-04 | Lateral **girada 90°** → Frontal, Proyectada | Frontal a **90°**; repetir a 180° y 270°: frontal a **180°** y **270°** |
+| OV-C16-07-05 | Frontal girada 90° → Lateral, **Predeterminada** (`PRE`) | Lateral a **0°** (presentacion normal de RackCad), con su suelo en la horizontal indicada arriba |
+| OV-C16-07-06 | Lateral girada 90° → Frontal, **Predeterminada** | Frontal a **0°** |
+| OV-C16-07-07 | Dinamico: frontal (salida) → Lateral y lateral → Frontal, Proyectada, sin girar | Ambas se completan a **0°** (lateral del poste 1; frontal de salida) |
+| OV-C16-07-08 | Push Back: lateral girada 90° → Frontal, Proyectada | Frontal (Entrada/Salida, lado A) a **90°** |
+| OV-C16-07-09 | Cantilever: frontal → Lateral (Proyectada, sin girar) y lateral de una estacion → Frontal (Predeterminada) | Lateral de la estacion 1 a **0°**; frontal a **0°** |
+| OV-C16-07-10 | Cabecera: lateral → Frontal | Rechazo **antes de pedir puntos**: `PairNotExposed` («Esta vista no se puede proyectar»): la cabecera no tiene frontal; nada escrito |
+| OV-C16-07-11 | Dos frontales de **una misma fila** (mismo suelo, sin girar) → Lateral, Proyectada | Aviso de **superposicion** antes de pedir puntos; las dos laterales quedan en el mismo lugar (es la proyeccion ortografica: una fila vista de lado) |
+| OV-C16-07-12 | Dos frontales **opuestas** (una a 0° y otra a 180°) → Lateral, Proyectada; despues lo mismo en Predeterminada | Proyectada: rechazo **antes de pedir puntos** con `SourceOrientationDivergent` y los dos racks; Predeterminada: se proyecta, ambas laterales a 0° |
+| OV-C16-07-13 | Selectivo **sin nombre**: frontal → Lateral; `RACKLISTA` antes y despues; guardar, cerrar y reabrir | Se completa; mismo `RackId`; sigue «(sin nombre)» |
+| OV-C16-07-14 | Tras OV-C16-07-01: `RACKLISTA`, `RACKBOMTOTAL`, guardar/reabrir y `RACKEDITAR` desde la lateral proyectada → Actualizar | Un rack con una vista mas; mismo BOM; `RACKEDITAR` actualiza todas las vistas del rack |
+
 ## 7. Registro
 
 Cada escenario se registra con: identificador, `PASS` | `FAIL` | `NOT EXECUTED (motivo)`, observaciones y, en un fallo, su clasificacion
@@ -264,3 +293,9 @@ nombre y conservarlos sin nombre (sin «Rack», «Selectivo» ni «Sin nombre» 
 `integration/I-52-AUTH15-C1`): exige Id y Kind, nunca Name. I-55 se reconcilio sobre ese `main` y retiro `UnnamedRackNotProjectable` (filas OV-UNNAMED U-01/U-02).
 En la misma ronda el Owner exigio **C16-06** (orientacion Proyectada por defecto y Predeterminada explicita; filas OV-C16-06 en §6.1) y corrigio la fila
 **OV-ID18-10** (la costura de G12 es la lista de direcciones tipadas, no un prompt «que frontal»).
+
+### Ronda 6 — Candidato `681152697822470d16cc5609349be0f2fc5421ae`: REJECTED por el Owner (C16-07)
+
+La validacion del Owner expuso un hueco de producto: Selectivo Frontal → Lateral se detiene en `AVAILABLE` con `PairNotExposed`, con y sin nombre (no es un
+defecto de nombre ni de AUTH-15). La exclusion Frontal ↔ Lateral (OD-7.a A) queda **REVOCADA** por el Owner: `RACKPROYECTAR` debe admitir Frontal → Lateral y
+Lateral → Frontal, en Proyectada y en Predeterminada, en todo sistema con ambas clases. Correccion: C16-07 (filas en §6.3; la fila OV-ID19-09 queda supersedida).
