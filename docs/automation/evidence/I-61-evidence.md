@@ -43,7 +43,7 @@ Transferencia directa de texto (orden C61-G0-07 del Coordinator), escrita **fuer
 | Respuesta | **ACUSE** de la sesión orquestadora de I-52 (única escritora de su rama; afirma autoridad sobre sus escrituras de ROADMAP): no escribe, rebasa ni publica cambios que toquen `docs/ROADMAP.md` hasta el «RELEASE» |
 | Archivo y alcance | solo `docs/ROADMAP.md`; el resto del trabajo de I-52 continúa |
 | INICIO | el mensaje de acuse (recibido antes del reclamo; el canal no registra hora exacta → no la invento) |
-| FIN | mensaje «RELEASE» de I-61 por el mismo canal — **PENDIENTE al momento de esta escritura**; ver §7 |
+| FIN | mensaje «RELEASE» de I-61 por el mismo canal, enviado tras publicar el bootstrap (`msg_id e6660bd2-5704-4188-9bcf-cc2f9e92cd7d`); no esperó a la CI. La entrega quedó encolada en la sesión de I-52; no hay acuse de lectura (el canal no lo reporta) |
 | Estado observado de I-52 antes del reclamo | tip `65e465a71e8e91d60fc9315dace1aac55c0db5de`, 0 detrás y 140 delante de la base; modifica `docs/ROADMAP.md` (líneas 471 y 478 de la base) |
 | Compatibilidad textual | una fusión de ensayo de una fila en la tabla Engineering Productivity con la rama de I-52 no produjo conflicto. **No** se usa como prueba de exclusividad (C61-G0-03) |
 
@@ -64,16 +64,19 @@ Archivos nuevos: el contrato `docs/initiatives/I-61-protocolo-ejecucion-agentes.
 
 ## 6. Validación de G0
 
-- **Comprobación documental:** el diff contra la base solo toca `docs/` (ver §7 para el resultado registrado).
-- **CI exacta requerida** ([WORKFLOW](../../WORKFLOW.md) §4.5.2, commit documental): corrida de `push` sobre el SHA publicado, 4 jobs `success`:
-  **PENDIENTE** (se registra en §7 y en el informe de G0, no antes de que exista).
+- **Comprobación documental:** `git diff --name-only` del bootstrap contra la base: 6 archivos, todos bajo `docs/` (0 fuera de `docs/`).
+- **CI exacta del bootstrap** ([WORKFLOW](../../WORKFLOW.md) §4.5.2, commit documental): corrida de `event=push` **36781748452** sobre
+  `head_sha` = `c701ff8f8cd3ee58f7dfab529e092d1f5e18190b`: conclusión `success`, 4/4 jobs `success` (Build UI, UI Tests, Tests Domain + Application,
+  Build Plugin without AutoCAD). La del commit de reclamo (`21af80e8`, corrida 36781382840): `success`.
+- La CI del commit de seguimiento de este registro (§7) es propia de ese SHA y se informa al Coordinator; no se copia aquí (evita la recursión).
 - Suites Core/UI locales, builds del Plugin y Owner Validation: **no aplican a G0** (sin cambios de producto, `src/`, `tests/` ni `assets/`);
   no se ejecutaron.
 
 ## 7. Registros posteriores a la publicación del bootstrap
 
-PENDIENTE: SHA del commit de bootstrap, envío del «RELEASE» a la sesión de I-52 y corrida de CI exacta. Se anotan en un commit de seguimiento
-(solo documental) y en el informe al Coordinator.
+- Commit de bootstrap: `c701ff8f8cd3ee58f7dfab529e092d1f5e18190b` (push aceptado sin force sobre el reclamo `21af80e8`).
+- `RELEASE` enviado a la sesión de I-52 tras ese push (§3). `origin/main` seguía en `95690c28…` (no avanzó por G0).
+- Este registro se publica en un commit de seguimiento solo documental.
 
 ## 8. Métricas, conformidad, Owner Validation y tag
 

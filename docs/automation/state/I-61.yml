@@ -8,7 +8,7 @@ automation_state:
   gate: owner-decision
   attempts: 0
   next_action: Coordinator revisa el bootstrap G0 y autoriza el Discovery DC-01..09 (M-07 UNKNOWN; NEW ARCHITECTURE provisional); sin Freeze, piloto, Candidate ni merge.
-  last_evidence_commit: 21af80e81a3f96649fa6e649374ec8591548a082
+  last_evidence_commit: c701ff8f8cd3ee58f7dfab529e092d1f5e18190b
 execution_context:
   mode: manual
   automation_enabled: false
