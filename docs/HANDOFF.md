@@ -357,7 +357,10 @@ clasificaciones). **POST-AUDIT PACKAGE BASELINE: PASS.**
 - **CT-21D AUTHORITY CONTRACT V2 (borrador, §205):** [documento](initiatives/I-52-ct21d-authority-contract-v2.md) — reexpresión completa que incorpora los cambios requeridos por la revisión del Arquitecto de V1 (SC-1..SC-12, ID-1..ID-6, WD-1..WD-6; esquema de catálogo, procedimiento del modelo de eventos y custodia del manifiesto).
   V1 queda intacto como historia. `CT21D_AUTHORITY_CONTRACT = DRAFT_V2`, `CT21D_AUTHORITY_BASELINE_READY = FALSE`, `CT21D_EXECUTION_READY = FALSE`, `CT21D_EXECUTION = NOT_AUTHORIZED`, `CURRENTLY_ADMISSIBLE_KIND_SCOPE = NONE`. B5 avanza a prerrequisito de implementación; B6 = `REMAINS_BLOCKER_FOR_ACT2`;
   NB-1/2/3/4/6 = `REMAINS_BLOCKER_FOR_AUTHORITY_BASELINE`; NB-5 = `REMAINS_BLOCKER_FOR_CT21D_EXECUTION`.
-- **Siguiente gate: revisión del Coordinador del CT-21D Authority Contract V2** (y, si pasa, revisión delta del Arquitecto). La rama sigue sin reconciliar con `main` (79 detrás / 125 delante).
+- **CT-21D AUTHORITY CONTRACT V2.1 (borrador, §206):** [documento](initiatives/I-52-ct21d-authority-contract-v2.1.md) — incorpora exactamente RC-1..RC-14 del delta review del Arquitecto sobre V2 (registro de clases y matriz de cobertura, predicado ligado a versión + tupla con taxonomía de causas, vehículo de warm-up,
+  cierre de dependencias y reutilización, copia privada como única fuente de importación, cola V1→CP, huella en dos capas, autoridad E-06 tipada, catálogo/EVM/custodia, comparación de autoridad de NB-1). V1 y V2 quedan intactos. `CT21D_AUTHORITY_CONTRACT = DRAFT_V2_1`,
+  `CT21D_AUTHORITY_BASELINE_READY = FALSE`, `CT21D_EXECUTION_READY = FALSE`, `CT21D_EXECUTION = NOT_AUTHORIZED`, `CURRENTLY_ADMISSIBLE_KIND_SCOPE = NONE`.
+- **Siguiente gate: revisión del Coordinador del CT-21D Authority Contract V2.1** (y, si pasa, chequeo ítem por ítem del Arquitecto de RC-1..RC-14). La rama sigue sin reconciliar con `main` (79 detrás / 126 delante).
 
 **Congelación de V35 (§172).** El Coordinador aceptó V35-A2 (`86089886`) con consenso de arquitectura final.
 - `V35_FREEZE_SHA` = `86089886f37da05c2de5dcf9e237044a3deeada3`.
