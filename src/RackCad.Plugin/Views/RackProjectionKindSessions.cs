@@ -193,6 +193,13 @@ namespace RackCad.Plugin.Views
             return RackProjectionEditPreflight.Accepted;
         }
 
+        /// <summary>The names the views of this rack carry, in stable order (the rack's own views, never another rack's).</summary>
+        protected IEnumerable<string> SiblingNames()
+            => Membership.MutableMembers
+                .OrderBy(member => member.Fact.DefinitionKey, StringComparer.Ordinal)
+                .Select(member => facts.Scan.Envelopes.TryGetValue(member.Fact.DefinitionKey, out var envelope) ? envelope.Name : null)
+                .ToList();
+
         protected RackEmbedDocument Representative(IReadOnlyList<string> selectedDefinitionKeys)
         {
             foreach (var key in selectedDefinitionKeys.OrderBy(k => k, StringComparer.Ordinal))
@@ -490,6 +497,7 @@ namespace RackCad.Plugin.Views
         private readonly Func<TPayload, RackViewAddress, PieceRequirementExtractionResult> extract;
         private readonly Action<string> setRackName;
         private readonly RackEmbedDocument source;
+        private readonly string rawSourceName;
 
         private TInput comparisonInput;
         private RackAuthoredComparisonResult<TAuthored> comparison;
@@ -529,8 +537,17 @@ namespace RackCad.Plugin.Views
             this.baseName = baseName;
             this.extract = extract;
             this.setRackName = setRackName;
-            source = Representative(selectedDefinitionKeys);
-            if (source != null) setRackName?.Invoke(source.Name);
+            var representative = Representative(selectedDefinitionKeys);
+
+            // The name the rack's views carry AS IS: BaseName and the plan grouping read it with their own fallback (AUTH-11).
+            rawSourceName = representative?.Name;
+
+            // The envelope is composed from a copy that carries a usable Name (AUTH-15 refuses an envelope without one); the source
+            // envelope in the drawing is never touched, and a named rack keeps its name (G16 OV-ID19-01).
+            source = representative == null
+                ? null
+                : RackProjectionEnvelopeName.WithLogicalName(representative, SiblingNames());
+            if (representative != null) setRackName?.Invoke(rawSourceName);
         }
 
         private RackAuthoredComparisonResult<TAuthored> Comparison()
@@ -657,7 +674,7 @@ namespace RackCad.Plugin.Views
                 new ResolvedOnce<TAuthored, TResolved>(Kind, result),
                 prepare,
                 (system, address) => frame(system, address),
-                (system, address) => baseName(system, address, source.Name));
+                (system, address) => baseName(system, address, rawSourceName));
             var product = preparer.PrepareExisting(accepted.Intent, new PrecomputedComparator(Kind, Comparison()));
             if (!product.IsSuccess) return Unavailable(product.CauseCode ?? product.Failure.ToString());
 
