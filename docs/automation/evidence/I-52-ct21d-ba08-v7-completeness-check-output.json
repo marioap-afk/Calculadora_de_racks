@@ -1,0 +1,596 @@
+{
+ "check": "I-52-ct21d-ba08-v7-completeness-check",
+ "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-08-selective-kind-baseline-v7.md",
+ "artifactSha256": "c606e878bf8f4578808ed37adf2b0038f3513ef70f204a74dcde284f0b02ac44",
+ "boundSha": "95690c28dc6268e61dff32a0cbc33cc9fde3d47f",
+ "identityRows": 71,
+ "identityRowsWC": 67,
+ "declaredOutRows": 3,
+ "citedFiles": 71,
+ "missing": [],
+ "badRows": [],
+ "ambiguousOpen": [],
+ "ambiguousResolved": [],
+ "unresolvedPathTokens": [
+  ".xaml.cs"
+ ],
+ "tableRowsNotCitedOutsideTheTables_informative": [
+  "src/RackCad.Application/Persistence/SelectivePalletDesignStore.cs",
+  "src/RackCad.Plugin/Systems/Selective/SelectiveFrontalDrawService.cs",
+  "src/RackCad.Plugin/Systems/Selective/SelectivePlantaDrawService.cs"
+ ],
+ "declaredOutNotCited": [],
+ "results": [
+  {
+   "file": "src/RackCad.Application/BlockNaming.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "path:Application/BlockNaming.cs",
+    "type:BlockNaming"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Catalogs/CatalogDirectory.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "path:Application/Catalogs/CatalogDirectory.cs",
+    "type:CatalogDirectory"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "path:Application/Catalogs/JsonRackCatalogProvider.cs",
+    "type:JsonRackCatalogProvider"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Drawing/HeaderBlockInstance.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "path:Application/Drawing/HeaderBlockInstance.cs",
+    "type:HeaderBlockInstance",
+    "type:HeaderBlockRole"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Drawing/HeaderRunPlan.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "path:Application/Drawing/HeaderRunPlan.cs",
+    "type:HeaderGroup",
+    "type:HeaderPlacement",
+    "type:HeaderRunPlan"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Geometry/Vector2D.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "path:Application/Geometry/Vector2D.cs",
+    "path:Vector2D.cs",
+    "type:GeometryTolerance",
+    "type:Vector2D"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Persistence/RackDuplicationPlan.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "path:Application/Persistence/RackDuplicationPlan.cs",
+    "path:RackDuplicationPlan.cs",
+    "type:RackDuplicationPlan"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Persistence/RackEmbedComposer.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "type:RackEmbedComposer"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Persistence/RackEmbedDocument.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "type:RackEmbedDocument"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Persistence/RackLogicalNameAllocator.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "type:RackLogicalNameAllocator"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Persistence/SelectivePalletDesignDocument.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "type:SelectivePalletDesignDocument"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/ProjectVariables/LinkedPropertyReconciler.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "type:LinkedPropertyReconciler"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Settings/UserSettings.cs",
+   "status": "DECLARED_OUT",
+   "citedAs": [
+    "type:UserSettingsStore"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Systems/Selective/SelectiveAnnotations.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "path:Application/Systems/Selective/SelectiveAnnotations.cs",
+    "type:SelectiveAnnotations"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Systems/Selective/SelectiveDepthLayout.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "path:Application/Systems/Selective/SelectiveDepthLayout.cs",
+    "type:SelectiveDepthLayout"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Systems/Selective/SelectiveDimensions.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "path:SelectiveDimensions.cs",
+    "type:SelectiveDimensions"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Systems/Selective/SelectiveEditorState.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "abbr:SES",
+    "path:RackCad.Application/Systems/Selective/SelectiveEditorState.cs",
+    "type:SelectiveEditorState"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "path:SelectiveFrontalBuilder.cs",
+    "type:SelectiveFrontalBuilder"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "path:SelectivePlantaBuilder.cs",
+    "type:SelectivePlantaBuilder"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Systems/Shared/LibraryBlockRequirements.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "path:Application/Systems/Shared/LibraryBlockRequirements.cs",
+    "type:LibraryBlockAvailabilityFlow",
+    "type:RackBlockRequirementExtractors"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Systems/Shared/RackSourceTransformFactsV2.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "path:Application/Systems/Shared/RackSourceTransformFactsV2.cs",
+    "type:RackSourceTransformClassifier",
+    "type:RackSourceTransformFactsV2"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Systems/Shared/RackViewBaseName.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "abbr:RVBN",
+    "path:RackCad.Application/Systems/Shared/RackViewBaseName.cs",
+    "type:RackViewBaseName"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Systems/Shared/RackViewCodec.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "type:RackViewCodec"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Systems/Shared/RackViewProductNames.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "path:Application/Systems/Shared/RackViewProductNames.cs",
+    "type:RackViewProductNames"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Views/Insertion/RackSiblingInsertRun.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "path:RackSiblingInsertRun.cs",
+    "type:RackSiblingInsertRun"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Views/Placement/RackSingleViewPlacement.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "path:RackSingleViewPlacement.cs",
+    "type:RackSingleViewPlacement"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Views/Policy/RackViewExposure.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "type:RackViewExposure"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Views/Redraw/RackSiblingRedrawPlan.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "path:RackSiblingRedrawPlan.cs",
+    "type:RackSiblingRedrawPlan"
+   ]
+  },
+  {
+   "file": "src/RackCad.Application/Views/Redraw/RackSiblingRedrawRun.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "path:RackSiblingRedrawRun.cs",
+    "type:RackSiblingRedrawRun"
+   ]
+  },
+  {
+   "file": "src/RackCad.Domain/Systems/Selective/SelectivePalletDesign.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "type:SelectivePalletDesign"
+   ]
+  },
+  {
+   "file": "src/RackCad.Domain/Systems/Selective/SelectiveRackDefaults.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "path:Domain/Systems/Selective/SelectiveRackDefaults.cs",
+    "type:SelectiveRackDefaults"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/CustomPropertiesData.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "type:CustomPropertiesData"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Drawing/AutoCadExternalLibraryBlockQuery.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "type:AutoCadExternalLibraryBlockQuery"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Drawing/AutoCadLibraryBlockQuery.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "type:AutoCadLibraryBlockQuery"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "type:BlockLibraryDatabaseCache"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "abbr:BLI",
+    "path:RackCad.Plugin/Drawing/BlockLibraryImporter.cs",
+    "type:BlockLibraryImporter"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Drawing/BlockPlacement.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "abbr:BP",
+    "path:RackCad.Plugin/Drawing/BlockPlacement.cs",
+    "type:BlockPlacement"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Drawing/LateralHeaderDrawService.cs",
+   "status": "DECLARED_OUT",
+   "citedAs": [
+    "type:LateralHeaderDrawService"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "abbr:LHD",
+    "path:RackCad.Plugin/Drawing/LateralHeaderDrawer.cs",
+    "type:LateralHeaderDrawer"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Drawing/RackBlockRenamer.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "type:RackBlockRenamer"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/LayerHelper.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "path:LayerHelper.cs",
+    "type:LayerHelper"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/ProjectVariablesData.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "type:ProjectVariablesData"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/RackBlockFinder.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "type:RackBlockFinder"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/RackCatalogLoader.cs",
+   "status": "DECLARED_OUT",
+   "citedAs": [
+    "type:RackCatalogLoader"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/RackCommandSupport.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "path:RackCommandSupport.cs",
+    "type:RackCommandSupport"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/RackEnvelopeRestamp.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "path:RackEnvelopeRestamp.cs",
+    "type:RackEnvelopeRestamp"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/RackMenuCommands.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "abbr:RMC",
+    "path:RackCad.Plugin/RackMenuCommands.cs",
+    "type:RackMenuCommands"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/RackProyectarCommands.cs",
+   "status": "IN_TABLE:P",
+   "citedAs": [
+    "path:RackProyectarCommands.cs",
+    "type:RackProyectarCommands"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/RackSelectivoCommands.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "abbr:RSC",
+    "path:RackCad.Plugin/RackSelectivoCommands.cs",
+    "type:RackSelectivoCommands"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/RackSelectivoInsertIntegration.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "abbr:RSI",
+    "path:RackCad.Plugin/RackSelectivoInsertIntegration.cs",
+    "type:RackSelectivoCommands",
+    "type:SelectiveInsertPort"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Systems/Shared/AutoCadSiblingRedrawPort.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "path:AutoCadSiblingRedrawPort.cs",
+    "type:AutoCadSiblingRedrawPort"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Systems/Shared/RackBlockData.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "abbr:RBD",
+    "path:RackCad.Plugin/Systems/Shared/RackBlockData.cs",
+    "type:RackBlockData"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Systems/Shared/RackDefinitionCreator.cs",
+   "status": "IN_TABLE:P",
+   "citedAs": [
+    "abbr:RDC",
+    "path:RackCad.Plugin/Systems/Shared/RackDefinitionCreator.cs",
+    "type:RackDefinitionCreator"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Systems/Shared/RackNewRackName.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "path:RackNewRackName.cs",
+    "type:RackNewRackName"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Systems/Shared/SiblingRedrawDebugFaultInjection.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "path:SiblingRedrawDebugFaultInjection.cs",
+    "type:SiblingRedrawDebugFaultInjection"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Systems/Shared/SiblingRedrawTransaction.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "path:SiblingRedrawTransaction.cs",
+    "type:SiblingRedrawTransaction"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "abbr:SBW",
+    "path:RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs",
+    "type:SystemBlockWriter"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Systems/Shared/ViewBlockDraw.cs",
+   "status": "IN_TABLE:W",
+   "citedAs": [
+    "path:ViewBlockDraw.cs",
+    "type:ViewBlockDraw"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Views/RackProjectionSnapshotReader.cs",
+   "status": "IN_TABLE:P",
+   "citedAs": [
+    "type:RackProjectionSnapshotReader"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Views/RackProjectionWriteScope.cs",
+   "status": "IN_TABLE:P",
+   "citedAs": [
+    "abbr:RPWS",
+    "path:RackCad.Plugin/Views/RackProjectionWriteScope.cs"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Views/RackSiblingScan.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "type:RackSiblingScan"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Views/RackViewBatchDriver.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "path:RackViewBatchDriver.cs",
+    "type:RackViewBatchDriver"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Views/RackViewBatchExecution.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "type:RackViewBatchExecution"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Views/RackViewBatchProductSession.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "type:RackViewBatchProductSession"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Views/RackViewBatchProducts.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "type:RackViewBatchProducts"
+   ]
+  },
+  {
+   "file": "src/RackCad.Plugin/Views/RackViewPlacement.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "abbr:RVP",
+    "path:RackCad.Plugin/Views/RackViewPlacement.cs",
+    "type:HeaderMaterializer",
+    "type:HeaderRequirements",
+    "type:RackViewPlacement"
+   ]
+  },
+  {
+   "file": "src/RackCad.UI/Editor/RackEditorSession.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "path:RackEditorSession.cs",
+    "type:RackEditorSession"
+   ]
+  },
+  {
+   "file": "src/RackCad.UI/Editor/RackInsertionRequest.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "path:RackInsertionRequest.cs",
+    "type:RackInsertionRequest"
+   ]
+  },
+  {
+   "file": "src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "abbr:RSW",
+    "abbr:RSW.xaml",
+    "path:RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml"
+   ]
+  },
+  {
+   "file": "src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "abbr:RSW",
+    "abbr:RSW.xaml.cs",
+    "type:RackSelectiveWindow"
+   ]
+  },
+  {
+   "file": "src/RackCad.UI/Views/RackViewBatchDialogPresenter.cs",
+   "status": "IN_TABLE:C",
+   "citedAs": [
+    "path:RackViewBatchDialogPresenter.cs",
+    "type:RackViewBatchDialogPresenter"
+   ]
+  }
+ ],
+ "verdict": "PASS"
+}

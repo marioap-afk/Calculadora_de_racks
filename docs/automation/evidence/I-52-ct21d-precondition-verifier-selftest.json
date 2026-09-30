@@ -1,0 +1,1664 @@
+{
+ "artifact": "I-52 CT-21D precondition verifier self-test (round V7, decisions sections 226 and 227)",
+ "status": "EXECUTION-PREPARATION EVIDENCE; outside the hash registry (AR7-03)",
+ "verifier": {
+  "path": "docs/automation/evidence/I-52-ct21d-precondition-verifier.py",
+  "sha256LF": "ddd5d24aa9c508d8df828c9e5f8e6e6921bbd3cc699d74e1864f508f7d8ccf30"
+ },
+ "nature": "read-only self-test of the tool on SOURCE commits (git objects only). It is not a run against any build under test (section 227: the verifier is not executed against any build in this round). All runs read the V7 files of the round (BA-06 V7 section 2.1, BA-08 V7 section 3.2, BA-09 V7 section 3.2) and the BA-03 V5 specification, passed by argument. The BA-09 source is an extension of the AR7-03 union submitted to the Architect for confirmation (verifier docstring). The BA-03 runner outputs of the --ba03-runner-output controls are scratch files produced by the committed BA-03 runner; they are recorded by SHA-256 and not published.",
+ "inputs": [
+  {
+   "artifact": "BA-03",
+   "path": "docs/automation/evidence/I-52-ct21d-ba03-v5-checks.json",
+   "sha256LF": "c958cb2021ab072b0b6fecb609bebb7819cf0aba00c6c09d5a23be6275cc93c3"
+  },
+  {
+   "artifact": "BA-06",
+   "path": "docs/initiatives/I-52-ct21d-baseline-ba-06-evm-preparation-v7.md",
+   "sha256LF": "7fd22ab0d3c1fd84db2bd348263fc2903a5708bf223a56e3b1871ba0ef5accb1"
+  },
+  {
+   "artifact": "BA-08",
+   "path": "docs/initiatives/I-52-ct21d-baseline-ba-08-selective-kind-baseline-v7.md",
+   "sha256LF": "c606e878bf8f4578808ed37adf2b0038f3513ef70f204a74dcde284f0b02ac44"
+  },
+  {
+   "artifact": "BA-09",
+   "path": "docs/initiatives/I-52-ct21d-baseline-ba-09-warmup-v7.md",
+   "sha256LF": "a68189efb7bce6b34167194e9aa982378e394b342e22ff10760291d564c53ebb"
+  }
+ ],
+ "controlInputs": [
+  {
+   "role": "BA-03 runner output at 95690c28 (P1)",
+   "producedBy": "docs/automation/evidence/I-52-ct21d-ba03-v5-checks.py <out> 95690c28",
+   "runnerExit": 0,
+   "sha256LF": "0f2931516ececcd8379a9e08b0203470830628c110d0301d0f9458ffa8041da5"
+  },
+  {
+   "role": "BA-03 runner output at 3375aadb (N10)",
+   "producedBy": "docs/automation/evidence/I-52-ct21d-ba03-v5-checks.py <out> 3375aadb",
+   "runnerExit": 1,
+   "sha256LF": "c00934a0cfc80934272f103426626af9db0b8c8fd8db4f9d3e07337837fdfe2d"
+  },
+  {
+   "role": "committed BA-03 runner output without a build source SHA (N11)",
+   "path": "docs/automation/evidence/I-52-ct21d-ba03-v5-checks-output.json",
+   "sha256LF": "76e6daf246be4d31877e9879d8fc7bb851a20eb11f73b025f0d1b3006d059ea0"
+  },
+  {
+   "role": "BA-06 V6 hash used as the wrong expectation (N8)",
+   "path": "docs/initiatives/I-52-ct21d-baseline-ba-06-evm-preparation-v6.md",
+   "sha256LF": "37a2763e32692c16f14d40fafabae3364948cb0359dd0278ce311a7a706c4030"
+  }
+ ],
+ "boundProductSha": "95690c28dc6268e61dff32a0cbc33cc9fde3d47f",
+ "invocation": "PYTHONIOENCODING=utf-8 python docs/automation/evidence/I-52-ct21d-precondition-verifier.py <repo root> <build source sha> <output.json> [--bound <sha>] [--ba03 <path>] [--ba06 <path>] [--ba08 <path>] [--ba09 <path>] [--expect-sha256 BA-xx=<hex>]... [--expect-count <n>] [--ba03-runner-output <path>]",
+ "selectionRules": {
+  "BA-03": "sources with where = BOUND (path, expected_blob); spec bound_product_sha must equal the bound SHA",
+  "BA-06": "section 2.1 identity-table rows whose Role starts with \"route\"; declared excluded: precedent, residual source, quantity source; any other role = parse gap",
+  "BA-08": "section 3.2 rows with Role W or C; declared excluded: P; any other role = parse gap; path column \"under `src/`\" prefixed with src/",
+  "BA-09": "section 3.2 rows with Role W-1 (extension submitted to the Architect); no declared excluded role, so any other role = parse gap; blob or tree ids admitted",
+  "blobColumn": "the header cell that contains \"blob\" and the backticked first 8 hex of the bound SHA; the cell must be a full 40-hex id",
+  "objectTypes": "BA-03, BA-06 and BA-08 admit blob ids only; BA-09 admits blob or tree ids; an object of a type not admitted is DIFFERENT",
+  "union": "keyed by path; the same path with two cited ids = conflict (fail)",
+  "status": "per pair and per SHA: EQUAL / DIFFERENT / ABSENT against the cited id; a pair is EQUAL only if EQUAL at both the bound SHA and the build source SHA",
+  "expectations": "--expect-sha256 BA-xx=<hex> (per input file; mismatch or unreadable file = fail), --expect-count <n> (union count; mismatch = fail), --ba03-runner-output <path> (recorded with SHA-256; its buildSourceSha.resolved must equal the resolved build source SHA; unreadable, null or different = fail)",
+  "repoRoot": "required positional argument, no default; a directory that is not the top level of a git checkout = usage error (exit 2)"
+ },
+ "runs": [
+  {
+   "id": "P1-95690c28",
+   "purpose": "positive: build source = bound SHA, V7 files, every expectation declared and true (sha256 of the four inputs, union count 90, BA-03 runner output run at 95690c28)",
+   "buildSourceArgument": "95690c28",
+   "artifactsRead": "BA-03 V5 spec, BA-06 V7, BA-08 V7, BA-09 V7",
+   "expectedExit": 0,
+   "actualExit": 0,
+   "asExpected": true,
+   "verdict": "PASS",
+   "unionCount": 90,
+   "counts": {
+    "EQUAL": 90,
+    "DIFFERENT": 0,
+    "ABSENT": 0,
+    "NOT_RESOLVED": 0
+   },
+   "selectedPerArtifact": {
+    "BA-03": 6,
+    "BA-06": 39,
+    "BA-08": 67,
+    "BA-09": 15
+   },
+   "excludedPerArtifact": {
+    "BA-03": 8,
+    "BA-06": 7,
+    "BA-08": 4,
+    "BA-09": 0
+   },
+   "parseGaps": [],
+   "conflicts": [],
+   "expectedSha256": {
+    "BA-03": true,
+    "BA-06": true,
+    "BA-08": true,
+    "BA-09": true
+   },
+   "expectedCount": 90,
+   "ba03RunnerOutput": {
+    "path": "<scratchpad>/pv7/ba03-runner-95690c28.json",
+    "sha256": "0f2931516ececcd8379a9e08b0203470830628c110d0301d0f9458ffa8041da5",
+    "buildSourceSha": "95690c28dc6268e61dff32a0cbc33cc9fde3d47f",
+    "buildSourceMatches": true,
+    "runnerFailedCount": 0,
+    "runnerIdentityDriftCount": 0
+   }
+  },
+  {
+   "id": "P2-3375aadb",
+   "purpose": "known drift: build source = 3375aadb (the V5 bound SHA), V7 files",
+   "buildSourceArgument": "3375aadb",
+   "artifactsRead": "BA-03 V5 spec, BA-06 V7, BA-08 V7, BA-09 V7",
+   "expectedExit": 1,
+   "actualExit": 1,
+   "asExpected": true,
+   "verdict": "FAIL",
+   "unionCount": 90,
+   "counts": {
+    "EQUAL": 59,
+    "DIFFERENT": 10,
+    "ABSENT": 21,
+    "NOT_RESOLVED": 0
+   },
+   "selectedPerArtifact": {
+    "BA-03": 6,
+    "BA-06": 39,
+    "BA-08": 67,
+    "BA-09": 15
+   },
+   "excludedPerArtifact": {
+    "BA-03": 8,
+    "BA-06": 7,
+    "BA-08": 4,
+    "BA-09": 0
+   },
+   "parseGaps": [],
+   "conflicts": [],
+   "drifts": [
+    {
+     "path": "src/RackCad.Application/Persistence/RackLogicalNameAllocator.cs",
+     "status": "ABSENT",
+     "citedBlob": "7feedaef1e1d5026bfd6629785851a2cfa7432df",
+     "atBound": "EQUAL",
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Systems/Shared",
+     "status": "DIFFERENT",
+     "citedBlob": "111ca46a8222b661c8c4b71970ec190ed2f7c56b",
+     "atBound": "EQUAL",
+     "atBuildOid": "5436e11bcf43ec57e89d4bbff0c33aff2e3042ad"
+    },
+    {
+     "path": "src/RackCad.Application/Systems/Shared/RackViewBaseName.cs",
+     "status": "DIFFERENT",
+     "citedBlob": "dc47fa87f176ffb84399921dc702258a8b8e5424",
+     "atBound": "EQUAL",
+     "atBuildOid": "d4e3d87ca17f9361e8a2865a61f05784e5f3ced4"
+    },
+    {
+     "path": "src/RackCad.Application/Systems/Shared/RackViewProductNames.cs",
+     "status": "ABSENT",
+     "citedBlob": "06cf88cf2745cc7bcb6c541afbcce2cf638bf7d6",
+     "atBound": "EQUAL",
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Views/Batch/RackViewBatchPlan.cs",
+     "status": "ABSENT",
+     "citedBlob": "b39c25a787f24367a393c2db1e31913fb31a0e51",
+     "atBound": "EQUAL",
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Views/Insertion/RackSiblingInsertRun.cs",
+     "status": "ABSENT",
+     "citedBlob": "c343d582df9272b3e0d06dd4350205843ade81de",
+     "atBound": "EQUAL",
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Views/Placement/RackSingleViewPlacement.cs",
+     "status": "ABSENT",
+     "citedBlob": "8ba312f5084df022a83678156124bc9e49cd353f",
+     "atBound": "EQUAL",
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Views/Policy/RackViewExposure.cs",
+     "status": "ABSENT",
+     "citedBlob": "81c714ca1e7ff889b6104b2234c68d82a935962d",
+     "atBound": "EQUAL",
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Views/Preparation/RackViewEnvelopeComposition.cs",
+     "status": "ABSENT",
+     "citedBlob": "289f1f84f1fb6cd3b61e94fc6bed84f011080d8e",
+     "atBound": "EQUAL",
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Views/Redraw/RackSiblingRedrawPlan.cs",
+     "status": "ABSENT",
+     "citedBlob": "dd853fbf8c4cb78650df8fb59ac9f3f1a91bd8ab",
+     "atBound": "EQUAL",
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Views/Redraw/RackSiblingRedrawRun.cs",
+     "status": "ABSENT",
+     "citedBlob": "a22ea4eb133bd0082d77e3bd408677e3ee9a01d3",
+     "atBound": "EQUAL",
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Drawing/BlockPlacement.cs",
+     "status": "DIFFERENT",
+     "citedBlob": "63652c609f8647fc105800162e110d927b3dc869",
+     "atBound": "EQUAL",
+     "atBuildOid": "f8504b179ea0fbca806079842e34305a94fad589"
+    },
+    {
+     "path": "src/RackCad.Plugin/RackMenuCommands.cs",
+     "status": "DIFFERENT",
+     "citedBlob": "2660980025a2089fde43f4689efd588100efa041",
+     "atBound": "EQUAL",
+     "atBuildOid": "ec2683ee804d5698146dd2301a04e1b1676d211b"
+    },
+    {
+     "path": "src/RackCad.Plugin/RackSelectivoCommands.cs",
+     "status": "DIFFERENT",
+     "citedBlob": "f8e514a085dd7a9889e7b8b3006926acb4350166",
+     "atBound": "EQUAL",
+     "atBuildOid": "a22e6a6a4dba2ee2b62f2f47f358d9ac975fc486"
+    },
+    {
+     "path": "src/RackCad.Plugin/RackSelectivoInsertIntegration.cs",
+     "status": "ABSENT",
+     "citedBlob": "308a42e540e329921926c7db64727a41f7aa3a46",
+     "atBound": "EQUAL",
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Systems/Shared/AutoCadSiblingRedrawPort.cs",
+     "status": "ABSENT",
+     "citedBlob": "505e3a25c73eef651028f6183154d93699d996c5",
+     "atBound": "EQUAL",
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Systems/Shared/RackNewRackName.cs",
+     "status": "ABSENT",
+     "citedBlob": "528a0582aaa3dbbc29569c0c281dd622bd77fdc2",
+     "atBound": "EQUAL",
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Systems/Shared/SiblingRedrawDebugFaultInjection.cs",
+     "status": "ABSENT",
+     "citedBlob": "c89264742933cc169a1a002229f6e59327b4618e",
+     "atBound": "EQUAL",
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Systems/Shared/SiblingRedrawTransaction.cs",
+     "status": "ABSENT",
+     "citedBlob": "4a01610d78b0d42b5026e30208b1fa69ff0bcfa8",
+     "atBound": "EQUAL",
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs",
+     "status": "DIFFERENT",
+     "citedBlob": "ed23c86420b72126d55a5372a6677ccb07bad1ec",
+     "atBound": "EQUAL",
+     "atBuildOid": "fcdd7856464f27db396881dd9e48c47ac34572e9"
+    },
+    {
+     "path": "src/RackCad.Plugin/Views/RackSiblingScan.cs",
+     "status": "ABSENT",
+     "citedBlob": "47e7bd542a4a79f8c31d083c32944d491c12226b",
+     "atBound": "EQUAL",
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Views/RackViewBatchDriver.cs",
+     "status": "ABSENT",
+     "citedBlob": "f66abaf1c104394f3079ee48cb7a99931624e536",
+     "atBound": "EQUAL",
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Views/RackViewBatchExecution.cs",
+     "status": "ABSENT",
+     "citedBlob": "14cff7216eea0908aa4887162f7dcda433a2450c",
+     "atBound": "EQUAL",
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Views/RackViewBatchProductSession.cs",
+     "status": "ABSENT",
+     "citedBlob": "f06af5f426ef95f882b5673e72f349e91265c4e9",
+     "atBound": "EQUAL",
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Views/RackViewBatchProducts.cs",
+     "status": "ABSENT",
+     "citedBlob": "7d9f0bba1274dc8ea7f972abd312431f413fe1a4",
+     "atBound": "EQUAL",
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Views/RackViewPlacement.cs",
+     "status": "ABSENT",
+     "citedBlob": "36224d0efe7446ec4778568bd037587f5257238a",
+     "atBound": "EQUAL",
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.UI/Editor/RackEditorSession.cs",
+     "status": "DIFFERENT",
+     "citedBlob": "4cede26d8754018ce5830e9fbab21af6441d1d16",
+     "atBound": "EQUAL",
+     "atBuildOid": "ada2266a1782563f53c2b8afec3a93771811232d"
+    },
+    {
+     "path": "src/RackCad.UI/Editor/RackInsertionRequest.cs",
+     "status": "DIFFERENT",
+     "citedBlob": "a4d2c9c537e0f1f6d635ea1783cb181ca302f590",
+     "atBound": "EQUAL",
+     "atBuildOid": "b0f2a45d89f40af9d3d30b24907db76427f95302"
+    },
+    {
+     "path": "src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml",
+     "status": "DIFFERENT",
+     "citedBlob": "0724d32c94344565201ef3e7aadcaa33c5c5e780",
+     "atBound": "EQUAL",
+     "atBuildOid": "6ee75e65cfdf98b81214d39b5ff137d335beb466"
+    },
+    {
+     "path": "src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs",
+     "status": "DIFFERENT",
+     "citedBlob": "199de1417754da5990862307ffde0fbfefbc4bb7",
+     "atBound": "EQUAL",
+     "atBuildOid": "eacc29aea64d4fd22e2027a8969e93e28cf46c93"
+    },
+    {
+     "path": "src/RackCad.UI/Views/RackViewBatchDialogPresenter.cs",
+     "status": "ABSENT",
+     "citedBlob": "770176d49e71c33b04afa9ec7234486a1b8f168c",
+     "atBound": "EQUAL",
+     "atBuildOid": null
+    }
+   ]
+  },
+  {
+   "id": "N0-unresolvable-build",
+   "purpose": "negative: build source SHA that does not resolve",
+   "buildSourceArgument": "0000000000000000000000000000000000000000",
+   "artifactsRead": "BA-03 V5 spec, BA-06 V7, BA-08 V7, BA-09 V7",
+   "expectedExit": 1,
+   "actualExit": 1,
+   "asExpected": true,
+   "verdict": "FAIL",
+   "unionCount": 90,
+   "counts": {
+    "EQUAL": 0,
+    "DIFFERENT": 0,
+    "ABSENT": 0,
+    "NOT_RESOLVED": 90
+   },
+   "selectedPerArtifact": {
+    "BA-03": 6,
+    "BA-06": 39,
+    "BA-08": 67,
+    "BA-09": 15
+   },
+   "excludedPerArtifact": {
+    "BA-03": 8,
+    "BA-06": 7,
+    "BA-08": 4,
+    "BA-09": 0
+   },
+   "parseGaps": [
+    {
+     "artifact": null,
+     "gap": "build source SHA '0000000000000000000000000000000000000000' does not resolve to a commit"
+    }
+   ],
+   "conflicts": [],
+   "drifts": [
+    {
+     "path": "assets",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "9189a76bf8b2dcc211a49af61df70f11823d3e15",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/BlockNaming.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "da7b463d89a889e2e366a7ecbe556c60da038ce1",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Catalogs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "99f905fd96eb86c7701c9f474bbd7e8caf0863f0",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Catalogs/BlockLibrary.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "ce8042144e645a6408d7c3284b37e8808d2b4632",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Catalogs/CatalogDirectory.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "85fc5e16124956abd5a234110356169107db69fa",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "ff4bdbdc6ed6225f5e5aad52fec17c6f8a6fdfb0",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Drawing",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "6f3ee517978861951ad88a6d7719a805aa14187d",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Drawing/HeaderBlockInstance.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "a9ea721e3c1859b11719af0292bc96b094a148a4",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Drawing/HeaderInstanceGrouper.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "4be728982f48bea7cb32baf1e58ba04d71153061",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Drawing/HeaderRunPlan.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "4b144f056288083ac85ca9da631180877dba475e",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Expressions",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "f39a8a1230f9a56ac80ec6e12dc43349d1e11d6f",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Geometry",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "8545d1125b40b4b76592aaff2de250ce7f19f220",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Geometry/Vector2D.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "c88c67cdbff1a4a4b3695732b22003e129daba74",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Persistence/RackDuplicationPlan.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "e939f4d07a15b8b2ce934936f5d380f0be0e08e2",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Persistence/RackEmbedComposer.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "742c1f7ddd04a2c5fbff993103d25ba4a9ea02df",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Persistence/RackEmbedDocument.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "e9df985bdb56ad0bb74dc6d463b096f4d3f0a085",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Persistence/RackLogicalNameAllocator.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "7feedaef1e1d5026bfd6629785851a2cfa7432df",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Persistence/SelectivePalletDesignDocument.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "ef08473cffb7d93b4977d144f16e6e82a33f607e",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Persistence/SelectivePalletDesignStore.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "1573b774358fb5bbaf1d497f9cc9bfb5d6c392e4",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/ProjectVariables",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "5fc1b2b736d69424507faa00b30e0698f2ba2d1d",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/ProjectVariables/LinkedPropertyReconciler.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "88f6b663ad2d812799e466026e61a201fb525707",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/RackFrames",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "613a07725c6f3b533e08430e94c696fba3de6a52",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/StructuralSections",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "2ba7e1b6c651f11c9a7202e9dfc367b07f20d24f",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Systems/Selective",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "2edaf7a8f0b31d5743d7860a764018b54f18f88b",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Systems/Selective/SelectiveAnnotations.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "28b9c0e58ed8f24c304e118967394ff1269bb3ff",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Systems/Selective/SelectiveDepthLayout.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "9e45f2f2c90bcd2ac881d4fc2dc3db2debfcd762",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Systems/Selective/SelectiveDimensions.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "561e6f662a15795e04b4c8ea51339e8c9d896d3b",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Systems/Selective/SelectiveEditorState.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "7096c310d4cacd24a6de9b3698b6615ecf4d7771",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "f0525c6932c21728255a06781fad416ff12c57ce",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "4e6c2a411490e60b84624a47cc522f11ee9f29b1",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Systems/Shared",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "111ca46a8222b661c8c4b71970ec190ed2f7c56b",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Systems/Shared/LibraryBlockRequirements.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "f675b22c1c351af421f1c75975b69433cb970d0c",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Systems/Shared/RackSourceTransformFactsV2.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "25e812ee1e7b20455dc760e6416397ac65769425",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Systems/Shared/RackViewAvailability.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "74e1a1aba691e42e03d3744bf6631e444aa1d696",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Systems/Shared/RackViewBaseName.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "dc47fa87f176ffb84399921dc702258a8b8e5424",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Systems/Shared/RackViewCodec.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "b63661678a2488449baab37cc74023fff0550165",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Systems/Shared/RackViewProductNames.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "06cf88cf2745cc7bcb6c541afbcce2cf638bf7d6",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Units",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "77704870d7e2757e172d4c3c7d11ee0176adde34",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Views/Batch/RackViewBatchPlan.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "b39c25a787f24367a393c2db1e31913fb31a0e51",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Views/Insertion/RackSiblingInsertRun.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "c343d582df9272b3e0d06dd4350205843ade81de",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Views/Placement/RackSingleViewPlacement.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "8ba312f5084df022a83678156124bc9e49cd353f",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Views/Policy/RackViewExposure.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "81c714ca1e7ff889b6104b2234c68d82a935962d",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Views/Preparation/RackViewEnvelopeComposition.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "289f1f84f1fb6cd3b61e94fc6bed84f011080d8e",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Views/Redraw/RackSiblingRedrawPlan.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "dd853fbf8c4cb78650df8fb59ac9f3f1a91bd8ab",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Application/Views/Redraw/RackSiblingRedrawRun.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "a22ea4eb133bd0082d77e3bd408677e3ee9a01d3",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Domain/RackFrames",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "496a2a3b1b55368d233727e78aec24534455e38c",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Domain/Systems/Dynamic",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "8925cbd5d10933b8c9ca85c5b74e57ad524079ac",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Domain/Systems/Selective",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "bbf9f2cbfe9b2ebc0fae032697acc2e4a99e0a35",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Domain/Systems/Selective/SelectivePalletDesign.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "df97189f03d693439bd19a50197e86db13573f63",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Domain/Systems/Selective/SelectiveRackDefaults.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "6026ea6302bf516298205db9d737dbfb56b9db8e",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Domain/Systems/Shared",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "521b9e876517305a4e8468dd40dc8b85b90dc909",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/CustomPropertiesData.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "6b81165175a646afbb8929e15c0b8c61c9f91165",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Drawing/AutoCadExternalLibraryBlockQuery.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "06ba1e59e4e0b98062b4c6dc33a21c87a4996523",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Drawing/AutoCadLibraryBlockQuery.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "d7c7cdb1a6b3166bd58967a782083cea14391565",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "b4d3669e87c8bfa9f3c3fa894c2e664248ac9f79",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "bbba47b35b4e20526baaf76c6bdbabe99a158ba0",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Drawing/BlockPlacement.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "63652c609f8647fc105800162e110d927b3dc869",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Drawing/LateralHeaderDrawService.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "ba39f06371c66cbe52b77c2ed7933f429bbb48a8",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "65db706081e7c50f920acbd1b9f8c414f5a82f21",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Drawing/RackBlockRenamer.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "5b8eb4ce59935aabeee96d3647c34deca184122b",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/InDocumentTransaction.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "f2961ebf39cb3f53243cad711268a79521251e91",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/LayerHelper.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "1f38d7c56b53cb9040c420c3ca9e7d1811688a99",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/ProjectVariablesData.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "ded0249982ab9aef4305a5e94986c4ed1fb189ed",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/RackBlockFinder.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "17fca2333818f7ea5b795d6dcd7ffc44d88004f2",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/RackCommandSupport.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "0c6814ac85043738a6a46b8491856073ac34ab34",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/RackEnvelopeRestamp.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "d9efc74b9c8be48a2dc8bff86d2724a970498ebc",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/RackMenuCommands.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "2660980025a2089fde43f4689efd588100efa041",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/RackSelectivoCommands.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "f8e514a085dd7a9889e7b8b3006926acb4350166",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/RackSelectivoInsertIntegration.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "308a42e540e329921926c7db64727a41f7aa3a46",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/RackUnitsGuard.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "000ea1426ffb40b904c326c55ffa90ec5f9afd3c",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Systems/Selective/SelectiveFrontalDrawService.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "eb0e43a88d2c839e71f174ab324e6de421653fde",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Systems/Selective/SelectivePlantaDrawService.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "8de456f4a1d635b723d27bc242cd26c64f25d819",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Systems/Shared/AutoCadSiblingRedrawPort.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "505e3a25c73eef651028f6183154d93699d996c5",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Systems/Shared/RackBlockData.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "d143b21ed06f88b8ddc57251ee38ed0194fc304c",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Systems/Shared/RackNewRackName.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "528a0582aaa3dbbc29569c0c281dd622bd77fdc2",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Systems/Shared/SiblingRedrawDebugFaultInjection.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "c89264742933cc169a1a002229f6e59327b4618e",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Systems/Shared/SiblingRedrawTransaction.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "4a01610d78b0d42b5026e30208b1fa69ff0bcfa8",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "ed23c86420b72126d55a5372a6677ccb07bad1ec",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Systems/Shared/ViewBlockDraw.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "a2d7ff9ec8fcf43ebfe615e2bfc0031039fda82f",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Views/RackSiblingScan.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "47e7bd542a4a79f8c31d083c32944d491c12226b",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Views/RackViewBatchDriver.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "f66abaf1c104394f3079ee48cb7a99931624e536",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Views/RackViewBatchExecution.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "14cff7216eea0908aa4887162f7dcda433a2450c",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Views/RackViewBatchProductSession.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "f06af5f426ef95f882b5673e72f349e91265c4e9",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Views/RackViewBatchProducts.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "7d9f0bba1274dc8ea7f972abd312431f413fe1a4",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.Plugin/Views/RackViewPlacement.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "36224d0efe7446ec4778568bd037587f5257238a",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.UI/Editor/RackEditorSession.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "4cede26d8754018ce5830e9fbab21af6441d1d16",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.UI/Editor/RackInsertionRequest.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "a4d2c9c537e0f1f6d635ea1783cb181ca302f590",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "0724d32c94344565201ef3e7aadcaa33c5c5e780",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "199de1417754da5990862307ffde0fbfefbc4bb7",
+     "atBound": null,
+     "atBuildOid": null
+    },
+    {
+     "path": "src/RackCad.UI/Views/RackViewBatchDialogPresenter.cs",
+     "status": "NOT_RESOLVED",
+     "citedBlob": "770176d49e71c33b04afa9ec7234486a1b8f168c",
+     "atBound": null,
+     "atBuildOid": null
+    }
+   ]
+  },
+  {
+   "id": "N1-unknown-role",
+   "purpose": "negative (mutated scratch copy)",
+   "buildSourceArgument": "95690c28",
+   "artifactsRead": "as P2 inputs with the BA-08 file replaced by a mutated scratch copy",
+   "expectedExit": 1,
+   "actualExit": 1,
+   "asExpected": true,
+   "mutation": "BA-08 V7 copy: role of the LateralHeaderDrawer row changed from W to X",
+   "verdict": "FAIL",
+   "unionCount": 90,
+   "counts": {
+    "EQUAL": 90,
+    "DIFFERENT": 0,
+    "ABSENT": 0,
+    "NOT_RESOLVED": 0
+   },
+   "selectedPerArtifact": {
+    "BA-03": 6,
+    "BA-06": 39,
+    "BA-08": 66,
+    "BA-09": 15
+   },
+   "excludedPerArtifact": {
+    "BA-03": 8,
+    "BA-06": 7,
+    "BA-08": 4,
+    "BA-09": 0
+   },
+   "parseGaps": [
+    {
+     "artifact": "BA-08",
+     "line": 146,
+     "gap": "role 'X' neither selected nor declared excluded"
+    }
+   ],
+   "conflicts": []
+  },
+  {
+   "id": "N2-truncated-blob",
+   "purpose": "negative (mutated scratch copy)",
+   "buildSourceArgument": "95690c28",
+   "artifactsRead": "as P2 inputs with the BA-06 file replaced by a mutated scratch copy",
+   "expectedExit": 1,
+   "actualExit": 1,
+   "asExpected": true,
+   "mutation": "BA-06 V7 copy: bound-SHA blob of the RackCommandSupport route row truncated to 8 hex",
+   "verdict": "FAIL",
+   "unionCount": 90,
+   "counts": {
+    "EQUAL": 90,
+    "DIFFERENT": 0,
+    "ABSENT": 0,
+    "NOT_RESOLVED": 0
+   },
+   "selectedPerArtifact": {
+    "BA-03": 6,
+    "BA-06": 38,
+    "BA-08": 67,
+    "BA-09": 15
+   },
+   "excludedPerArtifact": {
+    "BA-03": 8,
+    "BA-06": 7,
+    "BA-08": 4,
+    "BA-09": 0
+   },
+   "parseGaps": [
+    {
+     "artifact": "BA-06",
+     "line": 83,
+     "gap": "selected row without a backticked path or a 40-hex blob at the bound SHA (path 'src/RackCad.Plugin/RackCommandSupport.cs', blob '0c6814ac')"
+    }
+   ],
+   "conflicts": []
+  },
+  {
+   "id": "N3-missing-section",
+   "purpose": "negative (mutated scratch copy)",
+   "buildSourceArgument": "95690c28",
+   "artifactsRead": "as P2 inputs with the BA-08 file replaced by a mutated scratch copy",
+   "expectedExit": 1,
+   "actualExit": 1,
+   "asExpected": true,
+   "mutation": "BA-08 V7 copy: heading \"### 3.2\" renumbered to \"### 3.9\"",
+   "verdict": "FAIL",
+   "unionCount": 58,
+   "counts": {
+    "EQUAL": 58,
+    "DIFFERENT": 0,
+    "ABSENT": 0,
+    "NOT_RESOLVED": 0
+   },
+   "selectedPerArtifact": {
+    "BA-03": 6,
+    "BA-06": 39,
+    "BA-08": 0,
+    "BA-09": 15
+   },
+   "excludedPerArtifact": {
+    "BA-03": 8,
+    "BA-06": 7,
+    "BA-08": 0,
+    "BA-09": 0
+   },
+   "parseGaps": [
+    {
+     "artifact": "BA-08",
+     "gap": "heading '^###\\\\s+3\\\\.2\\\\s' found 0 times (expected 1)"
+    }
+   ],
+   "conflicts": []
+  },
+  {
+   "id": "N4-conflict-and-wrong-blob",
+   "purpose": "negative (mutated scratch copy)",
+   "buildSourceArgument": "95690c28",
+   "artifactsRead": "as P2 inputs with the BA-06 file replaced by a mutated scratch copy",
+   "expectedExit": 1,
+   "actualExit": 1,
+   "asExpected": true,
+   "mutation": "BA-06 V7 copy: bound-SHA blob of the LateralHeaderDrawer route row replaced by the blob of LayerHelper (valid 40-hex, wrong object; BA-08 cites the true blob)",
+   "verdict": "FAIL",
+   "unionCount": 90,
+   "counts": {
+    "EQUAL": 89,
+    "DIFFERENT": 1,
+    "ABSENT": 0,
+    "NOT_RESOLVED": 0
+   },
+   "selectedPerArtifact": {
+    "BA-03": 6,
+    "BA-06": 39,
+    "BA-08": 67,
+    "BA-09": 15
+   },
+   "excludedPerArtifact": {
+    "BA-03": 8,
+    "BA-06": 7,
+    "BA-08": 4,
+    "BA-09": 0
+   },
+   "parseGaps": [],
+   "conflicts": [
+    {
+     "path": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs",
+     "blobs": [
+      "1f38d7c56b53cb9040c420c3ca9e7d1811688a99",
+      "65db706081e7c50f920acbd1b9f8c414f5a82f21"
+     ],
+     "citedBy": [
+      "BA-06 (line 92, role route (U-11..U-24, U-35))",
+      "BA-08 (line 146, role W)"
+     ]
+    }
+   ],
+   "drifts": [
+    {
+     "path": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs",
+     "status": "DIFFERENT",
+     "citedBlob": "1f38d7c56b53cb9040c420c3ca9e7d1811688a99",
+     "atBound": "DIFFERENT",
+     "atBuildOid": "65db706081e7c50f920acbd1b9f8c414f5a82f21"
+    }
+   ]
+  },
+  {
+   "id": "N5-cell-count",
+   "purpose": "negative (mutated scratch copy)",
+   "buildSourceArgument": "95690c28",
+   "artifactsRead": "as P2 inputs with the BA-08 file replaced by a mutated scratch copy",
+   "expectedExit": 1,
+   "actualExit": 1,
+   "asExpected": true,
+   "mutation": "BA-08 V7 copy: one extra cell in the BlockNaming row",
+   "verdict": "FAIL",
+   "unionCount": 89,
+   "counts": {
+    "EQUAL": 89,
+    "DIFFERENT": 0,
+    "ABSENT": 0,
+    "NOT_RESOLVED": 0
+   },
+   "selectedPerArtifact": {
+    "BA-03": 6,
+    "BA-06": 39,
+    "BA-08": 66,
+    "BA-09": 15
+   },
+   "excludedPerArtifact": {
+    "BA-03": 8,
+    "BA-06": 7,
+    "BA-08": 4,
+    "BA-09": 0
+   },
+   "parseGaps": [
+    {
+     "artifact": "BA-08",
+     "line": 157,
+     "gap": "row cell count 7 differs from header 6"
+    }
+   ],
+   "conflicts": []
+  },
+  {
+   "id": "N6-ba03-bound-sha",
+   "purpose": "negative (mutated scratch copy)",
+   "buildSourceArgument": "95690c28",
+   "artifactsRead": "as P2 inputs with the BA-03 file replaced by a mutated scratch copy",
+   "expectedExit": 1,
+   "actualExit": 1,
+   "asExpected": true,
+   "mutation": "BA-03 spec copy: bound_product_sha changed to 3375aadb",
+   "verdict": "FAIL",
+   "unionCount": 90,
+   "counts": {
+    "EQUAL": 90,
+    "DIFFERENT": 0,
+    "ABSENT": 0,
+    "NOT_RESOLVED": 0
+   },
+   "selectedPerArtifact": {
+    "BA-03": 6,
+    "BA-06": 39,
+    "BA-08": 67,
+    "BA-09": 15
+   },
+   "excludedPerArtifact": {
+    "BA-03": 8,
+    "BA-06": 7,
+    "BA-08": 4,
+    "BA-09": 0
+   },
+   "parseGaps": [
+    {
+     "artifact": "BA-03",
+     "gap": "bound_product_sha of the specification (3375aadb) differs from the bound SHA (95690c28dc6268e61dff32a0cbc33cc9fde3d47f)"
+    }
+   ],
+   "conflicts": []
+  },
+  {
+   "id": "N12-ba09-unknown-role",
+   "purpose": "negative (mutated scratch copy)",
+   "buildSourceArgument": "95690c28",
+   "artifactsRead": "as P2 inputs with the BA-09 file replaced by a mutated scratch copy",
+   "expectedExit": 1,
+   "actualExit": 1,
+   "asExpected": true,
+   "mutation": "BA-09 V7 copy: role of the assets W-1 row changed from W-1 to W-2 (BA-09 declares no excluded role)",
+   "verdict": "FAIL",
+   "unionCount": 89,
+   "counts": {
+    "EQUAL": 89,
+    "DIFFERENT": 0,
+    "ABSENT": 0,
+    "NOT_RESOLVED": 0
+   },
+   "selectedPerArtifact": {
+    "BA-03": 6,
+    "BA-06": 39,
+    "BA-08": 67,
+    "BA-09": 14
+   },
+   "excludedPerArtifact": {
+    "BA-03": 8,
+    "BA-06": 7,
+    "BA-08": 4,
+    "BA-09": 0
+   },
+   "parseGaps": [
+    {
+     "artifact": "BA-09",
+     "line": 127,
+     "gap": "role 'W-2' neither selected nor declared excluded"
+    }
+   ],
+   "conflicts": []
+  },
+  {
+   "id": "N13-ba09-wrong-tree",
+   "purpose": "negative (mutated scratch copy)",
+   "buildSourceArgument": "95690c28",
+   "artifactsRead": "as P2 inputs with the BA-09 file replaced by a mutated scratch copy",
+   "expectedExit": 1,
+   "actualExit": 1,
+   "asExpected": true,
+   "mutation": "BA-09 V7 copy: tree id of Systems/Selective replaced by the tree id of Systems/Shared (valid 40-hex, wrong object)",
+   "verdict": "FAIL",
+   "unionCount": 90,
+   "counts": {
+    "EQUAL": 89,
+    "DIFFERENT": 1,
+    "ABSENT": 0,
+    "NOT_RESOLVED": 0
+   },
+   "selectedPerArtifact": {
+    "BA-03": 6,
+    "BA-06": 39,
+    "BA-08": 67,
+    "BA-09": 15
+   },
+   "excludedPerArtifact": {
+    "BA-03": 8,
+    "BA-06": 7,
+    "BA-08": 4,
+    "BA-09": 0
+   },
+   "parseGaps": [],
+   "conflicts": [],
+   "drifts": [
+    {
+     "path": "src/RackCad.Application/Systems/Selective",
+     "status": "DIFFERENT",
+     "citedBlob": "111ca46a8222b661c8c4b71970ec190ed2f7c56b",
+     "atBound": "DIFFERENT",
+     "atBuildOid": "2edaf7a8f0b31d5743d7860a764018b54f18f88b"
+    }
+   ]
+  },
+  {
+   "id": "N7-missing-file-by-argument",
+   "purpose": "negative: --ba09 names a file that does not exist (replaces the V6-era control \"defaults V7 absent\")",
+   "buildSourceArgument": "95690c28",
+   "artifactsRead": "BA-03 V5 spec, BA-06 V7, BA-08 V7, BA-09 = docs/initiatives/I-52-ct21d-baseline-ba-09-warmup-v99-absent.md (absent)",
+   "expectedExit": 1,
+   "actualExit": 1,
+   "asExpected": true,
+   "verdict": "FAIL",
+   "unionCount": 75,
+   "counts": {
+    "EQUAL": 75,
+    "DIFFERENT": 0,
+    "ABSENT": 0,
+    "NOT_RESOLVED": 0
+   },
+   "selectedPerArtifact": {
+    "BA-03": 6,
+    "BA-06": 39,
+    "BA-08": 67,
+    "BA-09": 0
+   },
+   "excludedPerArtifact": {
+    "BA-03": 8,
+    "BA-06": 7,
+    "BA-08": 4,
+    "BA-09": 0
+   },
+   "parseGaps": [
+    {
+     "artifact": "BA-09",
+     "gap": "artifact file not readable: docs/initiatives/I-52-ct21d-baseline-ba-09-warmup-v99-absent.md"
+    }
+   ],
+   "conflicts": []
+  },
+  {
+   "id": "N8-expect-sha256-mismatch",
+   "purpose": "negative: --expect-sha256 BA-06 = the SHA-256 of BA-06 V6 while BA-06 V7 is read",
+   "buildSourceArgument": "95690c28",
+   "artifactsRead": "BA-03 V5 spec, BA-06 V7, BA-08 V7, BA-09 V7",
+   "expectedExit": 1,
+   "actualExit": 1,
+   "asExpected": true,
+   "verdict": "FAIL",
+   "unionCount": 90,
+   "counts": {
+    "EQUAL": 90,
+    "DIFFERENT": 0,
+    "ABSENT": 0,
+    "NOT_RESOLVED": 0
+   },
+   "selectedPerArtifact": {
+    "BA-03": 6,
+    "BA-06": 39,
+    "BA-08": 67,
+    "BA-09": 15
+   },
+   "excludedPerArtifact": {
+    "BA-03": 8,
+    "BA-06": 7,
+    "BA-08": 4,
+    "BA-09": 0
+   },
+   "parseGaps": [
+    {
+     "artifact": "BA-06",
+     "gap": "sha256 7fd22ab0d3c1fd84db2bd348263fc2903a5708bf223a56e3b1871ba0ef5accb1 of docs/initiatives/I-52-ct21d-baseline-ba-06-evm-preparation-v7.md differs from the expected 37a2763e32692c16f14d40fafabae3364948cb0359dd0278ce311a7a706c4030 (--expect-sha256)"
+    }
+   ],
+   "conflicts": [],
+   "expectedSha256": {
+    "BA-06": false
+   }
+  },
+  {
+   "id": "N9-expect-count-mismatch",
+   "purpose": "negative: --expect-count 75 (the union before the BA-09 extension) while the union is 90",
+   "buildSourceArgument": "95690c28",
+   "artifactsRead": "BA-03 V5 spec, BA-06 V7, BA-08 V7, BA-09 V7",
+   "expectedExit": 1,
+   "actualExit": 1,
+   "asExpected": true,
+   "verdict": "FAIL",
+   "unionCount": 90,
+   "counts": {
+    "EQUAL": 90,
+    "DIFFERENT": 0,
+    "ABSENT": 0,
+    "NOT_RESOLVED": 0
+   },
+   "selectedPerArtifact": {
+    "BA-03": 6,
+    "BA-06": 39,
+    "BA-08": 67,
+    "BA-09": 15
+   },
+   "excludedPerArtifact": {
+    "BA-03": 8,
+    "BA-06": 7,
+    "BA-08": 4,
+    "BA-09": 0
+   },
+   "parseGaps": [
+    {
+     "artifact": null,
+     "gap": "union count 90 differs from the declared count 75 (--expect-count)"
+    }
+   ],
+   "conflicts": [],
+   "expectedCount": 75
+  },
+  {
+   "id": "N10-runner-output-other-build",
+   "purpose": "negative: --ba03-runner-output is a BA-03 runner output run at 3375aadb while the build source SHA is 95690c28",
+   "buildSourceArgument": "95690c28",
+   "artifactsRead": "BA-03 V5 spec, BA-06 V7, BA-08 V7, BA-09 V7",
+   "expectedExit": 1,
+   "actualExit": 1,
+   "asExpected": true,
+   "verdict": "FAIL",
+   "unionCount": 90,
+   "counts": {
+    "EQUAL": 90,
+    "DIFFERENT": 0,
+    "ABSENT": 0,
+    "NOT_RESOLVED": 0
+   },
+   "selectedPerArtifact": {
+    "BA-03": 6,
+    "BA-06": 39,
+    "BA-08": 67,
+    "BA-09": 15
+   },
+   "excludedPerArtifact": {
+    "BA-03": 8,
+    "BA-06": 7,
+    "BA-08": 4,
+    "BA-09": 0
+   },
+   "parseGaps": [
+    {
+     "artifact": "BA-03 runner output",
+     "gap": "runner build source SHA '3375aadbbf929427a6d106b2fff275d64863b89c' differs from the build source SHA of this run '95690c28dc6268e61dff32a0cbc33cc9fde3d47f'"
+    }
+   ],
+   "conflicts": [],
+   "ba03RunnerOutput": {
+    "path": "<scratchpad>/pv7/ba03-runner-3375aadb.json",
+    "sha256": "c00934a0cfc80934272f103426626af9db0b8c8fd8db4f9d3e07337837fdfe2d",
+    "buildSourceSha": "3375aadbbf929427a6d106b2fff275d64863b89c",
+    "buildSourceMatches": false,
+    "runnerFailedCount": 0,
+    "runnerIdentityDriftCount": 3
+   }
+  },
+  {
+   "id": "N11-runner-output-without-build",
+   "purpose": "negative: --ba03-runner-output is the committed BA-03 runner output, run without a build source SHA (buildSourceSha.resolved = null)",
+   "buildSourceArgument": "95690c28",
+   "artifactsRead": "BA-03 V5 spec, BA-06 V7, BA-08 V7, BA-09 V7",
+   "expectedExit": 1,
+   "actualExit": 1,
+   "asExpected": true,
+   "verdict": "FAIL",
+   "unionCount": 90,
+   "counts": {
+    "EQUAL": 90,
+    "DIFFERENT": 0,
+    "ABSENT": 0,
+    "NOT_RESOLVED": 0
+   },
+   "selectedPerArtifact": {
+    "BA-03": 6,
+    "BA-06": 39,
+    "BA-08": 67,
+    "BA-09": 15
+   },
+   "excludedPerArtifact": {
+    "BA-03": 8,
+    "BA-06": 7,
+    "BA-08": 4,
+    "BA-09": 0
+   },
+   "parseGaps": [
+    {
+     "artifact": "BA-03 runner output",
+     "gap": "runner build source SHA None differs from the build source SHA of this run '95690c28dc6268e61dff32a0cbc33cc9fde3d47f'"
+    }
+   ],
+   "conflicts": [],
+   "ba03RunnerOutput": {
+    "path": "docs/automation/evidence/I-52-ct21d-ba03-v5-checks-output.json",
+    "sha256": "76e6daf246be4d31877e9879d8fc7bb851a20eb11f73b025f0d1b3006d059ea0",
+    "buildSourceSha": null,
+    "buildSourceMatches": false,
+    "runnerFailedCount": 0,
+    "runnerIdentityDriftCount": 0
+   }
+  },
+  {
+   "id": "N14-runner-output-missing",
+   "purpose": "negative: --ba03-runner-output names a file that does not exist",
+   "buildSourceArgument": "95690c28",
+   "artifactsRead": "BA-03 V5 spec, BA-06 V7, BA-08 V7, BA-09 V7",
+   "expectedExit": 1,
+   "actualExit": 1,
+   "asExpected": true,
+   "verdict": "FAIL",
+   "unionCount": 90,
+   "counts": {
+    "EQUAL": 90,
+    "DIFFERENT": 0,
+    "ABSENT": 0,
+    "NOT_RESOLVED": 0
+   },
+   "selectedPerArtifact": {
+    "BA-03": 6,
+    "BA-06": 39,
+    "BA-08": 67,
+    "BA-09": 15
+   },
+   "excludedPerArtifact": {
+    "BA-03": 8,
+    "BA-06": 7,
+    "BA-08": 4,
+    "BA-09": 0
+   },
+   "parseGaps": [
+    {
+     "artifact": "BA-03 runner output",
+     "gap": "file not readable: <scratchpad>/pv7/absent-runner-output.json"
+    }
+   ],
+   "conflicts": [],
+   "ba03RunnerOutput": {
+    "path": "<scratchpad>/pv7/absent-runner-output.json",
+    "sha256": null,
+    "buildSourceSha": null,
+    "buildSourceMatches": null,
+    "runnerFailedCount": null,
+    "runnerIdentityDriftCount": null
+   }
+  },
+  {
+   "id": "U1-repo-root-not-git",
+   "purpose": "usage: <repo root> is a directory that is not the top level of a git checkout (the scratchpad folder, which lies inside another checkout); no output is written",
+   "buildSourceArgument": "95690c28",
+   "artifactsRead": "none (usage error)",
+   "expectedExit": 2,
+   "actualExit": 2,
+   "asExpected": true,
+   "outputWritten": false,
+   "usageError": "usage error: <repo root> '<scratchpad>' is not the top level of a git checkout\r"
+  },
+  {
+   "id": "U2-expect-sha256-malformed",
+   "purpose": "usage: --expect-sha256 value is not 64 hex; no output is written",
+   "buildSourceArgument": "95690c28",
+   "artifactsRead": "none (usage error)",
+   "expectedExit": 2,
+   "actualExit": 2,
+   "asExpected": true,
+   "outputWritten": false,
+   "usageError": "usage error: --expect-sha256 needs BA-xx=<64 lowercase hex>, BA-xx one of BA-03, BA-06, BA-08, BA-09, each at most once\r"
+  }
+ ],
+ "crossCheckP2": {
+  "method": "expected status of every table pair recomputed independently from the 3375aadb columns of BA-06 V7 section 2.1 (full blob), BA-08 V7 section 3.2 (8-hex prefix, \"absent\") and BA-09 V7 section 3.2 (\"identical\" or a different id); BA-03-only BOUND paths are not in those columns",
+  "tablePairs": 89,
+  "ba03OnlyPaths": [
+   "src/RackCad.Application/Systems/Shared/RackViewAvailability.cs"
+  ],
+  "ba03OnlyStatusAt3375aadb": {
+   "src/RackCad.Application/Systems/Shared/RackViewAvailability.cs": "EQUAL"
+  },
+  "mismatches": [],
+  "result": "AGREE"
+ },
+ "allAsExpected": true,
+ "deltaV7": {
+  "title": "Delta V7 (decisions 226)",
+  "rows": [
+   {
+    "id": "AR7-03",
+    "change": "new dedicated precondition verifier (union of the BA-03, BA-06 and BA-08 precondition pairs), outside the registry, under BA-07 custody; no previous version exists"
+   },
+   {
+    "id": "BA03V6-N1",
+    "change": "BA-03 pairs compared as expected blob versus the blob at the build source SHA (and at the bound SHA); origin/main not read"
+   },
+   {
+    "id": "BA03V6-N2 / BA0809V6-03",
+    "change": "the detector of the union is this verifier, not the BA-03 runner"
+   },
+   {
+    "id": "AR7-07 (critic gap: W-1 pairs)",
+    "change": "fourth source BA-09 V7 section 3.2 W-1 rows (--ba09; tree ids admitted); union 75 -> 90; extension of AR7-03 submitted to the Architect for confirmation"
+   },
+   {
+    "id": "AQ-V6-01 obligations (critic gap)",
+    "change": "--expect-sha256 BA-xx=<hex>, --expect-count <n> and --ba03-runner-output <path>, each fail closed; repo root required and checked"
+   },
+   {
+    "id": "self-test (critic gap)",
+    "change": "regenerated against the V7 files; N7 \"defaults V7 absent\" replaced by a missing file passed by argument; controls N8..N14, U1, U2 added"
+   }
+  ]
+ },
+ "constraints": "no git write command, no src/, no tests, no AutoCAD; I60_NAMING_FOR_RACKMIRROR = NOT_YET_ADOPTED"
+}

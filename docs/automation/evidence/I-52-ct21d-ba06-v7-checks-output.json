@@ -1,0 +1,3000 @@
+{
+ "CHECKER": "docs/automation/evidence/I-52-ct21d-ba06-v7-checks.py",
+ "CHECKER_SHA256": "d8d5e7296be6ed431a4a5fc7058b47c5189826614386ab757bb36d62d262881f",
+ "ARTIFACT": "docs/initiatives/I-52-ct21d-baseline-ba-06-evm-preparation-v7.md",
+ "COMPARED_WITH": "docs/initiatives/I-52-ct21d-baseline-ba-06-evm-preparation-v6.md",
+ "COMPARED_WITH_BLOB": "3065065069bc2eb04efac130dfef5426f35e8b3f",
+ "NOTE": "no hash of the V7 artifact is recorded here: the artifact binds this output by hash (section 14)",
+ "RESULTS": [
+  {
+   "ID": "BA06-C1",
+   "STATEMENT": "the columns of the coverage matrix of section 7, with the fondo counts dropped, are exactly the plan-shape classes of section 10.2",
+   "RESULT": "PASS",
+   "DETAIL": "columns ['SH-ANN', 'SH-DIM', 'SH-F1', 'SH-FALL', 'SH-FN', 'SH-FP', 'SH-IMP', 'SH-LAY-ADDED', 'SH-P']; classes ['SH-ANN', 'SH-DIM', 'SH-F1', 'SH-FALL', 'SH-FN', 'SH-FP', 'SH-IMP', 'SH-LAY-ADDED', 'SH-P']"
+  },
+  {
+   "ID": "BA06-C2",
+   "STATEMENT": "15 MUTATING rows; 14 map to a class of section 3.3; C-105 (SL-3) is n/a by the sealed scope",
+   "RESULT": "PASS",
+   "DETAIL": "MUTATING 15, mapped 14, C-105 class \"n/a (SL-3 not required by the sealed scope, V2.1 25.7)\""
+  },
+  {
+   "ID": "BA06-C3",
+   "STATEMENT": "every NON_MUTATING_READ row has a class; C-13 is marked as an instrument sample",
+   "RESULT": "PASS",
+   "DETAIL": "C-13=instrument (I-07 sample; not an operation class), C-43=OC-LIB-ACQ, C-52=OC-LIB-ACQ, C-61=OC-LIB-ACQ, C-73=OC-LIB-ACQ, C-75=OC-PREP-READ, C-128=OC-ENVELOPE, C-156=OC-PREP-READ, C-169=OC-VERIFY-READ, C-170=OC-VERIFY-READ"
+  },
+  {
+   "ID": "BA06-C4",
+   "STATEMENT": "every class cited in sections 3.2 and 3.2.5 is a class of section 3.3, and every class of 3.3 has its micro-scenario EV-L-<class> or a reasoned exclusion; 21 classes (16 and 5)",
+   "RESULT": "PASS",
+   "DETAIL": "classes 21 (micro-scenario 16, exclusion 5); cited not in 3.3: []"
+  },
+  {
+   "ID": "BA06-C5",
+   "STATEMENT": "the 203 rows of section 3.2 transcribe sa1-compiled-operations.json (id, actor, kind, operation, clause fragments), except the declared V4 amendment of C-98 and the declared V6 amendment of C-72 (AR5-03)",
+   "RESULT": "PASS",
+   "DETAIL": "rows 203; mismatches []"
+  },
+  {
+   "ID": "BA06-C6",
+   "STATEMENT": "DF-nn = DC-nn in order; every DC row transcribes its comparator difference and carries a disposition",
+   "RESULT": "PASS",
+   "DETAIL": "rows 51"
+  },
+  {
+   "ID": "BA06-C7",
+   "STATEMENT": "each of the 25 ambiguities is RESOLVED by a clause outside the compiler fragments, or is a CONTRACT QUESTION with an id of section 3.2.6",
+   "RESULT": "PASS",
+   "DETAIL": "none"
+  },
+  {
+   "ID": "BA06-C8",
+   "STATEMENT": "every fragment of sa1-contract-fragments.md is contained verbatim in the current V2.1, V2.2 or V2.4 text",
+   "RESULT": "PASS",
+   "DETAIL": "8 fragments; not found: []"
+  },
+  {
+   "ID": "BA06-C9",
+   "STATEMENT": "every SHA-256 of section 14, except the row of this output, equals the SHA-256 of the LF-normalized file; 34 rows, 2 of them new in V7 (this script and its output)",
+   "RESULT": "PASS",
+   "DETAIL": "rows 34; mismatches []; new in V7 ['docs/automation/evidence/I-52-ct21d-ba06-v7-checks-output.json', 'docs/automation/evidence/I-52-ct21d-ba06-v7-checks.py']"
+  },
+  {
+   "ID": "BA06-C10",
+   "STATEMENT": "the published V4 task inputs are internally consistent and reproduce, from repository files, the checks TI-CRIT-A, TI-CRIT-B, TI-CRIT-CENSUS, TI-COMPILE and TI-LIST1",
+   "RESULT": "PASS",
+   "DETAIL": "hashes of the 15 task texts and bodies: PASS; critic REVIEW A = B1a: PASS; critic REVIEW B = B1b: PASS; census critic input = B2a..B2d entries: PASS; compiler body = prompts.json compile: PASS; comparator body = compare_template with LIST 1: PASS; all checks recorded at extraction PASS: PASS"
+  },
+  {
+   "ID": "BA06-C11",
+   "STATEMENT": "the residual table of section 5 cites no row of the superseded V2 R-list",
+   "RESULT": "PASS",
+   "DETAIL": "found []"
+  },
+  {
+   "ID": "BA06-C12",
+   "STATEMENT": "the header is V7: it cites the git blob of the V6 file, the unchanged contract chain, BOUND_PRODUCT_SHA 95690c28, sections 226 and 227 before 223 and 220, the AR7-01 prerequisite and review status, DEPENDS_ON = BA-01, BA-03, BA-05, BA-07, the BA-11 registry entry and the naming state, has no CANDIDATE_HASH or SEAL_HASH field, and the artifact ends with the Delta V7 section",
+   "RESULT": "PASS",
+   "DETAIL": "V6 blob 3065065069bc2eb04efac130dfef5426f35e8b3f; title and banner V7: PASS; ARTIFACT_VERSION cites the git blob of the V6 file: PASS; AUTHORITY_CONTRACT unchanged: PASS; BOUND_PRODUCT_SHA: PASS; DELTA RULING APPLIED names sections 226 (AR7-01, AR7-02, AR7-09) and 227, then 223 and 220: PASS; PREREQUISITES (1) is the AR7-01 check against V6; (4) none: PASS; INVENTORY_REVIEW_STATUS records AR7-01: PASS; DEPENDS_ON = BA-01, BA-03, BA-05, BA-07: PASS; STATUS AUTHORITY cites the BA-11 registry entry: PASS; I60_NAMING_FOR_RACKMIRROR = NOT_YET_ADOPTED: PASS; no CANDIDATE_HASH or SEAL_HASH: PASS; last section is Delta V7 (decisions 226): PASS"
+  },
+  {
+   "ID": "BA06-C13",
+   "STATEMENT": "the V6 file is the one that the BA-11 V6 registry entry of BA-06 records (path and SHA-256) and the one the V7 header supersedes; the V6 architect review evidence has the SHA-256 that decisions section 226 states (AR7-01 was decided on these V6 bytes); the V5 file is still the one AR5-01 carried",
+   "RESULT": "PASS",
+   "DETAIL": "V6 sha256 37a2763e32692c16f14d40fafabae3364948cb0359dd0278ce311a7a706c4030 blob 3065065069bc2eb04efac130dfef5426f35e8b3f; registry True; review True (reviewed commit 33ee9d5daf41ee045b3529bf66aafdd0b1f50875); V5 blob prefix e69a141d"
+  },
+  {
+   "ID": "BA06-C14",
+   "STATEMENT": "EXACT DELTA CHECK (AR7-01): V7 differs from the V6 bytes, over the whole file (header fields, every table row, every other line, every section), exactly by the declared set of changes (BA06V6-01..04 and AR7-02), each with its kind and ruling; the only CONTENT changes are the U-45 row of 3.1 (seam role) and the OC-IMPORT row of 3.3; the contract rows, section 5, section 12, the trace plan and the other class rows are unchanged; the REPORT lists every change with its cell or line edits",
+   "RESULT": "PASS",
+   "DETAIL": "changes 95 (declared 95); kinds {'RECORD': 93, 'CONTENT': 2}; content [('### 3.1 ', 'U-45'), ('### 3.3 ', '`OC-IMPORT`')]; problems []",
+   "REPORT": {
+    "COMPARED_WITH": "docs/initiatives/I-52-ct21d-baseline-ba-06-evm-preparation-v6.md",
+    "COMPARED_WITH_BLOB": "3065065069bc2eb04efac130dfef5426f35e8b3f",
+    "CHANGES": [
+     {
+      "SECTION": "(header)",
+      "TABLE": null,
+      "KEY": "FIELD ARTIFACT_VERSION",
+      "CHANGE": "CHANGED",
+      "EDITS": [
+       {
+        "OP": "REPLACE",
+        "OLD": "6",
+        "NEW": "7"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "5",
+        "NEW": "6"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "e69a141d67f6af68578bd0243310b256852b1501",
+        "NEW": "3065065069bc2eb04efac130dfef5426f35e8b3f"
+       }
+      ],
+      "KIND": "RECORD",
+      "RULING": "AR7-01: 7-DRAFT, supersedes the V6 blob"
+     },
+     {
+      "SECTION": "(header)",
+      "TABLE": null,
+      "KEY": "FIELD BANNER",
+      "CHANGE": "CHANGED",
+      "EDITS": [
+       {
+        "OP": "REPLACE",
+        "OLD": "V6",
+        "NEW": "V7"
+       }
+      ],
+      "KIND": "RECORD",
+      "RULING": "AR7-01: version label V7"
+     },
+     {
+      "SECTION": "(header)",
+      "TABLE": null,
+      "KEY": "FIELD DELTA RULING APPLIED",
+      "CHANGE": "CHANGED",
+      "EDITS": [
+       {
+        "OP": "INSERT",
+        "OLD": "",
+        "NEW": " section 226 (AR7-01; AR7-02; AR7-09: the minors BA06V6-01..04) and section 227\n>                             (Coordinator, round V7 narrow);"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": " ",
+        "NEW": "\n>                             "
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "\n>                             ",
+        "NEW": " "
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": " ",
+        "NEW": "\n>                             "
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "\n>                             ",
+        "NEW": " "
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": " ",
+        "NEW": "\n>                             "
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "\n>                             ",
+        "NEW": " "
+       },
+       {
+        "OP": "INSERT",
+        "OLD": "",
+        "NEW": "\n>                             226,"
+       }
+      ],
+      "KIND": "RECORD",
+      "RULING": "decisions sections 226 (AR7-01, AR7-02, AR7-09) and 227 added"
+     },
+     {
+      "SECTION": "(header)",
+      "TABLE": null,
+      "KEY": "FIELD INVENTORY_REVIEW_STATUS",
+      "CHANGE": "CHANGED",
+      "EDITS": [
+       {
+        "OP": "REPLACE",
+        "OLD": " and",
+        "NEW": ","
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": ";",
+        "NEW": ", and APPROVED on the V6 bytes as the design-time inventory"
+       },
+       {
+        "OP": "DELETE",
+        "OLD": " 95690c28 it is NOT transferred as a whole (AR5-01 (ii),",
+        "NEW": ""
+       },
+       {
+        "OP": "INSERT",
+        "OLD": "",
+        "NEW": "95690c28 (AR7-01): carried for the 16 classes of "
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": ")",
+        "NEW": " (OC-LAYER included"
+       },
+       {
+        "OP": "INSERT",
+        "OLD": "",
+        "NEW": "its AR6-02 rewording\n>                             is non-content); confirmed for OC-ENVELOPE and OC-REF-TOP; re-reviewed and approved for\n>                             OC-PREP-READ, OC-VERIFY-READ and OC-IMPORT (on the membership of AR7-02, applied in these bytes);\n>                             "
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "per",
+        "NEW": "to"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "class",
+        "NEW": "these"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "after",
+        "NEW": "V7 bytes only through"
+       },
+       {
+        "OP": "DELETE",
+        "OLD": "; proposed carry\n>                             candidates: the 16 classes of section 3.4 whose rows are unchanged; not carried: OC-IMPORT,\n>                             OC-REF-TOP, OC-ENVELOPE, OC-PREP-READ, OC-VERIFY-READ",
+        "NEW": ""
+       }
+      ],
+      "KIND": "RECORD",
+      "RULING": "AR7-01: STATIC_REVIEWED approved on the V6 bytes by class; carried to V7 through the check"
+     },
+     {
+      "SECTION": "(header)",
+      "TABLE": null,
+      "KEY": "FIELD PREREQUISITES",
+      "CHANGE": "CHANGED",
+      "EDITS": [
+       {
+        "OP": "REPLACE",
+        "OLD": "V6",
+        "NEW": "V7"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "V5",
+        "NEW": "V6"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "e69a141d",
+        "NEW": "3065065069bc2eb0"
+       },
+       {
+        "OP": "DELETE",
+        "OLD": " under",
+        "NEW": ""
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "AR5",
+        "NEW": "under AR7"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "02, with the per-class decision of AR6-03",
+        "NEW": "01"
+       },
+       {
+        "OP": "DELETE",
+        "OLD": "of the\n>                             inventory ",
+        "NEW": ""
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "of",
+        "NEW": "line"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "the",
+        "NEW": "against"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "trace plan with the ruling that orders it",
+        "NEW": "V6"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "section",
+        "NEW": "the"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "3.4",
+        "NEW": "set"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "is",
+        "NEW": "of changes\n>                             equals"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "per",
+        "NEW": "declared set (BA06V6"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "class",
+        "NEW": "01..04 and the OC-IMPORT membership of AR7-02); STATIC_REVIEWED"
+       },
+       {
+        "OP": "DELETE",
+        "OLD": "carry table; STATIC_REVIEWED ",
+        "NEW": ""
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "at",
+        "NEW": "to"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "95690c28",
+        "NEW": "these bytes"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "for the classes that",
+        "NEW": "if"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "without",
+        "NEW": "no other change, and any other change to a class"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "change;",
+        "NEW": "reopens"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "OC-IMPORT",
+        "NEW": "that"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "full re-review; OC-REF-TOP and OC-ENVELOPE confirmation; OC-PREP-READ and\n>                             OC-VERIFY-READ re-review per AR5-03",
+        "NEW": "class"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "\n>                             ",
+        "NEW": " "
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": " ",
+        "NEW": "\n>                             "
+       },
+       {
+        "OP": "INSERT",
+        "OLD": "",
+        "NEW": " CANDIDATE;"
+       },
+       {
+        "OP": "DELETE",
+        "OLD": "CANDIDATE; ",
+        "NEW": ""
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "\n>                             ",
+        "NEW": " "
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": " ",
+        "NEW": "\n>                             "
+       },
+       {
+        "OP": "INSERT",
+        "OLD": "",
+        "NEW": " gate"
+       },
+       {
+        "OP": "DELETE",
+        "OLD": "gate ",
+        "NEW": ""
+       },
+       {
+        "OP": "INSERT",
+        "OLD": "",
+        "NEW": " none:"
+       },
+       {
+        "OP": "DELETE",
+        "OLD": ":",
+        "NEW": ""
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "gate",
+        "NEW": "are"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "BEFORE",
+        "NEW": "ruled"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "CANDIDATE",
+        "NEW": "by AR7-02"
+       }
+      ],
+      "KIND": "RECORD",
+      "RULING": "AR7-01: (1) the exact delta check against V6; AR7-02: (4) none open"
+     },
+     {
+      "SECTION": "(header)",
+      "TABLE": null,
+      "KEY": "FIELD TITLE",
+      "CHANGE": "CHANGED",
+      "EDITS": [
+       {
+        "OP": "REPLACE",
+        "OLD": "V6",
+        "NEW": "V7"
+       }
+      ],
+      "KIND": "RECORD",
+      "RULING": "AR7-01: version label V7"
+     },
+     {
+      "SECTION": "## 20. Delta V7 (decisions 226)",
+      "TABLE": null,
+      "KEY": "<section>",
+      "CHANGE": "ADDED",
+      "LINES": 3,
+      "KIND": "RECORD",
+      "RULING": "the Delta V7 table (decisions 226)"
+     },
+     {
+      "SECTION": "### 3.1 Reused product path at `BOUND_PRODUCT_SHA` `95690c28` (V6: re-derived, AR6-03)",
+      "TABLE": "id",
+      "KEY": "U-45",
+      "CHANGE": "CHANGED",
+      "KIND": "CONTENT",
+      "RULING": "BA06V6-02; AR7-02 (01): seam role = call site of OC-IMPORT, not a member",
+      "CHANGED_COLUMNS": [
+       5
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "call site of `OC-IMPORT` on R2 and R3 "
+         },
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "the D-13 site pattern, not a class member; AR7-02); "
+         },
+         {
+          "OP": "DELETE",
+          "OLD": ")",
+          "NEW": ""
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "#### 3.1.1 Relink ledger at `95690c28` (record of the review; AR6-03)",
+      "TABLE": "Row",
+      "KEY": "U-41",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-03: R3-001 and R3-009 are ND",
+      "CHANGED_COLUMNS": [
+       5,
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "REPLACE",
+          "OLD": "001",
+          "NEW": "002..R3-008, R3-010"
+         }
+        ]
+       },
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "; V7 (BA06V6-03): the command entry R3-001 and the dispatch R3-009 are ND (4.4)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 3.3 Operation classes and their learning micro-scenarios (AR2-27; BA06-F04; V4: DC-49, BA06V3-N01, N07)",
+      "TABLE": null,
+      "KEY": "- **V7 (AR7-02; BA06V6-02).** Neither import call site is a member of `OC-IMPORT` (AQ-V6-BA06-01): the class is U-03, U-",
+      "CHANGE": "ADDED",
+      "KIND": "RECORD",
+      "RULING": "AR7-02 (01), (02): bullet on the V7 class record"
+     },
+     {
+      "SECTION": "### 3.3 Operation classes and their learning micro-scenarios (AR2-27; BA06-F04; V4: DC-49, BA06V3-N01, N07)",
+      "TABLE": "Class",
+      "KEY": "`OC-IMPORT`",
+      "CHANGE": "CHANGED",
+      "KIND": "CONTENT",
+      "RULING": "BA06V6-02; AR7-02 (01): members U-03, U-07, U-08, C-81, C-82; sites U-02 and U-45 in the class row; X-01 / C-89 context of the micro-scenario",
+      "CHANGED_COLUMNS": [
+       2,
+       3
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 2,
+        "EDITS": [
+         {
+          "OP": "DELETE",
+          "OLD": "U-45 (V6: the call site under L0, AR6-03), ",
+          "NEW": ""
+         },
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": " (V7, AR7-02: the call sites U-02 on R1 and U-45 on R2 and R3 are sites of the class, the D-13 site pattern, not members)"
+         }
+        ]
+       },
+       {
+        "COLUMN": 3,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": ". V7 (AR7-02; BA06V6-02): the learning micro-scenario runs the import under the orchestrator's held lock (X-01), outside any RackCad transaction (C-89), and does not reproduce the product's L1 and L0 contexts"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "TABLE": null,
+      "KEY": "The members are those of 3.3; \"changed members\" are the U-, C- and X-rows whose cells differ from V5 (the V6 check `BA06",
+      "CHANGE": "CHANGED",
+      "EDITS": [
+       {
+        "OP": "INSERT",
+        "OLD": "",
+        "NEW": "the V6 "
+       },
+       {
+        "OP": "INSERT",
+        "OLD": "",
+        "NEW": "; the V7 check `BA06-C18` recomputes them from the V5 and V6 bytes"
+       },
+       {
+        "OP": "INSERT",
+        "OLD": "",
+        "NEW": " **V7 (AR7-01, AR7-02; BA06V6-01).** The members are those of the V7 3.3 (`OC-IMPORT` without its call sites U-02 and U-45, AR7-02). The column \"Changed section-5 rows covering a member\" lists every section-5 row that changed in content from V5 to V6 (the rows 2, 3, 12 and 15 that the V6 check `BA06-C14` classes as CONTENT) and whose \"affects\" cell, in V5 or in V6, covers a member of the class: \"residual text changed, membership unchanged\" when the members it covers are the same in V5 and V6 (a non-membership edit, the class stays without content change), or \"residual membership changed\" (a content change of the class). The Architect decided on the V6 bytes (AR7-01): carried for the 16 classes of AR6-03, `OC-LAYER` included; confirmed `OC-ENVELOPE` and `OC-REF-TOP`; re-reviewed and approved `OC-PREP-READ`, `OC-VERIFY-READ` and `OC-IMPORT` (on the membership of AR7-02). The last column keeps the V6 proposal as recorded; the V7 delta against V6 changes no member row (check `BA06-C14`)."
+       }
+      ],
+      "KIND": "RECORD",
+      "RULING": "BA06V6-01; AR7-01; AR7-02: intro of the carry table"
+     },
+     {
+      "SECTION": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "TABLE": "Class",
+      "KEY": "<header>",
+      "CHANGE": "CHANGED",
+      "OLD_COLUMNS": 6,
+      "NEW_COLUMNS": 7,
+      "EDITS": [
+       {
+        "OP": "REPLACE",
+        "OLD": "V6",
+        "NEW": "V7"
+       },
+       {
+        "OP": "INSERT",
+        "OLD": "",
+        "NEW": "Changed section-5 rows covering a member (V5 to V6; BA06V6-01) | "
+       }
+      ],
+      "KIND": "RECORD",
+      "RULING": "BA06V6-01: column 5 added; Members (V7)"
+     },
+     {
+      "SECTION": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "TABLE": "Class",
+      "KEY": "`OC-LOCK`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-01: the section-5 column only",
+      "CHANGED_COLUMNS": [
+       5
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "none"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "TABLE": "Class",
+      "KEY": "`OC-LIB-ACQ`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-01: the section-5 column only",
+      "CHANGED_COLUMNS": [
+       5
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "none"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "TABLE": "Class",
+      "KEY": "`OC-PREP-READ`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-01: the section-5 column only",
+      "CHANGED_COLUMNS": [
+       5
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "row 12: residual text changed, membership unchanged (Run-time data; covers U-09; \"affects\" adds U-42..U-46, no member of the class; a non-membership edit)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "TABLE": "Class",
+      "KEY": "`OC-IMPORT`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-01 and BA06V6-02 (AR7-02 (01)): members, changed members, membership change, section-5 column and reason",
+      "CHANGED_COLUMNS": [
+       2,
+       3,
+       4,
+       5,
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 2,
+        "EDITS": [
+         {
+          "OP": "DELETE",
+          "OLD": "U-45, ",
+          "NEW": ""
+         }
+        ]
+       },
+       {
+        "COLUMN": 3,
+        "EDITS": [
+         {
+          "OP": "DELETE",
+          "OLD": ", U-45",
+          "NEW": ""
+         }
+        ]
+       },
+       {
+        "COLUMN": 4,
+        "EDITS": [
+         {
+          "OP": "DELETE",
+          "OLD": "+ U-45; ",
+          "NEW": ""
+         }
+        ]
+       },
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "row 12: residual text changed, membership unchanged (Run-time data; covers U-07, U-08; \"affects\" adds U-42..U-46, no member of the class; a non-membership edit)"
+         }
+        ]
+       },
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "; V7 (AR7-02 (01), BA06V6-02): neither import call site is a member; U-02 (R1) and U-45 (R2, R3) are sites recorded in the class row, and the learning micro-scenario runs the import under X-01, outside any RackCad transaction (C-89)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "TABLE": "Class",
+      "KEY": "`OC-TM`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-01: the section-5 column only",
+      "CHANGED_COLUMNS": [
+       5
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "none"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "TABLE": "Class",
+      "KEY": "`OC-TM-READ`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-01: the section-5 column only",
+      "CHANGED_COLUMNS": [
+       5
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "none"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "TABLE": "Class",
+      "KEY": "`OC-TOP-CHECK`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-01: the section-5 column only",
+      "CHANGED_COLUMNS": [
+       5
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "none"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "TABLE": "Class",
+      "KEY": "`OC-BT-OPEN`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-01: the section-5 column only",
+      "CHANGED_COLUMNS": [
+       5
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "row 12: residual text changed, membership unchanged (Run-time data; covers U-11; \"affects\" adds U-42..U-46, no member of the class; a non-membership edit)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "TABLE": "Class",
+      "KEY": "`OC-BTR-NESTED`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-01: the section-5 column only",
+      "CHANGED_COLUMNS": [
+       5
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "row 12: residual text changed, membership unchanged (Run-time data; covers U-12; \"affects\" adds U-42..U-46, no member of the class; a non-membership edit)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "TABLE": "Class",
+      "KEY": "`OC-BTR-VIEW`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-01: the section-5 column only",
+      "CHANGED_COLUMNS": [
+       5
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "row 12: residual text changed, membership unchanged (Run-time data; covers U-13; \"affects\" adds U-42..U-46, no member of the class; a non-membership edit)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "TABLE": "Class",
+      "KEY": "`OC-REF-PIECE`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-01: the section-5 column only",
+      "CHANGED_COLUMNS": [
+       5
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "row 12: residual text changed, membership unchanged (Run-time data; covers U-14; \"affects\" adds U-42..U-46, no member of the class; a non-membership edit)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "TABLE": "Class",
+      "KEY": "`OC-DYN`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-01: the section-5 column only",
+      "CHANGED_COLUMNS": [
+       5
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "row 12: residual text changed, membership unchanged (Run-time data; covers U-15, U-16; \"affects\" adds U-42..U-46, no member of the class; a non-membership edit)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "TABLE": "Class",
+      "KEY": "`OC-REF-ARRAY`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-01: the section-5 column only",
+      "CHANGED_COLUMNS": [
+       5
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "row 12: residual text changed, membership unchanged (Run-time data; covers U-17; \"affects\" adds U-42..U-46, no member of the class; a non-membership edit)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "TABLE": "Class",
+      "KEY": "`OC-LAYER`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-01: the section-5 column only",
+      "CHANGED_COLUMNS": [
+       5
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "row 12: residual text changed, membership unchanged (Run-time data; covers U-18, U-21; \"affects\" adds U-42..U-46, no member of the class; a non-membership edit)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "TABLE": "Class",
+      "KEY": "`OC-LAYER-PRESENT`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-01: the section-5 column only",
+      "CHANGED_COLUMNS": [
+       5
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "row 12: residual text changed, membership unchanged (Run-time data; covers U-18, U-21; \"affects\" adds U-42..U-46, no member of the class; a non-membership edit)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "TABLE": "Class",
+      "KEY": "`OC-TEXT`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-01: the section-5 column only",
+      "CHANGED_COLUMNS": [
+       5
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "row 12: residual text changed, membership unchanged (Run-time data; covers U-19, U-20; \"affects\" adds U-42..U-46, no member of the class; a non-membership edit)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "TABLE": "Class",
+      "KEY": "`OC-DIM`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-01: the section-5 column only",
+      "CHANGED_COLUMNS": [
+       5
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "row 12: residual text changed, membership unchanged (Run-time data; covers U-22..U-24; \"affects\" adds U-42..U-46, no member of the class; a non-membership edit)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "TABLE": "Class",
+      "KEY": "`OC-ENVELOPE`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-01: the section-5 column only",
+      "CHANGED_COLUMNS": [
+       5
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "row 12: residual text changed, membership unchanged (Run-time data; covers U-25, U-26; \"affects\" adds U-42..U-46, no member of the class; a non-membership edit)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "TABLE": "Class",
+      "KEY": "`OC-REF-TOP`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-01 and AR7-02 (02): section-5 column and reason (every entry; U-48 watch item)",
+      "CHANGED_COLUMNS": [
+       5,
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "row 2: residual text changed, membership unchanged (Transaction.Dispose and commit grouping; covers U-31, U-32; \"affects\" adds U-42..U-45, U-50, no member of the class; a non-membership edit); row 15: residual text changed, membership unchanged (Selectability; covers U-32; \"affects\" adds U-49, no member of the class; a non-membership edit)"
+         }
+        ]
+       },
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "; V7 (AR7-02 (02)): the confirmation covers every entry (R1 PlaceAndReport, R2 and R3 PlaceDefinitionWithStatus, the test-only beforeCommit variant), all reaching U-31 and U-32; U-48 stays a watch item that reopens the class if a production caller passes a hook"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "TABLE": "Class",
+      "KEY": "`OC-VERIFY-READ`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-01: the section-5 column only",
+      "CHANGED_COLUMNS": [
+       5
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "none"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 3.4 Per-class `STATIC_REVIEWED` carry table at `95690c28` (record of the review; AR6-03, AR5-01 (ii), AR5-02)",
+      "TABLE": "Class",
+      "KEY": "`OC-ABV-READ`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-01: the section-5 column only",
+      "CHANGED_COLUMNS": [
+       5
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "none"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": null,
+      "KEY": "Source: `docs/automation/evidence/I-52-ct21d-ba06-v6-blind-recompile.json` (section 14): role \"INDEPENDENT COMPILER (PA-",
+      "CHANGE": "CHANGED",
+      "EDITS": [
+       {
+        "OP": "INSERT",
+        "OLD": "",
+        "NEW": " **V7 (BA06V6-03, BA06V6-04).** The command entry R3-001 (`RackMenuCommands.cs:153`) and the dispatch R3-009 (`RackMenuCommands.cs:184`) are `ND`, like the command entries R1-001 and R2-001 and the other dispatch steps (the V6 table assigned them to U-41, which keeps R3-002..R3-008 and R3-010..R3-018). The last column gives, for every row, its classes of 3.3 or its disposition with no class; every row that carries a MUTATING operation has one (check `BA06-C16`)."
+       }
+      ],
+      "KIND": "RECORD",
+      "RULING": "BA06V6-03, BA06V6-04: intro sentence"
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "<header>",
+      "CHANGE": "CHANGED",
+      "OLD_COLUMNS": 5,
+      "NEW_COLUMNS": 6,
+      "EDITS": [
+       {
+        "OP": "INSERT",
+        "OLD": "",
+        "NEW": " | Class of 3.3 or disposition (V7; BA06V6-04)"
+       }
+      ],
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: column 6 added"
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-01",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "no class: product lock site (D-13); the mirror holds the single orchestrator lock (`OC-LOCK`: C-01, X-01; the seams take no lock, C-120, C-89)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-02",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "no class: R1 call site of `OC-IMPORT` (the D-13 site pattern; AR7-02)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-03",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "class: `OC-IMPORT`"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-04",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "no class: orchestrator precondition (D-03); in the mirror path the library is the private copy of `OC-LIB-ACQ`"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-07",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "class: `OC-IMPORT`"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-08",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "class: `OC-IMPORT`"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-09",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "class: `OC-PREP-READ`"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-10",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "no class: transaction site TX-A (D-13); the mirror replaces it by the single caller-owned `T_M` (`OC-TM`, C-02)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-11",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "class: `OC-BT-OPEN`"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-12",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "class: `OC-BTR-NESTED`"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-13",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "class: `OC-BTR-VIEW`"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-14",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "class: `OC-REF-PIECE`"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-15",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "class: `OC-DYN`"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-17",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "class: `OC-REF-ARRAY`"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-18",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "class: `OC-LAYER`, `OC-LAYER-PRESENT`"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-19",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "class: `OC-TEXT`"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-21",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "class: `OC-LAYER`, `OC-LAYER-PRESENT`"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-22",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "class: `OC-DIM`"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-25",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "class: `OC-ENVELOPE`"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-26",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "class: `OC-ENVELOPE`"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-27",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "no class: host commit of TX-A (D-13); replaced in the mirror by `T_M` (`OC-TM`, C-04)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-28",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "no class: lock and transaction site TX-E (D-13); the mirror replaces it by the single caller-owned `T_M` (`OC-TM`, C-02)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-29",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "no class: not in the mirror path (computed transform, no interaction; C-106; 4.2 NX-01)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-30",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "no class: no counterpart under the contract (3.1)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-31",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "class: `OC-REF-TOP`"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-32",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "class: `OC-REF-TOP`"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-33",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "no class: host commit of TX-E (D-13); replaced in the mirror by `T_M` (`OC-TM`, C-04)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-34",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "no class: NOT_IN_SEAM, post-commit compensation (D-05)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-35",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "no class: NOT_IN_SEAM (D-05)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-36",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "no class: NOT_IN_SEAM (D-05)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-37",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "no class: pre-creation read (D-04)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-38",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "no class: pre-creation read (D-04)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-39",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "OUT: lateral branch (D-11)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-40",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "excluded: not a database operation, an orchestrator input (D-12)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-41",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-03 and BA06V6-04: R3-001 and R3-009 leave U-41",
+      "CHANGED_COLUMNS": [
+       4,
+       5,
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 4,
+        "EDITS": [
+         {
+          "OP": "REPLACE",
+          "OLD": "001",
+          "NEW": "002..R3-008, R3-010"
+         }
+        ]
+       },
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "REPLACE",
+          "OLD": "18",
+          "NEW": "16"
+         }
+        ]
+       },
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "OUT: edit-path preliminaries (D-11)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-42",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "no class: lock site of TX-A' (D-13, D-17); the mirror holds the single orchestrator lock (`OC-LOCK`: C-01, X-01)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-43",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "no class: transaction site TX-A' (D-13, D-17); the mirror replaces it by `T_M` (`OC-TM`, C-02); the drawer primitives it runs are the rows U-11..U-24"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-44",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "no class: host commit of TX-A' (D-13, D-17); replaced in the mirror by `T_M` (`OC-TM`, C-04)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-45",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "no class: R2 and R3 call site of `OC-IMPORT` (the D-13 site pattern; AR7-02); the U-09 query inside it is `OC-PREP-READ`"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-46",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "no class: pre-creation read (D-04, D-19); the mirror orchestrator does not call it"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-47",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "no class: the D-04 pattern (D-20); not an `OC-TOP-CHECK` member"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-48",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "no class: dormant watch item inside `T_place` (D-21); reopens `OC-REF-TOP` if a production caller passes a hook (AR7-02)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-49",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "no class: not a database operation (D-22)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "U-50",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-04: the class-or-disposition column only",
+      "CHANGED_COLUMNS": [
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "OUT: edit path (D-11)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "### 4.4 Blind recompile at `95690c28` and its difference log (PA-11 conditions 1, 5, 6; AR6-03)",
+      "TABLE": "V6 row or disposition",
+      "KEY": "ND: not a database operation (command entry, modal UI, prompt, catalog file read, pure step, dispatch, status mapping, message, exception report)",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "BA06V6-03 and BA06V6-04: R3-001 and R3-009 join ND",
+      "CHANGED_COLUMNS": [
+       4,
+       5,
+       6
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 4,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "R3-001, R3-009, "
+         }
+        ]
+       },
+       {
+        "COLUMN": 5,
+        "EDITS": [
+         {
+          "OP": "REPLACE",
+          "OLD": "29",
+          "NEW": "31"
+         }
+        ]
+       },
+       {
+        "COLUMN": 6,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "n/a: not a database operation"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "## 13. Status",
+      "TABLE": "Item",
+      "KEY": "per-class `STATIC_REVIEWED`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "AR7-01: decision recorded",
+      "CHANGED_COLUMNS": [
+       2
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 2,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "**V7: decided by AR7-01 on the V6 bytes**: carried for the 16 classes of AR6-03 (`OC-LAYER` included); `OC-ENVELOPE` and `OC-REF-TOP` confirmed (every entry, AR7-02 (02)); `OC-PREP-READ` (AR7-02 (03)), `OC-VERIFY-READ` and `OC-IMPORT` (on the membership of AR7-02 (01), applied in V7) re-reviewed and approved; it carries to the V7 bytes only if the exact delta check against V6 shows only BA06V6-01..04 (AR7-01; check `BA06-C14`). As proposed in V6, "
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "## 13. Status",
+      "TABLE": "Item",
+      "KEY": "`STATIC_REVIEWED`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "AR7-01: approval on the V6 bytes recorded",
+      "CHANGED_COLUMNS": [
+       2
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 2,
+        "EDITS": [
+         {
+          "OP": "INSERT",
+          "OLD": "",
+          "NEW": "; **APPROVED on the V6 bytes at `95690c28` by class (AR7-01)**, carried to V7 through the exact delta check of header `PREREQUISITES` (1)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "## 13. Status",
+      "TABLE": "Item",
+      "KEY": "open Architect questions",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "AR7-02: none open",
+      "CHANGED_COLUMNS": [
+       2
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 2,
+        "EDITS": [
+         {
+          "OP": "REPLACE",
+          "OLD": "section",
+          "NEW": "none"
+         },
+         {
+          "OP": "REPLACE",
+          "OLD": "18",
+          "NEW": "open:"
+         },
+         {
+          "OP": "DELETE",
+          "OLD": "(",
+          "NEW": ""
+         },
+         {
+          "OP": "REPLACE",
+          "OLD": ")",
+          "NEW": " are ruled by AR7-02 (section 18"
+         },
+         {
+          "OP": "REPLACE",
+          "OLD": "before-candidate prerequisites (header `PREREQUISITES` (4",
+          "NEW": "V7"
+         },
+         {
+          "OP": "DELETE",
+          "OLD": "); none is decided here",
+          "NEW": ""
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "## 13. Status",
+      "TABLE": "Item",
+      "KEY": "V7 minors",
+      "CHANGE": "ADDED",
+      "KIND": "RECORD",
+      "RULING": "AR7-09: BA06V6-01..04"
+     },
+     {
+      "SECTION": "## 14. Evidence bound to this artifact (path and SHA-256 of the LF-normalized bytes)",
+      "TABLE": null,
+      "KEY": "The two files marked \"new in V7\" are the V7 check script (usage: `python I-52-ct21d-ba06-v7-checks.py <repository root> ",
+      "CHANGE": "CHANGED",
+      "EDITS": [
+       {
+        "OP": "REPLACE",
+        "OLD": "four",
+        "NEW": "two files marked \"new in V7\" are the V7 check script (usage: `python I-52-ct21d-ba06-v7-checks.py <repository root> <output file>`) and its output. The V7 checks repeat the applicable V6 checks on these bytes; `BA06-C14` is the exact delta check of AR7-01: it compares these bytes with the V6 bytes over the whole file, lists every changed table row and every changed line with its kind and its ruling, and fails unless the set of changes equals the declared set (BA06V6-01..04 and AR7-02); `BA06-C13` binds the V6 bytes to the hash that the BA-11 registry entry of BA-06 records in `I-52-ct21d-baseline-ba-11-hash-registry-v6.md`; `BA06-C16` adds the class-or-disposition column (BA06V6-04); `BA06-C18` recomputes the carry table from the V5 and V6 bytes with the section-5 column (BA06V6-01); `BA06-C25` verifies the AR7-02 membership. The"
+       },
+       {
+        "OP": "INSERT",
+        "OLD": "",
+        "NEW": "and "
+       },
+       {
+        "OP": "DELETE",
+        "OLD": "(usage: `python I-52-ct21d-ba06-v6-checks.py <repository root> <output file>`) ",
+        "NEW": ""
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "its",
+        "NEW": "output,"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "output.",
+        "NEW": "which"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "The",
+        "NEW": "check the"
+       },
+       {
+        "OP": "DELETE",
+        "OLD": "checks repeat the applicable V5 checks on these ",
+        "NEW": ""
+       },
+       {
+        "OP": "DELETE",
+        "OLD": " and add the relink checks: `BA06-C14` is the frozen-parts check of AR5-02 (it lists exactly which inventory and trace rows changed against V5 and why), `BA06-C16` the partition of the recompile, `BA06-C17` the Gate 2 classifications of 3.1.1, `BA06-C18` the carry table against AR6-03, `BA06-C19` the identity table of section 2.1, and `BA06-C20` to `BA06-C24` the AR5-03 corrections, AR6-04, the AR6-02 wording, the naming state and the version labels",
+        "NEW": ""
+       },
+       {
+        "OP": "INSERT",
+        "OLD": "",
+        "NEW": ", V5"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "V5",
+        "NEW": "V6"
+       },
+       {
+        "OP": "DELETE",
+        "OLD": " (the V4 and V5 check scripts check the V4 and V5 bytes)",
+        "NEW": ""
+       }
+      ],
+      "KIND": "RECORD",
+      "RULING": "section 14 intro for V7"
+     },
+     {
+      "SECTION": "## 14. Evidence bound to this artifact (path and SHA-256 of the LF-normalized bytes)",
+      "TABLE": "Path",
+      "KEY": "`docs/automation/evidence/I-52-ct21d-ba06-v6-checks.py`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "version cell: V6",
+      "CHANGED_COLUMNS": [
+       3
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 3,
+        "EDITS": [
+         {
+          "OP": "DELETE",
+          "OLD": "new in ",
+          "NEW": ""
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "## 14. Evidence bound to this artifact (path and SHA-256 of the LF-normalized bytes)",
+      "TABLE": "Path",
+      "KEY": "`docs/automation/evidence/I-52-ct21d-ba06-v6-checks-output.json`",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "version cell: V6",
+      "CHANGED_COLUMNS": [
+       3
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 3,
+        "EDITS": [
+         {
+          "OP": "DELETE",
+          "OLD": "new in ",
+          "NEW": ""
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "## 14. Evidence bound to this artifact (path and SHA-256 of the LF-normalized bytes)",
+      "TABLE": "Path",
+      "KEY": "`docs/automation/evidence/I-52-ct21d-ba06-v7-checks.py`",
+      "CHANGE": "ADDED",
+      "KIND": "RECORD",
+      "RULING": "new in V7"
+     },
+     {
+      "SECTION": "## 14. Evidence bound to this artifact (path and SHA-256 of the LF-normalized bytes)",
+      "TABLE": "Path",
+      "KEY": "`docs/automation/evidence/I-52-ct21d-ba06-v7-checks-output.json`",
+      "CHANGE": "ADDED",
+      "KIND": "RECORD",
+      "RULING": "new in V7"
+     },
+     {
+      "SECTION": "## 18. Open Architect questions (round V6)",
+      "TABLE": null,
+      "KEY": "These questions needed an Architect ruling; this artifact decided none of them. **V7:** they are ruled by AR7-02 (decisi",
+      "CHANGE": "CHANGED",
+      "EDITS": [
+       {
+        "OP": "REPLACE",
+        "OLD": "need",
+        "NEW": "needed"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "decides",
+        "NEW": "decided"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "Each",
+        "NEW": "**V7:** they are ruled by AR7-02 (decisions section 226); the last column records each ruling, and none"
+       },
+       {
+        "OP": "REPLACE",
+        "OLD": "a before-candidate prerequisite",
+        "NEW": "open"
+       }
+      ],
+      "KIND": "RECORD",
+      "RULING": "AR7-02: rulings recorded"
+     },
+     {
+      "SECTION": "## 18. Open Architect questions (round V6)",
+      "TABLE": "Id",
+      "KEY": "AQ-V6-BA06-01",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "AR7-02 (01): ruling recorded",
+      "CHANGED_COLUMNS": [
+       4
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 4,
+        "EDITS": [
+         {
+          "OP": "REPLACE",
+          "OLD": "OPEN",
+          "NEW": "RULED by AR7-02 (01): neither call site is a member"
+         },
+         {
+          "OP": "REPLACE",
+          "OLD": "gate",
+          "NEW": "`OC-IMPORT`"
+         },
+         {
+          "OP": "REPLACE",
+          "OLD": "BEFORE",
+          "NEW": "="
+         },
+         {
+          "OP": "REPLACE",
+          "OLD": "CANDIDATE",
+          "NEW": "U-03, U-07, U-08, C-81, C-82; U-02 (R1) and U-45 (R2, R3) are recorded as sites in the class row; applied in V7 (BA06V6-02: 3.1 U-45, 3.3, 3.4)"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "## 18. Open Architect questions (round V6)",
+      "TABLE": "Id",
+      "KEY": "AQ-V6-BA06-02",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "AR7-02 (02): ruling recorded",
+      "CHANGED_COLUMNS": [
+       4
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 4,
+        "EDITS": [
+         {
+          "OP": "REPLACE",
+          "OLD": "OPEN",
+          "NEW": "RULED by AR7-02 (02): the confirmation covers every entry (R1 `PlaceAndReport`, R2 and R3 `PlaceDefinitionWithStatus`, the test-only `beforeCommit` variant), which reach U-31 and U-32"
+         },
+         {
+          "OP": "REPLACE",
+          "OLD": "gate",
+          "NEW": "U-48"
+         },
+         {
+          "OP": "REPLACE",
+          "OLD": "BEFORE",
+          "NEW": "stays"
+         },
+         {
+          "OP": "REPLACE",
+          "OLD": "CANDIDATE",
+          "NEW": "a watch item that reopens the class if a production caller passes a hook; recorded in 3.3 (V7 bullet) and 3.4"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "## 18. Open Architect questions (round V6)",
+      "TABLE": "Id",
+      "KEY": "AQ-V6-BA06-03",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "AR7-02 (03): ruling recorded",
+      "CHANGED_COLUMNS": [
+       4
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 4,
+        "EDITS": [
+         {
+          "OP": "REPLACE",
+          "OLD": "OPEN",
+          "NEW": "RULED by AR7-02 (03): bounded re-review (membership +U-09, the C-72 amendment, the context of U-09 under L0): APPROVED"
+         },
+         {
+          "OP": "REPLACE",
+          "OLD": "gate",
+          "NEW": "no"
+         },
+         {
+          "OP": "REPLACE",
+          "OLD": "BEFORE",
+          "NEW": "inventory"
+         },
+         {
+          "OP": "REPLACE",
+          "OLD": "CANDIDATE",
+          "NEW": "change"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "SECTION": "## 18. Open Architect questions (round V6)",
+      "TABLE": "Id",
+      "KEY": "AQ-V6-BA06-04",
+      "CHANGE": "CHANGED",
+      "KIND": "RECORD",
+      "RULING": "AR7-02 (04): ruling recorded",
+      "CHANGED_COLUMNS": [
+       4
+      ],
+      "CELL_EDITS": [
+       {
+        "COLUMN": 4,
+        "EDITS": [
+         {
+          "OP": "REPLACE",
+          "OLD": "OPEN",
+          "NEW": "RULED by AR7-02 (04): yes, a non-content edit"
+         },
+         {
+          "OP": "REPLACE",
+          "OLD": "gate",
+          "NEW": "`OC-LAYER`"
+         },
+         {
+          "OP": "REPLACE",
+          "OLD": "BEFORE",
+          "NEW": "carries;"
+         },
+         {
+          "OP": "REPLACE",
+          "OLD": "CANDIDATE",
+          "NEW": "no inventory change"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "DECLARED_ITEMS": 95,
+    "CHANGED_ITEMS": 95,
+    "SET_EQUALS_DECLARED_SET": true,
+    "CONTENT_CHANGES": [
+     [
+      "### 3.1 ",
+      "U-45"
+     ],
+     [
+      "### 3.3 ",
+      "`OC-IMPORT`"
+     ]
+    ],
+    "UNCHANGED_PARTS": {
+     "3.2 contract rows": true,
+     "3.2.5 supplementary rows": true,
+     "section 5 residuals": true,
+     "section 7 trace plan": true,
+     "10.2 plan-shape classes": true,
+     "section 11 f(plan)": true,
+     "section 12 EVM schema": true,
+     "sections 1, 2, 2.1, 8, 9, 10.1": true
+    },
+    "PROBLEMS": []
+   }
+  },
+  {
+   "ID": "BA06-C15",
+   "STATEMENT": "section 7 declared limit (4) is present with the four elements of AR4-12 condition (1), and the declared-limits paragraph equals the V6 paragraph",
+   "RESULT": "PASS",
+   "DETAIL": "same source SHA as the product build: True; every harness switch is off: True; every I-14 writer included: True; `RECORDED_NOT_ENFORCED` handling of the AR3-01 set: True; control-plane decisions only: True; both build identities: True; this attestation: True; only because of a harness difference: True; recorded as a finding, not added to the inventory: True"
+  },
+  {
+   "ID": "BA06-C16",
+   "STATEMENT": "section 4.4 assigns each of the 689 operations of the blind recompile (source SHA 95690c28, which did not read BA-06 V5 section 3 or the Gate 2 assessment) to exactly one V6 row or to ND; the command entries R1-001, R2-001, R3-001 and the dispatch R3-009 are ND (BA06V6-03); every MUTATING operation goes to a U-row; for every non-aggregate U-row, the file of each assigned operation is cited in the row's location cell; the counts column is exact; every row names exactly its classes of 3.3 (\"class: ...\") or states a disposition with no class (\"no class\", \"OUT\", \"excluded\", \"n/a\"), so every row carrying a MUTATING operation is resolved to a class or a disposition (BA06V6-04; REPORT lists them)",
+   "RESULT": "PASS",
+   "DETAIL": "header True; unassigned []; unknown []; duplicates []; MUTATING not on a U-row []; file not cited []; count mismatch []; entries not ND []; column True; class/disposition mismatches []; MUTATING-carrying rows 20",
+   "REPORT": {
+    "MUTATING_CARRYING_ROWS": {
+     "U-08": {
+      "MUTATING": 4,
+      "CLASS_OR_DISPOSITION": "class: `OC-IMPORT`"
+     },
+     "U-12": {
+      "MUTATING": 4,
+      "CLASS_OR_DISPOSITION": "class: `OC-BTR-NESTED`"
+     },
+     "U-13": {
+      "MUTATING": 4,
+      "CLASS_OR_DISPOSITION": "class: `OC-BTR-VIEW`"
+     },
+     "U-14": {
+      "MUTATING": 8,
+      "CLASS_OR_DISPOSITION": "class: `OC-REF-PIECE`"
+     },
+     "U-15": {
+      "MUTATING": 8,
+      "CLASS_OR_DISPOSITION": "class: `OC-DYN`"
+     },
+     "U-17": {
+      "MUTATING": 4,
+      "CLASS_OR_DISPOSITION": "class: `OC-REF-ARRAY`"
+     },
+     "U-18": {
+      "MUTATING": 8,
+      "CLASS_OR_DISPOSITION": "class: `OC-LAYER`, `OC-LAYER-PRESENT`"
+     },
+     "U-19": {
+      "MUTATING": 8,
+      "CLASS_OR_DISPOSITION": "class: `OC-TEXT`"
+     },
+     "U-21": {
+      "MUTATING": 8,
+      "CLASS_OR_DISPOSITION": "class: `OC-LAYER`, `OC-LAYER-PRESENT`"
+     },
+     "U-22": {
+      "MUTATING": 8,
+      "CLASS_OR_DISPOSITION": "class: `OC-DIM`"
+     },
+     "U-25": {
+      "MUTATING": 4,
+      "CLASS_OR_DISPOSITION": "class: `OC-ENVELOPE`"
+     },
+     "U-26": {
+      "MUTATING": 4,
+      "CLASS_OR_DISPOSITION": "class: `OC-ENVELOPE`"
+     },
+     "U-27": {
+      "MUTATING": 2,
+      "CLASS_OR_DISPOSITION": "no class: host commit of TX-A (D-13); replaced in the mirror by `T_M` (`OC-TM`, C-04)"
+     },
+     "U-32": {
+      "MUTATING": 4,
+      "CLASS_OR_DISPOSITION": "class: `OC-REF-TOP`"
+     },
+     "U-33": {
+      "MUTATING": 4,
+      "CLASS_OR_DISPOSITION": "no class: host commit of TX-E (D-13); replaced in the mirror by `T_M` (`OC-TM`, C-04)"
+     },
+     "U-34": {
+      "MUTATING": 12,
+      "CLASS_OR_DISPOSITION": "no class: NOT_IN_SEAM, post-commit compensation (D-05)"
+     },
+     "U-35": {
+      "MUTATING": 12,
+      "CLASS_OR_DISPOSITION": "no class: NOT_IN_SEAM (D-05)"
+     },
+     "U-39": {
+      "MUTATING": 29,
+      "CLASS_OR_DISPOSITION": "OUT: lateral branch (D-11)"
+     },
+     "U-44": {
+      "MUTATING": 2,
+      "CLASS_OR_DISPOSITION": "no class: host commit of TX-A' (D-13, D-17); replaced in the mirror by `T_M` (`OC-TM`, C-04)"
+     },
+     "U-50": {
+      "MUTATING": 25,
+      "CLASS_OR_DISPOSITION": "OUT: edit path (D-11)"
+     }
+    }
+   }
+  },
+  {
+   "ID": "BA06-C17",
+   "STATEMENT": "the Gate 2 evidence has the SHA-256 that decisions section 223 states, and every row of the relink ledger 3.1.1 (U-01..U-50 and U-26x) carries exactly the classification that the evidence gives to that fact (new rows by their Gate 2 id N-01..N-08)",
+   "RESULT": "PASS",
+   "DETAIL": "stated b7d4a570b6443a9297e84225291ae076d09d5b88794924061a951932905cbba4; rows 51; mismatches []"
+  },
+  {
+   "ID": "BA06-C18",
+   "STATEMENT": "the carry table 3.4 lists the classes of 3.3 in order with their V7 members, the members changed from V5 to V6 and the membership change from V5 (recomputed from the V5 and V6 bytes and equal to the rows the bound V6 check output records), and, for every section-5 row that changed in content from V5 to V6 and covers a member, whether its residual membership changed (BA06V6-01); a class counts as content-changed if a member row, its class row (CONTENT) or the residual membership changed, and a carry candidate has no content change; the carry candidates are exactly the 16 classes that AR6-03 lists",
+   "RESULT": "PASS",
+   "DETAIL": "candidates ['OC-ABV-READ', 'OC-BT-OPEN', 'OC-BTR-NESTED', 'OC-BTR-VIEW', 'OC-DIM', 'OC-DYN', 'OC-LAYER', 'OC-LAYER-PRESENT', 'OC-LIB-ACQ', 'OC-LOCK', 'OC-REF-ARRAY', 'OC-REF-PIECE', 'OC-TEXT', 'OC-TM', 'OC-TM-READ', 'OC-TOP-CHECK']; AR6-03 ['OC-ABV-READ', 'OC-BT-OPEN', 'OC-BTR-NESTED', 'OC-BTR-VIEW', 'OC-DIM', 'OC-DYN', 'OC-LAYER', 'OC-LAYER-PRESENT', 'OC-LIB-ACQ', 'OC-LOCK', 'OC-REF-ARRAY', 'OC-REF-PIECE', 'OC-TEXT', 'OC-TM', 'OC-TM-READ', 'OC-TOP-CHECK']; others {'OC-PREP-READ': 'RE-REVIEW (AR5-03, AR6-03)', 'OC-IMPORT': 'FULL RE-REVIEW (AR6-03)', 'OC-ENVELOPE': 'CONFIRMATION (AR6-03)', 'OC-REF-TOP': 'CONFIRMATION (AR6-03)', 'OC-VERIFY-READ': 'BOUNDED RE-REVIEW (AR5-03)'}; problems []",
+   "REPORT": {
+    "CHANGED_MEMBER_ROWS_V5_TO_V6": [
+     "C-72",
+     "U-02",
+     "U-03",
+     "U-04",
+     "U-07",
+     "U-08",
+     "U-09",
+     "U-25",
+     "U-26",
+     "U-28",
+     "U-29",
+     "U-30",
+     "U-31",
+     "U-32",
+     "U-33",
+     "U-34",
+     "U-35",
+     "U-36",
+     "U-37",
+     "U-38",
+     "U-39",
+     "U-40",
+     "U-41",
+     "U-42",
+     "U-43",
+     "U-44",
+     "U-45",
+     "U-46",
+     "U-47",
+     "U-48",
+     "U-49",
+     "U-50",
+     "X-05"
+    ],
+    "SECTION5_ROWS_V5_TO_V6": [
+     2,
+     3,
+     12,
+     15
+    ],
+    "SECTION5_COLUMN": {
+     "`OC-LOCK`": [],
+     "`OC-LIB-ACQ`": [],
+     "`OC-PREP-READ`": [
+      [
+       12,
+       "residual text changed, membership unchanged"
+      ]
+     ],
+     "`OC-IMPORT`": [
+      [
+       12,
+       "residual text changed, membership unchanged"
+      ]
+     ],
+     "`OC-TM`": [],
+     "`OC-TM-READ`": [],
+     "`OC-TOP-CHECK`": [],
+     "`OC-BT-OPEN`": [
+      [
+       12,
+       "residual text changed, membership unchanged"
+      ]
+     ],
+     "`OC-BTR-NESTED`": [
+      [
+       12,
+       "residual text changed, membership unchanged"
+      ]
+     ],
+     "`OC-BTR-VIEW`": [
+      [
+       12,
+       "residual text changed, membership unchanged"
+      ]
+     ],
+     "`OC-REF-PIECE`": [
+      [
+       12,
+       "residual text changed, membership unchanged"
+      ]
+     ],
+     "`OC-DYN`": [
+      [
+       12,
+       "residual text changed, membership unchanged"
+      ]
+     ],
+     "`OC-REF-ARRAY`": [
+      [
+       12,
+       "residual text changed, membership unchanged"
+      ]
+     ],
+     "`OC-LAYER`": [
+      [
+       12,
+       "residual text changed, membership unchanged"
+      ]
+     ],
+     "`OC-LAYER-PRESENT`": [
+      [
+       12,
+       "residual text changed, membership unchanged"
+      ]
+     ],
+     "`OC-TEXT`": [
+      [
+       12,
+       "residual text changed, membership unchanged"
+      ]
+     ],
+     "`OC-DIM`": [
+      [
+       12,
+       "residual text changed, membership unchanged"
+      ]
+     ],
+     "`OC-ENVELOPE`": [
+      [
+       12,
+       "residual text changed, membership unchanged"
+      ]
+     ],
+     "`OC-REF-TOP`": [
+      [
+       2,
+       "residual text changed, membership unchanged"
+      ],
+      [
+       15,
+       "residual text changed, membership unchanged"
+      ]
+     ],
+     "`OC-VERIFY-READ`": [],
+     "`OC-ABV-READ`": []
+    }
+   }
+  },
+  {
+   "ID": "BA06-C19",
+   "STATEMENT": "every file of the identity table of section 2.1 has, in the checkout, the git blob of its 95690c28 column (so the checkout's src equals 95690c28 for those paths), and the Relation column agrees with the two blob columns",
+   "RESULT": "PASS",
+   "DETAIL": "rows 46; mismatches []"
+  },
+  {
+   "ID": "BA06-C20",
+   "STATEMENT": "the AR5-03 corrections are applied: C-72 amendment, DC-41 aligned, DC-18 corrected, row X-05 (class OC-VERIFY-READ), U-09 moved to OC-PREP-READ, U-03 kept in OC-IMPORT",
+   "RESULT": "PASS",
+   "DETAIL": "C-72 marked amendment: PASS; DC-41 aligned: PASS; DC-18 corrected: PASS; X-05 row, class OC-VERIFY-READ: PASS; U-09 in OC-PREP-READ, not in OC-IMPORT: PASS; U-03 stays in OC-IMPORT: PASS; X-05 in OC-VERIFY-READ: PASS"
+  },
+  {
+   "ID": "BA06-C21",
+   "STATEMENT": "AR6-04: section 8 and D-01 record RACKPROYECTAR as a precedent only with the exclusion reason; the V5 sentence \"no production caller\" is superseded; P-8 stays required; no inventory row cites the RACKPROYECTAR files",
+   "RESULT": "PASS",
+   "DETAIL": "section 8: the V5 sentence superseded, RACKPROYECTAR a precedent, P-8: PASS; D-01 excludes RACKPROYECTAR with the reason: PASS; D-25 precedent only: PASS; no other line says \"no production caller\" of AUTH-15: PASS; no 3.1 row cites RACKPROYECTAR files: PASS; lines []"
+  },
+  {
+   "ID": "BA06-C22",
+   "STATEMENT": "AR6-02: 3.3, section 7 and 10.2 state FX-ANN-BLANK as a legacy product state built by the declared FIXTURE_CONSTRUCTION_BUILD 69daf03a; the fixture cell stays FX-ANN-BLANK; no \"product-reachable\" outside the history",
+   "RESULT": "PASS",
+   "DETAIL": "3.3 OC-LAYER fixture cell: PASS; section 7 coverage-matrix sentence: PASS; 10.2 SH-LAY-ADDED: PASS; no \"product-reachable\" outside the history: PASS; lines []"
+  },
+  {
+   "ID": "BA06-C23",
+   "STATEMENT": "the naming state: I60_NAMING_FOR_RACKMIRROR = NOT_YET_ADOPTED in the header; U-46 records the I-60 read as a product fact that the mirror orchestrator does not call; the mirror name \"<base> - espejo\" is kept",
+   "RESULT": "PASS",
+   "DETAIL": "header: PASS; U-46: the mirror orchestrator does not call it: PASS; 10.2 mirror name kept: PASS; no mirror named Selectivo N: PASS"
+  },
+  {
+   "ID": "BA06-C24",
+   "STATEMENT": "outside the history of sections 15 to 17, no stale sibling label (BA-03 V4; BA-04, BA-07, BA-08, BA-09, BA-10 V5) and no BA-11 version label remain (BA-11 is cited by registry entry)",
+   "RESULT": "PASS",
+   "DETAIL": "lines []"
+  },
+  {
+   "ID": "BA06-C25",
+   "STATEMENT": "AR7-02: OC-IMPORT = U-03, U-07, U-08, C-81, C-82 as decisions section 226 states; U-02 (R1) and U-45 (R2, R3) are recorded as call sites in the class row and are members of no class; the micro-scenario runs under X-01 outside any RackCad transaction (C-89); U-45's seam role says so; U-48 stays a watch item; section 18 records the rulings of AQ-V6-BA06-01..04",
+   "RESULT": "PASS",
+   "DETAIL": "decisions 226 AR7-02 states the OC-IMPORT membership: PASS; OC-IMPORT members = U-03, U-07, U-08, C-81, C-82: PASS; U-02 and U-45 named as sites in the class row, not members: PASS; micro-scenario context X-01, C-89, no L1/L0 reproduction: PASS; micro-scenario and fixture unchanged: PASS; U-45 seam role: call site of OC-IMPORT, not a member: PASS; U-48 stays a watch item that reopens OC-REF-TOP: PASS; section 18 records the four rulings: PASS"
+  }
+ ],
+ "ALL_PASS": true
+}

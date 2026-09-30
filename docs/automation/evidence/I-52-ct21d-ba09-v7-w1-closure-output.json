@@ -1,0 +1,776 @@
+{
+ "check": "I-52-ct21d-ba09-v7-w1-closure",
+ "boundSha": "95690c28dc6268e61dff32a0cbc33cc9fde3d47f",
+ "seeds": [
+  "src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs",
+  "src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs",
+  "src/RackCad.Application/Systems/Selective/SelectiveGeometryResolver.cs",
+  "src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs"
+ ],
+ "closureCount": 129,
+ "closure": [
+  {
+   "path": "src/RackCad.Application/Catalogs/CatalogDirectory.cs",
+   "blobAtBound": "85fc5e16124956abd5a234110356169107db69fa",
+   "blobAt3375aadb": "85fc5e16124956abd5a234110356169107db69fa"
+  },
+  {
+   "path": "src/RackCad.Application/Catalogs/CatalogEntries.cs",
+   "blobAtBound": "e7821a9f15ac5e35069d9ad405e86b4c7bc40ee4",
+   "blobAt3375aadb": "e7821a9f15ac5e35069d9ad405e86b4c7bc40ee4"
+  },
+  {
+   "path": "src/RackCad.Application/Catalogs/CatalogLookup.cs",
+   "blobAtBound": "e1c36680fcc994011a9ee1a04f604d0bc62cabcf",
+   "blobAt3375aadb": "e1c36680fcc994011a9ee1a04f604d0bc62cabcf"
+  },
+  {
+   "path": "src/RackCad.Application/Catalogs/CsvCatalogReader.cs",
+   "blobAtBound": "169d19cde693dad87c7ca32079b0d760b75d7004",
+   "blobAt3375aadb": "169d19cde693dad87c7ca32079b0d760b75d7004"
+  },
+  {
+   "path": "src/RackCad.Application/Catalogs/CsvLexer.cs",
+   "blobAtBound": "93c38d8ce55da63b65738983a0c05ccae0508873",
+   "blobAt3375aadb": "93c38d8ce55da63b65738983a0c05ccae0508873"
+  },
+  {
+   "path": "src/RackCad.Application/Catalogs/IRackCatalogProvider.cs",
+   "blobAtBound": "0d0a5e5dcc5c99c88edee10cb236ce53b202b54a",
+   "blobAt3375aadb": "0d0a5e5dcc5c99c88edee10cb236ce53b202b54a"
+  },
+  {
+   "path": "src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs",
+   "blobAtBound": "ff4bdbdc6ed6225f5e5aad52fec17c6f8a6fdfb0",
+   "blobAt3375aadb": "ff4bdbdc6ed6225f5e5aad52fec17c6f8a6fdfb0"
+  },
+  {
+   "path": "src/RackCad.Application/Catalogs/RackDefaults.cs",
+   "blobAtBound": "184615cfb7dea72955fa8bdc171e858716eeb183",
+   "blobAt3375aadb": "184615cfb7dea72955fa8bdc171e858716eeb183"
+  },
+  {
+   "path": "src/RackCad.Application/Catalogs/SeccionRoles.cs",
+   "blobAtBound": "a2268a091af1009a206546283a2d5445db46d539",
+   "blobAt3375aadb": "a2268a091af1009a206546283a2d5445db46d539"
+  },
+  {
+   "path": "src/RackCad.Application/Catalogs/Validation/CatalogValidationIssue.cs",
+   "blobAtBound": "c39e391f423bb0ba626f242f0a3ccdffc4c84892",
+   "blobAt3375aadb": "c39e391f423bb0ba626f242f0a3ccdffc4c84892"
+  },
+  {
+   "path": "src/RackCad.Application/Catalogs/Validation/CatalogValidationReport.cs",
+   "blobAtBound": "4ed02954f7962ee05fd3493f708b3b56fe67dd5d",
+   "blobAt3375aadb": "4ed02954f7962ee05fd3493f708b3b56fe67dd5d"
+  },
+  {
+   "path": "src/RackCad.Application/Drawing/HeaderBlockInstance.cs",
+   "blobAtBound": "a9ea721e3c1859b11719af0292bc96b094a148a4",
+   "blobAt3375aadb": "a9ea721e3c1859b11719af0292bc96b094a148a4"
+  },
+  {
+   "path": "src/RackCad.Application/Drawing/HeaderInstanceGrouper.cs",
+   "blobAtBound": "4be728982f48bea7cb32baf1e58ba04d71153061",
+   "blobAt3375aadb": "4be728982f48bea7cb32baf1e58ba04d71153061"
+  },
+  {
+   "path": "src/RackCad.Application/Drawing/HeaderRunPlan.cs",
+   "blobAtBound": "4b144f056288083ac85ca9da631180877dba475e",
+   "blobAt3375aadb": "4b144f056288083ac85ca9da631180877dba475e"
+  },
+  {
+   "path": "src/RackCad.Application/Drawing/LateralHeaderLayout.cs",
+   "blobAtBound": "7347d01e81f4abfef1511c9b5e328ed270ba703f",
+   "blobAt3375aadb": "7347d01e81f4abfef1511c9b5e328ed270ba703f"
+  },
+  {
+   "path": "src/RackCad.Application/Expressions/BoundExpression.cs",
+   "blobAtBound": "3b8e641958cf1ccb996d1796571256386c34a5a7",
+   "blobAt3375aadb": "3b8e641958cf1ccb996d1796571256386c34a5a7"
+  },
+  {
+   "path": "src/RackCad.Application/Expressions/ExpressionDiagnostic.cs",
+   "blobAtBound": "96fbd027841e244d5614d05c7799816fdbdce314",
+   "blobAt3375aadb": "96fbd027841e244d5614d05c7799816fdbdce314"
+  },
+  {
+   "path": "src/RackCad.Application/Expressions/ExpressionDiagnosticCode.cs",
+   "blobAtBound": "cf7df1d732bf188cd75d7746040d9460fb8982e4",
+   "blobAt3375aadb": "cf7df1d732bf188cd75d7746040d9460fb8982e4"
+  },
+  {
+   "path": "src/RackCad.Application/Expressions/ExpressionLexer.cs",
+   "blobAtBound": "3f7c34dd73adb550514cab9a99a4840f0ee1a5cf",
+   "blobAt3375aadb": "3f7c34dd73adb550514cab9a99a4840f0ee1a5cf"
+  },
+  {
+   "path": "src/RackCad.Application/Expressions/ExpressionParseResult.cs",
+   "blobAtBound": "a0ad5c766c8e43c429bea6c33248bd4284481710",
+   "blobAt3375aadb": "a0ad5c766c8e43c429bea6c33248bd4284481710"
+  },
+  {
+   "path": "src/RackCad.Application/Expressions/ExpressionParser.cs",
+   "blobAtBound": "056d27e25603ef9851c402457af0a6214523d4d0",
+   "blobAt3375aadb": "056d27e25603ef9851c402457af0a6214523d4d0"
+  },
+  {
+   "path": "src/RackCad.Application/Expressions/ExpressionSyntax.cs",
+   "blobAtBound": "2607ab26226d3960b332ff688cb9f5deeffb1619",
+   "blobAt3375aadb": "2607ab26226d3960b332ff688cb9f5deeffb1619"
+  },
+  {
+   "path": "src/RackCad.Application/Expressions/ExpressionSyntaxParser.cs",
+   "blobAtBound": "f209db153f04ee517be8b9d50bc94f919644deac",
+   "blobAt3375aadb": "f209db153f04ee517be8b9d50bc94f919644deac"
+  },
+  {
+   "path": "src/RackCad.Application/Expressions/ExpressionToken.cs",
+   "blobAtBound": "c8b368a72051a01d54b606f0f8cedfd065c7ac08",
+   "blobAt3375aadb": "c8b368a72051a01d54b606f0f8cedfd065c7ac08"
+  },
+  {
+   "path": "src/RackCad.Application/Expressions/FunctionRegistry.cs",
+   "blobAtBound": "46e7aae761ccea7384828703bd7ccb9c55ddce50",
+   "blobAt3375aadb": "46e7aae761ccea7384828703bd7ccb9c55ddce50"
+  },
+  {
+   "path": "src/RackCad.Application/Expressions/SourceSpan.cs",
+   "blobAtBound": "78451cbde4d914c2e431c547e35c0a218fc689bf",
+   "blobAt3375aadb": "78451cbde4d914c2e431c547e35c0a218fc689bf"
+  },
+  {
+   "path": "src/RackCad.Application/Expressions/SymbolId.cs",
+   "blobAtBound": "0754fb257427a12266fc2a42a8c4a642417cb209",
+   "blobAt3375aadb": "0754fb257427a12266fc2a42a8c4a642417cb209"
+  },
+  {
+   "path": "src/RackCad.Application/Geometry/Bounds2D.cs",
+   "blobAtBound": "76239b3e177fb13b3c10c253e14a1be16d4e3cda",
+   "blobAt3375aadb": "76239b3e177fb13b3c10c253e14a1be16d4e3cda"
+  },
+  {
+   "path": "src/RackCad.Application/Geometry/ClosedContour2D.cs",
+   "blobAtBound": "e4579274174f4a0d24294de0603055747f2c113a",
+   "blobAt3375aadb": "e4579274174f4a0d24294de0603055747f2c113a"
+  },
+  {
+   "path": "src/RackCad.Application/Geometry/Geometry2D.cs",
+   "blobAtBound": "9b6d55addad2c9533f6ca03366c5b9aa621f2006",
+   "blobAt3375aadb": "9b6d55addad2c9533f6ca03366c5b9aa621f2006"
+  },
+  {
+   "path": "src/RackCad.Application/Geometry/PathSegment2D.cs",
+   "blobAtBound": "67f7cb432e8f5b1e83d37b027e8fb557af5c92da",
+   "blobAt3375aadb": "67f7cb432e8f5b1e83d37b027e8fb557af5c92da"
+  },
+  {
+   "path": "src/RackCad.Application/Geometry/Spatial3D.cs",
+   "blobAtBound": "71994afd44bc548de98c54b919d7158179ea0fd7",
+   "blobAt3375aadb": "71994afd44bc548de98c54b919d7158179ea0fd7"
+  },
+  {
+   "path": "src/RackCad.Application/Geometry/Transform2D.cs",
+   "blobAtBound": "1ebbecffc5c1df257cef01f08fc4c27033bf0b97",
+   "blobAt3375aadb": "1ebbecffc5c1df257cef01f08fc4c27033bf0b97"
+  },
+  {
+   "path": "src/RackCad.Application/Geometry/Vector2D.cs",
+   "blobAtBound": "c88c67cdbff1a4a4b3695732b22003e129daba74",
+   "blobAt3375aadb": "c88c67cdbff1a4a4b3695732b22003e129daba74"
+  },
+  {
+   "path": "src/RackCad.Application/ProjectVariables/ProjectVariable.cs",
+   "blobAtBound": "0501bb53b95639859006266ba24e2706d6444ad4",
+   "blobAt3375aadb": "0501bb53b95639859006266ba24e2706d6444ad4"
+  },
+  {
+   "path": "src/RackCad.Application/ProjectVariables/VariableDefinition.cs",
+   "blobAtBound": "9bf801678233968063133a5901cef955c86c6268",
+   "blobAt3375aadb": "9bf801678233968063133a5901cef955c86c6268"
+  },
+  {
+   "path": "src/RackCad.Application/ProjectVariables/VariableId.cs",
+   "blobAtBound": "78270f745ad8285f2d9b35f5f21bcbfc911dceb4",
+   "blobAt3375aadb": "78270f745ad8285f2d9b35f5f21bcbfc911dceb4"
+  },
+  {
+   "path": "src/RackCad.Application/ProjectVariables/VariableType.cs",
+   "blobAtBound": "d8ff944af30d3e9c13bd93c2b477e1cb8d8b9217",
+   "blobAt3375aadb": "d8ff944af30d3e9c13bd93c2b477e1cb8d8b9217"
+  },
+  {
+   "path": "src/RackCad.Application/RackFrames/BracingPanelMemberBuilder.cs",
+   "blobAtBound": "c2f352d1749d6894bc6614ef6317c6e0e0b70c8e",
+   "blobAt3375aadb": "c2f352d1749d6894bc6614ef6317c6e0e0b70c8e"
+  },
+  {
+   "path": "src/RackCad.Application/RackFrames/CatalogIds.cs",
+   "blobAtBound": "590e0d44dab28c1d0a92cfe7c47edb0f50a41249",
+   "blobAt3375aadb": "590e0d44dab28c1d0a92cfe7c47edb0f50a41249"
+  },
+  {
+   "path": "src/RackCad.Application/RackFrames/LateralHeaderLayoutBuilder.cs",
+   "blobAtBound": "d94022d322cdd7e7c562c72410b5b9a78153df43",
+   "blobAt3375aadb": "d94022d322cdd7e7c562c72410b5b9a78153df43"
+  },
+  {
+   "path": "src/RackCad.Application/RackFrames/LateralHeaderParameters.cs",
+   "blobAtBound": "c0310c055bdd70643067bc6bbecc6e3887204359",
+   "blobAt3375aadb": "c0310c055bdd70643067bc6bbecc6e3887204359"
+  },
+  {
+   "path": "src/RackCad.Application/RackFrames/LateralHeaderParametersFactory.cs",
+   "blobAtBound": "588b9de5e53685d3a9445cf52d353f8f502b24c4",
+   "blobAt3375aadb": "588b9de5e53685d3a9445cf52d353f8f502b24c4"
+  },
+  {
+   "path": "src/RackCad.Application/RackFrames/PlantaHeaderLayoutBuilder.cs",
+   "blobAtBound": "35181817acbca59a6f2374f7d813a70c2f3538a8",
+   "blobAt3375aadb": "35181817acbca59a6f2374f7d813a70c2f3538a8"
+  },
+  {
+   "path": "src/RackCad.Application/RackFrames/RackFrameConfigurationFactory.cs",
+   "blobAtBound": "d38837ffb19e07612cba8dac3458ece247a40b21",
+   "blobAt3375aadb": "d38837ffb19e07612cba8dac3458ece247a40b21"
+  },
+  {
+   "path": "src/RackCad.Application/RackFrames/RackFrameTemplate.cs",
+   "blobAtBound": "172d1dcd2c90b5588d8715d1b5724b13f582138c",
+   "blobAt3375aadb": "172d1dcd2c90b5588d8715d1b5724b13f582138c"
+  },
+  {
+   "path": "src/RackCad.Application/RackFrames/RackFrameTemplateCatalog.cs",
+   "blobAtBound": "6f72bf09343dd4395285d11bf3adef8d883eef3f",
+   "blobAt3375aadb": "6f72bf09343dd4395285d11bf3adef8d883eef3f"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/AngleSectionDimensions.cs",
+   "blobAtBound": "f28fd1e53fb15b92b3387a39c84b7842c0a6c948",
+   "blobAt3375aadb": "f28fd1e53fb15b92b3387a39c84b7842c0a6c948"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/ChannelSectionDimensions.cs",
+   "blobAtBound": "4fdf44f0cb5589cf0edd2d02838c23d4fd6fb873",
+   "blobAt3375aadb": "4fdf44f0cb5589cf0edd2d02838c23d4fd6fb873"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/CsvStructuralSectionCatalogProvider.cs",
+   "blobAtBound": "f5f089c77817d2e3bb3e62820a864fce190ff064",
+   "blobAt3375aadb": "f5f089c77817d2e3bb3e62820a864fce190ff064"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/Geometry/SectionGeometryDiagnostics.cs",
+   "blobAtBound": "ad78e9bbaaf780c6a4a5c120a51509ca0cc65665",
+   "blobAt3375aadb": "ad78e9bbaaf780c6a4a5c120a51509ca0cc65665"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/Geometry/SectionProjectionCanonicalizer.cs",
+   "blobAtBound": "b61e226c422feaf18cb7c5c183b0e25434206970",
+   "blobAt3375aadb": "b61e226c422feaf18cb7c5c183b0e25434206970"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/Geometry/SectionViewpoint.cs",
+   "blobAtBound": "9a634a33022a0917746522cba9ac304b7d2681f1",
+   "blobAt3375aadb": "9a634a33022a0917746522cba9ac304b7d2681f1"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/Geometry/StructuralSectionGeometry.cs",
+   "blobAtBound": "93cb7247c0ae39854fd7e6324074aaae15ea1c9b",
+   "blobAt3375aadb": "93cb7247c0ae39854fd7e6324074aaae15ea1c9b"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/Geometry/StructuralSectionRepresentationPlan.cs",
+   "blobAtBound": "570a85aec95cb85704f5215014ce71a061861deb",
+   "blobAt3375aadb": "570a85aec95cb85704f5215014ce71a061861deb"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/HssRectangularSectionDimensions.cs",
+   "blobAtBound": "216decd3c8c123c6fb51fa6a9d44d25d67f5b55d",
+   "blobAt3375aadb": "216decd3c8c123c6fb51fa6a9d44d25d67f5b55d"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/IStructuralSectionCatalogProvider.cs",
+   "blobAtBound": "058b762b0e7952ad36514b81be7247059cb6f401",
+   "blobAt3375aadb": "058b762b0e7952ad36514b81be7247059cb6f401"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/IStructuralSectionDimensions.cs",
+   "blobAtBound": "33ec8f84cb92208efeac25fcc53f3abdc5b9154a",
+   "blobAt3375aadb": "33ec8f84cb92208efeac25fcc53f3abdc5b9154a"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/SSectionDimensions.cs",
+   "blobAtBound": "9797e727446b7cf36e0c6f85102178623ae06783",
+   "blobAt3375aadb": "9797e727446b7cf36e0c6f85102178623ae06783"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/StrictCsvTable.cs",
+   "blobAtBound": "5f79eea7dc10f563292592ca54b6a9155160b633",
+   "blobAt3375aadb": "5f79eea7dc10f563292592ca54b6a9155160b633"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/StructuralSectionCatalog.cs",
+   "blobAtBound": "67c9b777bdd6e199062b489f447f2b32774b1239",
+   "blobAt3375aadb": "67c9b777bdd6e199062b489f447f2b32774b1239"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/StructuralSectionCatalogException.cs",
+   "blobAtBound": "318a3a195b791f3de4ec0ae269c000837fc2f019",
+   "blobAt3375aadb": "318a3a195b791f3de4ec0ae269c000837fc2f019"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/StructuralSectionCatalogValidator.cs",
+   "blobAtBound": "10bcd901e1922934c5637d80180314e55fa66b5e",
+   "blobAt3375aadb": "10bcd901e1922934c5637d80180314e55fa66b5e"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/StructuralSectionCsvException.cs",
+   "blobAtBound": "ca0a657a00bc28391127b6db9e2ef5dba0da4935",
+   "blobAt3375aadb": "ca0a657a00bc28391127b6db9e2ef5dba0da4935"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/StructuralSectionCsvSchema.cs",
+   "blobAtBound": "bc65abaedecf458a0e3406a6d98a762ae5e3c7a7",
+   "blobAt3375aadb": "bc65abaedecf458a0e3406a6d98a762ae5e3c7a7"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/StructuralSectionCsvSerializer.cs",
+   "blobAtBound": "b69a4d42de185fe4d707438e24d5ebc9c434625f",
+   "blobAt3375aadb": "b69a4d42de185fe4d707438e24d5ebc9c434625f"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/StructuralSectionDefinition.cs",
+   "blobAtBound": "c98807aecd7b20b702852d51564d08d9a0e47817",
+   "blobAt3375aadb": "c98807aecd7b20b702852d51564d08d9a0e47817"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/StructuralSectionDesignationNormalizer.cs",
+   "blobAtBound": "ea5c4a840ad1066056309430c734a36f14e55d81",
+   "blobAt3375aadb": "ea5c4a840ad1066056309430c734a36f14e55d81"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/StructuralSectionFamily.cs",
+   "blobAtBound": "23260934e18d9a86bed02eb4c2ea6d357d2c1792",
+   "blobAt3375aadb": "23260934e18d9a86bed02eb4c2ea6d357d2c1792"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/StructuralSectionId.cs",
+   "blobAtBound": "d6ed939bbd2fa48c203942537a9f61eb71cd4f01",
+   "blobAt3375aadb": "d6ed939bbd2fa48c203942537a9f61eb71cd4f01"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/StructuralSectionIdentity.cs",
+   "blobAtBound": "0cbb1152b280a46acf4326c5ca4950ed283f22be",
+   "blobAt3375aadb": "0cbb1152b280a46acf4326c5ca4950ed283f22be"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/StructuralSectionProperties.cs",
+   "blobAtBound": "63957db1f21a076b7dc8a460fc17d98e80e3a546",
+   "blobAt3375aadb": "63957db1f21a076b7dc8a460fc17d98e80e3a546"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/StructuralSectionSource.cs",
+   "blobAtBound": "49459fb007fd4742585d32dec3ba998bab541985",
+   "blobAt3375aadb": "49459fb007fd4742585d32dec3ba998bab541985"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/StructuralSectionStatusOverride.cs",
+   "blobAtBound": "667183285ecb5ecac08f24ff4b7f0d61508d761c",
+   "blobAt3375aadb": "667183285ecb5ecac08f24ff4b7f0d61508d761c"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/StructuralSectionsManifest.cs",
+   "blobAtBound": "a3b5ad17d9b6cd9095d5122802f646953d26c33f",
+   "blobAt3375aadb": "a3b5ad17d9b6cd9095d5122802f646953d26c33f"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections/WSectionDimensions.cs",
+   "blobAtBound": "e7f2bb9f4f80ee84fe39242e367dd3f5e7ad884a",
+   "blobAt3375aadb": "e7f2bb9f4f80ee84fe39242e367dd3f5e7ad884a"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective/SelectiveAnnotations.cs",
+   "blobAtBound": "28b9c0e58ed8f24c304e118967394ff1269bb3ff",
+   "blobAt3375aadb": "28b9c0e58ed8f24c304e118967394ff1269bb3ff"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective/SelectiveCabeceraAuthority.cs",
+   "blobAtBound": "9f090e98356614fce7d0fd791e9be028edafdcea",
+   "blobAt3375aadb": "9f090e98356614fce7d0fd791e9be028edafdcea"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective/SelectiveDepthLayout.cs",
+   "blobAtBound": "9e45f2f2c90bcd2ac881d4fc2dc3db2debfcd762",
+   "blobAt3375aadb": "9e45f2f2c90bcd2ac881d4fc2dc3db2debfcd762"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective/SelectiveDesviadorDrawing.cs",
+   "blobAtBound": "6e1a1dafc99c48d8f4b4087c6832e7f94514e9b4",
+   "blobAt3375aadb": "6e1a1dafc99c48d8f4b4087c6832e7f94514e9b4"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective/SelectiveDesviadorPlan.cs",
+   "blobAtBound": "e26dbed8cdf780d7a627b8e0d3e3b2017c2d2451",
+   "blobAt3375aadb": "e26dbed8cdf780d7a627b8e0d3e3b2017c2d2451"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective/SelectiveDimensions.cs",
+   "blobAtBound": "561e6f662a15795e04b4c8ea51339e8c9d896d3b",
+   "blobAt3375aadb": "561e6f662a15795e04b4c8ea51339e8c9d896d3b"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs",
+   "blobAtBound": "f0525c6932c21728255a06781fad416ff12c57ce",
+   "blobAt3375aadb": "f0525c6932c21728255a06781fad416ff12c57ce"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective/SelectiveGeometryResolver.cs",
+   "blobAtBound": "b7cbc541fb40d364b13ebe2dbc91a74462ab93a4",
+   "blobAt3375aadb": "b7cbc541fb40d364b13ebe2dbc91a74462ab93a4"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective/SelectiveLateralBuilder.cs",
+   "blobAtBound": "26db7629ee99e84b8448a75406968330cf0a8ab6",
+   "blobAt3375aadb": "26db7629ee99e84b8448a75406968330cf0a8ab6"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective/SelectiveMedioFrente.cs",
+   "blobAtBound": "b7b2d270b1494ee4e54d6b6e503f2649ce00ba21",
+   "blobAt3375aadb": "b7b2d270b1494ee4e54d6b6e503f2649ce00ba21"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective/SelectiveParrillaPlacement.cs",
+   "blobAtBound": "62712ad68362d95971731ffc2901df0b3e4d43db",
+   "blobAt3375aadb": "62712ad68362d95971731ffc2901df0b3e4d43db"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective/SelectiveParrillaPlan.cs",
+   "blobAtBound": "5f985fa54784cbdce0965384a5622cc467cfdc2d",
+   "blobAt3375aadb": "5f985fa54784cbdce0965384a5622cc467cfdc2d"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs",
+   "blobAtBound": "4e6c2a411490e60b84624a47cc522f11ee9f29b1",
+   "blobAt3375aadb": "4e6c2a411490e60b84624a47cc522f11ee9f29b1"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective/SelectivePostGeometry.cs",
+   "blobAtBound": "eb7cf4796f5342d68403dc1a5165ad443c90fc26",
+   "blobAt3375aadb": "eb7cf4796f5342d68403dc1a5165ad443c90fc26"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective/SelectiveSafetyEnds.cs",
+   "blobAtBound": "a5f758d541a7611deb99167dcd270179adbf5d03",
+   "blobAt3375aadb": "a5f758d541a7611deb99167dcd270179adbf5d03"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective/SelectiveSafetyFamilies.cs",
+   "blobAtBound": "a56ccd07e5c98fc310f0f838fe9f90a14643cbcd",
+   "blobAt3375aadb": "a56ccd07e5c98fc310f0f838fe9f90a14643cbcd"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective/SelectiveSafetyGrid.cs",
+   "blobAtBound": "f2f605e18ab3ed461fdfbb11c2d5b3789e870075",
+   "blobAt3375aadb": "f2f605e18ab3ed461fdfbb11c2d5b3789e870075"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective/SelectiveSafetyPlacement.cs",
+   "blobAtBound": "fd9011ecf1b074ee1db14b24873f5a58182368ff",
+   "blobAt3375aadb": "fd9011ecf1b074ee1db14b24873f5a58182368ff"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective/SelectiveSeparadorPlacement.cs",
+   "blobAtBound": "013fe1fe80d87c94a0f17fb1570ead0ea2abaaca",
+   "blobAt3375aadb": "013fe1fe80d87c94a0f17fb1570ead0ea2abaaca"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective/SelectiveSeparadorPlan.cs",
+   "blobAtBound": "499fe4f410a386ac027abc9dbe8b831443176b2f",
+   "blobAt3375aadb": "499fe4f410a386ac027abc9dbe8b831443176b2f"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective/SelectiveTarimaPlacement.cs",
+   "blobAtBound": "1376f46a270888484dca05c4b37c83d51ff6bf66",
+   "blobAt3375aadb": "1376f46a270888484dca05c4b37c83d51ff6bf66"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective/SelectiveTopePlacement.cs",
+   "blobAtBound": "98ef490e620527412f88054ce36bbdb8eecaa816",
+   "blobAt3375aadb": "98ef490e620527412f88054ce36bbdb8eecaa816"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective/SelectiveTopePlan.cs",
+   "blobAtBound": "b0366b8447d146ae9c765de82f6b12d2d1f44c10",
+   "blobAt3375aadb": "b0366b8447d146ae9c765de82f6b12d2d1f44c10"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Shared/DimensionViewPolicy.cs",
+   "blobAtBound": "20507b9386f40148fdbb6e83fec9b8fee809c35c",
+   "blobAt3375aadb": "20507b9386f40148fdbb6e83fec9b8fee809c35c"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Shared/SeparatorLevelCalculator.cs",
+   "blobAtBound": "4220d80512e65d2c99ecbcd6fd79693b88161e22",
+   "blobAt3375aadb": "4220d80512e65d2c99ecbcd6fd79693b88161e22"
+  },
+  {
+   "path": "src/RackCad.Application/Units/LengthUnits.cs",
+   "blobAtBound": "5471f3a17eb6b4ce268646ded5821e1c9a2227e0",
+   "blobAt3375aadb": "5471f3a17eb6b4ce268646ded5821e1c9a2227e0"
+  },
+  {
+   "path": "src/RackCad.Domain/RackFrames/BasePlatePlacement.cs",
+   "blobAtBound": "632b6605d1ea74d51a51a19c40d38f94718e208c",
+   "blobAt3375aadb": "632b6605d1ea74d51a51a19c40d38f94718e208c"
+  },
+  {
+   "path": "src/RackCad.Domain/RackFrames/BracingDiagonalGeometry.cs",
+   "blobAtBound": "ae24bf4cb13f6c4c9221026c9f1294aa7d575f9b",
+   "blobAt3375aadb": "ae24bf4cb13f6c4c9221026c9f1294aa7d575f9b"
+  },
+  {
+   "path": "src/RackCad.Domain/RackFrames/BracingPanel.cs",
+   "blobAtBound": "f5dc5f4c47075d6678edb6bed64938a00ff1f81d",
+   "blobAt3375aadb": "f5dc5f4c47075d6678edb6bed64938a00ff1f81d"
+  },
+  {
+   "path": "src/RackCad.Domain/RackFrames/BracingPattern.cs",
+   "blobAtBound": "fad15486fe48b9b173b5042ea8bd855f444d6ca4",
+   "blobAt3375aadb": "fad15486fe48b9b173b5042ea8bd855f444d6ca4"
+  },
+  {
+   "path": "src/RackCad.Domain/RackFrames/DiagonalDirection.cs",
+   "blobAtBound": "709318164c4858639ac3e90ce7b7f93b05d2a2d5",
+   "blobAt3375aadb": "709318164c4858639ac3e90ce7b7f93b05d2a2d5"
+  },
+  {
+   "path": "src/RackCad.Domain/RackFrames/ExceptionType.cs",
+   "blobAtBound": "92845735a2ef4503ee086791b6ea2fe672ed13ae",
+   "blobAt3375aadb": "92845735a2ef4503ee086791b6ea2fe672ed13ae"
+  },
+  {
+   "path": "src/RackCad.Domain/RackFrames/FrameComponentState.cs",
+   "blobAtBound": "c6b0d6e88c53c5df1794559631e3d683e2c8dbcf",
+   "blobAt3375aadb": "c6b0d6e88c53c5df1794559631e3d683e2c8dbcf"
+  },
+  {
+   "path": "src/RackCad.Domain/RackFrames/FrameExceptionOverride.cs",
+   "blobAtBound": "bfc6c0839012720abe732fa22023f10fc959fd0f",
+   "blobAt3375aadb": "bfc6c0839012720abe732fa22023f10fc959fd0f"
+  },
+  {
+   "path": "src/RackCad.Domain/RackFrames/FrameHorizontal.cs",
+   "blobAtBound": "e851b9b21421695f4a5c373d613351432022d25d",
+   "blobAt3375aadb": "e851b9b21421695f4a5c373d613351432022d25d"
+  },
+  {
+   "path": "src/RackCad.Domain/RackFrames/FrameMember.cs",
+   "blobAtBound": "da0c7cf666beba435ecb0f6503a38d8d3737b5c8",
+   "blobAt3375aadb": "da0c7cf666beba435ecb0f6503a38d8d3737b5c8"
+  },
+  {
+   "path": "src/RackCad.Domain/RackFrames/FrameMemberEnd.cs",
+   "blobAtBound": "2516d0a9892cdf017ec80cbf6c6a5815fef160b1",
+   "blobAt3375aadb": "2516d0a9892cdf017ec80cbf6c6a5815fef160b1"
+  },
+  {
+   "path": "src/RackCad.Domain/RackFrames/FrameMemberEndRole.cs",
+   "blobAtBound": "de7a3c510509571ce32f425120233a538d990c3b",
+   "blobAt3375aadb": "de7a3c510509571ce32f425120233a538d990c3b"
+  },
+  {
+   "path": "src/RackCad.Domain/RackFrames/FrameMemberOrigin.cs",
+   "blobAtBound": "229f2480f02e804ebb55304d6509f3731da0cbdf",
+   "blobAt3375aadb": "229f2480f02e804ebb55304d6509f3731da0cbdf"
+  },
+  {
+   "path": "src/RackCad.Domain/RackFrames/FrameMemberType.cs",
+   "blobAtBound": "0a1c78d082060e8cdc878ef1bea14d5d1f221f80",
+   "blobAt3375aadb": "0a1c78d082060e8cdc878ef1bea14d5d1f221f80"
+  },
+  {
+   "path": "src/RackCad.Domain/RackFrames/FrameSide.cs",
+   "blobAtBound": "4322725a81e78bbf18047f29fcd9f369e2de689b",
+   "blobAt3375aadb": "4322725a81e78bbf18047f29fcd9f369e2de689b"
+  },
+  {
+   "path": "src/RackCad.Domain/RackFrames/PostAssembly.cs",
+   "blobAtBound": "99845dbfb364e8c93b0d304d3cc49e0ef31882fc",
+   "blobAt3375aadb": "99845dbfb364e8c93b0d304d3cc49e0ef31882fc"
+  },
+  {
+   "path": "src/RackCad.Domain/RackFrames/PostSide.cs",
+   "blobAtBound": "710e62e15011f1023e2badc4a3b5031b46d77c76",
+   "blobAt3375aadb": "710e62e15011f1023e2badc4a3b5031b46d77c76"
+  },
+  {
+   "path": "src/RackCad.Domain/RackFrames/RackFrameConfiguration.cs",
+   "blobAtBound": "d0563bd62077dec31a3d606e65ade23a9c1911bc",
+   "blobAt3375aadb": "d0563bd62077dec31a3d606e65ade23a9c1911bc"
+  },
+  {
+   "path": "src/RackCad.Domain/Systems/Dynamic/DynamicRackDefaults.cs",
+   "blobAtBound": "726394e77c81751730e90bcc5368b62190669619",
+   "blobAt3375aadb": "726394e77c81751730e90bcc5368b62190669619"
+  },
+  {
+   "path": "src/RackCad.Domain/Systems/Selective/BootPlacement.cs",
+   "blobAtBound": "f4301ffe678cf1b65a11b3f0585f1891d615fd82",
+   "blobAt3375aadb": "f4301ffe678cf1b65a11b3f0585f1891d615fd82"
+  },
+  {
+   "path": "src/RackCad.Domain/Systems/Selective/SafetyFacePiece.cs",
+   "blobAtBound": "8bb0fdf734b28ead27e537cc31b239bdacb491e6",
+   "blobAt3375aadb": "8bb0fdf734b28ead27e537cc31b239bdacb491e6"
+  },
+  {
+   "path": "src/RackCad.Domain/Systems/Selective/SelectivePalletDesign.cs",
+   "blobAtBound": "df97189f03d693439bd19a50197e86db13573f63",
+   "blobAt3375aadb": "df97189f03d693439bd19a50197e86db13573f63"
+  },
+  {
+   "path": "src/RackCad.Domain/Systems/Selective/SelectiveRackDefaults.cs",
+   "blobAtBound": "6026ea6302bf516298205db9d737dbfb56b9db8e",
+   "blobAt3375aadb": "6026ea6302bf516298205db9d737dbfb56b9db8e"
+  },
+  {
+   "path": "src/RackCad.Domain/Systems/Selective/SelectiveRackSystem.cs",
+   "blobAtBound": "16afb2dae144b324a21099a0c6477137a90e6756",
+   "blobAt3375aadb": "16afb2dae144b324a21099a0c6477137a90e6756"
+  },
+  {
+   "path": "src/RackCad.Domain/Systems/Selective/SelectiveSafetyConfig.cs",
+   "blobAtBound": "bb0a102d16882411a4e720c818a34ca69047ccf4",
+   "blobAt3375aadb": "bb0a102d16882411a4e720c818a34ca69047ccf4"
+  },
+  {
+   "path": "src/RackCad.Domain/Systems/Shared/DimensionDetail.cs",
+   "blobAtBound": "5e99f8cc5b0c3e6cb5d36ac961c291aee1ff6688",
+   "blobAt3375aadb": "5e99f8cc5b0c3e6cb5d36ac961c291aee1ff6688"
+  },
+  {
+   "path": "src/RackCad.Domain/Systems/Shared/DimensionViewVisibility.cs",
+   "blobAtBound": "3bab7cecda296ce0d7f192797492e226517d56a2",
+   "blobAt3375aadb": "3bab7cecda296ce0d7f192797492e226517d56a2"
+  }
+ ],
+ "selectiveApplicationFiles": [
+  "src/RackCad.Application/Systems/Selective/SelectiveAnnotations.cs",
+  "src/RackCad.Application/Systems/Selective/SelectiveCabeceraAuthority.cs",
+  "src/RackCad.Application/Systems/Selective/SelectiveDepthLayout.cs",
+  "src/RackCad.Application/Systems/Selective/SelectiveDesviadorDrawing.cs",
+  "src/RackCad.Application/Systems/Selective/SelectiveDesviadorPlan.cs",
+  "src/RackCad.Application/Systems/Selective/SelectiveDimensions.cs",
+  "src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs",
+  "src/RackCad.Application/Systems/Selective/SelectiveGeometryResolver.cs",
+  "src/RackCad.Application/Systems/Selective/SelectiveLateralBuilder.cs",
+  "src/RackCad.Application/Systems/Selective/SelectiveMedioFrente.cs",
+  "src/RackCad.Application/Systems/Selective/SelectiveParrillaPlacement.cs",
+  "src/RackCad.Application/Systems/Selective/SelectiveParrillaPlan.cs",
+  "src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs",
+  "src/RackCad.Application/Systems/Selective/SelectivePostGeometry.cs",
+  "src/RackCad.Application/Systems/Selective/SelectiveSafetyEnds.cs",
+  "src/RackCad.Application/Systems/Selective/SelectiveSafetyFamilies.cs",
+  "src/RackCad.Application/Systems/Selective/SelectiveSafetyGrid.cs",
+  "src/RackCad.Application/Systems/Selective/SelectiveSafetyPlacement.cs",
+  "src/RackCad.Application/Systems/Selective/SelectiveSeparadorPlacement.cs",
+  "src/RackCad.Application/Systems/Selective/SelectiveSeparadorPlan.cs",
+  "src/RackCad.Application/Systems/Selective/SelectiveTarimaPlacement.cs",
+  "src/RackCad.Application/Systems/Selective/SelectiveTopePlacement.cs",
+  "src/RackCad.Application/Systems/Selective/SelectiveTopePlan.cs"
+ ],
+ "w1DependencyPairs": [
+  {
+   "path": "src/RackCad.Application/Catalogs",
+   "object": "tree",
+   "idAtBound": "99f905fd96eb86c7701c9f474bbd7e8caf0863f0",
+   "idAt3375aadb": "99f905fd96eb86c7701c9f474bbd7e8caf0863f0"
+  },
+  {
+   "path": "src/RackCad.Application/Drawing",
+   "object": "tree",
+   "idAtBound": "6f3ee517978861951ad88a6d7719a805aa14187d",
+   "idAt3375aadb": "6f3ee517978861951ad88a6d7719a805aa14187d"
+  },
+  {
+   "path": "src/RackCad.Application/Expressions",
+   "object": "tree",
+   "idAtBound": "f39a8a1230f9a56ac80ec6e12dc43349d1e11d6f",
+   "idAt3375aadb": "f39a8a1230f9a56ac80ec6e12dc43349d1e11d6f"
+  },
+  {
+   "path": "src/RackCad.Application/Geometry",
+   "object": "tree",
+   "idAtBound": "8545d1125b40b4b76592aaff2de250ce7f19f220",
+   "idAt3375aadb": "8545d1125b40b4b76592aaff2de250ce7f19f220"
+  },
+  {
+   "path": "src/RackCad.Application/ProjectVariables",
+   "object": "tree",
+   "idAtBound": "5fc1b2b736d69424507faa00b30e0698f2ba2d1d",
+   "idAt3375aadb": "5fc1b2b736d69424507faa00b30e0698f2ba2d1d"
+  },
+  {
+   "path": "src/RackCad.Application/RackFrames",
+   "object": "tree",
+   "idAtBound": "613a07725c6f3b533e08430e94c696fba3de6a52",
+   "idAt3375aadb": "613a07725c6f3b533e08430e94c696fba3de6a52"
+  },
+  {
+   "path": "src/RackCad.Application/StructuralSections",
+   "object": "tree",
+   "idAtBound": "2ba7e1b6c651f11c9a7202e9dfc367b07f20d24f",
+   "idAt3375aadb": "2ba7e1b6c651f11c9a7202e9dfc367b07f20d24f"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Selective",
+   "object": "tree",
+   "idAtBound": "2edaf7a8f0b31d5743d7860a764018b54f18f88b",
+   "idAt3375aadb": "2edaf7a8f0b31d5743d7860a764018b54f18f88b"
+  },
+  {
+   "path": "src/RackCad.Application/Systems/Shared",
+   "object": "tree",
+   "idAtBound": "111ca46a8222b661c8c4b71970ec190ed2f7c56b",
+   "idAt3375aadb": "5436e11bcf43ec57e89d4bbff0c33aff2e3042ad"
+  },
+  {
+   "path": "src/RackCad.Application/Units",
+   "object": "tree",
+   "idAtBound": "77704870d7e2757e172d4c3c7d11ee0176adde34",
+   "idAt3375aadb": "77704870d7e2757e172d4c3c7d11ee0176adde34"
+  },
+  {
+   "path": "src/RackCad.Domain/RackFrames",
+   "object": "tree",
+   "idAtBound": "496a2a3b1b55368d233727e78aec24534455e38c",
+   "idAt3375aadb": "496a2a3b1b55368d233727e78aec24534455e38c"
+  },
+  {
+   "path": "src/RackCad.Domain/Systems/Dynamic",
+   "object": "tree",
+   "idAtBound": "8925cbd5d10933b8c9ca85c5b74e57ad524079ac",
+   "idAt3375aadb": "8925cbd5d10933b8c9ca85c5b74e57ad524079ac"
+  },
+  {
+   "path": "src/RackCad.Domain/Systems/Selective",
+   "object": "tree",
+   "idAtBound": "bbf9f2cbfe9b2ebc0fae032697acc2e4a99e0a35",
+   "idAt3375aadb": "bbf9f2cbfe9b2ebc0fae032697acc2e4a99e0a35"
+  },
+  {
+   "path": "src/RackCad.Domain/Systems/Shared",
+   "object": "tree",
+   "idAtBound": "521b9e876517305a4e8468dd40dc8b85b90dc909",
+   "idAt3375aadb": "521b9e876517305a4e8468dd40dc8b85b90dc909"
+  },
+  {
+   "path": "assets",
+   "object": "tree",
+   "idAtBound": "9189a76bf8b2dcc211a49af61df70f11823d3e15",
+   "idAt3375aadb": "9189a76bf8b2dcc211a49af61df70f11823d3e15"
+  }
+ ],
+ "closureFilesChangedSince3375aadb": []
+}
