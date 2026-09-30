@@ -436,7 +436,9 @@ clasificaciones). **POST-AUDIT PACKAGE BASELINE: PASS.**
   `CT21D_EXECUTION_READY = FALSE`, `CT21D_EXECUTION = NOT_AUTHORIZED`.
 - **Artefactos de línea base de autoridad, fase 1 (§209):** diez artefactos BORRADOR en `docs/initiatives/I-52-ct21d-baseline-ba-NN-*.md` (registro de clases y cobertura, alcance sellado de Selective con comparación de autoridad ejecutada, catálogo de escenarios md+json, especificación de huella de dos capas, preparación del EVM con inventario de operaciones,
   custodia del manifiesto, línea base del kind Selective, warm-up, hoja de parámetros, esqueleto del registro de hashes). Ninguno sellado; ningún hash de artefacto registrado; parámetros `UNSET`; inventario con completitud `NOT_ESTABLISHED`. `CT21D_AUTHORITY_BASELINE_READY = FALSE`, `CT21D_EXECUTION_READY = FALSE`, `CT21D_EXECUTION = NOT_AUTHORIZED`.
-- **Siguiente gate: revisión del Coordinador de los artefactos de línea base de autoridad, fase 1.** La rama sigue sin reconciliar con `main` (79 detrás / 129 delante).
+- **Artefactos de línea base, fase 2 (§210):** versiones V2 de BA-02..BA-11 (BA-02 dividido en BA-02a registro y BA-02b cobertura), micro-errata **V2.4** (RC-C1, texto preaprobado), vectores normativos de huella y evidencia cruda del análisis estático independiente contra `main` `3375aadb`. Todo BORRADOR; nada sellado; parámetros `UNSET`
+  (decisiones del Owner Q-O1..Q-O5 preparadas, no preguntadas). `CT21D_AUTHORITY_BASELINE_READY = FALSE`, `CT21D_EXECUTION_READY = FALSE`, `CT21D_EXECUTION = NOT_AUTHORIZED`.
+- **Siguiente gate: revisión del Arquitecto de la fase 2 y de V2.4, luego dictamen del Coordinador.** La rama sigue sin reconciliar con `main` (79 detrás / 130 delante).
 
 **Congelación de V35 (§172).** El Coordinador aceptó V35-A2 (`86089886`) con consenso de arquitectura final.
 - `V35_FREEZE_SHA` = `86089886f37da05c2de5dcf9e237044a3deeada3`.

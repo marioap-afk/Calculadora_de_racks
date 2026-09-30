@@ -1,0 +1,232 @@
+{
+ "scope": "Every .cs file under src/RackCad.Application in the extract of commit 3375aadb (457 files; there are no obj/ or bin/ folders in the extract). Method: a Python pass flagged every line containing 'static' (skipping comments, static classes, 'using static', methods, operators and static lambdas), then I read each remaining hit. Separate regex passes looked for [ThreadStatic], ThreadLocal, AsyncLocal, static events, ModuleInitializer, static constructors, static properties with set/init, volatile, Lazy, lock objects, AppDomain and Registry use. Negative findings (FACT): no static constructors, no module initializers, no static events, no ThreadStatic/ThreadLocal/AsyncLocal, and no static properties with a setter. Only one static field is not readonly: RackLog.sink. No static initializer does file, registry or AppDomain I/O. The only one that reads the environment is RackLog.cs:18 (Environment.GetFolderPath, RackLog.cs:67-68). To check reachability I read the Plugin seam files: RackSelectivoCommands, SelectiveFrontalDrawService/SelectivePlantaDrawService, ViewBlockDraw, SystemBlockWriter, BlockLibraryImporter, RackCatalogLoader, RackBlockFinder and RackCommandSupport.",
+ "files_scanned": 457,
+ "entries": [
+  {
+   "member": "RackLog.sink",
+   "location": "src/RackCad.Application/Diagnostics/RackLog.cs:18",
+   "declared_type": "static volatile RackDiagnosticsLog (not readonly). The instance holds only readonly 'gate' and 'directory' fields (RackDiagnosticsLog.cs:15-16).",
+   "kind": "STATIC_MUTABLE_FIELD",
+   "written_at": "RackLog.cs:18 (field initializer); RackLog.cs:39 (RedirectForTests swaps the sink); RackLog.cs:61 (SinkScope.Dispose restores the previous sink). RedirectForTests is internal and visible only to RackCad.Tests (RackCad.Application.csproj:11). Its only caller is tests/RackCad.Tests/RackLogTestSupport.cs:40.",
+   "populated_when": "At type initialization, on first touch of RackLog. There is no explicit static constructor. It captures %APPDATA%\\RackCad\\logs once (ResolveDirectory, RackLog.cs:65-69). The constructor does no I/O (RackDiagnosticsLog.cs:18-21). Directory.CreateDirectory and the append happen on each Write (RackDiagnosticsLog.cs:44-48).",
+   "reachable_from_seam_paths": "YES",
+   "reachability_chain": "Plugin RackCatalogLoader.cs:28 (load failure) and :37 (empty-catalog warning, logged on every Load call, not cached); BlockLibraryImporter.cs:129; BlockLibraryDatabaseCache.cs:44; BlockPlacement.cs:168; LateralHeaderDrawer.cs:236; Application UserSettingsStore.Load UserSettings.cs:118 and CorruptFile.cs:16,38 (library path resolution).",
+   "warmup_risk": "In memory: LOW. The only state is the log directory, fixed at first touch. Nothing in the repo changes %APPDATA% or calls RedirectForTests outside tests. On disk: MEDIUM. Every warm-up warning or exception is appended to the same UTC daily file, %AppData%\\RackCad\\logs\\rackcad-yyyyMMdd.log (RackDiagnosticsLog.cs:45-48), that the governed run writes to. A governed check that reads the whole log without a baseline offset or timestamp would see warm-up entries, for example the empty-catalog warning or library import errors."
+  },
+  {
+   "member": "JsonRackCatalogProvider.Cache",
+   "location": "src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs:48-49",
+   "declared_type": "static readonly ConcurrentDictionary<string, CacheEntry>, OrdinalIgnoreCase. CacheEntry has mutable public fields Signature and Catalog (lines 51-55). It holds shared RackCatalog instances, whose properties all have public setters and default to List-backed IReadOnlyLists (CatalogEntries.cs:266-298).",
+   "kind": "LAZY_OR_CACHE",
+   "written_at": "JsonRackCatalogProvider.cs:75 (GetOrAdd creates an entry keyed by directory); :85-86 (entry.Signature and entry.Catalog assigned under lock(entry), :77). A load that throws leaves Catalog unassigned or stale, so it is never served as a hit.",
+   "populated_when": "Lazily, on the first Load() for a directory. It is refreshed when the signature changes. The signature covers every *.csv and *.json in the directory: name|length|LastWriteTimeUtc.Ticks, sorted (ComputeSignature :220-241). If the folder cannot be read, the signature is a fresh Guid (:245), so the entry never hits.",
+   "reachable_from_seam_paths": "YES",
+   "reachability_chain": "RackSelectivoCommands.cs:470/521 -> SelectivePlantaDrawService/SelectiveFrontalDrawService.DrawAndPlace -> ViewBlockDraw.cs:49 (also :84, :136 on redraw paths) -> RackCatalogLoader.Load (Plugin RackCatalogLoader.cs:22) -> JsonRackCatalogProvider.FromBaseDirectory() (:67-70, key = CatalogDirectory.Resolve(), the 'catalogs' folder next to the assembly, CatalogDirectory.cs:19-38) -> Load (:72-89). The same cache is also reached from RackFrameConfigurationFactory.cs:250 (parameterless constructor only) and from the UI UiSupport.cs:88.",
+   "warmup_risk": "HIGH relevance, LOW behavioural effect. The key is the catalog directory path, not the side database or drawing. After a warm-up, the governed run gets the SAME RackCatalog object by reference (:79-81) as long as no csv/json in that folder changed name, size or mtime tick. Parsing, CSV reads and Latin-1 fallback decoding are skipped (timing differs; content is the same). This only stays equivalent while no consumer mutates the shared catalog. FACT: grep found no reassignment of any RackCatalog list property and no 'Defaults.X =' in Application, Plugin or UI. Mutation of individual entries is UNCERTAIN. An edit between the two runs that keeps the same length and mtime tick would be missed (UNCERTAIN, depends on filesystem timestamp resolution)."
+  },
+  {
+   "member": "RackFrameTemplateCatalog.All (plus Default => All[0], FindById, FindStandardOrDefault)",
+   "location": "src/RackCad.Application/RackFrames/RackFrameTemplateCatalog.cs:21-83 (Default :85, FindById :87-96, FindStandardOrDefault :19)",
+   "declared_type": "static get-only auto-property IReadOnlyList<RackFrameTemplate>. At runtime it is a List<RackFrameTemplate> of 3 mutable RackFrameTemplate objects (public setters, RackFrameTemplate.cs:23-36), each holding a TemplateHorizontal[] (public setters, RackFrameTemplate.cs:9-11).",
+   "kind": "STATIC_READONLY_MUTABLE_OBJECT",
+   "written_at": "Only the initializer (:21-83). FACT: grep for 'template.X =', 'Template.X =' and Horizontals element writes found no writer in Application, Plugin or UI. The only hits, CantileverColumnBaseEditorState.cs:68/95/117, are a different Cantilever Template.",
+   "populated_when": "At type initialization, on first access.",
+   "reachable_from_seam_paths": "YES",
+   "reachability_chain": "PLANTA only: SelectivePlantaBuilder.cs:50 FindStandardOrDefault -> FindById (:94) / Default (:85). The shared instance goes to RackFrameConfigurationFactory.Build (SelectivePlantaBuilder.cs:136,166), which only reads it (RackFrameConfigurationFactory.cs:42-49). SelectiveFrontalBuilder does not reference it (FACT). Also reachable outside the seam: SelectiveLateralBuilder.cs:46, SelectiveBomBuilder.cs:428, RackFrameTemplateProvider.cs:40/47/63 (UI fallback), and Dynamic/PushBack builders.",
+   "warmup_risk": "LOW. No writer was found, so templates hold the same values in the warm-up and the governed run. It would become HIGH if any consumer mutated a shared template, for example the UI RackFrameConfiguratorViewModel, which receives this same list through RackFrameTemplateProvider. That is UNCERTAIN and was not observed."
+  },
+  {
+   "member": "RackEmbedComposer.DeclaredMembers",
+   "location": "src/RackCad.Application/Persistence/RackEmbedComposer.cs:37-41",
+   "declared_type": "private static readonly string[], built by reflection over the public instance properties of RackEmbedDocument",
+   "kind": "STATIC_READONLY_MUTABLE_OBJECT",
+   "written_at": "Only the initializer (:37-41). Read at :112.",
+   "populated_when": "At type initialization, on first use of RackEmbedComposer.",
+   "reachable_from_seam_paths": "YES",
+   "reachability_chain": "RackSelectivoCommands.WrapSelectivePayload :413 -> RackEmbedComposer.Compose (:43-46) -> RequireNoDeclaredMemberInExtensionData (:103-112)",
+   "warmup_risk": "NONE. The value is fixed by the assembly and never written."
+  },
+  {
+   "member": "RackEmbedStore.Options",
+   "location": "src/RackCad.Application/Persistence/RackEmbedDocument.cs:81-85",
+   "declared_type": "private static readonly JsonSerializerOptions (a mutable type until first use)",
+   "kind": "STATIC_READONLY_MUTABLE_OBJECT",
+   "written_at": "Only the initializer. FACT: grep found no later write to its Converters, properties or TypeInfoResolver.",
+   "populated_when": "At type initialization. Framework-internal metadata is filled on first Serialize/Deserialize (UNCERTAIN: .NET behavior, not visible in repo code).",
+   "reachable_from_seam_paths": "YES",
+   "reachability_chain": "RackSelectivoCommands.cs:416 new RackEmbedStore().Serialize; readers: RackBlockFinder.cs:60 and RackCommandSupport.cs:98 (Deserialize)",
+   "warmup_risk": "NONE for output. UNCERTAIN, framework-level: System.Text.Json freezes the options and caches type metadata on first use, so only first-call latency differs."
+  },
+  {
+   "member": "SelectivePalletDesignStore.SerializerOptions",
+   "location": "src/RackCad.Application/Persistence/SelectivePalletDesignStore.cs:15 (CreateOptions :115-129)",
+   "declared_type": "private static readonly JsonSerializerOptions, with a JsonStringEnumConverter and the stateless PersistedBoundExpressionJson converter (PersistedBoundExpressionJson.cs:16,26)",
+   "kind": "STATIC_READONLY_MUTABLE_OBJECT",
+   "written_at": "Only the initializer and CreateOptions (:115-129). No later write was found.",
+   "populated_when": "At type initialization. Serialize separately rewrites the INSTANCE document's SchemaVersion (:29-31); that is not static state.",
+   "reachable_from_seam_paths": "YES",
+   "reachability_chain": "RackSelectivoCommands.SerializeSelectiveDesign :398 (create path); also EditSelective :55 and :154",
+   "warmup_risk": "NONE for output. UNCERTAIN framework caching, same as RackEmbedStore.Options."
+  },
+  {
+   "member": "SelectiveAuthoredAuthority.ComparisonOptions",
+   "location": "src/RackCad.Application/ProjectVariables/SelectiveAuthoredAuthority.cs:86-90",
+   "declared_type": "private static readonly JsonSerializerOptions",
+   "kind": "STATIC_READONLY_MUTABLE_OBJECT",
+   "written_at": "Only the initializer. Used at :160.",
+   "populated_when": "At type initialization.",
+   "reachable_from_seam_paths": "YES",
+   "reachability_chain": "The task lists SelectiveAuthoredAuthority as a seam reader. Any call that compares authored documents reaches :160.",
+   "warmup_risk": "NONE for output. UNCERTAIN framework caching only."
+  },
+  {
+   "member": "JsonRackCatalogProvider.SerializerOptions",
+   "location": "src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs:32-37",
+   "declared_type": "private static readonly JsonSerializerOptions",
+   "kind": "STATIC_READONLY_MUTABLE_OBJECT",
+   "written_at": "Only the initializer. Used at :289 (ReadObject, defaults.json at :126) and :329 (the JSON fallback of ReadArray).",
+   "populated_when": "At type initialization.",
+   "reachable_from_seam_paths": "YES",
+   "reachability_chain": "The same chain as JsonRackCatalogProvider.Cache, but only on a cache miss (LoadUncached :84).",
+   "warmup_risk": "NONE for output. After a warm-up, a governed run that hits the cache may never touch it."
+  },
+  {
+   "member": "UserSettingsStore.Options (settings are NOT cached)",
+   "location": "src/RackCad.Application/Settings/UserSettings.cs:55-59",
+   "declared_type": "private static readonly JsonSerializerOptions",
+   "kind": "STATIC_READONLY_MUTABLE_OBJECT",
+   "written_at": "Only the initializer. Used at :98 and :140.",
+   "populated_when": "At type initialization. UserSettings itself is re-read from disk on every Load (:95). There is no static settings cache (FACT).",
+   "reachable_from_seam_paths": "YES",
+   "reachability_chain": "Conditional: only when the target database lacks required blocks. SystemBlockWriter.cs:25/59 -> BlockLibraryImporter.EnsureForPlan (:25-38) -> ImportAdapter.Ensure (:140-141) -> EnsureRequirements/EnsureBlocks (:43-50) -> LibraryPath (:87,:23) -> BlockLibraryLocator.ResolvePath (Catalogs/BlockLibrary.cs:19-23) -> UserSettingsStore.Load (UserSettings.cs:77,91-121). Also reached from AutoCadExternalLibraryBlockQuery.cs:19.",
+   "warmup_risk": "No in-memory state. Durable side effect: if settings.json holds corrupt JSON, the warm-up's Load moves it to settings.json.bad (UserSettings.cs:111 -> CorruptFile.cs:25-31). The governed run then finds no settings file, gets defaults and resolves the DEFAULT library DWG path instead of a configured override. The warm-up also writes a log entry (see RackLog.sink)."
+  },
+  {
+   "member": "CsvStructuralSectionCatalogProvider.Cache",
+   "location": "src/RackCad.Application/StructuralSections/CsvStructuralSectionCatalogProvider.cs:26-27",
+   "declared_type": "private static readonly ConcurrentDictionary<string, CacheEntry> (mutable fields Signature and Catalog, :42-46)",
+   "kind": "LAZY_OR_CACHE",
+   "written_at": ":64 (GetOrAdd); :76-77 (assigned under lock after Validate succeeds, :73-74)",
+   "populated_when": "Lazily, on the first Load per directory. The signature covers the structural CSVs and the manifest (:301-329).",
+   "reachable_from_seam_paths": "NO",
+   "reachability_chain": "Only callers: Plugin StructuralSectionCatalogAccess.cs:34 (used by CantileverKindHandler.cs:60, RackCantileverCommands.cs:556 and StructuralSectionCommandFlow.cs:51) and UI RackCantileverWindow.xaml.cs:106. None of these is on the Selective seam.",
+   "warmup_risk": "NONE for the Selective seam. It has the same directory-keyed shape as the product catalog cache, so it would matter only if a warm-up ran Cantilever or structural-section commands."
+  },
+  {
+   "member": "Other static readonly JsonSerializerOptions (not on the seam): CatalogBlockManifest.JsonOptions, FlowBedConfigurationStore.SerializerOptions, ProjectVariablesStore.SerializerOptions, RackFrameProjectStore.SerializerOptions, RackProjectStore.SerializerOptions, ProjectVariableCloning.Options, RackFrameTemplateProvider.SerializerOptions, UserTemplateStore.SerializerOptions, AuthoredRawReader.Options",
+   "location": "Catalogs/Validation/CatalogBlockManifest.cs:48; Persistence/FlowBedConfigurationStore.cs:17; Persistence/ProjectVariablesStore.cs:32; Persistence/RackFrameProjectStore.cs:19; Persistence/RackProjectStore.cs:24; ProjectVariables/MutationPlan.cs:256; RackFrames/RackFrameTemplateProvider.cs:19; RackFrames/UserTemplateStore.cs:21; Systems/Shared/AuthoredRawReader.cs:13",
+   "declared_type": "private static readonly JsonSerializerOptions",
+   "kind": "STATIC_READONLY_MUTABLE_OBJECT",
+   "written_at": "Only the initializers or CreateOptions factories. FACT: grep found no later write.",
+   "populated_when": "At type initialization of each owner.",
+   "reachable_from_seam_paths": "NO",
+   "reachability_chain": "RackProjectStore is not referenced by any Selective seam file (its callers are other kinds' commands and RackCommandSupport.cs:50 preflight). ProjectVariablesStore is reached only on the edit path (RackSelectivoCommands.EditSelective :67). AuthoredRawReader is used only by RackAuthoredComparator.FourKinds.cs:63-65 (AUTH comparators).",
+   "warmup_risk": "NONE (framework caching only, UNCERTAIN)."
+  },
+  {
+   "member": "Private non-empty static readonly arrays, never written: OperatorInNameDetector.OperatorCharacters, CustomPropertiesStore.RootMembers/EntryMembers, RackProjectStore.RetiredCantileverPunchMargins, VariableTypes.Supported, SectionProjectionCanonicalizer.Priority, DynamicSafetyDefaults.Families",
+   "location": "Expressions/OperatorInNameDetector.cs:32; Persistence/CustomPropertiesStore.cs:41-42; Persistence/RackProjectStore.cs:374-378; ProjectVariables/VariableType.cs:32; StructuralSections/Geometry/SectionProjectionCanonicalizer.cs:34-42; Systems/Dynamic/DynamicSafetyDefaults.cs:14-21",
+   "declared_type": "char[], string[], string[], VariableType[], SectionCurveRole[], string[]",
+   "kind": "STATIC_READONLY_MUTABLE_OBJECT",
+   "written_at": "Only the initializers. FACT: grep for element writes and Array.Sort/Reverse/Clear/Fill found none.",
+   "populated_when": "At type initialization.",
+   "reachable_from_seam_paths": "NO",
+   "reachability_chain": "Owners are used by Expressions, CustomProperties, RackProjectStore, ProjectVariables (edit and registry paths), structural geometry, and Dynamic/PushBack/UI. None is referenced from the Selective create seam files or builders (grep).",
+   "warmup_risk": "NONE"
+  },
+  {
+   "member": "PUBLIC static readonly arrays: StructuralSectionCsvSchema.{IdentityColumns, CommonPropertyColumns, WSpecificColumns, HssRectangularSpecificColumns, ChannelSpecificColumns, AngleSpecificColumns, SSpecificColumns, SourcesColumns, StatusColumns}; StructuralSectionFamilies.All; StructuralSectionSearch.Families (an array behind IReadOnlyList)",
+   "location": "StructuralSections/StructuralSectionCsvSchema.cs:61,68,74,83,90,98,117,124,129; StructuralSections/StructuralSectionFamily.cs:56-63; StructuralSections/StructuralSectionSearch.cs:51-58",
+   "declared_type": "public static readonly string[] / StructuralSectionFamily[]; get-only IReadOnlyList<StructuralSectionFamily> = new[]{...}",
+   "kind": "STATIC_READONLY_MUTABLE_OBJECT",
+   "written_at": "Only the initializers. Any caller could write elements, but grep found no writer.",
+   "populated_when": "At type initialization.",
+   "reachable_from_seam_paths": "NO",
+   "reachability_chain": "Used by CsvStructuralSectionCatalogProvider (:120,:122-124), StrictCsvTable, the validator and the serializer, and the UI StructuralSectionPicker and SectionFamilyLabelConverter. None is on the Selective seam.",
+   "warmup_risk": "NONE"
+  },
+  {
+   "member": "Non-empty arrays wrapped in ReadOnlyCollection (underlying array not exposed): BoundExpressionTokens.DeclaredNodeTokens, FunctionRegistry.DeclaredFunctions, SymbolId.DeclaredNamespaces, LengthUnits.DeclaredUnits",
+   "location": "Expressions/BoundExpression.cs:412-413; Expressions/FunctionRegistry.cs:32-33; Expressions/SymbolId.cs:27-28; Units/LengthUnits.cs:46-47",
+   "declared_type": "private static readonly IReadOnlyList<T> = new ReadOnlyCollection<T>(new[]{...})",
+   "kind": "STATIC_READONLY_MUTABLE_OBJECT",
+   "written_at": "Only the initializers",
+   "populated_when": "At type initialization.",
+   "reachable_from_seam_paths": "UNCERTAIN",
+   "reachability_chain": "BoundExpressionTokens is reached through the PersistedBoundExpressionJson converter (PersistedBoundExpressionJson.cs:68,156; FunctionRegistry.Productive at :124,187), which is attached to SelectivePalletDesignStore options (:127). It runs only when a serialized design actually carries a bound expression.",
+   "warmup_risk": "NONE"
+  },
+  {
+   "member": "Zero-length array sentinels: CustomPropertiesCommit.NoPlan; CustomPropertiesWorkspace.NoRows/NoSummaries/NoDefinitions; RackCustomPropertiesAuthority.NoMembers/NoDefinitions/NoOptions; ExpressionBinder.NoDiagnostics; ExpressionDiagnostic.NoSymbols; ExpressionEvaluator.NoDiagnostics; RegistryEvaluationModels EmptyTail/NoSymbols/NoInvalidArguments/NoSymbols; SymbolTable.NoEntries; CustomPropertiesReadResult.NoIds; RackDuplicationPlan.NoGroups/None; MutationPlan.NoRacks; ProjectVariableConsumerDiscovery.None; ProjectVariablesWorkspace.NoVariables/NoBroken/NoUnresolvable; VariableMutationPreflightResult.NoConsumers; StructuralSectionCatalog.NoSections; StructuralSectionGeometry.NoHoles/NoDiagnostics; SelectiveSafetyEnds.None; SelectiveTargetPlan.NoCells",
+   "location": "CustomProperties/CustomPropertiesCommit.cs:62; CustomProperties/CustomPropertiesWorkspace.cs:133,135,137; CustomProperties/RackCustomPropertiesAuthority.cs:99,101,103; Expressions/ExpressionBinder.cs:14; Expressions/ExpressionDiagnostic.cs:75; Expressions/ExpressionEvaluator.cs:38; Expressions/RegistryEvaluationModels.cs:12,92,93,224; Expressions/SymbolTable.cs:122; Persistence/CustomPropertiesReadResult.cs:44; Persistence/RackDuplicationPlan.cs:129,535; ProjectVariables/MutationPlan.cs:194; ProjectVariables/ProjectVariableConsumerDiscovery.cs:41; ProjectVariables/ProjectVariablesWorkspace.cs:258-260; ProjectVariables/VariableMutationPreflightResult.cs:33; StructuralSections/StructuralSectionCatalog.cs:28; StructuralSections/Geometry/StructuralSectionGeometry.cs:178-179; Systems/Selective/SelectiveSafetyEnds.cs:44; Systems/Selective/SelectiveTargetPlan.cs:127",
+   "declared_type": "static readonly T[] or IReadOnlyList<T> over Array.Empty<T>() / new T[0], some wrapped in ReadOnlyCollection",
+   "kind": "OTHER",
+   "written_at": "Only the initializers",
+   "populated_when": "At type initialization.",
+   "reachable_from_seam_paths": "YES",
+   "reachability_chain": "Only SelectiveSafetyEnds.None is on the seam: SelectiveFrontalBuilder/SelectivePlantaBuilder -> SelectiveSafetyPlacement.AppendAtPost/EnabledOfType -> SelectiveSafetyEnds (SelectiveSafetyPlacement.cs:280,285). The rest are on non-seam paths, or their reachability is UNCERTAIN (SelectiveTargetPlan, via SelectiveTargetResolver).",
+   "warmup_risk": "NONE. A zero-length array has no element that could be written."
+  },
+  {
+   "member": "Empty List/Dictionary sentinels returned through read-only interfaces (a caller could cast them back and mutate them): PushBackBootPlan.None, PushBackDefensePlan.None, PushBackDiverterPlan.NoDiverters, PushBackPalletProjection.None, RackFrontLevelElevations.Empty, RackLevelElevations.NoEnvelope, SelectiveEditorOpenResult.NoStates",
+   "location": "Systems/PushBack/PushBackBootPlan.cs:82 (returned :90,98,104); Systems/PushBack/PushBackDefensePlan.cs:59; Systems/PushBack/PushBackDiverterPlan.cs:80; Systems/PushBack/PushBackPalletProjection.cs:100; Systems/Shared/RackLevelElevations.cs:13 (exposed via Elevations :21,:34) and :72 (returned :130); Systems/Selective/SelectiveEditorOpen.cs:70-71 (exposed via LinkedPropertyStates :66,:98)",
+   "declared_type": "static readonly IReadOnlyList<T> = new List<T>() / IReadOnlyDictionary<K,V> = new Dictionary<K,V>()",
+   "kind": "STATIC_READONLY_MUTABLE_OBJECT",
+   "written_at": "Only the initializers. FACT: grep for downcasts such as '(List<Resolved', 'as List<Resolved' and '(Dictionary<int, double>)' found none in Application, Plugin or UI.",
+   "populated_when": "At type initialization.",
+   "reachable_from_seam_paths": "NO",
+   "reachability_chain": "RackLevelElevations and the PushBack plans are used only by Dynamic/PushBack builders (grep list). SelectiveEditorOpen is reached only from RackSelectivoCommands.EditSelective :68, the edit path, not the create seam.",
+   "warmup_risk": "NONE unless a consumer casts one back and mutates it. That would then leak into every later caller."
+  },
+  {
+   "member": "CantileverArmSectionPolicy.Empty and CantileverColumnBaseSectionPolicy.Empty (they expose an internal List and array through IReadOnlyList)",
+   "location": "Systems/Cantilever/CantileverArmSectionPolicy.cs:119-120 (Variants => _order List, :136); Systems/Cantilever/CantileverColumnBaseSectionPolicy.cs:90-93 (AllowedFamilies => _families array {W}, :115; Variants => _order, :117)",
+   "declared_type": "static get-only singletons holding private readonly List<>/array fields",
+   "kind": "SINGLETON",
+   "written_at": "Initializers. _order.Add runs only in constructors (CantileverArmSectionPolicy.cs:96,115; CantileverColumnBaseSectionPolicy.cs:51,73,76).",
+   "populated_when": "At type initialization.",
+   "reachable_from_seam_paths": "NO",
+   "reachability_chain": "Cantilever only",
+   "warmup_risk": "NONE"
+  },
+  {
+   "member": "Stateless service singletons: FunctionRegistry.Productive, LengthUnits.Authority, ExpressionLimits.Normative, RackBlockRequirementExtractors.HeaderRun/.Cantilever, RackHeaderPieceRequirementExtractorV2.Instance, and 4 static SelectiveEffectiveDesignResolver instances (named Resolver)",
+   "location": "Expressions/FunctionRegistry.cs:39; Units/LengthUnits.cs:54; Expressions/ExpressionContext.cs:36; Systems/Shared/LibraryBlockRequirements.cs:47-51; Systems/Shared/LibraryPieceRequirementsV2.cs:153; ProjectVariables/LinkedPropertyReconciler.cs:181; ProjectVariables/ProjectVariableMutationPreflight.cs:805; Systems/Selective/SelectiveEditorOpen.cs:140; Systems/Selective/SelectiveLibraryExport.cs:54",
+   "declared_type": "static get-only property or static readonly field of a class with no instance fields (checked by per-type field scan). The HeaderRun extractor allocates a new HashSet and List on every call (LibraryBlockRequirements.cs:68-69).",
+   "kind": "SINGLETON",
+   "written_at": "Only the initializers",
+   "populated_when": "At type initialization.",
+   "reachable_from_seam_paths": "YES",
+   "reachability_chain": "RackBlockRequirementExtractors.HeaderRun is on the seam: SystemBlockWriter.cs:25/59 -> BlockLibraryImporter.EnsureForPlan :32. FunctionRegistry.Productive is reachable only through the bound-expression converter (UNCERTAIN). RackHeaderPieceRequirementExtractorV2.Instance has no caller in src. The resolvers are on edit and project-variable paths only.",
+   "warmup_risk": "NONE (stateless)"
+  },
+  {
+   "member": "Singletons that are immutable once constructed and hold private collections: SystemRegistry.Default, SelectiveLinkedProperties.Catalogue (a LinkedPropertyDescriptorSet), SymbolTable.Empty",
+   "location": "Systems/Shared/SystemRegistry.Default.cs:23-40 (fields filled only in the constructor, SystemRegistry.cs:47-48; descriptors wrapped with AsReadOnly); ProjectVariables/SelectiveLinkedProperties.cs:178 (_byProperty set :92); Expressions/SymbolTable.cs:151 (dictionaries filled only in the constructor, :130-145)",
+   "declared_type": "static get-only property or static readonly field; private readonly Dictionary fields; no mutators after construction",
+   "kind": "SINGLETON",
+   "written_at": "Only the initializers and constructors",
+   "populated_when": "At type initialization. SelectiveLinkedProperties builds its catalogue through BuildCatalogue (:185+).",
+   "reachable_from_seam_paths": "NO",
+   "reachability_chain": "SystemRegistry.Default is reached only through RackProjectStore's default constructor (RackProjectStore.cs:30) and RackDesignLibrary.cs:48. No Selective seam file uses RackProjectStore. SelectiveLinkedProperties is reached from RackSelectivoCommands.EditSelective/update (:68 SelectiveEditorOpen.Resolve, :145 LinkedPropertyReconciler), not from DrawSelectiveView.",
+   "warmup_risk": "NONE"
+  }
+ ],
+ "excluded_immutable_examples": [
+  "All const fields (for example JsonRackCatalogProvider file-name consts, RackFrameTemplateCatalog.StandardTemplateId, ExpressionLimits.Max*).",
+  "Immutable sentinel objects, i.e. get-only properties and no mutators: RackBomOutputVerdict.Allow (Bom/RackBomOutputGate.cs:25), LocalFrame3D.World (Geometry/Spatial3D.cs:139), SectionViewpoint.CrossSection/LongitudinalX/LongitudinalY/Isometric (StructuralSections/Geometry/SectionViewpoint.cs:57-82), LinkedPropertyStageResult.Clean/Ready (ProjectVariables/LinkedPropertyEditSession.cs:55,58), LinkedPropertySource.Literal (LinkedPropertySource.cs:79), RegistryMutation.None / MutationPlan.Empty (MutationPlan.cs:60,215), PlanReadSet.Empty (PlanReadSet.cs:325), SelectiveFondoTargets.None (SelectiveFondoTargets.cs:39, empty int[]), SelectiveTopology.Empty (SelectiveTopology.cs:35), SelectiveTargetPreference.All/Current (SelectiveTargetPreference.cs:43,47, Array.Empty fondos), StructuralSectionCatalog.Empty (StructuralSectionCatalog.cs:61), StructuralSectionProperties.Empty (StructuralSectionProperties.cs:20, init-only).",
+  "Readonly-struct values: ProjectPropertyIds.SelectiveVerticalClearance/SelectivePalletTolerance (ProjectPropertyIds.cs:23,38; PropertyId is a readonly struct, PropertyId.cs:22). CustomPropertiesStore.ParseOptions (CustomPropertiesStore.cs:48) is a JsonDocumentOptions struct in a readonly field, so its members cannot be modified through the field.",
+  "Immutable primitives and enums: StructuralSectionUnits.PoundsPerFootToKilogramsPerMeter (double, StructuralSectionUnits.cs:26); PushBackPlanComposer.Ic (StringComparison, PushBackPlanComposer.cs:18).",
+  "Expression-bodied statics that build a new value on every call: Geometry Point3D.Origin, Vector3D/Vector2D units, Transform2D.Identity/Mirror*, RackViewFrame axis maps and Zero values, ReinforcementZone.None, DynamicEndBeamKey.None, FrontalCellMatch.None, CantileverColumnBaseDatum directions, PushBackBedRotation.TargetSlope, PushBackBedSlope.RisePerFoot/Ratio.",
+  "Path getters recomputed from the environment on every call, with no caching: RackLog.LogDirectory (RackLog.cs:21), UserSettingsStore.SettingsPath (UserSettings.cs:61), BlockLibraryLocator.DefaultPath (Catalogs/BlockLibrary.cs:16), UserTemplateStore.DefaultPath (UserTemplateStore.cs:31). CatalogDirectory.Resolve() (CatalogDirectory.cs:19-38) probes the disk on every call and caches nothing.",
+  "Static accessors that simply return an already-listed field: RackFrameTemplateCatalog.Default, BoundExpressionTokens.NodeTokens, SymbolNamespaces.All (SymbolId.cs:30), SelectiveLinkedProperties.All. RackAuthoredComparatorPorts.Selective() (RackAuthoredComparator.cs:67-68) is a factory method that returns a new object, not a property."
+ ],
+ "limitations": [
+  "This census covers src/RackCad.Application only. The Plugin layer holds non-readonly static state directly on the library-import seam that I did not analyze: Plugin/Drawing/BlockLibraryDatabaseCache.cs:11-15 (CacheGate, cachedPath, cachedWriteUtc, cachedLength, cachedLibrary, a side Database acquired at BlockLibraryImporter.cs:96 and AutoCadExternalLibraryBlockQuery.cs:27). It is probably the largest warm-up carrier, and a separate Plugin census is needed.",
+  "Some effects come from framework behavior, not from repo code, and are marked UNCERTAIN: System.Text.Json freezing options and caching type metadata on first use, and beforefieldinit type-initialization timing (there are no explicit static constructors, so initializers run at or before first static-field access).",
+  "I established that the shared RackCatalog (cache) and RackFrameTemplate (All) objects are not mutated by grepping for property assignments, collection mutators and downcasts in Application, Plugin and UI. This is not a full data-flow proof: mutation of individual catalog entries and indirect mutation stay UNCERTAIN.",
+  "Reachability is scoped to the Selective CREATE path (RACKSELECTIVO -> DrawSelectiveView). The WPF RackSelectiveWindow that RACKSELECTIVO opens first is outside the listed seam but reaches the same JsonRackCatalogProvider cache (RackCad.UI/UiSupport.cs:88). Whether a warm-up opens that window is unknown. The edit and update paths (RackSelectivoCommands.EditSelective :48-160) reach additional state (ProjectVariablesStore, SelectiveLinkedProperties, SelectiveEditorOpen.NoStates) that I marked NO.",
+  "The durable on-disk effects I report (appends to the daily log file; quarantining a corrupt settings.json to .bad) are not static memory state. I included them because they carry over from a warm-up into a governed run.",
+  "The first pass used a line-based classifier and regex. I then checked multi-line declarations, generic tuple types and CRLF-terminated lines by hand and with a comment-stripped regex pass over whole files. None of those passes found any declaration the classifier had missed."
+ ]
+}

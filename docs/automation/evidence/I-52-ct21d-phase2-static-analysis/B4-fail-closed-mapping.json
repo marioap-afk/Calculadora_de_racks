@@ -1,0 +1,470 @@
+{
+ "facts": [
+  {
+   "id": "F-01",
+   "topic": "L-11 corner fondos",
+   "statement": "Per-fondo frente matrices live in SelectivePalletDesign.ExtraFondoBays (entry k-1 = fondo k); a missing/empty entry inherits fondo 0's Bays. Each fondo keeps its OWN frente count; the longest fondo is the width master and shorter fondos are a prefix of its grid (corner layout). DepthCount drives the number of fondos.",
+   "evidence": "src/RackCad.Domain/Systems/Selective/SelectivePalletDesign.cs:44,71-79; src/RackCad.Application/Persistence/SelectivePalletDesignDocument.cs:62-63,76-77; src/RackCad.Application/Systems/Selective/SelectiveGeometryResolver.cs:121-145,214-228; src/RackCad.Application/Systems/Selective/SelectiveDepthLayout.cs:28-50; src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:69-71,84,113-116",
+   "status": "FACT"
+  },
+  {
+   "id": "F-02",
+   "topic": "L-12 half frente encoding",
+   "statement": "Medio frente = SelectiveBayDesign.Segments with Count>=2 (last tramo length = computed remainder). Legacy SelectiveBayDocument.MedioFrenteLength>0 with empty Segments is mapped to 2 tramos on load. Resolve returns null (bay drawn as a full bay although Segments exist) when a specified length <=0 or the remainder <=0 ('does not resolve').",
+   "evidence": "src/RackCad.Domain/Systems/Selective/SelectivePalletDesign.cs:722-747; src/RackCad.Application/Persistence/SelectivePalletDesignDocument.cs:450-455,490-502; src/RackCad.Application/Systems/Selective/SelectiveMedioFrente.cs:49-86",
+   "status": "FACT"
+  },
+  {
+   "id": "F-03",
+   "topic": "L-12 half frente anchored to left post",
+   "statement": "The tramo overhead 2*(troquelX+inicioX) uses a single troquelX = the bay's LEFT post troquel, while bay post spacing uses both posts' troquelXs; intermediate posts take the left post's peralte. So a split bay whose two end posts have different effective peralte (PostPeraltes) is left-anchored. Matching this to the proposal's 'postes distintos' wording is an interpretation.",
+   "evidence": "src/RackCad.Application/Systems/Selective/SelectiveMedioFrente.cs:57,70; src/RackCad.Application/Systems/Selective/SelectivePostGeometry.cs:26-40,46-49; src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:120-151; src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:152-175; src/RackCad.Application/Systems/Selective/SelectiveTopePlan.cs:134-136",
+   "status": "UNCERTAIN"
+  },
+  {
+   "id": "F-04",
+   "topic": "L-12/L-23 dependency chain",
+   "statement": "The medio-frente remainder depends on bay BeamLength; auto BeamLength = Frente*Count + PalletTolerance*(Count+1) unless every governing cell has BeamLengthOverride>0; PalletTolerance is a bindable (linkable) property.",
+   "evidence": "src/RackCad.Application/Systems/Selective/SelectiveMedioFrente.cs:70; src/RackCad.Application/Systems/Selective/SelectiveGeometryResolver.cs:369-393; src/RackCad.Application/ProjectVariables/SelectiveLinkedProperties.cs:207-213; src/RackCad.Application/ProjectVariables/ProjectPropertyIds.cs:35",
+   "status": "FACT"
+  },
+  {
+   "id": "F-05",
+   "topic": "L-13 topes",
+   "statement": "A tope exists when SafetySelections holds a selection whose ElementId is a catalog variant of type TOPE (family resolved by the catalog 'type' column, first persisted variant wins). Repo catalog TOPE ids: LARGUERO_ESCALON_TOPE_DE_3, POSTE_3_1_5_8_TOPE. Config: Tope.Shared/Fondo/Saque/Frontal/OffCells (persisted TopeShared/TopeSaque/TopeFrontal/TopeFondo/TopeOffCells). LONGITUD allowance +0.25 in; spots depend on Side (None = zero spots), TopeShared and TopeFondo.",
+   "evidence": "src/RackCad.Application/Systems/Selective/SelectiveSafetyFamilies.cs:27-61; src/RackCad.Application/Systems/Selective/SelectiveTopePlan.cs:89-160,217-233; src/RackCad.Domain/Systems/Selective/SelectiveSafetyConfig.cs:16-41; src/RackCad.Application/Persistence/SelectivePalletDesignDocument.cs:529-535; src/RackCad.Application/Systems/Selective/SelectiveSafetyPlacement.cs:54-55,84-128; assets/catalogs/seguridad.csv:8-9; src/RackCad.Domain/Systems/Selective/SelectiveRackDefaults.cs:79",
+   "status": "FACT"
+  },
+  {
+   "id": "F-06",
+   "topic": "Safety selection retention",
+   "statement": "The resolver keeps a safety selection in the resolved system if Quantity>0 OR Side!=None OR any PostSide!=None, with non-blank ElementId; the payload loader drops only blank ElementIds. A tope with Side=None but Quantity>0 therefore stays in the system (zero spots) and in the payload.",
+   "evidence": "src/RackCad.Application/Systems/Selective/SelectiveGeometryResolver.cs:69-77; src/RackCad.Application/Persistence/SelectivePalletDesignDocument.cs:414-420; src/RackCad.Application/Systems/Selective/SelectiveSafetyPlacement.cs:93-96",
+   "status": "FACT"
+  },
+  {
+   "id": "F-07",
+   "topic": "L-14 protector lateral",
+   "statement": "LATERAL-type ids (PROTECTOR_LATERAL_BOTA_*) draw at every post whose SideForPost != None and replace botas there (frontal and planta), LONGITUD = total fondo span. Selective builders pass no adaptive sideOverride for it.",
+   "evidence": "assets/catalogs/seguridad.csv:5-7; src/RackCad.Application/Systems/Selective/SelectiveSafetyPlacement.cs:188-191,266-286; src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:59-61,105-114; src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:58-59,96-107; src/RackCad.Domain/Systems/Selective/SelectivePalletDesign.cs:491-503",
+   "status": "FACT"
+  },
+  {
+   "id": "F-08",
+   "topic": "L-14 desviador off-cells",
+   "statement": "DESVIADOR OffCells are keyed by POST-column index (SelectiveGridCell.Frente holds the post column). The column index space is the sorted set of distinct run-post Xs, including medio-frente intermediate posts and corner-reach dedup; Side selects front/back aisle faces. An off-cell set not invariant under i -> P-1-i is asymmetric; index space depends on medio-frente resolution (hence on BeamLength/links).",
+   "evidence": "src/RackCad.Domain/Systems/Selective/SelectiveSafetyConfig.cs:44-66; src/RackCad.Application/Systems/Selective/SelectiveDesviadorPlan.cs:28-31,105-165,190-237; src/RackCad.Application/Persistence/SelectivePalletDesignDocument.cs:536-538; assets/catalogs/seguridad.csv:11-17",
+   "status": "FACT"
+  },
+  {
+   "id": "F-09",
+   "topic": "L-14 parrilla overflow",
+   "statement": "PARRILLA (legacy alias DECK) row rule: on a full bay with no manual width/count, count = level PalletCount and is NOT clamped to what fits; decks are laid with gap=max(0,(span-count*frente)/(count+1)), i.e. stacked from the left when count*frente > span.",
+   "evidence": "assets/catalogs/seguridad.csv:10; src/RackCad.Domain/Systems/Selective/SelectiveRackDefaults.cs:83-84,106-114; src/RackCad.Domain/Systems/Selective/SelectiveSafetyConfig.cs:115-141; src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:233-311 (line 310); src/RackCad.Application/Systems/Selective/SelectiveParrillaPlacement.cs:40-54",
+   "status": "FACT"
+  },
+  {
+   "id": "F-10",
+   "topic": "L-14 tarimas",
+   "statement": "Pallets draw only when DrawPallets=true, using the TARIMA_GENERICA piece; full-bay rows use the design count with gap clamped at 0 (overflow stacks from the left). blocks.csv maps TARIMA_GENERICA for FRONTAL and LATERAL only (no PLANTA row).",
+   "evidence": "src/RackCad.Domain/Systems/Selective/SelectivePalletDesign.cs:123-125; src/RackCad.Application/Persistence/SelectivePalletDesignDocument.cs:100; src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:356-441; src/RackCad.Application/Systems/Selective/SelectiveTarimaPlacement.cs:43-53; src/RackCad.Domain/Systems/Selective/SelectiveRackDefaults.cs:59; assets/catalogs/blocks.csv:49-50",
+   "status": "FACT"
+  },
+  {
+   "id": "F-11",
+   "topic": "L-23 linked properties",
+   "statement": "Bindings are SelectivePalletDesignDocument.PropertyValues (key -> {Kind projectVariable|expression, VariableId, Expression}). The closed bindable catalogue is exactly selective.verticalClearance and selective.palletTolerance; effective values overwrite the domain fields before resolving. Unknown kinds are rejected by the store. Binding promotes SchemaVersion to 2.0 and it never goes back down.",
+   "evidence": "src/RackCad.Application/Persistence/SelectivePalletDesignDocument.cs:24-47,137-138,161-208,326-340; src/RackCad.Application/Persistence/SelectivePropertyValueDocument.cs:23-53; src/RackCad.Application/ProjectVariables/SelectiveLinkedProperties.cs:186-214; src/RackCad.Application/ProjectVariables/ProjectPropertyIds.cs:20,35; src/RackCad.Application/Systems/Selective/SelectiveEffectiveDesignResolver.cs:136-172; src/RackCad.Application/Persistence/SelectivePalletDesignStore.cs:63-113; src/RackCad.Application/Persistence/SelectiveDesignSchema.cs:43-66",
+   "status": "FACT"
+  },
+  {
+   "id": "F-12",
+   "topic": "L-23 VerticalClearance consumers",
+   "statement": "VerticalClearance feeds the first clear and every level separation unless that level has ClearOverride>0; bay height derives from the top level unless HeightOverride>0; post height = tallest adjacent bay unless a custom cabecera with Height>0 exists.",
+   "evidence": "src/RackCad.Application/Systems/Selective/SelectiveGeometryResolver.cs:302-327,334-336,395-414; src/RackCad.Application/Systems/Selective/SelectivePostGeometry.cs:121-130; src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:86-91",
+   "status": "FACT"
+  },
+  {
+   "id": "F-13",
+   "topic": "L-24 registry accreditation",
+   "statement": "Register lives in NOD entry RACKCAD_PROJECT. Absent -> empty document, accredited Usable; PresentButUnreadable/IncompatibleMajor -> NotReadable; a duplicated VariableId -> AmbiguousIdentity. The effective-design resolver requires a registry even with no bindings.",
+   "evidence": "src/RackCad.Plugin/ProjectVariablesData.cs:36,56-96; src/RackCad.Plugin/ProjectVariablesRegistry.cs:22-23; src/RackCad.Application/Persistence/ProjectVariablesReadResult.cs:4-23,67-80; src/RackCad.Application/ProjectVariables/UsableProjectVariablesRegistry.cs:120-206; src/RackCad.Application/Systems/Selective/SelectiveEffectiveDesignResolver.cs:122-125",
+   "status": "FACT"
+  },
+  {
+   "id": "F-14",
+   "topic": "L-20 payload metadata",
+   "statement": "Only two Selective DTOs declare [JsonExtensionData]: SelectivePalletDesignDocument (top level, preserved by WithDesign) and SelectivePropertyValueDocument. Nested DTOs (SelectiveBayDocument, SelectiveCellDocument, SelectiveSegmentDocument, SafetySelectionDocument, GridCellDocument, PostSideDocument...) declare none, so unknown nested members are not carried (System.Text.Json default skip).",
+   "evidence": "src/RackCad.Application/Persistence/SelectivePalletDesignDocument.cs:150-151,330-332,437-818; src/RackCad.Application/Persistence/SelectivePropertyValueDocument.cs:40-41; grep of JsonExtensionData over src",
+   "status": "FACT"
+  },
+  {
+   "id": "F-15",
+   "topic": "L-20 exterior metadata",
+   "statement": "Selective has no wrapper: the envelope Design string is the SelectivePalletDesignStore JSON directly. Exterior unknown keys go to RackEmbedDocument.ExtensionData; CustomProperties is an opaque raw member omitted when null.",
+   "evidence": "src/RackCad.Plugin/RackSelectivoCommands.cs:154,184,405-417; src/RackCad.Application/Persistence/RackEmbedDocument.cs:32-75",
+   "status": "FACT"
+  },
+  {
+   "id": "F-16",
+   "topic": "L-20 enums/collisions",
+   "statement": "Both stores read with PropertyNameCaseInsensitive=true (case-variant duplicate keys collide). Selective store adds JsonStringEnumConverter (accepts integer enum values, relevant to embedded RackFrameProjectDocument enums in PostCabeceras). DimensionViews is cast raw without validation (defined bits 1,2,4); Dimensions out of range -> None; SafetySide out of range -> Both; BotaPlacement guarded by Enum.IsDefined.",
+   "evidence": "src/RackCad.Application/Persistence/SelectivePalletDesignStore.cs:115-129; src/RackCad.Application/Persistence/RackEmbedDocument.cs:81-85; src/RackCad.Application/Persistence/SelectivePalletDesignDocument.cs:108-115,411-412,427-433,698-709; src/RackCad.Application/Persistence/SafetySelectionDocuments.cs:35-41; src/RackCad.Domain/Systems/Shared/DimensionViewVisibility.cs:17-31",
+   "status": "FACT"
+  },
+  {
+   "id": "F-17",
+   "topic": "L-21 retired members",
+   "statement": "The Selective store has no retired-member modifier (unlike RackProjectStore's Cantilever punch-margin drop); HighEndBeamPeralte exists only in Push Back types. Selective legacy-read members still declared: MedioFrenteLength, nullable DepthCount/DrawBasePlate/AnnotationScale/Dimensions, FloorBeamRiseOverride=null (legacy, materialized at load). Which Selective members (if any) are RM-1..RM-3/RM-7 cannot be determined from permitted sources.",
+   "evidence": "src/RackCad.Application/Persistence/SelectivePalletDesignStore.cs:115-129; src/RackCad.Application/Persistence/RackProjectStore.cs:374-422; src/RackCad.Domain/Systems/PushBack/PushBackDesign.cs:29-38; src/RackCad.Domain/Systems/PushBack/PushBackSideDesign.cs:35; src/RackCad.Application/Persistence/SelectivePalletDesignDocument.cs:62-63,95-106,442-455; src/RackCad.Domain/Systems/Selective/SelectivePalletDesign.cs:704-720",
+   "status": "UNCERTAIN"
+  },
+  {
+   "id": "F-18",
+   "topic": "L-25 views",
+   "statement": "Selective view decode: lateral needs Section>=0; planta ignores Section (coerced if != -1); frontal Section<0 coerced to fondo 0; empty/unknown View coerced to frontal. Canonical encode: frontal Section=fondo k, planta via whole-view encode. RACKEDITAR marks a frontal whose fondo no longer exists as VariantNotPresent (phantom). Views of a rack are found by GUID.",
+   "evidence": "src/RackCad.Application/Systems/Shared/RackViewCodec.cs:187-223,348-355; src/RackCad.Plugin/RackSelectivoCommands.cs:126-130,159-179",
+   "status": "FACT"
+  },
+  {
+   "id": "F-19",
+   "topic": "L-06/L-07 source placement",
+   "statement": "RackCad creates the outer definition with Origin=(0,0,0) and inserts a default BlockReference whose jig only sets Position (scale 1, rotation 0, default normal). Neutral facts exist: IsUniformScale, IsNegativeZ, NormalIsWorldZ, ReferenceBasisIsReflectionXY, DefinitionOrigin captured from BlockTableRecord.Origin. At this commit the classifier/capture adapter have no production caller (tests only).",
+   "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:240-247; src/RackCad.Plugin/Drawing/BlockPlacement.cs:174-199,242; src/RackCad.Plugin/Drawing/RackSourcePlacementCaptureAdapter.cs:13-39; src/RackCad.Application/Systems/Shared/RackSourceTransformFactsV2.cs:7-52,183-247; tests/RackCad.Tests/I59F2BoundaryGuardTests.cs:27-35; tests/RackCad.Tests/I59F3ConsumerIntegrationTests.cs:17-18",
+   "status": "FACT"
+  },
+  {
+   "id": "F-20",
+   "topic": "L-08 dynamic/anonymous/annotative",
+   "statement": "Envelope scan skips anonymous, layout and xref definitions (an anonymous rack definition is not found at all). No Plugin code sets Annotative; IsDynamicBlock is only tested on nested piece references. No Application fact type for 'source is dynamic/annotative' was found.",
+   "evidence": "src/RackCad.Plugin/RackBlockFinder.cs:63-69; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:240-247,415-419; grep 'Annotative|IsAnonymous|IsDynamic' over src",
+   "status": "UNCERTAIN"
+  },
+  {
+   "id": "F-21",
+   "topic": "L-33 payload location",
+   "statement": "The envelope is written into the DEFINITION's extension dictionary (Xrecord key RACKCAD_SELECTIVE); all seen callers pass definition ids and the scan reads from the BlockTableRecord. RackCad code writes no XData or extension dictionary on the outer reference (the RackBlockData summary says 'block reference', but call sites pass definitions).",
+   "evidence": "src/RackCad.Plugin/Systems/Shared/RackBlockData.cs:7-48; src/RackCad.Plugin/Drawing/LateralHeaderDrawService.cs:257; src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:33,114; src/RackCad.Plugin/Systems/Shared/RackDefinitionCreator.cs:204; src/RackCad.Plugin/RackBlockFinder.cs:71",
+   "status": "FACT"
+  },
+  {
+   "id": "F-22",
+   "topic": "L-29/L-30/L-32 materialization",
+   "statement": "Nested piece references get only Position, Rotation, ScaleFactors (+/-1 for mirror) and dynamic parameters (LONGITUD/PERALTE etc.); no layer/color/linetype is assigned. Annotations become DBText on layer RACKCAD_ANOTACIONES; cotas become RotatedDimension on RACKCAD_COTAS with DIMVAR overrides unless a named DimensionStyle exists. Annotations are gated by NumberFronts/NumberLevels/DrawRackName; cotas by Dimensions/DimensionViews (None always wins).",
+   "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:252-376,415-419; src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:315-346,450-514; src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:324-343; src/RackCad.Application/Systems/Shared/DimensionViewPolicy.cs:34-48; src/RackCad.Application/Systems/Selective/SelectiveDimensions.cs:64-65,210",
+   "status": "FACT"
+  },
+  {
+   "id": "F-23",
+   "topic": "L-26 block import",
+   "statement": "EnsureForPlan/EnsureBlocks import only missing definitions from the configured library and return 0 silently if the library file or a block is absent; the drawer then skips that piece and records it as missing. Library path = BlockLibraryLocator.ResolvePath.",
+   "evidence": "src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:20-110; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:293-303; src/RackCad.Application/Catalogs/BlockLibrary.cs:19; src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:95-102",
+   "status": "FACT"
+  },
+  {
+   "id": "F-24",
+   "topic": "Extra piece families from design fields",
+   "statement": "DepthCount>=2 adds planta separadores; DrawBasePlate adds base plates (frontal and planta groups); PostCabeceras/ExtraFondoPostCabeceras give custom per-post frames (own planta group, own height/plate in frontal); medio frente adds intermediate posts/frames.",
+   "evidence": "src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:122-130,146-177,286-304,416-452; src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:86-103,141-151,493-496; src/RackCad.Domain/Systems/Selective/SelectivePalletDesign.cs:81-107",
+   "status": "FACT"
+  },
+  {
+   "id": "F-25",
+   "topic": "Empty frente columns",
+   "statement": "A bay with no levels (BeamLength 0) is an empty frente; the resolver replaces the master width at that index with the widest real bay among fondos. Not one of the listed L-rows (advisory only).",
+   "evidence": "src/RackCad.Application/Systems/Selective/SelectiveGeometryResolver.cs:147-175,268-274",
+   "status": "FACT"
+  },
+  {
+   "id": "F-26",
+   "topic": "Catalog dependence of safety families",
+   "statement": "Whether an ElementId is a tope/lateral/desviador/parrilla is decided by the effective catalog's type column (case-insensitive, DECK=PARRILLA), not by the payload; the repo seguridad.csv is only the shipped catalog.",
+   "evidence": "src/RackCad.Application/Systems/Selective/SelectiveSafetyFamilies.cs:18-34; src/RackCad.Domain/Systems/Selective/SelectiveRackDefaults.cs:106-114; assets/catalogs/seguridad.csv:1-19",
+   "status": "FACT"
+  }
+ ],
+ "tables": [
+  {
+   "title": "Fail-closed condition mapping for Selective fixtures (commit 3375aadb)",
+   "columns": [
+    "Limitation",
+    "Condition summary",
+    "Code fields / facts (file:line)",
+    "Fixture constraint (clean fixture)",
+    "Notes"
+   ],
+   "rows": [
+    [
+     "L-06",
+     "Non-uniform scale, sz<0 or Normal != +Z on the source reference",
+     "RackSourceTransformFactsV2.cs:236 (IsUniformScale), :241 (IsNegativeZ), :242-244 (NormalIsWorldZ); capture of ScaleFactors/Normal RackSourcePlacementCaptureAdapter.cs:20-38; RackCad insert defaults BlockPlacement.cs:182,242",
+     "Reference exactly as RackCad inserted it: ScaleFactors (1,1,1), Normal (0,0,1), Position Z=0; no SCALE/Properties edits, no MIRROR/MIRROR3D/ROTATE3D (also keeps L-04 clear: sx,sy same sign, RackSourceTransformFactsV2.cs:227)",
+     "Drawing-state, not a design field. Classifier has no production caller at this commit (tests only)."
+    ],
+    [
+     "L-07",
+     "Definition Origin != 0 (BASE/BEDIT moved)",
+     "DefinitionOrigin input RackSourceTransformFactsV2.cs:20-22,49-51; captured from BlockTableRecord.Origin RackSourcePlacementCaptureAdapter.cs:23,36-38; RackCad creates Origin=Point3d.Origin LateralHeaderDrawer.cs:243",
+     "Outer definition never edited in BEDIT/BASE: Origin (0,0,0)",
+     "Drawing-state. RackCloner copies source Origin (RackCloner.cs:34), so a clone of a moved definition inherits it."
+    ],
+    [
+     "L-08",
+     "Source is dynamic, anonymous or annotative",
+     "Anonymous defs skipped by the scan RackBlockFinder.cs:66; plain named BTR created LateralHeaderDrawer.cs:240-247; no Annotative setter in src; IsDynamicBlock only on nested refs LateralHeaderDrawer.cs:417",
+     "Outer definition as RackCad created it: named (no '*'), no parameters/actions added in BEDIT, not made annotative",
+     "Drawing-state; no Application fact/detector for dynamic/annotative outer source found (UNCERTAIN)."
+    ],
+    [
+     "L-11 (S-01)",
+     "Selective with per-fondo frente counts in a corner layout",
+     "DepthCount SelectivePalletDesign.cs:44 / doc :62-63; ExtraFondoBays SelectivePalletDesign.cs:79 / doc :76-77; inherit rule SelectiveGeometryResolver.cs:214-228; master = longest fondo SelectiveGeometryResolver.cs:138-145, SelectiveDepthLayout.cs:34-50",
+     "DepthCount=1 (preferred). If multi-fondo is needed: ExtraFondoBays=[] (every fondo inherits fondo 0) or each entry empty or with Count == Bays.Count",
+     "Corner = exists k: ExtraFondoBays[k-1].Count>0 and != Bays.Count. DepthCount>=2 also adds planta separadores (L-22 surface)."
+    ],
+    [
+     "L-12 (S-02b/c/d)",
+     "Half frente dependent on a link, with different posts, or not resolving",
+     "Segments SelectivePalletDesign.cs:729 / doc :451; legacy MedioFrenteLength doc :453-455,497-502; Resolve SelectiveMedioFrente.cs:49-86 (null = not resolving :52-74); left-post anchoring :57 + SelectiveFrontalBuilder.cs:123-126,146; remainder vs BeamLength :70 + SelectiveGeometryResolver.cs:369-393",
+     "Every bay in Bays AND ExtraFondoBays: Segments=[] and MedioFrenteLength=0/absent. Recommended: PostPeraltes=[] (uniform peralte)",
+     "'Different posts' read as unequal effective peralte of the bay's two end posts (UNCERTAIN interpretation)."
+    ],
+    [
+     "L-13 (S-13, S-13b)",
+     "Selective uses topes",
+     "TOPE family via catalog type SelectiveSafetyFamilies.cs:37-61; TopeType SelectiveRackDefaults.cs:79; ids seguridad.csv:8-9; config SelectiveSafetyConfig.cs:16-41; persisted TopeShared/TopeSaque/TopeFrontal/TopeFondo/TopeOffCells doc :531-535; +0.25 in allowance SelectiveSafetyPlacement.cs:55; retention with Quantity>0 SelectiveGeometryResolver.cs:69-77",
+     "SafetySelections contains no ElementId of TOPE type (LARGUERO_ESCALON_TOPE_DE_3, POSTE_3_1_5_8_TOPE); simplest SafetySelections=[]",
+     "A tope selection with Side=None still persists and stays in the system if Quantity>0 (F-06); family depends on the effective catalog (F-26)."
+    ],
+    [
+     "L-14 (S-12)",
+     "Explicit side protector",
+     "LATERAL ids seguridad.csv:5-7; draws where SideForPost!=None SelectiveSafetyPlacement.cs:188-191; SelectiveFrontalBuilder.cs:60,105-114; SelectivePlantaBuilder.cs:59,96-107",
+     "No selection whose ElementId is LATERAL type (PROTECTOR_LATERAL_BOTA_*)",
+     "Selective passes no adaptive sideOverride, so any drawn lateral comes from Side/PostSides (explicit)."
+    ],
+    [
+     "L-14 (S-14c, D-08a, D-10b)",
+     "Desviador with asymmetric or dependent off-cells",
+     "DESVIADOR ids seguridad.csv:11-17; OffCells keyed by post column SelectiveSafetyConfig.cs:44-58; column space from distinct post Xs incl. medio-frente posts SelectiveDesviadorPlan.cs:130-140,217-231; CellKey :28-31; persisted DesviadorOffCells doc :536-538",
+     "No DESVIADOR-type selection. (If kept: DesviadorOffCells=[] with no medio frente and DepthCount=1, so the set is symmetric and the index space is fixed; the piece is still subject to L-22.)",
+     "Asymmetric = off set not invariant under post i -> P-1-i."
+    ],
+    [
+     "L-14 (S-15x, S-15d)",
+     "Parrilla overflowing, or default count dependent on a link",
+     "PARRILLA/DECK seguridad.csv:10, SelectiveRackDefaults.cs:83-84,106-114; config SelectiveSafetyConfig.cs:115-141; unclamped default count SelectiveFrontalBuilder.cs:291-311 (line 310); gap clamp SelectiveParrillaPlacement.cs:49",
+     "No PARRILLA/DECK-type selection",
+     "Overflow = count*frente > span. Dependence goes through BeamLength -> PalletTolerance (F-04)."
+    ],
+    [
+     "L-14 (S-17c, S-17d)",
+     "Pallets overflowing, or dependent on a link",
+     "DrawPallets SelectivePalletDesign.cs:125 / doc :100; rows SelectiveFrontalBuilder.cs:356-441; gap clamp SelectiveTarimaPlacement.cs:47; TARIMA_GENERICA SelectiveRackDefaults.cs:59, blocks.csv:49-50",
+     "DrawPallets=false",
+     "If true, every level and floor row needs count*frente <= BeamLength (no undersized BeamLengthOverride, PalletTolerance >= 0, no link). It also hits L-30 (TARIMA_GENERICA gradient HATCH per the proposal)."
+    ],
+    [
+     "L-20 (V-META, X-02b, X-03b, X-16, X-20, X-21)",
+     "Unknown payload metadata, unknown exterior key, UNSUPPORTED member, undefined enum, colliding names",
+     "Payload ExtensionData doc :150-151 (kept by WithDesign :330-332); PropertyValue ExtensionData SelectivePropertyValueDocument.cs:40-41; envelope ExtensionData RackEmbedDocument.cs:74-75; CustomProperties :66-67; case-insensitive stores SelectivePalletDesignStore.cs:120, RackEmbedDocument.cs:84; enum ints: DimensionViews raw cast doc :412, Dimensions :427-433, SafetySide SafetySelectionDocuments.cs:35-41, JsonStringEnumConverter SelectivePalletDesignStore.cs:126",
+     "Design JSON and envelope produced by this build's serializers (SelectivePalletDesignDocument.From + SelectivePalletDesignStore.Serialize; RackEmbedComposer.Compose with source=null). No extra keys in design or envelope; CustomProperties absent; Dimensions=0; DimensionViews absent; SafetySelections=[]; PostCabeceras=[] or all null (no embedded frame enums); SchemaVersion '1.0' on both",
+     "The UNSUPPORTED classification is a proposal coverage guard, not in code. Nested DTOs have no ExtensionData (F-14). Allowlist status of CustomProperties not verifiable from the sections read."
+    ],
+    [
+     "L-21 (X-19, X-19b)",
+     "Legacy payload with retired members",
+     "No retired-member handling in the Selective store SelectivePalletDesignStore.cs:115-129; HighEndBeamPeralte only in Push Back (PushBackDesign.cs:38); legacy-read Selective fields doc :62-63,95-106,448,453-455; FloorBeamRiseOverride legacy null SelectivePalletDesign.cs:704-720",
+     "Freshly serialized payload: DepthCount, DrawBasePlate, AnnotationScale, Dimensions written explicitly; every bay FloorBeamRiseOverride non-null; MedioFrenteLength=0; no keys outside the declared DTO set",
+     "RM-1..RM-3/RM-7 cannot be tied to Selective members from the code (UNKNOWN). X-19b (HighEndBeamPeralte) does not apply to Selective."
+    ],
+    [
+     "L-22 (X-17a, X-17b)",
+     "Piece needing a change of hand without proven visual-geometric equivalence",
+     "Not expressible from design fields (state probe + effective library). Design fields that add piece families: DrawBasePlate SelectiveFrontalBuilder.cs:103,493-496 / SelectivePlantaBuilder.cs:292-295; DepthCount>=2 separadores SelectivePlantaBuilder.cs:416-452; safety families; DrawPallets; medio-frente posts; mirrored nested refs via ScaleFactors +/-1 LateralHeaderDrawer.cs:313",
+     "Minimize surface: one PostId, one BeamId in every cell, DepthCount=1, SafetySelections=[], DrawPallets=false, no Segments, PostCabeceras empty; optionally DrawBasePlate=false",
+     "Outcome depends on the library definitions (L-28), so pin the library SHA-256 in the fixture."
+    ],
+    [
+     "L-23 (S-26, S-27a..c, X-17c)",
+     "Linked PalletTolerance without width-fixing overrides, or linked VerticalClearance without heights fixed per post path",
+     "PropertyValues doc :137-138; keys ProjectPropertyIds.cs:20,35; descriptors SelectiveLinkedProperties.cs:192-213; effective overwrite SelectiveEffectiveDesignResolver.cs:136-172; consumers SelectiveGeometryResolver.cs:302-327,369-414; post height SelectivePostGeometry.cs:124-130",
+     "PropertyValues absent (null) and the rack never bound (SchemaVersion stays '1.0', SelectiveDesignSchema.cs:61-65)",
+     "A rack bound once stays on '2.0' after unbinding (SelectiveDesignSchema.cs:54-59). Author the fixture fresh."
+    ],
+    [
+     "L-24 (PV-5)",
+     "Variable register not accreditable while a Selective group is present",
+     "NOD RACKCAD_PROJECT ProjectVariablesData.cs:36,56-96; outcomes ProjectVariablesReadResult.cs:4-23; Accredit UsableProjectVariablesRegistry.cs:120-206",
+     "Fixture DWG has no RACKCAD_PROJECT entry (Absent = usable empty) or a Readable register (supported major) with unique VariableIds",
+     "Drawing-level, independent of the rack's own bindings."
+    ],
+    [
+     "L-25 (X-15)",
+     "Some admissible view of the rack (selected or not) does not commute",
+     "Views found by GUID RackSelectivoCommands.cs:126-130; decode/encode RackViewCodec.cs:187-223,348-355; phantom frontal RackSelectivoCommands.cs:169-179",
+     "Every constraint above holds for every fondo frontal and the planta. View blocks canonical: frontal View='frontal', Section=k with 0<=k<DepthCount; planta View='planta', Section=-1; no phantom frontal, no empty View with Section>=0, no Section<-1",
+     "Whether a lateral sibling counts as 'admissible' is UNCERTAIN (L-01 puts laterals out); recommend no lateral siblings."
+    ],
+    [
+     "L-26 (PRE-09, PRE-13, PRE-18)",
+     "Blocks missing after import, real definition different or changed PREFLIGHT->PREPARE, footprint inputs changed after EnsureForPlan",
+     "BlockLibraryImporter.cs:25-110 (silent 0 when library or block missing); missing piece skipped LateralHeaderDrawer.cs:293-303; path BlockLibrary.cs:19; blockName mapping assets/catalogs/blocks.csv",
+     "Fixture DWG already contains every required definition (chosen PostId/BeamId/plate for FRONTAL and PLANTA per blocks.csv), identical to the pinned library; no concurrent edits during the run",
+     "Library and drawing state, not design fields."
+    ],
+    [
+     "L-29 (X-17a, X-22)",
+     "Homologous pieces with different typed symbolic visual sources or other visual properties",
+     "Nested refs get no explicit layer/color/linetype; properties come from the creation context plus library definitions LateralHeaderDrawer.cs:308-319",
+     "Not design-expressible. Draw the source in a fixed, neutral materialization context and do not edit piece definitions/layers between source and copy",
+     "Probe- and library-dependent."
+    ],
+    [
+     "L-30 (X-17b)",
+     "Piece class/variant outside the closed policy",
+     "TARIMA_GENERICA SelectiveRackDefaults.cs:59 / blocks.csv:49-50; DBText and RotatedDimension from annotations LateralHeaderDrawer.cs:257-291; gates SelectiveFrontalBuilder.cs:315-346, DimensionViewPolicy.cs:34-48",
+     "DrawPallets=false; NumberFronts=NumberLevels=DrawRackName=false; Dimensions=0; DimensionViews absent; DimensionStyle null",
+     "Inner entity classes of the remaining pieces depend on the library (L-28)."
+    ],
+    [
+     "L-31 (X-17a)",
+     "Conservative canonicalization (segmentation/orientation/multiplicity differences)",
+     "No code-level field; depends on library linetypes and geometry",
+     "Not design-expressible; pin the library",
+     "Probe-only."
+    ],
+    [
+     "L-32 (X-23)",
+     "Dynamic evaluation alters the reference's effective transform",
+     "Pieces are dynamic refs with LONGITUD/PERALTE set SelectiveFrontalBuilder.cs:466-467,489-490,508-511; applied in LateralHeaderDrawer.cs:319,415-419",
+     "Not design-expressible; library-dependent",
+     "Only lever is fewer piece kinds and parameter values."
+    ],
+    [
+     "L-33 (ST-18, PRE-15)",
+     "Source reference with non-transportable or unclassified presentation state",
+     "Payload is on the DEFINITION ext-dict RackBlockData.cs:16,27-48 (callers LateralHeaderDrawService.cs:257, SystemBlockWriter.cs:33, RackDefinitionCreator.cs:204; reader RackBlockFinder.cs:71); reference created bare BlockPlacement.cs:182-199",
+     "Source reference untouched after insertion: no XCLIP, no attribute references, no extension dictionary or XData on the reference, default presentation properties",
+     "Drawing-state; the closed inventory (CT-49) is not in code."
+    ]
+   ]
+  },
+  {
+   "title": "Consolidated clean Selective fixture values",
+   "columns": [
+    "Carrier",
+    "Field",
+    "Value",
+    "Avoids"
+   ],
+   "rows": [
+    [
+     "Envelope",
+     "SchemaVersion / Kind",
+     "'1.0' / 'selective'",
+     "L-20"
+    ],
+    [
+     "Envelope",
+     "View / Section",
+     "frontal: 'frontal', 0 (one per fondo k); planta: 'planta', -1",
+     "L-25"
+    ],
+    [
+     "Envelope",
+     "CustomProperties, extra keys",
+     "absent",
+     "L-20"
+    ],
+    [
+     "Design",
+     "SchemaVersion, PropertyValues",
+     "'1.0', absent",
+     "L-20, L-23"
+    ],
+    [
+     "Design",
+     "DepthCount, ExtraFondoBays, ExtraFondoDepths, SeparatorLengths, CabeceraFondoOverrides",
+     "1, [], [], [], []",
+     "L-11, L-22"
+    ],
+    [
+     "Design",
+     "PalletTolerance / VerticalClearance",
+     "positive literals (defaults 4 / 6), unlinked",
+     "L-14 overflow, L-23"
+    ],
+    [
+     "Design",
+     "PostId / PostPeraltes / PostCabeceras / ExtraFondoPostCabeceras",
+     "one catalog post (e.g. defaults.json:2) / [] / [] / absent",
+     "L-12, L-20, L-22"
+    ],
+    [
+     "Design",
+     "Bays[i].Segments, MedioFrenteLength",
+     "[], 0",
+     "L-12"
+    ],
+    [
+     "Design",
+     "Bays[i].FloorBeamRiseOverride, HeightOverride",
+     "explicit value, null",
+     "L-21"
+    ],
+    [
+     "Design",
+     "Bays[i].Levels (every bay has levels)",
+     "same BeamId, BeamLengthOverride null, ClearOverride null, PalletCount>=1",
+     "L-14, L-23, F-25"
+    ],
+    [
+     "Design",
+     "SafetySelections",
+     "[]",
+     "L-13, L-14, L-22"
+    ],
+    [
+     "Design",
+     "DrawPallets, NumberFronts, NumberLevels, DrawRackName",
+     "false",
+     "L-14, L-30"
+    ],
+    [
+     "Design",
+     "Dimensions, DimensionViews, DimensionStyle, AnnotationScale",
+     "0, absent, null, 1",
+     "L-20, L-30"
+    ],
+    [
+     "Drawing",
+     "RACKCAD_PROJECT NOD entry",
+     "absent (or readable with unique ids)",
+     "L-24"
+    ],
+    [
+     "Drawing",
+     "Source reference",
+     "scale (1,1,1), normal +Z, def Origin 0, named non-dynamic non-annotative def, no XCLIP/attributes/XData/ext-dict",
+     "L-06, L-07, L-08, L-33"
+    ],
+    [
+     "Drawing",
+     "Block definitions",
+     "all required pieces pre-present, identical to the pinned library",
+     "L-26, L-28"
+    ]
+   ]
+  }
+ ],
+ "limitations": [
+  "Only the permitted proposal sections were read (lines 372-440, section 2, section 3.7). The S-/D-/X-/PV- row definitions in section 7 and the RM-n list were not read, so each limitation-to-code mapping is taken from the L-row wording (e.g. 'postes distintos', 'explicito', S-13b).",
+  "RM-1..RM-3 and RM-7 could not be identified as Selective members from code; L-21 is mapped to candidate legacy fields only.",
+  "L-22, L-29, L-31, L-32, L-26 and part of L-30 depend on the state probe, the effective block library (not versioned; assets/blocks has only .gitkeep) or drawing state. Code can only show which design fields add piece families.",
+  "Safety-family membership depends on the effective catalog's type column. The repo seguridad.csv may differ from a user's configured or shared catalog.",
+  "No AutoCAD run and no tests were executed. System.Text.Json skipping unmapped nested members is default library behavior, inferred and not exercised here.",
+  "The source-transform classifier (I-59 facts) has no production caller at 3375aadb. How RACKMIRROR will consume these facts is not in code.",
+  "Whether CustomProperties is on the proposal's exterior carrier allowlist, and whether lateral sibling views count as 'admissible' for X-15, is not stated in the sections read."
+ ]
+}

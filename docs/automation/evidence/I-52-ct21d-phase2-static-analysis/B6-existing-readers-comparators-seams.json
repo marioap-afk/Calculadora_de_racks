@@ -1,0 +1,832 @@
+{
+ "facts": [
+  {
+   "id": "F1.01",
+   "topic": "RackDefinitionCreator surface",
+   "statement": "RackDefinitionCreator is `internal static class` in RackCad.Plugin.Systems.Shared with exactly two non-private members, both named CreateInTransaction; private helpers are UnusableEffectiveName, Precheck, Envelope. It has no fields or state.",
+   "evidence": "src/RackCad.Plugin/Systems/Shared/RackDefinitionCreator.cs:36,39,83,121,137,201; guard tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs:97-126 (exactly 2 entries, no loops, no static fields)",
+   "status": "FACT"
+  },
+  {
+   "id": "F1.02",
+   "topic": "RackDefinitionCreator plan families",
+   "statement": "Overload A (header-run family) is CreateInTransaction(Database database, Transaction transaction, LateralHeaderDrawer drawer, HeaderRunPlan plan, string requestedBlockName, RackEmbedDocument envelope). Overload B (Cantilever family) is CreateInTransaction(Database database, Transaction transaction, CantileverViewPlan plan, string requestedBlockName, RackEmbedDocument envelope). No other plan type is accepted.",
+   "evidence": "RackDefinitionCreator.cs:39-45, 83-88; HeaderRunPlan defined at src/RackCad.Application/Drawing/HeaderRunPlan.cs:13; CantileverViewPlan at src/RackCad.Application/Systems/Cantilever/CantileverViewPlanBuilder.cs:123",
+   "status": "FACT"
+  },
+  {
+   "id": "F1.03",
+   "topic": "RackDefinitionCreator caller-transaction check",
+   "statement": "Precheck refuses with TransactionMismatch when the database or transaction is null or disposed, or when database.TransactionManager.TopTransaction is null or its UnmanagedObject differs from transaction.UnmanagedObject. It never compares wrapper identity. An OpenCloseTransaction is unsupported on purpose. After that it checks InvalidPlan (plan is null, or the drawer is null in family A), InvalidBlockName (IsNullOrWhiteSpace), and InvalidEnvelope (envelope is null, or its Id, Kind or Name is blank). It then serializes with new RackEmbedStore().Serialize, and a throw there also gives InvalidEnvelope. Every refusal in Precheck happens before anything is written.",
+   "evidence": "RackDefinitionCreator.cs:145-194 (TopTransaction/UnmanagedObject at 156-164); guard RackDefinitionCreatorGuardTests.cs:361-377 (asserts TopTransaction, UnmanagedObject, no ReferenceEquals), 347-359 (Precheck precedes write)",
+   "status": "FACT"
+  },
+  {
+   "id": "F1.04",
+   "topic": "RackDefinitionCreator write sequence (header-run)",
+   "statement": "Family A calls drawer.CreateSystemBlock(database, transaction, plan, requestedBlockName). It then checks UnusableEffectiveName(created.BlockName), which returns WriteFailed if the name is blank. Next, if created.Outcome.HasMissingBlocks, it returns Missing(MissingInstances) and does NOT write the envelope. Otherwise it calls Envelope(...). Any exception becomes WriteFailed. It never erases anything to clean up.",
+   "evidence": "RackDefinitionCreator.cs:53-79, 121-131; guards RackDefinitionCreatorGuardTests.cs:379-392 (catch + no Erase), 394-403 (missing before envelope), 405-435 (name check before envelope)",
+   "status": "FACT"
+  },
+  {
+   "id": "F1.05",
+   "topic": "RackDefinitionCreator write sequence (Cantilever)",
+   "statement": "Family B calls CantileverViewMaterializer.CreateBlockDefinitionNamed(database, transaction, plan, requestedBlockName, out blockName), then UnusableEffectiveName(blockName), then Envelope. Any exception becomes WriteFailed. This family has no missing-block check.",
+   "evidence": "RackDefinitionCreator.cs:96-112; CantileverViewMaterializer.cs:97-115",
+   "status": "FACT"
+  },
+  {
+   "id": "F1.06",
+   "topic": "RackDefinitionCreator envelope write/readback",
+   "statement": "Envelope() calls RackBlockData.Write(transaction, definitionId, payloadJson), then reads the value back with RackBlockData.Read and compares it to payloadJson with ordinal equality. A mismatch gives EnvelopeWriteFailed; a match gives Created(definitionId, blockName). This readback matters because RackBlockData.Write returns silently when the id is null or the JSON is empty.",
+   "evidence": "RackDefinitionCreator.cs:197-214; RackBlockData.cs:20-25; guard RackDefinitionCreatorGuardTests.cs:447-456",
+   "status": "FACT"
+  },
+  {
+   "id": "F1.07",
+   "topic": "RackDefinitionCreator naming",
+   "statement": "AUTH-15 does not derive, sanitize or uniquify names; it passes requestedBlockName straight to the family. Header-run family: LateralHeaderDrawer.NewBlock -> UniqueBlockName, which applies BlockNaming.SanitizeBlockName and then adds a _1, _2, ... suffix on collision. Cantilever family: UniqueBlockName(blockTable, Sanitize(baseName)). The name the family actually produced is returned in the result.",
+   "evidence": "LateralHeaderDrawer.cs:54, 240-247, 394-413; CantileverViewMaterializer.cs:106, 289, 309; guards RackDefinitionCreatorGuardTests.cs:198-206, 437-445",
+   "status": "FACT"
+  },
+  {
+   "id": "F1.08",
+   "topic": "RackDefinitionCreator exclusions",
+   "statement": "RackDefinitionCreator does not open a transaction, lock the document, commit, abort, dispose, regenerate, purge, import (no EnsureForPlan, BlockLibraryImporter or EnsureBlocks), place references (no BlockReference, ModelSpace, AppendEntity or InsertReference), compose or restamp the envelope (no RackEmbedComposer or RackEnvelopeRestamp), transform, or show any UI.",
+   "evidence": "RackDefinitionCreator.cs:16-28 (doc); guards RackDefinitionCreatorGuardTests.cs:130-196",
+   "status": "FACT"
+  },
+  {
+   "id": "F1.09",
+   "topic": "Delegated writers boundary",
+   "statement": "The guard test lists, by exact signature, the members AUTH-15 reaches to write: LateralHeaderDrawer (CreateSystemBlock, NewBlock, AppendInstance, AppendDimension, ResolveDimStyle, EnsureAnnotationLayer, ApplyDynamicParameters, UniqueBlockName), CantileverViewMaterializer (CreateBlockDefinitionNamed, AppendCurves, EnsureRoleLayers, UniqueBlockName, Sanitize), LayerHelper.EnsureLayer, and RackBlockData.Write/Read. It forbids Commit(, Abort(, StartTransaction, LockDocument, Regen, Purge(, EnsureForPlan, ModelSpace, Editor and similar tokens in those bodies.",
+   "evidence": "tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs:216-254, 313-333",
+   "status": "FACT"
+  },
+  {
+   "id": "F1.10",
+   "topic": "Side effects inside the caller transaction (header-run drawer)",
+   "statement": "CreateSystemBlock opens the BlockTable ForWrite. It creates one nested BTR per plan.Headers group, and those carry no envelope. It then creates the system BTR. Layers RACKCAD_ANOTACIONES (ACI 2) and RACKCAD_COTAS (ACI 1) are created through LayerHelper.EnsureLayer if they are missing. Dimensions are RotatedDimension with RecomputeDimensionBlock; the code comment says each owns an anonymous *D block. Pieces whose BlockName is blank or absent from the BlockTable are skipped and recorded once per BlockName|View.",
+   "evidence": "LateralHeaderDrawer.cs:31, 36-81, 109-111, 293-303, 324-331, 354-375; LayerHelper.cs:16-29; RackDefinitionCreator.cs:31-33",
+   "status": "FACT"
+  },
+  {
+   "id": "F1.11",
+   "topic": "RackDefinitionCreationResult",
+   "statement": "RackDefinitionCreationResult is `internal readonly struct` with IsSuccess, DefinitionId (ObjectId.Null on failure), BlockName (null on failure, never empty on success), Failure, MissingInstances (IReadOnlyList<HeaderBlockInstance>, empty unless MissingLibraryBlocks) and Diagnostic. Its internal factories are Created, Failed and Missing. Failure enum: None, TransactionMismatch, InvalidPlan, InvalidBlockName, MissingLibraryBlocks, InvalidEnvelope, EnvelopeWriteFailed, WriteFailed. Success does not mean committed.",
+   "evidence": "src/RackCad.Plugin/Systems/Shared/RackDefinitionCreationResult.cs:12-42, 44-98; guard RackDefinitionCreatorGuardTests.cs:458-473",
+   "status": "FACT"
+  },
+  {
+   "id": "F1.12",
+   "topic": "RackDefinitionCreator callers",
+   "statement": "At this commit there is NO production caller of RackDefinitionCreator in src/. Across the extract, the only occurrences are its own two files and the source-text guard test. A guard asserts that no src/RackCad.Application file mentions it.",
+   "evidence": "Grep 'RackDefinitionCreat' over the extract: matches only in src/RackCad.Plugin/Systems/Shared/RackDefinitionCreator.cs, RackDefinitionCreationResult.cs and tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs; guard :477-488",
+   "status": "FACT"
+  },
+  {
+   "id": "F1.13",
+   "topic": "Sibling redefine primitive",
+   "statement": "SystemBlockWriter.RedefineInTransaction(Database, Transaction, LateralHeaderDrawer, ObjectId blockId, HeaderRunPlan, string payloadJson, out IReadOnlyCollection<ObjectId> staleDefinitions) calls drawer.RedefineSystemBlock and then RackBlockData.Write. It does not check TopTransaction, read back, or check missing blocks. It is reached through ViewBlockDraw.RedrawInTransaction, the Selective facades' RedrawInTransaction and LateralHeaderDrawService.",
+   "evidence": "SystemBlockWriter.cs:104-116; ViewBlockDraw.cs:97-109; SelectiveFrontalDrawService.cs:53-59; SelectivePlantaDrawService.cs:48-54; LateralHeaderDrawService.cs:99",
+   "status": "FACT"
+  },
+  {
+   "id": "F1.14",
+   "topic": "Selective plan types match",
+   "statement": "SelectiveFrontalBuilder.BuildPlan(SelectiveRackSystem, RackCatalog) returns HeaderRunPlan (HeaderInstanceGrouper.Group(Build(...), \"SEL_FRONTAL\")). SelectivePlantaBuilder.BuildPlan(SelectiveRackSystem, RackCatalog) also returns HeaderRunPlan. Both match the plan parameter type of RackDefinitionCreator overload A.",
+   "evidence": "src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:26,35-36; SelectivePlantaBuilder.cs:36; RackDefinitionCreator.cs:43",
+   "status": "FACT"
+  },
+  {
+   "id": "F1.15",
+   "topic": "Same drawer code",
+   "statement": "Both the Selective frontal/planta creation path and AUTH-15 family A run the same drawer method, LateralHeaderDrawer.CreateSystemBlock(Database, Transaction, HeaderRunPlan, string). The Selective path gets there via DrawAndPlace -> ViewBlockDraw.DrawAndPlace -> SystemBlockWriter.CreateBlock -> drawer.CreateSystemBlock; AUTH-15 calls drawer.CreateSystemBlock directly. Each Selective facade holds its own `new LateralHeaderDrawer()`.",
+   "evidence": "SelectiveFrontalDrawService.cs:24,31-39; SelectivePlantaDrawService.cs:24,26-34; ViewBlockDraw.cs:50; SystemBlockWriter.cs:18-29; RackDefinitionCreator.cs:55; LateralHeaderDrawer.cs:28-81",
+   "status": "FACT"
+  },
+  {
+   "id": "F1.16",
+   "topic": "Selective frontal naming today",
+   "statement": "InsertSelectiveFrontal computes blockName = RackViewBaseName.LinkedSelectiveFrontal(name or \"Selectivo\", fondo, fondoCount) and passes it as rackName. The facade then applies RackViewBaseName.SelectiveFrontal(system, rackName), which is Standard(rackName.Trim()) = BlockNaming.SanitizeBlockName. The drawer sanitizes again and uniquifies. The frontal geometry comes from SelectiveDepthLayout.FondoSystemView(system, fondo).",
+   "evidence": "src/RackCad.Plugin/RackSelectivoCommands.cs:517-521, 526-527; SelectiveFrontalDrawService.cs:76-77; src/RackCad.Application/Systems/Shared/RackViewBaseName.cs:22-29, 186-191, 202; LateralHeaderDrawer.cs:395-413",
+   "status": "FACT"
+  },
+  {
+   "id": "F1.17",
+   "topic": "Selective planta naming today",
+   "statement": "Planta calls DrawAndPlace(document, system, plantaPayload, name). The facade uses RackViewBaseName.SelectivePlanta(system, name), which gives Standard(name.Trim() + \" - planta\"), or \"Selectivo planta - {n} frentes\" when the name is blank. The drawer then sanitizes and uniquifies. AUTH-15 applies no view base-name policy, so a caller must supply the RackViewBaseName-derived name itself to match.",
+   "evidence": "RackSelectivoCommands.cs:467-472; SelectivePlantaDrawService.cs:67-68; RackViewBaseName.cs:31-37; RackDefinitionCreator.cs:55",
+   "status": "FACT"
+  },
+  {
+   "id": "F1.18",
+   "topic": "Selective envelope composition today",
+   "statement": "The Selective path composes the envelope in WrapSelectivePayload with RackEmbedComposer.Compose(source, KindSelective, id, name, view (ViewFrontal when blank), section, designJson) and serializes it with new RackEmbedStore().Serialize. Frontal uses view=frontal and section=fondo; planta uses view=planta and section=-1 (the default). View strings are literal constants, not RackViewCodec.Encode. AUTH-15 receives a RackEmbedDocument, never composes, and serializes with the same RackEmbedStore.Serialize.",
+   "evidence": "RackSelectivoCommands.cs:367-369, 405-417, 469, 519; RackEmbedComposer.cs:43-60; RackDefinitionCreator.cs:176-187; guard RackDefinitionCreatorGuardTests.cs:177-187",
+   "status": "FACT"
+  },
+  {
+   "id": "F1.19",
+   "topic": "Same serialized bytes",
+   "statement": "If a caller passes AUTH-15 the same RackEmbedDocument that RackEmbedComposer.Compose produces, the payload bytes should equal the Selective path's, because both use RackEmbedStore.Serialize with the same static options (compact, case-insensitive). This was not run.",
+   "evidence": "src/RackCad.Application/Persistence/RackEmbedDocument.cs:79-95; RackSelectivoCommands.cs:416; RackDefinitionCreator.cs:187",
+   "status": "UNCERTAIN"
+  },
+  {
+   "id": "F1.20",
+   "topic": "Import difference",
+   "statement": "The Selective path imports library blocks with BlockLibraryImporter.EnsureForPlan(database, plan) inside the document lock but BEFORE and OUTSIDE its own transaction. EnsureBlocks opens its own transactions, WblockClones into the drawing, is best-effort, and returns 0 when the library file is absent. AUTH-15 never imports, so the caller must prepare (import) before opening its transaction, following the PrepareRedraw pattern.",
+   "evidence": "SystemBlockWriter.cs:23-27; BlockLibraryImporter.cs:18, 25-39, 50-132 (own tx 68-80, WblockCloneObjects 123, file absent 87-91); ViewBlockDraw.cs:59-89 (PrepareRedraw imports outside tx)",
+   "status": "FACT"
+  },
+  {
+   "id": "F1.21",
+   "topic": "Transaction/commit difference",
+   "statement": "SystemBlockWriter.CreateBlock takes LockDocument, opens StartTransaction, writes the payload only if it is non-empty (no readback), and commits. AUTH-15 uses the caller's verified top transaction and never commits.",
+   "evidence": "SystemBlockWriter.cs:18-40; RackDefinitionCreator.cs:147-164",
+   "status": "FACT"
+  },
+  {
+   "id": "F1.22",
+   "topic": "Missing-piece difference",
+   "statement": "In the Selective path, pieces missing from the library are omitted from the geometry, the envelope is still written, and the missing pieces are only reported as text (DescribeMissing). AUTH-15 returns MissingLibraryBlocks and writes no envelope; the definition remains in the caller's transaction for rollback.",
+   "evidence": "SystemBlockWriter.cs:29-34; BlockPlacement.cs:44, 98-118; RackDefinitionCreator.cs:65-72; RackDefinitionCreationResult.cs:28-31",
+   "status": "FACT"
+  },
+  {
+   "id": "F1.23",
+   "topic": "Placement difference",
+   "statement": "The Selective path places the block with BlockPlacement.PlaceAndReport -> PlaceBlockWithJig. That uses its own lock and StartTransaction, editor.Drag, a model-space AppendEntity and a Commit. If the user cancels, EraseUnreferencedDefinition runs in yet another own transaction plus PurgeUnreferenced. So today's Selective create is at least two commits (definition, then reference) plus the import mutation. AUTH-15 places nothing.",
+   "evidence": "ViewBlockDraw.cs:51; BlockPlacement.cs:26-53, 123-170, 174-201; guard RackDefinitionCreatorGuardTests.cs:167-175",
+   "status": "FACT"
+  },
+  {
+   "id": "F1.24",
+   "topic": "Plan/catalog difference",
+   "statement": "The Selective path builds the plan inside ViewBlockDraw.DrawAndPlace from RackCatalogLoader.Load(), and exceptions become HeaderPlacementResult.Failure. AUTH-15 receives a plan that is already built.",
+   "evidence": "ViewBlockDraw.cs:28-57; RackDefinitionCreator.cs:39-45",
+   "status": "FACT"
+  },
+  {
+   "id": "F1.25",
+   "topic": "Selective lateral (out of scope)",
+   "statement": "The Selective LATERAL cut is created through LateralHeaderDrawService.DrawAndPlace -> private CreateBlock, which groups the layout into a HeaderRunPlan internally (HeaderInstanceGrouper.Group(layout.Instances, blockName)) and then calls drawer.CreateSystemBlock. That plan is not exposed by a public BuildPlan.",
+   "evidence": "RackSelectivoCommands.cs:588; LateralHeaderDrawService.cs:28, 213-271",
+   "status": "FACT"
+  },
+  {
+   "id": "F2.01",
+   "topic": "RackBlockData.Read",
+   "statement": "`public static string Read(Transaction transaction, ObjectId entityId)` uses the caller's transaction. It opens the entity ForRead, then its extension dictionary, then the Xrecord under key \"RACKCAD_SELECTIVE\" (the key used for every kind), and concatenates the DxfCode.Text chunks. It returns null if there is no transaction, a null id, no ext dict, no key, no data or an empty result. It is read-only. Write is a separate member that returns silently on a null id or empty JSON.",
+   "evidence": "src/RackCad.Plugin/Systems/Shared/RackBlockData.cs:16, 20-52, 54-89",
+   "status": "FACT"
+  },
+  {
+   "id": "F2.02",
+   "topic": "RackBlockFinder.ScanEnvelopes",
+   "statement": "`public static List<RackEnvelopeScan> ScanEnvelopes(Transaction transaction, Database database, bool includeReferenceCount)` uses the caller's transaction and makes one pass over the BlockTable in traversal order. It SKIPS IsLayout (model/paper space), IsAnonymous (e.g. *D/*U), IsFromExternalReference, and every definition whose RackBlockData.Read is null or empty (library blocks and nested SEL_FRONTAL group defs, which have no envelope). Each scan entry holds (DefinitionId, Embed, DirectReferenceCount, BlockName); Embed is null when the envelope does not deserialize. DirectReferenceCount = GetBlockReferenceIds(directOnly:true, forceValidity:false).Count, only when requested, and is measured independently of the payload. It is read-only.",
+   "evidence": "src/RackCad.Plugin/RackBlockFinder.cs:42-91, 94-120",
+   "status": "FACT"
+  },
+  {
+   "id": "F2.03",
+   "topic": "RackEmbedStore.Deserialize tolerance",
+   "statement": "Deserialize returns null for blank input, a JsonException, a null result, or an unreadable MAJOR schema version; it never throws. Serialize throws on null.",
+   "evidence": "src/RackCad.Application/Persistence/RackEmbedDocument.cs:87-129",
+   "status": "FACT"
+  },
+  {
+   "id": "F2.04",
+   "topic": "RackBlockFinder.FindFirstModelSpaceReference",
+   "statement": "`public static BlockReference FindFirstModelSpaceReference(Transaction, Database, List<(ObjectId BlockId, RackEmbedDocument Embed)>)` uses the caller's transaction. It returns the first live BlockReference owned by model space, frontal first. It is read-only but returns a DBObject.",
+   "evidence": "RackBlockFinder.cs:19-40",
+   "status": "FACT"
+  },
+  {
+   "id": "F2.05",
+   "topic": "RackCommandSupport.FindRackBlocks",
+   "statement": "`public static List<(ObjectId BlockId, RackEmbedDocument Embed)> FindRackBlocks(Document document, string rackId)` opens its OWN LockDocument and StartTransaction and commits. It calls ScanEnvelopes(includeReferenceCount:false) and keeps entries whose Embed.Id equals rackId (OrdinalIgnoreCase), accepting a missing Kind. It writes nothing. It is not caller-owned.",
+   "evidence": "src/RackCad.Plugin/RackCommandSupport.cs:113-142",
+   "status": "FACT"
+  },
+  {
+   "id": "F2.06",
+   "topic": "Nested reader transactions",
+   "statement": "Whether readers that open their own StartTransaction (FindRackBlocks, AutoCadLibraryBlockQuery, ReadDimensionStyleNames, InDocumentTransaction.Run) nest correctly under an open caller transaction, and leave TopTransaction as the caller's afterwards, is AutoCAD runtime behaviour that the code does not show. Calling ScanEnvelopes directly with the caller's transaction avoids the question.",
+   "evidence": "RackCommandSupport.cs:125-126; AutoCadLibraryBlockQuery.cs:24; InDocumentTransaction.cs:20-40",
+   "status": "UNCERTAIN"
+  },
+  {
+   "id": "F2.07",
+   "topic": "RackCommandSupport.DecodeView / IsPlantaView",
+   "statement": "DecodeView(RackEmbedDocument) is pure: RackViewCodec.Decode(embed?.Kind, embed?.View, embed?.Section ?? -1). IsPlantaView returns true when the decoded address is Planta. Neither opens a transaction or writes.",
+   "evidence": "RackCommandSupport.cs:102-111",
+   "status": "FACT"
+  },
+  {
+   "id": "F2.08",
+   "topic": "RackViewCodec",
+   "statement": "RackViewCodec is a pure static codec: TryDecodeViewKind, DecodeKind, Decode(kind, view, section) -> DecodedRackView{OriginalSyntax, SystemKind, Address, HasAddress, Disposition, CoercionCode}, and Encode(RackSystemKind, RackViewAddress). Decoding for kind \"selective\" (RackSystemKind.SelectiveRack): lateral needs section >= 0 and gives Post(section), otherwise Invalid. Planta gives Whole, and is Coerced when section != -1. Frontal gives Fondo(section), with section < 0 coerced to Fondo(0). Any other view is coerced to frontal. Encode for Selective: Fondo(i) -> (\"frontal\", i), Post(i) -> (\"lateral\", i), planta -> (\"planta\", -1).",
+   "evidence": "src/RackCad.Application/Systems/Shared/RackViewCodec.cs:75-164, 187-223, 348-355, 453-465",
+   "status": "FACT"
+  },
+  {
+   "id": "F2.09",
+   "topic": "RackViewAvailability",
+   "statement": "`RackViewAvailability.Evaluate(DecodedRackView, RackViewAvailabilityFacts)` is pure. It returns Unavailable when there is no address or no facts, SystemDoesNotSupportKind on a kind mismatch, and otherwise Available or VariantNotPresent. SelectiveViewAvailabilityFacts(int fondoCount, IEnumerable<int> postIndexes) accepts planta Whole, Fondo index < FondoCount, and Post in the given set. It never selects a fallback.",
+   "evidence": "src/RackCad.Application/Systems/Shared/RackViewAvailability.cs:50-77, 133-150; used at RackSelectivoCommands.cs:173-179, 202-213 and ProjectVariableMutationExecutor.cs:200-221",
+   "status": "FACT"
+  },
+  {
+   "id": "F2.10",
+   "topic": "SelectiveAuthoredAuthority",
+   "statement": "`public static AuthoredAuthorityResult Resolve(string rackId, IReadOnlyList<ProjectVariableScanEntry> siblings)` is pure. It returns UnreadableSibling if there are no siblings or any sibling is null, has !AuthoredReadable, or has a null Authored; it never filters those out. Otherwise it returns Single(documents[0]) when IsSameAuthority, else Divergent. IsSameAuthority(IReadOnlyList<SelectivePalletDesignDocument>) is public. It compares structurally over the JSON serialized with WhenWritingNull: objects ignore member order, arrays keep order, numbers compare as doubles, and SchemaVersion and ExtensionData are included. View and section are not in this document.",
+   "evidence": "src/RackCad.Application/ProjectVariables/SelectiveAuthoredAuthority.cs:9-19, 84-157, 159-235",
+   "status": "FACT"
+  },
+  {
+   "id": "F2.11",
+   "topic": "ProjectVariableScanProjection / ScanEntry",
+   "statement": "ProjectVariableScanProjection.Project(string definitionId, RackEmbedDocument embed, int directReferenceCount) is pure. A null embed or a blank Id/Kind gives UnreadableEnvelope; a non-selective kind gives Foreign; a design whose SelectivePalletDesignStore.Deserialize throws InvalidOperationException gives SelectiveUnreadableDesign; otherwise Selective(authored). This is the input type that Resolve requires. Production callers build it from ScanEnvelopes + Handle.ToString().",
+   "evidence": "src/RackCad.Application/ProjectVariables/ProjectVariableScanProjection.cs:30-65; ProjectVariableScanEntry.cs:21-126; RackSelectivoCommands.cs:308-313",
+   "status": "FACT"
+  },
+  {
+   "id": "F2.12",
+   "topic": "IRackAuthoredComparatorPort + Selective comparator",
+   "statement": "IRackAuthoredComparatorPort<in TInput, TAuthored> has Kind and Compare(TInput) -> RackAuthoredComparisonResult<TAuthored>{Outcome Single|Divergent|Unreadable, Authored, Diagnostic}. RackAuthoredComparatorPorts.Selective() returns the private SelectiveComparator for SelectiveAuthoredComparisonInput(rackId, siblings). It returns Unreadable for null input and otherwise maps SelectiveAuthoredAuthority.Resolve 1:1. There is no production caller in src; it is used only in tests (SharedViewFoundationF6Tests.cs:178). Dynamic/PushBack/Cantilever/Cabecera have non-generic typed comparators (AUTH-13 raw reader); Cama and the generic overloads are unsupported and return Unreadable.",
+   "evidence": "src/RackCad.Application/Systems/Shared/RackAuthoredComparator.cs:8-45, 47-59, 65-125; RackAuthoredComparator.FourKinds.cs:12-83",
+   "status": "FACT"
+  },
+  {
+   "id": "F2.13",
+   "topic": "IRackResolvePort / Selective adapter",
+   "statement": "IRackResolvePort<in TInput, TResolved> has Kind and Resolve(TInput) -> RackResolveResult<TResolved>. RackResolveAdapter calls the supplied delegate once and maps null input to UnreadableInput, a null result to ResolutionFailure, a blocked diagnostic to Blocked, and an exception to ResolutionFailure. RackResolvePorts.Selective<TInput,TResolved>(Func resolver, Func blocked) is only a generic factory; src contains no concrete Selective resolver adapter instance, only tests.",
+   "evidence": "src/RackCad.Application/Systems/Shared/RackResolveContract.cs:59-128, 131-168; tests/RackCad.Tests/SharedViewFoundationF5Tests.cs:49,68,249",
+   "status": "FACT"
+  },
+  {
+   "id": "F2.14",
+   "topic": "IRackViewPreparationPort / RackPreparedView",
+   "statement": "IRackViewPreparationPort<in TResolved, TPayload>.Prepare(resolved, RackViewAddress, RackViewFrameResult, string baseName) returns RackPreparedView<TPayload>{Kind, Address, Frame, BaseName, BlockRequirements, Payload}. The adapter calls the builder once and extracts requirements from the typed payload; it does not materialize, import or open transactions. PrepareV2 adds PieceRequirements. RackViewPreparationPorts.Selective(builder, supports, requirements) exists, but src contains no Selective instance, only tests. RackBlockRequirementExtractors.HeaderRun extracts distinct non-blank BlockNames from LooseInstances and Headers[].Instances.",
+   "evidence": "src/RackCad.Application/Systems/Shared/RackViewPreparation.cs:19-43, 134-253, 256-262; LibraryBlockRequirements.cs:45-80; tests/RackCad.Tests/SharedViewFoundationF5Tests.cs:266",
+   "status": "FACT"
+  },
+  {
+   "id": "F2.15",
+   "topic": "AutoCadLibraryBlockQuery",
+   "statement": "`internal sealed class AutoCadLibraryBlockQuery : ILibraryBlockQuery`, constructed with a Database. Query(IReadOnlyList<LibraryBlockRequirement>) opens its OWN StartTransaction (no lock), checks BlockTable.Has(key) -> Found/Missing, and commits. It writes nothing. Its only production user is BlockLibraryImporter.EnsureForPlan through LibraryBlockAvailabilityFlow.Observe(allowImport:true), which queries AFTER the import.",
+   "evidence": "src/RackCad.Plugin/Drawing/AutoCadLibraryBlockQuery.cs:9-40; BlockLibraryImporter.cs:25-39; LibraryBlockRequirements.cs:112-117, 156-180",
+   "status": "FACT"
+  },
+  {
+   "id": "F2.16",
+   "topic": "AutoCadExternalLibraryBlockQuery",
+   "statement": "AutoCadExternalLibraryBlockQuery reads the external library DWG (BlockLibraryDatabaseCache side database), not the active drawing. It uses its own transaction on the source database and returns FileMissing/Unknown/Present/Missing observations.",
+   "evidence": "src/RackCad.Plugin/Drawing/AutoCadExternalLibraryBlockQuery.cs:12-57",
+   "status": "FACT"
+  },
+  {
+   "id": "F2.17",
+   "topic": "ProjectVariablesData / Registry",
+   "statement": "ProjectVariablesData.Read(Transaction, Database) uses the caller's transaction. It reads the NOD entry \"RACKCAD_PROJECT\" as an Xrecord of text chunks and returns ProjectVariablesPayload Absent, Present(json) or Unreadable. It never throws (catches System.Exception). ProjectVariablesRegistry.Read(Transaction, Database) = new ProjectVariablesStore().Read(ProjectVariablesData.Read(...)) -> ProjectVariablesReadResult; the caller owns the transaction. Writes exist separately (Data.Write, and Registry.TryWrite guarded by lastRead).",
+   "evidence": "src/RackCad.Plugin/ProjectVariablesData.cs:33-98, 104-134; ProjectVariablesRegistry.cs:17-51",
+   "status": "FACT"
+  },
+  {
+   "id": "F2.18",
+   "topic": "CustomPropertiesData",
+   "statement": "CustomPropertiesData.Read(Transaction, Database) uses the caller's transaction. It reads the NOD entry \"RACKCAD_CUSTOM_PROPERTIES\" and returns CustomPropertiesPayload Absent, Present or Unreadable. It catches only Autodesk.AutoCAD.Runtime.Exception and disposes the ResultBuffer. It is interpreted by new CustomPropertiesStore().Read(...). A Write member exists separately.",
+   "evidence": "src/RackCad.Plugin/CustomPropertiesData.cs:30-103, 112-158; CustomPropertiesExecutor.cs:139, 165",
+   "status": "FACT"
+  },
+  {
+   "id": "F2.19",
+   "topic": "Other read-only accessors",
+   "statement": "Other read accessors: CustomPropertiesExecutor.SelectionOf(Transaction, ObjectId) is caller-owned and returns handle + IsFromExternalReference. CustomPropertiesExecutor.ScanProjection (private) is caller-owned and adds IsDependent and placed. RackCommandSupport.ReadDimensionStyleNames(Document) opens its own tx and reads DimStyleTable names. RackCommandSupport.PickRackBlock prompts, then reads through InDocumentTransaction. RackDuplicarCommands.TakeSnapshot (private) opens its own tx and reads selected references, ownerId == model space, position/rotation/scale/layer, and definition payload + name. LateralHeaderDrawService.ReadBlockName (private) uses StartOpenCloseTransaction. RackUnitsGuard reads Database.Insunits.",
+   "evidence": "CustomPropertiesExecutor.cs:223-232, 297-315; RackCommandSupport.cs:75-100, 146-179; RackDuplicarCommands.cs:175-237; LateralHeaderDrawService.cs:274-279; RackUnitsGuard.cs:34-63",
+   "status": "FACT"
+  },
+  {
+   "id": "F2.20",
+   "topic": "Missing generic readers",
+   "statement": "Only ScanEnvelopes enumerates the drawing's BlockTable, and it filters (see F2.02). Grep of RackCad.Plugin finds no reader that enumerates all block-table names, all layers, the whole NOD or all model-space content. LayerHelper.EnsureLayer only does Has() and creates the layer when it is missing (a writer). The only other model-space enumeration is RACKRELLENAR's layer-outline scan.",
+   "evidence": "Grep BlockTableId/LayerTableId/NamedObjectsDictionaryId in src/RackCad.Plugin (enumeration only at RackBlockFinder.cs:62-63); RackLayoutCommands.Fill.cs:159-190; LayerHelper.cs:16-29",
+   "status": "FACT"
+  },
+  {
+   "id": "F2.21",
+   "topic": "Existing in-transaction revalidation precedent",
+   "statement": "ProjectVariableMutationExecutor prepares all views first (PrepareRedraw, which imports outside the tx). It then opens ONE StartTransaction and, inside it, re-reads ProjectVariablesRegistry.Read and ScanEnvelopes -> Project and calls RegistryCommit.Prepare(plan, lastRead, currentEntries). On IsBlocked, or when TryWrite fails, it returns Aborted without Commit, so dispose rolls back. Only after that does it write the views, commit once, then PurgeAfterCommit and ApplyRegen.",
+   "evidence": "src/RackCad.Plugin/ProjectVariableMutationExecutor.cs:223-258, 262-321; RegistryCommit.cs:107; PlanReadSet.cs:302-325",
+   "status": "FACT"
+  },
+  {
+   "id": "F2.22",
+   "topic": "Writers that look like readers",
+   "statement": "RackBlockRenamer.SyncName opens its own lock and tx and RENAMES the BTR (commit). RackCommandSupport.EraseViewBlocks erases definitions and references in its own tx plus a purge. Neither is read-only.",
+   "evidence": "src/RackCad.Plugin/Drawing/RackBlockRenamer.cs:21-58; RackCommandSupport.cs:218-283",
+   "status": "FACT"
+  },
+  {
+   "id": "F3.01",
+   "topic": "Source-guard infrastructure",
+   "statement": "The source guards locate the repo root by walking up from AppContext.BaseDirectory until RackCad.sln exists, read files with File.ReadAllText(Path.Combine(root, \"src\", \"RackCad.Plugin\", ...)), and assert on text. Their stated reason: no suite can load the Plugin (ADR-0003) and CI has no AutoCAD.",
+   "evidence": "tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs:9-22, 26-45; CallerOwnedTransactionGuardTests.cs:18-22, 31-46; CallerOwnedFacadeGuardTests.cs:25-27, 32-47",
+   "status": "FACT"
+  },
+  {
+   "id": "F3.02",
+   "topic": "Comment stripping variants",
+   "statement": "RackDefinitionCreatorGuardTests.Code() cuts each line at its first \"//\"; it does not handle block comments or string literals. CantileverPluginSourceGuardTests.CodeOnly() removes /* */ blocks (Singleline regex) and then // comments. CallerOwnedTransactionGuardTests and CallerOwnedFacadeGuardTests assert on raw text, comments included.",
+   "evidence": "RackDefinitionCreatorGuardTests.cs:47-55; CantileverPluginSourceGuardTests.cs:42-46; CallerOwnedTransactionGuardTests.cs:48-50; CallerOwnedFacadeGuardTests.cs:45-47",
+   "status": "FACT"
+  },
+  {
+   "id": "F3.03",
+   "topic": "Method-body locators",
+   "statement": "Four body locators exist. (1) Body(source, signature, occurrence) matches braces from the n-th signature (RackDefinitionCreatorGuardTests.cs:57-90). (2) MemberBody(code, signature, file) requires the signature to end in '(' and be unique, skips the parameter list, and handles expression bodies (=> ... ;); it has a self-test (RackDefinitionCreatorGuardTests.cs:256-311, 335-343). (3) CallerOwnedFacadeGuardTests.Body handles expression bodies without a uniqueness check (:58-92). (4) SelectiveTransactionBoundaryGuardTests.BodyOf is line-based and ends at member-level indentation (tests/RackCad.UI.Tests/SelectiveTransactionBoundaryGuardTests.cs:64-80).",
+   "evidence": "as cited",
+   "status": "FACT"
+  },
+  {
+   "id": "F3.04",
+   "topic": "Assertion styles",
+   "statement": "The assertion styles in use are: (a) forbidden tokens in a body or file with Assert.DoesNotContain, e.g. \"Commit(\", \"Abort(\", \"StartTransaction\", \"StartOpenCloseTransaction\", \"LockDocument\", \"Regen\", \"EnsureForPlan\", \"BlockReference\", \"ModelSpace\", \"Erase(\" (RackDefinitionCreatorGuardTests.cs:130-196, 391; CallerOwnedFacadeGuardTests.cs:112-161; CallerOwnedTransactionGuardTests.cs:91-126). (b) Required tokens with Assert.Contains, e.g. TopTransaction and UnmanagedObject (RackDefinitionCreatorGuardTests.cs:361-377). (c) Ordering via IndexOf comparisons: Precheck < write, missing-check < Envelope, Write < Read, prepare < StartTransaction, Commit < Purge < Regen (RackDefinitionCreatorGuardTests.cs:347-359, 394-403, 447-456; CallerOwnedTransactionGuardTests.cs:179-231; ProjectVariableMutationExecutorTests.cs:255-278). (d) Exact counts: Count(source, \"Commit()\") == 1, StartTransaction() == 1, ApplyRegen == 1 (ProjectVariableMutationExecutorTests.cs:186-198, 225-244), Regex.Matches(...).Count == 2 (RackDefinitionCreatorGuardTests.cs:99-100), a single Editor.Regen() (CantileverPluginSourceGuardTests.cs:171). (e) A table of delegated members x forbidden tokens (RackDefinitionCreatorGuardTests.cs:216-254, 313-333). (f) Theory/MemberData over several files (CallerOwnedFacadeGuardTests.cs:49-56, 96-191). (g) Directory-wide scans with exclusions: Directory.EnumerateFiles(Application) with DoesNotContain (RackDefinitionCreatorGuardTests.cs:477-488), and Directory.GetFiles(Plugin) excluding obj/bin with a Regex word match (CantileverPluginSourceGuardTests.cs:95-108). (h) Regex negative matches for static state or assignment (RackDefinitionCreatorGuardTests.cs:121-125, 183).",
+   "evidence": "as cited",
+   "status": "FACT"
+  },
+  {
+   "id": "F3.05",
+   "topic": "Token false-positive risk",
+   "statement": "Token guards are substring-based, so any identifier containing a forbidden word trips them: 'Editor' is forbidden in the whole creator (RackDefinitionCreatorGuardTests.cs:190-196) and 'Regen' in the delegated bodies (:250). A P-5 guard modelled on them inherits that coarseness unless it uses word-boundary Regex, as CantileverPluginSourceGuardTests.cs:103 does.",
+   "evidence": "RackDefinitionCreatorGuardTests.cs:190-196, 248-254; CantileverPluginSourceGuardTests.cs:103",
+   "status": "FACT"
+  }
+ ],
+ "tables": [
+  {
+   "title": "T1 RackDefinitionCreator / RackDefinitionCreationResult API (src/RackCad.Plugin/Systems/Shared)",
+   "columns": [
+    "Member",
+    "Signature",
+    "File:line",
+    "Behaviour"
+   ],
+   "rows": [
+    [
+     "CreateInTransaction (header-run)",
+     "internal static RackDefinitionCreationResult CreateInTransaction(Database, Transaction, LateralHeaderDrawer drawer, HeaderRunPlan plan, string requestedBlockName, RackEmbedDocument envelope)",
+     "RackDefinitionCreator.cs:39-80",
+     "Precheck, then drawer.CreateSystemBlock, then empty-name check, then missing-blocks check (no envelope written), then Envelope; catch gives WriteFailed"
+    ],
+    [
+     "CreateInTransaction (Cantilever)",
+     "internal static RackDefinitionCreationResult CreateInTransaction(Database, Transaction, CantileverViewPlan plan, string requestedBlockName, RackEmbedDocument envelope)",
+     "RackDefinitionCreator.cs:83-113",
+     "Precheck, then CantileverViewMaterializer.CreateBlockDefinitionNamed, then empty-name check, then Envelope; catch gives WriteFailed"
+    ],
+    [
+     "Precheck (private)",
+     "RackDefinitionCreationResult? Precheck(Database, Transaction, bool invalidPlan, string, RackEmbedDocument, out string payloadJson)",
+     "RackDefinitionCreator.cs:137-195",
+     "Checks, in order: disposed or null inputs; TopTransaction.UnmanagedObject == transaction.UnmanagedObject; InvalidPlan; InvalidBlockName; InvalidEnvelope (Id/Kind/Name); RackEmbedStore.Serialize"
+    ],
+    [
+     "UnusableEffectiveName (private)",
+     "RackDefinitionCreationResult? UnusableEffectiveName(string)",
+     "RackDefinitionCreator.cs:121-131",
+     "Post-write check: a blank actual name gives WriteFailed"
+    ],
+    [
+     "Envelope (private)",
+     "RackDefinitionCreationResult Envelope(Transaction, ObjectId, string blockName, string payloadJson)",
+     "RackDefinitionCreator.cs:201-214",
+     "RackBlockData.Write, then RackBlockData.Read compared by ordinal equality; mismatch gives EnvelopeWriteFailed, match gives Created"
+    ],
+    [
+     "RackDefinitionCreationFailure",
+     "enum None, TransactionMismatch, InvalidPlan, InvalidBlockName, MissingLibraryBlocks, InvalidEnvelope, EnvelopeWriteFailed, WriteFailed",
+     "RackDefinitionCreationResult.cs:12-42",
+     "Every value other than None leaves what was written in the caller's transaction"
+    ],
+    [
+     "RackDefinitionCreationResult",
+     "internal readonly struct {IsSuccess, DefinitionId, BlockName, Failure, MissingInstances, Diagnostic}; Created/Failed/Missing",
+     "RackDefinitionCreationResult.cs:53-98",
+     "Success does not mean committed"
+    ],
+    [
+     "Production callers",
+     "none",
+     "Grep over the extract",
+     "Referenced only by the source-text guard tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs"
+    ]
+   ]
+  },
+  {
+   "title": "T2 Selective FRONTAL/PLANTA creation vs AUTH-15 (header-run family)",
+   "columns": [
+    "Aspect",
+    "Selective path today (evidence)",
+    "RackDefinitionCreator (evidence)",
+    "Same?"
+   ],
+   "rows": [
+    [
+     "Plan type",
+     "SelectiveFrontalBuilder.BuildPlan / SelectivePlantaBuilder.BuildPlan return HeaderRunPlan (SelectiveFrontalBuilder.cs:35; SelectivePlantaBuilder.cs:36)",
+     "Accepts HeaderRunPlan (RackDefinitionCreator.cs:43)",
+     "YES"
+    ],
+    [
+     "Drawer code",
+     "SystemBlockWriter.CreateBlock calls drawer.CreateSystemBlock (SystemBlockWriter.cs:29)",
+     "drawer.CreateSystemBlock (RackDefinitionCreator.cs:55)",
+     "YES: same LateralHeaderDrawer.CreateSystemBlock (LateralHeaderDrawer.cs:28-81)"
+    ],
+    [
+     "Plan/catalog build",
+     "RackCatalogLoader.Load() plus the plan factory inside ViewBlockDraw.DrawAndPlace (ViewBlockDraw.cs:49-50); frontal uses FondoSystemView(system, fondo) (RackSelectivoCommands.cs:517)",
+     "Plan supplied by the caller",
+     "DIFF (caller must build)"
+    ],
+    [
+     "Library import",
+     "EnsureForPlan inside the lock, outside the tx (SystemBlockWriter.cs:25); own tx plus WblockClone (BlockLibraryImporter.cs:68-80,123)",
+     "Never imports (guard :157-165)",
+     "DIFF (caller must pre-import outside its tx)"
+    ],
+    [
+     "Lock / transaction / commit",
+     "Own LockDocument, StartTransaction and Commit (SystemBlockWriter.cs:23-37)",
+     "Caller's tx, verified as TopTransaction by UnmanagedObject; no commit (RackDefinitionCreator.cs:156-164)",
+     "DIFF"
+    ],
+    [
+     "Requested name",
+     "Frontal: LinkedSelectiveFrontal, then SelectiveFrontal (RackSelectivoCommands.cs:520; SelectiveFrontalDrawService.cs:76-77). Planta: SelectivePlanta(system, name) (SelectivePlantaDrawService.cs:67-68)",
+     "requestedBlockName passed through unchanged; no base-name policy",
+     "DIFF (caller must apply RackViewBaseName)"
+    ],
+    [
+     "Effective name / uniqueness",
+     "Drawer UniqueBlockName: sanitize plus _N (LateralHeaderDrawer.cs:395-413)",
+     "Same drawer policy, plus a blank-name refusal (RackDefinitionCreator.cs:59-63)",
+     "SAME policy; AUTH-15 adds the blank check"
+    ],
+    [
+     "Envelope input",
+     "Pre-serialized payloadJson from RackEmbedComposer.Compose plus RackEmbedStore.Serialize (RackSelectivoCommands.cs:405-417)",
+     "RackEmbedDocument, validated (Id/Kind/Name) and serialized with RackEmbedStore.Serialize (RackDefinitionCreator.cs:177-187)",
+     "Serializer SAME; composition is the caller's in both"
+    ],
+    [
+     "Envelope write",
+     "Written only if non-empty; no readback (SystemBlockWriter.cs:31-34)",
+     "Write followed by ordinal readback (RackDefinitionCreator.cs:204-211)",
+     "DIFF"
+    ],
+    [
+     "Missing library pieces",
+     "Envelope still written; missing pieces reported as text (BlockPlacement.cs:44,98-118)",
+     "MissingLibraryBlocks failure; no envelope (RackDefinitionCreator.cs:67-72)",
+     "DIFF"
+    ],
+    [
+     "Placement",
+     "Jig: own tx, ModelSpace AppendEntity, Commit; on cancel, erase plus purge in another tx (BlockPlacement.cs:26-53,123-201)",
+     "None (guard :167-175)",
+     "DIFF"
+    ],
+    [
+     "Failure surface",
+     "HeaderPlacementResult.Failure(ex.Message) (ViewBlockDraw.cs:53-56)",
+     "Typed RackDefinitionCreationFailure",
+     "DIFF"
+    ],
+    [
+     "Nested header defs",
+     "Created with no envelope (LateralHeaderDrawer.cs:38-51)",
+     "Same, inside the caller's tx (RackDefinitionCreator.cs:31-33)",
+     "SAME"
+    ],
+    [
+     "Layers / dim blocks",
+     "EnsureLayer RACKCAD_ANOTACIONES/RACKCAD_COTAS; RotatedDimension *D (LateralHeaderDrawer.cs:324-375)",
+     "Same drawer, same side effects inside the caller's tx",
+     "SAME"
+    ]
+   ]
+  },
+  {
+   "title": "T3 Readers / comparators inventory",
+   "columns": [
+    "API",
+    "Signature",
+    "File:line",
+    "Tx ownership",
+    "Reads",
+    "Can write?",
+    "Prod callers",
+    "Candidate verification role"
+   ],
+   "rows": [
+    [
+     "RackBlockData.Read",
+     "public static string Read(Transaction, ObjectId)",
+     "src/RackCad.Plugin/Systems/Shared/RackBlockData.cs:54-89",
+     "Caller's",
+     "Ext dict Xrecord RACKCAD_SELECTIVE text chunks",
+     "No (Write is a separate member)",
+     "RackDefinitionCreator:206, RackBlockFinder:71, RackCommandSupport:94, RackDuplicarCommands:223, RackLayoutCommands:191",
+     "Payload scan; envelope postcondition"
+    ],
+    [
+     "RackBlockFinder.ScanEnvelopes",
+     "public static List<RackEnvelopeScan> ScanEnvelopes(Transaction, Database, bool includeReferenceCount)",
+     "src/RackCad.Plugin/RackBlockFinder.cs:57-91",
+     "Caller's",
+     "Every non-layout, non-anonymous, non-xref BTR that has a payload: id, Embed (or null), direct ref count, name",
+     "No",
+     "RackSelectivoCommands:308, RackVariablesCommands:111, ProjectVariableMutationExecutor:272, RackInventarioCommands:46, BomTotal:52, CustomPropertiesExecutor:303, RackCommandSupport:130",
+     "Payload scan; RackCad definitions; partial block names; placement count. Skips library, nested, anonymous and xref defs"
+    ],
+    [
+     "RackEnvelopeScan",
+     "readonly struct(DefinitionId, Embed, DirectReferenceCount, BlockName)",
+     "RackBlockFinder.cs:99-120",
+     "n/a",
+     "n/a",
+     "No",
+     "as above",
+     "Value snapshot"
+    ],
+    [
+     "RackBlockFinder.FindFirstModelSpaceReference",
+     "public static BlockReference FindFirstModelSpaceReference(Transaction, Database, List<(ObjectId, RackEmbedDocument)>)",
+     "RackBlockFinder.cs:20-40",
+     "Caller's",
+     "Direct refs of the given defs owned by model space",
+     "No (returns a live DBObject)",
+     "RACKLAYOUT/RACKLISTA (per doc)",
+     "Model-space presence of a definition"
+    ],
+    [
+     "RackCommandSupport.FindRackBlocks",
+     "public static List<(ObjectId, RackEmbedDocument)> FindRackBlocks(Document, string rackId)",
+     "src/RackCad.Plugin/RackCommandSupport.cs:117-142",
+     "OWN lock, tx and commit",
+     "ScanEnvelopes filtered by Id (ignore case)",
+     "No",
+     "RackSelectivoCommands:126 and other editors",
+     "Sibling set; not caller-owned"
+    ],
+    [
+     "RackCommandSupport.DecodeView / IsPlantaView",
+     "public static DecodedRackView DecodeView(RackEmbedDocument); bool IsPlantaView(RackEmbedDocument)",
+     "RackCommandSupport.cs:102-111",
+     "None (pure)",
+     "Embed Kind, View, Section",
+     "No",
+     "RackSelectivoCommands:169,206; ProjectVariableMutationExecutor",
+     "View addresses"
+    ],
+    [
+     "RackViewCodec",
+     "Decode(string kind, string view, int section); Encode(RackSystemKind, RackViewAddress); TryDecodeViewKind; DecodeKind",
+     "src/RackCad.Application/Systems/Shared/RackViewCodec.cs:75-164",
+     "None (pure)",
+     "Syntax only",
+     "No",
+     "RackCommandSupport:103; RackSelectivoCommands:352",
+     "View addresses, canonical/coerced disposition"
+    ],
+    [
+     "RackViewAvailability.Evaluate",
+     "RackViewAvailabilityResult Evaluate(DecodedRackView, RackViewAvailabilityFacts); SelectiveViewAvailabilityFacts(int fondoCount, IEnumerable<int> posts)",
+     "src/RackCad.Application/Systems/Shared/RackViewAvailability.cs:50-77,134-150",
+     "None (pure)",
+     "Facts supplied by the caller",
+     "No",
+     "RackSelectivoCommands:173-213; ProjectVariableMutationExecutor:200-221",
+     "View-address validity against the design"
+    ],
+    [
+     "SelectiveAuthoredAuthority.Resolve / IsSameAuthority",
+     "AuthoredAuthorityResult Resolve(string rackId, IReadOnlyList<ProjectVariableScanEntry>); bool IsSameAuthority(IReadOnlyList<SelectivePalletDesignDocument>)",
+     "src/RackCad.Application/ProjectVariables/SelectiveAuthoredAuthority.cs:96-157",
+     "None (pure)",
+     "Authored docs",
+     "No",
+     "BomAuthoredAuthority:112, ProjectVariableConsumerDiscovery:150,185, ProjectVariablesWorkspace:492, RecoveryAssessment:101,261,308, RackDuplicationPlan:450",
+     "SL-6 comparator (authored equivalence, include-by-default)"
+    ],
+    [
+     "ProjectVariableScanProjection.Project",
+     "ProjectVariableScanEntry Project(string definitionId, RackEmbedDocument, int directReferenceCount)",
+     "src/RackCad.Application/ProjectVariables/ProjectVariableScanProjection.cs:30-65",
+     "None (pure)",
+     "Embed plus inner Selective design",
+     "No",
+     "RackSelectivoCommands:311, ProjectVariableMutationExecutor:275, RackVariablesCommands",
+     "Classifies a scan entry (unreadable / foreign / selective)"
+    ],
+    [
+     "IRackAuthoredComparatorPort + RackAuthoredComparatorPorts.Selective()",
+     "Compare(SelectiveAuthoredComparisonInput(rackId, siblings)) -> RackAuthoredComparisonResult<SelectivePalletDesignDocument>",
+     "src/RackCad.Application/Systems/Shared/RackAuthoredComparator.cs:41-45,65-113",
+     "None (pure)",
+     "Siblings",
+     "No",
+     "None in src (tests only: SharedViewFoundationF6Tests.cs:178)",
+     "SL-6 comparator port shape"
+    ],
+    [
+     "IRackResolvePort / RackResolvePorts.Selective",
+     "RackResolveAdapter<TIn,TRes> Selective(Func<TIn,TRes>, Func<TRes,string> blocked)",
+     "src/RackCad.Application/Systems/Shared/RackResolveContract.cs:59-168",
+     "None",
+     "n/a",
+     "No",
+     "None in src (tests only)",
+     "Typed resolve outcome"
+    ],
+    [
+     "IRackViewPreparationPort / RackPreparedView / RackViewPreparationPorts.Selective",
+     "Prepare(resolved, RackViewAddress, RackViewFrameResult, baseName) -> RackPreparedView{Kind, Address, Frame, BaseName, BlockRequirements, Payload}",
+     "src/RackCad.Application/Systems/Shared/RackViewPreparation.cs:19-43,134-262",
+     "None (no tx, no import)",
+     "Builder output",
+     "No",
+     "None in src (tests only)",
+     "Carries plan + library requirements + address + base name"
+    ],
+    [
+     "RackBlockRequirementExtractors.HeaderRun",
+     "IReadOnlyList<LibraryBlockRequirement> Extract(HeaderRunPlan)",
+     "src/RackCad.Application/Systems/Shared/LibraryBlockRequirements.cs:45-80",
+     "None (pure)",
+     "Plan BlockNames",
+     "No",
+     "BlockLibraryImporter:32",
+     "Expected library keys (library residue / import set)"
+    ],
+    [
+     "AutoCadLibraryBlockQuery",
+     "IReadOnlyList<LibraryBlockAvailabilityFact> Query(IReadOnlyList<LibraryBlockRequirement>)",
+     "src/RackCad.Plugin/Drawing/AutoCadLibraryBlockQuery.cs:9-40",
+     "OWN tx (no lock), commit",
+     "BlockTable.Has(key)",
+     "No",
+     "BlockLibraryImporter.EnsureForPlan:36",
+     "Library block presence / residue by key"
+    ],
+    [
+     "AutoCadExternalLibraryBlockQuery",
+     "Query(requirements) -> LibraryKeyAvailabilityObservation list",
+     "src/RackCad.Plugin/Drawing/AutoCadExternalLibraryBlockQuery.cs:12-57",
+     "Own tx on the LIBRARY db",
+     "Library DWG",
+     "No",
+     "(library observer)",
+     "Not a drawing reader"
+    ],
+    [
+     "ProjectVariablesData.Read",
+     "ProjectVariablesPayload Read(Transaction, Database)",
+     "src/RackCad.Plugin/ProjectVariablesData.cs:45-98",
+     "Caller's",
+     "NOD RACKCAD_PROJECT",
+     "No (Write separate)",
+     "ProjectVariablesRegistry:23",
+     "Project-variables snapshot (Absent/Present/Unreadable)"
+    ],
+    [
+     "ProjectVariablesRegistry.Read",
+     "ProjectVariablesReadResult Read(Transaction, Database)",
+     "src/RackCad.Plugin/ProjectVariablesRegistry.cs:22-23",
+     "Caller's",
+     "As above plus store classification",
+     "No (TryWrite separate)",
+     "RackSelectivoCommands:306, RackVariablesCommands:109, BomTotal:56, ProjectVariableMutationExecutor:270",
+     "Project-variables read-set"
+    ],
+    [
+     "CustomPropertiesData.Read",
+     "CustomPropertiesPayload Read(Transaction, Database)",
+     "src/RackCad.Plugin/CustomPropertiesData.cs:42-103",
+     "Caller's",
+     "NOD RACKCAD_CUSTOM_PROPERTIES",
+     "No (Write separate)",
+     "CustomPropertiesExecutor:139,165",
+     "Custom-properties snapshot"
+    ],
+    [
+     "CustomPropertiesExecutor.SelectionOf",
+     "internal static RackCustomPropertiesSelection SelectionOf(Transaction, ObjectId)",
+     "src/RackCad.Plugin/CustomPropertiesExecutor.cs:223-232",
+     "Caller's",
+     "BTR handle, IsFromExternalReference",
+     "No",
+     "CustomPropertiesExecutor:204",
+     "Definition identity by handle"
+    ],
+    [
+     "RackCommandSupport.ReadDimensionStyleNames",
+     "List<string> ReadDimensionStyleNames(Document)",
+     "RackCommandSupport.cs:146-179",
+     "OWN lock, tx and commit",
+     "DimStyleTable names",
+     "No",
+     "RackSelectivoCommands:32,77",
+     "Symbol-table snapshot (dimstyles only)"
+    ],
+    [
+     "RackDuplicarCommands.TakeSnapshot (private)",
+     "DuplicationSnapshot TakeSnapshot(Document, ObjectId[])",
+     "src/RackCad.Plugin/RackDuplicarCommands.cs:175-237",
+     "OWN (InDocumentTransaction)",
+     "Selected refs: model-space owner, position/rotation/scale/layer; definition payload + name",
+     "No",
+     "RACKDUPLICAR",
+     "Model-space reference snapshot pattern"
+    ],
+    [
+     "RackUnitsGuard.Classify/WarnIfNotInches",
+     "DrawingUnits Classify(UnitsValue); void WarnIfNotInches(Document)",
+     "src/RackCad.Plugin/RackUnitsGuard.cs:34-63",
+     "None",
+     "Database.Insunits",
+     "Editor message only",
+     "Insert paths",
+     "INSUNITS"
+    ],
+    [
+     "ProjectVariableMutationExecutor MUTATE re-read",
+     "(inline) Registry.Read + ScanEnvelopes + RegistryCommit.Prepare inside the single tx",
+     "src/RackCad.Plugin/ProjectVariableMutationExecutor.cs:266-299",
+     "Its own single tx",
+     "Registry plus envelopes",
+     "Yes (writer)",
+     "RACKVARIABLES binding",
+     "Precedent for in-tx read-set revalidation and abort-by-no-commit"
+    ]
+   ]
+  },
+  {
+   "title": "T4 Source-guard patterns usable for static guards (P-5)",
+   "columns": [
+    "Test file",
+    "Technique",
+    "Lines"
+   ],
+   "rows": [
+    [
+     "tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs",
+     "RepoRoot via RackCad.sln; PluginSource; Code() cuts at //; Body by n-th occurrence; MemberBody (unique, expression-aware) with self-test; forbidden-token table over delegated members; order via IndexOf; Regex count == 2; Application-wide EnumerateFiles",
+     "26-90, 96-206, 216-343, 347-488"
+    ],
+    [
+     "tests/RackCad.Tests/CallerOwnedTransactionGuardTests.cs",
+     "Body brace-match; DoesNotContain Commit()/Regen/StartTransaction/LockDocument/EnsureForPlan in RedefineInTransaction; order prepare < StartTransaction, Commit < PurgeAfterCommit < ApplyRegen; exactly 1 ApplyRegen",
+     "52-81, 85-138, 179-231, 249-262"
+    ],
+    [
+     "tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs",
+     "Theory/MemberData over 4 facade files; expression-aware Body; the primitive must not Commit, start a tx, lock, regen, import, or call RedrawInPlace (self-owned wrapper)",
+     "49-92, 96-191"
+    ],
+    [
+     "tests/RackCad.Tests/ProjectVariableMutationExecutorTests.cs",
+     "Count(token) == 1 for Commit(), StartTransaction(), ApplyRegen; At(token) ordering; DoesNotContain EnsureForPlan/CommandMethod",
+     "182-205, 211-278"
+    ],
+    [
+     "tests/RackCad.Tests/CantileverPluginSourceGuardTests.cs",
+     "CodeOnly strips /* */ and //; Directory.GetFiles(Plugin) excluding obj/bin plus Regex word boundary; Count(Editor.Regen()) == 1",
+     "35-46, 95-108, 171"
+    ],
+    [
+     "tests/RackCad.UI.Tests/SelectiveTransactionBoundaryGuardTests.cs",
+     "Signature table; line-based BodyOf; checks presence or absence of a call per handler",
+     "25-47, 64-80, 92, 110"
+    ],
+    [
+     "tests/RackCad.Tests/I59F2BoundaryGuardTests.cs",
+     "DoesNotContain(\"Transaction\") in the adapter source; assembly-reference check",
+     "12-50"
+    ]
+   ]
+  }
+ ],
+ "limitations": [
+  "Static read of the extract of commit 3375aadb only. Nothing was built, run or tested, and no AutoCAD runtime behaviour was observed. Nested-transaction semantics and how TopTransaction behaves after a reader opens its own nested StartTransaction are inferred, not seen (F2.06 UNCERTAIN).",
+  "Byte-equality of the envelope between the Selective path and AUTH-15 (F1.19) is inferred from the shared serializer and was not executed.",
+  "The caller inventory comes from grep over src/ and tests/ at this commit. Later commits (for example any RACKPROYECTAR caller of AUTH-15) are outside the extract and were not analysed.",
+  "HeaderInstanceGrouper, the SelectivePlantaBuilder grouping internals, RegistryCommit/PlanReadSet semantics and BlockNaming.SanitizeBlockName were not read in full; statements about them are limited to their call sites.",
+  "The anonymous *D block per dimension rests on the code comment at LateralHeaderDrawer.cs:109-111, not on observed runtime behaviour.",
+  "docs/adr/, .github/ and eng/ci/ were not consulted for this inventory; CI wiring of the guard tests is assumed from the test sources only."
+ ]
+}

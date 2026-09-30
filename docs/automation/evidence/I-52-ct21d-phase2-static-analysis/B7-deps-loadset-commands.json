@@ -1,0 +1,767 @@
+{
+ "facts": [
+  {
+   "id": "P1",
+   "topic": "csproj/Domain",
+   "statement": "RackCad.Domain targets net8.0 and declares no ProjectReference, PackageReference, Reference or Content items.",
+   "evidence": "src/RackCad.Domain/RackCad.Domain.csproj:1-5",
+   "status": "FACT"
+  },
+  {
+   "id": "P2",
+   "topic": "csproj/Application",
+   "statement": "RackCad.Application targets net8.0, references only RackCad.Domain, has no packages, and declares InternalsVisibleTo RackCad.Tests.",
+   "evidence": "src/RackCad.Application/RackCad.Application.csproj:3,6,10-12",
+   "status": "FACT"
+  },
+  {
+   "id": "P3",
+   "topic": "csproj/UI",
+   "statement": "RackCad.UI targets net8.0-windows with UseWPF=true and references Domain and Application. It emits InternalsVisibleTo(RackCad.UI.Tests) and ThemeInfo(None, SourceAssembly) as AssemblyAttribute items. It has no packages.",
+   "evidence": "src/RackCad.UI/RackCad.UI.csproj:3-4,7-8,13-15,20-25",
+   "status": "FACT"
+  },
+  {
+   "id": "P4",
+   "topic": "csproj/Plugin",
+   "statement": "RackCad.Plugin targets net8.0-windows, sets UseWPF=true and OutputType=Library, and references Domain, Application and UI. The ProjectReferences carry no Private=false, so the three product DLLs are copy-local.",
+   "evidence": "src/RackCad.Plugin/RackCad.Plugin.csproj:3-5,18-20",
+   "status": "FACT"
+  },
+  {
+   "id": "P5",
+   "topic": "csproj/Plugin AutoCAD refs",
+   "statement": "By default (UseAutoCADNuGetReferences != true) the Plugin references AcCoreMgd, AcDbMgd and AcMgd through HintPath $(AutoCADInstallDir)\\<name>.dll with Private=false. AutoCADInstallDir defaults to C:\\Program Files\\Autodesk\\AutoCAD 2025.",
+   "evidence": "src/RackCad.Plugin/RackCad.Plugin.csproj:6,28-41",
+   "status": "FACT"
+  },
+  {
+   "id": "P6",
+   "topic": "csproj/Plugin NuGet exception",
+   "statement": "When UseAutoCADNuGetReferences=true, the Plugin instead declares PackageReference AutoCAD.NET Version=[25.0.1] with PrivateAssets=all and ExcludeAssets=runtime (compile-only). The CI verifier pins the transitive packages AutoCAD.NET.Core 25.0.0 and AutoCAD.NET.Model 25.0.0 and maps AcCoreMgd to Core, AcDbMgd to Model and AcMgd to AutoCAD.NET.",
+   "evidence": "src/RackCad.Plugin/RackCad.Plugin.csproj:7,11-16; eng/ci/verify-autocad-references.ps1:24-33; docs/adr/0003-referencias-autocad-para-ci.md:40-44",
+   "status": "FACT"
+  },
+  {
+   "id": "P7",
+   "topic": "csproj/Plugin content",
+   "statement": "The Plugin copies assets/catalogs/*.json, *.csv and *.dwg to the output catalogs\\ folder with CopyToOutputDirectory=Always. The extracted assets/catalogs contains no .dwg (no blocks-library.dwg), only CSV and JSON files.",
+   "evidence": "src/RackCad.Plugin/RackCad.Plugin.csproj:24-26; listing of assets/catalogs (base-plates.csv, blocks.csv, connection-layout.csv, connection-points.csv, defaults.json, flow-bed-profiles.csv, header-templates.json, mensulas.csv, secciones.csv, seguridad.csv, structural-sections-*.csv/json, views.csv)",
+   "status": "FACT"
+  },
+  {
+   "id": "P8",
+   "topic": "csproj/Plugin bundle target",
+   "statement": "Target AssembleAutoloaderBundle runs AfterTargets=Publish. It builds PackageContents.xml from deploy/RackCad.bundle/PackageContents.template.xml by replacing @RACKCAD_VERSION@, @RACKCAD_SERIES_MIN@ and @RACKCAD_SERIES_MAX@ with $(RackCadVersion) and $(RackCadAutoCADSeriesMin/Max), then copies exactly RackCad.Plugin, Application, Domain and UI DLLs plus the catalogs into RackCad.bundle\\Contents. A plain build emits no bundle.",
+   "evidence": "src/RackCad.Plugin/RackCad.Plugin.csproj:43-73 (esp. 51,55-59,62-63,67-71)",
+   "status": "FACT"
+  },
+  {
+   "id": "P9",
+   "topic": "csproj/tests",
+   "statement": "RackCad.Tests targets net8.0 with RollForward=LatestMajor. Packages: Microsoft.NET.Test.Sdk 17.11.1, coverlet.collector 6.0.4 (PrivateAssets=all), xunit 2.9.2 and xunit.runner.visualstudio 2.8.2. It references Domain, Application and ../../tools/RackCad.StructuralSections.Import, and copies catalogs *.json and *.csv (PreserveNewest).",
+   "evidence": "tests/RackCad.Tests/RackCad.Tests.csproj:3,5,11-17,21-22,26,32-34",
+   "status": "FACT"
+  },
+  {
+   "id": "P10",
+   "topic": "csproj/UI tests",
+   "statement": "RackCad.UI.Tests targets net8.0-windows with UseWPF=true and RollForward=LatestMajor. It uses the same four test packages and versions, references Domain, Application and UI, and copies catalogs *.json and *.csv.",
+   "evidence": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj:5-8,15-21,25-27,33-35",
+   "status": "FACT"
+  },
+  {
+   "id": "P11",
+   "topic": "tools project",
+   "statement": "The tools/RackCad.StructuralSections.Import project referenced by RackCad.Tests is outside the extract, so its TFM and packages are not visible.",
+   "evidence": "tests/RackCad.Tests/RackCad.Tests.csproj:23-26; extract contains no tools/",
+   "status": "UNKNOWN"
+  },
+  {
+   "id": "P12",
+   "topic": "Directory.Build.props/targets",
+   "statement": "Directory.Build.props and Directory.Build.targets are NOT in the extract, so their contents are not visible. Other files say what they do: the targets stamp the commit SHA into InformationalVersion (priority SourceRevisionId, then GITHUB_SHA, then git rev-parse HEAD). The props hold LangVersion=latest and Nullable=disable, declare deterministic per-commit builds, and define RackCadVersion and RackCadAutoCADSeriesMin/Max (R25.0).",
+   "evidence": ".github/workflows/ci.yml:24-32; tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj:9; docs/adr/0033-validacion-por-clase-de-evidencia-y-sha-exacto.md:45-49; docs/adr/0004-estrategia-de-versiones-de-autocad.md:25-28; src/RackCad.Plugin/RackCad.Plugin.csproj:57-59; eng/ci/verify-autocad-references.ps1:648,660",
+   "status": "UNCERTAIN"
+  },
+  {
+   "id": "P13",
+   "topic": "resources",
+   "statement": "src/ and tests/ contain no .resx or .resources files, and no csproj declares EmbeddedResource items or satellite/culture settings. RackCad.UI has 20 XAML files, including Themes/Generic.xaml and Themes/AppStyles.xaml. RackCad.Plugin contains only .cs files and no XAML, even though UseWPF=true.",
+   "evidence": "find over src/tests (no *.resx); src/RackCad.UI/Themes/Generic.xaml, AppStyles.xaml; file listing of src/RackCad.Plugin",
+   "status": "FACT"
+  },
+  {
+   "id": "P14",
+   "topic": "resources",
+   "statement": "XAML is compiled to BAML embedded in RackCad.UI.dll. This is the SDK default for UseWPF Page items and is not declared explicitly.",
+   "evidence": "src/RackCad.UI/RackCad.UI.csproj:4 (UseWPF) - no explicit Page/Resource items",
+   "status": "UNCERTAIN"
+  },
+  {
+   "id": "P15",
+   "topic": "layering",
+   "statement": "Autodesk namespaces appear only in RackCad.Plugin. Plugin files use Autodesk.AutoCAD.ApplicationServices (39 files), DatabaseServices (59), EditorInput (16), Geometry (10), Runtime (17) and Colors (2). Application, Domain and UI contain no 'Autodesk' text.",
+   "evidence": "grep ^using Autodesk over src/RackCad.Plugin; grep -rln Autodesk src/RackCad.Application src/RackCad.Domain src/RackCad.UI = empty",
+   "status": "FACT"
+  },
+  {
+   "id": "L1",
+   "topic": "load/initializer",
+   "statement": "The only IExtensionApplication is PluginInitializer (public sealed), and its Initialize() and Terminate() are empty, so nothing runs at plugin load. There is no [assembly: ExtensionApplication], no [assembly: CommandClass] and no [ModuleInitializer] in src or tests.",
+   "evidence": "src/RackCad.Plugin/PluginInitializer.cs:5-13; grep '[assembly' and 'ModuleInitializer' = none",
+   "status": "FACT"
+  },
+  {
+   "id": "L2",
+   "topic": "load/static ctors",
+   "statement": "There are exactly three explicit static constructors, all in RackCad.UI (StructuralSectionPicker, RackBoundedEditorShell, RackEditorVisualShell). Each only overrides DefaultStyleKeyProperty metadata and does no I/O. Plugin, Application and Domain have no explicit static constructors.",
+   "evidence": "src/RackCad.UI/Controls/StructuralSectionPicker.cs:39-43; src/RackCad.UI/Shell/RackBoundedEditorShell.cs:29-34; src/RackCad.UI/Shell/RackEditorVisualShell.cs:21-25",
+   "status": "FACT"
+  },
+  {
+   "id": "L3",
+   "topic": "load/static field initializers on seam",
+   "statement": "Static field initializers on the seam run at type-initialization time. JsonRackCatalogProvider builds JsonSerializerOptions plus a process-wide ConcurrentDictionary catalog cache. UserSettingsStore, RackEmbedStore and SelectivePalletDesignStore build JsonSerializerOptions (the last adds JsonStringEnumConverter and PersistedBoundExpressionJson). RackEmbedComposer reflects over RackEmbedDocument properties. RackLog creates its sink, which does no file I/O until something is written. RackBlockRequirementExtractors instantiates the HeaderRun and Cantilever extractors. BlockLibraryDatabaseCache holds process-wide static state, including a cached side Database.",
+   "evidence": "src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs:32-37,48-49; src/RackCad.Application/Settings/UserSettings.cs:55-59; src/RackCad.Application/Persistence/RackEmbedDocument.cs:81-85; src/RackCad.Application/Persistence/SelectivePalletDesignStore.cs:15,115-129; src/RackCad.Application/Persistence/RackEmbedComposer.cs:37-41; src/RackCad.Application/Diagnostics/RackLog.cs:18,65-69; src/RackCad.Application/Diagnostics/RackDiagnosticsLog.cs:18-21,44-48; src/RackCad.Application/Systems/Shared/LibraryBlockRequirements.cs:47-51; src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:11-15,32-54",
+   "status": "FACT"
+  },
+  {
+   "id": "L4",
+   "topic": "load/NETLOAD vs autoloader",
+   "statement": "There are two loading routes: NETLOAD of a Debug DLL for manual validation, and an Autoloader bundle (RackCad.bundle with PackageContents.xml) installed under %AppData%\\Autodesk\\ApplicationPlugins. The manifest declares RuntimeRequirements SeriesMin=SeriesMax=R25.0.",
+   "evidence": "docs/adr/0002-paso0-evidencia.md:73,86; src/RackCad.Plugin/RackCad.Plugin.csproj:43-50; docs/adr/0004-estrategia-de-versiones-de-autocad.md:13-16,25-28",
+   "status": "FACT"
+  },
+  {
+   "id": "L5",
+   "topic": "load/PackageContents content",
+   "statement": "The PackageContents.template.xml content (ComponentEntry, LoadOnAutoCADStartup/LoadReasons, any Commands element) is not visible because deploy/ is outside the extract.",
+   "evidence": "src/RackCad.Plugin/RackCad.Plugin.csproj:55 references ..\\..\\deploy\\RackCad.bundle\\PackageContents.template.xml; extract has no deploy/",
+   "status": "UNKNOWN"
+  },
+  {
+   "id": "L6",
+   "topic": "load/catalog location",
+   "statement": "Catalogs are resolved next to RackCad.Application.dll (typeof(CatalogDirectory).Assembly.Location) before AppContext.BaseDirectory. The comment explains why: under NETLOAD, BaseDirectory points at acad.exe. The block library DWG defaults to catalogs/blocks-library.dwg unless UserSettings.BlockLibraryPath overrides it.",
+   "evidence": "src/RackCad.Application/Catalogs/CatalogDirectory.cs:8-12,19-38,43-44,51; src/RackCad.Application/Catalogs/BlockLibrary.cs:16,19-22",
+   "status": "FACT"
+  },
+  {
+   "id": "C1",
+   "topic": "commands",
+   "statement": "src registers 34 [CommandMethod] entries in 14 public sealed non-static command classes; every command method is a public instance void. Each attribute passes only the command name: CommandFlags does not appear anywhere in src, so no command declares CommandFlags.Session, Modal, UsePickSet or Redraw.",
+   "evidence": "grep CommandMethod over src (see command table); grep CommandFlags = none",
+   "status": "FACT"
+  },
+  {
+   "id": "C2",
+   "topic": "commands/context APIs",
+   "statement": "src never uses SendStringToExecute, SendCommand, PostCommand, ExecuteInApplicationContext, ExecuteInCommandContextAsync, LispFunction, P/Invoke, AssemblyResolve/Assembly.Load, or AutoCAD event subscriptions (Idle, DocumentActivated, CommandEnded, ObjectModified, ...). Dispatcher.BeginInvoke appears only in the UI recompute scheduler.",
+   "evidence": "grep over src (no hits); src/RackCad.UI/Editor/DispatcherRecomputeScheduler.cs:19,29",
+   "status": "FACT"
+  },
+  {
+   "id": "C3",
+   "topic": "commands/UI",
+   "statement": "Plugin commands open WPF windows only through AcApplication.ShowModalWindow. There is no ShowModelessWindow and no PaletteSet.",
+   "evidence": "grep ShowModalWindow over src/RackCad.Plugin (e.g. RackSelectivoCommands.cs:33,92; RackMenuCommands.cs:30); grep ShowModelessWindow/PaletteSet = none",
+   "status": "FACT"
+  },
+  {
+   "id": "C4",
+   "topic": "commands/absent",
+   "statement": "At this commit no RACKPROYECTAR, RPY or RACKMIRROR command is registered.",
+   "evidence": "grep -i RACKPROYECTAR|RACKMIRROR|\"RPY\" over src = none",
+   "status": "FACT"
+  },
+  {
+   "id": "C5",
+   "topic": "commands/per-document instance",
+   "statement": "Because the command classes are non-static and their methods are instance methods, AutoCAD creates a command-class instance per document on first invocation. That is AutoCAD API semantics and is not visible in the code. The command classes declare no instance fields, per a grep of field declarations.",
+   "evidence": "src/RackCad.Plugin/Rack*Commands*.cs class declarations (e.g. RackSelectivoCommands.cs:21); field grep returned nothing",
+   "status": "UNCERTAIN"
+  },
+  {
+   "id": "S1",
+   "topic": "seam/entry",
+   "statement": "A fresh Selective rack is created from RACKSELECTIVO/RS or from the RACKCAD menu (SelectiveInsertionRequest). Both call RackSelectivoCommands.DrawSelectiveView, which serializes the design once (SelectivePalletDesignDocument.From + SelectivePalletDesignStore.Serialize) and then calls DrawSelectiveViewFromAuthored.",
+   "evidence": "src/RackCad.Plugin/RackSelectivoCommands.cs:23,26-46,386-399,429-432; src/RackCad.Plugin/RackMenuCommands.cs:76-78",
+   "status": "FACT"
+  },
+  {
+   "id": "S2",
+   "topic": "seam/fresh view = frontal",
+   "statement": "In a fresh editor the lateral and planta insert buttons are enabled only when isEditingExisting && canInsertInAutoCad. So a new rack can only be inserted as FRONTAL; PLANTA (and lateral) are created later from RACKEDITAR, which calls EditSelective and then DrawSelectiveViewFromAuthored.",
+   "evidence": "src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs:279-282,2537-2541; src/RackCad.Plugin/RackSelectivoCommands.cs:270-280,467-472; src/RackCad.Plugin/KindHandlers/SelectiveKindHandler.cs:20",
+   "status": "FACT"
+  },
+  {
+   "id": "S3",
+   "topic": "seam/window construction",
+   "statement": "RACKSELECTIVO first constructs RackSelectiveWindow (RackCad.UI plus WPF). Its constructor reads %APPDATA%\\RackCad\\settings.json through UserSettingsGateway and loads the catalog through UiSupport.LoadCatalogSafe, which uses JsonRackCatalogProvider with the same static cache as the Plugin. The command then reads dimension styles in a LockDocument plus a transaction.",
+   "evidence": "src/RackCad.Plugin/RackSelectivoCommands.cs:31-33; src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs:215-229; src/RackCad.UI/Editor/RackEditorSession.cs:59; src/RackCad.UI/UiSupport.cs:84-94; src/RackCad.Plugin/RackCommandSupport.cs:146-179",
+   "status": "FACT"
+  },
+  {
+   "id": "S4",
+   "topic": "seam/frontal",
+   "statement": "InsertSelectiveFrontal may prompt for the fondo number (Editor.GetInteger), builds the payload with RackEmbedComposer.Compose + RackEmbedStore.Serialize, and calls SelectiveFrontalDrawService.DrawAndPlace. That calls ViewBlockDraw.DrawAndPlace, which runs RackCatalogLoader.Load, then SystemBlockWriter.CreateBlock, then BlockPlacement.PlaceAndReport. Every exception becomes HeaderPlacementResult.Failure.",
+   "evidence": "src/RackCad.Plugin/RackSelectivoCommands.cs:484-523,405-417; src/RackCad.Plugin/Systems/Selective/SelectiveFrontalDrawService.cs:31-39; src/RackCad.Plugin/Systems/Shared/ViewBlockDraw.cs:28-57",
+   "status": "FACT"
+  },
+  {
+   "id": "S5",
+   "topic": "seam/planta",
+   "statement": "SelectivePlantaDrawService.DrawAndPlace goes through the same ViewBlockDraw.DrawAndPlace with SelectivePlantaBuilder.BuildPlan.",
+   "evidence": "src/RackCad.Plugin/Systems/Selective/SelectivePlantaDrawService.cs:26-34",
+   "status": "FACT"
+  },
+  {
+   "id": "S6",
+   "topic": "seam/CreateBlock",
+   "statement": "SystemBlockWriter.CreateBlock takes LockDocument and runs BlockLibraryImporter.EnsureForPlan outside the transaction. It then opens ONE transaction for LateralHeaderDrawer.CreateSystemBlock and RackBlockData.Write on result.DefinitionId, and commits. Placement is a separate LockDocument plus transaction with an EntityJig (Editor.Drag); on cancel, the definition is erased in a further transaction.",
+   "evidence": "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:18-40; src/RackCad.Plugin/Drawing/BlockPlacement.cs:26-53,123-170,174-201,204",
+   "status": "FACT"
+  },
+  {
+   "id": "S7",
+   "topic": "seam/RackBlockData",
+   "statement": "RackBlockData stores the payload as an Xrecord under extension-dictionary key RACKCAD_SELECTIVE (used for every kind), as DxfCode.Text chunks of at most 255 characters. The class doc says 'block reference', but the callers write and read it on the block DEFINITION.",
+   "evidence": "src/RackCad.Plugin/Systems/Shared/RackBlockData.cs:7-11,16,20-52,54-89; src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:33; src/RackCad.Plugin/RackCommandSupport.cs:93-94",
+   "status": "FACT"
+  },
+  {
+   "id": "S8",
+   "topic": "seam/library import",
+   "statement": "EnsureForPlan runs RackBlockRequirementExtractors.HeaderRun.Extract and then LibraryBlockAvailabilityFlow.Observe(allowImport:true, AutoCadLibraryBlockQuery, ImportAdapter). That leads to EnsureBlocks: a read transaction for the missing names, then, only if some are missing, BlockLibraryLocator.ResolvePath (UserSettingsStore.Load again), File.Exists, BlockLibraryDatabaseCache.Acquire (new Database(false,true).ReadDwgFile, cached by path, mtime and length), and WblockCloneObjects(DuplicateRecordCloning.Ignore). Failures are logged and return 0.",
+   "evidence": "src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:23,25-38,50-131; src/RackCad.Application/Systems/Shared/LibraryBlockRequirements.cs:53-80,158-178; src/RackCad.Plugin/Drawing/AutoCadLibraryBlockQuery.cs:18-40; src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:17-56; src/RackCad.Application/Catalogs/BlockLibrary.cs:19-22",
+   "status": "FACT"
+  },
+  {
+   "id": "S9",
+   "topic": "seam/catalog",
+   "statement": "RackCatalogLoader.Load calls JsonRackCatalogProvider.FromBaseDirectory().Load(). On an exception it logs through RackLog and returns an empty catalog; an empty catalog is only logged as a warning. The provider caches per directory by a name+size+mtime signature of *.csv and *.json. Reads are CSV-first (strict UTF-8 with a Latin-1 fallback, reflection-based CsvCatalogReader); defaults.json goes through JsonSerializer.",
+   "evidence": "src/RackCad.Plugin/RackCatalogLoader.cs:17-43; src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs:72-89,112-127,220-247,255-269,271-336; src/RackCad.Application/Catalogs/CsvCatalogReader.cs:5,38-39",
+   "status": "FACT"
+  },
+  {
+   "id": "S10",
+   "topic": "seam/readers not on fresh create",
+   "statement": "RackBlockFinder.ScanEnvelopes, RackBlockData.Read and RackViewCodec are reached on the EDIT/RACKEDITAR paths (PickRackBlock, FindRackBlocks, ReadProjectVariables, IsLateralView/DecodeView), not on the fresh RACKSELECTIVO frontal path.",
+   "evidence": "src/RackCad.Plugin/RackCommandSupport.cs:75-99,103-111,117-142; src/RackCad.Plugin/RackSelectivoCommands.cs:67,126-130,298-319,350-353; src/RackCad.Plugin/RackBlockFinder.cs:57-91",
+   "status": "FACT"
+  },
+  {
+   "id": "S11",
+   "topic": "seam/SelectiveAuthoredAuthority",
+   "statement": "No Plugin file references SelectiveAuthoredAuthority. It is used only inside Application: BomAuthoredAuthority, RackDuplicationPlan, ProjectVariableConsumerDiscovery, ProjectVariablesWorkspace, RecoveryAssessment and RackAuthoredComparator (the last has no callers outside its own file). It uses System.Text.Json (JsonDocument.Parse of a re-serialization).",
+   "evidence": "grep SelectiveAuthoredAuthority. over src; src/RackCad.Application/ProjectVariables/SelectiveAuthoredAuthority.cs:3,84-86,160",
+   "status": "FACT"
+  },
+  {
+   "id": "S12",
+   "topic": "seam/AUTH-15 creator unused",
+   "statement": "RackDefinitionCreator.CreateInTransaction (the caller-owned-transaction creator) has no production callers in src. It is referenced only by a source-guard test string. The Selective create path uses SystemBlockWriter.CreateBlock instead.",
+   "evidence": "src/RackCad.Plugin/Systems/Shared/RackDefinitionCreator.cs:36-39,83; grep CreateInTransaction -> only tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs:92",
+   "status": "FACT"
+  },
+  {
+   "id": "S13",
+   "topic": "seam/pure builders",
+   "statement": "SelectiveFrontalBuilder and SelectivePlantaBuilder import only System, System.Collections.Generic, System.Globalization, System.Linq and RackCad Application/Domain namespaces. The planta builder constructs RackFrameConfigurationFactory(catalog) with the caller's catalog. The factory's parameterless constructor (which loads the catalog from disk) is not used there, and RackFrameTemplateCatalog is an in-memory static list.",
+   "evidence": "src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:1-6,35; src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:1-11,36,44-50; src/RackCad.Application/RackFrames/RackFrameConfigurationFactory.cs:32-40,246-255; src/RackCad.Application/RackFrames/RackFrameTemplateCatalog.cs:19-21",
+   "status": "FACT"
+  },
+  {
+   "id": "S14",
+   "topic": "seam/builder closure",
+   "statement": "A static type-reference closure (heuristic: identifier-to-declared-type, file level, over-approximate) from the two builders spans 91 files: 64 in Application (Catalogs, Drawing, Expressions, Geometry, ProjectVariables, RackFrames, Systems/Selective, Systems/Shared, Units) and 27 in Domain. The only System.IO/System.Text.Json users in it are CatalogDirectory and JsonRackCatalogProvider, reached only through the unused parameterless factory constructor.",
+   "evidence": "in-memory script over src (no files written); chains: SelectivePlantaBuilder -> RackFrameConfigurationFactory -> JsonRackCatalogProvider",
+   "status": "UNCERTAIN"
+  },
+  {
+   "id": "F1",
+   "topic": "framework/seam namespaces",
+   "statement": "Framework namespaces used on the seam: System.Text.Json and .Serialization (catalog defaults, settings, envelope, design store, Domain CatalogEntries); System.Collections.Concurrent (catalog cache, used fully qualified); System.IO (File/Directory/FileInfo/Path in catalog, settings, log, AtomicFile, library import and cache); System.Reflection (RackEmbedComposer static init, CsvCatalogReader); System.Text (StringBuilder, UTF8Encoding, Encoding.Latin1); System.Linq; System.Globalization; plus WPF System.Windows.* in RackSelectiveWindow.",
+   "evidence": "JsonRackCatalogProvider.cs:3-4,48-49,262-267; UserSettings.cs:2-3; RackEmbedDocument.cs:3-4; RackEmbedComposer.cs:4-6; SelectivePalletDesignStore.cs:2-3; RackBlockData.cs:2,79; BlockLibraryImporter.cs:3; BlockLibraryDatabaseCache.cs:2; CsvCatalogReader.cs:5; RackSelectiveWindow.xaml.cs:5-9",
+   "status": "FACT"
+  },
+  {
+   "id": "F2",
+   "topic": "framework/crypto & compression",
+   "statement": "System.Security.Cryptography is imported only by CatalogBlockManifest (validation, SHA256) and CsvStructuralSectionCatalogProvider (SHA256); System.IO.Compression only by Bom/XlsxWriter. None of them is in the type-reference closure of the Plugin/Application seam files. From the UI windows they are type-reachable only through the BOM window and the Cantilever module.",
+   "evidence": "src/RackCad.Application/Catalogs/Validation/CatalogBlockManifest.cs:4,144; src/RackCad.Application/StructuralSections/CsvStructuralSectionCatalogProvider.cs:6,260; src/RackCad.Application/Bom/XlsxWriter.cs:5; closure script chains (RackSelectiveWindow -> RackBomWindow -> BomXlsxExporter -> XlsxWriter)",
+   "status": "FACT"
+  },
+  {
+   "id": "F3",
+   "topic": "framework/assembly mapping",
+   "statement": "The namespaces map to .NET 8 assemblies as System.Text.Json.dll, System.Collections.Concurrent.dll, System.Linq.dll, System.Private.CoreLib/System.Runtime (IO, Text, Reflection, Guid) and PresentationFramework/PresentationCore/WindowsBase/System.Xaml (WPF). The Autodesk types map to AcMgd (Application.ShowModalWindow), AcCoreMgd (DocumentManager, Editor, EntityJig) and AcDbMgd (Database, Xrecord, ReadDwgFile, WblockCloneObjects). This mapping is standard platform knowledge and is not recorded in the tree.",
+   "evidence": "not in source; only namespaces are visible (see F1, P15)",
+   "status": "UNCERTAIN"
+  },
+  {
+   "id": "F4",
+   "topic": "framework/solution assemblies",
+   "statement": "A Selective creation loads all four product assemblies. RackCad.Plugin (commands and draw services) and RackCad.UI (RackSelectiveWindow, or RackMainMenuWindow via RACKCAD) are referenced directly from the command bodies; RackCad.Application (catalog, stores, builders, log, settings) and RackCad.Domain (SelectiveRackSystem, SelectivePalletDesign) through the calls.",
+   "evidence": "src/RackCad.Plugin/RackSelectivoCommands.cs:7-15,31; src/RackCad.Plugin/RackMenuCommands.cs:27-29",
+   "status": "FACT"
+  },
+  {
+   "id": "F5",
+   "topic": "framework/files touched",
+   "statement": "Files touched at runtime on the seam: %APPDATA%\\RackCad\\settings.json (read; quarantined to .bad on corrupt JSON); %APPDATA%\\RackCad\\logs\\rackcad-yyyyMMdd.log (append on error or warning); catalogs\\*.csv/*.json next to RackCad.Application.dll (stat plus read); blocks-library.dwg (ReadDwgFile, OpenForReadAndAllShare) only when blocks are missing.",
+   "evidence": "src/RackCad.Application/Settings/UserSettings.cs:61-62,91-121; src/RackCad.Application/Diagnostics/RackLog.cs:65-69; RackDiagnosticsLog.cs:44-48; JsonRackCatalogProvider.cs:220-247; BlockLibraryDatabaseCache.cs:33-40",
+   "status": "FACT"
+  },
+  {
+   "id": "CI1",
+   "topic": "CI/triggers",
+   "statement": "CI runs on every push (no branch filter) and on workflow_dispatch with a required candidate_sha. The env var SourceRevisionId is set from inputs.candidate_sha so InformationalVersion stamps the measured commit.",
+   "evidence": ".github/workflows/ci.yml:15-22,31-32",
+   "status": "FACT"
+  },
+  {
+   "id": "CI2",
+   "topic": "CI/jobs",
+   "statement": "CI has four jobs. tests (ubuntu-latest) runs dotnet test tests/RackCad.Tests in Debug with TRX and blame-hang, collecting coverage only on dispatch or trunk. build-ui (windows-latest) runs dotnet build src/RackCad.UI in Debug. ui-tests (windows-latest) runs dotnet test tests/RackCad.UI.Tests. build-plugin (windows-latest, needs tests+build-ui, contents: read) runs eng/ci/verify-autocad-references.ps1. All use the .NET SDK 8.0.x.",
+   "evidence": ".github/workflows/ci.yml:35-43,121-138,193-211,213-244,254-317",
+   "status": "FACT"
+  },
+  {
+   "id": "CI3",
+   "topic": "CI/Plugin",
+   "statement": "The header comment says the Plugin is excluded because its AutoCAD references need AutoCAD installed. That describes the test and UI jobs; the build-plugin job does compile it on a clean runner. The verifier asserts no AutoCAD on the runner and runs a negative control (UseAutoCADNuGetReferences=false must fail only with CS0234/CS0246 on Autodesk). It then does a locked restore of exactly the 3 Autodesk packages, checks ResolveReferences (13 references, CopyLocal=false), does a Release dotnet publish of the Plugin and a Release build of RackCad.sln with zero warnings, asserts no Autodesk DLL or ZIP in the outputs, and checks the bundle has exactly 4 RackCad DLLs, then runs deploy/verify-bundle.ps1 and deploy/test-verify-bundle.ps1.",
+   "evidence": ".github/workflows/ci.yml:1-4,254-317; eng/ci/verify-autocad-references.ps1:126-150,191-215,263-287,555-581,583-603,605-665,698-701",
+   "status": "FACT"
+  },
+  {
+   "id": "CI4",
+   "topic": "CI/Plugin not executed",
+   "statement": "No test project references RackCad.Plugin, so Plugin code is never executed in CI. Instead, 34 files in tests/RackCad.Tests read Plugin .cs sources as text (source-guard tests). ADR-0003 excludes NETLOAD and AutoCAD execution from CI.",
+   "evidence": "tests/*/*.csproj ProjectReferences; e.g. tests/RackCad.Tests/KindHandlerGuardSourceTests.cs:26, CantileverPluginSourceGuardTests.cs:33; docs/adr/0003-referencias-autocad-para-ci.md:59-61",
+   "status": "FACT"
+  },
+  {
+   "id": "CI5",
+   "topic": "CI/solution",
+   "statement": "RackCad.sln, which the build-plugin verifier builds, is not in the extract, so its project list is not visible.",
+   "evidence": "eng/ci/verify-autocad-references.ps1:590,598-601",
+   "status": "UNKNOWN"
+  }
+ ],
+ "tables": [
+  {
+   "title": "Projects: framework, references, packages, items",
+   "columns": [
+    "Project",
+    "TFM / WPF",
+    "ProjectReference",
+    "PackageReference (version)",
+    "Reference/HintPath",
+    "Content / attributes",
+    "Evidence"
+   ],
+   "rows": [
+    [
+     "src/RackCad.Domain",
+     "net8.0 / no",
+     "-",
+     "-",
+     "-",
+     "-",
+     "src/RackCad.Domain/RackCad.Domain.csproj:1-5"
+    ],
+    [
+     "src/RackCad.Application",
+     "net8.0 / no",
+     "Domain",
+     "-",
+     "-",
+     "InternalsVisibleTo RackCad.Tests",
+     "src/RackCad.Application/RackCad.Application.csproj:3,6,11"
+    ],
+    [
+     "src/RackCad.UI",
+     "net8.0-windows / UseWPF",
+     "Domain, Application",
+     "-",
+     "-",
+     "InternalsVisibleTo RackCad.UI.Tests; ThemeInfo(None,SourceAssembly); 20 XAML files",
+     "src/RackCad.UI/RackCad.UI.csproj:3-4,7-8,13-25"
+    ],
+    [
+     "src/RackCad.Plugin",
+     "net8.0-windows / UseWPF; OutputType=Library",
+     "Domain, Application, UI",
+     "Only if UseAutoCADNuGetReferences=true: AutoCAD.NET [25.0.1], PrivateAssets=all, ExcludeAssets=runtime",
+     "Else: AcCoreMgd, AcDbMgd, AcMgd from $(AutoCADInstallDir) (default C:\\Program Files\\Autodesk\\AutoCAD 2025), Private=false",
+     "catalogs *.json/*.csv/*.dwg copied Always; target AssembleAutoloaderBundle AfterTargets=Publish",
+     "src/RackCad.Plugin/RackCad.Plugin.csproj:3-7,11-16,18-20,24-26,28-41,51-73"
+    ],
+    [
+     "tests/RackCad.Tests",
+     "net8.0, RollForward=LatestMajor",
+     "Domain, Application, tools/RackCad.StructuralSections.Import",
+     "Microsoft.NET.Test.Sdk 17.11.1; coverlet.collector 6.0.4; xunit 2.9.2; xunit.runner.visualstudio 2.8.2",
+     "-",
+     "catalogs *.json/*.csv PreserveNewest",
+     "tests/RackCad.Tests/RackCad.Tests.csproj:3-7,11-17,21-26,32-34"
+    ],
+    [
+     "tests/RackCad.UI.Tests",
+     "net8.0-windows / UseWPF, RollForward=LatestMajor",
+     "Domain, Application, UI",
+     "same four packages and versions",
+     "-",
+     "catalogs *.json/*.csv PreserveNewest",
+     "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj:5-8,15-21,25-27,33-35"
+    ],
+    [
+     "Directory.Build.props/.targets",
+     "not in extract",
+     "-",
+     "-",
+     "-",
+     "Per other files: LangVersion latest, Nullable disable, deterministic builds, RackCadVersion, SeriesMin/Max; SHA stamped into InformationalVersion (UNCERTAIN)",
+     "ci.yml:24-32; UI.Tests.csproj:9; ADR-0033:45-49; ADR-0004:25-28"
+    ]
+   ]
+  },
+  {
+   "title": "Command registration (all in src/RackCad.Plugin; every class is public sealed and non-static, every method is public instance void, no CommandFlags)",
+   "columns": [
+    "Command",
+    "Kind",
+    "Class",
+    "File:line",
+    "Calls"
+   ],
+   "rows": [
+    [
+     "RA / RACKAYUDA",
+     "alias / primary",
+     "RackAyudaCommands",
+     "RackAyudaCommands.cs:11,13",
+     "RackAyuda"
+    ],
+    [
+     "RCB / QCB / RACKCABECERA / QUICKCABECERA",
+     "alias / alias / primary / primary",
+     "RackCabeceraCommands",
+     "RackCabeceraCommands.cs:25,26,29,55",
+     "RackCabecera, QuickCabecera"
+    ],
+    [
+     "QCM / QUICKCAMA",
+     "alias / primary",
+     "RackCamaCommands",
+     "RackCamaCommands.cs:22,29",
+     "QuickCama"
+    ],
+    [
+     "RCT / RACKCANTILEVER",
+     "alias / primary",
+     "RackCantileverCommands",
+     "RackCantileverCommands.cs:39,43",
+     "RackCantilever"
+    ],
+    [
+     "RSD / RACKSISTEMADINAMICO",
+     "alias / primary",
+     "RackDinamicoCommands",
+     "RackDinamicoCommands.cs:25,31",
+     "RackSistemaDinamico"
+    ],
+    [
+     "RD / RACKDUPLICAR",
+     "alias / primary",
+     "RackDuplicarCommands",
+     "RackDuplicarCommands.cs:23,42",
+     "RackDuplicar"
+    ],
+    [
+     "RL / RACKLISTA",
+     "alias / primary",
+     "RackInventarioCommands (partial)",
+     "RackInventarioCommands.cs:17,23",
+     "RackLista"
+    ],
+    [
+     "RB / RACKBOMTOTAL",
+     "alias / primary",
+     "RackInventarioCommands (partial)",
+     "RackInventarioCommands.BomTotal.cs:32,34",
+     "RackBomTotal"
+    ],
+    [
+     "RLY / RACKLAYOUT",
+     "alias / primary",
+     "RackLayoutCommands (partial)",
+     "RackLayoutCommands.cs:23,32",
+     "RackLayout"
+    ],
+    [
+     "RR / RACKRELLENAR",
+     "alias / primary",
+     "RackLayoutCommands (partial)",
+     "RackLayoutCommands.Fill.cs:23,31",
+     "RackRellenar"
+    ],
+    [
+     "RK / RACKCAD",
+     "alias / primary",
+     "RackMenuCommands",
+     "RackMenuCommands.cs:17,21",
+     "RackCad (menu; Selective dispatch at :76-78)"
+    ],
+    [
+     "RED / RACKEDITAR",
+     "alias / primary",
+     "RackMenuCommands",
+     "RackMenuCommands.cs:18,115",
+     "RackEditar -> KindHandlerDispatch -> SelectiveKindHandler -> EditSelective"
+    ],
+    [
+     "RPR / RACKPROPIEDADES",
+     "alias / primary",
+     "RackPropiedadesCommands",
+     "RackPropiedadesCommands.cs:35,37",
+     "RackPropiedades"
+    ],
+    [
+     "RPB / RACKPUSHBACK",
+     "alias / primary",
+     "RackPushBackCommands",
+     "RackPushBackCommands.cs:31,35",
+     "RackPushBack"
+    ],
+    [
+     "RACKSECCION",
+     "primary (no alias)",
+     "RackSeccionCommands",
+     "RackSeccionCommands.cs:15",
+     "RackSeccion"
+    ],
+    [
+     "RS / RACKSELECTIVO",
+     "alias / primary",
+     "RackSelectivoCommands",
+     "RackSelectivoCommands.cs:23,26",
+     "RackSelectivo -> DrawSelectiveView"
+    ],
+    [
+     "RVA / RACKVARIABLES",
+     "alias / primary",
+     "RackVariablesCommands",
+     "RackVariablesCommands.cs:31,33",
+     "RackVariables"
+    ],
+    [
+     "(none)",
+     "LispFunction / SendStringToExecute / SendCommand / Application.Invoke / ExecuteInApplicationContext / CommandFlags.Session",
+     "-",
+     "grep over src = no hits",
+     "-"
+    ]
+   ]
+  },
+  {
+   "title": "Selective creation seam: call path and what it touches",
+   "columns": [
+    "Step",
+    "Member",
+    "Assembly",
+    "Side effects / framework",
+    "Fresh FRONTAL",
+    "PLANTA (via RACKEDITAR)",
+    "Evidence"
+   ],
+   "rows": [
+    [
+     "1",
+     "RackSelectivo / RACKCAD menu dispatch",
+     "Plugin",
+     "-",
+     "yes",
+     "EditSelective instead",
+     "RackSelectivoCommands.cs:26-46; RackMenuCommands.cs:76-78"
+    ],
+    [
+     "2",
+     "new RackSelectiveWindow(true)",
+     "UI + WPF",
+     "UserSettingsStore.Load (settings.json); LoadCatalogSafe (JsonRackCatalogProvider)",
+     "yes",
+     "yes (:76)",
+     "RackSelectiveWindow.xaml.cs:215-229; RackEditorSession.cs:59; UiSupport.cs:84-94"
+    ],
+    [
+     "3",
+     "RackCommandSupport.ReadDimensionStyleNames",
+     "Plugin",
+     "LockDocument + read tx over DimStyleTable",
+     "yes",
+     "yes (:77)",
+     "RackCommandSupport.cs:146-179"
+    ],
+    [
+     "4",
+     "RackUnitsGuard.WarnIfNotInches",
+     "Plugin -> Application DrawingUnitsAdvisory",
+     "reads Database.Insunits; WriteMessage",
+     "yes",
+     "only if !UpdateOnly",
+     "RackUnitsGuard.cs:34-45; RackSelectivoCommands.cs:38,110-113"
+    ],
+    [
+     "5",
+     "SerializeSelectiveDesign / SelectivePalletDesignStore.Serialize",
+     "Application",
+     "System.Text.Json, enum converter",
+     "yes",
+     "reconciled Authored serialized at :154",
+     "RackSelectivoCommands.cs:386-399; SelectivePalletDesignStore.cs:23-35,115-129"
+    ],
+    [
+     "6",
+     "WrapSelectivePayload: RackEmbedComposer.Compose + RackEmbedStore.Serialize",
+     "Application",
+     "System.Reflection (static), System.Text.Json",
+     "yes",
+     "yes",
+     "RackSelectivoCommands.cs:405-417; RackEmbedComposer.cs:37-60; RackEmbedDocument.cs:79-95"
+    ],
+    [
+     "7",
+     "Selective{Frontal|Planta}DrawService.DrawAndPlace -> ViewBlockDraw.DrawAndPlace",
+     "Plugin",
+     "try/catch -> Failure",
+     "frontal",
+     "planta",
+     "SelectiveFrontalDrawService.cs:31-39; SelectivePlantaDrawService.cs:26-34; ViewBlockDraw.cs:28-57"
+    ],
+    [
+     "8",
+     "RackCatalogLoader.Load -> JsonRackCatalogProvider.Load",
+     "Plugin -> Application",
+     "disk stat+read, ConcurrentDictionary cache, CSV reflection reader, RackLog on failure",
+     "yes",
+     "yes",
+     "RackCatalogLoader.cs:17-43; JsonRackCatalogProvider.cs:72-89"
+    ],
+    [
+     "9",
+     "Selective{Frontal|Planta}Builder.BuildPlan",
+     "Application (pure)",
+     "no I/O found",
+     "frontal",
+     "planta",
+     "SelectiveFrontalBuilder.cs:35; SelectivePlantaBuilder.cs:36-50"
+    ],
+    [
+     "10",
+     "SystemBlockWriter.CreateBlock",
+     "Plugin",
+     "LockDocument; EnsureForPlan outside tx; 1 tx: CreateSystemBlock + RackBlockData.Write(definition); Commit",
+     "yes",
+     "yes",
+     "SystemBlockWriter.cs:18-40"
+    ],
+    [
+     "11",
+     "BlockLibraryImporter.EnsureForPlan -> EnsureBlocks",
+     "Plugin + Application",
+     "read tx; if missing: UserSettingsStore.Load, File.Exists, side DB ReadDwgFile (cached), WblockCloneObjects; query tx",
+     "yes",
+     "yes",
+     "BlockLibraryImporter.cs:25-131; LibraryBlockRequirements.cs:158-178; BlockLibraryDatabaseCache.cs:17-56"
+    ],
+    [
+     "12",
+     "BlockPlacement.PlaceAndReport",
+     "Plugin",
+     "LockDocument + tx + EntityJig (Editor.Drag); on cancel erase definition + purge; RackLog",
+     "yes",
+     "yes",
+     "BlockPlacement.cs:26-53,123-201"
+    ],
+    [
+     "R",
+     "RackBlockFinder.ScanEnvelopes / RackBlockData.Read / RackViewCodec",
+     "Plugin / Application",
+     "read txs over BlockTable",
+     "no",
+     "yes (edit path)",
+     "RackSelectivoCommands.cs:126,298-319,350-353; RackCommandSupport.cs:90-111,117-142"
+    ],
+    [
+     "X",
+     "SelectiveAuthoredAuthority",
+     "Application",
+     "System.Text.Json",
+     "no",
+     "not called by Plugin",
+     "SelectiveAuthoredAuthority.cs:84-86,160; grep"
+    ],
+    [
+     "X",
+     "RackDefinitionCreator.CreateInTransaction (AUTH-15)",
+     "Plugin",
+     "-",
+     "no (no callers)",
+     "no",
+     "RackDefinitionCreator.cs:36-39"
+    ]
+   ]
+  },
+  {
+   "title": "CI jobs",
+   "columns": [
+    "Job",
+    "Runner",
+    "Builds/tests",
+    "Plugin?",
+    "Evidence"
+   ],
+   "rows": [
+    [
+     "tests",
+     "ubuntu-latest, 20 min",
+     "dotnet test tests/RackCad.Tests (Debug; coverage only on dispatch or trunk)",
+     "no (Domain + Application + tools importer)",
+     "ci.yml:35-191"
+    ],
+    [
+     "build-ui",
+     "windows-latest, 15 min",
+     "dotnet build src/RackCad.UI (Debug)",
+     "no",
+     "ci.yml:193-211"
+    ],
+    [
+     "ui-tests",
+     "windows-latest, 25 min",
+     "dotnet test tests/RackCad.UI.Tests (Debug)",
+     "no",
+     "ci.yml:213-252"
+    ],
+    [
+     "build-plugin",
+     "windows-latest, 30 min, needs tests+build-ui",
+     "verify-autocad-references.ps1: negative control, locked restore, ResolveReferences, Release publish of Plugin + Release build of RackCad.sln (no warnings), bundle contract",
+     "compiled/published with NuGet compile-only refs; never executed",
+     "ci.yml:254-317; verify-autocad-references.ps1:191-215,263-287,555-603,622-665"
+    ]
+   ]
+  }
+ ],
+ "limitations": [
+  "The extract has no Directory.Build.props/targets, RackCad.sln, deploy/ (PackageContents.template.xml, verify-bundle scripts) or tools/. Their contents are known only indirectly (P12, L5, CI5, P11).",
+  "Reachability is from source reading plus an in-memory, file-level type-reference closure script (no files written). The closure over-approximates, because a type reference is not a call, and it can miss dynamic dispatch through interfaces and delegates.",
+  "The mapping of namespaces to framework and Autodesk assemblies, AutoCAD's command-class instancing, and scanning without CommandClass/ExtensionApplication attributes are platform semantics not recorded in the tree, so they are marked UNCERTAIN.",
+  "The UI closure was checked only for crypto, compression and metadata namespaces; the full WPF load set of RackSelectiveWindow and RackMainMenuWindow was not enumerated.",
+  "The RackSelectiveWindow internals (3675 lines) were read only around the constructor, the insert buttons and RequestInsert; other user-triggered paths (BOM, library save/load) were not traced."
+ ]
+}

@@ -1,0 +1,826 @@
+{
+ "facts": [
+  {
+   "id": "F01",
+   "topic": "GeometryTolerance declaration",
+   "statement": "GeometryTolerance is a public static class in namespace RackCad.Application.Geometry, declared inside Vector2D.cs (it has no file of its own). Its doc comment says the tolerances are ABSOLUTE and in inches, the internal unit per ADR-0005, and it explicitly rejects a relative epsilon.",
+   "evidence": "src/RackCad.Application/Geometry/Vector2D.cs:83-90",
+   "status": "FACT"
+  },
+  {
+   "id": "F02",
+   "topic": "GeometryTolerance values",
+   "statement": "Three constants: Length = 1e-9 (in; 'two lengths closer than this are the same point'), Continuity = 1e-7 (in; tolerance for chaining segment end to start, looser because endpoints come from sin/cos) and Angle = 1e-9 (radians; 'two angles closer than this are the same angle'). No scale, normal or determinant member exists.",
+   "evidence": "src/RackCad.Application/Geometry/Vector2D.cs:92-100",
+   "status": "FACT"
+  },
+  {
+   "id": "F03",
+   "topic": "GeometryTolerance methods",
+   "statement": "IsFinite(v) is !NaN && !Infinity. IsZero(value, tolerance = Length) is |v| <= tol. AreClose(a, b, tolerance = Length) is |a-b| <= tol. RequireFinite throws ArgumentException. RequirePositive requires a finite value and value > 0.0, compared EXACTLY with no tolerance.",
+   "evidence": "src/RackCad.Application/Geometry/Vector2D.cs:102-133",
+   "status": "FACT"
+  },
+  {
+   "id": "F04",
+   "topic": "GeometryTolerance scope",
+   "statement": "Every src reference to GeometryTolerance is under src/RackCad.Application. None exists in RackCad.Domain, RackCad.Plugin or RackCad.UI.",
+   "evidence": "A repo-wide grep for 'GeometryTolerance|OrthonormalTolerance' returned only RackCad.Application src paths plus tests (tests/RackCad.Tests/GeometryPrimitivesTests.cs:209,334,338; StructuralSection*Tests; CantileverStationCorrectionTests.cs:155)",
+   "status": "FACT"
+  },
+  {
+   "id": "F05",
+   "topic": "LocalFrame3D.OrthonormalTolerance",
+   "statement": "public const double OrthonormalTolerance = 1e-9, documented as 'How far from orthonormal a frame may be before it is rejected'. It is used only in RequireUnit (|axis.Length - 1| > tol, line 239) and RequireOrthogonal (|a·b| > tol, line 247). Both are called only from LocalFrame3D.FromAxes (201-216), and FromAxes has NO caller in src; only tests call it (GeometryPrimitivesTests.cs:395,399).",
+   "evidence": "src/RackCad.Application/Geometry/Spatial3D.cs:119-120,201-216,237-252; grep 'FromAxes(' shows only Spatial3D.cs:201 and the tests",
+   "status": "FACT"
+  },
+  {
+   "id": "F06",
+   "topic": "Other literal frame tolerances",
+   "statement": "Production frames are built with LocalFrame3D.Create and LocalFrame3D.Camera. Both re-orthonormalize by construction and reject a parallel reference with the unnamed literal 1e-8 (Create: projected.Length <= 1e-8; Camera: right.Length <= 1e-8). FromAxes checks right-handedness with the unnamed literal 1e-7. Callers of Create/Camera are SectionViewpoint.cs:67,73,82,86, CantileverArmFrameResolver.cs:113,117,173, CantileverColumnBaseFrameResolver.cs:56,99,155 and CantileverLineFrameResolver.cs:79,115,165,195.",
+   "evidence": "src/RackCad.Application/Geometry/Spatial3D.cs:147-167,157,179-198,189,210",
+   "status": "FACT"
+  },
+  {
+   "id": "F07",
+   "topic": "Transform2D structure",
+   "statement": "Transform2D is a readonly struct holding a 2x3 affine matrix (M11 M12 Dx / M21 M22 Dy). The constructor requires all six values to be finite and does NOT restrict the matrix otherwise. Factories are Identity, Translation, Rotation(radians) (finite check only, no range wrap), RotationDegrees (deg*PI/180), MirrorAboutY (-1,0,0,1), MirrorAboutX (1,0,0,-1) and Scale(factor), which calls RequirePositive and builds a UNIFORM scale only (non-uniform is 'deliberately absent').",
+   "evidence": "src/RackCad.Application/Geometry/Transform2D.cs:11-15,22-30,44-74",
+   "status": "FACT"
+  },
+  {
+   "id": "F08",
+   "topic": "Transform2D derived facts",
+   "statement": "Determinant = M11*M22 - M12*M21. ReversesOrientation = Determinant < 0.0, an exact sign test with no tolerance. ScaleFactor = sqrt(|Determinant|), documented as 'valid because only uniform scaling can be built'. RotationAngle() = Atan2 of the image of UnitX, with range (-PI, PI] from Atan2 and no normalization. Then() composes left to right. Apply(Vector2D) ignores translation.",
+   "evidence": "src/RackCad.Application/Geometry/Transform2D.cs:76-115",
+   "status": "FACT"
+  },
+  {
+   "id": "F09",
+   "topic": "Transform2D consumers",
+   "statement": "PathSegment2D.Transformed maps line endpoints. For an arc it uses radius*ScaleFactor and adds RotationAngle to the start angle. When ReversesOrientation is true it re-derives the start angle by Atan2 from the transformed start point and negates the sweep. ClosedContour2D.Transformed reverses the contour when ReversesOrientation is true. PrismaticSectionInstance.SectionTransform = (Mirrored ? MirrorAboutY : Identity).Then(Rotation(RotationRadians)). SectionGeometrySupport uses Translation. StructuralSectionPlanBuilder takes a Transform2D sectionTransform parameter. No Plugin code uses Transform2D.",
+   "evidence": "src/RackCad.Application/Geometry/PathSegment2D.cs:134-160; ClosedContour2D.cs:127-136; StructuralSections/Geometry/PrismaticSectionInstance.cs:91-95; SectionGeometrySupport.cs:114; StructuralSectionPlanBuilder.cs:135,227,322; grep 'Transform2D' in src",
+   "status": "FACT"
+  },
+  {
+   "id": "F10",
+   "topic": "RackTransformFacts (AUTH-08 V1) algorithm",
+   "statement": "RackTransformFacts.Describe(Transform2D, double tolerance) takes the tolerance from the CALLER and has no default. Checks run in this order. (1) A non-finite tolerance or tolerance < 0 gives InvalidTolerance. (2) first=(M11,M21), second=(M12,M22); if either length <= tol (absolute), Degenerate. (3) |first·second| > tol*max(1, l1*l2) gives NonOrthogonal. (4) |l1-l2| > tol*max(1, max(l1,l2)) gives NonUniformScale. (5) |det| <= tol*max(1, l1*l2) gives Degenerate. On success it returns Translation=(Dx,Dy), RotationRadians=Atan2(M21,M11), Determinant=det, IsReflection = det < 0.0 and UniformScale=(l1+l2)/2. The doc says it carries 'no mirror or placement policy'.",
+   "evidence": "src/RackCad.Application/Systems/Shared/RackTransformFacts.cs:6-13,15-37,62-111",
+   "status": "FACT"
+  },
+  {
+   "id": "F11",
+   "topic": "RackTransformFacts rotation range",
+   "statement": "RackTransformFacts does not normalize rotation. Describe(Rotation(-PI)) returns RotationRadians = -PI, which the tests call 'a measured V2 gap'. MirrorAboutY yields rotation PI, det -1, IsReflection true and UniformScale 1. The half-turn matrix (-1,0,0,-1) yields PI, det +1 and IsReflection false.",
+   "evidence": "tests/RackCad.Tests/I59F1CharacterizationTests.cs:37-54,70-77; I59F3ConsumerIntegrationTests.cs:14-24,103-112",
+   "status": "FACT"
+  },
+  {
+   "id": "F12",
+   "topic": "RackTransformFacts consumers",
+   "statement": "RackTransformFacts.Describe has no production caller in src; only tests call it, with tolerances 1e-9, 1e-8 and 1e-3. A test shows that a 1.00001 non-uniformity fails at 1e-8 and passes at 1e-3.",
+   "evidence": "grep 'RackTransformFacts' in src hits only RackTransformFacts.cs; tests/RackCad.Tests/SharedPhysicalFactsTests.cs:177-240 (220-227); I59F1CharacterizationTests.cs:27,61,73,85",
+   "status": "FACT"
+  },
+  {
+   "id": "F13",
+   "topic": "RackSourceTransformClassifier (V2) inputs",
+   "statement": "RackSourcePlacementInput carries 13 raw doubles: position XYZ, rotationRadians, scale XYZ, normal XYZ and definition origin XYZ. Its doc says 'Construction does not imply validity'. RackSourceTransformTolerance has three caller-supplied fields (Scale, AngleRadians, Normal) and no defaults or constants. RackSourceTransformFactsV2 deliberately exposes no composite planar transform.",
+   "evidence": "src/RackCad.Application/Systems/Shared/RackSourceTransformFactsV2.cs:6-66,106; tests/RackCad.Tests/I59F2ContractTests.cs:183-192",
+   "status": "FACT"
+  },
+  {
+   "id": "F14",
+   "topic": "RackSourceTransformClassifier algorithm",
+   "statement": "Classify returns InvalidTolerance if any tolerance is non-finite or < 0, and NonFinite if any of the 13 inputs is non-finite. Sign(v, tolScale) gives ZeroWithinTolerance when |v| <= tol, Positive when v > tol, else Negative. Any zero-within-tolerance scale axis, or |normal| <= tolNormal, gives Degenerate. Facts: RotationRadians = NormalizePi(raw); ReferenceBasisDeterminantXY = ScaleX*ScaleY (the raw product, rotation not included); ReferenceBasisIsReflectionXY = signX != signY (Z excluded); IsUniformScale = max(|sx|,|sy|,|sz|) - min(...) <= tolScale (absolute, INCLUDES Z); IsUnitScale = each | |s| - 1 | <= tolScale; HasPlanarHalfTurnSign = signX and signY both Negative; IsNegativeZ = signZ Negative; NormalIsWorldZ = |nx| <= tolN && |ny| <= tolN && |nz - 1| <= tolN. The raw scales and normal are preserved in the Snapshot.",
+   "evidence": "src/RackCad.Application/Systems/Shared/RackSourceTransformFactsV2.cs:183-253",
+   "status": "FACT"
+  },
+  {
+   "id": "F15",
+   "topic": "Angle tolerance unused",
+   "statement": "RackSourceTransformTolerance.AngleRadians is validated (finite and >= 0) but is not used by any computation in Classify. The rotation fact is normalized without tolerance.",
+   "evidence": "src/RackCad.Application/Systems/Shared/RackSourceTransformFactsV2.cs:187-191 (the only reference to AngleRadians inside Classify), 230, 255-261",
+   "status": "FACT"
+  },
+  {
+   "id": "F16",
+   "topic": "NormalizePi range",
+   "statement": "The private NormalizePi(angle) computes angle % 2PI, then adds 2PI if <= -PI and subtracts 2PI if > PI. The range is (-PI, PI]. The tests assert -PI, PI, -3PI and 3PI all map to PI, and 0.25 stays 0.25. -PI maps to +PI here, whereas RackTransformFacts returns -PI.",
+   "evidence": "src/RackCad.Application/Systems/Shared/RackSourceTransformFactsV2.cs:255-261; tests/RackCad.Tests/I59F2ContractTests.cs:32-44; I59F4ConformanceTests.cs:88-101",
+   "status": "FACT"
+  },
+  {
+   "id": "F17",
+   "topic": "V2 classifier/capture consumers",
+   "statement": "RackSourceTransformClassifier has no production caller in src. RackSourcePlacementCaptureAdapter.Capture (internal, Plugin) copies reference.Position, reference.Rotation, reference.ScaleFactors, reference.Normal and definition.Origin into RackSourcePlacementInput with no classification, and nothing in src calls Capture. Tests only read its source text and assert that it contains no classifier, no RackTransformFacts and no 'Accepted'/'Remedy'.",
+   "evidence": "src/RackCad.Plugin/Drawing/RackSourcePlacementCaptureAdapter.cs:7-39; grep 'RackSourcePlacementCaptureAdapter|RackSourceTransformClassifier' in src (only definitions); tests/RackCad.Tests/I59F3ConsumerIntegrationTests.cs:130-143; I59F2BoundaryGuardTests.cs:27-35",
+   "status": "FACT"
+  },
+  {
+   "id": "F18",
+   "topic": "Test tolerance values for V2",
+   "statement": "The tests use RackSourceTransformTolerance(1e-9,1e-9,1e-9) in I59F4, a helper default of (1e-6,1e-6,1e-6) in I59F2, and scale/normal 0.01 or normal 0.0001 in boundary cases. These are test values, not product constants.",
+   "evidence": "tests/RackCad.Tests/I59F4ConformanceTests.cs:94-95,113; I59F2ContractTests.cs:55,71,106-116,140,355-356",
+   "status": "FACT"
+  },
+  {
+   "id": "F19",
+   "topic": "Determinant / positive-determinant",
+   "statement": "No positive-determinant requirement (det > 0 or rejecting det < 0) exists anywhere in src. The determinant sign is only REPORTED: Transform2D.ReversesOrientation (det < 0.0), RackTransformFacts.IsReflection (det < 0.0) and V2 ReferenceBasisIsReflectionXY (signX != signY). The only use is ClosedContour2D/PathSegment2D reversing winding and sweep.",
+   "evidence": "grep 'Determinant' in src: Transform2D.cs:16,77,80,83; RackTransformFacts.cs:27,34,97; RackSourceTransformFactsV2.cs:115,129,150 only; ClosedContour2D.cs:135; PathSegment2D.cs:150",
+   "status": "FACT"
+  },
+  {
+   "id": "F20",
+   "topic": "Mirroring detection on existing block references",
+   "statement": "No production code reads a BlockReference's ScaleFactors or Normal to detect mirroring or non-uniform scale. ScaleFactors are read only to copy them verbatim (RACKDUPLICAR, RACKLAYOUT seed) or in the unused capture adapter.",
+   "evidence": "grep 'ScaleFactors' in src: RackDuplicarCommands.cs:213,314; RackLayoutCommands.cs:199,253; RackLayoutCommands.Fill.cs:457; RackSourcePlacementCaptureAdapter.cs:21; LateralHeaderDrawer.cs:62,147,313",
+   "status": "FACT"
+  },
+  {
+   "id": "F21",
+   "topic": "ScaleFactors: nested header refs",
+   "statement": "When the system block is built or redefined, each nested header reference is created with ScaleFactors = placement.Mirrored ? new Scale3d(-1.0, 1.0, 1.0) : new Scale3d(1.0). Rotation is NOT set on these references. HeaderPlacement.Mirrored alternates so that the celosía alternates direction.",
+   "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:56-68,143-152; src/RackCad.Application/Drawing/HeaderRunPlan.cs:83-102",
+   "status": "FACT"
+  },
+  {
+   "id": "F22",
+   "topic": "ScaleFactors: piece refs",
+   "statement": "Every catalog-piece reference (AppendInstance, inside header defs or system defs) gets Rotation = instance.RotationRadians and ScaleFactors = new Scale3d(MirroredX ? -1.0 : 1.0, MirroredY ? -1.0 : 1.0, 1.0). Scale magnitudes are always 1, and Z is always +1. MirroredX is documented as 'Insert with X scale -1' and MirroredY as 'Insert with Y scale -1'.",
+   "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:305-320; src/RackCad.Application/Drawing/HeaderBlockInstance.cs:77-83",
+   "status": "FACT"
+  },
+  {
+   "id": "F23",
+   "topic": "ScaleFactors: top-level placement",
+   "statement": "Top-level model-space references are created with new BlockReference(insertion, id), with no ScaleFactors, Rotation or Normal assignment, in BlockPlacement.AppendReference, BlockPlacement.PlaceBlockWithJig (the jig only updates Position), CantileverViewMaterializer.InsertReference and StructuralSectionMaterializer.InsertReference. The resulting values are AutoCAD constructor defaults, and those defaults are not visible in the code.",
+   "evidence": "src/RackCad.Plugin/Drawing/BlockPlacement.cs:79-95,174-201,240-244; Drawing/Cantilever/CantileverViewMaterializer.cs:118-130; Drawing/StructuralSections/StructuralSectionMaterializer.cs:78-90",
+   "status": "FACT"
+  },
+  {
+   "id": "F24",
+   "topic": "Default BlockReference transform",
+   "statement": "The exact default values (scale 1,1,1, rotation 0, normal +Z) for a BlockReference created without explicit assignment come from AutoCAD API behavior and are not asserted in this code tree.",
+   "evidence": "No assignment at the sites in F23; no test in scope asserts the defaults",
+   "status": "UNCERTAIN"
+  },
+  {
+   "id": "F25",
+   "topic": "ScaleFactors: RACKDUPLICAR",
+   "statement": "RACKDUPLICAR snapshots Position, Rotation, ScaleFactors and LayerId from each source reference. The SourceReference struct has NO Normal field. Each copy is created with Rotation = source.Rotation and ScaleFactors = source.Scale, copied verbatim with no sign, uniformity or tolerance check. The displacement is transformed by the current UCS.",
+   "evidence": "src/RackCad.Plugin/RackDuplicarCommands.cs:145-149,202-215,308-319,353-360",
+   "status": "FACT"
+  },
+  {
+   "id": "F26",
+   "topic": "ScaleFactors: RACKLAYOUT / RACKRELLENAR",
+   "statement": "The planta seed captures reference.Rotation and reference.ScaleFactors, and every new cell reference gets Rotation = seed.Rotation and ScaleFactors = seed.Scale verbatim. The comment claims the AABB stays correct for 0/90/180/270 degrees, but the code does not check this. In Fill, rotation = seed.Rotation + (rotated ? PI/2 : 0), with no normalization, and ScaleFactors = seed.Scale.",
+   "evidence": "src/RackCad.Plugin/RackLayoutCommands.cs:160-172,189-199,246-256; RackLayoutCommands.Fill.cs:435-461",
+   "status": "FACT"
+  },
+  {
+   "id": "F27",
+   "topic": "Independent-copy definition cloning",
+   "statement": "RackCloner.CloneDefinition creates a BlockTableRecord with Origin = source.Origin and DeepCloneObjects the source entities into it. The code does not rewrite the ScaleFactors or Rotation of nested references. That clones keep their source transforms is AutoCAD DeepClone behavior and is not asserted here.",
+   "evidence": "src/RackCad.Plugin/RackCloner.cs:29-50",
+   "status": "UNCERTAIN"
+  },
+  {
+   "id": "F28",
+   "topic": "Application-level mirror composition",
+   "statement": "HeaderRunPlan.PlacedClone (Flatten) maps X to InsertionX - x under a mirrored placement, toggles MirroredX, keeps MirroredY, and keeps RotationRadians UNCHANGED. PushBackMirror.Instance maps x to axis - x and, for physical pieces, NEGATES RotationRadians and toggles MirroredX. For annotations and dimensions it keeps both. Its doc derives the rule T(t)·R(θ)·S(±1,1) -> T(Mt)·R(-θ)·S(∓1,1). PushBackMirror.AreReflected uses tolerance = 1e-6 (default parameter).",
+   "evidence": "src/RackCad.Application/Drawing/HeaderRunPlan.cs:53-80; src/RackCad.Application/Systems/PushBack/PushBackMirror.cs:10-27,43-78,305-307",
+   "status": "FACT"
+  },
+  {
+   "id": "F29",
+   "topic": "Angle normalization helpers",
+   "statement": "There is no shared or public angle-normalization helper in src. There are exactly two local wraps: RackSourceTransformClassifier.NormalizePi (private, range (-PI, PI]) and ClosedContour2D.ArcContainsAngle, which wraps delta into [0, 2PI) with Math.Floor and compares with <= |sweep| + GeometryTolerance.Angle. Transform2D.Rotation, RotationDegrees, PrismaticSectionInstance (deg->rad at line 84), PushBackMirror (negation) and RACKRELLENAR (+PI/2) never wrap angles.",
+   "evidence": "grep for normalize/%2PI/%360/+=2PI patterns in src: RackSourceTransformFactsV2.cs:255-261; ClosedContour2D.cs:283-292; Transform2D.cs:51-60; PrismaticSectionInstance.cs:77-84",
+   "status": "FACT"
+  },
+  {
+   "id": "F30",
+   "topic": "PathSegment2D angle limits",
+   "statement": "PathSegment2D.Arc rejects |sweep| <= GeometryTolerance.Angle (zero sweep) and |sweep| > 2PI + Angle (more than one turn). startAngle is unrestricted apart from the finite check. ArcStepCount treats maxStep <= Angle as degenerate.",
+   "evidence": "src/RackCad.Application/Geometry/PathSegment2D.cs:85-108,198-218",
+   "status": "FACT"
+  },
+  {
+   "id": "F31",
+   "topic": "Plugin numeric tolerances",
+   "statement": "The Plugin has only three numeric tolerances. OutlineCloseTolerance = 0.01 in: endpoints this close count as a closed nave outline. The literal 1e-9 filters bulge and consecutive duplicate vertices. BlockPlacement's jig uses Point3d.IsEqualTo(position) with no explicit Tolerance argument. No other Math.Abs comparison or tolerance constant exists in RackCad.Plugin besides LateralHeaderDrawer.cs:345 (horizontal vs vertical dimension choice, no epsilon).",
+   "evidence": "src/RackCad.Plugin/RackLayoutCommands.Fill.cs:266-268,289,356-357,373-374; Drawing/BlockPlacement.cs:231; grep 'Math.Abs|Tolerance|IsEqualTo' in RackCad.Plugin",
+   "status": "FACT"
+  },
+  {
+   "id": "F32",
+   "topic": "IsEqualTo tolerance value",
+   "statement": "The tolerance that Point3d.IsEqualTo applies without an explicit argument is AutoCAD's global default, which the code does not state.",
+   "evidence": "src/RackCad.Plugin/Drawing/BlockPlacement.cs:231",
+   "status": "UNCERTAIN"
+  },
+  {
+   "id": "F33",
+   "topic": "Domain numeric tolerances",
+   "statement": "Domain has two numeric epsilons. CantileverArmTemplateComparer.Tolerance = 1e-9 compares templates after a text round-trip, 'the same tolerance the geometry uses for a fit'. DynamicRackSystem uses literal 1e-6 slack for an inclusive interior-face range. PalletTolerance (4.0 in) is a design clearance / legacy persisted input, not a numeric epsilon.",
+   "evidence": "src/RackCad.Domain/Systems/Cantilever/CantileverArmTemplateComparer.cs:24-28; Systems/Dynamic/DynamicRackSystem.cs:112-113; Systems/Dynamic/DynamicRackDefaults.cs:13-14; Systems/Selective/SelectivePalletDesign.cs:13,27",
+   "status": "FACT"
+  },
+  {
+   "id": "F34",
+   "topic": "Relative tolerances",
+   "statement": "The only extent-relative tolerance in geometry is StructuralSectionRepresentationPlan.ProjectedDimensionality: max(GeometryTolerance.Continuity, extent*1e-9). RackTransformFacts scales the caller tolerance by max(1, lengths) for orthogonality, uniformity and degeneracy. SectionViewpoint uses the literal 1e-9 on | |cos| - 1 | for axis alignment.",
+   "evidence": "src/RackCad.Application/StructuralSections/Geometry/StructuralSectionRepresentationPlan.cs:112-125; Systems/Shared/RackTransformFacts.cs:85-101; StructuralSections/Geometry/SectionViewpoint.cs:121-122,137-145",
+   "status": "FACT"
+  },
+  {
+   "id": "F35",
+   "topic": "ADR boundary",
+   "statement": "ADR-0044 (accepted) says Transform2D is mature and must not be replaced 'por simetria'. It excludes RACKMIRROR policy, reflection and AUTH-15 from the shared foundation.",
+   "evidence": "docs/adr/0044-hechos-neutrales-de-vistas-compartidas.md:12-15,29-30",
+   "status": "FACT"
+  },
+  {
+   "id": "F36",
+   "topic": "RACKMIRROR presence",
+   "statement": "No RACKMIRROR command or RackMirror type exists in src at this commit. The only hits are AUTH-15 comments in RackDefinitionCreator and RackDefinitionCreationResult.",
+   "evidence": "grep 'RACKMIRROR|RackMirror|AUTH-15|Auth15' in src: RackCad.Plugin/Systems/Shared/RackDefinitionCreator.cs:12,57,116; RackDefinitionCreationResult.cs:8-9,45",
+   "status": "FACT"
+  },
+  {
+   "id": "F37",
+   "topic": "Quantities with NO tolerance authority",
+   "statement": "There is no named, shared product tolerance constant for: (a) block-reference scale factors (magnitude equality, uniformity, unit-ness or sign-vs-zero); only caller-supplied RackSourceTransformTolerance.Scale and RackTransformFacts' tolerance parameter exist, with no default and no production caller; (b) rotation equality of block references (GeometryTolerance.Angle is used only for arc sweep, containment and ToString; V2 AngleRadians is unused); (c) the insertion normal / world-Z test (only caller-supplied RackSourceTransformTolerance.Normal); (d) the determinant sign (exact < 0.0 comparisons); (e) Plugin position equality (AutoCAD default only). OrthonormalTolerance governs only the unused LocalFrame3D.FromAxes.",
+   "evidence": "F02, F05, F10, F13-F15, F19-F20, F31",
+   "status": "FACT"
+  }
+ ],
+ "tables": [
+  {
+   "title": "T1 Tolerance declarations (GeometryTolerance / LocalFrame3D)",
+   "columns": [
+    "Member",
+    "Value",
+    "Unit",
+    "Declared at",
+    "Notes"
+   ],
+   "rows": [
+    [
+     "GeometryTolerance.Length",
+     "1e-9",
+     "in",
+     "src/RackCad.Application/Geometry/Vector2D.cs:93",
+     "default for IsZero/AreClose (104,106) and Bounds2D.Contains (Bounds2D.cs:106)"
+    ],
+    [
+     "GeometryTolerance.Continuity",
+     "1e-7",
+     "in",
+     "Vector2D.cs:97",
+     "segment chaining; aliased as SectionProjectionCanonicalizer.Tolerance (SectionProjectionCanonicalizer.cs:45)"
+    ],
+    [
+     "GeometryTolerance.Angle",
+     "1e-9",
+     "rad",
+     "Vector2D.cs:100",
+     "arcs only"
+    ],
+    [
+     "GeometryTolerance.IsFinite/IsZero/AreClose/RequireFinite/RequirePositive",
+     "n/a",
+     "n/a",
+     "Vector2D.cs:102-133",
+     "RequirePositive is exact > 0"
+    ],
+    [
+     "LocalFrame3D.OrthonormalTolerance",
+     "1e-9",
+     "unitless",
+     "src/RackCad.Application/Geometry/Spatial3D.cs:120",
+     "used at 239, 247 only via FromAxes (no src caller)"
+    ],
+    [
+     "(literal) LocalFrame3D.Create/Camera parallel guard",
+     "1e-8",
+     "length of unit-vector residue",
+     "Spatial3D.cs:157,189",
+     "unnamed"
+    ],
+    [
+     "(literal) FromAxes handedness",
+     "1e-7",
+     "unitless",
+     "Spatial3D.cs:210",
+     "unnamed"
+    ]
+   ]
+  },
+  {
+   "title": "T2 GeometryTolerance / OrthonormalTolerance usages by purpose (src)",
+   "columns": [
+    "Purpose",
+    "Member",
+    "Locations"
+   ],
+   "rows": [
+    [
+     "Zero-length vector normalization guard",
+     "Length",
+     "Vector2D.cs:44; Spatial3D.cs:70"
+    ],
+    [
+     "Zero-length line rejection",
+     "Length",
+     "PathSegment2D.cs:70-71"
+    ],
+    [
+     "Zero area / sliver / centroid",
+     "IsZero(Length)",
+     "ClosedContour2D.cs:88,206,224; StructuralSections/Geometry/StructuralSectionGeometry.cs:370"
+    ],
+    [
+     "Bounds has area / contains",
+     "Length",
+     "Bounds2D.cs:54,106"
+    ],
+    [
+     "Bounds/envelope approx-equality (caller tolerance)",
+     "AreClose",
+     "Bounds2D.cs:110-114; Systems/Cantilever/CantileverEnvelope3D.cs:123-129"
+    ],
+    [
+     "Cantilever degenerate length / fit checks",
+     "Length",
+     "CantileverArmFrameResolver.cs:163; CantileverArmBodyPlan.cs:115; CantileverBraceAdapterFrameResolver.cs:198,206,225; CantileverBracingPlaneResolver.cs:78,118,156,161; CantileverBraceRepresentationResolver.cs:187; CantileverIntervalResolver.cs:448,487; CantileverLineResolver.cs:233"
+    ],
+    [
+     "Section builders degenerate radius/depth",
+     "Length",
+     "HssRectangularSectionGeometryBuilder.cs:81,132,178; SectionGeometrySupport.cs:67; SSectionGeometryBuilder.cs:157; StructuralSectionPlanBuilder.cs:261"
+    ],
+    [
+     "Contour chaining / closing duplicate",
+     "Continuity",
+     "ClosedContour2D.cs:77,152; StructuralSectionPlanBuilder.cs:174,296,339,346"
+    ],
+    [
+     "Projection canonicalization (line identity, merge)",
+     "Continuity (alias)",
+     "SectionProjectionCanonicalizer.cs:45 -> 124,228,251,259,311-312,324-326"
+    ],
+    [
+     "Relative dimensionality",
+     "max(Continuity, extent*1e-9)",
+     "StructuralSectionRepresentationPlan.cs:124"
+    ],
+    [
+     "Arc zero sweep / >1 turn / step degeneracy",
+     "Angle",
+     "PathSegment2D.cs:92,97,212"
+    ],
+    [
+     "Arc contains angle",
+     "Angle",
+     "ClosedContour2D.cs:291"
+    ],
+    [
+     "Rotation display in ToString",
+     "Angle",
+     "PrismaticSectionInstance.cs:136"
+    ],
+    [
+     "Finiteness / positivity guards (no numeric tolerance)",
+     "IsFinite/RequireFinite/RequirePositive",
+     "Transform2D.cs:24-29,53,72; PathSegment2D.cs:88-90,172,200-201,222-223; Bounds2D.cs:18-19,96; Vector2D.cs:33; Spatial3D.cs:64; RackTransformFacts.cs:70; PrismaticSectionInstance.cs:65,77; StructuralSectionPlanBuilder.cs:68; SectionGeometrySupport.cs:24,55; Channel/Angle/SSection builders (85,91 / 115 / 145); Cantilever* resolvers (ArmBodyArrangement:21, ArmFrame:41,61,100,228, Arm:338,369,489, ArmConnectionMetrics:279,299,318, BracingLayout:187,197,262,436,483, ColumnBaseFrame:92,137, ColumnBase:770,790,810, ColumnRegularPunchGrid:119-120,175,188,207,219, Envelope3D:26-28, Interval:28-30, LineFrame:69-71,144, PanelLayout:128-129, PlatePlan:111-112,208-211, PunchPlan:85-87, StationLevelLayout:254,476, Station:93,339)"
+    ],
+    [
+     "Frame unit/orthogonality",
+     "OrthonormalTolerance",
+     "Spatial3D.cs:239,247 (FromAxes only)"
+    ]
+   ]
+  },
+  {
+   "title": "T3 Other numeric tolerance constants/literals (Domain / Application / Plugin)",
+   "columns": [
+    "Location",
+    "Value",
+    "Purpose (from code/comment)"
+   ],
+   "rows": [
+    [
+     "Domain CantileverArmTemplateComparer.cs:28",
+     "1e-9",
+     "template equality after text round-trip"
+    ],
+    [
+     "Domain DynamicRackSystem.cs:112-113",
+     "1e-6",
+     "inclusive interior-face range"
+    ],
+    [
+     "App Cantilever FitTolerance: ArmResolver.cs:25, ArmConnectionMetricsResolver.cs:156, BracingLayoutResolver.cs:177, ColumnBaseConnectionPattern.cs:85, ColumnBaseResolver.cs:25, ColumnRegularPunchGrid.cs:33, StationLevelLayoutResolver.cs:149, StationResolver.cs:30",
+     "1e-9",
+     "fit / elevation-inside / last-punch determinations"
+    ],
+    [
+     "App CantileverArmPunchCountRule.cs:66; CantileverPunchPlan.cs:72; CantileverPanelLayoutResolver.cs:38 (JoinTolerance)",
+     "1e-9",
+     "floor-count guard; datum compare; panel join"
+    ],
+    [
+     "App CantileverArmFrameResolver.cs:23 DegenerateProjection",
+     "1e-8",
+     "projection of +Z on arm plane undefined"
+    ],
+    [
+     "App CantileverPlateInPlaneDimensions.cs:67 PlanarTolerance; CantileverStationResolver.cs:38 FinalPassTolerance",
+     "1e-6",
+     "rectangular-plate check; two-pass agreement"
+    ],
+    [
+     "App CantileverViewPlanBuilder.cs:907 HullTolerance",
+     "1e-12",
+     "area tolerance for hull"
+    ],
+    [
+     "App SectionViewpoint.cs:122,144",
+     "1e-9",
+     "camera/member axis alignment"
+    ],
+    [
+     "App HssRectangularSectionGeometryBuilder.cs:36",
+     "0.10 (10%)",
+     "corner radius agreement with catalog"
+    ],
+    [
+     "App StructuralSectionPlanBuilder.cs:19 DefaultChordTolerance",
+     "0.001 in",
+     "arc tessellation sagitta"
+    ],
+    [
+     "App Layout PolygonGeometry.cs:16; WarehouseAutoFill.cs:53; WarehouseFitChecker.cs:52 (Eps)",
+     "1e-6",
+     "layout polygon/fit"
+    ],
+    [
+     "App LateralHeaderLayoutBuilder.cs:25; SelectiveCabeceraAuthority.cs:110; SelectiveHeaderBatchPlanner.cs:36",
+     "1e-6",
+     "layout / depth / peralte equality"
+    ],
+    [
+     "App DynamicHeaderBatch.cs:37 LengthTolerance",
+     "0.0001 in",
+     "edited fondo equals module length"
+    ],
+    [
+     "App DynamicEndBeamIdentity.cs:91",
+     "0.05",
+     "same elevation/column (historic)"
+    ],
+    [
+     "App PushBackSystemFrontalBuilder.cs:639 LevelMatchTolerance",
+     "0.05 in",
+     "beam Y vs level entrance"
+    ],
+    [
+     "App SelectiveCabeceraHeightReview.cs:54",
+     "0.5 in",
+     "same height (pre-existing criterion)"
+    ],
+    [
+     "App DynamicIntermediateBeamGeometry.cs:171 BoundaryTolerance",
+     "1.0 in",
+     "piece insertion vs module end"
+    ],
+    [
+     "App PushBackBedSpan.cs:52 (and PushBackRunSupports.cs:48 alias)",
+     "1e-3 in",
+     "bed-span comparisons"
+    ],
+    [
+     "App PushBackMirror.cs:306 AreReflected default",
+     "1e-6",
+     "reflection check (tests/guards)"
+    ],
+    [
+     "App PushBackElevations.cs:272-273",
+     "1e-12",
+     "tie-break comparisons"
+    ],
+    [
+     "App 1e-4 literals: RackFrameConfigurationFactory.cs:156,171-172; DynamicSafetyLateralBuilder.cs:344,347,359; SelectiveDesviadorDrawing.cs:47",
+     "1e-4",
+     "gap / anchor-X matching"
+    ],
+    [
+     "App 1e-9 literals: DynamicFlowBedGeometry.cs:52; SelectiveGeometryResolver.cs:421; RackFirstLevelDatum.cs:71; SeparatorLevelCalculator.cs:74",
+     "1e-9",
+     "zero-run, round-up, datum, troquel threshold"
+    ],
+    [
+     "App 1e-6 literals (Dynamic/PushBack/Selective/RackFrames)",
+     "1e-6",
+     "value-in-list / range / equality: FrameModelValidator.cs:102; PlantaHeaderLayoutBuilder.cs:108; CantileverArmColumnConnectionPattern.cs:184; DynamicDepthGeometry.cs:404,431; DynamicEditorDesignAssembler.cs:57-60; DynamicFrontGeometry.cs:219,251,508; DynamicFrontMatrix.cs:304-313,487; DynamicIntermediateBeamGeometry.cs:71,80; DynamicLoadBeamGeometry.cs:62; DynamicRackLevelGeometry.cs:214,219; DynamicSystemLateralBuilder.cs:104; DynamicSystemPlantaBuilder.cs:170; DynamicViewDecorations.cs:218-219,365,381; SystemBomBuilder.cs:240; PushBackEditorCell.cs:90; PushBackIntermediateBeamLateralBuilder.cs:149; PushBackResolver.cs:500; PushBackTarimaPlacement.cs:180; SelectiveDesviadorPlan.cs:87,174; SelectiveDimensions.cs:274,286,296; SelectiveLateralBuilder.cs:225"
+    ],
+    [
+     "App BracingPanelMemberBuilder.cs:106,352",
+     "0.001 / 0.0001",
+     "elevation floor; avoid atan2 of zero"
+    ],
+    [
+     "Plugin RackLayoutCommands.Fill.cs:268 OutlineCloseTolerance",
+     "0.01 in",
+     "outline closed by coincident endpoints"
+    ],
+    [
+     "Plugin RackLayoutCommands.Fill.cs:289,373-374",
+     "1e-9",
+     "bulge present; duplicate vertex"
+    ],
+    [
+     "Plugin BlockPlacement.cs:231",
+     "AutoCAD default",
+     "jig point unchanged (IsEqualTo)"
+    ]
+   ]
+  },
+  {
+   "title": "T4 Transform decomposition facts compared",
+   "columns": [
+    "Aspect",
+    "Transform2D",
+    "RackTransformFacts.Describe (V1)",
+    "RackSourceTransformClassifier.Classify (V2)"
+   ],
+   "rows": [
+    [
+     "Input",
+     "2x3 matrix (Transform2D.cs:22-30)",
+     "Transform2D + caller tolerance (RackTransformFacts.cs:68)",
+     "raw position/rotation/scale XYZ/normal/def origin + {Scale, AngleRadians, Normal} tolerances (RackSourceTransformFactsV2.cs:7-66,183-185)"
+    ],
+    [
+     "Rotation",
+     "RotationAngle()=Atan2(image of UnitX), (-PI,PI], no wrap (111-115)",
+     "Atan2(M21,M11), no wrap; -PI stays -PI (106; I59F1 tests:70-77)",
+     "NormalizePi -> (-PI,PI]; -PI -> PI (230,255-261)"
+    ],
+    [
+     "Scale extraction",
+     "ScaleFactor=sqrt|det|, assumes uniform (83)",
+     "column lengths l1,l2; UniformScale=(l1+l2)/2 (75-78,109)",
+     "raw ScaleX/Y/Z preserved (143-145,206)"
+    ],
+    [
+     "Uniformity check",
+     "none (Scale() only builds uniform; ctor accepts any matrix)",
+     "|l1-l2| > tol*max(1,max(l1,l2)) -> NonUniformScale (91-95)",
+     "IsUniformScale = max|s|-min|s| <= tolScale incl. Z (236)"
+    ],
+    [
+     "Unit-scale check",
+     "none",
+     "none",
+     "IsUnitScale: each ||s|-1| <= tolScale (237-239)"
+    ],
+    [
+     "Degenerate",
+     "none",
+     "length <= tol, |det| <= tol*max(1,l1*l2) (80-83,97-101)",
+     "any |s| <= tolScale or |normal| <= tolNormal (214-220)"
+    ],
+    [
+     "Orthogonality",
+     "none",
+     "|dot| > tol*max(1,l1*l2) -> NonOrthogonal (85-89)",
+     "n/a (scale+rotation input)"
+    ],
+    [
+     "Mirror detection",
+     "ReversesOrientation = det < 0.0 (80)",
+     "IsReflection = det < 0.0 (108)",
+     "ReferenceBasisIsReflectionXY = signX != signY; det XY = sx*sy (227,234-235)"
+    ],
+    [
+     "Half-turn / negative Z",
+     "n/a",
+     "half-turn matrix => det +1, not reflection",
+     "HasPlanarHalfTurnSign (sx,sy<0) (240); IsNegativeZ (241)"
+    ],
+    [
+     "Normal",
+     "n/a",
+     "n/a",
+     "preserved; NormalIsWorldZ with tolNormal (242-244)"
+    ],
+    [
+     "Positive-determinant gate",
+     "none",
+     "none",
+     "none"
+    ],
+    [
+     "Production callers",
+     "PathSegment2D, ClosedContour2D, PrismaticSectionInstance, section builders",
+     "none (tests only)",
+     "none (tests only)"
+    ]
+   ]
+  },
+  {
+   "title": "T5 BlockReference creation sites and transform values",
+   "columns": [
+    "Site",
+    "Position",
+    "Rotation",
+    "ScaleFactors",
+    "Normal"
+   ],
+   "rows": [
+    [
+     "LateralHeaderDrawer nested header ref (create) :60-63",
+     "(InsertionX, InsertionY, 0)",
+     "not set",
+     "Mirrored ? (-1,1,1) : Scale3d(1.0)",
+     "not set"
+    ],
+    [
+     "LateralHeaderDrawer nested header ref (redefine) :145-148",
+     "(InsertionX, InsertionY, 0)",
+     "not set",
+     "Mirrored ? (-1,1,1) : Scale3d(1.0)",
+     "not set"
+    ],
+    [
+     "LateralHeaderDrawer.AppendInstance piece ref :308-314",
+     "(Insertion.X, Insertion.Y, 0)",
+     "instance.RotationRadians (unwrapped)",
+     "(MirroredX?-1:1, MirroredY?-1:1, 1)",
+     "not set"
+    ],
+    [
+     "BlockPlacement.AppendReference :88",
+     "insertion",
+     "not set",
+     "not set",
+     "not set"
+    ],
+    [
+     "BlockPlacement.PlaceBlockWithJig :182 (+jig :240-244)",
+     "Origin then picked point",
+     "not set",
+     "not set",
+     "not set"
+    ],
+    [
+     "CantileverViewMaterializer.InsertReference :125",
+     "insertion",
+     "not set",
+     "not set",
+     "not set"
+    ],
+    [
+     "StructuralSectionMaterializer.InsertReference :85",
+     "insertion",
+     "not set",
+     "not set",
+     "not set"
+    ],
+    [
+     "RackDuplicarCommands.PlaceDestination :311-316",
+     "source.Position + UCS-transformed displacement",
+     "source.Rotation (verbatim)",
+     "source.Scale (verbatim)",
+     "not captured/not set (SourceReference :354-360)"
+    ],
+    [
+     "RackLayoutCommands.PlaceGrid :250-254",
+     "(cell.X, cell.Y, 0)",
+     "seed.Rotation",
+     "seed.Scale (verbatim)",
+     "not set"
+    ],
+    [
+     "RackLayoutCommands.Fill.PlaceFill :454-458",
+     "(cell - rotated offset)",
+     "seed.Rotation + (rotated ? PI/2 : 0), unwrapped (:441)",
+     "seed.Scale (verbatim)",
+     "not set"
+    ],
+    [
+     "RackCloner.CloneDefinition :34,49",
+     "def Origin = source.Origin",
+     "via DeepCloneObjects",
+     "via DeepCloneObjects",
+     "via DeepCloneObjects"
+    ]
+   ]
+  },
+  {
+   "title": "T6 Angle ranges and normalization",
+   "columns": [
+    "Location",
+    "Behavior",
+    "Range"
+   ],
+   "rows": [
+    [
+     "RackSourceTransformFactsV2.cs:255-261 NormalizePi (private)",
+     "% 2PI then shift",
+     "(-PI, PI]"
+    ],
+    [
+     "ClosedContour2D.cs:283-292 ArcContainsAngle",
+     "delta - floor(delta/2PI)*2PI; <= |sweep| + Angle",
+     "[0, 2PI)"
+    ],
+    [
+     "Transform2D.RotationAngle Transform2D.cs:111-115",
+     "Atan2",
+     "(-PI, PI] from Atan2, no wrap"
+    ],
+    [
+     "RackTransformFacts.cs:106",
+     "Atan2(M21,M11)",
+     "[-PI, PI] observed (-PI kept)"
+    ],
+    [
+     "Transform2D.Rotation / RotationDegrees :51-60",
+     "finite check only",
+     "unbounded"
+    ],
+    [
+     "PrismaticSectionInstance.Create :77-84",
+     "deg->rad, finite check only",
+     "unbounded"
+    ],
+    [
+     "PathSegment2D.Arc :92-101",
+     "sweep must satisfy Angle < |sweep| <= 2PI + Angle; start angle unbounded",
+     "sweep bounded; start unbounded"
+    ],
+    [
+     "PushBackMirror.Instance :61; HeaderRunPlan.PlacedClone :67; RackLayoutCommands.Fill :441",
+     "negate / keep / +PI/2, no wrap",
+     "unbounded"
+    ]
+   ]
+  },
+  {
+   "title": "T7 Quantities with NO existing tolerance authority in code",
+   "columns": [
+    "Quantity",
+    "What exists instead",
+    "Evidence"
+   ],
+   "rows": [
+    [
+     "Block-reference scale factor (magnitude, uniformity, unit, sign vs zero)",
+     "caller-supplied RackSourceTransformTolerance.Scale / RackTransformFacts tolerance, with no default constant and no production caller; product writes only exact ±1",
+     "RackSourceTransformFactsV2.cs:54-66; RackTransformFacts.cs:68; LateralHeaderDrawer.cs:62,147,313"
+    ],
+    [
+     "Block-reference rotation equality",
+     "GeometryTolerance.Angle used only for arcs/ToString; V2 AngleRadians validated but unused",
+     "Vector2D.cs:100; RackSourceTransformFactsV2.cs:187-191"
+    ],
+    [
+     "Insertion normal / world-Z",
+     "caller-supplied RackSourceTransformTolerance.Normal only; RACKDUPLICAR ignores Normal",
+     "RackSourceTransformFactsV2.cs:217,242-244; RackDuplicarCommands.cs:354-360"
+    ],
+    [
+     "Determinant sign / positive-determinant",
+     "exact < 0.0 comparisons; no gate",
+     "Transform2D.cs:80; RackTransformFacts.cs:108"
+    ],
+    [
+     "Plugin point equality",
+     "AutoCAD IsEqualTo default",
+     "BlockPlacement.cs:231"
+    ],
+    [
+     "Frame orthonormality in production",
+     "OrthonormalTolerance only in unused FromAxes; Create/Camera use literal 1e-8",
+     "Spatial3D.cs:120,157,189,201-216"
+    ]
+   ]
+  }
+ ],
+ "limitations": [
+  "Read-only analysis of the extract of commit 3375aadbbf929427a6d106b2fff275d64863b89c. Only src/, tests/ and docs/adr/ were searched. .github/ and eng/ci/ were not inspected for tolerances.",
+  "AutoCAD API behavior is not verifiable from code: the default ScaleFactors, Rotation and Normal of a new BlockReference, the tolerance used by Point3d.IsEqualTo without an argument, whether AutoCAD wraps assigned Rotation values, and whether DeepCloneObjects preserves nested transforms. These are marked UNCERTAIN.",
+  "Pure finiteness and positivity guards (IsFinite/RequireFinite/RequirePositive) are listed by file:line but were not individually read in context. Their purpose is inferred from the method names and signatures only.",
+  "The 1e-6 literal comparisons in Dynamic, PushBack and Selective are grouped. Each was located by grep but not read in full context.",
+  "UI-layer (RackCad.UI) tolerances appeared in greps (for example RackFrameConfiguratorViewModel HeightTolerance 0.01, Tolerance 0.0001 in the editor rows) but are out of the requested Domain/Application/Plugin scope and are not tabulated.",
+  "'No production caller' claims rely on text greps of src. Reflection-based or dynamically constructed calls would not be detected."
+ ]
+}

@@ -1,0 +1,664 @@
+{
+ "method": "API-surface sweep (grep, not call-graph first) over the extract of 3375aadb at scratchpad\\main2. Step 1: identified the only project referencing Autodesk assemblies: src/RackCad.Plugin/RackCad.Plugin.csproj:11-16,28-39 (AcCoreMgd/AcDbMgd/AcMgd or AutoCAD.NET NuGet); grep for 'Autodesk.' in src/RackCad.UI, src/RackCad.Application, src/RackCad.Domain returned no source hits; tests contain 'using Autodesk' only as a string literal (tests/RackCad.Tests/CustomPropertiesEdgeGuardTests.cs:156). Step 2: grep of all 69 Plugin .cs files (10,952 lines) for AppendEntity, AddNewlyCreatedDBObject, SetAt, Erase(, UpgradeOpen/DowngradeOpen, OpenMode.ForWrite, CreateExtensionDictionary, new Xrecord/.Data=, XData/ResultBuffer, RecordGraphicsModified, WblockCloneObjects, DeepCloneObjects, Wblock/Insert(, Purge(, new Database(, ReadDwgFile, SaveAs, StartTransaction, StartOpenCloseTransaction, Commit/Abort, LockDocument, Regen/UpdateScreen/SetCurrentView, AdjustAlignment, RecomputeDimensionBlock, TransformBy, SetDatabaseDefaults, constructors (BlockReference, BlockTableRecord, DBText, RotatedDimension, LayerTableRecord, Polyline, Circle, IdMapping), and property setters (Layer/LayerId/Color/ColorIndex/Linetype/LineWeight/Position/ScaleFactors/Rotation/Normal/TextString/Height/AlignmentPoint/Dim*/Name/Origin/Closed). Step 3: every hit was read in context and classified REACHED (by Selective frontal/planta creation, reference placement or library import) or NOT REACHED, with the chain proven by reading callers (grep of caller names). Chain abbreviations used in reached_by: ENTRY = RACKSELECTIVO (RackSelectivoCommands.cs:26-39) | RACKCAD menu SelectiveInsertionRequest (RackMenuCommands.cs:76-78) | RACKEDITAR->SelectiveKindHandler.Edit (KindHandlers/SelectiveKindHandler.cs:19-20)->EditSelective 'Insertar' branch (RackSelectivoCommands.cs:270-280); CH-F = ENTRY -> DrawSelectiveView (RackSelectivoCommands.cs:429-432) -> DrawSelectiveViewFromAuthored (:449-476) -> InsertSelectiveFrontal (:484-523) -> SelectiveFrontalDrawService.DrawAndPlace (Systems/Selective/SelectiveFrontalDrawService.cs:31-39) -> ViewBlockDraw.DrawAndPlace (Systems/Shared/ViewBlockDraw.cs:28-57); CH-P = ENTRY -> DrawSelectiveViewFromAuthored (:467-473) -> SelectivePlantaDrawService.DrawAndPlace (Systems/Selective/SelectivePlantaDrawService.cs:26-34) -> ViewBlockDraw.DrawAndPlace; CREATE = ViewBlockDraw.cs:50 -> SystemBlockWriter.CreateBlock (Systems/Shared/SystemBlockWriter.cs:18-40); PLACE = ViewBlockDraw.cs:51 -> BlockPlacement.PlaceAndReport (Drawing/BlockPlacement.cs:26-53) -> PlaceBlockWithJig (:174-201); IMPORT = SystemBlockWriter.cs:25 -> BlockLibraryImporter.EnsureForPlan (Drawing/BlockLibraryImporter.cs:25-38) -> LibraryBlockAvailabilityFlow.Observe (src/RackCad.Application/Systems/Shared/LibraryBlockRequirements.cs:158-180: Ensure first, then Query) -> ImportAdapter.Ensure (BlockLibraryImporter.cs:140-141) -> EnsureRequirements (:42-47) -> EnsureBlocks (:50-132). All paths are relative to the extract root. Only files inside the extract were read.",
+ "entry_points": [
+  {
+   "name": "RACKSELECTIVO / alias RS (creation of ONE view per invocation: frontal of one fondo, planta, or lateral)",
+   "location": "src/RackCad.Plugin/RackSelectivoCommands.cs:23-46"
+  },
+  {
+   "name": "RACKCAD / alias RK main menu, SelectiveInsertionRequest case",
+   "location": "src/RackCad.Plugin/RackMenuCommands.cs:17,21-30,48,76-78"
+  },
+  {
+   "name": "RACKEDITAR / alias RED -> SelectiveKindHandler.Edit -> EditSelective 'Insertar' (non-UpdateOnly) branch -> DrawSelectiveViewFromAuthored",
+   "location": "src/RackCad.Plugin/RackMenuCommands.cs:18,115-146; src/RackCad.Plugin/KindHandlers/SelectiveKindHandler.cs:19-20; src/RackCad.Plugin/RackSelectivoCommands.cs:270-280"
+  },
+  {
+   "name": "DrawSelectiveView / DrawSelectiveViewFromAuthored (internal dispatch by view: lateral :461-465, planta :467-473, frontal :475)",
+   "location": "src/RackCad.Plugin/RackSelectivoCommands.cs:429-476"
+  },
+  {
+   "name": "SelectiveFrontalDrawService.DrawAndPlace / SelectivePlantaDrawService.DrawAndPlace -> ViewBlockDraw.DrawAndPlace",
+   "location": "src/RackCad.Plugin/Systems/Selective/SelectiveFrontalDrawService.cs:31-39; src/RackCad.Plugin/Systems/Selective/SelectivePlantaDrawService.cs:26-34; src/RackCad.Plugin/Systems/Shared/ViewBlockDraw.cs:28-57"
+  }
+ ],
+ "operations": [
+  {
+   "id": "OP-01",
+   "category": "lock",
+   "api_call": "document.LockDocument() (callee-owned lock L1, spans library import AND the definition transaction T1)",
+   "location": "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:23",
+   "reached_by": "CH-F / CH-P -> CREATE",
+   "seam_role": "Orchestrator (contract: lock is held by the orchestrator; SL-1/SL-2/SL-4 must NOT LockDocument)",
+   "transaction_context": "Outside any transaction; wraps IMPORT (SystemBlockWriter.cs:25) then T1 (:27-37)",
+   "certainty": "CERTAIN"
+  },
+  {
+   "id": "OP-02",
+   "category": "transaction (read, doc DB)",
+   "api_call": "db.TransactionManager.StartTransaction(); GetObject(db.BlockTableId, ForRead); BlockTable.Has(name); Commit()",
+   "location": "src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:67-80",
+   "reached_by": "CH-F / CH-P -> CREATE -> IMPORT (EnsureBlocks)",
+   "seam_role": "SL-5 (callee transaction allowed)",
+   "transaction_context": "Callee-owned read transaction on the active drawing, inside L1, before T1",
+   "certainty": "CERTAIN",
+   "conditional_on": "plan has at least one non-blank BlockName (LibraryBlockRequirements.cs:59-78, 168-173; BlockLibraryImporter.cs:57-65)"
+  },
+  {
+   "id": "OP-03",
+   "category": "side-database open/dispose",
+   "api_call": "new Database(false, true); ReadDwgFile(path, FileOpenMode.OpenForReadAndAllShare, allowCPConversion:true, password:null); fresh.Dispose() on failure; cachedLibrary?.Dispose() on replacement",
+   "location": "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:17-56 (lock(CacheGate) :19; cache hit :25-31; open :33-40; dispose :45,:49)",
+   "reached_by": "CH-F / CH-P -> CREATE -> IMPORT -> EnsureBlocks :96 -> BlockLibraryDatabaseCache.Acquire",
+   "seam_role": "SL-5 (today the importer opens the library itself, from the configured path, not an already-opened private copy)",
+   "transaction_context": "No transaction; inside L1; process-wide static cache keyed by path+LastWriteTimeUtc+Length survives across commands",
+   "certainty": "CERTAIN",
+   "conditional_on": "at least one required block missing in the drawing (BlockLibraryImporter.cs:82-85) AND File.Exists(LibraryPath) (:87-91) AND cache miss; path = BlockLibraryLocator.ResolvePath() (src/RackCad.Application/Catalogs/BlockLibrary.cs:19-23: user-settings override else default next to catalogs)"
+  },
+  {
+   "id": "OP-04",
+   "category": "transaction (read, library side DB)",
+   "api_call": "source.TransactionManager.StartTransaction(); GetObject(source.BlockTableId, ForRead); Has/indexer; Commit()",
+   "location": "src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:102-115",
+   "reached_by": "CH-F / CH-P -> CREATE -> IMPORT -> EnsureBlocks",
+   "seam_role": "SL-5",
+   "transaction_context": "Callee transaction on the library Database, inside L1, before T1",
+   "certainty": "CERTAIN",
+   "conditional_on": "same as OP-03 and Acquire returned non-null"
+  },
+  {
+   "id": "OP-05",
+   "category": "import / clone into active drawing",
+   "api_call": "new IdMapping(); source.WblockCloneObjects(ids, db.BlockTableId, mapping, DuplicateRecordCloning.Ignore, deferTranslation:false); return ids.Count (not verified); exceptions swallowed -> RackLog + return 0",
+   "location": "src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:117-131",
+   "reached_by": "CH-F / CH-P -> CREATE -> IMPORT -> EnsureBlocks",
+   "seam_role": "SL-5 (the only write of PREPARE-W)",
+   "transaction_context": "Writes the active drawing's BlockTable with NO RackCad transaction on the destination, inside L1, BEFORE and independent of T1 (ViewBlockDraw.cs:59-64 comment: import 'mutates the database on its own account')",
+   "certainty": "CERTAIN",
+   "conditional_on": "ids.Count > 0 (library contains at least one missing name)"
+  },
+  {
+   "id": "OP-06",
+   "category": "transaction (read, doc DB)",
+   "api_call": "AutoCadLibraryBlockQuery.Query: StartTransaction(); GetObject(BlockTableId, ForRead); Has; Commit()",
+   "location": "src/RackCad.Plugin/Drawing/AutoCadLibraryBlockQuery.cs:18-40",
+   "reached_by": "CH-F / CH-P -> CREATE -> IMPORT -> LibraryBlockAvailabilityFlow.Observe :178 (after Ensure)",
+   "seam_role": "SL-5 (post-import availability facts; computed but DISCARDED: EnsureForPlan returns only result.Import.ImportedCount, BlockLibraryImporter.cs:33-38)",
+   "transaction_context": "Callee read transaction inside L1, before T1",
+   "certainty": "CERTAIN",
+   "conditional_on": "requirements.Count > 0"
+  },
+  {
+   "id": "OP-07",
+   "category": "transaction open",
+   "api_call": "database.TransactionManager.StartTransaction() (T1, callee-owned, 'using' => disposed/aborted on exception)",
+   "location": "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:27",
+   "reached_by": "CH-F / CH-P -> CREATE",
+   "seam_role": "SL-1 / SL-2 (contract: must instead RECEIVE caller T_M)",
+   "transaction_context": "T1 inside L1, after IMPORT",
+   "certainty": "CERTAIN"
+  },
+  {
+   "id": "OP-08",
+   "category": "write-open symbol table",
+   "api_call": "tr.GetObject(db.BlockTableId, OpenMode.ForWrite)",
+   "location": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:31",
+   "reached_by": "CH-F / CH-P -> CREATE -> SystemBlockWriter.cs:29 drawer.CreateSystemBlock (LateralHeaderDrawer.cs:28-81)",
+   "seam_role": "SL-1 / SL-2",
+   "transaction_context": "T1",
+   "certainty": "CERTAIN"
+  },
+  {
+   "id": "OP-09",
+   "category": "block definition create (nested ARRAY defs)",
+   "api_call": "NewBlock: UniqueBlockName(BlockNaming.SanitizeBlockName + '_N' probe via blockTable.Has); new BlockTableRecord{Name, Origin=Point3d.Origin}; blockTable.Add; tr.AddNewlyCreatedDBObject",
+   "location": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:37-51, 240-247, 395-413",
+   "reached_by": "CH-F / CH-P -> CREATE -> CreateSystemBlock loop over plan.Headers. Frontal groups named SEL_FRONTAL_<Role>_<i> (src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:26,35-36; src/RackCad.Application/Drawing/HeaderInstanceGrouper.cs:58-99); planta groups PLANTA_CAB_<n> (src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:300-302)",
+   "seam_role": "SL-1 / SL-2 (definition content; effective nested names decided inside the write, not returned)",
+   "transaction_context": "T1",
+   "certainty": "CERTAIN",
+   "conditional_on": "plan.Headers non-empty (grouper creates a group only for buckets of >= 2 identical pieces, HeaderInstanceGrouper.cs:60-64)"
+  },
+  {
+   "id": "OP-10",
+   "category": "block definition create (top-level view definition)",
+   "api_call": "NewBlock(blockTable, tr, systemBlockName, out systemName, out systemId) -> new BlockTableRecord{Name=UniqueBlockName(...), Origin}; blockTable.Add; AddNewlyCreatedDBObject",
+   "location": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:54, 240-247, 395-413",
+   "reached_by": "CH-F / CH-P -> CREATE. Requested name: frontal = RackViewBaseName.SelectiveFrontal(system, FrontalName(...)) (SelectiveFrontalDrawService.cs:38,76-77; RackSelectivoCommands.cs:520,526-527; src/RackCad.Application/Systems/Shared/RackViewBaseName.cs:22-29,186-191); planta = RackViewBaseName.SelectivePlanta(system, name) (SelectivePlantaDrawService.cs:33,67-68; RackViewBaseName.cs:31-37)",
+   "seam_role": "SL-1 (frontal k) / SL-2 (planta)",
+   "transaction_context": "T1",
+   "certainty": "CERTAIN"
+  },
+  {
+   "id": "OP-11",
+   "category": "entity append (nested header references)",
+   "api_call": "new BlockReference(new Point3d(InsertionX, InsertionY, 0), headerId){ScaleFactors = Mirrored ? Scale3d(-1,1,1) : Scale3d(1)}; systemDef.AppendEntity; tr.AddNewlyCreatedDBObject",
+   "location": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:56-68",
+   "reached_by": "CH-F / CH-P -> CREATE -> CreateSystemBlock. Selective placements are always mirrored:false (HeaderInstanceGrouper.cs:92; SelectivePlantaBuilder.cs:142,174)",
+   "seam_role": "SL-1 / SL-2 (definition content)",
+   "transaction_context": "T1",
+   "certainty": "CERTAIN",
+   "conditional_on": "plan.Headers non-empty"
+  },
+  {
+   "id": "OP-12",
+   "category": "entity append (catalog piece references)",
+   "api_call": "AppendInstance: blockTable.Has(BlockName) else record missing and skip; new BlockReference(Insertion, blockTable[BlockName]){Rotation = RotationRadians, ScaleFactors = Scale3d(MirroredX?-1:1, MirroredY?-1:1, 1)}; space.AppendEntity; tr.AddNewlyCreatedDBObject",
+   "location": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:42-48, 70-76, 252-256, 293-317",
+   "reached_by": "CH-F / CH-P -> CREATE -> CreateSystemBlock (into header defs and into the system def for loose instances)",
+   "seam_role": "SL-1 / SL-2 (definition content). NOTE: negative nested scales occur inside the definition (e.g. planta largueros mirrored:true, SelectivePlantaBuilder.cs:393-394,403-404,505-513); they are not the model-space reference SL-4 places",
+   "transaction_context": "T1",
+   "certainty": "CERTAIN",
+   "conditional_on": "piece block present in drawing; a missing block is silently skipped and only listed in outcome.MissingInstances (LateralHeaderDrawer.cs:293-303)"
+  },
+  {
+   "id": "OP-13",
+   "category": "dynamic block property write",
+   "api_call": "foreach DynamicBlockReferenceProperty in reference.DynamicBlockReferencePropertyCollection: if !ReadOnly and name matches (OrdinalIgnoreCase) -> property.Value = value",
+   "location": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:319, 415-439",
+   "reached_by": "CH-F / CH-P -> CREATE -> AppendInstance. Values from builders: SelectiveFrontalBuilder.cs:466-467,489-490,510; SelectivePlantaBuilder.cs:517-518",
+   "seam_role": "SL-1 / SL-2 (nested piece references only; nothing sets dynamic properties on the top-level model-space reference)",
+   "transaction_context": "T1, after AppendEntity/AddNewlyCreatedDBObject of the nested reference",
+   "certainty": "CERTAIN",
+   "conditional_on": "reference.IsDynamicBlock && values.Count > 0 (LateralHeaderDrawer.cs:417-420)"
+  },
+  {
+   "id": "OP-14",
+   "category": "graphics invalidation",
+   "api_call": "reference.RecordGraphicsModified(true) on each nested piece reference whose dynamic property was set",
+   "location": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:441-448",
+   "reached_by": "CH-F / CH-P -> CREATE -> AppendInstance -> ApplyDynamicParameters",
+   "seam_role": "SL-1 / SL-2 (nested refs; the placed model-space reference never gets RecordGraphicsModified in the creation path)",
+   "transaction_context": "T1 (inside the transaction; no post-commit graphics write)",
+   "certainty": "CERTAIN",
+   "conditional_on": "at least one dynamic property applied"
+  },
+  {
+   "id": "OP-15",
+   "category": "entity append (annotation text)",
+   "api_call": "new DBText{Height, TextString, LayerId, HorizontalMode=TextCenter, VerticalMode=TextVerticalMid, Position, AlignmentPoint}; space.AppendEntity; tr.AddNewlyCreatedDBObject; label.AdjustAlignment(space.Database)",
+   "location": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:257-282",
+   "reached_by": "CH-F / CH-P -> CREATE -> AppendInstance (Role=Annotation). Sources: SelectiveFrontalBuilder.cs:317-344; SelectivePlantaBuilder.cs:326-341",
+   "seam_role": "SL-1 / SL-2 (definition content)",
+   "transaction_context": "T1",
+   "certainty": "CERTAIN",
+   "conditional_on": "annotation instance with non-blank Text (LateralHeaderDrawer.cs:260-263)"
+  },
+  {
+   "id": "OP-16",
+   "category": "symbol table write (layer create)",
+   "api_call": "LayerHelper.EnsureLayer: GetObject(LayerTableId, ForRead); Has; layerTable.UpgradeOpen(); new LayerTableRecord{Name, Color=Color.FromColorIndex(ByAci, aci)}; layerTable.Add; AddNewlyCreatedDBObject",
+   "location": "src/RackCad.Plugin/LayerHelper.cs:16-29 (called from src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:270,330-331 'RACKCAD_ANOTACIONES' aci 2 and :356 'RACKCAD_COTAS' aci 1)",
+   "reached_by": "CH-F / CH-P -> CREATE -> AppendInstance (annotation) / AppendDimension",
+   "seam_role": "SL-1 / SL-2 (side effect on the drawing LayerTable during definition creation)",
+   "transaction_context": "T1",
+   "certainty": "CERTAIN",
+   "conditional_on": "layer absent in drawing and an annotation/dimension instance exists"
+  },
+  {
+   "id": "OP-17",
+   "category": "entity append (dimension) + dimension overrides",
+   "api_call": "ResolveDimStyle (DimStyleTable ForRead); new RotatedDimension(rotation, p1, p2, dimLine, string.Empty, styleId){LayerId}; space.AppendEntity; tr.AddNewlyCreatedDBObject; Dimscale/Dimtxt/Dimasz/Dimexe/Dimexo/Dimgap/Dimtad/Dimdec setters; dimension.RecomputeDimensionBlock(true)",
+   "location": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:287-291, 338-392",
+   "reached_by": "CH-F / CH-P -> CREATE -> AppendInstance (Role=Dimension). Sources: SelectiveFrontalBuilder.cs:169 (SelectiveDimensions.AddFrontal), SelectivePlantaBuilder.cs:203 (SelectiveDimensions.AddPlanta)",
+   "seam_role": "SL-1 / SL-2 (definition content)",
+   "transaction_context": "T1",
+   "certainty": "PROBABLE",
+   "conditional_on": "plan contains Dimension instances (whether SelectiveDimensions emits them for a given configuration was not traced: UNCERTAIN); DIMVAR overrides only when no named style resolves (LateralHeaderDrawer.cs:362-373)"
+  },
+  {
+   "id": "OP-18",
+   "category": "extension dictionary / Xrecord (envelope)",
+   "api_call": "RackBlockData.Write: GetObject(definitionId, ForWrite); CreateExtensionDictionary(); GetObject(ExtensionDictionary, ForWrite); new ResultBuffer of <=255-char DxfCode.Text chunks; existing Xrecord (ForWrite).Data = buffer OR new Xrecord{Data}; dictionary.SetAt('RACKCAD_SELECTIVE', xrecord); AddNewlyCreatedDBObject",
+   "location": "src/RackCad.Plugin/Systems/Shared/RackBlockData.cs:16, 20-52 (called from src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:31-34)",
+   "reached_by": "CH-F / CH-P -> CREATE. Payload composed by RackSelectivoCommands.WrapSelectivePayload (:405-417: RackEmbedComposer.Compose + RackEmbedStore.Serialize); frontal section=fondo (:519), planta section=-1 (:469, :368)",
+   "seam_role": "SL-1 / SL-2 (envelope written on the DEFINITION; no read-back)",
+   "transaction_context": "T1",
+   "certainty": "CERTAIN",
+   "conditional_on": "payloadJson non-empty (SystemBlockWriter.cs:31); WrapSelectivePayload returns null when designJson empty (RackSelectivoCommands.cs:408-411) and RackBlockData.Write also returns silently on empty (RackBlockData.cs:22-25)"
+  },
+  {
+   "id": "OP-19",
+   "category": "transaction commit",
+   "api_call": "transaction.Commit() of T1 (definition + nested defs + layers + envelope)",
+   "location": "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:36",
+   "reached_by": "CH-F / CH-P -> CREATE",
+   "seam_role": "SL-1 / SL-2 (internal Commit: forbidden by the contract)",
+   "transaction_context": "Ends T1 BEFORE the reference exists; L1 released at :39",
+   "certainty": "CERTAIN"
+  },
+  {
+   "id": "OP-20",
+   "category": "lock + transaction open",
+   "api_call": "document.LockDocument() (L2); database.TransactionManager.StartTransaction() (T2)",
+   "location": "src/RackCad.Plugin/Drawing/BlockPlacement.cs:179-180",
+   "reached_by": "CH-F / CH-P -> PLACE",
+   "seam_role": "SL-4 (contract: must receive caller T_M; no LockDocument)",
+   "transaction_context": "New lock and new transaction AFTER T1 committed",
+   "certainty": "CERTAIN"
+  },
+  {
+   "id": "OP-21",
+   "category": "reference construction + interactive jig",
+   "api_call": "new BlockReference(Point3d.Origin, blockDefinitionId); new HeaderInsertionJig(reference, prompt); editor.Drag(jig); jig Update: ((BlockReference)Entity).Position = position",
+   "location": "src/RackCad.Plugin/Drawing/BlockPlacement.cs:182-184, 204-245 (Position setter :242)",
+   "reached_by": "CH-F / CH-P -> PLACE",
+   "seam_role": "SL-4 (today: interactive; ONLY Position is set; no Rotation, ScaleFactors, Normal, Layer/LayerId, Color, dynamic properties or RecordGraphicsModified on the placed reference)",
+   "transaction_context": "T2 open during user interaction",
+   "certainty": "CERTAIN"
+  },
+  {
+   "id": "OP-22",
+   "category": "entity append (model space reference) + commit",
+   "api_call": "GetObject(SymbolUtilityServices.GetBlockModelSpaceId(db), OpenMode.ForWrite); modelSpace.AppendEntity(reference); tr.AddNewlyCreatedDBObject(reference, true); transaction.Commit()",
+   "location": "src/RackCad.Plugin/Drawing/BlockPlacement.cs:193-198",
+   "reached_by": "CH-F / CH-P -> PLACE",
+   "seam_role": "SL-4 (append) + internal Commit (forbidden by contract)",
+   "transaction_context": "T2",
+   "certainty": "CERTAIN",
+   "conditional_on": "jig result PromptStatus.OK"
+  },
+  {
+   "id": "OP-23",
+   "category": "cancel path (empty commit)",
+   "api_call": "reference.Dispose(); transaction.Commit(); return ObjectId.Null",
+   "location": "src/RackCad.Plugin/Drawing/BlockPlacement.cs:186-191",
+   "reached_by": "CH-F / CH-P -> PLACE",
+   "seam_role": "SL-4 (interactive cancel; no counterpart under a non-interactive seam)",
+   "transaction_context": "T2 committed empty",
+   "certainty": "CERTAIN",
+   "conditional_on": "jig cancelled"
+  },
+  {
+   "id": "OP-24",
+   "category": "erase (compensating cleanup)",
+   "api_call": "EraseUnreferencedDefinition: LockDocument (L3); StartTransaction (T3); GetObject(defId, ForRead); GetBlockReferenceIds(directOnly:true, forceValidity:false); record.UpgradeOpen(); record.Erase(); Commit(); exceptions logged",
+   "location": "src/RackCad.Plugin/Drawing/BlockPlacement.cs:37-42, 123-170",
+   "reached_by": "CH-F / CH-P -> PLACE (placedId.IsNull)",
+   "seam_role": "None in contract (post-commit compensation for an already-committed T1; under T_M the caller's abort replaces it)",
+   "transaction_context": "L3 + T3, after T1 and T2 committed",
+   "certainty": "CERTAIN",
+   "conditional_on": "jig cancelled"
+  },
+  {
+   "id": "OP-25",
+   "category": "purge + erase (post-commit)",
+   "api_call": "LateralHeaderDrawer.PurgeUnreferenced: StartTransaction (T4); GetObject ForRead; db.Purge(ids); ((BlockTableRecord)GetObject(id, ForWrite)).Erase(); Commit(); exceptions logged",
+   "location": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:193-238 (called from src/RackCad.Plugin/Drawing/BlockPlacement.cs:162)",
+   "reached_by": "CH-F / CH-P -> PLACE -> EraseUnreferencedDefinition",
+   "seam_role": "None in contract (post-commit write)",
+   "transaction_context": "T4 after T3 commit, still inside L3",
+   "certainty": "CERTAIN",
+   "conditional_on": "jig cancelled and the erased definition nested block references"
+  },
+  {
+   "id": "OP-26",
+   "category": "envelope composition (pure, non-AutoCAD)",
+   "api_call": "RackEmbedComposer.Compose(source, KindSelective, id, name, view, section, designJson) + RackEmbedStore.Serialize; design serialized by SelectivePalletDesignStore.Serialize(SelectivePalletDesignDocument.From(design,id,name))",
+   "location": "src/RackCad.Plugin/RackSelectivoCommands.cs:367-369, 386-399, 405-417, 469, 519",
+   "reached_by": "CH-F / CH-P before CREATE; id = window.RackId (RackSelectivoCommands.cs:39) minted in UI by RackEditorSession.Complete -> Identity.EnsureId (src/RackCad.UI/Editor/RackEditorSession.cs:119-131; src/RackCad.UI/Editor/RackEditorIdentity.cs:45-48) or embed.Id on RACKEDITAR (RackSelectivoCommands.cs:120)",
+   "seam_role": "Orchestrator (caller composes envelope; NewRackId minted once per rack)",
+   "transaction_context": "None (before L1)",
+   "certainty": "CERTAIN"
+  }
+ ],
+ "contract_required_operations": [
+  {
+   "id": "CR-01",
+   "category": "transaction ownership",
+   "description": "SL-1/SL-2 must create the view definition inside a caller-supplied (Database, Transaction). Current CreateBlock takes a Document, opens its own lock L1 (SystemBlockWriter.cs:23), its own T1 (:27) and commits (:36). LateralHeaderDrawer.CreateSystemBlock (LateralHeaderDrawer.cs:28-81) already takes (Database, Transaction) and does not commit/lock, so it is the reusable core; the wrapper is what violates the clause. AUTH-15 RackDefinitionCreator.CreateInTransaction (Systems/Shared/RackDefinitionCreator.cs:39-80) is a caller-owned header-run creator but has NO product caller at this SHA (grep: only its definition and tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs).",
+   "seam_role": "SL-1, SL-2",
+   "basis": "Clause: receive caller Database and Transaction; NO internal Commit, Abort, Dispose of caller transaction, LockDocument"
+  },
+  {
+   "id": "CR-02",
+   "category": "transaction ownership",
+   "description": "SL-4 must append the model-space reference inside T_M. Current placement opens its own lock L2 and T2 and commits (BlockPlacement.cs:179-198); BlockPlacement.AppendReference (BlockPlacement.cs:79-95) is non-interactive but also owns lock+tx+commit. No caller-owned BlockReference placement exists for Selective; the only caller-owned fixed-point placement is CantileverViewMaterializer.InsertReference (Drawing/Cantilever/CantileverViewMaterializer.cs:118-130), which sets Position only.",
+   "seam_role": "SL-4",
+   "basis": "Clause: receive caller Database and Transaction; NO internal Commit/LockDocument; place the block reference in the caller's transaction"
+  },
+  {
+   "id": "CR-03",
+   "category": "transaction verification",
+   "description": "Verify the passed transaction is the live top transaction of the target database before any write. Only AUTH-15 Precheck does this (RackDefinitionCreator.cs:147-164, comparing TopTransaction.UnmanagedObject; OpenCloseTransaction deliberately unsupported). CreateSystemBlock, SystemBlockWriter.RedefineInTransaction (SystemBlockWriter.cs:104-116) and every placement path perform no such check. SL-4 needs its own check (none exists for placement).",
+   "seam_role": "SL-1, SL-2, SL-4",
+   "basis": "Clause: verify the transaction is the live top transaction"
+  },
+  {
+   "id": "CR-04",
+   "category": "single-transaction multi-view creation",
+   "description": "Create, for one logical rack, frontal definition k for EVERY fondo k plus the planta definition, each with one model-space reference, all in ONE T_M. Current product creates ONE view per invocation (RackSelectivoCommands.cs:461-475), picks the fondo interactively via editor.GetInteger (:495-515), and splits each view into T1 (definition, committed) + T2 (reference, committed). fondoCount from SelectiveDepthLayout.Count(system) (:493) and per-fondo system from SelectiveDepthLayout.FondoSystemView (:517) are the reusable inputs.",
+   "seam_role": "Orchestrator, SL-1, SL-2, SL-4",
+   "basis": "Contract preamble: all frontal definitions (one per fondo k) and the planta definition, each with ONE block reference, entirely inside ONE caller-owned T_M"
+  },
+  {
+   "id": "CR-05",
+   "category": "placement from computed transform",
+   "description": "SL-4 must set Position, ScaleFactors, Rotation and Normal from a computed transform with no jig/interaction. Current code: jig only, only Position set (BlockPlacement.cs:182-184, 242). No '.Normal =' setter or BlockTransform/TransformBy on an entity exists anywhere in the Plugin (property-setter grep; TransformBy only on a Vector3d displacement at RackDuplicarCommands.cs:147).",
+   "seam_role": "SL-4",
+   "basis": "Clause SL-4: place from a computed transform (no jig, no interaction), set position/scale/rotation/normal from the transform"
+  },
+  {
+   "id": "CR-06",
+   "category": "transform validation",
+   "description": "Reject transforms with non-positive determinant / any negative scale for the placed reference. No placement path checks this. Pure helpers exist in Application (src/RackCad.Application/Geometry/Transform2D.cs:77-83 Determinant/ReversesOrientation; src/RackCad.Application/Systems/Shared/RackTransformFacts.cs:21-34,97-98) but are not used by any placement.",
+   "seam_role": "SL-4",
+   "basis": "Clause SL-4: strictly positive determinant, no negative scale"
+  },
+  {
+   "id": "CR-07",
+   "category": "reference properties",
+   "description": "Set layer and entity properties of the placed reference from the plan. Current PlaceBlockWithJig sets no Layer/LayerId/Color/Linetype/LineWeight and calls no SetDatabaseDefaults (BlockPlacement.cs:174-201); effective layer at runtime is decided by AutoCAD (UNCERTAIN from code).",
+   "seam_role": "SL-4",
+   "basis": "Clause SL-4: set layer and properties from the plan"
+  },
+  {
+   "id": "CR-08",
+   "category": "dynamic properties + graphics",
+   "description": "Apply dynamic properties and RecordGraphicsModified to the PLACED reference inside T_M. Current creation applies them only to nested piece references inside the definition (LateralHeaderDrawer.cs:319, 415-449); the top-level definition is a plain BlockTableRecord{Name, Origin} (LateralHeaderDrawer.cs:243) and PlaceBlockWithJig never calls RecordGraphicsModified. The redraw precedent calls RecordGraphicsModified on references inside the caller's transaction (LateralHeaderDrawer.cs:167-171).",
+   "seam_role": "SL-4",
+   "basis": "Clause SL-4: apply dynamic properties and RecordGraphicsModified INSIDE T_M"
+  },
+  {
+   "id": "CR-09",
+   "category": "no post-commit writes / no compensation",
+   "description": "Remove post-commit graphics/cleanup writes and compensating erase. The creation chain performs no Regen (ApplyRegen not called on ViewBlockDraw.DrawAndPlace/CreateBlock/PlaceAndReport), but the cancel path does post-commit Erase + Purge (BlockPlacement.cs:37-42, 123-170; LateralHeaderDrawer.cs:193-238). Under T_M a failure must be an abort by the caller, not a cleanup by the seam.",
+   "seam_role": "SL-4 (and orchestrator abort)",
+   "basis": "Clause SL-4: no post-commit graphics writes; general: a failed call leaves the caller obliged to abort"
+  },
+  {
+   "id": "CR-10",
+   "category": "envelope verbatim + read-back",
+   "description": "Write the caller-composed envelope verbatim, then read it back and compare. Current CreateBlock writes via RackBlockData.Write with no read-back (SystemBlockWriter.cs:31-34) and silently writes nothing when payload is null/empty (SystemBlockWriter.cs:31; RackBlockData.cs:22-25; WrapSelectivePayload returns null on empty design, RackSelectivoCommands.cs:408-411). AUTH-15 has the read-back (RackDefinitionCreator.cs:201-214) but takes a RackEmbedDocument and re-serializes it (:185-187) and at this SHA refuses an envelope with blank Name (:177-183), whereas the Selective product allows a blank rack name (fallback block name 'Selectivo', RackSelectivoCommands.cs:520; default names RackViewBaseName.cs:22-37) and composes the envelope with the name as given (:413-416). Reconciling blank-name handling is required before reuse (UNCERTAIN how the seam will resolve it).",
+   "seam_role": "SL-1, SL-2",
+   "basis": "Clause: envelope composed by the caller and written verbatim, then read back and compared"
+  },
+  {
+   "id": "CR-11",
+   "category": "identity",
+   "description": "Mint NewRackId once per logical rack in the orchestrator and assert it is identical in every sibling envelope (all frontals k and planta). Current Plugin never mints a Selective id: it is minted in the UI (RackEditorSession.cs:126 -> RackEditorIdentity.EnsureId :45-48) or taken from the picked embed (RackSelectivoCommands.cs:120) and passed to a single-view creation. No cross-envelope equality check exists.",
+   "seam_role": "Orchestrator (SL-1/SL-2 receive it inside the envelope)",
+   "basis": "Clause: NewRackId minted once per logical rack by the orchestrator and identical in every sibling envelope"
+  },
+  {
+   "id": "CR-12",
+   "category": "naming",
+   "description": "Compute effective block names deterministically and expose them. Base names are pure (RackViewBaseName.cs:22-37,186-191), but the effective name (SanitizeBlockName + '_N' collision suffix) is decided INSIDE the write by probing the live BlockTable (LateralHeaderDrawer.cs:240-247, 395-413), so it depends on in-transaction state and on sibling creation order; nested group names (SEL_FRONTAL_*, PLANTA_CAB_*) are also uniquified inside and not returned (only the system name is returned, LateralHeaderDrawer.cs:54,80). An empty effective name is possible (BlockNaming.SanitizeBlockName returns trimmed cleaned text, src/RackCad.Application/BlockNaming.cs:12-29; AUTH-15 guards it, RackDefinitionCreator.cs:57-63,121-131).",
+   "seam_role": "SL-1, SL-2 (orchestrator precomputes)",
+   "basis": "Clause: effective block names computed deterministically"
+  },
+  {
+   "id": "CR-13",
+   "category": "import separation",
+   "description": "Seams must not import. Current CreateBlock imports inside its own lock right before T1 (SystemBlockWriter.cs:25). The PREPARE pattern that separates import from the mutation exists for redraw only (ViewBlockDraw.PrepareRedraw, ViewBlockDraw.cs:65-89; used by ProjectVariableMutationExecutor.cs:239-257). A create-side PREPARE for Selective frontal/planta does not exist.",
+   "seam_role": "SL-5 (moved out of SL-1/SL-2)",
+   "basis": "Clause: seams do not import (imports belong to SL-5)"
+  },
+  {
+   "id": "CR-14",
+   "category": "library import result",
+   "description": "SL-5 must return a structured result. Current EnsureForPlan returns int ImportedCount only (BlockLibraryImporter.cs:25-38), discards the post-import availability facts computed by LibraryBlockAvailabilityFlow (LibraryBlockRequirements.cs:175-179), returns 0 for file missing / unreadable / exception without distinction (BlockLibraryImporter.cs:87-91, 96-100, 126-131), reports ids.Count requested rather than verified (:123-124), and ImportAdapter always reports WasAttempted=true (:140-141).",
+   "seam_role": "SL-5",
+   "basis": "Clause SL-5: PREPARE-W library import with a structured result"
+  },
+  {
+   "id": "CR-15",
+   "category": "library source",
+   "description": "SL-5 must read ONLY an already-opened library Database of a private copy. Current importer resolves the configured path itself (BlockLibraryLocator.ResolvePath, src/RackCad.Application/Catalogs/BlockLibrary.cs:19-23) and opens that original file with ReadDwgFile OpenForReadAndAllShare into a process-wide cache (BlockLibraryDatabaseCache.cs:11-15, 17-56). No private copy is made and the Database is not supplied by the caller.",
+   "seam_role": "SL-5",
+   "basis": "Clause SL-5: reading ONLY an already-opened library Database of a private copy (outside T_M, under the lock, callee transactions allowed)"
+  },
+  {
+   "id": "CR-16",
+   "category": "missing pieces surfaced",
+   "description": "A definition with pieces missing from the drawing must not be reported as a normal success. Current CreateSystemBlock skips missing blocks (LateralHeaderDrawer.cs:293-303) and the product only prints them after placement (BlockPlacement.cs:44; RackCommandSupport.cs:195-205). AUTH-15 returns MissingLibraryBlocks and does not write the envelope (RackDefinitionCreator.cs:65-72). Whether a missing piece must fail the seam is not stated by the contract (UNCERTAIN); at minimum SL-5's structured result must carry it.",
+   "seam_role": "SL-5, SL-1, SL-2",
+   "basis": "Clause SL-5 structured result; clause: a failed call leaves the caller obliged to abort"
+  },
+  {
+   "id": "CR-17",
+   "category": "failure semantics",
+   "description": "On failure the seam returns a typed failure and the caller aborts T_M; the seam must not clean up. Current: ViewBlockDraw.DrawAndPlace converts exceptions to HeaderPlacementResult.Failure (ViewBlockDraw.cs:47-56); if PlaceBlockWithJig throws, PlaceAndReport returns Failure (BlockPlacement.cs:49-52) while the definition from T1 is ALREADY committed and is not erased (erase only on cancel, :37-42).",
+   "seam_role": "SL-1, SL-2, SL-4",
+   "basis": "Clause: a failed call leaves the caller obliged to abort"
+  },
+  {
+   "id": "CR-18",
+   "category": "read-only verifier",
+   "description": "SL-6 expected-versus-persisted comparator with no write surface. No such component exists for Selective creation. Available read-only primitives: RackBlockData.Read (RackBlockData.cs:54-89), RackBlockFinder.ScanEnvelopes/FindFirstModelSpaceReference (RackBlockFinder.cs:20-31,57-65), RackSourcePlacementCaptureAdapter.Capture (Drawing/RackSourcePlacementCaptureAdapter.cs:13-39, reads Position/Rotation/ScaleFactors/Normal/definition Origin; no caller in src).",
+   "seam_role": "SL-6",
+   "basis": "Clause SL-6: read-only verifier and expected-versus-persisted comparator (no write surface)"
+  },
+  {
+   "id": "CR-19",
+   "category": "no interaction / no side DB writes",
+   "description": "No prompts or jigs inside T_M and no OpenCloseTransaction or side-database write in SL-1/2/4. Current chain prompts for fondo (RackSelectivoCommands.cs:499-515) and runs editor.Drag inside T2 (BlockPlacement.cs:183-184). The creation chain uses no StartOpenCloseTransaction (only LateralHeaderDrawService.cs:278, redraw path) and writes no side database (the library side DB is only read, BlockLibraryImporter.cs:103-115).",
+   "seam_role": "SL-1, SL-2, SL-4",
+   "basis": "Clause SL-4: no jig, no interaction; clauses SL-1/SL-2/SL-4: NO OpenCloseTransaction or side-database write"
+  }
+ ],
+ "transaction_and_lock_sites": [
+  {
+   "location": "src/RackCad.Plugin/RackCommandSupport.cs:146-179",
+   "kind": "lock + transaction (read) + commit",
+   "detail": "ReadDimensionStyleNames: LockDocument, StartTransaction, DimStyleTable ForRead, Commit. Runs before the editor window on RACKSELECTIVO (RackSelectivoCommands.cs:32), RACKCAD (RackMenuCommands.cs:29) and EditSelective (RackSelectivoCommands.cs:77). Read-only; not part of creation."
+  },
+  {
+   "location": "src/RackCad.Plugin/RackUnitsGuard.cs:34-45",
+   "kind": "no transaction (sysvar read)",
+   "detail": "Reads Database.Insunits and at most WriteMessage; called before DrawSelectiveView (RackSelectivoCommands.cs:38; RackMenuCommands.cs:48; RackSelectivoCommands.cs:110-113). No DB write."
+  },
+  {
+   "location": "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:23-39",
+   "kind": "lock L1 (callee-owned)",
+   "detail": "Wraps library import (line 25) and T1 (27-37). Released after T1 commit; placement takes a NEW lock."
+  },
+  {
+   "location": "src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:67-80",
+   "kind": "callee transaction (read, active drawing)",
+   "detail": "Presence check of required names inside L1, before T1."
+  },
+  {
+   "location": "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:19-55",
+   "kind": "C# monitor lock + side Database lifecycle",
+   "detail": "lock(CacheGate); new Database(false,true) + ReadDwgFile(OpenForReadAndAllShare); Dispose of failed/replaced DB. Cache persists across commands (static fields 11-15)."
+  },
+  {
+   "location": "src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:103-115",
+   "kind": "callee transaction (read, library side DB)",
+   "detail": "Collects source ObjectIds by name."
+  },
+  {
+   "location": "src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:122-124",
+   "kind": "implicit write outside any RackCad transaction",
+   "detail": "WblockCloneObjects into db.BlockTableId (DuplicateRecordCloning.Ignore) inside L1, before T1; not rolled back by T1 (documented at ViewBlockDraw.cs:59-64)."
+  },
+  {
+   "location": "src/RackCad.Plugin/Drawing/AutoCadLibraryBlockQuery.cs:24-37",
+   "kind": "callee transaction (read, active drawing)",
+   "detail": "Post-import availability query from LibraryBlockAvailabilityFlow.Observe (LibraryBlockRequirements.cs:178); result discarded by EnsureForPlan."
+  },
+  {
+   "location": "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:27-37",
+   "kind": "transaction T1 open + commit (callee-owned)",
+   "detail": "Definition, nested defs, layers, dimensions, texts, dynamic props, envelope Xrecord; Commit at 36. 'using' disposes (aborts) on exception."
+  },
+  {
+   "location": "src/RackCad.Plugin/Drawing/BlockPlacement.cs:179-200",
+   "kind": "lock L2 + transaction T2 open + commit (callee-owned)",
+   "detail": "Interactive editor.Drag inside open T2; Commit on cancel (189, empty) and on success (198, reference appended)."
+  },
+  {
+   "location": "src/RackCad.Plugin/Drawing/BlockPlacement.cs:135-163",
+   "kind": "lock L3 + transaction T3 + commit, then T4",
+   "detail": "Cancel-only cleanup: Erase of the committed definition (154-155, commit 158), then LateralHeaderDrawer.PurgeUnreferenced T4 (LateralHeaderDrawer.cs:202-230: Purge + Erase + Commit) still inside L3."
+  },
+  {
+   "location": "src/RackCad.Plugin/Systems/Shared/ViewBlockDraw.cs:28-57; src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:18-40; src/RackCad.Plugin/Drawing/BlockPlacement.cs:26-53,174-201",
+   "kind": "absence (FACT)",
+   "detail": "No Editor.Regen/UpdateScreen, no Transaction.Abort, no StartOpenCloseTransaction anywhere in the Selective frontal/planta creation chain; SystemBlockWriter.ApplyRegen (135-141) is not called by it."
+  },
+  {
+   "location": "src/RackCad.Plugin/RackSelectivoCommands.cs:126,185,221,238,188-191,224-227,241,254,264,303-315; src/RackCad.Plugin/RackCommandSupport.cs:90-95",
+   "kind": "locks/transactions/Regen preceding creation on RACKEDITAR 'Insertar' (not creation)",
+   "detail": "PickRackBlock via InDocumentTransaction.Run (read), FindRackBlocks (lock+tx read, RackCommandSupport.cs:125-139), ReadProjectVariables (lock+tx read), per-view RedrawInPlace (lock+import+tx+commit+purge, SystemBlockWriter.cs:55-71; LateralHeaderDrawService.cs:131-147), RackBlockRenamer.SyncName (lock+tx, Drawing/RackBlockRenamer.cs:32-50), EraseViewBlocks (lock+tx, RackCommandSupport.cs:229-275), one Editor.Regen (RackSelectivoCommands.cs:264). All complete before DrawSelectiveViewFromAuthored (:279)."
+  },
+  {
+   "location": "src/RackCad.Plugin/ProjectVariableMutationExecutor.cs:141-317",
+   "kind": "precedent (not reached): one lock, PREPARE outside tx, ONE transaction, commit, post-commit purge + regen",
+   "detail": "Lock at 141; PrepareRedraw imports outside the transaction (ViewBlockDraw.cs:84-86); single StartTransaction 266 / Commit 312; PurgeAfterCommit 316; ApplyRegen 317. Redraw only; no creation, no placement, no top-transaction check."
+  },
+  {
+   "location": "src/RackCad.Plugin/Systems/Shared/RackDefinitionCreator.cs:147-164",
+   "kind": "precedent (not reached): top-transaction verification",
+   "detail": "Refuses unless database.TransactionManager.TopTransaction.UnmanagedObject == transaction.UnmanagedObject; OpenCloseTransaction unsupported by design."
+  },
+  {
+   "location": "src/RackCad.Plugin/RackCantileverCommands.cs:440-462",
+   "kind": "precedent (not reached): definitions + references in one transaction",
+   "detail": "CreateBlockDefinitionNamed + InsertReference (fixed points) per plan inside ONE lock/transaction, Commit 459, ApplyRegen 462."
+  }
+ ],
+ "limitations": [
+  "Sweep scope: only src/RackCad.Plugin references Autodesk assemblies (RackCad.Plugin.csproj:11-16,28-39); UI/Application/Domain were grepped for 'Autodesk.' with no source hits, so their code was read only to resolve names, ids and plan contents.",
+  "Grep-based: sites reached through delegates (Func plan/blockName in ViewBlockDraw.DrawAndPlace, PreparedDestination.Write in ProjectVariableMutationExecutor) were resolved by reading callers; no reflection or dynamic dispatch was found, but a call-graph tool was not used (method independence by design).",
+  "AutoCAD runtime semantics are not provable from source and are UNCERTAIN: the layer/properties a BlockReference receives when appended without SetDatabaseDefaults; whether WblockCloneObjects uses an internal transaction; the coordinate system of the jig's AcquirePoint value; IsDynamicBlock of the plain top-level definition; exact defaults of BlockReference Normal/Rotation/ScaleFactors.",
+  "Whether SelectiveDimensions/SelectiveAnnotations emit Dimension/Annotation instances for every configuration was not traced (OP-15/OP-17 marked conditional/PROBABLE).",
+  "Lateral corte creation (RackSelectivoCommands.cs:461-465, 535-592 -> LateralHeaderDrawService.DrawAndPlace/CreateBlock, LateralHeaderDrawService.cs:28-53,236-271) is excluded from operations because the contract covers frontal (SL-1) and planta (SL-2) only; it shares CreateSystemBlock, RackBlockData.Write and PlaceAndReport with the reached chain.",
+  "RackDefinitionCreator (AUTH-15) is described as it exists at 3375aadb; it has no product caller at this SHA and refuses a blank envelope Name (RackDefinitionCreator.cs:177-183). Later commits on main were not read.",
+  "No code was executed and no host (AutoCAD) evidence was produced; all claims are from static reading of the extract. ADRs in docs/adr were listed but not analysed.",
+  "Catalog loading (RackCatalogLoader.Load, RackCatalogLoader.cs:17-43) and user-settings reads (BlockLibrary.cs:21) are file I/O without AutoCAD database mutation and were not listed as operations."
+ ],
+ "not_reached_but_similar": [
+  {
+   "api_call": "RackDefinitionCreator.CreateInTransaction (header-run and Cantilever families): Precheck top-transaction, drawer.CreateSystemBlock, RackBlockData.Write + Read-back compare",
+   "location": "src/RackCad.Plugin/Systems/Shared/RackDefinitionCreator.cs:39-80, 83-113, 137-214",
+   "why_not_reached": "No caller in src at this SHA (grep of 'CreateInTransaction' finds only its definitions and tests). Closest existing primitive for SL-1/SL-2."
+  },
+  {
+   "api_call": "SystemBlockWriter.RedefineInTransaction -> LateralHeaderDrawer.RedefineSystemBlock (BlockTable ForWrite, erase contents, new defs/refs, RecordGraphicsModified on all references) + RackBlockData.Write",
+   "location": "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:104-116; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:88-182 (RecordGraphicsModified 167-171)",
+   "why_not_reached": "Redraw of an existing definition (RACKEDITAR Actualizar, EditSelective :185/:238, ProjectVariableMutationExecutor); creation never redefines. Caller-owned but performs no top-transaction check."
+  },
+  {
+   "api_call": "SystemBlockWriter.RedrawInPlace: LockDocument, EnsureForPlan, StartTransaction, Commit, PurgeAfterCommit, ApplyRegen(Editor.Regen)",
+   "location": "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:45-80, 125-141",
+   "why_not_reached": "Edit/redraw path only (ViewBlockDraw.RedrawInPlace, ViewBlockDraw.cs:114-143)."
+  },
+  {
+   "api_call": "ViewBlockDraw.PrepareRedraw / RedrawInTransaction (PREPARE import outside tx, MUTATE in caller tx)",
+   "location": "src/RackCad.Plugin/Systems/Shared/ViewBlockDraw.cs:65-109; src/RackCad.Plugin/Systems/Selective/SelectiveFrontalDrawService.cs:42-59; src/RackCad.Plugin/Systems/Selective/SelectivePlantaDrawService.cs:37-54",
+   "why_not_reached": "Only called by ProjectVariableMutationExecutor.cs:239-257 (binding propagation); redraw only. Pattern template for SL-5 + SL-1/SL-2."
+  },
+  {
+   "api_call": "BlockPlacement.AppendReference: LockDocument, StartTransaction, ModelSpace ForWrite, new BlockReference(insertion), AppendEntity, AddNewlyCreatedDBObject, Commit",
+   "location": "src/RackCad.Plugin/Drawing/BlockPlacement.cs:79-95",
+   "why_not_reached": "Only caller LateralHeaderDrawService.DrawAt (LateralHeaderDrawService.cs:162-193, call at 182), which has no caller in src. Non-interactive but owns lock/tx and sets Position only."
+  },
+  {
+   "api_call": "BlockPlacement.PlaceDefinition (jig + cancel erase)",
+   "location": "src/RackCad.Plugin/Drawing/BlockPlacement.cs:64-76",
+   "why_not_reached": "Cantilever only (RackCantileverCommands.cs:162)."
+  },
+  {
+   "api_call": "LateralHeaderDrawService DrawAndPlace/PlaceLayout/CreateBlock (lock, EnsureForPlan, StartTransaction, CreateSystemBlock, RackBlockData.Write, Commit) and RedrawInPlace; ReadBlockName StartOpenCloseTransaction",
+   "location": "src/RackCad.Plugin/Drawing/LateralHeaderDrawService.cs:28-53, 111-156, 213-271, 274-290",
+   "why_not_reached": "Selective LATERAL corte (RackSelectivoCommands.cs:461-465, 588) and cabecera/dynamic flows; outside the frontal/planta seam scope. OpenCloseTransaction only in the redraw PREPARE."
+  },
+  {
+   "api_call": "RackBlockRenamer.SyncName: LockDocument, StartTransaction, def.UpgradeOpen(), def.Name = target, Commit",
+   "location": "src/RackCad.Plugin/Drawing/RackBlockRenamer.cs:21-58",
+   "why_not_reached": "EditSelective redraw only (RackSelectivoCommands.cs:188-191, 224-227, 241)."
+  },
+  {
+   "api_call": "RackCommandSupport.EraseViewBlocks: lock, tx, reference.Erase, definition.UpgradeOpen/Erase, Commit, PurgeUnreferenced",
+   "location": "src/RackCad.Plugin/RackCommandSupport.cs:218-283",
+   "why_not_reached": "EditSelective shrink cleanup only (RackSelectivoCommands.cs:252-255)."
+  },
+  {
+   "api_call": "EditSelective Editor.Regen; ReadProjectVariables lock+tx",
+   "location": "src/RackCad.Plugin/RackSelectivoCommands.cs:262-265, 298-319",
+   "why_not_reached": "Edit flow; precedes (on RACKEDITAR Insertar) but is not part of the creation call."
+  },
+  {
+   "api_call": "ProjectVariableMutationExecutor.Execute: lock, PrepareRedraw imports, StartTransaction, ProjectVariablesRegistry.TryWrite, RedrawInTransaction, Commit, PurgeAfterCommit, ApplyRegen",
+   "location": "src/RackCad.Plugin/ProjectVariableMutationExecutor.cs:141-328",
+   "why_not_reached": "Binding gesture (RackSelectivoCommands.cs:341); no creation or placement."
+  },
+  {
+   "api_call": "ProjectVariablesData.Write: NOD ForWrite, Xrecord.Data / new Xrecord + SetAt + AddNewlyCreatedDBObject",
+   "location": "src/RackCad.Plugin/ProjectVariablesData.cs:104-134",
+   "why_not_reached": "Drawing-level register write (project variables), not part of view creation."
+  },
+  {
+   "api_call": "CustomPropertiesData write (NOD ForRead, Xrecord UpgradeOpen/Data, dictionary UpgradeOpen/SetAt, AddNewlyCreatedDBObject); CustomPropertiesExecutor lock+tx+commit",
+   "location": "src/RackCad.Plugin/CustomPropertiesData.cs:120-157; src/RackCad.Plugin/CustomPropertiesExecutor.cs:137,160-185,202,248-260,276-288",
+   "why_not_reached": "RACKPROPIEDADES only."
+  },
+  {
+   "api_call": "RackCloner.CloneDefinition: BlockTable ForWrite, new BlockTableRecord + Add + AddNewlyCreatedDBObject, DeepCloneObjects, DBText UpgradeOpen/TextString, RackBlockData.Write",
+   "location": "src/RackCad.Plugin/RackCloner.cs:29-87",
+   "why_not_reached": "RACKDUPLICAR (RackDuplicarCommands.cs:303-305) and RACKLAYOUT independent copies (RackLayoutCommands.cs:241)."
+  },
+  {
+   "api_call": "RackDuplicarCommands.PlaceDestination: ModelSpace ForWrite, new BlockReference(Position+displacement){Rotation, ScaleFactors, LayerId}, AppendEntity, AddNewlyCreatedDBObject (one InDocumentTransaction)",
+   "location": "src/RackCad.Plugin/RackDuplicarCommands.cs:290-321 (snapshot read 175-237)",
+   "why_not_reached": "RACKDUPLICAR only. Closest non-jig placement copying rotation/scale/layer (no Normal, no determinant check)."
+  },
+  {
+   "api_call": "RackLayoutCommands.PlaceGrid/AppendLabel: lock, tx, ModelSpace ForWrite, LayerHelper.EnsureLayer, new BlockReference{Rotation, ScaleFactors}, DBText + AdjustAlignment, Commit, Editor.Regen; ReadPlantaSeed lock+tx read",
+   "location": "src/RackCad.Plugin/RackLayoutCommands.cs:174-210, 213-292",
+   "why_not_reached": "RACKLAYOUT only."
+  },
+  {
+   "api_call": "RackLayoutCommands.Fill: read tx (159-252); placement lock+tx, BlockReference{Rotation, ScaleFactors}, DBText + AdjustAlignment, Commit, Editor.Regen",
+   "location": "src/RackCad.Plugin/RackLayoutCommands.Fill.cs:159-252, 445-483",
+   "why_not_reached": "RACKRELLENAR only."
+  },
+  {
+   "api_call": "CantileverViewMaterializer: BlockTable ForWrite, new BlockTableRecord/Add, AppendEntity polylines/circles, Layer/ColorIndex/Linetype/LineWeight, LayerTableRecord create, entity Erase, RecordGraphicsModified, InsertReference (caller-owned, fixed point)",
+   "location": "src/RackCad.Plugin/Drawing/Cantilever/CantileverViewMaterializer.cs:34-130, 150-155, 185-194, 212-215, 237-262, 278-281",
+   "why_not_reached": "Cantilever system only (RackCantileverCommands.cs:152, 330, 446-451)."
+  },
+  {
+   "api_call": "RackCantileverCommands: lock+tx+commit around definition create/redefine/component insert; ApplyRegen / Editor.Regen",
+   "location": "src/RackCad.Plugin/RackCantileverCommands.cs:148-170, 327-365, 440-462",
+   "why_not_reached": "RACKCANTILEVER / RCT only."
+  },
+  {
+   "api_call": "StructuralSectionMaterializer (BlockTable ForWrite, BTR Add, AppendEntity, LayerId, Polyline Layer/ColorIndex/Linetype/LineWeight, InsertReference) + StructuralSectionInsertService lock/tx/commit/ApplyRegen",
+   "location": "src/RackCad.Plugin/Drawing/StructuralSections/StructuralSectionMaterializer.cs:44-119; src/RackCad.Plugin/StructuralSectionCommandFlow.cs:166-201",
+   "why_not_reached": "RACKSECCION / menu structural section only."
+  },
+  {
+   "api_call": "Editor.Regen after multi-view edits of other kinds",
+   "location": "src/RackCad.Plugin/RackCabeceraCommands.cs:292; src/RackCad.Plugin/RackDinamicoCommands.cs:286; src/RackCad.Plugin/RackPushBackCommands.cs:337",
+   "why_not_reached": "Cabecera / Dinamico / Push Back edit flows."
+  },
+  {
+   "api_call": "RackInventarioCommands: lock+tx reads; ZoomToRack Editor.GetCurrentView + SetCurrentView; RackBomTotal lock+tx read",
+   "location": "src/RackCad.Plugin/RackInventarioCommands.cs:43-47, 104-134; src/RackCad.Plugin/RackInventarioCommands.BomTotal.cs:49-57",
+   "why_not_reached": "RACKLISTA / RACKBOMTOTAL; no view creation."
+  },
+  {
+   "api_call": "RackVariablesCommands.Read lock+tx read",
+   "location": "src/RackCad.Plugin/RackVariablesCommands.cs:101-119",
+   "why_not_reached": "RACKVARIABLES only."
+  },
+  {
+   "api_call": "InDocumentTransaction.Run (LockDocument + StartTransaction + Commit wrapper)",
+   "location": "src/RackCad.Plugin/InDocumentTransaction.cs:20-40",
+   "why_not_reached": "Used by PickRackBlock (RACKEDITAR entry read, RackCommandSupport.cs:90-95), RACKDUPLICAR, RACKPROPIEDADES, custom properties; not in the creation call itself."
+  },
+  {
+   "api_call": "AutoCadExternalLibraryBlockQuery.Query (library side DB read tx via BlockLibraryDatabaseCache)",
+   "location": "src/RackCad.Plugin/Drawing/AutoCadExternalLibraryBlockQuery.cs:14-57",
+   "why_not_reached": "No caller in src (grep finds only its definition)."
+  },
+  {
+   "api_call": "RackSourcePlacementCaptureAdapter.Capture (reads Position, ScaleFactors, Normal, Rotation, definition Origin)",
+   "location": "src/RackCad.Plugin/Drawing/RackSourcePlacementCaptureAdapter.cs:13-39",
+   "why_not_reached": "Read-only and without caller in src; candidate input for SL-6 comparator."
+  }
+ ]
+}

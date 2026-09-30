@@ -1,0 +1,1007 @@
+{
+ "facts": [
+  {
+   "id": "F-01",
+   "topic": "scope",
+   "statement": "Only RackCad.Plugin references AutoCAD. UI, Application and Domain have no Autodesk references, and UI does not reference Plugin, so no WPF window or pure builder can write to the Database.",
+   "evidence": "src/RackCad.Plugin/RackCad.Plugin.csproj:12,29-37 (AutoCAD.NET, AcCoreMgd, AcDbMgd, AcMgd); src/RackCad.UI/RackCad.UI.csproj:7-8 (Domain and Application only); src/RackCad.Application/RackCad.Application.csproj:6; grep 'Autodesk' over src/**/*.cs outside Plugin returns 0 hits.",
+   "status": "FACT"
+  },
+  {
+   "id": "F-02",
+   "topic": "entry points",
+   "statement": "Three commands reach the Selective creation chain, all through DrawSelectiveViewFromAuthored: (1) RACKSELECTIVO and its alias RS; (2) RACKCAD and its alias RK, via the SelectiveInsertionRequest case; (3) RACKEDITAR and its alias RED, via SelectiveKindHandler.Edit -> EditSelective, in the non-UpdateOnly ('Insertar') branch. Entry (3) reaches the same mutation sites. It differs only in its inputs: id = embed.Id, source = embed, and the authored JSON comes from the reconciler.",
+   "evidence": "src/RackCad.Plugin/RackSelectivoCommands.cs:23,26-39,429-432,449-476; src/RackCad.Plugin/RackMenuCommands.cs:17,21,76-79 (request built at src/RackCad.UI/Editor/EditorModules.cs:53-56); src/RackCad.Plugin/RackMenuCommands.cs:18,115-146; src/RackCad.Plugin/KindHandlers/SelectiveKindHandler.cs:19-20; src/RackCad.Plugin/RackSelectivoCommands.cs:120,145-154,270-280",
+   "status": "FACT"
+  },
+  {
+   "id": "F-03",
+   "topic": "entry points",
+   "statement": "Each invocation creates exactly one view. For the frontal, one fondo is chosen with editor.GetInteger when fondoCount > 1, and this happens before any DB write. The planta is a separate branch. On RACKEDITAR 'Insertar', the redraws, renames, phantom erases and the Regen of the existing views all commit BEFORE the new view is created.",
+   "evidence": "src/RackCad.Plugin/RackSelectivoCommands.cs:461-475, 493-515 (GetInteger at :508), 167-265 then :279",
+   "status": "FACT"
+  },
+  {
+   "id": "F-04",
+   "topic": "import",
+   "statement": "The library import runs INSIDE the creation callee: CreateBlock takes the document lock, calls EnsureForPlan, and only then opens T_create. The int result is discarded.",
+   "evidence": "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:23,25,27",
+   "status": "FACT"
+  },
+  {
+   "id": "F-05",
+   "topic": "import",
+   "statement": "WblockCloneObjects runs with no RackCad transaction open on the destination drawing: the presence-check transaction committed at :79 and the side-DB transaction committed at :114. It runs before T_create exists, so a rollback of T_create cannot undo it.",
+   "evidence": "src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:68-80,103-115,122-123; src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:25-27; the comment at src/RackCad.Plugin/Systems/Shared/ViewBlockDraw.cs:59-64 states the import 'mutates the database on its own account'",
+   "status": "FACT"
+  },
+  {
+   "id": "F-06",
+   "topic": "side database",
+   "statement": "The library side DB is opened by the importer itself, from the SHARED configured path (a user-settings override, else the default), with OpenForReadAndAllShare. It is kept in a process-wide static cache keyed by path + LastWriteTimeUtc + Length. No private copy is made, and the caller does not supply the Database.",
+   "evidence": "src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:23,87-96; src/RackCad.Application/Catalogs/BlockLibrary.cs:19-23; src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:11-15,19-31,33-40,49-54",
+   "status": "FACT"
+  },
+  {
+   "id": "F-07",
+   "topic": "import result",
+   "statement": "Every importer outcome collapses to an int, and the post-import Found/Missing facts are discarded. Cases:\n- 0 for a null db or plan (:27-30).\n- 0 when no names are wanted (:62-65) or none are missing (:82-85).\n- 0 when the file is absent (:88-91) or Acquire returns null (:97-100).\n- 0 when none of the names are in the library (:117-120).\n- 0 when an exception is swallowed (:126-131).\n- On success it returns the REQUESTED id count, which is not verified (:124).\n- ImportAdapter always reports WasAttempted=true (:140-141).",
+   "evidence": "src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:25-38 (returns result.Import.ImportedCount at :38), 50-131, 140-141; src/RackCad.Application/Systems/Shared/LibraryBlockRequirements.cs:175-179",
+   "status": "FACT"
+  },
+  {
+   "id": "F-08",
+   "topic": "definition creation",
+   "statement": "T_create holds every definition-content write and the envelope write, and it commits internally. No Abort exists. An exception inside T_create leaves through the using-Dispose without a Commit and is converted into a Failure result.",
+   "evidence": "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:27-38; src/RackCad.Plugin/Systems/Shared/ViewBlockDraw.cs:47-56",
+   "status": "FACT"
+  },
+  {
+   "id": "F-09",
+   "topic": "envelope",
+   "statement": "The envelope is skipped SILENTLY when the payload is null or empty. That happens when the design is null (SerializeSelectiveDesign) or the JSON is empty (WrapSelectivePayload). The create path never reads the envelope back.",
+   "evidence": "src/RackCad.Plugin/RackSelectivoCommands.cs:389-392,408-411; src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:31-34; src/RackCad.Plugin/Systems/Shared/RackBlockData.cs:22-25",
+   "status": "FACT"
+  },
+  {
+   "id": "F-10",
+   "topic": "envelope",
+   "statement": "On the create path only the new-Xrecord branch of RackBlockData.Write can run. The definition is a BlockTableRecord created in the same transaction, and its extension dictionary is created in the same call. The overwrite branch (existing.Data = buffer) is therefore not reached on create. This assumes the host behaviour that a new object has no extension dictionary and that a new dictionary is empty.",
+   "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:243-245; src/RackCad.Plugin/Systems/Shared/RackBlockData.cs:28-31 (create), 41-45 (overwrite, not reached), 46-51 (new Xrecord)",
+   "status": "FACT"
+  },
+  {
+   "id": "F-11",
+   "topic": "placement",
+   "statement": "Placement opens a SECOND lock and transaction (T_place) after T_create has committed, and runs editor.Drag inside them. The jig sets only Position on the top-level BlockReference. No Layer, Rotation, ScaleFactors, Normal, dynamic property or RecordGraphicsModified is set on it. T_place commits internally. Nothing consumes the returned PlacedId.",
+   "evidence": "src/RackCad.Plugin/Drawing/BlockPlacement.cs:179-199, 240-244 (Position :242); grep PlacedId: set only at src/RackCad.Plugin/Drawing/BlockPlacement.cs:46 and src/RackCad.Plugin/Drawing/LateralHeaderDrawService.cs:186, declared at :323",
+   "status": "FACT"
+  },
+  {
+   "id": "F-12",
+   "topic": "cancel path",
+   "statement": "Any non-OK Drag result takes the cancel path. That includes Enter, because NullResponseAccepted makes the Sampler return Cancel. The cancel path disposes the non-resident reference, commits T_place empty, and then runs a compensating erase of the committed view definition (new lock plus T_cleanup) followed by T_purge.",
+   "evidence": "src/RackCad.Plugin/Drawing/BlockPlacement.cs:221,226-229,186-191,37-42,135-162; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:202-230",
+   "status": "FACT"
+  },
+  {
+   "id": "F-13",
+   "topic": "cancel path (CRITIC)",
+   "statement": "Neither review stated this. The purge candidate list on cancel holds the BlockTableRecord of EVERY BlockReference directly inside the view definition, not only the private ARRAY header definitions. Loose catalog pieces are appended directly into the view definition, for example the planta largueros, separadores, topes and safety items, and frontal singletons. Their catalog definitions are therefore purge candidates too. The XML doc at :120-122 describes only the 'private nested header defs'.",
+   "evidence": "src/RackCad.Plugin/Drawing/BlockPlacement.cs:146-151,162; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:70-76,305-317; src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:179-183,205; src/RackCad.Application/Drawing/HeaderInstanceGrouper.cs:61-64",
+   "status": "FACT"
+  },
+  {
+   "id": "F-14",
+   "topic": "cancel path (CRITIC)",
+   "statement": "Consequence of F-13: a cancelled jig can erase library definitions that this same command just imported with WblockCloneObjects. It can also erase PRE-EXISTING catalog definitions that have no other reference in the drawing, because Database.Purge keeps only zero-reference ids and the code then erases them. The actual extent depends on host Purge semantics.",
+   "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:218-227; src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:123",
+   "status": "UNCERTAIN"
+  },
+  {
+   "id": "F-15",
+   "topic": "cancel path (CRITIC)",
+   "statement": "The cancel cleanup does not collect the anonymous dimension blocks of RotatedDimensions. The redefine path does collect them (DimBlockId), so on cancel those blocks are left orphaned.",
+   "evidence": "src/RackCad.Plugin/Drawing/BlockPlacement.cs:146-151 (BlockReference only) vs src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:107-112; dimensions created at :353-375",
+   "status": "FACT"
+  },
+  {
+   "id": "F-16",
+   "topic": "failure",
+   "statement": "If PlaceBlockWithJig throws, PlaceAndReport returns Failure. The enveloped definition committed by T_create stays in the drawing, because the erase runs only when placedId.IsNull.",
+   "evidence": "src/RackCad.Plugin/Drawing/BlockPlacement.cs:33-52",
+   "status": "FACT"
+  },
+  {
+   "id": "F-17",
+   "topic": "graphics",
+   "statement": "The creation path never regenerates: ViewBlockDraw.DrawAndPlace, CreateBlock and PlaceAndReport do not call ApplyRegen or Editor.Regen.",
+   "evidence": "src/RackCad.Plugin/Systems/Shared/ViewBlockDraw.cs:28-57; src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:18-40,135-141; src/RackCad.Plugin/Drawing/BlockPlacement.cs:26-53,174-201",
+   "status": "FACT"
+  },
+  {
+   "id": "F-18",
+   "topic": "census",
+   "statement": "Across the Plugin:\n- There is no Transaction.Abort() call.\n- The only StartOpenCloseTransaction is LateralHeaderDrawService.cs:278, on the redraw path.\n- There is no '.Normal =', BlockTransform or SetDatabaseDefaults call.\n- The only TransformBy is on a Vector3d in RackDuplicarCommands.cs:147.",
+   "evidence": "grep over src/RackCad.Plugin (0 hits for '.Abort()'); src/RackCad.Plugin/Drawing/LateralHeaderDrawService.cs:278; src/RackCad.Plugin/RackDuplicarCommands.cs:147",
+   "status": "FACT"
+  },
+  {
+   "id": "F-19",
+   "topic": "naming",
+   "statement": "Effective names are UniqueBlockName(SanitizeBlockName(requested)) with an _n suffix, probed against the LIVE block table inside the transaction. Nested ARRAY names restart per plan: SEL_FRONTAL_<Role>_<i> with i from 0, and PLANTA_CAB_<n> numbered within the plan. If K frontals were created in one T_M, every fondo would request identical nested names, so their suffixes would depend on creation order. Nested effective names are never returned; only the view name is.",
+   "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:40 (out _), 54, 80, 242, 395-413; src/RackCad.Application/Drawing/HeaderInstanceGrouper.cs:57,96; src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:26,35-36; src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:300",
+   "status": "FACT"
+  },
+  {
+   "id": "F-20",
+   "topic": "naming",
+   "statement": "An empty effective view name is NOT reachable on the Selective frontal and planta paths. SanitizeBlockName can return '' for input made only of invalid characters. However, a frontal name that sanitizes to blank falls back to the default 'Selectivo frontal - N frentes - H..' name, and the planta name always carries the ' - planta' suffix. Review B's CR-12 empty-name hazard does not apply to these two paths.",
+   "evidence": "src/RackCad.Application/BlockNaming.cs:14-17,21-28; src/RackCad.Plugin/RackSelectivoCommands.cs:520; src/RackCad.Application/Systems/Shared/RackViewBaseName.cs:22-29,31-37,186-191,202; src/RackCad.Plugin/Systems/Selective/SelectiveFrontalDrawService.cs:76-77; src/RackCad.Plugin/Systems/Selective/SelectivePlantaDrawService.cs:67-68",
+   "status": "FACT"
+  },
+  {
+   "id": "F-21",
+   "topic": "identity",
+   "statement": "The Plugin never mints a Selective id. The id comes from one of two places:\n- the UI session, which calls Identity.EnsureId -> Guid.NewGuid and exposes it as window.RackId;\n- embed.Id on RACKEDITAR.\nNo check exists that sibling envelopes carry the same id.",
+   "evidence": "src/RackCad.UI/Editor/RackEditorSession.cs:126; src/RackCad.UI/Editor/RackEditorIdentity.cs:19-22,45-53; src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs:191; src/RackCad.Plugin/RackSelectivoCommands.cs:39,120",
+   "status": "FACT"
+  },
+  {
+   "id": "F-22",
+   "topic": "AUTH-15",
+   "statement": "RackDefinitionCreator.CreateInTransaction has no caller in src/; its only references are tests. At this SHA it has four relevant properties:\n- It checks TopTransaction.UnmanagedObject.\n- It refuses an envelope whose Name is blank.\n- It serializes the RackEmbedDocument itself.\n- It reads the envelope back and compares ordinally.\nThe Selective path composes the envelope with the name as given, and a blank name is allowed there.",
+   "evidence": "src/RackCad.Plugin/Systems/Shared/RackDefinitionCreator.cs:39-80,151-164,177-183,185-187,201-214; grep: tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs only; src/RackCad.Plugin/RackSelectivoCommands.cs:413-416,520",
+   "status": "FACT"
+  },
+  {
+   "id": "F-23",
+   "topic": "conditional ops",
+   "statement": "Dimensions default to None in the domain, and EffectiveDetail maps None to None. The annotation toggles NumberFronts, NumberLevels and DrawRackName are bool auto-properties with no initializer, so false by default. As a result, the dimension and annotation writes, including the layers RACKCAD_COTAS and RACKCAD_ANOTACIONES, occur only when the user enables them. The UI defaults were not checked.",
+   "evidence": "src/RackCad.Domain/Systems/Selective/SelectiveRackSystem.cs:67,70,73,83; src/RackCad.Domain/Systems/Selective/SelectivePalletDesign.cs:115,121,131; src/RackCad.Application/Systems/Shared/DimensionViewPolicy.cs:38-41; src/RackCad.Application/Systems/Selective/SelectiveDimensions.cs:64-68,210-214",
+   "status": "FACT"
+  },
+  {
+   "id": "F-24",
+   "topic": "mirroring",
+   "statement": "Negative scale occurs only on NESTED piece references. Examples are the planta largueros built with mirrored:true, and the grouper prototypes, which keep MirroredX/Y. The ARRAY placement references in the view definition are always built with mirrored:false for Selective.",
+   "evidence": "src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:142,174,394,404; src/RackCad.Application/Drawing/HeaderInstanceGrouper.cs:79-80,92; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:60-63,311-314",
+   "status": "FACT"
+  },
+  {
+   "id": "F-25",
+   "topic": "lateral",
+   "statement": "The lateral branch starts from the same entry points but is outside the frontal/planta seam. It keeps its own lock, import, transaction and Commit, and it reuses CreateSystemBlock, RackBlockData.Write and PlaceAndReport.",
+   "evidence": "src/RackCad.Plugin/RackSelectivoCommands.cs:461-464,535-592 (call :588); src/RackCad.Plugin/Drawing/LateralHeaderDrawService.cs:28-53,213-271 (lock :245, import :248, tx :250, create :252, write :257, commit :260, place :223)",
+   "status": "FACT"
+  },
+  {
+   "id": "F-26",
+   "topic": "contract source",
+   "statement": "The seam contract (SL-1..SL-6, T_M, PREPARE-W) is not in the extract: no ADR mentions those terms. My adjudication of the required operations therefore rests only on the clause fragments the two reviews quote.",
+   "evidence": "grep 'SL-1|SL-4|T_M|PREPARE-W' over docs/adr: 0 hits; docs/adr listing 0001..0045",
+   "status": "FACT"
+  },
+  {
+   "id": "F-27",
+   "topic": "pre-creation reads",
+   "statement": "Before creation, the entry points perform only reads:\n- ReadDimensionStyleNames, under its own lock and read transaction;\n- a read of Database.Insunits with at most a WriteMessage;\n- on RACKEDITAR, PickRackBlock, FindRackBlocks and ReadProjectVariables.\nNone of these writes to the DB.",
+   "evidence": "src/RackCad.Plugin/RackCommandSupport.cs:146-179; src/RackCad.Plugin/RackUnitsGuard.cs:34-45; src/RackCad.Plugin/RackSelectivoCommands.cs:298-319",
+   "status": "FACT"
+  },
+  {
+   "id": "F-28",
+   "topic": "events",
+   "statement": "No event handler, overrule or reflection can inject writes on these paths: IExtensionApplication.Initialize and Terminate are empty, and there are no event subscriptions.",
+   "evidence": "src/RackCad.Plugin/PluginInitializer.cs:7-13; grep Overrule/ObjectAppended/CommandEnded/DocumentCreated/Idle/GetMethod/Activator over src/RackCad.Plugin: 0 hits",
+   "status": "FACT"
+  }
+ ],
+ "tables": [
+  {
+   "title": "T1. Final union of reached operations (deduplicated by call site). Chain = {RACKSELECTIVO|RS, RACKCAD|RK, RACKEDITAR|RED Insertar} -> DrawSelectiveViewFromAuthored -> {frontal: InsertSelectiveFrontal -> SelectiveFrontalDrawService, planta: SelectivePlantaDrawService} -> ViewBlockDraw.DrawAndPlace",
+   "columns": [
+    "id",
+    "category",
+    "api_call",
+    "location",
+    "seam_role",
+    "transaction_context",
+    "found_by"
+   ],
+   "rows": [
+    [
+     "U-01",
+     "lock (callee-owned L1)",
+     "document.LockDocument()",
+     "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:23",
+     "Target: orchestrator only. Forbidden in SL-1/SL-2.",
+     "Outside any tx; spans U-02..U-27",
+     "BOTH (A tx-site, B OP-01)"
+    ],
+    [
+     "U-02",
+     "import call site",
+     "BlockLibraryImporter.EnsureForPlan(database, plan); int discarded",
+     "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:25",
+     "SL-5, misplaced inside the SL-1/SL-2 callee",
+     "Under L1, before T_create; no tx open",
+     "BOTH (A OP-06, B chain)"
+    ],
+    [
+     "U-03",
+     "read tx (doc DB)",
+     "StartTransaction; BlockTable ForRead; Has(name); Commit",
+     "src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:67-80",
+     "SL-5 (read)",
+     "Callee read tx under L1",
+     "BOTH (A tx-site, B OP-02)"
+    ],
+    [
+     "U-04",
+     "side-DB create",
+     "new Database(false, true)",
+     "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:33 (via BlockLibraryImporter.cs:96)",
+     "Today inside the SL-5 callee. Target: orchestrator/PREPARE precondition, NOT an SL-5 action.",
+     "No tx; L1 + lock(CacheGate) :19; static cache :11-15. Conditional: a block is missing, File.Exists, and the cache misses.",
+     "BOTH (A OP-01, B OP-03)"
+    ],
+    [
+     "U-05",
+     "side-DB load",
+     "fresh.ReadDwgFile(path, FileOpenMode.OpenForReadAndAllShare, true, null) on the SHARED configured path",
+     "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:36-40; path from src/RackCad.Application/Catalogs/BlockLibrary.cs:19-23",
+     "Same as U-04",
+     "Same as U-04",
+     "BOTH (A OP-02, B OP-03)"
+    ],
+    [
+     "U-06",
+     "side-DB dispose",
+     "fresh.Dispose() on read failure; cachedLibrary?.Dispose() when superseded",
+     "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:45, :49",
+     "Same as U-04",
+     "Same as U-04",
+     "BOTH (A OP-03, B OP-03)"
+    ],
+    [
+     "U-07",
+     "read tx (side DB)",
+     "source.StartTransaction; BlockTable ForRead; Has / indexer -> ids; Commit",
+     "src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:102-115",
+     "SL-5",
+     "Callee tx on the side DB, under L1",
+     "BOTH (A OP-04, B OP-04)"
+    ],
+    [
+     "U-08",
+     "clone into doc DB",
+     "new IdMapping(); source.WblockCloneObjects(ids, db.BlockTableId, mapping, DuplicateRecordCloning.Ignore, false); returns ids.Count; exceptions -> 0",
+     "src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:117-131",
+     "SL-5 (the only PREPARE-W write)",
+     "NO RackCad tx; under L1; before T_create; not undone by a T_create rollback",
+     "BOTH (A OP-05, B OP-05)"
+    ],
+    [
+     "U-09",
+     "read tx (doc DB)",
+     "AutoCadLibraryBlockQuery.Query: StartTransaction; Has; Commit. Facts are discarded.",
+     "src/RackCad.Plugin/Drawing/AutoCadLibraryBlockQuery.cs:24-37; src/RackCad.Application/Systems/Shared/LibraryBlockRequirements.cs:178",
+     "SL-5 (post-import facts)",
+     "Callee read tx under L1",
+     "BOTH (A tx-site, B OP-06)"
+    ],
+    [
+     "U-10",
+     "tx open (T_create)",
+     "database.TransactionManager.StartTransaction()",
+     "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:27",
+     "SL-1/SL-2 (should receive T_M instead)",
+     "Under L1",
+     "BOTH (A tx-site, B OP-07)"
+    ],
+    [
+     "U-11",
+     "symbol table write-open",
+     "tr.GetObject(db.BlockTableId, OpenMode.ForWrite)",
+     "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:31",
+     "SL-1/SL-2",
+     "T_create",
+     "BOTH"
+    ],
+    [
+     "U-12",
+     "BTR add (nested ARRAY defs)",
+     "NewBlock: new BlockTableRecord{Name=UniqueBlockName(bt, group.Name), Origin}; blockTable.Add; AddNewlyCreatedDBObject",
+     "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:38-51 -> 240-247, 395-413",
+     "SL-1/SL-2. Effective name not returned.",
+     "T_create. Conditional: plan.Headers non-empty (frontal needs 2 or more bitwise-identical pieces, HeaderInstanceGrouper.cs:61-64; planta one group per distinct frame, SelectivePlantaBuilder.cs:300).",
+     "BOTH"
+    ],
+    [
+     "U-13",
+     "BTR add (view def)",
+     "NewBlock(blockTable, tr, systemBlockName, out systemName, out systemId)",
+     "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:54 -> 240-247",
+     "SL-1 (frontal of one fondo) / SL-2 (planta)",
+     "T_create",
+     "BOTH"
+    ],
+    [
+     "U-14",
+     "entity create (catalog piece ref)",
+     "new BlockReference(pt, defId){Rotation, ScaleFactors(+/-1, +/-1, 1)}; space.AppendEntity; AddNewlyCreatedDBObject",
+     "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:305-317 (callers :44 into header def, :72 into view def)",
+     "SL-1/SL-2, nested (can be negative scale)",
+     "T_create. Per instance: skipped if the block is absent (:293-303).",
+     "BOTH"
+    ],
+    [
+     "U-15",
+     "dynamic property write",
+     "DynamicBlockReferenceProperty.Value = value",
+     "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:319 -> 432-438",
+     "SL-1/SL-2, nested only",
+     "T_create, after append. Conditional: IsDynamicBlock and values present (:417); property writable and name matches (:434).",
+     "BOTH"
+    ],
+    [
+     "U-16",
+     "graphics",
+     "reference.RecordGraphicsModified(true)",
+     "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:445-448",
+     "SL-1/SL-2, nested only",
+     "T_create. Conditional: at least one value applied.",
+     "BOTH"
+    ],
+    [
+     "U-17",
+     "entity create (ARRAY placement refs)",
+     "new BlockReference(pt, headerId){ScaleFactors = Mirrored ? (-1,1,1) : 1}; systemDef.AppendEntity; AddNewlyCreatedDBObject",
+     "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:56-68",
+     "SL-1/SL-2 (Selective is always mirrored:false)",
+     "T_create. Conditional: as U-12.",
+     "BOTH"
+    ],
+    [
+     "U-18",
+     "layer create",
+     "LayerHelper.EnsureLayer(db, tr, 'RACKCAD_ANOTACIONES', 2): UpgradeOpen; new LayerTableRecord; Add; AddNewlyCreatedDBObject",
+     "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:270, 330-331 -> src/RackCad.Plugin/LayerHelper.cs:18-28",
+     "SL-1/SL-2",
+     "T_create. Conditional: an annotation is present and the layer is absent.",
+     "BOTH"
+    ],
+    [
+     "U-19",
+     "entity create (DBText)",
+     "new DBText{Height, TextString, LayerId, H/V modes, Position, AlignmentPoint}; AppendEntity; AddNewlyCreatedDBObject",
+     "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:258-279",
+     "SL-1/SL-2",
+     "T_create. Conditional: toggles are on (default false) and the text is non-blank (:260-263).",
+     "BOTH"
+    ],
+    [
+     "U-20",
+     "entity modify",
+     "label.AdjustAlignment(space.Database)",
+     "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:280",
+     "SL-1/SL-2",
+     "T_create",
+     "BOTH"
+    ],
+    [
+     "U-21",
+     "layer create",
+     "LayerHelper.EnsureLayer(db, tr, 'RACKCAD_COTAS', 1)",
+     "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:356 -> src/RackCad.Plugin/LayerHelper.cs:18-28",
+     "SL-1/SL-2",
+     "T_create. Conditional: a dimension is present and the layer is absent.",
+     "BOTH"
+    ],
+    [
+     "U-22",
+     "entity create (RotatedDimension)",
+     "ResolveDimStyle (read); new RotatedDimension(rot, p1, p2, dimLine, '', styleId){LayerId}; AppendEntity; AddNewlyCreatedDBObject",
+     "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:353-360, 380-392",
+     "SL-1/SL-2",
+     "T_create. Conditional: EffectiveDetail is not None (default None).",
+     "BOTH"
+    ],
+    [
+     "U-23",
+     "entity setters (DIMVAR overrides)",
+     "Dimscale / Dimtxt / Dimasz / Dimexe / Dimexo / Dimgap / Dimtad / Dimdec",
+     "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:362-373",
+     "SL-1/SL-2",
+     "T_create. Conditional: no named style is present.",
+     "BOTH"
+    ],
+    [
+     "U-24",
+     "host-generated block",
+     "dimension.RecomputeDimensionBlock(true)",
+     "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:375",
+     "SL-1/SL-2",
+     "T_create. Conditional: as U-22.",
+     "BOTH"
+    ],
+    [
+     "U-25",
+     "extension dictionary create",
+     "GetObject(defId, ForWrite); CreateExtensionDictionary()",
+     "src/RackCad.Plugin/Systems/Shared/RackBlockData.cs:27-31 (caller src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:31-34)",
+     "SL-1/SL-2",
+     "T_create. Conditional: payload non-empty; otherwise silently skipped.",
+     "BOTH"
+    ],
+    [
+     "U-26",
+     "Xrecord add (envelope)",
+     "ExtDict ForWrite; ResultBuffer of DxfCode.Text chunks of 255 chars or fewer; new Xrecord{Data}; SetAt('RACKCAD_SELECTIVE'); AddNewlyCreatedDBObject",
+     "src/RackCad.Plugin/Systems/Shared/RackBlockData.cs:16,33-39,46-51",
+     "SL-1/SL-2 (no read-back)",
+     "T_create. Conditional: as U-25.",
+     "BOTH"
+    ],
+    [
+     "U-26x",
+     "NOT REACHED on create",
+     "existing Xrecord ForWrite; existing.Data = buffer",
+     "src/RackCad.Plugin/Systems/Shared/RackBlockData.cs:41-45",
+     "n/a (redefine only)",
+     "n/a",
+     "A (not reached); B listed it inside OP-18"
+    ],
+    [
+     "U-27",
+     "tx commit (T_create)",
+     "transaction.Commit()",
+     "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:36",
+     "Forbidden in SL-1/SL-2",
+     "Ends T_create; L1 released at :39",
+     "BOTH (A tx-site, B OP-19)"
+    ],
+    [
+     "U-28",
+     "lock L2 + tx open (T_place)",
+     "document.LockDocument(); StartTransaction()",
+     "src/RackCad.Plugin/Drawing/BlockPlacement.cs:179-180",
+     "SL-4 (should receive T_M, take no lock)",
+     "After T_create committed",
+     "BOTH (A tx-site, B OP-20)"
+    ],
+    [
+     "U-29",
+     "non-resident ref + jig setter",
+     "new BlockReference(Point3d.Origin, defId); editor.Drag(new HeaderInsertionJig(...)); Update: ((BlockReference)Entity).Position = position",
+     "src/RackCad.Plugin/Drawing/BlockPlacement.cs:182-184, 240-244",
+     "SL-4 (interactive today; only Position is set)",
+     "Inside T_place, with L2 held during user interaction",
+     "BOTH (A OP-23, B OP-21)"
+    ],
+    [
+     "U-30",
+     "cancel (empty commit)",
+     "reference.Dispose(); transaction.Commit(); return ObjectId.Null",
+     "src/RackCad.Plugin/Drawing/BlockPlacement.cs:186-191",
+     "No counterpart under the contract",
+     "T_place",
+     "BOTH (A tx-site, B OP-23)"
+    ],
+    [
+     "U-31",
+     "model space write-open",
+     "GetObject(SymbolUtilityServices.GetBlockModelSpaceId(db), ForWrite)",
+     "src/RackCad.Plugin/Drawing/BlockPlacement.cs:193-194",
+     "SL-4",
+     "T_place. Conditional: Drag returned OK.",
+     "BOTH"
+    ],
+    [
+     "U-32",
+     "entity append (top-level ref)",
+     "modelSpace.AppendEntity(reference); AddNewlyCreatedDBObject(reference, true)",
+     "src/RackCad.Plugin/Drawing/BlockPlacement.cs:195-196",
+     "SL-4 (no layer, dynamic property or RGM set)",
+     "T_place. Conditional: OK.",
+     "BOTH"
+    ],
+    [
+     "U-33",
+     "tx commit (T_place)",
+     "transaction.Commit()",
+     "src/RackCad.Plugin/Drawing/BlockPlacement.cs:198",
+     "Forbidden in SL-4",
+     "T_place",
+     "BOTH (A tx-site, B OP-22)"
+    ],
+    [
+     "U-34",
+     "compensating erase",
+     "LockDocument (L3); StartTransaction; GetBlockReferenceIds(true, false); UpgradeOpen; Erase; Commit",
+     "src/RackCad.Plugin/Drawing/BlockPlacement.cs:37-42, 123-160",
+     "NOT_IN_SEAM (post-commit compensation)",
+     "L3 + T_cleanup, after T_create and T_place committed. Conditional: jig not OK and the def has no direct refs.",
+     "BOTH (A OP-26, B OP-24)"
+    ],
+    [
+     "U-35",
+     "purge + erase",
+     "db.Purge(ids); ((BlockTableRecord)GetObject(id, ForWrite)).Erase(); Commit; exceptions swallowed",
+     "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:193-238 via src/RackCad.Plugin/Drawing/BlockPlacement.cs:162",
+     "NOT_IN_SEAM",
+     "T_purge inside L3",
+     "BOTH (A OP-27, B OP-25)"
+    ],
+    [
+     "U-36",
+     "effect of U-35 (scope correction)",
+     "Candidates = the BTR of EVERY direct BlockReference in the view def. This includes catalog piece defs (possibly just imported by U-08, or pre-existing with no other refs). The anonymous dimension blocks are NOT collected.",
+     "src/RackCad.Plugin/Drawing/BlockPlacement.cs:146-151; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:70-76, 107-112 (contrast)",
+     "NOT_IN_SEAM",
+     "T_purge",
+     "CRITIC"
+    ],
+    [
+     "U-37",
+     "pre-creation read",
+     "ReadDimensionStyleNames: LockDocument; StartTransaction; DimStyleTable ForRead; Commit",
+     "src/RackCad.Plugin/RackCommandSupport.cs:146-179 (callers src/RackCad.Plugin/RackSelectivoCommands.cs:32,77; src/RackCad.Plugin/RackMenuCommands.cs:29)",
+     "None (read-only)",
+     "Own lock + read tx",
+     "BOTH"
+    ],
+    [
+     "U-38",
+     "pre-creation read",
+     "document.Database.Insunits read; Editor.WriteMessage",
+     "src/RackCad.Plugin/RackUnitsGuard.cs:34-45 (callers src/RackCad.Plugin/RackSelectivoCommands.cs:38,112; src/RackCad.Plugin/RackMenuCommands.cs:48)",
+     "None (read-only)",
+     "No tx",
+     "B (A named the call only)"
+    ],
+    [
+     "U-39",
+     "lateral branch (same entries)",
+     "LockDocument; EnsureForPlan; StartTransaction; CreateSystemBlock; RackBlockData.Write; Commit; PlaceAndReport",
+     "src/RackCad.Plugin/Drawing/LateralHeaderDrawService.cs:222-223, 245-260 (via src/RackCad.Plugin/RackSelectivoCommands.cs:461-464, 588)",
+     "NOT_IN_SEAM (lateral)",
+     "Own lock and tx; reuses U-03..U-35 primitives",
+     "A (OP-28..31); B (not_reached)"
+    ],
+    [
+     "U-40",
+     "not a DB operation",
+     "WrapSelectivePayload -> RackEmbedComposer.Compose + RackEmbedStore.Serialize",
+     "src/RackCad.Plugin/RackSelectivoCommands.cs:405-417 (planta :469, frontal :519)",
+     "Orchestrator input (pure)",
+     "None",
+     "B (OP-26); A (method). Excluded from the DB-op union."
+    ],
+    [
+     "U-41",
+     "RACKEDITAR 'Insertar' preliminaries (not creation)",
+     "RedrawInPlace xN; RackBlockRenamer.SyncName; EraseViewBlocks; Editor.Regen; ReadProjectVariables",
+     "src/RackCad.Plugin/RackSelectivoCommands.cs:185-191, 221-227, 238-241, 254, 264, 303-315",
+     "Outside creation (committed before :279)",
+     "Own locks and txs",
+     "B (tx-sites); A (not_reached)"
+    ]
+   ]
+  },
+  {
+   "title": "T2. Adjudications (single-review sites and classification differences)",
+   "columns": [
+    "site",
+    "A says",
+    "B says",
+    "verdict",
+    "evidence"
+   ],
+   "rows": [
+    [
+     "Side DB open/load/dispose (U-04..U-06)",
+     "NOT_IN_SEAM: orchestrator precondition. PROBABLE (OP-01/02), UNCERTAIN (OP-03).",
+     "SL-5 (the importer opens it today). CERTAIN, conditional.",
+     "Both are partly right. Today the code runs inside the SL-5 callee (B, describing current code). Under the quoted SL-5 clause ('ONLY an already-opened library Database of a private copy'), opening is a precondition outside SL-5 (A, describing the target). Reachability is CERTAIN; execution depends on missing blocks, File.Exists and a cache miss. It opens the shared original file, not a copy.",
+     "src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:82-100; src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:19-40; src/RackCad.Application/Catalogs/BlockLibrary.cs:19-23"
+    ],
+    [
+     "Lock/tx/commit sites (U-01, U-03, U-09, U-10, U-27, U-28, U-30, U-33)",
+     "Listed as transaction_and_lock_sites",
+     "Listed as operations",
+     "Same sites; the difference is classification only. These are transaction control, not DB-content writes. They stay in the union because their Commits and locks are what the contract forbids in the seams.",
+     "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:23,27,36; src/RackCad.Plugin/Drawing/BlockPlacement.cs:179-180,189,198"
+    ],
+    [
+     "RackBlockData overwrite branch",
+     "Not reached on create",
+     "Folded into reached OP-18 ('existing .Data = buffer OR new Xrecord')",
+     "A is correct. The def is new in T_create and its extension dictionary is created in the same call, so only :46-51 can run.",
+     "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:243-245; src/RackCad.Plugin/Systems/Shared/RackBlockData.cs:28-31,41-51"
+    ],
+    [
+     "Dimension ops (U-21..U-24)",
+     "UNCERTAIN, gated by effective detail",
+     "PROBABLE, emission not traced",
+     "Reachable. They run only when EffectiveDetail is not None, and the domain default is None. The frontal also needs at least 2 posts and Height > 0; the planta needs at least 2 frenteYs and offsets. The overrides apply only without a present named style. A's gating is the more precise description.",
+     "src/RackCad.Domain/Systems/Selective/SelectiveRackSystem.cs:83; src/RackCad.Application/Systems/Shared/DimensionViewPolicy.cs:38-41; src/RackCad.Application/Systems/Selective/SelectiveDimensions.cs:64-68,210-214; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:362,380-392"
+    ],
+    [
+     "Annotation ops (U-18..U-20)",
+     "UNCERTAIN",
+     "CERTAIN, conditional",
+     "Reachable. Gated by NumberFronts, NumberLevels and DrawRackName (default false in the domain), by non-blank text, and for the rack name by a non-blank system.Name. The layer is created at most once per T_create.",
+     "src/RackCad.Domain/Systems/Selective/SelectiveRackSystem.cs:67,70,73; src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:320,333,342; src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:329,338; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:260-263; src/RackCad.Plugin/LayerHelper.cs:19"
+    ],
+    [
+     "Piece refs, dynamic props, nested RGM (U-14..U-16)",
+     "PROBABLE",
+     "CERTAIN, conditional",
+     "Identical conditions; only the labels differ. The call sites are reachable with certainty, and each instance depends on blockTable.Has, IsDynamicBlock and a writable matching property.",
+     "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:293-319,415-449"
+    ],
+    [
+     "Cancel erase + purge (U-34/U-35)",
+     "UNCERTAIN; 'orphaned nested definitions'",
+     "CERTAIN, conditional; 'nested block references'",
+     "Reachable on ANY non-OK Drag, including Enter. Both reviews understate the purge SCOPE: it also covers catalog piece defs and can erase library defs imported in the same run or pre-existing unreferenced ones (U-36). The anonymous dimension blocks are not collected.",
+     "src/RackCad.Plugin/Drawing/BlockPlacement.cs:37-42,142-162,221,226-229; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:70-76,107-112,218-227"
+    ],
+    [
+     "RACKEDITAR 'Insertar' entry",
+     "Out of the assigned scope (mentioned only)",
+     "Listed as an entry point",
+     "Include it as a third entry. It reaches the same creation sites. Its preceding redraw, rename, erase and regen writes are separate committed operations, not creation.",
+     "src/RackCad.Plugin/RackMenuCommands.cs:146; src/RackCad.Plugin/KindHandlers/SelectiveKindHandler.cs:19-20; src/RackCad.Plugin/RackSelectivoCommands.cs:120,167-265,270-280"
+    ],
+    [
+     "Lateral branch",
+     "Operations OP-28..31, NOT_IN_SEAM",
+     "Excluded; listed as not_reached_but_similar",
+     "Agree: it is reached from the same entries but lies outside the frontal/planta seam. Kept only as information.",
+     "src/RackCad.Plugin/RackSelectivoCommands.cs:461-464,588; src/RackCad.Plugin/Drawing/LateralHeaderDrawService.cs:245-260"
+    ],
+    [
+     "Envelope composition",
+     "Mentioned in the method",
+     "OP-26 operation",
+     "This is not a DB operation: it is Application code with no Autodesk reference. Removed from the DB-op union and kept as the orchestrator's input.",
+     "src/RackCad.Plugin/RackSelectivoCommands.cs:405-417; src/RackCad.Application/RackCad.Application.csproj:6"
+    ],
+    [
+     "Insunits read",
+     "Not listed as a site",
+     "Listed as a read",
+     "A read only, with no DB write. Kept as a non-mutating pre-creation read.",
+     "src/RackCad.Plugin/RackUnitsGuard.cs:41-44"
+    ],
+    [
+     "Empty effective name (B CR-12)",
+     "Not raised",
+     "'An empty effective name is possible'",
+     "The hazard exists in general but is unreachable on the Selective frontal and planta paths (see F-20). The nested names are constant prefixes.",
+     "src/RackCad.Application/BlockNaming.cs:21-28; src/RackCad.Application/Systems/Shared/RackViewBaseName.cs:22-37,186-191,202; src/RackCad.Plugin/RackSelectivoCommands.cs:520"
+    ],
+    [
+     "Determinism of names (A CR-07 / B CR-12)",
+     "UNCERTAIN whether a DB-dependent suffix counts as deterministic",
+     "Depends on in-tx state and sibling order",
+     "Fact: names are a pure function of the base name and the live block table. In a multi-fondo T_M the nested names collide by construction, so order decides the suffixes, and nested names are not reported. Whether this conforms to the contract is UNCERTAIN, because the contract text is unavailable.",
+     "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:40,54,80,395-413; src/RackCad.Application/Drawing/HeaderInstanceGrouper.cs:57,96"
+    ],
+    [
+     "AUTH-15 reuse (B CR-10)",
+     "Unreached creator, with Precheck and read-back",
+     "Refuses a blank Name and re-serializes",
+     "Confirmed at this SHA. There are no product callers (tests only). A caller that composes a string envelope, as the Selective path does, is not what it accepts; it takes a RackEmbedDocument.",
+     "src/RackCad.Plugin/Systems/Shared/RackDefinitionCreator.cs:39-47,177-187,204-211; src/RackCad.Plugin/RackSelectivoCommands.cs:413-416"
+    ],
+    [
+     "Nested header placements mirrored",
+     "mirrored:false for Selective",
+     "mirrored:false for Selective",
+     "Agree. Negative scale exists only on nested piece refs.",
+     "src/RackCad.Application/Drawing/HeaderInstanceGrouper.cs:92; src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:142,174,394,404"
+    ],
+    [
+     "PlacedId unused",
+     "FACT, via grep",
+     "Not raised",
+     "Confirmed.",
+     "src/RackCad.Plugin/Drawing/BlockPlacement.cs:46; src/RackCad.Plugin/Drawing/LateralHeaderDrawService.cs:186,323"
+    ],
+    [
+     "Census (Abort, OpenClose, Normal/TransformBy)",
+     "No Abort; OpenClose only at LateralHeaderDrawService.cs:278",
+     "No Normal, BlockTransform or entity TransformBy",
+     "Both confirmed by grep.",
+     "src/RackCad.Plugin/Drawing/LateralHeaderDrawService.cs:278; src/RackCad.Plugin/RackDuplicarCommands.cs:147"
+    ],
+    [
+     "Missed mutation sites (fresh sweep)",
+     "-",
+     "-",
+     "No new API call site was found on the chain. A grep of every mutating API over the 15 reached Plugin files matches only sites already in T1. The only new findings are EFFECTS of existing sites: U-36 and F-15.",
+     "grep over src/RackCad.Plugin/{Drawing/BlockPlacement,Drawing/LateralHeaderDrawer,Drawing/BlockLibraryImporter,Drawing/BlockLibraryDatabaseCache,Drawing/AutoCadLibraryBlockQuery,LayerHelper,Systems/Shared/*,Systems/Selective/*,RackSelectivoCommands,RackMenuCommands,RackCommandSupport,RackUnitsGuard,RackCatalogLoader,KindHandlers/*}.cs"
+    ]
+   ]
+  },
+  {
+   "title": "T3. Contract-required operations: adjudicated union (clauses taken from the reviews' quotes; contract text not in the extract)",
+   "columns": [
+    "id",
+    "required operation",
+    "seam",
+    "sources",
+    "verdict",
+    "current gap (evidence)"
+   ],
+   "rows": [
+    [
+     "R-01",
+     "The orchestrator takes ONE document lock spanning PREPARE-W and T_M; the seams take none.",
+     "ORCH",
+     "Derived from A CR-16, B OP-01 role, B CR-15 ('under the lock')",
+     "KEEP. CRITIC: neither review lists it as an operation; exact wording UNCERTAIN.",
+     "Three callee locks: src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:23; src/RackCad.Plugin/Drawing/BlockPlacement.cs:135,179"
+    ],
+    [
+     "R-02",
+     "The orchestrator opens T_M once and alone commits or aborts; no seam calls Commit, Abort or Dispose on T_M.",
+     "ORCH, SL-1/2/4",
+     "A CR-16; B CR-01, CR-02, CR-17",
+     "KEEP (merged)",
+     "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:36; src/RackCad.Plugin/Drawing/BlockPlacement.cs:189,198"
+    ],
+    [
+     "R-03",
+     "Before any write, verify that TopTransaction.UnmanagedObject equals T_M.UnmanagedObject.",
+     "SL-1/2/4",
+     "A CR-01; B CR-03",
+     "KEEP",
+     "Exists only in the unreached src/RackCad.Plugin/Systems/Shared/RackDefinitionCreator.cs:151-164"
+    ],
+    [
+     "R-04",
+     "Create the frontal definition for EVERY fondo k = 0..SelectiveDepthLayout.Count-1 in T_M.",
+     "SL-1",
+     "A CR-02; B CR-04",
+     "KEEP",
+     "One fondo per run, via prompt: src/RackCad.Plugin/RackSelectivoCommands.cs:493-515"
+    ],
+    [
+     "R-05",
+     "Create the planta definition in the same T_M.",
+     "SL-2",
+     "A CR-03; B CR-04",
+     "KEEP",
+     "Separate run: src/RackCad.Plugin/RackSelectivoCommands.cs:467-472"
+    ],
+    [
+     "R-06",
+     "Compute effective names (view and nested) deterministically and report them to the caller.",
+     "SL-1/2 (+ORCH)",
+     "A CR-07; B CR-12",
+     "KEEP. B's empty-name sub-claim REJECTED for these paths. Conformance of UniqueBlockName UNCERTAIN.",
+     "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:40,54,80,395-413"
+    ],
+    [
+     "R-07",
+     "Write the caller-composed envelope verbatim and never skip it silently.",
+     "SL-1/2",
+     "A CR-04; B CR-10",
+     "KEEP",
+     "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:31; src/RackCad.Plugin/Systems/Shared/RackBlockData.cs:22-25"
+    ],
+    [
+     "R-08",
+     "Read the envelope back in T_M and compare ordinally; fail on mismatch.",
+     "SL-1/2",
+     "A CR-05; B CR-10",
+     "KEEP",
+     "Not on the create path; exists at src/RackCad.Plugin/Systems/Shared/RackDefinitionCreator.cs:204-211"
+    ],
+    [
+     "R-09",
+     "The orchestrator mints NewRackId once, and it is identical in every sibling envelope.",
+     "ORCH",
+     "A CR-06; B CR-11",
+     "KEEP",
+     "Minted in the UI: src/RackCad.UI/Editor/RackEditorSession.cs:126; or embed.Id: src/RackCad.Plugin/RackSelectivoCommands.cs:120"
+    ],
+    [
+     "R-10",
+     "Append the top-level ref to model space via T_M, with no jig, prompt or Commit; exactly one ref per definition.",
+     "SL-4",
+     "A CR-08; B CR-02, CR-04, CR-19",
+     "KEEP",
+     "src/RackCad.Plugin/Drawing/BlockPlacement.cs:179-199"
+    ],
+    [
+     "R-11",
+     "Set Position, ScaleFactors, Rotation and Normal from the computed transform.",
+     "SL-4",
+     "A CR-09; B CR-05",
+     "KEEP",
+     "Only Position is set: src/RackCad.Plugin/Drawing/BlockPlacement.cs:242"
+    ],
+    [
+     "R-12",
+     "Guard the transform: determinant strictly positive and no negative scale.",
+     "SL-4",
+     "A CR-09; B CR-06",
+     "KEEP",
+     "No check exists. The pure src/RackCad.Application/Geometry/Transform2D.cs:77-83 is unused by placement."
+    ],
+    [
+     "R-13",
+     "Set the layer and other entity properties from the plan.",
+     "SL-4",
+     "A CR-10; B CR-07",
+     "KEEP",
+     "None set: src/RackCad.Plugin/Drawing/BlockPlacement.cs:182-196"
+    ],
+    [
+     "R-14",
+     "Apply dynamic properties to the top-level ref inside T_M.",
+     "SL-4",
+     "A CR-11; B CR-08",
+     "KEEP. It may be a no-op, since the view def is a plain BTR (UNCERTAIN, host).",
+     "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:243 (plain BTR); nothing on the top-level ref"
+    ],
+    [
+     "R-15",
+     "Call RecordGraphicsModified on the top-level ref inside T_M, with no post-commit graphics writes.",
+     "SL-4",
+     "A CR-12; B CR-08, CR-09",
+     "KEEP",
+     "Only on nested refs: src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:447"
+    ],
+    [
+     "R-16",
+     "Seams do not import; import is PREPARE-W, run before T_M.",
+     "SL-5 vs SL-1/2",
+     "B CR-13; A OP-06 role",
+     "KEEP",
+     "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:25"
+    ],
+    [
+     "R-17",
+     "SL-5 returns a structured result: Found/Missing per requirement, the imported count, and the failure cause.",
+     "SL-5",
+     "A CR-13; B CR-14 (B CR-16 merged in)",
+     "KEEP",
+     "int only: src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:38; causes collapse to 0 at :88-91, 97-100, 126-131"
+    ],
+    [
+     "R-18",
+     "SL-5 clones only from an already-opened library DB of a PRIVATE COPY. The orchestrator or PREPARE makes the copy, opens it, and disposes it after use.",
+     "SL-5 + ORCH",
+     "A CR-14; B CR-15. CRITIC adds the copy, open and dispose operations.",
+     "KEEP",
+     "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:17-56; src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:87-96"
+    ],
+    [
+     "R-19",
+     "No interaction, OpenCloseTransaction, side-DB write or compensating cleanup in SL-1/2/4.",
+     "SL-1/2/4",
+     "B CR-19, CR-09; A CR-16",
+     "KEEP",
+     "GetInteger: src/RackCad.Plugin/RackSelectivoCommands.cs:508; Drag: src/RackCad.Plugin/Drawing/BlockPlacement.cs:184; compensation: :37-42,123-170"
+    ],
+    [
+     "R-20",
+     "SL-6 read-only verifier: names, envelope equality with expected, exactly one model-space ref per definition with the expected transform, layer and dynamic values.",
+     "SL-6",
+     "A CR-15; B CR-18",
+     "KEEP (non-mutating)",
+     "None. Read primitives exist: src/RackCad.Plugin/Systems/Shared/RackBlockData.cs:54-89; src/RackCad.Plugin/Drawing/RackSourcePlacementCaptureAdapter.cs:13-39 (no caller)"
+    ],
+    [
+     "R-21",
+     "Missing library pieces fail the seam.",
+     "SL-1/2",
+     "B CR-16",
+     "DEMOTE. Only 'surface them in R-17' is supported. Failing the seam is not in the quoted clauses (UNCERTAIN).",
+     "Pieces are skipped silently: src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:293-303"
+    ]
+   ]
+  },
+  {
+   "title": "T4. Residual facts no static method can see",
+   "columns": [
+    "residual",
+    "affects",
+    "why not statically visible"
+   ],
+   "rows": [
+    [
+     "Which dependent records WblockCloneObjects clones (layers, linetypes, text and dim styles, nested BTRs, regapps, dictionaries, dynamic-block data); whether it uses an internal transaction or undo; whether it touches the source side DB; state after a partial failure",
+     "U-08",
+     "Host-internal behaviour of the AutoCAD API"
+    ],
+    [
+     "That Transaction.Dispose without Commit rolls back, which is the only 'abort' on these paths; how UNDO groups the 3 to 5 separate commits of one command",
+     "U-10, U-27..U-35",
+     "Host transaction and undo semantics"
+    ],
+    [
+     "The implicit document lock of modal commands (no CommandFlags) and how explicit LockDocument calls nest inside it",
+     "U-01, U-28, U-34, U-37",
+     "Host command runtime"
+    ],
+    [
+     "Defaults applied on AppendEntity without SetDatabaseDefaults (layer, color, linetype, lineweight, and the DBText text style) for the nested refs, DBText, dimensions and the top-level ref",
+     "U-14, U-19, U-22, U-32",
+     "Host defaults"
+    ],
+    [
+     "BlockReference constructor defaults (Normal, Rotation, ScaleFactors); the coordinate system of the jig's AcquirePoint (UCS vs WCS) and the resulting real transform",
+     "U-29, U-32",
+     "Host defaults and user UCS at run time"
+    ],
+    [
+     "New BTR defaults (Units, BlockScaling, Explodable) and how they interact with INSUNITS",
+     "U-12, U-13",
+     "Host defaults"
+    ],
+    [
+     "Creation and naming of the anonymous dimension block by RecomputeDimensionBlock; how the DIMVAR overrides are persisted",
+     "U-22..U-24, F-15",
+     "Host-internal"
+    ],
+    [
+     "Anonymous representation blocks and enhanced-block data created by setting DynamicBlockReferenceProperty.Value; whether IsDynamicBlock is false for the plain view def",
+     "U-15, R-14",
+     "Host-internal"
+    ],
+    [
+     "Database.Purge semantics (references from erased owners, anonymous blocks), which decide the real extent of U-35/U-36",
+     "U-35, U-36",
+     "Host-internal"
+    ],
+    [
+     "Round-trip fidelity of the 255-UTF-16-unit Xrecord chunks (a surrogate pair split at a boundary, per-string storage limits)",
+     "U-26, R-07, R-08",
+     "Host storage behaviour"
+    ],
+    [
+     "Library cache validity: a replacement file with the same mtime and length goes undetected; file sharing and locking under OpenForReadAndAllShare; the side DB is never disposed at unload (Terminate is empty)",
+     "U-04..U-06",
+     "File-system and host state; src/RackCad.Plugin/PluginInitializer.cs:11-13"
+    ],
+    [
+     "Run-time data: live block-table contents (which blocks are missing, which suffixes apply); the user-settings library path; catalog contents; UI toggle values; user answers (fondo prompt, jig OK, cancel or Enter)",
+     "U-04..U-26, U-34..U-36",
+     "Data-dependent"
+    ],
+    [
+     "Whether the interactive prompts (GetInteger, Drag) update DB header system variables such as LASTPOINT",
+     "U-29, F-03",
+     "Host-internal"
+    ],
+    [
+     "TopTransaction wrapper identity and UnmanagedObject semantics, on which the R-03 check relies",
+     "R-03",
+     "Host-internal"
+    ],
+    [
+     "Selectability and extents of the placed ref without a Regen after commit",
+     "U-32, F-17",
+     "Host display pipeline"
+    ]
+   ]
+  }
+ ],
+ "limitations": [
+  "This was a static reading of the extract at scratchpad/main2 only. Nothing was compiled or executed, and nothing was observed in AutoCAD.",
+  "The seam contract (SL-1..SL-6, T_M, PREPARE-W) is not present in the extract: docs/adr has no mention of it. I adjudicated the required operations only against the clause fragments quoted in the two reviews, so R-01, R-06 conformance, R-14 and R-21 remain UNCERTAIN.",
+  "The fresh sweep was a grep of mutating AutoCAD APIs over the 15 Plugin files on the chain, plus event, overrule and reflection greps over the whole Plugin. The UI was excluded by construction, because it has no Autodesk references and no reference to Plugin.",
+  "UI default values for the annotation and dimension toggles were not checked. Only the domain defaults were read (SelectiveRackSystem, SelectivePalletDesign).",
+  "Builder internals were read only far enough to settle grouping, mirroring, loose-instance membership and the dimension and annotation gates. Safety-item placement (SelectiveSafetyPlacement, SelectiveDesviadorDrawing) was not traced beyond the fact that it appends to the loose list.",
+  "F-14 (erasure of catalog definitions on cancel) depends on host Database.Purge semantics. The collection of those candidates is a FACT; the erase outcome is UNCERTAIN.",
+  "The line numbers the reviews cited were spot-checked, not all re-verified. Every citation used in this report was read directly."
+ ]
+}
