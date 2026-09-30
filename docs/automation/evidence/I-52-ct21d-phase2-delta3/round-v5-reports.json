@@ -1,0 +1,1018 @@
+{
+ "reports": [
+  {
+   "key": "BA04",
+   "r": {
+    "files_written": [
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-04-scenario-catalog-v5.json",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-04-scenario-catalog-v5.md",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-02b-coverage-matrix-v5.md",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba04-v5-checks.py",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba04-v5-checks-output.json",
+     "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\gen_catalog_v5.py (generator, scratchpad only)"
+    ],
+    "findings": [
+     {
+      "id": "R1:BA04V4-01 [MAJOR]",
+      "status": "FIXED",
+      "where": "BA-04 V5 md 1.1, 4 (CHARACTERIZATION_TUPLE, QUALIFICATION_TUPLE per build), 2.1, 2.2 step 0/6; JSON BUILD_PROFILES, PER_BUILD_QUALIFICATION, 29 twins <id>-CB, Q-I14 on CHARACTERIZATION_BUILD, BUILD_EQUIVALENCE_RECORD in RUN_PREREQUISITES of 48 PRODUCT_BUILD scenarios",
+      "note": "Item (5) of the required fix (BA-07 per-build manifest, BA-08 K-10, BA-09 W-7, BA-11) is outside these bytes: cross-artifact note."
+     },
+     {
+      "id": "R1:BA04V4-04 [MAJOR]",
+      "status": "FIXED",
+      "where": "JSON NC-E12A (CER-WIT; delivered => E12A FAIL, abort, O2/O6 by CER-ABV; not delivered => NOT_RUNNABLE, E12A PASS, commits O3, NEGATIVE_CONTROL_NOT_EVALUATED; REACH CP; RUN_PREREQUISITES QUALIFICATION_RECORD@Q-I14-Y); BA-02b V5 E12A row COVERED_DRAFT_CONDITIONAL"
+     },
+     {
+      "id": "R1:BA04V4-02",
+      "status": "FIXED",
+      "where": "JSON WU-DRY of NC-E12A, NC-E04-R2, NC-E03-NOT-HELD, NC-E03-REACQUIRE, NC-S1-Y1, NC-S1-Y1-SILENT (DRY_RUN_BRANCH_SWITCH in PLAN_OR_INPUT and INJECTIONS; REACH/profile of source); md 1.2, 4 LP-DRY, 5.2; JSON DRY_RUN_RULES"
+     },
+     {
+      "id": "R1:BA04V4-03",
+      "status": "FIXED",
+      "where": "LOG_PROFILES LP-INJ, LP-WIT, LP-PAR appended per scenario; EXPECTED_EVIDENCE_SET names the I-14 witness log / post-abort read / Q-I14-SILENT record"
+     },
+     {
+      "id": "R1:BA04V4-05",
+      "status": "FIXED",
+      "where": "Q-I14 and Q-I14-Y writer set with Wr-OCT, XDATA_WRITE and the post-abort read; NC-S5-O6 and NC-E12A RUN_PREREQUISITES QUALIFICATION_RECORD@Q-I14-Y; CER-WIT, CER-PERSIST texts; md 1.2"
+     },
+     {
+      "id": "R1:BA04V4-06",
+      "status": "FIXED",
+      "where": "NC-CLONE-REPLACE PLAN_OR_INPUT, INJECTIONS, EXPECTED_CONTROL_RESULTS.CLONE, EXPECTED_DETECTION_CHANNEL (effective mode forced below the declaration; declared mode stays on the allow-list; CQ-02 reading, AR4-12)"
+     },
+     {
+      "id": "R1:BA04V4-07",
+      "status": "FIXED",
+      "where": "PW-CLONE-WRONG-TYPE EXPECTED_PROCEDURAL_RESULT and S5CLO = FAIL (V2.1 5 PR row)"
+     },
+     {
+      "id": "R1:BA04V4-08",
+      "status": "FIXED",
+      "where": "the four HDM-CHAR-*: 9 CONTROL_PLANE_SETUP injections per key before P0, exactly one informative run per varied key, informative pin entries, lookup UNKNOWN (O5)"
+     },
+     {
+      "id": "R1:BA04V4-09",
+      "status": "FIXED",
+      "where": "A1 removed from AT_CP (only EA1-READONLY-OPENS exercises A1); CER-A2 text; GROUPS_SERVED/SEALED_AT recomputed; BA-02b A1 reason"
+     },
+     {
+      "id": "R1:BA04V4-10",
+      "status": "FIXED",
+      "where": "SEALED_AT_RULE.fields + GROUP, EVIDENCE_GROUPS_DECLARED, CONTRACT_ASSIGNED_GROUPS, REPETITION, RETRY_APPLICABILITY, RUN_PREREQUISITES; md 1.3 scope"
+     },
+     {
+      "id": "R1:BA04V4-11",
+      "status": "FIXED",
+      "where": "header PREREQUISITES and 7.1 (no pending AQ); REPETITION_RULES cite AR4-14; DELTA_RULING_APPLIED identical in md header and JSON (AR3-23 applied, AR3-29 stated as BA-02b's)"
+     },
+     {
+      "id": "R2:CLOSURE BA04V3-17 (PARTIALLY_FIXED)",
+      "status": "FIXED",
+      "where": "Q-I14-* vehicles ruled by AR4-01 (no blocker, no proposal label); writer set extended; per-writer/per-coordinate path of Q-I14-Y and Q-I14-SILENT-Y (E-08 enforced aborts at PV)"
+     },
+     {
+      "id": "R2:BA04V4-01 [MAJOR]",
+      "status": "FIXED",
+      "where": "as R1:BA04V4-01, CATALOG_FOLDER of the build under test in CHARACTERIZATION_TUPLE; QUALIFICATION_TUPLE names its build; counts include twins"
+     },
+     {
+      "id": "R2:BA04V4-02 [MAJOR]",
+      "status": "FIXED",
+      "where": "EA2-DEFERRED-EVENTS on CHARACTERIZATION_BUILD, CHARACTERIZATION_TUPLE, QUALIFICATION_RECORD@Q-I14-X; REPETITION_RULES.CLEAN and NOTE state PARAM-03 validity only under the equivalence record (AR4-06 (6))"
+     },
+     {
+      "id": "R2:BA04V4-03",
+      "status": "FIXED",
+      "where": "as R1:BA04V4-02; check dry_run_branch_switches_ar4_02"
+     },
+     {
+      "id": "R2:BA04V4-04",
+      "status": "FIXED",
+      "where": "NC-E12D CONTROLS_EXERCISED = [WUM, E12D], E11M NOT_DECLARED with reason; E04 pin dropped from NC-E12D and NC-WU-FOREIGN (pre-baseline refusal); md 2.1 row reworded; check pin_slots_rule"
+     },
+     {
+      "id": "R2:BA04V4-05",
+      "status": "FIXED",
+      "where": "as R1:BA04V4-04"
+     },
+     {
+      "id": "R2:BA04V4-06",
+      "status": "FIXED",
+      "where": "as R1:BA04V4-05 and the per-writer reach/profile of Q-I14-Y (vehicle path key, log LP-CHAR over LP-CP or LP-PV + LP-INJ + LP-PAR)"
+     },
+     {
+      "id": "R2:BA04V4-07",
+      "status": "FIXED",
+      "where": "as R1:BA04V4-06"
+     },
+     {
+      "id": "R2:BA04V4-08",
+      "status": "FIXED",
+      "where": "BA-04 header DEPENDS_ON adds BA-07; md 2.1 custody cites BA-07 V5 as a declared normative dependency"
+     },
+     {
+      "id": "R2:BA04V4-09",
+      "status": "FIXED",
+      "where": "as R1:BA04V4-10 with REPETITION and RETRY_APPLICABILITY"
+     },
+     {
+      "id": "R2:BA04V4-10",
+      "status": "FIXED",
+      "where": "(1) REPETITION_RULES.DEFAULT and md 1 cite AR4-14 (a); (2) one DELTA_RULING_APPLIED text; (3) HDM label accepted by AR4-07 (it names group HDM), stated in md 1 and 5"
+     },
+     {
+      "id": "R1:BA02V4-N01",
+      "status": "FIXED",
+      "where": "BA-02b rule 1 applies BA-04 section 1 definition (sources incl. AR4-03); check contract_assigned_groups_admitted_sources; KS-* and PR-CLOSURE-COMPLETENESS verdicts say evidence only, never PASS"
+     },
+     {
+      "id": "R1:BA02V4-N02",
+      "status": "FIXED",
+      "where": "BA-04 conditional NC verdicts branch-dependent (VERDICT_WIT/SIL/PERSIST, WR cells); one non-detection convention (target PASS, NOT_RUNNABLE as NC); NC-S5-O6 S5 non-persisted branch; BA-02b rule 5 and section 5 (check 2 NOT MET, ALT21D_HOST_PASS NOT_EVALUATED)"
+     },
+     {
+      "id": "R1:BA02V4-N03",
+      "status": "FIXED",
+      "where": "BA-02b rule 4 (AR4-06), section 2 column NEGATIVE CONTROLS ON THE CHARACTERIZATION BUILD and the list of 16 CB-only controls, section 5 check 2"
+     },
+     {
+      "id": "R1:BA02V4-N04",
+      "status": "FIXED",
+      "where": "BA-02b rule 6 amended; section 3.2 column ENUMERATED SET (11 quantified clauses, sets recomputed by the check from V2.1 4.2/4.3/17.2, V2.2 PA-12); R14 split"
+     },
+     {
+      "id": "R1:BA02V4-N05",
+      "status": "FIXED",
+      "where": "R16/P3 PR-TORN-READ exceptions removed; OU-ROW1-INVALID declared R20 exception; OU-O1..O7 matched strictly in generator and check"
+     },
+     {
+      "id": "R1:BA02V4-N06",
+      "status": "FIXED",
+      "where": "BA-02b rule 4 defines the column (renamed GOVERNING SCENARIOS SERVING THE GROUP) as governing GROUPS_SERVED only; section 4 recomputed"
+     },
+     {
+      "id": "R-1 (BA-02a readiness)",
+      "status": "NOT_APPLICABLE",
+      "where": "BA-02b V5 section 7",
+      "note": "Belongs to the BA-02a candidate ruling (AR4-19); no bytes of BA-02b affected."
+     },
+     {
+      "id": "R-2 (dated re-run of BA-02a comparison)",
+      "status": "NOT_APPLICABLE",
+      "where": "BA-02b V5 section 7",
+      "note": "Recorded in ratification records, outside the bytes (AR4-19)."
+     },
+     {
+      "id": "R-3 (a)..(d)",
+      "status": "FIXED",
+      "where": "BA-02b rule 5 and section 5 (AR4-20)"
+     },
+     {
+      "id": "R-4",
+      "status": "FIXED",
+      "where": "as R1:BA02V4-N01 (AR4-03 admits the scenario-class source)"
+     },
+     {
+      "id": "R-5",
+      "status": "FIXED",
+      "where": "as R1:BA02V4-N03"
+     },
+     {
+      "id": "R1:BA11V4-01",
+      "status": "PARTIAL",
+      "where": "BA-04 header DEPENDS_ON adds BA-07; BA-02b header DEPENDS_ON adds BA-01",
+      "note": "Parts in BA-11 (edge list, graph check) and (c) BA-08 K-10 / BA-09 W-7 pointer wording are other artifacts; BA-09 V5 already calls its list an informative pointer."
+     },
+     {
+      "id": "R1:BA11V4-02 (e)",
+      "status": "FIXED",
+      "where": "BA-02b header PREREQUISITES: readings ruled (AR4-05, AR4-04, AR4-06, AR4-20); none remains",
+      "note": "Items (a)-(d) are BA-11/BA-06/BA-08 texts, not assigned."
+     },
+     {
+      "id": "R1:BA11V4-04",
+      "status": "PARTIAL",
+      "where": "BA-02b V5 section 0 names the check path and its LF SHA-256 and states that check and output belong to the BA-02b registry entry paths, never BA-04's; BA-04 md header says the same",
+      "note": "The output cannot be hashed inside BA-02b (it holds BA-02b's SHA-256); the lead must add both files to the BA-02b entry Paths in BA-11 V5 (AR4-17)."
+     },
+     {
+      "id": "R2:BA11V4-01 [MAJOR]",
+      "status": "FIXED",
+      "where": "BA-04 md section 1 rows GROUPS_SERVED and CONTRACT_ASSIGNED_GROUPS marked 'Normative definition of this artifact' (AR4-17; AR2-08, AR3-06, AR4-03) + JSON GROUP_FIELD_DEFINITIONS; BA-02b rule 1 applies 'the definition of BA-04 section 1'; check group_fields_defined_in_ba04_section1_and_applied_by_ba02b"
+     },
+     {
+      "id": "R2:BA11V4-03",
+      "status": "FIXED",
+      "where": "as R2:BA04V4-08"
+     }
+    ],
+    "summary": "BA-04 V5 (catalog JSON + md) and BA-02b V5 (coverage matrix) are generated by scratchpad gen_catalog_v5.py (deterministic; V4 files untouched). They apply decisions section 217 and the COORD5 section 2 rules.\n- **Per-build qualification:** 29 per-build twins `<id>-CB` (every Q-* and E6-C* outside the I-14 family). Q-I14 moves to CHARACTERIZATION_BUILD.\n- **Builds and tuples:** CHARACTERIZATION_TUPLE carries its own build-dependent BUILD_BOUND fields, with one admissible profile per build (JSON BUILD_PROFILES). A new RUN_PREREQUISITES field names BUILD_EQUIVALENCE_RECORD on the 48 PRODUCT_BUILD runs that consume E04/LOCK_MODE/HOST_DEFAULT_MAP pins, and names the I-14 qualification records (Q-I14-X/Y/SILENT-*) where a rule resolves from them.\n- **Learning runs (AR4-01):** EV-L-OC-* are governing E12-L runs on PRODUCT_BUILD. RNE = E-04, E-12 A, E-12 C, with the basis per control. E-03 is enforced, S-1..S-3 are NOT_EVALUATED and the outcome is NONE. The driver is a declared harness DLL, present and inert in EV-V-*. EV-L-COMPOSED is now a NON_GOVERNING composition check outside the learning corpus.\n- **Q-I14-* vehicles:** ruled; the writer set adds Wr-OCT, XDATA_WRITE and the post-abort read; the per-writer path (E-08 enforced) is stated.\n- **Dry runs:** six dry runs take the DRY_RUN_BRANCH_SWITCH (AR4-02). The dry runs of NC-E10, NC-E11M-PV, NC-E11M-PC, NC-WU-FOREIGN, AB-AFTER-MUTATION and U-5 exclude stimulus loads (STIMULUS_LOAD, declared identities, no warm-up preload; AR4-16).\n- **Ruled scenarios:** KS-* per AR4-03; NC-S5-O6 E-06 PASS without E6-C4; NC-E12A via CER-WIT; EA2 on CB.\n- **HDM:** HDM-CHAR-FXANNBLANK added. CL-CLEAN-FXANNBLANK-FP drops K-6. Every HDM-CHAR-* runs exactly one informative run per varied key.\n- **Blocker vocabulary** is K-3/K-8 only. Section 7.1 = K-3, K-8 and the Architect's exact review of V5; no open Architect question remains.\n- **Other catalog fixes:** GROUPS_SERVED/CONTRACT_ASSIGNED_GROUPS are defined normatively in BA-04 section 1 and applied by BA-02b rule 1. DEPENDS_ON gains BA-07 (BA-04) and BA-01 (BA-02b). A1 now appears only in EA1. The SEALED_AT fields are extended and every SEALED_AT is recomputed. Log deltas LP-INJ/LP-WIT/LP-PAR are appended. Q-FPSPEC/Q-SIGNED-ZERO cite the BA-05 V5 vectors file.\n- **BA-02b:** R-3 (a)..(d), a characterization-build column, enumerated-set rule 6 with an R14 split, strict OU class, and the governing-serving column.\n- **Check:** new ...-ba04-v5-checks.py, 69/69 PASS, output reproducible byte for byte. A 20-case mutation test (scratchpad mut_v5.py) is detected in full and the baseline passes.\n- **SHA-256 (LF):** json 3219e5b0…84fa, md abf34c18…ea52, BA-02b e7e67dbe…edfd, check 584e20eb…b6d8, output f3aa4ff9…9b336.",
+    "counts": "total 423 = 262 own + 161 WU-DRY. By governance: GOVERNING 249, NON_GOVERNING_BY_DESIGN 172 (161 WU-DRY, 6 E4-LEARN/LK, 4 HDM-CHAR, EV-L-COMPOSED), EXPLORATORY_NON_GOVERNING 2 (E6-C4, E6-C4-CB). WU-DRY 161. By build: CHARACTERIZATION_BUILD 331, PRODUCT_BUILD 80, NONE 12. By status: DRAFT 158, SEALED_PENDING_PIN_CANDIDATE 194, SEALED_CANDIDATE 69, EXPLORATORY_NON_GOVERNING 2. By rule label: DEFAULT 149 (N_A 32, N_B 4, max(N_A,N_B) 113), CLEAN 10, VALIDATE 3, EVIDENCE 56, EVIDENCE_STRICT 3, SYNTH 12, LEARN 16, DRY 161, CHAR 13 (N_A 6, HDM exactly-one 4, exploratory 2, composition check PARAM-02 1). Blockers: K-3 134, K-8 32. Pin slots: FIXTURE_INSTANCE 356, LOCK_MODE 169, E04_ADMITTED_SET 155, EVM_FROZEN 134, HOST_DEFAULT_MAP 134. RUN_PREREQUISITES: BUILD_EQUIVALENCE_RECORD 48, Q-I14-X 69, Q-I14-Y 5, Q-I14-SILENT-X 7, Q-I14-SILENT-Y 3. AR3-01 mode 175; per-build twins 29; EV-L 17 (16 governing + EV-L-COMPOSED). BA-02b conditional rows S5, E12A, E12C; checks 69/69 PASS.",
+    "decisions_applied": [
+     "AR4-01 (EV-L-* on PRODUCT_BUILD with RNE E-04/E-12 A/E-12 C and basis; EV-L-COMPOSED non-governing composition check; Q-I14-* vehicles ruled; writer set + Wr-OCT, XDATA_WRITE, post-abort read)",
+     "AR4-02 (DRY_RUN_BRANCH_SWITCH on the six dry runs)",
+     "AR4-03 (KS-*: CONTRACT_ASSIGNED KS/SC-A by extension of AR3-06; typed failure = EXPECTED_PROCEDURAL_RESULT; blocker lifted)",
+     "AR4-04 (NC-S5-O6 E-06 PASS at every sampling point; no E6-C4 blocker)",
+     "AR4-05 (BA-02b section 3 reading with the three precisions; R03 covers S5REC/S5MAN/S5CLO)",
+     "AR4-06 (1)-(6) (per-build profiles, CHARACTERIZATION_TUPLE own fields, per-build twins, BUILD_EQUIVALENCE_RECORD, EA2 on CB)",
+     "AR4-07 (HDM-CHAR-FXANNBLANK; CL-CLEAN-FXANNBLANK-FP without K-6)",
+     "AR4-12 (CQ-02 reading in NC-CLONE-REPLACE)",
+     "AR4-13 (pin custody in md 2.1)",
+     "AR4-14 (a) N_strict exclusion, (b) CHAR_RUNS exactly one informative run per varied key, informative pin entries",
+     "AR4-15 (no expectation change; recorded in 8.1)",
+     "AR4-16 (NC-E12A via CER-WIT; dry-run canary/foreign-load exclusion, warm-up never preloads)",
+     "AR4-17 (group-field definitions in BA-04 section 1; BA-02b applies them; DEPENDS_ON edges; check bound in BA-02b entry; BA-11 cited by registry entry)",
+     "AR4-19 (BA-02a V3 unchanged; R-1/R-2 outside the bytes)",
+     "AR4-20 (all confirmed minors both passes; BA-02b R-3 (a)..(d))"
+    ],
+    "cross_artifact_notes": [
+     "BA-11 V5 (lead): add docs/automation/evidence/I-52-ct21d-ba04-v5-checks.py and ...-ba04-v5-checks-output.json to the Paths of the BA-02b entry (never BA-04's; the output holds the BA-02b SHA-256). Add the edges BA-04 -> BA-07 and BA-02b -> BA-01. BA-02b md section 0 cites the check LF SHA-256 584e20ebdf7410d8d429bc70b55c54f34439ef14df3f47dee7478a73e577b6d8. Any edit of the check requires regenerating BA-02b and re-running the check.",
+     "BA-10 V5 / cost memo: the catalog changed from 393 to 423 scenarios. The per-label counts are in 'counts'. New rows are 29 twins (21 EVIDENCE, 7 DEFAULT N_A, 1 exploratory CHAR), HDM-CHAR-FXANNBLANK (CHAR, V(s)=9 keys) and the EV-L-COMPOSED label 'CHAR: CHAR_RUNS = PARAM-02 (non-governing composition check)'. NC-E12D now gives 'DEFAULT: N_B'. LEARN has 16 scenarios.",
+     "BA-08 K-10 / BA-09 W-7: the switch set of BA-04 V5 section 1.2 now includes DRY_RUN_BRANCH_SWITCH as a build switch. BA-09 V5 section 4 already matches the AR4-02 and AR4-16 wording and calls the BA-04 list an informative pointer.",
+     "BA-07 V5: R1:BA04V4-01 (5) asks for a per-build manifest layer; BA-04 V5 declares it only as a CHARACTERIZATION_TUPLE field (manifest build layer, E-10 and WUM sets of that build).",
+     "BA-05 V5: Q-SIGNED-ZERO, Q-FPSPEC-VECTORS and their twins cite docs/automation/evidence/I-52-ct21d-fpspec-v1-vectors-v5.json (RJ-01..RJ-25; SV-01..SV-18; slot-unit SV-06, 07, 10, 11, 14, 15). The generator and the check read these ids from that file, so a later change of the vectors file requires regenerating and re-checking.",
+     "The working-tree change to I-52-ct21d-authority-contract-v2.5.md (revision 2) is the lead's and was not touched. Only the five assigned files were written in the worktree. No git write command was used."
+    ],
+    "open_questions": [
+     "Q-V5-BA04-1: AR4-06 (4) rules equivalence for CB-derived pins used on the PRODUCT_BUILD, but not the converse. EVM_FROZEN is learned and validated on the PRODUCT_BUILD (AR4-01) and is consumed by 111 governing CHARACTERIZATION_BUILD runs (scan cells, Y and harness-fault negative controls, NC-E12A, NC-E12C, EA2, U-3..U-5). V2.1 27.5 ties a model to its tuple. Question: does the same BUILD_EQUIVALENCE_RECORD cover that use? No expectation was changed and no record was added to those runs.",
+     "Q-V5-BA04-2: PR-CLOSURE-COMPLETENESS (group Q; qualification control of I-13 with I-12, V2.2 PA-12) has a non-Q-* id, so it has no -CB twin under the ruled rule (AR4-06 (3) names Q-* and E6-C*). Question: should the per-build rule reach it? Q-I12, Q-I13 and their twins already qualify both instruments on each build.",
+     "Q-V5-BA04-3: BA-10 defines no CHAR_RUNS case for a non-governing composition check. EV-L-COMPOSED is labelled PARAM-02 (the count of the learning runs it checks). A different value would be a BA-10 decision and a new scenario version."
+    ]
+   }
+  },
+  {
+   "key": "BA10",
+   "r": {
+    "files_written": [
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-10-parameter-sheet-v5.md",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-cost-memo-v5.py",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-cost-memo-v5.md",
+     "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\gen_ba10v5.py",
+     "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\gen_costmemo_v5.py"
+    ],
+    "findings": [
+     {
+      "id": "R1:BA10-V4-01",
+      "status": "FIXED",
+      "where": "BA-10 V5 2.2 rules table row LEARN and the paragraph after it; 2.2 PARAM-01 floor bullet; 2.2 PARAM-02 learning bullet; 2.1 PARAM-02 row; 2.3 G term (governing LEARN split) and closing paragraph; section 5 Q-O3; section 7. Memo V5 blocks A.2 and A.7",
+      "note": "First option of the required fix. LEARN now matches every learning micro-scenario, governing or not, whatever groups it serves. R(s) = N_det + 1, or max(N_strict(s), N_det + 1) when the micro-scenario is governing and serves a class-A or class-B group. The first run is the reference in both cases. The 2.3 sentence claiming the rules 'do not change' is replaced. No V5 count changes: the memo reports 0 learning scenarios serving A/B."
+     },
+     {
+      "id": "R2:BA10-V4-01",
+      "status": "FIXED",
+      "where": "Same places as R1:BA10-V4-01",
+      "note": "The same rule also closes the fall-through to DEFAULT, because LEARN comes before every rule of governing scenarios. The memo was re-run; its V5 counts change only because of the catalog (twins and HDM-CHAR-FXANNBLANK), not because of this rule."
+     },
+     {
+      "id": "R1:BA10-V4-02",
+      "status": "NOT_ADDRESSED",
+      "where": "BA-11 registry section 3.2 row for the machine-attribute observation (not my file)",
+      "note": "The defect is in BA-11, which the lead writes (COORD5 section 0). BA-10 V5 already uses the target gate 'before the candidate' (header PREREQUISITES; 2.2 PARAM-05 row 'label value', which now states it explicitly). The lead should change the BA-11 V5 3.2 row to 'prerequisite of BA-10 (before candidate)'. Recorded in BA-10 V5 section 7 and in the cross-artifact notes."
+     },
+     {
+      "id": "R2:BA10-V4-02",
+      "status": "NOT_ADDRESSED",
+      "where": "BA-11 registry section 3.2 (not my file)",
+      "note": "Same defect and same owner of the fix as R1:BA10-V4-02."
+     },
+     {
+      "id": "R1:BA10-V4-03",
+      "status": "FIXED",
+      "where": "Memo V5 section 2 row1 and block B assumptions; also BA-10 V5 2.1 row EVIDENCE_REPETITION, 2.2 'EVIDENCE_REPETITION' and the section 5 status block; memo V5 section 6",
+      "note": "EVIDENCE_REPETITION = 1 is now described as 'the implementer's draft proposal in BA-10 (since V4) for the Coordinator value; not a value and not a Coordinator position' (AR4-21). The V4 memo files are unchanged."
+     },
+     {
+      "id": "R1:BA10-06",
+      "status": "NOT_APPLICABLE",
+      "where": "BA-10 V5 section 7",
+      "note": "Closure refuted by the Architect (section 214.1); its remains belong to BA10-V3-03, which is FIXED."
+     }
+    ],
+    "decisions_applied": [
+     "AR4-14 (a): CONTRACT_ASSIGNED_GROUPS never enter N_strict; 'serves groups A or B' means GROUPS_SERVED, whose normative field definition is in BA-04 section 1 (cited as an informative pointer). Q-A1 is now cited as ruled (BA-10 V5 2.1, 2.2 terms, rule EVIDENCE, 'EVIDENCE_REPETITION', section 6; memo A.2, E.1).",
+     "AR4-14 (b)(i): the derived N_c (today N_A) is used with no Owner pair of its own. Q-O1 discloses that the same pair sizes the E4-LEARN/LK runs and the HDM pinned-configuration runs. A fail-closed statement is added per consumer: E-04 FAIL or UNKNOWN (V2.1 3.3); E-03 lock re-read at PL and in the continuity set (V2.1 3.4 and section 5 row PL); S-1..S-3 UNKNOWN (O5) or a mismatch (BA-08 V5 HDM-5). Memo E.2.",
+     "AR4-14 (b)(ii): each of the four HDM-CHAR-* scenarios runs CHAR_RUNS(s) = N_A + V(s): N_A runs at the pinned key configuration plus EXACTLY one informative run per varied key. V(s) is declared by the scenario from the closed key list of BA-08 V5. The plan is determinate. Informative entries are marked in the pin record, and a governing lookup that resolves to one is UNKNOWN (O5). The memo reads V(s) from each scenario's injections and checks them against BA-08 V5 HDM-2 and HDM-4 (36 informative runs; A.6, D.7, E.3).",
+     "AR4-21: memo attribution corrected. The BA-10 V5 header and section 5, and the memo header, say that the memo and Q-O1..Q-O5 go to the Owner package after this V5 is reviewed; the section 218 order places that package later, and it needs explicit authorization.",
+     "AR4-06: new BA-10 term 'Build under test'. The 29 twins are counted as scenarios with their own R(s); c(X) counts both builds. EA2-DEFERRED-EVENTS counts toward the PRODUCT_BUILD PARAM-03 bound only under the recorded equivalence. Pins derived on the characterization build apply to product-build runs only under the equivalence. Memo A.4, A.8, A.9, B.3, C.1 and F.3.",
+     "AR4-01: EV-L-OC-* are governing LEARN runs on the PRODUCT_BUILD. EV-L-COMPOSED is a non-governing CHAR composition check with CHAR_RUNS = N_det + 1, which answers BA-04 V5 Q-V5-BA04-3. Q-I14-* keep their dry runs.",
+     "AR4-07: the fourth scenario, HDM-CHAR-FXANNBLANK, is named and counted.",
+     "AR4-13: pointer in BA-10 V5 section 4 (pin custody in BA-07 V5 5.1).",
+     "AR4-16: pointer in WU_DRY_RUNS (the dry-run measurement excludes loads of assemblies named by an injection; BA-09 V5 section 4).",
+     "AR4-17: BA-11 is cited as a registry, without a version. REFERENCES (NOT EDGES) line added. DEPENDS_ON stays BA-01 only.",
+     "AR4-20: all confirmed BA-10 minors of both passes handled as listed in findings."
+    ],
+    "open_questions": [
+     "Count of EV-L-COMPOSED (new; a BA-10 design choice, not a contract value). BA-10 V5 sets CHAR_RUNS = N_det + 1, matching the BA-04 V5 wording 'the count of the learning runs it checks'. The first run is the reference for the reproducibility of the composed multiset, and every run is also compared with the composition of the DRAFT/UNDER_REVIEW entries. A reviewer applying AR3-24 'reference by use' strictly could prefer N_det (the draft-model composition as the only reference, as for validation). That would lower every memo row by 1 run and require only text changes in BA-04 V5 (the label 'CHAR_RUNS = PARAM-02 (non-governing composition check)' would not change).",
+     "Scope of the AR4-14 (b)(i) fail-closed statement. BA-10 V5 states it for values and states that a governing run observes and a consuming control re-checks: the E-04 tuple, the E-03 lock read-back at PL and in the continuity set, and the S-1..S-3 lookups. The CHAR_RUNS intent still lists 'a lock property or conflict outcome' among the characterized behaviours. A missed conflict outcome (V2.1 3.4 P-L5/P-L6, the exclusion of other contexts) is not re-observed by E-03 in a governing run; it rests on the LOCK_MODE selection review. So 'a missed behaviour fails closed' is not literally per-run for that property. The Architect may want to confirm that reading or restrict the intent wording."
+    ],
+    "cross_artifact_notes": [
+     "BA-11 V5 (lead): change the section 3.2 row for the machine-attribute observation to 'prerequisite of BA-10 (before candidate)' (R1/R2:BA10-V4-02). The BA-10 entry keeps DEPENDS_ON = BA-01 only. The cost memo is not a registry entry. BA-10 V5 LF SHA-256 = 908e4cbd11c19bb892a8a747ab6044316cc5b3cee263acb41f2f4f3667bfc8be (supersedes the V4 blob 5d90f9c417e313f29ce2949a29536d681a561c12).",
+     "BA-04 V5: Q-V5-BA04-3 is answered by BA-10 V5 section 2.2 (EV-L-COMPOSED CHAR_RUNS(s) = N_det + 1). This agrees with BA-04 V5 REPETITION_RULES.CHAR and the scenario NOTE, so no label or SEALED_AT change is needed; BA-04 can close the question with a pointer. BA-04's label vocabulary has no label for a governing LEARN scenario that serves a class-A or class-B group. None exists today; if one appears, the catalog needs a label and the memo would report a MISMATCH.",
+     "Memo V5 input hashes: it cites the LF SHA-256 of the BA-04 V5 JSON (3219e5b087535ea4bb5ad21432186cd0ec5b2a8e3d7230d0cf470864de0b84fa), BA-08 V5 (96b457351733fbd14385265ce59cfaf0c7793e7646defbd243492800675f2eb1), BA-10 V5 (908e4cbd...), the V4 catalog and the V4 memo. Any later change of those files requires re-running scratchpad gen_costmemo_v5.py, which regenerates the memo .md. Memo .py LF SHA-256 = 6eed4d46775f28162feebe098bf3c197a829d378ad4aacd253e0e6cb45851e9c; memo .md LF SHA-256 = 927e124fb1caea3ec5356d62f2ea7b3a236a89b7d10c3f0969f3424254e50f50.",
+     "Memo V5 wording dependencies (fail-closed): the script stops if the catalog's HDM-CHAR-* INJECTIONS stop using the variant form 'informative run: <key> changed to ...', if PLAN_OR_INPUT stops stating 'V(s) = 9' and 'exactly one informative run per key', or if BA-08 V5 HDM-4 no longer contains 'plus **exactly one** informative run per varied key'.",
+     "BA-10 V5 cites these as informative pointers only: BA-07 V5 5.1 (pin custody, AR4-13), BA-08 V5 section 10, section 8, and HDM-2/4/5, and BA-09 V5 section 4 ('Count', W-2, AR4-16).",
+     "V4 files (BA-10 V4, cost memo V4 .md and .py) are byte-unchanged. Only the three new V5 files were written in the worktree. No git write command was used, and AutoCAD was not touched."
+    ],
+    "counts": "Memo V5 over the V5 catalog (423 scenarios), all 423 REPETITION labels agree with the BA-10 V5 derivation (A.1 and A.5). By rule: DEFAULT 149 (A_ONLY 32, MIXED 113, B_ONLY 4), CLEAN 10, VALIDATE 3, EVIDENCE 56, EVIDENCE_STRICT 3, SYNTH 12, LEARN 16, DRY 161, CHAR 13 (pin/selection 6, HDM 4, composition check 1, exploratory 2). These match the catalog implementer's counts. Governing mixed-class scenarios: 127, all labelled max(N_A, N_B). Builds: PRODUCT 80, CHARACTERIZATION 331, NONE 12; all 161 dry-run scenarios are on the characterization build. 29 twins (EVIDENCE 21, DEFAULT 7, CHAR 1): 225 runs at row1. HDM informative runs: 36 (4 x 9). Illustrative totals, rows 1 to 4: 10360 (G 5333, D 5027), 5065, 2594, 1535. V4 to V5 at row1: +263 (twins +225, HDM-CHAR-FXANNBLANK +38); the V4 block B rows are reproduced exactly from the V4 catalog. Sensitivities: N_B -166 / +293 per unit; EVIDENCE_REPETITION +58 per unit; N_det +20 per unit. Draft scenarios: K-3 134 scenarios / 3690 runs; K-8 32 / 845; BUILD_EQUIVALENCE_RECORD 48 / 1241 (all at row1).",
+    "summary": "I wrote BA-10 V5 (symbolic; DEPENDS_ON = BA-01 only) and the non-sealed cost memo V5 (.py and .md) in the worktree. Both were generated from the scratchpad generators gen_ba10v5.py and gen_costmemo_v5.py, copies of the V4 generators.\n\n**BA-10 V5**\n- Applies AR4-14 (a), (b)(i) and (b)(ii) as ruled (details in decisions_applied), including the per-consumer fail-closed statement and EXACTLY one informative run per varied key for the four HDM-CHAR-* scenarios.\n- Fixes R1/R2:BA10-V4-01: LEARN now matches every learning micro-scenario and keeps its first-run reference; when it is governing and serves a class-A or class-B group, R(s) = max(N_strict(s), N_det + 1).\n- Applies AR4-01, AR4-06, AR4-07, AR4-13, AR4-16, AR4-17 and AR4-21 (details in decisions_applied).\n- Defines the EV-L-COMPOSED count as N_det + 1, which answers BA-04 V5 Q-V5-BA04-3.\n- Replaces the V4 open question with a table of rulings (section 6) and ends with the Delta V5 table.\n\n**Cost memo V5**\n- It is computed from the V5 catalog; every REPETITION label matches the V5 derivation, and the memo reproduces the V4 memo totals exactly from the V4 catalog.\n- New content: the build split, the 29 twins, V(s) per scenario checked against BA-08 V5, the V4-to-V5 reconciliation, and blockers by status and run prerequisite. The sizing of the other readings of the ruled question is removed.\n- The EVIDENCE_REPETITION attribution is corrected (R1:BA10-V4-03).\n- The generator runs the script twice, checks that the two outputs are identical and that every figure quoted in section 3 appears in the output. The V4 memo files are unchanged.\n\n**Not fixed here**\n- R1/R2:BA10-V4-02 stay NOT_ADDRESSED: the fix belongs to the BA-11 registry, which the lead writes.\n- R1:BA10-06 is NOT_APPLICABLE (a refuted closure).\n\nAll hashes were computed with Python over the actual LF-normalized bytes. No git write command was used and AutoCAD was not touched."
+   }
+  },
+  {
+   "key": "BA05",
+   "r": {
+    "files_written": [
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-05-fingerprint-specification-v5.md",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-fpspec-v1-vectors-v5.gen.py",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-fpspec-v1-vectors-v5.json",
+     "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\gen_ba05v5.py (scratch: document generator)",
+     "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\v5work\\make_vec_v5.py (scratch: derives the V5 vector generator from V4 through asserted replacements)"
+    ],
+    "findings": [
+     {
+      "id": "R1:BA05V3-N11",
+      "status": "FIXED",
+      "where": "BA-05 V5 2.7 (paragraph on the consistent EV-62/EV-64 state); vectors EV-62, EV-64, EV-84, EV-85",
+      "note": "Closure remnant. The claim that the structures follow the product is now true: see R1:BA05V4-03."
+     },
+     {
+      "id": "R1:BA05V4-01",
+      "status": "FIXED",
+      "where": "2.3.5 'Session scope of handle keys'; 2.4 Excluded; 4.1 item 5; section 7 AR4-11 disclosure",
+      "note": "AR4-11 reading recorded with its id. Records and SCOPED_RECORD_COMPARISONs that hold handle-keyed members are session-bound and excluded from the V2.1 28.3 cross-session determinism control."
+     },
+     {
+      "id": "R1:BA05V4-02",
+      "status": "FIXED",
+      "where": "2.3.5 CONTEXT row",
+      "note": "AR4-08: every record member, CONTEXT included, is in EXPECTED_AFTER_ABORT and ABORT-VERIFY compares it exactly (V2.1 11, 11.2, 11.3). Only the E-08 domain belongs to the kind baseline; for Selective it is REFERENCE and CONTEXT_VARIABLE at PS/PV."
+     },
+     {
+      "id": "R1:BA05V4-03",
+      "status": "FIXED",
+      "where": "gen EV-62/EV-64 (regenerated), new EV-84 and EV-85; 2.7; encoder assertion",
+      "note": "First option. POSTE_3X3 is PRESENT (EV-48, REUSE_AS_IS) and RACKCAD_ANOTACIONES is PRESENT (EV-54). The ABSENT members are unreferenced (RACKCAD_COTAS, PLACA_BASE_3X3). EV-64 adds PLACA_BASE_3X3 (EV-84) and binds layer 0 (REUSED_BOUND). The block-table enumeration EV-85 is consistent, and the encoder asserts this."
+     },
+     {
+      "id": "R1:BA05V4-04",
+      "status": "FIXED",
+      "where": "2.3.5 recordKind table (new storedName column); STATE_MEMBER schema; check_record; RJ-16; EV-62",
+      "note": "Named kinds (BLOCK..APPID, PAYLOAD, NOD_ENTRY) carry storedName exactly when PRESENT. It is always absent for ENUMERATION, CONTEXT_VARIABLE and REFERENCE. EV-62 now holds an ENUMERATION member (EV-85) and a NOD_ENTRY member (EV-59)."
+     },
+     {
+      "id": "R1:BA05V4-05",
+      "status": "FIXED",
+      "where": "(a) 2.1.3 read path and expected host-type table, 5 step 5, header PREREQUISITES, EV-87; (b) 2.3.2, 2.4, 2.5, EV-88",
+      "note": "(a) The value comes from the system-variable read by name, never a typed Database property. Expected types (String/Double/Int16) are confirmed by the I-12 qualification before the candidate. EV-87 covers CELWEIGHT as Int16 -> INT. (b) A reference to an anonymous non-dynamic definition is UNKNOWN."
+     },
+     {
+      "id": "R1:BA05V4-06",
+      "status": "FIXED",
+      "where": "gen check_record/enc_value; RJ-07..RJ-23, EV-86, EV-89, SV-14, SV-15; 2.1, 2.3 intro, 2.3.3, 2.3.4, 2.3.5, 2.3.6, 3.3",
+      "note": "All listed rules are enforced and pinned. A malformed dynamic property is now REJECTED instead of a KeyError. EV-86 sorts handles whose string and numeric orders differ. SV-14 and SV-15 add the missing DIFFERENT/EQUAL counterparts. A DIMSTYLE missing a variable gives UNKNOWN; an extra variable or a wrong kind gives REJECTED."
+     },
+     {
+      "id": "R1:BA05V4-07",
+      "status": "FIXED",
+      "where": "NOD_CLASS_MAP, nod_from_host, inputConventions; 2.3.1, 2.7; EV-59, EV-60, EV-75..EV-78, RJ-01, RJ-02 re-expressed; RJ-24",
+      "note": "NOD objects now have a host-class input slot [host class, fields], and objectClass is derived from it. All digests and results are unchanged. A supplied objectClass is REJECTED."
+     },
+     {
+      "id": "R1:BA05V4-08",
+      "status": "FIXED",
+      "where": "3.1 table, 3.1.1 predicates (EXACT_DOUBLE, EXACT, DIRECTION_ANGLE_LE), 3.1.2 field routing generated from the registry (157 double fields, totality asserted); SV-17, SV-18",
+      "note": "Default rule EXACT_DOUBLE (binary64, -0.0 = +0.0). linetypeScale, widthFactor, bulge and similar fields are exact. The reference scaleX/Y/Z fields stay under TOL_SCALE. Only the eight existing slots are used."
+     },
+     {
+      "id": "R2:BA05V4-N01",
+      "status": "FIXED",
+      "where": "gen slot_rule = JSON semanticSlotInstanceRule, rendered in 3.3.1",
+      "note": "Realized quantity defined per predicate: exact rational |p-e| for ABS_DIFF_LE; for ANGLE_DIFF_LE, the wrapped difference under the sealed NORM_ANGLE rule as a certified enclosure with exact pi; for NORMAL_ANGLE_LE, a certified enclosure. A straddling enclosure is INVALID. The same text in BA-04's Q-FPSPEC-VECTORS belongs to BA-04 (cross-artifact)."
+     },
+     {
+      "id": "R2:BA05V4-N02",
+      "status": "FIXED",
+      "where": "check_record/enc_value; RJ-07..RJ-22; 2.3 tables (overrides value-kind cell without 'or absent'); 2.3.3; section 7 choice (2)",
+      "note": "Enforced: colour/transparency conditional presence, table name, state closed list with conditional fields, TYPED_VALUE ABSENT consistency, and MANIFEST key form and category. A missing DIMVAR gives UNKNOWN rather than R2's literal REJECTED: it follows R1 and the 'unreadable = UNKNOWN' rule, both deny a digest, and the choice is disclosed in section 7."
+     },
+     {
+      "id": "R2:BA05V4-N03",
+      "status": "FIXED",
+      "where": "as R1:BA05V4-03",
+      "note": "Same fix."
+     },
+     {
+      "id": "R2:BA05V4-N04",
+      "status": "FIXED",
+      "where": "2.3.5 CONTEXT row",
+      "note": "Same fix as R1:BA05V4-02 (AR4-08)."
+     },
+     {
+      "id": "R2:BA05V4-N05",
+      "status": "FIXED",
+      "where": "2.3.5 'Member values for the oracle'; section 4",
+      "note": "The canonical stream of every CONTEXT member, and of any member the oracle consumes, is retained with the record in the PR evidence. The oracle reads a value only from a stream whose SHA-256 equals the member digest; otherwise the input is UNKNOWN. No field table changes."
+     },
+     {
+      "id": "R2:BA05V4-N06",
+      "status": "FIXED",
+      "where": "2.1.3; CONTEXT_VARIABLE schema; EV-87",
+      "note": "Same fix as R1:BA05V4-05 (a)."
+     },
+     {
+      "id": "R2:BA05V4-N07",
+      "status": "FIXED",
+      "where": "3.1 rows (OVERRIDE_MAP_EQUAL, DIMVAR_VALUE, EXACT, direction vectors), 3.1.1, 3.1.2 DIMVAR class table (22 DOUBLE variables, DIMSCALE exact); SV-16",
+      "note": "Overrides are compared as a map keyed by DIMVAR group code; host order is not significant. The codes of the variables the product writes are listed and are to be confirmed by census step 5. Integers and booleans are EXACT. Direction vectors use DIRECTION_ANGLE_LE(TOL_ANGLE). No new slot."
+     },
+     {
+      "id": "R2:BA05V4-N08",
+      "status": "FIXED",
+      "where": "as R1:BA05V4-01",
+      "note": "AR4-11."
+     },
+     {
+      "id": "R2:BA05V4-N09",
+      "status": "FIXED",
+      "where": "2.3.2, 2.4, 2.5, EV-88; section 5 step 2, step 4 and census schema (referencesAnonymousStatic, classesWithoutTable named/anonymousOrLayoutOnly)",
+      "note": "Census step 4 is restricted to named non-layout records. Classes found only in anonymous or layout records are recorded and disclosed."
+     },
+     {
+      "id": "R2:BA05V4-N10",
+      "status": "FIXED",
+      "where": "3.1 (the sealed kind baseline / the tolerance section of the sealed BA-08), header, 4, 5, 6 (BA-11 registry cited without a version)",
+      "note": "No normative reference to a draft version number remains. The only versioned sibling mention is informative: BA-04 V5 in the Delta row of N01."
+     }
+    ],
+    "summary": "BA-05 V5 is written: DRAFT, blob b74af94e, SHA-256 LF ba0a0b43…62f5. It supersedes 4-DRAFT (blob 5d6e4d0de5e4801af796ba5969b70f3457fb21be) and ends with the table 'Delta V5 (decisions section 217)'. The vectors had to change, so there are new files: I-52-ct21d-fpspec-v1-vectors-v5.gen.py (SHA-256 LF 08cd41d1…f949) and v5.json (SHA-256 LF 87473b0c…b249). The V4 document, generator and JSON are byte-identical (git diff empty).\n\n**AR4 decisions applied.**\n- **AR4-08:** CONTEXT row fixed as the contract states it. The E-08 domain belongs to the kind baseline.\n- **AR4-09:** the plot style is a declared gap, with its three conditions and the Owner Act 2 disclosure (2.3.5, 2.4).\n- **AR4-10:** `overrides` is the stored override set. Location, order and equal-to-style behaviour must be confirmed by the census and the I-12 qualification before the candidate (2.3.2, 5 step 5, L-4, header). Handle-valued overrides are UNKNOWN and disclosed.\n- **AR4-11:** the handle-key reading is disclosed in section 7 with its id. Records and scoped comparisons that hold handle-keyed members are session-bound. The SV-11 note on stable angle computation is added.\n- **AR4-17:** the BA-11 registry is cited by its entry.\n- **AR4-20:** all minors of both passes are applied.\n\n**Mechanical results (scripts over the actual bytes).**\n- The encoder regenerates the JSON byte-identically.\n- All 43 field tables match the registry.\n- Every V4 result is reproduced. Only EV-62 and EV-64 change digest, on purpose. The inputs of EV-59, EV-60, EV-63, EV-75..EV-78, RJ-01 and RJ-02 changed, with the same results.\n- Layer-2 routing covers all 157 double fields and all 22 DOUBLE DIMVARs.\n- No exponent literal appears, so no tolerance value is written.\n\n**Choices inside BA-05's own tables, flagged in section 7 for the Architect's exact delta check.**\n- REJECTED takes precedence over UNKNOWN (RJ-25).\n- A missing DIMVAR gives UNKNOWN, not REJECTED.\n- A manifest memberKey must be a CLOSURE key.\n- linetypeScale, widthFactor, bulge and DIMSCALE are compared exactly, not under TOL_SCALE.",
+    "counts": "Findings: 19 (R1: 9 including the N11 closure remnant; R2: 10). All FIXED, 0 NOT_ADDRESSED. Vectors V5: 81 exact (62 digests, 19 UNKNOWN; new EV-84..EV-89), 25 REJECTED (new RJ-07..RJ-25), 18 semantic (6 in slot units; new SV-14..SV-18; SV-11 rule text updated). 43 field tables. 157 routed double fields.",
+    "decisions_applied": [
+     "AR4-08: CONTEXT row (2.3.5). The contract makes ABORT-VERIFY compare every PRE_COMMAND_STATE_RECORD member exactly, CONTEXT included. The E-08 domain belongs to the kind baseline (for Selective: REFERENCE and CONTEXT_VARIABLE at PS/PV).",
+     "AR4-09: the plot style name is a declared gap, with no plot-style field in FPSPEC-V1. Conditions: PSTYLEMODE = 1 bound and verified in fixtures, or captured as CONTEXT_VARIABLE; SL-R is UNKNOWN (O5) on named-plot-style drawings; Owner Act 2 disclosure (2.3.5, 2.4). PSTYLEMODE is also listed in the expected host-type table of 2.1.3.",
+     "AR4-10: overrides = the stored DSTYLE set, not an effective value. Before the BA-05 candidate, the census and the I-12 qualification confirm location, host order and equal-to-style behaviour (2.3.2, 5 step 5, 6 L-4, header PREREQUISITES). Handle-valued overrides stay UNKNOWN and are disclosed (EV-83).",
+     "AR4-11: REFERENCE handle-key reading disclosed in section 7 with the decision id. Session-bound records and scoped comparisons (2.3.5, 2.4, 4.1 item 5). SV-11 note and a stable atan2 angle rule in NORMAL_ANGLE_LE (3.1.1, 3.3.1).",
+     "AR4-17: the BA-11 registry is cited by its entry, not by a version (header, 4, 5, 6).",
+     "AR4-20: all confirmed minors of both passes are applied."
+    ],
+    "cross_artifact_notes": [
+     "BA-04 V5 (Q-FPSPEC-VECTORS) must carry the same per-predicate slot-instance rule as the V5 JSON semanticSlotInstanceRule (R2:BA05V4-N01). It must also include the new slot-unit vectors SV-14 and SV-15, and its tuple must name the V5 vector file (SHA-256 LF 87473b0c008370c863f0b4c136939f5d05a84e4bf4913fca85b5f1f7348eb249) and the V5 generator (08cd41d1ba50bc8d8bad2550b6be6309513438839c323a18bd1f4bfd7d7bf949).",
+     "BA-08 V5, layer-2 classes now fixed in BA-05 3.1/3.1.2:\n- linetypeScale, widthFactor and DIMSCALE are EXACT_DOUBLE, not TOL_SCALE.\n- The stored overrides are compared as a group-code map, with host order not significant.\n- DYNPROP values are classed by the census units type (distance -> TOL_DYNAMIC, angular -> TOL_ANGLE, other -> EXACT_DOUBLE, unrecorded -> UNKNOWN).\n- MTEXT direction uses DIRECTION_ANGLE_LE with TOL_ANGLE.\nNo new slot, so BA-08 section 10's 'eight slots' statement still holds.",
+     "BA-08 V5 captures TEXTSTYLE, DIMSTYLE and PSTYLEMODE as CONTEXT_VARIABLE. BA-05 2.1.3 fixes the read (system-variable read by name) and lists their expected host types (String, String, Int16), to be confirmed by the I-12 qualification before the BA-05 candidate.",
+     "BA-08 oracle: context values reach the oracle through retained canonical member streams bound by the member digest (BA-05 2.3.5, R2:BA05V4-N05). BA-08's section 11 inputs can cite this.",
+     "BA-06 V5: its trace source T-4 uses SCOPED_RECORD_COMPARISON (BA-05 4.1). The new item 5 makes a scope holding handle-keyed members session-bound. Item 4 (the coverage limit that BA-06 cites) keeps its number.",
+     "BA-11 registry entry of BA-05:\n- Paths become the V5 document, generator and JSON.\n- PREREQUISITES before the candidate now include the I-12 qualification confirmations of BA-05 section 5 step 5 (AR4-10 overrides; RB range types; context-variable host types) next to the census.\n- AQ-V4-08/09/10 are no longer BA-05 prerequisites.",
+     "BA-04 / I-12 qualification scenarios: the qualification must include the AR4-10 write-and-read-back of product overrides (a value different from the style and one equal to it), the RB range host types and the context-variable host types on the exact build."
+    ],
+    "open_questions": []
+   }
+  },
+  {
+   "key": "BA06",
+   "r": {
+    "files_written": [
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-06-evm-preparation-v5.md",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba06-v5-checks.py",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba06-v5-checks-output.json",
+     "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\gen_ba06v5.py",
+     "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\ba06v5\\mk_gen_ba06v5.py",
+     "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\ba06v5\\negtest.py"
+    ],
+    "findings": [
+     {
+      "id": "R1:BA06V4-N01",
+      "status": "NOT_ADDRESSED",
+      "where": "BA-06 V5 section 16 (row R1:BA06V4-N01) and section 17",
+      "note": "Both fixes the finding asks for would change inventory content: a marked amendment to compiled row C-72, or a new DC-41 disposition. AR4-12 condition (2) and the V5 order forbid that. The correction is recorded outside the inventory in section 16, together with a note: C-72 reads per AMB-09 and DC-41, i.e. captured once by the orchestrator in PREPARE-R at PR. The class placement (OC-PREP-READ) was already correct. The Architect can rule on it, or order it into a later version with a re-review of OC-PREP-READ."
+     },
+     {
+      "id": "R1:BA06V4-N02",
+      "status": "FIXED",
+      "where": "section 12 row INVENTORY_REVIEW_RECORDS; section 9 last bullet; section 1 paragraph",
+      "note": "The field is now written when the EVM record is first created (EVM_STATUS = DRAFT, V2.1 27.2 step 3, after learning). It lists the REVIEWED record that was custodied before the first learning run. The order REVIEWED-before-LEARNING is shown by the learning records and the BA-07 custody order, not by the field. 'No EVM exists during learning' now reads 'the EVM record does not exist before learning; no FROZEN model is in use during learning'."
+     },
+     {
+      "id": "R1:BA06V4-N03",
+      "status": "FIXED",
+      "where": "section 7 declared limit (4); section 2 row 2; section 1 row E2; checks BA06-C13 and BA06-C15",
+      "note": "Limit (4) is written exactly as AR4-12 condition (1) states it: same source SHA; harness switches off, every I-14 writer included, except the RECORDED_NOT_ENFORCED handling of the AR3-01 set; the REVIEWED record carries both build identities and this attestation; an event class that appears only because of a harness difference is a finding, not an inventory entry."
+     },
+     {
+      "id": "R1:BA06V4-N04",
+      "status": "FIXED",
+      "where": "section 9 (first paragraph and first bullet); section 13",
+      "note": "Per AR4-01, EV-L-COMPOSED is out of the learning corpus and out of LEARNING_CORPUS_HASH. It is a NON_GOVERNING_BY_DESIGN composition check against the DRAFT or UNDER_REVIEW model, contributes no model entry, and records unexplained events as UNEXPLAINED_EVENTS. The frozen 3.3 bullet only names the check, not its corpus, so it is unchanged. Aligning the BA-04 V5 scenario is the BA-04 implementer's job."
+     },
+     {
+      "id": "R2:BA06V4-N01",
+      "status": "NOT_ADDRESSED",
+      "where": "BA-06 V5 section 16 (row R2:BA06V4-N01) and section 17",
+      "note": "The fix would correct the DC-18 disposition and add supplementary row X-05 (the SL-6 pass-1 and pass-2 reads). Both are inventory content that AR4-12 condition (2) and the V5 order keep unchanged. The full correction is recorded in section 16 for the Architect: a ruling, or a later version with a re-review of OC-VERIFY-READ. The note there says V2.1 10.1-10.3 govern the VERIFY reads and the EVM effect is small."
+     },
+     {
+      "id": "R2:BA06V4-N02",
+      "status": "NOT_ADDRESSED",
+      "where": "BA-06 V5 section 16 (row R2:BA06V4-N02) and section 17",
+      "note": "The partition would move U-03 and U-09 from OC-IMPORT to OC-PREP-READ. That is a change to operation-class membership (inventory content), which AR4-12 condition (2) and the V5 order forbid. It is recorded in section 16 with the affected classes OC-IMPORT and OC-PREP-READ. No interim reading is adopted."
+     },
+     {
+      "id": "R2:BA06V4-N03",
+      "status": "FIXED",
+      "where": "header PREREQUISITES (2); Dependencies paragraph; section 14 intro",
+      "note": "BA-06 now lists 'the evidence files bound in section 14 exist at their bound hashes' as a before-candidate prerequisite (AR3-25), and 'are not prerequisites' is removed. This is the alternative that R1:BA11V4-02 item 2 and R2:BA11V4-06 also accept."
+     },
+     {
+      "id": "R2:BA06V4-N04",
+      "status": "FIXED",
+      "where": "section 9 last bullet; section 12 row INVENTORY_REVIEW_RECORDS; section 1",
+      "note": "The EVM record is created at DRAFT (V2.1 27.2 step 3). The order is bound by records that exist at learning time: every learning session record and the sealed learning-corpus record cite the REVIEWED hash, and REVIEW_RECORD_ADDED has a lower BA-07 custody index than the IN_USE entry of the first learning run. The AR3-22 field and the EVM_FROZEN pin citation are unchanged."
+     },
+     {
+      "id": "R2:BA06V4-N05",
+      "status": "FIXED",
+      "where": "section 2 row 5; check BA06-C10 (framing facts verified in the task texts)",
+      "note": "Declares the framing the blind inputs carried. The B1a entry points came from the V1 inventory. The path chain and a seam paraphrase with two non-clause points were in both B1a and B1b. The REACH list was in the census and dependency tasks, not in B1a or B1b; this was verified. Mitigations are listed (B1b's API sweep of the whole Plugin, and the critic's own finding of RACKEDITAR and U-36), next to the three limitations recorded by AR4-12."
+     },
+     {
+      "id": "R2:BA06V4-N06",
+      "status": "FIXED",
+      "where": "section 3.2.6 column 5 of CQ-07 (BA-06 side)",
+      "note": "Records the AR4-12 CQ-07 (b) ruling: host-generated objects stay the section 5 residual. BA-06 adopts no reading on whether they are 'created objects'. BA-08 V5 (already in the worktree) labels its sentence as its own reading, consistent with AR4-12, and points to the BA-06 V5 section 5 residual."
+     }
+    ],
+    "summary": "BA-06 V5 is written and all 17 of its checks pass. The artifact is generated by gen_ba06v5.py, which is built from the V4 generator by the asserted patch script ba06v5/mk_gen_ba06v5.py.\n\n- **Carry-over of STATIC_REVIEWED (AR4-12):** the generator renders the inventory and trace-plan sections exactly as in V4. It asserts they are byte-equal to the approved V4 file (LF SHA-256 4faae1658dc031808868102761af430b8fcce64b049cac0f6e6c6ac534746f09, taken from the AR4-12 row of section 217; blob 5758f3c4b04c24ae33b43b461e1adb087e5bca02). It then only swaps labels from a closed list and adds declared limit (4).\n- **Frozen sections:** 3 to 3.2.5, 3.3, 7, 10.2 and 11.\n- **Self-check BA06-C13:** confirms that V5 equals V4 in those sections except 21 declared label substitutions and the limit (4) insertion. It reports all 12 changed lines, and the diff is recorded in the check output.\n  - The 21 substitutions are 19 sibling-version labels, 1 BA-11 citation changed to \"BA-11 registry section\" (AR4-17), and 1 pointer: \"is open question AQ-V4-14.\" became \"is ruled by AR4-15 (section 217; section 5).\".\n- **Other V5 changes, outside the frozen sections:**\n  - **Header:** follows coordination sheet section 1; DEPENDS_ON = BA-01, BA-03, BA-05. PREREQUISITES are (1) the Architect's exact delta check and (2) the existence of the section 14 evidence files.\n  - **3.2.6 (AR4-12):** a new column records the ruling or deferral for CQ-01 to CQ-07. CQ-08 is moot by AR4-01. The V4 cells are kept verbatim.\n  - **Section 2 row 5:** condition 5 accepted with three limitations, plus the framing disclosure of R2:BA06V4-N05.\n  - **Section 5:** the residual is stated with AR4-15 reasons (a) to (e), and the fourth characterization scenario HDM-CHAR-FXANNBLANK is added (AR4-07).\n  - **Section 9 (AR4-01):** EV-L-* are governing runs on PRODUCT_BUILD with RECORDED_NOT_ENFORCED = E-04, E-12 phase A and E-12 phase C, each with its basis; E-03 is enforced under LOCK_MODE; S-1 to S-3 are NOT_EVALUATED; EXPECTED_PRODUCT_OUTCOME = NONE. EV-L-COMPOSED is out of the learning corpus. The section also states how the REVIEWED-before-LEARNING order is shown.\n  - **Sections 10.1, 12 and 13:** 10.1 now says validation runs on the same PRODUCT_BUILD as learning; section 12 corrects when INVENTORY_REVIEW_RECORDS is written; section 13 carries the new status.\n  - **Section 6:** census row corrected to \"writes :50-53; :49 disposes\", verified at 3375aadb.\n  - **Sections 16 and 17:** section 16 lists the three corrections withheld; section 17 is the Delta V5 table.\n- **Other checks:**\n  - BA06-C14 checks sections 3.2.6, 5 and 12: same rows, same \"affects\" column, same fields, and only the rows each ruling names are changed.\n  - BA06-C15 checks the wording of limit (4).\n  - BA06-C16 checks that no AQ-V4 question is left pending.\n  - BA06-C17 checks that every BA-06 finding from both review passes appears in the Delta V5 table. It reads the findings from the review evidence, whose SHA-256 is compared with the one stated in section 217.\n- **Findings:** 7 fixed. 3 not addressed, because fixing them would change inventory content: R1:BA06V4-N01, R2:BA06V4-N01, R2:BA06V4-N02. They are recorded in section 16 for the Architect.\n- **Verification:**\n  - All 17 checks pass, and the output is byte-identical across two generator passes.\n  - 11 negative mutation tests give the expected FAIL each time, run on a scratch copy of the needed repository files.\n  - The V4 artifact and V4 evidence files are unchanged, no git write commands were run, and nothing touched AutoCAD, host or src/.\n- **Final V5 artifact:** LF SHA-256 b60a24110b0ecd3fcb14ac9ee3759191d8655d3b7e174226688723de18040ac1, blob 4081fa738dc2d9daae0d5708fdd612f0a4f15f5a, 920 lines.\n- **Check files:** the checks script has SHA-256 388f8998e3ac81729954cfd52926ba47c86392a51454241c298cc4149c88f0e3. Its output has SHA-256 efe03333622552cad078a346a3cd145996412829b7de5cbbdfb4bf0f560fb892.",
+    "decisions_applied": [
+     "AR4-01: section 9 (EV-L-OC-* are governing runs of group E12-L on PRODUCT_BUILD; the micro-scenario driver is a declared harness DLL, inert in EV-V-* validation; they are not in the AR3-01 mode; RECORDED_NOT_ENFORCED = E-04 (basis V2.1 3.3), E-12 phase A and E-12 phase C (basis V2.1 27.2, 14.3 and V2.2 PA-2); E-03 is enforced under the LOCK_MODE pin; S-1..S-3 are NOT_EVALUATED (AR2-25); every other control is fail-closed; EXPECTED_PRODUCT_OUTCOME = NONE). EV-L-COMPOSED is out of the corpus and LEARNING_CORPUS_HASH as a non-governing composition check. CQ-08 is moot. Also sections 10.1 and 13.",
+     "AR4-07: section 5 host-defaults row (HDM-CHAR-FXANNBLANK records the SYMBOL_RECORD_LAYER typed form of the created layer); section 9 scope of the AR3-01 mode.",
+     "AR4-12: STATIC_REVIEWED approved on the V4 bytes, recorded in the header, sections 1, 2 and 13, with the carry-over check BA06-C13. Declared limit (4) added (condition (1)). Condition 5 accepted with its three limitations (section 2 row 5). CQ rulings and deferrals recorded in 3.2.6 column 5: CQ-01, 02 and 06 adopted; CQ-03 (i) and (ii) O1 before the first import and O2/O6 by ABORT-VERIFY after, (iii) DEFERRED; CQ-04 DEFERRED with the baseline reading; CQ-05 three-valued logging with a sequence number, the rest DEFERRED; CQ-07 (a) and (b) fixed, the rest DEFERRED.",
+     "AR4-15: section 5 failure-path row and paragraph state the residual with reasons (a) to (e); no expectation change and no learning variant of the rollback. The section 7 limit (3) pointer names the ruling.",
+     "AR4-17: BA-11 is cited by registry entry and section (header STATUS AUTHORITY and DEPENDS_ON, 3.2 'Source').",
+     "AR4-20: all confirmed minors of both passes applied where they leave the inventory and trace-plan content unchanged; the three that do not are reported NOT_ADDRESSED with the reason.",
+     "Coordination sheet section 1: header format; sibling cross-references use V5 (BA-03 stays V4); V4 history kept verbatim (section 8 V4 tag, section 15, the cells of 3.2.6 columns 1 to 4); final section is 'Delta V5 (decisions section 217)'."
+    ],
+    "cross_artifact_notes": [
+     "BA-11 (lead): BA-06 V5 now lists 'the section 14 evidence files exist at their bound hashes' as a before-candidate PREREQUISITE (R2:BA06V4-N03). The BA-06 row of the BA-11 registry should keep that item; this is the alternative that R1:BA11V4-02 item 2 and R2:BA11V4-06 admit. The option R2:BA11V4-06 recommends, dropping the item from BA-11, would re-open the disagreement. Section 14 of BA-06 V5 binds 28 files: 23 V3, 3 V4, and 2 new (docs/automation/evidence/I-52-ct21d-ba06-v5-checks.py and -checks-output.json). The V5 artifact has LF SHA-256 b60a24110b0ecd3fcb14ac9ee3759191d8655d3b7e174226688723de18040ac1. DEPENDS_ON is unchanged (BA-01, BA-03, BA-05).",
+     "BA-04 V5: EV-L-COMPOSED must be NON_GOVERNING_BY_DESIGN, outside the learning corpus and LEARNING_CORPUS_HASH, with no model entry and UNEXPLAINED_EVENTS recording. The 16 EV-L-OC-* must match BA-06 V5 section 9, which BA-06 states without deferring to BA-04. BA-06 V5 section 9 also requires every learning session record to cite the SHA-256 of the REVIEWED record, so the EV-L-* records may need that field. BA-06 V5 section 5 cites 'the 20 governing abort scenarios of BA-04 V5' and scenario U-6b (AR4-15).",
+     "BA-07 V5: BA-06 V5 section 9 shows the order REVIEWED-before-first-LEARNING-run by requiring the REVIEW_RECORD_ADDED custody index to be lower than the IN_USE index of the first learning run (learning runs are governing under AR4-01 and record IN_USE). BA-07 V4 ordered REVIEW_RECORD_ADDED only before PIN_RECORDED, so BA-07 V5 may want to add this ordering to its verification. BA-06 does not depend on BA-07 enforcing it.",
+     "BA-08 V5 (already in the worktree) section 5 labels the host-derived anonymous-block sentence as its own reading, consistent with AR4-12 CQ-07 (b), and cites the BA-06 V5 section 5 residual. This is consistent with BA-06 V5 3.2.6 and closes R2:BA06V4-N06 on both sides.",
+     "The section numbers that BA-06 V5 cites in siblings exist in the V5 files now in the worktree: BA-05 V5 2.3.1, 2.4 and 4.1 items 1 and 4; BA-08 V5 4.1, 5, 6, 11 (ORACLE_SPEC) and 12.3. BA-04 V5 was not yet present, so its cited items are unverified.",
+     "The mechanical carry-over check is published as BA06-C13 in docs/automation/evidence/I-52-ct21d-ba06-v5-checks.py. It reads the approved hash from the section 217 AR4-12 row. Its output lists every changed line of the frozen sections, token by token, and the full limit (4) insertion. Records outside the frozen sections that the rulings change are reported in BA06-C14, with full V4 and V5 cells and paragraphs."
+    ],
+    "open_questions": [
+     "For the Architect's exact delta check (AR4-12 (2)): the V4 section 3 'Composition' paragraph, which V5 keeps frozen, names the residuals (section 5) and the EVM schema (section 12) as inventory components. The Coordinator's frozen list does not include them. V5 edits two section 5 rows and the paragraph (AR4-15 and AR4-07), and one section 12 row (the timing of INVENTORY_REVIEW_RECORDS, R1:BA06V4-N02 and R2:BA06V4-N04). BA06-C14 shows that the residual set, the 'affects' column and the EVM field set are unchanged, and that no operation class is touched. Does the Architect count these edits as outside the inventory's content?",
+     "Label category: the only non-version label substitution inside the frozen trace plan is the ruling pointer in section 7 limit (3): 'is open question AQ-V4-14.' became 'is ruled by AR4-15 (section 217; section 5).'. It is required by coordination sheet section 0 and reported as its own category by BA06-C13. The Architect should confirm it counts as a pure label change.",
+     "R1:BA06V4-N01 (C-72 wording), R2:BA06V4-N01 (DC-18 disposition and a new X-05 row) and R2:BA06V4-N02 (U-03 and U-09 class partition) need either an Architect ruling that records the correction, or a later BA-06 version with a re-review of the affected class (OC-PREP-READ; OC-VERIFY-READ; OC-IMPORT and OC-PREP-READ), as AR4-12 condition (2) provides. V5 keeps the approved inventory and records them in section 16."
+    ],
+    "counts": "BA-06 findings in the V5 bundle: 10 (R1: 4, R2: 6); 7 FIXED, 3 NOT_ADDRESSED. AR4 decisions applied: 6 (AR4-01, AR4-07, AR4-12, AR4-15, AR4-17, AR4-20). V5 checks: 17 of 17 PASS (BA06-C1 to BA06-C12 repeat the V4 checks; C13 to C17 are new), and the output is byte-identical across two generator passes. Negative mutation tests: 11 of 11 as expected. BA06-C13 frozen parts: 5, all identical except the declared changes; 21 declared label substitutions (BA-05 7, BA-08 9, BA-04 3, the BA-11 registry citation 1, the ruled question pointer 1) plus 1 insertion (limit (4)); 12 changed lines. BA06-C14: section 5 has 2 declared changed rows plus the paragraph; section 12 has 1 declared changed row; 3.2.6 has 8 rulings, with columns 1 to 4 kept verbatim. Section 14 binds 28 evidence files, all hashes matching. V5 artifact: 920 lines, LF SHA-256 b60a24110b0ecd3fcb14ac9ee3759191d8655d3b7e174226688723de18040ac1."
+   }
+  },
+  {
+   "key": "BA07",
+   "r": {
+    "files_written": [
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-07-manifest-custody-v5.md",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba07-v5-jcs-vector.py",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba07-v5-jcs-vector.json"
+    ],
+    "findings": [
+     {
+      "id": "R1:BA07-V4-01",
+      "status": "FIXED",
+      "where": "5.1 rules 2 and 3; 6.1 supersededBy; 6.2 step 5(c); 7 pin machine and U3; 12 cases T8, T17; 13",
+      "note": "Rule 2: a pin is live until SUPERSEDED or REVOKED, and a slot has at most one live pin (PIN_SLOT_CONFLICT). A successor's supersedes must name the live pin, and the successor's SUPERSEDED pair must be the next entry (PIN_SUPERSESSION). Rule 3: once a pin is consumed, no new pin of that slot is recorded under the same baseline version, except EVM_FROZEN (V2.1 27.5; runs under the predecessor are never evidence for the successor). E04_ADMITTED_SET is never superseded that way (AR2-11); LOCK_MODE, HOST_DEFAULT_MAP and FIXTURE_INSTANCE are not either (AR2-17, AR3-26) (CONSUMED_PIN_SUPERSEDED). pinRecordHashes attributes each run to the pin version it consumed."
+     },
+     {
+      "id": "R1:BA07-V4-02",
+      "status": "FIXED",
+      "where": "5.1 rules 1 and 4; 7 U3; 8 new baseline version and carry-over block; 11 N6-1; header PREREQUISITES; cases T9, T10",
+      "note": "baselineVersion must equal the version in force at PIN_RECORDED and at IN_USE (PIN_VERSION_MISMATCH). Carry-over is explicit and fail-closed. Every SUPERSEDED/REVOKED entry of the carry-over block comes before the first anchor of v<k+1>, whose h is the last of them. AQ-V4-12 is cited as ruled by AR4-13."
+     },
+     {
+      "id": "R1:BA07-V4-03",
+      "status": "FIXED",
+      "where": "7 state machines; 6.1 subjectHash; V5 vector (TRANSITIONS and the subjectHash rule); 4.1 hashes; case T11",
+      "note": "SUPERSEDED -> REVOKED is now legal for a manifest (V2.1 29.3), and the pin case is stated. subjectHash may be null in a REVOKED entry that follows AUTHORIZED. The fix is in a new V5 vector; the V4 files are unchanged. BA-11 CURRENT_HASH is the lead's to update (value in the cross-artifact notes)."
+     },
+     {
+      "id": "R1:BA07-V4-04",
+      "status": "FIXED",
+      "where": "7 U4 (USE_WITH_PENDING_CLOSURE); 1 pending-window row; 9 step 7; 10 new row; case T12",
+      "note": "First option of the finding, with the remaining loss declared in section 10: a supersession or revocation lost before any anchor covers it is not detectable."
+     },
+     {
+      "id": "R1:BA07-V4-05",
+      "status": "FIXED",
+      "where": "2 (<kind> without 'seal'); 5.2 'BA-11's seal'; 6.1 ratificationRecords; 8 index 1 and status of BA-11; 6.2 step 5(b) BASELINE_RECORDS_INVALID",
+      "note": "The BA-11 seal record is defined as BA-11's candidate record plus its two ratification records. There is no separate seal record. SEAL_HASH = CANDIDATE_HASH = the subjectHash of BASELINE_RECORDED and BASELINE_APPROVED."
+     },
+     {
+      "id": "R1:BA07-V4-06",
+      "status": "FIXED",
+      "where": "12 case table; V5 vector output key T4a_..._copyDesignatedHolderNotConsulted; 4.1",
+      "note": "Relabelled to 'copy designated, holder not consulted' (NOT_VERIFIABLE). The other option (building T4a with an undesignated copy) no longer applies, because an UNDESIGNATED anchor record is now a violation. That branch is exercised by T7 (DESIGNATION_MISSING)."
+     },
+     {
+      "id": "R2:BA07-V4-01",
+      "status": "FIXED",
+      "where": "6.2 step 6 (a)-(e); 1 remote-rewrite row; 2 independent-copy row; 9 step 6 and schema; 10 rows; cases T5, T6, T7",
+      "note": "The AR3-23 reading is kept. (a) An UNDESIGNATED anchor record gives DESIGNATION_MISSING. (b) The primary designation record is a cross-check and the source when no tag exists; the holder is consulted, and NOT_VERIFIABLE is reported only when the holder cannot be consulted. (c) Only the last tag may be missing from the copy: status LAST_ANCHOR_NOT_IN_COPY, reported with the copy-confirmed index. (d) New cases: R1-type T6, R2-type T7, anchoring window T5."
+     },
+     {
+      "id": "R2:BA07-V4-02",
+      "status": "FIXED",
+      "where": "5.1 rule 1 (PIN_VERSION_MISMATCH, PIN_SLOT_UNKNOWN against the sealed BA-11 section 3.1); 7 U2/U3 (MANIFEST_VERSION_MISMATCH); 8 carry-over block and 'Unusability'; cases T9, T10, T15, T16",
+      "note": "'In the entries that follow' is replaced: items not carried over are unusable from BASELINE_APPROVED(v<k+1>) on, and are REVOKED (SUPERSEDED_BY_RULING) inside the block. The reviewer's cases C1, C2 and C3 are reproduced as T9 and T10."
+     },
+     {
+      "id": "R2:BA07-V4-03",
+      "status": "FIXED",
+      "where": "4 'association with the tuple'; 6.1 new IN_USE field runStartAnchor; 7 'When IN_USE is appended' and U1-U3; 1 pending-window sentence; case T13",
+      "note": "Deviation from the first suggestion: the custody-log reference of the tuple is a per-manifest constant (the first anchor that covers its APPROVED entry). The latest anchor at sampling time changes from run to run, which would break V2.1 2.2 BUILD_BOUND equality, so it is carried in IN_USE as runStartAnchor, fixed at run start. This is the finding's alternative 'carry the anchor in IN_USE'."
+     },
+     {
+      "id": "R2:BA07-V4-04",
+      "status": "FIXED",
+      "where": "5.2 (complete schema, new field evidence, record-kind table, BA-11 seal paragraph, direction-of-reference paragraph)",
+      "note": "Removed the sentence that delegated record content to BA-11 section 2, so the reference runs one way (BA-11 section 2 -> BA-07 5.2). There is no SEALED decision or separate seal record."
+     },
+     {
+      "id": "R2:BA07-V4-05",
+      "status": "FIXED",
+      "where": "6.2 'Modes' and 'Result'; steps 3(e) and 4; case T14 (both modes)",
+      "note": "Second option: an explicit HISTORICAL mode. It lists LATER_ANCHORS and reports HISTORICAL_PASS_WITH_DECLARED_LIMITS, never a pass of the current state. The codes expected when the same bytes are verified in CURRENT mode are stated exactly."
+     },
+     {
+      "id": "AQ-V4-12 (reviewer ruling recommendations, both passes)",
+      "status": "FIXED",
+      "where": "5.1 lifecycle, rules 1-4; 6.2 step 5(c); 8; 11; header",
+      "note": "Ruled by AR4-13 and applied; where the reviewers' recommendations differ from it, AR4-13 prevails."
+     },
+     {
+      "id": "R1:BA10-06, R1:BA10-V4-01..03, R2:BA10-V4-01..02",
+      "status": "NOT_APPLICABLE",
+      "where": "13 last row",
+      "note": "These belong to BA-10, BA-11 and the cost memo, not to BA-07; the task limits this job to the bundle's BA-07 items."
+     }
+    ],
+    "summary": "I wrote BA-07 V5 by hand from V4, applying AR4-13 in full and every confirmed BA-07 minor from both review passes (R1:BA07-V4-01..06, R2:BA07-V4-01..05); all 11 are FIXED. The normative vector had to change: the entry schema gains the IN_USE field runStartAnchor, the record schema gains evidence, and the model and cases change. So the vector is in new files I-52-ct21d-ba07-v5-jcs-vector.py/.json; the V4 files are byte-identical.\n\nThe generator is deterministic and regenerates the output byte-identically. It reproduces the example entry (834 bytes, entryHash 20716bfb...) and every hash cited in 4.1. Its cross-check against json.dumps gives 1675 of 1675.\n\nThe model runs 21 cases. The honest mandatory sequence and the full example (0-23, with a v2 carry-over block) give PASS_WITH_DECLARED_LIMITS. T1-T17 cover truncation, the pending window, tag deletion, the holder not consulted versus consulted, the anchoring window, the R1-type and R2-type remote rewrites, two live pins in one slot, an incomplete carry-over, pin version and slot checks, the legal revocations, a pending closure, the run-start anchor, historical versus current mode, a BA-07 change with manifest revocation, an invalid carry-over, and a consumed E04 pin superseded. All results match the section 12 table.\n\nBA-11 is cited only by registry entry, DEPENDS_ON is BA-01 only, and the header uses the COORD5 format. The file ends with 'Delta V5 (decisions section 217)'. No git write commands were run, no host was touched, and only my 3 files were created.",
+    "decisions_applied": [
+     "AR4-13: the pin ratification pair (one COORDINATOR, one ARCHITECT; decision RATIFIED, subjectKind PIN, subject = the slot, subjectHash = the pin-record hash) is checked in step 5 (PIN_SEAL_INVALID). baselineVersion must be the version in force (PIN_VERSION_MISMATCH at PIN_RECORDED and at IN_USE). The verifier allows at most one live pin per slot (PIN_SLOT_CONFLICT, PIN_SUPERSESSION). Carry-over is fail-closed: a new pin version per baseline version, followed by SUPERSEDED of the old one. The manifest stays usable under v<k+1> only through a Coordinator MANIFEST_CARRY_OVER record cited by BASELINE_APPROVED(v<k+1>) with the BA-07 seal hash unchanged; otherwise it is REVOKED (SUPERSEDED_BY_RULING). All carry-over entries sit in a block before the first anchor of v<k+1>, whose h = the last of them.",
+     "AR4-17: BA-11 is cited only as 'BA-11 section n', 'the BA-11 registry' or 'the BA-07 entry of the BA-11 registry'; no version label.",
+     "AR4-20: every confirmed BA-07 minor of both passes is applied, including SUPERSEDED -> REVOKED for manifests (and pins), the BA-11 'seal record' defined as BA-11's ratification records, the T4a label and the pending-window statement.",
+     "AR4-06 (1)-(2), alignment only: one manifest capture per build under test; a run is compared with the manifest approved for its own build (sections 1(c), 2, 3, 4).",
+     "Sections 214/211 kept: AR3-23 model A and step 6 reading the designation from the anchor records, AR3-22 EVM_FROZEN inventoryReviewRecords, AR3-25, AR2-11/16/17/39/44.",
+     "Reading, flagged in open_questions: 'esas entradas van antes de la primera ancla de v<k+1>' is read to cover the pin carry-over pairs and the revocation of non-carried pins, as the R1 recommendation that AR4-13 condensed says."
+    ],
+    "open_questions": [
+     "Custody-log reference (V2.1 2.1, BUILD_BOUND 'manifest hash and custody-log reference'). V5 defines it as a per-manifest constant: the first anchor covering the manifest's APPROVED entry. The run-bound 'latest anchor at sampling time' proposed by R2:BA07-V4-03 is carried as IN_USE.runStartAnchor instead, because a per-run value would conflict with V2.1 2.2 BUILD_BOUND equality. The Architect should confirm this reading.",
+     "Superseding a consumed LOCK_MODE, HOST_DEFAULT_MAP or FIXTURE_INSTANCE pin within one baseline version. V5 forbids it (CONSUMED_PIN_SUPERSEDED), reading AR2-17/AR3-26 ('fixed before the first governing run that uses it') and V2.1 21.3; a correction needs a new baseline version, and REVOKED is always admitted. R1:BA07-V4-01 said only 'where the contract allows it' for these kinds. The Architect should confirm.",
+     "Scope of 'esas entradas' in AR4-13. V5 puts the pin carry-over pairs, and a mandatory REVOKED (SUPERSEDED_BY_RULING) of every live v<k> pin not carried over, inside the block before the first anchor of v<k+1> (CARRY_OVER_MISSING). This is stricter than 'todo antes del primer uso gobernante' alone, and it keeps one live pin per slot after the version change."
+    ],
+    "cross_artifact_notes": [
+     "BA-11 (lead): the BA-07 entry paths become docs/initiatives/I-52-ct21d-baseline-ba-07-manifest-custody-v5.md, docs/automation/evidence/I-52-ct21d-ba07-v5-jcs-vector.json and docs/automation/evidence/I-52-ct21d-ba07-v5-jcs-vector.py. The CURRENT_HASH from the BA-11 section 1 multi-file procedure over LF-normalized bytes is eac46072512c38eea17464b66b88124cda654571b1a6c58a31e4a9ba27f6686a. The procedure reproduces the V4 value 3a9df153...f014. Per-file SHA-256: md 36e1caaf35ee73c9ebf0bde43b4f93ff45357047245fa5f7a76f39b75361fe93; json 743302c72a901c2631c4bdbe46e2e6b755901c8427dc3d0af508474ed28dff38; py 9f9fd14f9c6efb2754f8c98c5aff470b34e525379be6b30dfc4224f253ac4209.",
+     "BA-11 (lead): in the BA-07 PREREQUISITES cell, drop the AQ-V4-12 item (ruled by AR4-13) and keep the designation of the independent copy (before seal).",
+     "BA-11 (lead): section 2 can cite BA-07 section 5.2 one-way for record location and fields. BA-07 no longer delegates back. The BA-03 PA-14 seal-time items and the BA-02a dated re-run go in the ratification records' new 'evidence' field ([{path, sha256}]) and 'reference'.",
+     "BA-11 (lead): in rule 2 and the BA-11 row, BA-11's status is established by its candidate record and its two ratification records; there is no separate seal record.",
+     "BA-11 (lead): the section 3.1 sentence 'usable only when its PIN_RECORDED entry is covered by an anchor recorded before that run's IN_USE entry' is now narrower than BA-07 V5. The anchor must be the run's run-start anchor, of the version in force, and the pin's baselineVersion must be the version in force. Better to point to BA-07 section 7 than to restate it.",
+     "BA-04 V5: the section 2.1 custody bullets restate BA-07's pin-usability rule. Align them with V5 (run-start anchor, version in force, one live pin per slot, carry-over) or turn them into a pointer. The edge BA-04 -> BA-07 (AR4-17) keeps any BA-07 change cascading to BA-04.",
+     "BA-08 (AR4-14): the informative marking of varied-key HOST_DEFAULT_MAP entries lives in the pin record's 'value'. The BA-07 pin schema needs no change.",
+     "BA-06: the 'REVIEWED before the first LEARNING run' order can be shown in BA-07 custody. Compare the REVIEW_RECORD_ADDED index with the IN_USE entries of the governing EV-L-* runs; AR4-01 makes those runs governing, so they record IN_USE.",
+     "AR4-06 (4): BA-07 does not custody the build-equivalence record. If the Architect wants it custodied, it could enter as a review record (REVIEW_RECORD_ADDED); that is BA-04's or BA-11's decision.",
+     "BA-07 sections 1-12 keep their V4 numbers, so sibling pointers to BA-07 sections (for example from BA-09 or BA-04) do not need renumbering."
+    ],
+    "counts": "BA-07 findings in the bundle: 11 (R1: 6, R2: 5). FIXED 11, PARTIAL 0, NOT_ADDRESSED 0. The AQ-V4-12 recommendations are ruled by AR4-13 and applied; 6 BA-10/BA-11/memo items are out of scope for this artifact. AR4 decisions applied: AR4-13, AR4-17, AR4-20, plus AR4-06 (1)-(2) as alignment. New violation codes: 13 (PIN_SLOT_CONFLICT, PIN_SUPERSESSION, PIN_VERSION_MISMATCH, PIN_SLOT_UNKNOWN, CONSUMED_PIN_SUPERSEDED, CARRY_OVER_MISSING, CARRY_OVER_INVALID, MANIFEST_VERSION_MISMATCH, USE_REFERENCE_INVALID, PIN_USE_AFTER_CLOSURE, USE_WITH_PENDING_CLOSURE, DESIGNATION_MISSING, BASELINE_RECORDS_INVALID). New status: LAST_ANCHOR_NOT_IN_COPY. New result: HISTORICAL_PASS_WITH_DECLARED_LIMITS. Worked example: 24 entries (0-23), 6 tags. Vector verification cases: 21 (8 PASS or HISTORICAL_PASS, 13 VIOLATION). JCS cross-check: 1675/1675 objects. Files written: 3 (1 md, 1 py, 1 json)."
+   }
+  },
+  {
+   "key": "BA0809",
+   "r": {
+    "files_written": [
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-08-selective-kind-baseline-v5.md",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-09-warmup-v5.md",
+     "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\v5b\\make_ba08v5.py (scratch generator: V4 bytes + asserted replacements)",
+     "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\v5b\\make_ba09v5.py (scratch generator)",
+     "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\v5b\\ba08v5_s164.md, ba08v5_delta.md, ba09v5_delta.md, chk_ba0809v5_tables.py (scratch inputs and checker)"
+    ],
+    "findings": [
+     {
+      "id": "R1:D4-01",
+      "status": "FIXED",
+      "where": "BA-09 V5 section 4: 'Designed injection loads', the 'Dry-run mode' expectation, the WARMUP_COVERAGE_CRITERION paragraph and 'Consequences' (a warm-up revision never preloads an injected assembly); Delta V5",
+      "note": "BA-09 side of AR4-16. The E11M expectation and SEALED_AT of WU-DRY-NC-E11M-PV, -NC-E11M-PC, -AB-AFTER-MUTATION and -U-5 belong to BA-04 V5 (cross-artifact)."
+     },
+     {
+      "id": "R1:D4-02",
+      "status": "FIXED",
+      "where": "BA-08 V5 section 6 rows 'consumed context variables' (TEXTSTYLE and DIMSTYLE as CONTEXT_VARIABLE members) and 'symbol tables'; section 11.2 HDM-2 (style key = the captured name + exact fingerprint of the named record and its transitive records); section 16.3 K-7"
+     },
+     {
+      "id": "R1:D4-03",
+      "status": "FIXED",
+      "where": "BA-08 V5 section 11.2 HDM-1 (dimension style moved to Excluded); section 11 new paragraph 'Rule 1, dimension style' (named style if present at the seam call, else the current DIMSTYLE of the record; LHD:351-354,378-392, re-verified at 3375aadb); rule 5"
+     },
+     {
+      "id": "R1:D4-04",
+      "status": "FIXED",
+      "where": "BA-08 V5 section 6 introduction (second exception: library residue = PREPARE_RESIDUE_MANIFEST, second term of EXPECTED_AFTER_ABORT, V2.1 11) and row 'library residue'"
+     },
+     {
+      "id": "R1:D4-05",
+      "status": "FIXED",
+      "where": "BA-08 V5 section 12.1 'Construction sequence' (frontal of fondo 1 from a new rack, then every other view through RACKEDITAR with no input change; RSW.xaml.cs:2560-2570, RSC:484-514 re-verified at 3375aadb); 12.2 'Drawing'; 12.6 (conformance record taken after the last insert)"
+     },
+     {
+      "id": "R1:D4-06",
+      "status": "FIXED",
+      "where": "BA-09 V5 section 3.2 (plan source without mu_k: the bound-SHA builders on the authored source design of BA-08 V5 12.2/12.3 with synthetic name CT21D-WARMUP; own record type WARMUP_PLAN_SET, domain CT21D-WUPLAN-V1|; newRackId/effectiveName/envelopeBytes/transform set at replay as synthetic values; plans representative only); section 8 W-1"
+     },
+     {
+      "id": "R1:D4-07",
+      "status": "PARTIAL",
+      "where": "BA-08 V5 header PREREQUISITES and section 16.1 K-2 (one gate, before the seal, plus the stated effective before-candidate timing through BA-05)",
+      "note": "The finding's primary artifact is BA-11 section 3.2, which the lead writes. The BA-08 side is fixed and consistent with 'census: BA-05 before candidate, BA-08 before seal'."
+     },
+     {
+      "id": "R2:BA0809V4-01",
+      "status": "FIXED",
+      "where": "BA-08 V5 HDM-1 and section 11 paragraph 'Rule 1, dimension style' (same defect as R1:D4-03; the circularity with the DIMSTYLE key is removed)"
+     },
+     {
+      "id": "R2:BA0809V4-02",
+      "status": "FIXED",
+      "where": "BA-08 V5 section 12.6 (PSTYLEMODE must be 1 in the conformance record); 12.2 and 12.3 FX-SCRATCH (bound); section 6 (PSTYLEMODE captured per run as CONTEXT_VARIABLE); section 11 rule 1 (AR4-09 wording: SL-R UNKNOWN on named plot styles, Owner Act 2 disclosure); HDM-7 and HDM-2 (a fixed fixture value, not a key)"
+     },
+     {
+      "id": "R2:BA0809V4-03",
+      "status": "FIXED",
+      "where": "BA-08 V5 section 5 part (1): 'with its handle' removed; PREPARE-R resolves the handle of each reused SL-Y layer by name under the lock and logs it (session-local) with the phase-A domain in the PR checkpoint record"
+     },
+     {
+      "id": "R2:BA0809V4-04",
+      "status": "FIXED",
+      "where": "BA-08 V5 section 16.1 K-2 (single gate) and catalog-seal paragraph (direct BLOCKED_BY blockers K-3 and K-8; K-2 and K-5 precede the catalog seal via the BA-11 section 2 gating and the AR3-25 order; K-2 also gates the catalog candidate via BA-05); header",
+      "note": "The chosen single gate is 'before the seal', which D4-07, R1:BA11V4-02 and R2:BA11V4-05 ask BA-11 to carry. Its before-candidate effect is stated explicitly. The BA-11 3.2 text and the BA-04 7.4 C-10 tension belong to the lead and BA-04."
+     },
+     {
+      "id": "R2:BA0809V4-05",
+      "status": "FIXED",
+      "where": "BA-09 V5 section 3.2 (option (a) with its own record type and synthetic run-bound values); section 8 W-1"
+     },
+     {
+      "id": "R1:BA11V4-01 (item c; BA-08 and BA-09 parts)",
+      "status": "FIXED",
+      "where": "BA-08 V5 section 16.3 K-10 (enumerated switch list dropped; BA-04's value cited as an informative pointer bound by CHARACTERIZATION_TUPLE), header 'REFERENCES (NOT EDGES)'; BA-09 V5 section 8 W-7 and header DEPENDS_ON note",
+      "note": "Items (a), (b), 1, 2 and 4 are for BA-11, BA-04 and BA-02b and are not assigned to me."
+     },
+     {
+      "id": "R1:BA11V4-02 (items a and d; BA-08 part)",
+      "status": "FIXED",
+      "where": "BA-08 V5 section 16.1: K-2 gate as above; the sentence 'AQ-V4-08..10 gate ... (and of BA-05 V4, BA-11 V4)' is withdrawn (K-6 CLOSED; no BA-11 version cited)",
+      "note": "Items (b), (c) and (e) concern BA-10, BA-06 and BA-02b."
+     },
+     {
+      "id": "R2:BA11V4-05",
+      "status": "NOT_APPLICABLE",
+      "where": "BA-11 section 3.2 (the lead's artifact)",
+      "note": "BA-08 V5 already states the census as a before-seal prerequisite, which is what this finding asks BA-11 to say."
+     },
+     {
+      "id": "R2:BA06V4-N06 (BA-08 part; outside my bundles, applied for consistency)",
+      "status": "FIXED",
+      "where": "BA-08 V5 section 5 last sentence, labelled as this artifact's reading and consistent with AR4-12 CQ-07 (b)"
+     }
+    ],
+    "summary": "I wrote BA-08 V5 and BA-09 V5 by hand from the V4 bytes. Each was generated by a scratch script that copies V4 and applies replacements, each asserted to match exactly once. The V4 files are unchanged (their SHA-256 values still match the registry). Both V5 files are UTF-8 with LF line ends and one final newline. Every table has consistent column counts, 'git diff --check' is clean, and neither file still contains 'pending AQ'. Each ends with a 'Delta V5 (decisions section 217)' table covering every finding and AR4 decision.\n\nBA-08 V5 (git blob 4b31d4ed…, SHA-256 96b45735…2eb1):\n- AR4-06: K-10 now covers the characterization build's users. The Q-I14 vehicles, the -CB qualification twins, EA2-DEFERRED-EVENTS and the dynamic-trace dry runs are users. EV-L-* are not users; they run on PRODUCT_BUILD.\n- AR4-06, continued: K-10 also sets one BUILD_BOUND profile per build, CHARACTERIZATION_TUPLE with its own build-dependent values, per-build qualification (the I-14 family only on the characterization build) and the recorded equivalence. The E-04, LOCK_MODE and HOST_DEFAULT_MAP pins apply to product-build runs only under that equivalence (sections 8, 9, HDM-5, K-4). CATALOG_FOLDER is per build.\n- AR4-17: the switch list is only an informative pointer to BA-04. References to BA-04 and BA-09 are declared mentions, not edges. BA-11 is cited as the registry, not by version.\n- AR4-07: HDM-CHAR-FXANNBLANK is added in HDM-3, HDM-8, K-4 and 16.x. It records the SYMBOL_RECORD_LAYER fields other than name and colour. CL-CLEAN-FXANNBLANK-FP drops K-6, and K-6 is now CLOSED.\n- AR4-08: ABORT-VERIFY compares every record member. E-08 compares the REFERENCE and CONTEXT_VARIABLE members at PS and PV.\n- AR4-09: PSTYLEMODE = 1 is bound in the fixtures, verified in the conformance record and captured per run. SL-R is UNKNOWN on named plot styles, and this is disclosed among the Owner Act 2 coverage limits.\n- AR4-10: the oracle predicts the stored override set.\n- AR4-14: HDM-4 allows exactly one informative run per varied key. HDM-5 marks those entries informative, and a governing lookup that resolves to one is UNKNOWN.\n- AR4-11 and AR4-12 CQ-07 (a) and (b) are applied in sections 5, 6 and 15.\n- All BA-08 minors are fixed. I added one fail-closed rule of my own in HDM-5: runs that supply the same entry must agree.\n- Section 16.4 now lists the rulings in place of the open questions.\n- I re-ran the script over the seven catalog-blob hashes: all unchanged.\n\nBA-09 V5 (git blob bd75c430…, SHA-256 f0d40c5b…560b):\n- AR4-16 in section 4: a dry run excludes the load events of an assembly or module named by an injection and records them as the stimulus. Every other load counts, and a warm-up revision never preloads an injected assembly.\n- AR4-02 'Dry-run branches': the dry run takes the source's declared branch through a switch. NC-E12A's conditional branch follows the recorded value. W-9 is CLOSED, and the residual is reduced accordingly.\n- D4-06 / BA0809V4-05: section 3.2 now takes the plans from the bound-SHA builders applied to the authored source design, not from mu_k. It adds a WARMUP_PLAN_SET record and states the synthetic run-bound values. W-1 stays before the candidate as offline work that needs its own authorization.\n- AR4-01: the Q-I14 dry runs are kept and are no longer DRAFT. EV-L-* and EV-L-COMPOSED are excluded from dry runs.\n- AR4-06 per build: one warm-up definition, with a per-build manifest layer (section 5).\n- AR4-17: W-7 cites the switch set only as an informative pointer.",
+    "counts": "Assigned confirmed findings: 12 in BA0809 (R1:D4-01..D4-07, R2:BA0809V4-01..05) plus 3 BA11X items naming BA-08/09 (R1:BA11V4-01 (c), R1:BA11V4-02 (a)/(d), R2:BA11V4-05). Result: 13 FIXED, 1 PARTIAL (R1:D4-07; its primary artifact is BA-11), 1 NOT_APPLICABLE (R2:BA11V4-05, BA-11 only). One extra item outside my bundles was fixed for consistency (R2:BA06V4-N06, BA-08 part). AR4 decisions applied: BA-08 has 13 (AR4-01, -02 pointer only, -03, -06, -07, -08, -09, -10, -11, -12, -14, -17, -20); BA-09 has 8 (AR4-01, -02, -06, -07, -12, -16, -17, -20). AQ-V4 references replaced with rulings: 7 in BA-08 (01, 03, 06, 07, 08, 09, 10) and 3 in BA-09 (01, 02, 06); zero 'pending AQ' left. Line diffs against V4: BA-08 130 insertions and 123 deletions; BA-09 78 insertions and 60 deletions.",
+    "decisions_applied": [
+     "AR4-01: EV-L-* are governing (E12-L) on PRODUCT_BUILD and are not users of the characterization build (BA-08 K-10). Q-I14-* are governing Q evidence on CHARACTERIZATION_BUILD with the AR3-01 set on the vehicle. Their WU-DRY are kept (BA-09 section 4). EV-L-COMPOSED is non-governing and excluded.",
+     "AR4-02: BA-09 section 4 'Dry-run branches': a switch records the RECORDED_NOT_ENFORCED value and performs the declared refusal or abort. The switch is named in PLAN_OR_INPUT and INJECTIONS. REACH and profiles are those of the source. W-9 is CLOSED. BA-08 K-10 only points to the switches.",
+     "AR4-03: BA-08 section 4 note on KS-SL4-NEG-DET: group AB; KS and SC-A only in CONTRACT_ASSIGNED_GROUPS.",
+     "AR4-06: BA-08 K-10 sets one profile per build, CHARACTERIZATION_TUPLE with its own values, per-build qualification (-CB twins; the I-14 family only on the characterization build; no transfer) and the recorded equivalence. The E04, LOCK_MODE and HOST_DEFAULT_MAP pins apply to PRODUCT_BUILD runs only under that equivalence (sections 8, 9, HDM-5, K-4). CATALOG_FOLDER is per build (sections 3, 7). BA-09 has one warm-up definition with a per-build manifest layer (sections 2, 5) and a residual bounded by the equivalence.",
+     "AR4-07: HDM-CHAR-FXANNBLANK is added in HDM-3, HDM-8, K-4, 16.1 and 16.4. CL-CLEAN-FXANNBLANK-FP drops K-6. BA-09 excludes all four HDM-CHAR-* from dry runs.",
+     "AR4-08: BA-08 section 6: ABORT-VERIFY compares every member exactly; E-08 compares the REFERENCE and CONTEXT_VARIABLE members at PS and PV.",
+     "AR4-09: PSTYLEMODE = 1 is bound in the fixtures, verified in the conformance record and captured per run. SL-R is UNKNOWN (O5) on named plot styles. The gap is disclosed among the Owner Act 2 limits (sections 6, 11 rule 1, HDM-7, 12.2, 12.3, 12.6).",
+     "AR4-10: BA-08 section 11 'Rule 1, automatic overrides': the stored override set, predicted under the storage behaviour the census and I-12 confirm before the BA-05 candidate; handle-valued overrides are UNKNOWN and disclosed; K-2.",
+     "AR4-11: the REFERENCE member is keyed by handle within the session (BA-08 section 6).",
+     "AR4-12: CQ-07 (a) is applied in BA-08 section 15 and CQ-07 (b) in section 5. The dynamic-trace dry runs are users of the characterization build under condition (1) (K-10, W-7).",
+     "AR4-14: HDM-4 CHAR_RUNS(s) = N_A + V(s) with exactly one informative run per varied key. HDM-5 marks those entries informative, and a governing lookup that resolves to one is UNKNOWN.",
+     "AR4-16: BA-09 section 4 excludes designed-injection loads from the measurement and records them as the stimulus; every other load counts; no warm-up revision preloads an injected assembly.",
+     "AR4-17: BA-08 K-10 and BA-09 W-7 cite the switch list only as an informative pointer. BA-11 is cited as the registry entry, not by version. References to BA-04 and BA-09 are declared mentions.",
+     "AR4-20: every confirmed minor of both passes that names BA-08 or BA-09 is applied."
+    ],
+    "cross_artifact_notes": [
+     "BA-04 V5, AR4-16: align the E11M expectation and SEALED_AT of WU-DRY-NC-E11M-PV, WU-DRY-NC-E11M-PC, WU-DRY-AB-AFTER-MUTATION and WU-DRY-U-5 with BA-09 V5 section 4. The canary load is excluded from the measurement and recorded as the stimulus; every other load counts.",
+     "BA-04 V5, AR4-02: the six dry runs (NC-E12A, NC-E04-R2, NC-E03-NOT-HELD, NC-E03-REACQUIRE, NC-S1-Y1, NC-S1-Y1-SILENT) need the branch switch named in PLAN_OR_INPUT and INJECTIONS, with REACH and profiles kept as the source's. Replace md 5.2 'Branches the dry runs do not take' and the LP-DRY sentence. BA-09 V5 reads NC-E12A's conditional branch (CER-WIT, AR4-16) as following the recorded E-12 phase-A value.",
+     "BA-04 V5, AR4-07 and AR4-14: add HDM-CHAR-FXANNBLANK; drop K-6 from CL-CLEAN-FXANNBLANK-FP; give HDM-CHAR REPETITION exactly one informative run per varied key; declare in each HDM-CHAR PLAN which keys are varied and how (BA-08 V5 HDM-4 points there). BA04V4-08 also asks for this declaration.",
+     "BA-04 V5 section 7.4 (C-10: K-5 'not catalog seal blockers'): per BA0809V4-04 and BA-08 V5 16.1, K-2 and K-5 are not direct BLOCKED_BY items but precede the catalog seal indirectly (BA-11 section 2 gating, AR3-25 order). K-2 also gates the catalog candidate through BA-05.",
+     "BA-11 V5 (lead): census = BA-05 before candidate and BA-08 before seal, with the effective before-candidate timing. BA-08 PREREQUISITES = K-3 and K-8 before candidate, K-2 and K-5 before seal; K-6 CLOSED. The HOST_DEFAULT_MAP source row adds HDM-CHAR-FXANNBLANK. BA-09 PREREQUISITES = W-1 only (W-9 CLOSED). DEPENDS_ON of BA-08 and BA-09 is unchanged. BA-08 and BA-09 now declare their BA-04 and BA-09 references as mentions, not edges.",
+     "BA-05 V5: BA-08 V5 now lists TEXTSTYLE, DIMSTYLE and PSTYLEMODE as CONTEXT_VARIABLE members. They fall under 'as the kind baseline lists it' and under the read path BA05V4-N06 fixes. The 2.3.5 CONTEXT row should state the AR4-08 split. BA-08 V5 cites BA-05 V5 sections 2.1, 2.3, 2.3.2, 2.3.5, 2.3.6, 3.1 and 5 assuming the V4 numbering is kept; no BA-05 V5 file existed when I finished.",
+     "BA-06 V5: BA-08 V5 section 5 labels the anonymous-block sentence as its reading, consistent with AR4-12 CQ-07 (b) (R2:BA06V4-N06). BA-06 may cite it without changing its inventory or trace plan.",
+     "BA-10 V5 and cost memo: CHAR_RUNS covers four HDM-CHAR scenarios as N_A + V(s), with V(s) the number of keys varied as declared in BA-04.",
+     "BA-07 V5: BA-09 V5 section 5 relies on a per-build manifest build layer (AR4-06 (2)).",
+     "Worktree state: docs/initiatives/I-52-ct21d-authority-contract-v2.5.md was already modified by someone else before I started. Untracked BA-05, BA-06 and BA-07 V5 evidence files from other implementers are also present. I touched none of these and ran no git write command."
+    ],
+    "open_questions": [
+     "WU-BOUNDARY and AR4-06 (3): per-build qualification names Q-* and E6-C* scenarios. WU-BOUNDARY is qualification-like (REACH NONE; BA-09 W-4) but is not named. Whether it runs on each build under test is left to BA-04 and the Architect; BA-09 V5 does not decide it.",
+     "HDM-5 agreement rule: when more than one run supplies the same (object class, attribute, key tuple) entry, the values must agree, otherwise the entry is UNKNOWN and no run is chosen. This is a fail-closed rule of BA-08 V5, suggested by the R2 recommendation on AQ-V4-07. No AR4 decision states it, so the Architect's delta review should confirm it."
+    ]
+   }
+  }
+ ],
+ "critics": [
+  {
+   "summary": "Read-only completeness critique of the V5 bytes against both review passes (v5b bundles) and decisions AR4-01..AR4-22 (section 217). Verified directly in the worktree, without relying on the implementer reports:\n(a) The published checks and generators reproduce. The BA-04 V5 check gives 69/69 PASS with output identical to the committed file, and its LF SHA-256 584e20eb... matches BA-02b section 0. The BA-06 V5 check output is identical, and all 28 section-14 hashes match. The BA-05 V5 vectors regenerate byte for byte (JSON 87473b0c..., generator 08cd41d1...). The BA-07 V5 JCS vector regenerates byte for byte (743302c7...; generator 9f9fd14f...), and its model reports the intended codes for T1..T17. The cost-memo V5 output appears verbatim in the memo md.\n(b) BA-04 V5 recomputation. All 423 SEALED_AT values recompute under the new field set. BUILD_EQUIVALENCE_RECORD appears on exactly the 48 PRODUCT_BUILD scenarios that consume a pin derived on the characterization build. Every rule that resolves from an I-14 record is on the CHARACTERIZATION_BUILD and names its qualification record, and the LP-INJ, LP-WIT and LP-PAR deltas are present. A1 is exercised only by EA1. Every N_strict label matches its GROUPS_SERVED classes. The 29 -CB twins exist, and the I-14 family runs on the characterization build only. NC-E12A is conditional by CER-WIT. The six branch dry runs name DRY_RUN_BRANCH_SWITCH and keep their source's REACH and profile. The six load-injection dry runs exclude the stimulus loads. The four HDM-CHAR-* carry 9 CONTROL_PLANE_SETUP key injections and exactly one informative run per key. KS-* and PR-CLOSURE-COMPLETENESS mark their contract-assigned groups 'evidence only, never PASS'. NC-S5-O6 carries the E-06 clause of AR4-04 and no E6-C4 blocker. NC-E12D and NC-WU-FOREIGN carry no E-04 pin.\n(c) BA-06 AR4-12 constraint, diffed V4 against V5 myself. Sections 3.1, 3.2 (C-01..C-203), 3.2.5, 3.3, 7, 10.2 and 11 are identical except the declared version and registry labels, the ruling pointer in limit (3) and the added limit (4). V5 also changes review records (3.2.4 labels and 3.2.6 column 5) and, outside the frozen set but inside the section 3 'Composition' inventory, two section 5 rows, the section 5 paragraph and the section 12 INVENTORY_REVIEW_RECORDS row. No operation class or row set changed.\n(d) The fixes in BA-05, BA-07, BA-08, BA-09, BA-02b and most of BA-10 are present and correct.\nThe remaining real gaps are listed below. The two MAJOR gaps are: open Architect questions in BA-04 that can change bytes, including the conflict between EVM_FROZEN and the characterization build under V2.1 27.5 that affects 111 governing runs; and the removal of A-1 from the clean runs, which contradicts V2.1 10.6 and BA-10 V5. Out of scope and not assessed: BA-11 V5 and V2.5 rev. 2 (lead), BA-02a V3 and BA-03 V4 (no byte change; git shows them unmodified). The HANDOFF reconciliation sentence of R1:BA11V4-05 and R2:BA11V4-08 is already present at d7c89fcb.",
+   "gaps": [
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-04-scenario-catalog-v5.md (+ .json)",
+     "ref": "header PREREQUISITES (md lines 18-22); 7.1 row C-3 (line 633) and the sentence after it; 8.2 Q-V5-BA04-1..3 (lines 689-691)",
+     "problem": "The header and section 7.1 say that no Architect open question remains, but section 8.2 records questions whose answers would change the catalog bytes. This is the same defect as R1:BA04V4-11, now for the V5 questions. (1) Q-V5-BA04-1 is a real contract conflict. The EVM_FROZEN pin is learned and validated on the PRODUCT_BUILD, and V2.1 27.5 ties a model to its tuple. Yet it is consumed by 111 governing CHARACTERIZATION_BUILD runs, whose CHARACTERIZATION_TUPLE has its own Plugin and harness DLL SHA-256. These runs include every E-12 phase-A and phase-C negative control (NC-E12A, NC-E12C, the E12C WR cells), EA2 and NC-S5-O6. AR4-06 (4) rules only the characterization-to-product direction. (2) Q-V5-BA04-3 is stale: BA-10 V5 section 2.2 (composition-check bullet) already defines CHAR_RUNS(s) = N_det + 1 for EV-L-COMPOSED. (3) The BA-08/09 implementer raised whether WU-BOUNDARY (the qualification of WARMUP_BOUNDARY_CONTROL, V2.2 PA-12; BA-09 W-4) must run on each build under test. Today it runs on the PRODUCT_BUILD only, and no artifact records the question.",
+     "evidence": "My recount: 111 scenarios with BUILD_UNDER_TEST = CHARACTERIZATION_BUILD, RUN_GOVERNANCE = GOVERNING and PIN_SLOTS containing EVM_FROZEN. None names BUILD_EQUIVALENCE_RECORD, because the check restricts it to the PRODUCT_BUILD. md line 20: 'no Architect open question remains (section 8)'; line 633: '**no open question remains**'. md 8.2 Q-V5-BA04-3: 'BA-10 names no CHAR_RUNS case for a non-governing composition check'. BA-10 V5 line 113: 'CHAR_RUNS(s) = N_det + 1 for the composition check EV-L-COMPOSED ... This rule answers the question Q-V5-BA04-3'. The WU-BOUNDARY JSON has BUILD_UNDER_TEST PRODUCT_BUILD and no -CB twin.",
+     "required_fix": "Close Q-V5-BA04-3 with a pointer to BA-10 V5 section 2.2. List Q-V5-BA04-1, Q-V5-BA04-2 and the WU-BOUNDARY per-build question as before-candidate Architect items (they can change RUN_PREREQUISITES and SEALED_AT of 111 scenarios, or add twins) in the header PREREQUISITES and in 7.1 C-3 (AR3-26), and remove 'no open question remains' from both. Record the WU-BOUNDARY question in 8.2 as Q-V5-BA04-4.",
+     "severity": "MAJOR"
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-04-scenario-catalog-v5.json/.md (with docs/initiatives/I-52-ct21d-baseline-ba-10-parameter-sheet-v5.md)",
+     "ref": "BA-04 md section 1 row CONTROLS_EXERCISED ('A-1 is exercised only by EA1-READONLY-OPENS'); section 3 CER-A2; JSON CONTROLS_EXERCISED of the CL-CLEAN-* sample and EA2; BA-10 V5 section 2.2 PARAM-03 bullet (line 137); BA-02b V5 A1 row",
+     "problem": "R1:BA04V4-09 was fixed by the first option of the required fix: A1 was removed from every mirror run, the clean runs of the PARAM-03 sample included. The contract requires the baseline runs without writers to evaluate A-1, and BA-10 V5 still states that they do. The two sibling artifacts contradict each other, and the catalog drops an evaluation that the contract mandates. No ruling authorizes it: AR3-09 only gives EA1 its A-1 result by measurement.",
+     "evidence": "V2.1 line 570: 'Baseline runs without any writer ... measure the false terminal failure rate ... and evaluate **A-1** and **A-2** (section 14.7)'. BA-10 V5 line 137: '**A-1 and A-2** are evaluated on this clean sample, as V2.1 10.6 states'. BA-04 V5: the only scenario with A1 in CONTROLS_EXERCISED is EA1-READONLY-OPENS (my scan). BA-02b V5 A1 row: 'a mirror run does not evaluate A-1 (BA-04 V5, R1:BA04V4-09)'.",
+     "required_fix": "Use the second option of R1:BA04V4-09. Keep A1 in CONTROLS_EXERCISED of the clean sample and EA2, and make it conditional in CER-A2: no WRITE_CLASS event on a protected object in W-scan => A-1 PASS; a delivered W-scan event => A-1 UNKNOWN (unattributable, V2.1 14). Then recompute GROUPS_SERVED and SEALED_AT, the BA-02b A1 row and the memo. Alternatively, obtain an Architect reading that V2.1 10.6 is met by EA1 alone, and correct the BA-10 V5 PARAM-03 bullet to match. Either way, BA-04, BA-10 and BA-02b must agree.",
+     "severity": "MAJOR"
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-06-evm-preparation-v5.md",
+     "ref": "section 16 rows R1:BA06V4-N01 and R2:BA06V4-N01; section 17 rows R1:BA06V4-N01 and R2:BA06V4-N01; 3.2.2 DC-41 (line 396) and DC-18 (line 373)",
+     "problem": "Both findings are reported NOT_ADDRESSED on the ground that every available fix changes inventory content. That is false for part of each fix. A reword of the DC-41 disposition (the alternative that R1:BA06V4-N01 itself offers) and the correction of the DC-18 disposition text (the first part of R2:BA06V4-N01) change only section 3.2.2. BA-06's own section 3 'Composition' classes 3.2.2 as a review record, not inventory. AR4-20 orders every confirmed minor applied, and AR4-12 (2) sends BA-06's minors to this candidate version. Only the X-05 row of R2:BA06V4-N01 is real inventory content.",
+     "evidence": "Line 61: 'The difference logs (3.2.2, 3.2.3), the ambiguity list (3.2.4), the comparator's proposed texts and the contract questions (3.2.6) are records of the review, not inventory rows.' Line 898 (section 17): 'both required fixes (a marked amendment of the compiled row C-72, or a new DC-41 disposition) change inventory content'. V5 itself edits review records: AMB-08, AMB-09 and AMB-23 labels in 3.2.4, and a new column 5 in 3.2.6 (BA06-C14). DC-41 and DC-18 are byte-identical to V4 (my diff).",
+     "required_fix": "Reword the DC-41 V4 disposition to say that C-72 keeps its compiled wording and is read per AMB-09 (captured once, by the orchestrator, in PREPARE-R at PR, inside the command after PL). Correct the DC-18 disposition: V2.1 10.1 and 10.2 require the top-level reference to be read and compared in pass 1 and pass 2 against the ORACLE_SPEC value, and the X-05 row is withheld under AR4-12 (2) pending the Architect. Declare both as review-record changes in BA06-C13/C14, re-run the checks, re-bind section 14, and set R1:BA06V4-N01 = FIXED and R2:BA06V4-N01 = PARTIAL (X-05 withheld).",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-06-evm-preparation-v5.md (+ docs/automation/evidence/I-52-ct21d-ba06-v5-checks.py)",
+     "ref": "section 13 row 'design-time inventory' (line 798); section 17 row 'STATIC_REVIEWED with the dynamic-trace plan' (line 909); BA06-C14 statement",
+     "problem": "The bytes tell the Architect's exact delta check that the inventory is 'unchanged from V4' and that the section 5 and section 12 edits are 'outside' the inventory. The artifact's own Composition paragraph lists the residuals (section 5) and the EVM schema (section 12) as inventory components. V5 changed two section 5 rows, the section 5 paragraph (AR4-15, AR4-07) and the section 12 INVENTORY_REVIEW_RECORDS row (R1:BA06V4-N02). AR4-12 (2) makes carry-over depend on 'sin cambio de contenido' of the inventory, so the bytes misframe the check. The implementer raised this only in the report.",
+     "evidence": "Line 61: 'The design-time inventory is: ... the residuals (section 5); and the EVM schema (section 12)'. Line 798: '**unchanged from V4** (the content approved by AR4-12)'. BA06-C14 output: 'outside the frozen sections, the rulings change only: ... in section 5, the host-defaults row (AR4-07) and the failure-path row (AR4-15) ... in section 12, the row INVENTORY_REVIEW_RECORDS'. My diff confirms these content edits.",
+     "required_fix": "In section 13, section 17 and the BA06-C13/C14 statements, say that the inventory components section 5 (two rows and the paragraph: AR4-15, AR4-07) and section 12 (the INVENTORY_REVIEW_RECORDS row: R1:BA06V4-N02, R2:BA06V4-N04) changed in content, that no operation class, row set or 'affects' cell changed, and that carry-over or a class re-review is for the Architect to decide under AR4-12 (2). Remove 'unchanged from V4' for the inventory as a whole, then re-run the checks and re-bind section 14.",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-06-evm-preparation-v5.md",
+     "ref": "section 9 bullet 'REVIEWED before the first LEARNING run' (line 724), mechanism (2); section 12 INVENTORY_REVIEW_RECORDS",
+     "problem": "The fix of R1:BA06V4-N02 and R2:BA06V4-N04 shows the V2.4 order through 'REVIEW_RECORD_ADDED has a lower custody index than the IN_USE entry of the first learning run'. BA-07 V5 appends IN_USE after the run ends, so this shows only that the review was custodied before the use was recorded, not before the first LEARNING run. The record that is fixed at run start in BA-07 V5 is the run-start anchor.",
+     "evidence": "BA-07 V5 section 7 (line 310): '**IN_USE** is recorded at each use (V2.1 29.3), **after the run ends**, once the run's canonical tuple record exists'. BA-07 V5 6.1: runStartAnchor is fixed when the BUILD_BOUND fields are sampled; U1 and U3 compare against its h.",
+     "required_fix": "Restate mechanism (2) as: the index of the REVIEW_RECORD_ADDED entry of the REVIEWED record is at most the h of the runStartAnchor of the first learning run's IN_USE entry (BA-07 V5 6.1 and section 7, U1). Keep mechanism (1). Optionally cross-note that BA-07 can check this order in step 5.",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-04-scenario-catalog-v5.json/.md",
+     "ref": "LOG_PROFILES LP-LEARN (md line 221) and LP-COMPOSE; RUN_PREREQUISITES and RUN_PREREQUISITE_VOCABULARY of the 16 EV-L-OC-*",
+     "problem": "BA-06 V5 section 9 (a DEPENDS_ON entry of BA-04) makes the learning session records carry the V2.4 order: every learning session record cites the SHA-256 of the REVIEWED record, and a run without it cannot enter the corpus. BA-04 V5 declares no such record or prerequisite. The V2.4 requirement survives only in NOTE, which is not a SEALED_AT field.",
+     "evidence": "LP-LEARN = 'RUN_START x1; TUPLE x1 ...; WARMUP x1; LOCK x1 ...; MICRO_OPERATION x1; E12_EVENT_RAW x1 per delivered event; RECORDED_CONTROL x1 per control ...; CLEANUP x1; SEAL x1' (no reference to REVIEWED). The RUN_PREREQUISITES of every EV-L-OC-* are ['BUILD_EQUIVALENCE_RECORD'] only. RUN_PREREQUISITE_VOCABULARY has no REVIEWED entry. BA-06 V5 line 724: '(1) every learning session record cites the SHA-256 of the REVIEWED record'.",
+     "required_fix": "Add 'REVIEWED_REF x1 (the SHA-256 of the REVIEWED inventory record, V2.4; BA-06 V5 section 9)' to LP-LEARN, which LP-COMPOSE inherits. Add a RUN_PREREQUISITE_VOCABULARY entry for the REVIEWED record in BA-07 custody and name it in the RUN_PREREQUISITES of the 16 EV-L-OC-*. Then recompute SEALED_AT and re-run the check.",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-04-scenario-catalog-v5.json",
+     "ref": "Q-FPSPEC-VECTORS and Q-FPSPEC-VECTORS-CB: EXPECTED_CONTROL_RESULTS 'instrument I-12' and EXPECTED_PROCEDURAL_RESULT",
+     "problem": "R2:BA05V4-N01 required the per-predicate slot-instance rule to appear in the BA-04 Q-FPSPEC-VECTORS text as well as in BA-05. BA-04 V5 still states the old reading, 'exact arithmetic'. BA-05 V5 3.3.1 now evaluates ANGLE_DIFF_LE and NORMAL_ANGLE_LE as certified enclosures, not in exact arithmetic, and adds the rule that a straddling enclosure is INVALID. The BA-05 implementer's cross-note asked for this alignment, and it was not made.",
+     "evidence": "BA-04 V5: 'a slot-unit instance that fails the exact-arithmetic check of BA-05 V5 3.3.1 is INVALID'; EXPECTED_PROCEDURAL_RESULT: 'binary64 instances generated, checked in exact arithmetic and hashed'. BA-05 V5 line 1148 and JSON semanticSlotInstanceRule: 'ABS_DIFF_LE: ... exactly (rational arithmetic); ANGLE_DIFF_LE: ... certified enclosure with exact pi; NORMAL_ANGLE_LE: ... certified enclosure ... whose enclosure straddles the slot, is INVALID'. BA-05 V5 section 7 row R2:BA05V4-N01: 'BA-04 V5 ... must carry the same rule'.",
+     "required_fix": "In both scenarios, replace 'the exact-arithmetic check' and 'checked in exact arithmetic' with the semanticSlotInstanceRule wording of BA-05 V5 3.3.1: the per-predicate realized quantity (exact rational difference; wrapped difference under NORM_ANGLE by a certified enclosure with exact pi; normal angle by a certified enclosure), and an instance whose check fails or whose enclosure straddles the slot is INVALID, never PASS. Then recompute SEALED_AT and re-run the check.",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-04-scenario-catalog-v5.json/.md",
+     "ref": "md section 1 row CONTROLS_EXERCISED (line 47); DEFAULTS.UNLISTED_CONTROLS; EXPECTED_CONTROL_RESULTS and CONTROLS_EXERCISED of the 16 EV-L-OC-*",
+     "problem": "AR4-01 enforces E-03 in the governing learning runs. BA-04 V5 keeps CONTROLS_EXERCISED = [] and parks the expectation under a non-registry key, 'E-03 (enforced)'. By the catalog's own schema, E03 is a control the run evaluates and does not list under its registry key, so it is expected PASS by UNLISTED_CONTROLS and must therefore be in CONTROLS_EXERCISED. Under the AR2-08 derivation, EV-L-OC-* would then serve LK (class A): the latent case that both passes of R1/R2:BA10-V4-01 predicted. Because of the key naming, the mechanical check cannot see the inconsistency.",
+     "evidence": "md line 47: 'CONTROLS_EXERCISED | the registry controls ... whose results the scenario expects ... Every other registry key of EXPECTED_CONTROL_RESULTS carries NOT_DECLARED or ... RECORDED_NOT_ENFORCED'. UNLISTED_CONTROLS: 'every control the run evaluates and EXPECTED_CONTROL_RESULTS does not list is expected PASS'. EV-L-OC-BT-OPEN 'E-03 (enforced)': 'a FAIL refuses the run ... and counts toward the LK group verdict ...; the run is not LK coverage (E-03 is not in CONTROLS_EXERCISED)'. LP-LEARN holds 'LOCK x1 (... E-03 enforced)'. No ruling exempts enforced controls from CONTROLS_EXERCISED.",
+     "required_fix": "Either (a) put E03, and every other enforced control a micro-scenario evaluates, into CONTROLS_EXERCISED of the 16 EV-L-OC-*, re-derive GROUPS_SERVED and REPETITION (BA-10 V5 LEARN: max(N_strict, N_det + 1)), and recompute SEALED_AT, BA-02b and the memo; or (b) amend md section 1 (CONTROLS_EXERCISED and UNLISTED_CONTROLS) with a normative, authority-cited rule that controls enforced in a learning micro-scenario are not exercised, and use the registry key E03 with that value, checked mechanically.",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-04-scenario-catalog-v5.json (with BA-06 V5 section 9)",
+     "ref": "EV-L-COMPOSED EXPECTED_PRODUCT_OUTCOME; BA-06 V5 section 9 bullet on EV-L-COMPOSED (line 719)",
+     "problem": "AR4-01 takes EV-L-COMPOSED out of the learning micro-scenarios, but its sealed expected outcome still calls it 'a learning micro-scenario'. BA-06 V5 section 9 (new V5 text, outside the frozen sections) describes it as 'a full mirror of FX-1F'. BA-04 V5 declares it as a composed plan driven by the micro-scenario driver, with REACH LEARN and no mirror product run.",
+     "evidence": "EXPECTED_PRODUCT_OUTCOME: 'NONE (a learning micro-scenario: no mirror product run; AR4-01)'. PLAN: 'a full composed plan of FX-1F ... driven by the micro-scenario driver'; REACH 'LEARN'. BA-06 V5 line 719: 'EV-L-COMPOSED, which checks the composition rule f(plan) of section 11 on a full mirror of FX-1F (3.3)'.",
+     "required_fix": "Set the BA-04 EXPECTED_PRODUCT_OUTCOME to 'NONE (a non-governing composition check driven by the micro-scenario driver: no mirror product run; AR4-01)' and recompute SEALED_AT. Align the BA-06 section 9 wording with the BA-04 plan (section 3.3 stays frozen).",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-04-scenario-catalog-v5.md (and docs/initiatives/I-52-ct21d-baseline-ba-07-manifest-custody-v5.md)",
+     "ref": "BA-04 1.1 'Build equivalence' and RUN_PREREQUISITE_VOCABULARY BUILD_EQUIVALENCE_RECORD; BA-07 V5 section 2 table and 5.2 record kinds",
+     "problem": "AR4-06 (4) requires the equivalence to be 'se verifica y registra', and 48 governing PRODUCT_BUILD runs name the record as a prerequisite. No artifact gives the record a location, a content schema or custody, and no run cites its hash. It is not a pin, not a tuple field, not a BA-07 record kind and not a review record, so it can be created or replaced without trace. The BA-07 implementer raised this only as a cross-note.",
+     "evidence": "BA-04 md line 67: 'It is not a pin, not a tuple field and not a seal blocker of this catalog'. BA-07 V5 section 2 lists locations for pins, ratification, designation and carry-over records, V24-N2 review records and manifests only. The 5.2 decisions are CANDIDATE_FOR_SEALING, RATIFIED, DESIGNATION and MANIFEST_CARRY_OVER.",
+     "required_fix": "Define, in BA-04 section 1.1 or in BA-07 section 2 and 5.2: the record's location; its content (both build identities with the Plugin and harness DLL SHA-256, the method, either the byte-identical product-assembly list with hashes or the reviewed diff with its hash, and the reviewer); and its custody (for example REVIEW_RECORD_ADDED with an index at most the h of the runStartAnchor of the first PRODUCT_BUILD run that consumes a pin derived on the characterization build). Require each such run to cite its hash in its run log or tuple record.",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-10-parameter-sheet-v5.md",
+     "ref": "section 2.2 CHAR_RUNS bullets 'Intent' (line 114) and 'Fail-closed (AR4-14 (b)(i))' (line 115)",
+     "problem": "AR4-14 (b)(i) is conditioned on BA-10 declaring that a missed behaviour fails closed. BA-10 V5 claims this for every characterized behaviour, and its intent explicitly covers 'a lock property or conflict outcome'. A conflict outcome (P-L5, P-L6) or a P-L7 effect missed in the LK-* runs is never re-observed by a governing run: E-03 re-reads only the held lock and its mode (P-L2, P-L3). Such a miss can therefore stand behind a governing PASS. The implementer raised this only in the report; the bytes overclaim.",
+     "evidence": "V2.1 3.4 lines 341-345: P-L5 'another execution context cannot write while the lock is held' is measured only by the adversarial probe of LK-*-CONFLICT; the selection rule applies by review. BA-10 V5 line 115: 'A missed behaviour therefore costs a rejection (FAIL or UNKNOWN) of a legitimate governing run, never a PASS that the characterization did not support'.",
+     "required_fix": "Qualify the fail-closed bullet: it holds for E-04 membership, for the E-03 read-back properties P-L2 and P-L3, and for S-1..S-3 lookups. A missed P-L5, P-L6 or P-L7 behaviour rests on the LOCK_MODE selection review (V2.1 3.4) and is not re-observed by governing runs. Disclose this in Q-O1, or restrict the intent wording and ask the Architect to confirm under AR4-14 (b)(i).",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-08-selective-kind-baseline-v5.md",
+     "ref": "section 10 paragraph 'Slot-unit vectors of BA-05 V5 (AR3-17)' (line 220)",
+     "problem": "BA-08 depends on BA-05, but its section 10 still lists four slot-unit vectors. BA-05 V5 has six, because SV-14 and SV-15 were added by R1:BA05V4-06, and all six are instantiated from BA-08 section 10's sealed values.",
+     "evidence": "BA-08 V5 line 220: 'its semantic vectors SV-06, SV-07, SV-10 and SV-11 are written in slot units'. BA-05 V5 lines 1123 and 1148: 'SV-06, SV-07, SV-10, SV-11, SV-14 and SV-15 carry no tolerance value'.",
+     "required_fix": "List SV-06, SV-07, SV-10, SV-11, SV-14 and SV-15, or cite 'the slot-unit vectors of BA-05 section 3.3' without an enumeration.",
+     "severity": "MINOR"
+    }
+   ]
+  },
+  {
+   "summary": "I found 3 MAJOR and 8 MINOR problems. None of them breaks the limits.\n\nThe artifacts differ in four places:\n- **Dimension style (BA-04 against BA-08):** BA-04 still treats a dimension's style as a host-default attribute, but BA-08 V5 now excludes it.\n- **Learning driver (BA-04):** it is declared only for the learning and validation runs, not for the rest of the product build.\n- **REVIEWED-before-learning order (BA-06):** BA-06 checks it against IN_USE, which BA-07 V5 now writes after the run ends. BA-04 also lacks the REVIEWED citation that BA-06 requires.\n- **Pin rules (BA-04):** BA-04 restates BA-07's pin rules more weakly.\n\n**Limits: all met.**\n- git status shows only the 19 new V5 files. The one tracked change is the lead's V2.5 revision 2, limited to the words of AR4-18; section 1 is untouched.\n- No V1–V4 file, BA-02a V3, BA-03 V4, decisions, HANDOFF, src/ or tests changed.\n- No artifact states its own candidate or seal hash.\n- No invented values: every parameter is UNSET, and EVIDENCE_REPETITION = 1 is labelled as the implementer's draft proposal.\n- No FAIL or UNKNOWN was turned into PASS; the non-detection branches of NC-E12A and NC-S5-O6 follow AR4-16 and AR4-04.\n\n**Checks re-run (read-only, into the scratchpad):**\n- ba04-v5-checks: 69/69 pass.\n- ba06-v5-checks: BA06-C1..C17 pass.\n- The BA-07 vector generator, the cost memo script and the fpspec vector generator all ran.\n- All five outputs match the published files byte for byte (LF). The memo output equals memo section 4 exactly.\n- Every evidence hash a V5 artifact states recomputes:\n  - the BA-02b check hash;\n  - the BA-05 generator and JSON, and all 62 EV digests;\n  - the 28 files of BA-06 section 14 and the approved V4 SHA;\n  - the BA-07 vector files, and the example entry hash (834 bytes, 20716bfb…);\n  - the seven BA-08 catalog blobs at 3375aadb;\n  - the eight memo input hashes;\n  - all V4 blob ids.\n\n**Checked and consistent:**\n- **DEPENDS_ON:** all eight headers match COORD5 section 3.\n- **Pending questions:** no 'pending AQ-V4' remains. The BA-06 mentions sit in kept V4 question cells or the verbatim Delta V4 table, and are marked ruled.\n- **Qualification twins:** 29 twins, each identical to its product scenario except id, build, tuple, note and purpose. The I-14 family runs only on the characterization build.\n- **Build assignment:** checked mechanically; no scenario is on the wrong build.\n- **BUILD_EQUIVALENCE_RECORD:** named by all 48 product-build scenarios that use a pin derived on the characterization build, and by nothing else.\n- **EV-L-\\*:** fields as ruled; the 16 EV-L-OC-\\* ids are the same in BA-04 and BA-06.\n- **EV-L-COMPOSED:** non-governing, outside the corpus, CHAR_RUNS = N_det + 1, consistent across BA-04, BA-06 and BA-10.\n- **AR3-01 mode:** exactly 175 scenarios (161 WU-DRY, 4 Q-I14 vehicles, 4 LK, 4 HDM-CHAR, 2 E4-LEARN).\n- **Dry runs:** switches for the six dry-run branches and canary-load exclusion for the six load sources, matching BA-09.\n- **Individual scenarios:** KS-\\*, NC-S5-O6, NC-E12A, EA2 and HDM-CHAR-FXANNBLANK follow the rulings.\n- **Shared rules:** HDM repetition, N_strict, the E-08 domain (BA-05 and BA-08), PSTYLEMODE, dimension overrides and the GROUPS_SERVED definition agree across artifacts.\n\nRemaining open items that are real and already recorded:\n- **Q-V5-BA04-1:** 111 governing characterization-build runs consume the product-build EVM_FROZEN.\n- **Q-V5-BA04-2:** whether PR-CLOSURE-COMPLETENESS needs a characterization-build twin.\n- **WU-BOUNDARY:** whether it runs on each build.\n- **BA-07 carry-over:** BA-07 V5 reads AR4-13's carry-over timing more strictly than the ruling.\n- **HDM-5:** BA-08's own agreement rule, not stated by any AR4 decision.\n- **BA-06:** three withheld minors.\n\nMost fixes need the scratchpad generator re-run: new SEALED_AT values, the published check, BA-02b and the cost memo (it cites the catalog hash). BA-11 V5 must use the new hashes.",
+   "gaps": [
+    {
+     "artifact": "BA-04 V5 (JSON) vs BA-08 V5",
+     "ref": "HDM-CHAR-FXDIM EXPECTED_CONTROL_RESULTS['HOST_DEFAULT_MAP characterization']",
+     "problem": "The scenario says it records every HDM-1 in-scope attribute of 'RotatedDimension (and the dimension style when no named style is used)'. BA-08 V5 fixed R1:D4-03 / R2:BA0809V4-01 by moving the dimension style of a RotatedDimension to the Excluded list of HDM-1, so the style is a writer-assigned attribute (section 11 rule 5 and paragraph 'Rule 1, dimension style'). This is the V4 HDM-1 wording carried over unchanged into a sealed-candidate expectation. It brings back the attribute/key circularity with the DIMSTYLE key that the fix removed.",
+     "evidence": "V5 JSON: '...(not only the class named for this fixture: RotatedDimension (and the dimension style when no named style is used)), read after PC...'. The same text is in the V4 JSON, and the V4 BA-08 HDM-1 listed the style as in scope. BA-08 V5 HDM-1: 'Excluded: ... the dimension style of a RotatedDimension, which the writer assigns (the named style, or else the current DIMSTYLE ...; D4-03)'. BA-08 V5 section 11 rule 5: 'the dimension style of a created dimension are not in its scope'.",
+     "required_fix": "In scratchpad gen_catalog_v5.py, change the FX-DIM class text to 'RotatedDimension (Color, Linetype, LinetypeScale, LineWeight, Transparency; its dimension style is writer-assigned and excluded: BA-08 V5 section 11.2 HDM-1 and section 11, paragraph \"Rule 1, dimension style\")'. Regenerate the HDM-CHAR-FXDIM SEALED_AT and the section 5.1 row, then re-run the ba04 check, BA-02b and the cost memo.",
+     "severity": "MAJOR"
+    },
+    {
+     "artifact": "BA-04 V5 (and BA-06 V5 section 9 / 10.1, BA-08 V5 K-10 wording)",
+     "ref": "BUILD_PROFILES.PRODUCT_BUILD / FULL_BASELINE_TUPLE vs TUPLE_REQUIREMENTS of EV-L-* and EV-V-*",
+     "problem": "Only the EV-L-\\* tuples and the three EV-V-\\* tuples declare the learning micro-scenario driver DLL ('present and inert'). The PRODUCT_BUILD profile (FULL_BASELINE_TUPLE) used by the other 77 product-build scenarios does not mention it. Twenty of those scenarios (CL-CLEAN-\\*, PW-CLONE-BASE, ...) consume EVM_FROZEN and adjudicate E-12 against it.\n\nIf the driver is absent from those runs, there are two product-build BUILD_BOUND profiles and two E-10 exact sets. That breaks AR4-06 (1) (one profile per build) and BA-07 V5 section 3 (one manifest per build under test). If they are read as one profile, the EVM learned with the driver loaded is applied under a different tuple (V2.1 27.5), the problem AR4-01 ruled moot only for validation.",
+     "evidence": "EV-V-FX-2F TUPLE_REQUIREMENTS ends '...; the learning micro-scenario driver DLL of EV-L-* is present and inert (AR4-01)'. CL-CLEAN-FX1F-F0 and 19 other product-build EVM_FROZEN consumers have FULL_BASELINE_TUPLE with no driver clause (checked by script). BA-04 section 4 lists 'learning tuple (EV-L-*)' as a separate tuple row. BA-06 V5 section 10.1 and BA-08 V5 K-10 both say 'present and inert in the EV-V-* validation' only.",
+     "required_fix": "State in BUILD_PROFILES.PRODUCT_BUILD and the FULL_BASELINE_TUPLE row that the learning micro-scenario driver is a declared harness DLL of the one PRODUCT_BUILD profile: present in every PRODUCT_BUILD run, part of its E-10 and WUM sets, and inert outside EV-L-\\*. Use that same text in the EV-L-\\* and EV-V-\\* tuples. Change BA-06 V5 section 9 bullet 2 and section 10.1, and BA-08 V5 K-10 'Not users', to 'present in every PRODUCT_BUILD run and inert outside EV-L-\\*'. Regenerate SEALED_AT, then re-run the ba04 check, BA-02b and the memo.",
+     "severity": "MAJOR"
+    },
+    {
+     "artifact": "BA-06 V5",
+     "ref": "section 9, last bullet item (2); section 12 row INVENTORY_REVIEW_RECORDS",
+     "problem": "The fix for R1:BA06V4-N02 / R2:BA06V4-N04 shows 'REVIEWED before the first LEARNING run' by requiring the REVIEW_RECORD_ADDED index to be lower than the IN_USE index of the first learning run. BA-07 V5 section 7 (R2:BA07-V4-03) now appends IN_USE after the run ends. A REVIEWED record put into custody during the first learning run would therefore pass this check. The order the finding asked for is still not shown.",
+     "evidence": "BA-06 V5 section 9: 'the REVIEW_RECORD_ADDED entry ... has a lower custody index than the IN_USE entry of the first learning run'. BA-07 V5 section 7: 'IN_USE is recorded at each use (V2.1 29.3), after the run ends ... What binds the run to its inputs is fixed at run start ... the run-start anchor ... the IN_USE entry carries it (runStartAnchor)'. BA-07 V5 U3 binds pins to the h of the run-start anchor.",
+     "required_fix": "Reword item (2): the REVIEW_RECORD_ADDED entry has an index at most the h of the run-start anchor (IN_USE.runStartAnchor) of every EV-L-OC-\\* run, so REVIEWED was anchored in custody before the run started (BA-07 V5 section 7 U1..U3). Point the section 12 row to that condition. BA-07 V5 may add it to the section 6.2 step 5 checks, and the BA-07 cross note should say 'run-start anchor' in place of 'IN_USE index'.",
+     "severity": "MAJOR"
+    },
+    {
+     "artifact": "BA-04 V5",
+     "ref": "LOG_PROFILES.LP-LEARN; RUN_PREREQUISITES and RUN_PREREQUISITE_VOCABULARY of the 16 EV-L-OC-*",
+     "problem": "BA-06 V5 section 9 (a DEPENDS_ON of BA-04) requires every learning session record to cite the SHA-256 of the REVIEWED record. A learning run without that citation 'does not meet V2.4 and cannot enter the learning corpus'. The BA-04 expected log record set for EV-L-OC-\\* has no such record, and RUN_PREREQUISITES names no REVIEWED record. The requirement appears only in the NOTE and AUTHORITY_SOURCE text, which are not part of SEALED_AT.",
+     "evidence": "LP-LEARN = 'RUN_START x1; TUPLE x1; WARMUP x1; LOCK x1; MICRO_OPERATION x1; E12_EVENT_RAW ...; RECORDED_CONTROL ...; CLEANUP x1; SEAL x1'. EV-L-OC-TM RUN_PREREQUISITES = ['BUILD_EQUIVALENCE_RECORD']. BA-06 V5 section 9: '(1) every learning session record cites the SHA-256 of the REVIEWED record'.",
+     "required_fix": "Add 'REVIEWED_REF x1 (the SHA-256 of the BA-06 REVIEWED record in BA-07 custody, anchored by the run-start anchor; BA-06 V5 section 9)' to LP-LEARN. Add a RUN_PREREQUISITE REVIEWED_RECORD (vocabulary: the REVIEWED inventory record of V2.4 in BA-07 custody before the run starts) to the 16 EV-L-OC-\\*. Regenerate SEALED_AT, then re-run the check, BA-02b and the memo.",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "BA-04 V5",
+     "ref": "md section 2.1, bullets 1-2 (pin mechanism)",
+     "problem": "BA-04 restates the pin-usability rule more weakly than BA-07 V5, which it names as a normative dependency. BA-04 says a pin's PIN_RECORDED must be covered by 'an anchor recorded before that run's IN_USE entry'; BA-07 V5 U3 requires the run-start anchor, the baselineVersion in force at u, and no SUPERSEDED or REVOKED entry before u. BA-04's carry-over says 'before the first governing use'; BA-07 V5 5.1 rule 4 and section 8 require the carry-over block before the first anchor of v<k+1>, and REVOKED (SUPERSEDED_BY_RULING) for every live pin not carried over.",
+     "evidence": "BA-04 V5 section 2.1: 'a pin is usable by a governing run only when its PIN_RECORDED entry is covered by an ANCHOR_RECORDED anchor recorded before that run's IN_USE entry ... before the first governing use (AR4-13)'. BA-07 V5 section 7 U1-U4 and 5.1 rules 1-4; section 8 'Unusability from BASELINE_APPROVED(v<k+1>) on'.",
+     "required_fix": "Replace bullets 1-2 with a pointer: 'pin seal, usability and carry-over follow BA-07 V5 sections 5.1 (rules 1-4), 7 (U1-U4) and 8', or restate those rules exactly. Only the md changes (the JSON is unaffected). BA-02b cites no md hash, but the ba04 check output hashes the md, so re-run the check.",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "BA-04 V5",
+     "ref": "header PREREQUISITES; section 7.1 C-3 and closing sentence; section 8.2 Q-V5-BA04-1..3",
+     "problem": "The header and section 7.1 say 'no Architect open question remains' and 'no other Architect item is open for this catalog'. Section 8.2, however, records two new questions whose answers can change sealed bytes. Q-V5-BA04-1 would add a RUN_PREREQUISITE to 111 governing characterization-build runs if the equivalence record covers EVM_FROZEN. Q-V5-BA04-2 would add a PR-CLOSURE-COMPLETENESS-CB twin. Q-V5-BA04-3 says 'BA-10 names no CHAR_RUNS case for a non-governing composition check', which is false against BA-10 V5.",
+     "evidence": "BA-04 V5 line 20: 'no Architect open question remains (section 8)'. Line 635: 'no other Architect item is open for this catalog'. Section 8.2 Q-V5-BA04-3 text. BA-10 V5 section 2.2: 'CHAR_RUNS(s) = N_det + 1 for the composition check EV-L-COMPOSED ... This rule answers the question Q-V5-BA04-3'. BA-10 V5 section 6 row Q-V5-BA04-3: 'answered by this sheet'.",
+     "required_fix": "Close Q-V5-BA04-3 with a pointer to BA-10 V5 section 2.2 (N_det + 1, consistent with the existing label). Reword the header, C-3 and the 7.1 closing sentence to: 'no AQ-V4 question remains; the new questions Q-V5-BA04-1 and Q-V5-BA04-2 (section 8.2) go with the Architect's delta review (C-3) and may change scenario bytes before the candidate'. Re-run the check.",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "BA-04 V5",
+     "ref": "md section 8.1, row AQ-V4-11",
+     "problem": "The row lists the AR4-12 deferrals as 'CQ-03 (iii), CQ-04 and part of CQ-05'. It leaves out that AR4-12 also deferred the rest of CQ-07 to EXEC-3, so CQ-07 reads as fully ruled.",
+     "evidence": "AR4-12: 'CQ-07: se fija (a) ... (b) ...; lo demás DEFER a EXEC-3'. BA-06 V5 3.2.6 CQ-07 column 5 lists those deferrals. BA-04 V5 line 682: 'ruled by AR4-12, section 217; CQ-03 (iii), CQ-04 and part of CQ-05 deferred by AR4-12'.",
+     "required_fix": "Change the row to '...; CQ-03 (iii), CQ-04, part of CQ-05 and the rest of CQ-07 (to EXEC-3) deferred by AR4-12', and re-run the check.",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "BA-08 V5",
+     "ref": "section 10, paragraph 'Slot-unit vectors of BA-05 V5 (AR3-17)'",
+     "problem": "The paragraph names only SV-06, SV-07, SV-10 and SV-11 as slot-unit vectors. BA-05 V5 added SV-14 and SV-15 (the DIFFERENT and EQUAL counterparts), plus the per-predicate instance rule of 3.3.1. BA-04 V5 Q-FPSPEC-VECTORS already names all six.",
+     "evidence": "BA-08 V5 line 220: 'its semantic vectors SV-06, SV-07, SV-10 and SV-11 are written in slot units'. BA-05 V5 section 3.3: 'SV-06, SV-07, SV-10, SV-11, SV-14 and SV-15 are written in slot units'. Vectors JSON semanticSlotInstanceRule. BA-04 Q-FPSPEC-VECTORS PLAN_OR_INPUT lists all six.",
+     "required_fix": "List SV-06, SV-07, SV-10, SV-11, SV-14 and SV-15, and cite BA-05 V5 section 3.3.1 for how their binary64 instances are generated.",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "BA-04 V5",
+     "ref": "md section 7.4 heading and row C-10",
+     "problem": "Section 7.4 lists K-5 under 'not catalog seal blockers' and does not mention K-2. BA-08 V5 16.1 states that K-2 and K-5 are before-seal prerequisites of BA-08, and therefore precede the catalog seal indirectly (BA-04 depends on BA-08, the BA-11 workflow and the AR3-25 order). It also states that K-2 gates the catalog candidate through BA-05. The BA-08/BA-09 implementer reported this conflict as a cross-artifact note, and it is still unresolved.",
+     "evidence": "BA-04 V5 section 7.4: '### 7.4 Prerequisites of BASELINE_READY held by other artifacts (not catalog seal blockers)' with C-10 = K-5. BA-08 V5 16.1: 'K-2 and K-5 precede the catalog seal indirectly ... K-2 also gates the catalog's candidate, through BA-05'.",
+     "required_fix": "Reword 7.4 as 'not direct BLOCKED_BY blockers'. In C-10 state that K-5 (and K-2) precede the catalog seal through the BA-08 seal (BA-11 registry workflow, AR3-25 order), and that K-2 also gates the catalog candidate through BA-05 (BA-08 V5 section 16.1).",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "BA-06 V5",
+     "ref": "section 13 row 'design-time inventory'; header PREREQUISITES (1); section 16",
+     "problem": "Section 13 says the inventory is 'unchanged from V4', and cites BA06-C13, which covers only sections 3-3.2.5, 3.3, 7, 10.2 and 11. The frozen section 3 'Composition' paragraph also counts the section 5 residuals and the section 12 EVM schema as inventory components, and V5 changed two section-5 rows (AR4-15) and the section-12 row INVENTORY_REVIEW_RECORDS (R1:BA06V4-N02 / R2:BA06V4-N04). Other confirmed minors were withheld in section 16 because they 'change inventory content'. The standard is applied inconsistently, and the 'unchanged' statement is inaccurate under AR4-12 (2).",
+     "evidence": "BA-06 V5 section 3: 'The design-time inventory is: ... the residuals (section 5); and the EVM schema (section 12)'. BA06-C14 output: 'section 5 True (changed rows 2); section 12 True (changed rows 1)'. Section 13: 'design-time inventory | unchanged from V4 (the content approved by AR4-12)'.",
+     "required_fix": "In section 13 and header PREREQUISITES (1), name the edits to the inventory components: the section 5 rows (ordered by AR4-15) and the section 12 INVENTORY_REVIEW_RECORDS row. Say that the residual set, the 'affects' column and the EVM field set are unchanged (BA06-C14), and submit these edits to the Architect's exact delta check. Otherwise, withhold the section-12 edit in section 16 like the other minors. Then re-run the ba06 check and rebind section 14.",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "BA-04 V5",
+     "ref": "Q-I14 PLAN_OR_INPUT; PR-REC-REOBS-MISMATCH; WR-*-X0/X7/X8 RUN_PREREQUISITES",
+     "problem": "Q-I14 (new V5 text) says 'the coordinates of the governing scenarios are qualified by the vehicles Q-I14-X and Q-I14-Y'. The governing PR-REC-REOBS-MISMATCH (characterization build) injects Wr-G 'between PR and PW', which neither vehicle covers (X0..X8 are after Commit(); Y0..Y2 are inside T_M). Also, the 18 governing WR-\\*-X0/X7/X8 scenarios and PR-REC-REOBS-MISMATCH use I-14 writers without naming QUALIFICATION_RECORD@Q-I14-X, while the X1..X6 cells name it.",
+     "evidence": "Checked by script: 19 governing characterization-build scenarios use Wr-\\* writers with RUN_PREREQUISITES = [], for example WR-A-X0, WR-G-X7, WR-B-X8, and PR-REC-REOBS-MISMATCH with injection {'writer':'Wr-G','position':'between PR and PW'}. Q-I14-X INJECTION_COORDINATE is 'X0..X8'; V2.1 10.6 defines X0 as 'after Commit() returns and before V0'.",
+     "required_fix": "Qualify the PREPARE-phase coordinate. Either add a vehicle (for example Q-I14-P: characterization build, AR3-01 mode, with its WU-DRY) or state in Q-I14 that the base harness qualifies Wr-G at that coordinate. Correct the Q-I14 sentence to match. Then either name the relevant QUALIFICATION_RECORD in RUN_PREREQUISITES of every governing scenario that injects an I-14 writer, or state in section 3 / RUN_PREREQUISITE_VOCABULARY that it is named only where a CER rule resolves from it. Regenerate SEALED_AT, then re-run the check, BA-02b and the memo.",
+     "severity": "MINOR"
+    }
+   ]
+  }
+ ]
+}

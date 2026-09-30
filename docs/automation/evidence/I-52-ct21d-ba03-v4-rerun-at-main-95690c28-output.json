@@ -1,0 +1,580 @@
+{
+ "runUtc": "2026-09-30T17:41:34Z",
+ "specification": {
+  "path": "docs/automation/evidence/I-52-ct21d-ba03-v4-checks.json",
+  "sha256": "8da090de56a6587f2214b084316761ce3b23bccb6b6c6cdb1b32dcc024608e6b"
+ },
+ "runner": {
+  "path": "docs/automation/evidence/I-52-ct21d-ba03-v4-checks.py",
+  "sha256": "443e332ea1bb19277f7f6765fd2a873d606c3fc0587d067211ee0d5f9e93f709"
+ },
+ "informative": {
+  "branchHead": "d7c89fcbbc6a28711a02851e6a9a41d7974b6501",
+  "originMain": "95690c28dc6268e61dff32a0cbc33cc9fde3d47f"
+ },
+ "identities": {
+  "V17": {
+   "path": "docs/initiatives/I-52-proposal-v17.md",
+   "expectedBlob": "dd944d8e9c62b083eebc2b1292789977b880c368",
+   "blob": "dd944d8e9c62b083eebc2b1292789977b880c368",
+   "equal": true
+  },
+  "V18": {
+   "path": "docs/initiatives/I-52-consensus-freeze-v18.md",
+   "expectedBlob": "c12fa65f5b6203061e8d717d1ceed595c4fed1f4",
+   "blob": "c12fa65f5b6203061e8d717d1ceed595c4fed1f4",
+   "equal": true
+  },
+  "P57": {
+   "path": "docs/initiatives/I-52-consensus-freeze-v17-post-i57.md",
+   "expectedBlob": "5f4933a3aa90d7052f571317107f1831ec02ac6e",
+   "blob": "5f4933a3aa90d7052f571317107f1831ec02ac6e",
+   "equal": true
+  },
+  "FND": {
+   "path": "docs/initiatives/I-52-foundation-consumption-reconciliation.md",
+   "expectedBlob": "89a21b6f9dc07e72472f3e34598e98049a3e1fb7",
+   "blob": "89a21b6f9dc07e72472f3e34598e98049a3e1fb7",
+   "equal": true
+  },
+  "ADR": {
+   "path": "docs/adr/0036-rackmirror-espejo-semantico-por-copia.md",
+   "expectedBlob": "5628947673f2afddf141c0505e92283962459443",
+   "blob": "5628947673f2afddf141c0505e92283962459443",
+   "equal": true
+  },
+  "ADR0": {
+   "path": "(blob)",
+   "expectedBlob": "ce5f6fae935c7acdc347e12a7d465bb438923549",
+   "blob": "ce5f6fae935c7acdc347e12a7d465bb438923549",
+   "equal": true
+  },
+  "DEC117": {
+   "path": "docs/automation/decisions/I-52.md",
+   "section": "## 117. O-1 V18 — redecisión del Owner y registro del estado diferido",
+   "expectedSectionSha256": "a5c0fd9383c5010af2c641fe5a8a67ff24a3e2084c9691b6bc42c464d16829f9",
+   "sectionSha256": "a5c0fd9383c5010af2c641fe5a8a67ff24a3e2084c9691b6bc42c464d16829f9",
+   "equal": true
+  },
+  "RVA": {
+   "path": "src/RackCad.Application/Systems/Shared/RackViewAvailability.cs",
+   "expectedBlob": "74e1a1aba691e42e03d3744bf6631e444aa1d696",
+   "blob": "74e1a1aba691e42e03d3744bf6631e444aa1d696",
+   "equal": true
+  },
+  "SDL": {
+   "path": "src/RackCad.Application/Systems/Selective/SelectiveDepthLayout.cs",
+   "expectedBlob": "9e45f2f2c90bcd2ac881d4fc2dc3db2debfcd762",
+   "blob": "9e45f2f2c90bcd2ac881d4fc2dc3db2debfcd762",
+   "equal": true
+  },
+  "CMD": {
+   "path": "src/RackCad.Plugin/RackSelectivoCommands.cs",
+   "expectedBlob": "a22e6a6a4dba2ee2b62f2f47f358d9ac975fc486",
+   "blob": "f8e514a085dd7a9889e7b8b3006926acb4350166",
+   "equal": false
+  },
+  "COD": {
+   "path": "src/RackCad.Application/Systems/Shared/RackViewCodec.cs",
+   "expectedBlob": "b63661678a2488449baab37cc74023fff0550165",
+   "blob": "b63661678a2488449baab37cc74023fff0550165",
+   "equal": true
+  }
+ },
+ "identityDrift": [
+  "CMD"
+ ],
+ "checks": [
+  {
+   "id": "V17_INSIDE",
+   "source": "V17",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "V17_AK",
+   "source": "V17",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "V17_21",
+   "source": "V17",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "V17_22",
+   "source": "V17",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "V17_FRONTAL_RUN",
+   "source": "V17",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "V17_PLANTA_ROW",
+   "source": "V17",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "V17_M1",
+   "source": "V17",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "V17_L01",
+   "source": "V17",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "V17_LAT_MC",
+   "source": "V17",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "V17_L11",
+   "source": "V17",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "V17_L12",
+   "source": "V17",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "V17_L13",
+   "source": "V17",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "V17_L14",
+   "source": "V17",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "V18_S3",
+   "source": "V18",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "V18_S7",
+   "source": "V18",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "V18_S10",
+   "source": "V18",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "DEC117_O1",
+   "source": "DEC117",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "DEC117_DEFERRED",
+   "source": "DEC117",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "ADR_O1V18",
+   "source": "ADR",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "P57_S2",
+   "source": "P57",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "P57_S2_ITEM2",
+   "source": "P57",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "P57_S2_CLOSE",
+   "source": "P57",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "P57_S4",
+   "source": "P57",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "P57_S7",
+   "source": "P57",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "P57_ZERO_FRONTAL",
+   "source": "P57",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "P57_ZERO_PLANTA",
+   "source": "P57",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "P57_ZERO_LATERAL",
+   "source": "P57",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "P57_ZERO_SECTION",
+   "source": "P57",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "P57_ZERO_EXPOSICION",
+   "source": "P57",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "P57_ZERO_AK",
+   "source": "P57",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "P57_ZERO_SELECTIV",
+   "source": "P57",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "P57_EXPOSURE_ONE",
+   "source": "P57",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "P57_KINDVIEW_TWO",
+   "source": "P57",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "FND_S3_HIST",
+   "source": "FND",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "FND_S3_ROWS",
+   "source": "FND",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "FND_S4",
+   "source": "FND",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "ADR_NEW_D4",
+   "source": "ADR",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "ADR_OLD_D4",
+   "source": "ADR0",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "ADR_NEW_LAT",
+   "source": "ADR",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "ADR_OLD_LAT",
+   "source": "ADR0",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "ADR_NEW_TOPES",
+   "source": "ADR",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "ADR_NEG_MEDIO",
+   "source": "ADR",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "ADR_NEG_PARRILLA",
+   "source": "ADR",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "ADR_M1",
+   "source": "ADR",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "ADR_V18",
+   "source": "ADR",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "RVA_SEL_WHOLE_PLANTA",
+   "source": "RVA",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [
+    false
+   ],
+   "ok": true
+  },
+  {
+   "id": "RVA_SEL_FONDO",
+   "source": "RVA",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "RVA_SEL_POST",
+   "source": "RVA",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "SDL_COUNT",
+   "source": "SDL",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "CMD_FONDOCOUNT",
+   "source": "CMD",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "CMD_LEGACY",
+   "source": "CMD",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "COD_SEL_NEG_FONDO0",
+   "source": "COD",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [
+    false
+   ],
+   "ok": true
+  },
+  {
+   "id": "COD_SEL_PLANTA",
+   "source": "COD",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  },
+  {
+   "id": "COD_SEL_LATERAL_POST",
+   "source": "COD",
+   "result": true,
+   "positiveControl": true,
+   "negativeControl": false,
+   "nearMissControls": [],
+   "ok": true
+  }
+ ],
+ "failed": []
+}
