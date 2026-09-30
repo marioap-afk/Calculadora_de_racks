@@ -1,0 +1,599 @@
+{
+ "artifact": "BA-03 V4",
+ "rule": "patterns are exact (JSON escapes only); substring = exact occurrence; regex = Python re.search; regex_count = number of re.findall matches, compared with expected_count; flags S = DOTALL, I = IGNORECASE; a scope (scope_start and scope_end, both required) restricts the text to the block from the first occurrence of scope_start up to (not including) the next occurrence of scope_end; if either marker is absent from the text the scope is EMPTY (fail closed: a scoped check cannot match outside its scope); a check is ok when its result is TRUE, its positive_control satisfies the predicate, and neither its negative_control nor any entry of near_miss_controls does; every source carries its expected identity (expected_blob, or expected_section_sha256 for a section of a file at the branch HEAD), which is the identity set of BA-03 V4 section 2; a resolved identity that differs from it, or cannot be resolved, is an identity drift; the run fails (exit 1) on any failed check or control or any identity drift; the output argument is mandatory",
+ "sources": {
+  "V17": {
+   "where": "BRANCH",
+   "path": "docs/initiatives/I-52-proposal-v17.md",
+   "expected_blob": "dd944d8e9c62b083eebc2b1292789977b880c368"
+  },
+  "V18": {
+   "where": "BRANCH",
+   "path": "docs/initiatives/I-52-consensus-freeze-v18.md",
+   "expected_blob": "c12fa65f5b6203061e8d717d1ceed595c4fed1f4"
+  },
+  "P57": {
+   "where": "BRANCH",
+   "path": "docs/initiatives/I-52-consensus-freeze-v17-post-i57.md",
+   "expected_blob": "5f4933a3aa90d7052f571317107f1831ec02ac6e"
+  },
+  "FND": {
+   "where": "BRANCH",
+   "path": "docs/initiatives/I-52-foundation-consumption-reconciliation.md",
+   "expected_blob": "89a21b6f9dc07e72472f3e34598e98049a3e1fb7"
+  },
+  "ADR": {
+   "where": "BRANCH",
+   "path": "docs/adr/0036-rackmirror-espejo-semantico-por-copia.md",
+   "expected_blob": "5628947673f2afddf141c0505e92283962459443"
+  },
+  "ADR0": {
+   "where": "BLOB",
+   "expected_blob": "ce5f6fae935c7acdc347e12a7d465bb438923549"
+  },
+  "DEC117": {
+   "where": "SECTION",
+   "path": "docs/automation/decisions/I-52.md",
+   "heading": "## 117. O-1 V18 — redecisión del Owner y registro del estado diferido",
+   "expected_section_sha256": "a5c0fd9383c5010af2c641fe5a8a67ff24a3e2084c9691b6bc42c464d16829f9"
+  },
+  "RVA": {
+   "where": "MAIN",
+   "path": "src/RackCad.Application/Systems/Shared/RackViewAvailability.cs",
+   "expected_blob": "74e1a1aba691e42e03d3744bf6631e444aa1d696"
+  },
+  "SDL": {
+   "where": "MAIN",
+   "path": "src/RackCad.Application/Systems/Selective/SelectiveDepthLayout.cs",
+   "expected_blob": "9e45f2f2c90bcd2ac881d4fc2dc3db2debfcd762"
+  },
+  "CMD": {
+   "where": "MAIN",
+   "path": "src/RackCad.Plugin/RackSelectivoCommands.cs",
+   "expected_blob": "a22e6a6a4dba2ee2b62f2f47f358d9ac975fc486"
+  },
+  "COD": {
+   "where": "MAIN",
+   "path": "src/RackCad.Application/Systems/Shared/RackViewCodec.cs",
+   "expected_blob": "b63661678a2488449baab37cc74023fff0550165"
+  }
+ },
+ "checks": [
+  {
+   "id": "V17_INSIDE",
+   "source": "V17",
+   "kind": "substring",
+   "pattern": "Selectivo (frontal por fondo y planta)",
+   "positive_control": "<<Selectivo (frontal por fondo y planta)>>",
+   "negative_control": "Selectivo (frontal por fondo y planta",
+   "note": "V17 1.3 maximum envelope; cited for SEL-FRONTAL and SEL-PLANTA (BA03V3-N6)"
+  },
+  {
+   "id": "V17_AK",
+   "source": "V17",
+   "kind": "substring",
+   "pattern": "| Selectivo | frontal de cada fondo `k` con `0 ≤ k < SelectiveDepthLayout.Count(sistema)`; planta |",
+   "positive_control": "<<| Selectivo | frontal de cada fondo `k` con `0 ≤ k < SelectiveDepthLayout.Count(sistema)`; planta |>>",
+   "negative_control": "| Selectivo | frontal de cada fondo `k` con `0 ≤ k < SelectiveDepthLayout.Count(sistema)`; planta ",
+   "note": "includes \"; planta\" (BA03-F6)"
+  },
+  {
+   "id": "V17_21",
+   "source": "V17",
+   "kind": "substring",
+   "pattern": "| Selectivo (`selective`) | **RUN**: invierte frentes/postes | frontal (`Section` = fondo), planta |",
+   "positive_control": "<<| Selectivo (`selective`) | **RUN**: invierte frentes/postes | frontal (`Section` = fondo), planta |>>",
+   "negative_control": "| Selectivo (`selective`) | **RUN**: invierte frentes/postes | frontal (`Section` = fondo), planta ",
+   "note": "V17 2.1 (BA03-F6)"
+  },
+  {
+   "id": "V17_22",
+   "source": "V17",
+   "kind": "substring",
+   "pattern": "- Laterales de Selectivo, Dinamico, Push Back y Cantilever; la cama (`cama`) entera.",
+   "positive_control": "<<- Laterales de Selectivo, Dinamico, Push Back y Cantilever; la cama (`cama`) entera.>>",
+   "negative_control": "- Laterales de Selectivo, Dinamico, Push Back y Cantilever; la cama (`cama`) entera",
+   "note": "V17 2.2 (BA03-F6)"
+  },
+  {
+   "id": "V17_FRONTAL_RUN",
+   "source": "V17",
+   "kind": "regex",
+   "pattern": "\\| selective \\| frontal \\(`View = frontal`\\) \\| `k`, con `0 \\u2264 k < fondos` \\| fondo `k` \\| `k` \\| RUN \\| \\*\\*si\\*\\*",
+   "flags": "",
+   "positive_control": "| selective | frontal (`View = frontal`) | `k`, con `0 ≤ k < fondos` | fondo `k` | `k` | RUN | **si** |",
+   "negative_control": "| selective | frontal (`View = frontal`) | `k`, con `0 ≤ k < fondos` | fondo `k` | `k` | RUN | no |",
+   "note": "V17 3.7: the frontal row exposes mu_k (RUN) (BA03-F4)"
+  },
+  {
+   "id": "V17_PLANTA_ROW",
+   "source": "V17",
+   "kind": "regex",
+   "pattern": "\\| selective \\| planta \\| cualquiera \\| planta \\| `\\u22121` \\| RUN \\| \\*\\*si\\*\\*",
+   "flags": "",
+   "positive_control": "| selective | planta | cualquiera | planta | `−1` | RUN | **si** |",
+   "negative_control": "| selective | planta | cualquiera | planta | `0` | RUN | **si** |",
+   "note": "V17 3.7: planta, canonical section -1, RUN (BA03-F6)"
+  },
+  {
+   "id": "V17_M1",
+   "source": "V17",
+   "kind": "substring",
+   "pattern": "`−1` (legado documentado)",
+   "positive_control": "<<`−1` (legado documentado)>>",
+   "negative_control": "`−1` (legado documentado",
+   "note": ""
+  },
+  {
+   "id": "V17_L01",
+   "source": "V17",
+   "kind": "regex",
+   "pattern": "\\| L-01 \\| Laterales de Selectivo",
+   "flags": "",
+   "positive_control": "| L-01 | Laterales de Selectivo, Dinamico",
+   "negative_control": "| L-02 | Laterales de Selectivo",
+   "note": ""
+  },
+  {
+   "id": "V17_LAT_MC",
+   "source": "V17",
+   "kind": "regex",
+   "pattern": "\\| selective \\| lateral \\| poste `p` .*\\(\\*\\*MC\\*\\*\\)",
+   "flags": "",
+   "positive_control": "| selective | lateral | poste `p` | poste | — | — | no (**MC**) |",
+   "negative_control": "| selective | lateral | poste `p` | poste | — | — | **si** |",
+   "note": ""
+  },
+  {
+   "id": "V17_L11",
+   "source": "V17",
+   "kind": "regex",
+   "pattern": "\\| L-11 \\| Selectivo con frentes por fondo en esquina",
+   "flags": "",
+   "positive_control": "| L-11 | Selectivo con frentes por fondo en esquina | fail-closed |",
+   "negative_control": "| L-11 | Dinamico con frentes por fondo en esquina |",
+   "note": ""
+  },
+  {
+   "id": "V17_L12",
+   "source": "V17",
+   "kind": "regex",
+   "pattern": "\\| L-12 \\| Selectivo con medio frente dependiente de un vinculo",
+   "flags": "",
+   "positive_control": "| L-12 | Selectivo con medio frente dependiente de un vinculo, con postes distintos |",
+   "negative_control": "| L-12 | Selectivo con medio frente independiente |",
+   "note": "restored (BA03-F4)"
+  },
+  {
+   "id": "V17_L13",
+   "source": "V17",
+   "kind": "regex",
+   "pattern": "\\| L-13 \\| Selectivo con topes",
+   "flags": "",
+   "positive_control": "| L-13 | Selectivo con topes | fail-closed |",
+   "negative_control": "| L-13 | Selectivo sin topes |",
+   "note": ""
+  },
+  {
+   "id": "V17_L14",
+   "source": "V17",
+   "kind": "regex",
+   "pattern": "\\| L-14 \\| Protector lateral explicito, desviador con off-cells asimetricos o dependientes, parrilla o tarimas desbordadas",
+   "flags": "",
+   "positive_control": "| L-14 | Protector lateral explicito, desviador con off-cells asimetricos o dependientes, parrilla o tarimas desbordadas o dependientes |",
+   "negative_control": "| L-14 | Protector lateral explicito |",
+   "note": "restored (BA03-F4)"
+  },
+  {
+   "id": "V18_S3",
+   "source": "V18",
+   "kind": "substring",
+   "pattern": "Proposal V17 gobierna todo lo no sustituido expresamente por V18.",
+   "positive_control": "<<Proposal V17 gobierna todo lo no sustituido expresamente por V18.>>",
+   "negative_control": "Proposal V17 gobierna todo lo no sustituido expresamente por V18",
+   "note": ""
+  },
+  {
+   "id": "V18_S7",
+   "source": "V18",
+   "kind": "substring",
+   "pattern": "exposición, combinaciones soportadas, restricciones de fuente y completitud/relectura",
+   "positive_control": "<<exposición, combinaciones soportadas, restricciones de fuente y completitud/relectura>>",
+   "negative_control": "exposición, combinaciones soportadas, restricciones de fuente y completitud/relectur",
+   "note": ""
+  },
+  {
+   "id": "V18_S10",
+   "source": "V18",
+   "kind": "substring",
+   "pattern": "O1_DISPOSITION = REQUIRES_REDECISION",
+   "positive_control": "<<O1_DISPOSITION = REQUIRES_REDECISION>>",
+   "negative_control": "O1_DISPOSITION = REQUIRES_REDECISIO",
+   "note": ""
+  },
+  {
+   "id": "DEC117_O1",
+   "source": "DEC117",
+   "kind": "substring",
+   "pattern": "O-1 V18 = ACCEPTED / REGISTERED",
+   "positive_control": "<<O-1 V18 = ACCEPTED / REGISTERED>>",
+   "negative_control": "O-1 V18 = ACCEPTED / REGISTERE",
+   "note": "O-1 V18 registered (BA03-F1)"
+  },
+  {
+   "id": "DEC117_DEFERRED",
+   "source": "DEC117",
+   "kind": "substring",
+   "pattern": "Product disposition = DEFERRED",
+   "positive_control": "<<Product disposition = DEFERRED>>",
+   "negative_control": "Product disposition = DEFERRE",
+   "note": "BA03-F1"
+  },
+  {
+   "id": "ADR_O1V18",
+   "source": "ADR",
+   "kind": "substring",
+   "pattern": "La decisión durable O-1 V18 de I-52 §117 está `ACCEPTED / REGISTERED`",
+   "positive_control": "<<La decisión durable O-1 V18 de I-52 §117 está `ACCEPTED / REGISTERED`>>",
+   "negative_control": "La decisión durable O-1 V18 de I-52 §117 está `ACCEPTED / REGISTERED",
+   "note": "BA03-F1"
+  },
+  {
+   "id": "P57_S2",
+   "source": "P57",
+   "kind": "substring",
+   "pattern": "Ninguna reconciliacion cambia de forma implicita la politica de producto de RACKMIRROR.",
+   "positive_control": "<<Ninguna reconciliacion cambia de forma implicita la politica de producto de RACKMIRROR.>>",
+   "negative_control": "Ninguna reconciliacion cambia de forma implicita la politica de producto de RACKMIRROR",
+   "note": ""
+  },
+  {
+   "id": "P57_S2_ITEM2",
+   "source": "P57",
+   "kind": "regex",
+   "pattern": "sustituye prospectivamente solo la propiedad o ubicacion provisional de\\s+AUTH-01\\.\\.13 en V17",
+   "flags": "",
+   "positive_control": "sustituye prospectivamente solo la propiedad o ubicacion provisional de\n   AUTH-01..13 en V17",
+   "negative_control": "sustituye prospectivamente la propiedad o ubicacion provisional de AUTH-01..13 en V17",
+   "note": "BA03-F8"
+  },
+  {
+   "id": "P57_S2_CLOSE",
+   "source": "P57",
+   "kind": "regex",
+   "pattern": "fuera de ese alcance, Proposal V17\\s+conserva su significado completo",
+   "flags": "",
+   "positive_control": "fuera de ese alcance, Proposal V17\nconserva su significado completo",
+   "negative_control": "fuera de ese alcance, Proposal V18 conserva su significado completo",
+   "note": "BA03-F8"
+  },
+  {
+   "id": "P57_S4",
+   "source": "P57",
+   "kind": "substring",
+   "pattern": "mirror read-set, exposure policy y combinaciones view/kind admitidas",
+   "positive_control": "<<mirror read-set, exposure policy y combinaciones view/kind admitidas>>",
+   "negative_control": "mirror read-set, exposure policy y combinaciones view/kind admitida",
+   "note": ""
+  },
+  {
+   "id": "P57_S7",
+   "source": "P57",
+   "kind": "substring",
+   "pattern": "la matriz kind/view soportada",
+   "positive_control": "<<la matriz kind/view soportada>>",
+   "negative_control": "la matriz kind/view soportad",
+   "note": ""
+  },
+  {
+   "id": "P57_ZERO_FRONTAL",
+   "source": "P57",
+   "kind": "regex_count",
+   "pattern": "frontal",
+   "flags": "I",
+   "expected_count": 0,
+   "positive_control": "no occurrence here",
+   "negative_control": "one occurrence: frontal",
+   "note": "PW-3 keyword list; supplementary, not the basis of row \"ownership of the exposure\" (BA03V3-N5)"
+  },
+  {
+   "id": "P57_ZERO_PLANTA",
+   "source": "P57",
+   "kind": "regex_count",
+   "pattern": "planta",
+   "flags": "I",
+   "expected_count": 0,
+   "positive_control": "no occurrence here",
+   "negative_control": "one occurrence: planta",
+   "note": ""
+  },
+  {
+   "id": "P57_ZERO_LATERAL",
+   "source": "P57",
+   "kind": "regex_count",
+   "pattern": "lateral",
+   "flags": "I",
+   "expected_count": 0,
+   "positive_control": "no occurrence here",
+   "negative_control": "one occurrence: lateral",
+   "note": ""
+  },
+  {
+   "id": "P57_ZERO_SECTION",
+   "source": "P57",
+   "kind": "regex_count",
+   "pattern": "\\bSection\\b",
+   "flags": "I",
+   "expected_count": 0,
+   "positive_control": "no occurrence here",
+   "negative_control": "one occurrence: Section",
+   "note": ""
+  },
+  {
+   "id": "P57_ZERO_EXPOSICION",
+   "source": "P57",
+   "kind": "regex_count",
+   "pattern": "exposici[oó]n",
+   "flags": "I",
+   "expected_count": 0,
+   "positive_control": "no occurrence here",
+   "negative_control": "one occurrence: exposición",
+   "note": ""
+  },
+  {
+   "id": "P57_ZERO_AK",
+   "source": "P57",
+   "kind": "regex_count",
+   "pattern": "A_k",
+   "flags": "",
+   "expected_count": 0,
+   "positive_control": "no occurrence here",
+   "negative_control": "one occurrence: A_k",
+   "note": ""
+  },
+  {
+   "id": "P57_ZERO_SELECTIV",
+   "source": "P57",
+   "kind": "regex_count",
+   "pattern": "Selectiv",
+   "flags": "I",
+   "expected_count": 0,
+   "positive_control": "no occurrence here",
+   "negative_control": "one occurrence: Selectivo",
+   "note": ""
+  },
+  {
+   "id": "P57_EXPOSURE_ONE",
+   "source": "P57",
+   "kind": "regex_count",
+   "pattern": "exposure",
+   "flags": "I",
+   "expected_count": 1,
+   "positive_control": "one occurrence: Exposure policy",
+   "negative_control": "two occurrences: exposure policy and exposure matrix",
+   "note": "English exposure vocabulary: exactly one occurrence, in section 4 (BA03V3-N5)"
+  },
+  {
+   "id": "P57_KINDVIEW_TWO",
+   "source": "P57",
+   "kind": "regex_count",
+   "pattern": "kind/view|view/kind",
+   "flags": "I",
+   "expected_count": 2,
+   "positive_control": "view/kind and KIND/VIEW",
+   "negative_control": "view/kind, kind/view and view/kind",
+   "note": "English kind/view vocabulary: exactly two occurrences, in sections 4 and 7 (BA03V3-N5)"
+  },
+  {
+   "id": "FND_S3_HIST",
+   "source": "FND",
+   "kind": "substring",
+   "pattern": "`HISTORICAL ONLY`; estaban marcadas `PROVISIONAL UNTIL CROSS-INITIATIVE RECONCILIATION`. Sus planes neutrales quedan `SUPERSEDE_LOCAL_NEUTRAL_PLAN` prospectivamente.",
+   "positive_control": "<<`HISTORICAL ONLY`; estaban marcadas `PROVISIONAL UNTIL CROSS-INITIATIVE RECONCILIATION`. Sus planes neutrales quedan `SUPERSEDE_LOCAL_NEUTRAL_PLAN` prospectivamente.>>",
+   "negative_control": "`HISTORICAL ONLY`; estaban marcadas `PROVISIONAL UNTIL CROSS-INITIATIVE RECONCILIATION`. Sus planes neutrales quedan `SUPERSEDE_LOCAL_NEUTRAL_PLAN` prospectivamente",
+   "note": ""
+  },
+  {
+   "id": "FND_S3_ROWS",
+   "source": "FND",
+   "kind": "substring",
+   "pattern": "Proposal V17 §§3.3, 3.7, 3.8, 5.1",
+   "positive_control": "<<Proposal V17 §§3.3, 3.7, 3.8, 5.1>>",
+   "negative_control": "Proposal V17 §§3.3, 3.7, 3.8, 5.",
+   "note": ""
+  },
+  {
+   "id": "FND_S4",
+   "source": "FND",
+   "kind": "substring",
+   "pattern": "exposicion de vistas y combinaciones soportadas",
+   "positive_control": "<<exposicion de vistas y combinaciones soportadas>>",
+   "negative_control": "exposicion de vistas y combinaciones soportada",
+   "note": ""
+  },
+  {
+   "id": "ADR_NEW_D4",
+   "source": "ADR",
+   "kind": "regex",
+   "pattern": "Primer corte: frontal y planta\\s+para Selectivo",
+   "flags": "",
+   "positive_control": "Primer corte: frontal y planta\n   para Selectivo, Dinámico",
+   "negative_control": "Primer corte: frontal y planta para Dinámico",
+   "note": "extended to \"para Selectivo\" (BA03-F6)"
+  },
+  {
+   "id": "ADR_OLD_D4",
+   "source": "ADR0",
+   "kind": "regex",
+   "pattern": "Primer corte: frontal y planta\\s+para Selectivo",
+   "flags": "",
+   "positive_control": "Primer corte: frontal y planta\n   para Selectivo, Dinámico",
+   "negative_control": "Primer corte: frontal y planta para Dinámico",
+   "note": ""
+  },
+  {
+   "id": "ADR_NEW_LAT",
+   "source": "ADR",
+   "kind": "substring",
+   "pattern": "no se reflejan laterales de Selectivo",
+   "positive_control": "<<no se reflejan laterales de Selectivo>>",
+   "negative_control": "no se reflejan laterales de Selectiv",
+   "note": ""
+  },
+  {
+   "id": "ADR_OLD_LAT",
+   "source": "ADR0",
+   "kind": "substring",
+   "pattern": "no se reflejan laterales de Selectivo",
+   "positive_control": "<<no se reflejan laterales de Selectivo>>",
+   "negative_control": "no se reflejan laterales de Selectiv",
+   "note": ""
+  },
+  {
+   "id": "ADR_NEW_TOPES",
+   "source": "ADR",
+   "kind": "substring",
+   "pattern": "los Selectivos con topes",
+   "positive_control": "<<los Selectivos con topes>>",
+   "negative_control": "los Selectivos con tope",
+   "note": ""
+  },
+  {
+   "id": "ADR_NEG_MEDIO",
+   "source": "ADR",
+   "kind": "substring",
+   "pattern": "los **medios frentes cuyo ancho depende de una propiedad vinculada**",
+   "positive_control": "<<los **medios frentes cuyo ancho depende de una propiedad vinculada**>>",
+   "negative_control": "los **medios frentes cuyo ancho depende de una propiedad vinculada*",
+   "note": "restored (BA03-F4)"
+  },
+  {
+   "id": "ADR_NEG_PARRILLA",
+   "source": "ADR",
+   "kind": "substring",
+   "pattern": "las **filas de parrillas o tarimas desbordadas**",
+   "positive_control": "<<las **filas de parrillas o tarimas desbordadas**>>",
+   "negative_control": "las **filas de parrillas o tarimas desbordadas*",
+   "note": "restored (BA03-F4)"
+  },
+  {
+   "id": "ADR_M1",
+   "source": "ADR",
+   "kind": "substring",
+   "pattern": "la frontal Selectiva con `−1` pasa a fondo `0`",
+   "positive_control": "<<la frontal Selectiva con `−1` pasa a fondo `0`>>",
+   "negative_control": "la frontal Selectiva con `−1` pasa a fondo `0",
+   "note": ""
+  },
+  {
+   "id": "ADR_V18",
+   "source": "ADR",
+   "kind": "substring",
+   "pattern": "ADR-0036 = PROPOSED / AMENDED FOR V18",
+   "positive_control": "<<ADR-0036 = PROPOSED / AMENDED FOR V18>>",
+   "negative_control": "ADR-0036 = PROPOSED / AMENDED FOR V1",
+   "note": ""
+  },
+  {
+   "id": "RVA_SEL_WHOLE_PLANTA",
+   "source": "RVA",
+   "kind": "regex",
+   "pattern": "case RackViewVariantKind\\.Whole:\\s*return address\\.Kind == DimensionViewKind\\.Planta;",
+   "flags": "S",
+   "positive_control": "public sealed class SelectiveViewAvailabilityFacts { case RackViewVariantKind.Whole:\n                    return address.Kind == DimensionViewKind.Planta; } public sealed class ",
+   "negative_control": "public sealed class SelectiveViewAvailabilityFacts { } public sealed class  case RackViewVariantKind.Whole:\n                    return address.Kind == DimensionViewKind.Planta;",
+   "note": "scoped to SelectiveViewAvailabilityFacts; binds the Whole case; near miss Whole -> Fondo (BA03V3-N2)",
+   "near_miss_controls": [
+    "public sealed class SelectiveViewAvailabilityFacts { case RackViewVariantKind.Fondo:\n                    return address.Kind == DimensionViewKind.Planta; } public sealed class "
+   ],
+   "scope_start": "public sealed class SelectiveViewAvailabilityFacts",
+   "scope_end": "public sealed class "
+  },
+  {
+   "id": "RVA_SEL_FONDO",
+   "source": "RVA",
+   "kind": "substring",
+   "pattern": "return address.Variant.Index < FondoCount;",
+   "positive_control": "public sealed class SelectiveViewAvailabilityFacts { return address.Variant.Index < FondoCount; } public sealed class ",
+   "negative_control": "public sealed class SelectiveViewAvailabilityFacts { } public sealed class  return address.Variant.Index < FondoCount;",
+   "note": "scoped",
+   "scope_start": "public sealed class SelectiveViewAvailabilityFacts",
+   "scope_end": "public sealed class "
+  },
+  {
+   "id": "RVA_SEL_POST",
+   "source": "RVA",
+   "kind": "substring",
+   "pattern": "return posts.Contains(address.Variant.Index);",
+   "positive_control": "public sealed class SelectiveViewAvailabilityFacts { return posts.Contains(address.Variant.Index); } public sealed class ",
+   "negative_control": "public sealed class SelectiveViewAvailabilityFacts { } public sealed class  return posts.Contains(address.Variant.Index);",
+   "note": "scoped",
+   "scope_start": "public sealed class SelectiveViewAvailabilityFacts",
+   "scope_end": "public sealed class "
+  },
+  {
+   "id": "SDL_COUNT",
+   "source": "SDL",
+   "kind": "substring",
+   "pattern": "Math.Max(1, system?.DepthCount ?? 1)",
+   "positive_control": "<<Math.Max(1, system?.DepthCount ?? 1)>>",
+   "negative_control": "Math.Max(1, system?.DepthCount ?? 1",
+   "note": ""
+  },
+  {
+   "id": "CMD_FONDOCOUNT",
+   "source": "CMD",
+   "kind": "substring",
+   "pattern": "var fondoCount = SelectiveDepthLayout.Count(system);",
+   "positive_control": "<<var fondoCount = SelectiveDepthLayout.Count(system);>>",
+   "negative_control": "var fondoCount = SelectiveDepthLayout.Count(system)",
+   "note": ""
+  },
+  {
+   "id": "CMD_LEGACY",
+   "source": "CMD",
+   "kind": "substring",
+   "pattern": "a legacy block with -1 = fondo 0",
+   "positive_control": "<<a legacy block with -1 = fondo 0>>",
+   "negative_control": "a legacy block with -1 = fondo ",
+   "note": ""
+  },
+  {
+   "id": "COD_SEL_NEG_FONDO0",
+   "source": "COD",
+   "kind": "regex",
+   "pattern": "if \\(syntax\\.Section < 0\\)\\s*\\{\\s*return Valid\\(syntax, kind, Address\\(DimensionViewKind\\.Frontal, RackViewVariant\\.Fondo\\(0\\)\\),\\s*RackViewSyntaxDisposition\\.Coerced, \"SelectiveNegativeFondoToZero\"\\)",
+   "flags": "S",
+   "positive_control": "private static DecodedRackView DecodeSelective( { if (syntax.Section < 0)\n                {\n                    return Valid(syntax, kind, Address(DimensionViewKind.Frontal, RackViewVariant.Fondo(0)),\n                        RackViewSyntaxDisposition.Coerced, \"SelectiveNegativeFondoToZero\");\n                } } private static DecodedRackView DecodeDynamic(",
+   "negative_control": "private static DecodedRackView DecodeSelective( { } private static DecodedRackView DecodeDynamic( if (syntax.Section < 0)\n                {\n                    return Valid(syntax, kind, Address(DimensionViewKind.Frontal, RackViewVariant.Fondo(0)),\n                        RackViewSyntaxDisposition.Coerced, \"SelectiveNegativeFondoToZero\");\n                }",
+   "note": "scoped to DecodeSelective; binds Section < 0 -> Fondo(0); near miss Fondo(0) -> Fondo(1) (BA03V3-N2)",
+   "near_miss_controls": [
+    "private static DecodedRackView DecodeSelective( { if (syntax.Section < 0)\n                {\n                    return Valid(syntax, kind, Address(DimensionViewKind.Frontal, RackViewVariant.Fondo(1)),\n                        RackViewSyntaxDisposition.Coerced, \"SelectiveNegativeFondoToZero\");\n                } } private static DecodedRackView DecodeDynamic("
+   ],
+   "scope_start": "private static DecodedRackView DecodeSelective(",
+   "scope_end": "private static DecodedRackView DecodeDynamic("
+  },
+  {
+   "id": "COD_SEL_PLANTA",
+   "source": "COD",
+   "kind": "substring",
+   "pattern": "Address(DimensionViewKind.Planta, RackViewVariant.Whole())",
+   "positive_control": "private static DecodedRackView DecodeSelective( { Address(DimensionViewKind.Planta, RackViewVariant.Whole()) } private static DecodedRackView DecodeDynamic(",
+   "negative_control": "private static DecodedRackView DecodeSelective( { } private static DecodedRackView DecodeDynamic( Address(DimensionViewKind.Planta, RackViewVariant.Whole())",
+   "note": "scoped",
+   "scope_start": "private static DecodedRackView DecodeSelective(",
+   "scope_end": "private static DecodedRackView DecodeDynamic("
+  },
+  {
+   "id": "COD_SEL_LATERAL_POST",
+   "source": "COD",
+   "kind": "substring",
+   "pattern": "Address(DimensionViewKind.Lateral, RackViewVariant.Post(syntax.Section))",
+   "positive_control": "private static DecodedRackView DecodeSelective( { Address(DimensionViewKind.Lateral, RackViewVariant.Post(syntax.Section)) } private static DecodedRackView DecodeDynamic(",
+   "negative_control": "private static DecodedRackView DecodeSelective( { } private static DecodedRackView DecodeDynamic( Address(DimensionViewKind.Lateral, RackViewVariant.Post(syntax.Section))",
+   "note": "scoped",
+   "scope_start": "private static DecodedRackView DecodeSelective(",
+   "scope_end": "private static DecodedRackView DecodeDynamic("
+  }
+ ]
+}

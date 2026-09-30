@@ -373,7 +373,8 @@ clasificaciones). **POST-AUDIT PACKAGE BASELINE: PASS.**
 - **Dictamen del Arquitecto sobre la fase 2 (§211): `CHANGES_REQUIRED`** (56 serios confirmados, 1 dividido, 1 refutado; 2 bloqueantes: pines del catálogo y lista de operaciones exigidas por el contrato). **Dictamen del Coordinador (§212): `REVISION`**; abierto el delta V3 (solo documentos y análisis estático).
 - **Delta V3 de los artefactos de línea base (§213):** versiones V3 de BA-02a..BA-11 y V2.4 revisión 2 (sección 1 intacta); análisis estáticos independientes con verificación adversarial en `docs/automation/evidence/I-52-ct21d-phase2-delta/`. Todo BORRADOR; nada candidato ni sellado.
 - **Revisión delta del Arquitecto sobre V3 (§214): `CHANGES_REQUIRED`** (1 bloqueante, 27 mayores confirmados; decisiones AR3-01..AR3-30; V2.4 rev. 2 lista para verificación textual tras una rev. 3 de dos líneas; BA-02a lista en sus bytes). **Coordinador (§215): `REVISION`**, ronda V4 + micro-errata V2.5 (campo de tupla `CATALOG_FOLDER`).
-- **Siguiente gate: ronda V4 (Implementador), luego revisión delta del Arquitecto, dictamen del Coordinador y verificación textual de V2.4 y V2.5.** La rama sigue sin reconciliar con `main` (`1304101d`: 93 detrás).
+- **Ronda V4 entregada (§216):** artefactos BA-02b..BA-11 V4 (BA-02a sin cambios), V2.4 revisión 3, micro-errata V2.5 (`CATALOG_FOLDER`); catálogo 393 = 232 + 161 dry runs; 14 preguntas abiertas para el Arquitecto (AQ-V4-01..14), ninguna decidida; chequeos y guardas verdes.
+- **Siguiente gate: revisión delta del Arquitecto de la ronda V4 (con verificación exacta de V2.4 rev. 3 y V2.5), luego dictamen del Coordinador y verificación textual de V2.4 y V2.5.**
 
 **Congelación de V35 (§172).** El Coordinador aceptó V35-A2 (`86089886`) con consenso de arquitectura final.
 - `V35_FREEZE_SHA` = `86089886f37da05c2de5dcf9e237044a3deeada3`.

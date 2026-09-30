@@ -5,9 +5,11 @@
 > ```text
 > CT21D_AUTHORITY_CONTRACT          = DRAFT_V2_4  (V2.1 with the V2.2, V2.3 and V2.4 errata applied)
 > CT21D_AUTHORITY_CONTRACT_STATUS   = AGREED_FOR_BASELINE_ARTIFACT_PREPARATION (for V2.1 + V2.2 + V2.3; V2.4 pending Coordinator textual verification)
-> DRAFT REVISION                    = 2 (corrections outside section 1 required by ARCHITECT_BASELINE_PHASE2_RULING, decisions section 211, AR2-01..AR2-07;
->                                     the reviewed draft is blob 1919a32a (commit d190ec0929ef5495b801a3164ce6e7b219cdd857) and stays in history;
->                                     section 1 is byte-identical to that draft)
+> DRAFT REVISION                    = 3 (content changes limited to the two sentences required by the Architect's phase-2 delta ruling, decisions
+>                                     section 214, AR3-27: the provenance sentence of section 0 and the note count of section 3; apart from them only
+>                                     the revision identifiers changed: this header field and the draft-revision word of the section 4 status line;
+>                                     revision 2 is blob fc137c52 (commit 1625a306c41bdb52f06c48d0a7da20a8d11ffcb1) and revision 1 is blob 1919a32a
+>                                     (commit d190ec09); both stay in history; section 1 is byte-identical to both)
 > CT21D_AUTHORITY_BASELINE_READY    = FALSE
 > CT21D_EXECUTION_READY             = FALSE
 > CT21D_EXECUTION                   = NOT_AUTHORIZED
@@ -23,7 +25,7 @@ The Architect's review of the authority baseline artifacts, phase 1 (`ARCHITECT_
 - V2.1 section 27.10 and V2.2 PA-11 make the **independent completeness review** of the seam-operation inventory a **baseline** requirement, and PA-11 conditions 3 and 4 require a **dynamic trace over every seam entry point and every plan-shape class**;
 - the seams do **not exist** (they are implementation prerequisites, V2.1 section 15.8 and EXEC-3), and host work is not authorized, so conditions 3 and 4 cannot be met before the baseline.
 
-The Architect pre-approved a closed replacement text (phase-1 ruling, section 7, BA-06 / NB-4). **V2.4 applies that text** (section 1), plus the clause map, the mechanical consequences and the notes that the Architect's phase-2 ruling pre-approved (decisions section 211, AR2-02..AR2-07). V1, V2, V2.1, V2.2 and V2.3 are intact and historical.
+The Architect pre-approved a closed replacement text (phase-1 ruling, section 7, BA-06 / NB-4). **V2.4 applies that text** (section 1). The rest of V2.4 is of two kinds: the rows, notes and wording that the Architect's phase-2 ruling pre-approved or required (decisions section 211, AR2-02..AR2-07: the *Contract hash* approach, the precedence text, the naming of the notes, the `NB-4` and `BASE-15` rows, note `V24-N2`, the review source and `NEXT`), and implementer text that the phase-2 review checked (the rows of section 2 for V2.1 27.10, V2.2 PA-11 and V2.1 27.2 step 1, note `V24-N1` and the last sentence of section 3). V1, V2, V2.1, V2.2 and V2.3 are intact and historical.
 
 | Item | Rule |
 |---|---|
@@ -58,12 +60,12 @@ Nothing else changes: the phase policy of E-12, the class registry, the cause ta
 | `V24-N1` | the states `STATIC_REVIEWED`, `REVIEWED` and `INVENTORY_COMPLETENESS = NOT_ESTABLISHED` are exactly those of the pre-approved text; no other state is introduced |
 | `V24-N2` | (pre-approved by the Architect, AR2-06) PA-11 "the review record is a baseline artifact" applies to the `STATIC_REVIEWED` record. The `REVIEWED` record (dynamic trace on the implemented seams) and any reopened operation-class review are execution-phase records: they are kept under the custody of BA-07 and cited by the `LEARNING` entry of the EVM; they do not modify the sealed baseline unless they change the design-time inventory, which requires a new BA-06 version and a new baseline. For the design-time review, condition 6 is read as in item (10) of the phase-1 ruling: the differences between the static reviewers and the critic are resolved explicitly |
 
-There is **no other deviation** from the pre-approved text. The notes of V2.4 use the identifiers `V24-N1` and `V24-N2` so that they do not collide with the notes N-1..N-4 of V2.2.
+There is **no other deviation** from the pre-approved text. The notes of V2.4 use the identifiers `V24-N1` and `V24-N2` so that they do not collide with the notes N-1..N-5 of V2.2.
 
 ## 4. Status
 
 ```text
-CT21D_AUTHORITY_CONTRACT = DRAFT_V2_4 (V2.1 + V2.2 + V2.3 + V2.4), draft revision 2
+CT21D_AUTHORITY_CONTRACT = DRAFT_V2_4 (V2.1 + V2.2 + V2.3 + V2.4), draft revision 3
 CT21D_AUTHORITY_BASELINE_READY = FALSE     CT21D_EXECUTION_READY = FALSE     CT21D_EXECUTION = NOT_AUTHORIZED
 INVENTORY_COMPLETENESS = NOT_ESTABLISHED (until REVIEWED)
 NEXT = ARCHITECT DELTA REVIEW (IDENTITY AND TEXT OF V2.4), THEN COORDINATOR TEXTUAL VERIFICATION OF V2.4

@@ -1,0 +1,126 @@
+{
+ "no_cycle": true,
+ "cycles": [],
+ "seal_order_topological": true,
+ "seal_order_violations": [],
+ "table_matches_edges": true,
+ "table_cells": {
+  "BA-02a": [
+   "BA-01"
+  ],
+  "BA-03": [
+   "BA-01"
+  ],
+  "BA-05": [
+   "BA-01"
+  ],
+  "BA-07": [
+   "BA-01"
+  ],
+  "BA-10": [
+   "BA-01"
+  ],
+  "BA-06": [
+   "BA-01",
+   "BA-03",
+   "BA-05"
+  ],
+  "BA-08": [
+   "BA-01",
+   "BA-03",
+   "BA-05",
+   "BA-06"
+  ],
+  "BA-09": [
+   "BA-01",
+   "BA-06",
+   "BA-07",
+   "BA-08"
+  ],
+  "BA-04": [
+   "BA-01",
+   "BA-02a",
+   "BA-03",
+   "BA-05",
+   "BA-06",
+   "BA-08",
+   "BA-09",
+   "BA-10"
+  ],
+  "BA-02b": [
+   "BA-02a",
+   "BA-04"
+  ]
+ },
+ "forbidden_edges_absent": true,
+ "edges": [
+  "BA-02a -> BA-01",
+  "BA-02b -> BA-02a",
+  "BA-02b -> BA-04",
+  "BA-03 -> BA-01",
+  "BA-04 -> BA-01",
+  "BA-04 -> BA-02a",
+  "BA-04 -> BA-03",
+  "BA-04 -> BA-05",
+  "BA-04 -> BA-06",
+  "BA-04 -> BA-08",
+  "BA-04 -> BA-09",
+  "BA-04 -> BA-10",
+  "BA-05 -> BA-01",
+  "BA-06 -> BA-01",
+  "BA-06 -> BA-03",
+  "BA-06 -> BA-05",
+  "BA-07 -> BA-01",
+  "BA-08 -> BA-01",
+  "BA-08 -> BA-03",
+  "BA-08 -> BA-05",
+  "BA-08 -> BA-06",
+  "BA-09 -> BA-01",
+  "BA-09 -> BA-06",
+  "BA-09 -> BA-07",
+  "BA-09 -> BA-08",
+  "BA-10 -> BA-01",
+  "BA-11 -> BA-01",
+  "BA-11 -> BA-02a",
+  "BA-11 -> BA-02b",
+  "BA-11 -> BA-03",
+  "BA-11 -> BA-04",
+  "BA-11 -> BA-05",
+  "BA-11 -> BA-06",
+  "BA-11 -> BA-07",
+  "BA-11 -> BA-08",
+  "BA-11 -> BA-09",
+  "BA-11 -> BA-10"
+ ],
+ "seal_order_tiers": [
+  [
+   "BA-01"
+  ],
+  [
+   "BA-02a",
+   "BA-03",
+   "BA-05",
+   "BA-07",
+   "BA-10"
+  ],
+  [
+   "BA-06"
+  ],
+  [
+   "BA-08"
+  ],
+  [
+   "BA-09"
+  ],
+  [
+   "BA-04"
+  ],
+  [
+   "BA-02b"
+  ],
+  [
+   "BA-11"
+  ]
+ ],
+ "ALL_PASS": true
+}

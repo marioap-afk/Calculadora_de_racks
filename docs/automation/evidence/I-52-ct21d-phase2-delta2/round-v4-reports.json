@@ -1,0 +1,1442 @@
+{
+ "reports": [
+  {
+   "key": "BA04",
+   "r": {
+    "files_written": [
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-04-scenario-catalog-v4.json",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-04-scenario-catalog-v4.md",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-02b-coverage-matrix-v4.md",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba04-v4-checks.py",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba04-v4-checks-output.json",
+     "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\gen_catalog_v4.py (generator, scratchpad only)"
+    ],
+    "findings": [
+     {
+      "id": "CLOSURE BA04-F01",
+      "status": "FIXED",
+      "where": "BA-04 V4 md 1.1, 2.1, 5.2; JSON E4-LEARN-R1-*, LK-*, WU-DRY-*",
+      "note": "AR3-01 mode: CHARACTERIZATION_BUILD, RECORDED_NOT_ENFORCED set, PROVISIONAL_NON_GOVERNING, FIXTURE_INSTANCE only, no EVM/HDM/K-3; every WU-DRY in the same mode (AR3-02)"
+     },
+     {
+      "id": "CLOSURE BA04-F08",
+      "status": "FIXED",
+      "where": "BA-04 V4 md 2.2; JSON E4-LEARN-R1-LM1/LM2 (MODE CHARACTERIZATION_RUN), LK-*",
+      "note": "no phantom EVM; E-12 A/C and S-1..S-3 recorded not enforced"
+     },
+     {
+      "id": "CLOSURE BA04-F09",
+      "status": "FIXED",
+      "where": "JSON U-1, U-3, U-4, U-5, U-6b, EA1-READONLY-OPENS; md 5 outcome claim (checked mechanically: expected_outcome_kinds)"
+     },
+     {
+      "id": "CLOSURE BA04-F13",
+      "status": "FIXED",
+      "where": "JSON PR-SOURCE-SWAP-MODIFY/DELETE, PW-CLONE-*: DESIGNED_STIMULUS, flag NO, target NONE; md 1"
+     },
+     {
+      "id": "CLOSURE BA04-F14",
+      "status": "FIXED",
+      "where": "JSON WR-*-X1 (+EV) S3 difference; U-3/U-4/U-5 targets and E-10 collateral; NC-S5-O6; KS-SL1-TX-MISMATCH E06 at defined sampling points"
+     },
+     {
+      "id": "CLOSURE BA04-F20",
+      "status": "FIXED",
+      "where": "JSON PW-CLONE-WRONG-TYPE: fixture FX-IMP-XREF-HOMONYM, FIXTURE_SPEC_PENDING, BLOCKED_BY K-8, DRAFT",
+      "note": "BA-08 V4 section 12.5 still defines FX-1F-XREF-HOMONYM as 'defined'; see cross-artifact notes"
+     },
+     {
+      "id": "CLOSURE BA04-F24",
+      "status": "FIXED",
+      "where": "JSON GROUPS_SERVED/EVIDENCE_GROUPS_DECLARED/CONTRACT_ASSIGNED_GROUPS; PR-CLOSURE-COMPLETENESS in Q; md 3 (CER-A2 witness only), md 4 (log profiles with counts); U-6 and Q-FPSPEC-VECTORS notes"
+     },
+     {
+      "id": "BA02-F04",
+      "status": "NOT_APPLICABLE",
+      "where": "BA-04 V4 md 9",
+      "note": "listed FIXED in the V3 closure; X0 cells unchanged"
+     },
+     {
+      "id": "BA04V3-01",
+      "status": "FIXED",
+      "where": "BA-04 V4 md 1.1, 2, 2.1, 2.2; JSON six pre-EVM runs",
+      "note": "AR3-01 applied exactly"
+     },
+     {
+      "id": "BA04V3-02",
+      "status": "FIXED",
+      "where": "BA-04 V4 md 4 (DRY rule), 5.2; JSON 157 WU-DRY-*",
+      "note": "WU-DRY for every GOVERNING scenario entering the governed window incl. the 11 evidence scenarios, CL-CLEAN-FXANNBLANK-FP and NC-CLONE-REPLACE; exclusions declared; WU_DRY_RUNS = N_B; counts reported for the decisions entry"
+     },
+     {
+      "id": "BA04V3-03",
+      "status": "FIXED",
+      "where": "JSON WR-{A,D,E,F,G}-X1 and -EV: S2 and S3 difference; WR-SA-X1 S2+S3 difference; WR-SA-X2..X4 S3 difference, S2 equal"
+     },
+     {
+      "id": "BA04V3-04",
+      "status": "FIXED",
+      "where": "JSON U-1 (DESIGNED_STIMULUS + injection), U-3 (S3 difference), U-4 (S3 UNKNOWN), U-5 (E11M FAIL + E10 collateral), U-6b (CER-ABV), EA1 (no product run); INJECTION_COORDINATE set; md 5"
+     },
+     {
+      "id": "BA04V3-05",
+      "status": "FIXED",
+      "where": "JSON WR-F/G-X5..X7 and X5/X6 -EV GROUP E8; every WR-[A-G]-X7 CONTRACT_ASSIGNED_GROUPS SC-B; md 5 counts"
+     },
+     {
+      "id": "BA04V3-06",
+      "status": "FIXED",
+      "where": "JSON NC-S5-O6 (source-definition entity; E08 FAIL at PV unconditional; E12A CER-WIT; E06 NOT_DECLARED and excluded from CONTROLS_EXERCISED; BLOCKED_BY K-3, E6-C4); CER-PERSIST in md 3 and JSON"
+     },
+     {
+      "id": "BA04V3-07",
+      "status": "FIXED",
+      "where": "md 3 and JSON CONDITIONAL_EXPECTATION_RULES (same five rules, checked); CER-A2 witness only; EA2 E12C conditional, A2 as control result"
+     },
+     {
+      "id": "BA04V3-08",
+      "status": "FIXED",
+      "where": "JSON EVIDENCE_GROUPS_DECLARED/CONTRACT_ASSIGNED_GROUPS; PW-CLONE-WRONG-TYPE exercises CLONE; check groups_served_equals_derivation in docs/automation/evidence/I-52-ct21d-ba04-v4-checks.py"
+     },
+     {
+      "id": "BA04V3-09",
+      "status": "FIXED",
+      "where": "md 4 log profiles LP-PW-STOP, LP-PW-REFUSE, LP-P0-STEP3, LP-P0-STEP4, LP-PS, LP-MEASURE, LP-WU-BOUNDARY, LP-CHAR; LOCK in LP-LEARN; counts in LP-EVID; QUALIFICATION_TUPLE defined; KS-* REACH PS",
+      "note": "KS-* regrouped to AB as a consequence (open question 3)"
+     },
+     {
+      "id": "BA04V3-10",
+      "status": "FIXED",
+      "where": "JSON PR-SOURCE-SWAP-NEG-COPY LIBF UNKNOWN (V2.1 19.1)"
+     },
+     {
+      "id": "BA04V3-11",
+      "status": "FIXED",
+      "where": "JSON PW-CLONE-WRONG-TYPE (FX-IMP-XREF-HOMONYM, K-8, DRAFT)",
+      "note": "BA-08 V4 must define the variant (cross-artifact note)"
+     },
+     {
+      "id": "BA04V3-12",
+      "status": "FIXED",
+      "where": "md 4 CLEAN rule (symbolic K); JSON PARAM_03_SAMPLE (9 CL-CLEAN + EA2); counts in md 5 and in this report for the section 213 correction"
+     },
+     {
+      "id": "BA04V3-13",
+      "status": "FIXED",
+      "where": "JSON KS-SL1-TX-MISMATCH E06: PASS at every defined sampling point of V2.1 4.2 (harness transaction lies between two points)"
+     },
+     {
+      "id": "BA04V3-14",
+      "status": "FIXED",
+      "where": "md 1 (DESIGNED_STIMULUS, flag/target rules); JSON; check flags_targets_designed_stimuli"
+     },
+     {
+      "id": "BA04V3-15",
+      "status": "FIXED",
+      "where": "JSON PIN_SLOTS FIXTURE_INSTANCE@L-VAR-DIFF (PW-CLONE-BASE), @L-VAR-PROXY (PR-REC-CLOSURE-UNKNOWN); md 2.1 and 7.2 (K-2 as pin-source dependency)",
+      "note": "BA-11 V4 must register the slots"
+     },
+     {
+      "id": "BA04V3-16",
+      "status": "FIXED",
+      "where": "JSON HDM-CHAR-FX1F/FXANN/FXDIM; md 2.1, 2.2 (order)"
+     },
+     {
+      "id": "BA04V3-17",
+      "status": "FIXED",
+      "where": "JSON Q-I14-Y, Q-I14-X, Q-I14-SILENT-Y, Q-I14-SILENT-X (fixtures FX-1F/FX-2F, mirror vehicle in AR3-01 mode reaching the coordinates); CER-SIL updated",
+      "note": "use of the AR3-01 mode for the vehicle is open question 2"
+     },
+     {
+      "id": "D-01 (scenario part)",
+      "status": "FIXED",
+      "where": "JSON CL-CLEAN-FXANNBLANK-FP (FX-ANN-BLANK, group KS, BLOCKED_BY K-3) and WU-DRY-CL-CLEAN-FXANNBLANK-FP; EV-L-OC-LAYER text"
+     },
+     {
+      "id": "D-04",
+      "status": "NOT_APPLICABLE",
+      "where": "BA-08 V4 section 5 (not my artifact)",
+      "note": "BA-04 V4 cites BA-08 V4 section 5 in the authority of CL-CLEAN-FXANN-FP and CL-CLEAN-FXDIM-FP"
+     },
+     {
+      "id": "D-05 / CLOSURE BA09-02",
+      "status": "FIXED",
+      "where": "BA-04 V4 md 5.2; JSON WU-DRY-*",
+      "note": "as BA04V3-02"
+     },
+     {
+      "id": "D-06",
+      "status": "FIXED",
+      "where": "JSON HDM-CHAR-*; md 2.1, 2.2",
+      "note": "aligned with BA-08 V4 section 11.2 HDM-1..HDM-4"
+     },
+     {
+      "id": "D-19 / BA11V3-13",
+      "status": "FIXED",
+      "where": "md 4 DRY rule; md 7.4 C-9 (WU_DRY_RUNS = N_B, Owner Q-O2, recorded by the Coordinator)"
+     },
+     {
+      "id": "BA11V3-02 (BA-04 edge)",
+      "status": "FIXED",
+      "where": "BA-04 V4 header DEPENDS_ON includes BA-09"
+     },
+     {
+      "id": "BA11V3-04",
+      "status": "FIXED",
+      "where": "BA-04 V4 md 7.1-7.4 (seal blockers only K-3, K-8, Architect rulings; instances and HOST_DEFAULT_MAP before the first governing run; OU-* fixtures execution items EXEC-10)"
+     },
+     {
+      "id": "BA11V3-05",
+      "status": "FIXED",
+      "where": "BA-04 V4 md 1.3; JSON SEALED_AT_RULE and SEALED_AT of all 389 scenarios; check sealed_at_recomputes"
+     },
+     {
+      "id": "BA11V3-11",
+      "status": "NOT_APPLICABLE",
+      "where": "decisions log (not my file)",
+      "note": "correct counts supplied in 'counts'"
+     },
+     {
+      "id": "BA11V3-12",
+      "status": "NOT_APPLICABLE",
+      "where": "BA-10 / decisions (not my files)",
+      "note": "per-rule scenario counts supplied for BA-10 V4"
+     },
+     {
+      "id": "CLOSURE BA02-F05",
+      "status": "FIXED",
+      "where": "BA-02b V4 section 1 rule 1, section 4 (contract-assigned column); BA-04 V4 JSON",
+      "note": "backed by the published check"
+     },
+     {
+      "id": "BA02V3-N01",
+      "status": "FIXED",
+      "where": "BA-02b V4 sections 1 and 4; BA-04 V4 CONTRACT_ASSIGNED_GROUPS"
+     },
+     {
+      "id": "BA02V3-N02",
+      "status": "FIXED",
+      "where": "BA-04 V4 NC-CLONE-REPLACE; BA-02b V4 section 2 CLONE row COVERED_DRAFT with negative control; section 5 check 2"
+     },
+     {
+      "id": "BA02V3-N03",
+      "status": "FIXED",
+      "where": "BA-02b V4 section 2 (S2 secondary none; S3 negatives 30 + 3 conditional = 33; CLONE secondary none; U-3/U-4/U-5 in the evidence column of S3, E11M, E10)"
+     },
+     {
+      "id": "BA02V3-N04",
+      "status": "FIXED",
+      "where": "BA-02b V4 section 1 rules 3 and 6; section 3.2 (E-14/E-15 discharged by the KS-* class; E-12 rows by their required classes)"
+     },
+     {
+      "id": "BA02V3-N05",
+      "status": "FIXED",
+      "where": "BA-02b V4 section 3.1 (29 rows verbatim, four NOT_A_CONTROL rows), section 3 reading of PA-1.4; check ba02b_section3_rows_verbatim"
+     },
+     {
+      "id": "BA02V3-N06",
+      "status": "FIXED",
+      "where": "BA-02b V4 header (AR2-08..AR2-13, AR2-21) and rule 1 (sections 2 and 4)"
+     },
+     {
+      "id": "BA02V3-N07",
+      "status": "FIXED",
+      "where": "BA-04 V4 KS-* (E14/E15 recorded UNDER_CHARACTERIZATION; NO_VERDICT for KR); BA-02b V4 section 4 KR N/A (PA-4)"
+     },
+     {
+      "id": "BA02V3-N08",
+      "status": "FIXED",
+      "where": "BA-02b V4 section 4 (N/A (PA-3) and governing-scenario column)"
+     },
+     {
+      "id": "BA02V3-N09",
+      "status": "FIXED",
+      "where": "BA-02b V4 rule 5, section 2 (S5, E12C COVERED_DRAFT_CONDITIONAL -> NEGATIVE_CONTROL_NOT_EVALUATED at acceptance); BA-04 V4 CER-PERSIST and CER-A2 in both files"
+     },
+     {
+      "id": "BA-02a R-3 / R-4 (readings)",
+      "status": "FIXED",
+      "where": "BA-02b V4 section 0 (BA-02a V3 unchanged; references frozen non-authoritative; dated re-execution recorded outside its bytes)"
+     },
+     {
+      "id": "BA-02a R-7 (informational)",
+      "status": "FIXED",
+      "where": "BA-02b V4 section 2 column CLEAN FREE OF K-3 AND K-8"
+     }
+    ],
+    "summary": "Published BA-04 V4 (JSON + md), BA-02b V4, and a mechanical check with its output. They apply the section 214 decisions (AR3-01..AR3-11, AR3-15, AR3-17, AR3-24, AR3-25, AR3-26, AR3-29, AR3-30) over section 211. The generator is gen_catalog_v4.py, a copy of the V3 generator. It was verified to reproduce V3 byte for byte before editing, and it is deterministic. V3 files and BA-02a V3 are untouched (git diff empty). The check runs 50 checks and all PASS (exit 0). Adversarial mutations were caught: 11 mutated copies each tripped the expected check(s), for example GROUPS_SERVED+SC-B, a removed WU-DRY, a corrupted SEALED_AT, an altered verbatim cell and an EVM pin on a dry run.\n\nKey content:\n- **AR3-01 mode.** A CHARACTERIZATION_BUILD, the RECORDED_NOT_ENFORCED set and PROVISIONAL_NON_GOVERNING are used by E4-LEARN/LK, HDM-CHAR, all WU-DRY, and also EV-L-* (aligned with BA-06 V4 section 9) and the Q-I14-* vehicles. The last two are open questions.\n- **Dry runs.** 157 WU-DRY, one per governing scenario that enters the governed window (the 11 evidence scenarios included), with WU_DRY_RUNS = N_B. Branches that a recorded-not-enforced control would take are the BA-09 V4 residual; no forced branch is used.\n- **New and changed scenarios.** New: NC-S5-O6 as ruled, NC-CLONE-REPLACE, CL-CLEAN-FXANNBLANK-FP, HDM-CHAR-*, and EV-L-OC-TM-READ (from BA-06 V4). Changed: the U-*/EA1 fixes, and the X1/SA exact cells.\n- **Groups and flags.** Wr-F/G at X5..X7 are in group E8, and SC-B is contract-assigned on every X7 cell. DESIGNED_STIMULUS is added, and CONTRACT_ASSIGNED_GROUPS is kept apart from GROUPS_SERVED.\n- **SEALED_AT.** It is the SHA-256 of a canonical serialization: the listed expectation fields, sorted keys, UTF-8, compact separators, no ASCII escaping. The generator computes it and the check recomputes it for all 389 scenarios.\n- **Section 7** is reclassified per AR3-26.\n- **BA-02b V4.** Section 3 quotes the 29 rows in effect verbatim, checked against the contract files, and uses a per-clause discharge rule. The table has N/A columns for evidence groups and KR, and S5 and E12C are marked as conditional rows.\n\nFile hashes (SHA-256 over LF-normalized bytes, computed with Python hashlib on the written files):\n- catalog JSON: 613d0de13e82cf9aea2dda068aac7df4a70b8d45bba9b93f19b633bd20eda088\n- catalog md: 6ea599d9a8e6a24c30e0d6037d8d643fbdb27b6899564ac062b36ce0a5cfdb00\n- BA-02b md: 8ffeae0e28297fbccca8d0ee27d9093ec4616886c07756261445e1f3298c5b25\n- checks .py: 907714b2990c3fd78c364d1672376b2f384d514175afa739e77c05a4a931987c\n- checks output: 639559bc07bd68a5e7f50c0c0e4669922bfbdc38f170d3d83f03b8b0aae269b3\n\nThese are informational. They are not CANDIDATE_HASH values and are not written into any artifact.",
+    "counts": "BA-04 V4 has 389 scenarios: 232 own and 157 WU-DRY. V3 had 225 own + 145 WU-DRY = 370; §213 said '219 + 151', which is wrong.\n\n**By RUN_GOVERNANCE:** GOVERNING 222, NON_GOVERNING_BY_DESIGN 166 (157 WU-DRY + 6 E4-LEARN/LK + 3 HDM-CHAR), EXPLORATORY_NON_GOVERNING 1 (E6-C4).\n\n**By STATUS:** DRAFT 158, SEALED_PENDING_PIN_CANDIDATE 189, SEALED_CANDIDATE 41, EXPLORATORY_NON_GOVERNING 1.\n\n**By BUILD_UNDER_TEST:** CHARACTERIZATION_BUILD 312 (125 of them are governing scenarios outside the AR3-01 mode), PRODUCT_BUILD 65, NONE 12 (synthetic). AR3-01-mode scenarios: 187.\n\n**By GROUP:** AB 6, CL 1, E10 1, E11M 2, E12-L 17, E12-V 6, E4 4, E6 9, E8 14, E9 1, EA1 1, EA2 1, HDM 3, ID-A 3, KS 11, LK 6, OU 11, PP 1, PR-FRESH 4, PR-REC 3, PW 1, PW-CLONE 6, Q 27, S1 1, SC-A 49, SC-B 32, U-1..U-8 8, U-6b 1, WU 159.\n\n**Blockers:** K-3 134, K-8 32, E6-C4 1.\n\n**Pin slots:** FIXTURE_INSTANCE 351, E04_ADMITTED_SET 157, LOCK_MODE 168, EVM_FROZEN 134, HOST_DEFAULT_MAP 134.\n\n**By repetition rule (for BA-10 V4):**\n- DEFAULT: N_A 139, N_B 3\n- CLEAN max(N_A, ceil(n/K)): 10, with K = 10\n- VALIDATE max(N_A, PARAM-02): 3\n- EVIDENCE: 35\n- EVIDENCE_STRICT: max(N_A, ..) 2 (U-3, U-4); max(N_B, ..) 1 (U-5)\n- LEARN (PARAM-02): 17\n- SYNTH: 12\n- CHAR (non-governing characterization): 10\n- DRY (WU_DRY_RUNS = N_B): 157\n\n**Number of WU-DRY:** 157.\n\n**CL-CLEAN ids (9):** CL-CLEAN-FX1F-F0, CL-CLEAN-FX1F-P, CL-CLEAN-FX1F-FP, CL-CLEAN-FX2F-ALL, CL-CLEAN-FX4F-ALL, CL-CLEAN-FXANN-FP, CL-CLEAN-FXANNBLANK-FP, CL-CLEAN-FXDIM-FP, CL-CLEAN-FXIMP-FP.\n\n**PARAM-03 sample:** these 9 plus EA2-DEFERRED-EVENTS (K = 10).\n\n**BA-02b V4:**\n- 30 controls: 28 COVERED_DRAFT and 2 COVERED_DRAFT_CONDITIONAL (S5: NC-S5-O6; E12C: NC-E12C plus 18 CER-WIT cells).\n- 29 section-3 rows in effect (22 from V2.1 31, 7 from V2.2 PA-1.4), all MET_IN_DRAFT.\n- SC-B has 13 contract-assigned scenarios; PR-REC has 1.\n\n**Checks:** 50 of 50 PASS.",
+    "decisions_applied": [
+     "AR3-01: characterization build, RECORDED_NOT_ENFORCED set [E-03, E-04, E-12 phase A, E-12 phase C, S-1, S-2, S-3], PROVISIONAL_NON_GOVERNING, MODE CHARACTERIZATION_RUN for E4-LEARN-R1-*, no EVM/HOST_DEFAULT_MAP/K-3 dependency (md 1.1, 2, 2.2)",
+     "AR3-02: WU-DRY for every GOVERNING scenario entering the governed window incl. evidence-group scenarios; none for non-governing/learning/qualification/no-product-run (declared md 5.2); dry runs in AR3-01 mode with FIXTURE_INSTANCE slots only",
+     "AR3-03: NOT_RUNNABLE leaves the cell uncovered; BA-02b rule 5 and COVERED_DRAFT_CONDITIONAL -> NEGATIVE_CONTROL_NOT_EVALUATED; CER texts updated",
+     "AR3-04: NC-S5-O6 on a source-definition entity (SL-S, PRE_COMMAND_STATE_RECORD), E-08 FAIL at PV unconditional, E-12A conditional on the witness, E-06 not declared, BLOCKED_BY E6-C4, CER-PERSIST registered",
+     "AR3-05: DESIGNED_STIMULUS field; designed stimuli flag NO; YES only with target; conditional E-12 phase C cells target E12C",
+     "AR3-06: CONTRACT_ASSIGNED_GROUPS (evidence only); PR-CLOSURE-COMPLETENESS to group Q with PR-REC; PW-CLONE-WRONG-TYPE exercises CLONE; mechanical check of the derivation published",
+     "AR3-07: NC-CLONE-REPLACE on FX-IMP-NESTED, CLONE FAIL, stop at PREPARE-W, O6, YES target CLONE, BLOCKED_BY [K-8]",
+     "AR3-08: X1 cells S-2 and S-3 difference; exact silent cells",
+     "AR3-09: U-1 designed stimulus; U-3 S3 difference; U-4 S3 UNKNOWN; U-5 E11M FAIL + E10 collateral; U-6b O2/O6 by CER-ABV; EA1 no product run",
+     "AR3-10: Wr-F/G X5..X7 and EV variants in group E8; SC-B contract-assigned on every X7 cell",
+     "AR3-11: HDM-CHAR-FX1F/FXANN/FXDIM (NON_GOVERNING_BY_DESIGN, GROUP HDM, GROUPS_SERVED [], AR3-01 mode, after LOCK_MODE selection, before any governing S-1..S-3 run), aligned with BA-08 V4 section 11.2",
+     "AR3-15: CL-CLEAN-FXANNBLANK-FP on FX-ANN-BLANK and WU-DRY-CL-CLEAN-FXANNBLANK-FP",
+     "AR3-17: Q-FPSPEC-VECTORS evaluates slot-unit vectors on binary64 instances generated from BA-08 V4 section 10; tuple binds BA-08 V4 hash and the instance file hash",
+     "AR3-24: WU_DRY_RUNS = N_B; MAX_ATTEMPTS per repetition slot (DEFAULTS); strictest pair on every governing scenario serving a class-A/B group (DEFAULT, CLEAN, VALIDATE, EVIDENCE_STRICT); PARAM-03 sample = 9 CL-CLEAN + EA2, symbolic K",
+     "AR3-25: SEALED_AT = SHA-256 of the canonical serialization of the expectation fields, computed in the bytes; artifact-level sealing; DEPENDS_ON header with BA-09",
+     "AR3-26: section 7 reclassified (seal blockers K-3, K-8, Architect rulings; pins before first governing run; OU-* fixtures execution items)",
+     "AR3-29: BA-02b V4 per the rules (N/A columns for KR and evidence groups; verbatim section 3 with the four NOT_A_CONTROL rows; conditional negative controls); BA-02a unchanged",
+     "AR3-30: minors BA04V3-07..17 and BA02V3-N03..N09"
+    ],
+    "open_questions": [
+     "Dry-run branches (AR3-02 consequence): with the dry runs in the AR3-01 mode, a source whose declared refusal or abort comes from a RECORDED_NOT_ENFORCED control (NC-E12A, NC-E04-R2, NC-E03-NOT-HELD, NC-E03-REACQUIRE, NC-S1-Y1, NC-S1-Y1-SILENT) is not traversed on that branch. V4 follows the declared residual of BA-09 V4 section 4 and does not force the branch with a harness switch. Should a forced branch be required?",
+     "AR3-01 scope: V4 uses the AR3-01 mode as the vehicle of governing evidence runs, namely the learning micro-scenarios EV-L-* (BA-06 V4 section 9 already puts them on the characterization build with E-12 A/C recorded, not enforced) and the Q-I14-* qualification vehicles (BA04V3-17). AR3-01 names only the pre-EVM characterization runs. Is this use confirmed?",
+     "KS-* and group KS: the seam-failure scenarios abort at the seam before PV (REACH PS, per BA04V3-09), so they reach neither S-1 nor S-2, the only registry controls whose AFFECTED_GROUPS include KS. V4 files them under AB (S-5) and KR (NO_VERDICT). How should seam failure typing contribute to KS?",
+     "AR3-04 vs AR3-26: NC-S5-O6 is BLOCKED_BY E6-C4, which only a host characterization can answer; AR3-26 lists only K-3, K-8 and the Architect rulings as seal blockers. V4 reads it as follows: E6-C4 does not block the catalog seal, and NC-S5-O6 stays DRAFT with S-5 NEGATIVE_CONTROL_NOT_EVALUATED. Is this reading confirmed?",
+     "V2.2 PA-1.4 says 'replaced or added rows' without saying which. BA-02b V4 reads every PA-1.4 row cumulatively with the V2.1 31 row of the same control, which keeps 'validation plans structurally outside the learning corpus' for E-12. Is this reading confirmed?",
+     "Governing runs on the characterization build: V2.1 10.6 places the I-14 writers in a characterization build, so V4 gives BUILD_UNDER_TEST = CHARACTERIZATION_BUILD to 125 governing scenarios whose injections need build switches. It binds that build through CHARACTERIZATION_TUPLE as a BUILD_BOUND field ('any payload / observer / harness DLL', V2.1 2.1), so the baseline tuple carries two build identities. Is this reading of V2.1 2.1 and 10.6 confirmed?"
+    ],
+    "cross_artifact_notes": [
+     "BA-08 V4 section 12.5: still defines FX-1F-XREF-HOMONYM as 'defined', but it cannot be built (BA04V3-11). BA-04 V4 uses FX-IMP-XREF-HOMONYM for PW-CLONE-WRONG-TYPE: an FX-IMP base in which one required name that FX-IMP lacks as an ordinary block definition is taken by a resolved attached external-reference record; SPECIFICATION_OPEN, K-8. BA-08 V4 must define this variant (and use it in its K-8 list).",
+     "BA-08 V4 section 4, row SL-R: lists KS-SL4-NEG-DET as coverage. In BA-04 V4 the KS-* scenarios abort at the seam before PV (REACH PS, GROUP AB), so KS-SL4-NEG-DET covers the SL-4 transform refusal, not an SL-R comparison.",
+     "BA-08 V4 Q-HDM-1: the NOTE of CL-CLEAN-FXANNBLANK-FP records that the created layer's fields other than Name and Color depend on HOST_DEFAULT_MAP entries that no named HDM-CHAR scenario produces. If the Architect adopts the proposed extra run (HDM-CHAR-FXANN on FX-ANN-BLANK, or a fourth HDM-CHAR scenario), BA-04 needs a new version.",
+     "BA-08 V4 K-10: names only HDM-CHAR, E4-LEARN, LK and WU-DRY as users of the characterization build. In BA-04 V4, 312 scenarios use it: the AR3-01-mode runs (187, including EV-L-* and Q-I14-*) and 125 governing scenarios whose injections need build switches (WR-*, Y and harness-fault negative controls, KS-*, canary loads, swap pause points, NC-CLONE-REPLACE).",
+     "BA-09 V4 section 4: its dry-run rule (GOVERNING, CHARACTERIZATION_RUN or VALIDATION, REACH P0..CP) would include the Q-I14-* qualification vehicles (REACH CP, AR3-01 mode). BA-04 V4 excludes them as qualification runs (AR3-02), so the BA-09 exclusions should name AR3-01-mode qualification vehicles. BA-04 V4 follows the BA-09 residual for recorded-not-enforced branches. BA-04 has no 'PP' reach value (PW covers it).",
+     "BA-06 V4: BA-04 V4 carries EV-L-OC-TM-READ, giving 16 EV-L-OC-* plus EV-L-COMPOSED = 17. The learning runs use the full AR3-01 set (E-03, E-04, E-12 A/C, S-1..S-3 recorded, not enforced), a superset of the E-12 A/C of BA-06 V4 section 9, which leaves the other controls to BA-04.",
+     "BA-10 V4: PARAM-03 sample = the 9 CL-CLEAN-<fixture> scenarios + EA2-DEFERRED-EVENTS, so K = 10 in this draft (keep it symbolic). BA-10 V4 needs a rule for the non-governing 'CHAR' runs (10: E4-LEARN 2, LK 4, HDM-CHAR 3, E6-C4 1). The EVIDENCE_STRICT and VALIDATE rules apply the strictest pair. The cost memo should use the per-rule counts given in 'counts'. MAX_ATTEMPTS is defined per repetition slot in BA-04 DEFAULTS.",
+     "BA-11 V4: register pin slots FIXTURE_INSTANCE@FX-ANN-BLANK, @FX-IMP-XREF-HOMONYM, @L-VAR-DIFF and @L-VAR-PROXY. The HOST_DEFAULT_MAP source is HDM-CHAR-FX1F/FXANN/FXDIM. BA-04 DEPENDS_ON = BA-01, BA-02a, BA-03, BA-05, BA-06, BA-08, BA-09, BA-10, and BA-02b DEPENDS_ON = BA-02a, BA-04. SEALED_AT is inside the BA-04 bytes (AR3-25). BA-04 is two files (json + md).",
+     "BA-05 V4: Q-FPSPEC-VECTORS evaluates the slot-unit semantic vectors on binary64 instances that the harness generates from BA-08 V4 section 10; its tuple binds the BA-05 V4 and BA-08 V4 artifact hashes and the instance-file hash. Q-SIGNED-ZERO cites 'the signed-zero and non-finite vectors of BA-05 V4' without vector ids.",
+     "Decisions log (next entry, section 213 correction): V3 = 225 own + 145 WU-DRY = 370. V4 = 232 own + 157 WU-DRY = 389, with 166 NON_GOVERNING_BY_DESIGN.",
+     "BA-02a V3 is unchanged (LF SHA-256 acb5e01d...e3c3, as recomputed by the check) and is the registry input of BA-02b V4 and of the check."
+    ]
+   }
+  },
+  {
+   "key": "BA10",
+   "r": {
+    "files_written": [
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-10-parameter-sheet-v4.md",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-cost-memo-v4.md",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-cost-memo-v4.py",
+     "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\gen_ba10v4.py (generator; copy of gen_ba10v3.py, edited; it no longer reads any catalog)",
+     "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\gen_costmemo_v4.py (generator of the memo .md; it runs the .py twice, checks the outputs are byte-identical, embeds the output verbatim and cites the script hash)"
+    ],
+    "findings": [
+     {
+      "id": "BA10-V3-01",
+      "status": "FIXED",
+      "where": "BA-10 V4 2.1 PARAM-03 row; 2.2 PARAM-03 (sample membership, K symbolic, combination rule); section 1 'Symbolic sheet'; header DEPENDS_ON",
+      "note": "The sample is the governing CL-CLEAN-<fixture> scenarios plus EA2-DEFERRED-EVENTS. CL-CLEANUP-CHECK and EA1-READONLY-OPENS are excluded. K = the sample size in the sealed catalog; BA-10 holds no value for it. Each member runs max(N_strict(s), ceil(n/K)), which guarantees at least n runs. BA-04 V4 already applies it (CLEAN rule, PARAM_03_SAMPLE, K = 10 in the memo)."
+     },
+     {
+      "id": "BA10-V3-02",
+      "status": "FIXED",
+      "where": "BA-10 V4 2.1 PARAM-04 row; 2.2 PARAM-04 rules 1-7; 2.2 Terms (repetition slot)",
+      "note": "m is counted per repetition slot. Every attempt of the slot counts, contamination included. A slot that exhausts m leaves the scenario without a required governing run, so its groups cannot be PASS (NOT_EVALUATED under V2.1 1.3/1.4/1.6 and V2.2 PA-3). Non-governing runs have no slot."
+     },
+     {
+      "id": "BA10-V3-03",
+      "status": "FIXED",
+      "where": "BA-10 V4 2.2 PARAM-05 table; 2.1 PARAM-05 row",
+      "note": "The class-defining attributes are a closed list of six: MachineGuid, OS version and build, AutoCAD product identity, AutoCAD profile identity, SECURELOAD, TRUSTEDPATHS. The class field itself and the manifest module entries are excluded. The observation is a read-only host read with no instrument and no manifest. The canonical serialization is now RFC 8785 JCS, defined inside BA-10; it no longer cites BA-07. The policy stays a proposal."
+     },
+     {
+      "id": "BA10-V3-04",
+      "status": "FIXED",
+      "where": "BA-10 V4 2.1 WU_DRY_RUNS row; 2.2 WU_DRY_RUNS; section 5 Q-O2",
+      "note": "WU_DRY_RUNS = N_B (Owner, Q-O2; recorded by the Coordinator; not a Coordinator value). BA-09 V4 (section 4 'Count', W-2) and BA-04 V4 (DRY rule, C-9) already use the same wording. I checked this; I did not edit them."
+     },
+     {
+      "id": "BA10-V3-05",
+      "status": "FIXED",
+      "where": "BA-10 V4 2.2 Terms (N_strict, no ordering of N_A and N_B assumed); 2.3 symbolic expression split into c_A/c_AB/c_B; memo sections 1, 3 and 4 (blocks B, C)",
+      "note": "BA-10 no longer carries any totals. The memo script recomputes the V3 table from the V3 catalog: 9377/4562/2315/1352 by its formula against 9358/4543/2296/1333 printed, a constant 19 lower because the table charged LEARN at 19*N_det. Decisions section 214.1 already records the corrected PH2D-1 figure."
+     },
+     {
+      "id": "BA10-V3-06",
+      "status": "FIXED",
+      "where": "BA-10 V4 section 5 'Consequences to weigh' (qualitative); memo section 3 and block D (figures)",
+      "note": "TOTAL scales roughly with 1/p (halving p: +103% to +119%) and logarithmically with 1/alpha (halving alpha: +21% to +28%). u and c act only through ceil(n/K) above N_strict: there is no effect at any of the four illustrative rows, and u* is 0.0103/0.0212/0.0324/0.0559."
+     },
+     {
+      "id": "BA10-V3-07",
+      "status": "FIXED",
+      "where": "BA-10 V4 2.1 PARAM-02 row; 2.2 PARAM-02; rules LEARN and VALIDATE; 2.3",
+      "note": "The reference depends on use. For learning it is the first run of the micro-scenario, so N_det+1 runs. For validation it is f(plan) of the frozen EVM, so N_det runs with no extra run, raised to N_strict by the floor."
+     },
+     {
+      "id": "BA10-V3-08",
+      "status": "FIXED",
+      "where": "BA-10 V4 2.2 Terms, Floor, repetition-rule table, CHAR_RUNS, EVIDENCE_REPETITION; 2.1 PARAM-01 and CHAR_RUNS rows; section 6 Q-A1",
+      "note": "The N_strict floor now applies to DEFAULT, CLEAN, VALIDATE and EVIDENCE_STRICT. PR-CLOSURE-COMPLETENESS is in group Q, with PR-REC contract-assigned (AR3-06), so it stays under EVIDENCE; this is open question Q-A1. The non-governing CHAR runs get their own derived count, CHAR_RUNS, with a stated intent: N_A for runs that feed a pin or selection, EVIDENCE_REPETITION for exploratory runs."
+     },
+     {
+      "id": "BA10-V3-09",
+      "status": "FIXED",
+      "where": "BA-10 V4 section 4 heading and new Gate column",
+      "note": "Only the tolerance row is part of BASE-18. Pins live in their own pin records and are fixed before the first governing run that uses them. The E-04 route falls under BASE-3 with K-5 ratification and AR3-14."
+     },
+     {
+      "id": "BA10-V3-10",
+      "status": "FIXED",
+      "where": "BA-10 V4 section 1 second bullet; 2.1 PARAM-05 row; 2.2 PARAM-05; section 5 intro and 'Who answers' column",
+      "note": "Q-O5 is answered by the Owner, or by the CAD manager if the Owner designates one. Q-O1..Q-O4 are answered by the Owner only."
+     },
+     {
+      "id": "CLOSURE BA10-01",
+      "status": "FIXED",
+      "where": "as BA10-V3-01"
+     },
+     {
+      "id": "CLOSURE BA10-02",
+      "status": "FIXED",
+      "where": "residual 1: BA10-V3-08; residual 2: BA10-V3-05 and the cost memo; residual 3: BA10-V3-04"
+     },
+     {
+      "id": "CLOSURE BA10-03",
+      "status": "FIXED",
+      "where": "as BA10-V3-03; the label no longer depends on the EXEC-11 manifest"
+     },
+     {
+      "id": "CLOSURE BA10-04",
+      "status": "FIXED",
+      "where": "as BA10-V3-07"
+     },
+     {
+      "id": "CLOSURE BA10-06",
+      "status": "NOT_APPLICABLE",
+      "where": "BA-10 V4 section 7 row",
+      "note": "Refuted by the Architect (section 214.1). Its remaining part belongs to BA10-V3-03, which is FIXED."
+     },
+     {
+      "id": "D-19",
+      "status": "FIXED",
+      "where": "BA-10 V4 2.1 WU_DRY_RUNS row and 2.2 WU_DRY_RUNS (BA-10 side)",
+      "note": "The reworded text itself belongs in BA-09. BA-09 V4 (another implementer) already reads 'WU_DRY_RUNS = N_B (Owner, Q-O2; recorded by the Coordinator)' in section 4 'Count' and W-2, and marks D-19 as assigned to BA-10."
+     },
+     {
+      "id": "BA11V3-12",
+      "status": "FIXED",
+      "where": "memo section 1 and block C; BA-10 V4 2.3 is symbolic",
+      "note": "The decisions record is not mine and I did not touch it; section 214.1 already records the corrected PH2D-1 figures."
+     },
+     {
+      "id": "BA11V3-13",
+      "status": "FIXED",
+      "where": "BA-10 V4 2.1, 2.2, section 5 (single authority: Owner Q-O2, recorded by the Coordinator)",
+      "note": "BA-09 V4 and BA-04 V4 are already aligned."
+     }
+    ],
+    "summary": "I published BA-10 V4 and a non-sealed cost memo (.md plus an arithmetic .py). BA-10 V4 applies AR3-24 in full, plus AR3-25, AR3-06 and AR3-30, with section 211 where section 214 does not change it. It is now purely symbolic and does not depend on BA-04: it holds no count, no K and no total. Its generator (scratchpad gen_ba10v4.py, copied from gen_ba10v3.py) reads no catalog.\n\nWhat V4 defines:\n- A repetition-rule vocabulary derived from scenario properties: DRY, LEARN, CHAR, CLEAN, SYNTH, VALIDATE, EVIDENCE, EVIDENCE_STRICT, DEFAULT. The memo checks the derivation against the REPETITION field of the V4 catalog: all 389 scenarios agree.\n- N_strict = the largest N over the classes served, with no ordering of N_A and N_B assumed. It is a floor for every governing scenario of groups A or B.\n- WU_DRY_RUNS = N_B, owned by the Owner through Q-O2.\n- CHAR_RUNS for non-governing characterization, with a stated intent.\n- PARAM-02 reference by use; PARAM-03 sample with symbolic K; PARAM-04 counted per repetition slot, with the consequence of an exhausted slot; PARAM-05 as a closed list of six attributes with its own RFC 8785 serialization and a read-only observation.\n- Section 4 gates split out (only the tolerances are in BASE-18); Q-O5 authority; the Owner questions are marked NOT ASKED until the V4 review.\n- Section 6 holds open question Q-A1; section 7 is the Delta V4 table. The V3 sections 1-5 keep their numbers.\n\nThe memo script reads the V4 catalog JSON. It prints the SHA-256 of the catalog's LF-normalized bytes, 613d0de13e82cf9aea2dda068aac7df4a70b8d45bba9b93f19b633bd20eda088, which matches the catalog implementer's report. It evaluates the four V3 illustrative rows, labels them ILLUSTRATIVE, and recomputes V3: 9377, not 9358. It shows the V3→V4 decomposition, the sensitivities (N_B, EVIDENCE_REPETITION, K, u/c with u*, alpha, p, MAX_ATTEMPTS worst case) and the size of the alternative reading in Q-A1. Its output is deterministic (two runs, byte-identical) and is embedded verbatim.\n\nFile hashes, computed with Python hashlib as SHA-256 over the LF-normalized bytes of the written files (informational only, not CANDIDATE_HASH values):\n- BA-10 V4 md: 512dac962c09fe21f70194c3880282b2068daaf9676a8740073aacc76923b963\n- memo md: f8893d2c54312461efc9d4b818ddcc991f18da74f484646943224f118e9245eb\n- memo py: 4798e668b6a7ddcd966abc00c5ed07357e6dcc6aa68b3af6c1ab2eaa551fa401\n\nThe V3 blob id cited in the header (d4e0ac99ff85912338c1ca56f9e655690fd44bd4) comes from git rev-parse HEAD:<V3 path>. The V2 and V3 BA-10 files are untouched (git diff is empty); I made no git writes, touched no AutoCAD and set no UNSET value.",
+    "counts": "These are ILLUSTRATIVE figures from the memo, not decisions. Assumptions: one (p, alpha) pair for both classes, p_det = p, alpha_det = alpha, EVIDENCE_REPETITION = 1, K = 10.\n\nV4 totals by row (p/alpha/u/c):\n- 0.10/0.05/0.05/0.95: 9954 = G 5139 governing slots + D 4815 non-governing (4553 dry, 262 CHAR)\n- 0.20/0.05/0.10/0.95: 4839\n- 0.30/0.10/0.10/0.90: 2452\n- 0.50/0.10/0.20/0.90: 1429\n\nV3 check: the V3 formula gives 9377/4562/2315/1352; the V3 table printed 9358/4543/2296/1333 (19 lower in every row).\n\nV3 to V4 at row 1: +577 in total:\n- dry runs +348\n- DEFAULT+CHAR +88\n- evidence rules +85\n- CLEAN +29\n- LEARN+VALIDATE +27\n\nScenarios per rule, as derived by BA-10 V4 and matching the catalog for all 389:\n- DEFAULT 142 (25 class-A only, 114 mixed, 3 class-B only)\n- CLEAN 10, VALIDATE 3, LEARN 17, EVIDENCE 35\n- EVIDENCE_STRICT 3 (1 class-A only, 1 mixed, 1 class-B only)\n- SYNTH 12, DRY 157\n- CHAR 10 (9 feed a pin or selection, 1 exploratory)\n\nSensitivities (row-independent unless noted):\n- N_B: -161 runs per unit below N_A; +289 per unit above N_A.\n- EVIDENCE_REPETITION: +36 per unit.\n- K+1: +2N (+58 at row 1); +48 where n dominates (row 1 with u = 0.01).\n- u*: 0.0103, 0.0212, 0.0324, 0.0559 for the four rows.\n- MAX_ATTEMPTS worst case: G*m (5139*m at row 1).\n- Q-A1 alternative reading: 14 scenarios change class composition; +28 runs at row 1 (+41 if N_B = N_A + 1).\n- 128 mixed-class scenarios carry an 'N_A' label in the catalog.",
+    "decisions_applied": [
+     "AR3-24: WU_DRY_RUNS = N_B (Owner Q-O2, recorded by the Coordinator); MAX_ATTEMPTS per repetition slot, every attempt counts, an exhausted slot means no PASS; the PARAM-03 sample is the governing CL-CLEAN-<fixture> scenarios plus EA2-DEFERRED-EVENTS, with symbolic K; PARAM-05 has explicit attributes, excludes the class field and the module entries, uses a read-only observation with no instrument and no manifest, and Q-O5 goes to the Owner or the CAD manager the Owner designates; PARAM-02 reference by use; strictest-pair floor on every governing scenario of groups A or B; corrected totals and real sensitivities are in the memo; the memo is not asked before the V4 review",
+     "AR3-25: DEPENDS_ON = BA-01 only, kept separate from PREREQUISITES (gate: before candidate); no edge to BA-04; the machine-attribute observation belongs to the future non-governing host gate planned under BASE-18",
+     "AR3-06: contract-assigned groups carry evidence and never a PASS; PR-CLOSURE-COMPLETENESS is in group Q, so it stays under EVIDENCE (see Q-A1)",
+     "AR3-01/AR3-02/AR3-11: non-governing characterization (E4-LEARN-R1-*, LK-*, HDM-CHAR-*) and dry runs have no repetition slot",
+     "AR3-14/AR3-26: section 4 gates (the E-04 route under BASE-3 with K-5; pins fixed before the first governing run)",
+     "AR3-30: minor fixes (BA10-V3-09)",
+     "AR2-28 and AR2-43 (section 211) kept where section 214 does not change them"
+    ],
+    "open_questions": [
+     "Q-A1 (in BA-10 V4 section 6): do CONTRACT_ASSIGNED_GROUPS enter the strictest pair N_strict? AR3-06 says a scenario can 'serve' a contract-assigned group as evidence, never PASS. AR3-24 applies the strictest pair to 'every governing scenario that serves groups A or B'. BA-10 V4 reads 'serves' as GROUPS_SERVED (AR2-08), so contract-assigned groups are excluded. Under the other reading, PR-CLOSURE-COMPLETENESS would run max(N_A, EVIDENCE_REPETITION) times, and the 13 X7/X8/X0 cells with SC-B assigned by contract would run max(N_A, N_B) times. That is +28 runs at row 1 with N_B = N_A (memo block E).",
+     "Lower priority: are the repetitions of non-governing characterization runs (the CHAR rule) a V2.1 21.7 'repetitions per group' MUST_FIX parameter needing their own Owner pair? BA-10 V4 took the BA10-V3-08 option 'state the intent' and sets CHAR_RUNS = N_c, the N of the class of the control that consumes the pin or selection (N_A today), and EVIDENCE_REPETITION for exploratory runs. No new Owner question is added. The Architect may want to confirm this."
+    ],
+    "cross_artifact_notes": [
+     "BA-04 V4: the DEFAULT rule text ('N_A if any class-A group, else N_B') and the per-scenario 'N_A' labels on 128 mixed-class scenarios (114 DEFAULT, 10 CLEAN, 3 VALIDATE, 1 EVIDENCE_STRICT) equal the BA-10 V4 strictest pair max(N_A, N_B) only while N_A >= N_B. BA-10 V4 assumes no ordering (BA10-V3-05). Suggest writing N_strict, or max(N_A, N_B) for mixed-class scenarios.",
+     "BA-04 V4: the CHAR rule points to 'the repetition that BA-10 V4 assigns'. BA-10 V4 names it CHAR_RUNS: N_A for the 9 runs that feed a pin or selection (E4-LEARN-R1-*, LK-*, HDM-CHAR-*) and EVIDENCE_REPETITION for the exploratory E6-C4. None of these runs has a repetition slot.",
+     "BA-04 V4: 'PARAM-02 validation count' in the VALIDATE rule = N_det (the reference is f(plan) of the frozen EVM, no extra run); LEARN = N_det + 1. In BA-10 V4, LEARN takes precedence over CHAR, so learning micro-scenarios keep PARAM-02 even if BA-04 open question 2 makes EV-L-* non-governing (they would then have no slots and count in D).",
+     "BA-04 V4: the memo derives every scenario's rule from its properties under BA-10 V4 section 2.2 and matches the REPETITION field for all 389 scenarios (memo block A.1).",
+     "BA-11 V4: BA-10 row DEPENDS_ON = BA-01 only; there is no BA-07 edge either, because the PARAM-05 serialization is now RFC 8785 defined inside BA-10 (V3 cited BA-07 V3 section 4). PREREQUISITES (gate before candidate): Q-O1..Q-O5 (Q-O5 by the Owner or the CAD manager the Owner designates); the Coordinator's PARAM-04 and EVIDENCE_REPETITION plus the recording of N_A, N_B, N_det and n; the machine-attribute observation (future non-governing host gate under BASE-18). The BASE-18 row should list WU_DRY_RUNS as Owner-derived (Q-O2), not as a Coordinator value. The cost memo is not a registry entry.",
+     "BA-09 V4: already aligned (section 4 'Count', W-2, and its D-19/BA11V3-13 rows). No change needed.",
+     "Coordinator (next decisions entry; not a file of mine): section 214.1 already corrects PH2D-1 (9377). The V4 illustrative total at row 1 is 9954. It is not directly comparable to 9377 because the catalog and rules changed; the decomposition is in memo block C.1. Per AR3-24, neither the memo nor Q-O1..Q-O5 goes to the Owner until the V4 review.",
+     "BA-10 V4 section 4 points to BA-08 V4 section 10 (tolerances), BA-08 V4 section 8 (E-04 route) and BA-07 V4 section 5.1 (pin records: RECORDED -> RATIFIED -> ANCHORED). These are informative pointers, not dependencies; if those artifacts renumber, BA-10 needs a touch-up.",
+     "The worktree has an uncommitted modification to docs/initiatives/I-52-ct21d-authority-contract-v2.4.md from another implementer. I did not touch it."
+    ]
+   }
+  },
+  {
+   "key": "BA05",
+   "r": {
+    "files_written": [
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-05-fingerprint-specification-v4.md",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-fpspec-v1-vectors-v4.gen.py",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-fpspec-v1-vectors-v4.json",
+     "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\gen_ba05v4.py (document generator, scratch)",
+     "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\chk_ba05v4.py (mechanical checks, scratch)",
+     "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\indep_ba05v4.py (independent encoder, scratch)"
+    ],
+    "findings": [
+     {
+      "id": "BA05-F08 (closure remnant)",
+      "status": "FIXED",
+      "where": "V4 md 3.3 and 3.3.1; JSON semanticVectors",
+      "note": "SV-04 now uses a valid design, {\"Levels\":[],\"futureKey\":1} in a bay, and is labelled wire form. SV-01..04, SV-08 and SV-12 are wire JSON. SV-09 names concrete classes (AcDbBlockReference expected, AcDbProxyEntity persisted). SV-06/07/10/11 are written in slot units."
+     },
+     {
+      "id": "BA05-F09 (closure remnant)",
+      "status": "FIXED",
+      "where": "V4 md header (DEPENDS_ON), 3.1, 6 (L-2 retired)",
+      "note": "BA-05 now carries no tolerance value. The TOL_SCALE row points to BA-08 V4 section 10 for value, rule and status."
+     },
+     {
+      "id": "BA05V3-N01",
+      "status": "FIXED",
+      "where": "V4 md 3.1, 3.3, 3.3.1; JSON semanticVectors + semanticSlotInstanceRule",
+      "note": "Applied AR3-17. SV-06 = expected + 0.5*TOL_LENGTH (EQUAL). SV-07 = expected + 2*TOL_LENGTH (DIFFERENT). SV-10 = 2pi - 0.5*TOL_ANGLE (EQUAL). SV-11 = (tan(2*TOL_NORMAL),0,1) (DIFFERENT). The Q-FPSPEC-VECTORS harness generates the binary64 instances from the sealed BA-08 section 10 values: round-to-nearest-even, an exact-arithmetic check, and INVALID if the check fails. A regex scan confirms that the md, JSON and gen.py contain no tolerance number."
+     },
+     {
+      "id": "BA05V3-N02",
+      "status": "FIXED",
+      "where": "V4 md 3.1 table and 3.1.1 ANGLE_DIFF_LE",
+      "note": "3.1 now names exactly BA-08's slots per value class: TOL_TEXT_HEIGHT for text heights, TOL_DIM for dimension points. ANGLE_DIFF_LE uses the rule of the slot NORM_ANGLE, which is written only in the kind baseline. Where N02 said 'define by reference to BA-08', AR3-17 prevails: NORM_ANGLE is referenced as a slot, like the values under AR2-35, so no BA-05 -> BA-08 edge is created."
+     },
+     {
+      "id": "BA05V3-N03",
+      "status": "FIXED",
+      "where": "V4 md 2.3 (all field tables), gen_ba05v4.py cell()",
+      "note": "A literal pipe is now escaped as \\| in every table cell; the V3 generator had replaced it with '/'. A scripted check (chk_ba05v4.py) parsed all 42 field tables, 1329 cells, and after unescaping found every cell identical to SCHEMAS."
+     },
+     {
+      "id": "BA05V3-N04",
+      "status": "FIXED",
+      "where": "V4 md 2.1.2; gen.py RB_KIND_RANGES/RB_HANDLE_CODES/rb_value",
+      "note": "Applied AR3-21. Codes 5, 105 and 1005 are UNKNOWN. Point codes 10-18, 110-112, 210 and 1010-1013 are inline POINT3D. A host value of the wrong type for its code range is UNKNOWN. New vectors: EV-76 (code 5 UNKNOWN), EV-77 (POINT3D digest), EV-78 (type mismatch UNKNOWN)."
+     },
+     {
+      "id": "BA05V3-N05",
+      "status": "FIXED",
+      "where": "V4 md 2.3.1; gen.py ENTITY_CLASS_MAP/ATTRIBUTE_CLASS_MAP",
+      "note": "Added a closed map from the exact RXClass name to the record type; every other class, including subclasses, is UNKNOWN. New vectors: EV-65 (AcDbMInsertBlock UNKNOWN) and EV-66 (AcDbAttributeDefinition -> ENTITY_ATTDEF). EV-51 is re-expressed as AcDbProxyEntity. NOD objects follow the same rule: AcDbXrecord/AcDbDictionary only (EV-75)."
+     },
+     {
+      "id": "BA05V3-N06",
+      "status": "FIXED",
+      "where": "V4 md 2.1.3, 2.3.2, 2.4, 5; gen.py host_typed, 'dynprops', overrides 'seq:rb'",
+      "note": "dynamicProperties = the writable (ReadOnly=false) properties only; duplicate writable names are UNKNOWN and disclosed. Added a host-type -> TYPED_VALUE table. overrides = the stored DSTYLE section of the ACAD XData as an RB sequence, carved out of the 2.4 boundary; the census and I-12 qualification confirm the storage. Vectors: EV-49 (digest unchanged, read-only duplicates ignored), EV-52/53 (regenerated), EV-69, EV-70, EV-71, EV-83."
+     },
+     {
+      "id": "BA05V3-N07",
+      "status": "FIXED",
+      "where": "V4 md 2.3.5, 2.3.6; gen.py RECORD_KINDS, ITEM_FORMS, ENUMERATION.itemForm",
+      "note": "Added a recordKind -> record-type table. BINDING is removed: the address (Kind/View/Section) and the grouping (Id) are envelope members inside the PAYLOAD_EXACT RB bytes (RackEmbedDocument.cs:38-50, RackDefinitionCreator.cs:197-204 at 3375aadb). The reference class is carried by the ENUMERATION item form HANDLE_CLASS (EV-74)."
+     },
+     {
+      "id": "BA05V3-N08",
+      "status": "FIXED",
+      "where": "V4 md 2.2, 2.3.1, 2.3.6, 2.7; gen.py check_record/enc_fields",
+      "note": "The encoder now sorts an ordered=0 ENUMERATION (EV-73 == EV-61), makes a NOD object of another class UNKNOWN (EV-75), rejects violated conditional absences as REJECTED (RJ-01, RJ-02, RJ-05), and pins duplicates as UNKNOWN (EV-72 set member, EV-70 set key)."
+     },
+     {
+      "id": "BA05V3-N09",
+      "status": "FIXED",
+      "where": "V4 md 2.6",
+      "note": "Rewritten: before the seal, vectors may be added or regenerated while FPSPEC-V1 and the domain separator stay; they are frozen at the seal; any change after the seal is FPSPEC-V2 and a new baseline."
+     },
+     {
+      "id": "BA05V3-N10",
+      "status": "FIXED",
+      "where": "V4 md 3.3 SV-04, SV-09; JSON semanticVectors",
+      "note": "Same fix as the BA05-F08 remnant. The bay type exposes no member for futureKey, so the vector result is UNKNOWN_MEMBER_UNSUPPORTED and never EQUAL."
+     },
+     {
+      "id": "BA05V3-N11",
+      "status": "FIXED",
+      "where": "V4 md 2.7; gen.py EV-60, EV-62, EV-64, EV-79",
+      "note": "EV-62 now uses EV-50 (DEFINITION_DUMP) for the read-set block and EV-19 (PAYLOAD_EXACT). EV-64 has the import add a closure block (EV-48) and bind to layer 0 (new EV-79 SYMBOL_RECORD_LAYER); the annotation layer is no longer an import addition. EV-60 is the host dictionary ACAD_GROUP. Synthetic names are marked."
+     },
+     {
+      "id": "BA05V3-N12",
+      "status": "FIXED",
+      "where": "V4 md 4.1 SCOPED_RECORD_COMPARISON",
+      "note": "Took the alternative the required fix allows: BA-05 states that no full-database fingerprint exists and defines a scoped record comparison with a declared scope and a coverage limit. The BA-06 V4 T-4 row still has to cite it (see cross-artifact notes); the finding's artifact is BA-06, which is not mine."
+     },
+     {
+      "id": "BA11V3-01 (BA-05 part)",
+      "status": "FIXED",
+      "where": "V4 md header DEPENDS_ON/PREREQUISITES, 3.3, 5, 6",
+      "note": "Applied AR3-17: vectors in slot units; census universe = every block table record of the library file, with no BA-08 reference (the census 'requiredBy' field is removed); TOL_SCALE is not a BA-05 gate. The BA-11 rows themselves belong to BA-11 V4."
+     },
+     {
+      "id": "BA11-F3 (closure, BA-05 content)",
+      "status": "FIXED",
+      "where": "V4 md header, 3.1, 5",
+      "note": "On the BA-05 side, no BA-05 content now comes from BA-08."
+     },
+     {
+      "id": "BA11V3-02 / BA11V3-07 (mention BA-05)",
+      "status": "NOT_APPLICABLE",
+      "where": "V4 md section 7 delta row",
+      "note": "The BA-07 -> BA-05 edge is removed in BA-07 (AR3-23), and the DEPENDS_ON/PREREQUISITES split is BA-11's to make. The BA-05 V4 header already uses the split."
+     }
+    ],
+    "summary": "BA-05 V4 is written. It is generated from a new reference encoder (gen.py) whose vector JSON regenerates byte for byte, and every finding in the BA05 bundle is FIXED; the one BA11X item that names BA-05 (BA11V3-01) is fixed on the BA-05 side.\n\nDecisions applied:\n- **AR3-17:** BA-05 carries no tolerance value. SV-06/07/10/11 are written in slot units, and the Q-FPSPEC-VECTORS harness generates their binary64 instances from the sealed BA-08 section 10 values (section 3.3.1). The census universe is every block table record of the library file, with no reference to BA-08. TOL_SCALE is no longer a BA-05 gate (L-2 retired). DEPENDS_ON = BA-01 only; the census is a PREREQUISITE before the candidate.\n- **AR3-18:** UNKNOWN propagates through blockDigest (EV-67, EV-68).\n- **AR3-19:** SV-12 is recorded as the Architect's interpretation of PA-8 rule 1.\n- **AR3-20:** ABS_DIFF_LE is per scalar component.\n- **AR3-21:** code 5 is UNKNOWN and the point codes are POINT3D.\n- **AR3-30 minors:**\n  - N02: exact BA-08 slot names per value class; NORM_ANGLE is referenced as a slot.\n  - N03: pipes escaped; every table cell checked against SCHEMAS.\n  - N05: closed exact-class map.\n  - N06: dynamicProperties = writable properties only, a host-type table, and overrides = the stored DSTYLE RB sequence.\n  - N07: BINDING removed (addresses and grouping are inside the PAYLOAD bytes); item form HANDLE_CLASS.\n  - N08: encoder sorts, returns UNKNOWN and REJECTED where required, with vectors.\n  - N09: versioning rule rewritten.\n  - N10: SV-04 valid in wire form; SV-09 concrete.\n  - N11: vector content corrected.\n  - N12: SCOPED_RECORD_COMPARISON defined; there is no full-database fingerprint.\n- **AR3-11 support:** added a CONTEXT category, a CONTEXT_VARIABLE record and a REFERENCE kind, so the PRE_COMMAND_STATE_RECORD can carry the context variables and the source-reference presentation.\n\nEvery vector now carries its producer `input`, and there are 6 REJECTED malformed-input vectors.\n\nChecks, all run as scripts over the actual bytes (Python 3.13, SHA-256 over LF-normalized bytes, lowercase hex):\n- The JSON regenerates byte for byte from a scratch copy of gen.py.\n- All 42 field tables (1329 cells) equal SCHEMAS.\n- A regex scan finds no tolerance number in the md, JSON or gen.py.\n- Every V3 digest is reproduced except EV-52, 53, 60, 61, 62 and 64, which changed on purpose.\n- An independent encoder, written from the JSON inputs and tables without importing gen.py, reproduces all 81 results (75 exact + 6 REJECTED).\n\nNo git write commands were run, no AutoCAD or host work was done, and V3 files were not touched.",
+    "counts": "BA-05 V4 vectors:\n- 75 exact vectors: 58 digests, 17 UNKNOWN (V3 had 56: 49 + 7).\n- 6 REJECTED inputs (RJ-01..RJ-06).\n- 13 semantic vectors, 4 of them in slot units.\n- 42 record schemas: 23 production, 11 helper, 8 test.\n- 78 DIMVAR entries, unchanged.\n\nFile SHA-256 values (LF-normalized, lowercase hex):\n- gen.py 56e28e7bd57fa405f97c476ad4ad65bc34b22c59edac0596f4863f293422656f (git blob e52095ad0e7d31163e7152459d990fbeaf97ed8d)\n- JSON 41a7c89ea8a24bc5417543dc5a12349a456879f75ecd6c6954b69220a28c4042 (blob 9e55e161140039556645d1dfd6df17e602497351)\n- md 3b0b92e089fad580ae37b91f923665aa1fd506a7e44b8f6a3b0e6178161ec7f4 (blob 053e98190495d21398ab7641bfdb94c7e5df070d)\n\nBA-05 V4 artifact hash (informational CURRENT_HASH): 904af6d56da80b13f5efe5bf5b46014f55847bfd33b713107441881543e58a0a. It is computed with the BA-11 section 1 procedure (ordinal path order, `<path>` LF `<hash>` LF); the same procedure reproduces the V3 value 689a937f.\n\nThe superseded V3 md blob is 9e4fa8eb9295a06c8db96e397fe31e9fb454ceaa.",
+    "cross_artifact_notes": [
+     "BA-11 V4, BA-05 row: files = ...-ba-05-fingerprint-specification-v4.md, ...-fpspec-v1-vectors-v4.gen.py, ...-fpspec-v1-vectors-v4.json. CURRENT_HASH = 904af6d56da80b13f5efe5bf5b46014f55847bfd33b713107441881543e58a0a (informational). DEPENDS_ON = BA-01. PREREQUISITES = library entity-type census (host), before the candidate. BASE-14 row: 'BA-05 V4 draft; census pending'. Do not add TOL_SCALE as a BA-05 gate (AR3-17). The V3 blob is 9e4fa8eb.",
+     "BA-08 V4 section 10: keep exactly the slot names BA-05 V4 3.1 uses: TOL_LENGTH, TOL_TEXT_HEIGHT, TOL_DIM, TOL_ANGLE, NORM_ANGLE, TOL_NORMAL, TOL_DYNAMIC, TOL_SCALE. NORM_ANGLE's rule is written only in BA-08 and must be a reduction modulo 2pi, which SV-10 relies on. Update the heading to 'BA-05 V4 names the slots only'. The harness instantiates SV-06/07/10/11 from BA-08's sealed section 10 values.",
+     "BA-08 V4 section 6:\n- 'view addresses and grouping' is carried by the PAYLOAD_EXACT members; BA-05 V4 2.3.5 has no BINDING kind.\n- The 'RackCad reference set with class' is an ENUMERATION with itemForm HANDLE_CLASS (BA-05 V4 2.3.6).\n- The name sets are ENUMERATION records with itemForm NAME.",
+     "BA-08 V4, AR3-11 items 2 and 3 and D-07:\n- The consumed context variables are CONTEXT|CONTEXT_VARIABLE members of the PRE_COMMAND_STATE_RECORD.\n- The source top-level reference is a CONTEXT|REFERENCE member, and its digest is an ENTITY_INSERT digest.\n- ENTITY_INSERT does not carry the plot style name (BA-05 V4 2.4). BA-08 must declare that gap for ST-13 under a named plot-style table, or ask for a BA-05 table change before the seal.\n- BA-08 decides whether ABORT-VERIFY and E-08 compare CONTEXT members.",
+     "BA-08 V4 sections 7, 11 and 14:\n- The census universe is now every block table record of the library file (BA-05 V4 section 5), and the census record no longer has a 'requiredBy' field. BA-08 maps its 46-name universe onto the census.\n- Section 11 rule 2: 'writable properties exposed' = the BA-05 V4 2.3.2 membership. The value sets come from the census field dynamicProperties[].allowedValues (this supports D-13).",
+     "BA-08 V4 D-12 (plan capture): BA-05 V4 does not define a plan-capture record type. BA-08 must define its own canonical serialization and digest, and must not use the 'FPSPEC-V1|EXACT|' domain separator for a record type that BA-05 does not define.",
+     "BA-06 V4 section 7, row T-4: replace 'exact full-database fingerprint (BA-05 V3)' with 'SCOPED_RECORD_COMPARISON (BA-05 V4 section 4.1)'. Name the scope, for example the read-set records of BA-08 V4 section 6, and repeat its coverage limit. This finishes BA05V3-N12. BA-06's DEPENDS_ON includes BA-05.",
+     "BA-04 V4, Q-FPSPEC-VECTORS:\n- PLAN_OR_INPUT = I-52-ct21d-fpspec-v1-vectors-v4.json: exactVectors with their 'input', rejectedInputs, semanticVectors.\n- EXPECTED_CONTROL_RESULTS adds: every REJECTED reproduced; SV-06/07/10/11 instantiated by the rule of BA-05 V4 3.3.1 from the sealed BA-08 section 10 values; an INVALID instance is reported, never PASS.\n- FPSPEC_CONFORMANCE_TUPLE adds the BA-08 SEAL_HASH, the source of the slot values.\n- AUTHORITY_SOURCE = BA-05 V4 sections 2.7 and 3.3.",
+     "BA-07 V4 (AR3-23): the double encoding BA-07 defines inside itself should match BA-05's: 16 lowercase hex digits of the IEEE-754 binary64 bit pattern, big-endian. This is consistency only; there is no dependency."
+    ],
+    "open_questions": [
+     "CONTEXT members (AR3-11) and ABORT-VERIFY: V2.1 11 defines EXPECTED_AFTER_ABORT = PRE_COMMAND_STATE_RECORD + manifest. AR3-11 puts the consumed context variables (CLAYER, CECOLOR, ...) and the source-reference presentation into that record. Read literally, ABORT-VERIFY (and E-08) must then compare them too, although system variables are not transactional state. Are CONTEXT members part of EXPECTED_AFTER_ABORT, or oracle inputs only? BA-05 V4 leaves the choice to the kind baseline (2.3.5).",
+     "Plot style name for ST-13: V17 ST-13 includes PlotStyleName under a named plot-style table, but BA-05's entity records exclude the plot style name (2.4, unchanged since V3). Should BA-05 add a plotStyleName field to the common entity fields before the seal, or does BA-08 declare the gap?",
+     "Source of dimension overrides (N06): BA-05 V4 takes the stored DSTYLE section of the ACAD extended data, encoded losslessly as an RB sequence; a handle value there is UNKNOWN. This is the stored-state reading. Evidence sa2 left the storage UNCERTAIN, so the census and the I-12 qualification must confirm it. Please confirm this reading rather than 'effective value compared with the style'."
+    ],
+    "decisions_applied": [
+     "AR3-17",
+     "AR3-18",
+     "AR3-19",
+     "AR3-20",
+     "AR3-21",
+     "AR3-30",
+     "AR3-11 (support: CONTEXT category, CONTEXT_VARIABLE record, REFERENCE kind)",
+     "AR3-25 (header DEPENDS_ON / PREREQUISITES split; L-3 after the BA-11 workflow agreement)",
+     "AR2-32..AR2-36 (kept)"
+    ]
+   }
+  },
+  {
+   "key": "BA06",
+   "r": {
+    "files_written": [
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-06-evm-preparation-v4.md",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba06-v4-task-inputs.json",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba06-v4-checks.py",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba06-v4-checks-output.json",
+     "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\gen_ba06v4.py (generator, scratchpad)",
+     "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\extract_ba06v4_task_inputs.py (task-input extractor, scratchpad)"
+    ],
+    "findings": [
+     {
+      "id": "BA06-F01",
+      "status": "FIXED",
+      "where": "V4 sections 3.2 'Source' (fragments bound to the composite contract identity; check BA06-C8), 3.2.2 new column 'V4 disposition', 3.3 (DC-49), 5 (DC-04), 12 (DC-51), 3.2.5 X-01 (DC-01), 2 row 5 + section 14 (task inputs published)",
+      "note": "All four remnants (a)-(d) closed."
+     },
+     {
+      "id": "BA06-F02",
+      "status": "FIXED",
+      "where": "V4 section 5, IsTopTransaction live-identity row (DC-04 text, E6-C7/E6-C8, POINTER_REUSE_OBSERVED V2.2 PW-4); affects C-06, C-07, C-116"
+     },
+     {
+      "id": "BA06-F05",
+      "status": "FIXED",
+      "where": "V4 header DEPENDS_ON = BA-01, BA-03, BA-05 and separate PREREQUISITES line; 'Dependencies (AR3-25)' paragraph",
+      "note": "BA-11 V4 row for BA-06 must carry the same edges (cross-artifact)."
+     },
+     {
+      "id": "XC-F6",
+      "status": "FIXED",
+      "where": "Section 2 row 4 and 3.3: 'checked by the generator' / 'the generator asserts it' removed; published check script I-52-ct21d-ba06-v4-checks.py + output (checks BA06-C1..C4), bound in section 14"
+     },
+     {
+      "id": "BA06V3-N01",
+      "status": "FIXED",
+      "where": "3.3 (new classes OC-TOP-CHECK, OC-PREP-READ, OC-LIB-ACQ, OC-TM-READ, OC-LOCK, OC-ABV-READ, each with micro-scenario or reasoned exclusion; C-26 added to OC-VERIFY-READ); 3.2 class column for C-52, C-73, C-75, C-156, C-26, C-91, C-92, C-94 etc.; section 5 (DC-04); section 12 EVM_STATUS (DC-51); section 2 row 6 and header restated"
+     },
+     {
+      "id": "BA06V3-N02",
+      "status": "FIXED",
+      "where": "DC-01/R-01 re-resolved per AR3-22 (3.2.1, 3.2.2, 3.2.3, supplementary row X-01 in 3.2.5, class OC-LOCK); every AMB-01..25 now cites a clause outside the fragments or a contract question CQ-01..CQ-08 (3.2.4, 3.2.6; check BA06-C7); 3.2.4 intro sentence corrected"
+     },
+     {
+      "id": "BA06V3-N03",
+      "status": "FIXED",
+      "where": "Section 2 row 4; 3.2 'Source' and 3.3 'Counts' (14 of 15 MUTATING mapped, C-105 excluded by scope); 3.3 OC-ENVELOPE: SL-4 none, CQ-06"
+     },
+     {
+      "id": "BA06V3-N04",
+      "status": "FIXED",
+      "where": "3.2.1 (DF-nn = DC-nn declared, check BA06-C6); 3.2.2 column 5 retitled 'Comparator's proposed text (evidence)'; section 3 'Composition' paragraph; section 5 references now C-ids (check BA06-C11); DC-51 disposition reads PARAM-02"
+     },
+     {
+      "id": "BA06V3-N05",
+      "status": "FIXED",
+      "where": "C-98 amended in 3.2 (marked V4 amendment, V2.1 7.1 and 11.3, AR3-22); DC-47 and AMB-05 dispositions; no Architect ruling requested"
+     },
+     {
+      "id": "BA06V3-N06",
+      "status": "FIXED",
+      "where": "New evidence I-52-ct21d-ba06-v4-task-inputs.json (exact inputs of all 13 phase-2 agents of wf_9ae00c65-313 and of the SA-1 compiler and comparator of wf_f78653d9-322, with 21 extraction checks all PASS); section 2 row 5 reworded (critic created the 3.1 union; blind reviewers not allowed to open V1; declared limitation on 'read nothing else')",
+      "note": "Recovered read-only from the local workflow run records. Comparator input = prompts.json compare_template with the placeholder replaced by the compact JSON serialization of sa1-compiled-operations.json (character-identical; JSON-equal to the indented published file)."
+     },
+     {
+      "id": "BA06V3-N07",
+      "status": "FIXED",
+      "where": "Section 11: ordered Ops(plan) with OC-TM start, OC-TM-READ + OC-TOP-CHECK at PS, seam writes, OC-TM-READ + OC-TOP-CHECK + seal at PV, OC-TM commit/abort, positioned per V2.1 section 8; supplementary rows X-02..X-04"
+     },
+     {
+      "id": "BA06V3-N08",
+      "status": "FIXED",
+      "where": "Section 7: (a) reconciliation of every operation instance P0..PC, orchestrator included, plus ORCH matrix row; (b) T-2 fallback to I-07 counter samples + IsTopTransaction declared; (c) success-path-only limit declared; section 5 failure-path residual row; section 2 row 2"
+     },
+     {
+      "id": "BA06V3-N09",
+      "status": "FIXED",
+      "where": "V4 header DEPENDS_ON = BA-01, BA-03, BA-05 (consistent with the COORD graph and seal order)",
+      "note": "The BA-11 V4 registry row itself belongs to the BA-11 implementer."
+     },
+     {
+      "id": "V24R2-02",
+      "status": "FIXED",
+      "where": "Section 2 row 6: anchor of 'item (10)' = phase-1 ruling section 7, BA-06 / NB-4, work step 2 (equivalently section 10, B.1), per AR3-22"
+     },
+     {
+      "id": "V24R2-03",
+      "status": "FIXED",
+      "where": "Section 12 new EVM-level field INVENTORY_REVIEW_RECORDS (hashes of REVIEWED and every reopened class-review record); the EVM_FROZEN pin record cites it; section 1 and section 9"
+     },
+     {
+      "id": "BA11V3-02 (item 4, BA-06 -> BA-03)",
+      "status": "FIXED",
+      "where": "Header DEPENDS_ON includes BA-03; stale 'BA-03 V2' citation in D-11 (4.1) now BA-03 V4"
+     },
+     {
+      "id": "BA11V3-07 (BA-06 row)",
+      "status": "FIXED",
+      "where": "Header: DEPENDS_ON registry entries only; PREREQUISITES with gates (before candidate); evidence bound inside section 14",
+      "note": "BA-11 V4 must mirror it."
+     },
+     {
+      "id": "D-01 (BA0809, SH-LAY-ADDED wording)",
+      "status": "FIXED",
+      "where": "10.2 row SH-LAY-ADDED -> FX-ANN-BLANK construction (AR3-15); section 7 matrix fixture; 3.3 OC-LAYER fixture note"
+     },
+     {
+      "id": "D-04 (BA0809, phase-A domain)",
+      "status": "FIXED",
+      "where": "3.3 note on OC-LAYER-PRESENT (reused SL-Y layers in the phase-A domain); section 11; DC-29 disposition"
+     },
+     {
+      "id": "D-06 (BA0809, host defaults)",
+      "status": "FIXED",
+      "where": "Section 5 host-defaults row cites HDM-CHAR-FX1F/FXANN/FXDIM and HOST_DEFAULT_MAP keyed by consumed context variables; ST-13 read from the source reference (AR3-11)"
+     },
+     {
+      "id": "D-02 (BA0809, AUTH-15 envelope, cites BA-06 C-127)",
+      "status": "FIXED",
+      "where": "Section 8 consistency sentence: overload A re-serializes the envelope (RackDefinitionCreator.cs:45, :187, :204, :206 at 3375aadb, verified with git show) and does not meet C-127"
+     },
+     {
+      "id": "BA08-04 closure note (mentions BA-06)",
+      "status": "NOT_APPLICABLE",
+      "where": "Section 15",
+      "note": "Fix belongs to BA-08; BA-06 makes no per-fixture limitation claim."
+     }
+    ],
+    "summary": "BA-06 V4 is written at docs/initiatives/I-52-ct21d-baseline-ba-06-evm-preparation-v4.md. The V3 file (blob c390af539c49760dc89085d1c39b112dc447a447) is unchanged; the V4 generator asserts this and also checked it with git hash-object. The generator is scratchpad/gen_ba06v4.py, a copy of gen_ba06v3.py that I edited.\n\nWhat V4 does:\n- **Header.** It follows the COORD format: 4-DRAFT, the V2.1 to V2.5 contract line, and the delta decisions applied (AR3-01, -02, -11, -13, -15, -16, -22, -25, -30). DEPENDS_ON is BA-01, BA-03, BA-05. PREREQUISITES lists the Architect's approval of STATIC_REVIEWED together with the trace plan on the V4 bytes, and the answers to CQ-01..CQ-08; both are gated before the candidate. There is no CANDIDATE_HASH or SEAL_HASH field.\n- **DC resolutions applied.** DC-04 is in section 5, DC-49 in section 3.3 and DC-51 in section 12 (EVM_STATUS). DC-01 is re-resolved as one document lock held from PL to V1 (new row X-01, class OC-LOCK). DC-47 is resolved by V2.1 7.1, and C-98 is amended with a visible marker. Every DC row gets a \"V4 disposition\" column.\n- **Ambiguities.** Each of AMB-01..AMB-25 either cites a clause outside the fragments or points to a contract question CQ-01..CQ-08 (new section 3.2.6).\n- **New rows and classes.** Section 3.2.5 adds X-01..X-04 from V2.1 3.4, 5 and 8. Section 3.3 now has 21 classes: 16 with a micro-scenario (EV-L-OC-TM-READ is new) and 5 with a stated reason for having none. Section 11's Ops(plan) now includes OC-TM and the reads the orchestrator makes inside T_M, in the order of V2.1 section 8.\n- **Trace plan (section 7).** Traces run on the characterization build in the AR3-01 mode, with no WU-DRY. Every operation instance is reconciled, the orchestrator's included. A T-2 fallback is declared, and so is a success-path-only limit.\n- **Learning (section 9).** Learning runs use the characterization build with E-12 phases A and C recorded but not enforced. This raises contract question CQ-08.\n- **EVM schema (section 12).** It gains INVENTORY_REVIEW_RECORDS, which the EVM_FROZEN pin record cites.\n- **Other updates.** The section 5 residuals are updated (IsTopTransaction, HOST_DEFAULT_MAP, failure paths). The section 6 findings follow AR3-16 and CATALOG_FOLDER. SH-LAY-ADDED now uses FX-ANN-BLANK. Section 8 now records that AUTH-15 re-serializes the envelope. Section 15 is the delta table.\n\nNew evidence files, bound in section 14:\n- **I-52-ct21d-ba06-v4-task-inputs.json.** The exact prompts of the 13 phase-2 agents and of the SA-1 compiler and comparator. I extracted them read-only from the local workflow run records; all 21 extraction checks pass.\n- **I-52-ct21d-ba06-v4-checks.py and its output.** The script runs 12 checks, BA06-C1 to BA06-C12, and all pass. Ten deliberate edits to a scratch copy (plus one run on the unedited copy) confirmed that it fails when it should.\n\nHashes are SHA-256 over the LF-normalized bytes, computed by Python over the actual files: the V4 artifact is 117f9636d7ed7cba50b026c303938340687b30f0b02fb7ac9e499665cb4e1145, the task inputs f5096ace..., the check script d1ac951a... and the check output d61d1806.... These are informational only; BA-11 remains the status authority.\n\nI did not touch AutoCAD, run any git write command, or edit any file I was not assigned.",
+    "decisions_applied": [
+     "AR3-22: DC-04/DC-49/DC-51 applied; DC-01 re-resolved (one lock PL..V1, X-01); every AMB-nn cites an outside clause or a CQ; DC-47 resolved by V2.1 7.1; item (10) anchor = phase-1 ruling section 7 BA-06/NB-4 work step 2 (eq. section 10 B.1); INVENTORY_REVIEW_RECORDS EVM field cited by the EVM_FROZEN pin record; STATIC_REVIEWED and the trace plan proposed together on V4 bytes; no new compilation",
+     "AR3-01: trace dry runs on the characterization build in AR3-01 mode (PROVISIONAL_NON_GOVERNING); learning runs with E-12 phases A and C RECORDED_NOT_ENFORCED on the characterization build",
+     "AR3-02: no WU-DRY for trace dry runs or learning runs (declared)",
+     "AR3-16: section 6 findings (no Load() on a catalog copy; no UserSettingsStore call and settings.json hash rule; E-12 handlers also by direct invocation with warm-up-only instances and sinks)",
+     "AR3-15: FX-ANN-BLANK for SH-LAY-ADDED; reused SL-Y layers inside the phase-A domain",
+     "AR3-11: HOST_DEFAULT_MAP/HDM-CHAR-* in the host-defaults residual; ST-13 from the source reference",
+     "AR3-13: CATALOG_FOLDER cited in section 6",
+     "AR3-25: DEPENDS_ON (BA-01, BA-03, BA-05) separated from PREREQUISITES",
+     "AR3-30: minors BA06V3-N03..N09 and closure remnants BA06-F01/F02/F05, XC-F6"
+    ],
+    "counts": "BA-06 V4: 203 compiled rows (MUTATING 15, of which 14 mapped and C-105 excluded; NON_MUTATING_READ 10; CHECK_OR_GUARD 85; RESULT_OR_REPORT 50; PROHIBITION 43) + 4 supplementary rows X-01..X-04; 51 DC differences with V4 dispositions; 16 T3/R-only rows; 25 AMB (all RESOLVED or CONTRACT QUESTION); 8 contract questions CQ-01..CQ-08; 21 operation classes (16 with EV-L micro-scenario, 5 reasoned exclusions: OC-LOCK, OC-LIB-ACQ, OC-PREP-READ, OC-TOP-CHECK, OC-ABV-READ); learning corpus = 16 EV-L-OC-* (EV-L-OC-TM-READ new) + EV-L-COMPOSED = 17 learning scenarios (V3: 16); trace matrix 7 rows (6 seam entry points + ORCH) x 11 columns (9 plan-shape classes); evidence bound in section 14 = 26 files (23 from V3 + 3 new); checks BA06-C1..C12 all PASS; task-input extraction checks 21/21 PASS.",
+    "cross_artifact_notes": [
+     "BA-04 V4: add learning micro-scenario EV-L-OC-TM-READ (group E12-L, MODE LEARNING, fixture FX-1F; purpose: learn the event class of OC-TM-READ = the orchestrator's reads inside T_M at PS and PV, BA-06 V4 X-02..X-04). E12-L goes from 16 to 17 scenarios. EV-L-* should cite 'BA-06 V4 section 3.3'. Classes with a reasoned exclusion (OC-LOCK, OC-LIB-ACQ, OC-PREP-READ, OC-TOP-CHECK, OC-ABV-READ) get no EV-L scenario.",
+     "BA-04 V4: BA-06 V4 section 9 puts the EV-L learning runs on the characterization build with E-12 phase A and phase C RECORDED_NOT_ENFORCED (BUILD_UNDER_TEST = CHARACTERIZATION_BUILD), pending CQ-08. It also declares that learning runs and trace dry runs have no WU-DRY (AR3-02).",
+     "BA-04 V4: BA-06 V4 declares the success-path-only trace limit. The event classes of failure paths (T_M abort after partial writes, POST-WRITE failures, failed or partial import, ABORT-VERIFY reads) are a residual. In governing abort scenarios, phase A may therefore meet events the frozen EVM does not explain (EVM_INCOMPLETE, V2.2 PA-10). BA-04 should reflect this in the expected E-12 results or conditional rules of those scenarios.",
+     "BA-04 V4 / BA-02b V4: contract question CQ-03 (the outcomes of a copy re-hash mismatch before the first import, a failed generation-id revalidation, and a post-run copy re-hash mismatch) affects the expected outcomes of any scenario that exercises these cases.",
+     "BA-08 V4 section 4.1, last row, says the empty scratch template serves EV-L-OC-LAYER 'and the SH-LAY-ADDED trace'. BA-06 V4 (sections 7 and 10.2) runs the SH-LAY-ADDED trace family and validation on FX-ANN-BLANK and keeps FX-SCRATCH only for EV-L-OC-LAYER. BA-08 should align that row. BA-08 V4 section 5 (reused SL-Y layers in the phase-A domain) and section 13 are consistent with BA-06 V4.",
+     "BA-11 V4: the BA-06 row is DEPENDS_ON = BA-01, BA-03, BA-05. Its PREREQUISITES are (1) the Architect's exact delta check and approval of STATIC_REVIEWED together with the dynamic-trace plan on the V4 bytes, before the candidate; (2) the Architect's answers to, or recorded deferral of, CQ-01..CQ-08, before the candidate. The EVM_FROZEN pin slot's record cites the EVM-level field INVENTORY_REVIEW_RECORDS (AR3-22). The BA-06 evidence is 26 files bound inside BA-06 V4 section 14, three of them new: I-52-ct21d-ba06-v4-task-inputs.json, I-52-ct21d-ba06-v4-checks.py and I-52-ct21d-ba06-v4-checks-output.json.",
+     "BA-07 V4: the REVIEWED record and each reopened class-review record are custody items. Their hashes are listed in the EVM field INVENTORY_REVIEW_RECORDS (BA-06 V4 section 12), which the EVM_FROZEN pin record cites.",
+     "BA-10 V4 (non-sealed cost memo): PARAM-02 repetitions now apply to 17 learning scenarios (16 EV-L-OC-* plus EV-L-COMPOSED), up from 16. The illustrative totals change accordingly.",
+     "BA-09 V4: consistent with BA-06 V4 section 6 findings (2), (4) and (7) (rows 1g, 1j and section 6 rows 1 and 4). BA-06 V4 uses AR3-16's 'also by direct invocation' wording. BA-09 V4 says no E-12 handler is attached during the warm-up. These do not conflict.",
+     "BA-05 V4: BA-06 V4 cites the T-4 fingerprint and 'the coverage boundary of BA-05 V4' generically. This is the BA-06 -> BA-05 dependency edge.",
+     "Coordinator: I-52-ct21d-ba06-v4-task-inputs.json publishes verbatim prompts recovered from the local session records of workflows wf_9ae00c65-313 and wf_f78653d9-322. They include scratchpad and worktree paths. I scanned them for credentials and found none (the only hit is a 'password: null' API argument in a code quote)."
+    ],
+    "open_questions": [
+     "CQ-01 (AMB-02, DC-16, DC-34): V2.1 15.2 and P-4 say SL-5 does 'a fresh acquire of the library', while V2.1 5 PR, 6 and 19.1 steps 5-6 put the acquisition and the Database open in PREPARE-R. Does 'fresh acquire' only name the input SL-5 consumes? V2.1 7 and 7.1 name no actor for the PREPARE-W checks: are they the orchestrator's?",
+     "CQ-02 (AMB-06): V2.1 7.1 says PREPARE-W does not start unless the declared cloning mode is on the allow-list, but the mode is declared in the importer's structured result, which exists only after an import. When is the allow-list checked?",
+     "CQ-03 (AMB-07): What outcome applies to (i) a copy re-hash mismatch before the first import (19.1 says O2 with an empty residue; 17.2 row 3 needs a PREPARE-W write and row 2 does not list the case), (ii) a failed generation-id revalidation, and (iii) a post-run copy re-hash mismatch?",
+     "CQ-04 (AMB-11): May a seam start and end a nested transaction inside T_M? PV forbids one only at sampling time, and V2.1 15.3 does not forbid it.",
+     "CQ-05 (AMB-12, AMB-13): Is E-06 'own bookkeeping' a mandatory second source in every governed run? How is the three-valued IsTopTransaction result logged under 'the log records the boolean result'? Who owns the typed authority's implementation?",
+     "CQ-06 (AMB-14, AMB-15): Does SL-4 write and read back an envelope, and where is the envelope stored? What must SL-1..SL-4 do to 'support' the fresh reread of V2.1 15.7?",
+     "CQ-07 (AMB-16..AMB-20): Seam-design details the contract leaves open: how deterministic results are verified; the naming actor, the comparison with the expected name, and the failure for a name the sanitizer empties; the criteria for InvalidPlan and InvalidEnvelope; the PRE-WRITE detectability of MissingLibraryBlocks; the meaning of MissingInstances and Diagnostic; whether host-generated anonymous blocks count as 'created objects'; the SL-4 property list.",
+     "CQ-08 (AR3-01 applied to learning): V2.1 27.5 says a tuple change requires a new model version. If the learning runs use the characterization build, is its CHARACTERIZATION_BUILD identity a tuple change for an EVM that governing validation applies on the product build?",
+     "Condition 5, product part: the section 3.1 union was built by the completeness critic, not by the blind reviewers. BA-06 V4 states this and leaves the judgment on whether it satisfies PA-11 condition 5 to the Architect."
+    ]
+   }
+  },
+  {
+   "key": "BA07",
+   "r": {
+    "files_written": [
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-07-manifest-custody-v4.md",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba07-v4-jcs-vector.py",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba07-v4-jcs-vector.json"
+    ],
+    "findings": [
+     {
+      "id": "CLOSURE:BA07-01",
+      "status": "FIXED",
+      "where": "BA-07 V4 6.1 (ANCHOR_RECORDED event), 6.2 steps 3-4, 7 (derived ANCHORED), 10, 12",
+      "note": "Model A replaces the ANCHORED entry. Every anchored index is compared, with the anchors discovered at the remote. The coverage rule that could never fire is replaced by the declared pending window (AR3-23). Honest logs pass in the vector's verification model."
+     },
+     {
+      "id": "BA07-V3-01",
+      "status": "FIXED",
+      "where": "6.1, 7 (state machines, derived anchoring, IN_USE -> IN_USE), 8 (new baseline version), 12 (worked example)",
+      "note": "A re-anchor after IN_USE, SUPERSEDED or REVOKED is a new ANCHOR subject, so no subject transition is needed. One anchor covers any number of pins. A new baseline version is BASELINE_RECORDED + BASELINE_APPROVED + SUPERSEDED of the previous one, appended to the same log. The worked example follows the exact mandatory sequence and adds a continuation."
+     },
+     {
+      "id": "BA07-V3-02",
+      "status": "FIXED",
+      "where": "6.2 step 3 (git ls-remote --tags <REMOTE_URL> 'refs/tags/ct21d-baseline/*', private-namespace fetch, baseline-anchor.json and the log read at each tag's peeled commit, ordering by h, comparison at every h), step 4 (one-to-one tags <-> ANCHOR_RECORDED), step 6 (whole tag list vs the independent copy), 10, 12 case T1",
+      "note": "The header hash is read from the anchor record at the peeled commit, never from anchorRef or from HEAD. Case T1 (truncate, re-append, revert the anchor file at HEAD) is detected."
+     },
+     {
+      "id": "BA07-V3-03",
+      "status": "FIXED",
+      "where": "1(b), 2 (pin-records row), 5.1 (pin record schema and seal), 7 (pin machine), 8",
+      "note": "BA-11 carries only the sealed slots. The seal is a Coordinator + Architect ratification pair under ratifications/, cited by PIN_RECORDED.ratificationRecords. Machine: RECORDED -> RATIFIED -> ANCHORED. A pin write never creates a baseline version."
+     },
+     {
+      "id": "BA07-V3-04",
+      "status": "FIXED",
+      "where": "1 (pending-window row), 6.2 step 4, 10, 12 case T2",
+      "note": "Second option of the finding, per AR3-23: the coverage check and its s10 row are removed, and entries after the last anchor are declared not tamper-evident until the next anchor."
+     },
+     {
+      "id": "BA07-V3-05",
+      "status": "FIXED",
+      "where": "2 (independent-copy row and closing paragraph), 5.2 (independentCopy field), 6.2 step 6, 9 (INDEPENDENT_COPY in the anchor record)",
+      "note": "The designation is recorded in the BA-07 candidate record or the Coordinator's ratification record and repeated in every anchor record. Step 6 is still step 6 and reads it there. A change of location or holder is a new designation record, not a new version of BA-07."
+     },
+     {
+      "id": "BA07-V3-06",
+      "status": "FIXED",
+      "where": "4 (double encoding defined inside BA-07), 3 step 3 (warm-up cited as V2.1 13.1, not BA-09), header DEPENDS_ON = BA-01",
+      "note": "Fixed for the BA-07 side. The BA-10 parts (the PARAM-05 label serialization citing BA-07 section 4; the CLEAN count) and the BA-11 edge list belong to the BA-10 V4 and BA-11 V4 implementers (see cross-artifact notes)."
+     },
+     {
+      "id": "BA07-V3-07",
+      "status": "FIXED",
+      "where": "4 (JCS RFC 8785 profile), 4.1 (normative vector), docs/automation/evidence/I-52-ct21d-ba07-v4-jcs-vector.{py,json}",
+      "note": "Output SHA-256 e7e6c9bec109dd3bc014dcfa5efac27f48674180c79cfd23f6e7df9222bb705e, cited in 4.1. Example entry entryHash 07e8bf8442a17638c38ef9a3bb3a2191a6986931ac52d82f51eb4227937ee322 (812 JCS bytes, reproduced in 4.1)."
+     },
+     {
+      "id": "CLOSURE:BA07-02..BA07-07 (FIXED in V3)",
+      "status": "FIXED",
+      "where": "7, 8 (BASELINE_APPROVED); 6.1 (IN_USE and REVOKED fields); 4 (manifest comparison); 1 (remote-rewrite limit); 9 step 5 (annotated tag); 2 (BA-11 as location authority)",
+      "note": "Kept unchanged in substance."
+     },
+     {
+      "id": "BA11V3-03 (BA-07 side)",
+      "status": "FIXED",
+      "where": "1, 2, 5.1, 8, 9",
+      "note": "Pin values, states and hashes are never written into BA-11. Pin events are custody events of the baseline in force, re-anchored as ct21d-baseline/v<k>-a<n>. The BA-11 side (section 3.1 slot table, rule 4 scope) belongs to BA-11 V4."
+     },
+     {
+      "id": "BA11V3-08 (BA-07 side)",
+      "status": "FIXED",
+      "where": "8 ('Status of BA-11')",
+      "note": "BA-11's status lives outside BA-11: CANDIDATE and RATIFIED in its records, SEALED via BASELINE_RECORDED and BASELINE_APPROVED, anchoring derived, SUPERSEDED entry."
+     },
+     {
+      "id": "BA11V3-02 item (2) edge BA-07 -> BA-05",
+      "status": "FIXED",
+      "where": "4; header DEPENDS_ON",
+      "note": "The edge is removed because BA-07 defines its own double encoding (AR3-23)."
+     },
+     {
+      "id": "AR3-22 pin link (V24-N2 landing)",
+      "status": "FIXED",
+      "where": "5.1 (inventoryReviewRecords field of the EVM_FROZEN pin record), 6.2 step 5 (PIN_REVIEW_RECORDS_MISSING)",
+      "note": "It carries the EVM field INVENTORY_REVIEW_RECORDS and must equal it. Each cited record must be custodied by REVIEW_RECORD_ADDED before PIN_RECORDED."
+     }
+    ],
+    "summary": "I wrote BA-07 V4 as a new file; the V3 blob 3a67dd48 is unchanged. It applies AR3-23 in full, plus AR3-22 (pin link) and AR3-25 (pins and BA-11 status live outside BA-11). The V2.1/V2.2/V2.4 clauses it rests on are unchanged.\n\n**Model A**\n- The anchor is its own event, ANCHOR_RECORDED (subject ANCHOR, anchor-record hash, anchorRef). There is no ANCHORED event any more; a subject counts as ANCHORED when its last entry index is at most h of a verified anchor.\n- IN_USE -> IN_USE is legal. The use preconditions are tied to the anchored approval and pins, not to earlier uses.\n- A new baseline version is three consecutive entries in the same log: BASELINE_RECORDED, BASELINE_APPROVED and SUPERSEDED of the previous version. It is then anchored as ct21d-baseline/v<k+1>.\n\n**Verification (6.2)**\n- Anchors are discovered at the remote with `git ls-remote --tags 'refs/tags/ct21d-baseline/*'` and fetched into a private namespace.\n- baseline-anchor.json and the log are read at each tag's peeled commit, and every anchored index is compared.\n- Tags and ANCHOR_RECORDED entries must match one to one.\n- The pending window is declared not tamper-evident.\n- The independent copy stays at step 6. It reads the designation from INDEPENDENT_COPY, which repeats the one in the BA-07 candidate or ratification record.\n\n**Pins**\n- BA-11 holds only the sealed slots. The seal is the Coordinator and Architect ratification pair under ratifications/, cited by PIN_RECORDED.\n- The pin machine is RECORDED -> RATIFIED -> ANCHORED.\n- The EVM_FROZEN pin record carries inventoryReviewRecords, equal to INVENTORY_REVIEW_RECORDS.\n\n**Serialization**\n- JCS (RFC 8785) with a BA-07 profile. Doubles are 16 lowercase hex characters of the binary64 pattern, big-endian, and the encoding is defined inside BA-07. Only safe integers are allowed, all fields are always present (null when not applicable), and a record file is JCS bytes plus one LF.\n\n**Normative vector**\n- The generator and its output are in docs/automation/evidence. They are deterministic, and a rerun gave the same bytes.\n- Output SHA-256 e7e6c9bec109dd3bc014dcfa5efac27f48674180c79cfd23f6e7df9222bb705e.\n- Example entry entryHash 07e8bf8442a17638c38ef9a3bb3a2191a6986931ac52d82f51eb4227937ee322.\n- Chain heads: mandatory 1e145b2915fd4373..., full 801b9663edd8b539...\n- It reproduces the RFC 8785 string example, and 320 of 320 objects serialize the same as Python json.dumps.\n- It includes a model of the 6.2 algorithm. Both honest logs pass with the declared limits. T1 (truncate and rewrite, the BA07-V3-02 scenario), T3 (tag deleted) and T4b (last tag plus its pending entry deleted, copy designated) are detected. T2 (edit in the pending window) and T4a (same deletion, copy undesignated) are not detected, as section 1 declares.\n- A check script (in the scratchpad only) compared every hash and table row in the md with the JSON: all OK, and the md is UTF-8 with LF only.\n\n**Other corrections made while writing**\n- The anchor-record template no longer lists the tag object id, peeled commit or verified-at/by. A commit cannot contain its own id, so these live in ANCHOR_RECORDED.\n- captureId is added, because AUTHORIZED comes before the manifest identity exists.\n- A role is fixed per event.\n\n**Hashes** (SHA-256 of LF-normalized bytes, Python hashlib)\n- md 581dae357e0895d5f1c810e2595e02f6711b897abb20f66b1b05a92f955ba7cc; git blob 194fb46e2f6c7ceff8b7693bfe983198ba48b8f1.\n- py 35e7dba4f380fd7a889fbe15b051bb303d62b3dd6f72d23da4599a9a9ea27e88.\n- Informational BA-11 multi-file hash of the three files: 4639520d38eafbc343e0e8a1492ab9079f8a809b2c8e921e6e1bba543cd44c61.\n\nNo git write commands were run, AutoCAD and host were not touched, and no UNSET value was invented. Every value in the worked example is illustrative (labelled EXAMPLE).",
+    "counts": "BA-07 V4 md: 457 lines. Sections 1-11 keep their V3 numbers; 4.1, 5.1, 5.2, 12 (worked example) and 13 (Delta V4) are new. Worked example: 19 entries (14 in the mandatory sequence plus 5 in the continuation) and 5 anchors (h = 1, 6, 9, 12, 17). Verification model: 7 cases (2 honest, T1, T2, T3, T4a, T4b). Cross-check: 320 of 320 objects equal. Delta table: 13 finding rows plus 1 editorial row. Informational BA-11 artifact hash for BA-07 V4 (3 paths in ordinal order: vector .json, vector .py, V4 md): 4639520d38eafbc343e0e8a1492ab9079f8a809b2c8e921e6e1bba543cd44c61.",
+    "decisions_applied": [
+     "AR3-23: model A (ANCHOR_RECORDED event, derived ANCHORED), IN_USE -> IN_USE, new baseline version (BASELINE_RECORDED + BASELINE_APPROVED + SUPERSEDED), remote anchor discovery with git ls-remote, baseline-anchor.json read at each tag's peeled commit, one-to-one tags <-> ANCHOR_RECORDED, declared pending window, mandatory worked example, JCS with 16-hex doubles defined inside BA-07, published normative vector with its output hash cited, pins after the baseline (slots only in BA-11; seal = Coordinator + Architect ratification records cited by PIN_RECORDED; RECORDED -> RATIFIED -> ANCHORED), independent-copy designation in the candidate or ratification record, repeated in INDEPENDENT_COPY and read by step 6",
+     "AR3-22: the EVM_FROZEN pin record carries and must equal INVENTORY_REVIEW_RECORDS; the review records must be custodied before PIN_RECORDED",
+     "AR3-25: pin values, state and hash never written into BA-11; BA-11's own status lives outside it (section 8); DEPENDS_ON = BA-01 only, separate from PREREQUISITES",
+     "AR3-30: BA-07 minors BA07-V3-04..07 applied",
+     "AR2-16, AR2-39, AR2-44 (section 211) retained where section 214 does not change them"
+    ],
+    "open_questions": [
+     "AR3-23 pin machine reading: AR3-23 says both that PIN_RECORDED cites the ratification records and that the machine is RECORDED -> RATIFIED -> ANCHORED. BA-07 V4 reads this as follows. RECORDED is the written pin record (a file). RATIFIED is reached once both ratification records exist, and the single PIN_RECORDED entry (APPROVAL_ROLE) is appended only then, citing them. ANCHORED is derived. So RECORDED has no log entry of its own. Please confirm, or rule that a separate log entry must mark RECORDED before ratification (such an entry could not cite the ratification records).",
+     "New baseline version: AR3-23 does not say whether the pins and the manifest in custody carry over to a new baseline version. BA-07 V4 (section 8) leaves this to the ruling that approves the new version; those that do not carry over are SUPERSEDED or REVOKED with cause SUPERSEDED_BY_RULING. Please confirm that this rule belongs in the sealed procedure."
+    ],
+    "cross_artifact_notes": [
+     "BA-11 V4, row BA-07: the paths are the V4 md plus docs/automation/evidence/I-52-ct21d-ba07-v4-jcs-vector.py and .json (the vector is normative, BA-07 V4 4.1). DEPENDS_ON = BA-01 only. PREREQUISITES = the Coordinator's designation of the independent copy (location and holder), recorded in the BA-07 candidate record or the Coordinator's ratification record (gate: before seal). BASE-17 text: BA-07 V4 is not ready for candidate until BA-01 is a candidate and the Architect agrees BA-11 sections 1, 2 and 2.1 (AR3-25).",
+     "BA-11 V4 rule 2 and the BA-11 row: cite 'BA-07 V4 sections 8 and 9' and the entries BASELINE_RECORDED, BASELINE_APPROVED and ANCHOR_RECORDED. There is no ANCHORED event any more; anchoring is derived.",
+     "BA-11 V4 section 3.1: the pin custody entries are PIN_RECORDED (citing the Coordinator and Architect ratification records, the pin's own seal) followed by an anchor (ANCHOR_RECORDED); the pin states are RECORDED -> RATIFIED -> ANCHORED (BA-07 V4 5.1). Replace 'PIN_RECORDED, ANCHORED'.",
+     "BA-11 V4 section 3.2, row 'manifest and custody log': the custody log is created at the baseline (genesis entry, BA-07 V4 section 8). Only the manifest is EXEC-11.",
+     "BA-11 V4 and all artifacts: ratification records now live at docs/automation/evidence/ct21d/ratifications/<subject>-<hash>-<kind>.json with kind in {candidate, coordinator, architect, seal, designation}. BA-07 V4 5.2 lists the fields BA-07 reads (ratifier, subjectKind, subject, subjectHash, decision, utc, reference, independentCopy); the rest is governed by BA-11 V4 section 2. Cite 'BA-07 V4 section 2' for the location.",
+     "BA-10 V4: BA-10 DEPENDS_ON = BA-01 only, so the PARAM-05 label must not take its canonical serialization from BA-07 (V3 cited 'BA-07 V3 section 4'). Define it inside BA-10 or cite RFC 8785 directly (BA07-V3-06).",
+     "BA-04 V4 section 2.1 (pins): the pin's 'seal' is the Coordinator + Architect ratification pair citing the pin-record hash, cited by PIN_RECORDED. A pin is usable by a governing run only when its PIN_RECORDED entry is covered by an anchor recorded before the run's IN_USE entry. Each governing run lists the pin-record hashes it consumes in IN_USE.pinRecordHashes. No BA-11 value is written. Replace 'PIN_RECORDED, then ANCHORED'.",
+     "BA-06 V4: the EVM field INVENTORY_REVIEW_RECORDS is copied into the EVM_FROZEN pin record field inventoryReviewRecords and must equal it. Each listed review record (hashed as SHA-256 of its LF-normalized bytes) must be custodied as REVIEW_RECORD_ADDED before PIN_RECORDED. Review records live at docs/automation/evidence/ct21d/review-records/ (planned).",
+     "BA-09 V4 depends on BA-07. BA-07 V4 keeps sections 1-11 numbered as in V3; the new sections are 4.1, 5.1, 5.2, 12 and 13.",
+     "Repository line endings: core.autocrlf=true and no -text rule for the new files. All cited BA-07 hashes are over LF-normalized bytes, which is also the committed blob content, so a CRLF checkout does not change them."
+    ]
+   }
+  },
+  {
+   "key": "BA0809",
+   "r": {
+    "files_written": [
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-08-selective-kind-baseline-v4.md",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-09-warmup-v4.md"
+    ],
+    "findings": [
+     {
+      "id": "CLOSURE:BA08-01",
+      "status": "FIXED",
+      "where": "BA-08 V4 section 4 (row SL-Y), new section 4.1, section 12.3 (FX-ANN-BLANK)",
+      "note": "V3 sealed reason withdrawn (AR3-15); SL-Y 'added' now covered by governing CL-CLEAN-FXANNBLANK-FP; rename case and view-kind case (sa3a S6a) kept as disclosed residuals"
+     },
+     {
+      "id": "D-01",
+      "status": "FIXED",
+      "where": "BA-08 V4 sections 4, 4.1, 12.3, 12.6, 13, 15",
+      "note": "Blank-name construction documented with code citations (SelectiveFrontalBuilder.cs:342, SelectivePlantaBuilder.cs:338, LHD:258-270, RSC:459, RSW.xaml:33-34, RSW.xaml.cs:2587) and V17 PDC-2/ID-4/S-17/T-M26 lines verified. The SH-LAY-ADDED wording in BA-06 is BA-06 V4's to correct (cross-artifact note)"
+     },
+     {
+      "id": "CLOSURE:BA08-04",
+      "status": "FIXED",
+      "where": "BA-08 V4 sections 12.1, 12.2, 12.4",
+      "note": "Completeness by authored output plus per-fixture limitation statement"
+     },
+     {
+      "id": "D-03",
+      "status": "FIXED",
+      "where": "BA-08 V4 sections 12.1-12.4",
+      "note": "Fixture = editor inputs of a new rack at 3375aadb; authored fields taken from SelectiveEditorState.BuildDesign (SES:1327-1400): PostPeralte 3.0 (RSW.xaml:85 initial value), FloorBeamRiseOverride 4.0 explicit per bay (SES:152), fondo lists as BuildDesign writes them (SES:1356-1366, CloneAligned SES:217-241), SeparatorLengths D-1 x 12.0, PostPeraltes/PostCabeceras padded by SyncPostCabeceras, tolerances 4.0/6.0 literals (RSW.xaml.cs:474-482), DimensionViews null. DrawPallets=false stated for every fixture including FX-BIG. The V3 blanket 'avoids L-06..L-33' is withdrawn; limitations split into value-decided (group A) and not decided by values (group B: L-22, L-26, L-28..L-32, L-34..L-37), with a per-fixture table. The authored document bytes are recorded in the FIXTURE_INSTANCE conformance record, not assumed"
+     },
+     {
+      "id": "CLOSURE:BA08-06",
+      "status": "NOT_APPLICABLE",
+      "where": "BA-08 V4 section 8",
+      "note": "Refuted in phase 2; the five AR3-14 acceptance conditions of PH2-E4-1 are now recorded as E4-C1..E4-C5"
+     },
+     {
+      "id": "CLOSURE:BA08-07",
+      "status": "FIXED",
+      "where": "BA-08 V4 section 2 (differences table and paragraph 'C-127 and the two current paths')",
+      "note": "Envelope input row corrected"
+     },
+     {
+      "id": "D-02",
+      "status": "FIXED",
+      "where": "BA-08 V4 section 2",
+      "note": "AUTH-15 takes a RackEmbedDocument and serializes it itself (RDC:187; RDC:186 at 1304101d, verified), writes and reads back its own serialization with an ordinal compare (RDC:204-206); product command serializes once (RSC:416) and SBW writes that string unchanged only when non-empty, with no read-back (SBW:31-34). Both verifiers were followed: C-127 conformance is asserted for neither current path, and a future object-taking seam is left to the seam design (PA-8). Missing-pieces (RDC:67-72, detected after writing) and transaction (RDC:159-164) rows were also made precise"
+     },
+     {
+      "id": "D-04",
+      "status": "FIXED",
+      "where": "BA-08 V4 section 5; section 15",
+      "note": "Phase-A domain part (1) now includes the reused SL-Y layers known from the plan capture and the PRE_COMMAND_STATE_RECORD (AR3-15). Part (2) includes the layers the seams create. The seams return the handles of the layers they create"
+     },
+     {
+      "id": "D-06",
+      "status": "FIXED",
+      "where": "BA-08 V4 section 11 rule 5, new section 11.2 (HDM-1..HDM-8), section 16.2 K-4",
+      "note": "Pin rule per AR3-11: sources HDM-CHAR-FX1F/FXANN/FXDIM (non-governing, AR3-01 mode, after LOCK_MODE selection and before any governing run that uses S-1..S-3); keys as ruled, captured in PRE_COMMAND_STATE_RECORD; lookup by exact key tuple, no generalization; UNKNOWN (O5) until pinned; reconciled with V17 L-36 / CT-50 (CT-50 not executed and not replaced). One gap is declared (HDM-8, open question Q-HDM-1): none of the three named scenarios creates a layer, so the unassigned fields of an SL-Y 'added' layer have no source"
+     },
+     {
+      "id": "D-07",
+      "status": "FIXED",
+      "where": "BA-08 V4 section 4 row SL-R; section 6 rows 'source reference presentation' and CONTEXT comparison rule; section 11 rule 1; section 11.2 HDM-1; section 12.2",
+      "note": "ST-13 cited (proposal-v17.md:918); full set read from the source reference into PRE_COMMAND_STATE_RECORD. PlotStyleName is not typed by BA-05 V4 (outside layer 1). It is a declared gap, and the fixtures require PSTYLEMODE=1 (colour-dependent plot styles) so it does not arise in CT-21D"
+     },
+     {
+      "id": "D-08",
+      "status": "FIXED",
+      "where": "BA-08 V4 section 3 ('Catalog folder in the tuple') and section 7 'Rule (D-08; AR3-13)'",
+      "note": "Cites the V2.5 CATALOG_FOLDER field and the CatalogDirectory.Resolve fallback. The blob hashes and the deployed bytes are separated, and the comparison is of the derived name universe. The 7 catalog SHA-256 values were recomputed with a script: SHA-256 (lowercase hex) of the `git show 3375aadb:assets/catalogs/<file>` bytes after CRLF->LF normalization. They equal V3, and no blob contains CR"
+     },
+     {
+      "id": "D-09",
+      "status": "FIXED",
+      "where": "BA-08 V4 section 6.1 and 16.3 K-9; BA-09 V4 section 6 row 2 and section 8 W-6",
+      "note": "Guard covers the seams, the orchestrator (PREPARE-R included) and the warm-up harness. It also forbids the catalog provider, RackCatalogLoader and UserSettingsStore in the warm-up harness. It is registered as an additional execution prerequisite derived from AR2-42/AR3-16, not as EXEC-12"
+     },
+     {
+      "id": "D-10",
+      "status": "FIXED",
+      "where": "BA-08 V4 section 12.5 FX-IMP paragraph",
+      "note": "Reverse reachable construction: the source is drawn while the library lacks the blocks, and the library supplies them later. The V3 example is withdrawn with its reason; admissibility is left to K-8"
+     },
+     {
+      "id": "D-11",
+      "status": "FIXED",
+      "where": "BA-08 V4 section 10 TOL_CONTINUITY paragraph",
+      "note": "Reworded: N-S02 (V17 4.3, proposal-v17.md:968 and :2643) is outside CT-21D, and the fixtures exclude medio frente"
+     },
+     {
+      "id": "D-12",
+      "status": "FIXED",
+      "where": "BA-08 V4 new section 11.1 PLAN_CAPTURE_RECORD",
+      "note": "Record types PLAN_CAPTURE_RECORD/PLAN_VIEW/PLAN_TRANSFORM/PLAN_GROUP/PLAN_PLACEMENT/PLAN_INSTANCE (every HeaderBlockInstance member) define the fields. Encoding is the BA-05 V4 section 2.1 stream (ordinal field order, binary64 hex doubles, plan-order sequences) and the digest is SHA-256. The digest is logged at the PR checkpoint and sealed. PV checks the sealed digest and plan equality"
+     },
+     {
+      "id": "D-13",
+      "status": "FIXED",
+      "where": "BA-08 V4 section 11 rule 2; section 14",
+      "note": "Census records the value set per dynamic property (BA-05 V4 section 5 already has it). A constrained property is UNKNOWN (O5) until a non-governing record shows the stored value; an unconstrained property expects the plan value"
+     },
+     {
+      "id": "D-14",
+      "status": "FIXED",
+      "where": "BA-08 V4 section 3 row 'entity types'",
+      "note": "Negative scale can appear on piece references (LHD:311-313) and group placements (LHD:60-63, 145-148), never on the top-level reference"
+     },
+     {
+      "id": "PH2-CF-1",
+      "status": "FIXED",
+      "where": "BA-08 V4 section 2 'Accepted fact correction'",
+      "note": "AR3-12 recorded: the F-2 fact is incomplete; decisions row AR3-12 is the correction; no 15.3 change; no evidence transfer; P-8 required; AR2-38"
+     },
+     {
+      "id": "PH2-TP-1",
+      "status": "FIXED",
+      "where": "BA-08 V4 sections 3 and 7",
+      "note": "Cites V2.5 CATALOG_FOLDER (AR3-13), not the V3 proposal"
+     },
+     {
+      "id": "PH2-OR-1",
+      "status": "FIXED",
+      "where": "BA-08 V4 section 11.2",
+      "note": "AR3-11 conditions 1-4 applied"
+     },
+     {
+      "id": "PH2-E4-1",
+      "status": "FIXED",
+      "where": "BA-08 V4 section 8 (E4-C1..E4-C5)",
+      "note": "AR3-14 five conditions recorded"
+     },
+     {
+      "id": "BA11V3-01 (BA-08 part)",
+      "status": "FIXED",
+      "where": "BA-08 V4 sections 7, 10, 14",
+      "note": "Section 10 keeps the tolerance values. The BA-05 V4 vectors are in slot units and get their binary64 instances from the Q-FPSPEC-VECTORS harness. The census universe is every block of the library file. TOL_SCALE is not a BA-05 gate (AR3-17)"
+     },
+     {
+      "id": "BA11V3-04 (BA-08 part)",
+      "status": "FIXED",
+      "where": "BA-08 V4 section 16.1 (catalog-seal paragraph) and 16.2",
+      "note": "K-1 and K-4 are fixed before the first governing run. Only K-3, K-8 and the Architect's rulings block the catalog seal (AR3-26)"
+     },
+     {
+      "id": "BA11V3-07 (rows BA-08, BA-09)",
+      "status": "FIXED",
+      "where": "BA-08 V4 header and 16.1 registry-gate column; BA-09 V4 header and section 8",
+      "note": "DEPENDS_ON lists registry entries only. PREREQUISITES carry their gates"
+     },
+     {
+      "id": "BA11V3-10",
+      "status": "FIXED",
+      "where": "BA-08 V4 section 3",
+      "note": "The catalog folder is now cited as the V2.5 field"
+     },
+     {
+      "id": "CLOSURE:BA09-02",
+      "status": "FIXED",
+      "where": "BA-09 V4 section 4",
+      "note": "Per-scenario rule applied by governance/mode/reach; see D-05"
+     },
+     {
+      "id": "D-05",
+      "status": "FIXED",
+      "where": "BA-09 V4 section 4",
+      "note": "WU-DRY is mandatory for every GOVERNING scenario (CHARACTERIZATION_RUN or VALIDATION) with REACH in P0..CP. The 11 evidence-group scenarios are named (U-1..U-8, U-6b, S1-SAVE-REOPEN, PP-POSTCP, CL-CLEANUP-CHECK) and CL-CLEAN-FXANNBLANK-FP is included. The V3 universal sentence is withdrawn. Learning (EV-L-*, reach LEARN), non-governing, qualification/NONE and SYN scenarios are declared excluded (AR3-02). Dry runs use the AR3-01 mode, PIN_SLOTS=[FIXTURE_INSTANCE@<FX>] only. The residual adds the branches of RECORDED_NOT_ENFORCED controls and the characterization-build vs product-build differences. The BA-04 section 5.2 sentence belongs to BA-04 V4"
+     },
+     {
+      "id": "D-15",
+      "status": "FIXED",
+      "where": "BA-09 V4 section 3.1 row 1g",
+      "note": "Every E-12 handler (WRITE, STRUCTURE, TX) is exercised by direct invocation on warm-up-only instances and sinks and is never attached to the side database (AR3-16)"
+     },
+     {
+      "id": "D-16",
+      "status": "FIXED",
+      "where": "BA-09 V4 section 3.1 rows 1e/1g/1h/1k, section 6 rows 8 and 10, section 7",
+      "note": "Warm-up-only instrument instances and sinks, with per-instance counters. The governed logs start at their initial sequence number, checked by WU-BOUNDARY. The Application and Domain tier-B statics are added"
+     },
+     {
+      "id": "D-17",
+      "status": "FIXED",
+      "where": "BA-09 V4 section 3.1 rows 1b and 1c; section 6 residual",
+      "note": "The SL-5 import into the side database precedes SL-1/SL-2 (LHD:293-303). The CORE-15 claim is limited to repository statics, and the host-internal effects go to WARMUP_STATIC_STATE_RESIDUAL"
+     },
+     {
+      "id": "D-18",
+      "status": "FIXED",
+      "where": "BA-09 V4 section 6 row 4",
+      "note": "UserSettingsStore is not called. The settings.json SHA-256 (or ABSENT) is recorded before step 1 and at CP, and a difference makes the run INVALID (AR3-16 row 4)"
+     },
+     {
+      "id": "D-19",
+      "status": "NOT_APPLICABLE",
+      "where": "BA-09 V4 section 4 'Count' and section 8 W-2 (wording aligned anyway)",
+      "note": "Assigned to BA-10 by the task. BA-09 V4 wording is nevertheless WU_DRY_RUNS = N_B (Owner, Q-O2; recorded by the Coordinator; UNSET) per AR3-24"
+     },
+     {
+      "id": "WU-Q1 rows 1-9 (AR3-16)",
+      "status": "FIXED",
+      "where": "BA-09 V4 section 6 (rows 1-9 plus new row 10), section 3.1 row 1j",
+      "note": "Row 1 NOT COMPATIBLE: no Load() on a catalog copy; a conditional type-initializer and dependent-assembly warm-up adds no entry. Rows 2, 3, 5, 6, 8, 9 COMPATIBLE: row 2 guard extended; row 8 extended to Application and Domain. Row 4: not called, with the INVALID rule. Row 7: repository options are executed code and the framework caches are a disclosed residual"
+     },
+     {
+      "id": "BA11V3-02 (BA-09 part)",
+      "status": "FIXED",
+      "where": "BA-09 V4 header",
+      "note": "States that BA-04 V4 depends on BA-09. The edge itself lives in BA-11 V4"
+     },
+     {
+      "id": "BA11V3-13",
+      "status": "FIXED",
+      "where": "BA-09 V4 section 4 'Count'; section 8 W-2",
+      "note": "WU_DRY_RUNS = N_B (Owner Q-O2; recorded by the Coordinator), per AR3-24"
+     }
+    ],
+    "summary": "I wrote BA-08 V4 and BA-09 V4 as new files. The V3 files are unchanged, and I ran no git write command and did no AutoCAD or host work. Every confirmed finding in bundle BA0809 (except D-19) and every BA11X item that names BA-08 or BA-09 is FIXED or NOT_APPLICABLE with a reason, and each artifact ends with a \"Delta V4 (decisions section 214)\" table. I checked the code facts again at 3375aadb (and 1304101d for AUTH-15) with read-only git show.\n\n**BA-08 V4**\n- AR3-12: the PH2-CF-1 fact correction is recorded. The differences table is corrected (D-02): AUTH-15 re-serializes the envelope (RDC:187) and compares against its own serialization. C-127 conformance is asserted for neither current path.\n- AR3-13: cites the V2.5 field `CATALOG_FOLDER` and separates the repository blob hashes from the deployed bytes (D-08).\n- AR3-14: records the five route conditions as E4-C1..E4-C5.\n- AR3-15:\n  - The V3 sealed reason for SL-Y \"added\" is withdrawn.\n  - New fixture `FX-ANN-BLANK` and governing clean scenario `CL-CLEAN-FXANNBLANK-FP`.\n  - The rename and view-kind cases stay as disclosed residuals.\n  - The phase-A domain now includes the reused SL-Y layers (D-04).\n- AR3-11:\n  - New section 11.2 is the `HOST_DEFAULT_MAP` pin rule.\n  - Its sources are the three `HDM-CHAR-*` scenarios, keyed by the consumed context variables, with exact-key lookup and `UNKNOWN` (O5) until pinned. It is reconciled with V17 L-36 / CT-50.\n  - The top-level reference's ST-13 set is excluded; SL-R and rule 1 read it from the source reference (D-07).\n- AR3-17: section 10 keeps the tolerance values; BA-05 V4 vectors are in slot units and the `Q-FPSPEC-VECTORS` harness instantiates them. The census universe is every block of the library file.\n- AR3-26: section 16 separates baseline, catalog-seal, pin and execution gates. The header lists `DEPENDS_ON` and `PREREQUISITES` separately.\n- D-03: fixtures are now specified by editor inputs and authored output. Fields verified in `SelectiveEditorState.BuildDesign` and the editor code: `PostPeralte` 3.0, `FloorBeamRiseOverride` 4.0 explicit in every bay, the fondo lists as the editor writes them, and `DrawPallets` false everywhere. V17 limitations are stated per fixture, and the V3 blanket statement is withdrawn.\n- Minor findings:\n  - D-12: new `PLAN_CAPTURE_RECORD` definition.\n  - D-13: dynamic-property value sets; a constrained property is `UNKNOWN` until characterized.\n  - D-09: the static guard is extended to the orchestrator and PREPARE-R and registered as an additional execution prerequisite, not EXEC-12.\n  - D-10, D-11, D-14: corrected.\n- Declared gap: BA-05 V4 does not type `PlotStyleName`. The fixtures now require colour-dependent plot styles (`PSTYLEMODE` = 1), so the gap does not arise in CT-21D.\n- One real gap is open as Q-HDM-1 (see below).\n\n**BA-09 V4**\n- AR3-16: the WU-Q1 ruling is applied row by row; section 6 is normative, with a new row 10 for instrument state.\n  - Row 1: no `Load()`; only the conditional type-initializer and dependent-assembly warm-up, with no cache entry.\n  - Row 4: `UserSettingsStore` is not called; a changed `settings.json` hash makes the run `INVALID`.\n  - Row 7: the framework metadata caches are a disclosed residual.\n  - E-12 and E-11M handlers are exercised by direct invocation with warm-up-only instances and sinks (D-15, D-16).\n- AR3-02 and AR3-01: `WU-DRY` is required for every GOVERNING scenario with reach P0..CP. The 11 evidence-group scenarios are named, and learning, non-governing, NONE and SYN scenarios are declared excluded. Dry runs use the characterization-build mode, and the residual is extended accordingly.\n- AR3-24: `WU_DRY_RUNS` = `N_B` (Owner, Q-O2; UNSET).\n- D-17: the step-1 order is now normative, with the SL-5 import before SL-1 and SL-2.\n- D-18: covered by row 4.\n- W-1: the synthetic plans are recorded plan captures, replayed without calling the catalog or the builders; this data is due before the BA-09 candidate.\n\nNo hash is declared normative. The only hashes written into the artifacts are the V3 blob ids and the seven catalog SHA-256 values, recomputed by script and equal to V3.",
+    "decisions_applied": [
+     "AR3-01 (characterization-build RECORDED_NOT_ENFORCED mode for HDM-CHAR-* and WU-DRY-*; BA-08 11.2 HDM-3, BA-09 section 4)",
+     "AR3-02 (WU-DRY for every GOVERNING scenario entering P0..CP incl. the 11 evidence-group scenarios; learning/non-governing declared excluded; PIN_SLOTS FIXTURE_INSTANCE only)",
+     "AR3-11 (HOST_DEFAULT_MAP pin rule: HDM-CHAR-FX1F/FXANN/FXDIM, scope excluding the ST-13 set, keys CLAYER..CPLOTSTYLE + current text/dim style, UNKNOWN until pinned, L-36/CT-50 reconciliation)",
+     "AR3-12 (PH2-CF-1 recorded as accepted fact correction; no 15.3 change, no evidence transfer, P-8 required, AR2-38)",
+     "AR3-13 (CATALOG_FOLDER cited from V2.5)",
+     "AR3-14 (five PH2-E4-1 acceptance conditions E4-C1..E4-C5)",
+     "AR3-15 (FX-ANN-BLANK, CL-CLEAN-FXANNBLANK-FP, sealed reason withdrawn, rename residual, D-04 phase-A domain)",
+     "AR3-16 (WU-Q1 rows 1-9 ruled; E-12/E-11M direct invocation with warm-up-only instances and sinks; settings.json INVALID rule)",
+     "AR3-17 (tolerance values stay in BA-08 section 10; slot-unit vectors instantiated by Q-FPSPEC-VECTORS; census universe = every library block)",
+     "AR3-24 (WU_DRY_RUNS = N_B, Owner Q-O2)",
+     "AR3-25 (DEPENDS_ON registry-only vs PREREQUISITES with gates in both headers)",
+     "AR3-26 (fixture instances and HOST_DEFAULT_MAP fixed before the first governing run; only K-3, K-8 and Architect rulings block the catalog seal)",
+     "AR3-30 (required fixes of the confirmed minor findings D-07..D-18)",
+     "AR2-xx of section 211 where not changed (AR2-15, AR2-16, AR2-17, AR2-35, AR2-38, AR2-40, AR2-41, AR2-42, AR2-46)"
+    ],
+    "open_questions": [
+     "Q-HDM-1 (BA-08 V4 11.2 HDM-8 / 16.1 K-6): AR3-11 names three HOST_DEFAULT_MAP sources (HDM-CHAR-FX1F, -FXANN, -FXDIM). None of their mirrors creates a layer, because each template already holds every layer it uses. So the fields of a newly created SL-Y layer that the writer leaves unset (linetype, lineweight, on/off, frozen, locked, plottable, transparency) have no pin source. That gap exists only since AR3-15 made SL-Y 'added' a governing case. Until the Architect rules, those fields are UNKNOWN (O5), and the SL-Y comparison of CL-CLEAN-FXANNBLANK-FP cannot reach EQUAL. Proposed ruling: also run HDM-CHAR-FXANN on FX-ANN-BLANK, whose mirror creates RACKCAD_ANOTACIONES. The alternative is to accept O5 for those fields."
+    ],
+    "cross_artifact_notes": [
+     "BA-04 V4: define HDM-CHAR-FX1F/FXANN/FXDIM consistently with BA-08 V4 11.2 HDM-3/HDM-4. Each runs at least once with the key values as pinned in the fixture instances plus runs with each key changed, and records every in-scope attribute of every created object class. If Q-HDM-1 is accepted, HDM-CHAR-FXANN also runs on FX-ANN-BLANK.",
+     "BA-04 V4: until Q-HDM-1 is ruled, CL-CLEAN-FXANNBLANK-FP's SL-Y comparison is UNKNOWN for the unassigned fields of the created layer. Mark it or carry the dependency.",
+     "BA-04 V4: the WU-DRY rule is BA-09 V4 section 4: every GOVERNING scenario (CHARACTERIZATION_RUN or VALIDATION) with REACH in P0..CP. This includes U-1..U-8, U-6b, S1-SAVE-REOPEN, PP-POSTCP, CL-CLEANUP-CHECK, CL-CLEAN-FXANNBLANK-FP, and NC-CLONE-REPLACE if it reaches P0 or later. Learning, non-governing, NONE and SYN scenarios are excluded. Correct the universal sentence of section 5.2 accordingly.",
+     "BA-04 V4: FX-IMP-NESTED is listed in BA-08 V4 12.5 as used by NC-CLONE-REPLACE. BA-08 V4 16.2 lists K-1 and K-4 as fixed before the first governing run (align section 7 C-1/C-7 per AR3-26). The purpose of EV-L-OC-LAYER must no longer say it is 'the only construction of SL-Y added'.",
+     "BA-05 V4: BA-08 V4 relies on the CONTEXT category with record kinds CONTEXT_VARIABLE and REFERENCE (section 2.3.5) and on the census value sets (section 5). BA-08 V4 section 6 fixes that ABORT-VERIFY compares both CONTEXT kinds and that E-08 compares the REFERENCE members only. BA-08 V4 declares the plot-style-name gap and requires PSTYLEMODE=1 in the fixtures. PLAN_CAPTURE_RECORD and its helper types are defined in BA-08 V4 11.1 on the BA-05 V4 section 2.1 stream; the reference encoder will need those schemas at implementation, and no change to BA-05 is required.",
+     "BA-06 V4: correct row SH-LAY-ADDED in section 10.2. It is no longer 'only a scratch document' and is also constructible on FX-ANN-BLANK (BA-08 V4 4.1). The OC-LAYER micro-scenario may keep FX-SCRATCH. BA-08 V4 cites 'compiled row C-136 of BA-06 V4'.",
+     "BA-10 V4: BA-09 V4 uses WU_DRY_RUNS = N_B (PARAM-01; Owner Q-O2; recorded by the Coordinator; UNSET) and does not use its value. D-19 is BA-10's.",
+     "BA-11 V4 rows:\n- BA-08: DEPENDS_ON = BA-01, BA-03, BA-05, BA-06. PREREQUISITES: K-3 (TOL_SCALE), K-8 (FX-IMP) and K-6 (Q-HDM-1) before the candidate; K-2 (census) and K-5 (Coordinator R-1 ratification) before the seal.\n- BA-09: DEPENDS_ON = BA-01, BA-06, BA-07, BA-08. PREREQUISITES: W-1 (recorded synthetic warm-up plan data, part of the warm-up definition) before the candidate; its file must be registered as a path of the BA-09 entry when produced.\n- The HOST_DEFAULT_MAP pin source is HDM-CHAR-FX1F/FXANN/FXDIM (BA-08 V4 11.2).\n- The FIXTURE_INSTANCE slots include FX-ANN-BLANK.\n- Execution prerequisites named in BA-08 V4 16.3: K-9 is the static guard (not EXEC-12); K-10 is the characterization build.",
+     "Decisions log: PH2D-4 (§213.2) is superseded in content by BA-08 V4 section 4.1. The log is append-only, so the Coordinator may note it in a follow-up entry."
+    ],
+    "counts": "BA-08 V4: sections 1-17 (new subsections 4.1, 11.1, 11.2, 12.1-12.6); 9 fixtures (FX-ANN-BLANK new) + 7 variants; 46 static-universe names unchanged; 7 catalog blob SHA-256 values recomputed, equal to V3. BA-09 V4: sections 1-9; section 6 has 10 rows (9 ruled by AR3-16, plus instrument state); the WU-DRY rule names 11 previously missing governing scenarios. Informational only, not normative: LF SHA-256 of BA-08 V4 = 179ea745f349c9d775be3a7c3bba7a7d872480d94448910ed9b2c6dde5b21377, BA-09 V4 = 4c82e18848547f2560f217a2fe3b4df82aa8af25d7a56ebbce22267751bcf8a7 (python hashlib over the file bytes with CRLF->LF; the files contain no CR)."
+   }
+  },
+  {
+   "key": "BA03",
+   "r": {
+    "files_written": [
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-03-selective-scope-v4.md",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba03-v4-checks.json",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba03-v4-checks.py",
+     "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba03-v4-checks-output.json",
+     "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\gen_ba03v4.py (generator, scratchpad; copy of gen_ba03v3.py, edited)",
+     "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\ba03v4test\\ (scratch-only negative tests of the runner: drift, fail-closed scope, re-run)"
+    ],
+    "findings": [
+     {
+      "id": "BA03V3-N1",
+      "status": "FIXED",
+      "where": "BA-03 V4 section 2, identity rule paragraph",
+      "note": "Now reads: in src/, the 3375aadb..1304101d delta touches only RackDefinitionCreator.cs and RackDefinitionCreationResult.cs; none of the four compared code paths changes (AR2-46: the reused Selective path is untouched). The generator checks this with read-only git and asserts it: `git diff --name-only 3375aadb 1304101d -- src/` gives exactly those 2 files, and `git rev-parse` shows the 4 code blobs are equal at 3375aadb, at 1304101d and to the expected blobs."
+     },
+     {
+      "id": "BA03V3-N2",
+      "status": "FIXED",
+      "where": "checks.json checks RVA_SEL_WHOLE_PLANTA and COD_SEL_NEG_FONDO0; runner field near_miss_controls; BA-03 V4 section 3 rows SEL-PLANTA (main) and SEL-LEGACY-M1 (main); section 7 table (new Near-miss column)",
+      "note": "Both checks are now scoped regexes with flags S, using the exact regexes from the required_fix. Each keeps its scope control and gains one near-miss control (Whole->Fondo; Fondo(0)->Fondo(1)); both near-miss controls evaluate FALSE. Scratch test on the real code with the change applied in memory (case labels swapped; Fondo(0)->Fondo(1)): the V4 checks return FALSE and the V3 checks still return TRUE."
+     },
+     {
+      "id": "BA03V3-N3",
+      "status": "FIXED",
+      "where": "runner I-52-ct21d-ba03-v4-checks.py (resolve/identityDrift, main argv check, scope(), output fields specification/runner); checks.json sources (expected_blob / expected_section_sha256) and rule; BA-03 V4 header ARTIFACT_PATHS, section 6 condition 3, section 7",
+      "note": "(a) Every source now carries its expected identity: blob, or section SHA-256 for DEC117, taken from the committed V3 output. The runner reports identityDrift and exits 1 on any drift; a scratch test with a tampered spec gave drift ['V17','DEC117'] and rc=1. (b) The output argument is mandatory: rc=2 and a usage message without it; there is no default target; the docstring is corrected. (c) Per AR3-28 the candidate output is the fourth BA-03 path. (d) The output records specification.sha256 8da090de... and runner.sha256 443e332e..., and both equal the file hashes. (e) scope() returns '' when a marker is absent and needs both keys; a scratch test with scope_end removed makes the check fail. The rule text states all of this."
+     },
+     {
+      "id": "BA03V3-N4",
+      "status": "FIXED",
+      "where": "BA-03 V4 section 3 (new normative 'Rule for authority-status rows', AR3-28; row 'authority of V17 3.7 / 3.8' now NO_STATEMENT with resolution in NOTE; rows 74-77 labelled); section 3.1 closing sentence; tally line",
+      "note": "The generator asserts that every row whose first column is not a scope row is NO_STATEMENT and carries the label. Tally: 23 rows = 14 IDENTICAL, 4 NARROWER, 5 NO_STATEMENT, 0 CONFLICT."
+     },
+     {
+      "id": "BA03V3-N5",
+      "status": "FIXED",
+      "where": "BA-03 V4 section 3 row 'ownership of the exposure' NOTE; section 4 rows 4 and 7 and closing paragraph; new checks P57_EXPOSURE_ONE (regex_count 'exposure', I, =1) and P57_KINDVIEW_TWO ('kind/view|view/kind', I, =2); note on P57_ZERO_FRONTAL",
+      "note": "NO_STATEMENT now rests on the section-by-section reading (the section 4 table is cited). The NOTE states that P57 uses English vocabulary: 'exposure policy'/'view/kind' in section 4 (line 71) and 'kind/view' in section 7 (line 133). The generator computes these sections and lines from the blob and asserts them. The zero-keyword counts are kept and marked as supplementary only."
+     },
+     {
+      "id": "BA03V3-N6",
+      "status": "FIXED",
+      "where": "BA-03 V4 section 3 row SEL-PLANTA / V17: authority 'V17 1.3, 2.1, 3.7, 3.8', checks V17_INSIDE V17_21 V17_AK V17_PLANTA_ROW",
+      "note": "The V17_INSIDE note now says it is cited for both SEL-FRONTAL and SEL-PLANTA."
+     },
+     {
+      "id": "BA03-F1..F8, XC-F9 (closure items)",
+      "status": "NOT_APPLICABLE",
+      "where": "BA-03 V4 section 8 (Delta V4 table)",
+      "note": "These were closed as FIXED in V3 (section 214.1). V4 does not change them."
+     }
+    ],
+    "summary": "I wrote BA-03 V4 and its V4 check evidence. The V4 change covers the six findings BA03V3-N1..N6 (AR3-28, section 214 of the decisions file), plus the header and V4-naming conventions from COORD section 1. All six findings are fixed. Sections 1 and 5 are byte-identical to V3, and the section numbering is unchanged. A new section 8, 'Delta V4 (decisions section 214)', covers N1..N6 and marks the closure items NOT_APPLICABLE.\n\nRunner result: I ran it from the worktree root on HEAD aebb86c2 (origin/main 1304101d), with the output path given as an argument. It checked 54 items (52 from V3 plus 2 new counted checks): failed = [], identityDrift = [] (all 11 identities equal the V3 identities), exit 0, runUtc 2026-09-30T09:01:40Z.\n- A second run to a scratch path matched the committed output in every field except runUtc.\n- Scratch-only negative tests passed:\n  - no argument gives rc=2;\n  - a tampered expected identity gives rc=1 with identityDrift ['V17','DEC117'];\n  - a missing scope marker makes the check fail;\n  - with the code changed in memory, the two N2 checks return FALSE, while the V3 versions of the same checks still return TRUE.\n\nRows: 23 in total — 14 IDENTICAL, 4 NARROWER, 5 NO_STATEMENT, 0 CONFLICT.\n\nThe V3 files were not modified. I ran no git write commands, did not touch AutoCAD, and changed no files outside my assignment.",
+    "counts": "BA-03 V4 composite artifact hash (BA-11 section 1 multi-file rule): 1c2df0595490f543e0563d7626719fd0d48e645752f41a679650faafae2adc19. This is informational, not a candidate hash.\n\nHow it was computed: a Python hashlib script. Each file hash is the SHA-256 of the file bytes with CRLF replaced by LF, as lowercase hex. The composite is the SHA-256 of the concatenation of `<path>\\n<file hash>\\n`, with paths in ascending ordinal (UTF-8 byte) order. Check of the method: the same script reproduces the V3 composite 2fe86f8c802ed053980a39c3c2de9d9523a6429990d56cdc73bed3eb4c1126ee from BA-11 V3.\n\nFile hashes, in path order:\n- docs/automation/evidence/I-52-ct21d-ba03-v4-checks-output.json: 8168c30babe81095eb50edb6a0c645c6ea00806d4ef3a7ada86921405a4d15a2\n- docs/automation/evidence/I-52-ct21d-ba03-v4-checks.json: 8da090de56a6587f2214b084316761ce3b23bccb6b6c6cdb1b32dcc024608e6b\n- docs/automation/evidence/I-52-ct21d-ba03-v4-checks.py: 443e332ea1bb19277f7f6765fd2a873d606c3fc0587d067211ee0d5f9e93f709\n- docs/initiatives/I-52-ct21d-baseline-ba-03-selective-scope-v4.md: ddc63969ff56fa8998d3c00b07019f2c1a1f8973d28d554a488e6e4a2cd27910\n\nGit blobs (from `git hash-object`, which only reads): md 5a908c67, json 7b1424b3, py 345c64a1, output 1a2c8cbc. The superseded V3 md blob is 6157f626c4b1d1811ba2ae4c661e85a7ae22a8be.\n\nOther counts: 54 checks (52 from V3 + 2 new); 2 checks turned into scoped regexes, each with 1 near-miss control; 11 identities, 0 drift; 23 comparison rows (14 IDENTICAL, 4 NARROWER, 5 NO_STATEMENT, 0 CONFLICT); 4 artifact paths.",
+    "decisions_applied": [
+     "AR3-28: V4 limited to BA03V3-N1..N6. The identity sentence now covers src/ only. The two checks use discriminating scoped regexes with near-miss controls. The runner compares expected identities and fails on drift, records the SHA-256 of the spec and of the runner, requires an output argument, and treats a missing scope marker as an empty scope. The candidate output is added to the BA-03 paths. Authority-status rows are NO_STATEMENT under a stated rule. The NO_STATEMENT of the exposure row now rests on the section-by-section reading. V17_INSIDE is added to SEL-PLANTA.",
+     "AR3-25: the header now has separate DEPENDS_ON (= BA-01 only) and PREREQUISITES lines, the second with its gates (before candidate, before seal).",
+     "AR2-45, AR2-46 (section 211) still apply: the identity set is the (path, blob) pairs; commit SHAs are informative; 3375aadb is the bound historical SHA.",
+     "COORD section 1: header block (ARTIFACT_VERSION 4-DRAFT superseding V3 blob 6157f626; AUTHORITY_CONTRACT with V2.4 rev 3 + V2.5 rev 1 pending Coordinator textual verification; DELTA RULING APPLIED line); no CANDIDATE_HASH/SEAL_HASH fields; sibling references renamed to BA-07 V4, BA-08 V4 and BA-11 V4; section 8 Delta V4 table; UTF-8, LF, final newline."
+    ],
+    "open_questions": [
+     "None that is a real contract ambiguity. One point to note: the expected identity of DEC117 is only the SHA-256 of section 117 (the AR2-45 identity), not the blob of docs/automation/decisions/I-52.md. That blob changes every time a decision is added, and binding it would report drift on every new ruling. N3's required_fix ('the expected blob (and, for DEC117, the section SHA-256)') is read that way."
+    ],
+    "cross_artifact_notes": [
+     "BA-11 V4 section 3, row BA-03: Paths must list four files in V4 names — the md, checks.json, checks.py and docs/automation/evidence/I-52-ct21d-ba03-v4-checks-output.json (AR3-28: the candidate output joins the BA-03 paths). DEPENDS_ON = BA-01. PREREQUISITES: before candidate, none beyond the authority identities that the spec binds; before seal, V2.2 PA-14 conditions 3 and 4, recorded in the ratification records and never in BA-03. The informational CURRENT_HASH for the current bytes is 1c2df0595490f543e0563d7626719fd0d48e645752f41a679650faafae2adc19; any byte change alters it.",
+     "BA-11 V4 section 2, BA-03 transition CANDIDATE_FOR_SEALING -> RATIFIED: the seal-time re-run must write its output to a path outside the four artifact paths (the runner's mandatory argument), otherwise it would change BA-03's bytes. The ratification records cite that output's exit status, identityDrift and failed. A non-zero exit or a non-empty identityDrift or failed means BA-03 is re-prepared. The runner makes the (path, blob) comparison, so no manual comparison is needed.",
+     "Mechanical delta check (Architect): a re-run of the V4 runner differs from the committed output only in runUtc, and after the commit also in informative.branchHead (the candidate run was on aebb86c2, before the V4 files were committed). The committed spec and runner are the executed ones when their LF-normalized SHA-256 equal the output's specification.sha256 8da090de... and runner.sha256 443e332e....",
+     "BA-03 V4 cites BA-07 V4 section 2 for the ratification record, BA-08 V4 section 12 for the fixture spec (rack-level conditions avoided; FX-ANN-BLANK adds no rack-level condition), and BA-11 V4 sections 1, 2, 2.1 and 3. If those sibling V4 artifacts renumber, BA-03 V4 needs a matching update.",
+     "Dependents of BA-03 (BA-06, BA-08, BA-04): the scope content is unchanged — section 1 is byte-identical to V3, and there is still no CONFLICT. Only the evidence mechanics and the classification of meta rows changed."
+    ]
+   }
+  }
+ ],
+ "critics": [
+  {
+   "gaps": [
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-04-scenario-catalog-v4.json and .md (with docs/initiatives/I-52-ct21d-baseline-ba-06-evm-preparation-v4.md section 9)",
+     "ref": "AR3-01 / BA04V3-17 / BA04V3-01",
+     "severity": "MAJOR",
+     "problem": "V4 applies the AR3-01 mode to GOVERNING scenarios, which AR3-01 does not cover. The mode puts E-03, E-04, E-12 phases A and C and S-1..S-3 in RECORDED_NOT_ENFORCED. It is applied to the 17 learning runs EV-L-* (MODE LEARNING) and to the 4 qualification vehicles Q-I14-Y, Q-I14-X, Q-I14-SILENT-Y and Q-I14-SILENT-X (MODE CHARACTERIZATION_RUN, REACH CP). AR3-01 names only the pre-EVM characterization runs (E4-LEARN-R1-*, LK-*). It calls itself a reading of V2.1 21.1 (non-governing runs by design) and says it 'no cambia la política de fases de las corridas gobernantes'. V2.1 3.2 keeps E-01..E-13 fail-closed in every CHARACTERIZATION_RUN. The COORD sheet also limits the mode to E4-LEARN-R1-*, LK-*, HDM-CHAR-* and WU-DRY-*. The extension is only raised as open question 2, yet these 21 scenarios carry STATUS SEALED_PENDING_PIN_CANDIDATE, which claims an authority for their expectation. The authority is also circular: BA-06 V4 section 9 sets only E-12 phases A and C to recorded-not-enforced and says 'the other controls are those BA-04 V4 declares', while the EV-L-* scenarios cite 'BA-06 V4 section 9' for the full set.",
+     "evidence": "BA-04 V4 md line 56: 'The mode applies to E4-LEARN-R1-*, LK-*, HDM-CHAR-*, every WU-DRY-* and, as the vehicle of a governing evidence run, to the learning micro-scenarios EV-L-* ... and to the qualifications Q-I14-*'. md line 592 (open question 2). JSON: EV-L-OC-LAYER has RUN_GOVERNANCE GOVERNING, RECORDED_NOT_ENFORCED = the full set of seven, EXPECTED_CONTROL_RESULTS 'RECORDED_NOT_ENFORCED set (AR3-01): E-03, E-04, E-12 phases A and C, S-1..S-3 ... (pre-EVM learning run; BA-06 V4 section 9)', STATUS SEALED_PENDING_PIN_CANDIDATE. Q-I14-Y has MODE CHARACTERIZATION_RUN, RUN_GOVERNANCE GOVERNING, the same set, REACH CP, STATUS SEALED_PENDING_PIN_CANDIDATE. In V3 (1625a306) the EV-L-* had no RECORDED_NOT_ENFORCED and the Q-I14-* had REACH NONE. BA-06 V4 line 711: 'E-12 phases A and C RECORDED_NOT_ENFORCED ... The other controls are those BA-04 V4 declares'. BA-06 CQ-08 is still open.",
+     "required_fix": "Do not treat these 21 governing scenarios as ruled while open question 2 and BA-06 CQ-08 are unanswered. Pick one option. (a) Keep them within the governing phase policy. For EV-L-*, state only what learning itself requires (V2.1 27.2: raw E-12 events recorded, no EVM), not the AR3-01 set: E-03 stays enforced under the LOCK_MODE pin, and E-04 and S-1..S-3 are either enforced or declared NOT_EVALUATED because REACH LEARN does not reach them. For Q-I14-*, use a non-governing vehicle run that feeds a governing qualification record, or the harness-emulation alternative that BA04V3-17 allowed. (b) Set these 21 scenarios to STATUS DRAFT, with BLOCKED_BY naming the pending Architect ruling, and list that ruling among the catalog seal blockers of md 7.1 (C-3). With either option, make BA-06 V4 section 9 and BA-04 cite the same control set, so neither artifact defers to the other."
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-04-scenario-catalog-v4.json and .md; docs/automation/evidence/I-52-ct21d-ba04-v4-checks.py",
+     "ref": "AR3-24 / BA10-V3-05 / BA10-V3-08",
+     "severity": "MAJOR",
+     "problem": "BA-04 V4 applies the strictest pair by assuming N_A >= N_B. BA-10 V4 assumes no ordering. BA-04 defines N_strict as 'N_A if any class-A group, else N_B' and labels every mixed-class scenario N_A, under the rules DEFAULT, CLEAN, VALIDATE and EVIDENCE_STRICT. BA-10 V4 defines N_strict(s) = max(N_A, N_B) for a scenario that serves both classes. If the Owner's Q-O2 answer makes N_B > N_A, 128 mixed-class governing scenarios would get fewer runs than AR3-24's 'par más estricto' requires. The published check enforces the BA-04 reading, so it reports PASS on this contradiction.",
+     "evidence": "JSON REPETITION_RULES.DEFAULT and md line 158: 'N_strict (PARAM-01): the N of the strictest class among the CONTROL groups of GROUPS_SERVED: N_A if any class-A group, else N_B'. md line 168: 'resolves the strictest class (N_A or N_B)'. md line 198 lists 139 'DEFAULT: N_A', 10 'CLEAN: max(N_A, ...)', 3 'VALIDATE: max(N_A, ...)' and 2 'EVIDENCE_STRICT: max(N_A, ...)' labels. BA-10 V4 line 65: 'max(N_A, N_B) when it serves both ... No ordering of N_A and N_B is assumed'. Cost memo block A.5: '128 mixed-class scenarios whose catalog REPETITION label reads N_A (equal to max(N_A, N_B) only while N_A >= N_B)'. ba04-v4-checks.py line 348: need = 'N_A' if 'A' in classes else 'N_B'.",
+     "required_fix": "Rewrite the DEFAULT rule text in JSON and md as BA-10 V4 defines it: N_A for class-A only, N_B for class-B only, and max(N_A, N_B) for both. Relabel the REPETITION field of every mixed-class scenario as N_strict or max(N_A, N_B), including the CLEAN, VALIDATE and EVIDENCE_STRICT labels. Correct line 348 of the check so it derives N_strict as BA-10 V4 does, then re-run the check and republish its output."
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-06-evm-preparation-v4.md",
+     "ref": "BA05V3-N12",
+     "severity": "MINOR",
+     "problem": "The fix of BA05V3-N12 landed only on the BA-05 side. BA-05 V4 section 4.1 now states that no full-database fingerprint exists and defines SCOPED_RECORD_COMPARISON instead. BA-06 V4, the artifact the finding targets, still cites 'the exact full-database fingerprint' of BA-05 as trace source T-4 and as the reason for its BA-05 dependency. The cross-reference is still broken, and it now contradicts BA-05 V4.",
+     "evidence": "BA-06 V4 line 684: '| T-4 exact full-database fingerprint before and after (BA-05 V4) | complementary | ...'. Line 28: 'BA-05 (the trace source T-4 of section 7 is the exact full-database fingerprint ...)'. BA-05 V4 line 1053: 'This specification defines no fingerprint of a whole database'. BA-05 V4 line 1116: 'BA-06 V4 must cite it instead of \"exact full-database fingerprint\"'.",
+     "required_fix": "In BA-06 V4 section 7 (row T-4) and in the Dependencies paragraph, replace the text with 'SCOPED_RECORD_COMPARISON (BA-05 V4 section 4.1)'. Name its scope, for example the read-set records of BA-08 V4 section 6 plus the ENUMERATION records of the covered containers, and repeat the 4.1 coverage limit in the declared limits of section 7. Re-run the BA-06 checks and update the section 14 binding if any bound text changes."
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-08-selective-kind-baseline-v4.md",
+     "ref": "BA04V3-11 / CLOSURE BA04-F20",
+     "severity": "MINOR",
+     "problem": "The fixture specification still carries the wrong-type variant that cannot be built, and it lacks the variant the catalog now uses. BA-04 V4 moved PW-CLONE-WRONG-TYPE to FX-IMP-XREF-HOMONYM (K-8). BA-08 V4 section 12.5 still defines FX-1F-XREF-HOMONYM as 'defined' and used by PW-CLONE-WRONG-TYPE, and it has no FX-IMP-XREF-HOMONYM row. The catalog therefore references a fixture that its fixture authority does not specify, and the authority still declares the refuted variant constructible.",
+     "evidence": "BA-08 V4 line 370: '| FX-1F-XREF-HOMONYM | FX-1F plus a resolved attached external reference named as one required block (the single wrong-type variant, BA04-F20) | PW-CLONE-WRONG-TYPE | defined |'. BA-04 V4 JSON PW-CLONE-WRONG-TYPE: FIXTURE 'FX-IMP-XREF-HOMONYM', PIN_SLOTS 'FIXTURE_INSTANCE@FX-IMP-XREF-HOMONYM', BLOCKED_BY [K-8]. BA-04 md line 515 lists FX-IMP-XREF-HOMONYM among the FX-IMP variants.",
+     "required_fix": "In BA-08 V4 section 12.5, withdraw FX-1F-XREF-HOMONYM and state the reason (every required name is already an ordinary block definition in FX-1F, BA04V3-11). Add an FX-IMP-XREF-HOMONYM row: an FX-IMP base in which one required name that FX-IMP lacks as an ordinary block definition is taken by a resolved attached external-reference block record. Mark it SPECIFICATION_OPEN (depends on FX-IMP, K-8) with user PW-CLONE-WRONG-TYPE. Include it in the K-8 scope of section 16.1."
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-04-scenario-catalog-v4.json and .md (with BA-08 V4 sections 11.2 and 16.1)",
+     "ref": "AR3-15 / AR3-26 / D-01 (scenario part)",
+     "severity": "MINOR",
+     "problem": "The governing clean scenario that AR3-15 requires has a declared O3 that its own NOTE says cannot be reached, but the dependency is not carried as a blocker. BA-08 V4 HDM-8 and K-6 (Q-HDM-1) state that the in-scope fields of the created SL-Y layer have no pin source, so their comparison is UNKNOWN (O5 path). BA-08 V4 16.1 also states that K-6 blocks the seal of the BA-04 catalog. BA-04 V4 carries BLOCKED_BY [K-3] only, and its section 7.1 seal blockers do not name K-6 or Q-HDM-1. The scenario also sits in the PARAM-03 false-rejection sample.",
+     "evidence": "JSON CL-CLEAN-FXANNBLANK-FP: EXPECTED_PRODUCT_OUTCOME 'O3 SUCCESS', BLOCKED_BY ['K-3']. Its NOTE: 'Until the pin record holds them, their comparison is UNKNOWN (O5 path) and this scenario cannot reach its declared O3 ... the expectation stays as declared'. BA-08 V4 line 301 (HDM-8): 'the SL-Y comparison of CL-CLEAN-FXANNBLANK-FP cannot reach EQUAL'. BA-08 V4 line 407: 'only K-3, K-8 and the Architect's rulings (K-6) block the seal of the scenario catalog BA-04 V4'. BA-04 V4 md 7.1 (lines 553-557) names only C-1 K-3, C-2 K-8 and C-3 'the delta review of this V4 and the open questions of section 8'. Q-HDM-1 is not in section 8.",
+     "required_fix": "Add the pending ruling (K-6, Q-HDM-1) to BLOCKED_BY of CL-CLEAN-FXANNBLANK-FP, and add it to md 7.1 as a seal blocker (C-3 or a new row), consistent with BA-08 V4 16.1. Alternatively, make the SL-Y expectation of the created layer's unassigned fields conditional or UNKNOWN until the ruling. Recompute SEALED_AT and the md counts."
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-08-selective-kind-baseline-v4.md (with BA-04 V4 KS-*)",
+     "ref": "BA04V3-09 (consequence) / D-07",
+     "severity": "MINOR",
+     "problem": "The BA04V3-09 fix changed the KS-* scenarios to REACH PS, so they abort at the seam before PV and before any S-1..S-3 or SL-R comparison. The dependent artifacts were not aligned. (1) BA-08 V4 still cites KS-SL4-NEG-DET as coverage of the sealed-list row SL-R, which that scenario never compares. (2) BA-04 V4 moved the whole V2.1 26.3 class KS-* ('Selective seam rollback and failure typing') from group KS to group AB, and those scenarios no longer serve KS. No AR3 decision authorizes this. V2.1 31 lists KS-* as a scenario class of the S-1..S-3 row for groups SC-A and KS. The change is only raised as open question 3.",
+     "evidence": "BA-08 V4 line 98 (row SL-R): covered by 'CL-CLEAN-*, KS-SL4-NEG-DET'. BA-04 V4 JSON KS-SL4-NEG-DET: REACH 'PS', GROUP 'AB', GROUPS_SERVED without KS, SEAM 'PRE-WRITE InvalidTransform; the caller aborts'. In V3 all three KS-* had GROUP 'KS' and REACH 'PV'. V2.1 line 1417 defines KS-*; V2.1 line 1665 lists KS-* for groups SC-A and KS. BA-04 V4 md line 593 is open question 3.",
+     "required_fix": "Remove KS-SL4-NEG-DET from the SL-R coverage of BA-08 V4 section 4, or name a scenario that actually compares SL-R. Do not seal the KS-* regrouping as settled: until the Architect answers open question 3, record the KS membership the contract gives the KS-* class, for example as a declared contract-assigned evidence membership or a declared exception to the group rule, and mark the KS-* statuses as pending that ruling."
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-08-selective-kind-baseline-v4.md",
+     "ref": "D-01 (BA-06 wording) / AR3-15",
+     "severity": "MINOR",
+     "problem": "BA-08 V4 still assigns the SH-LAY-ADDED dynamic-trace family to the empty scratch template. BA-06 V4, which owns the trace plan, now runs the SH-LAY-ADDED trace and validation on FX-ANN-BLANK and keeps FX-SCRATCH only for EV-L-OC-LAYER. After the D-01 fix, the two artifacts disagree about which fixture the SH-LAY-ADDED trace uses.",
+     "evidence": "BA-08 V4 line 115: 'an empty scratch template ... | operation class only: EV-L-OC-LAYER on FX-SCRATCH and the SH-LAY-ADDED trace (BA-06 V4)'. BA-08 V4 line 343, FX-SCRATCH purpose: 'learning micro-scenarios needing absence; SH-LAY-ADDED traces'. BA-06 V4 section 7 (line 691): 'SH-LAY-ADDED: FX-ANN-BLANK'. BA-06 V4 10.2 (line 733): SH-LAY-ADDED fixture FX-ANN-BLANK, with the isolated learning construction on FX-SCRATCH.",
+     "required_fix": "In BA-08 V4 section 4.1 (last row) and section 12.3 (FX-SCRATCH purpose), limit FX-SCRATCH to the EV-L-OC-LAYER learning construction. State that the SH-LAY-ADDED trace family runs on FX-ANN-BLANK (BA-06 V4 sections 7 and 10.2)."
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-08-selective-kind-baseline-v4.md",
+     "ref": "BA05V3-N07",
+     "severity": "MINOR",
+     "problem": "BA05V3-N07 also targeted BA-08 section 6, and the fix is only half-landed there. BA-05 V4 removed the BINDING record kind and states that view addresses and grouping are carried inside the PAYLOAD_EXACT member of each definition. BA-08 V4 section 6 says every component is a PRE_COMMAND_STATE_RECORD member, yet it still lists 'view addresses and grouping' as a separate EXA component with compared value 'decoded address and Embed.Id per view'. BA-05 V4 has no record kind for such a member. In the same table, the model-space row ('the RackCad reference set with class') does not cite the HANDLE_CLASS item form that BA-05 V4 added for it.",
+     "evidence": "BA-08 V4 line 130: 'Every component is a member of the PRE_COMMAND_STATE_RECORD (V2.1 6; BA-05 V4 section 2.3.5)'. Line 140: '| view addresses and grouping | decoded address and Embed.Id per view | EXA | as above | codec exists (RackViewCodec); host reader MISSING |'. BA-05 V4 section 2.3.5: 'Bindings and addresses ... have no record kind of their own (the V3 kind BINDING is removed): ... they are inside the exact RB sequence of that definition's PAYLOAD member'. BA-05 V4 2.3.6 defines itemForm HANDLE_CLASS.",
+     "required_fix": "In BA-08 V4 section 6, restate the 'view addresses and grouping' row: carried by the PAYLOAD members of the 'RackCad payloads' row (BA-05 V4 2.3.5), with no separate member. The decoded address stays only an oracle and SL-6 comparison input. For the model-space row, cite ENUMERATION with itemForm HANDLE_CLASS (BA-05 V4 2.3.6)."
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-08-selective-kind-baseline-v4.md",
+     "ref": "D-12",
+     "severity": "MINOR",
+     "problem": "PLAN_CAPTURE_RECORD reuses BA-05's FPSPEC-V1 exact-layer stream 'unchanged', and so its domain separator. The resulting digests are 'FPSPEC-V1|EXACT|PLAN_CAPTURE_RECORD|...' for record types that BA-05's closed type list does not contain. BA-05 V4 itself says that later changes to FPSPEC-V1 types need FPSPEC-V2. This mixes a BA-08-owned record family into the FPSPEC-V1 digest domain, which the BA-05 V4 implementer explicitly asked BA-08 to avoid. The type names used, such as POINT3D, DYNPROP and TYPED_VALUE, are also BA-05 helper types.",
+     "evidence": "BA-08 V4 line 226: 'Encoding: the canonical byte stream of BA-05 V4 section 2.1, applied unchanged to the record types below (the stream prefix with the record type name; ...)'. BA-05 V4 line 40: 'stream = \"FPSPEC-V1|EXACT|\" + <record type> + \"|\" + fields'. The V4 gen.py has PREFIX = b'FPSPEC-V1|EXACT|'.",
+     "required_fix": "Give PLAN_CAPTURE_RECORD its own domain separator, for example 'CT21D-PLANCAP-V1|', owned and versioned by BA-08. Keep BA-05's value-kind encodings by reference. State that the BA-05 helper types are used only as inline value encodings."
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-09-warmup-v4.md vs docs/initiatives/I-52-ct21d-baseline-ba-04-scenario-catalog-v4.md",
+     "ref": "AR3-02 / D-05",
+     "severity": "MINOR",
+     "problem": "The normative WU-DRY rule differs between the two artifacts, and the Q-I14-* vehicles fall in the gap. BA-09 V4 requires a dry run for every GOVERNING scenario of MODE CHARACTERIZATION_RUN or VALIDATION with REACH in P0..CP, and excludes qualification scenarios only as 'REACH = NONE'. BA-04 V4 adds the condition 'outside the AR3-01 mode' and so excludes Q-I14-Y, Q-I14-X, Q-I14-SILENT-Y and Q-I14-SILENT-X. These four are GOVERNING CHARACTERIZATION_RUN scenarios with REACH CP. BA-09's rule requires a dry run for them; BA-04 has none.",
+     "evidence": "BA-09 V4 line 68: 'mandatory for every GOVERNING scenario X ... RUN_GOVERNANCE = GOVERNING, MODE = CHARACTERIZATION_RUN or VALIDATION, and REACH in P0..CP'. Line 70: 'the qualification and no-product-run scenarios (REACH = NONE, for example WU-BOUNDARY)'. BA-04 V4 md line 475: 'a host scenario outside the AR3-01 mode'. Line 484: the 4 Q-I14-* are excluded as 'qualification ... with no governed window'.",
+     "required_fix": "State one rule in both artifacts. Either BA-09 V4 names qualification vehicle runs (REACH CP, AR3-01 mode) among the declared exclusions with their reason, or BA-04 adds WU-DRY for the Q-I14-* scenarios. Resolve this together with the AR3-01-extension gap above, since that ruling decides whether these vehicles are governing at all."
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-08-selective-kind-baseline-v4.md (K-10) and docs/initiatives/I-52-ct21d-baseline-ba-09-warmup-v4.md (W-7)",
+     "ref": "AR3-01 (characterization build) / AR3-07",
+     "severity": "MINOR",
+     "problem": "The execution prerequisite that defines the characterization build names only a subset of its users. BA-04 V4 runs 312 scenarios on CHARACTERIZATION_BUILD, including 125 GOVERNING scenarios whose injections need build switches. Among them are NC-CLONE-REPLACE (AR3-07's switch), the WR-* scan cells, the Y-coordinate and harness-fault negative controls, KS-*, the canary loads and the swap pause points, plus EV-L-* and Q-I14-*. BA-08 V4 K-10 lists only HDM-CHAR-*, E4-LEARN-R1-*, LK-* and WU-DRY-*. The switch set the build must contain, which is its tuple identity, is therefore under-specified in the artifact that registers it.",
+     "evidence": "BA-08 V4 line 422: 'K-10 | the characterization build used by HDM-CHAR-*, E4-LEARN-R1-*, LK-* and WU-DRY-*'. BA-09 V4 line 128 (W-7): 'the characterization build used by the WU-DRY runs'. BA-04 V4 md line 194: 'CHARACTERIZATION_BUILD = 312'. md line 595 (open question 5): '125 governing scenarios'. JSON NC-CLONE-REPLACE: BUILD_UNDER_TEST CHARACTERIZATION_BUILD, injection CLONE_MODE_SWITCH.",
+     "required_fix": "Make BA-08 V4 K-10 name every user class of the characterization build, or point to BA-04 V4 sections 1.1 and 1.2. It should list the required switch and injection-point set (the writer kinds of BA-04 V4 1.2), so the build identity covers every switch a governing scenario uses. Align BA-09 V4 W-7 with it."
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-04-scenario-catalog-v4.json",
+     "ref": "AR3-09 / BA04V3-04",
+     "severity": "MINOR",
+     "problem": "U-3 declares an S-2 result, but S-2 is not in CONTROLS_EXERCISED. The schema defines CONTROLS_EXERCISED as 'the registry controls ... whose results the scenario expects or records', and GROUPS_SERVED is derived from it. As a result, U-3's derived GROUPS_SERVED omits KS, even though S-2 is expected to be evaluated. It is the only such inconsistency in the catalog, apart from the E06 'NOT_DECLARED' key of NC-S5-O6, which AR3-04 rules.",
+     "evidence": "JSON U-3: EXPECTED_CONTROL_RESULTS {'S3': 'difference ...', 'S2': 'equal', 'E12C': ...}, CONTROLS_EXERCISED ['S3','E12C'], GROUPS_SERVED ['SC-A','E12-V','SC-B','U-1..U-8']. The BA-04 V4 md section 1 CONTROLS_EXERCISED definition. A mechanical scan finds result keys missing from CONTROLS_EXERCISED only in U-3 (S2) and NC-S5-O6 (E06).",
+     "required_fix": "Add S2 to U-3's CONTROLS_EXERCISED, then re-derive GROUPS_SERVED (it adds KS), CONTROL_CLASSES_EXERCISED, SEALED_AT and the BA-02b S2 row and section 4. Alternatively, drop the S2 key from its expected results. Extend the published check so every registry key in EXPECTED_CONTROL_RESULTS is either in CONTROLS_EXERCISED or explicitly NOT_DECLARED."
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-04-scenario-catalog-v4.json",
+     "ref": "AR3-17 / BA05V3-N08",
+     "severity": "MINOR",
+     "problem": "Q-FPSPEC-VECTORS does not check two outcomes that BA-05 V4 makes normative. (1) BA-05 V4 now has 6 normative REJECTED inputs (RJ-01..RJ-06), and an I-12 implementation is conformant only if it reproduces every digest, every UNKNOWN and every REJECTED. The scenario expects only digests, UNKNOWNs and semantic results. (2) BA-05 V4 3.3.1 makes a slot-unit instance that fails the exact-arithmetic check INVALID (reported, never PASS). The scenario does not declare that outcome. Q-SIGNED-ZERO also cites the signed-zero and non-finite vectors without naming their vector ids.",
+     "evidence": "JSON Q-FPSPEC-VECTORS EXPECTED_CONTROL_RESULTS: {'instrument I-12': 'every DIGEST reproduced byte for byte; every UNKNOWN reproduced; every semantic result reproduced on the generated binary64 instances'}. BA-05 V4 line 40: 'conformant only if ... it reproduces every digest byte for byte, every UNKNOWN and every REJECTED'. BA-05 V4 line 1038 (3.3.1): 'an instance that fails the check is INVALID (reported, never PASS)'. JSON Q-SIGNED-ZERO: '(the signed-zero and non-finite vectors of BA-05 V4)'.",
+     "required_fix": "Add to Q-FPSPEC-VECTORS: 'every REJECTED input (rejectedInputs RJ-01..RJ-06) reproduced as REJECTED'. Add: 'a slot-unit instance that fails the exact-arithmetic check of BA-05 V4 3.3.1 is INVALID and reported, never PASS'. Name the input file sections (exactVectors, rejectedInputs, semanticVectors). Cite the vector ids in Q-SIGNED-ZERO (for example SV-05, EV-01/EV-02 and the non-finite vectors). Recompute SEALED_AT."
+    }
+   ],
+   "summary": "I checked every confirmed finding and every non-BA-11 AR3 decision against the V4 bytes in the worktree, read-only; scratch outputs are in scratchpad/critic_v4. Most fixes are present and correct, and the mechanical claims reproduce:\n- **BA-03:** the runner, re-run to the scratchpad, gives 54 checks, no failures and no identity drift. Only runUtc differs from the published output. The spec and runner hashes match (8da090de…, 443e332e…).\n- **BA-05:** gen.py regenerates the vectors JSON byte-identically, and neither the md nor the JSON contains a tolerance value.\n- **BA-07:** the JCS vector reproduces exactly (e7e6c9be…, example entryHash 07e8bf84…).\n- **Cost memo:** the script's output equals the verbatim block of the memo.\n- **BA-04 checks:** 50/50 PASS, and the re-run equals the published output.\n- **BA-04 SEALED_AT:** all 389 values recompute.\n- **BA-06 checks:** 12/12 PASS, and the re-run equals the published output.\n- **V2.4 revision 3:** section 1 is untouched, and the N-1..N-5 and provenance sentences are fixed. V2.5 section 1 is the verbatim AR3-13 text.\n- **Other confirmed fixes:** all V4 headers cite the correct V3 blobs, every file is LF with a final newline, BA-02a is unchanged, and the spot-checked code citations of BA-08 D-02/D-03 and the 7 catalog hashes are correct.\n\nReal gaps found (13):\n- **MAJOR, BA-04 (with BA-06 section 9): AR3-01 mode applied to governing scenarios.** It covers the 17 governing EV-L-* and the 4 Q-I14-* vehicles. This goes beyond AR3-01, which does not change the phase policy of governing runs, and beyond the COORD sheet. These scenarios still carry SEALED_PENDING_PIN_CANDIDATE, although the extension is only open question 2 / CQ-08.\n- **MAJOR, BA-04 and its check: strictest pair assumes N_A >= N_B.** 128 mixed-class labels read N_A, which contradicts BA-10 V4's N_strict = max(N_A, N_B) and AR3-24.\n- **MINOR: BA05V3-N12 not landed in BA-06 V4.** T-4 still cites a 'full-database fingerprint' that BA-05 V4 says does not exist.\n- **MINOR: BA-08 V4 12.5 still defines FX-1F-XREF-HOMONYM and lacks FX-IMP-XREF-HOMONYM**, the variant BA-04 V4 uses (BA04V3-11).\n- **MINOR: CL-CLEAN-FXANNBLANK-FP declares an O3 its own NOTE says cannot be reached** (Q-HDM-1). K-6 is missing from its BLOCKED_BY and from BA-04's seal blockers, although BA-08 V4 16.1 says K-6 blocks the catalog seal.\n- **MINOR: KS-* now reach only PS.** BA-08 SL-R coverage still cites KS-SL4-NEG-DET, and the KS-* class was moved from group KS to AB without a ruling.\n- **MINOR: BA-08 V4 still assigns the SH-LAY-ADDED trace to FX-SCRATCH**; BA-06 V4 runs it on FX-ANN-BLANK.\n- **MINOR: BA-08 section 6 'view addresses and grouping' row** does not match BA-05 V4, which removed BINDING (BA05V3-N07).\n- **MINOR: BA-08 PLAN_CAPTURE_RECORD reuses the FPSPEC-V1|EXACT| domain separator.**\n- **MINOR: dry-run rule differs between BA-09 V4 and BA-04 V4** for the Q-I14-* vehicles.\n- **MINOR: BA-08 K-10 / BA-09 W-7 list only some users of the characterization build**; 125 governing scenarios also use it.\n- **MINOR: U-3 expects an S2 result but does not list S2 in CONTROLS_EXERCISED.**\n- **MINOR: Q-FPSPEC-VECTORS omits two normative outcomes:** the REJECTED-input outcome and the INVALID-instance outcome.\n\nEverything else is correctly FIXED or correctly NOT_APPLICABLE, including CLOSURE BA10-06 (refuted)."
+  },
+  {
+   "gaps": [
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-04-scenario-catalog-v4.md (section 4, lines 158 and 168) and -v4.json (REPETITION_RULES; REPETITION field of the mixed-class scenarios)",
+     "ref": "AR3-24 / BA10-V3-05",
+     "problem": "BA-04 V4 defines N_strict as 'N_A if any class-A group, else N_B' and labels every mixed-class scenario with N_A. BA-10 V4 defines N_strict(s) as max(N_A, N_B) when a scenario serves both classes and says 'No ordering of N_A and N_B is assumed'. The labels affected are DEFAULT 114, CLEAN 10, VALIDATE 3 and EVIDENCE_STRICT 1. If the Owner's pairs give N_B > N_A, BA-04 plans fewer runs than BA-10 requires. The CHAR rule also points to 'the repetition that BA-10 V4 assigns' instead of naming CHAR_RUNS.",
+     "evidence": "BA-04 md line 158 ('N_A if any class-A group, else N_B') and line 168 ('resolves the strictest class (N_A or N_B)'); JSON REPETITION_RULES.DEFAULT has the same text. REPETITION counts: 'DEFAULT: N_A' 139, 'CLEAN: max(N_A, ...)' 10, 'VALIDATE: max(N_A, ...)' 3. The CL-CLEAN-* scenarios serve SC-A/KS (A) and WU/SC-B/EA1/EA2 (B). BA-10 V4 line 65 has the max rule and 'No ordering ... assumed'. Cost memo section 3, block A.5: '128 mixed-class scenarios carry a catalog label that reads N_A; it equals ... max(N_A, N_B) only while N_A >= N_B'.",
+     "required_fix": "In BA-04 V4 (md section 4 and JSON REPETITION_RULES), state N_strict exactly as BA-10 V4 section 2.2 does: N_A if only class A, N_B if only class B, max(N_A, N_B) if both. Regenerate the REPETITION label of every mixed-class scenario as N_strict or max(N_A, N_B) in DEFAULT, CLEAN, VALIDATE and EVIDENCE_STRICT. Name BA-10's CHAR_RUNS in the CHAR rule. Re-run the BA-04 checks and the cost memo, and republish their outputs.",
+     "severity": "MAJOR"
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-04-scenario-catalog-v4.md (section 1.1 line 56, 6.5, 8 Q2) and -v4.json (EV-L-* x17, Q-I14-Y/X/SILENT-Y/SILENT-X)",
+     "ref": "AR3-01",
+     "problem": "BA-04 V4 applies the AR3-01 mode to 21 scenarios with RUN_GOVERNANCE = GOVERNING: the full RECORDED_NOT_ENFORCED set plus EXPECTED_PRODUCT_OUTCOME = PROVISIONAL_NON_GOVERNING. AR3-01 limits the mode to the pre-EVM characterization runs, which are non-governing by design, and says it 'no cambia la política de fases de las corridas gobernantes'. BA-04 section 1.1 repeats that sentence in the same paragraph that extends the mode to governing runs. COORD section 2 limits the mode to E4-LEARN-R1-*, LK-*, HDM-CHAR-* and WU-DRY-*. BA-04 cites BA-06 V4 section 9 as its support, but section 9 records only E-12 phases A and C as not enforced for learning runs, not E-03, E-04 or S-1..S-3. BA-08 V4 K-10 does not list these users either. BA-04 raises this only as open question 2 and applies the mode anyway.",
+     "evidence": "JSON: the 17 EV-L-* scenarios are GOVERNING/LEARNING and the 4 Q-I14-* scenarios are GOVERNING/CHARACTERIZATION_RUN, all with RECORDED_NOT_ENFORCED = [E-03, E-04, E-12 phase A, E-12 phase C, S-1, S-2, S-3] and outcome PROVISIONAL_NON_GOVERNING (Q-I14-Y at json line 1491). BA-04 md line 56 says '...and, as the vehicle of a governing evidence run, to ... EV-L-* ... and ... Q-I14-*; ... does not change the phase policy of the governing runs'. BA-06 V4 line 711 says 'E-12 phases A and C RECORDED_NOT_ENFORCED ... The other controls are those BA-04 V4 declares'. Decisions line 9399 is AR3-01.",
+     "required_fix": "Do not apply an unratified extension of AR3-01 to governing scenarios. Until the Architect rules open question 2, mark the 21 scenarios DRAFT with a BLOCKED_BY entry for that ruling. Add that entry to the section 1 BLOCKED_BY vocabulary and to section 7.1 C-3. Remove or correct the section 1.1 sentence 'does not change the phase policy of the governing runs'. After the ruling, align BA-06 V4 section 9, BA-08 V4 K-10 and COORD section 2 with the chosen RECORDED_NOT_ENFORCED set for EV-L-* and Q-I14-*.",
+     "severity": "MAJOR"
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-04-scenario-catalog-v4.md section 5.2 (line 484) / -v4.json; docs/initiatives/I-52-ct21d-baseline-ba-09-warmup-v4.md section 4 (lines 68-70)",
+     "ref": "AR3-02 / D-05",
+     "problem": "Q-I14-Y, Q-I14-X, Q-I14-SILENT-Y and Q-I14-SILENT-X are GOVERNING, MODE CHARACTERIZATION_RUN, REACH CP, and BA-04 V4 gives them no WU-DRY. AR3-02 makes a dry run mandatory for every governing run that enters P0..CP and excludes only non-governing and learning runs. BA-09 V4's normative rule (GOVERNING, CHARACTERIZATION_RUN or VALIDATION, REACH P0..CP) also requires them. BA-09's exclusions cover qualification only when REACH = NONE. BA-04 adds its own qualifier, 'outside the AR3-01 mode', which BA-09 does not have, and gives the reason 'no governed window', which is wrong for a run that reaches CP.",
+     "evidence": "Mechanical check over the JSON: the governing scenarios with REACH in {P0,PL,PR,PS,PW,PV,CP} that lack a WU-DRY are exactly the 4 Q-I14-* scenarios. BA-04 md line 484 is the 'qualification (group Q; its product run is a vehicle in the mode of AR3-01, with no governed window)' row. BA-09 V4 line 68 gives the rule and line 70 the exclusions ('the qualification and no-product-run scenarios (REACH = NONE ...)'). BA-10 V4 WU_DRY_RUNS says 'each governing scenario that enters the governed window'.",
+     "required_fix": "Either add WU-DRY-Q-I14-Y, WU-DRY-Q-I14-X, WU-DRY-Q-I14-SILENT-Y and WU-DRY-Q-I14-SILENT-X (AR3-01 mode, FIXTURE_INSTANCE slot only, rule DRY) and update the counts (161 dry runs), BA-02b V4 and the cost memo, or obtain an Architect ruling that excludes qualification vehicles whatever their REACH. With such a ruling, write the same exclusion in BA-09 V4 section 4 and BA-10 V4, and remove BA-04's extra qualifier so the three artifacts state one rule.",
+     "severity": "MAJOR"
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-08-selective-kind-baseline-v4.md section 12.5 (line 370) vs BA-04 V4 JSON PW-CLONE-WRONG-TYPE (line 6979) and WU-DRY-PW-CLONE-WRONG-TYPE",
+     "ref": "BA04V3-11",
+     "problem": "BA-04 V4 uses the fixture FX-IMP-XREF-HOMONYM, with pin slot FIXTURE_INSTANCE@FX-IMP-XREF-HOMONYM, in PW-CLONE-WRONG-TYPE and its dry run. BA-04 says its variants are declared in BA-08 V4 section 12, but FX-IMP-XREF-HOMONYM appears nowhere in BA-08 V4. BA-08 V4 still lists FX-1F-XREF-HOMONYM as 'defined' and used by PW-CLONE-WRONG-TYPE. BA04V3-11 showed that variant cannot be built, and no BA-04 scenario now uses it.",
+     "evidence": "A scan of the BA-08 V4 fixture ids against the BA-04 V4 FIXTURE and PIN_SLOTS fields finds one undefined id, FX-IMP-XREF-HOMONYM (2 scenarios). BA-08 line 370 reads '| `FX-1F-XREF-HOMONYM` | `FX-1F` plus a resolved attached external reference ... | `PW-CLONE-WRONG-TYPE` | defined |'. BA-04 section 6.3 lists FX-IMP-XREF-HOMONYM among the K-8 variants.",
+     "required_fix": "In BA-08 V4 section 12.5, replace the FX-1F-XREF-HOMONYM row with FX-IMP-XREF-HOMONYM: an FX-IMP base in which one required name that FX-IMP lacks as an ordinary block definition is taken by a resolved attached external-reference record; state SPECIFICATION_OPEN, blocked by K-8. Add it to the K-8 variants, and have BA-11 V4 register the slot FIXTURE_INSTANCE@FX-IMP-XREF-HOMONYM.",
+     "severity": "MAJOR"
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-06-evm-preparation-v4.md line 28 (dependency paragraph) and section 7 row T-4 (line 684) and declared limit (1)",
+     "ref": "BA05V3-N12",
+     "problem": "BA-06 V4 still names 'the exact full-database fingerprint (BA-05 V4)' as trace source T-4 and uses it to justify the BA-06 -> BA-05 edge. BA-05 V4 section 4.1 states that no whole-database fingerprint exists and defines SCOPED_RECORD_COMPARISON instead. The two V4 artifacts contradict each other. BA05V3-N12's artifact is BA-06, but the finding was in the BA05 bundle, and BA-06 V4's delta table does not cover it.",
+     "evidence": "BA-06 V4 line 28: '...BA-05 (the trace source T-4 of section 7 is the exact full-database fingerprint...)'. Line 684: '| T-4 exact full-database fingerprint before and after (BA-05 V4) |'. BA-05 V4 line 1051: '### 4.1 No full-database fingerprint: `SCOPED_RECORD_COMPARISON`'. Line 1116 says 'BA-06 V4 must cite it'.",
+     "required_fix": "In BA-06 V4 line 28, the section 7 T-4 row and declared limit (1), replace the phrase with 'SCOPED_RECORD_COMPARISON (BA-05 V4 section 4.1)'. Name its scope (for example the read-set records of BA-08 V4 section 6) and repeat its coverage limit. Add BA05V3-N12 to the BA-06 V4 delta table, then re-run the BA-06 checks and republish the output hash in section 14.",
+     "severity": "MAJOR"
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-04-scenario-catalog-v4.json CL-CLEAN-FXANNBLANK-FP (line 3169); BA-04 V4 md section 1 BLOCKED_BY vocabulary (line 47), section 7.1 (line 557), header PREREQUISITES",
+     "ref": "AR3-15 / AR3-11 / AR3-26 (BA-08 K-6, Q-HDM-1)",
+     "problem": "CL-CLEAN-FXANNBLANK-FP declares 'O3 SUCCESS' with S-1..S-3 equal and BLOCKED_BY [K-3] only, while its own NOTE says it 'cannot reach its declared O3'. BA-08 V4 HDM-8 says the created SL-Y layer's fields are UNKNOWN (O5) until the Architect rules Q-HDM-1 (K-6), so this scenario's SL-Y comparison cannot reach EQUAL. BA-08 V4 section 16.1 says K-6 blocks the seal of the BA-04 catalog, but BA-04 V4 section 7.1 ('Seal blockers (only these)') and its header omit K-6. The expectation is declared without authority.",
+     "evidence": "JSON: CL-CLEAN-FXANNBLANK-FP has EXPECTED_PRODUCT_OUTCOME 'O3 SUCCESS', BLOCKED_BY ['K-3'], and a NOTE that says '...this scenario cannot reach its declared O3 (cross-artifact dependency; the expectation stays as declared)'. BA-08 V4 line 301 (HDM-8): '...the SL-Y comparison of CL-CLEAN-FXANNBLANK-FP cannot reach EQUAL'. Line 407: 'only K-3, K-8 and the Architect's rulings (K-6) block the seal of the scenario catalog BA-04 V4'. BA-04 line 557 (C-3) names only the V4 delta review and the section 8 questions. Line 47 lists only K-3, K-8 and E6-C4.",
+     "required_fix": "Add K-6 (Q-HDM-1) to CL-CLEAN-FXANNBLANK-FP's BLOCKED_BY and to the section 1 BLOCKED_BY vocabulary. Name K-6 in section 7.1 (C-3 or its own row) and in the header PREREQUISITES as a seal blocker. Keep O3 only as the expectation that holds once the ruling supplies the field source. Recompute SEALED_AT if any sealed field changes, and re-run the BA-04 checks, BA-02b V4 and the memo.",
+     "severity": "MAJOR"
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-08-selective-kind-baseline-v4.md section 4 row SL-R (line 98)",
+     "ref": "AR3-30 (cross-artifact consistency; BA04 cross note)",
+     "problem": "BA-08 V4 lists KS-SL4-NEG-DET as covering SL-R, the comparison of top-level references. In BA-04 V4 that scenario aborts at PRE-WRITE InvalidTransform before PV (REACH PS, GROUP AB), and S-1..S-3 are not among its controls. It never compares SL-R.",
+     "evidence": "BA-04 JSON KS-SL4-NEG-DET: REACH 'PS'; EXPECTED_CONTROL_RESULTS SEAM 'PRE-WRITE InvalidTransform; the caller aborts'; CONTROLS_EXERCISED has no S1, S2 or S3.",
+     "required_fix": "Remove KS-SL4-NEG-DET from the SL-R coverage cell of BA-08 V4 section 4, or cite it separately as the SL-4 transform refusal, not as SL-R comparison coverage.",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-08-selective-kind-baseline-v4.md section 4.1 last row (line 115) and section 12.3 FX-SCRATCH purpose (line 343)",
+     "ref": "AR3-15 / D-01",
+     "problem": "BA-08 V4 says the SH-LAY-ADDED trace runs on FX-SCRATCH. BA-06 V4 runs the SH-LAY-ADDED trace and validation class on FX-ANN-BLANK and keeps FX-SCRATCH only for EV-L-OC-LAYER. The two artifacts name different fixtures for the same trace.",
+     "evidence": "BA-08 line 115: 'operation class only: EV-L-OC-LAYER on FX-SCRATCH and the SH-LAY-ADDED trace (BA-06 V4)'. Line 343 (FX-SCRATCH purpose): '...SH-LAY-ADDED traces'. BA-06 V4 line 691: '(SH-LAY-ADDED: FX-ANN-BLANK)'. Line 733: SH-LAY-ADDED fixture FX-ANN-BLANK; 'The isolated learning construction stays a scratch document (FX-SCRATCH, EV-L-OC-LAYER)'.",
+     "required_fix": "In BA-08 V4 sections 4.1 and 12.3, limit FX-SCRATCH to EV-L-OC-LAYER, and name FX-ANN-BLANK as the fixture of the SH-LAY-ADDED trace (BA-06 V4 sections 7 and 10.2).",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-08-selective-kind-baseline-v4.md section 16.3 K-10 (line 422)",
+     "ref": "AR3-01",
+     "problem": "K-10 says only HDM-CHAR-*, E4-LEARN-R1-*, LK-* and WU-DRY-* use the characterization build. BA-04 V4 runs 312 scenarios on it, including 125 governing scenarios whose injections need build switches, the 17 EV-L-* and the 4 Q-I14-*. BA-06 V4 section 9 also puts learning there. The execution prerequisite understates the scope of the build.",
+     "evidence": "BA-04 V4 section 5: 'Build under test: CHARACTERIZATION_BUILD = 312'. Section 8 Q5: '125 governing scenarios'. BA-08 line 422 is the K-10 row.",
+     "required_fix": "Reword K-10 to cover every BA-04 V4 scenario with BUILD_UNDER_TEST = CHARACTERIZATION_BUILD (BA-04 V4 sections 1.1 and 1.2), not a closed list of four families.",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-09-warmup-v4.md section 4 'Dry-run mode' (line 72)",
+     "ref": "AR3-02",
+     "problem": "BA-09 V4 says a dry run has 'PIN_SLOTS = [FIXTURE_INSTANCE@<FX>] only', a single slot. In BA-04 V4, WU-DRY-PW-CLONE-BASE and WU-DRY-PR-REC-CLOSURE-UNKNOWN each carry two FIXTURE_INSTANCE slots, the fixture plus the variant library. BA-04 section 5.2 says 'carries only FIXTURE_INSTANCE slots'.",
+     "evidence": "JSON: WU-DRY-PW-CLONE-BASE has PIN_SLOTS [FIXTURE_INSTANCE@FX-IMP, FIXTURE_INSTANCE@L-VAR-DIFF]. WU-DRY-PR-REC-CLOSURE-UNKNOWN has [FIXTURE_INSTANCE@FX-1F, FIXTURE_INSTANCE@L-VAR-PROXY].",
+     "required_fix": "In BA-09 V4 section 4, state: 'only FIXTURE_INSTANCE slots: the fixture of X and, where X uses one, its variant library (FIXTURE_INSTANCE@L-VAR-*)'. This matches BA-04 V4 section 5.2 and AR3-02 ('solo la ranura FIXTURE_INSTANCE').",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-10-parameter-sheet-v4.md section 2.2 CHAR_RUNS (line 98) vs BA-08 V4 section 11.2 HDM-4 (line 297)",
+     "ref": "AR3-11 / BA10-V3-08",
+     "problem": "BA-10 V4 sets CHAR_RUNS(s) = N_A runs per HDM-CHAR scenario, with the intent (1-p_A)^N_A <= alpha_A for the pinned behaviour. BA-08 V4 HDM-4 requires each HDM-CHAR scenario to run at least once with the pinned key values and once or more with each key changed. HDM-2 lists 9 keys, so at least 10 configurations are needed. N_A runs per scenario cannot hold both N_A runs at the pinned configuration, which the intent needs, and the 9 or more varied runs. The cost memo counts 3 x N_A.",
+     "evidence": "BA-10 line 98: '...runs CHAR_RUNS(s) = N_c times ... so CHAR_RUNS = N_A'. BA-08 line 297 (HDM-4) and HDM-2 (CLAYER, CECOLOR, CELTYPE, CELTSCALE, CELWEIGHT, CETRANSPARENCY, CPLOTSTYLE, text style, dimension style).",
+     "required_fix": "In BA-10 V4, state for HDM-CHAR-* either 'N_A runs at the pinned key values plus at least one informative run per varied key (outside the intent)', or that N_A applies per key configuration. Update the cost memo arithmetic to match.",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-08-selective-kind-baseline-v4.md section 11.1 (line 226)",
+     "ref": "D-12 / AR3-17",
+     "problem": "PLAN_CAPTURE_RECORD and its helper types are encoded with 'the canonical byte stream of BA-05 V4 section 2.1, applied unchanged (the stream prefix with the record type name...)'. That puts them in the 'FPSPEC-V1|EXACT|' domain, although BA-05 V4 does not define these types. BA-05 V4 section 2.6 ties FPSPEC-V1 and its domain separator to BA-05's own sealed tables: any change after the seal is FPSPEC-V2. A later BA-08 change to the plan-capture schema would keep the FPSPEC-V1 domain, which breaks that invariant. The BA-05 implementer's cross note asked BA-08 not to reuse the domain; BA-08 V4 did.",
+     "evidence": "BA-08 V4 line 226. BA-05 V4 line 40: stream = 'FPSPEC-V1|EXACT|' + <record type>. Lines 880-882: versioning of FPSPEC-V1 and the domain separator.",
+     "required_fix": "Either give PLAN_CAPTURE_RECORD its own domain prefix in BA-08 V4 section 11.1 (for example 'CT21D-PLANCAP-V1|<type>|') while reusing BA-05 V4's value encodings, or add to BA-05 V4 section 2.6 an explicit rule that kind baselines may define record types under FPSPEC-V1, and say how those types are versioned.",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "docs/initiatives/I-52-ct21d-authority-contract-v2.4.md (revision 3 working-tree edit)",
+     "ref": "AR3-27",
+     "problem": "AR3-27 limits revision 3 to two lines: the note count of section 3 and the provenance sentence of section 0. The diff also changes the header DRAFT REVISION block and the section 4 status line ('draft revision 2' -> '3'). The new header says revision 3 is 'limited to the two sentences', so it does not match the diff that the Coordinator's textual verification will compare.",
+     "evidence": "git diff of the file: hunks at lines 5-11 (DRAFT REVISION block), 24/27 (section 0 sentence), 58/62 (N-1..N-5) and 64/67 (section 4 status line). Section 1 is byte-identical to blobs 1919a32a and fc137c52 (verified).",
+     "required_fix": "In the DRAFT REVISION field, state that apart from the two AR3-27 sentences only the revision identifiers changed (this header field and the section 4 status line), so the declared scope matches the diff exactly.",
+     "severity": "MINOR"
+    },
+    {
+     "artifact": "docs/automation/evidence/I-52-ct21d-ba11-v4-graph-check.py (untracked); BA-11 V4 (absent)",
+     "ref": "AR3-25 / AR3-27",
+     "problem": "The worktree has a BA-11 V4 graph-check script whose only input, docs/initiatives/I-52-ct21d-baseline-ba-11-hash-registry-v4.md, does not exist. Every V4 artifact cites BA-11 V4 sections 1, 2, 2.1, 3, 3.1 or 4. AR3-27 requires BA-11 section 4 to be regenerated in the same commit as V2.4 revision 3, which is already in the working tree. As things stand, the DEPENDS_ON edges and slot registrations the V4 artifacts rely on cannot be checked, and the script cannot run.",
+     "evidence": "git status --porcelain lists ?? docs/automation/evidence/I-52-ct21d-ba11-v4-graph-check.py. git ls-files shows only BA-11 V1, V2 and V3. The script opens ...-ba-11-hash-registry-v4.md at line 17.",
+     "required_fix": "Produce BA-11 V4 before the commit. It must include the rows given in the implementers' cross notes: DEPENDS_ON as in COORD section 3, and the slots FIXTURE_INSTANCE@FX-ANN-BLANK, @FX-IMP-XREF-HOMONYM, @L-VAR-DIFF and @L-VAR-PROXY. Regenerate its section 4 for V2.4 revision 3 and V2.5, run the graph check, and publish its output. Otherwise do not commit the orphan script.",
+     "severity": "MINOR"
+    }
+   ],
+   "summary": "The V4 round passes the limits and hash checks but fails cross-artifact consistency: 6 major and 8 minor gaps, the majors concentrated in BA-04 V4 and its fit with BA-08, BA-09, BA-10 and BA-06.\n\n**Limits.** Only the V2.4 revision-3 file is modified in the worktree. The rest are untracked new files: the V4 artifacts, their evidence, V2.5, and a BA-11 V4 graph-check script whose BA-11 V4 input does not exist yet. V3 and older files are byte-identical. There are no changes under src/ or tests, and the decisions log and HANDOFF are untouched. V2.4 section 1 matches both earlier revisions byte for byte, and the V2.5 added text matches the pre-approved AR3-13 text exactly. No invented values: the memo's illustrative rows (and EVIDENCE_REPETITION = 1, already a proposal in V3) are labelled illustrative, and BA-08's tolerance values each cite a code authority. No host evidence is claimed, no FAIL or UNKNOWN is turned into PASS, and no artifact records its own candidate or seal hash.\n\n**Hashes.** Every SHA-256 that a V4 artifact states for a published file matches the LF-normalized bytes:\n- BA-06 V4 section 14 (26 files);\n- BA-05 V4 (the generator script and the vectors file), and all 75 exact-vector digests in the BA-05 md match the JSON;\n- BA-07 V4 (the output file and the generator), and the example entryHash recomputed from the md text (812 bytes, 07e8bf84...);\n- BA-08 V4 (the 7 catalog files at 3375aadb);\n- BA-03 V4 (the spec, the runner and the section 117 hash);\n- the cost memo (the script, and the V4 and V3 catalogs);\n- the BA-04 and BA-06 check outputs.\n\nRe-running the published scripts with outputs in the scratchpad gives byte-identical results for the BA-04 checks, the BA-06 checks, the BA-07 JCS vector, the fpspec generator and the memo. The BA-03 output differs only in runUtc.\n\n**Consistency.** Every DEPENDS_ON line matches COORD section 3, and every V3 blob id in the headers is correct. These shared identifiers are consistent across the V4 artifacts: INVENTORY_REVIEW_RECORDS, ANCHOR_RECORDED, the pin state machine, CATALOG_FOLDER, MAX_ATTEMPTS, the PARAM-03 sample (9 CL-CLEAN plus EA2), the NC-CLONE-REPLACE and NC-S5-O6 fields, and the AR3-01 fields of E4-LEARN/LK/HDM-CHAR/WU-DRY.\n\n**Major gaps:**\n- BA-04 treats N_strict as \"N_A if any class-A group\", which contradicts BA-10's max(N_A, N_B) with no ordering assumed.\n- BA-04 applies the AR3-01 mode to 21 governing scenarios (EV-L-* and Q-I14-*). This conflicts with AR3-01's own scope and with BA-06 section 9.\n- Q-I14-* have no WU-DRY, although AR3-02 and BA-09 section 4 require one.\n- FX-IMP-XREF-HOMONYM is not defined in BA-08 (which still lists FX-1F-XREF-HOMONYM as \"defined\").\n- BA-06 still cites an \"exact full-database fingerprint\", which BA-05 V4 section 4.1 says does not exist.\n- CL-CLEAN-FXANNBLANK-FP declares O3 without the K-6 (Q-HDM-1) blocker that BA-08 names as a catalog-seal blocker.\n\n**Minor gaps:** BA-08 wrong coverage for SL-R and the fixture of the SH-LAY-ADDED trace; K-10 understates who uses the characterization build; BA-09's single pin slot wording; BA-10 CHAR_RUNS against HDM-4; BA-08 plan capture reusing the FPSPEC-V1 domain; the V2.4 revision-3 declared scope versus the diff; BA-11 V4 missing while its check script exists.\n\nProcess note: my hash-scan script briefly wrote hs.json into the worktree root. I moved it to the scratchpad at once and re-checked git status; the worktree holds only the V4 files, V2.5 and the V2.4 edit. The scratch outputs are in C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\critic_v4."
+  }
+ ]
+}
