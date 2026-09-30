@@ -299,3 +299,24 @@ En la misma ronda el Owner exigio **C16-06** (orientacion Proyectada por defecto
 La validacion del Owner expuso un hueco de producto: Selectivo Frontal → Lateral se detiene en `AVAILABLE` con `PairNotExposed`, con y sin nombre (no es un
 defecto de nombre ni de AUTH-15). La exclusion Frontal ↔ Lateral (OD-7.a A) queda **REVOCADA** por el Owner: `RACKPROYECTAR` debe admitir Frontal → Lateral y
 Lateral → Frontal, en Proyectada y en Predeterminada, en todo sistema con ambas clases. Correccion: C16-07 (filas en §6.3; la fila OV-ID19-09 queda supersedida).
+
+### Ronda 7 — Candidato `6dcd65959c48495dcf439b267d0fca68de9807b0`: APPROVED
+
+**OWNER VALIDATION = APPROVED** (2026-09-30). DLL validado: `ProductVersion` `1.0.0+6dcd65959c48495dcf439b267d0fca68de9807b0`, SHA-256
+`8994E500513BBE2E68FC23714989B5CE462C0704F7409AAA13A5A2CADE125FF7`. Resultado reportado por el Owner: todos los grupos canonicos **PASS**:
+
+| Grupo | Resultado |
+|---|---|
+| OV-LEG | PASS |
+| OV-BOM | PASS |
+| OV-ID17 | PASS |
+| OV-ID18 | PASS |
+| OV-RED | PASS |
+| OV-META | PASS |
+| OV-PR | PASS |
+| OV-ID19 | PASS |
+| OV-C16-06 | PASS |
+| OV-C16-07 | PASS |
+| OV-UNNAMED | PASS |
+
+No se registran detalles por fila mas alla del resultado global del Owner. Evidencia canonica: [I-55-evidence.md](../automation/evidence/I-55-evidence.md).

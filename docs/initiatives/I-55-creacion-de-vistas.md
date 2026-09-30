@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-55
 title: "View Placement & Projection (ID17 + ID18 + ID19)"
 type: feature
-status: claimed
+status: integrated
 branch: feature/creacion-de-vistas
 base_branch: main
 priority:
@@ -472,4 +472,11 @@ comparte con su vista origen apunte donde apunta en la fuente; **Predeterminada*
 los planes, AUTH-15, la Foundation y el esquema no cambian.
 
 Producto final de I-55: **ID17** primera vista libre, **ID18** cola de vistas (varias vistas de una vez) e **ID19** `RACKPROYECTAR` / `RPY` (proyeccion de
-varios racks como vistas enlazadas, con orientacion Proyectada o Predeterminada y soporte de racks sin nombre). **G16: OWNER VALIDATION REQUIRED. I-55: NOT INTEGRATED.**
+varios racks como vistas enlazadas, con orientacion Proyectada o Predeterminada y soporte de racks sin nombre). *(Estado escrito antes de C16-07 y del cierre; ver abajo.)*
+
+# Cierre (2026-09-30)
+
+La ronda 6 rechazo `68115269` (Frontal → Lateral = `PairNotExposed`); **C16-07** ([diseño congelado](I-55-c16-07-elevation-projection.md)) expone Frontal ↔
+Lateral como proyeccion ortografica sobre la altura en todo sistema con ambas clases, en Proyectada y Predeterminada. La ronda 7 **APROBO** el Candidato final
+`6dcd65959c48495dcf439b267d0fca68de9807b0` (todos los grupos OV PASS). **ID17, ID18 e ID19: COMPLETE. G16: COMPLETE. I-55: integrada** (merge `--no-ff` en
+`main`; `MERGE_SHA`, CI posterior, cobertura y limpieza en el tag `integration/I-55`). Evidencia: [I-55-evidence.md](../automation/evidence/I-55-evidence.md).
