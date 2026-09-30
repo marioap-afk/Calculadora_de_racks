@@ -61,15 +61,19 @@ de una fila de plantas de un layout.
 
 ### 4.1 Cómo se usa
 
-1. Ejecuta `RACKPROYECTAR` (o `RPY`) y selecciona las vistas de rack a proyectar.
+1. Ejecuta `RACKPROYECTAR` (o `RPY`) y selecciona las vistas de rack a proyectar. Termina la selección con `Enter`
+   (durante la selección, `F` es el «Fence» de AutoCAD, no la clase Frontal).
 2. Elige la clase de vista destino: `Frontal`, `Lateral` o `Planta`.
-3. Si algo impide la operación, el comando lo dice **antes** de pedir ningún punto y no escribe nada.
-4. Se muestran los **avisos** (no bloquean): superposición entre las vistas nuevas, corrida cerca del límite del
+3. Elige la **orientación**: `Orientacion [PRoyectada/PREdeterminada] <PRoyectada>`. `Enter` (o `PR`) usa
+   **Proyectada**; para Predeterminada escribe `PRE` (o la palabra completa) o elígela en la lista. `Esc` cancela sin
+   leer ni escribir nada.
+4. Si algo impide la operación, el comando lo dice **antes** de pedir ningún punto y no escribe nada.
+5. Se muestran los **avisos** (no bloquean): superposición entre las vistas nuevas, corrida cerca del límite del
    sentido, pieza visual opcional sin bloque.
-5. Indica el **punto base** y el **punto de destino**. Todas las vistas se trasladan juntas con esa misma
-   transformación.
-6. El comando importa los bloques de biblioteca necesarios, comprueba que estén en el dibujo y crea todas las
-   vistas en una sola operación.
+6. Indica el **punto base** y el **punto de destino**. Todas las vistas se colocan juntas con esa misma
+   operación.
+7. El comando importa los bloques de biblioteca necesarios, comprueba que estén en el dibujo y crea todas las
+   vistas en una sola operación. El mensaje final dice qué orientación se usó.
 
 ### 4.2 Modos de proyección
 
@@ -81,6 +85,31 @@ de una fila de plantas de un layout.
 
 Los rangos de cada rack sobre la corrida se conservan; no se recuperan coordenadas descartadas ni orientaciones
 en un viaje de ida y vuelta, salvo la traslación.
+
+### 4.2.1 Orientación: Proyectada (por defecto) o Predeterminada
+
+La definición de bloque de la vista nueva es **siempre la normal de RackCad**: su geometría, textos, cotas y
+números no cambian. Lo único que cambia entre los dos modos es el **giro de la referencia de bloque** colocada.
+
+- **Proyectada** (por defecto): la vista nueva se comporta como una vista proyectada del dibujo. El eje del rack
+  que comparte con su vista origen (la corrida entre planta y frontal, el fondo entre planta y lateral) queda
+  **paralelo y en el mismo sentido** que en la vista origen, y las vistas nuevas quedan alineadas sobre una recta
+  que pasa por el punto de destino. Para lograrlo gira **toda** la referencia: geometría, textos, cotas y
+  etiquetas giran con ella (puede quedar vertical o de cabeza; RackCad no endereza los textos). Por ejemplo, la
+  planta de un Selectivo tal como se inserta tiene la corrida en vertical, así que su frontal proyectada queda
+  girada 90°; si giras la planta hasta que la corrida quede horizontal (con el poste 1 a la izquierda), la
+  frontal proyectada sale en su posición normal.
+  - En la **misma clase** (Planta → Planta, etc.) cada vista conserva el giro de su vista origen.
+  - Si en la selección hay racks paralelos pero **opuestos** (por ejemplo, espalda con espalda, uno girado 180°),
+    no existe una orientación proyectada común: la operación se rechaza antes de pedir puntos
+    (`SourceOrientationDivergent`). Proyecta cada sentido por separado o usa Predeterminada.
+- **Predeterminada**: la presentación normal de RackCad, sea cual sea el giro de la vista origen. Entre clases
+  distintas es exactamente el comportamiento anterior (vistas sin girar, en su orientación natural, alineadas sobre
+  una línea común). En la misma clase el
+  grupo se copia girado de modo que sus vistas quedan sin girar: el punto base cae en el punto de destino y la
+  disposición entre racks se conserva. Si en la misma clase los racks tienen **giros distintos**, no pueden quedar
+  todos sin girar en una sola operación y se rechaza antes de pedir puntos (`SourceRotationsDiffer`): usa Proyectada
+  o proyecta por separado cada grupo de igual giro. Nunca se rechaza por la divergencia de Proyectada.
 
 ### 4.3 Qué sistemas admite
 

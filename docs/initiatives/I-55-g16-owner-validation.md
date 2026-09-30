@@ -4,7 +4,7 @@ Documento de procedimiento del gate final. Contiene la matriz **canonica** de va
 de I-55: la del [mapa de implementacion V4](I-55-implementation-map-v4.md) (parte OV) con las enmiendas del
 [mapa V5](I-55-implementation-map-v5.md) (parte OV) y las decisiones del Owner ya congeladas
 ([decisions/I-55.md](../automation/decisions/I-55.md): OD-1..OD-8, M-01 con `phi_t = 0`, `alpha = 0`, OD-7.e A = Relative Frame
-Window). No es una lista abreviada. Los resultados por escenario, el SHA del Candidato y la identidad del DLL **no** viven aqui:
+Window; desde C16-06 su alcance por orientacion esta en el diseño [C16-06 §G.1](I-55-c16-06-projected-orientation.md)). No es una lista abreviada. Los resultados por escenario, el SHA del Candidato y la identidad del DLL **no** viven aqui:
 se registran en la evidencia de cierre, porque este archivo forma parte del Candidato y no puede contener su propio SHA.
 
 Los escenarios que dependen de un fixture que el Owner no tenga se registran **NOT EXECUTED** con el motivo (solo cuando la
@@ -53,7 +53,7 @@ propia fila lo permite con «si el Owner dispone de uno»). Ningun escenario se 
 | OV-ID18-07 | Dinamico existente → lote entrada + planta → `Esc` en la primera colocacion | Redibujo conservado; sin vistas nuevas; el mensaje dice que las vistas existentes se actualizaron y no se inserto ninguna |
 | OV-ID18-08 | Push Back compuesto → frontal A, frontal B y lateral tras una frontera suprimida | Tres vistas; poste real |
 | OV-ID18-09 | Cantilever → laterales de dos estaciones + planta | Tres vistas; una regeneracion al final |
-| OV-ID18-10 | Selectivo existente de 2 fondos → Insertar frontal → `Esc` en el prompt «que frontal» | Nada modificado: ni redibujo ni vistas nuevas |
+| OV-ID18-10 | Selectivo existente de 2 fondos → `RACKEDITAR` → en la lista de vistas a insertar elegir **frontal fondo 2** → Insertar. Repetir y, antes de confirmar la insercion, cancelar la lista (o cerrar el editor sin Insertar) | Se inserta la frontal del fondo 2 **sin** un prompt «que frontal» (G12 lleva la direccion tipada elegida en la lista). Al cancelar antes de confirmar: nada modificado, ni redibujo ni vistas nuevas. *(Correccion de la matriz, C16: el prompt «que frontal» es del camino legado de insercion directa; la costura aceptada de G12 es la lista de direcciones tipadas.)* |
 | OV-ID18-11 | Selectivo cuya unica vista es la frontal del fondo 2 → encoger a 1 fondo → Insertar planta | La planta nueva se coloca y la frontal huerfana desaparece en el mismo paso; `RACKBOMTOTAL` cuenta el rack |
 | OV-RED-01 | Selectivo con frontal, lateral y planta → `RACKEDITAR` → cambiar el diseno → Insertar **una** vista; repetir en Dinamico, Push Back compuesto, Cantilever y cabecera | En cada kind, las hermanas cambian juntas antes de pedir el punto; despues el jig de la vista nueva |
 | OV-RED-02 | Igual que OV-RED-01 → `Esc` en el jig | Las hermanas quedan actualizadas; ninguna vista nueva |
@@ -87,6 +87,12 @@ propia fila lo permite con «si el Owner dispone de uno»). Ningun escenario se 
 Decisiones aplicadas: misma clase = Rigid con `alpha = 0`; planta ↔ elevaciones = Orthographic con **Relative Frame Window** (nunca mayoria);
 Frontal ↔ Lateral no expuesto; superposicion = aviso; tipos fuente mezclados, varias definiciones de un `RackId` y familias mezcladas fallan; orientacion natural
 de las plantas proyectadas. Las filas 11, 22, 25 y 26 son las reescritas por el mapa V5.
+
+**Orientacion (C16-06).** `RACKPROYECTAR` pregunta ahora `Orientacion [PRoyectada/PREdeterminada] <PRoyectada>` despues de la clase. Las filas de esta
+tabla describen la geometria congelada de G14, que es la orientacion **Predeterminada** en las proyecciones entre clases distintas: en las filas 01, 02, 03,
+04, 06 (parte ortografica), 07, 14, 21, 22, 25 y 27 responder **Predeterminada** (escribir `PRE` o elegirla en la lista). En las filas de la misma clase
+05, 06 (parte rigida) y 26 responder **Proyectada** (Enter): conserva el giro de cada rack. En el resto la orientacion no cambia el resultado esperado
+(Enter). La orientacion **Proyectada** entre clases distintas se valida en la seccion 6.1.
 
 | # | Pasos | Esperado |
 |---|---|---|
@@ -125,6 +131,63 @@ de las plantas proyectadas. Las filas 11, 22, 25 y 26 son las reescritas por el 
 
 Las filas 27..32 son de aceptacion del Candidato (aviso de cercania, biblioteca, ausencia de huerfanas, rollback, persistencia y ayuda): completan los
 criterios del gate G15 sin cambiar la matriz congelada 01..26.
+
+## 6.1 OV-C16-06 (orientacion de la vista proyectada)
+
+Diseño congelado: [I-55-c16-06-projected-orientation.md](I-55-c16-06-projected-orientation.md). **Solo gira la referencia de bloque colocada, entera**:
+geometria, textos, cotas, numeros y etiquetas giran con ella (no se intenta mantener los textos derechos). La definicion de bloque NO cambia: comprobar con
+`BEDIT` o `LIST` de la definicion que su contenido es el de siempre; `LIST` de la referencia muestra el angulo de rotacion.
+
+Como leer una fila: gira la vista fuente con `ROTATE` (angulo exacto, sobre su punto de insercion) **antes** de `RACKPROYECTAR`; despues
+`RACKPROYECTAR` → seleccion → clase → orientacion → punto base → punto destino, y mide con `LIST` la **rotacion** de cada referencia nueva.
+Para el Selectivo (y Dinamico, Push Back y cabecera) la planta tal como se inserta (0°) tiene la **corrida en vertical** (eje Y) y el fondo en horizontal;
+la frontal y la lateral tal como se insertan tienen su ancho en horizontal. Esperado general de Proyectada: la corrida (o el fondo, segun la clase) de la vista
+nueva queda **paralela y en el mismo sentido** que en la vista fuente, y las vistas nuevas quedan alineadas sobre una recta que pasa por el punto destino.
+El otro eje de la vista nueva (la altura de una elevacion, el otro eje de una planta) queda donde lo pone ese giro: en cada fila anotar hacia donde apuntan la
+parte superior de los postes o el fondo. Si una vista se ve «desde atras» (orden de postes invertido respecto a la fuente), es un FAIL; que la altura quede de
+lado o de cabeza es el comportamiento esperado.
+
+| # | Pasos (Selectivo salvo que se diga) | Esperado |
+|---|---|---|
+| P-01 | Planta a 0° (corrida vertical) → Frontal, **Proyectada** | Frontal girada **90°** (queda vertical: su corrida sigue la de la planta) |
+| P-02 | Planta a 90° (corrida horizontal, poste 1 a la derecha) → Frontal, Proyectada | Frontal a **180°** (de cabeza), poste 1 a la derecha como en la planta |
+| P-03 | Planta a 180° → Frontal, Proyectada | Frontal a **270°** (vertical, sentido opuesto a P-01) |
+| P-04 | Planta a 270° (corrida horizontal, poste 1 a la izquierda) → Frontal, Proyectada | Frontal a **0°**: la frontal normal |
+| P-05 | Planta a 0° → Lateral, Proyectada | Lateral a **0°** (su fondo, horizontal, sigue el fondo de la planta) |
+| P-06 | Planta a 90° → Lateral, Proyectada | Lateral a **90°** |
+| P-07 | Planta a 180° → Lateral, Proyectada | Lateral a **180°** |
+| P-08 | Planta a 270° → Lateral, Proyectada | Lateral a **270°** |
+| P-09 | Frontal a 0° → Planta, Proyectada | Planta a **270°** (corrida horizontal, como la frontal) |
+| P-10 | Frontal a 90° → Planta, Proyectada | Planta a **0°** |
+| P-11 | Frontal a 180° → Planta, Proyectada | Planta a **90°** |
+| P-12 | Frontal a 270° → Planta, Proyectada | Planta a **180°** |
+| P-13 | Lateral a 0° → Planta, Proyectada | Planta a **0°** (su fondo sigue el de la lateral) |
+| P-14 | Lateral a 90° → Planta, Proyectada | Planta a **90°** |
+| P-15 | Lateral a 180° → Planta, Proyectada | Planta a **180°** |
+| P-16 | Lateral a 270° → Planta, Proyectada | Planta a **270°** |
+| P-17 | Dos plantas **con el mismo giro** (p. ej. ambas a 90°, en posiciones distintas) → Frontal, Proyectada | Ambas frontales con la **misma** rotacion (180°), alineadas sobre una recta que pasa por el punto destino en la direccion de la corrida |
+| P-18 | Dos plantas **opuestas** (una a 0° y otra a 180°) → Frontal, Proyectada | Rechazo **antes de pedir puntos**: `SourceOrientationDivergent` con los dos racks y el remedio (proyectar por separado o usar Predeterminada); nada escrito ni importado |
+| P-19 | Dinamico: planta a 90° → Frontal (salida), Proyectada | Frontal a **180°** (igual regla que el Selectivo) |
+| P-20 | Push Back: lateral a 90° → Planta, Proyectada | Planta a **90°** |
+| P-21 | Cabecera: planta a 90° → Lateral, Proyectada | Lateral a **90°** |
+| P-22 | Cantilever (su planta a 0° tiene la corrida **horizontal**): planta a 90° → Frontal, Proyectada; y planta a 0° → Lateral | Frontal a **90°**; lateral a **90°** |
+| P-23 | Misma clase: planta a 90° → Planta, Proyectada | La planta nueva conserva **90°** (copia rigida del giro) |
+| C-01 | Planta a 90° → Frontal, **Predeterminada** | Frontal a **0°** (presentacion normal), como antes de C16-06 |
+| C-02 | Planta a 90° → Lateral, Predeterminada | Lateral a **0°** |
+| C-03 | Frontal a 90° → Planta, Predeterminada | Planta a **0°** |
+| C-04 | Lateral a 90° → Planta, Predeterminada | Planta a **0°** |
+| C-05 | Misma clase: planta a 90° → Planta, Predeterminada, eligiendo como punto base una esquina de la planta | Planta a **0°** (`LIST` puede mostrar 0° o 360°); la esquina elegida cae en el punto destino (correccion aceptada de C16-06) |
+| C-05b | Misma clase: **dos** plantas contiguas **ambas a 90°** (con pasillo entre ellas) → Planta, Predeterminada | Ambas a **0°**, contiguas y con el mismo pasillo: la disposicion se conserva, girada alrededor del punto base; ninguna se superpone |
+| C-05c | Misma clase: dos plantas con **giros distintos** (0° y 180°) → Planta, Predeterminada | Rechazo **antes de pedir puntos**: `SourceRotationsDiffer` con los dos racks y el remedio (usar Proyectada o proyectar cada giro por separado); nada escrito |
+| C-06 | Las dos plantas opuestas de P-18 → Frontal, **Predeterminada** | Se proyecta (Predeterminada nunca se bloquea por la divergencia de Proyectada) |
+| C-07 | En cualquier fila: `Enter` en la pregunta de orientacion; despues `PR`; despues `PRE` | `Enter` y `PR` usan **Proyectada**; `PRE` usa **Predeterminada**; `Esc` en esa pregunta cancela sin leer ni escribir nada |
+
+## 6.2 OV-UNNAMED (racks sin nombre heredados)
+
+| # | Pasos | Esperado |
+|---|---|---|
+| U-01 | Selectivo **con nombre** → planta → `RACKPROYECTAR` → Lateral | PASS: se crea la definicion y la referencia; mismo `RackId`; la vista nueva lleva el **mismo nombre logico** (`RACKLISTA`) |
+| U-02 | Selectivo **sin nombre** (nombre en blanco en su editor, o un rack heredado sin nombre): `RACKLISTA` antes → `RACKPROYECTAR` planta → Lateral → `RACKLISTA` despues → guardar, cerrar y reabrir → `RACKLISTA` | Antes: «(sin nombre)». La proyeccion **se completa** (definicion y referencia creadas), mismo `RackId`, sin nombre inventado («Rack», «Selectivo», «Sin nombre»…). Despues y tras reabrir: sigue «(sin nombre)»; un solo rack; el nombre del **bloque** de AutoCAD no esta vacio |
 
 ## 7. Registro
 
@@ -193,3 +256,11 @@ Un rack con nombre conserva el MISMO nombre logico en el sobre proyectado; `Enve
 **RED antes del arreglo (`G16UnnamedRackTests`, 23 de 31 en rojo):** A) Selectivo sin nombre llegaba a `Completed` (preparaba y materializaba); B) nombrado + sin nombre + nombrado tambien terminaba `Completed`;
 C) Selectivo con nombre Planta→Lateral ya se aceptaba (verde, se conserva); D) sin cambios en el sobre fuente. Matriz de sistemas (Selectivo, Dinamico, Push Back, Cantilever, Cabecera × null/""/"   "): todas en rojo.
 **Despues:** 31/31; se reescribieron los tests de la ronda 2/3 que fijaban el respaldo «Rack» (`G16ProjectedEnvelopeTests`, `G16BlockNameTests`).
+
+### Ronda 5 — Candidato `3f06994adf7a30d8c2627b3fdc63393e4a489997`: REJECTED por decision de producto del Owner
+
+No por un defecto frente a su orden: el Owner cambio el comportamiento requerido. **C16-05 queda REVOCADA**: `RACKPROYECTAR` DEBE proyectar racks heredados sin
+nombre y conservarlos sin nombre (sin «Rack», «Selectivo» ni «Sin nombre» inventados). AUTH-15 se corrigio en su propia unidad (`I-52-AUTH15-C1`, integrada,
+`integration/I-52-AUTH15-C1`): exige Id y Kind, nunca Name. I-55 se reconcilio sobre ese `main` y retiro `UnnamedRackNotProjectable` (filas OV-UNNAMED U-01/U-02).
+En la misma ronda el Owner exigio **C16-06** (orientacion Proyectada por defecto y Predeterminada explicita; filas OV-C16-06 en §6.1) y corrigio la fila
+**OV-ID18-10** (la costura de G12 es la lista de direcciones tipadas, no un prompt «que frontal»).
