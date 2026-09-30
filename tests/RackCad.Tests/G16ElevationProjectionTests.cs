@@ -242,6 +242,24 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void C16_07_Q6_TheFlowBedStaysOutsideId19ForAnElevationTarget()
+        {
+            // Self-check note: the pair is now exposed, so the flow bed lateral is refused by the source decision (TargetNotExposed, the same
+            // failure it already had for Planta and Lateral targets) at AVAILABLE, before any point and with the same «no se puede proyectar».
+            var scenario = new G15.Scenario(RackSystemKind.Cama, DimensionViewKind.Frontal) { SourceAddress = RackViewAddress.Whole(DimensionViewKind.Lateral) };
+            scenario.AddRack(G14.RackA, "REF-1", 0, 0);
+            var port = scenario.NewPort(G15.Points());
+
+            var result = RackProjectionCommandRun.Execute(port);
+
+            Assert.Equal(RackProjectionCommandStatus.Blocked, result.Status);
+            Assert.Equal(RackProjectionStage.Available, result.PlanResult.FailedStage);
+            Assert.Equal(RackProjectionFailureCode.TargetNotExposed, Assert.Single(result.PlanResult.Diagnostics).Code);
+            Assert.DoesNotContain("pick-base", port.Events);
+            Assert.Equal(0, port.Scopes.Begun);
+        }
+
+        [Fact]
         public void C16_07_Q6_PairNotExposedKeepsItsCodeAndRemedy()
         {
             Assert.True(Enum.IsDefined(typeof(RackProjectionFailureCode), RackProjectionFailureCode.PairNotExposed));
