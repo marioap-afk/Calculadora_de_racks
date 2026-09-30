@@ -71,3 +71,10 @@ SHA-256 antes de NETLOAD, guia §7.2). Un resultado por fila: PASS, FAIL o NOT E
 | N-14 | RACKLAYOUT «independientes» desde «Selectivo 1» (fuera de alcance: sin cambios) | Igual que hoy: «Selectivo 1 <celda>» por celda |
 | N-15 | Renombrar un Dinamico a «Selectivo 9»; crear un Selectivo | «Selectivo 10» (el patron se lee sobre el texto de todos los racks) |
 | N-16 | RACKCABECERA sin tocar el nombre → RACKEDITAR (muestra «Cabecera N») → Actualizar; y un Cantilever nuevo → RACKEDITAR → Actualizar | Tras Actualizar siguen «Cabecera N» y «Cantilever N» en RACKLISTA y en el nombre del bloque |
+| N-17 | Menu RACKCAD → Selectivo nuevo **sin nombre** → «Insertar varias…» frontal fondo 1 + lateral poste 1 + planta → RACKLISTA | Un rack, tres vistas, las tres «Selectivo N» (el mismo N); mismo RackId; el nombre de cada bloque parte de «Selectivo N» |
+| N-18 | Igual que N-17 con Dinamico, Push Back, Cantilever y cabecera (cola de varias vistas, nombre vacio) | Cada rack: un solo «X N» compartido por todas sus vistas iniciales; secuencias independientes por familia |
+| N-19 | Menu RACKCAD → Selectivo nuevo con **primera vista Planta** (o Lateral) sin nombre | «Selectivo N» (primera vista libre, ID17) |
+| N-20 | Menu RACKCAD → cabecera con el nombre de una plantilla integrada («Estandar (3 paneles)») → Insertar | «Cabecera N» |
+| N-21 | Menu RACKCAD / biblioteca «como nuevo» con un nombre escrito («Rack A») → cola de dos vistas | Ambas «Rack A»; con «Colocar nombre de rack» marcado, la anotacion muestra «Rack A» (y «X N» cuando el nombre fue automatico) |
+| N-22 | Rack heredado **sin nombre** → RACKEDITAR → «Insertar varias…» (lateral + planta) → RACKLISTA; guardar y reabrir | Sigue «(sin nombre)» en todas sus vistas |
+| N-23 | Rack heredado **sin nombre** → RACKPROYECTAR a otra clase; y un rack «Selectivo 3» → RACKPROYECTAR | El sin nombre sigue «(sin nombre)»; el nombrado conserva «Selectivo 3»; ningun numero nuevo consumido |
