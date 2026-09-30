@@ -184,6 +184,17 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void G15_LA_PREGUNTA_DE_LA_CLASE_LLEVA_SU_LISTA_ENTRE_CORCHETES()
+        {
+            var port = Code("src/RackCad.Plugin/Views/RackProjectionCommandPort.cs");
+
+            // PromptKeywordOptions(messageAndKeywords, globalKeywords): sin la lista entre corchetes en el primer argumento, AutoCAD lanza
+            // «No bracketed keyword list» (hallazgo de la primera corrida del Owner).
+            Assert.Contains("PromptKeywordOptions(\"\\nClase de vista a proyectar [Frontal/Lateral/Planta]\", \"Frontal Lateral Planta\")", port);
+            Assert.DoesNotContain("AppendKeywordsToMessage", port);
+        }
+
+        [Fact]
         public void G15_F_LOS_PUNTOS_SE_CONVIERTEN_DEL_SCP_AL_UNIVERSAL()
         {
             var port = Code("src/RackCad.Plugin/Views/RackProjectionCommandPort.cs");

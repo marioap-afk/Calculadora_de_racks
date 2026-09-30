@@ -44,9 +44,10 @@ namespace RackCad.Plugin.Views
                 return RackProjectionSnapshot.Unavailable(RackProjectionSnapshotFailure.NoSelection, null);
             }
 
-            var keywords = new PromptKeywordOptions("\nClase de vista a proyectar", "Frontal Lateral Planta")
+            // The first argument is the message WITH its bracketed keyword list; the second is the global keyword list.
+            // The bare message throws "No bracketed keyword list" (found in the first Owner run of RACKPROYECTAR).
+            var keywords = new PromptKeywordOptions("\nClase de vista a proyectar [Frontal/Lateral/Planta]", "Frontal Lateral Planta")
             {
-                AppendKeywordsToMessage = true,
                 AllowNone = false,
             };
             var kind = editor.GetKeywords(keywords);
