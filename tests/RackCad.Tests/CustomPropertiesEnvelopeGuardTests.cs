@@ -182,9 +182,15 @@ namespace RackCad.Tests
 
         internal sealed record ComposeCall(string Path, string Member, string FirstArgument);
 
-        /// <summary>Las llamadas de D-21 y las composiciones puras autorizadas por I-55 G7/G9b, ordenadas por archivo.</summary>
+        /// <summary>
+        /// Las llamadas de D-21 y las composiciones puras autorizadas por I-55 G7/G9b, ordenadas por archivo. I-55 G16 anade UNA:
+        /// <c>RackProjectionEnvelopeName.WithLogicalName</c>, que compone una copia en memoria del sobre fuente real (parametro
+        /// <c>source</c>, conserva <c>CustomProperties</c> y datos de extension) cambiando solo el nombre cuando el rack no tiene
+        /// ninguno, porque AUTH-15 rechaza un sobre sin nombre (OV-ID19-01). No pasa <c>null</c> y no repara el sobre del dibujo.
+        /// </summary>
         internal static readonly IReadOnlyList<ComposeCall> ExpectedComposeCensus = new[]
         {
+            new ComposeCall("src/RackCad.Application/Views/Placement/RackProjectionEnvelopeName.cs", "WithLogicalName", "source"),
             new ComposeCall("src/RackCad.Application/Views/Preparation/RackViewEnvelopeComposition.cs", "Compose", "source"),
             new ComposeCall("src/RackCad.Plugin/ProjectVariableMutationExecutor.cs", "Execute", "view.Embed"),
             new ComposeCall("src/RackCad.Plugin/RackCabeceraCommands.cs", "BuildCabeceraPayload", "source"),

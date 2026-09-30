@@ -705,7 +705,7 @@ namespace RackCad.Tests
         {
             var calls = EnvelopeSourceGuards.ComposeCallsOutsideComposer(EnvelopeSourceGuards.ProductionSources());
 
-            Assert.Equal(9, calls.Count);
+            Assert.Equal(10, calls.Count); // las nueve de antes y la composicion del nombre logico de I-55 G16
             Assert.DoesNotContain(calls, call => call.FirstArgument == "null");
             Assert.Equal(6, calls.Count(call => call.Member.StartsWith("Build", StringComparison.Ordinal) || call.Member == "WrapSelectivePayload"));
             Assert.Single(calls, call => call.Path == "src/RackCad.Application/Views/Preparation/RackViewEnvelopeComposition.cs"
