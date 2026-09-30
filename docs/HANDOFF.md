@@ -363,7 +363,10 @@ clasificaciones). **POST-AUDIT PACKAGE BASELINE: PASS.**
 - **CT-21D AUTHORITY CONTRACT V2.2 (errata preaprobada, §207):** [documento](initiatives/I-52-ct21d-authority-contract-v2.2.md) — aplica literalmente PA-1..PA-14 y PW-1..PW-5 del chequeo del Arquitecto sobre V2.1 (registro de clases con `ENTRY_KIND`, `E12-V` con EVM congelado, frontera del warm-up, lectura rasgada, `REUSED_BOUND`,
   `ExtensionData`, dominio de fase A, revisión de completitud, controles de calificación, custodia con ancla remota, condiciones de sellado de NB-1, instancia superada). V1, V2 y V2.1 quedan intactos; el contrato efectivo `CT-21D-V2.2` es V2.1 con esta errata. `CT21D_AUTHORITY_CONTRACT = DRAFT_V2_2`,
   `CT21D_AUTHORITY_BASELINE_READY = FALSE`, `CT21D_EXECUTION_READY = FALSE`, `CT21D_EXECUTION = NOT_AUTHORIZED`, `CURRENTLY_ADMISSIBLE_KIND_SCOPE = NONE`. Los 13 puntos abiertos de V2.1 quedan cerrados como rulings; ningún blocker se cierra.
-- **Siguiente gate: verificación textual del Coordinador del CT-21D Authority Contract V2.2** (y, si pasa, preparación de artefactos de línea base). La rama sigue sin reconciliar con `main` (79 detrás / 127 delante).
+- **CT-21D AUTHORITY CONTRACT V2.3 (micro-errata de N-2, §208):** [documento](initiatives/I-52-ct21d-authority-contract-v2.3.md) — reemplaza la extensión de clase B de PW-1 (nota N-2 de V2.2) por el texto cerrado del micro-ruling del Arquitecto: `SUPERSEDED_AMENDMENT_PENDING_INSTANCE` es una designación (no un estado) con cuatro condiciones,
+  causas de host/empíricas no sustituibles, regla de instancia mixta, precedencia de `FALSE` y divulgación en el Acto 2. N-1, N-3 y N-4 sin cambio. V1, V2, V2.1 y V2.2 intactos; contrato efectivo `CT-21D-V2.3` = V2.1 + V2.2 + V2.3. `CT21D_AUTHORITY_BASELINE_READY = FALSE`,
+  `CT21D_EXECUTION_READY = FALSE`, `CT21D_EXECUTION = NOT_AUTHORIZED`.
+- **Siguiente gate: verificación textual del Coordinador del CT-21D Authority Contract V2.3**; si pasa, `CT21D_AUTHORITY_CONTRACT_STATUS = AGREED_FOR_BASELINE_ARTIFACT_PREPARATION` y sigue la preparación de artefactos de línea base. La rama sigue sin reconciliar con `main` (79 detrás / 128 delante).
 
 **Congelación de V35 (§172).** El Coordinador aceptó V35-A2 (`86089886`) con consenso de arquitectura final.
 - `V35_FREEZE_SHA` = `86089886f37da05c2de5dcf9e237044a3deeada3`.
