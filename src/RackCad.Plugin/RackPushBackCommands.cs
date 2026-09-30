@@ -89,6 +89,12 @@ namespace RackCad.Plugin
             }
 
             var editor = document.Editor;
+            if (source == null)
+            {
+                // I-60: a NEW Push Back rack (RPB, the RACKCAD menu) gets the automatic name when none was given; a RACKEDITAR sibling passes its source.
+                rackName = RackNewRackName.Resolve(document, RackSystemKind.PushBack, rackName);
+            }
+
             system.Name = rackName;
 
             // Lateral, unsectioned: prompt for a post and insert that corte.

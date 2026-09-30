@@ -57,6 +57,14 @@ namespace RackCad.Plugin
                 switch (menu.InsertionRequest)
                 {
                     case HeaderInsertionRequest header:
+                        // I-60 A-1: ONE name for the new cabecera (template rule), before the factory serializes the configuration; every
+                        // initial view of the batch shares it (one NewRackCreationContext). RACKEDITAR reaches the factory with its source.
+                        if (header.Configuration != null)
+                        {
+                            header.Configuration.Name = Systems.Shared.RackNewRackName.Resolve(
+                                document, global::RackCad.Domain.Systems.Shared.RackSystemKind.Selective, header.Configuration.Name);
+                        }
+
                         var headerProducts = RackViewBatchProducts.Header(document, header.Configuration,
                             header.RackId, header.Configuration?.Name, null, header.SourceProject, null);
                         RackViewBatchExecution.Run(document, headerProducts,
@@ -66,8 +74,12 @@ namespace RackCad.Plugin
                                     RackProductSourceKind.NewRack, header.Kind, header.RackId, header.Views));
                         break;
                     case DynamicInsertionRequest dynamic:
+                        // I-60 A-1: one name for the new rack, shared by every initial view of the batch.
+                        var dynamicName = Systems.Shared.RackNewRackName.Resolve(
+                            document, global::RackCad.Domain.Systems.Shared.RackSystemKind.PalletFlow, dynamic.RackName);
+                        if (dynamic.System != null) dynamic.System.Name = dynamicName;
                         var dynamicProducts = RackViewBatchProducts.Dynamic(document, dynamic.System, dynamic.Design,
-                            dynamic.RackId, dynamic.RackName, null, dynamic.SourceProject, null);
+                            dynamic.RackId, dynamicName, null, dynamic.SourceProject, null);
                         RackViewBatchExecution.Run(document, dynamicProducts,
                             RackViewBatchProductSession<RackCad.Domain.Systems.Dynamic.DynamicRackDesign,
                                 RackCad.Domain.Systems.Dynamic.DynamicRackSystem,
@@ -75,14 +87,21 @@ namespace RackCad.Plugin
                                     RackProductSourceKind.NewRack, dynamic.Kind, dynamic.RackId, dynamic.Views));
                         break;
                     case FlowBedInsertionRequest cama:
+                        // I-60: one assigned name for the envelope and the block of a NEW cama.
+                        var camaName = Systems.Shared.RackNewRackName.Resolve(
+                            document, global::RackCad.Domain.Systems.Shared.RackSystemKind.Cama, cama.RackName);
                         RackCamaCommands.DrawAndPlaceBed(
                             cama.FlowBed,
-                            RackCamaCommands.BuildCamaPayload(cama.FlowBed, cama.RackId, cama.RackName, null, cama.SourceDocument),
-                            cama.RackName);
+                            RackCamaCommands.BuildCamaPayload(cama.FlowBed, cama.RackId, camaName, null, cama.SourceDocument),
+                            camaName);
                         break;
                     case SelectiveInsertionRequest selective:
+                        // I-60 A-1: one name for the new rack (inner document and envelope), shared by every initial view of the batch.
+                        var selectiveName = Systems.Shared.RackNewRackName.Resolve(
+                            document, global::RackCad.Domain.Systems.Shared.RackSystemKind.SelectiveRack, selective.RackName);
+                        if (selective.System != null) selective.System.Name = selectiveName;
                         var selectiveProducts = RackViewBatchProducts.SelectiveNew(document, selective.System,
-                            selective.Design, selective.RackId, selective.RackName);
+                            selective.Design, selective.RackId, selectiveName);
                         RackViewBatchExecution.Run(document, selectiveProducts,
                             RackViewBatchProductSession<RackCad.Application.Persistence.SelectivePalletDesignDocument,
                                 RackCad.Domain.Systems.Selective.SelectiveRackSystem,
@@ -95,8 +114,13 @@ namespace RackCad.Plugin
                         break;
                     case CantileverInsertionRequest cantilever:
                         if (!RackCantileverCommands.TryGeometryFactory(document.Editor, out var geometry)) break;
+                        // I-60 A-1: one name for the new line; the persisted design copy (AUTH-13) carries it before the factory
+                        // serializes it, and every initial view of the batch shares it.
+                        var cantileverName = Systems.Shared.RackNewRackName.Resolve(
+                            document, global::RackCad.Domain.Systems.Shared.RackSystemKind.Cantilever, cantilever.RackName);
+                        if (cantilever.Design != null) cantilever.Design.Name = cantileverName;
                         var cantileverProducts = RackViewBatchProducts.Cantilever(document, cantilever.Line,
-                            cantilever.Design, geometry, cantilever.RackId, cantilever.RackName,
+                            cantilever.Design, geometry, cantilever.RackId, cantileverName,
                             null, cantilever.SourceProject, null);
                         RackViewBatchExecution.Run(document, cantileverProducts,
                             RackViewBatchProductSession<RackCad.Domain.Systems.Cantilever.CantileverLineDesign,
@@ -105,8 +129,12 @@ namespace RackCad.Plugin
                                     RackProductSourceKind.NewRack, cantilever.Kind, cantilever.RackId, cantilever.Views));
                         break;
                     case PushBackInsertionRequest pushBack:
+                        // I-60 A-1: one name for the new rack, shared by every initial view of the batch.
+                        var pushBackName = Systems.Shared.RackNewRackName.Resolve(
+                            document, global::RackCad.Domain.Systems.Shared.RackSystemKind.PushBack, pushBack.RackName);
+                        if (pushBack.System != null) pushBack.System.Name = pushBackName;
                         var pushBackProducts = RackViewBatchProducts.PushBack(document, pushBack.System, pushBack.Design,
-                            pushBack.RackId, pushBack.RackName, null, pushBack.SourceProject, null);
+                            pushBack.RackId, pushBackName, null, pushBack.SourceProject, null);
                         RackViewBatchExecution.Run(document, pushBackProducts,
                             RackViewBatchProductSession<RackCad.Domain.Systems.PushBack.PushBackDesign,
                                 RackCad.Domain.Systems.PushBack.PushBackSystem,

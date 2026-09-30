@@ -195,6 +195,9 @@ namespace RackCad.Plugin
                 return;
             }
 
+            // I-60: a NEW cabecera whose name is blank or a built-in template name gets «Cabecera N». The configuration carries it (it is the
+            // inner copy RACKEDITAR reloads), before the envelope and the block name are built from it.
+            configuration.Name = Systems.Shared.RackNewRackName.Resolve(document, RackSystemKind.Selective, configuration.Name);
             var syntax = RackViewCodec.Encode(RackSystemKind.Selective, address);
             var id = string.IsNullOrWhiteSpace(rackId) ? System.Guid.NewGuid().ToString() : rackId;
             var payload = BuildCabeceraPayload(
