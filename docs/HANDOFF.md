@@ -434,7 +434,9 @@ clasificaciones). **POST-AUDIT PACKAGE BASELINE: PASS.**
 - **CT-21D AUTHORITY CONTRACT V2.3 (micro-errata de N-2, §208):** [documento](initiatives/I-52-ct21d-authority-contract-v2.3.md) — reemplaza la extensión de clase B de PW-1 (nota N-2 de V2.2) por el texto cerrado del micro-ruling del Arquitecto: `SUPERSEDED_AMENDMENT_PENDING_INSTANCE` es una designación (no un estado) con cuatro condiciones,
   causas de host/empíricas no sustituibles, regla de instancia mixta, precedencia de `FALSE` y divulgación en el Acto 2. N-1, N-3 y N-4 sin cambio. V1, V2, V2.1 y V2.2 intactos; contrato efectivo `CT-21D-V2.3` = V2.1 + V2.2 + V2.3. `CT21D_AUTHORITY_BASELINE_READY = FALSE`,
   `CT21D_EXECUTION_READY = FALSE`, `CT21D_EXECUTION = NOT_AUTHORIZED`.
-- **Siguiente gate: verificación textual del Coordinador del CT-21D Authority Contract V2.3**; si pasa, `CT21D_AUTHORITY_CONTRACT_STATUS = AGREED_FOR_BASELINE_ARTIFACT_PREPARATION` y sigue la preparación de artefactos de línea base. La rama sigue sin reconciliar con `main` (79 detrás / 128 delante).
+- **Artefactos de línea base de autoridad, fase 1 (§209):** diez artefactos BORRADOR en `docs/initiatives/I-52-ct21d-baseline-ba-NN-*.md` (registro de clases y cobertura, alcance sellado de Selective con comparación de autoridad ejecutada, catálogo de escenarios md+json, especificación de huella de dos capas, preparación del EVM con inventario de operaciones,
+  custodia del manifiesto, línea base del kind Selective, warm-up, hoja de parámetros, esqueleto del registro de hashes). Ninguno sellado; ningún hash de artefacto registrado; parámetros `UNSET`; inventario con completitud `NOT_ESTABLISHED`. `CT21D_AUTHORITY_BASELINE_READY = FALSE`, `CT21D_EXECUTION_READY = FALSE`, `CT21D_EXECUTION = NOT_AUTHORIZED`.
+- **Siguiente gate: revisión del Coordinador de los artefactos de línea base de autoridad, fase 1.** La rama sigue sin reconciliar con `main` (79 detrás / 129 delante).
 
 **Congelación de V35 (§172).** El Coordinador aceptó V35-A2 (`86089886`) con consenso de arquitectura final.
 - `V35_FREEZE_SHA` = `86089886f37da05c2de5dcf9e237044a3deeada3`.
