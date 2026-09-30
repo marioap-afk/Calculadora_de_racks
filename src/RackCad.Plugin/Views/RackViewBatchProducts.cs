@@ -133,9 +133,7 @@ namespace RackCad.Plugin.Views
                     var plan = CantileverPlan(resolved, design, geometry, address);
                     return CantileverViewFrameAdapter.Resolve(resolved, plan, address);
                 },
-                (resolved, address) => RackViewBaseName.CantileverGenerated(
-                    CantileverKind(address), address.Variant.Kind == RackViewVariantKind.Station ? address.Variant.Index : -1,
-                    rackName));
+                (resolved, address) => RackViewProductNames.Cantilever(address, rackName));
             return new RackViewBatchProductSession<CantileverLineDesign, CantileverLineAssembly, CantileverViewPlan>(
                 RackSystemKind.Cantilever, facts, preparer, RackAuthoredComparatorPorts.Cantilever(), comparison,
                 source, design, rackId, rackName, Project(RackProject.ForCantilever(design), innerSource),
@@ -199,33 +197,20 @@ namespace RackCad.Plugin.Views
                 : address.Kind == DimensionViewKind.Lateral ? CantileverViewKind.Lateral
                 : CantileverViewKind.Frontal;
 
+        // The choice of AUTH-11 base name lives in Application (RackViewProductNames) so it can be proved without AutoCAD.
         internal static string SelectiveName(
             SelectiveRackSystem resolved, RackViewAddress address, string rackName, string baseName)
-            => address.Kind == DimensionViewKind.Planta
-                ? RackViewBaseName.SelectivePlanta(resolved, rackName)
-                : address.Kind == DimensionViewKind.Lateral
-                    ? RackViewBaseName.LinkedLateral(baseName, address.Variant.Index)
-                    : RackViewBaseName.LinkedSelectiveFrontal(baseName, address.Variant.Index,
-                        SelectiveDepthLayout.Count(resolved)) ?? RackViewBaseName.SelectiveFrontal(resolved, rackName);
+            => RackViewProductNames.Selective(resolved, address, rackName, baseName);
 
         internal static string HeaderName(
             RackCatalog catalog, RackFrameConfiguration resolved, RackViewAddress address, string rackName)
-            => address.Kind == DimensionViewKind.Planta
-                ? RackViewBaseName.CabeceraPlanta(rackName)
-                : RackViewBaseName.CabeceraLateral(catalog, resolved, rackName);
+            => RackViewProductNames.Header(catalog, resolved, address, rackName);
 
         internal static string DynamicName(DynamicRackSystem system, RackViewAddress address, string name, string baseName)
-            => address.Kind == DimensionViewKind.Planta ? RackViewBaseName.DynamicPlanta(system, name)
-                : address.Kind == DimensionViewKind.Frontal ? RackViewBaseName.DynamicFrontal(system, name, address.Variant.FlowEnd)
-                : RackViewBaseName.LinkedLateral(baseName, address.Variant.Index)
-                    ?? RackViewBaseName.DynamicLateral(system, name);
+            => RackViewProductNames.Dynamic(system, address, name, baseName);
 
         internal static string PushBackName(PushBackSystem system, RackViewAddress address, string name, string baseName)
-            => address.Kind == DimensionViewKind.Planta ? RackViewBaseName.PushBackPlanta(system, name)
-                : address.Kind == DimensionViewKind.Frontal
-                    ? RackViewBaseName.PushBackFrontal(system, name, address.Variant.PushBackEnd, address.Variant.PushBackSide)
-                    : RackViewBaseName.LinkedLateral(baseName, address.Variant.Index)
-                        ?? RackViewBaseName.PushBackLateral(system, name, address.Variant.Index);
+            => RackViewProductNames.PushBack(system, address, name, baseName);
 
         internal static DecodedRackView Decoded(RackSystemKind kind, RackViewAddress address)
         {
