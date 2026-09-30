@@ -141,7 +141,10 @@ namespace RackCad.Application.Views.Placement
 
         public double AlphaRadians { get; }
 
-        /// <summary>rho: orientation of every projected view, frozen to the target frame (OD-6.b A, OD-6.d A).</summary>
+        /// <summary>
+        /// rho: orientation of every projected view = the target group frame. Canonical: universal (OD-6.b A, OD-6.d A);
+        /// Projected (G16 C16-06): derived so the target +K axis points where the source +K axis points.
+        /// </summary>
         public double TargetRotationRadians { get; }
 
         public bool NearWindowLimit { get; }
@@ -303,7 +306,7 @@ namespace RackCad.Application.Views.Placement
                 || RackViewFrameSemantics.TrySpanOn(view.SourceFrame, axis, out min, out max);
 
         /// <summary>Signed angle from one unit direction to another, canonicalised by the shared Transform2D.</summary>
-        private static double AngleFrom(Vector2D from, Vector2D to)
+        internal static double AngleFrom(Vector2D from, Vector2D to)
         {
             var cos = from.Dot(to);
             var sin = from.Cross(to);

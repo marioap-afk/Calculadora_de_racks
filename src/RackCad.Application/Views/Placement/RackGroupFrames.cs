@@ -15,11 +15,17 @@ namespace RackCad.Application.Views.Placement
         public Point3D BasePoint { get; }
         public double OrientationRadians { get; }
 
-        /// <summary>Owner decision OD-6.c A: the source frame keeps universal X, so alpha is 0 for Rigid.</summary>
+        /// <summary>
+        /// Owner decision OD-6.c A: in Rigid the source frame keeps universal X, so alpha is 0. Since G16 C16-06 this universal frame
+        /// is the Projected same-class frame and the Canonical cross-class frame; the orientation authority derives the others.
+        /// </summary>
         public static SourceGroupFrame Universal(Point3D basePoint) => new SourceGroupFrame(basePoint, 0.0);
     }
 
-    /// <summary>Target frame of one projection operation. Owner decision OD-6.b A froze phi_t = 0 (universal X).</summary>
+    /// <summary>
+    /// Target frame of one projection operation. Owner decision OD-6.b A froze phi_t = 0 (universal X); since G16 C16-06 it holds
+    /// for Canonical, and Projected derives phi_t from the source orientation.
+    /// </summary>
     public readonly struct TargetGroupFrame
     {
         public TargetGroupFrame(Point3D targetPoint, double orientationRadians)
