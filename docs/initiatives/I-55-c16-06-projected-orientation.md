@@ -91,8 +91,8 @@ Resultados por familia (`θ` = rotacion de la fuente; todos los signos positivos
   Application/Views). Con esos marcos, la politica ortografica existente produce `e = w = d`, `α = 0` y `ρ = φt` para **todas** las vistas:
   las vistas destino quedan alineadas sobre la recta que pasa por el punto destino en la direccion `d`, cada una desplazada segun la coordenada de su fuente sobre `d`
   (proyeccion pura), y todas giradas `ρ`. Los intervalos, el anclaje del extremo del tramo y el aviso de solapamiento no cambian.
-- **Misma clase (Rigid).** Es la semantica G14 vigente: una sola transformacion rigida comun con `α = 0`; cada vista conserva su propia rotacion fuente (`ρ_i = θ_i`),
-  como fijan OV-ID19-05 («con la orientacion de cada rack») y OV-ID19-06 («layout y giros conservados»). La copia rigida de un grupo es por si misma una
+- **Misma clase (Rigid).** Es la semantica G14 vigente (OD-6.c A, OD-7.a A, OD-2.b A): una sola transformacion rigida comun con `α = 0`; cada vista conserva su
+  propia rotacion fuente (`ρ_i = θ_i`). La copia rigida de un grupo es por si misma una
   operacion coherente: no hay regla de divergencia en Rigid Proyectada.
 - **Coherencia (definicion).** Una operacion es coherente si se realiza con UNA `CommonTransform2D` (Rigid) o con UNA linea comun orientada y UNA `ρ` (Orthographic).
   La misma definicion rige para Predeterminada.
@@ -105,6 +105,10 @@ Resultados por familia (`θ` = rotacion de la fuente; todos los signos positivos
   para todo el grupo: `ρ_i = θ_i + α = 0`. El punto base elegido cae en el punto destino (semantica de COPY) y la disposicion del grupo se conserva, girada `α`
   alrededor del punto base. Es la **correccion aceptada** de C16-06 a la interpretacion `α = 0` de Rigid, solo en Predeterminada (el Owner la anticipo:
   «If this requires altering prior Rigid alpha=0 interpretation, document C16-06 as the accepted correction»).
+- **Predicado congelado de «rotaciones distintas»:** con `u_i = L_i · x̂` (el eje X local de cada referencia en el dibujo, media vuelta incluida), las rotaciones
+  difieren si `|u_i × u_0| > GeometryTolerance.Angle` o `u_i · u_0 < 0`. Es modulo `2π` por construccion (no compara angulos: 180° y el doble siguiente a π son
+  iguales) y no usa `Math.Atan2`. Orden: las familias mezcladas se rechazan antes en Validate; despues este predicado. `ρ_i = θ_i + α` puede salir cerca de
+  `±2π` en el limite de ±180°: es congruente con 0 y AutoCAD lo muestra como 0° (o 360°).
 - **Misma clase con rotaciones distintas** (p. ej. racks espalda con espalda a 0° y 180°): no existe una transformacion rigida que deje todas las vistas en la
   presentacion canonica, y girar cada rack por su cuenta destruiria la operacion comun (prohibido por el Owner). La operacion **falla completa antes de los puntos**
   con el fallo tipado `SourceRotationsDiffer` (etapa Validate, un diagnostico por vista), cuyo remedio es usar Proyectada (conserva el giro de cada rack) o proyectar
@@ -151,16 +155,25 @@ el patron es el de `RACKCAMA`: `Keywords.Add` + `Default` + `AllowNone`; `Esc` c
 Mecanica congelada de la pregunta (el Plugin no se carga en CI y esta pregunta ya fallo una vez en host):
 1. Patron probado de `RACKCAMA`: `PromptKeywordOptions` con un solo argumento de mensaje, `Keywords.Add` dos veces, `Keywords.Default` = la global de Proyectada y
    `AllowNone = true` (AutoCAD añade la lista y el valor por defecto). No se usa el constructor de dos argumentos ni `AppendKeywordsToMessage`.
-2. Mapa de estados: `OK` o `None` → Proyectada, salvo que `StringResult` sea exactamente la global de Predeterminada; `Cancel` o `Error` → la operacion termina antes
+2. Mapa de estados: `OK` o `None` → Proyectada, salvo que `StringResult` coincida (sin distinguir mayusculas; AutoCAD devuelve la global registrada) con la
+   global de Predeterminada; `Cancel` o `Error` → la operacion termina antes
    de leer el dibujo, con el resultado nuevo `Cancelled` de la instantanea («cancelado: no se leyo ni se escribio nada»), no con «no se selecciono nada».
 3. El ayudante de mapeo vive en el puerto, fuera de los metodos de punto; guardas de fuente fijan los literales y el orden.
 
-### G.1 Decisiones del Owner que quedan acotadas a Predeterminada
+### G.1 Alcance de las decisiones del Owner anteriores (por orientacion y por par de clases)
 
-OD-6.b A (`φt = 0`), OD-6.c A (`φs = 0`, «traslacion, como COPY»), OD-6.d A (orientacion «natural» de las vistas proyectadas) y OD-7.e A (Ventana de Marco
-Relativo) siguen vigentes **solo en Predeterminada** entre clases distintas; en Predeterminada de la misma clase rige la correccion de la seccion B. Proyectada, el
-nuevo valor por defecto del producto, las sustituye. Las filas congeladas de OV-ID19 que describen esa geometria se ejecutan en Predeterminada y las de la misma
-clase en Proyectada (asignacion por fila en la guia de validacion §6).
+Registro en [decisions/I-55.md](../automation/decisions/I-55.md): OD-6.b A = `φt = 0` (X universal); OD-6.c A = `α = 0` en Rigid, traslacion como COPY;
+OD-6.d A = orientacion «natural» de las plantas proyectadas desde elevaciones; OD-7.e A = Ventana de Marco Relativo (con el aviso de cercania OM-33).
+
+| Decision | Proyectada, misma clase | Proyectada, clases distintas | Predeterminada, misma clase | Predeterminada, clases distintas |
+|---|---|---|---|---|
+| OD-6.b A (`φt = 0`) | vigente | **sustituida** por `φt = ang(t_0 → d)` | vigente | vigente |
+| OD-6.c A (`α = 0` en Rigid, COPY) | vigente | no aplica | **sustituida** por `α = −θ_0` (seccion B, correccion aceptada) | no aplica |
+| OD-6.d A (orientacion natural) | no aplica | **sustituida** (la vista sigue a su fuente) | no aplica | vigente |
+| OD-7.e A (Ventana de Marco Relativo, OM-33) | no aplica | se ejecuta pero degenera (angulo relativo 0: sin aviso) | no aplica | vigente |
+
+Las filas congeladas de OV-ID19 que describen la geometria de clases distintas se ejecutan en Predeterminada y las de la misma clase en Proyectada
+(asignacion por fila en la guia de validacion §6).
 
 ### H. Sin cambios de definicion
 
@@ -173,8 +186,10 @@ Ninguna. El modo es una eleccion por invocacion y no se guarda; la rotacion ya e
 
 ### J. Matriz de Validacion del Owner (OV-C16-06)
 
-Filas `P-01..P-18` (Proyectada) y `C-01..C-04` (Predeterminada), con la rotacion esperada calculada con la seccion 4, en la guia de validacion de G16
-([I-55-g16-owner-validation.md](I-55-g16-owner-validation.md) §6.1 y §6.2). En Proyectada gira TODA la referencia: geometria, textos, cotas y etiquetas.
+Filas `P-01..P-23` (Proyectada, incluidas las de Dinamico, Push Back, Cabecera, Cantilever y la misma clase) y `C-01..C-07` (Predeterminada y la pregunta,
+incluidas `C-05b` y `C-05c`), con la rotacion esperada calculada con la seccion 4 y expresada en `[0°, 360°)`, en la guia de validacion de G16
+([I-55-g16-owner-validation.md](I-55-g16-owner-validation.md) §6.1). Mapa: O-2 → P-01..P-17 y P-19..P-22; O-3 → P-18; O-4 → C-01..C-04; O-5 → C-05, C-05b;
+O-5b → C-05c; O-6 → P-23; O-7 → C-06; O-9 → C-07. En Proyectada gira TODA la referencia: geometria, textos, cotas y etiquetas.
 
 ## 6. Obligaciones invariante → prueba (RED antes de implementar)
 
@@ -185,15 +200,17 @@ Filas `P-01..P-18` (Proyectada) y `C-01..C-04` (Predeterminada), con la rotacion
 | O-3 | Proyectada, fuentes antiparalelas → `SourceOrientationDivergent` antes de puntos, sin escritura | comando G15 | falla (hoy completa) |
 | O-4 | Predeterminada ortografica = G14 actual (rotacion 0, mismas posiciones) | comando G15 | pasa (se conserva) |
 | O-5 | Predeterminada misma clase, giro comun: `ρ = 0`, el punto base cae en el destino y la disposicion de varios racks se conserva (una transformacion con `α = −θ_0`) | comando G15 | falla (hoy `ρ = θ`) |
-| O-5b | Predeterminada misma clase con giros distintos → `SourceRotationsDiffer` antes de puntos, sin escritura | comando G15 | falla (hoy completa) |
+| O-5b | Predeterminada misma clase con giros distintos → `SourceRotationsDiffer` antes de puntos, sin escritura; 180° y el doble siguiente a π NO difieren | comando G15 y autoridad pura | falla (hoy completa) |
 | O-6 | Proyectada misma clase = Rigid G14 (`ρ = θ`) | comando G15 | pasa (se conserva) |
 | O-7 | Predeterminada no se bloquea por divergencia | comando G15 | pasa |
 | O-8 | Sin cambios de definicion: plan preparado, sobre y nombre base identicos entre modos | comando G15 | pasa |
 | O-9 | El Plugin pasa el modo y pregunta en el orden G con atajos distintos; el write scope no calcula rotaciones | guardas de fuente | falla (no hay pregunta) |
 
 **Suites existentes re-fijadas a Predeterminada** (sin editar sus asertos): `RackGroupPlacementPlanTests`, `RackViewCountInvariantTests` y los fakes de G15
-(`G15.Scenario.Orientation = Canonical` por defecto) construyen la solicitud en Predeterminada; `RackOrthographicPlacementPolicyTests` llama a la politica con marcos
-universales, que es el contrato de Predeterminada; `RackRigidPlacementPolicyTests` sigue fijando que la politica rigida copia la rotacion de la fuente con
+(`G15.Scenario.Orientation = Canonical` por defecto) construyen la solicitud en Predeterminada; en sus proyecciones entre clases distintas eso es exactamente el
+contrato G14; sus escenarios de la misma clase colocan las fuentes a 0°, donde Predeterminada y Proyectada coinciden (son invariantes al modo; un escenario
+rigido girado nuevo debe fijar el modo explicitamente). `RackOrthographicPlacementPolicyTests` llama a la politica con marcos universales, que es el contrato de
+Predeterminada entre clases; `RackRigidPlacementPolicyTests` sigue fijando que la politica rigida copia la rotacion de la fuente con
 `α = 0` (la sobrecarga de dos argumentos no cambia). Se añaden pruebas de comando en Proyectada (intervalos, aviso de solapamiento, cancelacion, un solo
 Commit, espejo Proyectada de `G14_V_A_MAJORITY` = `SourceOrientationDivergent`, 0°/90° = `NonParallelSources` en ambos modos) y la pregunta de orientacion con
 su mapa de estados queda fijada por guardas de fuente.
