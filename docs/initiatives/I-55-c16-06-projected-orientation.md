@@ -26,8 +26,8 @@ la `BlockReference` colocada**, entera (geometria, textos, cotas, numeros y simb
   Frontal `RunHeight`, Lateral `DepthHeight`. Todos los signos son positivos.
 - **AUTH-08 V2 (hechos de colocacion de la fuente):** la parte lineal aceptada `L` de cada referencia fuente (`RackSourcePlacementAcceptance.Linear`), que ya incluye la
   media vuelta planar que reporta la Foundation. `RotationRadians = L.RotationAngle()`.
-- **G14:** `RackProjectionClassMapping` (eje conservado `K` por par de clases), `SourceGroupFrame` / `TargetGroupFrame` (orientaciones `φs`, `φt`, hoy congeladas a 0 por
-  OD-6.c A / OD-6.b A), `RackOrthographicPlacementPolicy` (linea comun `e` por la Ventana de Marco Relativo, direccion destino `w = R(φt)·t`, `α = ang(e→w)`, rotacion
+- **G14:** `RackProjectionClassMapping` (eje conservado `K` por par de clases), `SourceGroupFrame` / `TargetGroupFrame` (orientaciones `φs`, `φt`: `φt = 0` por
+  OD-6.b A y `φs = 0` en Rigid por OD-6.c A; entre clases la referencia de la ventana es `R(φs)·s`), `RackOrthographicPlacementPolicy` (linea comun `e` por la Ventana de Marco Relativo, direccion destino `w = R(φt)·t`, `α = ang(e→w)`, rotacion
   de toda vista `ρ = φt`), `RackRigidPlacementPolicy` (`ρ_i = θ_i + α`, con `α = 0`), `CommonTransform2D` (una sola transformacion rigida por operacion).
 - **G15:** `RackProjectedPlacement.RotationRadians` → `AutoCadProjectionWriteScope.PlaceReference` → `BlockReference.Rotation` (el write scope NO calcula nada).
 
@@ -106,8 +106,8 @@ Resultados por familia (`θ` = rotacion de la fuente; todos los signos positivos
   alrededor del punto base. Es la **correccion aceptada** de C16-06 a la interpretacion `α = 0` de Rigid, solo en Predeterminada (el Owner la anticipo:
   «If this requires altering prior Rigid alpha=0 interpretation, document C16-06 as the accepted correction»).
 - **Predicado congelado de «rotaciones distintas»:** con `u_i = L_i · x̂` (el eje X local de cada referencia en el dibujo, media vuelta incluida), las rotaciones
-  difieren si `|u_i × u_0| > GeometryTolerance.Angle` o `u_i · u_0 < 0`. Es modulo `2π` por construccion (no compara angulos: 180° y el doble siguiente a π son
-  iguales) y no usa `Math.Atan2`. Orden: las familias mezcladas se rechazan antes en Validate; despues este predicado. `ρ_i = θ_i + α` puede salir cerca de
+  difieren si `|u_i × u_0| > GeometryTolerance.Angle` o `u_i · u_0 < 0`. Es modulo `2π` por construccion (no compara angulos: `π`, `−π` y `π + 2π` son la misma
+  rotacion) y no usa `Math.Atan2`. Orden: las familias mezcladas se rechazan antes en Validate; despues este predicado. `ρ_i = θ_i + α` puede salir cerca de
   `±2π` en el limite de ±180°: es congruente con 0 y AutoCAD lo muestra como 0° (o 360°).
 - **Misma clase con rotaciones distintas** (p. ej. racks espalda con espalda a 0° y 180°): no existe una transformacion rigida que deje todas las vistas en la
   presentacion canonica, y girar cada rack por su cuenta destruiria la operacion comun (prohibido por el Owner). La operacion **falla completa antes de los puntos**
@@ -188,8 +188,8 @@ Ninguna. El modo es una eleccion por invocacion y no se guarda; la rotacion ya e
 
 Filas `P-01..P-23` (Proyectada, incluidas las de Dinamico, Push Back, Cabecera, Cantilever y la misma clase) y `C-01..C-07` (Predeterminada y la pregunta,
 incluidas `C-05b` y `C-05c`), con la rotacion esperada calculada con la seccion 4 y expresada en `[0°, 360°)`, en la guia de validacion de G16
-([I-55-g16-owner-validation.md](I-55-g16-owner-validation.md) §6.1). Mapa: O-2 → P-01..P-17 y P-19..P-22; O-3 → P-18; O-4 → C-01..C-04; O-5 → C-05, C-05b;
-O-5b → C-05c; O-6 → P-23; O-7 → C-06; O-9 → C-07. En Proyectada gira TODA la referencia: geometria, textos, cotas y etiquetas.
+([I-55-g16-owner-validation.md](I-55-g16-owner-validation.md) §6.1). Mapa: O-1 → P-01..P-16 y P-19..P-22 (rotacion); O-2 → P-17 (posiciones sobre la recta); O-3 → P-18; O-4 → C-01..C-04; O-5 → C-05, C-05b;
+O-5b → C-05c; O-6 → P-23; O-7 → C-06; O-8 → la comprobacion `BEDIT`/`LIST` del preambulo de §6.1; O-9 → C-07. En Proyectada gira TODA la referencia: geometria, textos, cotas y etiquetas.
 
 ## 6. Obligaciones invariante → prueba (RED antes de implementar)
 
@@ -200,7 +200,7 @@ O-5b → C-05c; O-6 → P-23; O-7 → C-06; O-9 → C-07. En Proyectada gira TOD
 | O-3 | Proyectada, fuentes antiparalelas → `SourceOrientationDivergent` antes de puntos, sin escritura | comando G15 | falla (hoy completa) |
 | O-4 | Predeterminada ortografica = G14 actual (rotacion 0, mismas posiciones) | comando G15 | pasa (se conserva) |
 | O-5 | Predeterminada misma clase, giro comun: `ρ = 0`, el punto base cae en el destino y la disposicion de varios racks se conserva (una transformacion con `α = −θ_0`) | comando G15 | falla (hoy `ρ = θ`) |
-| O-5b | Predeterminada misma clase con giros distintos → `SourceRotationsDiffer` antes de puntos, sin escritura; 180° y el doble siguiente a π NO difieren | comando G15 y autoridad pura | falla (hoy completa) |
+| O-5b | Predeterminada misma clase con giros distintos → `SourceRotationsDiffer` antes de puntos, sin escritura; `π`, `−π` y `π + 2π` NO difieren | comando G15 y autoridad pura | falla (hoy completa) |
 | O-6 | Proyectada misma clase = Rigid G14 (`ρ = θ`) | comando G15 | pasa (se conserva) |
 | O-7 | Predeterminada no se bloquea por divergencia | comando G15 | pasa |
 | O-8 | Sin cambios de definicion: plan preparado, sobre y nombre base identicos entre modos | comando G15 | pasa |
