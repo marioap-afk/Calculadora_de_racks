@@ -30,7 +30,7 @@ namespace RackCad.Plugin.Systems.Shared
         /// them) and the envelope is not written. Reported after the definition was written: the caller rolls back.</summary>
         MissingLibraryBlocks,
 
-        /// <summary>The envelope is null, lacks Id/Kind/Name, or cannot be serialized. Detected before any write.</summary>
+        /// <summary>The envelope is null, lacks Id/Kind, or cannot be serialized. Detected before any write.</summary>
         InvalidEnvelope,
 
         /// <summary>The envelope read back from the new definition differs from the serialized envelope.</summary>

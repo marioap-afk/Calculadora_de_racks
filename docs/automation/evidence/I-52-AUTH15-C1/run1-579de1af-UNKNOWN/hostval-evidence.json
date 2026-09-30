@@ -1,0 +1,2940 @@
+{
+  "schema": "I52-AUTH15-HV/1",
+  "unit": "I-52-AUTH15",
+  "implementationSha": "7e7e9178165e7f3691e8d7888417bd0fc34012e4",
+  "harnessSha": "579de1af16dfe91845f3b8342bd4fc26b416412c",
+  "srcTree": "29265f70196fd19d6102e1932da15d535ffab8c8",
+  "testsTree": "3ea8617c48fa4734312ed6fb0659c47dd71c94ea",
+  "harnessSrcTree": "29265f70196fd19d6102e1932da15d535ffab8c8",
+  "harnessTestsTree": "3ea8617c48fa4734312ed6fb0659c47dd71c94ea",
+  "treesEqual": true,
+  "package": {
+    "packageRoot": "D:\\I52-AUTH15C1-HV\\579de1af",
+    "runDirectory": "D:\\I52-AUTH15C1-HV\\579de1af\\run",
+    "outDirectory": "D:\\I52-AUTH15C1-HV\\579de1af\\out",
+    "sha256SumsDigest": "F1128CF0E1DDDC74F98D03E25651370F71DACB8DCF6653505C4C6E998C184FDC",
+    "runFilesVerified": 19,
+    "runFileMismatches": [],
+    "metadataSha256": "6FDF14B4FE3AF55FE1DB2F71821E7AB44E3BC4F15C29989AEBBF782E9C7FDB12",
+    "expectedPluginSha256": "95E649C35D2EAACC210CD05F2E34135746DA00AE6DDEDF7B42CCF138E01F3894",
+    "expectedApplicationSha256": "AE8DC94B81425B7BE9659F4CAE0F94623CD40DEC542DEFA3570D91B9772EA440",
+    "expectedDomainSha256": "4AC6D6B1BC20550056657DA57A64ACDD3CBB385F576801FB4316D8619F345BA8",
+    "expectedHarnessSha256": "91760B6D79AAAC649BDD6CAB103C36164F1EFAAB66DBD39D74DBE5EEEC713BF7"
+  },
+  "host": {
+    "startUtc": "2026-09-30T03:34:53.8573708Z",
+    "filediaLiveAtHarnessStart": 1,
+    "filediaBefore": 1,
+    "filediaDuringNetload": 0,
+    "filediaAfter": 1,
+    "runFolder": "D:\\I52-AUTH15C1-HV\\579de1af\\run",
+    "pid": 3340,
+    "processName": "acad",
+    "processStartUtc": "2026-09-30T03:34:37.0698647Z",
+    "acadExecutable": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\acad.exe",
+    "acadFileVersion": "R25.0.171.0.0",
+    "acadSha256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+    "harnessDllPath": "D:\\I52-AUTH15C1-HV\\579de1af\\run\\I52Auth15.HostHarness.dll",
+    "harnessDllSha256": "91760B6D79AAAC649BDD6CAB103C36164F1EFAAB66DBD39D74DBE5EEEC713BF7",
+    "scratchDocumentPath": "D:\\I52-AUTH15C1-HV\\579de1af\\out\\scratch.dwg",
+    "scratchSha256AtHarnessStart": "7E7CDC22D2929138BE79A4558923B1D2092E6DF77DC0CBE0205D5FB062D115CC",
+    "scratchSha256DeclaredByLauncher": "7E7CDC22D2929138BE79A4558923B1D2092E6DF77DC0CBE0205D5FB062D115CC",
+    "ownerNoTouchDeclaredByLauncher": true,
+    "earlyIdentityErrors": [],
+    "acadVersion": "25.0s (LMS Tech)",
+    "acadVersionReadError": null,
+    "profile": "\u003C\u003CUnnamed Profile\u003E\u003E",
+    "profileReadError": null,
+    "os": "Microsoft Windows NT 10.0.26200.0",
+    "scratchDocument": "D:\\I52-AUTH15C1-HV\\579de1af\\out\\scratch.dwg",
+    "filediaLiveAtHarnessEnd": 1,
+    "endUtc": "2026-09-30T03:35:25.4256132Z",
+    "exitCode": "not known to the harness: see launcher-record.json"
+  },
+  "binding": {
+    "loadedPluginPath": "D:\\I52-AUTH15C1-HV\\579de1af\\run\\RackCad.Plugin.dll",
+    "loadedPluginSha256": "95E649C35D2EAACC210CD05F2E34135746DA00AE6DDEDF7B42CCF138E01F3894",
+    "loadedApplicationPath": "D:\\I52-AUTH15C1-HV\\579de1af\\run\\RackCad.Application.dll",
+    "loadedApplicationSha256": "AE8DC94B81425B7BE9659F4CAE0F94623CD40DEC542DEFA3570D91B9772EA440",
+    "loadedDomainPath": "D:\\I52-AUTH15C1-HV\\579de1af\\run\\RackCad.Domain.dll",
+    "loadedDomainSha256": "4AC6D6B1BC20550056657DA57A64ACDD3CBB385F576801FB4316D8619F345BA8",
+    "loadedHarnessPath": "D:\\I52-AUTH15C1-HV\\579de1af\\run\\I52Auth15.HostHarness.dll",
+    "loadedHarnessSha256": "91760B6D79AAAC649BDD6CAB103C36164F1EFAAB66DBD39D74DBE5EEEC713BF7",
+    "overloads": 2,
+    "dictKey": "RACKCAD_SELECTIVE",
+    "referenceEqualsTopTransaction": false,
+    "nativeIdentityEqual": true
+  },
+  "fixtures": {
+    "cantileverPlanFingerprint": "FD31A45DE8B2CA0E9E4472D9D8932BFF6DB8C510829E6EB0880CA8FBC18362F8",
+    "cantileverPlanCurves": 431,
+    "cantileverPlanSignature": "05C2AB2BCAF38A932AFF6858A7B7C0DD5430FEDEB514213193FC551E9212344D",
+    "headerRunPlanFingerprint": "2C5E8D82AFB09850B655625750CFA14374CADD1C02A0E1B0ECEA4A8870A49F03",
+    "headerRunMissingPlanFingerprint": "7BBF95FEC9E90F7ADB7947484D2D43DCB4E2C8041109221356064753BC68451E",
+    "headerRunEnvelopeFingerprint(n=1)": "59216BEED51B008F271D3DAE9CB24CC31A84AE8551935E7F9FA65165A7397401",
+    "cantileverEnvelopeFingerprint(n=2)": "ED78119D64A57D6AF381220F8C3EE00723EADBD74FFB6CAFFE9251BDA1D5C001",
+    "hostModel": "every case runs on harness-owned side databases (new Database(true,true)), one per case, with HostApplicationServices.WorkingDatabase set to it for the case and restored after; the scratch document is only the WorkingDatabase anchor and is never written"
+  },
+  "cases": [
+    {
+      "id": "HV-00",
+      "family": "BIND",
+      "expected": "the versioned Plugin/Application are the only ones loaded; both AUTH-15 overloads resolve; B-1 fact recorded",
+      "dbKind": "SIDE-DB",
+      "tx": [
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1836067497136"
+        }
+      ],
+      "stopRun": false,
+      "observed": null,
+      "assertions": [
+        {
+          "name": "ENVIRONMENT_PREREQUISITE: a scratch document is open (WorkingDatabase anchor)",
+          "expected": "WorkingDatabase != null and an active document",
+          "observed": "WorkingDatabase set, document D:\\I52-AUTH15C1-HV\\579de1af\\out\\scratch.dwg",
+          "result": "PASS"
+        },
+        {
+          "name": "ACADVER recorded",
+          "expected": "non-empty",
+          "observed": "25.0s (LMS Tech)",
+          "result": "PASS"
+        },
+        {
+          "name": "CPROFILE recorded",
+          "expected": "non-empty",
+          "observed": "\u003C\u003CUnnamed Profile\u003E\u003E",
+          "result": "PASS"
+        },
+        {
+          "name": "RackCad.Plugin: exactly one loaded",
+          "expected": "1",
+          "observed": "1",
+          "result": "PASS"
+        },
+        {
+          "name": "RackCad.Plugin: Location inside run\\",
+          "expected": "D:\\I52-AUTH15C1-HV\\579de1af\\run",
+          "observed": "D:\\I52-AUTH15C1-HV\\579de1af\\run\\RackCad.Plugin.dll",
+          "result": "PASS"
+        },
+        {
+          "name": "RackCad.Plugin: SHA-256 equals SHA256SUMS",
+          "expected": "95E649C35D2EAACC210CD05F2E34135746DA00AE6DDEDF7B42CCF138E01F3894",
+          "observed": "95E649C35D2EAACC210CD05F2E34135746DA00AE6DDEDF7B42CCF138E01F3894",
+          "result": "PASS"
+        },
+        {
+          "name": "RackCad.Plugin: SHA-256 equals TRANSFER-METADATA",
+          "expected": "95E649C35D2EAACC210CD05F2E34135746DA00AE6DDEDF7B42CCF138E01F3894",
+          "observed": "95E649C35D2EAACC210CD05F2E34135746DA00AE6DDEDF7B42CCF138E01F3894",
+          "result": "PASS"
+        },
+        {
+          "name": "RackCad.Application: exactly one loaded",
+          "expected": "1",
+          "observed": "1",
+          "result": "PASS"
+        },
+        {
+          "name": "RackCad.Application: Location inside run\\",
+          "expected": "D:\\I52-AUTH15C1-HV\\579de1af\\run",
+          "observed": "D:\\I52-AUTH15C1-HV\\579de1af\\run\\RackCad.Application.dll",
+          "result": "PASS"
+        },
+        {
+          "name": "RackCad.Application: SHA-256 equals SHA256SUMS",
+          "expected": "AE8DC94B81425B7BE9659F4CAE0F94623CD40DEC542DEFA3570D91B9772EA440",
+          "observed": "AE8DC94B81425B7BE9659F4CAE0F94623CD40DEC542DEFA3570D91B9772EA440",
+          "result": "PASS"
+        },
+        {
+          "name": "RackCad.Application: SHA-256 equals TRANSFER-METADATA",
+          "expected": "AE8DC94B81425B7BE9659F4CAE0F94623CD40DEC542DEFA3570D91B9772EA440",
+          "observed": "AE8DC94B81425B7BE9659F4CAE0F94623CD40DEC542DEFA3570D91B9772EA440",
+          "result": "PASS"
+        },
+        {
+          "name": "harness expectation: the harness compiled against this same Application assembly",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "Plugin expectation: the Plugin\u0027s own reference to RackCad.Application matches this assembly (name and version)",
+          "expected": "1.0.0.0",
+          "observed": "1.0.0.0",
+          "result": "PASS"
+        },
+        {
+          "name": "RackCad.Domain: exactly one loaded",
+          "expected": "1",
+          "observed": "1",
+          "result": "PASS"
+        },
+        {
+          "name": "RackCad.Domain: Location inside run\\",
+          "expected": "D:\\I52-AUTH15C1-HV\\579de1af\\run",
+          "observed": "D:\\I52-AUTH15C1-HV\\579de1af\\run\\RackCad.Domain.dll",
+          "result": "PASS"
+        },
+        {
+          "name": "RackCad.Domain: SHA-256 equals SHA256SUMS",
+          "expected": "4AC6D6B1BC20550056657DA57A64ACDD3CBB385F576801FB4316D8619F345BA8",
+          "observed": "4AC6D6B1BC20550056657DA57A64ACDD3CBB385F576801FB4316D8619F345BA8",
+          "result": "PASS"
+        },
+        {
+          "name": "RackCad.Domain: SHA-256 equals TRANSFER-METADATA",
+          "expected": "4AC6D6B1BC20550056657DA57A64ACDD3CBB385F576801FB4316D8619F345BA8",
+          "observed": "4AC6D6B1BC20550056657DA57A64ACDD3CBB385F576801FB4316D8619F345BA8",
+          "result": "PASS"
+        },
+        {
+          "name": "the harness DLL\u0027s SHA-256 equals SHA256SUMS and TRANSFER-METADATA",
+          "expected": "both equal 91760B6D79AAAC649BDD6CAB103C36164F1EFAAB66DBD39D74DBE5EEEC713BF7",
+          "observed": "91760B6D79AAAC649BDD6CAB103C36164F1EFAAB66DBD39D74DBE5EEEC713BF7 / 91760B6D79AAAC649BDD6CAB103C36164F1EFAAB66DBD39D74DBE5EEEC713BF7",
+          "result": "PASS"
+        },
+        {
+          "name": "the harness itself was loaded from run\\",
+          "expected": "D:\\I52-AUTH15C1-HV\\579de1af\\run",
+          "observed": "D:\\I52-AUTH15C1-HV\\579de1af\\run\\I52Auth15.HostHarness.dll",
+          "result": "PASS"
+        },
+        {
+          "name": "the product Plugin is not the loaded extension: only the harness command is under test",
+          "expected": "no second RackCad.Plugin",
+          "observed": "D:\\I52-AUTH15C1-HV\\579de1af\\run\\RackCad.Plugin.dll",
+          "result": "PASS"
+        },
+        {
+          "name": "binding exactness: overload count is exactly 2",
+          "expected": "true",
+          "observed": "True (2)",
+          "result": "PASS"
+        },
+        {
+          "name": "binding exactness: the two lookups are two different methods, and they are the only two overloads",
+          "expected": "true",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "binding exactness: HeaderRun parameter types are exactly the expected six",
+          "expected": "true",
+          "observed": "True (Autodesk.AutoCAD.DatabaseServices.Database, Autodesk.AutoCAD.DatabaseServices.Transaction, RackCad.Plugin.Drawing.LateralHeaderDrawer, RackCad.Application.Drawing.HeaderRunPlan, System.String, RackCad.Application.Persistence.RackEmbedDocument)",
+          "result": "PASS"
+        },
+        {
+          "name": "binding exactness: Cantilever parameter types are exactly the expected five",
+          "expected": "true",
+          "observed": "True (Autodesk.AutoCAD.DatabaseServices.Database, Autodesk.AutoCAD.DatabaseServices.Transaction, RackCad.Application.Systems.Cantilever.CantileverViewPlan, System.String, RackCad.Application.Persistence.RackEmbedDocument)",
+          "result": "PASS"
+        },
+        {
+          "name": "binding exactness: both overloads are static",
+          "expected": "true",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "binding exactness: both overloads return exactly the same type",
+          "expected": "true",
+          "observed": "True (RackCad.Plugin.Systems.Shared.RackDefinitionCreationResult / RackCad.Plugin.Systems.Shared.RackDefinitionCreationResult)",
+          "result": "PASS"
+        },
+        {
+          "name": "binding exactness: the result is the value type RackDefinitionCreationResult of the Plugin",
+          "expected": "true",
+          "observed": "True (RackCad.Plugin.Systems.Shared.RackDefinitionCreationResult)",
+          "result": "PASS"
+        },
+        {
+          "name": "binding exactness: the parameter types the Plugin uses are the harness\u0027s Application assembly",
+          "expected": "true",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "binding exactness: the failure enum has exactly the eight normative values (no BlockNameUnavailable)",
+          "expected": "true",
+          "observed": "True (EnvelopeWriteFailed,InvalidBlockName,InvalidEnvelope,InvalidPlan,MissingLibraryBlocks,None,TransactionMismatch,WriteFailed)",
+          "result": "PASS"
+        },
+        {
+          "name": "binding exactness: result member types are exactly (bool, ObjectId, string, enum, IReadOnlyList\u003CHeaderBlockInstance\u003E, string)",
+          "expected": "true",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "CreateInTransaction overloads on RackDefinitionCreator",
+          "expected": "2",
+          "observed": "2",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun overload resolved",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever overload resolved",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "recorded: ReferenceEquals(TopTransaction, tr)",
+          "expected": "False (B-1 premise)",
+          "observed": "False",
+          "result": "PASS"
+        },
+        {
+          "name": "recorded: two reads of TopTransaction are the same wrapper",
+          "expected": "False (a new wrapper per read)",
+          "observed": "False",
+          "result": "PASS"
+        },
+        {
+          "name": "TopTransaction.UnmanagedObject == tr.UnmanagedObject",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        }
+      ],
+      "notes": [],
+      "leaks": [],
+      "exception": null,
+      "deviation": false,
+      "result": "PASS"
+    },
+    {
+      "id": "HV-01",
+      "family": "HeaderRun",
+      "expected": "success: definition, nested content, exact envelope, no placement, caller-owned transaction; caller abort leaves nothing",
+      "dbKind": "DOCUMENT-AUTHORITY",
+      "tx": [
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1836062454608"
+        }
+      ],
+      "stopRun": false,
+      "observed": "IsSuccess=True Failure=None BlockName=AUTH15HV_HR DefinitionId=2D0 Missing=0",
+      "assertions": [
+        {
+          "name": "call succeeded",
+          "expected": "IsSuccess=True, Failure=None, no exception",
+          "observed": "IsSuccess=True Failure=None BlockName=AUTH15HV_HR DefinitionId=2D0 Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "DefinitionId is valid and not erased",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "BlockName equals the definition\u0027s name",
+          "expected": "AUTH15HV_HR",
+          "observed": "AUTH15HV_HR",
+          "result": "PASS"
+        },
+        {
+          "name": "requested name was free, so the actual name is the requested one",
+          "expected": "AUTH15HV_HR",
+          "observed": "AUTH15HV_HR",
+          "result": "PASS"
+        },
+        {
+          "name": "a top-level, non-anonymous, non-layout definition",
+          "expected": "true/false/false",
+          "observed": "True/False/False",
+          "result": "PASS"
+        },
+        {
+          "name": "raw envelope on the definition is exactly RackEmbedStore.Serialize(envelope)",
+          "expected": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022dynamic\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000001\u0022,\u0022Name\u0022:\u0022HV HeaderRun 1\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:1,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "observed": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022dynamic\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000001\u0022,\u0022Name\u0022:\u0022HV HeaderRun 1\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:1,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "result": "PASS"
+        },
+        {
+          "name": "the envelope spans several 255-character chunks",
+          "expected": "chunks \u003E= 2 and each \u003C= 255",
+          "observed": "5 chunks, max 255",
+          "result": "PASS"
+        },
+        {
+          "name": "RackBlockData.Read returns the same envelope",
+          "expected": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022dynamic\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000001\u0022,\u0022Name\u0022:\u0022HV HeaderRun 1\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:1,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "observed": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022dynamic\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000001\u0022,\u0022Name\u0022:\u0022HV HeaderRun 1\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:1,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "result": "PASS"
+        },
+        {
+          "name": "nested header definition referenced at both placements",
+          "expected": "2",
+          "observed": "2",
+          "result": "PASS"
+        },
+        {
+          "name": "the loose piece block is referenced once",
+          "expected": "1",
+          "observed": "1",
+          "result": "PASS"
+        },
+        {
+          "name": "the annotation (DBText) and the dimension are content of the definition",
+          "expected": "1 text, 1 dimension",
+          "observed": "1 text, 1 dimension",
+          "result": "PASS"
+        },
+        {
+          "name": "the nested definition exists in the block table",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "the nested definition carries no envelope",
+          "expected": "null",
+          "observed": "null",
+          "result": "PASS"
+        },
+        {
+          "name": "every reference to the nested definition lives inside the system definition",
+          "expected": "2 refs, all owned by the new definition",
+          "observed": "2 refs, 1 owner(s)",
+          "result": "PASS"
+        },
+        {
+          "name": "annotation and dimension layers exist",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "no reference to the new definition anywhere",
+          "expected": "0",
+          "observed": "0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun: model space and every layout unchanged",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "after the call: transaction not disposed",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "after the call: still the top transaction (native identity)",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "after the call: active transaction count unchanged",
+          "expected": "1",
+          "observed": "1",
+          "result": "PASS"
+        },
+        {
+          "name": "caller abort afterwards: no leak (SNAP identical to before)",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        }
+      ],
+      "notes": [],
+      "leaks": [],
+      "exception": null,
+      "deviation": false,
+      "result": "PASS"
+    },
+    {
+      "id": "HV-02",
+      "family": "Cantilever",
+      "expected": "success: definition, role layers, exact envelope, no placement; caller abort leaves nothing",
+      "dbKind": "DOCUMENT-AUTHORITY",
+      "tx": [
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1557099743088"
+        }
+      ],
+      "stopRun": false,
+      "observed": "IsSuccess=True Failure=None BlockName=AUTH15HV_CANT DefinitionId=2CB Missing=0",
+      "assertions": [
+        {
+          "name": "call succeeded",
+          "expected": "IsSuccess=True, Failure=None, no exception",
+          "observed": "IsSuccess=True Failure=None BlockName=AUTH15HV_CANT DefinitionId=2CB Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "DefinitionId is valid and not erased",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "BlockName equals the definition\u0027s name",
+          "expected": "AUTH15HV_CANT",
+          "observed": "AUTH15HV_CANT",
+          "result": "PASS"
+        },
+        {
+          "name": "requested name was free, so the actual name is the requested one",
+          "expected": "AUTH15HV_CANT",
+          "observed": "AUTH15HV_CANT",
+          "result": "PASS"
+        },
+        {
+          "name": "a top-level, non-anonymous, non-layout definition",
+          "expected": "true",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "raw envelope on the definition is exactly RackEmbedStore.Serialize(envelope)",
+          "expected": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022cantilever\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000002\u0022,\u0022Name\u0022:\u0022HV Cantilever 2\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:2,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "observed": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022cantilever\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000002\u0022,\u0022Name\u0022:\u0022HV Cantilever 2\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:2,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "result": "PASS"
+        },
+        {
+          "name": "the envelope spans several 255-character chunks",
+          "expected": "chunks \u003E= 2 and each \u003C= 255",
+          "observed": "5 chunks, max 255",
+          "result": "PASS"
+        },
+        {
+          "name": "RackBlockData.Read returns the same envelope",
+          "expected": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022cantilever\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000002\u0022,\u0022Name\u0022:\u0022HV Cantilever 2\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:2,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "observed": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022cantilever\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000002\u0022,\u0022Name\u0022:\u0022HV Cantilever 2\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:2,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "result": "PASS"
+        },
+        {
+          "name": "entities equal what the plan can draw",
+          "expected": "213 polylines \u002B 218 circles",
+          "observed": "213 polylines \u002B 218 circles (\u002B0 other)",
+          "result": "PASS"
+        },
+        {
+          "name": "no nested definition: the family draws no references",
+          "expected": "0",
+          "observed": "0",
+          "result": "PASS"
+        },
+        {
+          "name": "all role layers are present",
+          "expected": "none missing",
+          "observed": "none missing",
+          "result": "PASS"
+        },
+        {
+          "name": "every entity is on a role layer",
+          "expected": "none off-role",
+          "observed": "none off-role",
+          "result": "PASS"
+        },
+        {
+          "name": "no reference to the new definition anywhere",
+          "expected": "0",
+          "observed": "0",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever: model space and every layout unchanged",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "after the call: transaction not disposed",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "after the call: still the top transaction (native identity)",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "after the call: active transaction count unchanged",
+          "expected": "1",
+          "observed": "1",
+          "result": "PASS"
+        },
+        {
+          "name": "caller abort afterwards: no leak (SNAP identical to before)",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        }
+      ],
+      "notes": [],
+      "leaks": [],
+      "exception": null,
+      "deviation": false,
+      "result": "PASS"
+    },
+    {
+      "id": "HV-03",
+      "family": "Both",
+      "expected": "caller abort leaves SNAP identical to before",
+      "dbKind": "DOCUMENT-AUTHORITY",
+      "tx": [
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1836062903072"
+        }
+      ],
+      "stopRun": false,
+      "observed": "IsSuccess=True Failure=None BlockName=AUTH15HV_RB_H DefinitionId=2D0 Missing=0 | IsSuccess=True Failure=None BlockName=AUTH15HV_RB_C DefinitionId=2EA Missing=0",
+      "assertions": [
+        {
+          "name": "both calls succeeded inside ONE caller transaction",
+          "expected": "both IsSuccess",
+          "observed": "IsSuccess=True Failure=None BlockName=AUTH15HV_RB_H DefinitionId=2D0 Missing=0 | IsSuccess=True Failure=None BlockName=AUTH15HV_RB_C DefinitionId=2EA Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "both families in one transaction: model space and every layout unchanged",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "sanity: the calls did write inside the transaction",
+          "expected": "\u003E 0 differences",
+          "observed": "25 differences",
+          "result": "PASS"
+        },
+        {
+          "name": "sanity: definitions, nested definition, layers and an anonymous dimension block were created",
+          "expected": "BT: \u002B LT: \u002B extension data",
+          "observed": "BT\u002B 4, LT\u002B 17",
+          "result": "PASS"
+        },
+        {
+          "name": "after the abort: no leak (SNAP identical to before)",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "neither top-level name survives",
+          "expected": "absent",
+          "observed": "absent",
+          "result": "PASS"
+        },
+        {
+          "name": "the nested header definition does not survive",
+          "expected": "absent",
+          "observed": "absent",
+          "result": "PASS"
+        },
+        {
+          "name": "no layer AUTH-15 or the family drawers created survives",
+          "expected": "absent",
+          "observed": "absent",
+          "result": "PASS"
+        },
+        {
+          "name": "no Cantilever role layer survives",
+          "expected": "absent",
+          "observed": "absent",
+          "result": "PASS"
+        },
+        {
+          "name": "the returned ObjectIds no longer open",
+          "expected": "none opens",
+          "observed": "none opens",
+          "result": "PASS"
+        }
+      ],
+      "notes": [],
+      "leaks": [],
+      "exception": null,
+      "deviation": false,
+      "result": "PASS"
+    },
+    {
+      "id": "HV-04",
+      "family": "Both",
+      "expected": "caller commit persists both definitions and their envelopes across SaveAs/reopen; no references",
+      "dbKind": "SIDE-DB",
+      "tx": [
+        {
+          "label": "HV-04 after the caller\u0027s commit",
+          "isDisposedBefore": false,
+          "abortAttempted": false,
+          "abortSucceeded": false,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 0,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1557094014976"
+        }
+      ],
+      "stopRun": false,
+      "observed": "IsSuccess=True Failure=None BlockName=AUTH15HV_CM_H DefinitionId=81 Missing=0 | IsSuccess=True Failure=None BlockName=AUTH15HV_CM_C DefinitionId=9B Missing=0",
+      "assertions": [
+        {
+          "name": "both calls succeeded",
+          "expected": "both IsSuccess",
+          "observed": "IsSuccess=True Failure=None BlockName=AUTH15HV_CM_H DefinitionId=81 Missing=0 | IsSuccess=True Failure=None BlockName=AUTH15HV_CM_C DefinitionId=9B Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "after commit: model space and every layout unchanged",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "the drawing was saved",
+          "expected": "file exists",
+          "observed": "exists",
+          "result": "PASS"
+        },
+        {
+          "name": "AUTH15HV_CM_H: definition exists after reopen",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "AUTH15HV_CM_H: raw envelope exact after reopen",
+          "expected": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022dynamic\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000041\u0022,\u0022Name\u0022:\u0022HV HeaderRun 41\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:41,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "observed": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022dynamic\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000041\u0022,\u0022Name\u0022:\u0022HV HeaderRun 41\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:41,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "result": "PASS"
+        },
+        {
+          "name": "AUTH15HV_CM_H: Id/Kind/Name deserialize",
+          "expected": "id/kind/name of the composed envelope",
+          "observed": "a15a15a1-0000-4000-8000-000000000041/dynamic/HV HeaderRun 41",
+          "result": "PASS"
+        },
+        {
+          "name": "AUTH15HV_CM_H: no references to it",
+          "expected": "0",
+          "observed": "0",
+          "result": "PASS"
+        },
+        {
+          "name": "AUTH15HV_CM_C: definition exists after reopen",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "AUTH15HV_CM_C: raw envelope exact after reopen",
+          "expected": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022cantilever\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000042\u0022,\u0022Name\u0022:\u0022HV Cantilever 42\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:42,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "observed": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022cantilever\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000042\u0022,\u0022Name\u0022:\u0022HV Cantilever 42\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:42,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "result": "PASS"
+        },
+        {
+          "name": "AUTH15HV_CM_C: Id/Kind/Name deserialize",
+          "expected": "id/kind/name of the composed envelope",
+          "observed": "a15a15a1-0000-4000-8000-000000000042/cantilever/HV Cantilever 42",
+          "result": "PASS"
+        },
+        {
+          "name": "AUTH15HV_CM_C: no references to it",
+          "expected": "0",
+          "observed": "0",
+          "result": "PASS"
+        },
+        {
+          "name": "the nested header definition persisted",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "model space is empty after reopen",
+          "expected": "0 entities",
+          "observed": "0 entities",
+          "result": "PASS"
+        }
+      ],
+      "notes": [],
+      "leaks": [],
+      "exception": null,
+      "deviation": false,
+      "result": "PASS"
+    },
+    {
+      "id": "HV-05",
+      "family": "Both",
+      "expected": "name collision: HeaderRun _1 policy, Cantilever _2 policy; pre-existing definitions unchanged",
+      "dbKind": "DOCUMENT-AUTHORITY",
+      "tx": [
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1836062928096"
+        }
+      ],
+      "stopRun": false,
+      "observed": "IsSuccess=True Failure=None BlockName=AUTH15HV_HR_1 DefinitionId=2DC Missing=0 | IsSuccess=True Failure=None BlockName=AUTH15HV_CANT_2 DefinitionId=2F6 Missing=0",
+      "assertions": [
+        {
+          "name": "both calls succeeded",
+          "expected": "both IsSuccess",
+          "observed": "IsSuccess=True Failure=None BlockName=AUTH15HV_HR_1 DefinitionId=2DC Missing=0 | IsSuccess=True Failure=None BlockName=AUTH15HV_CANT_2 DefinitionId=2F6 Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun applies its own _1 policy to the system definition",
+          "expected": "AUTH15HV_HR_1",
+          "observed": "AUTH15HV_HR_1",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever applies its own _2 policy",
+          "expected": "AUTH15HV_CANT_2",
+          "observed": "AUTH15HV_CANT_2",
+          "result": "PASS"
+        },
+        {
+          "name": "returned HeaderRun name equals the definition\u0027s name",
+          "expected": "AUTH15HV_HR_1",
+          "observed": "AUTH15HV_HR_1",
+          "result": "PASS"
+        },
+        {
+          "name": "the nested header definition took the _1 policy too",
+          "expected": "AUTH15HV_HDR_1",
+          "observed": "AUTH15HV_HDR_1,AUTH15HV_PIECE",
+          "result": "PASS"
+        },
+        {
+          "name": "returned Cantilever name equals the definition\u0027s name",
+          "expected": "AUTH15HV_CANT_2",
+          "observed": "AUTH15HV_CANT_2",
+          "result": "PASS"
+        },
+        {
+          "name": "collision case: model space and every layout unchanged",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "pre-existing definition AUTH15HV_HR unchanged (entities, no new extension dictionary)",
+          "expected": "1|noext|2CE",
+          "observed": "1|noext|2CE",
+          "result": "PASS"
+        },
+        {
+          "name": "pre-existing definition AUTH15HV_HDR unchanged (entities, no new extension dictionary)",
+          "expected": "1|noext|2D2",
+          "observed": "1|noext|2D2",
+          "result": "PASS"
+        },
+        {
+          "name": "pre-existing definition AUTH15HV_CANT unchanged (entities, no new extension dictionary)",
+          "expected": "1|noext|2D6",
+          "observed": "1|noext|2D6",
+          "result": "PASS"
+        },
+        {
+          "name": "caller abort afterwards: no leak (SNAP identical to before)",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        }
+      ],
+      "notes": [],
+      "leaks": [],
+      "exception": null,
+      "deviation": false,
+      "result": "PASS"
+    },
+    {
+      "id": "HV-06",
+      "family": "Both",
+      "expected": "TransactionMismatch (a..e), no write",
+      "dbKind": "SIDE-DB",
+      "tx": [
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1557434426656"
+        },
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1556968269200"
+        },
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1556968266320"
+        },
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 2,
+          "activeAfter": 1,
+          "topAfter": "1557434426528",
+          "endedId": "1557434424608"
+        },
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1557434426528"
+        },
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1557434427360"
+        },
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1557434427296"
+        },
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1557434426528"
+        },
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1557434426528"
+        },
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1556968277392"
+        },
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1556968277328"
+        },
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 2,
+          "activeAfter": 1,
+          "topAfter": "1557434426528",
+          "endedId": "1557434425184"
+        },
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1557434426528"
+        },
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1557434427296"
+        },
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1557434426528"
+        },
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1557434426528"
+        },
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1557434424928"
+        },
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": "could not read the transaction manager: Exception: eNotApplicable",
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": -1,
+          "activeAfter": -1,
+          "topAfter": null,
+          "endedId": "1557434424032"
+        }
+      ],
+      "stopRun": false,
+      "observed": "see assertions",
+      "assertions": [
+        {
+          "name": "HeaderRun a) null transaction: typed failure",
+          "expected": "TransactionMismatch, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=TransactionMismatch BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun a) null transaction: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun b) foreign-database transaction: typed failure",
+          "expected": "TransactionMismatch, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=TransactionMismatch BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun b) foreign-database transaction: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun b) the foreign database was not written either",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun c) setup: the nested transaction is the top, the outer is not",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun c) outer while nested is top: typed failure",
+          "expected": "TransactionMismatch, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=TransactionMismatch BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun c) outer while nested is top: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun d) setup: the transaction is disposed",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun d) disposed transaction: typed failure",
+          "expected": "TransactionMismatch, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=TransactionMismatch BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun d) disposed transaction: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun e) setup: the database is disposed",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun e) disposed database: typed failure",
+          "expected": "TransactionMismatch, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=TransactionMismatch BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun e) disposed database: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever a) null transaction: typed failure",
+          "expected": "TransactionMismatch, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=TransactionMismatch BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever a) null transaction: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever b) foreign-database transaction: typed failure",
+          "expected": "TransactionMismatch, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=TransactionMismatch BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever b) foreign-database transaction: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever b) the foreign database was not written either",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever c) setup: the nested transaction is the top, the outer is not",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever c) outer while nested is top: typed failure",
+          "expected": "TransactionMismatch, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=TransactionMismatch BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever c) outer while nested is top: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever d) setup: the transaction is disposed",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever d) disposed transaction: typed failure",
+          "expected": "TransactionMismatch, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=TransactionMismatch BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever d) disposed transaction: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever e) setup: the database is disposed",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever e) disposed database: typed failure",
+          "expected": "TransactionMismatch, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=TransactionMismatch BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever e) disposed database: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "after every sub-case: no leak (SNAP identical to before)",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        }
+      ],
+      "notes": [],
+      "leaks": [],
+      "exception": null,
+      "deviation": false,
+      "result": "PASS"
+    },
+    {
+      "id": "HV-07",
+      "family": "Both",
+      "expected": "InvalidPlan, no write",
+      "dbKind": "SIDE-DB",
+      "tx": [
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1836062900640"
+        }
+      ],
+      "stopRun": false,
+      "observed": "see assertions",
+      "assertions": [
+        {
+          "name": "HeaderRun null plan: typed failure",
+          "expected": "InvalidPlan, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=InvalidPlan BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun null plan: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun null drawer: typed failure",
+          "expected": "InvalidPlan, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=InvalidPlan BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun null drawer: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever null plan: typed failure",
+          "expected": "InvalidPlan, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=InvalidPlan BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever null plan: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "after the abort: no leak (SNAP identical to before)",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        }
+      ],
+      "notes": [],
+      "leaks": [],
+      "exception": null,
+      "deviation": false,
+      "result": "PASS"
+    },
+    {
+      "id": "HV-08",
+      "family": "Both",
+      "expected": "InvalidBlockName pre-write; HeaderRun \u0022\u003C\u003E\u0022 characterization = WriteFailed (effective name empty) \u002B clean rollback",
+      "dbKind": "DOCUMENT-AUTHORITY",
+      "tx": [
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1836062903264"
+        },
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1836062903008"
+        }
+      ],
+      "stopRun": false,
+      "observed": "IsSuccess=False Failure=WriteFailed BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+      "assertions": [
+        {
+          "name": "HeaderRun name null: typed failure",
+          "expected": "InvalidBlockName, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=InvalidBlockName BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun name null: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever name null: typed failure",
+          "expected": "InvalidBlockName, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=InvalidBlockName BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever name null: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun name empty: typed failure",
+          "expected": "InvalidBlockName, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=InvalidBlockName BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun name empty: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever name empty: typed failure",
+          "expected": "InvalidBlockName, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=InvalidBlockName BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever name empty: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun name whitespace: typed failure",
+          "expected": "InvalidBlockName, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=InvalidBlockName BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun name whitespace: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever name whitespace: typed failure",
+          "expected": "InvalidBlockName, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=InvalidBlockName BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever name whitespace: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "after the abort: no leak (SNAP identical to before)",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "CHARACTERIZATION HeaderRun \u0022\u003C\u003E\u0022 surfaces as WriteFailed",
+          "expected": "WriteFailed, no exception",
+          "observed": "IsSuccess=False Failure=WriteFailed BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "CHARACTERIZATION HeaderRun \u003C\u003E after the caller\u0027s abort: no leak (SNAP identical to before)",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        }
+      ],
+      "notes": [
+        "HeaderRun \u0022\u003C\u003E\u0022: IsSuccess=False Failure=WriteFailed BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0; 9 differences inside the transaction (partial writes are the caller\u0027s rollback)"
+      ],
+      "leaks": [],
+      "exception": null,
+      "deviation": false,
+      "result": "PASS"
+    },
+    {
+      "id": "HV-09",
+      "family": "Both",
+      "expected": "InvalidEnvelope, no write",
+      "dbKind": "SIDE-DB",
+      "tx": [
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1557102286768"
+        }
+      ],
+      "stopRun": false,
+      "observed": "see assertions",
+      "assertions": [
+        {
+          "name": "HeaderRun null envelope: typed failure",
+          "expected": "InvalidEnvelope, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=InvalidEnvelope BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun null envelope: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever null envelope: typed failure",
+          "expected": "InvalidEnvelope, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=InvalidEnvelope BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever null envelope: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun empty Id: typed failure",
+          "expected": "InvalidEnvelope, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=InvalidEnvelope BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun empty Id: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever empty Id: typed failure",
+          "expected": "InvalidEnvelope, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=InvalidEnvelope BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever empty Id: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun whitespace Id: typed failure",
+          "expected": "InvalidEnvelope, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=InvalidEnvelope BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun whitespace Id: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever whitespace Id: typed failure",
+          "expected": "InvalidEnvelope, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=InvalidEnvelope BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever whitespace Id: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun null Id: typed failure",
+          "expected": "InvalidEnvelope, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=InvalidEnvelope BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun null Id: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever null Id: typed failure",
+          "expected": "InvalidEnvelope, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=InvalidEnvelope BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever null Id: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun empty Kind: typed failure",
+          "expected": "InvalidEnvelope, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=InvalidEnvelope BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun empty Kind: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever empty Kind: typed failure",
+          "expected": "InvalidEnvelope, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=InvalidEnvelope BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever empty Kind: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun null Kind: typed failure",
+          "expected": "InvalidEnvelope, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=InvalidEnvelope BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun null Kind: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever null Kind: typed failure",
+          "expected": "InvalidEnvelope, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=InvalidEnvelope BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever null Kind: no write",
+          "expected": "SNAP identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "after the abort: no leak (SNAP identical to before)",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        }
+      ],
+      "notes": [],
+      "leaks": [],
+      "exception": null,
+      "deviation": false,
+      "result": "PASS"
+    },
+    {
+      "id": "HV-10",
+      "family": "HeaderRun",
+      "expected": "MissingLibraryBlocks with exact distinct representatives; envelope absent; rollback clean",
+      "dbKind": "DOCUMENT-AUTHORITY",
+      "tx": [
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1836062640608"
+        }
+      ],
+      "stopRun": false,
+      "observed": "IsSuccess=False Failure=MissingLibraryBlocks BlockName=\u003Cnull\u003E DefinitionId=Null Missing=2",
+      "assertions": [
+        {
+          "name": "typed MissingLibraryBlocks",
+          "expected": "MissingLibraryBlocks, DefinitionId Null, BlockName null, no exception",
+          "observed": "IsSuccess=False Failure=MissingLibraryBlocks BlockName=\u003Cnull\u003E DefinitionId=Null Missing=2",
+          "result": "PASS"
+        },
+        {
+          "name": "MissingInstances: one representative per distinct (BlockName|View), not per occurrence",
+          "expected": "2",
+          "observed": "2",
+          "result": "PASS"
+        },
+        {
+          "name": "the representatives are the FIRST instance of each key, in first-seen order",
+          "expected": "frontal#1, lateral",
+          "observed": "AUTH15HV_ABSENT|frontal@10, AUTH15HV_ABSENT|lateral@30",
+          "result": "PASS"
+        },
+        {
+          "name": "the keys are exactly AUTH15HV_ABSENT|frontal and AUTH15HV_ABSENT|lateral",
+          "expected": "2 keys",
+          "observed": "AUTH15HV_ABSENT|frontal, AUTH15HV_ABSENT|lateral",
+          "result": "PASS"
+        },
+        {
+          "name": "the system definition exists inside the caller\u0027s transaction (post-write failure)",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "the envelope is ABSENT from it",
+          "expected": "null",
+          "observed": "null",
+          "result": "PASS"
+        },
+        {
+          "name": "the present piece was drawn, the absent ones omitted and reported",
+          "expected": "1 reference to the piece",
+          "observed": "1 reference(s), 1 total",
+          "result": "PASS"
+        },
+        {
+          "name": "after the caller\u0027s abort: no leak (SNAP identical to before)",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        }
+      ],
+      "notes": [],
+      "leaks": [],
+      "exception": null,
+      "deviation": false,
+      "result": "PASS"
+    },
+    {
+      "id": "HV-11",
+      "family": "Both",
+      "expected": "plans and envelopes unchanged by successful calls",
+      "dbKind": "SIDE-DB",
+      "tx": [
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1836062414416"
+        }
+      ],
+      "stopRun": false,
+      "observed": "10 successful calls fingerprinted",
+      "assertions": [
+        {
+          "name": "HeaderRun call succeeded",
+          "expected": "IsSuccess",
+          "observed": "IsSuccess=True Failure=None BlockName=AUTH15HV_IM DefinitionId=81 Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "envelope Id/Name/Kind/View/Section/Design unchanged",
+          "expected": "same",
+          "observed": "same",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever call succeeded",
+          "expected": "IsSuccess",
+          "observed": "IsSuccess=True Failure=None BlockName=AUTH15HV_IM_C DefinitionId=9B Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever envelope Id unchanged",
+          "expected": "a15a15a1-0000-4000-8000-000000000112",
+          "observed": "a15a15a1-0000-4000-8000-000000000112",
+          "result": "PASS"
+        },
+        {
+          "name": "across EVERY successful call of the run, plan and envelope fingerprints were identical before and after",
+          "expected": "0 changed of 10",
+          "observed": "0 changed",
+          "result": "PASS"
+        }
+      ],
+      "notes": [],
+      "leaks": [],
+      "exception": null,
+      "deviation": false,
+      "result": "PASS"
+    },
+    {
+      "id": "HV-12",
+      "family": "Both",
+      "expected": "no batch memory across independent calls in one transaction",
+      "dbKind": "DOCUMENT-AUTHORITY",
+      "tx": [
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1836062643488"
+        }
+      ],
+      "stopRun": false,
+      "observed": "IsSuccess=True Failure=None BlockName=AUTH15HV_B1 DefinitionId=2D0 Missing=0 | IsSuccess=True Failure=None BlockName=AUTH15HV_B2 DefinitionId=2EA Missing=0 | IsSuccess=True Failure=None BlockName=AUTH15HV_B1_1 DefinitionId=4B1 Missing=0 | IsSuccess=True Failure=None BlockName=AUTH15HV_B2_2 DefinitionId=4C7 Missing=0",
+      "assertions": [
+        {
+          "name": "the failures in between are typed",
+          "expected": "TransactionMismatch, InvalidBlockName",
+          "observed": "TransactionMismatch, InvalidBlockName",
+          "result": "PASS"
+        },
+        {
+          "name": "the failures left no trace",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "all four independent calls succeeded",
+          "expected": "4 x IsSuccess",
+          "observed": "IsSuccess=True Failure=None BlockName=AUTH15HV_B1 DefinitionId=2D0 Missing=0 | IsSuccess=True Failure=None BlockName=AUTH15HV_B2 DefinitionId=2EA Missing=0 | IsSuccess=True Failure=None BlockName=AUTH15HV_B1_1 DefinitionId=4B1 Missing=0 | IsSuccess=True Failure=None BlockName=AUTH15HV_B2_2 DefinitionId=4C7 Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "names follow each family\u0027s policy, call by call",
+          "expected": "B1, B2, B1_1, B2_2",
+          "observed": "AUTH15HV_B1, AUTH15HV_B2, AUTH15HV_B1_1, AUTH15HV_B2_2",
+          "result": "PASS"
+        },
+        {
+          "name": "AUTH15HV_B1 carries its OWN envelope",
+          "expected": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022dynamic\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000121\u0022,\u0022Name\u0022:\u0022HV HeaderRun 121\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:121,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "observed": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022dynamic\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000121\u0022,\u0022Name\u0022:\u0022HV HeaderRun 121\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:121,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "result": "PASS"
+        },
+        {
+          "name": "AUTH15HV_B2 carries its OWN envelope",
+          "expected": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022cantilever\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000122\u0022,\u0022Name\u0022:\u0022HV Cantilever 122\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:122,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "observed": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022cantilever\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000122\u0022,\u0022Name\u0022:\u0022HV Cantilever 122\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:122,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "result": "PASS"
+        },
+        {
+          "name": "AUTH15HV_B1_1 carries its OWN envelope",
+          "expected": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022dynamic\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000123\u0022,\u0022Name\u0022:\u0022HV HeaderRun 123\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:123,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "observed": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022dynamic\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000123\u0022,\u0022Name\u0022:\u0022HV HeaderRun 123\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:123,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "result": "PASS"
+        },
+        {
+          "name": "AUTH15HV_B2_2 carries its OWN envelope",
+          "expected": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022cantilever\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000124\u0022,\u0022Name\u0022:\u0022HV Cantilever 124\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:124,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "observed": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022cantilever\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000124\u0022,\u0022Name\u0022:\u0022HV Cantilever 124\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:124,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "result": "PASS"
+        },
+        {
+          "name": "four distinct definitions",
+          "expected": "4",
+          "observed": "4",
+          "result": "PASS"
+        },
+        {
+          "name": "four independent calls: model space and every layout unchanged",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "after the abort: no leak (SNAP identical to before)",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        }
+      ],
+      "notes": [],
+      "leaks": [],
+      "exception": null,
+      "deviation": false,
+      "result": "PASS"
+    },
+    {
+      "id": "HV-13",
+      "family": "Both",
+      "expected": "no reference placement in model space or any layout",
+      "dbKind": "DOCUMENT-AUTHORITY",
+      "tx": [
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1836062415632"
+        }
+      ],
+      "stopRun": false,
+      "observed": "7 observations",
+      "assertions": [
+        {
+          "name": "placement observations were collected",
+          "expected": "\u003E= 6",
+          "observed": "6",
+          "result": "PASS"
+        },
+        {
+          "name": "HV-01 HeaderRun",
+          "expected": "model space and every layout unchanged",
+          "observed": "unchanged",
+          "result": "PASS"
+        },
+        {
+          "name": "HV-02 Cantilever",
+          "expected": "model space and every layout unchanged",
+          "observed": "unchanged",
+          "result": "PASS"
+        },
+        {
+          "name": "HV-03 both families in one transaction",
+          "expected": "model space and every layout unchanged",
+          "observed": "unchanged",
+          "result": "PASS"
+        },
+        {
+          "name": "HV-04 after commit",
+          "expected": "model space and every layout unchanged",
+          "observed": "unchanged",
+          "result": "PASS"
+        },
+        {
+          "name": "HV-05 collision case",
+          "expected": "model space and every layout unchanged",
+          "observed": "unchanged",
+          "result": "PASS"
+        },
+        {
+          "name": "HV-12 four independent calls",
+          "expected": "model space and every layout unchanged",
+          "observed": "unchanged",
+          "result": "PASS"
+        },
+        {
+          "name": "the snapshot covers model space and the paper-space layouts",
+          "expected": "\u003E= 3 spaces",
+          "observed": "3",
+          "result": "PASS"
+        },
+        {
+          "name": "both families in one transaction: model space and every layout unchanged",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        }
+      ],
+      "notes": [],
+      "leaks": [],
+      "exception": null,
+      "deviation": false,
+      "result": "PASS"
+    },
+    {
+      "id": "HV-14",
+      "family": "Both",
+      "expected": "no internal commit; transaction stays caller-owned",
+      "dbKind": "DOCUMENT-AUTHORITY",
+      "tx": [
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1836062619168"
+        }
+      ],
+      "stopRun": false,
+      "observed": "17 successful calls observed",
+      "assertions": [
+        {
+          "name": "call succeeded",
+          "expected": "IsSuccess",
+          "observed": "IsSuccess=True Failure=None BlockName=AUTH15HV_NC DefinitionId=2D0 Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "after the call: transaction not disposed",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "after the call: still the top transaction (native identity)",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "after the call: active transaction count unchanged",
+          "expected": "1",
+          "observed": "1",
+          "result": "PASS"
+        },
+        {
+          "name": "no transaction is left active after the caller\u0027s abort (back to the count before the caller started one)",
+          "expected": "0",
+          "observed": "0",
+          "result": "PASS"
+        },
+        {
+          "name": "nothing survived the caller\u0027s abort: no leak (SNAP identical to before)",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "across EVERY successful call the caller\u0027s transaction stayed live and top",
+          "expected": "0 not live of 17",
+          "observed": "0 not live",
+          "result": "PASS"
+        }
+      ],
+      "notes": [],
+      "leaks": [],
+      "exception": null,
+      "deviation": false,
+      "result": "PASS"
+    },
+    {
+      "id": "HV-15",
+      "family": "Both",
+      "expected": "I-52-AUTH15-C1: a blank logical Name (null, empty, whitespace) is VALID: definition created, envelope written and read back unchanged, no placement, caller-owned transaction, caller abort leaves nothing",
+      "dbKind": "DOCUMENT-AUTHORITY",
+      "tx": [
+        {
+          "label": "tx",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1836062623392"
+        }
+      ],
+      "stopRun": false,
+      "observed": "see assertions",
+      "assertions": [
+        {
+          "name": "HeaderRun null Name: call succeeded",
+          "expected": "IsSuccess=True, Failure=None, no exception",
+          "observed": "IsSuccess=True Failure=None BlockName=AUTH15HV_HN1 DefinitionId=2D0 Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun null Name: BlockName equals the definition\u0027s name",
+          "expected": "AUTH15HV_HN1",
+          "observed": "AUTH15HV_HN1",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun null Name: raw envelope on the definition is exactly RackEmbedStore.Serialize(envelope)",
+          "expected": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022dynamic\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000151\u0022,\u0022Name\u0022:null,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:151,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "observed": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022dynamic\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000151\u0022,\u0022Name\u0022:null,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:151,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun null Name: RackBlockData.Read returns the same envelope",
+          "expected": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022dynamic\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000151\u0022,\u0022Name\u0022:null,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:151,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "observed": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022dynamic\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000151\u0022,\u0022Name\u0022:null,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:151,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun null Name: the Name read back is exactly the one supplied (no fallback, no trim)",
+          "expected": "\u003Cnull\u003E",
+          "observed": "\u003Cnull\u003E",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun null Name: the caller\u0027s envelope Name was not changed by the call",
+          "expected": "\u003Cnull\u003E",
+          "observed": "\u003Cnull\u003E",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun null Name: no reference to the new definition anywhere",
+          "expected": "0",
+          "observed": "0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun null Name after the call: transaction not disposed",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun null Name after the call: still the top transaction (native identity)",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun null Name after the call: active transaction count unchanged",
+          "expected": "1",
+          "observed": "1",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun empty Name: call succeeded",
+          "expected": "IsSuccess=True, Failure=None, no exception",
+          "observed": "IsSuccess=True Failure=None BlockName=AUTH15HV_HN2 DefinitionId=2EF Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun empty Name: BlockName equals the definition\u0027s name",
+          "expected": "AUTH15HV_HN2",
+          "observed": "AUTH15HV_HN2",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun empty Name: raw envelope on the definition is exactly RackEmbedStore.Serialize(envelope)",
+          "expected": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022dynamic\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000152\u0022,\u0022Name\u0022:\u0022\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:152,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "observed": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022dynamic\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000152\u0022,\u0022Name\u0022:\u0022\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:152,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun empty Name: RackBlockData.Read returns the same envelope",
+          "expected": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022dynamic\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000152\u0022,\u0022Name\u0022:\u0022\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:152,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "observed": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022dynamic\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000152\u0022,\u0022Name\u0022:\u0022\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:152,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun empty Name: the Name read back is exactly the one supplied (no fallback, no trim)",
+          "expected": "",
+          "observed": "",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun empty Name: the caller\u0027s envelope Name was not changed by the call",
+          "expected": "",
+          "observed": "",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun empty Name: no reference to the new definition anywhere",
+          "expected": "0",
+          "observed": "0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun empty Name after the call: transaction not disposed",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun empty Name after the call: still the top transaction (native identity)",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun empty Name after the call: active transaction count unchanged",
+          "expected": "1",
+          "observed": "1",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun whitespace Name: call succeeded",
+          "expected": "IsSuccess=True, Failure=None, no exception",
+          "observed": "IsSuccess=True Failure=None BlockName=AUTH15HV_HN3 DefinitionId=30A Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun whitespace Name: BlockName equals the definition\u0027s name",
+          "expected": "AUTH15HV_HN3",
+          "observed": "AUTH15HV_HN3",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun whitespace Name: raw envelope on the definition is exactly RackEmbedStore.Serialize(envelope)",
+          "expected": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022dynamic\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000153\u0022,\u0022Name\u0022:\u0022   \u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:153,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "observed": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022dynamic\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000153\u0022,\u0022Name\u0022:\u0022   \u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:153,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun whitespace Name: RackBlockData.Read returns the same envelope",
+          "expected": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022dynamic\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000153\u0022,\u0022Name\u0022:\u0022   \u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:153,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "observed": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022dynamic\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000153\u0022,\u0022Name\u0022:\u0022   \u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:153,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun whitespace Name: the Name read back is exactly the one supplied (no fallback, no trim)",
+          "expected": "   ",
+          "observed": "   ",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun whitespace Name: the caller\u0027s envelope Name was not changed by the call",
+          "expected": "   ",
+          "observed": "   ",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun whitespace Name: no reference to the new definition anywhere",
+          "expected": "0",
+          "observed": "0",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun whitespace Name after the call: transaction not disposed",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun whitespace Name after the call: still the top transaction (native identity)",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "HeaderRun whitespace Name after the call: active transaction count unchanged",
+          "expected": "1",
+          "observed": "1",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever null Name: call succeeded",
+          "expected": "IsSuccess=True, Failure=None, no exception",
+          "observed": "IsSuccess=True Failure=None BlockName=AUTH15HV_CN4 DefinitionId=320 Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever null Name: BlockName equals the definition\u0027s name",
+          "expected": "AUTH15HV_CN4",
+          "observed": "AUTH15HV_CN4",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever null Name: raw envelope on the definition is exactly RackEmbedStore.Serialize(envelope)",
+          "expected": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022cantilever\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000154\u0022,\u0022Name\u0022:null,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:154,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "observed": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022cantilever\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000154\u0022,\u0022Name\u0022:null,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:154,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever null Name: RackBlockData.Read returns the same envelope",
+          "expected": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022cantilever\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000154\u0022,\u0022Name\u0022:null,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:154,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "observed": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022cantilever\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000154\u0022,\u0022Name\u0022:null,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:154,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever null Name: the Name read back is exactly the one supplied (no fallback, no trim)",
+          "expected": "\u003Cnull\u003E",
+          "observed": "\u003Cnull\u003E",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever null Name: the caller\u0027s envelope Name was not changed by the call",
+          "expected": "\u003Cnull\u003E",
+          "observed": "\u003Cnull\u003E",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever null Name: no reference to the new definition anywhere",
+          "expected": "0",
+          "observed": "0",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever null Name after the call: transaction not disposed",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever null Name after the call: still the top transaction (native identity)",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever null Name after the call: active transaction count unchanged",
+          "expected": "1",
+          "observed": "1",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever empty Name: call succeeded",
+          "expected": "IsSuccess=True, Failure=None, no exception",
+          "observed": "IsSuccess=True Failure=None BlockName=AUTH15HV_CN5 DefinitionId=4E2 Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever empty Name: BlockName equals the definition\u0027s name",
+          "expected": "AUTH15HV_CN5",
+          "observed": "AUTH15HV_CN5",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever empty Name: raw envelope on the definition is exactly RackEmbedStore.Serialize(envelope)",
+          "expected": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022cantilever\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000155\u0022,\u0022Name\u0022:\u0022\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:155,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "observed": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022cantilever\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000155\u0022,\u0022Name\u0022:\u0022\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:155,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever empty Name: RackBlockData.Read returns the same envelope",
+          "expected": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022cantilever\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000155\u0022,\u0022Name\u0022:\u0022\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:155,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "observed": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022cantilever\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000155\u0022,\u0022Name\u0022:\u0022\u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:155,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever empty Name: the Name read back is exactly the one supplied (no fallback, no trim)",
+          "expected": "",
+          "observed": "",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever empty Name: the caller\u0027s envelope Name was not changed by the call",
+          "expected": "",
+          "observed": "",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever empty Name: no reference to the new definition anywhere",
+          "expected": "0",
+          "observed": "0",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever empty Name after the call: transaction not disposed",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever empty Name after the call: still the top transaction (native identity)",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever empty Name after the call: active transaction count unchanged",
+          "expected": "1",
+          "observed": "1",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever whitespace Name: call succeeded",
+          "expected": "IsSuccess=True, Failure=None, no exception",
+          "observed": "IsSuccess=True Failure=None BlockName=AUTH15HV_CN6 DefinitionId=696 Missing=0",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever whitespace Name: BlockName equals the definition\u0027s name",
+          "expected": "AUTH15HV_CN6",
+          "observed": "AUTH15HV_CN6",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever whitespace Name: raw envelope on the definition is exactly RackEmbedStore.Serialize(envelope)",
+          "expected": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022cantilever\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000156\u0022,\u0022Name\u0022:\u0022   \u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:156,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "observed": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022cantilever\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000156\u0022,\u0022Name\u0022:\u0022   \u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:156,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever whitespace Name: RackBlockData.Read returns the same envelope",
+          "expected": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022cantilever\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000156\u0022,\u0022Name\u0022:\u0022   \u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:156,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "observed": "{\u0022SchemaVersion\u0022:\u00221.0\u0022,\u0022Kind\u0022:\u0022cantilever\u0022,\u0022View\u0022:\u0022frontal\u0022,\u0022Section\u0022:-1,\u0022Id\u0022:\u0022a15a15a1-0000-4000-8000-000000000156\u0022,\u0022Name\u0022:\u0022   \u0022,\u0022Design\u0022:\u0022{\\u0022auth15\\u0022:\\u0022host-validation\\u0022,\\u0022seq\\u0022:156,\\u0022text\\u0022:\\u0022\\u00D1and\\u00FA \\u2713 \\\\\\u0022quoted\\\\\\u0022\\u0022,\\u0022pad\\u0022:\\u0022abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnop\\u0022}\u0022}",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever whitespace Name: the Name read back is exactly the one supplied (no fallback, no trim)",
+          "expected": "   ",
+          "observed": "   ",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever whitespace Name: the caller\u0027s envelope Name was not changed by the call",
+          "expected": "   ",
+          "observed": "   ",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever whitespace Name: no reference to the new definition anywhere",
+          "expected": "0",
+          "observed": "0",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever whitespace Name after the call: transaction not disposed",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever whitespace Name after the call: still the top transaction (native identity)",
+          "expected": "True",
+          "observed": "True",
+          "result": "PASS"
+        },
+        {
+          "name": "Cantilever whitespace Name after the call: active transaction count unchanged",
+          "expected": "1",
+          "observed": "1",
+          "result": "PASS"
+        },
+        {
+          "name": "blank-Name calls: model space and every layout unchanged",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        },
+        {
+          "name": "caller abort afterwards: no leak (SNAP identical to before)",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        }
+      ],
+      "notes": [],
+      "leaks": [],
+      "exception": null,
+      "deviation": false,
+      "result": "PASS"
+    }
+  ],
+  "controls": [
+    {
+      "id": "RB-01V",
+      "family": "primitive writes, dispose WITHOUT Abort",
+      "expected": "the same, but the transaction is only disposed (a forgotten Commit): nothing survives",
+      "dbKind": "DOCUMENT-AUTHORITY",
+      "tx": [
+        {
+          "label": "RB-01V dispose without abort",
+          "isDisposedBefore": false,
+          "abortAttempted": false,
+          "abortSucceeded": false,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1836064735408"
+        }
+      ],
+      "stopRun": false,
+      "observed": null,
+      "assertions": [
+        {
+          "name": "sanity: the control wrote something inside the transaction",
+          "expected": "\u003E 0 differences",
+          "observed": "3 differences",
+          "result": "PASS"
+        },
+        {
+          "name": "RB-01V after the caller\u0027s rollback: no leak (SNAP identical to before)",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        }
+      ],
+      "notes": [],
+      "leaks": [],
+      "exception": null,
+      "deviation": false,
+      "result": "PASS"
+    },
+    {
+      "id": "RB-01D",
+      "family": "primitive writes, DOCUMENT database",
+      "expected": "the primitive control on a document under LockDocument: the production condition",
+      "dbKind": "DOCUMENT-AUTHORITY",
+      "tx": [
+        {
+          "label": "RB-01D abort",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1557561264496"
+        }
+      ],
+      "stopRun": false,
+      "observed": null,
+      "assertions": [
+        {
+          "name": "sanity: the control wrote something inside the transaction",
+          "expected": "\u003E 0 differences",
+          "observed": "3 differences",
+          "result": "PASS"
+        },
+        {
+          "name": "RB-01D after the caller\u0027s rollback: no leak (SNAP identical to before)",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        }
+      ],
+      "notes": [],
+      "leaks": [],
+      "exception": null,
+      "deviation": false,
+      "result": "PASS"
+    },
+    {
+      "id": "RB-02a",
+      "family": "LateralHeaderDrawer.CreateSystemBlock, no dimension/annotation",
+      "expected": "the family creator alone, no AUTH-15, then abort",
+      "dbKind": "DOCUMENT-AUTHORITY",
+      "tx": [
+        {
+          "label": "RB-02a abort",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1836070810480"
+        }
+      ],
+      "stopRun": false,
+      "observed": null,
+      "assertions": [
+        {
+          "name": "sanity: the control wrote something inside the transaction",
+          "expected": "\u003E 0 differences",
+          "observed": "4 differences",
+          "result": "PASS"
+        },
+        {
+          "name": "RB-02a after the caller\u0027s rollback: no leak (SNAP identical to before)",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        }
+      ],
+      "notes": [],
+      "leaks": [],
+      "exception": null,
+      "deviation": false,
+      "result": "PASS"
+    },
+    {
+      "id": "RB-02b",
+      "family": "LateralHeaderDrawer.CreateSystemBlock, with dimension",
+      "expected": "the family creator alone with a dimension, no AUTH-15, then abort",
+      "dbKind": "DOCUMENT-AUTHORITY",
+      "tx": [
+        {
+          "label": "RB-02b abort",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1836062971040"
+        }
+      ],
+      "stopRun": false,
+      "observed": null,
+      "assertions": [
+        {
+          "name": "sanity: the control wrote something inside the transaction",
+          "expected": "\u003E 0 differences",
+          "observed": "9 differences",
+          "result": "PASS"
+        },
+        {
+          "name": "RB-02b after the caller\u0027s rollback: no leak (SNAP identical to before)",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        }
+      ],
+      "notes": [],
+      "leaks": [],
+      "exception": null,
+      "deviation": false,
+      "result": "PASS"
+    },
+    {
+      "id": "RB-02c",
+      "family": "CantileverViewMaterializer.CreateBlockDefinitionNamed",
+      "expected": "the Cantilever creator alone, no AUTH-15, then abort",
+      "dbKind": "DOCUMENT-AUTHORITY",
+      "tx": [
+        {
+          "label": "RB-02c abort",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1836064736688"
+        }
+      ],
+      "stopRun": false,
+      "observed": null,
+      "assertions": [
+        {
+          "name": "sanity: the control wrote something inside the transaction",
+          "expected": "\u003E 0 differences",
+          "observed": "16 differences",
+          "result": "PASS"
+        },
+        {
+          "name": "RB-02c after the caller\u0027s rollback: no leak (SNAP identical to before)",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        }
+      ],
+      "notes": [],
+      "leaks": [],
+      "exception": null,
+      "deviation": false,
+      "result": "PASS"
+    },
+    {
+      "id": "RB-03",
+      "family": "hand-made definition \u002B RackBlockData.Write",
+      "expected": "the envelope writer alone on a hand-made definition, then abort",
+      "dbKind": "DOCUMENT-AUTHORITY",
+      "tx": [
+        {
+          "label": "RB-03 abort",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1836062468176"
+        }
+      ],
+      "stopRun": false,
+      "observed": null,
+      "assertions": [
+        {
+          "name": "sanity: the control wrote something inside the transaction",
+          "expected": "\u003E 0 differences",
+          "observed": "2 differences",
+          "result": "PASS"
+        },
+        {
+          "name": "RB-03 after the caller\u0027s rollback: no leak (SNAP identical to before)",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        }
+      ],
+      "notes": [],
+      "leaks": [],
+      "exception": null,
+      "deviation": false,
+      "result": "PASS"
+    },
+    {
+      "id": "RB-05",
+      "family": "dimension \u002B RecomputeDimensionBlock only",
+      "expected": "native dimension residue (Defpoints, *D) in isolation, then abort",
+      "dbKind": "DOCUMENT-AUTHORITY",
+      "tx": [
+        {
+          "label": "RB-05 abort",
+          "isDisposedBefore": false,
+          "abortAttempted": true,
+          "abortSucceeded": true,
+          "abortError": null,
+          "disposeAttempted": true,
+          "disposeSucceeded": true,
+          "disposeError": null,
+          "isDisposedAfter": true,
+          "activeBefore": 1,
+          "activeAfter": 0,
+          "topAfter": "null",
+          "endedId": "1836062427600"
+        }
+      ],
+      "stopRun": false,
+      "observed": null,
+      "assertions": [
+        {
+          "name": "sanity: the control wrote something inside the transaction",
+          "expected": "\u003E 0 differences",
+          "observed": "5 differences",
+          "result": "PASS"
+        },
+        {
+          "name": "RB-05 after the caller\u0027s rollback: no leak (SNAP identical to before)",
+          "expected": "identical",
+          "observed": "identical",
+          "result": "PASS"
+        }
+      ],
+      "notes": [],
+      "leaks": [],
+      "exception": null,
+      "deviation": false,
+      "result": "PASS"
+    }
+  ],
+  "controlLeaks": [],
+  "sideCharacterizations": [],
+  "sideCharacterizationLeaks": [],
+  "documentAuthority": {
+    "available": true,
+    "documentsAtStart": 1
+  },
+  "deviations": [],
+  "stopKind": "none",
+  "characterizations": [
+    {
+      "what": "null database",
+      "expectation": "expected TransactionMismatch",
+      "observed": "IsSuccess=False Failure=TransactionMismatch BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+      "matchesExpectation": true,
+      "countedInVerdict": false
+    },
+    {
+      "what": "OpenCloseTransaction (conservatively unsupported)",
+      "expectation": "expected TransactionMismatch",
+      "observed": "IsSuccess=False Failure=TransactionMismatch BlockName=\u003Cnull\u003E DefinitionId=Null Missing=0",
+      "matchesExpectation": true,
+      "countedInVerdict": false
+    }
+  ],
+  "notExercisable": [
+    {
+      "surface": "EnvelopeWriteFailed",
+      "reason": "needs a read-back that differs from the written envelope; that cannot be provoked without fault injection into RackBlockData/AutoCAD, which this harness must not add",
+      "result": "NOT_EXERCISABLE_WITHOUT_FAULT_INJECTION"
+    },
+    {
+      "surface": "InvalidEnvelope (serialization failure)",
+      "reason": "needs RackEmbedStore.Serialize to throw on an otherwise valid envelope; not reachable without fault injection. The null envelope and the null / blank Id, Kind variants ARE exercised by HV-09; a blank Name is VALID (HV-15)",
+      "result": "NOT_EXERCISABLE_WITHOUT_FAULT_INJECTION"
+    }
+  ],
+  "leaks": [],
+  "problems": [],
+  "state": "final",
+  "lastCase": "HV-15",
+  "completed": true,
+  "stoppedBy": null,
+  "verdict": "UNKNOWN"
+}

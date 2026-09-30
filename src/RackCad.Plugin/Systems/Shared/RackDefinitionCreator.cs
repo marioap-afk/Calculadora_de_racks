@@ -176,10 +176,9 @@ namespace RackCad.Plugin.Systems.Shared
             // The envelope arrives already composed (identity, kind, view, design); it is validated, never altered.
             if (envelope == null
                 || string.IsNullOrWhiteSpace(envelope.Id)
-                || string.IsNullOrWhiteSpace(envelope.Kind)
-                || string.IsNullOrWhiteSpace(envelope.Name))
+                || string.IsNullOrWhiteSpace(envelope.Kind))
             {
-                return RackDefinitionCreationResult.Failed(RackDefinitionCreationFailure.InvalidEnvelope, "sobre ausente o sin Id/Kind/Name");
+                return RackDefinitionCreationResult.Failed(RackDefinitionCreationFailure.InvalidEnvelope, "sobre ausente o sin Id/Kind");
             }
 
             try

@@ -12,6 +12,16 @@ RackCad es un plugin de AutoCAD 2025 (.NET 8, C#/WPF) para diseñar y dibujar ra
 con BOM. El trunk único es `main`; Domain y Application son puros, UI usa WPF sin AutoCAD y Plugin
 es el único adaptador de la API de AutoCAD.
 
+**I-52-AUTH15-C1 — AUTH-15 admite un `Name` logico en blanco — INTEGRADA** el **2026-09-29** (`feature/i52-auth15-c1-unnamed-envelope`, Workflow V2, T8-A).
+Unidad correctiva de proposito unico de I-52, abierta por el Owner para que `RACKPROYECTAR` (I-55) pueda proyectar racks sin nombre conservandolos sin nombre. Cambio unico: `RackDefinitionCreator.Precheck` ya no rechaza un
+`RackEmbedDocument` cuyo `Name` es nulo, vacio o solo espacios (antes `InvalidEnvelope`). Siguen siendo `InvalidEnvelope`: sobre nulo, `Id` en blanco, `Kind` en blanco y fallo de serializacion; `requestedBlockName` en blanco sigue
+siendo `InvalidBlockName`. La propiedad no cambia: AUTH-15 sigue sin abrir transaccion, bloquear el documento, hacer Commit/Abort, colocar referencias ni elegir RackId, `Name` o BaseName. Sin cambios de Foundation ni de esquema.
+Validacion en host (AutoCAD 2025, base de documento + `LockDocument` + `StartTransaction`): PASS (16/16 casos, 7/7 controles, 0 fugas); la primera corrida fue VALID/UNKNOWN por un defecto del arnes y se conserva como historica. Excepcion de identidad
+host → Candidato ratificada. [Evidencia](automation/evidence/I-52-AUTH15-C1-evidence.md), [decisiones](automation/decisions/I-52-AUTH15-C1.md) y tag `integration/I-52-AUTH15-C1` (SHAs de cierre y merge). **I-55 G16 queda desbloqueada para reconciliar** sobre el nuevo `main`
+(quitar `UnnamedRackNotProjectable` y el servicio `LogicalName`, conservar C16-04); esa reconciliacion es de I-55 y no forma parte de esta unidad.
+
+**I-52-AUTH15 (integrada: merge `3375aadb`, tag `integration/I-52-AUTH15`)** — el parrafo siguiente se escribio antes del merge y se conserva como registro historico:
+
 **I-52-AUTH15 — AUTH-15: creacion caller-owned de definicion y sobre — CANDIDATE CONFORMADO;
 ADMISION EN HOST BAJO DOCUMENT-AUTHORITY; CIERRE DOCUMENTAL PRE-MERGE PREPARADO** el **2026-09-29**
 (`feature/i52-auth15-definition-creator`, Workflow V2). Segunda unidad de integracion de I-52, de proposito
@@ -1460,6 +1470,9 @@ PASS UNDER DOCUMENT-AUTHORITY, ratificado por el Owner; ver la [evidencia](autom
 binario validado no es el del Candidato (excepcion de identidad ratificada). Esta evidencia no acredita el SHA documental de
 cierre, que requiere sus propias suites, builds y CI antes del merge.
 
+**I-52-AUTH15-C1 (2026-09-29) — CANDIDATE PASS / HOST PASS UNDER DOCUMENT-AUTHORITY.** Core Full 11347/11347, UI Full 1581 (+17 omitidas historicas, 0 fallos), builds Debug de UI y Plugin y Release del Plugin con 0 errores, CI de push 4/4 y cobertura exacta
+sobre el Candidato `8f7847ad`; host: corrida 2 (arnes `b7ee683e`) VALID/PASS, 16/16 casos, 7/7 controles de documento, 0 fugas; la corrida 1 (`579de1af`) fue VALID/UNKNOWN y se conserva. Ver la [evidencia](automation/evidence/I-52-AUTH15-C1-evidence.md).
+
 **I-59 (2026-09-24) — CANDIDATE PASS / OWNER APPROVED.** Core Full y UI Full locales, builds Debug
 de UI y Plugin, CI exacta de push y cobertura exacta del Candidate quedaron PASS. El Owner aprobo en
 AutoCAD 2025 OV-I59-01..04 sobre el DLL y la biblioteca externa identificados en la
@@ -1892,7 +1905,8 @@ veredicto.
 
 ## 3. Problemas y riesgos activos
 
-- **I-52-AUTH15 aun NO integrada.** Su Candidate esta conformado y su admision en host ratificada, pero I-55 G15
+- **I-52-AUTH15 integrada** (merge `3375aadb`, tag `integration/I-52-AUTH15`); su correctivo `I-52-AUTH15-C1` deja el `Name` logico del sobre opcional. Texto original, escrito antes del merge:
+  **I-52-AUTH15 aun NO integrada.** Su Candidate esta conformado y su admision en host ratificada, pero I-55 G15
   no puede consumirla hasta que pasen evidencia propia del cierre, merge, CI post-merge, cobertura, limpieza y un receipt
   anotado `integration/I-52-AUTH15` valido. **Limite vigente:** el rollback del llamador solo esta garantizado para una base de
   documento con `LockDocument` y `StartTransaction()`; una base lateral (`new Database(...)`) no revirtio lo escrito en RUN-3 (el
@@ -1989,7 +2003,12 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### I-52-AUTH15 debe acreditar este cierre e integrar con Workflow V2
+### I-55 G16 se reconcilia sobre el nuevo main (I-52-AUTH15-C1 integrada)
+
+Reconciliar `feature/creacion-de-vistas` (Candidato rechazado `3f06994a`) sobre el nuevo `main`: quitar `UnnamedRackNotProjectable` y el servicio `LogicalName`, conservar C16-04, actualizar las pruebas de I-55 que fijaban `Name` en la precondicion de AUTH-15,
+crear un Candidato nuevo y repetir SMOKE A (rack con nombre) y SMOKE B (rack sin nombre) antes de la matriz OV-ID19.
+
+### (historico, escrito antes del merge) I-52-AUTH15 debia acreditar este cierre e integrar con Workflow V2
 
 Ejecutar Core Full, UI Full y builds Debug sobre el SHA limpio de cierre, publicar la rama y exigir su CI exacta 4/4
 (el cierre no hereda la evidencia del Candidato `0b6abdd5`). Despues: `fetch` final conservando `origin/main` en la base
