@@ -91,3 +91,16 @@ Resolucion de las preguntas (§3):
 Objeciones materiales: ninguna abierta sobre la version acordada.
 
 **Freeze.** El commit de Freeze cambia UNICAMENTE la linea `Frozen: NO` → `Frozen: YES` del contrato; ninguna clausula ni otra linea de cabecera cambia. Su SHA (`FROZEN CONTRACT SHA`) se registra en §6, porque un commit no puede contenerse a si mismo.
+
+## 6. Freeze
+
+```text
+FROZEN CONTRACT SHA = 6e667d02e14182d1fe232e10e53e0d447a6c98e7
+Frozen artifact     = docs/initiatives/I-52-auth15-c1-unnamed-envelope.md
+Agreed version      = a6a3e96a0860e0bd9196b257f81480a574ae91a9 (blob 2f4fa9459d8796f7ef88862dccf5a2ce1b61fdfd)
+Freeze change       = only the line `Frozen: NO` -> `Frozen: YES` (no clause changed)
+IMPLEMENTATION AUTHORIZED = YES (RED first; production only after RED is observed)
+```
+
+- El contrato es inmutable desde ese commit. Todo cambio posterior es una enmienda `A-n` append-only en este registro (INITIATIVE_LIFECYCLE §6); un diff de produccion materialmente mayor que las TRES ediciones del contrato §4 exige re-revision del Architect.
+- Estado: implementacion NO iniciada; sin RED escrito; sin cambios de produccion.
