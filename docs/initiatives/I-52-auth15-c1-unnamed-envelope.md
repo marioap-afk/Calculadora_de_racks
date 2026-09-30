@@ -2,7 +2,7 @@
 
 Status: CONTRATO ACORDADO POR EL ARCHITECT (ver decisiones §5); implementacion NO iniciada hasta el commit de Freeze; NOT INTEGRATED
 
-Frozen: NO
+Frozen: YES
 
 Workflow: V2 (clasificacion T8-A: unidad nueva posterior, conceptualmente de I-52; reclamo, contrato, Freeze delta y evidencia propios; no hereda V1)
 
