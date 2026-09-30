@@ -561,10 +561,10 @@ namespace I52Auth15.HostHarness
                     new CaseEntry("HV-03", "Both", "caller abort leaves SNAP identical to before", Hv03, true),
                     new CaseEntry("HV-04", "Both", "caller commit persists both definitions and their envelopes across SaveAs/reopen; no references", Hv04, false),
                     new CaseEntry("HV-05", "Both", "name collision: HeaderRun _1 policy, Cantilever _2 policy; pre-existing definitions unchanged", Hv05, true),
-                    new CaseEntry("HV-06", "Both", "TransactionMismatch (a..e), no write", Hv06, false),
-                    new CaseEntry("HV-07", "Both", "InvalidPlan, no write", Hv07, false),
+                    new CaseEntry("HV-06", "Both", "TransactionMismatch (a..e), no write (DOCUMENT authority)", Hv06, true),
+                    new CaseEntry("HV-07", "Both", "InvalidPlan, no write (DOCUMENT authority)", Hv07, true),
                     new CaseEntry("HV-08", "Both", "InvalidBlockName pre-write; HeaderRun \"<>\" characterization = WriteFailed (effective name empty) + clean rollback", Hv08, true),
-                    new CaseEntry("HV-09", "Both", "InvalidEnvelope, no write", Hv09, false),
+                    new CaseEntry("HV-09", "Both", "InvalidEnvelope, no write (DOCUMENT authority)", Hv09, true),
                     new CaseEntry("HV-10", "HeaderRun", "MissingLibraryBlocks with exact distinct representatives; envelope absent; rollback clean", Hv10, true),
                     new CaseEntry("HV-11", "Both", "plans and envelopes unchanged by successful calls", Hv11, false),
                     new CaseEntry("HV-12", "Both", "no batch memory across independent calls in one transaction", Hv12, true),
@@ -583,6 +583,7 @@ namespace I52Auth15.HostHarness
                     ctx.InitialDocCount = 0;
                 }
 
+                doc.ExpectedCaseIds.AddRange(entries.Select(e => e.Id));
                 SafeWrite(doc, outDir, log);
 
                 foreach (var entry in entries)
@@ -2158,7 +2159,7 @@ namespace I52Auth15.HostHarness
                 families.Add(("Cantilever", (d, t) => c.C(d, t, "AUTH15HV_M", c.EnvC(62))));
             }
 
-            using (var scope = new Scope())
+            using (var scope = c.NewScope())
             {
                 var db = scope.Db;
                 var baseline = Snapshot.Now(db);
@@ -2265,7 +2266,18 @@ namespace I52Auth15.HostHarness
                     }
                     finally
                     {
-                        End(t);
+                        // An OpenCloseTransaction is not counted among the active transactions of a document: its end is not judged by the
+                        // rollback bookkeeping (characterization only, never part of the verdict).
+                        var strict = StrictTx;
+                        StrictTx = false;
+                        try
+                        {
+                            End(t);
+                        }
+                        finally
+                        {
+                            StrictTx = strict;
+                        }
                     }
                 }, "expected TransactionMismatch");
 
@@ -2303,7 +2315,7 @@ namespace I52Auth15.HostHarness
 
         private static void Hv07(Ctx c, CaseRecord r)
         {
-            using (var scope = new Scope())
+            using (var scope = c.NewScope())
             {
                 var db = scope.Db;
                 var baseline = Snapshot.Now(db);
@@ -2402,7 +2414,7 @@ namespace I52Auth15.HostHarness
 
         private static void Hv09(Ctx c, CaseRecord r)
         {
-            using (var scope = new Scope())
+            using (var scope = c.NewScope())
             {
                 var db = scope.Db;
                 var baseline = Snapshot.Now(db);

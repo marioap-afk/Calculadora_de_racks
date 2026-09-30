@@ -167,7 +167,7 @@ namespace I52Auth15.HostHarness
         };
 
         /// <summary>The rollback-sensitive HV cases: their governing run is the DOCUMENT one; a side-database run never satisfies them.</summary>
-        public static readonly string[] RollbackSensitiveCases = { "HV-01", "HV-02", "HV-03", "HV-05", "HV-08", "HV-10", "HV-12", "HV-13", "HV-14", "HV-15" };
+        public static readonly string[] RollbackSensitiveCases = { "HV-01", "HV-02", "HV-03", "HV-05", "HV-06", "HV-07", "HV-08", "HV-09", "HV-10", "HV-12", "HV-13", "HV-14", "HV-15" };
 
         /// <summary>Why the control evidence cannot back a PASS (empty = it can). Includes documentAuthority.available.</summary>
         public static System.Collections.Generic.List<string> Problems(
@@ -454,6 +454,10 @@ namespace I52Auth15.HostHarness
 
         public List<CaseRecord> Cases { get; } = new List<CaseRecord>();
 
+        /// <summary>The ids of the cases the runner declared it would execute (its own case list). The verdict is judged against THIS
+        /// enumeration, never against a fixed count: a case added to the runner cannot silently fall outside the verdict.</summary>
+        public List<string> ExpectedCaseIds { get; } = new List<string>();
+
         /// <summary>Rollback controls (RB-xx): raw outcomes, PASS/FAIL each, never reinterpreted and never part of the HV verdict.</summary>
         public List<CaseRecord> Controls { get; } = new List<CaseRecord>();
 
@@ -485,7 +489,13 @@ namespace I52Auth15.HostHarness
 
         public string Verdict()
         {
-            var expectedIds = Enumerable.Range(0, 15).Select(i => "HV-" + i.ToString("D2")).ToList();
+            var expectedIds = ExpectedCaseIds.ToList();
+
+            if (expectedIds.Count == 0)
+            {
+                // The runner never declared its cases: nothing can be judged.
+                return Outcome.Unknown;
+            }
 
             // A FAIL anywhere governs: a failing HV case OR a failing control (a control is a raw outcome, but a control that leaks
             // means the caller-rollback premise does not hold on that path, so the campaign cannot be a PASS).
@@ -516,6 +526,7 @@ namespace I52Auth15.HostHarness
             root["host"] = Host;
             root["binding"] = Binding;
             root["fixtures"] = Fixtures;
+            root["expectedCaseIds"] = ExpectedCaseIds;
             root["cases"] = Cases;
             root["controls"] = Controls;
             root["controlLeaks"] = Controls.SelectMany(c => c.Leaks.Select(l => c.Id + " [" + c.DbKind + "] " + l)).ToList();

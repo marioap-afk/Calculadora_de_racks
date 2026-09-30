@@ -306,11 +306,18 @@ function Invoke-Launch {
         if ([string](Prop $evidence 'verdict') -ne 'PASS') { return $true }
         $cases = @($evidence.cases)
         $ok = $true
-        foreach ($id in 'HV-01', 'HV-02', 'HV-03', 'HV-05', 'HV-08', 'HV-10', 'HV-12', 'HV-13', 'HV-14', 'HV-15') {
+        foreach ($id in 'HV-01', 'HV-02', 'HV-03', 'HV-05', 'HV-06', 'HV-07', 'HV-08', 'HV-09', 'HV-10', 'HV-12', 'HV-13', 'HV-14', 'HV-15') {
             $mine = @($cases | Where-Object { $_.id -eq $id })
             if (($mine.Count -ne 1) -or ($mine[0].dbKind -ne 'DOCUMENT-AUTHORITY')) { $ok = $false }
         }
         $ok
+    })
+    # The frozen matrix is HV-00..HV-15 (16 cases). The harness declares the cases it means to run (expectedCaseIds); the launcher does not take
+    # that list on faith: for a PASS it must equal the frozen matrix exactly, so a case dropped from (or added to) the runner cannot pass unnoticed.
+    $checks['evidenceExpectedCaseIds'] = $parseable -and (Test-Check {
+        if ([string](Prop $evidence 'verdict') -ne 'PASS') { return $true }
+        $frozen = (0..15 | ForEach-Object { 'HV-{0:D2}' -f $_ }) -join ','
+        ((@($evidence.expectedCaseIds) | Sort-Object) -join ',') -eq $frozen
     })
     $checks['evidenceHarnessShaEqualsMetadata'] = $parseable -and ((Prop $evidence 'harnessSha') -eq $meta.harnessSha)
     $checks['evidenceImplementationShaEqualsMetadata'] = $parseable -and ((Prop $evidence 'implementationSha') -eq $meta.implementationSha)

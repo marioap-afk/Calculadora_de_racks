@@ -19,6 +19,7 @@ of the harness commit, and `treesEqual`.
   expected controls are exactly 7 records, all `DOCUMENT-AUTHORITY`: RB-01V, RB-01D, RB-02a, RB-02b, RB-02c, RB-03, RB-05. The
   SIDE-DB / CT-DA characterization is not reopened and never decides this verdict.
 - **HV-09 (InvalidEnvelope)** no longer lists a blank `Name`: a null envelope and a null/blank `Id` or `Kind` are the invalid cases.
+- **Second harness (corrective).** The first run of this harness (`579de1af`) was VALID with verdict UNKNOWN: `Evidence.Verdict()` judged a fixed 15 cases while the matrix has 16 (HV-00..HV-15), and HV-06/HV-07/HV-09 ran on side databases. Now the verdict is judged against `expectedCaseIds`, the runner's own case list (the launcher also requires it to equal HV-00..HV-15), and **HV-06, HV-07 and HV-09 run on the DOCUMENT database** (rollback-sensitive). No governed H-1..H-10 row runs on a side database; only HV-00 (binding/identity), HV-04 (SaveAs/reopen regression) and HV-11 (immutability regression) do, and none is an H row. The first run's evidence is preserved untouched.
 - **HV-15 (new)** is the case of this unit: for HeaderRun and Cantilever, with `Name` = null, `""` and `"   "`, the call succeeds; the
   definition exists; the raw envelope on the definition equals `RackEmbedStore.Serialize(envelope)`; `RackBlockData.Read` returns the
   same JSON; the Name read back is exactly the one supplied (no fallback, no trim); the caller's envelope is unchanged; no reference is
@@ -32,9 +33,9 @@ of the harness commit, and `treesEqual`.
 |---|---|
 | H-1, H-2, H-3 | HV-15: null / empty / whitespace `Name`, both families (DOCUMENT) |
 | H-4 | HV-15: raw envelope == serialized envelope, read-back equal, Name read back exactly the supplied one |
-| H-5, H-6, H-7 | HV-09: blank `Id`, blank `Kind`, null envelope -> `InvalidEnvelope`, no write (a database-kind-independent check, side database as in the previous harness; no rollback claim) |
+| H-5, H-6, H-7 | HV-09: blank `Id`, blank `Kind`, null envelope -> `InvalidEnvelope`, no write (DOCUMENT) |
 | H-8 | HV-08: blank `requestedBlockName` -> `InvalidBlockName` (DOCUMENT) |
-| H-9 | HV-06: a transaction that is not the top one of the database (foreign, outer-while-nested, disposed, null) -> `TransactionMismatch`; the `OpenCloseTransaction` characterization is recorded, never counted (side database, no rollback claim) |
+| H-9 | HV-06: a transaction that is not the top one of the database (foreign, outer-while-nested, disposed, null) -> `TransactionMismatch`; the `OpenCloseTransaction` characterization is recorded, never counted (DOCUMENT) |
 | H-10 | HV-15 and HV-14: the transaction stays caller-owned and live, no internal commit, no reference placement, the caller's abort discards the definition (DOCUMENT) |
 
 HV-00..HV-14 are kept as regression of the unchanged AUTH-15 behavior (they passed on the previous implementation under DOCUMENT authority).
