@@ -9,10 +9,12 @@ using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Systems.Shared;
+using RackCad.Application.Views.Policy;
 using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Domain.Systems.Shared;
 using RackCad.Plugin.Drawing;
+using RackCad.Plugin.Views;
 using RackCad.UI;
 using RackCad.UI.RackFrames;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
@@ -39,7 +41,11 @@ namespace RackCad.Plugin
                 {
                     // I-05: warn once if the drawing is not in inches, before drawing the new header.
                     RackUnitsGuard.WarnIfNotInches(AcApplication.DocumentManager.MdiActiveDocument);
-                    DrawAndPlace(window.Configuration);
+                    DrawAndPlace(
+                        window.Configuration,
+                        sourceProject: null,
+                        rackId: window.RackId,
+                        initialAddress: window.InsertAddress.Value);
                 }
             }
             catch (System.Exception ex)
@@ -106,7 +112,11 @@ namespace RackCad.Plugin
 
                 // I-05: warn once if the drawing is not in inches, before placing the new header.
                 RackUnitsGuard.WarnIfNotInches(document);
-                DrawAndPlace(configuration);
+                DrawAndPlace(
+                    configuration,
+                    sourceProject: null,
+                    rackId: null,
+                    initialAddress: RackViewAddress.Whole(DimensionViewKind.Lateral));
             }
             catch (System.Exception ex)
             {
@@ -162,7 +172,11 @@ namespace RackCad.Plugin
         /// <summary>Builds the header block and runs the placement jig, then reports the outcome. <paramref name="sourceProject"/>
         /// is the library project when a cabecera is inserted from a RackProject wrapper, so the embed's inner design keeps its
         /// metadata (I-11); a bare legacy header passes null and fabricates none.</summary>
-        internal static void DrawAndPlace(RackFrameConfiguration configuration, RackProject sourceProject = null)
+        internal static void DrawAndPlace(
+            RackFrameConfiguration configuration,
+            RackProject sourceProject,
+            string rackId,
+            RackViewAddress initialAddress)
         {
             var document = AcApplication.DocumentManager.MdiActiveDocument;
 
@@ -171,8 +185,27 @@ namespace RackCad.Plugin
                 return;
             }
 
-            var payload = BuildCabeceraPayload(configuration, System.Guid.NewGuid().ToString(), configuration.Name, innerSource: sourceProject);
-            var result = new LateralHeaderDrawService().DrawAndPlace(document, configuration, payload, configuration.Name);
+            var address = initialAddress;
+            if (!RackViewExposure.IsExposed(
+                    RackSystemKind.Selective,
+                    address,
+                    RackViewProductOperation.CreateFirst))
+            {
+                document.Editor.WriteMessage("\nRackCad: la vista elegida no está expuesta para crear una cabecera.");
+                return;
+            }
+
+            var syntax = RackViewCodec.Encode(RackSystemKind.Selective, address);
+            var id = string.IsNullOrWhiteSpace(rackId) ? System.Guid.NewGuid().ToString() : rackId;
+            var payload = BuildCabeceraPayload(
+                configuration,
+                id,
+                configuration.Name,
+                syntax.View,
+                innerSource: sourceProject);
+            var result = address.Kind == DimensionViewKind.Planta
+                ? new PlantaHeaderDrawService().DrawAndPlace(document, configuration, payload, configuration.Name)
+                : new LateralHeaderDrawService().DrawAndPlace(document, configuration, payload, configuration.Name);
             document.Editor.WriteMessage("\n" + Describe(result));
         }
 
@@ -231,12 +264,22 @@ namespace RackCad.Plugin
             // Editing the cabecera redraws BOTH its views (lateral + planta), found by the shared GUID — the same
             // multi-view round-trip as the selective. The planta is a separate block that links to this cabecera.
             var config = window.Configuration;
-            var id = string.IsNullOrEmpty(embed.Id) ? System.Guid.NewGuid().ToString() : embed.Id;
             var name = string.IsNullOrWhiteSpace(config?.Name) ? embed.Name : config.Name;
             var baseName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
+            // Insertar keeps G9b's whitespace cure and the editor session's accepted identity. Actualizar keeps the
+            // historic empty-only predicate so this visible ID18 path does not broaden the update contract.
+            var id = !window.UpdateOnly && string.IsNullOrWhiteSpace(embed.Id)
+                ? window.RackId
+                : string.IsNullOrEmpty(embed.Id) ? System.Guid.NewGuid().ToString() : embed.Id;
+            RackAuthorizedSiblingBatch authorized = null;
+
+            if (!window.UpdateOnly)
+            {
+                if (!RackUnsupportedSiblingInsert.TryAuthorize(document, blockId, embed, id, out authorized)) return;
+            }
 
             // Keep each block's own Embed (not just its id) so its per-view unknown metadata is preserved on redraw (I-11).
-            var blocks = RackCommandSupport.FindRackBlocks(document, id);
+            var blocks = !window.UpdateOnly ? authorized.Blocks.ToList() : RackCommandSupport.FindRackBlocks(document, id);
             var lateralBlocks = blocks.Where(b => !RackCommandSupport.IsPlantaView(b.Embed)).ToList();
             var plantaBlocks = blocks.Where(b => RackCommandSupport.IsPlantaView(b.Embed)).ToList();
 
@@ -261,6 +304,24 @@ namespace RackCad.Plugin
             if (!window.UpdateOnly)
             {
                 RackUnitsGuard.WarnIfNotInches(document);
+            }
+
+            RackViewBatchProductSession<RackFrameConfiguration, RackFrameConfiguration,
+                RackCad.Application.Drawing.HeaderRunPlan> batchProducts = null;
+            RackCad.Application.Views.Batch.RackViewBatchRequest batchRequest = null;
+            if (!window.UpdateOnly)
+            {
+                batchProducts = RackViewBatchProducts.Header(
+                    document, config, id, name, embed, project, authorized.AuthoredInput);
+                batchRequest = RackViewBatchProductSession<RackFrameConfiguration, RackFrameConfiguration,
+                    RackCad.Application.Drawing.HeaderRunPlan>.Request(
+                        RackCad.Application.Views.Preparation.RackProductSourceKind.ExistingRack,
+                        RackSystemKind.Selective, id, window.InsertViews);
+                if (!batchProducts.PrepareAll(batchRequest, out var batchDiagnostic))
+                {
+                    editor.WriteMessage("\nRackCad: no se preparo la cola ID18; no se modifico ningun bloque. " + batchDiagnostic);
+                    return;
+                }
             }
 
             // Redraw with regen:false and regenerate ONCE below — a full drawing regen per view-block is pure waste.
@@ -296,24 +357,8 @@ namespace RackCad.Plugin
             // requested view via the jig. "Actualizar" (UpdateOnly) inserts nothing.
             if (!window.UpdateOnly)
             {
-                if (window.InsertView == RackEmbedDocument.ViewPlanta)
-                {
-                    // A NEW view inserted during an edit inherits the initiating (picked) envelope AND inner wrapper (I-11).
-                    var payload = BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewPlanta, embed, project);
-                    var inserted = new PlantaHeaderDrawService().DrawAndPlace(document, config, payload, name);
-                    editor.WriteMessage(inserted != null && inserted.Success
-                        ? "\nRackCad: vista planta insertada y ligada a la cabecera; RACKEDITAR sobre cualquier vista edita ambas."
-                        : "\nRackCad: no se pudo insertar la planta. " + (inserted?.ErrorMessage ?? string.Empty));
-                }
-                else
-                {
-                    var payload = BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewLateral, embed, project);
-                    var inserted = new LateralHeaderDrawService().DrawAndPlace(document, config, payload, name);
-                    editor.WriteMessage(inserted != null && inserted.Success
-                        ? "\nRackCad: cabecera lateral insertada y ligada al mismo rack (mismo GUID)."
-                        : "\nRackCad: no se pudo insertar la cabecera. " + (inserted?.ErrorMessage ?? string.Empty));
-                }
-
+                RackViewBatchExecution.Run(document, batchProducts, batchRequest,
+                    _ => RackCad.Application.Views.Batch.RackViewBatchRedrawResult.Applied());
                 return;
             }
 

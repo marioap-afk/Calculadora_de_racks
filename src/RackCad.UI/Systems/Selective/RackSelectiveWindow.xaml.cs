@@ -15,6 +15,7 @@ using RackCad.Application.Settings;
 using RackCad.Application.ProjectVariables;
 using RackCad.Application.Systems.Selective;
 using RackCad.Application.Systems.Shared;
+using RackCad.Application.Views.Policy;
 using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Domain.Systems.Shared;
@@ -181,6 +182,7 @@ namespace RackCad.UI.Systems.Selective
 
         /// <summary>Insert/update contract, backed by the shared session (I-15).</summary>
         public bool InsertRequested => session.InsertRequested;
+        public RackInsertionRequest InsertionRequest => session.InsertionRequest;
 
         public SelectiveRackSystem SystemToInsert => (session.InsertionRequest as SelectiveInsertionRequest)?.System;
 
@@ -268,36 +270,39 @@ namespace RackCad.UI.Systems.Selective
         }
 
         /// <summary>
-        /// Lateral/planta are views OF an existing system: enabled only when editing one via RACKEDITAR (and
-        /// inside AutoCAD). A disabled button with the reason in its tooltip beats a rejection MessageBox.
+        /// New racks may start with any address exposed by the product policy. Updating still belongs exclusively to
+        /// an existing rack; this method does not keep a second first-view matrix in the editor.
         /// </summary>
         private void UpdateInsertButtons()
         {
-            // "Actualizar" (redraw existing views in place) and adding a linked lateral/planta only make sense on an
-            // existing rack, so they light up only when editing via RACKEDITAR (and inside AutoCAD). A new rack starts
-            // with "Insertar frontal", which creates the first block.
-            var enabled = isEditingExisting && canInsertInAutoCad;
-            UpdateButton.IsEnabled = enabled;
-            InsertLateralButton.IsEnabled = enabled;
-            InsertPlantaButton.IsEnabled = enabled;
+            UpdateButton.IsEnabled = isEditingExisting && canInsertInAutoCad;
+            InsertLateralButton.IsEnabled = canInsertInAutoCad
+                && (isEditingExisting || IsFirstViewExposed(RackViewAddress.Post(0)));
+            InsertPlantaButton.IsEnabled = canInsertInAutoCad
+                && (isEditingExisting || IsFirstViewExposed(RackViewAddress.Whole(DimensionViewKind.Planta)));
 
-            if (!enabled)
+            if (!canInsertInAutoCad)
             {
-                var reason = !canInsertInAutoCad
-                    ? "Disponible solo cuando la ventana se abre desde AutoCAD."
-                    : "Primero inserta la vista frontal; luego selecciónala con RACKEDITAR y actualiza o agrega vistas desde ahí.";
+                const string reason = "Disponible solo cuando la ventana se abre desde AutoCAD.";
                 UpdateButton.ToolTip = reason;
                 InsertLateralButton.ToolTip = reason;
                 InsertPlantaButton.ToolTip = reason;
             }
             else
             {
-                // Re-enabled (RACKEDITAR): put back the descriptive tooltips, or the disabled reason would linger.
-                UpdateButton.ToolTip = updateButtonTip;
+                UpdateButton.ToolTip = isEditingExisting
+                    ? updateButtonTip
+                    : "Actualizar requiere abrir un rack existente con RACKEDITAR.";
                 InsertLateralButton.ToolTip = insertLateralTip;
                 InsertPlantaButton.ToolTip = insertPlantaTip;
             }
         }
+
+        private static bool IsFirstViewExposed(RackViewAddress address)
+            => RackViewExposure.IsExposed(
+                RackSystemKind.SelectiveRack,
+                address,
+                RackViewProductOperation.CreateFirst);
 
         // ---- Matrix model (state + operations extracted to SelectiveEditorState, I-20) ----
         //
@@ -2540,6 +2545,26 @@ namespace RackCad.UI.Systems.Selective
 
         private void InsertPlanta_Click(object sender, RoutedEventArgs e) => RequestDraw(RackEmbedDocument.ViewPlanta, updateOnly: false);
 
+        private void InsertBatch_Click(object sender, RoutedEventArgs e)
+        {
+            if (!CommitPendingEditors() || !ConfirmPendingCellEdits()) return;
+            var system = BuildSystem(out var design, out var error);
+            if (system == null) { SetStatus(error, true); return; }
+            var options = new System.Collections.Generic.List<Views.RackViewBatchOption>();
+            for (var i = 0; i < SelectiveDepthLayout.Count(system); i++)
+                options.Add(new Views.RackViewBatchOption("Frontal · fondo " + (i + 1), RackViewAddress.Fondo(i)));
+            var cuts = new SelectiveLateralBuilder().Cortes(system, session.Catalog);
+            foreach (var cut in cuts)
+                options.Add(new Views.RackViewBatchOption("Lateral · poste " + (cut.PostIndex + 1), RackViewAddress.Post(cut.PostIndex)));
+            options.Add(new Views.RackViewBatchOption("Planta", RackViewAddress.Whole(DimensionViewKind.Planta)));
+            if (!Views.RackViewBatchDialogPresenter.TryShow(this, RackSystemKind.SelectiveRack, options, out var views)) return;
+            session.Identity.SetName(NameBox.Text?.Trim());
+            session.SetModel(design, system);
+            session.RequestInsertViews(views, ctx => new SelectiveInsertionRequest(system, design, ctx.Id, ctx.Name,
+                RackViewCodec.Encode(RackSystemKind.SelectiveRack, ctx.Views[0]).View));
+            Close();
+        }
+
         /// <summary>"Actualizar": redraw the rack's already-drawn views in place with the current edits, inserting nothing.</summary>
         private void UpdateExisting_Click(object sender, RoutedEventArgs e) => RequestDraw(view: null, updateOnly: true);
 
@@ -2555,17 +2580,15 @@ namespace RackCad.UI.Systems.Selective
                 return;
             }
 
-            // Updating, and adding a linked lateral/planta, only make sense on an existing system (a new rack has no GUID
-            // to link to yet): insert the frontal first, then add the rest via RACKEDITAR.
-            if (!isEditingExisting && (updateOnly || view == RackEmbedDocument.ViewLateral || view == RackEmbedDocument.ViewPlanta))
+            if (!isEditingExisting && updateOnly)
             {
-                MessageBox.Show(
-                    this,
-                    "Primero inserta la vista frontal. Luego selecciónala con RACKEDITAR y desde ahí actualiza o agrega "
-                        + "las demás vistas: así quedan ligadas al sistema (mismo GUID).",
-                    updateOnly ? "Actualizar" : "Vista " + view,
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
+                SetStatus("Actualizar requiere abrir un rack existente con RACKEDITAR.", true);
+                return;
+            }
+
+            if (!isEditingExisting && !IsFirstViewExposed(FirstViewAddress(view)))
+            {
+                SetStatus("La vista elegida no está disponible como primera vista del sistema selectivo.", true);
                 return;
             }
 
@@ -2596,6 +2619,21 @@ namespace RackCad.UI.Systems.Selective
             }
 
             Close();
+        }
+
+        private static RackViewAddress FirstViewAddress(string view)
+        {
+            if (string.Equals(view, RackEmbedDocument.ViewLateral, StringComparison.OrdinalIgnoreCase))
+            {
+                return RackViewAddress.Post(0);
+            }
+
+            if (string.Equals(view, RackEmbedDocument.ViewPlanta, StringComparison.OrdinalIgnoreCase))
+            {
+                return RackViewAddress.Whole(DimensionViewKind.Planta);
+            }
+
+            return RackViewAddress.Fondo(0);
         }
 
         /// <summary>

@@ -1,6 +1,9 @@
+using System;
+using System.Collections.Generic;
 using RackCad.Application.Persistence;
 using RackCad.Application.Systems.Cantilever;
 using RackCad.Application.Systems.PushBack;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems.Cantilever;
 using RackCad.Domain.Systems.Dynamic;
@@ -21,12 +24,50 @@ namespace RackCad.UI.Editor
     /// </summary>
     public abstract class RackInsertionRequest
     {
+        private IReadOnlyList<RackViewAddress> views = Array.Empty<RackViewAddress>();
+
         private protected RackInsertionRequest()
         {
         }
 
         /// <summary>The canonical system kind this request draws (used by the Plugin host to dispatch).</summary>
         public abstract RackSystemKind Kind { get; }
+
+        /// <summary>Ordered semantic views in one insertion intent. Historical insertion requests expose one item;
+        /// updates expose none. G11 only transports this contract; no current Plugin entry point consumes a batch.</summary>
+        public IReadOnlyList<RackViewAddress> Views => views;
+
+        internal void SetViews(IReadOnlyList<RackViewAddress> requested)
+        {
+            if (requested == null) throw new ArgumentNullException(nameof(requested));
+            if (requested.Count == 0) throw new ArgumentException("An insertion batch needs at least one view.", nameof(requested));
+            var copy = new RackViewAddress[requested.Count];
+            for (var index = 0; index < requested.Count; index++) copy[index] = requested[index];
+            views = Array.AsReadOnly(copy);
+        }
+
+        protected void SetSingleView(RackViewAddress address) => SetViews(new[] { address });
+
+        protected void SetLegacySingleView(RackSystemKind kind, string view, int section)
+        {
+            if (string.IsNullOrWhiteSpace(view)) return;
+            var decoded = RackViewCodec.Decode(KindToken(kind), view, section);
+            if (decoded.HasAddress) SetSingleView(decoded.Address);
+        }
+
+        private static string KindToken(RackSystemKind kind)
+        {
+            switch (kind)
+            {
+                case RackSystemKind.SelectiveRack: return "selective";
+                case RackSystemKind.PalletFlow: return "dynamic";
+                case RackSystemKind.PushBack: return "pushback";
+                case RackSystemKind.Cantilever: return "cantilever";
+                case RackSystemKind.Selective: return "cabecera";
+                case RackSystemKind.Cama: return "cama";
+                default: throw new ArgumentOutOfRangeException(nameof(kind));
+            }
+        }
     }
 
     /// <summary>
@@ -35,17 +76,28 @@ namespace RackCad.UI.Editor
     /// </summary>
     public sealed class HeaderInsertionRequest : RackInsertionRequest
     {
-        public HeaderInsertionRequest(RackFrameConfiguration configuration, RackProject sourceProject)
+        public HeaderInsertionRequest(
+            RackFrameConfiguration configuration,
+            RackProject sourceProject,
+            string rackId,
+            RackViewAddress initialAddress)
         {
             // No null-guard on the payload: a module only builds a request when the editor asked to insert (so it is set),
             // and the Plugin's Draw* already returns early on a null payload — matching the old "null → no draw" behavior.
             Configuration = configuration;
             SourceProject = sourceProject; // null for a brand-new header; the library carries the loaded project (I-11)
+            RackId = rackId;
+            InitialAddress = initialAddress;
+            SetSingleView(initialAddress);
         }
 
         public override RackSystemKind Kind => RackSystemKind.Selective;
 
         public RackFrameConfiguration Configuration { get; }
+
+        public string RackId { get; }
+
+        public RackViewAddress InitialAddress { get; }
 
         /// <summary>The loaded library project (its unknown JSON fields + schema version) so the new embed preserves them
         /// (I-11). Null for a brand-new header, where the downstream <c>WithSourceMetadataFrom</c> is a no-op.</summary>
@@ -70,6 +122,7 @@ namespace RackCad.UI.Editor
             View = view;
             Section = section;
             SourceProject = sourceProject; // library wrapper metadata to carry into the embed (I-11); null for a new design
+            SetLegacySingleView(Kind, view, section);
         }
 
         public override RackSystemKind Kind => RackSystemKind.PalletFlow;
@@ -102,6 +155,7 @@ namespace RackCad.UI.Editor
             RackId = rackId;
             RackName = rackName;
             SourceDocument = sourceDocument; // source FlowBed document (unknown fields + version) to carry into the embed (I-11)
+            SetLegacySingleView(Kind, RackEmbedDocument.ViewLateral, -1);
         }
 
         public override RackSystemKind Kind => RackSystemKind.Cama;
@@ -134,6 +188,7 @@ namespace RackCad.UI.Editor
             View = view;
             Section = section;
             SourceProject = sourceProject; // library wrapper metadata to carry into the embed (I-11); null for a new design
+            SetLegacySingleView(Kind, view, section);
         }
 
         public override RackSystemKind Kind => RackSystemKind.PushBack;
@@ -178,6 +233,7 @@ namespace RackCad.UI.Editor
             View = view;
             Section = section;
             SourceProject = sourceProject; // library wrapper metadata to carry into the embed (I-11); null for a new design
+            SetLegacySingleView(Kind, view, section);
         }
 
         public override RackSystemKind Kind => RackSystemKind.Cantilever;
@@ -214,6 +270,16 @@ namespace RackCad.UI.Editor
             RackId = rackId;
             RackName = rackName;
             View = view;
+            SetLegacySingleView(Kind, view, -1);
+
+            // A Selective lateral carries its post as its section, and the historical single-view request has none: it decoded to
+            // NO address, so the host saw an empty request (ONE_RACK_REQUIRED, 0/0). The editor's first lateral is the first
+            // post, exactly as the Dynamic editor's already is (its negative section coerces to post 0); the batch dialog is
+            // how any other post is chosen (G16 C16-01).
+            if (Views.Count == 0 && string.Equals(view, RackEmbedDocument.ViewLateral, StringComparison.OrdinalIgnoreCase))
+            {
+                SetSingleView(RackViewAddress.Post(0));
+            }
         }
 
         public override RackSystemKind Kind => RackSystemKind.SelectiveRack;

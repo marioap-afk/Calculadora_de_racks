@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using RackCad.Application.Systems.Shared;
 using RackCad.Application.Catalogs;
 
 namespace RackCad.UI.Editor
@@ -37,6 +39,30 @@ namespace RackCad.UI.Editor
         public int Section { get; }
 
         public bool UpdateOnly { get; }
+    }
+
+    /// <summary>One accepted editor intent containing an ordered set of typed views and one shared identity.</summary>
+    public readonly struct RackInsertionBatchContext<TDesign, TSystem>
+    {
+        internal RackInsertionBatchContext(
+            string id,
+            string name,
+            TDesign design,
+            TSystem system,
+            IReadOnlyList<RackViewAddress> views)
+        {
+            Id = id;
+            Name = name;
+            Design = design;
+            System = system;
+            Views = views;
+        }
+
+        public string Id { get; }
+        public string Name { get; }
+        public TDesign Design { get; }
+        public TSystem System { get; }
+        public IReadOnlyList<RackViewAddress> Views { get; }
     }
 
     /// <summary>
@@ -88,6 +114,9 @@ namespace RackCad.UI.Editor
         /// <summary>The requested section (-1 on an update), mirroring the editors' <c>updateOnly ? -1 : section</c>.</summary>
         public int InsertSection { get; private set; } = -1;
 
+        /// <summary>Ordered typed views for the accepted request. Single-view inserts contain one item.</summary>
+        public IReadOnlyList<RackViewAddress> InsertViews { get; private set; } = Array.Empty<RackViewAddress>();
+
         /// <summary>The produced payload the host draws, or null until a request is made.</summary>
         public RackInsertionRequest InsertionRequest { get; private set; }
 
@@ -110,6 +139,37 @@ namespace RackCad.UI.Editor
             => Complete(view, section, updateOnly: false, build);
 
         /// <summary>
+        /// Accepts one ordered multi-view intent. Validation happens before identity creation, then the identity is
+        /// ensured once and attached to the single request object. G11 adds no UI or Plugin consumer.
+        /// </summary>
+        public void RequestInsertViews(
+            IReadOnlyList<RackViewAddress> views,
+            Func<RackInsertionBatchContext<TDesign, TSystem>, RackInsertionRequest> build)
+        {
+            if (views == null) throw new ArgumentNullException(nameof(views));
+            if (views.Count == 0) throw new ArgumentException("An insertion batch needs at least one view.", nameof(views));
+            if (build == null) throw new ArgumentNullException(nameof(build));
+
+            var copy = new RackViewAddress[views.Count];
+            for (var index = 0; index < views.Count; index++) copy[index] = views[index];
+            var ordered = Array.AsReadOnly(copy);
+
+            Identity.EnsureId();
+            var request = build(new RackInsertionBatchContext<TDesign, TSystem>(
+                Identity.Id, Identity.Name, Design, System, ordered))
+                ?? throw new InvalidOperationException("The batch request builder returned null.");
+            request.SetViews(ordered);
+
+            UpdateOnly = false;
+            InsertView = null;
+            InsertSection = -1;
+            InsertViews = request.Views;
+            InsertionRequest = request;
+            InsertRequested = true;
+            InsertRequestedRaised?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
         /// "Actualizar": ensures the id, clears view/section (in-place redraw), builds the payload and raises
         /// <see cref="InsertRequestedRaised"/>. Same effect as the editors' <c>RequestDraw(view:null, updateOnly:true)</c>.
         /// </summary>
@@ -129,6 +189,7 @@ namespace RackCad.UI.Editor
             InsertSection = updateOnly ? -1 : section;
             InsertionRequest = build(new RackInsertionContext<TDesign, TSystem>(
                 Identity.Id, Identity.Name, Design, System, InsertView, InsertSection, updateOnly));
+            InsertViews = InsertionRequest?.Views ?? Array.Empty<RackViewAddress>();
             InsertRequested = true;
             InsertRequestedRaised?.Invoke(this, EventArgs.Empty);
         }

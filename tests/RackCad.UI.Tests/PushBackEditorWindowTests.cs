@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using RackCad.Application.Drawing;
 using RackCad.Application.Persistence;
+using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Systems.PushBack;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.PushBack;
@@ -423,6 +424,67 @@ namespace RackCad.UI.Tests
             Assert.NotEqual(r.sig1, r.sig2);                          // the preview plan changed with the corte
             Assert.Equal(RackEmbedDocument.ViewLateral, r.InsertView);
             Assert.Equal(1, r.InsertSection);                        // InsertSection matches the shown corte
+        }
+
+        [Fact]
+        public void LateralInsert_PersistsTheSelectedPhysicalPostIndex_WhenBlankFrontsLeaveAGap()
+        {
+            var design = SampleDesign();
+            design.Structure.Fronts.Add(new DynamicRackFrontDesign { IsActive = false, PalletCount = 1, LoadLevels = 2, PalletsDeep = 4, DepthStartPosition = 3 });
+            design.Structure.Fronts.Add(new DynamicRackFrontDesign { PalletCount = 1, LoadLevels = 2, PalletsDeep = 4, DepthStartPosition = 3 });
+            design.Structure.Fronts[1].IsActive = false;
+            design.Fronts.Add(new PushBackFrontConfig { HighEndBeamPeraltes = { 5.5, 5.5 } });
+            design.Fronts.Add(new PushBackFrontConfig { HighEndBeamPeraltes = { 5.5, 5.5 } });
+
+            var result = StaTestRunner.Run(() =>
+            {
+                var window = new RackPushBackSystemWindow(canInsertInAutoCad: true);
+                window.LoadDesignForNew(design, "PB con claros en blanco", null);
+                var postIndexes = window.LastComputation.LateralCortes.Select(corte => corte.PostIndex).ToArray();
+
+                ((ComboBox)window.FindName("ViewBox")).SelectedIndex = 0;
+                ((ComboBox)window.FindName("LateralSectionBox")).SelectedIndex = 2;
+                EditorWindowTestSupport.ClickNamed(window, "InsertButton");
+                return (postIndexes, window.InsertSection);
+            });
+
+            Assert.Equal(new[] { 0, 1, 3, 4 }, result.postIndexes);
+            Assert.Equal(3, result.InsertSection);
+        }
+
+        [Fact]
+        public void LateralSelector_MapsVisibleOrdinalsToPhysicalPostIndexes_AndFailsClosedWithoutAValidItem()
+        {
+            var plan = new HeaderRunPlan(Array.Empty<HeaderGroup>(), Array.Empty<HeaderBlockInstance>());
+            var options = RackPushBackSystemWindow.LateralViewOptions(new[]
+            {
+                new DynamicLateralCorte(0, 0.0, plan),
+                new DynamicLateralCorte(2, 20.0, plan),
+                new DynamicLateralCorte(5, 50.0, plan)
+            });
+
+            Assert.Equal(new[] { "1", "2", "3" }, options.Select(option => option.Label));
+            Assert.Equal(new[] { 0, 2, 5 }, options.Select(option => option.PostIndex));
+            Assert.Equal(0, RackPushBackSystemWindow.PhysicalPostIndex(options[0]));
+            Assert.Equal(2, RackPushBackSystemWindow.PhysicalPostIndex(options[1]));
+            Assert.Equal(5, RackPushBackSystemWindow.PhysicalPostIndex(options[2]));
+            Assert.Equal(-1, RackPushBackSystemWindow.PhysicalPostIndex(null));
+            Assert.Equal(-1, RackPushBackSystemWindow.PhysicalPostIndex("2"));
+            var empty = RackPushBackSystemWindow.LateralViewOptions(Array.Empty<DynamicLateralCorte>());
+            Assert.Empty(empty);
+            Assert.Equal(-1, RackPushBackSystemWindow.RestoredLateralSelectionIndex(empty, null));
+            Assert.Equal(0, RackPushBackSystemWindow.RestoredLateralSelectionIndex(options, null));
+            Assert.Equal(-1, RackPushBackSystemWindow.RestoredLateralSelectionIndex(
+                options,
+                new RackPushBackSystemWindow.LateralViewOption("stale", 1)));
+
+            var contiguous = RackPushBackSystemWindow.LateralViewOptions(new[]
+            {
+                new DynamicLateralCorte(0, 0.0, plan),
+                new DynamicLateralCorte(1, 10.0, plan),
+                new DynamicLateralCorte(2, 20.0, plan)
+            });
+            Assert.Equal(new[] { 0, 1, 2 }, contiguous.Select(option => option.PostIndex));
         }
 
         private static string PlanSignature(HeaderRunPlan plan)

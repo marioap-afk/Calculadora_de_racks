@@ -254,9 +254,9 @@ namespace RackCad.Tests
         private static string EditInsertStatement()
         {
             var body = Body(Commands(), "internal static void EditSelective(");
-            var at = body.IndexOf("window.InsertView", StringComparison.Ordinal);
+            var at = body.IndexOf("new SelectiveInsertPort", StringComparison.Ordinal);
 
-            Assert.True(at >= 0, "EditSelective tiene que insertar la vista pedida");
+            Assert.True(at >= 0, "EditSelective tiene que insertar la cola pedida");
 
             var start = body.LastIndexOf('\n', at) + 1;
             var end = body.IndexOf(';', at);

@@ -13,6 +13,7 @@ using RackCad.Domain.Systems.Shared;
 using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Systems.PushBack;
 using RackCad.Plugin.Systems.Shared;
+using RackCad.Plugin.Views;
 using RackCad.UI;
 using RackCad.UI.Editor;
 using RackCad.UI.Systems.PushBack;
@@ -181,8 +182,14 @@ namespace RackCad.Plugin
             var name = string.IsNullOrWhiteSpace(window.RackName) ? embed.Name : window.RackName;
             var baseName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
             system.Name = name;
+            RackAuthorizedSiblingBatch authorized = null;
 
-            var blocks = RackCommandSupport.FindRackBlocks(document, id);
+            if (!window.UpdateOnly)
+            {
+                if (!RackUnsupportedSiblingInsert.TryAuthorize(document, blockId, embed, id, out authorized)) return;
+            }
+
+            var blocks = !window.UpdateOnly ? authorized.Blocks.ToList() : RackCommandSupport.FindRackBlocks(document, id);
             if (blocks.Count == 0)
             {
                 blocks.Add((blockId, embed));
@@ -228,6 +235,22 @@ namespace RackCad.Plugin
             if (!window.UpdateOnly)
             {
                 RackUnitsGuard.WarnIfNotInches(document);
+            }
+
+            RackViewBatchProductSession<PushBackDesign, PushBackSystem, RackCad.Application.Drawing.HeaderRunPlan> batchProducts = null;
+            RackCad.Application.Views.Batch.RackViewBatchRequest batchRequest = null;
+            if (!window.UpdateOnly)
+            {
+                batchProducts = RackViewBatchProducts.PushBack(document, system, design, id, name, embed, project, authorized.AuthoredInput);
+                batchRequest = RackViewBatchProductSession<PushBackDesign, PushBackSystem,
+                    RackCad.Application.Drawing.HeaderRunPlan>.Request(
+                        RackCad.Application.Views.Preparation.RackProductSourceKind.ExistingRack,
+                        RackSystemKind.PushBack, id, window.InsertionRequest.Views);
+                if (!batchProducts.PrepareAll(batchRequest, out var batchDiagnostic))
+                {
+                    editor.WriteMessage("\nRackCad: no se preparo la cola ID18; no se modifico ningun bloque. " + batchDiagnostic);
+                    return;
+                }
             }
 
             // --- Multiview redraw: catalog + lateral cuts computed ONCE, geometry never recomputed here ---
@@ -339,9 +362,8 @@ namespace RackCad.Plugin
 
             if (!window.UpdateOnly)
             {
-                // The NEW view inherits the picked (initiating) envelope AND the inner wrapper (I-11): same GUID, current
-                // name, unknown envelope metadata + unknown/non-degraded inner-project version.
-                DrawPushBackView(window.InsertView, window.InsertSection, system, design, id, name, source: embed, innerSource: project);
+                RackViewBatchExecution.Run(document, batchProducts, batchRequest,
+                    _ => RackCad.Application.Views.Batch.RackViewBatchRedrawResult.Applied());
                 return;
             }
 

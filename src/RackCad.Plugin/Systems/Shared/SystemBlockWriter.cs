@@ -39,6 +39,28 @@ namespace RackCad.Plugin.Systems.Shared
             }
         }
 
+        /// <summary>
+        /// Materializes an already-prepared plan. The caller has already run the requirement import/query flow;
+        /// repeating it here would make the final availability report differ from the geometry being placed.
+        /// </summary>
+        internal static LateralHeaderBlockResult CreatePreparedBlock(
+            Document document, LateralHeaderDrawer drawer, HeaderRunPlan plan, string baseName, string payloadJson)
+        {
+            var database = document.Database;
+            using (document.LockDocument())
+            using (var transaction = database.TransactionManager.StartTransaction())
+            {
+                var result = drawer.CreateSystemBlock(database, transaction, plan, baseName);
+                if (!string.IsNullOrEmpty(payloadJson))
+                {
+                    RackBlockData.Write(transaction, result.DefinitionId, payloadJson);
+                }
+
+                transaction.Commit();
+                return result;
+            }
+        }
+
         /// <summary>Redefine an existing block DEFINITION in place from a plan; every copy updates on regen.
         /// Pass <paramref name="regen"/> = false when redrawing several blocks in a loop and regen ONCE after —
         /// a full drawing regeneration per block is pure waste (same pattern as LateralHeaderDrawService).</summary>

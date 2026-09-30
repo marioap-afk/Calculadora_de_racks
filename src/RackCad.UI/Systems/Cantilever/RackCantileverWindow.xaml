@@ -328,6 +328,9 @@
                 <Button x:Name="InsertPlantaButton" Content="Insertar planta" Style="{StaticResource SecondaryButtonStyle}"
                         MinWidth="130" Margin="0,0,8,0" ToolTipService.ShowOnDisabled="True" Click="InsertPlanta_Click"
                         ToolTip="Inserta la VISTA EN PLANTA de la línea completa, ligada a esta línea (mismo GUID)." />
+                <Button x:Name="InsertBatchButton" Content="Insertar varias…" Style="{StaticResource PrimaryButtonStyle}"
+                        MinWidth="135" Margin="0,0,8,0" Click="InsertBatch_Click"
+                        ToolTip="Elige y ordena varias vistas de la misma línea." />
             </StackPanel>
         </shell:RackEditorVisualShell.PrimaryActions>
         <shell:RackEditorVisualShell.TrailingActions>

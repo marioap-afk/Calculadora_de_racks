@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application.Catalogs;
@@ -57,6 +58,15 @@ namespace RackCad.Plugin.Systems.Dynamic
                 catalog => postIndex >= 0 ? builder.Build(system, catalog, postIndex) : builder.Build(system, catalog),
                 payloadJson,
                 regen);
+
+        internal PreparedViewRedraw PrepareRedraw(Database database, ObjectId blockId, DynamicRackSystem system, string payloadJson, int postIndex = -1)
+            => ViewBlockDraw.PrepareRedraw(database, blockId, system != null && !blockId.IsNull,
+                "No hay sistema para actualizar.", drawer,
+                catalog => postIndex >= 0 ? builder.Build(system, catalog, postIndex) : builder.Build(system, catalog), payloadJson);
+
+        internal LateralHeaderDrawOutcome RedrawInTransaction(Database database, Transaction transaction,
+            PreparedViewRedraw prepared, out IReadOnlyCollection<ObjectId> staleDefinitions)
+            => ViewBlockDraw.RedrawInTransaction(database, transaction, prepared, out staleDefinitions);
 
         private static string BlockName(DynamicRackSystem system, string rackName)
             => RackViewBaseName.DynamicLateral(system, rackName);

@@ -1387,6 +1387,9 @@
                             MinWidth="130"
                             Margin="0,0,8,0"
                             Click="InsertPlanta_Click" />
+                    <Button x:Name="InsertBatchButton" Content="Insertar varias…"
+                            Style="{StaticResource PrimaryButtonStyle}" ToolTip="Elige y ordena lateral y planta."
+                            Margin="0,0,8,0" Click="InsertBatch_Click" />
                     <Button Content="Cerrar"
                             Style="{StaticResource SecondaryButtonStyle}"
                             MinWidth="90"

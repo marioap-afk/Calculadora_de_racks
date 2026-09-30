@@ -10,7 +10,9 @@ using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
 using RackCad.Application.StructuralSections;
 using RackCad.Application.Systems.Cantilever;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.Cantilever;
+using RackCad.Domain.Systems.Shared;
 using RackCad.UI.Controls;
 using RackCad.UI.Editor;
 using RackCad.UI.Systems.Cantilever.Components;
@@ -1279,6 +1281,30 @@ namespace RackCad.UI.Systems.Cantilever
             RequestDraw(RackEmbedDocument.ViewLateral, LateralStationIndex(), updateOnly: false);
 
         private void Update_Click(object sender, RoutedEventArgs e) => RequestDraw(null, -1, updateOnly: true);
+
+        private void InsertBatch_Click(object sender, RoutedEventArgs e)
+        {
+            Recompute();
+            if (!currentInputsAreValid || lastComputation == null)
+            { SetStatus("Corrige los datos: no se puede insertar una línea que no se resolvió.", true); return; }
+            var options = new System.Collections.Generic.List<Views.RackViewBatchOption>
+            {
+                new Views.RackViewBatchOption("Frontal", RackViewAddress.Whole(DimensionViewKind.Frontal)),
+                new Views.RackViewBatchOption("Planta", RackViewAddress.Whole(DimensionViewKind.Planta))
+            };
+            for (var i = 0; i < lastComputation.Line.Stations.Count; i++)
+                options.Add(new Views.RackViewBatchOption("Lateral · estación " + (i + 1), RackViewAddress.Station(i)));
+            if (!Views.RackViewBatchDialogPresenter.TryShow(this, RackSystemKind.Cantilever, options, out var views)) return;
+            session.Identity.SetName(NameBox.Text?.Trim());
+            session.SetModel(lastComputation.Design, lastComputation.Line);
+            session.RequestInsertViews(views, ctx =>
+            {
+                var syntax = RackViewCodec.Encode(RackSystemKind.Cantilever, ctx.Views[0]);
+                return new CantileverInsertionRequest(lastComputation.Line, lastComputation.Design,
+                    ctx.Id, ctx.Name, syntax.View, syntax.Section, sourceProject);
+            });
+            Close();
+        }
 
         private void RequestDraw(string view, int section, bool updateOnly)
         {

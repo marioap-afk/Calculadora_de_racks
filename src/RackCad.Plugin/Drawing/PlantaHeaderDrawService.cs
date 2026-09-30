@@ -43,6 +43,15 @@ namespace RackCad.Plugin.Drawing
                 payloadJson,
                 regen);
 
+        internal PreparedViewRedraw PrepareRedraw(Database database, ObjectId blockId, RackFrameConfiguration config, string payloadJson)
+            => ViewBlockDraw.PrepareRedraw(database, blockId, config != null && !blockId.IsNull,
+                "No hay cabecera para actualizar.", drawer,
+                catalog => new HeaderRunPlan(new List<HeaderGroup>(), builder.Build(config, catalog)), payloadJson);
+
+        internal LateralHeaderDrawOutcome RedrawInTransaction(Database database, Transaction transaction,
+            PreparedViewRedraw prepared, out IReadOnlyCollection<ObjectId> staleDefinitions)
+            => ViewBlockDraw.RedrawInTransaction(database, transaction, prepared, out staleDefinitions);
+
         private static string BlockName(string rackName)
             => RackViewBaseName.CabeceraPlanta(rackName);
     }

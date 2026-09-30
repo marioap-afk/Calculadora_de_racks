@@ -1,6 +1,6 @@
 # Project Handoff
 
-> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-09-29**.
+> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-09-30**.
 > La arquitectura se consulta en [ARCHITECTURE.md](ARCHITECTURE.md), el proceso en
 > [WORKFLOW.md](WORKFLOW.md), el plan en [ROADMAP.md](ROADMAP.md), los procedimientos en
 > [guias/](guias/) y la historia anterior en
@@ -11,6 +11,15 @@
 RackCad es un plugin de AutoCAD 2025 (.NET 8, C#/WPF) para diseñar y dibujar racks industriales
 con BOM. El trunk único es `main`; Domain y Application son puros, UI usa WPF sin AutoCAD y Plugin
 es el único adaptador de la API de AutoCAD.
+
+**I-55 — View Placement & Projection (ID17 + ID18 + ID19) — INTEGRADA** el **2026-09-30** (`feature/creacion-de-vistas`, Workflow V1). **ID17** primera vista
+libre (un rack nuevo empieza por cualquier vista que su sistema soporte), **ID18** cola de vistas (varias vistas en una operacion, con redibujo atomico de
+hermanas) e **ID19** `RACKPROYECTAR` / `RPY` (proyecta racks ya dibujados como vistas enlazadas del mismo rack: mismo `RackId`, sin cambio de BOM; plan puro con
+todo bloqueo antes de los puntos, una transformacion comun y una transaccion del llamador sobre AUTH-15). Pares: misma clase, Planta ↔ Frontal, Planta ↔
+Lateral y Frontal ↔ Lateral (sobre la altura, C16-07); orientacion **Proyectada** (por defecto; solo gira la referencia de bloque) o **Predeterminada** (C16-06);
+los racks sin nombre se proyectan y siguen sin nombre. Owner Validation **APROBADA** sobre el Candidato `6dcd6595` (ronda 7, todos los grupos OV PASS) tras seis
+rondas correctivas. Sin cambios de Foundation ni de esquema. [Evidencia](automation/evidence/I-55-evidence.md), [decisiones](automation/decisions/I-55.md) y tag
+`integration/I-55` (SHAs de cierre y merge, CI posterior, cobertura y limpieza).
 
 **I-52-AUTH15-C1 — AUTH-15 admite un `Name` logico en blanco — INTEGRADA** el **2026-09-29** (`feature/i52-auth15-c1-unnamed-envelope`, Workflow V2, T8-A).
 Unidad correctiva de proposito unico de I-52, abierta por el Owner para que `RACKPROYECTAR` (I-55) pueda proyectar racks sin nombre conservandolos sin nombre. Cambio unico: `RackDefinitionCreator.Precheck` ya no rechaza un
@@ -1462,6 +1471,10 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
+**I-55 (2026-09-30) — OWNER VALIDATION APPROVED.** Candidato `6dcd6595`: Core Full 12281/12281, UI Full 1636 (+17 omitidas historicas, 0 fallos), builds Debug de
+UI y Plugin y Release del Plugin con 0 errores, CI de push 4/4 (run 36727291676) y cobertura exacta (run 36727916198). AutoCAD 2025: todos los grupos canonicos
+OV PASS con el DLL `1.0.0+6dcd6595…` (SHA-256 `8994E500…5FF7`). Ver la [evidencia](automation/evidence/I-55-evidence.md).
+
 **I-52-AUTH15 (2026-09-29) — CANDIDATE PASS / ADMISION EN HOST PASS UNDER DOCUMENT-AUTHORITY.** Core Full
 11342/11342, UI Full 1581 (+17 omitidas historicas, 0 fallos), builds Debug de UI y Plugin con 0 errores (2 advertencias
 `MSB3277` preexistentes en la base) y CI de push 4/4 sobre el Candidato `0b6abdd5`. Host: RUN-3 (paquete `fcca6e6c`,
@@ -2003,7 +2016,12 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### I-55 G16 se reconcilia sobre el nuevo main (I-52-AUTH15-C1 integrada)
+### I-60 (nombre automatico de racks nuevos) se reconcilia sobre el main con I-55
+
+Su Candidato `541834b7` quedo obsoleto al integrarse I-55: rebasar `feature/nombre-automatico-racks`, aplicar la enmienda prevista por su Freeze (la ruta de lote
+de ID18 con rack nuevo asigna UN nombre por rack, compartido por todas sus vistas iniciales), nuevo Candidato y validacion del Owner.
+
+### (historico) I-55 G16 se reconcilia sobre el nuevo main (I-52-AUTH15-C1 integrada)
 
 Reconciliar `feature/creacion-de-vistas` (Candidato rechazado `3f06994a`) sobre el nuevo `main`: quitar `UnnamedRackNotProjectable` y el servicio `LogicalName`, conservar C16-04, actualizar las pruebas de I-55 que fijaban `Name` en la precondicion de AUTH-15,
 crear un Candidato nuevo y repetir SMOKE A (rack con nombre) y SMOKE B (rack sin nombre) antes de la matriz OV-ID19.
@@ -3821,6 +3839,9 @@ visualmente** y no debe presentarse como tal.
 la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
+
+**Cierre de I-55 — 2026-09-30:** Candidato `6dcd6595` aprobado por el Owner con CI y cobertura exactos; el commit de cierre (solo documental) lleva sus propias
+suites, builds y CI; merge `--no-ff`, CI posterior al merge con cobertura y limpieza se registran en `integration/I-55`.
 
 **Baseline Candidate de I-59 — 2026-09-24** (pendiente de evidencia propia del cierre e integracion):
 

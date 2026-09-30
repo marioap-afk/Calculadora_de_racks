@@ -88,6 +88,7 @@ no una regla geométrica defectuosa.
 | `RACKSELECTIVO` | Selectivo, matriz, fondos, vistas y seguridad. |
 | `RACKEDITAR` | Recuperación del diseño y redibujo en sitio. |
 | `RACKDUPLICAR` | Identidad independiente frente a COPY de AutoCAD; varios racks y vistas en un gesto (§5.7). |
+| `RACKPROYECTAR` / `RPY` | Proyección de racks a otra clase de vista como vistas enlazadas del mismo rack, en una sola transacción (§5.9). |
 | `RACKLISTA` | Inventario de racks, vistas y copias. |
 | `RACKBOMTOTAL` | BOM consolidado sin duplicar vistas. |
 | `RACKLAYOUT` / `RACKRELLENAR` | Colocación y relleno determinista. |
@@ -123,6 +124,12 @@ total si solo se ejecutó un smoke test.
 - Cabecera: lateral y planta.
 - Confirma que la `Section` seleccionada reaparece correctamente y que todos los bloques con el
   mismo GUID se redibujan una sola vez, sin vistas huérfanas.
+- Primera vista libre: crea cada sistema con una primera vista distinta de la histórica (planta, lateral,
+  frontal de entrada o de salida) y agrega después las demás con `RACKEDITAR` → `Insertar`; `Esc` o `Enter` en
+  el jig de la primera vista no deja ninguna definición con datos de rack.
+- Cola de vistas: coloca varias vistas de una vez, con `Esc` en una intermedia y `Enter` en la última; lo ya
+  actualizado y colocado se conserva y lo que faltaba no se crea. Todas comparten el GUID del rack.
+- Descripción para el usuario en la [guía de vistas ligadas y proyección](vistas-ligadas-y-proyeccion.md).
 
 ### 5.4 BOM
 
@@ -287,6 +294,38 @@ Planta— en qué **tipos** de vista se dibujan las cotas
   los *extents* del bloque. Es consecuencia aceptada: regístrala, no la reportes como defecto.
 - **Legacy**: un rack dibujado antes de I-50 abre con las tres casillas marcadas y se redibuja EXACTAMENTE igual;
   guardarlo sin tocarlas no cambia su dato.
+
+### 5.9 Proyección con `RACKPROYECTAR`
+
+`RACKPROYECTAR` (alias `RPY`) crea vistas enlazadas de otra clase para racks ya dibujados. Tras la clase pregunta
+`Orientacion [PRoyectada/PREdeterminada] <PRoyectada>` (Enter = Proyectada). Recorre lo que el alcance exija (la
+matriz completa OV-ID19, OV-C16-06 y OV-UNNAMED vive en la guía de validación del gate G16 de I-55):
+
+- **Orientación**: solo gira la referencia de bloque, entera (geometría, textos, cotas); la definición no cambia.
+  Proyectada: el eje compartido con la vista origen conserva su dirección y sentido en el dibujo (la vista nueva
+  puede quedar de lado o de cabeza). Predeterminada: la presentación normal de RackCad.
+- **Misma clase** (Planta → Planta): con Proyectada, disposición y giros conservados, solo trasladados; con
+  Predeterminada, el grupo se gira para dejar sus vistas sin girar (el punto base cae en el destino) y se rechaza
+  si los racks tienen giros distintos (`SourceRotationsDiffer`). `Origin ≠ 0` en la definición fuente no desplaza
+  la vista nueva.
+- **Planta → Frontal / Lateral** y **Frontal / Lateral → Planta**: las vistas quedan sobre una línea común con el
+  orden y la separación sobre el eje compartido. Con Predeterminada, con racks girados 180° el sentido no depende
+  de cuántos estén girados; con Proyectada, racks opuestos se rechazan antes del punto
+  (`SourceOrientationDivergent`).
+- **Racks sin nombre**: se proyectan y siguen sin nombre («(sin nombre)» en `RACKLISTA`).
+- **Frontal ↔ Lateral** (C16-07): se proyecta sobre la altura; la vista nueva se alinea por su línea de suelo. Proyectada: la referencia conserva
+  el giro de la vista origen; Predeterminada: sin girar. La cabecera (sin frontal) se rechaza antes del punto (`PairNotExposed`); frontales opuestas
+  en Proyectada, con `SourceOrientationDivergent`.
+- **Avisos antes del punto**: superposición entre vistas nuevas y cercanía al límite del sentido; no bloquean.
+- **Bloqueos antes del punto**, con todos los ofensores: mezclas de clases, xref, `MINSERT`, escala distinta de 1,
+  reflexión, un rack con varias definiciones, cama de rodamiento; una pieza requerida sin bloque o sin biblioteca.
+- **Puntos**: `Esc`, `Enter` o un error no escriben ni importan nada.
+- **Una sola transacción**: un fallo al escribir deja el dibujo como estaba (sin definiciones huérfanas; `PURGE`
+  no encuentra definiciones de rack sin referencias).
+- **Identidad y conteo**: las vistas nuevas conservan el GUID del rack; `RACKLISTA` y `RACKBOMTOTAL` cuentan los
+  mismos racks y el mismo BOM.
+- **Guardar y reabrir**: las vistas persisten y `RACKEDITAR` desde una vista proyectada actualiza todas las del
+  rack.
 
 ## 6. Criterios de aprobación
 

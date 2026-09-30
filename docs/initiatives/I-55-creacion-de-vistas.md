@@ -1,0 +1,482 @@
+---
+schema: rackcad-initiative/v1
+id: I-55
+title: "View Placement & Projection (ID17 + ID18 + ID19)"
+type: feature
+status: integrated
+branch: feature/creacion-de-vistas
+base_branch: main
+priority:
+size:
+depends_on: [I-57]
+conflicts_with: []
+context_packs: [autocad-plugin, ui-editors, persistence, architecture-kernel, system-selective, system-dynamic-flowbed]
+automation_state_path:
+decision_paths: [docs/automation/decisions/I-55.md]
+requires_ci: true
+requires_plugin_build: true
+requires_autocad: true
+requires_owner_decision: true
+requires_owner_validation: true
+automation:
+  enabled: false
+  auto_merge: false
+  max_attempts: 3
+---
+
+# I-55 — View Placement & Projection
+
+> **Fase actual: G7 OPEN — Prepare de producto. G6 completo.**
+> [Proposal V5](I-55-proposal-v5.md), [mapa V5](I-55-implementation-map-v5.md),
+> [contrato I-57 integrado](I-57-shared-view-foundation.md) y recibo `integration/I-57`.
+>
+> - V4: Coordinator **CHANGES REQUIRED → V5**. AR4-01..50 es entrada tecnica vinculante aceptada por el Coordinador;
+>   no es una revision formal independiente. V1..V4 permanecen historicas.
+> - V5 exacta `f49671e29c6cc817166c720fe3f975deb92d4c3b`: **GOVERNING / FROZEN FOR IMPLEMENTATION**;
+>   Coordinator **AGREED**; Architect formal **AGREED**; Owner **ACCEPTED**; Technical Consensus **REACHED**.
+> - Owner: Shared View Foundation independiente = aceptada; OD-1..OD-8 = opciones recomendadas aceptadas;
+>   M-01 = **Relative Frame Window** (OD-7.e A). ADR-0042 = **ACCEPTED** el 2026-09-21.
+> - Dependencia neutral: I-57 esta integrada en `main` por `7097057cf8685bf5ecc09083cba37379d4a4aae8` y su
+>   recibo anotado `integration/I-57` fue verificado en G2I. AUTH-01..13 y AUTH-14 como caracterizaciones estan
+>   disponibles para consumo. AUTH-15 sigue fuera de I-57 y bloquea solamente G15.
+> - Foundation gaps: **NONE**. Proposal V6: **NOT REQUIRED**. AUTH-15 permanece bajo I-52 y no bloquea G3..G14.
+> - Proposal V5 exacta: `f49671e29c6cc817166c720fe3f975deb92d4c3b`. R1 queda historica; R3 es `EFFECTIVE`
+>   con blob `cd42db03becff42f98b047e61c46689c17a69670` y el tag de integracion es la senal consumible.
+> - Paquetes: [Coordinador](I-55-coordinator-review-package-v5.md), [Arquitecto independiente](I-55-architect-review-package-v5.md)
+>   y [reconciliacion G2I post-I-57](I-55-post-i57-reconciliation.md).
+>
+> **Consensus Freeze: COMPLETE. G6: COMPLETE. G7: OPEN.** G6 materializo solo politica pura de producto sobre
+> codec, availability y exposure de Foundation; no agrego consumers ni cambio UX, dibujo o persistencia.
+
+### Alcance abierto de G3
+
+G3 caracteriza exclusivamente seams y comportamiento de producto de I-55: primera vista vigente por sistema,
+matriz de exposición, Insertar y update/redraw actuales, pertenencia de hermanas, gate de Custom Properties, ciclo de
+vida de `RackId`, seams actuales de colocación/materialización, cancelación, informes, paridad BOM/listado, baselines
+PR-1/PR-2 y colocación fuente/referencia de ID19. No modifica producción.
+
+G3 no duplica CT-04, CT-05, CT-16, CT-RES, CT-PLAN, CT-NAME, CT-SCAN, CT-GEO, CT-BLK ni CT-AUTH; esas
+caracterizaciones pertenecen a I-57.
+
+```text
+Initiative     = I-55 — View Placement & Projection
+Owner IDs      = ID17 FIRST-VIEW FREEDOM · ID18 MULTI-VIEW QUEUE / BATCH · ID19 MULTI-RACK PROJECTION
+Branch         = feature/creacion-de-vistas   (nombre del bootstrap; se conserva por decision CD-05)
+Worktree       = ~/.codex/worktrees/feature-creacion-de-vistas
+BASE_SHA       = ba497f14581d81e83a27514852d6ec082ff57635   (base original: merge de I-54)
+CURRENT_BASE   = dad4e77f4f267b9fa248ecb0c8bfd8a74bbab093   (merge de I-53D; rebase al abrir G1.1)
+
+                 original (sobre ba497f1)                    rebasado (sobre dad4e77)
+CLAIM_SHA      = 24bb9cad77d945fecc00ec41f46ba0d0a7abb1de   6976262c6376fbda0c5b68afa2c3d3bdb95e8dc6
+BOOTSTRAP_SHA  = 5f774b459eb8b13732e4ae5c4e93a909874a10c5   5b5c4f6624bbd2d58d8419de071493d3735a6230
+DISCOVERY_SHA  = cf207b95020dbeb5a5164184b83dddb6658278e5   2d0f9bf03e70b8411ef4104b06609c542c5d71ff
+G1_CLOSE_SHA   = 96f6444f12b609e4ac009c8975b63cdc2c993338   717a38d2cc5b809cbcaab1e2748ae150070a85bf
+
+Claim-Id       = f96a4b1f-40ff-40d0-b3cf-e2cfad778cc7
+Archivo        = tag archive/i-55-creacion-de-vistas-pre-rebase-96f6444 (punta previa al rebase)
+Decisiones     = docs/automation/decisions/I-55.md
+```
+
+> **Correccion G1.1 (2026-09-13).** G0 y G1 afirmaron que la orden de apertura no fijaba un resultado de producto ni
+> un ID del Owner. **Esa afirmacion era incorrecta y queda retirada.** El Coordinador detecto la contradiccion y la
+> resolvio con caracter vinculante (decisiones CD-01..CD-09 en
+> [`docs/automation/decisions/I-55.md`](../automation/decisions/I-55.md)). La evidencia tecnica del
+> [Discovery](I-55-discovery.md) no cambia; cambia su lectura de producto.
+
+## 0. Gobierno de la iniciativa
+
+```text
+Owner → Coordinador I-55 ↔ Arquitecto I-55 → consenso congelado → implementador
+```
+
+- El ejecutor **no sustituye** al Coordinador ni al Arquitecto, **no declara** sus veredictos y **no declara**
+  consenso si ambos no lo emitieron sobre la **misma** version.
+- **NO SUBSTANTIVE IMPLEMENTATION BEFORE `Coordinator = AGREED` AND `Architect = AGREED` ON THE SAME PLAN VERSION.**
+- Hasta entonces se admite todo trabajo documental, de analisis, caracterizacion, diseno y planificacion que no cambie
+  comportamiento productivo.
+
+## 1. Objetivo
+
+I-55 entrega **tres capacidades de producto** que forman **una sola iniciativa** porque comparten **una sola
+infraestructura: preparar una representacion de vista antes de materializarla en AutoCAD**.
+
+- **ID17 — FIRST-VIEW FREEDOM.** Crear un rack comenzando por **cualquier vista que ese sistema realmente soporte**.
+  Ejemplo valido: crear un Selectivo desde **Planta** y despues agregar Frontal y Lateral **sin perder `RackId`, datos
+  authored ni coherencia**.
+- **ID18 — MULTI-VIEW QUEUE / BATCH.** Elegir **varias vistas de UN mismo rack en un flujo** y colocarlas
+  consecutivamente: Frontal → colocar → Lateral → colocar → Planta → colocar. **Todas comparten el mismo `RackId`**.
+- **ID19 — MULTI-RACK PROJECTION.** Seleccionar **varios racks ya existentes**, pedir **una misma clase de vista**,
+  generarla para todos y **preservar su layout relativo mediante UNA transformacion comun**. **Cada rack conserva SU
+  `RackId`**: **no** es `RACKDUPLICAR`, **no** hay `NewRackId` y **no** es un re-estampado de copia independiente.
+
+**Resultado verificable** (tras consenso e implementacion): las tres capacidades en todos los sistemas vigentes que
+dibujan vistas, sobre una frontera de **preparacion de vistas** verificable sin AutoCAD, con los invariantes de
+identidad, authored, metadatos y conteo de la seccion 11.
+
+## 2. Problema (evidencia de G1)
+
+El [Discovery](I-55-discovery.md) mide la linea base sobre el codigo:
+
+- **Primera vista restringida** en Selectivo (solo frontal), Dinamico (solo lateral) y Cabecera (solo lateral); libre
+  en Push Back y Cantilever (Discovery §6.2). **ID17** elimina esa restriccion por sistema, sin exigir uniformidad.
+- **Una vista por gesto**: toda ventana cierra tras una insercion; no hay cola ni lote (Discovery §6.3). **ID18** la
+  sustituye por un flujo de varias vistas del mismo rack.
+- **No existe proyeccion multi-rack**: las rutas de copia existentes (`RACKDUPLICAR`, `RACKLAYOUT` independiente) crean
+  identidad nueva o solo replican la planta (Discovery §15-16). **ID19** crea vistas **de los mismos racks**.
+- **Riesgos de base** que la foundation debe cerrar: la vista enlazada copia el sobre de la vista elegida sin comparar
+  hermanas (Discovery §7, §12); la variante se elige a veces en la ventana y a veces en el Plugin (§5); y **H-01**
+  demuestra el peligro de usar un indice de UI como contrato de `Section` (§21).
+
+## 3. Alcance
+
+1. **G0 — reclamo y bootstrap**: HECHO.
+2. **G1 — Discovery**: HECHO; su evidencia sigue vigente (§2.1 del Discovery registra la re-medicion tras el rebase).
+3. **G1.1 — correccion contractual**: framing, Owner IDs, objetivo y alcance; reclasificacion de OQ-1..OQ-7; fila
+   propia de ROADMAP; rebase sobre `dad4e77` y reconciliacion de la evidencia del Dinamico. Solo documentacion.
+4. **G2 — Proposal y consenso**: Proposal V1 (NOT CONSENSUS; Coordinator = CHANGES REQUIRED), en G2B Proposal V2
+   (NOT CONSENSUS; Coordinator = CHANGES REQUIRED → V3), en G2D Proposal V3 (NOT CONSENSUS; decision CQ-01 → V4) y, en G2E, Proposal V4
+   (NOT CONSENSUS), ADR propuesto si corresponde, mapa de implementacion, diseno de pruebas y de validacion del Owner, y
+   paquetes de revision para Coordinador y Arquitecto. Autorizado como documentacion; el consenso lo emiten Coordinador y
+   Arquitecto.
+5. **Implementacion** de ID17, ID18 e ID19 sobre la foundation acordada, por los gates que fije el consenso.
+   **BLOQUEADA.**
+
+## 4. Fuera de alcance
+
+- **Produccion antes del consenso**: nada en `src/`, `tests/`, `assets/`, `eng/`, `deploy/`, `tools/` ni `.github/`.
+- `docs/HANDOFF.md` fuera de la integracion ([WORKFLOW](../WORKFLOW.md) §2).
+- **Corregir H-01..H-12 incidentalmente** (CD-07). Si uno bloquea directamente el contrato, se aisla como prerrequisito
+  justificado antes de tocar produccion.
+- **Unicidad incidental de `(RackId, View, Section)`** (OQ-4): se preserva el comportamiento legacy.
+- **Geometria nueva**: los builders por sistema siguen siendo la autoridad geometrica.
+- **Drive-In**: no existe como sistema productivo; no se inventa.
+- **Cambiar la semantica** de `RACKDUPLICAR` (I-51), `RACKLAYOUT` o `RACKRELLENAR`.
+- **Reabrir ADR aceptados** ([ADR-0009](../adr/0009-identidad-guid-embebida-en-dwg.md),
+  [ADR-0010](../adr/0010-actualizar-redibuja-insertar-liga-vistas.md),
+  [ADR-0034](../adr/0034-project-variables-autoridad-drawing-level.md),
+  [ADR-0035](../adr/0035-visibilidad-de-cotas-por-tipo-de-vista.md),
+  [ADR-0039](../adr/0039-custom-properties-persistencia-autoridad.md)) sin un ADR nuevo.
+- **Territorio de iniciativas activas**: I-49 (motor de expresiones) e I-52 (`RACKMIRROR`). I-55 debe ser compatible
+  con ambas **sin depender** de ellas.
+
+## 5. Contexto requerido
+
+- [ARCHITECTURE.md](../ARCHITECTURE.md) §4.1; ADR-0009, ADR-0010, ADR-0034, ADR-0035 y ADR-0039.
+- [Discovery](I-55-discovery.md) y [decisiones de I-55](../automation/decisions/I-55.md).
+- Contratos de [I-50](I-50-cotas-independientes-por-vista.md), [I-51](I-51-rackduplicar-multiples-origenes.md),
+  [I-54](I-54-propiedades-personalizadas.md), [I-11](I-11-persistencia-uniforme.md) e
+  [I-53D](I-53D-cabeceras-multidestino-dinamico.md) (integrada en `dad4e77`).
+- I-49 e I-52 **en sus ramas remotas**, solo lectura y en el SHA exacto que se cite.
+- [AGENTS.md](../../AGENTS.md) e [I-45](I-45-test-validation-workflow.md) (evidencia por clase y por SHA exacto).
+- Context Packs del frontmatter; Push Back y Cantilever se leen desde el registro de sistemas y sus subarboles.
+
+## 6. Dependencias
+
+- **Sin dependencias pendientes**: I-47, I-48, I-50, I-51, I-53D (integrada en `dad4e77`) e I-54 estan en `main`.
+- **Paralelas**: I-49 y I-52; su estado y su cruce se re-miden antes de cada gate material (Discovery §2.1).
+- **I-53D** ya forma parte de la base: la ventana del Dinamico que I-55 modificara es la de I-53D, re-auditada en G1.1.
+- `conflicts_with` queda **vacio**: I-55 aun no tiene archivos de produccion. Lo fija el consenso de G2 con el cruce
+  re-medido.
+- **Entrada del Owner**: `requires_owner_decision: true`. El Owner fijo el producto en G1.1; las decisiones de
+  experiencia de usuario que la Proposal no pueda cerrar con evidencia se formulan como decisiones concretas (opcion A,
+  opcion B, compromiso, recomendacion y consecuencia).
+
+## 7. Archivos esperados
+
+**Esta sesion (solo documentacion)**: `docs/initiatives/I-55-*.md`, `docs/automation/decisions/I-55.md`, un ADR
+**propuesto** en `docs/adr/` con su linea en `docs/adr/README.md` si corresponde, y la fila propia de I-55 en
+`docs/ROADMAP.md` (correccion ordenada en G1.1).
+
+**Produccion**: la fija el consenso de G2; el mapa previsto por archivo y simbolo vive en la Proposal y en el mapa de
+implementacion, ambos **sin consenso**. Una desviacion material frente a lo acordado obliga a detenerse.
+
+## 8. Fases
+
+| # | Fase | Entregable | Estado |
+|---|---|---|---|
+| G0 | Reclamo + bootstrap | Reclamo atomico publicado, contrato y fila en ROADMAP | **HECHA** |
+| G1 | Discovery | [I-55-discovery.md](I-55-discovery.md): matriz sistema × ViewKind × variante | **HECHA** |
+| G1.1 | Correccion contractual | Framing ID17 + ID18 + ID19, OQ reclasificadas, rebase y reconciliacion | **HECHA** (commit de esta correccion) |
+| G2 | Proposal y consenso | V1..V4 historicas; G2F: [Proposal V5](I-55-proposal-v5.md), [mapa V5](I-55-implementation-map-v5.md), spec/map/reconciliacion/ADR neutral, ADR-0042 propuesto; [paquete Coordinador V5](I-55-coordinator-review-package-v5.md) y [paquete Architect V5](I-55-architect-review-package-v5.md). G2G registra decisiones del Owner y veredicto del Coordinador sin modificar V5 | V5 exacta `f49671e`: Coordinator AGREED; Architect formal PENDING; Owner product decisions ACCEPTED; ADR-0042 PROPOSED; Consensus NOT REACHED |
+| G3+ | Implementacion, Candidato, validacion del Owner, integracion | Gates del mapa de implementacion **tras el consenso** | **bloqueada** |
+
+## 9. Pruebas y builds
+
+Se fijan en el consenso de G2. Ya es exigible por norma: las **dos suites** en local sobre el Candidato, **CI verde
+sobre el SHA exacto** y builds Debug de UI y de Plugin (AGENTS.md, «Pruebas — definicion de terminado»). La Proposal
+maximiza la logica **pura** verificable sin AutoCAD y minimiza las guardas de texto (I-45). G0, G1, G1.1 y G2 son
+documentales: su evidencia es el CI de cada commit.
+
+## 10. Validacion manual
+
+**Requerida** en la implementacion: crear, encolar y proyectar vistas cambia el comportamiento de dibujo y solo el Plugin
+toca AutoCAD (AGENTS.md, punto 5). El checklist de AutoCAD 2025 (OV-ID17, OV-ID18, OV-ID19 y metadatos) se **disena**
+en G2 y se **ejecuta** solo sobre el Candidato. G0..G2 no la requieren.
+
+## 11. Criterios de aceptacion
+
+**Preliminares; los congela el consenso de G2.** Recogen lo vinculante de G1.1 y la doctrina aceptada:
+
+1. **Identidad.** Una vista hermana conserva el `RackId` de su rack; ID18 crea todas sus vistas con **un** `RackId`;
+   ID19 **conserva** los `RackId` originales y **no** crea identidad nueva (ADR-0009, CD-03, CD-04).
+2. **Authored/effective.** Nunca se reconstruye authored desde geometria efectiva; `ProjectVariableReference`, las
+   expresiones futuras de I-49, `DimensionViews`, `CustomProperties`, `ExtensionData` y `SchemaVersion` sobreviven.
+3. **Sin divergencia nueva.** I-55 no crea autoridad authored divergente entre hermanas (OQ-5).
+4. **Conteo.** Agregar vistas **nunca** agrega racks: una vista hermana no suma un rack; un lote F + L + P de un rack
+   nuevo es **un** rack; ID19 sobre N `RackId` son N racks antes y despues; `RACKLISTA` puede mostrar mas vistas pero
+   no multiplica racks ni cambia copias por vistas nuevas; el BOM no puede elegir un authored divergente creado por I-55.
+5. **Racks parciales.** Un rack existente puede recibir cualquier vista hermana soportada, incluido uno que hoy solo
+   tenga Planta (OQ-7).
+6. **Geometria.** Ninguna geometria nueva: los builders existentes producen toda vista.
+7. **Legado.** Los flujos de una sola vista, `RACKLAYOUT`, `RACKDUPLICAR`, el BOM, `RACKLISTA`, Project Variables,
+   Custom Properties y las cotas de I-50 no regresan.
+
+## 12. Condiciones para detenerse
+
+- **Implementacion bloqueada** hasta `Coordinator = AGREED` y `Architect = AGREED` sobre la **misma** Proposal.
+- **M-01 resuelta por el Owner** con Relative Frame Window y las opciones recomendadas. Sin la reconciliacion obligatoria con I-52 de las
+  autoridades compartidas, la integracion de I-57 y el veredicto formal del Architect no hay Consensus Freeze (Proposal V5 §2.6 y §7.1).
+- Contradiccion material no resoluble con evidencia; decision del Owner no contestada por las decisiones vigentes;
+  necesidad de veredicto del Arquitecto; conflicto Git o semantico ambiguo; fallo que invalide evidencia previa.
+- Cruce material con archivos de produccion de I-49 o I-52 al fijar los archivos de G2: reportarlo antes de continuar.
+- `docs/HANDOFF.md` **no se toca**.
+
+## 13. Estado versionado y entrega del Pull Request
+
+Sin `docs/automation/state/I-55.yml` (`automation.enabled: false`). Las decisiones viven en
+[`docs/automation/decisions/I-55.md`](../automation/decisions/I-55.md). El estado vivo se deriva de
+`origin/feature/creacion-de-vistas`. No hay Pull Request; la integracion es manual (WORKFLOW §4.5).
+
+## 14. Evidencia final
+
+**Reclamo atomico (G0).** Primer `git push -u origin feature/creacion-de-vistas` aceptado sin force (`* [new
+branch]`) sobre `ba497f1`, con `origin` sin referencias a I-55. `main` no fue modificada.
+
+**Bootstrap (G0).** Este contrato y la fila de I-55 en `docs/ROADMAP.md`; solo documentacion.
+
+**Discovery (G1).** [I-55-discovery.md](I-55-discovery.md): matriz sistema × ViewKind × variante (§5), creacion y
+primera vista (§6), vistas enlazadas (§7), `RequestDraw` (§8), materializacion (§9), authored/effective,
+`DimensionViews`, `CustomProperties` y `ProjectVariables` (§10-13), BOM y listado (§14), `RACKLAYOUT` (§15), I-51
+(§16), cancelacion (§17), pruebas (§18), cruces (§19), preguntas (§20) y hallazgos H-01..H-12 (§21).
+
+**G1.1.** `origin/main` avanzo a `dad4e77` (merge de I-53D, CI de `push` success) y la rama se rebaso al abrir la sesion
+(WORKFLOW §4.2), sin conflictos: `range-diff` con reclamo, Discovery y cierre de G1 identicos y el bootstrap cambiado
+solo en contexto de ROADMAP; publicacion con `--force-with-lease` sobre `96f6444`. La ventana del Dinamico se re-audito
+sobre la nueva base (Discovery §2.1). Este commit corrige el framing, reclasifica OQ-1..OQ-7 y crea el registro de
+decisiones. Solo documentacion.
+
+**G2 — Proposal V1 (sin consenso).** `d1918ab9a44ce7ae391aeacc10ff6686c8807a61`: Proposal V1, mapa de implementacion V1,
+ADR-0042 propuesto (sucesor propuesto de ADR-0010), fila del indice de ADR y seccion G2 del registro de decisiones. CI de
+`push` 34814797798: success en sus cuatro trabajos (Tests Domain + Application, UI Tests, Build UI, Build Plugin without
+AutoCAD). Antes del commit: re-fetch con `main` en `dad4e77`; I-49 publico ADR-0041 en su rama durante la redaccion, asi
+que el ADR de I-55 es 0042; revision adversarial propia y con un agente de solo lectura (Proposal §23). Los paquetes de
+revision citan ese SHA exacto. Solo documentacion; HANDOFF y ROADMAP sin tocar.
+
+**G2B — Proposal V2 (sin consenso).** El Coordinador emitio `CHANGES REQUIRED` sobre la Proposal V1 (CR-01..CR-12 en el
+registro de decisiones). `f84f303adc132a7d72ebc3e2c5cf3d7bf9faf6e1` publica la Proposal V2, el mapa de implementacion
+V2, ADR-0042 revisado y todavia propuesto, la fila del indice de ADR y la seccion G2B del registro. CI de `push`
+34863498499: success en sus cuatro trabajos. Antes del commit se hizo el preflight y el re-fetch: `main` en `dad4e77`
+sin avance; I-49 avanzo a `75f1862` e I-52 a `2275f21` (Proposal V11, con la reconciliacion obligatoria con I-55
+antes de cualquier freeze). La revision adversarial tuvo tres pasadas (Proposal V2 §23). Los paquetes de revision V2
+citan ese SHA exacto. Proposal V1, mapa V1 y paquetes V1 quedan como registro historico. Solo documentacion; HANDOFF
+y ROADMAP sin tocar.
+
+**G2C — revisiones sobre V2.** El Coordinador concluyo su revision tecnica sin blocker nuevo, pero no declaro
+`AGREED`: M-01 y X-1..X-8 siguen abiertas. Recomienda al Owner las opciones A, sin decision del Owner registrada. La
+revision del Arquitecto, asignada por la orden a esta sesion y hecha con revisores independientes de solo lectura, se
+registra en [I-55-architect-review-v2.md](I-55-architect-review-v2.md):
+- veredicto `CHANGES REQUIRED — PROPOSAL V3`, con MEDIUM AR2-01..AR2-06 y LOW AR2-07..AR2-20;
+- X-1..X-8 AGREED;
+- A-8 = complemento con nota posterior fechada en ADR-0010.
+
+Solo documentacion; HANDOFF y ROADMAP sin tocar. **Corregido en G2D:** el Coordinador reclasifica esa revision como revision tecnica
+adversarial; el veredicto formal del Arquitecto queda `PENDING`.
+
+**G2D — Proposal V3 (sin consenso).** Estado de V2: Coordinator = `CHANGES REQUIRED → V3`, Architect formal = `PENDING`.
+`8e35a51058033c2876c1935afd3f3a94931748ae` publica la Proposal V3, el mapa V3, ADR-0042 revisado (propuesto y complementario de ADR-0010, que no se
+modifica), la fila del indice de ADR, la seccion G2D del registro y la nota de reclasificacion de la revision de G2C. CI de `push`
+34881178359: success en sus cuatro trabajos. Preflight: `main` en `dad4e77` sin avance; antes del commit, I-49 avanzo a `f6f0991`
+(Amendment A3), I-52 a `dd45b0f` (Proposal V13, releida para X-1..X-8, sin MATERIAL CONFLICT) e I-56 a `0d66df2` (Evidence Audit). La
+revision adversarial de 20 puntos, con pase de verificacion, no dejo BLOCKER ni HIGH abiertos (Proposal V3 §23). Los paquetes V3 citan
+ese SHA exacto; el del Arquitecto es para un Arquitecto independiente. Sin decisiones del Owner registradas. Proposal V1 y V2, sus mapas y
+sus paquetes quedan como registro historico. Solo documentacion; HANDOFF y ROADMAP sin tocar.
+
+**G2E — Proposal V4 (sin consenso).** El Coordinador decidio CQ-01 sobre V3: el redibujo de las hermanas existentes durante Insertar pasa
+a PREPARE → una MUTATE → POST, y las vistas nuevas siguen colocandose una a una. `fe70d7a76c77f0c0eec01f242924a7a50a2adc4c` publica la Proposal V4
+(reconciliacion acotada de CQ-01), el mapa V4 (G9 dividido en G9a y G9b), ADR-0042 revisado (propuesto y complementario), la fila del
+indice de ADR y la seccion G2E del registro. CI de `push` 34889818061: success en sus cuatro trabajos. Preflight: `main` en `dad4e77` sin
+avance; I-52 avanzo a `e59bc89` (Proposal V14, releida para X-1..X-8 y CQ-01, sin MATERIAL CONFLICT); antes del commit, I-49 a `c8cfee2`
+(A3-R1) e I-56 a `18401da` (Proposal V1 de Workflow V2, que no se aplica a I-55). La revision adversarial de los ataques de la orden, con
+pase de verificacion, no dejo BLOCKER ni HIGH abiertos (Proposal V4 §23). Los paquetes V4 citan ese SHA exacto. Sin decisiones del Owner
+registradas. Proposals V1, V2 y V3, sus mapas y sus paquetes quedan como registro historico. Solo documentacion; HANDOFF y ROADMAP sin
+tocar.
+
+**G2F — Takeover aceptado (2026-09-15).** Se preservan los ocho borradores locales legitimos, se reconcilian con I-52 V17
+publicada y se separa foundation neutral de producto. Matriz AR4 completa con pendientes explicitados; mecanismo B recomendado,
+sin asignar ID ni ADR. Registro y evidencia exacta: decisiones G2F. CQ-01 permanece; Actualizar conserva su conducta.
+
+**Recibo G2F:** Proposal/spec `f49671e29c6cc817166c720fe3f975deb92d4c3b`; R1 y ambos paquetes `aa37264381e7d386339305d11030314ffd219d63`. CI de A y B verdes por push exacto,
+con cuatro trabajos success cada una. Registro literal SVF-RECONCILIATION en decisiones; no EFFECTIVE sin I52. La CI del recibo se
+entrega tras su push; no se infiere. Coordinator REVIEW REQUIRED, Architect formal PENDING, Owner PENDING, Consensus NOT REACHED,
+SUBSTANTIVE IMPLEMENTATION BLOCKED.
+
+**G2G — decisiones del Owner y veredicto del Coordinador (2026-09-15).** El Owner autoriza y acepta I-57 Shared View Foundation como
+iniciativa neutral independiente, acepta Relative Frame Window para M-01 y mantiene las opciones recomendadas de OD-1..OD-8. El
+Coordinador emite `AGREED` sobre la Proposal V5 exacta `f49671e29c6cc817166c720fe3f975deb92d4c3b`. La Proposal permanece inmutable;
+el detalle durable vive en decisiones G2G. Architect formal PENDING; ADR-0042 PROPOSED; Foundation ADR PROPOSED / NUMBER PENDING;
+R1 aceptada por I-55 pero NOT EFFECTIVE; Consensus NOT REACHED; SUBSTANTIVE IMPLEMENTATION BLOCKED. I-57 completa solo F0 y F1 no se abre.
+
+**G2H — registro exacto de R3 (2026-09-15).** I-55 registra la publicacion inmutable R3
+`e7baa255bd7c2632b071c90b84130c7ca35805fe`, blob `cd42db03becff42f98b047e61c46689c17a69670`. I-52 ya registro
+el mismo objeto en `ebc6634137d57283514fdeb0670ff7918ec5eb40`; I-57 tambien lo tiene registrado. No hay CR material
+abierta contra R3. Al publicarse este registro, R3 queda `EFFECTIVE` por coincidencia de los tres registros, aunque
+sigue sin ser consumible mientras el Integration SHA de I-57 este vacio. I-57 posee solo AUTH-01..14 y hechos
+neutrales; I-55 conserva ID17–19, Relative Frame Window, CQ-01, anchoring, queue, UX y materialization policy.
+Proposal V5 queda inmutable. ADR-0042 y ADR-0044 siguen `PROPOSED`; la implementacion sustantiva permanece
+`BLOCKED`.
+
+# Estado G3 (2026-09-21)
+
+El Consensus Freeze de Proposal V5 permanece vigente. G3 caracteriza producto sin modificar produccion; su receipt durable es
+[`I-55-g3-product-characterization.md`](I-55-g3-product-characterization.md). PR-1 y PR-2 quedan abiertos y caracterizados para G4 y G5,
+respectivamente. G4 solo abre cuando Full, builds Debug y CI exacta del SHA de cierre de G3 queden verdes; G5 permanece cerrado.
+
+# Estado G4 (2026-09-21)
+
+G4 corrige solo PR-1: la lateral Push Back persiste el `PostIndex` fisico del item seleccionado y la vista previa busca
+el mismo corte por esa identidad. El receipt durable es
+[`I-55-g4-pr1-pushback-postindex.md`](I-55-g4-pr1-pushback-postindex.md). PR-2 permanece abierto y caracterizado; G4
+queda completo y G5 abierto. La validacion manual OV-G4 queda diferida al Candidato.
+
+# Estado G5 (2026-09-21)
+
+G5 corrige solo PR-2: los dos callers Plugin de Cantilever entregan `design.PlantaVisibility` al builder existente, de
+modo que insercion y redibujo materializan la seleccion persistida. El receipt durable es
+[`I-55-g5-pr2-cantilever-plantavisibility.md`](I-55-g5-pr2-cantilever-plantavisibility.md). PR-1 permanece resuelto;
+PR-2 queda resuelto, G5 completo y G6 abierto. La validacion manual OV-G5 queda diferida al Candidato.
+
+# Estado G6 (2026-09-21)
+
+G6 agrega decisiones puras `Accept`, `AcceptCanonicalized` y `Reject` sobre `RackViewCodec`,
+`RackViewAvailability` y una matriz de exposure separada por operacion. Los seis sistemas productivos quedan
+explicitamente cubiertos; Flow Bed solo expone `CreateFirst`. El receipt durable es
+[`I-55-g6-codec-availability-policy.md`](I-55-g6-codec-availability-policy.md). Foundation, schema, UI, Plugin,
+ID17, ID18, ID19 y AUTH-15 permanecen sin cambios. G6 queda completo y G7 abierto.
+
+# Estado G7 (2026-09-21)
+
+G7 agrega una frontera pura de Product Prepare en Application. Las intenciones `NewRack` y `ExistingRack` son
+explicitas; la aceptacion aplica primero las policies G6 y concentra el lifecycle de `RackId`. Un contexto nuevo
+aceptado acuña una sola identidad y la comparte entre sus vistas; un rechazo no acuña ninguna; un rack existente
+conserva su identidad. Prepare no genera identidades.
+
+El flujo consume `IRackResolvePort`, `IRackViewPreparationPort`, `RackPreparedView<TPayload>`, BaseName,
+requirements y comparator authored de Foundation. Resolve y Prepare ocurren una vez; payload, BaseName y requirements
+permanecen tipados. Existing falla cerrado ante authored divergente, ilegible o sin comparator demostrado. El receipt
+durable es [`I-55-g7-product-prepare.md`](I-55-g7-product-prepare.md).
+
+No hay AutoCAD, UI, materializacion, persistencia, schema ni cambio productivo de Foundation. ID17 completo, ID18,
+ID19 y AUTH-15 permanecen fuera. Owner Validation no es requerida para este gate. G7 queda completo y G8 abierto; G8
+no se inicia en esta sesion.
+
+# Estado G9a (2026-09-22)
+
+G9a agrega un seam reusable, todavia no cableado, para clasificar y redibujar hermanas existentes de forma atomica.
+Una sola funcion produce `Redraw`, `Erase`, `ReadOnly`, `NotMember` y `BlockingUnreadable`, conserva el snapshot del
+barrido y comparte exactamente el conjunto mutable con los gates futuros. Una superviviente exige referencia directa
+de layout; las referencias anidadas no bastan.
+
+Prepare completa planes y preflight de layers antes de escribir. Mutate posee una sola transaccion y un commit para
+todas las unidades; fallo tipado o excepcion descartan todo. Post solo corre tras commit y concentra un unico regen.
+El caso solo-huerfanas se difiere a la primera colocacion de G9b. El receipt durable es
+[`I-55-g9a-atomic-redraw-seam.md`](I-55-g9a-atomic-redraw-seam.md).
+
+No se conectan comandos, no se colocan vistas y no se implementan ID17, ID18, ID19 o AUTH-15. Foundation,
+persistencia y schema no cambian. Owner Validation no es requerida para este gate. G9a queda completo y G9b abierto;
+G9b no se inicia en esta sesion.
+
+# Estado G9b (2026-09-22)
+
+G9b cablea `RACKEDITAR -> Insertar` con un barrido unico, membership reusable, gates de Custom Properties y authored,
+Resolve/Prepare, el seam atomico G9a y la colocacion individual G8. Selective completa la operacion y comparte el Id
+curado con hermanas y vista nueva. Los otros cuatro kinds con sisters consumen los comparators AUTH-13 vigentes y
+fallan cerrados mientras Foundation los mantenga como no demostrados. Flow Bed permanece fuera.
+
+Actualizar no entra al nuevo driver. Xrefs no se escriben; layers bloqueadas detienen antes de Mutate; rollback evita
+placement; Post ocurre tras commit y `TopTransaction` debe quedar null. El caso solo-huerfanas usa modo 2 dentro de la
+transaccion del primer jig sin implementar AUTH-15. Missing blocks de ID17/ID18 conservan place + report.
+
+El receipt durable es [`I-55-g9b-insertar-integration.md`](I-55-g9b-insertar-integration.md). Foundation y schema no
+cambian. Owner Validation queda diferida al Candidato. G9b queda completo y G10 abierto; G10 no se inicia en esta
+sesion.
+
+# Estado G10 (2026-09-22)
+
+G10 entrega ID17: Selective, Dynamic y Cabecera permiten iniciar un rack desde cualquier vista que su exposure
+`CreateFirst` realmente publica. La UI consume la policy G6, una intencion aceptada conserva un solo RackId y el
+request de Cabecera transporta identidad y direccion tipada hasta los builders existentes. Push Back y Cantilever no
+cambian; Flow Bed no adquiere sisters.
+
+La colocacion sigue siendo individual por G8 y `RACKEDITAR -> Insertar` sigue por G9b con la misma identidad. No se
+implementaron ID18, ID19 ni AUTH-15. Foundation y schema permanecen intactos. El receipt durable es
+[`I-55-g10-id17-first-view-freedom.md`](I-55-g10-id17-first-view-freedom.md). Owner Validation `OV-ID17` queda
+diferida al Candidato. G10 queda completo y G11 abierto; G11 no se inicia en esta sesion.
+
+# Estado G11 (2026-09-22)
+
+G11 entrega el contrato puro ID18 para una cola ordenada de vistas de un solo rack. Selecciona variantes y prepara toda
+la cola antes de escribir, representa una sola ejecucion del sibling redraw para racks existentes y coloca cada vista
+como paso independiente. Cancelacion o fallo parcial conservan redraw y placements previamente confirmados.
+
+Una intencion nueva comparte un solo RackId; una existente conserva el suyo. `RackInsertionRequest.Views` agrega la
+lista ordenada sin romper las solicitudes single-view. Flow Bed multivista se rechaza y missing requirements conserva
+`place + report`. El receipt durable es
+[`I-55-g11-id18-batch-contract.md`](I-55-g11-id18-batch-contract.md).
+
+No hay UI visible, dialogo, comando o driver Plugin. ID18 queda `CONTRACT COMPLETE / NOT YET USER-VISIBLE`; ID19 y
+AUTH-15 permanecen fuera. Foundation y schema no cambian. Owner Validation no es requerida para este gate. G11 queda
+completo y G12 abierto; G12 no se inicia en esta sesion.
+
+# Estado G12 (2026-09-23)
+
+G12 hace visible ID18 para Selective, Dynamic, Push Back, Cantilever y Cabecera mediante un dialogo/presenter tipado y
+un driver Plugin que consume el contrato G11. La cola conserva orden y variantes, prepara todo antes de escribir,
+reutiliza AUTH-13/Resolve, ejecuta una fase de redraw de hermanas y coloca cada vista por G8. Cancel/None/Error quedan
+separados; missing blocks conserva `place + report`. Flow Bed no adquiere batch.
+
+I-58 resuelve `G12-CR-01`; I-55 consume los comparators Foundation sin duplicarlos. El receipt durable es
+[`I-55-g12-id18-ui-driver.md`](I-55-g12-id18-ui-driver.md). Foundation y schema permanecen intactos; ID19 y AUTH-15
+siguen fuera. Owner Validation `OV-ID18` queda diferida al Candidato. G12 queda completo y G14 abierto; G14 no se
+inicia en esta sesion. G15 permanece bloqueado por AUTH-15/I-52.
+
+# Estado G15 (2026-09-29)
+
+G14 entrego el contrato puro de ID19 sobre I-59 ([recibo](I-55-g14-id19-pure-group-projection.md)). AUTH-15 quedo integrada en `main`
+(`integration/I-52-AUTH15` anotado sobre `3375aadb`) y G15 entrega ID19 de extremo a extremo: el comando `RACKPROYECTAR` (alias `RPY`)
+proyecta racks como vistas enlazadas del mismo rack. Lee el dibujo una vez, pide el plan puro de G14 (todo bloqueo antes de los puntos),
+pide base y destino con `GetPoint` y `AllowNone`, importa y verifica la biblioteca y escribe en UNA transaccion del llamador con UN `Commit`,
+creando cada definicion con `RackDefinitionCreator.CreateInTransaction`; cualquier fallo no confirma nada. Conserva el `RackId`, no hay
+`Regen` ni purga ni lote parcial, y Flow Bed sigue rechazado. El recibo durable es
+[`I-55-g15-id19-command.md`](I-55-g15-id19-command.md). Foundation y esquema permanecen intactos. Owner Validation `OV-ID19` queda
+preparada y diferida al Candidato. **G15: COMPLETE. G16 (Candidato, validacion del Owner e integracion): OPEN.** G16 no se inicia en esta sesion.
+
+# Estado G16 (2026-09-30)
+
+G16 es el gate del Candidato final, la validacion del Owner y la integracion. Las rondas de Owner Validation 1..5 rechazaron los Candidatos
+`beb9597b`, `bc622f12`, `50f6c8bf`, `66a9a504` y `3f06994a` (registro en la [guia de validacion](I-55-g16-owner-validation.md) §8); sus correcciones
+C16-01, C16-02 y C16-04 estan RESUELTAS. Por decision de producto del Owner, **C16-05 queda SUPERSEDED / REMOVED**: `RACKPROYECTAR` proyecta racks
+heredados sin nombre y los conserva sin nombre, sobre AUTH-15 corregida por `I-52-AUTH15-C1` (integrada, `integration/I-52-AUTH15-C1`), a la que I-55 se
+reconcilio. **C16-06** entrega la orientacion de la vista proyectada ([diseño congelado](I-55-c16-06-projected-orientation.md)): la pregunta
+`Orientacion [PRoyectada/PREdeterminada] <PRoyectada>` tras la clase; **Proyectada** (por defecto) gira la referencia de bloque entera para que el eje que
+comparte con su vista origen apunte donde apunta en la fuente; **Predeterminada** conserva la presentacion normal de RackCad. La definicion de bloque,
+los planes, AUTH-15, la Foundation y el esquema no cambian.
+
+Producto final de I-55: **ID17** primera vista libre, **ID18** cola de vistas (varias vistas de una vez) e **ID19** `RACKPROYECTAR` / `RPY` (proyeccion de
+varios racks como vistas enlazadas, con orientacion Proyectada o Predeterminada y soporte de racks sin nombre). *(Estado escrito antes de C16-07 y del cierre; ver abajo.)*
+
+# Cierre (2026-09-30)
+
+La ronda 6 rechazo `68115269` (Frontal → Lateral = `PairNotExposed`); **C16-07** ([diseño congelado](I-55-c16-07-elevation-projection.md)) expone Frontal ↔
+Lateral como proyeccion ortografica sobre la altura en todo sistema con ambas clases, en Proyectada y Predeterminada. La ronda 7 **APROBO** el Candidato final
+`6dcd65959c48495dcf439b267d0fca68de9807b0` (todos los grupos OV PASS). **ID17, ID18 e ID19: COMPLETE. G16: COMPLETE. I-55: integrada** (merge `--no-ff` en
+`main`; `MERGE_SHA`, CI posterior, cobertura y limpieza en el tag `integration/I-55`). Evidencia: [I-55-evidence.md](../automation/evidence/I-55-evidence.md).

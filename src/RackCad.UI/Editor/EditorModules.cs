@@ -50,10 +50,10 @@ namespace RackCad.UI.Editor
             return Build(window);
         }
 
+        // The window's session already built the typed request, with the ordered views of a single insertion or of a batch.
+        // Rebuilding it here from the legacy view token dropped a batch (G16 C16-01), so it is returned verbatim.
         private static RackInsertionRequest Build(RackSelectiveWindow window)
-            => window.InsertRequested
-                ? new SelectiveInsertionRequest(window.SystemToInsert, window.DesignToInsert, window.RackId, window.RackName, window.InsertView)
-                : null;
+            => window.InsertRequested ? window.InsertionRequest : null;
     }
 
     /// <summary>Dynamic pallet-flow (<see cref="RackSystemKind.PalletFlow"/>) → <see cref="RackDynamicSystemWindow"/>.</summary>
@@ -87,12 +87,10 @@ namespace RackCad.UI.Editor
             return Build(window);
         }
 
+        // Verbatim, like Push Back: the window's request already carries the wrapper metadata of a library open (I-11) and the ordered
+        // views of a batch, which rebuilding it from the legacy view token dropped (G16 C16-01).
         private static RackInsertionRequest Build(RackDynamicSystemWindow window)
-            => window.InsertRequested
-                ? new DynamicInsertionRequest(
-                    window.SystemToInsert, window.DesignToInsert, window.RackId, window.RackName,
-                    window.InsertView, window.InsertSection, window.SourceProjectToInsert) // null for a new design; the library wrapper metadata for a library open (I-11)
-                : null;
+            => window.InsertRequested ? window.InsertionRequest : null;
     }
 
     /// <summary>Push Back (<see cref="RackSystemKind.PushBack"/>) → <see cref="RackPushBackSystemWindow"/>, initiative I-18.
@@ -193,7 +191,10 @@ namespace RackCad.UI.Editor
             var configuration = new HardcodedStandardRackFrameService().CreateDefault();
             var window = new RackFrameConfiguratorWindow(configuration, context.CanInsertInAutoCad) { Owner = context.Owner };
             window.ShowDialog();
-            return window.InsertRequested ? new HeaderInsertionRequest(window.Configuration, sourceProject: null) : null;
+            if (!window.InsertRequested) return null;
+            var request = new HeaderInsertionRequest(window.Configuration, sourceProject: null, window.RackId, window.InsertAddress.Value);
+            request.SetViews(window.InsertViews);
+            return request;
         }
 
         public RackInsertionRequest OpenFromLibrary(RackProject project, RackDesignLibraryEntry entry, RackEditorLaunchContext context)
@@ -202,7 +203,10 @@ namespace RackCad.UI.Editor
             window.ShowDialog();
             // Carry the wrapper metadata when the header came from a RackProject wrapper; a bare legacy header's project has
             // no source document, so WithSourceMetadataFrom downstream is a no-op (I-11).
-            return window.InsertRequested ? new HeaderInsertionRequest(window.Configuration, sourceProject: project) : null;
+            if (!window.InsertRequested) return null;
+            var request = new HeaderInsertionRequest(window.Configuration, sourceProject: project, window.RackId, window.InsertAddress.Value);
+            request.SetViews(window.InsertViews);
+            return request;
         }
     }
 
