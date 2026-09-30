@@ -72,15 +72,19 @@ namespace RackCad.Plugin.Views
                     return RackProjectionDefinitionResult.Created(result.BlockName, result.DefinitionId);
                 }
 
+                // The envelope AUTH-15 was given, so a refusal names the field instead of leaving it to inference.
+                var given = " [sobre: Id='" + view.Envelope.Id + "', Kind='" + view.Envelope.Kind + "', Name='" + view.Envelope.Name
+                    + "', View='" + view.Envelope.View + "', Section=" + view.Envelope.Section + "; nombre base='" + view.BaseName + "']";
+
                 // A family that observed an incomplete definition is a materialisation failure: the caller does not commit.
                 if (result.Failure == RackDefinitionCreationFailure.MissingLibraryBlocks)
                 {
                     return RackProjectionDefinitionResult.Failed(
-                        RackProjectionWriteFailure.DefinitionIncomplete, result.Failure + ": " + result.Diagnostic);
+                        RackProjectionWriteFailure.DefinitionIncomplete, result.Failure + ": " + result.Diagnostic + given);
                 }
 
                 return RackProjectionDefinitionResult.Failed(
-                    RackProjectionWriteFailure.DefinitionCreationFailed, result.Failure + ": " + result.Diagnostic);
+                    RackProjectionWriteFailure.DefinitionCreationFailed, result.Failure + ": " + result.Diagnostic + given);
             }
 
             public RackProjectionReferenceResult PlaceReference(
