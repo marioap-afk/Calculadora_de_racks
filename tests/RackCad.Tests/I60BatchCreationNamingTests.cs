@@ -196,8 +196,10 @@ namespace RackCad.Tests
             var menu = Body(Code("src/RackCad.Plugin/RackMenuCommands.cs"), "public void RackCad(");
             var at = menu.IndexOf(label, StringComparison.Ordinal);
             Assert.True(at >= 0, "case not found: " + label);
+            // Up to the next case label (a case may contain an early «break;», e.g. the Cantilever geometry gate).
             var body = menu.Substring(at);
-            return body.Substring(0, body.IndexOf("break;", StringComparison.Ordinal));
+            var next = body.IndexOf("\n                    case ", label.Length, StringComparison.Ordinal);
+            return next < 0 ? body : body.Substring(0, next);
         }
 
         private static int Count(string text, string token)
