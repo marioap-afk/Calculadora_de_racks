@@ -1,0 +1,604 @@
+{
+ "analysis": {
+  "facts": [
+   {
+    "id": "F1.1",
+    "topic": "1. Missing library pieces (drawer)",
+    "statement": "In LateralHeaderDrawer.AppendInstance, a block piece whose BlockName is blank or not present in the active drawing's BlockTable is skipped without throwing: it is added once to the `missing` list (dedup key = BlockName ?? PieceId ?? Role, plus \"|\" + View) and the method returns false. No reference is created for it, and the rest of the plan keeps being drawn.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:293-303 (the comment at :302 says \"skip rather than throw\"); dedup set created per call at :33 (CreateSystemBlock) and :121 (RedefineSystemBlock)",
+    "status": "FACT"
+   },
+   {
+    "id": "F1.2",
+    "topic": "1. Missing library pieces (drawer)",
+    "statement": "CreateSystemBlock and RedefineSystemBlock return the skipped pieces as LateralHeaderDrawOutcome.MissingInstances. Neither method throws or aborts because of them.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:78-80, :180-181; src/RackCad.Plugin/Drawing/LateralHeaderDrawOutcome.cs:31-33",
+    "status": "FACT"
+   },
+   {
+    "id": "F1.3",
+    "topic": "1. Missing library pieces (import before draw)",
+    "statement": "On the creation path, SystemBlockWriter.CreateBlock calls BlockLibraryImporter.EnsureForPlan before the drawing transaction. EnsureBlocks returns 0 without any user message in three cases: the library file does not exist, the library cannot be read (the read error is only logged), or a block is absent from the library. EnsureForPlan computes availability facts through LibraryBlockAvailabilityFlow but returns only ImportedCount, so those facts are discarded.",
+    "evidence": "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:25; src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:32-38, :87-91, :96-100, :106-112, :126-130; src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:42-47",
+    "status": "FACT"
+   },
+   {
+    "id": "F1.4",
+    "topic": "1. Missing library pieces (creation outcome)",
+    "statement": "Creating a Selective FRONTAL or PLANTA view does not fail because blocks are missing. ViewBlockDraw.DrawAndPlace goes through BlockPlacement.PlaceAndReport, which builds HeaderPlacementResult(success: true, placed: <jig result>, ...) with MissingBlocks = DescribeMissing(...). Each line reads either \"<name> (falta el bloque '<block>' en el dibujo)\" or \"<name> (sin bloque definido en blocks.csv para la vista <view>)\".",
+    "evidence": "src/RackCad.Plugin/Systems/Shared/ViewBlockDraw.cs:47-56; src/RackCad.Plugin/Drawing/BlockPlacement.cs:35-47, :98-118",
+    "status": "FACT"
+   },
+   {
+    "id": "F1.5",
+    "topic": "1. Missing library pieces (user report on insert)",
+    "statement": "On insert, the user is told on the command line. RackSelectivoCommands writes DescribeSelective(result) for planta and frontal, and RackCommandSupport.DescribePlacement adds \"Bloques no definidos en el dibujo (omitidos): ...\" when HasMissingBlocks. This happens only when the jig was accepted. If placement is cancelled, the message is only \"creado, pero la insercion se cancelo\" (no missing list), and the new definition is erased.",
+    "evidence": "src/RackCad.Plugin/RackSelectivoCommands.cs:470-471, :521-522, :594-595; src/RackCad.Plugin/RackCommandSupport.cs:183-207 (early return at :190-193, missing list at :202-205); src/RackCad.Plugin/Drawing/BlockPlacement.cs:37-42",
+    "status": "FACT"
+   },
+   {
+    "id": "F1.6",
+    "topic": "1. Missing library pieces (edit / redraw path)",
+    "statement": "On the RACKEDITAR redraw path (EditSelective), missing blocks are not shown to the user. SystemBlockWriter.RedrawInPlace returns Success=true with MissingBlocks filled, but EditSelective checks only r.Success for frontal and planta, and its final summary does not mention missing blocks. No RackLog call exists for missing pieces either.",
+    "evidence": "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:73-74; src/RackCad.Plugin/RackSelectivoCommands.cs:185-193, :238-243, :283-289",
+    "status": "FACT"
+   },
+   {
+    "id": "F1.7",
+    "topic": "1. Missing library pieces (project-variable batch path)",
+    "statement": "ProjectVariableMutationExecutor discards the LateralHeaderDrawOutcome returned by each view writer, which includes MissingInstances. Missing pieces during a variable propagation are therefore silent, and the mutation still commits.",
+    "evidence": "src/RackCad.Plugin/ProjectVariableMutationExecutor.cs:104 (ViewWriter returns LateralHeaderDrawOutcome), :301-312",
+    "status": "FACT"
+   },
+   {
+    "id": "F1.8",
+    "topic": "1. Missing library pieces (AUTH-15 creator)",
+    "statement": "The AUTH-15 in-transaction creator does not stay silent. RackDefinitionCreator.CreateInTransaction returns RackDefinitionCreationResult.Missing(...) when created.Outcome.HasMissingBlocks and does not write the envelope. It also performs no cleanup: whatever was written stays in the caller's transaction for rollback. No other file in src calls RackDefinitionCreator.",
+    "evidence": "src/RackCad.Plugin/Systems/Shared/RackDefinitionCreator.cs:25-27, :55, :65-72; `git grep RackDefinitionCreator` at 3375aadb finds only RackDefinitionCreator.cs:36 and a doc comment in RackDefinitionCreationResult.cs:8",
+    "status": "FACT"
+   },
+   {
+    "id": "F1.9",
+    "topic": "1. Missing catalog rows (builder-level silent omissions)",
+    "statement": "Some pieces are dropped inside the builders before the drawer runs, so they never appear in MissingInstances or in any message: planta largueros with no PLANTA blocks.csv row, planta separadores with no PLANTA row, frontal tarimas when TARIMA_GENERICA has no row for the view, any safety element whose block is missing for the view, and the planta celosía when its truss block is blank. By contrast, a frontal post, plate or larguero with no row keeps a blank BlockName, stays loose, and is reported by the drawer as 'sin bloque definido en blocks.csv'.",
+    "evidence": "src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:378-382, :423-427; src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:365-369; src/RackCad.Application/Systems/Selective/SelectiveSafetyPlacement.cs:179-183; src/RackCad.Application/RackFrames/PlantaHeaderLayoutBuilder.cs:108; src/RackCad.Application/Drawing/HeaderInstanceGrouper.cs:37-43; src/RackCad.Plugin/Drawing/BlockPlacement.cs:112-114",
+    "status": "FACT"
+   },
+   {
+    "id": "F1.10",
+    "topic": "1. Catalog load failure",
+    "statement": "If the product catalog fails to load or loads empty, RackCatalogLoader.Load logs the problem and returns an empty or partial catalog. It never writes to the command line (the comment says it runs mid-draw). Drawing continues and pieces are omitted.",
+    "evidence": "src/RackCad.Plugin/RackCatalogLoader.cs:20-30, :32-40",
+    "status": "FACT"
+   },
+   {
+    "id": "F2.1",
+    "topic": "2. CommandMethod count",
+    "statement": "There are exactly 35 [CommandMethod(...)] attributes in src at 3375aadb. Every textual occurrence of \"CommandMethod\" in src is one of them (35 lines, 35 matches). In file order: RA, RACKAYUDA (RackAyudaCommands.cs:11,13); RCB, QCB, RACKCABECERA, QUICKCABECERA (RackCabeceraCommands.cs:25,26,29,55); QCM, QUICKCAMA (RackCamaCommands.cs:22,29); RCT, RACKCANTILEVER (RackCantileverCommands.cs:39,43); RSD, RACKSISTEMADINAMICO (RackDinamicoCommands.cs:25,31); RD, RACKDUPLICAR (RackDuplicarCommands.cs:23,42); RB, RACKBOMTOTAL (RackInventarioCommands.BomTotal.cs:32,34); RL, RACKLISTA (RackInventarioCommands.cs:17,23); RR, RACKRELLENAR (RackLayoutCommands.Fill.cs:23,31); RLY, RACKLAYOUT (RackLayoutCommands.cs:23,32); RK, RED, RACKCAD, RACKEDITAR (RackMenuCommands.cs:17,18,21,115); RPR, RACKPROPIEDADES (RackPropiedadesCommands.cs:35,37); RPB, RACKPUSHBACK (RackPushBackCommands.cs:31,35); RACKSECCION (RackSeccionCommands.cs:15); RS, RACKSELECTIVO (RackSelectivoCommands.cs:23,26); RVA, RACKVARIABLES (RackVariablesCommands.cs:31,33).",
+    "evidence": "`git grep -n \"\\[CommandMethod(\" 3375aadb -- src` → 35 lines, all under src/RackCad.Plugin/ at the lines listed",
+    "status": "FACT"
+   },
+   {
+    "id": "F2.2",
+    "topic": "2. CommandMethod count",
+    "statement": "src at 3375aadb has no RACKMIRROR (or RackMirror) command or symbol.",
+    "evidence": "`git grep -n -i \"RACKMIRROR\\|RackMirror\" 3375aadb -- src` returns no matches",
+    "status": "FACT"
+   },
+   {
+    "id": "F3.1",
+    "topic": "3. Dynamic params - FRONTAL",
+    "statement": "Selective FRONTAL (view \"FRONTAL\") parameters by piece: post LONGITUD (height) and PERALTE; base plate PERALTE, only when >0; larguero LONGITUD and PERALTE; lateral protector LONGITUD (= total fondo depth, only when >0); bota none; desviador LONGITUD; larguero tope LONGITUD and SAQUE (only with the TopeFrontal toggle); tarima LONGITUD and ALTURA (only with DrawPallets); parrilla FRENTE (only with the ParrillaFrontal toggle).",
+    "evidence": "src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:489-490, :508-511, :466-467, :108, :112-113, :189-191, :220-222, :242-245, :279, :360-363; src/RackCad.Application/Systems/Selective/SelectiveSafetyPlacement.cs:321-324; src/RackCad.Application/Systems/Selective/SelectiveDesviadorDrawing.cs:31, :126; src/RackCad.Application/Systems/Selective/SelectiveTopePlacement.cs:56-61; src/RackCad.Application/Systems/Selective/SelectiveTarimaPlacement.cs:35-36; src/RackCad.Application/Systems/Selective/SelectiveParrillaPlacement.cs:33",
+    "status": "FACT"
+   },
+   {
+    "id": "F3.2",
+    "topic": "3. Dynamic params - PLANTA",
+    "statement": "Selective PLANTA (view \"PLANTA\") parameters by piece: frame front/back post PERALTE only (no LONGITUD, and only when >0); frame plate PERALTE (only when >0); celosía/travesaño LONGITUD and PERALTE; larguero LONGITUD and PERALTE; lateral protector LONGITUD (frente depth span); bota none; separador LONGITUD (gap); larguero tope LONGITUD and SAQUE; desviador LONGITUD. The planta sets no FRENTE, FONDO or ALTURA: it has no tarima or parrilla code.",
+    "evidence": "src/RackCad.Application/RackFrames/PlantaHeaderLayoutBuilder.cs:140-143, :161-164, :120-121; src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:517-518, :100, :104-106, :449, :499, :182-183 (full list of added pieces at :179-183, :203); src/RackCad.Application/Systems/Selective/SelectiveSeparadorPlacement.cs:31; src/RackCad.Application/Systems/Selective/SelectiveTopePlacement.cs:56-61; src/RackCad.Application/Systems/Selective/SelectiveDesviadorDrawing.cs:73, :126",
+    "status": "FACT"
+   },
+   {
+    "id": "F3.3",
+    "topic": "3. Dynamic params - FONDO",
+    "statement": "FONDO is set only in the Selective LATERAL view, on the parrilla deck (ParrillaFondoParam). The only other reference in src is the catalog validator's expected-parameter list (FRENTE for frontal views, FONDO for lateral views). The literal \"FONDO\" appears only in the constant definition.",
+    "evidence": "src/RackCad.Application/Systems/Selective/SelectiveLateralBuilder.cs:530; src/RackCad.Application/Catalogs/CatalogBlockParameters.cs:161-162; src/RackCad.Domain/Systems/Selective/SelectiveRackDefaults.cs:95",
+    "status": "FACT"
+   },
+   {
+    "id": "F3.4",
+    "topic": "3. Dynamic params - parameter names",
+    "statement": "Parameter-name constants: LengthParam = \"LONGITUD\", PeralteParam = \"PERALTE\", PalletFrenteParam = \"LONGITUD\", PalletAltoParam = \"ALTURA\", SaqueParam = \"SAQUE\", ParrillaFrenteParam = \"FRENTE\", ParrillaFondoParam = \"FONDO\".",
+    "evidence": "src/RackCad.Domain/Systems/Selective/SelectiveRackDefaults.cs:46, :49, :64, :68, :89, :92, :95",
+    "status": "FACT"
+   },
+   {
+    "id": "F3.5",
+    "topic": "3. Dynamic params - where they are applied",
+    "statement": "Parameters are applied only to references of catalog piece blocks. For grouped (ARRAY) pieces, that single reference lives inside the nested header definition. The references to the nested definitions themselves (SEL_FRONTAL_* / PLANTA_CAB_*) get only position and an optional X-mirror scale, never dynamic parameters. ApplyDynamicParameters matches names case-insensitively, skips non-dynamic references, and silently ignores names that are absent or read-only.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:42-47, :56-66, :143-151, :319, :415-448",
+    "status": "FACT"
+   },
+   {
+    "id": "F4.1",
+    "topic": "4. Plan mutability - HeaderRunPlan/HeaderGroup",
+    "statement": "HeaderRunPlan and HeaderGroup are sealed classes, not records, with get-only properties typed IReadOnlyList<>. Their constructors store the caller's list references without copying.",
+    "evidence": "src/RackCad.Application/Drawing/HeaderRunPlan.cs:13-25, :105-121 (reference stores at :17-18, :109-111)",
+    "status": "FACT"
+   },
+   {
+    "id": "F4.2",
+    "topic": "4. Plan mutability - runtime collection types (FRONTAL)",
+    "statement": "The FRONTAL plan comes from HeaderInstanceGrouper.Group. At runtime, Headers and LooseInstances are List<T>. Each HeaderGroup.Instances is a one-element array (new[] { local }) and each Placements is a List<HeaderPlacement> from ToList(). All of these are mutable underneath the IReadOnlyList interface. Loose instances are the same objects that Build() created (no copy).",
+    "evidence": "src/RackCad.Application/Drawing/HeaderInstanceGrouper.cs:23, :41, :56, :63, :91-98, :102; src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:35-36, :40",
+    "status": "FACT"
+   },
+   {
+    "id": "F4.3",
+    "topic": "4. Plan mutability - runtime collection types (PLANTA)",
+    "statement": "In the PLANTA plan, Headers is a List<HeaderGroup> (ToList) and LooseInstances is a List<HeaderBlockInstance>. Each HeaderGroup.Instances is the builder's List<HeaderBlockInstance>, and each Placements is the same live List<HeaderPlacement> the builder appended to; ToGroup passes it without copying.",
+    "evidence": "src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:38, :41, :205, :289, :301, :306-319",
+    "status": "FACT"
+   },
+   {
+    "id": "F4.4",
+    "topic": "4. Plan mutability - element types",
+    "statement": "HeaderBlockInstance is a sealed class with public setters on Role, PieceId, BlockName, View, Insertion, ConnectionAnchor, RotationRadians, MirroredX, MirroredY, Text, TextHeight, DimensionOffset and DimensionStyleName. DynamicParameters is a get-only property that returns a mutable Dictionary<string,double>. HeaderPlacement and Point2D are readonly structs with get-only properties, so they are immutable. The plan types contain no C# records.",
+    "evidence": "src/RackCad.Application/Drawing/HeaderBlockInstance.cs:57-101 (DynamicParameters at :86); src/RackCad.Application/Drawing/HeaderRunPlan.cs:85-102; src/RackCad.Application/Geometry/Geometry2D.cs:6-15",
+    "status": "FACT"
+   },
+   {
+    "id": "F4.5",
+    "topic": "4. Plan mutability - PREPARE→MUTATE holder",
+    "statement": "PreparedViewRedraw keeps the same HeaderRunPlan object (and the same shared RackCatalog) from PREPARE through MUTATE, with get-only properties and no defensive copy. The objects it holds are mutable.",
+    "evidence": "src/RackCad.Plugin/Systems/Shared/PreparedViewRedraw.cs:24-49; src/RackCad.Plugin/Systems/Shared/ViewBlockDraw.cs:84-88",
+    "status": "FACT"
+   },
+   {
+    "id": "F5.1",
+    "topic": "5. Nested block naming - requested names restart per plan",
+    "statement": "FRONTAL nested-group names are \"SEL_FRONTAL_\" + Role + \"_\" + groupIndex. groupIndex is a local counter that restarts at 0 on every Group call and counts only buckets of 2 or more. PLANTA nested-group names are \"PLANTA_CAB_\" + (groups.Count + 1), where `groups` is a new local list per BuildPlan call. So every plan asks for the same base names (SEL_FRONTAL_Post_0, PLANTA_CAB_1, ...).",
+    "evidence": "src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:26, :35-36; src/RackCad.Application/Drawing/HeaderInstanceGrouper.cs:56-57, :95-99; src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:52, :300",
+    "status": "FACT"
+   },
+   {
+    "id": "F5.2",
+    "topic": "5. Nested block naming - effective names",
+    "statement": "Effective names come from UniqueBlockName, called for every nested header definition and for the new system block. It sanitizes the name, then returns the first of name, name_1, name_2, ... not already in the BlockTable at the moment of the call. The effective name therefore depends on what the table already holds, which includes earlier racks' SEL_FRONTAL_* or PLANTA_CAB_* definitions and unpurged stale ones. It depends on creation order.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:40, :54, :132, :240-247, :395-413; src/RackCad.Application/BlockNaming.cs:12-28",
+    "status": "FACT"
+   },
+   {
+    "id": "F5.3",
+    "topic": "5. Nested block naming - multi-view single transaction",
+    "statement": "ProjectVariableMutationExecutor redefines every prepared view (several frontals, lateral cortes and planta) inside one transaction, in view-scan order. The old nested definitions are only collected as stale and purged after the commit. While the transaction runs, each redefine requests base names that the previous definitions still occupy. The code comment confirms that redefines produce uniquified names (nombre_1, _2…).",
+    "evidence": "src/RackCad.Plugin/ProjectVariableMutationExecutor.cs:266-313, :316; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:94-96, :173-178",
+    "status": "FACT"
+   },
+   {
+    "id": "F5.4",
+    "topic": "5. Nested block naming - same-transaction visibility",
+    "statement": "The static code cannot prove that BlockTable.Has sees a record added earlier in the same uncommitted transaction (blockTable.Add at :244 before later UniqueBlockName calls). If it does, which is standard AutoCAD behavior and consistent with the code comment at :94-96, a second frontal created or redefined in the same transaction receives _1/_2 suffixed nested names, and the order it was processed in decides the suffixes. This includes several calls to AUTH-15 CreateInTransaction within one caller transaction.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:240-247, :399-411; src/RackCad.Plugin/Systems/Shared/RackDefinitionCreator.cs:55",
+    "status": "UNCERTAIN"
+   },
+   {
+    "id": "F5.5",
+    "topic": "5. Nested block naming - normal create path",
+    "statement": "On the normal insert path, each view is created in its own transaction (SystemBlockWriter.CreateBlock opens and commits one transaction per view). One transaction therefore never creates several frontals there. Names still depend on what earlier commands left in the table.",
+    "evidence": "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:18-39",
+    "status": "FACT"
+   },
+   {
+    "id": "F6.1",
+    "topic": "6. Planta views selected in EditSelective",
+    "statement": "The planta selection in EditSelective is every rack block definition that FindRackBlocks returns (matched by GUID over all definitions) and whose decoded address kind is Planta. The count is unbounded (0..N). No user choice, prompt or index is involved, and the loop at :235-244 redraws all of them.",
+    "evidence": "src/RackCad.Plugin/RackSelectivoCommands.cs:126, :130, :233-244; src/RackCad.Plugin/RackCommandSupport.cs:107-111, :117-141",
+    "status": "FACT"
+   },
+   {
+    "id": "F6.2",
+    "topic": "6. Planta views selected in EditSelective",
+    "statement": "Every selected planta block is redrawn with the whole `system`, not a per-fondo view, and with payload section -1 (WrapSelectivePayload default). Planta blocks get no availability/stale check (frontals get one at :173-180, laterals at :210-217), so they always count as survivors. The comment \"one block for the whole top view\" is not enforced: the insert path adds a new planta block without checking for an existing one.",
+    "evidence": "src/RackCad.Plugin/RackSelectivoCommands.cs:233, :237-238, :250, :405-406, :467-472",
+    "status": "FACT"
+   },
+   {
+    "id": "F6.3",
+    "topic": "6. Planta views selected in EditSelective",
+    "statement": "The defensive fallback that adds the clicked block when the GUID scan misses it adds it only to frontalBlocks, never to plantaBlocks.",
+    "evidence": "src/RackCad.Plugin/RackSelectivoCommands.cs:133-137",
+    "status": "FACT"
+   },
+   {
+    "id": "F7.1",
+    "topic": "7. Requirement extraction functions",
+    "statement": "The function that extracts a plan's library requirement set is RackBlockRequirementExtractors.HeaderRun.Extract(HeaderRunPlan). It collects the BlockName of every LooseInstance and every Headers[*].Instances item, skips blank names, and de-duplicates case-insensitively. Production use: BlockLibraryImporter.EnsureForPlan. A V2 per-piece extractor also exists: RackHeaderPieceRequirementExtractorV2.Extract(plan, address), projected by LibraryPieceKeyProjection.Project and wired through RackViewPreparationAdapter.PrepareV2. No production call site in src/RackCad.Plugin uses RackViewPreparationAdapter.",
+    "evidence": "src/RackCad.Application/Systems/Shared/LibraryBlockRequirements.cs:45-80; src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:32; src/RackCad.Application/Systems/Shared/LibraryPieceRequirementsV2.cs:151-186, :194-217; src/RackCad.Application/Systems/Shared/RackViewPreparation.cs:149, :229, :244",
+    "status": "FACT"
+   },
+   {
+    "id": "F7.2",
+    "topic": "7. Required block names - resolution rule",
+    "statement": "Block names resolve through blocks.csv: FindBlock takes the first row whose pieceId and view match case-insensitively, and uses its blockName. FRONTAL uses view token \"FRONTAL\" (SelectiveRackDefaults.View); PLANTA uses \"PLANTA\".",
+    "evidence": "src/RackCad.Application/Catalogs/RackCatalogExtensions.cs:106-116; src/RackCad.Application/Catalogs/CatalogLookup.cs:19-20; src/RackCad.Domain/Systems/Selective/SelectiveRackDefaults.cs:9; src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:47; src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:26",
+    "status": "FACT"
+   },
+   {
+    "id": "F7.3",
+    "topic": "7. Required block names - FRONTAL universe",
+    "statement": "With the shipped catalogs, the FRONTAL plan can require only these blocks.csv names. Always, for a rack with height and bays: POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_FRONTAL (system.PostId; the only POSTE row in secciones.csv) and, when DrawBasePlate is on, PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16_FRONTAL. Per level beam id: LARGUERO_ESCALON_CAL14_3_REMACHES_FRONTAL, LARGUERO_IN_OUT_C6_FRONTAL, LARGUERO_ESCALON_INFINITO_FRONTAL, LARGUERO_ESCALON_TROQUEL_REDONDO_FRONTAL. BOTA: PROTECTOR_BOTA_H_3_16_18_FRONTAL, PROTECTOR_BOTA_C_4_FRONTAL, PROTECTOR_BOTA_C_6_FRONTAL. LATERAL: PROTECTOR_LATERAL_BOTA_H_3_16_18_FRONTAL, PROTECTOR_LATERAL_BOTA_C_4_FRONTAL, PROTECTOR_LATERAL_BOTA_C_6_FRONTAL. TOPE (TopeFrontal on): LARGUERO_ESCALON_TOPE_DE_3_FRONTAL or POSTE_3_1_5_8_TOPE_FRONTAL. DESVIADOR: DESVIADOR_A_3_FRONTAL, DESVIADOR_A_4_FRONTAL, DESVIADOR_L_3_FRONTAL, DESVIADOR_L_3_5_FRONTAL, DESVIADOR_L_4_FRONTAL, DESVIADOR_L_4_5_FRONTAL, DESVIADOR_L_5_FRONTAL. TARIMA (DrawPallets): TARIMA_GENERICA (no _FRONTAL suffix). PARRILLA (ParrillaFrontal): PARRILLA_GENERICA_FRONTAL. The frontal code never references MENSULA_*, TRAVESANO_*, SEPARADOR_*, GUIA_ENTRADA or DEFENSA_MONTACARGAS.",
+    "evidence": "assets/catalogs/blocks.csv:2,5,28,31,34,94,37,52,55,40,61,64,43,58,67,70,73,76,79,82,85,49,46; assets/catalogs/secciones.csv (rows POSTE/LARGUERO); assets/catalogs/seguridad.csv (type column: BOTA/LATERAL/TOPE/DESVIADOR/PARRILLA); assets/catalogs/defaults.json (post, basePlate); src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:42, :53-54, :98-103, :106-114, :131, :154-158, :461, :484, :503; src/RackCad.Application/Systems/Selective/SelectiveSafetyFamilies.cs:37-61",
+    "status": "FACT"
+   },
+   {
+    "id": "F7.4",
+    "topic": "7. Required block names - PLANTA universe",
+    "statement": "With the shipped catalogs, the PLANTA plan can require only these names. Frames (standard): POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_PLANTA; PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16_PLANTA when DrawBasePlate is on; TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14_PLANTA when the celosía length is >1e-6. The standard frame uses the built-in RackFrameTemplateCatalog STD-3P, not header-templates.json. Largueros (Levels[0] beam id): LARGUERO_ESCALON_CAL14_3_REMACHES_PLANTA, LARGUERO_IN_OUT_C6_PLANTA, LARGUERO_ESCALON_INFINITO_PLANTA, LARGUERO_ESCALON_TROQUEL_REDONDO_PLANTA. With 2 or more fondos and a gap: SEPARADOR_DE_CABECERA_FORMADA_DE_CINTA_CALIBRE_12_PLANTA. BOTA: PROTECTOR_BOTA_H_3_16_18_PLANTA, PROTECTOR_BOTA_C_4_PLANTA, PROTECTOR_BOTA_C_6_PLANTA. LATERAL: PROTECTOR_LATERAL_BOTA_H_3_16_18_PLANTA, PROTECTOR_LATERAL_BOTA_C_4_PLANTA, PROTECTOR_LATERAL_BOTA_C_6_PLANTA. TOPE: LARGUERO_ESCALON_TOPE_DE_3_PLANTA or POSTE_3_1_5_8_TOPE_PLANTA. DESVIADOR: DESVIADOR_A_3_PLANTA, DESVIADOR_A_4_PLANTA, DESVIADOR_L_3_PLANTA, DESVIADOR_L_3_5_PLANTA, DESVIADOR_L_4_PLANTA, DESVIADOR_L_4_5_PLANTA, DESVIADOR_L_5_PLANTA. The planta cannot require TARIMA (no PLANTA row and no code), PARRILLA_GENERICA_PLANTA (no planta parrilla code), MENSULA_*_PLANTA, GUIA_ENTRADA_PLANTA or DEFENSA_MONTACARGAS_PLANTA.",
+    "evidence": "assets/catalogs/blocks.csv:7,4,10,30,33,36,93,13,39,51,54,42,60,63,45,57,66,69,72,75,78,81,84; src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:45, :50, :136, :179-183, :378, :418-427, :463-473, :290-297; src/RackCad.Application/RackFrames/PlantaHeaderLayoutBuilder.cs:62-66, :80-84, :100-108; src/RackCad.Application/RackFrames/RackFrameTemplateCatalog.cs:19-42; src/RackCad.Application/RackFrames/CatalogIds.cs:10-18; src/RackCad.Application/RackFrames/RackFrameConfigurationFactory.cs:69-71, :87-90, :97",
+    "status": "FACT"
+   },
+   {
+    "id": "F7.5",
+    "topic": "7. Required block names - minimal/default sets",
+    "statement": "For a minimal default design (default post and plate, plates on, one beam type, no safety, no pallets, one fondo), the FRONTAL set is {POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_FRONTAL, PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16_FRONTAL, <chosen LARGUERO>_FRONTAL}. The PLANTA set is {POSTE_OMEGA_..._PLANTA, PLACA_BASE_..._PLANTA, TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14_PLANTA, <chosen LARGUERO>_PLANTA}. The exact set for any real rack depends on its design, its toggles and any custom cabecera ids, and cannot be fixed statically.",
+    "evidence": "as in F7.3/F7.4; custom cabecera ids via src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:123-129 and src/RackCad.Application/RackFrames/PlantaHeaderLayoutBuilder.cs:62-66; custom plate id via SelectiveFrontalBuilder.cs:98-99",
+    "status": "UNCERTAIN"
+   },
+   {
+    "id": "F7.6",
+    "topic": "7. Catalog files and SHA-256 (git show 3375aadb:assets/catalogs/<file> | sha256sum)",
+    "statement": "Name-determining catalog files: blocks.csv 5ef806529b2dab33b057101dd344f2f250919ae7eda121bb88ae7c836f7318fb; secciones.csv 94baea1be03a65ad4c74c90e6038251eafde7fd205b0d7cde79a91a7191449a5; base-plates.csv 7f8d924296af0f834db821ba0a87e72e8340530155066be54996000de6af239b; seguridad.csv f438600d3e59075dfb62333b46bb88e6f8ae843bdc3f2aae3328921b5d737059; defaults.json fb06ea01e8d52b38c441cbcccfc73b8df1b2c1333637f010dbf6b128717279cf. Geometry-only files, which can gate the planta celosía (length >1e-6) but supply no names: connection-layout.csv 5c63da5b64c63e3d3bc6687d53f481cf49a20957a61e3d0c4674bd46fbfa3d37; connection-points.csv 473f0c205fb9fdb786ed445d4fd67dde9f596440d7d723d92d30deab47ec44f8. Read but not used by the frontal or planta plan: header-templates.json c9583c01d45f2fba86f5c753ae2644068c3d6ca896989293e558b8b4a5081ece (the planta uses the built-in template instead). For reference: views.csv 48cdecb907254501a0fd8ec34c8d925186f36b82d8734d0542db0234cbb530f0, mensulas.csv 2d908fab4b1f1cd13fcb176b605b254f409705764555a044f57eb78f4f449b1b.",
+    "evidence": "hashes computed from raw git blobs at 3375aadb; provider file map in src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs:16-30, :95-127",
+    "status": "FACT"
+   },
+   {
+    "id": "F7.7",
+    "topic": "7. Library DWG not in repo",
+    "statement": "blocks-library.dwg is not tracked in the repository at 3375aadb. The Plugin csproj would copy assets/catalogs/*.dwg, but none exists. The library path used at runtime is the user settings override, or catalogs/blocks-library.dwg next to the assembly. Whether the required names are actually present in the library cannot be decided statically.",
+    "evidence": "`git ls-tree -r --name-only 3375aadb -- assets` (no .dwg); src/RackCad.Plugin/RackCad.Plugin.csproj:24; src/RackCad.Application/Catalogs/BlockLibrary.cs:13-23",
+    "status": "FACT"
+   },
+   {
+    "id": "F8.1",
+    "topic": "8. Static caches - BlockLibraryDatabaseCache",
+    "statement": "BlockLibraryDatabaseCache is a process-wide, single-slot static cache guarded by a static lock. It holds one parsed side Database (read with ReadDwgFile, OpenForReadAndAllShare), keyed by (path compared OrdinalIgnoreCase, FileInfo.LastWriteTimeUtc, FileInfo.Length). A different key replaces and disposes the previous Database. A read failure is logged and returns null without caching.",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:9-15, :17-31, :33-54",
+    "status": "FACT"
+   },
+   {
+    "id": "F8.2",
+    "topic": "8. Static caches - AUTH-12 library queries",
+    "statement": "AutoCadLibraryBlockQuery (V1, active drawing) has no static state; it holds only an instance Database field. AutoCadExternalLibraryBlockQuery has no static fields of its own, but it reads through the static BlockLibraryDatabaseCache.Acquire(BlockLibraryLocator.ResolvePath()). No `new AutoCadExternalLibraryBlockQuery` appears in src. The extractor singletons (RackBlockRequirementExtractors.HeaderRun, RackHeaderPieceRequirementExtractorV2.Instance) are static but stateless.",
+    "evidence": "src/RackCad.Plugin/Drawing/AutoCadLibraryBlockQuery.cs:9-16; src/RackCad.Plugin/Drawing/AutoCadExternalLibraryBlockQuery.cs:12-31; src/RackCad.Application/Systems/Shared/LibraryBlockRequirements.cs:47-51; src/RackCad.Application/Systems/Shared/LibraryPieceRequirementsV2.cs:153",
+    "status": "FACT"
+   },
+   {
+    "id": "F8.3",
+    "topic": "8. Static caches - JsonRackCatalogProvider",
+    "statement": "JsonRackCatalogProvider keeps a process-wide static ConcurrentDictionary<string, CacheEntry{Signature, Catalog}>. The key is the catalog directory path (OrdinalIgnoreCase), with a per-entry lock. An entry is reused only when its signature matches. The signature is the sorted list of Name|Length|LastWriteTimeUtc.Ticks for every *.csv and *.json directly in the directory; it is \"<missing>\" if the directory does not exist and a new GUID on stat failure, which in effect disables reuse. The cached RackCatalog instance is shared across callers even though it has public setters; only a comment requires read-only use. The signature does not cover blocks-library.dwg or settings.json.",
+    "evidence": "src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs:41-55, :72-89, :220-247; src/RackCad.Application/Catalogs/CatalogEntries.cs:266-294",
+    "status": "FACT"
+   },
+   {
+    "id": "F8.4",
+    "topic": "8. Static caches - RackCatalogLoader and path resolvers",
+    "statement": "RackCatalogLoader has no static fields and delegates to JsonRackCatalogProvider.FromBaseDirectory().Load(), so it inherits the provider's cache. CatalogDirectory.Resolve, BlockLibraryLocator.ResolvePath and UserSettingsStore.Load keep no cache and recompute or re-read on every call. UserSettingsStore reads settings.json from disk each time.",
+    "evidence": "src/RackCad.Plugin/RackCatalogLoader.cs:15-43; src/RackCad.Application/Catalogs/CatalogDirectory.cs:19-38; src/RackCad.Application/Catalogs/BlockLibrary.cs:16-23; src/RackCad.Application/Settings/UserSettings.cs:77, :91-99",
+    "status": "FACT"
+   },
+   {
+    "id": "F8.5",
+    "topic": "8. Static state on the planta PREPARE path (not a cache)",
+    "statement": "SelectivePlantaBuilder.BuildPlan reads RackFrameTemplateCatalog.All, a static built-in template list initialized once, with no key and no invalidation. It is static data, not a file-backed cache.",
+    "evidence": "src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:50; src/RackCad.Application/RackFrames/RackFrameTemplateCatalog.cs:19-21, :85-96",
+    "status": "FACT"
+   },
+   {
+    "id": "F8.6",
+    "topic": "8. Other static caches outside the candidates",
+    "statement": "CsvStructuralSectionCatalogProvider has its own static ConcurrentDictionary cache (keyed by directory, invalidated by signature). None of the four candidates, nor the Selective frontal/planta builders, reach it; its users are StructuralSectionCatalogAccess and the Cantilever window.",
+    "evidence": "src/RackCad.Application/StructuralSections/CsvStructuralSectionCatalogProvider.cs:26-27, :61-70; src/RackCad.Plugin/StructuralSectionCatalogAccess.cs:34; src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs:106",
+    "status": "FACT"
+   }
+  ],
+  "limitations": [
+   "Static, read-only analysis at 3375aadb only. Nothing was built, run or tested, and AutoCAD runtime behavior was not observed.",
+   "AutoCAD API semantics were not verified from the repository: BlockTable.Has seeing uncommitted additions, DynamicBlockReferenceProperty behavior, and whether Database.Purge filters correctly. F5.4 is UNCERTAIN for this reason.",
+   "The required-block-name sets in item 7 depend on the design (post, plate and beam ids per level, safety selections, toggles, custom cabeceras, fondo count), so only the reachable universe and a minimal default set could be derived. The runtime catalogs folder is a deployed copy that may differ from assets/catalogs.",
+   "blocks-library.dwg is not in the repository, so whether the required names exist in the library cannot be established statically.",
+   "SHA-256 values are of the raw git blobs (git show 3375aadb:<path> | sha256sum). A checked-out or deployed file with different line endings would hash differently.",
+   "'AUTH-12 library query' was identified from docs/FOUNDATIONS.md:85 as AutoCadExternalLibraryBlockQuery plus AutoCadLibraryBlockQuery. The src code contains no 'AUTH-12' marker.",
+   "'PREPARE-R' and 'mirror mutation' do not exist as code at 3375aadb: there is no RACKMIRROR command. The analysis covers the existing PREPARE paths: ViewBlockDraw.PrepareRedraw, SystemBlockWriter, and RackDefinitionCreator (AUTH-15, no callers)."
+  ]
+ },
+ "adversarialVerification": {
+  "verdicts": [
+   {
+    "id": "F1.1",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:293-303 (blank or !blockTable.Has → key BlockName??PieceId??Role + \"|\" + View, missing.Add once, return false, comment 'skip rather than throw' at :302); per-call sets at :32-33 and :120-121."
+   },
+   {
+    "id": "F1.2",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "LateralHeaderDrawer.cs:78-80 and :180-181 return LateralHeaderDrawOutcome(..., inserted, missing); LateralHeaderDrawOutcome.cs:31-33 (MissingInstances, HasMissingBlocks). No throw on missing anywhere in either method."
+   },
+   {
+    "id": "F1.3",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "SystemBlockWriter.cs:25 (EnsureForPlan before StartTransaction at :27, return discarded); BlockLibraryImporter.cs:32-38 (flow result reduced to Import.ImportedCount), :87-91 (!File.Exists → 0), :96-100 (Acquire null → 0), :106-112 (only names present in library), :117-120, :126-130 (exception logged via RackLog, 0); BlockLibraryDatabaseCache.cs:42-47 (read failure logged, null)."
+   },
+   {
+    "id": "F1.4",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "SelectiveFrontalDrawService.cs:31-39 and SelectivePlantaDrawService.cs:26-34 route to ViewBlockDraw.DrawAndPlace (ViewBlockDraw.cs:47-56); BlockPlacement.cs:44 builds HeaderPlacementResult(true, !placedId.IsNull, ..., DescribeMissing(...)); DescribeMissing lines at BlockPlacement.cs:112-114; ctor signature LateralHeaderDrawService.cs:306."
+   },
+   {
+    "id": "F1.5",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "RackSelectivoCommands.cs:470-471 (planta), :521-522 (frontal), :594-595 (DescribeSelective→DescribePlacement); RackCommandSupport.cs:185-193 (failure / cancelled early return without missing list), :202-205 ('Bloques no definidos en el dibujo (omitidos)'); cancelled insert erases def at BlockPlacement.cs:37-42."
+   },
+   {
+    "id": "F1.6",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "SystemBlockWriter.cs:74 returns Success=true with DescribeMissing; RackSelectivoCommands.cs:185-193 and :238-243 only test r.Success; final summary :283-289 has no missing text; git grep of MissingBlocks/MissingInstances in src shows no consumer in EditSelective and no RackLog on missing pieces."
+   },
+   {
+    "id": "F1.7",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "ProjectVariableMutationExecutor.cs:104-108 (ViewWriter returns LateralHeaderDrawOutcome), :301-310 (return value of destination.Write discarded, only staleDefinitions used), :312 Commit."
+   },
+   {
+    "id": "F1.8",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "RackDefinitionCreator.cs:25-27 (no cleanup), :55 CreateSystemBlock, :65-72 Missing(...) returned before Envelope (:74); note the empty-name check (:59-63) runs before the missing check. git grep RackDefinitionCreator → only RackDefinitionCreator.cs:36 and RackDefinitionCreationResult.cs:8."
+   },
+   {
+    "id": "F1.9",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "SelectivePlantaBuilder.cs:378-382 (larguero no PLANTA row → continue), :423-427 (separador); SelectiveFrontalBuilder.cs:365-369 (tarima); SelectiveSafetyPlacement.cs:179-183 (safety block missing → element not returned); SelectiveDesviadorDrawing.cs:92-96 (desviador same); PlantaHeaderLayoutBuilder.cs:108 (celosía); CatalogLookup.cs:19-20 returns null for no row; HeaderInstanceGrouper.cs:37-43 keeps blank-name pieces loose; BlockPlacement.cs:112-114 message."
+   },
+   {
+    "id": "F1.10",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "RackCatalogLoader.cs:20-30 (exception → RackLog.Exception, new RackCatalog()), :32-40 (empty → RackLog.Warning; comment 'must not write to the command line'). A partially loaded non-empty catalog is not logged by the loader."
+   },
+   {
+    "id": "F2.1",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "git grep -n \"\\[CommandMethod(\" 3375aadb -- src → 35 lines, all in src/RackCad.Plugin, exactly at the listed files/lines; git grep -c CommandMethod totals 35 (2+4+2+2+2+2+2+2+2+2+4+2+2+1+2+2)."
+   },
+   {
+    "id": "F2.2",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "git grep -n -i \"RACKMIRROR\\|RackMirror\" 3375aadb -- src → no output."
+   },
+   {
+    "id": "F3.1",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "SelectiveFrontalBuilder.cs:489-490 (post LONGITUD+PERALTE, unconditional), :508-511 (plate PERALTE if >0), :466-467 (larguero), :108 + SelectiveSafetyPlacement.cs:321-324 (lateral LONGITUD=systemDepth if >0), :112-113 (bota no longitud), :189-191/:220-222 + SelectiveTopePlacement.cs:56-61 (tope LONGITUD+SAQUE), :360-363 + SelectiveTarimaPlacement.cs:35-36 (LONGITUD+ALTURA), :242-245/:279 + SelectiveParrillaPlacement.cs:33 (FRENTE), SelectiveDesviadorDrawing.cs:31,:126 (LONGITUD); View=\"FRONTAL\" SelectiveRackDefaults.cs:9."
+   },
+   {
+    "id": "F3.2",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "PlantaHeaderLayoutBuilder.cs:140-143 (post PERALTE if >0, no LONGITUD), :161-164 (plate), :120-121 (celosía LONGITUD+PERALTE); SelectivePlantaBuilder.cs:517-518 (larguero), :100 (lateral longitud=frenteBack-frenteFront), :104-106 (bota), :449 + SelectiveSeparadorPlacement.cs:31, :499 (tope), :182 + SelectiveDesviadorDrawing.cs:73,:126; no tarima/parrilla calls in BuildPlan :179-183, :203."
+   },
+   {
+    "id": "F3.3",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "git grep ParrillaFondoParam → SelectiveLateralBuilder.cs:530 is the only setter; CatalogBlockParameters.cs:161-162 (validator); alias constant SelectiveSafetyPlacement.cs:40; literal \"FONDO\" only at SelectiveRackDefaults.cs:95."
+   },
+   {
+    "id": "F3.4",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "SelectiveRackDefaults.cs:46, :49, :64, :68, :89, :92, :95."
+   },
+   {
+    "id": "F3.5",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "LateralHeaderDrawer.cs:42-47 and :135-141 (pieces appended into nested def), :56-66 and :143-151 (nested refs get only position + Scale3d(-1,1,1) mirror), :319 ApplyDynamicParameters on piece refs, :415-448 (IsDynamicBlock/Count==0 early return, OrdinalIgnoreCase lookup, skips ReadOnly/absent names). Note: planta nested defs contain several pieces (post/plate/back post/back plate/celosía), each with its own params."
+   },
+   {
+    "id": "F4.1",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "HeaderRunPlan.cs:13-25 (sealed class, get-only IReadOnlyList, stores args at :17-18), :105-121 (HeaderGroup sealed class, stores at :109-111)."
+   },
+   {
+    "id": "F4.2",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "HeaderInstanceGrouper.cs:23 (loose List), :41 (loose.Add(instance) same object), :56 (groups List), :63 (AddRange of original bucket objects), :91-93 (ToList placements), :97 (new[] { local }), :102; SelectiveFrontalBuilder.cs:35-36, :40."
+   },
+   {
+    "id": "F4.3",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "SelectivePlantaBuilder.cs:38/:41 (loose List), :205 (groups.Select(ToGroup).ToList()), :289 (pieces List), :301, :306-319 (Placements = new List<HeaderPlacement>, ToGroup passes it uncopied)."
+   },
+   {
+    "id": "F4.4",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "HeaderBlockInstance.cs:57-101 (public setters; DynamicParameters get-only Dictionary<string,double> at :86); HeaderRunPlan.cs:85-102 (readonly struct HeaderPlacement); Geometry2D.cs:6-15 (readonly struct Point2D)."
+   },
+   {
+    "id": "F4.5",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "PreparedViewRedraw.cs:24-49 (stores plan/catalog references, get-only); ViewBlockDraw.cs:84-88 (catalog from RackCatalogLoader, plan built, passed through)."
+   },
+   {
+    "id": "F5.1",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "SelectiveFrontalBuilder.cs:26, :35-36; HeaderInstanceGrouper.cs:56-57 (local groupIndex=0 per call), :61-65 (buckets <2 skipped before increment), :95-99 (name = prefix + \"_\" + Role + \"_\" + index); SelectivePlantaBuilder.cs:52 (new groups list per BuildPlan), :300 (\"PLANTA_CAB_\" + (groups.Count+1))."
+   },
+   {
+    "id": "F5.2",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "LateralHeaderDrawer.cs:40, :54, :132 (NewBlock), :240-247 (UniqueBlockName then blockTable.Add), :395-413 (Sanitize, first free of name, name_1, ...); BlockNaming.cs:12-28."
+   },
+   {
+    "id": "F5.3",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "ProjectVariableMutationExecutor.cs:146-259 (prepared list built per rack in FindRackBlocks scan order), :266-313 (one transaction, sequential Write), :316 purge after commit; LateralHeaderDrawer.cs:94-96 comment, :173-178 stale defs deferred."
+   },
+   {
+    "id": "F5.4",
+    "verdict": "UNCERTAIN",
+    "correction": "",
+    "evidence": "Code order is as stated (LateralHeaderDrawer.cs:242-244: UniqueBlockName then blockTable.Add inside caller transaction; RackDefinitionCreator.cs:55 inside caller transaction), but whether BlockTable.Has sees an uncommitted record added earlier in the same transaction is AutoCAD runtime semantics not provable from the repository. Independently of that, committed nested defs of earlier racks or of the view's own previous content already force suffixes (old defs are purged only post-commit, :173-178)."
+   },
+   {
+    "id": "F5.5",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "SystemBlockWriter.cs:18-39 (one LockDocument + one transaction + Commit per CreateBlock); RackSelectivoCommands.cs:467-475, :484-522 (one view per insert call)."
+   },
+   {
+    "id": "F6.1",
+    "verdict": "CORRECTED",
+    "correction": "The planta selection is every block definition returned by FindRackBlocks whose envelope Id equals the rack id (OrdinalIgnoreCase) and whose decoded address kind is Planta. FindRackBlocks scans via RackBlockFinder.ScanEnvelopes, which skips layout, anonymous and xref-owned records and records without a payload; Kind is not filtered by FindRackBlocks, but IsPlantaView requires a decodable Kind. Count is unbounded (0..N); no prompt, index or user choice; all are redrawn in the loop at :235-244.",
+    "evidence": "RackSelectivoCommands.cs:126, :130, :233-244; RackCommandSupport.cs:107-111, :117-141 (match at :132); RackBlockFinder.cs:57-88 (skip at :66, no payload skip at :72-75); RackViewCodec.cs:115-122 (invalid kind → no address), :196-200 (planta decode)."
+   },
+   {
+    "id": "F6.2",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "RackSelectivoCommands.cs:237-238 (whole `system`, WrapSelectivePayload without section → default -1 at :406), :173-180 (frontal availability), :210-217 (lateral), no check in planta loop :235-244, survivors formula :250; insert path :467-472 draws a new planta with no existence check."
+   },
+   {
+    "id": "F6.3",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "RackSelectivoCommands.cs:133-137 (fallback adds only to frontalBlocks and is suppressed when the clicked embed is lateral or planta)."
+   },
+   {
+    "id": "F7.1",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "LibraryBlockRequirements.cs:45-80 (loose + Headers[*].Instances BlockName, skip blank, OrdinalIgnoreCase dedup); BlockLibraryImporter.cs:32; LibraryPieceRequirementsV2.cs:151-186, :194-217; RackViewPreparation.cs:149, :229, :244; git grep RackViewPreparationAdapter/RackViewPreparationPorts/LibraryPieceAvailabilityFlowV2 → no call sites outside their defining Application files (none in Plugin)."
+   },
+   {
+    "id": "F7.2",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "RackCatalogExtensions.cs:106-116 (FirstOrDefault, OrdinalIgnoreCase on PieceId and View); CatalogLookup.cs:19-20; SelectiveRackDefaults.cs:9; SelectiveFrontalBuilder.cs:47; SelectivePlantaBuilder.cs:26."
+   },
+   {
+    "id": "F7.3",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "blocks.csv rows :2,:5,:28,:31,:34,:94,:37,:52,:55,:40,:61,:64,:43,:58,:67,:70,:73,:76,:79,:82,:85,:49 (TARIMA_GENERICA, no suffix),:46; secciones.csv has one POSTE row (line 2) and 4 LARGUERO rows; seguridad.csv types BOTA×3, LATERAL×3, TOPE×2, PARRILLA×1, DESVIADOR×7; SelectiveFrontalBuilder.cs:53-54, :98-103, :131, :154-158, :461, :484, :503. Caveat: post name is conditional on system.PostId being that id (frontal has no default fallback, :53)."
+   },
+   {
+    "id": "F7.4",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "blocks.csv :7,:4,:10,:30,:33,:36,:93,:13,:39,:51,:54,:42,:60,:63,:45,:57,:66,:69,:72,:75,:78,:81,:84; SelectivePlantaBuilder.cs:50, :136, :292-297, :377-382, :418-427, :463-473 (tope also needs non-blank PostId at :464); PlantaHeaderLayoutBuilder.cs:62-66, :80-84, :107-108; RackFrameTemplateCatalog.cs:19-42; CatalogIds.cs:10-18; RackFrameConfigurationFactory.cs:69-71, :87-90, :97. With shipped connection-layout (POSTE TROQUEL_CELOSIA LATERAL X=2.3438, TRAVESANO CELOSIA PLANTA X=0.75, connection-layout.csv:5,:7) the celosía appears whenever depth > ~3.19 in."
+   },
+   {
+    "id": "F7.5",
+    "verdict": "UNCERTAIN",
+    "correction": "",
+    "evidence": "The set composition follows from F7.3/F7.4, but default toggle values (DrawBasePlate), default safety selections and default depth/levels of a fresh design were not verified; custom cabecera ids (SelectivePlantaBuilder.cs:123-129) and per-post plate ids (SelectiveFrontalBuilder.cs:98-99) can change it. Correctly labeled UNCERTAIN."
+   },
+   {
+    "id": "F7.6",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "Recomputed with git show 3375aadb:assets/catalogs/<f> | sha256sum: blocks.csv 5ef80652…318fb, secciones.csv 94baea1b…449a5, base-plates.csv 7f8d9242…af239b, seguridad.csv f438600d…737059, defaults.json fb06ea01…279cf, connection-layout.csv 5c63da5b…a3d37, connection-points.csv 473f0c20…ec44f8, header-templates.json c9583c01…081ece, views.csv 48cdecb9…b530f0, mensulas.csv 2d908fab…9b1b — all identical. header-templates.json is read by RackFrameTemplateProvider.cs:17, not by the Selective planta (uses static RackFrameTemplateCatalog)."
+   },
+   {
+    "id": "F7.7",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "git ls-tree -r --name-only 3375aadb -- assets lists no .dwg; RackCad.Plugin.csproj:24 includes assets/catalogs/*.dwg; BlockLibrary.cs:13-23 (settings override else catalogs/blocks-library.dwg)."
+   },
+   {
+    "id": "F8.1",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "BlockLibraryDatabaseCache.cs:9-15 (static fields), :19 lock, :21-31 key (path OrdinalIgnoreCase, LastWriteTimeUtc, Length), :33-40 ReadDwgFile OpenForReadAndAllShare, :42-47 failure logged+null, :49-54 dispose previous and replace."
+   },
+   {
+    "id": "F8.2",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "AutoCadLibraryBlockQuery.cs:9-16 (instance Database field only); AutoCadExternalLibraryBlockQuery.cs:12-31 (no fields; BlockLibraryLocator.ResolvePath + BlockLibraryDatabaseCache.Acquire); git grep shows no instantiation of AutoCadExternalLibraryBlockQuery; LibraryBlockRequirements.cs:47-51, :53-80 (stateless); LibraryPieceRequirementsV2.cs:153."
+   },
+   {
+    "id": "F8.3",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "JsonRackCatalogProvider.cs:41-55 (static ConcurrentDictionary OrdinalIgnoreCase), :72-89 (per-entry lock, reuse on equal signature), :220-247 (top-level *.csv/*.json Name|Length|Ticks sorted; \"<missing>\"; Guid on exception); CatalogEntries.cs:266-294 (public setters); settings.json lives in %AppData%\\RackCad (UserSettings.cs:61-62), outside the signature."
+   },
+   {
+    "id": "F8.4",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "RackCatalogLoader.cs:15-43 (no static fields; FromBaseDirectory().Load()); CatalogDirectory.cs:19-38; BlockLibrary.cs:16-23; UserSettings.cs:77, :91-99 (File.ReadAllText each call)."
+   },
+   {
+    "id": "F8.5",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "SelectivePlantaBuilder.cs:50 (FindStandardOrDefault); RackFrameTemplateCatalog.cs:19-21 (static All initializer), :85-96."
+   },
+   {
+    "id": "F8.6",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "CsvStructuralSectionCatalogProvider.cs:26-27, :61-70; callers only StructuralSectionCatalogAccess.cs:34 and RackCantileverWindow.xaml.cs:106 (git grep)."
+   }
+  ],
+  "missed": [
+   {
+    "statement": "When a grouped (ARRAY) piece has a non-blank block name that is absent from the drawing, the drawer still creates its nested definition (SEL_FRONTAL_* / PLANTA_CAB_*), leaves it empty or partial, and still appends and counts a reference to it at every placement. InsertedCount (the 'N piezas' figure in DescribePlacement) therefore includes references to empty nested definitions. Both create and redefine behave this way.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:38-51 (NewBlock before AppendInstance, failure is ignored), :56-67 (inserted++ per placement regardless), :130-152 (same on redefine); RackCommandSupport.cs:195-200 prints Outcome.InsertedCount"
+   },
+   {
+    "statement": "Planta and frontal grouping use different thresholds. The frontal nests only signature buckets with 2 or more identical instances; single pieces stay loose. The planta creates a nested PLANTA_CAB_n definition for every distinct frame, even one placed only once, and always for each custom cabecera. So the planta always creates nested definitions whose names are subject to UniqueBlockName.",
+    "evidence": "src/RackCad.Application/Drawing/HeaderInstanceGrouper.cs:61-65; src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:125-140, :287-303"
+   },
+   {
+    "statement": "The project-variable batch path (ProjectVariableMutationExecutor) also picks up every planta view of the rack by GUID and address kind, with no availability or orphan check (the check is gated with !isPlanta). It redraws each one with the whole system and section -1, in the same single transaction as the frontals and laterals.",
+    "evidence": "src/RackCad.Plugin/ProjectVariableMutationExecutor.cs:148, :188, :215-221, :232, :243-249"
+   },
+   {
+    "statement": "The static JsonRackCatalogProvider cache is shared beyond the Plugin loader. The UI (UiSupport) and RackFrameConfigurationFactory's parameterless constructor also call FromBaseDirectory().Load(). While the folder signature is unchanged, the editor window and Plugin PREPARE (RackCatalogLoader) therefore receive the same mutable RackCatalog instance.",
+    "evidence": "src/RackCad.UI/UiSupport.cs:88; src/RackCad.Application/RackFrames/RackFrameConfigurationFactory.cs:250; src/RackCad.Plugin/RackCatalogLoader.cs:22; src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs:72-89"
+   },
+   {
+    "statement": "On the planta PREPARE path, RackFrameConfigurationFactory.Build throws ArgumentOutOfRangeException when the resolved height or a fondo depth is <= 0. That is a hard creation failure, so DrawAndPlace returns Failure and the mutation executor aborts. This differs from the silent skip applied to missing blocks.",
+    "evidence": "src/RackCad.Application/RackFrames/RackFrameConfigurationFactory.cs:58-66; src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:136, :166; src/RackCad.Plugin/Systems/Shared/ViewBlockDraw.cs:53-56; src/RackCad.Plugin/ProjectVariableMutationExecutor.cs:323-327"
+   },
+   {
+    "statement": "At the bound commit 3375aadb, the AUTH-15 Precheck still rejects an envelope with a blank Name (InvalidEnvelope). This check runs before any write or missing-block evaluation. The later C1 relaxation (merge 1304101d) is not part of 3375aadb.",
+    "evidence": "src/RackCad.Plugin/Systems/Shared/RackDefinitionCreator.cs:177-183"
+   }
+  ]
+ }
+}

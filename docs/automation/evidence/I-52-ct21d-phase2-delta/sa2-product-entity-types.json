@@ -1,0 +1,775 @@
+{
+ "analysis": {
+  "facts": [
+   {
+    "id": "F05-G01",
+    "topic": "scope",
+    "statement": "Only src/RackCad.Plugin creates AutoCAD objects. No file in RackCad.Application, RackCad.UI or RackCad.Domain references Autodesk.AutoCAD. The one 'new Line(' hit outside the Plugin is an Application-local geometry type, not an AutoCAD entity.",
+    "evidence": "git grep -l \"Autodesk.AutoCAD\" 3375aadb -- src/RackCad.UI src/RackCad.Application src/RackCad.Domain -> no files; src/RackCad.Application/StructuralSections/Geometry/SectionProjectionCanonicalizer.cs:320 (imports only System.* and RackCad.Application.Geometry, lines 1-4)",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-G02",
+    "topic": "shared header-run writer",
+    "statement": "Every header-run kind and view (Selective frontal/planta/lateral, Dynamic frontal/planta/lateral, Push Back frontal/planta/lateral, Cama, Cabecera lateral/planta) writes its geometry through LateralHeaderDrawer. Create path: ViewBlockDraw -> SystemBlockWriter.CreateBlock -> LateralHeaderDrawer.CreateSystemBlock. Redefine path: SystemBlockWriter.RedefineInTransaction -> LateralHeaderDrawer.RedefineSystemBlock. Cabecera lateral and the Selective lateral corte go through LateralHeaderDrawService, which calls the same drawer.",
+    "evidence": "src/RackCad.Plugin/Systems/Selective/SelectiveFrontalDrawService.cs:24; Systems/Selective/SelectivePlantaDrawService.cs:24; Drawing/LateralHeaderDrawService.cs:26,252; Drawing/PlantaHeaderDrawService.cs:22; Systems/Dynamic/DynamicFrontalDrawService.cs:16; Systems/Dynamic/DynamicPlantaDrawService.cs:16; Systems/Dynamic/DynamicSystemDrawService.cs:22; Systems/PushBack/PushBackFrontalDrawService.cs:19; Systems/PushBack/PushBackPlantaDrawService.cs:18; Systems/PushBack/PushBackSystemDrawService.cs:20; Systems/FlowBed/FlowBedDrawService.cs:22; Systems/Shared/ViewBlockDraw.cs:50-51; Systems/Shared/SystemBlockWriter.cs:29,113; Drawing/LateralHeaderDrawer.cs:28,88",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-G03",
+    "topic": "shared header-run writer - type set",
+    "statement": "LateralHeaderDrawer creates exactly four DatabaseServices types: BlockTableRecord, BlockReference, DBText and RotatedDimension. It also creates LayerTableRecord indirectly through LayerHelper. Its methods create no other entity type.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:243 (new BlockTableRecord in NewBlock), :60, :145, :308 (new BlockReference), :266 (new DBText), :354 (new RotatedDimension), :331, :356 (LayerHelper.EnsureLayer)",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-G04",
+    "topic": "shared header-run writer - owner rule",
+    "statement": "A view definition is one named BlockTableRecord. It contains references to each nested header-group definition at its placements (mirrored placements use scale (-1,1,1)) plus all loose instances. Each HeaderGroup becomes its own named nested BlockTableRecord, and its instances are appended into that nested definition. Redefine erases the view definition's contents and repopulates them in place, so the BTR id is kept, then calls RecordGraphicsModified on every reference.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:38-51 (nested def per group, instances appended into headerDef), :54-68 (system def + refs to nested defs, mirror scale :62), :70-76 (loose into system def), :97-118 (erase existing), :130-161 (repopulate), :167-171 (RecordGraphicsModified), :240-247 (NewBlock)",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-G05",
+    "topic": "shared header-run writer - DBText/dimension ownership",
+    "statement": "Annotation instances (DBText) and Dimension instances (RotatedDimension) end up only as loose entities in the view definition, never inside a nested header-group definition. Evidence chain: (1) Annotation instances have one factory, SelectiveAnnotations.Label. (2) Dimension instances have two factories, SelectiveDimensions.Dim and DynamicViewDecorations.Dimension. (3) HeaderInstanceGrouper forces both roles loose. (4) Every traced call site adds them to a loose list or to a list that passes through the grouper. (5) The group producers built from cabecera/RackFrames layouts and from PushBackCompositeContent emit no Annotation/Dimension.",
+    "evidence": "src/RackCad.Application/Systems/Selective/SelectiveAnnotations.cs:23-32; Systems/Selective/SelectiveDimensions.cs:304-314; Systems/Dynamic/DynamicViewDecorations.cs:387-403; Drawing/HeaderInstanceGrouper.cs:37-43; call sites: Selective/SelectiveFrontalBuilder.cs:36,158,169; Selective/SelectivePlantaBuilder.cs:183,203,205; Selective/SelectiveLateralBuilder.cs:201,229,231 + src/RackCad.Plugin/Drawing/LateralHeaderDrawService.cs:44,82,243; Dynamic/DynamicSystemFrontalBuilder.cs:26,171; Dynamic/DynamicSystemPlantaBuilder.cs:74,78-80; Dynamic/DynamicSystemLateralBuilder.cs:257-267; PushBack/PushBackSystemLateralBuilder.cs:181,186,213-227; PushBack/PushBackCompositePlanta.cs:60-62; PushBack/PushBackPlanComposer.cs:134-138; grep of Label(|Annotation|Decoration|Dimension in RackFrames, FlowBed, PushBackCompositeContent.cs, PushBackFlowBedLateralBuilder.cs, DynamicFlowBedLateralBuilder.cs -> no producer",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-G06",
+    "topic": "shared header-run writer - missing blocks",
+    "statement": "If a library block is missing from the drawing, the drawer records it as missing and creates no entity at all (no placeholder).",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:293-303",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-S01",
+    "topic": "Selective - BlockTableRecord",
+    "statement": "Selective creates one named view-definition BTR per inserted view: frontal (one per fondo), planta, and lateral (one per post corte). The rack payload is written on that BTR.",
+    "evidence": "src/RackCad.Plugin/RackSelectivoCommands.cs:470 (planta), :521 (frontal per fondo), :588 (lateral corte via LateralHeaderDrawService); src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:54,243; Systems/Shared/SystemBlockWriter.cs:33; Drawing/LateralHeaderDrawService.cs:257",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-S02",
+    "topic": "Selective - nested BlockTableRecord",
+    "statement": "Selective also creates nested named header-group BTRs. Frontal: grouper with prefix GroupPrefix, named prefix_Role_n, only for runs of 2 or more identical pieces. Planta: one PLANTA_CAB_n frame group per distinct cabecera frame. Lateral corte: grouper named after the view block.",
+    "evidence": "src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:35-36; Drawing/HeaderInstanceGrouper.cs:61-65,95-98; Systems/Selective/SelectivePlantaBuilder.cs:300-302,205,319; src/RackCad.Plugin/Drawing/LateralHeaderDrawService.cs:243,82; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:40,132",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-S03",
+    "topic": "Selective - BlockReference to library block",
+    "statement": "In the frontal, planta and lateral views, Selective places library-block BlockReferences in the view BTR (loose) or in the nested group BTR. They carry rotation, X/Y mirror scale and dynamic parameters such as LONGITUD and PERALTE.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:305-319; src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:466-467,489-490,510; Selective/SelectivePlantaBuilder.cs:517-518; Selective/SelectiveLateralBuilder.cs:638",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-S04",
+    "topic": "Selective - BlockReference to nested def",
+    "statement": "In the frontal, planta and lateral views, the Selective view BTR holds BlockReferences to its nested group BTRs, one per placement.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:56-68,143-152",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-S05",
+    "topic": "Selective - DBText",
+    "statement": "Selective places DBText labels (frente number, level number, rack name) in the view BTR on layer RACKCAD_ANOTACIONES, centered and middle-aligned. Frontal: frente, level and name. Planta: frente and name. Lateral: level, post number and name. Each label is conditional on the NumberFronts, NumberLevels or DrawRackName toggle.",
+    "evidence": "src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:320-345; Selective/SelectivePlantaBuilder.cs:329-342; Selective/SelectiveLateralBuilder.cs:596-622; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:258-282,324,331",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-S06",
+    "topic": "Selective - RotatedDimension",
+    "statement": "Selective places RotatedDimension cotas in the view BTR on layer RACKCAD_COTAS in the frontal, planta and lateral views, gated by the view's effective DimensionDetail (None emits nothing). The dimension uses the user-named DIMSTYLE when present; otherwise it uses db.Dimstyle plus per-entity DIMVAR overrides, and RecomputeDimensionBlock is called.",
+    "evidence": "src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:169; Selective/SelectiveDimensions.cs:60-68 (frontal), 140-148 (lateral corte), 205-214 (planta); Selective/SelectivePlantaBuilder.cs:203; Selective/SelectiveLateralBuilder.cs:229; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:287-291,327,338-376,380-392",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-S07",
+    "topic": "Selective - model space",
+    "statement": "Each Selective view insert adds one BlockReference to its view BTR in model space through the jig. A cancelled insert erases the definition.",
+    "evidence": "src/RackCad.Plugin/Systems/Shared/ViewBlockDraw.cs:51; Drawing/LateralHeaderDrawService.cs:223,233-234; Drawing/BlockPlacement.cs:35-42,182-199",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-D01",
+    "topic": "Dynamic - BlockTableRecord",
+    "statement": "Dynamic creates one named view BTR per view: frontal (entrada or salida), planta, and lateral (whole, or one per-post corte).",
+    "evidence": "src/RackCad.Plugin/RackDinamicoCommands.cs:114,118,127,360; Systems/Dynamic/DynamicFrontalDrawService.cs:24-31; Systems/Dynamic/DynamicPlantaDrawService.cs:23-30; Systems/Dynamic/DynamicSystemDrawService.cs:34-41",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-D02",
+    "topic": "Dynamic - nested BlockTableRecord",
+    "statement": "Dynamic creates nested group BTRs. Frontal: grouper with prefixes DIN_FRONTAL_ENTRADA and DIN_FRONTAL_SALIDA. Planta: DIN_PLANTA_CAB_n cabecera groups plus DIN_PLANTA_PIEZA grouper groups. Lateral: one group per distinct cabecera, 'Cama dinamica' bed groups and DIN_LARGUERO_INTERMEDIO groups.",
+    "evidence": "src/RackCad.Application/Systems/Dynamic/DynamicSystemFrontalBuilder.cs:26-28; Dynamic/DynamicSystemPlantaBuilder.cs:65,78-80; Dynamic/DynamicSystemLateralBuilder.cs:141-155,490; Dynamic/DynamicFlowBedLateralBuilder.cs:83; Dynamic/DynamicIntermediateBeamLateralBuilder.cs:27,97",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-D03",
+    "topic": "Dynamic - BlockReference to library block",
+    "statement": "In all three views, Dynamic places library-block BlockReferences with dynamic parameters in the view BTR or in nested group BTRs.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:305-319; src/RackCad.Application/Systems/Dynamic/DynamicSystemFrontalBuilder.cs:163-164; Dynamic/DynamicSystemLateralBuilder.cs:389,450,466; Dynamic/DynamicSystemPlantaBuilder.cs:135,237,260,334-335",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-D04",
+    "topic": "Dynamic - BlockReference to nested def",
+    "statement": "The Dynamic view BTR references its nested group BTRs. Alternate cabeceras are mirrored with scale (-1,1,1) in the lateral and planta views.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:60-65; src/RackCad.Application/Systems/Dynamic/DynamicSystemLateralBuilder.cs:153-155; Dynamic/DynamicSystemPlantaBuilder.cs:54-61",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-D05",
+    "topic": "Dynamic - DBText",
+    "statement": "Dynamic places DBText labels loose in the view BTR. Frontal: frente, level and name. Planta: frente and name. Lateral: level and name. Each is conditional on its toggle.",
+    "evidence": "src/RackCad.Application/Systems/Dynamic/DynamicViewDecorations.cs:66-98 (frontal), 143-163 (planta), 244-263 (lateral); src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:266-279",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-D06",
+    "topic": "Dynamic - RotatedDimension",
+    "statement": "Dynamic places RotatedDimension cotas loose in the view BTR in the frontal, planta and lateral views, gated by the per-view effective detail. The style name comes from system.DimensionStyle.",
+    "evidence": "src/RackCad.Application/Systems/Dynamic/DynamicViewDecorations.cs:61,266-326 (frontal), 112-139 (planta), 191-240 (lateral), 117,206,285 (style); src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:354-375",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-D07",
+    "topic": "Dynamic - model space",
+    "statement": "Each Dynamic view insert adds one model-space BlockReference to its view BTR through the jig.",
+    "evidence": "src/RackCad.Plugin/Systems/Shared/ViewBlockDraw.cs:51; Drawing/BlockPlacement.cs:182-199",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-P01",
+    "topic": "Push Back - BlockTableRecord",
+    "statement": "Push Back creates one named view BTR per view: frontal (EntradaSalida or Posterior, side A or B), planta, and lateral (whole, or one per-post corte).",
+    "evidence": "src/RackCad.Plugin/RackPushBackCommands.cs:104,117,122,404; Systems/PushBack/PushBackFrontalDrawService.cs:28-35,59-67; Systems/PushBack/PushBackPlantaDrawService.cs:25-32; Systems/PushBack/PushBackSystemDrawService.cs:30-37",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-P02",
+    "topic": "Push Back - nested BlockTableRecord",
+    "statement": "Push Back creates nested group BTRs. Frontal: grouper with prefixes PB_FRONTAL_ENTRADA_SALIDA, PB_FRONTAL_POSTERIOR and PB_FRONTAL_INTERMEDIO. Planta: PB_PLANTA_PIEZA. Lateral: the structural cabecera groups inherited from Dynamic, bed groups, intermediate-beam groups and side-B mirrored groups.",
+    "evidence": "src/RackCad.Application/Systems/PushBack/PushBackSystemFrontalBuilder.cs:215,313,547; PushBack/PushBackSystemPlantaBuilder.cs:157; PushBack/PushBackCompositePlanta.cs:62; PushBack/PushBackSystemLateralBuilder.cs:315,340,347-348; PushBack/PushBackFlowBedLateralBuilder.cs:150; PushBack/PushBackCompositeContent.cs:118; PushBack/PushBackMirror.cs:105",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-P03",
+    "topic": "Push Back - BlockReference (library and nested)",
+    "statement": "In all three views, Push Back places library-block BlockReferences (loose or inside nested groups) and view-BTR BlockReferences to its nested groups. Both are produced by the same drawer code as Dynamic.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:60-65,305-319; src/RackCad.Application/Systems/PushBack/PushBackSystemPlantaBuilder.cs:111; PushBack/PushBackFlowBedLateralBuilder.cs:196",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-P04",
+    "topic": "Push Back - DBText",
+    "statement": "Push Back places DBText loose in the view BTR. The labels are the Dynamic decorations it reuses (frontal from the low-cut Dynamic frontal build; planta from the flattened Dynamic planta; lateral from the Dynamic lateral build or, for composite racks, per side). Composite racks add the side labels 'A' and 'B' in the lateral and planta views.",
+    "evidence": "src/RackCad.Application/Systems/PushBack/PushBackSystemFrontalBuilder.cs:197-215,223-230,306; PushBack/PushBackCompositeFrontal.cs:67-71,98,102; PushBack/PushBackSystemPlantaBuilder.cs:72,89; PushBack/PushBackSystemLateralBuilder.cs:310-316,181,186,196-231; PushBack/PushBackSideAnnotations.cs:45-62,70-86,104; PushBack/PushBackCompositePlanta.cs:60",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-P05",
+    "topic": "Push Back - RotatedDimension",
+    "statement": "Push Back places RotatedDimension cotas loose in the view BTR through the reused Dynamic decorations, in the frontal, planta and lateral views. In a composite lateral, the structure is drawn without decorations and the cotas are emitted per side; side B is mirrored and keeps its dimension role and style.",
+    "evidence": "src/RackCad.Application/Systems/PushBack/PushBackSystemLateralBuilder.cs:159,234-242,213-227; PushBack/PushBackMirror.cs:50,66-69; PushBack/PushBackPlanComposer.cs:134-138; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:354-375",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-P06",
+    "topic": "Push Back - model space",
+    "statement": "Each Push Back view insert adds one model-space BlockReference through the jig.",
+    "evidence": "src/RackCad.Plugin/Systems/Shared/ViewBlockDraw.cs:51; Drawing/BlockPlacement.cs:182-199",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-C01",
+    "topic": "Cama / flow bed - BlockTableRecord",
+    "statement": "Cama (flow bed) creates one named view BTR per bed (single lateral view). It has no nested group BTRs because the plan is built with an empty group list.",
+    "evidence": "src/RackCad.Plugin/Systems/FlowBed/FlowBedDrawService.cs:24-32,30,44; src/RackCad.Plugin/RackCamaCommands.cs:106,171,233",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-C02",
+    "topic": "Cama / flow bed - BlockReference",
+    "statement": "Cama creates only loose library-block BlockReferences (rail, tope, rollers, brakes) in its view BTR. The rail takes a LONGITUD dynamic parameter.",
+    "evidence": "src/RackCad.Application/Systems/FlowBed/FlowBedLateralBuilder.cs:51; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:305-319",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-C03",
+    "topic": "Cama / flow bed - no DBText or dimension",
+    "statement": "A standalone Cama creates no DBText and no RotatedDimension: nothing under src/RackCad.Application/Systems/FlowBed produces an Annotation or Dimension instance.",
+    "evidence": "grep of Label(|Annotation|Decoration|Dimension over src/RackCad.Application/Systems/FlowBed at 3375aadb -> no hit; the only Annotation/Dimension factories are SelectiveAnnotations.cs:23-32, SelectiveDimensions.cs:304-314 and DynamicViewDecorations.cs:387-403",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-H01",
+    "topic": "Cabecera - BlockTableRecord",
+    "statement": "Cabecera (standalone header) creates one named view BTR for the lateral view and one for the planta view. Only the lateral view can create nested group BTRs (through the grouper). The planta plan has an empty group list.",
+    "evidence": "src/RackCad.Plugin/RackCabeceraCommands.cs:175,270,281,303,311; Drawing/LateralHeaderDrawService.cs:28-47,236-252,243; Drawing/PlantaHeaderDrawService.cs:24-32,30",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-H02",
+    "topic": "Cabecera - BlockReference",
+    "statement": "Cabecera creates library-block BlockReferences with dynamic parameters. Lateral: loose, or inside nested groups referenced from the view BTR. Planta: loose only.",
+    "evidence": "src/RackCad.Application/RackFrames/LateralHeaderLayoutBuilder.cs:165,181,220,328,347; RackFrames/PlantaHeaderLayoutBuilder.cs:120-121,142,163; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:60-65,305-319",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-H03",
+    "topic": "Cabecera - no DBText or dimension",
+    "statement": "A standalone Cabecera creates no DBText and no RotatedDimension: the RackFrames layout builders emit no Annotation or Dimension instance. When a cabecera is the base of a Selective lateral corte, that corte's labels and cotas come from the Selective extras.",
+    "evidence": "grep of Label(|Annotation|Decoration|Dimension over src/RackCad.Application/RackFrames -> no hit; src/RackCad.Plugin/Drawing/LateralHeaderDrawService.cs:44,197-207; src/RackCad.Application/Systems/Selective/SelectiveLateralBuilder.cs:201,229,231",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-H04",
+    "topic": "Cabecera - model space",
+    "statement": "Each Cabecera view insert adds one model-space BlockReference through the jig.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawService.cs:223,233-234; Drawing/PlantaHeaderDrawService.cs:25; Systems/Shared/ViewBlockDraw.cs:51; Drawing/BlockPlacement.cs:182-199",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-K01",
+    "topic": "Cantilever - BlockTableRecord",
+    "statement": "Cantilever creates one named view BTR per line view (Frontal, Lateral per station, Planta) and redefines it in place by erasing and re-appending its entities. The payload is written on it. The standalone component insertion also creates named BTRs, but writes no payload for them.",
+    "evidence": "src/RackCad.Plugin/Drawing/Cantilever/CantileverViewMaterializer.cs:45-51,61-88,108-114; src/RackCad.Plugin/RackCantileverCommands.cs:152-158,330-333,446-451,465-467; src/RackCad.Application/Systems/Cantilever/CantileverViewPlanBuilder.cs:12-36",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-K02",
+    "topic": "Cantilever - Polyline",
+    "statement": "Cantilever writes lightweight Polylines (open or closed, one per plan curve with 2 or more points) into its view or component BTR. Each is placed on the layer of its visual role (RACKCAD_CANT_<ROLE>) with colour, linetype and lineweight ByLayer.",
+    "evidence": "src/RackCad.Plugin/Drawing/Cantilever/CantileverViewMaterializer.cs:142-155,219-220,248-266,207-216; src/RackCad.Application/Systems/Cantilever/CantileverVisualRole.cs:112,187-231",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-K03",
+    "topic": "Cantilever - Circle",
+    "statement": "Cantilever writes a Circle into the view or component BTR when a plan curve carries CircleDiameter. That happens for a brace rod hole, and for a punch seen down its axis within the foreshortening limit. The views that actually contain circles depend on line geometry and cannot be determined statically.",
+    "evidence": "src/RackCad.Plugin/Drawing/Cantilever/CantileverViewMaterializer.cs:219-241; src/RackCad.Application/Systems/Cantilever/CantileverViewPlanBuilder.cs:105-107,852-858,961-965",
+    "status": "UNCERTAIN"
+   },
+   {
+    "id": "F05-K04",
+    "topic": "Cantilever - no BlockReference, DBText or dimension inside the BTR",
+    "statement": "The Cantilever materializer builds only Circle or Polyline entities. Its BTRs therefore hold no nested BlockReference, no DBText and no dimension, even though an 'Annotation' visual role and layer are declared. Because no dimensions exist, Cantilever produces no *D blocks.",
+    "evidence": "src/RackCad.Plugin/Drawing/Cantilever/CantileverViewMaterializer.cs:219-220 (Build returns Circle or Polyline only), 57-59 (comment: nothing nested); src/RackCad.Application/Systems/Cantilever/CantileverVisualRole.cs:53-59,230-231",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-K05",
+    "topic": "Cantilever - model space",
+    "statement": "Cantilever adds model-space BlockReferences in two ways: through the jig for line views (PlaceDefinition), and directly at a picked point, with an X offset per view, for standalone component views (InsertReference).",
+    "evidence": "src/RackCad.Plugin/RackCantileverCommands.cs:162,449-451; Drawing/BlockPlacement.cs:64-76,182-199; Drawing/Cantilever/CantileverViewMaterializer.cs:118-130",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-X01",
+    "topic": "Structural section (RACKSECCION)",
+    "statement": "RACKSECCION creates a named BTR RACKCAD_SECCION_<id>_<view>_L<len> containing only lightweight Polylines. They sit on layer 0 with ByBlock properties, except Axis and Envelope curves, which go on RACKCAD_ANOTACIONES. It also adds one model-space BlockReference. No payload is written.",
+    "evidence": "src/RackCad.Plugin/Drawing/StructuralSections/StructuralSectionMaterializer.cs:27,37,55-74,85-87,93-94,101-121,128-134; src/RackCad.Plugin/StructuralSectionCommandFlow.cs:192-196; RackBlockData.Write callers (git grep) do not include these files",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-L01",
+    "topic": "RACKLAYOUT (model space)",
+    "statement": "RACKLAYOUT adds model-space BlockReferences for each non-seed cell. Each points at the seed's definition (linked) or at an independent cloned BTR. It also adds a model-space DBText label for every cell on layer RACKCAD_LAYOUT (ACI 4).",
+    "evidence": "src/RackCad.Plugin/RackLayoutCommands.cs:25,224,228-260,243,250-256,271-292",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-L02",
+    "topic": "RACKRELLENAR (model space)",
+    "statement": "RACKRELLENAR adds one model-space BlockReference (linked to the seed definition, with rotation) and one model-space DBText label per kept cell, on RACKCAD_LAYOUT.",
+    "evidence": "src/RackCad.Plugin/RackLayoutCommands.Fill.cs:450,452-478",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-R01",
+    "topic": "RACKDUPLICAR and independent copies",
+    "statement": "RACKDUPLICAR and independent RACKLAYOUT copies create a new named BTR per source definition. They fill it with Database.DeepCloneObjects of all of the source definition's entities, so the clone holds whatever entity types that kind has (BlockReference, DBText, RotatedDimension, Polyline, Circle). Nested ARRAY definitions are shared, not duplicated. A DBText equal to the rack name is renamed, the payload is replaced, and a model-space BlockReference is created per selected reference.",
+    "evidence": "src/RackCad.Plugin/RackCloner.cs:29-67 (34-36 new BTR, 38-50 DeepCloneObjects, 46-47 nested defs shared, 52-63 DBText rename, 66 payload); src/RackCad.Plugin/RackDuplicarCommands.cs:301-319; RackLayoutCommands.cs:243",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-I01",
+    "topic": "Library import (copies, not RackCad-created)",
+    "statement": "Before drawing, header-run kinds import any missing library block definitions from blocks-library.dwg using WblockCloneObjects with DuplicateRecordCloning.Ignore. The entity types inside those BTRs are defined by the library, not by RackCad code.",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:25-38,102-124; Systems/Shared/SystemBlockWriter.cs:25,59; Systems/Shared/ViewBlockDraw.cs:86; Drawing/LateralHeaderDrawService.cs:83,248",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-T01",
+    "topic": "Symbol table records - layers",
+    "statement": "RackCad creates LayerTableRecords only when a layer is absent, and leaves existing layers untouched. Layers: RACKCAD_ANOTACIONES (ACI 2) from the header drawer and RACKSECCION; RACKCAD_COTAS (ACI 1) from the header drawer; RACKCAD_LAYOUT (ACI 4) from RACKLAYOUT and RACKRELLENAR; and every RACKCAD_CANT_* role layer, all created on each Cantilever append.",
+    "evidence": "src/RackCad.Plugin/LayerHelper.cs:16-29; Drawing/LateralHeaderDrawer.cs:324,327,331,356; Drawing/StructuralSections/StructuralSectionMaterializer.cs:37,55; RackLayoutCommands.cs:25,224; RackLayoutCommands.Fill.cs:450; Drawing/Cantilever/CantileverViewMaterializer.cs:167-196",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-T02",
+    "topic": "Symbol table records - none other",
+    "statement": "No TextStyleTableRecord, DimStyleTableRecord, LinetypeTableRecord or RegAppTableRecord is constructed anywhere in src. Dimensions reuse an existing named style or db.Dimstyle; DimStyleTableRecord is only read.",
+    "evidence": "git grep 'new (…TextStyleTableRecord|DimStyleTableRecord|LinetypeTableRecord|RegAppTableRecord…)' over src/RackCad.Plugin -> no hit; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:380-392; src/RackCad.Plugin/RackCommandSupport.cs:162 (read only)",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-T03",
+    "topic": "Non-entity objects",
+    "statement": "On each view-definition BTR (all kinds with a payload), RackCad writes an extension dictionary holding Xrecord 'RACKCAD_SELECTIVE' (the JSON, in 255-character chunks). At drawing level it writes Named Objects Dictionary Xrecords 'RACKCAD_PROJECT' and 'RACKCAD_CUSTOM_PROPERTIES'.",
+    "evidence": "src/RackCad.Plugin/Systems/Shared/RackBlockData.cs:16,20-51; ProjectVariablesData.cs:36,111-133; CustomPropertiesData.cs:33,129-156",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-M01",
+    "topic": "Model space only",
+    "statement": "Every top-level entity RackCad creates goes to model space via SymbolUtilityServices.GetBlockModelSpaceId. No code appends to a paper-space layout.",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockPlacement.cs:86-87,193-194; Drawing/Cantilever/CantileverViewMaterializer.cs:122-123; Drawing/StructuralSections/StructuralSectionMaterializer.cs:82-83; RackLayoutCommands.cs:222-223; RackLayoutCommands.Fill.cs:448-449; RackDuplicarCommands.cs:297-298 (full AppendEntity/AddNewlyCreatedDBObject grep)",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-A01",
+    "topic": "Host-derived *D blocks",
+    "statement": "Each RotatedDimension has an anonymous *D block holding its graphics, as the code itself states (DimBlockId, RecomputeDimensionBlock). *D blocks therefore follow only from the kinds and views that emit dimensions: Selective, Dynamic and Push Back, in the frontal, planta and lateral views, when DimensionDetail is not None. Cama, Cabecera, Cantilever, RACKSECCION and RACKLAYOUT produce none. On redefine, the old *D blocks are queued and purged after commit.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:107-112,177-178,193-237,375",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-A02",
+    "topic": "Host-derived *U blocks",
+    "statement": "The header drawer sets DynamicBlockReferenceProperty.Value on dynamic library references (IsDynamicBlock check) for Selective, Dynamic, Push Back, Cama and Cabecera, then calls RecordGraphicsModified. AutoCAD usually represents a modified dynamic reference with an anonymous *U BTR. The code never names *U, and whether one is created depends on the library block being dynamic and on the values set. This is host behaviour that static reading cannot confirm.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:319,415-448; dynamic-parameter producers listed in F05-S03, F05-D03, F05-P03, F05-C02, F05-H02",
+    "status": "UNCERTAIN"
+   },
+   {
+    "id": "F05-A03",
+    "topic": "Host-derived *U on redefine",
+    "statement": "On redefine, the drawer collects nestedRef.BlockTableRecord of every old reference as a purge candidate, but registers only blockTable[instance.BlockName] (the named definition) for new references. If a dynamic reference resolves to an anonymous *U record, those *U records would be among the purge candidates. That depends on host API semantics and is not provable statically.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:99-106,128,177-178,305-306",
+    "status": "UNCERTAIN"
+   },
+   {
+    "id": "F05-A04",
+    "topic": "Host-derived blocks under cloning and overrides",
+    "statement": "Two host behaviours cannot be established from source. First, what DeepCloneObjects in RackCloner does with a cloned RotatedDimension's *D block and with a dynamic reference's *U block (new copies or shared). Second, how per-dimension DIMVAR overrides (Dimscale, Dimtxt, Dimasz, Dimexe, Dimexo, Dimgap, Dimtad, Dimdec) are persisted on the entity (for example as XData).",
+    "evidence": "src/RackCad.Plugin/RackCloner.cs:48-49; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:362-373",
+    "status": "UNCERTAIN"
+   },
+   {
+    "id": "F05-A05",
+    "topic": "Anonymous blocks excluded from rack scan",
+    "statement": "RackBlockFinder skips anonymous BTRs (and layouts and xrefs) when sweeping rack definitions, so host-derived *D and *U records are never treated as rack views.",
+    "evidence": "src/RackCad.Plugin/RackBlockFinder.cs:44,66",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-Z01",
+    "topic": "Unreached writers at 3375aadb",
+    "statement": "RackDefinitionCreator.CreateInTransaction (AUTH-15) has no production caller at 3375aadb; it would create the same types through drawer.CreateSystemBlock or the Cantilever materializer. LateralHeaderDrawService.DrawAt, the only caller of BlockPlacement.AppendReference, has no production caller either.",
+    "evidence": "git grep CreateInTransaction -> only src/RackCad.Plugin/Systems/Shared/RackDefinitionCreator.cs:39,83 and tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs:92; RackDefinitionCreator.cs:55,98; git grep '\\.DrawAt\\(' -> no hit; src/RackCad.Plugin/Drawing/LateralHeaderDrawService.cs:162-193,182; Drawing/BlockPlacement.cs:79-95",
+    "status": "FACT"
+   },
+   {
+    "id": "F05-Z02",
+    "topic": "DBText text style",
+    "statement": "The code never sets a text style on DBText objects (header labels and layout labels), so the style is the drawing default the host applies. Which style that is cannot be determined statically.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:266-277; RackLayoutCommands.cs:278-287; RackLayoutCommands.Fill.cs:465-474",
+    "status": "UNCERTAIN"
+   }
+  ],
+  "limitations": [
+   "Read-only static analysis at commit 3375aadb. Nothing was built, run, tested or opened in AutoCAD, so host-side results (*D and *U anonymous blocks, clone semantics, DIMVAR override storage, default text style) are either inferred from code comments or marked UNCERTAIN.",
+   "The entity content of library blocks imported from blocks-library.dwg (WblockCloneObjects) was not inspected. That is the library census's job, and this list covers only entities that RackCad code itself constructs.",
+   "Whether an entity actually appears is data-dependent: DBText depends on the NumberFronts, NumberLevels and DrawRackName toggles; RotatedDimension depends on the effective DimensionDetail per view; nested group BTRs appear only for runs of 2 or more identical pieces; Cantilever circles depend on geometry. No real drawing was sampled.",
+   "The claim that DBText and dimensions are never placed inside nested group definitions comes from tracing every Annotation/Dimension factory call site and every HeaderGroup producer found by the searches below. A producer outside those search patterns would not have been seen.",
+   "Search pattern 1, over src: new (Line|Polyline|Polyline2d|Polyline3d|Circle|Arc|DBText|MText|RotatedDimension|AlignedDimension|ArcDimension|Hatch|BlockReference|Solid|Ellipse|Leader|MLeader|AttributeDefinition|AttributeReference|Xline|Ray|Spline|Face|Region|Wipeout|DBPoint|Solid3d|Trace|Table|RadialDimension|DiametricDimension|LineAngularDimension2|Point3AngularDimension|OrdinateDimension|Surface|PolyFaceMesh|PolygonMesh|Mline|RasterImage|Ole2Frame|Shape|Tolerance|MInsertBlock)\\(",
+   "Search pattern 2, over src/RackCad.Plugin (word boundary, catches object-initializer syntax): new (Line|Polyline|Polyline2d|Polyline3d|Circle|Arc|DBText|MText|RotatedDimension|AlignedDimension|ArcDimension|Hatch|BlockReference|Solid|Ellipse|Leader|MLeader|AttributeDefinition|AttributeReference|Xline|Ray|Spline|Face|Region|Wipeout|DBPoint|Solid3d|Trace|Table|RadialDimension|DiametricDimension|OrdinateDimension|BlockTableRecord|LayerTableRecord|TextStyleTableRecord|DimStyleTableRecord|LinetypeTableRecord|RegAppTableRecord|Xrecord|DBDictionary|ResultBuffer|TypedValue|Group|IdMapping|ObjectIdCollection)\\b",
+   "Search pattern 3: AppendEntity|AddNewlyCreatedDBObject",
+   "Search pattern 4: Clone\\(|DeepCloneObjects|WblockCloneObjects|WblockClone|GetTransformedCopy|Explode|CopyFrom|SendStringToExecute|\\.Command\\(|CommandAsync|Insert\\(|ReadDwgFile|\\.Wblock\\(|ExplodeToOwnerSpace|ConvertToStaticBlock|ResetBlock",
+   "Search pattern 5: TextStyleTableRecord|DimStyleTableRecord|LinetypeTableRecord|RegAppTableRecord|UcsTableRecord|ViewTableRecord|ViewportTableRecord|LayerTableRecord|XData|ResultBuffer|ExtensionDictionary|CreateExtensionDictionary|NamedObjectsDictionary|DBDictionary|Xrecord|SetAt\\(",
+   "Search pattern 6: \\b(Line|Polyline|Circle|Arc|DBText|MText|RotatedDimension|AlignedDimension|ArcDimension|Hatch|BlockReference|Solid|Ellipse|Leader|MLeader|AttributeDefinition|AttributeReference|Xline|Ray|Spline|Face|Region|Wipeout|DBPoint|Dimension|Entity)\\b, filtered for new/as/is/casts/typeof",
+   "Search pattern 7: HeaderBlockRole\\.(Annotation|Dimension)",
+   "Search pattern 8: SelectiveAnnotations\\.|SelectiveDimensions\\.|DynamicViewDecorations\\.|PushBackSideAnnotations\\.|PushBackMirror\\.",
+   "Search pattern 9: HeaderInstanceGrouper.Group|new HeaderRunPlan\\(|new HeaderGroup\\(",
+   "Search pattern 10: DynamicParameters\\[",
+   "Search pattern 11: Activator\\.CreateInstance|RXObject\\.Create|TransformBy|SetDatabaseDefaults|GetTransformedCopy|\\.Clone\\(\\)",
+   "Search pattern 12: OpenMode.ForWrite|\\.Erase\\(\\)|UpgradeOpen\\(\\)",
+   "Search pattern 13 (case-insensitive): \\*U|anonymous|anonim|IsAnonymous|DynamicBlockTableRecord|\\*D\\b",
+   "Search pattern 14: CommandMethod\\(",
+   "Search pattern 15: 'Autodesk.AutoCAD' in src/RackCad.UI, src/RackCad.Application and src/RackCad.Domain",
+   "Search pattern 16: LayerHelper.EnsureLayer|EnsureLayer\\(",
+   "Search pattern 17: \\.DrawAt\\(|AppendReference\\(|PlaceDefinition\\(",
+   "Search pattern 18: CreateInTransaction (in src and tests)",
+   "Search pattern 19: RackBlockData.Write\\(",
+   "Search pattern 20: DictKey = ",
+   "Search pattern 21: CircleDiameter|IsCircle",
+   "Search pattern 22: new CantileverViewCurve\\(|Circle\\(",
+   "Search pattern 23: Label\\(|Annotation|Decoration|Dimension over PushBackCompositeContent.cs, PushBackCompositePlanta.cs, PushBackFlowBedLateralBuilder.cs, DynamicFlowBedLateralBuilder.cs, RackFrames/, Systems/FlowBed/, PushBackSideAnnotations.cs and PushBackMirror.cs",
+   "Search pattern 24: DrawService\\b|DrawService\\(|new [A-Za-z]+DrawService|LateralHeaderDrawer\\(\\)|CantileverViewMaterializer\\.|StructuralSectionMaterializer\\.",
+   "Search pattern 25: RackDefinitionCreator\\.|RackSourcePlacementCaptureAdapter|RackEnvelopeRestamp\\.",
+   "Search pattern 26: enum HeaderBlockRole, enum CantileverViewKind, enum CantileverVisualRole and class SelectiveCorte, used to locate definitions",
+   "The list of views in the standalone Cantilever component request (request.Views, RackCantileverCommands.cs:444) was not traced to its source, so whether AdapterSection plans reach that path is not established."
+  ]
+ },
+ "adversarialVerification": {
+  "verdicts": [
+   {
+    "id": "F05-G01",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "git grep -l \"Autodesk\" 3375aadb -- src/RackCad.UI src/RackCad.Application src/RackCad.Domain returns no files. src/ holds only 4 projects (ls-tree). SectionProjectionCanonicalizer.cs:1-4,320 is an Application-local Line. The UI hits of new Line/Polyline/Ellipse (PreviewCanvasPainter.cs:25, RackFrameConfiguratorWindow.xaml.cs:1441,1581, StructuralSectionPreview.cs:70, CantileverPreviewRenderer.cs:148, RackFlowBedWindow.xaml.cs:496) are WPF shapes (PreviewCanvasPainter.cs:4 uses System.Windows.Shapes)."
+   },
+   {
+    "id": "F05-G02",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "ViewBlockDraw.cs:50 calls SystemBlockWriter.CreateBlock, which calls drawer.CreateSystemBlock at SystemBlockWriter.cs:29. The redefine goes through SystemBlockWriter.cs:113. All eleven draw services hold new LateralHeaderDrawer() (for example SelectiveFrontalDrawService.cs:24, FlowBedDrawService.cs:22, PushBackSystemDrawService.cs:20). LateralHeaderDrawService calls drawer.CreateSystemBlock directly at :252, not through SystemBlockWriter, and calls RedefineInTransaction at :99. It is used for Cabecera lateral (RackCabeceraCommands.cs:175,311) and for the Selective corte (RackSelectivoCommands.cs:588)."
+   },
+   {
+    "id": "F05-G03",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "The only database-object constructions in LateralHeaderDrawer.cs are :243 (BlockTableRecord), :60, :145, :308 (BlockReference), :266 (DBText) and :354 (RotatedDimension). LayerHelper is called at :331 and :356. :204 also constructs an ObjectIdCollection, but that is not a database object."
+   },
+   {
+    "id": "F05-G04",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "LateralHeaderDrawer.cs:38-51 creates one nested definition per group and appends that group's instances into it. :54-68 creates the system definition and its refs, with a mirror scale at :62. :70-76 adds the loose instances. :97-118 erases the old content, :130-161 repopulates, :167-171 calls RecordGraphicsModified, and :240-247 is NewBlock. The nested definitions are NEW on every redefine (:132), while the view BTR id is kept (:92)."
+   },
+   {
+    "id": "F05-G05",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "The Annotation role is set only at SelectiveAnnotations.cs:26 and the Dimension role only at SelectiveDimensions.cs:307 and DynamicViewDecorations.cs:396 (git grep HeaderBlockRole.(Annotation|Dimension)); PushBackMirror.cs:55 only copies a role. The grouper forces both roles loose (HeaderInstanceGrouper.cs:37-42). I grepped every HeaderGroup producer for Label(/Annotation/Decoration/Dimension: PushBackCompositeContent, PushBackFlowBedLateralBuilder, DynamicFlowBedLateralBuilder, PushBackBootPlan, PushBackDefensePlan, PushBackPalletProjection, the two IntermediateBeam builders and RackFrames. None emits them. Selective planta groups come from frameBuilder (SelectivePlantaBuilder.cs:290). Composite frontal filters groups (PushBackCompositeFrontal.cs:94-103)."
+   },
+   {
+    "id": "F05-G06",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "LateralHeaderDrawer.cs:293-303: a missing block is recorded once through the seen set and the method returns false without creating any entity."
+   },
+   {
+    "id": "F05-S01",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "RackSelectivoCommands.cs:470 is the planta insert, :521 the frontal of the chosen fondo (one per insert, prompt at :496-515), and :588 the lateral corte via LateralHeaderDrawService. The payload is written at SystemBlockWriter.cs:33 and LateralHeaderDrawService.cs:257."
+   },
+   {
+    "id": "F05-S02",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "The frontal prefix is the literal SEL_FRONTAL (SelectiveFrontalBuilder.cs:26,36). The grouper keeps only buckets of 2 or more (HeaderInstanceGrouper.cs:61-65) and names them prefix_Role_n (:96). Planta: PLANTA_CAB_n (SelectivePlantaBuilder.cs:300); a group is created per distinct frame key even when it is placed once (:163-168,205,319). Lateral corte: the grouper is named after the view block name (LateralHeaderDrawService.cs:243), or after the read-back name on redraw (:82)."
+   },
+   {
+    "id": "F05-S03",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "LateralHeaderDrawer.cs:308-319 sets Rotation, the X/Y mirror ScaleFactors and ApplyDynamicParameters. Dynamic parameters: SelectiveFrontalBuilder.cs:466-467,489-490,510; SelectivePlantaBuilder.cs:517-518; SelectiveLateralBuilder.cs:638."
+   },
+   {
+    "id": "F05-S04",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "LateralHeaderDrawer.cs:56-68 on create and :143-152 on redefine."
+   },
+   {
+    "id": "F05-S05",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "Frontal: SelectiveFrontalBuilder.cs:320-345. Planta: SelectivePlantaBuilder.cs:329-342. Lateral: SelectiveLateralBuilder.cs:596-622. The DBText is layered, centred and middle-aligned at LateralHeaderDrawer.cs:266-280, and blank text is skipped at :260-263."
+   },
+   {
+    "id": "F05-S06",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "The DimensionDetail None gates are at SelectiveDimensions.cs:64-68, 144-148 and 210-214. The style comes from system.DimensionStyle (:74,154,220). Style resolution is at LateralHeaderDrawer.cs:353,380-392 and the overrides are applied only when the style is not named (:362-373). RecomputeDimensionBlock (:375) is called in BOTH cases."
+   },
+   {
+    "id": "F05-S07",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "BlockPlacement.cs:182-199 is the jig and model-space append. :35-42 handles a cancel, and EraseUnreferencedDefinition erases the definition only when it has no references (:139-156)."
+   },
+   {
+    "id": "F05-D01",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "RackDinamicoCommands.cs:114,118,127,360. DynamicFrontalDrawService.cs:24-31 (end), DynamicPlantaDrawService.cs:23-30, DynamicSystemDrawService.cs:34-41 (postIndex selects whole or corte)."
+   },
+   {
+    "id": "F05-D02",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "DynamicSystemFrontalBuilder.cs:26-28. DynamicSystemPlantaBuilder.cs:65 (DIN_PLANTA_CAB_n), 78-80 (DIN_PLANTA_PIEZA groups added). DynamicSystemLateralBuilder.cs:144-155,211-242,490. DynamicFlowBedLateralBuilder.cs:83. DynamicIntermediateBeamLateralBuilder.cs:27,97."
+   },
+   {
+    "id": "F05-D03",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "DynamicSystemFrontalBuilder.cs:163-164. DynamicSystemLateralBuilder.cs:389,450,466. DynamicSystemPlantaBuilder.cs:135,237,260,334-335. LateralHeaderDrawer.cs:305-319."
+   },
+   {
+    "id": "F05-D04",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "DynamicSystemLateralBuilder.cs:153-155 and DynamicSystemPlantaBuilder.cs:54-61 set the mirrored flag. It is realised as scale (-1,1,1) at LateralHeaderDrawer.cs:60-63."
+   },
+   {
+    "id": "F05-D05",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "DynamicViewDecorations.cs:66-98 (frontal: fronts, levels, name), 143-163 (planta: fronts, name), 244-263 (lateral: levels, name). All are added to the loose list or pass through the grouper (DynamicSystemFrontalBuilder.cs:171, DynamicSystemPlantaBuilder.cs:74, DynamicSystemLateralBuilder.cs:257)."
+   },
+   {
+    "id": "F05-D06",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "DynamicViewDecorations.cs:61, 112-122, 191-209 (EffectiveDetail per view), 117/206/285 (style = system.DimensionStyle), 387-403 (Dimension factory). LateralHeaderDrawer.cs:354-375."
+   },
+   {
+    "id": "F05-D07",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "ViewBlockDraw.cs:51 leads to BlockPlacement.PlaceAndReport, which appends the reference at BlockPlacement.cs:182-199."
+   },
+   {
+    "id": "F05-P01",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "RackPushBackCommands.cs:104,117,122,404. The PushBackFrontalDrawService plan factory is builder.BuildPlan(system, catalog, end, side) (its lines 28-35 and 45-51). PushBackPlantaDrawService and PushBackSystemDrawService (postIndex) are equivalent."
+   },
+   {
+    "id": "F05-P02",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "PushBackSystemFrontalBuilder.cs:215,313,547. PushBackSystemPlantaBuilder.cs:157 and PushBackCompositePlanta.cs:62 (PB_PLANTA_PIEZA; the Dynamic planta is flattened first, :72 and :43-48). PushBackSystemLateralBuilder.cs:315,340,347-348. PushBackFlowBedLateralBuilder.cs:146-150: groups are named 'Cama push back' plus an optional ' D<depth>'. PushBackCompositeContent.cs:116-118 (the mirror suffix is ' B'). PushBackMirror.cs:105."
+   },
+   {
+    "id": "F05-P03",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "PushBackSystemPlantaBuilder.cs:111, PushBackFlowBedLateralBuilder.cs:196, LateralHeaderDrawer.cs:60-65,305-319."
+   },
+   {
+    "id": "F05-P04",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "Frontal: PushBackSystemFrontalBuilder.cs:197-215 (low) and :223-230,306 (posterior keeps decorations); composite: PushBackCompositeFrontal.cs:67-71,98,102. Planta: PushBackSystemPlantaBuilder.cs:72,89. Lateral: PushBackSystemLateralBuilder.cs:181,186,196-231. Side labels: PushBackSideAnnotations.cs:45-62,70-86,104; PushBackCompositePlanta.cs:60."
+   },
+   {
+    "id": "F05-P05",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "PushBackSystemLateralBuilder.cs:159,234-242 (structure drawn with Dimensions=None and no labels), :213-227 (decorations per side, side B mirrored). PushBackMirror.cs:50,61-69 keeps the role and style and flips the offset of a vertical cota. PushBackPlanComposer.cs:134-138 keeps decorations when deduplicating."
+   },
+   {
+    "id": "F05-P06",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "ViewBlockDraw.cs:51; BlockPlacement.cs:182-199."
+   },
+   {
+    "id": "F05-C01",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "FlowBedDrawService.cs:24-32,30,44 build new HeaderRunPlan(new List<HeaderGroup>(), ...). RackCamaCommands.cs:106,171,233."
+   },
+   {
+    "id": "F05-C02",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "FlowBedLateralBuilder.cs:42-52 (rail, LONGITUD at :51), 55 (stop), 65/89/101 (rollers), 88 (brake), 130-139 (Piece). All go into a flat list wrapped as loose."
+   },
+   {
+    "id": "F05-C03",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "git grep 'Label\\(|Annotation|Decoration|Dimension' over src/RackCad.Application/Systems/FlowBed at 3375aadb returns no hit. The only role factories are SelectiveAnnotations.cs:26, SelectiveDimensions.cs:307 and DynamicViewDecorations.cs:396."
+   },
+   {
+    "id": "F05-H01",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "RackCabeceraCommands.cs:175,270,281,303,311. LateralHeaderDrawService.cs:243 (grouper). PlantaHeaderDrawService.cs:30,42 (empty group list)."
+   },
+   {
+    "id": "F05-H02",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "LateralHeaderLayoutBuilder.cs:165,181,220,328,347 and PlantaHeaderLayoutBuilder.cs:120-121,142,163 set the DynamicParameters. The planta plan has only loose instances (PlantaHeaderDrawService.cs:30)."
+   },
+   {
+    "id": "F05-H03",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "The grep over src/RackCad.Application/RackFrames returns no hit. LateralHeaderDrawService.cs:44,197-207 merges the extras. SelectiveLateralBuilder.cs:201,229,231 put the labels and cotas into the corte extras."
+   },
+   {
+    "id": "F05-H04",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "LateralHeaderDrawService.cs:222-234 calls BlockPlacement.PlaceAndReport. PlantaHeaderDrawService.cs:25 calls ViewBlockDraw.DrawAndPlace. BlockPlacement.cs:182-199."
+   },
+   {
+    "id": "F05-K01",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "CantileverViewMaterializer.cs:45-51 (create), 61-88 (redefine: erase, AppendCurves, RecordGraphicsModified), 108-114 (named). RackCantileverCommands.cs:152-158 and 330-333 write the payload. :446-451 creates standalone components and writes no RackBlockData.Write; the message at :465-467 says they are loose pieces. CantileverViewPlanBuilder.cs:12-36 defines Frontal, Lateral and Planta plus AdapterSection (not a line view)."
+   },
+   {
+    "id": "F05-K02",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "CantileverViewMaterializer.cs:248-266 (Polyline, null when there are fewer than 2 points, Closed = IsClosed), 207-216 (ApplyRole: layer, ColorIndex 256, Linetype ByLayer, LineWeight ByLayer). Layer names are RACKCAD_CANT_ plus a Spanish role name: CantileverVisualRole.cs:112,187-231."
+   },
+   {
+    "id": "F05-K03",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "The static part is verified: CantileverViewMaterializer.cs:219-241 builds a Circle only when curve.IsCircle, with one point and a diameter > 0. CantileverViewPlanBuilder.cs:105-107; the rod hole is at :852-858 and the punch within the foreshortening limit at :961-965. Which views get circles depends on the data, as stated."
+   },
+   {
+    "id": "F05-K04",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "CantileverViewMaterializer.cs:219-220 returns only Circle or Polyline; :57-59 says nothing is nested. CantileverVisualRole.cs:53-59 declares Annotation with no emitter yet, and :230-231 gives its layer."
+   },
+   {
+    "id": "F05-K05",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "RackCantileverCommands.cs:162 (PlaceDefinition jig) and :444-456 (InsertReference at the pick point plus offsetX). BlockPlacement.cs:64-76,182-199. CantileverViewMaterializer.cs:118-130."
+   },
+   {
+    "id": "F05-X01",
+    "verdict": "CORRECTED",
+    "correction": "RACKSECCION creates a named BTR RACKCAD_SECCION_<id>_<view>_L<len>, sanitized, with '.' in the length replaced by '_'. It contains only lightweight Polylines. Every polyline has ByBlock colour, linetype and lineweight and sits on layer 0. The Axis and Envelope curves are moved to RACKCAD_ANOTACIONES but keep the ByBlock colour, linetype and lineweight. The RACKCAD_ANOTACIONES layer is ensured on every insert, whether or not such curves exist. The command also adds one model-space BlockReference and writes no payload.",
+    "evidence": "StructuralSectionMaterializer.cs:55 (EnsureLayer called unconditionally), 61-72 (only LayerId changes for Axis/Envelope), 112-119 (layer 0, ColorIndex 0, ByBlock), 128-134 (name). StructuralSectionCommandFlow.cs:192-196. No RackBlockData.Write caller exists in these files."
+   },
+   {
+    "id": "F05-L01",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "RackLayoutCommands.cs:222-224 (model space and RACKCAD_LAYOUT with ACI 4), 228-257 (non-seed cells, linked or RackCloner.CloneDefinition at :243), 260 and 271-291 (DBText label for every cell, the seed included)."
+   },
+   {
+    "id": "F05-L02",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "RackLayoutCommands.Fill.cs:448-450, 452-461 (a BlockReference to seed.DefinitionId with rotation), 463-477 (DBText on the layout layer)."
+   },
+   {
+    "id": "F05-R01",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "RackCloner.cs:34-36 (new BTR), 38-50 (DeepCloneObjects into cloneId), 46-47 (comment: nested definitions shared), 52-63 (renames a top-level DBText equal to labelFrom), 66 (payload). RackDuplicarCommands.cs:301-319: one model-space BlockReference per source reference, which also copies source.LayerId at :315. RackLayoutCommands.cs:243."
+   },
+   {
+    "id": "F05-I01",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "BlockLibraryImporter.cs:25-38 (EnsureForPlan through ImportAdapter, :134-142, to EnsureRequirements and EnsureBlocks), 102-124 (WblockCloneObjects with DuplicateRecordCloning.Ignore at :123). Callers: SystemBlockWriter.cs:25,59; ViewBlockDraw.cs:86; LateralHeaderDrawService.cs:83,248."
+   },
+   {
+    "id": "F05-T01",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "LayerHelper.cs:16-29 (returns an existing layer untouched). LateralHeaderDrawer.cs:324,327,331,356. StructuralSectionMaterializer.cs:37,55. RackLayoutCommands.cs:25,224. RackLayoutCommands.Fill.cs:450. CantileverViewMaterializer.cs:167-196: every role, skipped if it already exists, with ACI from CantileverVisualRoles.ColorIndexOf."
+   },
+   {
+    "id": "F05-T02",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "The git grep for new ...TableRecord over src finds only BlockTableRecord and LayerTableRecord. DimStyleTableRecord is only read: LateralHeaderDrawer.cs:384-391 and RackCommandSupport.cs:159-166."
+   },
+   {
+    "id": "F05-T03",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "RackBlockData.cs:16 (RACKCAD_SELECTIVE), 20-51 (extension dictionary plus Xrecord in 255-character chunks; returns early on empty json). ProjectVariablesData.cs:36,111-133 (NOD RACKCAD_PROJECT). CustomPropertiesData.cs:33,129-156 (NOD RACKCAD_CUSTOM_PROPERTIES)."
+   },
+   {
+    "id": "F05-M01",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "Every AppendEntity target outside a definition is model space via GetBlockModelSpaceId: BlockPlacement.cs:87,194; CantileverViewMaterializer.cs:123; StructuralSectionMaterializer.cs:83; RackDuplicarCommands.cs:298; RackLayoutCommands.Fill.cs:449; RackLayoutCommands.cs:223. There is no PaperSpace or CurrentSpaceId hit in src/RackCad.Plugin."
+   },
+   {
+    "id": "F05-A01",
+    "verdict": "CORRECTED",
+    "correction": "Every RotatedDimension has an anonymous *D block, according to the code comment at LateralHeaderDrawer.cs:109-110. RackCad itself constructs dimensions only in Selective, Dynamic and Push Back frontal, planta and lateral views, when the effective DimensionDetail is not None. However, independent RACKLAYOUT copies and RACKDUPLICAR copy a dimensioned definition's RotatedDimensions through DeepCloneObjects, so their cloned BTRs also contain dimensions with *D blocks; whether new *D records are created is host behaviour (see A04). Cama, Cabecera, Cantilever, RACKSECCION and linked RACKLAYOUT/RACKRELLENAR copies create no dimension. On redefine, the old *D blocks are queued for the post-commit best-effort purge. The cancelled-insert cleanup and EraseViewBlocks do NOT enqueue *D blocks.",
+    "evidence": "LateralHeaderDrawer.cs:107-112,177-178,193-237,375. RackCloner.cs:38-50. RackLayoutCommands.cs:243. RackDuplicarCommands.cs:303-305. BlockPlacement.cs:146-152 and RackCommandSupport.cs:247-253 collect only BlockReference.BlockTableRecord."
+   },
+   {
+    "id": "F05-A02",
+    "verdict": "UNCERTAIN",
+    "correction": "",
+    "evidence": "The static part is verified: LateralHeaderDrawer.cs:415-448 checks IsDynamicBlock, sets Value case-insensitively, and calls RecordGraphicsModified only when a value was applied (:445-448). Whether *U records are created is AutoCAD host behaviour and cannot be read from source."
+   },
+   {
+    "id": "F05-A03",
+    "verdict": "UNCERTAIN",
+    "correction": "",
+    "evidence": "The static part is verified: LateralHeaderDrawer.cs:99-106 collects nestedRef.BlockTableRecord for top-level refs; :128,133,305-306 add only the named definition ids; :177 takes the set difference. Whether BlockTableRecord returns a *U id for a modified dynamic reference is host API semantics."
+   },
+   {
+    "id": "F05-A04",
+    "verdict": "UNCERTAIN",
+    "correction": "",
+    "evidence": "RackCloner.cs:48-49 (DeepCloneObjects) and LateralHeaderDrawer.cs:362-373 (DIMVAR property setters). How the host clones and stores these cannot be established statically."
+   },
+   {
+    "id": "F05-A05",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "RackBlockFinder.cs:43-44 (doc) and :66-69 (skips IsLayout, IsAnonymous and IsFromExternalReference in ScanEnvelopes)."
+   },
+   {
+    "id": "F05-Z01",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "git grep CreateInTransaction over src and tests: the only hits are RackDefinitionCreator.cs:39,83 and tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs:92. RackDefinitionCreator.cs:55,98. git grep '\\.DrawAt\\(' finds no call site. LateralHeaderDrawService.cs:162-193 and :182 is the only AppendReference caller (BlockPlacement.cs:79-95)."
+   },
+   {
+    "id": "F05-Z02",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "The static part is verified: no TextStyle or TextStyleId is set in the DBText initializers at LateralHeaderDrawer.cs:266-277, RackLayoutCommands.cs:278-287 and RackLayoutCommands.Fill.cs:465-474. The resulting style is a host default and cannot be determined statically, as the fact says."
+   }
+  ],
+  "missed": [
+   {
+    "statement": "Except for RACKDUPLICAR, RackCad never sets a layer on the BlockReferences it creates. This covers library-piece refs and nested-group refs inside view definitions, jig and InsertReference model-space refs, and RACKLAYOUT/RACKRELLENAR refs. Their layer is therefore the host default, which cannot be determined statically. RACKDUPLICAR copies the source reference's LayerId. LayerId is set explicitly only on DBText and RotatedDimension, and ApplyRole or Layer on Cantilever/RACKSECCION polylines and circles.",
+    "evidence": "LateralHeaderDrawer.cs:60-63,145-148,308-314 (no Layer/LayerId); BlockPlacement.cs:88,182; CantileverViewMaterializer.cs:125; StructuralSectionMaterializer.cs:85; RackLayoutCommands.cs:250-254; RackLayoutCommands.Fill.cs:454-458; RackDuplicarCommands.cs:311-316 (LayerId = source.LayerId); LateralHeaderDrawer.cs:270,356"
+   },
+   {
+    "statement": "The two definition-erasing cleanups collect only nested BlockReference targets and never Dimension.DimBlockId: the cancelled-insert cleanup and the phantom-view erase. By contrast, the redefine path does enqueue *D blocks. Whether those *D records are left orphaned is host behaviour.",
+    "evidence": "BlockPlacement.cs:146-152 (EraseUnreferencedDefinition); RackCommandSupport.cs:247-253 (EraseViewBlocks); compare LateralHeaderDrawer.cs:107-112"
+   },
+   {
+    "statement": "On every redefine, nested group BTRs are recreated as NEW records with freshly uniquified names; only the view BTR keeps its id and name. The old group BTRs are purged after commit on a best-effort basis through Database.Purge. The three BTR-creating families use three different uniqueness policies: the header drawer appends '_1', '_2'; Cantilever appends '_2', '_3'; RackCloner appends ' (1)', ' (2)'.",
+    "evidence": "LateralHeaderDrawer.cs:94-96,130-133,177-178,193-237,395-413; CantileverViewMaterializer.cs:309-327; RackCloner.cs:71-87"
+   },
+   {
+    "statement": "There are other writer paths into view definitions besides the per-kind commands. ProjectVariableMutationExecutor redraws Selective lateral, planta and frontal definitions inside one caller-owned transaction through the same LateralHeaderDrawer, so it creates the same entity types. CustomPropertiesExecutor only rewrites the RACKCAD_SELECTIVE payload Xrecord on existing definitions and creates no entity.",
+    "evidence": "ProjectVariableMutationExecutor.cs:235-258,301-317; CustomPropertiesExecutor.cs:337-340"
+   },
+   {
+    "statement": "Grouper-produced placements are never mirrored. A nested-reference scale of (-1,1,1) therefore comes only from hand-built groups: the Dynamic lateral and planta cabecera groups, and groups passed through PushBackMirror, which keeps the flag. Push Back planta, both single and composite, flattens the Dynamic planta plan and regroups it as PB_PLANTA_PIEZA. As a result, DIN_PLANTA_CAB_n groups do not exist in Push Back planta definitions, and mirrored cabecera pieces there become per-piece MirroredX references.",
+    "evidence": "HeaderInstanceGrouper.cs:91-93; DynamicSystemLateralBuilder.cs:153-155; DynamicSystemPlantaBuilder.cs:54-61; PushBackMirror.cs:101-105; PushBackSystemPlantaBuilder.cs:72,157; PushBackCompositePlanta.cs:43-48,62"
+   },
+   {
+    "statement": "Several group-name literals were not stated. The Selective frontal grouper prefix is 'SEL_FRONTAL'. Push Back lateral bed groups are named 'Cama push back' plus a suffix, with ' D<depth>' only when there is more than one effective depth. Reflected composite groups get the suffix ' B'. These become sanitized, uniquified nested BTR names.",
+    "evidence": "SelectiveFrontalBuilder.cs:26,36; PushBackFlowBedLateralBuilder.cs:146-150; PushBackCompositeContent.cs:116-118; LateralHeaderDrawer.cs:397 (BlockNaming.SanitizeBlockName)"
+   },
+   {
+    "statement": "Library import clones BTRs with WblockCloneObjects from a side database read by ReadDwgFile. Beyond the requested BTRs, the host may also bring in dependent symbol-table records the library blocks reference, such as nested BTRs, layers, linetypes and text styles. RackCad code does not construct these, and static reading cannot confirm which records arrive.",
+    "evidence": "BlockLibraryDatabaseCache.cs:36 (ReadDwgFile); BlockLibraryImporter.cs:102-124 (WblockCloneObjects, DuplicateRecordCloning.Ignore)"
+   }
+  ]
+ }
+}

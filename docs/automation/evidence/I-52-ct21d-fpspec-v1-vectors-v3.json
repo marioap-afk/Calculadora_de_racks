@@ -1,0 +1,3290 @@
+{
+ "spec": "FPSPEC-V1",
+ "artifact": "BA-05 V3",
+ "status": "NORMATIVE (as part of BA-05 when sealed)",
+ "encoding": {
+  "prefix": "FPSPEC-V1|EXACT|",
+  "fieldOrder": "ordinal (UTF-8 byte order) of the field name",
+  "stringOrder": "Unicode scalar value order = UTF-8 byte order",
+  "authoritativeBytes": "streamHex (streamDisplay is informative only)",
+  "rbKindRanges": [
+   [
+    0,
+    9,
+    "string"
+   ],
+   [
+    10,
+    59,
+    "double"
+   ],
+   [
+    60,
+    79,
+    "int"
+   ],
+   [
+    90,
+    99,
+    "int"
+   ],
+   [
+    100,
+    100,
+    "string"
+   ],
+   [
+    102,
+    102,
+    "string"
+   ],
+   [
+    110,
+    149,
+    "double"
+   ],
+   [
+    160,
+    169,
+    "int"
+   ],
+   [
+    170,
+    179,
+    "int"
+   ],
+   [
+    210,
+    239,
+    "double"
+   ],
+   [
+    270,
+    289,
+    "int"
+   ],
+   [
+    290,
+    299,
+    "bool"
+   ],
+   [
+    300,
+    309,
+    "string"
+   ],
+   [
+    310,
+    319,
+    "bytes"
+   ],
+   [
+    370,
+    389,
+    "int"
+   ],
+   [
+    400,
+    409,
+    "int"
+   ],
+   [
+    410,
+    419,
+    "string"
+   ],
+   [
+    420,
+    429,
+    "int"
+   ],
+   [
+    430,
+    439,
+    "string"
+   ],
+   [
+    440,
+    459,
+    "int"
+   ],
+   [
+    460,
+    469,
+    "double"
+   ],
+   [
+    470,
+    479,
+    "string"
+   ],
+   [
+    999,
+    1003,
+    "string"
+   ],
+   [
+    1004,
+    1004,
+    "bytes"
+   ],
+   [
+    1005,
+    1009,
+    "string"
+   ],
+   [
+    1010,
+    1059,
+    "double"
+   ],
+   [
+    1060,
+    1071,
+    "int"
+   ]
+  ],
+  "rbUnsupported": "handle and object-id codes (5, 105, 320-369, 390-399, 480-481, 1005 as handle) and every code outside the table"
+ },
+ "schemas": {
+  "POINT3D": {
+   "use": "helper",
+   "fields": [
+    [
+     "x",
+     "double",
+     ""
+    ],
+    [
+     "y",
+     "double",
+     ""
+    ],
+    [
+     "z",
+     "double",
+     ""
+    ]
+   ]
+  },
+  "COLOR": {
+   "use": "helper",
+   "fields": [
+    [
+     "colorMethod",
+     "enum",
+     "stored name of the host ColorMethod"
+    ],
+    [
+     "colorIndex",
+     "int",
+     "ACI index as the host reports it"
+    ],
+    [
+     "colorRgb",
+     "int",
+     "R*65536 + G*256 + B when colorMethod = ByColor, else absent"
+    ],
+    [
+     "colorBookName",
+     "string",
+     "color book name, or absent"
+    ],
+    [
+     "colorName",
+     "string",
+     "color name in the book, or absent"
+    ]
+   ]
+  },
+  "TYPED_VALUE": {
+   "use": "helper",
+   "fields": [
+    [
+     "kind",
+     "enum",
+     "one of ABSENT, BOOL, INT, DOUBLE, STRING, NAME, BYTES, POINT3D, COLOR"
+    ],
+    [
+     "value",
+     "typed-inner",
+     "encoded by the kind; absent for ABSENT"
+    ]
+   ]
+  },
+  "RB": {
+   "use": "helper",
+   "fields": [
+    [
+     "code",
+     "int",
+     "the DXF group code of the typed value"
+    ],
+    [
+     "value",
+     "typed-inner",
+     "encoded by the kind of the code range (section 2.1.2)"
+    ]
+   ]
+  },
+  "DYNPROP": {
+   "use": "helper",
+   "fields": [
+    [
+     "name",
+     "string",
+     "dynamic property name (stored)"
+    ],
+    [
+     "value",
+     "typed",
+     "typed value"
+    ]
+   ]
+  },
+  "DIMVAR_VALUE": {
+   "use": "helper",
+   "fields": [
+    [
+     "name",
+     "string",
+     "dimension variable name (closed list, section 2.3.3)"
+    ],
+    [
+     "value",
+     "typed",
+     "typed value"
+    ]
+   ]
+  },
+  "PLINE_VERTEX": {
+   "use": "helper",
+   "fields": [
+    [
+     "x",
+     "double",
+     ""
+    ],
+    [
+     "y",
+     "double",
+     ""
+    ],
+    [
+     "bulge",
+     "double",
+     ""
+    ],
+    [
+     "startWidth",
+     "double",
+     ""
+    ],
+    [
+     "endWidth",
+     "double",
+     ""
+    ]
+   ]
+  },
+  "LTYPE_DASH": {
+   "use": "helper",
+   "fields": [
+    [
+     "length",
+     "double",
+     ""
+    ],
+    [
+     "shapeNumber",
+     "int",
+     ""
+    ],
+    [
+     "shapeStyleName",
+     "string",
+     "or absent"
+    ],
+    [
+     "shapeOffsetX",
+     "double",
+     ""
+    ],
+    [
+     "shapeOffsetY",
+     "double",
+     ""
+    ],
+    [
+     "shapeRotation",
+     "double",
+     ""
+    ],
+    [
+     "shapeScale",
+     "double",
+     ""
+    ],
+    [
+     "shapeIsUcsOriented",
+     "bool",
+     ""
+    ],
+    [
+     "text",
+     "string",
+     "or absent"
+    ]
+   ]
+  },
+  "STATE_MEMBER": {
+   "use": "helper",
+   "fields": [
+    [
+     "memberKey",
+     "string",
+     "category|recordKind|expectedName (the set key)"
+    ],
+    [
+     "category",
+     "enum",
+     "READ_SET or CLOSURE (V2.1 6, 11.3)"
+    ],
+    [
+     "recordKind",
+     "string",
+     "BLOCK, LAYER, LTYPE, STYLE, DIMSTYLE, APPID, PAYLOAD, NOD_ENTRY, ENUMERATION or BINDING"
+    ],
+    [
+     "expectedName",
+     "string",
+     "the name queried with host symbol-table semantics"
+    ],
+    [
+     "storedName",
+     "string",
+     "the stored case of the pre-existing record, absent when ABSENT"
+    ],
+    [
+     "state",
+     "enum",
+     "PRESENT, ABSENT or UNKNOWN"
+    ],
+    [
+     "digest",
+     "digest",
+     "the exact digest of the member record when PRESENT, else absent"
+    ]
+   ]
+  },
+  "MANIFEST_ADDITION": {
+   "use": "helper",
+   "fields": [
+    [
+     "memberKey",
+     "string",
+     "as STATE_MEMBER"
+    ],
+    [
+     "recordKind",
+     "string",
+     ""
+    ],
+    [
+     "storedName",
+     "string",
+     ""
+    ],
+    [
+     "digest",
+     "digest",
+     "exact digest recorded after the import"
+    ]
+   ]
+  },
+  "MANIFEST_REUSED": {
+   "use": "helper",
+   "fields": [
+    [
+     "memberKey",
+     "string",
+     "as STATE_MEMBER"
+    ],
+    [
+     "recordKind",
+     "string",
+     ""
+    ],
+    [
+     "storedName",
+     "string",
+     ""
+    ],
+    [
+     "preCommandDigest",
+     "digest",
+     "the digest of the pre-command record"
+    ]
+   ]
+  },
+  "DEFINITION_DUMP": {
+   "use": "production",
+   "fields": [
+    [
+     "name",
+     "string",
+     "block name (stored case)"
+    ],
+    [
+     "originX",
+     "double",
+     ""
+    ],
+    [
+     "originY",
+     "double",
+     ""
+    ],
+    [
+     "originZ",
+     "double",
+     ""
+    ],
+    [
+     "explodable",
+     "bool",
+     ""
+    ],
+    [
+     "scaling",
+     "enum",
+     "stored name of the host BlockScaling"
+    ],
+    [
+     "units",
+     "enum",
+     "stored name of the host UnitsValue"
+    ],
+    [
+     "annotative",
+     "enum",
+     "stored name of the host AnnotativeStates"
+    ],
+    [
+     "entities",
+     "seq:entity",
+     "every entity of the record in HOST ITERATION ORDER, each an inline ENTITY_* record (section 2.2)"
+    ]
+   ]
+  },
+  "ENTITY_LINE": {
+   "use": "production",
+   "fields": [
+    [
+     "dxfName",
+     "string",
+     "DXF class name as the host reports it"
+    ],
+    [
+     "layer",
+     "string",
+     "layer name (stored case)"
+    ],
+    [
+     "linetype",
+     "string",
+     "linetype name (stored case)"
+    ],
+    [
+     "linetypeScale",
+     "double",
+     ""
+    ],
+    [
+     "lineweight",
+     "enum",
+     "stored name of the host LineWeight value"
+    ],
+    [
+     "visible",
+     "bool",
+     ""
+    ],
+    [
+     "colorMethod",
+     "enum",
+     "stored name of the host ColorMethod"
+    ],
+    [
+     "colorIndex",
+     "int",
+     "ACI index as the host reports it"
+    ],
+    [
+     "colorRgb",
+     "int",
+     "R*65536 + G*256 + B when colorMethod = ByColor, else absent"
+    ],
+    [
+     "colorBookName",
+     "string",
+     "color book name, or absent"
+    ],
+    [
+     "colorName",
+     "string",
+     "color name in the book, or absent"
+    ],
+    [
+     "transparencyMethod",
+     "enum",
+     "stored name of the host TransparencyMethod"
+    ],
+    [
+     "transparencyAlpha",
+     "int",
+     "alpha 0-255 when the method is ByAlpha, else absent"
+    ],
+    [
+     "startX",
+     "double",
+     ""
+    ],
+    [
+     "startY",
+     "double",
+     ""
+    ],
+    [
+     "startZ",
+     "double",
+     ""
+    ],
+    [
+     "endX",
+     "double",
+     ""
+    ],
+    [
+     "endY",
+     "double",
+     ""
+    ],
+    [
+     "endZ",
+     "double",
+     ""
+    ],
+    [
+     "normalX",
+     "double",
+     ""
+    ],
+    [
+     "normalY",
+     "double",
+     ""
+    ],
+    [
+     "normalZ",
+     "double",
+     ""
+    ],
+    [
+     "thickness",
+     "double",
+     ""
+    ]
+   ]
+  },
+  "ENTITY_ARC": {
+   "use": "production",
+   "fields": [
+    [
+     "dxfName",
+     "string",
+     "DXF class name as the host reports it"
+    ],
+    [
+     "layer",
+     "string",
+     "layer name (stored case)"
+    ],
+    [
+     "linetype",
+     "string",
+     "linetype name (stored case)"
+    ],
+    [
+     "linetypeScale",
+     "double",
+     ""
+    ],
+    [
+     "lineweight",
+     "enum",
+     "stored name of the host LineWeight value"
+    ],
+    [
+     "visible",
+     "bool",
+     ""
+    ],
+    [
+     "colorMethod",
+     "enum",
+     "stored name of the host ColorMethod"
+    ],
+    [
+     "colorIndex",
+     "int",
+     "ACI index as the host reports it"
+    ],
+    [
+     "colorRgb",
+     "int",
+     "R*65536 + G*256 + B when colorMethod = ByColor, else absent"
+    ],
+    [
+     "colorBookName",
+     "string",
+     "color book name, or absent"
+    ],
+    [
+     "colorName",
+     "string",
+     "color name in the book, or absent"
+    ],
+    [
+     "transparencyMethod",
+     "enum",
+     "stored name of the host TransparencyMethod"
+    ],
+    [
+     "transparencyAlpha",
+     "int",
+     "alpha 0-255 when the method is ByAlpha, else absent"
+    ],
+    [
+     "centerX",
+     "double",
+     ""
+    ],
+    [
+     "centerY",
+     "double",
+     ""
+    ],
+    [
+     "centerZ",
+     "double",
+     ""
+    ],
+    [
+     "radius",
+     "double",
+     ""
+    ],
+    [
+     "startAngle",
+     "double",
+     ""
+    ],
+    [
+     "endAngle",
+     "double",
+     ""
+    ],
+    [
+     "normalX",
+     "double",
+     ""
+    ],
+    [
+     "normalY",
+     "double",
+     ""
+    ],
+    [
+     "normalZ",
+     "double",
+     ""
+    ],
+    [
+     "thickness",
+     "double",
+     ""
+    ]
+   ]
+  },
+  "ENTITY_CIRCLE": {
+   "use": "production",
+   "fields": [
+    [
+     "dxfName",
+     "string",
+     "DXF class name as the host reports it"
+    ],
+    [
+     "layer",
+     "string",
+     "layer name (stored case)"
+    ],
+    [
+     "linetype",
+     "string",
+     "linetype name (stored case)"
+    ],
+    [
+     "linetypeScale",
+     "double",
+     ""
+    ],
+    [
+     "lineweight",
+     "enum",
+     "stored name of the host LineWeight value"
+    ],
+    [
+     "visible",
+     "bool",
+     ""
+    ],
+    [
+     "colorMethod",
+     "enum",
+     "stored name of the host ColorMethod"
+    ],
+    [
+     "colorIndex",
+     "int",
+     "ACI index as the host reports it"
+    ],
+    [
+     "colorRgb",
+     "int",
+     "R*65536 + G*256 + B when colorMethod = ByColor, else absent"
+    ],
+    [
+     "colorBookName",
+     "string",
+     "color book name, or absent"
+    ],
+    [
+     "colorName",
+     "string",
+     "color name in the book, or absent"
+    ],
+    [
+     "transparencyMethod",
+     "enum",
+     "stored name of the host TransparencyMethod"
+    ],
+    [
+     "transparencyAlpha",
+     "int",
+     "alpha 0-255 when the method is ByAlpha, else absent"
+    ],
+    [
+     "centerX",
+     "double",
+     ""
+    ],
+    [
+     "centerY",
+     "double",
+     ""
+    ],
+    [
+     "centerZ",
+     "double",
+     ""
+    ],
+    [
+     "radius",
+     "double",
+     ""
+    ],
+    [
+     "normalX",
+     "double",
+     ""
+    ],
+    [
+     "normalY",
+     "double",
+     ""
+    ],
+    [
+     "normalZ",
+     "double",
+     ""
+    ],
+    [
+     "thickness",
+     "double",
+     ""
+    ]
+   ]
+  },
+  "ENTITY_LWPOLYLINE": {
+   "use": "production",
+   "fields": [
+    [
+     "dxfName",
+     "string",
+     "DXF class name as the host reports it"
+    ],
+    [
+     "layer",
+     "string",
+     "layer name (stored case)"
+    ],
+    [
+     "linetype",
+     "string",
+     "linetype name (stored case)"
+    ],
+    [
+     "linetypeScale",
+     "double",
+     ""
+    ],
+    [
+     "lineweight",
+     "enum",
+     "stored name of the host LineWeight value"
+    ],
+    [
+     "visible",
+     "bool",
+     ""
+    ],
+    [
+     "colorMethod",
+     "enum",
+     "stored name of the host ColorMethod"
+    ],
+    [
+     "colorIndex",
+     "int",
+     "ACI index as the host reports it"
+    ],
+    [
+     "colorRgb",
+     "int",
+     "R*65536 + G*256 + B when colorMethod = ByColor, else absent"
+    ],
+    [
+     "colorBookName",
+     "string",
+     "color book name, or absent"
+    ],
+    [
+     "colorName",
+     "string",
+     "color name in the book, or absent"
+    ],
+    [
+     "transparencyMethod",
+     "enum",
+     "stored name of the host TransparencyMethod"
+    ],
+    [
+     "transparencyAlpha",
+     "int",
+     "alpha 0-255 when the method is ByAlpha, else absent"
+    ],
+    [
+     "closed",
+     "bool",
+     ""
+    ],
+    [
+     "plinegen",
+     "bool",
+     ""
+    ],
+    [
+     "elevation",
+     "double",
+     ""
+    ],
+    [
+     "thickness",
+     "double",
+     ""
+    ],
+    [
+     "normalX",
+     "double",
+     ""
+    ],
+    [
+     "normalY",
+     "double",
+     ""
+    ],
+    [
+     "normalZ",
+     "double",
+     ""
+    ],
+    [
+     "vertices",
+     "seq:record:PLINE_VERTEX",
+     "vertices in host order"
+    ]
+   ]
+  },
+  "ENTITY_TEXT": {
+   "use": "production",
+   "fields": [
+    [
+     "dxfName",
+     "string",
+     "DXF class name as the host reports it"
+    ],
+    [
+     "layer",
+     "string",
+     "layer name (stored case)"
+    ],
+    [
+     "linetype",
+     "string",
+     "linetype name (stored case)"
+    ],
+    [
+     "linetypeScale",
+     "double",
+     ""
+    ],
+    [
+     "lineweight",
+     "enum",
+     "stored name of the host LineWeight value"
+    ],
+    [
+     "visible",
+     "bool",
+     ""
+    ],
+    [
+     "colorMethod",
+     "enum",
+     "stored name of the host ColorMethod"
+    ],
+    [
+     "colorIndex",
+     "int",
+     "ACI index as the host reports it"
+    ],
+    [
+     "colorRgb",
+     "int",
+     "R*65536 + G*256 + B when colorMethod = ByColor, else absent"
+    ],
+    [
+     "colorBookName",
+     "string",
+     "color book name, or absent"
+    ],
+    [
+     "colorName",
+     "string",
+     "color name in the book, or absent"
+    ],
+    [
+     "transparencyMethod",
+     "enum",
+     "stored name of the host TransparencyMethod"
+    ],
+    [
+     "transparencyAlpha",
+     "int",
+     "alpha 0-255 when the method is ByAlpha, else absent"
+    ],
+    [
+     "textString",
+     "string",
+     "exact stored text"
+    ],
+    [
+     "height",
+     "double",
+     ""
+    ],
+    [
+     "rotation",
+     "double",
+     ""
+    ],
+    [
+     "widthFactor",
+     "double",
+     ""
+    ],
+    [
+     "oblique",
+     "double",
+     ""
+    ],
+    [
+     "styleName",
+     "string",
+     "text style name"
+    ],
+    [
+     "horizontalMode",
+     "enum",
+     "stored name of the host TextHorizontalMode"
+    ],
+    [
+     "verticalMode",
+     "enum",
+     "stored name of the host TextVerticalMode"
+    ],
+    [
+     "mirroredInX",
+     "bool",
+     ""
+    ],
+    [
+     "mirroredInY",
+     "bool",
+     ""
+    ],
+    [
+     "thickness",
+     "double",
+     ""
+    ],
+    [
+     "positionX",
+     "double",
+     ""
+    ],
+    [
+     "positionY",
+     "double",
+     ""
+    ],
+    [
+     "positionZ",
+     "double",
+     ""
+    ],
+    [
+     "alignmentX",
+     "double",
+     ""
+    ],
+    [
+     "alignmentY",
+     "double",
+     ""
+    ],
+    [
+     "alignmentZ",
+     "double",
+     ""
+    ],
+    [
+     "normalX",
+     "double",
+     ""
+    ],
+    [
+     "normalY",
+     "double",
+     ""
+    ],
+    [
+     "normalZ",
+     "double",
+     ""
+    ]
+   ]
+  },
+  "ENTITY_MTEXT": {
+   "use": "production",
+   "fields": [
+    [
+     "dxfName",
+     "string",
+     "DXF class name as the host reports it"
+    ],
+    [
+     "layer",
+     "string",
+     "layer name (stored case)"
+    ],
+    [
+     "linetype",
+     "string",
+     "linetype name (stored case)"
+    ],
+    [
+     "linetypeScale",
+     "double",
+     ""
+    ],
+    [
+     "lineweight",
+     "enum",
+     "stored name of the host LineWeight value"
+    ],
+    [
+     "visible",
+     "bool",
+     ""
+    ],
+    [
+     "colorMethod",
+     "enum",
+     "stored name of the host ColorMethod"
+    ],
+    [
+     "colorIndex",
+     "int",
+     "ACI index as the host reports it"
+    ],
+    [
+     "colorRgb",
+     "int",
+     "R*65536 + G*256 + B when colorMethod = ByColor, else absent"
+    ],
+    [
+     "colorBookName",
+     "string",
+     "color book name, or absent"
+    ],
+    [
+     "colorName",
+     "string",
+     "color name in the book, or absent"
+    ],
+    [
+     "transparencyMethod",
+     "enum",
+     "stored name of the host TransparencyMethod"
+    ],
+    [
+     "transparencyAlpha",
+     "int",
+     "alpha 0-255 when the method is ByAlpha, else absent"
+    ],
+    [
+     "contents",
+     "string",
+     "raw stored contents with format codes"
+    ],
+    [
+     "textHeight",
+     "double",
+     ""
+    ],
+    [
+     "width",
+     "double",
+     ""
+    ],
+    [
+     "rotation",
+     "double",
+     ""
+    ],
+    [
+     "attachment",
+     "enum",
+     "stored name of the host AttachmentPoint"
+    ],
+    [
+     "flowDirection",
+     "enum",
+     "stored name of the host FlowDirection"
+    ],
+    [
+     "styleName",
+     "string",
+     ""
+    ],
+    [
+     "lineSpacingFactor",
+     "double",
+     ""
+    ],
+    [
+     "lineSpacingStyle",
+     "enum",
+     "stored name of the host LineSpacingStyle"
+    ],
+    [
+     "locationX",
+     "double",
+     ""
+    ],
+    [
+     "locationY",
+     "double",
+     ""
+    ],
+    [
+     "locationZ",
+     "double",
+     ""
+    ],
+    [
+     "directionX",
+     "double",
+     ""
+    ],
+    [
+     "directionY",
+     "double",
+     ""
+    ],
+    [
+     "directionZ",
+     "double",
+     ""
+    ],
+    [
+     "normalX",
+     "double",
+     ""
+    ],
+    [
+     "normalY",
+     "double",
+     ""
+    ],
+    [
+     "normalZ",
+     "double",
+     ""
+    ]
+   ]
+  },
+  "ENTITY_INSERT": {
+   "use": "production",
+   "fields": [
+    [
+     "dxfName",
+     "string",
+     "DXF class name as the host reports it"
+    ],
+    [
+     "layer",
+     "string",
+     "layer name (stored case)"
+    ],
+    [
+     "linetype",
+     "string",
+     "linetype name (stored case)"
+    ],
+    [
+     "linetypeScale",
+     "double",
+     ""
+    ],
+    [
+     "lineweight",
+     "enum",
+     "stored name of the host LineWeight value"
+    ],
+    [
+     "visible",
+     "bool",
+     ""
+    ],
+    [
+     "colorMethod",
+     "enum",
+     "stored name of the host ColorMethod"
+    ],
+    [
+     "colorIndex",
+     "int",
+     "ACI index as the host reports it"
+    ],
+    [
+     "colorRgb",
+     "int",
+     "R*65536 + G*256 + B when colorMethod = ByColor, else absent"
+    ],
+    [
+     "colorBookName",
+     "string",
+     "color book name, or absent"
+    ],
+    [
+     "colorName",
+     "string",
+     "color name in the book, or absent"
+    ],
+    [
+     "transparencyMethod",
+     "enum",
+     "stored name of the host TransparencyMethod"
+    ],
+    [
+     "transparencyAlpha",
+     "int",
+     "alpha 0-255 when the method is ByAlpha, else absent"
+    ],
+    [
+     "blockName",
+     "string",
+     "the definition name; for a dynamic reference, the name of its dynamic block definition (never the anonymous *U name)"
+    ],
+    [
+     "blockDigest",
+     "ref",
+     "reference to the DEFINITION_DUMP digest of that definition (nested-digest field)"
+    ],
+    [
+     "positionX",
+     "double",
+     ""
+    ],
+    [
+     "positionY",
+     "double",
+     ""
+    ],
+    [
+     "positionZ",
+     "double",
+     ""
+    ],
+    [
+     "scaleX",
+     "double",
+     ""
+    ],
+    [
+     "scaleY",
+     "double",
+     ""
+    ],
+    [
+     "scaleZ",
+     "double",
+     ""
+    ],
+    [
+     "rotation",
+     "double",
+     ""
+    ],
+    [
+     "normalX",
+     "double",
+     ""
+    ],
+    [
+     "normalY",
+     "double",
+     ""
+    ],
+    [
+     "normalZ",
+     "double",
+     ""
+    ],
+    [
+     "dynamicProperties",
+     "set:record:DYNPROP@name",
+     "dynamic property values, sorted by name; empty for a static reference"
+    ],
+    [
+     "attributes",
+     "seq:record:ENTITY_ATTRIB",
+     "attribute references in host iteration order"
+    ]
+   ]
+  },
+  "ENTITY_ATTRIB": {
+   "use": "production",
+   "fields": [
+    [
+     "dxfName",
+     "string",
+     "DXF class name as the host reports it"
+    ],
+    [
+     "layer",
+     "string",
+     "layer name (stored case)"
+    ],
+    [
+     "linetype",
+     "string",
+     "linetype name (stored case)"
+    ],
+    [
+     "linetypeScale",
+     "double",
+     ""
+    ],
+    [
+     "lineweight",
+     "enum",
+     "stored name of the host LineWeight value"
+    ],
+    [
+     "visible",
+     "bool",
+     ""
+    ],
+    [
+     "colorMethod",
+     "enum",
+     "stored name of the host ColorMethod"
+    ],
+    [
+     "colorIndex",
+     "int",
+     "ACI index as the host reports it"
+    ],
+    [
+     "colorRgb",
+     "int",
+     "R*65536 + G*256 + B when colorMethod = ByColor, else absent"
+    ],
+    [
+     "colorBookName",
+     "string",
+     "color book name, or absent"
+    ],
+    [
+     "colorName",
+     "string",
+     "color name in the book, or absent"
+    ],
+    [
+     "transparencyMethod",
+     "enum",
+     "stored name of the host TransparencyMethod"
+    ],
+    [
+     "transparencyAlpha",
+     "int",
+     "alpha 0-255 when the method is ByAlpha, else absent"
+    ],
+    [
+     "tag",
+     "string",
+     ""
+    ],
+    [
+     "textString",
+     "string",
+     ""
+    ],
+    [
+     "height",
+     "double",
+     ""
+    ],
+    [
+     "rotation",
+     "double",
+     ""
+    ],
+    [
+     "widthFactor",
+     "double",
+     ""
+    ],
+    [
+     "oblique",
+     "double",
+     ""
+    ],
+    [
+     "styleName",
+     "string",
+     ""
+    ],
+    [
+     "horizontalMode",
+     "enum",
+     ""
+    ],
+    [
+     "verticalMode",
+     "enum",
+     ""
+    ],
+    [
+     "invisible",
+     "bool",
+     ""
+    ],
+    [
+     "lockPosition",
+     "bool",
+     ""
+    ],
+    [
+     "positionX",
+     "double",
+     ""
+    ],
+    [
+     "positionY",
+     "double",
+     ""
+    ],
+    [
+     "positionZ",
+     "double",
+     ""
+    ],
+    [
+     "alignmentX",
+     "double",
+     ""
+    ],
+    [
+     "alignmentY",
+     "double",
+     ""
+    ],
+    [
+     "alignmentZ",
+     "double",
+     ""
+    ],
+    [
+     "normalX",
+     "double",
+     ""
+    ],
+    [
+     "normalY",
+     "double",
+     ""
+    ],
+    [
+     "normalZ",
+     "double",
+     ""
+    ]
+   ]
+  },
+  "ENTITY_ATTDEF": {
+   "use": "production",
+   "fields": [
+    [
+     "dxfName",
+     "string",
+     "DXF class name as the host reports it"
+    ],
+    [
+     "layer",
+     "string",
+     "layer name (stored case)"
+    ],
+    [
+     "linetype",
+     "string",
+     "linetype name (stored case)"
+    ],
+    [
+     "linetypeScale",
+     "double",
+     ""
+    ],
+    [
+     "lineweight",
+     "enum",
+     "stored name of the host LineWeight value"
+    ],
+    [
+     "visible",
+     "bool",
+     ""
+    ],
+    [
+     "colorMethod",
+     "enum",
+     "stored name of the host ColorMethod"
+    ],
+    [
+     "colorIndex",
+     "int",
+     "ACI index as the host reports it"
+    ],
+    [
+     "colorRgb",
+     "int",
+     "R*65536 + G*256 + B when colorMethod = ByColor, else absent"
+    ],
+    [
+     "colorBookName",
+     "string",
+     "color book name, or absent"
+    ],
+    [
+     "colorName",
+     "string",
+     "color name in the book, or absent"
+    ],
+    [
+     "transparencyMethod",
+     "enum",
+     "stored name of the host TransparencyMethod"
+    ],
+    [
+     "transparencyAlpha",
+     "int",
+     "alpha 0-255 when the method is ByAlpha, else absent"
+    ],
+    [
+     "tag",
+     "string",
+     ""
+    ],
+    [
+     "prompt",
+     "string",
+     ""
+    ],
+    [
+     "textString",
+     "string",
+     "default value"
+    ],
+    [
+     "height",
+     "double",
+     ""
+    ],
+    [
+     "rotation",
+     "double",
+     ""
+    ],
+    [
+     "widthFactor",
+     "double",
+     ""
+    ],
+    [
+     "oblique",
+     "double",
+     ""
+    ],
+    [
+     "styleName",
+     "string",
+     ""
+    ],
+    [
+     "horizontalMode",
+     "enum",
+     ""
+    ],
+    [
+     "verticalMode",
+     "enum",
+     ""
+    ],
+    [
+     "invisible",
+     "bool",
+     ""
+    ],
+    [
+     "constant",
+     "bool",
+     ""
+    ],
+    [
+     "verify",
+     "bool",
+     ""
+    ],
+    [
+     "preset",
+     "bool",
+     ""
+    ],
+    [
+     "lockPosition",
+     "bool",
+     ""
+    ],
+    [
+     "positionX",
+     "double",
+     ""
+    ],
+    [
+     "positionY",
+     "double",
+     ""
+    ],
+    [
+     "positionZ",
+     "double",
+     ""
+    ],
+    [
+     "alignmentX",
+     "double",
+     ""
+    ],
+    [
+     "alignmentY",
+     "double",
+     ""
+    ],
+    [
+     "alignmentZ",
+     "double",
+     ""
+    ],
+    [
+     "normalX",
+     "double",
+     ""
+    ],
+    [
+     "normalY",
+     "double",
+     ""
+    ],
+    [
+     "normalZ",
+     "double",
+     ""
+    ]
+   ]
+  },
+  "ENTITY_ROTATED_DIMENSION": {
+   "use": "production",
+   "fields": [
+    [
+     "dxfName",
+     "string",
+     "DXF class name as the host reports it"
+    ],
+    [
+     "layer",
+     "string",
+     "layer name (stored case)"
+    ],
+    [
+     "linetype",
+     "string",
+     "linetype name (stored case)"
+    ],
+    [
+     "linetypeScale",
+     "double",
+     ""
+    ],
+    [
+     "lineweight",
+     "enum",
+     "stored name of the host LineWeight value"
+    ],
+    [
+     "visible",
+     "bool",
+     ""
+    ],
+    [
+     "colorMethod",
+     "enum",
+     "stored name of the host ColorMethod"
+    ],
+    [
+     "colorIndex",
+     "int",
+     "ACI index as the host reports it"
+    ],
+    [
+     "colorRgb",
+     "int",
+     "R*65536 + G*256 + B when colorMethod = ByColor, else absent"
+    ],
+    [
+     "colorBookName",
+     "string",
+     "color book name, or absent"
+    ],
+    [
+     "colorName",
+     "string",
+     "color name in the book, or absent"
+    ],
+    [
+     "transparencyMethod",
+     "enum",
+     "stored name of the host TransparencyMethod"
+    ],
+    [
+     "transparencyAlpha",
+     "int",
+     "alpha 0-255 when the method is ByAlpha, else absent"
+    ],
+    [
+     "xLine1PointX",
+     "double",
+     ""
+    ],
+    [
+     "xLine1PointY",
+     "double",
+     ""
+    ],
+    [
+     "xLine1PointZ",
+     "double",
+     ""
+    ],
+    [
+     "xLine2PointX",
+     "double",
+     ""
+    ],
+    [
+     "xLine2PointY",
+     "double",
+     ""
+    ],
+    [
+     "xLine2PointZ",
+     "double",
+     ""
+    ],
+    [
+     "dimLinePointX",
+     "double",
+     ""
+    ],
+    [
+     "dimLinePointY",
+     "double",
+     ""
+    ],
+    [
+     "dimLinePointZ",
+     "double",
+     ""
+    ],
+    [
+     "textPositionX",
+     "double",
+     ""
+    ],
+    [
+     "textPositionY",
+     "double",
+     ""
+    ],
+    [
+     "textPositionZ",
+     "double",
+     ""
+    ],
+    [
+     "rotation",
+     "double",
+     ""
+    ],
+    [
+     "oblique",
+     "double",
+     ""
+    ],
+    [
+     "dimensionStyleName",
+     "string",
+     ""
+    ],
+    [
+     "dimensionText",
+     "string",
+     "the text override as stored (empty = measured)"
+    ],
+    [
+     "usingDefaultTextPosition",
+     "bool",
+     ""
+    ],
+    [
+     "normalX",
+     "double",
+     ""
+    ],
+    [
+     "normalY",
+     "double",
+     ""
+    ],
+    [
+     "normalZ",
+     "double",
+     ""
+    ],
+    [
+     "overrides",
+     "set:record:DIMVAR_VALUE@name",
+     "per-entity dimension-variable overrides, sorted by name; the host-derived *D block is excluded"
+    ]
+   ]
+  },
+  "ENTITY_ALIGNED_DIMENSION": {
+   "use": "production",
+   "fields": [
+    [
+     "dxfName",
+     "string",
+     "DXF class name as the host reports it"
+    ],
+    [
+     "layer",
+     "string",
+     "layer name (stored case)"
+    ],
+    [
+     "linetype",
+     "string",
+     "linetype name (stored case)"
+    ],
+    [
+     "linetypeScale",
+     "double",
+     ""
+    ],
+    [
+     "lineweight",
+     "enum",
+     "stored name of the host LineWeight value"
+    ],
+    [
+     "visible",
+     "bool",
+     ""
+    ],
+    [
+     "colorMethod",
+     "enum",
+     "stored name of the host ColorMethod"
+    ],
+    [
+     "colorIndex",
+     "int",
+     "ACI index as the host reports it"
+    ],
+    [
+     "colorRgb",
+     "int",
+     "R*65536 + G*256 + B when colorMethod = ByColor, else absent"
+    ],
+    [
+     "colorBookName",
+     "string",
+     "color book name, or absent"
+    ],
+    [
+     "colorName",
+     "string",
+     "color name in the book, or absent"
+    ],
+    [
+     "transparencyMethod",
+     "enum",
+     "stored name of the host TransparencyMethod"
+    ],
+    [
+     "transparencyAlpha",
+     "int",
+     "alpha 0-255 when the method is ByAlpha, else absent"
+    ],
+    [
+     "xLine1PointX",
+     "double",
+     ""
+    ],
+    [
+     "xLine1PointY",
+     "double",
+     ""
+    ],
+    [
+     "xLine1PointZ",
+     "double",
+     ""
+    ],
+    [
+     "xLine2PointX",
+     "double",
+     ""
+    ],
+    [
+     "xLine2PointY",
+     "double",
+     ""
+    ],
+    [
+     "xLine2PointZ",
+     "double",
+     ""
+    ],
+    [
+     "dimLinePointX",
+     "double",
+     ""
+    ],
+    [
+     "dimLinePointY",
+     "double",
+     ""
+    ],
+    [
+     "dimLinePointZ",
+     "double",
+     ""
+    ],
+    [
+     "textPositionX",
+     "double",
+     ""
+    ],
+    [
+     "textPositionY",
+     "double",
+     ""
+    ],
+    [
+     "textPositionZ",
+     "double",
+     ""
+    ],
+    [
+     "oblique",
+     "double",
+     ""
+    ],
+    [
+     "dimensionStyleName",
+     "string",
+     ""
+    ],
+    [
+     "dimensionText",
+     "string",
+     ""
+    ],
+    [
+     "usingDefaultTextPosition",
+     "bool",
+     ""
+    ],
+    [
+     "normalX",
+     "double",
+     ""
+    ],
+    [
+     "normalY",
+     "double",
+     ""
+    ],
+    [
+     "normalZ",
+     "double",
+     ""
+    ],
+    [
+     "overrides",
+     "set:record:DIMVAR_VALUE@name",
+     "as ENTITY_ROTATED_DIMENSION"
+    ]
+   ]
+  },
+  "SYMBOL_RECORD_LAYER": {
+   "use": "production",
+   "fields": [
+    [
+     "table",
+     "enum",
+     "LAYER"
+    ],
+    [
+     "name",
+     "string",
+     "stored case"
+    ],
+    [
+     "colorMethod",
+     "enum",
+     "stored name of the host ColorMethod"
+    ],
+    [
+     "colorIndex",
+     "int",
+     "ACI index as the host reports it"
+    ],
+    [
+     "colorRgb",
+     "int",
+     "R*65536 + G*256 + B when colorMethod = ByColor, else absent"
+    ],
+    [
+     "colorBookName",
+     "string",
+     "color book name, or absent"
+    ],
+    [
+     "colorName",
+     "string",
+     "color name in the book, or absent"
+    ],
+    [
+     "linetype",
+     "string",
+     "linetype name"
+    ],
+    [
+     "lineweight",
+     "enum",
+     ""
+    ],
+    [
+     "isOff",
+     "bool",
+     ""
+    ],
+    [
+     "isFrozen",
+     "bool",
+     ""
+    ],
+    [
+     "isLocked",
+     "bool",
+     ""
+    ],
+    [
+     "isPlottable",
+     "bool",
+     ""
+    ],
+    [
+     "transparencyMethod",
+     "enum",
+     "stored name of the host TransparencyMethod"
+    ],
+    [
+     "transparencyAlpha",
+     "int",
+     "alpha 0-255 when the method is ByAlpha, else absent"
+    ]
+   ]
+  },
+  "SYMBOL_RECORD_LTYPE": {
+   "use": "production",
+   "fields": [
+    [
+     "table",
+     "enum",
+     "LTYPE"
+    ],
+    [
+     "name",
+     "string",
+     ""
+    ],
+    [
+     "asciiDescription",
+     "string",
+     ""
+    ],
+    [
+     "patternLength",
+     "double",
+     ""
+    ],
+    [
+     "isScaledToFit",
+     "bool",
+     ""
+    ],
+    [
+     "dashes",
+     "seq:record:LTYPE_DASH",
+     "in host order"
+    ]
+   ]
+  },
+  "SYMBOL_RECORD_STYLE": {
+   "use": "production",
+   "fields": [
+    [
+     "table",
+     "enum",
+     "STYLE"
+    ],
+    [
+     "name",
+     "string",
+     ""
+    ],
+    [
+     "fileName",
+     "string",
+     ""
+    ],
+    [
+     "bigFontFileName",
+     "string",
+     ""
+    ],
+    [
+     "textSize",
+     "double",
+     ""
+    ],
+    [
+     "xScale",
+     "double",
+     "width factor"
+    ],
+    [
+     "obliquingAngle",
+     "double",
+     ""
+    ],
+    [
+     "isVertical",
+     "bool",
+     ""
+    ],
+    [
+     "isShapeFile",
+     "bool",
+     ""
+    ],
+    [
+     "flagBits",
+     "int",
+     ""
+    ],
+    [
+     "fontTypeface",
+     "string",
+     ""
+    ],
+    [
+     "fontBold",
+     "bool",
+     ""
+    ],
+    [
+     "fontItalic",
+     "bool",
+     ""
+    ],
+    [
+     "fontCharacterSet",
+     "int",
+     ""
+    ],
+    [
+     "fontPitchAndFamily",
+     "int",
+     ""
+    ]
+   ]
+  },
+  "SYMBOL_RECORD_DIMSTYLE": {
+   "use": "production",
+   "fields": [
+    [
+     "table",
+     "enum",
+     "DIMSTYLE"
+    ],
+    [
+     "name",
+     "string",
+     ""
+    ],
+    [
+     "dimvars",
+     "set:record:DIMVAR_VALUE@name",
+     "EVERY variable of the closed list of section 2.3.3, sorted by name"
+    ]
+   ]
+  },
+  "SYMBOL_RECORD_APPID": {
+   "use": "production",
+   "fields": [
+    [
+     "table",
+     "enum",
+     "APPID"
+    ],
+    [
+     "name",
+     "string",
+     ""
+    ]
+   ]
+  },
+  "PAYLOAD_EXACT": {
+   "use": "production",
+   "fields": [
+    [
+     "owner",
+     "string",
+     "the stored name of the definition whose extension dictionary holds the payload"
+    ],
+    [
+     "dictKey",
+     "string",
+     "the extension-dictionary key (RACKCAD_SELECTIVE)"
+    ],
+    [
+     "data",
+     "seq:rb",
+     "the stored ResultBuffer of the Xrecord: every (code, value) in host order, chunk boundaries and non-text entries preserved; absent when there is no payload"
+    ]
+   ]
+  },
+  "NOD_ENTRY": {
+   "use": "production",
+   "fields": [
+    [
+     "path",
+     "string",
+     "the dictionary keys from the named-object dictionary root, stored case, joined by \"/\""
+    ],
+    [
+     "objectClass",
+     "enum",
+     "XRECORD or DICTIONARY (any other class is UNKNOWN)"
+    ],
+    [
+     "data",
+     "seq:rb",
+     "XRECORD: its ResultBuffer; DICTIONARY: absent"
+    ],
+    [
+     "children",
+     "set:string",
+     "DICTIONARY: the child keys (each child is its own NOD_ENTRY); XRECORD: absent"
+    ]
+   ]
+  },
+  "ENUMERATION": {
+   "use": "production",
+   "fields": [
+    [
+     "container",
+     "string",
+     "role name of the enumerated container"
+    ],
+    [
+     "ordered",
+     "bool",
+     ""
+    ],
+    [
+     "items",
+     "seq:string",
+     "names, or handles as lowercase hexadecimal without leading zeros; when ordered = 0 the producer sorts the items in ordinal (UTF-8) order first; handle lists are valid only within one session"
+    ]
+   ]
+  },
+  "PRE_COMMAND_STATE_RECORD": {
+   "use": "production",
+   "fields": [
+    [
+     "kind",
+     "string",
+     "the rack kind (selective)"
+    ],
+    [
+     "members",
+     "set:record:STATE_MEMBER@memberKey",
+     "every read-set component and every closure member (V2.1 6, 11.3)"
+    ]
+   ]
+  },
+  "PREPARE_RESIDUE_MANIFEST": {
+   "use": "production",
+   "fields": [
+    [
+     "cloningMode",
+     "enum",
+     "the cloning mode the importer declared (stored name)"
+    ],
+    [
+     "importsCompleted",
+     "int",
+     ""
+    ],
+    [
+     "additions",
+     "set:record:MANIFEST_ADDITION@memberKey",
+     "every record added by PREPARE-W with its exact digest"
+    ],
+    [
+     "reusedBound",
+     "set:record:MANIFEST_REUSED@memberKey",
+     "every pre-existing record the imported content binds to (REUSED_BOUND, not residue)"
+    ]
+   ]
+  },
+  "TEST_COORD3": {
+   "use": "test",
+   "fields": [
+    [
+     "x",
+     "double",
+     ""
+    ],
+    [
+     "y",
+     "double",
+     ""
+    ],
+    [
+     "z",
+     "double",
+     ""
+    ]
+   ]
+  },
+  "TEST_NAME": {
+   "use": "test",
+   "fields": [
+    [
+     "name",
+     "string",
+     ""
+    ]
+   ]
+  },
+  "TEST_OPTIONAL": {
+   "use": "test",
+   "fields": [
+    [
+     "name",
+     "string",
+     ""
+    ],
+    [
+     "layer",
+     "string",
+     ""
+    ]
+   ]
+  },
+  "TEST_SEQ": {
+   "use": "test",
+   "fields": [
+    [
+     "items",
+     "seq:string",
+     ""
+    ]
+   ]
+  },
+  "TEST_SET": {
+   "use": "test",
+   "fields": [
+    [
+     "names",
+     "set:string",
+     ""
+    ]
+   ]
+  },
+  "TEST_OUTER": {
+   "use": "test",
+   "fields": [
+    [
+     "label",
+     "string",
+     ""
+    ],
+    [
+     "inner",
+     "record:TEST_COORD3",
+     ""
+    ]
+   ]
+  },
+  "TEST_REFHOLDER": {
+   "use": "test",
+   "fields": [
+    [
+     "ref",
+     "ref",
+     ""
+    ]
+   ]
+  },
+  "TEST_ORDER": {
+   "use": "test",
+   "fields": [
+    [
+     "zeta",
+     "int",
+     ""
+    ],
+    [
+     "alpha",
+     "int",
+     ""
+    ]
+   ]
+  }
+ },
+ "dimvars": {
+  "DIMADEC": "INT",
+  "DIMALT": "BOOL",
+  "DIMALTD": "INT",
+  "DIMALTF": "DOUBLE",
+  "DIMALTMZF": "DOUBLE",
+  "DIMALTMZS": "STRING",
+  "DIMALTRND": "DOUBLE",
+  "DIMALTTD": "INT",
+  "DIMALTTZ": "INT",
+  "DIMALTU": "INT",
+  "DIMALTZ": "INT",
+  "DIMAPOST": "STRING",
+  "DIMARCSYM": "INT",
+  "DIMASZ": "DOUBLE",
+  "DIMATFIT": "INT",
+  "DIMAUNIT": "INT",
+  "DIMAZIN": "INT",
+  "DIMBLK": "NAME",
+  "DIMBLK1": "NAME",
+  "DIMBLK2": "NAME",
+  "DIMCEN": "DOUBLE",
+  "DIMCLRD": "COLOR",
+  "DIMCLRE": "COLOR",
+  "DIMCLRT": "COLOR",
+  "DIMDEC": "INT",
+  "DIMDLE": "DOUBLE",
+  "DIMDLI": "DOUBLE",
+  "DIMDSEP": "INT",
+  "DIMEXE": "DOUBLE",
+  "DIMEXO": "DOUBLE",
+  "DIMFRAC": "INT",
+  "DIMFXL": "DOUBLE",
+  "DIMFXLON": "BOOL",
+  "DIMGAP": "DOUBLE",
+  "DIMJOGANG": "DOUBLE",
+  "DIMJUST": "INT",
+  "DIMLDRBLK": "NAME",
+  "DIMLFAC": "DOUBLE",
+  "DIMLIM": "BOOL",
+  "DIMLTEX1": "NAME",
+  "DIMLTEX2": "NAME",
+  "DIMLTYPE": "NAME",
+  "DIMLUNIT": "INT",
+  "DIMLWD": "INT",
+  "DIMLWE": "INT",
+  "DIMMZF": "DOUBLE",
+  "DIMMZS": "STRING",
+  "DIMPOST": "STRING",
+  "DIMRND": "DOUBLE",
+  "DIMSAH": "BOOL",
+  "DIMSCALE": "DOUBLE",
+  "DIMSD1": "BOOL",
+  "DIMSD2": "BOOL",
+  "DIMSE1": "BOOL",
+  "DIMSE2": "BOOL",
+  "DIMSOXD": "BOOL",
+  "DIMTAD": "INT",
+  "DIMTDEC": "INT",
+  "DIMTFAC": "DOUBLE",
+  "DIMTFILL": "INT",
+  "DIMTFILLCLR": "COLOR",
+  "DIMTIH": "BOOL",
+  "DIMTIX": "BOOL",
+  "DIMTM": "DOUBLE",
+  "DIMTMOVE": "INT",
+  "DIMTOFL": "BOOL",
+  "DIMTOH": "BOOL",
+  "DIMTOL": "BOOL",
+  "DIMTOLJ": "INT",
+  "DIMTP": "DOUBLE",
+  "DIMTSZ": "DOUBLE",
+  "DIMTVP": "DOUBLE",
+  "DIMTXSTY": "NAME",
+  "DIMTXT": "DOUBLE",
+  "DIMTXTDIRECTION": "BOOL",
+  "DIMTZIN": "INT",
+  "DIMUPT": "BOOL",
+  "DIMZIN": "INT"
+ },
+ "exactVectors": [
+  {
+   "id": "EV-01",
+   "purpose": "baseline coordinate (+0.0 components)",
+   "recordType": "TEST_COORD3",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c544553545f434f4f5244337c783d336666303030303030303030303030300a793d303030303030303030303030303030300a7a3d303030303030303030303030303030300a",
+   "streamDisplay": "FPSPEC-V1|EXACT|TEST_COORD3|x=3ff0000000000000\\ny=0000000000000000\\nz=0000000000000000\\n",
+   "sha256": "ba4e9ed7478785ce06e8e0010bfbd14970b9e87cbc923f63108fa6009acdae5e"
+  },
+  {
+   "id": "EV-02",
+   "purpose": "SIGNED ZERO: y = -0.0 must differ from EV-01",
+   "recordType": "TEST_COORD3",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c544553545f434f4f5244337c783d336666303030303030303030303030300a793d383030303030303030303030303030300a7a3d303030303030303030303030303030300a",
+   "streamDisplay": "FPSPEC-V1|EXACT|TEST_COORD3|x=3ff0000000000000\\ny=8000000000000000\\nz=0000000000000000\\n",
+   "sha256": "bc2cf0352fc258115745f43a0d7127011c2d692231696af4a25b4bd244626c11"
+  },
+  {
+   "id": "EV-03",
+   "purpose": "1 ulp above 1.0 must differ from EV-01",
+   "recordType": "TEST_COORD3",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c544553545f434f4f5244337c783d336666303030303030303030303030310a793d303030303030303030303030303030300a7a3d303030303030303030303030303030300a",
+   "streamDisplay": "FPSPEC-V1|EXACT|TEST_COORD3|x=3ff0000000000001\\ny=0000000000000000\\nz=0000000000000000\\n",
+   "sha256": "23ec89504f6f855fda794064fae9df813679bb4de17a347f9d36dce2d607c42d"
+  },
+  {
+   "id": "EV-04",
+   "purpose": "SUBNORMAL: smallest positive subnormal",
+   "recordType": "TEST_COORD3",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c544553545f434f4f5244337c783d303030303030303030303030303030310a793d303030303030303030303030303030300a7a3d303030303030303030303030303030300a",
+   "streamDisplay": "FPSPEC-V1|EXACT|TEST_COORD3|x=0000000000000001\\ny=0000000000000000\\nz=0000000000000000\\n",
+   "sha256": "e2a2a8b5b8faf7e5c36bedd923cf2a93af3a298c69abad649c7a1a7f8f7d09b0"
+  },
+  {
+   "id": "EV-05",
+   "purpose": "MAXIMUM FINITE double",
+   "recordType": "TEST_COORD3",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c544553545f434f4f5244337c783d376665666666666666666666666666660a793d303030303030303030303030303030300a7a3d303030303030303030303030303030300a",
+   "streamDisplay": "FPSPEC-V1|EXACT|TEST_COORD3|x=7fefffffffffffff\\ny=0000000000000000\\nz=0000000000000000\\n",
+   "sha256": "8443fcaab8e6744212cc983a39231e856c418cdc91e01695f9d4d0439187dffd"
+  },
+  {
+   "id": "EV-06",
+   "purpose": "NaN is unsupported: UNKNOWN, no digest",
+   "recordType": "TEST_COORD3",
+   "result": "UNKNOWN",
+   "reason": "non-finite double"
+  },
+  {
+   "id": "EV-07",
+   "purpose": "infinity is unsupported: UNKNOWN, no digest",
+   "recordType": "TEST_COORD3",
+   "result": "UNKNOWN",
+   "reason": "non-finite double"
+  },
+  {
+   "id": "EV-08",
+   "purpose": "string, exact case",
+   "recordType": "TEST_NAME",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c544553545f4e414d457c6e616d653d53383a5261636b204e20310a",
+   "streamDisplay": "FPSPEC-V1|EXACT|TEST_NAME|name=S8:Rack N 1\\n",
+   "sha256": "b625be899405392b55556bc8bff40e70a463190fbaf52e28460df64a91d9627a"
+  },
+  {
+   "id": "EV-09",
+   "purpose": "string, case differs from EV-08: must differ",
+   "recordType": "TEST_NAME",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c544553545f4e414d457c6e616d653d53383a7261636b204e20310a",
+   "streamDisplay": "FPSPEC-V1|EXACT|TEST_NAME|name=S8:rack N 1\\n",
+   "sha256": "80f92df041b0eddb78d33c471bd4b1fc0a815e2eb30dde3c0a4c47844945870f"
+  },
+  {
+   "id": "EV-10",
+   "purpose": "EMPTY STRING",
+   "recordType": "TEST_NAME",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c544553545f4e414d457c6e616d653d53303a0a",
+   "streamDisplay": "FPSPEC-V1|EXACT|TEST_NAME|name=S0:\\n",
+   "sha256": "4ea81bbc8c2e91b3d939861286eb0b5713bc2310917bb6e33361f09a8b885924"
+  },
+  {
+   "id": "EV-11",
+   "purpose": "MULTIBYTE string (UTF-8, no normalization)",
+   "recordType": "TEST_NAME",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c544553545f4e414d457c6e616d653d5331383ac391616e64c3ba20e697a5e69cac20e282ac0a",
+   "streamDisplay": "FPSPEC-V1|EXACT|TEST_NAME|name=S18:Ñandú 日本 €\\n",
+   "sha256": "1ae4a2037f5489626a3275ecaf007dd75373f89af1489347d58421404ab50ef3"
+  },
+  {
+   "id": "EV-12",
+   "purpose": "ABSENT field value (field layer streams before name: ordinal field order)",
+   "recordType": "TEST_OPTIONAL",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c544553545f4f5054494f4e414c7c6c617965723d7e0a6e616d653d53343a5261636b0a",
+   "streamDisplay": "FPSPEC-V1|EXACT|TEST_OPTIONAL|layer=~\\nname=S4:Rack\\n",
+   "sha256": "36c09d5bb858fe8ffa97a0f28e0cbf806959897643e5e94db0ebbeb091f89e98"
+  },
+  {
+   "id": "EV-13",
+   "purpose": "ORDERED SEQUENCE (host order is state)",
+   "recordType": "TEST_SEQ",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c544553545f5345517c6974656d733d5b320a53313a620a53313a610a5d0a",
+   "streamDisplay": "FPSPEC-V1|EXACT|TEST_SEQ|items=[2\\nS1:b\\nS1:a\\n]\\n",
+   "sha256": "d7504a38b410755341ed7aa6b0c6950b3ecdb42bb2535d2908a6d846b9e51063"
+  },
+  {
+   "id": "EV-14",
+   "purpose": "ordered sequence in the other order: must differ from EV-13",
+   "recordType": "TEST_SEQ",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c544553545f5345517c6974656d733d5b320a53313a610a53313a620a5d0a",
+   "streamDisplay": "FPSPEC-V1|EXACT|TEST_SEQ|items=[2\\nS1:a\\nS1:b\\n]\\n",
+   "sha256": "01d971c4f2b3a0dd7d370bcf827d996985ae0f6707050a5b9407b687bf31f1e0"
+  },
+  {
+   "id": "EV-15",
+   "purpose": "UNORDERED container given as b,a: sorted by stored name",
+   "recordType": "TEST_SET",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c544553545f5345547c6e616d65733d5b320a53313a610a53313a620a5d0a",
+   "streamDisplay": "FPSPEC-V1|EXACT|TEST_SET|names=[2\\nS1:a\\nS1:b\\n]\\n",
+   "sha256": "ab9751f8933fd5a2802d0309781c80b34161586758da7854cc1f47dba9a7c9de"
+  },
+  {
+   "id": "EV-16",
+   "purpose": "unordered container given as a,b: must EQUAL EV-15",
+   "recordType": "TEST_SET",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c544553545f5345547c6e616d65733d5b320a53313a610a53313a620a5d0a",
+   "streamDisplay": "FPSPEC-V1|EXACT|TEST_SET|names=[2\\nS1:a\\nS1:b\\n]\\n",
+   "sha256": "ab9751f8933fd5a2802d0309781c80b34161586758da7854cc1f47dba9a7c9de"
+  },
+  {
+   "id": "EV-17",
+   "purpose": "NESTED record inline (field inner streams before label)",
+   "recordType": "TEST_OUTER",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c544553545f4f555445527c696e6e65723d7b544553545f434f4f5244330a783d336666303030303030303030303030300a793d343030303030303030303030303030300a7a3d343030383030303030303030303030300a7d0a6c6162656c3d53353a6f757465720a",
+   "streamDisplay": "FPSPEC-V1|EXACT|TEST_OUTER|inner={TEST_COORD3\\nx=3ff0000000000000\\ny=4000000000000000\\nz=4008000000000000\\n}\\nlabel=S5:outer\\n",
+   "sha256": "8c120f364bfe895b1a2dee9a02c8832deadd787d72ca20c205e7329a9e331681"
+  },
+  {
+   "id": "EV-18",
+   "purpose": "NESTED definition referenced by name and digest",
+   "recordType": "TEST_REFHOLDER",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c544553545f524546484f4c4445527c7265663d405331383a53454c5f46524f4e54414c5f506f73745f3023626134653965643734373837383563653036653865303031306266626431343937306239653837636263393233663633313038666136303039616364616535650a",
+   "streamDisplay": "FPSPEC-V1|EXACT|TEST_REFHOLDER|ref=@S18:SEL_FRONTAL_Post_0#ba4e9ed7478785ce06e8e0010bfbd14970b9e87cbc923f63108fa6009acdae5e\\n",
+   "sha256": "b3bd691805fcf4e27a0db961be0da70e1fd5d90842dd484513eb4d13e6183164"
+  },
+  {
+   "id": "EV-19",
+   "purpose": "PAYLOAD_EXACT, one text chunk (code 1), no unknown member",
+   "recordType": "PAYLOAD_EXACT",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c5041594c4f41445f45584143547c646174613d5b310a7b52420a636f64653d310a76616c75653d5335333a7b224964223a22672d31222c224b696e64223a2273656c656374697665222c22536368656d6156657273696f6e223a22312e30227d0a7d0a5d0a646963744b65793d5331373a5241434b4341445f53454c4543544956450a6f776e65723d5331333a53454c5f46524f4e54414c5f300a",
+   "streamDisplay": "FPSPEC-V1|EXACT|PAYLOAD_EXACT|data=[1\\n{RB\\ncode=1\\nvalue=S53:{\"Id\":\"g-1\",\"Kind\":\"selective\",\"SchemaVersion\":\"1.0\"}\\n}\\n]\\ndictKey=S17:RACKCAD_SELECTIVE\\nowner=S13:SEL_FRONTAL_0\\n",
+   "sha256": "aff990496d5edb07ff330c3c01dcbe7e3c3c1ac13d2cd49082fc94a394f3cc81"
+  },
+  {
+   "id": "EV-20",
+   "purpose": "PAYLOAD_EXACT with an UNKNOWN / FORWARD-COMPATIBLE member: must differ from EV-19",
+   "recordType": "PAYLOAD_EXACT",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c5041594c4f41445f45584143547c646174613d5b310a7b52420a636f64653d310a76616c75653d5337303a7b224964223a22672d31222c224b696e64223a2273656c656374697665222c22536368656d6156657273696f6e223a22312e30222c226675747572654d656d626572223a317d0a7d0a5d0a646963744b65793d5331373a5241434b4341445f53454c4543544956450a6f776e65723d5331333a53454c5f46524f4e54414c5f300a",
+   "streamDisplay": "FPSPEC-V1|EXACT|PAYLOAD_EXACT|data=[1\\n{RB\\ncode=1\\nvalue=S70:{\"Id\":\"g-1\",\"Kind\":\"selective\",\"SchemaVersion\":\"1.0\",\"futureMember\":1}\\n}\\n]\\ndictKey=S17:RACKCAD_SELECTIVE\\nowner=S13:SEL_FRONTAL_0\\n",
+   "sha256": "90d3fefba07d7338d7e2d86d01854b0365d599a9b9808390f3a143d897789219"
+  },
+  {
+   "id": "EV-21",
+   "purpose": "FIELD ORDER: fields supplied as (zeta, alpha) stream as alpha, zeta",
+   "recordType": "TEST_ORDER",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c544553545f4f524445527c616c7068613d320a7a6574613d310a",
+   "streamDisplay": "FPSPEC-V1|EXACT|TEST_ORDER|alpha=2\\nzeta=1\\n",
+   "sha256": "f1919b6fc7a6e32bcd83675072bbcb528dbe53117575fcdf6efc60d8781530b0"
+  },
+  {
+   "id": "EV-22",
+   "purpose": "fields supplied as (alpha, zeta): must EQUAL EV-21 (ordinal field order, not supply or schema order)",
+   "recordType": "TEST_ORDER",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c544553545f4f524445527c616c7068613d320a7a6574613d310a",
+   "streamDisplay": "FPSPEC-V1|EXACT|TEST_ORDER|alpha=2\\nzeta=1\\n",
+   "sha256": "f1919b6fc7a6e32bcd83675072bbcb528dbe53117575fcdf6efc60d8781530b0"
+  },
+  {
+   "id": "EV-23",
+   "purpose": "CASE-MIXED unordered set b,B,a,A: sorted A,B,a,b (UTF-8 byte order)",
+   "recordType": "TEST_SET",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c544553545f5345547c6e616d65733d5b340a53313a410a53313a420a53313a610a53313a620a5d0a",
+   "streamDisplay": "FPSPEC-V1|EXACT|TEST_SET|names=[4\\nS1:A\\nS1:B\\nS1:a\\nS1:b\\n]\\n",
+   "sha256": "af7a2f0c29798c8eee91fb84456f0c54a8474d866c4af05bd3dd48be939c458d"
+  },
+  {
+   "id": "EV-24",
+   "purpose": "U+1F600 and U+FF21: UTF-8 order puts U+FF21 first (UTF-16 code-unit order would put U+1F600 first)",
+   "recordType": "TEST_SET",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c544553545f5345547c6e616d65733d5b320a53333aefbca10a53343af09f98800a5d0a",
+   "streamDisplay": "FPSPEC-V1|EXACT|TEST_SET|names=[2\\nS3:Ａ\\nS4:😀\\n]\\n",
+   "sha256": "25d74443039a84afe56998bd47edcb7e904fafd8d2e8fcdd7a365b95e500faaf"
+  },
+  {
+   "id": "EV-25",
+   "purpose": "LONE SURROGATE (ill-formed UTF-16): UNKNOWN, no digest",
+   "recordType": "TEST_NAME",
+   "result": "UNKNOWN",
+   "reason": "string is not well-formed UTF-16 (lone surrogate)"
+  },
+  {
+   "id": "EV-26",
+   "purpose": "PAYLOAD_EXACT, same text split in two chunks (\"ab\" + \"c\"): must differ from one chunk",
+   "recordType": "PAYLOAD_EXACT",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c5041594c4f41445f45584143547c646174613d5b320a7b52420a636f64653d310a76616c75653d53323a61620a7d0a7b52420a636f64653d310a76616c75653d53313a630a7d0a5d0a646963744b65793d5331373a5241434b4341445f53454c4543544956450a6f776e65723d5331333a53454c5f46524f4e54414c5f300a",
+   "streamDisplay": "FPSPEC-V1|EXACT|PAYLOAD_EXACT|data=[2\\n{RB\\ncode=1\\nvalue=S2:ab\\n}\\n{RB\\ncode=1\\nvalue=S1:c\\n}\\n]\\ndictKey=S17:RACKCAD_SELECTIVE\\nowner=S13:SEL_FRONTAL_0\\n",
+   "sha256": "b82a8df1b878539b8a9d564e2c9f71eef1e125e59259c9c06a97151e4b602ae1"
+  },
+  {
+   "id": "EV-27",
+   "purpose": "PAYLOAD_EXACT, one chunk \"abc\"",
+   "recordType": "PAYLOAD_EXACT",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c5041594c4f41445f45584143547c646174613d5b310a7b52420a636f64653d310a76616c75653d53333a6162630a7d0a5d0a646963744b65793d5331373a5241434b4341445f53454c4543544956450a6f776e65723d5331333a53454c5f46524f4e54414c5f300a",
+   "streamDisplay": "FPSPEC-V1|EXACT|PAYLOAD_EXACT|data=[1\\n{RB\\ncode=1\\nvalue=S3:abc\\n}\\n]\\ndictKey=S17:RACKCAD_SELECTIVE\\nowner=S13:SEL_FRONTAL_0\\n",
+   "sha256": "a4c852883142ee0f451aa8503ba844d9f769c2ba16512c76a91a3cad531d9619"
+  },
+  {
+   "id": "EV-28",
+   "purpose": "PAYLOAD_EXACT, same text with type code 300 instead of 1: must differ from EV-27",
+   "recordType": "PAYLOAD_EXACT",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c5041594c4f41445f45584143547c646174613d5b310a7b52420a636f64653d3330300a76616c75653d53333a6162630a7d0a5d0a646963744b65793d5331373a5241434b4341445f53454c4543544956450a6f776e65723d5331333a53454c5f46524f4e54414c5f300a",
+   "streamDisplay": "FPSPEC-V1|EXACT|PAYLOAD_EXACT|data=[1\\n{RB\\ncode=300\\nvalue=S3:abc\\n}\\n]\\ndictKey=S17:RACKCAD_SELECTIVE\\nowner=S13:SEL_FRONTAL_0\\n",
+   "sha256": "21c152a7d737cbbba15990a1d7b0fbb17ba7fa815e5e99fb1ecd80ebdce48e9e"
+  },
+  {
+   "id": "EV-29",
+   "purpose": "PAYLOAD_EXACT, no payload: data absent",
+   "recordType": "PAYLOAD_EXACT",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c5041594c4f41445f45584143547c646174613d7e0a646963744b65793d5331373a5241434b4341445f53454c4543544956450a6f776e65723d5331333a53454c5f46524f4e54414c5f300a",
+   "streamDisplay": "FPSPEC-V1|EXACT|PAYLOAD_EXACT|data=~\\ndictKey=S17:RACKCAD_SELECTIVE\\nowner=S13:SEL_FRONTAL_0\\n",
+   "sha256": "9cf5bb3248b95c6a010f1a771357a721bfd5d3128ece419eefd17cc14a22553f"
+  },
+  {
+   "id": "EV-30",
+   "purpose": "PAYLOAD_EXACT with a handle-valued entry (code 1005): UNKNOWN",
+   "recordType": "PAYLOAD_EXACT",
+   "result": "UNKNOWN",
+   "reason": "RB code 1005 (handle) is a volatile identifier"
+  },
+  {
+   "id": "EV-31",
+   "purpose": "PAYLOAD_EXACT whose chunking split a surrogate pair (RackBlockData chunks at 255 UTF-16 units): UNKNOWN",
+   "recordType": "PAYLOAD_EXACT",
+   "result": "UNKNOWN",
+   "reason": "string is not well-formed UTF-16 (lone surrogate)"
+  },
+  {
+   "id": "EV-40",
+   "purpose": "ENTITY_LINE",
+   "recordType": "ENTITY_LINE",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c454e544954595f4c494e457c636f6c6f72426f6f6b4e616d653d7e0a636f6c6f72496e6465783d3235360a636f6c6f724d6574686f643d53373a42794c617965720a636f6c6f724e616d653d7e0a636f6c6f725267623d7e0a6478664e616d653d53343a4c494e450a656e64583d343034353030303030303030303030300a656e64593d303030303030303030303030303030300a656e645a3d303030303030303030303030303030300a6c617965723d5331383a5241434b4341445f455354525543545552410a6c696e65747970653d53373a42794c617965720a6c696e65747970655363616c653d336666303030303030303030303030300a6c696e657765696768743d53373a42794c617965720a6e6f726d616c583d303030303030303030303030303030300a6e6f726d616c593d303030303030303030303030303030300a6e6f726d616c5a3d336666303030303030303030303030300a7374617274583d303030303030303030303030303030300a7374617274593d303030303030303030303030303030300a73746172745a3d303030303030303030303030303030300a746869636b6e6573733d303030303030303030303030303030300a7472616e73706172656e6379416c7068613d7e0a7472616e73706172656e63794d6574686f643d53373a42794c617965720a76697369626c653d310a",
+   "streamDisplay": "FPSPEC-V1|EXACT|ENTITY_LINE|colorBookName=~\\ncolorIndex=256\\ncolorMethod=S7:ByLayer\\ncolorName=~\\ncolorRgb=~\\ndxfName=S4:LINE\\nendX=4045000000000000\\nendY=0000000000000000\\nendZ=0000000000000000\\nlayer=S18:RACKCAD_ESTRUCTURA\\nlinetype=S7:ByLayer\\nlinetypeScale=3ff0000000000000\\nlineweight=S7:ByLayer\\nnormalX=0000000000000000\\nnormalY=0000000000000000\\nnormalZ=3ff0000000000000\\nstartX=0000000000000000\\nstartY=0000000000000000\\nstartZ=0000000000000000\\nthickness=0000000000000000\\ntransparencyAlpha=~\\ntransparencyMethod=S7:ByLayer\\nvisible=1\\n",
+   "sha256": "21a7b93317b70859a49c4eaf66f83a0cd061239918bbcd952e1e239091b6a5b3"
+  },
+  {
+   "id": "EV-41",
+   "purpose": "ENTITY_ARC",
+   "recordType": "ENTITY_ARC",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c454e544954595f4152437c63656e746572583d336666303030303030303030303030300a63656e746572593d343030303030303030303030303030300a63656e7465725a3d303030303030303030303030303030300a636f6c6f72426f6f6b4e616d653d7e0a636f6c6f72496e6465783d3235360a636f6c6f724d6574686f643d53373a42794c617965720a636f6c6f724e616d653d7e0a636f6c6f725267623d7e0a6478664e616d653d53333a4152430a656e64416e676c653d336666393231666235343434326431380a6c617965723d5331383a5241434b4341445f455354525543545552410a6c696e65747970653d53373a42794c617965720a6c696e65747970655363616c653d336666303030303030303030303030300a6c696e657765696768743d53373a42794c617965720a6e6f726d616c583d303030303030303030303030303030300a6e6f726d616c593d303030303030303030303030303030300a6e6f726d616c5a3d336666303030303030303030303030300a7261646975733d343030383030303030303030303030300a7374617274416e676c653d303030303030303030303030303030300a746869636b6e6573733d303030303030303030303030303030300a7472616e73706172656e6379416c7068613d7e0a7472616e73706172656e63794d6574686f643d53373a42794c617965720a76697369626c653d310a",
+   "streamDisplay": "FPSPEC-V1|EXACT|ENTITY_ARC|centerX=3ff0000000000000\\ncenterY=4000000000000000\\ncenterZ=0000000000000000\\ncolorBookName=~\\ncolorIndex=256\\ncolorMethod=S7:ByLayer\\ncolorName=~\\ncolorRgb=~\\ndxfName=S3:ARC\\nendAngle=3ff921fb54442d18\\nlayer=S18:RACKCAD_ESTRUCTURA\\nlinetype=S7:ByLayer\\nlinetypeScale=3ff0000000000000\\nlineweight=S7:ByLayer\\nnormalX=0000000000000000\\nnormalY=0000000000000000\\nnormalZ=3ff0000000000000\\nradius=4008000000000000\\nstartAngle=0000000000000000\\nthickness=0000000000000000\\ntransparencyAlpha=~\\ntransparencyMethod=S7:ByLayer\\nvisible=1\\n",
+   "sha256": "5c737004ef762b8c0ffee395ae0d32881437b7577fed69b0af731233765087f2"
+  },
+  {
+   "id": "EV-42",
+   "purpose": "ENTITY_CIRCLE",
+   "recordType": "ENTITY_CIRCLE",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c454e544954595f434952434c457c63656e746572583d336666303030303030303030303030300a63656e746572593d343030303030303030303030303030300a63656e7465725a3d303030303030303030303030303030300a636f6c6f72426f6f6b4e616d653d7e0a636f6c6f72496e6465783d3235360a636f6c6f724d6574686f643d53373a42794c617965720a636f6c6f724e616d653d7e0a636f6c6f725267623d7e0a6478664e616d653d53363a434952434c450a6c617965723d5331383a5241434b4341445f455354525543545552410a6c696e65747970653d53373a42794c617965720a6c696e65747970655363616c653d336666303030303030303030303030300a6c696e657765696768743d53373a42794c617965720a6e6f726d616c583d303030303030303030303030303030300a6e6f726d616c593d303030303030303030303030303030300a6e6f726d616c5a3d336666303030303030303030303030300a7261646975733d336665303030303030303030303030300a746869636b6e6573733d303030303030303030303030303030300a7472616e73706172656e6379416c7068613d7e0a7472616e73706172656e63794d6574686f643d53373a42794c617965720a76697369626c653d310a",
+   "streamDisplay": "FPSPEC-V1|EXACT|ENTITY_CIRCLE|centerX=3ff0000000000000\\ncenterY=4000000000000000\\ncenterZ=0000000000000000\\ncolorBookName=~\\ncolorIndex=256\\ncolorMethod=S7:ByLayer\\ncolorName=~\\ncolorRgb=~\\ndxfName=S6:CIRCLE\\nlayer=S18:RACKCAD_ESTRUCTURA\\nlinetype=S7:ByLayer\\nlinetypeScale=3ff0000000000000\\nlineweight=S7:ByLayer\\nnormalX=0000000000000000\\nnormalY=0000000000000000\\nnormalZ=3ff0000000000000\\nradius=3fe0000000000000\\nthickness=0000000000000000\\ntransparencyAlpha=~\\ntransparencyMethod=S7:ByLayer\\nvisible=1\\n",
+   "sha256": "ab35af53476d555e1feb4ef8e3cbe508bcdd21bf5d12f564c1be8a3ebb355021"
+  },
+  {
+   "id": "EV-43",
+   "purpose": "ENTITY_LWPOLYLINE",
+   "recordType": "ENTITY_LWPOLYLINE",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c454e544954595f4c57504f4c594c494e457c636c6f7365643d310a636f6c6f72426f6f6b4e616d653d7e0a636f6c6f72496e6465783d3235360a636f6c6f724d6574686f643d53373a42794c617965720a636f6c6f724e616d653d7e0a636f6c6f725267623d7e0a6478664e616d653d5331303a4c57504f4c594c494e450a656c65766174696f6e3d303030303030303030303030303030300a6c617965723d5331383a5241434b4341445f455354525543545552410a6c696e65747970653d53373a42794c617965720a6c696e65747970655363616c653d336666303030303030303030303030300a6c696e657765696768743d53373a42794c617965720a6e6f726d616c583d303030303030303030303030303030300a6e6f726d616c593d303030303030303030303030303030300a6e6f726d616c5a3d336666303030303030303030303030300a706c696e6567656e3d300a746869636b6e6573733d303030303030303030303030303030300a7472616e73706172656e6379416c7068613d7e0a7472616e73706172656e63794d6574686f643d53373a42794c617965720a76657274696365733d5b330a7b504c494e455f5645525445580a62756c67653d303030303030303030303030303030300a656e6457696474683d303030303030303030303030303030300a737461727457696474683d303030303030303030303030303030300a783d303030303030303030303030303030300a793d303030303030303030303030303030300a7d0a7b504c494e455f5645525445580a62756c67653d303030303030303030303030303030300a656e6457696474683d303030303030303030303030303030300a737461727457696474683d303030303030303030303030303030300a783d343030383030303030303030303030300a793d303030303030303030303030303030300a7d0a7b504c494e455f5645525445580a62756c67653d303030303030303030303030303030300a656e6457696474683d303030303030303030303030303030300a737461727457696474683d303030303030303030303030303030300a783d343030383030303030303030303030300a793d343035383030303030303030303030300a7d0a5d0a76697369626c653d310a",
+   "streamDisplay": "FPSPEC-V1|EXACT|ENTITY_LWPOLYLINE|closed=1\\ncolorBookName=~\\ncolorIndex=256\\ncolorMethod=S7:ByLayer\\ncolorName=~\\ncolorRgb=~\\ndxfName=S10:LWPOLYLINE\\nelevation=0000000000000000\\nlayer=S18:RACKCAD_ESTRUCTURA\\nlinetype=S7:ByLayer\\nlinetypeScale=3ff0000000000000\\nlineweight=S7:ByLayer\\nnormalX=0000000000000000\\nnormalY=0000000000000000\\nnormalZ=3ff0000000000000\\nplinegen=0\\nthickness=0000000000000000\\ntransparencyAlpha=~\\ntransparencyMethod=S7:ByLayer\\nvertices=[3\\n{PLINE_VERTEX\\nbulge=0000000000000000\\nendWidth=0000000000000000\\nstartWidth=0000000000000000\\nx=0000000000000000\\ny=0000000000000000\\n}\\n{PLINE_VERTEX\\nbulge=0000000000000000\\nendWidth=0000000000000000\\nstartWidth=0000000000000000\\nx=4008000000000000\\ny=0000000000000000\\n}\\n{PLINE_VERTEX\\nbulge=0000000000000000\\nendWidth=0000000000000000\\nstartWidth=0000000000000000\\nx=4008000000000000\\ny=4058000000000000\\n}\\n]\\nvisible=1\\n",
+   "sha256": "1b0c147265dc5ec5b102fe76378abac46d88010da8037a9bc503ebbb6d98451c"
+  },
+  {
+   "id": "EV-44",
+   "purpose": "ENTITY_TEXT",
+   "recordType": "ENTITY_TEXT",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c454e544954595f544558547c616c69676e6d656e74583d343032343030303030303030303030300a616c69676e6d656e74593d343033343030303030303030303030300a616c69676e6d656e745a3d303030303030303030303030303030300a636f6c6f72426f6f6b4e616d653d7e0a636f6c6f72496e6465783d3235360a636f6c6f724d6574686f643d53373a42794c617965720a636f6c6f724e616d653d7e0a636f6c6f725267623d7e0a6478664e616d653d53343a544558540a6865696768743d343031303030303030303030303030300a686f72697a6f6e74616c4d6f64653d5331303a5465787443656e7465720a6c617965723d5331393a5241434b4341445f414e4f544143494f4e45530a6c696e65747970653d53373a42794c617965720a6c696e65747970655363616c653d336666303030303030303030303030300a6c696e657765696768743d53373a42794c617965720a6d6972726f726564496e583d300a6d6972726f726564496e593d300a6e6f726d616c583d303030303030303030303030303030300a6e6f726d616c593d303030303030303030303030303030300a6e6f726d616c5a3d336666303030303030303030303030300a6f626c697175653d303030303030303030303030303030300a706f736974696f6e583d343032343030303030303030303030300a706f736974696f6e593d343033343030303030303030303030300a706f736974696f6e5a3d303030303030303030303030303030300a726f746174696f6e3d303030303030303030303030303030300a7374796c654e616d653d53383a5374616e646172640a74657874537472696e673d53373a4e4956454c20310a746869636b6e6573733d303030303030303030303030303030300a7472616e73706172656e6379416c7068613d7e0a7472616e73706172656e63794d6574686f643d53373a42794c617965720a766572746963616c4d6f64653d53383a54657874426173650a76697369626c653d310a7769647468466163746f723d336666303030303030303030303030300a",
+   "streamDisplay": "FPSPEC-V1|EXACT|ENTITY_TEXT|alignmentX=4024000000000000\\nalignmentY=4034000000000000\\nalignmentZ=0000000000000000\\ncolorBookName=~\\ncolorIndex=256\\ncolorMethod=S7:ByLayer\\ncolorName=~\\ncolorRgb=~\\ndxfName=S4:TEXT\\nheight=4010000000000000\\nhorizontalMode=S10:TextCenter\\nlayer=S19:RACKCAD_ANOTACIONES\\nlinetype=S7:ByLayer\\nlinetypeScale=3ff0000000000000\\nlineweight=S7:ByLayer\\nmirroredInX=0\\nmirroredInY=0\\nnormalX=0000000000000000\\nnormalY=0000000000000000\\nnormalZ=3ff0000000000000\\noblique=0000000000000000\\npositionX=4024000000000000\\npositionY=4034000000000000\\npositionZ=0000000000000000\\nrotation=0000000000000000\\nstyleName=S8:Standard\\ntextString=S7:NIVEL 1\\nthickness=0000000000000000\\ntransparencyAlpha=~\\ntransparencyMethod=S7:ByLayer\\nverticalMode=S8:TextBase\\nvisible=1\\nwidthFactor=3ff0000000000000\\n",
+   "sha256": "66bdad8149e2fe7e46ee4d1ad1eec4d7e4ae5d3d6415aa084bdee58ecc2a734b"
+  },
+  {
+   "id": "EV-45",
+   "purpose": "ENTITY_MTEXT",
+   "recordType": "ENTITY_MTEXT",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c454e544954595f4d544558547c6174746163686d656e743d53373a546f704c6566740a636f6c6f72426f6f6b4e616d653d7e0a636f6c6f72496e6465783d3235360a636f6c6f724d6574686f643d53373a42794c617965720a636f6c6f724e616d653d7e0a636f6c6f725267623d7e0a636f6e74656e74733d5331363a464f4e444f20315c504e4956454c20320a646972656374696f6e583d336666303030303030303030303030300a646972656374696f6e593d303030303030303030303030303030300a646972656374696f6e5a3d303030303030303030303030303030300a6478664e616d653d53353a4d544558540a666c6f77446972656374696f6e3d5331313a4c656674546f52696768740a6c617965723d5331393a5241434b4341445f414e4f544143494f4e45530a6c696e6553706163696e67466163746f723d336666303030303030303030303030300a6c696e6553706163696e675374796c653d53373a41744c656173740a6c696e65747970653d53373a42794c617965720a6c696e65747970655363616c653d336666303030303030303030303030300a6c696e657765696768743d53373a42794c617965720a6c6f636174696f6e583d303030303030303030303030303030300a6c6f636174696f6e593d303030303030303030303030303030300a6c6f636174696f6e5a3d303030303030303030303030303030300a6e6f726d616c583d303030303030303030303030303030300a6e6f726d616c593d303030303030303030303030303030300a6e6f726d616c5a3d336666303030303030303030303030300a726f746174696f6e3d303030303030303030303030303030300a7374796c654e616d653d53383a5374616e646172640a746578744865696768743d343031303030303030303030303030300a7472616e73706172656e6379416c7068613d7e0a7472616e73706172656e63794d6574686f643d53373a42794c617965720a76697369626c653d310a77696474683d303030303030303030303030303030300a",
+   "streamDisplay": "FPSPEC-V1|EXACT|ENTITY_MTEXT|attachment=S7:TopLeft\\ncolorBookName=~\\ncolorIndex=256\\ncolorMethod=S7:ByLayer\\ncolorName=~\\ncolorRgb=~\\ncontents=S16:FONDO 1\\\\PNIVEL 2\\ndirectionX=3ff0000000000000\\ndirectionY=0000000000000000\\ndirectionZ=0000000000000000\\ndxfName=S5:MTEXT\\nflowDirection=S11:LeftToRight\\nlayer=S19:RACKCAD_ANOTACIONES\\nlineSpacingFactor=3ff0000000000000\\nlineSpacingStyle=S7:AtLeast\\nlinetype=S7:ByLayer\\nlinetypeScale=3ff0000000000000\\nlineweight=S7:ByLayer\\nlocationX=0000000000000000\\nlocationY=0000000000000000\\nlocationZ=0000000000000000\\nnormalX=0000000000000000\\nnormalY=0000000000000000\\nnormalZ=3ff0000000000000\\nrotation=0000000000000000\\nstyleName=S8:Standard\\ntextHeight=4010000000000000\\ntransparencyAlpha=~\\ntransparencyMethod=S7:ByLayer\\nvisible=1\\nwidth=0000000000000000\\n",
+   "sha256": "583d7e4b35b3b8d31f23818ae98be18e2cd3c7956b27723aae0aa9a4f76bc851"
+  },
+  {
+   "id": "EV-46",
+   "purpose": "ENTITY_ATTRIB",
+   "recordType": "ENTITY_ATTRIB",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c454e544954595f4154545249427c616c69676e6d656e74583d303030303030303030303030303030300a616c69676e6d656e74593d303030303030303030303030303030300a616c69676e6d656e745a3d303030303030303030303030303030300a636f6c6f72426f6f6b4e616d653d7e0a636f6c6f72496e6465783d3235360a636f6c6f724d6574686f643d53373a42794c617965720a636f6c6f724e616d653d7e0a636f6c6f725267623d7e0a6478664e616d653d53363a4154545249420a6865696768743d343030303030303030303030303030300a686f72697a6f6e74616c4d6f64653d53383a546578744c6566740a696e76697369626c653d300a6c617965723d5331383a5241434b4341445f455354525543545552410a6c696e65747970653d53373a42794c617965720a6c696e65747970655363616c653d336666303030303030303030303030300a6c696e657765696768743d53373a42794c617965720a6c6f636b506f736974696f6e3d300a6e6f726d616c583d303030303030303030303030303030300a6e6f726d616c593d303030303030303030303030303030300a6e6f726d616c5a3d336666303030303030303030303030300a6f626c697175653d303030303030303030303030303030300a706f736974696f6e583d303030303030303030303030303030300a706f736974696f6e593d303030303030303030303030303030300a706f736974696f6e5a3d303030303030303030303030303030300a726f746174696f6e3d303030303030303030303030303030300a7374796c654e616d653d53383a5374616e646172640a7461673d53343a434f44450a74657874537472696e673d53333a502d310a7472616e73706172656e6379416c7068613d7e0a7472616e73706172656e63794d6574686f643d53373a42794c617965720a766572746963616c4d6f64653d53383a54657874426173650a76697369626c653d310a7769647468466163746f723d336666303030303030303030303030300a",
+   "streamDisplay": "FPSPEC-V1|EXACT|ENTITY_ATTRIB|alignmentX=0000000000000000\\nalignmentY=0000000000000000\\nalignmentZ=0000000000000000\\ncolorBookName=~\\ncolorIndex=256\\ncolorMethod=S7:ByLayer\\ncolorName=~\\ncolorRgb=~\\ndxfName=S6:ATTRIB\\nheight=4000000000000000\\nhorizontalMode=S8:TextLeft\\ninvisible=0\\nlayer=S18:RACKCAD_ESTRUCTURA\\nlinetype=S7:ByLayer\\nlinetypeScale=3ff0000000000000\\nlineweight=S7:ByLayer\\nlockPosition=0\\nnormalX=0000000000000000\\nnormalY=0000000000000000\\nnormalZ=3ff0000000000000\\noblique=0000000000000000\\npositionX=0000000000000000\\npositionY=0000000000000000\\npositionZ=0000000000000000\\nrotation=0000000000000000\\nstyleName=S8:Standard\\ntag=S4:CODE\\ntextString=S3:P-1\\ntransparencyAlpha=~\\ntransparencyMethod=S7:ByLayer\\nverticalMode=S8:TextBase\\nvisible=1\\nwidthFactor=3ff0000000000000\\n",
+   "sha256": "244c80e7951987f8b967184d4de62966eebbdf7a8c79f76a1588c395c366c188"
+  },
+  {
+   "id": "EV-47",
+   "purpose": "ENTITY_ATTDEF",
+   "recordType": "ENTITY_ATTDEF",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c454e544954595f4154544445467c616c69676e6d656e74583d303030303030303030303030303030300a616c69676e6d656e74593d303030303030303030303030303030300a616c69676e6d656e745a3d303030303030303030303030303030300a636f6c6f72426f6f6b4e616d653d7e0a636f6c6f72496e6465783d3235360a636f6c6f724d6574686f643d53373a42794c617965720a636f6c6f724e616d653d7e0a636f6c6f725267623d7e0a636f6e7374616e743d300a6478664e616d653d53363a4154544445460a6865696768743d343030303030303030303030303030300a686f72697a6f6e74616c4d6f64653d53383a546578744c6566740a696e76697369626c653d300a6c617965723d5331383a5241434b4341445f455354525543545552410a6c696e65747970653d53373a42794c617965720a6c696e65747970655363616c653d336666303030303030303030303030300a6c696e657765696768743d53373a42794c617965720a6c6f636b506f736974696f6e3d300a6e6f726d616c583d303030303030303030303030303030300a6e6f726d616c593d303030303030303030303030303030300a6e6f726d616c5a3d336666303030303030303030303030300a6f626c697175653d303030303030303030303030303030300a706f736974696f6e583d303030303030303030303030303030300a706f736974696f6e593d303030303030303030303030303030300a706f736974696f6e5a3d303030303030303030303030303030300a7072657365743d300a70726f6d70743d53343a436f64650a726f746174696f6e3d303030303030303030303030303030300a7374796c654e616d653d53383a5374616e646172640a7461673d53343a434f44450a74657874537472696e673d53303a0a7472616e73706172656e6379416c7068613d7e0a7472616e73706172656e63794d6574686f643d53373a42794c617965720a7665726966793d300a766572746963616c4d6f64653d53383a54657874426173650a76697369626c653d310a7769647468466163746f723d336666303030303030303030303030300a",
+   "streamDisplay": "FPSPEC-V1|EXACT|ENTITY_ATTDEF|alignmentX=0000000000000000\\nalignmentY=0000000000000000\\nalignmentZ=0000000000000000\\ncolorBookName=~\\ncolorIndex=256\\ncolorMethod=S7:ByLayer\\ncolorName=~\\ncolorRgb=~\\nconstant=0\\ndxfName=S6:ATTDEF\\nheight=4000000000000000\\nhorizontalMode=S8:TextLeft\\ninvisible=0\\nlayer=S18:RACKCAD_ESTRUCTURA\\nlinetype=S7:ByLayer\\nlinetypeScale=3ff0000000000000\\nlineweight=S7:ByLayer\\nlockPosition=0\\nnormalX=0000000000000000\\nnormalY=0000000000000000\\nnormalZ=3ff0000000000000\\noblique=0000000000000000\\npositionX=0000000000000000\\npositionY=0000000000000000\\npositionZ=0000000000000000\\npreset=0\\nprompt=S4:Code\\nrotation=0000000000000000\\nstyleName=S8:Standard\\ntag=S4:CODE\\ntextString=S0:\\ntransparencyAlpha=~\\ntransparencyMethod=S7:ByLayer\\nverify=0\\nverticalMode=S8:TextBase\\nvisible=1\\nwidthFactor=3ff0000000000000\\n",
+   "sha256": "1f41aa134ca5eb198bb3b74e26ac1b8dedbcd6cacba04e4b996e5851fcdfe258"
+  },
+  {
+   "id": "EV-48",
+   "purpose": "DEFINITION_DUMP (one LINE)",
+   "recordType": "DEFINITION_DUMP",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c444546494e4954494f4e5f44554d507c616e6e6f7461746976653d5331333a4e6f744170706c696361626c650a656e7469746965733d5b310a7b454e544954595f4c494e450a636f6c6f72426f6f6b4e616d653d7e0a636f6c6f72496e6465783d3235360a636f6c6f724d6574686f643d53373a42794c617965720a636f6c6f724e616d653d7e0a636f6c6f725267623d7e0a6478664e616d653d53343a4c494e450a656e64583d343034353030303030303030303030300a656e64593d303030303030303030303030303030300a656e645a3d303030303030303030303030303030300a6c617965723d5331383a5241434b4341445f455354525543545552410a6c696e65747970653d53373a42794c617965720a6c696e65747970655363616c653d336666303030303030303030303030300a6c696e657765696768743d53373a42794c617965720a6e6f726d616c583d303030303030303030303030303030300a6e6f726d616c593d303030303030303030303030303030300a6e6f726d616c5a3d336666303030303030303030303030300a7374617274583d303030303030303030303030303030300a7374617274593d303030303030303030303030303030300a73746172745a3d303030303030303030303030303030300a746869636b6e6573733d303030303030303030303030303030300a7472616e73706172656e6379416c7068613d7e0a7472616e73706172656e63794d6574686f643d53373a42794c617965720a76697369626c653d310a7d0a5d0a6578706c6f6461626c653d310a6e616d653d53393a504f5354455f3358330a6f726967696e583d303030303030303030303030303030300a6f726967696e593d303030303030303030303030303030300a6f726967696e5a3d303030303030303030303030303030300a7363616c696e673d53333a416e790a756e6974733d53363a496e636865730a",
+   "streamDisplay": "FPSPEC-V1|EXACT|DEFINITION_DUMP|annotative=S13:NotApplicable\\nentities=[1\\n{ENTITY_LINE\\ncolorBookName=~\\ncolorIndex=256\\ncolorMethod=S7:ByLayer\\ncolorName=~\\ncolorRgb=~\\ndxfName=S4:LINE\\nendX=4045000000000000\\nendY=0000000000000000\\nendZ=0000000000000000\\nlayer=S18:RACKCAD_ESTRUCTURA\\nlinetype=S7:ByLayer\\nlinetypeScale=3ff0000000000000\\nlineweight=S7:ByLayer\\nnormalX=0000000000000000\\nnormalY=0000000000000000\\nnormalZ=3ff0000000000000\\nstartX=0000000000000000\\nstartY=0000000000000000\\nstartZ=0000000000000000\\nthickness=0000000000000000\\ntransparencyAlpha=~\\ntransparencyMethod=S7:ByLayer\\nvisible=1\\n}\\n]\\nexplodable=1\\nname=S9:POSTE_3X3\\noriginX=0000000000000000\\noriginY=0000000000000000\\noriginZ=0000000000000000\\nscaling=S3:Any\\nunits=S6:Inches\\n",
+   "sha256": "b31c3550049136622fbccf010d5c90d51a981df57a4cac48b2757606dc67b9f4"
+  },
+  {
+   "id": "EV-49",
+   "purpose": "ENTITY_INSERT with nested-digest field and dynamic properties (sorted by name: FRENTE before LONGITUD)",
+   "recordType": "ENTITY_INSERT",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c454e544954595f494e534552547c617474726962757465733d5b300a5d0a626c6f636b4469676573743d4053393a504f5354455f33583323623331633335353030343931333636323266626363663031306435633930643531613938316466353761346361633438623237353736303664633637623966340a626c6f636b4e616d653d53393a504f5354455f3358330a636f6c6f72426f6f6b4e616d653d7e0a636f6c6f72496e6465783d3235360a636f6c6f724d6574686f643d53373a42794c617965720a636f6c6f724e616d653d7e0a636f6c6f725267623d7e0a6478664e616d653d53363a494e534552540a64796e616d696350726f706572746965733d5b320a7b44594e50524f500a6e616d653d53363a4652454e54450a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d343034353030303030303030303030300a7d0a7d0a7b44594e50524f500a6e616d653d53383a4c4f4e47495455440a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d343035383030303030303030303030300a7d0a7d0a5d0a6c617965723d5331383a5241434b4341445f455354525543545552410a6c696e65747970653d53373a42794c617965720a6c696e65747970655363616c653d336666303030303030303030303030300a6c696e657765696768743d53373a42794c617965720a6e6f726d616c583d303030303030303030303030303030300a6e6f726d616c593d303030303030303030303030303030300a6e6f726d616c5a3d336666303030303030303030303030300a706f736974696f6e583d303030303030303030303030303030300a706f736974696f6e593d303030303030303030303030303030300a706f736974696f6e5a3d303030303030303030303030303030300a726f746174696f6e3d303030303030303030303030303030300a7363616c65583d336666303030303030303030303030300a7363616c65593d336666303030303030303030303030300a7363616c655a3d336666303030303030303030303030300a7472616e73706172656e6379416c7068613d7e0a7472616e73706172656e63794d6574686f643d53373a42794c617965720a76697369626c653d310a",
+   "streamDisplay": "FPSPEC-V1|EXACT|ENTITY_INSERT|attributes=[0\\n]\\nblockDigest=@S9:POSTE_3X3#b31c3550049136622fbccf010d5c90d51a981df57a4cac48b2757606dc67b9f4\\nblockName=S9:POSTE_3X3\\ncolorBookName=~\\ncolorIndex=256\\ncolorMethod=S7:ByLayer\\ncolorName=~\\ncolorRgb=~\\ndxfName=S6:INSERT\\ndynamicProperties=[2\\n{DYNPROP\\nname=S6:FRENTE\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=4045000000000000\\n}\\n}\\n{DYNPROP\\nname=S8:LONGITUD\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=4058000000000000\\n}\\n}\\n]\\nlayer=S18:RACKCAD_ESTRUCTURA\\nlinetype=S7:ByLayer\\nlinetypeScale=3ff0000000000000\\nlineweight=S7:ByLayer\\nnormalX=0000000000000000\\nnormalY=0000000000000000\\nnormalZ=3ff0000000000000\\npositionX=0000000000000000\\npositionY=0000000000000000\\npositionZ=0000000000000000\\nrotation=0000000000000000\\nscaleX=3ff0000000000000\\nscaleY=3ff0000000000000\\nscaleZ=3ff0000000000000\\ntransparencyAlpha=~\\ntransparencyMethod=S7:ByLayer\\nvisible=1\\n",
+   "sha256": "fc0f8fdef5c610e9cf88e68d5d5ec6362bb0f5000df9975c7aee12ce7c276211"
+  },
+  {
+   "id": "EV-50",
+   "purpose": "DEFINITION_DUMP holding an INSERT (nested definition by reference) and a TEXT, in host iteration order",
+   "recordType": "DEFINITION_DUMP",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c444546494e4954494f4e5f44554d507c616e6e6f7461746976653d5331333a4e6f744170706c696361626c650a656e7469746965733d5b320a7b454e544954595f494e534552540a617474726962757465733d5b300a5d0a626c6f636b4469676573743d4053393a504f5354455f33583323623331633335353030343931333636323266626363663031306435633930643531613938316466353761346361633438623237353736303664633637623966340a626c6f636b4e616d653d53393a504f5354455f3358330a636f6c6f72426f6f6b4e616d653d7e0a636f6c6f72496e6465783d3235360a636f6c6f724d6574686f643d53373a42794c617965720a636f6c6f724e616d653d7e0a636f6c6f725267623d7e0a6478664e616d653d53363a494e534552540a64796e616d696350726f706572746965733d5b320a7b44594e50524f500a6e616d653d53363a4652454e54450a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d343034353030303030303030303030300a7d0a7d0a7b44594e50524f500a6e616d653d53383a4c4f4e47495455440a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d343035383030303030303030303030300a7d0a7d0a5d0a6c617965723d5331383a5241434b4341445f455354525543545552410a6c696e65747970653d53373a42794c617965720a6c696e65747970655363616c653d336666303030303030303030303030300a6c696e657765696768743d53373a42794c617965720a6e6f726d616c583d303030303030303030303030303030300a6e6f726d616c593d303030303030303030303030303030300a6e6f726d616c5a3d336666303030303030303030303030300a706f736974696f6e583d303030303030303030303030303030300a706f736974696f6e593d303030303030303030303030303030300a706f736974696f6e5a3d303030303030303030303030303030300a726f746174696f6e3d303030303030303030303030303030300a7363616c65583d336666303030303030303030303030300a7363616c65593d336666303030303030303030303030300a7363616c655a3d336666303030303030303030303030300a7472616e73706172656e6379416c7068613d7e0a7472616e73706172656e63794d6574686f643d53373a42794c617965720a76697369626c653d310a7d0a7b454e544954595f544558540a616c69676e6d656e74583d343032343030303030303030303030300a616c69676e6d656e74593d343033343030303030303030303030300a616c69676e6d656e745a3d303030303030303030303030303030300a636f6c6f72426f6f6b4e616d653d7e0a636f6c6f72496e6465783d3235360a636f6c6f724d6574686f643d53373a42794c617965720a636f6c6f724e616d653d7e0a636f6c6f725267623d7e0a6478664e616d653d53343a544558540a6865696768743d343031303030303030303030303030300a686f72697a6f6e74616c4d6f64653d5331303a5465787443656e7465720a6c617965723d5331393a5241434b4341445f414e4f544143494f4e45530a6c696e65747970653d53373a42794c617965720a6c696e65747970655363616c653d336666303030303030303030303030300a6c696e657765696768743d53373a42794c617965720a6d6972726f726564496e583d300a6d6972726f726564496e593d300a6e6f726d616c583d303030303030303030303030303030300a6e6f726d616c593d303030303030303030303030303030300a6e6f726d616c5a3d336666303030303030303030303030300a6f626c697175653d303030303030303030303030303030300a706f736974696f6e583d343032343030303030303030303030300a706f736974696f6e593d343033343030303030303030303030300a706f736974696f6e5a3d303030303030303030303030303030300a726f746174696f6e3d303030303030303030303030303030300a7374796c654e616d653d53383a5374616e646172640a74657874537472696e673d53373a4e4956454c20310a746869636b6e6573733d303030303030303030303030303030300a7472616e73706172656e6379416c7068613d7e0a7472616e73706172656e63794d6574686f643d53373a42794c617965720a766572746963616c4d6f64653d53383a54657874426173650a76697369626c653d310a7769647468466163746f723d336666303030303030303030303030300a7d0a5d0a6578706c6f6461626c653d310a6e616d653d5331333a53454c5f46524f4e54414c5f300a6f726967696e583d303030303030303030303030303030300a6f726967696e593d303030303030303030303030303030300a6f726967696e5a3d303030303030303030303030303030300a7363616c696e673d53333a416e790a756e6974733d53363a496e636865730a",
+   "streamDisplay": "FPSPEC-V1|EXACT|DEFINITION_DUMP|annotative=S13:NotApplicable\\nentities=[2\\n{ENTITY_INSERT\\nattributes=[0\\n]\\nblockDigest=@S9:POSTE_3X3#b31c3550049136622fbccf010d5c90d51a981df57a4cac48b2757606dc67b9f4\\nblockName=S9:POSTE_3X3\\ncolorBookName=~\\ncolorIndex=256\\ncolorMethod=S7:ByLayer\\ncolorName=~\\ncolorRgb=~\\ndxfName=S6:INSERT\\ndynamicProperties=[2\\n{DYNPROP\\nname=S6:FRENTE\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=4045000000000000\\n}\\n}\\n{DYNPROP\\nname=S8:LONGITUD\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=4058000000000000\\n}\\n}\\n]\\nlayer=S18:RACKCAD_ESTRUCTURA\\nlinetype=S7:ByLayer\\nlinetypeScale=3ff0000000000000\\nlineweight=S7:ByLayer\\nnormalX=0000000000000000\\nnormalY=0000000000000000\\nnormalZ=3ff0000000000000\\npositionX=0000000000000000\\npositionY=0000000000000000\\npositionZ=0000000000000000\\nrotation=0000000000000000\\nscaleX=3ff0000000000000\\nscaleY=3ff0000000000000\\nscaleZ=3ff0000000000000\\ntransparencyAlpha=~\\ntransparencyMethod=S7:ByLayer\\nvisible=1\\n}\\n{ENTITY_TEXT\\nalignmentX=4024000000000000\\nalignmentY=4034000000000000\\nalignmentZ=0000000000000000\\ncolorBookName=~\\ncolorIndex=256\\ncolorMethod=S7:ByLayer\\ncolorName=~\\ncolorRgb=~\\ndxfName=S4:TEXT\\nheight=4010000000000000\\nhorizontalMode=S10:TextCenter\\nlayer=S19:RACKCAD_ANOTACIONES\\nlinetype=S7:ByLayer\\nlinetypeScale=3ff0000000000000\\nlineweight=S7:ByLayer\\nmirroredInX=0\\nmirroredInY=0\\nnormalX=0000000000000000\\nnormalY=0000000000000000\\nnormalZ=3ff0000000000000\\noblique=0000000000000000\\npositionX=4024000000000000\\npositionY=4034000000000000\\npositionZ=0000000000000000\\nrotation=0000000000000000\\nstyleName=S8:Standard\\ntextString=S7:NIVEL 1\\nthickness=0000000000000000\\ntransparencyAlpha=~\\ntransparencyMethod=S7:ByLayer\\nverticalMode=S8:TextBase\\nvisible=1\\nwidthFactor=3ff0000000000000\\n}\\n]\\nexplodable=1\\nname=S13:SEL_FRONTAL_0\\noriginX=0000000000000000\\noriginY=0000000000000000\\noriginZ=0000000000000000\\nscaling=S3:Any\\nunits=S6:Inches\\n",
+   "sha256": "f51d99b36401200e585b2e421ea6a3629b3de59e0e8879dc200882bf1f607d0c"
+  },
+  {
+   "id": "EV-51",
+   "purpose": "DEFINITION_DUMP holding an entity type outside the specification (a proxy): UNKNOWN",
+   "recordType": "DEFINITION_DUMP",
+   "result": "UNKNOWN",
+   "reason": "entity type ENTITY_PROXY is not in the specification"
+  },
+  {
+   "id": "EV-52",
+   "purpose": "ENTITY_ROTATED_DIMENSION (overrides sorted by name)",
+   "recordType": "ENTITY_ROTATED_DIMENSION",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c454e544954595f524f54415445445f44494d454e53494f4e7c636f6c6f72426f6f6b4e616d653d7e0a636f6c6f72496e6465783d3235360a636f6c6f724d6574686f643d53373a42794c617965720a636f6c6f724e616d653d7e0a636f6c6f725267623d7e0a64696d4c696e65506f696e74583d303030303030303030303030303030300a64696d4c696e65506f696e74593d633032383030303030303030303030300a64696d4c696e65506f696e745a3d303030303030303030303030303030300a64696d656e73696f6e5374796c654e616d653d53383a5374616e646172640a64696d656e73696f6e546578743d53303a0a6478664e616d653d53393a44494d454e53494f4e0a6c617965723d5331333a5241434b4341445f434f5441530a6c696e65747970653d53373a42794c617965720a6c696e65747970655363616c653d336666303030303030303030303030300a6c696e657765696768743d53373a42794c617965720a6e6f726d616c583d303030303030303030303030303030300a6e6f726d616c593d303030303030303030303030303030300a6e6f726d616c5a3d336666303030303030303030303030300a6f626c697175653d303030303030303030303030303030300a6f76657272696465733d5b320a7b44494d5641525f56414c55450a6e616d653d53363a44494d41535a0a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d343030303030303030303030303030300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d5458540a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d343031303030303030303030303030300a7d0a7d0a5d0a726f746174696f6e3d303030303030303030303030303030300a74657874506f736974696f6e583d343034383030303030303030303030300a74657874506f736974696f6e593d633032383030303030303030303030300a74657874506f736974696f6e5a3d303030303030303030303030303030300a7472616e73706172656e6379416c7068613d7e0a7472616e73706172656e63794d6574686f643d53373a42794c617965720a7573696e6744656661756c7454657874506f736974696f6e3d310a76697369626c653d310a784c696e6531506f696e74583d303030303030303030303030303030300a784c696e6531506f696e74593d303030303030303030303030303030300a784c696e6531506f696e745a3d303030303030303030303030303030300a784c696e6532506f696e74583d343035383030303030303030303030300a784c696e6532506f696e74593d303030303030303030303030303030300a784c696e6532506f696e745a3d303030303030303030303030303030300a",
+   "streamDisplay": "FPSPEC-V1|EXACT|ENTITY_ROTATED_DIMENSION|colorBookName=~\\ncolorIndex=256\\ncolorMethod=S7:ByLayer\\ncolorName=~\\ncolorRgb=~\\ndimLinePointX=0000000000000000\\ndimLinePointY=c028000000000000\\ndimLinePointZ=0000000000000000\\ndimensionStyleName=S8:Standard\\ndimensionText=S0:\\ndxfName=S9:DIMENSION\\nlayer=S13:RACKCAD_COTAS\\nlinetype=S7:ByLayer\\nlinetypeScale=3ff0000000000000\\nlineweight=S7:ByLayer\\nnormalX=0000000000000000\\nnormalY=0000000000000000\\nnormalZ=3ff0000000000000\\noblique=0000000000000000\\noverrides=[2\\n{DIMVAR_VALUE\\nname=S6:DIMASZ\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=4000000000000000\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMTXT\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=4010000000000000\\n}\\n}\\n]\\nrotation=0000000000000000\\ntextPositionX=4048000000000000\\ntextPositionY=c028000000000000\\ntextPositionZ=0000000000000000\\ntransparencyAlpha=~\\ntransparencyMethod=S7:ByLayer\\nusingDefaultTextPosition=1\\nvisible=1\\nxLine1PointX=0000000000000000\\nxLine1PointY=0000000000000000\\nxLine1PointZ=0000000000000000\\nxLine2PointX=4058000000000000\\nxLine2PointY=0000000000000000\\nxLine2PointZ=0000000000000000\\n",
+   "sha256": "4f7b89d8fa7370a9284c683877c4a751d3d4d7a7a4c2f0037e8487f86cc7c5d2"
+  },
+  {
+   "id": "EV-53",
+   "purpose": "ENTITY_ALIGNED_DIMENSION",
+   "recordType": "ENTITY_ALIGNED_DIMENSION",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c454e544954595f414c49474e45445f44494d454e53494f4e7c636f6c6f72426f6f6b4e616d653d7e0a636f6c6f72496e6465783d3235360a636f6c6f724d6574686f643d53373a42794c617965720a636f6c6f724e616d653d7e0a636f6c6f725267623d7e0a64696d4c696e65506f696e74583d303030303030303030303030303030300a64696d4c696e65506f696e74593d633032383030303030303030303030300a64696d4c696e65506f696e745a3d303030303030303030303030303030300a64696d656e73696f6e5374796c654e616d653d53383a5374616e646172640a64696d656e73696f6e546578743d53303a0a6478664e616d653d53393a44494d454e53494f4e0a6c617965723d5331333a5241434b4341445f434f5441530a6c696e65747970653d53373a42794c617965720a6c696e65747970655363616c653d336666303030303030303030303030300a6c696e657765696768743d53373a42794c617965720a6e6f726d616c583d303030303030303030303030303030300a6e6f726d616c593d303030303030303030303030303030300a6e6f726d616c5a3d336666303030303030303030303030300a6f626c697175653d303030303030303030303030303030300a6f76657272696465733d5b320a7b44494d5641525f56414c55450a6e616d653d53363a44494d41535a0a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d343030303030303030303030303030300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d5458540a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d343031303030303030303030303030300a7d0a7d0a5d0a74657874506f736974696f6e583d343034383030303030303030303030300a74657874506f736974696f6e593d633032383030303030303030303030300a74657874506f736974696f6e5a3d303030303030303030303030303030300a7472616e73706172656e6379416c7068613d7e0a7472616e73706172656e63794d6574686f643d53373a42794c617965720a7573696e6744656661756c7454657874506f736974696f6e3d310a76697369626c653d310a784c696e6531506f696e74583d303030303030303030303030303030300a784c696e6531506f696e74593d303030303030303030303030303030300a784c696e6531506f696e745a3d303030303030303030303030303030300a784c696e6532506f696e74583d343035383030303030303030303030300a784c696e6532506f696e74593d303030303030303030303030303030300a784c696e6532506f696e745a3d303030303030303030303030303030300a",
+   "streamDisplay": "FPSPEC-V1|EXACT|ENTITY_ALIGNED_DIMENSION|colorBookName=~\\ncolorIndex=256\\ncolorMethod=S7:ByLayer\\ncolorName=~\\ncolorRgb=~\\ndimLinePointX=0000000000000000\\ndimLinePointY=c028000000000000\\ndimLinePointZ=0000000000000000\\ndimensionStyleName=S8:Standard\\ndimensionText=S0:\\ndxfName=S9:DIMENSION\\nlayer=S13:RACKCAD_COTAS\\nlinetype=S7:ByLayer\\nlinetypeScale=3ff0000000000000\\nlineweight=S7:ByLayer\\nnormalX=0000000000000000\\nnormalY=0000000000000000\\nnormalZ=3ff0000000000000\\noblique=0000000000000000\\noverrides=[2\\n{DIMVAR_VALUE\\nname=S6:DIMASZ\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=4000000000000000\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMTXT\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=4010000000000000\\n}\\n}\\n]\\ntextPositionX=4048000000000000\\ntextPositionY=c028000000000000\\ntextPositionZ=0000000000000000\\ntransparencyAlpha=~\\ntransparencyMethod=S7:ByLayer\\nusingDefaultTextPosition=1\\nvisible=1\\nxLine1PointX=0000000000000000\\nxLine1PointY=0000000000000000\\nxLine1PointZ=0000000000000000\\nxLine2PointX=4058000000000000\\nxLine2PointY=0000000000000000\\nxLine2PointZ=0000000000000000\\n",
+   "sha256": "7e20c0288597f4a036c2fc5735b2a4eab67b0ddb0ba8c6bf8ceb4dc81a9391b1"
+  },
+  {
+   "id": "EV-54",
+   "purpose": "SYMBOL_RECORD_LAYER",
+   "recordType": "SYMBOL_RECORD_LAYER",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c53594d424f4c5f5245434f52445f4c415945527c636f6c6f72426f6f6b4e616d653d7e0a636f6c6f72496e6465783d320a636f6c6f724d6574686f643d53353a42794163690a636f6c6f724e616d653d7e0a636f6c6f725267623d7e0a697346726f7a656e3d300a69734c6f636b65643d300a69734f66663d300a6973506c6f747461626c653d310a6c696e65747970653d5331303a436f6e74696e756f75730a6c696e657765696768743d5331393a42794c696e6557656967687444656661756c740a6e616d653d5331393a5241434b4341445f414e4f544143494f4e45530a7461626c653d53353a4c415945520a7472616e73706172656e6379416c7068613d3235350a7472616e73706172656e63794d6574686f643d53373a4279416c7068610a",
+   "streamDisplay": "FPSPEC-V1|EXACT|SYMBOL_RECORD_LAYER|colorBookName=~\\ncolorIndex=2\\ncolorMethod=S5:ByAci\\ncolorName=~\\ncolorRgb=~\\nisFrozen=0\\nisLocked=0\\nisOff=0\\nisPlottable=1\\nlinetype=S10:Continuous\\nlineweight=S19:ByLineWeightDefault\\nname=S19:RACKCAD_ANOTACIONES\\ntable=S5:LAYER\\ntransparencyAlpha=255\\ntransparencyMethod=S7:ByAlpha\\n",
+   "sha256": "087023825ee388b5969f85f88be6b95da37e8fb00b7f0c6ba368dc89b91b2856"
+  },
+  {
+   "id": "EV-55",
+   "purpose": "SYMBOL_RECORD_LTYPE",
+   "recordType": "SYMBOL_RECORD_LTYPE",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c53594d424f4c5f5245434f52445f4c545950457c61736369694465736372697074696f6e3d53383a5f5f205f5f205f5f0a6461736865733d5b320a7b4c545950455f444153480a6c656e6774683d336665303030303030303030303030300a736861706549735563734f7269656e7465643d300a73686170654e756d6265723d300a73686170654f6666736574583d303030303030303030303030303030300a73686170654f6666736574593d303030303030303030303030303030300a7368617065526f746174696f6e3d303030303030303030303030303030300a73686170655363616c653d303030303030303030303030303030300a73686170655374796c654e616d653d7e0a746578743d7e0a7d0a7b4c545950455f444153480a6c656e6774683d626664303030303030303030303030300a736861706549735563734f7269656e7465643d300a73686170654e756d6265723d300a73686170654f6666736574583d303030303030303030303030303030300a73686170654f6666736574593d303030303030303030303030303030300a7368617065526f746174696f6e3d303030303030303030303030303030300a73686170655363616c653d303030303030303030303030303030300a73686170655374796c654e616d653d7e0a746578743d7e0a7d0a5d0a69735363616c6564546f4669743d300a6e616d653d53363a4441534845440a7061747465726e4c656e6774683d336665383030303030303030303030300a7461626c653d53353a4c545950450a",
+   "streamDisplay": "FPSPEC-V1|EXACT|SYMBOL_RECORD_LTYPE|asciiDescription=S8:__ __ __\\ndashes=[2\\n{LTYPE_DASH\\nlength=3fe0000000000000\\nshapeIsUcsOriented=0\\nshapeNumber=0\\nshapeOffsetX=0000000000000000\\nshapeOffsetY=0000000000000000\\nshapeRotation=0000000000000000\\nshapeScale=0000000000000000\\nshapeStyleName=~\\ntext=~\\n}\\n{LTYPE_DASH\\nlength=bfd0000000000000\\nshapeIsUcsOriented=0\\nshapeNumber=0\\nshapeOffsetX=0000000000000000\\nshapeOffsetY=0000000000000000\\nshapeRotation=0000000000000000\\nshapeScale=0000000000000000\\nshapeStyleName=~\\ntext=~\\n}\\n]\\nisScaledToFit=0\\nname=S6:DASHED\\npatternLength=3fe8000000000000\\ntable=S5:LTYPE\\n",
+   "sha256": "98c57e7db8a5192a35674b352c4d67946f23dc5064efebc8945f9cfb141f19ad"
+  },
+  {
+   "id": "EV-56",
+   "purpose": "SYMBOL_RECORD_STYLE",
+   "recordType": "SYMBOL_RECORD_STYLE",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c53594d424f4c5f5245434f52445f5354594c457c626967466f6e7446696c654e616d653d53303a0a66696c654e616d653d53333a7478740a666c6167426974733d300a666f6e74426f6c643d300a666f6e744368617261637465725365743d300a666f6e744974616c69633d300a666f6e745069746368416e6446616d696c793d300a666f6e7454797065666163653d53303a0a6973536861706546696c653d300a6973566572746963616c3d300a6e616d653d53383a5374616e646172640a6f626c697175696e67416e676c653d303030303030303030303030303030300a7461626c653d53353a5354594c450a7465787453697a653d303030303030303030303030303030300a785363616c653d336666303030303030303030303030300a",
+   "streamDisplay": "FPSPEC-V1|EXACT|SYMBOL_RECORD_STYLE|bigFontFileName=S0:\\nfileName=S3:txt\\nflagBits=0\\nfontBold=0\\nfontCharacterSet=0\\nfontItalic=0\\nfontPitchAndFamily=0\\nfontTypeface=S0:\\nisShapeFile=0\\nisVertical=0\\nname=S8:Standard\\nobliquingAngle=0000000000000000\\ntable=S5:STYLE\\ntextSize=0000000000000000\\nxScale=3ff0000000000000\\n",
+   "sha256": "39e47384546fd9e832a1e322df84642b79dfdf851d529ad1a9e4ba87d04228b1"
+  },
+  {
+   "id": "EV-57",
+   "purpose": "SYMBOL_RECORD_DIMSTYLE with every variable of the closed list (illustrative values)",
+   "recordType": "SYMBOL_RECORD_DIMSTYLE",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c53594d424f4c5f5245434f52445f44494d5354594c457c64696d766172733d5b37380a7b44494d5641525f56414c55450a6e616d653d53373a44494d414445430a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d414c540a76616c75653d7b54595045445f56414c55450a6b696e643d53343a424f4f4c0a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53373a44494d414c54440a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53373a44494d414c54460a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d336663373061336437306133643730610a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53393a44494d414c544d5a460a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d336663373061336437306133643730610a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53393a44494d414c544d5a530a76616c75653d7b54595045445f56414c55450a6b696e643d53363a535452494e470a76616c75653d53303a0a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53393a44494d414c54524e440a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d336663373061336437306133643730610a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53383a44494d414c5454440a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53383a44494d414c54545a0a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53373a44494d414c54550a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53373a44494d414c545a0a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53383a44494d41504f53540a76616c75653d7b54595045445f56414c55450a6b696e643d53363a535452494e470a76616c75653d53303a0a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53393a44494d41524353594d0a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d41535a0a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d336663373061336437306133643730610a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53383a44494d41544649540a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53383a44494d41554e49540a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53373a44494d415a494e0a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d424c4b0a76616c75653d7b54595045445f56414c55450a6b696e643d53343a4e414d450a76616c75653d53303a0a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53373a44494d424c4b310a76616c75653d7b54595045445f56414c55450a6b696e643d53343a4e414d450a76616c75653d53303a0a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53373a44494d424c4b320a76616c75653d7b54595045445f56414c55450a6b696e643d53343a4e414d450a76616c75653d53303a0a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d43454e0a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d336663373061336437306133643730610a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53373a44494d434c52440a76616c75653d7b54595045445f56414c55450a6b696e643d53353a434f4c4f520a76616c75653d7b434f4c4f520a636f6c6f72426f6f6b4e616d653d7e0a636f6c6f72496e6465783d300a636f6c6f724d6574686f643d53373a4279426c6f636b0a636f6c6f724e616d653d7e0a636f6c6f725267623d7e0a7d0a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53373a44494d434c52450a76616c75653d7b54595045445f56414c55450a6b696e643d53353a434f4c4f520a76616c75653d7b434f4c4f520a636f6c6f72426f6f6b4e616d653d7e0a636f6c6f72496e6465783d300a636f6c6f724d6574686f643d53373a4279426c6f636b0a636f6c6f724e616d653d7e0a636f6c6f725267623d7e0a7d0a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53373a44494d434c52540a76616c75653d7b54595045445f56414c55450a6b696e643d53353a434f4c4f520a76616c75653d7b434f4c4f520a636f6c6f72426f6f6b4e616d653d7e0a636f6c6f72496e6465783d300a636f6c6f724d6574686f643d53373a4279426c6f636b0a636f6c6f724e616d653d7e0a636f6c6f725267623d7e0a7d0a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d4445430a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d444c450a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d336663373061336437306133643730610a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d444c490a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d336663373061336437306133643730610a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53373a44494d445345500a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d4558450a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d336663373061336437306133643730610a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d45584f0a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d336663373061336437306133643730610a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53373a44494d465241430a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d46584c0a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d336663373061336437306133643730610a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53383a44494d46584c4f4e0a76616c75653d7b54595045445f56414c55450a6b696e643d53343a424f4f4c0a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d4741500a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d336663373061336437306133643730610a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53393a44494d4a4f47414e470a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d336663373061336437306133643730610a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53373a44494d4a5553540a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53393a44494d4c4452424c4b0a76616c75653d7b54595045445f56414c55450a6b696e643d53343a4e414d450a76616c75653d53303a0a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53373a44494d4c4641430a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d336663373061336437306133643730610a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d4c494d0a76616c75653d7b54595045445f56414c55450a6b696e643d53343a424f4f4c0a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53383a44494d4c544558310a76616c75653d7b54595045445f56414c55450a6b696e643d53343a4e414d450a76616c75653d53303a0a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53383a44494d4c544558320a76616c75653d7b54595045445f56414c55450a6b696e643d53343a4e414d450a76616c75653d53303a0a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53383a44494d4c545950450a76616c75653d7b54595045445f56414c55450a6b696e643d53343a4e414d450a76616c75653d53303a0a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53383a44494d4c554e49540a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d4c57440a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d4c57450a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d4d5a460a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d336663373061336437306133643730610a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d4d5a530a76616c75653d7b54595045445f56414c55450a6b696e643d53363a535452494e470a76616c75653d53303a0a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53373a44494d504f53540a76616c75653d7b54595045445f56414c55450a6b696e643d53363a535452494e470a76616c75653d53303a0a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d524e440a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d336663373061336437306133643730610a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d5341480a76616c75653d7b54595045445f56414c55450a6b696e643d53343a424f4f4c0a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53383a44494d5343414c450a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d336663373061336437306133643730610a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d5344310a76616c75653d7b54595045445f56414c55450a6b696e643d53343a424f4f4c0a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d5344320a76616c75653d7b54595045445f56414c55450a6b696e643d53343a424f4f4c0a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d5345310a76616c75653d7b54595045445f56414c55450a6b696e643d53343a424f4f4c0a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d5345320a76616c75653d7b54595045445f56414c55450a6b696e643d53343a424f4f4c0a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53373a44494d534f58440a76616c75653d7b54595045445f56414c55450a6b696e643d53343a424f4f4c0a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d5441440a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53373a44494d544445430a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53373a44494d544641430a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d336663373061336437306133643730610a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53383a44494d5446494c4c0a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d5331313a44494d5446494c4c434c520a76616c75653d7b54595045445f56414c55450a6b696e643d53353a434f4c4f520a76616c75653d7b434f4c4f520a636f6c6f72426f6f6b4e616d653d7e0a636f6c6f72496e6465783d300a636f6c6f724d6574686f643d53373a4279426c6f636b0a636f6c6f724e616d653d7e0a636f6c6f725267623d7e0a7d0a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d5449480a76616c75653d7b54595045445f56414c55450a6b696e643d53343a424f4f4c0a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d5449580a76616c75653d7b54595045445f56414c55450a6b696e643d53343a424f4f4c0a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53353a44494d544d0a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d336663373061336437306133643730610a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53383a44494d544d4f56450a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53373a44494d544f464c0a76616c75653d7b54595045445f56414c55450a6b696e643d53343a424f4f4c0a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d544f480a76616c75653d7b54595045445f56414c55450a6b696e643d53343a424f4f4c0a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d544f4c0a76616c75653d7b54595045445f56414c55450a6b696e643d53343a424f4f4c0a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53373a44494d544f4c4a0a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53353a44494d54500a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d336663373061336437306133643730610a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d54535a0a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d336663373061336437306133643730610a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d5456500a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d336663373061336437306133643730610a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53383a44494d54585354590a76616c75653d7b54595045445f56414c55450a6b696e643d53343a4e414d450a76616c75653d53303a0a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d5458540a76616c75653d7b54595045445f56414c55450a6b696e643d53363a444f55424c450a76616c75653d336663373061336437306133643730610a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d5331353a44494d545854444952454354494f4e0a76616c75653d7b54595045445f56414c55450a6b696e643d53343a424f4f4c0a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53373a44494d545a494e0a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d5550540a76616c75653d7b54595045445f56414c55450a6b696e643d53343a424f4f4c0a76616c75653d300a7d0a7d0a7b44494d5641525f56414c55450a6e616d653d53363a44494d5a494e0a76616c75653d7b54595045445f56414c55450a6b696e643d53333a494e540a76616c75653d300a7d0a7d0a5d0a6e616d653d53383a5374616e646172640a7461626c653d53383a44494d5354594c450a",
+   "streamDisplay": "FPSPEC-V1|EXACT|SYMBOL_RECORD_DIMSTYLE|dimvars=[78\\n{DIMVAR_VALUE\\nname=S7:DIMADEC\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMALT\\nvalue={TYPED_VALUE\\nkind=S4:BOOL\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S7:DIMALTD\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S7:DIMALTF\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=3fc70a3d70a3d70a\\n}\\n}\\n{DIMVAR_VALUE\\nname=S9:DIMALTMZF\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=3fc70a3d70a3d70a\\n}\\n}\\n{DIMVAR_VALUE\\nname=S9:DIMALTMZS\\nvalue={TYPED_VALUE\\nkind=S6:STRING\\nvalue=S0:\\n}\\n}\\n{DIMVAR_VALUE\\nname=S9:DIMALTRND\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=3fc70a3d70a3d70a\\n}\\n}\\n{DIMVAR_VALUE\\nname=S8:DIMALTTD\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S8:DIMALTTZ\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S7:DIMALTU\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S7:DIMALTZ\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S8:DIMAPOST\\nvalue={TYPED_VALUE\\nkind=S6:STRING\\nvalue=S0:\\n}\\n}\\n{DIMVAR_VALUE\\nname=S9:DIMARCSYM\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMASZ\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=3fc70a3d70a3d70a\\n}\\n}\\n{DIMVAR_VALUE\\nname=S8:DIMATFIT\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S8:DIMAUNIT\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S7:DIMAZIN\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMBLK\\nvalue={TYPED_VALUE\\nkind=S4:NAME\\nvalue=S0:\\n}\\n}\\n{DIMVAR_VALUE\\nname=S7:DIMBLK1\\nvalue={TYPED_VALUE\\nkind=S4:NAME\\nvalue=S0:\\n}\\n}\\n{DIMVAR_VALUE\\nname=S7:DIMBLK2\\nvalue={TYPED_VALUE\\nkind=S4:NAME\\nvalue=S0:\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMCEN\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=3fc70a3d70a3d70a\\n}\\n}\\n{DIMVAR_VALUE\\nname=S7:DIMCLRD\\nvalue={TYPED_VALUE\\nkind=S5:COLOR\\nvalue={COLOR\\ncolorBookName=~\\ncolorIndex=0\\ncolorMethod=S7:ByBlock\\ncolorName=~\\ncolorRgb=~\\n}\\n}\\n}\\n{DIMVAR_VALUE\\nname=S7:DIMCLRE\\nvalue={TYPED_VALUE\\nkind=S5:COLOR\\nvalue={COLOR\\ncolorBookName=~\\ncolorIndex=0\\ncolorMethod=S7:ByBlock\\ncolorName=~\\ncolorRgb=~\\n}\\n}\\n}\\n{DIMVAR_VALUE\\nname=S7:DIMCLRT\\nvalue={TYPED_VALUE\\nkind=S5:COLOR\\nvalue={COLOR\\ncolorBookName=~\\ncolorIndex=0\\ncolorMethod=S7:ByBlock\\ncolorName=~\\ncolorRgb=~\\n}\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMDEC\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMDLE\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=3fc70a3d70a3d70a\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMDLI\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=3fc70a3d70a3d70a\\n}\\n}\\n{DIMVAR_VALUE\\nname=S7:DIMDSEP\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMEXE\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=3fc70a3d70a3d70a\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMEXO\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=3fc70a3d70a3d70a\\n}\\n}\\n{DIMVAR_VALUE\\nname=S7:DIMFRAC\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMFXL\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=3fc70a3d70a3d70a\\n}\\n}\\n{DIMVAR_VALUE\\nname=S8:DIMFXLON\\nvalue={TYPED_VALUE\\nkind=S4:BOOL\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMGAP\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=3fc70a3d70a3d70a\\n}\\n}\\n{DIMVAR_VALUE\\nname=S9:DIMJOGANG\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=3fc70a3d70a3d70a\\n}\\n}\\n{DIMVAR_VALUE\\nname=S7:DIMJUST\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S9:DIMLDRBLK\\nvalue={TYPED_VALUE\\nkind=S4:NAME\\nvalue=S0:\\n}\\n}\\n{DIMVAR_VALUE\\nname=S7:DIMLFAC\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=3fc70a3d70a3d70a\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMLIM\\nvalue={TYPED_VALUE\\nkind=S4:BOOL\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S8:DIMLTEX1\\nvalue={TYPED_VALUE\\nkind=S4:NAME\\nvalue=S0:\\n}\\n}\\n{DIMVAR_VALUE\\nname=S8:DIMLTEX2\\nvalue={TYPED_VALUE\\nkind=S4:NAME\\nvalue=S0:\\n}\\n}\\n{DIMVAR_VALUE\\nname=S8:DIMLTYPE\\nvalue={TYPED_VALUE\\nkind=S4:NAME\\nvalue=S0:\\n}\\n}\\n{DIMVAR_VALUE\\nname=S8:DIMLUNIT\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMLWD\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMLWE\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMMZF\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=3fc70a3d70a3d70a\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMMZS\\nvalue={TYPED_VALUE\\nkind=S6:STRING\\nvalue=S0:\\n}\\n}\\n{DIMVAR_VALUE\\nname=S7:DIMPOST\\nvalue={TYPED_VALUE\\nkind=S6:STRING\\nvalue=S0:\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMRND\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=3fc70a3d70a3d70a\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMSAH\\nvalue={TYPED_VALUE\\nkind=S4:BOOL\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S8:DIMSCALE\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=3fc70a3d70a3d70a\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMSD1\\nvalue={TYPED_VALUE\\nkind=S4:BOOL\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMSD2\\nvalue={TYPED_VALUE\\nkind=S4:BOOL\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMSE1\\nvalue={TYPED_VALUE\\nkind=S4:BOOL\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMSE2\\nvalue={TYPED_VALUE\\nkind=S4:BOOL\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S7:DIMSOXD\\nvalue={TYPED_VALUE\\nkind=S4:BOOL\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMTAD\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S7:DIMTDEC\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S7:DIMTFAC\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=3fc70a3d70a3d70a\\n}\\n}\\n{DIMVAR_VALUE\\nname=S8:DIMTFILL\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S11:DIMTFILLCLR\\nvalue={TYPED_VALUE\\nkind=S5:COLOR\\nvalue={COLOR\\ncolorBookName=~\\ncolorIndex=0\\ncolorMethod=S7:ByBlock\\ncolorName=~\\ncolorRgb=~\\n}\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMTIH\\nvalue={TYPED_VALUE\\nkind=S4:BOOL\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMTIX\\nvalue={TYPED_VALUE\\nkind=S4:BOOL\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S5:DIMTM\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=3fc70a3d70a3d70a\\n}\\n}\\n{DIMVAR_VALUE\\nname=S8:DIMTMOVE\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S7:DIMTOFL\\nvalue={TYPED_VALUE\\nkind=S4:BOOL\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMTOH\\nvalue={TYPED_VALUE\\nkind=S4:BOOL\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMTOL\\nvalue={TYPED_VALUE\\nkind=S4:BOOL\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S7:DIMTOLJ\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S5:DIMTP\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=3fc70a3d70a3d70a\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMTSZ\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=3fc70a3d70a3d70a\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMTVP\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=3fc70a3d70a3d70a\\n}\\n}\\n{DIMVAR_VALUE\\nname=S8:DIMTXSTY\\nvalue={TYPED_VALUE\\nkind=S4:NAME\\nvalue=S0:\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMTXT\\nvalue={TYPED_VALUE\\nkind=S6:DOUBLE\\nvalue=3fc70a3d70a3d70a\\n}\\n}\\n{DIMVAR_VALUE\\nname=S15:DIMTXTDIRECTION\\nvalue={TYPED_VALUE\\nkind=S4:BOOL\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S7:DIMTZIN\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMUPT\\nvalue={TYPED_VALUE\\nkind=S4:BOOL\\nvalue=0\\n}\\n}\\n{DIMVAR_VALUE\\nname=S6:DIMZIN\\nvalue={TYPED_VALUE\\nkind=S3:INT\\nvalue=0\\n}\\n}\\n]\\nname=S8:Standard\\ntable=S8:DIMSTYLE\\n",
+   "sha256": "1423f9ee723868053442d1c0defd694cbabbfbfb9789ccb3e0161c7bddf4b848"
+  },
+  {
+   "id": "EV-58",
+   "purpose": "SYMBOL_RECORD_APPID",
+   "recordType": "SYMBOL_RECORD_APPID",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c53594d424f4c5f5245434f52445f41505049447c6e616d653d53343a414341440a7461626c653d53353a41505049440a",
+   "streamDisplay": "FPSPEC-V1|EXACT|SYMBOL_RECORD_APPID|name=S4:ACAD\\ntable=S5:APPID\\n",
+   "sha256": "cabe53b3432232e3fe0cf106002246d9c03602fe583e95b9cb401b7d39e3d1e2"
+  },
+  {
+   "id": "EV-59",
+   "purpose": "NOD_ENTRY, an XRECORD",
+   "recordType": "NOD_ENTRY",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c4e4f445f454e5452597c6368696c6472656e3d7e0a646174613d5b310a7b52420a636f64653d310a76616c75653d5331363a7b225661726961626c6573223a5b5d7d0a7d0a5d0a6f626a656374436c6173733d53373a585245434f52440a706174683d5331353a5241434b4341445f50524f4a4543540a",
+   "streamDisplay": "FPSPEC-V1|EXACT|NOD_ENTRY|children=~\\ndata=[1\\n{RB\\ncode=1\\nvalue=S16:{\"Variables\":[]}\\n}\\n]\\nobjectClass=S7:XRECORD\\npath=S15:RACKCAD_PROJECT\\n",
+   "sha256": "8c245e3263eb6231cde7faef67c3d131e85cba9e6c1d8cf2727bb9b1654f9710"
+  },
+  {
+   "id": "EV-60",
+   "purpose": "NOD_ENTRY, a DICTIONARY (children sorted)",
+   "recordType": "NOD_ENTRY",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c4e4f445f454e5452597c6368696c6472656e3d5b320a53313a410a53313a620a5d0a646174613d7e0a6f626a656374436c6173733d5331303a44494354494f4e4152590a706174683d5332353a5241434b4341445f435553544f4d5f50524f504552544945530a",
+   "streamDisplay": "FPSPEC-V1|EXACT|NOD_ENTRY|children=[2\\nS1:A\\nS1:b\\n]\\ndata=~\\nobjectClass=S10:DICTIONARY\\npath=S25:RACKCAD_CUSTOM_PROPERTIES\\n",
+   "sha256": "4158db1b68e001e85d99f87f7e74be5f71abfbdd1fc97f9298c1372ac606fca6"
+  },
+  {
+   "id": "EV-61",
+   "purpose": "ENUMERATION, unordered names (sorted by the producer)",
+   "recordType": "ENUMERATION",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c454e554d45524154494f4e7c636f6e7461696e65723d5331373a424c4f434b5f5441424c455f4e414d45530a6974656d733d5b320a53393a504f5354455f3358330a5331333a53454c5f46524f4e54414c5f300a5d0a6f7264657265643d300a",
+   "streamDisplay": "FPSPEC-V1|EXACT|ENUMERATION|container=S17:BLOCK_TABLE_NAMES\\nitems=[2\\nS9:POSTE_3X3\\nS13:SEL_FRONTAL_0\\n]\\nordered=0\\n",
+   "sha256": "b7b139ab83366e3ce352d67ce8ffac53d62bc5e54123b09c63fe5fcf79826f59"
+  },
+  {
+   "id": "EV-62",
+   "purpose": "PRE_COMMAND_STATE_RECORD with a record-level ABSENT member",
+   "recordType": "PRE_COMMAND_STATE_RECORD",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c5052455f434f4d4d414e445f53544154455f5245434f52447c6b696e643d53393a73656c6563746976650a6d656d626572733d5b330a7b53544154455f4d454d4245520a63617465676f72793d53373a434c4f535552450a6469676573743d623331633335353030343931333636323266626363663031306435633930643531613938316466353761346361633438623237353736303664633637623966340a65787065637465644e616d653d53393a504f5354455f3358330a6d656d6265724b65793d5332333a434c4f535552457c424c4f434b7c504f5354455f3358330a7265636f72644b696e643d53353a424c4f434b0a73746174653d53373a50524553454e540a73746f7265644e616d653d53393a504f5354455f3358330a7d0a7b53544154455f4d454d4245520a63617465676f72793d53373a434c4f535552450a6469676573743d7e0a65787065637465644e616d653d5331393a5241434b4341445f414e4f544143494f4e45530a6d656d6265724b65793d5333333a434c4f535552457c4c415945527c5241434b4341445f414e4f544143494f4e45530a7265636f72644b696e643d53353a4c415945520a73746174653d53363a414253454e540a73746f7265644e616d653d7e0a7d0a7b53544154455f4d454d4245520a63617465676f72793d53383a524541445f5345540a6469676573743d623632356265383939343035333932623535353536626338626666343065373061343633313930666261663532653238343630646636346139316439363237610a65787065637465644e616d653d5331333a53454c5f46524f4e54414c5f300a6d656d6265724b65793d5332383a524541445f5345547c424c4f434b7c53454c5f46524f4e54414c5f300a7265636f72644b696e643d53353a424c4f434b0a73746174653d53373a50524553454e540a73746f7265644e616d653d5331333a53454c5f46524f4e54414c5f300a7d0a5d0a",
+   "streamDisplay": "FPSPEC-V1|EXACT|PRE_COMMAND_STATE_RECORD|kind=S9:selective\\nmembers=[3\\n{STATE_MEMBER\\ncategory=S7:CLOSURE\\ndigest=b31c3550049136622fbccf010d5c90d51a981df57a4cac48b2757606dc67b9f4\\nexpectedName=S9:POSTE_3X3\\nmemberKey=S23:CLOSURE|BLOCK|POSTE_3X3\\nrecordKind=S5:BLOCK\\nstate=S7:PRESENT\\nstoredName=S9:POSTE_3X3\\n}\\n{STATE_MEMBER\\ncategory=S7:CLOSURE\\ndigest=~\\nexpectedName=S19:RACKCAD_ANOTACIONES\\nmemberKey=S33:CLOSURE|LAYER|RACKCAD_ANOTACIONES\\nrecordKind=S5:LAYER\\nstate=S6:ABSENT\\nstoredName=~\\n}\\n{STATE_MEMBER\\ncategory=S8:READ_SET\\ndigest=b625be899405392b55556bc8bff40e70a463190fbaf52e28460df64a91d9627a\\nexpectedName=S13:SEL_FRONTAL_0\\nmemberKey=S28:READ_SET|BLOCK|SEL_FRONTAL_0\\nrecordKind=S5:BLOCK\\nstate=S7:PRESENT\\nstoredName=S13:SEL_FRONTAL_0\\n}\\n]\\n",
+   "sha256": "53e63bb0f53f8d7e22054811bc103b9e03814f617d9deabfe8076979b57856de"
+  },
+  {
+   "id": "EV-63",
+   "purpose": "PRE_COMMAND_STATE_RECORD with an UNKNOWN member: UNKNOWN",
+   "recordType": "PRE_COMMAND_STATE_RECORD",
+   "result": "UNKNOWN",
+   "reason": "a member of the PRE_COMMAND_STATE_RECORD is UNKNOWN: no partial digest (refusal O1, V2.1 6)"
+  },
+  {
+   "id": "EV-64",
+   "purpose": "PREPARE_RESIDUE_MANIFEST",
+   "recordType": "PREPARE_RESIDUE_MANIFEST",
+   "result": "DIGEST",
+   "streamHex": "4650535045432d56317c45584143547c505245504152455f524553494455455f4d414e49464553547c6164646974696f6e733d5b310a7b4d414e49464553545f4144444954494f4e0a6469676573743d383066393264663034316230656464623738643333633437316264346231666330613831356532656233306464653363306134633437383434393435383730660a6d656d6265724b65793d5333333a434c4f535552457c4c415945527c5241434b4341445f414e4f544143494f4e45530a7265636f72644b696e643d53353a4c415945520a73746f7265644e616d653d5331393a5241434b4341445f414e4f544143494f4e45530a7d0a5d0a636c6f6e696e674d6f64653d53363a49676e6f72650a696d706f727473436f6d706c657465643d310a726575736564426f756e643d5b310a7b4d414e49464553545f5245555345440a6d656d6265724b65793d5332333a434c4f535552457c424c4f434b7c504f5354455f3358330a707265436f6d6d616e644469676573743d623331633335353030343931333636323266626363663031306435633930643531613938316466353761346361633438623237353736303664633637623966340a7265636f72644b696e643d53353a424c4f434b0a73746f7265644e616d653d53393a504f5354455f3358330a7d0a5d0a",
+   "streamDisplay": "FPSPEC-V1|EXACT|PREPARE_RESIDUE_MANIFEST|additions=[1\\n{MANIFEST_ADDITION\\ndigest=80f92df041b0eddb78d33c471bd4b1fc0a815e2eb30dde3c0a4c47844945870f\\nmemberKey=S33:CLOSURE|LAYER|RACKCAD_ANOTACIONES\\nrecordKind=S5:LAYER\\nstoredName=S19:RACKCAD_ANOTACIONES\\n}\\n]\\ncloningMode=S6:Ignore\\nimportsCompleted=1\\nreusedBound=[1\\n{MANIFEST_REUSED\\nmemberKey=S23:CLOSURE|BLOCK|POSTE_3X3\\npreCommandDigest=b31c3550049136622fbccf010d5c90d51a981df57a4cac48b2757606dc67b9f4\\nrecordKind=S5:BLOCK\\nstoredName=S9:POSTE_3X3\\n}\\n]\\n",
+   "sha256": "2c30a265f0dfba0b5640f8bdb818f1bc158802de520f387b6163a657b886b548"
+  }
+ ],
+ "semanticPredicates": {
+  "ABS_DIFF_LE(TOL)": "|a - b| <= TOL, per scalar component, absolute (never relative); -0.0 equals +0.0; a non-finite value is UNKNOWN",
+  "ANGLE_DIFF_LE(TOL_ANGLE)": "d = |a - b| reduced modulo 2pi into [0, 2pi); EQUAL when min(d, 2pi - d) <= TOL_ANGLE",
+  "NORMAL_ANGLE_LE(TOL_NORMAL)": "both vectors normalized (a zero-length vector is UNKNOWN); EQUAL when the angle between them <= TOL_NORMAL",
+  "EXACT_STRING": "ordinal equality of the stored text",
+  "CANONICAL_JSON_EQUAL": "both sides parsed; objects compared as maps with ordinally sorted keys; arrays by position; strings exact; numbers by exact JSON number token; a member the reader does not expose is UNKNOWN_MEMBER_UNSUPPORTED",
+  "SCHEMA_VERSION_RECOGNIZED": "an unrecognized schema version makes the comparison UNKNOWN",
+  "TYPE_SUPPORTED": "a record type outside the specification makes the comparison UNKNOWN"
+ },
+ "semanticVectors": [
+  {
+   "id": "SV-01",
+   "recordType": "ENVELOPE",
+   "field": "ExtensionData",
+   "form": "typed (parsed JSON)",
+   "expected": "{\"Id\":\"g-1\",\"ExtensionData\":{\"futureKey\":1}}",
+   "persisted": "{\"ExtensionData\":{\"futureKey\":1},\"Id\":\"g-1\"}",
+   "predicate": "CANONICAL_JSON_EQUAL",
+   "result": "EQUAL",
+   "rule": "object keys compared after ordinal sorting; the extension member present and equal"
+  },
+  {
+   "id": "SV-02",
+   "recordType": "ENVELOPE",
+   "field": "ExtensionData",
+   "form": "typed (parsed JSON)",
+   "expected": "{\"Id\":\"g-1\",\"ExtensionData\":{\"futureKey\":1}}",
+   "persisted": "{\"Id\":\"g-1\"}",
+   "predicate": "CANONICAL_JSON_EQUAL",
+   "result": "DIFFERENT",
+   "rule": "a writer that DROPS an unknown member does not pass (O4 through S-2/S-3)"
+  },
+  {
+   "id": "SV-03",
+   "recordType": "ENVELOPE",
+   "field": "ExtensionData",
+   "form": "typed (parsed JSON)",
+   "expected": "{\"Id\":\"g-1\",\"ExtensionData\":{\"futureKey\":1}}",
+   "persisted": "{\"Id\":\"g-1\",\"ExtensionData\":{\"futureKey\":2}}",
+   "predicate": "CANONICAL_JSON_EQUAL",
+   "result": "DIFFERENT",
+   "rule": "a writer that ALTERS an unknown member does not pass"
+  },
+  {
+   "id": "SV-04",
+   "recordType": "DESIGN",
+   "field": "a known sub-object whose type declares no ExtensionData",
+   "form": "typed (parsed JSON)",
+   "expected": "{\"SchemaVersion\":\"1.0\",\"Bays\":[{\"Levels\":2}]}",
+   "persisted": "{\"SchemaVersion\":\"1.0\",\"Bays\":[{\"Levels\":2,\"futureKey\":1}]}",
+   "predicate": "CANONICAL_JSON_EQUAL",
+   "result": "UNKNOWN_MEMBER_UNSUPPORTED",
+   "rule": "the unknown member sits in a sub-object with no ExtensionData (JsonExtensionData is not recursive, I-11): surfaced explicitly, gives UNKNOWN (O5 path)"
+  },
+  {
+   "id": "SV-05",
+   "recordType": "ENTITY_TEXT",
+   "field": "positionY",
+   "form": "typed (binary64)",
+   "expected": "0000000000000000",
+   "persisted": "8000000000000000",
+   "predicate": "ABS_DIFF_LE(TOL_LENGTH)",
+   "result": "EQUAL",
+   "rule": "signed zero is domain-equivalent; secondary finding BIT_LEVEL_DIFFERENCE_DOMAIN_EQUIVALENT; the exact digests differ (EV-01 / EV-02)"
+  },
+  {
+   "id": "SV-06",
+   "recordType": "ENTITY_LINE",
+   "field": "endX",
+   "form": "typed (binary64)",
+   "expected": "4024000000000000",
+   "persisted": "4024000000044b83",
+   "predicate": "ABS_DIFF_LE(TOL_LENGTH)",
+   "result": "EQUAL",
+   "rule": "|a - b| = 5e-10 <= TOL_LENGTH = 1e-9 in (per component, absolute)"
+  },
+  {
+   "id": "SV-07",
+   "recordType": "ENTITY_LINE",
+   "field": "endX",
+   "form": "typed (binary64)",
+   "expected": "4024000000000000",
+   "persisted": "4024000000112e0c",
+   "predicate": "ABS_DIFF_LE(TOL_LENGTH)",
+   "result": "DIFFERENT",
+   "rule": "|a - b| = 2e-9 > TOL_LENGTH"
+  },
+  {
+   "id": "SV-08",
+   "recordType": "ENVELOPE",
+   "field": "SchemaVersion",
+   "form": "typed (string)",
+   "expected": "1.0",
+   "persisted": "9.0",
+   "predicate": "SCHEMA_VERSION_RECOGNIZED",
+   "result": "UNKNOWN",
+   "rule": "an unrecognized schema version is UNKNOWN"
+  },
+  {
+   "id": "SV-09",
+   "recordType": "ENTITY_PROXY",
+   "field": "(record)",
+   "form": "typed",
+   "expected": "a record of a type outside the supported list",
+   "persisted": "same",
+   "predicate": "TYPE_SUPPORTED",
+   "result": "UNKNOWN",
+   "rule": "layer-2 consequence: the comparison is UNKNOWN (the O1 consequence for closure members belongs to section 2.5)"
+  },
+  {
+   "id": "SV-10",
+   "recordType": "ENTITY_INSERT",
+   "field": "rotation",
+   "form": "typed (binary64, radians)",
+   "expected": "0000000000000000",
+   "persisted": "401921fb543b9612",
+   "predicate": "ANGLE_DIFF_LE(TOL_ANGLE)",
+   "result": "EQUAL",
+   "rule": "d = |a - b| mod 2pi; min(d, 2pi - d) = 5e-10 <= TOL_ANGLE = 1e-9 rad"
+  },
+  {
+   "id": "SV-11",
+   "recordType": "ENTITY_INSERT",
+   "field": "normal",
+   "form": "typed (binary64 vector)",
+   "expected": [
+    "0000000000000000",
+    "0000000000000000",
+    "3ff0000000000000"
+   ],
+   "persisted": [
+    "3e212e0be826d695",
+    "0000000000000000",
+    "3ff0000000000000"
+   ],
+   "predicate": "NORMAL_ANGLE_LE(TOL_NORMAL)",
+   "result": "DIFFERENT",
+   "rule": "angle between the normalized vectors = atan(2e-9) > TOL_NORMAL = 1e-9 rad; a zero-length vector is UNKNOWN"
+  },
+  {
+   "id": "SV-12",
+   "recordType": "ENVELOPE",
+   "field": "ExtensionData.futureKey",
+   "form": "typed (JSON number token)",
+   "expected": "1",
+   "persisted": "1.0",
+   "predicate": "CANONICAL_JSON_EQUAL",
+   "result": "DIFFERENT",
+   "rule": "PA-8 \"exact numbers\": an unknown or extension number is compared by its exact JSON number token (1 and 1.0 differ); whitespace and key order are not significant"
+  },
+  {
+   "id": "SV-13",
+   "recordType": "ENTITY_TEXT",
+   "field": "textString",
+   "form": "typed (string)",
+   "expected": "Nivel 1",
+   "persisted": "NIVEL 1",
+   "predicate": "EXACT_STRING",
+   "result": "DIFFERENT",
+   "rule": "texts, names and enum values are compared exactly (stored case)"
+  }
+ ]
+}

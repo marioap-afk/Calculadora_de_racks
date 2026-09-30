@@ -1,0 +1,1060 @@
+{
+ "analysis": {
+  "facts": [
+   {
+    "id": "G-01",
+    "topic": "Global census scope",
+    "statement": "Across all of src at 3375aadb there are NO static events, NO [ThreadStatic], NO ThreadLocal/AsyncLocal, NO [ModuleInitializer], and NO static property with a setter (get/set or private set). The only static constructors in src are the three in RackCad.UI (UI-06..UI-08); Application, Plugin and Domain have none.",
+    "evidence": "git grep -nE \"static\\s+event|ThreadStatic|ModuleInitializer|AsyncLocal|ThreadLocal\" 3375aadb -- src returned no match; git grep for static props with 'set;' returned no match; git grep -nE \"^\\s*static\\s+[A-Z]\\w*\\s*\\(\\s*\\)\" 3375aadb -- src matched only src/RackCad.UI/Controls/StructuralSectionPicker.cs:39, src/RackCad.UI/Shell/RackBoundedEditorShell.cs:29, src/RackCad.UI/Shell/RackEditorVisualShell.cs:21",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-01",
+    "topic": "Part 1 / RackCad.UI / tier A",
+    "statement": "EditorDiscardPrompt.confirm (private static Func<string,Window,bool>, NOT readonly) — TIER A. Initialized to ShowMessageBox; rewritten at run time by Substitute (swap) and by the Restore scope's Dispose (restore previous). The only callers of Substitute are in tests/RackCad.UI.Tests (no caller in src), so in production it keeps its initializer value; a leaked (undisposed) Substitute scope would leave a replaced prompt process-wide.",
+    "evidence": "src/RackCad.UI/Shell/EditorClosePolicy.cs:51 (decl); :69-71 (write confirm = replacement; restore lambda confirm = previous); :54 (read); :88-93 (Restore.Dispose invokes the restore once); callers tests/RackCad.UI.Tests/EditorClosePolicyTests.cs:27,66,75; git grep of 'Substitute(' in src: no caller",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-02",
+    "topic": "Part 1 / RackCad.UI / tier A",
+    "statement": "SelectiveCabeceraHeightPrompt.confirmSevere (private static Func<string,Window,bool>, NOT readonly) — TIER A. Written at run time by Substitute and restored by the returned scope; Substitute is called only from tests/RackCad.UI.Tests.",
+    "evidence": "src/RackCad.UI/Systems/Selective/SelectiveCabeceraHeightPrompt.cs:21 (decl); :37 (write); :41 (restore write); :25 (read); callers tests/RackCad.UI.Tests/SelectiveCustomizeTargetsTests.cs:100,138,173",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-03",
+    "topic": "Part 1 / RackCad.UI / tier A",
+    "statement": "SelectiveCabeceraHeightPrompt.showInformative (private static Action<string,Window>, NOT readonly) — TIER A. Written by Substitute and restored by the scope; test-only callers. Note: Restore.Dispose is not idempotent here (each Dispose re-runs undo), unlike EditorDiscardPrompt's Restore.",
+    "evidence": "src/RackCad.UI/Systems/Selective/SelectiveCabeceraHeightPrompt.cs:22 (decl); :38 (write); :42 (restore write); :28 (read); :60-67 (Restore.Dispose => undo(), no guard)",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-04",
+    "topic": "Part 1 / RackCad.UI / tier A",
+    "statement": "ShellResources.dictionary (private static ResourceDictionary, NOT readonly) — TIER A, write-once lazy: null at type init, assigned on first access of the Dictionary property under a lock (double-checked). The resulting single ResourceDictionary instance (loaded from /RackCad.UI;component/Themes/AppStyles.xaml) is then shared process-wide and merged into several owners' MergedDictionaries; it is never replaced afterwards.",
+    "evidence": "src/RackCad.UI/Shell/ShellResources.cs:16 (decl); :22-38 (lazy getter, write at :31-34 inside lock(Gate) :27); :54 (Shared exposes it); merged at src/RackCad.UI/Controls/DialogWindowChrome.cs:42, src/RackCad.UI/Shell/RackBoundedEditorShell.cs:58, src/RackCad.UI/Shell/RackEditorVisualShell.cs:49",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-05",
+    "topic": "Part 1 / RackCad.UI / tier B (lock/sentinel)",
+    "statement": "ShellResources.Gate (static readonly object) — TIER B, used only as the lock for UI-04; holds no state. Likewise StructuralSectionPicker.AllFamilies (static readonly object) is a stateless sentinel for the 'Todas' family row — TIER B.",
+    "evidence": "src/RackCad.UI/Shell/ShellResources.cs:15, :27; src/RackCad.UI/Controls/StructuralSectionPicker.cs:28-29",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-06",
+    "topic": "Part 1 / RackCad.UI / static constructor",
+    "statement": "static StructuralSectionPicker() — runs once at type init and calls DefaultStyleKeyProperty.OverrideMetadata(typeof(StructuralSectionPicker), ...): it writes WPF per-type property metadata (framework-global), writes no repository static field. Initialization-only (tier B nature).",
+    "evidence": "src/RackCad.UI/Controls/StructuralSectionPicker.cs:39-43",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-07",
+    "topic": "Part 1 / RackCad.UI / static constructor",
+    "statement": "static RackBoundedEditorShell() — runs once at type init; OverrideMetadata of DefaultStyleKeyProperty for the type; no repository static field written.",
+    "evidence": "src/RackCad.UI/Shell/RackBoundedEditorShell.cs:29-34",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-08",
+    "topic": "Part 1 / RackCad.UI / static constructor",
+    "statement": "static RackEditorVisualShell() — runs once at type init; OverrideMetadata of DefaultStyleKeyProperty for the type; no repository static field written.",
+    "evidence": "src/RackCad.UI/Shell/RackEditorVisualShell.cs:21-25",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-09",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "EnumDisplayConverter.Labels (private static readonly Dictionary<object,string>, a mutable Dictionary type) — TIER B: filled by its collection initializer, only read afterwards (TryGetValue).",
+    "evidence": "src/RackCad.UI/EnumDisplayConverter.cs:16-42 (decl+initializer); :45 (only use, read); no other reference in the file",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-10",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "PreviewPalette.ByName (private static readonly ReadOnlyDictionary<string,Brush>) — TIER B: wraps an inner Dictionary created inline and referenced nowhere else; values are frozen brushes; exposed read-only via Named.",
+    "evidence": "src/RackCad.UI/Controls/PreviewPalette.cs:40-51 (decl), :54 (Named => ByName), :56 (Frozen -> UiSupport.FrozenBrush), src/RackCad.UI/UiSupport.cs:51-55 (Freeze)",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-11",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "EditorModuleRegistry.Default (public static get-only auto-property) — TIER B: one registry built at type init; its internal Dictionary byKind and ReadOnlyCollection are assigned only in the constructor; the seven module classes it holds declare no instance fields.",
+    "evidence": "src/RackCad.UI/Editor/EditorModuleRegistry.cs:111-120 (Default), :19-20 and :49-50 (fields set only in ctor); src/RackCad.UI/Editor/EditorModules.cs:22,60,101,139,178,210,246 (module classes, no field declarations found)",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-12",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "RackCommandReference.Commands (public static readonly IReadOnlyList<RackCommandInfo> backed by an array; RackCommandInfo is get-only) — TIER B: only read (GroupBy) by the help window.",
+    "evidence": "src/RackCad.UI/RackCommandReference.cs:28 (decl); src/RackCad.UI/RackCommandHelpWindow.cs:61 (only src use, read)",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-13",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "SelectionMatrixBulkEditor.AllScopes (public static readonly IReadOnlyList<SelectionMatrixScope> backed by an array) — TIER B: no indexer/mutator write found.",
+    "evidence": "src/RackCad.UI/Controls/SelectionMatrixBulkEditor.cs:71-77; write-pattern grep over src/RackCad.UI: no hit",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-14",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "AciPalette.Colors (private static readonly IReadOnlyDictionary<short,Color> backed by a Dictionary) — TIER B: only ContainsKey/TryGetValue reads.",
+    "evidence": "src/RackCad.UI/Systems/Cantilever/AciPalette.cs:20-37 (decl); :40, :49 (reads)",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-15",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "CantileverPreviewRenderer.RoleBrushes (private static readonly IReadOnlyDictionary<CantileverVisualRole,Brush> built by ToDictionary, values frozen) — TIER B: only indexer reads.",
+    "evidence": "src/RackCad.UI/Systems/Cantilever/CantileverPreviewRenderer.cs:41-46 (decl); :56, :59 (reads)",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-16",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "PushBackBootSection.ModeLabels (public static readonly IReadOnlyList<string> backed by string[]) — TIER B: no write found.",
+    "evidence": "src/RackCad.UI/Systems/PushBack/PushBackBootSection.cs:33-34; write-pattern grep: no hit",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-17",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "RackPushBackSystemWindow.TopologyOptions (private static readonly PushBackCellTopology[]) — TIER B (mutable array type, never written after init).",
+    "evidence": "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs:28-34; write-pattern grep: no hit",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-18",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "RackPushBackSystemWindow.DirectionOptions (private static readonly PushBackRunDirection[]) — TIER B. (The hits for 'DirectionOptions =' in RackFrameConfiguratorViewModel are a different, instance property.)",
+    "evidence": "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs:36-40; unrelated instance property src/RackCad.UI/RackFrames/RackFrameConfiguratorViewModel.cs:93,161",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-19",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "RackPushBackSystemWindow.RearPeraltes (private static readonly double[]) — TIER B.",
+    "evidence": "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs:44; write-pattern grep: no hit",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-20",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "RackPushBackSystemWindow.ViewOptions (private static readonly string[]) — TIER B.",
+    "evidence": "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs:45; write-pattern grep: no hit",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-21",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "SafetyTopeGridWindow.SideLabels (private static readonly string[]) — TIER B.",
+    "evidence": "src/RackCad.UI/SafetyTopeGridWindow.cs:29; write-pattern grep: no hit",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-22",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "SelectiveSafetyWindow.SideLabels (private static readonly string[]) — TIER B.",
+    "evidence": "src/RackCad.UI/SelectiveSafetyWindow.cs:23; write-pattern grep: no hit",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-23",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "SelectiveSafetyWindow.BootLabels (private static readonly string[]) — TIER B.",
+    "evidence": "src/RackCad.UI/SelectiveSafetyWindow.cs:31; write-pattern grep: no hit",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-24",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "SelectiveSafetyWindow.SideOptions (private static readonly string[], second declaration in the file, nested type) — TIER B. (The 'SideOptions =' hit in RackFrameConfiguratorViewModel is an unrelated instance property.)",
+    "evidence": "src/RackCad.UI/SelectiveSafetyWindow.cs:1031; unrelated src/RackCad.UI/RackFrames/RackFrameConfiguratorViewModel.cs:92,160",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-25",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "CantileverArmWindow.Arrangements (private static readonly string[]) — TIER B.",
+    "evidence": "src/RackCad.UI/Systems/Cantilever/Components/CantileverArmWindow.xaml.cs:29",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-26",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "CantileverArmWindow.EndPlateModes (private static readonly string[]) — TIER B.",
+    "evidence": "src/RackCad.UI/Systems/Cantilever/Components/CantileverArmWindow.xaml.cs:30",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-27",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "CantileverBraceWindow.Kinds (private static readonly string[]) — TIER B.",
+    "evidence": "src/RackCad.UI/Systems/Cantilever/Components/CantileverBraceWindow.xaml.cs:26",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-28",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "RackCantileverWindow.FaceModes (private static readonly string[]) — TIER B.",
+    "evidence": "src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs:37",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-29",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "RackCantileverWindow.Sides (private static readonly string[]) — TIER B.",
+    "evidence": "src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs:38",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-30",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "RackCantileverWindow.HeightModes (private static readonly string[]) — TIER B.",
+    "evidence": "src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs:39",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-31",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "RackCantileverWindow.PanelModes (private static readonly string[]) — TIER B.",
+    "evidence": "src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs:40",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-32",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "RackCantileverWindow.PanelLayoutModes (private static readonly string[]) — TIER B.",
+    "evidence": "src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs:41",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-33",
+    "topic": "Part 1 / RackCad.UI / tier B",
+    "statement": "RackCantileverWindow.Scopes (private static readonly string[]) — TIER B.",
+    "evidence": "src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs:42-43",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-34",
+    "topic": "Part 1 / RackCad.UI / tier B (unfrozen brush)",
+    "statement": "RackFrameConfiguratorWindow.StandardStroke (private static readonly Brush = new SolidColorBrush(...), NOT frozen, so a mutable Freezable) — TIER B: its only assignment is the initializer.",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:20; Freeze() in src/RackCad.UI occurs only at src/RackCad.UI/UiSupport.cs:54 and src/RackCad.UI/Systems/Cantilever/CantileverPreviewRenderer.cs:197",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-35",
+    "topic": "Part 1 / RackCad.UI / tier B (unfrozen brush)",
+    "statement": "RackFrameConfiguratorWindow.ModifiedStroke (static readonly, unfrozen SolidColorBrush) — TIER B.",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:21",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-36",
+    "topic": "Part 1 / RackCad.UI / tier B (unfrozen brush)",
+    "statement": "RackFrameConfiguratorWindow.HorizontalStroke (static readonly, unfrozen SolidColorBrush) — TIER B.",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:22",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-37",
+    "topic": "Part 1 / RackCad.UI / tier B (unfrozen brush)",
+    "statement": "RackFrameConfiguratorWindow.PostStroke (static readonly, unfrozen SolidColorBrush) — TIER B.",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:23",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-38",
+    "topic": "Part 1 / RackCad.UI / tier B (unfrozen brush)",
+    "statement": "RackFrameConfiguratorWindow.PostFill (static readonly, unfrozen SolidColorBrush) — TIER B.",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:24",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-39",
+    "topic": "Part 1 / RackCad.UI / tier B (unfrozen brush)",
+    "statement": "RackFrameConfiguratorWindow.SegmentBoundaryStroke (static readonly, unfrozen SolidColorBrush) — TIER B.",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:25",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-40",
+    "topic": "Part 1 / RackCad.UI / tier B (unfrozen brush)",
+    "statement": "RackFrameConfiguratorWindow.ModifiedFill (static readonly, unfrozen SolidColorBrush) — TIER B.",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:26",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-41",
+    "topic": "Part 1 / RackCad.UI / tier B (unfrozen brush)",
+    "statement": "RackFrameConfiguratorWindow.SelectedFill (static readonly, unfrozen SolidColorBrush) — TIER B.",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:27",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-42",
+    "topic": "Part 1 / RackCad.UI / tier B (unfrozen brush)",
+    "statement": "RackFrameConfiguratorWindow.FrontSideStroke (static readonly, unfrozen SolidColorBrush) — TIER B.",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:28",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-43",
+    "topic": "Part 1 / RackCad.UI / tier B (unfrozen brush)",
+    "statement": "RackFrameConfiguratorWindow.RearSideStroke (static readonly, unfrozen SolidColorBrush) — TIER B.",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:29",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-44",
+    "topic": "Part 1 / RackCad.UI / tier B (unfrozen brush)",
+    "statement": "RackFrameConfiguratorWindow.BothSideStroke (static readonly, unfrozen SolidColorBrush) — TIER B.",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:30",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-45",
+    "topic": "Part 1 / RackCad.UI / tier B (unfrozen brush)",
+    "statement": "RackFrameConfiguratorWindow.ActiveElementStroke (static readonly, unfrozen SolidColorBrush) — TIER B (only assignment is the initializer; 21 read references in the file).",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:31",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-46",
+    "topic": "Part 1 / RackCad.UI / tier B (unfrozen brush)",
+    "statement": "RackFlowBedWindow.RollerStroke (static readonly, unfrozen SolidColorBrush) — TIER B.",
+    "evidence": "src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs:24",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-47",
+    "topic": "Part 1 / RackCad.UI / tier B (unfrozen brush)",
+    "statement": "RackFlowBedWindow.BrakeStroke (static readonly, unfrozen SolidColorBrush) — TIER B.",
+    "evidence": "src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs:25",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-48",
+    "topic": "Part 1 / RackCad.UI / tier B (unfrozen brush)",
+    "statement": "RackFlowBedWindow.StopStroke (static readonly, unfrozen SolidColorBrush) — TIER B.",
+    "evidence": "src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs:26",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-49",
+    "topic": "Part 1 / RackCad.UI / tier B (unfrozen brush)",
+    "statement": "RackFlowBedWindow.StopFill (static readonly, unfrozen SolidColorBrush) — TIER B.",
+    "evidence": "src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs:27",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-50",
+    "topic": "Part 1 / RackCad.UI / tier B (unfrozen brush)",
+    "statement": "RackFlowBedWindow.RailStroke (static readonly, unfrozen SolidColorBrush) — TIER B.",
+    "evidence": "src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs:28",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-51",
+    "topic": "Part 1 / RackCad.UI / tier B (unfrozen brush)",
+    "statement": "RackFlowBedWindow.TroquelStroke (static readonly, unfrozen SolidColorBrush) — TIER B.",
+    "evidence": "src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs:29",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-52",
+    "topic": "Part 1 / RackCad.UI / tier B (unfrozen brush)",
+    "statement": "RackFlowBedWindow.FloorStroke (static readonly, unfrozen SolidColorBrush) — TIER B.",
+    "evidence": "src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs:30",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-53",
+    "topic": "Part 1 / RackCad.UI / tier B (unfrozen brush)",
+    "statement": "RackFlowBedWindow.LabelStroke (static readonly, unfrozen SolidColorBrush) — TIER B.",
+    "evidence": "src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs:31",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-54",
+    "topic": "Part 1 / RackCad.UI / tier B (unfrozen brush)",
+    "statement": "RackFlowBedWindow.LabelDefault (static readonly, unfrozen SolidColorBrush) — TIER B.",
+    "evidence": "src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs:534",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-55",
+    "topic": "Part 1 / RackCad.UI / tier B (unfrozen brush)",
+    "statement": "RackFlowBedWindow.LabelMuted (static readonly, unfrozen SolidColorBrush) — TIER B.",
+    "evidence": "src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs:535",
+    "status": "FACT"
+   },
+   {
+    "id": "UI-56",
+    "topic": "Part 1 / RackCad.UI / summary",
+    "statement": "RackCad.UI tier-A set is exactly four members: EditorDiscardPrompt.confirm, SelectiveCabeceraHeightPrompt.confirmSevere, SelectiveCabeceraHeightPrompt.showInformative (all written only through test seams with no src caller) and ShellResources.dictionary (write-once lazy). All other mutable-typed statics are tier B.",
+    "evidence": "src/RackCad.UI/Shell/EditorClosePolicy.cs:51,70; src/RackCad.UI/Systems/Selective/SelectiveCabeceraHeightPrompt.cs:21-22,37-42; src/RackCad.UI/Shell/ShellResources.cs:16,31; the only non-readonly static fields found by the scanner in src/RackCad.UI are these four",
+    "status": "FACT"
+   },
+   {
+    "id": "CORE-01",
+    "topic": "Part 2 / tier-A inventory Application+Plugin+Domain",
+    "statement": "In src/RackCad.Application, src/RackCad.Plugin and src/RackCad.Domain the only tier-A static members are: RackLog.sink; JsonRackCatalogProvider.Cache; CsvStructuralSectionCatalogProvider.Cache; BlockLibraryDatabaseCache.cachedPath/cachedWriteUtc/cachedLength/cachedLibrary. Domain has none (its only static properties are get-only/expression-bodied).",
+    "evidence": "non-readonly statics: src/RackCad.Application/Diagnostics/RackLog.cs:18, src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:12-15; static readonly collections with run-time writes: src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs:75, src/RackCad.Application/StructuralSections/CsvStructuralSectionCatalogProvider.cs:64; Domain: src/RackCad.Domain/Systems/Selective/SafetyFacePiece.cs:35, src/RackCad.Domain/Systems/Cantilever/CantileverLineDesign.cs:318",
+    "status": "FACT"
+   },
+   {
+    "id": "CORE-02",
+    "topic": "Part 2 / BlockLibraryDatabaseCache.cachedLibrary (tier A)",
+    "statement": "BlockLibraryDatabaseCache.cachedLibrary (private static Database) — TIER A, SINGLE SLOT. Acquire(path) returns the cached side Database only if path (OrdinalIgnoreCase), LastWriteTimeUtc and Length all match; otherwise it reads a fresh Database, DISPOSES the previously cached one and replaces it. Warm-up effect: a warm-up that acquires a private library copy (different path) EVICTS and disposes the governed library's cached Database and leaves the private copy's Database resident until the next Acquire with a different signature. So a different key does NOT leave the governed key untouched — it removes it (the next governed Acquire re-reads the governed DWG). Not a file-system-only effect: it holds a live in-memory AutoCAD Database.",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:15 (decl); :19 lock; :21-31 (hit test); :33-47 (fresh read, dispose on failure + RackLog); :49 (cachedLibrary?.Dispose()); :50 (write)",
+    "status": "FACT"
+   },
+   {
+    "id": "CORE-03",
+    "topic": "Part 2 / BlockLibraryDatabaseCache.cachedPath (tier A)",
+    "statement": "BlockLibraryDatabaseCache.cachedPath (private static string) — TIER A; part of the single-slot key. A warm-up with a private copy leaves cachedPath = private copy path.",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:12 (decl); :26 (compare); :51 (write)",
+    "status": "FACT"
+   },
+   {
+    "id": "CORE-04",
+    "topic": "Part 2 / BlockLibraryDatabaseCache.cachedWriteUtc (tier A)",
+    "statement": "BlockLibraryDatabaseCache.cachedWriteUtc (private static DateTime) — TIER A; part of the single-slot signature; left at the private copy's mtime after such a warm-up.",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:13 (decl); :22,:27 (compare); :52 (write)",
+    "status": "FACT"
+   },
+   {
+    "id": "CORE-05",
+    "topic": "Part 2 / BlockLibraryDatabaseCache.cachedLength (tier A)",
+    "statement": "BlockLibraryDatabaseCache.cachedLength (private static long) — TIER A; part of the single-slot signature; left at the private copy's length after such a warm-up.",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:14 (decl); :23,:28 (compare); :53 (write)",
+    "status": "FACT"
+   },
+   {
+    "id": "CORE-06",
+    "topic": "Part 2 / BlockLibraryDatabaseCache.CacheGate (tier B)",
+    "statement": "BlockLibraryDatabaseCache.CacheGate (static readonly object) — TIER B lock object; serializes Acquire.",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:11, :19",
+    "status": "FACT"
+   },
+   {
+    "id": "CORE-07",
+    "topic": "Part 2 / library path routing",
+    "statement": "The public import path cannot target a private library copy by itself: BlockLibraryImporter.EnsureBlocks (and EnsureForPlan/EnsureRequirements through it) always uses LibraryPath => BlockLibraryLocator.ResolvePath(), which is the UserSettings.BlockLibraryPath override or the default <catalogs>/blocks-library.dwg. The availability observer AutoCadExternalLibraryBlockQuery resolves the same path and shares the same single-slot cache. A warm-up using a private copy therefore needs either (a) to write the private path into the user settings file (persistent user-visible side effect, and it changes the governed path for everything that reads settings), or (b) Plugin-internal code calling BlockLibraryDatabaseCache.Acquire(privatePath) directly (the class is internal to RackCad.Plugin), which evicts the governed slot (CORE-02).",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:23, :87-96; src/RackCad.Application/Catalogs/BlockLibrary.cs:16, :19-23; src/RackCad.Plugin/Drawing/AutoCadExternalLibraryBlockQuery.cs:19, :27; src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:9 (internal static class)",
+    "status": "FACT"
+   },
+   {
+    "id": "CORE-08",
+    "topic": "Part 2 / library side database file handle",
+    "statement": "The cached library Database is opened with ReadDwgFile(path, FileOpenMode.OpenForReadAndAllShare, ...) and no src code calls CloseInput. Whether the private copy (or governed) DWG stays open/locked while cached is AutoCAD runtime behavior not established by the repository source.",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:36-40; git grep CloseInput 3375aadb -- src: no match",
+    "status": "UNCERTAIN"
+   },
+   {
+    "id": "CORE-09",
+    "topic": "Part 2 / JsonRackCatalogProvider.Cache (tier A)",
+    "statement": "JsonRackCatalogProvider.Cache (private static readonly ConcurrentDictionary<string,CacheEntry>, OrdinalIgnoreCase) — TIER A: Load() does GetOrAdd(_directory) and writes the entry's Signature and Catalog when the folder signature (name|size|mtime of every *.csv/*.json) changed. KEYED by the raw directory string passed to the constructor (no Path.GetFullPath normalization). Warm-up effect: a warm-up that constructs new JsonRackCatalogProvider(<warm-up-only dir>) adds a SEPARATE entry and leaves the governed key untouched; that entry (and its RackCatalog) stays for the process lifetime (no Remove/Clear anywhere in src). Caveat: because the key is the unnormalized string, a different string that denotes the same folder (e.g. trailing separator) is a different key over the same files. Not file-system-only: it retains an in-memory RackCatalog.",
+    "evidence": "src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs:48-49 (decl); :51-55 (CacheEntry fields); :59 (key = directory as given); :74-88 (GetOrAdd + writes :85-86); :220-246 (signature; exception path returns a new Guid so that load is never reused); write-pattern grep for Cache.Remove/TryRemove/Clear: no hit",
+    "status": "FACT"
+   },
+   {
+    "id": "CORE-10",
+    "topic": "Part 2 / RackCatalogLoader uses the governed key",
+    "statement": "RackCatalogLoader.Load (Plugin, no static fields of its own) always calls JsonRackCatalogProvider.FromBaseDirectory().Load(), i.e. the key CatalogDirectory.Resolve() (the 'catalogs' folder next to the RackCad.Application assembly, else AppContext.BaseDirectory). A warm-up that goes through RackCatalogLoader therefore CANNOT use a warm-up-only directory: it primes the governed entry (Signature+Catalog) that production reuses while the folder signature is unchanged. The same governed key is used by UiSupport and RackFrameConfigurationFactory. On failure/empty catalog it only writes RackLog (file side effect).",
+    "evidence": "src/RackCad.Plugin/RackCatalogLoader.cs:17-43 (:22 FromBaseDirectory; :28, :37-39 RackLog); src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs:67-70; src/RackCad.Application/Catalogs/CatalogDirectory.cs:19-38, :47-53; other governed-key users src/RackCad.UI/UiSupport.cs:88, src/RackCad.Application/RackFrames/RackFrameConfigurationFactory.cs:250",
+    "status": "FACT"
+   },
+   {
+    "id": "CORE-11",
+    "topic": "Part 2 / cached RackCatalog is shared and mutable by type",
+    "statement": "The cached RackCatalog is returned BY REFERENCE to every caller of the same key; RackCatalog exposes public setters for all lists and Defaults. No src code was found assigning those properties or calling list mutators on them after load, so a warm-up via the governed key leaves the same instance production will read, unmodified by repository code.",
+    "evidence": "src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs:79-81 (returns entry.Catalog); src/RackCad.Application/Catalogs/CatalogEntries.cs:266-294 (public setters); grep for '[cC]atalog.<List|Defaults> =' and '.Add/.Remove/.Clear/.Insert/.Sort' on those members in src: no hit (only unrelated src/RackCad.Application/Catalogs/Validation/CatalogBlockManifest.cs:113)",
+    "status": "FACT"
+   },
+   {
+    "id": "CORE-12",
+    "topic": "Part 2 / CsvStructuralSectionCatalogProvider.Cache (tier A)",
+    "statement": "CsvStructuralSectionCatalogProvider.Cache (private static readonly ConcurrentDictionary<string,CacheEntry>, OrdinalIgnoreCase) — TIER A, keyed by directory, separate from the legacy catalog cache; written on Load after strict validation. Warm-up effect: NOT touched by any of the listed exercises (LateralHeaderDrawer, placement, library import, embed/pallet JSON, JsonRackCatalogProvider/RackCatalogLoader, RackLog, settings); it is reached only through the structural-section/Cantilever paths.",
+    "evidence": "src/RackCad.Application/StructuralSections/CsvStructuralSectionCatalogProvider.cs:20-22 (separate cache), :26-27 (decl), :64 (GetOrAdd), :76-77 (writes); callers src/RackCad.Plugin/StructuralSectionCatalogAccess.cs:34 (used by src/RackCad.Plugin/KindHandlers/CantileverKindHandler.cs:60, src/RackCad.Plugin/RackCantileverCommands.cs:556, src/RackCad.Plugin/StructuralSectionCommandFlow.cs:51) and src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs:106",
+    "status": "FACT"
+   },
+   {
+    "id": "CORE-13",
+    "topic": "Part 2 / RackLog.sink (tier A only via test seam)",
+    "statement": "RackLog.sink (private static volatile RackDiagnosticsLog, NOT readonly) — TIER A in the code, but its only run-time writers are RedirectForTests and SinkScope.Dispose, which are internal, and RackCad.Application grants InternalsVisibleTo only to RackCad.Tests; so a Plugin/UI warm-up cannot change it and in production it keeps its type-init value (%AppData%\\RackCad\\logs). Warm-up effect is FILE-SYSTEM ONLY: each RackLog.Exception/Warning does Directory.CreateDirectory + File.AppendAllText into the shared daily file rackcad-yyyyMMdd.log; not keyed by anything a warm-up controls, so warm-up entries land in the same log production uses.",
+    "evidence": "src/RackCad.Application/Diagnostics/RackLog.cs:18 (decl+init), :24, :27 (reads), :36-41 (write), :61 (restore write), :65-69 (fixed directory); src/RackCad.Application/RackCad.Application.csproj:11; src/RackCad.Application/Diagnostics/RackDiagnosticsLog.cs:15-16 (instance-only fields), :44-48 (file writes); test caller tests/RackCad.Tests/RackLogTestSupport.cs:40",
+    "status": "FACT"
+   },
+   {
+    "id": "CORE-14",
+    "topic": "Part 2 / user settings (no tier-A static)",
+    "statement": "UserSettingsStore holds no tier-A static: Options (static readonly JsonSerializerOptions) is tier B and SettingsPath is computed per call. Every Load re-reads %AppData%\\RackCad\\settings.json (no cache), so a warm-up leaves no in-memory settings state. Warm-up effect is FILE-SYSTEM ONLY: Save does CreateDirectory + AtomicFile.WriteAllText; a corrupt file on Load is quarantined (moved to settings.json.bad) and logged. The path-taking overloads are internal (tests only), so a Plugin/UI warm-up can only touch the governed settings file; BlockLibraryLocator.ResolvePath reads it on every call.",
+    "evidence": "src/RackCad.Application/Settings/UserSettings.cs:55-59 (Options), :61-62 (SettingsPath), :77, :91-121 (Load, read at :95, quarantine at :111), :123, :130-147 (Save, :137, :140); src/RackCad.Application/Diagnostics/CorruptFile.cs:16, :25-31; src/RackCad.Application/Catalogs/BlockLibrary.cs:21",
+    "status": "FACT"
+   },
+   {
+    "id": "CORE-15",
+    "topic": "Part 2 / LateralHeaderDrawer.CreateSystemBlock",
+    "statement": "LateralHeaderDrawer declares no static fields (only static helper methods and consts). CreateSystemBlock writes only into the Database/Transaction it is given (block table records, nested header defs, BlockReferences, DBText/RotatedDimension, layers RACKCAD_ANOTACIONES/RACKCAD_COTAS via LayerHelper, which also has no static fields). Warm-up on a side Database touches NO repository static member; its effects stay in that side Database. It performs no library import and no RackLog call (RackLog appears only in PurgeUnreferenced).",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:22-81 (CreateSystemBlock), :240-247 (NewBlock), :252-321 (AppendInstance), :324-331 (layer consts/EnsureAnnotationLayer), :338-376 (AppendDimension), :236 (only RackLog use); src/RackCad.Plugin/LayerHelper.cs:13,16 (static class, only a static method)",
+    "status": "FACT"
+   },
+   {
+    "id": "CORE-16",
+    "topic": "Part 2 / block reference placement",
+    "statement": "BlockPlacement declares no static fields; PlaceAndReport/PlaceDefinition/AppendReference operate on a Document (document.Database, LockDocument, jig), not on a side Database. No repository static member is written; the only static-reaching side effect is RackLog (file) on the cleanup failure path.",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockPlacement.cs:23-95 (methods take Document; :81-93 AppendReference), :168 (RackLog.Exception)",
+    "status": "FACT"
+   },
+   {
+    "id": "CORE-17",
+    "topic": "Part 2 / RackEmbedDocument JSON",
+    "statement": "RackEmbedStore.Options (private static readonly JsonSerializerOptions) — TIER B for repository code: configured only in its initializer, then only passed to JsonSerializer.Serialize/Deserialize. Not keyed by path or name; a warm-up serialization leaves no repository-level static state.",
+    "evidence": "src/RackCad.Application/Persistence/RackEmbedDocument.cs:81-85 (decl), :94, :107 (only uses)",
+    "status": "FACT"
+   },
+   {
+    "id": "CORE-18",
+    "topic": "Part 2 / SelectivePalletDesignStore JSON",
+    "statement": "SelectivePalletDesignStore.SerializerOptions (private static readonly JsonSerializerOptions from CreateOptions, which adds JsonStringEnumConverter and the PersistedBoundExpressionJson converter) — TIER B for repository code: converters are added only inside CreateOptions at type init. Serialize writes document.SchemaVersion on the ARGUMENT (instance), not static state. Not keyed; warm-up leaves no repository-level static state.",
+    "evidence": "src/RackCad.Application/Persistence/SelectivePalletDesignStore.cs:15 (decl), :30-34 (instance write + serialize), :47, :115-129 (CreateOptions, :126-127 converter adds); src/RackCad.Application/Persistence/PersistedBoundExpressionJson.cs:14-16 (static class, AddConverter only)",
+    "status": "FACT"
+   },
+   {
+    "id": "CORE-19",
+    "topic": "Part 2 / framework-internal JSON state",
+    "statement": "Using a static JsonSerializerOptions for the first time is expected to make it read-only and populate System.Text.Json's per-type metadata cache (keyed by CLR type, not by path/name). A JSON warm-up would therefore leave these framework caches primed for RackEmbedDocument/SelectivePalletDesignDocument. This is .NET runtime behavior, not repository code, and is not verifiable from the source at 3375aadb.",
+    "evidence": "options instances: src/RackCad.Application/Persistence/RackEmbedDocument.cs:81; src/RackCad.Application/Persistence/SelectivePalletDesignStore.cs:15; no repository code calls MakeReadOnly or touches TypeInfoResolver for these (only src/RackCad.Application/Persistence/RackProjectStore.cs:420 sets a TypeInfoResolver, for a different store)",
+    "status": "UNCERTAIN"
+   },
+   {
+    "id": "CORE-20",
+    "topic": "Part 2 / AutoCAD process globals",
+    "statement": "No src code writes AutoCAD process-global state such as HostApplicationServices.WorkingDatabase or system variables (SetSystemVariable), so none of the listed warm-up paths swaps the working database through repository code.",
+    "evidence": "git grep -nE \"WorkingDatabase|SetSystemVariable|HostApplicationServices\" 3375aadb -- src: no match",
+    "status": "FACT"
+   },
+   {
+    "id": "CORE-21",
+    "topic": "Part 2 / other Plugin statics are tier B",
+    "statement": "The remaining Plugin statics a warm-up could read are tier B: KindHandlerRegistry.Default (get-only, built once, only a readonly _dispatch field), CustomPropertiesExecutor.IsKnownKind (readonly delegate), RackDefinitionCreationResult.NoMissing (readonly empty array) and BlockLibraryImporter.LibraryPath (computed per call).",
+    "evidence": "src/RackCad.Plugin/KindHandlers/KindHandlerRegistry.cs:28, :55; src/RackCad.Plugin/CustomPropertiesExecutor.cs:127; src/RackCad.Plugin/Systems/Shared/RackDefinitionCreationResult.cs:55; src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:23",
+    "status": "FACT"
+   }
+  ],
+  "limitations": [
+   "The census came from a heuristic scanner (comment-stripping plus regex over `git show 3375aadb:<file>` for every .cs file), not a C# compiler. It was cross-checked against a raw `git grep` of static declarations. For Application, Plugin and Domain the only lines the two disagreed on were operator overloads; for UI they disagreed only on the static constructors and the ShellResources.Dictionary property, which the scanner caught and the raw grep did not.",
+   "Tier B ('never written after initialization') rests on pattern searches over src: indexer assignment, Add/TryAdd/GetOrAdd/Remove/Clear/Insert/Sort/Reverse, Array.Sort/Reverse/Clear/Fill, and direct property assignment. Indirect mutation cannot be ruled out by grep: an array passed as IList to a method that writes it, a cast from IReadOnlyList back to an array, or reflection.",
+   "The Part 1 facts leave out members whose objects are immutable. These are: 38 DependencyProperty/DependencyPropertyKey registration fields (NumericField 14, RackEditorVisualShell 9, RackBoundedEditorShell 7, EditorActionBar 4, StructuralSectionPicker 2, SelectionMatrix 1, EditorStatusPresenter 1); every static readonly Brush built through UiSupport.FrozenBrush (UiSupport.cs:51-55) or aliasing a frozen brush; static readonly string/double scalars (including the RackFrameConfiguratorLayoutStore paths, RackFrameConfiguratorLayoutStore.cs:25-29, which have a file side effect but no mutable static); and get-only properties holding immutable objects (EditorClosePolicy.cs:16, EditorStatus.cs:36, SelectionMatrixBulkEditor.cs:17,20). Static expression-bodied properties with no backing state are also left out (EditorStatus.cs:56-59, RackSelectiveWindow.xaml.cs:2688,2691, PendingTextField.cs:179, PreviewPalette.cs:54).",
+   "For Application, Plugin and Domain the task asked only for tier-A members, so the many tier-B static readonly sentinels (empty arrays, `new List<T>()` exposed as IReadOnlyList, for example src/RackCad.Application/Systems/PushBack/PushBackBootPlan.cs:82) and singletons (SystemRegistry.Default at SystemRegistry.Default.cs:23, FunctionRegistry.Productive, LengthUnits.Authority) are not listed one per member. None showed a run-time write.",
+   "Framework behavior is not established from the repository source: System.Text.Json option locking and metadata caching, WPF thread affinity of the unfrozen static SolidColorBrush fields (UI-34..UI-55) and of the shared ResourceDictionary (UI-04), WPF metadata overrides, and AutoCAD Database file handles and locking. Where these matter they are marked UNCERTAIN or described as framework-level.",
+   "The tests directory was read only to find callers of the static test seams (Substitute, RedirectForTests). It is not part of the census.",
+   "Part 2 was traced by reading the named entry points (LateralHeaderDrawer.CreateSystemBlock, BlockPlacement, BlockLibraryImporter/BlockLibraryDatabaseCache/AutoCadExternalLibraryBlockQuery, RackEmbedStore, SelectivePalletDesignStore, JsonRackCatalogProvider/RackCatalogLoader/CatalogDirectory, RackLog/RackDiagnosticsLog, UserSettingsStore/CorruptFile). Transitive callees that declare no static fields (for example CsvCatalogReader, LayerHelper, BlockNaming) were checked only by the static-member scan, not read line by line.",
+   "The warm-up itself does not exist at 3375aadb. Its effects are inferred from the code paths a warm-up would have to call, and whether it would call BlockLibraryDatabaseCache.Acquire directly or go through the settings override is a design choice outside the repository."
+  ]
+ },
+ "adversarialVerification": {
+  "verdicts": [
+   {
+    "id": "G-01",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "git grep for static event/ThreadStatic/ModuleInitializer/AsyncLocal/ThreadLocal over 3375aadb -- src: no match. The static-ctor regex matches only src/RackCad.UI/Controls/StructuralSectionPicker.cs:39, src/RackCad.UI/Shell/RackBoundedEditorShell.cs:29 and src/RackCad.UI/Shell/RackEditorVisualShell.cs:21. No static property with set/private set/init was found; multi-line static properties are expression-bodied only (src/RackCad.Application/Systems/PushBack/PushBackBedSlope.cs:33-38, src/RackCad.UI/Shell/ShellResources.cs:18-40). src/RackCad.Plugin/PluginInitializer.cs:7-13 is empty, so there are no subscriptions to process events."
+   },
+   {
+    "id": "UI-01",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Shell/EditorClosePolicy.cs:51 declares the field. :54 reads it, :69-71 swaps it, :88-93 is the idempotent restore. Substitute is PUBLIC (:57, :65) but has no caller in src. Test callers include tests/RackCad.UI.Tests/EditorClosePolicyTests.cs:27,66,75. tests/RackCad.UI.Tests/StaTestRunner.cs:57 deliberately leaks one substitute (see missed)."
+   },
+   {
+    "id": "UI-02",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/Selective/SelectiveCabeceraHeightPrompt.cs:21 declares the field. :25 reads it, :37 writes it, :41 restores it. There is no src caller of Substitute. Test callers include tests/RackCad.UI.Tests/SelectiveCustomizeTargetsTests.cs:100,138,173, plus several other UI test files."
+   },
+   {
+    "id": "UI-03",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/Selective/SelectiveCabeceraHeightPrompt.cs:22 declares the field. :28 reads it, :38 writes it, :42 restores it. :60-67 is Restore, with `public void Dispose() => undo();` and no guard."
+   },
+   {
+    "id": "UI-04",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Shell/ShellResources.cs:16 declares the field (not volatile). :22-38 is the double-checked lazy load under lock(Gate) (:27), with the assignment at :31-34 and Source at :33. :54 returns the shared instance. It is merged into window resources unconditionally at src/RackCad.UI/Controls/DialogWindowChrome.cs:42. The shells merge it only when ShellZoneSpacing does not resolve: src/RackCad.UI/Shell/RackBoundedEditorShell.cs:56-58 and src/RackCad.UI/Shell/RackEditorVisualShell.cs:47-49."
+   },
+   {
+    "id": "UI-05",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Shell/ShellResources.cs:15 and :27. src/RackCad.UI/Controls/StructuralSectionPicker.cs:28-29 is `private static readonly object AllFamilies = new object();`."
+   },
+   {
+    "id": "UI-06",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Controls/StructuralSectionPicker.cs:39-43 contains only DefaultStyleKeyProperty.OverrideMetadata."
+   },
+   {
+    "id": "UI-07",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Shell/RackBoundedEditorShell.cs:29-34 contains only OverrideMetadata."
+   },
+   {
+    "id": "UI-08",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Shell/RackEditorVisualShell.cs:21-25 contains only OverrideMetadata."
+   },
+   {
+    "id": "UI-09",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/EnumDisplayConverter.cs:16-42 is the declaration and collection initializer. :45 (Labels.TryGetValue) is its only other use."
+   },
+   {
+    "id": "UI-10",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Controls/PreviewPalette.cs:40-51 wraps an inline Dictionary in a ReadOnlyDictionary. :54 exposes Named => ByName. :56 builds the values with Frozen -> UiSupport.FrozenBrush, and src/RackCad.UI/UiSupport.cs:51-55 freezes them."
+   },
+   {
+    "id": "UI-11",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Editor/EditorModuleRegistry.cs:19-20 declares readonly fields, assigned only in the ctor at :49-50. :111-120 is Default. src/RackCad.UI/Editor/EditorModules.cs:22,60,101,139,178,210,246 are the seven module classes, and a field-declaration grep of that file returns none."
+   },
+   {
+    "id": "UI-12",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/RackCommandReference.cs:28 is backed by `new[]`. RackCommandInfo properties are get-only at :16-19. src/RackCad.UI/RackCommandHelpWindow.cs:61 (GroupBy) is the only src use."
+   },
+   {
+    "id": "UI-13",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Controls/SelectionMatrixBulkEditor.cs:71-77 declares it. The only other use is the read at :96 (`scopes ?? AllScopes` in a foreach)."
+   },
+   {
+    "id": "UI-14",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/Cantilever/AciPalette.cs:20 declares it. :40 (ContainsKey) and :49 (TryGetValue) are the only uses."
+   },
+   {
+    "id": "UI-15",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/Cantilever/CantileverPreviewRenderer.cs:41-46 builds it with ToDictionary over UiSupport.FrozenBrush. :56 and :59 are indexer reads."
+   },
+   {
+    "id": "UI-16",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/PushBack/PushBackBootSection.cs:33-34 is `new[] {...}`. Reads are at :139, :309 and src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs:2692 (passed as IReadOnlyList)."
+   },
+   {
+    "id": "UI-17",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs:28-34. A grep for writes (Array.*, Sort, indexer assignment, Reverse, Fill, Clear) returns no hit."
+   },
+   {
+    "id": "UI-18",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs:36-40. The unrelated instance property is src/RackCad.UI/RackFrames/RackFrameConfiguratorViewModel.cs:93 (write) and :161 (`public Array DirectionOptions { get; private set; }`)."
+   },
+   {
+    "id": "UI-19",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs:44. No write found."
+   },
+   {
+    "id": "UI-20",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs:45. No write found."
+   },
+   {
+    "id": "UI-21",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/SafetyTopeGridWindow.cs:29, inside class SafetyTopeGridWindow (:25)."
+   },
+   {
+    "id": "UI-22",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/SelectiveSafetyWindow.cs:23. It is read at :43 and :587, where it is passed to a child window as IReadOnlyList."
+   },
+   {
+    "id": "UI-23",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/SelectiveSafetyWindow.cs:31, read at :43."
+   },
+   {
+    "id": "UI-24",
+    "verdict": "CORRECTED",
+    "correction": "The member is SafetyPerPostWindow.SideOptions (private static readonly string[]), TIER B. SafetyPerPostWindow is a second TOP-LEVEL class declared in SelectiveSafetyWindow.cs, not a nested type of SelectiveSafetyWindow. It is only read (:1064-1066).",
+    "evidence": "src/RackCad.UI/SelectiveSafetyWindow.cs:21 opens `public sealed class SelectiveSafetyWindow : Window`. The class closes with `    }` at namespace indentation just before :1028, which opens `public sealed class SafetyPerPostWindow : Window` at namespace level. :1031 is the declaration, :1064-1066 are the reads. The unrelated instance property is src/RackCad.UI/RackFrames/RackFrameConfiguratorViewModel.cs:92,160."
+   },
+   {
+    "id": "UI-25",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/Cantilever/Components/CantileverArmWindow.xaml.cs:29, class declared at :24."
+   },
+   {
+    "id": "UI-26",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/Cantilever/Components/CantileverArmWindow.xaml.cs:30."
+   },
+   {
+    "id": "UI-27",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/Cantilever/Components/CantileverBraceWindow.xaml.cs:26."
+   },
+   {
+    "id": "UI-28",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs:37."
+   },
+   {
+    "id": "UI-29",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs:38."
+   },
+   {
+    "id": "UI-30",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs:39."
+   },
+   {
+    "id": "UI-31",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs:40."
+   },
+   {
+    "id": "UI-32",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs:41."
+   },
+   {
+    "id": "UI-33",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs:42-43."
+   },
+   {
+    "id": "UI-34",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:20 is `new SolidColorBrush(...)` with no Freeze. `.Freeze()` in src/RackCad.UI occurs only at UiSupport.cs:54 and Systems/Cantilever/CantileverPreviewRenderer.cs:197. A grep for property writes, Freeze, SetValue or BeginAnimation on these brushes returns no hit."
+   },
+   {
+    "id": "UI-35",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:21."
+   },
+   {
+    "id": "UI-36",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:22."
+   },
+   {
+    "id": "UI-37",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:23."
+   },
+   {
+    "id": "UI-38",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:24."
+   },
+   {
+    "id": "UI-39",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:25."
+   },
+   {
+    "id": "UI-40",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:26."
+   },
+   {
+    "id": "UI-41",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:27."
+   },
+   {
+    "id": "UI-42",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:28."
+   },
+   {
+    "id": "UI-43",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:29."
+   },
+   {
+    "id": "UI-44",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:30."
+   },
+   {
+    "id": "UI-45",
+    "verdict": "CORRECTED",
+    "correction": "RackFrameConfiguratorWindow.ActiveElementStroke (static readonly, unfrozen SolidColorBrush) is TIER B, and its only assignment is the initializer. The file has 21 occurrences of the name: the declaration plus 20 read references, not 21 reads.",
+    "evidence": "src/RackCad.UI/RackFrames/RackFrameConfiguratorWindow.xaml.cs:31 is the declaration. `git show 3375aadb:<file> | grep -o ActiveElementStroke | wc -l` = 21, and grep -c = 21 lines, so there are 20 non-declaration uses."
+   },
+   {
+    "id": "UI-46",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs:24. Class RackFlowBedWindow spans :22 to :546."
+   },
+   {
+    "id": "UI-47",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs:25."
+   },
+   {
+    "id": "UI-48",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs:26."
+   },
+   {
+    "id": "UI-49",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs:27."
+   },
+   {
+    "id": "UI-50",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs:28."
+   },
+   {
+    "id": "UI-51",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs:29."
+   },
+   {
+    "id": "UI-52",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs:30."
+   },
+   {
+    "id": "UI-53",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs:31."
+   },
+   {
+    "id": "UI-54",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs:534, still inside RackFlowBedWindow (class closes at :546)."
+   },
+   {
+    "id": "UI-55",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.UI/Systems/FlowBed/RackFlowBedWindow.xaml.cs:535."
+   },
+   {
+    "id": "UI-56",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "A grep of src/RackCad.UI for static lines that are not readonly, const, class or method returns exactly these fields: src/RackCad.UI/Shell/EditorClosePolicy.cs:51, src/RackCad.UI/Shell/ShellResources.cs:16, src/RackCad.UI/Systems/Selective/SelectiveCabeceraHeightPrompt.cs:21-22. The remaining hits are expression-bodied or get-only immutable properties (EditorStatus.cs:36,56-59; PreviewPalette.cs:54; PendingTextField.cs:179; RackSelectiveWindow.xaml.cs:2688,2691; EditorModuleRegistry.cs:111). A cross-check of static readonly mutable types found no run-time write."
+   },
+   {
+    "id": "CORE-01",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "The only non-readonly static fields in Application, Plugin and Domain are src/RackCad.Application/Diagnostics/RackLog.cs:18 and src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:12-15. The only static readonly collections with run-time writes are src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs:48,75 and src/RackCad.Application/StructuralSections/CsvStructuralSectionCatalogProvider.cs:26,64. The other static readonly mutable-typed fields are empty arrays or lists, JsonSerializerOptions configured only in CreateOptions, or stateless resolvers. SelectiveEffectiveDesignResolver has no fields; KindDispatch.cs:23-25, SystemRegistry.cs:17-18 and KindHandlerRegistry.cs:28 hold readonly fields only. Domain has only SafetyFacePiece.cs:35 (get-only, immutable type with get-only props) and CantileverLineDesign.cs:318 (expression-bodied)."
+   },
+   {
+    "id": "CORE-02",
+    "verdict": "CORRECTED",
+    "correction": "BlockLibraryDatabaseCache.cachedLibrary (private static Database) is TIER A and a SINGLE SLOT. Acquire(path) returns the cached side Database only if path (OrdinalIgnoreCase on the raw string), LastWriteTimeUtc and Length all match. Otherwise it reads a fresh Database. ONLY IF that read succeeds does it dispose the previously cached Database and replace the slot. If ReadDwgFile throws, the fresh Database is disposed, RackLog.Exception is written (the message includes the path), null is returned, and the previous slot, which may be the governed library, stays intact. So a warm-up that successfully acquires a private copy at a different path evicts and disposes the governed cached Database, and the private copy stays resident until the next Acquire with a different signature. The next governed Acquire then re-reads the governed DWG. The cache is not file-system-only: it holds a live in-memory AutoCAD Database. FileInfo.Length is evaluated outside the try (:21-23), but both callers check File.Exists first.",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:15 declares the field. :19 takes the lock. :21-23 builds FileInfo and reads Length outside the try. :25-31 is the hit test. :33-47 reads, and the catch at :42-46 logs, disposes fresh and returns null without touching the slot. :49-53 does the dispose and replace, reached only after a successful read. Caller guards: src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:88 and src/RackCad.Plugin/Drawing/AutoCadExternalLibraryBlockQuery.cs:20."
+   },
+   {
+    "id": "CORE-03",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:12 is the declaration, :26 the compare, :51 the write (only after a successful read)."
+   },
+   {
+    "id": "CORE-04",
+    "verdict": "CONFIRMED",
+    "correction": "Evidence nit: :22 is the local read of FileInfo.LastWriteTimeUtc, not a compare of the static. The static is compared at :27 and written at :52.",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:13, :27, :52."
+   },
+   {
+    "id": "CORE-05",
+    "verdict": "CONFIRMED",
+    "correction": "Evidence nit: :23 is the local read of FileInfo.Length, not a compare of the static. The static is compared at :28 and written at :53.",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:14, :28, :53."
+   },
+   {
+    "id": "CORE-06",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:11 declares it, and it is used only at :19. It serializes Acquire only, not later use of the returned Database."
+   },
+   {
+    "id": "CORE-07",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:23 is LibraryPath => BlockLibraryLocator.ResolvePath(). :87-96 does path, File.Exists, then Acquire. EnsureForPlan reaches it through ImportAdapter.Ensure -> EnsureRequirements -> EnsureBlocks (:33-37, :140-141, :47). src/RackCad.Application/Catalogs/BlockLibrary.cs:16 is DefaultPath = CatalogDirectory.Resolve()/blocks-library.dwg, and :19-23 reads UserSettingsStore.Load() on every call. src/RackCad.Plugin/Drawing/AutoCadExternalLibraryBlockQuery.cs:19 and :27 follow the same route. BlockLibraryDatabaseCache is `internal static class` (:9). The only src writers of the override are src/RackCad.UI/RackMainMenuWindow.xaml.cs:119 and :127. ReadDwgFile occurs nowhere else in src."
+   },
+   {
+    "id": "CORE-08",
+    "verdict": "UNCERTAIN",
+    "correction": "The source facts hold: ReadDwgFile uses OpenForReadAndAllShare, and src never calls CloseInput. Whether the DWG stays open or locked while cached is AutoCAD runtime behavior that the source does not establish.",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:33-40. git grep of ReadDwgFile/CloseInput over src finds only :36 for ReadDwgFile and no CloseInput."
+   },
+   {
+    "id": "CORE-09",
+    "verdict": "CONFIRMED",
+    "correction": "Additional nuance: the entry is inserted by GetOrAdd (:75) BEFORE LoadUncached (:84), so a load that throws still leaves an empty entry (Catalog null) under that key permanently.",
+    "evidence": "src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs:48-49 declares the cache with OrdinalIgnoreCase. :51-55 is CacheEntry. :59 stores the raw directory. :74-88 computes the signature, then GetOrAdd, lock, and the writes at :85-86. :220-247 computes the signature from top-level *.csv/*.json name|length|mtime, and the catch at :242-246 returns Guid.NewGuid(). There is no Cache.Remove/TryRemove/Clear in src."
+   },
+   {
+    "id": "CORE-10",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.Plugin/RackCatalogLoader.cs:15-43: :22 is FromBaseDirectory().Load(), :28 is RackLog.Exception, :37-39 is RackLog.Warning, and there are no fields. src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs:67-70. src/RackCad.Application/Catalogs/CatalogDirectory.cs:19-38 and :40-58. Other users of the governed key: src/RackCad.UI/UiSupport.cs:88 and src/RackCad.Application/RackFrames/RackFrameConfigurationFactory.cs:250. Plugin users: LateralHeaderDrawService.cs:299, ProjectVariableMutationExecutor.cs:144 and ViewBlockDraw.cs:49,84,136."
+   },
+   {
+    "id": "CORE-11",
+    "verdict": "CONFIRMED",
+    "correction": "Limited by grep: the catalog ENTRY objects also expose setters. Indirect mutation of entries through a list element was not found, but grep cannot exclude it.",
+    "evidence": "src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs:79-81. src/RackCad.Application/Catalogs/CatalogEntries.cs:266-294 has public setters. A grep for assignment or Add/Remove/Clear/Insert/Sort on RackCatalog lists and Defaults finds only src/RackCad.Application/Catalogs/Validation/CatalogBlockManifest.cs:113, which is a different type. No cast-to-List of catalog lists was found."
+   },
+   {
+    "id": "CORE-12",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.Application/StructuralSections/CsvStructuralSectionCatalogProvider.cs:20-22 (comment), :26-27 (declaration), :64 (GetOrAdd), :76-77 (writes after Validate at :74). Callers: src/RackCad.Plugin/StructuralSectionCatalogAccess.cs:34, itself called only at src/RackCad.Plugin/KindHandlers/CantileverKindHandler.cs:60, src/RackCad.Plugin/RackCantileverCommands.cs:556 and src/RackCad.Plugin/StructuralSectionCommandFlow.cs:51. Also src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs:106. None of the listed warm-up entry points reaches these."
+   },
+   {
+    "id": "CORE-13",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.Application/Diagnostics/RackLog.cs:18 (volatile, initialized to ResolveDirectory()), :24 and :27 (reads), :36-41 (internal RedirectForTests write), :53-62 (private SinkScope restore, idempotent), :65-69 (%AppData%\\RackCad\\logs). src/RackCad.Application/RackCad.Application.csproj:11 is the only InternalsVisibleTo, and no other InternalsVisibleTo exists in src or Directory.Build.*. src/RackCad.Application/Diagnostics/RackDiagnosticsLog.cs:15-16 holds readonly fields; :44-48 does CreateDirectory and AppendAllText into rackcad-<UTC yyyyMMdd>.log. The only caller is tests/RackCad.Tests/RackLogTestSupport.cs:40."
+   },
+   {
+    "id": "CORE-14",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.Application/Settings/UserSettings.cs:55-59 (Options), :61-62 (SettingsPath computed), :77, :91-121 (no cache; read at :95; quarantine at :111; RackLog at :118), :123, :130-147 (CreateDirectory at :137, AtomicFile at :140). The internal path overloads are :91 and :130. src/RackCad.Application/Diagnostics/CorruptFile.cs:16 logs and :25-31 deletes any existing .bad, then moves. src/RackCad.Application/Catalogs/BlockLibrary.cs:21."
+   },
+   {
+    "id": "CORE-15",
+    "verdict": "CONFIRMED",
+    "correction": "Caveat: the repository-static part is exact. Whether AutoCAD calls made on the given Database fully stay inside a side Database is runtime behavior not established by source. The calls in question are DBText.AdjustAlignment(space.Database) at :280, RotatedDimension.RecomputeDimensionBlock(true) at :375, and dynamic-block property evaluation at :432-447.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:22 (sealed, non-static class), :28-81 (CreateSystemBlock), :240-247, :252-321, :324-331 (consts and EnsureAnnotationLayer), :338-376, :236 (the only RackLog, in PurgeUnreferenced). A grep finds no static fields. src/RackCad.Plugin/LayerHelper.cs:13-29 has a static method only."
+   },
+   {
+    "id": "CORE-16",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockPlacement.cs:23 (internal static class, no static fields; the nested HeaderInsertionJig has instance fields at :206-207). :26, :64 and :79 all take a Document. :81-93 is AppendReference into the document's model space. :168 is RackLog. LateralHeaderDrawer.PurgeUnreferenced, called at :162, may also RackLog (LateralHeaderDrawer.cs:236)."
+   },
+   {
+    "id": "CORE-17",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.Application/Persistence/RackEmbedDocument.cs:81-85 declares Options. :94 and :107 are its only uses."
+   },
+   {
+    "id": "CORE-18",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.Application/Persistence/SelectivePalletDesignStore.cs:15 declares the options. :30-34 writes the ARGUMENT's SchemaVersion, then serializes. :47 deserializes. :115-129 is CreateOptions, with Converters.Add at :126-127. src/RackCad.Application/Persistence/PersistedBoundExpressionJson.cs:14-24 has AddConverter only and no static fields. All Converters.Add in src occur inside CreateOptions-style factories."
+   },
+   {
+    "id": "CORE-19",
+    "verdict": "UNCERTAIN",
+    "correction": "The repository facts hold: static options instances, no MakeReadOnly, and the only TypeInfoResolver at RackProjectStore.cs:420. The locking and metadata caching of System.Text.Json is runtime behavior and cannot be verified from source.",
+    "evidence": "src/RackCad.Application/Persistence/RackEmbedDocument.cs:81. src/RackCad.Application/Persistence/SelectivePalletDesignStore.cs:15. git grep TypeInfoResolver|MakeReadOnly over src finds only src/RackCad.Application/Persistence/RackProjectStore.cs:420."
+   },
+   {
+    "id": "CORE-20",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "git grep -nE \"WorkingDatabase|SetSystemVariable|HostApplicationServices|GetSystemVariable\" 3375aadb -- src returns no match. src/RackCad.Plugin/PluginInitializer.cs:7-13 is empty, with no event subscriptions."
+   },
+   {
+    "id": "CORE-21",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.Plugin/KindHandlers/KindHandlerRegistry.cs:28 and :55. src/RackCad.Application/Persistence/KindDispatch.cs:23-25 has readonly fields only. A field grep of src/RackCad.Plugin/KindHandlers/*.cs returns none. src/RackCad.Plugin/CustomPropertiesExecutor.cs:127. src/RackCad.Plugin/Systems/Shared/RackDefinitionCreationResult.cs:55. src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:23."
+   }
+  ],
+  "missed": [
+   {
+    "statement": "The UI test host deliberately installs an UNDISPOSED EditorDiscardPrompt substitute (`_ = EditorDiscardPrompt.Substitute(_ => true)`). The 'leaked scope' scenario named in UI-01 is therefore real and intentional in tests/RackCad.UI.Tests, but not in production src. Substitute is PUBLIC, not internal, so any assembly could call it. Nothing in src does.",
+    "evidence": "tests/RackCad.UI.Tests/StaTestRunner.cs:49,57. src/RackCad.UI/Shell/EditorClosePolicy.cs:57,65 (public Substitute overloads)."
+   },
+   {
+    "statement": "BlockPlacement.PlaceAndReport and PlaceDefinition are INTERACTIVE: they run an EntityJig through editor.Drag. A non-interactive warm-up cannot exercise them. The only non-interactive placement, AppendReference, locks the given Document and appends to ITS model space, which is the user's drawing rather than a side Database. A 'block reference placement' warm-up on a side Database cannot go through BlockPlacement at all.",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockPlacement.cs:174-200 (PlaceBlockWithJig: LockDocument, editor.Drag(jig), model space of document.Database), :204-245 (HeaderInsertionJig), :79-95 (AppendReference on document.Database)."
+   },
+   {
+    "statement": "CreateSystemBlock appends a piece BlockReference only when the block already exists in the TARGET database's block table. Otherwise it records the piece as missing and skips it, and it never imports from the library itself. On a fresh side Database without a prior BlockLibraryImporter.EnsureBlocks into that same database, the warm-up would therefore draw no piece references and never reach ApplyDynamicParameters. It would create only block definitions, annotations and dimensions.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:293-303 (missing-block skip), :305-319 (reference + ApplyDynamicParameters only on the present-block path), :415-448."
+   },
+   {
+    "statement": "A second public entry point constructs JsonRackCatalogProvider on an arbitrary directory: CatalogValidator.ValidateDirectory(directory). Any use of it (none in src) adds a permanent cache entry keyed by that raw directory string, alongside the public constructor. Separately, GetOrAdd inserts the entry BEFORE loading, so even a throwing load leaves an empty entry under that key for the process lifetime.",
+    "evidence": "src/RackCad.Application/Catalogs/Validation/CatalogValidator.cs:79-82. src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs:57-60 (public ctor), :75 (GetOrAdd before LoadUncached at :84)."
+   },
+   {
+    "statement": "The block-library cache key is the RAW path string, compared OrdinalIgnoreCase with no normalization. A differently spelled path to the governed DWG counts as a different key, which evicts and re-reads, for example a settings override written with other separators or a relative path. A failed read of a warm-up copy writes a RackLog entry containing that path into the shared production log.",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:26 (string.Equals OrdinalIgnoreCase on raw path), :44 (RackLog.Exception with the path). src/RackCad.Application/Catalogs/BlockLibrary.cs:21-22 (override used verbatim)."
+   },
+   {
+    "statement": "No other code path in src opens the library DWG. Only one ReadDwgFile, one side-Database construction and one WblockCloneObjects exist, so BlockLibraryDatabaseCache is the single process-wide holder of the library side Database.",
+    "evidence": "git grep ReadDwgFile|new Database(|WblockCloneObjects over 3375aadb -- src matches only src/RackCad.Plugin/Drawing/BlockLibraryDatabaseCache.cs:33,36 and src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:123."
+   }
+  ]
+ }
+}

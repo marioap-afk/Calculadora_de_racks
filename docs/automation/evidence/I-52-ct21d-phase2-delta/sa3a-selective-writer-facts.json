@@ -1,0 +1,633 @@
+{
+ "analysis": {
+  "facts": [
+   {
+    "id": "L1",
+    "topic": "1. Writer constants: layers",
+    "statement": "The Selective frontal/planta path names exactly two layers, both private constants of LateralHeaderDrawer: \"RACKCAD_ANOTACIONES\" for text annotations and \"RACKCAD_COTAS\" for dimensions. StructuralSectionMaterializer, a separate non-Selective path, declares the same annotation layer name.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:323-327; src/RackCad.Plugin/Drawing/StructuralSections/StructuralSectionMaterializer.cs:37,55",
+    "status": "FACT"
+   },
+   {
+    "id": "L2",
+    "topic": "1. Writer constants: layers",
+    "statement": "LayerHelper.EnsureLayer creates a layer only when it is missing. If LayerTable.Has(name) is true it returns the existing id and changes nothing (colour, on/off, freeze, lock are left as they are). Otherwise it creates a LayerTableRecord and sets only Name and Color = Color.FromColorIndex(ByAci, aci). It never sets linetype, lineweight, plottability, on/off/freeze/lock, transparency or description.",
+    "evidence": "src/RackCad.Plugin/LayerHelper.cs:16-29",
+    "status": "FACT"
+   },
+   {
+    "id": "L3",
+    "topic": "1. Writer constants: layers",
+    "statement": "RACKCAD_ANOTACIONES is ensured with ACI 2 (yellow) and assigned to each DBText through EnsureAnnotationLayer. RACKCAD_COTAS is ensured with ACI 1 (red) and assigned to each RotatedDimension.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:270,330-331,354-357",
+    "status": "FACT"
+   },
+   {
+    "id": "L4",
+    "topic": "1. Writer constants: layers",
+    "statement": "Layers are created lazily, never unconditionally. RACKCAD_ANOTACIONES is ensured only when an Annotation instance with non-blank text is materialized; blank text returns before the layer call. RACKCAD_COTAS is ensured only when a Dimension instance is materialized. SystemBlockWriter, ViewBlockDraw and BlockPlacement contain no layer code.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:258-263,270,287-291,338-357; src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:18-40; src/RackCad.Plugin/Systems/Shared/ViewBlockDraw.cs:28-57; src/RackCad.Plugin/Drawing/BlockPlacement.cs:174-201",
+    "status": "FACT"
+   },
+   {
+    "id": "L5",
+    "topic": "1. Writer constants: layers",
+    "statement": "Layers are created inside the transaction that creates the view-block definition and are committed with it. If the jig placement is cancelled, BlockPlacement erases the unreferenced definition and purges its nested defs, but it does not remove any layer. A cancelled insert can therefore leave RACKCAD_ANOTACIONES or RACKCAD_COTAS in a drawing with no rack.",
+    "evidence": "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:23-38; src/RackCad.Plugin/Drawing/BlockPlacement.cs:37-42,123-170",
+    "status": "FACT"
+   },
+   {
+    "id": "L6",
+    "topic": "1. Writer constants: layers",
+    "statement": "A redraw (RACKEDITAR or a variable propagation) erases all prior entities of the definition and repopulates it through the same AppendInstance, which re-ensures the layers if the toggles are on. No code removes a layer when the toggles are turned off.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:88-161; src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:104-116",
+    "status": "FACT"
+   },
+   {
+    "id": "L7",
+    "topic": "1. Writer constants: layers",
+    "statement": "Nested piece BlockReferences and header-group references are appended without a LayerId. The catalog row BlockCatalogEntry has Layer, Color, Scale and Rotation fields, but HeaderBlockInstance has no layer field and the drawer never applies a catalog layer or colour.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:60-63,145-148,308-314; src/RackCad.Application/Catalogs/CatalogEntries.cs:245-260; src/RackCad.Application/Drawing/HeaderBlockInstance.cs:57-102",
+    "status": "FACT"
+   },
+   {
+    "id": "L8",
+    "topic": "1. Writer constants: layers",
+    "statement": "The layer that nested piece references actually get (no explicit LayerId) is decided by AutoCAD's default for a new entity, commonly the current layer. The Plugin never calls SetDatabaseDefaults.",
+    "evidence": "git grep 'SetDatabaseDefaults' in src/RackCad.Plugin at 3375aadb has no hits; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:308-314",
+    "status": "UNCERTAIN"
+   },
+   {
+    "id": "T1",
+    "topic": "1. Writer constants: text",
+    "statement": "Annotations are DBText, not MText. Height is instance.TextHeight when > 0, else 3.0. TextString is instance.Text and LayerId is RACKCAD_ANOTACIONES. HorizontalMode is TextCenter and VerticalMode is TextVerticalMid. Position and AlignmentPoint are both the anchor (Z=0), and AdjustAlignment(db) is called after the entity is appended.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:265-281",
+    "status": "FACT"
+   },
+   {
+    "id": "T2",
+    "topic": "1. Writer constants: text",
+    "statement": "The DBText gets no TextStyleId, Rotation, WidthFactor, Oblique, Color, Linetype or Lineweight. No text style is created or looked up anywhere in the Plugin.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:266-277; git grep 'TextStyleTable|TextStyleId|WidthFactor' in src/RackCad.Plugin at 3375aadb has no hits",
+    "status": "FACT"
+   },
+   {
+    "id": "T3",
+    "topic": "1. Writer constants: text",
+    "statement": "The text style, rotation, width factor and colour that a new DBText actually gets are AutoCAD defaults for an entity with those properties unset. This is runtime behaviour and cannot be established from repo code.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:266-277",
+    "status": "UNCERTAIN"
+   },
+   {
+    "id": "T4",
+    "topic": "1. Writer constants: text",
+    "statement": "Selective label sizing: base text height 6.0 in, Margin 4.0 in (not scaled), and TextHeightFor(scale) = 6 x scale, with scale <= 0 treated as 1. The resolver sets AnnotationScale to the design value when > 0, else 1. The rack-name label uses 1.5 x h. Each Label sets Insertion = ConnectionAnchor = anchor and Role = Annotation.",
+    "evidence": "src/RackCad.Application/Systems/Selective/SelectiveAnnotations.cs:15-32; src/RackCad.Application/Systems/Selective/SelectiveGeometryResolver.cs:65; src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:344; src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:341",
+    "status": "FACT"
+   },
+   {
+    "id": "T5",
+    "topic": "1. Writer constants: text",
+    "statement": "Frontal labels, with gap = h + 4: (a) NumberFronts puts one number per bay at (bay centre X, -(FrontalBottomReach + gap)), or at -gap when no frontal cotas are drawn. (b) NumberLevels puts one number per level of bay 0 at (postX[0] - gap, level.Y). (c) DrawRackName with a non-blank Name puts the name at (postX[0], Height + h), height 1.5h. The frontal Build returns nothing when Height <= 0 or there are no bays.",
+    "evidence": "src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:42-45,158,313-346",
+    "status": "FACT"
+   },
+   {
+    "id": "T6",
+    "topic": "1. Writer constants: text",
+    "statement": "Planta labels: NumberFronts puts one number per bay at (-gap, mid-Y between consecutive frames). DrawRackName with a non-blank Name and at least one frente position puts the name at (0, last frente Y + gap), height 1.5h. NumberLevels is not used in planta.",
+    "evidence": "src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:183,322-343",
+    "status": "FACT"
+   },
+   {
+    "id": "D1",
+    "topic": "1. Writer constants: dimensions",
+    "statement": "Dimension geometry rule: the drawer creates a RotatedDimension with p1 = Insertion and p2 = ConnectionAnchor (Z=0). The dimension is horizontal when |p2.Y - p1.Y| <= |p2.X - p1.X|, and rotation is 0 (horizontal) or PI/2 (vertical). The dimension-line point is (midX, p1.Y + DimensionOffset) when horizontal and (p1.X + DimensionOffset, midY) when vertical. Dimension text is string.Empty and LayerId is RACKCAD_COTAS.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:338-360",
+    "status": "FACT"
+   },
+   {
+    "id": "D2",
+    "topic": "1. Writer constants: dimensions",
+    "statement": "Dimension style: the named style (instance.DimensionStyleName = system.DimensionStyle) is used as-is, with no overrides, only when it is non-blank and DimStyleTable.Has(name). Otherwise db.Dimstyle (the drawing's current style) is used. No dimension style is ever created because the table is opened ForRead only. A named style missing from the drawing falls back to the current style without any message or log. The editor keeps a saved style name in its combo even when the current drawing lacks it.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:351-354,362,378-392; src/RackCad.Application/Systems/Selective/SelectiveDimensions.cs:74,220,304-314; src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs:2210-2223",
+    "status": "FACT"
+   },
+   {
+    "id": "D3",
+    "topic": "1. Writer constants: dimensions",
+    "statement": "Per-dimension DIMVAR overrides are applied only in automatic mode (no usable named style), with h = instance.TextHeight or 3.0: Dimscale=1.0, Dimtxt=h, Dimasz=0.7h, Dimexe=0.4h, Dimexo=0.4h, Dimgap=0.3h, Dimtad=1, Dimdec=2. RecomputeDimensionBlock(true) is always called afterwards. No other dimension property is set.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:362-375",
+    "status": "FACT"
+   },
+   {
+    "id": "D4",
+    "topic": "1. Writer constants: dimensions",
+    "statement": "Selective dimension constants: ChainGap 14, OverallGap 22 and ElevationStep 14, all multiplied by scale. Dimension text height is h = 6 x scale. Offsets are always negative (below or left of the geometry): near = -14s, far = -36s, and Detailed elevation lines use -(36s + (i+1) x 14s). Zero-length segments (< 1e-6) are skipped.",
+    "evidence": "src/RackCad.Application/Systems/Selective/SelectiveDimensions.cs:22-30,70-74,120-129,216-220,284-314",
+    "status": "FACT"
+   },
+   {
+    "id": "D5",
+    "topic": "1. Writer constants: dimensions",
+    "statement": "Frontal cotas are gated by DimensionViewPolicy.EffectiveDetail(Dimensions, DimensionViews, Frontal) and require postX.Count >= 2 and Height > 0. Minimal draws the total height (vertical at the left post) and bay 0's larguero cut. Standard draws a per-bay larguero cut chain, the overall post-to-post width, the level-separation chain and the total height. Detailed adds each level's elevation.",
+    "evidence": "src/RackCad.Application/Systems/Selective/SelectiveDimensions.cs:60-130",
+    "status": "FACT"
+   },
+   {
+    "id": "D6",
+    "topic": "1. Writer constants: dimensions",
+    "statement": "Planta cotas are gated by EffectiveDetail(..., Planta) and require frenteYs.Count >= 2 and offsets non-empty. Minimal draws one representative larguero cut (Y) and the overall depth (X). Standard draws the cut per frente, the per-fondo depth chain and the overall depth. There is no Detailed-only branch, so Detailed draws the same as Standard in planta.",
+    "evidence": "src/RackCad.Application/Systems/Selective/SelectiveDimensions.cs:205-264",
+    "status": "FACT"
+   },
+   {
+    "id": "D7",
+    "topic": "1. Writer constants: dimensions",
+    "statement": "Annotation and Dimension instances always stay loose. They are appended directly into the top-level view-block definition, not into nested group definitions and not into model space.",
+    "evidence": "src/RackCad.Application/Drawing/HeaderInstanceGrouper.cs:35-43; src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:35-36; src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:183,203,205; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:70-76,155-161",
+    "status": "FACT"
+   },
+   {
+    "id": "B1",
+    "topic": "1. Writer constants: top-level block reference",
+    "statement": "The top-level reference is created by PlaceBlockWithJig as new BlockReference(Point3d.Origin, definitionId). The jig sets only Position. The reference is always appended to Model Space via GetBlockModelSpaceId, never to the current space. No LayerId, Rotation, ScaleFactors or colour is set.",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockPlacement.cs:174-201,240-244",
+    "status": "FACT"
+   },
+   {
+    "id": "B2",
+    "topic": "1. Writer constants: top-level block reference",
+    "statement": "The effective layer of the top-level reference is not set by RackCad code, so it is AutoCAD's default for a new entity, commonly the current layer (CLAYER) at placement. Repo code cannot confirm this, and no SetDatabaseDefaults call exists in the Plugin.",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockPlacement.cs:182,193-196; git grep 'SetDatabaseDefaults|Clayer' in src/RackCad.Plugin has no hits",
+    "status": "UNCERTAIN"
+   },
+   {
+    "id": "B3",
+    "topic": "1. Writer constants: top-level block reference",
+    "statement": "The view-block definition is created with Origin = Point3d.Origin and a unique name: the sanitized base name, with _1, _2, ... appended if the name is taken. The frontal base name is the rack name or \"Selectivo\", passed to RackViewBaseName.LinkedSelectiveFrontal.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:240-247,395-413; src/RackCad.Plugin/RackSelectivoCommands.cs:520,526-527",
+    "status": "FACT"
+   },
+   {
+    "id": "P1",
+    "topic": "1. Writer constants: unexposed dynamic parameters",
+    "statement": "ApplyDynamicParameters silently drops parameters the block does not expose. It returns at once when the reference is not a dynamic block or has no values. Otherwise it matches names case-insensitively and sets only properties that exist and are not ReadOnly. Plan parameters with no matching property, and all parameters of a non-dynamic block, are skipped with no log, message or missing entry. RecordGraphicsModified(true) runs only when at least one value was applied.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:415-449",
+    "status": "FACT"
+   },
+   {
+    "id": "P2",
+    "topic": "1. Writer constants: unexposed dynamic parameters",
+    "statement": "Only a piece whose block is absent from the block table, or whose block name is blank, is recorded as missing (once per block and view). On insert this is reported as \"Bloques no definidos en el dibujo (omitidos)\". Library import checks block names only, never parameters.",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:293-303; src/RackCad.Plugin/Drawing/BlockPlacement.cs:98-118; src/RackCad.Plugin/RackCommandSupport.cs:183-208; src/RackCad.Plugin/RackSelectivoCommands.cs:471,522,594-595; src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs:25-39; src/RackCad.Application/Systems/Shared/LibraryBlockRequirements.cs:10-22",
+    "status": "FACT"
+   },
+   {
+    "id": "P3",
+    "topic": "1. Writer constants: unexposed dynamic parameters",
+    "statement": "On the RACKEDITAR redraw path the missing-block list comes back in HeaderPlacementResult, but EditSelective only checks Success and never prints it.",
+    "evidence": "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:73-74; src/RackCad.Plugin/RackSelectivoCommands.cs:185-193,238-243",
+    "status": "FACT"
+   },
+   {
+    "id": "S1",
+    "topic": "2. Layer reachability (SL-Y)",
+    "statement": "All annotation and dimension toggles default to off. NumberFronts, NumberLevels and DrawRackName are plain bools (false), and Dimensions defaults to DimensionDetail.None. In the editor the three checkboxes have no IsChecked, and DimensionsBox.SelectedIndex = 0 (\"Ninguna\"). A Selective frontal or planta drawn with defaults emits no Annotation or Dimension instances, so this path creates neither RACKCAD layer.",
+    "evidence": "src/RackCad.Domain/Systems/Selective/SelectivePalletDesign.cs:114-131; src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml:40-45; src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs:262,2816-2821",
+    "status": "FACT"
+   },
+   {
+    "id": "S2",
+    "topic": "2. Layer reachability (SL-Y)",
+    "statement": "A Selective frontal never creates RACKCAD_ANOTACIONES when NumberFronts is off (or there are no bays), NumberLevels is off, and DrawRackName is off or Name is blank. A planta never creates it when NumberFronts is off (or there are fewer than 2 frente positions) and DrawRackName is off or Name is blank. NumberLevels alone never creates it in planta.",
+    "evidence": "src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:42-45,320-345; src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:329-342; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:258-263",
+    "status": "FACT"
+   },
+   {
+    "id": "S3",
+    "topic": "2. Layer reachability (SL-Y)",
+    "statement": "RACKCAD_COTAS is not created for a view kind whose effective detail is None. That happens when Dimensions is None, or when DimensionViews is present and that kind's bit is off (Frontal=1, Lateral=2, Planta=4). It also happens when the builder guards fail (frontal: postX.Count < 2 or Height <= 0; planta: frenteYs.Count < 2 or no offsets). The policy is per view kind, so one view kind can have cotas while another has none.",
+    "evidence": "src/RackCad.Application/Systems/Shared/DimensionViewPolicy.cs:34-49; src/RackCad.Domain/Systems/Shared/DimensionViewVisibility.cs:17-31; src/RackCad.Application/Systems/Selective/SelectiveDimensions.cs:64-68,210-214",
+    "status": "FACT"
+   },
+   {
+    "id": "S4",
+    "topic": "2. Layer reachability (SL-Y)",
+    "statement": "The rack-name label depends on the runtime Name. Creation sets system.Name = name, and a blank or whitespace name suppresses the label even with DrawRackName on. The \"Selectivo\" fallback is applied only to the block name, not to the label.",
+    "evidence": "src/RackCad.Plugin/RackSelectivoCommands.cs:459,470,518-520; src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:342; src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:338",
+    "status": "FACT"
+   },
+   {
+    "id": "S5",
+    "topic": "2. Layer reachability (SL-Y)",
+    "statement": "Which layers a view needs is fully decided by its inputs: view kind, the toggles (copied unchanged into each fondo's frontal view by FondoSystemView), Name, bays/levels, and Dimensions plus DimensionViews. Re-running the same builders with the same authored design, the same Name and the same view kind emits the same Annotation/Dimension roles as the source's last draw. That draw already ensured those layers through LayerHelper, so no new layer is needed unless the layer was later removed or renamed outside RackCad.",
+    "evidence": "src/RackCad.Application/Systems/Selective/SelectiveDepthLayout.cs:64-87; src/RackCad.Application/Systems/Selective/SelectiveGeometryResolver.cs:60-68; src/RackCad.Plugin/LayerHelper.cs:16-29",
+    "status": "FACT"
+   },
+   {
+    "id": "S6",
+    "topic": "2. Layer reachability (SL-Y)",
+    "statement": "From the builder code, a mirror using the same authored design could need a layer the source drawing lacks when its inputs differ from what was drawn. (a) View kind: a planta-only source with NumberLevels on, or with DimensionViews = Frontal only, has neither layer, but a frontal needs RACKCAD_ANOTACIONES or RACKCAD_COTAS. (b) Name: a source with a blank Name and DrawRackName on emits no label, while a named mirror would emit one and need RACKCAD_ANOTACIONES.",
+    "evidence": "src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs:322-343; src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs:333-345; src/RackCad.Application/Systems/Shared/DimensionViewPolicy.cs:43-48",
+    "status": "FACT"
+   },
+   {
+    "id": "S7",
+    "topic": "2. Layer reachability (SL-Y)",
+    "statement": "No mirror command is registered at 3375aadb. So it cannot be established whether a mirror would redraw through LateralHeaderDrawer, which would silently create any missing RACKCAD layer (ACI 2/1) via EnsureLayer, or would transform existing references and need no new layer.",
+    "evidence": "git grep 'CommandMethod(' in src/RackCad.Plugin at 3375aadb lists no mirror command (e.g. src/RackCad.Plugin/RackSelectivoCommands.cs:23,26); src/RackCad.Plugin/LayerHelper.cs:18-28",
+    "status": "UNCERTAIN"
+   },
+   {
+    "id": "S8",
+    "topic": "2. Layer reachability (SL-Y)",
+    "statement": "The same layers can come from paths other than Selective. LateralHeaderDrawer is shared by the view-block draw services (selective, dynamic, cama, cabecera planta) and the lateral service, and StructuralSectionMaterializer ensures RACKCAD_ANOTACIONES. A cancelled insert also leaves them (L5). So the presence of a layer does not prove that a Selective rack drew annotations or cotas.",
+    "evidence": "src/RackCad.Plugin/Systems/Shared/ViewBlockDraw.cs:12-23; src/RackCad.Plugin/Drawing/LateralHeaderDrawService.cs:252; src/RackCad.Plugin/Drawing/StructuralSections/StructuralSectionMaterializer.cs:37,55",
+    "status": "FACT"
+   },
+   {
+    "id": "S9",
+    "topic": "2. Layer reachability (SL-Y)",
+    "statement": "Whether a user can PURGE, delete or RENAME a RACKCAD layer after a Selective rack drew entities on it (inside the block definition) is AutoCAD behaviour. The code has no guard or restore beyond re-creating the layer by name on the next draw or redraw.",
+    "evidence": "src/RackCad.Plugin/LayerHelper.cs:18-28; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:270,356",
+    "status": "UNCERTAIN"
+   },
+   {
+    "id": "N1",
+    "topic": "3. NOD / project variables",
+    "statement": "Only two Named Objects Dictionary entries exist in the Plugin: RACKCAD_PROJECT (project-variable register) and RACKCAD_CUSTOM_PROPERTIES (project custom properties). NamedObjectsDictionaryId appears only in their two data classes. Both store one Xrecord of text chunks of at most 255 characters.",
+    "evidence": "src/RackCad.Plugin/ProjectVariablesData.cs:36,55-57,111-133; src/RackCad.Plugin/CustomPropertiesData.cs:33,52,129-140",
+    "status": "FACT"
+   },
+   {
+    "id": "N2",
+    "topic": "3. NOD / project variables",
+    "statement": "The Selective creation path neither reads nor writes either NOD entry. The path is RACKSELECTIVO, or the RACKCAD menu, then DrawSelectiveView, DrawSelectiveViewFromAuthored, InsertSelectiveFrontal or SelectivePlantaDrawService.DrawAndPlace, then ViewBlockDraw, SystemBlockWriter, BlockPlacement and LateralHeaderDrawer. On creation the window is never given project variables and starts with literal defaults.",
+    "evidence": "src/RackCad.Plugin/RackSelectivoCommands.cs:26-46,429-523; src/RackCad.Plugin/RackMenuCommands.cs:76-79; src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs:474-483; git grep 'ProjectVariab|Custom' in src/RackCad.Plugin/Systems/Selective, Systems/Shared, BlockPlacement.cs, LateralHeaderDrawer.cs, LayerHelper.cs has no hits",
+    "status": "FACT"
+   },
+   {
+    "id": "N3",
+    "topic": "3. NOD / project variables",
+    "statement": "Creation writes the rack payload to the extension dictionary of the view-block DEFINITION, not to the NOD. The key is RACKCAD_SELECTIVE and the value is an Xrecord of 255-character DxfCode.Text chunks. The payload is a RackEmbedDocument (kind Selective, id, name, view, section, design JSON). For a new rack the design document is built by SelectivePalletDesignDocument.From(design, id, name), which carries no bindings. RackBlockData's summary says \"block reference's extension dictionary\", but the code writes on the definition id.",
+    "evidence": "src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:29-34; src/RackCad.Plugin/Systems/Shared/RackBlockData.cs:8,16-51; src/RackCad.Plugin/RackSelectivoCommands.cs:386-417,429-432",
+    "status": "FACT"
+   },
+   {
+    "id": "N4",
+    "topic": "3. NOD / project variables",
+    "statement": "RACKEDITAR (EditSelective) reads RACKCAD_PROJECT once, before the window opens, in ReadProjectVariables. It runs under the document lock in its own transaction, calls ProjectVariablesRegistry.Read, sweeps every rack envelope (RACKCAD_SELECTIVE Xrecords on non-layout, non-anonymous, non-xref definitions, with direct reference counts), and commits without writing anything.",
+    "evidence": "src/RackCad.Plugin/RackSelectivoCommands.cs:67,298-319; src/RackCad.Plugin/ProjectVariablesRegistry.cs:22-23; src/RackCad.Plugin/RackBlockFinder.cs:57-91",
+    "status": "FACT"
+   },
+   {
+    "id": "N5",
+    "topic": "3. NOD / project variables",
+    "statement": "EditSelective uses the register read in four ways. (a) SelectiveEditorOpen.Resolve blocks the editor when the register is PresentButUnreadable or IncompatibleMajor, is not accredited, or resolution fails; otherwise it opens on the effective design with variable values substituted for bound properties. (b) LinkedPropertyOptions.ForProperty(SelectiveVerticalClearance, registry) supplies the variable choices; if unusable the command returns. (c) LinkedPropertyReconciler.Reconcile accredits and resolves again; failure aborts before any redraw. (d) ApplyBinding. The only linkable properties are VerticalClearance and PalletTolerance.",
+    "evidence": "src/RackCad.Plugin/RackSelectivoCommands.cs:68-100,145-154; src/RackCad.Application/Systems/Selective/SelectiveEditorOpen.cs:158-241; src/RackCad.Application/ProjectVariables/LinkedPropertyReconciler.cs:113-179; src/RackCad.Application/ProjectVariables/SelectiveLinkedProperties.cs:186-213; src/RackCad.Application/ProjectVariables/ProjectPropertyIds.cs:23,38",
+    "status": "FACT"
+   },
+   {
+    "id": "N6",
+    "topic": "3. NOD / project variables",
+    "statement": "A binding gesture (lines 94-100) goes through SelectiveBindingIntentPreflight.Run, then ProjectVariableMutationExecutor.Execute. Link and Unlink plans carry RegistryMutation.None. In its mutate transaction the executor re-reads RACKCAD_PROJECT and rescans envelopes only when Kind != None or PlanReadSet is non-empty. It writes RACKCAD_PROJECT via TryWrite only when Kind != None. It redraws every view of the rack, writing RACKCAD_SELECTIVE payloads, in that same transaction. So the Selective editor reads RACKCAD_PROJECT but never writes it.",
+    "evidence": "src/RackCad.Plugin/RackSelectivoCommands.cs:94-100,326-347; src/RackCad.Application/ProjectVariables/SelectiveBindingIntent.cs:136-157; src/RackCad.Application/ProjectVariables/ProjectVariableMutationPreflight.cs:509-515,592-598; src/RackCad.Plugin/ProjectVariableMutationExecutor.cs:223-258,266-312",
+    "status": "FACT"
+   },
+   {
+    "id": "N7",
+    "topic": "3. NOD / project variables",
+    "statement": "RACKCAD_CUSTOM_PROPERTIES is reached only through CustomPropertiesExecutor, which only RackPropiedadesCommands (RACKPROPIEDADES) calls. Neither the Selective creation path nor the edit path touches it.",
+    "evidence": "src/RackCad.Plugin/RackPropiedadesCommands.cs:87,98,115,159,175; src/RackCad.Plugin/CustomPropertiesExecutor.cs:139,165,184",
+    "status": "FACT"
+   },
+   {
+    "id": "N8",
+    "topic": "3. NOD / project variables",
+    "statement": "On redraw, geometry comes from the EFFECTIVE system: window.SystemToInsert in the editor, or SelectiveGeometryResolver.Resolve(rack.EffectiveOutput) in a propagation. The persisted payload is the AUTHORED document (reconciled.Authored, or rack.AuthoredOutput). The label Name comes from the window or embed, or from AuthoredOutput.Name.",
+    "evidence": "src/RackCad.Plugin/RackSelectivoCommands.cs:118-122,154; src/RackCad.Plugin/ProjectVariableMutationExecutor.cs:167-174",
+    "status": "FACT"
+   },
+   {
+    "id": "N9",
+    "topic": "3. NOD / project variables",
+    "statement": "Besides the NOD, the creation path reads only the DimStyleTable (read-only) to fill the style combo, and checks drawing units through RackUnitsGuard. Neither writes any dictionary.",
+    "evidence": "src/RackCad.Plugin/RackSelectivoCommands.cs:32,38; src/RackCad.Plugin/RackCommandSupport.cs:146-179",
+    "status": "FACT"
+   }
+  ],
+  "limitations": [
+   "Read-only static reading of source at commit 3375aadb. Nothing was built, run or tested, and AutoCAD was not started.",
+   "What AutoCAD assigns to properties the code leaves unset is runtime behaviour, not repo code, and is marked UNCERTAIN. This covers the layer, colour and text style of new entities with no LayerId or TextStyleId (including the top-level reference and nested pieces), the default linetype and lineweight of a new layer, and PURGE/RENAME behaviour.",
+   "The contents of blocks-library.dwg were not inspected. WblockCloneObjects (BlockLibraryImporter.cs:123) could bring in layers the library blocks use, and whether any of them are RACKCAD_* layers is unknown.",
+   "No mirror command exists at 3375aadb, so the mirror answer (S5-S7) is inferred from the shared builders and writers, not from mirror code.",
+   "The lateral (corte) view was covered only where it shares LateralHeaderDrawer; its builder was read only for the annotation toggles (SelectiveLateralBuilder.cs:589-623).",
+   "Docs, ADRs and HANDOFF were not consulted, as the task asked; all evidence is from src/ at 3375aadb."
+  ]
+ },
+ "adversarialVerification": {
+  "verdicts": [
+   {
+    "id": "L1",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:324,327 (the only two layer constants on the path); StructuralSectionMaterializer.cs:37,55 has the duplicate annotation name. A git grep for RACKCAD_ANOTACIONES|RACKCAD_COTAS in src finds only these, plus UI text at RackSelectiveWindow.xaml:54,73."
+   },
+   {
+    "id": "L2",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "src/RackCad.Plugin/LayerHelper.cs:18-22 returns the existing id untouched. LayerHelper.cs:24-28 creates a LayerTableRecord with only Name and Color = FromColorIndex(ByAci, aci)."
+   },
+   {
+    "id": "L3",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "LateralHeaderDrawer.cs:270 and 330-331: EnsureAnnotationLayer, ACI 2. LateralHeaderDrawer.cs:354-357: RotatedDimension LayerId = EnsureLayer(RACKCAD_COTAS, 1)."
+   },
+   {
+    "id": "L4",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "LateralHeaderDrawer.cs:258-263: blank text returns before line 270. LateralHeaderDrawer.cs:287-291,356: the layer is ensured only per Dimension. SystemBlockWriter.cs:18-40, ViewBlockDraw.cs:28-57 and BlockPlacement.cs:174-201 have no layer calls. Caveat: SystemBlockWriter.cs:25 calls BlockLibraryImporter.EnsureForPlan, and its WblockCloneObjects (BlockLibraryImporter.cs:123) may bring in library layers. The analysis already lists this as a limitation."
+   },
+   {
+    "id": "L5",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "SystemBlockWriter.cs:27-36: CreateSystemBlock and payload in one transaction, then Commit. BlockPlacement.cs:37-42 calls EraseUnreferencedDefinition on cancel. BlockPlacement.cs:139-162 erases only the BTR and nested BlockReference defs; there is no layer code."
+   },
+   {
+    "id": "L6",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "LateralHeaderDrawer.cs:97-118 erases every entity of the definition. LateralHeaderDrawer.cs:130-161 repopulates through AppendInstance. SystemBlockWriter.cs:104-116 is used by RedrawInPlace and by ProjectVariableMutationExecutor.cs:301-304. The Plugin has no layer-erase code (grep of LayerTable in src/RackCad.Plugin finds only creation sites)."
+   },
+   {
+    "id": "L7",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "LateralHeaderDrawer.cs:60-63,145-148,308-314: no LayerId. CatalogEntries.cs:256-259: Layer, Color, Scale and Rotation exist. HeaderBlockInstance.cs:57-102 has no layer field. The Plugin never reads BlockCatalogEntry.Layer (grep of .Layer in Plugin/Application hits only Cantilever, StructuralSection and RackLayout code)."
+   },
+   {
+    "id": "L8",
+    "verdict": "UNCERTAIN",
+    "correction": "The code part is confirmed: nested piece and header references get no LayerId, and there is no SetDatabaseDefaults/Clayer call in src/RackCad.Plugin. The effective layer is AutoCAD runtime behaviour. The repo's own comments say a new entity is 'born on the current layer' (StructuralSectionMaterializer.cs:112-116; CantileverViewMaterializer.cs:271-272), but a comment is not proof.",
+    "evidence": "LateralHeaderDrawer.cs:308-314. git grep 'SetDatabaseDefaults|Clayer|CLAYER' at 3375aadb -- src/RackCad.Plugin hits only comments (CantileverViewMaterializer.cs:272; StructuralSectionMaterializer.cs:114)."
+   },
+   {
+    "id": "T1",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "LateralHeaderDrawer.cs:265-281."
+   },
+   {
+    "id": "T2",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "LateralHeaderDrawer.cs:266-277. git grep -i 'textstyle|widthfactor|Oblique|Justify' in src/RackCad.Plugin: no hits. The only DBText creations are LateralHeaderDrawer.cs:266, RackLayoutCommands.cs:278 and RackLayoutCommands.Fill.cs:465."
+   },
+   {
+    "id": "T3",
+    "verdict": "UNCERTAIN",
+    "correction": "",
+    "evidence": "LateralHeaderDrawer.cs:266-277 leaves these properties unset. The values they end up with are AutoCAD runtime defaults, which the repo cannot show."
+   },
+   {
+    "id": "T4",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "SelectiveAnnotations.cs:15,18,21,23-32. SelectiveGeometryResolver.cs:65. SelectiveFrontalBuilder.cs:317-318 (gap = h + Margin, Margin unscaled) and 344. SelectivePlantaBuilder.cs:326-327,341."
+   },
+   {
+    "id": "T5",
+    "verdict": "CONFIRMED",
+    "correction": "Small precision: the number drops to -gap when FrontalBottomReach is 0, which means the EFFECTIVE frontal detail is None. It does not literally mean 'no cotas drawn'. In practice this is equivalent, because Height>0 and at least one bay are already guaranteed.",
+    "evidence": "SelectiveFrontalBuilder.cs:42-45,158,320-345. SelectiveDimensions.cs:35-50."
+   },
+   {
+    "id": "T6",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "SelectivePlantaBuilder.cs:183,322-343. BuildPlan also returns an empty plan when the system is null or has no bays (SelectivePlantaBuilder.cs:39-42)."
+   },
+   {
+    "id": "D1",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "LateralHeaderDrawer.cs:341-357."
+   },
+   {
+    "id": "D2",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "LateralHeaderDrawer.cs:353-354 and 380-392: ForRead only; the fallback is db.Dimstyle with no log. SelectiveDimensions.cs:74,220,304-314. RackSelectiveWindow.xaml.cs:2210-2223: SelectDimStyle adds the missing name to the combo."
+   },
+   {
+    "id": "D3",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "LateralHeaderDrawer.cs:362-375."
+   },
+   {
+    "id": "D4",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "SelectiveDimensions.cs:23,27,30,70-73,124-127,216-219,284-302."
+   },
+   {
+    "id": "D5",
+    "verdict": "CONFIRMED",
+    "correction": "Note that the doc comment at SelectiveDimensions.cs:53 says Minimal = 'overall height + overall width'. The code instead draws the bay-0 larguero cut (lines 81-90), and only when beamStartXs is non-empty and Bays[0].BeamLength>0. The analysis correctly follows the code.",
+    "evidence": "SelectiveDimensions.cs:60-130."
+   },
+   {
+    "id": "D6",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "SelectiveDimensions.cs:205-264. There is no DimensionDetail.Detailed branch in AddPlanta."
+   },
+   {
+    "id": "D7",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "HeaderInstanceGrouper.cs:35-43. SelectiveFrontalBuilder.cs:35-36. SelectivePlantaBuilder.cs:183,203,205 (loose list). LateralHeaderDrawer.cs:70-76,155-161."
+   },
+   {
+    "id": "B1",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "BlockPlacement.cs:182: new BlockReference(Point3d.Origin, id). BlockPlacement.cs:193-196: appended to the model space from GetBlockModelSpaceId. BlockPlacement.cs:240-244: the jig Update sets only Position."
+   },
+   {
+    "id": "B2",
+    "verdict": "UNCERTAIN",
+    "correction": "The code part is confirmed: no LayerId is set and there is no SetDatabaseDefaults. The CLAYER claim is runtime. Repo comments assert new entities land on the current layer (StructuralSectionMaterializer.cs:114; CantileverViewMaterializer.cs:271-272), but the Selective path never sets it. By contrast, RACKDUPLICAR copies explicitly preserve the source reference's LayerId (RackDuplicarCommands.cs:214,315).",
+    "evidence": "BlockPlacement.cs:182,193-196."
+   },
+   {
+    "id": "B3",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "LateralHeaderDrawer.cs:240-247,395-413. RackSelectivoCommands.cs:520,526-527. Planta instead uses RackViewBaseName.SelectivePlanta(system, rackName) (SelectivePlantaDrawService.cs:33,67-68)."
+   },
+   {
+    "id": "P1",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "LateralHeaderDrawer.cs:415-449."
+   },
+   {
+    "id": "P2",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "LateralHeaderDrawer.cs:293-303 (key = BlockName ?? PieceId ?? Role + '|' + View). BlockPlacement.cs:98-118. RackCommandSupport.cs:202-205. RackSelectivoCommands.cs:471,522,594-595. LibraryBlockRequirements.cs:10-22 (Key only). BlockLibraryImporter.cs:25-39,67-124."
+   },
+   {
+    "id": "P3",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "SystemBlockWriter.cs:73-74. RackSelectivoCommands.cs:185-193 (frontal), 221-229 (lateral) and 238-243 (planta) check only r.Success."
+   },
+   {
+    "id": "S1",
+    "verdict": "CONFIRMED",
+    "correction": "This holds for a fresh window only. A library-template creation seeds the toggles from the template (see missed).",
+    "evidence": "SelectivePalletDesign.cs:115,118,121,131. RackSelectiveWindow.xaml:40-45 (no IsChecked on the three annotation checkboxes). RackSelectiveWindow.xaml.cs:262,2816-2821."
+   },
+   {
+    "id": "S2",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "SelectiveFrontalBuilder.cs:42-45,320-345. SelectivePlantaBuilder.cs:39-42,329-342. LateralHeaderDrawer.cs:258-263. The only Selective annotation emitters are these plus the lateral builder (git grep SelectiveAnnotations.Label)."
+   },
+   {
+    "id": "S3",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "DimensionViewPolicy.cs:34-49. DimensionViewVisibility.cs:21-30. SelectiveDimensions.cs:64-68,210-214."
+   },
+   {
+    "id": "S4",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "RackSelectivoCommands.cs:459,518,520. SelectiveFrontalBuilder.cs:342-344. SelectivePlantaBuilder.cs:338-341. For planta the name is passed only for block naming (RackSelectivoCommands.cs:470)."
+   },
+   {
+    "id": "S5",
+    "verdict": "CONFIRMED",
+    "correction": "One caveat: geometry comes from the EFFECTIVE design, resolved against project variables, and from the catalog. Toggles are not bindable: only VerticalClearance and PalletTolerance are (SelectiveLinkedProperties.cs:192-213). So which Annotation/Dimension roles are emitted stays the same unless the geometry becomes degenerate (no bays, Height<=0, fewer than 2 posts).",
+    "evidence": "SelectiveDepthLayout.cs:71-87. SelectiveGeometryResolver.cs:60-68. LayerHelper.cs:16-29."
+   },
+   {
+    "id": "S6",
+    "verdict": "CORRECTED",
+    "correction": "The source lacks both layers only if ALL of its drawn views emitted nothing. For a planta-only source that means: NumberFronts off (or fewer than 2 frente positions), DrawRackName off or a blank Name, and an effective planta detail of None. Only then can a FRONTAL of the same design need a layer the source lacks: RACKCAD_ANOTACIONES when NumberLevels is on and bay 0 has levels (or NumberFronts is on), and RACKCAD_COTAS when Dimensions != None and the Frontal bit is on (or DimensionViews is null). Point (b), about the name, stands as stated.",
+    "evidence": "SelectivePlantaBuilder.cs:329-342 (no level numbers in planta). SelectiveFrontalBuilder.cs:320-345. DimensionViewPolicy.cs:38-48. SelectiveDimensions.cs:210-214."
+   },
+   {
+    "id": "S7",
+    "verdict": "CONFIRMED",
+    "correction": "The registered commands are listed in the evidence. None is a mirror command. The closest precedent is RACKDUPLICAR / RACKLAYOUT independent copies, which DeepClone the definition in the same database and need no new layer (see missed).",
+    "evidence": "git grep 'CommandMethod(' at 3375aadb -- src/RackCad.Plugin: RACKAYUDA, RACKCABECERA, QUICKCABECERA, QUICKCAMA, RACKCANTILEVER, RACKSISTEMADINAMICO, RACKDUPLICAR, RACKBOMTOTAL, RACKLISTA, RACKRELLENAR, RACKLAYOUT, RACKCAD, RACKEDITAR, RACKPROPIEDADES, RACKPUSHBACK, RACKSECCION, RACKSELECTIVO, RACKVARIABLES and aliases. LayerHelper.cs:18-28."
+   },
+   {
+    "id": "S8",
+    "verdict": "CORRECTED",
+    "correction": "The list of LateralHeaderDrawer consumers is incomplete. It also includes the Push Back frontal, planta and system draw services, which emit their own Annotation and Dimension roles (PushBackSideAnnotations.cs:104; PushBackMirror.cs:50). StructuralSectionMaterializer ensures RACKCAD_ANOTACIONES UNCONDITIONALLY on every definition it creates. The conclusion stands: a layer's presence does not prove that a Selective rack drew annotations or cotas.",
+    "evidence": "git grep 'new LateralHeaderDrawer()': LateralHeaderDrawService.cs:26, PlantaHeaderDrawService.cs:22, DynamicFrontal/Planta/SystemDrawService, FlowBedDrawService.cs:22, PushBackFrontalDrawService.cs:19, PushBackPlantaDrawService.cs:18, PushBackSystemDrawService.cs:20, SelectiveFrontal/PlantaDrawService.cs:24. StructuralSectionMaterializer.cs:55."
+   },
+   {
+    "id": "S9",
+    "verdict": "UNCERTAIN",
+    "correction": "",
+    "evidence": "LayerHelper.cs:18-28 re-creates the layer only by name. What PURGE and RENAME do to layers referenced inside block definitions is AutoCAD behaviour, which the repo cannot show."
+   },
+   {
+    "id": "N1",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "git grep NamedObjectsDictionaryId in src finds only ProjectVariablesData.cs:56,112 and CustomPropertiesData.cs:52,129. The keys are at ProjectVariablesData.cs:36 and CustomPropertiesData.cs:33, with 255-character chunking at ProjectVariablesData.cs:38,117-122 and CustomPropertiesData.cs:35,133-136."
+   },
+   {
+    "id": "N2",
+    "verdict": "CORRECTED",
+    "correction": "It is correct that neither creation path reads or writes either NOD entry, and that the window never gets SetProjectVariables on creation. But the window does not always start with literal defaults. The RACKCAD menu's library path (SelectiveEditorModule.OpenFromLibrary) calls LoadForNew, which seeds every field from the template document's domain design (ToDomain, which carries no bindings). That includes the toggles, AnnotationScale, Dimensions, DimensionViews and DimensionStyle. Only a brand-new window (RACKSELECTIVO, or menu OpenForNew) starts from the SelectivePalletDesign defaults.",
+    "evidence": "EditorModules.cs:35-51. RackSelectiveWindow.xaml.cs:474-483,3083,3192-3199,3283-3292. RackSelectivoCommands.cs:26-46,429-523. RackMenuCommands.cs:76-79. git grep for ProjectVariab|CustomPropert in Plugin/Systems, BlockPlacement, LateralHeaderDrawer, LayerHelper and BlockLibraryImporter finds nothing."
+   },
+   {
+    "id": "N3",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "SystemBlockWriter.cs:31-34 (result.DefinitionId). RackBlockData.cs:8,16,20-51. RackSelectivoCommands.cs:386-417,429-432. SelectivePalletDesignDocument.From (SelectivePalletDesignDocument.cs:210-285) never assigns PropertyValues."
+   },
+   {
+    "id": "N4",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "RackSelectivoCommands.cs:67,298-319. ProjectVariablesRegistry.cs:22-23. RackBlockFinder.cs:57-91."
+   },
+   {
+    "id": "N5",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "RackSelectivoCommands.cs:68-100,145-152. SelectiveEditorOpen.cs:158-241 (it also seeds Expression states at 221-229). LinkedPropertyReconciler.cs:131-178. SelectiveLinkedProperties.cs:186-213. ProjectPropertyIds.cs:23,38."
+   },
+   {
+    "id": "N6",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "RackSelectivoCommands.cs:94-100,326-347. SelectiveBindingIntent.cs:136-158. ProjectVariableMutationPreflight.cs:509-515,592-598 (Link and Unlink success plans use RegistryMutation.None; the other returns are Failed). ProjectVariableMutationExecutor.cs:223-258,266-312."
+   },
+   {
+    "id": "N7",
+    "verdict": "CONFIRMED",
+    "correction": "This is correct for the NOD entry. Separately, rack-scoped custom properties live in the RACKCAD_SELECTIVE envelope, and the Selective path carries them forward (see missed).",
+    "evidence": "git grep 'CustomPropertiesData.|CustomPropertiesExecutor.' finds only CustomPropertiesExecutor.cs:139,165,184 and RackPropiedadesCommands.cs:87,98,115,159,175."
+   },
+   {
+    "id": "N8",
+    "verdict": "CONFIRMED",
+    "correction": "",
+    "evidence": "RackSelectivoCommands.cs:118-122,154,183-184. ProjectVariableMutationExecutor.cs:167-174."
+   },
+   {
+    "id": "N9",
+    "verdict": "CORRECTED",
+    "correction": "'Reads only' overstates it. Besides the NOD question, the creation path also reads DimStyleTable (ReadDimensionStyleNames, in its own transaction committed without writes; ResolveDimStyle ForRead plus db.Dimstyle at draw time) and Database.Insunits (RackUnitsGuard). It also reads and writes the BlockTable, reads and upgrades the LayerTable (EnsureLayer), may WblockClone definitions from blocks-library.dwg, and creates the definition's EXTENSION dictionary with the RACKCAD_SELECTIVE Xrecord. None of these is a NOD entry or a project-variable store. On the RACKCAD menu, brand-new path (OpenForNew), SetDimensionStyles is not called, so only '(Automático)' is offered.",
+    "evidence": "RackSelectivoCommands.cs:32,38. RackCommandSupport.cs:146-179. RackUnitsGuard.cs:34-45. LateralHeaderDrawer.cs:31,380-392. LayerHelper.cs:18-24. BlockLibraryImporter.cs:25-39,123. RackBlockData.cs:27-50. EditorModules.cs:35-42."
+   }
+  ],
+  "missed": [
+   {
+    "statement": "A NEW Selective rack can start from a library template instead of the defaults. The path is RACKCAD menu, then SelectiveEditorModule.OpenFromLibrary, then window.LoadForNew, then LoadDesign. That loads NumberFronts, NumberLevels, DrawRackName, AnnotationScale, Dimensions, DimensionViews and DimensionStyle from the template. The first insert can therefore create RACKCAD_ANOTACIONES and RACKCAD_COTAS, and it can carry a named DimensionStyle that the current drawing lacks. SelectDimStyle adds that name to the combo, and at draw time ResolveDimStyle silently falls back to db.Dimstyle with automatic DIMVAR overrides.",
+    "evidence": "src/RackCad.UI/Editor/EditorModules.cs:44-51; src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs:3083,3192-3199,3283-3292,2210-2223; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:380-392"
+   },
+   {
+    "statement": "A brand-new Selective created from the RACKCAD menu (OpenForNew) never calls SetDimensionStyles, so the style combo holds only '(Automático)'. Such a rack is always drawn in automatic DIMVAR-override mode unless the style is changed later in RACKEDITAR. RACKSELECTIVO does populate the drawing's styles.",
+    "evidence": "src/RackCad.UI/Editor/EditorModules.cs:35-42; src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs:264-265; src/RackCad.Plugin/RackSelectivoCommands.cs:32"
+   },
+   {
+    "statement": "Rack-scoped custom properties are not in the NOD. They live inside the RACKCAD_SELECTIVE envelope (RackEmbedDocument.CustomProperties) on the definition's extension dictionary, written by CustomPropertiesExecutor through RackBlockData.Write. The Selective creation and edit path carries them forward: RackEmbedComposer.Compose inherits source.CustomProperties. A fresh insert (source = null) writes none, while an edit redraw, or an 'Insertar' during edit (source = picked embed), inherits them.",
+    "evidence": "src/RackCad.Application/Persistence/RackEmbedDocument.cs:67; src/RackCad.Application/Persistence/RackEmbedComposer.cs:43-57; src/RackCad.Plugin/CustomPropertiesExecutor.cs:303-340; src/RackCad.Plugin/RackSelectivoCommands.cs:184,237,279,405-416"
+   },
+   {
+    "statement": "The existing product copy mechanism, RACKDUPLICAR and RACKLAYOUT independent copies, is the closest precedent for a mirror. It clones the definition with Database.DeepCloneObjects inside the same database, sharing the nested ARRAY defs, so no layer is created. The new reference explicitly copies the source reference's LayerId. RackCloner also renames the DBText whose text equals the source rack name.",
+    "evidence": "src/RackCad.Plugin/RackCloner.cs:29-61; src/RackCad.Plugin/RackDuplicarCommands.cs:214,303-315"
+   },
+   {
+    "statement": "On a cancelled insert, EraseUnreferencedDefinition queues only nested BlockReference definitions for purge. It does not queue the anonymous *D blocks owned by the RotatedDimensions inside the erased definition. RedefineSystemBlock does queue Dimension.DimBlockId, so a cancelled insert with cotas can leave orphaned *D blocks as well as the RACKCAD layers.",
+    "evidence": "src/RackCad.Plugin/Drawing/BlockPlacement.cs:146-162; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:107-112"
+   },
+   {
+    "statement": "Other RackCad materializers deliberately set Layer='0' with ByBlock colour, linetype and lineweight, because the repo states that a new entity is otherwise born on CLAYER. The Selective drawer does not do this for piece or header references, nor for the top-level reference.",
+    "evidence": "src/RackCad.Plugin/Drawing/StructuralSections/StructuralSectionMaterializer.cs:112-119; src/RackCad.Plugin/Drawing/Cantilever/CantileverViewMaterializer.cs:268-282; src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:308-314; src/RackCad.Plugin/Drawing/BlockPlacement.cs:182"
+   },
+   {
+    "statement": "After a cancelled placement, the insert message still says the block was 'creado, pero la insercion se cancelo', although the definition has been erased. Any RACKCAD layers it created remain.",
+    "evidence": "src/RackCad.Plugin/RackCommandSupport.cs:190-193; src/RackCad.Plugin/Drawing/BlockPlacement.cs:37-42"
+   }
+  ]
+ }
+}

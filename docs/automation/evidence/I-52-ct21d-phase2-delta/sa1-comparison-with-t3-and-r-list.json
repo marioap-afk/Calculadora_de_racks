@@ -1,0 +1,2130 @@
+{
+ "mapping": [
+  {
+   "compiled_id": "C-01",
+   "t3_ids": [
+    "R-01"
+   ],
+   "r_ids": [
+    "R-01"
+   ],
+   "relation": "PARTIAL",
+   "note": "R-01 has the orchestrator lock and says seams take none. It leaves out PREPARE-R ('PREPARE-R computes the expected effective names under the lock', 15.5). It also asserts ONE continuous lock spanning PREPARE-W and T_M, which the fragments do not state."
+  },
+  {
+   "compiled_id": "C-02",
+   "t3_ids": [
+    "R-02"
+   ],
+   "r_ids": [
+    "R-02"
+   ],
+   "relation": "PARTIAL",
+   "note": "'The orchestrator opens T_M once' matches. It is merged with commit, abort and the seam prohibitions."
+  },
+  {
+   "compiled_id": "C-03",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "No row says the orchestrator passes the document Database and T_M to SL-1/SL-2/SL-4 (15.3 caller-owned Database/Transaction). R-03 and R-10 only presuppose T_M."
+  },
+  {
+   "compiled_id": "C-04",
+   "t3_ids": [
+    "R-02"
+   ],
+   "r_ids": [
+    "R-02"
+   ],
+   "relation": "PARTIAL",
+   "note": "'alone commits' matches. The precondition is missing: PV checks and the PA-10 consistency check before Commit()."
+  },
+  {
+   "compiled_id": "C-05",
+   "t3_ids": [
+    "R-02"
+   ],
+   "r_ids": [
+    "R-02"
+   ],
+   "relation": "PARTIAL",
+   "note": "'alone ... aborts' matches. Missing: disposal after Abort() (count back to 0) and the triggers (PRE/POST-WRITE seam failure, PV inconsistency)."
+  },
+  {
+   "compiled_id": "C-06",
+   "t3_ids": [
+    "R-03"
+   ],
+   "r_ids": [
+    "R-03"
+   ],
+   "relation": "PARTIAL",
+   "note": "R-03 uses the obsolete mechanism: a direct TopTransaction.UnmanagedObject == T_M.UnmanagedObject comparison instead of the typed authority IsTopTransaction(myTransaction) -> YES/NO/UNKNOWN."
+  },
+  {
+   "compiled_id": "C-07",
+   "t3_ids": [
+    "R-03"
+   ],
+   "r_ids": [
+    "R-03"
+   ],
+   "relation": "PARTIAL",
+   "note": "R-03 makes UnmanagedObject the contract mechanism. In 4.2 it is only an internal detail of the authority ('never an identity the contract stores')."
+  },
+  {
+   "compiled_id": "C-08",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Neither list rejects a stale, disposed or null wrapper. A raw pointer comparison can give a false YES after pointer reuse (E6-C8)."
+  },
+  {
+   "compiled_id": "C-09",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The 'never compares with a stored value' rule is absent."
+  },
+  {
+   "compiled_id": "C-10",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Absent, although 15.3 also says 'No native pointer is persisted as an identity'."
+  },
+  {
+   "compiled_id": "C-11",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Pointer-as-log-key prohibition absent."
+  },
+  {
+   "compiled_id": "C-12",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Identity-check logging (boolean result plus sequence number) absent."
+  },
+  {
+   "compiled_id": "C-13",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "BA-06 D-13 keeps the transaction and lock sites 'for E-06 sampling', but no R row requires the count sampling."
+  },
+  {
+   "compiled_id": "C-14",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Separate logging of side-DB transactions absent."
+  },
+  {
+   "compiled_id": "C-15",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Exclusion of side-DB transactions from the document count absent."
+  },
+  {
+   "compiled_id": "C-16",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The events-are-never-proof rule is absent. BA-06 §7 uses T-2 transaction events as a 'primary' trace source, which is only for the dynamic trace, not E-06 proof."
+  },
+  {
+   "compiled_id": "C-17",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Instrumentation-requirement fallback absent."
+  },
+  {
+   "compiled_id": "C-18",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "P0 = 0 absent."
+  },
+  {
+   "compiled_id": "C-19",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "PL = 0 absent."
+  },
+  {
+   "compiled_id": "C-20",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The before-import count of 0 is absent. R-16 'run before T_M' implies it only indirectly."
+  },
+  {
+   "compiled_id": "C-21",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "After-import count = 0 absent."
+  },
+  {
+   "compiled_id": "C-22",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "PS = 1 (T_M, IsTopTransaction = YES) absent."
+  },
+  {
+   "compiled_id": "C-23",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "PV = 1 with no nested transaction absent."
+  },
+  {
+   "compiled_id": "C-24",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "IsTopTransaction(T_M) = YES at PS and PV is absent. R-03 checks only at the seam, before the write."
+  },
+  {
+   "compiled_id": "C-25",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Post-Commit and post-Abort+dispose count = 0 absent."
+  },
+  {
+   "compiled_id": "C-26",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "R-20 says SL-6 is read-only but does not require the verifier's own read transaction per scope (0 -> 1 -> 0)."
+  },
+  {
+   "compiled_id": "C-27",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "E-06 UNKNOWN (instrument throws or is unavailable) absent."
+  },
+  {
+   "compiled_id": "C-28",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "E-06 UNKNOWN (negative or impossible value) absent."
+  },
+  {
+   "compiled_id": "C-29",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Source cross-check absent."
+  },
+  {
+   "compiled_id": "C-30",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Unobserved-change UNKNOWN absent."
+  },
+  {
+   "compiled_id": "C-31",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Missing-sample UNKNOWN absent."
+  },
+  {
+   "compiled_id": "C-32",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "IsTopTransaction-undecidable UNKNOWN absent."
+  },
+  {
+   "compiled_id": "C-33",
+   "t3_ids": [
+    "R-19"
+   ],
+   "r_ids": [
+    "R-19"
+   ],
+   "relation": "PARTIAL",
+   "note": "R-19 forbids OpenCloseTransaction only inside SL-1/2/4. The contract bars the whole mirror path, the orchestrator included, from reaching LateralHeaderDrawService.ReadBlockName (4.2 blind spots, P-5; 15.3, F-6)."
+  },
+  {
+   "compiled_id": "C-34",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Qualification control E6-C1 absent."
+  },
+  {
+   "compiled_id": "C-35",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "E6-C2 absent."
+  },
+  {
+   "compiled_id": "C-36",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "E6-C3 absent."
+  },
+  {
+   "compiled_id": "C-37",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "E6-C4 absent."
+  },
+  {
+   "compiled_id": "C-38",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "E6-C5 absent."
+  },
+  {
+   "compiled_id": "C-39",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "E6-C6 absent."
+  },
+  {
+   "compiled_id": "C-40",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "E6-C7 absent. It is the qualification of the authority that R-03 should use."
+  },
+  {
+   "compiled_id": "C-41",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "E6-C8 STALE_WRAPPER_CONTROL is absent. BA-06 §5 lists 'TopTransaction wrapper identity and UnmanagedObject semantics, on which the R-03 check relies' as a residual instead of pointing to this control."
+  },
+  {
+   "compiled_id": "C-42",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "BA-06 D-03 and §6 say the static cache is not used by the mirror path, but no row performs the explicit PREPARE-R invalidation that 19.1 step 5 requires."
+  },
+  {
+   "compiled_id": "C-43",
+   "t3_ids": [
+    "R-18"
+   ],
+   "r_ids": [
+    "R-18"
+   ],
+   "relation": "PARTIAL",
+   "note": "R-18 says 'The orchestrator or PREPARE makes the copy'. It leaves out 'once', 'run-scoped' and the streaming acquisition."
+  },
+  {
+   "compiled_id": "C-44",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Write-deny open of the source absent."
+  },
+  {
+   "compiled_id": "C-45",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The streaming SHA-256 over the copied bytes is absent."
+  },
+  {
+   "compiled_id": "C-46",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Absent. PA-6 supersedes it as the authority, so it needs no separate row (see DF-35)."
+  },
+  {
+   "compiled_id": "C-47",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Torn-acquisition authority A absent."
+  },
+  {
+   "compiled_id": "C-48",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Torn-acquisition authority B absent."
+  },
+  {
+   "compiled_id": "C-49",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "ACQUISITION_AUTHORITY recording absent."
+  },
+  {
+   "compiled_id": "C-50",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Refusal (O1) when neither authority holds is absent."
+  },
+  {
+   "compiled_id": "C-51",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "LibraryInputRecord absent."
+  },
+  {
+   "compiled_id": "C-52",
+   "t3_ids": [
+    "R-18"
+   ],
+   "r_ids": [
+    "R-18"
+   ],
+   "relation": "PARTIAL",
+   "note": "R-18 says the orchestrator or PREPARE 'opens it'. It leaves out 'fully read into memory'."
+  },
+  {
+   "compiled_id": "C-53",
+   "t3_ids": [
+    "R-18"
+   ],
+   "r_ids": [
+    "R-18"
+   ],
+   "relation": "PARTIAL",
+   "note": "Implied by 'already-opened library DB of a PRIVATE COPY', not stated as a prohibition."
+  },
+  {
+   "compiled_id": "C-54",
+   "t3_ids": [
+    "R-18"
+   ],
+   "r_ids": [
+    "R-18"
+   ],
+   "relation": "PARTIAL",
+   "note": "'clones only from ... PRIVATE COPY' implies no import read of the original. ORIGINAL_SOURCE_IMPORT_READ and AUTHORITY_INVALID are not named."
+  },
+  {
+   "compiled_id": "C-55",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "AUTHORITY_INVALID -> INVALID with a mandatory ruling is absent."
+  },
+  {
+   "compiled_id": "C-56",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "PRODUCT_OR_SEAM_DEFECT finding absent."
+  },
+  {
+   "compiled_id": "C-57",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "No-PASS rule absent."
+  },
+  {
+   "compiled_id": "C-58",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "R-18 says 'disposes it after use'. It does not require retaining the copy against write and delete for the whole run."
+  },
+  {
+   "compiled_id": "C-59",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Cache key by copy hash plus generation id absent."
+  },
+  {
+   "compiled_id": "C-60",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Generation-id increment absent."
+  },
+  {
+   "compiled_id": "C-61",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Drift observation through ORIGINAL_SOURCE_VERIFICATION_READ absent."
+  },
+  {
+   "compiled_id": "C-62",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The rule that verification reads never feed the Database is absent."
+  },
+  {
+   "compiled_id": "C-63",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "SOURCE_DRIFT_AFTER_ACQUISITION absent."
+  },
+  {
+   "compiled_id": "C-64",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The rule that drift does not stop the import is absent."
+  },
+  {
+   "compiled_id": "C-65",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Post-run re-hash of the copy absent."
+  },
+  {
+   "compiled_id": "C-66",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "SOURCE_SWAP_CONTROL absent."
+  },
+  {
+   "compiled_id": "C-67",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Disclosure of drift in the Owner Act 2 evidence absent."
+  },
+  {
+   "compiled_id": "C-68",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Acquisition UNKNOWN (cannot hash or copy) absent."
+  },
+  {
+   "compiled_id": "C-69",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Copy-hash-differs UNKNOWN absent."
+  },
+  {
+   "compiled_id": "C-70",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Acquire-returns-nothing-or-throws UNKNOWN absent. R-17 concerns the SL-5 result, not the acquire."
+  },
+  {
+   "compiled_id": "C-71",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The BEFORE_CT21D_EXECUTION gate is absent. It is a sequencing gate, not a runtime operation."
+  },
+  {
+   "compiled_id": "C-72",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "PRE_COMMAND_STATE_RECORD (including the homologue fingerprints) absent."
+  },
+  {
+   "compiled_id": "C-73",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "PREPARE-R static dependency closure absent. R-17's 'Found/Missing per requirement' is a result field, not the closure."
+  },
+  {
+   "compiled_id": "C-74",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The import-only-what-PREPARE-R-decided rule is absent."
+  },
+  {
+   "compiled_id": "C-75",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Pre-first-import re-observation absent."
+  },
+  {
+   "compiled_id": "C-76",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Mismatch -> no import, O1, empty manifest is absent."
+  },
+  {
+   "compiled_id": "C-77",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Allow-list gate on the declared cloning mode absent."
+  },
+  {
+   "compiled_id": "C-78",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Re-hash of the copy before each import absent."
+  },
+  {
+   "compiled_id": "C-79",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The O2 stop on a copy re-hash mismatch is absent."
+  },
+  {
+   "compiled_id": "C-80",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Generation-id revalidation absent."
+  },
+  {
+   "compiled_id": "C-81",
+   "t3_ids": [
+    "R-16",
+    "R-18"
+   ],
+   "r_ids": [
+    "R-16",
+    "R-18"
+   ],
+   "relation": "PARTIAL",
+   "note": "R-16 'import is PREPARE-W' and R-18 'SL-5 clones' match. 'Exactly the ADD set of that closure' is absent."
+  },
+  {
+   "compiled_id": "C-82",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "No R row requires a verified non-replacing cloning mode. DuplicateRecordCloning.Ignore appears only as a product fact (BA-06 U-08)."
+  },
+  {
+   "compiled_id": "C-83",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "MODIFY_PREEXISTING = PROHIBITED absent."
+  },
+  {
+   "compiled_id": "C-84",
+   "t3_ids": [
+    "R-17"
+   ],
+   "r_ids": [
+    "R-17"
+   ],
+   "relation": "PARTIAL",
+   "note": "R-17 requires a structured result but not the declared cloning mode."
+  },
+  {
+   "compiled_id": "C-85",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "FAIL/UNKNOWN cloning control absent."
+  },
+  {
+   "compiled_id": "C-86",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The never-silently-permit-replacement rule is absent."
+  },
+  {
+   "compiled_id": "C-87",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "CLONE_NON_REPLACE_CONTROL absent."
+  },
+  {
+   "compiled_id": "C-88",
+   "t3_ids": [
+    "R-18"
+   ],
+   "r_ids": [
+    "R-18"
+   ],
+   "relation": "SAME",
+   "note": "'SL-5 clones only from an already-opened library DB of a PRIVATE COPY' expresses it. 'never a path to the original source' is implicit."
+  },
+  {
+   "compiled_id": "C-89",
+   "t3_ids": [
+    "R-16",
+    "R-01"
+   ],
+   "r_ids": [
+    "R-16",
+    "R-01"
+   ],
+   "relation": "PARTIAL",
+   "note": "R-16 says 'run before T_M' where the contract says 'outside T_M'. R-01 gives the lock. 'callee transactions allowed (AUTH-12 pattern)' is absent."
+  },
+  {
+   "compiled_id": "C-90",
+   "t3_ids": [
+    "R-17"
+   ],
+   "r_ids": [
+    "R-17"
+   ],
+   "relation": "PARTIAL",
+   "note": "R-17 has a structured result with a failure cause. It does not state the explicit structured success, or UNKNOWN when there is none."
+  },
+  {
+   "compiled_id": "C-91",
+   "t3_ids": [
+    "R-17"
+   ],
+   "r_ids": [
+    "R-17"
+   ],
+   "relation": "PARTIAL",
+   "note": "'Found/Missing per requirement' resembles the post-import re-query (U-09). Fingerprint confirmation and UNKNOWN when unconfirmed are absent."
+  },
+  {
+   "compiled_id": "C-92",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Fingerprint of each imported definition absent."
+  },
+  {
+   "compiled_id": "C-93",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The manifest-admission order (after the fingerprint) is absent."
+  },
+  {
+   "compiled_id": "C-94",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Homologue fingerprint re-read after each import absent."
+  },
+  {
+   "compiled_id": "C-95",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The newly-present = ADD set check is absent."
+  },
+  {
+   "compiled_id": "C-96",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "PREPARE_RESIDUE_MANIFEST absent."
+  },
+  {
+   "compiled_id": "C-97",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "REUSED_BOUND marking absent."
+  },
+  {
+   "compiled_id": "C-98",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The rule that the manifest persists after an abort is absent."
+  },
+  {
+   "compiled_id": "C-99",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The rule that a failed import stays out of the manifest is absent."
+  },
+  {
+   "compiled_id": "C-100",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The rule that a partial failure is never expected residue is absent."
+  },
+  {
+   "compiled_id": "C-101",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The run stop on a failed import is absent. R-17 only reports a cause."
+  },
+  {
+   "compiled_id": "C-102",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "ABORT-VERIFY comparison absent."
+  },
+  {
+   "compiled_id": "C-103",
+   "t3_ids": [
+    "R-04"
+   ],
+   "r_ids": [
+    "R-04"
+   ],
+   "relation": "PARTIAL",
+   "note": "R-04 over-specifies with 'EVERY fondo k = 0..SelectiveDepthLayout.Count-1', a product-path reading. The clause says only 'one per depth k'. BA-06 §10.2 SH-FN has a single frontal of a multi-fondo rack."
+  },
+  {
+   "compiled_id": "C-104",
+   "t3_ids": [
+    "R-05"
+   ],
+   "r_ids": [
+    "R-05"
+   ],
+   "relation": "SAME",
+   "note": "'Create the planta definition in the same T_M'."
+  },
+  {
+   "compiled_id": "C-105",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Not required by sealed scope V1 (lateral out, V17 L-01). Its absence is acceptable for V1."
+  },
+  {
+   "compiled_id": "C-106",
+   "t3_ids": [
+    "R-10",
+    "R-11"
+   ],
+   "r_ids": [
+    "R-10",
+    "R-11"
+   ],
+   "relation": "PARTIAL",
+   "note": "R-10 (append via T_M, no jig) and R-11 (from the computed transform) together express it. R-10 fixes 'model space' where the contract says 'target space'."
+  },
+  {
+   "compiled_id": "C-107",
+   "t3_ids": [
+    "R-20"
+   ],
+   "r_ids": [
+    "R-20"
+   ],
+   "relation": "SAME",
+   "note": "The read-only verifier role matches. R-20's verification content differs from 15.7 (see C-169..C-174)."
+  },
+  {
+   "compiled_id": "C-108",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "SL-3 only. BA-06 §8 says AUTH-15 evidence does not transfer to SL-1/SL-2 by family name, but it says nothing about SL-3."
+  },
+  {
+   "compiled_id": "C-109",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "EQ-1 (SL-3, future prerequisite) absent."
+  },
+  {
+   "compiled_id": "C-110",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "EQ-2 absent."
+  },
+  {
+   "compiled_id": "C-111",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "EQ-3 absent."
+  },
+  {
+   "compiled_id": "C-112",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "EQ-4 absent."
+  },
+  {
+   "compiled_id": "C-113",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "EQ-5 absent."
+  },
+  {
+   "compiled_id": "C-114",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The no-AUTH-15-evidence-transfer-to-SL-3 rule is absent."
+  },
+  {
+   "compiled_id": "C-115",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The 15.3 caller-owned-Database clause (never open a database of its own) is absent."
+  },
+  {
+   "compiled_id": "C-116",
+   "t3_ids": [
+    "R-03"
+   ],
+   "r_ids": [
+    "R-03"
+   ],
+   "relation": "PARTIAL",
+   "note": "The check before any write matches. The mechanism is obsolete (raw UnmanagedObject equality), and NO/UNKNOWN -> PRE-WRITE TransactionMismatch is absent."
+  },
+  {
+   "compiled_id": "C-117",
+   "t3_ids": [
+    "R-02"
+   ],
+   "r_ids": [
+    "R-02"
+   ],
+   "relation": "SAME",
+   "note": "'no seam calls Commit'. The static guard is not mentioned."
+  },
+  {
+   "compiled_id": "C-118",
+   "t3_ids": [
+    "R-02"
+   ],
+   "r_ids": [
+    "R-02"
+   ],
+   "relation": "SAME",
+   "note": "'no seam calls ... Abort'. The static guard is not mentioned."
+  },
+  {
+   "compiled_id": "C-119",
+   "t3_ids": [
+    "R-02"
+   ],
+   "r_ids": [
+    "R-02"
+   ],
+   "relation": "SAME",
+   "note": "'no seam calls ... Dispose on T_M'. The static guard is not mentioned."
+  },
+  {
+   "compiled_id": "C-120",
+   "t3_ids": [
+    "R-01"
+   ],
+   "r_ids": [
+    "R-01"
+   ],
+   "relation": "SAME",
+   "note": "'the seams take none'. The static guard is not mentioned."
+  },
+  {
+   "compiled_id": "C-121",
+   "t3_ids": [
+    "R-19"
+   ],
+   "r_ids": [
+    "R-19"
+   ],
+   "relation": "SAME",
+   "note": "'No ... OpenCloseTransaction ... in SL-1/2/4'. The static guard is not mentioned."
+  },
+  {
+   "compiled_id": "C-122",
+   "t3_ids": [
+    "R-19"
+   ],
+   "r_ids": [
+    "R-19"
+   ],
+   "relation": "SAME",
+   "note": "'No ... side-DB write'. The static guard is not mentioned."
+  },
+  {
+   "compiled_id": "C-123",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "No row requires the static guards."
+  },
+  {
+   "compiled_id": "C-124",
+   "t3_ids": [
+    "R-06"
+   ],
+   "r_ids": [
+    "R-06"
+   ],
+   "relation": "PARTIAL",
+   "note": "R-06 requires determinism for names only. The clause covers effective name, definition content and result."
+  },
+  {
+   "compiled_id": "C-125",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "No row requires PRE-WRITE/POST-WRITE typed failures for SL-1..SL-4. R-08 and R-21 only say 'fail'."
+  },
+  {
+   "compiled_id": "C-126",
+   "t3_ids": [
+    "R-07"
+   ],
+   "r_ids": [
+    "R-07"
+   ],
+   "relation": "PARTIAL",
+   "note": "'caller-composed envelope' presupposes it but does not assign the operation to ORCH."
+  },
+  {
+   "compiled_id": "C-127",
+   "t3_ids": [
+    "R-07"
+   ],
+   "r_ids": [
+    "R-07"
+   ],
+   "relation": "SAME",
+   "note": "'Write the caller-composed envelope verbatim'."
+  },
+  {
+   "compiled_id": "C-128",
+   "t3_ids": [
+    "R-08"
+   ],
+   "r_ids": [
+    "R-08"
+   ],
+   "relation": "SAME",
+   "note": "'Read the envelope back in T_M'."
+  },
+  {
+   "compiled_id": "C-129",
+   "t3_ids": [
+    "R-08"
+   ],
+   "r_ids": [
+    "R-08"
+   ],
+   "relation": "SAME",
+   "note": "'compare ordinally; fail on mismatch'. The typed POST-WRITE failure EnvelopeReadbackMismatch is not named."
+  },
+  {
+   "compiled_id": "C-130",
+   "t3_ids": [
+    "R-07"
+   ],
+   "r_ids": [
+    "R-07"
+   ],
+   "relation": "PARTIAL",
+   "note": "'verbatim' implies no rewrite. 'never restamps or reinterprets' and the NewRackId no-restamp rule (15.5) are absent."
+  },
+  {
+   "compiled_id": "C-131",
+   "t3_ids": [
+    "R-04",
+    "R-05",
+    "R-10"
+   ],
+   "r_ids": [
+    "R-04",
+    "R-05",
+    "R-10"
+   ],
+   "relation": "PARTIAL",
+   "note": "Each creation row says 'in T_M'. The single-transaction clause is not stated as its own requirement."
+  },
+  {
+   "compiled_id": "C-132",
+   "t3_ids": [
+    "R-19",
+    "R-01"
+   ],
+   "r_ids": [
+    "R-19",
+    "R-01"
+   ],
+   "relation": "PARTIAL",
+   "note": "R-19 (no side-DB write) and R-01 (lock) cover parts. 'only document-database objects ... in the caller's transaction' is not stated."
+  },
+  {
+   "compiled_id": "C-133",
+   "t3_ids": [
+    "R-19"
+   ],
+   "r_ids": [
+    "R-19"
+   ],
+   "relation": "SAME",
+   "note": "'No ... compensating cleanup in SL-1/2/4'."
+  },
+  {
+   "compiled_id": "C-134",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The plan's declaration of required library blocks is absent. R-17 and R-21 presuppose it."
+  },
+  {
+   "compiled_id": "C-135",
+   "t3_ids": [
+    "R-16"
+   ],
+   "r_ids": [
+    "R-16"
+   ],
+   "relation": "PARTIAL",
+   "note": "R-16's seam column is 'SL-5 vs SL-1/2'. The contract also forbids SL-4 (and SL-3 if authorized) from importing."
+  },
+  {
+   "compiled_id": "C-136",
+   "t3_ids": [
+    "R-21"
+   ],
+   "r_ids": [
+    "R-21"
+   ],
+   "relation": "PARTIAL",
+   "note": "'Missing library pieces fail the seam'. The typed failure MissingLibraryBlocks and its PRE/POST-WRITE classification are absent. The verdict still reads DEMOTE."
+  },
+  {
+   "compiled_id": "C-137",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The never-success-over-a-partially-written-definition rule is absent."
+  },
+  {
+   "compiled_id": "C-138",
+   "t3_ids": [
+    "R-06"
+   ],
+   "r_ids": [
+    "R-06"
+   ],
+   "relation": "PARTIAL",
+   "note": "Only EffectiveBlockName ('report them to the caller'). IsSuccess, DefinitionId, MissingInstances and Diagnostic are absent."
+  },
+  {
+   "compiled_id": "C-139",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "SL-4 ReferenceId absent."
+  },
+  {
+   "compiled_id": "C-140",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The handles of all created objects are absent. They feed the sealed list and the PA-10 domain. R-06's nested names are not handles."
+  },
+  {
+   "compiled_id": "C-141",
+   "t3_ids": [
+    "R-03"
+   ],
+   "r_ids": [
+    "R-03"
+   ],
+   "relation": "PARTIAL",
+   "note": "Only the transaction check is placed 'before any write'. The other PRE-WRITE validations are not ordered before the first write."
+  },
+  {
+   "compiled_id": "C-142",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "InvalidPlan absent."
+  },
+  {
+   "compiled_id": "C-143",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "InvalidBlockName absent."
+  },
+  {
+   "compiled_id": "C-144",
+   "t3_ids": [
+    "R-07"
+   ],
+   "r_ids": [
+    "R-07"
+   ],
+   "relation": "PARTIAL",
+   "note": "'never skip it silently' implies an invalid or empty envelope must fail. InvalidEnvelope (PRE-WRITE) is not named."
+  },
+  {
+   "compiled_id": "C-145",
+   "t3_ids": [
+    "R-12"
+   ],
+   "r_ids": [
+    "R-12"
+   ],
+   "relation": "PARTIAL",
+   "note": "'determinant strictly positive' matches. The InvalidTransform PRE-WRITE failure is absent."
+  },
+  {
+   "compiled_id": "C-146",
+   "t3_ids": [
+    "R-12"
+   ],
+   "r_ids": [
+    "R-12"
+   ],
+   "relation": "PARTIAL",
+   "note": "'no negative scale' matches. 'scale within the kind's declared tolerance' and InvalidTransform are absent."
+  },
+  {
+   "compiled_id": "C-147",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "TargetSpaceInvalid is absent. R-10 hard-codes 'model space'."
+  },
+  {
+   "compiled_id": "C-148",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "DefinitionWriteFailed absent."
+  },
+  {
+   "compiled_id": "C-149",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "EnvelopeWriteFailed absent."
+  },
+  {
+   "compiled_id": "C-150",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "ReferencePlacementFailed absent."
+  },
+  {
+   "compiled_id": "C-151",
+   "t3_ids": [
+    "R-09"
+   ],
+   "r_ids": [
+    "R-09"
+   ],
+   "relation": "SAME",
+   "note": "'The orchestrator mints NewRackId once' (per logical rack implied)."
+  },
+  {
+   "compiled_id": "C-152",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The never-equal-to-the-source-id rule is absent."
+  },
+  {
+   "compiled_id": "C-153",
+   "t3_ids": [
+    "R-09"
+   ],
+   "r_ids": [
+    "R-09"
+   ],
+   "relation": "SAME",
+   "note": "'identical in every sibling envelope'."
+  },
+  {
+   "compiled_id": "C-154",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The different-logical-racks-get-different-ids rule is absent."
+  },
+  {
+   "compiled_id": "C-155",
+   "t3_ids": [
+    "R-06"
+   ],
+   "r_ids": [
+    "R-06"
+   ],
+   "relation": "PARTIAL",
+   "note": "'Compute effective names ... deterministically'. The family policy and the uniqueness requirement are not named."
+  },
+  {
+   "compiled_id": "C-156",
+   "t3_ids": [
+    "R-06"
+   ],
+   "r_ids": [
+    "R-06"
+   ],
+   "relation": "PARTIAL",
+   "note": "Only the '(+ORCH)' seam tag hints at it. The PREPARE-R computation of expected names under the lock is not stated."
+  },
+  {
+   "compiled_id": "C-157",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Recording of the expected names absent."
+  },
+  {
+   "compiled_id": "C-158",
+   "t3_ids": [
+    "R-06"
+   ],
+   "r_ids": [
+    "R-06"
+   ],
+   "relation": "SAME",
+   "note": "'report them to the caller'."
+  },
+  {
+   "compiled_id": "C-159",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The rule that the sealed list uses the effective names is absent."
+  },
+  {
+   "compiled_id": "C-160",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "R-06's verdict explicitly REJECTS the empty-name sub-claim on product reachability (F-20), although 15.5 makes it a failure. BA-06 D-14 (outside §3.2) only 'records' a non-empty postcondition."
+  },
+  {
+   "compiled_id": "C-161",
+   "t3_ids": [
+    "R-11"
+   ],
+   "r_ids": [
+    "R-11"
+   ],
+   "relation": "PARTIAL",
+   "note": "'from the computed transform'. Supply by the orchestrator (RACKMIRROR reflection, mu_k) is not stated."
+  },
+  {
+   "compiled_id": "C-162",
+   "t3_ids": [
+    "R-13"
+   ],
+   "r_ids": [
+    "R-13"
+   ],
+   "relation": "SAME",
+   "note": "'Set the layer and other entity properties from the plan'."
+  },
+  {
+   "compiled_id": "C-163",
+   "t3_ids": [
+    "R-14"
+   ],
+   "r_ids": [
+    "R-14"
+   ],
+   "relation": "SAME",
+   "note": "'Apply dynamic properties to the top-level ref inside T_M'."
+  },
+  {
+   "compiled_id": "C-164",
+   "t3_ids": [
+    "R-15"
+   ],
+   "r_ids": [
+    "R-15"
+   ],
+   "relation": "SAME",
+   "note": "'Call RecordGraphicsModified on the top-level ref inside T_M'."
+  },
+  {
+   "compiled_id": "C-165",
+   "t3_ids": [
+    "R-10"
+   ],
+   "r_ids": [
+    "R-10"
+   ],
+   "relation": "PARTIAL",
+   "note": "R-10 says 'model space' where the contract says 'target space'."
+  },
+  {
+   "compiled_id": "C-166",
+   "t3_ids": [
+    "R-10",
+    "R-19"
+   ],
+   "r_ids": [
+    "R-10",
+    "R-19"
+   ],
+   "relation": "SAME",
+   "note": "R-10 'with no jig'."
+  },
+  {
+   "compiled_id": "C-167",
+   "t3_ids": [
+    "R-10",
+    "R-19"
+   ],
+   "r_ids": [
+    "R-10",
+    "R-19"
+   ],
+   "relation": "SAME",
+   "note": "R-10 'no ... prompt'; R-19 'No interaction'."
+  },
+  {
+   "compiled_id": "C-168",
+   "t3_ids": [
+    "R-15"
+   ],
+   "r_ids": [
+    "R-15"
+   ],
+   "relation": "SAME",
+   "note": "'with no post-commit graphics writes'."
+  },
+  {
+   "compiled_id": "C-169",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "R-20 does not require RackBlockFinder.ScanEnvelopes."
+  },
+  {
+   "compiled_id": "C-170",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "R-20 cites RackBlockData.cs:54-89 in its gap column as an existing primitive, but does not require RackBlockData.Read."
+  },
+  {
+   "compiled_id": "C-171",
+   "t3_ids": [
+    "R-20"
+   ],
+   "r_ids": [
+    "R-20"
+   ],
+   "relation": "PARTIAL",
+   "note": "'envelope equality with expected'. The typed canonical form of the Selective design document is absent."
+  },
+  {
+   "compiled_id": "C-172",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Independence from the writer and mu_k is absent. R-20's 'expected transform' check may conflict with it."
+  },
+  {
+   "compiled_id": "C-173",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "The Resolve-secondary-only rule is absent."
+  },
+  {
+   "compiled_id": "C-174",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Scan completeness against the sealed list is absent."
+  },
+  {
+   "compiled_id": "C-175",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Sealing of the created-object list and of PROTECTED_OBJECTS is absent."
+  },
+  {
+   "compiled_id": "C-176",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "PA-10 plan-determinable protected objects absent."
+  },
+  {
+   "compiled_id": "C-177",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Objects created in T_M by handle are absent. This depends on C-140."
+  },
+  {
+   "compiled_id": "C-178",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Phase-A adjudication absent."
+  },
+  {
+   "compiled_id": "C-179",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Out-of-domain recording absent."
+  },
+  {
+   "compiled_id": "C-180",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Phase C (W-SCAN) absent."
+  },
+  {
+   "compiled_id": "C-181",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "PV consistency check and abort before Commit() absent."
+  },
+  {
+   "compiled_id": "C-182",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Ambiguous-event fail-closed absent."
+  },
+  {
+   "compiled_id": "C-183",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "EVM_INCOMPLETE absent."
+  },
+  {
+   "compiled_id": "C-184",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Control-plane procedure, not a seam operation. It is realized by BA-06 §3 itself."
+  },
+  {
+   "compiled_id": "C-185",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Control plane. Addressed by BA-06 §2 (PA-11 conditions)."
+  },
+  {
+   "compiled_id": "C-186",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Control plane. Addressed by BA-06 §3.3, §7 (reconciliation rule) and §9."
+  },
+  {
+   "compiled_id": "C-187",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Control plane. Addressed by BA-06 §9."
+  },
+  {
+   "compiled_id": "C-188",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Control plane. BA-06 §9 PARAM-01 is UNSET."
+  },
+  {
+   "compiled_id": "C-189",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Control plane. Addressed by BA-06 §12."
+  },
+  {
+   "compiled_id": "C-190",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Control plane. BA-06 §12 EXPLANATION_TYPE."
+  },
+  {
+   "compiled_id": "C-191",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Control plane. BA-06 §12 EXPLANATION_TYPE and RISK_LABEL."
+  },
+  {
+   "compiled_id": "C-192",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Control plane. BA-06 §12 ('never a free-standing permission')."
+  },
+  {
+   "compiled_id": "C-193",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Control plane. BA-06 §5 last paragraph and §7."
+  },
+  {
+   "compiled_id": "C-194",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Control plane. BA-06 §5 and §7."
+  },
+  {
+   "compiled_id": "C-195",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Control plane. BA-06 §12 has VERSION and HASH. There is no model-status field (DRAFT/UNDER_REVIEW/FROZEN(hash)); REVIEW_STATUS is per entry."
+  },
+  {
+   "compiled_id": "C-196",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Control plane. BA-06 §10.1."
+  },
+  {
+   "compiled_id": "C-197",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Control plane. BA-06 §10.1 and §10.3."
+  },
+  {
+   "compiled_id": "C-198",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Control plane. BA-06 §1 and §2."
+  },
+  {
+   "compiled_id": "C-199",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Control plane. BA-06 §7 (plan submitted)."
+  },
+  {
+   "compiled_id": "C-200",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Control plane. BA-06 §1 E2 and §7."
+  },
+  {
+   "compiled_id": "C-201",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Control plane. BA-06 §1 and §9."
+  },
+  {
+   "compiled_id": "C-202",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Control plane. BA-06 header INVENTORY_COMPLETENESS."
+  },
+  {
+   "compiled_id": "C-203",
+   "t3_ids": [],
+   "r_ids": [],
+   "relation": "MISSING_IN_T3_AND_R",
+   "note": "Control plane. BA-06 §1 last line and §7 reconciliation rule."
+  }
+ ],
+ "t3_or_r_only": [
+  {
+   "id": "R-01 (sub-claim: 'ONE document lock spanning PREPARE-W and T_M')",
+   "source": "T3 R-01 = BA-06 V2 §3.2 R-01 (identical text)",
+   "clause_support": "Partial. 'no `LockDocument` | forbidden; the orchestrator holds the lock' (V2.1 15.3); '(outside `T_M`, under the lock)' (15.2); 'PREPARE-R computes the expected effective names under the lock' (15.5). No clause says a single continuous lock spans the phases. PREPARE-R is omitted from R-01.",
+   "resolution": "REWORD: the orchestrator holds the document lock for PREPARE-R, the SL-5 import and every seam write. Do not assert one continuous lock (DF-01)."
+  },
+  {
+   "id": "R-04 (sub-claim: 'EVERY fondo k = 0..SelectiveDepthLayout.Count-1')",
+   "source": "T3 R-04 = BA-06 V2 §3.2 R-04",
+   "clause_support": "Only 'create the **frontal** view definition (one per depth `k`)' (V2.1 15.2). 'EVERY' and 'SelectiveDepthLayout.Count' are NONE; they are a product-path reading.",
+   "resolution": "REWORD: one frontal definition per depth k the plan requests (DF-05)."
+  },
+  {
+   "id": "R-06 (sub-claim: effective names '(view and nested)')",
+   "source": "T3 R-06 = BA-06 V2 §3.2 R-06",
+   "clause_support": "NONE for nested names. 15.4 returns a single `EffectiveBlockName` plus 'the **handles of all created objects**'. 15.5: 'the seam returns the effective name it used'.",
+   "resolution": "REWORD: return EffectiveBlockName for the view definition and handles for every created object, nested definitions included. Nested names are not a contract requirement (DF-07)."
+  },
+  {
+   "id": "R-07 (sub-claim: 'never skip it silently')",
+   "source": "T3 R-07 = BA-06 V2 §3.2 R-07",
+   "clause_support": "Indirect: 'the envelope is composed **by the caller** and written **verbatim**' (15.3); '`InvalidEnvelope` | PRE-WRITE | nothing was written' (15.4); 'structured failure' (15.3).",
+   "resolution": "KEEP with clause, restated as a typed failure: a missing or invalid envelope is InvalidEnvelope (PRE-WRITE), never a silent skip (DF-08)."
+  },
+  {
+   "id": "R-08 (sub-claim: compare 'ordinally')",
+   "source": "T3 R-08 = BA-06 V2 §3.2 R-08",
+   "clause_support": "Only 'the seam reads it back and compares (AUTH-15 pattern)' (15.3). 'Ordinal' is the AUTH-15 implementation fact (critic F-22), not the clause text.",
+   "resolution": "KEEP, citing '(AUTH-15 pattern)'. Name the POST-WRITE failure EnvelopeReadbackMismatch (DF-09)."
+  },
+  {
+   "id": "R-10 (sub-claim: 'exactly one ref per definition')",
+   "source": "T3 R-10 = BA-06 V2 §3.2 R-10",
+   "clause_support": "NONE explicit. 15.2 SL-4 'place the block reference' (singular) at most implies one reference per SL-4 call.",
+   "resolution": "REWORD: drop it as a contract requirement, or restate it as a plan-derived expectation checked by SL-6 against the sealed list (DF-11)."
+  },
+  {
+   "id": "R-10 (sub-claim: 'to model space')",
+   "source": "T3 R-10 = BA-06 V2 §3.2 R-10",
+   "clause_support": "NONE. The contract says 'creates the reference in the target space in the caller's transaction' (15.6) and '`TargetSpaceInvalid` | PRE-WRITE' (15.4).",
+   "resolution": "REWORD to 'target space' (DF-11)."
+  },
+  {
+   "id": "R-11 (sub-claim: 'Set Position, ScaleFactors, Rotation and Normal')",
+   "source": "T3 R-11 = BA-06 V2 §3.2 R-11",
+   "clause_support": "NONE for the property list, which is an implementation decomposition. The clauses are 'from a computed transform (no jig)' (15.2) and 'The orchestrator supplies the computed common transform (RACKMIRROR reflection, `mu_k`)' (15.6).",
+   "resolution": "REWORD: apply the orchestrator-supplied computed transform. Keep the property list as an implementation note (DF-12)."
+  },
+  {
+   "id": "R-16 (sub-claim: import 'run before T_M')",
+   "source": "T3 R-16 = BA-06 V2 §3.2 R-16",
+   "clause_support": "Partial. The clause says '(outside `T_M`, under the lock)' (15.2). The order before MUTATION is only implied by the E-06 sampling rows (import before and after = 0; PS = 1).",
+   "resolution": "REWORD to 'outside T_M, under the orchestrator lock, callee transactions allowed' (DF-14)."
+  },
+  {
+   "id": "R-17 (sub-claim: result fields 'Found/Missing per requirement, the imported count, and the failure cause')",
+   "source": "T3 R-17 = BA-06 V2 §3.2 R-17",
+   "clause_support": "NONE for these specific fields. The clauses require a 'structured result' (15.2), a declared cloning mode (7.1: 'The importer must **declare** the mode it used in its structured result'), and UNKNOWN on 'the importer returns without a structured success' or 'an import result not confirmed by a re-query and a fingerprint' (19.1).",
+   "resolution": "REWORD: keep the fields as a working shape; the contract content is the explicit success, the declared cloning mode, and confirmation by re-query plus fingerprint (DF-15)."
+  },
+  {
+   "id": "R-18 (sub-claim: the orchestrator 'disposes it after use')",
+   "source": "T3 R-18 = BA-06 V2 §3.2 R-18",
+   "clause_support": "NONE. The contract requires the opposite for the copy file: '**retain the private copy against writes** (a handle that denies write and delete) for the whole run' (19.1 step 5) and 'the post-run re-hash of the copy' (19.1).",
+   "resolution": "REWORD: disposing the library Database is an implementation step with no clause. It must not end the retention of the copy file or come before the post-run re-hash (DF-16)."
+  },
+  {
+   "id": "R-19 (sub-claim: 'No interaction' in SL-1/SL-2)",
+   "source": "T3 R-19 = BA-06 V2 §3.2 R-19",
+   "clause_support": "'No jig, no interaction, no post-commit graphics writes' (15.6) is an SL-4 clause. For SL-1/SL-2 it follows only from 'deterministic result: the same plan and the same block-table state give the same effective name, definition content and result' (15.3).",
+   "resolution": "REWORD: cite 15.6 for SL-4 and 15.3 'deterministic result' for SL-1/SL-2 (DF-17)."
+  },
+  {
+   "id": "R-20 (sub-claim: 'exactly one model-space ref per definition with the expected transform, layer and dynamic values')",
+   "source": "T3 R-20 = BA-06 V2 §3.2 R-20",
+   "clause_support": "NONE in 15.7, which covers ScanEnvelopes, RackBlockData.Read, and an expected-versus-persisted comparator on the typed canonical form of the design document. The comparator must be 'independent of the writer and of `mu_k`'.",
+   "resolution": "REWORD: replace with the 15.7 content. If a reference check is kept, its expected transform must not come from mu_k or the writer (DF-18)."
+  },
+  {
+   "id": "R-20 (sub-claim: verifies 'names')",
+   "source": "T3 R-20 = BA-06 V2 §3.2 R-20",
+   "clause_support": "'Completeness of the scan is attested by comparing the enumeration with the sealed list' (15.7); '**the sealed list uses the effective names**' (15.5).",
+   "resolution": "KEEP with those clauses."
+  },
+  {
+   "id": "R-01..R-21 'current gap (evidence)' column",
+   "source": "T3 = BA-06 V2 §3.2 (identical)",
+   "clause_support": "NONE. These are product-path facts at the bound SHA (e.g. SystemBlockWriter.cs:23, BlockPlacement.cs:179-199), not contract requirements.",
+   "resolution": "KEEP only as gap evidence. They do not define required operations."
+  },
+  {
+   "id": "R-01..R-21 'sources' column (A CR-xx / B CR-xx)",
+   "source": "T3 = BA-06 V2 §3.2 (identical)",
+   "clause_support": "NONE. They cite reviewer claims. The critic had no contract text (critic F-26 and limitation 2: 'The seam contract ... is not present in the extract').",
+   "resolution": "REWORD: add a contract-clause citation to every row (DF-20)."
+  }
+ ],
+ "differences": [
+  {
+   "id": "DF-01",
+   "description": "R-01 leaves out PREPARE-R, which also runs under the lock. It asserts ONE continuous spanning lock, which no fragment states, and does not mention the static guard. Its 'exact wording UNCERTAIN' verdict came from the critic lacking the contract text, and the clauses now resolve it. Covers C-01, C-120 and C-89 (lock part).",
+   "resolution": "REWORD",
+   "clause": "V2.1 15.3 'no `LockDocument` | forbidden; the orchestrator holds the lock; static guard'; 15.3 'seams write only document-database objects under a held lock'; 15.2 SL-5 '(outside `T_M`, under the lock)'; 15.5 'PREPARE-R computes the expected effective names under the lock'",
+   "proposed_text": "R-01 (ORCH; SL-1, SL-2, SL-4) The orchestrator holds the document lock for PREPARE-R (expected effective names), for the SL-5 import in PREPARE-W (outside T_M) and for every seam write inside T_M. No seam calls LockDocument (static guard). The fragments do not say whether one continuous lock spans all three phases; record that as open. [V2.1 15.2, 15.3, 15.5]"
+  },
+  {
+   "id": "DF-02",
+   "description": "R-02 merges three orchestrator transaction operations and one seam prohibition. Start, commit and abort+dispose are separate transaction events with separate E-06 sampling points (PS, PV, post-commit or post-abort), so they need separate rows. R-02 also leaves out the preconditions of Commit (PV checks, PA-10 consistency), the disposal after Abort, the abort triggers, and the static guards. Covers C-02, C-04, C-05, C-117, C-118, C-119 and C-131.",
+   "resolution": "SPLIT",
+   "clause": "V2.1 15.3 'participation in one `MUTATION` transaction', 'no internal `Commit`/`Abort`', 'no `Dispose` of the caller transaction', 'failure atomicity'; 15.4 POST-WRITE 'the caller must abort'; 4.2 PS, PV and 'after `Commit()` returns, or after `Abort()` and disposal' rows; PA-10 'aborts before `Commit()`'",
+   "proposed_text": "R-02a (ORCH) Start exactly one MUTATION transaction T_M on the document Database's transaction manager; every definition and every reference of the logical rack is created inside it (PS: count 1, IsTopTransaction(T_M) = YES). R-02b (ORCH) Commit T_M only after the PV checks pass (count 1, no nested transaction, PROTECTED_OBJECTS consistent with the phase-A domain); count 0 after Commit() returns. R-02c (ORCH) On any seam failure (PRE-WRITE or POST-WRITE) or a PV inconsistency, call Abort() and then dispose T_M; count 0 afterwards. R-02d (SL-1, SL-2, SL-4; SL-3 if authorized) No internal Commit, no internal Abort, no Dispose of the caller transaction; each enforced by a static guard. [V2.1 15.3, 15.4, 4.2; V2.2 PA-10]"
+  },
+  {
+   "id": "DF-03",
+   "description": "R-03 prescribes an obsolete mechanism: a direct comparison of TopTransaction.UnmanagedObject with T_M.UnmanagedObject. The contract exposes top-transaction identity only through the typed authority IsTopTransaction(myTransaction) -> YES/NO/UNKNOWN. UnmanagedObject is an internal detail of that authority, compared only between live objects at that instant. The authority must return NO or UNKNOWN, never YES, for a disposed, null or stale wrapper, and must never compare with a stored value, persist the pointer, or use it as a log key. R-03 also omits the consequence: NO or UNKNOWN is the PRE-WRITE failure TransactionMismatch. The R-03 gap column points at RackDefinitionCreator.cs:151-164 (a raw comparison), which is a precedent at most, not the authority. Covers C-06..C-10, C-116 and C-141 (transaction part).",
+   "resolution": "REWORD",
+   "clause": "V2.1 15.3 caller-owned `Transaction`: 'verifies that it is the live top transaction through the typed authority `IsTopTransaction(myTransaction)` (4.2); a `NO` or `UNKNOWN` is a PRE-WRITE failure. No native pointer is persisted as an identity'; V2.1 4.2 'Typed identity authority' bullets; 15.4 `TransactionMismatch` PRE-WRITE",
+   "proposed_text": "R-03 (SL-1, SL-2, SL-4; SL-3 if authorized) Before the first write, call the typed authority IsTopTransaction(myTransaction) on the received T_M. Proceed only on YES. NO or UNKNOWN is the PRE-WRITE failure TransactionMismatch, and nothing is written. The authority compares live objects only, at that instant; UnmanagedObject is an internal detail, never stored, never persisted as an identity and never a log key. It returns NO or UNKNOWN, never YES, for a disposed, null or stale wrapper. A raw TopTransaction.UnmanagedObject == T_M.UnmanagedObject comparison is not the contract mechanism. [V2.1 15.3; 4.2; 15.4]"
+  },
+  {
+   "id": "DF-04",
+   "description": "The BA-06 §5 residual row 'TopTransaction wrapper identity and UnmanagedObject semantics, on which the R-03 check relies' treats the obsolete mechanism as the thing to qualify. The contract qualifies the typed authority through E6-C7 and E6-C8 (STALE_WRAPPER_CONTROL); neither list mentions either control. Covers C-40 and C-41.",
+   "resolution": "REWORD",
+   "clause": "V2.1 4.2 E6-C7 '`IsTopTransaction` returns YES for the live top, NO for another live transaction, UNKNOWN for a disposed one'; E6-C8 '`STALE_WRAPPER_CONTROL` ... the result is **never `YES`** for B ... even if the native pointer of B equals the one A had'",
+   "proposed_text": "§5 residual: 'Live-identity semantics of the IsTopTransaction authority (wrapper identity; native pointer reuse after a transaction ends), on which R-03 relies. Not statically visible. Qualified by E6-C7 and E6-C8 STALE_WRAPPER_CONTROL before governing use.' [V2.1 4.2]"
+  },
+  {
+   "id": "DF-05",
+   "description": "R-04 over-specifies. 'EVERY fondo k = 0..SelectiveDepthLayout.Count-1' is a product-path reading; the clause says only 'one per depth k', and BA-06's own §10.2 includes SH-FN (one frontal of a multi-fondo rack). Covers C-103.",
+   "resolution": "REWORD",
+   "clause": "V2.1 15.2 SL-1 'create the **frontal** view definition (one per depth `k`) in the caller's transaction'; 15.3 'every definition and every reference of the logical rack is created inside `T_M`'",
+   "proposed_text": "R-04 (SL-1) Create one frontal view definition per depth k that the plan requests, in the caller's T_M. The set of depths comes from the plan; the fragments do not fix it to all depths. [V2.1 15.2, 15.3]"
+  },
+  {
+   "id": "DF-06",
+   "description": "R-05, R-13, R-14 and R-15 match the clauses. No change is needed beyond adding a clause citation. Covers C-104, C-162, C-163, C-164 and C-168.",
+   "resolution": "KEEP",
+   "clause": "V2.1 15.2 SL-2 'create the **planta** view definition in the caller's transaction'; 15.6 'sets layer and properties from the plan; applies dynamic properties and `RecordGraphicsModified` **inside** `T_M` ... no post-commit graphics writes'",
+   "proposed_text": "R-05 (SL-2) Create the planta view definition in the caller's T_M [15.2, 15.3]. R-13 (SL-4) Set layer and properties from the plan [15.6]. R-14 (SL-4) Apply dynamic properties to the reference inside T_M (a no-op is expected when the plan sets none; host UNCERTAIN) [15.6]. R-15 (SL-4) Call RecordGraphicsModified inside T_M; no post-commit graphics writes [15.6]."
+  },
+  {
+   "id": "DF-07",
+   "description": "R-06 merges an orchestrator operation (PREPARE-R computes and records the expected names under the lock) with seam operations (apply the family policy, return EffectiveBlockName). It leaves out that the sealed list uses the effective names. It adds nested names, which the contract does not require (15.4 asks for handles of all created objects). Its verdict REJECTS the empty-name failure because the product path cannot reach it (F-20); a product fact cannot remove a contract clause. BA-06 D-14 partly restores it, but the §3.2 row was not updated. Covers C-124, C-138, C-155..C-160.",
+   "resolution": "SPLIT",
+   "clause": "V2.1 15.5 'Names. The family policy gives a unique effective name; PREPARE-R computes the expected effective names under the lock ... and records them; the seam returns the effective name it used, and **the sealed list uses the effective names**. A name that the sanitizer reduces to empty is a failure (AUTH-15 finding F-2).'; 15.3 'deterministic result'; 15.4 Result shape",
+   "proposed_text": "R-06a (ORCH, PREPARE-R) Under the lock, compute the expected effective names for the current block-table state and record them. R-06b (SL-1, SL-2) Apply the family naming policy to obtain a unique effective name, and return the name used as EffectiveBlockName. A name that the sanitizer reduces to empty is a failure, even if the current product path cannot reach it; the typed failure (presumably InvalidBlockName) and the detecting actor are unstated. R-06c (ORCH) The sealed list uses the effective names the seams returned. Nested definitions are reported by handle in the result (15.4); returning nested names is not required. [V2.1 15.3, 15.4, 15.5]"
+  },
+  {
+   "id": "DF-08",
+   "description": "R-07 does not assign envelope composition to the orchestrator. It leaves out 'never rewrites, restamps or reinterprets' (including NewRackId), and it does not type the failures: an invalid or missing envelope is InvalidEnvelope (PRE-WRITE) and a failed write is EnvelopeWriteFailed (POST-WRITE). Its seam scope is SL-1/2, but the 15.3 clause applies to SL-1..SL-4, and whether SL-4 writes an envelope is undetermined. Covers C-126, C-127, C-130, C-144 and C-149.",
+   "resolution": "REWORD",
+   "clause": "V2.1 15.3 'exact authored payload | the envelope is composed **by the caller** and written **verbatim**; the seam reads it back and compares (AUTH-15 pattern); it never rewrites, restamps or reinterprets'; 15.5 'The seam receives the composed envelope and does not restamp it.'; 15.4 `InvalidEnvelope`, `EnvelopeWriteFailed`",
+   "proposed_text": "R-07 (ORCH -> SL-1, SL-2) The orchestrator composes the authored envelope, including NewRackId. The seam writes it verbatim in T_M and never rewrites, restamps or reinterprets it. A missing or invalid envelope is the PRE-WRITE failure InvalidEnvelope, never a silent skip. A failed write is the POST-WRITE failure EnvelopeWriteFailed, and the caller aborts. Whether SL-4 carries an envelope is not determined by the fragments. [V2.1 15.3, 15.4, 15.5]"
+  },
+  {
+   "id": "DF-09",
+   "description": "R-08 does not name the typed POST-WRITE failure EnvelopeReadbackMismatch or the caller's obligation to abort. 'Ordinally' should be cited as the AUTH-15 pattern. Covers C-128 and C-129.",
+   "resolution": "REWORD",
+   "clause": "V2.1 15.3 'the seam reads it back and compares (AUTH-15 pattern)'; 15.4 '`EnvelopeReadbackMismatch` | POST-WRITE | something may have been written; the caller must abort'",
+   "proposed_text": "R-08 (SL-1, SL-2) Read the written envelope back inside T_M and compare it with the composed envelope (AUTH-15 pattern, ordinal). A mismatch is the POST-WRITE failure EnvelopeReadbackMismatch, and the caller must abort. [V2.1 15.3, 15.4]"
+  },
+  {
+   "id": "DF-10",
+   "description": "R-09 leaves out that NewRackId is never equal to the source id, that different logical racks get different ids, and that seams never restamp it. Covers C-151..C-154.",
+   "resolution": "REWORD",
+   "clause": "V2.1 15.5 '**`NewRackId`** is minted **once per logical mirrored rack** by the orchestrator (a new GUID string, as the editor's `EnsureId` does), is never equal to the source id, and is **identical in the envelope of every sibling** of that logical rack; different logical racks get different ids. The seam receives the composed envelope and does not restamp it.'",
+   "proposed_text": "R-09 (ORCH) Mint NewRackId (a new GUID string) once per logical mirrored rack. It never equals the source id, it is identical in the envelope of every sibling, and different logical racks get different ids. Seams never restamp it. [V2.1 15.5]"
+  },
+  {
+   "id": "DF-11",
+   "description": "R-10 hard-codes 'model space' where the contract says 'target space'. It adds 'exactly one ref per definition', which has no clause. It leaves out ReferenceId in the result and the typed failures TargetSpaceInvalid (PRE-WRITE) and ReferencePlacementFailed (POST-WRITE). Covers C-106, C-139, C-147, C-150, C-165, C-166 and C-167.",
+   "resolution": "REWORD",
+   "clause": "V2.1 15.2 SL-4 '**place the block reference** in the caller's transaction from a computed transform (no jig)'; 15.6 'creates the reference in the target space in the caller's transaction. No jig, no interaction'; 15.4 `ReferenceId` (SL-4), `TargetSpaceInvalid`, `ReferencePlacementFailed`",
+   "proposed_text": "R-10 (SL-4) Create the block reference in the target space, in the caller's T_M, from the orchestrator-supplied computed transform, with no jig, no interaction and no Commit. Return ReferenceId. If the target space cannot be opened for write in this transaction, fail with TargetSpaceInvalid (PRE-WRITE). A failed placement is ReferencePlacementFailed (POST-WRITE), and the caller aborts. [V2.1 15.2, 15.4, 15.6]"
+  },
+  {
+   "id": "DF-12",
+   "description": "R-11 states an implementation decomposition (Position, ScaleFactors, Rotation, Normal) as the contract requirement. It also leaves out that the orchestrator supplies the computed common transform (RACKMIRROR reflection, mu_k). Covers C-106 and C-161.",
+   "resolution": "REWORD",
+   "clause": "V2.1 15.6 'The orchestrator supplies the computed common transform (RACKMIRROR reflection, `mu_k`).'; 15.2 SL-4 'from a computed transform'",
+   "proposed_text": "R-11 (ORCH -> SL-4) The orchestrator supplies the computed common transform (RACKMIRROR reflection, mu_k), and SL-4 places the reference from it. Implementation note, not a clause: set Position, ScaleFactors, Rotation and Normal, or apply an equivalent transform. [V2.1 15.2, 15.6]"
+  },
+  {
+   "id": "DF-13",
+   "description": "R-12 leaves out 'scale within the kind's declared tolerance' and the typed PRE-WRITE failure InvalidTransform. Covers C-145 and C-146.",
+   "resolution": "REWORD",
+   "clause": "V2.1 15.6 'SL-4 accepts only a transform with **strictly positive determinant** and scale within the kind's declared tolerance (no negative scale, ADR-0036)'; 15.4 '`InvalidTransform` | PRE-WRITE'",
+   "proposed_text": "R-12 (SL-4) Before writing, accept only a transform whose determinant is strictly positive and whose scale is within the kind's declared tolerance (no negative scale, ADR-0036). Otherwise fail with InvalidTransform (PRE-WRITE); nothing is written. [V2.1 15.4, 15.6]"
+  },
+  {
+   "id": "DF-14",
+   "description": "R-16's seam scope 'SL-5 vs SL-1/2' leaves out SL-4 (and SL-3 if authorized), which are equally forbidden to import. It says 'run before T_M' where the clause says 'outside T_M, under the lock'. It also leaves out that callee transactions are allowed (AUTH-12 pattern) and the zero document count before and after each import. Covers C-20, C-21, C-81, C-89 and C-135.",
+   "resolution": "REWORD",
+   "clause": "V2.1 15.3 'SL-1, SL-2 and SL-4 (and SL-3 if it is ever authorized) **do not import** ... imports belong to SL-5 in PREPARE-W'; 15.2 SL-5 '(outside `T_M`, under the lock) | callee transactions allowed (AUTH-12 pattern)'; 4.2 sampling rows 'AUTH-12 call or import, before/after | 0'",
+   "proposed_text": "R-16 (SL-1, SL-2, SL-4; SL-3 if authorized; SL-5) Seams do not import. Imports belong to SL-5 in PREPARE-W, outside T_M and under the orchestrator's lock. SL-5 callee transactions are allowed (AUTH-12 pattern). The document transaction count is 0 immediately before and after each import. [V2.1 15.2, 15.3, 4.2]"
+  },
+  {
+   "id": "DF-15",
+   "description": "R-17 leaves out the cloning mode that the importer must declare in its structured result, and the UNKNOWN rules (no structured success; result not confirmed by a re-query and a fingerprint). Its fields Found/Missing, imported count and failure cause have no clause. Covers C-84, C-90 and C-91.",
+   "resolution": "REWORD",
+   "clause": "V2.1 15.2 SL-5 'PREPARE-W **import** with a structured result'; 7.1 'The importer must **declare** the mode it used in its structured result'; 19.1 UNKNOWN row 'the importer returns without a structured success; an import result not confirmed by a re-query and a fingerprint'",
+   "proposed_text": "R-17 (SL-5) Return a structured result with an explicit success that declares the cloning mode actually used. A return without structured success is UNKNOWN. Each import result is confirmed by a re-query of the document and a fingerprint; otherwise it is UNKNOWN. Working fields with no clause: Found/Missing per requirement, imported count, failure cause. [V2.1 15.2, 7.1, 19.1]"
+  },
+  {
+   "id": "DF-16",
+   "description": "R-18 merges the orchestrator's library acquisition (copy, open) with SL-5's import-source rule. It adds 'disposes it after use', which has no clause and conflicts in spirit with retaining the copy against writes for the whole run and re-hashing it after the run. It also leaves out 'fully read into memory', 'never from the source path' and 'never a path to the original source'. The acquisition actor is ambiguous: 15.2 gives SL-5 'a fresh acquire', while 19.1 step 5 places the invalidation in PREPARE-R before the acquire and 7.1 has PREPARE-R compute the closure from the copy. Covers C-43, C-52, C-53, C-54 and C-88.",
+   "resolution": "SPLIT",
+   "clause": "V2.1 19.1 steps 1, 4, 5, 6 ('open the library `Database` **from the private copy**, fully read into memory, never from the source path'; '**SL-5 receives the opened `Database`, not a path to the original source**'); 7.1 'Import source'; 15.2 SL-5 'a fresh acquire of the library'",
+   "proposed_text": "R-18a (ORCH, PREPARE-R; actor ambiguous with 15.2 SL-5 'fresh acquire') Acquire the library once per run into a private, run-scoped copy (see DF-34..DF-37). R-18b (ORCH/PREPARE) Open the library Database from the private copy, fully read into memory, never from the source path. R-18c (SL-5) Import only from the opened Database received for the private copy; the importer never receives a path to the original source. Disposing the library Database has no clause. If done, it must not release the copy file's write/delete-deny retention or come before the post-run re-hash of the copy. [V2.1 15.2, 19.1, 7.1]"
+  },
+  {
+   "id": "DF-17",
+   "description": "R-19 applies 'no interaction' to SL-1/SL-2 without citing a clause (15.6 is SL-4-only; for SL-1/SL-2 the support is the 15.3 'deterministic result'). It leaves out the static guards and the 'only document-database objects in the caller's transaction' rule. It limits the OpenCloseTransaction bar to the seams, whereas the contract bars the whole mirror path from reaching LateralHeaderDrawService.ReadBlockName. Covers C-33, C-121, C-122, C-132, C-133, C-166 and C-167.",
+   "resolution": "REWORD",
+   "clause": "V2.1 15.3 'no `OpenCloseTransaction`, no side database write | forbidden; static guard (this excludes today's `ReadBlockName` from the mirror path, F-6)'; 15.3 'rollback compatible with Option B ... the seam claims no cleanup'; 15.6 'No jig, no interaction, no post-commit graphics writes'; 4.2 blind spots 'the mirror path must not reach it (P-5)'",
+   "proposed_text": "R-19 (SL-1, SL-2, SL-4; SL-3 if authorized) No OpenCloseTransaction and no side-database write (static guard). Seams write only document-database objects, under the held lock, in T_M, and attempt no cleanup after a failure (rollback is the caller's abort). The mirror path, orchestrator included, never reaches LateralHeaderDrawService.ReadBlockName (P-5, F-6). SL-4: no jig, no interaction, no post-commit graphics writes (15.6). SL-1/SL-2: no interaction, because 'deterministic result' (15.3) forbids content that depends on user input. [V2.1 15.3, 15.6, 4.2]"
+  },
+  {
+   "id": "DF-18",
+   "description": "R-20's content does not match 15.7. It leaves out RackBlockFinder.ScanEnvelopes, RackBlockData.Read, the new comparator independent of the writer and of mu_k, the typed canonical form of the Selective design document, Resolve as a secondary check only, completeness attested against the sealed list, and the verifier's own read transaction per scope (E-06 0 -> 1 -> 0). It adds a 'model-space ref ... expected transform, layer and dynamic values' check with no clause, whose expected transform could violate the independence from mu_k. Covers C-26, C-107 and C-169..C-174.",
+   "resolution": "REWORD",
+   "clause": "V2.1 15.7 (entire); 15.2 SL-6 'the **read-only verifier** and the expected-versus-persisted comparator | read-only'; 4.2 'VERIFY, per read scope | 0 → 1 → 0 (the verifier's own read transaction), or the exact equivalent the Architect reviews'",
+   "proposed_text": "R-20 (SL-6, read-only) Enumerate siblings with RackBlockFinder.ScanEnvelopes, which skips layouts, anonymous and xref records. Read payloads with RackBlockData.Read. Compare expected against persisted with a new comparator, independent of the writer and of mu_k, using the typed canonical form of the Selective design document. Use SelectiveAuthoredAuthority.Resolve only as a secondary sibling-consistency check. Attest scan completeness by comparing the enumeration with the sealed list. Each read scope opens and closes the verifier's own read transaction (count 0 -> 1 -> 0, or the reviewed equivalent). A reference/transform check has no clause in 15.7; if kept, its expected values must not be derived from mu_k or the writer. [V2.1 15.2, 15.7, 4.2]"
+  },
+  {
+   "id": "DF-19",
+   "description": "R-21's verdict still reads 'DEMOTE ... Failing the seam is not in the quoted clauses (UNCERTAIN)'. That contradicts the §3.2 heading ('R-21 restored') and D-09 ('RESTORED'). The row also scopes the rule to SL-1/2, while 15.3 applies it to SL-1..SL-4. It does not name MissingLibraryBlocks or its PRE-WRITE/POST-WRITE classification, and it leaves out the 'never success over a partially written definition' rule. Covers C-134, C-136 and C-137.",
+   "resolution": "REWORD",
+   "clause": "V2.1 15.3 'explicit library and input dependencies | the plan declares its required library blocks ... a missing required block is a typed failure'; 15.3 'failure atomicity | ... a seam never reports success over a partially written definition'; 15.4 '`MissingLibraryBlocks` | PRE-WRITE if detectable from the declared requirements, otherwise POST-WRITE'",
+   "proposed_text": "R-21 (SL-1, SL-2, SL-4; SL-3 if authorized) A required library block, declared by the plan, that is absent is the typed failure MissingLibraryBlocks: PRE-WRITE if detectable from the declared requirements, otherwise POST-WRITE, and then the caller aborts. A seam never reports success over a partially written definition; silently skipping a missing piece is forbidden. Verdict: KEEP (restored per D-09). [V2.1 15.3, 15.4]"
+  },
+  {
+   "id": "DF-20",
+   "description": "BA-06 V2 §3.2 is byte-identical to critic T3 in all 21 rows and all six columns. None of BA-06's own §4 resolutions were applied to the rows: D-09 restored R-21 but the row says DEMOTE, and D-14 keeps a non-empty-name postcondition but R-06 still says REJECTED. Every 'sources' cell cites reviewer CR ids, and the critic had no contract text (F-26, limitation 2). The 'current gap' column holds product-path facts, not requirements.",
+   "resolution": "REWORD",
+   "clause": "V2.4 section 1 'the design-time inventory (the reused product path at a bound SHA plus the operations required by the seam contract)'",
+   "proposed_text": "§3.2: add a 'contract clause' column citing V2.1 4.2/7/7.1/15.2-15.7/19.1/27.2 and V2.2 PA-6/PA-10 for every row. Replace the verdicts that were UNCERTAIN only for lack of contract text (R-01, R-06 empty-name, R-21). Label the 'current gap' column as product-path evidence at the bound SHA, not requirement text."
+  },
+  {
+   "id": "DF-21",
+   "description": "Missing operation: neither list says the orchestrator passes the document Database and T_M to each creation seam, or that the seam uses only the received Database and never opens a database of its own. Covers C-03 and C-115.",
+   "resolution": "ADD",
+   "clause": "V2.1 15.3 'caller-owned `Database` | the seam receives the document `Database`; it never opens a database of its own'; 'caller-owned `Transaction` | the seam receives the orchestrator's `Transaction`'",
+   "proposed_text": "R-22 (ORCH -> SL-1, SL-2, SL-4; SL-3 if authorized) The orchestrator passes the document Database and its Transaction T_M to each creation seam. The seam uses only the received Database and never opens a database of its own. [V2.1 15.3]"
+  },
+  {
+   "id": "DF-22",
+   "description": "Missing operation: static guards enforce the seam prohibitions. No row requires them. Covers C-123.",
+   "resolution": "ADD",
+   "clause": "V2.1 15.3 rows 'no internal `Commit`', 'no internal `Abort`', 'no `Dispose` of the caller transaction', 'no `LockDocument`', 'no `OpenCloseTransaction`, no side database write' — each 'forbidden; static guard'",
+   "proposed_text": "R-23 (design-time check over SL-1, SL-2, SL-4 code; SL-3 if authorized) Static guards reject internal Commit, internal Abort, Dispose of the caller transaction, LockDocument, OpenCloseTransaction and side-database writes. The mechanism and owner of the guards are not stated in the fragments. [V2.1 15.3]"
+  },
+  {
+   "id": "DF-23",
+   "description": "Missing operation: the determinism requirement covers definition content and result, not only names as R-06 has it. Covers C-124.",
+   "resolution": "ADD",
+   "clause": "V2.1 15.3 'deterministic result | the same plan and the same block-table state give the same effective name, definition content and result'",
+   "proposed_text": "R-24 (SL-1, SL-2, SL-4; SL-3 if authorized) Deterministic result: the same plan and the same block-table state give the same effective name, definition content and result; no user input enters the result. [V2.1 15.3]"
+  },
+  {
+   "id": "DF-24",
+   "description": "Missing operation: all PRE-WRITE validations complete before the first write. InvalidPlan and InvalidBlockName appear in neither list; InvalidEnvelope, TargetSpaceInvalid and InvalidTransform appear only implicitly or not at all. Covers C-141..C-144 and C-147.",
+   "resolution": "ADD",
+   "clause": "V2.1 15.4 '`TransactionMismatch`, `InvalidPlan`, `InvalidBlockName`, `InvalidEnvelope` | PRE-WRITE | nothing was written'; `InvalidTransform`, `TargetSpaceInvalid`, `MissingLibraryBlocks` (PRE-WRITE when detectable)",
+   "proposed_text": "R-25 (SL-1, SL-2, SL-4) Complete every PRE-WRITE validation before the first write: TransactionMismatch (R-03), InvalidPlan, InvalidBlockName (including a sanitizer-empty name), InvalidEnvelope, InvalidTransform (SL-4), TargetSpaceInvalid, and MissingLibraryBlocks when detectable from the declared requirements. A PRE-WRITE failure means nothing was written. The criteria for InvalidPlan and InvalidEnvelope are not defined in the fragments. [V2.1 15.4, 15.5]"
+  },
+  {
+   "id": "DF-25",
+   "description": "Missing operation: POST-WRITE typed failures and failure atomicity. DefinitionWriteFailed, EnvelopeWriteFailed and ReferencePlacementFailed are absent, and so is 'never success over a partially written definition'. Covers C-125, C-137, C-148, C-149 and C-150.",
+   "resolution": "ADD",
+   "clause": "V2.1 15.3 'structured failure | typed failures split into PRE-WRITE and POST-WRITE (15.4)'; 'failure atomicity | a failed seam call leaves the caller obliged to abort; a seam never reports success over a partially written definition'; 15.4 POST-WRITE row",
+   "proposed_text": "R-26 (SL-1, SL-2, SL-4) Report write failures as POST-WRITE typed failures: DefinitionWriteFailed, EnvelopeWriteFailed, ReferencePlacementFailed (SL-4) and EnvelopeReadbackMismatch. Something may have been written; the seam attempts no cleanup and never reports success over a partially written definition, and the caller must abort T_M. [V2.1 15.3, 15.4]"
+  },
+  {
+   "id": "DF-26",
+   "description": "Missing operation: the seam result shape, above all the handles of all created objects (they feed the sealed list, PROTECTED_OBJECTS and the PA-10 phase-A domain) and SL-4's ReferenceId. R-06 has only EffectiveBlockName. Covers C-138, C-139, C-140 and C-177.",
+   "resolution": "ADD",
+   "clause": "V2.1 15.4 'Result (working shape): `IsSuccess`, `DefinitionId`, `EffectiveBlockName`, `ReferenceId` (SL-4), the **handles of all created objects** (for the sealed list and the protected objects), `MissingInstances`, `Diagnostic`'; V2.2 PA-10 '**objects created inside `T_M`** (listed by handle in the seam results)'",
+   "proposed_text": "R-27 (SL-1, SL-2, SL-4) Return IsSuccess, DefinitionId, EffectiveBlockName, ReferenceId (SL-4), the handles of all created objects (nested definitions, entities, extension dictionary, Xrecord, reference), MissingInstances and Diagnostic (working shape). Whether 'all created objects' includes host-generated objects such as anonymous dimension blocks is not stated. [V2.1 15.4; V2.2 PA-10]"
+  },
+  {
+   "id": "DF-27",
+   "description": "Missing operation: the plan declares its required library blocks. That declaration drives the SL-5 imports and the PRE-WRITE MissingLibraryBlocks check. Covers C-134.",
+   "resolution": "ADD",
+   "clause": "V2.1 15.3 'the plan declares its required library blocks'",
+   "proposed_text": "R-28 (ORCH/plan) The plan declares its required library blocks. The declaration is the input of the PREPARE-R closure and of the PRE-WRITE MissingLibraryBlocks detection. [V2.1 15.3, 15.4]"
+  },
+  {
+   "id": "DF-28",
+   "description": "Missing operation: seal the created-object list (effective names and handles) and PROTECTED_OBJECTS, then check at PV that PROTECTED_OBJECTS is consistent with the phase-A domain; an inconsistency aborts before Commit(). Covers C-159, C-175 and C-181.",
+   "resolution": "ADD",
+   "clause": "V2.1 15.4 'handles of all created objects (for the sealed list and the protected objects)'; 15.5 'the sealed list uses the effective names'; V2.2 PA-10 '**At PV** the sealed `PROTECTED_OBJECTS` is checked for **consistency with the earlier domain**: a member of the sealed set that the domain did not include is an inconsistency and aborts before `Commit()`.'",
+   "proposed_text": "R-29 (ORCH) From the seam results, seal the created-object list (effective names plus handles) and PROTECTED_OBJECTS. At PV, check PROTECTED_OBJECTS against the phase-A domain; a member the domain did not include aborts T_M before Commit(). The exact sealing moment is not stated (by PV at the latest). [V2.1 15.4, 15.5; V2.2 PA-10]"
+  },
+  {
+   "id": "DF-29",
+   "description": "Missing operation: the PA-10 phase-A adjudication domain and its rules (phase C W-SCAN, fail-closed on ambiguous targets, EVM_INCOMPLETE during validation). These are EVM/E-12 policy inputs, not mutation primitives, and the BA-06 EVM preparation should carry them. Covers C-176..C-180, C-182 and C-183.",
+   "resolution": "ADD",
+   "clause": "V2.2 PA-10 (entire)",
+   "proposed_text": "R-30 (ORCH/E-12, EVM policy) The phase-A domain is the protected objects determinable from the plan (source objects, relevant containers, NOD entries the kind consumes) plus the objects created in T_M, taken by handle from the seam results. Phase-A events outside the domain are recorded and not adjudicated. Phase C (W-SCAN) adjudicates events on PROTECTED_OBJECTS against an empty expected write set. An event whose target cannot be resolved, or that matches more than one entry, fails closed. During validation, an event category the frozen EVM does not explain is EVM_INCOMPLETE: a new model version, review and revalidation are needed, and it is not a host verdict. [V2.2 PA-10]"
+  },
+  {
+   "id": "DF-30",
+   "description": "Missing operation: E-06 sampling of the document transaction count at the required points. BA-06 D-13 only keeps the sites 'for E-06 sampling'. Covers C-13, C-18..C-26.",
+   "resolution": "ADD",
+   "clause": "V2.1 4.2 'What is counted' and 'Expected counts (sampling points)' table",
+   "proposed_text": "R-31 (ORCH instrument, non-mutating) Sample the active-transaction count of the document Database's transaction manager (top level plus nested) at: P0 = 0; PL = 0; immediately before and immediately after each AUTH-12 call or SL-5 import = 0 (the callee is not sampled); PS = 1, T_M with IsTopTransaction(T_M) = YES; PV = 1, same, no nested transaction; after Commit() returns, or after Abort() and disposal = 0; VERIFY, per read scope, 0 -> 1 -> 0 (or the reviewed equivalent). [V2.1 4.2]"
+  },
+  {
+   "id": "DF-31",
+   "description": "Missing operation: E-06 scope and logging rules. Side-DB transactions are logged separately and excluded from the count; events are an additional log, never proof; identity checks are logged as a boolean plus a sequence number, never keyed by pointer; there is an instrumentation-requirement fallback. Covers C-11, C-12 and C-14..C-17.",
+   "resolution": "ADD",
+   "clause": "V2.1 4.2 'Candidate instrument' paragraph; 'Typed identity authority' bullets 3 and 4",
+   "proposed_text": "R-32 (ORCH instrument) Scope the count to the document Database's transaction manager. Log transactions of the library side database (AUTH-12 queries) and of the warm-up side database separately, and exclude them from the count. Treat transaction start/end events only as an additional log, never as proof. Log each IsTopTransaction check as its result plus a sequence number; how UNKNOWN is logged under a 'boolean' log is undetermined. Never use a native pointer as a log key or persist it. If no API with sufficient authority exists in the exact tuple, record an instrumentation requirement; E-06 stays unsatisfiable until it is met. [V2.1 4.2]"
+  },
+  {
+   "id": "DF-32",
+   "description": "Missing operation: E-06 UNKNOWN conditions. Covers C-27..C-32.",
+   "resolution": "ADD",
+   "clause": "V2.1 4.2 'UNKNOWN conditions'",
+   "proposed_text": "R-33 (ORCH) E-06 is UNKNOWN when: the instrument throws or is unavailable; a value is negative or impossible; two sources disagree (counter, own bookkeeping, events); the count changes between two samples with no observed start or end event while events are subscribed; a sample is missing at a required point; or IsTopTransaction cannot decide. [V2.1 4.2]"
+  },
+  {
+   "id": "DF-33",
+   "description": "Missing: qualification controls for the counter (E6-C1..E6-C6) and for the identity authority (E6-C7, E6-C8). They are qualification of I-07 (section 4.3), not seam operations. E6-C8 is the control that retires the obsolete R-03 mechanism. E6-C6 uses an adversarial probe, so it must stay outside the learning micro-scenarios (27.2 step 2: 'no adversarial probes'). Covers C-34..C-41.",
+   "resolution": "ADD",
+   "clause": "V2.1 4.2 'Reliability controls for the counter itself' E6-C1..E6-C8",
+   "proposed_text": "Q-E6 (qualification, I-07 4.3; not a seam operation) Before governing use, qualify the counter with E6-C1..E6-C6 (count 0 at rest; 1/2/back on start, nested start, commit, abort, dispose-without-commit; sees AUTH-12 and import callee transactions 0 -> 1 -> 0; characterizes OpenCloseTransaction and side-DB visibility; two independent sources agree; an adversarial second transaction is detected). Qualify IsTopTransaction with E6-C7 (YES/NO/UNKNOWN) and E6-C8 STALE_WRAPPER_CONTROL (never YES for B through A's stale wrapper, even on pointer reuse). [V2.1 4.2]"
+  },
+  {
+   "id": "DF-34",
+   "description": "Missing operation: explicit cache invalidation in PREPARE-R, then a single streaming acquisition of the source bytes into a private run-scoped copy, with a write-deny open and SHA-256 over the copied bytes. BA-06 D-03 and §6 ('the static cache is not used by the mirror path') do not discharge the explicit invalidation. Covers C-42..C-45.",
+   "resolution": "ADD",
+   "clause": "V2.1 19.1 step 1 'acquire the original source bytes **once** into a **private, run-scoped copy** (the source is opened for reading with write access denied to others when the host allows it), streaming the bytes and computing the SHA-256 **over the same bytes** as they are copied'; step 5 'invalidate explicitly in PREPARE-R before the acquire'",
+   "proposed_text": "R-34 (ORCH, PREPARE-R; actor vs SL-5 'fresh acquire' ambiguous) Invalidate the library cache explicitly. Then acquire the original source bytes exactly once into a private, run-scoped copy, opening the source for reading with write access denied to others when the host allows it, and computing SHA-256 over the same bytes as they are copied. [V2.1 19.1 steps 1, 5; 15.2]"
+  },
+  {
+   "id": "DF-35",
+   "description": "Missing operation: the mandatory torn-acquisition check under PA-6 authority A or B, with ACQUISITION_AUTHORITY recorded and refusal (O1) when neither holds. The V2.1 step-2 stat bracket (C-46) is superseded as the authority, but PA-6 and the 19.1 UNKNOWN row still cite it; that ambiguity stays open. Neither list has any of this. Covers C-46..C-50.",
+   "resolution": "ADD",
+   "clause": "V2.2 PA-6 'The check of a **torn acquisition is mandatory**. Step 2 of V2.1 19.1 is replaced by the following ... A ... B ... If neither A nor B can be established, or B does not match, the acquisition is `UNKNOWN` and the run is refused (O1)'",
+   "proposed_text": "R-35 (ORCH/PREPARE) The torn-acquisition check is mandatory. Authority A: hold the source handle with writes denied for the entire streaming acquisition. Authority B: after streaming, re-hash the original source (ORIGINAL_SOURCE_VERIFICATION_READ); the hash must equal the private-copy hash. Record which one was used as ACQUISITION_AUTHORITY in the LibraryInputRecord. If neither can be established, or B does not match, the acquisition is UNKNOWN and the run is refused (O1). The V2.1 step-2 size/mtime bracket is not a separate authority (PA-6). No selection order between A and B is given. [V2.2 PA-6; V2.1 19.1]"
+  },
+  {
+   "id": "DF-36",
+   "description": "Missing operation: the LibraryInputRecord. Covers C-51.",
+   "resolution": "ADD",
+   "clause": "V2.1 19.1 step 3 'record in the `LibraryInputRecord`: normalized source path, source stat, the SHA-256 of the **copied bytes**, the copy path and the generation id'; PA-6 `ACQUISITION_AUTHORITY`",
+   "proposed_text": "R-36 (ORCH) Record in the LibraryInputRecord the normalized source path, the source stat, the SHA-256 of the copied bytes, the copy path, the generation id and ACQUISITION_AUTHORITY. [V2.1 19.1 step 3; V2.2 PA-6]"
+  },
+  {
+   "id": "DF-37",
+   "description": "Missing operation: retain the private copy against write and delete for the whole run; key any cache entry by the copy's hash and a generation id incremented at every fill. R-18's 'disposes it after use' does not cover retention. BA-06's claim that the cache is unused does not remove the generation id, which the LibraryInputRecord holds and PREPARE-W revalidates before each import. Covers C-58, C-59 and C-60.",
+   "resolution": "ADD",
+   "clause": "V2.1 19.1 step 5 '**retain the private copy against writes** (a handle that denies write and delete) for the whole run, and key any cache entry by the **copy's hash** and a generation id incremented at every fill'; 7 'revalidate the generation id'",
+   "proposed_text": "R-37 (ORCH) Retain the private copy for the whole run with a handle that denies write and delete. Key any library cache entry by the copy's hash and a generation id incremented at every fill. The generation id is required even if the mirror path uses no cache. [V2.1 19.1 step 5; 7]"
+  },
+  {
+   "id": "DF-38",
+   "description": "Missing operation: the discipline for reading the original source. There is no ORIGINAL_SOURCE_IMPORT_READ after the copy exists, and a violation carries its consequences (AUTHORITY_INVALID, non-governing INVALID with a ruling, PRODUCT_OR_SEAM_DEFECT, no PASS). Verification reads are allowed only for authority B and drift observation, and never feed the library Database. R-18 only implies the first part. Covers C-54..C-57, C-61 and C-62.",
+   "resolution": "ADD",
+   "clause": "V2.1 19.1 'Authority rule'; V2.2 PA-6 read-kind table and '**Verification reads never feed the library `Database`.**'",
+   "proposed_text": "R-38 (ORCH, SL-5) Once the private copy exists, never read the original source for import (ORIGINAL_SOURCE_IMPORT_READ). Any such read makes the run AUTHORITY_INVALID: INVALID and non-governing, with a mandatory ruling; recorded as a PRODUCT_OR_SEAM_DEFECT finding; the LibraryInputRecord cannot support a PASS. ORIGINAL_SOURCE_VERIFICATION_READ is allowed only for authority B and for observing drift, and never feeds the library Database. [V2.1 19.1; V2.2 PA-6]"
+  },
+  {
+   "id": "DF-39",
+   "description": "Missing operation: the drift policy. Drift after acquisition is informational only; it does not stop the import and is disclosed in the Owner Act 2 evidence. Covers C-63, C-64 and C-67.",
+   "resolution": "ADD",
+   "clause": "V2.1 19.1 'Source drift policy'; V2.2 PA-6 'Drift of the original source after the authoritative acquisition remains **informational only**'",
+   "proposed_text": "R-39 (ORCH) If the original source drifts after the authoritative acquisition, record the informational finding SOURCE_DRIFT_AFTER_ACQUISITION, do not stop the import, and disclose the drift in the Owner Act 2 evidence. [V2.1 19.1; V2.2 PA-6]"
+  },
+  {
+   "id": "DF-40",
+   "description": "Missing operations: the acquisition UNKNOWN conditions, the post-run re-hash of the copy, the SOURCE_SWAP_CONTROL qualification, and the implementation gate BEFORE_CT21D_EXECUTION. The fragments give no consequence for a post-run re-hash mismatch. Covers C-65, C-66 and C-68..C-71.",
+   "resolution": "ADD",
+   "clause": "V2.1 19.1 UNKNOWN / qualification / status rows; 'the post-run re-hash of the copy; the `SOURCE_SWAP_CONTROL` (4.3.1)'",
+   "proposed_text": "R-40 (ORCH) The acquisition is UNKNOWN when the file cannot be hashed or copied (locked, denied), when the copy hash differs from the record, or when the acquire returns nothing or throws. Re-hash the private copy after the run; the consequence of a mismatch is not stated. Qualify the acquisition with SOURCE_SWAP_CONTROL (4.3.1). This authority must be implemented BEFORE_CT21D_EXECUTION (EXEC-6). [V2.1 19.1]"
+  },
+  {
+   "id": "DF-41",
+   "description": "Missing operation: the PRE_COMMAND_STATE_RECORD, including the exact fingerprints of pre-existing homologues. The pre-import re-observation, the effect check and ABORT-VERIFY all rely on it. Covers C-72.",
+   "resolution": "ADD",
+   "clause": "V2.1 7 'Before the first import: re-observe the relevant elements of the `PRE_COMMAND_STATE_RECORD`'; 7.1 'the exact fingerprints of the pre-existing homologues recorded in the `PRE_COMMAND_STATE_RECORD`'",
+   "proposed_text": "R-41 (ORCH) Before the command, record the PRE_COMMAND_STATE_RECORD, including the exact fingerprints of the pre-existing homologue records (fingerprint per section 28, not in the fragments). The producing phase and actor are not stated. [V2.1 7, 7.1]"
+  },
+  {
+   "id": "DF-42",
+   "description": "Missing operation: PREPARE-R computes the static dependency closure from the private copy, and PREPARE-W imports exactly its ADD set, nothing else. R-16 and R-18 lack the closure and the ADD-set limit. Covers C-73, C-74 and C-81.",
+   "resolution": "ADD",
+   "clause": "V2.1 7 'Content. Only the imports that PREPARE-R decided are necessary.'; 7.1 'Closure. Before any import, PREPARE-R computed the **static dependency closure** from the private copy (11.3). PREPARE-W adds exactly the **ADD set** of that closure.'",
+   "proposed_text": "R-42 (ORCH PREPARE-R -> SL-5) Before any import, compute the static dependency closure from the private copy (derivation per 11.3, not in the fragments). SL-5 imports into the document Database exactly the ADD set of that closure and nothing else. [V2.1 7, 7.1]"
+  },
+  {
+   "id": "DF-43",
+   "description": "Missing operation: before the first import, re-observe the relevant elements of the PRE_COMMAND_STATE_RECORD. On a mismatch there is no import, the outcome is O1 and the manifest stays empty. Covers C-75 and C-76.",
+   "resolution": "ADD",
+   "clause": "V2.1 7 'Before the first import: re-observe the relevant elements of the `PRE_COMMAND_STATE_RECORD` and compare (V4 3.3); mismatch => no import, O1, empty manifest.'",
+   "proposed_text": "R-43 (ORCH) Before the first import, re-observe the relevant elements of the PRE_COMMAND_STATE_RECORD and compare. On a mismatch: no import, outcome O1, empty manifest. 'Relevant elements' is not defined in the fragments. [V2.1 7]"
+  },
+  {
+   "id": "DF-44",
+   "description": "Missing operation: before each import, re-hash the private copy against the LibraryInputRecord (a mismatch stops the import: O2 with the residue produced so far) and revalidate the generation id. Covers C-78, C-79 and C-80.",
+   "resolution": "ADD",
+   "clause": "V2.1 7 'Before each import: re-hash the **private library copy** and compare with the `LibraryInputRecord`; revalidate the generation id'; 19.1 'the re-hash of the **copy** immediately before each import (a mismatch stops the import: O2 with the residue produced so far)'",
+   "proposed_text": "R-44 (ORCH/SL-5) Immediately before each import, re-hash the private copy and compare it with the LibraryInputRecord; a mismatch stops the import (O2, with the residue produced so far). Revalidate the generation id; the outcome of a failed revalidation is not stated. [V2.1 7, 19.1]"
+  },
+  {
+   "id": "DF-45",
+   "description": "Missing operation: the cloning-mode rules. A verified non-replacing mode is required (today DuplicateRecordCloning.Ignore, which BA-06 lists only as the product fact U-08). MODIFY_PREEXISTING is prohibited. The mode is declared in the structured result and gated by an allow-list (when that gate runs is ambiguous). The control is FAIL or UNKNOWN when the mode differs or cannot be verified. Replacement is never silently permitted, and CLONE_NON_REPLACE_CONTROL qualifies the mode. Covers C-77 and C-82..C-87.",
+   "resolution": "ADD",
+   "clause": "V2.1 7.1 '`MODIFY_PREEXISTING = PROHIBITED`' and 'Cloning mode' bullet",
+   "proposed_text": "R-45 (SL-5; ORCH gate) Import with a verified non-replacing cloning mode (today DuplicateRecordCloning.Ignore, or a proven equivalent). PREPARE-W only adds and never modifies a pre-existing record (MODIFY_PREEXISTING = PROHIBITED). SL-5 declares the mode it used in its structured result, and PREPARE-W does not start unless that mode is on the allow-list. When the check runs relative to the first import is undetermined. The cloning control is FAIL if the mode differs and UNKNOWN if it cannot be verified; replacement is never silently permitted. CLONE_NON_REPLACE_CONTROL (4.3.1) demonstrates the behaviour, not a code reading. [V2.1 7.1]"
+  },
+  {
+   "id": "DF-46",
+   "description": "Missing operation: the effect check after each import. Confirm the import by a re-query and a fingerprint, record the fingerprint of each imported definition before admitting it to the manifest, re-read the fingerprints of the pre-existing homologues (any difference is an unexpected mutation, and ABORT-VERIFY decides O2 or O6), and check that the newly present records equal the ADD set. R-17's 'Found/Missing' is at most the re-query. Covers C-91..C-95.",
+   "resolution": "ADD",
+   "clause": "V2.1 7 'After each import: compute and record the fingerprint of the imported definition (section 28); only then may it enter the `PREPARE_RESIDUE_MANIFEST`'; 7.1 'Effect check'; 19.1 UNKNOWN 'an import result not confirmed by a re-query and a fingerprint'",
+   "proposed_text": "R-46 (ORCH/SL-5, non-mutating reads) After each import: confirm the result by a re-query of the document plus a fingerprint, otherwise UNKNOWN. Compute and record the fingerprint of each imported definition; only then may it enter the manifest. Re-read the exact fingerprints of the pre-existing homologues from the PRE_COMMAND_STATE_RECORD; any difference is an unexpected mutation, and ABORT-VERIFY decides O2 or O6. Check that the set of newly present records equals the ADD set; an extra record is unexpected. [V2.1 7, 7.1, 19.1]"
+  },
+  {
+   "id": "DF-47",
+   "description": "Missing operation: the PREPARE_RESIDUE_MANIFEST. Its content (added records with fingerprints), REUSED_BOUND marking, and persistence after an abort are all absent. The fragments conflict internally: section 7 says 'added or changed', while 7.1 says 'PREPARE-W only adds'. Covers C-96, C-97 and C-98.",
+   "resolution": "ADD",
+   "clause": "V2.1 7.1 'Manifest'; 7 'Residue. The manifest is the exact list of what PREPARE-W added or changed and may persist after an abort'",
+   "proposed_text": "R-47 (ORCH) Keep the PREPARE_RESIDUE_MANIFEST: every definition and dependency record added by the import, each with its exact fingerprint. Mark every pre-existing record the imported content binds to as REUSED_BOUND, with its pre-command fingerprint; these are not residue. The manifest may persist after an abort of T_M. The 'or changed' in section 7 conflicts with MODIFY_PREEXISTING = PROHIBITED (7.1); resolve it as 'added' unless the Architect rules otherwise. [V2.1 7, 7.1]"
+  },
+  {
+   "id": "DF-48",
+   "description": "Missing operation: handling of a failed or indeterminate import. The definition stays out of the manifest, the run stops, ABORT-VERIFY compares against the record plus the manifest of completed imports, and a partial failure never becomes expected residue. R-17 only reports a cause. Covers C-99..C-102.",
+   "resolution": "ADD",
+   "clause": "V2.1 7 'Import failure or indeterminate: the definition does not enter the manifest; the run stops; ABORT-VERIFY compares against the record plus the manifest of completed imports (V4 3.4).'; 7.1 'Failure. A partially failed import never becomes expected residue'",
+   "proposed_text": "R-48 (ORCH) On a failed or indeterminate import, keep the definition out of the manifest and stop the run. ABORT-VERIFY compares the document against the PRE_COMMAND_STATE_RECORD plus the manifest of completed imports. A partially failed import never becomes expected residue. [V2.1 7, 7.1]"
+  },
+  {
+   "id": "DF-49",
+   "description": "BA-06 §3.3 has operation classes only for mutating primitives and SL-6 reads. The added contract operations that produce host transaction or read events have no class: T_M start, commit and abort+dispose; the IsTopTransaction read; the PREPARE-R and PREPARE-W callee read transactions (closure, re-observation, re-query, fingerprints); the library acquisition and side-DB open, which are logged separately. The §7 trace treats T-2 transaction events as primary, and its reconciliation rule turns any unmapped event class into an unexplained event.",
+   "resolution": "ADD",
+   "clause": "V2.1 4.2 sampling table and scope ('logged separately', 'excluded from the document count'); V2.1 27.2 step 1 ('every database-mutating primitive that SL-1, SL-2, SL-4 and SL-5 use ... and any other explicit category the inventory shows'); V2.4 'An operation added ... reopens the review of its operation class'",
+   "proposed_text": "§3.3 additions: OC-TX-M (R-02a..R-02c: T_M start, commit, abort+dispose; ORCH; transaction events only). OC-TOP-CHECK (R-03: IsTopTransaction; SL-1, SL-2, SL-4; expected DB events: none). OC-PREP-READ (R-43, R-46, and the SL-5 re-query: callee read transactions on the document DB, count 0 -> 1 -> 0 per E6-C3; expected write events: none). OC-LIB-ACQ (R-34..R-37: private copy and side-DB open; side-DB transactions logged separately and excluded from the document count). OC-VERIFY-READ adds the verifier read transaction per scope (R-20)."
+  },
+  {
+   "id": "DF-50",
+   "description": "SL-3 (lateral) has no row in either list. That is acceptable for sealed scope V1 (lateral out), but the retained contract conditions are not recorded: the 15.3 clauses apply, AUTH-15 is not SL-3's authority, EQ-1..EQ-5 must be shown, and no AUTH-15 evidence transfers until then. BA-06 §8 covers AUTH-15 non-transfer for SL-1/SL-2 by family name only. Covers C-105 and C-108..C-114.",
+   "resolution": "KEEP",
+   "clause": "V2.1 15.2 SL-3 row ('**not required** ... the contract is retained for the case in which the scope changes') and 'SL-3 has its own Selective contract' with EQ-1..EQ-5",
+   "proposed_text": "No inventory row for V1. Scope note: 'SL-3 (lateral) is not required by sealed scope V1 (V17 L-01). If the scope changes, every 15.3 clause applies to SL-3; AUTH-15 is not its authority; AUTH-15 may implement it only after EQ-1..EQ-5 (plan type, dispatcher and path, caller-owned transaction semantics, exact Option-B host evidence, authored and persistence contract) are demonstrated; until then no AUTH-15 evidence transfers.' [V2.1 15.2]"
+  },
+  {
+   "id": "DF-51",
+   "description": "The 27.2 procedure and the V2.4 gates are control-plane requirements with no runtime actor. Neither list has rows for them, and none are needed: BA-06 addresses them in §1, §2, §5, §7, §9, §10 and §12. One gap remains. §12 has no model-status field (DRAFT / UNDER_REVIEW / FROZEN(hash)); its REVIEW_STATUS is per entry and uses ACCEPTED/REJECTED. Also, 27.2 step 1 names SL-1, SL-2, SL-4 and SL-5, while the orchestrator's own T_M operations and the SL-6 reads are covered only through the DF-49 classes. Covers C-184..C-203.",
+   "resolution": "KEEP",
+   "clause": "V2.1 27.2 steps 1-6; V2.4 section 1",
+   "proposed_text": "No §3.2 rows. BA-06 §12: add a model-level field MODEL_STATUS = DRAFT | UNDER_REVIEW | FROZEN(hash); only FROZEN is used by governing validation (27.2 step 5). Everything else stays as addressed in BA-06 §1 (V2.4 two-stage gate), §2 (PA-11 conditions), §5 and §7 (UNEXPLAINED_EVENTS block the freeze; reconciliation), §9 (isolated micro-scenarios, repetitions PARAM-01), §10 (validation disjoint and structurally outside) and §12 (EXPLANATION_TYPE, HOST_OBSERVED_STABLE constraints, RISK_LABEL)."
+  }
+ ]
+}
