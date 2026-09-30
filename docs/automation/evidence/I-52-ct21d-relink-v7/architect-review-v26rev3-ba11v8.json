@@ -1,0 +1,157 @@
+{
+  "summary": "Independent exact review of CT-21D V2.6 rev3 and BA-11 V8 rule-5 readiness",
+  "agentCount": 2,
+  "logs": [],
+  "result": {
+    "v26rev3": {
+      "verdict": "APPROVE_EXACT",
+      "checks": [
+        {
+          "item": "(a0) Rev3 identity and encoding",
+          "result": "PASS",
+          "evidence": "`git hash-object docs/initiatives/I-52-ct21d-authority-contract-v2.6.md` = fd9c16873c526e5f009ad92beb8dd2fe236b964f. Python read of the raw file found 0 CR bytes and 30623 bytes, raw sha256 a1a0ffff66f2fd00da9c7f1a5743559c6a71c06dced55742c411d215d2054cbe, so the raw bytes are the blob bytes. HEAD = e2779dad. `git diff --stat 95690c28 HEAD -- src` is empty, so src is byte-identical to main 95690c28."
+        },
+        {
+          "item": "(a) The diff between rev2 and rev3 is exactly the 5 intended hunks",
+          "result": "PASS",
+          "evidence": "Ran `git show 66fd9dbd... > rev2.md` and `git diff --no-index rev2.md <file>`. The result has 5 hunks. (1) Header lines 12-13: the DRAFT REVISION field goes from 2 lines to 4. It now reads revision 3, adds the rev2 blob, and says rev3 \"applies only AR8-01 of decisions section 229\". (2) Line 69, section 1.2 closing sentence: the only change is the inserted word \"Selective\" (\"creates a Selective definition from a plan\"). (3) Line 102: the V26-N7 row is added. (4) Line 104: `V26-N1`..`V26-N6` becomes `V26-N1`..`V26-N7`. (5) Line 109: \"draft revision 2\" becomes \"draft revision 3\". Nothing else changed. The -/+ lines of my diff are identical to those in docs/automation/evidence/I-52-ct21d-v26-rev3-diff.txt (python: 13 == 13, equal True); that evidence file uses -U0 and a different temp path."
+        },
+        {
+          "item": "(b1) V26-N7 RACKCANTILEVER facts at 95690c28",
+          "result": "PASS",
+          "evidence": "`git rev-parse 95690c28:src/RackCad.Plugin/RackCantileverCommands.cs` = 76db43c4fc68... Lines 473-492: LockDocument at 473, one StartTransaction at 475, a foreach over request.Views calling CantileverViewMaterializer.CreateBlockDefinitionNamed (478) and InsertReference (481), one transaction.Commit() at 492. The point comes from editor.GetPoint (456); there is no jig. The method is DrawCantileverComponent, called from RACKCANTILEVER (:44, :63) and also from RackMenuCommands.cs:113. The note makes no claim that this file is unchanged since 3375aadb, which is correct because 3375aadb has blob c8b3de14."
+        },
+        {
+          "item": "(b2) V26-N7 RACKSECCION facts at 95690c28",
+          "result": "PASS",
+          "evidence": "`git rev-parse 95690c28:src/RackCad.Plugin/StructuralSectionCommandFlow.cs` = 42f2a66e738774fd..., the same as `git rev-parse 3375aadb:...` (unchanged; `git log 3375aadb..95690c28` on the file lists no commit touching it). Lines 188-199: LockDocument at 188, StartTransaction at 190, StructuralSectionMaterializer.CreateBlockDefinition at 192, InsertReference at 195, Commit at 198, closing brace at 199. The point comes from GetPoint (177); there is no jig. RACKSECCION is at RackSeccionCommands.cs:15 and the flow calls StructuralSectionInsertService.Insert at :67."
+        },
+        {
+          "item": "(b3) No determinant/scale validation and no verbatim caller envelope in either scope",
+          "result": "PASS",
+          "evidence": "CantileverViewMaterializer.InsertReference (:118-130) and StructuralSectionMaterializer.InsertReference (:78-90) only do `new BlockReference(insertion, definitionId)` and AppendEntity. They set no scale or rotation and do no determinant check. A grep for determinant/RackBlockData in both materializers and in StructuralSectionCommandFlow finds nothing. Neither of the two scopes calls RackBlockData.Write."
+        },
+        {
+          "item": "(c) With \"Selective\" added, RACKPROYECTAR is the only production caller-owned scope creating a Selective definition from a plan",
+          "result": "PASS",
+          "evidence": "The Selective drawer entry point is LateralHeaderDrawer.CreateSystemBlock (its `new BlockTableRecord` is at :243). A grep for its callers finds 4. (1) LateralHeaderDrawService.CreateBlock (own lock and transaction); it is followed by a separate jig (PlaceLayout :222-223) or a separate AppendReference transaction (DrawAt :181-182, which has no production caller: `git grep \\.DrawAt\\(` finds nothing). (2) SystemBlockWriter.CreateBlock (own transaction, then the ViewBlockDraw jig). (3) SystemBlockWriter.CreatePreparedBlock (own transaction, then the RackViewPlacement jig). (4) RackDefinitionCreator.CreateInTransaction, whose only production callers are RackProjectionWriteScope.cs:58/62 (RACKPROYECTAR). Every `new BlockReference` in src was checked: BlockPlacement:142 (AppendReference), BlockPlacement:240 (jig), LateralHeaderDrawer 60/145/308 (nested refs inside definitions), RackDuplicar:311 and RackLayout:250 (clone path, RackCloner DeepCloneObjects), RackLayoutCommands.Fill:454 (reuses the seed definition, creates none), and the Cantilever and StructuralSection materializers (not Selective). The only `new BlockTableRecord` sites are the Cantilever, StructuralSection and LateralHeader drawers and RackCloner."
+        },
+        {
+          "item": "(d) Other absolute claims in the text changed by rev2 or rev3",
+          "result": "PASS",
+          "evidence": "(1) Section 1.1, sysvar-backed DB property reads. Grepping src for GetSystemVariable and common Database sysvar properties finds only Database.Insunits (RackUnitsGuard.cs:41, blob 000ea142, unchanged since 3375aadb) and Database.Dimstyle (LateralHeaderDrawer.cs:391, blob 65db7060, unchanged). Dimscale at :365 is an entity property. The RackProjectionCommandPort.cs:85 call site is confirmed. (2) V26-N6 (\"every file byte-identical to 3375aadb\"): the RackDuplicarCommands, InDocumentTransaction, RackCloner, RackLayoutCommands and RackEnvelopeRestamp blobs are identical at both SHAs and their prefixes match. Cited lines checked: 257, 290/321, 311-318, 219/220/236/243/250-256/263, RackCloner 29/49/66-67, InDocumentTransaction 32-40. (3) \"There is no other deviation\" and \"the only user of beforeCommit\" are unchanged in rev3. (4) The rev3 header claim \"revision 3 applies only AR8-01\" matches the observed diff."
+        }
+      ],
+      "majors": [],
+      "minors": [
+        "V26-N7 calls the Cantilever scope \"the RACKCANTILEVER loose-piece insertion\". The same method, DrawCantileverComponent, is also reached from the RACKCAD menu (RackMenuCommands.cs:113). This is not false, only incomplete as to entry points.",
+        "Not verified: the decisions sections 226/229, the AR8-01 wording and the BA-11 V6 generic-clause claim in D-1 (changed in rev2). These are document facts outside src and are outside the scope of this exact delta."
+      ]
+    },
+    "ba11v8": {
+      "verdict": "CHANGES_REQUIRED",
+      "checks": [
+        {
+          "item": "Pre-check: V8 blob identity and worktree state",
+          "result": "PASS",
+          "evidence": "`git rev-parse HEAD` = e2779dad8cd7b97937803b97a875c4f76e5b8854. `git hash-object docs/initiatives/I-52-ct21d-baseline-ba-11-hash-registry-v8.md` = b7c2700e0cb54c09256baa11b7a5a7f95e88942c, as expected. `git status --short`: M ba08-v7-completeness-check-output.json, M authority-contract-v2.6.md, ?? ba11-v8-graph-check.json, ?? v26-rev3-diff.txt, ?? BA-11 v8.md. Nothing was written to the repo; all scratch output went to the scratchpad."
+        },
+        {
+          "item": "(a) Sections 1..2.1 byte-identical between V7 (HEAD) and V8 (working tree)",
+          "result": "PASS",
+          "evidence": "The span runs from the line starting '## 1. ' up to but excluding the line starting '## 3. Registry entries'. Both texts were LF-normalized first. The span is 95 lines in each version, and V7 span == V8 span returned True. That comparison included the informative line, which is identical in both."
+        },
+        {
+          "item": "(a) Agreed-text hash 33023d54... (rule 5)",
+          "result": "PASS",
+          "evidence": "Variant A gives 33023d544b257a42f918c0a80eb32eb9a66e4eb91070b6521d312aae58293e88, which matches. Variant A: the LF lines from the '## 1. Hash procedure (normative)' heading line up to but excluding the '## 3. Registry entries' heading, dropping the one line that starts with '*Informative (not part of the agreed text).*', with each kept line followed by LF (this includes the trailing empty line before '## 3.', so the text ends in 'LF LF'). The other variants do not match: joined with no final LF = 4836e294...; trailing blanks stripped + final LF = 1fb8ed33...; trailing blanks stripped, no final LF = 5bba1308...; informative line included = 320fdfec..."
+        },
+        {
+          "item": "(b) CURRENT_HASH of BA-02a, BA-02b, BA-03, BA-04, BA-05, BA-06, BA-07, BA-08, BA-09, BA-10",
+          "result": "PASS",
+          "evidence": "Method from section 1: a single file is the SHA-256 of its LF bytes. Several files are the SHA-256 of `<path>` LF `<filehash>` LF, concatenated in ascending UTF-8 path order. All 10 matched the table: BA-02a acb5e01d...e3c3 (1 file); BA-03 0afb5d9d...49e6 (4 files); BA-05 89736f4f...f088; BA-07 330d5e66...b6dc; BA-10 ec22e926...5ae0; BA-06 7fd22ab0...ccb1; BA-08 552e337e...e72d; BA-09 a68189ef...3ebb; BA-04 1971e8db...13ee; BA-02b 0dba7a53...5d5d (full values equal the table). `git status --short` on every listed path was empty, so all of them are clean at HEAD."
+        },
+        {
+          "item": "(b) BA-01 candidate composite",
+          "result": "PASS",
+          "evidence": "`git hash-object` on V2.1..V2.6 equals the blob of every section 4 row. V2.6 = fd9c16873c526e5f009ad92beb8dd2fe236b964f, but only in the working tree, where the file is modified and uncommitted. `git cat-file -t f73157d9...` = blob. Following the registry's own section 1 text (the LF texts of V2.1..V2.6 concatenated, then one LF, then the V5 id with no trailing LF) gives 97100cff11868807f3c49f25bf25d0385c86e8873cba0cf2c1996338b9b98eb4, which matches. The task brief's reading ('each blob followed by one LF') does not match: each+LF then id = f9473815..., each+LF then LF+id = 51729981... The registry text governs."
+        },
+        {
+          "item": "(c) Graph check on V8",
+          "result": "PASS",
+          "evidence": "Ran `python docs/automation/evidence/I-52-ct21d-ba11-v5-graph-check.py . docs/initiatives/I-52-ct21d-baseline-ba-11-hash-registry-v8.md <scratchpad>/gc.json`. Stdout: `ALL_PASS {no_cycle, seal_order_topological, table_matches_edges, headers_match_cells, forbidden_edges_absent: all true}`, exit=0. The LF sha256 of the scratch output and of the working-tree docs/automation/evidence/I-52-ct21d-ba11-v8-graph-check.json are both 59a176a39fa7a3984980b5cc3728c227309220c3a0f4f6384663a549807aa4de, byte-equal True. The script is unmodified versus HEAD (blob ab8af5bc...). The committed output file was not overwritten."
+        },
+        {
+          "item": "(d) V8 vs V7 changes outside 1..2.1 limited to V2.6 rev3 relink and the V7-04 fix",
+          "result": "FAIL",
+          "evidence": "`git diff --no-index` of V7@HEAD against V8 shows 17 insertions and 9 deletions: (1) Title, banner and ARTIFACT_VERSION: version bump to V8, supersedes 7-DRAFT blob 5ae8e300... (expected housekeeping). (2) BA-03 PREREQUISITES cell: the open 'Architect's ruling on AQ-V6-01 (before candidate)' becomes 'AQ-V6-01 is ruled (AR7-03)'. This matches V7-04. (3) BA-07 PREREQUISITES cell: 'the Architect's confirmation of the BA-09 extension (before candidate)' becomes 'confirmed (AR8-02)', which matches V7-04. The same cell also ADDS a new before-candidate prerequisite, 'the text change of finding V7-01 (BA-09 in citedArtifactsUnchanged, in a new BA-07 version)', and DROPS the qualifier '(location and holder) in the BA-07 candidate or ratification record' from the independent-copy item. Neither change is described in the V8 delta table. (4) Section 4: V2.6 blob 66fd9dbd... becomes fd9c1687..., the label 'V2.6 DRAFT' becomes 'V2.6 draft revision 3', and the composite c7c77194... becomes 97100cff... This is the relink. (5) New '## 6. Delta V8 (decisions section 229)', and the old section 6 is retitled '## 6c. Delta V7 (decisions section 226; history)'. Item (3) goes beyond 'relinks + V7-04 fix'. None of the cited decisions can be traced in the repo: `docs/automation/decisions/I-52.md` ends at '## 228.' (9883 lines), and no section 229 or AR8-01/AR8-02/AR8-04 for CT-21D exists."
+        }
+      ],
+      "majors": [
+        "The BA-07 row of V8 section 3 adds a new before-candidate PREREQUISITE, 'the text change of finding V7-01 (BA-09 in citedArtifactsUnchanged, in a new BA-07 version)'. It also removes '(location and holder) in the BA-07 candidate or ratification record' from the independent-copy prerequisite. Neither edit is listed in the V8 delta table, whose V7-04 row mentions only AQ-V6-01/AR7-03 and the AR8-02 confirmation. The row also no longer follows the BA-07 V7 header PREREQUISITES (docs/initiatives/I-52-ct21d-baseline-ba-07-manifest-custody-v7.md lines 42-46), which is the V7 rule BA07V6-01 (4). This goes beyond the 'relinks + V7-04 minor fix' scope. Either record it in the delta table with its decision reference, or revert it.",
+        "Decisions cited by V8 (decisions section 229, AR8-01, AR8-02, AR8-04, finding V7-01/V7-04 of the BA-11 V7 review) cannot be traced in the repo: docs/automation/decisions/I-52.md ends at section 228. The authority for the V8 edits, including 'confirmed (AR8-02)', therefore cannot be checked."
+      ],
+      "minors": [
+        "The V2.6 blob fd9c16873c526e5f009ad92beb8dd2fe236b964f and the composite 97100cff... exist only in the working tree, where docs/initiatives/I-52-ct21d-authority-contract-v2.6.md is modified but not committed. The rule-5 blob and any candidate need these committed.",
+        "The informative line in section 2.1 still names the output file ...ba11-v7-graph-check.json, while the V8 output is ...ba11-v8-graph-check.json. It is outside the agreed text and has to stay byte-identical to preserve sections 1..2.1, so this is acceptable but stale.",
+        "The header AUTHORITY_CONTRACT line still says 'V2.6 (DRAFT, pending ...)' with no mention of revision 3. Section 4 says 'draft revision 3'. This is frozen, non-authoritative header text.",
+        "The task brief described the composite as 'each followed by one LF'. The registry's section 1 row, which is what reproduces 97100cff..., is concatenation, then ONE LF, then the V5 id with no trailing LF. The agreement record should state the formula exactly as section 1 does.",
+        "The agreed-text hash boundary that reproduces 33023d54... is: from the '## 1.' heading line up to but excluding the '## 3. Registry entries' heading, with the informative line removed and every line (including the final empty line) terminated by LF. The rule-5 record should state that boundary explicitly.",
+        "The unrelated working-tree modification docs/automation/evidence/I-52-ct21d-ba08-v7-completeness-check-output.json is not a registry path, but it is uncommitted in the same worktree."
+      ]
+    }
+  },
+  "workflowProgress": [
+    {
+      "type": "workflow_phase",
+      "index": 1,
+      "title": "Review"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 1,
+      "label": "review:v26-rev3",
+      "phaseIndex": 1,
+      "phaseTitle": "Review",
+      "agentId": "a11263c473e9e67ec",
+      "model": "claude-opus-5-5",
+      "state": "done",
+      "startedAt": 1790811437871,
+      "queuedAt": 1790811437845,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "APPROVE_EXACT",
+      "promptPreview": "Worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico, HEAD e2779dad, src byte-identical to main 95690c28). READ-ONLY: do not edit, commit or run AutoCAD. Use git and python for hashing (LF-normalize text before sha256 where the registry does). Default to FAIL/UNKNOWN when you cannot verify; never assume. Report exact …",
+      "promptFramed": true,
+      "lastProgressAt": 1790811574482,
+      "tokens": 100706,
+      "toolCalls": 20,
+      "durationMs": 136609,
+      "resultPreview": "{\"verdict\":\"APPROVE_EXACT\",\"checks\":[{\"item\":\"(a0) Rev3 identity and encoding\",\"result\":\"PASS\",\"evidence\":\"`git hash-object docs/initiatives/I-52-ct21d-authority-contract-v2.6.md` = fd9c16873c526e5f009ad92beb8dd2fe236b964f. Python read of the raw file found 0 CR bytes and 30623 bytes, raw sha256 a1a0ffff66f2fd00da9c7f1a5743559c6a71c06dced55742c411d215d2054cbe, so the raw bytes are the blob bytes. …"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 2,
+      "label": "review:ba11-v8",
+      "phaseIndex": 1,
+      "phaseTitle": "Review",
+      "agentId": "a2175c1808c95dfa0",
+      "model": "claude-opus-5-5",
+      "state": "done",
+      "startedAt": 1790811437873,
+      "queuedAt": 1790811437846,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "CHANGES_REQUIRED",
+      "promptPreview": "Worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico, HEAD e2779dad, src byte-identical to main 95690c28). READ-ONLY: do not edit, commit or run AutoCAD. Use git and python for hashing (LF-normalize text before sha256 where the registry does). Default to FAIL/UNKNOWN when you cannot verify; never assume. Report exact …",
+      "promptFramed": true,
+      "lastProgressAt": 1790811551350,
+      "tokens": 101420,
+      "toolCalls": 14,
+      "durationMs": 112067,
+      "resultPreview": "{\"verdict\":\"CHANGES_REQUIRED\",\"checks\":[{\"item\":\"Pre-check: V8 blob identity and worktree state\",\"result\":\"PASS\",\"evidence\":\"`git rev-parse HEAD` = e2779dad8cd7b97937803b97a875c4f76e5b8854. `git hash-object docs/initiatives/I-52-ct21d-baseline-ba-11-hash-registry-v8.md` = b7c2700e0cb54c09256baa11b7a5a7f95e88942c, as expected. `git status --short`: M ba08-v7-completeness-check-output.json, M author…"
+    }
+  ],
+  "totalTokens": 202126,
+  "totalToolCalls": 34
+}

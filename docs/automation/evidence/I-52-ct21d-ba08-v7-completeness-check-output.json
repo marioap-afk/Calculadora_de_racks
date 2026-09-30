@@ -1,7 +1,7 @@
 {
  "check": "I-52-ct21d-ba08-v7-completeness-check",
  "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-08-selective-kind-baseline-v7.md",
- "artifactSha256": "c606e878bf8f4578808ed37adf2b0038f3513ef70f204a74dcde284f0b02ac44",
+ "artifactSha256": "552e337ea6dfbbeea0ae730f609b7b2207976c7428d10bc267644955f723e72d",
  "boundSha": "95690c28dc6268e61dff32a0cbc33cc9fde3d47f",
  "identityRows": 71,
  "identityRowsWC": 67,
