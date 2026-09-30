@@ -48,11 +48,16 @@ Preparacion: dibujo nuevo en pulgadas; el DLL del Candidato de I-60 (no el de I-
 | N-03 | Renombrar con RACKEDITAR «Selectivo 2» → «Pasillo A»; crear otro Selectivo | «Selectivo 4» (no se rellena el 2); el RackId del renombrado no cambia (RACKLISTA, zoom) |
 | N-04 | Renombrar un rack a «selectivo 7» (minusculas); crear otro | «Selectivo 8» |
 | N-05 | Crear un Selectivo escribiendo «Rack A» | Se llama «Rack A»; el siguiente automatico no salta |
-| N-06 | Crear Dinamico (menu RACKCAD), Push Back, Cantilever, cama (QUICKCAMA y menu) y cabecera (RACKCABECERA sin tocar el nombre, y QUICKCABECERA) | «Dinámico 1», «Push Back 1», «Cantilever 1», «Cama 1» y «Cama 2», «Cabecera 1» y «Cabecera 2»; secuencias independientes |
+| N-06 | Crear Dinamico (menu RACKCAD), Push Back, Cantilever, cama (QUICKCAMA y menu) y cabecera (RACKCABECERA sin tocar el nombre, y QUICKCABECERA) | «Dinámico 1», «Push Back 1», «Cantilever 1», «Cama 1» y «Cama 2», «Cabecera 1» y «Cabecera 2»; secuencias independientes; en la cama, el nombre del bloque tambien lleva «Cama N» |
 | N-07 | RACKCABECERA escribiendo un nombre propio | Se respeta |
-| N-08 | Insertar un diseño desde la biblioteca «como nuevo» | Conserva el nombre de la plantilla (editable) |
+| N-08a | Biblioteca «como nuevo»: un diseño de Dinamico, Push Back, Cantilever o cama con nombre de archivo propio | Conserva el nombre de la entrada (editable) |
+| N-08b | Biblioteca «como nuevo»: una cabecera guardada con el nombre «Estandar (3 paneles)» | Recibe «Cabecera N» |
+| N-08c | Biblioteca «como nuevo»: un Selectivo guardado sin nombre | Recibe «Selectivo N» |
 | N-09 | RACKEDITAR sobre «Selectivo 1» → Insertar lateral y planta | Las tres vistas se llaman «Selectivo 1» (RACKLISTA: 1 rack, 3 vistas) |
 | N-10 | Dibujo con un rack heredado **sin nombre** → abrir, RACKLISTA, RACKBOMTOTAL, RACKEDITAR → Actualizar / Insertar, guardar y reabrir | Sigue «(sin nombre)» en todo momento |
 | N-11 | Guardar, cerrar y reabrir el dibujo de N-01..N-06 | Todos los nombres se conservan; crear uno nuevo continua la numeracion |
-| N-12 | RACKDUPLICAR de «Selectivo 1» y de un rack sin nombre | Sin cambios respecto de hoy: «Selectivo 1 - copia», «Rack - copia» |
+| N-12 | RACKDUPLICAR de «Selectivo 1» y de un rack sin nombre (fuera de alcance: sin cambios) | Igual que hoy: «Selectivo 1 - copia», «Rack - copia» |
 | N-13 | `Esc` en el jig de un Selectivo nuevo; despues crear otro | No queda nada; el siguiente sigue la numeracion del dibujo (no se consumio numero) |
+| N-14 | RACKLAYOUT «independientes» desde «Selectivo 1» (fuera de alcance: sin cambios) | Igual que hoy: «Selectivo 1 <celda>» por celda |
+| N-15 | Renombrar un Dinamico a «Selectivo 9»; crear un Selectivo | «Selectivo 10» (el patron se lee sobre el texto de todos los racks) |
+| N-16 | RACKCABECERA sin tocar el nombre → RACKEDITAR (muestra «Cabecera N») → Actualizar; y un Cantilever nuevo → RACKEDITAR → Actualizar | Tras Actualizar siguen «Cabecera N» y «Cantilever N» en RACKLISTA y en el nombre del bloque |
