@@ -105,6 +105,24 @@ namespace RackCad.UI.Tests
             AssertFixtureConfig(config);
         }
 
+        [Fact]
+        public void I61_P3_ExistingBed_Insert_WithEmptyNameField_LeavesRackNameEmpty_TheResolutionLivesInEditCama()
+        {
+            // I-61 (D-1a) characterization: the window hands back "" when the name field is emptied; resolving a blank name to the
+            // drawn envelope's name is EditCama's job (EditedRackNameResolver), not the window's.
+            var (requested, name) = StaTestRunner.Run(() =>
+            {
+                var window = new RackFlowBedWindow(canInsertInAutoCad: true);
+                window.LoadExisting(ValidConfig(), "GUID-CAMA", "Cama A");
+                EditorWindowTestSupport.SetText(window, "NameBox", string.Empty);
+                EditorWindowTestSupport.ClickNamed(window, "InsertButton");
+                return (window.InsertRequested, window.RackName);
+            });
+
+            Assert.True(requested);
+            Assert.Equal(string.Empty, name);
+        }
+
         // ---- Helpers ----
 
         /// <summary>The config the real handler produced must match the fixture field by field, not just be non-null.</summary>

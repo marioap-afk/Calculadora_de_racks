@@ -12,7 +12,7 @@ namespace RackCad.Application.Persistence
         /// </summary>
         public static string Resolve(string editedName, string envelopeName)
         {
-            return editedName;
+            return string.IsNullOrWhiteSpace(editedName) ? envelopeName : editedName;
         }
     }
 }
