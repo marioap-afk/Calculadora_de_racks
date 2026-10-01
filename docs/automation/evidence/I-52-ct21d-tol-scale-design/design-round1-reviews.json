@@ -1,0 +1,419 @@
+{
+  "summary": "Architect design of TOL_SCALE authority/test and the exact host-fact matrix (G6), with adversarial review rounds",
+  "agentCount": 8,
+  "logs": [],
+  "result": {
+    "d1": {
+      "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/docs/initiatives/I-52-ct21d-tol-scale-design-and-host-fact-matrix-v1.md",
+      "gitBlob": "2d41ceba8c7e6dfa6953a5e89ac6601f5284ab20",
+      "sha256Lf": "9b1b500d8444768762d8e0dc0d29e046344c42044b037a3195c25372abb119b2",
+      "summary": "Wrote the Architect design document. It has four parts: A) TOL_SCALE authority and test design, B) host-fact matrix, C) G6 implication review, D) instrument specifications. I chose no TOL_SCALE value.\n\nPart A:\n- TOL_SCALE is one of the eight layer-2 slots. It bounds ENTITY_INSERT.scaleX/Y/Z per component: absolute, dimensionless, never Euclidean, never relative.\n- The decision rule has three branches. R1 is EXACT (zero, or route scale to EXACT_DOUBLE). R2 is a bounded noise floor (margin M, set by the Architect after the evidence) under a ceiling TOL_LENGTH/E_max. R3 is UNUSABLE, and then TOL_SCALE stays UNSET.\n- The Architect decides the value after a pre-registration entry; the Coordinator verifies the text.\n- The host test is a 147-row probe, defined by bit patterns, with one execution (EVIDENCE_REPETITION = 1, not a statistical count).\n- Results are PASS / FAIL / UNKNOWN / INVALID, with no automatic retry. The doc also gives a JSON Schema (validated on a generated 147-row sample), 11 failure modes, the \"record\" semantics, the BA-08 / BA-05 / BA-04 relink flow and the fail-closed fallback.\n\nFindings from grounding the design in the code and documents:\n- The contract has a second consumer of the same declared scale tolerance: the SL-4 acceptance (V2.1 15.6; BA-06 C-146).\n- Product code already supplies 1e-9 as the scale tolerance in the I-55 reader (RackProjectionSnapshotReader.cs:26-27). BA-08 V7 does not cite this. I treat it as a precedent only.\n- BA-05 has no slot-unit vector for scale.\n- 138 of the 437 BA-04 V7 scenarios are blocked by K-3 (checked by script).\n- BA-05's own census procedure already needs scratch-database references.\n- The existing G3A probe is not read-only (AddOverrule).\n\nPart B: the matrix has rows HF-M1..M11, HF-C1..C5, HF-G1..G4, HF-T1..T2 and HF-F1..F3. The six PARAM-05 strings are fixed as A1-R1..R6 (UBR included; MachineGuid read in the 64-bit view). MACHINE_CLASS and SESSION_BUILD_TUPLE are defined separately. G6 was not stretched:\n- The RB-range round trip (HF-G2) is flagged NEEDS-OWNER, with a no-write fallback (BA-05 keeps only the ranges that were actually observed).\n- The equal-to-style write-back (HF-C4) rests on the Coordinator's earlier ruling (section 236 R-3), not on G6.\n- A five-question boundary test is included for auditors.\n\nPart C: G6 changes the host package as follows. H3 splits into a write-back probe and the read-only G6 facts. The host-type facts expressly required by BA-05 V5 are limited to the context-variable types and the RB ranges (read-only). The doc lists what G6 does not authorize and the scope-creep controls.\n\nPart D: nine instruments I-0..I-9, in two DLL classes, R0 (strict read-only) and RS (read-only on product data, writes only to side databases). The doc covers the proposed folder, managed .NET via NETLOAD, TRUSTEDPATHS / SECURELOAD handling, hash pinning, how a reviewer verifies read-only, and the tests that need no AutoCAD versus host-only checks.\n\nThe doc ends with 12 Coordinator rulings (R-A..R-L), the residual open questions, the status block and the state lines.\n\nCitations: every cited file has its blob id in section 9, all produced by git hash-object. I checked line citations by reading the cited lines. src/ is identical to main, and no file under src/, tests/ or eng/ was touched. Only the new doc was added (untracked).\n\nAutoCAD and Windows facts that no repository file establishes are tagged [HOST-TO-CONFIRM]; the raw output on the host governs.",
+      "openQuestions": [
+        "R-A: does 'solo lectura' of the instrument gate and G6 mean READ-ONLY on product data, allowing side-database writes? Without that reading, the TOL_SCALE probe, the dynamic-property census and the write-back probe cannot run, and BA-05 L-1 and L-4 cannot close.",
+        "R-C: should the comparator and the SL-4 acceptance (V2.1 15.6; BA-06 C-146) share one TOL_SCALE slot or be split? What is the status of the I-55 1e-9 precedent for ST-7?",
+        "R-E: for the RB ranges that existing library data cannot cover (HF-G2), does the Owner extend G6 to a scratch round trip, or does BA-05 take the no-write fallback and keep only the ranges actually observed?",
+        "R-F: choose the TRUSTEDPATHS option. The Architect recommends one recursive trusted root, set before the six PARAM-05 strings are read.",
+        "R-H: are the exact reads A1-R1..R6 accepted for BA-10 V9, including UBR in the OS build (so every cumulative update changes the machine-class label)?",
+        "E_max (needed for the ceiling TOL_LENGTH/E_max) and tau_arith depend on fixture plan parameters and on SL-4 / mu_k formulas that are not implemented yet. R1 (EXACT) therefore rests on an assumption (the writer copies the scale bit for bit) that is not yet proven.",
+        "Package v2 and AR10-07 are not written; this document supplies their sections 2 and 5.",
+        "Some Windows and AutoCAD read commands are Architect knowledge, not repository facts. Examples: (vlax-product-key), the registry value names, getvar behaviour, and NETLOAD under SECURELOAD. They stay tagged [HOST-TO-CONFIRM] until the CAD manager's raw outputs exist."
+      ],
+      "checksRun": [
+        "git hash-object (and --no-filters) on the new file and on every cited path; blob ids recorded in section 9 and in the header",
+        "git rev-parse main equals 95690c28dc6268e61dff32a0cbc33cc9fde3d47f; git diff --stat main HEAD -- src is empty",
+        "git rev-parse 69daf03a^{tree} equals 3c34dc9be113e98088acf56653aa5181437d0893",
+        "git cat-file -t on every 40-hex id cited in the document (the two working-tree-only blobs are the uncommitted decisions log and the untracked Owner record)",
+        "BA-11 V9 and V10 section 3.3 rows compared by script: identical",
+        "Scripted check of about 90 cited path:line locations for the quoted text; two mismatches were found and corrected (Vector2D.cs ADR-0005 line, BA-05 census range)",
+        "BA-04 V7 JSON counts by script: 437 scenarios, 138 with K-3, 45 with K-8, all K-3 scenarios GOVERNING",
+        "BA-05 V5 section 2.1.2 range count by script: 32 ranges (corrected from an earlier 35)",
+        "Probe design validated by script: 147 rows (132 + 15) generated from the bit patterns, then validated against the embedded JSON Schema 2020-12 with jsonschema",
+        "All three JSON blocks in the document parse",
+        "Synthetic PARAM-05 label vectors computed with Python (sorted keys, compact separators, UTF-8, SHA-256)",
+        "Markdown table column counts checked: 0 mismatches",
+        "File has LF line endings only (0 CR), no emoji; sha256 is of the LF bytes",
+        "git status shows only the new untracked doc beyond the pre-existing changes; nothing under src/, tests/ or eng/ modified"
+      ]
+    },
+    "rev1": [
+      {
+        "verdict": "CHANGES_REQUIRED",
+        "majors": [
+          "MAJOR-1 (statistic ignores the persisted-file observation point). D_A is defined at OP1 only (section 2.3 table). OP1 is a re-read of the same in-memory side database after commit. OP2 (save, reopen, re-read) is 'recommended ON', is optional in the schema (`op2` not required, `DA_op2` nullable), and enters the PASS condition only 'when ON' (V2). The rule never uses DA_op2. If the governing comparator reads state that has been through a DWG save and reload, an R1 EXACT conclusion from OP1 alone is unsound. If the governing comparator reads only in-memory state, OP2 is not needed. The design asserts neither with a citation (V2.1 15.7 and BA-08 section 11 do not settle it). Required: either D_A = max(OP1, OP2) with OP2 mandatory, or an explicit cited statement that persistence is in-memory only.",
+          "MAJOR-2 (Owner scope is decided at the wrong level; the classification is honest in the table but not in the ruling path). The Owner's wording is 'instrumentos de solo lectura' three times: decisions section 237 point 5, point 8 item 5, and section 236 Owner item (d). The Coordinator's own section 236 says that anything exceeding the Owner's authorization 'se devuelve al Owner'. Instruments I-3, I-5 and I-6 write to side databases and I-6 saves a DWG file (OP2), so they are not read-only. The design coins 'READ-ONLY (PRODUCT)' and pre-selects it as its proposal. It makes the Owner referral conditional ('If there is doubt', R-A), and R-A is addressed to the Coordinator. Redefining an Owner word to widen an Owner-bounded gate is a decision for the Owner. The phase-2 hold in R-G is correct, but R-A, R-B and R-G should state that I-3, I-5, I-6 and the HF-C4 write probe stay blocked until the Owner answers, and should not present the term as an Architect definition. HF-C4 rests on the Coordinator's R-3, which admitted a host activity. R-3 did not admit a non-read-only instrument under the Owner's read-only instrument gate.",
+          "MAJOR-3 (the C2 consumer, SL-4 acceptance, is bound to a value that is not derived for it). TS-D-03 and R-C keep one slot, with the C1 meaning (noise floor of host storage and arithmetic), and state that C2 'reads the same value'. (a) The reference quantity of C2 is never defined: V2.1:903/915 and BA-06 C-146 say 'scale within the kind's declared tolerance' without saying within tolerance of what (1? the plan's s? |s-1|?). (b) The noise floor is not evidence for a PRE-WRITE acceptance threshold. (c) Branch R1(b) retires the slot and routes scaleX/Y/Z to EXACT_DOUBLE, which leaves 'the kind's declared tolerance' in V2.1 15.6, C-146 and DC-13 with no referent, and the design does not say what replaces it. (d) V17 4.3 / ST-7 / ST-8 / G4 (V17:912, 972) is the original home of the slot. That is C3, which the design excludes. Yet the I-55 reader already integrated in main supplies 1e-9 as the scale tolerance (RackProjectionSnapshotReader.cs:25-27). The design treats this only as a 'precedent' and defers it to residual question 7. Required: define C2 (or split the slot before sealing) and state the R1(b) consequence for C2.",
+          "MAJOR-4 (the derivation rule cannot be applied as written, and pre-registration leaves the main free parameter open). The rule needs `tau_arith` and `E_max`. The design itself says (section 7, items 1 and 2) that these depend on SL-4 / mu_k formulas that are not implemented (grep RACKMIRROR src finds nothing) and on fixture plan parameters that are not fixed. Both R1 (tau_arith = 0) and R2 (max(D_A, tau_arith); ceiling TOL_LENGTH/E_max) are therefore undefined today. The pre-registration (TS-D-05) fixes E_max, 'the form of the justification of M' and the R1(a)/(b) preference, but not M or any rule for M. So M (>= 1, chosen after the evidence) stays a post-hoc discretionary factor, which defeats the anti-tuning purpose the section claims (PA-9 discipline). The step order is also unclear: E_max and the tau_arith derivation should be sealed before the host run, not only 'before the raw evidence is opened', and the design does not say that the oracle and writer formulas must be sealed first. Required: fix M (or a closed function of the evidence) in the pre-registration, and list the sealed prerequisites for tau_arith and E_max as a gate of H4 / the decision."
+        ],
+        "minors": [
+          "MINOR-1: R2 proposes new SCALE slot-unit vectors in BA-05 and R1(b) proposes re-routing scaleX/Y/Z in BA-05. BA-05 V5 L-2 (line 1199, AR3-17) and BA-08 V7:392 say TOL_SCALE 'is not a gate of BA-05' and that its value and status live only in BA-08. The design does not cite or reconcile this. Reconcile it, and say what a new BA-05 hash does to the BA-05 and BA-08 candidate chain (BA-08 depends on BA-05).",
+          "MINOR-2: the boundary test in 3.5 (question 1) defines 'host-type fact' as 'what the host returns or stores', which is wider than the Owner's 'host-type fact'. The read part of HF-C5 (group-code designation of dimension variables, a number-to-variable assignment, not a type) is placed in G6 on that basis, although the status block says 'no G6 fact was stretched'. R-D asks only about the write output of the R-3 probe, not about the read part. Ask for a ruling on the read part, or move it to ROW3 and flag it.",
+          "MINOR-3: authority extent versus statistic. TS-D-03 limits the authority to the fixture scales (+1, -1, plan s; fixtures use (1,1,1)), but D_A takes the maximum over all 147 rows, including PF-2 bases 0.5, 2, 25.4 and 1/25.4. This is conservative and fail-closed (it may push to R3), but the design should state how PF-2 enters the rule or whether it is excluded from D_A.",
+          "MINOR-4: the evidence is bound to a tuple without RackCad loaded. Governing runs use other tuples (R8 and decisions section 237 point 3: 'la evidencia no se transfiere automáticamente'). FM-8 mentions one tuple, but the design does not state how a value derived on one tuple is applied in the baseline, nor who accepts that transfer. Say so explicitly (a residual-risk disclosure; Owner Act 2 is reserved).",
+          "MINOR-5: S1 makes a manually answered load prompt INVALID for P-A. Under SECURELOAD, a prompt is likely ([HOST-TO-CONFIRM]), so the test may be unrunnable. Specify a scripted or pre-trusted route as a precondition.",
+          "MINOR-6: the definition of K_pres ('largest ladder level k such that every row at that level and at every coarser level...') is ambiguous. 'Largest k' means the finest level, and the condition requires all coarser levels to be exact. Rephrase it as 'the finest level such that all levels not finer are bit-identical'. R1 uses K_pres = 52 and D_A = 0, which duplicates one condition for the PF-1 rows.",
+          "MINOR-7: JSON Schema and procedure consistency. `op2` is not required per row although PASS V2 requires OP2 'when ON'. The `summary` object has no additionalProperties:false while `rows` does. The PASS state is 'decision-eligible' but the result enum mixes verdict and eligibility. In the status block, section 2.4 says Core Console is allowed only if the Coordinator rules, while R-I proposes interactive for everything. Reconcile.",
+          "MINOR-8: G-12 lists 'the plan's uniform s' as a possible expected scale, while the fixtures place every source reference at scale (1,1,1) (BA-08 V7:606). The expected set is therefore {+1, -1} (and s = 1). Tighten the wording so no non-unit expected value is implied.",
+          "MINOR-9: the design excludes the clone / import / TransformBy paths (FM-9, section 2.4) while saying the SL-4 writer is not designed. The TOL_SCALE decision therefore depends on a writer route that is not yet fixed. Section 2.8 and R-B should state that K-3 cannot close before that route is fixed. The design says this only as 'a new test version'.",
+          "CHECKS THAT CAME OUT CORRECT (not defects): the doc sha256 and git blob match the writer report (9b1b500d...; 2d41ceba...); the file is LF only; src is identical to main (git diff --stat is empty; status shows only the decisions-log change and two untracked docs); BA-05 V5 lines 1059, 1079, 1103, 1104, 1106, 1180, 1199 quote as cited; BA-08 V7 section 10 / K-3 (lines 390, 632, 640, 392) agree; BA-04 V7 has 437 scenarios, 138 K-3 (115 characterization build, 23 product build); V17 lines 912, 915, 916, 972, 2039 match; the code lines of LateralHeaderDrawer (62, 147, 313), the reader (25-27), the classifier, Vector2D and ProbeCommands (AddOverrule at 122 and 155) match; the PF-2 bit patterns for 25.4 and 1/25.4 and their neighbours match Python; the PF-1 + PF-2 row count is 147; the two synthetic PARAM-05 label vectors reproduce (MC-47229d23a125, MC-c7edfcd1078e); the three JSON blocks parse. Faithfulness: decider = Architect is supported by BA-11 3.3 row 2 ('the Architect's TOL_SCALE decision') and package V1 G7; no number is chosen; the absolute, per-component and non-Euclidean form matches BA-05; the fail-closed fallback keeps UNSET, K-3 and the 138 markers. The P-A classification as not read-only is stated honestly in 2.4 and HF-T1. The derivation uses no governing output."
+        ],
+        "checks": [
+          "Read the full 750-line document and compared it with the Owner record (decisions section 237 and the evidence file), decisions sections 236 and 237, package V1 (G7, H4, R-3, R-5), BA-11 V10 3.3, BA-08 V7 section 10 / K-3, BA-05 V5 3.1 / 3.1.2 / L-2, V2.1 15.6 / 15.7 / 28.2 / 2.3, V2.2 PA-9, the phase-1 ruling item 5, V17 4.3 / ST-7 / ST-8 / ST-11 / CreateReference.",
+          "Ran git hash-object and sha256sum on the document (blob 2d41ceba...; sha256 9b1b500d...; 0 CR), git diff --stat main HEAD -- src (empty), and git status (decisions log modified; the Owner record and the design untracked).",
+          "Verified about 40 path:line citations with sed (BA-05, BA-08, BA-04, BA-06, V17, the product sources, the G3A probe): matched, with the observations listed in MINOR-1 and MAJOR-3.",
+          "Recomputed with Python the BA-04 V7 JSON counts (437 / 138 / 115 + 23), the bit patterns of 25.4 and 1/25.4 and their neighbours, the 147-row count, and the two PARAM-05 synthetic labels: all match. The three JSON blocks parse; the jsonschema module was not available, so the schema validation claimed by the writer was not re-run.",
+          "Tested the lens questions: no circularity or governing-output derivation found (the inputs are the probe, the sealed oracle / fixture parameters and the sealed TOL_LENGTH); the classification is honest in the tables; the Owner-scope and C2 issues are in the majors above."
+        ]
+      },
+      {
+        "verdict": "CHANGES_REQUIRED",
+        "majors": [
+          "G6 boundary stretch on HF-C5 (read part). The matrix (HF-C5, section 3.4 line 523), the status block (line 702) and section 4.1 place the read part of the group-code designation of the dimension variables inside G6. The Owner's G6 covers 'tipos/rangos RB', 'variables de contexto' and 'cualquier otro host-type fact'. A group-code-to-variable designation is a code assignment, not a host type. Package V1 never put it under G6: row G6 is RB ranges and context variables only, and the designation was in row G5 (write part). The Coordinator's section 236 R-3 ruling covers only 'equal-to-style'. The doc admits in the HF-C5 cell that BA-11 row 3 does not name the designation, but still labels the read part G6 and tells the reader 'no G6 fact was stretched' (line 703). The section 3.5 boundary test also redefines 'host-type fact' as 'what the host returns or stores' (question 1), which widens the Owner's wording. Fix: take the read part out of G6, either as a Coordinator ruling request like R-D or by deriving it from the ROW3 census pairs of HF-C3. Drop the 'no G6 fact was stretched' claim, and tighten question 1 to host value types and ranges.",
+          "HF-C3 also carries a dual in-gate basis, 'ROW3 (storage, order) and G6 (host types)'. BA-05 V5 section 5 step 2 (line 1180) already requires the '(code, host value type) pairs in host order' in the census itself, which is ROW3. Citing G6 for part of HF-C3 blurs which rows depend on the Owner extension, and the G6 rows are the ones the Coordinator must confirm separately. Fix: give HF-C3 a single basis (ROW3), or state exactly which cell is G6 and why. Combined with the HF-C5 problem, an auditor cannot tell what G6 added, which is the point of the G6 implication review (Part C)."
+        ],
+        "minors": [
+          "Capture of the six PARAM-05 strings is not fully deterministic. Section 3.2 requires one raw file per attribute holding UTF-8 bytes without BOM, and says 'the AutoLISP route adds exactly one line terminator'. It does not say how a getvar result reaches the file: command-line copy, which can wrap or truncate a long TRUSTEDPATHS, or an AutoLISP open/write-line with a stated encoding. The default AutoLISP file encoding is not necessarily UTF-8, and a Spanish-locale path with accents would then produce different bytes. This also sits uneasily with BA-11 row 1 ('no instrument'). Fix: fix one transfer mechanism and its encoding, with a check of the byte length against the string length.",
+          "A1-R3 relies on 'the single mapping rule above' to compare `(vlax-product-key)` with the registry subkey cross-check. No rule is written for that comparison: hive prefix, `SOFTWARE` against `Software` case, WOW6432 view. Section 3.2 also says 'no case folding' for the extracted string. Fix: state the comparison rule (for example a case-insensitive comparison used only for the cross-check, with the extracted string unchanged) and what happens when `(vlax-product-key)` is not of the form `Software\\...`. Cross-check 2 (`MachineRegistryProductRootKey`) needs an instrument, which conflicts with ROW1's 'no instrument'; it is optional but should be marked as outside ROW1.",
+          "A1-R2 puts UBR in OsVersionBuild, so every Windows cumulative update changes the MC label. BA-10 (2) says 'OS version and build' and the label hashes the 'exact text that the observation read'. A joined four-part string is a derived text, not a read text. The Owner's AR10_03B_READING says that an 'actualización de software' does not automatically change the label. The doc discloses this and asks the Coordinator in R-H. It is faithful only if BA-10 V9 accepts the join, so treat it as a ruling item before the label is computed.",
+          "The TB-C-only tuple binding for HF-M1..M6 is weaker than the Owner's 'toda observación ... ligada a build/machine/session tuple exacta'. The row-level binding stops at TB-C. The getvar reads (HF-M4..M6) happen inside an AutoCAD session and should also carry TB-S.",
+          "HF-F1 uses the tuple binding code 'TB-F', which is not defined in the conventions table of section 3.1 (TB-C, TB-B, TB-S, TB-L, TB-R).",
+          "HF-T2 (existing block-reference scales and optional extents, ROW2) is an extra section of the R0 census instrument I-2, which also carries the G6 facts HF-G1 and HF-C5. Mixing non-G6, optional output into the instrument that carries the strictest read-only G6 facts works against the doc's own scope-creep control (section 4.3). Prefer a separate section or a separate command, or strike the extents field now.",
+          "HF-G1 lists 'sealed fixture templates once they exist' as a source for the RB type reads. Fixtures are built by product commands under ROW4, and instances other than FX-ANN-BLANK/FX-IMP are OUT for now (R-4). Say whether G6 reads of fixtures are only allowed after their own gate, or drop the source.",
+          "HF-M4b ('stop condition 2 of package V1 4.0') is correct; this is a positive spot check, not a defect. The text of the BA-05, BA-10, BA-11 V10, decisions section 236/237 and package V1 rows was matched on 12 or more citations. No wrong line was found."
+        ],
+        "checks": [
+          "Read the Owner record (docs/automation/evidence/I-52-ct21d-owner-decisions-machine-g6-instruments.md) in full and decisions sections 236 and 237. G6 wording, R8, AR10-03(b), instrument gate and the unchanged state lines match the doc's header, section 3.3 and section 8 (state lines are unchanged).",
+          "Citations checked against the cited text: BA-05 V5 lines 72-105 (32 RB ranges counted: 32), 107, 125-140 (context-variable table, 10 variables, matches HF-G3 and the BA-08 V7:323 key list), 847, 1115, 1177-1192, 1180, 1190, 1183 (step 5 a, b, c), 1201 (L-4); BA-10 V8 section 2.2 PARAM-05 (closed list of 6, label rule, JCS object, 'exact text', SECURELOAD decimal digits, line 330); BA-11 V10 section 3.3 rows 1-4; decisions section 236 R-3 and R-4 rows; package V1 rows G1-G6 and the stop conditions (1)-(8); LateralHeaderDrawer.cs:362-372 (8 dimension variables, matches the DIM* list); G3A doc line 39 registry identity `Software\\Autodesk\\AutoCAD\\R25.0\\ACAD-8101:409`.",
+          "git hash-object matched the blob ids stated in the doc for BA-05 V5 (b74af94e), BA-10 V8 (820d90c8), BA-11 V10 (9984e9f8), the Owner record (2feb0bec), the G3A doc (ceb9f721) and the reviewed doc itself (2d41ceba, sha256 9b1b500d...); git status shows only I-52.md modified plus the two untracked files, and nothing under src/ changed.",
+          "Recomputed the synthetic PARAM-05 vectors with Python (sorted keys, compact separators, UTF-8, SHA-256): MC-47229d23a125 and MC-c7edfcd1078e. Both match section 3.2. The serialization is consistent with the BA-10 V8 label rule (exactly six keys, all string values, first 12 hex digits).",
+          "Checked each of the matrix's G6 rows: HF-G1 (M1 read of stored data; M2 round trip correctly kept out as NEEDS-OWNER, R-E), HF-G3 (read of context-variable types; read-only), HF-G4 (scan closed). HF-G1 and HF-G3 are inside G6; the first major concerns HF-C5/HF-C3 only. Write rows HF-C4 (R-3), HF-T1 (ROW2) and HF-F1 (ROW4/R-4) are correctly kept out of G6 and flagged for R-A.",
+          "MACHINE_CLASS and SESSION_BUILD_TUPLE separation (section 3.3) matches the Owner's AR10_03B text: the class changes only for the BA-10 list of six, and a module, update or build change gives a new session/build tuple. The one tension is UBR in A1-R2 (see the minors)."
+        ]
+      },
+      {
+        "verdict": "CHANGES_REQUIRED",
+        "majors": [
+          "Unfaithful to the Coordinator ruling R-5 (decisions section 236, around I-52.md line 10016) and to package V1 P-0.3 (line 212). Both say the tools are 'finales y cargadas en la linea base de modulos antes de H1' and that an instrument loaded after the baseline is a plugin change. The design never cites or reconciles either. Its R-G phases the instruments (phase 2 = I-3, I-5, I-6 after R-A, so after H1), and P-A step S1 NETLOADs the instrument mid-run after the S0 baseline reads. HF-M9 reads the module baseline 'before any gate instrument', which implies the same thing. The Owner's R8 acceptance (record 237 point 3) names only 'una build RackCad especificamente fijada'. Section 3.3 extends it to 'every instrument' without saying that this is an extension. A later RS DLL also changes TB-B and starts a new tuple, so I-2 and I-4 evidence, the H1 label and the phase-2 evidence would sit on different tuples. This must either be raised as an explicit ruling request or be changed so that the whole R0 and RS instrument set is final and in the baseline before H1.",
+          "The TOL_SCALE instrument split is internally inconsistent. Section 2.4 steps S0 to S8 describe one run in which S7, the P-R inventory pass, follows P-A. Section 5.2 assigns P-R to I-2 (the R0 DLL, command CT21DHG_CENSUS_R) and P-A to I-6 (the RS DLL, command CT21DHG_TOLSCALE). R-G puts I-2 in phase 1 and I-6 in phase 2. The tolscale-raw.json schema requires 'inventory' next to 'rows', with ONE tuple.buildTupleDigest and ONE instrument name and sha256. So the record cannot be produced by a single instrument, a single DLL class or a single tuple. The design must say which DLL writes the inventory, or split the record and the schema, and state that both DLLs are declared in the same tuple.",
+          "The read-only verification layers in 5.3 are overclaimed. (a) Layer 2 reads member references from the built DLL with System.Reflection.Metadata. `OpenMode.ForWrite` is an enum literal that the C# compiler inlines as an int constant, so it leaves no member reference. `GetObject(id, OpenMode.ForWrite)` is therefore indistinguishable from a read at that layer. (b) Layer 1 is a syntax-level scan that sees no receiver types and is evaded by `(OpenMode)1` or a variable argument. (c) 'The SideDb wrapper can be constructed only over a database created by the instrument' and 'only one EvidenceWriter writes files' are design intentions, not properties the scans can enforce. (d) R0 is called 'strict read-only (no side database written)', but I-2 includes optional block extents and dynamic-block reads on ReadDwgFile side databases. The host may evaluate and write anonymous blocks internally there, which no API-symbol scan sees. The repository already has a semantic Roslyn model with a DECLARED_MUTATOR classification (eng/validation/I52G3AApiCensus/Program.cs, which compiles with AutoCAD references). The design should require a semantic scan, or an IL scan that tracks constant operands, and should restate the R0 claim as 'no API write call, no save', not 'nothing is written in memory'."
+        ],
+        "minors": [
+          "Table 5.4 lists 'build twice and compare hashes' under 'tests without AutoCAD'. Section 5.2 I-8 itself says the build needs the AutoCAD installation (the probe csproj uses HintPath to AcDbMgd.dll, AcMgd.dll and AcCoreMgd.dll under AutoCADInstallDir). Only the core/ library can be tested with no AutoCAD files present. 'Without a running AutoCAD' is a different claim from 'without AutoCAD'.",
+          "Root Directory.Build.props sets Deterministic, Nullable=disable and LangVersion. Root Directory.Build.targets runs `git rev-parse HEAD` and stamps SourceRevisionId into InformationalVersion, so the DLL bytes depend on the repository HEAD. The design says 'same isolation as I52Ctda' and 'deterministic compiler settings' without saying that these files are inherited. It should pin SourceRevisionId explicitly or build outside the repo tree, and state how the compile-time AutoCAD assembly versions relate to the designated machine's build.",
+          "Self-hash pinning at command start (5.1) hashes the instrument's own file and compares it with a sidecar pin in the same trusted folder. That adds no independent protection against substituting the DLL together with its sidecar, and it checks the file on disk, not the loaded image. The independent pin is the pre-H1 tuple record plus the module-list hash. Whether Assembly.Location is a real file path under AutoCAD 2025 NETLOAD is not tagged [HOST-TO-CONFIRM].",
+          "The forbidden-symbol list lacks a setter of `HostApplicationServices.WorkingDatabase`. Building entities in a `new Database(true, true)` often needs that setter. It is global host state and would be a hidden write for I-3, I-5 and I-6. The spec should forbid it or declare and restore it. The `DBMOD` and hash checks do not catch it. P/Invoke/DllImport and reflection are also not named in the forbidden list.",
+          "HF-M9 says a module not in the declared set is INVALID. AutoCAD can itself demand-load native or ObjectDBX modules when ReadDwgFile meets proxy or custom objects (HF-C1 looks for exactly those). The design has no rule distinguishing host-loaded modules from instrument-loaded ones, so it could produce spurious INVALIDs.",
+          "Section 4.2 and line 175 say Core Console is allowed only if the Coordinator rules it. Package R-9, ruled in section 236, already says 'Core Console para el censo si es suficiente'. R-I should cite that ruling instead of re-asking.",
+          "I-1 is called 'no instrument' (BA-11 row 1: no instrument, no manifest), yet it ships an OS-level script (hashes, process list, module list) and an offline helper that run on or for the designated machine. That is tooling beyond the row's text and should be flagged for a ruling. The P-0.3 wording 'console-less' is also not addressed for instruments that echo to the command line.",
+          "I-7 would load or reference the product's Application-layer DLL inside the instrument process. The design says nothing about assembly identity or duplication if a pinned RackCad build is also NETLOADed, nor about hashing that DLL in TB-B. Its details are deferred to package v2, so I-7 is not implementable from this document alone.",
+          "Section 5.1 says outputs are deterministic functions of the inputs, but the OP2 side-database DWG saved by the instrument is not byte-deterministic (GUIDs and timestamps). It should be excluded from contentSha256 and hashed only as a raw file.",
+          "The precedent folders (eng/research/I52Ctda, including a managed observer that already NETLOADs, and eng/validation/I52G3A*) exist on the feature branch HEAD but not on main (the eng tree differs, 49 files). The 'src byte-identical to main' check is true (git diff main HEAD -- src is empty). The managed-observer precedent is not cited.",
+          "The section 5.3 item 4 host-run check 'SECURELOAD, TRUSTEDPATHS, profile equal before and after' is fine. NETLOAD under SECURELOAD is correctly tagged [HOST-TO-CONFIRM]."
+        ],
+        "checks": [
+          "Every blob id in section 9 matched `git hash-object` (scripted loop, zero mismatches). The document's own blob is 2d41ceba, which matches the writer's report.",
+          "The synthetic label vectors reproduce: 47229d23a125f9bc7bb947aa8d2eef9ee05f8e2484ea82c61c5f2ba31f593780 (label MC-47229d23a125) and c7edfcd1078e... for the empty TRUSTEDPATHS.",
+          "Citations checked: RackProjectionSnapshotReader.cs:25-27 (1e-9 supplied as the scale tolerance); ProbeCommands.cs lines 54-55, 69, 98, 122 and 155 (AddOverrule, JSON write, registry keys); LateralHeaderDrawer.cs:62 and RackSourcePlacementCaptureAdapter.cs:21 (ScaleFactors); LateralHeaderDrawer.cs:362-372 (product dimension setters, so I-5's 'property setters the product uses' is realistic); BA-05 V5:1115 and 1180-1183 (scratch-database census, step 5 (a)(b)(c)).",
+          "The Owner record (237 points 2, 3 and 5) and the Coordinator rulings R-5 and R-9 were read. R-5 and package P-0.3 conflict with the design (major 1). R-9 is misstated (minor).",
+          "I52Ctda/README (isolation sentence), build-r3.ps1 and deploy/build-bundle.ps1 (-InventoryOutPath) exist as described. I52G3AApiCensus is a Roslyn semantic census against AutoCAD references, not a metadata-level imports check.",
+          "`git diff --stat main HEAD -- src` is empty and `git status` shows only the new untracked doc plus the pre-existing decisions-log change and Owner record. Nothing under src/, tests/ or eng/ was modified by this document. The design itself needs no src or product change (instruments live under eng/research/; the only coupling is I-7's reference to Application-layer code, which needs no change either).",
+          "No AutoCAD was run and no file was edited."
+        ]
+      }
+    ],
+    "d2": {
+      "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/docs/initiatives/I-52-ct21d-tol-scale-design-and-host-fact-matrix-v1.md",
+      "gitBlob": "0a8ab46c54bd381bb031a8f1ee31a3b6d429993f",
+      "sha256Lf": "085379bd2550af47c86a17968df2831e7f7bee075c5173510fbe7da11a955959",
+      "summary": "I revised the same untracked draft in place and added section 10, the Review record. It answers every finding of the three reviews. All 9 MAJORs are applied, except that the C2 definition inside A-MAJOR-3 is turned into an open question (R-C). Of the minors, 2 are open (C-MINOR-7 and C-MINOR-8), 2 are positive spot checks that needed no change (B-MINOR-8 and C-MINOR-11), and the rest are applied. No value was chosen, no authorization was widened, and the state lines are unchanged.\n\nWhat changed against the MAJORs:\n- **A-MAJOR-1 (persisted state):** OP2 is now mandatory and D_A is the maximum over OP1 and OP2. V2.1 15.7 and BA-08 section 11 do not say whether the comparator reads reloaded state, so the design takes the stricter reading.\n- **A-MAJOR-2 (Owner scope):**\n  - I withdrew \"READ-ONLY (PRODUCT)\" as an Architect definition. STRICT and WRITES-SIDE are now only descriptive labels.\n  - New Owner questions Q-O-1 (what \"solo lectura\" admits) and Q-O-2 (HF-G2). I-3, I-5, I-6, the HF-C4 write probe and the OP2 save stay blocked until the Owner answers.\n  - R-A, R-B and R-G say so. R-3 is stated as admitting a host activity, not a non-read-only instrument.\n- **A-MAJOR-3 (C2):**\n  - `TOL_SCALE` is now C1 only. I withdrew the earlier position that C2 reads the same value.\n  - The C2 reference quantity is stated to be undefined by the contract text and is not invented. Candidates are listed, none chosen.\n  - The consequence of R1(b) for C2 is stated.\n  - The I-55 `1e-9` (`RackProjectionSnapshotReader.cs:25-27`) is cited. The next BA-08 must cite it.\n  - R-C asks for the C2 definition and the C3 question.\n- **A-MAJOR-4 (rule not applicable, M post hoc):**\n  - The free margin factor M is gone. tau is the smallest decade strictly above max(D_A, tau_arith), with no 1-2-5 relief. If it exceeds the ceiling TOL_LENGTH/E_max, the branch is R3.\n  - New sealed prerequisites PRE-1 to PRE-4 gate H4 and the decision. They are the scale formulas, the SL-4 writer route, the fixture plan parameters for E_max, and the pre-registration sealed before the host run.\n  - The closed function is my proposal. The Coordinator may rule a different closed function before the run (R-M).\n- **B-MAJORs (G6 boundary):**\n  - The read part of HF-C5 is no longer G6. It is derived from the ROW3 pairs of HF-C3.\n  - HF-C3 has a single ROW3 basis.\n  - The claim \"no G6 fact was stretched\" is removed. Boundary question 1 is tightened to host value types and ranges. R-D asks the Coordinator.\n  - The G6 facts in this design are now HF-G1 (M1) and HF-G3 only.\n- **C-MAJOR-1 (R-5, P-0.3):**\n  - The whole instrument set (R0 and RS DLLs) must be final and in the tuple before H1. R-G no longer places phase 2 after H1.\n  - S1 now requires a scripted or pre-trusted load route.\n  - Extending the Owner's R8 condition to instruments is stated as an extension (R-N).\n- **C-MAJOR-2 (instrument split):** P-A is I-6 (RS DLL). P-R is a separate I-2 (R0 DLL) command with its own record, inventory-raw.json. Both are declared in one tuple. The tolscale schema no longer has `inventory`.\n- **C-MAJOR-3 (verification overclaim):** section 5.3 now requires a semantic Roslyn scan with constant evaluation, modelled on the repository's `DECLARED_MUTATOR` census. The metadata layer is reduced to an API-membership backstop. Structural rules come with negative controls. The R0 claim is restated as \"no API write call and no save\", and the in-memory residual is disclosed.\n\nOther changes:\n- **Scope:** 135 of the 147 probe rows are in scope. The 12 PF-2 rows of other bases are characterization (`DA_char`).\n- **Struck and added:** the optional extents field is struck. A transfer-to-other-tuples disclosure is added.\n- **Raw strings (3.2):** one fixed transfer mechanism, a character-count check, and the A1-R3 comparison rule.\n- **A1-R2:** it is now a single read of `Win32_OperatingSystem.Version` with no UBR join. This changes the earlier recommendation. The four-part join with UBR is alternative (ii), ruled in R-H(a) before the label is computed.\n- **TB-S:** it now accompanies TB-C in every observation row.\n- **Rulings:** section 6 now has Q-O-1, Q-O-2, R-A to R-N.\n- **Section 9:** it has three new blob rows.\n\nI answered two items that remain open and need a ruling. C-MINOR-7 is the I-1 tooling and \"console-less\" question, flagged in R-H(b) and R-I. C-MINOR-8 is I-7 assembly identity, deferred to package v2.",
+      "openQuestions": [
+        "Q-O-1 (Owner, via the Coordinator): does the Owner's 'solo lectura' admit instruments that write only to in-memory side databases and save new files under the evidence folder (RS: I-3, I-5, I-6, the HF-C4 write probe, the OP2 save)? If the answer is STRICT, the TOL_SCALE host test cannot run (TOL_SCALE stays UNSET), the dynamic-property census and the write-back probe cannot run, and BA-05 L-1 (dynamic part) and L-4 (write-back part) cannot close unless BA-05 is re-prepared without them.",
+        "Q-O-2 (Owner, conditional): extend G6 to a scratch round trip for the RB ranges that stored data cannot show (HF-G2)? The Architect proposes fallback F-RB and no question for now.",
+        "R-C: split TOL_SCALE (C1 comparator) from the SL-4 acceptance bound (C2) and define the C2 reference quantity, which V2.1 15.6 and BA-06 C-146 leave undefined; confirm that C3 and the I-55 1e-9 are a separate product decision cited by the next BA-08; decide where the SCALE slot-unit vectors of branch R2 live.",
+        "R-M: prerequisites PRE-1 to PRE-4 (the oracle and writer scale formulas, the SL-4 writer route, the fixture plan parameters for E_max, and the pre-registration) gate the H4 host run and the decision. None is met today, and the closed margin function is only the Architect's proposal.",
+        "R-N: confirm that 'baseline' in R-5 and package V1 P-0.3 means the declared instrument set, final and recorded before H1. This extends the Owner's R8 wording to instruments.",
+        "R-H: choose A1-R2 proposal (i) or alternative (ii) before the label is computed. Also rule whether a typed AutoLISP file write and the OS-level script stay inside the words 'no instrument' of BA-11 row 1, and accept the A1-R3 comparison rule.",
+        "I-7 (fixture conformance reader) is not implementable from this document alone: assembly identity and duplication with a pinned RackCad build, and its hash in TB-B.",
+        "Whether the SL-4 writer produces the scale by assignment, TransformBy or clone/import is not fixed (PRE-2); K-3 cannot close before it is fixed.",
+        "[HOST-TO-CONFIRM] items remain open: the encoding argument of AutoLISP open, strlen semantics, Win32_OperatingSystem.Version, Assembly.Location under NETLOAD, NETLOAD prompts under SECURELOAD, and host-demand-loaded modules."
+      ],
+      "checksRun": [
+        "git hash-object of the revised file: blob 0a8ab46c54bd381bb031a8f1ee31a3b6d429993f; sha256 of the LF bytes 085379bd2550af47c86a17968df2831e7f7bee075c5173510fbe7da11a955959; 879 lines; 0 CR (grep -c)",
+        "Scripted loop over all 34 blob rows of section 9: git hash-object equals the stated blob, 0 mismatches. The 40-hex ids that git cat-file does not find are exactly the two working-tree-only blobs already disclosed in section 9 (decisions log, Owner record)",
+        "git diff --stat main HEAD -- src is empty; git status shows only the pre-existing decisions-log modification, the untracked Owner record and this untracked doc; nothing under src/, tests/ or eng/ touched",
+        "Read before citing, in the working tree: decisions log lines 10007, 10016, 10019, 10027; package V1 lines 212 and 464; BA-05 V5 line 1199; BA-08 V7 lines 392 and 606; V2.1 15.6 and 15.7; eng/validation/I52G3AApiCensus/Program.cs lines 197 and 222; RackProjectionSnapshotReader.cs lines 25-27; build-r3.ps1 line 66; Directory.Build.props and Directory.Build.targets",
+        "git ls-tree -r main: 0 files under eng/research/I52Ctda; git ls-tree -r HEAD: 70 files",
+        "All 3 JSON blocks parse. The revised JSON Schema was exercised with a hand-written validator of the keyword subset it uses (the jsonschema package is not installed and was not downloaded): a generated 147-row sample (135 in scope, bit patterns from the design) validates, an UNKNOWN-row case validates, and 9 negative cases are all rejected",
+        "Markdown table column counts checked on every table: 0 mismatches",
+        "Grep for leftovers (READ-ONLY (PRODUCT) as a proposal, TB-F, the old M margin, 'when ON', phase 2 after H1): only Review record mentions remain",
+        "No AutoCAD run, no instrument built, no git add/commit/push"
+      ]
+    },
+    "rev2": [
+      {
+        "verdict": "CHANGES_REQUIRED",
+        "majors": [
+          "The Owner-scope classification of the R0 class contradicts itself, and the G6 boundary test depends on it. Section 0 defines STRICT READ-ONLY as 'no write call of any kind, no save, no database object created'. Section 5.1 defines R0 (STRICT) in the same terms ('no database object created') and then says its only database construction is `new Database(false, true)` followed by `ReadDwgFile`. I-2 and I-4 (HF-C1, HF-C3, HF-G1 M1, HF-T2) are labelled 'yes (strict)'. Section 3.5 question 3 requires an observation to be done 'without writing even to a side database', and then states 'HF-G1 (M1) and HF-G3 pass all five'. Section 5.3 item 4 admits that a ReadDwgFile'd side database can be evaluated and written in memory by the host (anonymous blocks, caches, and the host-loaded modules of HF-M9). Q-O-1 puts only the RS class to the Owner. The R0 class, with its in-memory residual, is never put to the Owner, yet the G6 facts HF-G1 and HF-G3 are presented as clean 'READ-ONLY' under the Owner's word. This is the same kind of Owner-bounded term that A-MAJOR-2 was about. Fix: make the definition of STRICT consistent with what R0 does (for example 'no API write call, no save, no document or product database; reads a private copy into an in-memory side database'). Extend Q-O-1, or add a Q-O-0, so the Owner or Coordinator confirms that this R0 residual is inside 'READ-ONLY'. Or state that G6 reads proceed only on the Coordinator's confirmation of that reading, so that 'passes all five' stops being asserted by the Architect."
+        ],
+        "minors": [
+          "C-LEN ceiling and ruling coverage. The ceiling `tau <= TOL_LENGTH/E_max` decides R2 versus R3, and it is an Architect-invented criterion tied to the sealed TOL_LENGTH (1e-9 in, BA-08 V7:386). R-M and the pre-registration list only the 'closed margin function'. Add the ceiling formula and the E_max definition to R-M and to the pre-registered items, so the Coordinator rules them explicitly.",
+          "R1(b) re-routes `scaleX/Y/Z` from `ABS_DIFF_LE(TOL_SCALE)` to `EXACT_DOUBLE`. That changes the comparator class in BA-05, not just a value. The text says 'the Architect chooses (a) or (b)' and the preference is fixed in pre-registration. R-J covers the value and the evidence discipline, and R-C(a) covers C2. Say expressly that the Coordinator rules, before the host run, whether a class change falls under the 'TOL_SCALE decision' that BA-11 3.3 row 2 gives the Architect.",
+          "R-N and the S0/S1 order are still in tension with the literal R-5 (decisions log line 10016) and P-0.3 (package V1 line 212): 'cargadas en la linea base de modulos antes de H1' versus HF-M9 'module list before any NETLOAD' and the NETLOAD in S1. The design now states this as an extension and a ruling request, which is acceptable. Until R-N is ruled, S0/S1 must not be read as authorized.",
+          "PRE-1 gives 'nothing is implemented (grep RACKMIRROR src)' as the state. PRE-1 asks that the formulas be sealed in a baseline artifact, which is a different condition from the code existing. `git grep -il rackmirror -- src` finds nothing in tracked files. A plain `grep -r` over `src` also hits untracked bin/ build outputs. Say 'tracked source' and separate 'implemented' from 'sealed in a baseline artifact'; BA-08 V7 section 11 already sets part of the oracle (mirror flags as scale signs).",
+          "The PF-2 base-1 rows `(nextUp(1),1,1)` and the PF-1 row (sigma=++, c=X, k=52) are the same intended triple. They are counted as two rows in the 135. It is harmless, but state the duplication so the count is not read as 135 distinct triples.",
+          "The A1-R2 claim that 'a cumulative update changes UBR, not the build number' is correctly tagged HOST-TO-CONFIRM. A feature update does change the build number, and so the label. This is consistent with AR10_03B, but say so.",
+          "Open items already listed by the writer remain open: C-MINOR-7 (I-1 tooling, 'console-less') and C-MINOR-8 (I-7 assembly identity). Both go to rulings or to package v2 and block nothing in this review."
+        ],
+        "checks": [
+          "Re-read the whole revised document (879 lines). `git hash-object` gives blob 0a8ab46c54bd381bb031a8f1ee31a3b6d429993f, which matches the report. 0 CR bytes. `git status` shows only the decisions-log change, the untracked Owner record and this untracked doc. `git diff --stat main HEAD -- src` is empty. No src, tests or eng change by this document.",
+          "Spot-verified citations by reading the cited lines: decisions log R-5 (10016), R-9 (10019) and Owner decisions (d) (10027); package V1 P-0.3 (212) and 'console-less' (464); BA-05 V5 L-2 (1199); BA-08 V7 392, 606 and 386 (TOL_LENGTH 1e-9); V2.1 15.7 (it does not say whether the comparator reads reloaded state, which supports the OP2-mandatory choice); `Program.cs` 197 and 222 (DECLARED_MUTATOR); `RackProjectionSnapshotReader.cs` 25-27 (1e-9 as scale tolerance). All match the document. Blob ids of BA-05 V5, BA-08 V7, `Directory.Build.targets` and `ObserverApplication.cs` match section 9. The Owner record text matches the document's G6, R8, AR10-03(b), instrument-gate and 'solo lectura' quotations.",
+          "Prior review 1 (authority-and-contract), MAJOR-1 persisted state: RESOLVED. OP2 is mandatory, D_A is the max over OP1 and OP2, and the schema requires op2. MAJOR-2 Owner scope: RESOLVED for the RS class. The 'READ-ONLY (PRODUCT)' definition is withdrawn, Q-O-1 and Q-O-2 are Owner questions, and I-3, I-5, I-6, the HF-C4 write probe and the OP2 save are blocked. The R0 side is not resolved: see the major. MAJOR-3 C2: RESOLVED. TOL_SCALE is C1 only, C2 is an open ruling with no invented value, the R1(b) consequence is stated, and the I-55 1e-9 is cited. MAJOR-4 rule not applicable and M post hoc: RESOLVED. M is removed, the decade function is closed, PRE-1 to PRE-4 gate H4, and the pre-registration is sealed before the host run. Residual: the C-LEN ceiling is not listed for a ruling (minor).",
+          "Prior review 2 (G6 boundary): both MAJORs RESOLVED. The HF-C5 read part is derived from the HF-C3 ROW3 pairs and is not G6, the 'no G6 fact stretched' claim is gone, question 1 is tightened to host value types and ranges, and HF-C3 has a single ROW3 basis. The G6 facts are now only HF-G1 (M1) and HF-G3. R-D asks the Coordinator about the HF-C5 designation.",
+          "Prior review 3 (instruments): MAJOR-1 (R-5 and P-0.3) is addressed by requiring the whole instrument set in the tuple before H1, with the extension of R8 stated as R-N. This is acceptable as a ruling request; see the minor on S0/S1. MAJOR-2 (instrument split) is RESOLVED: P-A is I-6 (RS), P-R is a separate I-2 command with its own record, and the tolscale schema has no inventory. MAJOR-3 (verification overclaim) is RESOLVED: a Roslyn semantic scan with constant evaluation, the metadata layer reduced to a backstop, negative controls, and the R0 claim restated with the in-memory residual disclosed.",
+          "Circularity and governing outputs: none found. Inputs are host probe evidence, a sealed oracle and writer analysis, and sealed fixture parameters. The rule is closed, no number is chosen, fail-closed R3 keeps UNSET, K-3 and the 138 BA-04 BLOCKED_BY markers, and the state lines are unchanged. The test is honestly labelled WRITES-SIDE and routed to the Owner as Q-O-1, not self-authorized. Row arithmetic checked: 4x3x11 = 132 PF-1 rows, plus 15 PF-2 rows = 147, with 135 in scope.",
+          "Smuggled decisions: the Owner-entitled items (Q-O-1, Q-O-2, Owner Act 2, residual risk) are reserved. The only residual smuggling risks are the unlisted C-LEN ceiling, the R1(b) class change, and the R0 in-memory residual presented as 'strict' without being put to the Owner (the major). Nothing was run: no AutoCAD, no edits, no git add/commit/push."
+        ]
+      },
+      {
+        "verdict": "CHANGES_REQUIRED",
+        "majors": [
+          "HF-C5 read part (and the 'nothing extra is read' claim in R-D) has no workable method. The matrix says the group-code designation (code -> variable name, e.g. 40=DIMSCALE) is 'derived from the ROW3 census pairs of HF-C3', but those pairs are only (code, host value type) in host order (BA-05 V5:1180/1183). A code with a type carries no variable identity, so `designation[].variable` cannot be derived from them. A real read needs a second source, such as the dimension's own variable values compared with the override values, or the write-back probe HF-C4. That source is not stated, not assigned to an instrument, and not classified for G6 or ROW3. As written, the row claims an output its method cannot produce. The G6 re-classification (not G6, ROW3) rests on this unsupported derivation, and R-D asks the Coordinator to accept 'nothing extra is read'. Fix: say what read yields the code-to-variable assignment. If it is only the write probe, the read part is NOT_OBSERVABLE from HF-C3 and the designation depends on Q-O-1. Then correct HF-C5, section 3.5 line 627, the I-2 row and R-D."
+        ],
+        "minors": [
+          "Prior G6 majors confirmed resolved, subject to the HF-C5 major above. HF-C3 now has a single ROW3 basis. The 'no G6 fact was stretched' claim is gone. Boundary question 1 is tightened to host value types and ranges. Only HF-G1 (M1) and HF-G3 sit IN. HF-G2 and HF-C4 are NEEDS-OWNER.",
+          "Prior R-5 and P-0.3 major resolved in substance: the whole instrument set is final before H1, and the extension of the Owner's R8 wording is declared as R-N. Package V1 P-0.3 itself says 'H1 needs none' and the instruments are needed from H2 onward. The design's stricter 'all before H1' is the Architect's reading, which R-N should say plainly.",
+          "The PARAM-05 transfer mechanism uses a typed AutoLISP file write in the AutoCAD session. BA-10 V8 says the label value 'needs no implemented instrument and no manifest'. The conflict is disclosed in R-H(b). Until it is ruled, A1-R3 to A1-R6 are not fully determinate. They also depend on [HOST-TO-CONFIRM] items: the AutoLISP open encoding argument and strlen semantics.",
+          "The six attribute strings are otherwise well defined. The closed list matches BA-10 V8 2.2. The JCS object has exactly six string keys, sorted and compact. The label is MC- plus the first 12 hex digits, and SECURELOAD is its decimal digits. A1-R2 is a single read with no join. A1-R3 has an explicit comparison rule. The offline helper strips exactly one terminator and checks the character count. The synthetic vectors MC-47229d23a125 and MC-c7edfcd1078e were already reproduced by earlier reviewers and I did not recompute them.",
+          "MACHINE_CLASS versus SESSION_BUILD_TUPLE (3.3) is faithful to the Owner's AR10-03(b). The label changes only for a change in the list of six. A module, update or build change gives a new session/build tuple without changing the label. A trusted-path change changes the label. This is consistent with BA-10 V8 'change of a module entry: no change of the label'.",
+          "Where the design is stricter than the Owner's G6 text, it sends the point to Owner questions (Q-O-1, Q-O-2) rather than deciding it. The state lines are unchanged."
+        ],
+        "checks": [
+          "Doc blob 0a8ab46c54bd381bb031a8f1ee31a3b6d429993f and sha256 085379bd...5959 match the report; 879 lines.",
+          "Read the Owner record G6 section (G6=EXTEND: non-governing, READ-ONLY, RB ranges, context variables, other host-type facts expressly required by the current BA-05; no product writes; every observation bound to an exact tuple). Compared it with sections 3.4, 3.5 and 4.1.",
+          "Spot-checked about 14 citations against the cited text. BA-05 V5: the RB table at lines 72-105 has 32 rows (awk count); line 107 on Unsupported codes; the context-variable table at lines 127-138 has 10 variables, matching HF-G3; line 1115 for the eight dimension variables and codes; line 1180 for step 2 (pairs in host order, scratch-database reference for dynamic properties); line 1183 for step 5 (a)(b)(c); L-4 at line 1201. BA-10 V8 PARAM-05: the closed list of six, the label rule, the JCS object, the 'exact text' rule, SECURELOAD as digits, and the 'no instrument' remark. BA-11 V10 line 172 on the K-2 census and AR4-10 confirmations. Package V1 P-0.3 (line 212) and R-3 (line 536). All matched except the HF-C5 derivation, which does not follow from its cited source.",
+          "Read sections 3.2 to 3.5, 4.1 and 5.2 of the design in full. Also read rows I-1 to I-6 and the rulings and status lines.",
+          "Did not recompute the label vectors or the 147-row scale statistics. No edits, no AutoCAD, no git writes."
+        ]
+      },
+      {
+        "verdict": "CHANGES_REQUIRED",
+        "majors": [
+          "Internal contradiction left in the C-MAJOR-1 fix (R-5 / package V1 P-0.3 versus I-7). R-G and R-N say no host activity starts and no tuple record closes until the WHOLE declared set (all R0 and RS DLLs, manifest, declared RackCad build) is final and recorded before H1. But section 5.2 classes I-7 (`conformance/`) as an R0 plus product-reader instrument, says it 'follows R8', 'follows package v2' and 'is not implementable from this document alone', and R-G places I-7 and I-8 after package v2. The document never says whether the I-7 DLL belongs to the declared set. If it does, H1 and the tuple record are blocked on an instrument that has no implementable spec, and the tuple cannot close as R-5 requires. If it does not, a later I-7 load is exactly the 'instrument loaded after the baseline' that P-0.3 calls a plugin change, and it changes TB-B. The design must state which one it is (or put the I-7 scope, and the dependent HF-F1/HF-F2 conformance, into an explicit R-N / R-G ruling item) before this can be called implementable."
+        ],
+        "minors": [
+          "Section 5.3 item 1 forbids `Database.Wblock*` 'to a file' in every instrument, while I-3 (RS) clones dynamic definitions into a scratch side database (cloning API calls such as WblockCloneObjects or DeepCloneObjects). Item 3 lists ForWrite, Commit, `new Database(true,...)` and Save call sites for the `SideDb` wrapper, but does not list the clone calls. State whether the clone calls are allowed and where, so the scan rule is decidable for I-3 and I-5.",
+          "Section 5.4 does not list the forbidden-api-scan, its negative controls, or the imports allowlist check as tests. They need the AutoCAD managed reference assemblies at build time but not a running AutoCAD, so they belong in the 'without a running AutoCAD' column. Without them, the main read-only verification layer has no stated test.",
+          "The tolscale schema requires exactly 147 rows (`minItems`/`maxItems` 147). A crash or an INVALID run that dies midway cannot produce a conforming record, yet INVALID is a schema result value and the design says the logs are retained. State that an instrument crash yields a partial log under a different (non-conforming) document type, or relax the row count when `result` is INVALID.",
+          "I-1 still ships an OS-level script and typed AutoLISP file writes under the words 'no instrument' of BA-11 row 1 (C-MINOR-7). This is correctly left OPEN and flagged in R-H(b); it needs a ruling before I-1 is final. This is a carry-over, not a new defect.",
+          "Note on the 'Core Console / console-less' question (R-I): the design now cites R-9 correctly. R-I proposes interactive for all and a one-line command-line status. Package V1 line 464 says 'console-less', so the status line is a visible deviation that needs the ruling."
+        ],
+        "checks": [
+          "`git hash-object` of the document gives 0a8ab46c54bd381bb031a8f1ee31a3b6d429993f and sha256 gives 085379bd...5959, matching the report. The file has 879 lines.",
+          "`git diff --stat main HEAD -- src` is empty. `git status` shows only the decisions-log modification, the untracked Owner record and the untracked design. Nothing under src/ or tests/ is touched by this document. (eng/ differs between main and HEAD by 74 files already on the branch, not caused by this document.) No src or product change is needed by the design.",
+          "Citations checked against the repository: `eng/validation/I52G3AApiCensus/Program.cs` lines 197 ('Explicit write-open marker') and 222 ('Object is opened ForWrite at this call site') match. It detects ForWrite by symbol name and `ToString().Contains`, not by constant evaluation. The design presents it only as a model, so this is accurate.",
+          "`build-r3.ps1`: the `OutputRoot` parameter is at line 4 and line 18, and the script does not set `SourceRevisionId`. Root `Directory.Build.targets` does resolve `SourceRevisionId` via `git rev-parse HEAD`, and `Directory.Build.props` is as described. So the design's 'pin SourceRevisionId explicitly' fix is correct and needed. The probe csproj uses `AutoCADInstallDir` with HintPath references to AcCoreMgd, AcDbMgd and AcMgd.",
+          "`eng/research/I52Ctda` has 0 files in `main` and exists on HEAD, with `managed-observer/ObserverApplication.cs` and a README isolation statement, as claimed. `69daf03a` is a valid commit. The `deploy/build-bundle.ps1` `-InventoryOutPath` parameter exists.",
+          "Package V1 line 212 (P-0.3: instruments in the loaded-module baseline; a later load is a plugin change) and line 464 ('console-less') were read. The revised design reconciles the first by requiring the declared set before H1 and by asking R-N for the 'declared module load is an expected event' reading. It does not fully reconcile it for I-7 (see the major).",
+          "Prior MAJOR-1 (R-5/P-0.3 mid-run load): resolved in substance, except for the I-7 gap above. Prior MAJOR-2 (instrument split): resolved. P-A is I-6 (RS DLL), P-R is the separate I-2 `CT21DHG_INVENTORY` command with its own `inventory-raw.json`, and the schema has no `inventory` field. Prior MAJOR-3 (verification overclaim): resolved. The scan is semantic with constant evaluation, the metadata layer is demoted to a backstop, structural rules have negative controls, the R0 claim is restated, and the in-memory residual is disclosed. The reflection, P/Invoke and `WorkingDatabase` setter items are now in the forbidden list.",
+          "Prior minors confirmed applied: 'without a running AutoCAD' wording, inherited build files, self-hash limits with `Assembly.Location` tagged HOST-TO-CONFIRM, `hostLoaded[]` for host-demand-loaded modules, R-I citing R-9, the OP2 DWG excluded from `contentSha256`, and the managed-observer precedent cited.",
+          "Schema read in full. The `if`/`then`/`else` on result and decisionEligible is consistent, and `op2` is required per row. P-A is a single instrument with a single tuple. The section 2.4 write-class table, the PASS V1..V8 conditions and the 2.5 classes are consistent with 5.2 and R-G. No governing output enters the derivation, and no value is chosen.",
+          "Not re-run: schema validation (jsonschema not installed) and the offline scripts. Nothing was built or run; AutoCAD was not used. No file was edited."
+        ]
+      }
+    ]
+  },
+  "workflowProgress": [
+    {
+      "type": "workflow_phase",
+      "index": 1,
+      "title": "Design"
+    },
+    {
+      "type": "workflow_phase",
+      "index": 2,
+      "title": "Review"
+    },
+    {
+      "type": "workflow_phase",
+      "index": 3,
+      "title": "Revise"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 1,
+      "label": "design:v1",
+      "phaseIndex": 1,
+      "phaseTitle": "Design",
+      "agentId": "aee255881abaac39c",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790817479724,
+      "queuedAt": 1790817479687,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmir…",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ byte-identical to main 95690c28). Project: I-52 CT-21D authority baseline preparation (documents only). HARD RULES: no AutoCAD, no host run, no src/tests/eng change, no git add/commit/push, never fabricate a fact/hash/number, write files with LF via…",
+      "promptFramed": true,
+      "lastProgressAt": 1790818926702,
+      "tokens": 427276,
+      "toolCalls": 82,
+      "durationMs": 1446978,
+      "resultPreview": "{\"path\":\"C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/docs/initiatives/I-52-ct21d-tol-scale-design-and-host-fact-matrix-v1.md\",\"gitBlob\":\"2d41ceba8c7e6dfa6953a5e89ac6601f5284ab20\",\"sha256Lf\":\"9b1b500d8444768762d8e0dc0d29e046344c42044b037a3195c25372abb119b2\",\"summary\":\"Wrote the Architect design document. It has four parts: A) TOL_SCALE authority and test design, …"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 2,
+      "label": "review:authority-and-contract",
+      "phaseIndex": 2,
+      "phaseTitle": "Review",
+      "agentId": "aaf8d75b3e36ac0f1",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790818926746,
+      "queuedAt": 1790818926709,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "CHANGES_REQUIRED",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ byte-identical to main 95690c28). Project: I-52 CT-21D authority baseline preparation (documents only). HARD RULES: no AutoCAD, no host run, no src/tests/eng change, no git add/commit/push, never fabricate a fact/hash/number, write files with LF via…",
+      "promptFramed": true,
+      "lastProgressAt": 1790819195536,
+      "tokens": 165718,
+      "toolCalls": 21,
+      "durationMs": 268782,
+      "resultPreview": "{\"verdict\":\"CHANGES_REQUIRED\",\"majors\":[\"MAJOR-1 (statistic ignores the persisted-file observation point). D_A is defined at OP1 only (section 2.3 table). OP1 is a re-read of the same in-memory side database after commit. OP2 (save, reopen, re-read) is 'recommended ON', is optional in the schema (`op2` not required, `DA_op2` nullable), and enters the PASS condition only 'when ON' (V2). The rule ne…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 3,
+      "label": "review:host-fact-matrix-and-g6",
+      "phaseIndex": 2,
+      "phaseTitle": "Review",
+      "agentId": "ac5a19ee74581acc2",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790818926750,
+      "queuedAt": 1790818926709,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "CHANGES_REQUIRED",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ byte-identical to main 95690c28). Project: I-52 CT-21D authority baseline preparation (documents only). HARD RULES: no AutoCAD, no host run, no src/tests/eng change, no git add/commit/push, never fabricate a fact/hash/number, write files with LF via…",
+      "promptFramed": true,
+      "lastProgressAt": 1790819137007,
+      "tokens": 153683,
+      "toolCalls": 23,
+      "durationMs": 208514,
+      "resultPreview": "{\"verdict\":\"CHANGES_REQUIRED\",\"majors\":[\"G6 boundary stretch on HF-C5 (read part). The matrix (HF-C5, section 3.4 line 523), the status block (line 702) and section 4.1 place the read part of the group-code designation of the dimension variables inside G6. The Owner's G6 covers 'tipos/rangos RB', 'variables de contexto' and 'cualquier otro host-type fact'. A group-code-to-variable designation is a…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 4,
+      "label": "review:instruments-and-feasibility",
+      "phaseIndex": 2,
+      "phaseTitle": "Review",
+      "agentId": "a1d09542b593d2398",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790818926753,
+      "queuedAt": 1790818926709,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "CHANGES_REQUIRED",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ byte-identical to main 95690c28). Project: I-52 CT-21D authority baseline preparation (documents only). HARD RULES: no AutoCAD, no host run, no src/tests/eng change, no git add/commit/push, never fabricate a fact/hash/number, write files with LF via…",
+      "promptFramed": true,
+      "lastProgressAt": 1790819183439,
+      "tokens": 136197,
+      "toolCalls": 20,
+      "durationMs": 254946,
+      "resultPreview": "{\"verdict\":\"CHANGES_REQUIRED\",\"majors\":[\"Unfaithful to the Coordinator ruling R-5 (decisions section 236, around I-52.md line 10016) and to package V1 P-0.3 (line 212). Both say the tools are 'finales y cargadas en la linea base de modulos antes de H1' and that an instrument loaded after the baseline is a plugin change. The design never cites or reconciles either. Its R-G phases the instruments (p…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 5,
+      "label": "design:v1-revised",
+      "phaseIndex": 3,
+      "phaseTitle": "Revise",
+      "agentId": "adb2b649a2f952da1",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790819195545,
+      "queuedAt": 1790819195540,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmir…",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ byte-identical to main 95690c28). Project: I-52 CT-21D authority baseline preparation (documents only). HARD RULES: no AutoCAD, no host run, no src/tests/eng change, no git add/commit/push, never fabricate a fact/hash/number, write files with LF via…",
+      "promptFramed": true,
+      "lastProgressAt": 1790819928980,
+      "tokens": 243921,
+      "toolCalls": 31,
+      "durationMs": 733434,
+      "resultPreview": "{\"path\":\"C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/docs/initiatives/I-52-ct21d-tol-scale-design-and-host-fact-matrix-v1.md\",\"gitBlob\":\"0a8ab46c54bd381bb031a8f1ee31a3b6d429993f\",\"sha256Lf\":\"085379bd2550af47c86a17968df2831e7f7bee075c5173510fbe7da11a955959\",\"summary\":\"I revised the same untracked draft in place and added section 10, the Review record. It answers …"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 6,
+      "label": "rereview:authority-and-contract",
+      "phaseIndex": 2,
+      "phaseTitle": "Review",
+      "agentId": "a7310c409eb4b80f6",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790819928994,
+      "queuedAt": 1790819928988,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "CHANGES_REQUIRED",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ byte-identical to main 95690c28). Project: I-52 CT-21D authority baseline preparation (documents only). HARD RULES: no AutoCAD, no host run, no src/tests/eng change, no git add/commit/push, never fabricate a fact/hash/number, write files with LF via…",
+      "promptFramed": true,
+      "lastProgressAt": 1790820081238,
+      "tokens": 152857,
+      "toolCalls": 12,
+      "durationMs": 152238,
+      "resultPreview": "{\"verdict\":\"CHANGES_REQUIRED\",\"majors\":[\"The Owner-scope classification of the R0 class contradicts itself, and the G6 boundary test depends on it. Section 0 defines STRICT READ-ONLY as 'no write call of any kind, no save, no database object created'. Section 5.1 defines R0 (STRICT) in the same terms ('no database object created') and then says its only database construction is `new Database(false…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 7,
+      "label": "rereview:host-fact-matrix-and-g6",
+      "phaseIndex": 2,
+      "phaseTitle": "Review",
+      "agentId": "ad4702bea29310442",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790819928997,
+      "queuedAt": 1790819928988,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "CHANGES_REQUIRED",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ byte-identical to main 95690c28). Project: I-52 CT-21D authority baseline preparation (documents only). HARD RULES: no AutoCAD, no host run, no src/tests/eng change, no git add/commit/push, never fabricate a fact/hash/number, write files with LF via…",
+      "promptFramed": true,
+      "lastProgressAt": 1790819997852,
+      "tokens": 101062,
+      "toolCalls": 9,
+      "durationMs": 67272,
+      "resultPreview": "{\"verdict\":\"CHANGES_REQUIRED\",\"majors\":[\"HF-C5 read part (and the 'nothing extra is read' claim in R-D) has no workable method. The matrix says the group-code designation (code -> variable name, e.g. 40=DIMSCALE) is 'derived from the ROW3 census pairs of HF-C3', but those pairs are only (code, host value type) in host order (BA-05 V5:1180/1183). A code with a type carries no variable identity, so …"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 8,
+      "label": "rereview:instruments-and-feasibility",
+      "phaseIndex": 2,
+      "phaseTitle": "Review",
+      "agentId": "ad740c98929b84f2a",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790819929000,
+      "queuedAt": 1790819928989,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "CHANGES_REQUIRED",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ byte-identical to main 95690c28). Project: I-52 CT-21D authority baseline preparation (documents only). HARD RULES: no AutoCAD, no host run, no src/tests/eng change, no git add/commit/push, never fabricate a fact/hash/number, write files with LF via…",
+      "promptFramed": true,
+      "lastProgressAt": 1790820008611,
+      "tokens": 109604,
+      "toolCalls": 7,
+      "durationMs": 78031,
+      "resultPreview": "{\"verdict\":\"CHANGES_REQUIRED\",\"majors\":[\"Internal contradiction left in the C-MAJOR-1 fix (R-5 / package V1 P-0.3 versus I-7). R-G and R-N say no host activity starts and no tuple record closes until the WHOLE declared set (all R0 and RS DLLs, manifest, declared RackCad build) is final and recorded before H1. But section 5.2 classes I-7 (`conformance/`) as an R0 plus product-reader instrument, say…"
+    }
+  ],
+  "totalTokens": 1490318,
+  "totalToolCalls": 205
+}

@@ -1,0 +1,145 @@
+{
+  "summary": "Second revision of the TOL_SCALE design/host-fact matrix and re-review",
+  "agentCount": 3,
+  "logs": [],
+  "result": {
+    "d": {
+      "gitBlob": "ec2d20be552d234a2f70d5f6a9e522e81960fbd0",
+      "sha256Lf": "cca35cbe7cf509bf3e3e31e926ee41b093769f99f8c485b82b43071d9b338dbc",
+      "summary": "I revised the untracked draft in place at C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/docs/initiatives/I-52-ct21d-tol-scale-design-and-host-fact-matrix-v1.md. All three MAJOR findings and the accepted minors are applied, and section 10 has a new \"Second review\" table with one entry per finding. The draft is now 903 lines, LF only, and all JSON blocks parse. The Markdown table column counts match except one mismatch at G-07 (line 97), a row I did not touch. I changed no src, tests or eng files and ran no git add, commit or push. The state lines are unchanged. I chose no tolerance value and widened no authorization.\n\n(1) R2-MAJOR-1, the R0 contradiction.\n- STRICT READ-ONLY is redefined in section 0, 5.1 and 3.5 question 3 so it matches what R0 does: no API write call, no save, no write to or write-open of a product or open-document database. The only database is an in-memory side database filled by `ReadDwgFile` from a private copy, never saved or attached.\n- The in-memory residual is named the \"R0 residual\". It is put as a new Q-O-0 in section 6, with a consequence sentence, and is referenced from R-A, R-G, 5.3 item 4, 4.1, section 7 and the section 8 status.\n- The \"pass all five\" assertion is removed. For HF-G1 (M1) and HF-G3, question 3 is no longer asserted as an Architect fact.\n- The G6 reads now proceed only on the Coordinator's or Owner's confirmation of Q-O-0. I also flagged the same residual for HF-C1, HF-C3 and HF-T2.\n\n(2) R2-MAJOR-2, HF-C5.\n- I took the NOT_OBSERVABLE route. The HF-C3 pairs `(code, host value type)` carry no variable name, so the code-to-variable assignment cannot be derived from them.\n- HF-C5, the 3.5 text, the I-2 row (no `designation[]` from I-2), R-D, 4.1, section 7 and section 8 are corrected. `NOT_OBSERVABLE` is added to the fact vocabulary and the record status enum.\n- The designation is observed only by the HF-C4 write probe (I-5), which is blocked on Q-O-1.\n- The second read-only source (comparing override values with the dimension's own variable values) is not adopted, because it is an inference, not an observation. It goes to the Coordinator as R-D(b); if admitted it could only be CORROBORATING_ONLY.\n- If the probe cannot run, the designation stays unconfirmed and BA-05 decides how to carry it. I invented no BA-05 rule.\n\n(3) R2-MAJOR-3, I-7.\n- I-7 is stated as NOT in the declared set for H1, as ruling item R-N(b), referenced from R-G, 3.3, the HF-F1 and HF-F2 rows, 5.1, 5.2 and section 7.\n- The HF-F1 and HF-F2 conformance reads are not in H1. They run in a later session under its own SESSION_BUILD_TUPLE, with I-7 declared before that run and no evidence transferred either way (the Owner's R8 reading).\n- H5 step 2, H6 and H7 need the exact PRODUCT_BUILD, which does not exist, so they could not be in H1 in any case. Where the `FX-ANN-BLANK` step 1 construction runs is left to package v2.\n\nMinors applied:\n- The ceiling `tau <= TOL_LENGTH / E_max` and the E_max definition are now in R-M and in the pre-registration items.\n- Routing `scaleX/Y/Z` to `EXACT_DOUBLE` is stated as a comparator-class change that needs the Coordinator's ruling before the host run, in R1, the pre-registration paragraph and R-M. Until then only R1(a) is available.\n- The row count notes the PF-1/PF-2 duplicate triple: 147 rows, 146 distinct triples, and 135 in-scope rows, 134 distinct triples. This was computed by script. The duplicate is `(3FF0000000000001, 3FF0000000000000, 3FF0000000000000)`, PF-1 (+,+) X k=52 against PF-2 base 1 nextUp.\n\nCitations re-read with git and sed: BA-05 V5:107, 1115, 1183 and 1201; package V1 lines 212, 307, 311 and 464; decisions log lines 10016, 10019, 10027, 10047 and 10050; Owner record lines 42, 184 and 203. The `git hash-object` values of the decisions log (858509b4...) and the Owner record (2feb0bec...) are unchanged, and section 9 records this.\n\nThe old entries A-MINOR-2 and B-MAJOR-1 now note that their \"derived from HF-C3\" claim is superseded.",
+      "openQuestions": [
+        "Q-O-0 (new): is the R0 residual (an in-memory ReadDwgFile side database the host may evaluate or cache) inside the Owner's 'solo lectura'? The G6 reads HF-G1 (M1) and HF-G3 wait for this answer from the Coordinator or the Owner.",
+        "Q-O-1 (existing): what 'solo lectura' admits, STRICT or also side-database writes. It still gates I-3, I-5, I-6, the HF-C4 write probe (which now also carries the HF-C5 designation) and the OP2 save.",
+        "R-D(b): is a CORROBORATING_ONLY read-only comparison of override values against the dimension's own variable values wanted as an extra HF-C5 read? The Architect proposes no.",
+        "R-N(b): confirm that I-7 is outside the H1 declared set. Where the FX-ANN-BLANK step 1 construction runs, and under which tuple, is left to package v2.",
+        "R-M: the Coordinator must rule before the host run on whether routing scaleX/Y/Z to EXACT_DOUBLE (R1(b)) is admissible. Until then a result R1 can only inscribe R1(a), a zero slot.",
+        "BA-05 treatment of an unconfirmed group-code designation, if Q-O-1 is STRICT or the HF-C4 probe does not run. This is a BA-05 decision outside this document."
+      ]
+    },
+    "rev": [
+      {
+        "verdict": "CHANGES_REQUIRED",
+        "majors": [
+          "Q-O-0 is internally contradictory on HF-G3 and on which reads it gates. Section 6 Q-O-0 says a 'no' leaves 'only HF-G3 (system-variable reads, no side database)' runnable. Yet the HF-G3 matrix row, 3.5 (boundary-test paragraph), 5.1, 5.3 item 4 ('HF-G1 M1, HF-G3'), R-A, section 7 item 11 and the section 8 status all say HF-G3 'proceeds only on the confirmation of Q-O-0'. HF-G3 uses no side database, so the residual does not touch it. The document gates it on a question that, by its own text, it cannot fail. Conversely, 5.3 item 4 and Q-O-0 say the same residual applies to HF-C1, HF-C3 and HF-T2, and a 'no' blocks them. But R-A, R-G (I-2 in phase 1), section 7 item 11 and the section 8 status gate only the G6 reads. Required fix: state one consistent gating set. Either drop HF-G3 from the Q-O-0 gate, or explain why it stays, and say explicitly whether the ROW3/ROW2 reads HF-C1, HF-C3 and HF-T2 (command I-2, phase 1) also wait for Q-O-0. Section 8's status and R-A must match that."
+        ],
+        "minors": [
+          "Matrix rows HF-C1, HF-C3 and HF-T2 are labelled 'STRICT READ-ONLY on disk (no API write call, no save)' with no pointer to Q-O-0. The residual is disclosed only in 5.3 item 4. Add the Q-O-0 pointer to those rows or use the section 0 definition wording.",
+          "The Q-O-0 consequence sentence says HF-C1/C3/T2 'cannot run as instruments' and that BA-05 L-4(b) and the census 'would need another route'. The R-G phase-1 plan still lists I-2 as implementable without caveat. Align the two.",
+          "The author's report says the Markdown table has a column-count mismatch at G-07 (line 97 of the earlier draft). I did not re-verify this, and it is not a content issue. Fix it or confirm it is only the escaped pipe characters in the text.",
+          "The `conformance/` entry in the section 5 layout table (I-7) does not say it is outside the H1 declared set (R-N(b)). This is harmless but could mislead an implementer, so add a short pointer."
+        ],
+        "checks": [
+          "The draft's git blob is ec2d20be552d234a2f70d5f6a9e522e81960fbd0, matching the author report. It has 902 lines (wc -l; the author reported 903, probably counting the last line without a trailing newline).",
+          "Citations re-read with sed: BA-05 V5 lines 107, 1115, 1183 and 1201 match what is cited. Package V1 lines 212 (P-0.3), 307 (H1 row), 311 (H5 step 2, H6, H7 need the PRODUCT_BUILD) and 464 (console-less) match. Decisions log lines 10016 (R-5), 10019 (R-9), 10027, 10047 and 10050 match. Owner record lines 42, 184 and 203 match.",
+          "git hash-object of the decisions log (858509b4...) and the Owner record (2feb0bec...) match section 9.",
+          "Major 2 (HF-C5): the NOT_OBSERVABLE route is consistent everywhere I grepped. That covers the HF-C5 row, the HF-C3 row note 'no variable name', 3.5, the I-2 row (no designation), the I-5 row (the HF-C4 probe yields it), 4.1 H3a, R-D(a)/(b), section 7 item 12, the section 8 status and the fact vocabulary and enum (NOT_OBSERVABLE). The unconfirmed designation is left as a BA-05 decision and no rule is invented. The second read-only source is correctly classed as inference and CORROBORATING_ONLY. RESOLVED.",
+          "Major 3 (I-7): grep of I-7, R-G, R-N, HF-F1, HF-F2 and H1 shows consistent text. I-7 is not in the declared set for H1 (3.3, 5.1, the I-7 row in 5.2, R-G, R-N(b), section 7 item 10, the HF-F1 and HF-F2 rows). H5 step 2, H6 and H7 are tied to the nonexistent PRODUCT_BUILD at package V1:311, and the construction location is left to package v2. RESOLVED.",
+          "Major 1 (STRICT definition): section 0, 5.1, 3.5 question 3 and 5.3 item 4 all define STRICT to match R0 (an in-memory ReadDwgFile side database, never saved). The Architect no longer asserts that HF-G1 or HF-G3 'pass all five'. The Owner-bounded term is explicitly left to Q-O-0 and Q-O-1. The definition itself is RESOLVED. The gating-set contradiction above is what remains.",
+          "State lines are unchanged: BASELINE_READY FALSE, EXECUTION_READY FALSE, EXECUTION NOT_AUTHORIZED, CIA UNKNOWN, G3 STOPPED, ALT-21E. The document claims no src, tests or eng change and no git add, commit or push. I did not run git status for src or tests, so I did not verify those claims."
+        ]
+      },
+      {
+        "verdict": "CHANGES_REQUIRED",
+        "majors": [
+          "MAJOR-1 (Q-O-0 blocking list is inconsistent across the document). The Q-O-0 row in section 6 says that if the R0 residual is not inside 'solo lectura', HF-G1 (M1) AND every R0 read that uses a side database (HF-C1, HF-C3, HF-T2) cannot run as instruments. The header OWNER_QUESTIONS_PENDING line (55-57), R-A (6), R-G phase 1, section 8 and 4.1 name only the G6 reads (HF-G1 M1, HF-G3) as waiting for Q-O-0. The matrix rows HF-C1, HF-C3 and HF-T2 are labelled 'STRICT READ-ONLY on disk' with no Q-O-0 flag, while HF-G1 carries one. R-G phase 1 also lets the Coordinator open implementation of I-2 (which hosts HF-C1, HF-C3, HF-T2 and HF-G1 M1) while Q-O-0 is open. The Coordinator cannot read the activities blocked by Q-O-0 from one place. The review lens requires every open question to be listed with the activities it blocks. Fix: use one explicit list (HF-G1 M1, HF-C1, HF-C3, HF-T2, and the I-2 R0 build that carries them), repeated in the header, R-A, R-G, 3.4, 4.1 and section 8. Or state that Q-O-0 does not gate the census rows, with a basis.",
+          "MAJOR-2 (the STRICT / R0 definition still contradicts what R0 specifies; same defect class as R2-MAJOR-1). Section 0 and 5.1 define STRICT/R0 as 'no API write call of any kind in the instrument's code' and list the allowed constructions (an in-memory side database from ReadDwgFile). 5.1 also says 'Instruments write their results to files only', and 5.3 item 1 allows File writes through the single EvidenceWriter. So R0 (I-2, I-4) writes result files, and I-1 has the CAD manager type an AutoLISP (open ... \"w\") file write inside the live AutoCAD session. These evidence-folder writes are not in the STRICT definition. They are not in the R0 residual of Q-O-0 either, which names only in-memory host caching. The WRITES-SIDE definition does state that it 'saves only new files under the evidence folder', so only the R0 definition is silent. A Coordinator who rules PASS on Q-O-0 as worded would not have been asked whether evidence-file output is inside 'solo lectura'. Fix: add 'writes only new result files under the evidence folder via EvidenceWriter' to the STRICT/R0 definition in 0 and 5.1, and name it as a disclosed element of Q-O-0 (or a separate sub-question). Then 'no API write call of any kind' no longer conflicts with the EvidenceWriter allowance in 5.3."
+        ],
+        "minors": [
+          "Q-O-0 and its blocking scope: the HF-C1, HF-C3 and HF-T2 rows in 3.4 should carry the same Q-O-0 flag as HF-G1 once MAJOR-1 is settled (Read-only? column and the 5.3 item 4 cross-reference).",
+          "R-N / R-G consequence is stated but not highlighted: 'no host activity starts and no tuple record is closed until the whole declared set is final', while the RS DLL waits on Q-O-1. Even H1 (machine fact capture, which needs no instrument) is therefore held until Q-O-1 is answered. The Coordinator should see this as an explicit sequencing consequence in section 6 or 7. If it is intended, one sentence suffices.",
+          "The closed margin rule (smallest decade strictly above F) and the ceiling tau <= TOL_LENGTH / E_max are Architect-authored rules. They are correctly framed as proposals with R-M ruling and chose no value, but the document text should say once, near 2.3, that they are design proposals without repository authority. TOL_LENGTH = 1e-9 does have a citable source (BA-08 V7 section 10 and Vector2D.cs:93).",
+          "G-07 (line 97) quotes V17 with escaped pipes (\\|). The author already reports a column-count mismatch there. It renders correctly in GFM, but a table linter will still flag it; switch to a code span or a non-pipe separator.",
+          "Citation of 'Owner gate 233 machine/session fact capture (package row G2)' for HF-M4b (a profile registry subtree digest) is a stretch. G2 lists 'configuration inputs of the tuple', and a digest of the exported profile is an extra read. It is basis-citable but should be tagged NEEDS-COORDINATOR, or cite the G2 'configuration inputs' phrase explicitly."
+        ],
+        "checks": [
+          "Spot-checked 8+ citations against git/grep and all matched the quoted text: BA-05 V5:107 (host types confirmed before the candidate; unsupported codes), V5:1059 (scale routed to ABS_DIFF_LE(TOL_SCALE)), V5:1104 (EXACT_DOUBLE rows), V5:1115 (group-code designation, codes 40..271 'to be confirmed'), V5:1180 (scratch-database census), V5:1183 (step 5 (a), including the group-code designation), V5:1199 (L-2) and V5:1201 (L-4); BA-08 V7:390 (TOL_SCALE UNSET), V7:392, V7:606 (scale (1,1,1)) and V7:632 (K-3); BA-11 V10 section 3.3 (row 1 'read-only, no instrument', row 2 with no qualifier, row 3 census with AR4-10).",
+          "Owner record: G6 text (EXTEND, READ-ONLY, RB types/ranges, context variables, other host-type facts expressly required by BA-05; the NO-autoriza list) and the R8 prerequisites match. Decisions log lines 10016 (R-5), 10019 (R-9), 10027 (Owner decision (d)), 10047 (point 5) and 10050 (point 8) match. Package V1 lines 53-62, 212, 307, 311, 464 and row G2 match; Owner 233 record lines 155 and 157 match. V2.1:903/915, BA-06:399/504, V17 lines 912, 972 and 2039 match.",
+          "Numeric facts verified by script: the RB table has exactly 32 ranges (V5:72-105 region). The PF-2 bit patterns for 1, 0.5, 2, 25.4 and 1/25.4, and their nextUp/nextDown, match IEEE-754 binary64 exactly. 2^-30 and 2^-29 magnitudes are right. The PF-1 (132) and PF-2 (15) row counts, the 135 in-scope rows and the one PF-1/PF-2 duplicate triple (146 distinct triples) are consistent.",
+          "git hash-object matches the document for decisions/I-52.md (858509b4), the Owner G6 record (2feb0bec), BA-05 V5 (b74af94e), BA-08 V7 (57330c3a) and BA-11 V10 (9984e9f8). The document's own blob is ec2d20be as reported. `git diff --stat main HEAD -- src` is empty. git status shows only the decisions log modified plus two untracked docs (the Owner record and this design).",
+          "State lines are unchanged: BASELINE_READY FALSE, EXECUTION_READY FALSE, EXECUTION NOT_AUTHORIZED, CIA UNKNOWN, G3 STOPPED, ALT-21E. INSTRUMENT_IMPLEMENTATION_GATE is NOT_OPEN and HOST_RUN_STARTED is FALSE. No tolerance value is chosen; TOL_SCALE stays UNSET. The numbers present are test inputs (ladder K, PF-2 bases, row counts) and Architect rules (decade ladder, C-LEN ceiling) that the document presents as proposals subject to R-M, not as repository facts.",
+          "Every IN-gate row has a citable basis: ROW1..ROW4 (BA-11 3.3), G6 with the V5 sentence, R-3 (write-back probe as a host activity), or package row G2. The exceptions are flagged NEEDS-OWNER: HF-C2, HF-C4, HF-G2, HF-T1. HF-C5 is NOT_OBSERVABLE read-only. No instrument writes into a product database or open document; the P-A, I-3 and I-5 side-database writes and the OP2 save are classed WRITES-SIDE and blocked on Q-O-1. The residual is the evidence-file writes by R0 and the AutoLISP write by I-1 (MAJOR-2)."
+        ]
+      }
+    ]
+  },
+  "workflowProgress": [
+    {
+      "type": "workflow_phase",
+      "index": 1,
+      "title": "Revise"
+    },
+    {
+      "type": "workflow_phase",
+      "index": 2,
+      "title": "Review"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 1,
+      "label": "design:revise-2",
+      "phaseIndex": 1,
+      "phaseTitle": "Revise",
+      "agentId": "aeabc6cb278133c5e",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790820113634,
+      "queuedAt": 1790820113582,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "ec2d20be552d234a2f70d5f6a9e522e81960fbd0",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ byte-identical to main 95690c28). I-52 CT-21D baseline preparation, documents only. HARD RULES: no AutoCAD/host, no src/tests/eng change, no git add/commit/push, never fabricate facts/hashes/numbers, LF files (Write tool or python newline='\\n'), sta…",
+      "promptFramed": true,
+      "lastProgressAt": 1790820450265,
+      "tokens": 176016,
+      "toolCalls": 17,
+      "durationMs": 336629,
+      "resultPreview": "{\"gitBlob\":\"ec2d20be552d234a2f70d5f6a9e522e81960fbd0\",\"sha256Lf\":\"cca35cbe7cf509bf3e3e31e926ee41b093769f99f8c485b82b43071d9b338dbc\",\"summary\":\"I revised the untracked draft in place at C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/docs/initiatives/I-52-ct21d-tol-scale-design-and-host-fact-matrix-v1.md. All three MAJOR findings and the accepted minors are applied, …"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 2,
+      "label": "rereview2:majors-and-owner-scope",
+      "phaseIndex": 2,
+      "phaseTitle": "Review",
+      "agentId": "af813a4fffd7be849",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790820450314,
+      "queuedAt": 1790820450271,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "CHANGES_REQUIRED",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ byte-identical to main 95690c28). I-52 CT-21D baseline preparation, documents only. HARD RULES: no AutoCAD/host, no src/tests/eng change, no git add/commit/push, never fabricate facts/hashes/numbers, LF files (Write tool or python newline='\\n'), sta…",
+      "promptFramed": true,
+      "lastProgressAt": 1790820514162,
+      "tokens": 101756,
+      "toolCalls": 9,
+      "durationMs": 63842,
+      "resultPreview": "{\"verdict\":\"CHANGES_REQUIRED\",\"majors\":[\"Q-O-0 is internally contradictory on HF-G3 and on which reads it gates. Section 6 Q-O-0 says a 'no' leaves 'only HF-G3 (system-variable reads, no side database)' runnable. Yet the HF-G3 matrix row, 3.5 (boundary-test paragraph), 5.1, 5.3 item 4 ('HF-G1 M1, HF-G3'), R-A, section 7 item 11 and the section 8 status all say HF-G3 'proceeds only on the confirmat…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 3,
+      "label": "rereview2:implementability-and-fidelity",
+      "phaseIndex": 2,
+      "phaseTitle": "Review",
+      "agentId": "a8c95b1bbb4b7266b",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790820450319,
+      "queuedAt": 1790820450271,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "CHANGES_REQUIRED",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ byte-identical to main 95690c28). I-52 CT-21D baseline preparation, documents only. HARD RULES: no AutoCAD/host, no src/tests/eng change, no git add/commit/push, never fabricate facts/hashes/numbers, LF files (Write tool or python newline='\\n'), sta…",
+      "promptFramed": true,
+      "lastProgressAt": 1790820562534,
+      "tokens": 149221,
+      "toolCalls": 10,
+      "durationMs": 110659,
+      "resultPreview": "{\"verdict\":\"CHANGES_REQUIRED\",\"majors\":[\"MAJOR-1 (Q-O-0 blocking list is inconsistent across the document). The Q-O-0 row in section 6 says that if the R0 residual is not inside 'solo lectura', HF-G1 (M1) AND every R0 read that uses a side database (HF-C1, HF-C3, HF-T2) cannot run as instruments. The header OWNER_QUESTIONS_PENDING line (55-57), R-A (6), R-G phase 1, section 8 and 4.1 name only the…"
+    }
+  ],
+  "totalTokens": 426993,
+  "totalToolCalls": 36
+}

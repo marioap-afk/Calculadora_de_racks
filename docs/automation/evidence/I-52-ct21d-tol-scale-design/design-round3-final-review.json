@@ -1,0 +1,99 @@
+{
+  "summary": "Third revision (Q-O-0 gating consistency, evidence-file writes) and final re-review",
+  "agentCount": 2,
+  "logs": [],
+  "result": {
+    "d": {
+      "gitBlob": "529cdd0a0c2cff45011bdf7e5d287e36b84a81dd",
+      "sha256Lf": "85c896b700530e8566230025a790a2529a5f3346f8aab8f543a292e9139544c6",
+      "summary": "Revised docs/initiatives/I-52-ct21d-tol-scale-design-and-host-fact-matrix-v1.md in place (untracked, LF only, no CR). No git add/commit/push, no src/tests/eng change, state lines unchanged.\n\nMAJOR-1: there is now one gated set, {HF-G1 (M1), HF-C1, HF-C3, HF-T2 and the I-2 R0 build (CT21DHG_CENSUS_R, CT21DHG_INVENTORY) that carries them}. HF-G3 and I-4 are removed from the Q-O-0 gate everywhere. Edited places: header, section 0, 3.4 (new gating paragraph), the HF-G1, HF-C1, HF-C3, HF-T2 and HF-G3 rows, P-R in 2.4, 3.5 question 3 and its applied paragraph, 4.1 (row plus new paragraph), 5.1, 5.2 (I-2 and I-4 rows), 5.3 item 4, section 6 (Q-O-0 row, R-A, R-G), 7 item 11 and section 8 (both lines). R-G phase 1 now says the I-2 R0 build cannot start before Q-O-0(a), while I-0, I-1, I-4 and I-9 may start. The sequencing consequence is stated once, in the Q-O-0 row. No host activity starts and no tuple record is closed until the whole declared set is final. H1 waits on Q-O-1 while the RS DLL is declared. If Q-O-1 is STRICT only, the RS DLL is struck and H1 waits only for Q-O-0 and the R0 DLL. If Q-O-0(a) is no, the I-2 R0 build is struck too.\n\nMAJOR-2: the STRICT/R0 definition (section 0 and 5.1) now includes \"writes only new result files under the evidence folder through the single EvidenceWriter\". This is the disclosed element Q-O-0(b), distinct from the in-memory residual Q-O-0(a). The I-1 AutoLISP `open ... \"w\"` write is named as the same element in 3.2 and in the I-1 row. Q-O-0(b) does not change the gated set, but the consequence of a \"no\" is stated in the Q-O-0 row.\n\nMinors:\n- HF-C1, HF-C3 and HF-T2 carry Q-O-0(a) pointers.\n- HF-M4b is tagged NEEDS-COORDINATOR and cites the Owner Q-O5 \"configuration inputs\" phrase as written in its Required-by cell.\n- 2.3 has a one-time statement that the margin rule and the ceiling tau<=TOL_LENGTH/E_max are Architect proposals without repository authority. TOL_LENGTH=1e-9 is sourced to BA-08 V7 section 10 and src/RackCad.Application/Geometry/Vector2D.cs:93; I confirmed the file exists, but did not read line 93.\n- G-07 is rewritten cell by cell in code spans, with no pipe character.\n- The I-7 `conformance/` layout row points to R-N(b) as outside the H1 declared set.\n\nSection 10 has a new \"Third review\" table, one entry per finding (R3-MAJOR-1/2, R3-MINOR-1..5), and the intro mentions it.\n\nChecks: grep over Q-O-0, HF-G3, HF-C1, HF-C3, HF-T2 and EvidenceWriter shows HF-G3 is never gated except in the sentences that exclude it. Cell counts of the touched table rows are consistent: 11 for the HF rows, 6 for the instrument rows, 3 for Q-O-0, R-A, R-G and G-07, and 2 for the `conformance/` row (the 2-column layout table). I did not re-read the whole file line by line, only the edited sections. A pre-existing modification to docs/automation/decisions/I-52.md and an untracked owner-decisions evidence file appear in git status; I did not touch either.",
+      "openQuestions": [
+        "Q-O-0(b) is disclosed but deliberately does not enlarge the gate (the task fixed the gated set by (a) only). The Coordinator may rule that it must also gate HF-G3 and I-4, since they too write a result file.",
+        "HF-M4b is tagged NEEDS-COORDINATOR; I did not find or quote the G2 text beyond the phrase already in the row's Required-by cell.",
+        "I did not re-open Vector2D.cs:93 to verify the TOL_LENGTH=1e-9 line; the citation follows the task text and I only confirmed that the file path exists.",
+        "The 3.5 'applied' paragraph still says HF-G1 and HF-G3 answer yes to questions 1, 2, 4 and 5; I kept that wording from the earlier draft and did not re-verify it."
+      ]
+    },
+    "rev": {
+      "verdict": "APPROVE_EXACT",
+      "majors": [],
+      "minors": [
+        "Section 4.1: the paragraph 'Q-O-0 gated set in this review' (line 669) sits between table rows 668 and 670 with no blank line, so the rows 'BA-11 3.3' and 'Package v2' (670-671) are detached from the table and render as raw pipe text. The paragraph should go after the table. Formatting only; no content effect.",
+        "R-G phase 1 (line 769) and the header (lines 56-59) say I-0, I-1, I-4 and I-9 may start and call them 'not gated by Q-O-0(a)'. The Q-O-0 row itself says HF-G3/I-4 are 'still subject to (b)', and every one of them writes result files through the EvidenceWriter or a typed write. R-G should say phase 1 is also subject to Q-O-0(b). It is not a breach, because nothing is implemented or run before the Coordinator's PASS and the sequencing rule blocks host activity.",
+        "Q-O-0(b) names only the R0/RS EvidenceWriter writes and the I-1 typed AutoLISP open/'w'. The other CAD-manager and I-1 file writes are not named: the PowerShell WriteAllText transfer in 3.2, the OS-level script, the HF-M4b registry export, and the I-9 seal writing HASHES.sha256 and setting the folder read-only. The I-1 row says the OS script writes only to the evidence folder. Add them to the (b) text so that a 'no' to (b) has a complete scope.",
+        "The creation of the private library copy is not specified anywhere: who makes it, where, and by which operation. It is a file write outside the evidence folder and outside the Q-O-0(b) wording. The document only hashes it before and after. State the procedure, or mark it a CAD-manager step.",
+        "HF-T2 and I_max: the stated basis is BA-11 3.3 row 2 ('TOL_SCALE test and record'), which does not name a library-scale inventory. I_max is a symbol defined only by this design, it is 'informative only', and it enters no decision branch. Yet HF-T2 pulls the I-2 R0 build into the Q-O-0 gated set. The basis is citable but weak; the Coordinator may rule the field out or keep it informative.",
+        "I-8 (line 730) says the build 'runs on the build side, outside the gate's read-only definition'. This is the Architect classifying a term the Owner bounded (instrument implementation limited to 'solo lectura'). Soften it to a ruling request or tag it NEEDS-COORDINATOR.",
+        "3.5 'applied' paragraph (line 655): the claim that HF-G1 (M1) and HF-G3 answer yes to questions 1, 2, 4 and 5 relies on BA-05 V5:107, V5:125-140 and V5:1183. I confirmed V5:107 and V5:1183 say what the paragraph needs. I did not open V5:125-140 to check question 2 for HF-G3. The text is hedged, so this is not blocking."
+      ],
+      "checks": [
+        "Document identity: git hash-object = 529cdd0a0c2cff45011bdf7e5d287e36b84a81dd and sha256 = 85c896b7...44c6, both equal to the author report. 0 CR bytes, 925 lines. git status shows only the draft (untracked), the pre-existing decisions-log modification and the untracked Owner record. The decisions-log blob is 858509b4..., as cited.",
+        "MAJOR-1 resolved: the Q-O-0 gated set {HF-G1 (M1), HF-C1, HF-C3, HF-T2, I-2 R0 build (CT21DHG_CENSUS_R, CT21DHG_INVENTORY)} is worded identically, with HF-G3 and I-4 excluded, in the header (55-59), 3.4 (579) and its HF-C1, HF-C3, HF-G1 and HF-T2 rows, 3.5 (655), 4.1 (663, 669), 5.1 (696), 5.2 I-2 and I-4 rows, 5.3 item 4 (740), section 6 Q-O-0, R-A and R-G (760, 763, 769), section 7 item 11 (790) and section 8 (800-802). I grepped all 23 HF-G3 and I-4 lines. HF-G3 is never gated except in sentences that exclude it. R-G says the I-2 R0 build cannot start before Q-O-0(a).",
+        "MAJOR-2 resolved: the STRICT and R0 definitions (section 0 line 77, 5.1 line 694) include 'writes only new result files under the evidence folder through the single EvidenceWriter'. Q-O-0(b) is named as a distinct element in section 0, 3.2, 5.2 I-1, 5.3 item 4, the Q-O-0 row, section 7 item 11 and section 8, with the consequence of a 'no' stated. The header, 3.4 and R-G carry the same set and the same (a)/(b) split. Q-O-0(b) deliberately does not change the gated set, which the Q-O-0 row discloses.",
+        "Citations verified against the files (13): BA-05 V5:107, 1059, 1079, 1104, 1115, 1180, 1183, 1199; BA-05 V5:72 header and 105 last row (32 ranges); BA-08 V7:390, 392, 606, 632; V17:912 and 2039; Vector2D.cs:93 (public const double Length = 1e-9, which closes the author's open item); RackProjectionSnapshotReader.cs:25-27; RackSourceTransformFactsV2.cs:56; LateralHeaderDrawer.cs:62; ProbeCommands.cs:98, 122, 155; I52G3AApiCensus Program.cs:197 and 222; package V1 row G2 (line 181) and 'configuration inputs'; the decisions-log R-5 text at line 10016.",
+        "Numbers recomputed: PF-1 = 4 signs x 3 components x 11 levels = 132; PF-2 = 5 bases x 3 = 15; 147 total; 135 in scope; 12 characterization. The PF-1 (+,+), X, k=52 row and the PF-2 base-1 nextUp row give the same triple, so 146 distinct triples overall and 134 among the in-scope rows. The IEEE bit patterns of 25.4 (4039666666666666) and 1/25.4 (3FA42850A142850A) are correct. The synthetic label vector recomputed: SHA-256 starts 47229d23a125f9bc and the label is MC-47229d23a125; the empty-TRUSTEDPATHS label is MC-c7edfcd1078e. Both match the document. No invented number or hash found.",
+        "Table check: with a script that ignores code spans, all pipe tables have consistent cell counts except the 4.1 table split at line 669 (minor 1). The JSON examples are well formed on reading; I did not re-run the schema validator.",
+        "Contradictions: the sequencing rule (no host activity or tuple record until the whole declared set is final; H1 waits on Q-O-1 while the RS DLL is declared; strike the RS DLL if Q-O-1 is STRICT; strike the I-2 R0 build if Q-O-0(a) is no) is the same in the Q-O-0 row, R-G, section 7 and the section 8 state lines. The state lines are unchanged: BASELINE_READY FALSE, EXECUTION_READY FALSE, EXECUTION NOT_AUTHORIZED, CIA UNKNOWN, G3 STOPPED, ALT-21E. The IN-gate items each have a basis (ROW1 to ROW4, G6 with a BA-05 line, R-3, or a NEEDS-OWNER/NEEDS-COORDINATOR flag). HF-C2, HF-C4, HF-G2, HF-T1 and HF-M4b are flagged, not decided.",
+        "Write locations: the instrument specs write only to declared side databases (new Database(true,true) for RS, an in-memory ReadDwgFile database for R0) or to the evidence folder through the EvidenceWriter or EvidenceSideDbSaver. The undeclared items are the private-copy creation and the CAD-manager PowerShell and AutoLISP writes (minors 3 and 4); none is an instrument write outside a declared location."
+      ]
+    }
+  },
+  "workflowProgress": [
+    {
+      "type": "workflow_phase",
+      "index": 1,
+      "title": "Revise"
+    },
+    {
+      "type": "workflow_phase",
+      "index": 2,
+      "title": "Review"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 1,
+      "label": "design:revise-3",
+      "phaseIndex": 1,
+      "phaseTitle": "Revise",
+      "agentId": "af9e7f574e7fe3df9",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790820582340,
+      "queuedAt": 1790820582297,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "529cdd0a0c2cff45011bdf7e5d287e36b84a81dd",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ byte-identical to main 95690c28). I-52 CT-21D baseline preparation, documents only. HARD RULES: no AutoCAD/host, no src/tests/eng change, no git add/commit/push, never fabricate facts/hashes/numbers, LF files (Write tool or python newline='\\n'), sta…",
+      "promptFramed": true,
+      "lastProgressAt": 1790820817282,
+      "tokens": 129380,
+      "toolCalls": 17,
+      "durationMs": 234941,
+      "resultPreview": "{\"gitBlob\":\"529cdd0a0c2cff45011bdf7e5d287e36b84a81dd\",\"sha256Lf\":\"85c896b700530e8566230025a790a2529a5f3346f8aab8f543a292e9139544c6\",\"summary\":\"Revised docs/initiatives/I-52-ct21d-tol-scale-design-and-host-fact-matrix-v1.md in place (untracked, LF only, no CR). No git add/commit/push, no src/tests/eng change, state lines unchanged.\\n\\nMAJOR-1: there is now one gated set, {HF-G1 (M1), HF-C1, HF-C3, …"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 2,
+      "label": "rereview3",
+      "phaseIndex": 2,
+      "phaseTitle": "Review",
+      "agentId": "a6a667e8fceb54f29",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790820817353,
+      "queuedAt": 1790820817288,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "APPROVE_EXACT",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ byte-identical to main 95690c28). I-52 CT-21D baseline preparation, documents only. HARD RULES: no AutoCAD/host, no src/tests/eng change, no git add/commit/push, never fabricate facts/hashes/numbers, LF files (Write tool or python newline='\\n'), sta…",
+      "promptFramed": true,
+      "lastProgressAt": 1790820953407,
+      "tokens": 154384,
+      "toolCalls": 17,
+      "durationMs": 136053,
+      "resultPreview": "{\"verdict\":\"APPROVE_EXACT\",\"majors\":[],\"minors\":[\"Section 4.1: the paragraph 'Q-O-0 gated set in this review' (line 669) sits between table rows 668 and 670 with no blank line, so the rows 'BA-11 3.3' and 'Package v2' (670-671) are detached from the table and render as raw pipe text. The paragraph should go after the table. Formatting only; no content effect.\",\"R-G phase 1 (line 769) and the heade…"
+    }
+  ],
+  "totalTokens": 283764,
+  "totalToolCalls": 34
+}
