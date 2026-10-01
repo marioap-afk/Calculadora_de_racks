@@ -6,7 +6,7 @@ Contrato: [I-62-portabilidad-coordinador-principal.md](../../initiatives/I-62-po
 Estado de esta evidencia:
 - **G0 cerrado**: GATE PASS administrativo del Coordinator (C62-G0-02) sobre `85ae4324…`; hechos posteriores al bootstrap en §9.
 - **F0, tramo Discovery**: entrega inicial (C62-F0-01; §10) y ronda R1 (C62-F0-02..07; §11), aceptada como base de diseño (C62-F0-08).
-- **F0, diseño**: Proposal V1 y paquete del Architect para revisión (C62-F0-11; §12). Sin Freeze.
+- **F0, diseño**: Proposal V1 (C62-F0-11; §12), CHANGES REQUIRED del Coordinator (C62-F0-13), y Proposal V2 con su paquete para revisión (C62-F0-15; §13). Sin Freeze.
 - No hay Freeze, piloto, Candidato ni F0 GATE PASS. Lo no ejecutado figura como **PENDIENTE**.
 - §§1-8 son el registro original de G0 y se conservan como se escribieron.
 
@@ -279,3 +279,35 @@ invocó ningún modelo ni subagente, no hubo sondas, no se repitieron las 17 pru
 
 **Validación de esta entrega:** allowlist, enlaces y `git diff --check`; resultado en el cuerpo del commit. La CI de este commit se informa al Coordinator; no
 se registra aquí para no guardar un SHA autorreferente.
+
+## 13. F0 — Proposal V2 (C62-F0-13..16)
+
+**CI de la Proposal V1** (`ea0555913202efc96e1007f021942579b989b43d`): corrida **36902279722**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: UI Tests (WPF controls, net8.0-windows), Tests (Domain +
+Application), Build UI (WPF, valida API de Application) y Build Plugin without AutoCAD; los cuatro `success`. MEASURED por la sesión con `gh run view`
+y verificado por el Coordinator, con los ids de job 110504100000, 110504100280, 110504100386 y 110504922226 (C62-F0-13). Acredita solo `ea055591`.
+
+**Orden recibida:** `I-62-Proposal-V1-revision-y-orden-V2.txt`, 27 797 bytes, SHA-256 `101e9bbaec51c967395bce10de69dac4a241a87310e496038ce323d9b1f3fb0b`,
+fuera del repositorio. Su registro recuperable está en `docs/initiatives/I-62-coordinator-review-v1.md`.
+
+**Apertura del tramo** (MEASURED, 19:16Z):
+- `origin/main` = `819955d6…`, sin rebase;
+- rama de I-62 en `ea055591…` = remoto, árbol limpio;
+- I-63 `85293273` e I-64 `c6c44828`, sin cambio desde el tramo anterior;
+- **I-52 `88138f01`**: `c1982b2a..88138f01` toca `docs/automation/decisions/I-52.md` y `eng/research/I52Ct21dPhase2/**`; **ninguna** superficie candidata de
+  I-62 (`git diff --name-only` sobre AUTOMATION_PLAN, agent-execution, PROMPT_TEMPLATES, WORKFLOW, AGENTS, CLAUDE.md, FOUNDATIONS, LIFECYCLE, la prueba
+  guardiana, `.gitignore` y context packs: vacío).
+
+**Lectura del tramo** (sin modificar nada): LIFECYCLE §§5-9 (estados de revisión, Freeze, gates, READY, conformidad).
+
+**Identidad del contenido entregado** (blob calculado con `git hash-object` antes del commit; el commit lo da el recibo):
+- `docs/initiatives/I-62-proposal-v2.md` → `47a643ddf1f22226072ede67a862133f77441e2e`;
+- `docs/initiatives/I-62-coordinator-review-v1.md` → `b518a4f977ee5b18157fc45c881a8ea06d69d7cc`.
+
+**No se hizo:**
+- invocaciones de modelos ni subagentes, sondas, pilotos, fixtures, pruebas nuevas ni repetidas, tooling ni esquemas operativos;
+- tocar V1, su paquete, el mandato ni superficies ajenas.
+
+`docs/automation/evidence/I-62-discovery/` no se creó, y el Discovery no cambió: ningún hecho nuevo lo exigía.
+
+**Validación de esta entrega:** allowlist, enlaces y `git diff --check`; resultado en el cuerpo del commit. La CI de este commit se informa al Coordinator.
