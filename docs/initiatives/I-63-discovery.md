@@ -15,8 +15,9 @@
 >   - Las consultas al Master quedan **superadas y sin enviar**. La decisión del Owner prevalece, para I-63, sobre `MASTER-I63-I64-01`,
 >     que I-64 registró en su rama (§24).
 >   - Más tarde, el **Owner decidió P-01..P-05** (§25): población cotizable; exclusión de `Kind` ausente o desconocido; `Unavailable`
->     cuando la cobertura no está acreditada; referencia directa activa; frentes del fondo 0. Sigue pendiente si los frentes vacíos del
->     fondo 0 cuentan.
+>     cuando la cobertura no está acreditada; referencia directa activa; frentes del fondo 0.
+>   - Por último, el Owner **cerró P-05** (§26): `Rack.Frentes` cuenta todos los frentes estructurales del fondo 0, incluidos los vacíos,
+>     y los vacíos se exponen en una métrica calculada aparte. P-01..P-05 quedan resueltas.
 >   - La salida hacia el diseño espera una orden del Coordinator para la Proposal y el Architect.
 >   - La historia de rondas anteriores (§§9, 21 y 23) se conserva y se anota; no se borra.
 
@@ -347,6 +348,18 @@ I-52 `d8078ef3`, I-62 `a1f5e003`, I-63 `23eeefc5`, I-64 `dcc16bed`, `main` `8199
 - **I-62** (`ea055591..a1f5e003`): Proposal V2 y registro de su revisión; solo `docs/`.
 - **I-52** (`88138f01..d8078ef3`): decisiones y evidencia de su campaña de host; solo `docs/`.
 
+### 9.5 Observación posterior a las decisiones del Owner (2026-10-01T20:30:51Z)
+
+I-52 `d8078ef3`, I-62 `486e45e7`, I-63 `f6da2768`, I-64 `ab4efe86`, `main` `819955d6`. Todas avanzan por *fast-forward* y ninguna
+cambia `src/` ni `tests/` frente a `main` (diff de tres puntos).
+
+- **I-64** (`dcc16bed..ab4efe86`): Proposal V2 y paquete de re-revisión; solo documentos.
+  - Registra el aviso de I-63 sobre P-14.
+  - Sigue aplicando `MASTER-I63-I64-01` y declara **abierto** el conflicto con P-14 (su §15).
+  - Su D-05 pasa a «solo F6 consume el *snapshot*», con STOP al Master si no llega `[MEASURED]` (lectura de `ab4efe86`).
+  - Para I-63 rige la decisión del Owner (§24). Resolver la dependencia de I-64 corresponde a su Coordinator y al Owner.
+- **I-62** (`a1f5e003..486e45e7`): Proposal V3; solo `docs/`. Sin cruce de producto.
+
 ## 10. DC-08 — Fundaciones (y EXP-01 repetida)
 
 - **Freeze de I-49** (sin cambio respecto de R0):
@@ -444,6 +457,8 @@ pero falta decidir la semántica o la autoridad. `NeedsContract` es un resultado
 - Ninguna está congelada; decide el Owner (P-05).
 - **Posterior a R2:** el Owner eligió el **fondo 0** (§25). Que la alternativa preferida contara los frentes vacíos era una
   propuesta del Discovery, **no** una decisión: si cuentan sigue pendiente del Owner.
+- **Cierre posterior de P-05 (§26):** cuentan todos los frentes estructurales del fondo 0, incluidos los vacíos. Los vacíos se
+  exponen en una métrica aparte.
 - El ejemplo del mandato `Rack.Frentes * 2` quedaría bien definido en un contexto de rack con cualquiera de las dos, una vez decidida
   la semántica.
 
@@ -723,7 +738,7 @@ el 2026-10-01 (texto literal y procedencia en la evidencia §13). No es una orde
 | P-02b | **No aplica**: los racks excluidos no forman parte de `RacksBySystem` | — | La partición se forma solo con kinds admitidos |
 | P-03 | Si la cobertura completa de la población no puede acreditarse, **no** se presenta un número como total exacto: estado `Unavailable` y diagnóstico, según el contrato de la Proposal. El fallo de una métrica individual no vuelve `Unavailable` a `TotalRacks` por sí solo si la pertenencia a la población cotizable y la identidad están acreditadas | (b), para la clase (2) | Oráculos I-05 e I-11 (abajo) |
 | P-04 | Criterio de colocación: **al menos una referencia directa activa**. V1 no exige demostrar una instancia alcanzable recorriendo bloques contenedores | (a) | Sigue documentada la limitación de §17: un rack que solo está dentro de una definición contenedora nunca colocada cuenta como colocado |
-| P-05 | `Rack.Frentes` del Selectivo = número de frentes del **fondo 0**; ni el máximo entre fondos ni la suma | Primera alternativa (fondo 0) | **Pendiente del Owner:** si los frentes vacíos del fondo 0 cuentan. No se asume |
+| P-05 | `Rack.Frentes` del Selectivo = número de frentes del **fondo 0**; ni el máximo entre fondos ni la suma | Primera alternativa (fondo 0) | Entonces quedaba pendiente si los frentes vacíos del fondo 0 cuentan. **Cerrada después** (§26): cuentan, y se exponen aparte |
 
 P-14 sigue resuelta por la decisión anterior del Owner (§24): mecanismos independientes en I-63 e I-64.
 
@@ -758,9 +773,51 @@ P-14 sigue resuelta por la decisión anterior del Owner (§24): mecanismos indep
 - **I-04a / I-04b:** con P-02a ambos casos quedan fuera de `TotalRacks`, pero siguen siendo distintos para el diagnóstico.
 - **I-06:** población cotizable con el predicado de referencia directa activa. En V1, el escenario (2), el de la definición contenedora
   nunca colocada, cuenta como colocado (P-04).
-- **I-09:** `Rack.Frentes` = frentes del fondo 0. El valor de `Rack.Frentes * 2` con frentes vacíos depende de la decisión pendiente.
+- **I-09:** `Rack.Frentes` = frentes del fondo 0. El valor de `Rack.Frentes * 2` con frentes vacíos dependía de la decisión entonces
+  pendiente, cerrada en §26.
 - **I-11:** el caso (a) da `Unavailable` (P-03); el caso (b) no crea otro rack; el caso (c) lo resuelve la Proposal.
 - **I-05:** el fallo de una métrica no afecta a `TotalRacks` si la pertenencia y la identidad están acreditadas. Si la pertenencia
   cotizable exige un diseño legible, ese fallo sí puede afectar a la pertenencia; lo resuelve la Proposal.
+
+No se redacta la Proposal ni se invoca al Architect hasta una nueva orden del Coordinator. IMPLEMENTATION AUTHORIZATION = NO.
+
+## 26. Cierre de P-05 por el Owner (posterior a R2)
+
+**Fuente:** decisión explícita del Owner, «I-63 — OWNER DECISION: cierre de P-05», pegada en el chat de la sesión responsable el
+2026-10-01 (texto literal en la evidencia §15). Es un insumo para la Proposal y el Freeze: no autoriza implementar.
+
+**Decisión:**
+- `Rack.Frentes` usa el **fondo 0** y cuenta **todos sus frentes estructurales, incluidos los vacíos**. No se suman fondos ni se usa el
+  fondo con más frentes.
+- Los frentes vacíos se exponen como una **métrica calculada aparte**. Así los consumidores distinguen los frentes totales de los
+  vacíos y, cuando corresponda, derivan los ocupados (totales − vacíos).
+- El nombre definitivo de la métrica de frentes vacíos se decide en la Proposal o el Freeze.
+- La Proposal define el predicado exacto de «frente vacío» **con la autoridad existente del modelo Selectivo**, sin inventar una
+  regla de producto nueva.
+
+Con esto, **P-01..P-05 quedan resueltas por el Owner**.
+
+**Insumo para la Proposal: predicados de «vacío» que ya existen** (`[MEASURED]` en las rutas inspeccionadas, sin elegir ninguno):
+
+| Lugar | Predicado | Qué decide |
+|---|---|---|
+| `SelectivePlantaBuilder.cs:371-373` | `Levels.Count == 0` sobre la bahía resuelta del fondo | En la planta, salta ese frente del fondo; el comentario lo llama «*empty frente (column) in this fondo*» |
+| `SelectiveDesviadorPlan.cs:266` | `FloorPalletCount <= 0 && Levels.Count == 0` | La bahía no aporta carga (`HasLoad`) a sus postes |
+| `SelectiveTopePlan.cs:115` | `BeamLength <= 0.0 \|\| Levels.Count == 0` | La bahía no recibe topes |
+| `SelectiveGeometryResolver.cs:268-273` | `Levels.Count == 0` en el diseño | La bahía resuelta se crea igualmente (altura solo por *override*): el frente vacío sigue siendo estructural (§3, fila 10) |
+
+- **Divergencia relevante:** un frente con tarimas de piso y sin niveles de larguero está vacío según el primer predicado, pero tiene
+  carga según el segundo.
+- La Proposal debe identificar cuál es la autoridad del modelo Selectivo para la métrica, o declarar la diferencia, sin crear una
+  regla nueva. También debe decidir si el predicado se evalúa sobre el diseño o sobre el modelo resuelto: la fase cambia, ya que el
+  diseño estructural es anterior al *resolve* (§15).
+
+**Oráculos candidatos** (siguen siendo candidatos):
+- **I-09:** un rack cuyo fondo 0 tiene 4 frentes, uno de ellos vacío, da `Rack.Frentes` = 4 y `Rack.Frentes * 2` = 8, en un contexto de
+  rack. Un valor de 3 delataría la alternativa incorrecta, la de no contar los vacíos.
+- **Métrica de frentes vacíos** (nombre pendiente): en el mismo escenario, vacíos = 1 y ocupados derivados = 3.
+- Un frente con tarimas de piso y sin niveles separa los dos predicados existentes; el valor esperado depende de la autoridad que fije
+  la Proposal.
+- Otros fondos con más frentes no cambian `Rack.Frentes`.
 
 No se redacta la Proposal ni se invoca al Architect hasta una nueva orden del Coordinator. IMPLEMENTATION AUTHORIZATION = NO.

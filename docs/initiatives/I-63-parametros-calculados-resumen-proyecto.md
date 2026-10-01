@@ -112,8 +112,8 @@ Son candidatos de intake, no afirmaciones: cada entrada se verifica con DC-08 en
 - Discovery: [I-63-discovery.md](I-63-discovery.md), ronda **R2**, **aceptada** por el Coordinator (CD-I63-F0-R2-04). Aplica las precisiones
   localizadas R63-R1-01 y R63-R1-02 (CD-I63-F0-R2-01 y CD-I63-F0-R2-02) sobre R1, que a su vez corrigió R0 (CD-I63-F0-R1-01) y
   completó las EXP de CD-I63-F0-R1-02. No es Proposal ni Freeze. La hizo directamente la sesión principal responsable, sin
-  participantes de IA. Las rondas R0 y R1 se conservan en Git. Sus §24 y §25 registran las decisiones posteriores del Owner (P-14 y
-  P-01..P-05).
+  participantes de IA. Las rondas R0 y R1 se conservan en Git. Sus §24, §25 y §26 registran las decisiones posteriores del Owner
+  (P-14, P-01..P-05 y el cierre de P-05).
 - Freeze / Freeze delta / A-n: ninguno.
 - Decisiones: [I-63.md](../automation/decisions/I-63.md); mandato: [I-63-owner-mandate.original.txt](../automation/decisions/I-63-owner-mandate.original.txt).
 
@@ -157,7 +157,7 @@ C-F0-RED queda registrado en las [decisiones](../automation/decisions/I-63.md) c
 
 | Iniciativa activa | Rama | Cruce textual conocido | Cruce funcional |
 |---|---|---|---|
-| I-64 (ID30) | `architecture/workspace-persistente-rackcad` | Su fila de ROADMAP también va tras I-60: conflicto textual de filas adyacentes para quien integre segundo | Código no inspeccionado (su rama solo tiene documentos). El Discovery identificó un candidato a contrato compartido (CD-I63-F0-R1-03). **El Owner decidió no exigirlo:** mecanismos independientes, duplicación diferida y consultas al Master superadas sin enviar. La Proposal V1 de I-64 sigue citando `MASTER-I63-I64-01` (dependencia de su F2 respecto de I-63); I-63 se lo avisó, y qué hacer con ello lo deciden su Coordinator y el Owner ([Discovery](I-63-discovery.md) §9.4, §24) |
+| I-64 (ID30) | `architecture/workspace-persistente-rackcad` | Su fila de ROADMAP también va tras I-60: conflicto textual de filas adyacentes para quien integre segundo | Código no inspeccionado (su rama solo tiene documentos). El Discovery identificó un candidato a contrato compartido (CD-I63-F0-R1-03). **El Owner decidió no exigirlo:** mecanismos independientes, duplicación diferida y consultas al Master superadas sin enviar. La Proposal de I-64 (V2) sigue aplicando `MASTER-I63-I64-01`, declara abierto el conflicto y hace depender su F6 de un *snapshot* de I-63. I-63 se lo avisó; resolverlo corresponde a su Coordinator y al Owner ([Discovery](I-63-discovery.md) §9.4, §9.5, §24) |
 | I-62 (portabilidad del Principal) | `architecture/portabilidad-coordinador-principal` | Fila en otra tabla de ROADMAP (Engineering Productivity, tras I-61) | Ninguno de producto: su rama solo tiene documentos de proceso (Discovery y Proposal incluidos) |
 | I-52 (RACKMIRROR) | `feature/rackmirror-espejo-semantico` | Edita ROADMAP (su fila y la de I-57), HANDOFF y el índice de ADR; su rebase futuro sobre main tocará ROADMAP | Sin cambios propios en `src/` ni `tests/` (diff de tres puntos; solo `eng/` y `docs/`); su contenido no se inspeccionó entero ([Discovery](I-63-discovery.md) §9.3) |
 
@@ -169,8 +169,7 @@ C-F0-RED queda registrado en las [decisiones](../automation/decisions/I-63.md) c
 
 G0: reclamo y bootstrap, **PASS** (CD-I63-G0-10). F0-DISCOVERY: R0 con CHANGES REQUIRED (CD-I63-F0-R1-01); R1 con CHANGES REQUIRED
 localizado (CD-I63-F0-R2-01); R2 **aceptada** (CD-I63-F0-R2-04), sin GATE PASS de F0 (Discovery + Freeze). P-14 quedó resuelta por
-el Owner, sin contrato común (§7). El Owner también decidió P-01..P-04 y el fondo de P-05 ([Discovery](I-63-discovery.md) §25);
-sigue pendiente si cuentan los frentes vacíos del fondo 0. La salida hacia el diseño espera una orden del Coordinator para la Proposal
+el Owner, sin contrato común (§7). El Owner también resolvió P-01..P-05 ([Discovery](I-63-discovery.md) §25 y §26). La salida hacia el diseño espera una orden del Coordinator para la Proposal
 y la revisión del Architect (CD-I63-F0-R2-06). El plan provisional del mandato (F0 Discovery y Freeze; F1..F6; READY) **no está congelado** y se
 revisa contra [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §7 antes del Freeze: ningún gate solo de capa, DTO o modelo sin
 resultado observable verificable. La conformidad final se referencia desde READY-06.

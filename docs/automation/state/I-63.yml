@@ -4,11 +4,11 @@ automation_state:
   branch: architecture/parametros-calculados-resumen-proyecto
   claim_id: ce04f47f-ca53-4e75-b983-5ac57ab6c5e3
   current_phase: F0
-  state: waiting
-  gate: owner-decision
+  state: review-ready
+  gate: none
   attempts: 0
-  next_action: Remitir P-01..P-05 al Coordinator para la orden de Proposal + revision del Architect; frentes vacios de P-05 pendientes del Owner; sin implementacion.
-  last_evidence_commit: f0b063e95ae6376abdd126873e66bee20189d748
+  next_action: Coordinator emite la orden de Proposal + revision del Architect con P-01..P-05 y P-14 resueltas por el Owner; sin implementacion.
+  last_evidence_commit: f6da276874bb53ba481a2c798747a9a5a4d16a55
 execution_context:
   mode: manual
   automation_enabled: false

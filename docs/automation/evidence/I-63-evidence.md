@@ -514,3 +514,56 @@ IMPLEMENTATION AUTHORIZATION = NO.
 - No hubo nada que preguntar al Owner: ninguna fuente leída contradice estas decisiones. Lo que la Proposal debe formalizar está en el
   Discovery §25 como insumo, sin decidir.
 - La CI exacta del commit que contiene este archivo se informa al Coordinator.
+
+## 15. Cierre de P-05 por el Owner
+
+### 15.1 CI de la entrega anterior
+
+| Commit | SHA | Corrida `push` | Resultado |
+|---|---|---|---|
+| Decisiones del Owner P-01..P-05 | `f6da276874bb53ba481a2c798747a9a5a4d16a55` | 36920968703: `head_branch` = `architecture/parametros-calculados-resumen-proyecto`, `head_sha` exacto | `success`; los cuatro jobs requeridos de `AGENTS.md` en `success` |
+
+### 15.2 Texto literal
+
+Procedencia: el usuario la pegó en el chat de la sesión responsable el 2026-10-01, antes del preflight de 20:30:51Z. No llegó como
+archivo ni a través del Coordinator. Texto tal como se recibió:
+
+```text
+I-63 — OWNER DECISION: cierre de P-05
+P-05 queda resuelta por el Owner:
+
+1. `Rack.Frentes` usa el fondo 0.
+2. `Rack.Frentes` cuenta todos los frentes estructurales del fondo 0, incluidos los frentes vacíos.
+3. Los frentes vacíos deben exponerse como una métrica calculada separada, para que los consumidores puedan distinguir:
+   * frentes totales;
+   * frentes vacíos;
+   * y, cuando corresponda, derivar frentes ocupados = totales - vacíos.
+4. El nombre definitivo de la métrica de frentes vacíos se decide en Proposal/Freeze.
+5. La Proposal debe definir, con la autoridad existente del modelo Selectivo, el predicado exacto que determina cuándo un frente se considera “vacío”. No inventar una regla nueva de producto.
+6. No sumar frentes de distintos fondos y no usar el fondo con mayor cantidad: la autoridad de esta métrica es el fondo 0.
+
+Con esta decisión, P-01..P-05 quedan resueltas por el Owner.
+Estas decisiones son insumos para Proposal/Freeze y no autorizan implementación.
+IMPLEMENTATION AUTHORIZATION = NO.
+```
+
+### 15.3 Preflight (2026-10-01T20:30:51Z)
+
+- `HEAD` = remoto = `f6da2768`; árbol limpio; `origin/main` = `819955d6`, ancestro de `HEAD`: **sin rebase**.
+- Ramas: I-52 `d8078ef3` e I-62 `486e45e7`, sin cambios desde §14.3; I-64 `ab4efe86`, *fast-forward* desde `dcc16bed`. Ninguna cambia
+  `src/` ni `tests/` frente a `main` (diff de tres puntos).
+- **I-64 `ab4efe86`** (Proposal V2, solo documentos):
+  - registra el aviso de I-63 sobre P-14;
+  - sigue aplicando `MASTER-I63-I64-01` y declara abierto el conflicto con P-14 en su §15;
+  - su D-05 deja que solo su F6 consuma el *snapshot* de I-63, con STOP al Master si no llega.
+
+  Es un hecho de coordinación; I-63 no envió ningún mensaje nuevo (Discovery §9.5).
+
+### 15.4 Método
+
+- Registro directo de la sesión principal; ningún participante de IA y ninguna delegación §16.
+- Sin pruebas ni host. Nada fuera de las cinco rutas autorizadas.
+- **Código leído** para documentar los predicados de «vacío» que ya existen, sin elegir ninguno (Discovery §26):
+  `SelectivePlantaBuilder.cs:371-373`, `SelectiveDesviadorPlan.cs:266`, `SelectiveTopePlan.cs:115` y
+  `SelectiveGeometryResolver.cs:268-273`.
+- La CI exacta del commit que contiene este archivo se informa al Coordinator.
