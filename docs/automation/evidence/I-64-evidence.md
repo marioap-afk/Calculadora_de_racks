@@ -695,3 +695,75 @@ transcripción local citada. Sin AutoCAD, builds, pruebas, prototipos, subagente
 
 **Estado:** Proposal V5 publicada para la re-revisión del mismo Architect y la revisión posterior del Coordinator, sin consenso, Freeze ni
 GATE PASS. `IMPLEMENTATION AUTHORIZATION = NO`.
+
+## 18. Consensus Freeze (I64-CONSENSUS-V5-01) y cierre de F0
+
+Sección nueva; las anteriores no se reescriben.
+
+**Orden del Coordinator**, recibida en el chat de la sesión el 2026-10-01 (sin archivo en `D:\IDs\I-64\`, así que sin hash). Resumen
+saneado:
+- Proposal V5 acordada: commit `9e3d289a9b61339c162b2f791f6995a584207800`, blob `bd4e96264e538ffc679bfd9f088400b22b553931`; paquete blob
+  `faf516c807f0a712a694a3cfc36ad51390fb9115`; CI 36940271314 (`push`, `head_sha` exacto, 4/4 `success`);
+- **Architect sobre V5 = AGREED**; **Coordinator sobre V5 = AGREED**; REQUIRED abiertos: 0; Consensus **REACHED**, ID
+  **`I64-CONSENSUS-V5-01`**; Freeze autorizado, pendiente de publicar y verificar;
+- preflight real; STOP al Coordinator si `origin/main` cambió respecto de `819955d6`, sin rebase automático antes del Freeze;
+- commit de Freeze que toque solo `docs/initiatives/I-64-proposal-v5.md` y solo con tres reemplazos literales de cabecera; verificación
+  mecánica; push fast-forward; CI exacta del Freeze antes de declararlo verificado;
+- después, un commit separado, sin tocar la Proposal congelada, que registre Freeze, CI, Consensus, F0 COMPLETE, `freeze_ref`, estado y
+  la siguiente acción persistente; regla operativa del Owner: relay automático entre agentes cuando esté autorizado, escalado de autoridad
+  al Owner, y registro de `AUTONOMY_GAP` cuando un rol no pueda invocarse; preparar F1 sin implementarlo sin contrato de gate autorizado.
+
+**Preflight** (MEASURED, 23:36:55Z):
+- `origin/main` = `819955d61a6da4c811a11fbd11b5dca13f634b7c`, sin cambio: no hubo STOP ni rebase;
+- `HEAD` = `origin/architecture/workspace-persistente-rackcad` = `9e3d289a9b61339c162b2f791f6995a584207800`;
+- árbol limpio; ninguna operación Git en curso (sin `MERGE_HEAD`, `REBASE_HEAD`, `CHERRY_PICK_HEAD`, `REVERT_HEAD`, `BISECT_LOG`,
+  `rebase-merge` ni `rebase-apply`);
+- las tres cadenas de origen aparecían una sola vez, en las líneas 4, 16 y 17 de la cabecera.
+
+**Commit de Freeze** (MEASURED):
+
+| Hecho | Valor |
+|---|---|
+| `FREEZE_SHA` | `9b43dafbe3b8874aa0ba5a85d62cbf953dbdd311` |
+| Padre único | `9e3d289a9b61339c162b2f791f6995a584207800` |
+| Rutas cambiadas | solo `docs/initiatives/I-64-proposal-v5.md` (3 líneas añadidas y 3 eliminadas) |
+| Blob anterior | `bd4e96264e538ffc679bfd9f088400b22b553931` |
+| Blob congelado | `dc1924ff5a73a4e529fbc5f995621d29351a091b` (sin CR) |
+| Comprobación | aplicar los tres reemplazos literales al blob anterior reproduce exactamente el blob congelado |
+| Push | fast-forward `9e3d289a..9b43dafb`, sin force |
+
+**CI del Freeze** (MEASURED con `gh run view`): corrida **36941847270**, `event=push`, `headBranch=architecture/workspace-persistente-rackcad`,
+`head_sha=9b43dafbe3b8874aa0ba5a85d62cbf953dbdd311`. Jobs Tests (Domain + Application), UI Tests (WPF controls, net8.0-windows), Build UI
+(WPF, valida API de Application) y Build Plugin without AutoCAD, los cuatro `success`. Creada 23:38:13Z, actualizada 23:41:29Z.
+
+**Resultado:** Freeze **VERIFICADO**. **F0 = COMPLETE.** F1 = NOT STARTED. Desde aquí el Freeze es inmutable y todo cambio va por A-n.
+
+**Estado posterior** (este commit):
+- [estado canónico](../state/I-64.yml), con la siguiente acción persistente (`NEXT_ROLE` … `OWNER_REQUIRED_IF`) y tres `AUTONOMY_GAP`;
+- [propuesta de contratos de gate de F1](../../initiatives/I-64-f1-gate-contract-proposal.md), no emitida;
+- contrato: estado `f1-pending-gate-contract`, `freeze_ref`, `ov_assignment_ref` y `automation_state_path`.
+
+**Participantes y autonomía** (MEASURED el 2026-10-01):
+- No se invocó a ningún participante: el Freeze lo hizo la sesión responsable por orden directa, y la siguiente acción delegable (la
+  planificación del Controller) necesita antes un contrato de gate que emite el Coordinator (AUTOMATION_PLAN 16.5; agent-execution/README §1).
+- Capacidad presente: binario de Codex en `%LOCALAPPDATA%\OpenAI\Codex\bin\` y celda del Controller `gpt-6-luna`/`high` medida (catálogo);
+  Worker subagente `claude-sonnet-5-5`/`medium`-`high` con escritura medida. No se tomó todavía la línea base de `config.toml` (se toma en la
+  salida del primer relevo; el archivo se modificó por última vez a las 23:09Z, fuera de esta sesión).
+- `ListAgents` no muestra ninguna sesión Coordinator; sí la del Architect de I-64, que no hace falta en este paso.
+- `AUTONOMY_GAP` registrados en el estado: Coordinator (emisión de contratos, sin sesión direccionable), Worker Long-horizon (sin celda
+  Frontera con escritura medida) y Worker Routine (sin celda Eficiente elegible).
+- El Freeze no fija el tope de invocaciones de 16.8; la propuesta de F1 pide que lo fije el contrato de gate.
+
+**Ramas paralelas** (por referencia remota, 23:42:24Z):
+
+| Rama | Punta | Avance desde §17 |
+|---|---|---|
+| I-52 | `51a66245` | sin cambio |
+| I-62 | `d66463a5` | un commit: su Proposal V8 y su paquete; solo documentos |
+| I-63 | `fb3c8788` | un commit: su Proposal V3 y su paquete de re-revisión; solo documentos |
+
+A las 23:42:24Z había **un proceso `acad` en ejecución**, no iniciado ni tocado por esta sesión. I-64 no usa AutoCAD y respeta la
+restricción de host de I-52 (§12.1 del Freeze).
+
+**Ejecución:** sesión responsable, sin AutoCAD, builds, pruebas, subagentes, Controller ni Worker. Este commit no toca la Proposal
+congelada.

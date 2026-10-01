@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-64
 title: Persistent RackCad Workspace
 type: architecture
-status: f0-proposal-v5
+status: f1-pending-gate-contract
 workflow: V2
 conceptual_initiative: I-64
 delivery_unit: I-64
@@ -22,13 +22,13 @@ consumes: [UNKNOWN]
 extends: [UNKNOWN]
 introduces: [UNKNOWN]
 discovery_ref: docs/initiatives/I-64-discovery.md
-freeze_ref:
+freeze_ref: docs/initiatives/I-64-proposal-v5.md
 freeze_delta_ref:
 amendment_refs: []
-ov_assignment_ref:
+ov_assignment_ref: docs/initiatives/I-64-proposal-v5.md
 decision_refs: [docs/initiatives/I-64-owner-brief.txt, docs/initiatives/I-64-coordinator-confirmation-d0-r3.txt]
 evidence_ref: docs/automation/evidence/I-64-evidence.md
-automation_state_path:
+automation_state_path: docs/automation/state/I-64.yml
 requires_ci: true
 requires_plugin_build: true
 requires_autocad: true
@@ -46,7 +46,7 @@ automation:
 > `requires_plugin_build`, `requires_autocad` y `requires_owner_validation` salen del brief («OWNER SMOKE EARLY», «OWNER
 > VALIDATION»): la workspace vive dentro de AutoCAD y el Owner la valida con el DLL del worktree. `requires_owner_decision` queda
 > **vacío a propósito** (por determinar). Ningún campo vacío concede exenciones ([AUTOMATION_PLAN](../AUTOMATION_PLAN.md) §11).
-> `automation_state_path` queda vacío hasta que se cree el estado antes de la primera delegación (AUTOMATION_PLAN 16.8).
+> `automation_state_path` apunta al estado canónico, creado tras verificarse el Freeze y antes de la primera delegación (AUTOMATION_PLAN §8 y 16.8).
 
 ## 1. Identidad y agrupación
 
@@ -101,7 +101,8 @@ de dibujo; rediseño mayor de RACKPROYECTAR; restauración entre arranques salvo
 reescritura de toda la arquitectura de producto. La workspace prepara superficies de alojamiento para esas funciones sin
 implementarlas.
 
-Freeze, Freeze delta y A-n: **ninguno** todavía.
+Freeze: [Proposal V5](I-64-proposal-v5.md) (`Frozen: YES`), Consensus `I64-CONSENSUS-V5-01`; su identidad (commit, blob y CI) está en la
+evidencia §18. Freeze delta y A-n: ninguno.
 
 ## 5. Fundaciones y evolución
 
@@ -141,7 +142,8 @@ persistente ni crea una segunda autoridad de persistencia (brief, «KEY ARCHITEC
   del Coordinator y adopta O4-01, O4-02, O4-05 y O4-06. Paquete de re-revisión: [I-64-architect-package-v5.md](I-64-architect-package-v5.md).
   **Re-revisión pendiente** por el mismo Architect y, después, revisión del Coordinator sobre la misma V5; un AGREED del Architect no crea
   Freeze: el Coordinator ordena después el Consensus Freeze ([INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §5-§6).
-- Freeze / Freeze delta / A-n: ninguno.
+- **Freeze:** Proposal V5 acordada por el Architect y el Coordinator (`I64-CONSENSUS-V5-01`) y congelada con los tres reemplazos de
+  cabecera que enumeró la orden; Freeze verificado con su CI exacta (evidencia §18). **F0 = COMPLETE.** Freeze delta / A-n: ninguno.
 - Fuentes: [brief](I-64-owner-brief.txt) y [confirmación D0-R3](I-64-coordinator-confirmation-d0-r3.txt).
 
 ## 7. Dependencias, archivos calientes y coordinación
@@ -170,11 +172,14 @@ D0: reclamo y este bootstrap (tarea de F0, no gate funcional). La [Proposal V5](
 Coordinator con las precisiones de V4 y V5: F1 → Smoke-1 (tras F1 PASS); F2 Context Navigation → Smoke-NAV (tras F2 PASS); F3 Browser
 Session; F4 con Smoke-2 dentro de su secuencia de cierre; F5-A y F5-B; F6 Document-wide Inventory (sin clasificar ID3); F7 rendimiento y
 regresión; F7 PASS → Smoke-PERF → si PASS → READY, con la clasificación de ID3. Revisado contra [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md)
-§7. **No está congelado.** La conformidad final se referencia desde READY-06.
+§7. **Congelado con la Proposal V5.** La conformidad final se referencia desde READY-06.
+
+Estado: **F0 COMPLETE**; **F1 NOT STARTED**. Los contratos de gate de F1 los emite el Coordinator (AUTOMATION_PLAN 16.5); la propuesta para
+emitirlos está en [I-64-f1-gate-contract-proposal.md](I-64-f1-gate-contract-proposal.md).
 
 ## 9. Owner Validation
 
-- Asignación OV: propuesta en la [Proposal V5](I-64-proposal-v5.md) §12.6 (OV-01..OV-26, todas a la unidad I-64); se fija en el Freeze.
+- Asignación OV: fijada en el Freeze, [Proposal V5](I-64-proposal-v5.md) §12.6 (OV-01..OV-26, todas a la unidad I-64).
 - Requiere AutoCAD: **sí** (workspace y sincronización dentro de AutoCAD; smoke temprano tras F1).
 - Requiere Owner Validation: **sí** (brief). El procedimiento y la identidad del DLL viven en
   [validacion-manual-autocad.md](../guias/validacion-manual-autocad.md).
@@ -182,7 +187,8 @@ regresión; F7 PASS → Smoke-PERF → si PASS → READY, con la clasificación 
 ## 10. Evidencia y entrega
 
 - Evidencia por unidad: [`docs/automation/evidence/I-64-evidence.md`](../automation/evidence/I-64-evidence.md)
-- Estado transitorio: pendiente (`docs/automation/state/I-64.yml`, antes de la primera delegación)
+- Estado transitorio: [`docs/automation/state/I-64.yml`](../automation/state/I-64.yml), con la siguiente acción persistente y los
+  `AUTONOMY_GAP` registrados
 - Tag esperado: `integration/I-64`
 
 Este contrato no copia SHAs, corridas ni conteos. La integración es manual, serializada y sin auto-merge, conforme a `WORKFLOW.md`.
@@ -198,8 +204,9 @@ Los doce criterios de éxito del brief («SUCCESS CRITERIA»), concretados por e
 Las del brief más: contradicción material de fuentes o de autoridad (se citan ambas y se devuelve al Coordinator); EXP-01 clase A
 abierta; M UNKNOWN sin resolver antes del Freeze; intersección activa no coordinada; fundación común con I-63 (Master
 Orchestrator); consumo de código no integrado; cualquier paso que exija ejecutar AutoCAD, autenticación, instalación o cambios de
-configuración no autorizados por un contrato aprobado. **IMPLEMENTATION AUTHORIZATION = NO** hasta Coordinator = AGREED y
-Architect = AGREED sobre el mismo Freeze.
+configuración no autorizados por un contrato aprobado. **IMPLEMENTATION AUTHORIZATION = YES**, sujeta al Freeze, a contratos de gate
+emitidos por el Coordinator, al protocolo de ejecución de I-61 y a la autorización de cada gate; sin contrato emitido no hay trabajo de
+producto.
 
 ## 13. Hallazgos fuera de alcance
 
