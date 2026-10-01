@@ -629,3 +629,69 @@ remota y la transcripción local citada. Sin AutoCAD, builds, pruebas, prototipo
 
 **Estado:** Proposal V4 publicada para la re-revisión del mismo Architect y la revisión posterior del Coordinator, sin consenso, Freeze ni
 GATE PASS. `IMPLEMENTATION AUTHORIZATION = NO`.
+
+## 17. F0 / Proposal V5 — Dictamen del Architect sobre V4 y hechos posteriores
+
+Sección nueva; las anteriores no se reescriben.
+
+**CI de la Proposal V4** (MEASURED con `gh run view`; evidencia de CI, no local): corrida **36937865502**, `event=push`,
+`ref=refs/heads/architecture/workspace-persistente-rackcad`, `head_sha=e87ba32cf4132cd29677c49cf208d4ca6fb9ea49`. Jobs Tests (Domain +
+Application), UI Tests (WPF controls, net8.0-windows), Build UI (WPF, valida API de Application) y Build Plugin without AutoCAD, los cuatro
+`success`. Creada 22:54:55Z, actualizada 22:59:00Z. Blobs de V4: Proposal `ef3aa9994bf0028aa1966761ccdfb4dcf42b3c56`, paquete
+`580beba108911a97bcc6a33db5bd2d025d5a2388`.
+
+**Dictamen del mismo Architect sobre V4** (RECONSTRUCTED):
+- **Procedencia.** La orden del Coordinator lo acepta y resume. El texto completo se leyó en la transcripción local de la misma sesión
+  separada «I-64 Architect Review Proposal V1» (archivo de sesión `caf7ae64-ba5b-4648-ae0b-f7aeb9e7103a.jsonl`, mensaje del Architect de
+  2026-10-01T23:08:45Z). El texto extraído mide 9 065 bytes UTF-8, con SHA-256
+  `776ea95195ff6a5a3e1a79d8c29e487383d0ea86cfc796f8146a4231f39883ee`. No se versiona aquí; se trata como dato.
+- **Contenido**, en resumen saneado:
+  - objeto: commit `e87ba32c`, proposal blob `ef3aa999`, package blob `580beba1`, CI 36937865502; V1, V2 y V3 intactas;
+  - el mismo revisor; SEPARATE SESSION; revisor ≠ autor; límite declarado: el mismo modelo que la sesión autora;
+  - A64-PV3-01, 02, 03, 05 y 06 = **CLOSED**; V4 no reabre A64-PV1-01..22 ni reintroduce dependencias de I-63;
+  - **A64-PV3-04 = STILL OPEN:** en modo degradado, un borrador que se ensucia después de degradar quedaba sin veto, porque
+    `BeginDocumentClose` se conservaba solo «mientras» hubiera dirty; el oráculo no probaba el orden degradar → editar → cerrar;
+  - **A64-PV4-01 = REQUIRED:** el PASS de Smoke-PERF, condición de entrada de READY, no era verificable; faltaba qué hacer si el
+    rendimiento no es aceptable con F7 cerrado; el momento era ambiguo;
+  - O4-01..O4-06 OPTIONAL; siguen O3-04, O3-05 y O3-07;
+  - estado: CHANGES REQUIRED; ninguno exige autoridad reservada del Owner.
+
+**Orden F0 / Proposal V5 del Coordinator**, recibida en el chat de la sesión el 2026-10-01. No llegó como archivo a `D:\IDs\I-64\`, así
+que no tiene hash. Resumen saneado:
+- acepta el dictamen sobre `e87ba32c` / `ef3aa999` / `580beba1`;
+- no reabrir el Discovery, no implementar, sin Freeze, sin AutoCAD ni GATE PASS; Proposal V5 autocontenida; V1..V4 intactas;
+- **A64-PV3-04 (regla vinculante):** una vez creada una sesión de documento, `BeginDocumentClose` permanece suscrito toda su vida, también
+  en modo degradado, sin depender del dirty al degradar; el manejador solo lee estado en memoria, decide el veto y emite un aviso no modal
+  permitido; no lee la base de datos, no resuelve, no escribe ni abre diálogos; con dirty o texto pendiente en el instante del cierre:
+  VETO; INV-20 ampliado con sesión limpia → modo degradado → edición posterior → dirty → cierre → veto;
+- **A64-PV4-01:** Smoke-PERF PASS = SP-01..SP-05 completos y válidos + SP-06 PASS + aceptación explícita del Owner; sin umbrales antes de la
+  línea base; sin aceptación: NOT PASS y STOP antes de READY, con A-n del Coordinator (umbral cuantitativo o gate correctivo) y repetición
+  de la evidencia afectada; momento exacto: F7 PASS → Smoke-PERF → si PASS → READY; eliminar toda frase ambigua «tras F6»;
+- adoptar O4-01, O4-02, O4-05 y O4-06;
+- conservar A64-PV1-01..22 y A64-PV3-01, 02, 03, 05, 06 como CLOSED; tabla finding → disposición → cláusula V5 → oráculo;
+- contrato y evidencia solo de forma histórica; registrar aquí la CI de V4; refrescar puntas y `main` antes de publicar; sin rebase si
+  `main` no cambió; publicar y esperar la CI exacta;
+- la V5 vuelve al **mismo** Architect, con el formato «A64-PV3-04 / A64-PV4-01 = CLOSED | STILL OPEN», hallazgos nuevos y CONSENSUS STATUS;
+  si ambos cierran sin REQUIRED nuevos, Architect = AGREED, pero sin Freeze, implementación ni GATE PASS; el Coordinator revisa después la
+  misma V5 y ordena el Consensus Freeze. `IMPLEMENTATION AUTHORIZATION = NO`.
+
+**Preflight (MEASURED):**
+- 23:16:25Z: `HEAD` = remoto = `e87ba32c…`; árbol limpio; `origin/main` = `819955d6…`, sin cambio, así que no hubo rebase ni ventana de
+  ROADMAP que coordinar.
+- Ningún proceso `acad` en ejecución al preparar este commit.
+
+**Ramas paralelas** (por referencia remota, solo como coordinación):
+
+| Rama | Punta | Avance desde §16 |
+|---|---|---|
+| I-52 | `51a66245` | dos commits: lectura de pre-vuelo exacta de sesión para S1-A (§252) y autorización de S1-A detenida antes de AutoCAD (§253); 0 archivos de `src/`, `tests/` y `assets/` |
+| I-62 | `3d7ec77f` | un commit: su Proposal V7 y su paquete; solo documentos |
+| I-63 | `dddc215f` | un commit: su Proposal V2 y su paquete de re-revisión; solo documentos; su §16 sigue alineado con MASTER-I63-I64-02 |
+
+**Ejecución:** redacción directa de la sesión responsable, con lectura estática de documentos, ramas paralelas por referencia remota y la
+transcripción local citada. Sin AutoCAD, builds, pruebas, prototipos, subagentes, Controller ni Worker. Archivos versionados:
+[Proposal V5](../../initiatives/I-64-proposal-v5.md) (nueva), [paquete de re-revisión V5](../../initiatives/I-64-architect-package-v5.md)
+(nuevo), el contrato y esta evidencia. V1..V4 y sus paquetes no cambian.
+
+**Estado:** Proposal V5 publicada para la re-revisión del mismo Architect y la revisión posterior del Coordinator, sin consenso, Freeze ni
+GATE PASS. `IMPLEMENTATION AUTHORIZATION = NO`.
