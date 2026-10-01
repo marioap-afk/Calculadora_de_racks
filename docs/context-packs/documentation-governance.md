@@ -33,6 +33,8 @@ excludes:
 - HANDOFF contiene estado vivo; ROADMAP plan; ADRs aceptados decisiones; Freeze+A-n alcance congelado.
 - FOUNDATIONS es un registro descriptivo subordinado a ADR/Freeze y código/pruebas.
 - PROMPT_TEMPLATES es procedimental y subordinado; TEMPLATE describe el contrato mutable.
+- La ejecución delegada de agentes la gobierna AUTOMATION_PLAN §16; `docs/automation/agent-execution/` solo contiene procedimiento,
+  enrutamiento, catálogo no normativo, guía y esquemas subordinados.
 - Todo movimiento de ruta corrige referentes en la misma fase coherente.
 - El estado del ejecutor vive en `docs/automation/state/`; las decisiones pueden vivir en
   `docs/automation/decisions/`.

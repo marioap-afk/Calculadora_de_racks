@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rackcad-gate-contract/v1",
+  "description": "Contrato de gate que redacta el Coordinator (Freeze de I-61, Proposal V9 §3.4 y §8.2). Subordinado: no crea requisitos de evidencia, estados, gates, reglas Git ni decisiones del Owner.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "Schema": { "type": "string", "enum": ["rackcad-gate-contract/v1"] },
+    "Unit": { "type": "string" },
+    "Gate": { "type": "string" },
+    "TaskId": { "type": "string" },
+    "Objective": { "type": "string" },
+    "AuthorityRevision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "MainSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "Authorities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Path": { "type": "string" },
+          "Section": { "type": "string" },
+          "Class": { "type": "string", "enum": ["UNIT_DOC", "UNIT_CHANGE", "EXTERNAL"] }
+        },
+        "required": ["Path", "Section", "Class"]
+      }
+    },
+    "AllowedWriteScope": { "type": "array", "items": { "type": "string" } },
+    "ForbiddenWriteScope": { "type": "array", "items": { "type": "string" } },
+    "Invariants": { "type": "array", "items": { "type": "string" } },
+    "RequiredTests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Project": { "type": "string" },
+          "Filter": { "type": "string" },
+          "MinSelected": { "type": "integer" },
+          "ExpectRed": { "type": "boolean" }
+        },
+        "required": ["Project", "Filter", "MinSelected", "ExpectRed"]
+      }
+    },
+    "ExpectedEvidence": { "type": "array", "items": { "type": "string" } },
+    "StopConditions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Id": { "type": "string" },
+          "Text": { "type": "string" }
+        },
+        "required": ["Id", "Text"]
+      }
+    },
+    "EligibleCells": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Cell": { "type": "string" },
+          "Provider": { "type": "string" },
+          "Model": { "type": "string" },
+          "Transport": { "type": "string" },
+          "Capabilities": { "type": "array", "items": { "type": "string", "enum": ["read", "tool-use", "write-commit-push", "effort-applied"] } },
+          "TestedEfforts": { "type": "array", "items": { "type": "string" } },
+          "Source": { "type": "string" },
+          "VerifiedOn": { "type": "string" }
+        },
+        "required": ["Cell", "Provider", "Model", "Transport", "Capabilities", "TestedEfforts", "Source", "VerifiedOn"]
+      }
+    },
+    "RoutingEnforcement": { "type": "string", "enum": ["required", "advisory"] },
+    "CorrectionsAuthorized": { "type": "boolean" },
+    "IssuedBy": { "type": "string" },
+    "IssuedUtc": { "type": "string" }
+  },
+  "required": [
+    "Schema", "Unit", "Gate", "TaskId", "Objective", "AuthorityRevision", "MainSha", "Authorities", "AllowedWriteScope",
+    "ForbiddenWriteScope", "Invariants", "RequiredTests", "ExpectedEvidence", "StopConditions", "EligibleCells",
+    "RoutingEnforcement", "CorrectionsAuthorized", "IssuedBy", "IssuedUtc"
+  ]
+}
