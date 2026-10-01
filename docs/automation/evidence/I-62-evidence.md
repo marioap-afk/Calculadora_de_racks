@@ -1,0 +1,142 @@
+# I-62 — Evidencia de la unidad (Principal Coordinator Portability & Provider-Agnostic Role Binding)
+
+Unit / Initiative / Workflow: `I-62` / I-62 / V2. Claim-Id `5b661a17-8c18-4183-8554-3866059cba2b`.
+Contrato: [I-62-portabilidad-coordinador-principal.md](../../initiatives/I-62-portabilidad-coordinador-principal.md). Decisiones: [I-62.md](../decisions/I-62.md).
+
+Estado de esta evidencia: **G0 (reclamo y bootstrap)**. No hay Discovery sustantivo, Freeze, piloto, Candidato ni GATE PASS. Lo no ejecutado
+figura como **PENDIENTE**.
+
+Clases de afirmación ([INITIATIVE_LIFECYCLE](../../INITIATIVE_LIFECYCLE.md) §4):
+- `MEASURED`: lo midió la sesión responsable de G0, una sesión de Claude Desktop en el host Windows del Owner.
+- `RECONSTRUCTED`: lo reportó otra fuente y aquí no se reejecutó.
+- `INFERENCE` y `UNKNOWN`: según su significado.
+
+Nada de lo `MEASURED` se atribuye al Coordinator.
+
+## 1. Base de reclamo y clasificación de transición (MEASURED)
+
+| Hecho | Valor | Fuente |
+|---|---|---|
+| Base (`origin/main`) | `819955d61a6da4c811a11fbd11b5dca13f634b7c`, revalidada inmediatamente antes del reclamo | `git fetch --prune` + `git rev-parse origin/main` |
+| Commit de reclamo | `a851841ae40d63f59ac18ff64f792efd07ca036c` (vacío; `2026-10-01T10:04:12-06:00; push aceptado 2026-10-01T16:04:13Z`) | `git log` |
+| Primer push aceptado (reclamo) | rama nueva `architecture/portabilidad-coordinador-principal` en `origin`, sin force | salida de `git push -u` |
+| Rama / worktree | `architecture/portabilidad-coordinador-principal` / `%USERPROFILE%\.codex\worktrees\architecture-portabilidad-coordinador-principal`; distinto del principal y de los de I-52, I-63 e ID30 | `git worktree list` |
+| Worktree principal | `main` sin actualizar a propósito, árbol limpio; ninguna operación Git en curso en el repositorio común | `git status`, marcadores de `.git` |
+| ID | I-62 reservado por el Owner. Antes del reclamo no había rama ni tag de I-62 en el remoto. `origin/main` no menciona I-62; en la rama de I-63 solo aparece como reserva | `git ls-remote`, `git grep` |
+| `WORKFLOW_V2_EFFECTIVE_SHA` | `8a021fb67c16dfccd6afc18448ea7e6a71a32364`. Derivación (§11.2): commit único con el trailer `Workflow-V2-Normative: I-56` (`afd1077c…`) y primer merge first-parent cuyo segundo padre lo alcanza y el primero no. Es ancestro de la base | `git log --grep`, `git merge-base --is-ancestor` |
+| Fin de la pausa | tag anotado `integration/I-56` (objeto `41b1835b…`): `Claim pause … end=2026-09-17T22:30:00Z` | `git tag -l --format=%(contents)` |
+| Clasificación | **V2, T4** (posterior probado, base con el SHA efectivo, sin pausa; consume diseño V2) | [WORKFLOW](../../WORKFLOW.md) §11.3 |
+
+Recibo de I-61, revalidado como antecedente (MEASURED):
+- `integration/I-61` es un tag anotado (`8a6f71ed…`) que apunta a `819955d6…`;
+- los padres del merge son `95690c28…` y `a5e583ed…` (Closure);
+- `6513777f…` (Candidato) es ancestro del Closure, y entre ambos solo cambian archivos de `docs/`;
+- la corrida `36866499374` fue push sobre `main` con `head_sha` `819955d6…` y 4/4 jobs `success`.
+
+Esto no reabre I-61.
+
+## 2. Fuentes recibidas (entrada de G0)
+
+Todas se custodian fuera del repositorio, en `D:\IDs\I-62\`. Los hashes los midió la sesión en el host.
+
+| Archivo | Bytes | SHA-256 | Papel |
+|---|---:|---|---|
+| `I-62-owner-mandate.original.txt` | 19 004 | `2364e892d050b939c910e6b5d22ea5960d7bb36dbfe3d4fe4c349ed0f6780f0a` | mandato original; se versiona como [`I-62-owner-mandate.txt`](../decisions/I-62-owner-mandate.txt) |
+| `I-62-G0-orden-claim-bootstrap.txt` | 9 263 | `5d6cb6473b36e22d761d4c0c640c40b3879fc863cc171f3013e6a49022d06f94` | orden de G0 del Owner (decisiones O62-G0-01) |
+| `I-62-G0-continuacion.txt` | 5 800 | `3c288170ec0eca929c5d6327f0c7e15d277845f67ff3892a197c95ce32ee4694` | continuación del Coordinator (decisiones C62-G0-01) |
+| `I-62-admision-y-propuesta-inicial.md` | 23 745 | `141294640252da522ff9c914555a7437e0c08428a8956dd2f3b1e904ed1443c0` | intake previo hecho fuera del host; antecedente, no autoridad |
+| `I-62-preflight-observado.json` | 3 276 | `b97e16bc45558ee1e96e4bace0df71bb322c09a9080b0b63ea6f94942e3bd947` | observación del contenedor del intake; **no** describe este host |
+
+**Mandato, verificación en el host (MEASURED):**
+- 19 004 bytes, SHA-256 idéntico al declarado;
+- UTF-8 estricto válido, sin BOM, solo LF (857, ningún CR), sin LF final (último byte `0x2E`).
+
+`MANDATE_LOCAL = VERIFIED`.
+
+Procedencia (RECONSTRUCTED): el Owner adjuntó el mandato como «Texto pegado.txt» en la conversación del Coordinator. El Coordinator lo copió
+byte a byte y comprobó la copia en su entorno, sin acreditar la transferencia a Windows. El Owner dejó el archivo en `D:\IDs\I-62\`
+(2026-10-01T15:51:03Z). Cadena de custodia: Owner → Coordinator → Owner → sesión. No hay verificación independiente contra el adjunto
+original más allá de la coincidencia del hash declarado.
+
+Blob versionado: `e352ce7e940280e6168b6a20af8192150245b95e`. `git cat-file blob` de ese objeto da 19 004 bytes y el mismo SHA-256 (MEASURED tras el commit). Con
+`core.autocrlf=true` y sin regla `-text`, un checkout en Windows puede convertir el archivo a CRLF en disco: el hash canónico es el del
+blob. No se cambió configuración Git ni normas para forzar la coincidencia.
+
+## 3. Coordinación de escritura de `docs/ROADMAP.md`
+
+Canal: mensajería entre sesiones locales de Claude Desktop. El canal no reporta hora de entrega ni de lectura: las horas son del reloj de
+la sesión y ningún acuse se fecha más allá de eso. Solicitud enviada, entrega encolada y acuse son hechos distintos.
+
+**Ronda 1** (antes de 15:35Z): sin reclamo. ID20 e ID30 acusaron; I-52 acusó tarde. La sesión se detuvo porque faltaba el mandato y envió
+RELEASE o retiro a las tres. Esos acuses no se reutilizan.
+
+**Compromiso intermedio:** I-62 dio un acuse a ID20 para la fila de su bootstrap (`af5b2e5c…`, confirmado para I-63 en `a757eb80…`).
+ID20/I-63 envió su RELEASE real tras publicar su bootstrap `cba24838…`. Comprobación propia: `ls-remote` a las 15:49:30Z.
+
+**Ronda 2** (solicitudes desde 15:53:46Z, ya con el mandato verificado):
+- I-63 (`31a18cf6…`) e ID30 (`2f27fcea…`) acusaron.
+- I-52 no respondió en esa ejecución, así que I-62 envió RELEASE a I-63 (`bbcba6a7…`) y a ID30 (`75cb3327…`) para no retener ventanas, y dejó abierta la solicitud a I-52 (`47213183…`).
+- ID30 pidió entonces ventana para su propio bootstrap, ya como I-64; I-62 acusó (`fb8f9529…`).
+- I-52 acusó la solicitud `47213183`; I-62 le avisó que esperaría el RELEASE de I-64 (`cf2073bd…`).
+- I-64 publicó su bootstrap `d8a02163…` y envió su RELEASE real.
+
+**Ventana vigente del bootstrap** (limitada a insertar la fila de I-62; HANDOFF fuera):
+
+| Escritor | Sesión | Solicitud | Respuesta |
+|---|---|---|---|
+| I-52 | «I - 52» (`local_7a6025bd…`) | `47213183-fd09-4683-b666-10fb5a494ba9` | **ACUSE nuevo**: no escribe, rebasa ni publica ROADMAP hasta el RELEASE; sin escritura de ROADMAP en curso ni planeada; rebase diferido hasta después de sus corridas de host; sin reclamo ni rama incompatible. Host y demás superficies siguen |
+| I-63 (ID20) | «I - 63» (`local_ea0644a0…`) | `0ca4a000-6144-475c-ad62-b88333d6688c` | **ACUSE nuevo** (independiente del `31a18cf6` cerrado): ídem; bootstrap `cba24838` publicado; sin escrituras pendientes; nada de I-63 usa I-62 ni la rama |
+| I-64 (ID30) | «I - 64» (`local_1c89299c…`) | `8073ecd1-e2ae-43e8-a37f-e83848b0def2` | **ACUSE**: ídem, incluido no rebasar su fila; bootstrap `d8a02163` publicado; sin escrituras pendientes; sin conflicto |
+
+- INICIO de la ventana: los tres acuses, recibidos antes del reclamo (comprobación de la base a las 16:03:31Z).
+- FIN: el «RELEASE» de I-62 por el mismo canal tras publicar el bootstrap (§7).
+
+I-62 no valida ni asigna los números I-63 e I-64; los registra como los comunicaron esas sesiones.
+
+## 4. Preflight del host (MEASURED, 2026-10-01; datos saneados, sin credenciales)
+
+| Elemento | Observación |
+|---|---|
+| Plataforma | Windows 11 Pro 10.0.26200; PowerShell 7.6.6 |
+| Git | 2.54.0.windows.1; `core.autocrlf=true` |
+| GitHub CLI | 2.96.0; autenticado (cuenta del Owner, keyring, https); ámbitos `repo`, `workflow`, `read:org`, `gist` |
+| .NET | SDK 8.0.423 de usuario en `%LOCALAPPDATA%\Microsoft\dotnet`; el `dotnet` del PATH es otra instalación |
+| Codex CLI | **no está en el PATH**. Ejecutable efectivo `%LOCALAPPDATA%\OpenAI\Codex\bin\de8a38d2100ae498\codex.exe`, `codex-cli 0.159.2`; `login status` = «Logged in using ChatGPT». **Hallazgo:** de cuatro directorios en `bin`, el más reciente por mtime (`5cb96978…`) **no** contiene `codex.exe`, así que localizar por «directorio más nuevo» falla. Método usado: enumerar los directorios y comprobar que el ejecutable existe |
+| Claude CLI | **no está en el PATH** de PowerShell. `%USERPROFILE%\.local\bin\claude.exe` = 2.1.270; `claude auth status` → `loggedIn: false`, `authMethod: none` (**NOT_AUTHENTICATED**). La app de escritorio trae otras copias (2.1.281, 2.1.284). La autenticación del escritorio no autentica el CLI |
+| Sesión principal | `get_session("self")` → `claude-opus-5-5` / `xhigh`. Es una observación de la interfaz y no acredita ninguna invocación delegada (decisiones S62-G0-04) |
+| `config.toml` de Codex | SHA-256 `42E15A039EFD7E1A9197423AFB14B4358C7D60C89FEDDD734583891DB6E732A5`, mtime 2026-10-01T05:30:20Z. Difiere de los hashes registrados en I-61; antecedente preservado, causa UNKNOWN (decisiones S62-G0-03). No se leyeron ni copiaron valores |
+| Procesos (una foto) | `ChatGPT.exe` ×11, `claude.exe` ×17, `codex.exe` ×2 (app-server y exec-server de la app de Codex), `node.exe` ×6, `git.exe` ×2 (status/ls-files lanzados por el mismo proceso padre de la app); sin `acad.exe` ni `dotnet.exe`. La atribución de los `git.exe` no se clasifica en G0 como falso positivo ni como escritor: no hubo delegación |
+| Invocaciones de modelos | NOT_RUN (no hubo sondas, Controller ni Worker) |
+
+## 5. Bootstrap (contenido versionado de G0)
+
+- Archivos nuevos:
+  - el contrato `docs/initiatives/I-62-portabilidad-coordinador-principal.md`;
+  - `docs/automation/decisions/I-62.md` y `docs/automation/decisions/I-62-owner-mandate.txt`;
+  - `docs/automation/state/I-62.yml`;
+  - este archivo.
+- Archivo modificado: `docs/ROADMAP.md`, una fila en Engineering Productivity.
+- **Nada más**: sin cambios en normas globales, HANDOFF, FOUNDATIONS, esquemas, índice ADR, `src/`, `tests/`, `assets/`, CI ni configuración.
+- `automation.enabled: false`. Los campos `requires_*` vacíos quedan pendientes y no conceden exenciones.
+
+## 6. Validación de G0
+
+- **Comprobación documental:** el diff contra la base solo toca los seis archivos de la allowlist de la orden (resultado en el cuerpo del
+  commit de bootstrap).
+- **CI exacta requerida** ([WORKFLOW](../../WORKFLOW.md) §4.5.2, commit documental): corrida de `push` sobre el SHA publicado, con los 4 jobs
+  de `AGENTS.md` en `success`. **PENDIENTE** al escribir este archivo; se registra en el informe de G0 y en la siguiente escritura de la
+  unidad.
+- Suites Core/UI locales, builds del Plugin y Owner Validation: **no aplican a G0** (sin cambios de producto, `src/`, `tests/` ni `assets/`);
+  no se ejecutaron ni se simulan.
+
+## 7. Registros posteriores a la publicación del bootstrap
+
+PENDIENTE: SHA del commit de bootstrap (es el commit que introduce este archivo), envío del «RELEASE» a las tres sesiones de §3 y corrida de
+CI exacta. Se anotan en el informe al Coordinator y en la siguiente escritura de la unidad. No se crea un commit adicional solo para esto.
+
+## 8. Métricas, conformidad, Owner Validation y tag
+
+- Métricas: UNKNOWN (no hay gates funcionales).
+- Conformidad: no aplica todavía.
+- Owner Validation: no aplica a G0; la asignación la fija el Freeze.
+- Tag de integración: no existe (`integration/I-62` solo se crea tras la integración).
