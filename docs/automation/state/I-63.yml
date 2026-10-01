@@ -7,8 +7,8 @@ automation_state:
   state: review-ready
   gate: none
   attempts: 0
-  next_action: El mismo Architect de R1 re-revisa la Proposal V2 exacta y el resultado vuelve al Coordinator; sin Freeze ni implementacion.
-  last_evidence_commit: 772ac242430084918d319a7683ce615daec39452
+  next_action: El mismo Architect de R1/R2 re-revisa la Proposal V3 exacta (R3) y el resultado vuelve al Coordinator; sin Freeze ni implementacion.
+  last_evidence_commit: dddc215f08123b64adbf7fe35de6d3776a241501
 execution_context:
   mode: manual
   automation_enabled: false

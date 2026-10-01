@@ -674,3 +674,55 @@ IMPLEMENTATION AUTHORIZATION = NO.
   La V1 y el paquete v1 no se tocan. Además: el contrato, las decisiones, esta evidencia y el estado.
 - **Re-revisión R2:** pedida al **mismo** Architect, **no realizada** en este commit.
 - La CI exacta del commit que contiene este archivo se informa al Coordinator.
+
+## 18. Architect R2 y orden PV3: Proposal V3 y paquete de re-revisión R3
+
+### 18.1 CI de la entrega anterior
+
+| Commit | SHA | Corrida `push` | Resultado |
+|---|---|---|---|
+| Proposal V2 y paquete v2 | `dddc215f08123b64adbf7fe35de6d3776a241501` | 36938698110: `head_branch` = `architecture/parametros-calculados-resumen-proyecto`, `head_sha` exacto | `success`; los cuatro jobs requeridos de `AGENTS.md` en `success` |
+
+### 18.2 Revisión del Architect R2 (procedencia)
+
+- La re-revisión la hizo el **mismo** Architect, en la misma sesión separada (`local_d5787742…`). **Esta sesión no participó.**
+- El veredicto no llegó como archivo. La orden PV3 exige el veredicto R2 completo en el paquete, así que la sesión autora lo extrajo,
+  **solo leyendo**, de la transcripción local de la sesión revisora:
+  - archivo `fdd2a979-cce9-4391-83aa-e7dfe5effcc4.jsonl`;
+  - mensaje de 2026-10-01T23:20:04Z, modelo `claude-opus-5-5`;
+  - 18 329 caracteres; SHA-256 UTF-8 `8901e8b0f034405833c7fb1dbc34985b0c8de269609a5597576fc2ccf889fe44`.
+- La orden PV3 confirma su identidad: objeto `dddc215f`/`9a84546f`/`09f874dd`, SEPARATE SESSION, mismo Architect, CHANGES REQUIRED,
+  cerrados y abiertos.
+- El texto se reproduce literal en el anexo R2 del paquete v3.
+
+### 18.3 Orden PV3
+
+- Pegada por el usuario en el chat de la sesión responsable el 2026-10-01. No llegó como archivo, así que no tiene hash.
+- Resumen en las [decisiones](../decisions/I-63.md) §2.
+
+### 18.4 Preflight (2026-10-01T23:32:35Z)
+
+- `HEAD` = remoto = `dddc215f`; árbol limpio salvo los dos archivos nuevos de esta entrega; `origin/main` = `819955d6`, ancestro de
+  `HEAD`: **sin rebase**.
+- Ramas: I-52 `51a66245`, I-62 `d66463a5` (Proposal V8) e I-64 `9e3d289a` (Proposal V5). Ninguna cambia `src/` ni `tests/` frente a
+  `main` (diff de tres puntos).
+
+### 18.5 Método y salidas
+
+- Redacción directa de la sesión principal; ningún participante de IA, ninguna delegación §16, sin pruebas ni host.
+- Código y configuración leídos para resolver los pendientes (sin editarlos):
+  - `PushBackResolver.cs:30-32` (`catalog ?? new RackCatalog()`);
+  - `RackCatalogLoader.cs:24-29` (catálogo vacío ante un error);
+  - `tests/RackCad.Tests/CantileverPluginSourceGuardTests.cs` (precedente de guarda de fuente);
+  - `.github/workflows/ci.yml`: el job de Core solo compila `RackCad.Tests`;
+  - las referencias de `RackCad.Tests.csproj`, `RackCad.UI.Tests.csproj` y `RackCad.Plugin.csproj`.
+- Salidas:
+
+  | Archivo | Blob |
+  |---|---|
+  | `docs/initiatives/I-63-proposal-v3.md` (Frozen: NO) | `e4a94effa99f29e06b447a3ce07ec5bcc41f0b6d` |
+  | `docs/initiatives/I-63-architect-package-v3.md` | `e195e9aed75155bfc2a6a38384f42cd4412c6f67` |
+
+  V1, V2 y los paquetes v1 y v2 no se tocan. Además: el contrato, las decisiones, esta evidencia y el estado.
+- **Re-revisión R3:** pedida al **mismo** Architect, **no realizada** en este commit.
+- La CI exacta del commit que contiene este archivo se informa al Coordinator.

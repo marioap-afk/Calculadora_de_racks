@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-63
 title: Computed Parameters & Project Summary Foundation
 type: architecture
-status: f0-proposal-v2-review
+status: f0-proposal-v3-review
 workflow: V2
 conceptual_initiative: I-63
 delivery_unit: I-63
@@ -114,9 +114,9 @@ Son candidatos de intake, no afirmaciones: cada entrada se verifica con DC-08 en
   completó las EXP de CD-I63-F0-R1-02. No es Proposal ni Freeze. La hizo directamente la sesión principal responsable, sin
   participantes de IA. Las rondas R0 y R1 se conservan en Git. Sus §24, §25 y §26 registran las decisiones posteriores del Owner
   (P-14, P-01..P-05 y el cierre de P-05).
-- Proposal vigente: [I-63-proposal-v2.md](I-63-proposal-v2.md) (Frozen: NO), con el paquete de re-revisión
-  [I-63-architect-package-v2.md](I-63-architect-package-v2.md). La V1 ([I-63-proposal-v1.md](I-63-proposal-v1.md)) es histórica:
-  el Architect R1 dio CHANGES REQUIRED.
+- Proposal vigente: [I-63-proposal-v3.md](I-63-proposal-v3.md) (Frozen: NO), con el paquete de re-revisión
+  [I-63-architect-package-v3.md](I-63-architect-package-v3.md). V1 ([I-63-proposal-v1.md](I-63-proposal-v1.md)) y V2
+  ([I-63-proposal-v2.md](I-63-proposal-v2.md)) son históricas: el Architect dio CHANGES REQUIRED en R1 y R2.
 - Freeze / Freeze delta / A-n: ninguno.
 - Decisiones: [I-63.md](../automation/decisions/I-63.md); mandato: [I-63-owner-mandate.original.txt](../automation/decisions/I-63-owner-mandate.original.txt).
 
@@ -172,9 +172,9 @@ C-F0-RED queda registrado en las [decisiones](../automation/decisions/I-63.md) c
 
 G0: reclamo y bootstrap, **PASS** (CD-I63-G0-10). F0-DISCOVERY: R0 con CHANGES REQUIRED (CD-I63-F0-R1-01); R1 con CHANGES REQUIRED
 localizado (CD-I63-F0-R2-01); R2 **aceptada** (CD-I63-F0-R2-04), sin GATE PASS de F0 (Discovery + Freeze). P-14 quedó resuelta por
-el Owner, sin contrato común (§7). El Owner también resolvió P-01..P-05 ([Discovery](I-63-discovery.md) §25 y §26). Con la orden PV1, F0-DISCOVERY queda cerrado para pasar al diseño. Architect R1 sobre
-la V1 = CHANGES REQUIRED. La Proposal V2 y su paquete están publicados y la re-revisión del mismo Architect está pedida; sin Freeze
-(orden PV2). El plan provisional del mandato (F0 Discovery y Freeze; F1..F6; READY) **no está congelado** y se
+el Owner, sin contrato común (§7). El Owner también resolvió P-01..P-05 ([Discovery](I-63-discovery.md) §25 y §26). Con la orden PV1, F0-DISCOVERY queda cerrado para pasar al diseño. Architect R1 (V1) y R2
+(V2) = CHANGES REQUIRED. La Proposal V3 y su paquete están publicados y la re-revisión R3 del mismo Architect está pedida; sin
+Freeze (orden PV3). El plan provisional del mandato (F0 Discovery y Freeze; F1..F6; READY) **no está congelado** y se
 revisa contra [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §7 antes del Freeze: ningún gate solo de capa, DTO o modelo sin
 resultado observable verificable. La conformidad final se referencia desde READY-06.
 
