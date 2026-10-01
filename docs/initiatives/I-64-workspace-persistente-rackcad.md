@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-64
 title: Persistent RackCad Workspace
 type: architecture
-status: f0-proposal-v1
+status: f0-proposal-v2
 workflow: V2
 conceptual_initiative: I-64
 delivery_unit: I-64
@@ -61,9 +61,10 @@ automation:
 - Workflow **V2**; la clasificación de transición se determina por el reclamo ([WORKFLOW](../WORKFLOW.md) §11.3) y se registra en
   la evidencia.
 - **Arquetipo: NEW ARCHITECTURE**, fijado por el brief. Materialidad confirmada por el Coordinator: M-04..M-07 y M-08, este último de
-  forma conservadora (CD-I64-D1-01); y M-01, que el Coordinator exigió activar (C64-D1-04) y quedó así en el Discovery D1-R1 aceptado. M-02
-  y M-03 siguen `UNKNOWN` tratados como activados; la [Proposal V1](I-64-proposal-v1.md) §14 propone resolverlos como no activados, y no
-  se cambian aquí hasta que lo acepten el Coordinator y el Architect.
+  forma conservadora (CD-I64-D1-01); y M-01, que el Coordinator exigió activar (C64-D1-04) y quedó así en el Discovery D1-R1 aceptado. Para
+  la Proposal V2 el Coordinator aceptó **M-02 = NOT ACTIVATED** y **M-03 = NOT ACTIVATED**, con las condiciones de su §14 (sin estampado,
+  `Compose` por vista e importación sin efecto persistido; comandos clásicos observacionalmente invariantes). Si una condición se rompe, el
+  disparador se reabre.
 
 ## 2. Objetivo
 
@@ -112,7 +113,7 @@ Introduces: UNKNOWN — candidatos preliminares: workspace modeless en memoria, 
             AutoCAD, inventario runtime de navegación y sesiones de borrador con control de obsolescencia
 ```
 
-Son candidatos de intake, no afirmaciones. La [Proposal V1](I-64-proposal-v1.md) concreta qué consume y qué introduce (§§2-8 y anexo A);
+Son candidatos de intake, no afirmaciones. La [Proposal V2](I-64-proposal-v2.md) concreta qué consume y qué introduce (§§2-8 y anexo A);
 la lista se fija en el Freeze. DC-08 del Discovery (§11) comprobó en la base de F0 la presencia de los símbolos y pruebas de
 las nueve fundaciones del brief; el consumo concreto se fija en el Freeze. Cada entrada se vuelve a verificar con DC-08 en la base vigente
 ([INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §4.1), contra fuente, código y pruebas. Que una fundación no tenga entrada en
@@ -125,9 +126,11 @@ persistente ni crea una segunda autoridad de persistencia (brief, «KEY ARCHITEC
   §13). Responde las dieciocho preguntas del brief («DISCOVERY REQUIRED») sobre DC-01..09, con EXP-01..09 evaluadas y sus negativos
   razonados; su §17 detalla la disposición de C64-D1-01..07.
 - Decisión del Master: `MASTER-I63-I64-01` (frontera con I-63 y reglas del smoke), registrada en la evidencia §13.
-- Proposal: [Proposal V1](I-64-proposal-v1.md) (`Frozen: NO`), que cubre «PROPOSAL MUST DEFINE» del brief, con el borrador del ADR propio y
-  las notas previstas a ADR-0010 y ADR-0032. Paquete de revisión: [I-64-architect-package-v1.md](I-64-architect-package-v1.md). **Revisión
-  pendiente** del Coordinator y del Architect; NEW ARCHITECTURE exige rondas hasta acuerdo sobre la misma versión
+- Proposal V1: [I-64-proposal-v1.md](I-64-proposal-v1.md), con su [paquete](I-64-architect-package-v1.md). Veredicto del Architect
+  (sesión separada): **CHANGES REQUIRED**, A64-PV1-01..22, aceptado por el Coordinator (evidencia §14).
+- Proposal V2: [I-64-proposal-v2.md](I-64-proposal-v2.md) (`Frozen: NO`, autocontenida), que dispone A64-PV1-01..22 con las precisiones
+  PV2-01..22 del Coordinator. Paquete de re-revisión: [I-64-architect-package-v2.md](I-64-architect-package-v2.md). **Re-revisión
+  pendiente** por el mismo Architect y por el Coordinator; NEW ARCHITECTURE exige rondas hasta acuerdo sobre la misma versión
   ([INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §5).
 - Freeze / Freeze delta / A-n: ninguno.
 - Fuentes: [brief](I-64-owner-brief.txt) y [confirmación D0-R3](I-64-coordinator-confirmation-d0-r3.txt).
@@ -139,24 +142,26 @@ persistente ni crea una segunda autoridad de persistencia (brief, «KEY ARCHITEC
   providers y la agregación; esta unidad posee el inventario runtime de navegación y la representación de UI/sesión. No se consume
   código no integrado de I-63. Una fundación común es STOP al Master Orchestrator. Ambos Discovery registran un **candidato** a
   fundación común en la enumeración lógica de racks. El Master lo decidió en `MASTER-I63-I64-01`: I-63 es autor inicial de un snapshot
-  lógico neutral y mínimo por RackId; I-64 posee el índice runtime y lo consume en F2 solo cuando esté integrado en `origin/main`
-  (Proposal V1, D-05).
+  lógico neutral y mínimo por RackId; I-64 posee el índice runtime. En la Proposal V2 solo F6 (navegador del documento) lo consume, y
+  solo integrado en `origin/main`; si no lo está al cerrar F1..F5, STOP al Master. **Conflicto abierto:** I-63 registró después la decisión
+  del Owner P-14 (sin contrato común; prevalece para I-63), así que no será autor de ese snapshot. Qué rige para I-64 lo deciden su
+  Coordinator y el Owner (Proposal V2 §15; evidencia §14).
 - **I-52 (RACKMIRROR)** recorre en su producto planificado el ciclo `RACKEDITAR` → Actualizar → redibujo; la intersección se evalúa en
   DC-07 (EXP-07 si toca la misma autoridad o contrato). No se toca su rama, worktree, paquete de host ni política de confianza. Su
-  respuesta sobre la convivencia del host y las reglas del smoke del Master constan en la evidencia §13 y en la Proposal V1 §12.1.
+  respuesta sobre la convivencia del host y las reglas del smoke del Master constan en la evidencia §13 y en la Proposal V2 §12.1.
 - Archivos calientes: `docs/ROADMAP.md` (solo la fila propia, en los momentos de [WORKFLOW](../WORKFLOW.md) §2). Los de producto
   (editores grandes de `src/RackCad.UI/Systems/`, `src/RackCad.Plugin/*Commands*.cs`) se inventarían en DC-07. `HANDOFF.md` y el
   índice de ADR se editan únicamente al integrar/cerrar.
 
 ## 8. Gates funcionales
 
-D0: reclamo y este bootstrap (tarea de F0, no gate funcional). La [Proposal V1](I-64-proposal-v1.md) §11 propone F1..F7 (con F5-A y
-F5-B), Smoke-1 tras F1, Smoke-2 tras F4 y READY, revisados contra [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §7. **No está
-congelado.** La conformidad final se referencia desde READY-06.
+D0: reclamo y este bootstrap (tarea de F0, no gate funcional). La [Proposal V2](I-64-proposal-v2.md) §11 propone F1..F7 (con F5-A y
+F5-B; navegación en F2 y navegador del documento en F6), Smoke-1 tras F1, Smoke-NAV tras F2, Smoke-2 dentro del cierre de F4 y READY,
+revisados contra [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §7. **No está congelado.** La conformidad final se referencia desde READY-06.
 
 ## 9. Owner Validation
 
-- Asignación OV: propuesta en la [Proposal V1](I-64-proposal-v1.md) §12 (OV-01..OV-23, todas a la unidad I-64); se fija en el Freeze.
+- Asignación OV: propuesta en la [Proposal V2](I-64-proposal-v2.md) §12 (OV-01..OV-26, todas a la unidad I-64); se fija en el Freeze.
 - Requiere AutoCAD: **sí** (workspace y sincronización dentro de AutoCAD; smoke temprano tras F1).
 - Requiere Owner Validation: **sí** (brief). El procedimiento y la identidad del DLL viven en
   [validacion-manual-autocad.md](../guias/validacion-manual-autocad.md).

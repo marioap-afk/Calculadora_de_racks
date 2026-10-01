@@ -394,3 +394,93 @@ versionados: [Proposal V1](../../initiatives/I-64-proposal-v1.md) (nueva), [paqu
 (nuevo), el contrato y esta evidencia.
 
 **Estado:** Proposal V1 publicada para revisión, sin consenso, Freeze ni GATE PASS. `IMPLEMENTATION AUTHORIZATION = NO`.
+
+## 14. F0 / Proposal V2 — Veredicto del Architect sobre V1, orden del Coordinator y hechos posteriores
+
+Sección nueva; las anteriores no se reescriben.
+
+**CI de la Proposal V1** (MEASURED con `gh run view`; evidencia de CI, no local): corrida **36915005173**, `event=push`,
+`ref=refs/heads/architecture/workspace-persistente-rackcad`, `head_sha=dcc16bed371207c8c68dd6bc6a7dd7e5a7acee6d`. Jobs Tests (Domain +
+Application), UI Tests (WPF controls, net8.0-windows), Build UI (WPF, valida API de Application) y Build Plugin without AutoCAD, los
+cuatro `success`. Creada 19:32:12Z, actualizada 19:35:55Z. Blobs de V1: Proposal `962fc1958f3b6885d43eff3a94190325edaf850f`, paquete
+`d54f5bd231fb5a5fc0ef3bc6319322163a98c780`.
+
+**Veredicto del Architect sobre V1** (RECONSTRUCTED):
+- **Procedencia.** La orden del Coordinator lo acepta, pero no lo transcribe. La sesión autora lo leyó en la transcripción local de la
+  sesión separada «I-64 Architect Review Proposal V1» (archivo de sesión `caf7ae64-ba5b-4648-ae0b-f7aeb9e7103a.jsonl` del proyecto, mensaje
+  del Architect de 2026-10-01T20:07:09Z), localizada con la búsqueda de transcripciones. El texto extraído mide 30 092 bytes UTF-8, con
+  SHA-256 `2cf82c1e96b83859bbdba517425d9ed251b7c542f48c116a469e11675474a4a3`. No se versiona aquí; se trata como dato.
+- **Contenido**, en resumen saneado:
+  - objeto: commit `dcc16bed`, Proposal blob `962fc195`, paquete blob `d54f5bd2`, Discovery blob `3565015c`, CI 36915005173;
+  - modo SEPARATE SESSION; revisor ≠ autor; declara como límite de independencia que es el mismo modelo que la sesión autora;
+  - puntos acordados: autoridad del DWG, `PaletteSet` con contingencia, capas, estructura del puente, D-05, dirección de la selección,
+    pestañas, D-10 como evolución, D-11 (sin elevar a I-55), núcleo de D-12, resultado de D-13, D-16, D-18, D-20, D-21 y el plan de gates
+    con piloto Push Back; M-02 y M-03 NOT ACTIVATED con condiciones;
+  - **CHANGES REQUIRED**: A64-PV1-01..22 REQUIRED, O-01..O-17 OPTIONAL, y la disposición de C64-PV1-01..04 (revisión del Coordinator sobre
+    V1, que esta sesión no recibió directamente);
+  - riesgos R-01..R-09.
+
+**Orden F0 / Proposal V2 del Coordinator**, recibida en el chat de la sesión el 2026-10-01 tras el veredicto. No llegó como archivo a
+`D:\IDs\I-64\` (listado MEASURED a las 20:11Z), así que no tiene hash. Resumen saneado:
+- acepta el veredicto (CHANGES REQUIRED sobre `dcc16bed` / `962fc195`) y los REQUIRED A64-PV1-01..22 para corregir en V2;
+- no reabrir el Discovery, no implementar, no ejecutar AutoCAD, no declarar consenso, Freeze ni GATE PASS;
+- redactar una Proposal V2 **autocontenida** que disponga cada A64-PV1-01..22;
+- 22 precisiones vinculantes, citadas en la Proposal como PV2-01..PV2-22:
+  - cierre de F4 con Smoke-2 y las comprobaciones de host dentro de él; hito Smoke-NAV tras F2;
+  - atomicidad por resultado sobre la costura de I-55, con importación fuera de la transacción authored, `Commit()` que lanza =
+    Desconocido y renombrado fuera del núcleo;
+  - separación de StaleBase, InitialDraftState, CurrentDraftState y Dirty; base y estado inicial de una sola lectura;
+  - registro completo de Selectivo sin entradas de escaneo; comparación por atribución;
+  - veto continuo de cierre con descarte explícito; identidad de instancia y peticiones ligadas;
+  - eventos en cualquier momento con manejadores que solo encolan; eco por contenido; foco; contención de excepciones; preview y texto
+    pendiente;
+  - panel nunca abierto frente a oculto y escenario masivo; ciclo de vida de suscripciones; guardas de transacciones;
+  - INV-19 con ADR-0029 D13 completo; acuse de I-52 y diff del perfil;
+  - diferimiento `OWNER-RESERVED`; STOP al Master si el snapshot no llega; oráculos de UI y OV para avisos, admisión y Desconocido;
+- materialidad aceptada para V2: M-01, M-04..M-08 ACTIVATED; M-02 NOT ACTIVATED con las restricciones de V1 y V2; M-03 NOT ACTIVATED
+  mientras los comandos clásicos permanezcan observacionalmente invariantes;
+- actualizar la coordinación con las puntas de I-52, I-62 e I-63; registrar la CI de V1 en este commit; publicar V2 y su paquete; esperar
+  la CI exacta; la re-revisión vuelve al **mismo** Architect. `IMPLEMENTATION AUTHORIZATION = NO`.
+
+**Aviso de I-63 sobre P-14** (RECONSTRUCTED; canal entre sesiones, remitente «I - 63», recibido por esta sesión a las 19:59:00Z):
+- el Owner decidió en el chat de I-63 la frontera P-14: **sin contrato común** de inventario o enumeración entre I-63 e I-64; cada
+  iniciativa implementa su propio mecanismo; la duplicación se acepta; una iniciativa posterior podrá revisarla; para I-63, la consulta al
+  Master queda superada;
+- I-63 nunca recibió MASTER-I63-I64-01; preguntado, el Owner eligió que su decisión **prevalece para I-63** y que I-63 avisara a I-64;
+- I-63 lo registró en su rama (`f0b063e9`, decisiones de I-63 §6) y no compromete diseño de I-64.
+
+Acuse de I-64: msg `83fa245d-78ff-4639-99a0-242a9b20bbcd`, sin cambios en la Proposal y con elevación al Coordinator. La orden V2 no
+resuelve expresamente el conflicto; la Proposal V2 aplica MASTER-I63-I64-01 y PV2-21 y lo declara abierto (§15).
+
+**Preflight (MEASURED):**
+- 20:11:20Z: `HEAD` = remoto = `dcc16bed…`; árbol limpio; `origin/main` = `819955d6…`, sin cambio, así que no hubo rebase.
+- 20:16:25Z: ningún proceso `acad` en ejecución.
+
+**Ramas paralelas** (por referencia remota, solo como coordinación):
+
+| Rama | Punta | Avance desde §13 |
+|---|---|---|
+| I-52 | `d8078ef3` | un commit (19:32:09Z): dictamen de `TRUSTEDPATHS` y revisión de scripts; 3 archivos; 0 de `src/`, `tests/` y `assets/` |
+| I-62 | `486e45e7` | dos commits: Proposal V2 y V3 con sus paquetes; solo documentos |
+| I-63 | `f6da2768` | tres commits: Discovery R2; aceptación de R2 con la decisión P-14 (`f0b063e9`); decisiones del Owner P-01..P-05 sobre sus métricas (20:21:18Z, leída antes de publicar); solo documentos |
+
+**Hechos de código verificados para la V2** (MEASURED en la base `819955d6`):
+- `ISiblingRedrawPort` (`Prepare`, `Mutate`, `Post`) y `RackSiblingRedrawRun.Execute`, que convierte una excepción de `Mutate` en
+  `Discarded`;
+- `SiblingRedrawTransaction.Mutate`, que abre una transacción con `using`, aplica las unidades sin confirmar y llama a `Commit()` una vez;
+  `Post` ejecuta el postproceso de las unidades y un `Regen`;
+- `SiblingRedrawDebugFaultInjection`, solo Debug, con la variable de entorno `RACKCAD_DEBUG_FAIL_SIBLING_REDRAW_UNIT`; OV-RED-06 de I-55 la
+  usa al lanzar AutoCAD;
+- `CallerOwnedFacadeGuardTests`: la primitiva no confirma, no abre transacción, no bloquea y no regenera;
+- `BlockLibraryImporter` traga y registra las excepciones de importación;
+- `RackVariablesCommands` abre rondas modales dentro de un bucle del mismo comando;
+- `RackCantileverCommands` confirma su propia transacción al crear la definición;
+- I-55 V5 §4.4 (transacción de `Mutate`, INV-TX-1), §4.6 (OM-5) y §4.10 (renombrado en POST).
+
+**Ejecución:** redacción directa de la sesión responsable, con lectura estática de código y documentos, ramas paralelas por referencia
+remota y la transcripción local citada. Sin AutoCAD, builds, pruebas, prototipos, subagentes, Controller ni Worker. Archivos versionados:
+[Proposal V2](../../initiatives/I-64-proposal-v2.md) (nueva), [paquete de re-revisión](../../initiatives/I-64-architect-package-v2.md)
+(nuevo), el contrato y esta evidencia. La Proposal V1 y su paquete no cambian.
+
+**Estado:** Proposal V2 publicada para la re-revisión del mismo Architect y del Coordinator, sin consenso, Freeze ni GATE PASS.
+`IMPLEMENTATION AUTHORIZATION = NO`.
