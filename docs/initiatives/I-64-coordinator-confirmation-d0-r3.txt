@@ -1,0 +1,45 @@
+I-64 — PERSISTENT RACKCAD WORKSPACE / ID30
+D0-R3 — CONFIRMACION DIRECTA DE NUMERO Y CONTINUIDAD ADMINISTRATIVA
+Fecha: 2026-10-01. Emisor: Coordinator de ID30, en esta conversacion.
+Complementa D0, D0-R1 y D0-R2; sustituye sus referencias operativas a numeracion pendiente.
+No es otro gate, Freeze, delegacion I-61, claim ni autorizacion de implementacion.
+
+CD-ID30-NUM-01 — CONFIRMACION EMITIDA AQUI
+Confirmo directamente I-64 como numero tecnico de ID30 — Persistent RackCad Workspace.
+I-63 queda retirado como candidato de ID30; esta unidad no lo reserva, reclama ni utiliza.
+La numeracion de ID30 deja de estar pendiente de confirmacion en esta coordinacion.
+La asociacion ID20 = I-63 procede del informe trasladado por el Owner; esta orden no reasigna ID20.
+No se atribuye esta confirmacion a un mensaje original del Master que no se haya recuperado.
+I-62 conserva su reserva. Una asignacion de planificacion no equivale a claim remoto.
+Rama propuesta de ID30: architecture/workspace-persistente-rackcad.
+El preflight comprobara colisiones reales; ante una, STOP y evidencia, sin renumerar en silencio.
+No reescribir ordenes historicas: conservarlas y registrar que esta resolucion las actualiza.
+
+BRIEF EXACTO — INCLUIDO SIN CAMBIOS
+Archivo: 00-owner-brief.txt
+Bytes: 18668
+SHA-256: f0be18e7a7f408be9f4bc4a66dd7c9a1e47e920124311e87b3ae77dac31df660
+Leer el archivo adjunto o extraido de este paquete y comprobar su hash en el host.
+No reemplazar <NEXT_FREE_INITIATIVE_ID> dentro del brief: la asignacion se documenta aqui y en el contrato.
+No reconstruir el mandato ni repetir busquedas completas del disco.
+Que exista en esta conversacion no acredita recepcion local; registrar ruta y hash realmente medidos.
+
+ROADMAP — VENTANA ACTUAL DE ID20
+Segun el ultimo informe del Owner, la ventana sigue abierta para ID20 / I-63.
+Mantener el ACUSE ya emitido: no escribir, rebasar ni publicar cambios en docs/ROADMAP.md hasta su RELEASE.
+No inferir RELEASE de silencio, ausencia de ramas ni un diff aparentemente compatible.
+Tras recibirlo y verificar el brief, solicitar a «I - 52» la ventana propia para la fila I-64.
+Coordinar tambien con los otros escritores afectados segun el estado actual, sin retener una ventana indefinida.
+El RELEASE de ID20 termina su ventana; no concede por si mismo la de ID30.
+La antigua ventana liberada de I-62 no se reactiva y su ACUSE no cubre una nueva solicitud.
+No extender esta coordinacion a HANDOFF, a toda la iniciativa I-52 ni a sus operaciones de host.
+
+REANUDACION Y PARADA
+Con brief verificado y ventana propia acreditada: preflight diferencial, claim atomico y bootstrap inmediato
+conforme a D0 y a las autoridades vigentes. Usar I-64 en los documentos nuevos de la unidad.
+Conservar el brief exacto y esta confirmacion como fuentes separadas en el alcance documental propio.
+No crear rama/worktree/claim mientras falte la ventana o no pueda publicarse el bootstrap inmediato.
+No repetir la solicitud de confirmacion de I-64 salvo una contradiccion nueva y verificable.
+Entregar hechos reales de brief, coordinacion, claim/bootstrap y CI exigible; detenerse tras D0.
+No iniciar Discovery sustantivo, Controller/Worker, pruebas nuevas, producto, AutoCAD, Freeze ni integracion.
+IMPLEMENTATION AUTHORIZATION = NO
