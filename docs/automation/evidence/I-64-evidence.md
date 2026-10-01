@@ -484,3 +484,70 @@ remota y la transcripción local citada. Sin AutoCAD, builds, pruebas, prototipo
 
 **Estado:** Proposal V2 publicada para la re-revisión del mismo Architect y del Coordinator, sin consenso, Freeze ni GATE PASS.
 `IMPLEMENTATION AUTHORIZATION = NO`.
+
+## 15. F0 / Proposal V3 — MASTER-I63-I64-02 y hechos posteriores
+
+Sección nueva; las anteriores no se reescriben.
+
+**CI de la Proposal V2** (MEASURED con `gh run view`; evidencia de CI, no local): corrida **36921626892**, `event=push`,
+`ref=refs/heads/architecture/workspace-persistente-rackcad`, `head_sha=ab4efe865638cbe121c0ecd232a689563ba7ee6a`. Jobs Build UI (WPF, valida
+API de Application), UI Tests (WPF controls, net8.0-windows), Tests (Domain + Application) y Build Plugin without AutoCAD, los cuatro
+`success`. Creada 20:26:54Z, actualizada 20:31:10Z. Blobs de V2: Proposal `7bf98cca583c4b5c0ea2c090f2b239cdfd7f8239`, paquete
+`0a66d7c23fa782880ea99d8a51fda14d00f6b054`. V2 no llegó a re-revisarse y queda como registro histórico.
+
+**Orden F0 / Proposal V3 del Coordinator**, recibida en el chat de la sesión el 2026-10-01. No llegó como archivo a `D:\IDs\I-64\` (listado
+MEASURED a las 22:18Z), así que no tiene hash. Resumen saneado:
+- V2 (`ab4efe86`) queda como registro histórico y no se edita;
+- el Coordinator acepta la disposición de A64-PV1-01..22 de V2 y resuelve antes de la re-revisión el conflicto MASTER-I63-I64-01 / P-14;
+- **MASTER-I63-I64-02**, que sustituye parcialmente a MASTER-I63-I64-01:
+  1. se retira la obligación de crear una fundación o snapshot compartido entre I-63 e I-64;
+  2. se retira la autoría inicial asignada a I-63;
+  3. se conserva la frontera: I-63 = métricas, providers, población y agregación; I-64 = captura e índice runtime para navegación,
+     selección, UI y sesión; RackId e identidad de vista = autoridades integradas vigentes; pertenencia para mutar = autoridades
+     integradas correspondientes; DWG authored = única autoridad persistida;
+  4. I-64 puede usar una representación pura interna de hechos neutrales para su índice, sin declararla fundación reutilizable ni contrato
+     consumido por I-63;
+  5. convertirla después en fundación común requerirá una decisión explícita nueva del Master;
+  6. I-64 no depende de la integración de I-63 para cerrar ningún gate;
+  7. I-63 no consume código no integrado de I-64;
+- **plan de gates confirmado:** F1 → Smoke-1; F2 Context Navigation (AutoCAD ↔ RackCad para el rack en contexto; Seleccionar, Ver, Centrar y
+  Localizar; sin depender de I-63) → Smoke-NAV; F3 Browser Session; F4 Draft + Update (Candidato F4 → evidencia automatizada → Smoke-2 →
+  revisión del Coordinator → F4 PASS); F5 integraciones de editores; F6 Document-wide Inventory + Selection (N) + evaluación de ID3, con el
+  inventario global a cargo de I-64 sobre autoridades integradas y sin esperar a I-63; F7 rendimiento y regresión; READY.
+  `ProjectSummary`/ID20 puede alojarse después como consumidor o superficie futura, sin bloquear a I-64;
+- redactar una V3 **autocontenida** que conserve las correcciones de V2, incorpore MASTER-I63-I64-02, elimine toda dependencia obligatoria
+  de I-63 y el STOP por ausencia del snapshot, actualice D-05, gates, coordinación, riesgos, UNKNOWN y el borrador de ADR, mantenga la
+  separación entre inventario runtime y métricas, los tres smokes y M-02/M-03 NOT ACTIVATED, y añada la tabla cláusula de -01 →
+  disposición bajo -02;
+- actualizar contrato y evidencia solo de forma histórica; registrar aquí la CI de V2; actualizar las puntas paralelas; publicar y esperar
+  la CI exacta;
+- la V3 completa vuelve al **mismo** Architect, con ambos deltas, la disposición de A64-PV1-01..22, MASTER-I63-I64-02 y las mismas
+  identidades del revisor. No implementar, sin Freeze ni GATE PASS. `IMPLEMENTATION AUTHORIZATION = NO`.
+
+**Preflight (MEASURED):**
+- 22:18:37Z: `HEAD` = remoto = `ab4efe86…`; árbol limpio; `origin/main` = `819955d6…`, sin cambio, así que no hubo rebase.
+- Ningún proceso `acad` en ejecución al preparar este commit.
+
+**Ramas paralelas** (por referencia remota, solo como coordinación):
+
+| Rama | Punta | Avance desde §14 |
+|---|---|---|
+| I-52 | `d8078ef3` | sin cambio |
+| I-62 | `acd88eaf` | dos commits: Proposal V4 y V5 con sus paquetes; solo documentos |
+| I-63 | `a0654ae2` | un commit (20:32:56Z): cierre de P-05 por el Owner, sobre sus métricas; solo documentos |
+
+Ninguna toca `src/`, `tests/` ni `assets/`.
+
+**Hechos de código verificados para la V3** (MEASURED en la base `819955d6`):
+- `RackBlockFinder.ScanEnvelopes` recorre las definiciones del `BlockTable`, omite layouts, anónimas y xref, devuelve también las
+  definiciones cuyo sobre no se interpreta (sobre nulo) y, si se pide, su recuento de referencias directas tomado del registro, no del
+  sobre. La política de validez queda en cada consumidor;
+- `RackEnvelopeIdProbe` existe en Application para sondear el Id de un sobre no interpretable.
+
+**Ejecución:** redacción directa de la sesión responsable, con lectura estática de código y documentos y ramas paralelas por referencia
+remota. Sin AutoCAD, builds, pruebas, prototipos, subagentes, Controller ni Worker. Archivos versionados:
+[Proposal V3](../../initiatives/I-64-proposal-v3.md) (nueva), [paquete de re-revisión V3](../../initiatives/I-64-architect-package-v3.md)
+(nuevo), el contrato y esta evidencia. V1, V2 y sus paquetes no cambian.
+
+**Estado:** Proposal V3 publicada para la re-revisión del mismo Architect y del Coordinator, sin consenso, Freeze ni GATE PASS.
+`IMPLEMENTATION AUTHORIZATION = NO`.
