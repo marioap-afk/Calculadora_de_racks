@@ -1,0 +1,51 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-64
+  branch: architecture/workspace-persistente-rackcad
+  claim_id: 614371d5-441f-4f14-bac9-f97017105610
+  current_phase: F1
+  state: waiting
+  gate: scope
+  attempts: 0
+  next_action: Coordinator emite el gate-contract de la primera tarea de F1 desde docs/initiatives/I-64-f1-gate-contract-proposal.md; despues, relevo y planificacion del Controller (AUTOMATION_PLAN 16.4-16.5).
+  last_evidence_commit: 9b43dafbe3b8874aa0ba5a85d62cbf953dbdd311
+execution_context:
+  mode: manual
+  automation_enabled: false
+  worktree: architecture-workspace-persistente-rackcad
+  discovery: docs/initiatives/I-64-discovery.md (D1-R1, blob 3565015c21a44b08df564b3277b5546a8a6ce013; cerrado por el Coordinator)
+  design_agreed: docs/initiatives/I-64-proposal-v5.md en 9e3d289a9b61339c162b2f791f6995a584207800, blob bd4e96264e538ffc679bfd9f088400b22b553931 (I64-CONSENSUS-V5-01; Architect AGREED; Coordinator AGREED)
+  freeze: 9b43dafbe3b8874aa0ba5a85d62cbf953dbdd311 (Frozen YES; blob dc1924ff5a73a4e529fbc5f995621d29351a091b; CI 36941847270 push 4/4 success; evidencia §18)
+  f0: COMPLETE
+  f1: NOT STARTED (gate-contract pendiente de emision por el Coordinator)
+  max_attempts: 3
+  persistent_next_action:
+    NEXT_ROLE: Coordinator (AUTOMATION_PLAN 16.5 y agent-execution/README §1 le reservan redactar y emitir gate-contract.json y aceptar A1-A8); despues, Controller Codex de planificacion
+    NEXT_ACTION: emitir, o corregir y emitir, el gate-contract de la primera tarea de F1 a partir de la propuesta versionada; la sesion responsable hace entonces el relevo (16.4) y lanza la planificacion del Controller
+    TARGET_SHA: la punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo (git log -1 -- docs/automation/state/I-64.yml); su padre es el Freeze 9b43dafbe3b8874aa0ba5a85d62cbf953dbdd311
+    GATE: F1 — Workspace Foundation
+    TASK: F1-T0-ADR, luego F1-T1-MODEL, F1-T2-BRIDGE y F1-T3-HOST (docs/initiatives/I-64-f1-gate-contract-proposal.md §2)
+    INPUTS_REQUIRED: Freeze docs/initiatives/I-64-proposal-v5.md (blob dc1924ff5a73a4e529fbc5f995621d29351a091b); propuesta de contratos de F1; autoridades EXTERNAL en MainSha 819955d61a6da4c811a11fbd11b5dca13f634b7c (AGENTS, WORKFLOW, LIFECYCLE, AUTOMATION_PLAN §16, docs/automation/agent-execution/); este estado; linea base de ~/.codex/config.toml tomada en la salida del primer relevo
+    EXPECTED_RESULT: gate-contract.json valido contra rackcad-gate-contract/v1 para el TaskId elegido, con AuthorityRevision = TARGET_SHA, MainSha vigente, celdas elegibles, RoutingEnforcement y tope de invocaciones; despues, registro de planificacion COMPLETED del Controller
+    REMAINING_BUDGET: attempts 0 de 3; MaxReworkLoops 3 por clase; BLOCKED <= 2 reejecuciones por (TaskId, fase); recuperaciones 16.7 <= 2 por TaskId; tope de invocaciones NO fijado por el Freeze (debe fijarlo el gate-contract; sin el, P-07 no es evaluable)
+    STOP_CONDITION: origin/main distinto de 819955d61a6da4c811a11fbd11b5dca13f634b7c antes de escribir (S-13, 16.7); cambio del hash de config.toml (P-01); S-01..S-14 y P-01..P-08; tarea Long-horizon sin celda Frontera con write-commit-push medida; cualquier necesidad de AutoCAD, perfil, TRUSTEDPATHS, SECURELOAD o ACL; cambio observable en comandos clasicos
+    OWNER_REQUIRED_IF: OWNER-RESERVED (alcance, diferir sistemas, retirar OV); aceptacion del ADR; Owner Validation y smokes (Smoke-1 tras F1 PASS y RELEASE de I-52); cambio de config.toml (P-01); credenciales, compras o sondas con consumo no cubierto; AutoCAD manual o cambios de seguridad; presupuesto agotado
+  autonomy_gaps:
+    - ROLE_REQUIRED: Coordinator (emision de gate-contract, aceptacion A1-A8, analysis.md y GATE PASS)
+      MISSING_CAPABILITY: no hay sesion ni agente Coordinator direccionable; las ordenes del Coordinator llegan solo por el chat del Owner (ListAgents 2026-10-01T23:4xZ sin sesion Coordinator)
+      MISSING_AUTHORITY: AUTOMATION_PLAN 16.5 y agent-execution/README §1 reservan esas acciones al Coordinator; esta sesion no tiene SAME-SESSION ROLE de Coordinator para I-64
+      AVAILABLE_TRANSPORT: chat de la sesion (ordenes pegadas por el Owner)
+      WHY_MANUAL_RELAY_IS_CURRENTLY_REQUIRED: sin Coordinator invocable, el contrato de gate solo puede emitirse por una orden que llega por el chat
+      I62_DEBT: binding de roles independiente del proveedor y transporte durable para el rol Coordinator (I-62)
+    - ROLE_REQUIRED: Worker para tareas Long-horizon (posible en F1-T3-HOST y en los adaptadores de F4/F5)
+      MISSING_CAPABILITY: "ninguna celda Frontera con write-commit-push medida (routing.md §3: Long-horizon -> Frontera; model-catalog: claude-opus-5-5 y claude-fable-5-1 sin escritura medida)"
+      MISSING_AUTHORITY: medir una celda exige una sonda autorizada (routing.md §5); sin celda elegible decide el Coordinator (routing.md §4)
+      AVAILABLE_TRANSPORT: subagente de la sesion (herramienta Agent)
+      WHY_MANUAL_RELAY_IS_CURRENTLY_REQUIRED: no aplica relay; la celda no es elegible hasta que el Coordinator decida o autorice la sonda
+      I62_DEBT: acreditacion de capacidades por celda (I-62)
+    - ROLE_REQUIRED: Worker para tareas Routine (F1-T0-ADR)
+      MISSING_CAPABILITY: ninguna celda Eficiente con write-commit-push elegible (claude-haiku-4-5 STALE desde 2026-10-01)
+      MISSING_AUTHORITY: escalar de nivel exige ModelEscalationReason (routing.md §4) o que el Coordinator autorice trabajo directo de la sesion
+      AVAILABLE_TRANSPORT: subagente de la sesion (claude-sonnet-5-5, nivel Equilibrado)
+      WHY_MANUAL_RELAY_IS_CURRENTLY_REQUIRED: no aplica relay; la eleccion la fija el gate-contract
+      I62_DEBT: ninguna adicional
