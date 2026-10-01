@@ -7,15 +7,15 @@ automation_state:
   state: review-ready
   gate: none
   attempts: 0
-  next_action: Revisión formal del Architect de la Proposal V7 en SEPARATE SESSION (insumos canónicos, sin memoria del autor); con cero REQUIRED, decisión del Owner sobre OD-6 y Consensus Freeze; sin implementación ni delegaciones.
-  last_evidence_commit: 3888c5c8de19b5abaf479983e56836ef2bcef76e
+  next_action: Revisión formal nueva del Architect de la Proposal V8 en SEPARATE SESSION (clon limpio, sin memoria ni transcripción del autor); con cero REQUIRED, decisión del Owner sobre OD-6 y Consensus Freeze; sin implementación ni delegaciones.
+  last_evidence_commit: 3d7ec77f07d374704f2bc0b888a07bb182c32203
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-portabilidad-coordinador-principal
   g0_gate_pass_by_coordinator: 85ae4324988ac7564719664f8f05b3fa9c6cafbe (C62-G0-02; CI 36889478597 push success; decisions §7)
-  f0_scope: Discovery (C62-F0-01..07); diseño Proposal V1 a V6 (C62-F0-11/15/20/22/24/26) y V7 (corrección autónoma tras el Architect de V6), sin implementación (decisions §§10-16)
+  f0_scope: Discovery (C62-F0-01..07); diseño Proposal V1 a V6 (C62-F0-11/15/20/22/24/26), V7 y V8 (correcciones autónomas tras el Architect de V6 y de V7), sin implementación (decisions §§10-17)
   f0_discovery: docs/initiatives/I-62-discovery.md (R1 aceptada como base de diseño; C62-F0-08)
-  archetype: NEW ARCHITECTURE confirmado por el Coordinator para el diseño (C62-F0-09); Architect: V6 CHANGES REQUIRED (A62-V6-01..03), V7 pendiente de revisión
-  f0_proposal: docs/initiatives/I-62-proposal-v7.md (Frozen: NO; paquete docs/initiatives/I-62-architect-package-v7.md; V1-V5 CHANGES REQUIRED del Coordinator; V6 CHANGES REQUIRED del Architect, A62-V6-01..03 aceptados)
-  f0_owner_pending: OD-6 (predicado de independencia de LIFECYCLE; Proposal V7 §11.4; dos alternativas); sin decisión no hay acuerdo ni Freeze
+  archetype: NEW ARCHITECTURE confirmado por el Coordinator para el diseño (C62-F0-09); Architect: V6 y V7 CHANGES REQUIRED (A62-V6-01..03, A62-V7-01..03), V8 pendiente de revisión
+  f0_proposal: docs/initiatives/I-62-proposal-v8.md (Frozen: NO; paquete docs/initiatives/I-62-architect-package-v8.md; V1-V5 CHANGES REQUIRED del Coordinator; V6 y V7 CHANGES REQUIRED del Architect, aceptados)
+  f0_owner_pending: OD-6 (predicado de independencia de LIFECYCLE; Proposal V8 §11.4; dos alternativas); sin decisión no hay acuerdo ni Freeze

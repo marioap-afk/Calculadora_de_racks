@@ -506,3 +506,38 @@ Las trazas de V7 (§§8.6-8.8, E.3.0, E.6, Anexo F) son **análisis del diseño*
 
 **Validación de esta entrega:** allowlist, enlaces, columnas de las tablas, diff V6→V7 revisado por bloques y `git diff --check`; resultado en el cuerpo del
 commit. La CI de este commit se informa al Coordinator.
+
+## 19. F0 — Proposal V8 (corrección de A62-V7-01..03)
+
+**CI de la Proposal V7** (`3d7ec77f07d374704f2bc0b888a07bb182c32203`): corrida **36939524509**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: Tests (Domain + Application) (110627506125), UI Tests
+(110627506270), Build UI (110627506378) y Build Plugin without AutoCAD (110627841717), los cuatro `success`. MEASURED por la sesión. Acredita solo
+`3d7ec77f`.
+
+**Orden recibida:** «I-62 — PROPOSAL V8 / NARROW ARCHITECT CORRECTION», texto pegado sin archivo de origen en `D:\IDs`. 5 433 bytes en UTF-8, SHA-256
+`e0a2b496c12d71e5325268bd548c668af4bf48ed934fdf23b048aaa537e5003e`, fuera del repositorio. Registro recuperable en
+`docs/initiatives/I-62-architect-review-v7.md`. El texto literal del dictamen del Architect de V7 no se recibió (MEASURED: no está en `D:\IDs` ni en el
+repositorio).
+
+**Apertura del tramo** (MEASURED, 23:25Z):
+- `origin/main` = `819955d6…`, sin rebase;
+- rama de I-62 en `3d7ec77f…` = remoto, árbol limpio.
+
+**Revalidación antes del commit** (MEASURED, 23:30Z):
+- `origin/main` y la rama de I-62 sin cambios;
+- I-52 `51a66245` e I-63 `dddc215f`, sin commits nuevos;
+- I-64 `e87ba32c..9e3d289a`: 1 commit, Proposal V5 de I-64, solo archivos propios;
+- **ningún cruce** con superficies de I-62.
+
+**Identidad del contenido entregado** (blob calculado con `git hash-object` antes del commit; el commit lo da el recibo):
+- `docs/initiatives/I-62-proposal-v8.md` → `667b59d7a433130e20a42bbc13d3e6f564350049`;
+- `docs/initiatives/I-62-architect-review-v7.md` → `40a6d5205ff3edef9c781d69c4c9c116b76774a9`.
+
+**No se hizo:**
+- invocaciones, subagentes, Workers, Controllers, Architect, sondas, pilotos, sesiones nuevas, fixtures, remotos, pruebas, tooling ni esquemas operativos;
+- tocar V1-V7, sus paquetes, los registros previos, el Discovery, el mandato, las normas compartidas ni ninguna superficie ajena.
+
+Las trazas de V8 (§§8.8-8.9, Anexo F) son **análisis del diseño**, no ensayos.
+
+**Validación de esta entrega:** allowlist, enlaces, columnas de las tablas, diff V7→V8 revisado por bloques y `git diff --check`; resultado en el cuerpo del
+commit. La CI de este commit se informa al Coordinator.
