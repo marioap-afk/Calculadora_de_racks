@@ -1,0 +1,398 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ct21d:phase2:v1",
+  "title": "ct21d.phase2.v1",
+  "description": "CT-21D phase 2 session-binding capture record (non-governing). Closed schema: additionalProperties false everywhere. Only the keyword subset implemented by lib/Phase2Common.ps1 is used: type, enum, const, pattern, required, properties, additionalProperties(false), items, minItems, maxItems, minLength, maxLength, minimum, maximum, $ref (local), $defs.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "recordKind", "schema", "governing", "phase", "session", "runId", "captureBinding", "tool", "testHook",
+    "tupleInputs", "process", "acadBuild", "profile", "modules", "moduleBaseline", "profileAtRest", "processList", "pinCheck", "transcript",
+    "coverage", "hostToConfirm", "validation", "volatile"
+  ],
+  "properties": {
+    "recordKind": { "const": "CT21D_PHASE2_SESSION_BINDING_CAPTURE" },
+    "schema": { "const": "ct21d.phase2.v1" },
+    "governing": { "const": false },
+    "phase": { "const": 2 },
+    "session": { "enum": ["S1-A", "S1-B", "S1-C", "S2", "S3", "S4"] },
+    "runId": { "$ref": "#/$defs/runId" },
+    "captureBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["captureBindingId", "inputs", "derivation", "isNotTheAssignedSessionId"],
+      "properties": {
+        "captureBindingId": { "type": "string", "pattern": "^[0-9a-f]{16}$" },
+        "inputs": { "const": "pid+processStartUtc+runId" },
+        "derivation": { "const": "sha256(utf8('CT21D-PHASE2-CAPTURE-BINDING-V1' LF pid LF processStartUtc LF runId LF)) first 16 lowercase hex" },
+        "isNotTheAssignedSessionId": { "const": true }
+      }
+    },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "scriptSha256", "librarySha256", "schemaSha256", "powershellVersion"],
+      "properties": {
+        "name": { "const": "Capture-Phase2.ps1" },
+        "version": { "const": "1" },
+        "scriptSha256": { "$ref": "#/$defs/sha256" },
+        "librarySha256": { "$ref": "#/$defs/sha256" },
+        "schemaSha256": { "$ref": "#/$defs/sha256" },
+        "powershellVersion": { "type": "string", "minLength": 1, "maxLength": 64 }
+      }
+    },
+    "testHook": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["active", "processName"],
+      "properties": {
+        "active": { "type": "boolean" },
+        "processName": { "type": ["string", "null"], "pattern": "^[A-Za-z0-9_.-]{1,64}$" }
+      }
+    },
+    "tupleInputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sessionId", "declaredSetSha256", "acadExeSha256", "profileExpected", "requireTranscript", "expectedProcessName", "requireModuleBaseline", "moduleBaselineSha256"],
+      "properties": {
+        "sessionId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$" },
+        "declaredSetSha256": { "$ref": "#/$defs/sha256" },
+        "acadExeSha256": { "$ref": "#/$defs/sha256" },
+        "profileExpected": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "requireTranscript": { "type": "boolean" },
+        "expectedProcessName": { "type": "string", "pattern": "^[A-Za-z0-9_.-]{1,64}$" },
+        "requireModuleBaseline": { "type": "boolean" },
+        "moduleBaselineSha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "process": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pid", "name", "startUtc", "owner", "ownerStatus", "invokingUser", "commandLine", "commandLineStatus", "commandLineSwitches"],
+      "properties": {
+        "pid": { "type": "integer", "minimum": 1 },
+        "name": { "type": "string", "minLength": 1, "maxLength": 260 },
+        "startUtc": { "$ref": "#/$defs/utcMs" },
+        "owner": { "type": ["string", "null"], "maxLength": 512 },
+        "ownerStatus": { "enum": ["OBSERVED", "NOT_OBSERVABLE"] },
+        "invokingUser": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "commandLine": { "type": ["string", "null"], "maxLength": 32768 },
+        "commandLineStatus": { "enum": ["OBSERVED", "NOT_OBSERVABLE"] },
+        "commandLineSwitches": { "type": "array", "items": { "type": "string", "pattern": "^/[a-z][a-z0-9]*$", "maxLength": 64 } }
+      }
+    },
+    "acadBuild": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "path", "sha256", "fileVersion", "productVersion"],
+      "properties": {
+        "status": { "enum": ["OBSERVED", "UNREADABLE"] },
+        "path": { "type": ["string", "null"], "maxLength": 1024 },
+        "sha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+        "fileVersion": { "type": ["string", "null"], "maxLength": 128 },
+        "productVersion": { "type": ["string", "null"], "maxLength": 128 }
+      }
+    },
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "registrySubKey", "registryStatus", "registryDefaultValue", "commandLineProfileStatus", "commandLineProfile",
+        "effective", "effectiveSource", "confirmedFromInsideProcess"
+      ],
+      "properties": {
+        "registrySubKey": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "registryStatus": { "enum": ["OBSERVED", "KEY_ABSENT", "VALUE_ABSENT", "UNREADABLE"] },
+        "registryDefaultValue": { "type": ["string", "null"], "maxLength": 256 },
+        "commandLineProfileStatus": { "enum": ["NOT_PRESENT", "PRESENT", "ARG_FILE", "NOT_OBSERVABLE"] },
+        "commandLineProfile": { "type": ["string", "null"], "maxLength": 256 },
+        "effective": { "type": ["string", "null"], "maxLength": 256 },
+        "effectiveSource": { "enum": ["COMMAND_LINE_P_SWITCH", "REGISTRY_DEFAULT_AT_CAPTURE", "NONE"] },
+        "confirmedFromInsideProcess": { "const": "HOST-TO-CONFIRM" }
+      }
+    },
+    "modules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "count", "items", "declaredSetFolder", "declaredSetSubset"],
+      "properties": {
+        "status": { "enum": ["OBSERVED", "UNREADABLE"] },
+        "count": { "type": "integer", "minimum": 0 },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "sha256", "hashStatus", "fileVersion"],
+            "properties": {
+              "path": { "type": "string", "minLength": 1, "maxLength": 1024 },
+              "sha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+              "hashStatus": { "enum": ["OK", "UNREADABLE"] },
+              "fileVersion": { "type": ["string", "null"], "maxLength": 128 }
+            }
+          }
+        },
+        "declaredSetFolder": { "type": ["string", "null"], "maxLength": 1024 },
+        "declaredSetSubset": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "sha256"],
+            "properties": {
+              "path": { "type": "string", "minLength": 1, "maxLength": 1024 },
+              "sha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" }
+            }
+          }
+        }
+      }
+    },
+    "moduleBaseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "path", "sha256", "entryCount", "reason", "outsideBaseline"],
+      "properties": {
+        "status": { "enum": ["PROVIDED", "NOT_PROVIDED", "UNREADABLE", "MALFORMED"] },
+        "path": { "type": ["string", "null"], "maxLength": 1024 },
+        "sha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+        "entryCount": { "type": "integer", "minimum": 0 },
+        "reason": { "type": ["string", "null"], "maxLength": 512 },
+        "outsideBaseline": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "sha256", "reason"],
+            "properties": {
+              "path": { "type": "string", "minLength": 1, "maxLength": 1024 },
+              "sha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+              "reason": { "enum": ["NOT_IN_BASELINE", "HASH_DIFFERS"] }
+            }
+          }
+        }
+      }
+    },
+    "profileAtRest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["informationalOnly", "note", "variablesSubKey", "secureload", "trustedpaths"],
+      "properties": {
+        "informationalOnly": { "const": true },
+        "note": { "type": "string", "maxLength": 512 },
+        "variablesSubKey": { "type": ["string", "null"], "maxLength": 1024 },
+        "secureload": { "$ref": "#/$defs/atRestValue" },
+        "trustedpaths": { "$ref": "#/$defs/atRestValue" }
+      }
+    },
+    "processList": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "count", "items", "related"],
+      "properties": {
+        "status": { "enum": ["OBSERVED", "UNREADABLE"] },
+        "count": { "type": "integer", "minimum": 0 },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["pid", "name", "startUtc"],
+            "properties": {
+              "pid": { "type": "integer", "minimum": 0 },
+              "name": { "type": "string", "maxLength": 260 },
+              "startUtc": { "type": "string", "pattern": "^([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z|UNREADABLE)$" }
+            }
+          }
+        },
+        "related": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["pid", "name", "reason"],
+            "properties": {
+              "pid": { "type": "integer", "minimum": 0 },
+              "name": { "type": "string", "maxLength": 260 },
+              "reason": { "enum": ["TARGET_NAME", "ACAD_PREFIX", "AUTODESK_RELATED"] }
+            }
+          }
+        }
+      }
+    },
+    "pinCheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["declaredSet", "entries", "folder"],
+      "properties": {
+        "declaredSet": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "status", "sha256", "entryCount", "folder", "reason"],
+          "properties": {
+            "path": { "type": "string", "minLength": 1, "maxLength": 1024 },
+            "status": { "enum": ["OK", "UNREADABLE", "MALFORMED"] },
+            "sha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+            "entryCount": { "type": "integer", "minimum": 0 },
+            "folder": { "type": ["string", "null"], "maxLength": 1024 },
+            "reason": { "type": ["string", "null"], "maxLength": 512 }
+          }
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "declaredSha256", "fileStatus", "actualSha256", "pinPath", "pinStatus", "pinValue"],
+            "properties": {
+              "path": { "type": "string", "minLength": 1, "maxLength": 1024 },
+              "declaredSha256": { "$ref": "#/$defs/sha256" },
+              "fileStatus": { "enum": ["OK", "MISSING", "UNREADABLE", "REPARSE", "NOT_LOCAL"] },
+              "actualSha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+              "pinPath": { "type": "string", "minLength": 1, "maxLength": 1030 },
+              "pinStatus": { "enum": ["OK", "MISSING", "UNREADABLE", "FORMAT_INVALID"] },
+              "pinValue": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" }
+            }
+          }
+        },
+        "folder": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "listing", "unexpected", "missing"],
+          "properties": {
+            "status": { "enum": ["OBSERVED", "UNREADABLE", "NOT_DETERMINED", "NOT_LOCAL_OR_REPARSE"] },
+            "listing": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["name", "kind", "size", "sha256", "reparse"],
+                "properties": {
+                  "name": { "type": "string", "minLength": 1, "maxLength": 260 },
+                  "kind": { "enum": ["FILE", "DIRECTORY"] },
+                  "size": { "type": ["integer", "null"], "minimum": 0 },
+                  "sha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+                  "reparse": { "type": "boolean" }
+                }
+              }
+            },
+            "unexpected": { "type": "array", "items": { "type": "string", "maxLength": 260 } },
+            "missing": { "type": "array", "items": { "type": "string", "maxLength": 260 } }
+          }
+        }
+      }
+    },
+    "transcript": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "requirement", "path", "sha256", "encoding", "lineCount", "loadLines"],
+      "properties": {
+        "status": { "enum": ["PROVIDED", "NOT_PROVIDED"] },
+        "requirement": { "enum": ["NOT_APPLICABLE_S1A_NO_LOAD_STEP", "REQUIRED_LATER", "REQUIRED_NOW"] },
+        "path": { "type": ["string", "null"], "maxLength": 1024 },
+        "sha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+        "encoding": { "type": ["string", "null"], "maxLength": 32 },
+        "lineCount": { "type": ["integer", "null"], "minimum": 0 },
+        "loadLines": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["line", "text"],
+            "properties": {
+              "line": { "type": "integer", "minimum": 1 },
+              "text": { "type": "string", "maxLength": 4096 }
+            }
+          }
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["verdictCovers", "templateComplete", "moduleBaselineComparison", "sessionProfileFacts", "runtimeIdentities", "pinCheckAfterLoad", "humanFields"],
+      "properties": {
+        "verdictCovers": { "const": "EXTERNAL_OBSERVATIONS_OF_THIS_TOOL_ONLY" },
+        "templateComplete": { "const": false },
+        "moduleBaselineComparison": { "enum": ["COMPARED", "NOT_COMPARED"] },
+        "sessionProfileFacts": { "const": "HOST-TO-CONFIRM" },
+        "runtimeIdentities": { "const": "HOST-TO-CONFIRM" },
+        "pinCheckAfterLoad": { "const": "HOST-TO-CONFIRM" },
+        "humanFields": { "const": "CAD_MANAGER" }
+      }
+    },
+    "hostToConfirm": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["item", "reason", "resolvedBy"],
+        "properties": {
+          "item": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "reason": { "type": "string", "minLength": 1, "maxLength": 512 },
+          "resolvedBy": { "type": "string", "minLength": 1, "maxLength": 256 }
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checks", "verdict"],
+      "properties": {
+        "checks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "result", "detail"],
+            "properties": {
+              "name": { "type": "string", "pattern": "^[A-Z0-9_]{3,64}$" },
+              "result": { "enum": ["PASS", "FAIL"] },
+              "detail": { "type": "string", "maxLength": 1024 }
+            }
+          }
+        },
+        "verdict": { "enum": ["PHASE2_EXTERNAL_OBSERVATIONS_VALID", "PHASE2_INVALID", "PHASE2_TEST_STANDIN_OBSERVATIONS_OK"] }
+      }
+    },
+    "volatile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capturedAtUtc", "evidenceRoot", "moduleSigners", "secondsSinceProcessStart"],
+      "properties": {
+        "capturedAtUtc": { "$ref": "#/$defs/utcMs" },
+        "evidenceRoot": { "type": "string", "minLength": 1, "maxLength": 1024 },
+        "secondsSinceProcessStart": { "type": ["integer", "null"] },
+        "moduleSigners": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "status", "subject"],
+            "properties": {
+              "path": { "type": "string", "minLength": 1, "maxLength": 1024 },
+              "status": { "type": "string", "minLength": 1, "maxLength": 64 },
+              "subject": { "type": ["string", "null"], "maxLength": 1024 }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "atRestValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "kind", "value"],
+      "properties": {
+        "status": { "enum": ["OBSERVED", "KEY_ABSENT", "VALUE_ABSENT", "UNREADABLE", "NOT_ATTEMPTED"] },
+        "kind": { "type": ["string", "null"], "maxLength": 32 },
+        "value": { "type": ["string", "null"], "maxLength": 32768 }
+      }
+    },
+    "utcMs": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$" },
+    "runId": { "type": "string", "pattern": "^HGP-H[0-9]+-[0-9]{8}T[0-9]{6}Z-[0-9]{2}$" }
+  }
+}

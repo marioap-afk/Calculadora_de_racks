@@ -1,0 +1,19 @@
+# Allowed command list of the phase 2 production scripts (deny by default). One command per line; '#' starts a comment.
+# Checked by tests/StaticScan.ps1 (AST layer): every command the production scripts invoke must be listed here or be a function
+# defined in lib/Phase2Common.ps1 / in the scanned file itself. Aliases are not allowed. Adding a line here is a change that needs
+# the same review as a script change (this file is in HASHES-PHASE2.txt).
+#
+# Read-only observation
+Get-CimInstance        # only: -ClassName Win32_Process  (command line, owner)
+Invoke-CimMethod       # only: -MethodName GetOwner  (read-only query of the process owner)
+Get-AuthenticodeSignature   # read-only signer status of a module file
+Get-ChildItem          # only with -LiteralPath (listing of the declared-set folder, -Force so hidden entries show)
+# Plumbing without side effects
+Join-Path
+New-Object             # .NET objects only (FileStream, StringBuilder, encodings, DriveInfo, ...); -ComObject is forbidden by the token layer
+Where-Object
+ForEach-Object
+Select-Object
+Out-Null
+Write-Output
+Set-StrictMode

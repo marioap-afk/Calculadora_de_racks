@@ -1,0 +1,2 @@
+# New folder, new files only: bytes are LF, UTF-8, and are read as exact bytes (core.autocrlf=true in this repository).
+* -text
