@@ -319,3 +319,78 @@ Escrituras versionadas: solo los tres archivos de la allowlist.
 
 **Elevación:** el candidato a fundación común con I-63 en la enumeración lógica de racks se eleva al Coordinator para el Master. No se
 diseña ni se consume.
+
+## 13. F0 / Proposal V1 — Aceptación de D1-R1, decisión del Master y hechos posteriores
+
+Sección nueva; las anteriores no se reescriben.
+
+**Fuente:** orden del Coordinator «I-64 — F0 / PROPOSAL V1», recibida en el chat de la sesión el 2026-10-01, antes de las 19:09Z. No llegó
+como archivo a `D:\IDs\I-64\` (listado MEASURED a las 19:09Z), así que no tiene hash. Resumen saneado:
+
+- **Aceptación:** el Coordinator acepta D1-R1 (`c6c44828`) y cierra el Discovery. No se implementa producto.
+- **`MASTER-I63-I64-01`:**
+  - I-63 e I-64 comparten solo una fundación mínima de snapshot lógico neutral por RackId;
+  - I-63 posee métricas, providers y agregación, y es el autor inicial del contrato puro común;
+  - I-64 posee el índice runtime por documento, la invalidación, ObjectIds y handles, la navegación, la selección, las pestañas y los
+    borradores;
+  - el snapshot de solo lectura no decide la población de métricas ni sustituye a las autoridades de pertenencia de hermanas para mutar;
+  - no se inventa RackId; no se resuelven diseños, geometría ni BOM para formar el snapshot; no se persiste;
+  - F1 de I-64 puede avanzar sin esa fundación; F2 consumirá el contrato de I-63 solo cuando esté integrado en `origin/main`.
+- **Smoke:**
+  - en la estación principal del Owner, con AutoCAD 2025;
+  - solo después de F1 y de un RELEASE explícito de la ventana de host de I-52;
+  - una sola sesión de AutoCAD;
+  - I-64 no cambia perfil, `TRUSTEDPATHS`, `SECURELOAD`, ACL ni la configuración de I-52;
+  - si cargar el DLL exige modificar la seguridad, STOP al Owner o al CAD manager.
+- **Registro:** la respuesta tardía de I-52 va en el próximo commit útil, no en uno ceremonial (este commit).
+- **Encargo:** redactar y publicar la Proposal V1 completa y entregar el paquete para la revisión adversarial del Architect, sin declarar
+  consenso, Freeze ni GATE PASS. `IMPLEMENTATION AUTHORIZATION = NO`.
+
+**CI de la entrega D1-R1** (MEASURED con `gh run view`; evidencia de CI, no local): corrida **36900174150**, `event=push`,
+`ref=refs/heads/architecture/workspace-persistente-rackcad`, `head_sha=c6c44828de103c293fac7b4edd6385e285243b9f`. Jobs Tests (Domain +
+Application), UI Tests (WPF controls, net8.0-windows), Build UI (WPF, valida API de Application) y Build Plugin without AutoCAD, los
+cuatro `success`. Creada 17:32:51Z, actualizada 17:37:08Z. El blob del Discovery aceptado es `3565015c21a44b08df564b3277b5546a8a6ce013`.
+
+**Respuesta tardía de I-52** (RECONSTRUCTED). Llegó después de publicar `c6c44828`: el registro de esta sesión la recibió a las
+17:33:28Z, del remitente «I - 52». I-52 la declara informativa y sin compromiso; RACKMIRROR no está implementado y su G3 está detenido.
+Resumen saneado:
+1. **Host:**
+   - su campaña CT-21D (no gobernante) está ligada a esta máquina física y a su perfil «<<Unnamed Profile>>»;
+   - durante la campaña rigen: sin actualizaciones; sin cambios de perfil, plugins, `TRUSTEDPATHS` ni `SECURELOAD`; una sola `acad.exe` a
+     la vez, porque otra concurrente invalida su sesión;
+   - un smoke de I-64 en esta máquina debe no solaparse con sus sesiones (al responder no había ninguna iniciada ni autorizada), no tocar
+     esos ajustes ni instalar plugins, y avisarle antes por el canal entre sesiones;
+   - un perfil o una sesión distintos no bastan: crear un perfil o cambiar el registro de AutoCAD altera la máquina ligada;
+   - lo más limpio es otra máquina o esperar a que cierren sus sesiones S1..S3, que aún no tienen fecha (dependen del CAD manager).
+2. **Eventos:** lo previsto para RACKMIRROR es un comando que escribe en una transacción del llamador (AUTH-15), sin suscripción a
+   eventos; la observación de eventos es instrumentación de I-52 bajo `eng/research`. No es un compromiso de diseño.
+3. **Redibujo:** la intención es crear un rack **nuevo** espejado («<base> - espejo») sin mutar el origen, así que no prevé redibujar
+   ni redefinir el origen. Está sin implementar y su ADR está propuesto: es un supuesto, no un contrato.
+
+Acuse de I-64: msg `6ace751e-5062-42ae-87f9-9e91a1155313`. Tratamiento: Proposal V1 §12.1 y §15.
+
+**Preflight (MEASURED):**
+- 19:09:19Z: `HEAD` = remoto = `c6c44828…`; árbol limpio; `origin/main` = `819955d6…`, sin cambio, así que no hubo rebase.
+- 19:24:18Z: ningún proceso `acad` en ejecución.
+
+**Ramas paralelas** (por referencia remota, solo como coordinación):
+
+| Rama | Tip | Avance |
+|---|---|---|
+| I-52 | `88138f01` | antes `c1982b2a`; un commit (§249, 18:01:28Z) en `docs/automation/decisions/I-52.md` y `eng/research`; 0 archivos de `src/`, `tests/` y `assets/` |
+| I-62 | `ea055591` | antes `2b7976b0`; su Proposal V1, el paquete del Architect y el borrador de su ADR; solo documentos |
+| I-63 | `85293273` | sin cambio |
+
+**Metadatos de API leídos sin cargar los ensamblados** (MEASURED; mismos archivos y hashes que §11):
+- `accoremgd.dll`: `DocumentBeginCloseEventArgs` con `Veto` e `IsVetoed`; `DocumentLockModeChangedEventArgs` con `Veto`; en `Application`,
+  los eventos `Idle`, `BeginQuit`, `QuitWillStart` y `QuitAborted`.
+- `acmgd.dll`: `PaletteSet` con los eventos `Load` y `Save`, y `KeepFocus`, `Visible` y `Name`.
+
+Se usan en las decisiones D-01 y D-17 de la Proposal.
+
+**Ejecución:** redacción directa de la sesión responsable, con lectura estática de código y documentos, ramas paralelas leídas por
+referencia remota y los metadatos anteriores. Sin AutoCAD, builds, pruebas, prototipos, subagentes, Controller ni Worker. Archivos
+versionados: [Proposal V1](../../initiatives/I-64-proposal-v1.md) (nueva), [paquete del Architect](../../initiatives/I-64-architect-package-v1.md)
+(nuevo), el contrato y esta evidencia.
+
+**Estado:** Proposal V1 publicada para revisión, sin consenso, Freeze ni GATE PASS. `IMPLEMENTATION AUTHORIZATION = NO`.
