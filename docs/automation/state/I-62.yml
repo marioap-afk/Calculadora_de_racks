@@ -7,13 +7,13 @@ automation_state:
   state: review-ready
   gate: none
   attempts: 0
-  next_action: Coordinator revisa el Discovery delta de F0 (DC-01..09, EXP-01..09) y decide EXP-05/EXP-06 y el arquetipo; sin diseño, Freeze ni delegaciones.
-  last_evidence_commit: 85ae4324988ac7564719664f8f05b3fa9c6cafbe
+  next_action: Coordinator revisa la ronda R1 del Discovery (R62-F0-01..08, EXP-09/02/04/05/06/08) y decide los UNKNOWN de §18; sin diseño, Freeze ni delegaciones.
+  last_evidence_commit: f25dd1d53ca5da3b2d8ad1842f2c2eb8b3cf4d8c
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-portabilidad-coordinador-principal
   g0_gate_pass_by_coordinator: 85ae4324988ac7564719664f8f05b3fa9c6cafbe (C62-G0-02; CI 36889478597 push success; decisions §7)
-  f0_scope: tramo Discovery solamente (C62-F0-01; decisions §7)
-  f0_discovery: docs/initiatives/I-62-discovery.md (entregado para revisión; EXP-05 y EXP-06 propuestas y sin autorizar)
-  archetype: NEW ARCHITECTURE provisional (C62-F0-01); propuesta del Discovery FOUNDATION EVOLUTION con restricción de diseño (decisions §8)
+  f0_scope: tramo Discovery solamente (C62-F0-01); ronda R1 autorizada (C62-F0-02..07; decisions §9)
+  f0_discovery: docs/initiatives/I-62-discovery.md (R1 entregada para revisión; EXP-09 abierta con UNKNOWN y decisor)
+  archetype: NEW ARCHITECTURE provisional mantenido tras F0-R1 (R62-F0-01); FOUNDATION EVOLUTION solo como alternativa
