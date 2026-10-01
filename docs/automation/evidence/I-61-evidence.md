@@ -622,3 +622,166 @@ Protecting tests: AgentExecutionProtocolTests (OBL-01..06 y OBL-11 estructural);
 Known limitations: independencia parcial de la verificación con un Worker subagente; efecto de consumo del service_tier heredado UNKNOWN; Worker Codex con escritura UNKNOWN; recetas dependientes de Windows y del sandbox unelevated; nivel A, sin scripts; medición de procesos con falsos positivos por apps del host y otras sesiones (DEV-G3-02); el Controller puede emitir paradas conservadoras injustificadas, que la regla de coherencia y el Coordinator filtran (DEV-G3-04).
 Last changed by: I-61
 ```
+
+## 16. Candidato final, READY, Owner Validation y cierre
+
+### 16.1 Rondas hacia el Candidato
+
+| Punta | READY | Resultado |
+|---|---|---|
+| `b69c34634fdb44513c7f993aa28c5e4e77577f33` (decisiones del Owner, decisiones §17) | READY-01..05 en verde; READY-06 **NON-CONFORMING** (falta «sin distinguir mayúsculas» del Freeze §3.3 en AUTOMATION_PLAN 16.4 y en README §3.2) | nunca se declaró Candidato; corregida en el commit siguiente, que reinició READY-02 (decisiones §18) |
+| `6513777f431fd672a515d9f8a33d8611d238fbe4` | READY-01..09 satisfechos en orden (16.2) | **`FINAL_CANDIDATE_SHA`** |
+
+### 16.2 READY-01..09 sobre `6513777f`
+
+| READY | Evidencia |
+|---|---|
+| 01 | Alcance del Freeze completo (entregables §§4-8 y 11 en G2; piloto §12 en G3); sin diferimientos del Freeze y sin A-n |
+| 02 | Gates G0..G3 cerrados (decisiones §§7, 12, 14 y 15); decisiones y documentos de producto versionados; la corrección de READY-06 versionada (decisiones §18) |
+| 03 | Sin REQUIRED abierto ni discrepancia A; decisiones del Owner sobre ADR-0046 y DEV-G1C-01 registradas (decisiones §17) |
+| 04 | `git fetch --prune`; `origin/main` = `95690c28` = merge-base, sin rebase; árbol y stash limpios; `HEAD` = upstream; `git merge-tree` con la rama activa de I-52 (`feature/rackmirror-espejo-semantico`, `b1fd5027`) sin conflicto |
+| 05 | Focales Core 33/33 (`I61EditedRackNameTests`, `I61CamaEditWiringGuardTests`, `AgentExecutionProtocolTests`) y UI 5/5 (`FlowBedEditorWindowTests`, con I61_P3); CI 36819890344: `push`, `refs/heads/architecture/protocolo-ejecucion-agentes`, `head_sha` = Candidato, los cuatro jobs en `success` |
+| 06 | Conformidad Architect + Coordinator **CONFORMING** sobre `6513777f`, sin REQUIRED. Modo: **SAME-SESSION ROLE** (Architect = subagente de la sesión responsable; revisor = sesión autora; **no** independiente). Repetida completa, no trasladada desde `b69c3463` |
+| 07 | Árbol limpio; `HEAD` = remoto = `6513777f` |
+| 08 | Matriz OV-I61-01..05 completa y asignada a I-61 (Freeze §16.3); DLL legacy de 03a y 03b preparados (16.5) |
+| 09 | Acuerdo: blob `fccae56d` en `5bffe5a7`; el commit de Freeze `e9466a24` solo cambia la línea `Frozen`; blob `8cf5f9f4` idéntico en `e9466a24` y en el Candidato; ningún commit posterior toca la Proposal; sin A-n; los 16 commits de `95690c28..6513777f` llevan exactamente un `Co-Authored-By` de quien ejecutó |
+
+### 16.3 Bloque del Candidato (guía de validación manual §7.1)
+
+```text
+Candidate SHA:         6513777f431fd672a515d9f8a33d8611d238fbe4
+Base:                  95690c28dc6268e61dff32a0cbc33cc9fde3d47f (origin/main; merge-base; sin rebase)
+Arbol limpio:          SI (al producir la evidencia local)
+SDK resuelto:          8.0.423 (dotnet de usuario)
+Core Full local:       PASS — 12396/12396
+UI Full local:         PASS — 1654 seleccionadas: 1637 superadas, 17 omitidas (los Skip de base), 0 fallidas
+Debug UI build:        PASS — 0 errores; RackCad.UI.dll 1.0.0+6513777f431fd672a515d9f8a33d8611d238fbe4,
+                       SHA-256 4ED12E08045E129A8B0A87E7AA463DC4F882455CC1C6FDDBA94488147FA37E5D
+Debug Plugin build:    PASS — 0 errores; RackCad.Plugin.dll 1.0.0+6513777f431fd672a515d9f8a33d8611d238fbe4,
+                       SHA-256 1EA1565E8CB9D517CD5E3A3D911C91993A47BA2A9A1450D9CAFE3ED16B536D33
+CI exact SHA:          GREEN — run 36819890344, event push, ref refs/heads/architecture/protocolo-ejecucion-agentes;
+                       Tests (Domain + Application), UI Tests (WPF controls, net8.0-windows), Build UI y
+                       Build Plugin without AutoCAD en success
+Coverage:              run 36820312102, event workflow_dispatch, candidate_sha = HEAD del checkout = measured-sha.txt
+                       = 6513777f431fd672a515d9f8a33d8611d238fbe4; artifact rackcad-coverage-cobertura id 11143381154
+                       (sha256:5323ee7b2139e20722d0a8fbf93e865ff3b3800025ef7c28c7d33da71e80d1aa); line-rate 0.9087
+Owner validation:      pass (16.4)
+Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg (override de %APPDATA%\RackCad\settings.json)
+                       SHA-256 B4CA2248DB9C3D72487AC8B5B1E5510CDD8ABA231AB340541D91BEBCA2D560E8
+                       (resuelta al cerrar; última modificación 2026-09-09, anterior a la validación)
+```
+
+### 16.4 Owner Validation (declaración del Owner)
+
+El Owner ejecutó físicamente la validación y la entregó en la conversación de la sesión responsable el 2026-10-01. Se registra **tal como la declaró**, sin observaciones añadidas
+ni evidencia reconstruida.
+
+```text
+Fecha y zona:       2026-10-01 (fecha de la declaración; la hora de ejecución no se declaró)
+Validador:          Owner del repositorio
+Iniciativa / rama:  I-61 / architecture/protocolo-ejecucion-agentes
+Commit:             6513777f431fd672a515d9f8a33d8611d238fbe4 (FINAL_CANDIDATE_SHA declarado por el Owner)
+Worktree:           D:\Documentos\Codex\Calculadora de racks\.claude\worktrees\architecture-protocolo-ejecucion-agentes
+DLL entregado:      src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll del worktree,
+                    ProductVersion 1.0.0+6513777f431fd672a515d9f8a33d8611d238fbe4,
+                    SHA-256 1EA1565E8CB9D517CD5E3A3D911C91993A47BA2A9A1450D9CAFE3ED16B536D33
+                    (la sesión comprobó antes del cierre que el archivo no se recompiló desde el build del Candidato)
+Versión de AutoCAD: no declarada por el Owner; instalada en el equipo: AutoCAD 2025 (acad.exe R25.0.171.0.0)
+Escenarios:         matriz OV-I61-01..05 del Freeze §16.3
+Resultado:          OV-I61-01 PASS; OV-I61-02 PASS; OV-I61-03a PASS; OV-I61-03b PASS; OV-I61-04 PASS;
+                    OV-I61-05 ACCEPTED / PASS
+Fallos y severidad: ninguno declarado
+Resultado global:   aprobado
+Confirmación:       «El Owner acepta el resultado funcional y el protocolo/piloto de I-61 conforme a la matriz definida.»
+```
+
+La duración activa de la validación (guía §8) no fue declarada: no se registra ninguna línea en su lugar.
+
+### 16.5 DLL legacy de OV-I61-03a y 03b (Freeze §16.3)
+
+Construidos por la sesión, como Executor, desde `git archive` en raíces cortas fuera del repositorio, con `-p:SourceRevisionId=<SHA de origen>`; la `ProductVersion` termina en el
+SHA de origen en ambos casos.
+
+| OV | SHA de origen | Ruta | ProductVersion | SHA-256 |
+|---|---|---|---|---|
+| 03a | `95690c28dc6268e61dff32a0cbc33cc9fde3d47f` | `%LOCALAPPDATA%\Temp\i61l-95690c28\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll` | `1.0.0+95690c28dc6268e61dff32a0cbc33cc9fde3d47f` | `6B3479D6E2F3E9C0076B0CEDEE04296CC8E670D1C999C776EF0AE4EF3B7D601F` |
+| 03b | `69daf03a35c630e453e1d9e98136f128bd0325a4` (`95690c28^1`) | `%LOCALAPPDATA%\Temp\i61l-69daf03a\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll` | `1.0.0+69daf03a35c630e453e1d9e98136f128bd0325a4` | `F1C8139D08A72F7D5BF5FF5F1ADE1C0ABD0F87B5F2718BEC464210AC682828C1` |
+
+### 16.6 Medición de procesos no versionada (G2 y G3)
+
+Seguimiento de la conformidad final: los scripts del snapshot de procesos vivían en el scratchpad de la sesión y no están versionados (nivel A). Se acreditan por su SHA-256 al
+cerrar y por su fecha de última modificación, anterior a su primer uso:
+
+| Script | SHA-256 | Última modificación (UTC) | Usado en |
+|---|---|---|---|
+| `proc-snapshot.ps1` | `37674de0182cecb189bd0d950ae5678c1c72adca24aa28bc45b9a93218c1bc45` | 2026-10-01T02:44:47Z | PR-1 (G2) y U-04 (G3) |
+| `proc-snapshot2.ps1` | `85e4f24963268accbcb20cbc1562a8ba4561a7d4cf9daf7748ede0a1e30189c6` | 2026-10-01T03:29:49Z | relevos Codex de G3 desde la salida repetida de la planificación |
+| `proc-snapshot3.ps1` | `dcb8e40337082004f1ca65df569981dca596cfddd14ef32f8956299c846037d4` | 2026-10-01T03:37:49Z | relevo del Worker subagente |
+| `relay-side.ps1` | `38c3f113d4479d0ec814666063118c7d2bf11b47f2576cc6477acfa4731449b2` | 2026-10-01T03:37:28Z | envoltorio de salida y entrada de los relevos de G3 |
+
+Los tres scripts de snapshot comparan la línea de órdenes con la ruta del worktree **sin distinguir mayúsculas**: pasan ambas cadenas a minúsculas
+(`$Worktree.Replace(...).ToLowerInvariant()` para la ruta con `\` y con `/`, `$lc = $cmd.ToLowerInvariant()` y
+`$match = $readable -and ($lc.Contains($wtBack) -or $lc.Contains($wtFwd))`). La medición de G2 y G3 cumplió, por tanto, el Freeze §3.3, cuyo texto normativo se restauró en
+READY-06.
+
+### 16.7 Autoverificación de la sesión principal (hallazgo fuera del Freeze)
+
+Orden del Owner del 2026-10-01: la sesión principal resuelve al empezar qué perfil, nivel y effort le corresponden y los compara con lo observable del runtime. Resolución, por
+analogía con `routing.md` §§1-3 porque **no existe clase ni perfil para la sesión principal** (el hueco):
+
+| Campo | Valor |
+|---|---|
+| `PRINCIPAL_SESSION_PROFILE` | PRINCIPAL_COORDINATION (propuesto): coordinación larga, decisiones de gate, interpretación de Architect, Controller y Worker, arquitectura sensible |
+| `REQUIRED_CAPABILITY_LEVEL` | Frontera |
+| `REQUIRED_EFFORT_CLASS` | Long-horizon (horizonte `High`; ambigüedad, sensibilidad arquitectónica y coste de fallo `High`) |
+| Traducción vigente (catálogo verificado el 2026-09-30) | `claude-opus-5-5` con effort `xhigh`; `claude-fable-5-1` no es elegible (no medido) |
+| `ESCALATION_CONDITIONS` | `routing.md` §4: effort → nivel → maximum, solo con evidencia registrada |
+
+Observaciones con los metadatos de la sesión (`get_session("self")`):
+
+| Momento (UTC) | `CURRENT_MODEL` | `CURRENT_EFFORT` | `CONFIGURATION_STATUS` | Conducta |
+|---|---|---|---|---|
+| ~05:54 | `claude-opus-5-5` | `medium` | `BELOW_REQUIRED` | STOP antes de trabajo sustantivo con `PRINCIPAL_SESSION_CONFIGURATION_REQUIRED` |
+| ~05:56 y ~05:58 (tras el cambio del Owner) | `claude-opus-5-5` | `max` | `ABOVE_REQUIRED` | PASS, con la discrepancia anotada (el Owner indicó `xhigh`) |
+| ~06:02 (inicio de este cierre) | `claude-opus-5-5` | `xhigh` | `MATCH` | PASS |
+
+El Owner aceptó la prueba como evidencia del hueco. Se registra como **seguimiento formal fuera del Freeze de I-61** en
+[ideas-futuras](../../ideas-futuras.md) (sección de I-61) y en HANDOFF; no cambia el Freeze, el Candidato ni ningún gate. La memoria local de Claude conserva una ayuda
+operativa con la misma regla, que no sustituye a la autoridad versionada.
+
+### 16.8 Reconciliación final de desviaciones y seguimientos
+
+| Desviación | Clasificación final (decisiones §18) | Estado |
+|---|---|---|
+| DEV-G1C-01 (entrada `trusted` de la sonda P2) | decisión del Owner: eliminar | eliminada (decisiones §17) |
+| DEV-G2-01 (snapshot desde Git Bash) | NON-MATERIAL | cerrada; README §3.2 manda PowerShell |
+| DEV-G3-01 (registros de U-04 posteriores) | NON-MATERIAL | cerrada |
+| DEV-G3-02 (relectura y host de consola; huérfano de otra sesión resuelto como STOP) | BEHAVIORAL-WITHIN-FREEZE | aceptada; propuesta en ideas-futuras |
+| DEV-G3-03 (filtro P3 del contrato) | NON-MATERIAL | aceptada; propuesta en ideas-futuras |
+| DEV-G3-04 (camino de reverificación) | BEHAVIORAL-WITHIN-FREEZE | aceptada; propuesta en ideas-futuras |
+
+Los seguimientos no bloqueantes (las cinco propuestas del piloto de 15.12, los de la conformidad final, los hallazgos fuera de alcance del contrato §13 y la autoverificación de
+la sesión principal) quedan en [ideas-futuras](../../ideas-futuras.md), sección de I-61.
+
+### 16.9 Métricas de la unidad (LIFECYCLE §11)
+
+| Métrica | Valor |
+|---|---|
+| Arquetipo inicial / final y disparadores | NEW ARCHITECTURE provisional (el mandato decía FOUNDATION EVOLUTION) / NEW ARCHITECTURE (Q-01); M-01, M-02, M-04, M-05, M-06, M-07 y M-08; el piloto, EXTENSION |
+| Rondas Discovery y EXP | 2 (G1 y G1-C); EXP-04, 05, 06, 07, 08 y 09 evaluadas (Discovery) |
+| Rondas Architect y modo | diseño: 8 rondas y 2 confirmaciones; G2: revisión y confirmación; READY-06: 2 (NON-CONFORMING y CONFORMING). Todas **SAME-SESSION ROLE** |
+| Gates totales / verificables | 4 (G0, G1, G2, G3) / 2 funcionales (G2, G3) |
+| Full locales por cierre / Candidato | Core Full en el cierre de G2 (12380) y de G3 (12396); Core Full y UI Full del Candidato (12396; 1637 + 17 omitidas) |
+| Intentos e invalidaciones de Candidato | 1 Candidato declarado y validado; 1 punta (`b69c3463`) invalidada en READY-06 antes de declararse |
+| Intentos CI y rojos no leídos | 16 corridas `push` en la rama (15 success, 1 failure = el RED esperado de G3, leído) y 1 `workflow_dispatch` de cobertura; 0 rojos no leídos |
+| Rondas Owner de política/producto y hallazgos | mandato y órdenes de continuidad; decisiones ADR-0046 y DEV-G1C-01; 1 ronda de Owner Validation (PASS, sin hallazgos); 1 hallazgo de proceso (configuración de la sesión principal) |
+| Desviaciones | DEV-G1C-01, DEV-G2-01, DEV-G3-01..04 |
+| Invalidaciones Freeze | 0 (sin A-n) |
+| Findings escapados después del merge | UNKNOWN (sin merge todavía) |
+| Duración activa de la Owner Validation | UNKNOWN (no declarada) |
+
+### 16.10 Integración
+
+La integración es manual, serializada y de autoridad del Owner (WORKFLOW §11.5). Tag esperado: `integration/I-61`. `CLOSURE_SHA`, `MERGE_SHA`, la CI posterior al merge con
+cobertura, la comprobación diferida de cobertura del Candidato y la limpieza pertenecen a ese tag (WORKFLOW §11.4 y §11.6); este archivo no contiene el SHA de su propio commit
+de cierre.

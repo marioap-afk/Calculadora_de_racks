@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-61
 title: Agent Execution, Model Routing & Prompting Protocol
 type: architecture
-status: implementing
+status: candidate-validated-closure
 workflow: V2
 conceptual_initiative: I-61
 delivery_unit: I-61
@@ -104,7 +104,7 @@ Freeze, Freeze delta y A-n: **ninguno todavía**.
 ```text
 Consumes:   Rack Identity, Unknown-field Preservation in Persisted Envelopes, Custom Properties (piloto; sin cambiarlas; Discovery §19.1)
 Extends:    ninguna fundación
-Introduces: Agent Execution Protocol (reutilizable: M-06/M-07 y éxito 14); su entrada factual en FOUNDATIONS se redacta antes de READY-04 (LIFECYCLE §4.1)
+Introduces: Agent Execution Protocol (reutilizable: M-06/M-07 y éxito 14); su entrada factual en FOUNDATIONS se redacta antes de READY-04 (LIFECYCLE §4.1) y se publica `STABLE` en el cierre
 Normas que se modifican (no son fundaciones): PROMPT_TEMPLATES (sección nueva), AUTOMATION_PLAN (§16 y §2), WORKFLOW §10 (fila); base: artefactos V2 de ADR-0045 (Discovery §20.3)
 ```
 
@@ -119,7 +119,7 @@ Normas que se modifican (no son fundaciones): PROMPT_TEMPLATES (sección nueva),
 | Decisión | Bloquea |
 |---|---|
 | Aceptar o rechazar ADR-0046 (propuesto con el diseño) | `READY-03` y `FINAL_CANDIDATE_SHA`; no bloquea diseño, implementación ni piloto (C61-G1-04) **Decidido 2026-10-01: ACCEPTED** (decisiones §17) |
-| Owner Validation del Candidato: comportamiento del piloto y aceptación del resultado frente a los criterios de éxito | la integración (es la validación ordinaria, no una decisión previa pendiente; Discovery §15 Q-04 y Q-06) |
+| Owner Validation del Candidato: comportamiento del piloto y aceptación del resultado frente a los criterios de éxito | la integración (es la validación ordinaria, no una decisión previa pendiente; Discovery §15 Q-04 y Q-06) **Ejecutada 2026-10-01: PASS** (decisiones §19) |
 | DEV-G1C-01: conservar o eliminar la entrada `trusted` añadida a `~/.codex/config.toml` | `READY-03`, por aplicación literal (Proposal V9 §16.1; sustituye la anotación anterior «nada del flujo», decisiones §13) **Decidido 2026-10-01: eliminar; eliminada** (decisiones §17) |
 
 Las preguntas sobre la intención de producto del piloto (Q-06, con la inferencia del Coordinator que el Discovery §15 registra), la agrupación (C61-G1-07) y el relevo con agentes externos (C61-G1-01) están **respondidas por cláusulas del Owner**
@@ -144,12 +144,14 @@ cambio a lo congelado va por A-n.
   `push` 4/4 sobre el SHA exacto. No es un gate funcional (LIFECYCLE §7) y **no crea una exención general**: los gates funcionales y el Candidato siguen AGENTS.md «Pruebas — definición de
   terminado» y WORKFLOW §§4.5 y 11.5 sin excepción por clase de cambio.
 - **G1 — Discovery**, con su consolidación G1-C: [I-61-discovery.md](I-61-discovery.md). Decisión del gate en el Discovery §20.5.
-- **Gates siguientes:** los define la Proposal congelada.
+- **G2 — Protocolo materializado** y **G3 — Piloto real:** definidos por la Proposal congelada (§16.2); GATE PASS del Coordinator (decisiones §§14-15).
+- **READY-01..09:** satisfechos en orden sobre el Candidato final (decisiones §§16-18; evidencia §16).
 
 ## 9. Owner Validation
 
 - Asignación OV: la fija el Freeze.
 - **Requiere AutoCAD y Owner Validation:** sí, porque el piloto cambia el comportamiento de dibujo (AGENTS.md punto 5; Discovery §19.3). Se ejerce sobre `FINAL_CANDIDATE_SHA`.
+- **Veredicto (2026-10-01): APROBADA** — OV-I61-01..05 PASS y OV-I61-05 aceptada, declarados por el Owner sobre el Candidato final (decisiones §19; evidencia §16.4).
 
 ## 10. Evidencia y entrega
 
@@ -178,3 +180,5 @@ resolverla. (Corregido en G1-C: la versión anterior añadía una regla propia q
   no efectivo» desactualizada (Discovery §18.3, EXP-01 F-02). No se corrigen en I-61.
 - D-4: `EditCama` redibuja solo la definición elegida (Discovery §19).
 - Observación pendiente de procedencia sobre la fila de I-57 en la rama de I-52 (decisiones §5).
+- En el cierre, los hallazgos de esta sección (salvo el de I-52), los seguimientos del piloto y la autoverificación de la sesión principal quedan en
+  [ideas-futuras](../ideas-futuras.md), sección de I-61.

@@ -3,12 +3,12 @@ automation_state:
   initiative: I-61
   branch: architecture/protocolo-ejecucion-agentes
   claim_id: 0e2923de-e1a7-41bf-b7db-50ec84217850
-  current_phase: READY-02
-  state: validating
+  current_phase: integration
+  state: integration-ready
   gate: none
   attempts: 0
-  next_action: READY-02..09 sobre este commit tras la correccion de READY-06; si se cumplen, es FINAL_CANDIDATE_SHA: evidencia final exact-SHA y paquete OV-I61-01..05; parar antes de integrar.
-  last_evidence_commit: b69c34634fdb44513c7f993aa28c5e4e77577f33
+  next_action: Integracion manual con autoridad del Owner (WORKFLOW §11.5): fetch y ruta R si main avanzo, merge --no-ff, CI posterior con cobertura, cobertura diferida del Candidato, limpieza y tag integration/I-61.
+  last_evidence_commit: 6513777f431fd672a515d9f8a33d8611d238fbe4
 execution_context:
   mode: manual
   automation_enabled: false
@@ -24,3 +24,6 @@ execution_context:
   g3_gate_pass: 5cda24f3cf25d725b2e39a0eea3f67061a368c58 (CI 36816144887; Core Full 12396/12396; decisions §15)
   ready: READY-01..03 satisfechos (decisions §16 y §17; ADR-0046 aceptado y DEV-G1C-01 eliminada por decision del Owner)
   ready06_b69c3463: NON-CONFORMING (1 REQUIRED corregido en este commit; decisions §18)
+  final_candidate: 6513777f431fd672a515d9f8a33d8611d238fbe4 (READY-01..09; decisions §18; evidence §16)
+  owner_validation: PASS 2026-10-01 (OV-I61-01..05; OV-I61-05 ACCEPTED; decisions §19)
+  closure: cierre documental preparado; integracion pendiente de la autoridad del Owner

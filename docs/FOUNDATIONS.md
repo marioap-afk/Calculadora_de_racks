@@ -156,3 +156,14 @@ Decision source: Freeze integrado [I-48](initiatives/I-48-generic-linked-propert
 Protecting tests: `LinkedPropertyFoundationTests`, `LinkedPropertyKernelTests`, `LinkedPropertyEditSessionTests`, `LinkedPropertyReconcilerTests`, `MultiPropertyRealProofTests`.
 Known limitations: el catalogo actual contiene propiedades Selectivas; la concurrencia general entre preflight y commit queda fuera del contrato.
 Last changed by: I-48
+
+Name: Agent Execution Protocol
+Status: STABLE
+Authority: `AUTOMATION_PLAN.md` §16 fija la ejecucion delegada (participantes, relevo, aceptacion A1-A8, identidad, conteo, verificacion de 14 comprobaciones y STOP); WORKFLOW §3 rige el relevo entre sesiones y AGENTS.md la evidencia.
+Persistence: trafico transitorio en `artifacts/orchestration/` (ignorado por Git); custodia de JSON y MD en `docs/automation/evidence/<unit>-pilot/`; esquemas `rackcad-*/v1` en `docs/automation/agent-execution/schemas/`.
+Mutation contract: las reglas cambian solo en AUTOMATION_PLAN §16 con sus autoridades; un esquema cambia por version nueva (`/v2`) con ADR o A-n; el catalogo de modelos es mutable con fuente y fecha, sin Freeze.
+Extension point: entrada de catalogo; clase de tarea o perfil nuevo en `routing.md` o PROMPT_TEMPLATES §G, revisado por el Coordinator contra el Freeze §§4 y 7; version nueva de esquema; regla de §16 (Freeze de I-61 §15).
+Decision source: [ADR-0046](adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md) (aceptado) y Freeze de I-61 ([Proposal V9](initiatives/I-61-proposal-v9.md)).
+Protecting tests: `AgentExecutionProtocolTests` (OBL-01..06 y OBL-11); `I61EditedRackNameTests`, `I61CamaEditWiringGuardTests` y `FlowBedEditorWindowTests.I61_P3` (piloto); controles nc1..nc4, OBL-08 y OBL-09 del piloto de G3.
+Known limitations: independencia parcial de la verificacion con un Worker subagente; efecto de consumo del `service_tier` heredado UNKNOWN; Worker Codex con escritura UNKNOWN; recetas dependientes de Windows y del sandbox unelevated; nivel A, sin scripts; la medicion de procesos da falsos positivos por apps del host y otras sesiones; sin clase de routing para la sesion principal (seguimiento en ideas-futuras).
+Last changed by: I-61
