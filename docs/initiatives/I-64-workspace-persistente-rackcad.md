@@ -3,12 +3,12 @@ schema: rackcad-initiative/v2
 id: I-64
 title: Persistent RackCad Workspace
 type: architecture
-status: f0-discovery
+status: f0-discovery-r1
 workflow: V2
 conceptual_initiative: I-64
 delivery_unit: I-64
 archetype: NEW ARCHITECTURE
-materiality: [UNKNOWN]
+materiality: [M-04, M-05, M-06, M-07, M-08]
 branch: architecture/workspace-persistente-rackcad
 base_branch: main
 priority: HIGH
@@ -60,8 +60,9 @@ automation:
   ([`I-64-coordinator-confirmation-d0-r3.txt`](I-64-coordinator-confirmation-d0-r3.txt), CD-ID30-NUM-01).
 - Workflow **V2**; la clasificación de transición se determina por el reclamo ([WORKFLOW](../WORKFLOW.md) §11.3) y se registra en
   la evidencia.
-- **Arquetipo: NEW ARCHITECTURE**, fijado por el brief. DC-09 registra los disparadores M-01..M-08; la materialidad queda UNKNOWN
-  hasta Discovery.
+- **Arquetipo: NEW ARCHITECTURE**, fijado por el brief. Materialidad confirmada por el Coordinator (CD-I64-D1-01): M-04..M-07, y M-08
+  activado de forma conservadora. El Discovery D1-R1 propone además M-01 activado y deja M-02 y M-03 `UNKNOWN` tratados como
+  activados; esos tres esperan revisión y no se copian al campo `materiality` hasta entonces.
 
 ## 2. Objetivo
 
@@ -118,9 +119,9 @@ persistente ni crea una segunda autoridad de persistencia (brief, «KEY ARCHITEC
 
 ## 6. Discovery, decisiones y Freeze
 
-- Discovery: [I-64-discovery.md](I-64-discovery.md) (F0-D1), **pendiente de revisión del Coordinator**. Responde las dieciocho
-  preguntas del brief («DISCOVERY REQUIRED») sobre DC-01..09, con EXP-01..09 evaluadas y sus negativos razonados. La materialidad que
-  propone (DC-09) no se copia aquí hasta esa revisión.
+- Discovery: [I-64-discovery.md](I-64-discovery.md), versión D1-R1 (corrección tras CD-I64-D1-01/02), **pendiente de revisión del
+  Coordinator**. Responde las dieciocho preguntas del brief («DISCOVERY REQUIRED») sobre DC-01..09, con EXP-01..09 evaluadas y sus
+  negativos razonados; su §17 detalla la disposición de C64-D1-01..07.
 - Proposal/Freeze: cubre «PROPOSAL MUST DEFINE» del brief y los puntos que el Architect debe impugnar («ARCHITECT REVIEW»). NEW
   ARCHITECTURE exige rondas Coordinator ↔ Architect hasta acuerdo sobre la misma versión ([INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §5).
 - Freeze / Freeze delta / A-n: ninguno.
@@ -131,7 +132,8 @@ persistente ni crea una segunda autoridad de persistencia (brief, «KEY ARCHITEC
 - Sin dependencia de producto no integrada; las fundaciones candidatas (§5) están integradas y se verifican en DC-08.
 - **I-63 (ID20)** corre en paralelo. Frontera fijada por el mandato de ID20 y su contrato: ID20 posee la semántica de métricas, los
   providers y la agregación; esta unidad posee el inventario runtime de navegación y la representación de UI/sesión. No se consume
-  código no integrado de I-63. Una fundación común es STOP al Master Orchestrator.
+  código no integrado de I-63. Una fundación común es STOP al Master Orchestrator. Ambos Discovery registran un **candidato** a
+  fundación común en la enumeración lógica de racks; está elevado al Master y no se diseña en I-64 (Discovery §10.2).
 - **I-52 (RACKMIRROR)** recorre en su producto planificado el ciclo `RACKEDITAR` → Actualizar → redibujo; la intersección se evalúa en
   DC-07 (EXP-07 si toca la misma autoridad o contrato). No se toca su rama, worktree, paquete de host ni política de confianza.
 - Archivos calientes: `docs/ROADMAP.md` (solo la fila propia, en los momentos de [WORKFLOW](../WORKFLOW.md) §2). Los de producto
