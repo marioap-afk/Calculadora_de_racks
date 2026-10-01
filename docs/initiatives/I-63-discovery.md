@@ -1,475 +1,533 @@
-# I-63 — Focused Discovery (F0-DISCOVERY) — ID20, Computed Parameters & Project Summary
+# I-63 — Focused Discovery (F0-DISCOVERY R1) — ID20, Computed Parameters & Project Summary
 
-> **Estado:** Discovery entregado para revisión del Coordinator. **No** es Proposal, Freeze, revisión del Architect ni GATE PASS.
-> Lo hizo **directamente** la sesión principal responsable (orden CD-I63-F0-01, opción (a)), sin Controller, Worker, Architect,
-> subagente ni otro proceso de IA y sin delegación §16. Las decisiones de diseño quedan abiertas (§16).
+> **Estado:** ronda R1 del Discovery, que corrige la ronda R0 según la revisión del Coordinator (CD-I63-F0-R1-01: CHANGES REQUIRED)
+> y completa las expansiones autorizadas (CD-I63-F0-R1-02). **No** es Proposal, Freeze, revisión del Architect ni GATE PASS.
+> - Lo hizo **directamente** la sesión principal responsable, sin Controller, Worker, Architect, subagente ni otro proceso de IA y
+>   sin delegación §16.
+> - La ronda R0 se conserva en Git: commit `dbfe1150007b7ea6819df7277e35666fe67af056`, blob `d9426070818eaa14ceb976fca474248160fbf803`.
+> - La elección del contrato compartido con I-64, la Proposal y el Freeze están **detenidos** mientras se coordina con el Master
+>   (CD-I63-F0-R1-03).
 
 ## 0. Identidad, base y método
 
-- Unidad I-63 (ID funcional ID20). Rama `architecture/parametros-calculados-resumen-proyecto`; contrato
-  [I-63-parametros-calculados-resumen-proyecto.md](I-63-parametros-calculados-resumen-proyecto.md).
-- **Base leída:** `b557ea3be4adeb496c353d9915b38fffaf2d9316`. Fuera de `docs/` es idéntica a `origin/main`
-  `819955d61a6da4c811a11fbd11b5dca13f634b7c`: `git diff --name-only 819955d6 b557ea3b` no lista nada fuera de `docs/`. Por eso todo
-  lo dicho sobre código vale para `main`.
-- **Fuentes de autoridad:** mandato del Owner ([copia](../automation/decisions/I-63-owner-mandate.original.txt)); AGENTS; WORKFLOW;
-  [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §§3-5; [FOUNDATIONS](../FOUNDATIONS.md), solo como índice; ADR y Freezes de §9;
-  código y pruebas citados por ruta y línea.
+- Unidad I-63 (ID funcional ID20). Rama `architecture/parametros-calculados-resumen-proyecto`.
+  [Contrato](I-63-parametros-calculados-resumen-proyecto.md); [decisiones](../automation/decisions/I-63.md);
+  [evidencia](../automation/evidence/I-63-evidence.md).
+- **Base de R1:** `dbfe1150`. Fuera de `docs/` es idéntica a `origin/main` `819955d61a6da4c811a11fbd11b5dca13f634b7c` (preflight
+  2026-10-01T17:16:34Z, sin rebase), así que todo lo dicho sobre código vale para `main`.
+- **Fuentes:** mandato del Owner ([copia](../automation/decisions/I-63-owner-mandate.original.txt)), en especial sus secciones RACK
+  COUNTING, FIRST METRIC SET, EVALUATION PHASES, RACK INVENTORY COORDINATION WITH ID30 y DISCOVERY REQUIRED; AGENTS; WORKFLOW;
+  [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §§3-5; [FOUNDATIONS](../FOUNDATIONS.md), solo como índice; ADR y Freezes de
+  §10; código y pruebas por ruta y línea.
+- Los documentos de I-64 e I-62 se leyeron como **hechos de coordinación**, no como fundaciones ni política integrada.
 - **Clase de cada afirmación** (LIFECYCLE §4):
   - `[MEASURED]`: leído en el código o en Git, o ejecutado, en esta base.
-  - `[RECONSTRUCTED]`: deducido de varias lecturas cuyo encadenamiento no se ejecutó.
+  - `[RECONSTRUCTED]`: encadenamiento de lecturas que no se ejecutó.
   - `[INFERENCE]`: juicio sobre lo leído.
   - `[UNKNOWN]`: no acreditado.
-- Las rutas `src/…` son relativas a la raíz. Un número de línea identifica la lectura en esta base, no un contrato.
-- **Pruebas existentes ejecutadas** (no se escribió ninguna; solo para responder preguntas concretas, §7): ocho clases de Core,
-  179/179 superadas, selección > 0 en cada clase.
+  - `[EXTERNAL]`: documentación oficial de terceros; no es una ejecución en este equipo.
+- Toda ausencia se limita a las rutas y búsquedas inspeccionadas (§22); no es una inexistencia universal.
+- **Pruebas existentes ejecutadas** (sin escribir ninguna):
+  - R0: ocho clases, 179/179;
+  - R1: dos pruebas nuevas para preguntas nuevas, 9/9, compiladas sobre `dbfe1150` (§8).
 
-## 1. Resumen de hallazgos
+## 1. Resumen R1
 
-1. **El motor de I-49 tiene un solo namespace activo, `projectVariable`.** `Rack` y `Project` están reservados y nada productivo
-   los crea `[MEASURED]`. Activarlos exige cambiar contratos consumidos: `SymbolNamespace`, la validez de clave de `SymbolId` (hoy
-   exige un GUID) y la resolución del cualificador del binder (fija `ProjectVariable`). Además, persistir una referencia `Rack.*`
-   cambiaría el formato de disco: un *token* de namespace desconocido no se puede leer (§3, §4).
-2. **Ya existen fases implícitas en el Selectivo:**
-   1. acreditar el registro;
-   2. evaluar las variables (grafo y ciclos solo entre variables);
-   3. evaluar cada propiedad vinculada (literal, referencia o fórmula, con consumidor de ámbito `Rack`);
-   4. obtener el diseño *effective*;
-   5. resolver la geometría;
-   6. construir dibujo y BOM.
+1. **Identidad lógica decidida; población abierta.** El mandato ya fija que N vistas o colocaciones del mismo RackId aportan **un**
+   rack a `Project.TotalRacks`.
+   - Lo que queda abierto es la **población admitida** (definida o colocada; ámbitos de colocación; casos incompletos) y sus
+     **diagnósticos** (§20, P-01..P-03).
+   - Falta de identidad, kind ausente o desconocido y fallo de una métrica son tres casos distintos (§16.1).
+2. **Ya existe agrupación pura en Application.**
+   - `RackListBuilder.Build` agrupa por `Id` con `OrdinalIgnoreCase` `[MEASURED]`.
+   - `RackPhysicalSelection.Classify` forma los grupos de selección con el mismo comparador `[MEASURED]`.
+   - Lo **no acreditado** es un contrato neutral **común** de captura, población, admisión y agrupación útil para ID20 e I-64 (§7.2).
+3. **Hay dos capturas en el Plugin.** `ScanEnvelopes`, la barata, omite xref y no distingue el tipo de colocación. `RackSiblingScan`,
+   de I-55, separa layout y anidada, marca xref y tantea el `Id` en sobres ilegibles. Cada consumidor aplica después su propia
+   política (§7.2, §17).
+4. **Las cifras de RACKLISTA y RACKBOMTOTAL son magnitudes distintas sobre poblaciones distintas, no una métrica duplicada.**
+   - RACKLISTA: racks lógicos **definidos** (filas).
+   - RACKBOMTOTAL: racks **cotizados** (`ConsolidatedBom.Racks`), y su ventana muestra `Racks.Count` y `Σ max(1, Copies)`.
+   - La duplicación solo aparecería si ID20 definiera `TotalRacks` con una de esas poblaciones sin reconciliarla (§7.2, M-01).
+5. **Fases por dependencia real, no por prefijo.**
+   - Contar RackIds sobre una instantánea de sobres **no** exige resolver diseños ni catálogos.
+   - Las métricas de capacidad o geometría sí lo exigen, en distinto grado (§15).
+   - El ciclo VerticalClearance → altura → fórmula es un **riesgo de una extensión futura**, no un defecto que se pueda ejecutar hoy (§16.2).
+6. **Compatibilidad precisa (prueba ejecutada en R1).** Hoy, un registro de variables que **contenga** una referencia
+   `"Namespace":"rack"` se lee entero como `PresentButUnreadable`.
+   - Los documentos que no contienen el *token* no cambian.
+   - Lo que hay que diseñar es el caso de **un documento nuevo leído por una *build* antigua** (§5.2).
+   - Mantener claves GUID para los símbolos nuevos sigue siendo posible (§16.3).
+7. **Métrica numérica real para la vía ID23:** **frentes del Selectivo**.
+   - Su fuente es el conteo estructural del diseño (`Bays.Count` y `BaysForFondo(k).Count`), que el resolver mantiene 1:1.
+   - No depende del catálogo ni de las propiedades vinculables `[MEASURED]`.
+   - Falta decidir el **producto**: cómo se cuentan los fondos con distinto número de frentes y si los frentes vacíos cuentan (§14,
+     P-05). `SystemKind` es texto y no ejercita la vía numérica.
+8. **Arquetipo:** NEW ARCHITECTURE como arquetipo de trabajo.
+   - M-01 está activado como **creador** de una autoridad de métricas.
+   - M-02, M-04 y M-07 cuentan como activados para la planificación: cada uno tiene evidencia, una pregunta acotada y quién decide (§11).
+9. **Coordinación con el Master:** la consulta preparada por el Coordinator **no** se envió, porque esta sesión no tiene canal con el
+   Master. Se entrega al Owner (§21). I-64 confirmó por canal entre sesiones que no diseña ese mínimo común.
 
-   Las fórmulas de propiedad **no son nodos del grafo**. Un símbolo `Rack.*` derivado del *effective* y leído desde una fórmula de
-   propiedad crearía un ciclo entre fases que el grafo actual no ve (§14) `[RECONSTRUCTED]`.
-3. **No hay una enumeración lógica de racks en Application.** El escaneo de definiciones es único, pero vive en el Plugin
-   (`RackBlockFinder.ScanEnvelopes`), y cada consumidor aplica su propia política: RACKLISTA, RACKBOMTOTAL, nombre automático,
-   variables, propiedades personalizadas y duplicación (§6) `[MEASURED]`.
-4. **Ya hay tres «conteos de racks» con semánticas distintas** `[MEASURED]`:
-   - RACKLISTA: definiciones agrupadas por GUID, incluidas las no colocadas; «copias» = máximo de referencias directas.
-   - RACKBOMTOTAL: solo colocados y con autoridad, saltando los ilegibles con aviso.
-   - Su ventana muestra **«N racks · M copias»** (`ConsolidatedBom.RackCount` / `TotalCopies`).
+## 2. Disposición de los hallazgos R63-DISC-01..07
 
-   Un `Project.TotalRacks` nuevo sería una **segunda autoridad** si no se reconcilia con estos (M-01; EXP-02) `[INFERENCE]`.
-5. **«Racks lógicos» frente a «copias físicas» no está decidido.** Una referencia copiada en AutoCAD comparte definición y GUID, y
-   el BOM la multiplica por `Copies` `[MEASURED]`. El mandato dice «racks lógicos, no BlockReferences»; falta decidir si las copias
-   colocadas de un mismo GUID cuentan una vez o N (§16, D-OPEN-01) `[UNKNOWN]`.
-6. **Las métricas de producto no tienen semántica común:**
-   - «Frente», «nivel» y «posición» significan cosas distintas en Selectivo (bahía; niveles por bahía; celdas × tarimas, medio
-     frente por ajuste geométrico), Dinámico (frente transversal con carriles, niveles y fondo por frente), Push Back (ranuras por
-     lado, fondo efectivo por nivel), Cantilever (estaciones, intervalos y niveles de brazo, sin tarimas), Cabecera (un marco) y
-     Cama (una cama).
-   - No hay hoy una función que cuente posiciones de tarima de un rack completo. La matriz (§13) da la mayoría de celdas como
-     `NeedsContract` `[MEASURED]`/`[INFERENCE]`.
-7. **Autoridad entre vistas hermanas desigual** `[MEASURED]`:
-   - el BOM compara las vistas hermanas solo en Selectivo; en los demás kinds aprueba la primera vista;
-   - desde I-58 existen comparadores AUTH-13 para Dinámico, Push Back, Cantilever y Cabecera, que el BOM no consume;
-   - la Cama no tiene comparador.
-8. **Candidato a fundación común con I-64 (ID30).** I-64 declara un «inventario ligero de racks por dibujo»; ID20 necesita
-   deduplicar por RackId; y en Application no existe la autoridad de enumeración que ambos necesitarían. Se registra para
-   coordinarlo **vía Master** antes del diseño, conforme al mandato (§8) `[INFERENCE]`.
-9. **Arquetipo:** M-01, M-05, M-06 y M-08 activados; M-02 condicional; M-07 sigue UNKNOWN, acotado a una decisión de diseño.
-   Recomendación: mantener **NEW ARCHITECTURE provisional** hasta la Proposal (§10).
+| ID | Corrección aplicada | Dónde |
+|---|---|---|
+| R63-DISC-01 | Se retira la alternativa «1 frente a N» para el mismo RackId. D-OPEN-01 pasa a ser población, ámbitos de colocación, admisibilidad y diagnósticos. Se separan los tres tipos de exclusión. No se añade ninguna métrica de copias | §1.1, §16.1, §20 |
+| R63-DISC-02 | Se corrigen las afirmaciones absolutas: sí hay agrupación pura; lo que falta acreditar es un contrato común. Se mapea productor → población → filtros → igualdad → magnitud → consumidor. Ninguna cifra distinta se trata como duplicación por sí sola | §1.2-1.4, §7.2 |
+| R63-DISC-03 | Las fases se basan en dependencias reales, con una tabla por métrica: entradas, dependencias, fase mínima, consumidor, consistencia, catálogo y geometría, efectos e invalidación. La disponibilidad previa al *resolve* sigue siendo hipótesis | §15, §16.2 |
+| R63-DISC-04 | Se separa el hecho (solo `projectVariable`; clave GUID) de las alternativas. Se precisa la compatibilidad en tres casos con una prueba ejecutada. No se decide persistencia ni ADR | §5.2, §16.3 |
+| R63-DISC-05 | Se descarta `SystemKind` como prueba numérica y se documenta una métrica numérica real (frentes del Selectivo). La matriz distingue fuente actual, pregunta pendiente, dependencias o fase y datos no fiables, con una alternativa preferida y una segunda | §14 |
+| R63-DISC-06 | NEW ARCHITECTURE se mantiene; se revisan M-01 (creador), M-02, M-04 y M-07. Cada UNKNOWN lleva evidencia, una pregunta acotada y quién decide | §11 |
+| R63-DISC-07 | Se cierra el inventario del motor (EXP-04). Los grupos de `RackProjectionPipeline` se forman con `OrdinalIgnoreCase` (no solo se ordenan con `Ordinal`). DC-07 se actualiza con el Discovery de I-64 y el avance de I-62, conservando el *snapshot* R0 | §7.1, §7.3, §9 |
 
-## 2. DC-01 — Comportamiento observable actual
+## 3. DC-01 — Comportamiento observable actual
 
 | # | Comportamiento | Evidencia | Clase |
 |---|---|---|---|
-| 1 | Una referencia sin llaves `Rack` o `Project` da `ReservedName`, aunque exista una variable con ese nombre. La forma `palabra.miembro` (p. ej. `Rack.Frentes * 2`, `Project.TotalRacks`) da `UnknownNamespace`. Con llaves (`{Rack}`, `{Rack.Frentes}`) son nombres ordinarios de variable | `src/RackCad.Application/Expressions/ExpressionBinder.cs:220-222, 322-326`; `FunctionRegistry.cs:174-186`; `ExpressionBinderTests` (`UN_RESERVADO_SIN_LLAVES_…`, `LA_SINTAXIS_DE_NAMESPACE_DA_UNKNOWNNAMESPACE`, datos `"Rack.Frentes * 2"`, `"Project.TotalRacks"`); `ExpressionRoundTripTests.cs:136-139`, que usa los nombres `Rack` y `Rack.Frentes` como variables válidas | `[MEASURED]`, ejecutado §7 |
-| 2 | El símbolo de ámbito `Rack` solo lo crean tablas sintéticas; consumidor de ámbito `Project` + símbolo `Rack` = `ScopeViolation` | `SymbolTable.cs:9-17`; `ExpressionBinder.cs:376-379`; `ExpressionSymbolModelTests` | `[MEASURED]` |
-| 3 | Las fórmulas de las propiedades vinculables del Selectivo se enlazan con consumidor de ámbito `Rack` y solo pueden leer símbolos `projectVariable`. Su valor debe ser > 0 | `ProjectVariables/LinkedPropertyExpressionAuthoring.cs:127, 155`; `BindingInspection.cs:359-364` | `[MEASURED]` |
-| 4 | Propiedades vinculables productivas: **dos**, `SelectiveVerticalClearance` y `SelectivePalletTolerance` (longitudes) | `ProjectVariables/SelectiveLinkedProperties.cs:186-214` | `[MEASURED]` |
-| 5 | RACKLISTA: una fila por GUID (comparador `OrdinalIgnoreCase`), con nombre y kind tomados del primer valor no vacío entre las hermanas. Omite sin aviso los sobres sin `Id` o sin `Kind`. Lista también definiciones sin colocar (copias 0). «Copias» = máximo de referencias directas entre las definiciones de vista. Etiqueta Push Back con el *token* crudo | `Persistence/RackListBuilder.cs:54-73, 82-96`; `RackCad.Plugin/RackInventarioCommands.cs:50-73`; `RackCountInvariantCharacterizationTests`; `RackListBuilderTests` | `[MEASURED]` |
-| 6 | RACKBOMTOTAL: lee el registro una vez y cuenta solo racks colocados. Aborta ante una definición colocada inclasificable, un kind sin handler, un rack bloqueado o una referencia de variable rota. Salta con aviso un rack sin autoridad o con *payload* ilegible. Multiplica por «copias» | `RackCad.Plugin/RackInventarioCommands.BomTotal.cs:47-232` | `[MEASURED]` (lectura) |
-| 7 | La ventana del BOM total muestra «N racks · M copias». `RackCount` = racks listados tras saltos; `TotalCopies` = suma de `max(1, Copies)` | `Bom/ConsolidatedBom.cs:40-41`; `RackCad.UI/RackConsolidatedBomWindow.xaml.cs:24-25`; `ConsolidatedBomBuilderTests` | `[MEASURED]` |
-| 8 | El BOM del Selectivo cuenta las instancias de bloque que producen los *builders* de vista (con las decoraciones apagadas), no un modelo de conteo separado | `Systems/Selective/SelectiveBomBuilder.cs:54-84` | `[MEASURED]` |
-| 9 | La numeración de niveles dibujada en el frontal del Selectivo usa solo los niveles de la **primera** bahía | `Systems/Selective/SelectiveFrontalBuilder.cs:333-339` | `[MEASURED]` |
-| 10 | El nombre lógico automático de un rack nuevo (I-60) es `«Prefijo» N`, con N uno por encima del máximo de su familia. El nombre no es identidad | `Persistence/RackLogicalNameAllocator.cs:9-19, 64-98` | `[MEASURED]` |
+| 1 | Una referencia sin llaves `Rack` o `Project` da `ReservedName`, y la sintaxis `palabra.miembro` da `UnknownNamespace`. Con llaves (`{Rack}`, `{Rack.Frentes}`) son nombres ordinarios de variable | `Expressions/ExpressionBinder.cs:220-222, 322-326`; `FunctionRegistry.cs:174-186`; `ExpressionBinderTests` (R0); `ExpressionRoundTripTests.cs:136-139` | `[MEASURED]` |
+| 2 | Ningún camino productivo crea un símbolo de ámbito `Rack`; consumidor `Project` + símbolo `Rack` = `ScopeViolation` | `SymbolTable.cs:9-17`; `ExpressionBinder.cs:376-379`; `ExpressionSymbolModelTests` (R0) | `[MEASURED]` |
+| 3 | Las fórmulas de propiedad del Selectivo se enlazan con consumidor `Rack` y solo leen `projectVariable`; su valor debe ser > 0 | `ProjectVariables/LinkedPropertyExpressionAuthoring.cs:127, 155`; `BindingInspection.cs:359-364` | `[MEASURED]` |
+| 4 | Propiedades vinculables productivas: `SelectiveVerticalClearance` y `SelectivePalletTolerance` | `ProjectVariables/SelectiveLinkedProperties.cs:186-214` | `[MEASURED]` |
+| 5 | Un registro de variables cuyo JSON contiene una referencia con `"Namespace":"rack"` (clave GUID) se lee como `PresentButUnreadable` y sin documento | `tests/RackCad.Tests/G8PersistenceIntegrationContractTests.cs:171, 179-185` (ejecutada en R1) | `[MEASURED]` |
+| 6 | RACKLISTA: una fila por RackId lógico **definido** (`OrdinalIgnoreCase`), colocado o no. Omite sin aviso los sobres sin `Id` o `Kind`. Nombre y kind = primer valor no vacío entre las hermanas. Copias = máximo de referencias directas | `Persistence/RackListBuilder.cs:46-79`; `RackCad.Plugin/RackInventarioCommands.cs:50-85` | `[MEASURED]` |
+| 7 | RACKBOMTOTAL cotiza racks **colocados** con autoridad y sin bloqueo. Aborta o salta según el caso (§7.2). Su ventana muestra `ConsolidatedBom.RackCount` (= `Racks.Count`) y `TotalCopies` (= `Σ max(1, Copies)`) | `RackInventarioCommands.BomTotal.cs:47-232`; `Bom/ConsolidatedBom.cs:40-41`; `RackConsolidatedBomWindow.xaml.cs:24-25` | `[MEASURED]` |
+| 8 | El BOM del Selectivo cuenta instancias de los *builders* de vista con las decoraciones apagadas | `Systems/Selective/SelectiveBomBuilder.cs:54-84` | `[MEASURED]` |
+| 9 | La numeración de niveles dibujada usa solo la primera bahía | `Systems/Selective/SelectiveFrontalBuilder.cs:333-339` | `[MEASURED]` |
+| 10 | El resolver del Selectivo crea **una bahía resuelta por cada bahía de diseño**, por fondo, sin filtrar. Una bahía sin niveles sigue siendo un frente vacío. Cada fondo conserva su propio número de frentes | `Systems/Selective/SelectiveGeometryResolver.cs:121-136, 212-228, 244-260` | `[MEASURED]` |
+| 11 | Dinámico: un frente en blanco (`IsActive = false`) conserva su estructura y aporta **cero** niveles de carga. La autoridad es `DynamicFrontActivation.EffectiveLoadLevels`, sobre el diseño o sobre el frente resuelto | `Domain/Systems/Dynamic/DynamicRackFront.cs:38-45, 100-111`; `Application/Systems/Dynamic/DynamicFrontActivation.cs:24-40` | `[MEASURED]` |
 
-## 3. DC-02 — Dueños de reglas y valores
+## 4. DC-02 — Dueños de reglas y valores
 
-| Concepto | Dueño actual (símbolo) | Gobierno | Clase |
+| Concepto | Dueño actual | Gobierno | Clase |
 |---|---|---|---|
-| Identidad de símbolo | `SymbolId` = `(SymbolNamespace, Key)`. La clave debe ser un GUID válido para cualquier namespace registrado | `Expressions/SymbolId.cs:85-108, 151-154`; ADR-0043 D5 | `[MEASURED]` |
-| Namespaces | Conjunto cerrado de `SymbolNamespace`, hoy solo `ProjectVariable`. Tabla de *tokens* explícita | `SymbolId.cs:16-70` | `[MEASURED]` |
-| Ámbitos | `SymbolScope.Project` (activo) y `SymbolScope.Rack` (reservado) | `SymbolTable.cs:13-17` | `[MEASURED]` |
-| Contexto de operación | `ExpressionContext`: tabla de un *snapshot*, `FunctionRegistry.Productive`, `LengthUnits.Authority` y límites normativos. Se construye solo por `internal Create` | `Expressions/ExpressionContext.cs:60-77` | `[MEASURED]` |
-| Del nombre a la identidad | `ExpressionBinder.Bind(syntax, context, consumerScope)`: único camino productivo. El cualificador `#…` resuelve siempre como `ProjectVariable` | `ExpressionBinder.cs:48-90, 317-383` (en 334) | `[MEASURED]` |
-| Grafo y ciclos | `DependencyGraph` sobre las entradas de la tabla; `RegistryEvaluation` decide orden, ciclos y causas raíz | `Expressions/DependencyGraph.cs:16-20`; `RegistryEvaluation.cs:8-80` | `[MEASURED]` |
-| Productores de contexto | `ProjectVariablesExpressionAdapter.From`, siempre con ámbito `Project`; las fábricas de autoría de propiedades vinculadas | `ProjectVariables/ProjectVariablesExpressionAdapter.cs:13-63`; `LinkedPropertyAuthoringContext.cs:62-89`; `LinkedPropertyExpressionAuthoring.cs:60-109` | `[MEASURED]` |
-| *Effective* del Selectivo | `SelectiveEffectiveDesignResolver`, punto único | `Systems/Selective/SelectiveEffectiveDesignResolver.cs:11-31, 112-172`; ADR-0034 + Freeze de I-48 | `[MEASURED]` |
-| *Authored* entre hermanas | `SelectiveAuthoredAuthority` (Selectivo). Los puertos AUTH-13 de `RackAuthoredComparatorPorts` (Dinámico, Push Back, Cantilever y Cabecera) son de I-58; la Cama no tiene | `ProjectVariables/SelectiveAuthoredAuthority.cs:84`; `Systems/Shared/RackAuthoredComparator.cs:65-86`; `RackAuthoredComparator.FourKinds.cs:14-27` | `[MEASURED]` |
-| Autoridad para cotizar | `BomAuthoredAuthority`: compara las hermanas solo en Selectivo y aprueba la primera vista en los demás kinds | `Bom/BomAuthoredAuthority.cs:82-125` (104-110) | `[MEASURED]` |
-| Identidad de rack | `RackEmbedDocument.Id` (GUID) | `Persistence/RackEmbedDocument.cs:49-50`; ADR-0009 | `[MEASURED]` |
-| Identidad de vista | `RackEmbedDocument.View` y `Section` | `RackEmbedDocument.cs:40-47`; ADR-0010 | `[MEASURED]` |
-| Escaneo de definiciones | `RackBlockFinder.ScanEnvelopes`: omite layouts, anónimos y xref; cuenta referencias directas con `directOnly: true, forceValidity: false` | `RackCad.Plugin/RackBlockFinder.cs:42-92` (66, 85) | `[MEASURED]` |
-| Clasificación sin inventar RackId | `ProjectVariableScanProjection.Project` (sobre ilegible, sin `Id` o sin `Kind` → inclasificable) | `ProjectVariables/ProjectVariableScanProjection.cs:30-65` | `[MEASURED]` |
-| Vocabularios de kind | *Token* del sobre (`selective`, `dynamic`, `cabecera`, `cama`, `pushback`, `cantilever`); `RackSystemKind`, cuyo miembro `Selective` es la **cabecera** y `SelectiveRack` el selectivo, e incluye `Larguero`; etiquetas en `RackListBuilder.KindLabel`, `IRackKindHandler.BomLabel` y `SystemDescriptor` | `RackEmbedDocument.cs:16-26`; `Domain/Systems/Shared/RackSystemKind.cs:4-30`; `Systems/Shared/SystemRegistry.Default.cs:25-37` | `[MEASURED]` |
-| Agregación del BOM | `ConsolidatedBomBuilder.Build` (componentes × copias) | `Bom/ConsolidatedBom.cs:44-117` | `[MEASURED]` |
-| Conteos de producto | **Sin dueño único** para frentes, niveles o posiciones de un rack o proyecto (§13) | búsquedas de §17 | `[MEASURED]` (ausencia, con los huecos de §17) |
+| Identidad de símbolo | `SymbolId(Namespace, Key)`. El constructor rechaza namespaces no registrados y valida la clave como `projectVariable` (GUID) | `Expressions/SymbolId.cs:85-108, 151-154`; ADR-0043 | `[MEASURED]` |
+| Namespaces | `SymbolNamespace`, hoy solo `ProjectVariable`, con tabla de *tokens* y comparador por namespace (`OrdinalIgnoreCase`) | `SymbolId.cs:16-70` | `[MEASURED]` |
+| Ámbitos | `SymbolScope.Project` y `SymbolScope.Rack` (reservado) | `SymbolTable.cs:13-17` | `[MEASURED]` |
+| Contexto de operación | `ExpressionContext` inmutable, por operación (construcción interna) | `ExpressionContext.cs:60-77` | `[MEASURED]` |
+| Del nombre a la identidad | `ExpressionBinder.Bind`; el cualificador resuelve como `ProjectVariable` | `ExpressionBinder.cs:48-90, 334` | `[MEASURED]` |
+| Grafo y evaluación | `DependencyGraph` y `RegistryEvaluation` sobre las entradas de la tabla | `DependencyGraph.cs:16-20`; `RegistryEvaluation.cs:8-80` | `[MEASURED]` |
+| *Effective* del Selectivo | `SelectiveEffectiveDesignResolver` | `Systems/Selective/SelectiveEffectiveDesignResolver.cs:112-172`; ADR-0034 + I-48 | `[MEASURED]` |
+| Niveles efectivos del Dinámico | `DynamicFrontActivation.EffectiveLoadLevels` | `DynamicFrontActivation.cs:24-40` | `[MEASURED]` |
+| *Authored* entre hermanas | `SelectiveAuthoredAuthority` (Selectivo) y los puertos AUTH-13 (Dinámico, Push Back, Cantilever y Cabecera); la Cama sin puerto | `SelectiveAuthoredAuthority.cs:84`; `Systems/Shared/RackAuthoredComparator.cs:65-86`; `RackAuthoredComparator.FourKinds.cs:14-27` | `[MEASURED]` |
+| Autoridad para cotizar | `BomAuthoredAuthority` (compara solo el Selectivo; en los demás kinds aprueba la primera vista) | `Bom/BomAuthoredAuthority.cs:82-125` | `[MEASURED]` |
+| Identidad de rack y de vista | `RackEmbedDocument.Id`, `View` y `Section` | `Persistence/RackEmbedDocument.cs:40-50`; ADR-0009/0010 | `[MEASURED]` |
+| Agrupación pura del dibujo | `RackListBuilder.Build` (`Id`, `OrdinalIgnoreCase`; exige `Id` y `Kind`) | `RackListBuilder.cs:54-57` | `[MEASURED]` |
+| Agrupación pura de una selección | `RackPhysicalSelection.Classify` (claves físicas `Ordinal`; grupos por RackId `OrdinalIgnoreCase`, solo donde se observó un RackId) | `Systems/Shared/RackPhysicalSelection.cs:195-273` (227, 231) | `[MEASURED]` |
+| Clasificación sin inventar RackId | `ProjectVariableScanProjection.Project` | `ProjectVariables/ProjectVariableScanProjection.cs:30-65` | `[MEASURED]` |
+| Captura del dibujo | `RackBlockFinder.ScanEnvelopes` y `RackSiblingScan` (§17) | `RackCad.Plugin/RackBlockFinder.cs:57-92`; `RackCad.Plugin/Views/RackSiblingScan.cs:95-149` | `[MEASURED]` |
+| Vocabularios de kind | *Token* del sobre; `RackSystemKind` (`Selective` = cabecera); tres familias de etiquetas | `RackEmbedDocument.cs:16-26`; `Domain/Systems/Shared/RackSystemKind.cs:4-30`; `SystemRegistry.Default.cs:25-37` | `[MEASURED]` |
+| Conteos de producto por rack | Sin dueño único hoy para frentes, posiciones, altura y fondo de rack en las rutas inspeccionadas. Para niveles del Dinámico existe la autoridad por frente | búsquedas de §22 | `[MEASURED]` (en las rutas inspeccionadas) |
 
-## 4. DC-03 — Persistencia, campos, *legacy* y desconocidos
+## 5. DC-03 — Persistencia, *legacy* y compatibilidad
 
-- **Sobre del rack** (`RackEmbedDocument`):
-  - campos `SchemaVersion`, `Kind`, `View`, `Section`, `Id`, `Name`, `Design` y `CustomProperties` (JSON crudo);
-  - `[JsonExtensionData]` preserva los campos desconocidos (`RackEmbedDocument.cs:35-75`) `[MEASURED]`;
-  - una vista nula o vacía se lee como lateral en RACKLISTA (`RackListBuilder.cs:117-118`) `[MEASURED]`.
-- **Identidad *legacy*:**
-  - un sobre sin `Id` o sin `Kind` no es un rack para RACKLISTA (`RackListBuilder.cs:54-56`) ni para el BOM total
-    (`ProjectVariableScanProjection.cs:37-42`) `[MEASURED]`;
-  - el BOM total aborta si esa definición está colocada (`RackInventarioCommands.BomTotal.cs:84-96`), y RACKLISTA la omite sin
-    avisar (`RackInventarioCommands.cs:53-56`) `[MEASURED]`;
-  - FOUNDATIONS («Rack Identity», limitaciones) dice que un sobre *legacy* sin `Id` no permite inferir hermanas `[MEASURED]`.
-- **Expresiones persistidas:**
-  - `{"Node":"Reference","Namespace":<token>,"Id":<clave>}`; leer un *token* de namespace desconocido falla
-    (`Persistence/PersistedBoundExpressionJson.cs:93-103, 170`) `[MEASURED]`;
-  - las usan `ProjectVariablesStore` (`:277`), `SelectivePalletDesignStore` (`:127`) y `MutationPlan` (`:265`) `[MEASURED]`;
-  - consecuencia: persistir `Rack.*` o `Project.*` haría ilegibles los documentos para las *builds* anteriores (fallo cerrado) →
-    M-02 `[RECONSTRUCTED]`.
-- **Dinámico *legacy*:** `RackProject.DynamicSystem`, sistema resuelto persistido, frente a `DynamicDesign`; el handler acepta
-  ambos (`RackCad.Plugin/KindHandlers/DynamicKindHandler.cs:37-42`) `[MEASURED]`.
-- **Custom Properties (ADR-0039):** V1 solo admite cadenas literales; `RACKCAD_CUSTOM_PROPERTIES` en el NOD y JSON crudo en el
-  sobre (FOUNDATIONS «Custom Properties») `[MEASURED]`.
-- **Lo que no se encontró:** ningún campo persistido de «métrica calculada», «resumen» o «conteo» en sobres, documentos de diseño
-  ni NOD `[MEASURED]` (búsquedas de §17).
+### 5.1 Hechos
 
-## 5. DC-04 — Del documento al *effective*, por sistema
-
-Así compone hoy el BOM cada kind; las composiciones viven en los handlers del Plugin (`RackCad.Plugin/KindHandlers/*`).
-
-| Kind (*token*) | Deserialización | Resolución | Variables de proyecto | Modelo resuelto | Clase |
-|---|---|---|---|---|---|
-| `selective` | `SelectivePalletDesignStore.Deserialize` | `SelectiveEffectiveDesignResolver.Resolve` → `SelectiveGeometryResolver.Resolve(design, catalog)` | **sí** (dos propiedades vinculables) | `SelectiveRackSystem` | `[MEASURED]` (`SelectiveKindHandler.BuildBom`) |
-| `dynamic` | `RackProjectStore.Deserialize` | `DynamicRackSystemResolver(catalog).Resolve(DynamicDesign).System`, o `DynamicSystem` *legacy* | no | `DynamicRackSystem` | `[MEASURED]` (`DynamicKindHandler.cs:37-42`) |
-| `pushback` | `RackProjectStore.Deserialize` | `PushBackResolver(catalog).Resolve(PushBackDesign)` | no | `PushBackSystem` (`Structure`, `Composite`) | `[MEASURED]` (`PushBackKindHandler.cs:40-50`) |
-| `cantilever` | `RackProjectStore.Deserialize` | `CantileverLineEditorAssembler(sections).Build(CantileverLineDesign)`; el catálogo de secciones lo carga el Plugin (`StructuralSectionCatalogAccess.TryLoad`) | no | línea ensamblada (`IsValid`, `Bom`) | `[MEASURED]` (`CantileverKindHandler.cs:47-66`) |
-| `cabecera` | `RackProjectStore.Deserialize(...)?.Header` | ninguna: la configuración es el modelo | no | `RackFrameConfiguration` | `[MEASURED]` (`CabeceraKindHandler.cs:35-39`) |
-| `cama` | `FlowBedConfigurationStore.Deserialize` | `FlowBedLateralBuilder().Build(config, catalog)` | no | instancias de lateral | `[MEASURED]` (`CamaKindHandler.cs:37-46`) |
-
-**Fases del Selectivo** (`SelectiveEffectiveDesignResolver.cs:132-172`) `[MEASURED]`:
-1. acreditar el registro;
-2. `RegistryEvaluation` de todas las variables;
-3. cada `PropertyValues` en orden ordinal: `LinkedPropertyInspection` (literal, referencia o fórmula);
-4. `authored.ToDomain()` + `WriteEffective`;
-5. el consumidor resuelve la geometría.
-
-Las reglas de derivación (`Domain/Systems/Selective/SelectivePalletDesign.cs:9-16`) fijan que la separación entre niveles depende de
-la holgura vertical (`Clearance`) y que la altura del poste depende del nivel superior `[MEASURED]`.
-
-## 6. DC-05 — Llamadores, consumidores y lectores
-
-- **`RackBlockFinder.ScanEnvelopes`** lo llaman `CustomPropertiesExecutor`, `ProjectVariableMutationExecutor`, `RackCommandSupport`,
-  `RackInventarioCommands` (RACKLISTA y RACKBOMTOTAL), `RackSelectivoCommands`, `RackVariablesCommands` y
-  `Systems/Shared/RackNewRackName` (I-60) (`grep ScanEnvelopes(`) `[MEASURED]`.
-  - Cada uno aplica su propia política de validez, colocación y agrupación (comentario `RackBlockFinder.cs:51-55`) `[MEASURED]`.
-- **Agrupación por RackId:**
-  - `RackListBuilder` (`GroupBy … OrdinalIgnoreCase`);
-  - el diccionario de hermanas de RACKBOMTOTAL (`OrdinalIgnoreCase`, `BomTotal.cs:73`);
-  - `PlanReadSet` (orden `OrdinalIgnoreCase`, `ProjectVariables/PlanReadSet.cs:313`);
-  - `RackProjectionPipeline`, que **ordena** sus grupos con `Ordinal` (`Views/Placement/RackProjectionPipeline.cs:78-79`); el
-    comparador con que se formaron esos grupos no se inspeccionó `[UNKNOWN]`.
-- **Contratos del motor:**
-  - consumidores productivos de `ExpressionContext`/`SymbolTable`: `ProjectVariables/*` (adaptador, autoría, *preflight*, *commit*,
-    recuperación) y `SelectiveEffectiveDesignResolver`;
-  - lectores persistidos de `SymbolNamespace`: `PersistedBoundExpressionJson`;
-  - binder con consumidor `Rack`: `LinkedPropertyExpressionAuthoring` (`grep` de `ExpressionContext.Create`, `RegistryEvaluation.`
-    y `SymbolScope.`) `[MEASURED]`.
-- **Consumidores de conteos:**
-  - `RackListRow`/`RackListWindow` (RACKLISTA);
-  - `RackConsolidatedBomWindow` («N racks · M copias»);
-  - exportadores CSV/XLSX del BOM consolidado (`ConsolidatedBomCsvExporter`, `ConsolidatedBomXlsxExporter`) `[MEASURED]`.
-- **Huecos de búsqueda:** el Plugin no es comprobable en Core (ADR-0003). Los caminos que solo se ejecutan en AutoCAD se leyeron,
-  no se ejecutaron `[MEASURED]` en la lectura, `[UNKNOWN]` en el comportamiento.
-
-## 7. DC-06 — Pruebas y guardas
-
-**Corrida focal de pruebas existentes** (sin editar fuentes):
-- base `b557ea3b`, árbol limpio antes y después; SDK de usuario 8.0.423;
-- `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter <8 cláusulas FullyQualifiedName~RackCad.Tests.<Clase>>`;
-- 2026-10-01, de 16:48:09Z a 16:49:16Z;
-- TRX fuera del repositorio, SHA-256 `F5A9D461…DA21`.
-
-| Clase | Seleccionadas | Resultado |
-|---|---:|---|
-| `ExpressionBinderTests` | 65 | superadas |
-| `ExpressionSymbolModelTests` | 44 | superadas |
-| `SelectiveBomAuthorityTests` | 31 | superadas |
-| `ProjectVariableScanProjectionTests` | 17 | superadas |
-| `RackListBuilderTests` | 10 | superadas |
-| `RackEmbedDocumentTests` | 7 | superadas |
-| `RackCountInvariantCharacterizationTests` | 3 | superadas |
-| `ConsolidatedBomBuilderTests` | 2 | superadas |
-| **Total** | **179** | **179 superadas, 0 fallos, 0 omitidas** |
-
-**Guardas leídas, no ejecutadas:** `ExpressionRoundTripTests`, `ExpressionSyntaxGrammarTests`, `ExpressionSyntaxDiagnosticsTests`,
-`ExpressionFunctionRegistryTests`, `ExpressionParserGuardTests`, `G11CandidateValidationTests` (mide tiempos con `Stopwatch` en la
-cadena de I-49, `:306-309`) y las pruebas de AUTH-13 (`I58*`) que cita FOUNDATIONS.
-
-**Huecos declarados** `[MEASURED]` (ausencia en las búsquedas de §17):
-- ninguna prueba compara RACKLISTA con RACKBOMTOTAL sobre el mismo dibujo;
-- ninguna fija la semántica «definido sin colocar», ni la de «copias» con un número de referencias distinto entre vistas;
-- ninguna protege ciclos entre fases a través de un símbolo calculado, porque esos símbolos no existen;
-- ninguna fija que `BomAuthoredAuthority` apruebe la primera vista en los kinds no selectivos;
-- `RackCountInvariantCharacterizationTests.BomRepresentativeStillUsesOneAuthoredDocumentPerRack` es una **guardia de fuente**
-  (busca texto en el código), no una prueba de comportamiento.
-
-## 8. DC-07 — Archivos calientes e intersecciones activas
-
-Ramas activas observadas el 2026-10-01 a las 16:40:05Z: I-52 `c1982b2a`, I-62 `85ae4324`, I-63 `b557ea3b` e I-64 `d8a02163`;
-`main` `819955d6`.
-
-| Iniciativa | Cruce textual | Cruce funcional | Autoridad compartida |
-|---|---|---|---|
-| **I-64 (ID30, Workspace)** | `docs/ROADMAP.md`: las dos filas van tras I-60; `git merge-tree` dio conflicto de contenido `[MEASURED]` (evidencia §9.4). Su rama solo cambia `docs/` (5 archivos) `[MEASURED]` | **No inspeccionado en código**: su rama no tiene producto. Su contrato declara un «navegador e inventario ligero de racks por dibujo» y «selección de AutoCAD → RackId lógico» `[MEASURED]`, lectura del contrato de su rama | **Candidato a fundación común:** enumeración lógica de racks del dibujo (identidad, *legacy*, colocado frente a definido, hermanas). No existe autoridad en Application (§6) `[INFERENCE]` |
-| **I-62 (portabilidad del Principal)** | Fila en otra tabla de ROADMAP; `git merge-tree` sin conflicto `[MEASURED]`. Su rama solo cambia `docs/` `[MEASURED]` | Ninguno de producto esperado; **no inspeccionado** | Protocolo de ejecución delegada (`routing.md`, AUTOMATION_PLAN §16): afecta cómo delegará I-63, no a su producto `[INFERENCE]` |
-| **I-52 (RACKMIRROR)** | Edita ROADMAP (su fila y la de I-57), HANDOFF y el índice de ADR (ADR-0036) `[MEASURED]`; no se midió el cruce con I-63 | **No inspeccionado.** Su rama no cambia `src/`, `tests/` ni `assets/` respecto de su base `[MEASURED]`. RACKMIRROR crea racks espejados, lo que podría influir en los conteos | Identidad de racks nuevos (AUTH-15) `[UNKNOWN]` |
-
-Archivos calientes para el diseño futuro, según WORKFLOW §7:
-- `src/RackCad.Plugin/*Commands*.cs`, incluidos `RackInventarioCommands*.cs`;
-- `docs/ROADMAP.md`;
-- `docs/HANDOFF.md`, solo al cerrar `[MEASURED]`.
-
-## 9. DC-08 — Fundaciones consumidas o extendidas
-
-### 9.1 Freeze final integrado de I-49 (acreditación)
-
-- **Freeze vigente:** [`I-49-consensus-freeze-v6-a1-a2-a3-r1.md`](I-49-consensus-freeze-v6-a1-a2-a3-r1.md), blob `440ae61a…`, en el
-  segundo padre del merge `a61850a6` y en `origin/main`.
-  - Es el «Consensus Freeze **correctivo** V6 + A1 + A2 + A3-R2 + ADR-0043 R1»: `R1` es la primera revisión del freeze, no A3-R1.
-  - El freeze anterior `…-v6-a1-a2-a3.md` (blob `cba59b7f…`) queda histórico `[MEASURED]`.
-- **Los blobs que declara coinciden con los medidos en `origin/main`** `[MEASURED]`:
-  - Proposal V6 `ef4db3aa…`;
-  - A1 `d6201908…`;
-  - A2 `49a92533…`;
-  - A3-R2 `4da6ef3c…` (`I-49-proposal-v6-amendment-a3-multi-cause-dependency-failures.md`);
-  - ADR-0043 aceptado y corregido `dd88bf06…`.
-- ADR-0043 («Base exacta y frontera de decisión») registra esa base, e indica que A3 original y A3-R1 recibieron CHANGES REQUIRED
+- **Sobre del rack:** `SchemaVersion`, `Kind`, `View`, `Section`, `Id`, `Name`, `Design`, `CustomProperties` y `[JsonExtensionData]`
+  (`RackEmbedDocument.cs:35-75`) `[MEASURED]`.
+- **Identidad *legacy*:** sin `Id` no hay rack en RACKLISTA ni en el BOM total; nunca se inventa (`ProjectVariableScanProjection.cs:37-42`)
   `[MEASURED]`.
-- **Correspondencia con el código** `[MEASURED]`:
-  - ADR-0043 reserva `Rack.*`, `Project.*` y el ámbito `Rack` para ID20 «sin registrar» (`:368, 2031-2057`);
-  - el código coincide: un solo namespace, palabras reservadas, `UnknownNamespace` y ningún símbolo `Rack` productivo (§2, filas
-    1-2);
-  - el consumidor de ámbito `Rack` de las fórmulas de propiedad **no** crea símbolos `Rack`, así que no contradice el ADR.
+  - `RackSiblingScan` tantea el `Id` aunque el sobre no se pueda deserializar (`RackEnvelopeIdProbe`; `RackSiblingScan.cs:131`) `[MEASURED]`.
+- **Expresiones persistidas:** `{"Node":"Reference","Namespace":<token>,"Id":<clave>}`; leer un *token* desconocido falla
+  (`Persistence/PersistedBoundExpressionJson.cs:93-103, 170`). Las usan `ProjectVariablesStore:277`, `SelectivePalletDesignStore:127` y
+  `MutationPlan:265` `[MEASURED]`.
+- **Ningún campo persistido de métrica, resumen o conteo** en las rutas inspeccionadas `[MEASURED]`.
 
-### 9.2 Fundaciones candidatas
+### 5.2 Compatibilidad (R63-DISC-04), en tres casos
 
-| Fundación | Fuente | Código | Consumidores | Pruebas | Resultado DC-08 |
+| Caso | Efecto | Clase |
+|---|---|---|
+| Documento antiguo (sin el *token* nuevo) leído por una *build* nueva | Sin cambio de significado, si la *build* nueva conserva exactamente las reglas de `projectVariable` (clave, comparación, ida y vuelta, cualificador) | `[INFERENCE]` |
+| Documento nuevo que **no** contiene el *token* nuevo, leído por una *build* antigua | Se lee como hoy: el *token* nuevo solo existe donde se escribe | `[RECONSTRUCTED]` |
+| Documento nuevo que **contiene** `"Namespace":"rack"` (o similar), leído por una *build* antigua | **Registro de variables:** el documento entero queda `PresentButUnreadable` (prueba ejecutada). La lectura del registro falla cerrada en sus consumidores (RACKBOMTOTAL no genera el listado: `BomTotal.cs:60-67`). **Diseño Selectivo** con una fórmula de propiedad que contenga el *token*: el convertidor lanzaría `JsonException`, el *store* la convierte en `InvalidOperationException` (`SelectivePalletDesignStore.cs:49-51`) y el rack quedaría «diseño ilegible» (`ProjectVariableScanProjection.cs:51-62`); no se ejecutó una prueba de ese caso | `[MEASURED]` registro / `[RECONSTRUCTED]` diseño |
+
+Que un documento antiguo se vuelva ilegible solo por añadir código **no** está demostrado ni se afirma. La persistencia y el ADR no se
+deciden en esta ronda.
+
+## 6. DC-04 — Del documento al *effective*, por sistema
+
+Sin cambios respecto de R0: composición en los handlers del Plugin; resolutores puros en Application; solo el Selectivo usa variables.
+
+| Kind | Deserialización | Resolución | Variables | Modelo resuelto |
+|---|---|---|---|---|
+| `selective` | `SelectivePalletDesignStore` | `SelectiveEffectiveDesignResolver` → `SelectiveGeometryResolver(design, catalog)` | sí | `SelectiveRackSystem` |
+| `dynamic` | `RackProjectStore` | `DynamicRackSystemResolver(catalog)` o `DynamicSystem` *legacy* | no | `DynamicRackSystem` |
+| `pushback` | `RackProjectStore` | `PushBackResolver(catalog)` | no | `PushBackSystem` |
+| `cantilever` | `RackProjectStore` | `CantileverLineEditorAssembler(sections)`; catálogo de secciones cargado por el Plugin | no | línea ensamblada |
+| `cabecera` | `RackProjectStore(...).Header` | ninguna | no | `RackFrameConfiguration` |
+| `cama` | `FlowBedConfigurationStore` | `FlowBedLateralBuilder(config, catalog)` | no | instancias de lateral |
+
+Toda la tabla es `[MEASURED]` (`RackCad.Plugin/KindHandlers/*KindHandler.cs`, métodos `BuildBom`/`Build`). Las fases del Selectivo
+(`SelectiveEffectiveDesignResolver.cs:132-172`) son: acreditar; `RegistryEvaluation`; inspeccionar las propiedades; `ToDomain` +
+`WriteEffective`; resolver la geometría en el consumidor `[MEASURED]`.
+
+## 7. DC-05 — Consumidores, lectores y autoridades por conteo
+
+### 7.1 EXP-04 — Inventario de los contratos de símbolo
+
+Todo `[MEASURED]` en las rutas buscadas (§22). ID23 es un consumidor **previsto**, no código existente.
+
+| Frontera | Productores | Lectores | Restricción de ida y vuelta | Prueba existente |
+|---|---|---|---|---|
+| Namespace | `SymbolNamespaces` (tabla de *tokens*) | `SymbolId` (`IsRegistered`), `PersistedBoundExpressionJson` (lectura y escritura del *token*), `BindingInspection` (rechaza los que no son `projectVariable`), `ExpressionFormatter`/`CanonicalShape.Classify` (referencia directa solo para `ProjectVariable`, `ExpressionFormatter.cs:64`) | Un *token* desconocido hace ilegible el documento (§5.2) | `ExpressionSymbolModelTests`; `G8PersistenceIntegrationContractTests` (R1) |
+| Clave | `SymbolId.ProjectVariable` en `ExpressionBinder`, `ProjectVariablesExpressionAdapter`, `LinkedPropertyAuthoringContext`, `LinkedPropertyExpressionAuthoring`, `LinkedPropertyEditSession`, `BindingInspection`, `PlanReadSet`, `ProjectVariableMutationPreflight`, `ProjectVariablesWorkspace`, `RecoveryAssessment`; `PersistedBoundExpressionJson` (lectura) | `SymbolId.IsValidProjectVariableKey`; `ExpressionLexer` (cualificador `#d` / `#{clave}`, `:356, 405-430`); `ExpressionFormatter.FormatQualifier` (`:215-219`) | La clave se conserva tal cual y se compara con el comparador del namespace; el cualificador escribe `Q(key)` | `ExpressionRoundTripTests`, `ExpressionFormatterTests`, `G8PersistenceIntegrationContractTests` (`not-a-guid`) |
+| Ámbito | `ProjectVariablesExpressionAdapter` y `LinkedPropertyAuthoringContext` (entradas `Project`); `LinkedPropertyExpressionAuthoring` (entradas `Project`, consumidor `Rack`); `ProjectVariableDefinitionAuthoring` (consumidor `Project`) | `ExpressionBinder` (`ScopeViolation`) | El ámbito no se persiste en el árbol enlazado (el JSON solo lleva `Namespace` e `Id`) `[MEASURED]` (`PersistedBoundExpressionJson.cs:93-103`) | `ExpressionBinderTests` |
+| Forma persistida | `ProjectVariablesStore`, `SelectivePalletDesignStore`, `MutationPlan` | los mismos | Lectura estricta de miembros (`RequireOnly`) | `G8PersistenceIntegrationContractTests` |
+| UI vinculable (I-48) | — | `RackCad.UI/Controls/LinkedPropertyEditor.cs` (hospeda `LinkedPropertyEditSession`); `RackSelectiveWindow.xaml.cs:3015-3016` | La UI no toca `SymbolId` ni el namespace directamente; consume la sesión pura | `LinkedPropertyEditorControlTests`, `MultiPropertySessionTests`, `PalletToleranceEditorTests` (UI); `LinkedPropertyEditSessionTests` (Core) |
+
+**Hueco:** ninguna prueba ejecutada fija la ida y vuelta de un *token* nuevo en `SelectivePalletDesignStore` (el caso de diseño de §5.2).
+
+### 7.2 EXP-02 — Productores de conteos y etiquetas (R63-DISC-02)
+
+| Productor | Población | Filtros y admisión | Igualdad y agrupación | Magnitud | Consumidor / presentación |
 |---|---|---|---|---|---|
-| Rack Identity | ADR-0009 (aceptado) | `RackEmbedDocument.Id`; agrupaciones de §6 | RACKLISTA, RACKBOMTOTAL, duplicación, variables, nombres | `RackEmbedDocumentTests`, `RackListBuilderTests`, `RackCountInvariantCharacterizationTests` (ejecutadas) | Coincide `[MEASURED]`. La entrada no dice si las copias de una definición son un rack o varios: es una decisión abierta (D-OPEN-01), no una discrepancia |
-| View Identity | ADR-0010 + ADR-0009 | `View`/`Section`; `RackListBuilder.DescribeViews` | RACKLISTA, edición multivista | `RackCountInvariantCharacterizationTests` | Coincide `[MEASURED]` |
-| Authored vs Effective | ADR-0034 + Freeze de I-48 | `SelectiveEffectiveDesignResolver`; `BomAuthoredAuthority` | BOM, dibujo, *preview* | `SelectiveBomAuthorityTests` (ejecutadas) | Coincide `[MEASURED]`; la autoridad estricta es solo del Selectivo, como dice la entrada. No es un veredicto de soporte para los demás sistemas |
-| Project Variables | ADR-0034 + I-48 | `ProjectVariablesExpressionAdapter`; `UsableProjectVariablesRegistry` | motor, *effective* del Selectivo | `ProjectVariableScanProjectionTests` (ejecutadas); FOUNDATIONS cita más | Coincide en lo leído `[MEASURED]` |
-| Expression Engine | ADR-0043 + Freeze correctivo R1 (§9.1) | `Expressions/*` | §6 | `ExpressionBinderTests`, `ExpressionSymbolModelTests` (ejecutadas) | Coincide `[MEASURED]`; **sin entrada en FOUNDATIONS**: su ausencia no prueba que la fundación no exista |
-| Auto Rack Naming | [I-60-freeze.md](I-60-freeze.md) §3 | `RackLogicalNameAllocator`; `RackNewRackName` | caminos de creación | no ejecutadas aquí | Coincide en lo leído `[MEASURED]`; sin entrada en FOUNDATIONS. El nombre no es identidad |
-| Shared View Foundation (AUTH-13; AUTH-08/12) | Freeze de I-58/I-59 + ADR-0044 | `RackAuthoredComparatorPorts` | sesiones de vista e inserción del Plugin; **no** el BOM | `I58*`/`I59*` según FOUNDATIONS; no ejecutadas | Coincide `[MEASURED]`; que el BOM no lo consuma no es una contradicción (no está declarado como consumidor) |
-| Custom Properties (frontera) | ADR-0039 | `CustomPropertiesDocument`; sobre crudo | — | no ejecutadas | Ver §9.3 |
+| RACKLISTA (`RackInventarioCommands.RackLista` + `RackListBuilder.Build`) | Definiciones de `ScanEnvelopes(includeReferenceCount: true)`: no layout, no anónimas, **no xref** | Sobre nulo, sin `Id` o sin `Kind`: omitido **sin aviso** | `Id`, `OrdinalIgnoreCase`; nombre y kind = primer valor no vacío | Filas = racks lógicos **definidos** (colocados o no); `ViewCount`; copias = máximo de referencias directas por vista | `RackListWindow` (filas por nombre) |
+| RACKBOMTOTAL (`RackInventarioCommands.BomTotal` + `ConsolidatedBomBuilder`) | Las mismas definiciones + el registro leído una vez | Inclasificable y colocado: **aborta**. Inclasificable sin colocar: salta. Solo colocados (copias > 0). Kind sin handler: aborta. Sin autoridad: salta con aviso. Bloqueado: aborta. Variable rota: aborta. Ilegible: salta con aviso | Hermanas por RackId `OrdinalIgnoreCase`; autoridad `BomAuthoredAuthority` | `Racks` (cotizados); `RackCount = Racks.Count`; `TotalCopies = Σ max(1, Copies)`; BOM total | `RackConsolidatedBomWindow` («N racks · M copias»), CSV y XLSX |
+| `FindRackBlocks` (`RackCommandSupport.cs:117-140`) | `ScanEnvelopes(false)` | Sobre no nulo con `Id` == rackId; **tolera `Kind` ausente** | `OrdinalIgnoreCase` | Lista de definiciones de **un** rack | RACKEDITAR / Actualizar; ejecutor de variables |
+| `RackSiblingScan` + `RackSiblingMembership` (I-55) | Definiciones no layout y no anónimas, **xref incluidas con marca** | Tantea el `Id` aunque el sobre no se pueda leer; separa referencias de layout y anidadas | Por RackId (en Application) | Pertenencia de las hermanas de un rack | Insertar; RACKPROYECTAR |
+| `RackPhysicalSelection.Classify` | **Selección** del usuario, no el dibujo | Sin RackId: se ignora o se conserva para que falle el plan (OD-3) | Claves físicas `Ordinal`; grupos `OrdinalIgnoreCase` | Grupos de la selección | `RackProjectionPipeline` (RACKPROYECTAR) |
+| `RackNewRackName` (I-60) | `ScanEnvelopes(false)` | Nombres no vacíos | — | Siguiente nombre de la familia (no es un conteo) | Creación de racks nuevos |
+| Etiquetas de kind | `RackListBuilder.KindLabel` (sin Push Back); `IRackKindHandler.BomLabel`; `SystemDescriptor.LibraryLabel` | — | — | Texto de presentación | RACKLISTA, BOM y biblioteca |
 
-**Ninguna discrepancia consumida de clase A** (§11, EXP-01).
+Toda la tabla es `[MEASURED]` en el código citado.
 
-### 9.3 ADR-0039 D-16: delimitación
+**Conclusión de EXP-02** `[INFERENCE]`: RACKLISTA y RACKBOMTOTAL miden **magnitudes distintas sobre poblaciones distintas**, y que sus
+cifras difieran no prueba una duplicación. La ambigüedad real es **qué población y qué admisión adopta `Project.TotalRacks`**: definida,
+colocada o cotizable; qué ámbitos de colocación; qué diagnósticos. Esa decisión está pendiente (§20, P-01..P-03). No se autoriza
+migrar RACKLISTA, RACKBOMTOTAL ni las etiquetas para forzar igualdad.
 
-ADR-0039 §13 dice `[MEASURED]`:
-- un consumidor futuro referencia por `CustomPropertyId` y lee de la autoridad;
-- el ADR no fija la sintaxis de I-49 ni reclama `Rack`/`Project`;
-- «la relación entre ID24 e ID20 se decide en ID20».
+### 7.3 Grupos de `RackProjectionPipeline` (cerrado)
 
-Las Custom Properties V1 son **cadenas literales** `[MEASURED]`, y el motor solo maneja `double` finitos
-(`SymbolTable.cs:53-62`) `[MEASURED]`. Por tanto `[INFERENCE]`:
-- una CustomProperty no se convierte en símbolo numérico sin un contrato nuevo, y las fórmulas de Custom Properties quedan fuera de
-  alcance;
-- la Proposal debe fijar que CustomProperty (metadato), ProjectVariable (*authored*, editable) y ComputedParameter (derivado, solo
-  lectura) son autoridades disjuntas, y que ningún ComputedParameter se persiste como ProjectVariable ni como CustomProperty.
+`RackProjectionSelectionFilter.Build` → `RackPhysicalSelection.Classify`, que forma los grupos con un diccionario
+`OrdinalIgnoreCase` (`RackPhysicalSelection.cs:231-263`). `RackProjectionPipeline` solo **ordena** esos grupos con `Ordinal`
+(`Views/Placement/RackProjectionPipeline.cs:78-79`) `[MEASURED]`. Lo prueba
+`SharedPhysicalFactsTests.AUTH07_DEDUPES_IN_STABLE_ORDER_AND_GROUPS_ONLY_OBSERVED_RACK_IDS` (ejecutada en R1): `RackA` y
+`RACKA` forman un solo grupo, y una referencia sin RackId no se agrupa.
 
-## 10. DC-09 y EXP-09 — Disparadores M y arquetipo
+## 8. DC-06 — Pruebas, guardas y EXP-05
 
-EXP-09, con el disparador, la pregunta, el área y la salida que fijó el Coordinator.
+### 8.1 Corridas de pruebas existentes
 
-| ID | Estado | Evidencia | Clase |
+| Ronda | Base compilada | Orden y filtro | Resultado |
 |---|---|---|---|
-| M-01 | **Activado** | Aparecería una autoridad nueva de métricas, con riesgo de **segunda autoridad** frente a `ConsolidatedBom.RackCount`/`TotalCopies` y a RACKLISTA (§2, filas 5-7) | `[INFERENCE]` sobre hechos `[MEASURED]` |
-| M-02 | **Condicional** | Se activa si alguna expresión persiste referencias `Rack.*`/`Project.*` (*token* de namespace en el formato de disco, §4); no se activa si los parámetros solo existen en ejecución | `[RECONSTRUCTED]` |
-| M-03 | No activado (a verificar en la Proposal) | Los nombres con llaves (`{Rack.Frentes}`) siguen siendo variables; las expresiones persistidas guardan `SymbolId`, no texto, así que los documentos existentes no cambian de significado | `[INFERENCE]` |
-| M-04 | **UNKNOWN** | Hay que decidir cómo se presentan los estados Unavailable/NotApplicable y si un resumen aborta, salta o marca (las políticas de RACKLISTA y RACKBOMTOTAL difieren, §2) | `[UNKNOWN]` |
-| M-05 | **Activado** | Ampliar `SymbolNamespace`, la validez de clave de `SymbolId` (hoy GUID) y la resolución del cualificador cambia contratos que consumen Project Variables, I-48 y el formato persistido | `[MEASURED]` |
-| M-06 | **Activado** | Se añade o extiende el punto de símbolos built-in de I-49 y un punto de *providers* por kind | `[INFERENCE]` sobre el mandato y ADR-0043 |
-| M-07 | **UNKNOWN acotado** | Hoy no hay ninguna abstracción de *provider*; la composición por kind está en los handlers del Plugin. Que sea M-07 depende del diseño: un catálogo cerrado y estático de métricas por kind (patrón `SelectiveLinkedProperties`) extiende puntos existentes, mientras que un registro o *framework* genérico sería mecanismo transversal nuevo. **Falta una decisión de diseño de la Proposal**, no de Discovery | `[UNKNOWN]` |
-| M-08 | **Activado** | ADR-0043 fija hoy «exactamente un namespace activo» (`SymbolId.cs:8-14`; ADR D5/P25): activar `rack`/`project` modifica una afirmación de un ADR aceptado y exige un ADR nuevo o sucesor | `[MEASURED]` |
+| R0 | `b557ea3b` | ocho clases `FullyQualifiedName~` (detalle en la evidencia §10.3) | 179/179, selección > 0 por clase |
+| R1 | `dbfe1150` (ensamblado `1.0.0+dbfe1150…`) | `FullyQualifiedName~…G8PersistenceIntegrationContractTests.UNKNOWN_OR_MALFORMED_EXPRESSION_PAYLOAD_IS_STRUCTURALLY_UNREADABLE` y `FullyQualifiedName~…SharedPhysicalFactsTests.AUTH07_DEDUPES_IN_STABLE_ORDER_AND_GROUPS_ONLY_OBSERVED_RACK_IDS` | 9/9 (8 casos de la *theory* + 1 *fact*); TRX SHA-256 `A1F5A8FA…60E9` |
 
-**Recomendación (la confirma el Coordinator):** M-01, M-05, M-06 y M-08 bastan para FOUNDATION EVOLUTION como mínimo. Con M-07
-UNKNOWN, LIFECYCLE §3 obliga a mantener **NEW ARCHITECTURE provisional** hasta que la Proposal elija entre catálogo cerrado y
-registro, y el Architect lo revise.
+Son pruebas focales para preguntas del Discovery, no evidencia Full ni de gate. Una primera corrida R1 con `--no-build` usó binarios de
+`b557ea3b`; se repitió compilando y solo cuenta la segunda (evidencia §11).
 
-## 11. EXP-01..09
+### 8.2 EXP-05 — Invariante → oráculo
 
-Las expansiones con disparador presente se **proponen**, no se ejecutan: solo EXP-09 estaba autorizada.
+No se escriben pruebas ni se fabrica RED. Ubicación futura: Core (`tests/RackCad.Tests`), salvo que se indique otra.
 
-| EXP | Disparador | Evaluación |
+| Invariante candidato | Prueba existente o hueco | Escenario que demostraría la falla | Fallo esperado de la alternativa incorrecta |
+|---|---|---|---|
+| I-01: N vistas o colocaciones de un RackId aportan 1 a `TotalRacks` | Parcial: `RackCountInvariantCharacterizationTests` (vistas, mayúsculas), `SharedPhysicalFactsTests.AUTH07` (selección). Hueco para `TotalRacks` | Instantánea con 3 definiciones de un rack (frontal, lateral ×2) y referencias 2/1/0 | Un conteo por definición o por referencia da 3 o 3+; el correcto da 1 |
+| I-02: igualdad de RackId = la vigente (`OrdinalIgnoreCase`), sin normalizar | Parcial (las mismas) | `Rack-A` y `rack-a` | Un conteo `Ordinal` da 2 |
+| I-03: un sobre sin `Id` no recibe identidad y produce un diagnóstico, no un rack | `ProjectVariableScanProjectionTests` (proyección); hueco para el resumen | Definición colocada sin `Id` | Un resumen que la omita en silencio o le invente un id |
+| I-04: kind ausente o desconocido es un caso distinto de la falta de identidad | Hueco | Sobre con `Id` y `Kind` vacío; sobre con `Kind = "futuro"` | Mezclarlos en un solo «excluido» hace indistinguible el diagnóstico |
+| I-05: el fallo de una métrica no saca al rack del conteo de identidad | Hueco | Selectivo con variable rota | `TotalRacks` baja al fallar `Frentes` |
+| I-06: población declarada (definida o colocada) aplicada de forma uniforme | Hueco | Rack definido sin colocar | Según la decisión P-01, cuenta o no, y el diagnóstico lo dice |
+| I-07: ningún parámetro calculado legible desde una fórmula de propiedad (o fase demostrada segura) | Parcial: hoy `BindingInspection` rechaza namespaces ajenos | Fórmula de `VerticalClearance` que lee `Rack.Altura` | Sin la regla, se evalúa con un valor anterior o entra en ciclo |
+| I-08: un agregado `Project.*` que dependa de modelos resueltos no es legible desde variables de proyecto | Hueco | Variable `=Project.TotalPosiciones` + rack enlazado | Recursión o resolución completa del dibujo |
+| I-09: `Rack.Frentes` (Selectivo) numérico en un contexto de rack para ID23 | Hueco | Rack de 4 frentes; `Rack.Frentes * 2` | Debe dar 8 con la semántica decidida (P-05); otro valor si se toma la bahía equivocada o la suma de fondos sin decidir |
+| I-10: hermanas divergentes o ilegibles → estado explícito, no primera vista | Selectivo: `SelectiveBomAuthorityTests`; los demás kinds: los puertos AUTH-13 de I-58. Hueco en el resumen | Dinámico con dos vistas divergentes | Sin la regla, el valor depende del orden del `BlockTable` |
+| I-11: resultado parcial marcado como parcial | Hueco | Un rack ilegible entre 3 | `TotalRacks = 2` sin marca de parcial |
+| I-12: el formato de `projectVariable` (clave, ida y vuelta, cualificador) no cambia al añadir un namespace | `ExpressionRoundTripTests`, `G8PersistenceIntegrationContractTests` | Ida y vuelta de un árbol existente tras ampliar la tabla de *tokens* | Cambio de bytes o de igualdad |
+
+## 9. DC-07 — Archivos calientes e intersecciones
+
+### 9.1 *Snapshot* R0 (conservado; 2026-10-01T16:40:05Z)
+
+I-52 `c1982b2a`, I-62 `85ae4324`, I-63 `b557ea3b`, I-64 `d8a02163`, `main` `819955d6`. Cruce textual medido: I-63 × I-64 = conflicto en
+`docs/ROADMAP.md`; I-63 × I-62 = sin conflicto (`git merge-tree`, evidencia §9.4).
+
+### 9.2 Observación R1 (2026-10-01T17:16:34Z)
+
+I-52 `c1982b2a` (sin cambio), I-62 `f25dd1d5`, I-63 `dbfe1150`, I-64 `cf034e59`, `main` `819955d6`. Las ramas de I-62 e I-64 solo
+cambian `docs/` respecto de `main` (7 y 6 archivos) `[MEASURED]`. No se repitió `merge-tree`.
+
+| Iniciativa | Textual | Funcional | Autoridad compartida (hechos de coordinación) |
+|---|---|---|---|
+| I-64 | ROADMAP (filas adyacentes tras I-60) | **No inspeccionado en código**: no tiene producto. Su Discovery (§9.4) propone, como hipótesis, un índice runtime por documento (`RackId`, nombre, `SystemKind`, vistas, definiciones, conteo de referencias) alimentado por la misma travesía y sin retener `Design`. Su §10.2 dice que «ambas consumen la misma fundación integrada (Rack Identity, `RackListBuilder`)» y que una autoridad nueva de enumeración sería STOP y Master `[MEASURED]` (lectura de `cf034e59`) | Candidato a contrato compartido de hechos y agrupación; elevado al Master (§21) |
+| I-62 | ROADMAP (otra tabla) | Ninguno de producto; Discovery delta de proceso | Protocolo de ejecución delegada |
+| I-52 | ROADMAP, HANDOFF, índice de ADR | No inspeccionado; su rama no tiene producto | Identidad de racks espejados (AUTH-15) `[UNKNOWN]` |
+
+Canal con I-64: respondí a su consulta de frontera, sin compromisos (evidencia §11). I-64 adoptó la corrección de R63-DISC-02 y declaró
+que no diseña el mínimo común.
+
+## 10. DC-08 — Fundaciones (y EXP-01 repetida)
+
+- **Freeze de I-49** (sin cambio respecto de R0):
+  - vigente: `I-49-consensus-freeze-v6-a1-a2-a3-r1.md`, blob `440ae61a…`; es el freeze **correctivo** R1 sobre V6 + A1 + A2 + A3-R2
+    + ADR-0043;
+  - los blobs declarados coinciden con `origin/main` (V6 `ef4db3aa…`, A1 `d6201908…`, A2 `49a92533…`, A3-R2 `4da6ef3c…`, ADR-0043
+    `dd88bf06…`) `[MEASURED]`.
+- **Fundaciones candidatas** (detalle R0 conservado en Git):
+  - Rack Identity, View Identity, Authored vs Effective, Project Variables, Expression Engine, Auto Rack Naming y Shared View
+    Foundation coinciden con su fuente, código y pruebas en lo leído `[MEASURED]`;
+  - ni Expression Engine ni Auto Rack Naming tienen entrada en FOUNDATIONS, lo que no prueba que no existan;
+  - captura añadida en R1: `RackSiblingScan`/`RackSiblingMembership` (I-55) es una **segunda captura gobernada**, alcance de I-55, y
+    no contradice Rack Identity.
+- **ADR-0039 D-16:**
+  - las Custom Properties V1 son cadenas, y el motor solo usa `double` finitos `[MEASURED]`;
+  - CustomProperty, ProjectVariable y ComputedParameter son autoridades disjuntas que la Proposal debe delimitar `[INFERENCE]`.
+- **EXP-01 repetida con las fuentes ampliadas:** **negativa**.
+  - Las capturas y agrupaciones nuevas son coherentes con ADR-0009 (identidad por GUID; igualdad `OrdinalIgnoreCase` en todos los
+    agrupadores leídos).
+  - `forceValidity: true` con `directOnly: true` no contradice ningún ADR; según la documentación externa, la marca no tiene efecto
+    (§17) `[EXTERNAL]`.
+  - Los Discoveries de I-64 e I-62 no son fundaciones y no se usan como fuente consumida.
+  - No hay discrepancia consumida de clase A.
+
+## 11. DC-09 y EXP-09 — Materialidad (R63-DISC-06)
+
+Arquetipo de trabajo: **NEW ARCHITECTURE** (se mantiene). Que el diseño elija un catálogo estático no lo bajaría: LIFECYCLE §3 incluye
+la creación de una autoridad o contrato transversal y M-01 como creador.
+
+| ID | Estado para planificar | Evidencia | Pregunta acotada y quién decide |
+|---|---|---|---|
+| M-01 | **Activado (creador)** | No hay dueño único de métricas de rack o proyecto (§4); ID20 introduce una autoridad de métricas y agregación. Riesgo de modificador si `TotalRacks` coincide en población con `Racks` del BOM y no se reconcilia | Coordinator + Architect: relación con `ConsolidatedBom` (P-08) |
+| M-02 | **Activado (rama pendiente)** | Persistir referencias `rack`/`project` cambia el formato y deja ilegibles los registros en *builds* antiguas (§5.2, prueba ejecutada) | Proposal + Architect + ADR: ¿se persisten referencias a símbolos calculados (necesario para ID23 persistido)? |
+| M-03 | No activado (a verificar) | Los nombres con llaves siguen siendo variables; el árbol persiste `SymbolId`, no texto `[INFERENCE]` | Architect, en la revisión |
+| M-04 | **Activado (UNKNOWN)** | Los consumidores actuales difieren: omiten, saltan con aviso o abortan (§7.2). Un resumen añade estados Unavailable/NotApplicable/Divergent | Owner + Proposal: política de parciales y diagnósticos (P-03, P-07) |
+| M-05 | Activado | `SymbolNamespace`, la validez de `SymbolId` y el cualificador son contratos consumidos (§7.1) | Proposal + Architect |
+| M-06 | Activado | Punto de extensión de símbolos built-in de I-49 y de *providers* por kind | Proposal + Architect |
+| M-07 | **Activado para planificar (UNKNOWN)** | No hay ninguna abstracción de *provider* en las rutas inspeccionadas; la composición por kind está en el Plugin; un contrato compartido de captura y agrupación con I-64 está en consulta (§21). La pregunta no se cierra eligiendo una arquitectura | Master (contrato compartido) y después Proposal + Architect (catálogo o registro) |
+| M-08 | Activado | ADR-0043 fija «exactamente un namespace activo»; activar `rack`/`project` modifica esa afirmación | ADR sucesor; Owner acepta |
+
+**EXP-09: ejecutada; la pregunta M-07 sigue abierta.** Quién la resuelve: Master (frontera compartida), luego Proposal y Architect.
+
+## 12. EXP-01..09: resultados
+
+| EXP | Estado | Resultado |
 |---|---|---|
-| EXP-01 | Contradicción entre FOUNDATIONS, ADR, Freeze y código | **Negativo razonado.** §9 no halló contradicción en lo consumido. Que falten entradas para el Expression Engine y Auto Rack Naming es una ausencia, no una contradicción (CD-ID20-G0-06). La etiqueta de Push Back que falta en `RackListBuilder` la reconoce el propio código (`:92-94`) |
-| EXP-02 | Autoridad ambigua | **Positivo; se propone.** Pregunta: ¿qué autoridad única cuenta racks (definidos o colocados; GUID o copias) y qué autoridad de etiqueta de kind usa un resumen? Área: `RackListBuilder`, `ConsolidatedBom`, `RackInventarioCommands*`, `ProjectVariableScanProjection`, `SystemRegistry`/`KindLabel`/`BomLabel`. Salida: tabla de semánticas por consumidor con la decisión que falta |
-| EXP-03 | *Legacy* no localizable | **Negativo.** Los sobres sin `Id` o `Kind`, la vista nula y el `DynamicSystem` *legacy* se localizaron (§4) |
-| EXP-04 | Contrato con consumidores a más de un salto | **Positivo; se propone.** Pregunta: inventario completo de lectores de `SymbolNamespace`, `SymbolId`, `SymbolScope` y JSON persistido, incluidos los futuros ID23 y la UI de I-48. Área: `Expressions/*`, `ProjectVariables/*`, `Persistence/*Store.cs`, UI de las propiedades vinculables. Salida: lista de lectores con su efecto ante un *token* nuevo |
-| EXP-05 | Invariante sin prueba protectora | **Positivo; se propone.** Invariantes candidatos sin prueba: deduplicar por RackId con copias y sin colocar; ausencia de ciclo entre fases para un símbolo calculado; autoridad de hermanas por kind. Hacen falta pruebas nuevas en un gate autorizado |
-| EXP-06 | Fallo silencioso o semántica no determinable | **Positivo; se propone.** RACKLISTA omite sin aviso los sobres sin `Id`/`Kind` y toma el primer kind sin detectar divergencia; el efecto de `forceValidity: false` sobre referencias borradas es `[UNKNOWN]`. Salida: decisión de fallo cerrado o estado visible para el resumen |
-| EXP-07 | Rama activa sobre la misma autoridad | **Positivo; coordinación.** I-64 declara un inventario de racks por dibujo (§8). Se pide la coordinación vía **Master** que prevé el mandato; Discovery no asigna la propiedad |
-| EXP-08 | Deuda preexistente que el cambio expondría | **Positivo; se registra.** Faltan la etiqueta de Push Back en RACKLISTA y la comparación de hermanas no selectivas en el BOM; RACKLISTA cuenta definiciones sin colocar y el BOM no. Un resumen por sistema las haría visibles. No se arreglan aquí |
-| EXP-09 | M-07 UNKNOWN | **Ejecutada** (§10): matriz M-01..08; M-07 sigue UNKNOWN acotado a la decisión de catálogo cerrado frente a registro |
+| EXP-01 | Repetida; **negativa** | §10 |
+| EXP-02 | **Ejecutada** | §7.2; decisiones P-01..P-03 y P-09 |
+| EXP-03 | **No activada** | El camino *legacy* de las referencias está localizado (`ScanEnvelopes`, `RackSiblingScan`, `RackEnvelopeIdProbe`); su efecto incierto se trató en EXP-06 |
+| EXP-04 | **Ejecutada** | §7.1, con un hueco de prueba (diseño Selectivo con *token* nuevo) |
+| EXP-05 | **Ejecutada** (matriz; sin pruebas nuevas) | §8.2 |
+| EXP-06 | **Ejecutada** | §17; lo que solo se verifica en AutoCAD queda UNKNOWN con escenario manual |
+| EXP-07 | **En coordinación** | Consulta al Master preparada, no enviada (§21) |
+| EXP-08 | **Ejecutada** | §18 |
+| EXP-09 | **Ejecutada; M-07 abierto** | §11 |
 
-**¿Debió activarse alguna EXP que no se activó?** Candidata para la revisión del Coordinator: EXP-03 sobre la *legacy* de
-**copias** (referencias anidadas en otros bloques; `directOnly`) quedó como negativa porque la regla está localizada, pero su
-efecto en el conteo no se midió `[UNKNOWN]`.
+## 13. Trazado de Q1..Q14
 
-## 12. Trazado de Q1..Q14 (mandato, «DISCOVERY REQUIRED»)
-
-| Q | Respuesta | Sección |
+| Q | Respuesta R1 | Sección |
 |---|---|---|
-| 1 | Contrato de símbolos: `SymbolId(namespace, key)` con clave GUID, un namespace, ámbitos `Project`/`Rack` y nombre de visualización no identitario `[MEASURED]` | §3, §2 |
-| 2 | `ExpressionContext` inmutable por operación: tabla, funciones, unidades y límites; constructor interno `[MEASURED]` | §3 |
-| 3 | Grafo: `DependencyGraph` solo entre símbolos de la tabla; las fórmulas de propiedad no son nodos; ciclos y causas raíz en `RegistryEvaluation` `[MEASURED]` | §3, §14 |
-| 4 | Fases: implícitas (variables → propiedades → *effective* → geometría → dibujo/BOM) `[MEASURED]`; no hay fases nombradas | §5, §14 |
-| 5 | *Effective* por sistema: resolutores puros en Application, compuestos en los handlers del Plugin; solo el Selectivo usa variables `[MEASURED]` | §5 |
-| 6 | Conteos actuales: RACKLISTA, RACKBOMTOTAL y su resumen «N racks · M copias», con semánticas distintas `[MEASURED]` | §2, §6 |
-| 7 | RACKLISTA reutilizable: `RackListBuilder` es puro, pero orientado a la presentación (etiquetas, «(sin nombre)», definidos) `[MEASURED]`. Reutilizarlo como autoridad de conteo exige decidir su semántica `[INFERENCE]` | §2, §16 |
-| 8 | BOM: `ConsolidatedBomBuilder` reutilizable para piezas y componentes. **No** reutilizable como fuente de métricas de producto: cuenta instancias de dibujo, aprueba la primera vista en kinds no selectivos y salta racks `[MEASURED]`/`[INFERENCE]` | §2, §3 |
-| 9 | Dedupe por RackId: `OrdinalIgnoreCase` en los consumidores leídos; *legacy* sin `Id` nunca recibe identidad `[MEASURED]`; copias pendientes (D-OPEN-01) `[UNKNOWN]` | §4, §6 |
-| 10 | Métricas dispersas: alturas y fondos por kind, niveles y posiciones por celda, `StorageCapacity` de Push Back (capacidad de un marco, otro concepto), numeración dibujada `[MEASURED]` | §13 |
-| 11 | Comunes de verdad: el kind del sistema y el conteo lógico de racks. Frentes, niveles, posiciones, altura y fondo **no** tienen semántica común entre kinds `[INFERENCE]` | §13 |
-| 12 | Riesgos de ciclos: fórmula de propiedad → `Rack.*` *effective*; variable de proyecto → `Project.*` agregado `[RECONSTRUCTED]` | §14 |
-| 13 | Cruce con ID30: candidato a fundación común en la enumeración lógica; textual en ROADMAP `[MEASURED]`/`[INFERENCE]` | §8 |
-| 14 | 100 % Application/Domain: los *providers* y la agregación pueden ser puros si reciben instantáneas de sobres, conteos de referencias y catálogos ya cargados. El escaneo de BTR, las referencias y la carga de catálogos de secciones son del Plugin `[INFERENCE]` sobre §5-§6 | §5, §6 |
+| 1 | `SymbolId(namespace, key)`, clave GUID para `projectVariable`, un namespace, ámbitos `Project`/`Rack`, nombre de visualización no identitario `[MEASURED]` | §4, §7.1 |
+| 2 | `ExpressionContext` por operación, constructor interno `[MEASURED]` | §4 |
+| 3 | El grafo cubre solo los símbolos de la tabla; las fórmulas de propiedad no son nodos `[MEASURED]` | §4, §16.2 |
+| 4 | Fases implícitas del Selectivo `[MEASURED]`; fase mínima por métrica en §15 `[INFERENCE]` | §6, §15 |
+| 5 | Resolutores puros en Application, composición en el Plugin `[MEASURED]` | §6 |
+| 6 | Productores, poblaciones y magnitudes de §7.2 `[MEASURED]` | §7.2 |
+| 7 | `RackListBuilder.Build` es una agrupación pura **reutilizable**; su admisión (exige `Kind`; omite sin aviso) y su orientación a presentación (nombre, etiqueta) hay que decidirlas antes de adoptarlo como base de `TotalRacks` `[MEASURED]`/`[INFERENCE]` | §7.2 |
+| 8 | `ConsolidatedBomBuilder` sirve para el BOM. No es una fuente de métricas de producto: cuenta instancias de dibujo, la población «cotizable» y la autoridad de primera vista en kinds no selectivos `[MEASURED]`/`[INFERENCE]` | §7.2, §18 |
+| 9 | Dedupe `OrdinalIgnoreCase` en todos los agrupadores leídos; sin RackId no hay grupo `[MEASURED]` | §7.2, §7.3 |
+| 10 | Métricas dispersas: §14 `[MEASURED]` | §14 |
+| 11 | Comunes de verdad: kind y racks lógicos por población. Las demás, por kind `[INFERENCE]` | §14 |
+| 12 | Ciclos: riesgos de extensión futura por dependencias reales `[RECONSTRUCTED]` | §16.2 |
+| 13 | ID30: candidato a contrato compartido, en el Master `[MEASURED]`/`[INFERENCE]` | §9.2, §21 |
+| 14 | 100 % Application: *providers* y agregación puros, si reciben instantáneas de captura y catálogos cargados `[INFERENCE]` | §6, §17 |
 
-## 13. Matriz sistema × métrica candidata
+## 14. Matriz sistema × métrica (R63-DISC-05)
 
-Leyenda: `Supported` = existe hoy una autoridad única con semántica clara; `NotApplicable` = el concepto no existe en el sistema;
-`Unavailable` = el concepto existe pero no hay dato fiable; `NeedsContract` = hay datos, pero falta decidir la semántica o la
-autoridad. Unidades: pulgadas (`LengthUnits.Authority`), conteos enteros. **Soporte actual ≠ propuesta futura.**
+Leyenda de estado: `Supported` = fuente actual única y semántica clara; `NotApplicable`; `Unavailable`; `NeedsContract` = hay datos,
+pero falta decidir la semántica o la autoridad. `NeedsContract` es un resultado válido de Discovery, no una exclusión. Cada celda indica
+**fuente actual · pregunta pendiente · dependencia/fase · datos no fiables**.
 
-| Métrica (candidata) | Selectivo | Dinámico | Push Back | Cantilever | Cabecera | Cama |
+| Métrica | Selectivo | Dinámico | Push Back | Cantilever | Cabecera | Cama |
 |---|---|---|---|---|---|---|
-| **SystemKind** (*token* del sobre) | Supported: `selective` | Supported: `dynamic` | Supported: `pushback` | Supported: `cantilever` | Supported: `cabecera` | Supported: `cama` |
-| **Frentes** | NeedsContract: `Bays` por fondo (`SelectiveRackSystem.cs:41,50`); la rejilla horizontal es compartida entre fondos | NeedsContract: `Fronts`, con `IsActive` (`DynamicRackFront.cs:99-113`) | NeedsContract: ranuras compartidas y lados A/B (`PushBackSystem.cs:18,44`; `PushBackCompositeSystem.cs:16-48`) | NeedsContract: `StationCount` e `IntervalCount` (`CantileverLineDesign.cs:339,367`), góndola sencilla o doble | NotApplicable | NotApplicable |
-| **Niveles** | NeedsContract: varían por bahía (`SelectiveBay.Levels`, `SelectiveRackSystem.cs:125`); la numeración dibujada usa la primera bahía (§2, fila 9) | NeedsContract: `LoadLevels` por frente | NeedsContract: por frente y lado | NeedsContract: niveles de **brazo** (`LevelCount`, `:216`), no niveles de tarima | NotApplicable | NotApplicable |
-| **Posiciones de tarima** | NeedsContract: `PalletCount` por celda + piso; medio frente por ajuste geométrico (`SelectiveFrontalBuilder.cs:351-353`) | NeedsContract: carriles (`PalletCount`) × niveles × `PalletsDeep` por frente `[INFERENCE]` | NeedsContract: fondo efectivo por nivel (`PushBackResolvedFront.PalletsDeep`, `PushBackSystem.cs:258-261`) | NotApplicable (cargas largas, sin tarimas) `[INFERENCE]` | NotApplicable | NotApplicable |
-| **Altura** | NeedsContract: `Height` = bahía más alta (`SelectiveRackSystem.cs:16-17`). Es fuente segura después de resolver, nunca durante la evaluación de propiedades (§14) | NeedsContract: `Height` por frente; zonas de altura de cabecera | NeedsContract: estructura compartida | NeedsContract: altura de columna por estación (automática o manual) | Supported (candidato): `RackFrameConfiguration.Height` (`:17`) `[INFERENCE]` | NotApplicable |
-| **Fondo** | NeedsContract: `DepthCount` + `FondoDepths` (`SelectiveRackSystem.cs:29,35`) | NeedsContract: `PalletsDeep` por frente | NeedsContract: fondo efectivo por nivel y lado | NotApplicable o NeedsContract (base o brazo) `[UNKNOWN]` | Supported (candidato): `RackFrameConfiguration.Depth` (`:18`) `[INFERENCE]` | NeedsContract: `LaneDepth` (`FlowBedConfiguration.cs:13`) |
+| **SystemKind** (texto; **no** sirve para la vía numérica) | Supported · *token* `selective` · sin pregunta · instantánea · sobre sin `Kind` = caso propio | Supported (`dynamic`) | Supported (`pushback`) | Supported (`cantilever`) | Supported (`cabecera`) | Supported (`cama`) |
+| **Frentes** (numérico) | NeedsContract · `Bays.Count` y `BaysForFondo(k).Count` (1:1 con el resuelto, `SelectiveGeometryResolver.cs:121-136, 244-260`) · ¿fondo 0, el más largo o por fondo?; ¿cuentan los vacíos? · estructura del diseño, sin catálogo ni propiedades vinculables · diseño ilegible o hermanas divergentes = estado | NeedsContract · `Fronts` (`IsActive`) · ¿cuentan los frentes en blanco? · estructura del diseño · ídem | NeedsContract · ranuras compartidas, lados A/B · ¿por lado o compartidas? · resolución del compuesto · ídem | NeedsContract · `StationCount`/`IntervalCount` (`CantileverLineDesign.cs:339, 367`) · ¿estaciones, intervalos o caras? · diseño · ídem | NotApplicable | NotApplicable |
+| **Niveles** | NeedsContract · `Levels` por bahía (`SelectiveRackSystem.cs:125`) · ¿máximo, por bahía o total? · diseño · ídem | NeedsContract · `DynamicFrontActivation.EffectiveLoadLevels` por frente (**fuente única** por frente) · agregación a nivel rack · diseño o resuelto · ídem | NeedsContract · por frente y lado · ídem · resolución · ídem | NeedsContract · niveles de **brazo** · no equivalen a niveles de tarima | NotApplicable | NotApplicable |
+| **Posiciones de tarima** | NeedsContract · `PalletCount` por celda + piso; medio frente por ajuste geométrico · ¿se incluye el medio frente? · el medio frente exige geometría (longitud de tramo) · ídem | NeedsContract · carriles × niveles efectivos × `PalletsDeep` · confirmar la fórmula · resuelto · ídem | NeedsContract · fondo efectivo por nivel y lado · ídem · resolución · ídem | NotApplicable (cargas largas) `[INFERENCE]` | NotApplicable | NotApplicable |
+| **Altura** | NeedsContract · `SelectiveRackSystem.Height` (posterior al *resolve*, catálogo) · ¿altura máxima del rack? · **posterior al resolve**; insegura durante la evaluación de propiedades (§16.2) · ídem | NeedsContract · `Height` por frente · agregación · resuelto | NeedsContract · estructura compartida · resuelto | NeedsContract · columna por estación · resuelto | Supported (candidato) · `RackFrameConfiguration.Height` · sin pregunta de agregación · configuración | NotApplicable |
+| **Fondo** | NeedsContract · `DepthCount`, `FondoDepths` · ¿conteo o medida? · diseño o resuelto | NeedsContract · `PalletsDeep` por frente | NeedsContract · fondo efectivo por nivel y lado | `[UNKNOWN]` | Supported (candidato) · `Depth` | NeedsContract · `LaneDepth` |
 
-**Agregados de proyecto:**
-- `TotalRacks`: NeedsContract (D-OPEN-01/02).
-- `RacksBySystem`: NeedsContract, porque depende de `TotalRacks`; la clave candidata es el *token* del sobre.
-- `TotalFrentes` y `TotalPosiciones`: NeedsContract, sin semántica común entre kinds; agregarlos por kind evita equivalencias falsas
-  `[INFERENCE]`.
+**Métrica numérica para la vía ID23: Frentes del Selectivo.**
+- **Preferida:** frentes del **fondo 0** (cara frontal), contando los vacíos; numérica, de diseño estructural, sin catálogo y sin
+  dependencia de propiedades vinculables `[INFERENCE]` sobre §3, fila 10.
+- **Segunda:** frentes del **fondo más largo** (la rejilla maestra del resolver, `SelectiveGeometryResolver.cs:138-145`).
+- Ninguna está congelada; decide el Owner (P-05).
+- El ejemplo del mandato `Rack.Frentes * 2` quedaría bien definido en un contexto de rack con cualquiera de las dos, una vez decidida
+  la semántica.
 
-**Primer conjunto candidato (PROPUESTA, no congelada):**
-- Por rack: `SystemKind`.
-- Por proyecto: `TotalRacks` lógico y `RacksBySystem`, con identidad, colocación y *legacy* decididas.
-- Como métricas por kind, solo donde una autoridad resuelta sea inequívoca tras el contrato: Altura y Fondo de Cabecera; frentes del
-  Selectivo como `Bays` del fondo 0, si el Owner acepta esa semántica.
+**Subconjunto inicial de estudio** (no aprobado como suficiente): `SystemKind`, `TotalRacks`, `RacksBySystem` + `Frentes` del Selectivo
+como métrica numérica de prueba de la vía ID23. No se asignan códigos numéricos a los kinds. No se elige la bahía 0, la altura máxima
+ni la suma de niveles como decisión de producto.
 
-Todo lo demás queda `NeedsContract` hasta la Proposal. **Sin identidad *legacy* inventada:** un sobre sin `Id` no cuenta como rack;
-cuenta como «inclasificable» (estado de diagnóstico).
+## 15. Dependencias y fase mínima por métrica candidata (R63-DISC-03)
 
-## 14. Símbolos, fases, grafo y riesgos de reentrada
+| Métrica | Entradas | Dependencias | Fase mínima (hipótesis, no habilitada) | Consumidor | Consistencia de la instantánea | Catálogo/geometría | Efectos laterales | Invalidación |
+|---|---|---|---|---|---|---|---|---|
+| `TotalRacks` | Instantánea de sobres (Id, Kind, View, Section) + hechos de colocación según la población | Política de población y admisión (P-01..P-03) | **Metadatos**: sin deserializar `Design` ni resolver | Resumen, I-64 (presentación) | Una sola captura por lectura | No | Ninguno: solo lectura | Alta, baja o cambio de identidad o de colocación |
+| `RacksBySystem` | La de `TotalRacks` + *token* `Kind` | Ídem + clave de kind (P-09) | Metadatos | Resumen | Ídem | No | Ninguno | Ídem + cambio de kind |
+| `SystemKind` (rack) | `Kind` del sobre representativo | Hermanas coherentes en `Kind` (hoy RACKLISTA no lo verifica) | Metadatos | Resumen | Por rack | No | Ninguno | Cambio de kind |
+| `Frentes` (Selectivo) | `Design` deserializado (bahías por fondo) | Autoridad de hermanas (`SelectiveAuthoredAuthority`); semántica P-05 | **Diseño estructural**: deserializar sin resolver la geometría; no depende de las propiedades vinculables | Resumen; **ID23** en un contexto de rack | Por rack | No | Ninguno | Edición del diseño |
+| `Niveles` (Dinámico) | `Design` (frentes) | `DynamicFrontActivation.EffectiveLoadLevels`; agregación P-05 | Diseño estructural (la autoridad admite el diseño sin resolver) | Resumen | Por rack | No | Ninguno | Edición |
+| `Altura` (Selectivo) | *Effective* + catálogo | Resolver; propiedades vinculables (holgura) | **Posterior al resolve** | Resumen, ID23 | Por rack, con registro y catálogo de la misma lectura | Sí | Ninguno (resolver puro) | Diseño, variables o catálogo |
+| Posiciones (Selectivo) | *Effective* (celdas) + geometría para el medio frente | Resolver; P-05 | Posterior al resolve (medio frente) | Resumen | Ídem | Sí (medio frente) | Ninguno | Ídem |
+| Agregados de capacidad del proyecto | Todas las métricas por rack | Todas las anteriores | Posterior al resolve de cada rack incluido | Resumen | Una lectura de registro y catálogo por resumen, como RACKBOMTOTAL | Según la métrica | Ninguno | Cualquier cambio de los racks incluidos |
 
-- **Caso del mandato** (`Rack.Altura` → *effective* `Height` → `Height` *authored* = `Rack.Altura + 2`) `[RECONSTRUCTED]`:
-  - la altura no es hoy una propiedad vinculable;
-  - sí lo es `VerticalClearance` (§2, fila 4), y por las reglas de derivación la altura resuelta depende de ella (`SelectivePalletDesign.cs:9-16`);
-  - una fórmula `VerticalClearance = Rack.Altura / 10` se evaluaría en la fase de propiedades (§5, paso 3), **antes** de que exista
-    la altura;
-  - ese ciclo cruza fases y `DependencyGraph` no lo ve, porque las fórmulas de propiedad no son nodos.
-- **Agregados en variables** `[RECONSTRUCTED]`:
-  - si `Project.TotalRacks` u otro agregado fuera legible desde una **variable de proyecto** (consumidor `Project`, fase previa a
-    todos los racks), y un rack enlazara una propiedad a esa variable, el ciclo cruzaría proyecto → rack → agregado;
-  - incluso sin ciclo, el valor del agregado depende de todos los racks: evaluarlo durante el registro supondría resolver el
-    dibujo entero (rendimiento, §15).
-- **Fronteras del modelo actual** `[MEASURED]`:
-  - `ExpressionContext` es por operación y sin estado ambiente;
-  - el cualificador fija `ProjectVariable`;
-  - `BindingInspection` rechaza cualquier namespace distinto de `projectVariable` (`:359-364`);
-  - un `Rack.*` productivo solo puede entrar por decisiones explícitas de contrato, no por accidente.
-- **Hipótesis de fases para la Proposal** (no decidido):
-  - (i) los *built-ins* previos a resolver: ninguno identificado;
-  - (ii) parámetros posteriores a resolver: disponibles para consumidores posteriores, como el ID23 (cantidades de BOM en el
-    contexto de un rack) y los resúmenes, y **no** para las fórmulas de propiedad;
-  - (iii) agregados de proyecto: no disponibles para las variables de proyecto.
-- La frontera que ya existe (los consumidores de ámbito `Rack` solo leen `projectVariable`) es la equivalente que menciona el
-  mandato; la decisión es si se amplía y para qué consumidores `[INFERENCE]`.
-- **Vía para ID23:** una tabla de símbolos de ámbito `Rack` construida *después* del *effective* de un rack concreto (su
-  `SelectiveRackSystem` u homólogo), en un `ExpressionContext` propio y sin persistirlos como ProjectVariable. Es compatible con P26.1
-  (el núcleo no nombra `VariableType`) `[INFERENCE]`.
-- **Procedencia para ID28/ID29** (candidatos de la Proposal): `SymbolId`, *provider*/kind, autoridad de origen (§13), fase y
-  RackId. Las causas raíz de `RegistryEvaluation` ya son el modelo de explicación existente `[INFERENCE]`.
+**Separación de costes** `[INFERENCE]`, sobre `RackBlockFinder.cs:51-55`, el §9.8 de I-64 y `SelectiveBomBuilder.cs:54-59`:
+- recorrer metadatos (`BlockTable` + Xrecord + deserializar el sobre);
+- deserializar `Design`;
+- resolver el modelo (catálogo y geometría).
 
-## 15. Plan de caracterización de rendimiento (escenarios del mandato)
+Contar RackIds solo necesita lo primero.
 
-**Mediciones disponibles hoy** `[MEASURED]`:
-- RACKLISTA y RACKBOMTOTAL recorren las definiciones **una vez** con `forceValidity: false`, deliberadamente barato (`RackBlockFinder.cs:51-55`);
-- RACKBOMTOTAL resuelve cada rack aprobado completo y lee el registro una sola vez;
-- `SelectiveBomBuilder` apaga las decoraciones porque un rack de 20 frentes × 4 fondos generaba miles de instancias por BOM (`:54-59`);
-- `G11CandidateValidationTests` mide tiempos de la cadena de I-49.
+## 16. Identidad, fases y símbolos
 
-**No hay ninguna medición de métricas de ID20 ni tiempos de comandos registrados en AutoCAD** `[UNKNOWN]`.
+### 16.1 Exclusiones distintas (R63-DISC-01)
 
-**Plan futuro** (necesita pruebas nuevas en un gate autorizado; sin cachés previos y sin tiempos inventados):
-
-| Escenario | Instrumento propuesto | Variables |
+| Caso | Hecho actual | Tratamiento pendiente |
 |---|---|---|
-| Métrica de un rack | prueba de Core con `Stopwatch` y conteo de llamadas a resolutores por *provider* | kind; tamaño del diseño |
-| Agregación de proyecto | prueba de Core sobre instantáneas sintéticas de sobres (sin AutoCAD) | N = 1, 10, 100, 1000 racks |
-| N racks y múltiples vistas | mismas instantáneas con 1-3 vistas y secciones laterales; comprobar un solo *resolve* por RackId | vistas y secciones por rack; copias |
-| Lecturas repetidas | dos lecturas del resumen sobre la misma instantánea; contar resoluciones | sin caché frente a «resolver una vez por orden», el patrón de RACKBOMTOTAL |
+| Sin identidad (`Id` vacío o sobre ilegible) | Excluido por RACKLISTA (sin aviso) y por el BOM (aborta si está colocado) `[MEASURED]` | Diagnóstico «inclasificable»; nunca se inventa identidad |
+| Con `Id` y `Kind` ausente o desconocido | RACKLISTA lo excluye; `FindRackBlocks` lo tolera; el BOM aborta si el kind no tiene handler `[MEASURED]` | ¿Cuenta como rack lógico con kind desconocido? (P-02) |
+| Fallo de una métrica (diseño ilegible, hermanas divergentes, variable rota) | El BOM salta o aborta según el caso `[MEASURED]` | Estado de esa métrica; **no** saca al rack de `TotalRacks` (I-05), si así se decide (P-07) |
 
-## 16. Decisiones abiertas (insumos de la Proposal, no Freeze)
+### 16.2 Fases y ciclos por dependencias reales
 
-| ID | Decisión | Quién decide |
-|---|---|---|
-| D-OPEN-01 | Qué es «un rack» para `TotalRacks`: GUID lógico, copias colocadas o definido sin colocar; qué hacer con el sobre *legacy* sin `Id` | Owner (producto), con el Coordinator |
-| D-OPEN-02 | Autoridad de enumeración lógica (nueva y pura, o adoptar una política existente) y su propiedad frente a I-64 | **Master Orchestrator** (fundación común) y Coordinator |
-| D-OPEN-03 | Identidad de los símbolos calculados: *token* de namespace y forma de clave (`SymbolId` exige hoy un GUID); nombre visible frente a identidad | Proposal + Architect; ADR sucesor de ADR-0043 (M-08) |
-| D-OPEN-04 | Disponibilidad por fase y consumidor: fórmulas de propiedad, variables de proyecto, ID23, resumen | Proposal + Architect |
-| D-OPEN-05 | Semántica por kind de frentes, niveles, posiciones, altura y fondo (§13) | Owner (producto) |
-| D-OPEN-06 | Autoridad de hermanas por kind para las métricas (`BomAuthoredAuthority` o puertos AUTH-13) y trato de la Cama | Proposal + Architect |
-| D-OPEN-07 | Estados Unavailable, NotApplicable, Divergent o Unreadable y política de resumen parcial frente a abortar (M-04) | Proposal + Owner |
-| D-OPEN-08 | Relación con el contador visible «N racks · M copias» de RACKBOMTOTAL: fuente única o convivencia declarada (M-01) | Owner + Coordinator |
-| D-OPEN-09 | Clave de `RacksBySystem`: *token* del sobre frente a `RackSystemKind`; autoridad de etiqueta | Proposal |
-| D-OPEN-10 | Persistir o no las referencias `Rack.*`/`Project.*` (M-02; compatibilidad hacia atrás) | Proposal + Architect + ADR |
-| D-OPEN-11 | Frontera con CustomProperty según ADR-0039 D-16 (§9.3) | Proposal |
-| D-OPEN-12 | Modelo neutral del resumen (totales, por sistema, por rack, diagnósticos) y unidades | Proposal |
+- **Riesgo futuro** (no se puede ejecutar hoy porque no hay *built-ins*):
+  - la holgura vertical es vinculable (§3, fila 4), y la altura resuelta depende de ella (`SelectivePalletDesign.cs:9-16`);
+  - una fórmula de holgura que leyera una altura calculada se evaluaría antes de que exista;
+  - `DependencyGraph` no ve ese ciclo, porque las fórmulas de propiedad no son nodos `[RECONSTRUCTED]`.
+- **No todo `Project.*` depende del *effective*:** `TotalRacks` y `RacksBySystem` solo dependen de metadatos (§15); las agregaciones
+  de capacidad sí dependen de cada rack resuelto `[INFERENCE]`.
+- Un prefijo de namespace **no** decide la fase. Fase y ámbito se comprueban por métrica.
+- La disponibilidad de una métrica de diseño estructural (por ejemplo `Frentes`) dentro de las fórmulas de propiedad sigue siendo
+  **hipótesis**. No depende de las propiedades vinculables de hoy, pero una propiedad vinculable futura que cambiara la estructura
+  rompería esa independencia: no se habilita.
 
-**Preguntas reservadas al Coordinator:**
-1. ¿Se eleva al Master D-OPEN-02 (EXP-07) antes de la Proposal?
-2. ¿Qué EXP positivas (02, 04, 05, 06) se autorizan, y con qué límites?
-3. ¿Se acepta el criterio de no versionar pruebas nuevas hasta que exista un gate que lo permita?
+### 16.3 Identidad de símbolos calculados (alternativas; no se decide)
 
-## 17. Búsquedas realizadas y huecos
+| Alternativa | Contrato de namespace | Compatibilidad con las reglas de `projectVariable` | Riesgos |
+|---|---|---|---|
+| A. Clave GUID **preasignada y estable** por parámetro calculado (catálogo fijo), en un namespace nuevo | Validez de clave por namespace (hoy común) | Se conservan la forma `#d`/`#{}` y `Q(key)`; el lexer y el formatter ya manejan GUIDs | Hay que fijar los GUID como contrato; el nombre visible es aparte |
+| B. Clave **textual estable** (por ejemplo `frentes`) en un namespace nuevo | Cambiar `IsValidProjectVariableKey` por una validez por namespace; revisar el lexer, el formatter y el cualificador | Riesgo de alterar el cualificador de `projectVariable` si no se separa por namespace | Más cambios en contratos consumidos (M-05) |
 
-**Búsquedas** (`grep` sobre `src/` y `tests/` en `b557ea3b`):
-- `ScanEnvelopes(`, `RackListBuilder\.`, `ConsolidatedBom`, `BomAuthoredAuthority\.`;
-- `GroupBy(... Id|RackId)`, `RackId, StringComparer`;
-- `ExpressionContext.Create`, `SymbolTable.Create`, `RegistryEvaluation\.`, `SymbolScope\.`;
-- `ReservedName|UnknownNamespace|ScopeViolation`, `Rack\.Frentes|"Rack"|Project\.Total|ID20`;
-- `NumberFronts|NumberLevels`;
-- `posiciones|PalletPositions|PositionCount|Capacity|TotalPallets|PalletSlots`;
-- `RackCount|TotalCopies`;
-- `class RackAuthoredComparatorPorts|RackAuthoredComparatorPorts\.`;
-- `SystemRegistry\.`, `PersistedBoundExpressionJson`;
-- `Stopwatch|Elapsed|Performance|Benchmark`.
+En ambas: nunca se deriva la identidad del nombre visible, no cambia en cada evaluación y se conservan **exactamente** las reglas de
+`projectVariable`. La elección es de Proposal + Architect + ADR (M-08).
+
+## 17. EXP-06 — Qué observa y qué omite cada consumidor
+
+**Fuente externa** `[EXTERNAL]`: referencia oficial de Autodesk de `BlockTableRecord.GetBlockReferenceIds` (Managed Reference Guide,
+página de 2022, consultada el 2026-10-01; no se verificó la de 2025):
+- devuelve solo las referencias **activas**;
+- `directOnly: true` excluye las referencias del bloque padre cuando el bloque está anidado;
+- `forceValidity` «solo aplica si `directOnly` es false».
+
+| Caso | Salida actual | Diagnóstico | Límite de la prueba |
+|---|---|---|---|
+| Rack colocado en Model Space | Cuenta en las dos capturas | — | Plugin, solo en AutoCAD |
+| Rack colocado en un layout de Paper Space | Cuenta como referencia directa en `ScanEnvelopes`; `RackSiblingScan` la marca como layout | Ninguno | `[RECONSTRUCTED]`; escenario manual: rack en un layout, RACKLISTA y RACKBOMTOTAL |
+| Rack anidado dentro de otro bloque colocado N veces | `directOnly: true` cuenta **una** referencia (la de dentro de la definición contenedora), no N; `RackSiblingScan` la marca como anidada | Ninguno | `[EXTERNAL]` + `[RECONSTRUCTED]`; escenario manual: contenedor ×3 |
+| Referencia borrada | Excluida (solo referencias activas) | — | `[EXTERNAL]`; escenario manual: borrar, contar, deshacer y contar |
+| Definición sin referencias | RACKLISTA la lista con 0 copias; el BOM la salta si es inclasificable y la excluye si no está colocada | Ninguno | `[MEASURED]` |
+| Definición de una xref | `ScanEnvelopes` la omite; `RackSiblingScan` la incluye marcada | Ninguno | `[MEASURED]` (código) |
+| Sobre sin `Id` / sin `Kind` | Ver §16.1 | RACKLISTA: ninguno; BOM: mensaje | `[MEASURED]` |
+| Kinds divergentes entre hermanas | RACKLISTA toma el primero; el BOM usa el kind de la primera hermana para el handler | Ninguno | `[MEASURED]`; prueba futura posible en Core sobre `RackListBuilder` |
+| `forceValidity: true` frente a `false` con `directOnly: true` | Sin diferencia según la documentación externa | — | `[EXTERNAL]`; el comentario del código que atribuye coste a `true` no se verificó en el host `[UNKNOWN]` |
+
+## 18. EXP-08 — Deuda que un resumen podría exponer
+
+| Hallazgo | Disposición |
+|---|---|
+| Falta la etiqueta de Push Back en `RackListBuilder.KindLabel` | **No consumir** la etiqueta de RACKLISTA como identidad ni como texto del resumen; la clave es el *token* (P-09). No se arregla |
+| `BomAuthoredAuthority` aprueba la primera vista en kinds no selectivos | **No consumir** como autoridad de métricas; usar la autoridad de hermanas por kind (decisión de Proposal; P-06) |
+| RACKLISTA omite sin aviso los sobres sin `Id`/`Kind` | **Preservar** RACKLISTA tal cual; el resumen necesita diagnósticos propios (P-03) |
+| Las poblaciones de RACKLISTA (definidos) y RACKBOMTOTAL (cotizados) difieren | **Preservar**; declarar la población de `TotalRacks` (P-01) y su relación con `Racks.Count` (P-08) |
+| Copias con `directOnly` (anidados ×1) | **Dependencia**: no afecta a `TotalRacks` (identidad), sí a cualquier magnitud física futura; fuera de esta orden |
+| El BOM del Selectivo cuenta instancias de dibujo | **No consumir** como fuente de métricas de producto |
+
+## 19. Rendimiento: plan (sin tiempos inventados)
+
+- **Disponible** `[MEASURED]`:
+  - una sola travesía de definiciones por orden en RACKLISTA y RACKBOMTOTAL;
+  - RACKBOMTOTAL resuelve cada rack aprobado y lee el registro una vez;
+  - las decoraciones se apagan para contar;
+  - `G11CandidateValidationTests` cronometra la cadena de I-49.
+- **No hay** mediciones de ID20 ni de comandos en AutoCAD `[UNKNOWN]`.
+- **Plan futuro** (necesita pruebas nuevas en un gate autorizado):
+  1. métrica de un rack por clase de fuente (metadatos, diseño estructural, posterior al *resolve*);
+  2. agregación sobre instantáneas sintéticas de N = 1, 10, 100 y 1000 racks;
+  3. N racks con varias vistas o secciones: comprobar un solo *resolve* por RackId y por lectura;
+  4. lecturas repetidas: contar resoluciones con y sin «resolver una vez por orden».
+
+  Se separa el coste de los metadatos del coste de la resolución (§15).
+
+## 20. Decisiones pendientes
+
+### 20.1 De producto (Owner, con alternativas)
+
+| ID | Pregunta | Alternativas | Consecuencias |
+|---|---|---|---|
+| P-01 | Población de `TotalRacks` | (a) **definidos** en el dibujo (como RACKLISTA); (b) **colocados** (al menos una referencia activa en un ámbito admitido); (c) **cotizables** (como el BOM) | (a) cuenta racks dibujados y borrados sin purgar; (b) coincide con lo visible; (c) mezcla la validez del BOM con el conteo |
+| P-02 | Kind ausente o desconocido con `Id` válido | (a) cuenta como rack con kind «desconocido» y diagnóstico; (b) no cuenta, con diagnóstico | (a) `TotalRacks` refleja la identidad; (b) `RacksBySystem` suma `TotalRacks` |
+| P-03 | Diagnósticos y parciales | (a) siempre total + lista de diagnósticos; (b) total marcado «parcial» si hay exclusiones | Visibilidad frente a simplicidad |
+| P-04 | Ámbitos de colocación admitidos | Model Space; Paper Space; anidados; xref | Afecta a P-01 (b) |
+| P-05 | Semántica por kind de las métricas numéricas, empezando por los frentes del Selectivo | Fondo 0 (preferida) o fondo más largo; frentes vacíos sí o no | Define la vía ID23 |
+
+### 20.2 De arquitectura (Proposal + Architect; ADR cuando corresponda)
+
+- P-06: autoridad de hermanas por kind para las métricas;
+- P-07: estados por métrica;
+- P-08: relación con `ConsolidatedBom.Racks.Count`;
+- P-09: clave de `RacksBySystem` (*token*);
+- P-10: identidad de los símbolos (§16.3);
+- P-11: persistencia de referencias (M-02);
+- P-12: fases por consumidor;
+- P-13: modelo neutral del resumen y unidades.
+
+### 20.3 Reservadas al Master
+
+P-14: contrato mínimo compartido con I-64, su responsable, consumidores y secuencia (§21).
+
+## 21. Estado de la coordinación con el Master (EXP-07)
+
+- Consulta: `I63_I64_Consulta_Contrato_Compartido.txt` del Coordinator de I-63 (4 227 bytes, SHA-256 `e4ca7e8b…e935e930`).
+- **No enviada por esta sesión:** no tiene canal con el Master (sesiones visibles: I-64, I-62, I-52, ARC-02). Se entrega al Owner
+  para que la haga llegar.
+- **Estado: SIN RESPUESTA.** No se ha declarado ningún envío ni respuesta.
+- Mientras se coordina, se detienen la elección del contrato compartido, la Proposal y el Freeze. No se adopta la propuesta de I-64 ni
+  su código, y su caché o su inventario runtime no se tratan como autoridad de métricas.
+
+## 22. Búsquedas y huecos
+
+**Búsquedas R0** (en `src/` y `tests/`): `ScanEnvelopes(`, `RackListBuilder\.`, `ConsolidatedBom`, `BomAuthoredAuthority\.`,
+`GroupBy(… Id|RackId)`, `ExpressionContext.Create`, `SymbolTable.Create`, `RegistryEvaluation\.`, `SymbolScope\.`,
+`ReservedName|UnknownNamespace|ScopeViolation`, `NumberFronts|NumberLevels`, `posiciones|PalletPositions|Capacity…`,
+`RackCount|TotalCopies`, `RackAuthoredComparatorPorts`, `SystemRegistry\.`, `PersistedBoundExpressionJson`,
+`Stopwatch|Elapsed|Benchmark`.
+
+**Búsquedas R1:**
+- `SymbolNamespace`, `SymbolNamespaces\.`, `SymbolId\.ProjectVariable|new SymbolId(`, `SymbolScope\.`, `ExpressionFormatter\.`,
+  `ExpressionBinder\.Bind`, `IsValidProjectVariableKey|IsDFormatGuid`, `PersistedBoundExpressionJson` (Application, UI, Plugin);
+- `RackCad.Application.Expressions|LinkedPropertyEdit` (UI, Plugin);
+- `GetBlockReferenceIds` (Plugin);
+- `RackPhysicalSelection`, `RackSiblingScan`, `FindRackBlocks`, `DynamicFrontActivation`;
+- `projectVariable` y `Namespace` en las pruebas.
 
 **Huecos:**
-- No se ejecutó ningún camino del Plugin (sin AutoCAD).
-- No se inspeccionó el comparador de grupos de `RackProjectionPipeline`.
-- No se midió el efecto de `forceValidity: false` ni de las referencias anidadas en el conteo de copias.
-- No se leyó la UI de las propiedades vinculables más allá de su autoría.
-- No se inspeccionó código de I-64, I-62 ni I-52: sus ramas no tienen producto.
-- Ninguna afirmación funcional sobre ramas ajenas se presenta como medida.
+- no se ejecutó nada del Plugin ni de AutoCAD;
+- no se probó un *token* nuevo en el diseño Selectivo;
+- no se inspeccionó código de I-64, I-62 ni I-52;
+- la documentación de `GetBlockReferenceIds` es de 2022;
+- no se inventariaron todos los consumidores de `DynamicFrontActivation` (32 archivos).
 
-## 18. Riesgos del mandato → estado tras Discovery
+## 23. Riesgos del mandato → estado
 
-| Riesgo (orden G0 y mandato) | Estado |
+| Riesgo | Estado R1 |
 |---|---|
-| Contar vistas en vez de RackId | Mitigado en los consumidores actuales (agrupan por GUID) `[MEASURED]`; queda abierta la semántica de copias (D-OPEN-01) |
-| *Legacy* sin identidad | Hoy no se cuenta como rack y no se inventa identidad `[MEASURED]`; falta decidir cómo se presenta (D-OPEN-07) |
-| Hermanas divergentes o ilegibles | Comparación estricta solo en el Selectivo; la Cama no tiene (D-OPEN-06) |
-| Aritmética duplicada | Real: tres conteos con semánticas distintas (EXP-02) |
-| Fases y ciclos ocultos | Real entre fases; el grafo no los ve (§14) |
-| Nombres visibles como identidad | El motor y RACKLISTA usan identidad; los nombres no se usan como clave `[MEASURED]` |
-| Equivalencias falsas entre sistemas | Real (§13); se propone agregar por kind |
-| Parciales como totales | RACKBOMTOTAL salta racks con aviso y su resumen «N racks» excluye los saltados `[MEASURED]` (D-OPEN-07/08) |
-| Resoluciones repetidas | Sin medición; plan en §15 |
-| Solapamiento con ID30 | Candidato a fundación común (§8, D-OPEN-02) |
+| Contar vistas en vez de RackId | Decidido por el mandato; los agrupadores leídos lo cumplen; falta la población (P-01) |
+| *Legacy* sin identidad | Sin identidad inventada; falta el diagnóstico (P-03) |
+| Hermanas divergentes o ilegibles | Autoridad por kind (P-06) |
+| Aritmética duplicada | No demostrada: hay magnitudes distintas. El riesgo aparece si `TotalRacks` adopta una población sin reconciliar (P-08) |
+| Fases y ciclos ocultos | Riesgo de extensión futura; tablas de dependencia (§15-16) |
+| Nombres visibles como identidad | Excluido por el motor y los agrupadores |
+| Equivalencias falsas | Métricas por kind; ningún código numérico para los kinds |
+| Parciales presentados como totales | P-03 |
+| Resoluciones repetidas | Los metadatos y la resolución se separan (§15, §19) |
+| Solapamiento con ID30 | Consulta al Master (§21) |

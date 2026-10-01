@@ -229,3 +229,55 @@ Sobre ese SHA, el Coordinator declaró G0 = PASS (CD-I63-G0-10).
   `deploy/`, CI, ROADMAP, HANDOFF, FOUNDATIONS ni ADR.
 - `gate-contract.F0-INV.draft.json` sigue sin emitir (CD-I63-F0-02). La CI exacta del commit que contiene este archivo se informa al
   Coordinator.
+
+## 11. F0-DISCOVERY R1
+
+Órdenes recibidas del Coordinator (no se versionan; resumen en las [decisiones](../decisions/I-63.md) §2):
+
+| Archivo | Bytes | SHA-256 |
+|---|---:|---|
+| `I63_F0_R1_Revision_y_Continuacion.txt` | 14 915 | `c0241b82e75697ac7d46bd7ba4ec6f26d56d533d901bc45a335e22607144a78b` |
+| `I63_I64_Consulta_Contrato_Compartido.txt` (consulta para el Master) | 4 227 | `e4ca7e8b6656390c42361d5be2005e13a93a04e0725e619e8f533f01f935e930` |
+
+### 11.1 CI de la entrega F0 (R0)
+
+| Commit | SHA | Corrida `push` | Resultado |
+|---|---|---|---|
+| Discovery R0 | `dbfe1150007b7ea6819df7277e35666fe67af056` | 36895741267: `ref` = `refs/heads/architecture/parametros-calculados-resumen-proyecto`, `head_sha` exacto | `success`; los cuatro jobs requeridos de `AGENTS.md` en `success` |
+
+### 11.2 Preflight de R1 (2026-10-01T17:16:34Z)
+
+- `HEAD` = `ls-remote` = `dbfe1150`; árbol limpio.
+- `origin/main` = `819955d6`, ancestro de `HEAD`: **sin rebase**.
+- Ramas remotas: I-52 `c1982b2a`, I-62 `f25dd1d5`, I-63 `dbfe1150`, I-64 `cf034e59`. Coinciden con lo que observó el Coordinator.
+- Las ramas de I-62 e I-64 solo cambian `docs/` respecto de `main`. No se repitió `merge-tree` ni se limpiaron objetos.
+
+### 11.3 Método y ejecución
+
+- Discovery R1 directo; ningún participante de IA y ninguna delegación §16.
+- **Fuente externa consultada** (EXP-06): referencia oficial de Autodesk de `BlockTableRecord.GetBlockReferenceIds`,
+  `https://help.autodesk.com/cloudhelp/2022/ENU/OARX-ManagedRefGuide/files/OARX-ManagedRefGuide-Autodesk_AutoCAD_DatabaseServices_BlockTableRecord_GetBlockReferenceIds__MarshalAsUnmanagedType_U1__bool__MarshalAsUnmanagedType_U1__bool.html`,
+  consultada el 2026-10-01. Es una página de 2022; la de 2025 no se verificó. Es fuente externa, no ejecución en el host.
+- **Pruebas existentes ejecutadas** para preguntas nuevas (sin editar fuentes; SDK de usuario 8.0.423; árbol limpio antes y después):
+  - primer intento (17:19:35Z-17:19:51Z, con `--no-build`): binarios compilados en `b557ea3b`. **No cuenta** como evidencia de
+    `dbfe1150`;
+  - corrida que cuenta (17:20:06Z-17:21:25Z), compilada sobre `dbfe1150` (`RackCad.Application.dll` = `1.0.0+dbfe1150…`);
+  - filtro: `FullyQualifiedName~RackCad.Tests.G8PersistenceIntegrationContractTests.UNKNOWN_OR_MALFORMED_EXPRESSION_PAYLOAD_IS_STRUCTURALLY_UNREADABLE`
+    y `FullyQualifiedName~RackCad.Tests.SharedPhysicalFactsTests.AUTH07_DEDUPES_IN_STABLE_ORDER_AND_GROUPS_ONLY_OBSERVED_RACK_IDS`;
+  - resultado: **9 seleccionadas, 9 superadas**, incluido el caso `"Namespace":"rack"`;
+  - TRX fuera del repositorio, SHA-256 `A1F5A8FA2A8DB24F505BC3CCF7BDE3C6678985EBB225F8D9DB8657DC4B7560E9`.
+- Salidas: el Discovery reescrito como R1 (la R0 queda en `dbfe1150`, blob `d9426070…`), el contrato, las decisiones, esta evidencia
+  y el estado. Nada fuera de las cinco rutas autorizadas.
+
+### 11.4 Coordinación
+
+- **Consulta al Master:** **no enviada** por esta sesión, que no tiene canal con él. `ListAgents` a las 17:16Z mostró solo «I - 64»,
+  «I - 62», «I - 52» y «ARC - 02». Se entrega al Owner. Estado: sin respuesta.
+- **Canal con I-64** (sesión `local_1c89299c…`):
+  - recibida su consulta de frontera, informativa y sin pedir pausa ni ventana;
+  - respuesta de I-63 (msg `7d6433c4-ca21-41f6-b9a4-6e1370f665dc`): consulta al Master no enviada; sin Proposal; mi lectura de la
+    frontera; corrección R63-DISC-02; hechos de las dos capturas y de la documentación externa;
+  - acuse de I-64: registra la respuesta, adopta la corrección y declara que no diseña el mínimo común.
+
+  Ningún mensaje compromete diseño ni decisiones.
+- La CI exacta del commit que contiene este archivo se informa al Coordinator.
