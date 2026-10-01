@@ -3,8 +3,11 @@
 Unit / Initiative / Workflow: `I-62` / I-62 / V2. Claim-Id `5b661a17-8c18-4183-8554-3866059cba2b`.
 Contrato: [I-62-portabilidad-coordinador-principal.md](../../initiatives/I-62-portabilidad-coordinador-principal.md). Decisiones: [I-62.md](../decisions/I-62.md).
 
-Estado de esta evidencia: **G0 (reclamo y bootstrap)**. No hay Discovery sustantivo, Freeze, piloto, Candidato ni GATE PASS. Lo no ejecutado
-figura como **PENDIENTE**.
+Estado de esta evidencia:
+- **G0 cerrado**: GATE PASS administrativo del Coordinator (C62-G0-02) sobre `85ae4324…`; hechos posteriores al bootstrap en §9.
+- **F0, tramo Discovery, entregado** para revisión del Coordinator (C62-F0-01; §10).
+- No hay Freeze, piloto, Candidato ni F0 GATE PASS. Lo no ejecutado figura como **PENDIENTE**.
+- §§1-8 son el registro original de G0 y se conservan como se escribieron.
 
 Clases de afirmación ([INITIATIVE_LIFECYCLE](../../INITIATIVE_LIFECYCLE.md) §4):
 - `MEASURED`: lo midió la sesión responsable de G0, una sesión de Claude Desktop en el host Windows del Owner.
@@ -140,3 +143,65 @@ CI exacta. Se anotan en el informe al Coordinator y en la siguiente escritura de
 - Conformidad: no aplica todavía.
 - Owner Validation: no aplica a G0; la asignación la fija el Freeze.
 - Tag de integración: no existe (`integration/I-62` solo se crea tras la integración).
+
+## 9. Hechos posteriores a la publicación del bootstrap (cierra el PENDIENTE de §7)
+
+| Hecho | Valor | Fuente y clase |
+|---|---|---|
+| Commit de bootstrap | `85ae4324988ac7564719664f8f05b3fa9c6cafbe` (el que introduce este archivo); push a las 16:06:26Z; `ls-remote` = el mismo SHA; árbol limpio y sincronizado | salida de `git push` y `git ls-remote`; MEASURED por la sesión |
+| CI del bootstrap | corrida **36889478597**, attempt 1, event `push`, rama `architecture/portabilidad-coordinador-principal` (ref `refs/heads/…`), head_sha `85ae4324…`, `completed/success`. Jobs: Tests (Domain + Application), UI Tests (WPF controls, net8.0-windows), Build UI (WPF, valida API de Application) y Build Plugin without AutoCAD, los cuatro `success` | `gh run view`; MEASURED por la sesión y verificado de forma independiente por el Coordinator por GitHub (C62-G0-02) |
+| CI del reclamo | corrida 36889198265, `push`, head_sha `a851841a…`, `success` | `gh run view`; MEASURED |
+| RELEASE de la ventana de ROADMAP | enviados tras verificar el SHA remoto y antes de terminar la CI: I-52 `19a9b2a9-bc49-43fc-a7c4-ca2e9a0292aa`, I-63 `447d8f54-aa56-47f8-be6c-cdacfa76b817`, I-64 `3384d5c2-256a-4809-8570-db6537512fa6`. Entrega encolada; el canal no reporta lectura. El texto aclara que el RELEASE no declara CI verde | resultado de los envíos; MEASURED (envío), lectura UNKNOWN |
+| Decisión de G0 | GATE PASS administrativo del Coordinator (decisiones §7, C62-G0-02). Lo que el Coordinator verificó por GitHub y lo que acepta como hecho reportado están separados allí | orden del Coordinator (§10) |
+
+## 10. F0 — tramo Discovery (C62-F0-01)
+
+Lo ejecutó la sesión principal directamente, sin delegación. El contenido está en el [Discovery](../../initiatives/I-62-discovery.md); aquí van los hechos
+que lo respaldan.
+
+**Orden recibida:** `I-62-F0-orden-discovery.txt`, 14 753 bytes, SHA-256 `4575521afd51cf0d0e1e64c50b0f8f932c80828c837cec64b6d677e8c768a97e`. Se custodia
+fuera del repositorio (`D:\IDs\I-62\`); su contenido consta por ID en las decisiones §7.
+
+**Apertura** (MEASURED, 16:29Z):
+- `git fetch --prune`: `origin/main` = `819955d6…`, sin avance; no hizo falta rebase;
+- `HEAD` = `origin/<rama>` = `85ae4324…`; árbol limpio; mismo worktree y Claim-Id;
+- ramas ajenas observadas: I-52 `c1982b2a`, I-63 `b557ea3b`, I-64 `d8a02163`, sin tocarlas.
+
+**Sesión principal** (MEASURED): `get_session("self")` a las 16:36Z → `claude-opus-5-5` / `xhigh`. Es una observación del host, comparada con el perfil
+propuesto (MATCH); no es un perfil I-62 vigente.
+
+**Prueba existente ejecutada** para contrastar afirmaciones de DC-06 (MEASURED):
+
+| Campo | Valor |
+|---|---|
+| SDK resuelto | 8.0.423 (`%LOCALAPPDATA%\Microsoft\dotnet\dotnet.exe`; `global.json` 8.0.423) |
+| Comando | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter "FullyQualifiedName~RackCad.Tests.AgentExecutionProtocolTests" --logger "trx;LogFileName=i62-aep.trx" --results-directory <scratchpad de la sesión>` |
+| SHA / árbol | `85ae4324…` / `d277aaa4c60ac165a10f9c305e020ba8d05cfd03` |
+| Resultado | selección **17** (> 0); superadas 17; fallidas 0; omitidas 0; TRX `total=17 executed=17 passed=17 notExecuted=0` |
+| TRX | SHA-256 `4344a953271b8e8737d34e9413b54c16b9e247243cd3a392bba52b1e06bad580`, fuera del repositorio (no versionado: contiene rutas locales); el árbol siguió limpio |
+| Clase | prueba existente para contrastar una afirmación. No es RED→GREEN, evidencia de gate ni Full; no se creó ni modificó ninguna prueba |
+
+**`config.toml`** (MEASURED, 16:33Z; método del README §3.1: SHA-256 y nombres de secciones o claves, **sin valores**; las rutas de proyecto se
+redactan):
+- SHA-256 `42E15A03…`, mtime 2026-10-01T05:30:20Z, 103 nombres;
+- frente a `Exit.ConfigTomlKeys` del último relevo custodiado de I-61 (`g3-cama-d1a/R20261001T041132Z-17e8`, 103 nombres, `89F375C6…`): 26
+  diferencias;
+- 12 cabeceras de proyecto en el registro frente a 11 hoy, todas con texto distinto;
+- entradas nuevas `[tui]` y `screen_reader_detection_done`;
+- sale el `trust_level` eliminado por orden del Owner (decisiones de I-61 §17, referencia `37DD3559…`);
+- las 12 entradas `relay-record.json` custodiadas de I-61 (02:45Z-04:31Z) tienen `ConfigChanged=false` y `89F375C6…`.
+
+Interpretación y consecuencias: Discovery §13.1.
+
+**Lecturas de runtime:** no se repitieron las de G0 (§4), que se citan con su fecha. Se leyó el listado de `%LOCALAPPDATA%\OpenAI\Codex\bin\` (fechas
+de directorio) para contrastarlo con la ruta del binario registrada en I-61 (`bin\c6fe824d…`, ya inexistente).
+
+**No se hizo:**
+- invocaciones de Controller, Worker, Reviewer o Architect externo, subagentes, sondas de modelos ni pilotos;
+- instalar, autenticar o cambiar PATH o configuración;
+- escrituras en ROADMAP, HANDOFF, FOUNDATIONS, normas, esquemas, `src/`, `tests/` o superficies ajenas.
+
+No se pidió evidencia a I-63 ni a I-64 por el canal: su evidencia publicada ya acredita que no delegaron (Discovery §1).
+
+**Validación de esta entrega:** diff contra la base del tramo (`85ae4324`) limitado a la allowlist de C62-F0-01 y `git diff --check`; el resultado va en
+el cuerpo del commit. La CI de push del commit de esta entrega se informa al Coordinator. No se registra aquí para no guardar un SHA autorreferente.
