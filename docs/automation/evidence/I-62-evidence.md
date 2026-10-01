@@ -420,3 +420,47 @@ Las trazas de V5 (§8.6 y anexos E.6, F y G.2) son **análisis del diseño**, no
 
 **Validación de esta entrega:** allowlist, enlaces, columnas de las tablas, diff V4→V5 revisado por bloques y `git diff --check`; resultado en el cuerpo del
 commit. La CI de este commit se informa al Coordinator.
+
+## 17. F0 — Proposal V6 (C62-F0-25..26)
+
+**CI de la Proposal V5** (`acd88eafa4847e4740fdf9e7899a6988508ec24a`): corrida **36933410100**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: UI Tests (110607933716), Tests (Domain + Application)
+(110607933905), Build UI (110607933947) y Build Plugin without AutoCAD (110608384588), los cuatro `success`. MEASURED por la sesión y verificado por el
+Coordinator (C62-F0-25). Acredita solo `acd88eaf`.
+
+**Órdenes recibidas** (texto pegado, sin archivo de origen en `D:\IDs`):
+- un nuevo pegado de la revisión de V4, con el mismo contenido y otro formato. La sesión comprobó que `acd88eaf` seguía siendo la punta remota y no hizo nada
+  nuevo;
+- la revisión de V5: 4 972 bytes en UTF-8, SHA-256 `3d15bc258e3781eb59e2d14a3cd61258923c41c68d7117fcaeed5de06f6e17b6`, fuera del repositorio. Su registro
+  recuperable está en `docs/initiatives/I-62-coordinator-review-v5.md`.
+
+**Apertura del tramo** (MEASURED, 22:24Z):
+- `origin/main` = `819955d6…`, sin rebase;
+- rama de I-62 en `acd88eaf…` = remoto, árbol limpio;
+- I-52 `d8078ef3`, I-63 `a0654ae2` e I-64 `ab4efe86`, sin commits nuevos; ningún cruce.
+- revalidación antes del commit (MEASURED, 22:34Z): `origin/main` y la rama de I-62 sin cambios. I-52 `d8078ef3..352cc3de` (1 commit, sus decisiones y su
+  evidencia), I-63 `a0654ae2..772ac242` (1 commit, Proposal V1 de I-63) e I-64 `ab4efe86..1f1530be` (1 commit, Proposal V3 de I-64): solo archivos
+  propios; **ningún cruce** con superficies de I-62.
+
+**Hechos consultados para el diseño** (MEASURED salvo indicación):
+- WORKFLOW §10, filas «Git, reclamo, worktrees, integración, cierre, cadencia documental y transición» y «Operación del ejecutor y ejecución delegada …
+  dentro de las reglas de los dueños anteriores». Su texto es idéntico en `7b8662c5` (el `AuthorityRevision` de I-61 G3) y en `819955d6`.
+- WORKFLOW §11.3, último párrafo, en `819955d6`: «Tras activación, una unidad V1 lee `main` actual».
+- Merge `8a021fb6` («Merge I-56: activa normativamente Workflow V2») en la historia first-parent de `origin/main`.
+- WORKFLOW §4, punto 2: rebase sobre el trunk al abrir una sesión.
+- El contrato de I-61 G3 clasifica el preámbulo, §2 y §16 de AUTOMATION_PLAN como `UNIT_CHANGE`.
+- INFERENCE: ninguna regla de `/v1` lleva al evaluador a un texto leído en `MainSha` con independencia de las `Authorities` del contrato. Por eso el punto de
+  entrada se declara como delta de I-62 bajo OD-1.
+
+**Identidad del contenido entregado** (blob calculado con `git hash-object` antes del commit; el commit lo da el recibo):
+- `docs/initiatives/I-62-proposal-v6.md` → `19672958ec095ba9f88e103240d34c62c76ee850`;
+- `docs/initiatives/I-62-coordinator-review-v5.md` → `4c51a94c4790629f91006db642915e1ae11ce25b`.
+
+**No se hizo:**
+- invocaciones, subagentes, Architect, sondas, pilotos, sesiones nuevas, fixtures, remotos, pruebas nuevas ni repetidas, tooling ni esquemas operativos;
+- tocar V1-V5, sus paquetes, los registros previos, el Discovery, el mandato, WORKFLOW ni ninguna superficie ajena: el punto de entrada es diseño.
+
+Las trazas de V6 (E.3.0 y E.6) son **análisis del diseño**, no ensayos.
+
+**Validación de esta entrega:** allowlist, enlaces, columnas de las tablas, diff V5→V6 revisado por bloques y `git diff --check`; resultado en el cuerpo del
+commit. La CI de este commit se informa al Coordinator.
