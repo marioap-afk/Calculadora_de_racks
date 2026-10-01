@@ -3,13 +3,17 @@ automation_state:
   initiative: I-62
   branch: architecture/portabilidad-coordinador-principal
   claim_id: 5b661a17-8c18-4183-8554-3866059cba2b
-  current_phase: G0
-  state: claimed
-  gate: owner-decision
+  current_phase: F0
+  state: review-ready
+  gate: none
   attempts: 0
-  next_action: Coordinator revisa el bootstrap G0 y decide el arquetipo y la autorización de F0 (Discovery delta de I-61); sin Freeze, pilotos, Candidate ni merge.
-  last_evidence_commit: a851841ae40d63f59ac18ff64f792efd07ca036c
+  next_action: Coordinator revisa el Discovery delta de F0 (DC-01..09, EXP-01..09) y decide EXP-05/EXP-06 y el arquetipo; sin diseño, Freeze ni delegaciones.
+  last_evidence_commit: 85ae4324988ac7564719664f8f05b3fa9c6cafbe
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-portabilidad-coordinador-principal
+  g0_gate_pass_by_coordinator: 85ae4324988ac7564719664f8f05b3fa9c6cafbe (C62-G0-02; CI 36889478597 push success; decisions §7)
+  f0_scope: tramo Discovery solamente (C62-F0-01; decisions §7)
+  f0_discovery: docs/initiatives/I-62-discovery.md (entregado para revisión; EXP-05 y EXP-06 propuestas y sin autorizar)
+  archetype: NEW ARCHITECTURE provisional (C62-F0-01); propuesta del Discovery FOUNDATION EVOLUTION con restricción de diseño (decisions §8)
