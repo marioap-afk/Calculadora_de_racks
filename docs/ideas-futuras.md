@@ -1580,3 +1580,9 @@ Mientras tanto, la memoria local de Claude conserva una ayuda operativa con la m
 - 13 contratos V1 (más `TEMPLATE.md`) con `automation.enabled: true` sin ejecutor real; 35 estados obsoletos, 3 con YAML inválido y enums desviados; `.agent/` no ignorado;
   prosa «Workflow V2 no efectivo» desactualizada (Discovery §18.3, EXP-01 F-02).
 - D-4: `EditCama` redibuja solo la definición elegida (Discovery §19).
+
+### Registro de cierre ajeno desactualizado (hallazgo de la revisión del cierre de I-61)
+
+- La fila de I-59 en `docs/ROADMAP.md` de `main` conserva «integracion en proceso … merge/post-merge/cleanup/receipt pendientes» aunque I-59 está integrada. WORKFLOW §2 impide
+  corregir una fila ajena fuera de sus tres momentos: lo corrige la propia I-59 o una unidad documental con autoridad. Lección para los cierres preparados antes de integrar:
+  la sesión de integración debe reescribir el registro a «integrada (fecha)» en su commit documental final (decisiones de I-61 §20).

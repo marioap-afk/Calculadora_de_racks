@@ -7,7 +7,7 @@ automation_state:
   state: integration-ready
   gate: none
   attempts: 0
-  next_action: Integracion manual con autoridad del Owner (WORKFLOW §11.5): fetch y ruta R si main avanzo, merge --no-ff, CI posterior con cobertura, cobertura diferida del Candidato, limpieza y tag integration/I-61.
+  next_action: Con orden del Owner, sesion de integracion (WORKFLOW §11.5): fetch y ruta R si main avanzo; commit documental final que marca I-61 integrada (fecha) en ROADMAP y HANDOFF, con su CI; merge --no-ff; CI posterior con cobertura; cobertura diferida del Candidato; limpieza; tag integration/I-61.
   last_evidence_commit: 6513777f431fd672a515d9f8a33d8611d238fbe4
 execution_context:
   mode: manual

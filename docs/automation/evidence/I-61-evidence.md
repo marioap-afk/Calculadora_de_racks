@@ -3,8 +3,9 @@
 Unit / Initiative / Workflow: `I-61` / I-61 / V2. Claim-Id `0e2923de-e1a7-41bf-b7db-50ec84217850`.
 Contrato: [I-61-protocolo-ejecucion-agentes.md](../../initiatives/I-61-protocolo-ejecucion-agentes.md). Decisiones: [I-61.md](../decisions/I-61.md).
 
-Estado de esta evidencia: **G0 (reclamo y bootstrap, GATE PASS del Coordinator sobre `6f1ef981`) y G1 (Discovery, §9; consolidación G1-C, §§10-11)**. No hay Freeze, piloto ni Candidato; la decisión de G1 consta en [decisiones](../decisions/I-61.md) §12.
-Lo no ejecutado figura como **PENDIENTE**.
+Estado de esta evidencia: **unidad cerrada documentalmente; integración pendiente de la autoridad del Owner.** Recorrido: G0 (§§1-8), G1 y G1-C (§§9-11), diseño y Freeze
+(§§12-13), G2 (§14), G3 (§15) y Candidato final con READY-01..09 y Owner Validation PASS (§16). Las secciones anteriores son registros históricos de su momento y no se
+reescriben (WORKFLOW §11.4); donde dicen PENDIENTE, lo posterior consta en las secciones siguientes.
 
 ## 1. Base de reclamo y clasificación de transición
 
@@ -695,7 +696,6 @@ Resultado global:   aprobado
 Confirmación:       «El Owner acepta el resultado funcional y el protocolo/piloto de I-61 conforme a la matriz definida.»
 ```
 
-La duración activa de la validación (guía §8) no fue declarada: no se registra ninguna línea en su lugar.
 
 ### 16.5 DLL legacy de OV-I61-03a y 03b (Freeze §16.3)
 
