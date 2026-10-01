@@ -464,3 +464,45 @@ Las trazas de V6 (E.3.0 y E.6) son **análisis del diseño**, no ensayos.
 
 **Validación de esta entrega:** allowlist, enlaces, columnas de las tablas, diff V5→V6 revisado por bloques y `git diff --check`; resultado en el cuerpo del
 commit. La CI de este commit se informa al Coordinator.
+
+## 18. F0 — Proposal V7 (corrección de A62-V6-01..03)
+
+**CI de la Proposal V6** (`3888c5c8de19b5abaf479983e56836ef2bcef76e`): corrida **36935918514**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: Tests (Domain + Application) (110616038594), Build UI
+(110616038840), UI Tests (110616038954) y Build Plugin without AutoCAD (110616675264), los cuatro `success`. MEASURED por la sesión; el Coordinator la cita
+en la orden de revisión del Architect. Acredita solo `3888c5c8`.
+
+**Órdenes recibidas** (texto pegado, sin archivo de origen en `D:\IDs`):
+- la orden de revisión formal del Architect de V6. La sesión autora **no la ejecutó**: modo exigido SEPARATE SESSION, sin repositorio modificado. Verificó el
+  objeto (punta `3888c5c8`, blobs `19672958…` y `028df636…`, registros v1-v5 presentes) y avisó del riesgo de memoria de proyecto;
+- la orden «PROPOSAL V7 / ARCHITECT REQUIRED CORRECTIONS»: 7 543 bytes en UTF-8, SHA-256
+  `a330d761a1a0825ac55351873a3894b7a799ba3fc49fe2c26402adbfa4c68373`, fuera del repositorio. Registro recuperable en
+  `docs/initiatives/I-62-architect-review-v6.md`. El texto literal del dictamen del Architect no se recibió (MEASURED: no está en `D:\IDs` ni en el
+  repositorio).
+
+**Apertura del tramo** (MEASURED, 23:00Z):
+- `origin/main` = `819955d6…`, sin rebase;
+- rama de I-62 en `3888c5c8…` = remoto, árbol limpio;
+- revalidación antes del commit (MEASURED, 23:11Z): `origin/main` y la rama de I-62 sin cambios. I-52 `352cc3de..51a66245` (2 commits, sus §§252-253),
+  I-63 `772ac242..dddc215f` (Proposal V2 de I-63) e I-64 `1f1530be..e87ba32c` (Proposal V4 de I-64), solo archivos propios; **ningún cruce** con
+  superficies de I-62.
+
+**Hechos consultados para el diseño** (MEASURED):
+- LIFECYCLE §5: «Toda revision declara `SAME-SESSION ROLE`, `SEPARATE SESSION` o `EXTERNAL HUMAN` y si revisor y autor son la misma persona».
+- AUTOMATION_PLAN §16, preámbulo: «Ninguna otra iniciativa lo adopta por estar escrito».
+- AUTOMATION_PLAN 16.7: el rebase de apertura, con `--force-with-lease`, se registra con `RebaseMap`; con cadena en curso pertenece a la tarea y no consume
+  el máximo de recuperaciones.
+- WORKFLOW §4, punto 2: rebase al abrir y publicación con `git push --force-with-lease`.
+
+**Identidad del contenido entregado** (blob calculado con `git hash-object` antes del commit; el commit lo da el recibo):
+- `docs/initiatives/I-62-proposal-v7.md` → `9f68c9501fb8254792f875a039e11ec7485108ef`;
+- `docs/initiatives/I-62-architect-review-v6.md` → `2217239781eb47ec297c58d4313d511807c4e326`.
+
+**No se hizo:**
+- invocaciones, subagentes, Architect, sondas, pilotos, sesiones nuevas, fixtures, remotos, pruebas nuevas ni repetidas, tooling ni esquemas operativos;
+- tocar V1-V6, sus paquetes, los registros previos, el Discovery, el mandato, WORKFLOW, AUTOMATION_PLAN, LIFECYCLE ni ninguna superficie ajena.
+
+Las trazas de V7 (§§8.6-8.8, E.3.0, E.6, Anexo F) son **análisis del diseño**, no ensayos.
+
+**Validación de esta entrega:** allowlist, enlaces, columnas de las tablas, diff V6→V7 revisado por bloques y `git diff --check`; resultado en el cuerpo del
+commit. La CI de este commit se informa al Coordinator.
