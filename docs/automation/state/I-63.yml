@@ -7,8 +7,8 @@ automation_state:
   state: waiting
   gate: owner-decision
   attempts: 0
-  next_action: El Owner decide P-01..P-05 (Discovery §20.1) y el Coordinator emite la orden de Proposal + revision del Architect; sin implementacion.
-  last_evidence_commit: 23eeefc5f5ae0c50c1addd041865ceb6f69139fc
+  next_action: Remitir P-01..P-05 al Coordinator para la orden de Proposal + revision del Architect; frentes vacios de P-05 pendientes del Owner; sin implementacion.
+  last_evidence_commit: f0b063e95ae6376abdd126873e66bee20189d748
 execution_context:
   mode: manual
   automation_enabled: false

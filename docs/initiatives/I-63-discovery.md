@@ -14,7 +14,10 @@
 >     iniciativa implementa su propio mecanismo, y la duplicación queda aceptada y diferida a una futura iniciativa arquitectónica.
 >   - Las consultas al Master quedan **superadas y sin enviar**. La decisión del Owner prevalece, para I-63, sobre `MASTER-I63-I64-01`,
 >     que I-64 registró en su rama (§24).
->   - La salida hacia el diseño espera P-01..P-05 (Owner) y una orden del Coordinator para la Proposal y el Architect.
+>   - Más tarde, el **Owner decidió P-01..P-05** (§25): población cotizable; exclusión de `Kind` ausente o desconocido; `Unavailable`
+>     cuando la cobertura no está acreditada; referencia directa activa; frentes del fondo 0. Sigue pendiente si los frentes vacíos del
+>     fondo 0 cuentan.
+>   - La salida hacia el diseño espera una orden del Coordinator para la Proposal y el Architect.
 >   - La historia de rondas anteriores (§§9, 21 y 23) se conserva y se anota; no se borra.
 
 ## 0. Identidad, base y método
@@ -439,6 +442,8 @@ pero falta decidir la semántica o la autoridad. `NeedsContract` es un resultado
   dependencia de propiedades vinculables `[INFERENCE]` sobre §3, fila 10.
 - **Segunda:** frentes del **fondo más largo** (la rejilla maestra del resolver, `SelectiveGeometryResolver.cs:138-145`).
 - Ninguna está congelada; decide el Owner (P-05).
+- **Posterior a R2:** el Owner eligió el **fondo 0** (§25). Que la alternativa preferida contara los frentes vacíos era una
+  propuesta del Discovery, **no** una decisión: si cuentan sigue pendiente del Owner.
 - El ejemplo del mandato `Rack.Frentes * 2` quedaría bien definido en un contexto de rack con cualquiera de las dos, una vez decidida
   la semántica.
 
@@ -576,8 +581,11 @@ Es evidencia documental de 2022, no una verificación en AutoCAD 2025. Tampoco e
 
 ### 20.1 De producto (Owner, con alternativas; corregida en R2)
 
-Ninguna está aprobada. Todas parten de la regla del mandato que no se reabre: dentro de la población aprobada, un RackId aporta un rack
-aunque tenga varias vistas o colocaciones. Las consecuencias son **condicionadas**: dicen qué pasaría con cada alternativa, no qué se
+> **Posterior a R2:** el Owner decidió P-01..P-04 y la parte de P-05 sobre qué fondo gobierna (§25). La tabla conserva, como
+> historia, las alternativas tal como se presentaron.
+
+Texto de R2: ninguna está aprobada. Todas parten de la regla del mandato que no se reabre: dentro de la población aprobada, un RackId
+aporta un rack aunque tenga varias vistas o colocaciones. Las consecuencias son **condicionadas**: dicen qué pasaría con cada alternativa, no qué se
 recomienda al Owner.
 
 | ID | Pregunta | Alternativas | Consecuencias condicionadas |
@@ -702,3 +710,57 @@ el 2026-10-01 (texto literal y procedencia en la evidencia §13). No es una orde
 - Siguen pendientes las decisiones de producto P-01..P-05 (§20.1; Owner). Después, la Proposal y la revisión del Architect, conforme
   al workflow y con una orden del Coordinator.
 - Esta decisión **no** autoriza producto. IMPLEMENTATION AUTHORIZATION = NO hasta que Coordinator y Architect acuerden el mismo Freeze.
+
+## 25. Decisiones del Owner P-01..P-05 (posteriores a R2)
+
+**Fuente:** decisión explícita del Owner, «I-63 — OWNER DECISIONS P-01..P-05», pegada en el chat de la sesión responsable el
+2026-10-01 (texto literal y procedencia en la evidencia §14). Son **insumos para la Proposal**: no son Freeze ni autorizan implementar.
+
+| ID | Decisión del Owner | Alternativa de §20.1 | Efecto en el Discovery |
+|---|---|---|---|
+| P-01 | La población de `Project.TotalRacks` son los racks **cotizables**, conforme al contrato que se congele. No cuentan todas las definiciones ni todo rack con una referencia activa. La Proposal formaliza qué condiciones hacen cotizable un rack, sin depender por accidente de detalles de presentación del BOM | (c) | Se acepta la consecuencia documentada en §20.1: la validez para cotizar entra en el conteo |
+| P-02a | `Kind` ausente o desconocido: el rack queda **excluido** de `TotalRacks` | (b), para los casos C y D de §16.1 | Es una exclusión por regla de admisión; por sí sola no es parcialidad (§20.1, P-03). Para el diagnóstico siguen siendo dos casos distintos |
+| P-02b | **No aplica**: los racks excluidos no forman parte de `RacksBySystem` | — | La partición se forma solo con kinds admitidos |
+| P-03 | Si la cobertura completa de la población no puede acreditarse, **no** se presenta un número como total exacto: estado `Unavailable` y diagnóstico, según el contrato de la Proposal. El fallo de una métrica individual no vuelve `Unavailable` a `TotalRacks` por sí solo si la pertenencia a la población cotizable y la identidad están acreditadas | (b), para la clase (2) | Oráculos I-05 e I-11 (abajo) |
+| P-04 | Criterio de colocación: **al menos una referencia directa activa**. V1 no exige demostrar una instancia alcanzable recorriendo bloques contenedores | (a) | Sigue documentada la limitación de §17: un rack que solo está dentro de una definición contenedora nunca colocada cuenta como colocado |
+| P-05 | `Rack.Frentes` del Selectivo = número de frentes del **fondo 0**; ni el máximo entre fondos ni la suma | Primera alternativa (fondo 0) | **Pendiente del Owner:** si los frentes vacíos del fondo 0 cuentan. No se asume |
+
+P-14 sigue resuelta por la decisión anterior del Owner (§24): mecanismos independientes en I-63 e I-64.
+
+**Qué tendrá que formalizar la Proposal** (insumos sin decidir; `[INFERENCE]` sobre §7.2 y §16.1):
+
+- **Condiciones actuales de RACKBOMTOTAL para cotizar** (§7.2):
+  - sobre clasificable (`Id` y `Kind` no vacíos);
+  - colocado (referencias directas > 0);
+  - kind con handler;
+  - una autoridad *authored* entre hermanas;
+  - diseño no bloqueado;
+  - ninguna referencia de variable rota;
+  - diseño legible.
+
+  Hoy, unas abortan todo el comando y otras saltan el rack con aviso.
+- **Clasificación de cada condición.** Con P-01 y P-03, la Proposal decide si cada condición es:
+  - un **criterio de pertenencia**: el rack queda fuera, sin parcialidad;
+  - una **falta de cobertura**: `TotalRacks` = `Unavailable`;
+  - el **estado de otra métrica**, sin efecto sobre `TotalRacks`.
+
+  Ejemplos: hoy un diseño ilegible o unas hermanas sin autoridad saltan el rack, y un sobre inclasificable colocado aborta el comando.
+- **Casos de §16.1:**
+  - **Caso A** (identidad no recuperable, colocado): a la luz de P-03 es candidato a cobertura no acreditada; lo confirma la Proposal.
+  - **Caso B** (`Id` recuperable con sobre ilegible): no tiene `Kind` legible. Si encaja en P-02a (excluido) o en P-03 (cobertura no
+    acreditada) lo fija la Proposal, sin inventar identidad ni *authored*.
+- **Presentación del BOM:** la pertenencia no debe depender de etiquetas (`BomLabel`, `KindLabel`), de `Σ max(1, Copies)` ni de la
+  ventana del BOM.
+- **P-08** (relación con `ConsolidatedBom.Racks.Count`) gana peso: con P-01 (c), las dos poblaciones pueden coincidir. La Proposal debe
+  decidir si son una sola autoridad o dos magnitudes declaradas.
+
+**Oráculos candidatos de §8.2** (siguen siendo candidatos):
+- **I-04a / I-04b:** con P-02a ambos casos quedan fuera de `TotalRacks`, pero siguen siendo distintos para el diagnóstico.
+- **I-06:** población cotizable con el predicado de referencia directa activa. En V1, el escenario (2), el de la definición contenedora
+  nunca colocada, cuenta como colocado (P-04).
+- **I-09:** `Rack.Frentes` = frentes del fondo 0. El valor de `Rack.Frentes * 2` con frentes vacíos depende de la decisión pendiente.
+- **I-11:** el caso (a) da `Unavailable` (P-03); el caso (b) no crea otro rack; el caso (c) lo resuelve la Proposal.
+- **I-05:** el fallo de una métrica no afecta a `TotalRacks` si la pertenencia y la identidad están acreditadas. Si la pertenencia
+  cotizable exige un diseño legible, ese fallo sí puede afectar a la pertenencia; lo resuelve la Proposal.
+
+No se redacta la Proposal ni se invoca al Architect hasta una nueva orden del Coordinator. IMPLEMENTATION AUTHORIZATION = NO.

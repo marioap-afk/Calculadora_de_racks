@@ -450,3 +450,67 @@ No implementar producto todavía solo por esta decisión.
 - Sin pruebas ni host. Nada fuera de las cinco rutas autorizadas.
 - Esta entrega agrupa la aceptación de R2, la CI de `23eeefc5` y la decisión del Owner, conforme a la cadencia de CD-I63-F0-R2-06.
 - La CI exacta del commit que contiene este archivo se informa al Coordinator.
+
+## 14. Decisiones del Owner P-01..P-05
+
+### 14.1 CI de la entrega anterior
+
+| Commit | SHA | Corrida `push` | Resultado |
+|---|---|---|---|
+| Aceptación de R2 + decisión del Owner sobre P-14 | `f0b063e95ae6376abdd126873e66bee20189d748` | 36918481354: `head_branch` = `architecture/parametros-calculados-resumen-proyecto`, `head_sha` exacto | `success`; los cuatro jobs requeridos de `AGENTS.md` en `success` |
+
+### 14.2 Texto literal
+
+Procedencia: el usuario la pegó en el chat de la sesión responsable el 2026-10-01, antes del preflight de 20:19:02Z. No llegó como
+archivo ni a través del Coordinator. Texto tal como se recibió:
+
+```text
+I-63 — OWNER DECISIONS P-01..P-05
+Registrar las siguientes decisiones explícitas del Owner para ID20:
+P-01 — población de Project.TotalRacks:
+ELECCIÓN = c) racks cotizables.
+La población de TotalRacks se define por la población cotizable conforme al contrato que se congele. No se cuentan simplemente todas las definiciones ni todos los racks con una referencia activa. La Proposal debe formalizar exactamente qué condiciones convierten un rack en cotizable y evitar depender accidentalmente de detalles de presentación del BOM.
+P-02a — admisión de Kind ausente o desconocido:
+ELECCIÓN = b) excluir.
+Un rack con Kind ausente o Kind desconocido queda fuera de la población de TotalRacks.
+P-02b — clasificación:
+NO APLICA para esos racks como consecuencia de P-02a, porque al estar excluidos no forman parte de RacksBySystem.
+P-03 — cobertura incompleta:
+ELECCIÓN interpretada = segunda alternativa para cobertura no acreditada: Unavailable.
+Cuando no pueda acreditarse la cobertura completa de la población que define el total, no presentar un valor numérico como total exacto. Usar estado Unavailable/diagnóstico según el contrato que congele la Proposal.
+Esta decisión no implica que el fallo de una métrica individual convierta automáticamente TotalRacks en Unavailable: si la pertenencia a la población cotizable y su identidad están acreditadas, otras métricas pueden fallar de forma independiente según sus propios estados.
+P-04 — criterio de colocación:
+ELECCIÓN = a) al menos una referencia directa activa.
+No se exige para V1 demostrar una instancia alcanzable recorriendo bloques contenedores. Mantener documentada la limitación de referencias anidadas identificada en Discovery.
+P-05 — Rack.Frentes para Selectivo:
+ELECCIÓN = a) número de frentes del fondo 0.
+No usar el máximo entre fondos ni sumar los fondos.
+PENDIENTE DEL OWNER:
+
+* P-05 todavía requiere una decisión independiente sobre si los frentes vacíos del fondo 0 cuentan dentro de Rack.Frentes. No asumirla.
+
+Consecuencias:
+
+* P-01..P-04 quedan resueltas conforme a estas decisiones.
+* P-05 queda resuelta en cuanto a qué fondo gobierna, pero mantiene pendiente el tratamiento de frentes vacíos.
+* Estas decisiones son insumos para la Proposal; no son por sí mismas Freeze ni autorización de implementación.
+* P-14 ya está resuelta por la decisión anterior del Owner: mecanismos independientes I-63/I-64.
+* No redactar Proposal ni invocar Architect hasta nueva orden del Coordinator.
+
+IMPLEMENTATION AUTHORIZATION = NO.
+```
+
+### 14.3 Preflight (2026-10-01T20:19:02Z)
+
+- `HEAD` = remoto = `f0b063e9`; árbol limpio; `origin/main` = `819955d6`, ancestro de `HEAD`: **sin rebase**.
+- Ramas: I-52 `d8078ef3` e I-64 `dcc16bed`, sin cambios desde §13.4; I-62 `486e45e7`, *fast-forward* desde `a1f5e003`.
+- El delta de I-62 es solo `docs/` (Proposal V3). Sus menciones a I-63 son solo referencias observadas y una cláusula de no
+  retroactividad de su régimen de delegación. Ninguna rama cambia `src/` ni `tests/` frente a `main` (diff de tres puntos).
+
+### 14.4 Método
+
+- Registro directo de la sesión principal; ningún participante de IA y ninguna delegación §16.
+- Sin pruebas ni host, sin mensajes entre sesiones. Nada fuera de las cinco rutas autorizadas.
+- No hubo nada que preguntar al Owner: ninguna fuente leída contradice estas decisiones. Lo que la Proposal debe formalizar está en el
+  Discovery §25 como insumo, sin decidir.
+- La CI exacta del commit que contiene este archivo se informa al Coordinator.
