@@ -1,0 +1,390 @@
+{
+  "summary": "BA-07 V8, BA-10 V8 + cost memo V8, host-gate execution package; each with an independent exact review",
+  "agentCount": 7,
+  "logs": [],
+  "result": {
+    "ba07": {
+      "files": [
+        {
+          "path": "docs/initiatives/I-52-ct21d-baseline-ba-07-manifest-custody-v8.md",
+          "gitBlob": "610327e3388f8064a39052aae7f2554379b44c4d",
+          "sha256Lf": "d9e3210017b7072a2985a0b9990d71fd07e970b44d8a6937ca49bd372bfe5d7f"
+        }
+      ],
+      "summary": "I created docs/initiatives/I-52-ct21d-baseline-ba-07-manifest-custody-v8.md from the V7 file in the worktree C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico. V8 applies finding V7-01 (decisions section 229, AR8-02 and AR8-04 (e)) and nothing else of substance. The V7 file is untouched. The V8 file has LF endings (0 CR bytes). The V7 blob it supersedes is 89a325820ad7975ef57c2e19d576d17d7cfdda5e.\n\nEdits, each also listed in the new section 14 \"Delta V8\":\n- **`deltaProcessing.citedArtifactsUnchanged` (section 5.4):** it is now true only if no normative content of BA-03, BA-06, BA-08 or BA-09 changes. A W-1 tree delta that changes BA-09's WARMUP_PLAN_SET digests is not \"citedArtifactsUnchanged\". The record is then false, because BA-09 section 3.2 makes the warm-up definition a new BA-09 version before use.\n- **5.4 intro sentence:** all three mentions of \"BA-03, BA-06 and BA-08\" now include BA-09 (W-1 rows, section 3.2).\n- **Section 10:** the U6 row that restates the set now reads \"BA-03, BA-06, BA-08 or BA-09\". No other row restates it.\n- **Header:** `ARTIFACT_VERSION`, `AUTHORITY_CONTRACT`, `DELTA RULING APPLIED`, `DEPENDS_ON` and `PREREQUISITES` are updated as specified. `DEPENDS_ON` gets no new edge; BA-09 is an informative pointer through 5.4. `PREREQUISITES` records the AR8-02 confirmation and its three conditions.\n- **\"Submitted to the Architect for confirmation\":** replaced by \"confirmed by AR8-02, decisions section 229\" in 1 (g) and in the `citingArtifacts` row of 5.4.\n- **Unchanged:** the state lines (`CT21D_AUTHORITY_BASELINE_READY = FALSE`, `CT21D_EXECUTION_READY = FALSE`, `CT21D_EXECUTION = NOT_AUTHORIZED`), the bound product SHA, the vector and the numbering of sections 1 to 13.\n- **Additions beyond the literal instruction:** I changed the title, the banner and N6-1 (\"this V7\" became \"this V8\"), the same as V7 did for its own version. I also added section 14 after section 13. Both are declared in the Delta V8 table.\n- **Left as history:** the Delta V7 table (section 13), including its \"correction pass (V7 critic)\" row, and the 11.1 ruling rows are unchanged. The 11.1 table has no AR8-02 row, and its closing \"RULED AND APPLIED\" block does not list it.\n\nI did not touch any V7 sibling or the verifier. I have not changed git state or `docs/automation/decisions/I-52.md`; that file already showed as modified when I checked `git status`. I also did not run the precondition verifier or any host tool.",
+      "openQuestions": [
+        "Verifier docstring: docs/automation/evidence/I-52-ct21d-precondition-verifier.py lines 10 and 14 (module docstring) and line 101 (a code comment) still say the BA-09 extension of the union is 'SUBMITTED TO THE ARCHITECT FOR CONFIRMATION' and 'a proposal of round V7, not a ruled part of AR7-03'. AR8-02 now confirms it, so these contradict V8. Editing the verifier changes its bytes and any recorded hash. The Architect should say whether to reword it without an artifact version (as V7-03 suggests for the docstring) and re-hash it.",
+        "BA-11 V8 and V9: the BA-07 row (line 125 in both) still names the V7 path and file hash (the row's SHA-256 column is not checked here). It lists V7-01 as a before-candidate prerequisite for BA-07, and the BA-07 prerequisite cell still describes the BA-09 extension as a pending confirmation. Both need a BA-11 path relink to V8 and a new hash, as the finding itself says. The orchestrator or Architect decides when to relink.",
+        "BA-04 scenario catalog V7 (lines 67 and 205 of the .md, and the matching text in the v7.json): it says 'DELTA_PROCESSED with citedArtifactsUnchanged = true, BA-07 V7 section 5.4'. The semantics still hold, but the pointer cites BA-07 V7, and the catalog does not state that BA-09 now counts. A pointer relink to BA-07 V8 is needed.",
+        "BA-09 V7 (lines 107, 168, 172) and BA-08 V7 (line 688) cite 'BA-07 V7'. BA-08 line 688 restates the AR7-03 union as 'BA-03, BA-06 and BA-08' and does not mention BA-09. This is a historical ruling restatement; the Architect should decide whether it needs a relink or can stay as history.",
+        "BA-07 V8 section 11.1 (title '... sections 220 and 226') and its closing 'RULED AND APPLIED' block do not list AR8-02, because I kept to the listed edits. The Architect may want an AQ/AR8-02 row added in a later version.",
+        "The title, the banner and N6-1 changed from V7 to V8. This is editorial and follows the V7 precedent, but the instruction said 'change nothing else'. Please confirm, or tell me to revert those three."
+      ],
+      "checksRun": [
+        "git diff --no-index -U0 V7 V8: 15 hunks (the same count as the grep of '^@@' lines). Hunk 1: title V7 to V8 (editorial). Hunk 2: banner V7 to V8 (editorial). Hunk 3: ARTIFACT_VERSION 8-DRAFT superseding the V7 blob 89a32582... Hunk 4: AUTHORITY_CONTRACT = CT-21D-V2.6 AGREED (decisions section 230, composite 97100cff...). Hunk 5: DELTA RULING APPLIED prepends section 229 (AR8-02, AR8-04 (e)). Hunk 6: DEPENDS_ON rationale; the W-1 rows of BA-09 are an informative pointer through 5.4, not an edge, and no edge is added. Hunk 7: DEPENDS_ON list of sections that declare precondition sets now includes BA-09. Hunk 8: PREREQUISITES records the AR8-02 confirmation and its three conditions. Hunk 9: section 1 (g) replaces 'submitted to the Architect for confirmation' with 'confirmed by AR8-02, decisions section 229'. Hunk 10: 5.4 intro, three mentions of the BA-03/06/08 set now include BA-09 (W-1 rows). Hunk 11: 5.4 citingArtifacts, the same confirmation wording. Hunk 12: 5.4 deltaProcessing, BA-09 added to citedArtifactsUnchanged plus the W-1 tree-delta rule (BA-09 section 3.2). Hunk 13: section 10 U6 row, 'or BA-09' added. Hunk 14: N6-1 'this V7' to 'this V8' (editorial). Hunk 15: new section 14 Delta V8, appended.",
+        "No deletions in the V8 file other than the lines replaced by hunks 1 to 14; a +/- listing of the diff was reviewed hunk by hunk.",
+        "Each replacement was applied by a script that asserted exactly one match per source string; the first run failed on a header line wrap (the string spans a line break), and I fixed the pattern before the final run.",
+        "git hash-object (with and without filters) of the V8 file = 610327e3388f8064a39052aae7f2554379b44c4d; sha256 of the LF-normalized bytes = d9e3210017b7072a2985a0b9990d71fd07e970b44d8a6937ca49bd372bfe5d7f; CR byte count = 0.",
+        "git hash-object of the V7 file = 89a325820ad7975ef57c2e19d576d17d7cfdda5e (used in ARTIFACT_VERSION).",
+        "Read: architect-review-v7.json (entry V7-01 in full, V7-03 for context), decisions section 229 (AR8-02 and AR8-04 (e)), and BA-09 V7 section 3.2 'Identity with the build under test', whose text is the source of the tree-delta rule.",
+        "Sibling grep for citedArtifactsUnchanged and for the union scope: BA-04 V7 .md and .json restate citedArtifactsUnchanged; the verifier docstring restates the extension as 'submitted for confirmation'; BA-11 V8 and V9 row 125 carries V7-01 as a prerequisite; BA-08 V7 line 688 restates the union without BA-09. BA-03, BA-06, BA-10, BA-09 and ba04-v7-checks.py have no contradicting restatement. The findings are in openQuestions; no sibling was edited.",
+        "Not run: no AutoCAD, no host, no src/ or tests/ change, no git add, commit or push. The precondition verifier was not executed."
+      ]
+    },
+    "ba10": {
+      "r1": {
+        "files": [
+          {
+            "path": "docs/initiatives/I-52-ct21d-baseline-ba-10-parameter-sheet-v8.md",
+            "gitBlob": "820d90c8a2172ad32697e66f0c9b0f3eb5fadbdb",
+            "sha256Lf": "867fc4adb332f0a22ade4a24cb74309e5c76f39a90f5b24ab50f605144889dd5"
+          },
+          {
+            "path": "docs/automation/evidence/I-52-ct21d-ba10-v8-params-check.py",
+            "gitBlob": "fff1a17c77b788c1ce7713a95183286f1196dd94",
+            "sha256Lf": "9744b343fccb5b0306c6012f56e2aa9d57dbaae7b309607e9036e2748458789e"
+          },
+          {
+            "path": "docs/automation/evidence/I-52-ct21d-ba10-v8-params-check-output.json",
+            "gitBlob": "4ed07f3a88d525fe94be6a0bfb09fd6e6f40f6a8",
+            "sha256Lf": "23d4f031f368de7693c8bcfb49f97880da04b3f9a120f9659ee4b72ad5393d3c"
+          }
+        ],
+        "summary": "Produced the BA-10 V8 sheet (V7 blob 92f2b3ee... untouched, not edited) plus the reproducibility script and its output JSON. Nothing was run on a host, and src/, tests/ and git state were not touched. All three files are LF with 0 CR bytes (the sheet was written from V7 by an assertion-checked replacement script in the scratchpad, so every edit matched exactly once).\n\nValues inscribed:\n- N_A=44, N_B=29, WU_DRY_RUNS=29, N_det=90 and n=59 are inscribed in 2.1, 2.2, a new 2.4 with authority, intent and derivation, and the status block.\n- m=3 and EVIDENCE_REPETITION=1 are marked as Coordinator values (section 233) for the Architect's review.\n- CHAR_RUNS stays derived (44, 44+V(s), 91, 1) with no new choice.\n- PARAM-05: the policy is confirmed with the single-machine restriction. The six-attribute list, label rule and change rows are unchanged. The label value stays UNSET.\n- The sheet now has 2.4, 6.2 and section 8 (Delta V8). Section 5 is now the record of the answers. The state lines are unchanged.\n\nReproducibility of n (in 2.2 PARAM-03):\n- ln(0.05)/ln(0.95) = 58.403974814319771, so n = 59.\n- The k=0 bound is 0.050339338330420121983511957501 at n=58 (above u) and 0.049507609888226947385979516997 at n=59 (at or below u). This matches the Owner's 0.05034 and 0.04951.\n- The script computes each count twice, with a 60-digit decimal log formula and with exact rational arithmetic, and the two agree.\n- The script also reads the value block of 2.4 in the sheet. A negative test with N_B=30 in the sheet gave exit 1.\n- The output JSON was produced with --sheet pointing at V8 and is deterministic. The sheet hash is not in the output, so there is no cycle.",
+        "openQuestions": [
+          "AQ-V8-01 (raised in sheet 6.2): should the relevant hardware identity/class, and the user/profile identity per the contract, be class-defining attributes of PARAM-05? Extending the list would change the six-key JCS label object, so it is a rule change. Default applied: not class-defining, session/tuple fact capture only.",
+          "AQ-V8-02 (raised in sheet 6.2): after the first host run, is a material change of the recorded facts (module/plugin baseline, update, profile) a new machine class (new label) or a new tuple of the same class? The Owner wrote 'NEW MACHINE/SESSION TUPLE' and 'no silent transfer of evidence'. V7 rows are unchanged: a class-defining attribute gives a new class, a module entry gives a MACHINE_PROFILE_BOUND mismatch with no label change, and an AutoCAD version/build stays BUILD_BOUND. The sheet does not say where the new tuple is recorded when the label does not change.",
+          "Pointers: the V7 pointers to BA-04, BA-07, BA-08 and BA-09 V6 section numbers are left as in V7 (verified against V6 bytes in round V7). V8 does not re-verify or re-point them, even though newer versions exist (BA-07 V8, BA-04 V7, and so on). The Architect or Coordinator should decide whether the relink round re-points them.",
+          "V2.1 clause numbers in 'CONTRACT CLAUSES USED' are unchanged. V2.6 says V2.1 is intact and the effective contract is V2.1 with the errata applied, so I did not re-verify them clause by clause against V2.6.",
+          "Section 5 says the questions were put in docs/initiatives/I-52-ct21d-owner-decision-package-v1.md and answered on 2026-09-30. This rests on the verbatim record header and the package file existing; the orchestrator should confirm the date wording.",
+          "The sheet says the Owner authorized HOST_GATE_BA11_3_3 for non-governing use only, with the machine not yet designated and CT21D_EXECUTION still NOT_AUTHORIZED. This follows the Owner record, but the Coordinator should confirm the wording matches section 233.",
+          "The new 2.2 and 2.4 text cites the cost memo V8 (cost-memo-v8.md and .py) by path only. Those files do not exist yet and are not part of this task."
+        ],
+        "checksRun": [
+          "Reproducibility script run: exit 0 and verdict MATCH with --sheet pointing at the V8 sheet. The output was re-run and compared after stripping the console CR, and is byte-identical (deterministic). 0 CR bytes in the three files. Negative test with N_B=30 in a copy of the sheet: exit 1 with the mismatch reported.",
+          "git diff --no-index V7 vs V8: 27 hunks, 151 insertions, 58 deletions. Hunks, by V7 line:",
+          "  L1: title V7 to V8 (value inscription/header).",
+          "  L3: banner reworded from 'every value is UNSET' to values recorded with authority, PARAM-05 label UNSET (contradiction fix).",
+          "  L7: ARTIFACT_VERSION 8-DRAFT, supersedes V7 blob 92f2b3ee (header).",
+          "  L11-13: AUTHORITY_CONTRACT now CT-21D-V2.6 AGREED, section 230, composite 97100cff... (replaces 'not yet agreed').",
+          "  L19: DELTA RULING APPLIED adds section 233 (header).",
+          "  L34: ARCHITECT QUESTIONS from 'none open' to AQ-V8-01/02 (contradiction fix).",
+          "  L46-60 (the PREREQUISITES, COST MEMO and BASE ITEM header blocks): PREREQUISITES now says recorded versus remaining (label value and Architect review). COST MEMO points to cost-memo-v8 by path only, no hash (the cycle rule). BASE ITEM drops 'needs the prerequisites above' and names the label value plus K-3.",
+          "  L68 (rule 1) and L69 (rule 2/3, three edits), L71 (rule 4): rule 1 reconciles 'every value UNSET' with values set by their authorities. Rule 2 records the Owner answers and the CAD manager delegation, and the recording location. Rule 4 notes the sheet holds the parameter values and derived counts, not catalog counts.",
+          "  L80-87: the 'Current value' cells of the 2.1 rows. The EVIDENCE_REPETITION row drops 'implementer draft proposal'. The PARAM-05 row replaces 'future non-governing host gate' with the authorized, not-yet-executed wording.",
+          "  L105 PARAM-01 values and the not-generalized note; L127 WU_DRY_RUNS value recorded.",
+          "  After L144: PARAM-02 value and intent bullet.",
+          "  After L158: PARAM-03 value plus reproducible method block (formula, k=0 bounds at n=58 and n=59, script pointers).",
+          "  L170 and L172: PARAM-05 'Proposed ... for confirmation' to confirmed, 'Proposal' column header to 'Policy'; label-value row 'future gate, not authorized now' replaced (contradiction fix).",
+          "  After L181 and L183: the m=3 value paragraph (justification untouched); the Q-O5 single-machine paragraph, the table mapping the Owner's recording list to the sheet (class list unchanged), and the freeze/new-tuple text; the EVIDENCE_REPETITION draft-proposal sentence replaced.",
+          "  After L215: new 2.4 with the value table and the machine-readable value block read by the script.",
+          "  L233, L235, L237-243: section 5 retitled and rewritten as the record of answers (Q-O1..Q-O5 ANSWERED); table gains an 'Answer (section 233)' column; the 'NOT asked' wording is marked as history.",
+          "  L258-265: status block rewritten with the values, ANSWERED status, open AQs; CT21D_AUTHORITY_BASELINE_READY = FALSE kept.",
+          "  After L295: new 6.2 with AQ-V8-01/02; L297: history note at the head of section 7 (V7 delta statements describe V7).",
+          "  After L307: new section 8 Delta V8.",
+          "Unchanged by design: all rules, formulas, repetition-rule table, 2.3, section 3, section 4, section 6 tables and the Delta V7 content, plus the three state lines in the header.",
+          "Grep for stale wording (UNSET, 'NOT asked', 'future', 'not authorized', 'draft proposal', 'V7 memo'): remaining hits are intentional (PARAM-05 label UNSET, history notes, Delta V7 records)."
+        ]
+      },
+      "r2": {
+        "files": [
+          {
+            "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/docs/automation/evidence/I-52-ct21d-cost-memo-v8.py",
+            "gitBlob": "5dbccfe3738f4d953c8ee11884947358bf6a51f0",
+            "sha256Lf": "f3dded5380de5f170c3b93363630218f5a13b8e91e5ee31062ae281bdfba083f"
+          },
+          {
+            "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/docs/automation/evidence/I-52-ct21d-cost-memo-v8.md",
+            "gitBlob": "375517e62ce508c4fc54d440780f277e71d09c54",
+            "sha256Lf": "651b07c7be295dd2438421856f6aa04b4d11edf9e1f2058968c33f68ee5fa170"
+          }
+        ],
+        "summary": "Produced the cost memo V8 (script and memo). The V7 memo files and every other versioned file are untouched. Both new files are LF only, with no CR bytes.\n\nBound input: BA-10 V8 at git blob 820d90c8a2172ad32697e66f0c9b0f3eb5fadbdb, LF sha256 867fc4adb332f0a22ade4a24cb74309e5c76f39a90f5b24ab50f605144889dd5. The catalog is BA-04 V7 (437 scenarios, sha256 76abc5b2...2c2b).\n\nThe script reads the Owner pairs, the stated counts, m and EVIDENCE_REPETITION from BA-10 V8 section 2.4. It derives N_A, N_B, N_det and n from the four separate pairs in exact rational arithmetic, and N_B drives WU_DRY_RUNS. It prints the unrounded ratios and the k=0 Clopper-Pearson bounds at 58 and 59 (0.050339338330420121983511957501 and 0.049507609888226947385979516997), and checks that BA-10 V8 prints exactly those figures.\n\nIt exits 1 with no figures if BA-10 V8 does not state N_A=44, N_B=29, N_det=90, n=59, WU_DRY_RUNS=29, m=3 and EVIDENCE_REPETITION=1, if a derived count differs from the stated one, or if a rule it applies is missing from BA-10 V8. I confirmed the failure path by altering N_A, n, alpha_B and m in a temp copy: each case exited 1.\n\nThe script ran twice with identical output. The output sha256 of both runs is 4e5d19e6ca945491d82836468b6f4b1e74405cafd06c20b5ac66781c4dbe0ac6, measured on the script as it stands. The memo embeds that output verbatim in section 4. Every figure in the memo's section 3 comes from the script's own variables, not typed by hand.\n\nHeadline totals:\n- G (governing planned runs, the repetition slots) = 9098.\n- D (non-governing runs) = 5412: 4843 dry runs and 569 CHAR runs.\n- TOTAL = 14510.\n- Worst-case governing attempts m*G = 3*9098 = 27294. With D added that is 32706.\n- By build, G / D:\n  - PRODUCT_BUILD: 3088 / 92.\n  - CHARACTERIZATION_BUILD: 5998 / 5320.\n  - NONE (the offline SYNTH runs): 12 / 0.\n- The 36 qualification twins account for 580 runs.\n- PARAM-03: K=10, ceil(n/K)=6. Every member is at its floor N_strict=44, so each runs 44 times and the sample holds 440 runs.\n- CHAR split: pin-feeding 264, HDM-CHAR 212 (4*44 plus 36 informative), composition check 91, exploratory 2.\n- B.4 lists the runs per scenario by rule and class composition, showing where each count applies:\n  - 44: class-A-only and mixed-class scenarios.\n  - 29: class-B-only scenarios and the dry runs.\n  - 90: the validation scenarios.\n  - 91: the learning micro-scenarios and the composition check.\n\nReconciliation:\n- The engine reproduces the V7 memo's four rows exactly, and the V6 catalog gives the same total as V7 (+0).\n- Against the nearest V7 row (all counts 29, TOTAL 10710), the plan is +3800 runs.\n- Of that, DEFAULT is +2250, LEARN +976, CHAR +211, VALIDATE +183, CLEAN +150 and EVIDENCE_STRICT +30. The dry runs are unchanged because N_B stays 29.\n\nSensitivities re-based on the actual pairs: one unit of N_A moves 172 runs, N_B 173, N_det 20 and EVIDENCE_REPETITION 60. One more PARAM-03 sample member adds 73. u and c do not move the total unless u falls below u* = 0.0068. A.7 now also checks that BA-10 V8 states WU_DRY_RUNS = N_B and the 3*G worst case.",
+        "openQuestions": [
+          "N_B (29) is below N_A (44) while N_det (90) is above both, so MIXED-class scenarios follow N_A and the class-B pair acts only on the class-B-only scenarios and the dry runs. The Architect may want to confirm this reading is intended. If N_B ever exceeded N_A, the mixed scenarios would follow it (D.1 shows +2897 runs at N_B=45).",
+          "The worst case m*G = 27294 is a bound, not an expectation. It assumes every slot is first ruled INVALID twice and each retry is authorized per occurrence by the Coordinator, as BA-10 V8 PARAM-04 point 2 requires. The Coordinator values m=3 and EVIDENCE_REPETITION=1 are still pending the Architect's review, so lines D.2 and D.6 of the memo would move if they change.",
+          "The BA-10 V8 header names the cost memo by path with no hash, to avoid a cycle. The memo binds BA-10 V8 by its blob and LF sha256. If BA-10 V8 is amended, the memo must be regenerated and its hashes re-reported; the orchestrator should schedule that after the Architect's AQ-V8-01 and AQ-V8-02 rulings.",
+          "I did not read the Owner decisions file inside the script, because the brief said to read BA-10 V8. The Owner pairs come only from the BA-10 V8 value block. If the Architect wants an independent cross-check of those pairs against the verbatim Owner record, the script needs one added read.",
+          "The memo header says 'This report is decisions section 234' and cites sections 230 and 233 by number, as instructed. The orchestrator must write sections 233 and 234 so those references hold."
+        ],
+        "checksRun": [
+          "Read BA-10 V8 sections 2.1 to 2.4 and its section 5 to 8 headings, and confirmed the phrases the script checks exist there.",
+          "Ran the V8 script and confirmed exit 0. Ran it twice: the outputs were byte-identical (sha256 4e5d19e6ca945491d82836468b6f4b1e74405cafd06c20b5ac66781c4dbe0ac6).",
+          "Negative tests on a temp copy of the inputs: N_A=45, n=58, alpha_B=0.01 and m=4 each made the script exit 1 with a FAIL message and no figures.",
+          "Confirmed the k=0 bounds with an independent exp(ln()/n) computation in 80-digit decimal arithmetic. They match the figures in BA-10 V8 and in the earlier params-check output.",
+          "Engine regression: the four V7 memo block B rows were reproduced exactly (G, D and TOTAL) by the V8 engine over the V7 catalog. The same rows over the V6 catalog through its labels also agree.",
+          "Confirmed the memo section 4 embeds the script's output verbatim, that the script and memo have no CR bytes, and that git hash-object and the LF sha256 are as reported.",
+          "Searched the output for NO or MISMATCH check results. The only hit is the scenario id KS-SL1-TX-MISMATCH.",
+          "git status shows only new untracked files from this task and the orchestrator's own modifications. No V7 file changed and no src/ or tests/ change. No AutoCAD, no host run, no git add/commit."
+        ]
+      }
+    },
+    "host": {
+      "files": [
+        {
+          "path": "docs/initiatives/I-52-ct21d-host-gate-execution-package-v1.md",
+          "gitBlob": "b23221a8b4cb8f2b30135b1e811456be2cbb976c",
+          "sha256Lf": "e979c70cc59a6cd2eac8b05641a0dc85c16d09cb22174fa82fa94bd4f8f97517"
+        }
+      ],
+      "summary": "I wrote the host-gate execution package for Coordinator review at docs/initiatives/I-52-ct21d-host-gate-execution-package-v1.md. It has 566 lines, LF endings and no CRs. No host run was started and nothing under src/ or tests/ changed. I made no git add or commit, and the V7 files are untouched. The state lines are unchanged, and the document ends with HOST_GATE_PACKAGE = PREPARED_FOR_COORDINATOR_REVIEW and HOST_RUN_STARTED = FALSE. Every blob id and SHA below came from commands in this worktree. The document's blob ids come from git hash-object on the working tree, and the DLL SHA-256 values and the library path and hash are marked UNKNOWN.\n\nWhat the package contains:\n- **Authorization scope (section 1):** the Owner's authorization, execution discipline and Q-O5 are quoted verbatim, next to BA-11 V9 3.3 verbatim. 3.3 names only four rows: machine-attribute observation, K-3 (TOL_SCALE), K-2 (library census plus AR4-10 confirmations) and K-8 (fixture instances and FX-IMP). The Owner authorized the gate but did not name a machine; he delegated that to the CAD manager, so nothing can run until the designation record exists.\n- **Gate membership (section 2, rows G1 to G21):**\n  - IN: the six-attribute observation and machine/session fact capture, the library census with its AR4-10 read part, TOL_SCALE (but blocked, see below), the FX-ANN-BLANK instance (built from 69daf03a), FX-IMP and its variants, and the other fixture instances as to scope.\n  - OUT: governing runs, admission, G3, CT-50, Act 2, freeze, residual W-scan, the final guarantee, the WU-DRY-* warm-up dry runs (167 x 29 = 4843 runs), the BA-06 dynamic-trace dry runs, instrument qualification, EV-L/EV-V, manifest/custody/anchor, and UNDO evidence.\n  - NEEDS RULING: the AR4-10 write-back probe, the host-type confirmations for the RB ranges and context variables (BA-05 needs these before its candidate, but 3.3 does not name them), the build identity for the non-FX-IMP fixtures, \"otros K-*\" (my reading is none), and HDM-CHAR-*, E4-LEARN-R1-* and LK-*. I recommend those last three get their own gate: 3.3 does not name them, they need a characterization build that does not exist, and their pins are fixed before the first governing run.\n- **Pre-run checklist (section 3):** the Owner's six steps in order. It includes a designation-record template with the Owner's fields plus the six PARAM-05 attributes, the machine and session tuple layers, a per-activity build table, raw-evidence rules (location, naming, hashing, write-once), and the \"GOVERNING = FALSE\" labeling block.\n- **Run plan (section 4):** activities H1 to H7. Each has purpose, inputs, tool, raw outputs, classification, stop conditions and the baseline artifact that consumes the output. The common rules follow the existing contract: no automatic retries, and a rerun only with the Coordinator's per-occurrence authorization. N_A=44 and the other Owner counts are not applied to any in-gate activity, since all of those apply to scenario runs that are out of the gate.\n- **Tooling gaps (section 5, T-1 to T-9):** no census instrument, no write-back probe, no fixture conformance reader, no FX-IMP specification, no machine-fact script and no TOL_SCALE test design exist. The only \"census\" tool in eng/ is the Roslyn API census I52G3AApiCensus, which is not a DWG census. Nothing was written, and the minimal path (a read-only instrument under eng/research with Architect review) is listed as a Coordinator decision.\n- **Session discipline (section 6) and Coordinator verifications (section 7):** the operator is the Owner or CAD manager. A checklist V-1 to V-10 and 13 requested rulings (R-1 to R-13) are included. The package states in terms that no host run starts before the Coordinator's gate ruling.\n\nFacts I verified in the repo:\n- 69daf03a35c630e453e1d9e98136f128bd0325a4 is an ancestor of 95690c28, and the src diff between them is exactly nine files (the I-60 naming).\n- No RACKMIRROR exists in src, so the PRODUCT_BUILD under test does not exist yet.\n- The repo holds no DWG; blocks-library.dwg is resolved at run time by BlockLibraryLocator.\n\nI did not use BA-07 V8 or BA-10 V8, which are untracked in the worktree.",
+      "openQuestions": [
+        "R-1: is 'otros K-*' empty, i.e. only K-2, K-3, K-8 (and K-1 via fixture instances)? BA-11 3.3 names no other K-item.",
+        "R-2: are HDM-CHAR-*, E4-LEARN-R1-* and LK-* part of this gate? Recommendation: they need their own gate (not named in 3.3; they need the characterization build, the sealed catalog and K-5; their pins are fixed before the first governing run).",
+        "R-3: are the AR4-10 write-back probe (BA-05 5 step 5(a) assigns it to 'the I-12 qualification', which is OUT) and the RB-range and context-variable host-type confirmations (BA-05 L-4, not named in 3.3) inside the gate? Without a ruling BA-05 cannot reach its candidate.",
+        "R-4: what is 'the exact build' for FX-ANN-BLANK step 2 and the other fixtures while the PRODUCT_BUILD does not exist (no RACKMIRROR in src)? Proposal: a build of 95690c28 without RACKMIRROR, giving candidate instances only, with the FIXTURE_INSTANCE pins fixed on the exact build before the first governing run.",
+        "R-5: who authorizes writing the read-only instruments (T-1 to T-9) and under which path, and must they be final and in the loaded-module baseline before H1 (TRUSTEDPATHS is class-defining, so adding a trusted folder later is a new tuple)?",
+        "R-8: is loading a different RackCad build (69daf03a for FX-ANN-BLANK step 1, then the exact build) in a separate session a 'plugin change' under the Owner's Q-O5 rule or a build-tuple fact? No source decides this; it needs an Owner or Coordinator statement.",
+        "R-10: who writes the TOL_SCALE test design? No document defines the test (BA-08 V7 10 and 16.1: 'separate decision; the test needs non-governing host evidence'), so H4 cannot run.",
+        "A-1 (Architect): BA-10 V7 2.2 fixes the six PARAM-05 attributes and the JCS serialization but not the exact text each represents (e.g. product name vs code vs acad.exe version), and the label hashes that text. BA-10 V8 should fix the read for each attribute.",
+        "A-2 (Architect): the Owner's Q-O5 list is wider than the closed list of six (hardware, Windows account, module baseline, configuration inputs), and V2.1 2.1 has no Windows-account field. Are the extra fields session or MACHINE_PROFILE_BOUND facts that do not change the class label, or does BA-10 V8 add them to the class definition?",
+        "A-3 (Architect/Coordinator): may the instances of the non-FX-IMP fixtures wait for the exact build (BA-08 V7 16.2 K-1), leaving only the FX-ANN-BLANK and FX-IMP work in this gate now?",
+        "R-7, R-9, R-11, R-12, R-13 (also section 7): repetition count per activity (proposal: one), manual operation and interactive acad.exe vs Core Console, Release vs Debug for the fixture builds, the FAIL/UNKNOWN/INVALID mapping for non-governing preparation activities, and custody of the real blocks-library.dwg."
+      ],
+      "checksRun": [
+        "git hash-object on the new file and every cited source (blob ids in the document header)",
+        "sha256sum of the new file on LF bytes, 64 hex characters, zero CR characters",
+        "git rev-parse 69daf03a and 95690c28 trees; git merge-base --is-ancestor 69daf03a 95690c28 (true)",
+        "git diff --stat 69daf03a 95690c28 -- src (exactly 9 files, the I-60 naming)",
+        "grep RACKMIRROR over src (no match); grep census, DSTYLE, TOL_SCALE and FX-IMP over eng, src and tests (no DWG census instrument); git ls-files for DWG files (none)",
+        "verbatim extraction of the Owner file, BA-11 V9 3.3, BA-10 PARAM-05 and CHAR_RUNS, BA-05 section 5, BA-08 sections 10, 12 and 16, BA-09 sections 4 and 8, V2.1 sections 2, 20 and 21",
+        "git status: only new untracked files besides the pre-existing modifications; no src or tests change, no git add or commit by me"
+      ]
+    },
+    "rev": [
+      {
+        "verdict": "APPROVE_EXACT",
+        "majors": [],
+        "minors": [
+          "Verifier docstring (lines 10-14 and a code comment near line 101 of docs/automation/evidence/I-52-ct21d-precondition-verifier.py) still calls the BA-09 extension 'a proposal of round V7' pending Architect confirmation. This is now false against AR8-02. It sits outside V8. Reword it as V7-03 suggests and re-hash it; V8 does not need to change.",
+          "V8 section 14 and the V8 text say the BA-09 pointer is 'informative, not an edge (AR4-17)'. That is consistent with no DEPENDS_ON edge, but AR4-17 is cited for the informative-pointer convention and not for AR8-02 itself. Minor wording only.",
+          "N6-1 and the 11.1 'RULED AND APPLIED' block do not mention AR8-02, so section 11.1 has no row for it. It is only recorded in header and section 14. Acceptable; an AR8-02 row could be added in a later version.",
+          "Sibling relinks outside V8, as the writer already listed: BA-11 row for BA-07 (V7 path and hash), the BA-04 catalog pointer to 'BA-07 V7 section 5.4', and BA-08 V7 line 688 restating the union without BA-09.",
+          "Editorial changes beyond the literal V7-01 fix (title, banner, N6-1 'this V8', new section 14) follow the V7 precedent and are declared in the Delta V8 table. I accept them."
+        ],
+        "checks": [
+          "git diff --no-index -U0 V7 V8 gave 15 hunks, and I listed each. Hunks 1-2: title and banner V7 to V8. Hunk 3: ARTIFACT_VERSION, 8-DRAFT superseding blob 89a32582. Hunk 4: AUTHORITY_CONTRACT = CT-21D-V2.6 AGREED (section 230, composite 97100cff...). Hunk 5: DELTA RULING APPLIED prepends section 229 (AR8-02, AR8-04 (e)). Hunks 6-7: DEPENDS_ON rationale and the list of sections that declare precondition sets (BA-09 added). Hunk 8: PREREQUISITES records the AR8-02 confirmation. Hunk 9: section 1 (g) wording. Hunk 10: 5.4 intro, three mentions now include BA-09. Hunk 11: citingArtifacts row, confirmation wording. Hunk 12: deltaProcessing.citedArtifactsUnchanged adds BA-09 and the W-1 tree-delta rule. Hunk 13: section 10 U6 row, 'or BA-09'. Hunk 14: N6-1 'this V8'. Hunk 15: new section 14, Delta V8.",
+          "(a) The diff is limited to the V7-01 fix, the header updates, the Delta V8 section and the declared editorial changes. Nothing else changed.",
+          "(b) No BA-09 edge was added to DEPENDS_ON. The text says 'not an edge' and the list is unchanged, so the V8 DEPENDS_ON still holds only BA-01.",
+          "(c) The new rule matches BA-09 V7 section 3.2 (line 107). There a W-1 delta is processed before use, the WARMUP_PLAN_SET digests are recomputed, and a differing digest makes the warm-up definition a new BA-09 version. W-1 pairs are tree ids. The verifier has a BA-09 source with role ^W-1$ and object types blob and tree, and the tree-id note that only BA-09 may use trees matches the conditions.",
+          "(d) The three conditions in the V8 PREREQUISITES text match decisions section 229 AR8-02: tree ids only for W-1, W-1 tree delta processed by the rule of BA-09 section 3.2, and BA-09 added to citedArtifactsUnchanged (finding V7-01, before-candidate prerequisite, new BA-07 version).",
+          "(e) State lines are unchanged: CT21D_AUTHORITY_BASELINE_READY = FALSE, CT21D_EXECUTION_READY = FALSE, CT21D_EXECUTION = NOT_AUTHORIZED. The bound SHA 95690c28 is unchanged. There are 0 CR bytes, and git hash-object gives 610327e3388f8064a39052aae7f2554379b44c4d, which matches the writer's report. I did not recompute the sha256 of the LF-normalized bytes.",
+          "(f) Grep for 'submitted', 'pending', 'not yet agreed', 'draft', 'pending review' and 'proposal' found no remaining false statement in V8. The only occurrence of 'submitted to the Architect for confirmation' is in Delta V7 row 656, kept as history and explicitly superseded in section 14. The N6-1 text about V2.6 verification and AR6-06 is inherited from V7 and describes BA-01 preconditions, not the state of V2.6, so it is not false. Verifier docstring staleness is listed under minors."
+        ]
+      },
+      {
+        "verdict": "APPROVE_EXACT",
+        "majors": [],
+        "minors": [
+          "Rule 4 (V8 L74, symbolic sheet) gains a sentence saying the sheet holds only the section 2.4 values and derived counts. It is editorial and consistent with the symbolic-sheet rule, but it is not a pure value inscription. The Architect should accept it knowingly.",
+          "The memo script (cost-memo-v8.py) reads the HDM key list from BA-08 V7 section 11.2. BA-10 V8 keeps its V7 pointers to BA-08 V6. The sheet discloses that it does not re-point them, but there is pointer drift that the relink round should settle.",
+          "The memo reads the Owner pairs only from the BA-10 V8 value block and does not cross-check them against the verbatim Owner record. I re-derived the pairs from that record myself and they match, so this is a design observation only.",
+          "Sheet L302 and section 8 state the answer date 2026-09-30 and the package file name. The Owner record supports the date. The orchestrator must make sections 233 and 234 match every 'section 233' and 'section 234' citation.",
+          "The Q-O5 mapping table in the sheet is an interpretation: 'machine identity' is mapped to the MachineGuid, and 'AutoCAD version/build' to BUILD_BOUND, not class-defining. It is defensible and consistent with the unchanged six-attribute list, and the Architect should confirm it together with AQ-V8-01 and AQ-V8-02.",
+          "Stale text left in section 7 (the Delta V7 table, e.g. L381 on the V7 memo) is intentional history. The history note at the head of section 7 disclaims it, so I found no contradiction in the live sections.",
+          "m = 3 against the Owner's 'No automatic retries' is consistent. The sheet requires per-occurrence Coordinator authorization, and a governing FAIL or UNKNOWN is never retried. The memo's 27294 is a bound, not an expectation, and is labelled as such."
+        ],
+        "checks": [
+          "(a) Values. I recomputed the counts independently, both as exact rationals (smallest N with (1-p)^N <= alpha) and as logs. They give N_A=44 (ratio 43.7087), N_B=29 (28.4332), N_det=90 (89.7811), n=59 (58.40397), and WU_DRY_RUNS = N_B = 29. The k=0 Clopper-Pearson bounds, computed independently to 60 digits, are 0.050339338330420121983511957501 at n=58 and 0.049507609888226947385979516997 at n=59. Both match the sheet and the Owner's 0.05034 and 0.04951. m=3 and E=1 appear as Coordinator values 'for the Architect's review', in section 2.1, 2.2, 2.4 and the status block.",
+          "(b) Diff V7 to V8: 27 hunks, 151 insertions, 58 deletions, and I read every hunk (full diff plus word-level diff for the long lines). All are one of three kinds. Value inscriptions: the section 2.1 'Current value' cells, 2.2 PARAM-01/02/03/04, WU_DRY_RUNS and EVIDENCE_REPETITION, the new 2.4, and the status block. Contradiction or status fixes: banner, AUTHORITY_CONTRACT to V2.6 AGREED, ARCHITECT QUESTIONS, PREREQUISITES, COST MEMO, BASE ITEM, 'future/not authorized' gate wording, section 5 retitled as the record of answers, and the section 7 history note. Additions: 2.4, 6.2, 8 and the PARAM-05 confirmation text. No formula, repetition rule, rule table, section 2.3, section 4 or section number changed. The state lines stay FALSE / FALSE / NOT_AUTHORIZED. The only non-value editorial change is the rule 4 sentence listed under minors.",
+          "(c) Scope of 44. The sheet applies N_A only through N_strict(s) (floor) and the derived CHAR_RUNS (pin-feeding N_A, HDM N_A+V(s)) and says 'not generalized'. Class B uses its own pair (0.10/0.05) and the sheet says 'differs from class A, stays fail-closed'. Memo B.4 confirms the application: DEFAULT and EVIDENCE_STRICT are 44 for A-only and mixed scenarios and 29 for B-only. DRY is 29, VALIDATE is 90, and LEARN is 91. Governing LEARN scenarios serving a class-A/B group number 0.",
+          "(d) PARAM-05. The closed six-attribute list, the label rule, the JCS serialization and the change rows are byte-identical to V7. The label stays UNSET with the reason that the machine is not designated and no observation has been made. The Owner's wider recording list is mapped as 'fact capture', with the two items outside the closed list (hardware class, user/profile identity) explicitly not class-defining. AQ-V8-01 and AQ-V8-02 are real: extending the list would change the six-key JCS object, and the Owner's 'NEW MACHINE/SESSION TUPLE' wording does not map one-to-one onto the V7 change rows. The single-machine restriction and the no-evidence-of-equivalence statement match the Owner record. The sheet's 'questions not asked again unless a later reviewed contract change' is backed by the Owner record at L206-207.",
+          "(e) Memo. I ran it twice: exit 0, byte-identical, output sha256 4e5d19e6...ac6 (as claimed), 285 lines, and the output is embedded verbatim in the memo .md. The catalog is BA-04 V7 with 437 scenarios. I recomputed by hand: DEFAULT 32*44+118*44+5*29 = 6745; CLEAN 440; VALIDATE 3*90 = 270; LEARN 16*91 = 1456; EVIDENCE_STRICT 44+44+29 = 117; EVIDENCE 58; SYNTH 12. G = 9098. DRY 167*29 = 4843 and CHAR 264+212+91+2 = 569, so D = 5412 and TOTAL = 14510. The 3*G worst case is 27294. K=10, ceil(59/10)=6, and each member runs max(44,6)=44, so 440 runs. The structure matches V7 (the engine reproduces the four V7 rows exactly and V6 gives +0). The reconciliation against V7 row 1 (10710) is +3800, and the per-rule deltas sum to it. The failure path is handled: the script exits 1 on a mismatch.",
+          "(f) No cycle. BA-10 V8 names the memo by path only (L60, L398 'no hash'). The only 40-hex strings in the sheet are the V7 and V6 sheet blobs. The memo binds the sheet blob 820d90c8... and sha256 867fc4ad..., and both match my own measurements.",
+          "(g) Stale text. Remaining hits for 'NOT ASKED', 'not yet agreed', 'V7 memo' and 'every value UNSET' are only in history or delta notes, or in explicit 'closed by' statements. No live contradiction was found. The header and status PREREQUISITES are consistent with the label value still UNSET.",
+          "Hashes re-verified. The git blobs are sheet 820d90c8, check.py fff1a17c, check JSON 4ed07f3a, memo .md 375517e6 and memo .py 5dbccfe3, and the LF sha256 prefixes match the writers' reports. There are 0 CR bytes in the files I checked. The V7 sheet blob is unchanged at 92f2b3ee. The params-check run against V8 reproduces the committed JSON exactly. I made no edits to repo files, and scratch output went to the scratchpad."
+        ]
+      },
+      {
+        "verdict": "APPROVE_EXACT",
+        "majors": [],
+        "minors": [
+          "Line 361 (section 4.0, last table row): 'any of the above' puts every non-INVALID outcome under per-occurrence Coordinator authorization of a rerun, including UNKNOWN. V2.1 21.3 allows an authorized retry only for INVALID, and the same row says a FAIL/UNKNOWN is never repeated. The wording is slightly looser than the contract and should say 'INVALID or crash'. It does not stretch the Owner's 'No automatic retries'.",
+          "Section 8 status (line 560) lists H4 and H5 under 'ACTIVITIES IN' although H4 is blocked by T-4, H5 step 2 depends on R-4 (exact build UNKNOWN) and H6 is IN only as to scope. The body flags all of this, so it is only a summary-line precision issue. Suggest 'IN, conditional' for H4, H5 step 2 and H6.",
+          "Tooling search (section 5): the package never mentions eng/validation/I52G3AAutoCadProbe (a host probe, RXClass use only, not a census). It also does not cite V2.1 line 116, which says the CT-DA tooling and the G3A probe are reference material only and that using them is a decision of a future gate. I found no missed census, TOL_SCALE, fixture or machine-capture instrument, so the gaps are real, but one sentence on the probe would close the search record.",
+          "Section 3.4 and T-7 say the AutoCAD build, the DLL SHA-256 values and the library path/hash are UNKNOWN. That is correct, not an error. R-5 and R-8 (instrument and trusted-path ordering, two RackCad builds under the 'no plugin changes' rule) are genuine Owner/Coordinator questions that the package leaves open without deciding them."
+        ],
+        "checks": [
+          "git hash-object of the package is b23221a8b4cb8f2b30135b1e811456be2cbb976c and the SHA-256 of its LF bytes is e979c70c...97517 (64 hex characters). Both match the writer's report. The file has 566 lines and no CR characters.",
+          "Blob ids of all 17 cited sources match the header: the Owner record, BA-11 V9, BA-05 V5, BA-08 V7, BA-04 V7 md and json, BA-06 V7, BA-07 V7, BA-09 V7, BA-10 V7, the decision package V1, contracts V2.1 and V2.6, BlockLibrary.cs, build-bundle.ps1, the I52Ctda README and the validacion-manual guide. The precondition-verifier .py exists. eng/validation/I52G3AApiCensus exists (I verified the directory only; its blob was not checked).",
+          "69daf03a is an ancestor of 95690c28. Tree ids 3c34dc9b... and 967c4ccb... match. The commit subject 'Merge I-55: View Placement & Projection (ID17 + ID18 + ID19)' matches. git diff --stat 69daf03a 95690c28 -- src lists 9 files. global.json pins SDK 8.0.423. The worktree has no diff against 95690c28 in src/ or tests/. The V7 files show no modification, and git ls-files finds no DWG or DWT. There is no RACKMIRROR in src.",
+          "BA-04 V7 counts match the JSON and the md: 437 scenarios, 167 WU-DRY, K-3=138, K-8=45, FIXTURE_INSTANCE=372, HDM-CHAR 4, E4-LEARN 2 and LK 4.",
+          "Owner text: every non-blank line of the quoted blocks in sections 1.2, 1.3 and 1.4 is found verbatim in the Owner evidence file (0 missing). The BA-11 V9 3.3 intro, its four row phrases and 'each needs an explicit authorization' are verbatim. Section 1.5 says BA-11 3.3 names exactly four rows (the Owner's 'por ejemplo' is the Owner's phrase, quoted), and the stretch-prone items are marked RULING rather than IN: G5, G6, G9 (build), G11, G12, G20. The HDM-CHAR, E4-LEARN, LK and WU-DRY rows are excluded or referred out with reasons.",
+          "Owner's 6-step discipline: the steps are reproduced in the Owner's order, with the Coordinator step 3 as a per-activity IN/OUT record and the no-automatic-retry rule. They map to checklist items 3.1 to 3.6. The Owner's numbers (N_A=44, N_B=29, N_det=90, n=59, WU_DRY=29) are explicitly not applied to any in-gate activity. m=3 and EVIDENCE_REPETITION=1 are recorded as the Coordinator's values subject to Architect review (V-10), and the package uses neither.",
+          "Operator and gate statements: lines 4-6 and section 7 say no host run starts before the Coordinator's gate ruling. Section 0 and section 6 say the agent does not operate the host, and that a later gate would have to say otherwise in terms.",
+          "Tooling: grep of eng, src, tests and deploy for census, DSTYLE, TOL_SCALE, FX-IMP, MachineGuid, SECURELOAD and TRUSTEDPATHS finds only the Roslyn API census, the CT-DA harness (a TRUSTEDPATHS note in the build script and README) and unrelated tests. No DWG census, write-back probe, conformance reader or machine-capture script exists, so T-1 to T-9 hold. The package says no tooling was written. git status shows only new untracked docs and the pre-existing I-52.md decisions-log modification; the package itself added no src or tests change.",
+          "State lines CT21D_AUTHORITY_BASELINE_READY = FALSE, CT21D_EXECUTION_READY = FALSE and CT21D_EXECUTION = NOT_AUTHORIZED appear unchanged in the header (line 33) and at the end (line 565). HOST_RUN_STARTED = FALSE.",
+          "Nothing invented: unknown values (DLL hashes, library path and hash, AutoCAD build, template identity, test design) are marked UNKNOWN. The repetition count for in-gate activities is explicitly 'no source defines it' and is put to the Coordinator as R-7."
+        ]
+      }
+    ]
+  },
+  "workflowProgress": [
+    {
+      "type": "workflow_phase",
+      "index": 1,
+      "title": "Write"
+    },
+    {
+      "type": "workflow_phase",
+      "index": 2,
+      "title": "Review"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 1,
+      "label": "write:ba07-v8",
+      "phaseIndex": 1,
+      "phaseTitle": "Write",
+      "agentId": "afcc9d04ede33337d",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790815385551,
+      "queuedAt": 1790815385518,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "I created docs/initiatives/I-52-ct21d-baseline-ba-07-manife…",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ is byte-identical to main 95690c28). You are the IMPLEMENTER of I-52 / CT-21D baseline preparation (documents and evidence tools only). HARD RULES: no AutoCAD, no host run, no src/ or tests/ change, no git commit/push/add (the orchestrator commits),…",
+      "promptFramed": true,
+      "lastProgressAt": 1790815534450,
+      "tokens": 103884,
+      "toolCalls": 18,
+      "durationMs": 148894,
+      "resultPreview": "{\"files\":[{\"path\":\"docs/initiatives/I-52-ct21d-baseline-ba-07-manifest-custody-v8.md\",\"gitBlob\":\"610327e3388f8064a39052aae7f2554379b44c4d\",\"sha256Lf\":\"d9e3210017b7072a2985a0b9990d71fd07e970b44d8a6937ca49bd372bfe5d7f\"}],\"summary\":\"I created docs/initiatives/I-52-ct21d-baseline-ba-07-manifest-custody-v8.md from the V7 file in the worktree C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirro…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 2,
+      "label": "write:ba10-v8",
+      "phaseIndex": 1,
+      "phaseTitle": "Write",
+      "agentId": "acc3d11f55fcac48a",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790815385554,
+      "queuedAt": 1790815385519,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "Produced the BA-10 V8 sheet (V7 blob 92f2b3ee... untouched,…",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ is byte-identical to main 95690c28). You are the IMPLEMENTER of I-52 / CT-21D baseline preparation (documents and evidence tools only). HARD RULES: no AutoCAD, no host run, no src/ or tests/ change, no git commit/push/add (the orchestrator commits),…",
+      "promptFramed": true,
+      "lastProgressAt": 1790815719969,
+      "tokens": 144152,
+      "toolCalls": 17,
+      "durationMs": 332196,
+      "resultPreview": "{\"files\":[{\"path\":\"docs/initiatives/I-52-ct21d-baseline-ba-10-parameter-sheet-v8.md\",\"gitBlob\":\"820d90c8a2172ad32697e66f0c9b0f3eb5fadbdb\",\"sha256Lf\":\"867fc4adb332f0a22ade4a24cb74309e5c76f39a90f5b24ab50f605144889dd5\"},{\"path\":\"docs/automation/evidence/I-52-ct21d-ba10-v8-params-check.py\",\"gitBlob\":\"fff1a17c77b788c1ce7713a95183286f1196dd94\",\"sha256Lf\":\"9744b343fccb5b0306c6012f56e2aa9d57dbaae7b309607e…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 3,
+      "label": "write:host-package",
+      "phaseIndex": 1,
+      "phaseTitle": "Write",
+      "agentId": "ad934b24512ce63cb",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790815385555,
+      "queuedAt": 1790815385519,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "I wrote the host-gate execution package for Coordinator rev…",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ is byte-identical to main 95690c28). You are the IMPLEMENTER of I-52 / CT-21D baseline preparation (documents and evidence tools only). HARD RULES: no AutoCAD, no host run, no src/ or tests/ change, no git commit/push/add (the orchestrator commits),…",
+      "promptFramed": true,
+      "lastProgressAt": 1790815916761,
+      "tokens": 207258,
+      "toolCalls": 44,
+      "durationMs": 528986,
+      "resultPreview": "{\"files\":[{\"path\":\"docs/initiatives/I-52-ct21d-host-gate-execution-package-v1.md\",\"gitBlob\":\"b23221a8b4cb8f2b30135b1e811456be2cbb976c\",\"sha256Lf\":\"e979c70cc59a6cd2eac8b05641a0dc85c16d09cb22174fa82fa94bd4f8f97517\"}],\"summary\":\"I wrote the host-gate execution package for Coordinator review at docs/initiatives/I-52-ct21d-host-gate-execution-package-v1.md. It has 566 lines, LF endings and no CRs. No h…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 4,
+      "label": "write:memo-v8",
+      "phaseIndex": 1,
+      "phaseTitle": "Write",
+      "agentId": "a245d224256f45c5f",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790815719977,
+      "queuedAt": 1790815719972,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "Produced the cost memo V8 (script and memo). The V7 memo fi…",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ is byte-identical to main 95690c28). You are the IMPLEMENTER of I-52 / CT-21D baseline preparation (documents and evidence tools only). HARD RULES: no AutoCAD, no host run, no src/ or tests/ change, no git commit/push/add (the orchestrator commits),…",
+      "promptFramed": true,
+      "lastProgressAt": 1790816078382,
+      "tokens": 202360,
+      "toolCalls": 19,
+      "durationMs": 358404,
+      "resultPreview": "{\"files\":[{\"path\":\"C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/docs/automation/evidence/I-52-ct21d-cost-memo-v8.py\",\"gitBlob\":\"5dbccfe3738f4d953c8ee11884947358bf6a51f0\",\"sha256Lf\":\"f3dded5380de5f170c3b93363630218f5a13b8e91e5ee31062ae281bdfba083f\"},{\"path\":\"C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/docs/automation/evidence/I-…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 5,
+      "label": "review:ba07-v8",
+      "phaseIndex": 2,
+      "phaseTitle": "Review",
+      "agentId": "a3f4f182079449a00",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790816078417,
+      "queuedAt": 1790816078387,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "APPROVE_EXACT",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ is byte-identical to main 95690c28). You are the IMPLEMENTER of I-52 / CT-21D baseline preparation (documents and evidence tools only). HARD RULES: no AutoCAD, no host run, no src/ or tests/ change, no git commit/push/add (the orchestrator commits),…",
+      "promptFramed": true,
+      "lastProgressAt": 1790816111044,
+      "tokens": 77679,
+      "toolCalls": 5,
+      "durationMs": 32621,
+      "resultPreview": "{\"verdict\":\"APPROVE_EXACT\",\"majors\":[],\"minors\":[\"Verifier docstring (lines 10-14 and a code comment near line 101 of docs/automation/evidence/I-52-ct21d-precondition-verifier.py) still calls the BA-09 extension 'a proposal of round V7' pending Architect confirmation. This is now false against AR8-02. It sits outside V8. Reword it as V7-03 suggests and re-hash it; V8 does not need to change.\",\"V8 …"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 6,
+      "label": "review:ba10-memo-v8",
+      "phaseIndex": 2,
+      "phaseTitle": "Review",
+      "agentId": "a547f25636f326d19",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790816078419,
+      "queuedAt": 1790816078388,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "APPROVE_EXACT",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ is byte-identical to main 95690c28). You are the IMPLEMENTER of I-52 / CT-21D baseline preparation (documents and evidence tools only). HARD RULES: no AutoCAD, no host run, no src/ or tests/ change, no git commit/push/add (the orchestrator commits),…",
+      "promptFramed": true,
+      "lastProgressAt": 1790816190303,
+      "tokens": 114448,
+      "toolCalls": 16,
+      "durationMs": 109713,
+      "resultPreview": "{\"verdict\":\"APPROVE_EXACT\",\"majors\":[],\"minors\":[\"Rule 4 (V8 L74, symbolic sheet) gains a sentence saying the sheet holds only the section 2.4 values and derived counts. It is editorial and consistent with the symbolic-sheet rule, but it is not a pure value inscription. The Architect should accept it knowingly.\",\"The memo script (cost-memo-v8.py) reads the HDM key list from BA-08 V7 section 11.2. …"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 7,
+      "label": "review:host-package",
+      "phaseIndex": 2,
+      "phaseTitle": "Review",
+      "agentId": "a0dcf8762b904bdc4",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790816078422,
+      "queuedAt": 1790816078389,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "APPROVE_EXACT",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ is byte-identical to main 95690c28). You are the IMPLEMENTER of I-52 / CT-21D baseline preparation (documents and evidence tools only). HARD RULES: no AutoCAD, no host run, no src/ or tests/ change, no git commit/push/add (the orchestrator commits),…",
+      "promptFramed": true,
+      "lastProgressAt": 1790816201649,
+      "tokens": 109583,
+      "toolCalls": 14,
+      "durationMs": 121057,
+      "resultPreview": "{\"verdict\":\"APPROVE_EXACT\",\"majors\":[],\"minors\":[\"Line 361 (section 4.0, last table row): 'any of the above' puts every non-INVALID outcome under per-occurrence Coordinator authorization of a rerun, including UNKNOWN. V2.1 21.3 allows an authorized retry only for INVALID, and the same row says a FAIL/UNKNOWN is never repeated. The wording is slightly looser than the contract and should say 'INVALI…"
+    }
+  ],
+  "totalTokens": 959364,
+  "totalToolCalls": 133
+}

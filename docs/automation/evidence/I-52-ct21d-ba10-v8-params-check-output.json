@@ -1,0 +1,93 @@
+{
+  "artifact": "I-52-ct21d-ba10-v8-params-check",
+  "k0_bound": {
+    "at_n": {
+      "at_most_u": true,
+      "n": 59,
+      "upper_bound": "0.049507609888226947385979516997"
+    },
+    "at_n_minus_1": {
+      "at_most_u": false,
+      "n": 58,
+      "upper_bound": "0.050339338330420121983511957501"
+    },
+    "c": "0.95",
+    "formula": "1 - (1 - c)^(1 / n)",
+    "k": 0,
+    "u": "0.05"
+  },
+  "mismatches": [],
+  "owner_counts": {
+    "N_A": 44,
+    "N_B": 29,
+    "N_det": 90,
+    "WU_DRY_RUNS": 29,
+    "n": 59
+  },
+  "owner_pairs": {
+    "A": {
+      "alpha": "0.01",
+      "p": "0.10"
+    },
+    "B": {
+      "alpha": "0.05",
+      "p": "0.10"
+    },
+    "clean": {
+      "c": "0.95",
+      "u": "0.05"
+    },
+    "det": {
+      "alpha": "0.01",
+      "p": "0.05"
+    }
+  },
+  "recomputed": {
+    "N_A": 44,
+    "N_B": 29,
+    "N_det": 90,
+    "WU_DRY_RUNS": 29,
+    "n": 59
+  },
+  "rows": {
+    "N_A": {
+      "alpha": "0.01",
+      "count_exact": 44,
+      "count_log": 44,
+      "p": "0.10",
+      "parameter": "PARAM-01 class A",
+      "ratio_ln_alpha_over_ln_1_minus_p": "43.708690653565665"
+    },
+    "N_B": {
+      "alpha": "0.05",
+      "count_exact": 29,
+      "count_log": 29,
+      "p": "0.10",
+      "parameter": "PARAM-01 class B",
+      "ratio_ln_alpha_over_ln_1_minus_p": "28.433158805743416"
+    },
+    "N_det": {
+      "alpha": "0.01",
+      "count_exact": 90,
+      "count_log": 90,
+      "p": "0.05",
+      "parameter": "PARAM-02",
+      "ratio_ln_alpha_over_ln_1_minus_p": "89.781134960709769"
+    },
+    "n": {
+      "alpha_equivalent_1_minus_c": "0.05",
+      "c": "0.95",
+      "count_exact": 59,
+      "count_log": 59,
+      "parameter": "PARAM-03",
+      "ratio_ln_1_minus_c_over_ln_1_minus_u": "58.403974814319771",
+      "u": "0.05"
+    }
+  },
+  "sheet": {
+    "checked": true,
+    "keys": 13,
+    "path": "I-52-ct21d-baseline-ba-10-parameter-sheet-v8.md"
+  },
+  "verdict": "MATCH"
+}

@@ -7,11 +7,12 @@ Reading of AR5-12 (AR7-03, no erratum): the BA-03 runner detects BA-03's own pai
 union. Following BA03V6-N1, the BA-03 pairs are compared here as expected blob versus the blob at the build source
 SHA (and at the bound SHA); origin/main is not read (that is a seal-time question, not a per-build one).
 
-EXTENSION OF THE AR7-03 UNION, SUBMITTED TO THE ARCHITECT FOR CONFIRMATION. AR7-03 names the pairs of BA-03, BA-06
+EXTENSION OF THE AR7-03 UNION, CONFIRMED BY AR8-02 (decisions section 229). AR7-03 names the pairs of BA-03, BA-06
 and BA-08 only. This verifier also reads a fourth source, the W-1 dependency pairs of BA-09 V7 section 3.2 (option
 --ba09), because BA-09 V7 ties its warm-up plans to each build under test through this verifier (AR7-07; the W-1
-identity clause of BA-09 V7 section 3.2 and its closing block rely on it). Until the Architect confirms the
-extension, the BA-09 rows are part of the union as a proposal of round V7, not as a ruled part of AR7-03.
+identity clause of BA-09 V7 section 3.2 and its closing block rely on it). The Architect confirmed the extension
+(AR8-02) under three conditions: tree ids only for the W-1 rows; a W-1 tree delta is processed by the BA-09 section
+3.2 rule; BA-09 is part of citedArtifactsUnchanged in BA-07 V8.
 
 Usage:
     python I-52-ct21d-precondition-verifier.py <repo root> <build source sha> <output.json>
@@ -28,8 +29,9 @@ Usage:
                        can be pointed at without editing this file (defaults: CONFIG below);
   --expect-sha256 BA-xx=<hex>
                        repeatable; the expected SHA-256 (LF-normalized bytes, 64 lowercase hex) of the file read
-                       for artifact BA-xx (the sealed or BA-11-registered hash; required by the reviewer once the
-                       artifacts are sealed). A different or unreadable file FAILS the run (fail closed);
+                       for artifact BA-xx (the hash of the file read, not the entry composite: for a multi-file entry
+                       the reviewer checks the member hash against the entry hash by the BA-11 section 1 procedure;
+                       required by the reviewer once the artifacts are sealed). A different or unreadable file FAILS the run (fail closed);
   --expect-count <n>   the union pair count the reviewer declares; a different count FAILS the run;
   --ba03-runner-output <path>
                        the output JSON of the BA-03 runner (I-52-ct21d-ba03-v5-checks.py) run with a build source
@@ -98,7 +100,7 @@ CONFIG = {
         'role_excluded': r'^P$',
         'select': 'section 3.2 code-identity rows with Role W or C',
     },
-    # Extension of the AR7-03 union submitted to the Architect for confirmation (module docstring).
+    # Extension of the AR7-03 union, confirmed by AR8-02 (module docstring).
     'BA-09': {
         'kind': 'markdown-table',
         'default_path': 'docs/initiatives/I-52-ct21d-baseline-ba-09-warmup-v7.md',
