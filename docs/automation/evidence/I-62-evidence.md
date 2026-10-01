@@ -5,7 +5,8 @@ Contrato: [I-62-portabilidad-coordinador-principal.md](../../initiatives/I-62-po
 
 Estado de esta evidencia:
 - **G0 cerrado**: GATE PASS administrativo del Coordinator (C62-G0-02) sobre `85ae4324…`; hechos posteriores al bootstrap en §9.
-- **F0, tramo Discovery**: entrega inicial (C62-F0-01; §10) y ronda R1 tras la revisión F0-R1 (C62-F0-02..07; §11), para revisión del Coordinator.
+- **F0, tramo Discovery**: entrega inicial (C62-F0-01; §10) y ronda R1 (C62-F0-02..07; §11), aceptada como base de diseño (C62-F0-08).
+- **F0, diseño**: Proposal V1 y paquete del Architect para revisión (C62-F0-11; §12). Sin Freeze.
 - No hay Freeze, piloto, Candidato ni F0 GATE PASS. Lo no ejecutado figura como **PENDIENTE**.
 - §§1-8 son el registro original de G0 y se conservan como se escribieron.
 
@@ -253,3 +254,28 @@ repositorio (`D:\IDs\I-62\`).
 
 **Validación de esta entrega:** allowlist, enlaces y `git diff --check`; resultado en el cuerpo del commit. La CI de este commit se informa al Coordinator;
 no se registra aquí para no guardar un SHA autorreferente.
+
+## 12. F0 — diseño y Proposal V1 (C62-F0-08..12)
+
+**CI de la ronda R1** (`2b7976b02a44e2aca7feee2df473a86eda852fb0`): corrida **36898507559**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: Tests (Domain + Application), UI Tests (WPF controls,
+net8.0-windows), Build UI (WPF, valida API de Application) y Build Plugin without AutoCAD; los cuatro `success`. MEASURED por la sesión con `gh run view` y
+verificado por el Coordinator (C62-F0-08). Acredita solo `2b7976b0`.
+
+**Orden recibida:** `I-62-F0-resolucion-R1-y-orden-diseno.txt`, 21 665 bytes, SHA-256 `171fa091b7badb470b63a97c401955b2f9ee25cf540aec4d4f3c6987b91f2f3e`, fuera
+del repositorio (`D:\IDs\I-62\`).
+
+**Apertura del tramo** (MEASURED, 17:40Z):
+- `origin/main` = `819955d6…`, sin rebase;
+- rama de I-62 en `2b7976b0…` = remoto, árbol limpio;
+- I-52 `c1982b2a` (sin cambio);
+- I-63 `85293273` (`dbfe1150..85293273`: solo `I-63-*` propios);
+- I-64 `c6c44828` (`cf034e59..c6c44828`: solo `I-64-*` propios);
+- ninguna superficie candidata de I-62 tocada por otra rama (DC-07 por delta).
+
+**Trabajo del tramo:** redacción directa de la Proposal V1, del paquete del Architect y del borrador del ADR sucesor. No se tomó ninguna medición nueva, no se
+invocó ningún modelo ni subagente, no hubo sondas, no se repitieron las 17 pruebas (ninguna afirmación lo exigía) y no se escribió fuera de la allowlist.
+`docs/automation/evidence/I-62-discovery/` no se creó.
+
+**Validación de esta entrega:** allowlist, enlaces y `git diff --check`; resultado en el cuerpo del commit. La CI de este commit se informa al Coordinator; no
+se registra aquí para no guardar un SHA autorreferente.

@@ -3,12 +3,12 @@ schema: rackcad-initiative/v2
 id: I-62
 title: Principal Coordinator Portability & Provider-Agnostic Role Binding
 type: architecture
-status: discovery-f0
+status: design
 workflow: V2
 conceptual_initiative: I-62
 delivery_unit: I-62
 archetype: NEW ARCHITECTURE
-materiality: [UNKNOWN]
+materiality: [M-01, M-02, M-04, M-05, M-06, M-07, M-08]
 branch: architecture/portabilidad-coordinador-principal
 base_branch: main
 priority:
@@ -18,9 +18,9 @@ conflicts_with: []
 hot_files: [docs/ROADMAP.md]
 coordination_strategy: Bootstrap con acuses de ventana de ROADMAP de I-52, I-63 e I-64 (ID30) (ver decisiones); DC-07 fija el resto en Discovery.
 context_packs: [documentation-governance]
-consumes: [UNKNOWN]
-extends: [UNKNOWN]
-introduces: [UNKNOWN]
+consumes: []
+extends: [Agent Execution Protocol]
+introduces: []
 discovery_ref: docs/initiatives/I-62-discovery.md
 freeze_ref:
 freeze_delta_ref:
@@ -54,12 +54,15 @@ automation:
 - Apertura: caso (d) de [WORKFLOW](../WORKFLOW.md) §2, por **autorización explícita del Owner**, que además reserva el número I-62 para esta
   iniciativa ([decisiones](../automation/decisions/I-62.md) §2).
 - Mandato: [`I-62-owner-mandate.txt`](../automation/decisions/I-62-owner-mandate.txt). Es una sola copia; aquí no se reescribe.
-- **Arquetipo: NEW ARCHITECTURE provisional**, aceptado por el Coordinator como clasificación conservadora mientras M-07 siga UNKNOWN
-  (C62-F0-01, [decisiones](../automation/decisions/I-62.md) §7; [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §3). Solo gobierna la
-  profundidad de Discovery y revisión: no amplía alcance, no obliga a Level B y no autoriza plataforma ni gasto. El mandato conserva su
-  etiqueta FOUNDATION EVOLUTION. Tras la revisión F0-R1 (R62-F0-01), la clasificación provisional **se mantiene**. M-01, M-02 creador y M-07
-  siguen **UNKNOWN** con decisor, y EXP-09 sigue abierta ([Discovery](I-62-discovery.md) §9). FOUNDATION EVOLUTION es solo una **alternativa**
-  (Discovery §9.3), no una propuesta aceptada. Una bajada antes del Freeze sigue LIFECYCLE §3.
+- **Arquetipo: NEW ARCHITECTURE**, **confirmado por el Coordinator para el diseño** (C62-F0-09 §1, [decisiones](../automation/decisions/I-62.md)
+  §10; [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §3):
+  - activados M-01 (creador), M-02 (modificación y creador), M-04, M-05, M-06, M-07 y M-08; M-03 no;
+  - el Architect puede cuestionarlo; su acuerdo no se afirma;
+  - la clasificación no autoriza motor, framework, scheduler, servicio de locks ni plataforma.
+
+  Antes la clasificación era provisional (C62-F0-01, decisiones §7) y se mantuvo así en F0-R1 (R62-F0-01). El mandato conserva la etiqueta
+  FOUNDATION EVOLUTION como fuente histórica de la intención.
+- **Agrupación:** una iniciativa conceptual y **una** unidad de entrega. Los pilotos F6 validan la misma entrega (C62-F0-09 §2).
 - Evoluciona el **Agent Execution Protocol** de I-61, que sigue integrado, intacto y como protocolo vigente hasta que I-62 se integre. Es un
   cambio de **proceso de desarrollo**; no cambia funcionalidad de producto.
 
@@ -111,23 +114,21 @@ Freeze, Freeze delta y A-n: **ninguno**.
 ## 5. Fundaciones y evolución
 
 ```text
-Consumes: UNKNOWN (Discovery DC-08; candidata: Agent Execution Protocol de I-61, solo tras comprobación en la base)
-Extends: UNKNOWN (el mandato propone extender el Agent Execution Protocol)
-Introduces: UNKNOWN (condicionado a M-07 y EXP-09)
+Consumes: ninguna entrada de FOUNDATIONS (decisión del Coordinator C62-F0-09 §1; Discovery §8)
+Extends: Agent Execution Protocol (AUTOMATION_PLAN §16, ADR-0046, Freeze de I-61 §15; C62-F0-09 §1)
+Introduces: ninguna entrada propia (propuesta de la Proposal V1 §17: los contratos nuevos forman parte de la entrada extendida; pendiente de revisión)
 ```
 
-Ninguna entrada se afirma sin la comprobación DC-08 de [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §4.1.
-
-**Propuesta del Discovery** (DC-08, [Discovery](I-62-discovery.md) §8, corregida en R1; pendiente de revisión del Coordinator; el frontmatter no
-cambia hasta entonces):
-- Consumes: ninguna entrada de FOUNDATIONS. Las autoridades de proceso (WORKFLOW, LIFECYCLE) se obedecen, pero no son fundaciones;
-- Extends: Agent Execution Protocol (AUTOMATION_PLAN §16, ADR-0046, Freeze de I-61 §15);
-- Introduces: UNKNOWN; depende de las decisiones de diseño sobre la frontera de adapters y la custodia (Discovery §9).
+Ninguna entrada se afirma sin la comprobación DC-08 de [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §4.1. Las autoridades de proceso
+(WORKFLOW, LIFECYCLE) se obedecen, pero no son fundaciones. La entrada de FOUNDATIONS se actualiza en el cierre (F7); no se publica antes ni como
+`STABLE` anticipado.
 
 ## 6. Discovery, decisiones y Freeze
 
-- Discovery: [I-62-discovery.md](I-62-discovery.md), tramo Discovery de F0. Ronda R1 entregada para revisión del Coordinator (C62-F0-01..07).
-  **No está completo:** EXP-09 sigue abierta con UNKNOWN (M-01, M-02 creador, M-07) y quedan decisiones de EXP-02 y de agrupación (Discovery §18).
+- Discovery: [I-62-discovery.md](I-62-discovery.md), ronda R1, **aceptada por el Coordinator como base suficiente para el diseño**
+  (C62-F0-08). Las decisiones sobre sus asuntos abiertos están en Discovery §21 (C62-F0-09/10). No es F0 GATE PASS.
+- Proposal: [I-62-proposal-v1.md](I-62-proposal-v1.md), `Frozen: NO`, con el borrador del ADR sucesor parcial de ADR-0046 (anexo A, sin
+  número). Paquete de revisión: [I-62-architect-package-v1.md](I-62-architect-package-v1.md), **revisión no realizada**.
 - Freeze / Freeze delta / A-n: ninguno.
 - Decisiones: [I-62.md](../automation/decisions/I-62.md). Mandato: [I-62-owner-mandate.txt](../automation/decisions/I-62-owner-mandate.txt).
 
@@ -135,8 +136,13 @@ cambia hasta entonces):
 EXP-09 (en particular M-07), DC-07 frente a I-52, I-63, I-64 y futuras normas, la acreditación de capacidades por runtime, el triage del
 backlog de I-61, la evaluación de Level B, el plan de las dos topologías, el paquete del Architect y la Proposal hacia el Freeze. La
 secuencia F1–F7 del mandato («FUNCTIONAL GATES») queda como propuesta hasta el Freeze. F5 no se implementa si el Freeze concluye que el
-Level A sigue siendo preferible. C62-F0-01 autorizó solo el tramo Discovery: diseño, Proposal, revisión del Architect y Freeze **no** están
-aprobados.
+Level A sigue siendo preferible.
+
+Autorizaciones de F0:
+- C62-F0-01: el tramo Discovery;
+- C62-F0-11: el diseño y la Proposal V1, **sin implementación**.
+
+La revisión del Architect, el acuerdo y el Freeze **no** están hechos ni aprobados.
 
 ## 7. Dependencias, archivos calientes y coordinación
 
@@ -149,11 +155,11 @@ aprobados.
 ## 8. Gates funcionales
 
 G0 (este bootstrap) incluye reclamo, contrato, fila, estado, decisiones, mandato y evidencia. Los gates posteriores se definen en el Freeze
-según [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §7; aquí no se prometen.
+según [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §7; aquí no se prometen. Plan **propuesto** (no aprobado): [Proposal V1](I-62-proposal-v1.md) §17.
 
 ## 9. Owner Validation
 
-- Asignación OV: pendiente del Freeze.
+- Asignación OV: pendiente del Freeze. Matriz **propuesta** OV-I62-01..05 y decisiones del Owner OD-1..OD-5 con su momento de bloqueo: [Proposal V1](I-62-proposal-v1.md) §18.
 - Requiere AutoCAD: pendiente. No hay disparador mientras no cambie el comportamiento de dibujo; el mandato excluye cambios de producto
   salvo un fixture mínimo aprobado.
 - Requiere Owner Validation: pendiente. La fija el Freeze conforme a la autoridad vigente; no se decide N/A por anticipado.
