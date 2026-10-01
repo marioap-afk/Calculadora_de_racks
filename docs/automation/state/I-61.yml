@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 0
-  next_action: G3 paso 1: contrato de gate del piloto (D-1a) y Controller Codex de planificacion sobre la base publicada; luego nc4, aceptacion y Worker sonnet.
+  next_action: G3 paso 11: decision del Coordinator sobre G3 tras Core Full local, CI y build Debug del Plugin sobre el commit de cierre de G3; despues READY-01..09 (READY-03 bloqueado por ADR-0046 y DEV-G1C-01).
   last_evidence_commit: 7b8662c5190bb22c0b4aa7ea49ea31367f4bb359
 execution_context:
   mode: manual
@@ -20,3 +20,4 @@ execution_context:
   freeze: e9466a248726f00e966b789f67653788b6a0af21 (Frozen YES de I-61-proposal-v9.md; acuerdo en 5bffe5a7)
   g2_materialization: 4da82667f47b227507166428817ececa8239d73a
   g2_gate_pass: 7b8662c5190bb22c0b4aa7ea49ea31367f4bb359 (CI 36809531027; decisions §14)
+  g3_pilot: g3-cama-d1a EXECUTION_VERIFIED sobre b8dfc900c25196b9757c2030548a226cc87516f9 (RED 31211b41; nc1..nc4 cumplidos; evidencia §15)

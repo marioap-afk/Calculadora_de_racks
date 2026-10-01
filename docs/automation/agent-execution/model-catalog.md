@@ -58,7 +58,7 @@ autenticado (`medido`) y no se usa como transporte.
 - Retiro anunciado: ninguno anterior a 2027 publicado
 - Estado local: subagente × `read`/`tool-use`/`write-commit-push` × effort `medium` y `high` — **medido en la sonda U-04** (2026-10-01 UTC): modelo y effort efectivos
   `claude-sonnet-5-5`/`medium` y `claude-sonnet-5-5`/`high` en las transcripciones, pedidos con el alias `sonnet`; escritura, commit con trailer y push comprobados contra Git
-  (evidencia §15)
+  (evidencia §15). Usada como Worker real en el piloto de G3 con effort `high` (ROUTINE_IMPLEMENTATION): entrega verificada, 12 min 44 s, sin aviso de límite (evidencia §15.4)
 
 ### claude-haiku-4-5-20251001 (Anthropic)
 
@@ -103,7 +103,9 @@ advierte que dependen del modelo y del cliente; la página de modelos usa los r�
 - Consumo cubierto: sí (medido: seis invocaciones de G1-C y la sonda PR-1, con la autenticación de ChatGPT y sin aviso de límite; evidencia §§10 y 14)
 - Retiro anunciado: ninguno publicado
 - Estado local: CLI × `read`/`tool-use` × effort `high` — **medido en la sonda PR-1** (2026-10-01 UTC): modelo y effort efectivos `gpt-6-luna`/`high` en el registro de sesión,
-  `--output-schema` aceptado y oráculo contra Git correcto (evidencia §14). Es la celda del Controller (perfiles CONTROLLER_*, effort Balanced)
+  `--output-schema` aceptado y oráculo contra Git correcto (evidencia §14). Es la celda del Controller (perfiles CONTROLLER_*, effort Balanced). En G3, siete invocaciones reales
+  (planificación, tres verificaciones y nc1-nc3) con los esquemas de delegación y de verificación, sin aviso de límite. Dos verificaciones emitieron paradas conservadoras
+  injustificadas antes del VERIFIED (evidencia §15.6)
 
 ### gpt-6-astra (OpenAI)
 

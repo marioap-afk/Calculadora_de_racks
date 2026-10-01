@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "g3-cama-d1a",
+  "RunId": "R20261001T041132Z-17e8",
+  "DelegationRunId": "R20261001T032333Z-4a2d",
+  "WorkRunId": "R20261001T033522Z-7f2d",
+  "Attempt": 0,
+  "VerifiedSha": "b8dfc900c25196b9757c2030548a226cc87516f9",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Participant.Kind=subagent, LaunchedPid=null. Cession.SessionOperated=false."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "Test-Json del worker-handoff.json contra worker-handoff.schema.json = True. TaskId, Attempt y DelegationRunId coinciden; OutputWrittenUtc 2026-10-01T03:51:40.1572555Z es posterior a Cession.StartUtc 03:38:18Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha dio 0. git diff --name-only AuthorityRevision BaseSha lista solo model-catalog.md, decisions/I-61.md, evidence/state y dos relay records; ninguna ruta de autoridad EXTERNAL o UNIT_CHANGE. git diff MainSha..AuthorityRevision modifica WORKFLOW.md solo en la tabla de §10; sus secciones §3 y §4 y AGENTS.md no difieren. git show leyó AUTOMATION_PLAN.md y README.md en AuthorityRevision, AGENTS.md en MainSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json y delegation.json: las cinco rutas autorizadas por la delegación están cubiertas por los prefijos permitidos del contrato; los archivos prohibidos, invariantes, condiciones STOP, Authorities y tres RequiredTests se conservan. relay-record-planning.json registra A1-A8=pass."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD y refs/remotes/origin/architecture/protocolo-ejecucion-agentes = b8dfc900c25196b9757c2030548a226cc87516f9; rama y worktree coinciden con la delegación. merge-base --is-ancestor BaseSha HEAD y RedSha HEAD dieron 0."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Entry.LsRemoteSha=CurrentSha=b8dfc900c25196b9757c2030548a226cc87516f9 y OriginMainSha=MainSha=95690c28dc6268e61dff32a0cbc33cc9fde3d47f; RemoteFacts.LsRemoteSha coincide."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha HEAD enumera exactamente EditedRackNameResolver.cs, RackCamaCommands.cs y los tres archivos de pruebas declarados en AllowedWriteScope; no hay rutas prohibidas ni otras rutas de edición."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain vacío. git check-ignore -v para el gate-contract.json de inputs devuelve .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun: evento push, ref exacta, HEAD b8dfc900c25196b9757c2030548a226cc87516f9 y los cuatro jobs requeridos success. RedRun: push de 31211b41530f90d9410328992e0535d8be742b7a; job Core failure. Sus TRX confirman ocho fallos Core esperados."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX actuales: I61EditedRackNameTests 6/6 y I61CamaEditWiringGuardTests 10/10; UI I61_P3 1/1. TRX RED: Core selecciona 6 con 4 fallidas y 10 con 4 fallidas; las ocho fallidas coinciden con las pruebas ExpectRed. RT y ChainRedFiles acreditados: tests/RackCad.Tests/I61CamaEditWiringGuardTests.cs y tests/RackCad.Tests/I61EditedRackNameTests.cs. diff RedSha..CurrentSha toca EditedRackNameResolver.cs, RackCamaCommands.cs y FlowBedEditorWindowTests.cs; no toca RT ni ChainRedFiles. Los TRX UI tienen 17 NotExecuted, como explican los registros; el conteo total coincide."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..HEAD muestra commits RED y GREEN; ambos llevan Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, coherente con ModelEffective=claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita claude-sonnet-5-5|subagent y effort high; relay-record-work.json registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Escaneo de WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction contra los términos de AUTOMATION_PLAN §16.10: cero coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra cero denegaciones de permisos o credenciales. La orden fallida de heredoc tuvo código 2, se superó en llamadas posteriores y el archivo figura en el commit RED; no queda orden fallida pendiente."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La entrega documenta que el filtro UI cambió de Name~ a FullyQualifiedName~; el TRX actual confirma una ejecución aprobada de I61_P3.",
+    "Los TRX UI registran 17 pruebas NotExecuted en ambas corridas; los conteos brutos y la nota de clases con Skip concuerdan."
+  ],
+  "RecommendedNextAction": "Registrar esta verificación contra b8dfc900c25196b9757c2030548a226cc87516f9 y continuar el flujo delegado autorizado."
+}

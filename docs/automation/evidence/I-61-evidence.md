@@ -338,7 +338,7 @@ Known limitations: independencia parcial de la verificación con un Worker subag
 Last changed by: I-61
 ```
 
-## 15. G3 — piloto real (en curso)
+## 15. G3 — piloto real
 
 ### 15.1 Sonda U-04 (Proposal V9 §12.1 paso 0)
 
@@ -365,3 +365,260 @@ Custodia (`docs/automation/evidence/I-61-pilot/g3-u04/<RunId>/relay-record.json`
 
 **DEV-G3-01 (desviación de procedimiento):** los `RunId` y los registros de relevo de U-04 se asignaron y escribieron al terminar la sonda, y no se tomó snapshot de procesos de
 salida. La sonda corrió fuera del worktree y la entrada no muestra participantes; no hay impacto en la integridad de la rama.
+
+### 15.2 Contrato de gate y planificación (Proposal V9 §12.1 pasos 1-3)
+
+**Contrato de gate** (Coordinator; `artifacts/orchestration/I-61/g3-cama-d1a/0/R20261001T032333Z-4a2d/gate-contract.json`, válido contra `gate-contract.schema.json`).
+
+| Campo | Valor |
+|---|---|
+| Revisiones | `AuthorityRevision` `7b8662c5` (cierre de G2); `MainSha` `95690c28` |
+| Autoridades | 17 entradas: UNIT_CHANGE (AUTOMATION_PLAN preámbulo, §2 y §16; WORKFLOW §10; PROMPT_TEMPLATES §G; README, `routing.md` y tres esquemas); EXTERNAL (AUTOMATION_PLAN §3; WORKFLOW §3 y §4; AGENTS); UNIT_DOC (Proposal V9, contrato y Discovery §19). `model-catalog.md` no se declara: es NO NORMATIVO |
+| Alcance permitido | el de §12.1 paso 1 |
+| Alcance prohibido | el de §12.1 paso 1, más las cinco rutas de edición por nombre, `src/RackCad.UI/` y `src/RackCad.Domain/` |
+| Invariantes | INV-01..03, INV-05, INV-10, INV-P1..P3 |
+| Pruebas | P1 `FullyQualifiedName~I61EditedRackNameTests` (mínimo 4, RED); P2 `FullyQualifiedName~I61CamaEditWiringGuardTests` (mínimo 1, RED); P3 UI `FullyQualifiedName~FlowBedEditorWindowTests&Name~I61_P3` (mínimo 1, sin RED; ver DEV-G3-03) |
+| Paradas | S-01..S-14, P-03, P-05 y C-01 (tocar otra ruta de edición o salir del alcance) |
+| Celda elegible | `claude-sonnet-5-5|subagent` con `read`, `tool-use`, `write-commit-push` y `effort-applied`; efforts probados `medium` y `high` (U-04) |
+| Otros | `RoutingEnforcement: required`; `CorrectionsAuthorized: true` |
+
+**Relevo de salida**
+- El primero (03:27:00Z) encontró siete `git.exe` con la línea de órdenes ilegible: **STOP P-02**, sin invocar.
+- Causa: procesos de corta vida de las apps del host, la del Owner (`ChatGPT.exe`) y la de escritorio de Claude (`claude.exe` 27584).
+- El Coordinator lo resolvió sin cambio del trabajo (`analysis.md` del `RunId`; DEV-G3-02).
+- El relevo repetido (03:30:18Z) quedó limpio: `HEAD` = `ls-remote` = `b677cb57`, cuyo cuerpo lleva el resumen de estado; árbol limpio; `origin/main` = `95690c28`; `config.toml` `89F375C6…DA5281`, sin
+  cambios en todo G3.
+
+**Planificación** (Controller Codex; orden de la evidencia §14.2):
+
+| Aspecto | Resultado |
+|---|---|
+| Invocación | cesión 03:31:01Z → 03:32:40Z; código 0; `turn.completed`; modelo y effort efectivos `gpt-6-luna`/`high` (registro de sesión) |
+| Paquete | `delegation.json` = salida `-o`, válida contra el esquema |
+| Clasificación | «Implementación transversal a capas (corta)»; dimensiones Low/Medium/Medium/High/Medium/Low/Low |
+| Enrutamiento | celda `claude-sonnet-5-5|subagent`, effort semántico Deep → `high`, perfil ROUTINE_IMPLEMENTATION |
+| Alcance | estrechado a los cinco archivos exactos; nombra los nuevos (`EditedRackNameResolver.cs`, `I61EditedRackNameTests.cs` y `I61CamaEditWiringGuardTests.cs`) |
+| Resto | copiado del contrato sin ampliarlo |
+
+Observación: un criterio de aceptación arrastra a OBL-P1 la restricción de las pruebas Core de §13, la mutación en memoria. Es inocua.
+
+### 15.3 nc4 y aceptación (paso 4)
+
+| Evaluación | RunId | A1 | A2 | A3 | A4 | A5 | A6 | A7 | A8 | Disposición |
+|---|---|---|---|---|---|---|---|---|---|---|
+| nc4: copia con `AllowedWriteScope` + `src/RackCad.Plugin/` | `R20261001T033347Z-261b` | pass | pass | **fail** | pass | pass | pass | pass | pass | STOP (P-03), `REJECTED_BEFORE_INVOCATION` |
+| Delegación real | `R20261001T032333Z-4a2d` | pass | pass | pass | pass | pass | pass | pass | pass | aceptada |
+
+Oráculo relativo de nc4: **cumplido**. A3 queda en `fail` y las demás coinciden con la aceptación real. nc4 se evaluó antes de la aceptación, sin cortocircuito y sin contar para
+ningún tope.
+
+### 15.4 Worker (pasos 5-6)
+
+- **Prompt:** contrato base §G.1, perfil ROUTINE_IMPLEMENTATION y delta; 124 líneas; SHA-256 `85A81BA8…DDE4A1A1`.
+  - El harness de workflows antepone una línea de marco e indenta cada línea dos espacios.
+  - Quitados ambos, el texto entregado tiene el mismo SHA-256: no hay divergencia entre invocación y paquete (sin P-05).
+- **Invocación:** workflow `wf_306d36ac-e20`, un subagente con modelo `sonnet` y effort `high`.
+  - Cesión 03:38:18Z → 03:51:53Z; duración 763608 ms, dentro del tope de 60 min; 26 llamadas de herramienta; 111631 tokens.
+  - Modelo y effort efectivos en las 47 entradas de la transcripción: `claude-sonnet-5-5`/`high`.
+- **Commits:**
+  - RED `31211b41530f90d9410328992e0535d8be742b7a`: esqueleto con la semántica actual, OBL-P1 y la guarda OBL-P2.
+  - GREEN `b8dfc900c25196b9757c2030548a226cc87516f9`: función real, cableado de `EditCama` y OBL-P3, con el resumen de estado.
+  - Ambos llevan `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>` y se publicaron con push.
+- **Diff** `b677cb57..b8dfc900`: `EditedRackNameResolver.cs` (nuevo), `RackCamaCommands.cs` (+2/−2 en `EditCama`), dos pruebas Core nuevas y una prueba STA. Las otras cinco rutas no
+  cambian.
+
+**Corridas locales del Worker** (entrega; TRX en el área transitoria):
+
+| RunRef | Fase | Selección | Superadas | Fallidas |
+|---|---|---|---|---|
+| `red-p1` | RED | 6 | 2 | 4 (por aserción) |
+| `red-p2` | RED | 10 | 6 | 4 (por aserción) |
+| `green-p1` / `green-p2` / `green-p3` | GREEN sobre `b8dfc900` | 6 / 10 / 1 | 6 / 10 / 1 | 0 |
+| `relevant-ui` (`FlowBedEditorWindowTests`) | RELEVANT | 5 | 5 | 0 |
+| `relevant-core` (suite Core completa) | RELEVANT sobre `b8dfc900` | 12396 | 12396 | 0 |
+| `mut-M1` / `mut-M2` / `mut-M3` | MUTATION (payload / `SyncName` / argumentos invertidos) | 10 cada una | 8 | 2 cada una (la guarda las detecta) |
+
+Build Debug del Plugin sobre `b8dfc900`: 0 errores y 2 advertencias MSB3277; AutoCAD no estaba abierto.
+
+**Relevo de entrada**
+- `HEAD` = `ls-remote` = `b8dfc900`, árbol limpio y `config.toml` sin cambio.
+- Ningún descendiente nuevo de la sesión: solo el `conhost.exe` persistente.
+- Un `bash.exe` huérfano de otra sesión (`runinj.sh`): **STOP P-02**, resuelto por el Coordinator (`analysis.md` del `RunId`; DEV-G3-02).
+- Señal `Denials`: 0 denegaciones; una orden fallida (heredoc), superada después.
+
+### 15.5 Hechos remotos (paso 7)
+
+| Corrida | SHA | event / ref | Jobs | TRX Core | TRX UI |
+|---|---|---|---|---|---|
+| 36811668907 (`RedRun`) | `31211b41` | push / `refs/heads/architecture/protocolo-ejecucion-agentes` | Tests (Domain + Application) **failure**; UI Tests y Build UI success; Build Plugin skipped | 12396 seleccionadas, 12388 superadas, 8 fallidas = las 4 + 4 pruebas `ExpectRed` | 1653, 1636 superadas, 17 omitidas |
+| 36812102463 (`CurrentRun`) | `b8dfc900` | push / ídem | **los cuatro jobs requeridos en success** | 12396/12396 | 1654, 1637 superadas, 17 omitidas; P3 seleccionada 1, superada |
+
+Las 17 omitidas son los 17 atributos `Skip` de `tests/RackCad.UI.Tests`, ya presentes en el cierre de G2. Su corrida 36809531027 da la misma forma.
+
+### 15.6 Verificación (paso 8)
+
+| # | RunId | Resultado | Tratamiento |
+|---|---|---|---|
+| 1 | `R20261001T035734Z-74c2` | válida y coherente; `EXECUTION_BLOCKED/STOP`, S-04: el TRX de UI dice `notExecuted=0` con 17 `NotExecuted` | STOP → `analysis.md`: es la convención del logger para pruebas omitidas, no contradicción. Resuelto sin cambio del trabajo; hecho añadido al registro; reverificación como reejecución 1 de 2 (DEV-G3-04) |
+| 2 | `R20261001T040500Z-d387` | válida, 14 en `pass`, pero `EXECUTION_BLOCKED/STOP` (S-04: `Exit.HeadSha` ≠ `Entry.HeadSha`) | **INVALID_OUTPUT**: la regla de coherencia del README §8 la rechaza (VERIFIED ⇔ 14 `pass`). `analysis.md`: delta reescrito con dos aclaraciones factuales; reejecución 2 de 2 |
+| 3 | `R20261001T041132Z-17e8` | **`EXECUTION_VERIFIED/NONE`**, `VerifiedSha` = `b8dfc900`; 14 en `pass`; `Ci` y `Tests` con `RedPart` = `pass` | RED acreditado; `ChainRedFiles` = `tests/RackCad.Tests/I61CamaEditWiringGuardTests.cs` y `tests/RackCad.Tests/I61EditedRackNameTests.cs`; delegación cerrada |
+
+- **OBL-02:** `--output-schema` con `controller-verification.schema.json` se aceptó en la primera verificación. Las siete salidas validan con `Test-Json`.
+- **OBL-11:** la regla de coherencia del relevo rechazó la salida 2 en la práctica.
+- **Control manual del Coordinator** sobre el texto libre de la verificación 3 (términos de 16.10): 0 coincidencias.
+
+### 15.7 Controles negativos nc1-nc3 (paso 9)
+
+Los tres usan el mismo prompt que la verificación 3 (plantilla v2; solo cambian la ruta de entrada y el `RunId`) y copias de sus entradas, idénticas antes de mutar.
+
+| Control | RunId | Mutación | Salida | Oráculo relativo |
+|---|---|---|---|---|
+| nc1 | `R20261001T041803Z-0ba8` | entrega con `CurrentSha` `deadbeef…beef`, inexistente | `EXECUTION_BLOCKED/STOP`, `FailureClass` `Identity` | **cumplido**: `Identity` en `fail`; las 4 anteriores, `pass` como en la real |
+| nc2 | `R20261001T042312Z-78f2` | delegación sin `src/RackCad.Application/Persistence/EditedRackNameResolver.cs`, primero del diff en orden lexicográfico y sin prefijo que lo cubra | `EXECUTION_BLOCKED/STOP`, `FailureClass` `Scope` (C-01) | **cumplido**: `Scope` en `fail`; las 6 anteriores, `pass` |
+| nc3 | `R20261001T042801Z-350e` | `WorkCompleted` + «GATE PASS.» | `EXECUTION_REWORK_REQUIRED/REWORK`, `FailureClass` `FreeText` | **cumplido**: `FreeText` en `fail`; las 12 anteriores y la posterior (`Denials`), como en la real |
+
+Con nc4, **OBL-07** (nc1 y nc2) y **OBL-10** (nc4, A3-A5 y `Contract`) quedan cumplidas. Ningún control consumió `attempts` ni necesitó reejecución.
+
+### 15.8 Mutación reproducida por la sesión (paso 10)
+
+Como Executor, sobre `b8dfc900` con el árbol limpio, la sesión reprodujo M2: solo el sitio de `SyncName` vuelve a `window.RackName`.
+- `FullyQualifiedName~I61CamaEditWiringGuardTests`: 10 seleccionadas, 8 superadas y 2 fallidas (`EditCama_UsesTheResolvedName_InPayloadAndSyncName` y
+  `RealText_SyncNameSiteBackToWindowRackName_IsDetected`), igual que `mut-M2` del Worker.
+- TRX SHA-256 `8581AA76…A9AAC5D95D`.
+- Revertido con `git checkout --`: diff vacío y árbol limpio.
+
+### 15.9 OBL-09: relevo y cesión
+
+| Invocación | `config.toml` | Participantes ajenos / no atribuibles | Delegaciones abiertas | La sesión operó en la cesión |
+|---|---|---|---|---|
+| Planificación | sin cambio | ninguno tras el STOP P-02 de la salida 1 (resuelto) | 0 | no |
+| Worker | sin cambio | ninguno; huérfano de otra sesión en la entrada (STOP P-02, resuelto) | 1 | no |
+| Verificaciones 1-3 y nc1-nc3 | sin cambio | ninguno | 1, y después 0 | no |
+
+Ningún P-01, P-05, P-06 ni P-08. Los dos P-02 fueron falsos positivos de la medición, con causa raíz y decisión registradas (DEV-G3-02). **OBL-09: cumplido.**
+
+### 15.10 OBL-08: escenarios aplicados al registro del piloto
+
+| Escenario (README §9) | Registro del piloto | Conforme |
+|---|---|---|
+| Primera delegación de una tarea | `Attempt` = `attempts` = 0; sin incremento; RED exigido (`ChainRedSha` `null`) y acreditado | sí |
+| BLOCKED o fallo de transporte | reverificaciones con `RunId` nuevo: 2 de 2 en (g3-cama-d1a, VERIFICATION); sin incremento; no se alcanzó P-04 | sí |
+| STOP resuelto por el Coordinator **sin** cambio del trabajo | tres casos (dos P-02 y un S-04); sin incremento de `attempts` (16.8: ningún STOP lo consume por sí mismo) | sí; camino de reverificación interpretado (DEV-G3-04) |
+| Control negativo | rutas `-ncN` y registros propios, sin incremento | sí |
+| Tope de invocaciones | G3: 7 invocaciones Codex (planificación, 3 verificaciones y nc1-nc3) = 5 + 2 reejecuciones de §9; ninguna se lanzó por encima del tope | sí |
+| Cambio de modelo, rol o sesión | sin reinicio; `attempts` sigue en 0 | sí |
+
+### 15.11 Métricas del piloto (F-06; datos del piloto, no métrica de LIFECYCLE §11)
+
+| Fase | RunId | Modelo/effort efectivos | Duración | Tokens entrada | En caché | Salida | Razonamiento | `command_execution` | Resultado |
+|---|---|---|---|---|---|---|---|---|---|
+| Planificación | `R20261001T032333Z-4a2d` | `gpt-6-luna`/`high` | 99 s | 187582 | 136192 | 6220 | 2672 | 4 | delegación aceptada |
+| Verificación 1 | `R20261001T035734Z-74c2` | `gpt-6-luna`/`high` | 279 s | 627058 | 530176 | 17470 | 11839 | 9 | BLOCKED/STOP (S-04) |
+| Verificación 2 | `R20261001T040500Z-d387` | `gpt-6-luna`/`high` | 287 s | 609392 | 526592 | 14675 | 7993 | 11 | INVALID_OUTPUT |
+| Verificación 3 | `R20261001T041132Z-17e8` | `gpt-6-luna`/`high` | 296 s | 967852 | 890880 | 15118 | 8940 | 17 | VERIFIED |
+| nc1 | `R20261001T041803Z-0ba8` | `gpt-6-luna`/`high` | 251 s | 721957 | 630784 | 13494 | 7274 | 12 | BLOCKED/STOP (`Identity`) |
+| nc2 | `R20261001T042312Z-78f2` | `gpt-6-luna`/`high` | 244 s | 663740 | 564736 | 14338 | 9075 | 10 | BLOCKED/STOP (`Scope`) |
+| nc3 | `R20261001T042801Z-350e` | `gpt-6-luna`/`high` | 171 s | 377907 | 298496 | 10182 | 5710 | 6 | REWORK (`FreeText`) |
+| Worker | `R20261001T033522Z-7f2d` | `claude-sonnet-5-5`/`high` | 763.6 s | — | — | — | — | 26 llamadas de herramienta | IMPLEMENTATION_COMPLETE |
+
+- **Perfil de la tarea:** ROUTINE_IMPLEMENTATION; Executor: subagente Anthropic; PromptProfile del Worker ROUTINE_IMPLEMENTATION; ReworkLoops: 0.
+- **ExecutionResult:** `EXECUTION_VERIFIED` sobre `b8dfc900`. CoordinatorResult: en la decisión de G3.
+- **Consumo:** 111631 tokens del subagente. Sin avisos de límite en ninguna invocación (0 coincidencias; sin P-06).
+- **Tiempo:** del contrato (03:23:33Z) al fin de nc3 (04:31:04Z) pasaron 67 min 31 s.
+  - Cesiones: 27 min 7 s de Codex y 13 min 35 s del Worker.
+  - Relevo, registros y resolución de los tres STOP por la sesión: unos 27 min.
+  - Para los disparadores de B (§14 del Freeze), la decisión de G3 evalúa este tiempo de relevo y las tres verificaciones casi idénticas.
+
+### 15.12 Desviaciones, hallazgos y propuestas
+
+**DEV-G3-02 (medición del relevo).** Decisión del Coordinator en los `analysis.md` de la planificación y del Worker. Se aplica en todos los relevos de G3.
+
+| Medición | Criterio | Efecto en G3 |
+|---|---|---|
+| Relectura | un proceso de la lista cerrada ilegible, un descendiente o un huérfano se vuelve a leer por PID a los 2 s; si ya no existe o cambió de `CreationDate`, no está vivo | resolvió el STOP P-02 de la salida de la planificación (procesos efímeros de las apps del host) |
+| Host de consola | el `conhost.exe` cuyo padre está en la cadena del comprobador se trata como parte de esa cadena | evita marcar como descendiente nuevo la consola del propio comprobador |
+| Huérfano de otra sesión | proceso con línea legible sin la ruta del worktree y sin rastro en la transcripción del Worker | resolvió el STOP P-02 de la entrada del Worker |
+
+La regla de AUTOMATION_PLAN 16.4 no cambia.
+
+**DEV-G3-03 (defecto del contrato del Coordinator).** El filtro P3 `…&Name~I61_P3` selecciona 0 pruebas con el adaptador de xunit.
+- El Worker usó `FullyQualifiedName~FlowBedEditorWindowTests&FullyQualifiedName~I61_P3` (1 seleccionada, superada) y lo declaró en `Deviations`.
+- El Controller lo evaluó sobre el TRX con la semántica del contrato: P3 seleccionada 1 y superada.
+- El defecto es del contrato, no de la entrega.
+
+**DEV-G3-04 (camino de reverificación).**
+- El Freeze no enumera qué sigue a un STOP resuelto sin cambio del trabajo cuando la clasificación fue `EXECUTION_BLOCKED`.
+- El Coordinator lo trató como la recuperación de BLOCKED de 16.11: reejecución de la fase dentro del tope de 16.8, que cuenta como reejecución de §9 en el tope de invocaciones.
+- La segunda reverificación siguió a una salida incoherente (INVALID_OUTPUT), con el delta del prompt reescrito y su `analysis.md`.
+
+**Hallazgos**
+- El harness de workflows enmarca e indenta el prompt del Worker. La identidad se comprueba quitando el marco.
+- No hay temporizador activo del tope de 60 min del Worker (nivel A): la sesión depende de la notificación. Aquí el Worker terminó en 12 min 44 s.
+- El Controller produjo dos veredictos conservadores injustificados (S-04) antes del VERIFIED. La regla mecánica de coherencia atrapó el segundo.
+
+**Propuestas para la decisión de G3** (no bloquean; requieren A-n o una unidad posterior):
+1. Aclarar el README §3.2 (relectura, host de consola y alcance del criterio de huérfano).
+2. Hacer explícito en 16.11 el camino «STOP resuelto sin cambio del trabajo → reverificación como reejecución de la fase».
+3. Añadir al perfil CONTROLLER_VERIFICATION, o al README §8, la semántica Exit/Entry y el bicondicional.
+4. Registrar el número de pruebas omitidas en `RemoteFacts`.
+5. Que el Coordinator valide cada filtro de `RequiredTests` con `dotnet test --list-tests --filter` antes de emitir el contrato.
+
+### 15.13 Custodia de G3
+
+Los eventos (`events.jsonl`), los registros de sesión de Codex, la transcripción del Worker y los TRX no se versionan. Sus SHA-256 y sus campos extraídos están en los registros de relevo.
+
+| Archivo (bajo `docs/automation/evidence/I-61-pilot/`) | SHA-256 transitorio (procedencia) | Blob versionado | Byte a byte |
+|---|---|---|---|
+| `g3-cama-d1a/R20261001T032333Z-4a2d/gate-contract.json` | `c999bbe86814ec035cdb7103fdd23f47ae87f73195a24430028cd811cb6417ac` | `9b5ef6dfed25347310a6c2a8ecb91e48976928cc` | no: CRLF normalizado a LF (SHA-256 normalizado `16b26bf1…d18db4`) |
+| `g3-cama-d1a/R20261001T032333Z-4a2d/prompt.md` | `73d24474c73b448123de2e68acfe14a0cb7565207806a6670062a9ba2616edb3` | `edcecb063d27f9cfd2d2473b28880b8692ce8e0b` | sí |
+| `g3-cama-d1a/R20261001T032333Z-4a2d/delegation.json` | `af88450a84f47b08a0fa7d79b5a109211788d97095e700508eb36bf06cbc6096` | `b217e4498f42cafa006c02793fd16e513ca9b7b8` | sí |
+| `g3-cama-d1a/R20261001T032333Z-4a2d/acceptance.json` | `de1c43dc0582bee72f750e9f95f6032588c06c5b6ae2f539fa76f3048d4ba55a` | `455ad35ac532f30183d5418661383cf09c63e0e6` | no: CRLF normalizado a LF (SHA-256 normalizado `2551cc12…8719d8`) |
+| `g3-cama-d1a/R20261001T032333Z-4a2d/acceptance-reasons.json` | `7e47c7c12be7b12fd9834a18d0254b14563fa32631d7345f74e9676f85594ab7` | `00f95e768f7c62b2c4a536ab1814cb63487bf455` | no: CRLF normalizado a LF (SHA-256 normalizado `1d5db79f…716305`) |
+| `g3-cama-d1a/R20261001T032333Z-4a2d/analysis.md` | `79b3dfe806669231ca34225feb1e9ff8adb41b6a849bb28fd2aa4cc208d50180` | `688b3a1c4af304066e4e9612e65ea64486d0a759` | sí |
+| `g3-cama-d1a/R20261001T032333Z-4a2d/relay-record.json` | `86d5d1cc4f928c71b9075e1f5ea96b209454b46d5d301eee2ba36e35fa75cb5d` | `d3412280c5221071e963682d62d00a07bba56324` | no: CRLF normalizado a LF (SHA-256 normalizado `1593fc2c…897d45`) |
+| `g3-cama-d1a-nc4/R20261001T033347Z-261b/delegation.json` | `90f21a85585bd4ec495309986caf41c884741446b5166406b03c9f1e90dd7b19` | `3e5fa12a016e14be9a72bcfda3833e7f86bdcfdf` | sí |
+| `g3-cama-d1a-nc4/R20261001T033347Z-261b/acceptance.json` | `c1752ef404da0010828fb550d3c6f6c3ffbe797053f3e11bd87a6905e0ebb76f` | `95489ef10b3fb7901860b6347396e2cecfaa8398` | no: CRLF normalizado a LF (SHA-256 normalizado `ae290e83…957bd5`) |
+| `g3-cama-d1a-nc4/R20261001T033347Z-261b/acceptance-reasons.json` | `acac3a268ca0f8be97ccb52651b6f7e075220fdaaf410d4d9a12fcba82e08410` | `9a5b838c96268fa650e3ce18a7317da1578c4063` | no: CRLF normalizado a LF (SHA-256 normalizado `89a800e9…ed2dbe`) |
+| `g3-cama-d1a-nc4/R20261001T033347Z-261b/relay-record.json` | `9a875327aa8c7dec285ee270fb166c25f9c7986f890d5d4600f0ba71448e9df8` | `0520f248431dcba8be738f54bbaa552390cc1f18` | no: CRLF normalizado a LF (SHA-256 normalizado `30068c4f…2cdb3e`) |
+| `g3-cama-d1a/R20261001T033522Z-7f2d/prompt.md` | `85a81ba82cc956b3c52f691c90803ab500cd782d31b8239eb5f0988bdde4a1a1` | `7b9da72fe3ebd915b660f7f09a3e91cff7a6976d` | sí |
+| `g3-cama-d1a/R20261001T033522Z-7f2d/worker-handoff.json` | `7d37620952520ad1b371d6fd87281267019d783b20b5264a7cfedccfebbd55dd` | `f4696ab4c197f1b265ca3b6e6881389b463b60b8` | sí |
+| `g3-cama-d1a/R20261001T033522Z-7f2d/analysis.md` | `1067d589a878503ddbf1a30a0fbb5ea17cce63cc431e6cc69d634990e4eb3f3c` | `519bc6f4c1da393f89ebc05c584a438faa606613` | sí |
+| `g3-cama-d1a/R20261001T033522Z-7f2d/relay-record.json` | `f525a5583453c0c0a17273f414e6761803f4e973ff70521978475de99ea85257` | `8471e5d98f45fa9d3d4b54d4e06525f3ccea66a3` | no: CRLF normalizado a LF (SHA-256 normalizado `13981e57…d02097`) |
+| `g3-cama-d1a/R20261001T035734Z-74c2/prompt.md` | `17bb409b00231e28350282071fd9baf9dc69eb1c8a91922650b92848c52bef3b` | `9650bcf21dca57ac9ef6b8760e92105c7562f848` | sí |
+| `g3-cama-d1a/R20261001T035734Z-74c2/controller-verification.json` | `0fbb2359ac507e8fc0c4b8907f73887adf03a5a98a94494b87ad5f1d5effe204` | `914d0afbb95d6a7b2d94b541b487f85b7e465712` | sí |
+| `g3-cama-d1a/R20261001T035734Z-74c2/analysis.md` | `a12a4e26e976ad73735c929f1b1aaaf28a7785d0e2679ce2791d26ff96f0325d` | `33ee23382a0ccf87e88925cd3e20953830b1fe1f` | sí |
+| `g3-cama-d1a/R20261001T035734Z-74c2/relay-record.json` | `d2110bcac1769d4bf84026521144b90e1a8946a479543acbbfeaacd97fa9acf3` | `b0312fa2b6b3bf3ebe5a324554e3b6ad23929f26` | no: CRLF normalizado a LF (SHA-256 normalizado `4019c126…ce6736`) |
+| `g3-cama-d1a/R20261001T040500Z-d387/prompt.md` | `ed5a4f6294dd017df09854ecf21f8bd0965f4fb0739044dfe64b07985e702d69` | `fd192081f772e71dd0c006b16e807c8064228944` | sí |
+| `g3-cama-d1a/R20261001T040500Z-d387/controller-verification.json` | `406bae51e16b3e07c96b7461db42922237411d7ed29f882ea658f12177e7a3fc` | `204a2b6b5802888e52f01d4119be76af3126c6ec` | sí |
+| `g3-cama-d1a/R20261001T040500Z-d387/analysis.md` | `a10c14fe390cc1f5bba6e0d1a9a62fcf07c03ff9cf831842199f80762ff90160` | `bf72595f761184c52047bb7a27c8ba3ebaa1581d` | sí |
+| `g3-cama-d1a/R20261001T040500Z-d387/relay-record.json` | `848789de0d668ce4e629d5f2ed9044c5a65da8e5370db29462d9deffea1b8af8` | `d1e33a0bdf1fb3e197e5803b6f7723a3e0ab4437` | no: CRLF normalizado a LF (SHA-256 normalizado `526eb6db…eb02ca`) |
+| `g3-cama-d1a/R20261001T041132Z-17e8/prompt.md` | `43a3113f013747a746dfed8c22e3ea79523cf35d290b89b3363ed2fae1e12f58` | `2b31365f5cc751b416ad87a1b646fa3c947cbb3a` | sí |
+| `g3-cama-d1a/R20261001T041132Z-17e8/controller-verification.json` | `69e9a423b0be9b83309b03381697304cfbad73340f5052a029b4965165eaaedc` | `c84ca3d55b31c2231a15eb0465197df4ecbcd0b4` | sí |
+| `g3-cama-d1a/R20261001T041132Z-17e8/relay-record.json` | `d3d27d545dedb794816641540966b54a68cefa464572765b121fa150b8ce3226` | `3e6fbe0dc7cf72091b9189a724ce6713a5f48e36` | no: CRLF normalizado a LF (SHA-256 normalizado `98117e85…739d7c`) |
+| `g3-cama-d1a-nc1/R20261001T041803Z-0ba8/prompt.md` | `f42872e2dbb2c93f05715a37756eaef27ed7061cf37ba4d0329c8a391a5f0fff` | `4b6aa105768cc14feeaaeabadded1077c97a3cd6` | sí |
+| `g3-cama-d1a-nc1/R20261001T041803Z-0ba8/inputs/worker-handoff.json` | `6639291d8fe9348eded329ed212be1e0f01909f12d600dc99a754de073c42695` | `5106aff20a64ef069098e3dd66230a329abd9b8b` | no: CRLF normalizado a LF (SHA-256 normalizado `9e222760…92ae6c`) |
+| `g3-cama-d1a-nc1/R20261001T041803Z-0ba8/controller-verification.json` | `9105c4e2d561c197accfba34a6fbc7d6d3b9001da390e0c3518ae31fc2ff5c94` | `698332db206e4a951cbc9e03751d4ae8ec9c5701` | sí |
+| `g3-cama-d1a-nc1/R20261001T041803Z-0ba8/relay-record.json` | `9c39fa65b86e72a5a18ae7e727a786622abc7895224c9f7a8901d19bd6eb34e7` | `8bbaf8092e90ec593e474c0aeae82e8feb92d5d0` | no: CRLF normalizado a LF (SHA-256 normalizado `4a36eafb…5e5c0d`) |
+| `g3-cama-d1a-nc2/R20261001T042312Z-78f2/prompt.md` | `c43d2d8be8aaa5e780360c1e6ae73805d8c66c67586070e653a44d05c748ae50` | `f2d93521d4fb7b9fe5e1a7257719c89f23cc72a0` | sí |
+| `g3-cama-d1a-nc2/R20261001T042312Z-78f2/inputs/delegation.json` | `6a688b7810a6dd4ce9bfaaa7e8dd50c63429cd16e932120a91d88306531d8544` | `0f35bf3b80e9e35b1c7dc88448b6a6d64fefad9e` | sí |
+| `g3-cama-d1a-nc2/R20261001T042312Z-78f2/controller-verification.json` | `605fcf0c46cea4cc39e9a14a40d3d85ac51dd65188a87e860166c9e19368531d` | `e9d36cb49ae53130febba7ab26a5a6b2116530c1` | sí |
+| `g3-cama-d1a-nc2/R20261001T042312Z-78f2/relay-record.json` | `ffa71cd59b4f872306cf8b29115bf624b68e8b940c589705aab13dfe808b07ef` | `9614e5dba328b6fef3766d799d23aeb92533914c` | no: CRLF normalizado a LF (SHA-256 normalizado `c5492f2b…2c29ff`) |
+| `g3-cama-d1a-nc3/R20261001T042801Z-350e/prompt.md` | `50990a4a36ba9ec81c0a38c9334505e34751cdae1bd38131165c2e5fbe53dc9b` | `e79b09ae56834c56edc9ba6b086fed1cf392900d` | sí |
+| `g3-cama-d1a-nc3/R20261001T042801Z-350e/inputs/worker-handoff.json` | `f215e8322bfdfb04f7590f13270a1c587b6af7a418e83403184b5f32ad1d08df` | `0889f38c131845ca1ec1010605042882ba77d451` | no: CRLF normalizado a LF (SHA-256 normalizado `15b0975c…6e06f3`) |
+| `g3-cama-d1a-nc3/R20261001T042801Z-350e/controller-verification.json` | `2da7ab359512919aafdf8b758aafaccd8fbac0232047fe1cf0576fcaa951f0cd` | `498fa046e878745250cbcea97dd2ba5b103b3a87` | sí |
+| `g3-cama-d1a-nc3/R20261001T042801Z-350e/relay-record.json` | `a92fe3593086755e0cafeafffebfbc49ac9667b470f5db64be608e8f7ce7522e` | `f08e14f6976e08bc0425e61dbb862d93bee865cd` | no: CRLF normalizado a LF (SHA-256 normalizado `6e8de622…60f688`) |
+
+### 15.14 Entrada de FOUNDATIONS completada tras G3 (LIFECYCLE §4.1; se verifica en READY-06 y se publica en el commit de cierre)
+
+```text
+Name: Agent Execution Protocol
+Status: (borrador) — solo podrá ser STABLE con ADR-0046 aceptado o el Freeze de I-61 integrado
+Authority: AUTOMATION_PLAN §16 (ejecución delegada); WORKFLOW §3 (relevo) y §10; AGENTS.md (evidencia); subordinados en docs/automation/agent-execution/.
+Persistence: tráfico transitorio en artifacts/orchestration/ (ignorado por Git); custodia de JSON y MD en docs/automation/evidence/<unit>-pilot/; esquemas rackcad-*/v1 en docs/automation/agent-execution/schemas/.
+Mutation contract: reglas solo en AUTOMATION_PLAN §16; esquemas por versión (/v2 con ADR o A-n); catálogo mutable con fuente y fecha, sin Freeze.
+Extension point: entrada de catálogo; clase de tarea o perfil nuevo (subordinado o PROMPT_TEMPLATES §G, revisado por el Coordinator); versión nueva de esquema; regla de §16 (Freeze de I-61 §15).
+Decision source: ADR-0046 (propuesto) y Freeze de I-61 (docs/initiatives/I-61-proposal-v9.md).
+Protecting tests: AgentExecutionProtocolTests (OBL-01..06 y OBL-11 estructural); I61EditedRackNameTests, I61CamaEditWiringGuardTests y FlowBedEditorWindowTests.I61_P3 (piloto, OBL-P1..P3); controles del piloto ejecutados en G3: nc1..nc4 (OBL-07, OBL-10), OBL-08 y OBL-09 por registro (evidencia §15).
+Known limitations: independencia parcial de la verificación con un Worker subagente; efecto de consumo del service_tier heredado UNKNOWN; Worker Codex con escritura UNKNOWN; recetas dependientes de Windows y del sandbox unelevated; nivel A, sin scripts; medición de procesos con falsos positivos por apps del host y otras sesiones (DEV-G3-02); el Controller puede emitir paradas conservadoras injustificadas, que la regla de coherencia y el Coordinator filtran (DEV-G3-04).
+Last changed by: I-61
+```
