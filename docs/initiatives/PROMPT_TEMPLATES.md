@@ -258,8 +258,8 @@ Metodo: verificar contra Git y los registros, sin escribir.
 1. Evalua las 14 comprobaciones en su orden fijo con ordenes de git reales
    (rev-parse, merge-base, diff --name-only, log, check-ignore, show).
 2. Cada comprobacion: pass, fail o not_run, con la evidencia concreta.
-3. EXECUTION_VERIFIED solo con las 14 en pass; si no, la disposicion de la primera
-   que falla y la precedencia de AUTOMATION_PLAN §16.
+3. Rellena Classification, Disposition y FailureClass segun AUTOMATION_PLAN 16.9,
+   mirando todas las comprobaciones, no una sola.
 4. Contrasta la CI y los conteos del registro de relevo con el diff; no te fies de
    lo que declare la entrega.
 ```

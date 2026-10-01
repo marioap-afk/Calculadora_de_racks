@@ -226,3 +226,114 @@ solicitados.
 
 **EXP-07 reverificada** (Proposal V9 §17): el 2026-09-30, tras `git fetch`, `origin/main` = `95690c28`; entre las ramas remotas con commits por delante de `main`, solo
 `feature/rackmirror-espejo-semantico` (I-52) toca alguna de las rutas compartidas consideradas, y solo `docs/adr/README.md`.
+
+## 14. G2 — Protocolo materializado
+
+### 14.1 RED → GREEN de `AgentExecutionProtocolTests` (OBL-01..06 y OBL-11 estructural)
+
+| Fase | Árbol | Orden | Resultado |
+|---|---|---|---|
+| RED | sucio sobre `e9466a24` (prueba nueva y 2 de los 5 esquemas; sin README, routing, catálogo, guía ni §G) | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter "FullyQualifiedName~AgentExecutionProtocolTests"` | 17 seleccionadas, 15 fallidas por aserción (artefacto ausente o §G ausente), 2 superadas (`I61_OBL02_TheStrictnessOracleDetectsMutationsInNestedObjects`, que solo usa el esquema de delegación ya presente, e `I61_OBL06_WitnessPhrasesStillExistInTheirSources`, que solo lee las fuentes de las frases testigo) |
+| GREEN | sucio antes de `4da82667` | la misma | 17/17 |
+| GREEN tras la revisión de G2 | sucio sobre `4da82667` (correcciones de la revisión) | la misma | 17/17; incluye las mutaciones nuevas (perfil de exactamente 26 líneas rechazado y de 25 aceptado; objeto sin `type`; `$defs`; nombre de familia de modelo) |
+
+Suite Core completa sobre el árbol antes de `4da82667`: 12380/12380 (referencia de trabajo, no evidencia de gate; la evidencia es el Core Full sobre el SHA de cierre).
+
+### 14.2 Sonda PR-1 (Proposal V9 §16.2)
+
+Orden exacta (Git Bash, desde el worktree de la unidad):
+
+```text
+PATH="/c/Users/alejandra-mendoza/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell:$PATH" \
+timeout --kill-after=10 600 "$LOCALAPPDATA/OpenAI/Codex/bin/c6fe824d725f02d7/codex.exe" exec -C "<worktree>" -s read-only \
+  -m gpt-6-luna -c 'model_reasoning_effort="high"' --output-schema docs/automation/agent-execution/schemas/delegation.schema.json \
+  -o <dir del RunId>/output.json --json "$(cat <dir del RunId>/prompt.md)" < /dev/null > <dir del RunId>/events.jsonl 2> <dir del RunId>/stderr.txt
+```
+
+- **Celda:** `gpt-6-luna` × CLI de Codex × `read`/`tool-use` × effort `high` (perfil CONTROLLER_PLANNING; Balanced como Eficiente con más effort). `codex-cli 0.159.2`.
+- **Identidad:** `RunId` `R20261001T024407Z-a191`; directorio transitorio `artifacts/orchestration/I-61/g2-pr1/0/R20261001T024407Z-a191/`; contrato de ensayo `g2-pr1-dryrun`.
+- **Relevo de salida:** árbol limpio; `HEAD` = `ls-remote` = `4da82667`; el último commit lleva el resumen de estado; `origin/main` = `95690c28`; sin participantes ni procesos no
+  atribuibles; SHA-256 de `config.toml` `89F375C6…DA5281` (el mismo desde P2) y 103 nombres de claves.
+- **Cesión:** 2026-10-01T02:45:26Z → 02:47:56Z; la sesión no operó sobre el worktree.
+- **Resultado:** código 0, evento terminal `turn.completed`; uso 250729 tokens de entrada (203776 en caché), 5382 de salida (2994 de razonamiento); `thread_id`
+  `01a0f55a-45fa-71c3-809d-a5df76a7eb4c`.
+- **Modelo y effort efectivos:** `turn_context.model` = `gpt-6-luna`, `turn_context.effort` = `high` en el registro de sesión (`session_meta.model` vacío); SHA-256 del registro
+  `C9B7A99476E4C29A6D9285EF2B3F131292279C027701BDBCF5F6F45885900549`. Queda medido que **sin `--ephemeral` el registro de sesión confirma el modelo y el effort efectivos**.
+- **Esquema:** `--output-schema` aceptó `delegation.schema.json` (con `$schema`, `pattern`, tipos con `null` y `enum`) y la salida valida con `Test-Json`.
+- **Oráculo contra Git:** `ExpectedBranch` = rama; `BaseSha` = `HEAD` `4da82667`; `RoutingReason` empieza por `PR1: ls-files=2185` (= `git ls-files`); 13 `command_execution`
+  completados, todos con código 0.
+- **Relevo de entrada:** `config.toml` con el mismo hash y los mismos nombres de claves (sin P-01); sin P-06 (las seis coincidencias de «credit» en los eventos son contenido de
+  archivos leídos); sin participantes vivos (snapshot repetido desde PowerShell, ver DEV-G2-01).
+- **Conducta observada del Controller:** detectó que la única celda del contrato de ensayo no tiene `write-commit-push` para la clase Documentación y lo declaró como bloqueo en
+  `RoutingReason`, en vez de enrutar en silencio. Lo etiquetó como P-03; según `routing.md` §4 es el caso «sin celda elegible». Es una observación, no un defecto del protocolo.
+- **Catálogo:** la celda queda como medida para los perfiles CONTROLLER_* (consumo cubierto, invocación probada, effort `high`).
+
+**Custodia** (`docs/automation/evidence/I-61-pilot/g2-pr1/R20261001T024407Z-a191/`):
+
+| Archivo | SHA-256 transitorio (procedencia) | Blob versionado | Byte a byte |
+|---|---|---|---|
+| `gate-contract.json` | `321a9f65433bb35d9eb447158eda04eb2d11bf8b4b0981354059842343ade29c` | `17f44e125c14bcd66e597f8a2c1811af8d0aa726` | no: escrito con CRLF; Git normaliza a LF (SHA-256 normalizado `0a87a204…1750f7`) |
+| `prompt.md` | `1154f93c4a259bb595a65b6dd7e779ad5d6a963bce16742a367e6fc0cfb5a4bf` | `8054afd4e3884c8d8586ff1ec6fc57565d4da789` | sí |
+| `delegation.json` (salida `-o`) | `24b1ece8d3f388c6f93f30efd1e2c997541fd462fd348ebc28cb0271c5d36990` | `a830ab3a5e17e4376bed20f63a7cf937ef9dc097` | sí |
+| `relay-record.json` | `36465aed3799f292286f21cd30feb26eaa17fc2eb6a101ad8a9f8b4279fd2628` | `6886eb9a8ec05d4224d5f745a7ef7140827b3139` | no: CRLF normalizado (SHA-256 normalizado `6345ff11…59563`) |
+
+Los eventos (`events.jsonl`, SHA-256 `4F7D9AE5D2739E1816DB713B0E9E78619D380CC7BA54604810CBA15B4A06E9C3`) y el registro de sesión no se versionan. El registro de relevo se escribió antes de
+renombrar `RemoteFacts.*.RunId` a `GhRunId` en el esquema; como su `RemoteFacts` es `null`, sigue validando contra el esquema actual.
+
+### 14.3 Controles manuales
+
+**OBL-11** (el relevo rechaza VERIFIED incoherente; fixtures en el scratchpad de la sesión, no versionados):
+
+| Fixture | `Test-Json` | Regla de coherencia del relevo |
+|---|---|---|
+| VERIFIED con las 14 en `pass` | válido | acepta |
+| VERIFIED con `Scope` en `fail` | válido | **rechaza** |
+| VERIFIED con `Tests` en `not_run` | válido | **rechaza** |
+| REWORK coherente (`FreeText` en `fail`) | válido | acepta |
+| Par inválido (`REWORK_REQUIRED` con `STOP`) | válido | **rechaza** |
+| Comprobación `Scope` omitida | **inválido** | — |
+
+Medido con la regla del README de G2 (`4da82667`); la revisión de G2 la reforzó (VERIFIED ⇔ 14 `pass`, `FailureClass` = primera no `pass`, `Result` = `pass` ⇒ `RedPart` ≠ `fail`),
+sin cambiar el resultado de esos fixtures.
+
+**OBL-08** (tabla de escenarios del Freeze §9 frente a AUTOMATION_PLAN §16 y el README): la primera revisión de G2 dio **FAIL** (el README tenía 9 de 19 filas y §16 no tenía «Sin
+reinicios»). Corregido; resultado de la repetición: ver 14.4.
+
+**DEV-G2-01 (desviación de procedimiento).** El snapshot de procesos de la entrada de PR-1, lanzado desde Git Bash, clasificó como no atribuibles dos `bash.exe` propios creados a las
+02:48:10Z, después del fin de la cesión: bajo MSYS2 la cadena de `ParentProcessId` se rompe y no se reconocen como ancestros del comprobador. Repetido desde PowerShell, con la cadena
+íntegra (`pwsh` ← `cmd` ← `claude`): sin participantes ni procesos no atribuibles. El README §3.2 indica ahora que el snapshot se lanza desde PowerShell. La regla de AUTOMATION_PLAN
+16.4 no cambia.
+
+### 14.4 Revisión de G2 contra el Freeze (Coordinator, con ayudas Architect SAME-SESSION ROLE)
+
+| Paso | Ejecución | Objeto | Resultado |
+|---|---|---|---|
+| Revisión de G2 | workflow `wf_b3029f47-75a` (dos lentes Architect, SAME-SESSION ROLE) | commit `4da82667` más el diff de catálogo y README | **NON_CONFORMING**: 17 REQUIRED (G2-A-01..10: reglas del Freeze ausentes o cambiadas en AUTOMATION_PLAN §16 — roles y trabajo terminado, Worker subagente y cesión, exclusión de procesos, normalización del `RebaseMap`, propiedad exclusiva, «Sin reinicios», registro de `ChainRedFiles`, actor de la señal, modos de fallo y recuperación, transporte; G2-B-01..07: tabla de escenarios del README incompleta, «Sin reinicios», fortalezas y perfiles del catálogo, cláusula normativa en el perfil CONTROLLER_VERIFICATION, mutación de perfil que no ejercía la frontera de 25 líneas, rutas operativas incompletas, §14 de evidencia inexistente) y 14 OPTIONAL. OBL-08 = FAIL |
+| Correcciones | sesión responsable (Executor) | AUTOMATION_PLAN §16 reescrita con fidelidad al Freeze; README, routing.md, catálogo, esquema de relevo (`GhRunId`), §G y pruebas | aplicadas, junto con los OPTIONAL de valor (regla de coherencia en ambos sentidos, oráculo relativo de los controles, construcciones de esquema no recorridas, nombres de familia) |
+| Confirmación | workflow `wf_311d2621-70d` (un agente Architect) | árbol corregido | 16 REQUIRED APPLIED y G2-B-07 PARTIAL (esta sección, que se publica en el commit de cierre); **OBL-08 = PASS** (19 filas fieles); dos REQUIRED nuevos: N-01 (fila «Resultado de Claude sin datos» renombrada) y N-02 (`Processes[]` no admitía descendientes de la sesión ni huérfanos) |
+| Corrección final | sesión responsable | AUTOMATION_PLAN 16.9; esquema de relevo (clases `session-descendant` y `orphan`); README §3.2 y §8 (orden fijo de 16.9); prueba de nombres de familia de tres letras | aplicadas tal como las describe la confirmación; verificación directa de la sesión (`grep`, `Test-Json` y 17/17); OBL-11 repetido con la regla final: mismos resultados |
+
+**Decisión del Coordinator sobre G2:** se registra después del commit de cierre, con el Core Full local sobre ese SHA y su CI (LIFECYCLE §7), en el siguiente commit sustantivo.
+
+**Datos adicionales de la fuente oficial de modelos** (`https://learn.chatgpt.com/docs/models`, misma consulta del 2026-09-30, con la herramienta que puede resumir): para Astra,
+«Our most capable model for complex work»; guía general, «start with **High** for Luna or **Light** for Astra». Respaldan las líneas de fortalezas de `gpt-6-luna` y
+`gpt-6-astra` en el catálogo.
+
+### 14.5 Coordinación
+
+I-52 confirmó por el canal entre sesiones (2026-10-01) que no tiene ningún ADR-0046 en uso ni en preparación y que no escribe `docs/adr/README.md`.
+
+### 14.6 Borrador de la entrada de FOUNDATIONS (LIFECYCLE §4.1; se completa tras G3 y se publica en el commit de cierre)
+
+```text
+Name: Agent Execution Protocol
+Status: (borrador) — solo podrá ser STABLE con ADR-0046 aceptado o el Freeze de I-61 integrado
+Authority: AUTOMATION_PLAN §16 (ejecución delegada); WORKFLOW §3 (relevo) y §10; AGENTS.md (evidencia); subordinados en docs/automation/agent-execution/.
+Persistence: tráfico transitorio en artifacts/orchestration/ (ignorado por Git); custodia de JSON y MD en docs/automation/evidence/<unit>-pilot/; esquemas rackcad-*/v1 en docs/automation/agent-execution/schemas/.
+Mutation contract: reglas solo en AUTOMATION_PLAN §16; esquemas por versión (/v2 con ADR o A-n); catálogo mutable con fuente y fecha, sin Freeze.
+Extension point: entrada de catálogo; clase de tarea o perfil nuevo (subordinado o PROMPT_TEMPLATES §G, revisado por el Coordinator); versión nueva de esquema; regla de §16 (Freeze de I-61 §15).
+Decision source: ADR-0046 (propuesto) y Freeze de I-61 (docs/initiatives/I-61-proposal-v9.md).
+Protecting tests: AgentExecutionProtocolTests (OBL-01..06 y OBL-11 estructural); controles del piloto OBL-07..10 (pendientes de G3).
+Known limitations: independencia parcial de la verificación con un Worker subagente; efecto de consumo del service_tier heredado UNKNOWN; Worker Codex con escritura UNKNOWN; recetas dependientes de Windows y del sandbox unelevated; nivel A, sin scripts.
+Last changed by: I-61
+```

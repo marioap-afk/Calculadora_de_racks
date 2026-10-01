@@ -121,6 +121,8 @@ namespace RackCad.Tests
             foreach (var file in SchemaFiles)
             {
                 Assert.Empty(StrictnessProblems(Schema(file)).Select(p => file + ": " + p));
+                // The recursive oracle walks properties and items only; constructions it would not reach are not allowed.
+                Assert.Empty(UnwalkedKeywords(Schema(file)).Select(k => file + ": uses " + k));
             }
         }
 
@@ -139,6 +141,16 @@ namespace RackCad.Tests
             var openItems = Schema("delegation.schema.json");
             ((JsonObject)openItems["properties"]!["RequiredTests"]!["items"]!)["additionalProperties"] = true;
             Assert.NotEmpty(StrictnessProblems(openItems));
+
+            var untyped = Schema("delegation.schema.json");
+            var owner = (JsonObject)untyped["properties"]!["Owner"]!;
+            owner.Remove("type");
+            owner.Remove("additionalProperties");
+            Assert.NotEmpty(StrictnessProblems(untyped));
+
+            var hidden = Schema("delegation.schema.json");
+            ((JsonObject)hidden)["$defs"] = new JsonObject { ["Loose"] = new JsonObject { ["type"] = "object" } };
+            Assert.NotEmpty(UnwalkedKeywords(hidden));
         }
 
         // ---------------------------------------------------------------- OBL-03 (INV-02): exact-SHA identity
@@ -218,6 +230,8 @@ namespace RackCad.Tests
             Assert.NotEmpty(ModelIdsIn(routing + "\nUsar " + models.First() + " por defecto.\n", models));
             Assert.NotEmpty(ModelIdsIn(routing + "\nUsar gpt-9-nova por defecto.\n", models));
             Assert.NotEmpty(ModelIdsIn(routing + "\nUsar claude-zeta-9 por defecto.\n", models));
+            Assert.NotEmpty(FamilyTokens(models));
+            Assert.NotEmpty(ModelIdsIn(routing + "\nUsar " + FamilyTokens(models).First() + " para todo.\n", models));
 
             var firstKey = catalog.IndexOf("Consumo cubierto:", StringComparison.Ordinal);
             Assert.True(firstKey >= 0);
@@ -266,8 +280,9 @@ namespace RackCad.Tests
 
             Assert.NotEmpty(WitnessesIn(sectionG + "\n" + Witnesses[0].Phrase + "\n"));
 
-            var longProfile = LongerProfile(sectionG, Profiles[0], 26);
-            Assert.NotEmpty(SectionGProblems(longProfile));
+            // The frozen boundary is 25 lines: a profile of exactly 26 lines is rejected, one of exactly 25 is not.
+            Assert.NotEmpty(SectionGProblems(ProfileWithLines(sectionG, Profiles[0], 26)));
+            Assert.Empty(SectionGProblems(ProfileWithLines(sectionG, Profiles[0], 25)));
 
             Assert.NotEmpty(SectionGProblems(sectionG.Replace(LifecycleFields[0], "Meta:", StringComparison.Ordinal)));
 
@@ -365,7 +380,7 @@ namespace RackCad.Tests
                 return;
             }
 
-            if (TypesOf(obj).Contains("object"))
+            if (TypesOf(obj).Contains("object") || obj["properties"] is JsonObject)
             {
                 if (obj["additionalProperties"] is not JsonValue additional || !additional.TryGetValue<bool>(out var allowed) || allowed)
                 {
@@ -391,6 +406,45 @@ namespace RackCad.Tests
             }
 
             Strictness(obj["items"], path + "[]", problems);
+        }
+
+        private static readonly string[] UnwalkedSchemaKeywords = { "$defs", "definitions", "$ref", "anyOf", "oneOf", "allOf", "not", "if", "then", "else", "prefixItems", "patternProperties" };
+
+        private static List<string> UnwalkedKeywords(JsonNode? node)
+        {
+            var found = new List<string>();
+            if (node is JsonObject obj)
+            {
+                foreach (var pair in obj)
+                {
+                    // Property names inside "properties" are field names, not keywords.
+                    if (pair.Key == "properties" && pair.Value is JsonObject properties)
+                    {
+                        foreach (var property in properties)
+                        {
+                            found.AddRange(UnwalkedKeywords(property.Value));
+                        }
+
+                        continue;
+                    }
+
+                    if (UnwalkedSchemaKeywords.Contains(pair.Key, StringComparer.Ordinal))
+                    {
+                        found.Add(pair.Key);
+                    }
+
+                    found.AddRange(UnwalkedKeywords(pair.Value));
+                }
+            }
+            else if (node is JsonArray array)
+            {
+                foreach (var item in array)
+                {
+                    found.AddRange(UnwalkedKeywords(item));
+                }
+            }
+
+            return found;
         }
 
         private static List<string> ShaProblems(JsonNode schema)
@@ -511,9 +565,18 @@ namespace RackCad.Tests
         private static List<string> CatalogModelIds(string catalog) =>
             Regex.Matches(catalog, @"^### (\S+) \(", RegexOptions.Multiline).Select(m => m.Groups[1].Value).Distinct().ToList();
 
+        // Family names come from the catalog ids themselves (alphabetic segments of three letters or more, provider prefixes aside).
+        private static List<string> FamilyTokens(IEnumerable<string> catalogIds) =>
+            catalogIds.SelectMany(id => Regex.Split(id, @"[-.]"))
+                .Where(s => s.Length >= 3 && s.All(char.IsLetter) && s != "claude" && s != "gpt")
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
         private static List<string> ModelIdsIn(string text, IEnumerable<string> catalogIds)
         {
-            var hits = catalogIds.Where(id => text.Contains(id, StringComparison.OrdinalIgnoreCase)).ToList();
+            var ids = catalogIds.ToList();
+            var hits = ids.Where(id => text.Contains(id, StringComparison.OrdinalIgnoreCase)).ToList();
+            hits.AddRange(FamilyTokens(ids).Where(t => Regex.IsMatch(text, @"\b" + Regex.Escape(t) + @"\b", RegexOptions.IgnoreCase)));
             hits.AddRange(Regex.Matches(text, @"\b(gpt-[0-9][\w.-]*|claude-[a-z][\w.-]*|o[0-9]-[\w.-]+|gemini-[\w.-]+)", RegexOptions.IgnoreCase)
                 .Select(m => m.Value));
             return hits;
@@ -614,14 +677,18 @@ namespace RackCad.Tests
             return text.Substring(bodyStart, Math.Max(0, close - bodyStart)).Split('\n').Select(l => l.TrimEnd('\r')).ToList();
         }
 
-        private static string LongerProfile(string sectionG, string profile, int lines)
+        // Replaces the body of the profile's fenced block with exactly <paramref name="lines"/> lines.
+        private static string ProfileWithLines(string sectionG, string profile, int lines)
         {
             var heading = "\n#### " + profile;
             var at = sectionG.IndexOf(heading, StringComparison.Ordinal);
             var open = sectionG.IndexOf("\n```", at, StringComparison.Ordinal);
             var bodyStart = sectionG.IndexOf('\n', open + 1) + 1;
-            var filler = string.Concat(Enumerable.Repeat("relleno\n", lines));
-            return sectionG.Insert(bodyStart, filler);
+            var close = sectionG.IndexOf("\n```", bodyStart - 1, StringComparison.Ordinal);
+            var body = string.Join("\n", Enumerable.Repeat("relleno", lines));
+            var mutated = sectionG.Substring(0, bodyStart) + body + sectionG.Substring(close);
+            Assert.Equal(lines, FencedBlockAfter(mutated, heading)!.Count);
+            return mutated;
         }
 
         private static List<string> WitnessesIn(string text)

@@ -47,7 +47,7 @@
               "ParentPid": { "type": "integer" },
               "Name": { "type": "string" },
               "CreationDateUtc": { "type": "string" },
-              "Classification": { "type": "string", "enum": ["own-tree", "owner-app", "nominal-exclusion", "build-server", "participant", "unattributable"] }
+              "Classification": { "type": "string", "enum": ["own-tree", "owner-app", "nominal-exclusion", "build-server", "participant", "unattributable", "session-descendant", "orphan"] }
             },
             "required": ["Pid", "ParentPid", "Name", "CreationDateUtc", "Classification"]
           }
@@ -117,7 +117,7 @@
               "ParentPid": { "type": "integer" },
               "Name": { "type": "string" },
               "CreationDateUtc": { "type": "string" },
-              "Classification": { "type": "string", "enum": ["own-tree", "owner-app", "nominal-exclusion", "build-server", "participant", "unattributable"] }
+              "Classification": { "type": "string", "enum": ["own-tree", "owner-app", "nominal-exclusion", "build-server", "participant", "unattributable", "session-descendant", "orphan"] }
             },
             "required": ["Pid", "ParentPid", "Name", "CreationDateUtc", "Classification"]
           }
@@ -133,7 +133,7 @@
           "type": ["object", "null"],
           "additionalProperties": false,
           "properties": {
-            "RunId": { "type": "integer" },
+            "GhRunId": { "type": "integer" },
             "Event": { "type": "string" },
             "Ref": { "type": "string" },
             "HeadSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
@@ -149,13 +149,13 @@
               }
             }
           },
-          "required": ["RunId", "Event", "Ref", "HeadSha", "Status", "Conclusion", "Jobs"]
+          "required": ["GhRunId", "Event", "Ref", "HeadSha", "Status", "Conclusion", "Jobs"]
         },
         "RedRun": {
           "type": ["object", "null"],
           "additionalProperties": false,
           "properties": {
-            "RunId": { "type": "integer" },
+            "GhRunId": { "type": "integer" },
             "Event": { "type": "string" },
             "Ref": { "type": "string" },
             "HeadSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
@@ -171,7 +171,7 @@
               }
             }
           },
-          "required": ["RunId", "Event", "Ref", "HeadSha", "Status", "Conclusion", "Jobs"]
+          "required": ["GhRunId", "Event", "Ref", "HeadSha", "Status", "Conclusion", "Jobs"]
         },
         "TestArtifacts": {
           "type": "array",

@@ -11,7 +11,7 @@ el cambio no altera la elegibilidad de una delegación ya aceptada.
 real registrada en la evidencia de una unidad). El **nivel** (Eficiente, Equilibrado, Frontera) es una asignación de RackCad hecha sobre la descripción oficial. Fuentes de esta versión:
 [Discovery de I-61](../../initiatives/I-61-discovery.md) §§12-13 y §17, y la [evidencia de I-61](../evidence/I-61-evidence.md) §§10-13.
 
-**Frescura:** `STALE` = mín(fecha de verificación + 90 días, retiro anunciado). Un retiro con precisión de mes cuenta desde el primer día de ese mes.
+**Frescura:** `STALE` = mín(fecha de verificación + 90 días, retiro anunciado). Un retiro con precisión de mes o trimestre cuenta desde el primer día de ese periodo.
 
 ## Anthropic (subagentes de la sesión de escritorio)
 
@@ -24,6 +24,8 @@ autenticado (`medido`) y no se usa como transporte.
 - Fecha de verificación: 2026-09-30
 - Tipo de fuente: oficial (descripción, effort por defecto `high`, retiro); asignación de RackCad (nivel)
 - Nivel: Frontera
+- Fortalezas y debilidades (oficial): contexto de 1M tokens y effort por defecto `high`; la descripción detallada no está registrada en la evidencia de I-61
+- Perfiles recomendados (asignación de RackCad): ARCHITECTURE_REVIEW, LONG_HORIZON_IMPLEMENTATION
 - Effort: Routine → `low`; Balanced → `medium`; Deep → `high`; Long-horizon → `xhigh`; Maximum → `max` (cada valor, solo tras medirlo en la celda)
 - Consumo cubierto: UNKNOWN (sin invocación medida)
 - Retiro anunciado: ninguno anterior a 2027 publicado
@@ -35,8 +37,10 @@ autenticado (`medido`) y no se usa como transporte.
 - Fecha de verificación: 2026-09-30
 - Tipo de fuente: oficial (descripción, effort por defecto `medium`, retiro); asignación de RackCad (nivel); medido (estado local)
 - Nivel: Frontera
+- Fortalezas y debilidades (oficial): contexto de 1M tokens; effort por defecto `medium`; la fuente de effort recomienda `xhigh` para agentes de larga duración
+- Perfiles recomendados (asignación de RackCad): ARCHITECTURE_REVIEW, LONG_HORIZON_IMPLEMENTATION, DEBUGGING con causa incierta
 - Effort: Routine → `low`; Balanced → `medium`; Deep → `high`; Long-horizon → `xhigh`; Maximum → `max` (medidos: `high` y `xhigh`)
-- Consumo cubierto: sí (medido: las invocaciones de subagentes de revisión de I-61 completaron con la autenticación por suscripción, sin aviso de límite; evidencia §13)
+- Consumo cubierto: sí solo para la celda subagente con modelo heredado (medido: las invocaciones de subagentes de revisión de I-61 completaron con la autenticación por suscripción, sin aviso de límite; evidencia §13); petición explícita por alias: UNKNOWN hasta U-04
 - Retiro anunciado: ninguno anterior a 2027 publicado
 - Estado local: subagente × `read`/`tool-use` — medido (2026-09-30, modelo heredado de la sesión; effort solicitado `high` aplicado, sin solicitar se hereda `xhigh`); subagente ×
   `write-commit-push` — no medido; petición explícita de este modelo — no medida
@@ -47,6 +51,8 @@ autenticado (`medido`) y no se usa como transporte.
 - Fecha de verificación: 2026-09-30
 - Tipo de fuente: oficial (descripción, effort por defecto `high`, retiro); asignación de RackCad (nivel)
 - Nivel: Equilibrado
+- Fortalezas y debilidades (oficial): contexto de 1M tokens y effort por defecto `high`; la descripción detallada no está registrada en la evidencia de I-61
+- Perfiles recomendados (asignación de RackCad): ROUTINE_IMPLEMENTATION, DEBUGGING, CHARACTERIZATION
 - Effort: Routine → `low`; Balanced → `medium`; Deep → `high`; Long-horizon → `xhigh`; Maximum → `max` (cada valor, solo tras medirlo en la celda)
 - Consumo cubierto: UNKNOWN (sin invocación medida)
 - Retiro anunciado: ninguno anterior a 2027 publicado
@@ -58,6 +64,8 @@ autenticado (`medido`) y no se usa como transporte.
 - Fecha de verificación: 2026-09-30
 - Tipo de fuente: oficial (descripción, sin control de effort, retiro); asignación de RackCad (nivel)
 - Nivel: Eficiente
+- Fortalezas y debilidades (oficial): contexto de 200K tokens y sin control de effort; la descripción detallada no está registrada en la evidencia de I-61
+- Perfiles recomendados (asignación de RackCad): DOCUMENTATION y ROUTINE_IMPLEMENTATION mientras no esté `STALE`
 - Effort: no tiene control de effort; en una celda de subagente se registra el effort heredado medido
 - Consumo cubierto: UNKNOWN (sin invocación medida)
 - Retiro anunciado: octubre de 2026 (`STALE` desde el 2026-10-01)
@@ -74,6 +82,8 @@ advierte que dependen del modelo y del cliente; la página de modelos usa los r�
 - Fecha de verificación: 2026-09-30
 - Tipo de fuente: oficial (descripción, effort de Light a Ultra; «Max and Ultra depend on your settings»); asignación de RackCad (nivel)
 - Nivel: Equilibrado
+- Fortalezas y debilidades (oficial): effort de Light a Ultra («Max and Ultra depend on your settings»); sin más descripción registrada
+- Perfiles recomendados (asignación de RackCad): CONTROLLER_PLANNING y CONTROLLER_VERIFICATION como alternativa de nivel Equilibrado; DEBUGGING
 - Effort: Routine → `low`; Balanced → `medium`; Deep → `high`; Long-horizon → `xhigh`; Maximum → `max` (cada valor, solo tras medirlo en la celda)
 - Consumo cubierto: UNKNOWN (sin invocación medida)
 - Retiro anunciado: ninguno publicado
@@ -85,11 +95,13 @@ advierte que dependen del modelo y del cliente; la página de modelos usa los r�
 - Fecha de verificación: 2026-09-30
 - Tipo de fuente: oficial (descripción, effort hasta Max, sin Ultra); asignación de RackCad (nivel); medido (estado local)
 - Nivel: Eficiente
-- Effort: Routine → `low`; Balanced → `high` (Eficiente con más effort); Deep → `xhigh`; Maximum → `max` (cada valor, solo tras medirlo en la celda)
-- Consumo cubierto: sí (medido: seis invocaciones de G1-C con la autenticación de ChatGPT, sin aviso de límite; evidencia §10)
+- Fortalezas y debilidades (oficial): effort hasta Max, sin Ultra; la guía sugiere empezar con High
+- Perfiles recomendados (asignación de RackCad): CONTROLLER_PLANNING y CONTROLLER_VERIFICATION (Balanced como Eficiente con más effort)
+- Effort: Routine → `low`; Balanced → `high` (Eficiente con más effort); Deep → `xhigh`; Maximum → `max` (medido: `high`; los demás, solo tras medirlos en la celda)
+- Consumo cubierto: sí (medido: seis invocaciones de G1-C y la sonda PR-1, con la autenticación de ChatGPT y sin aviso de límite; evidencia §§10 y 14)
 - Retiro anunciado: ninguno publicado
-- Estado local: CLI × `read`/`tool-use` — medido con el modelo solicitado (P1-a4 y P3, 2026-09-30); modelo y effort efectivos no confirmados porque se usó `--ephemeral`; se
-  confirman en la sonda PR-1
+- Estado local: CLI × `read`/`tool-use` × effort `high` — **medido en la sonda PR-1** (2026-10-01 UTC): modelo y effort efectivos `gpt-6-luna`/`high` en el registro de sesión,
+  `--output-schema` aceptado y oráculo contra Git correcto (evidencia §14). Es la celda del Controller (perfiles CONTROLLER_*, effort Balanced)
 
 ### gpt-6-astra (OpenAI)
 
@@ -97,6 +109,8 @@ advierte que dependen del modelo y del cliente; la página de modelos usa los r�
 - Fecha de verificación: 2026-09-30
 - Tipo de fuente: oficial (descripción «most capable», filas de disponibilidad «ChatGPT Credits» y «API Access»); asignación de RackCad (nivel)
 - Nivel: Frontera
+- Fortalezas y debilidades (oficial): «Our most capable model for complex work»; la guía sugiere empezar con Light
+- Perfiles recomendados (asignación de RackCad): ninguno mientras no sea elegible
 - Effort: sin correspondencia medida
 - Consumo cubierto: UNKNOWN; marcado por la fuente oficial como de créditos o API, así que **no es elegible ni se sondea**
 - Retiro anunciado: ninguno publicado
@@ -108,6 +122,8 @@ advierte que dependen del modelo y del cliente; la página de modelos usa los r�
 - Fecha de verificación: 2026-09-30
 - Tipo de fuente: oficial (retiro de ChatGPT y Codex)
 - Nivel: sin asignar
+- Fortalezas y debilidades (oficial): sin descripción registrada; anunciado su retiro
+- Perfiles recomendados (asignación de RackCad): ninguno
 - Effort: sin correspondencia medida
 - Consumo cubierto: UNKNOWN
 - Retiro anunciado: 2026-10-14

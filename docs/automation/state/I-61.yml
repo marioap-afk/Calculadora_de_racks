@@ -3,12 +3,12 @@ automation_state:
   initiative: I-61
   branch: architecture/protocolo-ejecucion-agentes
   claim_id: 0e2923de-e1a7-41bf-b7db-50ec84217850
-  current_phase: freeze
+  current_phase: G2
   state: implementing
   gate: none
   attempts: 0
-  next_action: Commit de Freeze (solo la linea Frozen de la Proposal V9 acordada) y despues G2 Protocolo materializado segun la Proposal V9 §16.2.
-  last_evidence_commit: 07ef2a858616b12e5f72d2b5f9c7b3da434e63d8
+  next_action: Leer la CI del commit de cierre de G2 y registrar la decision del Coordinator; despues G3 (piloto real, Proposal V9 §12.1) empezando por la sonda U-04.
+  last_evidence_commit: 4da82667f47b227507166428817ececa8239d73a
 execution_context:
   mode: manual
   automation_enabled: false
@@ -17,3 +17,5 @@ execution_context:
   g1_gate_pass: effective (CI 36796667573 push success on 07ef2a85; decisions §13)
   g1_discovery: docs/initiatives/I-61-discovery.md
   design_agreed: docs/initiatives/I-61-proposal-v9.md blob fccae56dfbea82fbe092555d51a0fb57baff5651 (decisions §13)
+  freeze: e9466a248726f00e966b789f67653788b6a0af21 (Frozen YES de I-61-proposal-v9.md; acuerdo en 5bffe5a7)
+  g2_materialization: 4da82667f47b227507166428817ececa8239d73a

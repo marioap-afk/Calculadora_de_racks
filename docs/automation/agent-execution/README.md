@@ -36,6 +36,10 @@ artifacts/orchestration/<unit>/<task>/<attempt>/<RunId>/controller-verification.
 artifacts/orchestration/<unit>/<task>/<attempt>/<RunId>/relay-record.json
 artifacts/orchestration/<unit>/<task>/<attempt>/<RunId>/analysis.md
 artifacts/orchestration/<unit>/<task>/<attempt>/<RunId>/events.jsonl
+artifacts/orchestration/<unit>/<task>/<attempt>/<RunId>/output.json
+artifacts/orchestration/<unit>/<task>/<attempt>/<RunId>/ci-core/
+artifacts/orchestration/<unit>/<task>/<attempt>/<RunId>/ci-ui/
+artifacts/orchestration/<unit>/<task>/<attempt>/{WorkRunId}/worker-handoff.json
 artifacts/orchestration/<unit>/<task>-ncN/<attempt>/<RunId>/
 artifacts/orchestration/<unit>/session-rebase/<RunId>/
 ```
@@ -68,6 +72,9 @@ Si `HEAD` coincide con el remoto y el último commit lleva el resumen, no hace f
 
 ### 3.2 Procesos vivos
 
+Se ejecuta desde **PowerShell**, no desde Git Bash: bajo MSYS2 la cadena de `ParentProcessId` se rompe y los shells propios aparecen como no atribuibles (medido en la sonda
+PR-1, desviación DEV-G2-01 de I-61).
+
 ```powershell
 Get-CimInstance Win32_Process |
   Select-Object ProcessId, ParentProcessId, Name, CommandLine,
@@ -81,11 +88,19 @@ Clasificación de cada proceso para el registro (`Processes[].Classification`):
 | `own-tree` | Es el proceso que ejecuta la comprobación o uno de sus ancestros por `ParentProcessId` |
 | `owner-app` | `codex*.exe` con línea de órdenes legible que no contiene la ruta del worktree (se registran solo PID y nombre) |
 | `nominal-exclusion` | `codex-windows-sandbox-service.exe` (línea de órdenes ilegible) |
-| `build-server` | `VBCSCompiler.exe`; `MSBuild.exe` o `dotnet.exe` con `/nodemode`, `build-server` o `VBCSCompiler.dll` |
+| `build-server` | `VBCSCompiler.exe`; `MSBuild.exe` o `dotnet.exe` con `/nodemode`, `build-server` o `VBCSCompiler.dll`. Solo exime en la comparación de descendientes de un Worker subagente y en la de huérfanos; en la evaluación general, si su línea de órdenes contiene la ruta del worktree, es `participant` |
 | `participant` | Su línea de órdenes contiene la ruta del worktree (con `\` o `/`) o `-C <worktree>` |
 | `unattributable` | Línea de órdenes ilegible y nombre en la lista cerrada (`codex*.exe`, `claude.exe`, `node.exe`, `git.exe`, `pwsh.exe`, `powershell.exe`, `bash.exe`, `dotnet.exe`), salvo la exclusión nominal |
 
-Un `participant` ajeno o un `unattributable` es STOP (P-02). Para un Worker subagente se compara la lista de descendientes de la sesión del `Exit` con la del `Entry`, y se
+Para un Worker subagente, además, se listan siempre con dos clases más:
+
+| Clase | Cuándo |
+|---|---|
+| `session-descendant` | Descendiente de la sesión que no cae en las clases anteriores; el `Exit` los registra y el `Entry` los compara |
+| `orphan` | Proceso de la lista cerrada creado en la ventana de la cesión cuyo padre no existe en el `Entry`, o existe con una `CreationDate` posterior (PID reutilizado) |
+
+`Processes[]` lista los procesos de estas clases; los demás procesos legibles sin la ruta del worktree no se registran. La regla y sus consecuencias están en AUTOMATION_PLAN 16.4;
+en resumen, un `participant` ajeno, un `unattributable`, o en la entrada un `session-descendant` nuevo o un `orphan` vivo (salvo servidores de compilación) es STOP (P-02). Para un Worker subagente se compara la lista de descendientes de la sesión del `Exit` con la del `Entry`, y se
 evalúan los huérfanos con `CreationDateUtc` dentro de la ventana de la cesión.
 
 ### 3.3 Cesión
@@ -137,7 +152,8 @@ Tras la invocación: el `thread_id` del evento `thread.started` localiza el regi
 ## 6. Invocación del Worker (subagente)
 
 La sesión lanza el subagente con el modelo y el effort del paquete y el `prompt.md` compuesto, y espera la notificación de finalización (tope de 60 min). El modelo y el effort efectivos
-salen de la transcripción del subagente (`"model"`, `"effort"`). No se usan subagentes que sobrevivan a su llamada.
+salen de la transcripción del subagente (`"model"`, `"effort"`). La conducta al vencer el tope y la prohibición de subagentes que sobrevivan a su llamada están en AUTOMATION_PLAN
+16.4.
 
 ## 7. Hechos remotos
 
@@ -148,7 +164,7 @@ gh run download <run_id> --name rackcad-core-test-diagnostics --dir <dir del Run
 gh run download <run_id> --name rackcad-ui-test-diagnostics --dir <dir del RunId>\ci-ui
 ```
 
-Se registran en `RemoteFacts`: `ref` (`refs/heads/` + `headBranch`), `event`, `head_sha`, la conclusión de cada job requerido y, de los TRX, seleccionadas, superadas, fallidas y los
+Se registran en `RemoteFacts` (con el id de GitHub en `GhRunId`): `ref` (`refs/heads/` + `headBranch`), `event`, `head_sha`, la conclusión de cada job requerido y, de los TRX, seleccionadas, superadas, fallidas y los
 nombres de las fallidas. Se espera hasta 90 min sin reinvocar a nadie; la disposición la fija la fila `Ci` de AUTOMATION_PLAN §16.
 
 ## 8. Coherencia de la verificación
@@ -157,39 +173,66 @@ Además de `Test-Json`, el relevo aplica esta comprobación mecánica a `control
 
 ```powershell
 $v = Get-Content -Raw controller-verification.json | ConvertFrom-Json
-$checks = $v.Checks.PSObject.Properties
 $pairs = @{ 'EXECUTION_VERIFIED' = 'NONE'; 'EXECUTION_REWORK_REQUIRED' = 'REWORK' }
 $okPair = ($pairs[$v.Classification] -eq $v.Disposition) -or
           ($v.Classification -eq 'EXECUTION_BLOCKED' -and $v.Disposition -in 'BLOCKED', 'STOP')
-$okVerified = ($v.Classification -ne 'EXECUTION_VERIFIED') -or
-              (@($checks | Where-Object { $_.Value.Result -ne 'pass' }).Count -eq 0 -and $v.FailureClass -eq 'NONE')
-$okPair -and $okVerified          # False → salida inválida (INVALID_OUTPUT)
+$order = 'Termination','Handoff','Authority','Contract','Identity','Remote','Scope','CleanTree','Ci','Tests','Trailer','Routing','FreeText','Denials'   # orden de 16.9
+$notPass = @($order | Where-Object { $v.Checks.$_.Result -ne 'pass' } | ForEach-Object { [pscustomobject]@{ Name = $_ } })
+$okVerified = ($v.Classification -eq 'EXECUTION_VERIFIED') -eq ($notPass.Count -eq 0)          # VERIFIED ⇔ 14 en pass
+$okClass = if ($notPass.Count -eq 0) { $v.FailureClass -eq 'NONE' } else { $v.FailureClass -eq $notPass[0].Name -or $v.FailureClass -eq 'StopCondition' }
+$okRed = @('Ci', 'Tests' | Where-Object { $v.Checks.$_.Result -eq 'pass' -and $v.Checks.$_.RedPart -eq 'fail' }).Count -eq 0
+$okPair -and $okVerified -and $okClass -and $okRed          # False → salida inválida (INVALID_OUTPUT)
 ```
+
+`FailureClass` debe ser la primera comprobación que no está en `pass` (o `StopCondition` para un STOP no ligado a una comprobación); la `Disposition` sigue la precedencia de
+AUTOMATION_PLAN 16.9 sobre todas las fallidas.
 
 ## 9. Escenarios de conteo (OBL-08)
 
-La regla es la de AUTOMATION_PLAN §16. Escenarios para comprobarla sobre un registro:
+La regla es la de AUTOMATION_PLAN 16.8 (con 16.6, 16.7 y 16.11). Escenarios para comprobarla sobre un registro; son los diecinueve del Freeze de I-61 (Proposal V9 §9), con las
+referencias reescritas:
 
 | Escenario | Resultado esperado |
 |---|---|
-| Primera delegación | `Attempt` = `attempts`; nada se incrementa; la entrega exige RED |
-| REWORK de clase X, contador 0, intentos disponibles | commit con `attempts`+1 antes de la delegación de corrección; contador X = 1 |
-| REWORK de otra clase | `analysis.md` antes de la corrección; `attempts`+1 |
-| REWORK de clase X con contador 3 | STOP |
+| Primera delegación de una tarea | `Attempt` = `attempts`; nada se incrementa; RED exigido |
+| REWORK de clase X, contador X = 0, `attempts` < máximo y RED acreditado | commit con `attempts`+1, delegación con el nuevo `Attempt`, `ChainRedSha` y `ChainRedFiles`, contador X = 1 |
+| RED de una corrección que solo desactiva el fix en `src/` | se acredita; `ChainRedFiles` incluye igualmente las pruebas de la cadena desde `ChainBaseSha` |
+| GREEN que modifica pruebas de `RT` ∪ `ChainRedFiles` | `Tests` con `RedPart` = `fail`: REWORK (las pruebas modificadas no se vieron fallar) |
+| Corrección tras un RED no acreditado, con RED que solo desactiva el fix y GREEN que modifica pruebas de la cadena | `RT` (desde `ChainBaseSha`) las incluye: `RedPart` = `fail`, REWORK |
+| REWORK por `RedPart` = `fail` con un RED acreditado anterior | RED vigente = `null`; `ChainRedFiles` se conserva; la corrección exige RED |
+| REWORK sin RED acreditado (p. ej. la corrida del `RedSha` no falló) | la corrección exige RED (corrección desactivada, luego GREEN); `ChainRedSha` = `null` |
+| Entrega sin `RedSha` cuando exige RED | `Ci` y `Tests` con `RedPart` = `fail`: REWORK |
+| Entrega con RED acreditado en la cadena cuyo diff toca `ChainRedFiles` | exige RED (caducado): sin RED nuevo, `RedPart` = `fail` y REWORK; con RED nuevo acreditado, nuevo `ChainRedSha` y `ChainRedFiles` ampliado |
+| REWORK de clase Y ≠ X | `analysis.md` antes de la corrección; `attempts`+1 |
+| REWORK de clase X con contador X = 3 | STOP |
 | `attempts` = `max_attempts` y nuevo REWORK | STOP |
-| BLOCKED o fallo de transporte | sin incremento; `RunId` nuevo; dos reejecuciones por fase, la tercera → STOP |
-| STOP por avance de `main` | sin incremento; recuperación (máximo dos por tarea) |
-| Invocación que superaría el tope | no se lanza; STOP P-07 |
-| Control negativo | ruta y registro propios; sin incremento |
+| STOP resuelto por el Coordinator con un cambio del trabajo | `analysis.md`; `attempts`+1 |
+| STOP por avance de `main` | sin incremento; recuperación de AUTOMATION_PLAN 16.7; como máximo dos recuperaciones por tarea, la tercera → STOP |
+| BLOCKED o fallo de transporte | sin incremento; reejecución con `RunId` nuevo, máximo dos por fase; la tercera → STOP |
+| Una invocación excedería el tope de invocaciones del plan de gates de la unidad | no se lanza; STOP (P-07) |
+| Cambio de modelo, rol o sesión | sin reinicio |
+| Control negativo | ruta y registro propios, sin incremento |
+| Trabajo directo de la sesión con CI roja (fuera de la ejecución delegada) | AUTOMATION_PLAN §8-9: la corrección incrementa `attempts` |
 
 ## 10. Controles negativos
 
-Se ejecutan una vez sobre las entradas de la verificación `EXECUTION_VERIFIED` final, con el mismo prompt salvo la ruta de entrada y el `RunId`, en un directorio `<task>-ncN`:
+Se ejecutan una sola vez (contando solo los de salida válida), y solo sobre las entradas de la verificación `EXECUTION_VERIFIED` del último `WorkRunId` de la cadena; si la cadena termina
+sin VERIFIED, no se ejecutan. Los ejecuta el Controller Codex real con `CONTROLLER_VERIFICATION` y el mismo prompt, salvo la ruta de entrada y el `RunId` de la invocación. Cada uno usa una
+ruta `<task>-ncN` y un registro propios, con copias de todas las entradas que conservan sus `TaskId`, `RunId`, `DelegationRunId` y `Attempt` internos salvo el campo mutado. No consumen
+`attempts`.
 
-- **nc1:** `CurrentSha` inexistente en la entrega → `Identity` en `fail`.
-- **nc2:** se quita de `AllowedWriteScope` un archivo del diff verificado → `Scope` en `fail`.
-- **nc3:** un término de gate en `WorkCompleted` → `FreeText` en `fail`.
-- **nc4** (aceptación, sin invocar): `AllowedWriteScope` más amplio que el contrato → solo A3 en `fail`.
+**Oráculo relativo:** la comprobación mutada queda en `fail`, `FailureClass` es esa comprobación y todas las anteriores en el orden de AUTOMATION_PLAN 16.9 tienen el mismo `Result`
+(`pass`) que en la verificación real. Una salida ausente o inválida es un fallo de transporte de la fase `CONTROL`, reejecutable con `RunId` nuevo hasta dos veces por control; agotado
+ese tope, STOP (P-04) y control no superado.
+
+- **nc1:** entrega con `CurrentSha` inexistente → `Identity`; `EXECUTION_BLOCKED/STOP`.
+- **nc2:** delegación cuyo `AllowedWriteScope` excluye un archivo de `git diff --name-only BaseSha..CurrentSha` de la delegación verificada (el primero en orden lexicográfico,
+  registrado; si una entrada de prefijo lo cubre, se sustituye por la enumeración de los demás archivos del diff) → `Scope`; `EXECUTION_BLOCKED/STOP`.
+- **nc3:** entrega con un término de gate en `WorkCompleted` → `FreeText`; `EXECUTION_REWORK_REQUIRED/REWORK`; las comprobaciones posteriores, igual que en la real.
+- **nc4** (aceptación, sin invocar; solo en la primera delegación de la cadena y antes de aceptar la real): copia de `delegation.json` que solo cambia `AllowedWriteScope`, más amplio que
+  el contrato, evaluada con A1-A8 sin cortocircuito. Oráculo relativo: A3 en `fail` y las demás con el mismo resultado que en la aceptación de la delegación real; disposición STOP (P-03)
+  registrada como `REJECTED_BEFORE_INVOCATION` en `artifacts/orchestration/<unit>/<task>-nc4/…`, confinada al control y sin contar para ningún tope. Si la real no pasa A6 por avance de
+  `main`, nc4 se repite sobre la primera delegación de la cadena que lo pase.
 
 ## 11. Custodia
 

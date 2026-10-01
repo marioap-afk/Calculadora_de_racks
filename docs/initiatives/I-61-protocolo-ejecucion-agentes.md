@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-61
 title: Agent Execution, Model Routing & Prompting Protocol
 type: architecture
-status: design
+status: implementing
 workflow: V2
 conceptual_initiative: I-61
 delivery_unit: I-61
@@ -22,7 +22,7 @@ consumes: [Rack Identity, Unknown-field Preservation in Persisted Envelopes, Cus
 extends: []
 introduces: [Agent Execution Protocol]
 discovery_ref: docs/initiatives/I-61-discovery.md
-freeze_ref:
+freeze_ref: docs/initiatives/I-61-proposal-v9.md
 freeze_delta_ref:
 amendment_refs: []
 ov_assignment_ref:

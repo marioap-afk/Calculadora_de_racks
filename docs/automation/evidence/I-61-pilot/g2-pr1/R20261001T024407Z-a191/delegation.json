@@ -1,0 +1,118 @@
+{
+  "Schema": "rackcad-delegation/v1",
+  "TaskId": "g2-pr1-dryrun",
+  "RunId": "R20261001T024407Z-a191",
+  "Initiative": "I-61",
+  "Unit": "I-61",
+  "Gate": "G2",
+  "Attempt": 0,
+  "AuthorityRevision": "4da82667f47b227507166428817ececa8239d73a",
+  "MainSha": "95690c28dc6268e61dff32a0cbc33cc9fde3d47f",
+  "BaseSha": "4da82667f47b227507166428817ececa8239d73a",
+  "ExpectedBranch": "architecture/protocolo-ejecucion-agentes",
+  "ExpectedWorktree": "D:\\Documentos\\Codex\\Calculadora de racks\\.claude\\worktrees\\architecture-protocolo-ejecucion-agentes",
+  "Owner": {
+    "Kind": "subagent",
+    "Id": "subagent:R20261001T024407Z-a191"
+  },
+  "TaskClass": "Documentation",
+  "Dimensions": {
+    "Ambiguity": "Low",
+    "ArchitecturalSensitivity": "Low",
+    "Breadth": "Low",
+    "ToolUse": "Medium",
+    "FailureCost": "Low",
+    "MechanicalRepetition": "Low",
+    "Horizon": "Low"
+  },
+  "Executor": {
+    "Provider": "Anthropic",
+    "Transport": "subagent",
+    "Role": "Worker",
+    "Cell": "claude-opus-5-5|subagent"
+  },
+  "Model": "claude-opus-5-5",
+  "Effort": {
+    "Semantic": "Routine",
+    "Provider": "low"
+  },
+  "PromptProfile": "DOCUMENTATION",
+  "RoutingReason": "PR1: ls-files=2185; EXECUTION_BLOCKED por P-03: routing.md exige write-commit-push para una tarea de documentacion, pero la unica celda elegible del contrato, claude-opus-5-5|subagent, no tiene esa capacidad medida. Ademas, el catalogo verificado el 2026-09-30 solo registra efforts high y xhigh para esa celda; Routine no esta probado. No hay una celda que cumpla capacidades y effort sin ampliar el contrato.",
+  "ModelEscalationReason": null,
+  "RoutingEnforcement": "advisory",
+  "Authorities": [
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "## 16. Ejecución delegada bajo orden del Coordinator",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "documento completo",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "docs/initiatives/I-61-proposal-v9.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "AGENTS.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    }
+  ],
+  "Objective": "Ensayo de planificación (sonda PR-1): emitir un paquete de delegación válido para una tarea de documentación ficticia, sin que nadie la ejecute.",
+  "AllowedWriteScope": [
+    "docs/automation/evidence/I-61-pr1-dryrun.md"
+  ],
+  "ForbiddenWriteScope": [
+    "src/",
+    "tests/",
+    "docs/AUTOMATION_PLAN.md",
+    "docs/WORKFLOW.md",
+    "AGENTS.md",
+    "CLAUDE.md",
+    ".gitignore",
+    ".gitattributes",
+    ".github/"
+  ],
+  "Invariants": [
+    "INV-01",
+    "INV-02",
+    "INV-05",
+    "INV-10"
+  ],
+  "AcceptanceCriteria": [
+    "Paquete de delegacion valido contra rackcad-delegation/v1"
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~AgentExecutionProtocolTests",
+      "MinSelected": 17,
+      "ExpectRed": false
+    }
+  ],
+  "ExpectedEvidence": [
+    "Paquete de delegacion valido contra rackcad-delegation/v1"
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "P-03",
+      "Text": "Delegacion fuera del contrato"
+    }
+  ],
+  "MaxReworkLoops": 3,
+  "AttemptsRemaining": 3,
+  "ChainBaseSha": "4da82667f47b227507166428817ececa8239d73a",
+  "ChainRedSha": null,
+  "ChainRedFiles": [],
+  "CorrectionOf": null,
+  "ExpectedHandoffPath": "artifacts/orchestration/I-61/g2-pr1-dryrun/0/{WorkRunId}/worker-handoff.json",
+  "IssuedBy": "Controller Codex (planificacion, sonda PR-1)"
+}

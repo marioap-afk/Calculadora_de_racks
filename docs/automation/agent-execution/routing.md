@@ -53,7 +53,7 @@ Escala: `Routine` < `Balanced` < `Deep` < `Long-horizon` < `Maximum`.
 4. **Escalar** solo con `ModelEscalationReason` respaldado por evidencia, en este orden: effort → nivel → long-horizon → maximum, sin obligación de recorrerlos todos. La elegibilidad,
    incluido el consumo cubierto, vale también para el escalado.
 5. **Enrutar hacia abajo** está permitido, con la razón registrada.
-6. Escalar, bajar o cambiar de modelo, rol o sesión no reinicia `attempts` ni los contadores de clase.
+6. Escalar, bajar o cambiar de modelo, rol o sesión no reinicia nada (AUTOMATION_PLAN 16.8, «Sin reinicios»).
 
 **Sin celda elegible**, el Coordinator elige: (a) el siguiente nivel de transporte, con la limitación documentada; (b) una A-n de Coordinator + Architect que acepte
 `RoutingEnforcement: advisory`, con la limitación declarada; o (c) BLOCKED — OWNER DECISION.
@@ -61,7 +61,8 @@ Escala: `Routine` < `Balanced` < `Deep` < `Long-horizon` < `Maximum`.
 ## 5. Elegibilidad de una celda
 
 Una **celda** es modelo × transporte × capacidad (`read`, `tool-use`, `write-commit-push`, `effort-applied`). `effort-applied` se registra por valor de effort probado; en una celda
-sin control de effort (por su modelo o por su transporte) se registra el effort **heredado medido**, que es el que la delegación pide.
+sin control de effort (por su modelo o por su transporte) se registra el effort **heredado medido**, que es el que la delegación pide. Pedir un effort heredado que no se puede
+bajar no es un escalado sin `ModelEscalationReason`: es una limitación que se anota en `RoutingReason`.
 
 Es elegible si, en la fecha de la delegación:
 
@@ -76,6 +77,8 @@ Es elegible si, en la fecha de la delegación:
 API. Una sonda completada sin aviso de límite deja la celda como medida. La regla es igual para el Controller y para el Worker.
 
 El `service_tier` heredado de la configuración del Owner no entra en este criterio: es un riesgo registrado, con tope de invocaciones y STOP P-06.
+
+La elegibilidad la aplica el Controller de planificación con la fecha de la delegación, y la sesión la comprueba en la aceptación (A7). No hay prueba automatizada que dependa del reloj.
 
 ## 6. Exigencia del enrutamiento
 
