@@ -341,3 +341,47 @@ fuera del repositorio. Su registro recuperable está en `docs/initiatives/I-62-c
 Las trazas de V3 (anexos E.3, F y G.2) son **análisis del diseño**, no ensayos. `docs/automation/evidence/I-62-discovery/` no se creó.
 
 **Validación de esta entrega:** allowlist, enlaces y `git diff --check`; resultado en el cuerpo del commit. La CI de este commit se informa al Coordinator.
+
+## 15. F0 — Proposal V4 (C62-F0-21..22)
+
+**CI de la Proposal V3** (`486e45e797642ad589980584e16b3e50e53c1fb9`): corrida **36918816719**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: Build UI (110559415075), Tests (Domain + Application)
+(110559415090), UI Tests (110559415115) y Build Plugin without AutoCAD (110560254404), los cuatro `success`. MEASURED por la sesión y verificado por el
+Coordinator (C62-F0-21). Acredita solo `486e45e7`.
+
+**Orden recibida:** texto pegado por el Owner en la conversación, **sin archivo de origen** en `D:\IDs` y sin hash de archivo. Procedencia: la transcripción
+literal recibida, 5 854 bytes en UTF-8, SHA-256 `cb3ace77e6fbf7659af23bbb13f742666b09693cba4ff43fa72773e5b8213de5`, fuera del repositorio. Su registro
+recuperable está en `docs/initiatives/I-62-coordinator-review-v3.md`.
+
+**Apertura del tramo** (MEASURED, 20:16Z):
+- `origin/main` = `819955d6…`, sin rebase;
+- rama de I-62 en `486e45e7…` = remoto, árbol limpio;
+- deltas por rama (`git diff --name-only`), **ninguna** superficie candidata de I-62 tocada:
+  - I-52 `d8078ef3`: sin cambios;
+  - I-63 `23eeefc5..f0b063e9`: 1 commit, 5 archivos propios (contrato, Discovery, decisiones, evidencia y estado de I-63);
+  - I-64 `dcc16bed`: sin cambios.
+- revalidación antes del commit (MEASURED, 20:51Z): `origin/main` y la rama de I-62 sin cambios; I-63 `f0b063e9..a0654ae2` (2 commits) e I-64
+  `dcc16bed..ab4efe86` (1 commit, Proposal V2 de I-64), solo archivos propios; I-52 sin cambios; **ningún cruce** con superficies de I-62.
+
+**Hechos consultados para el diseño:**
+- MEASURED: `docs/automation/agent-execution/schemas/gate-contract.schema.json` (`/v1`), blob `56ced893586abc4a571d842f631e435342906f6a`, último cambio en
+  `4da82667`. `Authorities[]` = `{Path, Section, Class}`; `MainSha` y `AuthorityRevision`, un SHA cada uno.
+- MEASURED: el contrato real de I-61 G3 (`docs/automation/evidence/I-61-pilot/g3-cama-d1a/R20261001T032333Z-4a2d/gate-contract.json`, blob
+  `9b5ef6dfed25347310a6c2a8ecb91e48976928cc`, commit `5cda24f3`) cita 17 autoridades. `Section` toma tres formas: la línea de encabezado exacta, «preámbulo»
+  o «documento completo».
+- MEASURED: el job Core de `.github/workflows/ci.yml` usa `actions/checkout@v4` sin `fetch-depth`. INFERENCE: con el valor por defecto el checkout es
+  superficial. Por eso C-20a no usa historia y C-20b es MC.
+- MEASURED: §8 de AUTOMATION_PLAN (forma de `state/v1`), 16.3, 16.4, 16.6, 16.8 y 16.9, y WORKFLOW §§11.1-11.3, en `819955d6`.
+
+**Identidad del contenido entregado** (blob calculado con `git hash-object` antes del commit; el commit lo da el recibo):
+- `docs/initiatives/I-62-proposal-v4.md` → `dd9e478d737c76139b0eecc3c9e30d9beae8ccd6`;
+- `docs/initiatives/I-62-coordinator-review-v3.md` → `461ef605ffc04b1df85ce6cf60d2a132e7506403`.
+
+**No se hizo:**
+- invocaciones, subagentes, Architect, sondas, pilotos, sesiones nuevas, fixtures, remotos, pruebas nuevas ni repetidas, tooling ni esquemas operativos;
+- tocar V1, V2, V3, sus paquetes, los registros previos, el Discovery, el mandato ni superficies ajenas.
+
+Las trazas de V4 (anexos E.6, F y G.2) son **análisis del diseño**, no ensayos. `docs/automation/evidence/I-62-discovery/` no se creó.
+
+**Validación de esta entrega:** allowlist, enlaces, columnas de las tablas y `git diff --check`; resultado en el cuerpo del commit. La CI de este commit se
+informa al Coordinator.
