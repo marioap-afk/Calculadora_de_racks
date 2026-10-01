@@ -337,3 +337,31 @@ Protecting tests: AgentExecutionProtocolTests (OBL-01..06 y OBL-11 estructural);
 Known limitations: independencia parcial de la verificación con un Worker subagente; efecto de consumo del service_tier heredado UNKNOWN; Worker Codex con escritura UNKNOWN; recetas dependientes de Windows y del sandbox unelevated; nivel A, sin scripts.
 Last changed by: I-61
 ```
+
+## 15. G3 — piloto real (en curso)
+
+### 15.1 Sonda U-04 (Proposal V9 §12.1 paso 0)
+
+- **Clasificación provisional** (sesión como Coordinator; no vincula al Controller): clase «Implementación de pruebas», effort de partida Balanced; dimensiones: ambigüedad Low,
+  sensibilidad arquitectónica Medium, amplitud Low, uso de herramientas Medium, coste de fallo Medium, repetición Low, horizonte Low. Nivel Equilibrado: `claude-sonnet-5-5` con
+  `medium`, más el escalón superior (`high`). Sin alternativa de nivel inferior: `claude-haiku-4-5-20251001` está `STALE` desde el 2026-10-01 (retiro anunciado en octubre de 2026).
+- **Réplicas desechables** fuera del repositorio (scratchpad de la sesión, una por celda, con remoto local desnudo); el worktree de la unidad no se tocó.
+- **Invocación:** workflow `wf_9bb26e7e-466`, dos subagentes con modelo `sonnet` y effort `medium` y `high`, en paralelo, 2026-10-01T03:18:51Z → 03:19:07Z.
+
+| Celda | Commit en el remoto local | Oráculo contra Git | Modelo / effort efectivos (transcripción) | SHA-256 de la transcripción |
+|---|---|---|---|---|
+| sonnet × subagente × `write-commit-push`, effort `medium` | `4f0baae23ccfa5baa2616935702ac664022ee95a` (padre `aded5ef0…`) | archivo presente; trailer `Co-Authored-By: Claude Sonnet 5.5` como última línea; `ls-remote` = commit | `claude-sonnet-5-5` / `medium` | `513b58518327403fc8cb8f133ede4c20cb4ec5f25b112eeac2cc81d77a0046e8` |
+| ídem, effort `high` | `5bc79b15db95e51d87620363985d23927c7e20a7` (padre `00f2819f…`) | ídem | `claude-sonnet-5-5` / `high` | `b424b68c3f21a07b27f8f2190c1b5c23edbd880fb66a415b113d4086d1797ccd` |
+
+Sin avisos de límite (cero coincidencias en las transcripciones); `config.toml` sin cambios. **Resultado: U-04 positiva** para las dos celdas: un subagente con modelo y effort
+solicitados escribe, hace commit con su trailer y push, y la transcripción confirma lo solicitado. Las celdas pasan al catálogo y al contrato de G3.
+
+Custodia (`docs/automation/evidence/I-61-pilot/g3-u04/<RunId>/relay-record.json`):
+
+| RunId | SHA-256 transitorio | Blob versionado |
+|---|---|---|
+| `R20261001T031851Z-0b0e` (medium) | `93989c3d9636ba6a99e477b4384d4608416cd49aa5f501c14bb6abbbe6132ea7` | `7f467d5e281ee9958fec3f0020214d2ed55c69e5` (CRLF normalizado; SHA-256 normalizado `92563610…4198f`) |
+| `R20261001T031851Z-0b0f` (high) | `81ba46d3657a558877103205ff6b6524fb741543ca9581aee783df34040c4d07` | `5682df17808bae645fa30405949c57fe8712f0a5` (CRLF normalizado; SHA-256 normalizado `450e9b4f…41bc8`) |
+
+**DEV-G3-01 (desviación de procedimiento):** los `RunId` y los registros de relevo de U-04 se asignaron y escribieron al terminar la sonda, y no se tomó snapshot de procesos de
+salida. La sonda corrió fuera del worktree y la entrada no muestra participantes; no hay impacto en la integridad de la rama.

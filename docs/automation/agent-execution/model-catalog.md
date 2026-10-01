@@ -53,10 +53,12 @@ autenticado (`medido`) y no se usa como transporte.
 - Nivel: Equilibrado
 - Fortalezas y debilidades (oficial): contexto de 1M tokens y effort por defecto `high`; la descripción detallada no está registrada en la evidencia de I-61
 - Perfiles recomendados (asignación de RackCad): ROUTINE_IMPLEMENTATION, DEBUGGING, CHARACTERIZATION
-- Effort: Routine → `low`; Balanced → `medium`; Deep → `high`; Long-horizon → `xhigh`; Maximum → `max` (cada valor, solo tras medirlo en la celda)
-- Consumo cubierto: UNKNOWN (sin invocación medida)
+- Effort: Routine → `low`; Balanced → `medium`; Deep → `high`; Long-horizon → `xhigh`; Maximum → `max` (medidos: `medium` y `high`)
+- Consumo cubierto: sí para la celda subagente (medido: sonda U-04 con la autenticación por suscripción, sin aviso de límite; evidencia §15)
 - Retiro anunciado: ninguno anterior a 2027 publicado
-- Estado local: subagente × `read` — no medido; subagente × `write-commit-push` — no medido
+- Estado local: subagente × `read`/`tool-use`/`write-commit-push` × effort `medium` y `high` — **medido en la sonda U-04** (2026-10-01 UTC): modelo y effort efectivos
+  `claude-sonnet-5-5`/`medium` y `claude-sonnet-5-5`/`high` en las transcripciones, pedidos con el alias `sonnet`; escritura, commit con trailer y push comprobados contra Git
+  (evidencia §15)
 
 ### claude-haiku-4-5-20251001 (Anthropic)
 
