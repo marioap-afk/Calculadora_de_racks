@@ -6,7 +6,7 @@ Contrato: [I-62-portabilidad-coordinador-principal.md](../../initiatives/I-62-po
 Estado de esta evidencia:
 - **G0 cerrado**: GATE PASS administrativo del Coordinator (C62-G0-02) sobre `85ae4324…`; hechos posteriores al bootstrap en §9.
 - **F0, tramo Discovery**: entrega inicial (C62-F0-01; §10) y ronda R1 (C62-F0-02..07; §11), aceptada como base de diseño (C62-F0-08).
-- **F0, diseño**: Proposal V1 (C62-F0-11; §12), CHANGES REQUIRED del Coordinator (C62-F0-13), y Proposal V2 con su paquete para revisión (C62-F0-15; §13). Sin Freeze.
+- **F0, diseño**: Proposal V1 (§12) y V2 (§13), ambas CHANGES REQUIRED del Coordinator (C62-F0-13, C62-F0-17); Proposal V3 con su paquete para revisión (C62-F0-20; §14). Sin Freeze.
 - No hay Freeze, piloto, Candidato ni F0 GATE PASS. Lo no ejecutado figura como **PENDIENTE**.
 - §§1-8 son el registro original de G0 y se conservan como se escribieron.
 
@@ -309,5 +309,35 @@ fuera del repositorio. Su registro recuperable está en `docs/initiatives/I-62-c
 - tocar V1, su paquete, el mandato ni superficies ajenas.
 
 `docs/automation/evidence/I-62-discovery/` no se creó, y el Discovery no cambió: ningún hecho nuevo lo exigía.
+
+**Validación de esta entrega:** allowlist, enlaces y `git diff --check`; resultado en el cuerpo del commit. La CI de este commit se informa al Coordinator.
+
+## 14. F0 — Proposal V3 (C62-F0-17..20)
+
+**CI de la Proposal V2** (`a1f5e0035f0e109d02a336c0a01917e53a53b88a`): corrida **36914815626**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: UI Tests (110546066161), Build UI (110546066596), Tests
+(Domain + Application) (110546066788) y Build Plugin without AutoCAD (110546725540), los cuatro `success`. MEASURED por la sesión y verificado por el
+Coordinator (C62-F0-17). Acredita solo `a1f5e003`.
+
+**Orden recibida:** `I-62-Proposal-V2-revision-y-orden-V3.txt`, 31 529 bytes, SHA-256 `7f55b9311b930b344bae7e1a0a6dcae64d8270bad515ccbbe38f79c8b31c9cb2`,
+fuera del repositorio. Su registro recuperable está en `docs/initiatives/I-62-coordinator-review-v2.md`.
+
+**Apertura del tramo** (MEASURED, 19:51Z):
+- `origin/main` = `819955d6…`, sin rebase;
+- rama de I-62 en `a1f5e003…` = remoto, árbol limpio;
+- deltas por rama (`git diff --name-only`), **ninguna** superficie candidata de I-62 tocada:
+  - I-52 `c1982b2a..d8078ef3`: 24 archivos, sus decisiones y `eng/research/`;
+  - I-63 `85293273..23eeefc5`: 5 archivos propios;
+  - I-64 `c6c44828..dcc16bed`: 4 archivos propios.
+
+**Identidad del contenido entregado** (blob calculado con `git hash-object` antes del commit; el commit lo da el recibo):
+- `docs/initiatives/I-62-proposal-v3.md` → `36b13443b3d8cdc21fe731b4a5ab263cc9fd7fb9`;
+- `docs/initiatives/I-62-coordinator-review-v2.md` → `b431510af260da6f57b2c347f3378e3f1a52f6cb`.
+
+**No se hizo:**
+- invocaciones, subagentes, sondas, pilotos, sesiones nuevas, fixtures, remotos, pruebas nuevas ni repetidas, tooling ni esquemas operativos;
+- tocar V1, V2, sus paquetes, los registros previos, el Discovery, el mandato ni superficies ajenas.
+
+Las trazas de V3 (anexos E.3, F y G.2) son **análisis del diseño**, no ensayos. `docs/automation/evidence/I-62-discovery/` no se creó.
 
 **Validación de esta entrega:** allowlist, enlaces y `git diff --check`; resultado en el cuerpo del commit. La CI de este commit se informa al Coordinator.
