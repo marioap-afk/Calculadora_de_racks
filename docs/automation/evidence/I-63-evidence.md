@@ -186,3 +186,46 @@ Enviado hacia las 15:49Z, tras el push del bootstrap, a I-52 (msg `1d0346df-52bb
   `gc`/`prune` y no se repitió.
 - Esta continuación no toca `docs/ROADMAP.md`, así que no pidió ventana.
 - Ningún Controller, Worker, Architect ni subagente se invocó.
+
+## 10. G0 PASS y F0-DISCOVERY
+
+Orden recibida: `I63_G0_PASS_F0_Discovery.txt` del Coordinator (10 068 bytes, SHA-256
+`26fa3b877257c5853509398f82a912aecaa824d11379b35e22d5327159d1e946`; no se versiona). Resumen en las
+[decisiones](../decisions/I-63.md) §2 (CD-I63-G0-10, CD-I63-F0-01, CD-I63-F0-02, F0-DISCOVERY).
+
+### 10.1 CI de la continuación de G0
+
+| Commit | SHA | Corrida `push` | Resultado |
+|---|---|---|---|
+| Continuación G0 | `b557ea3be4adeb496c353d9915b38fffaf2d9316` | 36891560504: `ref` = `refs/heads/architecture/parametros-calculados-resumen-proyecto`, `head_sha` exacto | `success`; los cuatro jobs requeridos de `AGENTS.md` en `success` |
+
+Sobre ese SHA, el Coordinator declaró G0 = PASS (CD-I63-G0-10).
+
+### 10.2 Preflight de F0-DISCOVERY (2026-10-01T16:40:05Z)
+
+- `HEAD` = `ls-remote` = `b557ea3b`; árbol limpio; rama `architecture/parametros-calculados-resumen-proyecto`.
+- `origin/main` = `819955d61a6da4c811a11fbd11b5dca13f634b7c`, ancestro de `HEAD`: **sin rebase**. Fuera de `docs/`, `b557ea3b` no
+  difiere de `819955d6`.
+- Ramas remotas: I-52 `c1982b2a`, I-62 `85ae4324`, I-63 `b557ea3b`, I-64 `d8a02163`, `main` `819955d6`. Ninguna ventana de
+  ROADMAP abierta; esta entrega no toca ROADMAP.
+
+### 10.3 Método y ejecución
+
+- Discovery hecho **directamente** por la sesión principal (CD-I63-F0-01): lectura de código, documentos y Git con `grep`, `git show`
+  y `git rev-parse`. **Ningún** Controller, Worker, Architect, subagente ni otro proceso de IA; ninguna delegación §16; ningún
+  `EXECUTION_*`.
+- Blobs de I-49 medidos en `origin/main`, iguales a los que declara su Freeze correctivo R1 (Discovery §9.1).
+- **Pruebas existentes ejecutadas** (sin editar fuentes; SDK de usuario 8.0.423; árbol limpio antes y después):
+  - orden: `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter` con ocho cláusulas `FullyQualifiedName~RackCad.Tests.<Clase>`;
+  - inicio 2026-10-01T16:48:09Z, fin 16:49:16Z;
+  - resultado: **179 seleccionadas, 179 superadas, 0 fallos, 0 omitidas**;
+  - selección por clase: `ExpressionBinderTests` 65, `ExpressionSymbolModelTests` 44, `SelectiveBomAuthorityTests` 31,
+    `ProjectVariableScanProjectionTests` 17, `RackListBuilderTests` 10, `RackEmbedDocumentTests` 7,
+    `RackCountInvariantCharacterizationTests` 3 y `ConsolidatedBomBuilderTests` 2;
+  - TRX fuera del repositorio, SHA-256 `F5A9D461424B4C2B88130384E88E992ED039A414A87FA4051FA42404FE23DA21`;
+  - son **pruebas focales para responder preguntas del Discovery**, no evidencia Full ni de gate funcional.
+- Salidas versionadas, todas dentro de las cinco rutas autorizadas: [`I-63-discovery.md`](../../initiatives/I-63-discovery.md)
+  (nuevo), el contrato, las decisiones, esta evidencia y el estado. Ningún cambio en `src/`, `tests/`, `assets/`, `eng/`, `tools/`,
+  `deploy/`, CI, ROADMAP, HANDOFF, FOUNDATIONS ni ADR.
+- `gate-contract.F0-INV.draft.json` sigue sin emitir (CD-I63-F0-02). La CI exacta del commit que contiene este archivo se informa al
+  Coordinator.

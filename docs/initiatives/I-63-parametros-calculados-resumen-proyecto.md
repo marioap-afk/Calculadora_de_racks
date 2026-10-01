@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-63
 title: Computed Parameters & Project Summary Foundation
 type: architecture
-status: bootstrap-g0
+status: f0-discovery-review
 workflow: V2
 conceptual_initiative: I-63
 delivery_unit: I-63
@@ -21,7 +21,7 @@ context_packs: [documentation-governance]
 consumes: [UNKNOWN]
 extends: [UNKNOWN]
 introduces: [UNKNOWN]
-discovery_ref:
+discovery_ref: docs/initiatives/I-63-discovery.md
 freeze_ref:
 freeze_delta_ref:
 amendment_refs: []
@@ -109,8 +109,8 @@ Son candidatos de intake, no afirmaciones: cada entrada se verifica con DC-08 en
 
 ## 6. Discovery, decisiones y Freeze
 
-- Discovery: pendiente; **no iniciado** en G0. La preparación de F0 está entregada al Coordinator y no aprobada; la resume el plan
-  de abajo.
+- Discovery: [I-63-discovery.md](I-63-discovery.md), entregado (F0-DISCOVERY) para revisión del Coordinator. No es Proposal ni
+  Freeze. Lo hizo directamente la sesión principal responsable, sin participantes de IA (CD-I63-F0-01).
 - Freeze / Freeze delta / A-n: ninguno.
 - Decisiones: [I-63.md](../automation/decisions/I-63.md); mandato: [I-63-owner-mandate.original.txt](../automation/decisions/I-63-owner-mandate.original.txt).
 
@@ -120,7 +120,8 @@ puntos integrados (M-01..06/M-08)? La Proposal/Freeze cubre las obligaciones de 
 delimita CustomProperty, ProjectVariable y ComputedParameter con referencia a
 [ADR-0039](../adr/0039-custom-properties-persistencia-autoridad.md) D-16.
 
-**Plan de F0** (propuesto y no aprobado; [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §4):
+**Tareas de F0** ([INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §4). Las cuatro primeras se ejecutaron en F0-DISCOVERY,
+directamente por la sesión principal; las dos últimas siguen pendientes:
 
 | Tarea | Perfil o actor | Salida |
 |---|---|---|
@@ -131,8 +132,8 @@ delimita CustomProperty, ProjectVariable y ComputedParameter con referencia a
 | Pruebas de caracterización nuevas, solo si una pregunta las exige | CHARACTERIZATION, con contrato aprobado aparte | — |
 | Revisión del Architect sobre la Proposal | ARCHITECTURE_REVIEW; modo de revisión declarado | revisión versionada |
 
-La delegación de estas tareas bajo [AUTOMATION_PLAN](../AUTOMATION_PLAN.md) §16 depende del conflicto C-F0-RED, pendiente de
-[decisión](../automation/decisions/I-63.md) del Coordinator.
+C-F0-RED queda registrado en las [decisiones](../automation/decisions/I-63.md) como limitación no corregida del protocolo
+([AUTOMATION_PLAN](../AUTOMATION_PLAN.md) §16.8-16.9). No bloquea el Discovery directo y no crea ninguna exención para delegaciones.
 
 ## 7. Dependencias, archivos calientes y coordinación
 
@@ -147,17 +148,18 @@ La delegación de estas tareas bajo [AUTOMATION_PLAN](../AUTOMATION_PLAN.md) §1
 
 | Iniciativa activa | Rama | Cruce textual conocido | Cruce funcional |
 |---|---|---|---|
-| I-64 (ID30) | `architecture/workspace-persistente-rackcad` | Su fila de ROADMAP también va tras I-60: conflicto textual de filas adyacentes para quien integre segundo | **No inspeccionado.** Riesgo declarado por el mandato: inventario y enumeración de racks lógicos |
+| I-64 (ID30) | `architecture/workspace-persistente-rackcad` | Su fila de ROADMAP también va tras I-60: conflicto textual de filas adyacentes para quien integre segundo | Código no inspeccionado (su rama solo tiene documentos). **Candidato a fundación común**: enumeración lógica de racks del dibujo; coordinación vía Master pendiente ([Discovery](I-63-discovery.md) §8) |
 | I-62 (portabilidad del Principal) | `architecture/portabilidad-coordinador-principal` | Fila en otra tabla de ROADMAP (Engineering Productivity, tras I-61) | **No inspeccionado.** Por su objeto (proceso y protocolo), no se espera cruce de producto; sin verificar |
 | I-52 (RACKMIRROR) | `feature/rackmirror-espejo-semantico` | Edita ROADMAP (su fila y la de I-57), HANDOFF y el índice de ADR; su rebase futuro sobre main tocará ROADMAP | **No inspeccionado** |
 
-- La escritura de `docs/ROADMAP.md` se coordina por acuse (decisiones y evidencia). DC-07 mide el resto en F0.
+- La escritura de `docs/ROADMAP.md` se coordina por acuse (decisiones y evidencia). El DC-07 vigente está en el [Discovery](I-63-discovery.md) §8.
 - Archivos calientes: `docs/ROADMAP.md` (solo la fila propia, en los momentos de [WORKFLOW](../WORKFLOW.md) §2). `HANDOFF.md` y el índice
   de ADR se editan únicamente al integrar/cerrar.
 
 ## 8. Gates funcionales
 
-G0: reclamo y este bootstrap. El plan provisional del mandato (F0 Discovery y Freeze; F1..F6; READY) **no está congelado** y se
+G0: reclamo y bootstrap, **PASS** (CD-I63-G0-10). F0-DISCOVERY: entregado para revisión. Siguen pendientes la revisión del Discovery,
+la Proposal, el Architect y el Freeze. El plan provisional del mandato (F0 Discovery y Freeze; F1..F6; READY) **no está congelado** y se
 revisa contra [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §7 antes del Freeze: ningún gate solo de capa, DTO o modelo sin
 resultado observable verificable. La conformidad final se referencia desde READY-06.
 
