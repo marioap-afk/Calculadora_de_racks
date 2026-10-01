@@ -8,19 +8,19 @@ workflow: V2
 conceptual_initiative: I-61
 delivery_unit: I-61
 archetype: NEW ARCHITECTURE
-materiality: [UNKNOWN]
+materiality: [M-01, M-02, M-04, M-05, M-06, M-07]
 branch: architecture/protocolo-ejecucion-agentes
 base_branch: main
 priority:
 size:
 depends_on: []
 conflicts_with: []
-hot_files: [docs/ROADMAP.md]
-coordination_strategy: Bootstrap con acuse de ventana de ROADMAP de I-52 (ver decisiones); DC-07 fija el resto en Discovery.
-context_packs: [documentation-governance]
-consumes: [UNKNOWN]
-extends: [UNKNOWN]
-introduces: [UNKNOWN]
+hot_files: [docs/ROADMAP.md, docs/adr/README.md, src/RackCad.Plugin/RackCamaCommands.cs]
+coordination_strategy: Ventana de escritura acordada con I-52 por su canal para ROADMAP y el índice de ADR; piloto en gate y commits propios (Discovery §19.2).
+context_packs: [documentation-governance, delivery-validation, autocad-plugin, system-dynamic-flowbed, persistence]
+consumes: [Rack Identity, Unknown-field Preservation in Persisted Envelopes, Custom Properties]
+extends: []
+introduces: [Agent Execution Protocol]
 discovery_ref: docs/initiatives/I-61-discovery.md
 freeze_ref:
 freeze_delta_ref:
@@ -30,10 +30,10 @@ decision_refs: [docs/automation/decisions/I-61.md, docs/automation/decisions/I-6
 evidence_ref: docs/automation/evidence/I-61-evidence.md
 automation_state_path: docs/automation/state/I-61.yml
 requires_ci: true
-requires_plugin_build: false
-requires_autocad: false
+requires_plugin_build: true
+requires_autocad: true
 requires_owner_decision: true
-requires_owner_validation: false
+requires_owner_validation: true
 automation:
   enabled: false
   auto_merge: false
@@ -42,129 +42,114 @@ automation:
 
 # I-61 — Agent Execution, Model Routing & Prompting Protocol
 
-> Contrato **manual** (`automation.enabled: false`): esta iniciativa no se selecciona ni se reanuda por el ejecutor nocturno. Los valores
-> `requires_* : false` **solo significan que este contrato no añade un gate por esa metadata**; **no conceden exenciones**. Si el piloto
-> (o cualquier cambio posterior) cambia comportamiento de dibujo, `AGENTS.md` y `WORKFLOW.md` §4.5.3 exigen Owner Validation/AutoCAD por la
-> naturaleza del cambio, y el build del Plugin se exige donde aplique ([AUTOMATION_PLAN](../AUTOMATION_PLAN.md) §11, regla monotónica).
+> Contrato **manual** (`automation.enabled: false`): la iniciativa no se selecciona ni se reanuda por el ejecutor nocturno; eso impide la selección y la recurrencia
+> automáticas, no el trabajo manual autorizado ([decisiones](../automation/decisions/I-61.md) §9). Desde G1-C, `requires_plugin_build`, `requires_autocad` y
+> `requires_owner_validation` valen `true` porque el piloto cambia el comportamiento de dibujo ([AUTOMATION_PLAN](../AUTOMATION_PLAN.md) §11, regla monotónica; Discovery §19.3).
 
 ## 1. Identidad y agrupación
 
-- Iniciativa conceptual y unidad de entrega: **I-61** (única). Workflow **V2, T4** (reclamo posterior a `WORKFLOW_V2_EFFECTIVE_SHA`, sin pausa;
-  [WORKFLOW](../WORKFLOW.md) §11.3).
-- Apertura: caso (d) de [WORKFLOW](../WORKFLOW.md) §2 por **mandato explícito del Owner**
-  ([`I-61-owner-mandate.txt`](../automation/decisions/I-61-owner-mandate.txt), una sola copia; no se reescribe aquí).
-- **Arquetipo: NEW ARCHITECTURE, provisional.** El mandato etiqueta FOUNDATION EVOLUTION; el Coordinator fijó la clasificación conservadora
-  provisional mientras **M-07** siga UNKNOWN (C61-D0-04; [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §3: ante duda, el arquetipo superior).
-  Materialidad final, `Consumes/Extends/Introduces` y agrupación las decide el Coordinator sobre el [Discovery G1](I-61-discovery.md); hasta entonces el frontmatter
-  conserva `UNKNOWN`. **Propuesta del Executor (no decisión):** I-61 **crea y modifica** (EXP-09 resuelta); M-01, M-02, M-04, M-06 y M-07 activados, M-03 UNKNOWN solo
-  para el piloto, M-05 a reevaluar y M-08 no activado; arquetipo **NEW ARCHITECTURE**; el proceso no consume ni extiende ninguna entrada de FOUNDATIONS (DC-08).
-- Modifica el **proceso de desarrollo** de RackCad; **no** la funcionalidad de producto salvo el piloto, que debe seguir siendo intencionalmente pequeño.
+- Iniciativa conceptual y unidad de entrega: **I-61** (única). Workflow **V2, T4** ([WORKFLOW](../WORKFLOW.md) §11.3).
+- Apertura: caso (d) de [WORKFLOW](../WORKFLOW.md) §2 por **mandato explícito del Owner** ([`I-61-owner-mandate.txt`](../automation/decisions/I-61-owner-mandate.txt), una sola copia).
+- **Arquetipo: NEW ARCHITECTURE, confirmado por el Coordinator (Q-01).** La etiqueta FOUNDATION EVOLUTION del mandato se conserva como fuente y no se reescribe.
+  Materialidad (Discovery §9): M-01, M-02 (creador), M-04, M-05, M-06 y M-07 activados; M-03 y M-08 no. El delta del piloto es EXTENSION (Discovery §19.1).
+- **Agrupación:** por sí solo, el piloto sería otra unidad (LIFECYCLE §2), pero el **Owner** fijó el alcance: lo incluye en esta iniciativa (mandato «PILOT») y en este recorrido hasta el Candidato,
+  sin nuevos reclamos (decisiones §9.1, cláusulas 1-3). El Coordinator lo registra (C61-G1-07). Tiene gate y commits propios.
+- Modifica el **proceso de desarrollo** de RackCad; el único cambio de producto es el piloto, intencionalmente pequeño.
 
 ## 2. Objetivo
 
-Un protocolo estable para que un Coordinator delegue gates de implementación a un Execution Controller (Codex), que seleccione executor, model,
-effort, prompt profile y transport, y delegue en workers Claude/Codex con handoffs estructurados, exact-SHA y condiciones de STOP, **sin mover**
-la autoridad arquitectónica o de producto fuera de Coordinator/Architect/Owner (éxito 1..14 en el mandato, «SUCCESS CRITERIA»).
+Un protocolo estable para que un Coordinator delegue gates de implementación a un Execution Controller (Codex), que seleccione executor, model, effort, prompt profile y
+transport, y delegue en workers Claude/Codex con entregas estructuradas, exact-SHA y condiciones de STOP, **sin mover** la autoridad arquitectónica o de producto fuera de
+Coordinator/Architect/Owner (éxito 1..14 del mandato, «SUCCESS CRITERIA»).
 
 ## 3. Problema
 
-Seis problemas declarados por el Owner en el mandato («MOTIVATION»): modelos potentes para trabajo rutinario; selección informal de modelo y effort;
-traspaso manual de prompts; relevo humano repetido; Computer Use frágil como bus; handoffs no legibles por máquina ni atribuibles por SHA exacto.
-La caracterización en el repositorio es trabajo de Discovery (§6), no de este contrato.
+Los seis problemas que declara el mandato («MOTIVATION»). La caracterización vive en el [Discovery](I-61-discovery.md), no en este contrato.
 
 ## 4. Alcance y no-objetivos
 
-**Alcance A–G** (resumen por referencia; la fuente es el mandato, secciones «DELIVERABLE A…G»; los nombres `A/B/C` de «IMPLEMENTATION LEVEL»
-son **niveles de solución**, otra cosa):
+**Alcance A–G** (resumen por referencia; la fuente es el mandato, «DELIVERABLE A…G»; los `A/B/C` de «IMPLEMENTATION LEVEL» son **niveles de solución**):
 
 | Entregable | Resumen (ver mandato) |
 |---|---|
-| A — Prompting standard | Guía breve y propia de RackCad basada en guía oficial vigente de los proveedores; registra URL, proveedor, fecha verificada y modelos/generación; no copia documentación externa; las reglas normativas viven en el repositorio |
-| B — Model/Effort router | Política estable por **clase de tarea** (11 clases mínimas, 7 ejes de evaluación) que selecciona Executor, Model, Effort y PromptProfile; `MODEL_ROUTING` (principios estables) separado de `MODEL_CATALOG` (modelos vigentes, **no normativo**, actualizable sin tocar Workflow); política de effort semántica, escalado con `MODEL_ESCALATION_REASON` y *down-routing* |
-| C — Prompt composition | Base Delegation Contract + Model Prompt Profile + Task Delta; prompts **autolocalizados**, sin mega-plantilla ni repetir WORKFLOW/lifecycle/contrato/Freeze |
-| D — Structured delegation | Esquema legible por máquina (JSON preferido) con identidad, SHA base, rama/worktree esperados, executor/model/effort/profile, autoridades, alcance de escritura permitido/prohibido, invariantes, criterios, pruebas, evidencia, STOP, `MaxReworkLoops`, ruta de handoff |
-| E — Structured handoff | Esquema legible por máquina con SHAs, rama/worktree, archivos cambiados, pruebas y resultados, evidencia, hallazgos, desviaciones, `WorkerStatus` (`IMPLEMENTATION_COMPLETE`/`PARTIAL`/`BLOCKED`); **no otorga GATE PASS** |
-| F — Transport hierarchy | Orden: 1 filesystem + artefactos estructurados; 2 CLI/invocación directa; 3 connector/API/MCP estable; 4 Computer Use (fallback); 5 relevo manual; el protocolo no depende del transporte |
-| G — Execution Controller | Responsabilidades 1..12 de Codex (recibir contrato, clasificar, rutar, delegar, verificar de forma independiente, clasificar `VERIFIED`/`REWORK REQUIRED`/`BLOCKED`, devolver al Coordinator); política de rework (`MAX_REWORK_LOOPS = 3`, «misma clase de fallo»), STOP y propiedad exclusiva de escritura |
+| A — Prompting standard | Guía breve y propia de RackCad basada en guía oficial vigente; registra URL, proveedor, fecha verificada y modelos/generación; no copia documentación externa |
+| B — Model/Effort router | Política estable por **clase de tarea** (11 clases, 7 ejes) → Executor, Model, Effort, PromptProfile; `MODEL_ROUTING` estable separado de `MODEL_CATALOG` mutable y **no normativo**; effort semántico, escalado con `MODEL_ESCALATION_REASON` y enrutamiento hacia abajo |
+| C — Prompt composition | Contrato base de delegación + perfil + delta de la tarea; prompts **autolocalizados**, sin mega-plantilla |
+| D — Structured delegation | Esquema legible por máquina (JSON) con identidad, SHA base, rama/worktree, executor/model/effort/profile, autoridades, alcance, invariantes, criterios, pruebas, evidencia, STOP, `MaxReworkLoops`, ruta de la entrega |
+| E — Structured handoff | Esquema legible por máquina de la **entrega de worker** (nombre elegido para no confundirla con `HANDOFF.md`); `WorkerStatus` `IMPLEMENTATION_COMPLETE`/`PARTIAL`/`BLOCKED`; **no otorga GATE PASS** |
+| F — Transport hierarchy | 1 archivos + artefactos; 2 CLI/invocación directa; 3 conector/API/MCP; 4 Computer Use (fallback); 5 relevo manual |
+| G — Execution Controller | Responsabilidades 1..12 (Discovery §20.4 las asigna a actores medidos); rework, STOP y propiedad exclusiva de escritura |
 
-Además del A–G, el mandato fija: **estado transitorio vs versionado** (auditar convenciones del repositorio antes de adoptar cualquier ruta;
-la evidencia persistente sigue en las ubicaciones V2), **métricas del piloto** (las no disponibles no bloquean), **piloto** y **nivel de
-implementación** (Discovery decide A/B/C; preferir lo mínimo; sin plataforma grande antes de evidencia del piloto; sin automatización simulada).
+Además, del mandato: estado transitorio frente a versionado, métricas del piloto (las no disponibles no bloquean), piloto y nivel de implementación (preferir el mínimo; sin plataforma
+grande antes de evidencia del piloto; sin automatización simulada).
 
-**Jerarquía de autoridad (mandato):** el Worker puede declarar `IMPLEMENTATION COMPLETE`; Codex puede declarar `EXECUTION VERIFIED` /
-`EXECUTION REWORK REQUIRED` / `EXECUTION BLOCKED`; **solo el Coordinator declara GATE PASS**; solo el Workflow vigente declara Candidate / Closure /
-Integration. Codex **no** es el Master Orchestrator. Este contrato no crea política normativa nueva: **referencia sobre repetición**.
+**Jerarquía de autoridad (mandato):** el Worker declara `IMPLEMENTATION COMPLETE`; Codex, `EXECUTION VERIFIED` / `REWORK REQUIRED` / `BLOCKED`; **solo el Coordinator declara GATE PASS**;
+solo el Workflow vigente declara Candidate / Closure / Integration. Codex **no** es el Master Orchestrator.
 
-**No-objetivos / exclusiones** (mandato «NO PRODUCT SCOPE CREEP» y órdenes del Coordinator): ID20; BOM calculado; configuraciones/plantillas;
-UX de `RACKPROYECTAR`; Semantic Grips; backlog de producto ajeno; plataforma de orquestación grande antes del piloto; cambios en normas globales,
-`HANDOFF`, índice ADR, `src/`, `tests/`, `assets/` o CI **durante G0**; scripts operativos, instalaciones, cambios de PATH/autenticación, workers nuevos
-o recurrencia; benchmark entre proveedores.
+**No-objetivos del mandato:** ID20; BOM calculado; configuraciones/plantillas; UX de `RACKPROYECTAR`; Semantic Grips; backlog de producto ajeno; plataforma de orquestación grande antes
+del piloto. **No convertir el piloto en un benchmark entre proveedores** (Coordinator, C61-G0-06, decisiones §2) y «No sustituir el piloto por un benchmark, un nuevo D0 o solo documentación»
+(Owner, decisiones §9.1, cláusula 3).
 
-**Piloto (pendiente de caracterización):** candidato preferido **Cama / `RACKEDITAR` → preservar el `Name` lógico en editar/actualizar/guardar/
-reabrir** (hallazgo residual reportado en `I-60-evidence.md` §7). **No** se corrige en G0. Si el estado real del repositorio lo muestra ya
-corregido o inadecuado, Discovery elige otro Extension pequeño y lo justifica. Una prueba de transporte de solo lectura no sustituye al piloto.
+**Restricciones de fase (no son no-objetivos del mandato; C61-G1-09):** en G0 y G1 rigieron las prohibiciones de tocar normas globales, `HANDOFF`, índice ADR, `src/`, `tests/`,
+`assets/` o CI, y de scripts operativos, instalaciones, cambios de PATH/autenticación, workers nuevos o recurrencia. Desde la orden de continuidad rigen sus propias restricciones
+([decisiones](../automation/decisions/I-61.md) §9). Desde la implementación solo se tocan las rutas justificadas por el Freeze.
 
-Freeze, Freeze delta y A-n: **ninguno** (no existe Freeze; los esquemas y el «catálogo» históricos son borradores/transcripción no reverificada,
-no autoridades integradas).
+**Piloto (Discovery §19; C61-G1-06):** corregir la asimetría **D-1a**: `RACKEDITAR` de Cama debe conservar el nombre lógico del sobre ante un nombre editado en blanco, como las otras
+cinco familias. D-4 queda fuera.
+
+Freeze, Freeze delta y A-n: **ninguno todavía**.
 
 ## 5. Fundaciones y evolución
 
 ```text
-Consumes: UNKNOWN en el frontmatter; Discovery G1 (DC-08) propone «ninguna entrada de FOUNDATIONS» para el proceso; pendiente de confirmación
-Extends: UNKNOWN; Discovery G1 propone «ninguna»
-Introduces: UNKNOWN; Discovery G1 propone mecanismos nuevos (delegación, handoff, enrutamiento, catálogo, perfiles), condicionado a Q-01 (M-07)
+Consumes:   Rack Identity, Unknown-field Preservation in Persisted Envelopes, Custom Properties (piloto; sin cambiarlas; Discovery §19.1)
+Extends:    ninguna fundación
+Introduces: Agent Execution Protocol (reutilizable: M-06/M-07 y éxito 14); su entrada factual en FOUNDATIONS se redacta antes de READY-04 (LIFECYCLE §4.1)
+Normas que se modifican (no son fundaciones): PROMPT_TEMPLATES (sección nueva), AUTOMATION_PLAN (§16 y §2), WORKFLOW §10 (fila); base: artefactos V2 de ADR-0045 (Discovery §20.3)
 ```
-
-Ninguna entrada se afirma sin la comprobación DC-08 de [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §4.1. El piloto, si consume Rack Identity / View Identity /
-Unknown-field Preservation / Custom Properties, lo verifica en su propio Discovery delta.
 
 ## 6. Discovery, decisiones y Freeze
 
-- Discovery: [I-61-discovery.md](I-61-discovery.md) (G1; DC-01..09 y EXP evaluadas; **no** es Proposal ni Freeze).
-- Freeze / Freeze delta / A-n: ninguno.
+- Discovery: [I-61-discovery.md](I-61-discovery.md) (G1 + consolidación G1-C).
+- Freeze / Freeze delta / A-n: ninguno todavía. NEW ARCHITECTURE congela su Proposal autocontenida (LIFECYCLE §6).
 - Decisiones: [I-61.md](../automation/decisions/I-61.md); mandato: [I-61-owner-mandate.txt](../automation/decisions/I-61-owner-mandate.txt).
 
-**Plan de Discovery** ([INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §4; ejecutado en G1 en [I-61-discovery.md](I-61-discovery.md), a revisar por el Coordinator): DC-01..09 sobre la base vigente, con:
+**Decisiones del Owner necesarias y dónde bloquean** (LC-17):
 
-- **DC-07:** archivos calientes e intersecciones activas (ROADMAP, HANDOFF, índice ADR frente a I-52 y futuras normas).
-- **DC-09 / EXP-09:** M-01..M-08 (en particular **M-07**) y la distinción crear/modificar; decide arquetipo y agrupación.
-- **EXP-01:** separar, cláusula por cláusula, lo condicional, lo histórico y lo materialmente contradictorio (p. ej. prosa que sigue diciendo «V2 no
-  efectivo» frente a hechos de Git); no se pre-clasifica como clase B (C61-D0-05).
-- **EXP-02:** solo si se demuestra una ambigüedad real de dueño de dominio para «ejecución de agentes / enrutamiento de modelos»; no se infiere
-  por faltar un rótulo en `WORKFLOW` §10 (C61-D0-03).
-- Auditoría de convenciones para el **estado transitorio** (ubicación ignorada por Git, sin adoptar `.agent/` por analogía) y de los puntos de
-  contacto con `AUTOMATION_PLAN` (§§8–9: cambiar de modelo **no reinicia** intentos), `PROMPT_TEMPLATES` y `AGENTS.md`.
-- Caracterización del piloto (Cama/`RACKEDITAR`/`Name`) y de los transportes realmente disponibles/probados (instalación ≠ autenticación ≠
-  invocación probada), y verificación **en fuentes oficiales vigentes** de modelos y controles de effort para el catálogo (Deliverable A/B).
-- Decisión A/B/C del nivel de solución con la opción mínima que demuestre el protocolo.
-- Revisión obligatoria del **Architect** (mandato): autoridad invertida, Codex como Master, worker auto-aprobado, regreso de la duplicación de
-  prompts, sobre-complejidad del router, catálogo obsoleto, Computer Use, bucles sin límite, pérdida de exact-SHA, carreras, contaminación de Git
-  por artefactos transitorios y métricas convertidas en burocracia.
+| Decisión | Bloquea |
+|---|---|
+| Aceptar o rechazar ADR-0046 (propuesto con el diseño) | `READY-03` y `FINAL_CANDIDATE_SHA`; no bloquea diseño, implementación ni piloto (C61-G1-04) |
+| Owner Validation del Candidato: comportamiento del piloto y aceptación del resultado frente a los criterios de éxito | la integración (es la validación ordinaria, no una decisión previa pendiente; Discovery §15 Q-04 y Q-06) |
+| DEV-G1C-01: conservar o eliminar la entrada `trusted` añadida a `~/.codex/config.toml` | nada del flujo; es limpieza del entorno |
+
+Las preguntas sobre la intención de producto del piloto (Q-06, con la inferencia del Coordinator que el Discovery §15 registra), la agrupación (C61-G1-07) y el relevo con agentes externos (C61-G1-01) están **respondidas por cláusulas del Owner**
+(mandato; decisiones §9.1).
 
 ## 7. Dependencias, archivos calientes y coordinación
 
 - Dependencias integradas: ninguna declarada (la base contiene Workflow V2 efectivo).
-- Conflictos: sin iniciativa conflictiva declarada. Coordinación **textual** con **I-52**: ambas escriben `docs/ROADMAP.md`; el bootstrap se
-  hizo dentro de una ventana acordada por acuse (decisiones §4). Ninguna edición de la rama, worktree ni filas de I-52.
-- Archivos calientes: `docs/ROADMAP.md` (solo la fila propia de I-61 en Engineering Productivity). `HANDOFF.md` se edita únicamente al integrar/cerrar.
+- Coordinación con **I-52**: ambas escriben `docs/ROADMAP.md` y `docs/adr/README.md`. Toda escritura de esas superficies requiere una ventana acordada por el canal entre sesiones
+  (precedente: decisiones §4). No se toca la rama, el worktree ni las filas de I-52.
+- Archivos calientes: `docs/ROADMAP.md` (solo la fila propia), `docs/adr/README.md` (una fila para ADR-0046) y `src/RackCad.Plugin/RackCamaCommands.cs` (piloto; WORKFLOW §7).
+  `HANDOFF.md` solo se edita al integrar o cerrar.
 - Las puntas observadas viven en la evidencia y en los cuerpos de commit.
 
 ## 8. Gates funcionales
 
-Secuencia del ciclo ([INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §§4-7): **Discovery → revisión del Coordinator → diseño/Proposal → revisión del Architect → Consensus Freeze → gates funcionales de
-implementación y piloto → READY → Candidato**. Discovery y revisión **preceden** al Freeze; los gates funcionales se definen tras él y no se prometen aquí.
+Secuencia del ciclo (LIFECYCLE §§4-8): **Discovery → revisión del Coordinator → Proposal → rondas Coordinator ↔ Architect hasta AGREED → Consensus Freeze → gates funcionales →
+READY → Candidato**. **El plan de gates, con sus resultados verificables, forma parte de la Proposal que se congela** (LIFECYCLE §6). Tras el Freeze solo se implementa, y cualquier
+cambio a lo congelado va por A-n.
 
-- **G0 — admisión documental (reclamo y bootstrap):** reclamo, contrato, fila, estado, decisiones y evidencia. Decisión del Coordinator: GATE PASS sobre el SHA revisado (ver decisiones §7).
-  *Validación registrada* en la [evidencia](../automation/evidence/I-61-evidence.md) §6: comprobación mecánica de que el diff solo toca `docs/` y CI de `push` 4/4 `success` sobre el SHA exacto
-  (el CI ejecuta ambas suites y builds sobre ese SHA). G0 **no** es un gate funcional ([INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §7: no entrega un resultado conductual de producto) y **no crea una
-  exención general** por ser documental: los gates funcionales posteriores y el Candidato siguen [AGENTS.md](../../AGENTS.md) «Pruebas — definición de terminado» y [WORKFLOW](../WORKFLOW.md) §§4.5 y 11.5 sin excepción por clase de cambio.
-- **G1 — Discovery (este trabajo):** [I-61-discovery.md](I-61-discovery.md). No implementa; devuelve al Coordinator para decidir el paso de diseño. No declara G1 GATE PASS.
+- **G0 — admisión documental (reclamo y bootstrap).** GATE PASS del Coordinator sobre `6f1ef981` (decisiones §7). Validación registrada en la evidencia §6: diff solo en `docs/` y CI de
+  `push` 4/4 sobre el SHA exacto. No es un gate funcional (LIFECYCLE §7) y **no crea una exención general**: los gates funcionales y el Candidato siguen AGENTS.md «Pruebas — definición de
+  terminado» y WORKFLOW §§4.5 y 11.5 sin excepción por clase de cambio.
+- **G1 — Discovery**, con su consolidación G1-C: [I-61-discovery.md](I-61-discovery.md). Decisión del gate en el Discovery §20.5.
+- **Gates siguientes:** los define la Proposal congelada.
 
 ## 9. Owner Validation
 
-- Asignación OV: pendiente del Freeze.
-- Requiere AutoCAD: no por metadata; **sí** si el piloto cambia comportamiento de dibujo (disparador vigente: AGENTS.md punto 5 y WORKFLOW §4.5.3).
-- Requiere Owner Validation: igual criterio; `false` no la cancela ([AUTOMATION_PLAN](../AUTOMATION_PLAN.md) §11).
+- Asignación OV: la fija el Freeze.
+- **Requiere AutoCAD y Owner Validation:** sí, porque el piloto cambia el comportamiento de dibujo (AGENTS.md punto 5; Discovery §19.3). Se ejerce sobre `FINAL_CANDIDATE_SHA`.
 
 ## 10. Evidencia y entrega
 
@@ -180,16 +165,16 @@ Los 14 criterios de éxito del mandato («SUCCESS CRITERIA»), concretados por e
 
 ## 12. Condiciones para detenerse
 
-Las del mandato («STOP CONDITIONS») más: contradicción material de fuentes o de autoridad (se cita y se devuelve al Coordinator); EXP-01 clase A
-abierta **antes del Freeze o de cualquier gate de implementación**; intersección activa no coordinada; cualquier paso que requiera autenticación, instalación,
-invocación de pago, recurrencia o subdelegación sin autorización expresa.
+Las del mandato («STOP CONDITIONS») más: contradicción material de fuentes o de autoridad (se cita y se devuelve al Coordinator); EXP-01 clase A abierta en los términos de LIFECYCLE
+§4; intersección activa no coordinada; cualquier paso que requiera autenticación, instalación, invocación de pago, recurrencia o subdelegación sin autorización expresa.
 
-**Materialidad UNKNOWN (precisión de G1):** una M en UNKNOWN **obliga a investigarla** (EXP-09) y cuenta como activada hasta resolverse, pero **no impide el Discovery** que debe
-resolverla. Sí impide el Freeze, la Proposal congelable y cualquier implementación mientras siga sin resolver; la UNKNOWN de M-07/Q-01 y de M-03 (piloto) se eleva al Coordinator.
+**Materialidad UNKNOWN:** se rige por LIFECYCLE §§3-4. Una M en UNKNOWN obliga a investigarla (EXP-09) y cuenta como activada hasta resolverse; **no impide el Discovery** que debe
+resolverla. (Corregido en G1-C: la versión anterior añadía una regla propia que no está en el lifecycle.)
 
 ## 13. Hallazgos fuera de alcance
 
-- Regla `-text`/fin de línea para copias byte-exactas de fuentes del Owner bajo `core.autocrlf=true` (tema de configuración; no se toca en G0).
-- 14 contratos V1 con `automation.enabled: true` sin ejecutor real, `.agent/` no ignorado por Git y prosa «Workflow V2 no efectivo» desactualizada: deuda preexistente registrada en el
-  [Discovery](I-61-discovery.md) (EXP-08/EXP-01); no se corrige en G1.
+- Regla `-text`/fin de línea para copias byte-exactas bajo `core.autocrlf=true`.
+- 13 contratos V1 (más `TEMPLATE.md`) con `automation.enabled: true` sin ejecutor real; 35 estados obsoletos, 3 con YAML inválido y enums desviados; `.agent/` no ignorado; prosa «Workflow V2
+  no efectivo» desactualizada (Discovery §18.3, EXP-01 F-02). No se corrigen en I-61.
+- D-4: `EditCama` redibuja solo la definición elegida (Discovery §19).
 - Observación pendiente de procedencia sobre la fila de I-57 en la rama de I-52 (decisiones §5).

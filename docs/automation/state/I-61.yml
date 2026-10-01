@@ -3,15 +3,16 @@ automation_state:
   initiative: I-61
   branch: architecture/protocolo-ejecucion-agentes
   claim_id: 0e2923de-e1a7-41bf-b7db-50ec84217850
-  current_phase: G1
-  state: waiting
-  gate: owner-decision
+  current_phase: design
+  state: implementing
+  gate: none
   attempts: 0
-  next_action: Coordinator revisa el Discovery G1 (DC-01..09, EXP, Q-01..Q-05, D-01..D-05) y decide el paso de diseño; sin Freeze, piloto, Candidate ni merge.
-  last_evidence_commit: 6f1ef9815ffa20f8bea946c55622efa165994f7c
+  next_action: Proposal V1 autocontenida + ADR-0046 propuesto; rondas Coordinator-Architect (SAME-SESSION ROLE) hasta AGREED; Consensus Freeze; sin implementar antes del Freeze.
+  last_evidence_commit: 9228bf30f2270ae327a3ed7193dd3bb4eb448ad3
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-protocolo-ejecucion-agentes
   g0_gate_pass_by_coordinator: 6f1ef9815ffa20f8bea946c55622efa165994f7c
+  g1_gate_pass: conditional on CI of the commit publishing G1-C (decisions §12)
   g1_discovery: docs/initiatives/I-61-discovery.md
