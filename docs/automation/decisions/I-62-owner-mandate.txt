@@ -1,0 +1,858 @@
+Coordina exclusivamente:
+
+# I-62 — Principal Coordinator Portability & Provider-Agnostic Role Binding
+
+Workflow:
+V2
+
+Archetype:
+FOUNDATION EVOLUTION
+
+Domain:
+ENGINEERING / AGENT INFRASTRUCTURE
+
+Priority:
+Does not block product.
+
+I-62 evolves I-61.
+
+I-61 remains CLOSED / INTEGRATED and must not be rewritten retroactively.
+
+======================================================================
+AUTHORITIES
+======================================================================
+
+Read and follow:
+
+- docs/WORKFLOW.md
+- AGENTS.md
+- docs/INITIATIVE_LIFECYCLE.md
+- docs/FOUNDATIONS.md
+- docs/initiatives/PROMPT_TEMPLATES.md
+- I-61 Agent Execution Protocol
+- I-61 contracts/schemas/evidence
+- current model-routing and prompting docs
+- docs/ideas-futuras.md relevant I-61 follow-ups
+
+Use:
+
+REFERENCE OVER REPETITION.
+
+Do not copy all I-61 material into I-62.
+
+I-62 is a delta/evolution.
+
+======================================================================
+BASELINE
+======================================================================
+
+Last canonical main known to Master Orchestrator:
+
+819955d61a6da4c811a11fbd11b5dca13f634b7c
+
+Do NOT assume it remains current.
+
+I-61:
+
+FINAL_CANDIDATE =
+6513777f431fd672a515d9f8a33d8611d238fbe4
+
+FINAL_CLOSURE =
+a5e583ede52a68364263e22d15c9bf0cfe12f23b
+
+MERGE =
+819955d61a6da4c811a11fbd11b5dca13f634b7c
+
+integration/I-61
+
+I-61 remains authoritative until I-62 is integrated.
+
+======================================================================
+GOAL
+======================================================================
+
+Remove unnecessary provider/session coupling from I-61.
+
+A RackCad initiative must be able to bind execution roles to different
+AI providers/models/runtimes according to verified capability rather than
+hard-coded assumptions such as:
+
+Claude = Principal
+
+Codex = Reviewer
+
+The protocol must remain provider-agnostic.
+
+======================================================================
+PRIMARY ROLES
+======================================================================
+
+Formalize provider-independent roles:
+
+PRINCIPAL_COORDINATOR
+ARCHITECT
+EXECUTION_CONTROLLER
+WORKER
+REVIEWER
+
+Possibly others only if Discovery proves a need.
+
+Role semantics are stable.
+
+Provider/model bindings are runtime decisions.
+
+======================================================================
+ROLE BINDING
+======================================================================
+
+At initiative/session bootstrap, resolve bindings based on observable facts.
+
+Inputs may include:
+
+- available providers;
+- available models;
+- capacity level;
+- effort capabilities;
+- token/quota availability when observable;
+- cost policy;
+- task risk;
+- horizon;
+- independence requirement;
+- CLI/runtime availability;
+- authentication;
+- tool access;
+- computer-use capability;
+- repo access.
+
+Do NOT infer unavailable facts.
+
+Fail closed when a required capability cannot be accredited.
+
+======================================================================
+EXAMPLE TOPOLOGIES TO SUPPORT / STUDY
+======================================================================
+
+At minimum study:
+
+Topology A:
+
+Claude Principal
+→ Claude Workers
+→ Codex CLI Reviewer/Controller
+
+Topology B:
+
+Codex Principal
+→ Codex Workers
+→ Claude CLI Reviewer
+
+Do NOT assume both are valid.
+
+Discovery must verify actual available capabilities.
+
+The protocol should also permit future providers without schema redesign.
+
+======================================================================
+PRINCIPAL SESSION SELF-VERIFICATION
+======================================================================
+
+Formalize a versioned Principal bootstrap/profile.
+
+Required fields:
+
+PRINCIPAL_SESSION_PROFILE
+
+REQUIRED_CAPABILITY_LEVEL
+REQUIRED_EFFORT_CLASS
+
+CURRENT_PROVIDER
+CURRENT_MODEL
+CURRENT_EFFORT
+
+ROUTING_REASON
+ESCALATION_CONDITIONS
+
+CONFIGURATION_STATUS
+
+Minimum status:
+
+MATCH
+ABOVE_REQUIRED
+BELOW_REQUIRED
+UNKNOWN
+
+Rules:
+
+BELOW_REQUIRED
+→ STOP before substantive work
+
+UNKNOWN
+→ do not guess
+→ state required configuration / verification
+
+ABOVE_REQUIRED
+→ allowed but record why higher capacity is being used when relevant
+
+Do not make model names normative.
+
+Current model names belong in mutable catalogs/adapters.
+
+======================================================================
+CAPABILITY MODEL
+======================================================================
+
+Reuse I-61 semantic levels unless Discovery finds a material problem:
+
+Eficiente
+Equilibrado
+Frontera
+
+Reuse semantic effort:
+
+Routine
+Balanced
+Deep
+Long-horizon
+Maximum
+
+Provider-specific mappings belong outside the stable protocol.
+
+Do not bake:
+
+Opus
+Sonnet
+GPT
+etc.
+
+into durable role semantics.
+
+======================================================================
+EXECUTION ENVIRONMENT PREFLIGHT
+======================================================================
+
+Create a provider-agnostic preflight contract.
+
+Before substantive delegated work, verify required facts such as:
+
+Git:
+- executable
+- repo
+- origin/main
+- branch
+- worktrees
+- clean/expected state
+
+Claude runtime when bound:
+- CLI/application availability
+- version
+- authentication
+- real invocation
+- model selection if observable
+- effort if observable
+- tools
+
+Codex runtime when bound:
+- CLI/application availability
+- version
+- authentication
+- real invocation
+- model/capability if observable
+- effort if observable
+- tool permissions
+
+Other:
+- evidence directories
+- transient orchestration directories
+- required host tools
+- local restrictions
+- filesystem access
+
+No simulated PASS.
+
+If a capability cannot be verified:
+UNKNOWN / STOP according to requirement.
+
+======================================================================
+PROVIDER ADAPTER BOUNDARY
+======================================================================
+
+Stable protocol owns:
+
+- roles;
+- gate contracts;
+- delegations;
+- handoffs;
+- verification;
+- exact-SHA;
+- STOP;
+- retry budgets;
+- ownership/custody;
+- evidence.
+
+Provider adapters/catalogs own:
+
+- executable / CLI;
+- invocation syntax;
+- API details;
+- authentication;
+- model names;
+- effort flags;
+- session introspection;
+- output parsing;
+- computer-use specifics;
+- service tier.
+
+No provider-specific field should leak into core schemas unless represented
+through an explicit adapter metadata boundary.
+
+======================================================================
+MODEL ROUTING
+======================================================================
+
+I-61 already introduced routing.
+
+I-62 must make routing portable across providers.
+
+Routing input:
+
+TaskProfile
+RequiredCapability
+RequiredEffort
+IndependenceRequirement
+RuntimeAvailability
+Cost/Quota policy when known
+
+Output:
+
+RoleBinding
+Provider
+Model
+Effort
+PromptProfile
+Transport
+RoutingReason
+
+Do not route purely by model brand.
+
+======================================================================
+INDEPENDENCE BY RISK
+======================================================================
+
+Do NOT require a different provider for every microtask.
+
+Define when independent review materially matters.
+
+At minimum evaluate:
+
+- New Architecture;
+- Foundation Evolution;
+- shared authority changes;
+- destructive operations;
+- Candidate/READY;
+- security-sensitive changes;
+- ambiguous evidence;
+- high failure cost;
+- Coordinator/Worker same-session situations.
+
+Possible outcome:
+
+IndependentContextRequired
+IndependentProviderPreferred
+IndependentProviderRequired
+SameSessionAllowed
+
+The final classification names must come from Freeze.
+
+Avoid bureaucracy for routine wiring.
+
+======================================================================
+CONTEXT PORTABILITY
+======================================================================
+
+A core success criterion:
+
+A different Principal must be able to resume an initiative without private
+memory of the previous Principal.
+
+Reconstruct solely from versioned/project state:
+
+- Git;
+- WORKFLOW;
+- lifecycle;
+- foundations;
+- contract;
+- Freeze;
+- decisions/A-n;
+- evidence;
+- HANDOFF;
+- ROADMAP;
+- integration receipts;
+- orchestration state.
+
+No hidden facts in:
+
+- private model memory;
+- previous chat-only reasoning;
+- Owner memory.
+
+If a fact is necessary to continue:
+it must be recoverable from authoritative state.
+
+======================================================================
+PORTABILITY TEST
+======================================================================
+
+Design a real test.
+
+Example:
+
+Principal A:
+- opens a test/pilot unit;
+- performs bootstrap / gate(s);
+- writes canonical state;
+- stops.
+
+Principal B:
+- starts with no private context from A;
+- reconstructs unit;
+- identifies exact state;
+- produces correct next gate decision / delegation.
+
+Validate:
+
+no manual narrative from A beyond canonical versioned handoff.
+
+Do this in both directions if viable:
+
+Claude → Codex
+Codex → Claude
+
+======================================================================
+CURRENT I-61 BACKLOG TO AUDIT
+======================================================================
+
+Review and classify, do not blindly absorb:
+
+- process re-read behavior;
+- orphan criteria;
+- formal reverification path;
+- CONTROLLER_VERIFICATION clarification;
+- RemoteFacts omitted coverage;
+- filter validation before use;
+- automation Level B;
+- real Worker timer;
+- P-02 false positives;
+- Codex Worker with write access;
+- service_tier behavior;
+- handoff portability issues;
+- relay friction observed by product initiatives using I-61.
+
+For each:
+
+IN SCOPE
+DEFER
+OBSOLETE
+SEPARATE UNIT
+
+with rationale.
+
+======================================================================
+LEVEL B AUTOMATION
+======================================================================
+
+I-61 closed at Level A:
+
+documentation
++
+schemas
++
+session-managed relay
+
+I-62 may investigate Level B.
+
+Do NOT assume Level B is required.
+
+Discovery must use evidence from real I-61 usage.
+
+Possible Level B components:
+
+- environment preflight helper;
+- role-binding resolver;
+- schema validation;
+- handoff validation;
+- routing record generation;
+- provider adapter invocation;
+- orphan/recovery detection.
+
+Prefer small deterministic tooling.
+
+Do not build an agent platform.
+
+If automation adds more complexity than relay friction warrants:
+defer it.
+
+======================================================================
+TRANSPORT
+======================================================================
+
+Preserve preferred hierarchy:
+
+1. filesystem structured artifacts;
+2. CLI/direct invocation;
+3. stable API/connector where available;
+4. Computer Use;
+5. manual relay.
+
+Transport does not alter protocol semantics.
+
+Provider adapter decides how a role communicates.
+
+Do not make UI automation mandatory.
+
+======================================================================
+CUSTODY / OWNERSHIP
+======================================================================
+
+At all times record:
+
+Principal
+Controller
+Worker
+Reviewer
+
+Branch owner
+Worktree owner
+Write scope owner
+
+No simultaneous writers to same mutable scope.
+
+Role rebinding must explicitly transfer custody.
+
+A session disappearing must not leave ambiguous ownership.
+
+======================================================================
+ORPHAN / FAILURE RECOVERY
+======================================================================
+
+Formalize what happens when:
+
+- Principal disappears;
+- Worker crashes;
+- Controller loses context;
+- provider quota is exhausted;
+- CLI stops authenticating;
+- machine changes;
+- handoff is missing;
+- transient artifacts remain;
+- branch contains uncommitted work;
+- current SHA differs from delegation.
+
+Define:
+
+orphan detection
+custody recovery
+safe resume
+required reverification
+STOP conditions
+
+Fail closed.
+
+======================================================================
+RETRY BUDGET
+======================================================================
+
+Preserve bounded retries from I-61.
+
+Ensure budgets survive provider changes.
+
+A provider/model switch does not automatically erase the failure count for
+the same failure class.
+
+Escalation should be explicit.
+
+======================================================================
+PROMPT PORTABILITY
+======================================================================
+
+Core delegation contract must be provider-neutral.
+
+Prompt text is rendered through provider/model-specific PromptProfiles.
+
+Concept:
+
+GateContract
+→ Delegation
+→ Role binding
+→ Provider Prompt Renderer
+→ Worker
+
+Do not encode Claude-specific XML or Codex-specific wording into the semantic
+delegation schema.
+
+Renderer may choose XML/Markdown/etc.
+
+======================================================================
+SECURITY / AUTH
+======================================================================
+
+Do not store secrets/tokens in repo/evidence.
+
+Preflight can report:
+
+AUTHENTICATED
+NOT_AUTHENTICATED
+UNKNOWN
+
+but not credentials.
+
+Provider switching must not copy credentials between adapters.
+
+======================================================================
+PARALLELISM WITH PRODUCT
+======================================================================
+
+I-62 must not block product initiatives.
+
+Do not modify:
+
+src/RackCad product behavior
+product UIs
+Rack logic
+
+unless a tiny test fixture is explicitly required and approved.
+
+Prefer:
+
+docs/
+schemas/
+orchestration tooling/
+tests for infrastructure
+
+Coordinate shared process docs carefully with active initiatives.
+
+======================================================================
+EVIDENCE FROM CURRENT PRODUCT INITIATIVES
+======================================================================
+
+New product initiatives may already be using I-61.
+
+Collect evidence of:
+
+- relay friction;
+- routing failures;
+- prompt problems;
+- consumption;
+- independence gaps;
+- portability;
+- model/effort mismatch;
+- manual steps.
+
+Do NOT modify their protocol mid-initiative.
+
+Use findings as I-62 evidence.
+
+======================================================================
+ARCHITECT
+======================================================================
+
+Foundation Evolution requires:
+
+Architect preimplementation review
++
+final conformance.
+
+Architect must challenge:
+
+- provider identity leaking into roles;
+- unverifiable current-model assumptions;
+- fake self-introspection;
+- hidden private-memory dependencies;
+- over-complex role router;
+- excessive cross-provider requirements;
+- security/auth leakage;
+- ambiguous custody;
+- recovery that can overwrite work;
+- Level B automation without demonstrated need;
+- provider-specific schemas;
+- inability to resume on another machine.
+
+======================================================================
+I-61 EXECUTION
+======================================================================
+
+Ironically, I-62 itself should use I-61 as currently integrated.
+
+Do NOT use unapproved I-62 behavior to implement I-62.
+
+Record every friction discovered.
+
+This is useful evidence.
+
+======================================================================
+VALIDATION
+======================================================================
+
+Aim to demonstrate at least two real topologies if actual environment allows:
+
+A.
+Claude Principal
++ external Codex role
+
+B.
+Codex Principal
++ external Claude role
+
+For each verify:
+
+- bootstrap;
+- self/profile check;
+- environment preflight;
+- role binding;
+- delegation;
+- execution/review;
+- exact-SHA;
+- handoff;
+- STOP/retry;
+- custody;
+- resume/portability.
+
+If one topology cannot be demonstrated due to real capability limitation:
+
+do not fake parity.
+
+Document:
+
+UNSUPPORTED / UNVERIFIED
+
+and why.
+
+======================================================================
+OUT OF SCOPE
+======================================================================
+
+NO:
+
+- changing RackCad product functionality;
+- replacing Master Orchestrator;
+- removing Coordinator authority;
+- unlimited autonomous loops;
+- dynamic purchasing/subscriptions;
+- credential management;
+- arbitrary cloud scheduler;
+- permanent hardcoding of current models;
+- auto-merge without existing Workflow authority;
+- rewriting I-61 history.
+
+======================================================================
+FUNCTIONAL GATES
+======================================================================
+
+Suggested V2 shape:
+
+F0
+I-61 delta Discovery
++ evidence from real usage
++ Freeze
+
+F1
+Provider-neutral role/profile model
++ Principal self-verification
+
+F2
+Environment preflight
++ provider adapter boundary
+
+F3
+Portable routing / role binding
++ independence policy
+
+F4
+Context portability / orphan recovery
+
+F5
+Level B minimum tooling if evidence supports it
+
+F6
+Cross-provider pilots
+
+F7
+Conformance / operational docs
+
+READY
+Candidate
+
+Do not implement F5 if Freeze concludes Level A remains preferable.
+
+======================================================================
+SUCCESS CRITERIA
+======================================================================
+
+1. Principal role is provider-independent.
+
+2. roles can be rebound from observable capability facts.
+
+3. Principal can verify whether its session satisfies requirements.
+
+4. UNKNOWN never silently becomes MATCH.
+
+5. environment portability is explicitly preflighted.
+
+6. protocol schemas remain provider-neutral.
+
+7. provider details live in adapters/catalogs.
+
+8. independence is risk-based.
+
+9. second Principal can reconstruct state without private memory.
+
+10. orphan/custody recovery is deterministic.
+
+11. no secrets enter repo.
+
+12. at least two topologies are tested, or limitations are honestly recorded.
+
+13. I-61 remains intact as predecessor.
+
+14. product initiatives are not blocked.
+
+======================================================================
+FIRST RESPONSE REQUIRED
+======================================================================
+
+Before implementation:
+
+1. real preflight;
+2. current origin/main;
+3. I-62 claim/branch/worktree;
+4. I-61 receipt/integration verification;
+5. actual I-61 documents/schemas;
+6. current I-61 usage evidence available;
+7. available provider runtimes on this machine;
+8. Claude CLI real status;
+9. Codex CLI real status;
+10. authentication status without secrets;
+11. observable models/capabilities;
+12. observable effort controls;
+13. current role bindings hardcoded or implicit;
+14. portability gaps;
+15. private-context dependencies found;
+16. proposed PrincipalSessionProfile;
+17. proposed configuration statuses;
+18. proposed environment preflight;
+19. proposed provider adapter interface;
+20. proposed role-binding algorithm;
+21. proposed independence policy;
+22. proposed custody/orphan model;
+23. I-61 backlog triage;
+24. Level B evidence/need assessment;
+25. two-topology validation plan;
+26. Freeze;
+27. Architect package;
+28. I-61 routing plan for implementing I-62;
+29. explicit status:
+
+IMPLEMENTATION AUTHORIZATION = NO
+until Coordinator + Architect agree on the same Freeze.
+
+I-61 REMAINS THE ACTIVE PROTOCOL
+UNTIL I-62 IS INTEGRATED.

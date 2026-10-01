@@ -1,0 +1,15 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-62
+  branch: architecture/portabilidad-coordinador-principal
+  claim_id: 5b661a17-8c18-4183-8554-3866059cba2b
+  current_phase: G0
+  state: claimed
+  gate: owner-decision
+  attempts: 0
+  next_action: Coordinator revisa el bootstrap G0 y decide el arquetipo y la autorización de F0 (Discovery delta de I-61); sin Freeze, pilotos, Candidate ni merge.
+  last_evidence_commit: a851841ae40d63f59ac18ff64f792efd07ca036c
+execution_context:
+  mode: manual
+  automation_enabled: false
+  worktree: architecture-portabilidad-coordinador-principal
