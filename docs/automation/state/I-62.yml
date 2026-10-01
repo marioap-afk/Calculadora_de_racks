@@ -7,15 +7,15 @@ automation_state:
   state: review-ready
   gate: none
   attempts: 0
-  next_action: Coordinator revisa la Proposal V4 (paquete V4); Architect no invocado todavía (C62-F0-22); OD-6 pendiente del Owner antes del Freeze; sin implementación ni delegaciones.
-  last_evidence_commit: 486e45e797642ad589980584e16b3e50e53c1fb9
+  next_action: Coordinator revisa la Proposal V5 (paquete V5); Architect no invocado todavía (C62-F0-24); OD-6 pendiente del Owner antes del Freeze; sin implementación ni delegaciones.
+  last_evidence_commit: 2960b28614da14ad6ebe9eeaa9631fd787041ac3
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-portabilidad-coordinador-principal
   g0_gate_pass_by_coordinator: 85ae4324988ac7564719664f8f05b3fa9c6cafbe (C62-G0-02; CI 36889478597 push success; decisions §7)
-  f0_scope: Discovery (C62-F0-01..07); diseño Proposal V1 (C62-F0-11), V2 (C62-F0-15), V3 (C62-F0-20) y V4 (C62-F0-22), sin implementación (decisions §§10-13)
+  f0_scope: Discovery (C62-F0-01..07); diseño Proposal V1 (C62-F0-11), V2 (C62-F0-15), V3 (C62-F0-20), V4 (C62-F0-22) y V5 (C62-F0-24), sin implementación (decisions §§10-14)
   f0_discovery: docs/initiatives/I-62-discovery.md (R1 aceptada como base de diseño; C62-F0-08)
   archetype: NEW ARCHITECTURE confirmado por el Coordinator para el diseño (C62-F0-09); Architect sin dictaminar
-  f0_proposal: docs/initiatives/I-62-proposal-v4.md (Frozen: NO; paquete docs/initiatives/I-62-architect-package-v4.md; V1, V2 y V3 CHANGES REQUIRED del Coordinator, C62-F0-13/C62-F0-17/C62-F0-21; Architect no revisó)
-  f0_owner_pending: OD-6 (predicado de independencia de LIFECYCLE; Proposal V4 §11.4; dos alternativas); sin decisión no hay acuerdo ni Freeze
+  f0_proposal: docs/initiatives/I-62-proposal-v5.md (Frozen: NO; paquete docs/initiatives/I-62-architect-package-v5.md; V1-V4 CHANGES REQUIRED del Coordinator, C62-F0-13/17/21/23; Architect no revisó)
+  f0_owner_pending: OD-6 (predicado de independencia de LIFECYCLE; Proposal V5 §11.4; dos alternativas); sin decisión no hay acuerdo ni Freeze
