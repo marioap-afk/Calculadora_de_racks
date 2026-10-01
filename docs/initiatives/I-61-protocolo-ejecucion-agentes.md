@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-61
 title: Agent Execution, Model Routing & Prompting Protocol
 type: architecture
-status: candidate-validated-closure
+status: integrated
 workflow: V2
 conceptual_initiative: I-61
 delivery_unit: I-61

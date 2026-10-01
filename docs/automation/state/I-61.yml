@@ -3,11 +3,11 @@ automation_state:
   initiative: I-61
   branch: architecture/protocolo-ejecucion-agentes
   claim_id: 0e2923de-e1a7-41bf-b7db-50ec84217850
-  current_phase: integration
-  state: integration-ready
+  current_phase: integrated
+  state: completed
   gate: none
   attempts: 0
-  next_action: Con orden del Owner, sesion de integracion (WORKFLOW §11.5): fetch y ruta R si main avanzo; commit documental final que marca I-61 integrada (fecha) en ROADMAP y HANDOFF, con su CI; merge --no-ff; CI posterior con cobertura; cobertura diferida del Candidato; limpieza; tag integration/I-61.
+  next_action: Ninguna en I-61 (integrada el 2026-10-01; hechos posteriores al merge en el tag integration/I-61); seguimientos fuera del Freeze en docs/ideas-futuras.md.
   last_evidence_commit: 6513777f431fd672a515d9f8a33d8611d238fbe4
 execution_context:
   mode: manual
@@ -26,4 +26,4 @@ execution_context:
   ready06_b69c3463: NON-CONFORMING (1 REQUIRED corregido en este commit; decisions §18)
   final_candidate: 6513777f431fd672a515d9f8a33d8611d238fbe4 (READY-01..09; decisions §18; evidence §16)
   owner_validation: PASS 2026-10-01 (OV-I61-01..05; OV-I61-05 ACCEPTED; decisions §19)
-  closure: cierre documental preparado; integracion pendiente de la autoridad del Owner
+  closure: integrada el 2026-10-01 por orden del Owner (decisions §21); MERGE_SHA, CI posterior, cobertura y limpieza en el tag integration/I-61

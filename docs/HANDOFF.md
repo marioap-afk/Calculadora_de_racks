@@ -12,13 +12,13 @@ RackCad es un plugin de AutoCAD 2025 (.NET 8, C#/WPF) para diseñar y dibujar ra
 con BOM. El trunk único es `main`; Domain y Application son puros, UI usa WPF sin AutoCAD y Plugin
 es el único adaptador de la API de AutoCAD.
 
-**I-61 — Agent Execution, Model Routing & Prompting Protocol — CANDIDATO VALIDADO; CIERRE DOCUMENTAL PREPARADO PARA INTEGRACIÓN** el **2026-10-01**
+**I-61 — Agent Execution, Model Routing & Prompting Protocol — INTEGRADA** el **2026-10-01**
 (`architecture/protocolo-ejecucion-agentes`, Workflow V2). Protocolo estable para que el Coordinator delegue gates en un Controller Codex de solo lectura y en Workers, con
 paquetes, entregas y verificaciones estructuradas (`rackcad-*/v1`), relevo con cesión, exact-SHA, STOP y routing por perfil semántico con catálogo de modelos mutable: reglas en
 [AUTOMATION_PLAN](AUTOMATION_PLAN.md) §16, procedimiento en `docs/automation/agent-execution/`, composición en PROMPT_TEMPLATES §G y decisión en
 [ADR-0046](adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md), **aceptado** por el Owner. Piloto real D-1a: `RACKEDITAR` de una cama con el nombre vaciado conserva el nombre
-del sobre, como las otras cinco rutas de edición. Owner Validation **PASS** (OV-I61-01..05; OV-I61-05 aceptada). Integración, CI posterior al merge, cobertura diferida, limpieza y tag
-`integration/I-61` pendientes de la autoridad del Owner. [Evidencia](automation/evidence/I-61-evidence.md), [decisiones](automation/decisions/I-61.md).
+del sobre, como las otras cinco rutas de edición. Owner Validation **PASS** (OV-I61-01..05; OV-I61-05 aceptada). Integrada por orden del Owner. [Evidencia](automation/evidence/I-61-evidence.md),
+[decisiones](automation/decisions/I-61.md) y tag `integration/I-61` (SHAs de cierre y merge, CI posterior, cobertura y limpieza).
 
 **I-60 — Nombre logico automatico de los racks nuevos — INTEGRADA** el **2026-09-30** (`feature/nombre-automatico-racks`, Workflow V2).
 Todo rack logico NUEVO recibe UN nombre automatico y editable en `RackEmbedDocument.Name`: «Selectivo N», «Dinámico N», «Push Back N», «Cantilever N»,
@@ -2042,11 +2042,10 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### I-61 lista para integrar (cierre documental preparado; integración pendiente de la autoridad del Owner)
+### Sin trabajo activo de I-61 (integrada el 2026-10-01)
 
-Siguiente paso, con orden del Owner: integración manual de `architecture/protocolo-ejecucion-agentes` según WORKFLOW §11.5 (fetch inmediatamente antes del merge y ruta R si
-`main` avanzó; merge `--no-ff`; CI posterior al merge con cobertura; comprobación diferida de la cobertura del Candidato; limpieza; tag `integration/I-61`). La rama activa de
-I-52 comparte `docs/ROADMAP.md` y `docs/adr/README.md` (ventanas coordinadas por su canal).
+El protocolo de ejecución delegada de I-61 ([AUTOMATION_PLAN](AUTOMATION_PLAN.md) §16, ADR-0046) queda disponible para las iniciativas siguientes. Al integrarse I-61, la rama
+activa de I-52 (que comparte `docs/ROADMAP.md`, `docs/HANDOFF.md` y `docs/adr/README.md`) se rebasa sobre el nuevo `main` antes de su propia integración.
 
 Seguimiento formal registrado en [ideas-futuras](ideas-futuras.md) (sección de I-61): **autoverificación de la sesión principal**. `routing.md` no tiene perfil para la
 sesión principal (Coordinator/Principal); una unidad futura debe fijar cómo resuelve al empezar perfil, nivel y effort requeridos, los compara con lo observable del runtime y se
@@ -3879,7 +3878,7 @@ la Fase 5, depende de todas).
 ## 5. Última verificación vigente
 
 **Cierre de I-61 — 2026-10-01:** Candidato final aprobado por el Owner con evidencia local Full, CI y cobertura exactas; el commit de cierre (solo documental) lleva su
-propio CI; merge `--no-ff`, CI posterior al merge con cobertura y limpieza se registrarán en `integration/I-61`.
+propio CI; merge `--no-ff`, CI posterior al merge con cobertura y limpieza se registran en `integration/I-61`.
 
 **Cierre de I-60 — 2026-09-30:** Candidato `ae628890` aprobado por el Owner con CI y cobertura exactos; el commit de cierre (solo documental) lleva sus propias
 suites, builds y CI; merge `--no-ff`, CI posterior al merge con cobertura y limpieza se registran en `integration/I-60`.
