@@ -375,7 +375,7 @@ salida. La sonda corrió fuera del worktree y la entrada no muestra participante
 | Revisiones | `AuthorityRevision` `7b8662c5` (cierre de G2); `MainSha` `95690c28` |
 | Autoridades | 17 entradas: UNIT_CHANGE (AUTOMATION_PLAN preámbulo, §2 y §16; WORKFLOW §10; PROMPT_TEMPLATES §G; README, `routing.md` y tres esquemas); EXTERNAL (AUTOMATION_PLAN §3; WORKFLOW §3 y §4; AGENTS); UNIT_DOC (Proposal V9, contrato y Discovery §19). `model-catalog.md` no se declara: es NO NORMATIVO |
 | Alcance permitido | el de §12.1 paso 1 |
-| Alcance prohibido | el de §12.1 paso 1, más las cinco rutas de edición por nombre, `src/RackCad.UI/` y `src/RackCad.Domain/` |
+| Alcance prohibido | el de §12.1 paso 1 salvo «el resto de comandos del Plugin», que la sintaxis de alcance no puede expresar como «Plugin menos `RackCamaCommands.cs`»: se listan las cinco rutas de edición por nombre, más `src/RackCad.UI/` y `src/RackCad.Domain/`; `AllowedWriteScope` solo admite `RackCamaCommands.cs` dentro del Plugin |
 | Invariantes | INV-01..03, INV-05, INV-10, INV-P1..P3 |
 | Pruebas | P1 `FullyQualifiedName~I61EditedRackNameTests` (mínimo 4, RED); P2 `FullyQualifiedName~I61CamaEditWiringGuardTests` (mínimo 1, RED); P3 UI `FullyQualifiedName~FlowBedEditorWindowTests&Name~I61_P3` (mínimo 1, sin RED; ver DEV-G3-03) |
 | Paradas | S-01..S-14, P-03, P-05 y C-01 (tocar otra ruta de edición o salir del alcance) |
@@ -537,7 +537,7 @@ Ningún P-01, P-05, P-06 ni P-08. Los dos P-02 fueron falsos positivos de la med
 |---|---|---|
 | Relectura | un proceso de la lista cerrada ilegible, un descendiente o un huérfano se vuelve a leer por PID a los 2 s; si ya no existe o cambió de `CreationDate`, no está vivo | resolvió el STOP P-02 de la salida de la planificación (procesos efímeros de las apps del host) |
 | Host de consola | el `conhost.exe` cuyo padre está en la cadena del comprobador se trata como parte de esa cadena | evita marcar como descendiente nuevo la consola del propio comprobador |
-| Huérfano de otra sesión | proceso con línea legible sin la ruta del worktree y sin rastro en la transcripción del Worker | resolvió el STOP P-02 de la entrada del Worker |
+| Huérfano de otra sesión (no es criterio de medición: es la resolución de un STOP) | el STOP P-02 sí se disparó; el Coordinator lo resolvió por §10.2 con causa raíz (línea legible sin la ruta del worktree, sin rastro en la transcripción del Worker) | no exime de futuros STOP de huérfano sin A-n |
 
 La regla de AUTOMATION_PLAN 16.4 no cambia.
 
@@ -612,12 +612,12 @@ Los eventos (`events.jsonl`), los registros de sesión de Codex, la transcripci�
 
 ```text
 Name: Agent Execution Protocol
-Status: (borrador) — solo podrá ser STABLE con ADR-0046 aceptado o el Freeze de I-61 integrado
+Status: STABLE al publicarse en el commit de cierre (ADR-0046 aceptado por el Owner el 2026-10-01)
 Authority: AUTOMATION_PLAN §16 (ejecución delegada); WORKFLOW §3 (relevo) y §10; AGENTS.md (evidencia); subordinados en docs/automation/agent-execution/.
 Persistence: tráfico transitorio en artifacts/orchestration/ (ignorado por Git); custodia de JSON y MD en docs/automation/evidence/<unit>-pilot/; esquemas rackcad-*/v1 en docs/automation/agent-execution/schemas/.
 Mutation contract: reglas solo en AUTOMATION_PLAN §16; esquemas por versión (/v2 con ADR o A-n); catálogo mutable con fuente y fecha, sin Freeze.
 Extension point: entrada de catálogo; clase de tarea o perfil nuevo (subordinado o PROMPT_TEMPLATES §G, revisado por el Coordinator); versión nueva de esquema; regla de §16 (Freeze de I-61 §15).
-Decision source: ADR-0046 (propuesto) y Freeze de I-61 (docs/initiatives/I-61-proposal-v9.md).
+Decision source: ADR-0046 (aceptado) y Freeze de I-61 (docs/initiatives/I-61-proposal-v9.md).
 Protecting tests: AgentExecutionProtocolTests (OBL-01..06 y OBL-11 estructural); I61EditedRackNameTests, I61CamaEditWiringGuardTests y FlowBedEditorWindowTests.I61_P3 (piloto, OBL-P1..P3); controles del piloto ejecutados en G3: nc1..nc4 (OBL-07, OBL-10), OBL-08 y OBL-09 por registro (evidencia §15).
 Known limitations: independencia parcial de la verificación con un Worker subagente; efecto de consumo del service_tier heredado UNKNOWN; Worker Codex con escritura UNKNOWN; recetas dependientes de Windows y del sandbox unelevated; nivel A, sin scripts; medición de procesos con falsos positivos por apps del host y otras sesiones (DEV-G3-02); el Controller puede emitir paradas conservadoras injustificadas, que la regla de coherencia y el Coordinator filtran (DEV-G3-04).
 Last changed by: I-61

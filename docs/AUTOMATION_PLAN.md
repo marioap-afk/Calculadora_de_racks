@@ -504,7 +504,7 @@ que sobrevivan a su llamada.
    de Codex más hasta que decida el Owner, y se registra el diff de nombres de secciones y claves.
 
 **Procesos:** se evalúan los de línea de órdenes legible y, entre los ilegibles, los de la lista cerrada `codex*.exe`, `claude.exe`, `node.exe`, `git.exe`, `pwsh.exe`, `powershell.exe`,
-`bash.exe` y `dotnet.exe`. Es participante sobre el worktree un proceso evaluado cuya línea de órdenes contiene la ruta del worktree (con `\` o `/`) o `-C <worktree>`. Exclusión
+`bash.exe` y `dotnet.exe`. Es participante sobre el worktree un proceso evaluado cuya línea de órdenes contiene la ruta del worktree (sin distinguir mayúsculas, con `\` o `/`) o `-C <worktree>`. Exclusión
 estricta: solo el proceso que comprueba y sus ancestros por `ParentProcessId`, nunca sus hermanos ni otros descendientes de la sesión; y, por nombre,
 `codex-windows-sandbox-service.exe`. Un `codex*.exe` del Owner con línea de órdenes legible que no contiene la ruta del worktree no es participante; si la contiene, STOP al Owner. El
 PID del participante lanzado y todo su árbol deben estar muertos en la entrada. Para un Worker subagente, ningún descendiente nuevo de la sesión ni ningún huérfano (proceso de la lista

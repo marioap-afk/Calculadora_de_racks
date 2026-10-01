@@ -89,7 +89,7 @@ Clasificación de cada proceso para el registro (`Processes[].Classification`):
 | `owner-app` | `codex*.exe` con línea de órdenes legible que no contiene la ruta del worktree (se registran solo PID y nombre) |
 | `nominal-exclusion` | `codex-windows-sandbox-service.exe` (línea de órdenes ilegible) |
 | `build-server` | `VBCSCompiler.exe`; `MSBuild.exe` o `dotnet.exe` con `/nodemode`, `build-server` o `VBCSCompiler.dll`. Solo exime en la comparación de descendientes de un Worker subagente y en la de huérfanos; en la evaluación general, si su línea de órdenes contiene la ruta del worktree, es `participant` |
-| `participant` | Su línea de órdenes contiene la ruta del worktree (con `\` o `/`) o `-C <worktree>` |
+| `participant` | Su línea de órdenes contiene la ruta del worktree (sin distinguir mayúsculas, con `\` o `/`) o `-C <worktree>` |
 | `unattributable` | Línea de órdenes ilegible y nombre en la lista cerrada (`codex*.exe`, `claude.exe`, `node.exe`, `git.exe`, `pwsh.exe`, `powershell.exe`, `bash.exe`, `dotnet.exe`), salvo la exclusión nominal |
 
 Para un Worker subagente, además, se listan siempre con dos clases más:
