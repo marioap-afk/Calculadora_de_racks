@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-64
 title: Persistent RackCad Workspace
 type: architecture
-status: bootstrap-d0
+status: f0-discovery
 workflow: V2
 conceptual_initiative: I-64
 delivery_unit: I-64
@@ -21,7 +21,7 @@ context_packs: [ui-editors, autocad-plugin, architecture-kernel]
 consumes: [UNKNOWN]
 extends: [UNKNOWN]
 introduces: [UNKNOWN]
-discovery_ref:
+discovery_ref: docs/initiatives/I-64-discovery.md
 freeze_ref:
 freeze_delta_ref:
 amendment_refs: []
@@ -110,15 +110,17 @@ Introduces: UNKNOWN — candidatos preliminares: workspace modeless en memoria, 
             AutoCAD, inventario runtime de navegación y sesiones de borrador con control de obsolescencia
 ```
 
-Son candidatos de intake, no afirmaciones: cada entrada se verifica con DC-08 en la base vigente
+Son candidatos de intake, no afirmaciones. DC-08 del Discovery (§11) comprobó en la base de F0 la presencia de los símbolos y pruebas de
+las nueve fundaciones del brief; el consumo concreto se fija en el Freeze. Cada entrada se vuelve a verificar con DC-08 en la base vigente
 ([INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §4.1), contra fuente, código y pruebas. Que una fundación no tenga entrada en
 [FOUNDATIONS](../FOUNDATIONS.md) (p. ej., Auto Rack Naming) no prueba que no exista. La workspace **no** se convierte en autoridad
 persistente ni crea una segunda autoridad de persistencia (brief, «KEY ARCHITECTURAL BOUNDARY» y «STALE / EXTERNAL CHANGE»).
 
 ## 6. Discovery, decisiones y Freeze
 
-- Discovery: pendiente; **no iniciado** en D0. Debe responder las dieciocho preguntas del brief («DISCOVERY REQUIRED») sobre
-  DC-01..09, con EXP-01..09 evaluadas y sus negativos razonados.
+- Discovery: [I-64-discovery.md](I-64-discovery.md) (F0-D1), **pendiente de revisión del Coordinator**. Responde las dieciocho
+  preguntas del brief («DISCOVERY REQUIRED») sobre DC-01..09, con EXP-01..09 evaluadas y sus negativos razonados. La materialidad que
+  propone (DC-09) no se copia aquí hasta esa revisión.
 - Proposal/Freeze: cubre «PROPOSAL MUST DEFINE» del brief y los puntos que el Architect debe impugnar («ARCHITECT REVIEW»). NEW
   ARCHITECTURE exige rondas Coordinator ↔ Architect hasta acuerdo sobre la misma versión ([INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §5).
 - Freeze / Freeze delta / A-n: ninguno.
