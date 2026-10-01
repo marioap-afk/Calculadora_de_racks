@@ -244,3 +244,78 @@ Resultado: [I-64-discovery.md](../../initiatives/I-64-discovery.md). **No** es P
 
 **CI de esta tarea:** la corrida `push` del SHA que publica este archivo es un hecho posterior al commit; se informa al Coordinator en
 la entrega y no se encadena otro commit para citarla (CD-I64-D0-02).
+
+## 12. F0-D1-R1 — Resolución del Coordinator y correcciones (CD-I64-D1-01/02)
+
+Sección nueva; las anteriores no se reescriben.
+
+**Fuentes** (archivos locales en `D:\IDs\I-64\`, medidos en el host; no se versionan):
+
+| Archivo | Bytes | SHA-256 |
+|---|---:|---|
+| `01-orden-F0-D1-R1.txt` (orden) | 4 230 | `9683cdbf538b6b7ddd4df4b368417b42e834cde03b2781f02ad7128d77d45168` |
+| `02-revision-Coordinator.md` (revisión, adjunto normativo de la orden) | 14 201 | `fe47ea6ce270397eb1edc447829d91fbd33fdf461692f5b129fd92792e075f80` |
+
+**Resolución, en resumen saneado:**
+- **CD-I64-D1-01:** D0 sigue ACCEPTED. D1 se recibe como entrega publicada con su CI exacta. La revisión queda en CHANGES REQUIRED para
+  cerrar el Discovery. Se autoriza F0-D1-R1 (correcciones y ampliaciones documentales), no Proposal, ADR, Architect formal, Freeze ni
+  producto. NEW ARCHITECTURE y M-04..M-07 confirmados; M-08 se mantiene activado de forma conservadora.
+- **CD-I64-D1-02:** expansiones autorizadas EXP-04/05/06/08, delta de EXP-07, EXP-09 solo para M concretos UNKNOWN y EXP-02 condicional,
+  con sus preguntas, áreas y salidas.
+- **Hallazgos REQUIRED:** C64-D1-01..07. Disposición por ID abajo y en el Discovery §17.
+
+**CI de la entrega D1** (MEASURED con `gh run view`; evidencia de CI, no local): corrida **36894342807**, `event=push`,
+`ref=refs/heads/architecture/workspace-persistente-rackcad`, `head_sha=cf034e594daf6b222013808c9795fd92a66940cb`. Jobs Tests (Domain +
+Application), UI Tests (WPF controls, net8.0-windows), Build UI (WPF, valida API de Application) y Build Plugin without AutoCAD, los
+cuatro `success`. Creada 16:45:13Z, actualizada 16:49:35Z. El blob del Discovery revisado era `7748152ec62984d0c9dedddc94d629f5ab0a61d7`.
+
+**Disposiciones C64-D1-01..07:**
+
+| ID | Disposición | Dónde |
+|---|---|---|
+| C64-D1-01 | resuelto: matriz de fallos con fallo sin commit, commit parcial, fallo posterior al commit y desconocido; EXP-06 positiva | Discovery §9.12, §3.4 |
+| C64-D1-02 | resuelto: el sobre no es diseño tipado ni sistema resuelto; etapas separadas; coste `UNKNOWN` | Discovery §9.4, §9.8 |
+| C64-D1-03 | resuelto: lecturas y escrituras por sistema; hipótesis H-LOCK acotada con verificación; riesgos de normalización | Discovery §9.7, §9.13, §9.14 |
+| C64-D1-04 | resuelto: M-01 activado; M-02 y M-03 `UNKNOWN` tratados como activados (EXP-09); M-08 con delta exacto; EXP-02 reevaluada | Discovery §12, §13 |
+| C64-D1-05 | resuelto: intención explícita interpretada por el host; `BindingIntent`; EXP-04; EXP-05; trazas DC-08 con aserción; censo por tipo | Discovery §3.3, §3.4, §7, §8, §11 |
+| C64-D1-06 | resuelto con consulta pendiente: delta DC-07, hechos de host acotados, consultas registradas | Discovery §10 |
+| C64-D1-07 | resuelto: enrutamiento por tarea, sin elegir ni sondear modelos | Discovery §14, §15 |
+
+**Preflight diferencial (17:13:37Z, MEASURED):**
+- `HEAD` = remoto = `cf034e59…`; árbol limpio; sin operaciones Git en curso; ningún proceso con la ruta del worktree.
+- `origin/main` = `819955d6…`, sin cambio, así que no hubo rebase.
+- Había **un proceso de AutoCAD en ejecución**, no iniciado ni tocado por esta sesión.
+
+**Ramas paralelas** (por referencia remota, solo como coordinación):
+
+| Rama | Tip | Avance |
+|---|---|---|
+| I-52 | `c1982b2a` | sin cambio |
+| I-62 | `2b7976b0` | antes `85ae4324` → `f25dd1d5`; solo documentos |
+| I-63 | `85293273` | antes `cba24838` → `b557ea3b` → `dbfe1150`; solo documentos |
+
+**Consultas de coordinación** (canal: mensajería entre sesiones locales; el canal no da hora ni acuse de lectura):
+- **I-63, consulta de frontera.** msg `474704b7-b532-4157-a9dc-38d32f6304e7`, enviada ≈17:20Z (estimación de esta sesión), en cola.
+  **Respuesta recibida** antes de 17:23Z:
+  - la consulta al Master la preparó su Coordinator y **no está enviada** (no tiene canal; irá por el Owner);
+  - no hay Proposal ni decisión;
+  - su lectura es que un índice de navegación sin semántica de métricas cae del lado de ID30, sin conflicto con la frontera escrita;
+  - el mínimo común sigue abierto;
+  - corrige su Discovery: `RackListBuilder` ya agrupa por Id en Application, y lo que falta es un contrato común.
+
+  Acuse de I-64: msg `c6c38df8-adef-45c3-af1c-599a5345c79b`, en cola.
+- **I-52, consulta de convivencia** (host, eventos y redibujo). msg `7b90958e-ac63-4f30-bfc4-9f5920098b4a`, enviada ≈17:20Z, en cola.
+  **Sin acuse ni respuesta** al preparar este commit.
+
+**Documentación oficial adicional consultada el 2026-10-01** (RECONSTRUCTED):
+
+| Fuente | URL | Versión |
+|---|---|---|
+| Autodesk, «Guidelines for Event Handlers (.NET)» | `https://help.autodesk.com/cloudhelp/2025/ENU/OARX-DevGuide-Managed/files/GUID-FE7D58D5-28A0-4C98-A876-D4D48F06D0B2.htm` | ruta 2025 |
+| Autodesk, `BlockTableRecord.GetBlockReferenceIds` | `https://help.autodesk.com/cloudhelp/2022/ENU/OARX-ManagedRefGuide/files/OARX-ManagedRefGuide-Autodesk_AutoCAD_DatabaseServices_BlockTableRecord_GetBlockReferenceIds__MarshalAsUnmanagedType_U1__bool__MarshalAsUnmanagedType_U1__bool.html` | **2022**; la ruta 2025 dio 404 |
+
+**Ejecución:** lectura estática y documentación. Sin AutoCAD, builds, pruebas, prototipos, sondas, subagentes, Controller ni Worker.
+Escrituras versionadas: solo los tres archivos de la allowlist.
+
+**Elevación:** el candidato a fundación común con I-63 en la enumeración lógica de racks se eleva al Coordinator para el Master. No se
+diseña ni se consume.
