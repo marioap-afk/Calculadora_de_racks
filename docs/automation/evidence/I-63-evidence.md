@@ -617,3 +617,60 @@ IMPLEMENTATION AUTHORIZATION = NO.
   Además: el contrato, las decisiones, esta evidencia y el estado.
 - **Revisión del Architect:** pedida, **no realizada** en este commit. El modo se declarará en la revisión.
 - La CI exacta del commit que contiene este archivo se informa al Coordinator.
+
+## 17. Architect R1 y orden PV2: Proposal V2 y paquete de re-revisión
+
+### 17.1 CI de la entrega anterior
+
+| Commit | SHA | Corrida `push` | Resultado |
+|---|---|---|---|
+| Proposal V1 y paquete v1 | `772ac242430084918d319a7683ce615daec39452` | 36935682563: `head_branch` = `architecture/parametros-calculados-resumen-proyecto`, `head_sha` exacto | `success`; los cuatro jobs requeridos de `AGENTS.md` en `success` |
+
+### 17.2 Revisión del Architect R1 (procedencia)
+
+- La revisión se hizo en una **sesión separada** que abrió el Owner (sesión local `local_d5787742…`, «I-63 Architect Review R1»),
+  con el encargo del paquete v1, ampliado por el Owner o el Coordinator.
+- **Esta sesión no participó en la revisión.**
+- El veredicto no llegó como archivo a `D:\IDs\I-63`. La orden PV2 exige incluir el veredicto completo en el paquete, así que la
+  sesión autora lo extrajo, **solo leyendo**, de la transcripción local de la sesión revisora:
+  - archivo `fdd2a979-cce9-4391-83aa-e7dfe5effcc4.jsonl`;
+  - mensaje del asistente de 2026-10-01T22:50:30Z, modelo `claude-opus-5-5`;
+  - 24 721 caracteres; SHA-256 UTF-8 `a8ccab34a911429603cafcc2cb7c5a4008e95871c166b0667e5d46fa447526dc`.
+- La orden PV2 confirma su identidad: modo SEPARATE SESSION, commit `772ac242`, blobs `48a68307` y `98e34b18`, CHANGES REQUIRED y
+  A63-PV1-01..10.
+- El texto se reproduce literal en el anexo R1 del paquete v2.
+
+### 17.3 Orden PV2
+
+- Pegada por el usuario en el chat de la sesión responsable el 2026-10-01. No llegó como archivo, así que no tiene hash.
+- Resumen en las [decisiones](../decisions/I-63.md) §2.
+
+### 17.4 Preflight (2026-10-01T23:02:17Z)
+
+- `HEAD` = remoto = `772ac242`; árbol limpio; `origin/main` = `819955d6`, ancestro de `HEAD`: **sin rebase**.
+- Ramas: I-52 `7a8e622d` (lectura de pre-vuelo), I-62 `3888c5c8` (Proposal V6) e I-64 `e87ba32c` (Proposal V4, A64-PV3-01..06).
+  Ninguna cambia `src/` ni `tests/` frente a `main` (diff de tres puntos).
+- I-64 `e87ba32c` registra la V1 de I-63 como alineada con `MASTER-I63-I64-02`. Ningún hecho nuevo contradice P-14.
+
+### 17.5 Método y salidas
+
+- Redacción directa de la sesión principal; ningún participante de IA, ninguna delegación §16, sin pruebas ni host.
+- Código leído para resolver los REQUIRED (sin editarlo):
+  - `SymbolTable` (índices por nombre y `OperatorNames`);
+  - `ExpressionBinder` (`Resolve`, `NamespaceReferenceSyntax`);
+  - `ExpressionSyntaxParser` (`palabra.` sin miembro);
+  - `ExpressionFormatter` (`FormatReference`, `CanonicalShape`);
+  - `ExpressionDiagnosticCode`;
+  - los seis `*KindHandler.BuildBom` y `PushBackKindHandler.OutputBlockedReason`;
+  - `KindDispatch`, `KindHandlerRegistry` y `BomAuthoredAuthority`;
+  - la lista de decisiones D1..D25 de ADR-0043.
+- Salidas:
+
+  | Archivo | Blob |
+  |---|---|
+  | `docs/initiatives/I-63-proposal-v2.md` (Frozen: NO) | `9a84546fdccbe77593c78352521ab8bb926a3d96` |
+  | `docs/initiatives/I-63-architect-package-v2.md` | `09f874ddc91848f47ad221d48d22b33b439ccb16` |
+
+  La V1 y el paquete v1 no se tocan. Además: el contrato, las decisiones, esta evidencia y el estado.
+- **Re-revisión R2:** pedida al **mismo** Architect, **no realizada** en este commit.
+- La CI exacta del commit que contiene este archivo se informa al Coordinator.
