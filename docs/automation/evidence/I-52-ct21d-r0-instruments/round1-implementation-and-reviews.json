@@ -1,0 +1,442 @@
+{
+  "summary": "Implement the R0-class read-only host instruments (no AutoCAD load), write host package v2, independent semantic reviews",
+  "agentCount": 4,
+  "logs": [],
+  "result": {
+    "impl": {
+      "files": [
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/README.md",
+          "gitBlob": "0cdfdbe0697f829604f1fbe2945be4806e3a9987"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/core/CensusBuilder.cs",
+          "gitBlob": "17843a37a02da51a08af3e82cf9faeb3e03ede22"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/core/DrawingModel.cs",
+          "gitBlob": "a02c5ad640777e5b931bc9f1de078a579923bf78"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/core/EvidenceSealer.cs",
+          "gitBlob": "e0f1965dee5f7b680028240dc2fde233e4a859ad"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/core/EvidenceWriter.cs",
+          "gitBlob": "4308f8f02fd2e772d98292ed7b73a4752ab0394a"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/core/ExpectationTables.cs",
+          "gitBlob": "91d7381fed25d13a6423be8168a782af68df3b2b"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/core/Hashing.cs",
+          "gitBlob": "9f98c8eefd6102486caa31d8a9c239f230dd2205"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/core/I52Ct21d.HostFacts.Core.csproj",
+          "gitBlob": "d6314f2ec1e9e7b6c0be0bfa2910f64929229266"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/core/InventoryAndCtxBuilders.cs",
+          "gitBlob": "ac1abaf3080eb4d0c944a6f5a1c0a40305b5c1fb"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/core/Jcs.cs",
+          "gitBlob": "ef5c570b260556a78da948cdab4c9b9672ac5a64"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/core/JsonSchemaLite.cs",
+          "gitBlob": "813ee6225af35322c65f920aeafa90693c2831c1"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/core/MachineLabel.cs",
+          "gitBlob": "bf42a64f334f7ba7b00d318652aa3d640446961c"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/core/PackageManifest.cs",
+          "gitBlob": "d220ae29597ebfb3e70765e28c5db0cadd5b81f8"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/core/ProbeTable.cs",
+          "gitBlob": "76d4179154fd72510314e75af98b293337de9634"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/core/RawAttributeText.cs",
+          "gitBlob": "ced3ba4a2ced000b8221933a35cb33a3a3c923e9"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/core/RecordJson.cs",
+          "gitBlob": "99b9968c11a6aef30cbdc1000f7a1bf53b22940c"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/core/RunDesignation.cs",
+          "gitBlob": "1bda77d10c3ce2f468db3359d5972be76b942bf8"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/core/Runners.cs",
+          "gitBlob": "bfdb4af257d3636c2a8df834f7cf729a6ddd7a1d"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/protocol/I-1-observation-protocol.md",
+          "gitBlob": "3a77ba62da77dfa2fc8bd2ffeb176a9454864193"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/protocol/i1-os-observation.ps1",
+          "gitBlob": "a9081cff612b2290c35c86c0ded72f42c62b5e5a"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/r0/AcadSideDbReader.cs",
+          "gitBlob": "c10255b8fac7b819870cca258e3e563df8691fb9"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/r0/HostAdapters.cs",
+          "gitBlob": "4cd949beffc2898e290e1b6f901894e2c5482fd8"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/r0/HostGateCommands.cs",
+          "gitBlob": "768546f80a13281fccec5f19f51db766e63898da"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/r0/I52Ct21d.HostFacts.R0.csproj",
+          "gitBlob": "3712eebf146be64a3e34d059d10986441bd20ace"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/schemas/ct21d.census.v1.json",
+          "gitBlob": "d575eebf28b976467c3d281b606bf9f647fbe48d"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/schemas/ct21d.ctxvars.v1.json",
+          "gitBlob": "38d8a1a3637e9d8dee8040cb4c6ad2125d8eb43a"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/schemas/ct21d.designation.v1.json",
+          "gitBlob": "936764e90cee8234ab4981ed80ba060cb4fd74f4"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/schemas/ct21d.hostfact.v1.json",
+          "gitBlob": "ebfd0922fc9ea44576aa0b91caf8b2ba987658b6"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/schemas/ct21d.inventory.v1.json",
+          "gitBlob": "4f530ec75db3b4a74dc8234decbec3ab63b9eaa2"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/schemas/ct21d.machine-label.v1.json",
+          "gitBlob": "d0450d3185c7413ad4d55321dc9ab7eb11bd4642"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/schemas/ct21d.package-manifest.v1.json",
+          "gitBlob": "5b920a9ee587d0e65544d7a36637a7dc362f4c81"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/schemas/gen_schemas.py",
+          "gitBlob": "58a7d86ec9488392daecc5003f0f73bba3868c10"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/tests/EvidenceWriterTests.cs",
+          "gitBlob": "83f2998f3a4e2e2d700b20a1e17930efd8135394"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/tests/FixtureBuilder.cs",
+          "gitBlob": "3d9dd0cd1e39140290bd17135dd7b2f330df649d"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/tests/ForbiddenApiScanTests.cs",
+          "gitBlob": "02f46815b3bef0ca1ff6892cdf532e8d7caae243"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/tests/I52Ct21d.HostFacts.Tests.csproj",
+          "gitBlob": "2053abd3a5d3fdfb9598b3776ab1c57951f91981"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/tests/LabelAndJcsTests.cs",
+          "gitBlob": "93d149dd20a51453ec363423ca6a4939949af609"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/tests/ProbeTests.cs",
+          "gitBlob": "c4ff636e5dfbf7a8d63666822bc903e001d86aee"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/tests/RunnersTests.cs",
+          "gitBlob": "767c647dc1c3568231b7f8e922a854019d193b9a"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/tests/SchemaTests.cs",
+          "gitBlob": "f4213a89f151691167a70b131a8a10f225addf24"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/tests/SealAndManifestTests.cs",
+          "gitBlob": "8b1a751d636e9a6d2a70349c5b25c61eae834a7b"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/tests/Support.cs",
+          "gitBlob": "af05bbe976eebf0a0f6e2384a52065ab1e7362a8"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/tests/TablesAndCensusTests.cs",
+          "gitBlob": "b9ab1c22640af2fbdef4d90627cce1a8a70fb45a"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/tests/ToolsCliTests.cs",
+          "gitBlob": "034b116e46e1b99f6365d51381d7fa25c716455b"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/tests/data/gen_vectors.py",
+          "gitBlob": "5f3ff7f04836237d80a22c7f89810d3260a66f68"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/tests/data/jcs-vectors.json",
+          "gitBlob": "83b87eb026f73002013a4e3ee8f95a02027bb033"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/tests/data/label-vectors.json",
+          "gitBlob": "e2971ee4e113d705ac3b148ded2119aaf0a3333a"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/tests/data/probe-table-expected.json",
+          "gitBlob": "487daa69c6e1f04f02f3a2677033a7120c52ddbc"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/tools/I52Ct21d.HostFacts.Tools.csproj",
+          "gitBlob": "0f4df2b680f02ab981d2fb1852c2b5d697aaba53"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/tools/Program.cs",
+          "gitBlob": "1cfc793c5efe9c5af8f818638455332a1ae5738d"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/tools/Scan/ForbiddenApiScan.cs",
+          "gitBlob": "652116bc29db6ca3c17b88146ecd8da35edce8b4"
+        },
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/tools/Scan/IlReader.cs",
+          "gitBlob": "fdafa0c85e5a2cf33f95f6d1e7af38836b050de3"
+        }
+      ],
+      "summary": "The R0-class instruments (I-0, I-1, I-2, I-4, I-9) are implemented in the new folder eng/research/I52Ct21dHostFacts/ (the folder name the design proposes). Nothing was run on a host, no AutoCAD was started, and nothing was loaded into AutoCAD. Nothing under src/, tests/, any existing eng/ folder, any solution or CI file was changed, and I did not run git add, commit or push. All 199 tests pass without AutoCAD, the freeze-v35 guard still reports Holds=true, and two builds of the R0 DLLs at the same HEAD gave the same hashes.\n\nWhat was built:\n- **core/** (net8.0, no AutoCAD reference):\n  - Label and canonical JSON: the PARAM-05 label (RFC 8785, six keys, MC- plus the first 12 hex) and canonical JSON.\n  - EvidenceWriter: the single writer (create-new, flat names, write-once, SHA-256 recorded and re-verified, no append, overwrite or delete). Every file written by an instrument or tool goes through it.\n  - Schemas: a closed JSON Schema subset validator that rejects unsupported keywords.\n  - Expectation tables: the 32-range RB table and the 10 context-variable types.\n  - Builders and runners: census, inventory and context-variable record builders over an abstract reader, plus the three runners with their host-run checks. Any failed check makes every fact of the run INVALID, with the records retained.\n  - Probe statistics: the PF-1/PF-2 probe-table generator (147 rows, 135 in scope) and the statistics (D_A, K_pres, I_max).\n  - Pinning and sealing: the I-9 evidence sealer and the deterministic manifest and pin generator.\n- **r0/** (net8.0-windows, x64):\n  - Commands: CT21DHG_CENSUS_R, CT21DHG_INVENTORY and CT21DHG_CTXVARS.\n  - Database access: one AutoCAD-touching type, AcadSideDbReader. It builds new Database(false, true), calls ReadDwgFile on a private copy, reads through OpenCloseTransaction objects that are only disposed, and never saves or commits. The other r0 files (system-variable reader, process and clock facts, command entry points) touch AutoCAD only through GetSystemVariable and a one-line command-line status.\n  - Compile only: it builds against the AutoCad 2025 assemblies via AutoCADInstallDir with Private=false and does not lock them.\n- **tools/**:\n  - scan: the forbidden-API semantic scan, which reads metadata and IL and resolves the constant OpenMode operand.\n  - label: recomputes HF-M7 from six raw files.\n  - seal: I-9.\n  - manifest: the pin generator.\n- **protocol/**: the I-1 observation protocol (text only) and an OS-level PowerShell script. The script was parse-checked with the PowerShell parser and never executed.\n- **schemas/**: the JSON schemas, with gen_schemas.py as their authoring form.\n- **tests/**: 199 xUnit tests, with expected vectors from an independent Python generator.\n- **README.md**: purpose, the gate (sections 237 to 239), what is not implemented and why, how to build and test, pinning, and the statement \"not loaded, not executed on any host\".\n\nTest and guard results:\n- **Tests:** 199 passed, 0 failed.\n- **Scan negative controls:** fixture assemblies, emitted at test time with System.Reflection.Metadata, call 74 forbidden APIs and each makes the scan fail with the expected rule. A positive control stays clean.\n- **Real DLLs:** the real core, tools and R0 DLLs scan clean, and the scan reports how many call sites it examined so the verdict is not vacuous.\n- **Mutation controls:** patching a ForRead constant in the real R0 DLL to ForWrite, or the Database constructor arguments, makes the scan fail.\n\nNot implemented: the RS class (I-3, I-5, I-6, the HF-C4 write probe, the OP2 save), I-7, I-8, the imports-allowlist-check, the tolscale-raw record and schema, and the section 2.5 classification state machine. The reasons are in the deviations below.\n\nBuild and test commands run (cwd = the worktree root):\n- dotnet build eng/research/I52Ct21dHostFacts/tests/I52Ct21d.HostFacts.Tests.csproj -c Release -nologo\n- dotnet test eng/research/I52Ct21dHostFacts/tests/I52Ct21d.HostFacts.Tests.csproj -c Release --no-build -nologo\n- dotnet run --no-build --project eng/research/I52Ctda/harness -c Release -- freeze-v35 .\n- dotnet build eng/research/I52Ct21dHostFacts/r0/I52Ct21d.HostFacts.R0.csproj -c Release --no-incremental -o <scratchpad>/det-a and again to det-b, for the determinism comparison.\n\n`dotnet` is the user-level $LOCALAPPDATA/Microsoft/dotnet/dotnet.exe in every call. The tools scan command is in the README.\n\nOther results:\n- **Guard:** the freeze-v35 guard reports Holds=true. The package hash D9FD41B4CEBE5F698C2A597A96E4AAE9221A9DC32060ED791B73232636A47554 matches in expected, manifest and computed, with 24 blobs and no mismatches.\n- **Determinism:** two builds of the R0 DLLs at the same HEAD gave the same hashes (Core ed22f61d..., R0 c11114f9...). Directory.Build.targets stamps the git HEAD into the version, so these hashes will change once the files are committed.\n- **Ignored output:** bin/ and obj/ under the new folder are ignored by the existing .gitignore, so nothing extra needs ignoring.\n- **Line endings:** all files are LF, with no CR in any source, JSON, markdown, Python or PowerShell file.\n- **git status:** the only change is the untracked eng/research/I52Ct21dHostFacts/.",
+      "testsRun": [
+        "dotnet test eng/research/I52Ct21dHostFacts/tests/I52Ct21d.HostFacts.Tests.csproj -c Release (user-level dotnet 8.0.423): 199 passed, 0 failed, 0 skipped, no AutoCAD running; includes the HAVE_R0 tests that scan and mutate the real R0 DLL (AutoCAD managed assemblies only referenced at compile time)",
+        "dotnet build of core, r0, tools and tests in Release: 0 errors, 0 warnings (MSB3277 reference-conflict notice from the AutoCAD assemblies suppressed with NoWarn and a comment)",
+        "dotnet run --no-build --project eng/research/I52Ctda/harness -c Release -- freeze-v35 . : Holds=true (ExpectedPackageHash = ManifestPackageHash = ComputedPackageHash = D9FD41B4CEBE5F698C2A597A96E4AAE9221A9DC32060ED791B73232636A47554, Blobs 24, Mismatches empty)",
+        "tools scan on the real assemblies (core, tools, r0): all three CLEAN, exit 0",
+        "Determinism: dotnet build of the R0 project twice with --no-incremental into two scratchpad output folders gave identical SHA-256 for I52Ct21d.HostFacts.Core.dll (ed22f61d0ff0ca741fb626046ec8495dfe7f187be478fda6e82e5fd057771e99) and I52Ct21d.HostFacts.R0.dll (c11114f910073ccf4e9930ac11d28cd902fbf2be97930b82d9a26ce1453ad882)",
+        "Python generators run offline: tests/data/gen_vectors.py (reproduces the design's labels MC-47229d23a125 and MC-c7edfcd1078e, and 147 rows / 135 in scope / 146 distinct triples) and schemas/gen_schemas.py",
+        "PowerShell Parser.ParseFile on protocol/i1-os-observation.ps1: 0 parse errors (static parse only, the script was not executed)"
+      ],
+      "openQuestions": [
+        "Condition 1 of section 239 (independent semantic review of each instrument as read-only, confirmed by the Coordinator) is still pending. The scan is a review aid with negative controls and mutation controls, not that review. The mutator-name rule is a deliberately conservative heuristic, so a false positive goes to the reviewer and a false negative is what the reviewer and the host-run checks are for.",
+        "The files run-designation.json (schema ct21d.designation.v1) and the pin sidecar <dll>.pin are my design, not the Architect's. The design says the tuple bindings come from the pre-H1 tuple record but does not fix the hand-over format into the instrument, so package v2 or the Architect should adopt or replace them.",
+        "Who writes the ct21d.hostfact.v1 records for HF-M1..HF-M11? I-1 is protocol text with no instrument, so the machine and session layer yields raw files and the machine-label record (HF-M7) but no hostfact JSON per HF-M row. The design does not say who assembles those records.",
+        "The declared set must also contain I52Ct21d.HostFacts.Core.dll, because the R0 DLL depends on it, along with the .pin files and the manifest. Whether NETLOAD resolves Core from the R0 DLL's own folder is HOST-TO-CONFIRM, and the set (R0 + Core + manifest) needs the Coordinator's confirmation.",
+        "The census marks a missing or unreadable block record UNKNOWN and then makes HF-C1 INVALID ('incomplete census is INVALID as every block', design HF-C1). INVALID normally means a tuple or stop-condition problem needing a Coordinator-authorized rerun. Please confirm that reading rather than UNKNOWN at fact level.",
+        "HF-C3 never produces OBSERVED_DIFFERS automatically (a storage location other than the ACAD DSTYLE section would show up as NOT_OBSERVED or a malformed-section UNKNOWN). If the Architect wants OBSERVED_DIFFERS for that case, the rule needs to be stated.",
+        "strlen semantics are HOST-TO-CONFIRM. The helper counts Unicode scalar values and fails closed on any mismatch, which makes a non-ASCII value UNKNOWN if AutoLISP strlen counts bytes.",
+        "The imports-allowlist-check (design 5.3 item 2) needs an Architect-approved allowed-apis.txt and was not generated from the build. The classification state machine (2.5) and the tolscale record belong to RS I-6 and were not built. Both go to package v2 or wait for Q-O-1.",
+        "The canonical build of the declared set must pin SourceRevisionId to the committed SHA (package v2 / I-8). The DLL bytes currently depend on the git HEAD stamped by Directory.Build.targets, so the hashes will change after the commit.",
+        "Whether the one-line Editor.WriteMessage status is acceptable was ruled in R-I. I assumed it also covers an error message with the exception type and text, and the scan allows Editor.WriteMessage."
+      ],
+      "deviations": [
+        "Folder name: eng/research/I52Ct21dHostFacts is the name the design proposes (section 5.1). The orchestrator's fallback name I52Ct21dHostGate was not used, because the design names one.",
+        "Subfolders: the design lists core/, r0/, rs/, conformance/, tools/, tests/, schemas/. I built core/, r0/, tools/, tests/ and schemas/, and added protocol/ for the I-1 text and OS script (the design gives I-1 no location). I did not build rs/ (Q-O-1) or conformance/ (I-7).",
+        "I-9 is implemented in C# through the single EvidenceWriter (core/EvidenceSealer.cs plus tools seal), not as a PowerShell script (design 5.2 says 'offline script (PowerShell), tools/seal-evidence'). Reason: the single-writer rule, so that the scan can enforce that every instrument and tool write goes through one class.",
+        "pid and processStartUtc are in volatile, not in TB-S, so that the hashed part holds no process-dependent value (design 5.1: 'no timestamps inside the hashed part'). The census field censusUtc of BA-05 section 5 is carried as volatile.capturedUtc for the same reason.",
+        "The census record is the BA-05 section 5 schema plus rbTypes[] and rbOutsideTable[], with explicit indices and first-appearance order. dynamicPropertyMethod is the constant NOT_READ_BY_R0 because HF-C2 is RS (blocked).",
+        "The PF-1/PF-2 generator and the statistics are in core because the design lists them under I-0. The probe command CT21DHG_TOLSCALE, the tolscale-raw.json builder and schema, and the section 2.5 classification state machine are not built (I-6 / RS).",
+        "The label helper reads one declared-length-<Key>.txt per attribute (A1-R3..R6 required, A1-R1/R2 optional) instead of one combined file, so that every file is written once and nothing is appended. The typed AutoLISP in the protocol writes each with a findfile guard, so it behaves create-new.",
+        "The protocol script uses a CreateNew .NET file open for its writes. The design says the OS script uses only Get-* cmdlets and Get-FileHash and writes only to the evidence folder. Some write primitive is unavoidable, and this is the disclosed Q-O-0(b) element, R-H(b) accepted.",
+        "The JSON Schema validator is a closed subset (unsupported keywords fail closed) rather than a general 2020-12 implementation. The schemas are authored in Python (gen_schemas.py) and committed as generated JSON. The tolscale schema of design 2.4 is intentionally not among them.",
+        "The scan resolves the OpenMode constant by walking back over single-instruction loads. Anything it cannot resolve is rejected as R-OPENMODE-UNRESOLVABLE, which is stricter than the design's constant evaluation but consistent with its fail-closed intent.",
+        "The scan is IL and metadata based (reflection over IL) rather than a Roslyn source scan, to keep the tests independent of the AutoCAD assemblies and to use the real compiled IL. Section 5.3 item 1 names a Roslyn semantic census as the model, and the orchestrator allowed either."
+      ]
+    },
+    "rv1": {
+      "verdict": "CHANGES_REQUIRED",
+      "majors": [
+        "The forbidden-API scan is not sound. In a scratch copy I injected seven calls into the R0 DLL, and the scan reported CLEAN for every one. Nothing was injected in the real tree. The calls were: Database.DxfOut(path, ...) (writes a DXF file from a Database), Autodesk.AutoCAD.Runtime.SystemObjects.DynamicLinker.LoadModule (loads a native module), System.IO.Path.GetTempFileName (creates a file), XDocument.Save(path) (a file write outside EvidenceWriter), the CultureInfo.DefaultThreadCurrentCulture setter (process-global state), Editor.Regen, and Process.CloseMainWindow (can close the host). A control injection of Database.SaveAs and File.WriteAllText was caught. This breaks two design rules. Section 5.3 item 3(c) says file and stream writes may appear only inside EvidenceWriter. Section 5.3 item 1 says no Database save of any kind. The causes are: (1) DbSaveMembers lacks DxfOut, and there is no rule for other Database writers or loaders such as DxfIn, AttachXref, BindXrefs, ResolveXrefs and SwapIdWith. (2) The mutator-name heuristic covers only the DatabaseServices, ApplicationServices and EditorInput namespaces, so Autodesk.AutoCAD.Runtime (DynamicLinker, IConfigurationSection.WriteProperty), Customization (CustomizationSection.Save), PlottingServices and Publishing are unchecked. The prefix list also lacks Write, Load, Swap, Bind, Detach, Dxf, Regen and Highlight. (3) Only System.IO.File, Directory, FileInfo, DirectoryInfo, FileSystemInfo, FileStream, StreamWriter and BinaryWriter are treated as write sinks. Path.GetTempFileName, System.Xml, XDocument.Save, ZipFile, MemoryMappedFile and FileSystemWatcher are not. (4) Reflection and dynamic escapes are only partly covered. Delegate.CreateDelegate, MethodInfo.CreateDelegate, Expression.Compile and the dynamic binder are not flagged. Calli is explicitly skipped. (5) Global-state setters outside Autodesk types (CultureInfo defaults, Console.SetOut, Directory.SetCurrentDirectory is covered but Environment.CurrentDirectory and AppDomain.SetData are not) and Process.CloseMainWindow are not flagged. The real R0 code does not use any of these, but the scan is the review aid the Coordinator relies on, and the controls in the tests cover only the families the author listed. Fix: make the scan deny-by-default with an allowlist of permitted Autodesk members and BCL types in R0 (the allowed-apis.txt of 5.3 item 2), or at least add the missing rules and a negative control for each.",
+        "The imports-allowlist backstop (5.3 item 2) is not implemented, as the author disclosed. The Coordinator's gate has open the R0 class, and the allowlist is the only defence against the false negatives above. It should be built before the scan is relied on as the sole verification."
+      ],
+      "minors": [
+        "Reading all 19 source files by hand (r0, core, tools, the .ps1, the protocol): the real instrument code has no write, save, commit, delete, write-open, UpgradeOpen, SetSystemVariable, Overrule, command, registry write, Process.Start, network, Assembly.Load, P/Invoke or reflection-invoke path. Its AutoCAD calls are new Database(false,true); ReadDwgFile(FileShare.Read) and CloseInput inside AcadSideDbReader; StartOpenCloseTransaction with GetObject(...,ForRead) only; the reads GetRXClass, XData, GetXDataForApplication, Xrecord.Data, ExtensionDictionary and DBDictionary; GetSystemVariable; and Editor.WriteMessage for a one-line status. Every file write goes through EvidenceWriter.WriteNew (FileMode.CreateNew, FileShare.None, a flat name matching ^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$, no separators or ADS markers, reserved devices refused, a direct-child check, a reparse-point check on the root, and the hash re-read). The only other mutation is File.SetAttributes(ReadOnly) in EvidenceWriter.MarkReadOnly, used by the seal. The R0 residual of 5.3 item 4 (in-memory host evaluation inside the side database, the Editor.WriteMessage echo possibly reaching a log file) is not visible to any API scan and stays disclosed.",
+        "No check that PrivateCopyPath differs from LibraryPath, or that the evidence folder is not the library or private-copy directory. If the designation sets PrivateCopyPath to the library itself, the hash checks pass trivially, and the instrument then reads the real library (read-only, FileShare.Read) instead of a private copy. EvidenceWriter accepts any existing absolute folder. If the designation points it at the library or product folder, it would add new files there (still create-new). Add a path-inequality and a not-under-product-root check in RunDesignation.Parse or the runners.",
+        "EvidenceWriter.MarkReadOnly, and the tools seal and manifest commands, take an arbitrary folder with no 'evidence folder' identity check. MarkReadOnly accepts any existing flat-named file in the folder, not only files the writer created. Running seal on the wrong folder would add HASHES files and set read-only on every file in it. The folder is operator-chosen, and the tools are offline.",
+        "Host-run checks of design 5.3 item 6 inside the instrument are only the private-copy hash before and after, DBMOD, the document identity (I-4), and the self-pin. The source-library hash before and after, SECURELOAD, TRUSTEDPATHS, the profile, and 'the evidence folder holds only the declared outputs' are not done in the R0 code. They are delegated to the I-1 script, the protocol and the seal. This should be stated in the README, not implied as implemented.",
+        "The self-pin is not a gate. On PIN_MISSING or PIN_MISMATCH the commands still open the database and write the records, but mark every fact INVALID. This is consistent with 'retain, never repair' and is acceptable, but the Coordinator should know the DLL still executes its reads when the pin fails.",
+        "The ps1 and typed AutoLISP file writes are outside EvidenceWriter by design (Q-O-0(b), R-H(b) accepted). The ps1 uses CreateNew and validates the file name. The evidence folder must exist and is not otherwise validated. AutoLISP findfile also searches the support paths. The folder path <E> is typed by hand, so correctness depends on the operator. The script was parse-checked only, not executed.",
+        "I confirmed the author's results: with the user-level dotnet, 199 of 199 tests passed, and the build left only the untracked eng/research/I52Ct21dHostFacts/ in git status (bin and obj are ignored). I did not re-run the determinism build or the freeze-v35 guard. The negative controls the author listed and the two mutation controls on the real DLL do pass, but they do not exercise the false-negative classes above."
+      ],
+      "checks": [
+        "Read every file under r0/, core/ (all 14 .cs), tools/ (Program.cs, ForbiddenApiScan.cs, IlReader.cs), protocol/ (.md and .ps1) and the .csproj files, and the design sections 0, 5.1, 5.2 and 5.3 line by line. Grepped all sources for System.IO, Process, Registry, Assembly, DllImport, Activator, Invoke, Environment, network and Marshal. Outside EvidenceWriter there are only read-only File/Directory calls, Process.GetCurrentProcess, Assembly.Location and GetManifestResourceStream.",
+        "dotnet build and test of tests/I52Ct21d.HostFacts.Tests.csproj, Release, user-level dotnet: 0 errors, 0 warnings, 199 passed, 0 failed. git status shows only the untracked new folder.",
+        "Mutation test in a scratch copy (scratchpad/mut): the real R0 and Core DLLs scan CLEAN. Injecting Database.SaveAs plus File.WriteAllText made the scan fail with R-DB-SAVE, R-AUTODESK-MUTATOR-NAME and R-FILE-WRITE (expected). Injecting DxfOut, DynamicLinker.LoadModule, Path.GetTempFileName, XDocument.Save, the CultureInfo.DefaultThreadCurrentCulture setter, Editor.Regen and Process.CloseMainWindow gave CLEAN (a scan false negative). I grepped the built DLL to confirm the strings were present.",
+        "STRICT R0 vs design 0, 5.1, 5.3: the only database construction is new Database(false,true) with constants 0 and 1 inside AcadSideDbReader. No save, commit or write-open appears in the real code. There is no document lock, no event, no overrule and no setter on a global. The Core and Tools assemblies have no AutoCAD reference. The structure matches the design: r0 and core are separate, there is no rs/ folder, and I-3, I-5, I-6, I-7 and I-8 are not implemented, consistent with section 239.",
+        "Output-path analysis: every instrument and tool file creation goes through EvidenceWriter.WriteNew (create-new, flat, validated names). The only other mutation is MarkReadOnly on a flat name in the evidence folder. I found no path by which the real code modifies a product file, the open drawing, the library or the registry. The private-copy and evidence-folder identity gaps are listed under minors."
+      ]
+    },
+    "rv2": {
+      "verdict": "CHANGES_REQUIRED",
+      "majors": [
+        "Gate overreach into I-8. Section 239 says 'No se implementan I-7 ni I-8 (siguen el paquete v2)'. Design 5.2 defines I-8 'build and pin' with output 'package, manifest, pins'. The folder implements that output: core/PackageManifest.cs (deterministic package-manifest.json, package-manifest.sha256, per-DLL .pin generation), the 'manifest' command in tools/Program.cs, and schemas/ct21d.package-manifest.v1.json. README line 38 admits 'This folder only offers the deterministic manifest / pin generator'. Design 5.1 lists tools/ as forbidden-api-scan, imports-allowlist-check, seal-evidence and label-helper, with no manifest generator. This is not in the R0 class I-0/I-1/I-2/I-4/I-9. Either remove the generator, its schema and its tests (SealAndManifestTests) from this folder and leave it to package v2, or obtain an explicit Coordinator ruling that it belongs to I-0/I-9. The SelfPin check itself (design 5.1) can stay."
+      ],
+      "minors": [
+        "The run-designation.json format (schema ct21d.designation.v1, including packageManifestSha256) and the .pin sidecar format are the implementer's own design and not in sections 237-239. The designation's manifest field only makes sense if the I-8 generator exists. Flag them for package v2 / Architect adoption.",
+        "I-9 is implemented in C# through the EvidenceWriter, whereas design 5.2 says 'offline script (PowerShell), tools/seal-evidence'. The deviation is disclosed and the reason (single-writer rule) is sound, but the Coordinator should accept it explicitly.",
+        "imports-allowlist-check (design 5.3 item 2) is absent. It is a backstop that needs an approved allowed-apis.txt, and it is disclosed.",
+        "The scan is based on IL and metadata, not Roslyn as design 5.3 item 1 names. It is disclosed and has negative and mutation controls, but it is not the independent semantic review of section 239 condition 1.",
+        "The OS script i1-os-observation.ps1 writes files with a CreateNew .NET open. The design says it uses only Get-* cmdlets, so this is disclosed as Q-O-0(b), but it goes beyond the 'Get-* only' wording.",
+        "Nothing assembles the ct21d.hostfact.v1 records for HF-M1..M11. I-1 is protocol text only, so this is an open design question.",
+        "The R0 DLL depends on Core.dll, so the declared set has to include Core, and NETLOAD resolution is HOST-TO-CONFIRM.",
+        "The Directory.Build.targets git-HEAD stamp makes the DLL hashes change after the commit. The canonical pinned build belongs to I-8 / package v2."
+      ],
+      "checks": [
+        "Label vectors recomputed independently in Python (sorted keys, compact separators, UTF-8, ensure_ascii=False). They gave MC-47229d23a125 (sha 47229d23...3780) and MC-c7edfcd1078e for the empty TRUSTEDPATHS. Both match the design and the C# MachineLabel, which uses exactly the six keys, MC- plus the first 12 hex digits, and UNSET if any key is missing.",
+        "A1-R1..R6 read rules match design 3.2: strict UTF-8 with BOM rejected; exactly one trailing LF or CRLF stripped; strlen cross-check by scalar count, required for R3..R6, optional for R1/R2; empty string valid; MachineGuid read from the 64-bit view; OsVersionBuild is a single Win32_OperatingSystem.Version read (proposal (i), ruling R-H(a)).",
+        "MACHINE_CLASS (the six strings plus the label) and the session/build tuple are kept separate. pid and processStartUtc are in volatile, which is outside the hashed part.",
+        "Commands are CT21DHG_CENSUS_R, CT21DHG_INVENTORY and CT21DHG_CTXVARS. They are plain CommandMethod, not Session, take no lock, and call SetSystemVariable, Commit, ForWrite or Save nowhere. r0 builds only new Database(false, true) with ReadDwgFile, uses OpenCloseTransaction objects that are only disposed, and its only AutoCAD output is a one-line Editor.WriteMessage.",
+        "EvidenceWriter is create-new, flat-name, write-once, with SHA-256 re-verified after writing, and has no append, overwrite or delete API.",
+        "The RB table has 32 ranges and the context-variable table 10 types, with tests comparing them against the BA-05 V5 markdown.",
+        "The RS class (I-3, I-5, I-6), the HF-C4 write probe, OP2, the tolscale record and schema, the 2.5 state machine and I-7 are all absent; the code mentions only a NOT_READ_BY_R0 constant and README text. HF-G3 is correctly I-4 and not gated by Q-O-0(a). The PF-1/PF-2 table generator and statistics are in core as I-0 lists them.",
+        "dotnet test (user-level dotnet): 199 passed, 0 failed. freeze-v35 reports Holds=true, with expected, manifest and computed package hash all D9FD41B4...47554 and no mismatches.",
+        "git status shows only '?? eng/research/I52Ct21dHostFacts/'. Nothing is changed under src/, tests/, any other eng/ folder, or solution/CI files, and bin/obj is ignored.",
+        "Both the HEAD commit and the 239 state lines are consistent with the gate (no host run, no AutoCAD start)."
+      ]
+    },
+    "pkg": {
+      "files": [
+        {
+          "path": "C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/docs/initiatives/I-52-ct21d-host-gate-execution-package-v2.md",
+          "gitBlob": "e2953120e2deb20816b42ccacefe2c1e7ed781b4"
+        }
+      ],
+      "summary": "Wrote docs/initiatives/I-52-ct21d-host-gate-execution-package-v2.md (592 lines, LF only, untracked, not committed). SHA-256 da18044e5976aa7a6a4cafe1783ec486f2f512577536d5d3a7eb528555ce23aa; git blob e2953120e2deb20816b42ccacefe2c1e7ed781b4. V1 (blob b23221a8) was not touched. Contents: (a) the three AR10-07 minors (the last row of 8.2 reads \"INVALID o caida\"; H4, H5 step 2 and H6 marked \"IN, condicional\"; the I52G3AAutoCadProbe reference-probe sentence citing V2.1 line 116 and ProbeCommands.cs lines 98, 122 and 155); (b) the 236/237/239 rulings in one table, the Owner's R8 precision (declared before the run, pinned hash, no substitution) and the AR10-03(b) reading, with MACHINE_CLASS and SESSION_BUILD_TUPLE recorded separately and no evidence transfer between tuples; (c) H1..H7 rewritten against the design's matrix: H1, H2 (HF-C1, HF-C3, HF-T2) and H3b (HF-G1 M1, HF-G3) are the only activities prepared to run; H2-DYN, H3a and H4 are BLOCKED_Q-O-1; H5 step 2 and H6 NEEDS_PRODUCT_BUILD; H5 step 1 and H7 wait for I-7 in a later session; (d) the PRE-RUN checklist P1..P10 in the Owner's order and an empty FIRST_NON_GOVERNING_HOST_RUN authorization template (C-01..C-17, each with its evidence), scoped to H1; (e) CAD-manager templates and procedures: designation record, TRUSTEDPATHS decision (option (a)), tuple record in sections A/B/C, the private library copy procedure (who, where, which operation, hashes A0/B0/A1), the I-1 protocol and the full list of files written by I-1 and the CAD manager; (f) stop conditions (13 items), the INVALID-or-crash no-automatic-retry rule, PARAM-04=3 read as a per-slot cap and not a retry permission, EVIDENCE_REPETITION=1 not reducing N_A/N_B/N_det/N_clean; (g) the section 10 list of what stays NOT authorized. State lines are unchanged and HOST_RUN_STARTED=FALSE. The file ends with HOST_GATE_PACKAGE = V2_PREPARED_FOR_COORDINATOR_REVIEW. The instruments are described only as \"implemented, reviewed, not loaded\", and the document says the author did not see the reviewers' verdicts. The instrument folder eng/research/I52Ct21dHostFacts/ (52 files outside bin/obj) existed and did not change while I worked. It is untracked, so the package cites no blob ids for its files. Its bin/ and obj/ are covered by the repository .gitignore (lines bin/ and obj/).",
+      "testsRun": [
+        "git hash-object and sha256sum of the new file",
+        "CR count in the new file is 0 (LF only)",
+        "git status: only the new package file and the untracked eng/research/I52Ct21dHostFacts/ appear; nothing under src/, tests/ or existing eng/ was changed",
+        "git hash-object of every cited source (decisions I-52.md f0c13c1a, design dc2897e5, Owner records, BA-05/08/10/11, V2.1, V2.6, ProbeCommands.cs, BlockLibrary.cs, build-bundle.ps1) matched the ids written in the header",
+        "Verified 69daf03a^{tree} = 3c34dc9b, main = 95690c28 and the empty `git diff --stat main HEAD -- src`",
+        "Re-checked at the end that the instrument folder has the same 52 files and no new file",
+        "No AutoCAD was started, no build and no dotnet test was run (documents only)"
+      ],
+      "openQuestions": [
+        "RQ-1: the Owner wants the tuple record complete before the first run, but the six strings, the label and the SESSION_START module list are produced by H1 itself. I propose the record is opened before H1 and closed after it, with the module baseline taken statically from the file system. The Coordinator must rule on this.",
+        "RQ-2: confirm the private library copy procedure (a copy outside the evidence folder, made by the CAD manager with a plain copy) falls inside Q-O-0(b).",
+        "RQ-3: where and with which build do H5 step 1, H7 and the conformance reads run (I-7 does not exist and is outside the H1 declared set)? Also which build draws the H7 source.",
+        "RQ-4: scope of the I-8 build and pin procedure (a ruling request, per 239 condition 4).",
+        "RQ-5: whether HF-M4b (profile registry subtree digest) falls inside the Owner's 'configuration inputs'.",
+        "RQ-6: who approves the imports-allowlist backstop.",
+        "RQ-7: whether H1 can be authorized before Q-O-1 fixes the declared set (the design says no).",
+        "Q-O-1 (the Owner) decides whether the RS class is part of the declared set, so H1 cannot start until it is answered. The CAD manager's machine designation and tuple record are also pending, and the Owner's possible objection to Q-O-0(a)/(b), R-H(a) and R-N(a) is unrecorded (P9)."
+      ],
+      "deviations": [
+        "I did not compile anything and did not touch bin/obj. The task only asked for a document, so no temporary build output was produced.",
+        "The package does not state whether the instruments passed review. By your instruction it uses the wording 'implemented, reviewed, not loaded' and says the verdicts were not seen.",
+        "The file names that I-1 and the CAD manager write (7.5.2) come from the protocol and script as they stood at the time of writing. The package says to re-check them against the built, pinned package.",
+        "Proposals beyond the sources, each flagged as a proposal or an RQ: the private-copy location `...\\hostgate-prep\\private\\<runId>\\`, the static module baseline taken before H1 (RQ-1), and the recommendation to restrict write access on the trusted root (7.2).",
+        "Decisions section 238 cites the design blob dc2897e5, the same id as the working-tree file (verified), so there is no discrepancy. The decisions log is now blob f0c13c1a, which is what the header cites."
+      ]
+    }
+  },
+  "workflowProgress": [
+    {
+      "type": "workflow_phase",
+      "index": 1,
+      "title": "Implement"
+    },
+    {
+      "type": "workflow_phase",
+      "index": 2,
+      "title": "Review"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 1,
+      "label": "implement:r0",
+      "phaseIndex": 1,
+      "phaseTitle": "Implement",
+      "agentId": "a18c04d6cee026198",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790821092570,
+      "queuedAt": 1790821092496,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "The R0-class instruments (I-0, I-1, I-2, I-4, I-9) are impl…",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ byte-identical to main 95690c28; all of the design and decisions up to section 239 are committed). Project: I-52 CT-21D baseline preparation. Authority for this work: decisions sections 237 (Owner), 238 (Architect design: docs/initiatives/I-52-ct21d…",
+      "promptFramed": true,
+      "lastProgressAt": 1790823167605,
+      "tokens": 462708,
+      "toolCalls": 107,
+      "durationMs": 2075033,
+      "resultPreview": "{\"files\":[{\"path\":\"C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/README.md\",\"gitBlob\":\"0cdfdbe0697f829604f1fbe2945be4806e3a9987\"},{\"path\":\"C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/eng/research/I52Ct21dHostFacts/core/CensusBuilder.cs\",\"gitBlob\":\"17843a37a02da51a08af3e82cf9faeb3e03ede22\"},{\"path\":…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 2,
+      "label": "review:semantic-audit",
+      "phaseIndex": 2,
+      "phaseTitle": "Review",
+      "agentId": "a1df8c3c85d74d058",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790823167672,
+      "queuedAt": 1790823167623,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "CHANGES_REQUIRED",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ byte-identical to main 95690c28; all of the design and decisions up to section 239 are committed). Project: I-52 CT-21D baseline preparation. Authority for this work: decisions sections 237 (Owner), 238 (Architect design: docs/initiatives/I-52-ct21d…",
+      "promptFramed": true,
+      "lastProgressAt": 1790823390661,
+      "tokens": 151633,
+      "toolCalls": 23,
+      "durationMs": 222977,
+      "resultPreview": "{\"verdict\":\"CHANGES_REQUIRED\",\"majors\":[\"The forbidden-API scan is not sound. In a scratch copy I injected seven calls into the R0 DLL, and the scan reported CLEAN for every one. Nothing was injected in the real tree. The calls were: Database.DxfOut(path, ...) (writes a DXF file from a Database), Autodesk.AutoCAD.Runtime.SystemObjects.DynamicLinker.LoadModule (loads a native module), System.IO.Pat…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 3,
+      "label": "review:spec-fidelity",
+      "phaseIndex": 2,
+      "phaseTitle": "Review",
+      "agentId": "a1880cbbb5847c931",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790823167679,
+      "queuedAt": 1790823167623,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "CHANGES_REQUIRED",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ byte-identical to main 95690c28; all of the design and decisions up to section 239 are committed). Project: I-52 CT-21D baseline preparation. Authority for this work: decisions sections 237 (Owner), 238 (Architect design: docs/initiatives/I-52-ct21d…",
+      "promptFramed": true,
+      "lastProgressAt": 1790823271450,
+      "tokens": 128444,
+      "toolCalls": 16,
+      "durationMs": 101357,
+      "resultPreview": "{\"verdict\":\"CHANGES_REQUIRED\",\"majors\":[\"Gate overreach into I-8. Section 239 says 'No se implementan I-7 ni I-8 (siguen el paquete v2)'. Design 5.2 defines I-8 'build and pin' with output 'package, manifest, pins'. The folder implements that output: core/PackageManifest.cs (deterministic package-manifest.json, package-manifest.sha256, per-DLL .pin generation), the 'manifest' command in tools/Prog…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 4,
+      "label": "write:package-v2",
+      "phaseIndex": 2,
+      "phaseTitle": "Review",
+      "agentId": "ae2045dc72866c31d",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790823167684,
+      "queuedAt": 1790823167624,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "Wrote docs/initiatives/I-52-ct21d-host-gate-execution-packa…",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico; src/ byte-identical to main 95690c28; all of the design and decisions up to section 239 are committed). Project: I-52 CT-21D baseline preparation. Authority for this work: decisions sections 237 (Owner), 238 (Architect design: docs/initiatives/I-52-ct21d…",
+      "promptFramed": true,
+      "lastProgressAt": 1790823574075,
+      "tokens": 239087,
+      "toolCalls": 25,
+      "durationMs": 406389,
+      "resultPreview": "{\"files\":[{\"path\":\"C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico/docs/initiatives/I-52-ct21d-host-gate-execution-package-v2.md\",\"gitBlob\":\"e2953120e2deb20816b42ccacefe2c1e7ed781b4\"}],\"summary\":\"Wrote docs/initiatives/I-52-ct21d-host-gate-execution-package-v2.md (592 lines, LF only, untracked, not committed). SHA-256 da18044e5976aa7a6a4cafe1783ec486f2f512577536d5d3…"
+    }
+  ],
+  "totalTokens": 981872,
+  "totalToolCalls": 171
+}

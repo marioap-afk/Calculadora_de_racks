@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Offline tools (design section 5.1 tools/): forbidden-api-scan with the imports allowlist (design 5.3), seal-evidence (I-9) and
+       label-helper (I-1). The package-manifest / pin generator (I-8) is NOT here: it belongs to package v2. No AutoCAD reference. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RootNamespace>I52Ct21d.HostFacts.Tools</RootNamespace>
+    <AssemblyName>I52Ct21d.HostFacts.Tools</AssemblyName>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\core\I52Ct21d.HostFacts.Core.csproj" />
+  </ItemGroup>
+</Project>

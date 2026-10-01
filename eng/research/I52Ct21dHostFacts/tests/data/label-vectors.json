@@ -1,0 +1,96 @@
+{
+  "cases": [
+    {
+      "id": "DESIGN-3.2-A",
+      "inputs": {
+        "AutoCadProduct": "SYNTHETIC-PRODUCT",
+        "AutoCadProfile": "SYNTHETIC-PROFILE",
+        "MachineGuid": "00000000-0000-0000-0000-000000000000",
+        "OsVersionBuild": "0.0.0.0",
+        "SECURELOAD": "1",
+        "TRUSTEDPATHS": "C:\\SYNTHETIC\\modules\\..."
+      },
+      "label": "MC-47229d23a125",
+      "note": "synthetic vector of design section 3.2 (SYNTHETIC; not a fact about any machine)",
+      "serialization": "{\"AutoCadProduct\":\"SYNTHETIC-PRODUCT\",\"AutoCadProfile\":\"SYNTHETIC-PROFILE\",\"MachineGuid\":\"00000000-0000-0000-0000-000000000000\",\"OsVersionBuild\":\"0.0.0.0\",\"SECURELOAD\":\"1\",\"TRUSTEDPATHS\":\"C:\\\\SYNTHETIC\\\\modules\\\\...\"}",
+      "sha256": "47229d23a125f9bc7bb947aa8d2eef9ee05f8e2484ea82c61c5f2ba31f593780"
+    },
+    {
+      "id": "DESIGN-3.2-B",
+      "inputs": {
+        "AutoCadProduct": "SYNTHETIC-PRODUCT",
+        "AutoCadProfile": "SYNTHETIC-PROFILE",
+        "MachineGuid": "00000000-0000-0000-0000-000000000000",
+        "OsVersionBuild": "0.0.0.0",
+        "SECURELOAD": "1",
+        "TRUSTEDPATHS": ""
+      },
+      "label": "MC-c7edfcd1078e",
+      "note": "same, TRUSTEDPATHS empty string",
+      "serialization": "{\"AutoCadProduct\":\"SYNTHETIC-PRODUCT\",\"AutoCadProfile\":\"SYNTHETIC-PROFILE\",\"MachineGuid\":\"00000000-0000-0000-0000-000000000000\",\"OsVersionBuild\":\"0.0.0.0\",\"SECURELOAD\":\"1\",\"TRUSTEDPATHS\":\"\"}",
+      "sha256": "c7edfcd1078e24f660c1abe9a793c03bd32817bd1434d720e64827a8f3995ea7"
+    },
+    {
+      "id": "NON-ASCII",
+      "inputs": {
+        "AutoCadProduct": "SYNTHETIC-PRODUCT",
+        "AutoCadProfile": "Perfil \u00c1rbol \u00f1and\u00fa",
+        "MachineGuid": "00000000-0000-0000-0000-000000000000",
+        "OsVersionBuild": "0.0.0.0",
+        "SECURELOAD": "1",
+        "TRUSTEDPATHS": "C:\\Usuarios\\Mar\u00eda\\M\u00f3dulos;D:\\\u20ac\\..."
+      },
+      "label": "MC-a817ce2ffead",
+      "note": "Spanish accents, euro sign (BMP, non ASCII)",
+      "serialization": "{\"AutoCadProduct\":\"SYNTHETIC-PRODUCT\",\"AutoCadProfile\":\"Perfil \u00c1rbol \u00f1and\u00fa\",\"MachineGuid\":\"00000000-0000-0000-0000-000000000000\",\"OsVersionBuild\":\"0.0.0.0\",\"SECURELOAD\":\"1\",\"TRUSTEDPATHS\":\"C:\\\\Usuarios\\\\Mar\u00eda\\\\M\u00f3dulos;D:\\\\\u20ac\\\\...\"}",
+      "sha256": "a817ce2ffead8e789243ae65140c7a8bdf53d77b7f79ab31259e39a9c76cf4eb"
+    },
+    {
+      "id": "ASTRAL",
+      "inputs": {
+        "AutoCadProduct": "SYNTHETIC-PRODUCT",
+        "AutoCadProfile": "emoji \ud83d\ude00 end",
+        "MachineGuid": "00000000-0000-0000-0000-000000000000",
+        "OsVersionBuild": "0.0.0.0",
+        "SECURELOAD": "1",
+        "TRUSTEDPATHS": "C:\\SYNTHETIC\\modules\\..."
+      },
+      "label": "MC-2be163f9f1ab",
+      "note": "a supplementary-plane character (surrogate pair in UTF-16)",
+      "serialization": "{\"AutoCadProduct\":\"SYNTHETIC-PRODUCT\",\"AutoCadProfile\":\"emoji \ud83d\ude00 end\",\"MachineGuid\":\"00000000-0000-0000-0000-000000000000\",\"OsVersionBuild\":\"0.0.0.0\",\"SECURELOAD\":\"1\",\"TRUSTEDPATHS\":\"C:\\\\SYNTHETIC\\\\modules\\\\...\"}",
+      "sha256": "2be163f9f1abd3c06c00de8bdedebd1649950b260477a5f2369016937c737cea"
+    },
+    {
+      "id": "CONTROL-ESCAPES",
+      "inputs": {
+        "AutoCadProduct": "SYNTHETIC-PRODUCT",
+        "AutoCadProfile": "a\tb\nc\rd\be\ff\u0001g\u001fh\u007fi\"j\\k/l",
+        "MachineGuid": "00000000-0000-0000-0000-000000000000",
+        "OsVersionBuild": "0.0.0.0",
+        "SECURELOAD": "1",
+        "TRUSTEDPATHS": "C:\\SYNTHETIC\\modules\\..."
+      },
+      "label": "MC-3650e352485f",
+      "note": "control characters, DEL, quote, backslash, slash",
+      "serialization": "{\"AutoCadProduct\":\"SYNTHETIC-PRODUCT\",\"AutoCadProfile\":\"a\\tb\\nc\\rd\\be\\ff\\u0001g\\u001fh\u007fi\\\"j\\\\k/l\",\"MachineGuid\":\"00000000-0000-0000-0000-000000000000\",\"OsVersionBuild\":\"0.0.0.0\",\"SECURELOAD\":\"1\",\"TRUSTEDPATHS\":\"C:\\\\SYNTHETIC\\\\modules\\\\...\"}",
+      "sha256": "3650e352485fe3845af4ff51d4a3482fb5f5378abc31749c9b216f56b0a5aec9"
+    },
+    {
+      "id": "ALL-EMPTY",
+      "inputs": {
+        "AutoCadProduct": "",
+        "AutoCadProfile": "",
+        "MachineGuid": "",
+        "OsVersionBuild": "",
+        "SECURELOAD": "",
+        "TRUSTEDPATHS": ""
+      },
+      "label": "MC-c47365f13ccc",
+      "note": "six empty strings",
+      "serialization": "{\"AutoCadProduct\":\"\",\"AutoCadProfile\":\"\",\"MachineGuid\":\"\",\"OsVersionBuild\":\"\",\"SECURELOAD\":\"\",\"TRUSTEDPATHS\":\"\"}",
+      "sha256": "c47365f13ccce9d51d6dace37d13f733d3c46794a25d28a8ad16d9823fdfb588"
+    }
+  ],
+  "generator": "gen_vectors.py (Python standard library; independent of the C# code)",
+  "rule": "BA-10 V8 2.2: RFC 8785 serialization, UTF-8, SHA-256, label = MC- + first 12 lowercase hex digits"
+}

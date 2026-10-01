@@ -1,0 +1,948 @@
+# allowed-apis.txt: the approved imports of the R0 instruments (design 5.3 item 2, deny-by-default).
+#
+# Format: KIND|ITEM|SCOPE|JUSTIFICATION   (KIND: A assembly, T type, M member, O IL store opcode; SCOPE: empty = anywhere, else
+# `Assembly::Full.Type.Name` = the exact top-level type that may use the member, AND the assembly that defines it: the same type name in
+# another assembly is a spoof and gets nothing. An O line (stind.*, stobj, cpobj) must be scoped; localloc, cpblk and initblk can never be approved).
+# Every external assembly, type and member that the three assemblies (core, tools, r0) reference must be here;
+# the scan fails on anything else. This list was drafted with `tools imports-list` from the CURRENT code and then reviewed line by line
+# for read-only safety by the implementer (see the README). It deliberately contains NOTHING that writes or saves a database, writes a
+# system variable, opens or locks a document, loads native or managed code, starts a process, touches the registry or the network,
+# changes process-wide state, or uses reflection to invoke. File writes exist only as the scoped members of the single
+# I52Ct21d.HostFacts.Core.EvidenceWriter. A reviewer reads this file; the independent semantic review of decisions section 239
+# condition 1 must confirm it. An entry that no assembly uses is a defect (the checker reports it).
+#
+# This list says WHICH external members may be referenced and in WHICH type. It does not say how they are called: the arguments of
+# FileStream::.ctor and File::SetAttributes inside the EvidenceWriter, the callers of the EvidenceWriter / EvidenceSealer (Core included),
+# their exact method set and the command registrations are pinned by layer 3 in privileged-surface.txt, privileged-callers.txt and
+# expected-commands.txt (see the README). File::ReadAllBytes / ReadAllText / Exists, the Path members, EvidenceWriter::.ctor and
+# IDisposable::Dispose are scoped to the types that use them (one line per type).
+#
+A|Acdbmgd||AutoCAD managed API assembly that the R0 DLL compiles against; its members are approved one by one below
+A|I52Ct21d.HostFacts.Core||the I-0 core library of this folder (part of the declared set), scanned with the same list
+A|System.Collections||BCL reference assembly System.Collections (type-forwarding facade of the .NET runtime); the members used from it are approved one by one below
+A|System.Collections.Immutable||BCL reference assembly System.Collections.Immutable (type-forwarding facade of the .NET runtime); the members used from it are approved one by one below
+A|System.Console||BCL reference assembly System.Console (type-forwarding facade of the .NET runtime); the members used from it are approved one by one below
+A|System.Diagnostics.Process||BCL reference assembly System.Diagnostics.Process (type-forwarding facade of the .NET runtime); the members used from it are approved one by one below
+A|System.Linq||BCL reference assembly System.Linq (type-forwarding facade of the .NET runtime); the members used from it are approved one by one below
+A|System.Reflection.Metadata||BCL reference assembly System.Reflection.Metadata (type-forwarding facade of the .NET runtime); the members used from it are approved one by one below
+A|System.Reflection.Primitives||BCL reference assembly System.Reflection.Primitives (type-forwarding facade of the .NET runtime); the members used from it are approved one by one below
+A|System.Runtime||BCL reference assembly System.Runtime (type-forwarding facade of the .NET runtime); the members used from it are approved one by one below
+A|System.Security.Cryptography||BCL reference assembly System.Security.Cryptography (type-forwarding facade of the .NET runtime); the members used from it are approved one by one below
+A|System.Text.Encoding.Extensions||BCL reference assembly System.Text.Encoding.Extensions (type-forwarding facade of the .NET runtime); the members used from it are approved one by one below
+A|System.Text.Json||BCL reference assembly System.Text.Json (type-forwarding facade of the .NET runtime); the members used from it are approved one by one below
+A|System.Text.RegularExpressions||BCL reference assembly System.Text.RegularExpressions (type-forwarding facade of the .NET runtime); the members used from it are approved one by one below
+A|accoremgd||AutoCAD managed API assembly that the R0 DLL compiles against; its members are approved one by one below
+M|Autodesk.AutoCAD.ApplicationServices.Core.Application::GetSystemVariable|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSystemVariables|READS a system variable (SetSystemVariable is a forbidden symbol); only inside the system-variable reader
+M|Autodesk.AutoCAD.ApplicationServices.Core.Application::get_DocumentManager|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostGateCommands|reaches the active editor only to print the one-line status; no database or lock is taken from the document
+M|Autodesk.AutoCAD.ApplicationServices.Document::get_Editor|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostGateCommands|reaches the active editor only to print the one-line status; no database or lock is taken from the document
+M|Autodesk.AutoCAD.ApplicationServices.DocumentCollection::get_MdiActiveDocument|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostGateCommands|reaches the active editor only to print the one-line status; no database or lock is taken from the document
+M|Autodesk.AutoCAD.DatabaseServices.BlockReference::get_BlockTableRecord|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of BlockReference over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.BlockReference::get_DynamicBlockTableRecord|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of BlockReference over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.BlockReference::get_IsDynamicBlock|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of BlockReference over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.BlockReference::get_ScaleFactors|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of BlockReference over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.BlockTableRecord::GetEnumerator|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of BlockTableRecord over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.BlockTableRecord::get_IsAnonymous|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of BlockTableRecord over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.BlockTableRecord::get_IsDynamicBlock|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of BlockTableRecord over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.BlockTableRecord::get_IsLayout|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of BlockTableRecord over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.BlockTableRecordEnumerator::MoveNext|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of BlockTableRecordEnumerator over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.BlockTableRecordEnumerator::get_Current|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of BlockTableRecordEnumerator over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.DBDictionary::GetEnumerator|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of DBDictionary over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.DBDictionaryEntry::get_Value|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of DBDictionaryEntry over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.DBObject::GetXDataForApplication|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of DBObject over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.DBObject::get_ExtensionDictionary|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of DBObject over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.DBObject::get_XData|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of DBObject over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.DBText::get_TextStyleName|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of DBText over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.Database::.ctor|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|new Database(false, true): the in-memory side database, only inside AcadSideDbReader (the scan checks the constant arguments)
+M|Autodesk.AutoCAD.DatabaseServices.Database::CloseInput|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|releases the input file of the side database; no write
+M|Autodesk.AutoCAD.DatabaseServices.Database::ReadDwgFile|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|fills the side database from the PRIVATE COPY; reads the file, never writes it; only inside AcadSideDbReader
+M|Autodesk.AutoCAD.DatabaseServices.Database::get_BlockTableId|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of Database over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.Database::get_NamedObjectsDictionaryId|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of Database over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.Database::get_TransactionManager|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|transaction manager of the side database only (the scan refuses it elsewhere)
+M|Autodesk.AutoCAD.DatabaseServices.DbDictionaryEnumerator::MoveNext|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of DbDictionaryEnumerator over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.DbDictionaryEnumerator::get_Current|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of DbDictionaryEnumerator over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.Dimension::get_DimensionStyleName|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of Dimension over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.Entity::get_Layer|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of Entity over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.Entity::get_Linetype|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of Entity over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.MText::get_TextStyleName|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of MText over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.ObjectId::get_IsNull|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of ObjectId over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.ResultBuffer::AsArray|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of ResultBuffer over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.SymbolTable::GetEnumerator|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of SymbolTable over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.SymbolTableEnumerator::MoveNext|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of SymbolTableEnumerator over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.SymbolTableEnumerator::get_Current|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of SymbolTableEnumerator over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.SymbolTableRecord::get_Name|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of SymbolTableRecord over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.Transaction::GetObject|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|opens an object ForRead only: the scan resolves the OpenMode constant and refuses anything but ForRead
+M|Autodesk.AutoCAD.DatabaseServices.TransactionManager::StartOpenCloseTransaction|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|OpenCloseTransaction of the side database: objects are only disposed, never committed (the scan refuses Commit)
+M|Autodesk.AutoCAD.DatabaseServices.TypedValue::get_TypeCode|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of TypedValue over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.TypedValue::get_Value|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of TypedValue over the side database (no mutation)
+M|Autodesk.AutoCAD.DatabaseServices.Xrecord::get_Data|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of Xrecord over the side database (no mutation)
+M|Autodesk.AutoCAD.EditorInput.Editor::WriteMessage|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostGateCommands|prints one status line to the command line (decisions section 239 R-I); no database effect
+M|Autodesk.AutoCAD.Geometry.Scale3d::get_X|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of Scale3d over the side database (no mutation)
+M|Autodesk.AutoCAD.Geometry.Scale3d::get_Y|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of Scale3d over the side database (no mutation)
+M|Autodesk.AutoCAD.Geometry.Scale3d::get_Z|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of Scale3d over the side database (no mutation)
+M|Autodesk.AutoCAD.Runtime.CommandClassAttribute::.ctor||declares the read-only R0 commands; the host registers them at load, the code itself registers nothing; every registration is pinned by expected-commands.txt (R-COMMAND-UNEXPECTED)
+M|Autodesk.AutoCAD.Runtime.CommandMethodAttribute::.ctor||declares the read-only R0 commands; the host registers them at load, the code itself registers nothing; every registration is pinned by expected-commands.txt (R-COMMAND-UNEXPECTED)
+M|Autodesk.AutoCAD.Runtime.DisposableWrapper::Dispose|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|disposes a read object or the in-memory side database; no write
+M|Autodesk.AutoCAD.Runtime.RXClass::get_DxfName|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of RXClass over the side database (no mutation)
+M|Autodesk.AutoCAD.Runtime.RXClass::get_Name|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of RXClass over the side database (no mutation)
+M|Autodesk.AutoCAD.Runtime.RXObject::GetRXClass|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|read-only getter or enumeration of RXObject over the side database (no mutation)
+M|I52Ct21d.HostFacts.Core.BlockRecordInfo::.ctor|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.DoubleBits::Hex|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSystemVariables|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.DstyleInfo::.ctor|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.DstylePair::.ctor|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.EntityInfo::.ctor|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.EvidenceSealer::SealOrVerify|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.EvidenceWriter::.ctor|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostGateCommands|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.EvidenceWriter::.ctor|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.EvidenceWriter::WriteNewText|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.Jcs::Serialize|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.LabelHelper/Outcome::get_Attributes|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.LabelHelper/Outcome::get_Label|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.LabelHelper::ComputeFromFolder|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.MachineLabelResult::get_IsSet|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.MachineLabelResult::get_Label|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.MachineLabelResult::get_SerializationSha256|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.RawAttributeResult::get_Reason|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.RawAttributeResult::get_RuneCount|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.RawAttributeResult::get_Status|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.RecordJson::Arr|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.RecordJson::ValidateOrThrow|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.RunDesignation::Parse|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostGateCommands|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.RunDesignation::get_EvidenceFolder|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostGateCommands|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.RunOutcome::get_FactStatuses|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostGateCommands|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.RunOutcome::get_InvalidReasons|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostGateCommands|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.Runners::RunCensus|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostGateCommands|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.Runners::RunCtxVars|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostGateCommands|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.Runners::RunInventory|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostGateCommands|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.SealResult::get_Differences|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.SealResult::get_Written|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.SelfPin::Verify|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostGateCommands|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.StoredBufferScan::.ctor|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.StoredEntry::.ctor|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.SysVarReading::.ctor|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSystemVariables|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.WrittenFile::get_Name|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|member of the I-0 core library of this folder (scanned with this same list)
+M|I52Ct21d.HostFacts.Core.WrittenFile::get_Sha256|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|member of the I-0 core library of this folder (scanned with this same list)
+M|System.Action`2::.ctor|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Action`2::Invoke|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.ArgumentException::.ctor||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Array::Empty||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Array::IndexOf|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.BitConverter::DoubleToUInt64Bits|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.DoubleBits|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.BitConverter::ToInt32|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.BitConverter::ToUInt16|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.BitConverter::UInt64BitsToDouble||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Byte::ToString|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Jcs|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Char::IsHighSurrogate|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Jcs|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Char::IsLowSurrogate|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Jcs|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Char::ToString|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.ProbeTable|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.CollectionExtensions::GetValueOrDefault||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.Dictionary`2/Enumerator::MoveNext|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceSealer|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.Dictionary`2/Enumerator::MoveNext|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.Dictionary`2/Enumerator::get_Current|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceSealer|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.Dictionary`2/Enumerator::get_Current|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.Dictionary`2/KeyCollection/Enumerator::MoveNext|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceSealer|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.Dictionary`2/KeyCollection/Enumerator::get_Current|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceSealer|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.Dictionary`2/KeyCollection::GetEnumerator|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceSealer|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.Dictionary`2::.ctor||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.Dictionary`2::ContainsKey||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.Dictionary`2::GetEnumerator|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceSealer|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.Dictionary`2::GetEnumerator|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.Dictionary`2::TryGetValue||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.Dictionary`2::get_Item||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.Dictionary`2::get_Keys|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceSealer|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.Dictionary`2::set_Item||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.EqualityComparer`1::Equals||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.EqualityComparer`1::GetHashCode||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.EqualityComparer`1::get_Default||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.HashSet`1::.ctor||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.HashSet`1::Add||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.HashSet`1::Contains||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.HashSet`1::get_Count|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.InventoryBuilder|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.HashSet`1::get_Count|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.IEnumerable`1::GetEnumerator||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.IEnumerator`1::get_Current||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.IReadOnlyCollection`1::get_Count||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.IReadOnlyDictionary`2::TryGetValue|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.MachineLabel|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.IReadOnlyDictionary`2::get_Item|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.MachineLabel|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.IReadOnlyDictionary`2::get_Keys|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.MachineLabel|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.IReadOnlyList`1::get_Item||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.KeyValuePair`2::Deconstruct||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.KeyValuePair`2::get_Key||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.KeyValuePair`2::get_Value||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.List`1/Enumerator::MoveNext||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.List`1/Enumerator::get_Current||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.List`1::.ctor||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.List`1::Add||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.List`1::AddRange|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ApiAllowlist|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.List`1::Contains||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.List`1::GetEnumerator||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.List`1::Sort||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.List`1::get_Count||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.List`1::get_Item||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.SortedDictionary`2/Enumerator::MoveNext|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.SortedDictionary`2/Enumerator::get_Current|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.SortedDictionary`2::.ctor||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.SortedDictionary`2::GetEnumerator|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.SortedDictionary`2::TryGetValue||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.SortedDictionary`2::get_Count|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.CensusBuilder|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.SortedDictionary`2::get_Keys|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.CensusBuilder|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.SortedDictionary`2::get_Values|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RbTallyBuilder|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.SortedDictionary`2::set_Item||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.SortedSet`1::.ctor||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.SortedSet`1::Add||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.SortedSet`1::get_Count|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.Stack`1::.ctor|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Jcs|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.Stack`1::Peek|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Jcs|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.Stack`1::Pop|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Jcs|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Generic.Stack`1::Push|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Jcs|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.IEnumerator::MoveNext||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Immutable.ImmutableArray::Create|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Collections.Immutable.ImmutableArray`1::get_Item|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Collections.Immutable.ImmutableArray`1::get_Length|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Comparison`1::.ctor|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Jcs|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Console::get_Error|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|standard output or error writer of the offline tools (no Set* member)
+M|System.Console::get_Out|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|standard output or error writer of the offline tools (no Set* member)
+M|System.Convert::ToHexString||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Convert::ToString|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSystemVariables|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Convert::ToUInt64|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.DoubleBits|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.DateTime::ToString||reads or formats the clock value (volatile part of the record)
+M|System.DateTime::ToUniversalTime||reads or formats the clock value (volatile part of the record)
+M|System.DateTime::get_UtcNow|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostEnvironment|reads or formats the clock value (volatile part of the record)
+M|System.Diagnostics.DebuggableAttribute::.ctor||compiler-emitted attribute constructor or helper (no I/O, no state)
+M|System.Diagnostics.Process::GetCurrentProcess|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostEnvironment|reads the identity of the CURRENT process (id, start time); no start, kill or close member is approved
+M|System.Diagnostics.Process::get_Id|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostEnvironment|reads the identity of the CURRENT process (id, start time); no start, kill or close member is approved
+M|System.Diagnostics.Process::get_StartTime|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostEnvironment|reads the identity of the CURRENT process (id, start time); no start, kill or close member is approved
+M|System.Double::IsFinite||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Double::ToString||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Exception::.ctor||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Exception::GetType||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Exception::get_Message||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.FormatException::.ctor||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Func`2::.ctor||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Func`3::.ctor|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.CensusBuilder|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Func`5::.ctor|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostGateCommands|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Func`5::Invoke|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostGateCommands|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Globalization.CultureInfo::get_InvariantCulture||read of the invariant culture; no setter of any culture default
+M|System.IDisposable::Dispose|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.CtxVarsBuilder|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.IDisposable::Dispose|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceSealer|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.IDisposable::Dispose|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceWriter|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.IDisposable::Dispose|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.InventoryBuilder|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.IDisposable::Dispose|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.JsonSchemaLite|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.IDisposable::Dispose|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.LabelHelper|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.IDisposable::Dispose|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.MachineLabel|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.IDisposable::Dispose|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.ProbeStatistics|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.IDisposable::Dispose|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.ProbeTable|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.IDisposable::Dispose|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RawAttributeText|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.IDisposable::Dispose|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RbTallyBuilder|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.IDisposable::Dispose|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RecordJson|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.IDisposable::Dispose|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Runners|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.IDisposable::Dispose|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Sha256Hex|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.IDisposable::Dispose|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.AcadSideDbReader|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.IDisposable::Dispose|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.IDisposable::Dispose|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ApiAllowlist|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.IDisposable::Dispose|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.IDisposable::Dispose|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.IDisposable::Dispose|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ScanPolicy|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.IDisposable::Dispose|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ScanReport|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.IO.Directory::EnumerateDirectories|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceSealer|enumerates or tests a directory (read-only); no create, delete or move member
+M|System.IO.Directory::EnumerateFileSystemEntries|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceWriter|enumerates or tests a directory (read-only); no create, delete or move member
+M|System.IO.Directory::EnumerateFiles|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceSealer|enumerates or tests a directory (read-only); no create, delete or move member
+M|System.IO.Directory::Exists|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceWriter|enumerates or tests a directory (read-only); no create, delete or move member
+M|System.IO.File::Exists|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceSealer|read-only file API (reads or inspects, never creates or changes a file)
+M|System.IO.File::Exists|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceWriter|read-only file API (reads or inspects, never creates or changes a file)
+M|System.IO.File::Exists|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.LabelHelper|read-only file API (reads or inspects, never creates or changes a file)
+M|System.IO.File::Exists|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.SelfPin|read-only file API (reads or inspects, never creates or changes a file)
+M|System.IO.File::GetAttributes|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceWriter|read-only file API (reads or inspects, never creates or changes a file)
+M|System.IO.File::OpenRead|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Sha256Hex|read-only file API (reads or inspects, never creates or changes a file)
+M|System.IO.File::ReadAllBytes|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.LabelHelper|read-only file API (reads or inspects, never creates or changes a file)
+M|System.IO.File::ReadAllBytes|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|read-only file API (reads or inspects, never creates or changes a file)
+M|System.IO.File::ReadAllBytes|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ApiAllowlist|read-only file API (reads or inspects, never creates or changes a file)
+M|System.IO.File::ReadAllBytes|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|read-only file API (reads or inspects, never creates or changes a file)
+M|System.IO.File::ReadAllBytes|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ScanPolicy|read-only file API (reads or inspects, never creates or changes a file)
+M|System.IO.File::ReadAllText|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceSealer|read-only file API (reads or inspects, never creates or changes a file)
+M|System.IO.File::ReadAllText|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.LabelHelper|read-only file API (reads or inspects, never creates or changes a file)
+M|System.IO.File::ReadAllText|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.SelfPin|read-only file API (reads or inspects, never creates or changes a file)
+M|System.IO.File::ReadAllText|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostGateCommands|read-only file API (reads or inspects, never creates or changes a file)
+M|System.IO.File::SetAttributes|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceWriter|sets the read-only attribute of a file the EvidenceWriter itself wrote (seal); not a content write, scoped to the writer
+M|System.IO.FileNotFoundException::.ctor|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.JsonSchemaLite|in-memory or read-only I/O member (FileNotFoundException)
+M|System.IO.FileStream::.ctor|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceWriter|the single create-new write stream of the EvidenceWriter (FileMode.CreateNew); scoped to that one type
+M|System.IO.FileStream::Flush|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceWriter|the single create-new write stream of the EvidenceWriter (FileMode.CreateNew); scoped to that one type
+M|System.IO.InvalidDataException::.ctor|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|in-memory or read-only I/O member (InvalidDataException)
+M|System.IO.Path::AltDirectorySeparatorChar|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RunDesignation|pure path string or constant (no I/O)
+M|System.IO.Path::Combine|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceSealer|pure path string or constant (no I/O)
+M|System.IO.Path::Combine|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceWriter|pure path string or constant (no I/O)
+M|System.IO.Path::Combine|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.LabelHelper|pure path string or constant (no I/O)
+M|System.IO.Path::Combine|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostGateCommands|pure path string or constant (no I/O)
+M|System.IO.Path::DirectorySeparatorChar|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceWriter|pure path string or constant (no I/O)
+M|System.IO.Path::DirectorySeparatorChar|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RunDesignation|pure path string or constant (no I/O)
+M|System.IO.Path::GetDirectoryName|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceWriter|pure path string or constant (no I/O)
+M|System.IO.Path::GetDirectoryName|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RunDesignation|pure path string or constant (no I/O)
+M|System.IO.Path::GetDirectoryName|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostGateCommands|pure path string or constant (no I/O)
+M|System.IO.Path::GetFileName|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceSealer|pure path string or constant (no I/O)
+M|System.IO.Path::GetFileName|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceWriter|pure path string or constant (no I/O)
+M|System.IO.Path::GetFileName|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|pure path string or constant (no I/O)
+M|System.IO.Path::GetFileName|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|pure path string or constant (no I/O)
+M|System.IO.Path::GetFullPath|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceWriter|pure path string or constant (no I/O)
+M|System.IO.Path::GetFullPath|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RunDesignation|pure path string or constant (no I/O)
+M|System.IO.Path::GetFullPath|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|pure path string or constant (no I/O)
+M|System.IO.Path::IsPathFullyQualified|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceWriter|pure path string or constant (no I/O)
+M|System.IO.Stream::Write|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceWriter|writes the bytes of the file the EvidenceWriter is creating; scoped to that one type
+M|System.IO.StreamReader::.ctor|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.JsonSchemaLite|in-memory or read-only I/O member (StreamReader)
+M|System.IO.TextReader::ReadToEnd|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.JsonSchemaLite|in-memory or read-only I/O member (TextReader)
+M|System.IO.TextWriter::Write|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|in-memory or read-only I/O member (TextWriter)
+M|System.IO.TextWriter::WriteLine|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|in-memory or read-only I/O member (TextWriter)
+M|System.Int16::ToString|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Jcs|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Int32::ToString||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Int32::TryParse|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.LabelHelper|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Int64::ToString|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Jcs|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.InvalidOperationException::.ctor||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Linq.Enumerable::All||in-memory LINQ operator over sequences (no I/O)
+M|System.Linq.Enumerable::Any||in-memory LINQ operator over sequences (no I/O)
+M|System.Linq.Enumerable::Concat|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Runners|in-memory LINQ operator over sequences (no I/O)
+M|System.Linq.Enumerable::Contains||in-memory LINQ operator over sequences (no I/O)
+M|System.Linq.Enumerable::Count|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Runners|in-memory LINQ operator over sequences (no I/O)
+M|System.Linq.Enumerable::Distinct||in-memory LINQ operator over sequences (no I/O)
+M|System.Linq.Enumerable::FirstOrDefault||in-memory LINQ operator over sequences (no I/O)
+M|System.Linq.Enumerable::OrderBy||in-memory LINQ operator over sequences (no I/O)
+M|System.Linq.Enumerable::Select||in-memory LINQ operator over sequences (no I/O)
+M|System.Linq.Enumerable::Single|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|in-memory LINQ operator over sequences (no I/O)
+M|System.Linq.Enumerable::Skip|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|in-memory LINQ operator over sequences (no I/O)
+M|System.Linq.Enumerable::Sum|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RbTallyBuilder|in-memory LINQ operator over sequences (no I/O)
+M|System.Linq.Enumerable::Take|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RecordJson|in-memory LINQ operator over sequences (no I/O)
+M|System.Linq.Enumerable::ThenBy|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|in-memory LINQ operator over sequences (no I/O)
+M|System.Linq.Enumerable::ToArray|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.ProbeStatistics|in-memory LINQ operator over sequences (no I/O)
+M|System.Linq.Enumerable::ToDictionary||in-memory LINQ operator over sequences (no I/O)
+M|System.Linq.Enumerable::ToList||in-memory LINQ operator over sequences (no I/O)
+M|System.Linq.Enumerable::Where||in-memory LINQ operator over sequences (no I/O)
+M|System.Linq.Enumerable::Zip|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.ProbeStatistics|in-memory LINQ operator over sequences (no I/O)
+M|System.Math::Abs||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Math::Max||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Math::Min|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.InventoryBuilder|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Math::Pow|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.ProbeTable|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Math::Sign|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.ProbeStatistics|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.NotSupportedException::.ctor|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Jcs|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Nullable`1::.ctor||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Nullable`1::GetValueOrDefault||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Nullable`1::get_HasValue||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Nullable`1::get_Value||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Object::.ctor||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Object::GetType||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Object::ToString||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.ReadOnlySpan`1::.ctor||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.ReadOnlySpan`1::op_Implicit||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Reflection.Assembly::GetManifestResourceStream|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.JsonSchemaLite|reads an embedded resource stream of the core assembly (the schemas); read-only
+M|System.Reflection.Assembly::get_Location|I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostGateCommands|path of the loaded instrument DLL (read) for the self-pin and the designation folder
+M|System.Reflection.AssemblyCompanyAttribute::.ctor||compiler-emitted attribute constructor or helper (no I/O, no state)
+M|System.Reflection.AssemblyConfigurationAttribute::.ctor||compiler-emitted attribute constructor or helper (no I/O, no state)
+M|System.Reflection.AssemblyFileVersionAttribute::.ctor||compiler-emitted attribute constructor or helper (no I/O, no state)
+M|System.Reflection.AssemblyInformationalVersionAttribute::.ctor||compiler-emitted attribute constructor or helper (no I/O, no state)
+M|System.Reflection.AssemblyProductAttribute::.ctor||compiler-emitted attribute constructor or helper (no I/O, no state)
+M|System.Reflection.AssemblyTitleAttribute::.ctor||compiler-emitted attribute constructor or helper (no I/O, no state)
+M|System.Reflection.Emit.OpCode::get_OperandType||opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCode::get_Value|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCode::op_Equality||opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Call|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Calli||opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Callvirt|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Jmp||opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldarg|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldarg_0|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldarg_1|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldarg_2|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldarg_3|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldarg_S|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldarga|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldarga_S|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldc_I4|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldc_I4_0|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldc_I4_M1|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldc_I4_S|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldc_I8|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldc_R4|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldc_R8|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldftn|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldloc|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldloc_0|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldloc_1|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldloc_2|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldloc_3|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldloc_S|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldloca|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldloca_S|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldnull|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldstr|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Ldvirtftn|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Newobj||opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Stfld|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.Emit.OpCodes::Stsfld|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|opcode value or constant used only to decode IL bytes; no emitting
+M|System.Reflection.FieldInfo::GetValue|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|reads the constant OpCode fields of OpCodes to build the IL opcode table; scoped to the IL reader
+M|System.Reflection.MemberInfo::get_Name||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Reflection.Metadata.ArrayShape::get_Rank|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.AssemblyDefinition::get_Name|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.AssemblyReference::get_Name|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.AssemblyReferenceHandleCollection/Enumerator::MoveNext|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.AssemblyReferenceHandleCollection/Enumerator::get_Current|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.AssemblyReferenceHandleCollection::GetEnumerator|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.Ecma335.MetadataTokens::EntityHandle|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.EntityHandle::get_IsNil|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.EntityHandle::get_Kind|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MemberReference::DecodeMethodSignature|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MemberReference::GetKind|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MemberReference::get_Name|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MemberReference::get_Parent|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MemberReferenceHandle::op_Explicit|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MemberReferenceHandleCollection/Enumerator::MoveNext|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MemberReferenceHandleCollection/Enumerator::get_Current|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MemberReferenceHandleCollection::GetEnumerator|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MetadataReader::GetAssemblyDefinition|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MetadataReader::GetAssemblyReference|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MetadataReader::GetMemberReference|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MetadataReader::GetMethodDefinition|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MetadataReader::GetMethodSpecification|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MetadataReader::GetString|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MetadataReader::GetTypeDefinition|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MetadataReader::GetTypeReference|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MetadataReader::GetTypeSpecification|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MetadataReader::get_AssemblyReferences|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MetadataReader::get_MemberReferences|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MetadataReader::get_TypeDefinitions|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MetadataReader::get_TypeReferences|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MethodBodyBlock::GetILBytes|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MethodDefinition::get_Attributes|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MethodDefinition::get_Name|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MethodDefinition::get_RelativeVirtualAddress|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MethodDefinitionHandleCollection/Enumerator::MoveNext|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MethodDefinitionHandleCollection/Enumerator::get_Current|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MethodDefinitionHandleCollection::GetEnumerator|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MethodSignature`1::get_ParameterTypes|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MethodSpecification::get_Method|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MethodSpecificationHandle::op_Explicit|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.PEReaderExtensions::GetMetadataReader|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.PEReaderExtensions::GetMethodBody|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.TypeDefinition::GetDeclaringType|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.TypeDefinition::GetMethods|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.TypeDefinition::get_BaseType|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.TypeDefinition::get_Name|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.TypeDefinition::get_Namespace|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.TypeDefinitionHandle::get_IsNil|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.TypeDefinitionHandle::op_Explicit|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.TypeDefinitionHandleCollection/Enumerator::MoveNext|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.TypeDefinitionHandleCollection/Enumerator::get_Current|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.TypeDefinitionHandleCollection::GetEnumerator|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.TypeReference::get_Name|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.TypeReference::get_Namespace|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.TypeReference::get_ResolutionScope|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.TypeReferenceHandle::op_Explicit|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.TypeReferenceHandleCollection/Enumerator::MoveNext|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.TypeReferenceHandleCollection/Enumerator::get_Current|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.TypeReferenceHandleCollection::GetEnumerator|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.TypeSpecification::DecodeSignature|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.TypeSpecificationHandle::op_Explicit|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.PortableExecutable.PEReader::.ctor|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Runtime.CompilerServices.CompilationRelaxationsAttribute::.ctor||compiler-emitted attribute constructor or helper (no I/O, no state)
+M|System.Runtime.CompilerServices.CompilerGeneratedAttribute::.ctor||compiler-emitted attribute constructor or helper (no I/O, no state)
+M|System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::.ctor||compiler-emitted attribute constructor or helper (no I/O, no state)
+M|System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendFormatted||compiler-emitted attribute constructor or helper (no I/O, no state)
+M|System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendLiteral||compiler-emitted attribute constructor or helper (no I/O, no state)
+M|System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::ToStringAndClear||compiler-emitted attribute constructor or helper (no I/O, no state)
+M|System.Runtime.CompilerServices.NullableAttribute::.ctor||compiler-emitted attribute constructor or helper (no I/O, no state)
+M|System.Runtime.CompilerServices.NullableContextAttribute::.ctor||compiler-emitted attribute constructor or helper (no I/O, no state)
+M|System.Runtime.CompilerServices.RefSafetyRulesAttribute::.ctor||compiler-emitted attribute constructor or helper (no I/O, no state)
+M|System.Runtime.CompilerServices.RuntimeCompatibilityAttribute::.ctor||compiler-emitted attribute constructor or helper (no I/O, no state)
+M|System.Runtime.CompilerServices.RuntimeHelpers::EnsureSufficientExecutionStack||compiler plumbing (array initializer, stack guard); no side effect
+M|System.Runtime.CompilerServices.RuntimeHelpers::InitializeArray|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.ProbeTable|compiler plumbing (array initializer, stack guard); no side effect
+M|System.Runtime.CompilerServices.TupleElementNamesAttribute::.ctor||compiler-emitted attribute constructor or helper (no I/O, no state)
+M|System.Runtime.Versioning.SupportedOSPlatformAttribute::.ctor||compiler-emitted attribute constructor or helper (no I/O, no state)
+M|System.Runtime.Versioning.TargetFrameworkAttribute::.ctor||compiler-emitted attribute constructor or helper (no I/O, no state)
+M|System.Runtime.Versioning.TargetPlatformAttribute::.ctor||compiler-emitted attribute constructor or helper (no I/O, no state)
+M|System.Security.Cryptography.SHA256::HashData||one-shot SHA-256 of bytes in memory
+M|System.String::.ctor|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.String::CompareOrdinal|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Jcs|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.String::Concat||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.String::Contains||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.String::EndsWith||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.String::EnumerateRunes|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RawAttributeText|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.String::Equals||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.String::IndexOf||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.String::IsNullOrWhiteSpace|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceWriter|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.String::Join||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.String::LastIndexOf||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.String::Split||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.String::StartsWith||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.String::Substring||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.String::ToLowerInvariant||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.String::Trim||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.String::TrimEnd||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.String::get_Chars||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.String::get_Length||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.String::op_Equality||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.String::op_Implicit||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.String::op_Inequality||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.StringComparer::get_Ordinal||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.StringComparer::get_OrdinalIgnoreCase||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Text.Encoding::GetBytes||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Text.Encoding::GetString||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Text.Json.JsonDocumentOptions::set_AllowTrailingCommas|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Jcs|sets an option of a local, in-memory JSON options struct (not process-wide state)
+M|System.Text.Json.JsonDocumentOptions::set_CommentHandling|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Jcs|sets an option of a local, in-memory JSON options struct (not process-wide state)
+M|System.Text.Json.JsonElement::GetRawText|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Jcs|in-memory JSON member (no I/O)
+M|System.Text.Json.JsonElement::GetString|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Jcs|in-memory JSON member (no I/O)
+M|System.Text.Json.JsonElement::TryGetInt64||in-memory JSON member (no I/O)
+M|System.Text.Json.JsonElement::get_ValueKind||in-memory JSON member (no I/O)
+M|System.Text.Json.JsonReaderOptions::set_CommentHandling|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Jcs|sets an option of a local, in-memory JSON options struct (not process-wide state)
+M|System.Text.Json.Nodes.JsonArray::.ctor|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RecordJson|in-memory JSON member (no I/O)
+M|System.Text.Json.Nodes.JsonArray::Add|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RecordJson|in-memory JSON member (no I/O)
+M|System.Text.Json.Nodes.JsonArray::GetEnumerator|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.JsonSchemaLite|in-memory JSON member (no I/O)
+M|System.Text.Json.Nodes.JsonArray::get_Count||in-memory JSON member (no I/O)
+M|System.Text.Json.Nodes.JsonNode::DeepClone||in-memory JSON member (no I/O)
+M|System.Text.Json.Nodes.JsonNode::GetValue||in-memory JSON member (no I/O)
+M|System.Text.Json.Nodes.JsonNode::GetValueKind|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.JsonSchemaLite|in-memory JSON member (no I/O)
+M|System.Text.Json.Nodes.JsonNode::Parse|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Jcs|in-memory JSON member (no I/O)
+M|System.Text.Json.Nodes.JsonNode::get_Item||in-memory JSON member (no I/O)
+M|System.Text.Json.Nodes.JsonNode::op_Implicit||in-memory JSON member (no I/O)
+M|System.Text.Json.Nodes.JsonNode::set_Item||sets an option of a local, in-memory JSON options struct (not process-wide state)
+M|System.Text.Json.Nodes.JsonObject::.ctor||in-memory JSON member (no I/O)
+M|System.Text.Json.Nodes.JsonObject::ContainsKey|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.JsonSchemaLite|in-memory JSON member (no I/O)
+M|System.Text.Json.Nodes.JsonObject::GetEnumerator|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.JsonSchemaLite|in-memory JSON member (no I/O)
+M|System.Text.Json.Nodes.JsonObject::Remove|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RecordJson|in-memory JSON member (no I/O)
+M|System.Text.Json.Nodes.JsonObject::TryGetPropertyValue|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.JsonSchemaLite|in-memory JSON member (no I/O)
+M|System.Text.Json.Nodes.JsonValue::Create||in-memory JSON member (no I/O)
+M|System.Text.Json.Nodes.JsonValue::TryGetValue||in-memory JSON member (no I/O)
+M|System.Text.Json.Utf8JsonReader::.ctor|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Jcs|in-memory JSON member (no I/O)
+M|System.Text.Json.Utf8JsonReader::GetString|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Jcs|in-memory JSON member (no I/O)
+M|System.Text.Json.Utf8JsonReader::Read|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Jcs|in-memory JSON member (no I/O)
+M|System.Text.Json.Utf8JsonReader::get_TokenType|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Jcs|in-memory JSON member (no I/O)
+M|System.Text.RegularExpressions.Regex::.ctor|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceWriter|in-memory regular expression member
+M|System.Text.RegularExpressions.Regex::IsMatch||in-memory regular expression member
+M|System.Text.StringBuilder::.ctor||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Text.StringBuilder::Append||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Text.StringRuneEnumerator::GetEnumerator|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RawAttributeText|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Text.StringRuneEnumerator::MoveNext|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RawAttributeText|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Text.StringRuneEnumerator::get_Current|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RawAttributeText|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Text.UTF8Encoding::.ctor||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Type::GetFields|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|type metadata read (name, assembly, field list, typeof); no InvokeMember or GetType(string) member
+M|System.Type::GetTypeFromHandle||type metadata read (name, assembly, field list, typeof); no InvokeMember or GetType(string) member
+M|System.Type::get_Assembly||type metadata read (name, assembly, field list, typeof); no InvokeMember or GetType(string) member
+M|System.Type::get_FullName||type metadata read (name, assembly, field list, typeof); no InvokeMember or GetType(string) member
+M|System.Type::op_Equality||type metadata read (name, assembly, field list, typeof); no InvokeMember or GetType(string) member
+M|System.UInt16::ToString|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.IlReader|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.UInt64::ToString|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.DoubleBits|pure in-memory BCL member (no I/O, no process-wide state)
+M|System.ValueTuple`2::.ctor||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.ValueTuple`2::Item1||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.ValueTuple`2::Item2||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.ValueTuple`3::.ctor||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.ValueTuple`3::Item1||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.ValueTuple`3::Item2||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.ValueTuple`3::Item3||pure in-memory BCL member (no I/O, no process-wide state)
+M|System.Linq.Enumerable::Prepend|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Emit.OpCode::get_Name|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.AssemblyDefinitionHandle::op_Implicit|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.CustomAttribute::get_Constructor|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.CustomAttributeHandleCollection/Enumerator::MoveNext|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.CustomAttributeHandleCollection/Enumerator::get_Current|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.CustomAttributeHandleCollection::GetEnumerator|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.Ecma335.MetadataReaderExtensions::GetTableRowCount|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.Ecma335.MetadataTokens::MethodSpecificationHandle|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.Ecma335.MetadataTokens::StandaloneSignatureHandle|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.Ecma335.MetadataTokens::TypeSpecificationHandle|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.EntityHandle::AssemblyDefinition|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.EntityHandle::ModuleDefinition|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.EventDefinition::get_Name|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.EventDefinition::get_Type|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.EventDefinitionHandleCollection/Enumerator::MoveNext|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.EventDefinitionHandleCollection/Enumerator::get_Current|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.EventDefinitionHandleCollection::GetEnumerator|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.FieldDefinition::DecodeSignature|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.FieldDefinition::get_Name|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.FieldDefinitionHandleCollection/Enumerator::MoveNext|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.FieldDefinitionHandleCollection/Enumerator::get_Current|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.FieldDefinitionHandleCollection::GetEnumerator|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MemberReference::DecodeFieldSignature|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MetadataReader::GetCustomAttribute|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MetadataReader::GetCustomAttributes|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MetadataReader::GetEventDefinition|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MetadataReader::GetFieldDefinition|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MetadataReader::GetPropertyDefinition|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MetadataReader::GetStandaloneSignature|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MethodBodyBlock::get_LocalSignature|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MethodDefinition::DecodeSignature|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MethodDefinition::GetDeclaringType|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MethodDefinition::get_ImplAttributes|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MethodDefinitionHandle::op_Explicit|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MethodSignature`1::get_ReturnType|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.MethodSpecification::DecodeSignature|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.ModuleDefinitionHandle::op_Implicit|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.PropertyDefinition::DecodeSignature|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.PropertyDefinition::get_Name|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.PropertyDefinitionHandleCollection/Enumerator::MoveNext|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.PropertyDefinitionHandleCollection/Enumerator::get_Current|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.PropertyDefinitionHandleCollection::GetEnumerator|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.StandaloneSignature::DecodeLocalSignature|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.StandaloneSignature::DecodeMethodSignature|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.StandaloneSignature::GetKind|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.StandaloneSignatureHandle::get_IsNil|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.TypeDefinition::GetEvents|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.TypeDefinition::GetFields|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.Metadata.TypeDefinition::GetProperties|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.PortableExecutable.CorHeader::get_Flags|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.PortableExecutable.PEHeaders::get_CorHeader|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+M|System.Reflection.PortableExecutable.PEReader::get_PEHeaders|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|metadata/PE READER member (parses bytes already in memory); scoped to the offline scan tool
+T|Autodesk.AutoCAD.ApplicationServices.Core.Application||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.ApplicationServices.Document||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.ApplicationServices.DocumentCollection||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.BlockReference||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.BlockTable||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.BlockTableRecord||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.BlockTableRecordEnumerator||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.DBDictionary||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.DBDictionaryEntry||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.DBObject||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.DBText||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.Database||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.DbDictionaryEnumerator||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.Dimension||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.Entity||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.MText||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.ObjectId||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.OpenCloseTransaction||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.OpenMode||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.ProxyEntity||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.ResultBuffer||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.SymbolTable||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.SymbolTableEnumerator||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.SymbolTableRecord||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.Transaction||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.TransactionManager||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.TypedValue||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.DatabaseServices.Xrecord||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.EditorInput.Editor||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.Geometry.Scale3d||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.Runtime.CommandClassAttribute||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.Runtime.CommandMethodAttribute||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.Runtime.DisposableWrapper||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.Runtime.RXClass||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|Autodesk.AutoCAD.Runtime.RXObject||AutoCAD type touched only by the read-only side-database reader, the system-variable reader or the command class; members approved one by one
+T|I52Ct21d.HostFacts.Core.BlockRecordInfo||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.DoubleBits||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.DstyleInfo||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.DstylePair||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.EntityInfo||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.EvidenceSealer||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.EvidenceWriter||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.IDrawingReader||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.IDrawingSource||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.IRunEnvironment||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.ISystemVariables||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.InstrumentInfo||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.Jcs||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.LabelHelper||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.LabelHelper/Outcome||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.MachineLabelResult||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.RawAttributeResult||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.RawAttributeStatus||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.RecordJson||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.RunDesignation||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.RunOutcome||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.Runners||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.SealResult||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.SelfPin||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.StoredBufferScan||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.StoredEntry||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.SysVarReading||type of the I-0 core library of this folder (scanned too)
+T|I52Ct21d.HostFacts.Core.WrittenFile||type of the I-0 core library of this folder (scanned too)
+T|System.Action`2||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.ArgumentException||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Array||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.BadImageFormatException||BCL / System.Reflection.Metadata type used by the scan tool (reads the bytes of an assembly); no I/O, no process-wide state
+T|System.BitConverter||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Boolean||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Byte||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Char||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Generic.CollectionExtensions||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Generic.Dictionary`2||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Generic.Dictionary`2/Enumerator||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Generic.Dictionary`2/KeyCollection||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Generic.Dictionary`2/KeyCollection/Enumerator||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Generic.EqualityComparer`1||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Generic.HashSet`1||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Generic.IComparer`1||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Generic.IEnumerable`1||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Generic.IEnumerator`1||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Generic.IEqualityComparer`1||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Generic.IReadOnlyCollection`1||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Generic.IReadOnlyDictionary`2||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Generic.IReadOnlyList`1||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Generic.KeyValuePair`2||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Generic.List`1||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Generic.List`1/Enumerator||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Generic.SortedDictionary`2||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Generic.SortedDictionary`2/Enumerator||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Generic.SortedDictionary`2/KeyCollection||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Generic.SortedDictionary`2/ValueCollection||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Generic.SortedSet`1||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Generic.Stack`1||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.IEnumerator||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Collections.Immutable.ImmutableArray||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Collections.Immutable.ImmutableArray`1||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Comparison`1||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Console||only the Out and Error getters of the offline tools Program are approved below
+T|System.Convert||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.DateTime||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Diagnostics.DebuggableAttribute||compiler-emitted attribute or helper type (no I/O, no state)
+T|System.Diagnostics.DebuggableAttribute/DebuggingModes||compiler-emitted attribute or helper type (no I/O, no state)
+T|System.Diagnostics.Process||only GetCurrentProcess, Id and StartTime (read) are approved below
+T|System.Double||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Enum||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Exception||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.FormatException||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Func`2||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Func`3||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Func`5||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Globalization.CultureInfo||only the InvariantCulture getter is approved below (no culture setter)
+T|System.Globalization.NumberStyles||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.IDisposable||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.IEquatable`1||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.IFormatProvider||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.IO.Directory||I/O type: only the read-only (or EvidenceWriter-scoped) members listed below are approved
+T|System.IO.File||I/O type: only the read-only (or EvidenceWriter-scoped) members listed below are approved
+T|System.IO.FileAccess||I/O type: only the read-only (or EvidenceWriter-scoped) members listed below are approved
+T|System.IO.FileAttributes||I/O type: only the read-only (or EvidenceWriter-scoped) members listed below are approved
+T|System.IO.FileMode||I/O type: only the read-only (or EvidenceWriter-scoped) members listed below are approved
+T|System.IO.FileNotFoundException||I/O type: only the read-only (or EvidenceWriter-scoped) members listed below are approved
+T|System.IO.FileShare||I/O type: only the read-only (or EvidenceWriter-scoped) members listed below are approved
+T|System.IO.FileStream||I/O type: only the read-only (or EvidenceWriter-scoped) members listed below are approved
+T|System.IO.IOException||I/O type: only the read-only (or EvidenceWriter-scoped) members listed below are approved
+T|System.IO.InvalidDataException||I/O type: only the read-only (or EvidenceWriter-scoped) members listed below are approved
+T|System.IO.Path||I/O type: only the read-only (or EvidenceWriter-scoped) members listed below are approved
+T|System.IO.Stream||I/O type: only the read-only (or EvidenceWriter-scoped) members listed below are approved
+T|System.IO.StreamReader||I/O type: only the read-only (or EvidenceWriter-scoped) members listed below are approved
+T|System.IO.TextReader||I/O type: only the read-only (or EvidenceWriter-scoped) members listed below are approved
+T|System.IO.TextWriter||I/O type: only the read-only (or EvidenceWriter-scoped) members listed below are approved
+T|System.Int16||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Int32||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Int64||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.InvalidOperationException||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Linq.Enumerable||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Linq.IOrderedEnumerable`1||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Math||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.NotSupportedException||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Nullable`1||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Object||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.ReadOnlySpan`1||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Reflection.Assembly||reflection type used read-only (Location, manifest resource, type name, field values of OpCodes); no Invoke / Load / CreateDelegate member is approved
+T|System.Reflection.AssemblyCompanyAttribute||assembly metadata attribute or flag enum emitted by the compiler or read by the scan
+T|System.Reflection.AssemblyConfigurationAttribute||assembly metadata attribute or flag enum emitted by the compiler or read by the scan
+T|System.Reflection.AssemblyFileVersionAttribute||assembly metadata attribute or flag enum emitted by the compiler or read by the scan
+T|System.Reflection.AssemblyInformationalVersionAttribute||assembly metadata attribute or flag enum emitted by the compiler or read by the scan
+T|System.Reflection.AssemblyProductAttribute||assembly metadata attribute or flag enum emitted by the compiler or read by the scan
+T|System.Reflection.AssemblyTitleAttribute||assembly metadata attribute or flag enum emitted by the compiler or read by the scan
+T|System.Reflection.BindingFlags||reflection type used read-only (Location, manifest resource, type name, field values of OpCodes); no Invoke / Load / CreateDelegate member is approved
+T|System.Reflection.Emit.OpCode||OpCode table used only to decode IL bytes (read); no Reflection.Emit builder type is approved
+T|System.Reflection.Emit.OpCodes||OpCode table used only to decode IL bytes (read); no Reflection.Emit builder type is approved
+T|System.Reflection.Emit.OperandType||OpCode table used only to decode IL bytes (read); no Reflection.Emit builder type is approved
+T|System.Reflection.FieldInfo||reflection type used read-only (Location, manifest resource, type name, field values of OpCodes); no Invoke / Load / CreateDelegate member is approved
+T|System.Reflection.MemberInfo||reflection type used read-only (Location, manifest resource, type name, field values of OpCodes); no Invoke / Load / CreateDelegate member is approved
+T|System.Reflection.Metadata.ArrayShape||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.AssemblyDefinition||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.AssemblyReference||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.AssemblyReferenceHandle||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.AssemblyReferenceHandleCollection||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.AssemblyReferenceHandleCollection/Enumerator||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.Ecma335.MetadataTokens||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.EntityHandle||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.HandleKind||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.IConstructedTypeProvider`1||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.ISZArrayTypeProvider`1||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.ISignatureTypeProvider`2||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.ISimpleTypeProvider`1||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.MemberReference||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.MemberReferenceHandle||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.MemberReferenceHandleCollection||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.MemberReferenceHandleCollection/Enumerator||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.MemberReferenceKind||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.MetadataReader||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.MethodBodyBlock||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.MethodDefinition||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.MethodDefinitionHandle||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.MethodDefinitionHandleCollection||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.MethodDefinitionHandleCollection/Enumerator||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.MethodSignature`1||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.MethodSpecification||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.MethodSpecificationHandle||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.PEReaderExtensions||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.PrimitiveTypeCode||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.StringHandle||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.TypeDefinition||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.TypeDefinitionHandle||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.TypeDefinitionHandleCollection||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.TypeDefinitionHandleCollection/Enumerator||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.TypeReference||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.TypeReferenceHandle||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.TypeReferenceHandleCollection||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.TypeReferenceHandleCollection/Enumerator||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.TypeSpecification||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.TypeSpecificationHandle||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.MethodAttributes||assembly metadata attribute or flag enum emitted by the compiler or read by the scan
+T|System.Reflection.PortableExecutable.PEReader||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Runtime.CompilerServices.CompilationRelaxationsAttribute||compiler-emitted attribute or helper type (no I/O, no state)
+T|System.Runtime.CompilerServices.CompilerGeneratedAttribute||compiler-emitted attribute or helper type (no I/O, no state)
+T|System.Runtime.CompilerServices.DefaultInterpolatedStringHandler||compiler-emitted attribute or helper type (no I/O, no state)
+T|System.Runtime.CompilerServices.IsExternalInit||compiler-emitted attribute or helper type (no I/O, no state)
+T|System.Runtime.CompilerServices.NullableAttribute||compiler-emitted attribute or helper type (no I/O, no state)
+T|System.Runtime.CompilerServices.NullableContextAttribute||compiler-emitted attribute or helper type (no I/O, no state)
+T|System.Runtime.CompilerServices.RefSafetyRulesAttribute||compiler-emitted attribute or helper type (no I/O, no state)
+T|System.Runtime.CompilerServices.RuntimeCompatibilityAttribute||compiler-emitted attribute or helper type (no I/O, no state)
+T|System.Runtime.CompilerServices.RuntimeHelpers||compiler-emitted attribute or helper type (no I/O, no state)
+T|System.Runtime.CompilerServices.TupleElementNamesAttribute||compiler-emitted attribute or helper type (no I/O, no state)
+T|System.Runtime.Versioning.SupportedOSPlatformAttribute||compiler-emitted attribute or helper type (no I/O, no state)
+T|System.Runtime.Versioning.TargetFrameworkAttribute||compiler-emitted attribute or helper type (no I/O, no state)
+T|System.Runtime.Versioning.TargetPlatformAttribute||compiler-emitted attribute or helper type (no I/O, no state)
+T|System.RuntimeFieldHandle||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.RuntimeTypeHandle||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Security.Cryptography.SHA256||only the one-shot hash HashData is approved below
+T|System.String||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.StringComparer||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.StringComparison||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.StringSplitOptions||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Text.DecoderFallbackException||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Text.Encoding||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Text.Json.JsonCommentHandling||in-memory JSON type (no I/O)
+T|System.Text.Json.JsonDocumentOptions||in-memory JSON type (no I/O)
+T|System.Text.Json.JsonElement||in-memory JSON type (no I/O)
+T|System.Text.Json.JsonReaderOptions||in-memory JSON type (no I/O)
+T|System.Text.Json.JsonTokenType||in-memory JSON type (no I/O)
+T|System.Text.Json.JsonValueKind||in-memory JSON type (no I/O)
+T|System.Text.Json.Nodes.JsonArray||in-memory JSON type (no I/O)
+T|System.Text.Json.Nodes.JsonNode||in-memory JSON type (no I/O)
+T|System.Text.Json.Nodes.JsonNodeOptions||in-memory JSON type (no I/O)
+T|System.Text.Json.Nodes.JsonObject||in-memory JSON type (no I/O)
+T|System.Text.Json.Nodes.JsonValue||in-memory JSON type (no I/O)
+T|System.Text.Json.Utf8JsonReader||in-memory JSON type (no I/O)
+T|System.Text.RegularExpressions.Regex||in-memory regular expression type (no I/O)
+T|System.Text.RegularExpressions.RegexOptions||in-memory regular expression type (no I/O)
+T|System.Text.Rune||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Text.StringBuilder||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Text.StringRuneEnumerator||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Text.UTF8Encoding||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Type||reflection type used read-only (Location, manifest resource, type name, field values of OpCodes); no Invoke / Load / CreateDelegate member is approved
+T|System.UInt16||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.UInt64||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.UnauthorizedAccessException||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.ValueTuple`2||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.ValueTuple`3||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.ValueType||pure in-memory BCL type (no I/O, no process-wide state)
+T|System.Diagnostics.DebuggerBrowsableAttribute||[debug-only] compiler-emitted debugger display attribute of Debug builds (no I/O, no state); not used by the Release build, exempt from the unused-entry check
+T|System.Diagnostics.DebuggerBrowsableState||[debug-only] enum argument of the Debug-build debugger attribute (no I/O, no state)
+T|System.Reflection.Metadata.AssemblyDefinitionHandle||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.CustomAttribute||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.CustomAttributeHandle||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.CustomAttributeHandleCollection||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.CustomAttributeHandleCollection/Enumerator||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.CustomAttributeNamedArgument`1||BCL / System.Reflection.Metadata type used by the scan tool (reads the bytes of an assembly); no I/O, no process-wide state
+T|System.Reflection.Metadata.CustomAttributeTypedArgument`1||BCL / System.Reflection.Metadata type used by the scan tool (reads the bytes of an assembly); no I/O, no process-wide state
+T|System.Reflection.Metadata.CustomAttributeValue`1||BCL / System.Reflection.Metadata type used by the scan tool (reads the bytes of an assembly); no I/O, no process-wide state
+T|System.Reflection.Metadata.Ecma335.MetadataReaderExtensions||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.Ecma335.TableIndex||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.EventDefinition||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.EventDefinitionHandle||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.EventDefinitionHandleCollection||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.EventDefinitionHandleCollection/Enumerator||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.FieldDefinition||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.FieldDefinitionHandle||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.FieldDefinitionHandleCollection||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.FieldDefinitionHandleCollection/Enumerator||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.ICustomAttributeTypeProvider`1||BCL / System.Reflection.Metadata type used by the scan tool (reads the bytes of an assembly); no I/O, no process-wide state
+T|System.Reflection.Metadata.ModuleDefinitionHandle||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.PropertyDefinition||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.PropertyDefinitionHandle||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.PropertyDefinitionHandleCollection||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.PropertyDefinitionHandleCollection/Enumerator||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.StandaloneSignature||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.StandaloneSignatureHandle||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.Metadata.StandaloneSignatureKind||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.MethodImplAttributes||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.PortableExecutable.CorFlags||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.PortableExecutable.CorHeader||metadata reader type used only by the offline scan tool to READ assemblies
+T|System.Reflection.PortableExecutable.PEHeaders||metadata reader type used only by the offline scan tool to READ assemblies
+M|System.Diagnostics.DebuggerBrowsableAttribute::.ctor||[debug-only] constructor of the Debug-build debugger attribute (metadata only, no behavior)
+M|System.Reflection.Emit.OpCodes::Or|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|IL opcode constant compared by the scan tool (reflection metadata value, not an emission)
+M|System.Reflection.Metadata.AssemblyReferenceHandle::op_Explicit|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|System.Reflection.Metadata read-only accessor used by the scan tool (decodes the bytes of an assembly)
+M|System.Reflection.Metadata.CustomAttribute::DecodeValue|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|System.Reflection.Metadata read-only accessor used by the scan tool (decodes the bytes of an assembly)
+M|System.Reflection.Metadata.CustomAttribute::get_Parent|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|System.Reflection.Metadata read-only accessor used by the scan tool (decodes the bytes of an assembly)
+M|System.Reflection.Metadata.CustomAttributeNamedArgument`1::get_Name|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|System.Reflection.Metadata read-only accessor used by the scan tool (decodes the bytes of an assembly)
+M|System.Reflection.Metadata.CustomAttributeNamedArgument`1::get_Value|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|System.Reflection.Metadata read-only accessor used by the scan tool (decodes the bytes of an assembly)
+M|System.Reflection.Metadata.CustomAttributeTypedArgument`1::get_Value|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|System.Reflection.Metadata read-only accessor used by the scan tool (decodes the bytes of an assembly)
+M|System.Reflection.Metadata.CustomAttributeValue`1::get_FixedArguments|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|System.Reflection.Metadata read-only accessor used by the scan tool (decodes the bytes of an assembly)
+M|System.Reflection.Metadata.CustomAttributeValue`1::get_NamedArguments|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|System.Reflection.Metadata read-only accessor used by the scan tool (decodes the bytes of an assembly)
+M|System.Reflection.Metadata.MetadataReader::get_CustomAttributes|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|System.Reflection.Metadata read-only accessor used by the scan tool (decodes the bytes of an assembly)
+#
+# IL store opcodes (stind.*, stobj, cpobj) approved per (assembly, top-level type): the compiler emits them for managed by-ref stores (out / ref parameters).
+# localloc, cpblk and initblk can never be approved.
+O|stind.i1|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.BlockRecordInfo|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.BlockRecordInfo|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i4|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.CensusSummary|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.CensusSummary|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.ContextVariable|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.DeclaredFile|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i1|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.DstyleInfo|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.DstyleInfo|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i4|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.DstylePair|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.DstylePair|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i1|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EntityInfo|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EntityInfo|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.InstrumentInfo|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i4|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.InventorySummary|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.InventorySummary|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stobj|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.InventorySummary|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i8|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.JsonSchemaLite|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.LabelHelper|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i1|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.MachineLabelResult|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.MachineLabelResult|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.ProbeObservation|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i1|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.ProbeRow|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.ProbeRow|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stobj|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.ProbeRow|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i1|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.ProbeStatistics|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.ProbeStatistics|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i1|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.ProbeStatisticsResult|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i4|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.ProbeStatisticsResult|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stobj|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.ProbeStatisticsResult|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i4|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RawAttributeResult|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RawAttributeResult|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stobj|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RawAttributeResult|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i4|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RbHostTypeCount|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RbHostTypeCount|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i4|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RbOutsideTableResult|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RbOutsideTableResult|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i4|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RbRange|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RbRange|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i4|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RbRangeResult|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RbRangeResult|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RbTally|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i4|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RunDesignation|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RunDesignation|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.RunOutcome|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Runners|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i1|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.SealResult|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.SealResult|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i4|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.StoredBufferScan|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.StoredBufferScan|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i4|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.StoredEntry|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.StoredEntry|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.SysVarReading|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i8|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.WrittenFile|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.WrittenFile|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i4|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.AllowEntry|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.AllowEntry|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i1|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i4|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i4|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.Instr|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i8|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.Instr|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.Instr|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stobj|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.Instr|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i4|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ScanConfig|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ScanConfig|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i4|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ScanOutcome|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.ScanOutcome|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.i4|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.Violation|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)
+O|stind.ref|I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Scan.Violation|managed by-ref store (out / ref parameter, record Deconstruct, struct copy) emitted by the compiler; the scan separately refuses this approval in any method that can forge a native address (conv.i / conv.u, IntPtr)

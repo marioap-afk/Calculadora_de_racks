@@ -1,0 +1,25 @@
+# privileged-surface.txt: the EXACT set of methods (name + signature + accessibility) of each privileged Core type, nested types
+# (compiler closures) included. Generated with `tools privileged-list core:...` and reviewed by reading the source of both types.
+# The scan (layer 3, rule R-PRIVILEGED-SURFACE) fails when the assembly's set differs from this file in either direction.
+# THIS IS A PIN, NOT AN APPROVAL: adding, removing or changing a method of EvidenceWriter or EvidenceSealer (a "Clobber(path, bytes)", an
+# overload, a visibility change, a new lambda) needs an explicit independent review of the type; only then edit this file.
+# Format: Full.Type.Name[/Nested]::Method(ParamTypes)->ReturnType [accessibility static|instance (virtual) (pinvoke)]. UTF-8, LF.
+#
+I52Ct21d.HostFacts.Core.EvidenceSealer/<>c::.cctor()->System.Void [private static]
+I52Ct21d.HostFacts.Core.EvidenceSealer/<>c::.ctor()->System.Void [public instance]
+I52Ct21d.HostFacts.Core.EvidenceSealer/<>c::<SealOrVerify>b__2_0(System.String)->System.Boolean [internal instance]
+I52Ct21d.HostFacts.Core.EvidenceSealer/<>c::<SealOrVerify>b__2_1(System.String)->System.String [internal instance]
+I52Ct21d.HostFacts.Core.EvidenceSealer/<>c::<SealOrVerify>b__2_2(System.String)->System.String [internal instance]
+I52Ct21d.HostFacts.Core.EvidenceSealer/<>c::<SealOrVerify>b__2_4(System.String)->System.String [internal instance]
+I52Ct21d.HostFacts.Core.EvidenceSealer/<>c__DisplayClass2_0::.ctor()->System.Void [public instance]
+I52Ct21d.HostFacts.Core.EvidenceSealer/<>c__DisplayClass2_0::<SealOrVerify>b__3(System.String)->System.String [internal instance]
+I52Ct21d.HostFacts.Core.EvidenceSealer::SealOrVerify(System.String,System.Boolean)->I52Ct21d.HostFacts.Core.SealResult [public static]
+I52Ct21d.HostFacts.Core.EvidenceSealer::Verify(System.String,System.Collections.Generic.Dictionary`2<System.String,System.String>,System.Collections.Generic.List`1<System.String>)->I52Ct21d.HostFacts.Core.SealResult [private static]
+I52Ct21d.HostFacts.Core.EvidenceWriter::.cctor()->System.Void [private static]
+I52Ct21d.HostFacts.Core.EvidenceWriter::.ctor(System.String)->System.Void [public instance]
+I52Ct21d.HostFacts.Core.EvidenceWriter::MarkReadOnly(System.String)->System.Void [public instance]
+I52Ct21d.HostFacts.Core.EvidenceWriter::ValidateName(System.String)->System.Void [public static]
+I52Ct21d.HostFacts.Core.EvidenceWriter::WriteNew(System.String,System.Byte[])->I52Ct21d.HostFacts.Core.WrittenFile [public instance]
+I52Ct21d.HostFacts.Core.EvidenceWriter::WriteNewText(System.String,System.String)->I52Ct21d.HostFacts.Core.WrittenFile [public instance]
+I52Ct21d.HostFacts.Core.EvidenceWriter::get_Ledger()->System.Collections.Generic.IReadOnlyList`1<I52Ct21d.HostFacts.Core.WrittenFile> [public instance]
+I52Ct21d.HostFacts.Core.EvidenceWriter::get_Root()->System.String [public instance]

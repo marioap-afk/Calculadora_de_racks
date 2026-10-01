@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- I-0 core: pure .NET library, NO AutoCAD reference (design section 5.1). Nothing in this folder is
+       referenced by a product project, by RackCad.sln or by deploy/. Research-only. -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RootNamespace>I52Ct21d.HostFacts.Core</RootNamespace>
+    <AssemblyName>I52Ct21d.HostFacts.Core</AssemblyName>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- The JSON schemas are embedded so that the validator needs no file path at run time. -->
+    <EmbeddedResource Include="..\schemas\*.json" LogicalName="schemas/%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

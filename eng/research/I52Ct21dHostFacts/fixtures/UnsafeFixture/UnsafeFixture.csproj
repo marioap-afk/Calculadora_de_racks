@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- NEGATIVE-CONTROL FIXTURE for the forbidden-API scan. It is compiled with AllowUnsafeBlocks on purpose: the tests only READ the resulting
+       DLL as bytes (the scan must refuse every class in it). It is never loaded, never executed and referenced by no instrument. AllowUnsafeBlocks is
+       set HERE only; the csproj of core, r0 and tools do not set it (the scan also refuses UnverifiableCodeAttribute, which that switch makes the compiler emit). -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <IsPackable>false</IsPackable>
+    <AssemblyName>UnsafeFixture</AssemblyName>
+    <RootNamespace>Fx</RootNamespace>
+  </PropertyGroup>
+</Project>

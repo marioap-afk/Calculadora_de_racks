@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- R0 plugin DLL (STRICT READ-ONLY, design section 5.1): commands CT21DHG_CENSUS_R, CT21DHG_INVENTORY
+       (I-2) and CT21DHG_CTXVARS (I-4). It only COMPILES against the AutoCAD managed assemblies of an
+       installation (AutoCADInstallDir, the same property and default as eng/validation/I52G3AAutoCadProbe).
+       Nothing is loaded into AutoCAD and nothing is executed on a host by building it. -->
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RootNamespace>I52Ct21d.HostFacts.R0</RootNamespace>
+    <AssemblyName>I52Ct21d.HostFacts.R0</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <!-- MSB3277: the AutoCAD managed assemblies reference WindowsBase / System.Drawing / Microsoft.VisualBasic at other versions than the
+         net8.0-windows reference pack; the conflict is only a build-time reference resolution notice and is the same for the G3A probe. -->
+    <NoWarn>$(NoWarn);MSB3277</NoWarn>
+    <AutoCADInstallDir Condition="'$(AutoCADInstallDir)' == ''">C:\Program Files\Autodesk\AutoCAD 2025</AutoCADInstallDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AcCoreMgd" HintPath="$(AutoCADInstallDir)\AcCoreMgd.dll" Private="false" />
+    <Reference Include="AcDbMgd" HintPath="$(AutoCADInstallDir)\AcDbMgd.dll" Private="false" />
+    <Reference Include="AcMgd" HintPath="$(AutoCADInstallDir)\AcMgd.dll" Private="false" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\core\I52Ct21d.HostFacts.Core.csproj" />
+  </ItemGroup>
+</Project>

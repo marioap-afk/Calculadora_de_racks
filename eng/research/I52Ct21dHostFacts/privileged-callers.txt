@@ -1,0 +1,22 @@
+# privileged-callers.txt: the ONLY methods that may call a method of a privileged Core type (EvidenceWriter, EvidenceSealer).
+# Layer 3 of the scan (rule R-PRIVILEGED-CALLER) checks it for every assembly, Core included (a call between two methods of the same
+# assembly is a call to a method DEFINITION and layers 1 and 2 do not see it). A privileged type calling itself is not listed (its surface
+# is pinned in privileged-surface.txt). The list is exact: an entry that no scanned assembly uses is reported when all three are scanned.
+# Derived with `tools privileged-list`, then every caller was reviewed by reading its source line (see the WHY column).
+# Format: CALLER|CALLEE|WHY    CALLER = Assembly::Full.Type.Name[/Nested]::Method    CALLEE = Full.Type.Name::Method. UTF-8, LF.
+#
+I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceSealer::SealOrVerify|I52Ct21d.HostFacts.Core.EvidenceWriter::.ctor|the seal opens the writer on the folder the CAD manager passed to `tools seal`; it creates no directory
+I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceSealer::SealOrVerify|I52Ct21d.HostFacts.Core.EvidenceWriter::MarkReadOnly|sets the read-only attribute of the files it just hashed and of the two seal files, by flat name (the seal, I-9)
+I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceSealer::SealOrVerify|I52Ct21d.HostFacts.Core.EvidenceWriter::WriteNewText|writes HASHES.sha256 and its digest file, create-new, once, in the sealed folder (two calls at the source)
+I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.EvidenceSealer::SealOrVerify|I52Ct21d.HostFacts.Core.EvidenceWriter::get_Ledger|reads the ledger of what it wrote to return the SealResult; a read
+I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Runners::RunCensus|I52Ct21d.HostFacts.Core.EvidenceWriter::WriteNewText|writes the raw file and the record of its fact through the writer it was given, create-new
+I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Runners::RunCensus|I52Ct21d.HostFacts.Core.EvidenceWriter::get_Ledger|reads the ledger to report the written files in the RunOutcome; a read
+I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Runners::RunCtxVars|I52Ct21d.HostFacts.Core.EvidenceWriter::WriteNewText|writes the raw file and the record of its fact through the writer it was given, create-new
+I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Runners::RunCtxVars|I52Ct21d.HostFacts.Core.EvidenceWriter::get_Ledger|reads the ledger to report the written files in the RunOutcome; a read
+I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Runners::RunInventory|I52Ct21d.HostFacts.Core.EvidenceWriter::WriteNewText|writes the raw file and the record of its fact through the writer it was given, create-new
+I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Runners::RunInventory|I52Ct21d.HostFacts.Core.EvidenceWriter::get_Ledger|reads the ledger to report the written files in the RunOutcome; a read
+I52Ct21d.HostFacts.Core::I52Ct21d.HostFacts.Core.Runners::WriteFact|I52Ct21d.HostFacts.Core.EvidenceWriter::WriteNewText|writes the record file of one fact through the writer it was given, create-new
+I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program::Label|I52Ct21d.HostFacts.Core.EvidenceWriter::.ctor|`tools label --record` opens the writer on the folder it was given (offline tool)
+I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program::Label|I52Ct21d.HostFacts.Core.EvidenceWriter::WriteNewText|`tools label --record` writes the one file machine-label.json, create-new
+I52Ct21d.HostFacts.Tools::I52Ct21d.HostFacts.Tools.Program::Seal|I52Ct21d.HostFacts.Core.EvidenceSealer::SealOrVerify|`tools seal` is the I-9 entry point of the seal
+I52Ct21d.HostFacts.R0::I52Ct21d.HostFacts.R0.HostGateCommands::Execute|I52Ct21d.HostFacts.Core.EvidenceWriter::.ctor|the R0 commands open the writer on the evidence folder of run-designation.json; the writer creates no directory and refuses reparse points

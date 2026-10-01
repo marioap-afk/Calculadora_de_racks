@@ -1,0 +1,1919 @@
+{
+  "distinctTriples": 146,
+  "generator": "gen_vectors.py",
+  "inScope": 135,
+  "rowCount": 147,
+  "rows": [
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0001",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000001",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 52,
+      "signPattern": "++"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0002",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000010",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 48,
+      "signPattern": "++"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0003",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000100",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 44,
+      "signPattern": "++"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0004",
+      "inScope": true,
+      "intended": [
+        "3FF0000000001000",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 40,
+      "signPattern": "++"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0005",
+      "inScope": true,
+      "intended": [
+        "3FF0000000010000",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 36,
+      "signPattern": "++"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0006",
+      "inScope": true,
+      "intended": [
+        "3FF0000000100000",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 32,
+      "signPattern": "++"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0007",
+      "inScope": true,
+      "intended": [
+        "3FF0000000400000",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 30,
+      "signPattern": "++"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0008",
+      "inScope": true,
+      "intended": [
+        "3FF0000000800000",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 29,
+      "signPattern": "++"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0009",
+      "inScope": true,
+      "intended": [
+        "3FF0000001000000",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 28,
+      "signPattern": "++"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0010",
+      "inScope": true,
+      "intended": [
+        "3FF0000010000000",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 24,
+      "signPattern": "++"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0011",
+      "inScope": true,
+      "intended": [
+        "3FF0000100000000",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 20,
+      "signPattern": "++"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0012",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "3FF0000000000001",
+        "3FF0000000000000"
+      ],
+      "k": 52,
+      "signPattern": "++"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0013",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "3FF0000000000010",
+        "3FF0000000000000"
+      ],
+      "k": 48,
+      "signPattern": "++"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0014",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "3FF0000000000100",
+        "3FF0000000000000"
+      ],
+      "k": 44,
+      "signPattern": "++"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0015",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "3FF0000000001000",
+        "3FF0000000000000"
+      ],
+      "k": 40,
+      "signPattern": "++"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0016",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "3FF0000000010000",
+        "3FF0000000000000"
+      ],
+      "k": 36,
+      "signPattern": "++"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0017",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "3FF0000000100000",
+        "3FF0000000000000"
+      ],
+      "k": 32,
+      "signPattern": "++"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0018",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "3FF0000000400000",
+        "3FF0000000000000"
+      ],
+      "k": 30,
+      "signPattern": "++"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0019",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "3FF0000000800000",
+        "3FF0000000000000"
+      ],
+      "k": 29,
+      "signPattern": "++"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0020",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "3FF0000001000000",
+        "3FF0000000000000"
+      ],
+      "k": 28,
+      "signPattern": "++"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0021",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "3FF0000010000000",
+        "3FF0000000000000"
+      ],
+      "k": 24,
+      "signPattern": "++"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0022",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "3FF0000100000000",
+        "3FF0000000000000"
+      ],
+      "k": 20,
+      "signPattern": "++"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0023",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "3FF0000000000000",
+        "3FF0000000000001"
+      ],
+      "k": 52,
+      "signPattern": "++"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0024",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "3FF0000000000000",
+        "3FF0000000000010"
+      ],
+      "k": 48,
+      "signPattern": "++"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0025",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "3FF0000000000000",
+        "3FF0000000000100"
+      ],
+      "k": 44,
+      "signPattern": "++"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0026",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "3FF0000000000000",
+        "3FF0000000001000"
+      ],
+      "k": 40,
+      "signPattern": "++"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0027",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "3FF0000000000000",
+        "3FF0000000010000"
+      ],
+      "k": 36,
+      "signPattern": "++"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0028",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "3FF0000000000000",
+        "3FF0000000100000"
+      ],
+      "k": 32,
+      "signPattern": "++"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0029",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "3FF0000000000000",
+        "3FF0000000400000"
+      ],
+      "k": 30,
+      "signPattern": "++"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0030",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "3FF0000000000000",
+        "3FF0000000800000"
+      ],
+      "k": 29,
+      "signPattern": "++"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0031",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "3FF0000000000000",
+        "3FF0000001000000"
+      ],
+      "k": 28,
+      "signPattern": "++"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0032",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "3FF0000000000000",
+        "3FF0000010000000"
+      ],
+      "k": 24,
+      "signPattern": "++"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0033",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "3FF0000000000000",
+        "3FF0000100000000"
+      ],
+      "k": 20,
+      "signPattern": "++"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0034",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000001",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 52,
+      "signPattern": "-+"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0035",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000010",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 48,
+      "signPattern": "-+"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0036",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000100",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 44,
+      "signPattern": "-+"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0037",
+      "inScope": true,
+      "intended": [
+        "BFF0000000001000",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 40,
+      "signPattern": "-+"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0038",
+      "inScope": true,
+      "intended": [
+        "BFF0000000010000",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 36,
+      "signPattern": "-+"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0039",
+      "inScope": true,
+      "intended": [
+        "BFF0000000100000",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 32,
+      "signPattern": "-+"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0040",
+      "inScope": true,
+      "intended": [
+        "BFF0000000400000",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 30,
+      "signPattern": "-+"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0041",
+      "inScope": true,
+      "intended": [
+        "BFF0000000800000",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 29,
+      "signPattern": "-+"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0042",
+      "inScope": true,
+      "intended": [
+        "BFF0000001000000",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 28,
+      "signPattern": "-+"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0043",
+      "inScope": true,
+      "intended": [
+        "BFF0000010000000",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 24,
+      "signPattern": "-+"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0044",
+      "inScope": true,
+      "intended": [
+        "BFF0000100000000",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 20,
+      "signPattern": "-+"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0045",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "3FF0000000000001",
+        "3FF0000000000000"
+      ],
+      "k": 52,
+      "signPattern": "-+"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0046",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "3FF0000000000010",
+        "3FF0000000000000"
+      ],
+      "k": 48,
+      "signPattern": "-+"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0047",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "3FF0000000000100",
+        "3FF0000000000000"
+      ],
+      "k": 44,
+      "signPattern": "-+"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0048",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "3FF0000000001000",
+        "3FF0000000000000"
+      ],
+      "k": 40,
+      "signPattern": "-+"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0049",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "3FF0000000010000",
+        "3FF0000000000000"
+      ],
+      "k": 36,
+      "signPattern": "-+"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0050",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "3FF0000000100000",
+        "3FF0000000000000"
+      ],
+      "k": 32,
+      "signPattern": "-+"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0051",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "3FF0000000400000",
+        "3FF0000000000000"
+      ],
+      "k": 30,
+      "signPattern": "-+"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0052",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "3FF0000000800000",
+        "3FF0000000000000"
+      ],
+      "k": 29,
+      "signPattern": "-+"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0053",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "3FF0000001000000",
+        "3FF0000000000000"
+      ],
+      "k": 28,
+      "signPattern": "-+"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0054",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "3FF0000010000000",
+        "3FF0000000000000"
+      ],
+      "k": 24,
+      "signPattern": "-+"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0055",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "3FF0000100000000",
+        "3FF0000000000000"
+      ],
+      "k": 20,
+      "signPattern": "-+"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0056",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "3FF0000000000000",
+        "3FF0000000000001"
+      ],
+      "k": 52,
+      "signPattern": "-+"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0057",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "3FF0000000000000",
+        "3FF0000000000010"
+      ],
+      "k": 48,
+      "signPattern": "-+"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0058",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "3FF0000000000000",
+        "3FF0000000000100"
+      ],
+      "k": 44,
+      "signPattern": "-+"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0059",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "3FF0000000000000",
+        "3FF0000000001000"
+      ],
+      "k": 40,
+      "signPattern": "-+"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0060",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "3FF0000000000000",
+        "3FF0000000010000"
+      ],
+      "k": 36,
+      "signPattern": "-+"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0061",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "3FF0000000000000",
+        "3FF0000000100000"
+      ],
+      "k": 32,
+      "signPattern": "-+"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0062",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "3FF0000000000000",
+        "3FF0000000400000"
+      ],
+      "k": 30,
+      "signPattern": "-+"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0063",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "3FF0000000000000",
+        "3FF0000000800000"
+      ],
+      "k": 29,
+      "signPattern": "-+"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0064",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "3FF0000000000000",
+        "3FF0000001000000"
+      ],
+      "k": 28,
+      "signPattern": "-+"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0065",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "3FF0000000000000",
+        "3FF0000010000000"
+      ],
+      "k": 24,
+      "signPattern": "-+"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0066",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "3FF0000000000000",
+        "3FF0000100000000"
+      ],
+      "k": 20,
+      "signPattern": "-+"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0067",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000001",
+        "BFF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 52,
+      "signPattern": "+-"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0068",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000010",
+        "BFF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 48,
+      "signPattern": "+-"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0069",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000100",
+        "BFF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 44,
+      "signPattern": "+-"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0070",
+      "inScope": true,
+      "intended": [
+        "3FF0000000001000",
+        "BFF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 40,
+      "signPattern": "+-"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0071",
+      "inScope": true,
+      "intended": [
+        "3FF0000000010000",
+        "BFF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 36,
+      "signPattern": "+-"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0072",
+      "inScope": true,
+      "intended": [
+        "3FF0000000100000",
+        "BFF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 32,
+      "signPattern": "+-"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0073",
+      "inScope": true,
+      "intended": [
+        "3FF0000000400000",
+        "BFF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 30,
+      "signPattern": "+-"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0074",
+      "inScope": true,
+      "intended": [
+        "3FF0000000800000",
+        "BFF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 29,
+      "signPattern": "+-"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0075",
+      "inScope": true,
+      "intended": [
+        "3FF0000001000000",
+        "BFF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 28,
+      "signPattern": "+-"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0076",
+      "inScope": true,
+      "intended": [
+        "3FF0000010000000",
+        "BFF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 24,
+      "signPattern": "+-"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0077",
+      "inScope": true,
+      "intended": [
+        "3FF0000100000000",
+        "BFF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 20,
+      "signPattern": "+-"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0078",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "BFF0000000000001",
+        "3FF0000000000000"
+      ],
+      "k": 52,
+      "signPattern": "+-"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0079",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "BFF0000000000010",
+        "3FF0000000000000"
+      ],
+      "k": 48,
+      "signPattern": "+-"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0080",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "BFF0000000000100",
+        "3FF0000000000000"
+      ],
+      "k": 44,
+      "signPattern": "+-"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0081",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "BFF0000000001000",
+        "3FF0000000000000"
+      ],
+      "k": 40,
+      "signPattern": "+-"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0082",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "BFF0000000010000",
+        "3FF0000000000000"
+      ],
+      "k": 36,
+      "signPattern": "+-"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0083",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "BFF0000000100000",
+        "3FF0000000000000"
+      ],
+      "k": 32,
+      "signPattern": "+-"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0084",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "BFF0000000400000",
+        "3FF0000000000000"
+      ],
+      "k": 30,
+      "signPattern": "+-"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0085",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "BFF0000000800000",
+        "3FF0000000000000"
+      ],
+      "k": 29,
+      "signPattern": "+-"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0086",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "BFF0000001000000",
+        "3FF0000000000000"
+      ],
+      "k": 28,
+      "signPattern": "+-"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0087",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "BFF0000010000000",
+        "3FF0000000000000"
+      ],
+      "k": 24,
+      "signPattern": "+-"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0088",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "BFF0000100000000",
+        "3FF0000000000000"
+      ],
+      "k": 20,
+      "signPattern": "+-"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0089",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "BFF0000000000000",
+        "3FF0000000000001"
+      ],
+      "k": 52,
+      "signPattern": "+-"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0090",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "BFF0000000000000",
+        "3FF0000000000010"
+      ],
+      "k": 48,
+      "signPattern": "+-"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0091",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "BFF0000000000000",
+        "3FF0000000000100"
+      ],
+      "k": 44,
+      "signPattern": "+-"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0092",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "BFF0000000000000",
+        "3FF0000000001000"
+      ],
+      "k": 40,
+      "signPattern": "+-"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0093",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "BFF0000000000000",
+        "3FF0000000010000"
+      ],
+      "k": 36,
+      "signPattern": "+-"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0094",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "BFF0000000000000",
+        "3FF0000000100000"
+      ],
+      "k": 32,
+      "signPattern": "+-"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0095",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "BFF0000000000000",
+        "3FF0000000400000"
+      ],
+      "k": 30,
+      "signPattern": "+-"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0096",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "BFF0000000000000",
+        "3FF0000000800000"
+      ],
+      "k": 29,
+      "signPattern": "+-"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0097",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "BFF0000000000000",
+        "3FF0000001000000"
+      ],
+      "k": 28,
+      "signPattern": "+-"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0098",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "BFF0000000000000",
+        "3FF0000010000000"
+      ],
+      "k": 24,
+      "signPattern": "+-"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0099",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "BFF0000000000000",
+        "3FF0000100000000"
+      ],
+      "k": 20,
+      "signPattern": "+-"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0100",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000001",
+        "BFF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 52,
+      "signPattern": "--"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0101",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000010",
+        "BFF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 48,
+      "signPattern": "--"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0102",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000100",
+        "BFF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 44,
+      "signPattern": "--"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0103",
+      "inScope": true,
+      "intended": [
+        "BFF0000000001000",
+        "BFF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 40,
+      "signPattern": "--"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0104",
+      "inScope": true,
+      "intended": [
+        "BFF0000000010000",
+        "BFF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 36,
+      "signPattern": "--"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0105",
+      "inScope": true,
+      "intended": [
+        "BFF0000000100000",
+        "BFF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 32,
+      "signPattern": "--"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0106",
+      "inScope": true,
+      "intended": [
+        "BFF0000000400000",
+        "BFF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 30,
+      "signPattern": "--"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0107",
+      "inScope": true,
+      "intended": [
+        "BFF0000000800000",
+        "BFF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 29,
+      "signPattern": "--"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0108",
+      "inScope": true,
+      "intended": [
+        "BFF0000001000000",
+        "BFF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 28,
+      "signPattern": "--"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0109",
+      "inScope": true,
+      "intended": [
+        "BFF0000010000000",
+        "BFF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 24,
+      "signPattern": "--"
+    },
+    {
+      "component": "X",
+      "family": "PF1",
+      "id": "PF1-0110",
+      "inScope": true,
+      "intended": [
+        "BFF0000100000000",
+        "BFF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": 20,
+      "signPattern": "--"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0111",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "BFF0000000000001",
+        "3FF0000000000000"
+      ],
+      "k": 52,
+      "signPattern": "--"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0112",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "BFF0000000000010",
+        "3FF0000000000000"
+      ],
+      "k": 48,
+      "signPattern": "--"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0113",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "BFF0000000000100",
+        "3FF0000000000000"
+      ],
+      "k": 44,
+      "signPattern": "--"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0114",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "BFF0000000001000",
+        "3FF0000000000000"
+      ],
+      "k": 40,
+      "signPattern": "--"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0115",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "BFF0000000010000",
+        "3FF0000000000000"
+      ],
+      "k": 36,
+      "signPattern": "--"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0116",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "BFF0000000100000",
+        "3FF0000000000000"
+      ],
+      "k": 32,
+      "signPattern": "--"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0117",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "BFF0000000400000",
+        "3FF0000000000000"
+      ],
+      "k": 30,
+      "signPattern": "--"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0118",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "BFF0000000800000",
+        "3FF0000000000000"
+      ],
+      "k": 29,
+      "signPattern": "--"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0119",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "BFF0000001000000",
+        "3FF0000000000000"
+      ],
+      "k": 28,
+      "signPattern": "--"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0120",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "BFF0000010000000",
+        "3FF0000000000000"
+      ],
+      "k": 24,
+      "signPattern": "--"
+    },
+    {
+      "component": "Y",
+      "family": "PF1",
+      "id": "PF1-0121",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "BFF0000100000000",
+        "3FF0000000000000"
+      ],
+      "k": 20,
+      "signPattern": "--"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0122",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "BFF0000000000000",
+        "3FF0000000000001"
+      ],
+      "k": 52,
+      "signPattern": "--"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0123",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "BFF0000000000000",
+        "3FF0000000000010"
+      ],
+      "k": 48,
+      "signPattern": "--"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0124",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "BFF0000000000000",
+        "3FF0000000000100"
+      ],
+      "k": 44,
+      "signPattern": "--"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0125",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "BFF0000000000000",
+        "3FF0000000001000"
+      ],
+      "k": 40,
+      "signPattern": "--"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0126",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "BFF0000000000000",
+        "3FF0000000010000"
+      ],
+      "k": 36,
+      "signPattern": "--"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0127",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "BFF0000000000000",
+        "3FF0000000100000"
+      ],
+      "k": 32,
+      "signPattern": "--"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0128",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "BFF0000000000000",
+        "3FF0000000400000"
+      ],
+      "k": 30,
+      "signPattern": "--"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0129",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "BFF0000000000000",
+        "3FF0000000800000"
+      ],
+      "k": 29,
+      "signPattern": "--"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0130",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "BFF0000000000000",
+        "3FF0000001000000"
+      ],
+      "k": 28,
+      "signPattern": "--"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0131",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "BFF0000000000000",
+        "3FF0000010000000"
+      ],
+      "k": 24,
+      "signPattern": "--"
+    },
+    {
+      "component": "Z",
+      "family": "PF1",
+      "id": "PF1-0132",
+      "inScope": true,
+      "intended": [
+        "BFF0000000000000",
+        "BFF0000000000000",
+        "3FF0000100000000"
+      ],
+      "k": 20,
+      "signPattern": "--"
+    },
+    {
+      "component": "ALL",
+      "family": "PF2",
+      "id": "PF2-0001",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000000",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": null,
+      "signPattern": "++"
+    },
+    {
+      "component": "X",
+      "family": "PF2",
+      "id": "PF2-0002",
+      "inScope": true,
+      "intended": [
+        "3FF0000000000001",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": null,
+      "signPattern": "++"
+    },
+    {
+      "component": "X",
+      "family": "PF2",
+      "id": "PF2-0003",
+      "inScope": true,
+      "intended": [
+        "3FEFFFFFFFFFFFFF",
+        "3FF0000000000000",
+        "3FF0000000000000"
+      ],
+      "k": null,
+      "signPattern": "++"
+    },
+    {
+      "component": "ALL",
+      "family": "PF2",
+      "id": "PF2-0004",
+      "inScope": false,
+      "intended": [
+        "3FE0000000000000",
+        "3FE0000000000000",
+        "3FE0000000000000"
+      ],
+      "k": null,
+      "signPattern": "++"
+    },
+    {
+      "component": "X",
+      "family": "PF2",
+      "id": "PF2-0005",
+      "inScope": false,
+      "intended": [
+        "3FE0000000000001",
+        "3FE0000000000000",
+        "3FE0000000000000"
+      ],
+      "k": null,
+      "signPattern": "++"
+    },
+    {
+      "component": "X",
+      "family": "PF2",
+      "id": "PF2-0006",
+      "inScope": false,
+      "intended": [
+        "3FDFFFFFFFFFFFFF",
+        "3FE0000000000000",
+        "3FE0000000000000"
+      ],
+      "k": null,
+      "signPattern": "++"
+    },
+    {
+      "component": "ALL",
+      "family": "PF2",
+      "id": "PF2-0007",
+      "inScope": false,
+      "intended": [
+        "4000000000000000",
+        "4000000000000000",
+        "4000000000000000"
+      ],
+      "k": null,
+      "signPattern": "++"
+    },
+    {
+      "component": "X",
+      "family": "PF2",
+      "id": "PF2-0008",
+      "inScope": false,
+      "intended": [
+        "4000000000000001",
+        "4000000000000000",
+        "4000000000000000"
+      ],
+      "k": null,
+      "signPattern": "++"
+    },
+    {
+      "component": "X",
+      "family": "PF2",
+      "id": "PF2-0009",
+      "inScope": false,
+      "intended": [
+        "3FFFFFFFFFFFFFFF",
+        "4000000000000000",
+        "4000000000000000"
+      ],
+      "k": null,
+      "signPattern": "++"
+    },
+    {
+      "component": "ALL",
+      "family": "PF2",
+      "id": "PF2-0010",
+      "inScope": false,
+      "intended": [
+        "4039666666666666",
+        "4039666666666666",
+        "4039666666666666"
+      ],
+      "k": null,
+      "signPattern": "++"
+    },
+    {
+      "component": "X",
+      "family": "PF2",
+      "id": "PF2-0011",
+      "inScope": false,
+      "intended": [
+        "4039666666666667",
+        "4039666666666666",
+        "4039666666666666"
+      ],
+      "k": null,
+      "signPattern": "++"
+    },
+    {
+      "component": "X",
+      "family": "PF2",
+      "id": "PF2-0012",
+      "inScope": false,
+      "intended": [
+        "4039666666666665",
+        "4039666666666666",
+        "4039666666666666"
+      ],
+      "k": null,
+      "signPattern": "++"
+    },
+    {
+      "component": "ALL",
+      "family": "PF2",
+      "id": "PF2-0013",
+      "inScope": false,
+      "intended": [
+        "3FA42850A142850A",
+        "3FA42850A142850A",
+        "3FA42850A142850A"
+      ],
+      "k": null,
+      "signPattern": "++"
+    },
+    {
+      "component": "X",
+      "family": "PF2",
+      "id": "PF2-0014",
+      "inScope": false,
+      "intended": [
+        "3FA42850A142850B",
+        "3FA42850A142850A",
+        "3FA42850A142850A"
+      ],
+      "k": null,
+      "signPattern": "++"
+    },
+    {
+      "component": "X",
+      "family": "PF2",
+      "id": "PF2-0015",
+      "inScope": false,
+      "intended": [
+        "3FA42850A1428509",
+        "3FA42850A142850A",
+        "3FA42850A142850A"
+      ],
+      "k": null,
+      "signPattern": "++"
+    }
+  ]
+}

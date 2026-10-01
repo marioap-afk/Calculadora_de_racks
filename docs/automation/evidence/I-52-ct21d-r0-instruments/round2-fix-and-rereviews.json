@@ -1,0 +1,186 @@
+{
+  "summary": "Fix the R0 instrument review majors (deny-by-default API scan, I-8 overreach) and re-review",
+  "agentCount": 3,
+  "logs": [],
+  "result": {
+    "fix": {
+      "summary": "All semantic-audit and spec-fidelity findings are resolved. Release build: 0 warnings, 0 errors. Tests: 369 pass, 0 fail in both Release and Debug (the baseline was 199). The scan is now deny-by-default against allowed-apis.txt and reports CLEAN on core, tools and r0, as does imports-allowlist-check. The freeze guard is clean: no tracked file changed and nothing was staged. The only path outside the folder in `git status` is the untracked package-v2 document that was already there at the start. No AutoCAD was started or loaded. The r0 DLL was only compiled against the AutoCAD assemblies.\n\n(1) Deny-by-default scan.\n- allowed-apis.txt has 712 entries (709 drafted from the current code, plus 3 `[debug-only]` entries for Debug-build compiler attributes). Each line is KIND|ITEM|SCOPE|JUSTIFICATION. I drafted the list with the new `tools imports-list` command, then read every Autodesk and BCL member line by line for read-only safety. Justifications were then generated per category by script, not typed one by one.\n- The checks cover every assembly, type and member reference in the metadata tables, so calls, newobj, delegates, ldftn, tokens and attributes are all covered. Each approval can be limited to one top-level type. Examples: FileStream::.ctor, Stream::Write and File::SetAttributes only inside EvidenceWriter; Database::.ctor, ReadDwgFile, StartOpenCloseTransaction and Transaction::GetObject only inside AcadSideDbReader.\n- `calli`, `jmp` and stores to external fields are always refused. Wildcard approvals are refused for Autodesk types and for namespaces that touch disk, process, registry, network, reflection or global state.\n- `scan --allowed` is mandatory; without it the CLI exits 1. `imports-allowlist-check` also reports approvals that nothing uses, apart from the 3 `[debug-only]` entries.\n- Second-layer rules added: DxfOut, DxfIn, AttachXref, BindXrefs, ResolveXrefs and SwapIdWith; DynamicLinker; the mutator-name heuristic now covers every Autodesk namespace with new prefixes (Write, Load, Swap, Bind, Detach, Dxf, Regen, Highlight, Begin, End and others); XML, compression, memory-mapped file, pipe, data and file-watcher sink types; Path.GetTempFileName; any Process member except GetCurrentProcess and getters; Delegate and MethodInfo CreateDelegate; Expression trees, the C# dynamic binder and CallSite; global-state setters.\n\n(2) Negative controls.\n- 36 new fixture cases cover all 7 injected calls the reviewer listed, plus CreateDelegate, Expression.Compile, calli, the Environment.CurrentDirectory setter, AppDomain.SetData, Console.SetOut, ZipFile and MemoryMappedFile, among others.\n- Each case is checked twice: the deny rule alone must fire while the import is approved, and the real allowed-apis.txt alone must refuse the import.\n- I also compiled the 7 injected calls into a scratch copy of the R0 sources, outside the repository and without loading it. The scan reported all 7 under both layers.\n\n(3) I-8 generator removed. PackageManifest.cs, the `manifest` command, the package-manifest schema and the manifest tests are gone. SelfPin and the I-9 seal stay, and the seal tests moved to SealTests.cs. The designation now requires `declaredSet`, a plain list of {path, sha256} supplied by the CAD manager.\n\n(4) PrivateCopyPath != LibraryPath, and the evidence folder not being the library or private-copy directory (or either file), are enforced by the parser and by all three runners before anything is touched. Tests confirm nothing is written and the private copy is not opened.\n\n(5) The README now has a \"Deviations and notes for package v2 / the Architect\" section recording every minor you listed, and it is updated throughout for the new scan and the removed generator.",
+      "changedFiles": [
+        "eng/research/I52Ct21dHostFacts/allowed-apis.txt (new)",
+        "eng/research/I52Ct21dHostFacts/tools/Scan/ApiAllowlist.cs (new)",
+        "eng/research/I52Ct21dHostFacts/tools/Scan/ForbiddenApiScan.Imports.cs (new)",
+        "eng/research/I52Ct21dHostFacts/tools/Scan/ForbiddenApiScan.cs",
+        "eng/research/I52Ct21dHostFacts/tools/Program.cs",
+        "eng/research/I52Ct21dHostFacts/tools/I52Ct21d.HostFacts.Tools.csproj",
+        "eng/research/I52Ct21dHostFacts/core/RunDesignation.cs",
+        "eng/research/I52Ct21dHostFacts/core/Runners.cs",
+        "eng/research/I52Ct21dHostFacts/core/PackageManifest.cs (deleted)",
+        "eng/research/I52Ct21dHostFacts/schemas/ct21d.package-manifest.v1.json (deleted)",
+        "eng/research/I52Ct21dHostFacts/schemas/ct21d.designation.v1.json (regenerated)",
+        "eng/research/I52Ct21dHostFacts/schemas/gen_schemas.py",
+        "eng/research/I52Ct21dHostFacts/tests/SealAndManifestTests.cs (deleted)",
+        "eng/research/I52Ct21dHostFacts/tests/SealTests.cs (new)",
+        "eng/research/I52Ct21dHostFacts/tests/ImportsAllowlistTests.cs (new)",
+        "eng/research/I52Ct21dHostFacts/tests/ForbiddenApiScanTests.cs",
+        "eng/research/I52Ct21dHostFacts/tests/FixtureBuilder.cs",
+        "eng/research/I52Ct21dHostFacts/tests/RunnersTests.cs",
+        "eng/research/I52Ct21dHostFacts/tests/SchemaTests.cs",
+        "eng/research/I52Ct21dHostFacts/tests/ToolsCliTests.cs",
+        "eng/research/I52Ct21dHostFacts/README.md"
+      ],
+      "testsRun": [
+        "dotnet build tests/I52Ct21d.HostFacts.Tests.csproj -c Release: 0 warnings, 0 errors (r0 compiled against AutoCAD 2025 managed DLLs; no AutoCAD process)",
+        "dotnet test -c Release --no-build: 369 passed, 0 failed (baseline was 199)",
+        "dotnet build and test -c Debug: 369 passed, 0 failed",
+        "tools scan --allowed allowed-apis.txt core+tools+r0 (Release): all CLEAN, exit 0, allowlist sha256 85a215b5c8bcd915b37fc9dbaeb60fc2ea8e52036daab80570bb91365fd3274d, 712 entries",
+        "tools imports-allowlist-check (Release): all CLEAN, no unused entries, exit 0",
+        "scratch compile of the 7 reviewer-injected calls into a copy of the R0 sources (outside the repo, never loaded): 24 violations, all 7 caught by both layers",
+        "freeze guard: git status shows no tracked-file changes and nothing staged; only the pre-existing untracked docs/initiatives/I-52-ct21d-host-gate-execution-package-v2.md lies outside the folder; no CR characters in the folder"
+      ],
+      "openQuestions": [
+        "tupleBinding.packageManifestSha256 stays required in the designation because every ct21d record schema carries it as a tuple member. It is now an opaque 64-hex value supplied by the CAD manager; nothing here generates or checks a manifest. Should package v2 rename or redefine it? Alternatively the record schemas could drop it; I did not touch them.",
+        "The DLL hashes in the SelfPin and in declaredSet depend on the HEAD stamp from Directory.Build.targets. Package v2 has to define the canonical pinned build; allowed-apis.txt is independent of it (it names APIs, not hashes).",
+        "Approvals are scoped to the single top-level type observed in the current code. A new legitimate use of a member in another type needs a reviewed line in the list; this is deliberate, but the Coordinator should confirm the friction is acceptable.",
+        "The three `[debug-only]` entries (DebuggerBrowsableAttribute and its state enum) exist so that Debug builds also pass the tests. The Coordinator can drop them if only Release is to be scanned.",
+        "The justifications in allowed-apis.txt were assigned by category by script. I read each line, but the independent reviewer of section 239 condition 1 must still read the list, because it is the surface the scan trusts.",
+        "The separation check compares normalized full paths (case-insensitive). It does not detect hard links or junctions that point to the same file."
+      ],
+      "deviations": [
+        "Added the `imports-list` command, which was not in the brief, to draft the allowlist from the current code. It approves nothing.",
+        "The `[debug-only]` marker in allowlist justifications (exempt from the unused-entry check) was added so Debug and Release builds both pass.",
+        "SealAndManifestTests.cs was split: the manifest tests were removed and the seal and SelfPin tests moved to SealTests.cs.",
+        "The mutator-name heuristic exempts MoveNext, Editor.WriteMessage and TransactionManager.StartTransaction and StartOpenCloseTransaction, which other rules judge.",
+        "The Process rule is stricter than before: every Process member except GetCurrentProcess and getters is refused.",
+        "The designation JSON gained a required `declaredSet` field. The positional RunDesignation record gained an optional trailing DeclaredSet parameter, so existing test construction is unchanged.",
+        "I-9 stays in C#, which the README now lists as a deviation the Coordinator must accept."
+      ]
+    },
+    "a": {
+      "verdict": "CHANGES_REQUIRED",
+      "majors": [
+        "Raw-memory writes in unsafe code are invisible to BOTH layers. My injection I41 (`int x=0; int* p=&x; *p=5;`) and a `stackalloc` + pointer writes use only IL opcodes (stind.*, cpblk, initblk, localloc) and no external member, so there is no import for the allowlist to refuse. The deny rules never look at those opcodes. I compiled it into a scratch copy of the R0 sources (AllowUnsafeBlocks added only in the scratch csproj). The real allowlist and a fully permissive allowlist both report NOTHING for that method. Suggested fix: refuse `localloc`, `cpblk` and `initblk`. Also refuse any pointer or function-pointer type in a method, field or local signature, and any module that carries System.Security.UnverifiableCodeAttribute (the compiler emits it when unsafe is enabled). The Unsafe.*, Marshal.Copy, Buffer.MemoryCopy and GCHandle cases are caught only by layer 1 (imports), not by layer 2. The real csproj files do not enable AllowUnsafeBlocks, but the IL scan itself passes such code, so 'every injection is caught' does not hold."
+      ],
+      "minors": [
+        "Layer 2 (deny rules alone, with every import approved) did not flag these: DocumentCollectionExtension::Open (the DocumentManager.Open(string) extension; 'Open' is not in MutatorPrefixes and the DocumentCollection rule matches only the type name DocumentCollection), Marshal.Copy into an IntPtr, Buffer.MemoryCopy, GCHandle.Alloc, Unsafe.Write and Unsafe.InitBlock, and the Thread, Task and Timer constructors (only the inner Process.Start and File.Delete lambdas were flagged). Layer 1 refused every one of them, so with the real allowlist they all fail. The 'two independent layers' claim is only partly true for these.",
+        "Scoped approvals match the top-level type NAME, not the assembly. A hostile type with the same name could inherit the scope. Only EvidenceWriter (R-WRITER-REDEFINED) and AcadSideDbReader (R-SIDEDB-REDEFINED) are protected by redefinition rules. The other scoped names get no such protection (EvidenceSealer, Sha256Hex, HostEnvironment, HostGateCommands, Tools.Program, IlReader, JsonSchemaLite). Their approved members are all read-only (Directory.Enumerate*, File.OpenRead, Process getters, Console.Out), so there is no write exposure today.",
+        "Unscoped approvals are broader than needed, though harmless: File.Exists, ReadAllBytes, ReadAllText, Path.*, Encoding.*, Exception::.ctor, Type::GetTypeFromHandle, the OpCodes statics (Calli, Jmp, Newobj) and the 3 [debug-only] entries. Several could be scoped to the types that use them.",
+        "Layer 2 depends on name heuristics. The Process rule and the unsafe/Marshal rules only list known write prefixes (Marshal 'Write' and 'GetDelegateFor', but not 'Copy', 'StructureToPtr' or 'GetFunctionPointerFor'). They are safe only because layer 1 refuses everything not listed.",
+        "allowed-apis.txt justifications are category-generated, as the report admits. I read all 712 entries and found no member that writes, saves, loads code, spawns a process or changes global state outside the evidence folder. EvidenceWriter is create-new and flat-named and has a root-escape check. File.SetAttributes only adds ReadOnly to a flat-named file inside the evidence folder. AcadSideDbReader opens objects ForRead only and never commits."
+      ],
+      "checks": [
+        "Read in full: ForbiddenApiScan.cs, ForbiddenApiScan.Imports.cs, ApiAllowlist.cs, Program.cs, EvidenceWriter.cs, EvidenceSealer.cs (first part), AcadSideDbReader.cs, HostGateCommands.cs, HostAdapters.cs and allowed-apis.txt (712 entries).",
+        "Release build: 0 warnings, 0 errors. Tests: 369 pass, 0 fail in Release and in Debug (matches the report).",
+        "Real scan of the core, tools and r0 DLLs: CLEAN with allowlist sha256 85a215b5..., 712 entries. imports-allowlist-check: CLEAN with no unused entries. `scan` without --allowed exits 1.",
+        "Freeze guard: `git status` shows only untracked entries (this folder and docs/initiatives/I-52-ct21d-host-gate-execution-package-v2.md). Nothing is staged or modified. No AutoCAD was started or loaded. The R0 DLL was only compiled against the AutoCAD assemblies.",
+        "Injections: I built 75 injected methods into a scratch copy outside the repo (scratchpad/s) and compiled them into a scratch R0 DLL, never loaded. They cover the usual suspects and my extras: Database.SaveAs, Wblock, WblockCloneObjects, Insert and ReadDwgFile outside the reader; SetSystemVariable; GetObject with ForWrite, (OpenMode)1 and a non-constant mode; UpgradeOpen; DocumentManager.Open; Document.Database; SendStringToExecute; Quit; LockDocument; Editor.Command; Process.Start, Kill and CloseMainWindow; File.WriteAllText, Copy, Delete, OpenWrite, AppendAllText and SetAttributes; Directory.CreateDirectory and SetCurrentDirectory; new FileStream, StreamWriter and FileInfo.Delete; Registry.SetValue; WebClient and HttpClient; Marshal.GetDelegateForFunctionPointer and WriteInt32; DllImport; Assembly.Load and LoadFrom; Thread, Task, ThreadPool and Timer; Environment setters; AppDomain.SetData; Console.SetOut; string-based reflection Invoke; Activator; DynamicInvoke; dynamic; Expression.Compile; DynamicMethod; ZipFile; MemoryMappedFile; NativeLibrary; method-group ldftn to File.Delete and Process.Start; calli via a function pointer; event subscription; a Database property setter; and new Line().",
+        "Result with the REAL allowlist (layer 1): every injection that uses a call or type is refused, either as an unapproved import or as a scope violation. 73 of the 75 injected methods (including the ones that need only layer 1) are caught.",
+        "Result with a fully permissive allowlist (deny rules only, layer 2): the deny rules caught every injected call except those listed in the minors. The pure unsafe memory write (I41) is the one injection neither layer caught."
+      ]
+    },
+    "b": {
+      "verdict": "APPROVE_EXACT",
+      "majors": [],
+      "minors": [
+        "tupleBinding.packageManifestSha256 stays a required opaque 64-hex field in the designation and in every record schema. It is documented in the README as supplied by the CAD manager. Package v2 should define or rename it, which the README already flags.",
+        "The README and csproj comments name I-8 and the package manifest only to say they are absent. Nothing functional remains, and the 'manifest' CLI test asserts exit 1.",
+        "The path-separation check is textual: normalized, ordinal, case-insensitive. Hard links and junctions are not detected. This is disclosed in the README.",
+        "Core contains ProbeTable.cs, the PF-1/PF-2 table generator and statistics. Design 5.1 assigns that to I-0, and there is no TOL_SCALE probe runner, no tolscale-raw record, no state machine, no HF-C4 and no OP2 save. The 'OP2' strings are only the observation-point field names of the statistics. This is acceptable, but the Coordinator should keep it in view.",
+        "allowed-apis.txt has 712 entries with justifications assigned by category by script. I read the Autodesk and System.IO/Process/Reflection entries and they are read-only or scoped to the right type. Section 239 condition 1 still needs the independent line-by-line read the README already requires.",
+        "The 3 [debug-only] allowlist entries exist only for Debug builds and can be dropped if only Release is scanned.",
+        "The DLL hashes in the SelfPin and in declaredSet depend on the HEAD stamp from Directory.Build.targets, so they change after every commit. The README says the canonical pinned build belongs to package v2.",
+        "The README lists these deviations: I-9 is written in C# instead of a script, run-designation.json and the .pin format are the implementer's own design, the scan reads IL and not source, and the I-1 OS-level script was only parse-checked."
+      ],
+      "checks": [
+        "git status: the only entries are the untracked eng/research/I52Ct21dHostFacts/ and the untracked docs/initiatives/I-52-ct21d-host-gate-execution-package-v2.md. There are no tracked modifications and nothing staged, so src/, tests/, existing eng/, solutions and CI are unchanged and the freeze guard holds.",
+        "Folder grep: no PackageManifest.cs, no package-manifest schema, no 'manifest' command and no manifest tests. Only the opaque tuple field packageManifestSha256 and explanatory comments remain. Designation and pin handling use declaredSet plus the <dll>.pin sidecar, and the runner test asserts the schema does not refer to package-manifest.v1.",
+        "Scope check: r0 has exactly three commands (CT21DHG_CENSUS_R, CT21DHG_INVENTORY, CT21DHG_CTXVARS). Runners has RunCensus, RunInventory and RunCtxVars only. A grep for HF-C4 and TolScale in core, r0 and tools finds nothing, and there is no RS-class, I-7 or I-8 code.",
+        "Read AcadSideDbReader, HostGateCommands and HostAdapters. The only database is new Database(false, true) filled by ReadDwgFile from the private copy. All object opens are ForRead via OpenCloseTransaction, which is disposed without Commit. Only GetSystemVariable is used, with no setter and no save. The only write is Editor.WriteMessage.",
+        "Ran Release build: 0 warnings, 0 errors. Release tests: 369 passed, 0 failed. Debug build: 0 warnings, 0 errors. Debug tests: 369 passed, 0 failed.",
+        "Ran tools scan --allowed allowed-apis.txt on core, tools and r0: all CLEAN, exit 0, allowlist sha256 85a215b5... with 712 entries. imports-allowlist-check is CLEAN with no unused entries.",
+        "Recomputed independently in Python (sorted-key compact JSON, SHA-256, label = 'MC-' plus the first 12 hex characters) for all 6 label-vector cases. Serialization, hash and label all match. DESIGN-3.2-A also matches the 47229d23a125... values printed in design section 3.2.",
+        "The path-separation checks exist in RunDesignation.SeparationProblems and EnsureSeparation. They cover private copy equal to library, evidence folder equal to the library directory, to the private-copy directory, or to either data file. Tests cover these cases, and the README documents them.",
+        "No CR characters found in the folder. The README has the 'Deviations and notes for package v2 / the Architect' section."
+      ]
+    }
+  },
+  "workflowProgress": [
+    {
+      "type": "workflow_phase",
+      "index": 1,
+      "title": "Fix"
+    },
+    {
+      "type": "workflow_phase",
+      "index": 2,
+      "title": "Review"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 1,
+      "label": "fix:r0",
+      "phaseIndex": 1,
+      "phaseTitle": "Fix",
+      "agentId": "a1d81479b03edd7f9",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790823610439,
+      "queuedAt": 1790823610417,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "All semantic-audit and spec-fidelity findings are resolved.…",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico). Instruments under eng/research/I52Ct21dHostFacts (untracked, implemented in the previous step under decisions sections 237-239: R0 class ONLY: I-0, I-1, I-2, I-4, I-9; RS class, I-7 and I-8 are NOT authorized). HARD RULES: NO AutoCAD start, no host run,…",
+      "promptFramed": true,
+      "lastProgressAt": 1790824485357,
+      "tokens": 279365,
+      "toolCalls": 62,
+      "durationMs": 874916,
+      "resultPreview": "{\"summary\":\"All semantic-audit and spec-fidelity findings are resolved. Release build: 0 warnings, 0 errors. Tests: 369 pass, 0 fail in both Release and Debug (the baseline was 199). The scan is now deny-by-default against allowed-apis.txt and reports CLEAN on core, tools and r0, as does imports-allowlist-check. The freeze guard is clean: no tracked file changed and nothing was staged. The only pa…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 2,
+      "label": "rereview:semantic",
+      "phaseIndex": 2,
+      "phaseTitle": "Review",
+      "agentId": "a8e499b87ab91807d",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790824485383,
+      "queuedAt": 1790824485362,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "CHANGES_REQUIRED",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico). Instruments under eng/research/I52Ct21dHostFacts (untracked, implemented in the previous step under decisions sections 237-239: R0 class ONLY: I-0, I-1, I-2, I-4, I-9; RS class, I-7 and I-8 are NOT authorized). HARD RULES: NO AutoCAD start, no host run,…",
+      "promptFramed": true,
+      "lastProgressAt": 1790824776029,
+      "tokens": 151343,
+      "toolCalls": 25,
+      "durationMs": 290645,
+      "resultPreview": "{\"verdict\":\"CHANGES_REQUIRED\",\"majors\":[\"Raw-memory writes in unsafe code are invisible to BOTH layers. My injection I41 (`int x=0; int* p=&x; *p=5;`) and a `stackalloc` + pointer writes use only IL opcodes (stind.*, cpblk, initblk, localloc) and no external member, so there is no import for the allowlist to refuse. The deny rules never look at those opcodes. I compiled it into a scratch copy of t…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 3,
+      "label": "rereview:fidelity",
+      "phaseIndex": 2,
+      "phaseTitle": "Review",
+      "agentId": "a47bd1396b1450528",
+      "model": "claude-sonnet-5-5",
+      "state": "done",
+      "startedAt": 1790824485384,
+      "queuedAt": 1790824485362,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "APPROVE_EXACT",
+      "promptPreview": "Repository worktree: C:/Users/alejandra-mendoza/.codex/worktrees/feature-rackmirror-espejo-semantico (branch feature/rackmirror-espejo-semantico). Instruments under eng/research/I52Ct21dHostFacts (untracked, implemented in the previous step under decisions sections 237-239: R0 class ONLY: I-0, I-1, I-2, I-4, I-9; RS class, I-7 and I-8 are NOT authorized). HARD RULES: NO AutoCAD start, no host run,…",
+      "promptFramed": true,
+      "lastProgressAt": 1790824567506,
+      "tokens": 91989,
+      "toolCalls": 11,
+      "durationMs": 80669,
+      "resultPreview": "{\"verdict\":\"APPROVE_EXACT\",\"majors\":[],\"minors\":[\"tupleBinding.packageManifestSha256 stays a required opaque 64-hex field in the designation and in every record schema. It is documented in the README as supplied by the CAD manager. Package v2 should define or rename it, which the README already flags.\",\"The README and csproj comments name I-8 and the package manifest only to say they are absent. N…"
+    }
+  ],
+  "totalTokens": 522697,
+  "totalToolCalls": 98
+}

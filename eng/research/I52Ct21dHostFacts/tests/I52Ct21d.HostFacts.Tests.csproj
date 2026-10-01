@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Tests of the R0 instruments. They need NO AutoCAD and never start it. xUnit with the same package versions as
+       tests/RackCad.Tests. Nothing here is referenced by RackCad.sln or by CI. -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>I52Ct21d.HostFacts.Tests</RootNamespace>
+    <AutoCADInstallDir Condition="'$(AutoCADInstallDir)' == ''">C:\Program Files\Autodesk\AutoCAD 2025</AutoCADInstallDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\core\I52Ct21d.HostFacts.Core.csproj" />
+    <ProjectReference Include="..\tools\I52Ct21d.HostFacts.Tools.csproj" />
+  </ItemGroup>
+  <!-- The R0 DLL only COMPILES against the AutoCAD managed assemblies of an installation (no AutoCAD process). When they are
+       installed the DLL is built here so that the scan test can read it; without them that test is compiled out and the scan of the
+       R0 DLL is run by the reviewer with tools (README). -->
+  <ItemGroup Condition="Exists('$(AutoCADInstallDir)\AcDbMgd.dll')">
+    <ProjectReference Include="..\r0\I52Ct21d.HostFacts.R0.csproj" ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
+  </ItemGroup>
+  <PropertyGroup Condition="Exists('$(AutoCADInstallDir)\AcDbMgd.dll')">
+    <DefineConstants>$(DefineConstants);HAVE_R0</DefineConstants>
+  </PropertyGroup>
+  <!-- Negative-control fixture compiled WITH unsafe code (AllowUnsafeBlocks is set in that csproj only). Built here so the scan tests can read its DLL
+       as bytes; never loaded, never executed. -->
+  <ItemGroup>
+    <ProjectReference Include="..\fixtures\UnsafeFixture\UnsafeFixture.csproj" ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="data\*.json" Link="data\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>
