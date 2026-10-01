@@ -1,7 +1,7 @@
 # I-64 — Proposal V5: workspace persistente y modeless de RackCad (ID30, absorbe ID3)
 
 ```text
-Frozen: NO
+Frozen: YES
 Version: V5 (sustituye a V4 como objeto de revisión; V1..V4 quedan como registro histórico:
          V1 = dcc16bed / 962fc195; V2 = ab4efe86 / 7bf98cca; V3 = 1f1530be / d08c2cee; V4 = e87ba32c / ef3aa999)
 Unit: I-64   Workflow: V2 (T4)   Claim-Id: 614371d5-441f-4f14-bac9-f97017105610
@@ -13,8 +13,8 @@ Review V1: Architect = CHANGES REQUIRED (A64-PV1-01..22), aceptado por el Coordi
 Review V3: Architect (el mismo) = CHANGES REQUIRED: A64-PV1-01..22 = CLOSED; A64-PV3-01..06 = REQUIRED, aceptados por el Coordinator (§18, §20)
 Author: sesión principal responsable de I-64 (Claude), redacción directa
 Review V4: Architect (el mismo) = CHANGES REQUIRED: A64-PV3-01, 02, 03, 05 y 06 = CLOSED; A64-PV3-04 = STILL OPEN; A64-PV4-01 = REQUIRED (§21)
-Review V5: PENDIENTE — re-revisión por el MISMO Architect y revisión posterior del Coordinator; paquete en docs/initiatives/I-64-architect-package-v5.md
-IMPLEMENTATION AUTHORIZATION = NO
+Review V5: Architect = AGREED; Coordinator = AGREED; Consensus = AGREED; package = docs/initiatives/I-64-architect-package-v5.md
+IMPLEMENTATION AUTHORIZATION = YES — subject to this Freeze, gate contracts, I-61 execution protocol and gate-specific authorization
 ```
 
 **Fuentes y precedencia:**
