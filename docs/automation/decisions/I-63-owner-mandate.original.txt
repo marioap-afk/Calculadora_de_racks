@@ -1,0 +1,671 @@
+Coordina exclusivamente una nueva iniciativa de RackCad:
+
+# <NEXT_FREE_INITIATIVE_ID> — Computed Parameters & Project Summary Foundation
+## ID20 — Resumen paramétrico de racks y proyecto
+
+Workflow:
+V2
+
+Archetype:
+FOUNDATION EVOLUTION
+
+Priority:
+HIGH
+
+Parallel constraint:
+ID30 — Persistent RackCad Workspace puede estar activa en paralelo.
+
+Esta iniciativa NO debe construir la UI final del resumen mientras ID30
+esté definiendo la superficie principal de interacción.
+
+======================================================================
+AUTHORITIES
+======================================================================
+
+Antes de diseñar, lee y sigue las autoridades actuales del repo:
+
+- docs/WORKFLOW.md
+- AGENTS.md
+- docs/INITIATIVE_LIFECYCLE.md
+- docs/FOUNDATIONS.md
+- docs/initiatives/PROMPT_TEMPLATES.md
+- protocolo / schemas vigentes de I-61
+- foundations de:
+  - Expression Engine / I-49
+  - Rack Identity
+  - View Identity
+  - Authored vs Effective
+  - Project Variables
+  - Auto Rack Naming
+  - Shared View Foundation
+
+Usa:
+
+REFERENCE OVER REPETITION.
+
+Usa I-61 para los gates de ejecución.
+
+Coordinator conserva GATE authority.
+
+======================================================================
+GOAL
+======================================================================
+
+Crear una capa común de parámetros calculados/read-only para RackCad y
+un modelo neutral de resumen de proyecto.
+
+Debe permitir exponer de forma estable información como:
+
+Rack.*
+Project.*
+
+sin duplicar cálculos en UI, BOM, reportes u otros consumidores.
+
+Ejemplos conceptuales:
+
+Rack.Frentes
+Rack.Niveles
+Rack.PosicionesTarima
+Rack.Altura
+Rack.Fondo
+
+Project.TotalRacks
+Project.TotalFrentes
+Project.TotalPosicionesTarima
+Project.RacksBySystem
+
+Los nombres concretos y métricas finales deben salir de Discovery/Freeze.
+
+======================================================================
+PRODUCT INTENT
+======================================================================
+
+ID20 originalmente busca un resumen de:
+
+- sistemas;
+- racks;
+- frentes por rack;
+- tipo/profundidad;
+- total de frentes;
+- métricas equivalentes útiles del proyecto.
+
+La nueva arquitectura debe separar:
+
+CALCULATION
+→ METRIC / COMPUTED PARAMETER
+
+de:
+
+PRESENTATION
+→ future Workspace / report / table
+
+El resumen NO debe recalcular por su cuenta datos que ya sean autoridad
+de Computed Parameters.
+
+======================================================================
+KEY CONCEPTS
+======================================================================
+
+Separar claramente:
+
+ProjectVariable
+= editable / authored by user
+
+ComputedParameter
+= read-only / derived by RackCad
+
+y:
+
+CustomProperty
+= metadata extensible
+
+No mezclar esos conceptos.
+
+Un ComputedParameter puede convertirse en Symbol del Expression Engine,
+pero no debe convertirse en ProjectVariable.
+
+======================================================================
+EXPRESSION ENGINE INTEGRATION
+======================================================================
+
+I-49 ya entregó el motor de expresiones.
+
+Esta iniciativa debe estudiar e implementar la extensión oficial para
+built-in symbols.
+
+Conceptualmente:
+
+ProjectVariable symbols
++
+BuiltIn ComputedParameter symbols
+
+El parser/evaluator NO debe tener conocimiento directo de racks.
+
+Usar la frontera vigente de:
+
+ExpressionContext
+SymbolResolver
+o equivalente real del repo.
+
+No crear un segundo expression engine.
+
+======================================================================
+NAMESPACES
+======================================================================
+
+Evaluar y congelar namespaces reservados como:
+
+Rack.*
+Project.*
+
+Ejemplos:
+
+Rack.Frentes
+Project.TotalRacks
+
+No reinterpretar silenciosamente variables legacy.
+
+No usar display names como identidad interna si el engine ya dispone de
+un modelo estable de SymbolId.
+
+Definir:
+
+symbol identity
+display name
+scope
+provider
+
+de forma explícita.
+
+======================================================================
+METRIC AUTHORITY
+======================================================================
+
+Cada métrica debe tener UNA fuente.
+
+Discovery debe responder:
+
+- ¿sale del authored?
+- ¿sale del effective?
+- ¿sale de topology?
+- ¿sale de resolved system?
+- ¿sale del inventario de RackId?
+- ¿sale del BOM?
+- ¿no debe existir como métrica?
+
+No implementar una métrica porque "es fácil contarla" si existe una autoridad
+más correcta en otra capa.
+
+Evitar:
+
+SummaryCounter
++
+BOMCounter
++
+ExpressionCounter
+
+para el mismo concepto.
+
+======================================================================
+RACK COUNTING
+======================================================================
+
+Regla fundamental:
+
+Project.TotalRacks
+
+debe contar racks lógicos,
+NO BlockReferences / vistas.
+
+Deduplicar por RackId conforme a foundations vigentes.
+
+Un rack con:
+
+Frontal
+Lateral
+Planta
+
+sigue siendo:
+
+1 rack.
+
+Legacy sin RackId debe tratarse según la foundation actual;
+no inventar identidad.
+
+======================================================================
+SYSTEM COVERAGE
+======================================================================
+
+Discovery debe construir una matriz por sistema:
+
+- Selectivo
+- Dinámico
+- Push Back
+- Cantilever
+- Cabecera
+- Cama
+- otros productivos reales si existen
+
+Para cada métrica:
+
+Supported
+NotApplicable
+Unavailable
+NeedsContract
+
+No fabricar números equivalentes entre sistemas si su semántica difiere.
+
+======================================================================
+FIRST METRIC SET
+======================================================================
+
+No intentar exponer 100 parámetros.
+
+Freeze debe seleccionar un conjunto inicial pequeño pero representativo.
+
+Preferencia:
+
+Rack-level:
+- SystemKind
+- Frentes / equivalente
+- Niveles / equivalente
+- posiciones/capacidad discreta cuando exista autoridad clara
+- dimensiones globales simples si son semánticamente seguras
+
+Project-level:
+- TotalRacks
+- count by system
+- TotalFronts donde tenga semántica común
+- otras agregaciones demostrables
+
+La lista final debe salir de Discovery.
+
+======================================================================
+CRITICAL: EXPRESSION DEPENDENCY / RECURSION
+======================================================================
+
+Computed Parameters pueden convertirse en símbolos usados por expresiones.
+
+Esto introduce riesgo de recursión.
+
+Ejemplo conceptual peligroso:
+
+Rack.Altura
+→ effective Height
+
+pero Height authored =
+=Rack.Altura + 2
+
+Esto sería circular aunque no sea un ProjectVariable cycle clásico.
+
+Discovery/Freeze debe definir:
+
+- qué parámetros son seguros durante property evaluation;
+- qué parámetros solo existen POST-RESOLVE;
+- qué scopes/contextos pueden acceder a cada símbolo;
+- cómo detectar/rechazar cycles ocultos;
+- cómo evitar geometría → expression → geometría recursion.
+
+No habilitar un símbolo dentro de expresiones hasta demostrar que su
+dependency phase es segura.
+
+Fail closed.
+
+======================================================================
+EVALUATION PHASES
+======================================================================
+
+Evaluar si hace falta distinguir algo equivalente a:
+
+PRE-RESOLVE BUILTINS
+POST-RESOLVE COMPUTED PARAMETERS
+PROJECT AGGREGATES
+
+Los nombres son hipótesis.
+
+La intención es que el engine no pueda consumir accidentalmente una métrica
+que depende del mismo proceso que está intentando resolver.
+
+No introducir complejidad innecesaria si el modelo actual ya tiene una
+frontera equivalente.
+
+======================================================================
+PROJECT SUMMARY MODEL
+======================================================================
+
+Entregar un modelo neutral de resumen.
+
+Conceptualmente:
+
+ProjectSummary
+├── totals
+├── by-system
+├── rack summaries
+└── diagnostics/unavailable metrics
+
+No decidir la UI.
+
+Debe poder ser consumido posteriormente por:
+
+- ID30 Workspace;
+- reports;
+- RACKLISTA evolution;
+- Calculated BOM;
+- diagnostics.
+
+No crear:
+
+ProjectSummaryWindow
+
+dentro de esta iniciativa mientras ID30 esté activa.
+
+======================================================================
+RACK INVENTORY COORDINATION WITH ID30
+======================================================================
+
+ID30 puede introducir un RackInventory runtime.
+
+No crear dos inventarios competidores.
+
+Regla de paralelismo:
+
+ID20 owns:
+- metric semantics;
+- computed parameter providers;
+- project aggregation semantics.
+
+ID30 owns:
+- Workspace runtime navigation inventory;
+- UI/session representation.
+
+Si aparece una foundation común obvia:
+
+STOP / coordinate through Master Orchestrator.
+
+No consumir código no integrado de ID30.
+
+No copiar su diseño hipotético.
+
+======================================================================
+ID23 EXTENSION POINT
+======================================================================
+
+Futuro ID23 debe poder escribir:
+
+Guías.Quantity =
+Rack.Frentes * 2
+
+Por tanto ID20 debe dejar una vía estable para resolver built-in Rack symbols
+dentro de un contexto de un rack concreto.
+
+NO implementar Custom/Calculated BOM aquí.
+
+======================================================================
+ID28 / ID29 EXTENSION POINT
+======================================================================
+
+Computed symbols deben preservar suficiente identity/provenance para que en
+el futuro:
+
+Explain
+→ pueda decir de dónde sale un valor
+
+Impact Preview
+→ pueda conocer consumidores/dependents
+
+No implementar esas UIs.
+
+No convertir I-20 en un nuevo dependency engine.
+
+Reutilizar I-49.
+
+======================================================================
+OUT OF SCOPE
+======================================================================
+
+NO:
+
+- Workspace UI;
+- ProjectSummaryWindow;
+- ID23 Calculated BOM;
+- ID21 Rack references;
+- ID25/26 Configurations/Templates;
+- ID28/29 UI;
+- Engineering Rules;
+- Custom Property formulas;
+- nuevos editors;
+- AutoCAD Palette UI;
+- cambios geométricos;
+- nuevas reglas de producto.
+
+======================================================================
+PERFORMANCE
+======================================================================
+
+El summary no debe resolver repetidamente todo el drawing sin necesidad.
+
+Characterize:
+
+- single rack metric evaluation;
+- project aggregation;
+- N racks / multiple views;
+- repeated summary reads.
+
+Preferir:
+
+pure providers
++
+single logical rack enumeration
++
+controlled effective resolution
+
+No crear caches complejos antes de medir.
+
+======================================================================
+DISCOVERY REQUIRED
+======================================================================
+
+Focused Discovery debe responder:
+
+1. Expression Engine symbol contracts actuales;
+2. ExpressionContext actual;
+3. dependency graph integration;
+4. phases de evaluation;
+5. cómo se accede al effective model por sistema;
+6. fuentes actuales de rack counts;
+7. RACKLISTA reusable logic;
+8. BOM aggregation reusable/non-reusable logic;
+9. RackId dedupe;
+10. métricas existentes dispersas;
+11. qué métricas son realmente comunes;
+12. riesgos de cycles;
+13. current ID30 overlap/hotspots;
+14. qué parte puede ser 100% Application/Domain.
+
+======================================================================
+PROPOSAL / FREEZE MUST DEFINE
+======================================================================
+
+- ComputedParameter identity;
+- scope;
+- provider contract;
+- namespaces;
+- metric source-of-truth;
+- evaluation phases;
+- expression availability;
+- cycle/reentrancy contract;
+- system matrix;
+- first metric set;
+- project aggregation;
+- RackId dedupe;
+- unavailable/not-applicable semantics;
+- summary neutral model;
+- performance strategy;
+- ID23 extension point;
+- ID30 integration boundary.
+
+======================================================================
+ARCHITECT
+======================================================================
+
+Classification:
+FOUNDATION EVOLUTION.
+
+Require:
+
+Architect preimplementation review
++
+final conformance.
+
+Architect must challenge:
+
+- duplicate metric authorities;
+- geometry/BOM used as accidental source;
+- rack views counted as racks;
+- hidden expression cycles;
+- UI leaking into metric providers;
+- eager whole-project resolution;
+- ambiguous cross-system semantics;
+- symbol names acting as identity;
+- over-generalized universal metric framework.
+
+Implementation requires:
+
+Coordinator = AGREED
+Architect = AGREED
+
+on the same Freeze.
+
+======================================================================
+I-61 EXECUTION
+======================================================================
+
+Use I-61.
+
+Coordinator defines gate contract.
+
+Controller:
+- classifies task;
+- chooses executor/model/effort;
+- verifies exact-SHA.
+
+Workers implement/test.
+
+Record routing decisions as I-61 evidence.
+
+This initiative should provide useful evidence about:
+
+- mechanical provider implementation;
+- cross-system characterization;
+- architecture review;
+- model/effort selection.
+
+Worker cannot declare Gate PASS.
+
+======================================================================
+FUNCTIONAL GATES
+======================================================================
+
+Use INITIATIVE_LIFECYCLE.md.
+
+Suggested shape:
+
+F0
+Focused Discovery + Freeze
+
+F1
+Computed Parameter model + provider contract
+
+F2
+Rack-level providers / system matrix
+
+F3
+Project aggregation + RackId dedupe
+
+F4
+Expression Engine built-in symbol integration
+
+F5
+Neutral ProjectSummary model
+
+F6
+Conformance + performance + consumer readiness
+
+READY
+Final Candidate
+
+No final Summary UI.
+
+======================================================================
+OWNER VALIDATION
+======================================================================
+
+If no user-visible UI/AutoCAD behavior is added:
+
+Owner Validation may be NOT APPLICABLE,
+but this must be decided by the normal workflow.
+
+If any command/visible summary is added:
+plan Owner Validation.
+
+Do not add UI merely to force manual validation.
+
+======================================================================
+SUCCESS CRITERIA
+======================================================================
+
+1. ComputedParameter is distinct from ProjectVariable.
+
+2. Rack-level and Project-level metrics have explicit authority.
+
+3. project rack counts dedupe by logical identity.
+
+4. first metric set works across documented systems.
+
+5. built-in symbols integrate with I-49 without second engine.
+
+6. no hidden evaluation recursion.
+
+7. unavailable/N/A states are explicit.
+
+8. neutral ProjectSummary exists.
+
+9. ID30 can later present summary without recalculating it.
+
+10. ID23 can later consume Rack.* symbols.
+
+======================================================================
+FIRST RESPONSE REQUIRED
+======================================================================
+
+Before production:
+
+1. preflight;
+2. origin/main;
+3. next free Initiative-Id;
+4. claim/branch/worktree;
+5. Workflow V2 + I-61 status;
+6. active ID30/hotspot boundary;
+7. Consumes / Extends / Introduces;
+8. Expression Engine symbol model;
+9. current evaluation phases;
+10. rack logical enumeration;
+11. system metric matrix draft;
+12. candidate first metric set;
+13. metric source authority per item;
+14. cycle/reentrancy risks;
+15. namespace proposal;
+16. computed symbol identity proposal;
+17. project aggregation proposal;
+18. summary neutral-model proposal;
+19. ID23 extension path;
+20. ID30 integration boundary;
+21. performance characterization plan;
+22. Freeze;
+23. Architect package;
+24. gates;
+25. initial I-61 routing plan;
+26. explicit status:
+
+IMPLEMENTATION AUTHORIZATION = NO
+until Coordinator + Architect agree on the same Freeze.
