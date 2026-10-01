@@ -567,3 +567,53 @@ IMPLEMENTATION AUTHORIZATION = NO.
   `SelectivePlantaBuilder.cs:371-373`, `SelectiveDesviadorPlan.cs:266`, `SelectiveTopePlan.cs:115` y
   `SelectiveGeometryResolver.cs:268-273`.
 - La CI exacta del commit que contiene este archivo se informa al Coordinator.
+
+## 16. Orden PV1: Proposal V1 y paquete del Architect
+
+### 16.1 CI de la entrega anterior
+
+| Commit | SHA | Corrida `push` | Resultado |
+|---|---|---|---|
+| Cierre de P-05 por el Owner | `a0654ae29f21532c1a97bf12d0fa3abc4ba1211f` | 36922395732: `head_branch` = `architecture/parametros-calculados-resumen-proyecto`, `head_sha` exacto | `success`; los cuatro jobs requeridos de `AGENTS.md` en `success` |
+
+### 16.2 Orden
+
+- **Procedencia:** «I-63 — COORDINATOR ORDER: PROPOSAL V1 + ARCHITECT PACKAGE», pegada por el usuario en el chat de la sesión
+  responsable el 2026-10-01. No llegó como archivo, así que no tiene hash.
+- Resumen en las [decisiones](../decisions/I-63.md) §2 («Orden PV1»), con la semántica de «frente vacío» que fija el Coordinator.
+
+### 16.3 Preflight (2026-10-01T22:15:43Z y 22:30:33Z)
+
+- `HEAD` = remoto = `a0654ae2`; árbol limpio; `origin/main` = `819955d6`, ancestro de `HEAD`: **sin rebase**.
+- Ramas ajenas a las 22:30:33Z: I-52 `352cc3de`, I-62 `acd88eaf`, I-64 `1f1530be`. Las tres son *fast-forward* desde lo observado
+  en §15.3 (y I-62 desde `486e45e7`), y ninguna cambia `src/` ni `tests/` frente a `main` (diff de tres puntos).
+- **I-64 `1f1530be`** (Proposal V3) registra en su evidencia §15, como resumen de una orden de su Coordinator, `MASTER-I63-I64-02`:
+  - retira la fundación o *snapshot* compartido y la autoría inicial de I-63;
+  - conserva la frontera;
+  - I-64 no depende de la integración de I-63;
+  - una fundación común futura exige una decisión nueva del Master.
+
+  I-63 no recibió esa decisión directamente; la conoce por esa lectura. Coincide con P-14, y la Proposal V1 lo refleja en §16 y R-07.
+
+### 16.4 Método y salidas
+
+- Redacción directa de la sesión principal; ningún participante de IA, ninguna delegación §16, sin pruebas ni host.
+- Código leído para fijar hechos de diseño (sin editarlo):
+  - núcleo de I-49: `SymbolId`, `SymbolTable`, `ExpressionContext`, `ExpressionBinder`, `ExpressionEvaluator`, `ExpressionFormatter`,
+    `RegistryEvaluation`, `DependencyGraph`;
+  - persistencia: `PersistedBoundExpressionJson`;
+  - Selectivo: `SelectiveEffectiveDesignResolver`, `SelectiveGeometryResolver`, `SelectiveDepthLayout`, `SelectivePalletDesign`,
+    `SelectiveRackSystem`;
+  - población y BOM: `BomAuthoredAuthority`, `RackBomOutputGate`, `PushBackKindHandler`, `KindHandlerRegistry`, `KindDispatch`.
+- Fuentes de autoridad leídas: el mandato; ADR-0043 D5, D6, D9, D24 y D25; I-49 V6 P25; ADR-0039 §13 e I-54 D-16;
+  INITIATIVE_LIFECYCLE; PROMPT_TEMPLATES §C y el perfil ARCHITECTURE_REVIEW; `routing.md` §1.
+- Salidas:
+
+  | Archivo | Blob |
+  |---|---|
+  | `docs/initiatives/I-63-proposal-v1.md` (Frozen: NO) | `48a68307be3f046c20c2405252dc8af3ad050342` |
+  | `docs/initiatives/I-63-architect-package-v1.md` | `98e34b183c4c9829c18fec3cc822b342f6753e52` |
+
+  Además: el contrato, las decisiones, esta evidencia y el estado.
+- **Revisión del Architect:** pedida, **no realizada** en este commit. El modo se declarará en la revisión.
+- La CI exacta del commit que contiene este archivo se informa al Coordinator.

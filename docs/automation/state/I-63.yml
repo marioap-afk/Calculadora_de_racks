@@ -7,8 +7,8 @@ automation_state:
   state: review-ready
   gate: none
   attempts: 0
-  next_action: Coordinator emite la orden de Proposal + revision del Architect con P-01..P-05 y P-14 resueltas por el Owner; sin implementacion.
-  last_evidence_commit: f6da276874bb53ba481a2c798747a9a5a4d16a55
+  next_action: El Architect revisa la Proposal V1 exacta (modo declarado) y el resultado vuelve al Coordinator; sin Freeze ni implementacion.
+  last_evidence_commit: a0654ae29f21532c1a97bf12d0fa3abc4ba1211f
 execution_context:
   mode: manual
   automation_enabled: false
