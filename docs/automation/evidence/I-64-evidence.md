@@ -158,3 +158,89 @@ Architect ni subagente se invocó en D0. `AuthorityRevision`, `BaseSha`, `RunId`
 
 Métricas: UNKNOWN (sin gates funcionales). Arquetipo inicial: NEW ARCHITECTURE (brief). Conformidad: no aplica todavía. Owner
 Validation: requerida por el brief; no aplica a D0. Tag de integración: no existe.
+
+## 10. Resolución de D0 y hechos posteriores al bootstrap (CD-I64-D0-01/02)
+
+Sección nueva: las secciones 1-9 son el registro histórico del bootstrap y no se reescriben. Fuente: orden del Coordinator
+`I64_F0_D1_orden_discovery.txt` (8 644 bytes, SHA-256 `5b46811eacae664926c2cc86b0a38c1a6f0c08a72fc81086d5a3284e033a120b`, medido en
+el host; no se versiona). **CD-I64-D0-01:** D0 aceptada (reclamo `6ea9b7e8…`, bootstrap `d8a02163…`, Claim-Id `614371d5-…`, V2/T4);
+no declara F0 PASS, Freeze, Candidato ni integración. **CD-I64-D0-02:** los hechos posteriores al bootstrap se registran en este primer
+commit útil de D1, sin commit ceremonial ni amend/rebase.
+
+**CI exigible de D0** (MEASURED con `gh run view`; evidencia de CI, no local):
+
+| Commit | Corrida | `event` | `ref` | `head_sha` | Jobs | Creada / actualizada (UTC) |
+|---|---|---|---|---|---|---|
+| reclamo | 36888872244 | `push` | `refs/heads/architecture/workspace-persistente-rackcad` | `6ea9b7e8002eaa69e17fbcf677e7855f40315ec4` | Tests (Domain + Application), UI Tests (WPF controls, net8.0-windows), Build UI (WPF, valida API de Application), Build Plugin without AutoCAD: `success` | 16:01:50 / 16:06:22 |
+| bootstrap | 36889041587 | `push` | `refs/heads/architecture/workspace-persistente-rackcad` | `d8a0216306f40e4d502b77310c1632cdbb84d70d` | los mismos cuatro: `success` | 16:03:09 / 16:07:23 |
+
+**RELEASE de la ventana propia** (canal: mensajería entre sesiones locales de Claude). El canal no devuelve hora ni acuse de lectura;
+el resultado de cada envío fue «en cola» en la sesión destino. La hora es una **estimación de esta sesión**: inmediatamente después del
+push del bootstrap (16:03:01Z, medido) y antes de 16:04Z.
+
+| Interlocutor | msg_id | Alcance |
+|---|---|---|
+| sesión «I - 52» | `4e98f665-4979-45dc-a896-840bd56742fe` | fin de la ventana sobre `docs/ROADMAP.md`; sin HANDOFF, índice de ADR ni host |
+| sesión «I - 63» (ID20) | `f341dded-27ab-48e6-9e9f-5f224c936f1b` | fin de la ventana sobre `docs/ROADMAP.md` |
+| sesión «I - 62» | `9be7a49c-89c2-4f88-8403-0a918399fe6d` | fin de la ventana sobre `docs/ROADMAP.md` |
+
+**Acuse posterior dado a I-62** (msg `ff2d1346-06a0-44d5-9034-78a05ed7d779`, hora estimada por esta sesión: poco después de 16:03Z):
+ventana sobre `docs/ROADMAP.md` para su bootstrap. Su RELEASE llegó por el mismo canal, sin hora de canal, antes del preflight de D1
+(16:19:53Z). Su bootstrap publicado: `85ae4324` sobre el reclamo `a851841a`.
+
+**Identidad de las copias versionadas** (MEASURED sobre el commit de bootstrap `d8a02163`). Se distinguen tres valores: el
+identificador Git del blob, el SHA-256 de los bytes del blob y el SHA-256 de transporte medido en el host.
+
+| Archivo | Identificador Git del blob | SHA-256 de los bytes del blob | SHA-256 de transporte | Bytes |
+|---|---|---|---|---:|
+| `docs/initiatives/I-64-owner-brief.txt` | `8970c15e228adf94c96a98fd3f577437ab66dab0` | `f0be18e7a7f408be9f4bc4a66dd7c9a1e47e920124311e87b3ae77dac31df660` | igual | 18 668 |
+| `docs/initiatives/I-64-coordinator-confirmation-d0-r3.txt` | `cfc9e721e42c2c3a63cee171d02e5ee5cd960939` | `8af5ba57a7b533f8ce9d148dfa92f945d189644503cb53d33de3e9140eec0b85` | igual | 3 268 |
+
+Ningún blob del bootstrap contiene CR.
+
+## 11. F0-D1 — Discovery (hechos de esta tarea)
+
+Resultado: [I-64-discovery.md](../../initiatives/I-64-discovery.md). **No** es Proposal, Freeze, revisión del Architect ni GATE PASS.
+
+| Hecho | Valor |
+|---|---|
+| Autorización | orden F0-D1 (CD-I64-F0-D1-01/02): Discovery de lectura y documentación; EXP-07 y EXP-09 condicionales |
+| Preflight diferencial (16:19:53Z) | `HEAD` = `origin/architecture/workspace-persistente-rackcad` = `d8a02163…`; árbol limpio; sin operaciones Git en curso; ningún proceso con la ruta del worktree; AutoCAD no en ejecución; `origin/main` = `819955d6…` (sin cambio) |
+| Ramas paralelas observadas (por referencia remota) | I-52 `c1982b2a`; I-62 `85ae4324`; I-63 `cba24838` al inicio y `b557ea3b` durante D1. Lectura solo como coordinación |
+| Escrituras versionadas | solo los tres archivos de la allowlist: el Discovery, esta evidencia y el contrato (estado y referencias) |
+| Ejecución | sin AutoCAD, sin builds, sin pruebas, sin prototipos, sin Controller, Worker, Architect ni subagentes |
+| Expansiones | EXP-07 ejecutada (§10 del Discovery); EXP-09 ejecutada solo para M-08 (activado); EXP-04, EXP-05 y EXP-08 positivas sin investigación adicional |
+
+**Superficie de API leída del host** (MEASURED; metadatos con `System.Reflection.Metadata`, sin cargar los DLL; AutoCAD 2025
+`R25.0.171.0.0`):
+
+| DLL | SHA-256 |
+|---|---|
+| `C:\Program Files\Autodesk\AutoCAD 2025\acmgd.dll` | `7AA8BF5F79F3F980DCC9F4CF9483F8438E773F6BF7C05EC3B263449B2846BC8C` |
+| `C:\Program Files\Autodesk\AutoCAD 2025\accoremgd.dll` | `31025BC01ABC2CB398040AC82A5018E4FCD7A80FE8A2012DE0329E7F8ED746AA` |
+| `C:\Program Files\Autodesk\AutoCAD 2025\acdbmgd.dll` | `C360186CC0702E210635895B7608D1D8BD5FEEC6A00612B7581EF160FE09CEDE` |
+| `C:\Program Files\Autodesk\AutoCAD 2025\AcWindows.dll` | `236DEEACD835B9BDD33B51061F8A9EBE9489FC6EF2A2F93148DFCF32F47588C3` (no contiene `PaletteSet`; el tipo está en `acmgd.dll`) |
+
+**Documentación oficial consultada el 2026-10-01** (RECONSTRUCTED):
+
+| Fuente | URL | Versión o fecha |
+|---|---|---|
+| Autodesk, `PaletteSet` (clase, métodos, propiedades, eventos, `AddVisual`) | `https://help.autodesk.com/cloudhelp/2025/ENU/OARX-ManagedRefGuide/files/OARX-ManagedRefGuide-Autodesk_AutoCAD_Windows_PaletteSet.html` y páginas de miembros hermanas | ruta 2025; sin marcador de versión en la página |
+| Autodesk, `Application.ShowModelessWindow` (sobrecargas con URI) | `https://help.autodesk.com/cloudhelp/2025/ENU/OARX-ManagedRefGuide/files/OARX-ManagedRefGuide-__OVERLOADED_ShowModelessWindow_Autodesk_AutoCAD_ApplicationServices_Application.html` | ruta 2025 |
+| Autodesk, «Lock and Unlock a Document (.NET)» | `https://help.autodesk.com/cloudhelp/2025/ENU/OARX-DevGuide-Managed/files/GUID-A2CD7540-69C5-4085-BCE8-2A8ACE16BFDD.htm` | ruta 2025; sin marcador de versión |
+| Autodesk, «Code Differences under the Application Execution Context» (ObjectARX) | `https://help.autodesk.com/cloudhelp/2022/ENU/OARX-DevGuide/files/GUID-634ADE0B-35FD-4146-A2D0-3621D2FB5B0C.htm` | **2022**; no verificada para 2025 |
+| Microsoft Learn, «WPF and Win32 interop» | `https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/wpf-and-win32-interoperation` | `updated_at` 2025-08-27 |
+
+**Hallazgos laterales** (no se corrigen en D1; candidatos a `docs/ideas-futuras.md` en el cierre):
+
+- [WORKFLOW](../../WORKFLOW.md) §7 cita tamaños antiguos de los editores grandes; hoy: Selectivo 3 713, Push Back 3 630 y Dinámico 3 508
+  líneas (MEASURED).
+- [ARCHITECTURE](../../ARCHITECTURE.md) §7.3 cita `RackDialogWindow`, retirada del código, y §8 cita `RackFrameCommands`, que ya no
+  existe (MEASURED).
+- [FOUNDATIONS](../../FOUNDATIONS.md) no tiene entradas para Auto Rack Naming, el motor de expresiones ni la base AUTH-01..07 de
+  Shared View (MEASURED).
+- `RackListBuilder.KindLabel` no etiqueta Push Back (hueco declarado en el propio código; MEASURED).
+- El directorio más reciente de `%LOCALAPPDATA%\OpenAI\Codex\bin` no contiene `codex.exe` (MEASURED en D0).
+
+**CI de esta tarea:** la corrida `push` del SHA que publica este archivo es un hecho posterior al commit; se informa al Coordinator en
+la entrega y no se encadena otro commit para citarla (CD-I64-D0-02).
