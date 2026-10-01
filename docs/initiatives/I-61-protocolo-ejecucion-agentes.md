@@ -3,12 +3,12 @@ schema: rackcad-initiative/v2
 id: I-61
 title: Agent Execution, Model Routing & Prompting Protocol
 type: architecture
-status: discovery-g1
+status: design
 workflow: V2
 conceptual_initiative: I-61
 delivery_unit: I-61
 archetype: NEW ARCHITECTURE
-materiality: [M-01, M-02, M-04, M-05, M-06, M-07]
+materiality: [M-01, M-02, M-04, M-05, M-06, M-07, M-08]
 branch: architecture/protocolo-ejecucion-agentes
 base_branch: main
 priority:
@@ -16,7 +16,7 @@ size:
 depends_on: []
 conflicts_with: []
 hot_files: [docs/ROADMAP.md, docs/adr/README.md, src/RackCad.Plugin/RackCamaCommands.cs]
-coordination_strategy: Ventana de escritura acordada con I-52 por su canal para ROADMAP y el índice de ADR; piloto en gate y commits propios (Discovery §19.2).
+coordination_strategy: Ventana de escritura acordada con I-52 por su canal para ROADMAP y, en el commit de cierre (WORKFLOW §11.4), para el índice de ADR; número ADR-0046 notificado a I-52 al publicar el diseño; piloto en gate y commits propios (Discovery §19.2).
 context_packs: [documentation-governance, delivery-validation, autocad-plugin, system-dynamic-flowbed, persistence]
 consumes: [Rack Identity, Unknown-field Preservation in Persisted Envelopes, Custom Properties]
 extends: []
@@ -51,7 +51,7 @@ automation:
 - Iniciativa conceptual y unidad de entrega: **I-61** (única). Workflow **V2, T4** ([WORKFLOW](../WORKFLOW.md) §11.3).
 - Apertura: caso (d) de [WORKFLOW](../WORKFLOW.md) §2 por **mandato explícito del Owner** ([`I-61-owner-mandate.txt`](../automation/decisions/I-61-owner-mandate.txt), una sola copia).
 - **Arquetipo: NEW ARCHITECTURE, confirmado por el Coordinator (Q-01).** La etiqueta FOUNDATION EVOLUTION del mandato se conserva como fuente y no se reescribe.
-  Materialidad (Discovery §9): M-01, M-02 (creador), M-04, M-05, M-06 y M-07 activados; M-03 y M-08 no. El delta del piloto es EXTENSION (Discovery §19.1).
+  Materialidad: M-01, M-02 (creador), M-04, M-05, M-06 y M-07 activados en el Discovery (§9); M-08 activada en el diseño (Proposal V9 §17: amplía la asignación de P-17, OWN-L); M-03 no. El delta del piloto es EXTENSION (Discovery §19.1).
 - **Agrupación:** por sí solo, el piloto sería otra unidad (LIFECYCLE §2), pero el **Owner** fijó el alcance: lo incluye en esta iniciativa (mandato «PILOT») y en este recorrido hasta el Candidato,
   sin nuevos reclamos (decisiones §9.1, cláusulas 1-3). El Coordinator lo registra (C61-G1-07). Tiene gate y commits propios.
 - Modifica el **proceso de desarrollo** de RackCad; el único cambio de producto es el piloto, intencionalmente pequeño.
@@ -111,7 +111,7 @@ Normas que se modifican (no son fundaciones): PROMPT_TEMPLATES (sección nueva),
 ## 6. Discovery, decisiones y Freeze
 
 - Discovery: [I-61-discovery.md](I-61-discovery.md) (G1 + consolidación G1-C).
-- Freeze / Freeze delta / A-n: ninguno todavía. NEW ARCHITECTURE congela su Proposal autocontenida (LIFECYCLE §6).
+- Freeze / Freeze delta / A-n: Proposal V9 ([I-61-proposal-v9.md](I-61-proposal-v9.md)), acordada tras ocho rondas Coordinator ↔ Architect en SAME-SESSION ROLE ([r1](I-61-design-review-r1.md)…[r8](I-61-design-review-r8.md)); identidad y Freeze en [decisiones](../automation/decisions/I-61.md) §13. NEW ARCHITECTURE congela su Proposal autocontenida (LIFECYCLE §6). Sin A-n.
 - Decisiones: [I-61.md](../automation/decisions/I-61.md); mandato: [I-61-owner-mandate.txt](../automation/decisions/I-61-owner-mandate.txt).
 
 **Decisiones del Owner necesarias y dónde bloquean** (LC-17):
@@ -120,7 +120,7 @@ Normas que se modifican (no son fundaciones): PROMPT_TEMPLATES (sección nueva),
 |---|---|
 | Aceptar o rechazar ADR-0046 (propuesto con el diseño) | `READY-03` y `FINAL_CANDIDATE_SHA`; no bloquea diseño, implementación ni piloto (C61-G1-04) |
 | Owner Validation del Candidato: comportamiento del piloto y aceptación del resultado frente a los criterios de éxito | la integración (es la validación ordinaria, no una decisión previa pendiente; Discovery §15 Q-04 y Q-06) |
-| DEV-G1C-01: conservar o eliminar la entrada `trusted` añadida a `~/.codex/config.toml` | nada del flujo; es limpieza del entorno |
+| DEV-G1C-01: conservar o eliminar la entrada `trusted` añadida a `~/.codex/config.toml` | `READY-03`, por aplicación literal (Proposal V9 §16.1; sustituye la anotación anterior «nada del flujo», decisiones §13) |
 
 Las preguntas sobre la intención de producto del piloto (Q-06, con la inferencia del Coordinator que el Discovery §15 registra), la agrupación (C61-G1-07) y el relevo con agentes externos (C61-G1-01) están **respondidas por cláusulas del Owner**
 (mandato; decisiones §9.1).
@@ -130,7 +130,7 @@ Las preguntas sobre la intención de producto del piloto (Q-06, con la inferenci
 - Dependencias integradas: ninguna declarada (la base contiene Workflow V2 efectivo).
 - Coordinación con **I-52**: ambas escriben `docs/ROADMAP.md` y `docs/adr/README.md`. Toda escritura de esas superficies requiere una ventana acordada por el canal entre sesiones
   (precedente: decisiones §4). No se toca la rama, el worktree ni las filas de I-52.
-- Archivos calientes: `docs/ROADMAP.md` (solo la fila propia), `docs/adr/README.md` (una fila para ADR-0046) y `src/RackCad.Plugin/RackCamaCommands.cs` (piloto; WORKFLOW §7).
+- Archivos calientes: `docs/ROADMAP.md` (solo la fila propia), `docs/adr/README.md` (una fila para ADR-0046, en el commit de cierre, WORKFLOW §11.4) y `src/RackCad.Plugin/RackCamaCommands.cs` (piloto; WORKFLOW §7).
   `HANDOFF.md` solo se edita al integrar o cerrar.
 - Las puntas observadas viven en la evidencia y en los cuerpos de commit.
 

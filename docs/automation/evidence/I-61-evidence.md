@@ -174,3 +174,55 @@ fd83089e3a5d1649b41a1f71becd98c1ff94428cfeed45aba5d202812e33f727  agent-a1dfc056
 6c460c0a318076c8905d13668023398af25525293c7bb8bf30b30feb84bce499  agent-ac3937b0e4d9f58be.jsonl
 c24a958bd639b56e8e5e665a13ae9183d1294dbc71305782d8604af23a60a053  agent-ac9b4007d1c6a0219.jsonl
 ```
+
+## 12. Diseño — fuentes oficiales consultadas (2026-09-30)
+
+Consultadas por la sesión de I-61 con una herramienta de recuperación web que **puede resumir**. Las citas son las que la herramienta devolvió como literales; no se verificó el texto
+íntegro de la página. Es guía del proveedor, no autoridad de RackCad.
+
+| Fuente | Proveedor | Lo que devolvió |
+|---|---|---|
+| `https://learn.chatgpt.com/docs/config-file/config-reference` (redirección 308 desde `https://developers.openai.com/codex/config-reference`) | OpenAI (Codex) | `service_tier`: «Preferred service tier for new turns. Use `fast` or another tier advertised by the active model; `fast` maps to the request value `priority`.» Sin datos sobre límites de uso, créditos ni coste. `model_reasoning_effort`: «Reasoning effort advertised by the selected model, such as `low`, `medium`, `high`, `xhigh`, `max`, or `ultra`. Available levels depend on the model and client.» |
+| `https://learn.chatgpt.com/docs/models` | OpenAI (Codex) | Menciona los modos «Fast» y «Ultrafast» sin efecto declarado sobre límites o créditos. GPT-6.1 Sol: effort de Light a Ultra («Max and Ultra depend on your settings»); GPT-6 Luna: hasta Max, sin Ultra. Para `gpt-6-astra` lista las filas de disponibilidad «ChatGPT Credits» y «API Access», sin más detalle. Sin correspondencia explícita entre los rótulos (Light…Ultra) y los valores de configuración |
+
+**Autenticación de la sesión responsable y de sus subagentes (MEASURED el 2026-09-30, sin registrar valores secretos ni identificadores de cuenta):**
+
+- Variables del proceso de la sesión: `CLAUDE_CODE_ENTRYPOINT = claude-desktop`; `ANTHROPIC_BASE_URL = https://api.anthropic.com`; `CLAUDE_CODE_OAUTH_SCOPES` presente con los alcances
+  `user:inference user:file_upload user:profile user:sessions:claude_code user:plugins`; existen variables de identificador de cuenta y de organización (valores no registrados).
+- **Ausentes:** `ANTHROPIC_API_KEY`, `ANTHROPIC_AUTH_TOKEN`, `CLAUDE_CODE_OAUTH_TOKEN`, `CLAUDE_CODE_USE_BEDROCK`, `CLAUDE_CODE_USE_VERTEX` y `CLAUDE_CODE_USE_FOUNDRY`.
+- Fuente oficial (`https://code.claude.com/docs/en/authentication`, consultada el 2026-09-30 con la misma herramienta que puede resumir): «Claude Desktop and cloud sessions do not call
+  `apiKeyHelper` or read these environment variables: they use OAuth, except desktop sessions running a third-party inference configuration»; en la precedencia de credenciales, «Subscription
+  OAuth credentials from `/login`. This is the default for Claude Pro, Max, Team, and Enterprise users».
+- Conclusión: la sesión se autentica con OAuth de una cuenta de claude.ai (canal de suscripción), sin clave de API de pago ni proveedor de nube ni configuración de inferencia de terceros
+  (la URL base es la de Anthropic). Los subagentes corren en el proceso de la sesión, que no tiene otra fuente de credenciales. El **tipo de plan** (Pro, Max, Team o Enterprise) es
+  **UNKNOWN**.
+
+## 13. Diseño — CI de G1-C, rondas de revisión y hechos medidos
+
+**CI del commit que publica G1-C** (condición del GATE PASS de G1, decisiones §12): corrida `36796667573`; `event` = `push`; `ref` = `refs/heads/architecture/protocolo-ejecucion-agentes`;
+`head_sha` = `07ef2a858616b12e5f72d2b5f9c7b3da434e63d8`; conclusión `success`; jobs `Tests (Domain + Application)`, `UI Tests (WPF controls, net8.0-windows)`,
+`Build UI (WPF, valida API de Application)` y `Build Plugin without AutoCAD`, todos en `success` (consulta con `gh run view`, 2026-09-30).
+
+**Rondas de diseño** (ayudas del Architect de esta sesión, SAME-SESSION ROLE; no independientes). Los `journal.jsonl` viven en el perfil del usuario y no se versionan; su SHA-256 es
+procedencia no reverificable tras una limpieza.
+
+| Ronda | Workflow | Objeto (blob) | Veredicto | SHA-256 de `journal.jsonl` |
+|---|---|---|---|---|
+| r1 | `wf_0d41af0e-fe9` | Proposal V1 `9dfa957b`, ADR `1feca318` | CHANGES REQUIRED | `f4d013bdea3f4633a3a3e8efdf6a72e60625629af49b16e649ad18fe9811dc30` |
+| r2 | `wf_465b000c-68c` | V2 `229ca694`, ADR `6d18c8ba` | CHANGES REQUIRED | `ceeb6a134f6f8d7d9024aef7b4bef4d5a6a0858f0fce27316b0f586831edeb9c` |
+| r3 | `wf_a0761336-ce0` | V3 `56972b06`, ADR `8403bf98` | CHANGES REQUIRED | `d0f3c13cf78083b1dfd39159096706133b4dd7bfe4623ef163a9a5c13a874cc1` |
+| r4 | `wf_69f6c12a-18f` | V4 `c0359f8f`, ADR `e9a70b32` | CHANGES REQUIRED (A y B AGREED) | `b88d99609060ee8fbcd0764a5e8dbccc57c167360115718ffc2a3874e00c06f1` |
+| r5 | `wf_ebced569-226` | V5 `861e7cbb`, ADR `cda4491b` | CHANGES REQUIRED | `f11104f7e26ed3f2490055807e3c94d51f51e161d02280f5afcd69bd6373db3a` |
+| r6 | `wf_cc7ae11f-349` | V6 `422fa47c`, ADR `d6602de6` | CHANGES REQUIRED | `1ed643c6a75919d04092dbbe514482af8cbcb3c255dd363305dde632ea8e10e7` |
+| r7 | `wf_e913851b-59e` | V7 `2bbb07fa`, ADR `c7a6f22c` | CHANGES REQUIRED | `8116d91fe2c0c15ee9cf8107f9cbba1f90a8a7af157a6bf4873435924cb23d01` |
+| r8 | `wf_972c4bea-38d` | V8 `8199f211`, ADR `3c7a4ead` | **AGREED** (cuatro lentes, cero REQUIRED) | `f9ee1a619c43a530bfd536dfb0a0c732c802983b3bfc8c37db2d374ef06dcec3` |
+| conf. 1 | `wf_6fa0ed72-d8c` | V9 `1cc9bf12` | CHANGES REQUIRED (N-R9-01) | `44f44148da8692206afd18f7d0583af4f00b4221f54996908c6a7774d5944bfa` |
+| conf. 2 | `wf_d2995aa2-fa9` | V9 **`fccae56d`**, ADR `154e067d` | **AGREED** | `38b4ce9efded05747dff23e5f636f064c43cb13468d424dc316114b7f92797eb` |
+
+**Modelo y effort de los subagentes revisores (MEASURED en sus transcripciones `agent-*.jsonl`):** todos registran `"model":"claude-opus-5-5"`, heredado porque no se solicitó modelo.
+En r1 no se solicitó effort y registran `"effort":"xhigh"`, el de la sesión; desde r2 se solicitó `effort: 'high'` y registran `"effort":"high"`. Es evidencia **parcial** para U-04:
+en subagentes de **solo lectura** el effort solicitado se aplica. Siguen sin medir la petición de un modelo distinto y la capacidad `write-commit-push` con modelo y effort
+solicitados.
+
+**EXP-07 reverificada** (Proposal V9 §17): el 2026-09-30, tras `git fetch`, `origin/main` = `95690c28`; entre las ramas remotas con commits por delante de `main`, solo
+`feature/rackmirror-espejo-semantico` (I-52) toca alguna de las rutas compartidas consideradas, y solo `docs/adr/README.md`.
