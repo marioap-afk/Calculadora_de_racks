@@ -1,7 +1,7 @@
 # I-61 — Proposal V9: protocolo de ejecución delegada de agentes
 
 ```text
-Frozen: NO
+Frozen: YES
 Version: V9 (sustituye a V8 en la revisión; las versiones V1-V8 se conservan sin cambios)
 Unit: I-61   Workflow: V2 (T4)   Claim-Id: 0e2923de-e1a7-41bf-b7db-50ec84217850
 Archetype: NEW ARCHITECTURE (Q-01)   Base: origin/main 95690c28   Branch base: 07ef2a85
