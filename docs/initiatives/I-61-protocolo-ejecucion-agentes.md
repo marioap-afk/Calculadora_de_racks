@@ -97,7 +97,7 @@ del piloto. **No convertir el piloto en un benchmark entre proveedores** (Coordi
 **Piloto (Discovery §19; C61-G1-06):** corregir la asimetría **D-1a**: `RACKEDITAR` de Cama debe conservar el nombre lógico del sobre ante un nombre editado en blanco, como las otras
 cinco familias. D-4 queda fuera.
 
-Freeze, Freeze delta y A-n: **ninguno todavía**.
+Freeze: [Proposal V9](I-61-proposal-v9.md) (`Frozen: YES`; acuerdo y commit de Freeze en [decisiones](../automation/decisions/I-61.md) §13). Sin Freeze delta ni A-n.
 
 ## 5. Fundaciones y evolución
 
