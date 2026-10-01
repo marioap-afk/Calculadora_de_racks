@@ -393,6 +393,7 @@ falsa. Cada regla tiene un solo dueño:
 | Ciclo de diseño, Discovery, Architect, Freeze/A-n, gates funcionales, READY y conformidad | [INITIATIVE_LIFECYCLE.md](INITIATIVE_LIFECYCLE.md) cuando V2 sea efectivo | WORKFLOW y plantillas enlazan |
 | Procedimiento de Owner Validation | [validacion-manual-autocad.md](guias/validacion-manual-autocad.md) | Freeze asigna escenarios; lifecycle verifica asignación |
 | Arquitectura | `AGENTS.md`, ADR aceptado y Freeze+A-n dentro de su alcance | [FOUNDATIONS.md](FOUNDATIONS.md) solo resume hechos verificados |
+| Operación del ejecutor y ejecución delegada | [AUTOMATION_PLAN.md](AUTOMATION_PLAN.md), dentro de las reglas de los dueños anteriores | [docs/automation/agent-execution/](automation/agent-execution/README.md) (subordinados) |
 | Prompts | [PROMPT_TEMPLATES.md](initiatives/PROMPT_TEMPLATES.md) | Siempre subordinadas a los dueños anteriores |
 | Decisiones del Owner | `docs/automation/decisions/<I>.md`, dentro del alcance registrado | Contrato y evidencia enlazan |
 | Estado y plan | `HANDOFF.md` y `ROADMAP.md` | No crean política normativa |

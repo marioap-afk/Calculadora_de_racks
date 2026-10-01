@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rackcad-controller-verification/v1",
+  "description": "Verificación del Controller (Freeze de I-61, Proposal V9 §8.2-8.3). EXECUTION_VERIFIED solo con las 14 comprobaciones en pass; STOP = EXECUTION_BLOCKED + Disposition STOP. No es evidencia de gate. Subordinado: no crea requisitos de evidencia, estados, gates, reglas Git ni decisiones del Owner.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "Schema": { "type": "string", "enum": ["rackcad-controller-verification/v1"] },
+    "TaskId": { "type": "string" },
+    "RunId": { "type": "string", "pattern": "^R[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$" },
+    "DelegationRunId": { "type": "string", "pattern": "^R[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$" },
+    "WorkRunId": { "type": "string", "pattern": "^R[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$" },
+    "Attempt": { "type": "integer" },
+    "VerifiedSha": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+    "Checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Termination": { "type": "object", "additionalProperties": false, "properties": { "Result": { "type": "string", "enum": ["pass", "fail", "not_run"] }, "Evidence": { "type": "string" } }, "required": ["Result", "Evidence"] },
+        "Handoff": { "type": "object", "additionalProperties": false, "properties": { "Result": { "type": "string", "enum": ["pass", "fail", "not_run"] }, "Evidence": { "type": "string" } }, "required": ["Result", "Evidence"] },
+        "Authority": { "type": "object", "additionalProperties": false, "properties": { "Result": { "type": "string", "enum": ["pass", "fail", "not_run"] }, "Evidence": { "type": "string" } }, "required": ["Result", "Evidence"] },
+        "Contract": { "type": "object", "additionalProperties": false, "properties": { "Result": { "type": "string", "enum": ["pass", "fail", "not_run"] }, "Evidence": { "type": "string" } }, "required": ["Result", "Evidence"] },
+        "Identity": { "type": "object", "additionalProperties": false, "properties": { "Result": { "type": "string", "enum": ["pass", "fail", "not_run"] }, "Evidence": { "type": "string" } }, "required": ["Result", "Evidence"] },
+        "Remote": { "type": "object", "additionalProperties": false, "properties": { "Result": { "type": "string", "enum": ["pass", "fail", "not_run"] }, "Evidence": { "type": "string" } }, "required": ["Result", "Evidence"] },
+        "Scope": { "type": "object", "additionalProperties": false, "properties": { "Result": { "type": "string", "enum": ["pass", "fail", "not_run"] }, "Evidence": { "type": "string" } }, "required": ["Result", "Evidence"] },
+        "CleanTree": { "type": "object", "additionalProperties": false, "properties": { "Result": { "type": "string", "enum": ["pass", "fail", "not_run"] }, "Evidence": { "type": "string" } }, "required": ["Result", "Evidence"] },
+        "Ci": { "type": "object", "additionalProperties": false, "properties": { "Result": { "type": "string", "enum": ["pass", "fail", "not_run"] }, "RedPart": { "type": "string", "enum": ["pass", "fail", "not_applicable"] }, "Evidence": { "type": "string" } }, "required": ["Result", "RedPart", "Evidence"] },
+        "Tests": { "type": "object", "additionalProperties": false, "properties": { "Result": { "type": "string", "enum": ["pass", "fail", "not_run"] }, "RedPart": { "type": "string", "enum": ["pass", "fail", "not_applicable"] }, "Evidence": { "type": "string" } }, "required": ["Result", "RedPart", "Evidence"] },
+        "Trailer": { "type": "object", "additionalProperties": false, "properties": { "Result": { "type": "string", "enum": ["pass", "fail", "not_run"] }, "Evidence": { "type": "string" } }, "required": ["Result", "Evidence"] },
+        "Routing": { "type": "object", "additionalProperties": false, "properties": { "Result": { "type": "string", "enum": ["pass", "fail", "not_run"] }, "Evidence": { "type": "string" } }, "required": ["Result", "Evidence"] },
+        "FreeText": { "type": "object", "additionalProperties": false, "properties": { "Result": { "type": "string", "enum": ["pass", "fail", "not_run"] }, "Evidence": { "type": "string" } }, "required": ["Result", "Evidence"] },
+        "Denials": { "type": "object", "additionalProperties": false, "properties": { "Result": { "type": "string", "enum": ["pass", "fail", "not_run"] }, "Evidence": { "type": "string" } }, "required": ["Result", "Evidence"] }
+      },
+      "required": [
+        "Termination", "Handoff", "Authority", "Contract", "Identity", "Remote", "Scope", "CleanTree", "Ci", "Tests", "Trailer",
+        "Routing", "FreeText", "Denials"
+      ]
+    },
+    "Classification": { "type": "string", "enum": ["EXECUTION_VERIFIED", "EXECUTION_REWORK_REQUIRED", "EXECUTION_BLOCKED"] },
+    "Disposition": { "type": "string", "enum": ["NONE", "REWORK", "BLOCKED", "STOP"] },
+    "FailureClass": {
+      "type": "string",
+      "enum": [
+        "NONE", "Termination", "Handoff", "Authority", "Contract", "Identity", "Remote", "Scope", "CleanTree", "Ci", "Tests",
+        "Trailer", "Routing", "FreeText", "Denials", "StopCondition"
+      ]
+    },
+    "TriggeredStopConditions": { "type": "array", "items": { "type": "string" } },
+    "Findings": { "type": "array", "items": { "type": "string" } },
+    "RecommendedNextAction": { "type": "string" }
+  },
+  "required": [
+    "Schema", "TaskId", "RunId", "DelegationRunId", "WorkRunId", "Attempt", "VerifiedSha", "Checks", "Classification",
+    "Disposition", "FailureClass", "TriggeredStopConditions", "Findings", "RecommendedNextAction"
+  ]
+}

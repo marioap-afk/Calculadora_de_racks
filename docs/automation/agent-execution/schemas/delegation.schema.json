@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rackcad-delegation/v1",
+  "description": "Paquete de delegación que emite el Controller de planificación (Freeze de I-61, Proposal V9 §8.2). Subordinado: no crea requisitos de evidencia, estados, gates, reglas Git ni decisiones del Owner.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "Schema": { "type": "string", "enum": ["rackcad-delegation/v1"] },
+    "TaskId": { "type": "string" },
+    "RunId": { "type": "string", "pattern": "^R[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$" },
+    "Initiative": { "type": "string" },
+    "Unit": { "type": "string" },
+    "Gate": { "type": "string" },
+    "Attempt": { "type": "integer" },
+    "AuthorityRevision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "MainSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "BaseSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "ExpectedBranch": { "type": "string" },
+    "ExpectedWorktree": { "type": "string" },
+    "Owner": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Kind": { "type": "string", "enum": ["subagent", "process"] },
+        "Id": { "type": "string" }
+      },
+      "required": ["Kind", "Id"]
+    },
+    "TaskClass": { "type": "string" },
+    "Dimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Ambiguity": { "type": "string", "enum": ["Low", "Medium", "High"] },
+        "ArchitecturalSensitivity": { "type": "string", "enum": ["Low", "Medium", "High"] },
+        "Breadth": { "type": "string", "enum": ["Low", "Medium", "High"] },
+        "ToolUse": { "type": "string", "enum": ["Low", "Medium", "High"] },
+        "FailureCost": { "type": "string", "enum": ["Low", "Medium", "High"] },
+        "MechanicalRepetition": { "type": "string", "enum": ["Low", "Medium", "High"] },
+        "Horizon": { "type": "string", "enum": ["Low", "Medium", "High"] }
+      },
+      "required": ["Ambiguity", "ArchitecturalSensitivity", "Breadth", "ToolUse", "FailureCost", "MechanicalRepetition", "Horizon"]
+    },
+    "Executor": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Provider": { "type": "string" },
+        "Transport": { "type": "string" },
+        "Role": { "type": "string" },
+        "Cell": { "type": "string" }
+      },
+      "required": ["Provider", "Transport", "Role", "Cell"]
+    },
+    "Model": { "type": "string" },
+    "Effort": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Semantic": { "type": "string", "enum": ["Routine", "Balanced", "Deep", "Long-horizon", "Maximum"] },
+        "Provider": { "type": "string" }
+      },
+      "required": ["Semantic", "Provider"]
+    },
+    "PromptProfile": {
+      "type": "string",
+      "enum": [
+        "ROUTINE_IMPLEMENTATION", "DEBUGGING", "LONG_HORIZON_IMPLEMENTATION", "ARCHITECTURE_REVIEW",
+        "CHARACTERIZATION", "DOCUMENTATION", "CONTROLLER_PLANNING", "CONTROLLER_VERIFICATION"
+      ]
+    },
+    "RoutingReason": { "type": "string" },
+    "ModelEscalationReason": { "type": ["string", "null"] },
+    "RoutingEnforcement": { "type": "string", "enum": ["required", "advisory"] },
+    "Authorities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Path": { "type": "string" },
+          "Section": { "type": "string" },
+          "Class": { "type": "string", "enum": ["UNIT_DOC", "UNIT_CHANGE", "EXTERNAL"] }
+        },
+        "required": ["Path", "Section", "Class"]
+      }
+    },
+    "Objective": { "type": "string" },
+    "AllowedWriteScope": { "type": "array", "items": { "type": "string" } },
+    "ForbiddenWriteScope": { "type": "array", "items": { "type": "string" } },
+    "Invariants": { "type": "array", "items": { "type": "string" } },
+    "AcceptanceCriteria": { "type": "array", "items": { "type": "string" } },
+    "RequiredTests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Project": { "type": "string" },
+          "Filter": { "type": "string" },
+          "MinSelected": { "type": "integer" },
+          "ExpectRed": { "type": "boolean" }
+        },
+        "required": ["Project", "Filter", "MinSelected", "ExpectRed"]
+      }
+    },
+    "ExpectedEvidence": { "type": "array", "items": { "type": "string" } },
+    "StopConditions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Id": { "type": "string" },
+          "Text": { "type": "string" }
+        },
+        "required": ["Id", "Text"]
+      }
+    },
+    "MaxReworkLoops": { "type": "integer", "enum": [3] },
+    "AttemptsRemaining": { "type": "integer" },
+    "ChainBaseSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "ChainRedSha": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+    "ChainRedFiles": { "type": "array", "items": { "type": "string" } },
+    "CorrectionOf": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "RunId": { "type": "string", "pattern": "^R[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$" },
+        "FailureClass": {
+          "type": "string",
+          "enum": [
+            "Termination", "Handoff", "Authority", "Contract", "Identity", "Remote", "Scope", "CleanTree",
+            "Ci", "Tests", "Trailer", "Routing", "FreeText", "Denials", "StopCondition"
+          ]
+        },
+        "AnalysisSha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" }
+      },
+      "required": ["RunId", "FailureClass", "AnalysisSha256"]
+    },
+    "ExpectedHandoffPath": { "type": "string", "pattern": "^artifacts/orchestration/.+/\\{WorkRunId\\}/worker-handoff\\.json$" },
+    "IssuedBy": { "type": "string" }
+  },
+  "required": [
+    "Schema", "TaskId", "RunId", "Initiative", "Unit", "Gate", "Attempt", "AuthorityRevision", "MainSha", "BaseSha",
+    "ExpectedBranch", "ExpectedWorktree", "Owner", "TaskClass", "Dimensions", "Executor", "Model", "Effort", "PromptProfile",
+    "RoutingReason", "ModelEscalationReason", "RoutingEnforcement", "Authorities", "Objective", "AllowedWriteScope",
+    "ForbiddenWriteScope", "Invariants", "AcceptanceCriteria", "RequiredTests", "ExpectedEvidence", "StopConditions",
+    "MaxReworkLoops", "AttemptsRemaining", "ChainBaseSha", "ChainRedSha", "ChainRedFiles", "CorrectionOf",
+    "ExpectedHandoffPath", "IssuedBy"
+  ]
+}

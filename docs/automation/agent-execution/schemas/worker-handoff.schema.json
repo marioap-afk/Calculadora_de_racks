@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rackcad-worker-handoff/v1",
+  "description": "Entrega de worker (Freeze de I-61, Proposal V9 §8.2). No concede GATE PASS. Subordinado: no crea requisitos de evidencia, estados, gates, reglas Git ni decisiones del Owner.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "Schema": { "type": "string", "enum": ["rackcad-worker-handoff/v1"] },
+    "TaskId": { "type": "string" },
+    "RunId": { "type": "string", "pattern": "^R[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$" },
+    "DelegationRunId": { "type": "string", "pattern": "^R[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$" },
+    "Initiative": { "type": "string" },
+    "Gate": { "type": "string" },
+    "Attempt": { "type": "integer" },
+    "BaseSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "RedSha": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+    "CurrentSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "Branch": { "type": "string" },
+    "Worktree": { "type": "string" },
+    "Pushed": { "type": "boolean" },
+    "FilesChanged": { "type": "array", "items": { "type": "string" } },
+    "WorkCompleted": { "type": "string" },
+    "TestsExecuted": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "RunRef": { "type": "string" },
+          "Command": { "type": "string" },
+          "Phase": { "type": "string", "enum": ["RED", "GREEN", "RELEVANT", "MUTATION"] },
+          "TreeSha": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+          "ResultsFile": { "type": ["string", "null"] }
+        },
+        "required": ["RunRef", "Command", "Phase", "TreeSha", "ResultsFile"]
+      }
+    },
+    "TestResults": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "RunRef": { "type": "string" },
+          "Selected": { "type": "integer" },
+          "Passed": { "type": "integer" },
+          "Failed": { "type": "integer" },
+          "Skipped": { "type": "integer" },
+          "FailedTests": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["RunRef", "Selected", "Passed", "Failed", "Skipped", "FailedTests"]
+      }
+    },
+    "Evidence": { "type": "array", "items": { "type": "string" } },
+    "UnexpectedFindings": { "type": "array", "items": { "type": "string" } },
+    "KnownLimitations": { "type": "array", "items": { "type": "string" } },
+    "Deviations": { "type": "array", "items": { "type": "string" } },
+    "OpenQuestions": { "type": "array", "items": { "type": "string" } },
+    "WorkerStatus": { "type": "string", "enum": ["IMPLEMENTATION_COMPLETE", "PARTIAL", "BLOCKED"] },
+    "Disposition": { "type": "string", "enum": ["NONE", "BLOCKED", "STOP"] },
+    "TriggeredStopConditions": { "type": "array", "items": { "type": "string" } },
+    "RecommendedNextAction": { "type": "string" },
+    "Worker": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Provider": { "type": "string" },
+        "ModelRequested": { "type": "string" },
+        "EffortRequested": { "type": "string" },
+        "Trailer": { "type": "string" }
+      },
+      "required": ["Provider", "ModelRequested", "EffortRequested", "Trailer"]
+    }
+  },
+  "required": [
+    "Schema", "TaskId", "RunId", "DelegationRunId", "Initiative", "Gate", "Attempt", "BaseSha", "RedSha", "CurrentSha", "Branch",
+    "Worktree", "Pushed", "FilesChanged", "WorkCompleted", "TestsExecuted", "TestResults", "Evidence", "UnexpectedFindings",
+    "KnownLimitations", "Deviations", "OpenQuestions", "WorkerStatus", "Disposition", "TriggeredStopConditions",
+    "RecommendedNextAction", "Worker"
+  ]
+}

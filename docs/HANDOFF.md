@@ -12,6 +12,14 @@ RackCad es un plugin de AutoCAD 2025 (.NET 8, C#/WPF) para diseñar y dibujar ra
 con BOM. El trunk único es `main`; Domain y Application son puros, UI usa WPF sin AutoCAD y Plugin
 es el único adaptador de la API de AutoCAD.
 
+**I-61 — Agent Execution, Model Routing & Prompting Protocol — INTEGRADA** el **2026-10-01**
+(`architecture/protocolo-ejecucion-agentes`, Workflow V2). Protocolo estable para que el Coordinator delegue gates en un Controller Codex de solo lectura y en Workers, con
+paquetes, entregas y verificaciones estructuradas (`rackcad-*/v1`), relevo con cesión, exact-SHA, STOP y routing por perfil semántico con catálogo de modelos mutable: reglas en
+[AUTOMATION_PLAN](AUTOMATION_PLAN.md) §16, procedimiento en `docs/automation/agent-execution/`, composición en PROMPT_TEMPLATES §G y decisión en
+[ADR-0046](adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md), **aceptado** por el Owner. Piloto real D-1a: `RACKEDITAR` de una cama con el nombre vaciado conserva el nombre
+del sobre, como las otras cinco rutas de edición. Owner Validation **PASS** (OV-I61-01..05; OV-I61-05 aceptada). Integrada por orden del Owner. [Evidencia](automation/evidence/I-61-evidence.md),
+[decisiones](automation/decisions/I-61.md) y tag `integration/I-61` (SHAs de cierre y merge, CI posterior, cobertura y limpieza).
+
 **I-60 — Nombre logico automatico de los racks nuevos — INTEGRADA** el **2026-09-30** (`feature/nombre-automatico-racks`, Workflow V2).
 Todo rack logico NUEVO recibe UN nombre automatico y editable en `RackEmbedDocument.Name`: «Selectivo N», «Dinámico N», «Push Back N», «Cantilever N»,
 «Cabecera N» o «Cama N»; N = el mayor N de los nombres del dibujo que siguen exactamente el patron de su familia + 1 (sin rellenar huecos, sin distinguir
@@ -1482,6 +1490,9 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
+**I-61 (2026-10-01) — OWNER VALIDATION PASS.** Candidato final validado por el Owner en AutoCAD (OV-I61-01..05 PASS; OV-I61-05, revisión del protocolo, aceptada), con
+evidencia local Full, builds, CI exacta y cobertura; identidades del Candidato y del DLL en la [evidencia](automation/evidence/I-61-evidence.md) §16.
+
 **I-60 (2026-09-30) — OWNER VALIDATION APPROVED.** Candidato `ae628890`: Core Full 12363/12363, UI Full 1636 (+17 omitidas historicas, 0 fallos), builds Debug de
 UI y Plugin y Release del Plugin con 0 errores, CI de push 4/4 (run 36736070843) y cobertura exacta (run 36736637016). AutoCAD 2025: N-01..N-23 PASS con el DLL
 `1.0.0+ae628890…` (SHA-256 `B91A33A9…7A72`). Ver la [evidencia](automation/evidence/I-60-evidence.md).
@@ -2030,6 +2041,15 @@ veredicto.
   catálogos sigue decorativa. `RACKDUPLICAR` no avisa por diseño (clona geometría ya dibujada a la misma escala).
 
 ## 4. Siguiente acción
+
+### Sin trabajo activo de I-61 (integrada el 2026-10-01)
+
+El protocolo de ejecución delegada de I-61 ([AUTOMATION_PLAN](AUTOMATION_PLAN.md) §16, ADR-0046) queda disponible para las iniciativas siguientes. Al integrarse I-61, la rama
+activa de I-52 (que comparte `docs/ROADMAP.md`, `docs/HANDOFF.md` y `docs/adr/README.md`) se rebasa sobre el nuevo `main` antes de su propia integración.
+
+Seguimiento formal registrado en [ideas-futuras](ideas-futuras.md) (sección de I-61): **autoverificación de la sesión principal**. `routing.md` no tiene perfil para la
+sesión principal (Coordinator/Principal); una unidad futura debe fijar cómo resuelve al empezar perfil, nivel y effort requeridos, los compara con lo observable del runtime y se
+detiene si está por debajo, con los modelos concretos en el catálogo mutable.
 
 ### Sin trabajo activo de I-55 ni de I-60 (ambas integradas el 2026-09-30)
 
@@ -3856,6 +3876,9 @@ visualmente** y no debe presentarse como tal.
 la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
+
+**Cierre de I-61 — 2026-10-01:** Candidato final aprobado por el Owner con evidencia local Full, CI y cobertura exactas; el commit de cierre (solo documental) lleva su
+propio CI; merge `--no-ff`, CI posterior al merge con cobertura y limpieza se registran en `integration/I-61`.
 
 **Cierre de I-60 — 2026-09-30:** Candidato `ae628890` aprobado por el Owner con CI y cobertura exactos; el commit de cierre (solo documental) lleva sus propias
 suites, builds y CI; merge `--no-ff`, CI posterior al merge con cobertura y limpieza se registran en `integration/I-60`.

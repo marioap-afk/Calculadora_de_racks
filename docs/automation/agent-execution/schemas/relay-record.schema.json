@@ -1,0 +1,243 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rackcad-relay-record/v1",
+  "description": "Registro de relevo que escribe la sesión responsable (Freeze de I-61, Proposal V9 §3.2-3.6 y §8.2). Registra hechos y la disposición de un fallo de transporte; nunca un veredicto EXECUTION_*. Subordinado: no crea requisitos de evidencia, estados, gates, reglas Git ni decisiones del Owner.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "Schema": { "type": "string", "enum": ["rackcad-relay-record/v1"] },
+    "TaskId": { "type": "string" },
+    "RunId": { "type": "string", "pattern": "^R[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$" },
+    "Attempt": { "type": "integer" },
+    "Phase": { "type": "string", "enum": ["PLANNING", "WORK", "VERIFICATION", "CONTROL", "PROBE", "REBASE"] },
+    "Participant": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "Kind": { "type": "string", "enum": ["codex-cli", "subagent"] },
+        "Profile": { "type": ["string", "null"] },
+        "ModelRequested": { "type": ["string", "null"] },
+        "EffortRequested": { "type": ["string", "null"] },
+        "ModelEffective": { "type": ["string", "null"] },
+        "EffortEffective": { "type": ["string", "null"] },
+        "EffectiveSource": { "type": ["string", "null"] },
+        "EffectiveSourceSha256": { "type": ["string", "null"], "pattern": "^[0-9A-Fa-f]{64}$" }
+      },
+      "required": ["Kind", "Profile", "ModelRequested", "EffortRequested", "ModelEffective", "EffortEffective", "EffectiveSource", "EffectiveSourceSha256"]
+    },
+    "Exit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "HeadSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "LsRemoteSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "OriginMainSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "CleanTree": { "type": "boolean" },
+        "GitOperationInProgress": { "type": "boolean" },
+        "SummaryCommitSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "ConfigTomlSha256": { "type": "string", "pattern": "^[0-9A-Fa-f]{64}$" },
+        "ConfigTomlKeys": { "type": "array", "items": { "type": "string" } },
+        "Processes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "Pid": { "type": "integer" },
+              "ParentPid": { "type": "integer" },
+              "Name": { "type": "string" },
+              "CreationDateUtc": { "type": "string" },
+              "Classification": { "type": "string", "enum": ["own-tree", "owner-app", "nominal-exclusion", "build-server", "participant", "unattributable", "session-descendant", "orphan"] }
+            },
+            "required": ["Pid", "ParentPid", "Name", "CreationDateUtc", "Classification"]
+          }
+        },
+        "OpenDelegations": { "type": "integer" }
+      },
+      "required": ["HeadSha", "LsRemoteSha", "OriginMainSha", "CleanTree", "GitOperationInProgress", "SummaryCommitSha", "ConfigTomlSha256", "ConfigTomlKeys", "Processes", "OpenDelegations"]
+    },
+    "Cession": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "StartUtc": { "type": "string" },
+        "EndUtc": { "type": ["string", "null"] },
+        "SessionOperated": { "type": "boolean" }
+      },
+      "required": ["StartUtc", "EndUtc", "SessionOperated"]
+    },
+    "Outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Kind": { "type": "string", "enum": ["COMPLETED", "TIMEOUT", "FAILED_TURN", "NO_OUTPUT", "INVALID_OUTPUT", "REJECTED_BEFORE_INVOCATION"] },
+        "LaunchedPid": { "type": ["integer", "null"] },
+        "ExitCode": { "type": ["integer", "null"] },
+        "TerminalEvent": { "type": ["string", "null"] },
+        "TreeKilled": { "type": "boolean" },
+        "DeathConfirmed": { "type": ["boolean", "null"] },
+        "OutputPath": { "type": ["string", "null"] },
+        "OutputSha256": { "type": ["string", "null"], "pattern": "^[0-9A-Fa-f]{64}$" },
+        "OutputWrittenUtc": { "type": ["string", "null"] },
+        "Acceptance": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "properties": {
+            "A1": { "type": "string", "enum": ["pass", "fail"] },
+            "A2": { "type": "string", "enum": ["pass", "fail"] },
+            "A3": { "type": "string", "enum": ["pass", "fail"] },
+            "A4": { "type": "string", "enum": ["pass", "fail"] },
+            "A5": { "type": "string", "enum": ["pass", "fail"] },
+            "A6": { "type": "string", "enum": ["pass", "fail"] },
+            "A7": { "type": "string", "enum": ["pass", "fail"] },
+            "A8": { "type": "string", "enum": ["pass", "fail"] }
+          },
+          "required": ["A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8"]
+        }
+      },
+      "required": ["Kind", "LaunchedPid", "ExitCode", "TerminalEvent", "TreeKilled", "DeathConfirmed", "OutputPath", "OutputSha256", "OutputWrittenUtc", "Acceptance"]
+    },
+    "Entry": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "HeadSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "LsRemoteSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "CleanTree": { "type": "boolean" },
+        "ConfigTomlSha256": { "type": "string", "pattern": "^[0-9A-Fa-f]{64}$" },
+        "ConfigTomlKeys": { "type": "array", "items": { "type": "string" } },
+        "ConfigChanged": { "type": "boolean" },
+        "Processes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "Pid": { "type": "integer" },
+              "ParentPid": { "type": "integer" },
+              "Name": { "type": "string" },
+              "CreationDateUtc": { "type": "string" },
+              "Classification": { "type": "string", "enum": ["own-tree", "owner-app", "nominal-exclusion", "build-server", "participant", "unattributable", "session-descendant", "orphan"] }
+            },
+            "required": ["Pid", "ParentPid", "Name", "CreationDateUtc", "Classification"]
+          }
+        }
+      },
+      "required": ["HeadSha", "LsRemoteSha", "CleanTree", "ConfigTomlSha256", "ConfigTomlKeys", "ConfigChanged", "Processes"]
+    },
+    "RemoteFacts": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "CurrentRun": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "properties": {
+            "GhRunId": { "type": "integer" },
+            "Event": { "type": "string" },
+            "Ref": { "type": "string" },
+            "HeadSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+            "Status": { "type": "string" },
+            "Conclusion": { "type": ["string", "null"] },
+            "Jobs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": { "Name": { "type": "string" }, "Conclusion": { "type": ["string", "null"] } },
+                "required": ["Name", "Conclusion"]
+              }
+            }
+          },
+          "required": ["GhRunId", "Event", "Ref", "HeadSha", "Status", "Conclusion", "Jobs"]
+        },
+        "RedRun": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "properties": {
+            "GhRunId": { "type": "integer" },
+            "Event": { "type": "string" },
+            "Ref": { "type": "string" },
+            "HeadSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+            "Status": { "type": "string" },
+            "Conclusion": { "type": ["string", "null"] },
+            "Jobs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": { "Name": { "type": "string" }, "Conclusion": { "type": ["string", "null"] } },
+                "required": ["Name", "Conclusion"]
+              }
+            }
+          },
+          "required": ["GhRunId", "Event", "Ref", "HeadSha", "Status", "Conclusion", "Jobs"]
+        },
+        "TestArtifacts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "RunRef": { "type": "string" },
+              "Name": { "type": "string" },
+              "Sha256": { "type": "string", "pattern": "^[0-9A-Fa-f]{64}$" },
+              "Selected": { "type": "integer" },
+              "Passed": { "type": "integer" },
+              "Failed": { "type": "integer" },
+              "FailedTests": { "type": "array", "items": { "type": "string" } }
+            },
+            "required": ["RunRef", "Name", "Sha256", "Selected", "Passed", "Failed", "FailedTests"]
+          }
+        },
+        "OriginMainSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "LsRemoteSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "Commands": { "type": "array", "items": { "type": "string" } },
+        "ObtainedUtc": { "type": "string" },
+        "Diagnosis": { "type": ["string", "null"] }
+      },
+      "required": ["CurrentRun", "RedRun", "TestArtifacts", "OriginMainSha", "LsRemoteSha", "Commands", "ObtainedUtc", "Diagnosis"]
+    },
+    "RebaseMap": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "MainBeforeSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "MainAfterSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "G2CloseSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "G2CloseImageSha": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+        "AuthorityRevision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "AuthorityRevisionImageSha": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+        "UnitDocBlobsEqual": { "type": ["boolean", "null"] },
+        "UnitChangeSectionsEqual": { "type": ["boolean", "null"] },
+        "BaseSha": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+        "BaseImageSha": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+        "ChainBaseSha": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+        "ChainBaseImageSha": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+        "Commits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "OriginalSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+              "ImageSha": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+              "PatchIdEqual": { "type": ["boolean", "null"] }
+            },
+            "required": ["OriginalSha", "ImageSha", "PatchIdEqual"]
+          }
+        },
+        "ConflictPaths": { "type": "array", "items": { "type": "string" } },
+        "CoordinatorDecision": { "type": ["string", "null"] }
+      },
+      "required": [
+        "MainBeforeSha", "MainAfterSha", "G2CloseSha", "G2CloseImageSha", "AuthorityRevision", "AuthorityRevisionImageSha",
+        "UnitDocBlobsEqual", "UnitChangeSectionsEqual", "BaseSha", "BaseImageSha", "ChainBaseSha", "ChainBaseImageSha", "Commits",
+        "ConflictPaths", "CoordinatorDecision"
+      ]
+    },
+    "Disposition": { "type": "string", "enum": ["NONE", "BLOCKED", "STOP"] },
+    "Notes": { "type": "array", "items": { "type": "string" } }
+  },
+  "required": ["Schema", "TaskId", "RunId", "Attempt", "Phase", "Participant", "Exit", "Cession", "Outcome", "Entry", "RemoteFacts", "RebaseMap", "Disposition", "Notes"]
+}

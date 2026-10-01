@@ -1,0 +1,223 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "g3-cama-d1a",
+  "RunId": "R20261001T033522Z-7f2d",
+  "DelegationRunId": "R20261001T032333Z-4a2d",
+  "Initiative": "I-61",
+  "Gate": "G3",
+  "Attempt": 0,
+  "BaseSha": "b677cb57eafcf557e1f0f5d276e973394c2e2256",
+  "RedSha": "31211b41530f90d9410328992e0535d8be742b7a",
+  "CurrentSha": "b8dfc900c25196b9757c2030548a226cc87516f9",
+  "Branch": "architecture/protocolo-ejecucion-agentes",
+  "Worktree": "D:\\Documentos\\Codex\\Calculadora de racks\\.claude\\worktrees\\architecture-protocolo-ejecucion-agentes",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.Application/Persistence/EditedRackNameResolver.cs",
+    "src/RackCad.Plugin/RackCamaCommands.cs",
+    "tests/RackCad.Tests/I61CamaEditWiringGuardTests.cs",
+    "tests/RackCad.Tests/I61EditedRackNameTests.cs",
+    "tests/RackCad.UI.Tests/FlowBedEditorWindowTests.cs"
+  ],
+  "WorkCompleted": "Commit RED 31211b41 (esqueleto de EditedRackNameResolver con la semantica actual, I61EditedRackNameTests con 6 pruebas, I61CamaEditWiringGuardTests con 10 pruebas; 4 y 4 fallan por asercion) y commit GREEN b8dfc900: EditedRackNameResolver.Resolve(editado, sobre) devuelve el sobre si el editado es nulo, vacio o solo espacios, y el editado tal cual en otro caso; EditCama calcula resolvedName una vez y lo usa en BuildCamaPayload y en RackViewBaseName.LinkedBase de SyncName; prueba STA I61_P3 de caracterizacion (campo vacio -> RackName vacio). Tres mutaciones temporales de OBL-P2 (M1 payload, M2 SyncName, M3 argumentos invertidos) hicieron fallar la guarda y se revirtieron (git diff de RackCamaCommands.cs identico al del GREEN). Las otras cinco rutas de edicion no se tocaron. GATE PASS.",
+  "TestsExecuted": [
+    {
+      "RunRef": "red-p1",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~I61EditedRackNameTests\"",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-61/g3-cama-d1a/0/R20261001T033522Z-7f2d/tests/red-p1/red-p1.trx"
+    },
+    {
+      "RunRef": "red-p2",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~I61CamaEditWiringGuardTests\"",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-61/g3-cama-d1a/0/R20261001T033522Z-7f2d/tests/red-p2/red-p2.trx"
+    },
+    {
+      "RunRef": "green-p1",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~I61EditedRackNameTests\"",
+      "Phase": "GREEN",
+      "TreeSha": "b8dfc900c25196b9757c2030548a226cc87516f9",
+      "ResultsFile": "artifacts/orchestration/I-61/g3-cama-d1a/0/R20261001T033522Z-7f2d/tests/green-p1/green-p1.trx"
+    },
+    {
+      "RunRef": "green-p2",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~I61CamaEditWiringGuardTests\"",
+      "Phase": "GREEN",
+      "TreeSha": "b8dfc900c25196b9757c2030548a226cc87516f9",
+      "ResultsFile": "artifacts/orchestration/I-61/g3-cama-d1a/0/R20261001T033522Z-7f2d/tests/green-p2/green-p2.trx"
+    },
+    {
+      "RunRef": "green-p3",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~FlowBedEditorWindowTests&FullyQualifiedName~I61_P3\"",
+      "Phase": "GREEN",
+      "TreeSha": "b8dfc900c25196b9757c2030548a226cc87516f9",
+      "ResultsFile": "artifacts/orchestration/I-61/g3-cama-d1a/0/R20261001T033522Z-7f2d/tests/green-p3/green-p3.trx"
+    },
+    {
+      "RunRef": "relevant-ui",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~FlowBedEditorWindowTests\"",
+      "Phase": "RELEVANT",
+      "TreeSha": "b8dfc900c25196b9757c2030548a226cc87516f9",
+      "ResultsFile": "artifacts/orchestration/I-61/g3-cama-d1a/0/R20261001T033522Z-7f2d/tests/relevant-ui/relevant-ui.trx"
+    },
+    {
+      "RunRef": "relevant-core",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Phase": "RELEVANT",
+      "TreeSha": "b8dfc900c25196b9757c2030548a226cc87516f9",
+      "ResultsFile": "artifacts/orchestration/I-61/g3-cama-d1a/0/R20261001T033522Z-7f2d/tests/relevant-core/relevant-core.trx"
+    },
+    {
+      "RunRef": "mut-M1",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~I61CamaEditWiringGuardTests\"",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-61/g3-cama-d1a/0/R20261001T033522Z-7f2d/tests/mut-M1/mut-M1.trx"
+    },
+    {
+      "RunRef": "mut-M2",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~I61CamaEditWiringGuardTests\"",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-61/g3-cama-d1a/0/R20261001T033522Z-7f2d/tests/mut-M2/mut-M2.trx"
+    },
+    {
+      "RunRef": "mut-M3",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~I61CamaEditWiringGuardTests\"",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-61/g3-cama-d1a/0/R20261001T033522Z-7f2d/tests/mut-M3/mut-M3.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "red-p1",
+      "Selected": 6,
+      "Passed": 2,
+      "Failed": 4,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.I61EditedRackNameTests.BlankEditedName_ResolvesToEnvelopeName",
+        "RackCad.Tests.I61EditedRackNameTests.WhiteSpaceOnlyEditedName_ResolvesToEnvelopeName",
+        "RackCad.Tests.I61EditedRackNameTests.BlankEditedName_WithNullEnvelope_ResolvesToNull",
+        "RackCad.Tests.I61EditedRackNameTests.NullEditedName_ResolvesToEnvelopeName"
+      ]
+    },
+    {
+      "RunRef": "red-p2",
+      "Selected": 10,
+      "Passed": 6,
+      "Failed": 4,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.I61CamaEditWiringGuardTests.EditCama_UsesTheResolvedName_InPayloadAndSyncName",
+        "RackCad.Tests.I61CamaEditWiringGuardTests.RealText_PayloadSiteBackToWindowRackName_IsDetected",
+        "RackCad.Tests.I61CamaEditWiringGuardTests.RealText_SyncNameSiteBackToWindowRackName_IsDetected",
+        "RackCad.Tests.I61CamaEditWiringGuardTests.RealText_InvertedResolverArguments_AreDetected"
+      ]
+    },
+    {
+      "RunRef": "green-p1",
+      "Selected": 6,
+      "Passed": 6,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-p2",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-p3",
+      "Selected": 1,
+      "Passed": 1,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "relevant-ui",
+      "Selected": 5,
+      "Passed": 5,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "relevant-core",
+      "Selected": 12396,
+      "Passed": 12396,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "mut-M1",
+      "Selected": 10,
+      "Passed": 8,
+      "Failed": 2,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.I61CamaEditWiringGuardTests.EditCama_UsesTheResolvedName_InPayloadAndSyncName",
+        "RackCad.Tests.I61CamaEditWiringGuardTests.RealText_PayloadSiteBackToWindowRackName_IsDetected"
+      ]
+    },
+    {
+      "RunRef": "mut-M2",
+      "Selected": 10,
+      "Passed": 8,
+      "Failed": 2,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.I61CamaEditWiringGuardTests.EditCama_UsesTheResolvedName_InPayloadAndSyncName",
+        "RackCad.Tests.I61CamaEditWiringGuardTests.RealText_SyncNameSiteBackToWindowRackName_IsDetected"
+      ]
+    },
+    {
+      "RunRef": "mut-M3",
+      "Selected": 10,
+      "Passed": 8,
+      "Failed": 2,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.I61CamaEditWiringGuardTests.EditCama_UsesTheResolvedName_InPayloadAndSyncName",
+        "RackCad.Tests.I61CamaEditWiringGuardTests.RealText_InvertedResolverArguments_AreDetected"
+      ]
+    }
+  ],
+  "Evidence": [
+    "RED: 31211b41530f90d9410328992e0535d8be742b7a pushed; red-p1 selecciona 6 (4 fallan por asercion), red-p2 selecciona 10 (4 fallan por asercion)",
+    "GREEN: b8dfc900c25196b9757c2030548a226cc87516f9 pushed; git ls-remote igual a HEAD; arbol limpio",
+    "Suite Core completa sobre el commit GREEN: 12396 superadas, 0 con error, 0 omitidas",
+    "dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug sobre el commit GREEN: 0 errores, 2 advertencias MSB3277 (referencias AutoCAD); AutoCAD no bloqueo los DLL",
+    "Resultados TRX bajo artifacts/orchestration/I-61/g3-cama-d1a/0/R20261001T033522Z-7f2d/tests/<RunRef>/"
+  ],
+  "UnexpectedFindings": [],
+  "KnownLimitations": [
+    "S-01 y S-10 son frontera: Owner Validation y validacion fisica en AutoCAD no se cruzaron; el comportamiento real de EditCama en AutoCAD (nombre en blanco en la ventana) no se ejecuto, solo la guarda de fuente y la caracterizacion STA",
+    "Las corridas RED y las de mutacion tienen TreeSha null (arbol con cambios sin commitear en ese momento); las GREEN y RELEVANT se ejecutaron con el arbol limpio en b8dfc900",
+    "La guarda OBL-P2 es de texto de fuente (ADR-0003): no prueba el comportamiento en tiempo de ejecucion"
+  ],
+  "Deviations": [
+    "El filtro prescrito 'FullyQualifiedName~FlowBedEditorWindowTests&Name~I61_P3' selecciona 0 pruebas con el adaptador xunit (Name no es una propiedad filtrable); se uso 'FullyQualifiedName~FlowBedEditorWindowTests&FullyQualifiedName~I61_P3', que selecciona 1 y pasa; el nombre del metodo contiene I61_P3"
+  ],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "Verificacion del Controller sobre b8dfc900c25196b9757c2030548a226cc87516f9, incluida la sustitucion del filtro Name~ por FullyQualifiedName~ para la prueba I61_P3.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

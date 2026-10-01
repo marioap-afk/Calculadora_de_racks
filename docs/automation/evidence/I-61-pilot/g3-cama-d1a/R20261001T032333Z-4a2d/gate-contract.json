@@ -1,0 +1,249 @@
+{
+  "Schema": "rackcad-gate-contract/v1",
+  "Unit": "I-61",
+  "Gate": "G3",
+  "TaskId": "g3-cama-d1a",
+  "Objective": "Corregir D-1a (Discovery de I-61 §19): EditCama debe resolver el nombre editado con la misma semantica que las otras cinco rutas de edicion (blanco o espacios -> nombre del sobre, incluido null; en otro caso, el editado) mediante una funcion pura en src/RackCad.Application/Persistence/, y usar el valor resuelto en el payload y en SyncName. RED compilable (esqueleto con la semantica actual), GREEN y caracterizacion de la ventana.",
+  "AuthorityRevision": "7b8662c5190bb22c0b4aa7ea49ea31367f4bb359",
+  "MainSha": "95690c28dc6268e61dff32a0cbc33cc9fde3d47f",
+  "Authorities": [
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "preámbulo",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "## 2. Fuentes del plan y modos de ejecucion",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "## 3. Limites de seguridad",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "## 16. Ejecución delegada bajo orden del Coordinator",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "docs/WORKFLOW.md",
+      "Section": "## 3. Worktrees",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/WORKFLOW.md",
+      "Section": "## 4. Ciclo de vida de una iniciativa (el proceso repetible)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/WORKFLOW.md",
+      "Section": "## 10. Autoridad por dominio",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "AGENTS.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+      "Section": "## G. Delegación de ejecución",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "documento completo",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "documento completo",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/delegation.schema.json",
+      "Section": "documento completo",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+      "Section": "documento completo",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/controller-verification.schema.json",
+      "Section": "documento completo",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "docs/initiatives/I-61-proposal-v9.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-61-protocolo-ejecucion-agentes.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-61-discovery.md",
+      "Section": "## 19. Piloto: caracterización completa (Cama / `RACKEDITAR` / `Name`)",
+      "Class": "UNIT_DOC"
+    }
+  ],
+  "AllowedWriteScope": [
+    "src/RackCad.Application/Persistence/",
+    "src/RackCad.Plugin/RackCamaCommands.cs",
+    "tests/RackCad.Tests/",
+    "tests/RackCad.UI.Tests/FlowBedEditorWindowTests.cs"
+  ],
+  "ForbiddenWriteScope": [
+    "docs/",
+    ".github/",
+    "assets/",
+    "AGENTS.md",
+    "CLAUDE.md",
+    ".gitignore",
+    ".gitattributes",
+    "src/RackCad.Plugin/RackSelectivoCommands.cs",
+    "src/RackCad.Plugin/RackDinamicoCommands.cs",
+    "src/RackCad.Plugin/RackPushBackCommands.cs",
+    "src/RackCad.Plugin/RackCantileverCommands.cs",
+    "src/RackCad.Plugin/RackCabeceraCommands.cs",
+    "src/RackCad.UI/",
+    "src/RackCad.Domain/"
+  ],
+  "Invariants": [
+    "INV-01: el Worker solo declara IMPLEMENTATION_COMPLETE, PARTIAL o BLOCKED; ningun termino de gate en el texto libre",
+    "INV-02: identidad exact-SHA (BaseSha, RedSha, CurrentSha; commit y push antes de la entrega)",
+    "INV-03: propiedad exclusiva; diff dentro del alcance permitido",
+    "INV-05: trafico transitorio solo en artifacts/orchestration/",
+    "INV-10: la delegacion no amplia este contrato",
+    "INV-P1: blanco o espacios -> nombre del sobre (incluido null); en otro caso, el nombre editado",
+    "INV-P2: EditCama usa el valor resuelto por la funcion en el payload y en SyncName (via LinkedBase), con el editado como primer argumento y el del sobre como segundo",
+    "INV-P3: las otras cinco rutas de edicion no cambian"
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~I61EditedRackNameTests",
+      "MinSelected": 4,
+      "ExpectRed": true
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~I61CamaEditWiringGuardTests",
+      "MinSelected": 1,
+      "ExpectRed": true
+    },
+    {
+      "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+      "Filter": "FullyQualifiedName~FlowBedEditorWindowTests&Name~I61_P3",
+      "MinSelected": 1,
+      "ExpectRed": false
+    }
+  ],
+  "ExpectedEvidence": [
+    "Commit RED (esqueleto con la semantica actual de Cama mas OBL-P1 y OBL-P2 fallando por asercion) y push",
+    "Commit GREEN (funcion real, cableado de EditCama y OBL-P3) y push, con el resumen de estado en su cuerpo",
+    "Corridas locales RED, GREEN y relevantes con su seleccion",
+    "Tres mutaciones temporales de OBL-P2 registradas y revertidas: solo el sitio del payload, solo el de SyncName, argumentos invertidos",
+    "worker-handoff.json valido en la ruta esperada"
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-01",
+      "Text": "Owner Validation required (frontera)"
+    },
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive/irreversible action not authorized"
+    },
+    {
+      "Id": "S-06",
+      "Text": "missing credentials/permissions"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch/worktree ownership conflict"
+    },
+    {
+      "Id": "S-09",
+      "Text": "dependency not integrated"
+    },
+    {
+      "Id": "S-10",
+      "Text": "required AutoCAD/user interaction (frontera)"
+    },
+    {
+      "Id": "S-11",
+      "Text": "repeated rework limit reached"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify authority revision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "main movement invalidates exact-SHA assumptions"
+    },
+    {
+      "Id": "S-14",
+      "Text": "initiative contract explicitly says STOP"
+    },
+    {
+      "Id": "P-03",
+      "Text": "Delegacion fuera del contrato"
+    },
+    {
+      "Id": "P-05",
+      "Text": "Invocacion distinta del paquete aceptado"
+    },
+    {
+      "Id": "C-01",
+      "Text": "Hacer falta tocar cualquiera de las otras cinco rutas de edicion (Selectivo, Dinamico, Push Back, Cantilever, Cabecera) o cualquier archivo fuera del alcance permitido"
+    }
+  ],
+  "EligibleCells": [
+    {
+      "Cell": "claude-sonnet-5-5|subagent",
+      "Provider": "Anthropic",
+      "Model": "claude-sonnet-5-5",
+      "Transport": "subagent",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "write-commit-push",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "medium",
+        "high"
+      ],
+      "Source": "docs/automation/evidence/I-61-evidence.md §15.1 (sonda U-04)",
+      "VerifiedOn": "2026-10-01"
+    }
+  ],
+  "RoutingEnforcement": "required",
+  "CorrectionsAuthorized": true,
+  "IssuedBy": "Coordinator I-61 (SAME-SESSION ROLE)",
+  "IssuedUtc": "2026-10-01T03:23:34.7642827Z"
+}

@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "g3-cama-d1a",
+  "RunId": "R20261001T042801Z-350e",
+  "DelegationRunId": "R20261001T032333Z-4a2d",
+  "WorkRunId": "R20261001T033522Z-7f2d",
+  "Attempt": 0,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.SessionOperated=false. OutputWrittenUtc 2026-10-01T03:51:40Z, posterior a Cession.StartUtc 2026-10-01T03:38:18Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json está presente en las entradas indicadas y parsea como rackcad-worker-handoff/v1. TaskId, RunId, DelegationRunId y Attempt coinciden con la invocación; CurrentSha=b8dfc900c25196b9757c2030548a226cc87516f9; entrega escrita después del inicio de la cesión."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git rev-parse 7b8662c5190bb22c0b4aa7ea49ea31367f4bb359:docs/AUTOMATION_PLAN.md y git rev-parse HEAD:docs/AUTOMATION_PLAN.md devuelven el mismo blob a41ac453ea606849d6586bfcf8463e69fdd383c1; git rev-parse MainSha:AGENTS.md y HEAD:AGENTS.md devuelven el mismo blob dd0d5a2d9ac3d3d8502ef7a556c8a5f1d62c9c29. AuthorityRevision es ancestro de HEAD."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "relay-record-planning.json registra A1-A8 en pass. AllowedWriteScope de delegation.json está contenido en AllowedWriteScope del contrato; la identidad, objetivo y requisitos de prueba corresponden a la tarea entregada."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD y git rev-parse origin/architecture/protocolo-ejecucion-agentes devuelven b8dfc900c25196b9757c2030548a226cc87516f9, igual a CurrentSha. La rama y el worktree coinciden. git merge-base --is-ancestor BaseSha HEAD y git merge-base --is-ancestor RedSha HEAD devuelven 0."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "Según la semántica del relevo, Exit registra BaseSha b677cb57eafcf557e1f0f5d276e973394c2e2256 antes de la cesión y Entry registra CurrentSha b8dfc900c25196b9757c2030548a226cc87516f9 después. RemoteFacts.LsRemoteSha coincide con CurrentSha; Exit.OriginMainSha y git rev-parse origin/main coinciden con MainSha 95690c28dc6268e61dff32a0cbc33cc9fde3d47f."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha enumera EditedRackNameResolver.cs, RackCamaCommands.cs, I61CamaEditWiringGuardTests.cs, I61EditedRackNameTests.cs y FlowBedEditorWindowTests.cs. Los cinco están permitidos por la delegación y ninguno intersecta ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 no devuelve cambios. git check-ignore -v sobre la ruta de entrada worker-handoff.json confirma exclusión por .gitignore:3, artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun 36812102463: event=push, ref=refs/heads/architecture/protocolo-ejecucion-agentes, head_sha=CurrentSha; los cuatro jobs requeridos concluyeron success. TRX Core actual: 12396 ejecutadas, 12396 pasadas, 0 fallidas. RedRun 36811668907 es push del RedSha y su job Core falló; TRX Core RED registra 8 fallos."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Los TRX Core del RedSha y CurrentSha contienen 6 I61EditedRackNameTests y 10 I61CamaEditWiringGuardTests: en RED fallan 4 de cada grupo; en Current pasan las 16. El TRX UI de Current contiene y pasa 1 prueba I61_P3. RT y ChainRedFiles son tests/RackCad.Tests/I61CamaEditWiringGuardTests.cs y tests/RackCad.Tests/I61EditedRackNameTests.cs; git diff --name-only RedSha CurrentSha solo toca FlowBedEditorWindowTests.cs, sin tocar RT ni ChainRedFiles. Los TRX UI contienen 17 resultados NotExecuted; relay-record-work.json explica la diferencia entre total y executed del logger."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha muestra los dos commits de RED y GREEN, ambos con Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, igual al trailer declarado y al modelo efectivo del relevo."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra Worker subagente, modelo efectivo sonnet (claude-sonnet-5-5) y effort high; coinciden con Provider, ModelRequested y EffortRequested de la delegación."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json:WorkCompleted contiene una coincidencia completa con la lista de AUTOMATION_PLAN.md §16.10; incumple INV-01. La propiedad Gate queda excluida de esa comprobación."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra cero denegaciones de permisos o credenciales y una orden fallida que fue superada, sin fallo pendiente. No hay señal de denegación activa."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "El único incumplimiento es el contenido de worker-handoff.json:WorkCompleted frente a AUTOMATION_PLAN.md §16.10 e INV-01.",
+    "El diff Git confirma cinco rutas dentro del alcance; las pruebas de RED, GREEN y los cuatro jobs actuales concuerdan con los registros del relevo."
+  ],
+  "RecommendedNextAction": "Corregir el texto libre de WorkCompleted para eliminar la coincidencia prohibida y entregar una versión corregida."
+}

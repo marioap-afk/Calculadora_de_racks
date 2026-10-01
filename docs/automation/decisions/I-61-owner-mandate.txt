@@ -1,0 +1,692 @@
+Coordina exclusivamente una nueva iniciativa de infraestructura de ingeniería:
+
+# <NEXT_FREE_INITIATIVE_ID>
+# Agent Execution, Model Routing & Prompting Protocol
+
+Workflow:
+V2
+
+Archetype:
+FOUNDATION EVOLUTION
+
+Goal:
+Crear un protocolo estable para que un Coordinator pueda delegar gates de
+implementación a un Execution Controller (Codex), y éste pueda seleccionar
+dinámicamente:
+
+- executor;
+- model;
+- effort;
+- prompt profile;
+- transport;
+
+y delegar trabajo a Claude/Codex workers con handoffs estructurados,
+exact-SHA y STOP conditions.
+
+Esta iniciativa modifica el PROCESO DE DESARROLLO de RackCad.
+
+No modifica funcionalidad de producto.
+
+======================================================================
+AUTHORITIES
+======================================================================
+
+Follow current repository authorities:
+
+- docs/WORKFLOW.md
+- AGENTS.md
+- docs/INITIATIVE_LIFECYCLE.md
+- docs/FOUNDATIONS.md
+- docs/initiatives/PROMPT_TEMPLATES.md
+- ADR-0045 / Workflow V2
+- current automation/evidence conventions
+
+Use:
+
+REFERENCE OVER REPETITION.
+
+Do not duplicate existing Workflow V2 policy.
+
+======================================================================
+MOTIVATION
+======================================================================
+
+Current problems to solve:
+
+1. powerful models are used for routine work;
+2. model/effort selection is informal;
+3. Coordinator prompts still require manual transfer;
+4. implementation gates require repeated human relay;
+5. Computer Use is possible but fragile as the primary inter-agent bus;
+6. handoffs should be machine-readable and exact-SHA attributable.
+
+The new protocol must reduce manual execution overhead without moving
+architectural or product authority away from Coordinator/Architect/Owner.
+
+======================================================================
+AUTHORITY MODEL
+======================================================================
+
+Preserve this hierarchy:
+
+Master Orchestrator
+    ↓
+Coordinator ↔ Architect
+    ↓
+Contract / Freeze
+    ↓
+Execution Controller — Codex
+    ↓
+Worker — Claude or Codex
+    ↓
+Structured Handoff
+    ↓
+Codex Verification
+    ↓
+Coordinator Gate Decision
+
+Important:
+
+Worker may declare:
+IMPLEMENTATION COMPLETE
+
+Codex may declare:
+EXECUTION VERIFIED
+EXECUTION REWORK REQUIRED
+EXECUTION BLOCKED
+
+Only Coordinator may declare:
+GATE PASS
+
+Only the existing Workflow may declare:
+Candidate / Closure / Integration.
+
+Codex is NOT the RackCad Master Orchestrator.
+
+======================================================================
+DELIVERABLE A — PROMPTING STANDARD
+======================================================================
+
+Create a concise RackCad-specific prompting guide based on current official
+vendor guidance.
+
+Do NOT copy entire external documentation into the repo.
+
+The guide must describe:
+
+- clear task framing;
+- role/context;
+- explicit success criteria;
+- XML/structured prompting where useful;
+- tool instructions;
+- avoiding over-engineering;
+- avoiding unnecessary re-investigation;
+- long-horizon agent instructions;
+- STOP criteria;
+- prompt profiles by task class.
+
+External vendor documentation is guidance, not RackCad authority.
+
+Record:
+
+source URL
+vendor
+date verified
+models/generation covered
+
+The normative RackCad rules live in the repository.
+
+======================================================================
+DELIVERABLE B — MODEL / EFFORT ROUTER
+======================================================================
+
+Do not hardcode one model for all work.
+
+Define a stable routing policy based first on TASK CLASS.
+
+At minimum classify:
+
+- mechanical implementation;
+- repetitive propagation/wiring;
+- test implementation;
+- documentation;
+- characterization;
+- debugging;
+- uncertain root-cause investigation;
+- cross-layer implementation;
+- architecture review;
+- adversarial conformance;
+- long-running agentic implementation.
+
+For each task profile evaluate:
+
+- ambiguity;
+- architecture sensitivity;
+- breadth;
+- expected tool use;
+- failure cost;
+- mechanical repetition;
+- expected horizon.
+
+Then select:
+
+Executor
+Model
+Effort
+PromptProfile
+
+Separate:
+
+MODEL_ROUTING
+= stable selection principles
+
+from:
+
+MODEL_CATALOG
+= current available models and recommended mappings
+
+The catalog must be updateable without changing Workflow.
+
+Do not assume Opus or any specific model remains permanently preferred.
+
+======================================================================
+EFFORT POLICY
+======================================================================
+
+Define effort levels semantically rather than by vendor-specific labels alone.
+
+Example mapping:
+
+Routine
+Balanced
+Deep
+Long-horizon
+Maximum
+
+MODEL_CATALOG can map those to current provider controls.
+
+Define escalation.
+
+Example concept:
+
+routine model / balanced
+→ stronger effort
+→ stronger model
+→ long-horizon
+→ maximum only when justified
+
+No requirement to traverse every level.
+
+Every upward escalation should have:
+
+MODEL_ESCALATION_REASON
+
+Avoid silently converging to the strongest model for all tasks.
+
+Also allow DOWN-ROUTING:
+
+a hard gate may use a strong model for diagnosis,
+then a cheaper/faster model for mechanical implementation/docs.
+
+======================================================================
+DELIVERABLE C — PROMPT COMPOSITION
+======================================================================
+
+A delegated prompt must be composed from:
+
+Base Delegation Contract
++
+Model Prompt Profile
++
+Task-specific Delta
+
+Do not create one universal mega-template.
+
+Example profiles:
+
+ROUTINE_IMPLEMENTATION
+DEBUGGING
+LONG_HORIZON_IMPLEMENTATION
+ARCHITECTURE_REVIEW
+CHARACTERIZATION
+DOCUMENTATION
+
+Prompts must be SELF-LOCATING, not fully self-contained.
+
+They reference:
+
+- WORKFLOW;
+- lifecycle;
+- initiative contract;
+- Freeze/plan;
+- Foundations;
+- relevant ADRs;
+- prompting profile.
+
+Do not repeat those documents inside the prompt.
+
+======================================================================
+DELIVERABLE D — STRUCTURED DELEGATION
+======================================================================
+
+Define a machine-readable delegation schema.
+
+Conceptual fields:
+
+TaskId
+Initiative
+Gate
+AuthorityRevision
+BaseSha
+ExpectedBranch
+ExpectedWorktree
+
+Executor
+Model
+Effort
+PromptProfile
+
+Authorities[]
+Objective
+
+AllowedWriteScope[]
+ForbiddenWriteScope[]
+
+Invariants[]
+AcceptanceCriteria[]
+RequiredTests[]
+ExpectedEvidence[]
+StopConditions[]
+
+MaxReworkLoops
+
+ExpectedHandoffPath
+
+Prefer JSON for machine interchange.
+
+Provide a human-readable rendering if useful.
+
+======================================================================
+DELIVERABLE E — STRUCTURED HANDOFF
+======================================================================
+
+Define machine-readable handoff schema.
+
+At minimum:
+
+TaskId
+Initiative
+Gate
+
+BaseSha
+CurrentSha
+Branch
+Worktree
+
+FilesChanged[]
+
+WorkCompleted
+
+TestsExecuted[]
+TestResults[]
+
+Evidence[]
+
+UnexpectedFindings[]
+KnownLimitations[]
+Deviations[]
+
+OpenQuestions[]
+
+WorkerStatus:
+IMPLEMENTATION_COMPLETE
+PARTIAL
+BLOCKED
+
+RecommendedNextAction
+
+Commit must normally exist before handoff when production/files changed.
+
+The handoff does NOT grant Gate PASS.
+
+======================================================================
+DELIVERABLE F — TRANSPORT HIERARCHY
+======================================================================
+
+Define preferred communication mechanisms in this order:
+
+1. filesystem + structured artifacts;
+2. CLI / direct agent invocation when available;
+3. connector/API/MCP equivalent where stable;
+4. Computer Use as fallback;
+5. manual user relay as final fallback.
+
+Computer Use must NOT be the normative primary message bus.
+
+Computer Use is appropriate for:
+
+- AutoCAD;
+- GUI-only host verification;
+- visual inspection;
+- agents without machine-readable interfaces.
+
+The protocol must remain the same regardless of transport.
+
+======================================================================
+TRANSIENT VS VERSIONED STATE
+======================================================================
+
+Determine where transient delegation/handoff artifacts should live.
+
+Prefer a gitignored machine-readable working area for transient traffic.
+
+Example concept:
+
+.agent/
+  orchestration/
+    <initiative>/
+      <task>/
+        delegation.json
+        handoff.json
+
+Do NOT adopt this path without auditing repo conventions.
+
+Persistent evidence/decisions continue using existing V2 evidence locations.
+
+Do not flood Git history with every intermediate prompt unless required.
+
+======================================================================
+DELIVERABLE G — EXECUTION CONTROLLER
+======================================================================
+
+Define Codex Execution Controller responsibilities:
+
+1. receive Gate Contract;
+2. read current repo authority;
+3. classify task;
+4. select executor/model/effort/profile;
+5. create delegation packet;
+6. verify exclusive write ownership;
+7. invoke worker;
+8. receive handoff;
+9. independently inspect:
+   - SHA;
+   - git status;
+   - diff;
+   - allowed scope;
+   - tests;
+   - evidence;
+   - invariants;
+10. classify execution:
+   - VERIFIED;
+   - REWORK REQUIRED;
+   - BLOCKED;
+11. route corrections if authorized;
+12. hand result back to Coordinator.
+
+Codex must not silently expand architecture or product scope.
+
+======================================================================
+REWORK POLICY
+======================================================================
+
+Default:
+
+MAX_REWORK_LOOPS = 3
+
+But define "same failure class".
+
+Do not count a completely new unrelated defect as merely another retry
+without analysis.
+
+On repeated failure:
+
+STOP
+→ root-cause investigation
+→ Coordinator.
+
+Do not endlessly rewrite prompts.
+
+======================================================================
+STOP CONDITIONS
+======================================================================
+
+At minimum:
+
+- Owner Validation required;
+- architecture outside Freeze;
+- material ambiguity;
+- contradictory evidence;
+- destructive/irreversible action not authorized;
+- missing credentials/permissions;
+- conflict with another active owner;
+- branch/worktree ownership conflict;
+- dependency not integrated;
+- required AutoCAD/user interaction;
+- repeated rework limit reached;
+- Worker loses context or cannot verify authority revision;
+- main movement invalidates exact-SHA assumptions;
+- initiative contract explicitly says STOP.
+
+On STOP:
+
+no speculative continuation.
+
+Return structured blocker to Coordinator.
+
+======================================================================
+OWNERSHIP
+======================================================================
+
+Never allow two workers to write simultaneously to:
+
+- same worktree;
+- same branch;
+- same mutable artifact set.
+
+Each delegation must establish:
+
+OWNER
+BRANCH
+WORKTREE
+BASE_SHA
+ALLOWED_WRITE_SCOPE
+
+Decision authority returns to Codex after worker handoff.
+
+Gate authority remains with Coordinator.
+
+======================================================================
+MODEL CATALOG
+======================================================================
+
+Create a mutable current-model catalog.
+
+It must be explicitly NON-NORMATIVE with respect to long-term model names.
+
+Record for each available worker/model where known:
+
+- provider;
+- model;
+- supported effort settings;
+- strengths;
+- weaknesses;
+- recommended task profiles;
+- date verified.
+
+Do not rely on memory or stale assumptions when documenting current models.
+
+Use current official vendor documentation during this initiative.
+
+======================================================================
+METRICS
+======================================================================
+
+The pilot should record:
+
+TaskProfile
+Executor
+Model
+Effort
+PromptProfile
+
+ElapsedTime if reliably available
+ToolCalls if available
+Tokens/cost if available
+ReworkLoops
+ExecutionResult
+CoordinatorResult
+
+Do not make unavailable metrics blockers.
+
+The purpose is to learn RackCad-specific routing.
+
+======================================================================
+PILOT
+======================================================================
+
+Do not automate an architecture-heavy initiative first.
+
+Use one small real Extension as pilot.
+
+Preferred candidate:
+
+Cama / RACKEDITAR
+→ preserve logical Name across edit/update/save/reopen
+
+If current repo state shows that bug is already fixed or unsuitable,
+select another similarly small Extension and explain why.
+
+Pilot flow:
+
+Coordinator contract
+→ Codex controller
+→ task classification
+→ model/effort routing
+→ delegated implementation
+→ structured handoff
+→ Codex verification
+→ Coordinator gate decision
+→ Owner smoke if applicable
+
+Do not auto-integrate the pilot unless Workflow explicitly authorizes it.
+
+======================================================================
+NO PRODUCT SCOPE CREEP
+======================================================================
+
+This initiative's primary deliverable is engineering infrastructure.
+
+Do not absorb:
+
+- ID20;
+- calculated BOM;
+- configurations/templates;
+- RACKPROYECTAR UX;
+- Semantic Grips;
+- unrelated product backlog.
+
+Pilot product change must remain intentionally small.
+
+======================================================================
+IMPLEMENTATION LEVEL
+======================================================================
+
+Discovery must determine whether this initiative should deliver:
+
+A. documentation + schemas + manual pilot only;
+
+B. documentation + schemas + lightweight orchestration scripts;
+
+or
+
+C. a more automated controller.
+
+Prefer the smallest solution that demonstrates the protocol.
+
+Do not build a large orchestration platform before the pilot proves value.
+
+If reliable CLI agent invocation is unavailable:
+do not fake automation.
+Use the next transport tier and document the limitation.
+
+======================================================================
+ARCHITECT REVIEW
+======================================================================
+
+Because this changes engineering infrastructure, require Architect review.
+
+Review especially:
+
+- authority inversion;
+- Codex accidentally becoming Master;
+- Worker self-approving;
+- prompt duplication returning;
+- routing over-complexity;
+- stale model catalog;
+- unsafe Computer Use reliance;
+- unbounded autonomous loops;
+- exact-SHA loss;
+- race conditions between agents;
+- Git pollution from transient artifacts;
+- metrics becoming bureaucracy.
+
+======================================================================
+SUCCESS CRITERIA
+======================================================================
+
+The initiative succeeds when:
+
+1. Coordinator authority remains intact;
+2. model/effort routing is explicit;
+3. current models are separated from stable routing rules;
+4. prompt profiles exist;
+5. delegation is machine-readable;
+6. handoff is machine-readable;
+7. filesystem/CLI is primary transport;
+8. Computer Use is fallback;
+9. exact-SHA is preserved;
+10. write ownership is exclusive;
+11. STOP/rework behavior is deterministic;
+12. one real pilot completes;
+13. results/metrics are documented;
+14. protocol can be used by a future V2 initiative without a mega-prompt.
+
+======================================================================
+FIRST RESPONSE REQUIRED
+======================================================================
+
+Before implementation:
+
+1. real preflight;
+2. current main/origin-main;
+3. next free Initiative-Id;
+4. current relevant process documents;
+5. current available execution transports;
+6. whether Claude Code/CLI is actually available;
+7. whether Codex can invoke it reliably;
+8. current available models/effort controls from official docs;
+9. proposed task classification;
+10. proposed stable routing algorithm;
+11. proposed current MODEL_CATALOG;
+12. proposed prompt profiles;
+13. proposed delegation schema;
+14. proposed handoff schema;
+15. proposed transient storage location;
+16. transport hierarchy;
+17. STOP/rework policy;
+18. pilot recommendation;
+19. minimum implementation option A/B/C;
+20. risks;
+21. Freeze proposal;
+22. Architect package;
+23. first SHORT Executor prompt;
+24. explicit confirmation:
+
+NO AUTHORITY TRANSFER FROM COORDINATOR.
+
+NO WORKER SELF-APPROVAL.
+
+NO COMPUTER-USE-ONLY PROTOCOL.
+
+NO LARGE AUTOMATION PLATFORM BEFORE PILOT EVIDENCE.

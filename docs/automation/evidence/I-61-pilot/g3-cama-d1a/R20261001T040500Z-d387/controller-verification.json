@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "g3-cama-d1a",
+  "RunId": "R20261001T040500Z-d387",
+  "DelegationRunId": "R20261001T032333Z-4a2d",
+  "WorkRunId": "R20261001T033522Z-7f2d",
+  "Attempt": 0,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-10-01T03:38:18Z y EndUtc=2026-10-01T03:51:53Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json existe en ExpectedHandoffPath sustituida por WorkRunId; Schema=rackcad-worker-handoff/v1, TaskId=g3-cama-d1a, Attempt=0, DelegationRunId=R20261001T032333Z-4a2d y RunId=R20261001T033522Z-7f2d. Outcome.OutputWrittenUtc=2026-10-01T03:51:40.1572555Z, posterior a Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leídos AUTOMATION_PLAN.md §16 en AuthorityRevision 7b8662c5190bb22c0b4aa7ea49ea31367f4bb359 y README.md §8 allí; AGENTS.md y sus reglas externas en MainSha 95690c28dc6268e61dff32a0cbc33cc9fde3d47f. merge-base --is-ancestor AuthorityRevision BaseSha y MainSha BaseSha devolvieron 0."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json y delegation.json coinciden en tarea, objetivo, invariantes, pruebas y condiciones; el alcance delegado concreta el alcance permitido del contrato. relay-record-planning.json Acceptance A1–A8: todas pass; Notes confirma delegation.json copia byte a byte de output.json."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git branch --show-current=architecture/protocolo-ejecucion-agentes; git rev-parse HEAD, refs/heads/architecture/protocolo-ejecucion-agentes y refs/remotes/origin/architecture/protocolo-ejecucion-agentes devuelven b8dfc900c25196b9757c2030548a226cc87516f9, igual a Handoff.CurrentSha. BaseSha b677cb57eafcf557e1f0f5d276e973394c2e2256 y RedSha 31211b41530f90d9410328992e0535d8be742b7a son ancestros de CurrentSha (merge-base --is-ancestor: código 0)."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha y CurrentRun.HeadSha=b8dfc900c25196b9757c2030548a226cc87516f9; OriginMainSha=95690c28dc6268e61dff32a0cbc33cc9fde3d47f, igual a MainSha. La discrepancia con Exit queda señalada como S-04 en Findings."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha enumera solo src/RackCad.Application/Persistence/EditedRackNameResolver.cs, src/RackCad.Plugin/RackCamaCommands.cs, tests/RackCad.Tests/I61CamaEditWiringGuardTests.cs, tests/RackCad.Tests/I61EditedRackNameTests.cs y tests/RackCad.UI.Tests/FlowBedEditorWindowTests.cs; todas están cubiertas por AllowedWriteScope y ninguna intersecta ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --short no produjo entradas. git check-ignore -v para inputs/worker-handoff.json devolvió .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts y TRX: CurrentRun 36812102463 es push de refs/heads/architecture/protocolo-ejecucion-agentes para CurrentSha, completed/success; los cuatro jobs requeridos están en success. RED 36811668907 es push de la misma rama para RedSha; job Core failure, como se requiere para RED. core.trx RED: 12,388 Passed y 8 Failed; ui.trx RED: 1,636 Passed y 17 NotExecuted."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX actuales: core 36812102463 contiene 12,396 Passed, incluidos los 6 I61EditedRackNameTests y 10 I61CamaEditWiringGuardTests; ui 36812102463 contiene Passed para FlowBedEditorWindowTests.I61_P3. RED core 36811668907 contiene los 4 fallos esperados de cada filtro y los otros tests de esos grupos pasan. RT/ChainRedFiles = I61CamaEditWiringGuardTests.cs e I61EditedRackNameTests.cs; diff --name-only RedSha CurrentSha -- tests/ contiene solo FlowBedEditorWindowTests.cs, sin intersección con RT/ChainRedFiles. ui.trx actual contiene 1,637 Passed y 17 NotExecuted de 1,654 resultados; el test requerido está Passed."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha muestra Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com> en los commits RED 31211b41530f90d9410328992e0535d8be742b7a y GREEN b8dfc900c25196b9757c2030548a226cc87516f9; coincide con Worker.Trailer y el modelo efectivo."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation solicita la celda claude-sonnet-5-5|subagent y effort high. relay-record-work.json Participant confirma ModelEffective=claude-sonnet-5-5 y EffortEffective=high; Notes identifica sonnet como alias de ese modelo."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Escaneo sin coincidencias de los términos de AUTOMATION_PLAN §16.10 en WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 denegaciones de permisos o credenciales y ninguna orden fallida pendiente; la llamada fallida 6 fue superada por llamadas posteriores."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "StopCondition",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "Contradicción en relay-record-work.json durante la cesión 2026-10-01T03:38:18Z–03:51:53Z: Entry.HeadSha y Entry.LsRemoteSha son b8dfc900c25196b9757c2030548a226cc87516f9, mientras Exit.HeadSha y Exit.LsRemoteSha son b677cb57eafcf557e1f0f5d276e973394c2e2256. RemoteFacts y Git actual coinciden en b8dfc900c25196b9757c2030548a226cc87516f9. La divergencia entre snapshots del mismo relevo activa S-04.",
+    "La entrega documenta el cambio del filtro UI prescrito porque Name~ no seleccionó pruebas; el filtro sustituto FullyQualifiedName~FlowBedEditorWindowTests&FullyQualifiedName~I61_P3 seleccionó una y pasó. El TRX actual confirma ese resultado."
+  ],
+  "RecommendedNextAction": "Resolver y reconciliar los snapshots Entry/Exit del registro del relevo con RemoteFacts y después repetir la verificación."
+}

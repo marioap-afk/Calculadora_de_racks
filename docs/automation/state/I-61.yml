@@ -1,0 +1,29 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-61
+  branch: architecture/protocolo-ejecucion-agentes
+  claim_id: 0e2923de-e1a7-41bf-b7db-50ec84217850
+  current_phase: integrated
+  state: completed
+  gate: none
+  attempts: 0
+  next_action: Ninguna en I-61 (integrada el 2026-10-01; hechos posteriores al merge en el tag integration/I-61); seguimientos fuera del Freeze en docs/ideas-futuras.md.
+  last_evidence_commit: 6513777f431fd672a515d9f8a33d8611d238fbe4
+execution_context:
+  mode: manual
+  automation_enabled: false
+  worktree: architecture-protocolo-ejecucion-agentes
+  g0_gate_pass_by_coordinator: 6f1ef9815ffa20f8bea946c55622efa165994f7c
+  g1_gate_pass: effective (CI 36796667573 push success on 07ef2a85; decisions §13)
+  g1_discovery: docs/initiatives/I-61-discovery.md
+  design_agreed: docs/initiatives/I-61-proposal-v9.md blob fccae56dfbea82fbe092555d51a0fb57baff5651 (decisions §13)
+  freeze: e9466a248726f00e966b789f67653788b6a0af21 (Frozen YES de I-61-proposal-v9.md; acuerdo en 5bffe5a7)
+  g2_materialization: 4da82667f47b227507166428817ececa8239d73a
+  g2_gate_pass: 7b8662c5190bb22c0b4aa7ea49ea31367f4bb359 (CI 36809531027; decisions §14)
+  g3_pilot: g3-cama-d1a EXECUTION_VERIFIED sobre b8dfc900c25196b9757c2030548a226cc87516f9 (RED 31211b41; nc1..nc4 cumplidos; evidencia §15)
+  g3_gate_pass: 5cda24f3cf25d725b2e39a0eea3f67061a368c58 (CI 36816144887; Core Full 12396/12396; decisions §15)
+  ready: READY-01..03 satisfechos (decisions §16 y §17; ADR-0046 aceptado y DEV-G1C-01 eliminada por decision del Owner)
+  ready06_b69c3463: NON-CONFORMING (1 REQUIRED corregido en este commit; decisions §18)
+  final_candidate: 6513777f431fd672a515d9f8a33d8611d238fbe4 (READY-01..09; decisions §18; evidence §16)
+  owner_validation: PASS 2026-10-01 (OV-I61-01..05; OV-I61-05 ACCEPTED; decisions §19)
+  closure: integrada el 2026-10-01 por orden del Owner (decisions §21); MERGE_SHA, CI posterior, cobertura y limpieza en el tag integration/I-61

@@ -5,7 +5,7 @@
 > Estas plantillas son procedimientos subordinados a
 > [INITIATIVE_LIFECYCLE.md](../INITIATIVE_LIFECYCLE.md),
 > [ADR-0045](../adr/0045-workflow-v2-ciclo-evidencia-e-integracion.md) y
-> [Proposal V4](I-56-proposal-v4.md). No crean politica ni activan Workflow V2.
+> [Proposal V4](I-56-proposal-v4.md) y, para §G, a [AUTOMATION_PLAN.md](../AUTOMATION_PLAN.md) §16. No crean politica ni activan Workflow V2.
 
 ## 1. Uso
 
@@ -139,11 +139,137 @@ STOP: cierre mezclado con producto; trabajo no preservado; conflicto material; A
 Informe: ronda invalidada; nueva base/Candidato/cierre por referencias; conformidad; evidencia; estado
 ```
 
+## G. Delegación de ejecución
+
+Prompt de un participante delegado = **contrato base** (G.1) + **perfil** (G.2) + **delta** (los campos del paquete de delegación, renderizados). Reglas en
+[AUTOMATION_PLAN](../AUTOMATION_PLAN.md) §16; procedimiento en [docs/automation/agent-execution/](../automation/agent-execution/README.md). El prompt compuesto no supera 200 líneas y se
+guarda como `prompt.md` con su SHA-256.
+
+### G.1 Contrato base de delegación
+
+```text
+I-NN — DELEGACION <TaskId> — <Worker|Controller>, perfil <PROFILE>
+Identidad: unidad <unit>; gate <gate>; tarea <TaskId>; intento <Attempt>; RunId <RunId>;
+           DelegationRunId <id>; AuthorityRevision <sha>; MainSha <sha>; BaseSha <sha>;
+           rama <branch>; worktree <path>; Owner <kind:id>
+Autoridades (leer desde Git, no copiar): <ruta + seccion + clase> por cada una;
+           vigencia: AuthorityRevision para la unidad, MainSha para lo demas
+Objetivo: <objetivo de la delegacion>
+Alcance: permitido <AllowedWriteScope>; prohibido <ForbiddenWriteScope>
+Invariantes del Freeze: <ids>
+Rutas y archivos calientes: <rutas relevantes y calientes>
+Criterios de aceptacion: <lista>
+Evidencia requerida: pruebas <proyecto + filtro + minimo seleccionado + RED esperado>;
+           cada corrida filtrada demuestra seleccion > 0; <evidencia esperada>
+No-touch: <lista especifica>; nada fuera del alcance permitido
+Condiciones de parada: <ids S-xx, P-xx y del contrato>; ante cualquiera, parar sin
+           continuar y devolver el bloqueo estructurado en la entrega
+Prohibido declarar: GATE PASS, Candidato, cierre, integracion o aprobacion del Owner;
+           ningun termino de AUTOMATION_PLAN §16 «Terminos de gate» en el texto libre
+Trailer: Co-Authored-By de quien ejecuta, nunca de otro participante
+Informe esperado: la salida exacta de su esquema en <ruta de la entrega o -o>;
+           Worker: commit y push antes de la entrega, y terminar tras escribirla;
+           Controller: solo lectura, sin escribir en Git
+```
+
+### G.2 Perfiles
+
+Cada perfil añade solo instrucciones de método; ninguno repite cláusulas normativas.
+
+#### ROUTINE_IMPLEMENTATION
+
+```text
+Metodo: cambio minimo que cumple los criterios; nada de refactor oportunista.
+1. Lee los archivos del alcance y las pruebas citadas antes de editar.
+2. Si la entrega exige RED: commit RED primero (pruebas que fallan por asercion,
+   seleccion > 0) y push; despues la implementacion.
+3. Ejecuta las pruebas requeridas y las relevantes; anota comando, seleccion y resultado.
+4. Commit GREEN con el resumen de estado en el cuerpo y push; luego la entrega.
+5. Si algo exige salir del alcance: no lo hagas; parada y bloqueo estructurado.
+```
+
+#### DEBUGGING
+
+```text
+Metodo: reproducir, aislar, explicar y solo entonces corregir.
+1. Reproduce el fallo con una prueba o una orden; registra la salida.
+2. Formula la causa con evidencia (lineas, valores, commits), no con suposiciones.
+3. Si corriges: prueba de regresion vista fallando antes del arreglo, y despues verde.
+4. Si la causa queda incierta: entrega PARTIAL con lo medido y las hipotesis
+   descartadas; no fuerces un arreglo.
+```
+
+#### LONG_HORIZON_IMPLEMENTATION
+
+```text
+Metodo: progreso incremental con estado en archivos.
+1. Divide el trabajo en pasos verificables; escribe el plan en el area transitoria.
+2. Tras cada paso: pruebas focales, commit y nota de progreso.
+3. Si el contexto se agota o cambia la base: deja el estado y entrega PARTIAL.
+4. No amplies el alcance aunque aparezcan mejoras; registralas como hallazgos.
+```
+
+#### ARCHITECTURE_REVIEW
+
+```text
+Metodo: revision adversarial contra las autoridades citadas, sin escribir.
+1. Lee el Freeze, los documentos dueños y el codigo afectado desde la revision fijada.
+2. Cada hallazgo: ubicacion (archivo:linea), defecto, autoridad que contradice y
+   correccion minima.
+3. Severidad: REQUIRED solo si contradice una autoridad o un hecho medido, deja algo
+   congelado ambiguo, impide ejecutar un paso o deja una garantia sin verificar.
+4. No reabras lo ya resuelto; prefiere pocos hallazgos de alta confianza.
+```
+
+#### CHARACTERIZATION
+
+```text
+Metodo: describir el comportamiento actual sin cambiarlo.
+1. Escribe pruebas que fijan lo que hoy ocurre, incluidos los casos borde.
+2. Las pruebas pasan sobre el codigo actual; si una falla, el hallazgo es el fallo.
+3. Registra lo observado como hecho medido y lo inferido como inferencia.
+```
+
+#### DOCUMENTATION
+
+```text
+Metodo: documento breve que cita y no copia.
+1. Cita las autoridades por ruta y seccion; no reproduzcas sus clausulas.
+2. Separa hechos medidos de inferencias y marca lo desconocido como UNKNOWN.
+3. Sigue el estilo del documento que editas (idioma, tablas, longitud de linea).
+```
+
+#### CONTROLLER_PLANNING
+
+```text
+Metodo: clasificar y enrutar dentro del contrato de gate, sin escribir en Git.
+1. Lee el contrato, docs/automation/agent-execution/routing.md y el catalogo.
+2. Clasifica la tarea, puntua las siete dimensiones y elige entre las celdas del
+   contrato el nivel mas bajo adecuado; registra RoutingReason con fechas.
+3. Copia del contrato el alcance, los invariantes, las pruebas y las paradas; nunca
+   los amplies. Nombra los archivos nuevos exactos.
+4. Rellena el esquema de delegacion completo; null solo donde el esquema lo admite.
+```
+
+#### CONTROLLER_VERIFICATION
+
+```text
+Metodo: verificar contra Git y los registros, sin escribir.
+1. Evalua las 14 comprobaciones en su orden fijo con ordenes de git reales
+   (rev-parse, merge-base, diff --name-only, log, check-ignore, show).
+2. Cada comprobacion: pass, fail o not_run, con la evidencia concreta.
+3. Rellena Classification, Disposition y FailureClass segun AUTOMATION_PLAN 16.9,
+   mirando todas las comprobaciones, no una sola.
+4. Contrasta la CI y los conteos del registro de relevo con el diff; no te fies de
+   lo que declare la entrega.
+```
+
 ## 2. Traza y vigencia
 
 - Autoridad de lifecycle: [INITIATIVE_LIFECYCLE.md](../INITIATIVE_LIFECYCLE.md) §§1 y 10.
 - Decision aceptada: [ADR-0045](../adr/0045-workflow-v2-ciclo-evidencia-e-integracion.md).
 - Fuente aprobada: [Proposal V4](I-56-proposal-v4.md) P-16, P-18 y P-24.
+- Fuente aprobada de §G: Freeze de I-61 ([Proposal V9](I-61-proposal-v9.md)) y [AUTOMATION_PLAN.md](../AUTOMATION_PLAN.md) §16.
 
 ```text
 WORKFLOW V2 = NOT EFFECTIVE

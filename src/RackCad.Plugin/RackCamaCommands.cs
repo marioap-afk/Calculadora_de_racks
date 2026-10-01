@@ -232,13 +232,15 @@ namespace RackCad.Plugin
                 return;
             }
 
+            // I-61 (D-1a): blank name -> the envelope's, like the other edit routes.
+            var resolvedName = EditedRackNameResolver.Resolve(window.RackName, embed.Name);
             var result = new FlowBedDrawService().RedrawInPlace(
                 document, blockId, window.FlowBedToInsert,
-                BuildCamaPayload(window.FlowBedToInsert, window.RackId, window.RackName, embed, sourceDesign));
+                BuildCamaPayload(window.FlowBedToInsert, window.RackId, resolvedName, embed, sourceDesign));
 
             if (result != null && result.Success)
             {
-                RackBlockRenamer.SyncName(document, blockId, RackViewBaseName.LinkedBase(window.RackName));
+                RackBlockRenamer.SyncName(document, blockId, RackViewBaseName.LinkedBase(resolvedName));
             }
 
             editor.WriteMessage(result != null && result.Success

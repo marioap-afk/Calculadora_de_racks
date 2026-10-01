@@ -1524,3 +1524,65 @@ los ensamblados de producto.
 **Seguimiento**: V6 lo deja registrado para G4 (P9.6); I-49 **no** modifica `tools/`. Tampoco lo absorberá la
 autoridad neutral de unidades del motor, a la que V6 asigna **únicamente** las conversiones genéricas de longitud (P9.5;
 ADR-0038 D3): un factor de masa por longitud de las secciones de catálogo no parece una de ellas *(inferencia)*.
+
+## I-61 — hallazgos fuera de alcance y seguimientos (2026-10-01, registrados sin corregir)
+
+Origen: [evidencia de I-61](automation/evidence/I-61-evidence.md) §§15.12 y 16, [decisiones](automation/decisions/I-61.md) §§18-19 y
+[contrato](initiatives/I-61-protocolo-ejecucion-agentes.md) §13. Nada de esto cambia el Freeze de I-61 ni su Candidato validado; cada punto exige una unidad posterior o una
+A-n con la autoridad que corresponda.
+
+### Seguimiento formal — autoverificación de la sesión principal (PRINCIPAL SESSION SELF-VERIFICATION)
+
+**Hallazgo** (medido el 2026-10-01 en la sesión principal de I-61, evidencia §16.7): `docs/automation/agent-execution/routing.md` no tiene clase de tarea ni perfil para la
+propia sesión principal (Coordinator o Principal), y `model-catalog.md` no tiene una celda «sesión principal». El modelo y el effort de esa sesión dependían de que el Owner o
+el Master Orchestrator recordaran el selector. Con el perfil requerido resuelto por analogía, la sesión corría por debajo de lo requerido y se detuvo; tras el cambio del Owner
+quedó por encima y después igual.
+
+**Obligación futura, en términos semánticos.** Al inicio de cada sesión principal, antes de cualquier trabajo sustantivo, se resuelve y se registra:
+
+| Campo | Contenido |
+|---|---|
+| `PRINCIPAL_SESSION_PROFILE` | perfil semántico de la sesión (propuesto: PRINCIPAL_COORDINATION, coordinación larga con decisiones de gate, interpretación de Architect/Controller/Worker y arquitectura sensible) |
+| `REQUIRED_CAPABILITY_LEVEL` | nivel de capacidad de `routing.md` §3 (hoy, Frontera para ese perfil) |
+| `REQUIRED_EFFORT_CLASS` | effort semántico de `routing.md` §3 (hoy, Long-horizon: horizonte `High`) |
+| `CURRENT_MODEL` / `CURRENT_EFFORT` | lo observado en una fuente fiable del runtime; sin ella, `UNKNOWN`, nunca inferido |
+| `ROUTING_REASON` | clasificación, dimensiones, celda del catálogo elegida y su fecha de verificación |
+| `ESCALATION_CONDITIONS` | cuándo subir, en el orden de `routing.md` §4 (effort → nivel → maximum) y solo con evidencia |
+| `CONFIGURATION_STATUS` | `MATCH`; `ABOVE_REQUIRED` (sigue y se registra); `BELOW_REQUIRED` (STOP antes de trabajo sustantivo con `PRINCIPAL_SESSION_CONFIGURATION_REQUIRED`, lo requerido, lo observado y el motivo); `UNKNOWN` (no detiene por sí solo un Candidato; se indica al Owner qué seleccionar) |
+
+Los modelos concretos se resuelven siempre en el catálogo mutable vigente; la regla estable trabaja con perfiles y niveles y no fija nombres de modelo.
+
+**La unidad futura evalúa, según sus autoridades:** `routing.md` (clase y perfil de la sesión principal; punto de extensión del Freeze de I-61 §15); `model-catalog.md`
+(celda «sesión principal» por modelo y effort, con fuente y fecha); AUTOMATION_PLAN (si la obligación y su STOP son reglas, su texto normativo vive en §16, con las autoridades
+de ese documento); WORKFLOW (los pasos de apertura de sesión, §4 «Cada sesión — al abrir»); CLAUDE.md (índice de arranque); y cualquier otra autoridad realmente aplicable.
+Mientras tanto, la memoria local de Claude conserva una ayuda operativa con la misma regla, que **no** sustituye a la autoridad versionada.
+
+### Propuestas del piloto de G3 (evidencia §15.12)
+
+1. README §3.2 de la ejecución delegada: relectura a los 2 s de los procesos ilegibles, host de consola de la cadena del comprobador y alcance del criterio de huérfano
+   (DEV-G3-02); un huérfano de otra sesión no queda exento sin A-n.
+2. AUTOMATION_PLAN 16.11: camino explícito «STOP resuelto sin cambio del trabajo → reverificación como reejecución de la fase» (DEV-G3-04).
+3. Perfil CONTROLLER_VERIFICATION o README §8: semántica Exit/Entry del registro de relevo, el bicondicional VERIFIED ⇔ 14 `pass` y la lectura de `StopCondition` cuando alguna
+   comprobación falla.
+4. `RemoteFacts`: número de pruebas omitidas de cada TRX.
+5. Validar cada filtro de `RequiredTests` con `dotnet test --list-tests --filter` antes de emitir el contrato (DEV-G3-03: `Name~` no filtra con xunit).
+
+### Seguimientos de la conformidad final y de la decisión de G3
+
+- Patrón hexadecimal de `CorrectionOf.AnalysisSha256` (`[0-9a-f]`) frente al del registro de relevo (`[0-9A-Fa-f]`).
+- Sufijo `-pilot` de la ruta de custodia `<unit>-pilot/` para unidades que no son piloto.
+- PROMPT_TEMPLATES §2 puede citar ADR-0046, ya aceptado.
+- Nivel B (scripts de relevo: snapshot con relectura, validación de filtros y regla de coherencia), recomendado por la decisión de G3 sin efecto en I-61.
+
+### Hallazgos fuera de alcance del Discovery (contrato §13)
+
+- Regla `-text`/fin de línea para copias byte a byte bajo `core.autocrlf=true`.
+- 13 contratos V1 (más `TEMPLATE.md`) con `automation.enabled: true` sin ejecutor real; 35 estados obsoletos, 3 con YAML inválido y enums desviados; `.agent/` no ignorado;
+  prosa «Workflow V2 no efectivo» desactualizada (Discovery §18.3, EXP-01 F-02).
+- D-4: `EditCama` redibuja solo la definición elegida (Discovery §19).
+
+### Registro de cierre ajeno desactualizado (hallazgo de la revisión del cierre de I-61)
+
+- La fila de I-59 en `docs/ROADMAP.md` de `main` conserva «integracion en proceso … merge/post-merge/cleanup/receipt pendientes» aunque I-59 está integrada. WORKFLOW §2 impide
+  corregir una fila ajena fuera de sus tres momentos: lo corrige la propia I-59 o una unidad documental con autoridad. Lección para los cierres preparados antes de integrar:
+  la sesión de integración debe reescribir el registro a «integrada (fecha)» en su commit documental final (decisiones de I-61 §20).
