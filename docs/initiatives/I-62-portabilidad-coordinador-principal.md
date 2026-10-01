@@ -116,19 +116,24 @@ Freeze, Freeze delta y A-n: **ninguno**.
 ```text
 Consumes: ninguna entrada de FOUNDATIONS (decisión del Coordinator C62-F0-09 §1; Discovery §8)
 Extends: Agent Execution Protocol (AUTOMATION_PLAN §16, ADR-0046, Freeze de I-61 §15; C62-F0-09 §1)
-Introduces: ninguna entrada propia (propuesta de la Proposal V1 §17: los contratos nuevos forman parte de la entrada extendida; pendiente de revisión)
+Introduces: ninguna entrada propia (propuesta de la Proposal V2 §17: los contratos nuevos forman parte de la entrada extendida; pendiente de revisión)
 ```
 
 Ninguna entrada se afirma sin la comprobación DC-08 de [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §4.1. Las autoridades de proceso
-(WORKFLOW, LIFECYCLE) se obedecen, pero no son fundaciones. La entrada de FOUNDATIONS se actualiza en el cierre (F7); no se publica antes ni como
-`STABLE` anticipado.
+(WORKFLOW, LIFECYCLE) se obedecen, pero no son fundaciones. La entrada de FOUNDATIONS se redacta como borrador factual en la evidencia (F7) y se
+**publica en el commit de cierre documental** (WORKFLOW §11.4); no antes ni como `STABLE` anticipado.
 
 ## 6. Discovery, decisiones y Freeze
 
 - Discovery: [I-62-discovery.md](I-62-discovery.md), ronda R1, **aceptada por el Coordinator como base suficiente para el diseño**
   (C62-F0-08). Las decisiones sobre sus asuntos abiertos están en Discovery §21 (C62-F0-09/10). No es F0 GATE PASS.
-- Proposal: [I-62-proposal-v1.md](I-62-proposal-v1.md), `Frozen: NO`, con el borrador del ADR sucesor parcial de ADR-0046 (anexo A, sin
-  número). Paquete de revisión: [I-62-architect-package-v1.md](I-62-architect-package-v1.md), **revisión no realizada**.
+- Proposal vigente para revisión: [I-62-proposal-v2.md](I-62-proposal-v2.md), `Frozen: NO`, con los anexos A (borrador del ADR sucesor parcial
+  de ADR-0046, sin número), B (contratos), C (pruebas y controles) y D (pilotos). Paquete: [I-62-architect-package-v2.md](I-62-architect-package-v2.md),
+  **revisión del Architect no realizada**.
+- Versión anterior: [I-62-proposal-v1.md](I-62-proposal-v1.md) y su [paquete](I-62-architect-package-v1.md), conservados sin cambios. **CHANGES
+  REQUIRED** del Coordinator (C62-F0-13; [registro](I-62-coordinator-review-v1.md)).
+- Punto del Owner abierto: **OD-6, BLOCKED — OWNER DECISION** (predicado de independencia de LIFECYCLE; Proposal V2 §11.4). Bloquea el acuerdo y el
+  Freeze de F0.
 - Freeze / Freeze delta / A-n: ninguno.
 - Decisiones: [I-62.md](../automation/decisions/I-62.md). Mandato: [I-62-owner-mandate.txt](../automation/decisions/I-62-owner-mandate.txt).
 
@@ -155,11 +160,11 @@ La revisión del Architect, el acuerdo y el Freeze **no** están hechos ni aprob
 ## 8. Gates funcionales
 
 G0 (este bootstrap) incluye reclamo, contrato, fila, estado, decisiones, mandato y evidencia. Los gates posteriores se definen en el Freeze
-según [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §7; aquí no se prometen. Plan **propuesto** (no aprobado): [Proposal V1](I-62-proposal-v1.md) §17.
+según [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §7; aquí no se prometen. Plan **propuesto** (no aprobado): [Proposal V2](I-62-proposal-v2.md) §17.
 
 ## 9. Owner Validation
 
-- Asignación OV: pendiente del Freeze. Matriz **propuesta** OV-I62-01..05 y decisiones del Owner OD-1..OD-5 con su momento de bloqueo: [Proposal V1](I-62-proposal-v1.md) §18.
+- Asignación OV: pendiente del Freeze. Matriz **propuesta** OV-I62-01..05 (preparación, ensayo y ejecución final sobre FINAL_CANDIDATE_SHA) y decisiones del Owner OD-1..OD-7 con su momento de bloqueo: [Proposal V2](I-62-proposal-v2.md) §18.
 - Requiere AutoCAD: pendiente. No hay disparador mientras no cambie el comportamiento de dibujo; el mandato excluye cambios de producto
   salvo un fixture mínimo aprobado.
 - Requiere Owner Validation: pendiente. La fija el Freeze conforme a la autoridad vigente; no se decide N/A por anticipado.
