@@ -7,8 +7,8 @@ automation_state:
   state: review-ready
   gate: none
   attempts: 0
-  next_action: Coordinator revisa el Discovery F0 R1; el Owner hace llegar al Master la consulta I-63/I-64; sin Proposal, Architect, Freeze ni implementacion.
-  last_evidence_commit: dbfe1150007b7ea6819df7277e35666fe67af056
+  next_action: Coordinator revisa el Discovery F0 R2 (R63-R1-01 y R63-R1-02); el Owner traslada al Master la consulta I-63/I-64 actualizada, no enviada por esta sesion; sin Proposal, Architect, Freeze ni implementacion.
+  last_evidence_commit: 852932735aca5b03c13a17064a67347ec8c78952
 execution_context:
   mode: manual
   automation_enabled: false

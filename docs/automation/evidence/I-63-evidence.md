@@ -281,3 +281,59 @@ Sobre ese SHA, el Coordinator declaró G0 = PASS (CD-I63-G0-10).
 
   Ningún mensaje compromete diseño ni decisiones.
 - La CI exacta del commit que contiene este archivo se informa al Coordinator.
+
+## 12. F0-DISCOVERY R2
+
+Documentos del Coordinator recibidos tras R1 (no se versionan; resumen en las [decisiones](../decisions/I-63.md) §2):
+
+| Archivo | Bytes | SHA-256 |
+|---|---:|---|
+| `I63_Revision_R1_Correcciones_Localizadas.txt` (revisión de R1: CD-I63-F0-R2-01..03) | 10 535 | `9e22ecd830231b8ff813ed945112c4a44afe9273c9e4bd8c7cfdfc38c54e3be4` |
+| `I63_I64_Consulta_Master_Actualizada_R1.txt` (consulta actualizada para el Master; documento nuevo) | 6 486 | `4c5f284303df41984d18d39a5197b601c6d1a7e38c7a0ab6d90f513915bb6c8d` |
+
+**Procedencia.**
+- En el chat de la sesión responsable, el usuario adjuntó la consulta actualizada y, otra vez, `I63_F0_R1_Revision_y_Continuacion.txt`.
+  Este último mantiene el SHA-256 `c0241b82…` registrado en §11: no cambió.
+- La revisión de R1 estaba en la misma carpeta de órdenes, con la misma fecha de modificación que la consulta, y no se adjuntó. La
+  consulta adjunta la cita: dice que la revisión deja dos precisiones documentales autorizadas sin esperar respuesta.
+- La sesión actuó solo dentro de lo que autorizan los documentos adjuntos: correcciones en las cinco rutas, sin participantes, sin
+  pruebas nuevas y sin envíos.
+
+### 12.1 CI de la entrega R1
+
+| Commit | SHA | Corrida `push` | Resultado |
+|---|---|---|---|
+| Discovery R1 | `852932735aca5b03c13a17064a67347ec8c78952` | 36899699293: `head_branch` = `architecture/parametros-calculados-resumen-proyecto`, `head_sha` exacto | `success`; los cuatro jobs requeridos de `AGENTS.md` en `success` (Build UI, Tests Domain + Application, UI Tests, Build Plugin without AutoCAD) |
+
+### 12.2 Preflight de R2 (2026-10-01T19:15:18Z)
+
+- `HEAD` = `origin/architecture/parametros-calculados-resumen-proyecto` = `85293273`; árbol limpio.
+- `origin/main` = `819955d6`, ancestro de `HEAD`: **sin rebase**.
+- Ramas remotas: I-52 `88138f01`, I-62 `ea055591`, I-63 `85293273`, I-64 `c6c44828`. Coinciden con lo que observó el Coordinator.
+- Deltas pertinentes (detalle en el Discovery §9.3):
+  - I-64 `cf034e59..c6c44828` y I-62 `f25dd1d5..ea055591`: solo `docs/`;
+  - I-52 `c1982b2a..88138f01`: avance *fast-forward*. Su diff de tres puntos contra `main` no toca `src/` ni `tests/` (208 archivos en
+    `eng/research`, 4 en `eng/validation`). Los seis archivos de `src/` y `tests/` del diff de dos puntos vienen de I-61, que entró en
+    `main` después de la base de fusión `95690c28`.
+- No se repitió `merge-tree` ni se limpiaron objetos.
+
+### 12.3 Método y ejecución
+
+- Correcciones directas de la sesión principal; ningún participante de IA y ninguna delegación §16.
+- **Ninguna prueba ejecutada:** CD-I63-F0-R2-02 no las pide para estas correcciones de redacción y razonamiento. Las pruebas
+  existentes que se citan nuevas en el Discovery (`RackListBuilderTests`, `RackEnvelopeIdProbeTests`, `RackSiblingMembershipTests`)
+  se **leyeron**.
+- **Código leído** (solo lectura): `RackListBuilder.cs`, `RackInventarioCommands.cs`, `RackInventarioCommands.BomTotal.cs`,
+  `ProjectVariableScanProjection.cs`, `ProjectVariableScanEntry.cs`, `RackEmbedDocument.cs`, `RackEnvelopeIdProbe.cs`,
+  `RackSiblingScan.cs`, `RackSiblingMembership.cs`, `RackCommandSupport.cs` y `RackBlockFinder.cs`, y el Discovery de I-64 §9.4 y
+  §10.2 en `c6c44828`.
+- **Fuente externa:** la misma de §11.3 (página 2022), sin nueva consulta. El Coordinator informa que también la corroboró.
+- Salidas: el Discovery reescrito como R2 (R1 queda en `85293273`, blob `5224349b…`), el contrato, las decisiones, esta evidencia y el
+  estado. Nada fuera de las cinco rutas autorizadas.
+
+### 12.4 Coordinación
+
+- **Consultas al Master:** la original (§11) y la actualizada (tabla de §12) están entregadas al Owner. Esta sesión **no** las envió.
+- Conforme a CD-I63-F0-R2-03, en R2 no se volvieron a enumerar sesiones buscando un canal y no se envió ningún mensaje entre sesiones.
+- Estado: **sin respuesta**.
+- La CI exacta del commit que contiene este archivo se informa al Coordinator.
