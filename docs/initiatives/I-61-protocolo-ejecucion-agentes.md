@@ -118,9 +118,9 @@ Normas que se modifican (no son fundaciones): PROMPT_TEMPLATES (sección nueva),
 
 | Decisión | Bloquea |
 |---|---|
-| Aceptar o rechazar ADR-0046 (propuesto con el diseño) | `READY-03` y `FINAL_CANDIDATE_SHA`; no bloquea diseño, implementación ni piloto (C61-G1-04) |
+| Aceptar o rechazar ADR-0046 (propuesto con el diseño) | `READY-03` y `FINAL_CANDIDATE_SHA`; no bloquea diseño, implementación ni piloto (C61-G1-04) **Decidido 2026-10-01: ACCEPTED** (decisiones §17) |
 | Owner Validation del Candidato: comportamiento del piloto y aceptación del resultado frente a los criterios de éxito | la integración (es la validación ordinaria, no una decisión previa pendiente; Discovery §15 Q-04 y Q-06) |
-| DEV-G1C-01: conservar o eliminar la entrada `trusted` añadida a `~/.codex/config.toml` | `READY-03`, por aplicación literal (Proposal V9 §16.1; sustituye la anotación anterior «nada del flujo», decisiones §13) |
+| DEV-G1C-01: conservar o eliminar la entrada `trusted` añadida a `~/.codex/config.toml` | `READY-03`, por aplicación literal (Proposal V9 §16.1; sustituye la anotación anterior «nada del flujo», decisiones §13) **Decidido 2026-10-01: eliminar; eliminada** (decisiones §17) |
 
 Las preguntas sobre la intención de producto del piloto (Q-06, con la inferencia del Coordinator que el Discovery §15 registra), la agrupación (C61-G1-07) y el relevo con agentes externos (C61-G1-01) están **respondidas por cláusulas del Owner**
 (mandato; decisiones §9.1).

@@ -1,8 +1,8 @@
 # ADR-0046: Protocolo de ejecución delegada de agentes (Controller Codex, Worker y entrega estructurada)
 
-- **Estado:** propuesto
+- **Estado:** **aceptado** (Owner, 2026-10-01; registro en `docs/automation/decisions/I-61.md` §17)
 - **Fecha:** 2026-09-30
-- **Decisores:** Owner del repositorio (aceptación pendiente). Redactado por la sesión de I-61 (Claude) en `SAME-SESSION ROLE`.
+- **Decisores:** Owner del repositorio (aceptado el 2026-10-01). Redactado por la sesión de I-61 (Claude) en `SAME-SESSION ROLE`.
 - **Iniciativa relacionada:** I-61 — Agent Execution, Model Routing & Prompting Protocol (`architecture/protocolo-ejecucion-agentes`)
 - **Proposal:** la Proposal congelada de I-61; su ruta, commit y blob se registran en `docs/automation/decisions/I-61.md` al congelarla. Versión en revisión mientras este ADR es
   `propuesto`: `docs/initiatives/I-61-proposal-v9.md`.
