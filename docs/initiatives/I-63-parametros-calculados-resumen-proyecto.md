@@ -14,7 +14,7 @@ base_branch: main
 priority: HIGH
 size:
 depends_on: [I-49]
-conflicts_with: []
+conflicts_with: [I-64]
 hot_files: [docs/ROADMAP.md]
 coordination_strategy: Bootstrap con acuse de ventana de ROADMAP de los escritores pertinentes (ver decisiones); frontera con ID30 y resto de intersecciones en DC-07.
 context_packs: [documentation-governance]
@@ -109,7 +109,8 @@ Son candidatos de intake, no afirmaciones: cada entrada se verifica con DC-08 en
 
 ## 6. Discovery, decisiones y Freeze
 
-- Discovery: pendiente; **no iniciado** en G0. El plan de F0 lo prepara la sesión responsable para revisión del Coordinator.
+- Discovery: pendiente; **no iniciado** en G0. La preparación de F0 está entregada al Coordinator y no aprobada; la resume el plan
+  de abajo.
 - Freeze / Freeze delta / A-n: ninguno.
 - Decisiones: [I-63.md](../automation/decisions/I-63.md); mandato: [I-63-owner-mandate.original.txt](../automation/decisions/I-63-owner-mandate.original.txt).
 
@@ -119,14 +120,38 @@ puntos integrados (M-01..06/M-08)? La Proposal/Freeze cubre las obligaciones de 
 delimita CustomProperty, ProjectVariable y ComputedParameter con referencia a
 [ADR-0039](../adr/0039-custom-properties-persistencia-autoridad.md) D-16.
 
+**Plan de F0** (propuesto y no aprobado; [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §4):
+
+| Tarea | Perfil o actor | Salida |
+|---|---|---|
+| Inventario de autoridades, símbolos, fases y fuentes de conteo (DC-01..06; preguntas 1-12 y 14 del mandato) | DOCUMENTATION | `docs/initiatives/I-63-discovery.md` |
+| Matriz sistema × métrica candidata, con evidencia por celda y sin pruebas nuevas | DOCUMENTATION | mismo archivo |
+| Hotspots e intersecciones (DC-07); fundaciones verificadas contra fuente, código y pruebas (DC-08), incluida la identidad del Freeze final de I-49 sobre A3-R2 | sesión responsable | Discovery y evidencia |
+| DC-09 y EXP-01..09 con negativos razonados; EXP-09 requerida | sesión responsable; revisión del Coordinator | Discovery |
+| Pruebas de caracterización nuevas, solo si una pregunta las exige | CHARACTERIZATION, con contrato aprobado aparte | — |
+| Revisión del Architect sobre la Proposal | ARCHITECTURE_REVIEW; modo de revisión declarado | revisión versionada |
+
+La delegación de estas tareas bajo [AUTOMATION_PLAN](../AUTOMATION_PLAN.md) §16 depende del conflicto C-F0-RED, pendiente de
+[decisión](../automation/decisions/I-63.md) del Coordinator.
+
 ## 7. Dependencias, archivos calientes y coordinación
 
 - Dependencia integrada: **I-49** (Expression Engine), cuyo ADR reserva `Rack.*`, `Project.*` y el ámbito `Rack` para ID20. Las demás
   fundaciones candidatas (§5) están integradas y se verifican en DC-08.
-- **ID30 — Persistent RackCad Workspace** puede abrirse en paralelo. Frontera del mandato: ID20 posee la semántica de métricas, los
-  providers y la semántica de agregación; ID30 posee el inventario runtime de navegación y la representación de UI/sesión. No se
-  consume código no integrado de ID30 ni se copia su diseño hipotético. Si aparece una fundación común: STOP y Master Orchestrator.
-- **I-52** y otras aperturas solo se cruzan por la escritura de `docs/ROADMAP.md`, coordinada por acuse (decisiones). DC-07 fija el resto.
+- **I-64 — ID30, Persistent RackCad Workspace**, está activa en paralelo. Frontera del mandato, que el contrato de I-64 recoge igual:
+  ID20 posee la semántica de métricas, los providers y la semántica de agregación; ID30 posee el inventario runtime de navegación y la
+  representación de UI/sesión. No se consume código no integrado de I-64 ni se copia su diseño. Si aparece una fundación común: STOP y
+  Master Orchestrator.
+
+**Mapa preliminar de DC-07** (las puntas observadas viven en la [evidencia](../automation/evidence/I-63-evidence.md)):
+
+| Iniciativa activa | Rama | Cruce textual conocido | Cruce funcional |
+|---|---|---|---|
+| I-64 (ID30) | `architecture/workspace-persistente-rackcad` | Su fila de ROADMAP también va tras I-60: conflicto textual de filas adyacentes para quien integre segundo | **No inspeccionado.** Riesgo declarado por el mandato: inventario y enumeración de racks lógicos |
+| I-62 (portabilidad del Principal) | `architecture/portabilidad-coordinador-principal` | Fila en otra tabla de ROADMAP (Engineering Productivity, tras I-61) | **No inspeccionado.** Por su objeto (proceso y protocolo), no se espera cruce de producto; sin verificar |
+| I-52 (RACKMIRROR) | `feature/rackmirror-espejo-semantico` | Edita ROADMAP (su fila y la de I-57), HANDOFF y el índice de ADR; su rebase futuro sobre main tocará ROADMAP | **No inspeccionado** |
+
+- La escritura de `docs/ROADMAP.md` se coordina por acuse (decisiones y evidencia). DC-07 mide el resto en F0.
 - Archivos calientes: `docs/ROADMAP.md` (solo la fila propia, en los momentos de [WORKFLOW](../WORKFLOW.md) §2). `HANDOFF.md` y el índice
   de ADR se editan únicamente al integrar/cerrar.
 

@@ -4,11 +4,11 @@ automation_state:
   branch: architecture/parametros-calculados-resumen-proyecto
   claim_id: ce04f47f-ca53-4e75-b983-5ac57ab6c5e3
   current_phase: G0
-  state: claimed
-  gate: ci
+  state: review-ready
+  gate: none
   attempts: 0
-  next_action: Verificar la CI push del bootstrap y entregar al Coordinator el informe G0 y la preparacion corregida de F0; sin Discovery, participantes, Freeze, Candidate ni merge.
-  last_evidence_commit: cdae642111373afb6df524480c65ade8c5ebf245
+  next_action: Coordinator revisa G0 y la preparacion de F0 y decide C-F0-RED; sin ejecutar F0, participantes, Freeze, Candidate ni merge.
+  last_evidence_commit: cba24838e58249ae1782c8fd922ca31f67a0fb32
 execution_context:
   mode: manual
   automation_enabled: false

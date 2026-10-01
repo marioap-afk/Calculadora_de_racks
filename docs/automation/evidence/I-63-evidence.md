@@ -126,3 +126,63 @@ ADR, FOUNDATIONS, `src/`, `tests/`, `assets/`, `eng/`, CI ni configuración. `au
 
 Métricas: UNKNOWN (sin gates funcionales). Arquetipo inicial: NEW ARCHITECTURE provisional (M-07 UNKNOWN). Conformidad: no aplica
 todavía. Owner Validation: por determinar; no aplica a G0. Tag de integración: no existe.
+
+## 9. Registros posteriores a la publicación del bootstrap
+
+Continuación documental ordenada por el Coordinator («Continuación G0» en las decisiones). Registra en un solo commit lo ocurrido
+después del bootstrap. La CI del commit que contiene este archivo se informa al Coordinator.
+
+### 9.1 Publicación y CI
+
+| Commit | SHA | Corrida `push` | Resultado |
+|---|---|---|---|
+| Reclamo | `cdae642111373afb6df524480c65ade8c5ebf245` | 36887041637: `ref` = `refs/heads/architecture/parametros-calculados-resumen-proyecto`, `head_sha` exacto | `success`; los cuatro jobs requeridos de `AGENTS.md` en `success` |
+| Bootstrap | `cba24838e58249ae1782c8fd922ca31f67a0fb32` | 36887229797: misma `ref`, `head_sha` exacto | `success`; los cuatro jobs requeridos de `AGENTS.md` en `success` |
+
+- Push del bootstrap: fast-forward `cdae6421..cba24838`, sin force, hacia las 15:49:15Z. Después, `HEAD` = `ls-remote` = `cba24838` y
+  el árbol quedó limpio.
+- `git diff --name-only 819955d6 cba24838`: las seis rutas del §5, todas bajo `docs/`.
+- Mandato: blob `876bdd50f10f76bb73eed7c8e686e5cb9b8972c6`, 15 760 bytes. El SHA-256 del contenido del blob es
+  `3B3C1D49846685DD83EA6D9B946433F45AEDFA5BFD8778B6185076062B46F6E0`, igual a la huella de transporte. B-03 queda cerrado en local.
+
+### 9.2 RELEASE de la ventana de I-63
+
+Enviado hacia las 15:49Z, tras el push del bootstrap, a I-52 (msg `1d0346df-52bb-4ee9-84a7-b6efd763ca55`), a I-62
+(`8b499bad-522f-4895-8ba1-f0fa77820a12`) y a ID30 (`4c6e5105-e914-4207-a43b-9833c63261e0`). El canal no confirma la lectura.
+
+### 9.3 Acuses dados por I-63 después de su bootstrap
+
+| Destinatario | Acuse de I-63 (msg_id del envío) | Cierre recibido y hechos que informó el destinatario |
+|---|---|---|
+| I-62 | `095567e3-e632-46a1-a4b7-b9be8f3e33b4` | RELEASE sin reclamo ni publicación; le faltaba el acuse de I-52 |
+| I-64 (ID30) | `0bf27797-5448-49a0-a489-52d13af27828` | RELEASE; reclamo `6ea9b7e8` y bootstrap `d8a02163` en `architecture/workspace-persistente-rackcad`, fila tras I-60 |
+| I-62 | `4d31d969-893d-48ac-a6c9-7595ca64300e` (acuse nuevo) | RELEASE; reclamo `a851841a` (Claim-Id `5b661a17-8c18-4183-8554-3866059cba2b`) y bootstrap `85ae4324` en `architecture/portabilidad-coordinador-principal`, fila en Engineering Productivity tras I-61 |
+
+**Identificadores discrepantes, conservados sin afirmar equivalencias:**
+- En sus RELEASE, I-62 cita los acuses de I-63 como `31a18cf6` y `0ca4a000`. Los msg_id que registró el envío de I-63 son
+  `095567e3-…` y `4d31d969-…`. No se afirma que nombren los mismos mensajes.
+- I-62 cita su propio acuse a ID20 como `af5b2e5c` (§4). El canal no entrega a la sesión receptora el msg_id de los mensajes
+  recibidos, así que no hay identificador propio con que compararlo.
+
+### 9.4 Preflight de la continuación (2026-10-01T16:20:03Z)
+
+- `origin/main` = `819955d61a6da4c811a11fbd11b5dca13f634b7c`, sin cambio y ancestro de `HEAD`: **sin rebase**.
+- `git ls-remote --heads origin`:
+
+  ```text
+  cba24838e58249ae1782c8fd922ca31f67a0fb32  refs/heads/architecture/parametros-calculados-resumen-proyecto
+  85ae4324988ac7564719664f8f05b3fa9c6cafbe  refs/heads/architecture/portabilidad-coordinador-principal
+  d8a0216306f40e4d502b77310c1632cdbb84d70d  refs/heads/architecture/workspace-persistente-rackcad
+  c1982b2a4b483f98beccc161e9635f92e1504895  refs/heads/feature/rackmirror-espejo-semantico
+  819955d61a6da4c811a11fbd11b5dca13f634b7c  refs/heads/main
+  ```
+
+- Reclamos observados en Git: I-64, commit `6ea9b7e8` con `Claim-Id: 614371d5-441f-4f14-bac9-f97017105610`; I-62, commit `a851841a` con
+  `Claim-Id: 5b661a17-8c18-4183-8554-3866059cba2b`.
+- Cruce textual medido con `git merge-tree --write-tree`: I-63 × I-64 da **conflicto de contenido en `docs/ROADMAP.md`** (las dos filas
+  se insertan tras I-60); I-63 × I-62 no da conflicto; I-63 × I-52 no se midió. **Cruce funcional: no inspeccionado**; es DC-07 de F0.
+- Efecto local de esa medición: `git merge-tree --write-tree` escribió objetos *tree* sin ref en el almacén del repositorio local
+  (`2b6cc6bd588795a1fc562f01a5b965918d7a0d5c`, `0e20d47dd9b5403191154128a3ba83c7b0d568ec`). No son commits ni refs; no se ejecutó
+  `gc`/`prune` y no se repitió.
+- Esta continuación no toca `docs/ROADMAP.md`, así que no pidió ventana.
+- Ningún Controller, Worker, Architect ni subagente se invocó.
