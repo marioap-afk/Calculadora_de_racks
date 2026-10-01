@@ -1,0 +1,767 @@
+Coordina exclusivamente una nueva iniciativa de arquitectura UI para RackCad.
+
+# <NEXT_FREE_INITIATIVE_ID> — Persistent RackCad Workspace
+## ID30 — Modeless Contextual Editor
+## Absorbe funcionalmente ID3 — sesión/edición multi-rack
+
+Workflow:
+V2
+
+Archetype:
+NEW ARCHITECTURE
+
+Priority:
+HIGH
+
+======================================================================
+AUTHORITIES
+======================================================================
+
+Antes de proponer arquitectura, lee y sigue las autoridades actuales del repo:
+
+- docs/WORKFLOW.md
+- AGENTS.md
+- docs/INITIATIVE_LIFECYCLE.md
+- docs/FOUNDATIONS.md
+- docs/initiatives/PROMPT_TEMPLATES.md
+- protocolo vigente de I-61 / Agent Execution Protocol
+- ADRs y contratos vigentes que afecten:
+  - Rack Identity
+  - View Identity
+  - Authored vs Effective
+  - Project Variables / Expressions
+  - Linked Properties
+  - Custom Properties
+  - DimensionViews
+  - Shared View Foundation
+  - Auto Rack Naming
+
+Usa:
+
+REFERENCE OVER REPETITION.
+
+No envíes megaprompts al Executor.
+Usa gate-contracts y delegaciones estructuradas conforme a I-61.
+
+======================================================================
+GOAL
+======================================================================
+
+Convertir RackCad de una colección de ventanas modales/temporales a una
+workspace persistente y modeless integrada con AutoCAD.
+
+La workspace debe poder permanecer abierta mientras el usuario continúa usando
+normalmente AutoCAD:
+
+- seleccionar objetos;
+- zoom;
+- pan;
+- ejecutar comandos;
+- cambiar de vista;
+- navegar por el dibujo.
+
+Debe existir sincronización bidireccional:
+
+AutoCAD selection
+→ RackCad context
+
+RackCad navigation
+→ AutoCAD selection / locate / center
+
+La aplicación debe evolucionar hacia una experiencia tipo inspector/workspace CAD.
+
+======================================================================
+PRODUCT DECISION ALREADY MADE
+======================================================================
+
+NO LIVE MUTATION.
+
+La edición continúa usando el paradigma actual:
+
+UI edit
+→ draft/pending state
+
+NO:
+- mutation;
+- redraw;
+- regen;
+- commit;
+
+hasta que el usuario pulse:
+
+ACTUALIZAR
+
+Actualizar debe seguir siendo la frontera explícita de commit.
+
+Cambiar de rack/tab NO aplica automáticamente los cambios.
+
+======================================================================
+FUNCTIONAL SCOPE
+======================================================================
+
+La arquitectura debe contemplar:
+
+1. Workspace modeless persistente.
+
+2. Integración nativa con AutoCAD, evaluando seriamente PaletteSet.
+
+3. Active-document awareness.
+
+4. Sincronización:
+   AutoCAD selection → logical RackId → workspace.
+
+5. Rack navigator:
+   - dropdown/list/search;
+   - logical rack name;
+   - SystemKind;
+   - views;
+   - status.
+
+6. Acciones:
+   - Seleccionar;
+   - Ver;
+   - Centrar;
+   - localizar una vista concreta cuando aplique.
+
+7. Browser-like workspace tabs:
+   - rack tabs;
+   - preview tab;
+   - pinned tabs;
+   - close without modifying drawing;
+   - dirty marker;
+   - lazy loading.
+
+8. Persistent DraftSession por RackId:
+   - committed base;
+   - draft;
+   - dirty;
+   - stale/conflict state.
+
+9. Cambio entre racks sin perder drafts.
+
+10. Integración progresiva de los editores existentes:
+    - Selectivo;
+    - Dinámico;
+    - Push Back;
+    - Cantilever;
+    - Cabecera;
+    - Cama.
+
+11. Multi-selection foundation:
+    selección grande NO debe abrir N tabs automáticamente.
+
+    Preferir:
+    Selection (N)
+
+    como contexto agregado.
+
+12. Preparación para cerrar ID3:
+    navegación entre racks;
+    sesiones persistentes;
+    futuros batch edits.
+
+======================================================================
+KEY ARCHITECTURAL BOUNDARY
+======================================================================
+
+Debe preservarse:
+
+DWG / authored persisted state
+= committed authority
+
+WorkspaceSession
+= transient editing state
+
+La workspace NO se convierte en autoridad persistente.
+
+Conceptualmente investigar algo equivalente a:
+
+WorkspaceController
+├── WorkspaceDocumentSession
+│   ├── RackInventory
+│   ├── SelectionContext
+│   ├── OpenTabs
+│   ├── ActiveTab
+│   └── DraftSessions
+└── AutoCADEventBridge
+
+Los nombres son hipótesis.
+
+No congelarlos antes de Discovery.
+
+======================================================================
+AUTOcad EVENT MODEL
+======================================================================
+
+Discovery debe caracterizar qué eventos reales se necesitan y cómo evitar
+suscripciones dispersas.
+
+Objetivo preferido:
+
+ONE CENTRAL AUTOCAD EVENT BRIDGE
+
+y no:
+
+cada tab/editor suscribiéndose independientemente.
+
+Auditar como mínimo:
+
+- implied selection changes;
+- active document changes;
+- command start/end;
+- object modification;
+- erase;
+- undo/redo;
+- document close/open;
+- current selection;
+- external RackCad mutations.
+
+No añadir listeners por rack/tab sin justificación.
+
+======================================================================
+RACK INVENTORY
+======================================================================
+
+Evaluar una autoridad/runtime index ligero por drawing.
+
+Debe poder alimentar:
+
+- rack dropdown;
+- search;
+- navigation;
+- view lookup;
+- selection synchronization.
+
+Metadata típica:
+
+RackId
+LogicalName
+SystemKind
+Views
+Status
+
+NO mantener geometría/resolved systems pesados para todos los racks.
+
+Debe evitarse:
+
+drawing changed
+→ resolve all racks
+
+Preferir:
+
+invalidate
+→ refresh on demand.
+
+======================================================================
+TABS / PERFORMANCE CONTRACT
+======================================================================
+
+Open Tabs
+≠
+AutoCAD Selected Racks.
+
+Seleccionar 50 racks NO significa crear 50 editores completos.
+
+Inactive tabs deben ser lightweight.
+
+Preferir lazy editor materialization.
+
+No retener innecesariamente por tab:
+
+- resolved geometry;
+- BOM;
+- AutoCAD objects;
+- transactions;
+- full WPF trees;
+- duplicate event subscriptions.
+
+Discovery debe proponer y medir una estrategia razonable.
+
+======================================================================
+PREVIEW TAB
+======================================================================
+
+Evaluar UX tipo Visual Studio/browser:
+
+single-click/select rack
+→ preview tab
+
+select another rack
+→ replaces preview
+
+double-click / pin / edit
+→ persistent tab
+
+Dirty tab:
+RackName *
+
+Dirty tabs must never be silently replaced.
+
+======================================================================
+MULTI-SELECTION
+======================================================================
+
+Primera versión no necesita batch edit completo.
+
+Expected initial behavior:
+
+1 logical rack selected
+→ contextual editor
+
+multiple racks selected
+→ Selection (N) context
+→ summary/navigation
+
+No abrir N rack tabs automáticamente.
+
+El diseño debe permitir que una futura extensión implemente:
+common-property multi-edit / batch mutation.
+
+======================================================================
+STALE / EXTERNAL CHANGE
+======================================================================
+
+Éste es un contrato material.
+
+Ejemplo:
+
+Rack A draft opened from committed revision X.
+
+Another command changes Rack A.
+
+User later presses Actualizar.
+
+RackCad must NOT silently overwrite the newer committed state.
+
+Discovery must define a reliable:
+
+BaseRevision / authored fingerprint / equivalent authority check
+
+so Apply can detect:
+
+MATCH
+or
+STALE / CONFLICT
+
+and fail closed or request explicit reconciliation.
+
+Do not invent a second persistence authority.
+
+======================================================================
+MULTI-DOCUMENT
+======================================================================
+
+Workspace may remain alive while AutoCAD changes documents.
+
+Design from the start for:
+
+Document A
+→ WorkspaceDocumentSession A
+
+Document B
+→ WorkspaceDocumentSession B
+
+Switch active document
+→ switch workspace context
+
+Do not mix RackIds/state across documents.
+
+V1 may keep sessions only in memory.
+
+Persistent cross-launch workspace restoration is future scope.
+
+======================================================================
+EXISTING EDITORS
+======================================================================
+
+Do NOT rewrite every editor immediately.
+
+Discovery must determine the safest migration pattern.
+
+Evaluate:
+
+A. host existing controls/viewmodels inside workspace;
+
+B. extract reusable editor surfaces;
+
+C. adapter layer around existing windows;
+
+D. staged migration.
+
+Avoid six parallel editor rewrites.
+
+Existing standalone RACKEDITAR behavior should remain usable during migration
+unless Freeze explicitly changes it.
+
+======================================================================
+OWNER SMOKE EARLY
+======================================================================
+
+Mandatory lesson from I-55:
+
+Do not wait until Final Candidate to validate modeless/selection UX.
+
+Require an EARLY THIN AUTOCAD SLICE after workspace foundation.
+
+Owner smoke should verify at minimum:
+
+- workspace remains open;
+- AutoCAD remains usable;
+- selection changes update RackCad;
+- zoom/pan still work;
+- command execution still works;
+- document switching does not corrupt context;
+- no focus/input capture problem.
+
+Do not expand all editor integration before this smoke passes.
+
+======================================================================
+ID3 RELATION
+======================================================================
+
+This initiative ABSORBS the architectural direction of ID3.
+
+ID3 should not be implemented separately.
+
+However, distinguish:
+
+ID3 Foundation:
+- navigate multiple racks;
+- preserve drafts;
+- persistent editing session.
+
+Future multi-rack batch edit:
+- common properties;
+- batch validation;
+- atomic multi-rack mutation.
+
+The latter may remain a later deliverable if scope becomes excessive.
+
+At closure classify ID3 explicitly:
+COMPLETE or PARTIAL with exact residual.
+
+======================================================================
+PREPARES BUT DOES NOT IMPLEMENT
+======================================================================
+
+Workspace should provide future host surfaces for:
+
+- ID20 Computed Summary;
+- ID28 Explain / Trace;
+- ID29 Impact Preview;
+- Custom Properties;
+- Project Variables;
+- Semantic Grips;
+- rack/view diagnostics.
+
+Do NOT implement those features here.
+
+======================================================================
+OUT OF SCOPE
+======================================================================
+
+NO:
+
+- live mutation on every UI edit;
+- semantic grips;
+- ID20 computed parameters;
+- ID23 calculated BOM;
+- ID28/29;
+- layout optimizer;
+- new expression semantics;
+- title block/drawing system;
+- major RACKPROYECTAR redesign;
+- session restore across application restarts unless trivial;
+- global batch Apply unless explicitly frozen;
+- rewriting all product architecture.
+
+======================================================================
+I-61 EXECUTION PROTOCOL
+======================================================================
+
+Use I-61 for implementation gates.
+
+Coordinator owns:
+- architecture;
+- Freeze;
+- Gate PASS.
+
+Execution Controller may:
+- classify task;
+- choose executor/model/effort;
+- generate delegation;
+- verify execution.
+
+Worker may:
+- implement;
+- test;
+- commit;
+- return structured handoff.
+
+Worker cannot declare Gate PASS.
+
+Record routing/friction as evidence for future I-62.
+
+Use provider/model routing according to current catalog.
+
+Do not assume one fixed model for every gate.
+
+======================================================================
+DISCOVERY REQUIRED
+======================================================================
+
+Focused Discovery must answer at least:
+
+1. current window/dialog architecture;
+2. where modal blocking occurs;
+3. whether PaletteSet can host current WPF surfaces;
+4. current RACKEDITAR lifecycle;
+5. editor/viewmodel reuse potential;
+6. current AutoCAD event subscriptions;
+7. selection APIs already used;
+8. RackId/member scan paths;
+9. RACKLISTA reusable inventory logic;
+10. current view lookup;
+11. current zoom/select helpers;
+12. document lifecycle;
+13. undo/redo/update behavior;
+14. authored snapshot/read paths;
+15. possible stale-state fingerprint;
+16. expensive operations that must remain lazy;
+17. hotspots with active initiatives;
+18. current status of I-52 and any native/ObjectARX interactions relevant to UI/events.
+
+======================================================================
+PROPOSAL MUST DEFINE
+======================================================================
+
+The Freeze must explicitly define:
+
+- workspace host technology;
+- ownership/lifecycle;
+- document sessions;
+- event bridge;
+- inventory;
+- selection synchronization;
+- tab model;
+- preview/pin behavior;
+- draft model;
+- stale detection;
+- Update semantics;
+- dirty switching;
+- multi-selection behavior;
+- editor migration strategy;
+- navigation/select/center semantics;
+- performance/lazy-loading contract;
+- failure behavior;
+- Owner smoke checkpoints;
+- legacy command coexistence;
+- ID3 closure boundaries.
+
+======================================================================
+ARCHITECT REVIEW
+======================================================================
+
+New Architecture requires full Coordinator ↔ Architect consensus before
+substantive implementation.
+
+Architect must challenge especially:
+
+- PaletteSet vs arbitrary modeless window;
+- UI becoming persistence authority;
+- event reentrancy loops;
+- selection feedback loops;
+- duplicate event subscriptions;
+- cross-document state leakage;
+- stale drafts overwriting committed state;
+- eager loading of all racks;
+- keeping too many WPF trees alive;
+- AutoCAD API calls from UI layer;
+- transaction lifetime leakage;
+- command focus/keyboard problems;
+- undo/redo semantics;
+- six-system editor duplication;
+- scope explosion into unrelated features.
+
+Implementation authorization requires:
+
+Coordinator = AGREED
+Architect   = AGREED
+
+on the same Freeze.
+
+======================================================================
+FUNCTIONAL GATES
+======================================================================
+
+Use INITIATIVE_LIFECYCLE.md.
+
+Do not create micro-gates.
+
+Suggested decomposition:
+
+F0 — Discovery / architecture / Freeze
+
+F1 — Modeless Workspace Foundation
+     Palette/modeless host
+     document context
+     central event bridge
+     thin rack selection sync
+
+     → EARLY OWNER SMOKE
+
+F2 — Rack Inventory + Navigation
+     dropdown/search
+     select
+     view
+     center
+
+F3 — Browser Session
+     preview tabs
+     pinned tabs
+     lightweight tab records
+     lazy editor loading
+
+F4 — Draft Sessions
+     dirty state
+     tab switching
+     stale detection
+     explicit Actualizar boundary
+
+F5 — Contextual Editor Integration
+     staged system adapters
+
+F6 — Multi-selection Context / ID3 completion assessment
+
+F7 — Conformance / performance / regression
+
+READY — Final Candidate
+
+Exact gate structure may change after Freeze.
+
+======================================================================
+PERFORMANCE EVIDENCE
+======================================================================
+
+Do not rely on intuition.
+
+Characterize at least:
+
+- workspace closed baseline;
+- workspace open idle;
+- rack selection latency;
+- switching racks;
+- switching tabs;
+- 10 open lightweight tabs;
+- larger rack inventory;
+- large AutoCAD selection;
+- active-document switch.
+
+Do not require arbitrary microsecond targets before baseline exists.
+
+Primary invariant:
+
+idle workspace must not continuously resolve/redraw/recompute racks.
+
+======================================================================
+OWNER VALIDATION
+======================================================================
+
+Plan Owner matrix during Freeze.
+
+Must eventually include:
+
+- keep workspace open while drawing;
+- zoom/pan;
+- run ordinary AutoCAD commands;
+- select rack in drawing;
+- workspace follows;
+- choose rack in navigator;
+- select/center its views;
+- several systems;
+- several tabs;
+- preview/pin;
+- dirty draft;
+- switch tabs without committing;
+- Actualizar commits;
+- stale conflict;
+- multi-selection;
+- multiple documents;
+- save/reopen;
+- RACKEDITAR compatibility;
+- no visible regression.
+
+Use early smoke before full expansion.
+
+======================================================================
+SUCCESS CRITERIA
+======================================================================
+
+Initiative succeeds when:
+
+1. RackCad workspace can remain open without blocking AutoCAD.
+
+2. AutoCAD can be used normally while workspace is open.
+
+3. logical rack selection is synchronized into workspace.
+
+4. rack navigation can drive AutoCAD selection/location.
+
+5. browser-like rack sessions work without opening one heavy editor per rack.
+
+6. draft edits persist between tabs but do not touch DWG until Actualizar.
+
+7. stale/external changes are detected before commit.
+
+8. multi-document state is isolated.
+
+9. existing authored/effective authority remains intact.
+
+10. no per-tab AutoCAD event subscription architecture exists.
+
+11. performance is characterized and acceptable.
+
+12. ID3 status is explicitly resolved.
+
+======================================================================
+FIRST RESPONSE REQUIRED
+======================================================================
+
+Before production implementation, return:
+
+1. real preflight;
+2. current origin/main;
+3. next free Initiative-Id;
+4. claim/branch/worktree;
+5. Workflow V2 + I-61 bootstrap status;
+6. Consumes / Extends / Introduces;
+7. active initiatives/hotspot conflicts;
+8. current modal/window architecture;
+9. current RACKEDITAR lifecycle;
+10. PaletteSet/modeless options in current stack;
+11. current AutoCAD event architecture;
+12. selection synchronization options;
+13. RackInventory candidates/reuse;
+14. RACKLISTA reusable pieces;
+15. view locate/zoom/select capabilities;
+16. document lifecycle;
+17. proposed WorkspaceSession model;
+18. proposed DraftSession model;
+19. stale detection alternatives;
+20. tab virtualization/lazy strategy;
+21. multi-selection strategy;
+22. editor migration alternatives;
+23. performance risks;
+24. proposed early Owner smoke;
+25. ID3 absorption/closure plan;
+26. proposed Freeze;
+27. Architect review package;
+28. functional gates;
+29. initial I-61 routing plan by gate/task;
+30. explicit status:
+
+IMPLEMENTATION AUTHORIZATION = NO
+
+until Coordinator + Architect agree on the same Freeze.
+
+Use REFERENCE OVER REPETITION.
