@@ -551,3 +551,81 @@ remota. Sin AutoCAD, builds, pruebas, prototipos, subagentes, Controller ni Work
 
 **Estado:** Proposal V3 publicada para la re-revisión del mismo Architect y del Coordinator, sin consenso, Freeze ni GATE PASS.
 `IMPLEMENTATION AUTHORIZATION = NO`.
+
+## 16. F0 / Proposal V4 — Dictamen del Architect sobre V3 y hechos posteriores
+
+Sección nueva; las anteriores no se reescriben.
+
+**CI de la Proposal V3** (MEASURED con `gh run view`; evidencia de CI, no local): corrida **36934958555**, `event=push`,
+`ref=refs/heads/architecture/workspace-persistente-rackcad`, `head_sha=1f1530be15a3bc95e260c03df07d51b9625345ae`. Jobs Tests (Domain +
+Application), UI Tests (WPF controls, net8.0-windows), Build UI (WPF, valida API de Application) y Build Plugin without AutoCAD, los cuatro
+`success`. Creada 22:25:22Z, actualizada 22:29:22Z. Blobs de V3: Proposal `d08c2cee75ee486bf5ed8f2ebebe6d2482aebbbe`, paquete
+`45133653e5eeea6e6f7a7dd1f1493d4a48e3b90f`.
+
+**Dictamen del mismo Architect sobre V3** (RECONSTRUCTED):
+- **Procedencia.** La orden del Coordinator lo acepta y resume. El texto completo se leyó en la transcripción local de la misma sesión
+  separada «I-64 Architect Review Proposal V1» (archivo de sesión `caf7ae64-ba5b-4648-ae0b-f7aeb9e7103a.jsonl`, mensaje del Architect de
+  2026-10-01T22:43:29Z). El texto extraído mide 14 072 bytes UTF-8, con SHA-256
+  `692fdd6c9b1884285f326e58ab172cd37455f8d03624a0768e1253c16336d214`. No se versiona aquí; se trata como dato.
+- **Contenido**, en resumen saneado:
+  - objeto: commit `1f1530be`, proposal blob `d08c2cee`, package blob `45133653`, CI 36934958555; V1 y V2 intactas;
+  - el mismo revisor; SEPARATE SESSION; revisor ≠ autor; límite declarado: el mismo modelo que la sesión autora;
+  - **A64-PV1-01..22 = CLOSED**, con evidencia por ID en V3;
+  - **A64-PV3-01..06 = REQUIRED**: privacidad del índice frente a las métricas; F6 consumía estado de borradores y la evaluación de ID3;
+    criterios de cierre de F3, F6 y F7 con evidencia de host; `BeginDocumentClose` frente a «solo encolan» y al modo degradado; sondeo
+    usado como identidad, dos derivaciones de objetivos y «RackId curado»; Smoke-2 frente a §12.1;
+  - O3-01..O3-07 OPTIONAL; riesgos R-01, R-02, R-08, R-09 y nuevos R-10 y R-11;
+  - estado: CHANGES REQUIRED; ninguno exige autoridad reservada del Owner.
+
+**Orden F0 / Proposal V4 del Coordinator**, recibida en el chat de la sesión el 2026-10-01. No llegó como archivo a `D:\IDs\I-64\` (listado
+MEASURED a las 22:46Z), así que no tiene hash. Resumen saneado:
+- acepta el dictamen sobre `1f1530be` / `d08c2cee` / `45133653`: A64-PV1-01..22 CLOSED, A64-PV3-01..06 REQUIRED, CHANGES REQUIRED;
+- no reabrir el Discovery, no implementar, sin Freeze, sin AutoCAD ni GATE PASS; Proposal V4 autocontenida; V1, V2 y V3 intactas;
+- disposiciones vinculantes:
+  - **A64-PV3-01:** invariante verificable de privacidad del índice y de los hechos neutrales frente a métricas, `ProjectSummary`, BOM,
+    `TotalRacks`, agregación y comandos ajenos; sin API pública; recuentos rotulados por navegación o selección; guarda de fuente o
+    visibilidad y oráculo de UI o view-model;
+  - **A64-PV3-02:** F6 entra con F2 + F3 y entrega inventario, Selección (N), navegación agregada y puntos de extensión de ID3, sin clasificar
+    ID3; InventoryStatus (Normal, Diagnóstico, Sin identidad, No editable por captura) separado del SessionOverlay (Dirty, Posiblemente
+    obsoleto, Conflicto, Error, Aplicando), que el índice no posee; clasificación de ID3 en READY tras F4/F5;
+  - **A64-PV3-03:** sin evidencia de host como criterio de cierre del Worker; arneses automatizados (cambio de rack, de pestaña, 10
+    pestañas, inventario grande sintético, selección grande sintética); hito del Owner PERF tras F6 y antes de READY; F7 consolida sin
+    afirmar AutoCAD;
+  - **A64-PV3-04:** manejadores ordinarios solo encolan; `BeginDocumentClose` decide el veto de forma síncrona con estado en memoria; el modo
+    degradado conserva `BeginDocumentClose` mientras haya dirty o texto pendiente; INV-20 ampliado;
+  - **A64-PV3-05:** el sondeo solo atribuye un diagnóstico; una única autoridad `NavigationTargets` para contexto, pestañas y navegador;
+    «Id no vacío tal como figura en el sobre»;
+  - **A64-PV3-06:** Smoke-1 tras F1 PASS; Smoke-NAV tras F2 PASS; Smoke-2 dentro de la secuencia de cierre de F4;
+- adoptar O3-01, O3-02, O3-03 y O3-06; O3-04, O3-05 y O3-07 pueden seguir opcionales;
+- conservar A64-PV1-01..22 = CLOSED sin reescribir el dictamen; tabla A64-PV3-01..06 → disposición → cláusula u oráculo;
+- contrato y evidencia solo de forma histórica; registrar aquí la CI de V3; refrescar puntas y `main` antes de publicar; sin rebase si
+  `main` no cambió; publicar y esperar la CI exacta;
+- la V4 vuelve al **mismo** Architect; si todos sus REQUIRED cierran sin nuevos, Architect = AGREED, pero sin crear Freeze; el Coordinator
+  revisa la misma V4 y ordena después el Consensus Freeze. `IMPLEMENTATION AUTHORIZATION = NO`.
+
+**Preflight (MEASURED):**
+- 22:46:27Z: `HEAD` = remoto = `1f1530be…`; árbol limpio; `origin/main` = `819955d6…`, sin cambio, así que no hubo rebase ni ventana de
+  ROADMAP que coordinar.
+- Ningún proceso `acad` en ejecución al preparar este commit.
+
+**Ramas paralelas** (por referencia remota, solo como coordinación):
+
+| Rama | Punta | Avance desde §15 |
+|---|---|---|
+| I-52 | `352cc3de` | un commit (22:25:15Z): ACL parte 1 aplicada (EXACT_MATCH), relecturas de pre-vuelo de S1-A y plan de ACL del hijo; 0 archivos de `src/`, `tests/` y `assets/` |
+| I-62 | `3888c5c8` | dos commits: Proposal V5 y V6 con sus paquetes; solo documentos |
+| I-63 | `772ac242` | un commit (22:32:25Z): su Proposal V1 y su paquete; solo documentos; su §16 se alinea con MASTER-I63-I64-02 (I-64 podrá presentar `ProjectSummary` como consumidor cuando esté integrado) |
+
+**Hechos de código verificados para la V4** (MEASURED en la base `819955d6`):
+- `RackSiblingScan.Traverse` abre su propia transacción (`RackSiblingScan.cs:103`): no sirve tal cual para releer dentro de la transacción
+  de MUTATE (O3-02);
+- `RackEnvelopeIdProbe` declara su ámbito como sondeo de Id para diagnósticos de pertenencia, sin tratar un Id anidado como identidad de
+  rack (`RackEnvelopeIdProbe.cs:6`).
+
+**Ejecución:** redacción directa de la sesión responsable, con lectura estática de código y documentos, ramas paralelas por referencia
+remota y la transcripción local citada. Sin AutoCAD, builds, pruebas, prototipos, subagentes, Controller ni Worker. Archivos versionados:
+[Proposal V4](../../initiatives/I-64-proposal-v4.md) (nueva), [paquete de re-revisión V4](../../initiatives/I-64-architect-package-v4.md)
+(nuevo), el contrato y esta evidencia. V1, V2, V3 y sus paquetes no cambian.
+
+**Estado:** Proposal V4 publicada para la re-revisión del mismo Architect y la revisión posterior del Coordinator, sin consenso, Freeze ni
+GATE PASS. `IMPLEMENTATION AUTHORIZATION = NO`.
