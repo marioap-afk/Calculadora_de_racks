@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-63
 title: Computed Parameters & Project Summary Foundation
 type: architecture
-status: f0-discovery-r2-review
+status: f0-discovery-r2-accepted
 workflow: V2
 conceptual_initiative: I-63
 delivery_unit: I-63
@@ -109,10 +109,10 @@ Son candidatos de intake, no afirmaciones: cada entrada se verifica con DC-08 en
 
 ## 6. Discovery, decisiones y Freeze
 
-- Discovery: [I-63-discovery.md](I-63-discovery.md), ronda **R2**, entregada para revisión del Coordinator. Aplica las precisiones
+- Discovery: [I-63-discovery.md](I-63-discovery.md), ronda **R2**, **aceptada** por el Coordinator (CD-I63-F0-R2-04). Aplica las precisiones
   localizadas R63-R1-01 y R63-R1-02 (CD-I63-F0-R2-01 y CD-I63-F0-R2-02) sobre R1, que a su vez corrigió R0 (CD-I63-F0-R1-01) y
   completó las EXP de CD-I63-F0-R1-02. No es Proposal ni Freeze. La hizo directamente la sesión principal responsable, sin
-  participantes de IA. Las rondas R0 y R1 se conservan en Git.
+  participantes de IA. Las rondas R0 y R1 se conservan en Git. Su §24 registra la decisión posterior del Owner sobre P-14.
 - Freeze / Freeze delta / A-n: ninguno.
 - Decisiones: [I-63.md](../automation/decisions/I-63.md); mandato: [I-63-owner-mandate.original.txt](../automation/decisions/I-63-owner-mandate.original.txt).
 
@@ -143,15 +143,21 @@ C-F0-RED queda registrado en las [decisiones](../automation/decisions/I-63.md) c
   fundaciones candidatas (§5) están integradas y se verifican en DC-08.
 - **I-64 — ID30, Persistent RackCad Workspace**, está activa en paralelo. Frontera del mandato, que el contrato de I-64 recoge igual:
   ID20 posee la semántica de métricas, los providers y la semántica de agregación; ID30 posee el inventario runtime de navegación y la
-  representación de UI/sesión. No se consume código no integrado de I-64 ni se copia su diseño. Si aparece una fundación común: STOP y
-  Master Orchestrator.
+  representación de UI/sesión. No se consume código no integrado de I-64 ni se copia su diseño.
+- **Decisión del Owner sobre P-14** (2026-10-01, posterior a R2; [Discovery](I-63-discovery.md) §24, [decisiones](../automation/decisions/I-63.md) §6):
+  - no se crea ni se exige en esta iniciativa un contrato común de inventario o enumeración con I-64;
+  - I-63 implementa su propio mecanismo para sus métricas, e I-64 el suyo para el Workspace;
+  - la duplicación queda aceptada conscientemente y diferida a una futura iniciativa arquitectónica separada;
+  - la decisión prevalece, para I-63, sobre `MASTER-I63-I64-01`, registrada por I-64;
+  - antes, la regla era «si aparece una fundación común: STOP y Master Orchestrator». Para el mecanismo propio de I-63 ya no aplica;
+    crear una fundación compartida queda fuera de esta iniciativa.
 
 **Mapa preliminar de DC-07** (las puntas observadas viven en la [evidencia](../automation/evidence/I-63-evidence.md)):
 
 | Iniciativa activa | Rama | Cruce textual conocido | Cruce funcional |
 |---|---|---|---|
-| I-64 (ID30) | `architecture/workspace-persistente-rackcad` | Su fila de ROADMAP también va tras I-60: conflicto textual de filas adyacentes para quien integre segundo | Código no inspeccionado (su rama solo tiene documentos). **Candidato a contrato compartido** de hechos y agrupación de racks lógicos (CD-I63-F0-R1-03); consultas al Master (original y actualizada tras R1) preparadas y entregadas al Owner, **no enviadas** por esta sesión y sin respuesta ([Discovery](I-63-discovery.md) §9, §21) |
-| I-62 (portabilidad del Principal) | `architecture/portabilidad-coordinador-principal` | Fila en otra tabla de ROADMAP (Engineering Productivity, tras I-61) | Ninguno de producto: su rama solo tiene documentos de proceso (Discovery incluido) |
+| I-64 (ID30) | `architecture/workspace-persistente-rackcad` | Su fila de ROADMAP también va tras I-60: conflicto textual de filas adyacentes para quien integre segundo | Código no inspeccionado (su rama solo tiene documentos). El Discovery identificó un candidato a contrato compartido (CD-I63-F0-R1-03). **El Owner decidió no exigirlo:** mecanismos independientes, duplicación diferida y consultas al Master superadas sin enviar. La Proposal V1 de I-64 sigue citando `MASTER-I63-I64-01` (dependencia de su F2 respecto de I-63); I-63 se lo avisó, y qué hacer con ello lo deciden su Coordinator y el Owner ([Discovery](I-63-discovery.md) §9.4, §24) |
+| I-62 (portabilidad del Principal) | `architecture/portabilidad-coordinador-principal` | Fila en otra tabla de ROADMAP (Engineering Productivity, tras I-61) | Ninguno de producto: su rama solo tiene documentos de proceso (Discovery y Proposal incluidos) |
 | I-52 (RACKMIRROR) | `feature/rackmirror-espejo-semantico` | Edita ROADMAP (su fila y la de I-57), HANDOFF y el índice de ADR; su rebase futuro sobre main tocará ROADMAP | Sin cambios propios en `src/` ni `tests/` (diff de tres puntos; solo `eng/` y `docs/`); su contenido no se inspeccionó entero ([Discovery](I-63-discovery.md) §9.3) |
 
 - La escritura de `docs/ROADMAP.md` se coordina por acuse (decisiones y evidencia). El DC-07 vigente está en el [Discovery](I-63-discovery.md) §9.
@@ -161,9 +167,9 @@ C-F0-RED queda registrado en las [decisiones](../automation/decisions/I-63.md) c
 ## 8. Gates funcionales
 
 G0: reclamo y bootstrap, **PASS** (CD-I63-G0-10). F0-DISCOVERY: R0 con CHANGES REQUIRED (CD-I63-F0-R1-01); R1 con CHANGES REQUIRED
-localizado (CD-I63-F0-R2-01); R2 entregada para revisión. La elección del contrato compartido con I-64, la Proposal, el Architect y el
-Freeze siguen detenidos mientras no haya disposición del Master; la consulta no la envió esta sesión (CD-I63-F0-R1-03,
-CD-I63-F0-R2-03). El plan provisional del mandato (F0 Discovery y Freeze; F1..F6; READY) **no está congelado** y se
+localizado (CD-I63-F0-R2-01); R2 **aceptada** (CD-I63-F0-R2-04), sin GATE PASS de F0 (Discovery + Freeze). P-14 quedó resuelta por
+el Owner, sin contrato común (§7). La salida hacia el diseño espera las decisiones de producto P-01..P-05 (Owner) y una orden del
+Coordinator para la Proposal y la revisión del Architect (CD-I63-F0-R2-06). El plan provisional del mandato (F0 Discovery y Freeze; F1..F6; READY) **no está congelado** y se
 revisa contra [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §7 antes del Freeze: ningún gate solo de capa, DTO o modelo sin
 resultado observable verificable. La conformidad final se referencia desde READY-06.
 
@@ -190,7 +196,7 @@ Los diez criterios de éxito del mandato («SUCCESS CRITERIA»), concretados por
 ## 12. Condiciones para detenerse
 
 Las del mandato más: contradicción material de fuentes o de autoridad (se citan ambas y se devuelve al Coordinator); EXP-01 clase A
-abierta; M UNKNOWN sin resolver antes del Freeze; intersección activa no coordinada; fundación común con ID30 (Master Orchestrator);
+abierta; M UNKNOWN sin resolver antes del Freeze; intersección activa no coordinada; crear o exigir una fundación común con ID30 (fuera de esta iniciativa por decisión del Owner sobre P-14);
 consumo de código no integrado; cualquier paso que exija autenticación, instalación, cambios de configuración o participantes no
 autorizados por un contrato aprobado.
 

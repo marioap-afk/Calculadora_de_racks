@@ -8,8 +8,14 @@
 > - Rondas anteriores conservadas en Git:
 >   - R0: commit `dbfe1150007b7ea6819df7277e35666fe67af056`, blob `d9426070818eaa14ceb976fca474248160fbf803`;
 >   - R1: commit `852932735aca5b03c13a17064a67347ec8c78952`, blob `5224349b39bfd18e3e17f9275e539404531e4b6a`.
-> - La elección del contrato compartido con I-64, la Proposal y el Freeze siguen **detenidos**. No hay disposición del Master: la
->   consulta está preparada y entregada al Owner, y esta sesión **no** la envió (CD-I63-F0-R1-03, CD-I63-F0-R2-03; §21).
+> - **Actualización posterior a R2.** No forma parte de la ronda revisada.
+>   - R2 fue **aceptada** sobre `23eeefc5` (blob `df74e7fe…`; CD-I63-F0-R2-04), sin ningún REQUIRED documental pendiente.
+>   - Después, el **Owner decidió P-14**: no se crea ni se exige un contrato común de inventario o enumeración con I-64. Cada
+>     iniciativa implementa su propio mecanismo, y la duplicación queda aceptada y diferida a una futura iniciativa arquitectónica.
+>   - Las consultas al Master quedan **superadas y sin enviar**. La decisión del Owner prevalece, para I-63, sobre `MASTER-I63-I64-01`,
+>     que I-64 registró en su rama (§24).
+>   - La salida hacia el diseño espera P-01..P-05 (Owner) y una orden del Coordinator para la Proposal y el Architect.
+>   - La historia de rondas anteriores (§§9, 21 y 23) se conserva y se anota; no se borra.
 
 ## 0. Identidad, base y método
 
@@ -86,7 +92,9 @@
    - las dos consultas del Coordinator, la original y la actualizada tras R1, están entregadas al Owner;
    - esta sesión **no** envió ninguna, porque no tiene canal con el Master;
    - **no** se ha recibido respuesta (§21);
-   - I-64 confirmó por canal entre sesiones que no diseña ese mínimo común.
+   - I-64 confirmó por canal entre sesiones que no diseña ese mínimo común;
+   - **posterior a R2:** el Owner resolvió P-14 sin contrato común; las consultas quedan superadas y no hace falta respuesta del
+     Master (§24).
 10. **R2: referencia directa ≠ instancia alcanzable.**
     - La multiplicidad física no cambia la deduplicación por RackId.
     - Si la población elegida es la **colocada**, saber si existe una colocación pertinente **sí** puede cambiar la admisión y, por
@@ -322,6 +330,20 @@ Coordinator. Solo se revisaron los deltas de coordinación pertinentes; no se re
     incorporó, no producto propio.
   - Cruce funcional con I-63: ninguno observado en esos deltas; su contenido no se inspeccionó entero.
 
+### 9.4 Observación posterior a R2 (2026-10-01T19:54:59Z)
+
+I-52 `d8078ef3`, I-62 `a1f5e003`, I-63 `23eeefc5`, I-64 `dcc16bed`, `main` `819955d6`. Las tres ramas ajenas avanzan por
+*fast-forward* y ninguna cambia `src/` ni `tests/` respecto de `main` (diff de tres puntos).
+
+- **I-64** (`c6c44828..dcc16bed`): Proposal V1 y paquete del Architect, solo documentos.
+  - Su evidencia §13 registra una decisión del Master, `MASTER-I63-I64-01`, recibida por su Coordinator: fundación mínima común de
+    *snapshot* lógico neutral por RackId, con **I-63 como autor inicial** del contrato puro común, y una F2 de I-64 que lo consume solo
+    cuando esté integrado `[MEASURED]` (lectura de `dcc16bed`, resumen saneado de I-64).
+  - **I-63 nunca recibió esa decisión**: la conoce solo por esa lectura.
+  - La decisión posterior del Owner sobre P-14 prevalece para I-63 (§24).
+- **I-62** (`ea055591..a1f5e003`): Proposal V2 y registro de su revisión; solo `docs/`.
+- **I-52** (`88138f01..d8078ef3`): decisiones y evidencia de su campaña de host; solo `docs/`.
+
 ## 10. DC-08 — Fundaciones (y EXP-01 repetida)
 
 - **Freeze de I-49** (sin cambio respecto de R0):
@@ -359,7 +381,7 @@ la creación de una autoridad o contrato transversal y M-01 como creador.
 | M-04 | **Activado (UNKNOWN)** | Los consumidores actuales difieren: omiten, saltan con aviso o abortan (§7.2). Un resumen añade estados Unavailable/NotApplicable/Divergent | Owner + Proposal: política de parciales y diagnósticos (P-03, P-07) |
 | M-05 | Activado | `SymbolNamespace`, la validez de `SymbolId` y el cualificador son contratos consumidos (§7.1) | Proposal + Architect |
 | M-06 | Activado | Punto de extensión de símbolos built-in de I-49 y de *providers* por kind | Proposal + Architect |
-| M-07 | **Activado para planificar (UNKNOWN)** | No hay ninguna abstracción de *provider* en las rutas inspeccionadas; la composición por kind está en el Plugin; para un posible contrato compartido de captura y agrupación con I-64 hay una consulta al Master preparada y entregada al Owner, no enviada por esta sesión y sin respuesta (§21). La pregunta no se cierra eligiendo una arquitectura | Master (contrato compartido) y después Proposal + Architect (catálogo o registro) |
+| M-07 | **Activado para planificar (UNKNOWN)** | No hay ninguna abstracción de *provider* en las rutas inspeccionadas; la composición por kind está en el Plugin; para un posible contrato compartido de captura y agrupación con I-64 hay una consulta al Master preparada y entregada al Owner, no enviada por esta sesión y sin respuesta (§21). **Posterior a R2:** el Owner decidió que no se exige ese contrato común (§24), así que la pregunta M-07 se limita al mecanismo propio de I-63. La pregunta no se cierra eligiendo una arquitectura | Master (contrato compartido) y después Proposal + Architect (catálogo o registro) |
 | M-08 | Activado | ADR-0043 fija «exactamente un namespace activo»; activar `rack`/`project` modifica esa afirmación | ADR sucesor; Owner acepta |
 
 **EXP-09: ejecutada; la pregunta M-07 sigue abierta.** Quién la resuelve: Master (frontera compartida), luego Proposal y Architect.
@@ -374,7 +396,7 @@ la creación de una autoridad o contrato transversal y M-01 como creador.
 | EXP-04 | **Ejecutada** | §7.1, con un hueco de prueba (diseño Selectivo con *token* nuevo) |
 | EXP-05 | **Ejecutada** (matriz; sin pruebas nuevas) | §8.2 |
 | EXP-06 | **Ejecutada** | §17; lo que solo se verifica en AutoCAD queda UNKNOWN con escenario manual |
-| EXP-07 | **Pendiente** | Consulta al Master preparada y entregada al Owner (original y actualizada tras R1); **no enviada** por esta sesión; respuesta **no recibida** (§21) |
+| EXP-07 | **Cerrada por decisión del Owner** (posterior a R2) | Hasta R2: consulta al Master preparada y entregada al Owner (original y actualizada tras R1), **no enviada** por esta sesión y sin respuesta (§21). Después, el Owner decidió P-14 sin contrato común; las consultas quedan superadas y no hace falta respuesta (§24) |
 | EXP-08 | **Ejecutada** | §18 |
 | EXP-09 | **Ejecutada; M-07 abierto** | §11 |
 
@@ -394,7 +416,7 @@ la creación de una autoridad o contrato transversal y M-01 como creador.
 | 10 | Métricas dispersas: §14 `[MEASURED]` | §14 |
 | 11 | Comunes de verdad: kind y racks lógicos por población. Las demás, por kind `[INFERENCE]` | §14 |
 | 12 | Ciclos: riesgos de extensión futura por dependencias reales `[RECONSTRUCTED]` | §16.2 |
-| 13 | ID30: candidato a contrato compartido; consulta al Master preparada, no enviada por esta sesión y sin respuesta `[MEASURED]`/`[INFERENCE]` | §9.2, §9.3, §21 |
+| 13 | ID30: el Discovery identificó un candidato a contrato compartido. **Posterior a R2:** el Owner decidió que no se exige; cada iniciativa tiene su propio mecanismo y la duplicación queda diferida | §9.2-9.4, §21, §24 |
 | 14 | 100 % Application: *providers* y agregación puros, si reciben instantáneas de captura y catálogos cargados `[INFERENCE]` | §6, §17 |
 
 ## 14. Matriz sistema × métrica (R63-DISC-05)
@@ -578,9 +600,10 @@ recomienda al Owner.
 - P-12: fases por consumidor;
 - P-13: modelo neutral del resumen y unidades.
 
-### 20.3 Reservadas al Master
+### 20.3 Reservadas al Master (historia) y resueltas por el Owner
 
-P-14: contrato mínimo compartido con I-64, su responsable, consumidores y secuencia (§21).
+P-14: contrato mínimo compartido con I-64, su responsable, consumidores y secuencia (§21). **Resuelta por el Owner después de R2**:
+no se crea ni se exige un contrato común en esta iniciativa (§24).
 
 ## 21. Estado de la coordinación con el Master (EXP-07)
 
@@ -594,6 +617,8 @@ P-14: contrato mínimo compartido con I-64, su responsable, consumidores y secue
 - **Estado: SIN RESPUESTA.** No se declara ningún envío ni respuesta, ni una solicitud «pendiente en el Master». EXP-07 y P-14 siguen
   pendientes de esta coordinación.
 - La falta de respuesta no reabre G0 ni impide las correcciones de R2.
+- **Posterior a R2:** el Owner decidió P-14 (§24). Las dos consultas quedan **SUPERADAS / NO ENVIAR** y no hace falta respuesta del
+  Master. Esta sección conserva su estado anterior como historia.
 - Mientras no haya disposición del Master, siguen detenidas la elección del contrato compartido, la Proposal y el Freeze. No se adopta
   la propuesta de I-64 ni su código, y su caché o su inventario runtime no se tratan como autoridad de métricas.
 
@@ -640,4 +665,40 @@ P-14: contrato mínimo compartido con I-64, su responsable, consumidores y secue
 | Equivalencias falsas | Métricas por kind; ningún código numérico para los kinds |
 | Parciales presentados como totales | P-03: tres clases de resultado; una exclusión por alcance no es parcialidad |
 | Resoluciones repetidas | Los metadatos y la resolución se separan (§15, §19) |
-| Solapamiento con ID30 | Consulta al Master preparada y entregada al Owner; no enviada por esta sesión; sin respuesta (§21) |
+| Solapamiento con ID30 | Hasta R2: consulta al Master preparada, no enviada y sin respuesta (§21). **Posterior a R2:** el riesgo se reformula como **duplicación aceptada conscientemente** de dos mecanismos independientes (I-63, métricas; I-64, inventario runtime), diferida a una futura iniciativa arquitectónica separada (decisión del Owner, §24) |
+
+## 24. Decisión del Owner sobre P-14 (posterior a R2)
+
+**Fuente:** decisión explícita del Owner, «I-63 — OWNER DECISION: frontera con I-64 / P-14», pegada en el chat de la sesión responsable
+el 2026-10-01 (texto literal y procedencia en la evidencia §13). No es una orden del Coordinator ni una decisión del Master.
+
+**Decisión:**
+- No se crea ni se exige en esta iniciativa un contrato común de inventario o enumeración entre I-63 e I-64.
+- **I-63** puede implementar su propio mecanismo para lo que necesitan sus métricas: enumeración lógica, deduplicación por RackId,
+  población y admisión definidas por sus contratos, `ProjectSummary` y agregaciones.
+- **I-64** puede implementar el suyo, de forma independiente, para su inventario runtime, la navegación, la selección y la
+  representación de sesión y UI.
+- I-63 no consume código no integrado de I-64, e I-64 no es autoridad de las métricas de I-63.
+- No se exige la misma estructura interna ni una fundación nueva compartida.
+- La duplicación posible queda **aceptada conscientemente**.
+- Una iniciativa arquitectónica separada podrá revisarla después, cuando ambas implementaciones existan (idealmente integradas):
+  duplicación, divergencia semántica, rendimiento, mantenimiento, extracción de una fundación común o sustitución de un mecanismo por
+  el otro. Esa revisión podrá mantener ambos, unificarlos, hacer que uno consuma al otro o extraer una tercera autoridad.
+
+**Relación con `MASTER-I63-I64-01`:**
+- I-64 registró en su rama (`dcc16bed`, evidencia §13) una decisión del Master con el reparto contrario: fundación común, I-63 como
+  autor inicial y la F2 de I-64 dependiente de ese contrato (§9.4). I-63 nunca la recibió.
+- Ante ese conflicto, el Owner eligió expresamente que **su decisión prevalece para I-63** (evidencia §13).
+- I-63 informó a I-64 por el canal entre sesiones, con un aviso informativo sin peticiones. Qué implica para la Proposal V1 de I-64 lo
+  deciden su Coordinator y el Owner; I-63 no emite órdenes a I-64.
+
+**Consecuencias para I-63:**
+- EXP-07 y P-14 dejan de bloquear el diseño (§12, §20.3).
+- Las dos consultas preparadas para el Master quedan **SUPERADAS / NO ENVIAR**; no hace falta respuesta (§21).
+- El hallazgo del solapamiento se conserva como historia (§§9, 21 y 23). El riesgo se reformula como duplicación conscientemente
+  diferida a una futura iniciativa arquitectónica (§23).
+- La frontera del mandato sigue igual: I-63 posee la semántica de métricas, los *providers* y la agregación; I-64 posee el inventario
+  runtime, la navegación y la UI y sesión. Sin consumo de código no integrado en ninguno de los dos sentidos.
+- Siguen pendientes las decisiones de producto P-01..P-05 (§20.1; Owner). Después, la Proposal y la revisión del Architect, conforme
+  al workflow y con una orden del Coordinator.
+- Esta decisión **no** autoriza producto. IMPLEMENTATION AUTHORIZATION = NO hasta que Coordinator y Architect acuerden el mismo Freeze.

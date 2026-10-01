@@ -4,11 +4,11 @@ automation_state:
   branch: architecture/parametros-calculados-resumen-proyecto
   claim_id: ce04f47f-ca53-4e75-b983-5ac57ab6c5e3
   current_phase: F0
-  state: review-ready
-  gate: none
+  state: waiting
+  gate: owner-decision
   attempts: 0
-  next_action: Coordinator revisa el Discovery F0 R2 (R63-R1-01 y R63-R1-02); el Owner traslada al Master la consulta I-63/I-64 actualizada, no enviada por esta sesion; sin Proposal, Architect, Freeze ni implementacion.
-  last_evidence_commit: 852932735aca5b03c13a17064a67347ec8c78952
+  next_action: El Owner decide P-01..P-05 (Discovery §20.1) y el Coordinator emite la orden de Proposal + revision del Architect; sin implementacion.
+  last_evidence_commit: 23eeefc5f5ae0c50c1addd041865ceb6f69139fc
 execution_context:
   mode: manual
   automation_enabled: false

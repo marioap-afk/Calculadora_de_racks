@@ -337,3 +337,116 @@ Documentos del Coordinator recibidos tras R1 (no se versionan; resumen en las [d
 - Conforme a CD-I63-F0-R2-03, en R2 no se volvieron a enumerar sesiones buscando un canal y no se envió ningún mensaje entre sesiones.
 - Estado: **sin respuesta**.
 - La CI exacta del commit que contiene este archivo se informa al Coordinator.
+
+## 13. Aceptación de R2 y decisión del Owner sobre P-14
+
+### 13.1 Revisión de R2
+
+| Archivo | Bytes | SHA-256 |
+|---|---:|---|
+| `I63_F0_R2_Revision_Aceptada.txt` (CD-I63-F0-R2-04..06) | 6 565 | `014d47576b62c78f05755f8eedbeb4d1b0bf49395b828baf2baf0ceed405e8fa` |
+
+- Adjuntado por el usuario en el chat de la sesión responsable, junto con otra copia de la consulta actualizada, que es idéntica a la de
+  §12 (SHA-256 `4c5f2843…`).
+- La sesión comprobó que el blob que cita la revisión, `df74e7fe8f86302493e6cd3312206eaf304b1891`, es el de
+  `docs/initiatives/I-63-discovery.md` en `23eeefc5`.
+- Más tarde el usuario volvió a adjuntar la misma consulta sin texto: mismo SHA-256 y fecha de modificación 13:46 local. No hubo ninguna
+  acción ni envío.
+
+### 13.2 CI de la entrega R2
+
+| Commit | SHA | Corrida `push` | Resultado |
+|---|---|---|---|
+| Discovery R2 | `23eeefc5f5ae0c50c1addd041865ceb6f69139fc` | 36914667772: `head_branch` = `architecture/parametros-calculados-resumen-proyecto`, `head_sha` exacto | `success`; los cuatro jobs requeridos de `AGENTS.md` en `success` |
+
+### 13.3 Decisión del Owner (texto literal)
+
+Procedencia: el usuario la pegó en el chat de la sesión responsable el 2026-10-01, poco antes del preflight de 19:54:59Z. No llegó como
+archivo a `D:\IDs\I-63` ni a través del Coordinator. Texto tal como se recibió:
+
+```text
+I-63 — OWNER DECISION: frontera con I-64 / P-14
+El Owner decide NO crear ni exigir en esta iniciativa un contrato común de inventario/enumeración entre I-63 e I-64.
+Decisión:
+
+1. I-63 / ID20 puede implementar su propio mecanismo necesario para:
+   * enumeración lógica usada por métricas;
+   * deduplicación por RackId;
+   * población y admisión definidas por sus contratos;
+   * ProjectSummary y agregaciones.
+2. I-64 / ID30 puede implementar de forma independiente su mecanismo necesario para:
+   * inventario runtime del Workspace;
+   * navegación;
+   * selección;
+   * representación de sesión/UI.
+3. I-63 no consume código no integrado de I-64.
+I-64 no se convierte en autoridad de las métricas de I-63.
+4. No se exige que ambos mecanismos tengan la misma estructura interna ni que compartan una nueva foundation.
+5. La posible duplicación queda aceptada conscientemente para estas dos iniciativas.
+6. Después de que ambas implementaciones existan e idealmente estén integradas, una iniciativa arquitectónica separada podrá revisar:
+   * duplicación;
+   * divergencia semántica;
+   * rendimiento;
+   * mantenimiento;
+   * posibilidad de extraer una foundation común;
+   * posibilidad de que un mecanismo sustituya al otro.
+7. Esa futura revisión puede decidir:
+   * mantener ambos mecanismos;
+   * unificarlos;
+   * hacer que uno consuma al otro;
+   * extraer una tercera autoridad compartida.
+
+Consecuencias para I-63:
+
+* EXP-07 / P-14 deja de bloquear el diseño de I-63.
+* La consulta preparada para el Master queda SUPERADA / NO ENVIAR.
+* No hace falta respuesta del Master.
+* Registrar esta decisión como decisión explícita del Owner.
+* No borrar la historia del Discovery que identificó el posible solapamiento.
+* Reformular el riesgo como duplicación conscientemente diferida a una futura iniciativa arquitectónica.
+* Continuar con P-01..P-05 y, después, con Proposal + revisión del Architect conforme al workflow.
+* IMPLEMENTATION AUTHORIZATION continúa en NO hasta acuerdo Coordinator + Architect sobre el mismo Freeze.
+
+No implementar producto todavía solo por esta decisión.
+```
+
+### 13.4 Conflicto con `MASTER-I63-I64-01` y elección del Owner
+
+- **Preflight (2026-10-01T19:54:59Z):**
+  - `HEAD` = remoto = `23eeefc5`; árbol limpio; `origin/main` = `819955d6`, ancestro de `HEAD`: **sin rebase**.
+  - Ramas: I-52 `d8078ef3`, I-62 `a1f5e003`, I-64 `dcc16bed`. Las tres son *fast-forward* desde lo observado en §12.2, y ninguna
+    cambia `src/` ni `tests/` frente a `main` (diff de tres puntos).
+- **Hecho encontrado:** la evidencia §13 de I-64 en `dcc16bed`, su Proposal V1 y su paquete del Architect registran
+  `MASTER-I63-I64-01`, recibida por el Coordinator de I-64:
+  - fundación mínima común de *snapshot* lógico neutral por RackId;
+  - I-63 como autor inicial del contrato puro común;
+  - la F2 de I-64 lo consume cuando esté integrado.
+
+  I-63 no recibió esa decisión; la conoce solo por esa lectura, que es un resumen saneado de I-64.
+- **Pregunta al Owner** (herramienta de preguntas de la sesión):
+  - registro de su decisión → eligió «La del Owner prevalece»: decisión explícita del Owner que sustituye a `MASTER-I63-I64-01` para
+    I-63, citando ambas fuentes;
+  - quién avisa a I-64 → eligió «Yo, aviso informativo».
+
+### 13.5 Canal con I-64
+
+- **Aviso de I-63** (msg `e3ec5404-ec4d-46ba-b3c1-0ac7e180a8cc`), informativo y sin peticiones de pausa, ventana ni cambios:
+  - resumen de la decisión del Owner;
+  - el conflicto con `MASTER-I63-I64-01`;
+  - la elección del Owner;
+  - las consecuencias para I-63.
+
+  Dice que qué rige para I-64 lo deciden su Coordinator y el Owner.
+- **Acuse de I-64** (sesión `local_1c89299c…`):
+  - lo eleva a su Coordinator y al Owner sin cambiar nada; su Proposal V1 (`dcc16bed`) sigue como está publicada;
+  - no toma como decisión para I-64 un hecho que le llega por este canal;
+  - no exige a I-63 ningún contrato, ventana ni pausa;
+  - registrará el aviso en su próximo commit útil.
+- No se envió nada al Master ni se buscó un canal con él.
+
+### 13.6 Método
+
+- Registro directo de la sesión principal; ningún participante de IA y ninguna delegación §16.
+- Sin pruebas ni host. Nada fuera de las cinco rutas autorizadas.
+- Esta entrega agrupa la aceptación de R2, la CI de `23eeefc5` y la decisión del Owner, conforme a la cadencia de CD-I63-F0-R2-06.
+- La CI exacta del commit que contiene este archivo se informa al Coordinator.
