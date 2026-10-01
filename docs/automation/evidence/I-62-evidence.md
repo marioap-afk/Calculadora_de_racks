@@ -385,3 +385,38 @@ Las trazas de V4 (anexos E.6, F y G.2) son **análisis del diseño**, no ensayos
 
 **Validación de esta entrega:** allowlist, enlaces, columnas de las tablas y `git diff --check`; resultado en el cuerpo del commit. La CI de este commit se
 informa al Coordinator.
+
+## 16. F0 — Proposal V5 (C62-F0-23..24)
+
+**CI de la Proposal V4** (`2960b28614da14ad6ebe9eeaa9631fd787041ac3`): corrida **36924676021**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: Tests (Domain + Application) (110578951155), Build UI
+(110578951576), UI Tests (110578951642) y Build Plugin without AutoCAD (110579869740), los cuatro `success`. MEASURED por la sesión y verificado por el
+Coordinator (C62-F0-23). Acredita solo `2960b286`.
+
+**Orden recibida:** texto pegado por el Owner en la conversación, **sin archivo de origen** en `D:\IDs` y sin hash de archivo. Procedencia: la transcripción
+literal recibida, 6 132 bytes en UTF-8, SHA-256 `040606ba4c0ea43dbe9db2c3fae6f4b792b2b005c97c92f8ce6d97147803a4bc`, fuera del repositorio. Su registro
+recuperable está en `docs/initiatives/I-62-coordinator-review-v4.md`.
+
+**Apertura del tramo** (MEASURED, 21:59Z):
+- `origin/main` = `819955d6…`, sin rebase;
+- rama de I-62 en `2960b286…` = remoto, árbol limpio;
+- deltas por rama desde la última observación: I-52 `d8078ef3`, I-63 `a0654ae2` e I-64 `ab4efe86`, **sin commits nuevos**; ningún cruce.
+
+**Hechos consultados para el diseño:**
+- MEASURED: en el repositorio hay exactamente dos `gate-contract.json`, los de I-61 G2 y G3. Ninguna otra unidad ha usado la ejecución delegada. C-20c parte
+  del de G3 (blob `9b5ef6df…`).
+- MEASURED: AUTOMATION_PLAN 16.7, en la reverificación sin conflictos, ya usa «las imágenes y el MainSha nuevo». Es la base de `MainSha_eval`.
+- MEASURED: WORKFLOW §3 (reclamo = commit de reclamo + push) y §11.1 (el primer push aceptado fija el `Claim-Id`): base del Modelo A.
+
+**Identidad del contenido entregado** (blob calculado con `git hash-object` antes del commit; el commit lo da el recibo):
+- `docs/initiatives/I-62-proposal-v5.md` → `b673b134c3f265b891e10807b6f6fd6cbe852773`;
+- `docs/initiatives/I-62-coordinator-review-v4.md` → `fb21c49e80377de6102e26a4ccc99785676c6526`.
+
+**No se hizo:**
+- invocaciones, subagentes, Architect, sondas, pilotos, sesiones nuevas, fixtures, remotos, pruebas nuevas ni repetidas, tooling ni esquemas operativos;
+- tocar V1-V4, sus paquetes, los registros previos, el Discovery, el mandato ni superficies ajenas.
+
+Las trazas de V5 (§8.6 y anexos E.6, F y G.2) son **análisis del diseño**, no ensayos. `docs/automation/evidence/I-62-discovery/` no se creó.
+
+**Validación de esta entrega:** allowlist, enlaces, columnas de las tablas, diff V4→V5 revisado por bloques y `git diff --check`; resultado en el cuerpo del
+commit. La CI de este commit se informa al Coordinator.
