@@ -5,7 +5,7 @@ Contrato: [I-62-portabilidad-coordinador-principal.md](../../initiatives/I-62-po
 
 Estado de esta evidencia:
 - **G0 cerrado**: GATE PASS administrativo del Coordinator (C62-G0-02) sobre `85ae4324…`; hechos posteriores al bootstrap en §9.
-- **F0, tramo Discovery, entregado** para revisión del Coordinator (C62-F0-01; §10).
+- **F0, tramo Discovery**: entrega inicial (C62-F0-01; §10) y ronda R1 tras la revisión F0-R1 (C62-F0-02..07; §11), para revisión del Coordinator.
 - No hay Freeze, piloto, Candidato ni F0 GATE PASS. Lo no ejecutado figura como **PENDIENTE**.
 - §§1-8 son el registro original de G0 y se conservan como se escribieron.
 
@@ -205,3 +205,51 @@ No se pidió evidencia a I-63 ni a I-64 por el canal: su evidencia publicada ya 
 
 **Validación de esta entrega:** diff contra la base del tramo (`85ae4324`) limitado a la allowlist de C62-F0-01 y `git diff --check`; el resultado va en
 el cuerpo del commit. La CI de push del commit de esta entrega se informa al Coordinator. No se registra aquí para no guardar un SHA autorreferente.
+
+## 11. F0 — ronda R1 (C62-F0-02..07)
+
+**CI de la entrega inicial del Discovery** (`f25dd1d53ca5da3b2d8ad1842f2c2eb8b3cf4d8c`): corrida **36894150011**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: Build UI (WPF, valida API de Application), Tests (Domain +
+Application), UI Tests (WPF controls, net8.0-windows) y Build Plugin without AutoCAD; los cuatro `success`. MEASURED por la sesión con `gh run view` y verificado
+de forma independiente por el Coordinator (decisiones §9, C62-F0-02). Esta CI acredita solo `f25dd1d5`.
+
+**Orden recibida:** `I-62-F0-R1-revision-y-continuacion.txt`, 23 224 bytes, SHA-256 `190052fa5027c15d794cad85eae9e013f6817a27ec3af79b220b3276d1fd2f56`, fuera del
+repositorio (`D:\IDs\I-62\`).
+
+**Apertura de R1** (MEASURED, 17:03Z):
+- `origin/main` = `819955d6…`, sin rebase;
+- rama de I-62 en `f25dd1d5…` = remoto, árbol limpio;
+- I-52 `c1982b2a` (sin cambio); I-63 `dbfe1150` e I-64 `cf034e59`, cuyos commits nuevos solo tocan documentos propios (`git diff --name-only`).
+
+**Lecturas de R1** (MEASURED; sin modificar nada):
+- PROMPT_TEMPLATES `0e3ed262`: l. 3 (preámbulo condicional), l. 13 (§1) y l. 274-277 (§2: bloque `WORKFLOW V2 = NOT EFFECTIVE`, introducido en `7e9073e7`,
+  2026-09-15, según `git log -L`);
+- LIFECYCLE §2 y los marcadores «materialized by later I-56 normative gate»;
+- lista de entradas de FOUNDATIONS (13 nombres);
+- inventario de la custodia de I-61 por tipo de archivo;
+- `git grep` de los esquemas `rackcad-*/v1` en las ramas remotas: fuera de I-61/I-62, solo AUTOMATION_PLAN;
+- `grep` del README §3.2 buscando criterios de relectura o `conhost`: sin coincidencias;
+- cláusulas de «cierre de G2» en AUTOMATION_PLAN (16.3, 16.5, 16.7).
+
+**SP-3, inspección pasiva de metadatos** (MEASURED, entre 17:03Z y 17:15Z; C62-F0-06):
+- **Ubicación y volumen:** `%USERPROFILE%\.codex\sessions\…\rollout-*.jsonl`, 62 archivos.
+- **Qué se leyó:** de la primera línea, solo los campos `originator`, `source`, `thread_source`, `cli_version` y `model_provider`, y la **lista de nombres** de
+  claves. De las líneas `turn_context`, solo `model`, `effort` e instante.
+- **Qué no se copió:** conversaciones, identificadores de cuenta o sesión, rutas de trabajo, instrucciones ni valores de configuración.
+- **Sin efectos:** ninguna invocación, sesión nueva, proceso participante ni prompt.
+- **Resultado:** las sesiones de escritorio (`originator` `Codex Desktop` / `codex_work_desktop`, `source` `vscode`) registran `model` y `effort` por turno.
+  Ejemplo: último `turn_context` de una sesión `codex_work_desktop`/`chatgpt_handoff` a las 14:35:09Z (2026-10-01): `gpt-6-astra`/`ultra`. Las sesiones
+  `codex_exec` (I-61) registran `gpt-6-luna`/`high`.
+- **Interpretación y límites:** Discovery §17. Fuente candidata; no acredita a un Principal ni habilita ninguna celda.
+
+**No se hizo:**
+- invocaciones de modelos, subagentes, Controller, Worker, Reviewer o Architect externo;
+- SP-1 o SP-2;
+- autenticar, instalar o cambiar PATH o configuración;
+- repetir las 17 pruebas, porque ninguna afirmación de R1 lo exigía;
+- escrituras fuera de la allowlist.
+
+`docs/automation/evidence/I-62-discovery/` no se creó: no hizo falta evidencia saneada adicional.
+
+**Validación de esta entrega:** allowlist, enlaces y `git diff --check`; resultado en el cuerpo del commit. La CI de este commit se informa al Coordinator;
+no se registra aquí para no guardar un SHA autorreferente.

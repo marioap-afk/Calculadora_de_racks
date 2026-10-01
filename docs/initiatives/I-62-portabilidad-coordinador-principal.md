@@ -57,8 +57,9 @@ automation:
 - **Arquetipo: NEW ARCHITECTURE provisional**, aceptado por el Coordinator como clasificación conservadora mientras M-07 siga UNKNOWN
   (C62-F0-01, [decisiones](../automation/decisions/I-62.md) §7; [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §3). Solo gobierna la
   profundidad de Discovery y revisión: no amplía alcance, no obliga a Level B y no autoriza plataforma ni gasto. El mandato conserva su
-  etiqueta FOUNDATION EVOLUTION. **Propuesta del Discovery** (pendiente de revisión): FOUNDATION EVOLUTION, con la restricción de diseño de
-  [Discovery](I-62-discovery.md) §9.3. La confirma el Coordinator; una bajada antes del Freeze sigue LIFECYCLE §3.
+  etiqueta FOUNDATION EVOLUTION. Tras la revisión F0-R1 (R62-F0-01), la clasificación provisional **se mantiene**. M-01, M-02 creador y M-07
+  siguen **UNKNOWN** con decisor, y EXP-09 sigue abierta ([Discovery](I-62-discovery.md) §9). FOUNDATION EVOLUTION es solo una **alternativa**
+  (Discovery §9.3), no una propuesta aceptada. Una bajada antes del Freeze sigue LIFECYCLE §3.
 - Evoluciona el **Agent Execution Protocol** de I-61, que sigue integrado, intacto y como protocolo vigente hasta que I-62 se integre. Es un
   cambio de **proceso de desarrollo**; no cambia funcionalidad de producto.
 
@@ -117,16 +118,16 @@ Introduces: UNKNOWN (condicionado a M-07 y EXP-09)
 
 Ninguna entrada se afirma sin la comprobación DC-08 de [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §4.1.
 
-**Propuesta del Discovery** (DC-08, [Discovery](I-62-discovery.md) §8; pendiente de revisión del Coordinator; el frontmatter no cambia hasta
-entonces):
-- Consumes: Workflow V2 e INITIATIVE_LIFECYCLE;
+**Propuesta del Discovery** (DC-08, [Discovery](I-62-discovery.md) §8, corregida en R1; pendiente de revisión del Coordinator; el frontmatter no
+cambia hasta entonces):
+- Consumes: ninguna entrada de FOUNDATIONS. Las autoridades de proceso (WORKFLOW, LIFECYCLE) se obedecen, pero no son fundaciones;
 - Extends: Agent Execution Protocol (AUTOMATION_PLAN §16, ADR-0046, Freeze de I-61 §15);
-- Introduces: ninguna fundación nueva, condicionado a la restricción de diseño de §9.3.
+- Introduces: UNKNOWN; depende de las decisiones de diseño sobre la frontera de adapters y la custodia (Discovery §9).
 
 ## 6. Discovery, decisiones y Freeze
 
-- Discovery: [I-62-discovery.md](I-62-discovery.md), tramo Discovery de F0 entregado para revisión del Coordinator (C62-F0-01). **No está
-  completo**: EXP-05 y EXP-06 están propuestas y sin autorizar, y falta la revisión del Coordinator.
+- Discovery: [I-62-discovery.md](I-62-discovery.md), tramo Discovery de F0. Ronda R1 entregada para revisión del Coordinator (C62-F0-01..07).
+  **No está completo:** EXP-09 sigue abierta con UNKNOWN (M-01, M-02 creador, M-07) y quedan decisiones de EXP-02 y de agrupación (Discovery §18).
 - Freeze / Freeze delta / A-n: ninguno.
 - Decisiones: [I-62.md](../automation/decisions/I-62.md). Mandato: [I-62-owner-mandate.txt](../automation/decisions/I-62-owner-mandate.txt).
 
