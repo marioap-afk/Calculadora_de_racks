@@ -13,6 +13,9 @@ Mandato: [I-62-owner-mandate.txt](../automation/decisions/I-62-owner-mandate.txt
 >
 > **Ronda R1** (revisión del Coordinator F0-R1 sobre `f25dd1d5`): se corrigieron las secciones que indica §20. Siguen abiertas las
 > UNKNOWN de §9 con su decisor. **El Discovery no se declara completo.**
+>
+> **Después de R1:** el Coordinator aceptó R1 como base de diseño y resolvió los asuntos abiertos (C62-F0-08..10). Ver §21: son **decisiones**,
+> no mediciones; las secciones §§9 y 18 conservan el análisis de R1 tal como se escribió.
 
 Clase de cada afirmación ([INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §4):
 - **MEASURED**: medido por esta sesión, con base y fecha;
@@ -631,3 +634,24 @@ No hace falta aceptar un ADR futuro para completar el Discovery; la evolución d
 | R62-F0-06 | aceptado: C-F0-RED acotado con tabla; SEPARATE UNIT propuesta sin A-n | §§10.6, 12, 17 |
 | R62-F0-07 | aceptado: disposición C62-F0-05; sin umbral inventado; `Skipped` justificado por completitud | §§12, 14 |
 | R62-F0-08 | aceptado: superficies vivas alineadas; DC-07 actualizado por delta | §7; contrato, estado, decisiones §9 |
+
+## 21. Decisiones del Coordinator sobre R1 (C62-F0-08..10)
+
+Esta sección registra **decisiones del Coordinator**, no mediciones nuevas. Fuente: [decisiones](../automation/decisions/I-62.md) §10. Las secciones
+anteriores se conservan como medición y análisis de R1.
+
+| Asunto abierto en R1 (§18) | Decisión del Coordinator |
+|---|---|
+| EXP-09: M-01, M-02 creador, M-07 (UNKNOWN) | **Resueltos para el diseño** (C62-F0-09 §1): M-01 activado (creador), M-02 activado (modificación y creador), M-07 activado; M-04..M-08 activados; M-03 no. **Arquetipo NEW ARCHITECTURE confirmado.** El Architect puede cuestionarlo |
+| §8 «Introduces: UNKNOWN» | Extends Agent Execution Protocol; Consumes ninguna otra entrada. La Proposal indica si los contratos nuevos van en la entrada extendida o en una propia (propuesta: en la extendida, [Proposal V1](I-62-proposal-v1.md) §17) |
+| Agrupación: pilotos entre proveedores | **Una iniciativa y una unidad**; F6 es validación de la misma entrega (C62-F0-09 §2) |
+| Alcance de la custodia | **Por unidad**; solo referencias a compromisos compartidos; sin registro global (C62-F0-09 §2) |
+| EXP-02: dueños | Mapa de autoridad para el diseño (C62-F0-09 §3), desarrollado en la Proposal V1 §3 |
+| EXP-06: regla de agregación | Dirección de diseño adoptada con precisiones (C62-F0-10 A); no vigente |
+| EXP-05 / SP-3 | Fuente candidata; sin exigir atestación del servidor (C62-F0-10 B) |
+| Equivalente de «cierre de G2» | No aplica a la fase documental directa (C62-F0-10 D); la Proposal identifica el hito (MaterializationClose) |
+| C-F0-RED | Se mantiene IN SCOPE como evidencia y restricción; remedio general SEPARATE UNIT propuesto, sin abrir (C62-F0-10 D) |
+| EXP-01 (R62-F0-03) | Cerrado; el emisor rectificó su objeción (C62-F0-08) |
+
+**Estado:** Discovery R1 **aceptado como base de diseño**. No es F0 GATE PASS: F0 incluye el Freeze, que aún no existe. EXP-05 y EXP-06 quedan
+investigadas para el diseño; no se declaran implementadas ni validadas.
