@@ -541,3 +541,47 @@ Las trazas de V8 (§§8.8-8.9, Anexo F) son **análisis del diseño**, no ensayo
 
 **Validación de esta entrega:** allowlist, enlaces, columnas de las tablas, diff V7→V8 revisado por bloques y `git diff --check`; resultado en el cuerpo del
 commit. La CI de este commit se informa al Coordinator.
+
+## 20. F0 — Proposal V9 (requisito R62-AUTO-01..20)
+
+**CI de la Proposal V8** (`d66463a5b04f79911580e2ef6e6f67263b51b5c3`): corrida **36941298033**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: UI Tests (110633148054), Tests (Domain + Application)
+(110633148232), Build UI (110633148314) y Build Plugin without AutoCAD (110633713878), los cuatro `success`. MEASURED por la sesión; el Coordinator la cita en
+su orden. Acredita solo `d66463a5`.
+
+**Orden recibida:** «I-62 — PROPOSAL V9 / AUTONOMOUS ROLE ORCHESTRATION», texto pegado sin archivo de origen en `D:\IDs`. 14 888 bytes en UTF-8, SHA-256
+`26eb3bd23979c437beaae7779e8c452e7109345aa3e4f679bc7b5a139214e3d9`, fuera del repositorio. Registro recuperable en
+`docs/initiatives/I-62-coordinator-requirement-auto.md`.
+
+**Apertura del tramo** (MEASURED, 23:40Z): `origin/main` = `819955d6…`, sin rebase; rama de I-62 en `d66463a5…` = remoto, árbol limpio.
+
+**Revalidación antes del commit** (MEASURED, 23:45Z):
+- `origin/main` y la rama de I-62 sin cambios;
+- I-52 `51a66245`, sin commits nuevos;
+- I-63 `dddc215f..fb3c8788`: Proposal V3 de I-63;
+- I-64 `9e3d289a..5570b924`: Freeze de la Proposal V5 de I-64 y F0 COMPLETE;
+- solo archivos propios; **ningún cruce** con superficies de I-62.
+
+**AUTONOMY_GAP observados durante el desarrollo de I-62** (R62-AUTO-18). Son fricción real, no ensayos. Detalle y triaje en la Proposal V9 §20.11:
+
+| Id | Hecho (MEASURED salvo indicación) | Transporte usado |
+|---|---|---|
+| GAP-01 | Las revisiones del Architect de V6 y V7 no pudieron invocarse desde la sesión principal. I-61 no tiene contrato de invocación del Architect. `claude-cli` está NOT_AUTHENTICATED (Discovery). `codex-cli` como Architect no tiene invocación medida, y su huella está pendiente (OD-2) | el Owner abrió otra sesión y trajo la orden del Coordinator |
+| GAP-02 | El dictamen literal del Architect de V6 y de V7 no llegó a la sesión autora (registros `I-62-architect-review-v6.md` y `-v7.md`) | resumen del Coordinator, pegado |
+| GAP-03 | Todas las disposiciones del Coordinator (C62-F0-01..26 y las órdenes de V7, V8 y V9) llegaron pegadas por el Owner | Owner |
+| GAP-04 | Parte de los hechos de continuación de la sesión autora vivía en su memoria de proyecto y en la prosa de `next_action` (INFERENCE, a partir de la práctica de la sesión) | memoria de sesión |
+| GAP-05 | Una sesión de Claude Code abierta en la carpeta de trabajo de la sesión autora carga su memoria de proyecto; se avisó al Owner al recibir la orden de revisión del Architect de V6 | aviso manual |
+| GAP-06 | El Owner volvió a pegar la revisión de V4 después de ejecutada; sin estado de orquestación, la sesión comprobó a mano que no había trabajo nuevo | comprobación manual |
+
+**Identidad del contenido entregado** (blob calculado con `git hash-object` antes del commit; el commit lo da el recibo):
+- `docs/initiatives/I-62-proposal-v9.md` → `831e3a6a87a242c872cfa0755f73e282f6c043c8`;
+- `docs/initiatives/I-62-coordinator-requirement-auto.md` → `fcf941669782ccbfc1e32efa7343b2be16dd6ac4`.
+
+**No se hizo:**
+- invocaciones, subagentes, Workers, Controllers, Architect, sondas, pilotos, sesiones nuevas, fixtures, remotos, pruebas, tooling ni esquemas en producción;
+- tocar V1-V8, sus paquetes, los registros previos, el Discovery, el mandato, las normas compartidas ni ninguna superficie ajena.
+
+Las trazas de V9 (§20 y Anexos D.8 y F.8) son **análisis del diseño**, no ensayos.
+
+**Validación de esta entrega:** allowlist, enlaces, columnas de las tablas, diff V8→V9 revisado y `git diff --check`; resultado en el cuerpo del commit. La CI
+de este commit se informa al Coordinator.
