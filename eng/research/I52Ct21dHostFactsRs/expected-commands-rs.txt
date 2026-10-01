@@ -1,0 +1,9 @@
+# expected-commands-rs.txt: the AutoCAD command registrations the RS assembly is expected to carry (design 5.2: I-3, I-5, I-6). Layer 3 of the scan
+# (rule R-COMMAND-UNEXPECTED) fails on any [CommandMethod] / [CommandClass] that is not listed here (owner and decoded fixed arguments must match
+# exactly, so a flag such as CommandFlags.Session changes the arguments and fails too). Adding a command is a gate matter, not an edit of this file alone.
+# Format: KIND|OWNER|ARGS|WHY    KIND = CommandMethod | CommandClass    OWNER = Assembly::Full.Type.Name::Method (or Assembly::<assembly>). UTF-8, LF.
+#
+CommandClass|I52Ct21d.HostFacts.Rs::<assembly>|I52Ct21d.HostFacts.Rs.RsGateCommands|registers the one command class of the RS DLL; the host loads it, the code registers nothing itself
+CommandMethod|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.RsGateCommands::CensusDyn|CT21DHG_CENSUS_DYN|I-3 dynamic-property census (HF-C2, U-RS-1); ordinary non-Session command
+CommandMethod|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.RsGateCommands::DimWriteBack|CT21DHG_DIMWRITEBACK|I-5 dimension write-back probe (HF-C4, HF-C5, U-RS-2); ordinary non-Session command
+CommandMethod|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.RsGateCommands::TolScale|CT21DHG_TOLSCALE|I-6 TOL_SCALE probe (HF-T1, U-RS-3); ordinary non-Session command

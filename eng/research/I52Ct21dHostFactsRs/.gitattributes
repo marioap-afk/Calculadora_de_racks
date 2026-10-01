@@ -1,0 +1,2 @@
+# The RS lists, schemas, sources and the hashes ledger are read as exact bytes (LF, UTF-8): no end-of-line conversion on checkout (core.autocrlf=true in this repository).
+* -text

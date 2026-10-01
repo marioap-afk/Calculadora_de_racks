@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ct21d.dyncensus.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "governing", "gate", "tuple", "libraryFileSha256", "libraryPath", "dynamicPropertyMethod", "blockRecords", "blocks", "summary",
+    "contentSha256", "volatile"
+  ],
+  "properties": {
+    "schema": { "const": "ct21d.dyncensus.v1" },
+    "governing": { "const": false },
+    "gate": { "const": "HOST_GATE_BA11_3_3" },
+    "tuple": { "type": "object" },
+    "libraryFileSha256": { "$ref": "#/$defs/sha256" },
+    "libraryPath": { "type": "string", "minLength": 1 },
+    "dynamicPropertyMethod": { "const": "CLONE_DEFINITION_TO_SCRATCH_SIDE_DATABASE_AND_READ_REFERENCE_PROPERTY_COLLECTION" },
+    "blockRecords": { "type": "integer", "minimum": 0 },
+    "blocks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["blockName", "isDynamic", "status", "reason", "dynamicProperties"],
+        "properties": {
+          "blockName": { "type": "string" },
+          "isDynamic": { "const": true },
+          "status": { "enum": ["OBSERVED", "UNKNOWN"] },
+          "reason": { "type": "string" },
+          "dynamicProperties": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["index", "name", "readOnly", "hostValueType", "unitsType", "valueText", "valueBitsHex", "valueSetStatus", "sharesNameWithAnother", "sharesNameIgnoringCase"],
+              "properties": {
+                "index": { "type": "integer", "minimum": 0 },
+                "name": { "type": "string" },
+                "readOnly": { "type": "boolean" },
+                "hostValueType": { "type": "string", "minLength": 1 },
+                "unitsType": { "enum": ["NoUnits", "Angular", "Distance", "Area", "UNKNOWN"] },
+                "valueText": { "type": "string" },
+                "valueBitsHex": { "oneOf": [ { "$ref": "#/$defs/hex64" }, { "type": "null" } ] },
+                "valueSetStatus": { "enum": ["NONE", "LISTED", "UNREADABLE"] },
+                "valueSetError": { "type": "string" },
+                "allowedValues": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["hostValueType", "valueText", "valueBitsHex"],
+                    "properties": {
+                      "hostValueType": { "type": "string", "minLength": 1 },
+                      "valueText": { "type": "string" },
+                      "valueBitsHex": { "oneOf": [ { "$ref": "#/$defs/hex64" }, { "type": "null" } ] }
+                    }
+                  }
+                },
+                "sharesNameWithAnother": { "type": "boolean" },
+                "sharesNameIgnoringCase": { "type": "boolean" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dynamicDefinitions", "observed", "unknown", "properties", "writableProperties", "constrainedProperties",
+        "valueSetUnreadableProperties", "definitionsWithDuplicateNames"
+      ],
+      "properties": {
+        "dynamicDefinitions": { "type": "integer", "minimum": 0 },
+        "observed": { "type": "integer", "minimum": 0 },
+        "unknown": { "type": "integer", "minimum": 0 },
+        "properties": { "type": "integer", "minimum": 0 },
+        "writableProperties": { "type": "integer", "minimum": 0 },
+        "constrainedProperties": { "type": "integer", "minimum": 0 },
+        "valueSetUnreadableProperties": { "type": "integer", "minimum": 0 },
+        "definitionsWithDuplicateNames": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "contentSha256": { "$ref": "#/$defs/sha256" },
+    "volatile": { "type": "object" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "hex64": { "type": "string", "pattern": "^[0-9A-F]{16}$" }
+  }
+}

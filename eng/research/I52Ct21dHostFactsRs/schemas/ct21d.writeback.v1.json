@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ct21d.writeback.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "governing", "gate", "tuple", "styleValues", "scenarios", "findings", "productOrder", "designation", "scratch", "checks", "contentSha256", "volatile"],
+  "properties": {
+    "schema": { "const": "ct21d.writeback.v1" },
+    "governing": { "const": false },
+    "gate": { "const": "HOST_GATE_BA11_3_3" },
+    "tuple": { "type": "object" },
+    "styleValues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["variable", "hostType", "valueText", "valueBitsHex"],
+        "properties": {
+          "variable": { "$ref": "#/$defs/variable" },
+          "hostType": { "type": "string", "minLength": 1 },
+          "valueText": { "type": "string" },
+          "valueBitsHex": { "oneOf": [ { "$ref": "#/$defs/hex64" }, { "type": "null" } ] }
+        }
+      }
+    },
+    "scenarios": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "variable", "assigned", "handle", "rejection", "op1", "op2", "consistentOp1Op2", "status", "reason"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^WB-(NONE|PRODUCT-ORDER|(DIFF|EQ)-DIM[A-Z]+)$" },
+          "kind": { "enum": ["None", "Different", "EqualToStyle", "ProductOrder"] },
+          "variable": { "oneOf": [ { "$ref": "#/$defs/variable" }, { "type": "null" } ] },
+          "assigned": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["variable", "valueBitsHex"],
+              "properties": { "variable": { "$ref": "#/$defs/variable" }, "valueBitsHex": { "$ref": "#/$defs/hex64" } }
+            }
+          },
+          "handle": { "oneOf": [ { "type": "string", "minLength": 1 }, { "type": "null" } ] },
+          "rejection": { "oneOf": [ { "type": "string" }, { "type": "null" } ] },
+          "op1": { "$ref": "#/$defs/reading" },
+          "op2": { "$ref": "#/$defs/reading" },
+          "consistentOp1Op2": { "type": "boolean" },
+          "status": { "enum": ["OBSERVED", "UNKNOWN"] },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["variable", "ba05Code", "observedCode", "storedWhenDifferent", "storedWhenEqualToStyle", "valueStoredAsWritten", "matchesBa05Code"],
+        "properties": {
+          "variable": { "$ref": "#/$defs/variable" },
+          "ba05Code": { "type": "integer" },
+          "observedCode": { "oneOf": [ { "type": "integer" }, { "type": "null" } ] },
+          "storedWhenDifferent": { "oneOf": [ { "type": "boolean" }, { "type": "null" } ] },
+          "storedWhenEqualToStyle": { "oneOf": [ { "type": "boolean" }, { "type": "null" } ] },
+          "valueStoredAsWritten": { "oneOf": [ { "type": "boolean" }, { "type": "null" } ] },
+          "matchesBa05Code": { "oneOf": [ { "type": "boolean" }, { "type": "null" } ] }
+        }
+      }
+    },
+    "productOrder": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assignedVariables", "storedCodes", "storedVariablesByDesignation", "hostOrderEqualsAssignmentOrder"],
+      "properties": {
+        "assignedVariables": { "type": "array", "items": { "$ref": "#/$defs/variable" } },
+        "storedCodes": { "type": "array", "items": { "type": "integer" } },
+        "storedVariablesByDesignation": { "type": "array", "items": { "type": "string" } },
+        "hostOrderEqualsAssignmentOrder": { "oneOf": [ { "type": "boolean" }, { "type": "null" } ] }
+      }
+    },
+    "designation": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["variable", "code", "source"],
+        "properties": { "variable": { "$ref": "#/$defs/variable" }, "code": { "type": "integer" }, "source": { "const": "HF-C4" } }
+      }
+    },
+    "scratch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op2File"],
+      "properties": {
+        "op2File": {
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name", "length", "sha256", "role"],
+              "properties": {
+                "name": { "type": "string", "pattern": "^CT21D_[A-Za-z0-9][A-Za-z0-9_-]{0,80}\\.dwg$" },
+                "length": { "type": "integer", "minimum": 0 },
+                "sha256": { "$ref": "#/$defs/sha256" },
+                "role": { "type": "string" }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dbmodBefore", "dbmodAfter"],
+      "properties": { "dbmodBefore": { "type": "integer" }, "dbmodAfter": { "type": "integer" } }
+    },
+    "contentSha256": { "$ref": "#/$defs/sha256" },
+    "volatile": { "type": "object" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "hex64": { "type": "string", "pattern": "^[0-9A-F]{16}$" },
+    "variable": { "enum": ["DIMSCALE", "DIMTXT", "DIMASZ", "DIMEXE", "DIMEXO", "DIMGAP", "DIMTAD", "DIMDEC"] },
+    "reading": {
+      "type": "object",
+      "required": ["read"],
+      "properties": {
+        "read": { "type": "boolean" },
+        "hasAcadXData": { "type": "boolean" },
+        "hasDstyleSection": { "type": "boolean" },
+        "wellFormed": { "type": "boolean" },
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["typeCode", "hostType", "valueText", "valueBitsHex"],
+            "properties": {
+              "typeCode": { "type": "integer" },
+              "hostType": { "type": "string" },
+              "valueText": { "type": "string" },
+              "valueBitsHex": { "oneOf": [ { "$ref": "#/$defs/hex64" }, { "type": "null" } ] }
+            }
+          }
+        },
+        "overrides": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["code", "valueTypeCode", "valueHostType", "valueText", "valueBitsHex"],
+            "properties": {
+              "code": { "type": "integer" },
+              "valueTypeCode": { "type": "integer" },
+              "valueHostType": { "type": "string" },
+              "valueText": { "type": "string" },
+              "valueBitsHex": { "oneOf": [ { "$ref": "#/$defs/hex64" }, { "type": "null" } ] }
+            }
+          }
+        },
+        "parsed": { "type": "boolean" },
+        "readError": { "oneOf": [ { "type": "string" }, { "type": "null" } ] }
+      }
+    }
+  }
+}

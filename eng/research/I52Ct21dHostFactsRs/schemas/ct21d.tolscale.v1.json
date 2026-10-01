@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ct21d.tolscale.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "governing", "gate", "tuple", "design", "rows", "summary", "checks", "result", "decisionEligible", "volatile"],
+  "properties": {
+    "schema": { "const": "ct21d.tolscale.v1" },
+    "governing": { "const": false },
+    "gate": { "const": "HOST_GATE_BA11_3_3" },
+    "tuple": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["machineClassLabel", "buildTupleDigest", "sessionId", "runId", "attempt", "instrument"],
+      "properties": {
+        "machineClassLabel": { "type": "string", "pattern": "^(MC-[0-9a-f]{12}|UNSET)$" },
+        "buildTupleDigest": { "$ref": "#/$defs/sha256" },
+        "sessionId": { "type": "string", "minLength": 1 },
+        "runId": { "type": "string", "pattern": "^HGP-H4-[0-9]{8}T[0-9]{6}Z-[0-9]{2}$" },
+        "attempt": { "type": "integer", "minimum": 1 },
+        "instrument": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "sha256", "packageManifestSha256", "declaredSetSha256"],
+          "properties": { "name": { "type": "string" }, "sha256": { "$ref": "#/$defs/sha256" },
+                          "packageManifestSha256": { "$ref": "#/$defs/sha256" },
+                          "declaredSetSha256": { "$ref": "#/$defs/sha256" } }
+        }
+      }
+    },
+    "design": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["designBlob", "ba05Blob", "probeTableSha256"],
+      "properties": { "designBlob": { "$ref": "#/$defs/blob" }, "ba05Blob": { "$ref": "#/$defs/blob" },
+                      "probeTableSha256": { "$ref": "#/$defs/sha256" } }
+    },
+    "rows": { "type": "array", "minItems": 147, "maxItems": 147, "items": { "$ref": "#/$defs/row" } },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rowsExpected", "rowsObserved", "inScopeRows", "DA_op1", "DA_op2", "DA", "DA_char", "Kpres", "bitLevelSignedZeroRows"],
+      "properties": {
+        "rowsExpected": { "const": 147 },
+        "rowsObserved": { "type": "integer", "minimum": 0, "maximum": 147 },
+        "inScopeRows": { "const": 135 },
+        "DA_op1": { "$ref": "#/$defs/hex64n" },
+        "DA_op2": { "$ref": "#/$defs/hex64n" },
+        "DA": { "$ref": "#/$defs/hex64n" },
+        "DA_char": { "$ref": "#/$defs/hex64n" },
+        "Kpres": { "type": "integer", "minimum": 0, "maximum": 52 },
+        "bitLevelSignedZeroRows": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dbmodBefore", "dbmodAfter", "privateFilesUnchanged", "otherAcadProcess", "manualInput"],
+      "properties": { "dbmodBefore": { "type": "integer" }, "dbmodAfter": { "type": "integer" },
+                      "privateFilesUnchanged": { "type": "boolean" }, "otherAcadProcess": { "type": "boolean" },
+                      "manualInput": { "type": "boolean" } }
+    },
+    "result": { "enum": ["PASS", "FAIL", "UNKNOWN", "INVALID"] },
+    "decisionEligible": { "type": "boolean" },
+    "volatile": { "type": "object", "additionalProperties": false, "required": ["capturedUtc", "pid"],
+                  "properties": { "capturedUtc": { "type": "string", "format": "date-time" }, "pid": { "type": "integer" } } }
+  },
+  "allOf": [
+    { "if": { "properties": { "result": { "const": "PASS" } }, "required": ["result"] },
+      "then": { "properties": { "decisionEligible": { "const": true } } },
+      "else": { "properties": { "decisionEligible": { "const": false } } } }
+  ],
+  "$defs": {
+    "hex64": { "type": "string", "pattern": "^[0-9A-F]{16}$" },
+    "hex64n": { "oneOf": [ { "$ref": "#/$defs/hex64" }, { "type": "null" } ] },
+    "hex3": { "type": "array", "items": { "$ref": "#/$defs/hex64" }, "minItems": 3, "maxItems": 3 },
+    "hex3n": { "oneOf": [ { "$ref": "#/$defs/hex3" }, { "type": "null" } ] },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "blob": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "family", "signPattern", "component", "k", "inScope", "intended", "op1", "op2", "rotationHex", "normal",
+                   "deltaOp1", "deltaOp2", "deltaExact", "bitIdentical", "witness", "status"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^PF[12]-[0-9]{4}$" },
+        "family": { "enum": ["PF1", "PF2"] },
+        "signPattern": { "enum": ["++", "-+", "+-", "--"] },
+        "component": { "enum": ["X", "Y", "Z", "ALL"] },
+        "k": { "oneOf": [ { "type": "integer", "minimum": 20, "maximum": 52 }, { "type": "null" } ] },
+        "inScope": { "type": "boolean" },
+        "intended": { "$ref": "#/$defs/hex3" },
+        "op1": { "$ref": "#/$defs/hex3n" },
+        "op2": { "$ref": "#/$defs/hex3n" },
+        "rotationHex": { "$ref": "#/$defs/hex64n" },
+        "normal": { "$ref": "#/$defs/hex3n" },
+        "deltaOp1": { "$ref": "#/$defs/hex3n" },
+        "deltaOp2": { "$ref": "#/$defs/hex3n" },
+        "deltaExact": { "type": "boolean" }, "bitIdentical": { "type": "boolean" },
+        "witness": { "enum": ["AGREE", "DISAGREE", "NOT_APPLICABLE"] },
+        "status": { "enum": ["OBSERVED", "UNKNOWN"] }, "reason": { "type": "string" }
+      },
+      "allOf": [
+        { "if": { "properties": { "status": { "const": "OBSERVED" } }, "required": ["status"] },
+          "then": { "properties": { "op1": { "$ref": "#/$defs/hex3" }, "op2": { "$ref": "#/$defs/hex3" },
+                                    "deltaOp1": { "$ref": "#/$defs/hex3" }, "deltaOp2": { "$ref": "#/$defs/hex3" },
+                                    "rotationHex": { "$ref": "#/$defs/hex64" }, "normal": { "$ref": "#/$defs/hex3" } } } }
+      ]
+    }
+  }
+}

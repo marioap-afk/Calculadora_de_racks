@@ -1,0 +1,85 @@
+# HASHES-RS.txt: SHA-256 of every source file of eng/research/I52Ct21dHostFactsRs (paths relative to that folder, LF, ordinal order), except this file and bin/ obj/.
+# This is the REVIEW RECORD of the RS instruments: any byte changed after the independent review invalidates the approval. Verify with:
+#   tools-rs ledger-verify HASHES-RS.txt <folder>      (exit 0 = no difference, 4 = differences). A test of the suite does the same.
+# The R0 folder is NOT edited by this work; the hashes of the four R0 lists (decisions section 240) and of the R0 files the RS projects reference are listed below as comments.
+# The DLL hashes depend on the HEAD stamp of Directory.Build.targets (SourceRevisionId) and on the compiler: they are INFORMATIONAL, the canonical pinned build belongs to package v3.
+# HEAD at the time of writing: b1fd5027e057ed77e51cd0a229d7a2367e8922b3
+#
+# --- the five RS lists and their hashes (as printed by `scan-rs`) ---
+# list  f14fe6fa02c1846843f665b2ec394b963f4fc83e1befa08730dc2ae88b23d266  allowed-apis-rs.txt
+# list  1bd95c25ef002b9830e9d7a9570a9ecabcc4c7b857750312eb24c00f3066baa5  rs-waivers.txt
+# list  9cf61870cb2c7b910f84045b2042db63a5abb6b92ca486e1bf5bdb962639480c  privileged-surface-rs.txt
+# list  fa1daf86fd8662788f574f8295f1438cc2c464b6dbe28c5719369cde5b12a09d  privileged-callers-rs.txt
+# list  533997c8016f2fd0ea2336e1c72761ca44f14ecece502cb890f68dd7a7ef77a7  expected-commands-rs.txt
+# --- the schemas ---
+# schema  fe31f053a6b664985e5526191d1a9dfaff229983637cd1991e558a0867085a0f  schemas/ct21d.designation.rs.v1.json
+# schema  bdc8c90de5cba1d6d3d02414c101b5eb0b4c4703bf1b908c1b4d6e571e8cab76  schemas/ct21d.dyncensus.v1.json
+# schema  8f0861910470cef70614144595917856b4dc7c503303040c65d1513c5bc1757a  schemas/ct21d.rs-run.v1.json
+# schema  ed0dc0b66604b439fce2d52ea19b6c546bb19b020a8d0b9ab6b658a02a26c0fa  schemas/ct21d.tolscale-probe-table.v1.json
+# schema  f377cc0e4c53ad6261292acafbaf6707b431b309bdde1813e8147aedb8bc1ad9  schemas/ct21d.tolscale.v1.json
+# schema  04ded4aec9ad2829a9cf49f7ae103c14ed06b848281a6fc578a04b1800445ca6  schemas/ct21d.writeback.v1.json
+# --- the four R0 lists (unchanged; same hashes as decisions section 240/241) ---
+# r0-list  b2cb0d26ac8dd5ce53a70845d62b2c3237e678aa586e4cc2f361687884a9d880  allowed-apis.txt
+# r0-list  7a56a8e77c841e0f481dba07dc0297714124ea716e978d3f2bbe497a1887949c  privileged-surface.txt
+# r0-list  278e8ccfa5da25a53614d4c54d958f0bf4c212f6e07eea62303da046899a3c07  privileged-callers.txt
+# r0-list  f3465afd52bc856a1852a9881a2130c2f801c54d0ebbc9428f95c85fb0267a9f  expected-commands.txt
+# --- the DLLs as built (Release; informational) ---
+# dll  40a046b2faaf22c3c65045ec14ca1b6609f2463b5ba4a9556ccf276e7b13d6b4  rs
+# dll  eb3e87dde488b083cecf4fc1cf6ca34f43e20ffa2cbcc9034e97b0233b327fd3  rs-core
+# dll  f828cd26e7cd1ef65290f0a9f9c5247db8d711f31d758aa3a1dbcd4479852c6c  tools-rs
+# dll  cf26b6b116ef6b6fc1b3d7b8f711c5ebd1f838d527010e3ea0f0cf78d2ef3a7e  r0-core (dependency)
+# dll  73097dffeaa358124b20c3435c5d599e0405a366df439048ec2a685fce52b8c3  r0-tools (scan engine)
+#
+# --- the files (verified) ---
+a08541fea9c4ee7145743cd663e41f2282b132426ed28d51d546dc42d1e7c8b4  .gitattributes
+1ff7b05fa9685733087edd47ae75a203a6e347cbab7634469f1cab8e2f3f4874  README.md
+f14fe6fa02c1846843f665b2ec394b963f4fc83e1befa08730dc2ae88b23d266  allowed-apis-rs.txt
+51819f66428602982431ed3a61378437352d9e9930b486dd316d0efa18bbecda  core-rs/DynCensus.cs
+117cfc8e224ec2e987c527d99cb48c6dda6a39bcade16ff24102ab045a569bcc  core-rs/I52Ct21d.HostFacts.Rs.Core.csproj
+9fafed0fb3e72846fa21d57deb5d13f0546315f4f6c32381e3c383f16a2e4fbd  core-rs/PathRegions.cs
+f9b5ddc38684ddfc013d599c5abd11450b030c4861b3bfd7fea7279e5148eb44  core-rs/RsDesignation.cs
+a86f8f230ef2a1bfc04ee1d212e96eaa5a8acc94e0b4a2be5cba78809144cbb7  core-rs/RsRunSupport.cs
+726f54826e84e0d77709f631351fccac73bdd2bdcc4708e8292dba90f65796ce  core-rs/ScratchRootGuard.cs
+45276ccb5395a60143595ed14a3593b1ebac43ffdb48cd14319bcc8b0d7c5d21  core-rs/ScratchVerifier.cs
+905c95a24ab7669387ec82f4f4a173239bc868816986bd85386d45332ff2dd6f  core-rs/TolScaleAnalysis.cs
+93f12736718700491a6fc06133d017be16d33b272f3677b3cda473b2b9799c10  core-rs/TolScaleModels.cs
+e1c9c9da4007b6e24cdc69bb190cbbd37ae79116edfb668b6c3d8de725706cd1  core-rs/TolScaleRecord.cs
+b869f9d9b2c8a6994ff833b37300ca21c41e2d7beea696900cf197edbd8ef63a  core-rs/TolScaleRunner.cs
+13b92000becd4282873278087d89bf3316d0fd72c1d04e34976207b4b892a1af  core-rs/WriteBack.cs
+f48b06ecfb1560d815d4391b7cdfc8952d0986eb625dac90018ceaac759fc8a5  core-rs/WriteBackRunner.cs
+533997c8016f2fd0ea2336e1c72761ca44f14ecece502cb890f68dd7a7ef77a7  expected-commands-rs.txt
+fa1daf86fd8662788f574f8295f1438cc2c464b6dbe28c5719369cde5b12a09d  privileged-callers-rs.txt
+9cf61870cb2c7b910f84045b2042db63a5abb6b92ca486e1bf5bdb962639480c  privileged-surface-rs.txt
+1bd95c25ef002b9830e9d7a9570a9ecabcc4c7b857750312eb24c00f3066baa5  rs-waivers.txt
+6e54e34e0f350feed14ba1b5d624a229c08a1d3184846849e6c986ddd7235bd3  rs/HostAdapters.cs
+c7ac5173a7744aaaf327d52239fd22e474e6c5544c89b5544995fe97806553c4  rs/I52Ct21d.HostFacts.Rs.csproj
+d22edb3f187d3769598c51b74a9a5adcd5512b1e2f2a62c4d57eab0ee1db3991  rs/RsGateCommands.cs
+90952253a19195ac5dce962f0b1bbee165194593323498ce6e02bb1ce8af4f36  rs/ScratchSaver.cs
+2fb1e8a80c068c3ba066cb56ac6d50ee9db98c6200900d86a51aabed33748c38  rs/SideDbHandle.cs
+658cabbdd05710fdce8b4c0708394dfa09da7d7a222afd27beefa23fd7593d27  rs/SideDbReader.cs
+1e4093f977bc9ef632f24dd8c7f24863722a5ad018daa3e3e7e427b3c82f40ae  rs/SideDbWriter.cs
+fe31f053a6b664985e5526191d1a9dfaff229983637cd1991e558a0867085a0f  schemas/ct21d.designation.rs.v1.json
+bdc8c90de5cba1d6d3d02414c101b5eb0b4c4703bf1b908c1b4d6e571e8cab76  schemas/ct21d.dyncensus.v1.json
+8f0861910470cef70614144595917856b4dc7c503303040c65d1513c5bc1757a  schemas/ct21d.rs-run.v1.json
+ed0dc0b66604b439fce2d52ea19b6c546bb19b020a8d0b9ab6b658a02a26c0fa  schemas/ct21d.tolscale-probe-table.v1.json
+f377cc0e4c53ad6261292acafbaf6707b431b309bdde1813e8147aedb8bc1ad9  schemas/ct21d.tolscale.v1.json
+04ded4aec9ad2829a9cf49f7ae103c14ed06b848281a6fc578a04b1800445ca6  schemas/ct21d.writeback.v1.json
+24ac6e4010abb3e7a795c8eab4df4b74d8b0492cc4654dacf070ccd92bd78522  tests/CliAndSupportTests.cs
+f30059ab4102886a5a78011ac8eb4f4f3dee9c82da09481a87f52fc535baddab  tests/DynCensusTests.cs
+26f9d4c9d964417eaaedf9d79e53684d1603a37f01514599b9fc53fac2cf4e44  tests/I52Ct21d.HostFacts.Rs.Tests.csproj
+209f50bff176f35d5a481f9bb06d6cb17b645b2ec26b0c9acefe816f87ca816b  tests/ListsAndSchemasTests.cs
+5ce1da84bf306a133f7bd26ee4437305a9f1bd80488cb0bd059ddad49ca0dc0b  tests/PathAndDesignationTests.cs
+8c8aa62f79323979b380754757e3b23f48ce90e35e5c355bdc022b026fe628d5  tests/RealAssemblyScanTests.cs
+0a75c99f2f3d09b1e931f4f75237ea3e2cbb9482faa2926b65e54c81f349ab66  tests/ReviewRound1Tests.cs
+e5f7bd78a19a40c875a9e46f4caf421c89fadeb2da28ca3df4d0be21bdaa9f00  tests/RsScanTests.cs
+2ad5ee2b04cda8df3c7760c2c99338d960b1245c5190f9e816afbf2949a521ff  tests/ScratchGuardTests.cs
+badb34cbf8bbb600939d2ab17e15beffaba4da81e3c3365c4aab763d1964da15  tests/Support.cs
+1ec9a18bc8a88fb8bc8eca4d4e8845a003526edd2efd23756af54bac7eac0f2f  tests/TolScaleRunnerTests.cs
+7ae4f6da78c494a576ed203181607be65e9723d33a99c473f3f975089d84e79f  tests/TolScaleTests.cs
+76c76e848ec231f8f06b43ec0bf5e0e0ffaa6269fbfb2700017ad0a8459dae7d  tests/WriteBackTests.cs
+7cb21010e36a4686e7f4a6d9c98449e871224ce692af3cfeb9eb404e79e11c9f  tools-rs/I52Ct21d.HostFacts.Rs.Tools.csproj
+447adfa99adc5dbcc82218b08b2ed320ab17e86340efcf3b2dd9860f7d45c8e8  tools-rs/Program.cs
+a8125f628b9a45b4815985e83b47ad9985b37e0b4264600b531c6ab0ee432a9c  tools-rs/RsLayer.cs
+03c733b7962342ac46b4ca9778f58e7e0b99ed61e1163e91b2be3d89b389842a  tools-rs/RsMeta.cs
+63cb0624d2b1c6c223e9edf4efff85852f81d1d550ab8fe46fb2b0171f2b8b00  tools-rs/RsScan.cs
+35c82f6563cfd78f4612eb1d7e50b124bdc31edc2706f35276ae556dd247560b  tools-rs/RsWaivers.cs

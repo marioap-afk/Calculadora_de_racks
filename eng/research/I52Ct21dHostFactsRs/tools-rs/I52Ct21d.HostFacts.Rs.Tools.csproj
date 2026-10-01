@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Offline RS tools: the RS scan (waivers + RS layers on top of the R0 scan API), the scratch verifier, the hashes ledger check.
+       Reads files only; writes none. No AutoCAD reference. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RootNamespace>I52Ct21d.HostFacts.Rs.Tools</RootNamespace>
+    <AssemblyName>I52Ct21d.HostFacts.Rs.Tools</AssemblyName>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\core-rs\I52Ct21d.HostFacts.Rs.Core.csproj" />
+    <ProjectReference Include="..\..\I52Ct21dHostFacts\tools\I52Ct21d.HostFacts.Tools.csproj" />
+  </ItemGroup>
+</Project>

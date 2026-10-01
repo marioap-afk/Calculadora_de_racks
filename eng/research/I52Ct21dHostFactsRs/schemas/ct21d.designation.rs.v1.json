@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ct21d.designation.rs.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "runId",
+    "attempt",
+    "sessionId",
+    "evidenceRoot",
+    "scratchRoot",
+    "privateCopyPath",
+    "privateCopySha256",
+    "libraryPath",
+    "libraryFileSha256",
+    "governedDocumentPath",
+    "productPaths",
+    "hostChecks",
+    "declaredSet",
+    "tupleBinding"
+  ],
+  "properties": {
+    "schema": { "const": "ct21d.designation.rs.v1" },
+    "runId": { "$ref": "#/$defs/runId" },
+    "attempt": { "type": "integer", "minimum": 1 },
+    "sessionId": { "type": "string", "minLength": 1 },
+    "evidenceRoot": { "type": "string", "minLength": 1 },
+    "scratchRoot": { "type": "string", "minLength": 1 },
+    "privateCopyPath": { "type": "string", "minLength": 1 },
+    "privateCopySha256": { "$ref": "#/$defs/sha256" },
+    "libraryPath": { "type": "string", "minLength": 1 },
+    "libraryFileSha256": { "$ref": "#/$defs/sha256" },
+    "governedDocumentPath": { "type": "string" },
+    "productPaths": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "hostChecks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["otherAcadProcess", "loadRouteScripted"],
+      "properties": {
+        "otherAcadProcess": { "type": "boolean" },
+        "loadRouteScripted": { "type": "boolean" }
+      }
+    },
+    "declaredSet": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "sha256"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "sha256": { "$ref": "#/$defs/sha256" }
+        }
+      }
+    },
+    "tupleBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["machineClassLabel", "buildTupleDigest", "packageManifestSha256", "declaredSetSha256", "designBlob", "ba05Blob"],
+      "properties": {
+        "machineClassLabel": { "$ref": "#/$defs/label" },
+        "buildTupleDigest": { "$ref": "#/$defs/sha256" },
+        "packageManifestSha256": { "$ref": "#/$defs/sha256" },
+        "declaredSetSha256": { "$ref": "#/$defs/sha256" },
+        "designBlob": { "$ref": "#/$defs/blob" },
+        "ba05Blob": { "$ref": "#/$defs/blob" }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "blob": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "label": { "type": "string", "pattern": "^(MC-[0-9a-f]{12}|UNSET)$" },
+    "runId": { "type": "string", "pattern": "^HGP-H[0-9]+-[0-9]{8}T[0-9]{6}Z-[0-9]{2}$" }
+  }
+}

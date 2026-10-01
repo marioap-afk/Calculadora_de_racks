@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- RS core: pure .NET library, NO AutoCAD reference. Records, canonical JSON (through the R0 core), the TOL_SCALE state machine, the
+       scratch-root guard, the ledger and the verifier. Nothing in this folder is referenced by a product project, by RackCad.sln,
+       by deploy/ or by CI. Research-only. -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RootNamespace>I52Ct21d.HostFacts.Rs.Core</RootNamespace>
+    <AssemblyName>I52Ct21d.HostFacts.Rs.Core</AssemblyName>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\I52Ct21dHostFacts\core\I52Ct21d.HostFacts.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- The JSON schemas are embedded so that the validator needs no file path at run time. -->
+    <EmbeddedResource Include="..\schemas\*.json" LogicalName="rs-schemas/%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

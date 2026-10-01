@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Tests of the RS instruments. They need NO AutoCAD and never start it. xUnit with the same package versions as the R0 tests. Nothing here is
+       referenced by RackCad.sln or by CI. -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>I52Ct21d.HostFacts.Rs.Tests</RootNamespace>
+    <AutoCADInstallDir Condition="'$(AutoCADInstallDir)' == ''">C:\Program Files\Autodesk\AutoCAD 2025</AutoCADInstallDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\core-rs\I52Ct21d.HostFacts.Rs.Core.csproj" />
+    <ProjectReference Include="..\tools-rs\I52Ct21d.HostFacts.Rs.Tools.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- The IL fixture emitter of the R0 tests is reused as a source link (the R0 file is not modified): it emits tiny assemblies that are only READ by the scan. -->
+    <Compile Include="..\..\I52Ct21dHostFacts\tests\FixtureBuilder.cs" Link="Linked\FixtureBuilder.cs" />
+  </ItemGroup>
+  <!-- The RS DLL only COMPILES against the AutoCAD managed assemblies of an installation (no AutoCAD process). When they are installed the DLL is
+       built here so that the scan tests can read it; without them those tests are compiled out and the reviewer scans the DLL with tools-rs. -->
+  <ItemGroup Condition="Exists('$(AutoCADInstallDir)\AcDbMgd.dll')">
+    <ProjectReference Include="..\rs\I52Ct21d.HostFacts.Rs.csproj" ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
+  </ItemGroup>
+  <PropertyGroup Condition="Exists('$(AutoCADInstallDir)\AcDbMgd.dll')">
+    <DefineConstants>$(DefineConstants);HAVE_RS</DefineConstants>
+  </PropertyGroup>
+</Project>

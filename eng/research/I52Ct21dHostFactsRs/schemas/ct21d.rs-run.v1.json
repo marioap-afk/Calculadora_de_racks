@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ct21d.rs-run.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "command", "unit", "governing", "gate", "classification", "tuple", "sideDatabases", "scratch", "host",
+    "declarations", "noAutomaticRetry", "invalidReasons", "result", "contentSha256", "volatile"
+  ],
+  "properties": {
+    "schema": { "const": "ct21d.rs-run.v1" },
+    "command": { "enum": ["CT21DHG_CENSUS_DYN", "CT21DHG_DIMWRITEBACK", "CT21DHG_TOLSCALE"] },
+    "unit": { "enum": ["U-RS-1", "U-RS-2", "U-RS-3"] },
+    "governing": { "const": false },
+    "gate": { "const": "HOST_GATE_BA11_3_3" },
+    "classification": { "const": "CONTROL_PLANE_AUXILIARY_WRITES" },
+    "tuple": { "type": "object" },
+    "sideDatabases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "role", "constructor", "fill", "source", "disposed"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^SDB-[0-9]{2}$" },
+          "role": { "enum": ["SCRATCH_WRITE", "PRIVATE_COPY_READ", "SAVED_REOPEN_READ"] },
+          "constructor": { "enum": ["new Database(true, true)", "new Database(false, true)"] },
+          "fill": { "enum": ["NONE", "ReadDwgFile"] },
+          "source": { "type": "string" },
+          "disposed": { "type": "boolean" }
+        }
+      }
+    },
+    "scratch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["root", "preexisting", "files", "verification"],
+      "properties": {
+        "root": { "type": "string", "minLength": 1 },
+        "preexisting": { "type": "array", "items": { "$ref": "#/$defs/scratchFile" } },
+        "files": { "type": "array", "items": { "$ref": "#/$defs/scratchFile" } },
+        "verification": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["ok", "undeclared", "missing", "hashMismatches", "reparsePoints"],
+          "properties": {
+            "ok": { "type": "boolean" },
+            "undeclared": { "type": "array", "items": { "type": "string" } },
+            "missing": { "type": "array", "items": { "type": "string" } },
+            "hashMismatches": { "type": "array", "items": { "type": "string" } },
+            "reparsePoints": { "type": "array", "items": { "type": "string" } }
+          }
+        }
+      }
+    },
+    "host": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["before", "after", "differences"],
+      "properties": {
+        "before": { "$ref": "#/$defs/snapshot" },
+        "after": { "$ref": "#/$defs/snapshot" },
+        "differences": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "declarations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "otherAcadProcess", "loadRouteScripted"],
+      "properties": {
+        "source": { "const": "CAD_MANAGER_DECLARATION" },
+        "otherAcadProcess": { "type": "boolean" },
+        "loadRouteScripted": { "type": "boolean" }
+      }
+    },
+    "contentHashes": { "type": "object", "additionalProperties": { "$ref": "#/$defs/sha256" } },
+    "noAutomaticRetry": { "const": true },
+    "invalidReasons": { "type": "array", "items": { "type": "string" } },
+    "result": { "type": "string", "minLength": 1 },
+    "contentSha256": { "$ref": "#/$defs/sha256" },
+    "volatile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capturedUtc", "pid", "processStartUtc"],
+      "properties": {
+        "capturedUtc": { "type": "string" },
+        "pid": { "type": "integer" },
+        "processStartUtc": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "scratchFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "length", "sha256", "role"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^CT21D_[A-Za-z0-9][A-Za-z0-9_-]{0,80}\\.dwg$" },
+        "length": { "type": "integer", "minimum": 0 },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "role": { "type": "string", "minLength": 1 }
+      }
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["DBMOD", "SECURELOAD", "TRUSTEDPATHS", "CPROFILE", "DWGPREFIX", "DWGNAME"],
+      "properties": {
+        "DBMOD": { "type": "string" },
+        "SECURELOAD": { "type": "string" },
+        "TRUSTEDPATHS": { "type": "string" },
+        "CPROFILE": { "type": "string" },
+        "DWGPREFIX": { "type": "string" },
+        "DWGNAME": { "type": "string" }
+      }
+    }
+  }
+}

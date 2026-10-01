@@ -1,0 +1,824 @@
+# allowed-apis-rs.txt: the imports the RS assemblies (core-rs, rs, tools-rs) may reference. DENY BY DEFAULT (layer 1 of the scan, same file format and
+# engine as the R0 allowed-apis.txt). KIND|ITEM|SCOPE|JUSTIFICATION; KIND A = assembly, T = type, M = member, O = store opcode. UTF-8, LF.
+#
+# THE WRITE MEMBERS of the host (object creation, AppendEntity, Add, the property setters, Commit, WblockCloneObjects, ReadDwgFile, SaveAs and the
+# Database constructor) are approved ONLY with a scope: ONLY in SideDbWriter (every write to a side database the instrument created itself) and ONLY
+# in ScratchSaver (the single SaveAs). SideDbReader gets getters, enumerators, GetObject and the transaction manager; the scan checks that its OpenMode
+# argument is the constant ForRead. RsGateCommands gets the command-line status line only. Where a member is used by two types there is one line per
+# type. Drafted with `tools-rs imports-list-rs` from the built assemblies, then reviewed line by line by the implementer; the independent source
+# review required by decisions section 242 has NOT been replaced by this file.
+#
+A|Acdbmgd||AutoCAD database managed assembly, compile reference of the rs assembly only
+A|I52Ct21d.HostFacts.Core||the R0 core library: EvidenceWriter, record builders, probe tables (reused, unchanged)
+A|I52Ct21d.HostFacts.Rs.Core||the RS core library: pure logic without AutoCAD
+A|I52Ct21d.HostFacts.Tools||the R0 tools assembly: the scan engine reused by the RS scan
+A|System.Collections||generic and non-generic in-memory collections
+A|System.Collections.Immutable||ImmutableArray for the PE reader of the scan tools
+A|System.Console||console output of the offline tools
+A|System.Diagnostics.Process||Process.GetCurrentProcess and getters only (RsEnvironment); every other Process member is refused by the scan
+A|System.Linq||LINQ over in-memory collections
+A|System.Reflection.Metadata||metadata reader of the offline scan
+A|System.Reflection.Primitives||IL opcode tables of the offline scan
+A|System.Runtime||base class library facade
+A|System.Security.Cryptography||SHA-256 of files and canonical records
+A|System.Text.Encoding.Extensions||UTF-8 without BOM
+A|System.Text.Json||JsonNode model of the records
+A|System.Text.RegularExpressions||name patterns
+A|accoremgd||AutoCAD core managed assembly, compile reference of the rs assembly only (GetSystemVariable, command attributes)
+T|Autodesk.AutoCAD.ApplicationServices.Core.Application||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.ApplicationServices.Document||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.ApplicationServices.DocumentCollection||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.BlockReference||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.BlockTable||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.BlockTableRecord||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.BlockTableRecordEnumerator||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.DBObject||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.Database||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.DimStyleTableRecord||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.Dimension||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.DuplicateRecordCloning||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.DwgVersion||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.DynamicBlockReferenceProperty||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.DynamicBlockReferencePropertyCollection||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.DynamicBlockReferencePropertyUnitsType||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.Entity||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.Handle||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.IdMapping||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.Line||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.ObjectId||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.ObjectIdCollection||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.OpenCloseTransaction||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.OpenMode||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.ResultBuffer||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.RotatedDimension||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.SymbolTable||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.SymbolTableEnumerator||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.SymbolTableRecord||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.Transaction||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.TransactionManager||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.DatabaseServices.TypedValue||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.EditorInput.Editor||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.Geometry.Matrix3d||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.Geometry.Point3d||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.Geometry.Scale3d||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.Geometry.Vector3d||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.Runtime.CommandClassAttribute||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.Runtime.CommandMethodAttribute||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|Autodesk.AutoCAD.Runtime.DisposableWrapper||AutoCAD type referenced by the rs assembly; the members it may use are approved one by one below
+T|I52Ct21d.HostFacts.Core.DeclaredFile||type of the R0 core library (reused unchanged)
+T|I52Ct21d.HostFacts.Core.DoubleBits||type of the R0 core library (reused unchanged)
+T|I52Ct21d.HostFacts.Core.EvidenceWriter||type of the R0 core library (reused unchanged)
+T|I52Ct21d.HostFacts.Core.HostFactRecord||type of the R0 core library (reused unchanged)
+T|I52Ct21d.HostFacts.Core.IRunEnvironment||type of the R0 core library (reused unchanged)
+T|I52Ct21d.HostFacts.Core.ISystemVariables||type of the R0 core library (reused unchanged)
+T|I52Ct21d.HostFacts.Core.InstrumentInfo||type of the R0 core library (reused unchanged)
+T|I52Ct21d.HostFacts.Core.Jcs||type of the R0 core library (reused unchanged)
+T|I52Ct21d.HostFacts.Core.JsonSchemaLite||type of the R0 core library (reused unchanged)
+T|I52Ct21d.HostFacts.Core.ProbeObservation||type of the R0 core library (reused unchanged)
+T|I52Ct21d.HostFacts.Core.ProbeRow||type of the R0 core library (reused unchanged)
+T|I52Ct21d.HostFacts.Core.ProbeStatistics||type of the R0 core library (reused unchanged)
+T|I52Ct21d.HostFacts.Core.ProbeStatisticsResult||type of the R0 core library (reused unchanged)
+T|I52Ct21d.HostFacts.Core.ProbeTable||type of the R0 core library (reused unchanged)
+T|I52Ct21d.HostFacts.Core.RecordJson||type of the R0 core library (reused unchanged)
+T|I52Ct21d.HostFacts.Core.RunDesignation||type of the R0 core library (reused unchanged)
+T|I52Ct21d.HostFacts.Core.SelfPin||type of the R0 core library (reused unchanged)
+T|I52Ct21d.HostFacts.Core.Sha256Hex||type of the R0 core library (reused unchanged)
+T|I52Ct21d.HostFacts.Core.SysVarReading||type of the R0 core library (reused unchanged)
+T|I52Ct21d.HostFacts.Core.WrittenFile||type of the R0 core library (reused unchanged)
+T|I52Ct21d.HostFacts.Rs.Core.AllowedValueReading||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.DimensionReading||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.DynCensusRunner||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.DynamicBlockProbe||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.DynamicPropertyReading||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.IDynCensusHost||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.IDynCensusSession||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.ITolScaleDatabase||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.ITolScaleHost||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.IWriteBackDatabase||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.IWriteBackHost||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.OverrideAssignment||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.PriorDeclarations||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.ReadableKind||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.ReadableSource||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.ReferenceReading||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.RowConstruction||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.RsDesignation||type of the RS core library
+T|I52Ct21d.HostFacts.Core.EvidenceWriterException||exception type of the reused R0 evidence writer (caught only to keep a create-new refusal from masking the original failure)
+T|I52Ct21d.HostFacts.Rs.Core.RsRefusedException||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.RsRunOutcome||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.ScenarioConstruction||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.ScratchFileEntry||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.ScratchRootGuard||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.ScratchTarget||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.ScratchVerification||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.ScratchVerifier||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.SideDbLedger||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.StoredEntryReading||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.StyleValue||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.TolScaleOfflineVerifier||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.TolScaleOutcome||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.TolScaleRowMath||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.TolScaleRunner||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.WriteBackRunner||type of the RS core library
+T|I52Ct21d.HostFacts.Rs.Core.WriteBackScenario||type of the RS core library
+T|I52Ct21d.HostFacts.Tools.Scan.AllowEntry||type of the R0 scan engine reused by the RS tools
+T|I52Ct21d.HostFacts.Tools.Scan.AllowKind||type of the R0 scan engine reused by the RS tools
+T|I52Ct21d.HostFacts.Tools.Scan.ApiAllowlist||type of the R0 scan engine reused by the RS tools
+T|I52Ct21d.HostFacts.Tools.Scan.CallerEntry||type of the R0 scan engine reused by the RS tools
+T|I52Ct21d.HostFacts.Tools.Scan.CommandEntry||type of the R0 scan engine reused by the RS tools
+T|I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan||type of the R0 scan engine reused by the RS tools
+T|I52Ct21d.HostFacts.Tools.Scan.IlReader||type of the R0 scan engine reused by the RS tools
+T|I52Ct21d.HostFacts.Tools.Scan.Instr||type of the R0 scan engine reused by the RS tools
+T|I52Ct21d.HostFacts.Tools.Scan.PrivilegedObservations||type of the R0 scan engine reused by the RS tools
+T|I52Ct21d.HostFacts.Tools.Scan.ScanConfig||type of the R0 scan engine reused by the RS tools
+T|I52Ct21d.HostFacts.Tools.Scan.ScanOutcome||type of the R0 scan engine reused by the RS tools
+T|I52Ct21d.HostFacts.Tools.Scan.ScanPolicy||type of the R0 scan engine reused by the RS tools
+T|I52Ct21d.HostFacts.Tools.Scan.ScanRole||type of the R0 scan engine reused by the RS tools
+T|I52Ct21d.HostFacts.Tools.Scan.Violation||type of the R0 scan engine reused by the RS tools
+T|System.Action`2||framework type without side effects on files, processes, registry or network
+T|System.ArgumentException||framework type without side effects on files, processes, registry or network
+T|System.Array||framework type without side effects on files, processes, registry or network
+T|System.BadImageFormatException||framework type without side effects on files, processes, registry or network
+T|System.BitConverter||framework type without side effects on files, processes, registry or network
+T|System.Char||framework type without side effects on files, processes, registry or network
+T|System.Collections.Generic.Dictionary`2||framework type without side effects on files, processes, registry or network
+T|System.Collections.Generic.Dictionary`2/KeyCollection||framework type without side effects on files, processes, registry or network
+T|System.Collections.Generic.Dictionary`2/KeyCollection/Enumerator||framework type without side effects on files, processes, registry or network
+T|System.Collections.Generic.Dictionary`2/ValueCollection||framework type without side effects on files, processes, registry or network
+T|System.Collections.Generic.HashSet`1||framework type without side effects on files, processes, registry or network
+T|System.Collections.Generic.IComparer`1||framework type without side effects on files, processes, registry or network
+T|System.Collections.Generic.IEnumerable`1||framework type without side effects on files, processes, registry or network
+T|System.Collections.Generic.IEnumerator`1||framework type without side effects on files, processes, registry or network
+T|System.Collections.Generic.IEqualityComparer`1||framework type without side effects on files, processes, registry or network
+T|System.Collections.Generic.IReadOnlyCollection`1||framework type without side effects on files, processes, registry or network
+T|System.Collections.Generic.IReadOnlyDictionary`2||framework type without side effects on files, processes, registry or network
+T|System.Collections.Generic.IReadOnlyList`1||framework type without side effects on files, processes, registry or network
+T|System.Collections.Generic.KeyValuePair`2||framework type without side effects on files, processes, registry or network
+T|System.Collections.Generic.List`1||framework type without side effects on files, processes, registry or network
+T|System.Collections.Generic.List`1/Enumerator||framework type without side effects on files, processes, registry or network
+T|System.Collections.Generic.SortedDictionary`2||framework type without side effects on files, processes, registry or network
+T|System.Collections.Generic.SortedDictionary`2/Enumerator||framework type without side effects on files, processes, registry or network
+T|System.Collections.Generic.SortedSet`1||framework type without side effects on files, processes, registry or network
+T|System.Collections.IEnumerator||framework type without side effects on files, processes, registry or network
+T|System.Collections.Immutable.ImmutableArray||framework type without side effects on files, processes, registry or network
+T|System.Collections.Immutable.ImmutableArray`1||framework type without side effects on files, processes, registry or network
+T|System.Console||framework type without side effects on files, processes, registry or network
+T|System.Convert||framework type without side effects on files, processes, registry or network
+T|System.DateTime||framework type without side effects on files, processes, registry or network
+T|System.Diagnostics.DebuggableAttribute||framework type without side effects on files, processes, registry or network
+T|System.Diagnostics.DebuggableAttribute/DebuggingModes||framework type without side effects on files, processes, registry or network
+T|System.Diagnostics.Process||type whose members are approved one by one with a scope below (file reads only; no write member is approved)
+T|System.Double||framework type without side effects on files, processes, registry or network
+T|System.Enum||framework type without side effects on files, processes, registry or network
+T|System.Exception||framework type without side effects on files, processes, registry or network
+T|System.FormatException||framework type without side effects on files, processes, registry or network
+T|System.Func`2||framework type without side effects on files, processes, registry or network
+T|System.Func`3||framework type without side effects on files, processes, registry or network
+T|System.Globalization.CultureInfo||framework type without side effects on files, processes, registry or network
+T|System.Globalization.NumberStyles||framework type without side effects on files, processes, registry or network
+T|System.IDisposable||framework type without side effects on files, processes, registry or network
+T|System.IFormatProvider||framework type without side effects on files, processes, registry or network
+T|System.IO.Directory||type whose members are approved one by one with a scope below (file reads only; no write member is approved)
+T|System.IO.File||type whose members are approved one by one with a scope below (file reads only; no write member is approved)
+T|System.IO.FileAttributes||type whose members are approved one by one with a scope below (file reads only; no write member is approved)
+T|System.IO.FileInfo||type whose members are approved one by one with a scope below (file reads only; no write member is approved)
+T|System.IO.FileNotFoundException||type whose members are approved one by one with a scope below (file reads only; no write member is approved)
+T|System.IO.FileShare||type whose members are approved one by one with a scope below (file reads only; no write member is approved)
+T|System.IO.IOException||type whose members are approved one by one with a scope below (file reads only; no write member is approved)
+T|System.IO.Path||type whose members are approved one by one with a scope below (file reads only; no write member is approved)
+T|System.IO.SearchOption||type whose members are approved one by one with a scope below (file reads only; no write member is approved)
+T|System.IO.Stream||type whose members are approved one by one with a scope below (file reads only; no write member is approved)
+T|System.IO.StreamReader||type whose members are approved one by one with a scope below (file reads only; no write member is approved)
+T|System.IO.TextReader||type whose members are approved one by one with a scope below (file reads only; no write member is approved)
+T|System.IO.TextWriter||type whose members are approved one by one with a scope below (file reads only; no write member is approved)
+T|System.Int32||framework type without side effects on files, processes, registry or network
+T|System.InvalidOperationException||framework type without side effects on files, processes, registry or network
+T|System.Linq.Enumerable||framework type without side effects on files, processes, registry or network
+T|System.Linq.IGrouping`2||framework type without side effects on files, processes, registry or network
+T|System.Linq.IOrderedEnumerable`1||framework type without side effects on files, processes, registry or network
+T|System.Math||framework type without side effects on files, processes, registry or network
+T|System.Nullable`1||framework type without side effects on files, processes, registry or network
+T|System.Object||framework type without side effects on files, processes, registry or network
+T|System.OutOfMemoryException||framework type without side effects on files, processes, registry or network
+T|System.ReadOnlySpan`1||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Assembly||type whose members are approved one by one with a scope below (file reads only; no write member is approved)
+T|System.Reflection.AssemblyCompanyAttribute||framework type without side effects on files, processes, registry or network
+T|System.Reflection.AssemblyConfigurationAttribute||framework type without side effects on files, processes, registry or network
+T|System.Reflection.AssemblyFileVersionAttribute||framework type without side effects on files, processes, registry or network
+T|System.Reflection.AssemblyInformationalVersionAttribute||framework type without side effects on files, processes, registry or network
+T|System.Reflection.AssemblyProductAttribute||framework type without side effects on files, processes, registry or network
+T|System.Reflection.AssemblyTitleAttribute||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Emit.OpCode||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Emit.OpCodes||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Emit.OperandType||framework type without side effects on files, processes, registry or network
+T|System.Reflection.MemberInfo||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.ArrayShape||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.AssemblyDefinition||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.AssemblyReference||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.AssemblyReferenceHandle||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.Ecma335.MetadataTokens||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.EntityHandle||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.HandleKind||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.IConstructedTypeProvider`1||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.ISZArrayTypeProvider`1||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.ISignatureTypeProvider`2||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.ISimpleTypeProvider`1||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.MemberReference||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.MemberReferenceHandle||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.MemberReferenceKind||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.MetadataReader||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.MethodBodyBlock||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.MethodDefinition||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.MethodDefinitionHandle||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.MethodDefinitionHandleCollection||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.MethodDefinitionHandleCollection/Enumerator||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.MethodSignature`1||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.MethodSpecification||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.MethodSpecificationHandle||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.PEReaderExtensions||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.PrimitiveTypeCode||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.StringHandle||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.TypeDefinition||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.TypeDefinitionHandle||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.TypeDefinitionHandleCollection||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.TypeDefinitionHandleCollection/Enumerator||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.TypeReference||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.TypeReferenceHandle||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.TypeSpecification||framework type without side effects on files, processes, registry or network
+T|System.Reflection.Metadata.TypeSpecificationHandle||framework type without side effects on files, processes, registry or network
+T|System.Reflection.MethodAttributes||framework type without side effects on files, processes, registry or network
+T|System.Reflection.MethodImplAttributes||framework type without side effects on files, processes, registry or network
+T|System.Reflection.PortableExecutable.PEReader||framework type without side effects on files, processes, registry or network
+T|System.Runtime.CompilerServices.CompilationRelaxationsAttribute||framework type without side effects on files, processes, registry or network
+T|System.Runtime.CompilerServices.CompilerGeneratedAttribute||framework type without side effects on files, processes, registry or network
+T|System.Runtime.CompilerServices.IsConst||framework type without side effects on files, processes, registry or network
+T|System.Runtime.CompilerServices.IsExternalInit||framework type without side effects on files, processes, registry or network
+T|System.Runtime.CompilerServices.NullableAttribute||framework type without side effects on files, processes, registry or network
+T|System.Runtime.CompilerServices.NullableContextAttribute||framework type without side effects on files, processes, registry or network
+T|System.Runtime.CompilerServices.RefSafetyRulesAttribute||framework type without side effects on files, processes, registry or network
+T|System.Runtime.CompilerServices.RuntimeCompatibilityAttribute||framework type without side effects on files, processes, registry or network
+T|System.Runtime.CompilerServices.TupleElementNamesAttribute||framework type without side effects on files, processes, registry or network
+T|System.Runtime.Versioning.SupportedOSPlatformAttribute||framework type without side effects on files, processes, registry or network
+T|System.Runtime.Versioning.TargetFrameworkAttribute||framework type without side effects on files, processes, registry or network
+T|System.Runtime.Versioning.TargetPlatformAttribute||framework type without side effects on files, processes, registry or network
+T|System.RuntimeTypeHandle||framework type without side effects on files, processes, registry or network
+T|System.Security.Cryptography.SHA256||framework type without side effects on files, processes, registry or network
+T|System.String||framework type without side effects on files, processes, registry or network
+T|System.StringComparer||framework type without side effects on files, processes, registry or network
+T|System.StringComparison||framework type without side effects on files, processes, registry or network
+T|System.StringSplitOptions||framework type without side effects on files, processes, registry or network
+T|System.Text.DecoderFallbackException||framework type without side effects on files, processes, registry or network
+T|System.Text.Encoding||framework type without side effects on files, processes, registry or network
+T|System.Text.Json.JsonException||framework type without side effects on files, processes, registry or network
+T|System.Text.Json.Nodes.JsonArray||framework type without side effects on files, processes, registry or network
+T|System.Text.Json.Nodes.JsonNode||framework type without side effects on files, processes, registry or network
+T|System.Text.Json.Nodes.JsonNodeOptions||framework type without side effects on files, processes, registry or network
+T|System.Text.Json.Nodes.JsonObject||framework type without side effects on files, processes, registry or network
+T|System.Text.Json.Nodes.JsonValue||framework type without side effects on files, processes, registry or network
+T|System.Text.RegularExpressions.Regex||framework type without side effects on files, processes, registry or network
+T|System.Text.RegularExpressions.RegexOptions||framework type without side effects on files, processes, registry or network
+T|System.Text.StringBuilder||framework type without side effects on files, processes, registry or network
+T|System.Text.UTF8Encoding||framework type without side effects on files, processes, registry or network
+T|System.Type||framework type without side effects on files, processes, registry or network
+T|System.ValueTuple`2||framework type without side effects on files, processes, registry or network
+T|System.ValueTuple`3||framework type without side effects on files, processes, registry or network
+T|System.ValueType||framework type without side effects on files, processes, registry or network
+M|Autodesk.AutoCAD.ApplicationServices.Core.Application::GetSystemVariable|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.RsSystemVariables|GetSystemVariable only (SetSystemVariable is a forbidden symbol)
+M|Autodesk.AutoCAD.ApplicationServices.Core.Application::get_DocumentManager|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.RsGateCommands|command-line status line and session handle only (Application.get_DocumentManager); the active document database is never touched
+M|Autodesk.AutoCAD.ApplicationServices.Document::get_Editor|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.RsGateCommands|command-line status line and session handle only (Document.get_Editor); the active document database is never touched
+M|Autodesk.AutoCAD.ApplicationServices.DocumentCollection::get_MdiActiveDocument|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.RsGateCommands|command-line status line and session handle only (DocumentCollection.get_MdiActiveDocument); the active document database is never touched
+M|Autodesk.AutoCAD.DatabaseServices.BlockReference::.ctor|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|creates a BlockReference in a side database the instrument created (SideDbWriter only)
+M|Autodesk.AutoCAD.DatabaseServices.BlockReference::get_BlockTransform|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (BlockReference.get_BlockTransform); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.BlockReference::get_DynamicBlockReferencePropertyCollection|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (BlockReference.get_DynamicBlockReferencePropertyCollection); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.BlockReference::get_IsDynamicBlock|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (BlockReference.get_IsDynamicBlock); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.BlockReference::get_Normal|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (BlockReference.get_Normal); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.BlockReference::get_Rotation|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (BlockReference.get_Rotation); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.BlockReference::get_ScaleFactors|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (BlockReference.get_ScaleFactors); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.BlockReference::set_ScaleFactors|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|write member on a side database object (BlockReference.set_ScaleFactors); approved only in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.BlockTableRecord::.ctor|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|creates a BlockTableRecord in a side database the instrument created (SideDbWriter only)
+M|Autodesk.AutoCAD.DatabaseServices.BlockTableRecord::AppendEntity|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|write member on a side database object (BlockTableRecord.AppendEntity); approved only in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.BlockTableRecord::GetEnumerator|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (BlockTableRecord.GetEnumerator); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.BlockTableRecord::ModelSpace|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (BlockTableRecord.ModelSpace); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.BlockTableRecord::ModelSpace|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|access to a side database object (BlockTableRecord.ModelSpace) in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.BlockTableRecord::get_IsAnonymous|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (BlockTableRecord.get_IsAnonymous); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.BlockTableRecord::get_IsDynamicBlock|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (BlockTableRecord.get_IsDynamicBlock); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.BlockTableRecord::get_IsLayout|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (BlockTableRecord.get_IsLayout); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.BlockTableRecordEnumerator::MoveNext|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (BlockTableRecordEnumerator.MoveNext); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.BlockTableRecordEnumerator::get_Current|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (BlockTableRecordEnumerator.get_Current); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.DBObject::GetXDataForApplication|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (DBObject.GetXDataForApplication); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.DBObject::get_Handle|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|access to a side database object (DBObject.get_Handle) in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.Database::.ctor|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|the side-database factory: new Database(true, true) / new Database(false, true), noDocument = true (the scan checks the constants)
+M|Autodesk.AutoCAD.DatabaseServices.Database::CloseInput|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|releases the input file after the read of a side database
+M|Autodesk.AutoCAD.DatabaseServices.Database::ReadDwgFile|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|fills a side database from a source the guard authorized (private copy or saved scratch file); path checked by the scan
+M|Autodesk.AutoCAD.DatabaseServices.Database::SaveAs|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.ScratchSaver|THE single save: SaveAs(string, DwgVersion) of a SideDbHandle to a ScratchTarget the guard authorized (the scan checks the shape)
+M|Autodesk.AutoCAD.DatabaseServices.Database::WblockCloneObjects|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|clones one dynamic definition from the private-copy side database INTO the scratch side database (BA-05 section 5 step 2)
+M|Autodesk.AutoCAD.DatabaseServices.Database::get_BlockTableId|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (Database.get_BlockTableId); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.Database::get_BlockTableId|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|access to a side database object (Database.get_BlockTableId) in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.Database::get_Dimstyle|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (Database.get_Dimstyle); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.Database::get_Dimstyle|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|access to a side database object (Database.get_Dimstyle) in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.Database::get_TransactionManager|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (Database.get_TransactionManager); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.Database::get_TransactionManager|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|access to a side database object (Database.get_TransactionManager) in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.DimStyleTableRecord::get_Dimasz|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (DimStyleTableRecord.get_Dimasz); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.DimStyleTableRecord::get_Dimdec|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (DimStyleTableRecord.get_Dimdec); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.DimStyleTableRecord::get_Dimexe|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (DimStyleTableRecord.get_Dimexe); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.DimStyleTableRecord::get_Dimexo|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (DimStyleTableRecord.get_Dimexo); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.DimStyleTableRecord::get_Dimgap|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (DimStyleTableRecord.get_Dimgap); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.DimStyleTableRecord::get_Dimscale|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (DimStyleTableRecord.get_Dimscale); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.DimStyleTableRecord::get_Dimtad|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (DimStyleTableRecord.get_Dimtad); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.DimStyleTableRecord::get_Dimtxt|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (DimStyleTableRecord.get_Dimtxt); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.Dimension::RecomputeDimensionBlock|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|write member on a side database object (Dimension.RecomputeDimensionBlock); approved only in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.Dimension::set_Dimasz|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|write member on a side database object (Dimension.set_Dimasz); approved only in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.Dimension::set_Dimdec|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|write member on a side database object (Dimension.set_Dimdec); approved only in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.Dimension::set_Dimexe|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|write member on a side database object (Dimension.set_Dimexe); approved only in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.Dimension::set_Dimexo|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|write member on a side database object (Dimension.set_Dimexo); approved only in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.Dimension::set_Dimgap|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|write member on a side database object (Dimension.set_Dimgap); approved only in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.Dimension::set_Dimscale|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|write member on a side database object (Dimension.set_Dimscale); approved only in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.Dimension::set_Dimtad|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|write member on a side database object (Dimension.set_Dimtad); approved only in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.Dimension::set_Dimtxt|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|write member on a side database object (Dimension.set_Dimtxt); approved only in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.DynamicBlockReferenceProperty::GetAllowedValues|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (DynamicBlockReferenceProperty.GetAllowedValues); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.DynamicBlockReferenceProperty::get_PropertyName|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (DynamicBlockReferenceProperty.get_PropertyName); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.DynamicBlockReferenceProperty::get_ReadOnly|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (DynamicBlockReferenceProperty.get_ReadOnly); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.DynamicBlockReferenceProperty::get_UnitsType|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (DynamicBlockReferenceProperty.get_UnitsType); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.DynamicBlockReferenceProperty::get_Value|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (DynamicBlockReferenceProperty.get_Value); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.DynamicBlockReferencePropertyCollection::GetEnumerator|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (DynamicBlockReferencePropertyCollection.GetEnumerator); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.IdMapping::.ctor|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|creates a IdMapping in a side database the instrument created (SideDbWriter only)
+M|Autodesk.AutoCAD.DatabaseServices.Line::.ctor|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|creates a Line in a side database the instrument created (SideDbWriter only)
+M|Autodesk.AutoCAD.DatabaseServices.ObjectId::get_Handle|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (ObjectId.get_Handle); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.ObjectIdCollection::.ctor|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|creates a ObjectIdCollection in a side database the instrument created (SideDbWriter only)
+M|Autodesk.AutoCAD.DatabaseServices.ObjectIdCollection::Add|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|write member on a side database object (ObjectIdCollection.Add); approved only in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.ResultBuffer::AsArray|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (ResultBuffer.AsArray); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.RotatedDimension::.ctor|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|creates a RotatedDimension in a side database the instrument created (SideDbWriter only)
+M|Autodesk.AutoCAD.DatabaseServices.SymbolTable::Add|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|write member on a side database object (SymbolTable.Add); approved only in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.SymbolTable::GetEnumerator|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (SymbolTable.GetEnumerator); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.SymbolTable::get_Item|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (SymbolTable.get_Item); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.SymbolTable::get_Item|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|access to a side database object (SymbolTable.get_Item) in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.SymbolTableEnumerator::MoveNext|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (SymbolTableEnumerator.MoveNext); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.SymbolTableEnumerator::get_Current|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (SymbolTableEnumerator.get_Current); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.SymbolTableRecord::get_Name|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (SymbolTableRecord.get_Name); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.SymbolTableRecord::set_Name|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|write member on a side database object (SymbolTableRecord.set_Name); approved only in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.Transaction::AddNewlyCreatedDBObject|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|write member on a side database object (Transaction.AddNewlyCreatedDBObject); approved only in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.Transaction::Commit|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|write member on a side database object (Transaction.Commit); approved only in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.Transaction::GetObject|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|opens objects of a side database with the constant OpenMode.ForRead only (any other constant is a scan violation outside SideDbWriter)
+M|Autodesk.AutoCAD.DatabaseServices.Transaction::GetObject|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|opens objects of its own side databases with a CONSTANT OpenMode (ForRead or ForWrite); ForNotify and UpgradeOpen stay refused by the scan
+M|Autodesk.AutoCAD.DatabaseServices.TransactionManager::StartOpenCloseTransaction|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (TransactionManager.StartOpenCloseTransaction); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.TransactionManager::StartOpenCloseTransaction|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|access to a side database object (TransactionManager.StartOpenCloseTransaction) in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.TransactionManager::StartTransaction|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|access to a side database object (TransactionManager.StartTransaction) in SideDbWriter
+M|Autodesk.AutoCAD.DatabaseServices.TypedValue::get_TypeCode|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (TypedValue.get_TypeCode); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.DatabaseServices.TypedValue::get_Value|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (TypedValue.get_Value); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.EditorInput.Editor::WriteMessage|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.RsGateCommands|command-line status line and session handle only (Editor.WriteMessage); the active document database is never touched
+M|Autodesk.AutoCAD.Geometry.Matrix3d::get_ElementAt|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (Matrix3d.get_ElementAt); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.Geometry.Point3d::.ctor|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|creates a Point3d in a side database the instrument created (SideDbWriter only)
+M|Autodesk.AutoCAD.Geometry.Point3d::get_Origin|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|access to a side database object (Point3d.get_Origin) in SideDbWriter
+M|Autodesk.AutoCAD.Geometry.Scale3d::.ctor|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|creates a Scale3d in a side database the instrument created (SideDbWriter only)
+M|Autodesk.AutoCAD.Geometry.Scale3d::get_X|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (Scale3d.get_X); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.Geometry.Scale3d::get_Y|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (Scale3d.get_Y); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.Geometry.Scale3d::get_Z|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (Scale3d.get_Z); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.Geometry.Vector3d::get_X|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (Vector3d.get_X); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.Geometry.Vector3d::get_Y|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (Vector3d.get_Y); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.Geometry.Vector3d::get_Z|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbReader|read-only access (Vector3d.get_Z); SideDbReader opens objects with the constant OpenMode.ForRead
+M|Autodesk.AutoCAD.Runtime.CommandClassAttribute::.ctor||command registration attribute; the registered commands are pinned by expected-commands-rs.txt
+M|Autodesk.AutoCAD.Runtime.CommandMethodAttribute::.ctor||command registration attribute; the registered commands are pinned by expected-commands-rs.txt
+M|Autodesk.AutoCAD.Runtime.DisposableWrapper::Dispose|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbHandle|disposes the side database that SideDbHandle wraps
+M|I52Ct21d.HostFacts.Core.DeclaredFile::.ctor||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.DoubleBits::FromHex||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.DoubleBits::Hex||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.EvidenceWriter::.ctor|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.RsGateCommands|the single evidence writer of the R0 core: create-new result files under the evidence root
+M|I52Ct21d.HostFacts.Core.EvidenceWriter::ValidateName|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.ScratchRootGuard|the single evidence writer of the R0 core: create-new result files under the evidence root
+M|I52Ct21d.HostFacts.Core.EvidenceWriter::WriteNewText|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.DynCensusRunner|the single evidence writer of the R0 core: create-new result files under the evidence root
+M|I52Ct21d.HostFacts.Core.EvidenceWriter::WriteNewText|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.TolScaleRunner|the single evidence writer of the R0 core: create-new result files under the evidence root
+M|I52Ct21d.HostFacts.Core.EvidenceWriter::WriteNewText|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.WriteBackRunner|the single evidence writer of the R0 core: create-new result files under the evidence root
+M|I52Ct21d.HostFacts.Core.EvidenceWriter::get_Ledger|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.DynCensusRunner|the single evidence writer of the R0 core: create-new result files under the evidence root
+M|I52Ct21d.HostFacts.Core.EvidenceWriter::get_Ledger|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.TolScaleRunner|the single evidence writer of the R0 core: create-new result files under the evidence root
+M|I52Ct21d.HostFacts.Core.EvidenceWriter::get_Ledger|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.WriteBackRunner|the single evidence writer of the R0 core: create-new result files under the evidence root
+M|I52Ct21d.HostFacts.Core.EvidenceWriter::get_Root|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.DynCensusRunner|the single evidence writer of the R0 core: create-new result files under the evidence root
+M|I52Ct21d.HostFacts.Core.EvidenceWriter::get_Root|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.TolScaleRunner|the single evidence writer of the R0 core: create-new result files under the evidence root
+M|I52Ct21d.HostFacts.Core.EvidenceWriter::get_Root|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.WriteBackRunner|the single evidence writer of the R0 core: create-new result files under the evidence root
+M|I52Ct21d.HostFacts.Core.HostFactRecord::Build||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.IRunEnvironment::get_ProcessId||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.IRunEnvironment::get_UtcNow||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.ISystemVariables::Read||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.InstrumentInfo::.ctor||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.InstrumentInfo::get_Name||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.InstrumentInfo::get_SelfPinStatus||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.InstrumentInfo::get_Sha256||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.Jcs::ParseStrict||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.Jcs::Serialize||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.Jcs::SerializeUtf8||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.JsonSchemaLite::.ctor||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.JsonSchemaLite::Validate||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.ProbeObservation::.ctor||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.ProbeRow::get_Component||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.ProbeRow::get_Family||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.ProbeRow::get_Id||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.ProbeRow::get_InScope||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.ProbeRow::get_Intended||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.ProbeRow::get_K||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.ProbeRow::get_SignPattern||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.ProbeStatistics::Compute||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.ProbeStatisticsResult::get_BitLevelSignedZeroRows||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.ProbeStatisticsResult::get_Complete||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.ProbeStatisticsResult::get_Da||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.ProbeStatisticsResult::get_DaChar||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.ProbeStatisticsResult::get_DaOp1||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.ProbeStatisticsResult::get_DaOp2||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.ProbeStatisticsResult::get_Kpres||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.ProbeTable::Generate||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.ProbeTable::LadderLevels||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.RecordJson::Arr||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.RecordJson::Seal||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.RecordJson::Strings||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.RecordJson::ToFileText||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.RecordJson::Tuple||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.RunDesignation::.ctor||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.SelfPin::Verify|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.RsGateCommands|self-hash pin comparison of the DLL on disk with its .pin sidecar (reads only)
+M|I52Ct21d.HostFacts.Core.Sha256Hex::Of||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.Sha256Hex::OfFile||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.Sha256Hex::OfUtf8||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.SysVarReading::.ctor||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.SysVarReading::get_Error||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Core.SysVarReading::get_ValueText||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.AllowedValueReading::.ctor||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.DimensionReading::.ctor||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.DynCensusRunner::Run||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.DynamicBlockProbe::.ctor||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.DynamicPropertyReading::.ctor||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.OverrideAssignment::get_Value||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.OverrideAssignment::get_Variable||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.PriorDeclarations::Load||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.ReadableSource::get_FullPath||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.ReadableSource::get_Kind||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.ReferenceReading::.ctor||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.RowConstruction::.ctor||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.RsDesignation::Parse||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.RsDesignation::get_EvidenceRoot||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.RsRefusedException::get_Reasons||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.RsRefusedException::.ctor|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.RsGateCommands|constructed only to report a refusal of an unusable designation; nothing was touched
+M|I52Ct21d.HostFacts.Rs.Core.RsRunOutcome::get_Status||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.ScenarioConstruction::.ctor||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.ScratchRootGuard::AssertCreatable||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.ScratchRootGuard::AssertReadable||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.ScratchRootGuard::RecordSaved||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.ScratchTarget::get_FullPath||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.ScratchVerification::get_HashMismatches||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.ScratchVerification::get_Missing||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.ScratchVerification::get_Ok||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.ScratchVerification::get_ReparsePoints||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.ScratchVerification::get_Undeclared||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.ScratchVerifier::Verify||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.SideDbLedger::MarkDisposed||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.SideDbLedger::Register||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.StoredEntryReading::.ctor||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.StyleValue::.ctor||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.TolScaleOfflineVerifier::Verify||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.TolScaleOutcome::get_Result||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.TolScaleRowMath::Values||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.TolScaleRunner::Run||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.WriteBackRunner::Run||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.WriteBackScenario::get_Assignments||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Rs.Core.WriteBackScenario::get_Id||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.AllowEntry::KindLetter||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.AllowEntry::get_Key||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.AllowEntry::get_Line||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.ApiAllowlist::LoadFile||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.ApiAllowlist::Unused||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.ApiAllowlist::get_Entries||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.ApiAllowlist::get_Sha256||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.CallerEntry::get_Key||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.CallerEntry::get_Line||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.CommandEntry::get_Key||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.CommandEntry::get_Line||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan::ListImports||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.ForbiddenApiScan::ScanDetailed||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.IlReader::BranchTargets||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.IlReader::ConstantI4||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.IlReader::Decode||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.Instr::get_Offset||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.Instr::get_Op||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.Instr::get_Operand||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.PrivilegedObservations::get_Callers||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.PrivilegedObservations::get_Commands||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.ScanConfig::.ctor||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.ScanConfig::For||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.ScanConfig::set_Allowlist||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.ScanConfig::set_Policy||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.ScanOutcome::get_ImportRowsChecked||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.ScanOutcome::get_Observed||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.ScanOutcome::get_Violations||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.ScanPolicy::AllowsCaller||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.ScanPolicy::LoadFiles||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.ScanPolicy::UnusedCallers||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.ScanPolicy::UnusedCommands||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.ScanPolicy::get_Callers||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.ScanPolicy::get_CallersSha256||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.ScanPolicy::get_Commands||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.ScanPolicy::get_CommandsSha256||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.ScanPolicy::get_Surface||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.ScanPolicy::get_SurfaceSha256||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.Violation::.ctor||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.Violation::get_Detail||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.Violation::get_IlOffset||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.Violation::get_Method||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.Violation::get_Rule||member of a reused or sibling library of this folder
+M|I52Ct21d.HostFacts.Tools.Scan.Violation::get_Type||member of a reused or sibling library of this folder
+M|System.Action`2::.ctor||member without side effects on files, processes, registry or network
+M|System.Action`2::Invoke||member without side effects on files, processes, registry or network
+M|System.ArgumentException::.ctor||member without side effects on files, processes, registry or network
+M|System.Array::Empty||member without side effects on files, processes, registry or network
+M|System.BitConverter::UInt64BitsToDouble||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.Dictionary`2/KeyCollection/Enumerator::MoveNext||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.Dictionary`2/KeyCollection/Enumerator::get_Current||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.Dictionary`2/KeyCollection::GetEnumerator||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.Dictionary`2::.ctor||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.Dictionary`2::TryAdd||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.Dictionary`2::TryGetValue||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.Dictionary`2::get_Keys||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.Dictionary`2::get_Values||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.Dictionary`2::set_Item||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.HashSet`1::.ctor||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.HashSet`1::Add||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.HashSet`1::Contains||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.HashSet`1::Remove||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.HashSet`1::get_Count||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.IEnumerable`1::GetEnumerator||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.IEnumerator`1::get_Current||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.IReadOnlyCollection`1::get_Count||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.IReadOnlyDictionary`2::TryGetValue||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.IReadOnlyDictionary`2::get_Item||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.IReadOnlyList`1::get_Item||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.KeyValuePair`2::Deconstruct||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.KeyValuePair`2::get_Key||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.KeyValuePair`2::get_Value||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.List`1/Enumerator::MoveNext||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.List`1/Enumerator::get_Current||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.List`1::.ctor||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.List`1::Add||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.List`1::AddRange||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.List`1::Contains||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.List`1::GetEnumerator||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.List`1::Sort||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.List`1::get_Count||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.List`1::get_Item||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.SortedDictionary`2/Enumerator::MoveNext||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.SortedDictionary`2/Enumerator::get_Current||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.SortedDictionary`2::.ctor||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.SortedDictionary`2::GetEnumerator||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.SortedDictionary`2::TryGetValue||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.SortedDictionary`2::set_Item||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.SortedSet`1::.ctor||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.SortedSet`1::Add||member without side effects on files, processes, registry or network
+M|System.Collections.Generic.SortedSet`1::get_Count||member without side effects on files, processes, registry or network
+M|System.Collections.IEnumerator::MoveNext||member without side effects on files, processes, registry or network
+M|System.Collections.IEnumerator::get_Current||member without side effects on files, processes, registry or network
+M|System.Collections.Immutable.ImmutableArray::Create||member without side effects on files, processes, registry or network
+M|System.Console::get_Error|I52Ct21d.HostFacts.Rs.Tools::I52Ct21d.HostFacts.Rs.Tools.Program|console output of the offline tools
+M|System.Console::get_Out|I52Ct21d.HostFacts.Rs.Tools::I52Ct21d.HostFacts.Rs.Tools.Program|console output of the offline tools
+M|System.Convert::ToHexString||member without side effects on files, processes, registry or network
+M|System.Convert::ToString||member without side effects on files, processes, registry or network
+M|System.Convert::ToUInt64||member without side effects on files, processes, registry or network
+M|System.DateTime::ToString||member without side effects on files, processes, registry or network
+M|System.DateTime::ToUniversalTime||member without side effects on files, processes, registry or network
+M|System.DateTime::get_UtcNow||member without side effects on files, processes, registry or network
+M|System.Diagnostics.DebuggableAttribute::.ctor||member without side effects on files, processes, registry or network
+M|System.Diagnostics.Process::GetCurrentProcess|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.RsEnvironment|process id and start time for the volatile part of the records (GetCurrentProcess and getters only)
+M|System.Diagnostics.Process::get_Id|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.RsEnvironment|process id and start time for the volatile part of the records (GetCurrentProcess and getters only)
+M|System.Diagnostics.Process::get_StartTime|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.RsEnvironment|process id and start time for the volatile part of the records (GetCurrentProcess and getters only)
+M|System.Double::IsFinite||member without side effects on files, processes, registry or network
+M|System.Double::ToString||member without side effects on files, processes, registry or network
+M|System.Double::TryParse||member without side effects on files, processes, registry or network
+M|System.Exception::.ctor||member without side effects on files, processes, registry or network
+M|System.Exception::GetType||member without side effects on files, processes, registry or network
+M|System.Exception::get_Message||member without side effects on files, processes, registry or network
+M|System.FormatException::.ctor||member without side effects on files, processes, registry or network
+M|System.Func`2::.ctor||member without side effects on files, processes, registry or network
+M|System.Func`3::.ctor||member without side effects on files, processes, registry or network
+M|System.Func`3::Invoke||member without side effects on files, processes, registry or network
+M|System.Globalization.CultureInfo::get_InvariantCulture||member without side effects on files, processes, registry or network
+M|System.IDisposable::Dispose||member without side effects on files, processes, registry or network
+M|System.IO.Directory::EnumerateFileSystemEntries|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.RsPreflight|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Directory::EnumerateFileSystemEntries|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.ScratchRootGuard|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Directory::EnumerateFileSystemEntries|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.ScratchVerifier|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Directory::EnumerateFiles|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.PriorDeclarations|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Directory::Exists|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.PathRegions|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Directory::Exists|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.RsPreflight|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Directory::Exists|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.ScratchRootGuard|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Directory::Exists|I52Ct21d.HostFacts.Rs.Tools::I52Ct21d.HostFacts.Rs.Tools.Program|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.File::Exists|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.PathRegions|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.File::Exists|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.RsPreflight|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.File::Exists|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.ScratchRootGuard|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.File::Exists|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.ScratchVerifier|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.File::Exists|I52Ct21d.HostFacts.Rs.Tools::I52Ct21d.HostFacts.Rs.Tools.HashesLedger|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.File::GetAttributes|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.PathRegions|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.File::GetAttributes|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.RsPreflight|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.File::GetAttributes|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.ScratchRootGuard|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.File::GetAttributes|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.ScratchVerifier|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.File::ReadAllBytes|I52Ct21d.HostFacts.Rs.Tools::I52Ct21d.HostFacts.Rs.Tools.Program|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.File::ReadAllBytes|I52Ct21d.HostFacts.Rs.Tools::I52Ct21d.HostFacts.Rs.Tools.RsScan|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.File::ReadAllBytes|I52Ct21d.HostFacts.Rs.Tools::I52Ct21d.HostFacts.Rs.Tools.RsWaivers|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.File::ReadAllText|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.PriorDeclarations|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.File::ReadAllText|I52Ct21d.HostFacts.Rs.Tools::I52Ct21d.HostFacts.Rs.Tools.Program|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.File::ReadAllText|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.RsGateCommands|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.FileInfo::.ctor|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.ScratchRootGuard|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.FileInfo::get_Length|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.ScratchRootGuard|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.FileNotFoundException::.ctor|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.RsSchemas|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Path::AltDirectorySeparatorChar|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.PathRegions|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Path::Combine|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.ScratchRootGuard|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Path::Combine|I52Ct21d.HostFacts.Rs.Tools::I52Ct21d.HostFacts.Rs.Tools.HashesLedger|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Path::Combine|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.RsGateCommands|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Path::DirectorySeparatorChar|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.PathRegions|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Path::DirectorySeparatorChar|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.ScratchVerifier|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Path::DirectorySeparatorChar|I52Ct21d.HostFacts.Rs.Tools::I52Ct21d.HostFacts.Rs.Tools.HashesLedger|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Path::GetDirectoryName|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.PathRegions|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Path::GetDirectoryName|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.ScratchRootGuard|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Path::GetDirectoryName|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.RsGateCommands|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Path::GetFileName|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.PriorDeclarations|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Path::GetFileName|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.RsPreflight|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Path::GetFileName|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.ScratchRootGuard|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Path::GetFileName|I52Ct21d.HostFacts.Rs.Tools::I52Ct21d.HostFacts.Rs.Tools.Program|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Path::GetFileName|I52Ct21d.HostFacts.Rs.Tools::I52Ct21d.HostFacts.Rs.Tools.RsScan|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Path::GetFileName|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.SideDbWriter|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Path::GetFileNameWithoutExtension|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.RsGateCommands|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Path::GetFullPath|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.PathRegions|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Path::GetPathRoot|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.PathRegions|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Path::GetFullPath|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.ScratchRootGuard|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Path::GetRelativePath|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.ScratchVerifier|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.Path::IsPathFullyQualified|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.PathRegions|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.StreamReader::.ctor|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.RsSchemas|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.TextReader::ReadToEnd|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.RsSchemas|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.TextWriter::Write|I52Ct21d.HostFacts.Rs.Tools::I52Ct21d.HostFacts.Rs.Tools.Program|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.IO.TextWriter::WriteLine|I52Ct21d.HostFacts.Rs.Tools::I52Ct21d.HostFacts.Rs.Tools.Program|file read, existence check or path arithmetic (no write member of System.IO is approved)
+M|System.Int32::ToString||member without side effects on files, processes, registry or network
+M|System.Int32::TryParse||member without side effects on files, processes, registry or network
+M|System.InvalidOperationException::.ctor||member without side effects on files, processes, registry or network
+M|System.Linq.Enumerable::All||member without side effects on files, processes, registry or network
+M|System.Linq.Enumerable::Any||member without side effects on files, processes, registry or network
+M|System.Linq.Enumerable::Contains||member without side effects on files, processes, registry or network
+M|System.Linq.Enumerable::Count||member without side effects on files, processes, registry or network
+M|System.Linq.Enumerable::Distinct||member without side effects on files, processes, registry or network
+M|System.Linq.Enumerable::FirstOrDefault||member without side effects on files, processes, registry or network
+M|System.Linq.Enumerable::GroupBy||member without side effects on files, processes, registry or network
+M|System.Linq.Enumerable::OrderBy||member without side effects on files, processes, registry or network
+M|System.Linq.Enumerable::Select||member without side effects on files, processes, registry or network
+M|System.Linq.Enumerable::SelectMany||member without side effects on files, processes, registry or network
+M|System.Linq.Enumerable::SequenceEqual||member without side effects on files, processes, registry or network
+M|System.Linq.Enumerable::Single||member without side effects on files, processes, registry or network
+M|System.Linq.Enumerable::Skip||member without side effects on files, processes, registry or network
+M|System.Linq.Enumerable::Sum||member without side effects on files, processes, registry or network
+M|System.Linq.Enumerable::Take||member without side effects on files, processes, registry or network
+M|System.Linq.Enumerable::ThenBy||member without side effects on files, processes, registry or network
+M|System.Linq.Enumerable::ToArray||member without side effects on files, processes, registry or network
+M|System.Linq.Enumerable::ToList||member without side effects on files, processes, registry or network
+M|System.Linq.Enumerable::Where||member without side effects on files, processes, registry or network
+M|System.Linq.Enumerable::Zip||member without side effects on files, processes, registry or network
+M|System.Math::Abs||member without side effects on files, processes, registry or network
+M|System.Math::Max||member without side effects on files, processes, registry or network
+M|System.Math::Pow||member without side effects on files, processes, registry or network
+M|System.Math::Sign||member without side effects on files, processes, registry or network
+M|System.Math::Sqrt||member without side effects on files, processes, registry or network
+M|System.Nullable`1::.ctor||member without side effects on files, processes, registry or network
+M|System.Nullable`1::GetValueOrDefault||member without side effects on files, processes, registry or network
+M|System.Nullable`1::get_HasValue||member without side effects on files, processes, registry or network
+M|System.Nullable`1::get_Value||member without side effects on files, processes, registry or network
+M|System.Object::.ctor||member without side effects on files, processes, registry or network
+M|System.Object::GetType||member without side effects on files, processes, registry or network
+M|System.Object::ToString||member without side effects on files, processes, registry or network
+M|System.ReadOnlySpan`1::.ctor||member without side effects on files, processes, registry or network
+M|System.ReadOnlySpan`1::op_Implicit||member without side effects on files, processes, registry or network
+M|System.Reflection.Assembly::GetManifestResourceStream|I52Ct21d.HostFacts.Rs.Core::I52Ct21d.HostFacts.Rs.Core.RsSchemas|location of the running DLL / embedded schema stream (reads only)
+M|System.Reflection.Assembly::get_Location|I52Ct21d.HostFacts.Rs::I52Ct21d.HostFacts.Rs.RsGateCommands|location of the running DLL / embedded schema stream (reads only)
+M|System.Reflection.AssemblyCompanyAttribute::.ctor||member without side effects on files, processes, registry or network
+M|System.Reflection.AssemblyConfigurationAttribute::.ctor||member without side effects on files, processes, registry or network
+M|System.Reflection.AssemblyFileVersionAttribute::.ctor||member without side effects on files, processes, registry or network
+M|System.Reflection.AssemblyInformationalVersionAttribute::.ctor||member without side effects on files, processes, registry or network
+M|System.Reflection.AssemblyProductAttribute::.ctor||member without side effects on files, processes, registry or network
+M|System.Reflection.AssemblyTitleAttribute::.ctor||member without side effects on files, processes, registry or network
+M|System.Reflection.Emit.OpCode::get_OperandType||member without side effects on files, processes, registry or network
+M|System.Reflection.Emit.OpCode::op_Equality||member without side effects on files, processes, registry or network
+M|System.Reflection.Emit.OpCode::op_Inequality||member without side effects on files, processes, registry or network
+M|System.Reflection.Emit.OpCodes::Newobj||member without side effects on files, processes, registry or network
+M|System.Reflection.Emit.OpCodes::Ret||member without side effects on files, processes, registry or network
+M|System.Reflection.Emit.OpCodes::Rethrow||member without side effects on files, processes, registry or network
+M|System.Reflection.Emit.OpCodes::Throw||member without side effects on files, processes, registry or network
+M|System.Reflection.MemberInfo::get_Name||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.ArrayShape::get_Rank||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.AssemblyDefinition::get_Name||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.AssemblyReference::get_Name||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.AssemblyReferenceHandle::op_Explicit||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.Ecma335.MetadataTokens::EntityHandle||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.EntityHandle::get_Kind||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MemberReference::DecodeMethodSignature||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MemberReference::GetKind||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MemberReference::get_Name||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MemberReference::get_Parent||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MemberReferenceHandle::op_Explicit||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MetadataReader::GetAssemblyDefinition||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MetadataReader::GetAssemblyReference||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MetadataReader::GetMemberReference||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MetadataReader::GetMethodDefinition||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MetadataReader::GetMethodSpecification||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MetadataReader::GetString||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MetadataReader::GetTypeDefinition||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MetadataReader::GetTypeReference||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MetadataReader::GetTypeSpecification||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MetadataReader::get_TypeDefinitions||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MethodBodyBlock::GetILBytes||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MethodDefinition::DecodeSignature||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MethodDefinition::GetDeclaringType||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MethodDefinition::get_Attributes||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MethodDefinition::get_ImplAttributes||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MethodDefinition::get_Name||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MethodDefinition::get_RelativeVirtualAddress||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MethodDefinitionHandle::op_Explicit||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MethodDefinitionHandleCollection/Enumerator::MoveNext||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MethodDefinitionHandleCollection/Enumerator::get_Current||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MethodDefinitionHandleCollection::GetEnumerator||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MethodSignature`1::get_ParameterTypes||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MethodSignature`1::get_ReturnType||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MethodSpecification::get_Method||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.MethodSpecificationHandle::op_Explicit||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.PEReaderExtensions::GetMetadataReader||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.PEReaderExtensions::GetMethodBody||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.TypeDefinition::GetDeclaringType||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.TypeDefinition::GetMethods||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.TypeDefinition::get_Name||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.TypeDefinition::get_Namespace||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.TypeDefinitionHandle::get_IsNil||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.TypeDefinitionHandle::op_Explicit||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.TypeDefinitionHandleCollection/Enumerator::MoveNext||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.TypeDefinitionHandleCollection/Enumerator::get_Current||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.TypeDefinitionHandleCollection::GetEnumerator||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.TypeReference::get_Name||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.TypeReference::get_Namespace||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.TypeReference::get_ResolutionScope||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.TypeReferenceHandle::op_Explicit||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.TypeSpecification::DecodeSignature||member without side effects on files, processes, registry or network
+M|System.Reflection.Metadata.TypeSpecificationHandle::op_Explicit||member without side effects on files, processes, registry or network
+M|System.Reflection.PortableExecutable.PEReader::.ctor||member without side effects on files, processes, registry or network
+M|System.Runtime.CompilerServices.CompilationRelaxationsAttribute::.ctor||member without side effects on files, processes, registry or network
+M|System.Runtime.CompilerServices.CompilerGeneratedAttribute::.ctor||member without side effects on files, processes, registry or network
+M|System.Runtime.CompilerServices.NullableAttribute::.ctor||member without side effects on files, processes, registry or network
+M|System.Runtime.CompilerServices.NullableContextAttribute::.ctor||member without side effects on files, processes, registry or network
+M|System.Runtime.CompilerServices.RefSafetyRulesAttribute::.ctor||member without side effects on files, processes, registry or network
+M|System.Runtime.CompilerServices.RuntimeCompatibilityAttribute::.ctor||member without side effects on files, processes, registry or network
+M|System.Runtime.CompilerServices.TupleElementNamesAttribute::.ctor||member without side effects on files, processes, registry or network
+M|System.Runtime.Versioning.SupportedOSPlatformAttribute::.ctor||member without side effects on files, processes, registry or network
+M|System.Runtime.Versioning.TargetFrameworkAttribute::.ctor||member without side effects on files, processes, registry or network
+M|System.Runtime.Versioning.TargetPlatformAttribute::.ctor||member without side effects on files, processes, registry or network
+M|System.Security.Cryptography.SHA256::HashData||member without side effects on files, processes, registry or network
+M|System.String::.ctor||member without side effects on files, processes, registry or network
+M|System.String::Concat||member without side effects on files, processes, registry or network
+M|System.String::Contains||member without side effects on files, processes, registry or network
+M|System.String::Empty||member without side effects on files, processes, registry or network
+M|System.String::EndsWith||member without side effects on files, processes, registry or network
+M|System.String::Equals||member without side effects on files, processes, registry or network
+M|System.String::IndexOf||member without side effects on files, processes, registry or network
+M|System.String::IsNullOrEmpty||member without side effects on files, processes, registry or network
+M|System.String::IsNullOrWhiteSpace||member without side effects on files, processes, registry or network
+M|System.String::Join||member without side effects on files, processes, registry or network
+M|System.String::Replace||member without side effects on files, processes, registry or network
+M|System.String::Split||member without side effects on files, processes, registry or network
+M|System.String::StartsWith||member without side effects on files, processes, registry or network
+M|System.String::Substring||member without side effects on files, processes, registry or network
+M|System.String::ToLowerInvariant||member without side effects on files, processes, registry or network
+M|System.String::ToUpperInvariant||member without side effects on files, processes, registry or network
+M|System.String::Trim||member without side effects on files, processes, registry or network
+M|System.String::TrimEnd||member without side effects on files, processes, registry or network
+M|System.String::get_Chars||member without side effects on files, processes, registry or network
+M|System.String::get_Length||member without side effects on files, processes, registry or network
+M|System.String::op_Equality||member without side effects on files, processes, registry or network
+M|System.String::op_Implicit||member without side effects on files, processes, registry or network
+M|System.String::op_Inequality||member without side effects on files, processes, registry or network
+M|System.StringComparer::get_Ordinal||member without side effects on files, processes, registry or network
+M|System.StringComparer::get_OrdinalIgnoreCase||member without side effects on files, processes, registry or network
+M|System.Text.Encoding::GetBytes||member without side effects on files, processes, registry or network
+M|System.Text.Encoding::GetString||member without side effects on files, processes, registry or network
+M|System.Text.Json.Nodes.JsonArray::.ctor||member without side effects on files, processes, registry or network
+M|System.Text.Json.Nodes.JsonArray::Add||member without side effects on files, processes, registry or network
+M|System.Text.Json.Nodes.JsonArray::GetEnumerator||member without side effects on files, processes, registry or network
+M|System.Text.Json.Nodes.JsonArray::get_Count||member without side effects on files, processes, registry or network
+M|System.Text.Json.Nodes.JsonNode::AsArray||member without side effects on files, processes, registry or network
+M|System.Text.Json.Nodes.JsonNode::DeepClone||member without side effects on files, processes, registry or network
+M|System.Text.Json.Nodes.JsonNode::GetValue||member without side effects on files, processes, registry or network
+M|System.Text.Json.Nodes.JsonNode::get_Item||member without side effects on files, processes, registry or network
+M|System.Text.Json.Nodes.JsonNode::op_Implicit||member without side effects on files, processes, registry or network
+M|System.Text.Json.Nodes.JsonNode::set_Item||member without side effects on files, processes, registry or network
+M|System.Text.Json.Nodes.JsonObject::.ctor||member without side effects on files, processes, registry or network
+M|System.Text.Json.Nodes.JsonObject::Remove||member without side effects on files, processes, registry or network
+M|System.Text.Json.Nodes.JsonValue::Create||member without side effects on files, processes, registry or network
+M|System.Text.RegularExpressions.Regex::.ctor||member without side effects on files, processes, registry or network
+M|System.Text.RegularExpressions.Regex::IsMatch||member without side effects on files, processes, registry or network
+M|System.Text.StringBuilder::.ctor||member without side effects on files, processes, registry or network
+M|System.Text.StringBuilder::Append||member without side effects on files, processes, registry or network
+M|System.Text.UTF8Encoding::.ctor||member without side effects on files, processes, registry or network
+M|System.Type::GetTypeFromHandle||member without side effects on files, processes, registry or network
+M|System.Type::get_Assembly||member without side effects on files, processes, registry or network
+M|System.Type::get_FullName||member without side effects on files, processes, registry or network
+M|System.ValueTuple`2::.ctor||member without side effects on files, processes, registry or network
+M|System.ValueTuple`2::Item1||member without side effects on files, processes, registry or network
+M|System.ValueTuple`2::Item2||member without side effects on files, processes, registry or network
+M|System.ValueTuple`3::.ctor||member without side effects on files, processes, registry or network
+M|System.ValueTuple`3::Item1||member without side effects on files, processes, registry or network
+M|System.ValueTuple`3::Item2||member without side effects on files, processes, registry or network
+M|System.ValueTuple`3::Item3||member without side effects on files, processes, registry or network
+T|System.Diagnostics.DebuggerBrowsableAttribute||[debug-only] compiler attribute emitted by the Debug build only
+T|System.Diagnostics.DebuggerBrowsableState||[debug-only] compiler attribute argument emitted by the Debug build only
+M|System.Diagnostics.DebuggerBrowsableAttribute::.ctor||[debug-only] compiler attribute emitted by the Debug build only

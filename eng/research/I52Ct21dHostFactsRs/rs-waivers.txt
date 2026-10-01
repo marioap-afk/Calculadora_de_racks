@@ -1,0 +1,16 @@
+# rs-waivers.txt: the findings of the R0 scan that are waived in the RS assembly, each in ONE type and for ONE member. Format RULE|Full.Type.Name|DETAIL_FRAGMENT|WHY.
+# The maximum a waiver file can do is fixed in the source of the RS scan (RsWaivers.Waivable): a line outside that table is a format error, so editing
+# this file alone cannot widen the privilege. A waiver does not approve an import (that is allowed-apis-rs.txt, scoped to the same types) and it does
+# not replace the RS layer checks (R-RS-DB-CTOR, R-RS-SAVE-SCOPE, R-RS-READDWG-SCOPE), which run on top. An entry that waives nothing is reported.
+# UTF-8, LF.
+#
+R-DB-CTOR|I52Ct21d.HostFacts.Rs.SideDbWriter|Database::.ctor|the R0 rule allows only new Database(false, true) in the reader; SideDbWriter also builds new Database(true, true) scratch databases (R-RS-DB-CTOR checks the constants and noDocument = true)
+R-NEWOBJ-OBJECT|I52Ct21d.HostFacts.Rs.SideDbWriter|::.ctor (object or entity creation)|SideDbWriter creates the objects it writes into its own side databases (BlockTableRecord, Line, BlockReference, RotatedDimension, ObjectIdCollection, IdMapping)
+R-AUTODESK-SETTER|I52Ct21d.HostFacts.Rs.SideDbWriter|(property write)|property setters on objects of its own side databases (Name, ScaleFactors, the dimension variables); allowed-apis-rs.txt names each setter
+R-AUTODESK-MUTATOR-NAME|I52Ct21d.HostFacts.Rs.SideDbWriter|(conservative name heuristic)|Add, AppendEntity, AddNewlyCreatedDBObject on its own side databases; allowed-apis-rs.txt names each member
+R-AUTODESK-MUTATOR-NAME|I52Ct21d.HostFacts.Rs.ScratchSaver|Database::SaveAs|the name heuristic fires on Save; the single SaveAs is judged by R-RS-SAVE-SCOPE
+R-COMMIT|I52Ct21d.HostFacts.Rs.SideDbWriter|Transaction::Commit|commits the write transactions on its own side databases (never a document's transaction)
+R-WRITE-OPEN|I52Ct21d.HostFacts.Rs.SideDbWriter|Transaction::GetObject (OpenMode constant 1 (ForWrite or ForNotify)|OpenMode.ForWrite (constant 1) on objects of its own side databases; ForNotify (2) and UpgradeOpen stay refused
+R-DB-SAVE|I52Ct21d.HostFacts.Rs.SideDbWriter|Database::WblockCloneObjects|clones a dynamic definition from the private-copy side database into the scratch side database (BA-05 V5 section 5 step 2)
+R-DB-SAVE|I52Ct21d.HostFacts.Rs.ScratchSaver|Database::SaveAs|THE single save of a side database to a scratch path the guard authorized (R-RS-SAVE-SCOPE checks the shape)
+R-TRANSACTION-SCOPE|I52Ct21d.HostFacts.Rs.SideDbReader|(outside the side-database reader)|SideDbReader reads with OpenCloseTransaction objects that are only disposed (never committed) and OpenMode.ForRead

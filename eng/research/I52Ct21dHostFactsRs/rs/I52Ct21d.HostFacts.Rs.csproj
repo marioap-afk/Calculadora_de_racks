@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- RS plugin DLL (WRITES-SIDE, Owner Q-O-1 = ALSO_SIDE_DB_WRITES_AND_NEW_FILES): commands CT21DHG_CENSUS_DYN (I-3), CT21DHG_DIMWRITEBACK
+       (I-5) and CT21DHG_TOLSCALE (I-6). It only COMPILES against the AutoCAD managed assemblies of an installation (AutoCADInstallDir,
+       the same property and default as the R0 DLL). Nothing is loaded into AutoCAD and nothing is executed on a host by building it. -->
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RootNamespace>I52Ct21d.HostFacts.Rs</RootNamespace>
+    <AssemblyName>I52Ct21d.HostFacts.Rs</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <NoWarn>$(NoWarn);MSB3277</NoWarn>
+    <AutoCADInstallDir Condition="'$(AutoCADInstallDir)' == ''">C:\Program Files\Autodesk\AutoCAD 2025</AutoCADInstallDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AcCoreMgd" HintPath="$(AutoCADInstallDir)\AcCoreMgd.dll" Private="false" />
+    <Reference Include="AcDbMgd" HintPath="$(AutoCADInstallDir)\AcDbMgd.dll" Private="false" />
+    <Reference Include="AcMgd" HintPath="$(AutoCADInstallDir)\AcMgd.dll" Private="false" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\core-rs\I52Ct21d.HostFacts.Rs.Core.csproj" />
+  </ItemGroup>
+</Project>

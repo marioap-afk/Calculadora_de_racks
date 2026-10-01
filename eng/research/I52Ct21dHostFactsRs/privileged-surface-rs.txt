@@ -1,0 +1,38 @@
+# privileged-surface-rs.txt: the EXACT set of methods (name + signature + accessibility) of each privileged type of the RS assembly
+# (SideDbWriter, SideDbReader, ScratchSaver, SideDbHandle), nested types (compiler closures) included. Generated with `tools-rs privileged-list-rs rs:...`
+# and reviewed by reading the source of the four types. The RS layer of the scan (rule R-RS-PRIVILEGED-SURFACE) fails when the assembly's set differs
+# from this file in either direction. THIS IS A PIN, NOT AN APPROVAL: adding, removing or changing a method of these types (an overload, a visibility
+# change, a new lambda, a new write member) needs an explicit independent review of the type; only then edit this file. Also enforced by the scan: no
+# non-private method of SideDbWriter, SideDbReader or ScratchSaver mentions an Autodesk type (R-RS-SURFACE-AUTODESK).
+# Format: Full.Type.Name[/Nested]::Method(ParamTypes)->ReturnType [accessibility static|instance (virtual) (pinvoke)]. UTF-8, LF.
+#
+I52Ct21d.HostFacts.Rs.ScratchSaver::.ctor(I52Ct21d.HostFacts.Rs.Core.ScratchRootGuard)->System.Void [internal instance]
+I52Ct21d.HostFacts.Rs.ScratchSaver::SaveNew(I52Ct21d.HostFacts.Rs.SideDbHandle,I52Ct21d.HostFacts.Rs.Core.ScratchTarget)->I52Ct21d.HostFacts.Rs.Core.ScratchFileEntry [internal instance]
+I52Ct21d.HostFacts.Rs.SideDbHandle::.ctor(Autodesk.AutoCAD.DatabaseServices.Database,System.String,I52Ct21d.HostFacts.Rs.Core.SideDbLedger)->System.Void [internal instance]
+I52Ct21d.HostFacts.Rs.SideDbHandle::Dispose()->System.Void [public instance virtual]
+I52Ct21d.HostFacts.Rs.SideDbHandle::get_Database()->Autodesk.AutoCAD.DatabaseServices.Database [internal instance]
+I52Ct21d.HostFacts.Rs.SideDbHandle::get_Id()->System.String [internal instance]
+I52Ct21d.HostFacts.Rs.SideDbReader::.ctor()->System.Void [public instance]
+I52Ct21d.HostFacts.Rs.SideDbReader::Bits(System.Object)->System.String [private static]
+I52Ct21d.HostFacts.Rs.SideDbReader::CountBlockRecords(I52Ct21d.HostFacts.Rs.SideDbHandle)->System.Int32 [internal instance]
+I52Ct21d.HostFacts.Rs.SideDbReader::Hex(System.Double)->System.String [private static]
+I52Ct21d.HostFacts.Rs.SideDbReader::ListDynamicDefinitionNames(I52Ct21d.HostFacts.Rs.SideDbHandle)->System.Collections.Generic.IReadOnlyList`1<System.String> [internal instance]
+I52Ct21d.HostFacts.Rs.SideDbReader::ReadDimensions(I52Ct21d.HostFacts.Rs.SideDbHandle)->System.Collections.Generic.IReadOnlyList`1<I52Ct21d.HostFacts.Rs.Core.DimensionReading> [internal instance]
+I52Ct21d.HostFacts.Rs.SideDbReader::ReadDstyle(System.String,Autodesk.AutoCAD.DatabaseServices.DBObject)->I52Ct21d.HostFacts.Rs.Core.DimensionReading [private static]
+I52Ct21d.HostFacts.Rs.SideDbReader::ReadDynamicProperties(I52Ct21d.HostFacts.Rs.SideDbHandle,System.String)->System.Collections.Generic.IReadOnlyList`1<I52Ct21d.HostFacts.Rs.Core.DynamicPropertyReading> [internal instance]
+I52Ct21d.HostFacts.Rs.SideDbReader::ReadScaleReferences(I52Ct21d.HostFacts.Rs.SideDbHandle)->System.Collections.Generic.IReadOnlyList`1<I52Ct21d.HostFacts.Rs.Core.ReferenceReading> [internal instance]
+I52Ct21d.HostFacts.Rs.SideDbReader::ReadStyleValues(I52Ct21d.HostFacts.Rs.SideDbHandle)->System.Collections.Generic.IReadOnlyList`1<I52Ct21d.HostFacts.Rs.Core.StyleValue> [internal instance]
+I52Ct21d.HostFacts.Rs.SideDbReader::Style(System.String,System.Double)->I52Ct21d.HostFacts.Rs.Core.StyleValue [private static]
+I52Ct21d.HostFacts.Rs.SideDbReader::StyleInt(System.String,System.Int32)->I52Ct21d.HostFacts.Rs.Core.StyleValue [private static]
+I52Ct21d.HostFacts.Rs.SideDbReader::Text(System.Object)->System.String [private static]
+I52Ct21d.HostFacts.Rs.SideDbReader::TypeName(System.Object)->System.String [private static]
+I52Ct21d.HostFacts.Rs.SideDbReader::UnitsName(Autodesk.AutoCAD.DatabaseServices.DynamicBlockReferencePropertyUnitsType)->System.String [private static]
+I52Ct21d.HostFacts.Rs.SideDbWriter::.ctor(I52Ct21d.HostFacts.Rs.Core.SideDbLedger,I52Ct21d.HostFacts.Rs.Core.ScratchRootGuard)->System.Void [internal instance]
+I52Ct21d.HostFacts.Rs.SideDbWriter::AppendDimensionScenarios(I52Ct21d.HostFacts.Rs.SideDbHandle,System.Collections.Generic.IReadOnlyList`1<I52Ct21d.HostFacts.Rs.Core.WriteBackScenario>)->System.Collections.Generic.IReadOnlyList`1<I52Ct21d.HostFacts.Rs.Core.ScenarioConstruction> [internal instance]
+I52Ct21d.HostFacts.Rs.SideDbWriter::AppendScaledReferences(I52Ct21d.HostFacts.Rs.SideDbHandle,System.Collections.Generic.IReadOnlyList`1<I52Ct21d.HostFacts.Core.ProbeRow>)->System.Collections.Generic.IReadOnlyList`1<I52Ct21d.HostFacts.Rs.Core.RowConstruction> [internal instance]
+I52Ct21d.HostFacts.Rs.SideDbWriter::Assign(Autodesk.AutoCAD.DatabaseServices.RotatedDimension,I52Ct21d.HostFacts.Rs.Core.OverrideAssignment)->System.Void [private static]
+I52Ct21d.HostFacts.Rs.SideDbWriter::BuildTolScaleTarget(I52Ct21d.HostFacts.Rs.SideDbHandle)->System.Void [internal instance]
+I52Ct21d.HostFacts.Rs.SideDbWriter::CloneDefinition(I52Ct21d.HostFacts.Rs.SideDbHandle,I52Ct21d.HostFacts.Rs.SideDbHandle,System.String)->System.Void [internal instance]
+I52Ct21d.HostFacts.Rs.SideDbWriter::CreateScratch(System.String)->I52Ct21d.HostFacts.Rs.SideDbHandle [internal instance]
+I52Ct21d.HostFacts.Rs.SideDbWriter::InsertReference(I52Ct21d.HostFacts.Rs.SideDbHandle,System.String)->System.String [internal instance]
+I52Ct21d.HostFacts.Rs.SideDbWriter::OpenForRead(I52Ct21d.HostFacts.Rs.Core.ReadableSource)->I52Ct21d.HostFacts.Rs.SideDbHandle [internal instance]
