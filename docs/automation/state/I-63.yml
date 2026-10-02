@@ -4,11 +4,11 @@ automation_state:
   branch: architecture/parametros-calculados-resumen-proyecto
   claim_id: ce04f47f-ca53-4e75-b983-5ac57ab6c5e3
   current_phase: G3
-  state: implementing
+  state: waiting
   gate: none
   attempts: 2
-  next_action: CI exact-SHA de la A-3; despues contrato T2 contra la A-3, planificacion, GREEN, verificacion, Scope mecanico, nc1-nc3 y revision del Architect.
-  last_evidence_commit: 637dce7e5e7811992330b3c305358d9a7542b9f6
+  next_action: Decision del Coordinator sobre la condicion de CI 4/4 de la A-3 (evidencia §42; corrida 37058065873 = RED heredado, 88 fallas identicas); G3-T2 sin planificar ni delegar.
+  last_evidence_commit: ea70e3b333efec49d3c3b9bc1e5d0395adc71a01
 execution_context:
   mode: manual
   automation_enabled: false
@@ -17,13 +17,13 @@ execution_chain:
   gate: G3
   task_id: G3-RACK-BUILTINS (T1 RED-BUILTINS -> A-3 -> T2 GREEN-BUILTINS)
   attempt: 2
-  next_role: Sesion (CI de la A-3 y reemision del contrato de G3-T2)
-  next_action: G3-T1 RED acreditado; A-3 materializada; pendiente CI de la A-3 y contrato de G3-T2
+  next_role: Coordinator (condicion de CI de la A-3 para autorizar G3-T2)
+  next_action: G3-T1 RED acreditado; A-3 publicada (ea70e3b333efec49d3c3b9bc1e5d0395adc71a01); su CI 37058065873 hereda el RED (Core 88 fallas identicas, Plugin skipped); contrato de G3-T2 en borrador sin emitir (artifacts/orchestration/I-63/G3-RACK-BUILTINS/draft-t2/R20261002T200818Z-6c4f/gate-contract.json)
   g3_t1: {contract: R20261002T184114Z-1c2f (SHA-256 C35EFC7C2D90014A2E1553AB8EA25242588CAF4E88EA581A80D5D3FBDC404DC8), authority_revision: e99621f9e285b1a7ddfcf51cd8ccf970828e0b66, chain_base_sha: e99621f9e285b1a7ddfcf51cd8ccf970828e0b66, chain_red_sha: 637dce7e5e7811992330b3c305358d9a7542b9f6, red_ci: 37053113058, verification: R20261002T194212Z-73b1 (REWORK por diseno; RedPart pass en Ci y Tests), verification_reruns_used: 2 of 2}
   main_sha: 819955d61a6da4c811a11fbd11b5dca13f634b7c
   freeze_commit: f61d0aca859a11b15cbe1797069a83cba873ba95
   frozen_proposal_blob: 4d5dedce15363fa6378e460c5b63005fe41b858b
-  amendments: [A-1 docs/initiatives/I-63-proposal-v3-amendment-a1-verificacion.md (658b35ad), A-2 docs/initiatives/I-63-proposal-v3-amendment-a2-gate-verification-sequencing.md (669d8a39), A-3 docs/initiatives/I-63-proposal-v3-amendment-a3-inv22-diagnostico.md]
+  amendments: [A-1 docs/initiatives/I-63-proposal-v3-amendment-a1-verificacion.md (658b35ad), A-2 docs/initiatives/I-63-proposal-v3-amendment-a2-gate-verification-sequencing.md (669d8a39), A-3 docs/initiatives/I-63-proposal-v3-amendment-a3-inv22-diagnostico.md (ea70e3b3)]
   g1: {verdict: PASS, verified_sha: 4a6c2d889fc2b421076b3165b26b97162439ad57, verification: R20261002T144842Z-0cf4, closure_evidence: 2f885759c79c916127d0613c8971ee058fa4f9d9, attempts_used: 2 of 3, red_sha: fc30dc6cf0d2f97e6732bbb8c512623db91c305d}
   g2: {verdict: PASS, contract: R20261002T164053Z-586f (SHA-256 486EB708C2A66F37B854C12D4A634B7B87918EF8BD90D4620D10782B7883329D), authority_revision: 669d8a391f208e1077f136a406fd89058bc0ce6e, red_sha: cdc8bbd08655f8ecdf499eb09dfec6581befc682, verified_sha: 844dabb6ffbb8b3ba11a2e9a796b78348857c088, verification: R20261002T172647Z-0aea, ci: 37039086898 4/4, negative_controls: nc1 nc3 nc4 conformes y nc2 no superado (H-G2-03), findings: [H-G2-01 guarda PushBackBomCommandGuardTests satisfecha por comentario, H-G2-02 fixture 56-73]}
   deviations: [DEV-G1-03 ejecutor de controles sin revalidacion de PID (aceptada), DEV-G2-01 nc2 no discrimino Scope (no bloqueante)]

@@ -1635,3 +1635,69 @@ transitorios R20261002T164522Z-a109/worker-handoff.json; su blob normalizado dif
 Las copias están en `docs/automation/evidence/I-63-pilot/G3-RACK-BUILTINS/<RunId>/`, `docs/automation/evidence/I-63-pilot/G3-RACK-BUILTINS-nc4/<RunId>/` y `docs/automation/evidence/I-63-pilot/G3-RACK-BUILTINS/A-3-session-probe/`.
 Llevan CRLF los transitorios R20261002T184507Z-9800/inv22-probe.txt, R20261002T184507Z-9800/inv22-probe2.txt, A-3-session-probe/a3-session-probe.txt; su blob normalizado difiere del SHA-256 transitorio por
 fin de línea (16.12).
+
+## 42. CI de la A-3: la condición «4/4» de G3-T2 no se puede cumplir antes del GREEN
+
+### 42.1 Hechos
+
+- **A-3 publicada:** `ea70e3b333efec49d3c3b9bc1e5d0395adc71a01` (padre: el RED `637dce7e`). El commit solo toca `docs/`, y `src/` y `tests/` son idénticos
+  a los del RED (`git diff --quiet 637dce7e ea70e3b3 -- src tests`).
+- **Corrida `push` 37058065873 del SHA exacto:** `failure`.
+
+  | Job | Resultado |
+  |---|---|
+  | UI Tests (WPF controls, net8.0-windows) | `success` |
+  | Tests (Domain + Application) | **`failure`** |
+  | Build UI (WPF, valida API de Application) | `success` |
+  | Build Plugin without AutoCAD | `skipped`, porque depende de Core |
+
+- **Core:** 12566 seleccionadas, 12478 superadas y 88 fallidas, las mismas cifras que la corrida del RED (37053113058).
+  - El multiconjunto de nombres de las fallidas es **idéntico** al del RED: las 86 focales de `ComputedParametersSymbols` y las 2
+    aserciones pre-ID20 de `ExpressionSymbolModelTests`.
+  - Ninguna fallida queda fuera de `ChainRedFiles`.
+  - TRX: `core.trx` SHA-256 `00779B64F827F05915F317410E2F371DB8D5B6186A61876BF04910BBA17A7C2D`; `ui.trx` 1654/1637/0.
+
+### 42.2 Lectura de la sesión
+
+- La orden de G3 exige, para G3-T2, «A-3 válida publicada + CI exact-SHA 4/4». La misma orden exige que el RED exista antes de la A-3.
+- Mientras el GREEN no exista, todo commit de la rama posterior al RED contiene las pruebas RED, que fallan por diseño. Así que la CI
+  exact-SHA de la A-3 **no puede** dar 4/4: Core falla con el conjunto RED acreditado y Plugin queda `skipped`.
+- Lo que la CI sí acredita es que la A-3 no cambia código ni pruebas y no introduce ningún fallo nuevo.
+- Fijar el sentido de una condición de autorización es del Coordinator, no de la sesión. Por eso **G3-T2 no se planifica ni se
+  delega**; vuelta al Coordinator. `attempts` sigue en 2 de 3. No hay Worker ni Controller abiertos.
+
+### 42.3 Opciones para el Coordinator
+
+- **Opción 1 (recomendada):** dar por cumplida la condición con la corrida 37058065873, porque su resultado equivale al del RED
+  acreditado:
+  - el commit solo toca `docs/`;
+  - Core falla solo con el multiconjunto RED idéntico (88);
+  - UI y Build UI en `success` y Plugin `skipped` por dependencia.
+  - El 4/4 exacto lo exige, como siempre, la corrida del GREEN de T2, que contiene la A-3.
+- **Opción 2:** sustituir la condición por «la corrida exact-SHA del GREEN de T2 con 4/4», sin condición de CI propia para la A-3.
+- **No se recomienda** revertir el RED para publicar la A-3 en verde: rompe la cadena 16.8 y el orden RED → A-3.
+
+### 42.4 Preparado, sin emitir
+
+- Borrador del contrato de T2: `artifacts/orchestration/I-63/G3-RACK-BUILTINS/draft-t2/R20261002T200818Z-6c4f/gate-contract.json`, SHA-256 `0BA36A4A0112D8966BA0D9E6C22E6A2E4AD5588B584177D734960FA249486E43`. Es válido contra el esquema y no tiene conflicto de
+  alcance.
+- Respecto del borrador de G3 cambian:
+  - `AuthorityRevision`, que pasa a ser el SHA de la A-3;
+  - `Authorities`, con la A-3 tras la A-2;
+  - el texto de INV-22, con el resultado de la A-3;
+  - un invariante: G3-T2 no tiene RED nuevo y no modifica `ChainRedFiles`;
+  - la parada C-11: el GREEN exigiría tocar `ChainRedFiles`, o una expectativa del RED es incompatible con el Freeze;
+  - `Objective` y `ExpectedEvidence` de T2;
+  - `CorrectionsAuthorized`, `IssuedBy` e `IssuedUtc`.
+- El alcance (`AllowedWriteScope` y `ForbiddenWriteScope`), `RequiredTests`, `EligibleCells` y `RoutingEnforcement` son los del borrador.
+- Delegación de T2 prevista:
+  - `ChainBaseSha` `e99621f9`, `ChainRedSha` `637dce7e` y `ChainRedFiles` = los 8 archivos de §41.2;
+  - `CorrectionOf` = null, `Attempt` 2 y `AttemptsRemaining` 1;
+  - sin nc4, porque no es la primera delegación de la cadena.
+
+### 42.5 Errata de la A-3 (sin editarla)
+
+- La A-3 §4 cita `95690c28` como «(main)». El `main` vigente es `819955d61a6da4c811a11fbd11b5dca13f634b7c`, del que `95690c28` es
+  ancestro.
+- `src/RackCad.Application/Expressions/` también es idéntico entre `819955d6` y `637dce7e` (comprobado). La afirmación de la A-3 se
+  mantiene, y el resultado fijado no cambia.
