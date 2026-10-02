@@ -272,6 +272,6 @@ Metodo: verificar contra Git y los registros, sin escribir.
 - Fuente aprobada de §G: Freeze de I-61 ([Proposal V9](I-61-proposal-v9.md)) y [AUTOMATION_PLAN.md](../AUTOMATION_PLAN.md) §16.
 
 ```text
-WORKFLOW V2 = NOT EFFECTIVE
-WORKFLOW_V2_EFFECTIVE_SHA = DOES NOT EXIST
+WORKFLOW V2 = EFFECTIVE
+WORKFLOW_V2_EFFECTIVE_SHA = merge normativo de I-56, derivado según WORKFLOW.md §11.2
 ```

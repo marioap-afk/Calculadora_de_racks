@@ -1241,3 +1241,101 @@ puede contener su propio SHA. Es inmutable desde ese commit (LIFECYCLE §6).
 
 **Validación de esta entrega:** allowlist, enlaces, columnas de las tablas, YAML del estado y `git diff --check`; resultado en el cuerpo del commit. La CI de
 este commit se informa al Owner y al Coordinator.
+
+## 34. F1 — Apertura e implementación (orden del Coordinator)
+
+**CI del commit del Freeze** (`b64a3b640c7ee3bd77636e7a3218ae0ebac2dd43`, §33): corrida **37068394720**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: Tests (Domain + Application) (111041765023), Build UI
+(111041765360), UI Tests (111041765545) y Build Plugin without AutoCAD (111042336278), los cuatro `success`. MEASURED por la sesión. Acredita solo
+`b64a3b64`.
+
+**Orden recibida:** «I-62 — COORDINATOR ORDER: OPEN AND IMPLEMENT F1», texto pegado sin archivo de origen. Cuerpo sin las etiquetas de pegado: 10 738 bytes
+en UTF-8, SHA-256 `6638968b39f5b8f287b2ab6bc9cba71542c6cc3e5f1d7d027f28b77349223f79`, fuera del repositorio. Resumen fiel en las decisiones, §32.
+
+### 34.1 DC-07 antes de escribir superficies compartidas
+
+MEASURED tras `git fetch --prune`, antes de escribir la clase de prueba y las superficies (la RED es de las 22:06:19Z). `origin/main` = `819955d6…`, sin
+cambios.
+
+| Rama activa | Punta | merge-base | Cambios en superficies de F1 |
+|---|---|---|---|
+| I-52 `feature/rackmirror-espejo-semantico` | `fb6b5648` | `95690c28` | `docs/adr/0036-…` (A) y `docs/adr/README.md` (índice); F1 no toca el índice |
+| I-63 `architecture/parametros-calculados-resumen-proyecto` | `eb58a476` | `819955d6` | ninguno |
+| I-64 `architecture/workspace-persistente-rackcad` | `39b45f36` | `819955d6` | `docs/adr/0047-…` (A) |
+
+Superficies comprobadas: `docs/AUTOMATION_PLAN.md`, `docs/automation/agent-execution/`, `docs/initiatives/PROMPT_TEMPLATES.md`, `docs/adr/`, `docs/WORKFLOW.md`,
+`docs/INITIATIVE_LIFECYCLE.md`, `AGENTS.md`, `CLAUDE.md` y las clases de prueba de los protocolos. **Sin solapamiento:** ninguna rama toca un archivo que F1
+modifica. F1 no edita ROADMAP, así que no necesita ventana. La comprobación se repite antes del push (cuerpo del commit).
+
+### 34.2 Asignación del número de ADR
+
+MEASURED tras `git fetch --prune`:
+- **`main` (`819955d6`):** `docs/adr/` contiene 0001-0035 y 0037-0046 (con dos archivos 0002 históricos). No contiene 0036.
+- **I-52:** añade `docs/adr/0036-rackmirror-espejo-semantico-por-copia.md`, así que 0036 queda ocupado por esa rama.
+- **I-64:** añade `docs/adr/0047-workspace-persistente-modeless-rackcad.md`, en estado propuesto (commit `36c344dc`).
+- **I-63:** no tiene archivo ADR. Su diseño prevé un ADR sucesor de ADR-0043 «con número asignado al integrar»; no reserva ninguno.
+- **Menciones:** `git grep` de `ADR-0047..0059` y `adr/0047..0059` sin los TRX. En `main`, cero (las coincidencias de «0047» en `main` son GUID de TRX). En
+  las ramas, solo las de I-64 a su propio 0047. Nadie menciona 0048 ni números mayores.
+
+**Siguiente número libre sin colisión: 0048**, sin ambigüedad. Archivo:
+`docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md`, estado **propuesto**, sin fila en el índice (cierre documental, WORKFLOW §11.4).
+
+### 34.3 Materialización del plano (b)
+
+Cada cláusula congelada (V14) y su destino. Todo es **inactivo** hasta `I62_EFFECTIVE_SHA` (AUTOMATION_PLAN 16.14; ADR-0048 «Vigencia»; README §12):
+
+| Cláusula congelada | Destino | Fidelidad |
+|---|---|---|
+| §2, tabla de roles; «El Coordinator de gates no es vinculable»; acumulación sobre la identidad observable | AUTOMATION_PLAN §16.1, bloque «Unidades I62» | filas de V14 §2, salvo «(§20.x)» → «(Proposal V14 §20.x)» en tres celdas; la acumulación, con su efecto al vincular (§11.3) |
+| §4.1, perfil, tabla por acción, perfil sin binding, P-09/P-10 por acción, CUSTODY no es permiso | AUTOMATION_PLAN 16.15 | tabla idéntica; texto fiel |
+| §4.1, §5, §6 y §10: autoverificación (niveles de la fuente, autodeclaración no es fuente, RUNTIME_OBSERVED mínimo, sin depender del binding) | 16.15, «Autoverificación» | sin la tabla de fuentes por adapter, que es de F2 |
+| §4.2: estados, agregado, disposiciones | 16.16 | idénticos (guarda C-03) |
+| §13: P-09 y P-10 | 16.16, tabla de ids | filas idénticas (comprobado por el script de materialización) |
+| §4.2: ejemplos E1-E13; B.4: forma de las filas, `Causes` y `Disposition` | README §12 | tabla idéntica (guarda C-03); procedimiento con la forma de B.4, sin esquema |
+| §7, operación 3; §20.3; §3, fila «PROMPT_TEMPLATES §G / adapters» | 16.17 | frontera de renderizado |
+| §15, plano (b); §14.0-§14.1 (aplicabilidad y punto efectivo); §20.11 | 16.14 | cláusula de vigencia, con la excepción de 16.13 |
+| §3, fila PROMPT_TEMPLATES (corrección del bloque factual de §2); Discovery §10.1 (1) y EXP-08 | PROMPT_TEMPLATES §2 | bloque factual |
+| Anexo A | ADR-0048 | conserva #2-#9, supera, amplía #1, vigencia; lo pedido por la orden |
+
+**Hecho factual de la corrección de §2** (MEASURED con la regla de WORKFLOW §11.2):
+- el único commit con el trailer `Workflow-V2-Normative: I-56` es `afd1077c…`;
+- el primer merge en first-parent de `origin/main` cuyo segundo padre lo alcanza y cuyo primer padre no lo alcanza es
+  `8a021fb67c16dfccd6afc18448ea7e6a71a32364`;
+- el bloque dice «WORKFLOW V2 = EFFECTIVE» y remite a esa derivación, sin copiar el SHA.
+
+**Fuera de F1** (elecciones de materialización, decisiones §32): la tabla de acumulación (F3); WORKFLOW §4 (F4); `routing.md` (F2); README §§1, 3, 5,
+6 y 11; los punteros de §16 y §16.3 y la propia 16.13 (F4); el delta de LIFECYCLE de OD-6 (fuera del mapa de F1). No se tocaron AGENTS, CLAUDE,
+FOUNDATIONS, HANDOFF, ROADMAP, WORKFLOW, LIFECYCLE, el índice ADR ni los esquemas `/v1`.
+
+### 34.4 C-01..C-04
+
+| Id | Clase / autoridad | Evidencia | Resultado de la sesión |
+|---|---|---|---|
+| C-01 | (i) Core RG + mutation | `I62_C01_RoleTableOfSection16_1HasTheFiveNeutralRolesAndNoProviderMark`: los cinco roles en su orden y cero marcas en la tabla. `I62_C01_CoreSchemaEnumsCarryNoProviderMark`: su entrada está **vacía** en F1, porque `schemas/` solo tiene los cinco `/v1` (MEASURED); el `codex-cli` del enum de `relay-record/v1` es I61 y queda fuera del núcleo. Mutation en memoria (`I62_C01_TheMarkOraclesDetect…`): «Codex» inyectado en la tabla, un rol borrado y un enum sintético `claude-subagent`, los tres detectados. Marcas: patrones fijos, proveedores de los descriptores (ninguno antes de F2) e ids y familias del catálogo | PASS en local; la CI exacta lo acredita |
+| C-02 | (ii) revisión del Coordinator | ADR-0048 contra V14 §2: los roles son semánticos; los proveedores, ejecutables, modelos y recetas solo aparecen como algo que vive en los descriptores y el catálogo. Ninguna asociación rol↔proveedor. Barrido con el mismo conjunto de 27 marcas de C-01: **0** coincidencias en el ADR (también 0 en las partes I62 del plan y en README §12) | la evidencia apoya PASS; lo decide el Coordinator |
+| C-03 | (i) Core RG + mutation (fidelidad) | `I62_C03_TheOracleIsTheFrozenProposal`: el oráculo es V14, fijada por su blob `34ad80ea…`. `I62_C03_StatusRulesOfSection16EqualProposalV14Section4_2RowByRow` y `I62_C03_ReadmeExamplesEqualProposalV14Section4_2RowByRow`: 0 diferencias. Mutation (`I62_C03_TheFidelityOracleDetects…`): disposición debilitada, E4 optimista, E13 omitido, pasos 2 y 3 del agregado permutados y oráculo alterado, todos detectados | PASS en local; la CI exacta lo acredita |
+| C-04 | (ii) MC | `I-62-F1/c04-design-data.json`: E1-E12 como datos de diseño con la forma de B.4, con los esperados escritos a mano desde §4.2 y B.4. `I-62-F1/c04-aggregation-mc.py`: aplica el procedimiento de README §12, paso a paso, sin leer los esperados. `I-62-F1/c04-result.json`: **14 evaluaciones, 14 PASS** (E10 antes y después de la decisión; E12 con CUSTODY y RESUME_DECISION). Control negativo con cuatro mutaciones del procedimiento, todas detectadas: m1 UNKNOWN antes que BELOW (E5, E10 antes); m2 los opcionales cuentan (E9, E12 RESUME_DECISION); m3 sin el paso 1 (E11); m4 lo no observado como MATCH (ocho evaluaciones) | PASS por la sesión; lo decide el Coordinator |
+
+SHA-256 de los archivos de C-04 (LF, como en el repositorio): `c04-design-data.json` `7eb71197…`; `c04-aggregation-mc.py` `4aaf0bc9…`; `c04-result.json`
+`23488cd5…`. Reproducción: `python c04-aggregation-mc.py c04-design-data.json <salida>`.
+
+### 34.5 Pruebas y validación (antes del commit)
+
+- **RED** (22:06:19Z), con el árbol `b64a3b64` + la clase de prueba nueva y sin materializar: 7 seleccionadas, **5 fallidas** (texto materializado
+  ausente), 2 superadas (la fijación del oráculo y el enum de entrada vacía). TRX SHA-256 `8dcf829b…`.
+- **GREEN focal** (22:10:00Z), `PrincipalPortabilityProtocolTests` + `AgentExecutionProtocolTests`: **24/24**. Las 17 de I-61 pasan con sus oráculos
+  intactos. TRX `4788622f…`.
+- **Core Full** sobre el árbol con todos los cambios (22:10:18Z): **12403/12403**. TRX `27aa48a9…`. Es evidencia del árbol, no del SHA del commit: el Core
+  Full del SHA exacto, si el cierre de F1 lo exige, se corre aparte.
+- `git diff --check` limpio. Enlaces de las cuatro superficies tocadas: 32, ninguno roto. Columnas de las tablas correctas. Encabezados únicos por archivo.
+  Fines de línea LF en el repositorio.
+- Contexto de la ejecución: SDK .NET 8.0.423 del usuario (`%LOCALAPPDATA%\Microsoft\dotnet`).
+
+**No se hizo:**
+- F2 (observación, descriptores, esquemas de hechos, `preflight/v1`, `relay-record/v2`, `controller-verification/v2`, huellas);
+- F3 (binding, contratos `/v2`, `role-invocation`, `input-closure`, `input-fidelity`, resultados por rol, B.11, A1'-A8', 14 comprobaciones);
+- F4;
+- invocar modelos o roles;
+- declarar el GATE PASS de F1.
+
+La CI del commit de esta entrega se informa al Owner y al Coordinator.

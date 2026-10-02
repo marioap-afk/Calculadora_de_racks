@@ -239,3 +239,47 @@ ese tope, STOP (P-04) y control no superado.
 Antes de que el Coordinator registre una decisión, la sesión copia los JSON y MD que la respaldan a `docs/automation/evidence/<unit>-pilot/<task>/<RunId>/`, hace commit y anota para
 cada uno el SHA-256 transitorio (procedencia) y el blob versionado (`git rev-parse <commit>:<ruta>`). Si difieren por fin de línea, se declara. Los eventos y registros de sesión no se
 versionan: solo su SHA-256 y los campos extraídos.
+
+## 12. Autoverificación del Principal y `CONFIGURATION_STATUS` (unidades I62)
+
+Materializado por I-62 e **inactivo** hasta su vigencia ([AUTOMATION_PLAN](../../AUTOMATION_PLAN.md) 16.14): hasta entonces no se aplica a ninguna unidad.
+Las reglas están en AUTOMATION_PLAN 16.15 (perfil por acción y autoverificación) y 16.16 (estados, agregado y disposición); aquí solo está cómo calcular
+el agregado de una acción.
+
+**Entrada:** una fila por requisito, con `RequirementId`, `Mandatory`, `Required` y `Observation` (`State` OBSERVED o NOT_OBSERVED, `Value`, `Source`,
+`Assurance` y `ObservedUtc`). **Salida:** el `Status` y la `Contradiction` de cada fila, y `ConfigurationStatus`, `Causes` y `Disposition` (`ELIGIBLE`,
+`NOT_ELIGIBLE` o `STOP`) de la acción.
+
+1. Fija los requisitos obligatorios de la acción según el perfil (AUTOMATION_PLAN 16.15). Un obligatorio sin fila se añade con `State` NOT_OBSERVED.
+2. Calcula el `Status` de cada fila:
+   - dos observaciones del mismo requisito con valores distintos → `Contradiction` true y UNKNOWN;
+   - `State` NOT_OBSERVED, `Assurance` por debajo de RUNTIME_OBSERVED u observación invalidada → UNKNOWN;
+   - en otro caso, el valor observado frente al requerido, en la escala del requisito: menor → BELOW_REQUIRED; mayor → ABOVE_REQUIRED; igual → MATCH.
+3. `ConfigurationStatus` = el agregado de AUTOMATION_PLAN 16.16 sobre las filas obligatorias. Las opcionales se registran y no lo alteran.
+4. `Causes` = los requisitos obligatorios cuyo `Status` no es MATCH, más las contradicciones.
+5. `Disposition`, según la tabla de AUTOMATION_PLAN 16.16:
+   - `STOP` si hay una contradicción (S-04) o si el Principal está en BELOW_REQUIRED para la acción (P-09);
+   - si no, `NOT_ELIGIBLE` (P-10) con UNKNOWN, o con otro rol en BELOW_REQUIRED. Se sale con una observación nueva, nunca con una reconfiguración
+     automática ni un reset;
+   - si no (MATCH o ABOVE_REQUIRED), `ELIGIBLE`: habilita solo la configuración, y los demás STOP siguen.
+6. Cada acción se calcula aparte: un mismo Principal puede tener CUSTODY en UNKNOWN y RESUME_DECISION en MATCH.
+
+La tabla siguiente es copia fila a fila de la tabla de ejemplos de la [Proposal V14](../../initiatives/I-62-proposal-v14.md) §4.2 (Freeze), que es la
+fuente del oráculo. Sus referencias «§» remiten a esa Proposal; P-09 y P-10 son los de AUTOMATION_PLAN 16.16, S-04 el de 16.11 y P-15 el de la
+Proposal V14 §13.
+
+| Caso | Entrada | Agregado | Disposición |
+|---|---|---|---|
+| E1 | todo = requisito; RUNTIME_OBSERVED | MATCH | sigue |
+| E2 | effort > requisito | ABOVE_REQUIRED | sigue y registra |
+| E3 | effort < requisito | BELOW_REQUIRED | STOP P-09 (Principal) |
+| E4 | effort sin fuente | UNKNOWN | P-10 |
+| E5 | nivel < requisito; effort sin fuente | BELOW_REQUIRED; `Causes` = {nivel, effort} | STOP P-09 |
+| E6 | dos observaciones RUNTIME_OBSERVED simultáneas y distintas | UNKNOWN; `Contradiction` | STOP S-04 |
+| E7 | observación invalidada (§6) | UNKNOWN | revalidar |
+| E8 | rebinding del Worker | Y evaluado desde cero | contadores intactos |
+| E9 | cuota desconocida (opcional) | MATCH | registrada |
+| E10 | el Owner rebaja un requisito | recálculo | lo no observado sigue UNKNOWN |
+| E11 | requisito obligatorio omitido en el preflight | UNKNOWN (falta acreditar) | P-10; `Causes` lo nombra |
+| E12 | Principal sin `repo-write` acreditado; lo demás en MATCH | CUSTODY: UNKNOWN; RESUME_DECISION: MATCH | no toma la custodia delegada (P-10); puede responder RESUME_DECISION |
+| E13 | unidad DIRECT_ONLY; CUSTODY sin observar | CUSTODY: UNKNOWN | sin efecto sobre el trabajo directo; ningún contrato delegado (P-15) |
