@@ -1292,3 +1292,53 @@ Llevan CRLF los transitorios R20261002T143522Z-0c4d/gate-contract.json, R2026100
 - **Contadores:** `attempts` usados 2 de 3.
 - **Siguiente:** `current_phase` = G2. La sesión prepara el contrato de G2 desde el Freeze + A-1 y vuelve al Coordinator solo para la
   autorización formal. Sin implementación de G2 antes; G3 y G4 no autorizados.
+
+## 35. CI del cierre de G1 y borrador del contrato de G2
+
+### 35.1 CI del cierre de G1
+
+| Commit | SHA | Corrida `push` | Resultado |
+|---|---|---|---|
+| Cierre documental de G1 | `82b034b8b887e8c5338232be1c91c0508f988e8d` | 37026164283 | `success`; cuatro jobs requeridos en `success` |
+
+### 35.2 Borrador del contrato de G2 (no emitido)
+
+- **Ruta:** `artifacts/orchestration/I-63/G2-POPULATION/draft/R20261002T152210Z-2298/gate-contract.json`, en `artifacts/`, que ignora `.gitignore`.
+  Válido contra `rackcad-gate-contract/v1`, SHA-256 `CB6E12169C41BBF98E98759DD531900F6F95B2D6EE8A9A6031EA0D687D2C334E`.
+- **Tarea:** `TaskId` `G2-POPULATION`. Una sola tarea para el resultado de G2 de §21 de la Proposal V3: proyección, E1..E6, lector D-26,
+  veredicto único con la delegación del handler guardada, `ProjectPopulation`, agregación `BySystem`, contador de población y determinismo.
+- **Autoridad:**
+  - `AuthorityRevision` propuesta: `82b034b8`, el cierre de G1, que contiene las decisiones de la unidad hasta G1 PASS.
+  - `git diff --name-only 658b35ad 82b034b8` solo toca documentos, evidencia y estado de la unidad y los dos prefijos de G1; ninguna ruta de
+    autoridad `EXTERNAL` (16.3).
+  - `Authorities` lleva las `EXTERNAL` de G1 sin cambios y las `UNIT_DOC` con secciones de G2.
+- **Alcance:** los dos prefijos de G1 más **un** archivo del Plugin, `src/RackCad.Plugin/KindHandlers/PushBackKindHandler.cs`, la única
+  edición del Plugin de §19.
+  - `ForbiddenWriteScope` cambia el prefijo `src/RackCad.Plugin/` por los otros siete archivos de `KindHandlers/`, las carpetas `Drawing/`,
+    `Systems/` y `Views/` y el `.csproj`, para que ninguna entrada prohibida cubra el archivo permitido.
+  - El resto del Plugin queda fuera por `AllowedWriteScope`.
+  - Añade `NamespaceFolderGuardTests.cs`.
+- **Invariantes:** INV-01, 02, 03, 06, 07, 08, 10, 11, 12, 13, 32, 33 y 35; D-10, D-10a, D-11, D-12, D-26 y D-27; D-20 al nivel Population;
+  la conservación de G1, incluida la precondición `ArgumentException`; y la no regresión de consumidores.
+- **Pruebas:** filtro `FullyQualifiedName~RackCad.Tests.ComputedParametersPopulation`, `MinSelected` 13 y `ExpectRed` true.
+  - Clases `ComputedParametersPopulation*` en el namespace `RackCad.Tests` (guarda de I-23).
+  - El filtro no selecciona las pruebas de G1; su regresión la cubre la suite Core completa.
+- **Paradas:** las 25 de G1, con C-01, C-02 y C-06 adaptadas a G2, más C-07 (la delegación cambiaría el comportamiento del handler) y C-08
+  (haría falta `ProjectSummary` Full, `RackComputedExpressionContext` o el núcleo de Expressions).
+- **Celdas, `RoutingEnforcement` y `ExpectedEvidence`:** las celdas y `RoutingEnforcement` son los de G1. `ExpectedEvidence` añade el build
+  del Plugin en la CI.
+- **Campos del emisor:** `CorrectionsAuthorized` = false, `IssuedBy` = borrador. Los fija el Coordinator al emitir.
+
+### 35.3 Preguntas para la autorización
+
+- **Q-G2-01 (INV-32).** El control positivo congelado encamina una petición «por `ProjectSummary` (`Full`)», que es de G4.
+  - Lectura propuesta para G2: el mismo contador sube (> 0) con una petición de `ProjectPopulation` que incluye el rack, y la variante
+    `Full` se añade en G4.
+  - Precisa la verificación de un comportamiento congelado: A-n solo del Coordinator, como la A-1.
+- **Q-G2-02 (INV-11).** El oráculo pide el mismo «`ProjectSummary`» con el orden de entrada invertido.
+  - Lectura propuesta para G2: el mismo `ProjectPopulation`, más representante, `DisplayName` y grafía. La comparación del `ProjectSummary`
+    completo va en G4.
+- **Q-G2-03 (presupuesto).** `attempts` es por unidad y no se reinicia al cerrar un gate (16.8): G2 empieza con `attempts` = 2 y
+  `AttemptsRemaining` = 1.
+  - Solo cabe una corrección; un segundo REWORK sería STOP (S-11).
+  - Que el Coordinator lo confirme o lo ajuste es decisión suya.

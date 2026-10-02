@@ -7,18 +7,18 @@ automation_state:
   state: waiting
   gate: none
   attempts: 2
-  next_action: Preparar el contrato de gate de G2 desde el Freeze + A-1 y volver al Coordinator para su autorizacion formal; sin implementacion antes.
-  last_evidence_commit: 2f885759c79c916127d0613c8971ee058fa4f9d9
+  next_action: Autorizacion formal de G2 por el Coordinator sobre el borrador de contrato R20261002T152210Z-2298 (evidencia §35; preguntas Q-G2-01..03).
+  last_evidence_commit: 82b034b8b887e8c5338232be1c91c0508f988e8d
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-parametros-calculados-resumen-proyecto
 execution_chain:
   gate: G2
-  task_id: null
+  task_id: G2-POPULATION (borrador)
   attempt: null
   next_role: Coordinator (autorizacion formal de G2 sobre el contrato preparado por la sesion)
-  next_action: Contrato de G2 en preparacion; sin delegacion ni Worker hasta la autorizacion
+  next_action: Borrador de contrato artifacts/orchestration/I-63/G2-POPULATION/draft/R20261002T152210Z-2298/gate-contract.json (SHA-256 CB6E12169C41BBF98E98759DD531900F6F95B2D6EE8A9A6031EA0D687D2C334E); sin delegacion ni Worker hasta la autorizacion
   authority_revision_g1: 658b35ad498520ba3c832a96eea4389df16dfa60
   main_sha: 819955d61a6da4c811a11fbd11b5dca13f634b7c
   freeze_commit: f61d0aca859a11b15cbe1797069a83cba873ba95
