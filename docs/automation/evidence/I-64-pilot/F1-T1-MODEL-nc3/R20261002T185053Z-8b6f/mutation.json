@@ -1,0 +1,36 @@
+{
+  "Control": "nc3",
+  "RunId": "R20261002T185053Z-8b6f",
+  "SourceVerification": "R20261002T182925Z-5c9b",
+  "SourceInputs": "artifacts/orchestration/I-64/F1-T1-MODEL/3/R20261002T182925Z-5c9b/inputs",
+  "Mutation": {
+    "File": "worker-handoff.json",
+    "Field": "WorkCompleted",
+    "Appended": " GATE PASS.",
+    "Term": "GATE PASS (AUTOMATION_PLAN 16.10)"
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-work.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "D627AE6FDFC708759F1C093CCF5D2199740A06E5413785EAC439B892F92BB8B5",
+    "New": "C287259CCE4BABD33C344F0B98809EC9BB4BDC164996C26DC9A9225EB83499BE",
+    "Reason": "hash derivado de worker-handoff.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "2DAB9D5AB237C4F8D2C4F42B334DBCA06D4CEFD1A9AFA9A3A9FA2DB464CB990D",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "delegation.json": "3D738567BA2C55CAB3B11E4650CDB71CBFD324A49525C9171F24DCC30AA33B03",
+    "gate-contract.json": "25B87EE7DCDF71E752BF911C004923BD513040CACD88C62E223D79EC60C511B1",
+    "relay-record-planning.json": "227049E2807D6F43636CD0023B49FDC63E6EC3E70BD0768729FC786DDB0316C1",
+    "relay-record-work.json": "A60AB2D0D37A48CDB86DB14A68356C3174524461882540E1780284996E975EAD",
+    "worker-handoff.json": "C287259CCE4BABD33C344F0B98809EC9BB4BDC164996C26DC9A9225EB83499BE",
+    "ci-core/37046833476/core.trx": "95F6A117AEF4E87EECFD104CB2354A25BEAD043D840C1422A5A634449CE21B3C",
+    "ci-ui/37046833476/ui.trx": "FE21DBEC71102CD37181D416AFED0ED1B7EC1A41F483A3AD6F0BC95A10E5D801"
+  }
+}

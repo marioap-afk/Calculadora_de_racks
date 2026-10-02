@@ -1,0 +1,140 @@
+{
+  "SourceContract": "artifacts/orchestration/I-64/F1-T1-MODEL/3/R20261002T165806Z-eef1/gate-contract.json",
+  "SourceSha256": "A4D3681828117B640B6FCFC04F2646CBA2A3AD78929DAE589F060230991999D2",
+  "AsciiContract": "artifacts/orchestration/I-64/F1-T1-MODEL/3/R20261002T171954Z-754a/gate-contract.json",
+  "AsciiSha256": "25B87EE7DCDF71E752BF911C004923BD513040CACD88C62E223D79EC60C511B1",
+  "SignSubstitutions": [
+    [
+      "Objective",
+      "U+2192",
+      "->"
+    ],
+    [
+      "Authorities[4].Section",
+      "U+2014",
+      "-"
+    ],
+    [
+      "EligibleCells[0].Source",
+      "U+00A7",
+      "Sec."
+    ]
+  ],
+  "ScalarChanges": {
+    "IssuedBy": [
+      "Coordinator I-64 (reemision tras confirmar P-03 y autorizar la segunda planificacion; orden en el chat de la sesion; transcrita literalmente por la sesion responsable)",
+      "Coordinator I-64 (reemision ASCII REISSUE_GATE_CONTRACT_ASCII tras el A5 FAIL de la planificacion 6/6 R20261002T165806Z-eef1; orden en el chat de la sesion; transliteracion mecanica por la sesion responsable)"
+    ],
+    "IssuedUtc": [
+      "2026-10-02T00:38:28.000Z",
+      "2026-10-02T17:19:55.000Z"
+    ]
+  },
+  "Checks": {
+    "Bytes.AllAscii": {
+      "ok": true,
+      "detail": "11631 bytes"
+    },
+    "Bytes.ControlOnlyLF": {
+      "ok": true,
+      "detail": "bytes de control presentes: ['0xa']"
+    },
+    "Bytes.NoBOM": {
+      "ok": true,
+      "detail": ""
+    },
+    "Bytes.NoUnicodeEscape": {
+      "ok": true,
+      "detail": ""
+    },
+    "Bytes.NoNUL": {
+      "ok": true,
+      "detail": ""
+    },
+    "Decoded.NoControlExceptLFInObjective": {
+      "ok": true,
+      "detail": "[]"
+    },
+    "Identical.Schema": {
+      "ok": true,
+      "detail": ""
+    },
+    "Identical.Unit": {
+      "ok": true,
+      "detail": ""
+    },
+    "Identical.Gate": {
+      "ok": true,
+      "detail": ""
+    },
+    "Identical.TaskId": {
+      "ok": true,
+      "detail": ""
+    },
+    "Identical.AuthorityRevision": {
+      "ok": true,
+      "detail": ""
+    },
+    "Identical.MainSha": {
+      "ok": true,
+      "detail": ""
+    },
+    "Identical.AllowedWriteScope": {
+      "ok": true,
+      "detail": ""
+    },
+    "Identical.ForbiddenWriteScope": {
+      "ok": true,
+      "detail": ""
+    },
+    "Identical.RequiredTests": {
+      "ok": true,
+      "detail": ""
+    },
+    "Identical.RoutingEnforcement": {
+      "ok": true,
+      "detail": ""
+    },
+    "Identical.CorrectionsAuthorized": {
+      "ok": true,
+      "detail": ""
+    },
+    "Fold.Objective": {
+      "ok": true,
+      "detail": ""
+    },
+    "Authorities": {
+      "ok": true,
+      "detail": "24 -> 24; Section cambiadas: 2"
+    },
+    "Invariants": {
+      "ok": true,
+      "detail": "12 -> 12; cambiadas: 5"
+    },
+    "ExpectedEvidence": {
+      "ok": true,
+      "detail": "13 -> 13; cambiadas: 6"
+    },
+    "StopConditions": {
+      "ok": true,
+      "detail": "34 -> 34; Text cambiadas: 8"
+    },
+    "RequiredTests": {
+      "ok": true,
+      "detail": "[{\"Project\": \"tests/RackCad.Tests/RackCad.Tests.csproj\", \"Filter\": \"FullyQualifiedName~RackCad.Tests.Workspace\", \"MinSelected\": 1, \"ExpectRed\": true}]"
+    },
+    "EligibleCells": {
+      "ok": true,
+      "detail": "Source: 'docs/automation/agent-execution/model-catalog.md (sonda U-04 de I-61, evidencia de I-61 \u00a715.1)' -> 'docs/automation/agent-execution/model-catalog.md (sonda U-04 de I-61, evidencia de I-61 Sec.15.1)'"
+    },
+    "Keys.SameOrder": {
+      "ok": true,
+      "detail": ""
+    },
+    "Schema.Valid": {
+      "ok": true,
+      "detail": ""
+    }
+  },
+  "AllOk": true
+}
