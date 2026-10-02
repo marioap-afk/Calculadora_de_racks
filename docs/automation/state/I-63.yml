@@ -4,11 +4,11 @@ automation_state:
   branch: architecture/parametros-calculados-resumen-proyecto
   claim_id: ce04f47f-ca53-4e75-b983-5ac57ab6c5e3
   current_phase: G1
-  state: waiting
+  state: implementing
   gate: none
   attempts: 2
-  next_action: Decision del Coordinator sobre el segundo STOP P-03 de la correccion 2 (planificacion R20261002T141601Z-4a2b, A5 por tildes en Authorities; evidencia §31).
-  last_evidence_commit: b37a1e0862bae8ee91e9f1d91da659aac185b7b7
+  next_action: Planificacion nueva del intento 2 con proyeccion mecanica de las seis colecciones desde gate-contract.json y preflight del Controller; si pasa, Worker, CI y verificacion.
+  last_evidence_commit: 65b3114a021dbe690a61933311191c8713b5a2cb
 execution_context:
   mode: manual
   automation_enabled: false
@@ -17,9 +17,9 @@ execution_chain:
   gate: G1
   task_id: G1-RACK-METRICS
   attempt: 2
-  next_role: Coordinator (segundo STOP P-03 de la correccion 2; A5 por tildes en Authorities)
+  next_role: Controller (CONTROLLER_PLANNING, Codex CLI gpt-6-luna), planificacion nueva del intento 2
   next_action: Correccion 1 (CorrectionOf R20261002T005944Z-1192, FailureClass Ci, analysis.md SHA-256 6080f3d008d032d4c6565f5f38df849f294c1a3c981d8ce9c31a14c5259a1fb8) -> planificacion -> aceptacion A1-A8 -> Worker RED solo de pruebas + GREEN -> CI -> verificacion -> nc1-nc3 si VERIFIED -> custodia
-  correction_rules: [Authorities AllowedWriteScope ForbiddenWriteScope Invariants RequiredTests y StopConditions copiadas exactamente del contrato, analysis.md solo por CorrectionOf, la correccion 2 solo crea tests/RackCad.Tests/ComputedParameters/RackMetricIdsTests.cs (restriccion en Objective y AcceptanceCriteria), sin RED nuevo, sin tocar produccion (si hiciera falta -> STOP)]
+  correction_rules: [Authorities AllowedWriteScope ForbiddenWriteScope Invariants RequiredTests y StopConditions copiadas exactamente del contrato, analysis.md solo por CorrectionOf, la correccion 2 solo crea tests/RackCad.Tests/ComputedParameters/RackMetricIdsTests.cs (restriccion en Objective y AcceptanceCriteria), sin RED nuevo, sin tocar produccion (si hiciera falta -> STOP), replanificacion automatica preautorizada solo si A5 es el unico fallo por cadenas literales del contrato (intento 2; tope 16.8)]
   red_sha: fc30dc6cf0d2f97e6732bbb8c512623db91c305d (RED de la correccion 1, acreditado en R20261002T062554Z-e271; ChainRedFiles = las dos pruebas de tests/RackCad.Tests/ComputedParameters/)
   run_ids: {planning: R20261002T002817Z-6294, nc4: R20261002T003429Z-a139, work: R20261002T003840Z-f180, verification: [R20261002T005705Z-eccd (transporte), R20261002T005944Z-1192]}
   limits_used: {verification_reruns_attempt0: 1 of 2, corrections: 2 (clase Ci = 1; clase Authority = 1), attempts: 2 of 3, planning_attempt1: 2 (R20261002T011628Z-7097 STOP P-03; R20261002T061154Z-9f77 aceptada), work_attempt1: R20261002T061533Z-8e64 (GREEN b5ee157d; CI 4/4), verification_attempt1: R20261002T062554Z-e271 (STOP S-12), planning_attempt2: 2 (R20261002T135956Z-2105 STOP P-03; R20261002T141601Z-4a2b STOP P-03)}

@@ -1205,3 +1205,13 @@ difiere del SHA-256 transitorio por fin de línea (16.12).
   - **Regla para el Coordinator:** si A5 falla solo porque `Authorities` normaliza la ortografía de etiquetas (mismas rutas y clases, y las
     demás colecciones exactas), la sesión repite la planificación sin volver al Coordinator, con el tope de 16.8 (dos reejecuciones por
     fase); agotado el tope, STOP.
+
+## 32. Resolución del segundo STOP P-03 y regla de replanificación automática
+
+- **Orden del Coordinator**, pegada por el usuario en el chat el 2026-10-02. Resumen en las [decisiones](../decisions/I-63.md) §2.
+  - Resuelve P-03 sin cambio del trabajo; `attempts` sigue en 2.
+  - El Controller proyecta las seis colecciones leyendo `gate-contract.json`, con un preflight de igualdad exacta antes de terminar.
+- **Regla preautorizada**, solo para este `TaskId` y el intento 2: replanificación automática cuando A5 es el único fallo y se debe a cadenas
+  que tenían que copiarse literalmente del contrato, sin cambio semántico ni de `attempts`. Cualquier otro fallo vuelve al Coordinator.
+- **Tope que aplica la sesión:** como máximo dos replanificaciones automáticas por (G1-RACK-METRICS, PLANNING, intento 2), por analogía con
+  16.8. Agotado el tope, vuelve al Coordinator.
