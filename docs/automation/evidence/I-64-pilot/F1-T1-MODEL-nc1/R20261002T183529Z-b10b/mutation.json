@@ -1,0 +1,37 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261002T183529Z-b10b",
+  "SourceVerification": "R20261002T182925Z-5c9b",
+  "SourceInputs": "artifacts/orchestration/I-64/F1-T1-MODEL/3/R20261002T182925Z-5c9b/inputs",
+  "Mutation": {
+    "File": "worker-handoff.json",
+    "Field": "CurrentSha",
+    "Old": "39f7caa411a5ebb372614c233a32255de7398cca",
+    "New": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+    "NewExistsInRepo": false
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-work.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "D627AE6FDFC708759F1C093CCF5D2199740A06E5413785EAC439B892F92BB8B5",
+    "New": "48E92F8177A9C7115736E0ECE29C58C64E56968B3B7AFBFBA845520D131716C2",
+    "Reason": "hash derivado de worker-handoff.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "8138E0C2E8528179B4971061A0E34EA7686176A95498BFCDB8DD144EB6DF906A",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "delegation.json": "3D738567BA2C55CAB3B11E4650CDB71CBFD324A49525C9171F24DCC30AA33B03",
+    "gate-contract.json": "25B87EE7DCDF71E752BF911C004923BD513040CACD88C62E223D79EC60C511B1",
+    "relay-record-planning.json": "227049E2807D6F43636CD0023B49FDC63E6EC3E70BD0768729FC786DDB0316C1",
+    "relay-record-work.json": "9E61F91E21A2523A4B615F3047D813FAB42683A5DA48E84B93F5E110860D3545",
+    "worker-handoff.json": "48E92F8177A9C7115736E0ECE29C58C64E56968B3B7AFBFBA845520D131716C2",
+    "ci-core/37046833476/core.trx": "95F6A117AEF4E87EECFD104CB2354A25BEAD043D840C1422A5A634449CE21B3C",
+    "ci-ui/37046833476/ui.trx": "FE21DBEC71102CD37181D416AFED0ED1B7EC1A41F483A3AD6F0BC95A10E5D801"
+  }
+}
