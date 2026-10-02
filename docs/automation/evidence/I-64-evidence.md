@@ -822,3 +822,38 @@ Sección nueva; las anteriores no se reescriben.
 Con (a) o (b), el Coordinator completa también `Authorities`, `RequiredTests`, `ExpectedEvidence` e `IssuedUtc` del contrato que emita.
 
 **Presupuesto:** intacto (0 planificaciones, 0 trabajos, 0 verificaciones; `attempts` 0).
+
+## 20. F1-T1-MODEL — Resolución de C-F0-RED y contrato de la primera cadena de F1
+
+Sección nueva; las anteriores no se reescriben.
+
+**Decisión del Coordinator** (orden en el chat de la sesión, 2026-10-02, sin archivo y por tanto sin hash; resumen saneado):
+- adopta la opción (b) de §19: **F1-T0-ADR = SUPERSEDED_BY_F1-T1-MODEL** y **C-F0-RED = RESOLVED_BY_TASK_MERGE**. No se modifica I-61 ni
+  AUTOMATION_PLAN. El RED de la cadena sale de pruebas reales del modelo de F1-T1 y no se fabrica para una tarea documental;
+- F1-T0-ADR no consumió presupuesto (0 planificaciones, 0 trabajos, 0 verificaciones).
+
+**Contrato de gate emitido para `F1-T1-MODEL`** (`rackcad-gate-contract/v1`; unidad I-64; gate F1):
+- `AuthorityRevision` `8a3fb8e26a260317b28d5573654b0221f1341029`; `MainSha` `819955d61a6da4c811a11fbd11b5dca13f634b7c`;
+- objetivo: el ADR 0047 en estado `propuesto`, fiel al Freeze y publicado antes del GREEN; el modelo puro de Workspace en
+  `RackCad.Application` (sesión por documento, identidad de instancia, `SelectionContext`, estado mínimo de pistas y cola, reglas puras del
+  drenaje y políticas puras de F1 sin AutoCAD); RED→GREEN real. Fuera: `PaletteSet`, host WPF, puente real de AutoCAD, selección real,
+  navegación, escritura authored y AutoCAD;
+- autoridades `UNIT_DOC`: Proposal V5 congelada, Discovery D1-R1, contrato, evidencia §§18-19, estado y la propuesta de contratos de F1
+  (subordinada al contrato); `EXTERNAL`: AGENTS, WORKFLOW, LIFECYCLE, AUTOMATION_PLAN §16, README y `routing.md` de agent-execution,
+  ADR-0006, ADR-0019, ADR-0029, ADR-0044 e I-55 V5 §4.4-§4.10 cuando aplique; sin `UNIT_CHANGE`;
+- `AllowedWriteScope`: `docs/adr/0047-workspace-persistente-modeless-rackcad.md`, `src/RackCad.Application/Workspace/`,
+  `tests/RackCad.Tests/Workspace/`; prohibido todo lo demás;
+- invariantes INV-F1-T1-01..12; prueba requerida `tests/RackCad.Tests/RackCad.Tests.csproj`, filtro `FullyQualifiedName~RackCad.Tests.Workspace`,
+  `MinSelected` 1, `ExpectRed` true (RED real por aserción, sin fallo de compilación ni prueba artificial);
+- Controller Codex CLI `gpt-6-luna` × `high`; Worker `claude-sonnet-5-5` × subagente × `medium` (Balanced); `RoutingEnforcement` `required`;
+  `CorrectionsAuthorized` `true`; `MaxReworkLoops` 3;
+- tope: 1 planificación, 4 trabajos, 4 verificaciones; los controles negativos fuera del tope solo donde I-61 lo establece;
+- S-01..S-14, P-01..P-08 y los STOP adicionales del contrato;
+- la aceptación A1-A8 es formal del Coordinator: si la delegación real pasa A1-A8 de forma mecánica, la sesión se detiene en
+  `COORDINATOR_ACCEPTANCE_REQUIRED` sin invocar al Worker.
+
+**Transcripción operativa:** la sesión transcribe el contrato a `gate-contract.json` en el área transitoria del `RunId` de planificación.
+Dos campos que el esquema exige y que la orden no da con forma literal se fijan así, sin añadir alcance: `IssuedUtc` = hora de recepción
+en la sesión, e `IssuedBy` = el Coordinator de I-64. Las rutas `docs/adr/00NN-*.md` del contrato se resuelven a su único archivo en la base.
+
+**Presupuesto de `F1-T1-MODEL`:** planificación 0 de 1; trabajo 0 de 4; verificación 0 de 4; `attempts` 0 de 3.
