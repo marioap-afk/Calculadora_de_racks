@@ -4,10 +4,10 @@ automation_state:
   branch: architecture/parametros-calculados-resumen-proyecto
   claim_id: ce04f47f-ca53-4e75-b983-5ac57ab6c5e3
   current_phase: G3
-  state: waiting
+  state: implementing
   gate: none
   attempts: 2
-  next_action: Decision del Owner sobre el STOP P-01 (config.toml cambio durante la planificacion de G3-T2; evidencia §44). Sin invocaciones de Codex hasta entonces.
+  next_action: Repetir la planificacion de G3-T2 (mismo contrato, RunId nuevo; P-01 aprobado por el Owner, linea base de config.toml 155933B3); despues GREEN, CI 4/4, verificacion, Scope mecanico, nc1-nc3 y revision del Architect.
   last_evidence_commit: ea70e3b333efec49d3c3b9bc1e5d0395adc71a01
 execution_context:
   mode: manual
@@ -17,8 +17,8 @@ execution_chain:
   gate: G3
   task_id: G3-RACK-BUILTINS (T1 RED-BUILTINS -> A-3 -> T2 GREEN-BUILTINS)
   attempt: 2
-  next_role: Owner (STOP P-01)
-  next_action: G3-T1 COMPLETE; A-3 VALID; G3-T2 AUTHORIZED; contrato T2 emitido (R20261002T212850Z-6064, SHA-256 2E43EAE22C3254F7CDF31EC9AC0C07B11409E7274E2A6D307DF3B7FB8D889CB7); planificacion A1-A8 pass pero STOP P-01 en la entrada (config.toml)
+  next_role: Controller (CONTROLLER_PLANNING de G3-T2, repeticion)
+  next_action: G3-T1 COMPLETE; A-3 VALID; G3-T2 AUTHORIZED; contrato T2 emitido (R20261002T212850Z-6064, SHA-256 2E43EAE22C3254F7CDF31EC9AC0C07B11409E7274E2A6D307DF3B7FB8D889CB7); planificacion A1-A8 pass pero STOP P-01 en la entrada (config.toml); P-01 aprobado por el Owner (linea base 155933B32E5178001700B1137A58435075C13AA0179ED9F530791F3F899726D7); delegacion de 6064 NO reutilizable
   g3_t1: {contract: R20261002T184114Z-1c2f (SHA-256 C35EFC7C2D90014A2E1553AB8EA25242588CAF4E88EA581A80D5D3FBDC404DC8), authority_revision: e99621f9e285b1a7ddfcf51cd8ccf970828e0b66, chain_base_sha: e99621f9e285b1a7ddfcf51cd8ccf970828e0b66, chain_red_sha: 637dce7e5e7811992330b3c305358d9a7542b9f6, red_ci: 37053113058, verification: R20261002T194212Z-73b1 (REWORK por diseno; RedPart pass en Ci y Tests), verification_reruns_used: 2 of 2 (no se arrastran a T2)}
   main_sha: 819955d61a6da4c811a11fbd11b5dca13f634b7c
   freeze_commit: f61d0aca859a11b15cbe1797069a83cba873ba95

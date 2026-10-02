@@ -1775,3 +1775,18 @@ fin de línea (16.12).
 - **Opción 3:** otra instrucción del Owner, por ejemplo revisar los valores cambiados antes de reanudar.
 
 Copias en `docs/automation/evidence/I-63-pilot/G3-RACK-BUILTINS/R20261002T212850Z-6064/`.
+
+## 45. Decisión del Owner sobre el STOP P-01 y nueva línea base de `config.toml`
+
+- **Decisión del Owner**, pegada en el chat el 2026-10-02. Resumen en las [decisiones](../decisions/I-63.md) §2.
+  - Causa confirmada: la app Codex se actualizó y se reinició durante la planificación.
+  - Se aprueba el cambio y se repite la planificación de G3-T2 con el mismo contrato y un `RunId` nuevo, sin consumir `attempts`.
+  - No se reutiliza la delegación de `R20261002T212850Z-6064`. Por eso la opción 2 de §44.3 queda descartada; además ya no era viable,
+    porque el commit de §44 movió HEAD fuera de su `BaseSha` `f5c4a5a2`.
+- **Nueva línea base de `~/.codex/config.toml`:**
+  - `155933B32E5178001700B1137A58435075C13AA0179ED9F530791F3F899726D7`, tomada a las 2026-10-02T21:42Z (`LastWriteTimeUtc` 21:34:25Z). Es el mismo valor observado tras la entrada de §44.
+  - Procesos de la app: `ChatGPT.exe` de `OpenAI.Codex_26.930.2377.0`, el primero creado a las 21:31:35Z.
+- **Regla desde aquí:**
+  - cada cesión compara su hash de salida con esta línea base y su hash de entrada con el de salida;
+  - cualquier diferencia es STOP P-01 y detiene la cadena;
+  - esta decisión no autoriza ningún cambio posterior.
