@@ -2,7 +2,7 @@ using System.Linq;
 using RackCad.Application.Workspace;
 using Xunit;
 
-namespace RackCad.Tests.Workspace;
+namespace RackCad.Tests;
 
 // I-64 F1-T1-MODEL: D-04 / INV-01, INV-06, INV-07, INV-23, INV-33.
 public class WorkspaceHintDrainTests

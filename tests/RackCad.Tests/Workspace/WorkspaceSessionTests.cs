@@ -1,7 +1,7 @@
 using RackCad.Application.Workspace;
 using Xunit;
 
-namespace RackCad.Tests.Workspace;
+namespace RackCad.Tests;
 
 // I-64 F1-T1-MODEL: D-03 / INV-02, INV-07, INV-09, INV-22.
 public class WorkspaceSessionTests
