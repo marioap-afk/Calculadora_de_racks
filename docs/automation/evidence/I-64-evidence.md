@@ -1220,3 +1220,49 @@ Causa del fallo del Plugin:
 
 Los archivos escritos con CRLF en el área transitoria (`worker-handoff.json` y los `processes-*.json`) se normalizan a LF en el blob, que es la
 identidad duradera.
+
+## 25. F1-T1-MODEL — Segundo REWORK aceptado, cuarta planificación autorizada y `attempts` = 2
+
+Sección nueva; las anteriores no se reescriben. Hechos de la sesión responsable. Sin GATE PASS, F1 PASS ni ADR aceptado.
+
+**Decisión del Coordinator** (chat, 2026-10-02; resumen saneado):
+- Acepta la verificación `R20261002T063546Z-0cd7` sobre el GREEN fallido `b38e54f9`: **REWORK**, **FailureClass Ci**. RED vigente `189353f8`.
+- **STOP P-07 resuelto.** Autoriza una **cuarta y última** planificación:
+
+  | Tipo | Máximo | Consumidas | Restantes |
+  |---|---|---|---|
+  | Planificación | 4 | 3 | 1 |
+  | Trabajo | 4 | 2 | 2 |
+  | Verificación | 4 | 2 | 2 |
+
+  `MaxReworkLoops` sigue en 3. La corrección entra como **attempt = 2**, sin cambio del Freeze ni de I-61.
+- **Causa aceptada:** CS8632 en `tests/RackCad.Tests/Workspace/WorkspaceSelectionContextTests.cs`, por una anotación `string?` sin contexto de
+  anotaciones nullable. La detecta la build Release del job «Build Plugin without AutoCAD». No es un defecto del Plugin.
+- **Corrección preferida:**
+  - directiva local `#nullable enable annotations`, o la forma mínima equivalente que admita el compilador del repositorio;
+  - sin tocar `NamespaceFolderGuardTests`, los scripts de CI, el nullable global, los `.csproj` ni el Plugin;
+  - sin debilitar avisos ni quitar cobertura.
+- **RED nuevo obligatorio**, porque el archivo pertenece a ChainRedFiles:
+  - el RED lleva la corrección nullable y el comportamiento desactivado, compila y falla por aserción real, sin fallo ni aviso artificial;
+  - el GREEN restaura el comportamiento sin tocar RT ∪ ChainRedFiles.
+- **Comprobación local obligatoria:** build Release sin CS8632 nuevo y la comprobación equivalente a «Build Plugin without AutoCAD» en verde.
+  Si el script de CI puede ejecutarse en local sin AutoCAD, se usa antes del push final.
+- **CorrectionOf:** `RunId` `R20261002T063546Z-0cd7`, `FailureClass` Ci. **`AnalysisSha256` = null.** La clase es la misma que la del REWORK
+  anterior, así que AUTOMATION_PLAN 16.8 no exige un `analysis.md` nuevo, y el Coordinator ordenó no inventarlo.
+- **Cadena:** ChainBaseSha `e0587355`, ChainRedSha `189353f8df954b05cbbcdc0f15dca0cb3bf21002`, ChainRedFiles las 5 rutas acreditadas (§24).
+
+**Hecho de la sesión.** `eng/ci/verify-autocad-references.ps1` compila contra los paquetes NuGet de Autodesk de nuget.org. Usa rutas aisladas
+y un directorio vacío como instalación de AutoCAD (`EmptyAutoCADDir`): no requiere AutoCAD instalado ni abierto. Necesita pwsh 7,
+`DOTNET_ROOT` y red hacia nuget.org.
+
+**Presupuesto:**
+
+| Tipo | Estado |
+|---|---|
+| Planificación | 3 de 4 |
+| Trabajo | 2 de 4 |
+| Verificación | 2 de 4 |
+| `attempts` | **2** de 3 |
+| Contador de la clase Ci | 2 al lanzar la corrección |
+
+`main` `819955d6` y Freeze `9b43dafb` intactos; `config.toml` sin cambio.
