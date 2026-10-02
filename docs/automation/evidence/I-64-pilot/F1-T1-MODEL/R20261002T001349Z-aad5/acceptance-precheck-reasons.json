@@ -1,0 +1,15 @@
+{
+  "A1": [],
+  "A2": [],
+  "A3": [],
+  "A4": [
+    "497 entradas prohibidas del contrato sin cubrir; primeras: tests/RackCad.Tests/CantileverLineEditorAssemblerTests.cs, tests/RackCad.Tests/CantileverLineTests.cs, tests/RackCad.Tests/CantileverPersistenceAndViewTests.cs, tests/RackCad.Tests/CantileverPlantaViewTests.cs, tests/RackCad.Tests/CantileverPluginSourceGuardTests.cs, tests/RackCad.Tests/CantileverPunchRepresentationTests.cs, tests/RackCad.Tests/CantileverRegularPunchGridCharacterizationTests.cs, tests/RackCad.Tests/CantileverRetiredMarginTests.cs"
+  ],
+  "A5": [
+    "invariantes ausentes: INV-F1-T1-02: una sesion representa una ; INV-F1-T1-08: no existe estado por pesta; INV-F1-T1-09: la destruccion de una sesi; INV-F1-T1-10: MASTER-I63-I64-02 intacto:; INV-F1-T1-11: ADR 0047 permanece propues",
+    "autoridades ausentes: docs/automation/evidence/I-64-evidence.md ## 19. F1-T0-ADR — Contrato re; docs/initiatives/I-55-proposal-v5.md ### 4.4 La transaccion la pose; docs/initiatives/I-55-proposal-v5.md ### 4.6 R-25: la primera coloc"
+  ],
+  "A6": [],
+  "A7": [],
+  "A8": []
+}
