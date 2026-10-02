@@ -1407,3 +1407,49 @@ Sin reintentos de transporte. El presupuesto productivo sigue congelado y sin ca
 **Custodia (16.12):** `docs/automation/evidence/I-64-pilot/F1-T1-MODEL-nc1/R20261002T150553Z-09df/` y
 `F1-T1-MODEL-nc2/R20261002T151201Z-abb1/`. Incluye prompt, verificación, registro, `mutation.json`, `oracle-result.json` y las entradas mutadas
 con su registro recalculado.
+
+## 28. F1-T1-MODEL — STOP de controles confirmado; recuperación (d) y `attempts` = 3
+
+Sección nueva; las anteriores no se reescriben. Hechos de la sesión responsable. Sin cierre de la tarea ni F1 PASS.
+
+**Decisión del Coordinator** (chat, 2026-10-02; resumen saneado):
+- **STOP confirmado.** Causa: la sesión publicó `747ead04` antes de nc1..nc3, en contra de AUTOMATION_PLAN 16.4 paso 5 (**DEV-F1T1-02**). I-61 no cambia.
+- **Rechazadas:** (a) una A-n que debilite Identity; (b) los controles en una copia o desvío del worktree; (c) cerrar T1 sin nc1..nc3.
+- **Autorizada la recuperación (d):**
+  - una entrega final semánticamente neutra sobre la punta actual;
+  - su verificación;
+  - nc1..nc3 **inmediatamente después, sin escrituras Git de la sesión entre medias**.
+- **nc1 `R20261002T150553Z-09df` y nc2 `R20261002T151201Z-abb1` = SUPERSEDED_BY_CONTROL_RECOVERY.** No son evidencia final de §10: nc1 no
+  discriminaba y nc2 no cumplió su oráculo. nc3 no se ejecutó.
+- La resolución cambia el trabajo: **`attempts` 2 → 3**, que es el máximo. Un nuevo REWORK o STOP que exija trabajo será STOP S-11 definitivo.
+- Presupuesto excepcional:
+
+  | Tipo | Máximo | Consumidas | Restantes |
+  |---|---|---|---|
+  | Planificación | 5 | 4 | 1 |
+  | Trabajo | 4 | 3 | 1 |
+  | Verificación productiva | 4 | 3 | 1 |
+
+  El presupuesto CONTROL independiente sigue vigente. Después de esta recuperación no se autoriza nada más.
+- **Cambio permitido:** solo el comentario de documentación XML existente de `WorkspaceSessionRegistry`, en
+  `src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs`. Debe aclarar que es un registro puro y transitorio en memoria de sesiones
+  vivas, sin autoridad de persistencia.
+  - Sin cambio ejecutable, de API, de pruebas, del ADR, de Plugin, UI, Domain ni de configuración. Sin «marcador de control».
+  - No exige RED si el diff no toca ChainRedFiles.
+- **Delegación:** Attempt 3, AttemptsRemaining 0. Cadena: ChainBaseSha `e0587355`, ChainRedSha `a9778068`, ChainRedFiles las 5 rutas.
+  `CorrectionOf` = {`R20261002T151201Z-abb1` (el control que detuvo la cadena), `StopCondition`, SHA-256 del `analysis.md`}.
+- **Oráculos finales:**
+  - nc1: Identity en fail → BLOCKED/STOP;
+  - nc2: Identity y Remote en pass, Scope en fail → BLOCKED/STOP;
+  - nc3: FreeText en fail → REWORK, con las posteriores iguales a la real.
+
+**Análisis del Coordinator** (texto literal):
+- Ubicación: `artifacts/orchestration/I-64/F1-T1-MODEL-nc2/2/R20261002T151201Z-abb1/analysis.md`; custodiado en
+  `docs/automation/evidence/I-64-pilot/F1-T1-MODEL-nc2/R20261002T151201Z-abb1/analysis.md`.
+- 21 líneas, UTF-8 con LF. SHA-256 `6fb6b914dd47cb43dff341868edf701ffe1fd89c8096bbcdad2b304e98b68b66`.
+
+**Compromiso de la sesión.** Este commit es el `BaseSha` de la última delegación. Desde él, ningún commit, push ni otra escritura Git de la sesión
+hasta terminar Worker → verificación → nc1 → nc2 → nc3 (16.4 paso 5, literal). La custodia, el estado y la evidencia irán después, en un único
+commit documental.
+
+`main` `819955d6` y Freeze intactos; `config.toml` sin cambio.
