@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-63
 title: Computed Parameters & Project Summary Foundation
 type: architecture
-status: f0-proposal-v3-review
+status: f0-proposal-v3-agreed
 workflow: V2
 conceptual_initiative: I-63
 delivery_unit: I-63
@@ -173,8 +173,8 @@ C-F0-RED queda registrado en las [decisiones](../automation/decisions/I-63.md) c
 G0: reclamo y bootstrap, **PASS** (CD-I63-G0-10). F0-DISCOVERY: R0 con CHANGES REQUIRED (CD-I63-F0-R1-01); R1 con CHANGES REQUIRED
 localizado (CD-I63-F0-R2-01); R2 **aceptada** (CD-I63-F0-R2-04), sin GATE PASS de F0 (Discovery + Freeze). P-14 quedó resuelta por
 el Owner, sin contrato común (§7). El Owner también resolvió P-01..P-05 ([Discovery](I-63-discovery.md) §25 y §26). Con la orden PV1, F0-DISCOVERY queda cerrado para pasar al diseño. Architect R1 (V1) y R2
-(V2) = CHANGES REQUIRED. La Proposal V3 y su paquete están publicados y la re-revisión R3 del mismo Architect está pedida; sin
-Freeze (orden PV3). El plan provisional del mandato (F0 Discovery y Freeze; F1..F6; READY) **no está congelado** y se
+(V2) = CHANGES REQUIRED. **Architect R3 (V3) = AGREED, READY FOR FREEZE** sobre `fb3c8788` / blob `e4a94eff`. El Consensus Freeze
+lo decide el Coordinator; sin Freeze todavía. El plan provisional del mandato (F0 Discovery y Freeze; F1..F6; READY) **no está congelado** y se
 revisa contra [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §7 antes del Freeze: ningún gate solo de capa, DTO o modelo sin
 resultado observable verificable. La conformidad final se referencia desde READY-06.
 

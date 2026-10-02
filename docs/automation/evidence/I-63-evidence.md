@@ -750,3 +750,102 @@ IMPLEMENTATION AUTHORIZATION = NO.
   de STOP y de escalado.
 - **Presupuesto de revisión:** 3 rondas (R3..R5). Es un **supuesto** de la sesión, derivado de `automation.max_attempts` del contrato;
   la orden no fijó un número.
+
+## 20. Architect R3: AGREED, READY FOR FREEZE
+
+### 20.1 CI del commit de la cadena de revisión
+
+La corrida `push` de `09637fa64096fe3972674f678ce59bfa71cd3875` (registro de la cadena) es la 36943762295. Su resultado se informa al
+Coordinator con la entrega; el commit no cambia la Proposal V3.
+
+### 20.2 Procedencia del veredicto
+
+- **Respuesta directa** del Architect a la solicitud R3 (msg `289a2f8a`). Llegó como mensaje entre sesiones a esta sesión, remitente
+  `local_d5787742-7168-40f7-b18f-56abcf3eda7c` («I-63 Architect Review R1»).
+- El mismo texto consta como entrada de su `SendMessage` en su transcripción local `fdd2a979-cce9-4391-83aa-e7dfe5effcc4.jsonl`
+  (2026-10-02T00:00:50Z). La sesión no escribió otro veredicto en su chat.
+- Tamaño: 6 549 caracteres. SHA-256 UTF-8: `190368f59ae67f2ff14f1b2511900829288af27ebbff69269952ab8afe3ac764`.
+- **Interpretación de la sesión principal:** AGREED con cero REQUIRED abiertos. Según la corrección operativa, el siguiente rol es el
+  **Coordinator**, que decide el Freeze. Ningún hallazgo cambia la materialidad ni el alcance, y los opcionales O-PV3-1..3 no bloquean.
+- La Proposal V3 **no** se toca: cualquier cambio crearía otro blob e invalidaría el acuerdo, que vale solo para el blob exacto.
+
+### 20.3 Texto literal
+
+```text
+I-63 — ARCHITECT RE-REVIEW R3 (Proposal V3): AGREED, READY FOR FREEZE, sobre fb3c8788 / docs/initiatives/I-63-proposal-v3.md / blob e4a94eff.
+
+Review mode: SEPARATE SESSION; revisor=autor: no; misma sesión que R1/R2: sí (local_d5787742…, «I-63 Architect Review R1»). Mismo modelo de base que la autora: unknown (probable claude-opus-5-5, limitación de independencia registrada desde R1).
+
+1. REVIEW IDENTITY
+- Commit fb3c87888ed583d1117ca565ce4751b51f67a81b: único commit sobre dddc215f, solo toca docs/.
+- Proposal: docs/initiatives/I-63-proposal-v3.md, blob e4a94effa99f29e06b447a3ce07ec5bcc41f0b6d (comprobado con git rev-parse).
+- Paquete: docs/initiatives/I-63-architect-package-v3.md, blob e195e9aed75155bfc2a6a38384f42cd4412c6f67 (comprobado).
+- Base: origin/main = 819955d61a6da4c811a11fbd11b5dca13f634b7c, tras git fetch.
+- Lectura con git show y diff V2→V3. Sin escrituras en el repositorio.
+
+2. DISPOSICIÓN DE LOS REQUIRED ABIERTOS
+- A63-PV1-05 → CLOSED.
+  (a) D-27 obliga a delegar y prohíbe conservar la composición propia del handler. INV-33 es una guarda de fuente única, DelegatesToOutputVerdict, sobre el texto del método. Exige la llamada a RackOutputVerdict y a la correspondencia del handler, y prohíbe PushBackResolver y RackBomOutputGate.For. Su control es el texto literal de 819955d6 (PushBackKindHandler.cs:56-71), rechazado por la misma función. Ese RED es observable: hoy el método contiene exactamente ese texto.
+  (b) CatalogInput = Loaded | LoadFailed. La vía del handler normaliza null a Loaded(new RackCatalog()), igual que PushBackResolver.cs:30-32, y nunca produce LoadFailed. INV-13 cubre el Push Back que se bloquea con catálogo vacío. CatalogUnavailable solo existe con LoadFailed. D-25 obliga al futuro productor a no normalizar un fallo de carga (RackCatalogLoader.cs:24-29).
+- A63-PV1-08 → CLOSED.
+  (a) D-28 es una tabla total y única para RackMetricRequest y RackSummary.Metrics, en este orden: kind (E3) → soporte de diseño (D-06, sin leer) → E5 → E4 → efectivo/resuelto → Available. Coincide con el orden de población E3→E5→E4. El ejemplo del Push Back ilegible da NotSupported. INV-34 discrimina la variante «E5 antes del paso 2» y exige el mismo resultado por las dos vías. INV-14 cuenta resoluciones y lecturas.
+  (b) INV-32 pasa a G2, con un solo contador en el orquestador real y control positivo por ProjectSummary Full (> 0). §21 retira la aserción de G1.
+- A63-PV2-01 → CLOSED.
+  - INV-20 usa una entrada rack sintética llamada Frentes-Vacios. La variante global (SymbolTable.cs:148) da OperatorInName; la correcta da UnknownSymbol. La guarda discrimina.
+  - INV-29(b) usa una sola función sobre el cierre declarado de los .csproj, con controles UI → WPF y Plugin → AutoCAD.
+  - INV-09 usa una sola función parametrizada por texto, con un fixture inválido.
+  - §20 fija que el control usa la misma función.
+  - No queda ninguna guarda tautológica.
+- Cerrados en R2 (A63-PV1-01..04, 06, 07, 09 y 10): siguen cerrados. Las secciones que los satisfacen no cambiaron en el delta V2→V3, y no encontré ningún defecto material nuevo.
+
+3. AGREED POINTS
+- Todo lo acordado en R2 sigue vigente.
+- D-28 resuelve la ambigüedad sin estados nuevos: Push Back ilegible → NotSupported; Excluded(OutputDenied) → NotSupported en sus frentes.
+- La asimetría de hermanas sin colocar (O-PV2-4) es explícita y está motivada.
+- INV-35 vigila la deriva del lector D-26 respecto de los handlers, con control.
+- Anexo A: P25.4 modificada y P25.1 descriptiva (O-PV2-1).
+- OV NOT APPLICABLE se confirma como candidata: la delegación no cambia nada observable (INV-13) y su unicidad está guardada (INV-33). La decisión final es del Freeze.
+- I-64: sin dependencia obligatoria, sin snapshot común y sin contrato compartido.
+
+4. DISAGREEMENTS
+Ninguno material.
+
+5. MATERIAL RISKS
+Riesgos residuales, todos declarados y con dueño:
+- R-13: el futuro productor podría normalizar un fallo de carga del catálogo. Queda obligación en D-25.
+- R-14: coste de calcular métricas para racks no incluidos. Se mide en G4.
+- R-11: deriva del lector D-26. Lo vigila INV-35.
+- Limitación de independencia: probablemente el mismo modelo de base.
+
+6. NEW REQUIRED CHANGES
+Ninguno.
+
+7. OPTIONAL IMPROVEMENTS (no bloquean el Freeze)
+- O-PV3-1 (INV-29 b): RackCad.Plugin.csproj declara AutoCAD por dos vías condicionadas. Con UseAutoCADNuGetReferences=true usa PackageReference AutoCAD.NET; con el valor por defecto false usa Reference AcCoreMgd, AcDbMgd y AcMgd. La función debe clasificar AutoCAD con cualquiera de las dos e ignorar Condition (unión de los ítems); si no, el control fallará al implementar. El Plugin también declara UseWPF=true.
+- O-PV3-2 (INV-20): nombrar el control de proyecto que dice «al de control». Debe ser una projectVariable A-B: el texto A-B sigue dando OperatorInName. Así queda dentro de la prueba que el detector no se desactivó globalmente (hoy lo cubre de forma indirecta INV-28, ExpressionBinderTests.cs:301-313).
+- O-PV3-3 (INV-14 / INV-34): fijar que el contador de lecturas de diseño está en el costado del lector D-26. El 0 de Push Back y Cabecera debe medirse allí y no en el store.
+
+8. AQ-06 / AQ-07
+- AQ-06: ACEPTO el cierre declarado de los .csproj, con la misma función para el objetivo y los dos controles, porque el job de Core no compila UI ni Plugin. Condiciones:
+  - aplicar O-PV3-1;
+  - declarar que no se inspeccionan las dependencias transitivas de PackageReference. Hoy Application solo tiene ProjectReference a Domain, así que el riesgo es nulo.
+- AQ-07: ACEPTO calcular RackSummary.Metrics para todos los RackIds atribuibles, NotPlaced incluidos, con D-28 y el coste medido en G4. Limitar el paso 5 a los Included obligaría a un estado nuevo (NotRequested) que O-04/AQ-05 ya rechazó. Membership deja explícito que esas métricas no entran en los totales.
+
+9. MATERIALITY / ARCHETYPE
+- M-01: creador y modificador, efectivo y único (INV-33).
+- M-02: no activado (dos tablas, INV-24).
+- M-03: no activado; la condición quedó cumplida con INV-13 y el catálogo nulo.
+- M-04 a M-08: activados, como en V3 §3.
+- Arquetipo: NEW ARCHITECTURE, confirmado.
+
+10. FREEZE READINESS
+READY FOR FREEZE. Este veredicto no crea el Freeze; el commit de Freeze lo decide el Coordinator.
+
+11. CONSENSUS STATUS
+AGREED: cero REQUIRED abiertos. Válido exclusivamente para:
+- commit fb3c87888ed583d1117ca565ce4751b51f67a81b;
+- ruta docs/initiatives/I-63-proposal-v3.md;
+- blob e4a94effa99f29e06b447a3ce07ec5bcc41f0b6d.
+
+IMPLEMENTATION AUTHORIZATION = NO hasta que Coordinator y Architect hayan acordado el mismo Freeze.
+```
