@@ -758,3 +758,47 @@ CI de este commit se informa al Owner y al Coordinator.
 
 **Validación de esta entrega:** allowlist (superficies propias de I-62), enlaces, columnas de las tablas, hashes de los archivos custodiados, YAML del estado y
 `git diff --check`; resultado en el cuerpo del commit. La CI de este commit se informa al Owner.
+
+## 24. F0 — Proposal V11 (corrección de A62-V10-01, -03, -04 y requisito R62-FIDELITY-01..06)
+
+**CI del commit de custodia** (`c2e2ecede5810dbd1c7fb108a7e9742c0663ee46`, §23): corrida **36950848216**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: Build UI (110663230205), UI Tests (110663230382), Tests (Domain +
+Application) (110663230430) y Build Plugin without AutoCAD (110663727615), los cuatro `success`. MEASURED por la sesión. Acredita solo `c2e2eced`.
+
+**Orden recibida:** «I-62 — PROPOSAL V11 / V10 ARCHITECT CORRECTIONS + INPUT FIDELITY», texto pegado sin archivo de origen. 10 559 bytes en UTF-8, SHA-256
+`e97c6a5bdc7d26056f518528ed046e087c099985af9977f964873340790d3a44`, fuera del repositorio. Registro recuperable en
+`docs/initiatives/I-62-architect-review-v10-disposition.md`.
+
+**Apertura del tramo** (MEASURED en el primer comando del tramo, tras recibir la orden a las 06:12Z): `origin/main` = `819955d6…`, sin rebase; rama de I-62
+en `c2e2eced…` = remoto, árbol limpio.
+
+**Fidelidad del prompt en la invocación de V10** (MEASURED ahora sobre el log de sesión `339a1f25…`, fuera del repositorio). El mensaje que recibió el revisor
+es igual a `prompt.md` salvo el salto de línea final, que es la normalización permitida por §20.3.3. Tiene los mismos 68 caracteres no ASCII y ningún
+U+FFFD. La degradación de GAP-09 estuvo en el camino de lectura de las herramientas, no en el prompt.
+
+**Corpus de caracteres de V11** (MEASURED): `docs/initiatives/I-62-proposal-v11.md` contiene 36 caracteres no ASCII distintos:
+`§ª«·»¿Ñ×Úáéíñóúü—…→↔⇒⇔∅∈∉−∖∧∩∪≠≤≥⊆⊇✓`. Es el mínimo que debe cubrir la prueba de fidelidad de la próxima revisión, sumado al del resto del cierre.
+
+**Revalidación antes del commit** (MEASURED, 06:23Z):
+- `origin/main` = `819955d6…` y la rama de I-62 en `c2e2eced…`, sin cambios;
+- I-52 `4d7fa61d..fb6b5648`: 2 commits;
+- I-63 `29fad150..b5ee157d`: 3 commits (corrección 1 de G1);
+- I-64 `24074abb..b2db5326`: 1 commit;
+- **ningún cruce** con superficies de I-62.
+
+**Identidad del contenido entregado** (blob calculado con `git hash-object` antes del commit; el commit lo da el recibo):
+- `docs/initiatives/I-62-proposal-v11.md` → `3e8fa9d8eb8a875069224e8ed7fd5850145e4d0e`;
+- `docs/initiatives/I-62-architect-review-v10-disposition.md` → `3328d1f5e11a1e3903cfd8ee3624f9d1d966efd8`;
+- `docs/initiatives/I-62-architect-package-v11.md` → `10fe74796ac94cbeaf1945ee3e47a60cb8f39ee4`.
+
+**No se hizo:**
+- invocaciones de modelos, subagentes, Workers, Controllers, Architect, sondas, pilotos, sesiones nuevas, fixtures, remotos, pruebas, tooling ni esquemas en
+  producción;
+- tocar V1-V10, sus paquetes, los registros previos (incluido el de la revisión de V10), el Discovery, el mandato, las normas compartidas ni ninguna
+  superficie ajena;
+- cambiar la semántica del presupuesto por A62-V10-02, decidir OD-6 ni declarar AGREED o Freeze.
+
+Las trazas de V11 (§20 y Anexos D.8 y F.8) son **análisis del diseño**, no ensayos.
+
+**Validación de esta entrega:** allowlist, enlaces, columnas de las tablas, diff V10→V11 revisado, YAML del estado y `git diff --check`; resultado en el
+cuerpo del commit. La CI de este commit se informa al Owner y al Coordinator.
