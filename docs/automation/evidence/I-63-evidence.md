@@ -1701,3 +1701,24 @@ fin de línea (16.12).
   ancestro.
 - `src/RackCad.Application/Expressions/` también es idéntico entre `819955d6` y `637dce7e` (comprobado). La afirmación de la A-3 se
   mantiene, y el resultado fijado no cambia.
+
+## 43. Autorización de G3-T2 y errata de la A-3
+
+- **Orden del Coordinator**, pegada en el chat el 2026-10-02 tras §42. Resumen en las [decisiones](../decisions/I-63.md) §2.
+- **Condición corregida de la A-3, satisfecha:**
+  - la A-3 `ea70e3b333efec49d3c3b9bc1e5d0395adc71a01` está publicada sobre el RED acreditado `637dce7e`;
+  - solo toca `docs/`, y `src/` y `tests/` son idénticos a los del RED;
+  - su CI exact-SHA, la corrida 37058065873, se inspeccionó: Core falla con exactamente las mismas 88 pruebas del RED y no hay fallas
+    nuevas (§42.1).
+- **Estado fijado por la orden:** G3-T1 COMPLETE; RED ACCREDITED; A-3 VALID; G3-T2 AUTHORIZED; `attempts` 2/3; G4 NOT AUTHORIZED; sin
+  decisión del Owner.
+- **INV-22 para T2:**
+  - `Rack.#{zzz}` → `InvalidQualifier` (11, `SyntaxAndLimits`), span 5+6, sin árbol sintáctico ni enlazado, determinista;
+  - el caso de una clave de 32 caracteres hexadecimales en forma N **no** es requisito de G3;
+  - alterarlo de forma accidental es STOP (C-12 del contrato de T2). Si se conserva, se registra como observación.
+- **Presupuesto de verificación:** la verificación de T2 tiene su propio tope de dos reejecuciones por (`TaskId`, fase). Esto sustituye
+  la lectura estricta de la sesión en §41.3.
+- **Errata de la A-3** (sin editarla y sin A-4, porque no cambia ninguna cláusula congelada):
+  - `95690c28` no era el `main` vigente;
+  - el `main` vigente en la decisión de la A-3 es `819955d61a6da4c811a11fbd11b5dca13f634b7c`;
+  - los bytes de `src/RackCad.Application/Expressions/` son idénticos, así que el resultado de INV-22 no cambia.
