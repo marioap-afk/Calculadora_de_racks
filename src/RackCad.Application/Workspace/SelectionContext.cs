@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RackCad.Application.Workspace
 {
@@ -61,7 +62,28 @@ namespace RackCad.Application.Workspace
         /// </summary>
         public static SelectionContext Classify(IReadOnlyList<DefinitionFact> references, int nonRackEntities)
         {
-            return None; // skeleton: behaviour arrives with GREEN
+            var ids = new HashSet<string>(StringComparer.Ordinal);
+            var unidentified = 0;
+            var diagnostics = 0;
+            foreach (var fact in references)
+            {
+                if (!fact.IsInterpretable) diagnostics++;
+                else if (string.IsNullOrWhiteSpace(fact.EnvelopeId)) unidentified++;
+                else ids.Add(fact.EnvelopeId!);
+            }
+
+            var total = references.Count + nonRackEntities;
+            if (total == 0) return None;
+
+            if (nonRackEntities == 0)
+            {
+                if (ids.Count == 1 && unidentified == 0 && diagnostics == 0) return One(ids.First());
+                if (ids.Count == 0 && references.Count == 1 && diagnostics == 1) return Diagnostic;
+                if (ids.Count == 0 && references.Count == 1 && unidentified == 1) return NoIdentity;
+            }
+
+            // Several items: N distinct racks, M entities that are not identified racks.
+            return Selection(ids.Count, nonRackEntities + unidentified + diagnostics);
         }
     }
 }
