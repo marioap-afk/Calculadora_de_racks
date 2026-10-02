@@ -3,37 +3,29 @@ automation_state:
   initiative: I-63
   branch: architecture/parametros-calculados-resumen-proyecto
   claim_id: ce04f47f-ca53-4e75-b983-5ac57ab6c5e3
-  current_phase: G1
-  state: review-ready
+  current_phase: G2
+  state: waiting
   gate: none
   attempts: 2
-  next_action: Juicio del Coordinator sobre G1 con la evidencia §33 (EXECUTION_VERIFIED R20261002T144842Z-0cf4 sobre 4a6c2d88; nc1-nc3 conformes).
-  last_evidence_commit: 4a6c2d889fc2b421076b3165b26b97162439ad57
+  next_action: Preparar el contrato de gate de G2 desde el Freeze + A-1 y volver al Coordinator para su autorizacion formal; sin implementacion antes.
+  last_evidence_commit: 2f885759c79c916127d0613c8971ee058fa4f9d9
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-parametros-calculados-resumen-proyecto
 execution_chain:
-  gate: G1
-  task_id: G1-RACK-METRICS
-  attempt: 2
-  next_role: Coordinator (juicio de G1)
-  next_action: Correccion 1 (CorrectionOf R20261002T005944Z-1192, FailureClass Ci, analysis.md SHA-256 6080f3d008d032d4c6565f5f38df849f294c1a3c981d8ce9c31a14c5259a1fb8) -> planificacion -> aceptacion A1-A8 -> Worker RED solo de pruebas + GREEN -> CI -> verificacion -> nc1-nc3 si VERIFIED -> custodia
-  correction_rules: [Authorities AllowedWriteScope ForbiddenWriteScope Invariants RequiredTests y StopConditions copiadas exactamente del contrato, analysis.md solo por CorrectionOf, la correccion 2 solo crea tests/RackCad.Tests/ComputedParameters/RackMetricIdsTests.cs (restriccion en Objective y AcceptanceCriteria), sin RED nuevo, sin tocar produccion (si hiciera falta -> STOP), replanificacion automatica preautorizada solo si A5 es el unico fallo por cadenas literales del contrato (intento 2; tope 16.8)]
-  red_sha: fc30dc6cf0d2f97e6732bbb8c512623db91c305d (RED vigente; ChainRedFiles = las dos pruebas protegidas de tests/RackCad.Tests/ComputedParameters/)
-  verified_sha: 4a6c2d889fc2b421076b3165b26b97162439ad57 (EXECUTION_VERIFIED R20261002T144842Z-0cf4; CI push 37021876416 4/4; nc1-nc3 conformes)
-  run_ids: {planning: R20261002T002817Z-6294, nc4: R20261002T003429Z-a139, work: R20261002T003840Z-f180, verification: [R20261002T005705Z-eccd (transporte), R20261002T005944Z-1192]}
-  limits_used: {verification_reruns_attempt0: 1 of 2, corrections: 2 (clase Ci = 1; clase Authority = 1), attempts: 2 of 3, planning_attempt1: 2 (R20261002T011628Z-7097 STOP P-03; R20261002T061154Z-9f77 aceptada), work_attempt1: R20261002T061533Z-8e64 (GREEN b5ee157d; CI 4/4), verification_attempt1: R20261002T062554Z-e271 (STOP S-12), planning_attempt2: 3 (R20261002T135956Z-2105 STOP P-03; R20261002T141601Z-4a2b STOP P-03; R20261002T143522Z-0c4d aceptada), work_attempt2: R20261002T143849Z-3698 (4a6c2d88; CI 4/4), verification_attempt2: R20261002T144842Z-0cf4 (EXECUTION_VERIFIED), negative_controls: nc1-nc3 conformes}
-  gate_contract: artifacts/orchestration/I-63/G1-RACK-METRICS/0/R20261002T002817Z-6294/gate-contract.json (SHA-256 87954E41E2F96B992DB7D02205E4102551DAC2A14351A8EBDFDD3838231B2068; no versionado)
-  planning_run_id: R20261002T002817Z-6294
-  authority_revision: 658b35ad498520ba3c832a96eea4389df16dfa60
+  gate: G2
+  task_id: null
+  attempt: null
+  next_role: Coordinator (autorizacion formal de G2 sobre el contrato preparado por la sesion)
+  next_action: Contrato de G2 en preparacion; sin delegacion ni Worker hasta la autorizacion
+  authority_revision_g1: 658b35ad498520ba3c832a96eea4389df16dfa60
   main_sha: 819955d61a6da4c811a11fbd11b5dca13f634b7c
   freeze_commit: f61d0aca859a11b15cbe1797069a83cba873ba95
   frozen_proposal_blob: 4d5dedce15363fa6378e460c5b63005fe41b858b
   amendments: [A-1 docs/initiatives/I-63-proposal-v3-amendment-a1-verificacion.md (blob 766d9ba9cf379daa077bed20fc6255b5ca656d60)]
-  allowed_write_scope: [src/RackCad.Application/ComputedParameters/, tests/RackCad.Tests/ComputedParameters/]
-  required_invariants: [INV-04, INV-05, INV-09, INV-14, INV-16, INV-34 (peticion)]
-  expected_result: EXECUTION_VERIFIED del Controller sobre el SHA GREEN y evidencia completa para que el Coordinator juzgue G1
-  return_to_coordinator_when: EXECUTION_VERIFIED con evidencia completa; STOP; cambio material, de autoridad o de alcance; presupuesto agotado; AUTONOMY_GAP
-  not_authorized: [G2, G3, G4]
+  g1: {verdict: PASS, verified_sha: 4a6c2d889fc2b421076b3165b26b97162439ad57, verification: R20261002T144842Z-0cf4, closure_evidence: 2f885759c79c916127d0613c8971ee058fa4f9d9, attempts_used: 2 of 3, red_sha: fc30dc6cf0d2f97e6732bbb8c512623db91c305d}
+  g2_invariants: [INV-01, INV-02, INV-03, INV-06, INV-07, INV-08, INV-10, INV-11, INV-12, INV-13, INV-32, INV-33, INV-35]
+  return_to_coordinator_when: contrato de G2 listo para autorizacion; STOP; cambio material, de autoridad o de alcance; AUTONOMY_GAP
+  not_authorized: [G2 (hasta la autorizacion formal), G3, G4]
   owner_escalation_conditions: OWNER-RESERVED; decision material del Owner; STOP que requiera al Owner; credenciales, autenticacion o compra; accion irreversible o destructiva

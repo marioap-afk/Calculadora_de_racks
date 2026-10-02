@@ -1275,3 +1275,20 @@ Copias en `docs/automation/evidence/I-63-pilot/G1-RACK-METRICS/<RunId>/` para `R
 Llevan CRLF los transitorios R20261002T143522Z-0c4d/gate-contract.json, R20261002T143849Z-3698/worker-handoff.json; su blob normalizado difiere del SHA-256 transitorio por fin de línea (16.12).
 
 **Siguiente:** el Coordinator juzga G1 con esta evidencia. G2, G3 y G4 no están autorizados.
+
+## 34. G1 PASS
+
+- **Veredicto del Coordinator**, pegado por el usuario en el chat el 2026-10-02: **G1 — Métricas por rack: PASS**. Resumen en las
+  [decisiones](../decisions/I-63.md) §2.
+- **Base del juicio:**
+  - `VerifiedSha` `4a6c2d889fc2b421076b3165b26b97162439ad57`; verificación `R20261002T144842Z-0cf4`, `EXECUTION_VERIFIED`, 14/14.
+  - CI `37021876416` 4/4: Core 12423/12423 y filtro 27/27.
+  - RED `fc30dc6c` con 17 focales fallidos; nc1-nc3 conformes.
+  - Cierre `2f885759` con CI `37024929926` 4/4.
+  - Revisión del diff productivo contra Freeze + A-1.
+- **Invariantes satisfechos:** INV-04, INV-05, INV-09, INV-14, INV-16, INV-34 (petición) y D-02.
+- **DEV-G1-03:** aceptada como desviación no bloqueante. La lección queda para los gates siguientes: el ejecutor de controles revalida PID y
+  pertenencia antes de lanzar.
+- **Contadores:** `attempts` usados 2 de 3.
+- **Siguiente:** `current_phase` = G2. La sesión prepara el contrato de G2 desde el Freeze + A-1 y vuelve al Coordinator solo para la
+  autorización formal. Sin implementación de G2 antes; G3 y G4 no autorizados.
