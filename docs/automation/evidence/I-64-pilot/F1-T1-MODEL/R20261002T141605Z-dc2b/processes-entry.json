@@ -1,0 +1,62 @@
+{
+  "CheckedUtc": "2026-10-02T14:29:25.2651225Z",
+  "CheckerPid": 12620,
+  "SessionPid": 7356,
+  "Rows": [
+    {
+      "Pid": 27468,
+      "ParentPid": 16040,
+      "Name": "claude.exe",
+      "CreationDateUtc": "2026-10-01T21:07:31.4279790Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 7356,
+      "ParentPid": 27468,
+      "Name": "claude.exe",
+      "CreationDateUtc": "2026-10-01T22:14:59.1560940Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 10384,
+      "ParentPid": 1244,
+      "Name": "codex-windows-sandbox-service.exe",
+      "CreationDateUtc": "2026-10-01T23:08:07.6177480Z",
+      "Classification": "nominal-exclusion",
+      "Reread": null
+    },
+    {
+      "Pid": 12620,
+      "ParentPid": 40024,
+      "Name": "pwsh.exe",
+      "CreationDateUtc": "2026-10-02T14:29:24.1970410Z",
+      "Classification": "own-tree",
+      "Reread": null
+    }
+  ],
+  "SessionDescendants": [],
+  "Orphans": [
+    {
+      "Pid": 34532,
+      "ParentPid": 29304,
+      "Name": "dotnet.exe",
+      "CreationDateUtc": "2026-10-02T14:18:04.7156430Z",
+      "Classification": "build-server",
+      "Reread": null
+    },
+    {
+      "Pid": 38144,
+      "ParentPid": 29304,
+      "Name": "dotnet.exe",
+      "CreationDateUtc": "2026-10-02T14:18:04.7156760Z",
+      "Classification": "build-server",
+      "Reread": null
+    }
+  ],
+  "ReadableNonParticipants": 34,
+  "Participants": 0,
+  "UnattributablePersistent": 0,
+  "OrphansPersistent": 0
+}

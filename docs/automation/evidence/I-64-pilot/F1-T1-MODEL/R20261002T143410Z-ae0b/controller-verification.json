@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T1-MODEL",
+  "RunId": "R20261002T143410Z-ae0b",
+  "DelegationRunId": "R20261002T140200Z-3886",
+  "WorkRunId": "R20261002T141605Z-dc2b",
+  "Attempt": 2,
+  "VerifiedSha": "8d9a0c6e6ea148caf3e8f20d26a95a864a2943ce",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, OutputWrittenUtc=2026-10-02T14:29:10.417312Z; Cession.StartUtc=2026-10-02T14:16:44Z. The handoff was written after the invocation began."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "Test-Json validates worker-handoff.json against worker-handoff.schema.json. TaskId, Attempt, DelegationRunId and RunId match the delegation and work record; handoff SHA-256 equals Outcome.OutputSha256; OutputWrittenUtc follows Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha succeeded. git merge-base MainSha AuthorityRevision returned MainSha; git diff --name-only from that merge-base to AuthorityRevision over all delegated EXTERNAL paths returned empty. Read AUTOMATION_PLAN.md, agent-execution/README.md and AGENTS.md from MainSha; read the unit authorities at AuthorityRevision."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Mechanical comparisons show delegation and gate-contract agree on AllowedWriteScope, ForbiddenWriteScope, Invariants (INV-F1-T1-01..12), RequiredTests, Authorities and StopConditions. Planning record reports accepted A1-A8 all pass."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git branch --show-current = architecture/workspace-persistente-rackcad; git rev-parse --show-toplevel matches the delegated worktree. git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both equal CurrentSha. git merge-base --is-ancestor BaseSha CurrentSha and RedSha CurrentSha succeeded."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha=CurrentSha and OriginMainSha=MainSha. Exit records HEAD and ls-remote both at BaseSha, MainSha unchanged; Entry records HEAD and ls-remote both at CurrentSha. This BaseSha-to-CurrentSha transition is expected during the Worker cession."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha returns only tests/RackCad.Tests/Workspace/WorkspaceSelectionContextTests.cs, within AllowedWriteScope and outside ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 --untracked-files=all is empty. git check-ignore -v on the attempt package path identifies .gitignore:3 (artifacts/)."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "CurrentRun 37020159700 is completed success for event=push, exact branch ref and CurrentSha; all four required jobs are success. RedRun 37019198364 is the exact RedSha push; its Core job failed as required for RED. Current Plugin job log in relay notes reports Release publish and solution Release build succeeded without warnings and AutoCAD compile-reference verification passed."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Required filter FullyQualifiedName~RackCad.Tests.Workspace selected 51 tests: RED TRX 37019198364 has 22 passed/29 failed; Current TRX 37020159700 has 51 passed/0 failed. Current Core Full has 12447 passed/0 failed. RT from ChainBaseSha to RedSha contains four test paths; union with delegated ChainRedFiles is the five paths SelectionContextTests.cs, WorkspaceHintDrainTests.cs, WorkspaceModelBoundaryTests.cs, WorkspaceSelectionContextTests.cs, WorkspaceSessionTests.cs. git diff RedSha CurrentSha contains only the three Workspace source files, not RT or ChainRedFiles. UI TRXs each show 1654 total, 1637 passed, 0 failed; 17 NotExecuted results are the documented Skip/logger convention."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git show -s --format=%H%n%B for both commits in BaseSha..CurrentSha shows the declared Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com> trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "RoutingEnforcement=required. Delegation requests the eligible claude-sonnet-5-5 cell at medium effort; relay-record-work records effective claude-sonnet-5-5/medium, confirmed by the cited transcript source."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Scanned WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction in worker-handoff.json; no AUTOMATION_PLAN §16.10 term matched."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work Notes report one harness-policy-blocked sleep/read attempt, subsequently resolved; no pending failed command, permissions or credential denial, or limit warning. The unattributable bash process was CLEARED_BY_REREAD and did not touch Git, config or the worktree; Entry has no unattributable process."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "El TRX RED registra 29 fallos de aserción al restaurar el esqueleto: WorkspaceSelectionContextTests (11) obtiene None frente a Selection, NoIdentity, Diagnostic o One; EqualContextsAreEqualSoTheSameSelectionDoesNotNavigate compara dos valores None iguales; ApplyingAnEqualContextIsNotAChange devuelve false. WorkspaceHintDrainTests (11) obtiene false en las aserciones de drenaje/cola y SelectionHintsReadAndRecomputeWhileObjectHintsInvalidateAndMark no encuentra ReadImplicitSelection. WorkspaceSessionTests (7): RequestBornInAExecutedWithBActiveIsRejectedWithoutEffects y RequestFromTheSessionOfTheExecutingDocumentIsAccepted obtienen Accepted frente a RejectedSessionMismatch; SameLiveDocumentInstanceYieldsTheSameSession devuelve otra instancia; DestroyedSessionIsRetiredAndRecycledNativeIdGetsAFreshEmptySession, DestroyedSessionDoesNotAcceptHintsOrContext y TwoOpenInstancesGiveTwoIndependentSessions fallan sus aserciones true; RequestOfADestroyedSessionIsRejectedEvenIfTheNativeIdIsRecycled obtiene Accepted frente a Not Accepted. El TRX Current pasa los 51 del filtro.",
+    "La entrega documenta que verify-autocad-references.ps1 se detuvo en Assert-CleanRunner por detectar AutoCAD 2025 instalado en la estación del Worker. Es una limitación de esa comprobación local; el job remoto requerido de Plugin sí consta como success.",
+    "El commit GREEN registra ADR 0047 en estado propuesto y Smoke-1 pendiente. Esta verificación cubre la ejecución automatizada; esas actividades quedan fuera de su alcance."
+  ],
+  "RecommendedNextAction": "Registrar esta verificación en la custodia prevista y devolver el resultado al Coordinator para los pasos siguientes."
+}

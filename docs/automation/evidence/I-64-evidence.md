@@ -1266,3 +1266,73 @@ y un directorio vacío como instalación de AutoCAD (`EmptyAutoCADDir`): no requ
 | Contador de la clase Ci | 2 al lanzar la corrección |
 
 `main` `819955d6` y Freeze `9b43dafb` intactos; `config.toml` sin cambio.
+
+## 26. F1-T1-MODEL — Corrección attempt 2: Worker, CI verde y verificación EXECUTION_VERIFIED
+
+Sección nueva; las anteriores no se reescriben. Hechos de la sesión responsable. Sin GATE PASS, F1 PASS ni ADR aceptado.
+
+**Planificación 4 de 4** (`R20261002T140200Z-3886`; Codex `gpt-6-luna` / `high`, efectivo comprobado):
+- Delegación SHA-256 `C3384842…BD9DF62`. Attempt 2 y AttemptsRemaining 1.
+- `CorrectionOf` = {`R20261002T063546Z-0cd7`, `Ci`, `null`}.
+- Cadena: ChainBaseSha `e0587355`, ChainRedSha `189353f8`, 5 ChainRedFiles. `TaskClass` «Depuración».
+- A1-A8: las ocho en pass. Copia exacta.
+
+**Aceptación formal del Coordinator** (chat, 2026-10-02): **ACCEPTED**, con la regla de RED nuevo y la comprobación local de la build Release.
+
+**Worker** (`R20261002T141605Z-dc2b`; workflow `wf_6e99223f-343`, `sonnet` / `medium`):
+- Prompt: 193 líneas; SHA-256 `16EC3AA1…29C040A`. El texto entregado es igual al archivo: sin P-05.
+- Cesión 14:16:44Z → 14:29:19Z; 684879 ms; 70 llamadas de herramienta.
+- Efectivos `claude-sonnet-5-5` / `medium` en las 102 entradas de la transcripción (SHA-256 `EC6A40AE…C6DE7C`).
+- 1 error de herramienta: el harness bloqueó un `sleep`. Se superó y no es una denegación.
+- Commits:
+  - **RED** `a9778068af566bc2b84ba6a0005711b6452a2666`: `#nullable enable annotations` como primera línea de
+    `WorkspaceSelectionContextTests.cs`, más el comportamiento desactivado.
+  - **GREEN** `8d9a0c6e6ea148caf3e8f20d26a95a864a2943ce`: el comportamiento restaurado, sin tocar pruebas.
+- Diff neto respecto de la base: solo esa directiva.
+- El Worker declaró un HEAD desacoplado temporal que produjo el commit local `a2db0a91`. No se publicó: no está en ninguna rama remota.
+- `verify-autocad-references.ps1` en local se detuvo en `Assert-CleanRunner` (AutoCAD 2025 instalado; causa de entorno). Las builds Release de
+  RackCad.Tests y RackCad.UI.Tests dieron 0 avisos MSB, CS, NU o NETSDK.
+- Relevos:
+  - salida: un `bash.exe` ilegible desapareció en la relectura (CLEARED_BY_REREAD);
+  - entrada: sin participantes, procesos no atribuibles ni descendientes nuevos; dos `dotnet.exe` servidores de compilación.
+
+**Hechos remotos:**
+
+| Corrida | SHA | Core | Build UI | UI Tests | Plugin | Filtro (TRX Core) |
+|---|---|---|---|---|---|---|
+| 37019198364 (RedRun) | `a9778068` | failure (29, todas del filtro) | success | success | skipped | 51 seleccionadas, 22 pass, 29 fail |
+| 37020159700 (CurrentRun) | `8d9a0c6e` | **success** 12447/12447 | **success** | **success** | **success** | 51/51 pass |
+
+El log del Plugin dice «Plugin Release publish and solution Release build succeeded without warnings» y «AutoCAD compile-reference
+verification passed».
+
+**Verificación 3 de 4** (`R20261002T143410Z-ae0b`; Codex `gpt-6-luna` / `high`, efectivo comprobado):
+- Resultado: **EXECUTION_VERIFIED / NONE**. `VerifiedSha` `8d9a0c6e`. Las 14 comprobaciones en pass.
+- Coherencia del README §8 comprobada.
+- Control manual de 16.10 de la sesión sobre el texto libre de la verificación: 0 coincidencias.
+- **RED acreditado:** `ChainRedSha` `a9778068`; `ChainRedFiles` = las 5 rutas. La delegación queda cerrada.
+
+**ADR 0047.** La sesión lo comparó mecánicamente con el Anexo A de la Proposal V5:
+- las 11 decisiones y el contexto son literalmente iguales;
+- el resto solo difiere en formato (mayúscula inicial, viñetas);
+- sigue propuesto y no cambió después de `36c344dc`.
+
+**Controles negativos nc1..nc3:** no se ejecutaron.
+- En I-61 cuentan dentro del tope de invocaciones de Codex. Queda 1 verificación de 4 y el contrato no los lista. Decide el Coordinator.
+
+**Paquete de cierre de tarea:** `docs/automation/evidence/I-64-pilot/F1-T1-MODEL/task-close-package.md`.
+
+**Custodia (16.12):** `F1-T1-MODEL/R20261002T140200Z-3886/`, `R20261002T141605Z-dc2b/` y `R20261002T143410Z-ae0b/`. El CRLF de
+`worker-handoff.json` y de los `processes-*.json` se normaliza a LF en el blob.
+
+**Presupuesto final:**
+
+| Tipo | Uso |
+|---|---|
+| Planificación | 4 de 4 |
+| Trabajo | 3 de 4 |
+| Verificación | 3 de 4 |
+| `attempts` | 2 de 3 |
+| Contador de la clase Ci | 2 |
+
+`main` `819955d6` y Freeze intactos; `config.toml` sin cambio.
