@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T1-MODEL",
+  "RunId": "R20261002T151201Z-abb1",
+  "DelegationRunId": "R20261002T140200Z-3886",
+  "WorkRunId": "R20261002T141605Z-dc2b",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra Outcome.Kind=COMPLETED y DeathConfirmed=true; Cession.SessionOperated=false, con inicio 2026-10-02T14:16:44Z y fin 2026-10-02T14:29:19Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json está presente y contiene TaskId=F1-T1-MODEL, Attempt=2, DelegationRunId=R20261002T140200Z-3886 y RunId=R20261002T141605Z-dc2b. Outcome.OutputWrittenUtc=2026-10-02T14:29:10.417312Z es posterior a Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leí docs/AUTOMATION_PLAN.md desde MainSha 819955d61a6da4c811a11fbd11b5dca13f634b7c (§§16.3, 16.8-16.10) y las autoridades UNIT_DOC desde AuthorityRevision e0587355b0e84d98807057a56dfc50591da87489. Las autoridades EXTERNAL se consultaron en MainSha; no encontré discrepancia aplicable a esta entrega."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparé Invariants, StopConditions, Authorities y RequiredTests de delegation.json con gate-contract.json: A3-A5 coinciden, incluido el filtro FullyQualifiedName~RackCad.Tests.Workspace, MinSelected=1 y ExpectRed=true. relay-record-planning.json registra aceptación formal A1-A8 PASS."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "La rama actual es architecture/workspace-persistente-rackcad y worktree coincide con ExpectedWorktree. git rev-parse BaseSha=1504c938dc8ac050a8e0d61c5db6c9977b638600; git merge-base --is-ancestor BaseSha CurrentSha devuelve 0; RedSha a9778068af566bc2b84ba6a0005711b6452a2666 también es ancestro de CurrentSha 8d9a0c6e6ea148caf3e8f20d26a95a864a2943ce. Sin embargo, git rev-parse HEAD y git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad devuelven 747ead04ee5e44f87de14250c4900680d72c4c93, no CurrentSha. git log -10 identifica ese HEAD como un commit posterior de custodia."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts registra para CurrentRun 37020159700 event=push, ref=refs/heads/architecture/workspace-persistente-rackcad, HeadSha=8d9a0c6e6ea148caf3e8f20d26a95a864a2943ce, LsRemoteSha igual a CurrentSha y OriginMainSha=819955d61a6da4c811a11fbd11b5dca13f634b7c igual a MainSha. Para CurrentSha, `git ls-remote` no pudo conectar por restricción de red; la señal remota evaluada es la del registro de trabajo."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only 1504c938dc8ac050a8e0d61c5db6c9977b638600 8d9a0c6e6ea148caf3e8f20d26a95a864a2943ce devuelve solo tests/RackCad.Tests/Workspace/WorkspaceSelectionContextTests.cs, ruta cubierta por AllowedWriteScope y fuera de ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain no devuelve cambios. `git check-ignore -v artifacts/orchestration/I-64/F1-T1-MODEL-nc2/2/R20261002T151201Z-abb1/inputs` devuelve .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun 37020159700 es push del ref y SHA exactos; los cuatro jobs requeridos terminan success. Notes registra el paso de Build Plugin: Release publish y solution Release build succeeded without warnings; AutoCAD compile-reference verification passed. RedRun 37019198364 es push del ref exacto sobre RedSha; Core terminó failure como se esperaba para RED. Los TRX concuerdan con esos resultados."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX del filtro contractual: RedSha core selecciona 51, con 22 pass y 29 fail; CurrentSha selecciona 51, con 51 pass y 0 fail. Los 29 fallos RED son aserciones conductuales: en SelectionContext aparecen valores esperados Selection/One/NoIdentity/Diagnostic frente a None; en HintDrain hay aserciones booleanas falsas y falta ReadImplicitSelection; en Session aparecen resultados Accepted donde se esperaba rechazo, identidad de instancia o estado de destrucción. git diff --name-only ChainBaseSha e0587355b0e84d98807057a56dfc50591da87489 RedSha a9778068af566bc2b84ba6a0005711b6452a2666 -- tests/ aporta cuatro rutas; la unión con ChainRedFiles de la delegación conserva cinco rutas: SelectionContextTests.cs, WorkspaceHintDrainTests.cs, WorkspaceModelBoundaryTests.cs, WorkspaceSelectionContextTests.cs y WorkspaceSessionTests.cs. git diff --name-only RedSha CurrentSha solo muestra tres archivos de src/RackCad.Application/Workspace/, sin tocar esas rutas ni RT. CurrentSha Core Full: 12447/12447 pass; UI: 1654 total, 1637 pass, 0 fail, y 17 NotExecuted por Skip, conforme a Notes. Los conteos coinciden con TestResults de la entrega."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "Worker.Trailer declara `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`. git log --format=%B BaseSha..CurrentSha muestra ese trailer en los commits RED a9778068 y GREEN 8d9a0c6e; concuerda con ModelEffective=claude-sonnet-5-5 del registro del trabajo."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Participant registra Kind=subagent, ModelRequested=sonnet, ModelEffective=claude-sonnet-5-5 y EffortRequested=medium, EffortEffective=medium. Notes identifica sonnet como alias de claude-sonnet-5-5; coincide con la celda/modelo/effectivo de la delegación y el contrato."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisé los campos de texto libre de worker-handoff.json enumerados en AUTOMATION_PLAN §16.10; no detecté ninguno de los términos restringidos."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "Notes registra 70 llamadas de herramienta, ningún aviso de límite y ninguna orden fallida pendiente. El único resultado con error fue una lectura bloqueada por política del harness durante un sleep, luego superada; no indica denegación de permisos ni falta de credenciales."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La entrega identifica CurrentSha 8d9a0c6e…, pero el HEAD y la referencia remota local de la rama están en 747ead04…. La igualdad de identidad exigida no se cumple en este worktree.",
+    "La diferencia BaseSha..CurrentSha solo añade la directiva nullable en WorkspaceSelectionContextTests.cs. La cadena RED/GREEN y los conteos registrados concuerdan con los commits y TRX leídos."
+  ],
+  "RecommendedNextAction": "Resolver con el Coordinator la discrepancia entre CurrentSha y el tip observado, y repetir la comprobación de identidad sobre el estado correspondiente."
+}

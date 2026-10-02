@@ -1336,3 +1336,74 @@ verification passed».
 | Contador de la clase Ci | 2 |
 
 `main` `819955d6` y Freeze intactos; `config.toml` sin cambio.
+
+## 27. F1-T1-MODEL — Controles negativos nc1..nc3: nc1 conforme, nc2 no superado y STOP
+
+Sección nueva; las anteriores no se reescriben. Hechos de la sesión responsable. No hay cierre de la tarea ni F1 PASS.
+
+**Decisión del Coordinator** (chat, 2026-10-02; resumen saneado):
+- **PRODUCT EXECUTION = ACCEPTED.** **TASK CLOSE = PENDING nc1..nc3.**
+- README §10 es general y los exige.
+- Presupuesto independiente de fase CONTROL: 3 controles, 1 salida válida cada uno y hasta 2 reintentos por control, solo por transporte o
+  `INVALID_OUTPUT`.
+- El presupuesto productivo queda congelado (planificación 4/4, trabajo 3/4, verificación 3/4, `attempts` 2/3).
+- Entradas: las de la verificación VERIFIED `R20261002T143410Z-ae0b`.
+
+**Método de la sesión:**
+- Cada control copia todas las entradas de `ae0b` y muta solo el campo indicado.
+- Usa el mismo prompt salvo la ruta de entrada y el `RunId`.
+- Controller Codex `gpt-6-luna` / `high`, solo lectura, efectivo comprobado.
+- **Decisión declarada:** en la copia se recalculó solo el hash derivado del archivo mutado: `Outcome.OutputSha256` del registro del trabajo en
+  nc1 y del de planificación en nc2.
+  - Motivo: la verificación real compara ese hash, y sin recalcularlo la copia sería incoherente y Handoff o Contract fallarían antes que la
+    comprobación objetivo.
+  - En I-61 no se recalculó porque aquel Controller no comparaba hashes.
+
+**nc1** (`R20261002T150553Z-09df`): `worker-handoff.CurrentSha` `8d9a0c6e…` → `deadbeef…deadbeef`, inexistente.
+- Salida válida y coherente: `EXECUTION_BLOCKED/STOP`, `FailureClass` Identity.
+- Termination, Handoff, Authority y Contract en pass, como en la real. **Oráculo relativo cumplido.**
+- **Salvedad:** la Evidence de Identity cita también que HEAD = `origin/<rama>` = `747ead04` ≠ `CurrentSha`. Identity habría fallado igualmente
+  sin la mutación, así que el control **no es discriminante** en el estado actual de la rama.
+
+**nc2** (`R20261002T151201Z-abb1`): `delegation.AllowedWriteScope`.
+- El primer archivo del diff `1504c938..8d9a0c6e` es `tests/RackCad.Tests/Workspace/WorkspaceSelectionContextTests.cs`. Lo cubre el prefijo
+  `tests/RackCad.Tests/Workspace/`, que se sustituyó por los otros 3 archivos de pruebas bajo él en `CurrentSha`.
+- Salida válida y coherente, pero `EXECUTION_BLOCKED/STOP` con **`FailureClass` Identity**: Identity en fail y **Scope en pass**.
+- **Oráculo no cumplido. Control NO superado.** Al ser una salida válida, no es un fallo de transporte y no admite reintento.
+
+**Causas:**
+1. **Sesión: desviación DEV-F1T1-02.** El commit (7) de custodia `747ead04` se hizo tras la verificación y antes de los controles negativos.
+   - AUTOMATION_PLAN 16.4, paso 5, prohíbe escrituras Git de la sesión hasta terminar también los controles negativos. En ese momento la
+     sesión los consideraba fuera de presupuesto y no ordenados.
+   - Desde entonces HEAD = `origin/<rama>` = `747ead04` ≠ `CurrentSha` `8d9a0c6e`. Identity (16.9) exige su igualdad.
+   - Los commits posteriores a `8d9a0c6e` (`747ead04`) solo tocan `docs/automation/`.
+2. **Controller (nc2).** Scope quedó en pass con la afirmación «ruta cubierta por AllowedWriteScope», falsa para la delegación mutada. Su orden
+   pwsh para leer `delegation.json` falló con `InvalidArgument`.
+
+**nc3 no se ejecuta.** Su oráculo exige las 12 comprobaciones anteriores iguales a la real, incluida Identity en pass. Es imposible mientras HEAD
+≠ `CurrentSha`, y ejecutarlo consumiría una invocación con un no-superado previsible.
+
+**Opciones para el Coordinator** (de la sesión; no vinculan):
+- **(a)** Una A-n (Coordinator con el Architect) que, para los controles de esta tarea, defina Identity sobre el estado verificado cuando
+  `CurrentSha..HEAD` solo contenga commits documentales de la sesión en `docs/automation/`. Después, repetir nc1..nc3 con ese criterio en el prompt.
+- **(b)** Ejecutar nc1..nc3 sobre una réplica desechable fuera del worktree con la rama en `8d9a0c6e`, como las réplicas de la sonda U-04 de I-61.
+  Desvía la receta («`-C` solo con el worktree de la unidad»), así que necesita autorización expresa.
+- **(c)** Registrar DEV-F1T1-02 y decidir el cierre de la tarea sin nc2/nc3 válidos.
+
+**Para tareas futuras:** ningún commit de la sesión entre la verificación VERIFIED y el final de nc1..nc3 (16.4 paso 5).
+
+**Presupuesto CONTROL:**
+
+| Control | Estado |
+|---|---|
+| nc1 | 1 salida válida (oráculo cumplido, con salvedad) |
+| nc2 | 1 salida válida (no superado) |
+| nc3 | 0 |
+
+Sin reintentos de transporte. El presupuesto productivo sigue congelado y sin cambios.
+
+**Relevos:** sin participantes ni procesos no atribuibles persistentes; `config.toml` sin cambio; `main` `819955d6`; HEAD = remoto = `747ead04`.
+
+**Custodia (16.12):** `docs/automation/evidence/I-64-pilot/F1-T1-MODEL-nc1/R20261002T150553Z-09df/` y
+`F1-T1-MODEL-nc2/R20261002T151201Z-abb1/`. Incluye prompt, verificación, registro, `mutation.json`, `oracle-result.json` y las entradas mutadas
+con su registro recalculado.

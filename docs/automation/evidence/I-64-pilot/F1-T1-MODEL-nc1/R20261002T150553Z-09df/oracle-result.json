@@ -1,0 +1,49 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261002T150553Z-09df",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "fail",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "fail",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Identity": "`git rev-parse HEAD` = 747ead04ee5e44f87de14250c4900680d72c4c93; `git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad` dio el mismo SHA. La entrega declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, que no es un objeto disponible (`git rev-parse` devolvió fatal: bad object). El BaseSha sí existe; RedSha a9778068af566bc2b84ba6a0005711b6452a2666 está entre BaseSha y el SHA GREEN 8d9a0c6e… indicado por Entry y RemoteFacts."
+  },
+  "OutputSha256": "9B894716F29A30F61C17A733E2694D7220DA7D1A083C68E4A221077F3C25C791",
+  "ManualFreeText1610": []
+}

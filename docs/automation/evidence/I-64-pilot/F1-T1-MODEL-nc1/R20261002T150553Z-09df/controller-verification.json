@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T1-MODEL",
+  "RunId": "R20261002T150553Z-09df",
+  "DelegationRunId": "R20261002T140200Z-3886",
+  "WorkRunId": "R20261002T141605Z-dc2b",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.SessionOperated=false. Inicio 2026-10-02T14:16:44Z; salida escrita 2026-10-02T14:29:10.417312Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json está presente; TaskId=F1-T1-MODEL, Attempt=2, DelegationRunId=R20261002T140200Z-3886, RunId=R20261002T141605Z-dc2b y fecha de salida posterior al inicio de cesión. Los identificadores concuerdan con delegation.json y relay-record-work.json."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leí AUTOMATION_PLAN.md §16.3 desde AuthorityRevision e0587355b0e84d98807057a56dfc50591da87489; leí AGENTS.md, AUTOMATION_PLAN.md y agent-execution/README.md desde MainSha 819955d61a6da4c811a11fbd11b5dca13f634b7c. `git merge-base MainSha AuthorityRevision` dio 819955d61a6da4c811a11fbd11b5dca13f634b7c. Las rutas EXTERNAL no difieren entre esa base y AuthorityRevision ni entre AuthorityRevision y BaseSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparé delegation.json con gate-contract.json: AllowedWriteScope, ForbiddenWriteScope, Authorities, Invariants, StopConditions y RequiredTests coinciden; A3-A5 quedan satisfechas. relay-record-planning.json registra A1-A8 en pass; la aceptación formal del Coordinator consta en la instrucción de esta sesión."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "`git rev-parse HEAD` = 747ead04ee5e44f87de14250c4900680d72c4c93; `git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad` dio el mismo SHA. La entrega declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, que no es un objeto disponible (`git rev-parse` devolvió fatal: bad object). El BaseSha sí existe; RedSha a9778068af566bc2b84ba6a0005711b6452a2666 está entre BaseSha y el SHA GREEN 8d9a0c6e… indicado por Entry y RemoteFacts."
+    },
+    "Remote": {
+      "Result": "fail",
+      "Evidence": "relay-record-work.json registra LsRemoteSha=8d9a0c6e6ea148caf3e8f20d26a95a864a2943ce y OriginMainSha=819955d61a6da4c811a11fbd11b5dca13f634b7c. El primero contradice el CurrentSha declarado. `git ls-remote origin refs/heads/architecture/workspace-persistente-rackcad refs/heads/main` no pudo conectarse a GitHub; la referencia remota local está en 747ead04ee5e44f87de14250c4900680d72c4c93."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "`git diff --name-only BaseSha CurrentSha` no puede establecer el alcance: CurrentSha declarado produce `fatal: bad object`. Como referencia, `git diff --name-only BaseSha 8d9a0c6e6ea148caf3e8f20d26a95a864a2943ce` devuelve solo tests/RackCad.Tests/Workspace/WorkspaceSelectionContextTests.cs, dentro del alcance permitido; esa referencia no resuelve el SHA declarado."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "`git status --porcelain=v1` no devolvió cambios. `git check-ignore -v artifacts/orchestration/I-64/F1-T1-MODEL-nc1/2/R20261002T150553Z-09df/inputs/` identificó `.gitignore:3:artifacts/`."
+    },
+    "Ci": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts reporta la corrida push 37020159700 con ref exacta y los cuatro jobs requeridos en success para 8d9a0c6e6ea148caf3e8f20d26a95a864a2943ce, no para el CurrentSha declarado. La corrida RED 37019198364 es push del RedSha y el job Core falla. No hay CI atribuible al objeto CurrentSha declarado."
+    },
+    "Tests": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "Leí los cuatro TRX. El filtro del contrato selecciona 51 pruebas: RED 37019198364 tiene 22 pasadas y 29 fallidas; el TRX muestra fallos de aserción conductual, por ejemplo Expected Selection / Actual None y Assert.True esperado true / actual false. El filtro de 37020159700 tiene 51/51 pasadas y Core completo 12447/12447, pero pertenece a 8d9a0c6e, no al CurrentSha declarado. `git diff --name-only ChainBaseSha RedSha -- tests/` devuelve las cinco ChainRedFiles declaradas; RedSha..8d9a0c6e no modifica esas rutas ni RT. UI en ambas corridas: 1637 pasadas, 0 fallidas y 17 UnitTestResult NotExecuted; Counters.notExecuted=0 es la convención reflejada en el TRX."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "`git log --format=%H %s%n%b BaseSha..8d9a0c6e6ea148caf3e8f20d26a95a864a2943ce` muestra los commits RED a9778068 y GREEN 8d9a0c6e; ambos incluyen `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`, coincidente con Worker.Trailer y el modelo efectivo claude-sonnet-5-5 del registro. El SHA final declarado en la entrega no se pudo validar."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Participant declara ModelRequested=sonnet, EffortRequested=medium, ModelEffective=claude-sonnet-5-5 y EffortEffective=medium. Coincide con el modelo claude-sonnet-5-5 y effort medium de la delegación."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Busqué los términos de AUTOMATION_PLAN §16.10 en WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json; cero coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 70 llamadas de herramienta, un bloqueo del harness superado y ninguna orden fallida pendiente; también registra cero avisos de límite. No se reportan denegaciones de permisos ni credenciales."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "worker-handoff.json declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef; Git no contiene ese objeto. Entry, RemoteFacts y los TRX identifican 8d9a0c6e6ea148caf3e8f20d26a95a864a2943ce, por lo que la identidad de la entrega y las señales de relevo se contradicen.",
+    "El HEAD y la referencia remota local están en 747ead04ee5e44f87de14250c4900680d72c4c93, distintos tanto del CurrentSha declarado como del SHA GREEN registrado.",
+    "La corrida GREEN registra resultados completos correctos para 8d9a0c6e, pero no acredita el CurrentSha declarado. La consulta actual a GitHub tampoco fue posible por falta de conexión."
+  ],
+  "RecommendedNextAction": "Corregir y reemitir la entrega con el SHA GREEN real y repetir la verificación de identidad, remoto y evidencias ligadas a ese SHA."
+}
