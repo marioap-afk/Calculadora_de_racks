@@ -1,0 +1,84 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "G1-RACK-METRICS",
+  "RunId": "R20261002T005944Z-1192",
+  "DelegationRunId": "R20261002T002817Z-6294",
+  "WorkRunId": "R20261002T003840Z-f180",
+  "Attempt": 0,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra Outcome.Kind=COMPLETED, DeathConfirmed=true y OutputWrittenUtc=2026-10-02T00:53:27.6225263Z, posterior a Cession.StartUtc=2026-10-02T00:39:59Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json está presente en las entradas y coincide en TaskId, RunId, DelegationRunId y Attempt. Su salida se registró después del inicio de la cesión."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leídos los UNIT_DOC en AuthorityRevision 658b35ad498520ba3c832a96eea4389df16dfa60 y los EXTERNAL en MainSha 819955d61a6da4c811a11fbd11b5dca13f634b7c mediante git show. git merge-base --is-ancestor AuthorityRevision BaseSha devolvió 0; las diferencias posteriores a AuthorityRevision corresponden a documentos de la unidad, sin rutas EXTERNAL."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json y delegation.json coinciden en unidad, gate, tarea, AuthorityRevision, MainSha, pruebas requeridas, invariantes y condiciones STOP. El registro de planificación consigna A1-A8 en pass; alcances delegados quedan dentro del alcance permitido del contrato."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git status --short --branch muestra architecture/parametros-calculados-resumen-proyecto; git rev-parse HEAD y refs/remotes/origin/architecture/parametros-calculados-resumen-proyecto devuelven ambos 1013449d61b8292b77273ceeac30b82282b975a2. git merge-base --is-ancestor BaseSha CurrentSha devolvió 0; RedSha coincide con CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra LsRemoteSha=1013449d61b8292b77273ceeac30b82282b975a2 y OriginMainSha=819955d61a6da4c811a11fbd11b5dca13f634b7c, iguales a CurrentSha y MainSha."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha enumera siete archivos bajo src/RackCad.Application/ComputedParameters/ y dos bajo tests/RackCad.Tests/ComputedParameters/. Todos están dentro de AllowedWriteScope y no intersectan ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain no muestra cambios. git check-ignore sobre la ruta de inputs/worker-handoff.json devuelve esa ruta, confirmando que el paquete está ignorado."
+    },
+    "Ci": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts y TRX 36947927245 corresponden a event=push, la ref exacta y HeadSha 1013449d61b8292b77273ceeac30b82282b975a2. Build UI y UI Tests terminaron success; Tests (Domain + Application) terminó failure y Build Plugin without AutoCAD quedó skipped, por lo que no están verdes los cuatro jobs requeridos. El job Core falló como se esperaba para RED; el TRX registra 16 fallas del filtro y una falla adicional de NamespaceFolderGuardTests."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "core.trx del CurrentSha registra 16 pruebas seleccionadas por FullyQualifiedName~RackCad.Tests.ComputedParameters, 16 fallidas, 0 errores; coincide con RED-1 y supera MinSelected=6. El diff BaseSha..RedSha -- tests/ contiene RackMetricRequestTests.cs y RackMetricProviderPurityTests.cs; el diff RedSha..CurrentSha -- tests/ está vacío. Cadena resultante: ChainRedFiles = [tests/RackCad.Tests/ComputedParameters/RackMetricProviderPurityTests.cs, tests/RackCad.Tests/ComputedParameters/RackMetricRequestTests.cs]. Cobertura en el diff: INV-04 por INV04_Fondo0Con4FrentesUnoVacio_Y_Fondo1Con6_FrentesEsCuatro e INV04_DisenoSinCeldas_DaLoMismo_LasBahiasDelFondo0; INV-05 por INV05_TarimaDePisoSinLarguero_NoEsVacia_UnFrenteSinCeldasSi; INV-09 por las tres pruebas INV09; INV-14 por las tres pruebas INV14 con contadores en los costados de resolución/lector; INV-16 por las dos pruebas INV16; INV-34 por las cinco pruebas INV34. Los nombres constan en el TRX del CurrentSha."
+    },
+    "Trailer": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json declara Worker.Trailer=null. git log --format=%B BaseSha..CurrentSha muestra Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>; el registro de trabajo identifica el modelo efectivo como claude-sonnet-5-5, pero el trailer real no coincide con el declarado."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra modelo efectivo claude-sonnet-5-5 y effort medium. El catálogo en MainSha documenta el alias solicitado sonnet para esa celda y effort; coinciden con el modelo y effort de la delegación."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "La inspección de WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json encuentra una coincidencia con la lista de AUTOMATION_PLAN §16.10."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "Notes de relay-record-work.json registra cero denegaciones de permisos o credenciales y ninguna orden fallida pendiente. Las llamadas 24 y 25 fallaron, pero las siguientes completaron las escrituras; no hay rechazo de acceso."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Ci",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "El TRX Core del SHA evaluado tiene 17 fallas: 16 del RED focal y una en NamespaceFolderGuardTests.TestProjects_KeepExactlyOneAssemblyRootNamespace.",
+    "Las pruebas nuevas declaran el namespace RackCad.Tests.ComputedParameters; la guardia existente exige un único namespace raíz RackCad.Tests. El TRX confirma el conflicto señalado en la entrega.",
+    "La corrida push del SHA exacto no tiene todos los jobs requeridos en success: Core falla y el build del Plugin quedó skipped.",
+    "Worker.Trailer es null, aunque el cuerpo del commit contiene un trailer Co-Authored-By.",
+    "Los campos de texto libre de la entrega contienen una coincidencia restringida por AUTOMATION_PLAN §16.10.",
+    "WorkerStatus BLOCKED y la ausencia de un commit posterior al RED coinciden con el estado de Git."
+  ],
+  "RecommendedNextAction": "El Coordinator debe resolver el conflicto entre el namespace de las pruebas y la guardia existente, y emitir una delegación actualizada para la siguiente ejecución."
+}

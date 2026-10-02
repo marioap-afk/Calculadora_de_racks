@@ -913,3 +913,100 @@ IMPLEMENTATION AUTHORIZATION = NO hasta que Coordinator y Architect hayan acorda
   I-61 (evidencia de I-61, `wf_9bb26e7e-466` y `wf_306d36ac-e20`).
 - **Tope de invocaciones (P-07):** el plan de gates de la Proposal V3 §21 no fija un tope de invocaciones para I-63. Rigen los topes de
   AUTOMATION_PLAN 16.8: dos reejecuciones por fase, `MaxReworkLoops` = 3 y `attempts` < `automation.max_attempts` = 3.
+
+## 23. G1-RACK-METRICS bajo I-61: cadena hasta el STOP S-04
+
+### 23.1 Invocaciones
+
+| `RunId` | Fase | Participante (solicitado = efectivo) | Resultado |
+|---|---|---|---|
+| `R20261002T002817Z-6294` | PLANNING | Codex CLI, `gpt-6-luna`, `high` | Delegación válida; aceptación A1-A8 en `pass` |
+| `R20261002T003429Z-a139` | CONTROL (nc4) | — (sin invocar) | A3 `fail` y A1, A2, A4-A8 iguales a la real: `REJECTED_BEFORE_INVOCATION`, STOP (P-03) confinado al control |
+| `R20261002T003840Z-f180` | WORK | Subagente, `claude-sonnet-5-5`, `medium` | Commit RED `1013449d` empujado; sin GREEN; entrega `BLOCKED` con S-04 |
+| `R20261002T005705Z-eccd` | VERIFICATION | Codex CLI, `gpt-6-luna`, `high` | Fallo de transporte (DEV-G1-02): 14 comprobaciones `not_run`, `EXECUTION_BLOCKED/BLOCKED` |
+| `R20261002T005944Z-1192` | VERIFICATION (reejecución 1 de 2) | Codex CLI, `gpt-6-luna`, `high` | **`EXECUTION_BLOCKED/STOP`**, `FailureClass` `Ci`, `TriggeredStopConditions` [S-04] |
+
+`config.toml` sin cambios en todas las entradas (SHA-256 `40C27B57…F74F`). No hubo participantes ajenos, huérfanos ni procesos no atribuibles
+en las entradas (DEV-G1-01 explica la primera entrada de la planificación).
+
+### 23.2 CI del commit del Worker
+
+| Commit | SHA | Corrida `push` | Resultado |
+|---|---|---|---|
+| RED del Worker | `1013449d61b8292b77273ceeac30b82282b975a2` | 36947927245 | `failure`: Core `failure`; Build UI y UI Tests `success`; Build Plugin `skipped` |
+
+TRX de Core (SHA-256 `466E98B4…02F4`; no versionado): 12412 seleccionadas, 12395 superadas y 17 fallidas.
+- El filtro del contrato `FullyQualifiedName~RackCad.Tests.ComputedParameters` selecciona 16 pruebas y fallan las 16, por aserción. Cubren
+  INV-04, INV-05, INV-09, INV-14, INV-16 e INV-34 (petición).
+- La fallida restante es `NamespaceFolderGuardTests.TestProjects_KeepExactlyOneAssemblyRootNamespace` (I-23). Lo explica §23.3.
+
+### 23.3 Hechos del STOP
+
+- **Qué hizo el Worker:**
+  - RED compilable: esqueleto de los siete archivos de producción y dos clases de prueba, con `git add` solo del alcance.
+  - Empujó el RED y construyó la implementación GREEN, que pasó 16 de 16 en local.
+  - **No** la commiteó: la suite Core completa fallaba en la guarda de I-23. Dejó el árbol limpio en `HEAD` = RED = remoto, y el
+    parche sin commitear en `green-candidate/green-over-red.patch` (en `artifacts/`; SHA-256 `3032AE65…02BD`; no versionado).
+- **La guarda:** `tests/RackCad.Tests/NamespaceFolderGuardTests.cs:211-248` exige que cada `.cs` de `tests/RackCad.Tests` declare exactamente
+  `namespace RackCad.Tests`. Las dos pruebas declaran `RackCad.Tests.ComputedParameters`.
+  - Cambiar ese namespace exige modificar archivos RT, prohibido tras el RED en la misma entrega.
+  - Cambiar la guarda queda fuera del alcance.
+- **Verificación `R20261002T005944Z-1192`:**
+  - 11 comprobaciones en `pass`.
+  - `Tests` en `pass` con `RedPart` `pass`: **RED acreditado** y `ChainRedFiles` = las dos pruebas de `tests/RackCad.Tests/ComputedParameters/`.
+  - `Ci` en `fail`, con `RedPart` `pass`; `Trailer` y `FreeText` en `fail`.
+  - S-04 → `STOP`, que precede a `REWORK` (16.9).
+  - La sesión comprobó la coherencia mecánica (README §8): par válido; `FailureClass` = primera no `pass`; `VerifiedSha` `null`.
+
+### 23.4 Lecturas y desviaciones de la sesión
+
+- **DEV-G1-01:** la primera entrada de la planificación listó dos `git.exe` del `git fetch` del propio comprobador. Se corrigió el orden
+  del script (instantánea de procesos antes de cualquier orden git); la entrada repetida está limpia.
+- **DEV-G1-02:** error de la sesión en la receta de Codex. El `PATH` del hijo apuntó a una ruta inexistente; el `pwsh` del runtime está
+  en `%USERPROFILE%\.cache\codex-runtimes\codex-primary-runtime\dependencies\native\powershell`. Codex tomó el alias de WindowsApps
+  y el sandbox rechazó crear el proceso (`CreateProcessAsUserW failed: 5`).
+  - Es un fallo de transporte (16.8), no una denegación de credenciales.
+  - La reejecución usa el mismo prompt, con solo el `RunId` y la ruta de las entradas cambiados.
+- **CTRL-G1-01:** el `fail` de `Trailer` contradice la propia evidencia del Controller. Su lectura de `inputs/worker-handoff.json`
+  devolvió `Worker.Trailer` = `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`, que coincide con el commit RED y con el modelo
+  efectivo; la `Evidence` dice `null`. No cambia la disposición.
+- **`FreeText`:** el `fail` es correcto. La entrega usa «candidato GREEN», término de 16.10, en cuatro campos de texto libre.
+- **Disposición de la entrega:** el Worker declaró `Disposition` `BLOCKED` con S-04, cuyo comportamiento es STOP (16.11). Lo corrige
+  la verificación.
+- **Pregunta abierta del Worker:** el parche sin commitear devuelve `Unavailable(EnvelopeUnreadable)` cuando la petición no tiene hermanas
+  con identidad atribuible.
+  - El Freeze no fija ese caso y ningún INV de G1 lo pide.
+  - Es un supuesto del Worker, no comprometido en Git.
+
+### 23.5 Causa raíz (propuesta de la sesión para el `analysis.md` del Coordinator)
+
+- **Origen:** la exigencia «namespace `RackCad.Tests.ComputedParameters`» **no** está en el Freeze, la A-1 ni el contrato de gate.
+  - El contrato solo fija el filtro `FullyQualifiedName~RackCad.Tests.ComputedParameters`.
+  - La introdujo la sesión en el prompt de planificación (`R20261002T002817Z-6294`, `prompt.md`, delta de `AllowedWriteScope`). El
+    Controller la copió a `AcceptanceCriteria[0]` y la sesión la repitió en el prompt del Worker.
+  - La sesión no contrastó esa exigencia con la guarda vigente de I-23.
+- **El filtro del contrato es satisfacible sin tocar la guarda.** El filtro compara por subcadena, así que basta un namespace
+  `RackCad.Tests` con clases cuyo nombre empiece por `ComputedParameters` (nombre completo `RackCad.Tests.ComputedParameters…`).
+- **Alcance de la corrección:**
+  - No cambia el Freeze, la A-1, el alcance, los invariantes ni la materialidad.
+  - Cambia archivos RT, así que exige un RED nuevo (16.8: el RED de la corrección incluye todo cambio de las pruebas de la cadena).
+  - Es un STOP cuya resolución cambia el trabajo: `attempts` + 1 (README §9).
+
+### 23.6 Custodia
+
+Copias en `docs/automation/evidence/I-63-pilot/G1-RACK-METRICS/<RunId>/` y `docs/automation/evidence/I-63-pilot/G1-RACK-METRICS-nc4/R20261002T003429Z-a139/`:
+- planificación: `gate-contract.json`, `prompt.md`, `delegation.json`, `acceptance.json`, `acceptance-reasons.json` y `relay-record.json`;
+- nc4: `delegation.json`, `acceptance.json`, `acceptance-reasons.json` y `relay-record.json`;
+- trabajo: `prompt.md`, `worker-handoff.json` y `relay-record.json`;
+- cada verificación: `prompt.md`, `controller-verification.json` y `relay-record.json`.
+
+Eventos, transcripciones, TRX y el parche del Worker no se versionan: quedan sus SHA-256 en los registros de relevo. Tres transitorios
+llevan CRLF (`gate-contract.json`, la `delegation.json` de nc4 y `worker-handoff.json`). Su blob normalizado difiere del SHA-256
+transitorio por fin de línea (16.12); el contenido es el mismo.
+
+### 23.7 Contadores
+
+- `attempts` = 0.
+- Reejecuciones de (G1-RACK-METRICS, VERIFICATION): 1 de 2.
+- Correcciones lanzadas: ninguna.
+- Controles negativos nc1-nc3: no se ejecutan, porque la cadena no llegó a `EXECUTION_VERIFIED` (README §10).
