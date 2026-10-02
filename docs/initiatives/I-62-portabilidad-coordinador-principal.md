@@ -152,8 +152,8 @@ Ninguna entrada se afirma sin la comprobación DC-08 de [INITIATIVE_LIFECYCLE](.
     [disposición](I-62-architect-review-v12-disposition.md));
   - [V13](I-62-proposal-v13.md) y su [paquete](I-62-architect-package-v13.md): clausura de dependencias normativas; revisión formal final, CHANGES REQUIRED,
     válida, con el residuo final de A62-V11-01 aceptado ([registro](I-62-architect-review-v13.md), [disposición](I-62-architect-review-v13-disposition.md)).
-- Punto del Owner abierto: **OD-6** (predicado de independencia de LIFECYCLE; Proposal V14 §11.4), con dos alternativas delimitadas y la recomendación del
-  Coordinator registrada como tal. Sin decisión del Owner no hay acuerdo ni Freeze.
+- **OD-6 decidida por el Owner: alternativa 1** (predicado de independencia de LIFECYCLE: Actor, Sesión y Contexto REQUIRED, Proveedor PREFERRED; Proposal
+  V14 §11.4; [decisiones](../automation/decisions/I-62.md) §30). Pendiente: el AGREED del Coordinator sobre la V14 exacta y el Consensus Freeze.
 - Freeze / Freeze delta / A-n: ninguno.
 - Decisiones: [I-62.md](../automation/decisions/I-62.md). Mandato: [I-62-owner-mandate.txt](../automation/decisions/I-62-owner-mandate.txt).
 
