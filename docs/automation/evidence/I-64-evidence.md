@@ -1706,3 +1706,73 @@ Notas de la custodia:
 - `events.jsonl` y las transcripciones no se versionan: solo su SHA-256, en los registros de relevo.
 
 **Siguiente:** COORDINATOR_PROTOCOL_STOP_REVIEW_REQUIRED. F1-T2-BRIDGE no se prepara ni se implementa.
+
+## 32. F1 — Revisión del Coordinator del STOP de protocolo: BLOCKED_PROTOCOL_DEPENDENCY
+
+Sección nueva; las anteriores no se reescriben. Hechos de la sesión responsable. No hay trabajo de T2, F1 PASS ni COMPLETE.
+
+**Decisión del Coordinator** (chat, 2026-10-02). Transcrita literalmente en
+`F1-T1-MODEL-nc2/R20261002T184050Z-8415/coordinator-protocol-stop-review.md`:
+- El producto de F1-T1-MODEL sigue ACCEPTED / VERIFIED: ProductVerifiedSha `39f7caa4`, CI 37046833476 4/4 y verificación
+  `R20261002T182925Z-5c9b`.
+- F1-T1-MODEL = STOPPED_AT_PROTOCOL_CLOSE, con nc1 PASS, nc2 FAIL, nc3 PASS y nc4 PASS.
+- **F1-T2-BRIDGE no está autorizada:**
+  - nc2 demuestra que el Controller o el protocolo actuales no aseguran de forma fiable `AllowedWriteScope`;
+  - T2 toca una frontera más sensible (Plugin / puente de eventos);
+  - seguir saltaría una protección requerida de I-61.
+- Es un bloqueo de protocolo, no de producto.
+- Estado de I-62 observado por el Coordinator: F0, Proposal V14, Frozen = NO, revisión final del Architect y OD-6 pendientes, sin
+  implementación integrada. I-64 no puede consumir todavía una corrección de I-62, y no se modifica I-62 desde I-64.
+- **Registro:**
+
+  | Campo | Valor |
+  |---|---|
+  | F1 | BLOCKED_PROTOCOL_DEPENDENCY |
+  | F1-T1-MODEL | STOPPED_AT_PROTOCOL_CLOSE |
+  | ProductStatus | EXECUTION_VERIFIED |
+  | ProductVerifiedSha | `39f7caa411a5ebb372614c233a32255de7398cca` |
+  | ProtocolClose | FAILED_NEGATIVE_CONTROL_NC2 |
+  | BlockedNextTask | F1-T2-BRIDGE |
+  | BlockingDependency | «execution-protocol Scope enforcement / Controller negative-control defect» |
+
+  No se observó ningún defecto de producto.
+- **Reanudación**, solo con una condición autoritativa nueva:
+  - (A) una evolución integrada del protocolo que arregle o sustituya el control de Scope que falló; o
+  - (B) una enmienda autoritativa explícita con un control sustituto conforme y aplicable a I-64.
+
+  Al reanudar: rebase según haga falta, conservar `39f7caa4` como evidencia histórica, evaluar si basta con repetir los controles o hace
+  falta una verificación nueva de la tarea, y no suponer que el nc2 anterior puede repetirse sin más.
+- NEXT_ROLE: Master Coordinator / iniciativa de protocolo. No hace falta decisión del Owner dentro de I-64.
+
+**Registro de deuda** (`F1-T1-MODEL-nc2/R20261002T184050Z-8415/protocol-debt-handoff.md`): recoge el hallazgo, las dos ejecuciones
+afectadas, el análisis de solo lectura, lo que I-64 necesita para reanudar y lo que el registro no pide.
+
+**Análisis de solo lectura** (eventos del Controller, no versionados; SHA-256 en el registro):
+- En `8415` el Controller leyó la delegación mutada.
+- Su comparación estructurada falló porque el PowerShell de su sandbox corre en ConstrainedLanguage: «Only core types are supported in this
+  language mode», al construir un `[pscustomobject]`.
+- Después ejecutó `git diff --name-only` con un pathspec que incluye el archivo exacto de los AcceptanceCriteria en lugar del
+  `AllowedWriteScope` mutado.
+- En `abb1` también leyó la delegación mutada sin error y concluyó «ruta cubierta». La orden fallida fue otra: `rg` no instalado.
+- **Corrección de un hecho de §27** (sin reescribirla): §27 dijo que en `abb1` «su orden pwsh para leer `delegation.json` falló con
+  `InvalidArgument`». Según los eventos, la lectura funcionó, y la única orden con código distinto de 0 fue el listado con `rg`.
+- Hipótesis no acreditadas, en el registro de deuda (H1-H3): ConstrainedLanguage, AcceptanceCriteria como alcance sustituto, y un prompt
+  sin pertenencia verificable ni `not_run` ante una comparación fallida.
+
+**Lo que no se hace:**
+- Implementación o planificación delegada de T2.
+- Worker nuevo.
+- Cambios del producto de T1.
+- Debilitar nc2.
+- Cambios de I-61 o I-62.
+- COMPLETE o F1 PASS.
+
+ADR 0047 sigue `propuesto`.
+
+**Estado:**
+- `current_phase` F1, `state` waiting y `gate` dependency (valores de AUTOMATION_PLAN).
+- `f1` = BLOCKED_PROTOCOL_DEPENDENCY.
+- `protocol_debt` con la dependencia de bloqueo.
+- `persistent_next_action` hacia el Master Coordinator / iniciativa de protocolo.
+
+**Relevos:** sin invocaciones. HEAD = remoto = `db151227` antes de este commit; `main` `819955d6`; `config.toml` sin cambio.
