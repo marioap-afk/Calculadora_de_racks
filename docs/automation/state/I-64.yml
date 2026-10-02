@@ -7,8 +7,8 @@ automation_state:
   state: waiting
   gate: scope
   attempts: 0
-  next_action: "Coordinator decide el STOP C-F0-RED de F1-T0-ADR (evidencia §19: opcion a, trabajo directo; o b, reemision con el ADR dentro de F1-T1-MODEL) y completa Authorities, RequiredTests, ExpectedEvidence e IssuedUtc del contrato."
-  last_evidence_commit: 5570b9249e6398efdea826bb03fba43c6ad484d2
+  next_action: "Sesion: relevo de salida y planificacion del Controller de F1-T1-MODEL; nc4 y A1-A8 mecanicas; parada en COORDINATOR_ACCEPTANCE_REQUIRED (area artifacts/orchestration/I-64/F1-T1-MODEL/0/)."
+  last_evidence_commit: 8a3fb8e26a260317b28d5573654b0221f1341029
 execution_context:
   mode: manual
   automation_enabled: false
@@ -17,21 +17,21 @@ execution_context:
   design_agreed: docs/initiatives/I-64-proposal-v5.md en 9e3d289a9b61339c162b2f791f6995a584207800, blob bd4e96264e538ffc679bfd9f088400b22b553931 (I64-CONSENSUS-V5-01; Architect AGREED; Coordinator AGREED)
   freeze: 9b43dafbe3b8874aa0ba5a85d62cbf953dbdd311 (Frozen YES; blob dc1924ff5a73a4e529fbc5f995621d29351a091b; CI 36941847270 push 4/4 success; evidencia §18)
   f0: COMPLETE
-  f1: "NOT STARTED (contrato de F1-T0-ADR emitido; STOP C-F0-RED antes de la planificacion; evidencia §19)"
+  f1: "IN PROGRESS: cadena F1-T1-MODEL (F1-T0-ADR SUPERSEDED_BY_F1-T1-MODEL; C-F0-RED RESOLVED_BY_TASK_MERGE; evidencia §20)"
   relay_baseline: "config.toml SHA-256 40C27B570B0056BC6D2B5AAF460628922C5AD39A405751E68B9001FFDF15F74F (2026-10-02T00:03:20Z; 103 nombres, sin valores)"
-  f1_t0_adr_budget: "planificacion 0 de 1; trabajo 0 de 4; verificacion 0 de 4; MaxReworkLoops 3; controles negativos fuera del tope"
+  f1_t1_model_budget: "planificacion 0 de 1; trabajo 0 de 4; verificacion 0 de 4; MaxReworkLoops 3; controles negativos fuera del tope solo donde I-61 lo establece"
   max_attempts: 3
   persistent_next_action:
-    NEXT_ROLE: "Coordinator: resolver el STOP de F1-T0-ADR (AUTOMATION_PLAN 16.11 y agent-execution/README §1 le reservan la decision de un STOP, la emision del contrato y la aceptacion A1-A8)"
-    NEXT_ACTION: "decidir entre (a) autorizar F1-T0-ADR como trabajo directo de la sesion, sin delegacion §16, o (b) reemitir el contrato con el ADR dentro de F1-T1-MODEL, cuyas pruebas dan el RED de la cadena; en ambos casos, completar Authorities, RequiredTests, ExpectedEvidence e IssuedUtc"
-    TARGET_SHA: "la punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo (git log -1 -- docs/automation/state/I-64.yml); su padre es 5570b9249e6398efdea826bb03fba43c6ad484d2"
+    NEXT_ROLE: "Sesion responsable (relevo) y Controller Codex CLI gpt-6-luna/high (CONTROLLER_PLANNING); despues, Coordinator para la aceptacion formal A1-A8"
+    NEXT_ACTION: "relevo de salida (AUTOMATION_PLAN 16.4 paso 1), planificacion del Controller con gate-contract.json transcrito, nc4 y evaluacion mecanica A1-A8 sin cortocircuito; si la delegacion pasa, parada en COORDINATOR_ACCEPTANCE_REQUIRED sin invocar al Worker"
+    TARGET_SHA: "la punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo (git log -1 -- docs/automation/state/I-64.yml); sera el BaseSha y el ChainBaseSha de la delegacion; su padre es 8a3fb8e26a260317b28d5573654b0221f1341029 (AuthorityRevision)"
     GATE: F1 — Workspace Foundation
-    TASK: F1-T0-ADR
-    INPUTS_REQUIRED: "evidencia §19 (contrato recibido, preflight, relevo de salida y STOP); AUTOMATION_PLAN 16.8, 16.9 y 16.11; Freeze docs/initiatives/I-64-proposal-v5.md (blob dc1924ff5a73a4e529fbc5f995621d29351a091b); propuesta de contratos de F1; linea base de config.toml de relay_baseline"
-    EXPECTED_RESULT: "decision registrada del Coordinator y, segun la opcion: (a) autorizacion de trabajo directo con su alcance, o (b) gate-contract reemitido y completo; despues, la sesion continua sin relay manual: trabajo directo o relevo, planificacion del Controller, paquete A1-A8 y nc4"
-    REMAINING_BUDGET: "F1-T0-ADR intacto: planificacion 0 de 1, trabajo 0 de 4, verificacion 0 de 4, MaxReworkLoops 3; attempts 0 de 3; BLOCKED <= 2 por (TaskId, fase); recuperaciones 16.7 <= 2 por TaskId"
-    STOP_CONDITION: "origin/main distinto de 819955d61a6da4c811a11fbd11b5dca13f634b7c antes de escribir (S-13, 16.7); hash de config.toml distinto de relay_baseline (P-01); ADR 0047 ocupado en otra rama; necesidad de cambiar el Freeze, tocar producto, ampliar el alcance o usar AutoCAD; S-01..S-14 y P-01..P-08; presupuesto agotado (P-07)"
-    OWNER_REQUIRED_IF: "OWNER-RESERVED (alcance, diferir sistemas, retirar OV); aceptacion del ADR; Owner Validation y smokes (Smoke-1 tras F1 PASS y RELEASE de I-52); cambio de config.toml (P-01); cambiar AUTOMATION_PLAN 16.8 (autoridad de I-61); credenciales, compras o sondas con consumo no cubierto; AutoCAD manual o cambios de seguridad; presupuesto agotado"
+    TASK: F1-T1-MODEL (incluye el ADR 0047 propuesto antes del GREEN)
+    INPUTS_REQUIRED: "contrato de F1-T1-MODEL (evidencia §20); autoridades UNIT_DOC en 8a3fb8e26a260317b28d5573654b0221f1341029 y EXTERNAL en MainSha 819955d61a6da4c811a11fbd11b5dca13f634b7c; esquemas de docs/automation/agent-execution/schemas/; linea base de config.toml de relay_baseline"
+    EXPECTED_RESULT: "delegation.json valido contra rackcad-delegation/v1 (Worker claude-sonnet-5-5 / subagent / medium; RED real exigido); nc4 REJECTED_BEFORE_INVOCATION con A3 en fail; A1-A8 de la delegacion real registradas; paquete de aceptacion en artifacts/orchestration/I-64/F1-T1-MODEL/0/<RunId>/; tras la aceptacion formal: Worker, verificacion del Controller, correcciones autorizadas y paquete de cierre de tarea"
+    REMAINING_BUDGET: "F1-T1-MODEL: planificacion 0 de 1, trabajo 0 de 4, verificacion 0 de 4, MaxReworkLoops 3; attempts 0 de 3; BLOCKED <= 2 por (TaskId, fase); recuperaciones 16.7 <= 2 por TaskId"
+    STOP_CONDITION: "origin/main distinto de 819955d61a6da4c811a11fbd11b5dca13f634b7c antes de escribir (S-13, 16.7); hash de config.toml distinto de relay_baseline (P-01); ADR 0047 ocupado; necesidad de tocar Plugin o UI, usar AutoCAD, ampliar el alcance, derivar hacia host o puente, introducir metricas de I-63 o modificar comandos existentes; ambiguedad material del Freeze; conflicto de propiedad; S-01..S-14 y P-01..P-08; presupuesto agotado (P-07)"
+    OWNER_REQUIRED_IF: "OWNER-RESERVED (alcance, diferir sistemas, retirar OV); aceptacion del ADR; Owner Validation y smokes (Smoke-1 tras F1 PASS y RELEASE de I-52); cambio de config.toml (P-01); credenciales, compras o sondas con consumo no cubierto; AutoCAD manual o cambios de seguridad; presupuesto agotado"
   autonomy_gaps:
     - ROLE_REQUIRED: "Coordinator (AUTONOMY_GAP-COORDINATOR: emision de gate-contract, decision de un STOP, aceptacion A1-A8, analysis.md y GATE PASS)"
       MISSING_CAPABILITY: no hay sesion ni agente Coordinator direccionable; las ordenes del Coordinator llegan solo por el chat del Owner (ListAgents 2026-10-01T23:4xZ sin sesion Coordinator)
@@ -47,7 +47,7 @@ execution_context:
       I62_DEBT: acreditacion de capacidades por celda (I-62)
     - ROLE_REQUIRED: Worker para tareas Routine (F1-T0-ADR)
       MISSING_CAPABILITY: ninguna celda Eficiente con write-commit-push elegible (claude-haiku-4-5 STALE desde 2026-10-01)
-      MISSING_AUTHORITY: "resuelta para F1-T0-ADR: el Coordinator autorizo el escalado a claude-sonnet-5-5 / subagente / medium con ModelEscalationReason literal; la tarea queda detenida por C-F0-RED, no por la celda"
+      MISSING_AUTHORITY: "sin efecto: F1-T0-ADR quedo SUPERSEDED_BY_F1-T1-MODEL, que es Balanced y usa claude-sonnet-5-5 / subagente / medium sin escalado"
       AVAILABLE_TRANSPORT: subagente de la sesion (claude-sonnet-5-5, nivel Equilibrado)
       WHY_MANUAL_RELAY_IS_CURRENTLY_REQUIRED: no aplica relay; la eleccion la fija el gate-contract
       I62_DEBT: ninguna adicional
