@@ -1070,3 +1070,61 @@ transitorio por fin de línea (16.12); el contenido es el mismo.
     Coordinator.
 - **Comprobación de la sesión:** además de A5, compara cada `Authorities[i]` de la delegación con el contrato por igualdad de bytes, antes
   de aceptar.
+
+## 27. Corrección 1: Worker y verificación (STOP S-12)
+
+### 27.1 Invocaciones
+
+| `RunId` | Fase | Participante (solicitado = efectivo) | Resultado |
+|---|---|---|---|
+| `R20261002T061154Z-9f77` | PLANNING | Codex CLI, `gpt-6-luna`, `high` | `Authorities` del contrato iguales byte a byte; A1-A8 en `pass` |
+| `R20261002T061533Z-8e64` | WORK | Subagente, `claude-sonnet-5-5`, `medium` | RED `fc30dc6c` (solo pruebas) y GREEN `b5ee157d` (cinco archivos de producción); `IMPLEMENTATION_COMPLETE` |
+| `R20261002T062554Z-e271` | VERIFICATION | Codex CLI, `gpt-6-luna`, `high` | **`EXECUTION_BLOCKED/STOP`**, `FailureClass` `Authority`, [S-12] |
+
+`config.toml` sin cambios. Ninguna entrada encontró participantes ajenos, huérfanos ni procesos no atribuibles. El Worker tardó 319 s, con 15
+llamadas y 0 denegaciones ni órdenes fallidas. Partió del parche no commiteado del intento 0 y cambió la rama sin hermanas identificables a
+`ArgumentException`.
+
+### 27.2 CI
+
+| Commit | SHA | Corrida `push` | Resultado |
+|---|---|---|---|
+| RED de la corrección | `fc30dc6cf0d2f97e6732bbb8c512623db91c305d` | 36972851773 | `failure`: Core `failure` con exactamente las 17 pruebas focales fallidas (12396 de 12413 superadas; `NamespaceFolderGuardTests` en verde); Build UI y UI Tests `success`; Plugin `skipped` |
+| GREEN de la corrección | `b5ee157d7c42a3bada7d6804cbbe3cd731405e00` | 36973107547 | **`success`**: los cuatro jobs requeridos en `success`; Core 12413 de 12413 |
+
+### 27.3 Verificación `R20261002T062554Z-e271`
+
+- 12 comprobaciones en `pass`, entre ellas `Ci` y `Tests.RedPart`. **RED nuevo acreditado:** `ChainRedSha` `fc30dc6c`; `ChainRedFiles` sin
+  cambio.
+- **`Authority` en `fail` (S-12 → STOP).** La delegación añadió como `UNIT_DOC` el `analysis.md` del STOP S-04.
+  - Ese archivo no existe en `AuthorityRevision` `658b35ad`: se dio de alta en `faa5f16e`, y 16.3 lee las `UNIT_DOC` en `AuthorityRevision`.
+  - **Causa:** el prompt de planificación de la sesión lo listaba como autoridad «en HEAD». Ya estaba citado por
+    `CorrectionOf.AnalysisSha256`, así que no hacía falta como autoridad.
+- **`Tests` en `fail` (REWORK).** D-02 (Proposal V3 §5) exige tokens «declarados explícitamente y probados en los dos sentidos».
+  - Las pruebas usan `RackMetricIds`, pero ninguna afirma los seis pares (`MetricScope`, token).
+  - El código declara los seis `MetricId` congelados; falta la prueba, no el comportamiento.
+- Coherencia mecánica (README §8) comprobada por la sesión: par válido; `FailureClass` = primera no `pass`; STOP sobre REWORK; `VerifiedSha`
+  `null`.
+
+### 27.4 Propuesta de la sesión para el `analysis.md` del Coordinator
+
+- **Corrección 2**, con `attempts` 1 → 2 (`AttemptsRemaining` 1). Es otra `FailureClass` (`Authority`), así que va con `analysis.md` previo
+  (16.8).
+- **Autoridades:** delegación con las `Authorities` del contrato exactas y `AuthorityRevision` `658b35ad`, sin el `analysis.md` como autoridad.
+  Los análisis se citan solo por `CorrectionOf`.
+  - Alternativa: reemitir el contrato con `AuthorityRevision` `44fb8dd0`. `git diff --name-only 658b35ad 44fb8dd0` solo toca documentos,
+    evidencia y estado de la unidad y los nueve archivos del alcance de G1, sin rutas de autoridad `EXTERNAL`.
+  - La reemisión cierra la delegación abierta.
+- **Prueba de D-02** en un archivo de pruebas **nuevo** dentro del prefijo del contrato, p. ej.
+  `tests/RackCad.Tests/ComputedParameters/RackMetricIdsTests.cs`, con namespace `RackCad.Tests` y clase `ComputedParameters*`.
+  - Así el diff no toca `ChainRedFiles`, y la entrega no exige RED (16.8; `ChainRedSha` `fc30dc6c` acreditado).
+  - Si la prueba fuera a los archivos de la cadena, exigiría un RED. No hay comportamiento que desactivar, así que ese RED no sería
+    observable (C-06).
+  - La prueba afirma los seis pares (`MetricScope`, token) en los dos sentidos y la forma de los tokens (ASCII, minúscula inicial, letras y
+    dígitos, `Ordinal`).
+- Controles negativos nc1-nc3: siguen pendientes de una verificación `EXECUTION_VERIFIED`.
+
+### 27.5 Custodia
+
+`docs/automation/evidence/I-63-pilot/G1-RACK-METRICS/<RunId>/` para `R20261002T061154Z-9f77`, `R20261002T061533Z-8e64` y `R20261002T062554Z-e271`. Llevan CRLF los transitorios R20261002T061154Z-9f77/gate-contract.json, R20261002T061533Z-8e64/worker-handoff.json; su blob normalizado
+difiere del SHA-256 transitorio por fin de línea (16.12).

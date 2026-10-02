@@ -1,0 +1,304 @@
+{
+  "Schema": "rackcad-delegation/v1",
+  "TaskId": "G1-RACK-METRICS",
+  "RunId": "R20261002T061154Z-9f77",
+  "Initiative": "I-63",
+  "Unit": "I-63",
+  "Gate": "G1",
+  "Attempt": 1,
+  "AuthorityRevision": "658b35ad498520ba3c832a96eea4389df16dfa60",
+  "MainSha": "819955d61a6da4c811a11fbd11b5dca13f634b7c",
+  "BaseSha": "44fb8dd06ee930cc1da64f91b9a167dca0c06c46",
+  "ExpectedBranch": "architecture/parametros-calculados-resumen-proyecto",
+  "ExpectedWorktree": "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-parametros-calculados-resumen-proyecto",
+  "Owner": {
+    "Kind": "subagent",
+    "Id": "subagent:R20261002T061154Z-9f77"
+  },
+  "TaskClass": "Implementación de pruebas",
+  "Dimensions": {
+    "Ambiguity": "Low",
+    "ArchitecturalSensitivity": "Medium",
+    "Breadth": "Medium",
+    "ToolUse": "High",
+    "FailureCost": "Medium",
+    "MechanicalRepetition": "Low",
+    "Horizon": "Medium"
+  },
+  "Executor": {
+    "Provider": "Anthropic",
+    "Transport": "subagente de la sesion de escritorio",
+    "Role": "Worker",
+    "Cell": "anthropic/subagent/claude-sonnet-5-5"
+  },
+  "Model": "claude-sonnet-5-5",
+  "Effort": {
+    "Semantic": "Balanced",
+    "Provider": "medium"
+  },
+  "PromptProfile": "ROUTINE_IMPLEMENTATION",
+  "RoutingReason": "G1 se clasifica como implementacion de pruebas con esfuerzo semantico Balanced segun routing.md. La correccion requiere pruebas focales, cambios acotados a Application y pruebas, y evidencia Git y de pruebas; por ello ToolUse es High. La sensibilidad arquitectonica es Medium: el comportamiento esta congelado, pero requiere respetar los limites de Application, D-26 y D-28. Anthropic claude-sonnet-5-5 es la unica celda elegible del contrato con capacidad write-commit-push; la celda Codex CLI es solo lectura. El catalogo registra la celda como Equilibrado, con medium y high probados, verificacion 2026-09-30; el esfuerzo medium corresponde a Balanced y el uso real como Worker se midio el 2026-10-01.",
+  "ModelEscalationReason": null,
+  "RoutingEnforcement": "required",
+  "Authorities": [
+    {
+      "Path": "docs/initiatives/I-63-proposal-v3.md",
+      "Section": "archivo completo (Frozen: YES); en especial D-02, D-05..D-09, D-10a, D-11, D-17, D-26, D-28 y §20-§21",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-63-proposal-v3-amendment-a1-verificacion.md",
+      "Section": "archivo completo; A-1.3 para INV-14 e INV-34",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-63-parametros-calculados-resumen-proyecto.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/decisions/I-63.md",
+      "Section": "§2 (orden de Freeze) y §6",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "Section": "## 7. Gates funcionales",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "AGENTS.md",
+      "Section": "## Convenciones arquitectonicas (obligatorias)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0043-motor-expresiones-parametricas-causas-multiples-y-recuperacion-segura.md",
+      "Section": "D1 (nucleo neutral) y D24",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "## 16. Ejecución delegada bajo orden del Coordinator",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "## 1. Clases de tarea y ## 4. Algoritmo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+      "Section": "## G. Delegación de ejecución",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/evidence/I-63-pilot/G1-RACK-METRICS/R20261002T005944Z-1192/analysis.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    }
+  ],
+  "Objective": "Implementar en Application pura la operación RackMetricRequest -> RackMetricResults para un RackId, conforme al contrato G1. Completar las pruebas RED de la cadena en un commit que solo cambie RackMetricProviderPurityTests.cs y RackMetricRequestTests.cs, con namespace RackCad.Tests y nombres de clase que empiecen por ComputedParameters; después implementar el comportamiento en los siete archivos de producción autorizados. Conservar D-17: si ninguna hermana tiene un RackId identificable, rechazar la petición con ArgumentException. No modificar la guarda I-23 ni el contrato o su filtro.",
+  "AllowedWriteScope": [
+    "src/RackCad.Application/ComputedParameters/RackMetricDefinitionProjection.cs",
+    "src/RackCad.Application/ComputedParameters/RackMetricDesignReader.cs",
+    "src/RackCad.Application/ComputedParameters/RackMetricIds.cs",
+    "src/RackCad.Application/ComputedParameters/RackMetricModels.cs",
+    "src/RackCad.Application/ComputedParameters/RackMetricProviderRegistry.cs",
+    "src/RackCad.Application/ComputedParameters/RackMetricProviders.cs",
+    "src/RackCad.Application/ComputedParameters/RackMetricRequest.cs",
+    "tests/RackCad.Tests/ComputedParameters/RackMetricProviderPurityTests.cs",
+    "tests/RackCad.Tests/ComputedParameters/RackMetricRequestTests.cs"
+  ],
+  "ForbiddenWriteScope": [
+    "src/RackCad.Application/Expressions/",
+    "src/RackCad.Application/Persistence/",
+    "src/RackCad.Application/ProjectVariables/",
+    "src/RackCad.Application/Systems/",
+    "src/RackCad.Application/Bom/",
+    "src/RackCad.Domain/",
+    "src/RackCad.Plugin/",
+    "src/RackCad.UI/",
+    "tests/RackCad.UI.Tests/",
+    "assets/",
+    "deploy/",
+    "eng/",
+    "tools/",
+    ".github/",
+    "RackCad.sln",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json",
+    "NuGet.Config",
+    ".gitattributes",
+    ".gitignore",
+    ".editorconfig",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "README.md",
+    "docs/",
+    "tests/RackCad.Tests/NamespaceFolderGuardTests.cs"
+  ],
+  "Invariants": [
+    "INV-04: Rack.Frentes = numero de bahias resueltas del fondo 0 (vacias incluidas); fondo 0 con 4 (1 vacio) y fondo 1 con 6 -> 4; equivalencia con diseno sin celdas",
+    "INV-05: Rack.FrentesVacios cuenta Levels.Count == 0 && FloorPalletCount <= 0 en el fondo 0; tarima de piso sin larguero -> no vacio",
+    "INV-09: una sola funcion de guarda ForbiddenProviderDependencies(codigoFuente) aplicada a los providers reales y a un fixture invalido que llama a SelectiveGeometryResolver; la misma funcion debe detectarlo",
+    "INV-14 (con A-1.3): RackMetricRequest de un Selectivo -> 1 resolucion; Push Back y Cabecera -> 0 resoluciones y 0 lecturas contadas en el costado del lector D-26",
+    "INV-16: mezcla de kinds -> metricas Unavailable(KindIncoherent); Kind ausente -> Unavailable(KindAbsent)",
+    "INV-34 (via de peticion, con A-1.3): Push Back ilegible -> NotSupported con 0 lecturas y 0 resoluciones; Cabecera -> NotApplicable; Selectivo divergente -> Unavailable(SiblingsDivergent) con 0 resoluciones; Selectivo ilegible -> Unavailable(DesignUnreadable); Selectivo valido -> Available",
+    "D-02: identidad MetricId(Rack|Project, token); G1 no crea SymbolId ni namespaces",
+    "D-08: providers puros, registro cerrado por los seis tokens de RackEmbedDocument.Kind* via KindDispatch, sin reflexion ni estado",
+    "D-28: tabla de precedencia unica kind -> soporte de diseno -> E5 -> E4 -> efectivo/resuelto -> Available",
+    "Ningun consumidor existente cambia de comportamiento"
+  ],
+  "AcceptanceCriteria": [
+    "INV-04: para un Selectivo con cuatro bahías resueltas en el fondo 0, una vacía, y seis en el fondo 1, Rack.Frentes devuelve 4; coincide con el resultado del diseño sin celdas.",
+    "INV-05: Rack.FrentesVacios cuenta en el fondo 0 los niveles vacíos con FloorPalletCount <= 0; una tarima de piso sin larguero no cuenta como vacía.",
+    "INV-09: ForbiddenProviderDependencies(codigoFuente) deja pasar cada archivo de provider real y detecta en un fixture que invoca SelectiveGeometryResolver la misma dependencia prohibida.",
+    "INV-14 y A-1.3: RackMetricRequest de Selectivo causa exactamente una resolución; Push Back y Cabecera causan cero resoluciones y cero lecturas medidas en el costado del lector D-26.",
+    "INV-16: una mezcla de kinds devuelve Unavailable(KindIncoherent); si falta Kind, devuelve Unavailable(KindAbsent).",
+    "INV-34 y A-1.3: Push Back ilegible devuelve NotSupported con cero lecturas y cero resoluciones; Cabecera devuelve NotApplicable; Selectivo divergente devuelve Unavailable(SiblingsDivergent) con cero resoluciones; Selectivo ilegible devuelve Unavailable(DesignUnreadable); Selectivo válido devuelve Available.",
+    "D-28: la precedencia se aplica en un solo sitio, en el orden kind, soporte de diseño, E5, E4 y efectivo/resuelto antes de Available.",
+    "D-17: si ninguna hermana tiene un RackId identificable, RackMetricRequest rechaza la petición con ArgumentException y no devuelve Unavailable(EnvelopeUnreadable).",
+    "Las pruebas G1 declaran namespace RackCad.Tests y sus nombres de clase empiezan por ComputedParameters; el filtro FullyQualifiedName~RackCad.Tests.ComputedParameters del contrato selecciona al menos seis pruebas.",
+    "No se modifica tests/RackCad.Tests/NamespaceFolderGuardTests.cs, el contrato ni el filtro del contrato.",
+    "El commit RED cambia únicamente los dos archivos de prueba autorizados; su push propio produce un fallo del job Core debido únicamente a las aserciones focales contra el esqueleto vigente, con la guarda de I-23 en verde.",
+    "El commit GREEN cambia únicamente los siete archivos de producción autorizados; no modifica pruebas ni archivos de la cadena RED, y la suite Core completa termina en verde."
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.ComputedParameters",
+      "MinSelected": 6,
+      "ExpectRed": true
+    }
+  ],
+  "ExpectedEvidence": [
+    "Commit RED: pruebas focales de INV-04, INV-05, INV-09, INV-14, INV-16 e INV-34 (via de peticion) que fallan por la razon esperada, con seleccion mayor que cero",
+    "Commit GREEN: implementacion en el AllowedWriteScope con las mismas pruebas en verde y la suite Core completa en verde",
+    "Contadores de resoluciones y de lecturas de diseno observados en los costados que fija A-1.3",
+    "worker-handoff.json conforme al esquema, con los SHA de RED y GREEN y el trailer real del Worker",
+    "Push de la rama sin force; corrida push del SHA exacto de GREEN con los cuatro jobs requeridos en success"
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive/irreversible action not authorized"
+    },
+    {
+      "Id": "S-06",
+      "Text": "missing credentials/permissions"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch/worktree ownership conflict"
+    },
+    {
+      "Id": "S-09",
+      "Text": "dependency not integrated"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify authority revision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "main movement invalidates exact-SHA assumptions"
+    },
+    {
+      "Id": "S-14",
+      "Text": "initiative contract explicitly says STOP"
+    },
+    {
+      "Id": "P-01",
+      "Text": "Cambio del hash de config.toml"
+    },
+    {
+      "Id": "P-02",
+      "Text": "Participante vivo ajeno, proceso no atribuible o mas de una delegacion abierta"
+    },
+    {
+      "Id": "P-03",
+      "Text": "Delegacion fuera del contrato"
+    },
+    {
+      "Id": "P-04",
+      "Text": "Tope de BLOCKED alcanzado"
+    },
+    {
+      "Id": "P-05",
+      "Text": "Invocacion distinta del paquete aceptado"
+    },
+    {
+      "Id": "P-06",
+      "Text": "Aviso de limite de uso o de creditos"
+    },
+    {
+      "Id": "P-07",
+      "Text": "Una invocacion excederia el tope de invocaciones"
+    },
+    {
+      "Id": "P-08",
+      "Text": "La sesion opero durante una cesion"
+    },
+    {
+      "Id": "C-01",
+      "Text": "Hace falta tocar Expressions, Persistence, ProjectVariables, Systems, Bom, Domain, Plugin o UI"
+    },
+    {
+      "Id": "C-02",
+      "Text": "D-07, D-26 o D-28 no pueden implementarse tal como estan congelados (requiere A-n o Architect)"
+    },
+    {
+      "Id": "C-03",
+      "Text": "Contradiccion entre el Freeze y el codigo consumido (EXP-01)"
+    },
+    {
+      "Id": "C-04",
+      "Text": "Necesidad de leer o consumir codigo no integrado de I-64, I-62 o I-52"
+    },
+    {
+      "Id": "C-05",
+      "Text": "Cualquier escritura fuera de AllowedWriteScope"
+    },
+    {
+      "Id": "C-06",
+      "Text": "Un INV de G1 no puede mostrar un RED observable antes del cambio correcto"
+    }
+  ],
+  "MaxReworkLoops": 3,
+  "AttemptsRemaining": 2,
+  "ChainBaseSha": "f71de12b33567e8b4109d3a17c60a17d54e96fdc",
+  "ChainRedSha": "1013449d61b8292b77273ceeac30b82282b975a2",
+  "ChainRedFiles": [
+    "tests/RackCad.Tests/ComputedParameters/RackMetricProviderPurityTests.cs",
+    "tests/RackCad.Tests/ComputedParameters/RackMetricRequestTests.cs"
+  ],
+  "CorrectionOf": {
+    "RunId": "R20261002T005944Z-1192",
+    "FailureClass": "Ci",
+    "AnalysisSha256": "6080f3d008d032d4c6565f5f38df849f294c1a3c981d8ce9c31a14c5259a1fb8"
+  },
+  "ExpectedHandoffPath": "artifacts/orchestration/I-63/G1-RACK-METRICS/1/{WorkRunId}/worker-handoff.json",
+  "IssuedBy": "Controller Codex (planificacion G1, correccion 1, CONTROLLER_PLANNING)"
+}

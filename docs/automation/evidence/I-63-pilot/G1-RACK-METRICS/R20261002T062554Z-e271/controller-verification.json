@@ -1,0 +1,82 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "G1-RACK-METRICS",
+  "RunId": "R20261002T062554Z-e271",
+  "DelegationRunId": "R20261002T061154Z-9f77",
+  "WorkRunId": "R20261002T061533Z-8e64",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, TerminalEvent=resultado final del subagente; Cession.SessionOperated=false."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json presente; TaskId=G1-RACK-METRICS, RunId=R20261002T061533Z-8e64, DelegationRunId=R20261002T061154Z-9f77, Attempt=1. OutputWrittenUtc 2026-10-02T06:21:08.9465276Z es posterior a Cession.StartUtc 06:15:45Z."
+    },
+    "Authority": {
+      "Result": "fail",
+      "Evidence": "Leí AUTOMATION_PLAN §16 en MainSha 819955d… y los documentos UNIT_DOC en AuthorityRevision 658b35a…. git cat-file confirma presentes los demás documentos listados, pero falta docs/automation/evidence/I-63-pilot/G1-RACK-METRICS/R20261002T005944Z-1192/analysis.md en AuthorityRevision. git log --all --diff-filter=A identifica su alta en faa5f16e6b3596033550d8c63208717db3fd92a4; el archivo existe en CurrentSha. Según §16.3, no pude verificar esa autoridad de unidad en la revisión declarada."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "La aceptación de planificación registra A1-A8=pass. Comparé contrato y delegación: los alcances permitidos de los archivos son subconjunto de los prefijos autorizados; la delegación conserva las prohibiciones, invariantes, condiciones STOP, autoridades y RequiredTests (filtro FullyQualifiedName~RackCad.Tests.ComputedParameters, MinSelected=6, ExpectRed=true). El diff BaseSha..CurrentSha contiene solo archivos dentro de los dos prefijos permitidos."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD y refs/remotes/origin/architecture/parametros-calculados-resumen-proyecto devuelven b5ee157d7c42a3bada7d6804cbbe3cd731405e00. La rama actual y el worktree coinciden con la delegación y la entrega. merge-base --is-ancestor BaseSha CurrentSha y merge-base --is-ancestor RedSha CurrentSha terminan con código 0."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts registra OriginMainSha=819955d61a6da4c811a11fbd11b5dca13f634b7c y LsRemoteSha=b5ee157d7c42a3bada7d6804cbbe3cd731405e00, iguales a MainSha y CurrentSha. La consulta git ls-remote de esta sesión no pudo conectar con GitHub; la señal de relevo sí contiene ambos valores."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha enumera exactamente dos archivos tests/RackCad.Tests/ComputedParameters/ y cinco src/RackCad.Application/ComputedParameters/, todos dentro de AllowedWriteScope y sin rutas prohibidas."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain está vacío. git check-ignore -v sobre artifacts/orchestration/I-63/G1-RACK-METRICS/1/R20261002T062554Z-e271/inputs identifica .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts y TRX: corrida 36973107547, evento push, ref refs/heads/architecture/parametros-calculados-resumen-proyecto, head b5ee157d…, completada con los cuatro jobs requeridos en success. core.trx: 12413 seleccionadas, 12413 pasaron; ui.trx: 1654 seleccionadas, 1637 pasaron, 0 fallaron, 17 NotExecuted. Para RED, corrida push 36972851773 sobre fc30dc6c…: job Core failure y TRX con 17 fallos por aserción."
+    },
+    "Tests": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "TRX del contrato: filtro RackCad.Tests.ComputedParameters selecciona 17 (mínimo 6); RED 17/17 fallidas por aserción y CurrentSha 17/17 pasadas. En CurrentSha, RackMetricRequestTests observa INV-04, INV-05, INV-14, INV-16, INV-34 y D-17; RackMetricProviderPurityTests observa INV-09/D-08; NamespaceFolderGuardTests permanece sin cambios y sus siete resultados están Passed. RT y ChainRedFiles son los dos archivos de pruebas ComputedParameters; git diff RedSha CurrentSha -- tests/ no devuelve rutas. Falta una prueba que observe la identidad D-02 MetricId(Rack|Project, token); los tests del diff consultan RackMetricIds, pero no afirman esa identidad."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "El valor literal de Worker.Trailer es \"Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>\". git log --format=%B BaseSha..CurrentSha muestra ese trailer en ambos commits."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Participant: ModelRequested=sonnet, ModelEffective=claude-sonnet-5-5, EffortRequested=medium y EffortEffective=medium; corresponde al modelo claude-sonnet-5-5, effort medium, y enforcement required declarados en la delegación. El catálogo documenta sonnet como alias medido de ese modelo."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisé WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json; no encontré coincidencias con los términos enumerados en AUTOMATION_PLAN §16.10."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 denegaciones de permisos o credenciales, 0 avisos de límite y 0 órdenes fallidas en la señal de sesión; transcripción identificada por SHA-256 3050F2AC2AB497F78D715B7D5E9AA7DF0AC54B32F56606557EE0D4C62AE5D564."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Authority",
+  "TriggeredStopConditions": [
+    "S-12"
+  ],
+  "Findings": [
+    "La autoridad UNIT_DOC analysis.md incluida en la delegación no existe en AuthorityRevision 658b35ad498520ba3c832a96eea4389df16dfa60; Git registra su alta posterior en faa5f16e6b3596033550d8c63208717db3fd92a4. §16.3 exige leer documentos de unidad desde AuthorityRevision.",
+    "Los TRX respaldan RED por aserciones, no por errores de compilación; la corrida actual selecciona y pasa las 17 pruebas focales.",
+    "La cobertura observable de D-02 no está demostrada: ninguna prueba del diff verifica explícitamente la identidad MetricId(Rack|Project, token).",
+    "La consulta git ls-remote de esta sesión falló por falta de conexión; Remote se evaluó con los hechos registrados por la sesión y la referencia remota local."
+  ],
+  "RecommendedNextAction": "Alinear la revisión de autoridad con el analysis.md versionado y añadir una prueba observable para D-02 antes de repetir la verificación."
+}
