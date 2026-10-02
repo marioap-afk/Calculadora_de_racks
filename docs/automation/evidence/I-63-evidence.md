@@ -1790,3 +1790,85 @@ Copias en `docs/automation/evidence/I-63-pilot/G3-RACK-BUILTINS/R20261002T212850
   - cada cesión compara su hash de salida con esta línea base y su hash de entrada con el de salida;
   - cualquier diferencia es STOP P-01 y detiene la cadena;
   - esta decisión no autoriza ningún cambio posterior.
+
+## 46. G3-T2 (GREEN-BUILTINS) bajo I-61: `EXECUTION_VERIFIED` y revisión de arquitectura CONFORMING
+
+### 46.1 Invocaciones
+
+| `RunId` | Fase | Participante (solicitado = efectivo) | Resultado |
+|---|---|---|---|
+| `R20261002T214309Z-19d7` | PLANNING (repetición ordenada por el Owner, §45) | Codex CLI, `gpt-6-luna`, `high` | Mismo contrato (`2E43EAE2…`); seis colecciones iguales; A1-A8 en `pass` (A8 en modo de continuación); `config.toml` = línea base en salida y entrada |
+| `R20261002T214618Z-be6d` | WORK | Subagente, `claude-sonnet-5-5`, `high` | GREEN `eb58a476` sobre `71205235`; sin RED nuevo (`RedSha` null); `IMPLEMENTATION_COMPLETE` (798 s, 47 llamadas) |
+| `R20261002T220419Z-26c9` | VERIFICATION (primera de la fase de T2) | Codex CLI, `gpt-6-luna`, `high` | **`EXECUTION_VERIFIED`**, `VerifiedSha` `eb58a4768d5a68892cce8d85b527f2a1ad1bdc64`, 14 de 14 en `pass` (`Ci` y `Tests` con `RedPart` `not_applicable`, citando la corrida del `ChainRedSha`) |
+| `R20261002T220928Z-5706` | CONTROL nc1 | Codex CLI, `gpt-6-luna`, `high` | `EXECUTION_BLOCKED/STOP`, `Identity`: oráculo cumplido |
+| `R20261002T220929Z-1c05` | CONTROL nc2 | Codex CLI, `gpt-6-luna`, `high` | `EXECUTION_BLOCKED/STOP`, `Scope` con [C-05]: oráculo cumplido. En G2 no discriminó (DEV-G2-01) |
+| `R20261002T220930Z-2504` | CONTROL nc3 | Codex CLI, `gpt-6-luna`, `high` | `EXECUTION_REWORK_REQUIRED/REWORK`, `FreeText`: oráculo cumplido |
+
+- **Binario del Controller:** la ruta verificada del piloto, `bin/a51e250fa15c740a` (`codex-cli 0.159.2`). La actualización de la app añadió
+  `bin/be3fd7e5c1969ff6` (`0.159.0-alpha.12.1`), que no se usó.
+- **`config.toml`:** la salida de cada cesión se comparó con la línea base del Owner `155933B3…` antes de ceder, y la entrada con la salida.
+  No hubo cambios: P-01 no se volvió a disparar.
+- **Puerta de PID:** sin procesos marcados vivos. Los dos `bash.exe` efímeros del host que se marcaron ya habían terminado al revalidar.
+
+### 46.2 Entrega y CI
+
+- **GREEN `eb58a4768d5a68892cce8d85b527f2a1ad1bdc64`:** 8 archivos de producción.
+  - `src/RackCad.Application/Expressions/`: `SymbolId.cs`, `SymbolTable.cs`, `ExpressionBinder.cs`, `ExpressionFormatter.cs`,
+    `DependencyGraph.cs` y `RegistryEvaluation.cs`.
+  - `src/RackCad.Application/ComputedParameters/RackComputedExpressionContext.cs` (nuevo).
+  - `src/RackCad.Application/Persistence/PersistedBoundExpressionJson.cs`.
+  - Lexer, parser, evaluador, límites y catálogo de diagnósticos sin cambios.
+  - Ningún archivo de `ChainRedFiles`, de las suites de INV-28 ni de las guardas.
+- **Corrida `push` 37069993992 del SHA exacto: `success`, cuatro jobs** (incluido «Build Plugin without AutoCAD»).
+  - Core 12566/12566; filtro `ComputedParametersSymbols` 89/89.
+  - UI 1637 superadas y 17 omitidas por `Skip`.
+- **INV-22 tras el GREEN** (observado por el Worker): `Rack.#{zzz}` → un `InvalidQualifier` (11) en 5+6, sin árbol. El caso de 32 caracteres
+  hexadecimales conserva su `UnexpectedToken` (3) en 5+35: C-12 no se activa.
+- **Comprobación mecánica independiente de `Scope`** (DEV-G2-01), antes de aceptar el resultado: **PASS**.
+  - `git diff --name-only 71205235..eb58a476` da 8 archivos.
+  - Todos están dentro de `AllowedWriteScope`; ninguno en `ForbiddenWriteScope` ni en `ChainRedFiles`.
+  - Detalle en `docs/automation/evidence/I-63-pilot/G3-RACK-BUILTINS/R20261002T214618Z-be6d/scope-check.json`.
+- **Limitaciones declaradas por el Worker:**
+  - `RackComputedExpressionContext.Create` es interno;
+  - los nombres de miembro `Frentes` y `FrentesVacios` se declaran en el contexto.
+
+### 46.3 Revisión de arquitectura
+
+- **Revisor:** el mismo Architect de R1-R3, en la sesión «I-63 Architect Review R1» (`local_d5787742…`).
+  - Modo SEPARATE SESSION y de solo lectura.
+  - Encargo enviado por SendMessage (`35ba09b6`); se custodia en `docs/automation/evidence/I-63-pilot/G3-RACK-BUILTINS/architect-review/request.txt`.
+- **Veredicto: CONFORMING**, sin REQUIRED y con 5 OPCIONALES (O-G3-1..5).
+  - Está ligado al SHA `eb58a4768d5a68892cce8d85b527f2a1ad1bdc64`, al diff `ea70e3b3..eb58a476 -- src/` (8 archivos) y al Freeze V3 con A-1, A-2 y A-3.
+  - Todos los puntos del foco son conformes: D-16.1-7, R4/INV-27, D-18, D-19, `projectVariable`, INV-28, sin segundo motor, D-17 (4-6),
+    INV-22 (A-3), ADR-0043 D1/D9/D24 y AGENTS.
+  - Considera aceptables las dos limitaciones del Worker y responde a la pregunta abierta de T1: los nombres de API son aceptables; el
+    mensaje con «Computed» es suficiente; es preferible que la tabla de D9 sea privada.
+- **Texto literal:** `docs/automation/evidence/I-63-pilot/G3-RACK-BUILTINS/architect-review/verdict.txt`. Es igual byte a byte al `SendMessage` de la transcripción del Architect
+  (`fdd2a979-cce9-4391-83aa-e7dfe5effcc4.jsonl`).
+- **Opcionales**, que no bloquean y pueden ir en G4 o en la iniciativa del consumidor:
+  - O-G3-1: trasladar `Frentes` y `FrentesVacios` al catálogo (`RackMetricIds`), para que D-03 tenga un solo sitio;
+  - O-G3-2: error de programación ante homónimos `rack`;
+  - O-G3-3: quitar la llamada doble a `RejectComputedEntries`;
+  - O-G3-4: la procedencia del registro (D-17.4) y la variable de proyecto fallida, como obligación del primer consumidor junto a la
+    apertura de `Create`;
+  - O-G3-5: aserción de ámbito `Rack` para las entradas `rack`.
+
+### 46.4 Observación de la sesión
+
+- El comentario de `ExpressionFormatter.cs` sobre `Rack.#{token}` dice que el parser lo lee como «namespace syntax followed by a loose
+  qualifier». Es el mecanismo `[RECONSTRUCTED]` de D-16.6.
+- Para el oráculo de INV-22, la A-3 fijó que el rechazo ocurre en el lexer (`InvalidQualifier`). Ese mecanismo solo aplica al caso de 32
+  caracteres hexadecimales (A-3 §4).
+- Es una imprecisión de comentario, sin efecto en el comportamiento, que las pruebas protegidas fijan. Se propone corregirla junto a los
+  opcionales.
+
+### 46.5 Contadores y custodia
+
+- `attempts` = 2 de 3, sin cambio: no hubo corrección.
+- Planificaciones de G3-T2: 2. La primera se detuvo por P-01; la segunda la ordenó el Owner y no consume.
+- Verificaciones de T2: 1, sin reejecuciones.
+- Controles: nc1-nc3 cumplidos, una vez cada uno sobre la verificación `EXECUTION_VERIFIED`.
+- La delegación de G3-T2 queda cerrada por una verificación válida registrada.
+- Copias en `docs/automation/evidence/I-63-pilot/G3-RACK-BUILTINS/<RunId>/`, `docs/automation/evidence/I-63-pilot/G3-RACK-BUILTINS-ncN/<RunId>/` y `docs/automation/evidence/I-63-pilot/G3-RACK-BUILTINS/architect-review/`.
+
+**Siguiente:** el Coordinator juzga G3 con esta evidencia. G4 no está autorizado.

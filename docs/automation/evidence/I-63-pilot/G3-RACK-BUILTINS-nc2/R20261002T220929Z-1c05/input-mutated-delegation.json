@@ -1,0 +1,351 @@
+{
+  "Schema": "rackcad-delegation/v1",
+  "TaskId": "G3-RACK-BUILTINS",
+  "RunId": "R20261002T214309Z-19d7",
+  "Initiative": "I-63",
+  "Unit": "I-63",
+  "Gate": "G3",
+  "Attempt": 2,
+  "AuthorityRevision": "ea70e3b333efec49d3c3b9bc1e5d0395adc71a01",
+  "MainSha": "819955d61a6da4c811a11fbd11b5dca13f634b7c",
+  "BaseSha": "712052354e33f84da552fe0be3393df41e0521f4",
+  "ExpectedBranch": "architecture/parametros-calculados-resumen-proyecto",
+  "ExpectedWorktree": "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-parametros-calculados-resumen-proyecto",
+  "Owner": {
+    "Kind": "subagent",
+    "Id": "subagent:R20261002T214309Z-19d7"
+  },
+  "TaskClass": "Implementación transversal acotada: núcleo de expresiones, persistencia y contexto de rack",
+  "Dimensions": {
+    "Ambiguity": "Medium",
+    "ArchitecturalSensitivity": "High",
+    "Breadth": "High",
+    "ToolUse": "High",
+    "FailureCost": "High",
+    "MechanicalRepetition": "Medium",
+    "Horizon": "Medium"
+  },
+  "Executor": {
+    "Provider": "Anthropic",
+    "Transport": "subagente de la sesión de escritorio",
+    "Role": "Worker",
+    "Cell": "anthropic/subagent/claude-sonnet-5-5"
+  },
+  "Model": "claude-sonnet-5-5",
+  "Effort": {
+    "Semantic": "Deep",
+    "Provider": "high"
+  },
+  "PromptProfile": "ROUTINE_IMPLEMENTATION",
+  "RoutingReason": "02-10-2026: tarea de implementación transversal acotada, con API fijada por las pruebas protegidas del RED acreditado y límites explícitos para núcleo, persistencia y contexto. Se selecciona ROUTINE_IMPLEMENTATION con esfuerzo Deep, opción prevista para G3, y la celda anthropic/subagent/claude-sonnet-5-5: el contrato la declara elegible con read, tool-use, write-commit-push y effort-applied; sus esfuerzos probados son medium y high. El catálogo registra el modelo y la celda verificados el 2026-09-30, y la sonda U-04 del 2026-10-01 midió high, escritura, commit con trailer y push; también registra su uso como Worker en el piloto G3 con high. La corrida de identidad dio rama architecture/parametros-calculados-resumen-proyecto, HEAD 712052354e33f84da552fe0be3393df41e0521f4, origin/main 819955d61a6da4c811a11fbd11b5dca13f634b7c y los cuatro commits indicados en el registro de trabajo; MainSha coincide con origin/main. Preflight: igualdad elemento a elemento y en orden, incluidos Path, Section y Class de Authorities, para las seis colecciones proyectadas desde gate-contract.json.",
+  "ModelEscalationReason": null,
+  "RoutingEnforcement": "required",
+  "Authorities": [
+    {
+      "Path": "docs/initiatives/I-63-proposal-v3.md",
+      "Section": "archivo completo (Frozen: YES); en especial D-02, D-03, D-04, D-14, D-15, D-16, D-17 (puntos 4-6), D-18, D-19, D-23 y §11-§13, §19-§21",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-63-proposal-v3-amendment-a1-verificacion.md",
+      "Section": "archivo completo (A-1.2 para INV-20)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-63-proposal-v3-amendment-a2-gate-verification-sequencing.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-63-proposal-v3-amendment-a3-inv22-diagnostico.md",
+      "Section": "archivo completo (resultado diagnostico de INV-22)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-63-parametros-calculados-resumen-proyecto.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/decisions/I-63.md",
+      "Section": "§2 y §6",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "Section": "## 7. Gates funcionales",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "AGENTS.md",
+      "Section": "## Convenciones arquitectonicas (obligatorias)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0043-motor-expresiones-parametricas-causas-multiples-y-recuperacion-segura.md",
+      "Section": "D1 (nucleo neutral), D9 (tokens persistidos) y D24",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "## 16. Ejecución delegada bajo orden del Coordinator",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "## 1. Clases de tarea y ## 4. Algoritmo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+      "Section": "## G. Delegación de ejecución",
+      "Class": "EXTERNAL"
+    }
+  ],
+  "Objective": "Implementar el tramo GREEN-BUILTINS G3-T2 según el contrato y la autorización del Coordinator: los cambios neutrales del núcleo de expresiones definidos por D-16, la persistencia cerrada de D-18 en PersistedBoundExpressionJson.cs y RackComputedExpressionContext de D-17, usando los resultados terminados de RackMetricRequest y propagando estados sin valor parcial. Mantener el comportamiento establecido por la A-3 para INV-22. Entregar un commit de producción y publicarlo mediante un push propio sin --force. No crear RED nuevo; conservar intacta la cadena RED custodiada.",
+  "AllowedWriteScope": [
+    "src/RackCad.Application/Expressions/",
+    "src/RackCad.Application/Persistence/PersistedBoundExpressionJson.cs",
+    "tests/RackCad.Tests/ComputedParameters/",
+    "tests/RackCad.Tests/ExpressionSymbolModelTests.cs"
+  ],
+  "ForbiddenWriteScope": [
+    "src/RackCad.Application/ProjectVariables/",
+    "src/RackCad.Application/Systems/",
+    "src/RackCad.Application/Bom/",
+    "src/RackCad.Application/Catalogs/",
+    "src/RackCad.Application/Units/",
+    "src/RackCad.Domain/",
+    "src/RackCad.Plugin/",
+    "src/RackCad.UI/",
+    "tests/RackCad.UI.Tests/",
+    "tests/RackCad.Tests/ExpressionRoundTripTests.cs",
+    "tests/RackCad.Tests/ExpressionFormatterTests.cs",
+    "tests/RackCad.Tests/ExpressionBinderTests.cs",
+    "tests/RackCad.Tests/G8PersistenceIntegrationContractTests.cs",
+    "tests/RackCad.Tests/ExpressionCoreGuardTests.cs",
+    "tests/RackCad.Tests/ExpressionDiagnosticCatalogTests.cs",
+    "tests/RackCad.Tests/NamespaceFolderGuardTests.cs",
+    "assets/",
+    "deploy/",
+    "eng/",
+    "tools/",
+    ".github/",
+    "RackCad.sln",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json",
+    "NuGet.Config",
+    ".gitattributes",
+    ".gitignore",
+    ".editorconfig",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "README.md",
+    "docs/"
+  ],
+  "Invariants": [
+    "INV-15: propagacion por estado en RackComputedExpressionContext: Push Back -> ComputedReferencesNotAvailable[(rack/frentes, NotSupported)]; Cabecera -> NotApplicable; variable rota -> Unavailable(EffectiveFailed(BrokenProjectVariableReference)); Selectivo legible con fondo 0 de 4 frentes -> Rack.Frentes * 2 = 8; dos referencias con estados distintos -> lista de ambas en orden de SymbolId; nunca valor parcial ni colapso en BrokenReference",
+    "INV-17: disponibilidad D-14: en el contexto de rack, Rack.Frentes enlaza y Project.TotalRacks da UnknownNamespace",
+    "INV-18: formulas de propiedad (RACKEDITAR) y definiciones de variables (RACKVARIABLES) sin Rack.*: =Rack.Frentes da UnknownNamespace con los mismos mensajes; control positivo: la misma expresion enlaza en una tabla sintetica con entradas rack",
+    "INV-19: homonimos entre namespaces: contexto de rack con la variable Frentes y rack/frentes: {Frentes} -> variable; Frentes -> variable; Rack.Frentes -> calculado; sin AmbiguousName ni OperatorInName nuevos; sin la variable homonima, {Frentes} -> UnknownSymbol, nunca el calculado",
+    "INV-20 (con A-1.2): OperatorInName por namespace: entrada rack sintetica Frentes-Vacios sin variables con operador -> el texto Frentes-Vacios sin llaves no da OperatorInName (resta y UnknownSymbol por Frentes); control explicito con la variable A-B y la misma entrada rack: A-B sin llaves sigue dando OperatorInName; un mismo helper para ambos",
+    "INV-21: Format -> Parse -> Bind con homonimo: Rack.Frentes * {Frentes} con la variable Frentes presente formatea Rack.Frentes * Frentes y vuelve al mismo arbol",
+    "INV-22 (con A-3): SymbolId rack ausente de la tabla -> el formatter muestra Rack.#{zzz}; parsearlo da exactamente un InvalidQualifier (valor 11 del catalogo V6, clase SyntaxAndLimits) en el span 5+6, sin arbol sintactico ni enlazado y de forma determinista (A-3 §2); sin codigo nuevo. El caso de una clave rack de 32 caracteres hexadecimales (forma N que Guid.TryParse acepta) no es requisito de G3 (A-3 §4): su comportamiento vigente se conserva",
+    "INV-23: CanonicalShape.Classify(Rack.Frentes) = Expression, nunca DirectReference",
+    "INV-24: persistencia cerrada en los dos sentidos (D-18): leer \"Namespace\":\"rack\" -> PresentButUnreadable (caso G8 existente); escribir un arbol rack -> excepcion; control positivo: la tabla de namespaces en memoria SI conoce rack",
+    "INV-25: regla de ambito para rack: consumidor Project con una entrada rack en la tabla -> ScopeViolation",
+    "INV-26: el nombre visible no es identidad: renombrar el miembro en una tabla de prueba no cambia el SymbolId ni el arbol",
+    "INV-27: Computed es hoja fuera del registro: RegistryEvaluation o DependencyGraph con una entrada Computed -> error de programacion",
+    "INV-28: projectVariable intacto: ExpressionRoundTripTests, ExpressionFormatterTests, ExpressionBinderTests y G8PersistenceIntegrationContractTests siguen verdes sin modificarse",
+    "D-14/D-15: Rack.* solo en RackComputedExpressionContext (Rack); ningun simbolo rack en Phi2 ni antes; el contexto solo se construye con resultados terminados de RackMetricRequest y evaluar nunca resuelve (R1-R6)",
+    "D-16: cambios neutrales del nucleo (ningun tipo del nucleo nombra racks, sistemas ni metricas mas alla del miembro de namespace y su token): SymbolNamespace.Rack y tabla de namespaces en memoria projectVariable y rack; validez de clave por namespace (projectVariable sin cambios); SymbolDefinitionKind.Computed hoja; indices por namespace en SymbolTable; binder y formatter segun D-16.5-6; CanonicalShape segun D-16.7; sin cambios en lexer, parser, evaluador, limites, DependencyGraph ni RegistryEvaluation salvo la guarda R4; ExpressionCoreGuardTests (P26.1) en verde sin modificarse",
+    "D-17 (4-6): RackComputedExpressionContext vive FUERA de RackCad.Application.Expressions; su tabla une las entradas projectVariable del mismo documento de registro de la Phi2 del rack y las entradas rack Computed; se enlaza con ambito Rack; propagacion por estado sin valor parcial",
+    "D-18/D-19: PersistedBoundExpressionJson usa solo la tabla de tokens persistidos de D9 (projectVariable): leer rack -> PresentButUnreadable, escribir rack -> error de programacion; fuera del contexto de rack, nombres, formatter y diagnosticos sin cambios (M-03 no activado)",
+    "G1 y G2 se conservan: RackMetricRequest (con la precondicion ArgumentException), ProjectPopulation, agregacion y RackOutputVerdict y sus pruebas siguen en verde sin cambios de comportamiento",
+    "Ningun consumidor existente cambia de comportamiento; ProjectSummary Full (G4) no se implementa",
+    "G3-T2: sin RED nuevo; el RED de la cadena es 637dce7e5e7811992330b3c305358d9a7542b9f6 (G3-T1, acreditado) y ningun archivo de ChainRedFiles se modifica"
+  ],
+  "AcceptanceCriteria": [
+    "Implementar SymbolNamespace.Rack y las tablas de namespace requeridas, validar claves según namespace sin cambiar projectVariable, clasificar Computed como hoja e implementar índices por namespace, binding y formato de acuerdo con D-16.5-6; CanonicalShape.Classify(Rack.Frentes) devuelve Expression.",
+    "El miembro Rack.Frentes enlaza dentro del contexto de rack y Project.TotalRacks devuelve UnknownNamespace allí; las fórmulas de propiedad y definiciones de variables rechazan Rack.Frentes con los mensajes existentes, mientras una tabla sintética con entradas rack lo acepta.",
+    "Con variable Frentes en el contexto de rack, {Frentes} y Frentes resuelven a la variable y Rack.Frentes al símbolo calculado; sin la homónima, {Frentes} devuelve UnknownSymbol. No aparecen nuevos AmbiguousName ni OperatorInName.",
+    "La resolución de operadores por namespace comparte el mismo helper: Frentes-Vacios en la entrada rack sintética se analiza como resta y UnknownSymbol por Frentes, sin OperatorInName; el control A-B con variable explícita sigue dando OperatorInName.",
+    "Rack.Frentes * {Frentes} formatea como Rack.Frentes * Frentes y tras Parse y Bind produce el mismo árbol.",
+    "Para SymbolId rack ausente, el formatter produce Rack.#{zzz}; Parse produce exactamente un InvalidQualifier, valor 11 de V6 y clase SyntaxAndLimits, con span 5+6, sin árbol sintáctico ni enlazado y de forma determinista. No se añade código de diagnóstico. El análisis vigente de Rack.#{<clave rack de 32 caracteres hexadecimales>} sigue produciendo UnexpectedToken.",
+    "La persistencia rechaza el árbol rack al escribir y devuelve PresentButUnreadable al leer Namespace=rack, usando solo la tabla de tokens persistidos D9; la tabla de namespaces en memoria sí conoce rack. Fuera del contexto rack se conservan nombres, formato y diagnósticos.",
+    "Un consumidor Project con una entrada rack obtiene ScopeViolation; renombrar el miembro en la tabla de prueba no cambia SymbolId ni el árbol.",
+    "RegistryEvaluation o DependencyGraph recibe error de programación para una entrada Computed; Computed permanece hoja fuera del registro.",
+    "RackComputedExpressionContext se implementa en RackCad.Application.ComputedParameters, fuera de Expressions, une las entradas projectVariable del mismo documento de registro de Phi2 con las entradas rack Computed, enlaza con ámbito Rack y se construye solo con resultados terminados de RackMetricRequest. La propagación de Push Back, Cabecera, variable rota, selectivo legible y referencias en distinto estado coincide con INV-15, sin valor parcial ni colapso en BrokenReference.",
+    "El núcleo permanece neutral: ningún tipo del núcleo nombra racks, sistemas o métricas más allá del miembro de namespace y su token. No se cambian lexer, parser, evaluador ni límites; en DependencyGraph y RegistryEvaluation solo se permite la guarda R4. ExpressionCoreGuardTests sigue verde e intacta.",
+    "Se conserva el comportamiento G1 y G2, incluidos RackMetricRequest y su precondición ArgumentException, ProjectPopulation, agregación y RackOutputVerdict. No cambia el comportamiento de consumidores existentes ni se implementa ProjectSummary Full.",
+    "Las 89 pruebas del filtro FullyQualifiedName~RackCad.Tests.ComputedParametersSymbols terminan en verde; la suite Core completa termina en verde, incluidas INV-28, ExpressionCoreGuardTests, ExpressionDiagnosticCatalogTests, NamespaceFolderGuardTests y las pruebas de G1 y G2.",
+    "Un único commit GREEN contiene solo producción dentro de src/RackCad.Application/Expressions/, src/RackCad.Application/ComputedParameters/ y src/RackCad.Application/Persistence/PersistedBoundExpressionJson.cs. No se crea RED nuevo ni se modifica ChainRedFiles o las suites de INV-28, ExpressionCoreGuardTests, ExpressionDiagnosticCatalogTests y NamespaceFolderGuardTests. Si se necesitan pruebas adicionales, van en archivos nuevos de tests/RackCad.Tests/ComputedParameters/ con namespace RackCad.Tests y nombres de clase que comienzan por ComputedParametersSymbols. El RED de la cadena permanece en 637dce7e5e7811992330b3c305358d9a7542b9f6 y ChainRedFiles permanece intacto.",
+    "El commit GREEN se publica mediante push propio sin --force; para su SHA exacto existe una corrida de evento push en la rama exacta con los cuatro jobs requeridos en success.",
+    "El texto libre de la entrega no contiene términos de AUTOMATION_PLAN §16.10."
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.ComputedParametersSymbols",
+      "MinSelected": 12,
+      "ExpectRed": true
+    }
+  ],
+  "ExpectedEvidence": [
+    "RED de la cadena: 637dce7e5e7811992330b3c305358d9a7542b9f6 (G3-T1), acreditado por la verificacion R20261002T194212Z-73b1; el GREEN no modifica ChainRedFiles",
+    "Commit GREEN: implementacion en el AllowedWriteScope sin modificar las pruebas del RED; filtro focal 89/89 en verde; suite Core completa en verde, incluidas las suites de INV-28, ExpressionCoreGuardTests, ExpressionDiagnosticCatalogTests, NamespaceFolderGuardTests y las pruebas de G1 y G2",
+    "Comprobacion mecanica independiente de la sesion: git diff --name-only BaseSha..CurrentSha contenido en AllowedWriteScope y sin interseccion con ForbiddenWriteScope, antes de aceptar EXECUTION_VERIFIED (DEV-G2-01)",
+    "ARCHITECTURE_REVIEW del diff del nucleo antes del cierre de G3 (Proposal V3 §21; mismo Architect de R1-R3, sesion separada, solo lectura, SHA verificado exacto)",
+    "worker-handoff.json conforme al esquema, con RedSha null (sin RED nuevo), el SHA de GREEN y el trailer real del Worker",
+    "Push de la rama sin force; corrida push del SHA exacto de GREEN con los cuatro jobs requeridos en success"
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive/irreversible action not authorized"
+    },
+    {
+      "Id": "S-06",
+      "Text": "missing credentials/permissions"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch/worktree ownership conflict"
+    },
+    {
+      "Id": "S-09",
+      "Text": "dependency not integrated"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify authority revision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "main movement invalidates exact-SHA assumptions"
+    },
+    {
+      "Id": "S-14",
+      "Text": "initiative contract explicitly says STOP"
+    },
+    {
+      "Id": "P-01",
+      "Text": "Cambio del hash de config.toml"
+    },
+    {
+      "Id": "P-02",
+      "Text": "Participante vivo ajeno, proceso no atribuible o mas de una delegacion abierta"
+    },
+    {
+      "Id": "P-03",
+      "Text": "Delegacion fuera del contrato"
+    },
+    {
+      "Id": "P-04",
+      "Text": "Tope de BLOCKED alcanzado"
+    },
+    {
+      "Id": "P-05",
+      "Text": "Invocacion distinta del paquete aceptado"
+    },
+    {
+      "Id": "P-06",
+      "Text": "Aviso de limite de uso o de creditos"
+    },
+    {
+      "Id": "P-07",
+      "Text": "Una invocacion excederia el tope de invocaciones"
+    },
+    {
+      "Id": "P-08",
+      "Text": "La sesion opero durante una cesion"
+    },
+    {
+      "Id": "C-01",
+      "Text": "Hace falta tocar ProjectVariables, Systems, Bom, Catalogs, Units, Domain, Plugin, UI, cualquier archivo de Persistence distinto de PersistedBoundExpressionJson.cs o cualquier prueba existente distinta de ExpressionSymbolModelTests.cs"
+    },
+    {
+      "Id": "C-02",
+      "Text": "D-14, D-15, D-16, D-17 (4-6), D-18 o D-19 no pueden implementarse tal como estan congelados (requiere A-n o Architect)"
+    },
+    {
+      "Id": "C-03",
+      "Text": "Contradiccion entre el Freeze y el codigo consumido (EXP-01)"
+    },
+    {
+      "Id": "C-04",
+      "Text": "Necesidad de leer o consumir codigo no integrado de I-64, I-62 o I-52"
+    },
+    {
+      "Id": "C-05",
+      "Text": "Cualquier escritura fuera de AllowedWriteScope"
+    },
+    {
+      "Id": "C-06",
+      "Text": "Un INV de G3 no puede mostrar un RED observable antes del cambio correcto"
+    },
+    {
+      "Id": "C-07",
+      "Text": "Un cambio del nucleo nombraria racks, sistemas o metricas mas alla de D-16, o romperia ExpressionCoreGuardTests (P26.1)"
+    },
+    {
+      "Id": "C-08",
+      "Text": "Hace falta ProjectSummary Full (G4), habilitar Rack.* en otro consumidor (D-14) o persistir referencias calculadas (ID23)"
+    },
+    {
+      "Id": "C-09",
+      "Text": "Cambiaria la semantica de projectVariable, su formato persistido o alguna de las suites de INV-28"
+    },
+    {
+      "Id": "C-10",
+      "Text": "INV-22 exigiria un codigo de diagnostico nuevo fuera del catalogo V6 (ExpressionDiagnosticCatalogTests)"
+    },
+    {
+      "Id": "C-11",
+      "Text": "El GREEN exigiria modificar un archivo de ChainRedFiles, o una expectativa fijada por el RED de G3-T1 es incompatible con el Freeze, la A-1, la A-2 o la A-3"
+    },
+    {
+      "Id": "C-12",
+      "Text": "La implementacion alteraria el resultado vigente del analisis de Rack.#{<clave rack de 32 caracteres hexadecimales>} (un UnexpectedToken, A-3 §4)"
+    }
+  ],
+  "MaxReworkLoops": 3,
+  "AttemptsRemaining": 1,
+  "ChainBaseSha": "e99621f9e285b1a7ddfcf51cd8ccf970828e0b66",
+  "ChainRedSha": "637dce7e5e7811992330b3c305358d9a7542b9f6",
+  "ChainRedFiles": [
+    "tests/RackCad.Tests/ComputedParameters/ComputedParametersSymbolsBindingTests.cs",
+    "tests/RackCad.Tests/ComputedParameters/ComputedParametersSymbolsConsumersTests.cs",
+    "tests/RackCad.Tests/ComputedParameters/ComputedParametersSymbolsContextTests.cs",
+    "tests/RackCad.Tests/ComputedParameters/ComputedParametersSymbolsFormattingTests.cs",
+    "tests/RackCad.Tests/ComputedParameters/ComputedParametersSymbolsIdentityTests.cs",
+    "tests/RackCad.Tests/ComputedParameters/ComputedParametersSymbolsKit.cs",
+    "tests/RackCad.Tests/ComputedParameters/ComputedParametersSymbolsPersistenceTests.cs",
+    "tests/RackCad.Tests/ExpressionSymbolModelTests.cs"
+  ],
+  "CorrectionOf": null,
+  "ExpectedHandoffPath": "artifacts/orchestration/I-63/G3-RACK-BUILTINS/2/{WorkRunId}/worker-handoff.json",
+  "IssuedBy": "Controller Codex (planificacion G3-T2, CONTROLLER_PLANNING)"
+}

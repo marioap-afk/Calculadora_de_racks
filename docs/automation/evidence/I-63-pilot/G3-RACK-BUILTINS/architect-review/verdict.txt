@@ -1,0 +1,78 @@
+I-63 — ARCHITECTURE_REVIEW del diff del núcleo de G3: CONFORMING sobre eb58a4768d5a68892cce8d85b527f2a1ad1bdc64. Sin REQUIRED; 5 OPTIONAL.
+
+Review mode: SEPARATE SESSION; revisor=autor: no; misma sesión del Architect que R1-R3: sí (local_d5787742…). Mismo modelo de base que la autora: unknown (probable claude-opus-5-5). Revisión de solo lectura.
+
+1. IDENTIDAD
+- Worktree: …\architecture-parametros-calculados-resumen-proyecto.
+- eb58a476 existe y es el GREEN de G3-T2, sobre 71205235.
+- Diff revisado: ea70e3b3..eb58a476. Hay exactamente 8 archivos en src/; el GREEN no toca tests/.
+- Freeze: blob de la V3 en eb58a476 = 4d5dedce15363fa6378e460c5b63005fe41b858b (comprobado).
+- Contexto leído: el RED de G3-T1 (e99621f9..637dce7e -- tests/) y la A-3.
+- CI 37069993992 y la verificación R20261002T220419Z-26c9: los tomo de tu informe. No los reejecuté ni los consulté.
+
+2. DISPOSICIÓN POR PUNTO DEL FOCO
+- D-16.1 (namespace rack en memoria): CONFORME. SymbolNamespace.Rack = 2; Token y TryParseToken en Ordinal; KeyComparer = Ordinal. project sigue fuera del núcleo: sin miembro, sin token y sin regla.
+- D-16.2 (validez de clave por namespace): CONFORME. IsValidRackKey exige un token ASCII que empieza en minúscula, con letras y dígitos. La regla A2 de projectVariable no cambia.
+- D-16.3 (Computed como hoja): CONFORME. SymbolDefinitionKind.Computed = 3 y FromComputed() sin valor. LiteralValue y Expression lanzan con mensaje propio.
+- D-16.4 (índices por namespace): CONFORME. _byName contiene solo entradas projectVariable y _rackByName solo entradas rack. OperatorNames = PatternsOf(_byName), es decir, solo projectVariable. FindByDisplayName ya no ve rack. Con tablas que solo tienen projectVariable, el comportamiento es idéntico al de antes.
+- D-16.5 (binder): CONFORME.
+  - ResolveNamespaceReference: sin entradas rack, o con una palabra distinta de Rack (Project incluida) → UnknownNamespace.
+  - Rack sin miembro → NameRequired (AQ-01).
+  - Miembro buscado solo entre las entradas rack → UnknownSymbol si no existe; después, la regla de ámbito vigente.
+  - Las referencias sin namespace (simples, con llaves o cualificadas) siguen la ruta de antes, sobre el índice projectVariable.
+- D-16.6 (formatter): CONFORME. Un rack presente se escribe Rack.<miembro>, también en FormatQualifiedReference; uno ausente, Rack.#{token}. Los homónimos se cuentan solo entre projectVariable.
+- D-16.7 (CanonicalShape): CONFORME sin tocar código: Classify solo da DirectReference a projectVariable, así que rack cae en Expression.
+- Lexer, parser, evaluador, límites y catálogo de diagnósticos: SIN CAMBIOS. No están en el diff y no se añadió ningún código de diagnóstico.
+- Guarda R4 / INV-27: CONFORME. DependencyGraph.RejectComputedEntries lanza InvalidOperationException y RegistryEvaluation la invoca. Detalle menor en O-G3-3.
+- D-18 (persistencia cerrada): CONFORME.
+  - PersistedNamespaceTokens es privado y solo conoce projectVariable: la tabla de D9 no se amplió.
+  - Leer "rack" da JsonException, es decir, fallo estructural.
+  - Al escribir, RequirePersistableNamespaces recorre el árbol entero antes del primer byte y lanza.
+  - Nada más del repositorio lee namespaces persistidos (grep de TryParseToken en la base).
+- D-19 / conservación de projectVariable: CONFORME. Fuera del contexto de rack calculado no cambian nombres, formatter ni diagnósticos. Las claves, el comparador, la búsqueda, AmbiguousName/OperatorInName, el formato y la persistencia de projectVariable quedan intactos.
+- INV-28: CONFORME. ExpressionRoundTripTests, ExpressionFormatterTests, ExpressionBinderTests y G8PersistenceIntegrationContractTests no cambian entre 819955d6 y eb58a476 (git diff --quiet). En el RED solo cambió ExpressionSymbolModelTests, que fijaba la reserva de P25.2. Era lo debido: la reserva deja de ser cierta por D-16.1/3, y se cambió en el RED, no en el GREEN.
+- Sin segundo motor: CONFORME. RackComputedExpressionContext.Evaluate llama a ExpressionEvaluator.Evaluate.
+- D-17 (4-6): CONFORME.
+  - El contexto vive en RackCad.Application.ComputedParameters, fuera de Expressions (P26.1).
+  - Se construye con RackMetricResults ya terminados más las entradas projectVariable, y rechaza entradas rack o Computed ajenas.
+  - Las entradas rack son de ámbito Rack.
+  - Revisa cada referencia rack en orden de SymbolId; si alguna no está Available, devuelve ComputedReferencesNotAvailable con todas, conservando estado y razón, sin evaluar y sin valor parcial.
+  - BrokenReference sigue siendo cosa del evaluador del núcleo; Value lanza si no hubo evaluación.
+- INV-22 (A-3): CONFORME. Rack.#{zzz} da InvalidQualifier en 5+6, que sale del lexer sin cambios. El caso de 32 caracteres hexadecimales conserva su UnexpectedToken porque el lexer y el parser no se tocaron, así que no hay STOP C-12.
+- ADR-0043 D1, D9 y D24: CONFORME. El núcleo no nombra racks ni métricas, la tabla de D9 queda intacta y D24 avanza como prevé el Anexo A.
+- AGENTS «Convenciones arquitectónicas»: CONFORME. Todo es Application pura y no hay nada de AutoCAD ni de WPF.
+
+3. LIMITACIONES DECLARADAS Y PREGUNTAS DEL WORKER
+- Create interno: ACEPTABLE. Es la misma costura que ExpressionContext.Create, y el consumidor real (ID23 o Plugin) la abrirá con su propia iniciativa. Mientras sea interno, la garantía de D-17.4 («mismo documento de registro que la Φ2») la da quien llama, no el tipo; ver O-G3-4.
+- Nombres de miembro (Frentes, FrentesVacios) declarados en el contexto: ACEPTABLE para G3. Es la única declaración, y un token sin nombre lanza. D-03 los sitúa en el catálogo; ver O-G3-1.
+- Nombres de API que fijan las pruebas RED: ACEPTABLES. Los nombres de tipo no se congelan (D-08) y estos son coherentes.
+- Mensaje de INV-27 que contenga «Computed»: SUFICIENTE, junto con el tipo InvalidOperationException. Es un error de programación, no un diagnóstico, y D-14 prohíbe comparar textos de diagnóstico, no mensajes de excepción.
+- Tabla de D9 sin API con nombre, probada por comportamiento: ACEPTABLE y preferible. Un tipo privado evita que alguien la amplíe por error, e INV-24 cubre lectura y escritura.
+
+4. PUNTOS ACORDADOS
+- Todos los cambios del núcleo son los mínimos de D-16 y no introducen una regla de dominio.
+- La guarda de escritura recorre el árbol antes de escribir el primer byte, así que no deja salida parcial.
+- El RED ajustó honestamente la única prueba de reserva que el Freeze invalidaba.
+
+5. DESACUERDOS
+Ninguno.
+
+6. RIESGOS MATERIALES
+No hay ninguno que bloquee. Riesgos futuros, ya declarados: el consumidor de ID23 tendrá que conectar Create con el registro de la misma lectura y decidir qué hace con una variable de proyecto que no se pudo evaluar (O-G3-4).
+
+7. REQUIRED
+Ninguno.
+
+8. OPCIONALES (no bloquean; pueden ir en G4 o en la iniciativa del consumidor)
+- O-G3-1: trasladar Frentes y FrentesVacios de RackComputedExpressionContext.MemberName a la declaración del catálogo (RackMetricIds), para que D-03 tenga un solo sitio.
+- O-G3-2: homónimos rack. ResolveNamespaceReference toma matches[0] en silencio. El catálogo los prohíbe, pero el núcleo no lo comprueba. Conviene un error de programación en SymbolTable (o en el contexto) si dos entradas rack comparten nombre con OrdinalIgnoreCase.
+- O-G3-3: RegistryEvaluation llama a RejectComputedEntries y luego el constructor de DependencyGraph lo vuelve a llamar. Es inocuo; puede quitarse la primera llamada sin cambiar nada observable.
+- O-G3-4: el contexto no impone que las entradas projectVariable y los valores de Evaluate vengan del mismo documento de registro que la Φ2, ni cómo se propaga una variable de proyecto fallida (hoy el evaluador lanzaría por valor ausente). Hay que dejarlo como obligación del primer consumidor, junto a la apertura de Create.
+- O-G3-5: SymbolEntry no obliga a que una entrada rack sea de ámbito Rack. Hoy lo garantiza el único constructor (el contexto), y una aserción lo haría explícito.
+
+9. VEREDICTO
+CONFORMING. Ligado exclusivamente a:
+- SHA verificado eb58a4768d5a68892cce8d85b527f2a1ad1bdc64;
+- diff ea70e3b333efec49d3c3b9bc1e5d0395adc71a01..eb58a4768d5a68892cce8d85b527f2a1ad1bdc64 -- src/ (8 archivos);
+- Freeze: Proposal V3, f61d0aca, blob 4d5dedce, más A-1, A-2 y A-3.
+Esta revisión no declara GATE PASS: el cierre del gate es del Coordinator.

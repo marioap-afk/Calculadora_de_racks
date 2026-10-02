@@ -1,0 +1,80 @@
+{
+ "Command": "git diff --name-only 712052354e33f84da552fe0be3393df41e0521f4..eb58a4768d5a68892cce8d85b527f2a1ad1bdc64",
+ "BaseSha": "712052354e33f84da552fe0be3393df41e0521f4",
+ "CurrentSha": "eb58a4768d5a68892cce8d85b527f2a1ad1bdc64",
+ "Files": [
+  {
+   "Path": "src/RackCad.Application/ComputedParameters/RackComputedExpressionContext.cs",
+   "AllowedBy": [
+    "src/RackCad.Application/ComputedParameters/"
+   ],
+   "ForbiddenBy": [],
+   "InChainRedFiles": false,
+   "Ok": true
+  },
+  {
+   "Path": "src/RackCad.Application/Expressions/DependencyGraph.cs",
+   "AllowedBy": [
+    "src/RackCad.Application/Expressions/"
+   ],
+   "ForbiddenBy": [],
+   "InChainRedFiles": false,
+   "Ok": true
+  },
+  {
+   "Path": "src/RackCad.Application/Expressions/ExpressionBinder.cs",
+   "AllowedBy": [
+    "src/RackCad.Application/Expressions/"
+   ],
+   "ForbiddenBy": [],
+   "InChainRedFiles": false,
+   "Ok": true
+  },
+  {
+   "Path": "src/RackCad.Application/Expressions/ExpressionFormatter.cs",
+   "AllowedBy": [
+    "src/RackCad.Application/Expressions/"
+   ],
+   "ForbiddenBy": [],
+   "InChainRedFiles": false,
+   "Ok": true
+  },
+  {
+   "Path": "src/RackCad.Application/Expressions/RegistryEvaluation.cs",
+   "AllowedBy": [
+    "src/RackCad.Application/Expressions/"
+   ],
+   "ForbiddenBy": [],
+   "InChainRedFiles": false,
+   "Ok": true
+  },
+  {
+   "Path": "src/RackCad.Application/Expressions/SymbolId.cs",
+   "AllowedBy": [
+    "src/RackCad.Application/Expressions/"
+   ],
+   "ForbiddenBy": [],
+   "InChainRedFiles": false,
+   "Ok": true
+  },
+  {
+   "Path": "src/RackCad.Application/Expressions/SymbolTable.cs",
+   "AllowedBy": [
+    "src/RackCad.Application/Expressions/"
+   ],
+   "ForbiddenBy": [],
+   "InChainRedFiles": false,
+   "Ok": true
+  },
+  {
+   "Path": "src/RackCad.Application/Persistence/PersistedBoundExpressionJson.cs",
+   "AllowedBy": [
+    "src/RackCad.Application/Persistence/PersistedBoundExpressionJson.cs"
+   ],
+   "ForbiddenBy": [],
+   "InChainRedFiles": false,
+   "Ok": true
+  }
+ ],
+ "Result": "PASS"
+}
