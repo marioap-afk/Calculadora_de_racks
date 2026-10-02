@@ -4,10 +4,10 @@ automation_state:
   branch: architecture/parametros-calculados-resumen-proyecto
   claim_id: ce04f47f-ca53-4e75-b983-5ac57ab6c5e3
   current_phase: G2
-  state: waiting
+  state: implementing
   gate: none
   attempts: 2
-  next_action: Autorizacion formal de G2 por el Coordinator sobre el borrador de contrato R20261002T152210Z-2298 (evidencia §35; preguntas Q-G2-01..03).
+  next_action: CI exact-SHA de la A-2; despues reemitir el contrato de G2 con AuthorityRevision = SHA de la A-2 y ejecutar G2 bajo I-61 hasta EXECUTION_VERIFIED o STOP.
   last_evidence_commit: 82b034b8b887e8c5338232be1c91c0508f988e8d
 execution_context:
   mode: manual
@@ -17,15 +17,15 @@ execution_chain:
   gate: G2
   task_id: G2-POPULATION (borrador)
   attempt: null
-  next_role: Coordinator (autorizacion formal de G2 sobre el contrato preparado por la sesion)
+  next_role: Sesion (CI de la A-2 y emision del contrato de G2 autorizado)
   next_action: Borrador de contrato artifacts/orchestration/I-63/G2-POPULATION/draft/R20261002T152210Z-2298/gate-contract.json (SHA-256 CB6E12169C41BBF98E98759DD531900F6F95B2D6EE8A9A6031EA0D687D2C334E); sin delegacion ni Worker hasta la autorizacion
   authority_revision_g1: 658b35ad498520ba3c832a96eea4389df16dfa60
   main_sha: 819955d61a6da4c811a11fbd11b5dca13f634b7c
   freeze_commit: f61d0aca859a11b15cbe1797069a83cba873ba95
   frozen_proposal_blob: 4d5dedce15363fa6378e460c5b63005fe41b858b
-  amendments: [A-1 docs/initiatives/I-63-proposal-v3-amendment-a1-verificacion.md (blob 766d9ba9cf379daa077bed20fc6255b5ca656d60)]
+  amendments: [A-1 docs/initiatives/I-63-proposal-v3-amendment-a1-verificacion.md (blob 766d9ba9cf379daa077bed20fc6255b5ca656d60), A-2 docs/initiatives/I-63-proposal-v3-amendment-a2-gate-verification-sequencing.md]
   g1: {verdict: PASS, verified_sha: 4a6c2d889fc2b421076b3165b26b97162439ad57, verification: R20261002T144842Z-0cf4, closure_evidence: 2f885759c79c916127d0613c8971ee058fa4f9d9, attempts_used: 2 of 3, red_sha: fc30dc6cf0d2f97e6732bbb8c512623db91c305d}
   g2_invariants: [INV-01, INV-02, INV-03, INV-06, INV-07, INV-08, INV-10, INV-11, INV-12, INV-13, INV-32, INV-33, INV-35]
-  return_to_coordinator_when: contrato de G2 listo para autorizacion; STOP; cambio material, de autoridad o de alcance; AUTONOMY_GAP
-  not_authorized: [G2 (hasta la autorizacion formal), G3, G4]
+  return_to_coordinator_when: G2 EXECUTION_VERIFIED con evidencia completa; STOP real; cambio material, de autoridad o de alcance; presupuesto agotado; AUTONOMY_GAP
+  not_authorized: [G3, G4]
   owner_escalation_conditions: OWNER-RESERVED; decision material del Owner; STOP que requiera al Owner; credenciales, autenticacion o compra; accion irreversible o destructiva

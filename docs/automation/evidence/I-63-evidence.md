@@ -1342,3 +1342,16 @@ Llevan CRLF los transitorios R20261002T143522Z-0c4d/gate-contract.json, R2026100
   `AttemptsRemaining` = 1.
   - Solo cabe una corrección; un segundo REWORK sería STOP (S-11).
   - Que el Coordinator lo confirme o lo ajuste es decisión suya.
+
+## 36. Autorización de G2 y A-2
+
+- **Orden del Coordinator**, pegada por el usuario en el chat el 2026-10-02. Resumen en las [decisiones](../decisions/I-63.md) §2.
+- **A-2** (`docs/initiatives/I-63-proposal-v3-amendment-a2-gate-verification-sequencing.md`), solo del Coordinator, append-only y `Applies-to = all`.
+  - Lleva literal el texto autorizado, con los deltas A-2.1 (INV-32) y A-2.2 (INV-11) y la tabla de obligaciones.
+  - M-01..M-08 no activados.
+- **G2 condicionalmente autorizado.** La condición: la A-2 publicada con CI exact-SHA 4/4 y el contrato reemitido con
+  `AuthorityRevision` = el SHA de la A-2.
+  - Respecto del borrador `CB6E1216…`, el único delta es: `AuthorityRevision`, la A-2 en `Authorities`, INV-11 e INV-32 según la A-2,
+    `CorrectionsAuthorized = true`, `IssuedBy` e `IssuedUtc`.
+- **Presupuesto:** `attempts` = 2/3 y `AttemptsRemaining` = 1, sin reinicio por gate.
+- La CI de la A-2 y el contrato emitido se registran en la custodia de G2. El commit de la A-2 no puede registrarse a sí mismo.
