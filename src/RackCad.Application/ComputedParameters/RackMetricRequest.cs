@@ -183,7 +183,7 @@ namespace RackCad.Application.ComputedParameters
         }
 
         /// <summary>Paso 1 de D-28. Devuelve la razon si el kind no decide, o null y el token coherente.</summary>
-        private static UnavailableReasonKind? ClassifyKind(
+        internal static UnavailableReasonKind? ClassifyKind(
             IReadOnlyList<RackMetricDefinitionProjection> members, out string kindToken)
         {
             kindToken = null;

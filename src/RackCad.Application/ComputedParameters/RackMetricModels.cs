@@ -29,20 +29,35 @@ namespace RackCad.Application.ComputedParameters
         EffectiveFailed = 8,
         CatalogUnavailable = 9,
         ResolveFailed = 10,
+
+        // De agregado (D-09).
+        CoverageNotAccredited = 11,
+        MemberMetricUnavailable = 12,
     }
 
-    /// <summary>La razon de un <c>Unavailable</c>. <see cref="EffectiveOutcome"/> solo acompana a <see cref="UnavailableReasonKind.EffectiveFailed"/>.</summary>
+    /// <summary>
+    /// La razon de un <c>Unavailable</c>. <see cref="EffectiveOutcome"/> solo acompana a
+    /// <see cref="UnavailableReasonKind.EffectiveFailed"/> y <see cref="MemberRackIds"/> solo a
+    /// <see cref="UnavailableReasonKind.MemberMetricUnavailable"/>.
+    /// </summary>
     public sealed class UnavailableReason : IEquatable<UnavailableReason>
     {
-        private UnavailableReason(UnavailableReasonKind kind, SelectiveEffectiveOutcome? effectiveOutcome)
+        private UnavailableReason(
+            UnavailableReasonKind kind,
+            SelectiveEffectiveOutcome? effectiveOutcome,
+            IReadOnlyList<string> memberRackIds)
         {
             Kind = kind;
             EffectiveOutcome = effectiveOutcome;
+            MemberRackIds = memberRackIds;
         }
 
         public UnavailableReasonKind Kind { get; }
 
         public SelectiveEffectiveOutcome? EffectiveOutcome { get; }
+
+        /// <summary>Los RackIds cuyo valor no estaba <c>Available</c>, en orden Ordinal. Solo con <c>MemberMetricUnavailable</c>.</summary>
+        public IReadOnlyList<string> MemberRackIds { get; }
 
         public static UnavailableReason Of(UnavailableReasonKind kind)
         {
@@ -51,21 +66,42 @@ namespace RackCad.Application.ComputedParameters
                 throw new ArgumentException("EffectiveFailed lleva su outcome: usa EffectiveFailed(outcome).", nameof(kind));
             }
 
-            return new UnavailableReason(kind, null);
+            if (kind == UnavailableReasonKind.MemberMetricUnavailable)
+            {
+                throw new ArgumentException("MemberMetricUnavailable lleva sus RackIds: usa MemberMetricUnavailable(rackIds).", nameof(kind));
+            }
+
+            return new UnavailableReason(kind, null, null);
         }
 
         public static UnavailableReason EffectiveFailed(SelectiveEffectiveOutcome outcome)
-            => new UnavailableReason(UnavailableReasonKind.EffectiveFailed, outcome);
+            => new UnavailableReason(UnavailableReasonKind.EffectiveFailed, outcome, null);
+
+        public static UnavailableReason MemberMetricUnavailable(IEnumerable<string> rackIds)
+        {
+            if (rackIds == null)
+            {
+                throw new ArgumentNullException(nameof(rackIds));
+            }
+
+            var ordered = rackIds.Distinct(StringComparer.Ordinal).OrderBy(id => id, StringComparer.Ordinal).ToList();
+            return new UnavailableReason(UnavailableReasonKind.MemberMetricUnavailable, null, ordered);
+        }
 
         public bool Equals(UnavailableReason other)
-            => other != null && Kind == other.Kind && EffectiveOutcome == other.EffectiveOutcome;
+            => other != null
+               && Kind == other.Kind
+               && EffectiveOutcome == other.EffectiveOutcome
+               && (MemberRackIds ?? new string[0]).SequenceEqual(other.MemberRackIds ?? new string[0], StringComparer.Ordinal);
 
         public override bool Equals(object obj) => Equals(obj as UnavailableReason);
 
         public override int GetHashCode() => (Kind.GetHashCode() * 397) ^ EffectiveOutcome.GetHashCode();
 
         public override string ToString()
-            => EffectiveOutcome.HasValue ? Kind + "(" + EffectiveOutcome.Value + ")" : Kind.ToString();
+            => EffectiveOutcome.HasValue ? Kind + "(" + EffectiveOutcome.Value + ")"
+                : MemberRackIds != null ? Kind + "(" + string.Join(", ", MemberRackIds) + ")"
+                : Kind.ToString();
     }
 
     /// <summary>Valor de una metrica: un estado cerrado y, solo con <see cref="MetricStatus.Available"/>, un <c>double</c> finito.</summary>

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using RackCad.Application.Persistence;
 
 namespace RackCad.Application.ComputedParameters
@@ -14,11 +15,32 @@ namespace RackCad.Application.ComputedParameters
     }
 
     /// <summary>
+    /// Una fila de D-26: lo que el lector reproduce, para <see cref="Kind"/>, del <c>BuildBom</c> (o <c>Build</c>) del
+    /// handler del mismo kind (comprobacion de presencia). Es la declaracion que vigila la guarda de fuente INV-35.
+    /// </summary>
+    public sealed class DesignPresenceRow
+    {
+        public DesignPresenceRow(string kindToken, IReadOnlyList<string> markers)
+        {
+            KindToken = kindToken;
+            Markers = markers;
+        }
+
+        public string KindToken { get; }
+
+        /// <summary>Los identificadores de la comprobacion de presencia que el handler debe seguir conteniendo.</summary>
+        public IReadOnlyList<string> Markers { get; }
+    }
+
+    /// <summary>
     /// Implementacion real de D-26. Solo reutiliza los <i>stores</i> vigentes; reproduce las comprobaciones de
     /// presencia de los <c>BuildBom</c> de los handlers sin cambiarlos (AQ-03).
     /// </summary>
     public sealed class RackMetricDesignReader : IRackMetricDesignReader
     {
+        /// <summary>Las seis filas de D-26, en el orden de los seis kinds (INV-35).</summary>
+        public static IReadOnlyList<DesignPresenceRow> PresenceRows { get; } = new DesignPresenceRow[0];
+
         public bool IsReadable(string kindToken, string designJson)
         {
             try
