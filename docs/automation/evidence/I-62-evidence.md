@@ -1068,3 +1068,55 @@ conversación, como respuesta a la pregunta de la sesión tras el fallo previo a
 
 **Validación de esta entrega:** allowlist (superficies propias de I-62), enlaces, columnas de las tablas, hashes de los archivos custodiados, YAML del estado y
 `git diff --check`; resultado en el cuerpo del commit. La CI de este commit se informa al Owner y al Coordinator.
+
+## 30. F0 — Proposal V14 (grafo normativo canónico y acotado; corrección final del residuo de A62-V11-01)
+
+**CI del commit de custodia** (`f51eda39d56a498a4ec56b4604acbe3a9be25746`, §29): corrida **37043096438**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: UI Tests (110957762431), Tests (Domain + Application)
+(110957762674), Build UI (110957762730) y Build Plugin without AutoCAD (110958480246), los cuatro `success`. MEASURED por la sesión. Acredita solo
+`f51eda39`.
+
+**Orden recibida:** «I-62 — PROPOSAL V14 / BOUNDED NORMATIVE DEPENDENCY CLOSURE», texto pegado sin archivo de origen. 9 425 bytes en UTF-8, SHA-256
+`346f14a0b48b4f9eb07fda1c254068605e74a2f3292780b6d0c76e326c6f7130`, fuera del repositorio. Registro recuperable en
+`docs/initiatives/I-62-architect-review-v13-disposition.md`. Antes, el Owner retiró un mensaje pegado por error («ADDITIONAL REQUIRED — AUTONOMOUS ROLE
+ORCHESTRATION», dirigido a V8): la sesión no lo aplicó ni lo registró como orden.
+
+**Apertura del tramo** (MEASURED): `origin/main` = `819955d6…`, sin rebase; rama de I-62 en `f51eda39…` = remoto, árbol limpio.
+
+**Alcance estrecho:** el diff V13→V14 (181 inserciones y 74 supresiones) toca solo:
+- la cabecera, el mapa de la corrección, las fuentes, los cierres preservados y tres referencias a la versión vigente (§11.4, la tabla de retos y §20.13);
+- §3.1 (nueva: destinos normativos propuestos);
+- §13 (P-25);
+- §20.3.3: punto 2 del envoltorio, regla de fidelidad, clausura sobre un grafo canónico y acotado, y el caso de V13;
+- §20.11 (GAP-12);
+- B.1, B.8.8 (campo e I-S18), B.10.1 y B.11 (nueva);
+- C-42, G.1 y G.2.
+
+Las demás secciones quedan sin cambio.
+
+**Hecho medido que recoge V14** (GAP-12): el diagnóstico de perfil del `pwsh` del runtime apareció antepuesto a varias salidas en cada revisión medida: en
+los comandos 0-4, 45, 48 y 49 de V12, y en los 0-3 y 89 de V13.
+
+**Revalidación antes del commit** (MEASURED, 18:25Z):
+- `origin/main` = `819955d6…` y la rama de I-62 en `f51eda39…`, sin cambios;
+- I-52 `fb6b5648`, sin commits nuevos;
+- I-63 `844dabb6..5e3306e0`: 3 commits;
+- I-64 `0b7db52f..39f7caa4`: 1 commit;
+- **ningún cruce** con superficies de I-62.
+
+**Identidad del contenido entregado** (blob calculado con `git hash-object` antes del commit; el commit lo da el recibo):
+- `docs/initiatives/I-62-proposal-v14.md` → `34ad80ea1bfff144bfc5169f62920a4c904c1bfa`;
+- `docs/initiatives/I-62-architect-review-v13-disposition.md` → `37c1752c914d01605b36937192b677d2a4fc281e`;
+- `docs/initiatives/I-62-architect-package-v14.md` → en el recibo del commit (el paquete no lleva su propio blob).
+
+**No se hizo:**
+- invocaciones de modelos, subagentes, Workers, Controllers, Architect, sondas, pilotos, sesiones nuevas, fixtures, remotos, pruebas, tooling ni esquemas en
+  producción; tampoco se generó el manifiesto, que V14 define como entregable de F3;
+- una clausura retroactiva para la revisión de V13;
+- tocar V1-V13, sus paquetes, los registros previos, la evidencia custodiada, el Discovery, el mandato, las normas compartidas ni ninguna superficie ajena;
+- reabrir un hallazgo cerrado, decidir OD-6 ni declarar AGREED o Freeze.
+
+Las trazas de V14 son **análisis del diseño**, no ensayos.
+
+**Validación de esta entrega:** allowlist, enlaces, columnas de las tablas, diff V13→V14 revisado, YAML del estado y `git diff --check`; resultado en el
+cuerpo del commit. La CI de este commit se informa al Owner y al Coordinator.

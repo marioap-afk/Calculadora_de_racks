@@ -116,7 +116,7 @@ Freeze, Freeze delta y A-n: **ninguno**.
 ```text
 Consumes: ninguna entrada de FOUNDATIONS (decisión del Coordinator C62-F0-09 §1; Discovery §8)
 Extends: Agent Execution Protocol (AUTOMATION_PLAN §16, ADR-0046, Freeze de I-61 §15; C62-F0-09 §1)
-Introduces: ninguna entrada propia (propuesta de la Proposal V13, Anexo B.1: los contratos nuevos forman parte de la entrada extendida; pendiente de revisión)
+Introduces: ninguna entrada propia (propuesta de la Proposal V14, Anexo B.1: los contratos nuevos forman parte de la entrada extendida; pendiente de revisión)
 ```
 
 Ninguna entrada se afirma sin la comprobación DC-08 de [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §4.1. Las autoridades de proceso
@@ -127,12 +127,11 @@ Ninguna entrada se afirma sin la comprobación DC-08 de [INITIATIVE_LIFECYCLE](.
 
 - Discovery: [I-62-discovery.md](I-62-discovery.md), ronda R1, **aceptada por el Coordinator como base suficiente para el diseño**
   (C62-F0-08). Las decisiones sobre sus asuntos abiertos están en Discovery §21 (C62-F0-09/10). No es F0 GATE PASS.
-- Proposal vigente para revisión: [I-62-proposal-v13.md](I-62-proposal-v13.md), `Frozen: NO`. Es la corrección final del residuo de A62-V11-01: la
-  fidelidad de una premisa sigue sus dependencias normativas (`NormativeDependencyClosure`), y la evidencia de fidelidad describe la representación entregada
-  al revisor, con la compactación como evidencia de runtime ([disposición del Owner y del Coordinator](I-62-architect-review-v12-disposition.md)). Conserva
-  todos los cierres de V12 y anteriores, incluido A62-V10-03. Paquete del Architect: [I-62-architect-package-v13.md](I-62-architect-package-v13.md).
-  Revisión formal final de V13: **CHANGES REQUIRED** ([registro](I-62-architect-review-v13.md)), con el residuo de A62-V11-01 abierto (terminalidad
-  incondicional del documento completo) y los cierres anteriores confirmados; pendiente de la disposición del Owner y del Coordinator.
+- Proposal vigente para revisión: [I-62-proposal-v14.md](I-62-proposal-v14.md), `Frozen: NO`. Es la corrección final del residuo de A62-V11-01: la
+  clausura de dependencias normativas recorre un grafo canónico y acotado (`NormativeUnitRef`, resolución canónica, destinos propuestos en §3.1, documentos
+  enteros clasificados y manifiesto de dependencias) ([disposición del Owner y del Coordinator](I-62-architect-review-v13-disposition.md)). Conserva todos
+  los cierres de V13 y anteriores. Paquete del Architect: [I-62-architect-package-v14.md](I-62-architect-package-v14.md), **una revisión formal final
+  pendiente**.
 - Versiones anteriores, conservadas sin cambios:
   - [V1](I-62-proposal-v1.md) … [V5](I-62-proposal-v5.md) y sus paquetes: CHANGES REQUIRED del Coordinator (registros
     [v1](I-62-coordinator-review-v1.md) … [v5](I-62-coordinator-review-v5.md));
@@ -149,8 +148,10 @@ Ninguna entrada se afirma sin la comprobación DC-08 de [INITIATIVE_LIFECYCLE](.
     sigue acreditada;
   - [V12](I-62-proposal-v12.md) y su [paquete](I-62-architect-package-v12.md): corrección de A62-V10-03 (residuo) y A62-V11-01; revisión formal limpia,
     CHANGES REQUIRED, con A62-V10-03 CLOSED y el residuo de A62-V11-01 aceptado ([registro](I-62-architect-review-v12.md),
-    [disposición](I-62-architect-review-v12-disposition.md)).
-- Punto del Owner abierto: **OD-6** (predicado de independencia de LIFECYCLE; Proposal V13 §11.4), con dos alternativas delimitadas y la recomendación del
+    [disposición](I-62-architect-review-v12-disposition.md));
+  - [V13](I-62-proposal-v13.md) y su [paquete](I-62-architect-package-v13.md): clausura de dependencias normativas; revisión formal final, CHANGES REQUIRED,
+    válida, con el residuo final de A62-V11-01 aceptado ([registro](I-62-architect-review-v13.md), [disposición](I-62-architect-review-v13-disposition.md)).
+- Punto del Owner abierto: **OD-6** (predicado de independencia de LIFECYCLE; Proposal V14 §11.4), con dos alternativas delimitadas y la recomendación del
   Coordinator registrada como tal. Sin decisión del Owner no hay acuerdo ni Freeze.
 - Freeze / Freeze delta / A-n: ninguno.
 - Decisiones: [I-62.md](../automation/decisions/I-62.md). Mandato: [I-62-owner-mandate.txt](../automation/decisions/I-62-owner-mandate.txt).
@@ -178,11 +179,11 @@ La revisión del Architect, el acuerdo y el Freeze **no** están hechos ni aprob
 ## 8. Gates funcionales
 
 G0 (este bootstrap) incluye reclamo, contrato, fila, estado, decisiones, mandato y evidencia. Los gates posteriores se definen en el Freeze
-según [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §7; aquí no se prometen. Plan **propuesto** (no aprobado): [Proposal V13](I-62-proposal-v13.md) §17.
+según [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §7; aquí no se prometen. Plan **propuesto** (no aprobado): [Proposal V14](I-62-proposal-v14.md) §17.
 
 ## 9. Owner Validation
 
-- Asignación OV: pendiente del Freeze. Matriz **propuesta** OV-I62-01..06 (preparación, ensayo y ejecución final sobre FINAL_CANDIDATE_SHA) y decisiones del Owner OD-1..OD-7 con su momento de bloqueo: [Proposal V13](I-62-proposal-v13.md) §18.
+- Asignación OV: pendiente del Freeze. Matriz **propuesta** OV-I62-01..06 (preparación, ensayo y ejecución final sobre FINAL_CANDIDATE_SHA) y decisiones del Owner OD-1..OD-7 con su momento de bloqueo: [Proposal V14](I-62-proposal-v14.md) §18.
 - Requiere AutoCAD: pendiente. No hay disparador mientras no cambie el comportamiento de dibujo; el mandato excluye cambios de producto
   salvo un fixture mínimo aprobado.
 - Requiere Owner Validation: pendiente. La fija el Freeze conforme a la autoridad vigente; no se decide N/A por anticipado.
