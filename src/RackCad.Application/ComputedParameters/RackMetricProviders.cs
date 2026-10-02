@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using RackCad.Application.Persistence;
+using RackCad.Application.Systems.Selective;
+using RackCad.Domain.Systems.Selective;
 
 namespace RackCad.Application.ComputedParameters
 {
@@ -67,8 +70,29 @@ namespace RackCad.Application.ComputedParameters
     {
         public override string KindToken => RackEmbedDocument.KindSelective;
 
-        // ESQUELETO RED: aun no declara soporte ni calcula.
-        public override RackMetricDeclaration Declare(MetricId metric) => RackMetricDeclaration.NotSupported();
+        public override RackMetricDeclaration Declare(MetricId metric)
+            => RackMetricDeclaration.Supported(RackMetricPhase.Resolved);
+
+        protected override MetricValue ComputeSupported(MetricId metric, RackMetricInput input)
+        {
+            var prerequisite = input.Prerequisite
+                ?? throw new InvalidOperationException("Una metrica Supported exige el prerrequisito del orquestador.");
+
+            if (!prerequisite.IsResolved)
+            {
+                return MetricValue.Unavailable(prerequisite.Failure);
+            }
+
+            var bays = SelectiveDepthLayout.BaysOfFondo(prerequisite.ResolvedSystem, 0)
+                ?? new List<SelectiveBay>();
+
+            if (metric == RackMetricIds.Frentes)
+            {
+                return MetricValue.Available(bays.Count);
+            }
+
+            return MetricValue.Available(bays.Count(bay => bay.Levels.Count == 0 && bay.FloorPalletCount <= 0));
+        }
     }
 
     internal sealed class DynamicRackMetricProvider : RackMetricProviderBase

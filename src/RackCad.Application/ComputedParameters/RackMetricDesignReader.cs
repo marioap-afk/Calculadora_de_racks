@@ -1,3 +1,5 @@
+using System;
+using RackCad.Application.Persistence;
 
 namespace RackCad.Application.ComputedParameters
 {
@@ -19,8 +21,39 @@ namespace RackCad.Application.ComputedParameters
     {
         public bool IsReadable(string kindToken, string designJson)
         {
-            // ESQUELETO RED: ningun diseno es legible.
-            return false;
+            try
+            {
+                switch (kindToken)
+                {
+                    case RackEmbedDocument.KindSelective:
+                        return new SelectivePalletDesignStore().Deserialize(designJson) != null;
+
+                    case RackEmbedDocument.KindDynamic:
+                    {
+                        var project = new RackProjectStore().Deserialize(designJson);
+                        return (project?.DynamicDesign ?? (object)project?.DynamicSystem) != null;
+                    }
+
+                    case RackEmbedDocument.KindPushBack:
+                        return new RackProjectStore().Deserialize(designJson)?.PushBackDesign != null;
+
+                    case RackEmbedDocument.KindCantilever:
+                        return new RackProjectStore().Deserialize(designJson)?.CantileverLineDesign != null;
+
+                    case RackEmbedDocument.KindCabecera:
+                        return new RackProjectStore().Deserialize(designJson)?.Header != null;
+
+                    case RackEmbedDocument.KindCama:
+                        return new FlowBedConfigurationStore().Deserialize(designJson) != null;
+
+                    default:
+                        return false;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

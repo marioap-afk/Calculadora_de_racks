@@ -19,8 +19,15 @@ namespace RackCad.Application.ComputedParameters
         /// <summary>El registro productivo: exactamente los seis kinds.</summary>
         public static RackMetricProviderRegistry Default { get; } = new RackMetricProviderRegistry(
             new KindDispatch<IRackMetricProvider>(
-                // ESQUELETO RED: ningun provider registrado todavia.
-                new IRackMetricProvider[0],
+                new IRackMetricProvider[]
+                {
+                    new SelectiveRackMetricProvider(),
+                    new DynamicRackMetricProvider(),
+                    new PushBackRackMetricProvider(),
+                    new CantileverRackMetricProvider(),
+                    new CabeceraRackMetricProvider(),
+                    new CamaRackMetricProvider(),
+                },
                 provider => provider.KindToken));
 
         public KindDispatch<IRackMetricProvider> Dispatch { get; }

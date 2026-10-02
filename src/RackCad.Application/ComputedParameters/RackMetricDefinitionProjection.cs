@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Persistence;
+using RackCad.Application.Views.Insertion;
 
 namespace RackCad.Application.ComputedParameters
 {
@@ -104,9 +105,34 @@ namespace RackCad.Application.ComputedParameters
                 throw new ArgumentNullException(nameof(capture));
             }
 
-            // ESQUELETO RED: toda definicion se clasifica como sobre ilegible.
+            var envelope = new RackEmbedStore().Deserialize(capture.EnvelopeJson);
+            if (envelope == null)
+            {
+                return new RackMetricDefinitionProjection(
+                    capture, RackDefinitionClass.EnvelopeUnreadable, null, null, null,
+                    RackEnvelopeIdProbe.Probe(capture.EnvelopeJson));
+            }
+
+            if (string.IsNullOrWhiteSpace(envelope.Id))
+            {
+                return new RackMetricDefinitionProjection(
+                    capture, RackDefinitionClass.IdAbsent, null, envelope.Kind, envelope, null);
+            }
+
+            if (string.IsNullOrWhiteSpace(envelope.Kind))
+            {
+                return new RackMetricDefinitionProjection(
+                    capture, RackDefinitionClass.KindAbsent, envelope.Id, null, envelope, null);
+            }
+
+            var known = KnownKinds.Any(token => string.Equals(token, envelope.Kind, StringComparison.Ordinal));
             return new RackMetricDefinitionProjection(
-                capture, RackDefinitionClass.EnvelopeUnreadable, null, null, null, null);
+                capture,
+                known ? RackDefinitionClass.Known : RackDefinitionClass.KindUnknown,
+                envelope.Id,
+                envelope.Kind,
+                envelope,
+                null);
         }
 
         /// <summary>
@@ -120,8 +146,9 @@ namespace RackCad.Application.ComputedParameters
                 throw new ArgumentNullException(nameof(captures));
             }
 
-            // ESQUELETO RED: sin orden canonico.
-            return captures.ToList();
+            return captures
+                .OrderBy(capture => capture?.DefinitionKey ?? string.Empty, StringComparer.Ordinal)
+                .ToList();
         }
     }
 }
