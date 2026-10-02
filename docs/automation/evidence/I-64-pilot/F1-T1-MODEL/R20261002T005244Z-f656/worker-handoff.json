@@ -1,0 +1,114 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F1-T1-MODEL",
+  "RunId": "R20261002T005244Z-f656",
+  "DelegationRunId": "R20261002T003827Z-3a76",
+  "Initiative": "I-64",
+  "Gate": "F1",
+  "Attempt": 0,
+  "BaseSha": "e0587355b0e84d98807057a56dfc50591da87489",
+  "RedSha": "36c344dc283d4a9855110a31ca6b20a2da7fd972",
+  "CurrentSha": "66d34af31524c49214e38479d5892cd9ec985eb9",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-workspace-persistente-rackcad",
+  "Pushed": true,
+  "FilesChanged": [
+    "docs/adr/0047-workspace-persistente-modeless-rackcad.md",
+    "src/RackCad.Application/Workspace/Hints.cs",
+    "src/RackCad.Application/Workspace/SelectionContext.cs",
+    "src/RackCad.Application/Workspace/SessionId.cs",
+    "src/RackCad.Application/Workspace/WorkspaceSession.cs",
+    "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs",
+    "tests/RackCad.Tests/Workspace/SelectionContextTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHintDrainTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceSessionTests.cs"
+  ],
+  "WorkCompleted": "ADR 0047 propuesto, esqueleto y 37 pruebas en el RED (30 fallan por asercion, 7 guardas pasan); implementacion GREEN del modelo puro (sesion por instancia, pistas coalescidas, drenaje en reposo sin modal, SelectionContext). 36/37 del filtro en verde; queda 1 prueba roja por defecto de la propia prueba (RT inmutable). Ademas la suite completa muestra NamespaceFolderGuardTests.TestProjects_KeepExactlyOneAssemblyRootNamespace en rojo porque exige el namespace RackCad.Tests y el contrato exige RackCad.Tests.Workspace.",
+  "TestsExecuted": [
+    {
+      "RunRef": "RED1",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.Workspace\"",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F1-T1-MODEL/0/R20261002T005244Z-f656/tests/RED1/red.trx"
+    },
+    {
+      "RunRef": "GREEN2",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.Tests.Workspace\"",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F1-T1-MODEL/0/R20261002T005244Z-f656/tests/GREEN2/green2.trx"
+    },
+    {
+      "RunRef": "REL2",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F1-T1-MODEL/0/R20261002T005244Z-f656/tests/REL2/full2.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "RED1",
+      "Selected": 37,
+      "Passed": 7,
+      "Failed": 30,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "GREEN2",
+      "Selected": 37,
+      "Passed": 36,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.Workspace.WorkspaceModelBoundaryTests.ModelDoesNotPersistNorWriteAuthoredData"
+      ]
+    },
+    {
+      "RunRef": "REL2",
+      "Selected": 12433,
+      "Passed": 12431,
+      "Failed": 2,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.NamespaceFolderGuardTests.TestProjects_KeepExactlyOneAssemblyRootNamespace",
+        "RackCad.Tests.Workspace.WorkspaceModelBoundaryTests.ModelDoesNotPersistNorWriteAuthoredData"
+      ]
+    }
+  ],
+  "Evidence": [
+    "dotnet build src/RackCad.UI/RackCad.UI.csproj -c Debug: 0 advertencias, 0 errores (corrida sobre arbol de trabajo previo al commit de la conversion a namespace de bloque)"
+  ],
+  "UnexpectedFindings": [
+    "WorkspaceModelBoundaryTests.ModelDoesNotPersistNorWriteAuthoredData (RT del RED): el regex banido contiene 'Registry' y coincide con el nombre del tipo WorkspaceSessionRegistry, que las propias pruebas instancian; no puede pasar sin editar la prueba. Correccion sugerida: acotar a Microsoft\\.Win32|\\bRegistry\\.",
+    "NamespaceFolderGuardTests.TestProjects_KeepExactlyOneAssemblyRootNamespace exige que los archivos de tests/RackCad.Tests declaren el namespace RackCad.Tests, en conflicto con el criterio contractual RackCad.Tests.Workspace; el guard esta fuera de alcance (Core tests existentes). Requiere decision del Coordinator: excepcion en el guard o namespace RackCad.Tests con filtro distinto.",
+    "EveryProductionFile_DeclaresExactlyOneBlockScopedNamespace exige namespaces de bloque; resuelto en el GREEN (conversion a namespace de bloque)."
+  ],
+  "KnownLimitations": [
+    "docs/adr/README.md (fuera de alcance) no lista el ADR 0047.",
+    "S-01 (Owner Validation) y S-10 (AutoCAD) son frontera: no se cruzaron.",
+    "Las corridas RED1, GREEN2 y REL2 se ejecutaron sobre arbol con cambios sin commit (TreeSha null); CI exacta del CurrentSha pendiente."
+  ],
+  "Deviations": [
+    "El commit GREEN no deja el filtro contractual en verde (36/37) porque corregirlo exige editar una prueba RT tras el RED, prohibido por la delegacion."
+  ],
+  "OpenQuestions": [
+    "Autoriza el Coordinator (a) corregir la guarda ModelDoesNotPersistNorWriteAuthoredData y (b) la excepcion del NamespaceFolderGuardTests para RackCad.Tests.Workspace?"
+  ],
+  "WorkerStatus": "BLOCKED",
+  "Disposition": "BLOCKED",
+  "TriggeredStopConditions": [
+    "C-05",
+    "C-06"
+  ],
+  "RecommendedNextAction": "El Coordinator decide la correccion de las dos pruebas/guardas en conflicto (REWORK autorizado con alcance de tests y NamespaceFolderGuardTests); la implementacion de 66d34af3 queda lista para ese REWORK.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "medium",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}
