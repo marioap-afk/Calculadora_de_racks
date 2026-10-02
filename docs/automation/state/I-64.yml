@@ -6,9 +6,9 @@ automation_state:
   current_phase: F1
   state: waiting
   gate: scope
-  attempts: 2
-  next_action: "Coordinator: decidir el STOP de los controles negativos de F1-T1-MODEL (nc1 conforme pero no discriminante; nc2 no superado: Identity por HEAD 747ead04 distinto de CurrentSha 8d9a0c6e y Scope mal evaluado; nc3 no ejecutado; evidencia §27)."
-  last_evidence_commit: 747ead04ee5e44f87de14250c4900680d72c4c93
+  attempts: 3
+  next_action: "Sesion: recuperacion (d) de F1-T1-MODEL (attempt 3, ultima): planificacion 5/5, Worker (solo el comentario XML de WorkspaceSessionRegistry), verificacion 4/4 y nc1..nc3 definitivos SIN escrituras Git de la sesion entre medias (16.4 paso 5); despues, un unico commit documental de cierre."
+  last_evidence_commit: bc24ebef63f60c935e380559ff5c3cdf692c33c6
 execution_context:
   mode: manual
   automation_enabled: false
@@ -17,21 +17,21 @@ execution_context:
   design_agreed: docs/initiatives/I-64-proposal-v5.md en 9e3d289a9b61339c162b2f791f6995a584207800, blob bd4e96264e538ffc679bfd9f088400b22b553931 (I64-CONSENSUS-V5-01; Architect AGREED; Coordinator AGREED)
   freeze: 9b43dafbe3b8874aa0ba5a85d62cbf953dbdd311 (Frozen YES; blob dc1924ff5a73a4e529fbc5f995621d29351a091b; CI 36941847270 push 4/4 success; evidencia §18)
   f0: COMPLETE
-  f1: "IN PROGRESS: F1-T1-MODEL con producto aceptado (EXECUTION_VERIFIED sobre 8d9a0c6e); cierre pendiente de nc1..nc3: STOP en los controles (evidencia §27)"
+  f1: "IN PROGRESS: F1-T1-MODEL; STOP de controles confirmado (DEV-F1T1-02); recuperacion (d) autorizada; nc1/nc2 previos SUPERSEDED_BY_CONTROL_RECOVERY (evidencia §28)"
   relay_baseline: "config.toml SHA-256 40C27B570B0056BC6D2B5AAF460628922C5AD39A405751E68B9001FFDF15F74F (2026-10-02T00:03:20Z; 103 nombres, sin valores)"
-  f1_t1_model_budget: "productivo congelado: planificacion 4 de 4, trabajo 3 de 4, verificacion 3 de 4, attempts 2 de 3; CONTROL: nc1 1 salida valida (conforme, no discriminante), nc2 1 salida valida (no superado), nc3 0; reintentos de transporte 0"
+  f1_t1_model_budget: "excepcional: planificacion 4 de 5, trabajo 3 de 4, verificacion productiva 3 de 4 (una de cada restante, la ultima); attempts 3 de 3; CONTROL independiente vigente; nc1 R20261002T150553Z-09df y nc2 R20261002T151201Z-abb1 SUPERSEDED_BY_CONTROL_RECOVERY"
   f1_t1_model_chain: "ChainBaseSha e0587355b0e84d98807057a56dfc50591da87489; ChainRedSha a9778068af566bc2b84ba6a0005711b6452a2666 (acreditado en R20261002T143410Z-ae0b); ChainRedFiles tests/RackCad.Tests/Workspace/{SelectionContextTests,WorkspaceHintDrainTests,WorkspaceModelBoundaryTests,WorkspaceSelectionContextTests,WorkspaceSessionTests}.cs; VerifiedSha 8d9a0c6e6ea148caf3e8f20d26a95a864a2943ce (EXECUTION_VERIFIED); delegacion R20261002T140200Z-3886 cerrada; sin delegacion abierta"
   max_attempts: 3
   persistent_next_action:
-    NEXT_ROLE: "Coordinator (decision del STOP de nc1..nc3; AUTONOMY_GAP-COORDINATOR: la orden llega por el chat)"
-    NEXT_ACTION: "decidir entre las opciones de la evidencia §27: (a) A-n que defina Identity sobre el estado verificado cuando CurrentSha..HEAD solo contiene commits documentales de la sesion y repetir nc1..nc3; (b) autorizar nc1..nc3 sobre una replica desechable con la rama en 8d9a0c6e; (c) registrar DEV-F1T1-02 y decidir el cierre sin nc2/nc3 validos"
-    TARGET_SHA: "la punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo (git log -1 -- docs/automation/state/I-64.yml); su padre es 747ead04ee5e44f87de14250c4900680d72c4c93"
+    NEXT_ROLE: "Sesion responsable y Controller Codex CLI gpt-6-luna/high (planificacion 5/5 y verificacion 4/4), Worker claude-sonnet-5-5/subagent/medium y Controller para nc1..nc3"
+    NEXT_ACTION: "planificacion de recuperacion con CorrectionOf {R20261002T151201Z-abb1, StopCondition, 6fb6b914...}, Attempt 3, AttemptsRemaining 0, ChainBaseSha e0587355, ChainRedSha a9778068, 5 ChainRedFiles; Worker: solo el comentario XML de WorkspaceSessionRegistry (sin RED); verificacion; nc1..nc3 inmediatos; ninguna escritura Git de la sesion hasta terminar nc3; despues custodia, DEV-F1T1-02, estado y commit documental F1-T1-MODEL COMPLETE si todo pasa"
+    TARGET_SHA: "la punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo (git log -1 -- docs/automation/state/I-64.yml); es el BaseSha de la ultima delegacion; su padre es bc24ebef63f60c935e380559ff5c3cdf692c33c6"
     GATE: F1 — Workspace Foundation
-    TASK: "F1-T1-MODEL (producto aceptado; cierre pendiente de nc1..nc3; STOP en controles)"
-    INPUTS_REQUIRED: "evidencia §26 y §27; custodia de nc1 (R20261002T150553Z-09df) y nc2 (R20261002T151201Z-abb1); paquete de cierre de tarea"
-    EXPECTED_RESULT: "decision del Coordinator; con (a) o (b), nc1..nc3 con oraculo cumplido y commit documental de cierre de tarea (F1-T1-MODEL COMPLETE) con su CI; despues, paquete minimo para el contrato de F1-T2-BRIDGE y parada en COORDINATOR_GATE_CONTRACT_REQUIRED"
-    REMAINING_BUDGET: "productivo congelado (planificacion 0, trabajo 1 de 4, verificacion 1 de 4, attempts 2 de 3); CONTROL: nc1 hecho, nc2 hecho (no superado), nc3 pendiente; reintentos de transporte 2 por control sin usar"
-    STOP_CONDITION: "cualquier invocacion de control o de producto sin decision del Coordinator; commits de la sesion que alteren el estado de identidad antes de terminar los controles (16.4 paso 5); origin/main distinto de 819955d61a6da4c811a11fbd11b5dca13f634b7c; config.toml distinto (P-01); P-02 persistente; S-01..S-14 y P-01..P-08"
+    TASK: "F1-T1-MODEL (recuperacion de controles, attempt 3)"
+    INPUTS_REQUIRED: "contrato reemitido (A4D36818...); analysis.md del Coordinator custodiado (6fb6b914...); evidencia §§26-28; linea base de config.toml"
+    EXPECTED_RESULT: "delegacion de recuperacion valida (A1-A8 en pass); entrega con diff = WorkspaceSessionRegistry.cs, solo documentacion XML; CI 4/4; verificacion EXECUTION_VERIFIED con HEAD = origin = CurrentSha; nc1, nc2 y nc3 con oraculo cumplido; commit documental F1-T1-MODEL COMPLETE con CI verde; paquete para el contrato de F1-T2-BRIDGE y parada en COORDINATOR_GATE_CONTRACT_REQUIRED"
+    REMAINING_BUDGET: "planificacion 1 de 5, trabajo 1 de 4, verificacion productiva 1 de 4 (las ultimas); attempts 3 de 3 (ninguno restante); CONTROL: 3 controles con hasta 2 reintentos de transporte cada uno"
+    STOP_CONDITION: "cualquier escritura Git de la sesion antes de terminar nc3 (16.4 paso 5); la recuperacion no termina en EXECUTION_VERIFIED (STOP final, S-11); un control con salida valida que no cumple su oraculo (STOP al Coordinator); cambio fuera del comentario XML autorizado; origin/main distinto de 819955d61a6da4c811a11fbd11b5dca13f634b7c; config.toml distinto (P-01); P-02 persistente; S-01..S-14 y P-01..P-08"
     OWNER_REQUIRED_IF: "OWNER-RESERVED (alcance, diferir sistemas, retirar OV); aceptacion del ADR 0047; Owner Validation y smokes (Smoke-1 tras F1 PASS y RELEASE de I-52); cambio de config.toml (P-01); credenciales, compras o sondas con consumo no cubierto; AutoCAD manual o cambios de seguridad"
   autonomy_gaps:
     - ROLE_REQUIRED: "Coordinator (AUTONOMY_GAP-COORDINATOR: emision de gate-contract, decision de un STOP, aceptacion A1-A8, analysis.md y GATE PASS)"
