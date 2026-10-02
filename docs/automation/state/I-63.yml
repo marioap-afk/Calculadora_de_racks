@@ -7,9 +7,29 @@ automation_state:
   state: review-ready
   gate: none
   attempts: 0
-  next_action: El mismo Architect de R1/R2 re-revisa la Proposal V3 exacta (R3) y el resultado vuelve al Coordinator; sin Freeze ni implementacion.
-  last_evidence_commit: dddc215f08123b64adbf7fe35de6d3776a241501
+  next_action: El Architect local_d5787742 emite R3 sobre fb3c8788 (Proposal V3); la sesion principal interpreta el veredicto y continua la cadena.
+  last_evidence_commit: fb3c87888ed583d1117ca565ce4751b51f67a81b
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-parametros-calculados-resumen-proyecto
+review_chain:
+  next_role: Architect
+  next_action: Re-revision R3 de la Proposal V3 exacta; declarar CLOSED o STILL OPEN por pendiente y emitir veredicto
+  target_sha: fb3c87888ed583d1117ca565ce4751b51f67a81b
+  proposal_version: V3
+  proposal_path: docs/initiatives/I-63-proposal-v3.md
+  proposal_blob: e4a94effa99f29e06b447a3ce07ec5bcc41f0b6d
+  package_path: docs/initiatives/I-63-architect-package-v3.md
+  package_blob: e195e9aed75155bfc2a6a38384f42cd4412c6f67
+  base_main: 819955d61a6da4c811a11fbd11b5dca13f634b7c
+  open_required_ids: [A63-PV1-05, A63-PV1-08, A63-PV2-01]
+  closed_by_architect: [A63-PV1-01, A63-PV1-02, A63-PV1-03, A63-PV1-04, A63-PV1-06, A63-PV1-07, A63-PV1-09, A63-PV1-10]
+  expected_result: AGREED | CHANGES REQUIRED | BLOCKED - OWNER DECISION, ligado a fb3c8788 / proposal v3 / blob e4a94eff
+  architect_session_identity: local_d5787742-7168-40f7-b18f-56abcf3eda7c (titulo "I-63 Architect Review R1"; misma sesion de R1 y R2)
+  transport: SendMessage entre sesiones locales (nombre "I-63 Architect Review R1"); respaldo, lectura de su transcripcion local fdd2a979-cce9-4391-83aa-e7dfe5effcc4.jsonl
+  request_msg_id: 289a2f8a-5ef9-481c-9b6a-9ee7faf39665
+  review_budget_remaining: 3 rondas (R3..R5), supuesto derivado de automation.max_attempts del contrato; el Coordinator puede fijar otro
+  on_changes_required: corregir dentro del alcance vigente, publicar la Proposal completa siguiente, verificar CI y volver al mismo Architect
+  stop_conditions: Architect AGREED (decision de Freeze del Coordinator); hallazgo que cambia materialidad, alcance o decisiones congelables sin autoridad vigente; STOP normativo; materia OWNER-RESERVED; presupuesto agotado; falta real de capacidad (AUTONOMY_GAP)
+  owner_escalation_conditions: OWNER-RESERVED; decision material del Owner; STOP que requiera al Owner; credenciales, autenticacion o compra; Owner Validation; accion irreversible o destructiva; presupuesto agotado sin autoridad para continuar

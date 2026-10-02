@@ -726,3 +726,27 @@ IMPLEMENTATION AUTHORIZATION = NO.
   V1, V2 y los paquetes v1 y v2 no se tocan. Además: el contrato, las decisiones, esta evidencia y el estado.
 - **Re-revisión R3:** pedida al **mismo** Architect, **no realizada** en este commit.
 - La CI exacta del commit que contiene este archivo se informa al Coordinator.
+
+## 19. Corrección operativa y relevo directo al Architect (R3)
+
+### 19.1 CI de la entrega anterior
+
+| Commit | SHA | Corrida `push` | Resultado |
+|---|---|---|---|
+| Proposal V3 y paquete v3 | `fb3c87888ed583d1117ca565ce4751b51f67a81b` | 36941471886: `head_branch` = `architecture/parametros-calculados-resumen-proyecto`, `head_sha` exacto | `success`; los cuatro jobs requeridos de `AGENTS.md` en `success` |
+
+### 19.2 Orden y transporte
+
+- **Orden:** «I-63 — CORRECCIÓN OPERATIVA INMEDIATA», pegada por el usuario en el chat de la sesión responsable el 2026-10-01. No llegó
+  como archivo. Resumen en las [decisiones](../decisions/I-63.md) §2.
+- **Identidad del Architect, verificada con el gestor de sesiones:** `local_d5787742-7168-40f7-b18f-56abcf3eda7c`, título «I-63 Architect
+  Review R1», el mismo de R1 y R2.
+- **Transporte disponible:** `SendMessage` entre sesiones locales, con suscripción a su próximo estado inactivo. No hay `AUTONOMY_GAP`.
+- **Solicitud R3** (msg `289a2f8a-5ef9-481c-9b6a-9ee7faf39665`, 2026-10-01, hacia las 23:59Z): objeto exacto (`fb3c8788`; Proposal V3, blob
+  `e4a94eff`; paquete v3, blob `e195e9ae`; base `819955d6`), pendientes A63-PV1-05, 08 y A63-PV2-01, declaración CLOSED o STILL OPEN,
+  posibles A63-PV3-nn, AQ-06/07 y veredicto `AGREED | CHANGES REQUIRED | BLOCKED — OWNER DECISION`. Sin escrituras ni implementación.
+- **Cadena persistente:** bloque `review_chain` del [estado](../state/I-63.yml). Lleva el siguiente rol, el SHA objetivo, la versión,
+  los REQUIRED abiertos y cerrados, el resultado esperado, la identidad del Architect, el transporte, el presupuesto y las condiciones
+  de STOP y de escalado.
+- **Presupuesto de revisión:** 3 rondas (R3..R5). Es un **supuesto** de la sesión, derivado de `automation.max_attempts` del contrato;
+  la orden no fijó un número.
