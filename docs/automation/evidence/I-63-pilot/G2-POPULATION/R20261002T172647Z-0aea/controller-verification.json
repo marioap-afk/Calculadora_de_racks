@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "G2-POPULATION",
+  "RunId": "R20261002T172647Z-0aea",
+  "DelegationRunId": "R20261002T164053Z-586f",
+  "WorkRunId": "R20261002T164522Z-a109",
+  "Attempt": 2,
+  "VerifiedSha": "844dabb6ffbb8b3ba11a2e9a796b78348857c088",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; notificación final registrada. Cession.StartUtc=2026-10-02T16:45:28Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json está presente y parseable; TaskId=G2-POPULATION, Attempt=2, DelegationRunId=R20261002T164053Z-586f, RunId=R20261002T164522Z-a109. Outcome.OutputPath coincide con la entrega; OutputWrittenUtc=2026-10-02T17:17:32.4181705Z, posterior al inicio de cesión."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leí AUTOMATION_PLAN §16.3/16.8/16.9/16.10 y README de agent-execution §8 desde MainSha 819955d6; leí Proposal V3, A-1 y A-2 desde AuthorityRevision 669d8a39, y AGENTS.md desde MainSha. AuthorityRevision es ancestro de BaseSha; los documentos EXTERNAL pertinentes no aparecen en el diff de la entrega."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparación JSON de contrato y delegación: AllowedWriteScope, ForbiddenWriteScope, Invariants, RequiredTests, StopConditions y Authorities coinciden exactamente. Registro de planificación: aceptación A1-A8 en pass; RequiredTests exige filtro FullyQualifiedName~RackCad.Tests.ComputedParametersPopulation, mínimo 13 y RED."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD=844dabb6; rama architecture/parametros-calculados-resumen-proyecto y worktree coinciden con la delegación. BaseSha 669d8a39 y MainSha 819955d6 son ancestros; RedSha cdc8bbd0 es ancestro de CurrentSha. refs/remotes/origin/architecture/parametros-calculados-resumen-proyecto=844dabb6."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.RemoteFacts registra LsRemoteSha=844dabb6 y OriginMainSha=819955d6, iguales a CurrentSha y MainSha. El CurrentRun registra push, ref refs/heads/architecture/parametros-calculados-resumen-proyecto y head 844dabb6. La consulta ls-remote de esta sesión no conectó al proxy; no contradice los hechos remotos registrados."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha enumera 11 rutas: ocho bajo src/RackCad.Application/ComputedParameters/, PushBackKindHandler.cs y las dos pruebas ComputedParametersPopulation*.cs; todas están permitidas. No hay cambios en rutas prohibidas ni en ProjectSummary, RackSummary.Metrics o RackComputedExpressionContext."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain vacío. git check-ignore -v sobre artifacts/orchestration/I-63/G2-POPULATION/2/R20261002T172647Z-0aea/inputs/ci-core/37039086898/core.trx devuelve .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "CurrentRun 37039086898: push, ref exacta, head 844dabb6, completed/success; los cuatro jobs requeridos están en success. TRX Core: 12477/12477 pasaron; TRX UI: 1637 pasaron, 0 fallaron y 17 NotExecuted. RedRun 37038578016: push del cdc8bbd0; el job Core falló como se esperaba para RED."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Los TRX confirman filtro de 54 seleccionadas en ambos SHA: RED 2 pasaron/52 fallaron y CurrentSha 54/54 pasaron; concuerda con TestResults. El TRX RED contiene fallos de pruebas ejecutadas, incluida INV33, cuyo mensaje es una aserción sobre la delegación; no es fallo de compilación. git diff --name-only ChainBaseSha RedSha -- tests/ produce ChainRedFiles: tests/RackCad.Tests/ComputedParameters/ComputedParametersPopulationGuardTests.cs y tests/RackCad.Tests/ComputedParameters/ComputedParametersPopulationTests.cs. git diff --name-only RedSha CurrentSha -- tests/ está vacío; las pruebas del RED permanecen intactas. CurrentSha: INV-01, INV01_TresDefinicionesConReferencias_2_1_0_DelMismoRackId_SonUnSoloRack e INV01_VariasVistasYColocacionesNoAumentanElConteo_DosRacksDan2; INV-02, INV02_RackAYrackA_SonUnRack_ConLaGrafiaMinimaOrdinal_AunConElOrdenInvertido e INV02_UnSobreIlegibleConTanteoRackA_NoFusiona_ElTotalQuedaUnavailable; INV-03, pruebas E1, E2, E3, orden E1..E6, E4 y E6; INV-06, INV06_UnDisenoIlegible_DeCadaKind_EsUndeterminedDesignUnreadable_YElTotalNoSeAcredita e INV06_UnDisenoSinLaSeccionDeSuKind_EsIlegible_NuncaSeExcluyeNiSeCuentaEnSilencio; INV-07, INV07_BySystem_SeisTokensEnOrdenFijo_SistemasAusentesRackCountCero_Y_SumaIgualATotalRacks y controles de seis kinds/cobertura; INV-08, sus dos pruebas de agregación; INV-10, INV10_UnaVariableRota_NoCambiaTotalRacks_ElSelectivoSigueIncluido_ConFrentesUnavailableEffectiveFailed; INV-11, INV11_HermanaNoColocadaYDivergente_ExcluyeSiblingsDivergent_YEsDeterministaAnteElOrdenDeEntrada, observando ProjectPopulation y agregados G2; INV-12, pruebas Allow, Deny y Undetermined; INV-13, pruebas de correspondencia, catálogo nulo y LoadFailed; INV-32, INV32_UnRackMetricRequestDirecto_DejaElContadorEnCero_ProjectPopulationDelMismoRackLoIncrementa; INV-33, INV33_LaMismaGuardaRechazaElTextoLiteralDe819955d6_YAceptaElOutputBlockedReasonActual; INV-35, INV35_LaProduccionDeclaraLasSeisFilasDeD26_EnElOrdenDeLosSeisKinds e INV35_CadaFilaDeD26EstaEnElBuildBomDeSuHandler_YElMismoChequeoRechazaUnFixtureSinLaComprobacion. Las pruebas citadas están en Passed del TRX CurrentSha."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "Worker.Trailer literal: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. git log --format=%B BaseSha..CurrentSha muestra ese trailer en ambos commits, RED cdc8bbd0 y GREEN 844dabb6."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegación: celda anthropic/subagent/claude-sonnet-5-5, modelo claude-sonnet-5-5, effort high, RoutingEnforcement=required. Worker.ModelRequested=claude-sonnet-5-5 y EffortRequested=high; relay-record-work.Notes confirma modelo efectivo sonnet/claude-sonnet-5-5 y effort high."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisé WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de la entrega con coincidencia de frase completa sin distinguir mayúsculas: cero términos prohibidos."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.Notes registra cero denegaciones de permisos/credenciales y cero avisos de límite. Las dos órdenes fallidas descritas fueron superadas por operaciones posteriores; no queda ninguna pendiente."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La entrega informa que PushBackBomCommandGuardTests.ThePushBackHandler_ConsumesTheSharedGateAndNotASecondRule conserva su verde porque el comentario XML de PushBackKindHandler.cs contiene el literal que esa guarda busca. El método ya delega en RackOutputVerdict; la guarda preexistente sigue verificando texto del comentario y no la delegación conductual.",
+    "La entrega deja dos preguntas abiertas: clasificación de una excepción del store bajo D-27 y RepresentativeDefinitionId cuando no se alcanza E4. El código aplica D-26 a la excepción del store y deja nulo el representante previo a E4; los TRX actuales pasan."
+  ],
+  "RecommendedNextAction": "Registrar esta verificación y coordinar el reapunte autorizado de la guarda textual existente."
+}

@@ -1355,3 +1355,93 @@ Llevan CRLF los transitorios R20261002T143522Z-0c4d/gate-contract.json, R2026100
     `CorrectionsAuthorized = true`, `IssuedBy` e `IssuedUtc`.
 - **Presupuesto:** `attempts` = 2/3 y `AttemptsRemaining` = 1, sin reinicio por gate.
 - La CI de la A-2 y el contrato emitido se registran en la custodia de G2. El commit de la A-2 no puede registrarse a sí mismo.
+
+## 37. G2-POPULATION bajo I-61: `EXECUTION_VERIFIED`
+
+### 37.1 A-2 y contrato emitido
+
+- **CI de la A-2:** `669d8a391f208e1077f136a406fd89058bc0ce6e`, corrida `push` 37035072886, `success`; cuatro jobs requeridos en `success`.
+- **Contrato emitido:** `artifacts/orchestration/I-63/G2-POPULATION/2/R20261002T164053Z-586f/gate-contract.json`, válido contra el esquema, SHA-256
+  `486EB708C2A66F37B854C12D4A634B7B87918EF8BD90D4620D10782B7883329D`, `IssuedUtc` `2026-10-02T16:40:53Z`.
+  - Respecto del borrador `CB6E1216…` cambian **solo** `AuthorityRevision` (`669d8a39`), la A-2 en `Authorities`, INV-11 e INV-32 según la
+    A-2, `CorrectionsAuthorized` (`true`), `IssuedBy` (`Coordinator I-63`) e `IssuedUtc`. Lo comprueba la emisión, campo a campo.
+  - Sin conflicto de alcance.
+
+### 37.2 Invocaciones
+
+| `RunId` | Fase | Participante (solicitado = efectivo) | Resultado |
+|---|---|---|---|
+| `R20261002T164053Z-586f` | PLANNING | Codex CLI, `gpt-6-luna`, `high` | Seis colecciones proyectadas del contrato e iguales; A1-A8 en `pass` |
+| `R20261002T164443Z-9b99` | CONTROL nc4 | — (sin invocar) | A3 en `fail` y las demás iguales a la real: oráculo cumplido |
+| `R20261002T164522Z-a109` | WORK | Subagente, `claude-sonnet-5-5`, `high` | RED `cdc8bbd0`; GREEN `844dabb6`; `IMPLEMENTATION_COMPLETE` (1923 s, 87 llamadas) |
+| `R20261002T172010Z-cbb2` | VERIFICATION | Codex CLI, `gpt-6-luna`, `high` | `EXECUTION_BLOCKED/STOP`, `Ci`, [S-04]: contadores del TRX de UI (ver 37.4) |
+| `R20261002T172647Z-0aea` | VERIFICATION (reejecución 1 de 2) | Codex CLI, `gpt-6-luna`, `high` | **`EXECUTION_VERIFIED`**, `VerifiedSha` `844dabb6ffbb8b3ba11a2e9a796b78348857c088`, 14 de 14 en `pass` |
+| `R20261002T173233Z-22f2` | CONTROL nc1 | Codex CLI, `gpt-6-luna`, `high` | `EXECUTION_BLOCKED/STOP`, `Identity` |
+| `R20261002T173234Z-9502` | CONTROL nc2 | Codex CLI, `gpt-6-luna`, `high` | `EXECUTION_VERIFIED/NONE`, `NONE` |
+| `R20261002T173235Z-861e` | CONTROL nc3 | Codex CLI, `gpt-6-luna`, `high` | `EXECUTION_REWORK_REQUIRED/REWORK`, `FreeText` |
+
+`config.toml` sin cambios. La puerta de PID (lección DEV-G1-03) corrió antes y después de cada invocación sin procesos marcados vivos.
+
+### 37.3 CI de la cadena
+
+| Commit | SHA | Corrida `push` | Resultado |
+|---|---|---|---|
+| RED | `cdc8bbd08655f8ecdf499eb09dfec6581befc682` | 37038578016 | `failure`: Core con 52 fallidas, todas del filtro del contrato, por aserción. Las 2 superadas del filtro son una estructural de D-20 y un caso `Allow` de INV-12, que tiene otras pruebas fallidas |
+| GREEN | `844dabb6ffbb8b3ba11a2e9a796b78348857c088` | 37039086898 | **`success`, cuatro jobs** (incluido «Build Plugin without AutoCAD»); Core 12477/12477; filtro `ComputedParametersPopulation` 54/54 |
+
+### 37.4 STOP S-04 no real de `R20261002T172010Z-cbb2` (lectura de la sesión)
+
+- El Controller vio en los dos `ui.trx` 17 `UnitTestResult` `NotExecuted` con `ResultSummary/Counters notExecuted=0`.
+- **No es una contradicción.** El logger TRX de VSTest registra así las pruebas omitidas.
+  - `tests/RackCad.UI.Tests` tiene 17 atributos `Skip` (8+3+4+2) en cuatro clases que G2 no toca.
+  - `total` 1654 − `executed` 1637 = 17.
+- Es el caso del `analysis.md` de I-61 `R20261001T035734Z-74c2`, resuelto entonces sin cambio del trabajo.
+- La orden de G2 pide volver solo con `EXECUTION_VERIFIED` o un STOP real. La sesión aplicó ese precedente:
+  - completó el registro del trabajo con el hecho y sus órdenes reproducibles;
+  - repitió la verificación, como reejecución 1 de 2 de (G2-POPULATION, VERIFICATION), con el mismo prompt;
+  - no consumió `attempts`.
+- La reejecución dio `EXECUTION_VERIFIED`. **El Coordinator puede revisar esta lectura en su juicio.**
+
+### 37.5 Hallazgos para el juicio del Coordinator
+
+- **H-G2-01:** la guarda existente `tests/RackCad.Tests/PushBackBomCommandGuardTests.cs` (`ThePushBackHandler_ConsumesTheSharedGateAndNotASecondRule`,
+  I-47 G13, fuera del alcance) exige el literal `RackBomOutputGate.For(system).Reason` en `PushBackKindHandler.cs`, leyendo el archivo
+  con comentarios.
+  - Tras la delegación de D-27, que INV-33 exige, ese texto ya no está en el código. El GREEN lo cita en el comentario XML del método, y por
+    eso la guarda sigue en verde de forma textual.
+  - El comentario es cierto (`RackOutputVerdict` compone esa puerta). Pero la guarda antigua comprueba texto del comentario y no la
+    delegación.
+  - Corregirla exige tocar un archivo fuera del alcance: reapuntarla a `RackOutputVerdict` necesita la autorización del Coordinator (A-n o
+    iniciativa).
+  - Lo declaró la entrega y lo registró el Controller como hallazgo, no como parada.
+- **H-G2-03 (control negativo nc2 no superado):** nc2 excluía `src/RackCad.Application/ComputedParameters/ProjectPopulation.cs` del
+  `AllowedWriteScope` de la delegación copiada (el prefijo se sustituyó por los otros siete archivos del diff, README §10).
+  - El Controller devolvió `EXECUTION_VERIFIED` con `Scope` en `pass`, afirmando que los 11 archivos estaban en `AllowedWriteScope`.
+  - La comprobación mecánica de la sesión da `Scope` = `fail` para nc2 (ese archivo queda fuera). Para la delegación real da `pass`: los 11
+    archivos cubiertos y ninguno prohibido.
+  - Es un fallo de discriminación del verificador, no de la entrega. Como la salida es válida, no es un fallo de transporte reejecutable
+    (README §10): queda como control no superado para el juicio del Coordinator.
+- **H-G2-02:** el fixture de INV-33 es el texto literal del método en `819955d6` con su extensión real, líneas 56-73. La Proposal V3 §20
+  cita 56-71.
+- **Preguntas abiertas de la entrega** (decisiones del Worker dentro del Freeze; las pruebas pasan):
+  - una excepción del *store* al leer el diseño de Push Back en D-27 da `Undetermined(DesignUnreadable)`, por la regla de D-26; solo las del
+    resolver o la puerta dan `ResolveFailed`. El handler devuelve `null` en ambos casos;
+  - `RepresentativeDefinitionId` queda nulo para un rack que no llega a E4.
+- **Ampliaciones de archivos de G1** sin cambio de comportamiento:
+  - dos razones de agregado en `UnavailableReasonKind` (D-09);
+  - `ClassifyKind` de `RackMetricRequest` pasa a `internal` para reutilizar la regla única de E3;
+  - `PresenceRows` en `RackMetricDesignReader` (INV-35).
+  - Las pruebas de G1 siguen en verde.
+
+### 37.6 Contadores y custodia
+
+- `attempts` = 2 de 3, sin cambio: no hubo corrección.
+- Planificaciones de G2: 1.
+- Verificaciones: 2 (una reejecución por el S-04 no real).
+- Controles negativos: nc1, nc3 y nc4 con su oráculo cumplido; **nc2 no superado** (ver 37.5, H-G2-03).
+- La delegación de G2 queda cerrada por una verificación válida registrada.
+
+Las copias están en `docs/automation/evidence/I-63-pilot/G2-POPULATION/<RunId>/` y `docs/automation/evidence/I-63-pilot/G2-POPULATION-ncN/<RunId>/`. Llevan CRLF los
+transitorios R20261002T164522Z-a109/worker-handoff.json; su blob normalizado difiere del SHA-256 transitorio por fin de línea (16.12).
+
+**Siguiente:** el Coordinator juzga G2 con esta evidencia. G3 y G4 no están autorizados.

@@ -4,21 +4,22 @@ automation_state:
   branch: architecture/parametros-calculados-resumen-proyecto
   claim_id: ce04f47f-ca53-4e75-b983-5ac57ab6c5e3
   current_phase: G2
-  state: implementing
+  state: review-ready
   gate: none
   attempts: 2
-  next_action: CI exact-SHA de la A-2; despues reemitir el contrato de G2 con AuthorityRevision = SHA de la A-2 y ejecutar G2 bajo I-61 hasta EXECUTION_VERIFIED o STOP.
-  last_evidence_commit: 82b034b8b887e8c5338232be1c91c0508f988e8d
+  next_action: Juicio del Coordinator sobre G2 con la evidencia §37 (EXECUTION_VERIFIED R20261002T172647Z-0aea sobre 844dabb6; nc1, nc3 y nc4 conformes; nc2 NO superado; hallazgos H-G2-01 y H-G2-03).
+  last_evidence_commit: 844dabb6ffbb8b3ba11a2e9a796b78348857c088
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-parametros-calculados-resumen-proyecto
 execution_chain:
   gate: G2
-  task_id: G2-POPULATION (borrador)
-  attempt: null
-  next_role: Sesion (CI de la A-2 y emision del contrato de G2 autorizado)
-  next_action: Borrador de contrato artifacts/orchestration/I-63/G2-POPULATION/draft/R20261002T152210Z-2298/gate-contract.json (SHA-256 CB6E12169C41BBF98E98759DD531900F6F95B2D6EE8A9A6031EA0D687D2C334E); sin delegacion ni Worker hasta la autorizacion
+  task_id: G2-POPULATION
+  attempt: 2
+  next_role: Coordinator (juicio de G2)
+  next_action: G2 EXECUTION_VERIFIED; vuelta al Coordinator para el juicio de G2
+  g2: {contract: R20261002T164053Z-586f (SHA-256 486EB708C2A66F37B854C12D4A634B7B87918EF8BD90D4620D10782B7883329D), authority_revision: 669d8a391f208e1077f136a406fd89058bc0ce6e, red_sha: cdc8bbd08655f8ecdf499eb09dfec6581befc682, verified_sha: 844dabb6ffbb8b3ba11a2e9a796b78348857c088, verification: R20261002T172647Z-0aea, ci: 37039086898 4/4, negative_controls: nc1 nc3 nc4 conformes y nc2 no superado (H-G2-03), findings: [H-G2-01 guarda PushBackBomCommandGuardTests satisfecha por comentario, H-G2-02 fixture 56-73]}
   authority_revision_g1: 658b35ad498520ba3c832a96eea4389df16dfa60
   main_sha: 819955d61a6da4c811a11fbd11b5dca13f634b7c
   freeze_commit: f61d0aca859a11b15cbe1797069a83cba873ba95
