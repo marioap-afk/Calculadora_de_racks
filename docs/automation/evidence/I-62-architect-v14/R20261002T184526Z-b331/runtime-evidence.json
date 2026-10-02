@@ -1,0 +1,157 @@
+{
+  "Schema": "runtime-evidence (representación experimental de InvokerObservedRuntimeIdentity / RuntimeEvidenceRef, Proposal V14 §20.3.2; no autoridad normativa)",
+  "LogicalReviewRequestId": "L20261002T184526Z-b331",
+  "InvocationId": "I20261002T184526Z-b331",
+  "AttemptSeq": 1,
+  "RunId": "R20261002T184526Z-b331",
+  "Invoker": "sesión autora de I-62 (Claude), con autorización acotada del Owner y del Coordinator; observador no independiente",
+  "Binary": {
+    "Path": "%LOCALAPPDATA%\\OpenAI\\Codex\\bin\\a51e250fa15c740a\\codex.exe",
+    "Version": "codex-cli 0.159.2",
+    "Sha256": "fcd5eafefb4ff4a607f244e099e0974f66e17966b6ffda6948de2ef3a7a79530"
+  },
+  "Authentication": "existente: «Logged in using ChatGPT»; sin leer ni modificar credenciales",
+  "ConfigFingerprint": {
+    "Path": "~/.codex/config.toml",
+    "Sha256Before": "40c27b570b0056bc6d2b5aaf460628922c5ad39a405751e68b9001ffdf15f74f",
+    "Sha256After": "40c27b570b0056bc6d2b5aaf460628922c5ad39a405751e68b9001ffdf15f74f",
+    "Changed": false
+  },
+  "Requested": {
+    "Model": "gpt-6.1-sol",
+    "Effort": "high",
+    "Sandbox": "read-only",
+    "Flags": [
+      "--disable memories",
+      "--disable apps",
+      "--disable plugins",
+      "--disable browser_use",
+      "--disable browser_use_external",
+      "--disable computer_use",
+      "--disable in_app_browser",
+      "--disable remote_plugin",
+      "--disable hooks",
+      "-c mcp_servers.node_repl.enabled=false",
+      "--output-schema",
+      "-o",
+      "--json",
+      "stdin=/dev/null",
+      "timeout 3600",
+      "MSYS_NO_PATHCONV=1",
+      "ruta de Windows calculada con cygpath -w y comprobada antes de lanzar"
+    ]
+  },
+  "Observed": {
+    "Assurance": "RUNTIME_OBSERVED (registro de sesión del runtime)",
+    "SessionLog": {
+      "Path": "~/.codex/sessions/2026/10/02/rollout-2026-10-02T13-21-17-01a0fe10-4d02-7750-a7c0-98eb1a58c97f.jsonl",
+      "Sha256": "3d4a7996468fc72733f9d1ed3b5ad802288410c4519c5de8c671c15447557a77",
+      "Lines": 701,
+      "Versioned": false
+    },
+    "ThreadId": "01a0fe10-4d02-7750-a7c0-98eb1a58c97f",
+    "Originator": "codex_exec",
+    "CliVersion": "0.159.2",
+    "ModelProvider": "openai",
+    "Cwd": "D:\\r62-arch-v14",
+    "GitCommit": "4c617e82b32b6c810b68d75fc19472efed22b393",
+    "TurnContexts": [
+      {
+        "Utc": "2026-10-02T19:21:19.133Z",
+        "Model": "gpt-6.1-sol",
+        "Effort": "high",
+        "ApprovalPolicy": "never",
+        "Sandbox": "read-only"
+      },
+      {
+        "Utc": "2026-10-02T19:34:32.121Z",
+        "Model": "gpt-6.1-sol",
+        "Effort": "high",
+        "ApprovalPolicy": "never",
+        "Sandbox": "read-only"
+      }
+    ],
+    "Compactions": [
+      {
+        "Utc": "2026-10-02T19:34:32.120Z",
+        "BeforeExecCall": 72,
+        "PromptPreserved": true,
+        "EncryptedSummaryChars": 31864,
+        "Effect": "las lecturas anteriores solo persisten en el resumen cifrado, que el invocador no puede leer; no se cita como evidencia"
+      }
+    ],
+    "ServedModelBehindProvider": "UNKNOWN (no observable)"
+  },
+  "RuntimeWrapperDiagnostics": {
+    "Rule": "GAP-12, orden del Owner para esta revisión: un diagnóstico del runtime, mecánicamente identificable, antepuesto o pospuesto a una salida por lo demás íntegra es metadato de transporte",
+    "Text": "profile.ps1: Cannot dot-source this command because it was defined in a different language mode. To invoke this command without importing its contents, omit the '.' operator.",
+    "Occurrences": [
+      {
+        "Command": 0,
+        "Position": "start"
+      },
+      {
+        "Command": 1,
+        "Position": "start"
+      },
+      {
+        "Command": 2,
+        "Position": "start"
+      }
+    ],
+    "Note": "las tres apariciones preceden a las salidas de los comandos Git de identidad 0-2; ninguna reemplazó, interrumpió ni ocultó contenido canónico"
+  },
+  "InjectedContext": {
+    "BaseInstructionsChars": 21769,
+    "DeveloperMessagesChars": [
+      3233,
+      2429,
+      271
+    ],
+    "AgentsMdAutoInjectionChars": 25321,
+    "PromptChars": 22204,
+    "PromptEqualToCustodied": true,
+    "PromptNonAsciiChars": 114,
+    "PromptReplacementChars": 0,
+    "GlobalAgentsMdBytes": 0,
+    "WorldState": "presente en el registro; no forma parte de los mensajes visibles"
+  },
+  "ToolSurface": {
+    "ModelTool": "exec (scripts JavaScript que invocan tools.exec_command)",
+    "ExecCalls": 113,
+    "ShellCommands": 117,
+    "ModelVisibleTruncation": "ninguna"
+  },
+  "Execution": {
+    "StartUtc": "2026-10-02T19:21:14Z",
+    "EndUtc": "2026-10-02T19:47:25Z",
+    "ExitCode": 0,
+    "TurnCompleted": true,
+    "TaskCompleteUtc": "2026-10-02T19:47:20.964Z",
+    "DurationMs": 1563680,
+    "Usage": {
+      "InputTokens": 13279704,
+      "CachedInputTokens": 12915200,
+      "OutputTokens": 24668,
+      "ReasoningOutputTokens": 3714
+    },
+    "Stderr": "«Reading additional input from stdin...» (39 bytes); ninguna advertencia de límite"
+  },
+  "Termination": {
+    "ReviewerProcessesAliveAfter": 0,
+    "Method": "Win32_Process: ningún proceso con la ruta del clon ni codex exec/sandbox de esta corrida tras la salida"
+  },
+  "Clone": {
+    "Path": "D:\\r62-arch-v14",
+    "HeadBefore": "4c617e82b32b6c810b68d75fc19472efed22b393",
+    "HeadAfter": "4c617e82b32b6c810b68d75fc19472efed22b393",
+    "StatusBefore": "limpio",
+    "StatusAfter": "limpio (sin archivos ignorados)"
+  },
+  "WriterCollision": {
+    "RemoteBranchAtLaunch": "4c617e82b32b6c810b68d75fc19472efed22b393",
+    "ProcessesOnI62Paths": 0
+  },
+  "ReviewerDeclaredIdentity": "UNKNOWN en output.json: no es contradicción (§20.3.2)",
+  "DotnetTestExemption": "ver README §2; dotnet test no se ejecutó (read-audit.json)"
+}

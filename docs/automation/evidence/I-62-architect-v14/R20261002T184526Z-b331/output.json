@@ -1,0 +1,534 @@
+{
+  "Schema": "rackcad-architect-review-result/v1",
+  "ResultId": "R20261002T184526Z-b331",
+  "LogicalReviewRequestId": "L20261002T184526Z-b331",
+  "InvocationId": "I20261002T184526Z-b331",
+  "AttemptSeq": 1,
+  "RequestedRole": "ARCHITECT",
+  "Action": "REVIEW_DESIGN",
+  "ReviewedUnit": "I-62",
+  "ReviewedCommit": "4c617e82b32b6c810b68d75fc19472efed22b393",
+  "ReviewedPath": "docs/initiatives/I-62-proposal-v14.md",
+  "ReviewedBlob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa",
+  "PackagePath": "docs/initiatives/I-62-architect-package-v14.md",
+  "PackageBlob": "3c3b3446b66ae8d0ccbb1f1beb347f461a37442d",
+  "ReviewerBinding": "ARCHITECT / REVIEW_DESIGN según la autorización acotada del Owner y del Coordinator; no se autocertifica un binding de runtime.",
+  "ReviewerDeclaredIdentity": {
+    "Runtime": "Codex CLI, declarado por el invocador",
+    "Model": "UNKNOWN",
+    "Effort": "UNKNOWN",
+    "SessionOrThread": "UNKNOWN",
+    "Source": "Declaración informativa; la identidad efectiva corresponde a la evidencia observada por el invocador."
+  },
+  "ReviewerMode": "SEPARATE SESSION",
+  "ReviewerAndAuthorSamePerson": "UNKNOWN respecto de identidades humanas; la invocación declara una sesión Codex distinta de la sesión Claude autora.",
+  "InjectedContextDeclaration": [
+    "Instrucciones de sistema sobre el asistente y el esquema experimental de salida.",
+    "Instrucciones de desarrollador sobre herramientas, colaboración, estilo, skills disponibles, sandbox de solo lectura y prohibición de delegación proactiva. No se abrió ninguna skill.",
+    "AGENTS.md suministrado en el mensaje del usuario y contexto de entorno: D:\\r62-arch-v14, PowerShell, fecha y zona horaria.",
+    "La autorización, el cierre de insumos, las formas de lectura, las identidades, los hallazgos abiertos y las señales de salud incluidos en esta invocación.",
+    "Salidas de las herramientas utilizadas durante esta revisión.",
+    "Una compactación automática visible del contexto, con resumen del trabajo de esta misma revisión. El resumen no se utiliza como cita canónica; las premisas centrales del resultado se releyeron.",
+    "No recibí transcripción ni memoria privada de la sesión autora."
+  ],
+  "InputsRead": [
+    "AGENTS.md",
+    "docs/HANDOFF.md",
+    "README.md",
+    "docs/ARCHITECTURE.md",
+    "docs/context-packs/README.md",
+    "docs/context-packs/documentation-governance.md",
+    "docs/ROADMAP.md",
+    "docs/FOUNDATIONS.md",
+    "docs/initiatives/README.md",
+    "docs/initiatives/PROMPT_TEMPLATES.md",
+    "docs/initiatives/I-62-proposal-v14.md",
+    "docs/initiatives/I-62-architect-package-v14.md",
+    "docs/initiatives/I-62-proposal-v13.md",
+    "docs/initiatives/I-62-architect-package-v13.md",
+    "docs/initiatives/I-62-architect-review-v13-disposition.md",
+    "docs/initiatives/I-62-architect-review-v13.md",
+    "docs/automation/evidence/I-62-architect-v13/R20261002T165850Z-648a/README.md",
+    "docs/automation/evidence/I-62-architect-v13/R20261002T165850Z-648a/input-fidelity-postrun.json",
+    "docs/automation/evidence/I-62-architect-v13/R20261002T165850Z-648a/output.json",
+    "docs/automation/evidence/I-62-architect-v13/R20261002T165850Z-648a/schema.json",
+    "docs/initiatives/I-62-architect-review-v12-disposition.md",
+    "docs/initiatives/I-62-architect-review-v12.md",
+    "docs/initiatives/I-62-architect-review-v11-disposition.md",
+    "docs/initiatives/I-62-architect-review-v11.md",
+    "docs/initiatives/I-62-architect-review-v10-disposition.md",
+    "docs/initiatives/I-62-architect-review-v9-disposition.md",
+    "docs/initiatives/I-62-architect-review-v7.md",
+    "docs/initiatives/I-62-architect-review-v6.md",
+    "docs/initiatives/I-62-coordinator-requirement-auto.md",
+    "docs/initiatives/I-62-discovery.md",
+    "docs/automation/decisions/I-62-owner-mandate.txt",
+    "docs/initiatives/I-62-portabilidad-coordinador-principal.md",
+    "docs/automation/decisions/I-62.md",
+    "docs/automation/evidence/I-62-evidence.md",
+    "docs/automation/state/I-62.yml",
+    "docs/INITIATIVE_LIFECYCLE.md",
+    "docs/WORKFLOW.md",
+    "docs/AUTOMATION_PLAN.md",
+    "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md",
+    "docs/initiatives/I-61-proposal-v9.md",
+    "docs/automation/agent-execution/README.md",
+    "docs/automation/agent-execution/model-catalog.md",
+    "docs/automation/agent-execution/prompting-guide.md",
+    "docs/automation/agent-execution/routing.md",
+    "docs/automation/agent-execution/schemas/controller-verification.schema.json",
+    "docs/automation/agent-execution/schemas/delegation.schema.json",
+    "docs/automation/agent-execution/schemas/gate-contract.schema.json",
+    "docs/automation/agent-execution/schemas/relay-record.schema.json",
+    "docs/automation/agent-execution/schemas/worker-handoff.schema.json"
+  ],
+  "InputFidelityEvidenceRef": "input-fidelity-preflight.json SHA-256 976090c7a330b662cf55c52a8097f26075689bdde491fad4e510aa6dae9452a9",
+  "IndependenceEvidence": "El invocador declara una ejecución separada de la autora, sin su transcripción ni memoria privada. Verifiqué HEAD, ambos blobs y árbol limpio al comienzo y al cierre. Las lecturas se limitaron al cierre autorizado y a las formas A, B y C. La identidad efectiva y la auditoría de visibilidad deben acreditarse desde la custodia del invocador; esta declaración no las certifica.",
+  "Verdict": "BLOCKED — OWNER DECISION",
+  "RequiredFindings": [],
+  "OptionalFindings": [],
+  "FindingDispositions": [
+    {
+      "FindingId": "A62-V11-01",
+      "LineageId": "A62-V11-01",
+      "State": "CLOSED",
+      "SupersededBy": [],
+      "Rationale": "V14 corrige el residuo final mediante unidades canónicas completas, resolución con espacio de nombres, destinos propuestos, documentos enteros clasificados, aristas exclusivamente de control y un manifiesto acotado. El recorrido tiene visitados, colapsa duplicados y termina en el grafo finito; los destinos o metadatos incompletos quedan en UNKNOWN. La fidelidad exige visibilidad de todas las unidades controlantes. C-42 q-z cubre los contraejemplos residuales. No encontré un contraejemplo material contra este diseño. B.11 se revisa como diseño y su materialización en F3 no es prerrequisito de esta revisión F0.",
+      "EvaluatedObject": {
+        "Commit": "4c617e82b32b6c810b68d75fc19472efed22b393",
+        "Path": "docs/initiatives/I-62-proposal-v14.md",
+        "Blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Section": "20.3.3, unidad normativa canónica",
+          "LineStart": 1298,
+          "LineEnd": 1301,
+          "Quote": "   Una **unidad normativa** es la unidad canónica más pequeña que lleva el significado de control completo que necesita una dependencia: un párrafo;\n   elemento de lista con su padre cuando lo controla; una fila de tabla con las cabeceras que necesita; un invariante; una definición o una enumeración; un\n   bloque de algoritmo o de máquina de estados; una cláusula de autoridad o de precedencia. Una unidad **no** se identifica solo por una subcadena del\n   texto. Sus líneas en la `Revision` son una proyección que sirve para comprobar su visibilidad."
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Section": "20.3.3, resolución canónica",
+          "LineStart": 1302,
+          "LineEnd": 1310,
+          "Quote": "2. **Resolución canónica.** Toda arista que se usa para acreditar una premisa se resuelve de forma determinista a una o más `NormativeUnitRef`, en este\n   orden, y sin elegir un destino por conjetura semántica:\n   1. referencia **calificada** (documento + ancla o unidad: un nombre de documento o un enlace inmediatamente anterior) → la unidad canónica exacta;\n   2. referencia a una sección **del mismo documento**, sin calificador → solo ese documento;\n   3. sección **propuesta o futura** mapeada en §3.1 → la unidad de diseño (`DesignSource`) de la Proposal;\n   4. **identificador definido** → su unidad de definición canónica;\n   5. referencia sin calificador que las reglas 2 a 4 no resuelven y que tiene algún destino posible en otro documento del cierre → **AMBIGUOUS_REFERENCE**\n      → UNKNOWN. Falta el espacio de nombres, aunque el candidato sea uno solo; no se busca en otros documentos;\n   6. referencia sin ningún destino → **UNRESOLVED_REFERENCE** → UNKNOWN."
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Section": "20.3.3, documentos enteros y aristas de control",
+          "LineStart": 1311,
+          "LineEnd": 1322,
+          "Quote": "3. **Documentos enteros.** Una dependencia de un documento entero **no** es terminal de forma automática, y **tampoco** expande por defecto todas sus\n   referencias. Se clasifica:\n   - **A. BOUNDED_ENTRY_SET:** el documento tiene un conjunto determinista de unidades de entrada normativas aplicables a esa dependencia, declarado en el\n     manifiesto (punto 5). La clausura sigue esas unidades y sus dependencias de control;\n   - **B. COMPOSITE_RULE:** una autoridad vigente, o una cláusula de la Proposal, define de forma explícita cómo se lee la cita del documento entero como un\n     conjunto acotado de unidades canónicas. Se aplica esa regla;\n   - **C. WHOLE_DOCUMENT_UNBOUNDED:** no se puede establecer ningún conjunto de entrada determinista. La independencia de la premisa es UNKNOWN y el\n     hallazgo no se acredita. **Nunca** se resuelve leyendo todas las frases normativas del documento.\n4. **Aristas de control.** De cada unidad seleccionada solo se siguen las dependencias que pueden cambiar su **significado o su aplicabilidad**. Por\n   ejemplo: «solo si §X» → §X; «salvo lo previsto en Y» → Y; una definición o una enumeración usada de forma normativa → su definición; una declaración de\n   precedencia → la cláusula de autoridad; una transición de estado que depende del invariante Z → Z. **No** se siguen los enlaces informativos, las citas\n   históricas, los ejemplos, las referencias de procedencia ni las referencias sin relación que solo están en la misma sección o en el mismo documento."
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Section": "20.3.3, manifiesto, algoritmo y terminalidad",
+          "LineStart": 1323,
+          "LineEnd": 1343,
+          "Quote": "5. **Manifiesto de dependencias** (`rackcad-normative-dependency-manifest/v1`, B.11). Es un artefacto de Nivel A, versionado y **acotado** a las superficies\n   normativas de I-62 y a sus dependencias de compatibilidad: la Proposal, las cláusulas de las autoridades que modifica o de las que depende, y los destinos\n   de §3.1. **No** es una ontología de todo el repositorio. Cada entrada declara, para una unidad, sus dependencias de control:\n   `NormativeDependencyEntry { Source: NormativeUnitRef, DependsOn[], Complete }`. El tiempo de ejecución **no** infiere aristas del lenguaje natural:\n   lee el manifiesto. Una unidad sin entrada, o con `Complete` = false, tiene **metadatos incompletos** (INCOMPLETE_METADATA → UNKNOWN). El autor lo\n   produce junto con la Proposal o con la materialización; el Architect lo revisa como parte del objeto; un validador determinista comprueba que toda\n   referencia resuelve según el punto 2, que no hay AMBIGUOUS ni UNRESOLVED y que todo destino tiene su propia entrada. El manifiesto de las superficies\n   congeladas es un entregable de F3, junto con los contratos, y se valida en F4. Mientras una unidad de la clausura no tenga entrada, la premisa que depende\n   de ella no se acredita con DEGRADED_BOUNDED.\n6. **Algoritmo** (`NormativeDependencyClosure(PremiseEnvelope)`):\n   1. obtener las `NormativeUnitRef` de las unidades del envoltorio y sus dependencias de control directas, según sus entradas del manifiesto;\n   2. ponerlas en una cola;\n   3. recorrer solo aristas de control declaradas y resueltas;\n   4. mantener un conjunto de **visitados**;\n   5. parar en los nodos sin dependencias de control;\n   6. los ciclos terminan por los visitados;\n   7. los nodos duplicados se funden por su identidad canónica.\n\n   No hace falta un límite de profundidad: el grafo es finito, canónico y está acotado a las superficies de I-62.\n7. **Nodo terminal.** Un nodo es terminal **solo** cuando su unidad canónica tiene cero dependencias de control sin resolver, declaradas en el manifiesto.\n   **No** lo es por ser un documento entero, un documento de autoridad, externo o grande. Con metadatos incompletos, UNKNOWN."
+        }
+      ]
+    },
+    {
+      "FindingId": "O-V7-01",
+      "LineageId": "O-V7-01",
+      "State": "STILL_OPEN",
+      "SupersededBy": [],
+      "Rationale": "Se conserva como OPTIONAL no bloqueante. El registro V7 §3 declara que su texto no fue transmitido; no hay base para afirmar una corrección comprobada o inventar su formulación.",
+      "EvaluatedObject": {
+        "Commit": "4c617e82b32b6c810b68d75fc19472efed22b393",
+        "Path": "docs/initiatives/I-62-proposal-v14.md",
+        "Blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Section": "Cierres y OPTIONAL preservados",
+          "LineStart": 78,
+          "LineEnd": 78,
+          "Quote": "Los OPTIONAL abiertos (O-V7-01, O-V7-02, O-05, O-07) no bloquean."
+        }
+      ]
+    },
+    {
+      "FindingId": "O-V7-02",
+      "LineageId": "O-V7-02",
+      "State": "STILL_OPEN",
+      "SupersededBy": [],
+      "Rationale": "Se conserva la disposición abierta y no bloqueante; no se acredita un cierre nuevo.",
+      "EvaluatedObject": {
+        "Commit": "4c617e82b32b6c810b68d75fc19472efed22b393",
+        "Path": "docs/initiatives/I-62-proposal-v14.md",
+        "Blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Section": "Cierres y OPTIONAL preservados",
+          "LineStart": 78,
+          "LineEnd": 78,
+          "Quote": "Los OPTIONAL abiertos (O-V7-01, O-V7-02, O-05, O-07) no bloquean."
+        }
+      ]
+    },
+    {
+      "FindingId": "O-05",
+      "LineageId": "O-05",
+      "State": "STILL_OPEN",
+      "SupersededBy": [],
+      "Rationale": "Se conserva la disposición abierta y no bloqueante; no se acredita un cierre nuevo.",
+      "EvaluatedObject": {
+        "Commit": "4c617e82b32b6c810b68d75fc19472efed22b393",
+        "Path": "docs/initiatives/I-62-proposal-v14.md",
+        "Blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Section": "Cierres y OPTIONAL preservados",
+          "LineStart": 78,
+          "LineEnd": 78,
+          "Quote": "Los OPTIONAL abiertos (O-V7-01, O-V7-02, O-05, O-07) no bloquean."
+        }
+      ]
+    },
+    {
+      "FindingId": "O-07",
+      "LineageId": "O-07",
+      "State": "STILL_OPEN",
+      "SupersededBy": [],
+      "Rationale": "Se conserva la disposición abierta y no bloqueante; no se acredita un cierre nuevo.",
+      "EvaluatedObject": {
+        "Commit": "4c617e82b32b6c810b68d75fc19472efed22b393",
+        "Path": "docs/initiatives/I-62-proposal-v14.md",
+        "Blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Section": "Cierres y OPTIONAL preservados",
+          "LineStart": 78,
+          "LineEnd": 78,
+          "Quote": "Los OPTIONAL abiertos (O-V7-01, O-V7-02, O-05, O-07) no bloquean."
+        }
+      ]
+    }
+  ],
+  "Downgrades": [],
+  "RequirementAssessments": [
+    {
+      "RequirementId": "R62-FIDELITY-01",
+      "Assessment": "SATISFIED",
+      "Rationale": "Satisfecho como arquitectura: contrato por insumo y prompt, identidad canónica, cobertura de los caracteres presentes y preflight por el mismo camino de lectura antes de reservar y lanzar.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Section": "20.3.3, preflight",
+          "LineStart": 1189,
+          "LineEnd": 1194,
+          "Quote": "**Antes de lanzar** (R62-FIDELITY-01, -05), el invocador:\n1. determina los bytes canónicos y el blob de cada insumo;\n2. configura en UTF-8 el transporte y el runtime, donde aplique;\n3. comprueba por el **mismo camino de lectura** que usará el revisor (mismo runtime, mismo shell, misma configuración y la forma de lectura que la\n   invocación le indica) que se conservan todos los caracteres no ASCII presentes en el corpus, y que el prompt renderizado llega igual;\n4. custodia la evidencia (`InputFidelityEvidenceRef`) a más tardar en el QU que reserva el intento (§20.6)."
+        }
+      ]
+    },
+    {
+      "RequirementId": "R62-FIDELITY-02",
+      "Assessment": "SATISFIED",
+      "Rationale": "La normalización está delimitada explícitamente. El fallo cerrado alcanza la representación visible, los envoltorios y las dependencias controlantes; la corrección del grafo elimina el residuo que motivó PARTIALLY_SATISFIED en V13.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Section": "20.3.3, normalización permitida",
+          "LineStart": 1181,
+          "LineEnd": 1187,
+          "Quote": "**Normalización permitida** (distinción A de R62-FIDELITY-02): el único cambio de bytes que se acepta como semánticamente fiel es el fin de línea (CRLF ↔ LF)\ny la presencia o ausencia del salto final. Da FAITHFUL_NORMALIZED. **Cualquier otra diferencia es degradación semántica** (distinción B), por ejemplo:\n- ≤ → «=» o ≠ → «?»;\n- un identificador o una ruta corrompidos;\n- una negación eliminada;\n- U+FFFD en una palabra normativa;\n- la estructura de una tabla o de un operador perdida."
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Section": "20.3.3, independencia",
+          "LineStart": 1242,
+          "LineEnd": 1252,
+          "Quote": "3. **Independencia (regla de fidelidad).** Con algún insumo en DEGRADED_BOUNDED, una premisa es independiente solo si se cumplen todas las condiciones:\n   1. sus envoltorios directos son fieles;\n   2. **todas** las `NormativeUnitRef` de su clausura llegaron al revisor de forma fiel: una unidad que nunca le llegó no es fiel;\n   3. **todas** sus dependencias de control se resolvieron de forma determinista: ninguna AMBIGUOUS_REFERENCE, UNRESOLVED_REFERENCE,\n      WHOLE_DOCUMENT_UNBOUNDED ni INCOMPLETE_METADATA;\n   4. todo el contexto de control (alcance, títulos, tablas y operadores) es fiel.\n\n   «Fiel» significa fuera de los tramos degradados o no vistos y con una representación entregada al revisor igual a la canónica, tras la normalización\n   permitida. Estar en el registro de eventos no equivale a haber sido visto. Si una unidad requerida solapa un tramo degradado o no visto, la premisa es\n   **INVALID_PREMISE**; si una dependencia queda sin resolver, su independencia es **UNKNOWN** y tampoco se acredita. Un hallazgo o una disposición es\n   independiente solo si lo son todas sus premisas."
+        }
+      ]
+    },
+    {
+      "RequirementId": "R62-FIDELITY-03",
+      "Assessment": "SATISFIED",
+      "Rationale": "La independencia se demuestra sobre unidades controlantes transitivas, aunque el hallazgo no cite el destino. No se acredita una dependencia ambigua, ausente, no acotada o sin metadatos completos. La invalidez no abre, cierra ni sustituye linajes y no produce ARCHITECT_SATISFIED.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Section": "20.3.3, independencia",
+          "LineStart": 1242,
+          "LineEnd": 1252,
+          "Quote": "3. **Independencia (regla de fidelidad).** Con algún insumo en DEGRADED_BOUNDED, una premisa es independiente solo si se cumplen todas las condiciones:\n   1. sus envoltorios directos son fieles;\n   2. **todas** las `NormativeUnitRef` de su clausura llegaron al revisor de forma fiel: una unidad que nunca le llegó no es fiel;\n   3. **todas** sus dependencias de control se resolvieron de forma determinista: ninguna AMBIGUOUS_REFERENCE, UNRESOLVED_REFERENCE,\n      WHOLE_DOCUMENT_UNBOUNDED ni INCOMPLETE_METADATA;\n   4. todo el contexto de control (alcance, títulos, tablas y operadores) es fiel.\n\n   «Fiel» significa fuera de los tramos degradados o no vistos y con una representación entregada al revisor igual a la canónica, tras la normalización\n   permitida. Estar en el registro de eventos no equivale a haber sido visto. Si una unidad requerida solapa un tramo degradado o no visto, la premisa es\n   **INVALID_PREMISE**; si una dependencia queda sin resolver, su independencia es **UNKNOWN** y tampoco se acredita. Un hallazgo o una disposición es\n   independiente solo si lo son todas sus premisas."
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Section": "20.3.3, invalidación conservadora",
+          "LineStart": 1269,
+          "LineEnd": 1274,
+          "Quote": "5. Si no se puede demostrar la independencia semántica, el hallazgo o la disposición es **INVALID_PREMISE**.\n6. Si no se puede determinar mecánicamente qué hallazgos son independientes, se invalida **toda** la revisión de forma conservadora\n   (INPUT_FIDELITY_INVALID). Ocurre, por ejemplo, si falta la representación entregada al revisor, si no se puede delimitar un envoltorio o una clausura, o\n   si un hallazgo no trae `PremiseRefs`.\n7. La evidencia de independencia de las premisas la observa y la custodia el **invocador** (`premise_independence`, B.8.8). El Architect aporta los\n   `PremiseRefs`, pero no acredita la fidelidad ni declara o certifica la clausura de dependencias: la calcula y la custodia el invocador o su adapter."
+        }
+      ]
+    },
+    {
+      "RequirementId": "R62-FIDELITY-04",
+      "Assessment": "SATISFIED",
+      "Rationale": "La observación y custodia pertenecen al invocador o adapter. El resultado del Architect solo referencia esa evidencia.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Section": "20.3.3, autoridad de fidelidad",
+          "LineStart": 1360,
+          "LineEnd": 1362,
+          "Quote": "**Observada por el invocador, no autodeclarada** (R62-FIDELITY-04). La fidelidad es evidencia de la capa de invocación y de transporte, como el\n`RuntimeEvidenceRef` (§20.3.2). El revisor no la certifica. Su resultado puede citar el `InputFidelityEvidenceRef` que recibe en la `RoleInvocation`, pero no\ncrea esa evidencia. Cambiar de proveedor, de runtime o de adapter no exime de la validación: cada intento lleva la suya."
+        }
+      ]
+    },
+    {
+      "RequirementId": "R62-FIDELITY-05",
+      "Assessment": "SATISFIED",
+      "Rationale": "Exige establecer y verificar el transporte seguro; no presupone la codificación de la terminal ni congela una receta de proveedor.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Section": "20.3.3, transporte PowerShell",
+          "LineStart": 1198,
+          "LineEnd": 1200,
+          "Quote": "Para `codex-cli` con PowerShell en Windows, el adapter **establece y verifica** un transporte seguro en UTF-8 en lugar de asumir los valores por defecto de la\nterminal. Puede usar salida de consola en UTF-8, lectura directa de archivos sin conversión con pérdida, lecturas estructuradas u otro método verificado. **No**\nse congela ningún comando concreto: se congela el requisito observable de que el texto canónico que ve el revisor sea fiel (R62-FIDELITY-05)."
+        }
+      ]
+    },
+    {
+      "RequirementId": "R62-FIDELITY-06",
+      "Assessment": "SATISFIED",
+      "Rationale": "Satisfecho como obligación de validación del diseño: C-42 conserva los ocho casos originales, añade envoltorios, visibilidad, compactación y los diez casos q-z del grafo canónico. F4 y F6 tienen las obligaciones asignadas. No se afirma que estos controles ya estén implementados o ejecutados.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Section": "Anexo C, C-42",
+          "LineStart": 2382,
+          "LineEnd": 2382,
+          "Quote": "| C-42 | fidelidad de los insumos (R62-FIDELITY-01..06; A62-V11-01) | MC sobre insumos reales del corpus y capturas sintéticas: (1) ≤ canónico; (2) ≠ canónico; (3) texto acentuado; (4) transporte con pérdida deliberada (consola sin UTF-8); (5) un hallazgo cuya única premisa es texto degradado intenta abrir, cerrar o sustituir un linaje; (6) un hallazgo no afectado, con `PremiseRefs` cuyas citas coinciden con el texto canónico; (7) un sucesor reconstruye la evidencia de fidelidad desde la custodia; (8) cambio de proveedor o de runtime entre intentos. Envoltorios de premisa (A62-V11-01): (a) premisa exacta fuera del tramo degradado; (b) cita intacta pero con la negación anterior degradada; (c) operador degradado fuera de la cita; (d) celda de tabla intacta con la etiqueta de fila o de columna degradada; (e) título que cambia el alcance, degradado; (f) tramo degradado sin relación con la premisa; (g) independencia que no se puede establecer. Clausura de dependencias normativas (A62-V11-01, residuo): (h) proposición y título del destino fieles, con el cuerpo del destino degradado; (i) proposición que remite a otra cláusula cuyo párrafo de control completo es fiel; (j) cadena A → B → C con C degradada; (k) ciclo A ↔ B con ambas fieles; (l) referencia sin resolver (destino inexistente, ambiguo o indistinguible); (m) cláusula degradada ajena a la clausura; (n) regla de tabla que remite a una enumeración o definición de otro lugar, degradada. Visibilidad y runtime: (o) salida truncada por la herramienta del revisor, con la captura completa; (p) compactación del contexto con premisas usadas después. Grafo canónico y acotado (A62-V11-01, residuo final): (q) A → documento entero B → unidad de control B1 → C degradada; (r) A → documento entero B con conjunto de entrada determinista {B1} y B2 sin relación y degradada; (s) documento entero B sin conjunto de entrada ni regla compuesta; (t) A → §16.13 propuesta; (u) «§16.3» sin calificador, con dos documentos candidatos y sin espacio de nombres; (v) «§16.3» del mismo documento; (w) ciclo A → B → C → A; (x) cita histórica o enlace sin relación dentro de B; (y) el manifiesto declara B → C, pero C no existe; (z) todos los nodos canónicos fieles | F4, F6 | contratos B.9-B.10, `input-fidelity/v1` y procedimiento F4 | (1)-(3) FAITHFUL: el carácter llega igual; (4) preflight no acreditado y sin lanzamiento (P-24); (5) INVALID_PREMISE, el linaje no cambia (P-25); (6) se ingiere solo con la independencia demostrada mecánicamente; si no, no; (7) mismo `FidelityStatus` y mismos `unaccredited`; (8) la validación se exige igual en el intento nuevo; (a) válido; (b), (c), (d) y (e) INVALID_PREMISE; (f) el hallazgo no afectado sigue válido; (g) toda la revisión, INPUT_FIDELITY_INVALID; (h) INVALID_PREMISE; (i) válido; (j) INVALID_PREMISE; (k) válido, y la clausura termina; (l) independencia UNKNOWN, hallazgo no acreditado; (m) el hallazgo sigue válido; (n) INVALID_PREMISE; (o) la evidencia usa lo entregado al revisor: el truncamiento es un tramo STRUCTURE, y una premisa cuyo envoltorio o clausura cae en él es INVALID_PREMISE; con solo la captura completa, UNVERIFIED; (p) la compactación queda registrada y no invalida por sí sola; las premisas se evalúan igual con la evidencia visible, sin citar el resumen cifrado; (q) INVALID_PREMISE; (r) B2 queda fuera y el hallazgo es válido si A y las dependencias de B1 son fieles; (s) UNKNOWN, sin expandir el documento; (t) se resuelve a la unidad de diseño exacta de la Proposal (§3.1); (u) AMBIGUOUS_REFERENCE, UNKNOWN; (v) se resuelve en el mismo documento; (w) clausura finita; (x) no entra en la clausura; (y) UNKNOWN; (z) hallazgo acreditado | (ii) MC + FX |"
+        }
+      ]
+    }
+  ],
+  "PreservedDispositionChecks": [
+    {
+      "FindingId": "A62-V10-03",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Confirmado sobre la disposición V12 y la preservación canónica de output.json V13. V14 §20.5.1, §20.6, I-P13 y F.8 conservan vigencia de acción separada de acreditación histórica, cancelación por no arranque probado, reserva contada y prohibición de ingerir resultados cancelados. Sin contradicción material nueva."
+    },
+    {
+      "FindingId": "A62-V10-01",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "La disposición V11 y output.json V13 preservan el cierre. V14 §20.3.1 mantiene la exención explícita separada de HealthSignals y niega equivalencia entre CI y Core local."
+    },
+    {
+      "FindingId": "A62-V10-04",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "La cadena canónica V11-V13 conserva el cierre. V14 §20.7 y B.9 mantienen PLAN → delegation/v2 y VERIFY → controller-verification/v2, sin intercambiarlos."
+    },
+    {
+      "FindingId": "A62-V9-04",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Disposición V11 y output.json V13. V14 §20.6 e I-S18 conservan identidades distintas, solicitud lógica estable, review_rounds ≤ logical_requests y reservas con conteo conservador; cambiar de proveedor, binding o Principal no reinicia presupuesto."
+    },
+    {
+      "FindingId": "A62-V9-02",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Disposición V10 y preservación V11-V13. V14 §20.6, B.8.8 y F.8 mantienen intención durable, reserva previa, LAUNCHING, incertidumbre conservadora y recepción e ingestión idempotentes."
+    },
+    {
+      "FindingId": "A62-V9-03",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Disposición V10 y output.json V13. V14 §20.5.2 conserva disposición explícita, omisión que deja abierto el hallazgo, objeto exacto, cierre con autoridad revisora y rebaja exclusivamente por el emisor. La corrección de fidelidad refuerza esas condiciones."
+    },
+    {
+      "FindingId": "A62-V9-05",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Disposición V10 y preservación V13. V14 §20.7 y B.10 conservan la separación ARCHITECT / REVIEW_DESIGN frente a REVIEWER / REVIEW_CHANGE; REVIEWER no produce AGREED ni ARCHITECT_SATISFIED."
+    },
+    {
+      "FindingId": "A62-V9-06",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Disposición V10 y output.json V13. V14 I-P13 y F.8 conservan loop.object actualizado en CORRECTING → PUBLISHED y C-38 mantiene el negativo de cambio tardío."
+    },
+    {
+      "FindingId": "A62-V7-01",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Registro V7 y preservación V10-V13. V14 B.8 mantiene QU REBASE_RECONCILIATION como excepción explícita, I-H02 fuera de Q0 y reconciliación dentro de ventana mediante Q7 o QR e I-P12."
+    },
+    {
+      "FindingId": "A62-V7-02",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Registro V7 y output.json V13. V14 §8.9 y F.7 conservan REBASE_TAKEOVER limitado a cinco acciones y QR combinado antes de cualquier trabajo ordinario."
+    },
+    {
+      "FindingId": "A62-V7-03",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Registro V7 y preservación V13. V14 §11.4 y B.2 mantienen autores acotados a unidad y objeto, sucesiones incluidas y operador humano incluido en la alternativa 1."
+    },
+    {
+      "FindingId": "A62-V6-01",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Registro V6 y preservación V10-V13. V14 §8.8, B.8.7 y F.6 conservan RebaseMap durable, reconciliación de todos los SHA afectados antes de Q0 y STOP cuando una imagen no se acredita."
+    },
+    {
+      "FindingId": "A62-V6-02",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Registro V6 y output.json V13. V14 §4.1, §8.7, §14 y §20.12 conservan adopción opt-in, DIRECT_ONLY y custodia acotada; la nueva arquitectura del manifiesto no impone I62 a unidades que no lo adoptan."
+    },
+    {
+      "FindingId": "A62-V6-03",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Registro V6 y preservación V13. V14 §11.4 conserva HumanReviewerRef y ReviewInstanceRef para EXTERNAL HUMAN, sin ActorRef ni SessionRef ficticios."
+    },
+    {
+      "FindingId": "A62-V9-01",
+      "PreservedState": "SUPERSEDED → A62-V10-03",
+      "Check": "CONFIRMED",
+      "Rationale": "Sucesión registrada en las disposiciones V10/V11 y preservada en output.json V13. V14 mantiene la materialización autorizada de bindings y las correcciones de A62-V10-03; no altera el linaje."
+    }
+  ],
+  "OwnerDecisions": [
+    "OD-6 permanece PENDING. No selecciono una alternativa.",
+    "El único bloqueo de este dictamen es la decisión reservada OD-6: V14 §11.4, líneas 743-744, establece que sin decisión no hay AGREED ni Frozen: YES.",
+    "Este resultado no declara Consensus Freeze, GATE PASS ni autorización de implementación."
+  ],
+  "FocusAreas": [
+    {
+      "Area": "1. Unidades normativas canónicas",
+      "Assessment": "Suficiente. NormativeUnitRef identifica documento, unidad, ancla y revisión; la unidad lleva significado controlante completo. Las líneas son una proyección de visibilidad y no una identidad por subcadena."
+    },
+    {
+      "Area": "2. Resolución de referencias",
+      "Assessment": "Suficiente. Las seis reglas resuelven referencias calificadas, locales, propuestas e identificadores definidos. La referencia externa sin calificador queda AMBIGUOUS_REFERENCE / UNKNOWN incluso con un solo candidato; un destino inexistente queda UNRESOLVED_REFERENCE / UNKNOWN."
+    },
+    {
+      "Area": "3. Destinos normativos propuestos",
+      "Assessment": "Suficiente. §3.1 da autoridad de diseño y DesignSource para las secciones futuras, incluida AUTOMATION_PLAN §16.13. Tras materialización rigen el documento y el ancla reales."
+    },
+    {
+      "Area": "4. Documentos enteros",
+      "Assessment": "Suficiente. BOUNDED_ENTRY_SET y COMPOSITE_RULE seleccionan entradas deterministas; WHOLE_DOCUMENT_UNBOUNDED produce UNKNOWN. La cita del documento no crea terminalidad ni expansión integral."
+    },
+    {
+      "Area": "5. Aristas de control",
+      "Assessment": "Suficiente. Solo se siguen relaciones que cambian significado o aplicabilidad. Historia, procedencia, ejemplos, enlaces informativos y referencias cercanas sin relación quedan excluidos."
+    },
+    {
+      "Area": "6. Manifiesto B.11 como diseño",
+      "Assessment": "Suficiente. Alcance I-62 y compatibilidad, fuentes y destinos canónicos, tipos de arista cerrados, Complete y validación de cierre bajo DependsOn. Ausencia o incompletitud produce UNKNOWN. Es entregable de F3 y validación de F4; no se exige su existencia en esta revisión F0."
+    },
+    {
+      "Area": "7. Terminalidad",
+      "Assessment": "Suficiente leído junto con el algoritmo y Complete. El recorrido sigue las dependencias declaradas y resueltas y se detiene en unidades sin dependencias de control. Documento entero, autoridad, externalidad o tamaño no bastan para declarar terminalidad."
+    },
+    {
+      "Area": "8. Clausura del grafo",
+      "Assessment": "Suficiente. Grafo finito y versionado, cola, visitados y colapso por identidad canónica producen clausura hasta punto fijo, incluidos ciclos. No necesita un límite arbitrario de profundidad."
+    },
+    {
+      "Area": "9. Identidad de unidad sin ID nativo",
+      "Assessment": "Aceptable. Ancla de sección, tipo y ordinal están ligados a Revision. Una revisión posterior puede cambiar la identidad y exige el manifiesto correspondiente; no se exige estabilidad global del ordinal."
+    },
+    {
+      "Area": "10. Fidelidad",
+      "Assessment": "Suficiente. Cada unidad de la clausura debe haber llegado fielmente al revisor, con contexto estructural y dependencias resueltas. La evidencia corresponde al invocador. El protocolo futuro no se aplica retroactivamente para exigir B.11 en este F0."
+    },
+    {
+      "Area": "11. C-42",
+      "Assessment": "Los casos q-z están explícitamente definidos y sus resultados coinciden con §20.3.3, §3.1 y B.11. Las disposiciones siguientes son análisis del diseño, no resultados de ejecución."
+    },
+    {
+      "Area": "C-42(q)",
+      "Assessment": "CONFIRMADO: A → documento entero B → B1 → C degradada produce INVALID_PREMISE; el documento entero no corta la dependencia."
+    },
+    {
+      "Area": "C-42(r)",
+      "Assessment": "CONFIRMADO: con entradas {B1}, B2 sin relación queda fuera aunque esté degradada. La premisa es válida si A, B1 y sus dependencias y contexto son fieles."
+    },
+    {
+      "Area": "C-42(s)",
+      "Assessment": "CONFIRMADO: sin conjunto de entrada ni regla compuesta, WHOLE_DOCUMENT_UNBOUNDED → UNKNOWN; no se expande todo B."
+    },
+    {
+      "Area": "C-42(t)",
+      "Assessment": "CONFIRMADO: la referencia propuesta a §16.13 resuelve por §3.1 a su unidad exacta de diseño en Anexo E, especialmente E.3."
+    },
+    {
+      "Area": "C-42(u)",
+      "Assessment": "CONFIRMADO: §16.3 externo sin calificador permanece AMBIGUOUS_REFERENCE / UNKNOWN. Encontrar un candidato externo único tampoco suministra el espacio de nombres."
+    },
+    {
+      "Area": "C-42(v)",
+      "Assessment": "CONFIRMADO: una referencia no calificada a sección del mismo documento resuelve exclusivamente en ese documento."
+    },
+    {
+      "Area": "C-42(w)",
+      "Assessment": "CONFIRMADO: A → B → C → A termina con visitados y una única inclusión por identidad canónica."
+    },
+    {
+      "Area": "C-42(x)",
+      "Assessment": "CONFIRMADO: una cita histórica o enlace informativo sin control material no amplía la clausura; incluirlo como Target del manifiesto sería inválido."
+    },
+    {
+      "Area": "C-42(y)",
+      "Assessment": "CONFIRMADO: B → C con destino inexistente no satisface la resolución ni la validación del manifiesto; la independencia queda UNKNOWN."
+    },
+    {
+      "Area": "C-42(z)",
+      "Assessment": "CONFIRMADO: todos los nodos canónicos vistos fielmente, contexto fiel, metadatos completos y resolución determinista permiten acreditar la premisa."
+    },
+    {
+      "Area": "12. A62-V11-01",
+      "Assessment": "CLOSED. El diseño responde al residuo final con un grafo canónico acotado y fallo cerrado. No encontré un contraejemplo concreto que justifique STILL_OPEN."
+    },
+    {
+      "Area": "Cierres anteriores",
+      "Assessment": "Todos los CLOSED y el SUPERSEDED solicitados permanecen confirmados sobre la cadena canónica de disposiciones y la preservación de V13. V14 no introduce contradicción material directa. Tampoco altera los cierres previos del Coordinator registrados en esa cadena."
+    },
+    {
+      "Area": "Revisión completa de V14",
+      "Assessment": "Proposal completa leída mediante rangos acotados, incluidos anexos A-G y tablas largas. Roles, autoridades, bindings, adapters, custodia, rebase y toma, presupuestos, autonomía, compatibilidad I61/I62, gates, pilotos y OV conservan coherencia. Cero REQUIRED nuevos; OD-6 es la decisión pendiente para acuerdo y Freeze."
+    }
+  ],
+  "FreezeAssessment": {
+    "A62V1101State": "CLOSED",
+    "PriorClosuresValid": "YES: todos los CLOSED y SUPERSEDED solicitados se conservan.",
+    "BothOD6AlternativesExecutable": "YES como diseño. La alternativa 1 conserva los tres modos y define evidencia propia para SEPARATE SESSION y EXTERNAL HUMAN; la alternativa 2 conserva la regla vigente con dimensiones PREFERRED registradas. Ninguna presupone capacidades no observadas.",
+    "ReadyForConsensusFreezeAfterOD6": "YES, para la V14 exacta revisada, una vez decidida OD-6 y obtenido el acuerdo del Coordinator sobre ese mismo objeto.",
+    "Notes": "BLOCKED — OWNER DECISION solo por OD-6, no por un REQUIRED de diseño ni por ausencia del manifiesto futuro. No se decide OD-6 ni se declara Freeze."
+  },
+  "AutonomyAssessment": "La arquitectura mantiene RELAY automático dentro de autoridad, independencia y presupuesto; ESCALATION queda para fronteras reales. Reserva durable, recuperación conservadora, ingestión idempotente, linaje y NextAction permiten reconstrucción por un Principal sucesor sin memoria privada. El Principal no adquiere autoridad de Architect, Coordinator u Owner. La viabilidad operativa deberá demostrarse en los controles y pilotos asignados; esta revisión no afirma ejecución autónoma ya acreditada.",
+  "KnownLimitations": [
+    "No se ejecutaron builds, pruebas, sondas ni pilotos, ni se usó red. La exención de dotnet test es exclusiva de esta invocación. La CI 37047587864 fue suministrada como HealthSignals y no se verificó por red ni se trató como evidencia local.",
+    "InputsRead enumera rutas consultadas, no afirma lectura integral de cada documento auxiliar. V14 se leyó completa; V13 y varios documentos extensos de contexto, decisiones y evidencia se consultaron mediante búsquedas y rangos pertinentes.",
+    "No se inspeccionaron archivos fuera del cierre, configuraciones externas, historiales privados o registros de sesiones. Modelo, effort, identidad efectiva, separación de actores y terminación deben acreditarse por el invocador.",
+    "La referencia de preflight se copia del invocador y no se certifica. La auditoría posterior de lo realmente visible y la custodia del resultado literal corresponden al invocador.",
+    "Diagnóstico externo observado en las primeras salidas Git: profile.ps1: Cannot dot-source this command because it was defined in a different language mode. To invoke this command without importing its contents, omit the '.' operator. Los valores Git solicitados estaban completos; se separó el diagnóstico como metadato de transporte conforme a GAP-12. Las lecturas posteriores usaron login:false.",
+    "Dos búsquedas fallaron por interpretación del patrón y devolvieron solo diagnósticos, sin contenido canónico utilizable. No se usaron como premisas; las lecturas necesarias se realizaron después por formas acreditadas. No observé marcas de truncamiento en las lecturas canónicas utilizadas.",
+    "La compactación automática visible debe quedar registrada en RuntimeEvidence. No invalida por sí sola; las citas del resultado proceden de lecturas canónicas, no del resumen.",
+    "Los OPTIONAL históricos se conservan abiertos. El cierre no proporciona una formulación original completa para todos ellos; no se inventa ni se acredita su corrección.",
+    "El manifiesto B.11 y sus validadores no se materializaron ni ejecutaron. Su ausencia en F0 es compatible con la autorización de esta revisión; su suficiencia se evaluó como diseño."
+  ],
+  "RecommendedNextAction": "El invocador debe custodiar este JSON literal junto con runtime, lecturas y auditoría de visibilidad. El Owner decide OD-6; después el Coordinator puede acordar la V14 exacta y completar el Consensus Freeze conforme a las autoridades vigentes. Esta invocación termina aquí y no autoriza implementación ni otra invocación."
+}

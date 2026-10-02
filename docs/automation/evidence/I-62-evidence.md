@@ -1120,3 +1120,52 @@ Las trazas de V14 son **análisis del diseño**, no ensayos.
 
 **Validación de esta entrega:** allowlist, enlaces, columnas de las tablas, diff V13→V14 revisado, YAML del estado y `git diff --check`; resultado en el
 cuerpo del commit. La CI de este commit se informa al Owner y al Coordinator.
+
+## 31. F0 — Revisión formal final del Architect de la Proposal V14 (autorización del Owner y del Coordinator)
+
+**CI de la Proposal V14** (`4c617e82b32b6c810b68d75fc19472efed22b393`, §30): corrida **37047587864**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: Build UI (110972729955), UI Tests (110972730225), Tests
+(Domain + Application) (110972730366) y Build Plugin without AutoCAD (110973255076), los cuatro `success`. MEASURED por la sesión. Acredita solo
+`4c617e82`.
+
+**Autorización recibida:** «OWNER / COORDINATOR AUTHORIZATION — FINAL FORMAL ARCHITECT REVIEW OF I-62 PROPOSAL V14», texto pegado sin archivo de origen.
+7 728 bytes en UTF-8, SHA-256 `6c1ded51cbbba33889f11524ee504beb8ac204d940f4dd527b6ff91c6f6ee2be`; va literal dentro de `prompt.md`. La exención (306
+bytes, SHA-256 `c1923b87…`) y la regla de GAP-12 (738 bytes, SHA-256 `9b5e16fa…`) están identificadas en el README de la corrida, §2.
+
+**Invocación** (MEASURED; detalle en
+[`I-62-architect-v14/R20261002T184526Z-b331/README.md`](I-62-architect-v14/R20261002T184526Z-b331/README.md)):
+- **Antes:**
+  - `codex-cli 0.159.2` y autenticación existente; `config.toml` con hash `40c27b57…` antes y después;
+  - clon limpio `D:\r62-arch-v14` en `4c617e82`, sin colisión de escritores;
+  - cierre de 74 insumos canónicos y 9 transitivos;
+  - preflight FAITHFUL_NORMALIZED (78 insumos por A y B completas; 5 grandes por rangos de 150 líneas; 62 caracteres no ASCII; control negativo). La
+    primera corrida falló solo por una búsqueda de prueba sin coincidencias («≈»).
+- **Ejecución:** una sola, de 19:21:14Z a 19:47:25Z, salida 0. `gpt-6.1-sol`/`high`/read-only RUNTIME_OBSERVED, con una compactación a las 19:34:32Z
+  que conservó el prompt. Consumo: entrada 13 279 704 tokens (12 915 200 en caché) y salida 24 668.
+- **Después:** clon limpio, configuración sin cambio y ningún proceso de la corrida vivo; 117 lecturas sobre 49 rutas del cierre, con la política de lectura
+  cumplida y sin `dotnet test`. Dos búsquedas fallaron sin devolver contenido.
+- **Lo entregado al revisor: FAITHFUL_NORMALIZED.** 113 llamadas sin truncamientos; objeto y paquete vistos enteros; tres diagnósticos del runtime, ante los
+  comandos Git 0-2, separados como metadato de transporte según la orden (GAP-12). Envoltorios fieles. Una cita del revisor omite un artículo que sí recibió.
+
+**Resultado:** **BLOCKED — OWNER DECISION, solo por OD-6; cero REQUIRED; A62-V11-01 CLOSED.** La V14 exacta queda lista para el Consensus Freeze tras OD-6
+y el acuerdo del Coordinator. Registro: [`I-62-architect-review-v14.md`](../../initiatives/I-62-architect-review-v14.md).
+
+**Hechos medidos en este tramo:**
+- la separación de GAP-12 solo afectó a la línea exacta y conocida del diagnóstico; no hizo falta ninguna otra normalización;
+- el presupuesto de salida por llamada evitó de nuevo todo truncamiento visible (0 de 113).
+
+**Revalidación antes del commit** (MEASURED, 19:54Z):
+- `origin/main` = `819955d6…` y la rama de I-62 en `4c617e82…`, sin cambios;
+- I-52 `fb6b5648`, sin commits nuevos;
+- I-63 `5e3306e0..637dce7e`: 2 commits;
+- I-64 `39f7caa4..db151227`: 2 commits;
+- **ningún cruce** con superficies de I-62.
+
+**No se hizo:**
+- una segunda invocación, Workers, Controllers, subagentes, pilotos, autenticación ni cambios de configuración;
+- materializar B.11, calcular una clausura retroactiva, editar el clon, crear V15, ni corregir, disponer, ratificar o rebajar hallazgos;
+- decidir OD-6 ni declarar AGREED o Freeze;
+- tocar V1-V14, sus paquetes, los registros previos, la evidencia custodiada, el Discovery, el mandato, las normas compartidas o cualquier superficie ajena.
+
+**Validación de esta entrega:** allowlist (superficies propias de I-62), enlaces, columnas de las tablas, hashes de los archivos custodiados, YAML del estado y
+`git diff --check`; resultado en el cuerpo del commit. La CI de este commit se informa al Owner y al Coordinator.

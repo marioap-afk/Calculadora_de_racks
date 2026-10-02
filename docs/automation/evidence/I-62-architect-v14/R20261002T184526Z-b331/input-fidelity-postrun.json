@@ -1,0 +1,100 @@
+{
+  "Schema": "rackcad-input-fidelity/v1 (representación experimental; Proposal V14 §20.3.3; no autoridad normativa) — COMPROBACIÓN TRAS LA CORRIDA",
+  "RunId": "R20261002T184526Z-b331",
+  "AuthorityRevision": "4c617e82b32b6c810b68d75fc19472efed22b393",
+  "Sources": {
+    "ReviewerVisible": "salidas de las 113 llamadas exec en el log de sesión (SHA-256 3d4a7996468fc72733f9d1ed3b5ad802288410c4519c5de8c671c15447557a77): la representación entregada al modelo; fuente decisiva",
+    "Transport": "aggregated_output de los 117 comandos en events.jsonl (SHA-256 bf9184e9e3ef970d911842d156e6a6f1e39e5e55e586eebfcaeb579d88b85e78), como comprobación adicional"
+  },
+  "ReviewerVisible": {
+    "ExecCalls": 113,
+    "RecordStatusCounts": {
+      "OMITTED": 3,
+      "FULL": 114
+    },
+    "TruncatedCalls": 0,
+    "NeverVisibleRequestedRanges": {},
+    "Coverage": {
+      "docs/initiatives/I-62-proposal-v14.md": {
+        "Lines": 3323,
+        "VisibleLines": 3323,
+        "NeverVisible": [],
+        "VisibleAfterCompaction": 529
+      },
+      "docs/initiatives/I-62-architect-package-v14.md": {
+        "Lines": 137,
+        "VisibleLines": 137,
+        "NeverVisible": [],
+        "VisibleAfterCompaction": 137
+      }
+    },
+    "CompactionBeforeExecCall": 72,
+    "NonFullRecords": "los 3 registros sin coincidencia exacta son los comandos Git de identidad 0-2: su salida llegó en la llamada siguiente (sondeo de la sesión del comando) y no contiene líneas canónicas",
+    "IndependentControl": {
+      "Method": "alineación difflib del texto visible con cada comando",
+      "StatusCounts": {
+        "FULL": 117
+      },
+      "TruncatedCalls": [],
+      "NeverVisible": {}
+    }
+  },
+  "Transport": {
+    "FullReadsA": {
+      "Count": 38,
+      "Equal": 38
+    },
+    "RangeReadsB": {
+      "Count": 59,
+      "Equal": 59
+    },
+    "SearchesC": {
+      "Count": 13,
+      "Equal": 13
+    },
+    "FailedReads": [
+      {
+        "Command": 13,
+        "Kind": "patrón «^#{1,4}»: pwsh interpretó «1,4» como argumento posicional y falló (exit 1) sin devolver contenido"
+      },
+      {
+        "Command": 99,
+        "Kind": "patrón con «|»: pwsh lo interpretó como tubería y falló (exit 1) sin devolver contenido"
+      }
+    ],
+    "CharacterDegradations": 0,
+    "UnmatchedLines": 0,
+    "ReplacementCharsInOutputs": 0
+  },
+  "RuntimeWrapperDiagnostics": {
+    "Count": 3,
+    "Commands": [
+      0,
+      1,
+      2
+    ],
+    "Classification": "metadato de transporte (GAP-12): separado mecánicamente; el contenido pedido estaba completo y sin cambios"
+  },
+  "DegradedSpans": [],
+  "PromptFidelity": {
+    "Equal": "sí, salvo el salto de línea final (normalización permitida)",
+    "NonAsciiChars": 114,
+    "ReplacementChars": 0,
+    "SessionLogSha256": "3d4a7996468fc72733f9d1ed3b5ad802288410c4519c5de8c671c15447557a77"
+  },
+  "FidelityStatus": "FAITHFUL_NORMALIZED",
+  "StatusReason": "todo lo entregado al revisor coincide con el texto canónico tras la normalización permitida, una vez separados los diagnósticos del runtime según GAP-12; sin truncamientos ni omisiones",
+  "QuoteInexactness": [
+    {
+      "FindingId": "A62-V11-01",
+      "Kind": "FindingDispositions",
+      "Path": "docs/initiatives/I-62-proposal-v14.md",
+      "Lines": [
+        1298,
+        1301
+      ],
+      "Detail": "la cita omite el artículo «un» al final de la línea 1298 («un párrafo; un elemento de lista…» → «un párrafo; elemento de lista…»). La línea llegó íntegra al revisor; es una inexactitud de transcripción del revisor, sin cambio de significado normativo; las líneas y el envoltorio son correctos"
+    }
+  ],
+  "Conclusion": "el objeto (Proposal V14, 3 323 líneas) y el paquete (137) llegaron completos al revisor; todos los envoltorios de premisa son fieles; el resultado no tiene REQUIRED"
+}

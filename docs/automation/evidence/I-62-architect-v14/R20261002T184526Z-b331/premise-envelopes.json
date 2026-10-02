@@ -1,0 +1,246 @@
+{
+  "Schema": "PremiseEnvelope (representación experimental; Proposal V14 §20.3.3; calculado por el invocador)",
+  "RunId": "R20261002T184526Z-b331",
+  "AuthorityRevision": "4c617e82b32b6c810b68d75fc19472efed22b393",
+  "Rule": "unidad estructural completa (párrafo, elemento de lista con continuación y padre, fila con cabecera) + cadena de títulos",
+  "DependencyClosure": "no se calcula: la orden establece que esta revisión F0 no aplica de forma retroactiva la regla propuesta de B.11, cuyo manifiesto es entregable de F3",
+  "Envelopes": [
+    {
+      "Kind": "FindingDispositions",
+      "Id": "A62-V11-01",
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Lines": [
+            1298,
+            1301
+          ],
+          "EnvelopeLines": 9,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeVisibleAfterCompaction": false
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Lines": [
+            1302,
+            1310
+          ],
+          "EnvelopeLines": 13,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeVisibleAfterCompaction": false
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Lines": [
+            1311,
+            1322
+          ],
+          "EnvelopeLines": 16,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeVisibleAfterCompaction": false
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Lines": [
+            1323,
+            1343
+          ],
+          "EnvelopeLines": 25,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeVisibleAfterCompaction": false
+        }
+      ],
+      "EnvelopeFaithful": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "O-V7-01",
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Lines": [
+            78,
+            78
+          ],
+          "EnvelopeLines": 2,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeVisibleAfterCompaction": false
+        }
+      ],
+      "EnvelopeFaithful": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "O-V7-02",
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Lines": [
+            78,
+            78
+          ],
+          "EnvelopeLines": 2,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeVisibleAfterCompaction": false
+        }
+      ],
+      "EnvelopeFaithful": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "O-05",
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Lines": [
+            78,
+            78
+          ],
+          "EnvelopeLines": 2,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeVisibleAfterCompaction": false
+        }
+      ],
+      "EnvelopeFaithful": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "O-07",
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Lines": [
+            78,
+            78
+          ],
+          "EnvelopeLines": 2,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeVisibleAfterCompaction": false
+        }
+      ],
+      "EnvelopeFaithful": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-01",
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Lines": [
+            1189,
+            1194
+          ],
+          "EnvelopeLines": 10,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeVisibleAfterCompaction": false
+        }
+      ],
+      "EnvelopeFaithful": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-02",
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Lines": [
+            1181,
+            1187
+          ],
+          "EnvelopeLines": 11,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeVisibleAfterCompaction": false
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Lines": [
+            1242,
+            1252
+          ],
+          "EnvelopeLines": 15,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeVisibleAfterCompaction": false
+        }
+      ],
+      "EnvelopeFaithful": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-03",
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Lines": [
+            1242,
+            1252
+          ],
+          "EnvelopeLines": 15,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeVisibleAfterCompaction": false
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Lines": [
+            1269,
+            1274
+          ],
+          "EnvelopeLines": 10,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeVisibleAfterCompaction": false
+        }
+      ],
+      "EnvelopeFaithful": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-04",
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Lines": [
+            1360,
+            1362
+          ],
+          "EnvelopeLines": 7,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeVisibleAfterCompaction": false
+        }
+      ],
+      "EnvelopeFaithful": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-05",
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Lines": [
+            1198,
+            1200
+          ],
+          "EnvelopeLines": 7,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeVisibleAfterCompaction": false
+        }
+      ],
+      "EnvelopeFaithful": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-06",
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v14.md",
+          "Lines": [
+            2382,
+            2382
+          ],
+          "EnvelopeLines": 5,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeVisibleAfterCompaction": false
+        }
+      ],
+      "EnvelopeFaithful": true
+    }
+  ]
+}

@@ -130,8 +130,9 @@ Ninguna entrada se afirma sin la comprobación DC-08 de [INITIATIVE_LIFECYCLE](.
 - Proposal vigente para revisión: [I-62-proposal-v14.md](I-62-proposal-v14.md), `Frozen: NO`. Es la corrección final del residuo de A62-V11-01: la
   clausura de dependencias normativas recorre un grafo canónico y acotado (`NormativeUnitRef`, resolución canónica, destinos propuestos en §3.1, documentos
   enteros clasificados y manifiesto de dependencias) ([disposición del Owner y del Coordinator](I-62-architect-review-v13-disposition.md)). Conserva todos
-  los cierres de V13 y anteriores. Paquete del Architect: [I-62-architect-package-v14.md](I-62-architect-package-v14.md), **una revisión formal final
-  pendiente**.
+  los cierres de V13 y anteriores. Paquete del Architect: [I-62-architect-package-v14.md](I-62-architect-package-v14.md). Revisión formal final de V14:
+  **BLOCKED — OWNER DECISION solo por OD-6**, con cero REQUIRED y A62-V11-01 CLOSED ([registro](I-62-architect-review-v14.md)); lista para el Consensus
+  Freeze una vez que el Owner decida OD-6 y el Coordinator dé su acuerdo.
 - Versiones anteriores, conservadas sin cambios:
   - [V1](I-62-proposal-v1.md) … [V5](I-62-proposal-v5.md) y sus paquetes: CHANGES REQUIRED del Coordinator (registros
     [v1](I-62-coordinator-review-v1.md) … [v5](I-62-coordinator-review-v5.md));
