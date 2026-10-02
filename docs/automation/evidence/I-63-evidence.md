@@ -1183,3 +1183,25 @@ difiere del SHA-256 transitorio por fin de línea (16.12).
   - A1-A8;
   - igualdad exacta de las seis colecciones con el contrato;
   - coherencia de alcance (A3 ampliada: ninguna entrada de `ForbiddenWriteScope` de la delegación cubre una de `AllowedWriteScope`).
+
+## 31. Corrección 2: segunda planificación rechazada en la aceptación (STOP P-03)
+
+- **Planificación** `R20261002T141601Z-4a2b` (Codex CLI, `gpt-6-luna`, `high`, efectivos = solicitados; cesión 14:16:10Z-14:17:57Z, código 0).
+  - El prompt transcribe literalmente las seis colecciones del contrato.
+  - Salida y entrada limpias.
+- **Igualdad exacta con el contrato** (comprobación de la sesión):
+  - `AllowedWriteScope`, `ForbiddenWriteScope`, `Invariants`, `RequiredTests` y las 25 `StopConditions` son iguales, y la coherencia de
+    alcance pasa: las correcciones de §30 funcionaron.
+  - `Authorities` vuelve a llevar tilde en dos etiquetas: `## Convenciones arquitectónicas (obligatorias)` (`AGENTS.md`) y `D1 (núcleo
+    neutral) y D24` (ADR-0043). El contrato y el JSON literal del prompt las escriben sin tilde.
+  - Es la misma normalización de `R20261002T011628Z-7097`. La planificación `R20261002T061154Z-9f77`, con el mismo método, sí las copió bien:
+    el modelo no la reproduce de forma estable.
+- **Aceptación:** A5 en `fail` y las demás en `pass`. Disposición **STOP (P-03)**; no se invoca al Worker.
+- **Contadores:** `attempts` = 2, sin cambio. Planificaciones del intento 2: 2, las dos con STOP P-03.
+- **Custodia:** `docs/automation/evidence/I-63-pilot/G1-RACK-METRICS/R20261002T141601Z-4a2b/`.
+- **Propuesta de la sesión:**
+  - **Remedio para el Controller:** el prompt nombra las dos trampas: las etiquetas `arquitectonicas` y `nucleo` van SIN tilde a propósito,
+    porque así está el encabezado real de `AGENTS.md:57`, y no se corrigen.
+  - **Regla para el Coordinator:** si A5 falla solo porque `Authorities` normaliza la ortografía de etiquetas (mismas rutas y clases, y las
+    demás colecciones exactas), la sesión repite la planificación sin volver al Coordinator, con el tope de 16.8 (dos reejecuciones por
+    fase); agotado el tope, STOP.
