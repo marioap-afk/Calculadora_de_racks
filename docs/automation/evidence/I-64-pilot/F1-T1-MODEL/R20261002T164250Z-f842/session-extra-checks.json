@@ -1,0 +1,18 @@
+{
+  "ExactCopy.Authorities": false,
+  "ExactCopy.AllowedWriteScope": true,
+  "ExactCopy.ForbiddenWriteScope": true,
+  "ExactCopy.Invariants": false,
+  "ExactCopy.RequiredTests": true,
+  "ExactCopy.ExpectedEvidence": false,
+  "ExactCopy.StopConditions": false,
+  "ExactCopy.Objective": false,
+  "CorrectionOfOk": true,
+  "TaskClass": "Documentación",
+  "RoutingRow": [
+    "DOCUMENTATION",
+    "Routine"
+  ],
+  "TaskClassNotController": true,
+  "PromptProfileMatchesRow": true
+}

@@ -1453,3 +1453,61 @@ hasta terminar Worker → verificación → nc1 → nc2 → nc3 (16.4 paso 5, li
 commit documental.
 
 `main` `819955d6` y Freeze intactos; `config.toml` sin cambio.
+
+## 29. F1-T1-MODEL — Planificación 5/5 rechazada (A5 por codificación) y reejecución autorizada
+
+Sección nueva; las anteriores no se reescriben. Hechos de la sesión responsable. Sin cierre de la tarea ni F1 PASS.
+
+**Planificación 5/5** (`R20261002T164250Z-f842`; Codex `gpt-6-luna` / `high`, efectivo comprobado; `BaseSha` `58d1140c`):
+- Salida válida contra el esquema; delegación SHA-256 `C45E8377…AEC20C`.
+- Correctos: `CorrectionOf` {`R20261002T151201Z-abb1`, StopCondition, `6fb6b914…`}, Attempt 3 y AttemptsRemaining 0, la cadena, Worker sonnet /
+  `medium` y clase «Documentación».
+- A1-A8 sin cortocircuito: **A1-A4 y A6-A8 en pass; A5 en FAIL**. La comparación se hizo sobre cadenas ya decodificadas con `json.load`, no sobre
+  su representación textual.
+
+**Evidencia del defecto de codificación:**
+- `output.json` contiene 52 secuencias JSON `\u0000` seguidas del código hexadecimal del carácter previsto. Ejemplo: `sesi\u0000f3n`, que se
+  decodifica como «sesi» + U+0000 + «f3n», en lugar de «sesión».
+- Afecta a 5 invariantes, a los encabezados de autoridad de la evidencia §19 y de AUTOMATION_PLAN §16, a `Objective`, `ExpectedEvidence` y
+  `StopConditions`.
+- El texto del `agent_message` de `events.jsonl` ya trae la misma secuencia: la generó el Controller, no el CLI ni el transporte.
+- La planificación 4/4 (`R20261002T140200Z-3886`), con el mismo contrato, emitió UTF-8 literal correcto.
+
+**Decisión del Coordinator** (chat, 2026-10-02; resumen saneado):
+- La planificación 5/5 queda **REJECTED_BEFORE_WORKER** (STOP P-03; A5 FAIL).
+- **No se cierra por S-11.** Es un fallo de la fase de planificación, anterior a la aceptación y al Worker. No es un REWORK de producto ni una
+  corrección nueva, así que **`attempts` sigue en 3 y Attempt en 3**.
+- El STOP se resuelve con una **reejecución de la fase de planificación**. Tope de planificación ampliado solo para esta recuperación: máximo 6,
+  consumidas 5, restante 1, **la última**. Trabajo (4), verificación productiva (4) y `attempts` (3) no se amplían.
+- Termina la prohibición de commits tras `58d1140c`: el STOP se versiona antes de reescribir el prompt. **Este commit es el nuevo `BaseSha`** de
+  la sexta planificación.
+- **Nuevo prompt:**
+  - en ASCII;
+  - el Controller carga el `gate-contract.json` canónico y copia sus estructuras;
+  - si reproduce texto, usa escapes JSON Unicode correctos (`ó`, `í`, `á`, `é`, `ú`, `ñ`), con prohibición
+    expresa de la forma «NUL + hex».
+- **A5 se evalúa tras decodificar el JSON.** «sesión» y su forma escapada correcta son equivalentes.
+- El trabajo autorizado no cambia: solo el comentario XML de `WorkspaceSessionRegistry`, sin cambio ejecutable.
+- Si A1-A8 pasan: parada en `COORDINATOR_ACCEPTANCE_REQUIRED`, sin Worker. Si vuelve a fallar: STOP final de la planificación, sin séptima.
+
+**Análisis del Coordinator** (texto literal):
+- Ubicación: `artifacts/orchestration/I-64/F1-T1-MODEL/3/R20261002T164250Z-f842/analysis.md`; custodiado en
+  `docs/automation/evidence/I-64-pilot/F1-T1-MODEL/R20261002T164250Z-f842/analysis.md`.
+- 25 líneas en ASCII con LF. SHA-256 `415811c5c48be9bebaae74fb454c0ba73d39b9c4644f4eed93a0d604506b6fb7`.
+- La sexta planificación lo cita en `CorrectionOf` (`RunId` `R20261002T164250Z-f842`, FailureClass StopCondition).
+
+**Custodia (16.12)** en `docs/automation/evidence/I-64-pilot/F1-T1-MODEL/R20261002T164250Z-f842/`: contrato, prompt, delegación,
+registro de relevo (Disposition STOP), A1-A8 con sus razones, comprobaciones adicionales, relevos y `analysis.md`. `events.jsonl` (SHA-256
+`BB58AE28…57DB4F`) no se versiona.
+
+**Presupuesto:**
+
+| Tipo | Uso |
+|---|---|
+| Planificación | 5 de 6 |
+| Trabajo | 3 de 4 |
+| Verificación productiva | 3 de 4 |
+| `attempts` | 3 de 3 (Attempt 3) |
+| CONTROL | independiente, sin usar en la recuperación |
+
+`main` `819955d6` y Freeze intactos; `config.toml` sin cambio.
