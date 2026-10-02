@@ -4,11 +4,11 @@ automation_state:
   branch: architecture/portabilidad-coordinador-principal
   claim_id: 5b661a17-8c18-4183-8554-3866059cba2b
   current_phase: F2
-  state: implementing
+  state: review-ready
   gate: none
   attempts: 0
-  next_action: custodiar la CI y el Core Full del SHA exacto del commit de F2, publicar el paquete de gate de F2 (C-05..C-10) y la preparación de F3, F4, F6 y F7 ordenada en decisions §33; sin implementar F3.
-  last_evidence_commit: 12660ea76f224694ea7fce1f13b122ffb9d9ade5
+  next_action: el Coordinator revisa el paquete de gate de F2 (docs/automation/evidence/I-62-F2/f2-gate-packet.json; evidence §§35-36) y decide su GATE PASS; F3 no se implementa sin su orden; el dossier de F3 está en docs/automation/evidence/I-62-prep/.
+  last_evidence_commit: 1eddbf48dbefd9685e68d63c0560bacf484d2dcb
 execution_context:
   mode: manual
   automation_enabled: false
@@ -23,5 +23,6 @@ execution_context:
   f1_status: GATE PASS / COMPLETE por el Coordinator sobre 12660ea7 (C-01..C-04 PASS; decisions §33)
   f1_scope: ADR-0048 propuesto; plano (b) inactivo en docs/AUTOMATION_PLAN.md (§16.1, 16.14-16.17) y docs/automation/agent-execution/README.md §12; corrección factual de PROMPT_TEMPLATES §2; guardas C-01 y C-03; MC de C-04
   implementation_authorization: solo F2; F3 y siguientes = NO salvo una decisión posterior del Coordinator; I-61 sigue siendo el protocolo activo hasta la frontera efectiva de I-62
-  f2_status: IN PROGRESS; implementación publicada, paquete de gate pendiente (decisions §33; evidence §35)
+  f2_status: REVIEW_READY sobre 1eddbf48 (CI 37075239120 4/4; Core Full exacto 12412/12412; C-05..C-10 y C-19 PASS; sin GATE PASS propio)
   f2_scope: AUTOMATION_PLAN 16.18-16.19; adapters/ (5 descriptores); preflight.v1, relay-record.v2, controller-verification.v2 y 5 esquemas de hechos; README §13; routing §8; guardas C-05, C-09, C-10 y C-19; MC C-06, C-07, C-08 y C-10
+  preparation: docs/automation/evidence/I-62-prep/ (F3, F4, F6, F7, READY, OV y cierre; FC-01 y FC-02 como A-n candidatas sin aplicar; paquetes OD-2, OD-3, OD-4, OD-5, OD-7 y DEP-F4-YAML sin solicitar)

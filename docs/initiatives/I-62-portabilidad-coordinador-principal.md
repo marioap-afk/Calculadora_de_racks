@@ -188,7 +188,8 @@ según [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §7; aquí no se prome
 
 - **F0:** GATE PASS del Coordinator ([decisiones](../automation/decisions/I-62.md) §32).
 - **F1:** GATE PASS del Coordinator (C-01..C-04; [decisiones](../automation/decisions/I-62.md) §33; [evidencia](../automation/evidence/I-62-evidence.md) §34).
-- **F2:** en curso (evidencia §35). Solo el Coordinator declara su GATE PASS.
+- **F2:** REVIEW_READY: paquete de gate en la [evidencia](../automation/evidence/I-62-evidence.md) §36. Solo el Coordinator declara su GATE PASS.
+- **F3-F7, READY y cierre:** preparados sin materializar ([I-62-prep](../automation/evidence/I-62-prep/README.md)).
 
 ## 9. Owner Validation
 
