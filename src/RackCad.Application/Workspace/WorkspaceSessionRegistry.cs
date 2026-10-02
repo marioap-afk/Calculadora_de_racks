@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RackCad.Application.Workspace
 {
-    /// <summary>Pure registry of the live sessions: one per open document instance (D-03).</summary>
+    /// <summary>Pure, transient in-memory registry of the live document sessions: one per open document instance (D-03); it has no persistence authority.</summary>
     public sealed class WorkspaceSessionRegistry
     {
         private long _next;
