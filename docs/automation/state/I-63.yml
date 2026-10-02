@@ -4,11 +4,11 @@ automation_state:
   branch: architecture/parametros-calculados-resumen-proyecto
   claim_id: ce04f47f-ca53-4e75-b983-5ac57ab6c5e3
   current_phase: G1
-  state: waiting
+  state: implementing
   gate: none
   attempts: 1
-  next_action: Decision del Coordinator sobre el STOP P-03 de la aceptacion de la correccion 1 (planificacion R20261002T011628Z-7097, A5; evidencia §25).
-  last_evidence_commit: faa5f16e6b3596033550d8c63208717db3fd92a4
+  next_action: Planificacion nueva del intento 1 con Authorities copiadas byte a byte (resolucion del STOP P-03), aceptacion A1-A8 y, si pasa, Worker RED/GREEN, CI y verificacion.
+  last_evidence_commit: 29fad1507e7ce60ca1040718c96430fabc7c28ed
 execution_context:
   mode: manual
   automation_enabled: false
@@ -17,7 +17,7 @@ execution_chain:
   gate: G1
   task_id: G1-RACK-METRICS
   attempt: 1
-  next_role: Coordinator (STOP P-03 de la aceptacion; A5 por etiquetas de Authorities con tilde)
+  next_role: Controller (CONTROLLER_PLANNING, Codex CLI gpt-6-luna), planificacion nueva del intento 1
   next_action: Correccion 1 (CorrectionOf R20261002T005944Z-1192, FailureClass Ci, analysis.md SHA-256 6080f3d008d032d4c6565f5f38df849f294c1a3c981d8ce9c31a14c5259a1fb8) -> planificacion -> aceptacion A1-A8 -> Worker RED solo de pruebas + GREEN -> CI -> verificacion -> nc1-nc3 si VERIFIED -> custodia
   correction_rules: [namespace RackCad.Tests, clases ComputedParameters*, sin tocar NamespaceFolderGuardTests ni el contrato o su filtro, sin terminos de gate en el texto libre, RED nuevo solo de pruebas antes del GREEN, peticion sin hermanas con RackId identificable -> ArgumentException]
   red_sha: 1013449d61b8292b77273ceeac30b82282b975a2 (acreditado; ChainRedFiles = las dos pruebas de tests/RackCad.Tests/ComputedParameters/)

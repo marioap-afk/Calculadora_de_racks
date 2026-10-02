@@ -1060,3 +1060,13 @@ transitorio por fin de línea (16.12); el contenido es el mismo.
   - Que el prompt exija copiar `Authorities` del contrato **byte a byte** (ruta, sección y clase, sin normalizar tildes ni ortografía).
   - Que la sesión compare antes de aceptar, como ya hace A5.
   - Sin incremento de `attempts` (README §9: no cambia el trabajo).
+
+## 26. Resolución del STOP P-03 y continuación de la corrección 1
+
+- **Orden del Coordinator**, pegada por el usuario en el chat el 2026-10-02. Resumen en las [decisiones](../decisions/I-63.md) §2.
+  - Resuelve P-03 sin cambio del trabajo; `attempts` sigue en 1 (README §9).
+  - Planificación nueva con `RunId` nuevo; `Authorities[]` copiadas byte a byte del contrato emitido.
+  - A1-A8 deben estar en `pass` antes del Worker. Con `pass`, la cadena sigue de forma autónoma hasta la verificación; con STOP, vuelve al
+    Coordinator.
+- **Comprobación de la sesión:** además de A5, compara cada `Authorities[i]` de la delegación con el contrato por igualdad de bytes, antes
+  de aceptar.
