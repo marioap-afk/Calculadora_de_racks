@@ -2,17 +2,18 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:ct21d:i1-p2:v1",
   "title": "ct21d.i1-p2.v1",
-  "description": "CT-21D I-1 family 2, artifact P2: OFFLINE ANALYSIS RECORD of the two P2 test files and of the operator-entered screen results (non-governing, activity H5). Closed schema: additionalProperties false everywhere. The record decides no run status; it cannot see tuple drift, processes, dialogs or writes outside the P2 evidence root.",
+  "description": "CT-21D I-1 family 2, artifact P2: OFFLINE ANALYSIS RECORD of the two P2 test files and of the operator-entered screen results (non-governing, activity H10). Closed schema: additionalProperties false everywhere. The record decides no run status; it cannot see tuple drift, processes, dialogs or writes outside the P2 evidence root. It carries no governed attribute value.",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "schemaVersion", "runId", "activity", "governing", "protocolFamily", "p2TextSha256", "ledgerSha256",
-    "files", "otherEntryNames", "screen", "screenshotSha256", "screenCustodyPresent", "stopConditionRecorded", "characterization"
+    "files", "otherEntryNames", "screen", "expressionResults", "openGate", "screenshotSha256", "checkpoints", "checkpointsMissing",
+    "screenCustodyPresent", "stopConditionRecorded", "characterization"
   ],
   "properties": {
     "schemaVersion": { "const": "ct21d.i1-p2.v1" },
-    "runId": { "type": "string", "pattern": "^HGP-H5-[0-9]{8}T[0-9]{6}Z-[0-9]{2}$" },
-    "activity": { "const": "H5" },
+    "runId": { "type": "string", "pattern": "^HGP-H10-[0-9]{8}T[0-9]{6}Z-[0-9]{2}$" },
+    "activity": { "const": "H10" },
     "governing": { "const": false },
     "protocolFamily": { "const": "I1-F2" },
     "p2TextSha256": { "$ref": "#/$defs/sha256" },
@@ -30,13 +31,29 @@
     },
     "screen": {
       "type": "array",
-      "maxItems": 19,
+      "maxItems": 25,
       "items": { "$ref": "#/$defs/screenEntry" }
     },
+    "expressionResults": {
+      "type": "array",
+      "maxItems": 25,
+      "items": { "$ref": "#/$defs/expressionResult" }
+    },
+    "openGate": { "enum": ["PASSED", "STOP_BEFORE_OPEN", "UNKNOWN"] },
     "screenshotSha256": {
       "type": "array",
       "maxItems": 64,
       "items": { "$ref": "#/$defs/sha256" }
+    },
+    "checkpoints": {
+      "type": "array",
+      "maxItems": 5,
+      "items": { "$ref": "#/$defs/checkpoint" }
+    },
+    "checkpointsMissing": {
+      "type": "array",
+      "maxItems": 5,
+      "items": { "$ref": "#/$defs/checkpointId" }
     },
     "screenCustodyPresent": { "type": "boolean" },
     "stopConditionRecorded": { "type": "boolean" },
@@ -45,15 +62,16 @@
       "additionalProperties": false,
       "required": [
         "openTwoArg", "openThreeArgUtf8", "findfileAbsent", "findfilePresent",
-        "writeLineTerminator", "strlenSemantics", "productKeyShape", "userFunctionArityControl"
+        "writeLineTerminator", "escapeInterpretation", "strlenSemantics", "productKeyShape", "userFunctionArityControl"
       ],
       "properties": {
-        "openTwoArg": { "$ref": "#/$defs/item" },
-        "openThreeArgUtf8": { "$ref": "#/$defs/item" },
+        "openTwoArg": { "$ref": "#/$defs/openItem" },
+        "openThreeArgUtf8": { "$ref": "#/$defs/openItem" },
         "findfileAbsent": { "$ref": "#/$defs/item" },
         "findfilePresent": { "$ref": "#/$defs/item" },
         "writeLineTerminator": { "$ref": "#/$defs/item" },
-        "strlenSemantics": { "$ref": "#/$defs/item" },
+        "escapeInterpretation": { "$ref": "#/$defs/escapeItem" },
+        "strlenSemantics": { "$ref": "#/$defs/strlenItem" },
         "productKeyShape": { "$ref": "#/$defs/item" },
         "userFunctionArityControl": { "$ref": "#/$defs/item" }
       }
@@ -63,6 +81,20 @@
     "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
     "optSha256": { "type": "string", "pattern": "^([0-9a-f]{64})?$" },
     "hexBytes": { "type": "string", "pattern": "^([0-9a-f]{2})*$", "maxLength": 128 },
+    "packageStatus": { "enum": ["OBSERVED", "OBSERVED_DIFFERS", "UNKNOWN", "NOT_OBSERVABLE", "NOT_OBSERVED", "INVALID"] },
+    "result": { "enum": ["SUPPORTED", "UNSUPPORTED", "HOST_ERROR", "OPERATOR_DEVIATION", "INCOMPLETE", "UNKNOWN"] },
+    "formVerdict": { "enum": ["SUPPORTED", "UNSUPPORTED", "HOST_ERROR", "DIFFERENT", "INCOMPLETE", "UNKNOWN"] },
+    "category": { "enum": ["NONE", "ARITY", "ARGUMENT_VALUE", "DEFINITION", "HELPER", "GUARD", "OTHER"] },
+    "checkpointId": { "enum": ["P2-E05", "P2-E09", "P2-E17", "P2-E19", "P2-E25"] },
+    "checkpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["after", "sha256"],
+      "properties": {
+        "after": { "$ref": "#/$defs/checkpointId" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
     "file": {
       "type": "object",
       "additionalProperties": false,
@@ -90,9 +122,19 @@
       "additionalProperties": false,
       "required": ["id", "classification", "text"],
       "properties": {
-        "id": { "type": "string", "pattern": "^P2-E(0[1-9]|1[0-9])$" },
+        "id": { "type": "string", "pattern": "^P2-E(0[1-9]|1[0-9]|2[0-5])$" },
         "classification": { "enum": ["OK", "ERROR_TEXT_VERBATIM", "REFUSED", "DEVIATION"] },
         "text": { "type": "string", "maxLength": 4000 }
+      }
+    },
+    "expressionResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "result", "category"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^P2-E(0[1-9]|1[0-9]|2[0-5])$" },
+        "result": { "$ref": "#/$defs/result" },
+        "category": { "$ref": "#/$defs/category" }
       }
     },
     "item": {
@@ -100,8 +142,40 @@
       "additionalProperties": false,
       "required": ["status", "detail"],
       "properties": {
-        "status": { "enum": ["OBSERVED", "OBSERVED_DIFFERS", "UNKNOWN", "NOT_OBSERVABLE"] },
+        "status": { "$ref": "#/$defs/packageStatus" },
         "detail": { "type": "string", "maxLength": 4000 }
+      }
+    },
+    "openItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "detail", "result", "formVerdict"],
+      "properties": {
+        "status": { "$ref": "#/$defs/packageStatus" },
+        "detail": { "type": "string", "maxLength": 4000 },
+        "result": { "$ref": "#/$defs/result" },
+        "formVerdict": { "$ref": "#/$defs/formVerdict" }
+      }
+    },
+    "strlenItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "detail", "label"],
+      "properties": {
+        "status": { "$ref": "#/$defs/packageStatus" },
+        "detail": { "type": "string", "maxLength": 4000 },
+        "label": { "enum": ["CHARACTER_INTERPRETATION_CANDIDATE", "UTF8_BYTE_COUNT_LIKE", "ESCAPE_UNINTERPRETED", "OTHER_VALUE", "NOT_DETERMINED"] }
+      }
+    },
+    "escapeItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "detail", "label", "printedCode"],
+      "properties": {
+        "status": { "$ref": "#/$defs/packageStatus" },
+        "detail": { "type": "string", "maxLength": 4000 },
+        "label": { "enum": ["ACCENT_CODEPOINT_LIKE", "UTF8_LEAD_BYTE_LIKE", "BACKSLASH_UNINTERPRETED", "OTHER_CODE", "NOT_DETERMINED"] },
+        "printedCode": { "type": "string", "pattern": "^[0-9]{0,6}$" }
       }
     }
   }
