@@ -882,3 +882,34 @@ IMPLEMENTATION AUTHORIZATION = NO hasta que Coordinator y Architect hayan acorda
 - Lo prepara la sesión. Lo **emite y autoriza el Coordinator** (README §1); hasta entonces no hay delegación, Controller, Worker ni
   implementación.
 - El `AuthorityRevision` del borrador es el commit de la A-1. Su SHA-256 y su validación contra el esquema se informan al Coordinator.
+
+## 22. Gate G1 bajo I-61: emisión del contrato y relevo
+
+### 22.1 CI de la A-1
+
+| Commit | SHA | Corrida `push` | Resultado |
+|---|---|---|---|
+| A-1 | `658b35ad498520ba3c832a96eea4389df16dfa60` | 36945143490 | `success`; cuatro jobs requeridos en `success` |
+
+### 22.2 Orden y contrato emitido
+
+- **Orden:** «I-63 — COORDINATOR GATE ORDER — G1», pegada por el usuario en el chat el 2026-10-02. No llegó como archivo. Resumen en
+  las [decisiones](../decisions/I-63.md) §2. **F0 = PASS. G1 = AUTHORIZED.**
+- **Contrato emitido:** `artifacts/orchestration/I-63/G1-RACK-METRICS/0/R20261002T002817Z-6294/gate-contract.json`, en `artifacts/`, que ignora `.gitignore`.
+  - Esquema `rackcad-gate-contract/v1`, válido con `Test-Json`. SHA-256 `87954E41E2F96B992DB7D02205E4102551DAC2A14351A8EBDFDD3838231B2068`.
+  - Respecto del borrador validado (SHA-256 `E920076C…6C4`) cambian **solo** `CorrectionsAuthorized` (`false` → `true`), `IssuedBy`
+    (`Coordinator I-63`) e `IssuedUtc` (`2026-10-02T00:28:17Z`, recepción de la orden en la sesión). Lo comprobó una comparación campo a
+    campo.
+  - `AuthorityRevision` `658b35ad`; `MainSha` `819955d6`; alcance `src/RackCad.Application/ComputedParameters/` y
+    `tests/RackCad.Tests/ComputedParameters/`.
+
+### 22.3 Hechos del entorno para la delegación
+
+- **Codex CLI:** `%LOCALAPPDATA%\OpenAI\Codex\bin\a51e250fa15c740a\codex.exe`, `codex-cli 0.159.2`, la misma versión de la celda del
+  catálogo. Es el único binario presente; la ruta `c6fe824d725f02d7` de I-61 ya no existe.
+- **`config.toml`, línea base:** SHA-256 `40C27B570B0056BC6D2B5AAF460628922C5AD39A405751E68B9001FFDF15F74F`. Cada relevo compara salida y
+  entrada (P-01).
+- **Worker:** subagente lanzado con un workflow de un solo agente con `model` y `effort` explícitos, como en las invocaciones medidas de
+  I-61 (evidencia de I-61, `wf_9bb26e7e-466` y `wf_306d36ac-e20`).
+- **Tope de invocaciones (P-07):** el plan de gates de la Proposal V3 §21 no fija un tope de invocaciones para I-63. Rigen los topes de
+  AUTOMATION_PLAN 16.8: dos reejecuciones por fase, `MaxReworkLoops` = 3 y `attempts` < `automation.max_attempts` = 3.

@@ -4,27 +4,31 @@ automation_state:
   branch: architecture/parametros-calculados-resumen-proyecto
   claim_id: ce04f47f-ca53-4e75-b983-5ac57ab6c5e3
   current_phase: G1
-  state: waiting
+  state: implementing
   gate: none
   attempts: 0
-  next_action: El Coordinator autoriza el gate G1 sobre el borrador de contrato I-61 (artifacts/orchestration/I-63/G1/1/R20261002T001347Z-ed7a/gate-contract.json); sin implementacion antes.
-  last_evidence_commit: f61d0aca859a11b15cbe1797069a83cba873ba95
+  next_action: Controller de planificacion I-61 para G1-RACK-METRICS (RunId R20261002T002817Z-6294); despues aceptacion, Worker RED y GREEN, CI y verificacion.
+  last_evidence_commit: 658b35ad498520ba3c832a96eea4389df16dfa60
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-parametros-calculados-resumen-proyecto
-review_chain:
-  next_role: Coordinator
-  next_action: Autorizar el gate G1 (o devolver el borrador de contrato con cambios); despues, ejecucion I-61 de G1
+execution_chain:
+  gate: G1
+  task_id: G1-RACK-METRICS
+  attempt: 0
+  next_role: Controller (CONTROLLER_PLANNING, Codex CLI gpt-6-luna)
+  next_action: Planificacion -> aceptacion A1-A8 y nc4 -> Worker RED/GREEN -> CI -> verificacion del Controller -> nc1-nc3 -> custodia
+  gate_contract: artifacts/orchestration/I-63/G1-RACK-METRICS/0/R20261002T002817Z-6294/gate-contract.json (SHA-256 87954E41E2F96B992DB7D02205E4102551DAC2A14351A8EBDFDD3838231B2068; no versionado)
+  planning_run_id: R20261002T002817Z-6294
+  authority_revision: 658b35ad498520ba3c832a96eea4389df16dfa60
+  main_sha: 819955d61a6da4c811a11fbd11b5dca13f634b7c
   freeze_commit: f61d0aca859a11b15cbe1797069a83cba873ba95
-  frozen_proposal_path: docs/initiatives/I-63-proposal-v3.md
   frozen_proposal_blob: 4d5dedce15363fa6378e460c5b63005fe41b858b
-  agreed_commit: fb3c87888ed583d1117ca565ce4751b51f67a81b
-  agreed_blob: e4a94effa99f29e06b447a3ce07ec5bcc41f0b6d
-  amendments: [A-1 docs/initiatives/I-63-proposal-v3-amendment-a1-verificacion.md (blob 766d9ba9cf379daa077bed20fc6255b5ca656d60; commit = git log -1 -- esa ruta)]
-  owner_validation: NOT APPLICABLE (orden de Freeze)
-  g1_contract_draft: artifacts/orchestration/I-63/G1/1/R20261002T001347Z-ed7a/gate-contract.json (no versionado; artifacts/ esta en .gitignore; SHA-256 en el informe al Coordinator)
-  open_required_ids: []
-  architect_session_identity: local_d5787742-7168-40f7-b18f-56abcf3eda7c (titulo "I-63 Architect Review R1"; R1, R2 y R3)
-  stop_conditions: implementar sin autorizacion del gate; cualquier cambio de la Proposal V3 congelada (solo A-n); STOP normativo; OWNER-RESERVED
+  amendments: [A-1 docs/initiatives/I-63-proposal-v3-amendment-a1-verificacion.md (blob 766d9ba9cf379daa077bed20fc6255b5ca656d60)]
+  allowed_write_scope: [src/RackCad.Application/ComputedParameters/, tests/RackCad.Tests/ComputedParameters/]
+  required_invariants: [INV-04, INV-05, INV-09, INV-14, INV-16, INV-34 (peticion)]
+  expected_result: EXECUTION_VERIFIED del Controller sobre el SHA GREEN y evidencia completa para que el Coordinator juzgue G1
+  return_to_coordinator_when: EXECUTION_VERIFIED con evidencia completa; STOP; cambio material, de autoridad o de alcance; presupuesto agotado; AUTONOMY_GAP
+  not_authorized: [G2, G3, G4]
   owner_escalation_conditions: OWNER-RESERVED; decision material del Owner; STOP que requiera al Owner; credenciales, autenticacion o compra; accion irreversible o destructiva
