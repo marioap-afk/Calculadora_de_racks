@@ -1,0 +1,2513 @@
+{
+  "Schema": "rackcad-input-fidelity/v1 (representación experimental; Proposal V14 §20.3.3; no autoridad normativa) — PREFLIGHT",
+  "UtcCompleted": "2026-10-02T19:19:48Z",
+  "AuthorityRevision": "4c617e82b32b6c810b68d75fc19472efed22b393",
+  "Clone": "D:\\r62-arch-v14",
+  "TransportPath": "codex sandbox (sandbox de Windows de codex-cli 0.159.2) -> pwsh del runtime de Codex -NoProfile -Command <script>; mismo binario, cuenta de sandbox y PATH que codex exec; no reproduce la captura interna de codex exec (comprobación decisiva tras la corrida)",
+  "RuntimeFacts": {
+    "LanguageMode": "ConstrainedLanguage",
+    "ConsoleOutputEncodingDefault": "ibm850 (página 850)"
+  },
+  "ReadPolicy": {
+    "LargeFileThresholdBytes": 150000,
+    "MaxRangeLines": 150,
+    "LargeFiles": [
+      "docs/initiatives/I-62-proposal-v14.md",
+      "docs/initiatives/I-62-proposal-v13.md",
+      "docs/automation/evidence/I-62-architect-v13/R20261002T165850Z-648a/normative-dependency-closures.json",
+      "docs/HANDOFF.md",
+      "docs/ROADMAP.md"
+    ],
+    "Note": "parámetro operativo de esta invocación (GAP-10); no es un requisito congelado de la arquitectura"
+  },
+  "AllowedReadForms": {
+    "A_only_small_files": "cmd /c type {win}",
+    "B_range": "cmd /c 'chcp 65001 >nul & pwsh -NoProfile -Command \"Get-Content -LiteralPath {posix} -Encoding utf8 | Select-Object -Skip {skip} -First {first}\"'",
+    "C": "cmd /c 'chcp 65001 >nul & pwsh -NoProfile -Command \"Select-String -LiteralPath {posix} -Encoding utf8 -Pattern {pat} | ForEach-Object { [string]$_.LineNumber + [char]58 + $_.Line }\"'"
+  },
+  "AllowedNormalization": "fin de línea (CRLF <-> LF) y salto final",
+  "CorpusDistinctNonAscii": 62,
+  "Corpus": "§ª«°±·»¿ÁÉÍÑÓ×ÚÜáéíñóúüΔα–—“”…′←→↓↔⇒⇔∅∈∉−∖∧∩∪≈≠≡≤≥⊆⊇─│┐┘├┤✅✋✓�",
+  "Inputs": [
+    {
+      "InputRef": "docs/initiatives/I-62-proposal-v14.md",
+      "Bytes": 342761,
+      "CanonicalSha256": "ab55ad4f4addef8455543ed06a4c60aa0a1901affc0ba3686146dfeedd9279af",
+      "Forms": {
+        "B_range_chunks": {
+          "Chunks": 23,
+          "AllChunksEqual": true,
+          "CountMismatches": {},
+          "Status": "FAITHFUL_NORMALIZED",
+          "Detail": [
+            {
+              "Skip": 0,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 150,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 300,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 450,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 600,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 750,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 900,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1050,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1200,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1350,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1500,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1650,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1800,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1950,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2100,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2250,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2400,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2550,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2700,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2850,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 3000,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 3150,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 3300,
+              "First": 150,
+              "Equal": true
+            }
+          ]
+        }
+      },
+      "ReadPolicy": "solo forma B por rangos de 150 líneas como máximo"
+    },
+    {
+      "InputRef": "docs/initiatives/I-62-architect-package-v14.md",
+      "Bytes": 11722,
+      "CanonicalSha256": "587722d0ddf966d6f24d0e08413c3f80275809c49cedccee7f8015442830c519",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "78a7ca0fe443e047e488c6ca40c16ff3d611c8c63e403639e0540e5f0dd7e4fb",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "78a7ca0fe443e047e488c6ca40c16ff3d611c8c63e403639e0540e5f0dd7e4fb",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/I-62-proposal-v13.md",
+      "Bytes": 330701,
+      "CanonicalSha256": "f9880c2ecd7b54c97751c4d07a5e13c944baa97fb8307fdea209781df0c844c1",
+      "Forms": {
+        "B_range_chunks": {
+          "Chunks": 22,
+          "AllChunksEqual": true,
+          "CountMismatches": {},
+          "Status": "FAITHFUL_NORMALIZED",
+          "Detail": [
+            {
+              "Skip": 0,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 150,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 300,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 450,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 600,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 750,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 900,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1050,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1200,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1350,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1500,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1650,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1800,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1950,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2100,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2250,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2400,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2550,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2700,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2850,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 3000,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 3150,
+              "First": 150,
+              "Equal": true
+            }
+          ]
+        }
+      },
+      "ReadPolicy": "solo forma B por rangos de 150 líneas como máximo"
+    },
+    {
+      "InputRef": "docs/initiatives/I-62-architect-package-v13.md",
+      "Bytes": 12777,
+      "CanonicalSha256": "c7eb1bdef7abe94280710091c8a677b61bada6e33ee0e14ba9af84ad8babfa0c",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "1704c2bd54ec47cf4b55a14186f8f2aa45199868ceef4f0e899fe66e2b3d5052",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "1704c2bd54ec47cf4b55a14186f8f2aa45199868ceef4f0e899fe66e2b3d5052",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/I-62-architect-review-v13-disposition.md",
+      "Bytes": 9603,
+      "CanonicalSha256": "e6d53f2dba11d06b03050be63228225057bbe5fe494c10e50bd48344bc2f5835",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "ee83f9a051027fb05152833aa5bfda23c6d97647f835e2ca9f794f96b128334e",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "ee83f9a051027fb05152833aa5bfda23c6d97647f835e2ca9f794f96b128334e",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/I-62-architect-review-v13.md",
+      "Bytes": 7479,
+      "CanonicalSha256": "78edc477c67f8a11947dbeb23541f1fce38793724592c372dde896077f840b53",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "51b10622b30995ff61ee70c0bbc426760eb46b63ca527f1008e3040b895fe33b",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "51b10622b30995ff61ee70c0bbc426760eb46b63ca527f1008e3040b895fe33b",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v13/R20261002T165850Z-648a/README.md",
+      "Bytes": 13193,
+      "CanonicalSha256": "8f9f92085470df5fdf48288d4f066b807b6ac87a88058a1b39267786f0bbbfa4",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "c9b184c531a4712f66d655a86272d53d3a4030544b967d67624161891f8c24f5",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "c9b184c531a4712f66d655a86272d53d3a4030544b967d67624161891f8c24f5",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v13/R20261002T165850Z-648a/closure.json",
+      "Bytes": 32048,
+      "CanonicalSha256": "2b2538af19467c907a9762fc6cc34685b0e38984f6cadd38c1bbfa1d552ed891",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "2b2538af19467c907a9762fc6cc34685b0e38984f6cadd38c1bbfa1d552ed891",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "2b2538af19467c907a9762fc6cc34685b0e38984f6cadd38c1bbfa1d552ed891",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v13/R20261002T165850Z-648a/input-fidelity-postrun.json",
+      "Bytes": 3334,
+      "CanonicalSha256": "b6494532ee23c8598f49510843b3fa4da2b86931455262aee0122f0bfde6665c",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "5c38a0771ef1ab6085d6f9de1356e5ffc8ca9958c6dab2f269bfe1ac7c5c5a50",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "5c38a0771ef1ab6085d6f9de1356e5ffc8ca9958c6dab2f269bfe1ac7c5c5a50",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v13/R20261002T165850Z-648a/input-fidelity-preflight.json",
+      "Bytes": 72024,
+      "CanonicalSha256": "c91ccd48776c58558bd3b5b5464adbd333227b60060524563a39f0846ad35df3",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "c91ccd48776c58558bd3b5b5464adbd333227b60060524563a39f0846ad35df3",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "c91ccd48776c58558bd3b5b5464adbd333227b60060524563a39f0846ad35df3",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v13/R20261002T165850Z-648a/normative-dependency-closures.json",
+      "Bytes": 222786,
+      "CanonicalSha256": "fb72e83cc13d4beecf7d503997cba9dd998dbbf5ad0cc94bd33c3821f17f26a2",
+      "Forms": {
+        "B_range_chunks": {
+          "Chunks": 20,
+          "AllChunksEqual": true,
+          "CountMismatches": {},
+          "Status": "FAITHFUL_NORMALIZED",
+          "Detail": [
+            {
+              "Skip": 0,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 150,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 300,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 450,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 600,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 750,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 900,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1050,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1200,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1350,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1500,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1650,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1800,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1950,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2100,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2250,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2400,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2550,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2700,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2850,
+              "First": 150,
+              "Equal": true
+            }
+          ]
+        }
+      },
+      "ReadPolicy": "solo forma B por rangos de 150 líneas como máximo"
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v13/R20261002T165850Z-648a/output.json",
+      "Bytes": 39556,
+      "CanonicalSha256": "1efa96eef31cd5fa5099ac1e290919d8dfa38137dfd409e15ffca0cf8859c9d5",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "1efa96eef31cd5fa5099ac1e290919d8dfa38137dfd409e15ffca0cf8859c9d5",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "1efa96eef31cd5fa5099ac1e290919d8dfa38137dfd409e15ffca0cf8859c9d5",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v13/R20261002T165850Z-648a/premise-envelopes.json",
+      "Bytes": 11598,
+      "CanonicalSha256": "fa57b96bd42bf2cc78163d2cd43175c7213b213e03d63595fd54c9cac52396eb",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "d7b4bfd871cc41cb7b0ef378c5ac7423c9b3e9f259aa95b0c34cc7c519f6eb20",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "d7b4bfd871cc41cb7b0ef378c5ac7423c9b3e9f259aa95b0c34cc7c519f6eb20",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v13/R20261002T165850Z-648a/prompt.md",
+      "Bytes": 18136,
+      "CanonicalSha256": "caccda1e88d8006c1917e265033f992ed2a55a0238103e93723e8f57c3f2cfe1",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "7b7fe1eae26a5ac4db8600031e0f7b07b71e811a40676030175fc3b6b95f8771",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "7b7fe1eae26a5ac4db8600031e0f7b07b71e811a40676030175fc3b6b95f8771",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v13/R20261002T165850Z-648a/read-audit.json",
+      "Bytes": 29224,
+      "CanonicalSha256": "999aaf61105e7a6dda06041a9b676586017888324a4d0f5b6a18f5603f29d1df",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "56098c8c949c04cb4113ceb4e9011bdbfc18a2413a86e8f8bb43da9e0166f0e4",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "56098c8c949c04cb4113ceb4e9011bdbfc18a2413a86e8f8bb43da9e0166f0e4",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v13/R20261002T165850Z-648a/runtime-evidence.json",
+      "Bytes": 5907,
+      "CanonicalSha256": "5e78caa04bc471237f78f87289d23609c64cf822e03e0272902b7056d39b5dbf",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "c39ec8a4dd110d35fa39187ea14130a89fedf35609b8491f8ca00d63ede6bcd8",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "c39ec8a4dd110d35fa39187ea14130a89fedf35609b8491f8ca00d63ede6bcd8",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v13/R20261002T165850Z-648a/schema.json",
+      "Bytes": 10887,
+      "CanonicalSha256": "c29f267e5907a4ec4d52ed1a2a6c75557123c0e8d1a2b188c13b340ced3a7567",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "c29f267e5907a4ec4d52ed1a2a6c75557123c0e8d1a2b188c13b340ced3a7567",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "c29f267e5907a4ec4d52ed1a2a6c75557123c0e8d1a2b188c13b340ced3a7567",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v13/R20261002T165850Z-648a/visible-output-audit.json",
+      "Bytes": 11378,
+      "CanonicalSha256": "bb1e3094936035720143e0a85391fc27f3f90d55037737a17558333175adef3d",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "9e3cf3fd48c77fcaa06d6b151c0dcf77afc20db798b064d84a76f8d09b4240ac",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "9e3cf3fd48c77fcaa06d6b151c0dcf77afc20db798b064d84a76f8d09b4240ac",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/I-62-architect-review-v12-disposition.md",
+      "Bytes": 7877,
+      "CanonicalSha256": "012510d20210ad97f7d134993e472b199dfa3bda40d1c0e2aae14763c5354a0e",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "fbcb4de4563f9e75142f37181473b7566200fe5873b6eb86f59a17c27d778536",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "fbcb4de4563f9e75142f37181473b7566200fe5873b6eb86f59a17c27d778536",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/I-62-architect-review-v12.md",
+      "Bytes": 8405,
+      "CanonicalSha256": "0138ba56acd2ae31bd3ad26d7bd2c5b6ec0840fe31249343b298cdb5abfd959f",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "9fe803afc07c492a193949f38ae004282730158cb804885eea83f2f84a2a9d1f",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "9fe803afc07c492a193949f38ae004282730158cb804885eea83f2f84a2a9d1f",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/README.md",
+      "Bytes": 14575,
+      "CanonicalSha256": "af7e61bc1ec6d54df88fc952529b20ce1f7ffdd5c64bb51411f0c2ad041cbd3f",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "2da46f4bf9474a60f8634d02c4254c373a08ce33054f0437ad169411bc1aa508",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "2da46f4bf9474a60f8634d02c4254c373a08ce33054f0437ad169411bc1aa508",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/closure.json",
+      "Bytes": 26352,
+      "CanonicalSha256": "2f0010c9eb3b4a060f7a7d02d53c48c637c34f09383047a73eecda67d640a696",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "2f0010c9eb3b4a060f7a7d02d53c48c637c34f09383047a73eecda67d640a696",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "2f0010c9eb3b4a060f7a7d02d53c48c637c34f09383047a73eecda67d640a696",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/input-fidelity-postrun.json",
+      "Bytes": 31032,
+      "CanonicalSha256": "82231e42903c2b3019ca58cb187a870179d3a5a5720c44938358f2075ecec7e9",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "39cb78f4d5519bef9b79da4b1a1c9119700fd3d7a29ed4c211cd1f9e5e629e68",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "39cb78f4d5519bef9b79da4b1a1c9119700fd3d7a29ed4c211cd1f9e5e629e68",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/input-fidelity-preflight.json",
+      "Bytes": 55338,
+      "CanonicalSha256": "ea36ffe4efde568289660f3e42ae2b0b2f384d91544659ad9edbe704f27d1fe0",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "ea36ffe4efde568289660f3e42ae2b0b2f384d91544659ad9edbe704f27d1fe0",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "ea36ffe4efde568289660f3e42ae2b0b2f384d91544659ad9edbe704f27d1fe0",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/output.json",
+      "Bytes": 45120,
+      "CanonicalSha256": "fb39b8cdc2434702a9520504df3a70c883d41ef61221aa68dbe85edf63c9346d",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "fb39b8cdc2434702a9520504df3a70c883d41ef61221aa68dbe85edf63c9346d",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "fb39b8cdc2434702a9520504df3a70c883d41ef61221aa68dbe85edf63c9346d",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/prompt.md",
+      "Bytes": 15741,
+      "CanonicalSha256": "7e31b136945edeb22e5524c1e38271eab52985963b9720f20f2ffc71d5d112ca",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "84afc655c1f516b7acd2e510b399b50348386e26857e32e86684998c78b70f63",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "84afc655c1f516b7acd2e510b399b50348386e26857e32e86684998c78b70f63",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/read-audit.json",
+      "Bytes": 44791,
+      "CanonicalSha256": "0c6e131cb864a2e5075b083399f419dcdcfeec920372f21ed10deb7c77cab552",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "412c22e80e6691970e02efaccc0509725632ab544cbcc4cc097e866521ecb938",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "412c22e80e6691970e02efaccc0509725632ab544cbcc4cc097e866521ecb938",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/runtime-evidence.json",
+      "Bytes": 6115,
+      "CanonicalSha256": "98413ee76a8f761cb2ee7a34bdd727715378c64fb23b33783e8bc645242bb5d5",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "bc44ab271c427d51d031d5741e949474e09de80a08cecfa7afbbcedc37bfa630",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "bc44ab271c427d51d031d5741e949474e09de80a08cecfa7afbbcedc37bfa630",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/schema.json",
+      "Bytes": 10060,
+      "CanonicalSha256": "8beabf5b6253fb1be45ef1335d732ba74e4cf4ac7b662a7ce1e16f930f9d44ea",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "8beabf5b6253fb1be45ef1335d732ba74e4cf4ac7b662a7ce1e16f930f9d44ea",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "8beabf5b6253fb1be45ef1335d732ba74e4cf4ac7b662a7ce1e16f930f9d44ea",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/v11-model-visible-reaudit.json",
+      "Bytes": 8206,
+      "CanonicalSha256": "5439dfbbcfd0c39869aac4efeaa34180eff63ac0266305f1b1ba2e7753981f3c",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "da9d0faf4bb027c0abe0b0c8eef86ef19232f6781b92a8ca1f986fdf56af41aa",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "da9d0faf4bb027c0abe0b0c8eef86ef19232f6781b92a8ca1f986fdf56af41aa",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/I-62-architect-review-v11-disposition.md",
+      "Bytes": 6997,
+      "CanonicalSha256": "0ca374683825db43a4e4e360758a04731c6b2ae6972f6080035dc057168de30b",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "2ed4687b5f1c2dd257d12aecca88af4d29c63ae241d3a5b77bf4f7614aa4c969",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "2ed4687b5f1c2dd257d12aecca88af4d29c63ae241d3a5b77bf4f7614aa4c969",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/I-62-architect-review-v11.md",
+      "Bytes": 7764,
+      "CanonicalSha256": "1d2ae2634a57056b9163d6cf8e590b1e048f82ffd83bc4d9fe9b0d5daf841c84",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "8176abef785330a4480f8871cd65a4de9529dc9acc68ce255e128b19bf031261",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "8176abef785330a4480f8871cd65a4de9529dc9acc68ce255e128b19bf031261",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v11/R20261002T140232Z-cdc5/README.md",
+      "Bytes": 11043,
+      "CanonicalSha256": "3a36e1d17e9689ba82db77f26a0e484c58ddfa03619cee2130efbcd586e2b8e0",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "28486135b8433c2d729df10bc7f6648e5e70b3365b94a95b536da00e43f3ea8c",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "28486135b8433c2d729df10bc7f6648e5e70b3365b94a95b536da00e43f3ea8c",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v11/R20261002T140232Z-cdc5/closure.json",
+      "Bytes": 23966,
+      "CanonicalSha256": "bd598fd5a1af0b45c44aea922098844e50141433e93fa10c30f793b1a6bbc72b",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "bd598fd5a1af0b45c44aea922098844e50141433e93fa10c30f793b1a6bbc72b",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "bd598fd5a1af0b45c44aea922098844e50141433e93fa10c30f793b1a6bbc72b",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v11/R20261002T140232Z-cdc5/input-fidelity-postrun.json",
+      "Bytes": 5779,
+      "CanonicalSha256": "02b9dded2ae6860e4a0bc4ed4ccb0928632d41d261c328036e21299d8c2c7550",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "02b9dded2ae6860e4a0bc4ed4ccb0928632d41d261c328036e21299d8c2c7550",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "02b9dded2ae6860e4a0bc4ed4ccb0928632d41d261c328036e21299d8c2c7550",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v11/R20261002T140232Z-cdc5/input-fidelity-preflight.json",
+      "Bytes": 75839,
+      "CanonicalSha256": "c4ee320f2ac5e6940a4d6013ca31014208bb3d36c9b7e804c55e3373fb0bccf7",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "c4ee320f2ac5e6940a4d6013ca31014208bb3d36c9b7e804c55e3373fb0bccf7",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "c4ee320f2ac5e6940a4d6013ca31014208bb3d36c9b7e804c55e3373fb0bccf7",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v11/R20261002T140232Z-cdc5/output.json",
+      "Bytes": 40630,
+      "CanonicalSha256": "cf731d6ca6271121b8a2c9fdf50b8d5b60e19a59dfb5c59cc945a33b35e83cc6",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "cf731d6ca6271121b8a2c9fdf50b8d5b60e19a59dfb5c59cc945a33b35e83cc6",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "cf731d6ca6271121b8a2c9fdf50b8d5b60e19a59dfb5c59cc945a33b35e83cc6",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v11/R20261002T140232Z-cdc5/prompt.md",
+      "Bytes": 15781,
+      "CanonicalSha256": "aaa6bae438099537bdbfc68924fb0ee4fdd57c9c80e0afc56bff955a6f810de8",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "2fec772181a64b7bfb42f04aa0fc9e2b0712964b5ffbaa0d355719493dc7cbc4",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "2fec772181a64b7bfb42f04aa0fc9e2b0712964b5ffbaa0d355719493dc7cbc4",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v11/R20261002T140232Z-cdc5/read-audit.json",
+      "Bytes": 25665,
+      "CanonicalSha256": "80fd5339a03eb9377683c474f6c3fd600c3d677923ad230fc60a1d734f736c60",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "80fd5339a03eb9377683c474f6c3fd600c3d677923ad230fc60a1d734f736c60",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "80fd5339a03eb9377683c474f6c3fd600c3d677923ad230fc60a1d734f736c60",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v11/R20261002T140232Z-cdc5/runtime-evidence.json",
+      "Bytes": 4310,
+      "CanonicalSha256": "91e6aa80ca772ee31a971542a2fc64a80c06930bf0b84b1df1a102e1ccbdf51e",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "91e6aa80ca772ee31a971542a2fc64a80c06930bf0b84b1df1a102e1ccbdf51e",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "91e6aa80ca772ee31a971542a2fc64a80c06930bf0b84b1df1a102e1ccbdf51e",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-architect-v11/R20261002T140232Z-cdc5/schema.json",
+      "Bytes": 6985,
+      "CanonicalSha256": "ae43421b282d6d83e1a4390153d99c49d0c30ce591b70f29838152a2dc012915",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "fcb6fbf1d3cba58f25f8e07fa7b44b83ffd66208c04157b6d5e46b9021fb6c33",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "fcb6fbf1d3cba58f25f8e07fa7b44b83ffd66208c04157b6d5e46b9021fb6c33",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+      "Bytes": 10674,
+      "CanonicalSha256": "fb8c5855c77996dcbea10cf427fa210ba9e27e0f5c7460a66f254112adf900ba",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "14c7046e2b76c02c53e8382a85e5115e6c4bbd1aa52fa12efb2fd54adaa140d4",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "14c7046e2b76c02c53e8382a85e5115e6c4bbd1aa52fa12efb2fd54adaa140d4",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/I-62-architect-review-v10.md",
+      "Bytes": 7104,
+      "CanonicalSha256": "f448038b1f431cc2718aa3677fc31ca9701c3b051a55ee353d720eebfb097177",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "e323a84d415a24b136b4ed2688fd8d9371edcec9b3d176749a97fe836db8b094",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "e323a84d415a24b136b4ed2688fd8d9371edcec9b3d176749a97fe836db8b094",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/I-62-architect-review-v9-disposition.md",
+      "Bytes": 9302,
+      "CanonicalSha256": "d4700575866a7e2896e33018cd5c931b13a4363341620dbd6d79297ba3bcbddd",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "6c70b8a82a9eeb15518e7ff5313a75898a3e8effbd4b3491bb7e8bad505712f0",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "6c70b8a82a9eeb15518e7ff5313a75898a3e8effbd4b3491bb7e8bad505712f0",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/I-62-architect-review-v9.md",
+      "Bytes": 7231,
+      "CanonicalSha256": "954be3543110d68c4b6861398f867031437f73d8f4628f01df0ffa5c736c6cb5",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "15261278ba1394846111696943244b70ad38271f8416f948829a2bb47956eebf",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "15261278ba1394846111696943244b70ad38271f8416f948829a2bb47956eebf",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/I-62-coordinator-requirement-auto.md",
+      "Bytes": 9499,
+      "CanonicalSha256": "71e300a4d94f0fd262df84b56aa5c6be0716e6222984050e77dfd1fe7a4d4e21",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "e9baaa4a199a1bd1ffb38dcc4c55c8dcc65f764d0dec64e0f7be364296439732",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "e9baaa4a199a1bd1ffb38dcc4c55c8dcc65f764d0dec64e0f7be364296439732",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/I-62-architect-review-v6.md",
+      "Bytes": 10200,
+      "CanonicalSha256": "93858794d8e2bd9a25bf15f42f3122215f22373b5d59f8408ea0e939455b5e64",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "6c0dddc80c05aba19a39fd51b1be1c5a1bb14c54a6747441dab13298de1c52ac",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "6c0dddc80c05aba19a39fd51b1be1c5a1bb14c54a6747441dab13298de1c52ac",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/I-62-architect-review-v7.md",
+      "Bytes": 7719,
+      "CanonicalSha256": "0c81d1fa11170f73806591de41bd8bb3e802a76af2ef3b89f06fc5dc5d0fcb4d",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "31c018574e63964a1c91a2a799a8095393c20a1ccfb3f41618981e518e6cc105",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "31c018574e63964a1c91a2a799a8095393c20a1ccfb3f41618981e518e6cc105",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/I-62-coordinator-review-v1.md",
+      "Bytes": 13700,
+      "CanonicalSha256": "9ca38c5777810d7cadbc280fbb2febaf601e90b23e08217624bb1a95dc553025",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "b2e3092fd28702ba30468e50b8ffd034582305ed0cbc71c61e57719fa031c188",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "b2e3092fd28702ba30468e50b8ffd034582305ed0cbc71c61e57719fa031c188",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/I-62-coordinator-review-v2.md",
+      "Bytes": 16368,
+      "CanonicalSha256": "75b2fd162a7209ed7700c709d02911e2cfb17980a73d9492ff52932cba2a5b73",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "c3ae64cd1ed6074ec46e56f96953e73be01f7c85bcc65208a01ae3d6e0c20b22",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "c3ae64cd1ed6074ec46e56f96953e73be01f7c85bcc65208a01ae3d6e0c20b22",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/I-62-coordinator-review-v3.md",
+      "Bytes": 7744,
+      "CanonicalSha256": "ed70227aa257742dcf23f792f475d2c917f41e881fcfc87d8f8f15a5b98121df",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "c971ad54b6acddb68ad5e9960dc917ba548e5bc0ba5008f39ed63b54dfdc865c",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "c971ad54b6acddb68ad5e9960dc917ba548e5bc0ba5008f39ed63b54dfdc865c",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/I-62-coordinator-review-v4.md",
+      "Bytes": 8165,
+      "CanonicalSha256": "5120eac994e9cc5d8cc6808f56c83ce92c108458b324ebffc45e329de1be99b1",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "a8b08eb86f6bf38d35381591fb4ed65a4931e276a54c1aee290c8a2204ec5c26",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "a8b08eb86f6bf38d35381591fb4ed65a4931e276a54c1aee290c8a2204ec5c26",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/I-62-coordinator-review-v5.md",
+      "Bytes": 7040,
+      "CanonicalSha256": "72106ba44b4d97d870248843dd62b32cde685ad5226bcd8c28cc6455336f783f",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "e2b28331853652b1252572269f6de2dc0e9340d52c6ea5c43e5a9bf3e3e049d4",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "e2b28331853652b1252572269f6de2dc0e9340d52c6ea5c43e5a9bf3e3e049d4",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/I-62-discovery.md",
+      "Bytes": 58480,
+      "CanonicalSha256": "769b427dc17ab2eddf1e038f0fe13a7fcb6ee832163b1337dd1ef1b0e93330aa",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "8e2b365e24f5ae6eb4fa4c0e2a2eddc0c4d48362521944ab495203ab12323467",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "8e2b365e24f5ae6eb4fa4c0e2a2eddc0c4d48362521944ab495203ab12323467",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/decisions/I-62-owner-mandate.txt",
+      "Bytes": 19004,
+      "CanonicalSha256": "2364e892d050b939c910e6b5d22ea5960d7bb36dbfe3d4fe4c349ed0f6780f0a",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "2364e892d050b939c910e6b5d22ea5960d7bb36dbfe3d4fe4c349ed0f6780f0a",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "2364e892d050b939c910e6b5d22ea5960d7bb36dbfe3d4fe4c349ed0f6780f0a",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/I-62-portabilidad-coordinador-principal.md",
+      "Bytes": 15374,
+      "CanonicalSha256": "e31e23ea59197627c3b9cd6a0d9e54987e72887019a7939e34b064122eedc21f",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "d955c663cb5f95489a1602f693cbfc95f285c100762d30c6d6a96f48cb3855e8",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "d955c663cb5f95489a1602f693cbfc95f285c100762d30c6d6a96f48cb3855e8",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/decisions/I-62.md",
+      "Bytes": 68472,
+      "CanonicalSha256": "41c20455b37f20747d93eee6adef54dd4e439668328cb79d91e0164c1ec711b0",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "fa61e1caddda35d4c8640ad37b6e8e9ee5c18e98954c97cd1f3cc8863663184e",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "fa61e1caddda35d4c8640ad37b6e8e9ee5c18e98954c97cd1f3cc8863663184e",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/evidence/I-62-evidence.md",
+      "Bytes": 89663,
+      "CanonicalSha256": "3f375a0943afa293bcc8ee54cd03f3a7925c998832665758529425c2731733b7",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "b91c8daa98045b2446aec6b97dd5f4cea908a472fb4eed94737105502b62efce",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "b91c8daa98045b2446aec6b97dd5f4cea908a472fb4eed94737105502b62efce",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/state/I-62.yml",
+      "Bytes": 3286,
+      "CanonicalSha256": "d85db08ce828ad67fd34d9ace3fcbfb6a7bb51deeae0277e2042c59a67ea4eb3",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "63335fcc58a80c511decbbe255d6412c5d3b613f2f6525c1c618ee817d87c0e2",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "63335fcc58a80c511decbbe255d6412c5d3b613f2f6525c1c618ee817d87c0e2",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/INITIATIVE_LIFECYCLE.md",
+      "Bytes": 22346,
+      "CanonicalSha256": "74d5ed42f0704b47637895feeea091642cbda9fb92c668a1655db8e3947ff119",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "c65db5593f6b89b0e4d0e855c91b289de3998434975355c6e3ab52e87a7c509e",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "c65db5593f6b89b0e4d0e855c91b289de3998434975355c6e3ab52e87a7c509e",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/WORKFLOW.md",
+      "Bytes": 43390,
+      "CanonicalSha256": "5c6290d0cf4c5f7ee39604f6654fdb2a5ae489769016639bca96bcc8a882c149",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "58813db992e8e0ab998cc1715b519921423f8ac16304530f1d1d2dab321ed6e2",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "58813db992e8e0ab998cc1715b519921423f8ac16304530f1d1d2dab321ed6e2",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "AGENTS.md",
+      "Bytes": 24587,
+      "CanonicalSha256": "5d66239153c294fb084979ddcd7521b3e24c449cba0fa371a8c4e3bc3bbed0d6",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "ebe2fa263f90e703ab608b21f3a0a0e2020272516212e6001b2339117b1ff0cf",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "ebe2fa263f90e703ab608b21f3a0a0e2020272516212e6001b2339117b1ff0cf",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/AUTOMATION_PLAN.md",
+      "Bytes": 56231,
+      "CanonicalSha256": "b5ca72945f64462f33b5efd6cf024e35b4c86630289d9b363e7f3eab8fde198d",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "c3f671b6cea1ecb8b2a56c1f3d4799cdb8b98a0ec650e7a3a873004c7999e6db",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "c3f671b6cea1ecb8b2a56c1f3d4799cdb8b98a0ec650e7a3a873004c7999e6db",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md",
+      "Bytes": 9871,
+      "CanonicalSha256": "3cdd80588e1565a64421831ae69919542ac984e948ced4784917fad63c806911",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "a8c3bc5f1a8a8b1946bac06eb42bbda48c98dfecab70d5f7a4d750f0fbe8c1c2",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "a8c3bc5f1a8a8b1946bac06eb42bbda48c98dfecab70d5f7a4d750f0fbe8c1c2",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/I-61-proposal-v9.md",
+      "Bytes": 103362,
+      "CanonicalSha256": "ef551403c91fe781bfebf8857fb164794da645643dc289533be4229dd161eece",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "cbe55452d34db85eae173bd73a27faf7dde1db4247772476fab29504f79a592c",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "cbe55452d34db85eae173bd73a27faf7dde1db4247772476fab29504f79a592c",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/agent-execution/README.md",
+      "Bytes": 17873,
+      "CanonicalSha256": "fb3286bff818d5a9b5b8a1e982a6c47337b54820ef25085e78364a1816e1a793",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "78d76c07827c66f89868cb69d6af49d27df11baa05e0350262baba63375bcf2a",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "78d76c07827c66f89868cb69d6af49d27df11baa05e0350262baba63375bcf2a",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/agent-execution/model-catalog.md",
+      "Bytes": 10624,
+      "CanonicalSha256": "dc11c201d39b2e80017cb15e049c20f1a5008a8dd97a713c0d4ea3547b0770c3",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "2e32710fd5ba08f1aa575b8c38cc4fa00a9ec964c5d6599bde1f5cc0a2781c74",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "2e32710fd5ba08f1aa575b8c38cc4fa00a9ec964c5d6599bde1f5cc0a2781c74",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/agent-execution/prompting-guide.md",
+      "Bytes": 2989,
+      "CanonicalSha256": "c03fde58bcd4666b612bdc611696fbbe8ec97513509c030db0bd0e0f82a59fb9",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "d5cc4114d7179f9f73cb1452a819b342edabe8a28d58a3186f0254e1f9ac8d3b",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "d5cc4114d7179f9f73cb1452a819b342edabe8a28d58a3186f0254e1f9ac8d3b",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/agent-execution/routing.md",
+      "Bytes": 6663,
+      "CanonicalSha256": "36f487b8cf5d7e2d49775e82f2ce853c3bda9db950c75e48ee455d0a461ae320",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "49c8b79b58ed5e2b8ff8983638f7eedb1a1401944ab6832732e48fc482ce1ad6",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "49c8b79b58ed5e2b8ff8983638f7eedb1a1401944ab6832732e48fc482ce1ad6",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/agent-execution/schemas/controller-verification.schema.json",
+      "Bytes": 5627,
+      "CanonicalSha256": "bacfa903b3b7b535e4813086bdd8e9b3db139ec5dde938b202d8eb90f6713c91",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "3496f1351818dfb1ee40c63070bfedc22975b00a6374f036767d16dfa735d877",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "3496f1351818dfb1ee40c63070bfedc22975b00a6374f036767d16dfa735d877",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/agent-execution/schemas/delegation.schema.json",
+      "Bytes": 6612,
+      "CanonicalSha256": "0740a5ac36285e508db8b4dae782bd0f9e7b6a2c94069e61b654f81e8e88f085",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "f1414dd1b148432dfc829db0474690047fdcc21222969476dc99ca9b7c54bd1b",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "f1414dd1b148432dfc829db0474690047fdcc21222969476dc99ca9b7c54bd1b",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/agent-execution/schemas/gate-contract.schema.json",
+      "Bytes": 3482,
+      "CanonicalSha256": "c34ead0ce98a09d6f9932d5b8ed8ffbab78ad14224365495b19584d590b57caf",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "ef8c4f4a3393e9f6850660ace32bfa97ce820cb0704668a7095d555e1db5d2fd",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "ef8c4f4a3393e9f6850660ace32bfa97ce820cb0704668a7095d555e1db5d2fd",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/agent-execution/schemas/relay-record.schema.json",
+      "Bytes": 11987,
+      "CanonicalSha256": "23933c47c7d6fe40878af2d596accd4c45477eac96523a66f6d76577f63057f5",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "b760ab0f9c19793199cc8df92920efb837fb102be19019ea2dd6b72cd0934d18",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "b760ab0f9c19793199cc8df92920efb837fb102be19019ea2dd6b72cd0934d18",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+      "Bytes": 3814,
+      "CanonicalSha256": "c5b63fe7daf142c3b3689289f2ab9eeccd7083298ecffc986e1509c8fe860015",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "de7d16ca36877411abbe59907be2073ecdea53909be81b84f84fc1f71d513b96",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "de7d16ca36877411abbe59907be2073ecdea53909be81b84f84fc1f71d513b96",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/HANDOFF.md",
+      "Bytes": 445188,
+      "CanonicalSha256": "04ae148fd220aff2fcecd071c1c399e1728902cc186ed73bec8b3d61e779ed84",
+      "Forms": {
+        "B_range_chunks": {
+          "Chunks": 36,
+          "AllChunksEqual": true,
+          "CountMismatches": {},
+          "Status": "FAITHFUL_NORMALIZED",
+          "Detail": [
+            {
+              "Skip": 0,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 150,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 300,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 450,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 600,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 750,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 900,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1050,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1200,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1350,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1500,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1650,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1800,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 1950,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2100,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2250,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2400,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2550,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2700,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 2850,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 3000,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 3150,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 3300,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 3450,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 3600,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 3750,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 3900,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 4050,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 4200,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 4350,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 4500,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 4650,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 4800,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 4950,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 5100,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 5250,
+              "First": 150,
+              "Equal": true
+            }
+          ]
+        }
+      },
+      "ReadPolicy": "solo forma B por rangos de 150 líneas como máximo"
+    },
+    {
+      "InputRef": "README.md",
+      "Bytes": 3696,
+      "CanonicalSha256": "2ca0337a565ea6d666063f08a92ef7275efbe27dafb96b8b120230ee8e7bfc8e",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "d6a594db4579af46aac761cb984618f01c45466b268264c06cc48931af2bea25",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "d6a594db4579af46aac761cb984618f01c45466b268264c06cc48931af2bea25",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/ARCHITECTURE.md",
+      "Bytes": 28890,
+      "CanonicalSha256": "64798e183679599cc65fa8b2cda66487953b7d8b7c81f1a0c19061f83ae1f560",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "1bc11b20170048e3f96364cf70ee46cd7ad714ef43a8fa76a4808c6d38a07a26",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "1bc11b20170048e3f96364cf70ee46cd7ad714ef43a8fa76a4808c6d38a07a26",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/context-packs/README.md",
+      "Bytes": 1965,
+      "CanonicalSha256": "3a51def8525f653059ba97d6ab56d66f9872e1009a3d7e4c42aaba576e53a756",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "29978c667394f2aa3db3cee738d70612f613c90eec730f34e1db7ea583d7a1e0",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "29978c667394f2aa3db3cee738d70612f613c90eec730f34e1db7ea583d7a1e0",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/context-packs/documentation-governance.md",
+      "Bytes": 2030,
+      "CanonicalSha256": "3d16c3090c6b4804ffce1bb321041a57cdbf6b1a9b1dd99ef0b3864bc2d266da",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "635d64929b87abf0f4dfda760046e9e64d53e71717b811c3af6227a81a65b1b1",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "635d64929b87abf0f4dfda760046e9e64d53e71717b811c3af6227a81a65b1b1",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/ROADMAP.md",
+      "Bytes": 167184,
+      "CanonicalSha256": "bd7736c5945ea223b7ff2381100932503e00c623fd53e5f74ec1539b45c34feb",
+      "Forms": {
+        "B_range_chunks": {
+          "Chunks": 5,
+          "AllChunksEqual": true,
+          "CountMismatches": {},
+          "Status": "FAITHFUL_NORMALIZED",
+          "Detail": [
+            {
+              "Skip": 0,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 150,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 300,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 450,
+              "First": 150,
+              "Equal": true
+            },
+            {
+              "Skip": 600,
+              "First": 150,
+              "Equal": true
+            }
+          ]
+        }
+      },
+      "ReadPolicy": "solo forma B por rangos de 150 líneas como máximo"
+    },
+    {
+      "InputRef": "docs/FOUNDATIONS.md",
+      "Bytes": 19499,
+      "CanonicalSha256": "bd8490d4f2687638c1903ef6b1fb702e8a3516cbb7d741b93a34294c02a20cfa",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "ea58ae2920f05ff545e752a658d00a728ad1cc9447eb138a885dc582f04f803b",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "ea58ae2920f05ff545e752a658d00a728ad1cc9447eb138a885dc582f04f803b",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/README.md",
+      "Bytes": 71987,
+      "CanonicalSha256": "88e7872baa70aa4915a8dfbad4b3251fa1067aebe15e6b98bb6f90eb4b7da64f",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "c40f2d5ad6b373f2004f14bf89579908cb1829f6a75c413b3b833125059267a0",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "c40f2d5ad6b373f2004f14bf89579908cb1829f6a75c413b3b833125059267a0",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    },
+    {
+      "InputRef": "docs/initiatives/PROMPT_TEMPLATES.md",
+      "Bytes": 13424,
+      "CanonicalSha256": "2b0ea8166f87912c9ec9d626c0ec803db1d52d3f1d62214e2c1012de3da71cae",
+      "Forms": {
+        "A_cmd_type": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "0c45e67154ce96fa45b274eff9713f00832698ececfa0acdef854e323c493d1e",
+          "Status": "FAITHFUL_NORMALIZED"
+        },
+        "B_nested_pwsh_utf8": {
+          "ExitCode": 0,
+          "ValidUtf8": true,
+          "EqualAfterAllowedNormalization": true,
+          "CountMismatches": {},
+          "TransportSha256Normalized": "0c45e67154ce96fa45b274eff9713f00832698ececfa0acdef854e323c493d1e",
+          "Status": "FAITHFUL_NORMALIZED"
+        }
+      }
+    }
+  ],
+  "Searches": [
+    {
+      "Pattern": "≤",
+      "Matches": 16,
+      "Expected": 16,
+      "AllLinesEqualCanonical": true,
+      "ValidUtf8": true
+    },
+    {
+      "Pattern": "⊆",
+      "Matches": 3,
+      "Expected": 3,
+      "AllLinesEqualCanonical": true,
+      "ValidUtf8": true
+    },
+    {
+      "Pattern": "✓",
+      "Matches": 2,
+      "Expected": 2,
+      "AllLinesEqualCanonical": true,
+      "ValidUtf8": true
+    },
+    {
+      "Pattern": "«",
+      "Matches": 83,
+      "Expected": 83,
+      "AllLinesEqualCanonical": true,
+      "ValidUtf8": true
+    },
+    {
+      "Pattern": "→",
+      "Matches": 246,
+      "Expected": 246,
+      "AllLinesEqualCanonical": true,
+      "ValidUtf8": true
+    },
+    {
+      "Pattern": "NormativeUnitRef",
+      "Matches": 9,
+      "Expected": 9,
+      "AllLinesEqualCanonical": true,
+      "ValidUtf8": true
+    },
+    {
+      "Pattern": "∅",
+      "Matches": 3,
+      "Expected": 3,
+      "AllLinesEqualCanonical": true,
+      "ValidUtf8": true
+    },
+    {
+      "Pattern": "↔",
+      "Matches": 3,
+      "Expected": 3,
+      "AllLinesEqualCanonical": true,
+      "ValidUtf8": true
+    }
+  ],
+  "GitLog": {
+    "EqualToLocalGitLog": true
+  },
+  "NegativeControl": {
+    "Script": "Get-Content -LiteralPath docs/initiatives/I-62-proposal-v14.md -Encoding utf8",
+    "EqualAfterAllowedNormalization": false,
+    "U+FFFD": 3996,
+    "Canonical≤": 20,
+    "Visible≤": 0,
+    "Status": "DEGRADED (esperado: el control demuestra que la prueba detecta un transporte con pérdida)"
+  },
+  "Result": {
+    "AllInputsFaithful": true,
+    "SearchesFaithful": true,
+    "GitLogFaithful": true,
+    "NegativeControlDetected": true
+  },
+  "FidelityStatus": "FAITHFUL_NORMALIZED"
+}
