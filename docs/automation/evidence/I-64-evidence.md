@@ -1511,3 +1511,52 @@ registro de relevo (Disposition STOP), A1-A8 con sus razones, comprobaciones adi
 | CONTROL | independiente, sin usar en la recuperación |
 
 `main` `819955d6` y Freeze intactos; `config.toml` sin cambio.
+
+## 30. F1-T1-MODEL — Planificación 6/6: A5 FAIL otra vez; STOP final de la planificación
+
+Sección nueva; las anteriores no se reescriben. Hechos de la sesión responsable. Sin cierre de la tarea ni F1 PASS.
+
+**Commit `519ca1ff`.** Custodia de la planificación 5/5 y `analysis.md` (§29). CI 37037488283: los cuatro jobs en success. Es el `BaseSha` de la
+reejecución.
+
+**Planificación 6/6** (`R20261002T165806Z-eef1`; Codex `gpt-6-luna` / `high`, efectivo comprobado):
+- Prompt en ASCII (110 líneas; SHA-256 `8E5A13C9…D541FE`). Ordena cargar el `gate-contract.json` canónico con `json.dumps(…, ensure_ascii=True)` y
+  reproducirlo; describe la forma «NUL + hex» como prohibida sin escribirla.
+- Correctos: `CorrectionOf` {`R20261002T164250Z-f842`, StopCondition, `415811c5…`}, Attempt 3 y AttemptsRemaining 0, la cadena y los
+  criterios (solo el comentario XML).
+- A1-A8 sobre cadenas decodificadas: **A1-A4 y A6-A8 en pass; A5 en FAIL** (los mismos 5 invariantes, 2 autoridades, `Objective`,
+  `ExpectedEvidence` y `StopConditions`).
+- Delegación SHA-256 `BAFAC0BD…61B7C1`.
+
+**Defecto:**
+- La orden de carga canónica del Controller devolvió escapes correctos: «sesi» + barra invertida + `u00f3` + «n».
+- La salida estructurada del modelo los transformó en **73 escapes de caracteres de control** (`u000X`/`u001X`). Ejemplos:
+  - invariante 02: «sesi» + U+0001 + «n»;
+  - `TaskClass`: «Documentaci» + U+0009 (tabulador) + «n», que no coincide con ninguna clase de `routing.md`.
+- La corrupción se produce al generar la salida estructurada del modelo, no en el contrato ni en el CLI.
+- Las planificaciones `3a76`, `c5cd` y `3886`, con el mismo contrato, emitieron UTF-8 correcto. Las dos últimas (`f842` y `eef1`) fallaron con la
+  misma clase de defecto.
+
+**Disposición (orden del Coordinator):** «Si vuelve a fallar: STOP FINAL de la planificación. No séptima planificación.»
+- **STOP final de la planificación de F1-T1-MODEL.** El Worker no se invocó.
+- `attempts` sigue en 3 y Attempt en 3.
+
+**Relevos:** sin participantes ni procesos no atribuibles persistentes; `config.toml` sin cambio; HEAD = remoto = `519ca1ff`; `main` `819955d6`.
+
+**Custodia (16.12):** `docs/automation/evidence/I-64-pilot/F1-T1-MODEL/R20261002T165806Z-eef1/`. `events.jsonl` (SHA-256 `328B75FE…C1408AE`) no
+se versiona.
+
+**Estado de F1-T1-MODEL:**
+- Producto **aceptado** por el Coordinator: EXECUTION_VERIFIED sobre `8d9a0c6e`, CI 4/4.
+- **Cierre formal pendiente** de nc1..nc3 (README §10).
+- La recuperación (d) queda **detenida en la planificación**.
+
+**Presupuesto:**
+
+| Tipo | Uso |
+|---|---|
+| Planificación | 6 de 6 (agotada) |
+| Trabajo | 3 de 4 |
+| Verificación productiva | 3 de 4 |
+| `attempts` | 3 de 3 |
+| CONTROL | sin usar en la recuperación |
