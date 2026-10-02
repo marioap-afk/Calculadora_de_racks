@@ -1169,3 +1169,35 @@ y el acuerdo del Coordinator. Registro: [`I-62-architect-review-v14.md`](../../i
 
 **Validación de esta entrega:** allowlist (superficies propias de I-62), enlaces, columnas de las tablas, hashes de los archivos custodiados, YAML del estado y
 `git diff --check`; resultado en el cuerpo del commit. La CI de este commit se informa al Owner y al Coordinator.
+
+## 32. F0 — Decisión del Owner sobre OD-6 (alternativa 1)
+
+**CI del commit de custodia** (`b90b01d6dc865b41370d2f9140341e5b7fd6b522`, §31): corrida **37057375285**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: Tests (Domain + Application) (111005275529), UI Tests
+(111005275765), Build UI (111005275866) y Build Plugin without AutoCAD (111005951496), los cuatro `success`. MEASURED por la sesión. Acredita solo
+`b90b01d6`.
+
+**Decisión recibida:** «OWNER DECISION — I-62 OD-6», texto pegado sin archivo de origen. 2 360 bytes en UTF-8, SHA-256
+`8d1899d49b1a28d536391f00bb582b9f25435d569b978ded8aabffef86a85771`, fuera del repositorio. Resumen fiel en las decisiones, §30.
+
+**Comprobación** (MEASURED sobre el texto de V14, commit `4c617e82`): la decisión coincide con la alternativa 1 de V14 §11.4 en las revisiones afectadas,
+los predicados de SEPARATE SESSION y EXTERNAL HUMAN, el tratamiento de SAME-SESSION ROLE, la conservación de los modos y la ausencia de efecto retroactivo. No
+hace falta cambiar la V14.
+
+**Recibido sin acción** (informativo; no es una orden y no cambia nada en I-62): la sesión de I-64 comunicó un registro de deuda de protocolo dirigido a la
+evolución del protocolo de ejecución. En sus controles negativos nc2, un Controller emitió Scope = pass con un `AllowedWriteScope` mutado, después de que
+fallara su comparación auxiliar (PowerShell en ConstrainedLanguage). Registro en la rama `architecture/workspace-persistente-rackcad`, commit `39b45f36`,
+`docs/automation/evidence/I-64-pilot/F1-T1-MODEL-nc2/R20261002T184050Z-8415/protocol-debt-handoff.md`. La sesión de I-62 lo leyó sin modificarlo.
+Incorporarlo, cuándo y cómo lo deciden el Master Coordinator y el Coordinator de I-62.
+
+**Revalidación antes del commit** (MEASURED, 21:30Z):
+- `origin/main` = `819955d6…` y la rama de I-62 en `b90b01d6…`, sin cambios;
+- I-52 `fb6b5648`, sin commits nuevos;
+- I-63 `637dce7e..f5c4a5a2`: 3 commits;
+- I-64 `db151227..39b45f36`: 1 commit;
+- **ningún cruce** con superficies de I-62.
+
+**No se hizo:** declarar AGREED ni Freeze; cambiar la V14 ni crear V15; implementar; invocar modelos o roles; tocar superficies ajenas.
+
+**Validación de esta entrega:** allowlist, enlaces, columnas de las tablas, YAML del estado y `git diff --check`; resultado en el cuerpo del commit. La CI de
+este commit se informa al Owner y al Coordinator.
