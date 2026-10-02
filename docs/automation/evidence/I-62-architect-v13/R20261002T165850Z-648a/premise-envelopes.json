@@ -1,0 +1,434 @@
+{
+  "Schema": "PremiseEnvelope (representación experimental; Proposal V13 §20.3.3; calculado por el invocador)",
+  "RunId": "R20261002T165850Z-648a",
+  "AuthorityRevision": "b337a59fa6879893229096f6e423d441b3c97bc6",
+  "Rule": "unidad estructural completa (párrafo, elemento de lista con continuación y padre, fila con cabecera) + cadena de títulos",
+  "Envelopes": [
+    {
+      "Kind": "RequiredFindings",
+      "Id": "A62-V11-01",
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Lines": [
+            1260,
+            1268
+          ],
+          "EnvelopeLines": 13,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false,
+          "EnvelopeUnit": {
+            "Path": "docs/initiatives/I-62-proposal-v13.md",
+            "Lines": [
+              1,
+              1268
+            ],
+            "Count": 13
+          }
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Lines": [
+            1269,
+            1272
+          ],
+          "EnvelopeLines": 8,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false,
+          "EnvelopeUnit": {
+            "Path": "docs/initiatives/I-62-proposal-v13.md",
+            "Lines": [
+              1,
+              1272
+            ],
+            "Count": 8
+          }
+        },
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v12-disposition.md",
+          "Lines": [
+            33,
+            33
+          ],
+          "EnvelopeLines": 5,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": true,
+          "EnvelopeUnit": {
+            "Path": "docs/initiatives/I-62-architect-review-v12-disposition.md",
+            "Lines": [
+              1,
+              33
+            ],
+            "Count": 5
+          }
+        },
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+          "Lines": [
+            45,
+            45
+          ],
+          "EnvelopeLines": 5,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false,
+          "EnvelopeUnit": {
+            "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+            "Lines": [
+              1,
+              45
+            ],
+            "Count": 5
+          }
+        }
+      ],
+      "EnvelopeFaithful": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "A62-V11-01",
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Lines": [
+            1267,
+            1268
+          ],
+          "EnvelopeLines": 7,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false,
+          "EnvelopeUnit": {
+            "Path": "docs/initiatives/I-62-proposal-v13.md",
+            "Lines": [
+              1,
+              1268
+            ],
+            "Count": 7
+          }
+        }
+      ],
+      "EnvelopeFaithful": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "O-V7-01",
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Lines": [
+            78,
+            78
+          ],
+          "EnvelopeLines": 2,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false,
+          "EnvelopeUnit": {
+            "Path": "docs/initiatives/I-62-proposal-v13.md",
+            "Lines": [
+              1,
+              78
+            ],
+            "Count": 2
+          }
+        }
+      ],
+      "EnvelopeFaithful": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "O-V7-02",
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Lines": [
+            78,
+            78
+          ],
+          "EnvelopeLines": 2,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false,
+          "EnvelopeUnit": {
+            "Path": "docs/initiatives/I-62-proposal-v13.md",
+            "Lines": [
+              1,
+              78
+            ],
+            "Count": 2
+          }
+        }
+      ],
+      "EnvelopeFaithful": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "O-05",
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Lines": [
+            78,
+            78
+          ],
+          "EnvelopeLines": 2,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false,
+          "EnvelopeUnit": {
+            "Path": "docs/initiatives/I-62-proposal-v13.md",
+            "Lines": [
+              1,
+              78
+            ],
+            "Count": 2
+          }
+        }
+      ],
+      "EnvelopeFaithful": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "O-07",
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Lines": [
+            78,
+            78
+          ],
+          "EnvelopeLines": 2,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false,
+          "EnvelopeUnit": {
+            "Path": "docs/initiatives/I-62-proposal-v13.md",
+            "Lines": [
+              1,
+              78
+            ],
+            "Count": 2
+          }
+        }
+      ],
+      "EnvelopeFaithful": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-01",
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+          "Lines": [
+            43,
+            43
+          ],
+          "EnvelopeLines": 5,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false,
+          "EnvelopeUnit": {
+            "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+            "Lines": [
+              1,
+              43
+            ],
+            "Count": 5
+          }
+        }
+      ],
+      "EnvelopeFaithful": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-02",
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+          "Lines": [
+            44,
+            44
+          ],
+          "EnvelopeLines": 5,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false,
+          "EnvelopeUnit": {
+            "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+            "Lines": [
+              1,
+              44
+            ],
+            "Count": 5
+          }
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Lines": [
+            1267,
+            1268
+          ],
+          "EnvelopeLines": 7,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false,
+          "EnvelopeUnit": {
+            "Path": "docs/initiatives/I-62-proposal-v13.md",
+            "Lines": [
+              1,
+              1268
+            ],
+            "Count": 7
+          }
+        }
+      ],
+      "EnvelopeFaithful": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-03",
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+          "Lines": [
+            45,
+            45
+          ],
+          "EnvelopeLines": 5,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false,
+          "EnvelopeUnit": {
+            "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+            "Lines": [
+              1,
+              45
+            ],
+            "Count": 5
+          }
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Lines": [
+            1267,
+            1268
+          ],
+          "EnvelopeLines": 7,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false,
+          "EnvelopeUnit": {
+            "Path": "docs/initiatives/I-62-proposal-v13.md",
+            "Lines": [
+              1,
+              1268
+            ],
+            "Count": 7
+          }
+        }
+      ],
+      "EnvelopeFaithful": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-04",
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+          "Lines": [
+            46,
+            46
+          ],
+          "EnvelopeLines": 5,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false,
+          "EnvelopeUnit": {
+            "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+            "Lines": [
+              1,
+              46
+            ],
+            "Count": 5
+          }
+        }
+      ],
+      "EnvelopeFaithful": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-05",
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+          "Lines": [
+            47,
+            47
+          ],
+          "EnvelopeLines": 5,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false,
+          "EnvelopeUnit": {
+            "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+            "Lines": [
+              1,
+              47
+            ],
+            "Count": 5
+          }
+        }
+      ],
+      "EnvelopeFaithful": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-06",
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+          "Lines": [
+            48,
+            48
+          ],
+          "EnvelopeLines": 5,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false,
+          "EnvelopeUnit": {
+            "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+            "Lines": [
+              1,
+              48
+            ],
+            "Count": 5
+          }
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Lines": [
+            1267,
+            1268
+          ],
+          "EnvelopeLines": 7,
+          "EnvelopeNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false,
+          "EnvelopeUnit": {
+            "Path": "docs/initiatives/I-62-proposal-v13.md",
+            "Lines": [
+              1,
+              1268
+            ],
+            "Count": 7
+          }
+        }
+      ],
+      "EnvelopeFaithful": true
+    }
+  ]
+}

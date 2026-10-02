@@ -1,0 +1,152 @@
+{
+  "Schema": "runtime-evidence (representación experimental de InvokerObservedRuntimeIdentity / RuntimeEvidenceRef, Proposal V13 §20.3.2; no autoridad normativa)",
+  "LogicalReviewRequestId": "L20261002T165850Z-648a",
+  "InvocationId": "I20261002T165850Z-648a",
+  "AttemptSeq": 1,
+  "RunId": "R20261002T165850Z-648a",
+  "Invoker": "sesión autora de I-62 (Claude), con autorización acotada del Owner y del Coordinator; observador no independiente",
+  "Binary": {
+    "Path": "%LOCALAPPDATA%\\OpenAI\\Codex\\bin\\a51e250fa15c740a\\codex.exe",
+    "Version": "codex-cli 0.159.2",
+    "Sha256": "fcd5eafefb4ff4a607f244e099e0974f66e17966b6ffda6948de2ef3a7a79530"
+  },
+  "Authentication": "existente: «Logged in using ChatGPT»; sin leer ni modificar credenciales",
+  "ConfigFingerprint": {
+    "Path": "~/.codex/config.toml",
+    "Sha256Before": "40c27b570b0056bc6d2b5aaf460628922c5ad39a405751e68b9001ffdf15f74f",
+    "Sha256After": "40c27b570b0056bc6d2b5aaf460628922c5ad39a405751e68b9001ffdf15f74f",
+    "Changed": false
+  },
+  "FailedLaunchBeforeSession": {
+    "StartUtc": "2026-10-02T17:17:28Z",
+    "ExitCode": 1,
+    "Stderr": "Failed to read output schema file \\schema.json (os error 2)",
+    "Cause": "la ruta de Windows de la carpeta de la corrida quedó vacía en el comando de lanzamiento (error de comillas en sed); codex-cli rechazó el esquema antes de crear la sesión",
+    "SessionCreated": false,
+    "ModelTokens": 0,
+    "Reads": 0,
+    "EventsBytes": 0,
+    "Authorization": "el Owner autorizó el relanzamiento en la conversación (respuesta a la pregunta de la sesión, 17:18Z), con los mismos insumos y solo la ruta corregida"
+  },
+  "Requested": {
+    "Model": "gpt-6.1-sol",
+    "Effort": "high",
+    "Sandbox": "read-only",
+    "Flags": [
+      "--disable memories",
+      "--disable apps",
+      "--disable plugins",
+      "--disable browser_use",
+      "--disable browser_use_external",
+      "--disable computer_use",
+      "--disable in_app_browser",
+      "--disable remote_plugin",
+      "--disable hooks",
+      "-c mcp_servers.node_repl.enabled=false",
+      "--output-schema",
+      "-o",
+      "--json",
+      "stdin=/dev/null",
+      "timeout 3600",
+      "MSYS_NO_PATHCONV=1",
+      "ruta de Windows calculada con cygpath -w y comprobada antes de lanzar"
+    ]
+  },
+  "Observed": {
+    "Assurance": "RUNTIME_OBSERVED (registro de sesión del runtime)",
+    "SessionLog": {
+      "Path": "~/.codex/sessions/2026/10/02/rollout-2026-10-02T11-19-28-01a0fda0-c870-7723-a2a9-c1cde4c223ef.jsonl",
+      "Sha256": "db9aef49a80d8fd036ed3992777582e9e4b594d4af203ac8e14f456064b46955",
+      "Lines": 567,
+      "Versioned": false
+    },
+    "ThreadId": "01a0fda0-c870-7723-a2a9-c1cde4c223ef",
+    "Originator": "codex_exec",
+    "CliVersion": "0.159.2",
+    "ModelProvider": "openai",
+    "Cwd": "D:\\r62-arch-v13",
+    "GitCommit": "b337a59fa6879893229096f6e423d441b3c97bc6",
+    "TurnContexts": [
+      {
+        "Utc": "2026-10-02T17:19:30.035Z",
+        "Model": "gpt-6.1-sol",
+        "Effort": "high",
+        "ApprovalPolicy": "never",
+        "Sandbox": "read-only"
+      },
+      {
+        "Utc": "2026-10-02T17:30:16.710Z",
+        "Model": "gpt-6.1-sol",
+        "Effort": "high",
+        "ApprovalPolicy": "never",
+        "Sandbox": "read-only"
+      }
+    ],
+    "ServiceTier": "priority",
+    "Compactions": [
+      {
+        "Utc": "2026-10-02T17:30:16.709Z",
+        "BeforeExecCall": 72,
+        "PromptPreserved": true,
+        "EncryptedSummaryChars": 25612,
+        "Effect": "las lecturas anteriores solo persisten en el resumen cifrado, que el invocador no puede leer; no se cita como evidencia"
+      }
+    ],
+    "ServedModelBehindProvider": "UNKNOWN (no observable)"
+  },
+  "InjectedContext": {
+    "BaseInstructionsChars": 21769,
+    "DeveloperMessagesChars": [
+      3233,
+      2429,
+      271
+    ],
+    "AgentsMdAutoInjectionChars": 25321,
+    "PromptChars": 18019,
+    "PromptEqualToCustodied": true,
+    "PromptNonAsciiChars": 102,
+    "PromptReplacementChars": 0,
+    "GlobalAgentsMdBytes": 0,
+    "RuntimeDiagnostic": "el comando 3 (lectura A del paquete V13) recibió antepuesto el diagnóstico de dot-sourcing de profile.ps1",
+    "WorldState": "presente en el registro; no forma parte de los mensajes visibles"
+  },
+  "ToolSurface": {
+    "ModelTool": "exec (scripts JavaScript que invocan tools.exec_command)",
+    "ExecCalls": 89,
+    "ShellCommands": 97,
+    "ModelVisibleTruncation": "ninguna: las 97 salidas llegaron completas al modelo"
+  },
+  "Execution": {
+    "StartUtc": "2026-10-02T17:19:27Z",
+    "EndUtc": "2026-10-02T17:37:15Z",
+    "ExitCode": 0,
+    "TurnCompleted": true,
+    "TaskCompleteUtc": "2026-10-02T17:37:13.771Z",
+    "DurationMs": 1065531,
+    "Usage": {
+      "InputTokens": 11089843,
+      "CachedInputTokens": 10778368,
+      "OutputTokens": 23001,
+      "ReasoningOutputTokens": 4805
+    },
+    "Stderr": "«Reading additional input from stdin...» (39 bytes); ninguna advertencia de límite"
+  },
+  "Termination": {
+    "ReviewerProcessesAliveAfter": 0,
+    "Method": "Win32_Process: ningún proceso con la ruta del clon ni codex exec/sandbox de esta corrida tras la salida",
+    "Excluded": "un codex exec de otra sesión sobre el worktree de I-63, arrancado a las 17:39:40Z (después del fin de esta corrida), ajeno a ella y no tocado"
+  },
+  "Clone": {
+    "Path": "D:\\r62-arch-v13",
+    "HeadBefore": "b337a59fa6879893229096f6e423d441b3c97bc6",
+    "HeadAfter": "b337a59fa6879893229096f6e423d441b3c97bc6",
+    "StatusBefore": "limpio",
+    "StatusAfter": "limpio (sin archivos ignorados)"
+  },
+  "WriterCollision": {
+    "RemoteBranchAtLaunch": "b337a59fa6879893229096f6e423d441b3c97bc6",
+    "ProcessesOnI62Paths": 0
+  },
+  "ReviewerDeclaredIdentity": "UNKNOWN en output.json: no es contradicción (§20.3.2)",
+  "DotnetTestExemption": "ver README §2; dotnet test no se ejecutó (read-audit.json)"
+}

@@ -1,0 +1,526 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rackcad-architect-review-result/v1 (representación experimental; Proposal V13 B.10.1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "Schema",
+    "ResultId",
+    "LogicalReviewRequestId",
+    "InvocationId",
+    "AttemptSeq",
+    "RequestedRole",
+    "Action",
+    "ReviewedUnit",
+    "ReviewedCommit",
+    "ReviewedPath",
+    "ReviewedBlob",
+    "PackagePath",
+    "PackageBlob",
+    "ReviewerBinding",
+    "ReviewerDeclaredIdentity",
+    "ReviewerMode",
+    "ReviewerAndAuthorSamePerson",
+    "InjectedContextDeclaration",
+    "InputsRead",
+    "InputFidelityEvidenceRef",
+    "IndependenceEvidence",
+    "Verdict",
+    "RequiredFindings",
+    "OptionalFindings",
+    "FindingDispositions",
+    "Downgrades",
+    "RequirementAssessments",
+    "PreservedDispositionChecks",
+    "OwnerDecisions",
+    "FocusAreas",
+    "FreezeAssessment",
+    "AutonomyAssessment",
+    "KnownLimitations",
+    "RecommendedNextAction"
+  ],
+  "properties": {
+    "Schema": {
+      "type": "string",
+      "enum": [
+        "rackcad-architect-review-result/v1"
+      ]
+    },
+    "ResultId": {
+      "type": "string"
+    },
+    "LogicalReviewRequestId": {
+      "type": "string"
+    },
+    "InvocationId": {
+      "type": "string"
+    },
+    "AttemptSeq": {
+      "type": "integer"
+    },
+    "RequestedRole": {
+      "type": "string",
+      "enum": [
+        "ARCHITECT"
+      ]
+    },
+    "Action": {
+      "type": "string",
+      "enum": [
+        "REVIEW_DESIGN"
+      ]
+    },
+    "ReviewedUnit": {
+      "type": "string"
+    },
+    "ReviewedCommit": {
+      "type": "string"
+    },
+    "ReviewedPath": {
+      "type": "string"
+    },
+    "ReviewedBlob": {
+      "type": "string"
+    },
+    "PackagePath": {
+      "type": "string"
+    },
+    "PackageBlob": {
+      "type": "string"
+    },
+    "ReviewerBinding": {
+      "type": "string"
+    },
+    "ReviewerDeclaredIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Runtime",
+        "Model",
+        "Effort",
+        "SessionOrThread",
+        "Source"
+      ],
+      "properties": {
+        "Runtime": {
+          "type": "string"
+        },
+        "Model": {
+          "type": "string"
+        },
+        "Effort": {
+          "type": "string"
+        },
+        "SessionOrThread": {
+          "type": "string"
+        },
+        "Source": {
+          "type": "string"
+        }
+      }
+    },
+    "ReviewerMode": {
+      "type": "string",
+      "enum": [
+        "SAME-SESSION ROLE",
+        "SEPARATE SESSION",
+        "EXTERNAL HUMAN"
+      ]
+    },
+    "ReviewerAndAuthorSamePerson": {
+      "type": "string"
+    },
+    "InjectedContextDeclaration": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "InputsRead": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "InputFidelityEvidenceRef": {
+      "type": "string"
+    },
+    "IndependenceEvidence": {
+      "type": "string"
+    },
+    "Verdict": {
+      "type": "string",
+      "enum": [
+        "AGREED",
+        "CHANGES REQUIRED",
+        "BLOCKED — OWNER DECISION"
+      ]
+    },
+    "RequiredFindings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/finding"
+      }
+    },
+    "OptionalFindings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/finding"
+      }
+    },
+    "FindingDispositions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "FindingId",
+          "LineageId",
+          "State",
+          "SupersededBy",
+          "Rationale",
+          "EvaluatedObject",
+          "PremiseRefs"
+        ],
+        "properties": {
+          "FindingId": {
+            "type": "string"
+          },
+          "LineageId": {
+            "type": "string"
+          },
+          "State": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSED",
+              "STILL_OPEN",
+              "SUPERSEDED"
+            ]
+          },
+          "SupersededBy": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "Rationale": {
+            "type": "string"
+          },
+          "EvaluatedObject": {
+            "$ref": "#/$defs/object"
+          },
+          "PremiseRefs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/premise"
+            }
+          }
+        }
+      }
+    },
+    "Downgrades": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "FindingId",
+          "From",
+          "To",
+          "Classification",
+          "Reason",
+          "Evidence"
+        ],
+        "properties": {
+          "FindingId": {
+            "type": "string"
+          },
+          "From": {
+            "type": "string",
+            "enum": [
+              "REQUIRED"
+            ]
+          },
+          "To": {
+            "type": "string",
+            "enum": [
+              "OPTIONAL"
+            ]
+          },
+          "Classification": {
+            "type": "string"
+          },
+          "Reason": {
+            "type": "string"
+          },
+          "Evidence": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "RequirementAssessments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "RequirementId",
+          "Assessment",
+          "Rationale",
+          "PremiseRefs"
+        ],
+        "properties": {
+          "RequirementId": {
+            "type": "string"
+          },
+          "Assessment": {
+            "type": "string",
+            "enum": [
+              "SATISFIED",
+              "PARTIALLY_SATISFIED",
+              "NOT_SATISFIED"
+            ]
+          },
+          "Rationale": {
+            "type": "string"
+          },
+          "PremiseRefs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/premise"
+            }
+          }
+        }
+      }
+    },
+    "PreservedDispositionChecks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "FindingId",
+          "PreservedState",
+          "Check",
+          "Rationale"
+        ],
+        "properties": {
+          "FindingId": {
+            "type": "string"
+          },
+          "PreservedState": {
+            "type": "string"
+          },
+          "Check": {
+            "type": "string",
+            "enum": [
+              "CONFIRMED",
+              "CHALLENGED"
+            ]
+          },
+          "Rationale": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "OwnerDecisions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "FocusAreas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "Area",
+          "Assessment"
+        ],
+        "properties": {
+          "Area": {
+            "type": "string"
+          },
+          "Assessment": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "FreezeAssessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "A62V1101State",
+        "PriorClosuresValid",
+        "BothOD6AlternativesExecutable",
+        "ReadyForConsensusFreezeAfterOD6",
+        "Notes"
+      ],
+      "properties": {
+        "A62V1101State": {
+          "type": "string"
+        },
+        "PriorClosuresValid": {
+          "type": "string"
+        },
+        "BothOD6AlternativesExecutable": {
+          "type": "string"
+        },
+        "ReadyForConsensusFreezeAfterOD6": {
+          "type": "string"
+        },
+        "Notes": {
+          "type": "string"
+        }
+      }
+    },
+    "AutonomyAssessment": {
+      "type": "string"
+    },
+    "KnownLimitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "RecommendedNextAction": {
+      "type": "string"
+    }
+  },
+  "$defs": {
+    "object": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Commit",
+        "Path",
+        "Blob"
+      ],
+      "properties": {
+        "Commit": {
+          "type": "string"
+        },
+        "Path": {
+          "type": "string"
+        },
+        "Blob": {
+          "type": "string"
+        }
+      }
+    },
+    "premise": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Path",
+        "Section",
+        "LineStart",
+        "LineEnd",
+        "Quote"
+      ],
+      "properties": {
+        "Path": {
+          "type": "string"
+        },
+        "Section": {
+          "type": "string"
+        },
+        "LineStart": {
+          "type": "integer"
+        },
+        "LineEnd": {
+          "type": "integer"
+        },
+        "Quote": {
+          "type": "string"
+        }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "FindingId",
+        "LineageId",
+        "Source",
+        "AffectedSection",
+        "Evidence",
+        "PremiseRefs",
+        "PremiseEnvelopeRefs",
+        "NormativeDependencyRefs",
+        "WhyItMatters",
+        "CorrectionRequired"
+      ],
+      "properties": {
+        "FindingId": {
+          "type": "string"
+        },
+        "LineageId": {
+          "type": "string"
+        },
+        "Source": {
+          "type": "string"
+        },
+        "AffectedSection": {
+          "type": "string"
+        },
+        "Evidence": {
+          "type": "string"
+        },
+        "PremiseRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/premise"
+          }
+        },
+        "WhyItMatters": {
+          "type": "string"
+        },
+        "CorrectionRequired": {
+          "type": "string"
+        },
+        "PremiseEnvelopeRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          }
+        },
+        "NormativeDependencyRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          }
+        }
+      }
+    },
+    "ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Path",
+        "Section",
+        "LineStart",
+        "LineEnd"
+      ],
+      "properties": {
+        "Path": {
+          "type": "string"
+        },
+        "Section": {
+          "type": "string"
+        },
+        "LineStart": {
+          "type": "integer"
+        },
+        "LineEnd": {
+          "type": "integer"
+        }
+      }
+    }
+  }
+}

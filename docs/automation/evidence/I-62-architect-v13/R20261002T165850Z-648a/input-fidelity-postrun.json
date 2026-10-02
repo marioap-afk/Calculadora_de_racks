@@ -1,0 +1,88 @@
+{
+  "Schema": "rackcad-input-fidelity/v1 (representación experimental; Proposal V13 §20.3.3; no autoridad normativa) — COMPROBACIÓN TRAS LA CORRIDA",
+  "RunId": "R20261002T165850Z-648a",
+  "AuthorityRevision": "b337a59fa6879893229096f6e423d441b3c97bc6",
+  "Sources": {
+    "ReviewerVisible": "salidas de las 89 llamadas exec en el log de sesión (SHA-256 db9aef49a80d8fd036ed3992777582e9e4b594d4af203ac8e14f456064b46955): la representación entregada al modelo; fuente decisiva (Proposal V13 §20.3.3)",
+    "Transport": "aggregated_output de los 97 comandos en events.jsonl (SHA-256 ad80947e6d8b00ee138665865f8180b6e908b4117f417438079345fbc5d19ae8), solo como comprobación adicional"
+  },
+  "ReviewerVisible": {
+    "ExecCalls": 89,
+    "RecordStatusCounts": {
+      "FULL": 97
+    },
+    "TruncatedCalls": 0,
+    "NeverVisibleRequestedRanges": {},
+    "PartialBoundaryLines": [],
+    "Coverage": {
+      "docs/initiatives/I-62-proposal-v13.md": {
+        "Lines": 3216,
+        "VisibleLines": 3216,
+        "NeverVisible": [],
+        "VisibleAfterCompaction": 359
+      },
+      "docs/initiatives/I-62-architect-package-v13.md": {
+        "Lines": 136,
+        "VisibleLines": 136,
+        "NeverVisible": [],
+        "VisibleAfterCompaction": 136
+      }
+    },
+    "CompactionBeforeExecCall": 72,
+    "IndependentControl": {
+      "Method": "alineación difflib del texto visible con cada comando",
+      "StatusCounts": {
+        "FULL": 97
+      },
+      "TruncatedCalls": [],
+      "NeverVisible": {}
+    }
+  },
+  "Transport": {
+    "FullReadsA": {
+      "Count": 25,
+      "Equal": 24
+    },
+    "RangeReadsB": {
+      "Count": 54,
+      "Equal": 54
+    },
+    "SearchesC": {
+      "Count": 12,
+      "Equal": 12
+    },
+    "FailedReads": [
+      {
+        "Command": 47,
+        "Kind": "búsqueda con «|» en el patrón: pwsh lo interpretó como tubería y falló (exit 1) sin devolver contenido"
+      }
+    ],
+    "CharacterDegradations": 0,
+    "UnmatchedLines": 0,
+    "ReplacementCharsInOutputs": 0
+  },
+  "DegradedSpans": [
+    {
+      "Command": 3,
+      "Path": "docs/initiatives/I-62-architect-package-v13.md",
+      "Class": "STRUCTURE",
+      "Kind": "INSERTED: diagnóstico del runtime antepuesto (profile.ps1: Cannot dot-source … language mode)",
+      "CanonicalLinesAdjacent": [
+        1,
+        1
+      ],
+      "CanonicalContentAffected": false,
+      "VisibleToModel": true
+    }
+  ],
+  "PromptFidelity": {
+    "Equal": "sí, salvo el salto de línea final (normalización permitida)",
+    "NonAsciiChars": 102,
+    "ReplacementChars": 0,
+    "SessionLogSha256": "db9aef49a80d8fd036ed3992777582e9e4b594d4af203ac8e14f456064b46955",
+    "AfterCompaction": "el historial de reemplazo conserva el prompt completo"
+  },
+  "FidelityStatus": "DEGRADED_BOUNDED",
+  "StatusReason": "la única desviación de lo entregado al modelo es una línea insertada por el runtime antes de la línea 1 del paquete V13; ningún carácter alterado, ninguna omisión ni truncamiento. Por conservadurismo, la línea 1 del paquete cuenta como degradada",
+  "Conclusion": "el objeto (Proposal V13, 3 216 líneas) y el paquete (136) llegaron completos al revisor; ningún envoltorio de premisa ni ninguna clausura de dependencias solapa un tramo degradado (premise-envelopes.json, normative-dependency-closures.json)"
+}

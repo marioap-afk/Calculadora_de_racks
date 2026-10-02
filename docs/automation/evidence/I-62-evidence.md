@@ -1009,3 +1009,62 @@ Las trazas de V13 son **análisis del diseño**, no ensayos.
 
 **Validación de esta entrega:** allowlist, enlaces, columnas de las tablas, diff V12→V13 revisado, YAML del estado y `git diff --check`; resultado en el
 cuerpo del commit. La CI de este commit se informa al Owner y al Coordinator.
+
+## 29. F0 — Revisión formal final del Architect de la Proposal V13 (autorización del Owner y del Coordinator)
+
+**CI de la Proposal V13** (`b337a59fa6879893229096f6e423d441b3c97bc6`, §28): corrida **37036044921**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: Tests (Domain + Application) (110934394578), UI Tests
+(110934394754), Build UI (110934395060) y Build Plugin without AutoCAD (110935136884), los cuatro `success`. MEASURED por la sesión. Acredita solo
+`b337a59f`.
+
+**Autorización recibida:** «OWNER / COORDINATOR AUTHORIZATION — FINAL FORMAL ARCHITECT REVIEW OF I-62 PROPOSAL V13», texto pegado sin archivo de origen.
+5 369 bytes en UTF-8, SHA-256 `4e6742b9f7b5884e9555f3e41c195c561a66328cae8be4eea129560c74116ec8`; va literal dentro de `prompt.md`. La exención de
+`dotnet test` (302 bytes, SHA-256 `2d0448eb…`) está transcrita en el README de la corrida, §2. **Relanzamiento:** autorizado por el Owner en la
+conversación, como respuesta a la pregunta de la sesión tras el fallo previo a la sesión.
+
+**Invocación** (MEASURED; detalle en
+[`I-62-architect-v13/R20261002T165850Z-648a/README.md`](I-62-architect-v13/R20261002T165850Z-648a/README.md)):
+- **Antes:**
+  - `codex-cli 0.159.2` y autenticación existente; `config.toml` con hash `40c27b57…` antes y después;
+  - clon limpio `D:\r62-arch-v13` en `b337a59f`, sin colisión de escritores;
+  - cierre de 60 insumos canónicos y 9 transitivos;
+  - preflight FAITHFUL_NORMALIZED (65 insumos por A y B completas; 4 grandes por rangos de 150 líneas; 61 caracteres no ASCII; control negativo). Una
+    primera corrida del preflight dio una diferencia solo en ASCII en una lectura, que no se reprodujo.
+- **Lanzamiento fallido** (17:17:28Z): salida 1 por una ruta vacía en el comando del invocador; sin sesión, sin tokens y sin lecturas.
+- **Ejecución:** una sesión, de 17:19:27Z a 17:37:15Z, salida 0. `gpt-6.1-sol`/`high`/read-only RUNTIME_OBSERVED, con una compactación a las 17:30:16Z
+  que conservó el prompt completo. Consumo: entrada 11 089 843 tokens (10 778 368 en caché) y salida 23 001.
+- **Después:** clon limpio, configuración sin cambio y ningún proceso de la corrida vivo; 97 lecturas sobre 36 rutas del cierre, con la política de lectura
+  cumplida y sin `dotnet test`.
+- **Lo entregado al revisor:** 89 llamadas sin truncamientos; 97 salidas completas; objeto y paquete vistos enteros. DEGRADED_BOUNDED solo por la línea del
+  diagnóstico del runtime.
+- **Clausuras:** ninguna solapa un tramo degradado. Con la regla literal, las premisas de §20.3.3 y dos de la disposición de V10 quedan en UNKNOWN (32
+  referencias sin resolver distintas, desde la profundidad 3).
+
+**Resultado:** CHANGES REQUIRED. A62-V11-01 sigue abierto como residuo (terminalidad incondicional del documento completo). Registro:
+[`I-62-architect-review-v13.md`](../../initiatives/I-62-architect-review-v13.md).
+
+**Hechos medidos en este tramo** (para el triaje; la sesión no cambia la Proposal):
+
+| Id | Hecho (MEASURED) | Efecto |
+|---|---|---|
+| GAP-10 | con un presupuesto de salida por llamada en el prompt (una lectura grande por llamada, menos de ~8 000 tokens), **ninguna** de las 89 llamadas llegó truncada al revisor | la mitigación operativa funcionó; la auditoría sobre lo entregado al revisor siguió siendo la comprobación decisiva |
+| — | el primer lanzamiento falló antes de crear sesión por una ruta vacía construida por el invocador (`sed` con barras invertidas mal escapadas) | ninguna; el Owner autorizó el relanzamiento. La ruta se calcula ahora con `cygpath -w` y se comprueba antes de lanzar |
+| — | la `NormativeDependencyClosure` literal de V13, calculada mecánicamente sobre el corpus, se extiende a casi todo el corpus: una sección entera trae todas sus referencias. Alcanza referencias que un resolutor mecánico no puede decidir sin juicio semántico: secciones que la Proposal propone y que aún no existen («§16.13»), § sin calificador presentes en varios documentos («§16.3») y § de registros que pueden apuntar a V12 o a V13 | con la regla literal, la independencia de las premisas afectadas es UNKNOWN aunque la fidelidad sea completa. La corrección que pide el Architect agranda aún más la clausura. Lo disponen el Owner y el Coordinator |
+
+**Revalidación antes del commit** (MEASURED, 17:45Z):
+- `origin/main` = `819955d6…` y la rama de I-62 en `b337a59f…`, sin cambios;
+- I-52 `fb6b5648`, sin commits nuevos;
+- I-63 `669d8a39..844dabb6`: 2 commits;
+- I-64 `58d1140c..0b7db52f`: 2 commits;
+- **ningún cruce** con superficies de I-62.
+
+**No se hizo:**
+- una segunda sesión de revisión, Workers, Controllers, subagentes, pilotos, autenticación ni cambios de configuración. El preflight usó `codex sandbox`, que
+  no invoca ningún modelo;
+- editar el clon, crear la Proposal V14, ni corregir, disponer, ratificar o rebajar hallazgos;
+- decidir OD-6 ni declarar Freeze;
+- tocar V1-V13, sus paquetes, los registros previos, la evidencia custodiada, el Discovery, el mandato, las normas compartidas o cualquier superficie ajena,
+  incluido el proceso de otra sesión sobre el worktree de I-63.
+
+**Validación de esta entrega:** allowlist (superficies propias de I-62), enlaces, columnas de las tablas, hashes de los archivos custodiados, YAML del estado y
+`git diff --check`; resultado en el cuerpo del commit. La CI de este commit se informa al Owner y al Coordinator.

@@ -1,0 +1,1408 @@
+{
+  "Schema": "read-audit (representación experimental; Proposal V13 §20.3.1/§20.3.3; no autoridad normativa)",
+  "RunId": "R20261002T165850Z-648a",
+  "AuthorityRevision": "b337a59fa6879893229096f6e423d441b3c97bc6",
+  "Commands": 97,
+  "PathsRead": [
+    "AGENTS.md",
+    "README.md",
+    "docs/ARCHITECTURE.md",
+    "docs/AUTOMATION_PLAN.md",
+    "docs/FOUNDATIONS.md",
+    "docs/HANDOFF.md",
+    "docs/INITIATIVE_LIFECYCLE.md",
+    "docs/ROADMAP.md",
+    "docs/WORKFLOW.md",
+    "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md",
+    "docs/automation/decisions/I-62-owner-mandate.txt",
+    "docs/automation/decisions/I-62.md",
+    "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/README.md",
+    "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/output.json",
+    "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/schema.json",
+    "docs/automation/evidence/I-62-evidence.md",
+    "docs/automation/state/I-62.yml",
+    "docs/context-packs/README.md",
+    "docs/context-packs/documentation-governance.md",
+    "docs/initiatives/I-62-architect-package-v12.md",
+    "docs/initiatives/I-62-architect-package-v13.md",
+    "docs/initiatives/I-62-architect-review-v10-disposition.md",
+    "docs/initiatives/I-62-architect-review-v11-disposition.md",
+    "docs/initiatives/I-62-architect-review-v11.md",
+    "docs/initiatives/I-62-architect-review-v12-disposition.md",
+    "docs/initiatives/I-62-architect-review-v12.md",
+    "docs/initiatives/I-62-architect-review-v6.md",
+    "docs/initiatives/I-62-architect-review-v7.md",
+    "docs/initiatives/I-62-architect-review-v9-disposition.md",
+    "docs/initiatives/I-62-coordinator-requirement-auto.md",
+    "docs/initiatives/I-62-discovery.md",
+    "docs/initiatives/I-62-portabilidad-coordinador-principal.md",
+    "docs/initiatives/I-62-proposal-v12.md",
+    "docs/initiatives/I-62-proposal-v13.md",
+    "docs/initiatives/PROMPT_TEMPLATES.md",
+    "docs/initiatives/README.md"
+  ],
+  "PathsReadCount": 36,
+  "OutsideClosure": [],
+  "ForbiddenCommands": [],
+  "DirectReadsInOuterPwsh": [],
+  "FailedReads": [
+    47
+  ],
+  "DotnetTestExecuted": false,
+  "ReadPolicy": {
+    "FormAOver24000Bytes": [],
+    "FormBOver150Lines": []
+  },
+  "FormCounts": {
+    "A": 25,
+    "B": 54,
+    "C": 13
+  },
+  "Result": "ninguna lectura fuera del cierre: no hay INVALID_REVIEW_CONTEXT; la política de lectura se cumplió",
+  "Detail": [
+    {
+      "Index": 0,
+      "ExecCall": 0,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [],
+      "Paths": [
+        "docs/initiatives/I-62-architect-package-v13.md",
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 298,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 1,
+      "ExecCall": 0,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [],
+      "Paths": [],
+      "OutputBytes": 175,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 2,
+      "ExecCall": 0,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [],
+      "Paths": [],
+      "OutputBytes": 2083,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 3,
+      "ExecCall": 0,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-architect-package-v13.md"
+      ],
+      "OutputBytes": 12952,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 4,
+      "ExecCall": 1,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/HANDOFF.md"
+      ],
+      "OutputBytes": 10484,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 5,
+      "ExecCall": 2,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "README.md"
+      ],
+      "OutputBytes": 3696,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 6,
+      "ExecCall": 3,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/ARCHITECTURE.md"
+      ],
+      "OutputBytes": 5557,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 7,
+      "ExecCall": 4,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/context-packs/README.md"
+      ],
+      "OutputBytes": 1965,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 8,
+      "ExecCall": 5,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/context-packs/documentation-governance.md"
+      ],
+      "OutputBytes": 2030,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 9,
+      "ExecCall": 6,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/ROADMAP.md"
+      ],
+      "OutputBytes": 9205,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 10,
+      "ExecCall": 7,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/FOUNDATIONS.md"
+      ],
+      "OutputBytes": 19499,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 11,
+      "ExecCall": 8,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/README.md"
+      ],
+      "OutputBytes": 8103,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 12,
+      "ExecCall": 9,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/initiatives/PROMPT_TEMPLATES.md"
+      ],
+      "OutputBytes": 13424,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 13,
+      "ExecCall": 10,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "C"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 7100,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 14,
+      "ExecCall": 11,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 13874,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 15,
+      "ExecCall": 12,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 11936,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 16,
+      "ExecCall": 13,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 13556,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 17,
+      "ExecCall": 14,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 13908,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 18,
+      "ExecCall": 15,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 15853,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 19,
+      "ExecCall": 16,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 14761,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 20,
+      "ExecCall": 17,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 14361,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 21,
+      "ExecCall": 18,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 9307,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 22,
+      "ExecCall": 19,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 8236,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 23,
+      "ExecCall": 20,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 8345,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 24,
+      "ExecCall": 21,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 14028,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 25,
+      "ExecCall": 22,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 16570,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 26,
+      "ExecCall": 23,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 15780,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 27,
+      "ExecCall": 24,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 14853,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 28,
+      "ExecCall": 25,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 15441,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 29,
+      "ExecCall": 26,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 12840,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 30,
+      "ExecCall": 27,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 8140,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 31,
+      "ExecCall": 28,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 3629,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 32,
+      "ExecCall": 29,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 10350,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 33,
+      "ExecCall": 30,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 10634,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 34,
+      "ExecCall": 31,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 11201,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 35,
+      "ExecCall": 32,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 8818,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 36,
+      "ExecCall": 33,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 13124,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 37,
+      "ExecCall": 34,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 11035,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 38,
+      "ExecCall": 35,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 9898,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 39,
+      "ExecCall": 36,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 13518,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 40,
+      "ExecCall": 37,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 16551,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 41,
+      "ExecCall": 38,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 154,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 42,
+      "ExecCall": 39,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-architect-review-v12-disposition.md"
+      ],
+      "OutputBytes": 7877,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 43,
+      "ExecCall": 40,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-architect-review-v10-disposition.md"
+      ],
+      "OutputBytes": 10674,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 44,
+      "ExecCall": 41,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-architect-review-v11-disposition.md"
+      ],
+      "OutputBytes": 6997,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 45,
+      "ExecCall": 42,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-architect-review-v12.md"
+      ],
+      "OutputBytes": 8405,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 46,
+      "ExecCall": 43,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-architect-review-v11.md"
+      ],
+      "OutputBytes": 7764,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 47,
+      "ExecCall": 44,
+      "AfterCompaction": false,
+      "ExitCode": 1,
+      "Forms": [
+        "C"
+      ],
+      "Paths": [
+        "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/output.json"
+      ],
+      "OutputBytes": 0,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 48,
+      "ExecCall": 45,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "C"
+      ],
+      "Paths": [
+        "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/output.json"
+      ],
+      "OutputBytes": 1898,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 49,
+      "ExecCall": 46,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/output.json"
+      ],
+      "OutputBytes": 13400,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 50,
+      "ExecCall": 47,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v12.md"
+      ],
+      "OutputBytes": 6587,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 51,
+      "ExecCall": 48,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/INITIATIVE_LIFECYCLE.md"
+      ],
+      "OutputBytes": 22346,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 52,
+      "ExecCall": 49,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "AGENTS.md"
+      ],
+      "OutputBytes": 11252,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 53,
+      "ExecCall": 50,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "AGENTS.md"
+      ],
+      "OutputBytes": 10003,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 54,
+      "ExecCall": 51,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "AGENTS.md"
+      ],
+      "OutputBytes": 3332,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 55,
+      "ExecCall": 52,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "C"
+      ],
+      "Paths": [
+        "docs/AUTOMATION_PLAN.md"
+      ],
+      "OutputBytes": 1508,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 56,
+      "ExecCall": 53,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/AUTOMATION_PLAN.md"
+      ],
+      "OutputBytes": 8738,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 57,
+      "ExecCall": 54,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/AUTOMATION_PLAN.md"
+      ],
+      "OutputBytes": 9002,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 58,
+      "ExecCall": 55,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/AUTOMATION_PLAN.md"
+      ],
+      "OutputBytes": 10762,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 59,
+      "ExecCall": 56,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/AUTOMATION_PLAN.md"
+      ],
+      "OutputBytes": 17860,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 60,
+      "ExecCall": 57,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/AUTOMATION_PLAN.md"
+      ],
+      "OutputBytes": 9869,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 61,
+      "ExecCall": 58,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-architect-review-v9-disposition.md"
+      ],
+      "OutputBytes": 9302,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 62,
+      "ExecCall": 59,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-architect-review-v7.md"
+      ],
+      "OutputBytes": 7719,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 63,
+      "ExecCall": 60,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-architect-review-v6.md"
+      ],
+      "OutputBytes": 10200,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 64,
+      "ExecCall": 61,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/output.json"
+      ],
+      "OutputBytes": 6963,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 65,
+      "ExecCall": 62,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-architect-package-v12.md"
+      ],
+      "OutputBytes": 10384,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 66,
+      "ExecCall": 63,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "C"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 2163,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 67,
+      "ExecCall": 63,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "C"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-architect-review-v10-disposition.md"
+      ],
+      "OutputBytes": 529,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 68,
+      "ExecCall": 64,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-portabilidad-coordinador-principal.md"
+      ],
+      "OutputBytes": 15085,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 69,
+      "ExecCall": 65,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/automation/decisions/I-62-owner-mandate.txt"
+      ],
+      "OutputBytes": 19004,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 70,
+      "ExecCall": 66,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/automation/state/I-62.yml"
+      ],
+      "OutputBytes": 3061,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 71,
+      "ExecCall": 67,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "C"
+      ],
+      "Paths": [
+        "docs/WORKFLOW.md"
+      ],
+      "OutputBytes": 1022,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 72,
+      "ExecCall": 67,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "C"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-discovery.md"
+      ],
+      "OutputBytes": 2226,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 73,
+      "ExecCall": 67,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "C"
+      ],
+      "Paths": [
+        "docs/automation/decisions/I-62.md"
+      ],
+      "OutputBytes": 2842,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 74,
+      "ExecCall": 67,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "C"
+      ],
+      "Paths": [
+        "docs/automation/evidence/I-62-evidence.md"
+      ],
+      "OutputBytes": 1953,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 75,
+      "ExecCall": 68,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/WORKFLOW.md"
+      ],
+      "OutputBytes": 8691,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 76,
+      "ExecCall": 69,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/automation/decisions/I-62.md"
+      ],
+      "OutputBytes": 6630,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 77,
+      "ExecCall": 70,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/automation/evidence/I-62-evidence.md"
+      ],
+      "OutputBytes": 3128,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 78,
+      "ExecCall": 71,
+      "AfterCompaction": false,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-discovery.md"
+      ],
+      "OutputBytes": 2017,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 79,
+      "ExecCall": 72,
+      "AfterCompaction": true,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 6153,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 80,
+      "ExecCall": 73,
+      "AfterCompaction": true,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-architect-package-v13.md"
+      ],
+      "OutputBytes": 12777,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 81,
+      "ExecCall": 74,
+      "AfterCompaction": true,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-architect-review-v12-disposition.md"
+      ],
+      "OutputBytes": 7877,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 82,
+      "ExecCall": 75,
+      "AfterCompaction": true,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/schema.json"
+      ],
+      "OutputBytes": 10060,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 83,
+      "ExecCall": 76,
+      "AfterCompaction": true,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-architect-review-v10-disposition.md"
+      ],
+      "OutputBytes": 4031,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 84,
+      "ExecCall": 77,
+      "AfterCompaction": true,
+      "ExitCode": 0,
+      "Forms": [
+        "C"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 9490,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 85,
+      "ExecCall": 78,
+      "AfterCompaction": true,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-coordinator-requirement-auto.md"
+      ],
+      "OutputBytes": 9499,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 86,
+      "ExecCall": 79,
+      "AfterCompaction": true,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md"
+      ],
+      "OutputBytes": 9871,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 87,
+      "ExecCall": 80,
+      "AfterCompaction": true,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 12740,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 88,
+      "ExecCall": 81,
+      "AfterCompaction": true,
+      "ExitCode": 0,
+      "Forms": [
+        "C"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 7188,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 89,
+      "ExecCall": 82,
+      "AfterCompaction": true,
+      "ExitCode": 0,
+      "Forms": [
+        "A"
+      ],
+      "Paths": [
+        "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/README.md"
+      ],
+      "OutputBytes": 14575,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 90,
+      "ExecCall": 83,
+      "AfterCompaction": true,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 13568,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 91,
+      "ExecCall": 84,
+      "AfterCompaction": true,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/output.json"
+      ],
+      "OutputBytes": 6963,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 92,
+      "ExecCall": 85,
+      "AfterCompaction": true,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/output.json"
+      ],
+      "OutputBytes": 8198,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 93,
+      "ExecCall": 86,
+      "AfterCompaction": true,
+      "ExitCode": 0,
+      "Forms": [
+        "B"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 4125,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 94,
+      "ExecCall": 87,
+      "AfterCompaction": true,
+      "ExitCode": 0,
+      "Forms": [],
+      "Paths": [
+        "docs/initiatives/I-62-architect-package-v13.md",
+        "docs/initiatives/I-62-proposal-v13.md"
+      ],
+      "OutputBytes": 123,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 95,
+      "ExecCall": 87,
+      "AfterCompaction": true,
+      "ExitCode": 0,
+      "Forms": [],
+      "Paths": [],
+      "OutputBytes": 0,
+      "ModelVisible": "FULL"
+    },
+    {
+      "Index": 96,
+      "ExecCall": 88,
+      "AfterCompaction": true,
+      "ExitCode": 0,
+      "Forms": [
+        "C"
+      ],
+      "Paths": [
+        "docs/initiatives/I-62-architect-review-v12-disposition.md"
+      ],
+      "OutputBytes": 2557,
+      "ModelVisible": "FULL"
+    }
+  ]
+}
