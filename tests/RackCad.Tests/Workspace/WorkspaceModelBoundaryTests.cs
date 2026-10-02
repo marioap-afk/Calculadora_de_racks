@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using RackCad.Application.Workspace;
 using Xunit;
 
-namespace RackCad.Tests.Workspace;
+namespace RackCad.Tests;
 
 // I-64 F1-T1-MODEL: INV-F1-T1-01, 03, 04, 08, 10 as source and shape guards over the pure model.
 public class WorkspaceModelBoundaryTests
@@ -36,13 +36,45 @@ public class WorkspaceModelBoundaryTests
         }
     }
 
+    // Concrete persistence / authored-write authorities and forbidden APIs. The bare token "Registry" is
+    // deliberately NOT banned: WorkspaceSessionRegistry is the in-memory session registry.
+    private static readonly Regex PersistenceOrWriteAuthorities = new(
+        @"System\.IO|\bFile\.|\bDirectory\.|\bStreamWriter\b|Microsoft\.Win32|\bRegistry\.|\bUserSettings\b|\bAtomicFile\b|Transaction|LockDocument|\bDatabase\b|\bCommit\(|\bAutodesk\.");
+
     [Fact]
     public void ModelDoesNotPersistNorWriteAuthoredData()
     {
-        var banned = new Regex(
-            @"System\.IO|File\.|Directory\.|StreamWriter|Registry|UserSettings|AtomicFile|Transaction|LockDocument|\bDatabase\b|Commit\(");
         foreach (var file in Directory.GetFiles(WorkspaceDir(), "*.cs", SearchOption.AllDirectories))
-            Assert.DoesNotMatch(banned, CodeOnly(File.ReadAllText(file)));
+            Assert.DoesNotMatch(PersistenceOrWriteAuthorities, CodeOnly(File.ReadAllText(file)));
+    }
+
+    [Theory]
+    [InlineData("using System.IO;")]
+    [InlineData("var t = File.ReadAllText(p);")]
+    [InlineData("Directory.CreateDirectory(p);")]
+    [InlineData("using var w = new StreamWriter(p);")]
+    [InlineData("Microsoft.Win32.Registry.CurrentUser.OpenSubKey(k);")]
+    [InlineData("Registry.CurrentUser.SetValue(k, v);")]
+    [InlineData("UserSettings.Save();")]
+    [InlineData("AtomicFile.Write(p, t);")]
+    [InlineData("using var tr = db.TransactionManager;")]
+    [InlineData("var l = doc.LockDocument();")]
+    [InlineData("Database db = null;")]
+    [InlineData("tr.Commit();")]
+    [InlineData("using Autodesk.AutoCAD.DatabaseServices;")]
+    public void BoundaryGuardDetectsEachForbiddenPersistenceFamilyInRealModelText(string injected)
+    {
+        var real = CodeOnly(File.ReadAllText(Path.Combine(WorkspaceDir(), "WorkspaceSession.cs")));
+        Assert.DoesNotMatch(PersistenceOrWriteAuthorities, real);
+        Assert.Matches(PersistenceOrWriteAuthorities, real + "\n" + injected);
+    }
+
+    [Fact]
+    public void BoundaryGuardDoesNotRejectTheInMemorySessionRegistry()
+    {
+        var registry = CodeOnly(File.ReadAllText(Path.Combine(WorkspaceDir(), "WorkspaceSessionRegistry.cs")));
+        Assert.Contains("WorkspaceSessionRegistry", registry);
+        Assert.DoesNotMatch(PersistenceOrWriteAuthorities, registry);
     }
 
     [Fact]
