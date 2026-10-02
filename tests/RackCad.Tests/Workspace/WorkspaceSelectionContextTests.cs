@@ -1,3 +1,4 @@
+#nullable enable annotations
 using System.Collections.Generic;
 using RackCad.Application.Workspace;
 using Xunit;
