@@ -447,6 +447,21 @@ del gate igual a ese SHA más commits de la sesión limitados a `docs/automation
 Coordinator lo comprueba con `git diff --name-only`; tocar esas rutas exige un contrato nuevo. Con REWORK, BLOCKED o STOP no hay trabajo delegado que revisar. El Coordinator puede
 rechazar un VERIFIED. Esta regla define cuándo termina la delegación y no añade condiciones de cierre de gate.
 
+**Unidades I62** (materializado por I-62 e inactivo hasta su vigencia, 16.14). Para una unidad I62, la tabla anterior se sustituye por cinco roles semánticos
+sin proveedor; las unidades I61 siguen con ella. Ningún rol nombra proveedor, modelo ni runtime: un binding los vincula según capacidad acreditada (Proposal
+V14 de I-62, §5), y los proveedores viven en los descriptores de adapter y en el catálogo.
+
+| Rol | Semántica | Declara | Nunca declara |
+|---|---|---|---|
+| **PRINCIPAL_COORDINATOR** | sesión responsable de la unidad: worktree, preflight, relevos, propuesta de bindings, trabajo directo autorizado, hechos y custodia; en una unidad I62_DELEGATED, además, **orquesta** las invocaciones de rol elegibles (Proposal V14 §20.2) sin ganar autoridad de gate | hechos del relevo, del remoto, del rebase y del preflight; `CONFIGURATION_STATUS` propio | `EXECUTION_*`; GATE PASS salvo SAME-SESSION ROLE de Coordinator declarado |
+| **ARCHITECT** | revisión de diseño y conformidad (LIFECYCLE §5, §9) | veredicto de LIFECYCLE, en `architect-review-result/v1` (Proposal V14 §20.7) | GATE PASS, `EXECUTION_*` |
+| **EXECUTION_CONTROLLER** | planificación y verificación, solo lectura (§16) | `EXECUTION_VERIFIED/REWORK_REQUIRED/BLOCKED` | GATE PASS, Candidato, cierre, integración |
+| **WORKER** | escritura dentro del alcance | `IMPLEMENTATION_COMPLETE`, `PARTIAL`, `BLOCKED` | verificación, GATE PASS |
+| **REVIEWER** | revisión operativa fuera de LIFECYCLE, sin autoridad de Architect ni de Controller | hallazgos y recomendaciones, en `reviewer-result/v1` (Proposal V14 §20.7) | `EXECUTION_*`, GATE PASS, veredictos de LIFECYCLE, ARCHITECT_SATISFIED, cierre o rebaja de hallazgos del ARCHITECT |
+
+El Coordinator de gates no es vinculable. La acumulación de roles en un mismo actor compara la identidad observable del actor, nunca el binding, y se aplica al
+vincular (Proposal V14 §2 y §11.3): un rebinding o una etiqueta nueva no crea un actor distinto.
+
 ### 16.2 Aplicación de este plan a la ejecución delegada
 
 «Ejecutor» se lee así: la sesión responsable para el estado, el informe, el relevo, el build local, el paquete de OV, las decisiones del Owner y la custodia; el Worker para sus commits,
@@ -694,3 +709,88 @@ Antes de que el Coordinator registre una decisión, la sesión copia los JSON y 
 blob de Git del commit de custodia; el SHA-256 del archivo transitorio es procedencia, y si difiere del de `git cat-file -p <blob>` por fin de línea se declara. Eventos, registros de
 sesión y transcripciones no se versionan: quedan su SHA-256 y los campos extraídos, como procedencia no reverificable tras la limpieza. Una decisión solo cita artefactos versionados.
 Esta custodia aplica la evidencia por unidad de `WORKFLOW.md` §11.4 y no añade condiciones de cierre de gate.
+
+### 16.14 Vigencia de las partes I62
+
+Origen: Freeze de I-62 ([Proposal V14](initiatives/I-62-proposal-v14.md) y [Consensus Freeze](initiatives/I-62-consensus-freeze.md)) y
+[ADR-0048](adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md), sucesor parcial de ADR-0046, en estado propuesto. Las partes de esta
+sección marcadas **I62** (en su encabezado o en el rótulo de su bloque) son texto materializado **inactivo**:
+
+- **Antes de `I62_EFFECTIVE_SHA`** no gobiernan ninguna operación real. Rigen I-61, el resto de este plan y el Workflow vigente. Su presencia no adopta nada
+  ni cambia la conducta de ninguna unidad, y no se usan como autoridad para desarrollar I-62, que sigue gobernada por I-61 hasta su integración.
+- **Desde `I62_EFFECTIVE_SHA`** rigen solo para las unidades I62, según su aplicabilidad (Proposal V14 §14.0 y §14.1): la ejecución delegada I62 sigue
+  siendo opt-in y solo la adopta una unidad con decisión registrada I62_DELEGATED; una unidad DIRECT_ONLY trabaja sin ella. La excepción declarada es el
+  resolver de compatibilidad de 16.13 (Proposal V14 Anexo E; destino propuesto hasta su materialización, Proposal V14 §3.1), que desde `I62_EFFECTIVE_SHA`
+  rige la lectura de autoridades de toda unidad, sin cambiar la conducta de las unidades I61 más allá de la revisión en la que leen las cláusulas que I-62
+  modificó.
+- **Unidades I61:** siguen en I61 toda su vida, con la ejecución delegada de I-61 sin cambios. Los esquemas `/v1` no se retiran.
+
+**Punto efectivo:** `I62_EFFECTIVE_SHA` es el primer merge en first-parent de `origin/main` cuyo segundo padre alcanza el **único** commit con el trailer
+`Agent-Protocol-Normative: I-62` y cuyo primer padre no lo alcanza. Rige al aceptarse el push de `main`, y su identidad se registra en el tag
+`integration/I-62`. Ausencia, duplicidad o derivación contradictoria = activación no válida: ninguna unidad es I62, y STOP al Owner. No hay activación
+parcial.
+
+### 16.15 Perfil del Principal y autoverificación (I62)
+
+Clase «Coordinación principal», perfil PRINCIPAL_COORDINATION (Long-horizon, Frontera). **Aplica a las unidades I62_DELEGATED** y a sus ensayos; una unidad
+DIRECT_ONLY no lo necesita para su trabajo ordinario. Requisitos **obligatorios**, como capacidades **por acción**:
+
+| Acción del Principal | Obligatorios |
+|---|---|
+| RESUME_DECISION: reconstruir el estado y proponer la siguiente decisión, sin tomar la custodia | nivel y effort; `remote-facts` (lectura); `introspection` ≥ RUNTIME_OBSERVED |
+| CUSTODY: custodia, relevo y orquestación **del protocolo delegado** (puntos durables BOOTSTRAP, Q0, Q7, QU, QH y QR, cesiones, bindings) | lo anterior + `repo-write` |
+| evidencia local | lo anterior + `build-test`, solo para la acción que deba producir evidencia local |
+
+El perfil y sus requisitos existen **aunque el binding del Principal no pueda aceptarse**. P-09 y P-10 (16.16) se evalúan **por acción**: un Principal en
+BELOW_REQUIRED para CUSTODY no toma la custodia, pero puede producir una respuesta RESUME_DECISION si esa acción está en MATCH o ABOVE_REQUIRED.
+
+**CUSTODY no es un permiso de trabajo directo.** El trabajo directo de una iniciativa (editar, probar, hacer commits, relevos de `WORKFLOW.md` §3) sigue las
+reglas de WORKFLOW y de AGENTS, y ninguna acción de este perfil lo condiciona. Una CUSTODY en UNKNOWN o BELOW_REQUIRED bloquea solo la maquinaria delegada
+(P-09/P-10 de esa acción), nunca el trabajo directo autorizado.
+
+**Autoverificación.** Al abrir la unidad, el Principal observa su propia sesión y evalúa su `CONFIGURATION_STATUS` por acción (16.16):
+- **solo hechos observables.** Niveles de la fuente: REQUESTED; CONFIGURED; RUNTIME_OBSERVED (metadato escrito por el runtime, ligado a sesión, turno o
+  invocación e instante); SERVICE_ATTESTED (adicional, no exigida). El mínimo para los obligatorios es RUNTIME_OBSERVED; por debajo, UNKNOWN. Solo
+  REQUESTED no se presenta como efectivo;
+- **ninguna inferencia.** La autodeclaración del modelo no es fuente, y ni el nombre de un proveedor o de un modelo ni una entrada de catálogo acreditan por
+  sí solos un requisito;
+- **sin depender del binding.** La autoverificación produce su observación y su disposición aunque no haya binding: el binding consume la observación, y la
+  observación no depende del binding;
+- **sin valores optimistas.** Un requisito sin acreditar es UNKNOWN, y UNKNOWN nunca se convierte en MATCH.
+
+La forma del registro de la observación, sus invalidadores y las fuentes de cada runtime no forman parte de esta subsección (Proposal V14 §6, §10 y
+Anexo B.4).
+
+### 16.16 `CONFIGURATION_STATUS` y disposición (I62)
+
+Estados exactos: **MATCH**, **ABOVE_REQUIRED**, **BELOW_REQUIRED**, **UNKNOWN**. Agregado solo sobre los requisitos **obligatorios** de la acción:
+1. BELOW_REQUIRED si alguno es insuficiente;
+2. si no, UNKNOWN si falta acreditar alguno;
+3. si no, ABOVE_REQUIRED;
+4. en otro caso, MATCH.
+
+Las métricas opcionales no alteran el agregado. Se registran **todas** las causas. El estado no es la disposición.
+
+| Situación | Disposición |
+|---|---|
+| Principal en BELOW_REQUIRED para la acción | STOP de esa acción antes de trabajo sustantivo (P-09) |
+| Rol en BELOW_REQUIRED o UNKNOWN | no hay binding ni trabajo dependiente (P-10); la investigación independiente sigue |
+| Evidencia material contradictoria (incluidas dos filas del mismo requisito con valores distintos) | STOP S-04, **además** de UNKNOWN en ese requisito |
+| MATCH / ABOVE_REQUIRED | habilita solo la configuración; los demás STOP siguen |
+| Decisión del Owner | cambia requisitos o acepta riesgos dentro de su autoridad; nunca convierte lo no observado en MATCH |
+| Recuperación | nueva observación; nunca reconfiguración automática ni reset |
+
+| Id | Condición | Comportamiento |
+|---|---|---|
+| P-09 | Principal en BELOW_REQUIRED para la acción al abrir | STOP de esa acción antes de trabajo sustantivo |
+| P-10 | requisito obligatorio de un rol o acción en UNKNOWN o BELOW_REQUIRED | no se vincula ni se invoca; no consume `attempts` |
+
+El procedimiento de agregación y los ejemplos con esperado independiente (E1-E13) están en el procedimiento subordinado
+([agent-execution/README](automation/agent-execution/README.md) §12).
+
+### 16.17 Frontera de renderizado (I62)
+
+Los contratos y las reglas de las partes I62 son neutrales: no contienen texto de prompt de ningún proveedor ni los ejecutables, las órdenes, los modelos o
+el formato de prompt de un runtime. El adapter de cada runtime renderiza la invocación concreta (CLI o sesión) a partir del contrato neutral: es la
+operación «renderizar» de su contrato (Proposal V14 §7). El prompt renderizado es representación, nunca autoridad. Para las unidades I62, proveedores,
+ejecutables, modelos y recetas viven en los descriptores de adapter y en el catálogo, no en el núcleo.

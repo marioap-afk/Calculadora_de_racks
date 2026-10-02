@@ -1,0 +1,751 @@
+{
+  "Summary": {
+    "Evaluations": 14,
+    "Pass": 14,
+    "Fail": 0,
+    "Cases": [
+      "E1",
+      "E2",
+      "E3",
+      "E4",
+      "E5",
+      "E6",
+      "E7",
+      "E8",
+      "E9",
+      "E10",
+      "E11",
+      "E12"
+    ]
+  },
+  "Results": [
+    {
+      "Case": "E1",
+      "Label": null,
+      "Role": "PRINCIPAL_COORDINATOR",
+      "Action": "RESUME_DECISION",
+      "Freeze": {
+        "Entrada": "todo = requisito; RUNTIME_OBSERVED",
+        "Agregado": "MATCH",
+        "Disposición": "sigue"
+      },
+      "Computed": {
+        "Statuses": {
+          "PRINCIPAL_COORDINATION.effort": "MATCH",
+          "PRINCIPAL_COORDINATION.introspection": "MATCH",
+          "PRINCIPAL_COORDINATION.level": "MATCH",
+          "PRINCIPAL_COORDINATION.remote-facts": "MATCH"
+        },
+        "Mandatory": [
+          "PRINCIPAL_COORDINATION.effort",
+          "PRINCIPAL_COORDINATION.introspection",
+          "PRINCIPAL_COORDINATION.level",
+          "PRINCIPAL_COORDINATION.remote-facts"
+        ],
+        "OptionalRecorded": {},
+        "AddedByStep1": [],
+        "Contradictions": [],
+        "ConfigurationStatus": "MATCH",
+        "Causes": [],
+        "Disposition": "ELIGIBLE",
+        "Rules": []
+      },
+      "Expected": {
+        "ConfigurationStatus": "MATCH",
+        "Causes": [],
+        "Disposition": "ELIGIBLE",
+        "Rules": []
+      },
+      "Checks": {
+        "ConfigurationStatus": true,
+        "Causes": true,
+        "Disposition": true,
+        "Rules": true
+      },
+      "Verdict": "PASS"
+    },
+    {
+      "Case": "E2",
+      "Label": null,
+      "Role": "PRINCIPAL_COORDINATOR",
+      "Action": "RESUME_DECISION",
+      "Freeze": {
+        "Entrada": "effort > requisito",
+        "Agregado": "ABOVE_REQUIRED",
+        "Disposición": "sigue y registra"
+      },
+      "Computed": {
+        "Statuses": {
+          "PRINCIPAL_COORDINATION.effort": "ABOVE_REQUIRED",
+          "PRINCIPAL_COORDINATION.introspection": "MATCH",
+          "PRINCIPAL_COORDINATION.level": "MATCH",
+          "PRINCIPAL_COORDINATION.remote-facts": "MATCH"
+        },
+        "Mandatory": [
+          "PRINCIPAL_COORDINATION.effort",
+          "PRINCIPAL_COORDINATION.introspection",
+          "PRINCIPAL_COORDINATION.level",
+          "PRINCIPAL_COORDINATION.remote-facts"
+        ],
+        "OptionalRecorded": {},
+        "AddedByStep1": [],
+        "Contradictions": [],
+        "ConfigurationStatus": "ABOVE_REQUIRED",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.effort"
+        ],
+        "Disposition": "ELIGIBLE",
+        "Rules": []
+      },
+      "Expected": {
+        "ConfigurationStatus": "ABOVE_REQUIRED",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.effort"
+        ],
+        "Disposition": "ELIGIBLE",
+        "Rules": []
+      },
+      "Checks": {
+        "ConfigurationStatus": true,
+        "Causes": true,
+        "Disposition": true,
+        "Rules": true
+      },
+      "Verdict": "PASS"
+    },
+    {
+      "Case": "E3",
+      "Label": null,
+      "Role": "PRINCIPAL_COORDINATOR",
+      "Action": "RESUME_DECISION",
+      "Freeze": {
+        "Entrada": "effort < requisito",
+        "Agregado": "BELOW_REQUIRED",
+        "Disposición": "STOP P-09 (Principal)"
+      },
+      "Computed": {
+        "Statuses": {
+          "PRINCIPAL_COORDINATION.effort": "BELOW_REQUIRED",
+          "PRINCIPAL_COORDINATION.introspection": "MATCH",
+          "PRINCIPAL_COORDINATION.level": "MATCH",
+          "PRINCIPAL_COORDINATION.remote-facts": "MATCH"
+        },
+        "Mandatory": [
+          "PRINCIPAL_COORDINATION.effort",
+          "PRINCIPAL_COORDINATION.introspection",
+          "PRINCIPAL_COORDINATION.level",
+          "PRINCIPAL_COORDINATION.remote-facts"
+        ],
+        "OptionalRecorded": {},
+        "AddedByStep1": [],
+        "Contradictions": [],
+        "ConfigurationStatus": "BELOW_REQUIRED",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.effort"
+        ],
+        "Disposition": "STOP",
+        "Rules": [
+          "P-09"
+        ]
+      },
+      "Expected": {
+        "ConfigurationStatus": "BELOW_REQUIRED",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.effort"
+        ],
+        "Disposition": "STOP",
+        "Rules": [
+          "P-09"
+        ]
+      },
+      "Checks": {
+        "ConfigurationStatus": true,
+        "Causes": true,
+        "Disposition": true,
+        "Rules": true
+      },
+      "Verdict": "PASS"
+    },
+    {
+      "Case": "E4",
+      "Label": null,
+      "Role": "PRINCIPAL_COORDINATOR",
+      "Action": "RESUME_DECISION",
+      "Freeze": {
+        "Entrada": "effort sin fuente",
+        "Agregado": "UNKNOWN",
+        "Disposición": "P-10"
+      },
+      "Computed": {
+        "Statuses": {
+          "PRINCIPAL_COORDINATION.effort": "UNKNOWN",
+          "PRINCIPAL_COORDINATION.introspection": "MATCH",
+          "PRINCIPAL_COORDINATION.level": "MATCH",
+          "PRINCIPAL_COORDINATION.remote-facts": "MATCH"
+        },
+        "Mandatory": [
+          "PRINCIPAL_COORDINATION.effort",
+          "PRINCIPAL_COORDINATION.introspection",
+          "PRINCIPAL_COORDINATION.level",
+          "PRINCIPAL_COORDINATION.remote-facts"
+        ],
+        "OptionalRecorded": {},
+        "AddedByStep1": [],
+        "Contradictions": [],
+        "ConfigurationStatus": "UNKNOWN",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.effort"
+        ],
+        "Disposition": "NOT_ELIGIBLE",
+        "Rules": [
+          "P-10"
+        ]
+      },
+      "Expected": {
+        "ConfigurationStatus": "UNKNOWN",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.effort"
+        ],
+        "Disposition": "NOT_ELIGIBLE",
+        "Rules": [
+          "P-10"
+        ]
+      },
+      "Checks": {
+        "ConfigurationStatus": true,
+        "Causes": true,
+        "Disposition": true,
+        "Rules": true
+      },
+      "Verdict": "PASS"
+    },
+    {
+      "Case": "E5",
+      "Label": null,
+      "Role": "PRINCIPAL_COORDINATOR",
+      "Action": "RESUME_DECISION",
+      "Freeze": {
+        "Entrada": "nivel < requisito; effort sin fuente",
+        "Agregado": "BELOW_REQUIRED; Causes = {nivel, effort}",
+        "Disposición": "STOP P-09"
+      },
+      "Computed": {
+        "Statuses": {
+          "PRINCIPAL_COORDINATION.effort": "UNKNOWN",
+          "PRINCIPAL_COORDINATION.introspection": "MATCH",
+          "PRINCIPAL_COORDINATION.level": "BELOW_REQUIRED",
+          "PRINCIPAL_COORDINATION.remote-facts": "MATCH"
+        },
+        "Mandatory": [
+          "PRINCIPAL_COORDINATION.effort",
+          "PRINCIPAL_COORDINATION.introspection",
+          "PRINCIPAL_COORDINATION.level",
+          "PRINCIPAL_COORDINATION.remote-facts"
+        ],
+        "OptionalRecorded": {},
+        "AddedByStep1": [],
+        "Contradictions": [],
+        "ConfigurationStatus": "BELOW_REQUIRED",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.effort",
+          "PRINCIPAL_COORDINATION.level"
+        ],
+        "Disposition": "STOP",
+        "Rules": [
+          "P-09"
+        ]
+      },
+      "Expected": {
+        "ConfigurationStatus": "BELOW_REQUIRED",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.effort",
+          "PRINCIPAL_COORDINATION.level"
+        ],
+        "Disposition": "STOP",
+        "Rules": [
+          "P-09"
+        ]
+      },
+      "Checks": {
+        "ConfigurationStatus": true,
+        "Causes": true,
+        "Disposition": true,
+        "Rules": true
+      },
+      "Verdict": "PASS"
+    },
+    {
+      "Case": "E6",
+      "Label": null,
+      "Role": "PRINCIPAL_COORDINATOR",
+      "Action": "RESUME_DECISION",
+      "Freeze": {
+        "Entrada": "dos observaciones RUNTIME_OBSERVED simultáneas y distintas",
+        "Agregado": "UNKNOWN; Contradiction",
+        "Disposición": "STOP S-04"
+      },
+      "Computed": {
+        "Statuses": {
+          "PRINCIPAL_COORDINATION.effort": "UNKNOWN",
+          "PRINCIPAL_COORDINATION.introspection": "MATCH",
+          "PRINCIPAL_COORDINATION.level": "MATCH",
+          "PRINCIPAL_COORDINATION.remote-facts": "MATCH"
+        },
+        "Mandatory": [
+          "PRINCIPAL_COORDINATION.effort",
+          "PRINCIPAL_COORDINATION.introspection",
+          "PRINCIPAL_COORDINATION.level",
+          "PRINCIPAL_COORDINATION.remote-facts"
+        ],
+        "OptionalRecorded": {},
+        "AddedByStep1": [],
+        "Contradictions": [
+          "PRINCIPAL_COORDINATION.effort"
+        ],
+        "ConfigurationStatus": "UNKNOWN",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.effort"
+        ],
+        "Disposition": "STOP",
+        "Rules": [
+          "S-04"
+        ]
+      },
+      "Expected": {
+        "ConfigurationStatus": "UNKNOWN",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.effort"
+        ],
+        "Contradictions": [
+          "PRINCIPAL_COORDINATION.effort"
+        ],
+        "Disposition": "STOP",
+        "Rules": [
+          "S-04"
+        ]
+      },
+      "Checks": {
+        "ConfigurationStatus": true,
+        "Causes": true,
+        "Disposition": true,
+        "Rules": true,
+        "Contradictions": true
+      },
+      "Verdict": "PASS"
+    },
+    {
+      "Case": "E7",
+      "Label": null,
+      "Role": "PRINCIPAL_COORDINATOR",
+      "Action": "RESUME_DECISION",
+      "Freeze": {
+        "Entrada": "observación invalidada (§6)",
+        "Agregado": "UNKNOWN",
+        "Disposición": "revalidar"
+      },
+      "Computed": {
+        "Statuses": {
+          "PRINCIPAL_COORDINATION.effort": "UNKNOWN",
+          "PRINCIPAL_COORDINATION.introspection": "MATCH",
+          "PRINCIPAL_COORDINATION.level": "MATCH",
+          "PRINCIPAL_COORDINATION.remote-facts": "MATCH"
+        },
+        "Mandatory": [
+          "PRINCIPAL_COORDINATION.effort",
+          "PRINCIPAL_COORDINATION.introspection",
+          "PRINCIPAL_COORDINATION.level",
+          "PRINCIPAL_COORDINATION.remote-facts"
+        ],
+        "OptionalRecorded": {},
+        "AddedByStep1": [],
+        "Contradictions": [],
+        "ConfigurationStatus": "UNKNOWN",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.effort"
+        ],
+        "Disposition": "NOT_ELIGIBLE",
+        "Rules": [
+          "P-10"
+        ]
+      },
+      "Expected": {
+        "ConfigurationStatus": "UNKNOWN",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.effort"
+        ],
+        "Disposition": "NOT_ELIGIBLE",
+        "Rules": [
+          "P-10"
+        ],
+        "Recovery": "new observation (revalidar)"
+      },
+      "Checks": {
+        "ConfigurationStatus": true,
+        "Causes": true,
+        "Disposition": true,
+        "Rules": true
+      },
+      "Verdict": "PASS"
+    },
+    {
+      "Case": "E8",
+      "Label": null,
+      "Role": "WORKER",
+      "Action": "ROLE_ACTION",
+      "Freeze": {
+        "Entrada": "rebinding del Worker",
+        "Agregado": "Y evaluado desde cero",
+        "Disposición": "contadores intactos"
+      },
+      "Computed": {
+        "Statuses": {
+          "ROLE_WORKER_ILLUSTRATIVE.effort": "MATCH",
+          "ROLE_WORKER_ILLUSTRATIVE.level": "MATCH"
+        },
+        "Mandatory": [
+          "ROLE_WORKER_ILLUSTRATIVE.effort",
+          "ROLE_WORKER_ILLUSTRATIVE.level"
+        ],
+        "OptionalRecorded": {},
+        "AddedByStep1": [],
+        "Contradictions": [],
+        "ConfigurationStatus": "MATCH",
+        "Causes": [],
+        "Disposition": "ELIGIBLE",
+        "Rules": []
+      },
+      "Expected": {
+        "ConfigurationStatus": "MATCH",
+        "Causes": [],
+        "Disposition": "ELIGIBLE",
+        "Rules": [],
+        "Property": "the result depends only on the new observations; the procedure has no counter output"
+      },
+      "Checks": {
+        "ConfigurationStatus": true,
+        "Causes": true,
+        "Disposition": true,
+        "Rules": true
+      },
+      "Verdict": "PASS"
+    },
+    {
+      "Case": "E9",
+      "Label": null,
+      "Role": "PRINCIPAL_COORDINATOR",
+      "Action": "RESUME_DECISION",
+      "Freeze": {
+        "Entrada": "cuota desconocida (opcional)",
+        "Agregado": "MATCH",
+        "Disposición": "registrada"
+      },
+      "Computed": {
+        "Statuses": {
+          "PRINCIPAL_COORDINATION.effort": "MATCH",
+          "PRINCIPAL_COORDINATION.introspection": "MATCH",
+          "PRINCIPAL_COORDINATION.level": "MATCH",
+          "PRINCIPAL_COORDINATION.quota": "UNKNOWN",
+          "PRINCIPAL_COORDINATION.remote-facts": "MATCH"
+        },
+        "Mandatory": [
+          "PRINCIPAL_COORDINATION.effort",
+          "PRINCIPAL_COORDINATION.introspection",
+          "PRINCIPAL_COORDINATION.level",
+          "PRINCIPAL_COORDINATION.remote-facts"
+        ],
+        "OptionalRecorded": {
+          "PRINCIPAL_COORDINATION.quota": "UNKNOWN"
+        },
+        "AddedByStep1": [],
+        "Contradictions": [],
+        "ConfigurationStatus": "MATCH",
+        "Causes": [],
+        "Disposition": "ELIGIBLE",
+        "Rules": []
+      },
+      "Expected": {
+        "ConfigurationStatus": "MATCH",
+        "Causes": [],
+        "Disposition": "ELIGIBLE",
+        "Rules": [],
+        "RecordedOptional": {
+          "PRINCIPAL_COORDINATION.quota": "UNKNOWN"
+        }
+      },
+      "Checks": {
+        "ConfigurationStatus": true,
+        "Causes": true,
+        "Disposition": true,
+        "Rules": true,
+        "RecordedOptional": true
+      },
+      "Verdict": "PASS"
+    },
+    {
+      "Case": "E10",
+      "Label": "before the decision",
+      "Role": "PRINCIPAL_COORDINATOR",
+      "Action": "RESUME_DECISION",
+      "Freeze": {
+        "Entrada": "el Owner rebaja un requisito",
+        "Agregado": "recálculo",
+        "Disposición": "lo no observado sigue UNKNOWN"
+      },
+      "Computed": {
+        "Statuses": {
+          "PRINCIPAL_COORDINATION.effort": "BELOW_REQUIRED",
+          "PRINCIPAL_COORDINATION.introspection": "MATCH",
+          "PRINCIPAL_COORDINATION.level": "MATCH",
+          "PRINCIPAL_COORDINATION.remote-facts": "UNKNOWN"
+        },
+        "Mandatory": [
+          "PRINCIPAL_COORDINATION.effort",
+          "PRINCIPAL_COORDINATION.introspection",
+          "PRINCIPAL_COORDINATION.level",
+          "PRINCIPAL_COORDINATION.remote-facts"
+        ],
+        "OptionalRecorded": {},
+        "AddedByStep1": [],
+        "Contradictions": [],
+        "ConfigurationStatus": "BELOW_REQUIRED",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.effort",
+          "PRINCIPAL_COORDINATION.remote-facts"
+        ],
+        "Disposition": "STOP",
+        "Rules": [
+          "P-09"
+        ]
+      },
+      "Expected": {
+        "ConfigurationStatus": "BELOW_REQUIRED",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.effort",
+          "PRINCIPAL_COORDINATION.remote-facts"
+        ],
+        "Disposition": "STOP",
+        "Rules": [
+          "P-09"
+        ]
+      },
+      "Checks": {
+        "ConfigurationStatus": true,
+        "Causes": true,
+        "Disposition": true,
+        "Rules": true
+      },
+      "Verdict": "PASS"
+    },
+    {
+      "Case": "E10",
+      "Label": "after the Owner lowers effort to Deep (recalculation)",
+      "Role": "PRINCIPAL_COORDINATOR",
+      "Action": "RESUME_DECISION",
+      "Freeze": {
+        "Entrada": "el Owner rebaja un requisito",
+        "Agregado": "recálculo",
+        "Disposición": "lo no observado sigue UNKNOWN"
+      },
+      "Computed": {
+        "Statuses": {
+          "PRINCIPAL_COORDINATION.effort": "MATCH",
+          "PRINCIPAL_COORDINATION.introspection": "MATCH",
+          "PRINCIPAL_COORDINATION.level": "MATCH",
+          "PRINCIPAL_COORDINATION.remote-facts": "UNKNOWN"
+        },
+        "Mandatory": [
+          "PRINCIPAL_COORDINATION.effort",
+          "PRINCIPAL_COORDINATION.introspection",
+          "PRINCIPAL_COORDINATION.level",
+          "PRINCIPAL_COORDINATION.remote-facts"
+        ],
+        "OptionalRecorded": {},
+        "AddedByStep1": [],
+        "Contradictions": [],
+        "ConfigurationStatus": "UNKNOWN",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.remote-facts"
+        ],
+        "Disposition": "NOT_ELIGIBLE",
+        "Rules": [
+          "P-10"
+        ]
+      },
+      "Expected": {
+        "ConfigurationStatus": "UNKNOWN",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.remote-facts"
+        ],
+        "Disposition": "NOT_ELIGIBLE",
+        "Rules": [
+          "P-10"
+        ]
+      },
+      "Checks": {
+        "ConfigurationStatus": true,
+        "Causes": true,
+        "Disposition": true,
+        "Rules": true
+      },
+      "Verdict": "PASS"
+    },
+    {
+      "Case": "E11",
+      "Label": null,
+      "Role": "PRINCIPAL_COORDINATOR",
+      "Action": "RESUME_DECISION",
+      "Freeze": {
+        "Entrada": "requisito obligatorio omitido en el preflight",
+        "Agregado": "UNKNOWN (falta acreditar)",
+        "Disposición": "P-10; Causes lo nombra"
+      },
+      "Computed": {
+        "Statuses": {
+          "PRINCIPAL_COORDINATION.effort": "MATCH",
+          "PRINCIPAL_COORDINATION.introspection": "UNKNOWN",
+          "PRINCIPAL_COORDINATION.level": "MATCH",
+          "PRINCIPAL_COORDINATION.remote-facts": "MATCH"
+        },
+        "Mandatory": [
+          "PRINCIPAL_COORDINATION.effort",
+          "PRINCIPAL_COORDINATION.introspection",
+          "PRINCIPAL_COORDINATION.level",
+          "PRINCIPAL_COORDINATION.remote-facts"
+        ],
+        "OptionalRecorded": {},
+        "AddedByStep1": [
+          "PRINCIPAL_COORDINATION.introspection"
+        ],
+        "Contradictions": [],
+        "ConfigurationStatus": "UNKNOWN",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.introspection"
+        ],
+        "Disposition": "NOT_ELIGIBLE",
+        "Rules": [
+          "P-10"
+        ]
+      },
+      "Expected": {
+        "ConfigurationStatus": "UNKNOWN",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.introspection"
+        ],
+        "Disposition": "NOT_ELIGIBLE",
+        "Rules": [
+          "P-10"
+        ]
+      },
+      "Checks": {
+        "ConfigurationStatus": true,
+        "Causes": true,
+        "Disposition": true,
+        "Rules": true
+      },
+      "Verdict": "PASS"
+    },
+    {
+      "Case": "E12",
+      "Label": null,
+      "Role": "PRINCIPAL_COORDINATOR",
+      "Action": "CUSTODY",
+      "Freeze": {
+        "Entrada": "Principal sin `repo-write` acreditado; lo demás en MATCH",
+        "Agregado": "CUSTODY: UNKNOWN; RESUME_DECISION: MATCH",
+        "Disposición": "no toma la custodia delegada (P-10); puede responder RESUME_DECISION"
+      },
+      "Computed": {
+        "Statuses": {
+          "PRINCIPAL_COORDINATION.effort": "MATCH",
+          "PRINCIPAL_COORDINATION.introspection": "MATCH",
+          "PRINCIPAL_COORDINATION.level": "MATCH",
+          "PRINCIPAL_COORDINATION.remote-facts": "MATCH",
+          "PRINCIPAL_COORDINATION.repo-write": "UNKNOWN"
+        },
+        "Mandatory": [
+          "PRINCIPAL_COORDINATION.effort",
+          "PRINCIPAL_COORDINATION.introspection",
+          "PRINCIPAL_COORDINATION.level",
+          "PRINCIPAL_COORDINATION.remote-facts",
+          "PRINCIPAL_COORDINATION.repo-write"
+        ],
+        "OptionalRecorded": {},
+        "AddedByStep1": [],
+        "Contradictions": [],
+        "ConfigurationStatus": "UNKNOWN",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.repo-write"
+        ],
+        "Disposition": "NOT_ELIGIBLE",
+        "Rules": [
+          "P-10"
+        ]
+      },
+      "Expected": {
+        "ConfigurationStatus": "UNKNOWN",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.repo-write"
+        ],
+        "Disposition": "NOT_ELIGIBLE",
+        "Rules": [
+          "P-10"
+        ]
+      },
+      "Checks": {
+        "ConfigurationStatus": true,
+        "Causes": true,
+        "Disposition": true,
+        "Rules": true
+      },
+      "Verdict": "PASS"
+    },
+    {
+      "Case": "E12",
+      "Label": null,
+      "Role": "PRINCIPAL_COORDINATOR",
+      "Action": "RESUME_DECISION",
+      "Freeze": {
+        "Entrada": "Principal sin `repo-write` acreditado; lo demás en MATCH",
+        "Agregado": "CUSTODY: UNKNOWN; RESUME_DECISION: MATCH",
+        "Disposición": "no toma la custodia delegada (P-10); puede responder RESUME_DECISION"
+      },
+      "Computed": {
+        "Statuses": {
+          "PRINCIPAL_COORDINATION.effort": "MATCH",
+          "PRINCIPAL_COORDINATION.introspection": "MATCH",
+          "PRINCIPAL_COORDINATION.level": "MATCH",
+          "PRINCIPAL_COORDINATION.remote-facts": "MATCH",
+          "PRINCIPAL_COORDINATION.repo-write": "UNKNOWN"
+        },
+        "Mandatory": [
+          "PRINCIPAL_COORDINATION.effort",
+          "PRINCIPAL_COORDINATION.introspection",
+          "PRINCIPAL_COORDINATION.level",
+          "PRINCIPAL_COORDINATION.remote-facts"
+        ],
+        "OptionalRecorded": {
+          "PRINCIPAL_COORDINATION.repo-write": "UNKNOWN"
+        },
+        "AddedByStep1": [],
+        "Contradictions": [],
+        "ConfigurationStatus": "MATCH",
+        "Causes": [],
+        "Disposition": "ELIGIBLE",
+        "Rules": []
+      },
+      "Expected": {
+        "ConfigurationStatus": "MATCH",
+        "Causes": [],
+        "Disposition": "ELIGIBLE",
+        "Rules": []
+      },
+      "Checks": {
+        "ConfigurationStatus": true,
+        "Causes": true,
+        "Disposition": true,
+        "Rules": true
+      },
+      "Verdict": "PASS"
+    }
+  ]
+}

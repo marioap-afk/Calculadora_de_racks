@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-62
 title: Principal Coordinator Portability & Provider-Agnostic Role Binding
 type: architecture
-status: design
+status: implementing
 workflow: V2
 conceptual_initiative: I-62
 delivery_unit: I-62
@@ -109,7 +109,7 @@ fricción se registra (mandato, «I-61 EXECUTION»). Solo el Coordinator declara
 Además, **durante G0**: no se tocan normas globales, HANDOFF, FOUNDATIONS, esquemas vigentes, índice ADR, `src/`, `tests/`, `assets/`, CI,
 configuración de agentes ni superficies de I-52, I-63 o I-64.
 
-Freeze, Freeze delta y A-n: **ninguno**.
+Freeze: [I-62-consensus-freeze.md](I-62-consensus-freeze.md). Freeze delta y A-n: **ninguno**.
 
 ## 5. Fundaciones y evolución
 
@@ -168,8 +168,9 @@ Autorizaciones de F0:
 - C62-F0-01: el tramo Discovery;
 - C62-F0-11: el diseño y la Proposal V1, **sin implementación**.
 
-La revisión del Architect, el acuerdo y el Consensus Freeze están hechos (decisiones §§29-31). La implementación no está autorizada todavía: F1 empieza solo
-con una orden explícita del Coordinator, después de verificar el Freeze publicado.
+La revisión del Architect, el acuerdo y el Consensus Freeze están hechos (decisiones §§29-31). **F0 = GATE PASS / COMPLETE** y **F1 abierto** por orden
+del Coordinator ([decisiones](../automation/decisions/I-62.md) §32): la implementación está autorizada **solo para F1**, y F2 y los siguientes no. I-61 sigue
+siendo la autoridad de ejecución hasta la frontera efectiva de I-62.
 
 ## 7. Dependencias, archivos calientes y coordinación
 
@@ -183,6 +184,10 @@ con una orden explícita del Coordinator, después de verificar el Freeze public
 
 G0 (este bootstrap) incluye reclamo, contrato, fila, estado, decisiones, mandato y evidencia. Los gates posteriores se definen en el Freeze
 según [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §7; aquí no se prometen. Plan **congelado**: [Proposal V14](I-62-proposal-v14.md) §17, por el [Consensus Freeze](I-62-consensus-freeze.md) §5.
+
+- **F0:** GATE PASS del Coordinator ([decisiones](../automation/decisions/I-62.md) §32).
+- **F1:** en curso. La entrega (ADR sucesor propuesto, plano (b) inactivo, corrección de PROMPT_TEMPLATES §2 y C-01..C-04) está en revisión del Coordinator
+  ([evidencia](../automation/evidence/I-62-evidence.md) §34). Solo el Coordinator declara su GATE PASS.
 
 ## 9. Owner Validation
 

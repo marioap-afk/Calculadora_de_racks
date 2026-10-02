@@ -1,0 +1,206 @@
+{
+  "Purpose": "I-62 F1, control C-04 (Proposal V14 Anexo C): E1-E12 of Proposal V14 §4.2 as design data in the shape of Anexo B.4 (Requirements rows), without schema validation. Expected values are written by hand from Proposal V14 §4.2 (Agregado, Disposición, Causes of E5 and E11) and from the B.4 definitions of Causes and Disposition; they are never the output of the procedure under test.",
+  "Notes": [
+    "RequirementId values and the scales of remote-facts, introspection, repo-write and build-test are illustrative design data, not normative: the fixed list of requirements per profile and action lives in routing.md from F2 (Proposal V14 Anexo B.2).",
+    "The effort and level scales are those of routing.md §3.",
+    "Observation.Invalidated (E7) stands for a changed invalidator of Proposal V14 §6; B.4 expresses it through Invalidators.",
+    "PreviousPreflight (E8) is context the procedure never reads: a rebinding is evaluated from scratch."
+  ],
+  "Scales": {
+    "level": ["Eficiente", "Equilibrado", "Frontera"],
+    "effort": ["Routine", "Balanced", "Deep", "Long-horizon", "Maximum"],
+    "remote-facts": ["none", "read"],
+    "introspection": ["REQUESTED", "CONFIGURED", "RUNTIME_OBSERVED", "SERVICE_ATTESTED"],
+    "repo-write": ["none", "write"],
+    "build-test": ["none", "run"],
+    "quota": ["unknown", "covered"]
+  },
+  "AssuranceOrder": ["NONE", "REQUESTED", "CONFIGURED", "RUNTIME_OBSERVED", "SERVICE_ATTESTED"],
+  "Profiles": {
+    "PRINCIPAL_COORDINATION": {
+      "RESUME_DECISION": {"PRINCIPAL_COORDINATION.level": "Frontera", "PRINCIPAL_COORDINATION.effort": "Long-horizon", "PRINCIPAL_COORDINATION.remote-facts": "read", "PRINCIPAL_COORDINATION.introspection": "RUNTIME_OBSERVED"},
+      "CUSTODY": {"PRINCIPAL_COORDINATION.level": "Frontera", "PRINCIPAL_COORDINATION.effort": "Long-horizon", "PRINCIPAL_COORDINATION.remote-facts": "read", "PRINCIPAL_COORDINATION.introspection": "RUNTIME_OBSERVED", "PRINCIPAL_COORDINATION.repo-write": "write"},
+      "LOCAL_EVIDENCE": {"PRINCIPAL_COORDINATION.level": "Frontera", "PRINCIPAL_COORDINATION.effort": "Long-horizon", "PRINCIPAL_COORDINATION.remote-facts": "read", "PRINCIPAL_COORDINATION.introspection": "RUNTIME_OBSERVED", "PRINCIPAL_COORDINATION.repo-write": "write", "PRINCIPAL_COORDINATION.build-test": "run"}
+    },
+    "ROLE_WORKER_ILLUSTRATIVE": {
+      "ROLE_ACTION": {"ROLE_WORKER_ILLUSTRATIVE.level": "Equilibrado", "ROLE_WORKER_ILLUSTRATIVE.effort": "Balanced"}
+    }
+  },
+  "Cases": [
+    {
+      "Case": "E1", "Freeze": {"Entrada": "todo = requisito; RUNTIME_OBSERVED", "Agregado": "MATCH", "Disposición": "sigue"},
+      "Evaluations": [
+        {"Role": "PRINCIPAL_COORDINATOR", "Profile": "PRINCIPAL_COORDINATION", "Action": "RESUME_DECISION",
+         "Requirements": [
+           {"RequirementId": "PRINCIPAL_COORDINATION.level", "Mandatory": true, "Required": "Frontera", "Observation": {"State": "OBSERVED", "Value": "Frontera", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.effort", "Mandatory": true, "Required": "Long-horizon", "Observation": {"State": "OBSERVED", "Value": "Long-horizon", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.remote-facts", "Mandatory": true, "Required": "read", "Observation": {"State": "OBSERVED", "Value": "read", "Source": "git-ls-remote", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.introspection", "Mandatory": true, "Required": "RUNTIME_OBSERVED", "Observation": {"State": "OBSERVED", "Value": "RUNTIME_OBSERVED", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}}
+         ],
+         "Expected": {"ConfigurationStatus": "MATCH", "Causes": [], "Disposition": "ELIGIBLE", "Rules": []}}
+      ]
+    },
+    {
+      "Case": "E2", "Freeze": {"Entrada": "effort > requisito", "Agregado": "ABOVE_REQUIRED", "Disposición": "sigue y registra"},
+      "Evaluations": [
+        {"Role": "PRINCIPAL_COORDINATOR", "Profile": "PRINCIPAL_COORDINATION", "Action": "RESUME_DECISION",
+         "Requirements": [
+           {"RequirementId": "PRINCIPAL_COORDINATION.level", "Mandatory": true, "Required": "Frontera", "Observation": {"State": "OBSERVED", "Value": "Frontera", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.effort", "Mandatory": true, "Required": "Long-horizon", "Observation": {"State": "OBSERVED", "Value": "Maximum", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.remote-facts", "Mandatory": true, "Required": "read", "Observation": {"State": "OBSERVED", "Value": "read", "Source": "git-ls-remote", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.introspection", "Mandatory": true, "Required": "RUNTIME_OBSERVED", "Observation": {"State": "OBSERVED", "Value": "RUNTIME_OBSERVED", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}}
+         ],
+         "Expected": {"ConfigurationStatus": "ABOVE_REQUIRED", "Causes": ["PRINCIPAL_COORDINATION.effort"], "Disposition": "ELIGIBLE", "Rules": []}}
+      ]
+    },
+    {
+      "Case": "E3", "Freeze": {"Entrada": "effort < requisito", "Agregado": "BELOW_REQUIRED", "Disposición": "STOP P-09 (Principal)"},
+      "Evaluations": [
+        {"Role": "PRINCIPAL_COORDINATOR", "Profile": "PRINCIPAL_COORDINATION", "Action": "RESUME_DECISION",
+         "Requirements": [
+           {"RequirementId": "PRINCIPAL_COORDINATION.level", "Mandatory": true, "Required": "Frontera", "Observation": {"State": "OBSERVED", "Value": "Frontera", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.effort", "Mandatory": true, "Required": "Long-horizon", "Observation": {"State": "OBSERVED", "Value": "Deep", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.remote-facts", "Mandatory": true, "Required": "read", "Observation": {"State": "OBSERVED", "Value": "read", "Source": "git-ls-remote", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.introspection", "Mandatory": true, "Required": "RUNTIME_OBSERVED", "Observation": {"State": "OBSERVED", "Value": "RUNTIME_OBSERVED", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}}
+         ],
+         "Expected": {"ConfigurationStatus": "BELOW_REQUIRED", "Causes": ["PRINCIPAL_COORDINATION.effort"], "Disposition": "STOP", "Rules": ["P-09"]}}
+      ]
+    },
+    {
+      "Case": "E4", "Freeze": {"Entrada": "effort sin fuente", "Agregado": "UNKNOWN", "Disposición": "P-10"},
+      "Evaluations": [
+        {"Role": "PRINCIPAL_COORDINATOR", "Profile": "PRINCIPAL_COORDINATION", "Action": "RESUME_DECISION",
+         "Requirements": [
+           {"RequirementId": "PRINCIPAL_COORDINATION.level", "Mandatory": true, "Required": "Frontera", "Observation": {"State": "OBSERVED", "Value": "Frontera", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.effort", "Mandatory": true, "Required": "Long-horizon", "Observation": {"State": "NOT_OBSERVED", "Value": null, "Source": null, "Assurance": "NONE", "ObservedUtc": null}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.remote-facts", "Mandatory": true, "Required": "read", "Observation": {"State": "OBSERVED", "Value": "read", "Source": "git-ls-remote", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.introspection", "Mandatory": true, "Required": "RUNTIME_OBSERVED", "Observation": {"State": "OBSERVED", "Value": "RUNTIME_OBSERVED", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}}
+         ],
+         "Expected": {"ConfigurationStatus": "UNKNOWN", "Causes": ["PRINCIPAL_COORDINATION.effort"], "Disposition": "NOT_ELIGIBLE", "Rules": ["P-10"]}}
+      ]
+    },
+    {
+      "Case": "E5", "Freeze": {"Entrada": "nivel < requisito; effort sin fuente", "Agregado": "BELOW_REQUIRED; Causes = {nivel, effort}", "Disposición": "STOP P-09"},
+      "Evaluations": [
+        {"Role": "PRINCIPAL_COORDINATOR", "Profile": "PRINCIPAL_COORDINATION", "Action": "RESUME_DECISION",
+         "Requirements": [
+           {"RequirementId": "PRINCIPAL_COORDINATION.level", "Mandatory": true, "Required": "Frontera", "Observation": {"State": "OBSERVED", "Value": "Equilibrado", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.effort", "Mandatory": true, "Required": "Long-horizon", "Observation": {"State": "NOT_OBSERVED", "Value": null, "Source": null, "Assurance": "NONE", "ObservedUtc": null}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.remote-facts", "Mandatory": true, "Required": "read", "Observation": {"State": "OBSERVED", "Value": "read", "Source": "git-ls-remote", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.introspection", "Mandatory": true, "Required": "RUNTIME_OBSERVED", "Observation": {"State": "OBSERVED", "Value": "RUNTIME_OBSERVED", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}}
+         ],
+         "Expected": {"ConfigurationStatus": "BELOW_REQUIRED", "Causes": ["PRINCIPAL_COORDINATION.effort", "PRINCIPAL_COORDINATION.level"], "Disposition": "STOP", "Rules": ["P-09"]}}
+      ]
+    },
+    {
+      "Case": "E6", "Freeze": {"Entrada": "dos observaciones RUNTIME_OBSERVED simultáneas y distintas", "Agregado": "UNKNOWN; Contradiction", "Disposición": "STOP S-04"},
+      "Evaluations": [
+        {"Role": "PRINCIPAL_COORDINATOR", "Profile": "PRINCIPAL_COORDINATION", "Action": "RESUME_DECISION",
+         "Requirements": [
+           {"RequirementId": "PRINCIPAL_COORDINATION.level", "Mandatory": true, "Required": "Frontera", "Observation": {"State": "OBSERVED", "Value": "Frontera", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.effort", "Mandatory": true, "Required": "Long-horizon", "Observation": {"State": "OBSERVED", "Value": "Long-horizon", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.effort", "Mandatory": true, "Required": "Long-horizon", "Observation": {"State": "OBSERVED", "Value": "Deep", "Source": "runtime-turn-context", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.remote-facts", "Mandatory": true, "Required": "read", "Observation": {"State": "OBSERVED", "Value": "read", "Source": "git-ls-remote", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.introspection", "Mandatory": true, "Required": "RUNTIME_OBSERVED", "Observation": {"State": "OBSERVED", "Value": "RUNTIME_OBSERVED", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}}
+         ],
+         "Expected": {"ConfigurationStatus": "UNKNOWN", "Causes": ["PRINCIPAL_COORDINATION.effort"], "Contradictions": ["PRINCIPAL_COORDINATION.effort"], "Disposition": "STOP", "Rules": ["S-04"]}}
+      ]
+    },
+    {
+      "Case": "E7", "Freeze": {"Entrada": "observación invalidada (§6)", "Agregado": "UNKNOWN", "Disposición": "revalidar"},
+      "Evaluations": [
+        {"Role": "PRINCIPAL_COORDINATOR", "Profile": "PRINCIPAL_COORDINATION", "Action": "RESUME_DECISION",
+         "Requirements": [
+           {"RequirementId": "PRINCIPAL_COORDINATION.level", "Mandatory": true, "Required": "Frontera", "Observation": {"State": "OBSERVED", "Value": "Frontera", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.effort", "Mandatory": true, "Required": "Long-horizon", "Observation": {"State": "OBSERVED", "Value": "Long-horizon", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z", "Invalidated": true, "InvalidatedBy": "AdapterVersion"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.remote-facts", "Mandatory": true, "Required": "read", "Observation": {"State": "OBSERVED", "Value": "read", "Source": "git-ls-remote", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.introspection", "Mandatory": true, "Required": "RUNTIME_OBSERVED", "Observation": {"State": "OBSERVED", "Value": "RUNTIME_OBSERVED", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}}
+         ],
+         "Expected": {"ConfigurationStatus": "UNKNOWN", "Causes": ["PRINCIPAL_COORDINATION.effort"], "Disposition": "NOT_ELIGIBLE", "Rules": ["P-10"], "Recovery": "new observation (revalidar)"}}
+      ]
+    },
+    {
+      "Case": "E8", "Freeze": {"Entrada": "rebinding del Worker", "Agregado": "Y evaluado desde cero", "Disposición": "contadores intactos"},
+      "PreviousPreflight": {"Role": "WORKER", "ConfigurationStatus": "BELOW_REQUIRED", "Note": "status of the replaced binding; not an input of the procedure"},
+      "Evaluations": [
+        {"Role": "WORKER", "Profile": "ROLE_WORKER_ILLUSTRATIVE", "Action": "ROLE_ACTION",
+         "Requirements": [
+           {"RequirementId": "ROLE_WORKER_ILLUSTRATIVE.level", "Mandatory": true, "Required": "Equilibrado", "Observation": {"State": "OBSERVED", "Value": "Equilibrado", "Source": "runtime-invocation-log", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "ROLE_WORKER_ILLUSTRATIVE.effort", "Mandatory": true, "Required": "Balanced", "Observation": {"State": "OBSERVED", "Value": "Balanced", "Source": "runtime-invocation-log", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}}
+         ],
+         "Expected": {"ConfigurationStatus": "MATCH", "Causes": [], "Disposition": "ELIGIBLE", "Rules": [], "Property": "the result depends only on the new observations; the procedure has no counter output"}}
+      ]
+    },
+    {
+      "Case": "E9", "Freeze": {"Entrada": "cuota desconocida (opcional)", "Agregado": "MATCH", "Disposición": "registrada"},
+      "Evaluations": [
+        {"Role": "PRINCIPAL_COORDINATOR", "Profile": "PRINCIPAL_COORDINATION", "Action": "RESUME_DECISION",
+         "Requirements": [
+           {"RequirementId": "PRINCIPAL_COORDINATION.level", "Mandatory": true, "Required": "Frontera", "Observation": {"State": "OBSERVED", "Value": "Frontera", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.effort", "Mandatory": true, "Required": "Long-horizon", "Observation": {"State": "OBSERVED", "Value": "Long-horizon", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.remote-facts", "Mandatory": true, "Required": "read", "Observation": {"State": "OBSERVED", "Value": "read", "Source": "git-ls-remote", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.introspection", "Mandatory": true, "Required": "RUNTIME_OBSERVED", "Observation": {"State": "OBSERVED", "Value": "RUNTIME_OBSERVED", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.quota", "Mandatory": false, "Required": "covered", "Observation": {"State": "NOT_OBSERVED", "Value": null, "Source": null, "Assurance": "NONE", "ObservedUtc": null}}
+         ],
+         "Expected": {"ConfigurationStatus": "MATCH", "Causes": [], "Disposition": "ELIGIBLE", "Rules": [], "RecordedOptional": {"PRINCIPAL_COORDINATION.quota": "UNKNOWN"}}}
+      ]
+    },
+    {
+      "Case": "E10", "Freeze": {"Entrada": "el Owner rebaja un requisito", "Agregado": "recálculo", "Disposición": "lo no observado sigue UNKNOWN"},
+      "Evaluations": [
+        {"Label": "before the decision", "Role": "PRINCIPAL_COORDINATOR", "Profile": "PRINCIPAL_COORDINATION", "Action": "RESUME_DECISION",
+         "Requirements": [
+           {"RequirementId": "PRINCIPAL_COORDINATION.level", "Mandatory": true, "Required": "Frontera", "Observation": {"State": "OBSERVED", "Value": "Frontera", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.effort", "Mandatory": true, "Required": "Long-horizon", "Observation": {"State": "OBSERVED", "Value": "Deep", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.remote-facts", "Mandatory": true, "Required": "read", "Observation": {"State": "NOT_OBSERVED", "Value": null, "Source": null, "Assurance": "NONE", "ObservedUtc": null}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.introspection", "Mandatory": true, "Required": "RUNTIME_OBSERVED", "Observation": {"State": "OBSERVED", "Value": "RUNTIME_OBSERVED", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}}
+         ],
+         "Expected": {"ConfigurationStatus": "BELOW_REQUIRED", "Causes": ["PRINCIPAL_COORDINATION.effort", "PRINCIPAL_COORDINATION.remote-facts"], "Disposition": "STOP", "Rules": ["P-09"]}},
+        {"Label": "after the Owner lowers effort to Deep (recalculation)", "Role": "PRINCIPAL_COORDINATOR", "Profile": "PRINCIPAL_COORDINATION", "Action": "RESUME_DECISION",
+         "ProfileOverride": {"PRINCIPAL_COORDINATION.effort": "Deep"},
+         "Requirements": [
+           {"RequirementId": "PRINCIPAL_COORDINATION.level", "Mandatory": true, "Required": "Frontera", "Observation": {"State": "OBSERVED", "Value": "Frontera", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.effort", "Mandatory": true, "Required": "Deep", "Observation": {"State": "OBSERVED", "Value": "Deep", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.remote-facts", "Mandatory": true, "Required": "read", "Observation": {"State": "NOT_OBSERVED", "Value": null, "Source": null, "Assurance": "NONE", "ObservedUtc": null}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.introspection", "Mandatory": true, "Required": "RUNTIME_OBSERVED", "Observation": {"State": "OBSERVED", "Value": "RUNTIME_OBSERVED", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}}
+         ],
+         "Expected": {"ConfigurationStatus": "UNKNOWN", "Causes": ["PRINCIPAL_COORDINATION.remote-facts"], "Disposition": "NOT_ELIGIBLE", "Rules": ["P-10"]}}
+      ]
+    },
+    {
+      "Case": "E11", "Freeze": {"Entrada": "requisito obligatorio omitido en el preflight", "Agregado": "UNKNOWN (falta acreditar)", "Disposición": "P-10; Causes lo nombra"},
+      "Evaluations": [
+        {"Role": "PRINCIPAL_COORDINATOR", "Profile": "PRINCIPAL_COORDINATION", "Action": "RESUME_DECISION",
+         "Requirements": [
+           {"RequirementId": "PRINCIPAL_COORDINATION.level", "Mandatory": true, "Required": "Frontera", "Observation": {"State": "OBSERVED", "Value": "Frontera", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.effort", "Mandatory": true, "Required": "Long-horizon", "Observation": {"State": "OBSERVED", "Value": "Long-horizon", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.remote-facts", "Mandatory": true, "Required": "read", "Observation": {"State": "OBSERVED", "Value": "read", "Source": "git-ls-remote", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}}
+         ],
+         "Expected": {"ConfigurationStatus": "UNKNOWN", "Causes": ["PRINCIPAL_COORDINATION.introspection"], "Disposition": "NOT_ELIGIBLE", "Rules": ["P-10"]}}
+      ]
+    },
+    {
+      "Case": "E12", "Freeze": {"Entrada": "Principal sin `repo-write` acreditado; lo demás en MATCH", "Agregado": "CUSTODY: UNKNOWN; RESUME_DECISION: MATCH", "Disposición": "no toma la custodia delegada (P-10); puede responder RESUME_DECISION"},
+      "Evaluations": [
+        {"Role": "PRINCIPAL_COORDINATOR", "Profile": "PRINCIPAL_COORDINATION", "Action": "CUSTODY",
+         "Requirements": [
+           {"RequirementId": "PRINCIPAL_COORDINATION.level", "Mandatory": true, "Required": "Frontera", "Observation": {"State": "OBSERVED", "Value": "Frontera", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.effort", "Mandatory": true, "Required": "Long-horizon", "Observation": {"State": "OBSERVED", "Value": "Long-horizon", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.remote-facts", "Mandatory": true, "Required": "read", "Observation": {"State": "OBSERVED", "Value": "read", "Source": "git-ls-remote", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.introspection", "Mandatory": true, "Required": "RUNTIME_OBSERVED", "Observation": {"State": "OBSERVED", "Value": "RUNTIME_OBSERVED", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.repo-write", "Mandatory": true, "Required": "write", "Observation": {"State": "NOT_OBSERVED", "Value": null, "Source": null, "Assurance": "NONE", "ObservedUtc": null}}
+         ],
+         "Expected": {"ConfigurationStatus": "UNKNOWN", "Causes": ["PRINCIPAL_COORDINATION.repo-write"], "Disposition": "NOT_ELIGIBLE", "Rules": ["P-10"]}},
+        {"Role": "PRINCIPAL_COORDINATOR", "Profile": "PRINCIPAL_COORDINATION", "Action": "RESUME_DECISION",
+         "Requirements": [
+           {"RequirementId": "PRINCIPAL_COORDINATION.level", "Mandatory": true, "Required": "Frontera", "Observation": {"State": "OBSERVED", "Value": "Frontera", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.effort", "Mandatory": true, "Required": "Long-horizon", "Observation": {"State": "OBSERVED", "Value": "Long-horizon", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.remote-facts", "Mandatory": true, "Required": "read", "Observation": {"State": "OBSERVED", "Value": "read", "Source": "git-ls-remote", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.introspection", "Mandatory": true, "Required": "RUNTIME_OBSERVED", "Observation": {"State": "OBSERVED", "Value": "RUNTIME_OBSERVED", "Source": "runtime-session-metadata", "Assurance": "RUNTIME_OBSERVED", "ObservedUtc": "2026-10-02T00:00:00Z"}},
+           {"RequirementId": "PRINCIPAL_COORDINATION.repo-write", "Mandatory": false, "Required": "write", "Observation": {"State": "NOT_OBSERVED", "Value": null, "Source": null, "Assurance": "NONE", "ObservedUtc": null}}
+         ],
+         "Expected": {"ConfigurationStatus": "MATCH", "Causes": [], "Disposition": "ELIGIBLE", "Rules": []}}
+      ]
+    }
+  ]
+}
