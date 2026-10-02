@@ -1722,3 +1722,56 @@ fin de línea (16.12).
   - `95690c28` no era el `main` vigente;
   - el `main` vigente en la decisión de la A-3 es `819955d61a6da4c811a11fbd11b5dca13f634b7c`;
   - los bytes de `src/RackCad.Application/Expressions/` son idénticos, así que el resultado de INV-22 no cambia.
+
+## 44. Planificación de G3-T2: STOP P-01 (`config.toml` cambió durante la cesión)
+
+### 44.1 Planificación
+
+- **Contrato de T2 emitido** contra la A-3: `artifacts/orchestration/I-63/G3-RACK-BUILTINS/2/R20261002T212850Z-6064/gate-contract.json`, SHA-256 `2E43EAE22C3254F7CDF31EC9AC0C07B11409E7274E2A6D307DF3B7FB8D889CB7`.
+  - Respecto del borrador de G3 cambian `AuthorityRevision` (`ea70e3b3`), `Authorities` (la A-3 tras la A-2) y el texto de INV-22
+    (con la A-3 y el caso de 32 caracteres hexadecimales conservado).
+  - Se añade un invariante de T2: sin RED nuevo y sin tocar `ChainRedFiles`.
+  - Se añaden las paradas C-11 (el GREEN exigiría tocar `ChainRedFiles`, o una expectativa del RED es incompatible) y C-12 (alterar el
+    caso de 32 caracteres hexadecimales, orden del Coordinator).
+  - Cambian también `Objective`, `ExpectedEvidence`, `CorrectionsAuthorized`, `IssuedBy` e `IssuedUtc`.
+  - El alcance, `RequiredTests`, `EligibleCells` y `RoutingEnforcement` son los del borrador.
+- **Invocación `R20261002T212850Z-6064`:** Codex CLI, `gpt-6-luna` / `high`, efectivos iguales; cesión 21:30:31Z-21:32:56Z, código 0.
+  - Salida válida y las seis colecciones iguales al contrato.
+  - A1-A8 en `pass`; A8 en modo de continuación: `ChainBaseSha` `e99621f9`, `ChainRedSha` `637dce7e`, los 8 `ChainRedFiles` y
+    `CorrectionOf` null.
+  - Celda `anthropic/subagent/claude-sonnet-5-5`, effort `high` (Deep), `ROUTINE_IMPLEMENTATION`.
+  - Delegación SHA-256 `858917B63E7EC1B11F8E3EAFD2E60BCE3AA254AB41D5487B690A9852CE93771A`. Sin nc4, porque no es la primera delegación de la cadena.
+
+### 44.2 STOP P-01
+
+| Momento | `TakenUtc` | SHA-256 de `~/.codex/config.toml` |
+|---|---|---|
+| Salida | 21:30:29Z | `40C27B570B0056BC6D2B5AAF460628922C5AD39A405751E68B9001FFDF15F74F` (el mismo de todas las invocaciones previas del piloto) |
+| Entrada | 21:33:17Z | `BB425B03566193815D17C2A9A4A62FDDAF0DC6285C318021BE57C53840DB769F` |
+| Después (sin invocación) | — | `155933B32E5178001700B1137A58435075C13AA0179ED9F530791F3F899726D7` (`LastWriteTimeUtc` 21:34:20Z) |
+
+- **Diff de nombres de secciones y claves** (README 3.4): ninguno. Hay 103 nombres en la salida y en la entrada, en el mismo orden; solo
+  cambian valores.
+- **Causa observada:** la app de escritorio de Codex del Owner se reinició durante la cesión.
+  - En la salida, sus procesos tenían como padre el PID 15404 y estaban vivos desde el 2026-10-01 a las 23:08Z.
+  - En la entrada hay procesos nuevos con el padre 42692: `ChatGPT.exe` de `OpenAI.Codex_26.930.2377.0`, creado a las 21:31:35Z.
+    Son `codex.exe` 42564 y 26088, `codex-computer-use-swift.exe` 38572 y `codex-windows-sandbox-service.exe` 1420.
+  - La invocación del Controller ya había empezado (21:30:31Z) y terminó a las 21:32:56Z. `config.toml` volvió a cambiar a las 21:34:20Z
+    sin ninguna invocación de la sesión.
+  - **Lectura de la sesión:** probable actualización o reinicio de la app, que reescribe valores propios (versión de la app, entorno de
+    sus servidores MCP). No es efecto del Controller. Sin embargo, P-01 no distingue la causa.
+- **Disposición:** STOP (P-01). La delegación no se abre y no se invoca al Worker. **Ninguna invocación de Codex más hasta la decisión
+  del Owner** (README de ejecución delegada 3.4; AUTOMATION_PLAN 16, P-01).
+- `attempts` sigue en 2 de 3.
+
+### 44.3 Decisión que se pide al Owner
+
+- **Opción 1 (recomendada):**
+  - aceptar el cambio como propio de la app del Owner, con los nombres de claves sin cambios;
+  - fijar como línea base el hash vigente al reanudar;
+  - repetir la planificación de T2 con el mismo contrato y un `RunId` nuevo, sin consumir `attempts`;
+  - mantener la app de Codex sin reinicios ni actualizaciones mientras dure G3-T2.
+- **Opción 2:** igual que la 1, pero aceptar la delegación ya planificada (A1-A8 en `pass`) sin repetirla.
+- **Opción 3:** otra instrucción del Owner, por ejemplo revisar los valores cambiados antes de reanudar.
+
+Copias en `docs/automation/evidence/I-63-pilot/G3-RACK-BUILTINS/R20261002T212850Z-6064/`.
