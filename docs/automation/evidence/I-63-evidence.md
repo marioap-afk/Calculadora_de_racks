@@ -1032,3 +1032,31 @@ transitorio por fin de línea (16.12); el contenido es el mismo.
 - **Contrato de gate:** sin reemisión. No hubo rebase y `main` sigue en `819955d6`.
 - **CI del commit de custodia** `75d803e3`: corrida `push` 36949456768 en `failure`. Era lo esperado: la rama conserva el RED (las 16 pruebas
   focales contra el esqueleto y la guarda de I-23) hasta el GREEN de la corrección.
+
+## 25. Corrección 1: planificación rechazada en la aceptación (STOP P-03)
+
+- **Planificación** `R20261002T011628Z-7097` (Codex CLI, `gpt-6-luna`, `high`, efectivos = solicitados; cesión 01:17:26Z-01:19:03Z, código 0).
+  - El prompt sigue el `analysis.md` y lleva la cadena custodiada. Antes de invocar, la sesión comprobó la ruta del `pwsh` del runtime.
+  - El contrato de gate no se reemitió: es una copia en el directorio del intento 1, con SHA-256 `87954E41…2068`.
+- **Delegación:** válida contra el esquema, con SHA-256 `E9ACB80D…DB53`.
+  - Las reglas del `analysis.md` están en `Objective` y `AcceptanceCriteria`: namespace `RackCad.Tests`, clases `ComputedParameters*`, RED
+    solo de pruebas y `ArgumentException`.
+  - `ForbiddenWriteScope` añade `NamespaceFolderGuardTests.cs`.
+  - La cadena y `CorrectionOf` son iguales a los custodiados.
+- **Aceptación A1-A8, sin cortocircuito:** A5 en `fail` y las demás en `pass`.
+  - Faltan dos `Authorities` del contrato por igualdad exacta de (ruta, sección, clase). La delegación escribe `## Convenciones
+    arquitectónicas (obligatorias)` (`AGENTS.md`) y `D1 (núcleo neutral) y D24` (ADR-0043), con tilde.
+  - El contrato dice `arquitectonicas` y `nucleo`, y el encabezado real de `AGENTS.md:57` no lleva tilde. El Controller normalizó la
+    ortografía de las etiquetas en lugar de copiarlas.
+  - La disposición de A5 es **STOP (P-03)** (16.5) y ningún fallo invoca al Worker: no hay prompt ni invocación del Worker.
+- **Precedente:** I-64 tuvo un STOP P-03 con la misma forma (A4/A5 por una transcripción de las etiquetas) y lo devolvió a su Coordinator.
+- **Contadores:** `attempts` = 1, sin cambio, porque no hubo trabajo nuevo. Planificaciones del intento 1: 1. Control nc4: no aplica, porque
+  solo se exige en la primera delegación de la cadena (README §10).
+- **Custodia:** `docs/automation/evidence/I-63-pilot/G1-RACK-METRICS/R20261002T011628Z-7097/`, con `gate-contract.json`, `prompt.md`,
+  `delegation.json`, `acceptance.json`, `acceptance-reasons.json` y `relay-record.json`. El `gate-contract.json` transitorio lleva CRLF
+  (16.12).
+- **Propuesta de la sesión:**
+  - Que el Coordinator resuelva el STOP sin cambio del trabajo, con una planificación nueva del intento 1 y un `RunId` nuevo.
+  - Que el prompt exija copiar `Authorities` del contrato **byte a byte** (ruta, sección y clase, sin normalizar tildes ni ortografía).
+  - Que la sesión compare antes de aceptar, como ya hace A5.
+  - Sin incremento de `attempts` (README §9: no cambia el trabajo).
