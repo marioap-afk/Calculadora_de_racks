@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rackcad-review-result/v1 (representación experimental para la revisión del Architect de I-62 V9; no es esquema normativo)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["Schema", "ReviewId", "InvocationId", "ReviewedUnit", "ReviewedCommit", "ReviewedPath", "ReviewedBlob", "PackagePath", "PackageBlob", "ReviewerBinding", "ReviewerIdentity", "ReviewerMode", "ReviewerAndAuthorSamePerson", "InjectedContextDeclaration", "IndependenceEvidence", "Verdict", "RequiredFindings", "OptionalFindings", "OwnerDecisions", "FocusAreas", "MandateChallenges", "OD6Assessment", "AutonomyAssessment", "KnownLimitations", "RecommendedNextAction"],
+  "properties": {
+    "Schema": { "type": "string", "enum": ["rackcad-review-result/v1"] },
+    "ReviewId": { "type": "string" },
+    "InvocationId": { "type": "string" },
+    "ReviewedUnit": { "type": "string" },
+    "ReviewedCommit": { "type": "string" },
+    "ReviewedPath": { "type": "string" },
+    "ReviewedBlob": { "type": "string" },
+    "PackagePath": { "type": "string" },
+    "PackageBlob": { "type": "string" },
+    "ReviewerBinding": { "type": "string" },
+    "ReviewerIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["Runtime", "Model", "Effort", "SessionOrThreadId", "Source"],
+      "properties": {
+        "Runtime": { "type": "string" },
+        "Model": { "type": "string" },
+        "Effort": { "type": "string" },
+        "SessionOrThreadId": { "type": "string" },
+        "Source": { "type": "string" }
+      }
+    },
+    "ReviewerMode": { "type": "string", "enum": ["SAME-SESSION ROLE", "SEPARATE SESSION", "EXTERNAL HUMAN"] },
+    "ReviewerAndAuthorSamePerson": { "type": "string" },
+    "InjectedContextDeclaration": { "type": "array", "items": { "type": "string" } },
+    "IndependenceEvidence": { "type": "string" },
+    "Verdict": { "type": "string", "enum": ["AGREED", "CHANGES REQUIRED", "BLOCKED — OWNER DECISION"] },
+    "RequiredFindings": { "type": "array", "items": { "$ref": "#/$defs/finding" } },
+    "OptionalFindings": { "type": "array", "items": { "$ref": "#/$defs/finding" } },
+    "OwnerDecisions": { "type": "array", "items": { "type": "string" } },
+    "FocusAreas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["Area", "Assessment"],
+        "properties": { "Area": { "type": "string" }, "Assessment": { "type": "string" } }
+      }
+    },
+    "MandateChallenges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["Challenge", "Disposition"],
+        "properties": { "Challenge": { "type": "string" }, "Disposition": { "type": "string" } }
+      }
+    },
+    "OD6Assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["BothAlternativesExecutable", "ReadyForConsensusFreezeAfterOD6", "Notes"],
+      "properties": {
+        "BothAlternativesExecutable": { "type": "string" },
+        "ReadyForConsensusFreezeAfterOD6": { "type": "string" },
+        "Notes": { "type": "string" }
+      }
+    },
+    "AutonomyAssessment": { "type": "string" },
+    "KnownLimitations": { "type": "array", "items": { "type": "string" } },
+    "RecommendedNextAction": { "type": "string" }
+  },
+  "$defs": {
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["FindingId", "Source", "AffectedSection", "Evidence", "WhyItMatters", "CorrectionRequired", "Supersedes"],
+      "properties": {
+        "FindingId": { "type": "string" },
+        "Source": { "type": "string" },
+        "AffectedSection": { "type": "string" },
+        "Evidence": { "type": "string" },
+        "WhyItMatters": { "type": "string" },
+        "CorrectionRequired": { "type": "string" },
+        "Supersedes": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

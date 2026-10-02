@@ -130,7 +130,9 @@ Ninguna entrada se afirma sin la comprobación DC-08 de [INITIATIVE_LIFECYCLE](.
 - Proposal vigente para revisión: [I-62-proposal-v9.md](I-62-proposal-v9.md), `Frozen: NO`. Incorpora el requisito arquitectónico nuevo del Coordinator
   R62-AUTO-01..20, orquestación autónoma de roles ([registro](I-62-coordinator-requirement-auto.md)): §20, contratos `role-invocation/v1` y
   `review-result/v1`, estado `orchestration`, bucle del Architect, presupuestos, AUTONOMY_GAP y FX-06. Conserva todos los cierres de V8. Paquete del Architect:
-  [I-62-architect-package-v9.md](I-62-architect-package-v9.md), **revisión formal limpia del Architect pendiente de autorización del Coordinator**.
+  [I-62-architect-package-v9.md](I-62-architect-package-v9.md). Revisión del Architect por invocación acotada autorizada por el Owner:
+  **BLOCKED — OWNER DECISION** ([registro](I-62-architect-review-v9.md)); el Owner resuelve la validez formal de la corrida y el Coordinator dispone los
+  hallazgos.
 - Versiones anteriores, conservadas sin cambios:
   - [V1](I-62-proposal-v1.md) … [V5](I-62-proposal-v5.md) y sus paquetes: CHANGES REQUIRED del Coordinator (registros
     [v1](I-62-coordinator-review-v1.md) … [v5](I-62-coordinator-review-v5.md));

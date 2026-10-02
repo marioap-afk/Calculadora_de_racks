@@ -585,3 +585,61 @@ Las trazas de V9 (§20 y Anexos D.8 y F.8) son **análisis del diseño**, no ens
 
 **Validación de esta entrega:** allowlist, enlaces, columnas de las tablas, diff V8→V9 revisado y `git diff --check`; resultado en el cuerpo del commit. La CI
 de este commit se informa al Coordinator.
+
+## 21. F0 — Invocación acotada del Architect de la Proposal V9 (decisión del Owner)
+
+**CI de la Proposal V9** (`b0725114e60319079c3abacf10542743ebb9303c`): corrida **36942576135**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: Build UI (110637249416), Tests (Domain + Application)
+(110637249662), UI Tests (110637249697) y Build Plugin without AutoCAD (110637654589), los cuatro `success`. MEASURED por la sesión. Acredita solo
+`b0725114`.
+
+**Decisión recibida:** «OWNER DECISION — BOUNDED ARCHITECT INVOCATION FOR I-62 V9», texto pegado en la conversación sin archivo de origen. 2 360 bytes en UTF-8,
+SHA-256 `a28332e5519434da4718fe050df9b31e4821129267392e50feb6f8714582fab7`, custodiado fuera del repositorio con la transcripción de la sesión. La orden de
+revisión del Coordinator que el Owner pegó antes (2 825 bytes, SHA-256 `4f7a6c34…`) va literal dentro de `prompt.md`.
+
+**Invocación** (MEASURED; detalle y tablas en
+[`I-62-architect-v9/R20261002T000511Z-ba10/README.md`](I-62-architect-v9/R20261002T000511Z-ba10/README.md)):
+- **Condiciones previas:** todas acreditadas antes de invocar:
+  - binario `codex-cli 0.159.2` con SHA-256;
+  - autenticación ChatGPT existente;
+  - `config.toml` con el mismo hash antes y después;
+  - read-only, y `gpt-6.1-sol`/`high` RUNTIME_OBSERVED en el `turn_context`;
+  - proceso e hilo nuevos;
+  - clon limpio `D:\r62-arch-v9` en `b0725114`;
+  - `memories` desactivado y sin transcripción del autor.
+- **Ejecución:**
+  - una sola invocación, de 00:06:09Z a 00:12:18Z, salida 0 con `turn.completed`;
+  - consumo: entrada 2 395 365 tokens (2 153 600 en caché) y salida 16 647 (7 167 de razonamiento);
+  - 23 comandos de lectura, sin avisos de límite.
+- **Después:** clon intacto, configuración sin cambio y ningún proceso vivo.
+- **Contexto inyectado:** instrucciones base, mensajes developer de skills y multiagente, `AGENTS.md` del clon y el prompt. El `world_state` con prefijos
+  aprobados del host no es visible al modelo. Hubo un intento fallido de cargar el perfil de PowerShell.
+- **Custodia:** `prompt.md`, `schema.json` y `output.json` se versionan byte a byte; `events.jsonl` y el log de sesión, solo por SHA-256.
+
+**Resultado:** BLOCKED — OWNER DECISION, con A62-V9-01..06 REQUIRED y O01/O02 OPTIONAL, propuestos para ratificación. Registro:
+[`I-62-architect-review-v9.md`](../../initiatives/I-62-architect-review-v9.md). El Owner **no** llevó el prompt ni el resultado entre sesiones: la sesión autora
+lanzó el proceso e ingirió la salida estructurada. Es una observación, no un ensayo de FX-06 ni un PASS. Las órdenes del Owner y del Coordinator siguieron
+llegando pegadas (GAP-03).
+
+**AUTONOMY_GAP nuevos** (R62-AUTO-18). Son hechos para el triaje; la sesión no cambia la Proposal:
+
+| Id | Hecho (MEASURED) | Efecto |
+|---|---|---|
+| GAP-07 | La cabecera de la invocación dio `AGENTS.md` como insumo canónico sin neutralizar su «Lectura inicial». El Architect siguió esa orden y leyó 100 líneas de `docs/HANDOFF.md`, `README.md` y `docs/ARCHITECTURE.md`, fuera de la lista | la corrida no se puede acreditar como limpia y su validez queda para el Owner. Una invocación futura debe incluir esos archivos como insumos o excluir de forma explícita las lecturas iniciales de `AGENTS.md` |
+| GAP-08 | El Architect no pudo acreditar desde dentro su modelo, effort ni hilo (UNKNOWN en `output.json`). La identidad RUNTIME_OBSERVED solo existe en el log del runtime, que lee quien invoca | la identidad del revisor en un `review-result` no puede ser autodeclarada: tiene que venir de la medición de la invocación |
+
+**Revalidación antes del commit** (MEASURED, 00:20Z):
+- `origin/main` = `819955d6…`; rama de I-62 en `b0725114…` = remoto;
+- I-52 `51a66245..04692eb7`: 2 commits (§254-255 de I-52), solo archivos propios;
+- I-63 `fb3c8788..658b35ad`: 4 commits (Architect R3 AGREED, Freeze de la Proposal V3 y A-1), solo archivos propios;
+- I-64 `5570b924..0a3fec30`: 2 commits (F1-T0/T1), solo archivos propios;
+- **ningún cruce** con superficies de I-62.
+
+**No se hizo:**
+- una segunda invocación, Workers, Controllers, subagentes, sondas, pilotos, autenticación ni cambios de configuración;
+- la Proposal V10, ni corregir, disponer, ratificar o rebajar hallazgos;
+- decidir OD-6 o la validez de la corrida;
+- tocar V1-V9, sus paquetes, los registros previos, el Discovery, el mandato, las normas compartidas o cualquier superficie ajena.
+
+**Validación de esta entrega:** allowlist (superficies propias de I-62), enlaces, columnas de las tablas, hashes de los archivos custodiados y
+`git diff --check`; resultado en el cuerpo del commit. La CI de este commit se informa al Owner.
