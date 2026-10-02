@@ -12,20 +12,20 @@ using RackCad.Domain.Systems.Shared;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace RackCad.Tests.ComputedParameters
+namespace RackCad.Tests
 {
     /// <summary>
     /// I-63 G1 — la peticion por rack (D-17) con la precedencia D-28. Los contadores se observan en los costados
     /// del lector D-26 y de la resolucion (A-1.3), nunca en los stores.
     /// </summary>
-    public class RackMetricRequestTests
+    public class ComputedParametersRackMetricRequestTests
     {
         private const string RackId = "3f2b1c9e-6d4a-4f38-9b71-0c2a5e8d1f44";
         private const string BeamId = "BEAM_A";
 
         private readonly ITestOutputHelper _output;
 
-        public RackMetricRequestTests(ITestOutputHelper output)
+        public ComputedParametersRackMetricRequestTests(ITestOutputHelper output)
         {
             _output = output;
         }
@@ -361,6 +361,26 @@ namespace RackCad.Tests.ComputedParameters
 
             AssertBoth(observation.Results, MetricStatus.Unavailable, UnavailableReasonKind.DesignUnreadable);
             Assert.Equal(0, observation.Resolutions);
+        }
+
+        [Fact]
+        public void D17_HermanasSinNingunRackIdIdentificable_LanzaArgumentException()
+        {
+            var illegible = new List<RackDefinitionCapture>
+            {
+                new RackDefinitionCapture("DEF-A", "{ esto no es un sobre", 1),
+            };
+            var blankId = new List<RackDefinitionCapture>
+            {
+                new RackDefinitionCapture("DEF-B", Envelope(RackEmbedDocument.KindSelective, DesignJson(Design(Bay(2))), id: "  "), 1),
+            };
+
+            foreach (var siblings in new[] { illegible, blankId })
+            {
+                var request = new RackMetricRequest(
+                    siblings, ProjectVariablesReadResult.Absent(), RackCatalogInput.Loaded(new RackCatalog()));
+                Assert.Throws<System.ArgumentException>(() => request.Execute());
+            }
         }
 
         [Fact]

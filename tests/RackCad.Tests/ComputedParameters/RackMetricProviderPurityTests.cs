@@ -7,14 +7,14 @@ using RackCad.Application.ComputedParameters;
 using RackCad.Application.Persistence;
 using Xunit;
 
-namespace RackCad.Tests.ComputedParameters
+namespace RackCad.Tests
 {
     /// <summary>
     /// I-63 G1 / INV-09 — los providers son puros (D-08). UNA sola funcion de guarda,
     /// <see cref="ForbiddenProviderDependencies"/>, sobre el codigo sin comentarios, se aplica a los archivos reales
     /// de provider y a un fixture invalido: la misma funcion debe detectarlo.
     /// </summary>
-    public class RackMetricProviderPurityTests
+    public class ComputedParametersRackMetricProviderPurityTests
     {
         private static readonly string[] SixKindTokens =
         {
