@@ -1,0 +1,39 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261002T150553Z-09df",
+  "SourceVerification": "R20261002T143410Z-ae0b",
+  "SourceInputs": "artifacts/orchestration/I-64/F1-T1-MODEL/2/R20261002T143410Z-ae0b/inputs",
+  "Mutation": {
+    "File": "worker-handoff.json",
+    "Field": "CurrentSha",
+    "Old": "8d9a0c6e6ea148caf3e8f20d26a95a864a2943ce",
+    "New": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+    "NewExistsInRepo": false
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-work.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "3D34AD30005E3D8BC89BACDBBFEBD1928B3C9AA756340DA2844F2094A9710BD7",
+    "New": "87DDB1FEF9A56D3EC5E55102F505C76DDC61529F8F8460E286158885B615642C",
+    "Reason": "hash derivado de worker-handoff.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "47E750CC93ECDF5CD48B171B70A4501267216BA363E41A95016CCDEDBB5F663D",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "delegation.json": "C3384842342745C5168205EAFEE4A426CAB5CA55E1160C777BFDB85CFBD9DF62",
+    "gate-contract.json": "A4D3681828117B640B6FCFC04F2646CBA2A3AD78929DAE589F060230991999D2",
+    "relay-record-planning.json": "CDE62E0F92F0788C4629694F8652FE00E851B7D714E08F37442F60E3C086FB3A",
+    "relay-record-work.json": "BE37DE2F582AB3332EAA82128717423E37683DC5B66E0D4537482B7DB0F85A4F",
+    "worker-handoff.json": "87DDB1FEF9A56D3EC5E55102F505C76DDC61529F8F8460E286158885B615642C",
+    "ci-core/37019198364/core.trx": "F3EB901A1BE8EA38371860FB9E2237078772F15062CD744E58FDA019B663D4AE",
+    "ci-core/37020159700/core.trx": "F7767A412BC328ADD84D5E74D84C620B75A52B3702ECA2F95EB7C741D8427387",
+    "ci-ui/37019198364/ui.trx": "AC0F7F0397F17D5660F476B97B53E5E765E2BBE5231B225B8B2FCFD73AED95F9",
+    "ci-ui/37020159700/ui.trx": "09D66038F0F64506A78ABEF5ECDF4EC6C2020139AAE06380B4C0CDC38F36D513"
+  }
+}
