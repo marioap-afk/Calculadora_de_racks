@@ -1215,3 +1215,63 @@ difiere del SHA-256 transitorio por fin de línea (16.12).
   que tenían que copiarse literalmente del contrato, sin cambio semántico ni de `attempts`. Cualquier otro fallo vuelve al Coordinator.
 - **Tope que aplica la sesión:** como máximo dos replanificaciones automáticas por (G1-RACK-METRICS, PLANNING, intento 2), por analogía con
   16.8. Agotado el tope, vuelve al Coordinator.
+
+## 33. Corrección 2: Worker, verificación `EXECUTION_VERIFIED` y controles negativos
+
+### 33.1 Invocaciones
+
+| `RunId` | Fase | Participante (solicitado = efectivo) | Resultado |
+|---|---|---|---|
+| `R20261002T143522Z-0c4d` | PLANNING | Codex CLI, `gpt-6-luna`, `high` | Proyección mecánica del contrato: las seis colecciones iguales (`exactness.json`); alcance coherente; A1-A8 en `pass`. Replanificaciones automáticas usadas: 0 |
+| `R20261002T143849Z-3698` | WORK | Subagente, `claude-sonnet-5-5`, `medium` | Commit `4a6c2d88`: solo `tests/RackCad.Tests/ComputedParameters/RackMetricIdsTests.cs`; sin RED (16.8); `IMPLEMENTATION_COMPLETE` |
+| `R20261002T144842Z-0cf4` | VERIFICATION | Codex CLI, `gpt-6-luna`, `high` | **`EXECUTION_VERIFIED`**, `VerifiedSha` `4a6c2d889fc2b421076b3165b26b97162439ad57`, 14 de 14 en `pass` |
+| `R20261002T145409Z-6c34` | CONTROL nc1 | Codex CLI, `gpt-6-luna`, `high` | `Identity` en `fail`, `EXECUTION_BLOCKED/STOP`; anteriores iguales a la real: **oráculo cumplido** |
+| `R20261002T145411Z-2850` | CONTROL nc2 | Codex CLI, `gpt-6-luna`, `high` | `Scope` en `fail`, `EXECUTION_BLOCKED/STOP`; anteriores iguales a la real: **oráculo cumplido** |
+| `R20261002T145412Z-f0cd` | CONTROL nc3 | Codex CLI, `gpt-6-luna`, `high` | `FreeText` en `fail`, `EXECUTION_REWORK_REQUIRED/REWORK`; anteriores y posterior iguales a la real: **oráculo cumplido** |
+
+### 33.2 CI de la cadena de G1-RACK-METRICS
+
+| Commit | SHA | Corrida `push` | Resultado |
+|---|---|---|---|
+| RED (corrección 1) | `fc30dc6cf0d2f97e6732bbb8c512623db91c305d` | 36972851773 | `failure`: Core con exactamente las 17 pruebas focales fallidas por aserción |
+| GREEN (corrección 1) | `b5ee157d7c42a3bada7d6804cbbe3cd731405e00` | 36973107547 | `success`, cuatro jobs; Core 12413/12413 |
+| Prueba D-02 (corrección 2) | `4a6c2d889fc2b421076b3165b26b97162439ad57` | 37021876416 | **`success`, cuatro jobs; Core 12423/12423; filtro del contrato 27/27** |
+
+### 33.3 Qué observa la verificación sobre `4a6c2d88`
+
+- `RackMetricRequest` de un rack con los estados D-28 por kind y una sola resolución.
+- INV-04, INV-05, INV-09, INV-14 (contadores en los costados de A-1.3), INV-16 e INV-34 por la vía de petición, con sus pruebas en verde.
+- D-02 cubierto por `ComputedParametersRackMetricIdsTests`: los seis pares congelados en los dos sentidos, catálogo cerrado y regla del token.
+- `NamespaceFolderGuardTests` en verde.
+- `Authorities` iguales a las del contrato, sin `analysis.md`.
+- RED vigente `fc30dc6c`; `ChainRedFiles` sin cambio. La corrección 2 no tocó producción ni las pruebas protegidas.
+
+### 33.4 Desviaciones y procesos
+
+- **DEV-G1-03:** el ejecutor secuencial de nc1-nc3 no detenía el lanzamiento ante procesos marcados.
+  - Afectó a nc2. Su salida (14:58:45Z) vio cuatro `git.exe` no atribuibles, creados a las 14:58:42Z por `claude.exe` 40812, el proceso
+    utilitario de la aplicación de escritorio de Claude. Su entrada (15:04:02Z) vio otro igual.
+  - Al releerlos por PID, ninguno estaba vivo, y el padre es ajeno al worktree: es el patrón de procesos del host de la lección de I-61.
+  - El control es de solo lectura y su oráculo se cumple.
+- **Entradas del trabajo:** la primera vio un `git.exe` efímero ya terminado, y el control de huérfanos vio `bash.exe` de otra sesión de
+  Claude Code (`claude.exe` 7356, viva, sin la ruta del worktree). La entrada repetida está limpia.
+- **Hechos remotos:** el sandbox del Controller no tiene red; usa los del registro de relevo.
+
+### 33.5 Contadores y estado de la cadena
+
+- `attempts` = 2 de 3.
+- Correcciones: dos (clase `Ci` 1, clase `Authority` 1).
+- Planificaciones del intento 2: 3 (dos STOP P-03 resueltos por el Coordinator y la aceptada).
+- Verificaciones: intento 0, 2 (una por transporte); intento 1, 1; intento 2, 1.
+- La delegación del intento 2 queda cerrada por una verificación válida registrada.
+
+### 33.6 Custodia
+
+Copias en `docs/automation/evidence/I-63-pilot/G1-RACK-METRICS/<RunId>/` para `R20261002T143522Z-0c4d`, `R20261002T143849Z-3698` y `R20261002T144842Z-0cf4`, y en
+`docs/automation/evidence/I-63-pilot/G1-RACK-METRICS-ncN/<RunId>/` para cada control:
+- verificaciones y controles: `prompt.md`, `controller-verification.json` y `relay-record.json`;
+- cada control añade `input-mutated-*.json` con el campo mutado.
+
+Llevan CRLF los transitorios R20261002T143522Z-0c4d/gate-contract.json, R20261002T143849Z-3698/worker-handoff.json; su blob normalizado difiere del SHA-256 transitorio por fin de línea (16.12).
+
+**Siguiente:** el Coordinator juzga G1 con esta evidencia. G2, G3 y G4 no están autorizados.

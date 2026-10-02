@@ -1,0 +1,90 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "G1-RACK-METRICS",
+  "RunId": "R20261002T143849Z-3698",
+  "DelegationRunId": "R20261002T143522Z-0c4d",
+  "Initiative": "I-63",
+  "Gate": "G1",
+  "Attempt": 2,
+  "BaseSha": "a2d2b0a60709156b557292eb019957898db1fb09",
+  "RedSha": null,
+  "CurrentSha": "0123456789abcdef0123456789abcdef01234567",
+  "Branch": "architecture/parametros-calculados-resumen-proyecto",
+  "Worktree": "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-parametros-calculados-resumen-proyecto",
+  "Pushed": true,
+  "FilesChanged": [
+    "tests/RackCad.Tests/ComputedParameters/RackMetricIdsTests.cs"
+  ],
+  "WorkCompleted": "Anadida la prueba explicita de D-02 (clase ComputedParametersRackMetricIdsTests): oraculo congelado de seis pares, mapeo en ambos sentidos contra RackMetricIds.All, catalogo cerrado de seis elementos distintos, regla del token ^[a-z][A-Za-z0-9]*$ y comparador Ordinal. Sin cambios de produccion.",
+  "TestsExecuted": [
+    {
+      "RunRef": "G1-IDS",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~ComputedParametersRackMetricIds\" --logger \"trx;LogFileName=G1-IDS.trx\" --results-directory artifacts/orchestration/I-63/G1-RACK-METRICS/2/R20261002T143849Z-3698/tests/G1-IDS",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-63/G1-RACK-METRICS/2/R20261002T143849Z-3698/tests/G1-IDS/G1-IDS.trx"
+    },
+    {
+      "RunRef": "G1-CONTRACT",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.ComputedParameters\" --logger \"trx;LogFileName=G1-CONTRACT.trx\" --results-directory artifacts/orchestration/I-63/G1-RACK-METRICS/2/R20261002T143849Z-3698/tests/G1-CONTRACT",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-63/G1-RACK-METRICS/2/R20261002T143849Z-3698/tests/G1-CONTRACT/G1-CONTRACT.trx"
+    },
+    {
+      "RunRef": "G1-CORE",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=G1-CORE.trx\" --results-directory artifacts/orchestration/I-63/G1-RACK-METRICS/2/R20261002T143849Z-3698/tests/G1-CORE",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-63/G1-RACK-METRICS/2/R20261002T143849Z-3698/tests/G1-CORE/G1-CORE.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "G1-IDS",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "G1-CONTRACT",
+      "Selected": 27,
+      "Passed": 27,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "G1-CORE",
+      "Selected": 12423,
+      "Passed": 12423,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    }
+  ],
+  "Evidence": [
+    "Filtro de la prueba nueva: 10 seleccionadas, 10 en verde.",
+    "Filtro del contrato: 27 seleccionadas, 27 en verde.",
+    "Suite Core completa: 12423 en verde, 0 fallos, incluida NamespaceFolderGuardTests.",
+    "Commit 4a6c2d889fc2b421076b3165b26b97162439ad57 empujado; HEAD = remoto."
+  ],
+  "UnexpectedFindings": [],
+  "KnownLimitations": [
+    "Las corridas se hicieron con el archivo nuevo aun sin commitear, por eso TreeSha es null."
+  ],
+  "Deviations": [],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "Verificacion del Controller sobre el commit empujado.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "medium",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

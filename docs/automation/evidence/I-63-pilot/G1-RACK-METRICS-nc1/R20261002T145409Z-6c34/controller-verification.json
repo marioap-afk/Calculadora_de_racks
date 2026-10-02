@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "G1-RACK-METRICS",
+  "RunId": "R20261002T145409Z-6c34",
+  "DelegationRunId": "R20261002T143522Z-0c4d",
+  "WorkRunId": "R20261002T143849Z-3698",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-10-02T14:38:52Z, SessionOperated=false."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json existe y declara Schema=rackcad-worker-handoff/v1, TaskId=G1-RACK-METRICS, RunId=R20261002T143849Z-3698, DelegationRunId=R20261002T143522Z-0c4d y Attempt=2. Outcome.OutputWrittenUtc=2026-10-02T14:43:49.5151479Z es posterior al inicio de cesión. La discrepancia de CurrentSha se evalúa en Identity."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leí Proposal V3 y Amendment A-1 con git show en AuthorityRevision 658b35ad498520ba3c832a96eea4389df16dfa60; leí AUTOMATION_PLAN.md y agent-execution/README.md en MainSha 819955d61a6da4c811a11fbd11b5dca13f634b7c. La lista Authorities de delegation.json coincide exactamente, en orden y contenido, con la del contrato."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparación de gate-contract.json y delegation.json: Authorities, AllowedWriteScope, ForbiddenWriteScope, Invariants, RequiredTests y StopConditions iguales. RequiredTests: proyecto RackCad.Tests.csproj, filtro FullyQualifiedName~RackCad.Tests.ComputedParameters, MinSelected=6, ExpectRed=true."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "git rev-parse HEAD y refs/remotes/origin/architecture/parametros-calculados-resumen-proyecto devuelven 4a6c2d889fc2b421076b3165b26b97162439ad57; el work record Entry.HeadSha y Entry.LsRemoteSha coinciden. Pero el CurrentSha de worker-handoff.json es 0123456789abcdef0123456789abcdef01234567, inexistente y distinto. La rama y worktree corresponden; BaseSha a2d2b0a60709156b557292eb019957898db1fb09 es ancestro de HEAD; RedSha=null."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: OriginMainSha=819955d61a6da4c811a11fbd11b5dca13f634b7c coincide con MainSha; Entry.LsRemoteSha=4a6c2d889fc2b421076b3165b26b97162439ad57 coincide con el push registrado para la rama exacta. Exit.HeadSha y Exit.LsRemoteSha eran BaseSha; el cambio durante la cesión está documentado como esperado."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only a2d2b0a60709156b557292eb019957898db1fb09 4a6c2d889fc2b421076b3165b26b97162439ad57 devuelve solo tests/RackCad.Tests/ComputedParameters/RackMetricIdsTests.cs, dentro de AllowedWriteScope y sin intersección con ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --short --branch muestra árbol limpio en architecture/parametros-calculados-resumen-proyecto, sincronizada con origin. git check-ignore -v sobre la ruta del paquete devuelve .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "not_applicable",
+      "Evidence": "RemoteFacts.CurrentRun: push, refs/heads/architecture/parametros-calculados-resumen-proyecto, HEAD 4a6c2d889fc2b421076b3165b26b97162439ad57, completada con éxito; los cuatro jobs requeridos constan en success. TRX Core 37021876416: 12423 seleccionadas, 12423 aprobadas, 0 fallidas; TRX UI: 1654, 1637 aprobadas, 0 fallidas y 17 NotExecuted. No se exige RED: ChainRedSha=fc30dc6cf0d2f97e6732bbb8c512623db91c305d está acreditado por su push 36972851773, cuyo job Core falló. RedPart not_applicable."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "not_applicable",
+      "Evidence": "TRX Core de CurrentRun 37021876416: filtro FullyQualifiedName~RackCad.Tests.ComputedParameters selecciona 27, aprueba 27 y falla 0; NamespaceFolderGuardTests selecciona 7 y las 7 pasan. git diff ChainBaseSha f71de12b33567e8b4109d3a17c60a17d54e96fdc..ChainRedSha fc30dc6cf0d2f97e6732bbb8c512623db91c305d -- tests/ lista los dos ChainRedFiles declarados (RackMetricProviderPurityTests.cs y RackMetricRequestTests.cs); RedSha..CurrentSha solo añade RackMetricIdsTests.cs y no toca esos archivos. En el código de CurrentSha, ComputedParametersRackMetricIdsTests contrasta los seis pares congelados con RackMetricIds y pasa en el TRX; RackMetricProviderPurityTests observa INV-09; RackMetricRequestTests observa INV-04, INV-05, INV-09, INV-14, INV-16 e INV-34. Sus pruebas correspondientes aparecen aprobadas en el TRX. INV-14 e INV-34 observan los contadores según A-1.3. Sin RED nuevo, RedPart not_applicable."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log -1 --format=%B 4a6c2d889fc2b421076b3165b26b97162439ad57 termina con `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`. Coincide literalmente con worker-handoff.json Worker.Trailer y con el modelo efectivo claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra ModelEffective=claude-sonnet-5-5 y EffortEffective=medium; worker-handoff.json declara ModelRequested=claude-sonnet-5-5 y EffortRequested=medium. Coinciden con delegación y RoutingEnforcement=required."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisé los campos de texto libre de worker-handoff.json: WorkCompleted, KnownLimitations, Deviations, UnexpectedFindings, OpenQuestions y RecommendedNextAction. No contienen términos de AUTOMATION_PLAN §16.10."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "Notes de relay-record-work.json: 6 llamadas, 0 denegaciones de permisos o credenciales, 0 avisos de límite y 0 órdenes fallidas."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La entrada pertenece al control nc1: el CurrentSha mutado de worker-handoff.json no coincide con el HEAD real 4a6c2d889fc2b421076b3165b26b97162439ad57; por eso Identity falla.",
+    "Las comprobaciones restantes pasan contra el commit real indicado por Git y el registro de trabajo. No se activó un id de condición de parada; el resultado es el STOP esperado para el control negativo de Identity."
+  ],
+  "RecommendedNextAction": "Conservar este resultado como control negativo de Identity y verificar la entrega real con la copia no mutada de worker-handoff.json."
+}
