@@ -4,11 +4,11 @@ automation_state:
   branch: architecture/parametros-calculados-resumen-proyecto
   claim_id: ce04f47f-ca53-4e75-b983-5ac57ab6c5e3
   current_phase: G1
-  state: waiting
+  state: implementing
   gate: none
-  attempts: 0
-  next_action: Decision del Coordinator sobre el STOP S-04 de G1-RACK-METRICS (verificacion R20261002T005944Z-1192; evidencia §23).
-  last_evidence_commit: 1013449d61b8292b77273ceeac30b82282b975a2
+  attempts: 1
+  next_action: Correccion 1 de G1-RACK-METRICS bajo I-61 (analysis.md de R20261002T005944Z-1192) -> planificacion del Controller, aceptacion, Worker RED de pruebas y GREEN, CI y verificacion.
+  last_evidence_commit: 75d803e32a9d84711df8632711204d0a9f909411
 execution_context:
   mode: manual
   automation_enabled: false
@@ -16,12 +16,13 @@ execution_context:
 execution_chain:
   gate: G1
   task_id: G1-RACK-METRICS
-  attempt: 0
-  next_role: Coordinator (decision sobre el STOP S-04; analysis.md)
-  next_action: STOP S-04 (verificacion R20261002T005944Z-1192, EXECUTION_BLOCKED/STOP, FailureClass Ci). Sin correccion ni Worker hasta la decision del Coordinator
+  attempt: 1
+  next_role: Controller (CONTROLLER_PLANNING, Codex CLI gpt-6-luna), delegacion de correccion
+  next_action: Correccion 1 (CorrectionOf R20261002T005944Z-1192, FailureClass Ci, analysis.md SHA-256 6080f3d008d032d4c6565f5f38df849f294c1a3c981d8ce9c31a14c5259a1fb8) -> planificacion -> aceptacion A1-A8 -> Worker RED solo de pruebas + GREEN -> CI -> verificacion -> nc1-nc3 si VERIFIED -> custodia
+  correction_rules: [namespace RackCad.Tests, clases ComputedParameters*, sin tocar NamespaceFolderGuardTests ni el contrato o su filtro, sin terminos de gate en el texto libre, RED nuevo solo de pruebas antes del GREEN, peticion sin hermanas con RackId identificable -> ArgumentException]
   red_sha: 1013449d61b8292b77273ceeac30b82282b975a2 (acreditado; ChainRedFiles = las dos pruebas de tests/RackCad.Tests/ComputedParameters/)
   run_ids: {planning: R20261002T002817Z-6294, nc4: R20261002T003429Z-a139, work: R20261002T003840Z-f180, verification: [R20261002T005705Z-eccd (transporte), R20261002T005944Z-1192]}
-  limits_used: {verification_reruns: 1 of 2, corrections: 0, attempts: 0}
+  limits_used: {verification_reruns_attempt0: 1 of 2, corrections: 1 (clase Ci = 1), attempts: 1 of 3}
   gate_contract: artifacts/orchestration/I-63/G1-RACK-METRICS/0/R20261002T002817Z-6294/gate-contract.json (SHA-256 87954E41E2F96B992DB7D02205E4102551DAC2A14351A8EBDFDD3838231B2068; no versionado)
   planning_run_id: R20261002T002817Z-6294
   authority_revision: 658b35ad498520ba3c832a96eea4389df16dfa60

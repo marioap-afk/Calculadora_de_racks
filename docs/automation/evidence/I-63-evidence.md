@@ -1010,3 +1010,25 @@ transitorio por fin de línea (16.12); el contenido es el mismo.
 - Reejecuciones de (G1-RACK-METRICS, VERIFICATION): 1 de 2.
 - Correcciones lanzadas: ninguna.
 - Controles negativos nc1-nc3: no se ejecutan, porque la cadena no llegó a `EXECUTION_VERIFIED` (README §10).
+
+## 24. Decisión del Coordinator sobre el STOP S-04 y corrección 1
+
+- **Entrada:** «I-63 / G1-RACK-METRICS — STOP S-04 analysis», pegado por el usuario en el chat el 2026-10-02, sin texto propio.
+  - Copia literal en `docs/automation/evidence/I-63-pilot/G1-RACK-METRICS/R20261002T005944Z-1192/analysis.md`, SHA-256 `6080f3d008d032d4c6565f5f38df849f294c1a3c981d8ce9c31a14c5259a1fb8` (LF; igual al blob).
+  - Resumen en las [decisiones](../decisions/I-63.md) §2.
+- **Decisión:** el Coordinator confirma la causa raíz de §23.5 y autoriza la corrección bajo `CorrectionsAuthorized = true`.
+  - Namespace `RackCad.Tests` y clases `ComputedParameters*`.
+  - Sin tocar la guarda de I-23 ni el contrato ni su filtro.
+  - Sin términos de gate en el texto libre del Worker.
+  - RED nuevo solo de pruebas antes del GREEN.
+  - Aclara D-17: una petición sin ninguna hermana con RackId identificable → `ArgumentException`.
+- **Contadores:** `attempts` pasa de 0 a 1 en este commit, antes de la delegación de corrección (16.8; README §9, «STOP resuelto por el
+  Coordinator con un cambio del trabajo»). Contador de la clase `Ci`: 1. `AttemptsRemaining` = 2.
+- **Cadena:**
+  - `ChainBaseSha` `f71de12b` (primera delegación).
+  - RED vigente `ChainRedSha` `1013449d` (acreditado en `R20261002T005944Z-1192`).
+  - `ChainRedFiles` = `tests/RackCad.Tests/ComputedParameters/RackMetricProviderPurityTests.cs` y `…/RackMetricRequestTests.cs`.
+  - `CorrectionOf` = {`R20261002T005944Z-1192`, `Ci`, SHA-256 del `analysis.md`}.
+- **Contrato de gate:** sin reemisión. No hubo rebase y `main` sigue en `819955d6`.
+- **CI del commit de custodia** `75d803e3`: corrida `push` 36949456768 en `failure`. Era lo esperado: la rama conserva el RED (las 16 pruebas
+  focales contra el esqueleto y la guarda de I-23) hasta el GREEN de la corrección.
