@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T1-MODEL",
+  "RunId": "R20261002T011239Z-647e",
+  "DelegationRunId": "R20261002T003827Z-3a76",
+  "WorkRunId": "R20261002T005244Z-f656",
+  "Attempt": 0,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-10-02T00:55:00Z; Outcome.OutputWrittenUtc=2026-10-02T01:07:33.812322Z, posterior al inicio."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json existe y declara TaskId=F1-T1-MODEL, Attempt=0, DelegationRunId=R20261002T003827Z-3a76, RunId=R20261002T005244Z-f656. La salida coincide con relay-record-work.json: OutputPath y OutputSha256=40FB9F9FD1F4B7E6EAE4A441E6539548F4E63728471AD6BE392704248AB6DAD6; WorkerStatus BLOCKED se evalúa en las demás comprobaciones."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leídas las 24 Authorities con git show: UNIT_DOC desde AuthorityRevision e0587355b0e84d98807057a56dfc50591da87489 y EXTERNAL desde MainSha 819955d61a6da4c811a11fbd11b5dca13f634b7c. Todos los paths existen en su revisión. AUTOMATION_PLAN §16.9/§16.10 y agent-execution/README.md §8 corresponden a esas revisiones."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparación de gate-contract.json y delegation.json: Authorities 24/24, AllowedWriteScope 3/3, ForbiddenWriteScope 17/17, Invariants 12/12 y RequiredTests 1/1 iguales. relay-record-planning.json registra A1-A8 en pass y Acceptance formalmente consignada."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "Git: rama architecture/workspace-persistente-rackcad; toplevel C:/Users/alejandra-mendoza/.codex/worktrees/architecture-workspace-persistente-rackcad; HEAD y refs/remotes/origin/architecture/workspace-persistente-rackcad = 66d34af31524c49214e38479d5892cd9ec985eb9. git merge-base --is-ancestor BaseSha CurrentSha y RedSha CurrentSha devolvió 0 en ambos casos. Rama y ruta coinciden con la delegación."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Exit HeadSha/LsRemoteSha=e0587355b0e84d98807057a56dfc50591da87489 antes de la cesión; Entry HeadSha/LsRemoteSha=66d34af31524c49214e38479d5892cd9ec985eb9 después. RemoteFacts.LsRemoteSha coincide con CurrentSha y OriginMainSha=819955d61a6da4c811a11fbd11b5dca13f634b7c coincide con MainSha. El cambio de punta ocurrió durante la cesión, según la semántica del registro."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha devolvió ADR 0047, cinco archivos en src/RackCad.Application/Workspace/ y cuatro en tests/RackCad.Tests/Workspace/. Los diez paths están cubiertos por AllowedWriteScope y ninguno intersecta ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --short --branch mostró la rama alineada con origin y sin cambios locales. git check-ignore -v sobre inputs/gate-contract.json devolvió .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts y TRX: run 36949370189 es push de refs/heads/architecture/workspace-persistente-rackcad para CurrentSha; Tests (Domain + Application)=failure, UI Tests=success, Build UI=success y Build Plugin without AutoCAD=skipped. No satisface los cuatro jobs requeridos en success. RedPart: run 36948737576 es push de la rama exacta para RedSha, completado con el job Core en failure."
+    },
+    "Tests": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "TRX Core RED 36948737576: filtro RackCad.Tests.Workspace seleccionó 37, con 7 pass y 30 fail; TRX Core Current 36949370189: 37 seleccionadas, 36 pass y 1 fail. Los conteos coinciden con RED1 y GREEN2 de la entrega. En Current falla ModelDoesNotPersistNorWriteAuthoredData: el regex prohibido incluye Registry y coincide con el identificador WorkspaceSessionRegistry. En la suite Core completa también falla TestProjects_KeepExactlyOneAssemblyRootNamespace: los cuatro archivos nuevos declaran RackCad.Tests.Workspace, pero la guarda exige RackCad.Tests. RedPart: para la primera delegación ChainBaseSha se resuelve como BaseSha según AUTOMATION_PLAN §16.8; RT = git diff --name-only BaseSha RedSha -- tests/ devolvió tests/RackCad.Tests/Workspace/SelectionContextTests.cs, tests/RackCad.Tests/Workspace/WorkspaceHintDrainTests.cs, tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs y tests/RackCad.Tests/Workspace/WorkspaceSessionTests.cs. git diff --name-only RedSha CurrentSha contiene solo cinco archivos de producción y no toca RT; ChainRedFiles resultantes: esos cuatro paths. CI UI: en ambas corridas 1654 total, 1637 pass, 0 fail y 17 NotExecuted; coincide con la convención indicada."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha muestra dos commits, RED y GREEN; ambos llevan Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, igual al Worker.Trailer declarado. relay-record-work.json Participant.ModelEffective=claude-sonnet-5-5 y EffortEffective=medium."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita claude-sonnet-5-5 con effort medium. relay-record-work.json registra ModelRequested sonnet, ModelEffective claude-sonnet-5-5, EffortRequested medium y EffortEffective medium; concuerda con el alias registrado y la solicitud."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisados WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json contra la lista de AUTOMATION_PLAN §16.10; no hubo coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra cero denegaciones de permisos o credenciales. Cuatro órdenes fallidas fueron corregidas o superadas y no queda ninguna pendiente; la señal de límite de uso/créditos fue cero. Los procesos no atribuibles desaparecieron en la relectura; Notes indica CLEARED_BY_REREAD y no hay evidencia de que tocaran Git, configuración o worktree."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "Ci",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La CI del CurrentSha no cumple: Core falla y el job Build Plugin without AutoCAD fue omitido.",
+    "El filtro requerido conserva un fallo en CurrentSha por la guarda de fuente que encuentra Registry dentro de WorkspaceSessionRegistry.",
+    "La suite Core completa añade un fallo de namespace: la guarda exige RackCad.Tests en los cuatro archivos nuevos.",
+    "La entrega declara C-05 y C-06; la revisión de Git no confirma expansión fuera del alcance ni ambigüedad material del Freeze.",
+    "El registro de RED declara 30 fallos con FailedTests vacío; los conteos sí coinciden con el TRX de RED, que identifica 30 resultados fallidos en el filtro."
+  ],
+  "RecommendedNextAction": "Preparar una nueva secuencia RED→GREEN que resuelva las dos guardas y valide el SHA resultante con los cuatro jobs requeridos."
+}

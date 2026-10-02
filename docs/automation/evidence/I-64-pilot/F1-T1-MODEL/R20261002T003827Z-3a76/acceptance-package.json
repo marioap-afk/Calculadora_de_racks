@@ -1,0 +1,106 @@
+{
+  "Status": "COORDINATOR_ACCEPTANCE_REQUIRED",
+  "CoordinatorDecisionReceived": {
+    "P-03": "CONFIRMED (R20261002T001349Z-aad5 rechazada, nunca al Worker)",
+    "P-07": "segunda planificacion autorizada (planificacion 2 maximo total)",
+    "P-02": "bash.exe 31724 y git.exe 38412 CLEARED_BY_REREAD; reaparicion persistente o contacto con Git/config/worktree = STOP P-02"
+  },
+  "PlanningRunId": "R20261002T003827Z-3a76",
+  "DelegationPath": "artifacts/orchestration/I-64/F1-T1-MODEL/0/R20261002T003827Z-3a76/delegation.json",
+  "DelegationSha256": "14058EA37B8FE0073148498F9B0CA62174D681C8C663E638F94CD2CDDE3FDE1A",
+  "GateContractSha256": "A4D3681828117B640B6FCFC04F2646CBA2A3AD78929DAE589F060230991999D2",
+  "PromptSha256": "44E6F8BD324BC1147165F019DED6B4F3CA9001A169407A6E902646196A673FD3",
+  "BaseSha": "e0587355b0e84d98807057a56dfc50591da87489",
+  "AuthorityRevision": "e0587355b0e84d98807057a56dfc50591da87489",
+  "MainSha": "819955d61a6da4c811a11fbd11b5dca13f634b7c",
+  "Acceptance": {
+    "A1": "pass",
+    "A2": "pass",
+    "A3": "pass",
+    "A4": "pass",
+    "A5": "pass",
+    "A6": "pass",
+    "A7": "pass",
+    "A8": "pass"
+  },
+  "AcceptanceReasons": {
+    "A1": [],
+    "A2": [],
+    "A3": [],
+    "A4": [],
+    "A5": [],
+    "A6": [],
+    "A7": [],
+    "A8": []
+  },
+  "SessionExtraChecks": {
+    "ExactCopy.Authorities": true,
+    "ExactCopy.AllowedWriteScope": true,
+    "ExactCopy.ForbiddenWriteScope": true,
+    "ExactCopy.Invariants": true,
+    "ExactCopy.RequiredTests": true,
+    "ExactCopy.ExpectedEvidence": true,
+    "ExactCopy.StopConditions": true,
+    "ExactCopy.Objective": true,
+    "TaskClass": "Implementación de pruebas",
+    "TaskClassIsRoutingClass": true,
+    "TaskClassNotController": true,
+    "RoutingRow": [
+      "ROUTINE_IMPLEMENTATION",
+      "Balanced"
+    ],
+    "PromptProfile": "ROUTINE_IMPLEMENTATION",
+    "Effort": {
+      "Semantic": "Balanced",
+      "Provider": "medium"
+    },
+    "Executor": {
+      "Provider": "Anthropic",
+      "Transport": "subagent",
+      "Role": "Worker",
+      "Cell": "claude-sonnet-5-5|subagent"
+    },
+    "Model": "claude-sonnet-5-5",
+    "ModelEscalationReason": null,
+    "Dimensions": {
+      "Ambiguity": "Low",
+      "ArchitecturalSensitivity": "Medium",
+      "Breadth": "Medium",
+      "ToolUse": "High",
+      "FailureCost": "Medium",
+      "MechanicalRepetition": "Low",
+      "Horizon": "Medium"
+    },
+    "BaseSha": "e0587355b0e84d98807057a56dfc50591da87489",
+    "AuthorityRevision": "e0587355b0e84d98807057a56dfc50591da87489",
+    "MainSha": "819955d61a6da4c811a11fbd11b5dca13f634b7c",
+    "AcceptanceCriteriaCount": 9
+  },
+  "Nc4": {
+    "RunId": "R20261002T004303Z-8d3c",
+    "DelegationSha256": "A2609D001315C056CB7B99B5935A7ED115F505EAD12A1456FC1DC58A89767DCD",
+    "Acceptance": {
+      "A1": "pass",
+      "A2": "pass",
+      "A3": "fail",
+      "A4": "pass",
+      "A5": "pass",
+      "A6": "pass",
+      "A7": "pass",
+      "A8": "pass"
+    },
+    "Mutation": "AllowedWriteScope += 'src/RackCad.Plugin/'",
+    "Disposition": "STOP (P-03)",
+    "Outcome": "REJECTED_BEFORE_INVOCATION",
+    "OracleRelative": true
+  },
+  "RelayRecordSha256": "699E32D64C197D76D642A76B9C7F86864FD4DE53BA9C85736D49F1F19A0778A8",
+  "Budget": {
+    "Planning": "2 de 2 consumidas (1 rechazada, 1 conforme)",
+    "Work": "0 de 4",
+    "Verification": "0 de 4",
+    "Attempts": "0 de 3",
+    "MaxReworkLoops": 3
+  },
+  "NotCommitted": "AUTOMATION_PLAN 16.4 paso 3: nc4 y aceptacion sin commit; custodia y estado en el commit (7) o, si el Coordinator rechaza, en un commit de STOP"
+}
