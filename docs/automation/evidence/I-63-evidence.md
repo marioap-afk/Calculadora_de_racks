@@ -1170,3 +1170,16 @@ difiere del SHA-256 transitorio por fin de línea (16.12).
   - La cabecera del Controller no usa una línea de paradas que pueda confundirse con las del paquete.
   - `ForbiddenWriteScope` = el del contrato más los nueve archivos exactos, sin prefijos que cubran el archivo nuevo.
   - La sesión añade a la aceptación la comprobación «ninguna entrada de `ForbiddenWriteScope` cubre `AllowedWriteScope`».
+
+## 30. Resolución del STOP P-03 de la corrección 2
+
+- **Orden del Coordinator**, pegada por el usuario en el chat el 2026-10-02. Resumen en las [decisiones](../decisions/I-63.md) §2.
+  - Resuelve P-03 sin cambio del trabajo; `attempts` sigue en 2.
+  - Seis colecciones copiadas exactamente del contrato: `Authorities`, `AllowedWriteScope`, `ForbiddenWriteScope`, `Invariants`,
+    `RequiredTests` y `StopConditions`.
+  - La restricción al archivo nuevo de la prueba de D-02 va en `Objective` y `AcceptanceCriteria`.
+  - La sesión comprueba que ninguna entrada prohibida cubra una permitida.
+- **Comprobación de la sesión antes del Worker:**
+  - A1-A8;
+  - igualdad exacta de las seis colecciones con el contrato;
+  - coherencia de alcance (A3 ampliada: ninguna entrada de `ForbiddenWriteScope` de la delegación cubre una de `AllowedWriteScope`).
