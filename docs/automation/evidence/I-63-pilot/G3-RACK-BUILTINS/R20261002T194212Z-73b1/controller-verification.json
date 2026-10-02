@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "G3-RACK-BUILTINS",
+  "RunId": "R20261002T194212Z-73b1",
+  "DelegationRunId": "R20261002T184114Z-1c2f",
+  "WorkRunId": "R20261002T184507Z-9800",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-10-02T18:45:15Z y Outcome.OutputWrittenUtc=2026-10-02T19:19:28.3768759Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json valida contra worker-handoff.schema.json: TaskId=G3-RACK-BUILTINS, RunId=R20261002T184507Z-9800, DelegationRunId=R20261002T184114Z-1c2f, Attempt=2, BaseSha=e99621f9…, RedSha=CurrentSha=637dce7e…. OutputWrittenUtc es posterior al inicio; SHA-256 real A00AEBC30869FB3EF216A8A8BB6DAB07BE41196E3AB8C028216D2D377EAE84CF coincide con el registro."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leídos con git show los documentos UNIT_DOC en e99621f9e285b1a7ddfcf51cd8ccf970828e0b66 y AUTOMATION_PLAN.md, agent-execution/README.md y AGENTS.md en 819955d61a6da4c811a11fbd11b5dca13f634b7c. AuthorityRevision=BaseSha y es ancestro de HEAD; la autorización escalonada de G3 en decisiones/I-63 §2 permite G3-T1 solo de pruebas."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparación gate-contract.json contra delegation.json: Authorities, AllowedWriteScope, ForbiddenWriteScope, Invariants, RequiredTests y StopConditions son iguales. relay-record-planning.json registra A1-A8 todas pass y paquete aceptado; RequiredTests exige FullyQualifiedName~RackCad.Tests.ComputedParametersSymbols, MinSelected=12, ExpectRed=true, coherente con G3-T1."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD=637dce7e5e7811992330b3c305358d9a7542b9f6; rama y worktree coinciden con la delegación. git merge-base --is-ancestor BaseSha HEAD dio exit 0; RedSha=CurrentSha; refs/remotes/origin/architecture/parametros-calculados-resumen-proyecto coincide con HEAD. Relay Entry registra HeadSha y LsRemoteSha iguales a CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha=637dce7e5e7811992330b3c305358d9a7542b9f6 y OriginMainSha=819955d61a6da4c811a11fbd11b5dca13f634b7c=MainSha. El registro identifica los comandos git ls-remote origin y git fetch origin; git rev-parse origin/main. Los refs remotos locales coinciden."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only e99621f9e285b1a7ddfcf51cd8ccf970828e0b66 637dce7e5e7811992330b3c305358d9a7542b9f6 devuelve solo 8 rutas: siete bajo tests/RackCad.Tests/ComputedParameters/ y ExpressionSymbolModelTests.cs. Ninguna está fuera de AllowedWriteScope ni en ForbiddenWriteScope; no hay cambios en src/."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain está vacío. git check-ignore -v sobre delegation.json y core.trx devuelve .gitignore:3:artifacts/ para ambas rutas del paquete."
+    },
+    "Ci": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun/RedRun: run 37053113058, event=push, ref=refs/heads/architecture/parametros-calculados-resumen-proyecto, head_sha=CurrentSha. Jobs: UI Tests success, Build UI success, Tests (Domain + Application) failure por el RED, Build Plugin without AutoCAD skipped. El run no cumple los cuatro jobs requeridos en success, por eso Result=fail; el Core fallido acredita el RedPart esperado."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Lectura de ci-core/37053113058/core.trx: filtro contractual selecciona 89 (mínimo 12), 3 passed y 86 failed; total Core 12.566/12.478/88 concuerda con TestResults y RemoteFacts. Las fallas son runtime: p. ej. INV-15 ContextTests.INV15_*; INV-17/19/20/25/26 BindingTests; INV-18 ConsumersTests; INV-21/22/23 FormattingTests; INV-24 PersistenceTests; INV-27 IdentityTests. INV-22 fija InvalidQualifier código 11, span 5+6 y ausencia de árbol; su prueba de diagnóstico pasa y las de formateo fallan. INV-28: no se modificaron las cuatro suites; el TRX registra RoundTrip 12/12, Formatter 54/54, Binder 65/65 y G8PersistenceIntegrationContract 53/53. RedSha=CurrentSha, así que git diff RedSha CurrentSha no toca RT. ChainRedFiles resultantes de git diff --name-only ChainBaseSha RedSha -- tests/: tests/RackCad.Tests/ComputedParameters/ComputedParametersSymbolsBindingTests.cs; ComputedParametersSymbolsConsumersTests.cs; ComputedParametersSymbolsContextTests.cs; ComputedParametersSymbolsFormattingTests.cs; ComputedParametersSymbolsIdentityTests.cs; ComputedParametersSymbolsKit.cs; ComputedParametersSymbolsPersistenceTests.cs; tests/RackCad.Tests/ExpressionSymbolModelTests.cs."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B HEAD contiene literalmente «Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>», igual al valor de Worker.Trailer; el único commit del rango concuerda con el modelo efectivo."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita claude-sonnet-5-5, effort high; relay-record-work.json registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high. El Worker declara ModelRequested=claude-sonnet-5-5 y EffortRequested=high."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisados WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json: no aparece ninguno de los términos enumerados en AUTOMATION_PLAN §16.10."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 88 llamadas, cero denegaciones de permisos/credenciales y cero avisos de límite. Las tres órdenes con código distinto de cero están explicadas y superadas; no queda ninguna fallida pendiente."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "Ci",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La corrida push exacta del SHA cumple el componente RedPart, pero el job requerido Build Plugin without AutoCAD quedó skipped y el resultado general de CI es failure; por §16.9, Ci no pasa.",
+    "Los conteos del TRX coinciden con la entrega. Además de las 86 fallas focales, fallan las dos aserciones pre-ID20 autorizadas en ExpressionSymbolModelTests; juntas explican las 88 fallas Core.",
+    "La consulta git ls-remote ejecutada por este Controller no pudo conectar con GitHub. Remote se evaluó usando RemoteFacts registrados durante el relevo y los refs remotos locales coincidentes."
+  ],
+  "RecommendedNextAction": "Pedir al Coordinator que resuelva el job requerido omitido antes de continuar con el siguiente tramo."
+}

@@ -1,0 +1,4 @@
+Rack.#{zzz} | Succeeded=False | InvalidQualifier(11)/SyntaxAndLimits@5+6 | Syntax throws InvalidOperationException
+Rack.#{frentes} | Succeeded=False | InvalidQualifier(11)/SyntaxAndLimits@5+10 | Syntax throws InvalidOperationException
+Rack.#{abcdef0123456789abcdef0123456789} | Succeeded=False | UnexpectedToken(3)/SyntaxAndLimits@5+35 | Syntax throws InvalidOperationException
+Rack.#{abcdef0123456789abcdef0123456789} + 1 | Succeeded=False | UnexpectedToken(3)/SyntaxAndLimits@5+35 | Syntax throws InvalidOperationException

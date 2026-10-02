@@ -1,0 +1,10 @@
+using System;
+using RackCad.Application.Expressions;
+foreach (var t in new[] { "Rack.#{zzz}", "Rack.#{frentes}", "Rack.#{abcdef0123456789abcdef0123456789}", "Rack.#{abcdef0123456789abcdef0123456789} + 1" })
+{
+    var r = ExpressionParser.Parse(t);
+    Console.Write(t + " | Succeeded=" + r.Succeeded + " |");
+    foreach (var d in r.Diagnostics) Console.Write(" " + d.Code + "(" + (int)d.Code + ")/" + d.Class + "@" + d.Span.Value.Start + "+" + d.Span.Value.Length);
+    try { var s = r.Syntax; Console.Write(" | Syntax=" + s.GetType().Name); } catch (InvalidOperationException) { Console.Write(" | Syntax throws InvalidOperationException"); }
+    Console.WriteLine();
+}

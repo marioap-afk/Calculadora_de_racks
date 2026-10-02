@@ -1545,3 +1545,93 @@ transitorios R20261002T164522Z-a109/worker-handoff.json; su blob normalizado dif
   - T2 es la continuación autorizada, no una corrección: lleva `CorrectionOf` = null, `ChainRedSha` = el RED de T1 y `ChainRedFiles` = sus
     pruebas. No consume `attempts` (orden del Coordinator).
   - Los controles negativos nc1-nc3 se ejecutan una sola vez, sobre la verificación `EXECUTION_VERIFIED` de T2 (README §10).
+
+## 41. G3-T1 (RED-BUILTINS) bajo I-61 y A-3
+
+### 41.1 Invocaciones
+
+| `RunId` | Fase | Participante (solicitado = efectivo) | Resultado |
+|---|---|---|---|
+| `R20261002T183445Z-47d4` | PLANNING | Codex CLI, `gpt-6-luna`, `high` | Rechazada: A5 en `fail` por una cadena de invariante con la tilde quitada («propagacion» en INV-15); las demás en `pass` |
+| `R20261002T184026Z-55e7` | CONTROL nc4 | — (sin invocar) | Sobre la delegación rechazada; no cuenta |
+| `R20261002T184114Z-1c2f` | PLANNING (replanificación automática, regla vigente) | Codex CLI, `gpt-6-luna`, `high` | Seis colecciones proyectadas del contrato e iguales; A1-A8 en `pass` |
+| `R20261002T184434Z-3b90` | CONTROL nc4 | — (sin invocar) | A3 en `fail` y las demás iguales a la real: oráculo cumplido |
+| `R20261002T184507Z-9800` | WORK | Subagente, `claude-sonnet-5-5`, `high` | RED `637dce7e`; `IMPLEMENTATION_COMPLETE` (2055 s, 88 llamadas) |
+| `R20261002T192212Z-e1aa` | VERIFICATION | Codex CLI, `gpt-6-luna`, `high` | `EXECUTION_BLOCKED/BLOCKED`, `Remote` (ver 41.3) |
+| `R20261002T193101Z-2628` | VERIFICATION (reejecución 1 de 2) | Codex CLI, `gpt-6-luna`, `high` | Fallo de transporte `TIMEOUT` (600 s, código 124), sin salida |
+| `R20261002T194212Z-73b1` | VERIFICATION (reejecución 2 de 2) | Codex CLI, `gpt-6-luna`, `high` | **`EXECUTION_REWORK_REQUIRED/REWORK`, `Ci`**, con `RedPart` = `pass` en `Ci` y `Tests`: **RED acreditado** |
+
+- **Contrato de T1:** `artifacts/orchestration/I-63/G3-RACK-BUILTINS/2/R20261002T184114Z-1c2f/gate-contract.json`, SHA-256 `C35EFC7C2D90014A2E1553AB8EA25242588CAF4E88EA581A80D5D3FBDC404DC8`, `AuthorityRevision`
+  `e99621f9`. Delegación aceptada: SHA-256 `A23A12B8994EC89C6FCE830EB7139D74DC235DF485DC1D4AA4CC69677F2C1142`.
+- La puerta de PID corrió antes y después de cada invocación sin procesos marcados vivos. `config.toml` sin cambios.
+- El REWORK de `R20261002T194212Z-73b1` es el resultado previsto de una entrega solo RED (§40): `Ci` no puede pasar con `CurrentSha` = RED. No es
+  una corrección y no consume `attempts`.
+
+### 41.2 RED de la cadena
+
+| Dato | Valor |
+|---|---|
+| `ChainBaseSha` | `e99621f9e285b1a7ddfcf51cd8ccf970828e0b66` |
+| `ChainRedSha` | `637dce7e5e7811992330b3c305358d9a7542b9f6` (corrida `push` 37053113058: Core en `failure` por el RED, Plugin `skipped`) |
+| `ChainRedFiles` | Los siete archivos nuevos de `tests/RackCad.Tests/ComputedParameters/` (`ComputedParametersSymbols{Binding,Consumers,Context,Formatting,Identity,Persistence}Tests.cs` y `ComputedParametersSymbolsKit.cs`) y `tests/RackCad.Tests/ExpressionSymbolModelTests.cs` |
+| Pruebas | Filtro `RackCad.Tests.ComputedParametersSymbols`: 89 seleccionadas, 86 fallan por aserción o excepción, 3 pasan (filas de INV-22 que fijan el analizador vigente). Core 12566/12478/88: las 86 y las 2 aserciones pre-ID20 autorizadas de `ExpressionSymbolModelTests` |
+| Producción | Sin cambios: `git diff e99621f9..637dce7e` solo toca `tests/` |
+
+### 41.3 BLOCKED por `Remote` de `R20261002T192212Z-e1aa` (lectura de la sesión)
+
+- El Controller buscó `Entry.OriginMainSha`, un campo que el esquema `rackcad-relay-record/v1` no tiene en `Entry`. El dato está en
+  `RemoteFacts.OriginMainSha` = `819955d6` = `MainSha`.
+- Es un error del Controller del tipo de CTRL-G1-01, no un defecto de la entrega.
+- Recuperación de BLOCKED (16.11): nota explícita en el registro del trabajo y reejecución con el mismo prompt.
+- La reejecución 1 agotó el tope de 600 s sin salida (`TIMEOUT`). La 2 terminó con la salida descrita.
+- **Las dos reejecuciones de (G3-RACK-BUILTINS, VERIFICATION) quedan consumidas** (AUTOMATION_PLAN 16.11: «como máximo dos reejecuciones
+  por (`TaskId`, fase)»). La sesión lo lee de forma estricta: un BLOCKED o un fallo de transporte en la verificación de T2, que comparte
+  `TaskId` y fase, sería STOP P-04.
+- Por eso el prompt de verificación de T2 anticipa las dos causas vistas: la señal de `origin/main` en `RemoteFacts` y el tope de 600 s,
+  con lecturas filtradas en lugar de volcados completos.
+
+### 41.4 Entrega del Worker: declaraciones
+
+- **Copia desechable.** El Worker creó, solo bajo `artifacts/` (ignorado por git), una copia del repositorio con una implementación
+  mínima de D-16, D-17 y D-18, para comprobar que las pruebas del RED son implementables: 133/133 en la copia. La copia se eliminó y el
+  parche queda en `work/shadow_patch.py`. No toca `src/` del repositorio.
+- **Sonda temporal.** La prueba sonda `ZzProbeInv22.cs` se retiró antes del commit.
+- **API que fijan las pruebas del RED.** La entrega la lista en su `Evidence`: núcleo, persistencia y
+  `RackComputedExpressionContext`.
+- **Pregunta abierta.** «confirmar los nombres de API […] y si el mensaje con Computed de INV-27 y la ausencia de una API nombrada para
+  la tabla de tokens persistidos de D9 son aceptables».
+  - **Lectura de la sesión:** no es materia de la A-3, que se limita a INV-22.
+  - Los nombres son decisiones del Worker dentro del Freeze, fijadas por pruebas protegidas. INV-27 solo exige el rechazo de `Computed`.
+  - D-18 exige el comportamiento de la tabla persistida (leer `rack` → `PresentButUnreadable`; escribir → rechazo), no un nombre de API.
+  - Se somete a la revisión del Architect (foco D-16 y D-18).
+- **TRX de UI.** 17 `NotExecuted` por los 17 `Skip` (8+3+4+2): la convención del logger, anotada en el registro (precedente §37.4).
+
+### 41.5 INV-22 observado
+
+- **Worker** (`work/inv22-probe*.txt`, en custodia): `Rack.#{zzz}` → `Succeeded` = false, un `InvalidQualifier` en 5+6, `Syntax` lanza
+  `InvalidOperationException`; igual con `* 2` y `+1`; `Rack.#{frentes}` → 5+10.
+- **Sesión** (sonda desechable fuera del worktree contra el DLL Debug; `Expressions/` idéntico en main y en el RED; `A-3-session-probe/`):
+  - confirma lo anterior;
+  - para `Rack.#{abcdef0123456789abcdef0123456789}` (clave `rack` válida y GUID en forma N) da un `UnexpectedToken` (3) en 5+35, sin árbol.
+- Ambos códigos están en el catálogo V6. C-10 no se activa.
+
+### 41.6 A-3
+
+- `docs/initiatives/I-63-proposal-v3-amendment-a3-inv22-diagnostico.md`, Coordinator-only preautorizada.
+- **Fija** el resultado del oráculo de INV-22 (§2 de la A-3). **Declara sin fijarlo** el caso de la forma N (§4 de la A-3).
+- No cambia D-16, lexer, parser, `projectVariable` ni alcance.
+- **Siguiente:**
+  - CI exact-SHA de la A-3 (cuatro jobs);
+  - reemisión del contrato de T2 con `AuthorityRevision` = SHA de la A-3;
+  - planificación, GREEN, verificación, `Scope` mecánico, nc1-nc3 y revisión del Architect.
+
+### 41.7 Contadores y custodia
+
+- `attempts` = 2 de 3, sin cambio.
+- Planificaciones de G3-T1: 2 (una replanificación automática por cadenas literales, regla vigente).
+- Verificaciones: 3 (original y dos reejecuciones).
+- Controles nc4: 2 (solo cuenta el de la delegación aceptada).
+
+Las copias están en `docs/automation/evidence/I-63-pilot/G3-RACK-BUILTINS/<RunId>/`, `docs/automation/evidence/I-63-pilot/G3-RACK-BUILTINS-nc4/<RunId>/` y `docs/automation/evidence/I-63-pilot/G3-RACK-BUILTINS/A-3-session-probe/`.
+Llevan CRLF los transitorios R20261002T184507Z-9800/inv22-probe.txt, R20261002T184507Z-9800/inv22-probe2.txt, A-3-session-probe/a3-session-probe.txt; su blob normalizado difiere del SHA-256 transitorio por
+fin de línea (16.12).
