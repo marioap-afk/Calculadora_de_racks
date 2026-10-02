@@ -1447,3 +1447,58 @@ cuatro, UNVERIFIED.
 - invocar `codex-cli` o `claude-cli`, autenticar, instalar o cambiar configuración;
 - leer credenciales o valores de configuración;
 - declarar el GATE PASS de F2.
+
+## 36. F2 REVIEW_READY y preparación de F3, F4, F6 y F7 (orden §33)
+
+**CI del commit de F2** (`1eddbf48dbefd9685e68d63c0560bacf484d2dcb`, §35): corrida **37075239120**, attempt 1, event `push`, head_sha exacto,
+`completed/success`. Jobs: Tests (Domain + Application) (111063540432), Build UI (111063540308), UI Tests (111063540427) y Build Plugin without AutoCAD
+(111063933724), los cuatro `success`. **Core Full del SHA exacto** con el árbol limpio: 12412/12412 (22:58:43Z, TRX SHA-256 `1c84642d…`). Core Full del
+árbol antes del commit: 12412/12412 (22:54:47Z, `b4212ade…`). MEASURED por la sesión.
+
+### 36.1 Paquete de gate de F2
+
+[`I-62-F2/f2-gate-packet.json`](I-62-F2/f2-gate-packet.json): **F2 = REVIEW_READY** (la sesión no declara GATE PASS). C-05, C-06, C-07, C-08, C-09, C-10 y C-19 en
+PASS sobre `1eddbf48`, cada uno con su artefacto, su prueba o su MC y el SHA. C-06 deja OV-I62-02 al Owner. La observación de `codex-cli` que exige
+invocarlo espera **OD-2, que no bloquea F2**: V14 §17 dice «OD-2 solo para medir invocando», y su frontera es la primera invocación afectada. Huellas para
+aceptación del Coordinator: ninguna (§35.2).
+
+### 36.2 Preparación (clase B; nada materializa F3+)
+
+En [`I-62-prep/`](I-62-prep/README.md), documentación sin autoridad normativa:
+- [f3-dossier.md](I-62-prep/f3-dossier.md): mapa de archivos con blobs de `1eddbf48`, planes de los nueve esquemas (las elecciones de forma marcadas
+  IMPLEMENTATION_CHOICE), plan de pruebas RED → GREEN de C-11..C-14, C-30 y C-40, plan de B.11, DC-07 y disposición de la deuda nc2 de I-64;
+- [f4-dossier.md](I-62-prep/f4-dossier.md): mapa de archivos, orden, matriz de transiciones y su auditoría, validadores, compatibilidad y pruebas de
+  C-15..C-42;
+- [freeze-issues.md](I-62-prep/freeze-issues.md): **FC-01** (sin camino para cerrar un bucle y abrir otro; presupuestos de unidad) y **FC-02** (SHAs de
+  `orchestration` que un rebase deja obsoletos, sin reconciliación ni actualización posibles), con sus A-n candidatas **sin aplicar**; SM-01..SM-04 no
+  materiales;
+- [f6-dossier.md](I-62-prep/f6-dossier.md): FX-01..FX-06, grafo de dependencias, y que FX-04a solo necesita OD-5;
+- [owner-decision-packets.md](I-62-prep/owner-decision-packets.md): OD-2, OD-3, OD-4, OD-5, OD-7 y DEP-F4-YAML, cada uno con su selección corta; ninguno se
+  solicita todavía;
+- [ov-scripts.md](I-62-prep/ov-scripts.md) y [f7-ready-closure.md](I-62-prep/f7-ready-closure.md): guiones de OV; borrador de FOUNDATIONS solo como
+  evidencia; READY-01..09; Candidato; cierre e integración, con el conflicto previsto en el índice ADR (I-52 lo modifica ya).
+
+**Disposición de la deuda de I-64** (f3-dossier §7):
+- para las unidades I62, **B**: F3 la satisface en procedimiento (pertenencia reproducible en la `Evidence` de `Scope`, `not_run` si la comparación falla y
+  comprobación mecánica del Coordinator);
+- para I-64, **D**: I-64 es una unidad ANTERIOR (I61 de por vida) y las reglas de I-62 no son retroactivas (V14 §14.1), así que I-62 no puede desbloquearla.
+  Decide el Master Coordinator.
+
+### 36.3 Investigación y verificaciones (MEASURED; sin invocar runtimes bloqueados)
+
+- **`Test-Json`** de PowerShell 7.6.6 aplica 2020-12 (`additionalProperties: false`, `pattern`, `enum`) con mensajes de error localizados.
+- **`MachineGuid`** disponible: `HostInstanceState` OBSERVED en este host.
+- **Contrato real de I-61 G3** (blob `9b5ef6df…`), insumo de C-20c: 17 citas, y cada encabezado citado existe una sola vez en `origin/main` y en la rama.
+  `Claim-Id` para la PRE de prueba: I-61 `0e2923de-…`, I-64 `614371d5-…`.
+- **Prototipo local de la derivación del mapa (E.4):** determinista (dos ejecuciones con SHA-256 `2e900f01…`) y coherente con E.5 para lo materializado
+  en F1 y F2 (18 archivos: 4 MODIFIED y 14 ADDED). Las secciones de título de nivel 1 salen siempre MODIFIED (SM-04). El script queda fuera del repositorio.
+- **Lector YAML:** el proyecto de pruebas no tiene ninguno, y AGENTS exige el acuerdo del Owner para añadir dependencias → DEP-F4-YAML (preparada).
+- **Binarios de la CLI:** dos instalados (`a51e250f`, la ruta verificada, y `be3fd7e5`, nuevo); la receta usa la ruta verificada.
+
+### 36.4 DC-07
+
+`git fetch --prune` antes del commit (en su cuerpo). Ramas activas: I-52 `fb6b5648`, I-63 `138bc3d4` e I-64 `39b45f36`. Ninguna toca los archivos del
+protocolo, AUTOMATION_PLAN, WORKFLOW, LIFECYCLE, las clases de prueba de los protocolos ni `docs/automation/evidence/I-62*`. I-52 modifica el índice ADR:
+conflicto previsto solo en el cierre documental.
+
+**Artefactos locales:** generadores, prototipo del mapa y TRX en el scratchpad de la sesión, fuera del repositorio; el árbol queda limpio en el commit.
