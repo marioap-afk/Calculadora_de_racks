@@ -1463,3 +1463,70 @@ transitorios R20261002T164522Z-a109/worker-handoff.json; su blob normalizado dif
 - **S-04 de los TRX:** clasificación de la sesión aceptada (STOP no material).
 - **Contadores:** `attempts` 2/3 (`AttemptsRemaining` 1).
 - **Siguiente:** `current_phase` = G3. La sesión prepara el contrato de G3 y vuelve solo para la autorización formal. G4 no autorizado.
+
+## 39. CI del cierre de G2 y borrador del contrato de G3
+
+### 39.1 CI del cierre de G2
+
+| Commit | SHA | Corrida `push` | Resultado |
+|---|---|---|---|
+| Cierre documental de G2 | `11207788bca71f173ee8c896c18c5c6af8f8cf5b` | 37046231017 | `success`; cuatro jobs requeridos en `success` |
+
+### 39.2 Borrador del contrato de G3 (no emitido)
+
+- **Ruta:** `artifacts/orchestration/I-63/G3-RACK-BUILTINS/draft/R20261002T181856Z-68f0/gate-contract.json`, válido contra el esquema, SHA-256
+  `14C40A9AF502BBE247A1BD51833F4F085A3EBC82A3F70A8F5AA2126C6652B055`. `TaskId` `G3-RACK-BUILTINS`.
+- **Autoridad:**
+  - `AuthorityRevision` propuesta: `11207788`, el cierre de G2, que contiene G2 PASS, DEV-G2-01, DEBT-I63-G2-01 y la regla de `Scope`.
+  - El diff desde la A-2 añade solo el código de G2 y documentos de la unidad; ninguna ruta de autoridad `EXTERNAL` (16.3).
+  - `Authorities` lleva Proposal V3 (D-02..D-04, D-14..D-19, D-23, §11-§13, §19-§21), la A-1 (A-1.2 para INV-20), la A-2, el contrato y
+    las decisiones. Las `EXTERNAL` son las de G2, y la de ADR-0043 añade D9.
+- **Alcance:**
+  - Permitido:
+    - el núcleo `src/RackCad.Application/Expressions/` (D-16 y la guarda R4);
+    - `src/RackCad.Application/ComputedParameters/` (`RackComputedExpressionContext`);
+    - el archivo `src/RackCad.Application/Persistence/PersistedBoundExpressionJson.cs` (D-18);
+    - `tests/RackCad.Tests/ComputedParameters/`;
+    - el archivo `tests/RackCad.Tests/ExpressionSymbolModelTests.cs` (Q-G3-02).
+  - Prohibido:
+    - ProjectVariables, Systems, Bom, Catalogs, Units, Domain, Plugin y UI;
+    - las cuatro suites de INV-28, `ExpressionCoreGuardTests`, `ExpressionDiagnosticCatalogTests` y `NamespaceFolderGuardTests`;
+    - `docs/` y la configuración del repositorio.
+  - Ninguna entrada prohibida cubre una permitida.
+- **Invariantes:** INV-15, 17-27 (INV-20 con A-1.2) e INV-28; D-14..D-19; la conservación de G1 y G2.
+- **Pruebas:** filtro `FullyQualifiedName~RackCad.Tests.ComputedParametersSymbols`, `MinSelected` 12 y `ExpectRed` true.
+- **Paradas:** las 25 de base con C-01, C-02 y C-06..C-08 adaptadas a G3, más C-09 (`projectVariable` o INV-28) y C-10 (código nuevo para
+  INV-22).
+- **`ExpectedEvidence`:** añade la comprobación mecánica independiente de `Scope` (DEV-G2-01) y el ARCHITECTURE_REVIEW del diff del núcleo
+  antes del cierre (§21).
+- **Celdas y emisor:** celdas y `RoutingEnforcement` de G2. `CorrectionsAuthorized` = false, `IssuedBy` = borrador.
+
+### 39.3 Hechos medidos que condicionan G3
+
+- **Pruebas que fijan el estado previo a ID20.** `tests/RackCad.Tests/ExpressionSymbolModelTests.cs` afirma:
+  - `SymbolNamespaces.All` = [`ProjectVariable`] y valores de `SymbolNamespace` = [1] (líneas 31-32);
+  - «rack» no es token activo (38-45, con el comentario «reservados conceptualmente para ID20»);
+  - valores de `SymbolDefinitionKind` = [1, 2] (273).
+  - D-16 cambia exactamente eso: no hay G3 posible sin actualizar esas aserciones.
+- **Catálogo de diagnósticos.** `ExpressionDiagnosticCatalogTests` fija el catálogo V6 completo (29 códigos, de I-49). `NameRequired` ya
+  existe. Un código nuevo para INV-22 rompería esa prueba y tocaría el catálogo de I-49.
+- **Persistencia.** `PersistedBoundExpressionJson` (Persistence) usa `SymbolNamespaces.TryParseToken` y `.Token`; D-18 lo pasa a la
+  tabla persistida de D9.
+- **Guarda P26.1.** `ExpressionCoreGuardTests` no prohíbe el término `Rack`. Prohíbe las capas ProjectVariables, Persistence, Systems,
+  Bom, Catalogs, Domain, UI, Plugin y Autodesk, y los conceptos dimensionales.
+
+### 39.4 Preguntas para la autorización
+
+- **Q-G3-01 (INV-22).** La Proposal fija el código concreto «en el commit RED de G3, con una A-n solo del Coordinator» (AQ-02).
+  - Propuesta: preautorizar que la sesión materialice esa A-n (A-3) tras el RED, con el código que el RED observe, siempre que sea uno del
+    catálogo V6 vigente y sin catálogo nuevo (C-10).
+  - Si hiciera falta un código nuevo: STOP.
+- **Q-G3-02 (pruebas fijadas).** Propuesta: permitir `ExpressionSymbolModelTests.cs` como archivo exacto.
+  - Solo para actualizar en el RED las aserciones del estado previo a ID20 que D-16 cambia: miembros de `SymbolNamespace` y
+    `SymbolDefinitionKind`, y tabla de namespaces en memoria frente a la persistida.
+  - Ningún otro cambio en ese archivo.
+- **Q-G3-03 (ARCHITECTURE_REVIEW).** La §21 exige revisar el diff del núcleo antes del cierre de G3: quién y cuándo.
+  - Propuesta: el mismo Architect de R1-R3 (sesión separada), de solo lectura, sobre el diff exacto del núcleo verificado, antes de volver
+    para el juicio de G3.
+- **Q-G3-04 (presupuesto).** `attempts` = 2/3: queda **una** corrección para G3 y G4 juntos, y G3 es el gate de mayor riesgo (el núcleo).
+  Se señala para la decisión del Coordinator.

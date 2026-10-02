@@ -7,18 +7,18 @@ automation_state:
   state: waiting
   gate: none
   attempts: 2
-  next_action: Preparar el contrato de gate de G3 (built-ins en I-49) desde el Freeze + A-1 + A-2, con la comprobacion mecanica de Scope desde el inicio, y volver al Coordinator para su autorizacion formal; sin implementacion antes.
-  last_evidence_commit: abe0eae58432d07d160c45c05bf97bbda80863c3
+  next_action: Autorizacion formal de G3 por el Coordinator sobre el borrador de contrato R20261002T181856Z-68f0 (evidencia §39; preguntas Q-G3-01..04).
+  last_evidence_commit: 11207788bca71f173ee8c896c18c5c6af8f8cf5b
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-parametros-calculados-resumen-proyecto
 execution_chain:
   gate: G3
-  task_id: null
+  task_id: G3-RACK-BUILTINS (borrador)
   attempt: null
   next_role: Coordinator (autorizacion formal de G3 sobre el contrato que prepara la sesion)
-  next_action: Contrato de G3 en preparacion; sin delegacion ni Worker hasta la autorizacion
+  next_action: Borrador de contrato artifacts/orchestration/I-63/G3-RACK-BUILTINS/draft/R20261002T181856Z-68f0/gate-contract.json (SHA-256 14C40A9AF502BBE247A1BD51833F4F085A3EBC82A3F70A8F5AA2126C6652B055); sin delegacion ni Worker hasta la autorizacion
   main_sha: 819955d61a6da4c811a11fbd11b5dca13f634b7c
   freeze_commit: f61d0aca859a11b15cbe1797069a83cba873ba95
   frozen_proposal_blob: 4d5dedce15363fa6378e460c5b63005fe41b858b
