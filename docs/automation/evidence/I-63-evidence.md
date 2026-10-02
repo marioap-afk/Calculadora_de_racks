@@ -1128,3 +1128,20 @@ llamadas y 0 denegaciones ni órdenes fallidas. Partió del parche no commiteado
 
 `docs/automation/evidence/I-63-pilot/G1-RACK-METRICS/<RunId>/` para `R20261002T061154Z-9f77`, `R20261002T061533Z-8e64` y `R20261002T062554Z-e271`. Llevan CRLF los transitorios R20261002T061154Z-9f77/gate-contract.json, R20261002T061533Z-8e64/worker-handoff.json; su blob normalizado
 difiere del SHA-256 transitorio por fin de línea (16.12).
+
+## 28. Decisión del Coordinator sobre el STOP S-12 y corrección 2
+
+- **Entrada:** orden del Coordinator pegada por el usuario en el chat el 2026-10-02.
+  - El `analysis.md` va materializado literal en `docs/automation/evidence/I-63-pilot/G1-RACK-METRICS/R20261002T062554Z-e271/analysis.md`, SHA-256 `a860e8e959f7ab4e491c7856e661370cb9505af63246d785f47691f248260696` (LF; igual al blob).
+  - Resumen en las [decisiones](../decisions/I-63.md) §2.
+- **Decisión:** la corrección 2 corrige los dos defectos de §27.3 sin cambiar el Freeze, la A-1, el contrato, `AuthorityRevision` ni el
+  alcance.
+  - `Authorities[]` byte a byte, sin `analysis.md`.
+  - Prueba de D-02 en un archivo nuevo, sin RED nuevo.
+  - Producción intacta.
+- **Contadores:** `attempts` pasa de 1 a 2 en este commit (`AttemptsRemaining` = 1). Contador de la clase `Authority`: 1 (el de `Ci` sigue en 1).
+- **Cadena:**
+  - `ChainBaseSha` `f71de12b`.
+  - `ChainRedSha` `fc30dc6c` (acreditado en `R20261002T062554Z-e271`).
+  - `ChainRedFiles` sin cambio.
+  - `CorrectionOf` = {`R20261002T062554Z-e271`, `Authority`, SHA-256 de este `analysis.md`}.
