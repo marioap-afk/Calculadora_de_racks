@@ -1,0 +1,150 @@
+{
+  "Schema": "runtime-evidence (representación experimental de InvokerObservedRuntimeIdentity / RuntimeEvidenceRef, Proposal V12 §20.3.2; no autoridad normativa)",
+  "LogicalReviewRequestId": "L20261002T151854Z-603d",
+  "InvocationId": "I20261002T151854Z-603d",
+  "AttemptSeq": 1,
+  "RunId": "R20261002T151854Z-603d",
+  "Invoker": "sesión autora de I-62 (Claude), con autorización acotada del Owner y del Coordinator; observador no independiente",
+  "Binary": {
+    "Path": "%LOCALAPPDATA%\\OpenAI\\Codex\\bin\\a51e250fa15c740a\\codex.exe",
+    "Version": "codex-cli 0.159.2",
+    "Sha256": "fcd5eafefb4ff4a607f244e099e0974f66e17966b6ffda6948de2ef3a7a79530"
+  },
+  "Authentication": "existente: «Logged in using ChatGPT» antes y después; sin leer ni modificar credenciales",
+  "ConfigFingerprint": {
+    "Path": "~/.codex/config.toml",
+    "Sha256Before": "40c27b570b0056bc6d2b5aaf460628922c5ad39a405751e68b9001ffdf15f74f",
+    "Sha256After": "40c27b570b0056bc6d2b5aaf460628922c5ad39a405751e68b9001ffdf15f74f",
+    "Changed": false
+  },
+  "Requested": {
+    "Model": "gpt-6.1-sol",
+    "Effort": "high",
+    "Sandbox": "read-only",
+    "Flags": [
+      "--disable memories",
+      "--disable apps",
+      "--disable plugins",
+      "--disable browser_use",
+      "--disable browser_use_external",
+      "--disable computer_use",
+      "--disable in_app_browser",
+      "--disable remote_plugin",
+      "--disable hooks",
+      "-c mcp_servers.node_repl.enabled=false",
+      "--output-schema",
+      "-o",
+      "--json",
+      "stdin=/dev/null",
+      "timeout 3600",
+      "MSYS_NO_PATHCONV=1 (sin conversión de rutas del prompt por Git Bash)"
+    ]
+  },
+  "Observed": {
+    "Assurance": "RUNTIME_OBSERVED (registro de sesión del runtime)",
+    "SessionLog": {
+      "Path": "~/.codex/sessions/2026/10/02/rollout-2026-10-02T09-27-42-01a0fd3a-77cd-7f80-8300-86104919bf07.jsonl",
+      "Sha256": "80d96e28428061f1f6729766acada272c8c2262f998a9bbfa637661d6eb6c5ab",
+      "Lines": 368,
+      "Versioned": false
+    },
+    "ThreadId": "01a0fd3a-77cd-7f80-8300-86104919bf07",
+    "Originator": "codex_exec",
+    "Source": "exec",
+    "CliVersion": "0.159.2",
+    "ModelProvider": "openai",
+    "Cwd": "D:\\r62-arch-v12",
+    "ModelContextWindow": 258400,
+    "TurnContexts": [
+      {
+        "Utc": "2026-10-02T15:27:45.278Z",
+        "Model": "gpt-6.1-sol",
+        "Effort": "high",
+        "ApprovalPolicy": "never",
+        "Sandbox": "read-only"
+      },
+      {
+        "Utc": "2026-10-02T15:34:27.786Z",
+        "Model": "gpt-6.1-sol",
+        "Effort": "high",
+        "ApprovalPolicy": "never",
+        "Sandbox": "read-only",
+        "Note": "tras la compactación"
+      }
+    ],
+    "ThreadSettings": {
+      "Utc": "2026-10-02T15:34:27.786Z",
+      "Model": "gpt-6.1-sol",
+      "ReasoningEffort": "high",
+      "ServiceTier": "priority",
+      "ApprovalPolicy": "never",
+      "FileSystem": "restricted: lectura de la raíz",
+      "Network": "restricted"
+    },
+    "Compactions": [
+      {
+        "Utc": "2026-10-02T15:34:27.785Z",
+        "BeforeExecCall": 21,
+        "ReplacementHistory": "3 mensajes de desarrollador, la inyección de AGENTS.md y el prompt COMPLETO (igual a prompt.md salvo el salto final), más un resumen cifrado de 27788 caracteres cuyo contenido no es observable",
+        "RetainedContextNote": "el registro guarda además una copia abreviada del prompt en retained_context (complete=false); esa copia no forma parte de replacement_history",
+        "Effect": "las lecturas anteriores a la compactación solo persisten a través del resumen cifrado; su efecto sobre el razonamiento no es observable"
+      }
+    ],
+    "ServedModelBehindProvider": "UNKNOWN (no observable)"
+  },
+  "InjectedContext": {
+    "BaseInstructionsChars": 21769,
+    "DeveloperMessagesChars": [
+      3233,
+      2429,
+      271
+    ],
+    "AgentsMdAutoInjectionChars": 25321,
+    "PromptChars": 15644,
+    "PromptEqualToCustodied": true,
+    "PromptNonAsciiChars": 85,
+    "PromptReplacementChars": 0,
+    "GlobalAgentsMdBytes": 0,
+    "RuntimeDiagnostic": "el primer comando de lectura de archivo (comando 1) recibió antepuesto el diagnóstico de dot-sourcing de profile.ps1 (modo de lenguaje); contenido del perfil no inspeccionado",
+    "WorldState": "presente en el registro; no forma parte de los mensajes visibles"
+  },
+  "ToolSurface": {
+    "ModelTool": "exec (modo código de codex: script JavaScript que invoca tools.exec_command)",
+    "ExecCalls": 35,
+    "ShellCommands": 122,
+    "ModelVisibleTruncation": "en 4 de las 35 llamadas la salida que vio el modelo llegó truncada por los límites de salida de la herramienta (input-fidelity-postrun.json, ModelVisible)"
+  },
+  "Execution": {
+    "StartUtc": "2026-10-02T15:27:42Z",
+    "EndUtc": "2026-10-02T15:45:22Z",
+    "ExitCode": 0,
+    "TurnCompleted": true,
+    "TaskCompleteUtc": "2026-10-02T15:45:21.168Z",
+    "DurationMs": 1058239,
+    "Usage": {
+      "InputTokens": 3975060,
+      "CachedInputTokens": 3633024,
+      "OutputTokens": 26793,
+      "ReasoningOutputTokens": 6539
+    },
+    "Stderr": "«Reading additional input from stdin...» (39 bytes); ninguna advertencia de límite"
+  },
+  "Termination": {
+    "ReviewerProcessesAliveAfter": 0,
+    "Method": "Win32_Process: ningún proceso con la ruta del clon ni codex exec/sandbox de esta corrida tras la salida",
+    "Excluded": "un codex.exe exec-server preexistente (creado el 2026-10-01, entorno en la nube de la app de escritorio), ajeno a la corrida"
+  },
+  "Clone": {
+    "Path": "D:\\r62-arch-v12",
+    "HeadBefore": "d0947c5d58280f8b0bfe2808dd8b7ff79e9f76bb",
+    "HeadAfter": "d0947c5d58280f8b0bfe2808dd8b7ff79e9f76bb",
+    "StatusBefore": "limpio",
+    "StatusAfter": "limpio (sin archivos ignorados)"
+  },
+  "WriterCollision": {
+    "RemoteBranchAtLaunch": "d0947c5d58280f8b0bfe2808dd8b7ff79e9f76bb",
+    "ProcessesOnI62Paths": 0
+  },
+  "ReviewerDeclaredIdentity": "Model, Effort y SessionOrThread = UNKNOWN en output.json: no es contradicción (§20.3.2)",
+  "DotnetTestExemption": "ver README §2; dotnet test no se ejecutó (read-audit.json)"
+}

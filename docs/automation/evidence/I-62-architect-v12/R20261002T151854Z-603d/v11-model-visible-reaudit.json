@@ -1,0 +1,408 @@
+{
+  "Schema": "re-auditoría de lo visible por el modelo (representación experimental; no autoridad normativa)",
+  "Subject": "revisión del Architect de la Proposal V11, RunId R20261002T140232Z-cdc5 (custodiada en 902c2cba)",
+  "AuthorityRevision": "26127a69a7dbc1324566b081381cd11db6b20f35",
+  "Why": "la auditoría custodiada de V11 comparó aggregated_output de events.jsonl con el texto canónico; el revisor usó la herramienta exec, cuyas salidas visibles por el modelo pueden truncarse aunque aggregated_output esté completo",
+  "Source": "log de sesión de V11 (SHA-256 663f86dd849f897890dd597cd8130fb888a3ffb296c7b73a7d73b4ba18d824b8), sin ninguna invocación nueva",
+  "Method": "alineación (difflib, sin autojunk) del texto visible de cada llamada exec con las líneas de cada comando de esa llamada; una línea cuenta como vista solo si aparece entera en un bloque coincidente; control: el mismo método sobre V12 reproduce el resultado del método estructural",
+  "ExecCalls": 34,
+  "TruncatedCalls": 11,
+  "TruncatedCallList": [
+    {
+      "Call": 1,
+      "OuterOriginalTokens": 67842,
+      "InnerTruncatedRecords": 1,
+      "Markers": 1
+    },
+    {
+      "Call": 4,
+      "OuterOriginalTokens": 10061,
+      "InnerTruncatedRecords": 0,
+      "Markers": 1
+    },
+    {
+      "Call": 14,
+      "OuterOriginalTokens": 17206,
+      "InnerTruncatedRecords": 1,
+      "Markers": 2
+    },
+    {
+      "Call": 16,
+      "OuterOriginalTokens": 14473,
+      "InnerTruncatedRecords": 0,
+      "Markers": 1
+    },
+    {
+      "Call": 17,
+      "OuterOriginalTokens": 4419,
+      "InnerTruncatedRecords": 0,
+      "Markers": 1
+    },
+    {
+      "Call": 22,
+      "OuterOriginalTokens": 12124,
+      "InnerTruncatedRecords": 1,
+      "Markers": 2
+    },
+    {
+      "Call": 23,
+      "OuterOriginalTokens": 10346,
+      "InnerTruncatedRecords": 0,
+      "Markers": 1
+    },
+    {
+      "Call": 26,
+      "OuterOriginalTokens": 4035,
+      "InnerTruncatedRecords": 0,
+      "Markers": 1
+    },
+    {
+      "Call": 27,
+      "OuterOriginalTokens": 4074,
+      "InnerTruncatedRecords": 0,
+      "Markers": 1
+    },
+    {
+      "Call": 28,
+      "OuterOriginalTokens": 4966,
+      "InnerTruncatedRecords": 0,
+      "Markers": 1
+    },
+    {
+      "Call": 32,
+      "OuterOriginalTokens": 3836,
+      "InnerTruncatedRecords": 0,
+      "Markers": 1
+    }
+  ],
+  "RecordStatusCounts": {
+    "FULL": 75,
+    "PARTIAL": 17,
+    "OMITTED": 4
+  },
+  "NeverVisibleRequestedLines": 7232,
+  "NeverVisibleByFile": {
+    "AGENTS.md": {
+      "Lines": 74,
+      "Ranges": [
+        [
+          1,
+          74
+        ]
+      ]
+    },
+    "docs/ARCHITECTURE.md": {
+      "Lines": 451,
+      "Ranges": [
+        [
+          76,
+          508
+        ],
+        [
+          510,
+          527
+        ]
+      ]
+    },
+    "docs/FOUNDATIONS.md": {
+      "Lines": 84,
+      "Ranges": [
+        [
+          86,
+          169
+        ]
+      ]
+    },
+    "docs/HANDOFF.md": {
+      "Lines": 4433,
+      "Ranges": [
+        [
+          205,
+          2107
+        ],
+        [
+          2110,
+          2139
+        ],
+        [
+          2142,
+          3194
+        ],
+        [
+          3196,
+          4638
+        ],
+        [
+          4945,
+          4945
+        ],
+        [
+          4976,
+          4976
+        ],
+        [
+          4978,
+          4978
+        ],
+        [
+          5165,
+          5165
+        ]
+      ]
+    },
+    "docs/ROADMAP.md": {
+      "Lines": 669,
+      "Ranges": [
+        [
+          1,
+          581
+        ],
+        [
+          584,
+          598
+        ],
+        [
+          601,
+          632
+        ],
+        [
+          635,
+          648
+        ],
+        [
+          651,
+          677
+        ]
+      ]
+    },
+    "docs/automation/decisions/I-62.md": {
+      "Lines": 13,
+      "Ranges": [
+        [
+          278,
+          278
+        ],
+        [
+          283,
+          283
+        ],
+        [
+          293,
+          293
+        ],
+        [
+          299,
+          299
+        ],
+        [
+          310,
+          311
+        ],
+        [
+          318,
+          318
+        ],
+        [
+          320,
+          320
+        ],
+        [
+          330,
+          331
+        ],
+        [
+          334,
+          334
+        ],
+        [
+          336,
+          336
+        ],
+        [
+          338,
+          338
+        ]
+      ]
+    },
+    "docs/automation/evidence/I-62-architect-v10/R20261002T010757Z-ef59/read-audit.json": {
+      "Lines": 385,
+      "Ranges": [
+        [
+          97,
+          481
+        ]
+      ]
+    },
+    "docs/automation/evidence/I-62-architect-v9/R20261002T000511Z-ba10/output.json": {
+      "Lines": 71,
+      "Ranges": [
+        [
+          156,
+          226
+        ]
+      ]
+    },
+    "docs/initiatives/I-61-proposal-v9.md": {
+      "Lines": 27,
+      "Ranges": [
+        [
+          258,
+          258
+        ],
+        [
+          269,
+          269
+        ],
+        [
+          273,
+          273
+        ],
+        [
+          282,
+          282
+        ],
+        [
+          290,
+          290
+        ],
+        [
+          313,
+          313
+        ],
+        [
+          317,
+          317
+        ],
+        [
+          331,
+          331
+        ],
+        [
+          345,
+          345
+        ],
+        [
+          348,
+          348
+        ],
+        [
+          359,
+          359
+        ],
+        [
+          374,
+          374
+        ],
+        [
+          384,
+          384
+        ],
+        [
+          394,
+          394
+        ],
+        [
+          417,
+          417
+        ],
+        [
+          434,
+          434
+        ],
+        [
+          442,
+          442
+        ],
+        [
+          448,
+          448
+        ],
+        [
+          455,
+          455
+        ],
+        [
+          461,
+          461
+        ],
+        [
+          466,
+          466
+        ],
+        [
+          469,
+          469
+        ],
+        [
+          475,
+          475
+        ],
+        [
+          502,
+          502
+        ],
+        [
+          510,
+          510
+        ],
+        [
+          527,
+          527
+        ],
+        [
+          529,
+          529
+        ]
+      ]
+    },
+    "docs/initiatives/PROMPT_TEMPLATES.md": {
+      "Lines": 273,
+      "Ranges": [
+        [
+          1,
+          35
+        ],
+        [
+          38,
+          55
+        ],
+        [
+          58,
+          277
+        ]
+      ]
+    },
+    "docs/initiatives/README.md": {
+      "Lines": 752,
+      "Ranges": [
+        [
+          1,
+          752
+        ]
+      ]
+    }
+  },
+  "AgentsMdNote": "AGENTS.md llegó completo por la inyección automática del runtime (25 321 caracteres), aunque su lectura explícita se truncó",
+  "Coverage": {
+    "docs/initiatives/I-62-proposal-v11.md": {
+      "Lines": 3071,
+      "VisibleLines": 3071,
+      "NeverVisible": []
+    },
+    "docs/initiatives/I-62-architect-package-v11.md": {
+      "Lines": 153,
+      "VisibleLines": 153,
+      "NeverVisible": []
+    }
+  },
+  "Premises": {
+    "Located": 35,
+    "SectionLevelUnlocated": 7,
+    "LocatedEnvelopesNeverVisible": 0,
+    "SectionLevelNote": "las 7 premisas de sección completa son de la Proposal V11, visible entera al menos una vez"
+  },
+  "Comparison": "input-fidelity-postrun.json de V11 informó un solo truncamiento estructural (HANDOFF, líneas 4639-4672). Lo visible por el modelo fue menor: 11 de 34 llamadas truncadas y 7232 líneas pedidas nunca vistas, todas de insumos transitivos o auxiliares; el objeto y el paquete fueron visibles enteros",
+  "Effect": "no cambia la independencia de las premisas de V11: todas las localizables tienen el envoltorio visible al menos una vez, y las de sección pertenecen al objeto, visible entero. La afirmación de V11 sobre las lecturas «íntegras y fieles» describía el transporte, no lo visible por el modelo",
+  "Authority": "registro de corrección de método. No dispone, no reabre y no rebaja ningún hallazgo de V11; la acreditación de V11 es del Owner",
+  "NotReaudited": "las revisiones de V9 y V10 usaron la misma fuente (aggregated_output) y no se reauditan aquí: su visibilidad por el modelo es UNKNOWN"
+}

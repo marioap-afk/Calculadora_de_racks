@@ -130,7 +130,9 @@ Ninguna entrada se afirma sin la comprobación DC-08 de [INITIATIVE_LIFECYCLE](.
 - Proposal vigente para revisión: [I-62-proposal-v12.md](I-62-proposal-v12.md), `Frozen: NO`. Es una corrección estrecha de A62-V10-03 (residuo:
   LAUNCHING sin arranque tras el fin de la vigencia) y A62-V11-01 (envoltorio de premisa e independencia semántica), con GAP-10 documentado
   ([disposición del Owner y del Coordinator](I-62-architect-review-v11-disposition.md)). Conserva todos los cierres de V11 y anteriores. Paquete del
-  Architect: [I-62-architect-package-v12.md](I-62-architect-package-v12.md), **una revisión formal limpia pendiente**.
+  Architect: [I-62-architect-package-v12.md](I-62-architect-package-v12.md). Revisión formal limpia de V12: **CHANGES REQUIRED**
+  ([registro](I-62-architect-review-v12.md)), con A62-V10-03 CLOSED y el residuo de A62-V11-01 abierto; pendiente de la disposición del Owner y del
+  Coordinator.
 - Versiones anteriores, conservadas sin cambios:
   - [V1](I-62-proposal-v1.md) … [V5](I-62-proposal-v5.md) y sus paquetes: CHANGES REQUIRED del Coordinator (registros
     [v1](I-62-coordinator-review-v1.md) … [v5](I-62-coordinator-review-v5.md));

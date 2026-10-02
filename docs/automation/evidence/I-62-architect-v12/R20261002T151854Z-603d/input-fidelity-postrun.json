@@ -1,0 +1,1229 @@
+{
+  "Schema": "rackcad-input-fidelity/v1 (representación experimental; Proposal V12 §20.3.3; no autoridad normativa) — COMPROBACIÓN TRAS LA CORRIDA",
+  "RunId": "R20261002T151854Z-603d",
+  "AuthorityRevision": "d0947c5d58280f8b0bfe2808dd8b7ff79e9f76bb",
+  "Sources": {
+    "Transport": "aggregated_output de los 122 comandos en events.jsonl (SHA-256 a72bb75e24fa4dd080ae6ac39208765e241f6cd4d328a4c9dab9f47665a6d6cf)",
+    "ModelVisible": "salidas de las 35 llamadas exec en el log de sesión (SHA-256 80d96e28428061f1f6729766acada272c8c2262f998a9bbfa637661d6eb6c5ab): lo que el modelo recibió de verdad; es la fuente decisiva"
+  },
+  "Method": {
+    "Transport": "lecturas A aisladas: archivo completo frente a su blob tras normalizar el fin de línea; lecturas B: tramo canónico exacto (Skip/First); búsquedas C: cada «número:línea» frente a la línea canónica; Git: frente a Git local; además, cada línea de cada salida frente al conjunto de líneas canónicas del cierre",
+    "ModelVisible": "por llamada exec se reconstruye qué registros llegaron completos, truncados (principio, final o centro) u omitidos, a partir de las marcas «…N tokens truncated…» y de la comparación exacta con aggregated_output; de ahí la cobertura visible por línea canónica. Las líneas de frontera de un empalme cuentan como no vistas en esa lectura",
+    "Envelope": "por premisa: unidad estructural completa (elemento de lista con continuaciones y padre, párrafo, o fila con cabecera) + cadena de títulos + destinos de TODAS las referencias cruzadas de esa unidad (§n con el cuerpo completo de la sección; C-n, P-n, I-…, F.n, B.n como fila o unidad), aunque el hallazgo no las cite. Es más estricto que el punto 2 de §20.3.3 de V12, para cumplir la condición «required cross-reference targets» de la orden",
+    "Control": "un segundo método independiente (alineación difflib de todo el texto visible con cada comando) da los mismos rangos nunca vistos y la misma cobertura"
+  },
+  "Transport": {
+    "FullReadsA": {
+      "Count": 39,
+      "Equal": 38,
+      "Different": [
+        {
+          "Command": 1,
+          "Path": "docs/initiatives/I-62-architect-package-v12.md",
+          "Kind": "diagnóstico del runtime antepuesto",
+          "CanonicalContentAffected": false
+        }
+      ]
+    },
+    "RangeReadsB": {
+      "Count": 57,
+      "Equal": 57
+    },
+    "SearchesC": {
+      "Count": 16,
+      "Equal": 16
+    },
+    "Git": "salidas iguales a las de Git local",
+    "FailedReads": [
+      {
+        "Command": 118,
+        "Kind": "ParserError del script del revisor; sin contenido devuelto"
+      },
+      {
+        "Command": 120,
+        "Kind": "ParserError del script del revisor; sin contenido devuelto"
+      }
+    ],
+    "CheckedLineByLineOnly": [
+      84,
+      105
+    ],
+    "CharacterDegradations": 0,
+    "UnmatchedLines": 0,
+    "TruncationInAggregatedOutput": "ninguna: con las lecturas por rangos, ninguna salida capturada se truncó (a diferencia del HANDOFF en V11)"
+  },
+  "ModelVisible": {
+    "ExecCalls": 35,
+    "CompactionBeforeExecCall": 21,
+    "RecordStatusCounts": {
+      "FULL": 111,
+      "PREFIX": 2,
+      "OMITTED": 5,
+      "SUFFIX": 2,
+      "INNER": 2
+    },
+    "TruncatedCalls": [
+      {
+        "ExecCall": 1,
+        "Kind": "salida completa del script truncada",
+        "OriginalTokens": 41396,
+        "OmittedTokens": 31396
+      },
+      {
+        "ExecCall": 4,
+        "Kind": "salida completa del script truncada",
+        "OriginalTokens": 10327,
+        "OmittedTokens": 327
+      },
+      {
+        "ExecCall": 18,
+        "Kind": "salida de un comando truncada (max_output_tokens del comando)",
+        "OriginalTokens": 7617,
+        "OmittedTokens": 617
+      },
+      {
+        "ExecCall": 28,
+        "Kind": "salida de un comando truncada (max_output_tokens del comando)",
+        "OriginalTokens": 6975,
+        "OmittedTokens": 3475
+      }
+    ],
+    "MarkersVisibleToModel": "cada truncamiento llegó al modelo con su marca explícita «…N tokens truncated…»; el revisor lo advirtió y releyó por tramos menores (KnownLimitations de output.json)",
+    "NeverVisibleRequestedRanges": {
+      "docs/ROADMAP.md": [
+        [
+          91,
+          140
+        ]
+      ],
+      "docs/FOUNDATIONS.md": [
+        [
+          121,
+          169
+        ]
+      ],
+      "docs/initiatives/README.md": [
+        [
+          76,
+          695
+        ]
+      ]
+    },
+    "NeverVisibleNote": "los tres archivos son insumos transitivos (lectura obligatoria de AGENTS.md o del Context Pack); ninguna premisa los cita",
+    "Coverage": {
+      "docs/initiatives/I-62-proposal-v12.md": {
+        "Lines": 3129,
+        "VisibleLines": 3129,
+        "NeverVisible": [],
+        "VisibleAfterCompaction": 420
+      },
+      "docs/initiatives/I-62-architect-package-v12.md": {
+        "Lines": 124,
+        "VisibleLines": 124,
+        "NeverVisible": [],
+        "VisibleAfterCompaction": 124
+      }
+    }
+  },
+  "DegradedSpans": [
+    {
+      "Command": 1,
+      "Path": "docs/initiatives/I-62-architect-package-v12.md",
+      "Class": "STRUCTURE",
+      "Kind": "diagnóstico del runtime antepuesto (profile.ps1: Cannot dot-source … language mode)",
+      "CanonicalContentAffected": false
+    },
+    {
+      "Command": 6,
+      "ExecCall": 1,
+      "Class": "STRUCTURE",
+      "Kind": "salida truncada: solo se vio el principio",
+      "UnseenCanonicalRanges": {
+        "docs/ROADMAP.md": [
+          [
+            73,
+            140
+          ]
+        ]
+      },
+      "PartialBoundaryLines": [
+        [
+          "docs/ROADMAP.md",
+          73
+        ]
+      ]
+    },
+    {
+      "Command": 7,
+      "ExecCall": 1,
+      "Class": "STRUCTURE",
+      "Kind": "salida omitida por completo",
+      "UnseenCanonicalRanges": {
+        "README.md": [
+          [
+            1,
+            69
+          ]
+        ]
+      },
+      "PartialBoundaryLines": []
+    },
+    {
+      "Command": 8,
+      "ExecCall": 1,
+      "Class": "STRUCTURE",
+      "Kind": "salida omitida por completo",
+      "UnseenCanonicalRanges": {
+        "docs/ARCHITECTURE.md": [
+          [
+            1,
+            527
+          ]
+        ]
+      },
+      "PartialBoundaryLines": []
+    },
+    {
+      "Command": 9,
+      "ExecCall": 1,
+      "Class": "STRUCTURE",
+      "Kind": "salida omitida por completo",
+      "UnseenCanonicalRanges": {
+        "docs/context-packs/README.md": [
+          [
+            1,
+            42
+          ]
+        ]
+      },
+      "PartialBoundaryLines": []
+    },
+    {
+      "Command": 10,
+      "ExecCall": 1,
+      "Class": "STRUCTURE",
+      "Kind": "salida omitida por completo",
+      "UnseenCanonicalRanges": {
+        "docs/context-packs/documentation-governance.md": [
+          [
+            1,
+            45
+          ]
+        ]
+      },
+      "PartialBoundaryLines": []
+    },
+    {
+      "Command": 11,
+      "ExecCall": 1,
+      "Class": "STRUCTURE",
+      "Kind": "salida omitida por completo",
+      "UnseenCanonicalRanges": {
+        "docs/FOUNDATIONS.md": [
+          [
+            1,
+            169
+          ]
+        ]
+      },
+      "PartialBoundaryLines": []
+    },
+    {
+      "Command": 12,
+      "ExecCall": 1,
+      "Class": "STRUCTURE",
+      "Kind": "salida truncada: solo se vio el final",
+      "UnseenCanonicalRanges": {
+        "docs/initiatives/README.md": [
+          [
+            1,
+            695
+          ]
+        ]
+      },
+      "PartialBoundaryLines": [
+        [
+          "docs/initiatives/README.md",
+          695
+        ]
+      ]
+    },
+    {
+      "Command": 20,
+      "ExecCall": 4,
+      "Class": "STRUCTURE",
+      "Kind": "salida truncada: solo se vio el principio",
+      "UnseenCanonicalRanges": {
+        "docs/initiatives/README.md": [
+          [
+            76,
+            80
+          ]
+        ]
+      },
+      "PartialBoundaryLines": [
+        [
+          "docs/initiatives/README.md",
+          76
+        ]
+      ]
+    },
+    {
+      "Command": 21,
+      "ExecCall": 4,
+      "Class": "STRUCTURE",
+      "Kind": "salida truncada: solo se vio el final",
+      "UnseenCanonicalRanges": {
+        "docs/initiatives/I-62-proposal-v12.md": [
+          [
+            1,
+            9
+          ]
+        ]
+      },
+      "PartialBoundaryLines": [
+        [
+          "docs/initiatives/I-62-proposal-v12.md",
+          9
+        ]
+      ]
+    },
+    {
+      "Command": 64,
+      "ExecCall": 18,
+      "Class": "STRUCTURE",
+      "Kind": "truncamiento central de la salida del comando",
+      "UnseenCanonicalRanges": {
+        "docs/AUTOMATION_PLAN.md": [
+          [
+            552,
+            569
+          ]
+        ]
+      },
+      "PartialBoundaryLines": [
+        [
+          "docs/AUTOMATION_PLAN.md",
+          552
+        ],
+        [
+          "docs/AUTOMATION_PLAN.md",
+          569
+        ]
+      ]
+    },
+    {
+      "Command": 95,
+      "ExecCall": 28,
+      "Class": "STRUCTURE",
+      "Kind": "truncamiento central de la salida del comando",
+      "UnseenCanonicalRanges": {
+        "docs/initiatives/I-62-proposal-v12.md": [
+          [
+            1161,
+            1161
+          ],
+          [
+            1175,
+            1175
+          ],
+          [
+            1178,
+            1178
+          ],
+          [
+            1187,
+            1188
+          ],
+          [
+            1190,
+            1190
+          ],
+          [
+            1205,
+            1206
+          ],
+          [
+            1208,
+            1209
+          ],
+          [
+            1212,
+            1213
+          ],
+          [
+            1215,
+            1215
+          ],
+          [
+            1287,
+            1292
+          ],
+          [
+            1325,
+            1327
+          ],
+          [
+            1329,
+            1330
+          ],
+          [
+            1518,
+            1518
+          ],
+          [
+            1542,
+            1542
+          ],
+          [
+            1545,
+            1545
+          ],
+          [
+            1550,
+            1550
+          ],
+          [
+            1613,
+            1613
+          ],
+          [
+            1667,
+            1667
+          ],
+          [
+            1679,
+            1679
+          ],
+          [
+            1682,
+            1686
+          ],
+          [
+            1688,
+            1688
+          ],
+          [
+            1724,
+            1724
+          ],
+          [
+            1752,
+            1752
+          ],
+          [
+            1848,
+            1848
+          ],
+          [
+            1856,
+            1856
+          ],
+          [
+            1881,
+            1881
+          ],
+          [
+            1904,
+            1904
+          ],
+          [
+            1906,
+            1906
+          ],
+          [
+            1929,
+            1929
+          ],
+          [
+            1936,
+            1937
+          ],
+          [
+            1939,
+            1939
+          ],
+          [
+            1993,
+            1993
+          ],
+          [
+            2167,
+            2167
+          ],
+          [
+            2170,
+            2170
+          ],
+          [
+            2172,
+            2172
+          ],
+          [
+            2193,
+            2193
+          ],
+          [
+            2196,
+            2196
+          ]
+        ]
+      },
+      "PartialBoundaryLines": [
+        [
+          "docs/initiatives/I-62-proposal-v12.md",
+          1161
+        ],
+        [
+          "docs/initiatives/I-62-proposal-v12.md",
+          2196
+        ]
+      ]
+    }
+  ],
+  "PromptFidelity": {
+    "Equal": "sí, salvo el salto de línea final (normalización permitida)",
+    "NonAsciiChars": 85,
+    "ReplacementChars": 0,
+    "SessionLogSha256": "80d96e28428061f1f6729766acada272c8c2262f998a9bbfa637661d6eb6c5ab",
+    "AfterCompaction": "replacement_history conserva el prompt completo"
+  },
+  "PremiseCheck": [
+    {
+      "Kind": "RequiredFindings",
+      "Id": "A62-V11-01",
+      "Independent": true,
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Lines": [
+            1178,
+            1186
+          ],
+          "EnvelopeLines": 13,
+          "CrossReferenceTargets": {},
+          "EnvelopeNeverVisible": [],
+          "CrossReferenceNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [
+            [
+              1,
+              1
+            ],
+            [
+              1178,
+              1178
+            ]
+          ],
+          "CrossReferenceOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Lines": [
+            1187,
+            1189
+          ],
+          "EnvelopeLines": 7,
+          "CrossReferenceTargets": {},
+          "EnvelopeNeverVisible": [],
+          "CrossReferenceNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [
+            [
+              1,
+              1
+            ],
+            [
+              1187,
+              1188
+            ]
+          ],
+          "CrossReferenceOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false
+        },
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v11-disposition.md",
+          "Lines": [
+            36,
+            36
+          ],
+          "EnvelopeLines": 5,
+          "CrossReferenceTargets": {
+            "C-42": null
+          },
+          "EnvelopeNeverVisible": [],
+          "CrossReferenceNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "CrossReferenceOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": true
+        },
+        {
+          "Path": "docs/INITIATIVE_LIFECYCLE.md",
+          "Lines": [
+            166,
+            169
+          ],
+          "EnvelopeLines": 6,
+          "CrossReferenceTargets": {},
+          "EnvelopeNeverVisible": [],
+          "CrossReferenceNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "CrossReferenceOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false
+        }
+      ]
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "A62-V10-03",
+      "Independent": true,
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Lines": [
+            1352,
+            1358
+          ],
+          "EnvelopeLines": 11,
+          "CrossReferenceTargets": {
+            "P-20": [
+              740,
+              753
+            ]
+          },
+          "EnvelopeNeverVisible": [],
+          "CrossReferenceNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [
+            [
+              1,
+              1
+            ]
+          ],
+          "CrossReferenceOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Lines": [
+            2037,
+            2044
+          ],
+          "EnvelopeLines": 13,
+          "CrossReferenceTargets": {
+            "B.8.8": [
+              1968,
+              2059
+            ],
+            "I-P13": [
+              2034,
+              2058
+            ],
+            "20.6": [
+              1390,
+              1456
+            ],
+            "B.1": [
+              1623,
+              1654
+            ],
+            "20.5.1": [
+              1306,
+              1366
+            ],
+            "B.8": [
+              1750,
+              2059
+            ]
+          },
+          "EnvelopeNeverVisible": [],
+          "CrossReferenceNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [
+            [
+              1,
+              1
+            ]
+          ],
+          "CrossReferenceOmittedOrPartialInSomeRead": [
+            [
+              1325,
+              1327
+            ],
+            [
+              1329,
+              1330
+            ],
+            [
+              1752,
+              1752
+            ],
+            [
+              1848,
+              1848
+            ],
+            [
+              1856,
+              1856
+            ],
+            [
+              1881,
+              1881
+            ],
+            [
+              1904,
+              1904
+            ],
+            [
+              1906,
+              1906
+            ],
+            [
+              1929,
+              1929
+            ],
+            [
+              1936,
+              1937
+            ],
+            [
+              1939,
+              1939
+            ],
+            [
+              1993,
+              1993
+            ]
+          ],
+          "EnvelopeVisibleAfterCompaction": false
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Lines": [
+            1415,
+            1417
+          ],
+          "EnvelopeLines": 6,
+          "CrossReferenceTargets": {
+            "20.5.1": [
+              1306,
+              1366
+            ]
+          },
+          "EnvelopeNeverVisible": [],
+          "CrossReferenceNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [
+            [
+              1,
+              1
+            ]
+          ],
+          "CrossReferenceOmittedOrPartialInSomeRead": [
+            [
+              1325,
+              1327
+            ],
+            [
+              1329,
+              1330
+            ]
+          ],
+          "EnvelopeVisibleAfterCompaction": false
+        }
+      ]
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "A62-V11-01",
+      "Independent": true,
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Lines": [
+            1178,
+            1186
+          ],
+          "EnvelopeLines": 13,
+          "CrossReferenceTargets": {},
+          "EnvelopeNeverVisible": [],
+          "CrossReferenceNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [
+            [
+              1,
+              1
+            ],
+            [
+              1178,
+              1178
+            ]
+          ],
+          "CrossReferenceOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false
+        }
+      ]
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "O-V7-01",
+      "Independent": true,
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-architect-package-v12.md",
+          "Lines": [
+            55,
+            55
+          ],
+          "EnvelopeLines": 3,
+          "CrossReferenceTargets": {},
+          "EnvelopeNeverVisible": [],
+          "CrossReferenceNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "CrossReferenceOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": true
+        }
+      ]
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "O-V7-02",
+      "Independent": true,
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-architect-package-v12.md",
+          "Lines": [
+            55,
+            55
+          ],
+          "EnvelopeLines": 3,
+          "CrossReferenceTargets": {},
+          "EnvelopeNeverVisible": [],
+          "CrossReferenceNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "CrossReferenceOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": true
+        }
+      ]
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "O-05",
+      "Independent": true,
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-architect-package-v12.md",
+          "Lines": [
+            55,
+            55
+          ],
+          "EnvelopeLines": 3,
+          "CrossReferenceTargets": {},
+          "EnvelopeNeverVisible": [],
+          "CrossReferenceNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "CrossReferenceOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": true
+        }
+      ]
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "O-07",
+      "Independent": true,
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-architect-package-v12.md",
+          "Lines": [
+            55,
+            55
+          ],
+          "EnvelopeLines": 3,
+          "CrossReferenceTargets": {},
+          "EnvelopeNeverVisible": [],
+          "CrossReferenceNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "CrossReferenceOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": true
+        }
+      ]
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-01",
+      "Independent": true,
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Lines": [
+            1148,
+            1153
+          ],
+          "EnvelopeLines": 10,
+          "CrossReferenceTargets": {
+            "20.6": [
+              1390,
+              1456
+            ]
+          },
+          "EnvelopeNeverVisible": [],
+          "CrossReferenceNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [
+            [
+              1,
+              1
+            ]
+          ],
+          "CrossReferenceOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false
+        }
+      ]
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-02",
+      "Independent": true,
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Lines": [
+            1140,
+            1146
+          ],
+          "EnvelopeLines": 11,
+          "CrossReferenceTargets": {},
+          "EnvelopeNeverVisible": [],
+          "CrossReferenceNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [
+            [
+              1,
+              1
+            ]
+          ],
+          "CrossReferenceOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Lines": [
+            1169,
+            1169
+          ],
+          "EnvelopeLines": 7,
+          "CrossReferenceTargets": {
+            "P-25": [
+              740,
+              758
+            ],
+            "B.10.1": [
+              2115,
+              2131
+            ]
+          },
+          "EnvelopeNeverVisible": [],
+          "CrossReferenceNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [
+            [
+              1,
+              1
+            ]
+          ],
+          "CrossReferenceOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Lines": [
+            1178,
+            1186
+          ],
+          "EnvelopeLines": 13,
+          "CrossReferenceTargets": {},
+          "EnvelopeNeverVisible": [],
+          "CrossReferenceNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [
+            [
+              1,
+              1
+            ],
+            [
+              1178,
+              1178
+            ]
+          ],
+          "CrossReferenceOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false
+        }
+      ]
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-03",
+      "Independent": true,
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+          "Lines": [
+            45,
+            45
+          ],
+          "EnvelopeLines": 5,
+          "CrossReferenceTargets": {},
+          "EnvelopeNeverVisible": [],
+          "CrossReferenceNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [],
+          "CrossReferenceOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Lines": [
+            1178,
+            1186
+          ],
+          "EnvelopeLines": 13,
+          "CrossReferenceTargets": {},
+          "EnvelopeNeverVisible": [],
+          "CrossReferenceNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [
+            [
+              1,
+              1
+            ],
+            [
+              1178,
+              1178
+            ]
+          ],
+          "CrossReferenceOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Lines": [
+            1205,
+            1207
+          ],
+          "EnvelopeLines": 7,
+          "CrossReferenceTargets": {},
+          "EnvelopeNeverVisible": [],
+          "CrossReferenceNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [
+            [
+              1,
+              1
+            ],
+            [
+              1205,
+              1206
+            ]
+          ],
+          "CrossReferenceOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false
+        }
+      ]
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-04",
+      "Independent": true,
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Lines": [
+            1215,
+            1217
+          ],
+          "EnvelopeLines": 7,
+          "CrossReferenceTargets": {
+            "20.3.2": [
+              1099,
+              1111
+            ]
+          },
+          "EnvelopeNeverVisible": [],
+          "CrossReferenceNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [
+            [
+              1,
+              1
+            ],
+            [
+              1215,
+              1215
+            ]
+          ],
+          "CrossReferenceOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false
+        }
+      ]
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-05",
+      "Independent": true,
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Lines": [
+            1157,
+            1159
+          ],
+          "EnvelopeLines": 7,
+          "CrossReferenceTargets": {},
+          "EnvelopeNeverVisible": [],
+          "CrossReferenceNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [
+            [
+              1,
+              1
+            ]
+          ],
+          "CrossReferenceOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Lines": [
+            1155,
+            1155
+          ],
+          "EnvelopeLines": 5,
+          "CrossReferenceTargets": {
+            "P-24": [
+              740,
+              757
+            ]
+          },
+          "EnvelopeNeverVisible": [],
+          "CrossReferenceNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [
+            [
+              1,
+              1
+            ]
+          ],
+          "CrossReferenceOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false
+        }
+      ]
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-06",
+      "Independent": true,
+      "Premises": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Lines": [
+            2197,
+            2197
+          ],
+          "EnvelopeLines": 5,
+          "CrossReferenceTargets": {
+            "C-42": [
+              2151,
+              2197
+            ],
+            "B.9": [
+              2060,
+              2090
+            ],
+            "B.10": [
+              2091,
+              2144
+            ],
+            "P-24": [
+              740,
+              757
+            ],
+            "P-25": [
+              740,
+              758
+            ]
+          },
+          "EnvelopeNeverVisible": [],
+          "CrossReferenceNeverVisible": [],
+          "EnvelopeOmittedOrPartialInSomeRead": [
+            [
+              1,
+              1
+            ]
+          ],
+          "CrossReferenceOmittedOrPartialInSomeRead": [],
+          "EnvelopeVisibleAfterCompaction": false
+        }
+      ]
+    }
+  ],
+  "FindingIndependence": [
+    {
+      "Kind": "RequiredFindings",
+      "Id": "A62-V11-01",
+      "Independent": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "A62-V10-03",
+      "Independent": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "A62-V11-01",
+      "Independent": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "O-V7-01",
+      "Independent": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "O-V7-02",
+      "Independent": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "O-05",
+      "Independent": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "O-07",
+      "Independent": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-01",
+      "Independent": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-02",
+      "Independent": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-03",
+      "Independent": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-04",
+      "Independent": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-05",
+      "Independent": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-06",
+      "Independent": true
+    }
+  ],
+  "FidelityStatus": "DEGRADED_BOUNDED",
+  "Conclusion": "Todos los tramos degradados están localizados mecánicamente: un diagnóstico antepuesto y omisiones de salida, sin ninguna degradación de caracteres. El objeto (Proposal V12, 3129 líneas) y el paquete (124) fueron visibles completos al menos una vez. Ningún envoltorio de premisa ni destino de referencia cruzada cae en una línea nunca vista ni en una línea de frontera de empalme. Ningún hallazgo, disposición ni evaluación queda INVALID_PREMISE y la revisión no se invalida",
+  "Limits": [
+    "la compactación (antes de la llamada exec 21) deja las lecturas anteriores solo en un resumen cifrado; de las 3129 líneas de V12, 420 se volvieron a ver después; la mayoría de los envoltorios no se releyó entera tras la compactación (EnvelopeVisibleAfterCompaction), aunque todas las citas coinciden con el texto canónico",
+    "las lecturas transitivas obligatorias de docs/initiatives/README.md, docs/ROADMAP.md y docs/FOUNDATIONS.md quedaron incompletas (NeverVisibleRequestedRanges)",
+    "la medición la hizo la sesión autora, que lanzó el proceso"
+  ],
+  "CorrectionOfPriorAudit": "la auditoría tras la corrida de V11 midió aggregated_output, no lo visible por el modelo; ver v11-model-visible-reaudit.json"
+}
