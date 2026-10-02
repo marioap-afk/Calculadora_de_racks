@@ -1,0 +1,353 @@
+{
+  "Schema": "rackcad-gate-contract/v1",
+  "Unit": "I-64",
+  "Gate": "F1",
+  "TaskId": "F1-T1-MODEL",
+  "Objective": "Construir la primera fundación pura de Workspace de I-64:\n\n* ADR 0047 en estado `propuesto`, fiel al Freeze;\n* modelo puro en RackCad.Application para sesión por documento;\n* identidad de instancia;\n* SelectionContext;\n* estado mínimo de pistas/cola;\n* reglas puras necesarias para el drenaje;\n* políticas puras congeladas por F1 que no dependan de AutoCAD.\n\nLa cadena debe demostrar RED→GREEN real.\nNo implementar todavía:\n\n* PaletteSet;\n* WPF host;\n* AutoCAD event bridge real;\n* selección real;\n* navegación;\n* escritura authored;\n* AutoCAD.\n\nADR 0047:\nRuta:\ndocs/adr/0047-workspace-persistente-modeless-rackcad.md\nEstado:\npropuesto\nDebe ser una proyección del Anexo A del Freeze.\nNo:\n\n* crea decisiones nuevas;\n* reinterpreta el Freeze;\n* adopta optional históricos;\n* se marca accepted;\n* se convierte en autoridad superior al Freeze.\n\nEl Worker debe materializar el ADR antes de la implementación GREEN.\nPuede estar en el commit inicial documental o en el RED, siempre que:\n\n* aparezca antes del GREEN;\n* permanezca estrictamente fiel al Freeze;\n* la cadena obtenga un RED técnico real independiente del ADR.\n\nRED/GREEN:\nLa primera cadena debe acreditar un RED real:\n\n* tests compilables;\n* selección >= 1;\n* fallo por aserción de comportamiento congelado aún no implementado;\n* no fallo artificial de compilación;\n* no test inventado que falle deliberadamente sin expresar un invariante.\n\nDespués:\nGREEN para el mismo conjunto.",
+  "AuthorityRevision": "e0587355b0e84d98807057a56dfc50591da87489",
+  "MainSha": "819955d61a6da4c811a11fbd11b5dca13f634b7c",
+  "Authorities": [
+    {
+      "Path": "docs/initiatives/I-64-proposal-v5.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-discovery.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-workspace-persistente-rackcad.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-evidence.md",
+      "Section": "## 18. Consensus Freeze (I64-CONSENSUS-V5-01) y cierre de F0",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-evidence.md",
+      "Section": "## 19. F1-T0-ADR — Contrato recibido, preflight, relevo de salida y STOP antes de la planificación",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/state/I-64.yml",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-f1-gate-contract-proposal.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "AGENTS.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/WORKFLOW.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "## 16. Ejecución delegada bajo orden del Coordinator",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0006-autocad-solo-en-plugin.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0019-shell-visual-de-editores-por-composicion.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0029-contrato-funcional-comun-de-ventanas-wpf.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0044-hechos-neutrales-de-vistas-compartidas.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/I-55-proposal-v5.md",
+      "Section": "### 4.4 La transaccion la posee `Mutate(units)` (AR4-19)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/I-55-proposal-v5.md",
+      "Section": "### 4.5 Capas bloqueadas (AR4-20)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/I-55-proposal-v5.md",
+      "Section": "### 4.6 R-25: la primera colocacion sin supervivientes (AR4-21)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/I-55-proposal-v5.md",
+      "Section": "### 4.7 Un solo barrido (AR4-42)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/I-55-proposal-v5.md",
+      "Section": "### 4.8 Estados e informe (AR4-40)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/I-55-proposal-v5.md",
+      "Section": "### 4.9 Guardas caller-owned (AR4-43)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/I-55-proposal-v5.md",
+      "Section": "### 4.10 Cuenta completa de transacciones (AR4-44)",
+      "Class": "EXTERNAL"
+    }
+  ],
+  "AllowedWriteScope": [
+    "docs/adr/0047-workspace-persistente-modeless-rackcad.md",
+    "src/RackCad.Application/Workspace/",
+    "tests/RackCad.Tests/Workspace/"
+  ],
+  "ForbiddenWriteScope": [
+    "docs/initiatives/",
+    "docs/automation/",
+    "src/RackCad.Plugin/",
+    "src/RackCad.UI/",
+    "src/RackCad.Domain/",
+    "tests/RackCad.UI.Tests/",
+    ".github/",
+    "assets/",
+    "eng/",
+    "deploy/",
+    "global.json",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "RackCad.sln",
+    "src/RackCad.Application/RackCad.Application.csproj",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "tools/RackCad.StructuralSections.Import/RackCad.StructuralSections.Import.csproj"
+  ],
+  "Invariants": [
+    "INV-F1-T1-01: Cero referencias a AutoCAD desde el modelo puro de Application.",
+    "INV-F1-T1-02: Una sesión representa una instancia abierta de documento, no ruta/nombre/título.",
+    "INV-F1-T1-03: El modelo no persiste nada.",
+    "INV-F1-T1-04: El modelo no escribe authored ni modela ninguna escritura authored.",
+    "INV-F1-T1-05: SelectionContext soporta los estados exigidos por el Freeze para F1 sin inventar RackId.",
+    "INV-F1-T1-06: Las pistas son hints, nunca autoridad.",
+    "INV-F1-T1-07: El modelo de cola/drenaje no exige ausencia de eventos durante modales.",
+    "INV-F1-T1-08: No existe estado por pestaña que duplique suscripciones o autoridad documental.",
+    "INV-F1-T1-09: La destrucción de una sesión no permite reemparejarla automáticamente con otro documento posterior.",
+    "INV-F1-T1-10: MASTER-I63-I64-02 permanece intacto: ninguna métrica, provider, ProjectSummary o agregación entra en este modelo.",
+    "INV-F1-T1-11: ADR 0047 permanece propuesto y no añade semántica.",
+    "INV-F1-T1-12: RACKEDITAR y comandos existentes no cambian."
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.Workspace",
+      "MinSelected": 1,
+      "ExpectRed": true
+    }
+  ],
+  "ExpectedEvidence": [
+    "gate/delegation package válido",
+    "nc4 según I-61 en la primera delegación aplicable",
+    "aceptación A1-A8 antes de Worker",
+    "commit RED real",
+    "ChainRedSha / ChainRedFiles correctamente acreditados",
+    "commit GREEN",
+    "pruebas RED y GREEN con selección",
+    "worker-handoff válido",
+    "push fast-forward",
+    "CI exacta del CurrentSha verde",
+    "Controller verification válida",
+    "diff dentro de AllowedWriteScope",
+    "ADR 0047 fiel al Freeze"
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-01",
+      "Text": "Owner Validation required"
+    },
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive/irreversible action not authorized"
+    },
+    {
+      "Id": "S-06",
+      "Text": "missing credentials/permissions"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch/worktree ownership conflict"
+    },
+    {
+      "Id": "S-09",
+      "Text": "dependency not integrated"
+    },
+    {
+      "Id": "S-10",
+      "Text": "required AutoCAD/user interaction"
+    },
+    {
+      "Id": "S-11",
+      "Text": "repeated rework limit reached"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify authority revision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "main movement invalidates exact-SHA assumptions"
+    },
+    {
+      "Id": "S-14",
+      "Text": "initiative contract explicitly says STOP"
+    },
+    {
+      "Id": "P-01",
+      "Text": "Cambio del hash de `config.toml`"
+    },
+    {
+      "Id": "P-02",
+      "Text": "Participante vivo ajeno, proceso no atribuible o más de una delegación abierta"
+    },
+    {
+      "Id": "P-03",
+      "Text": "Delegación fuera del contrato"
+    },
+    {
+      "Id": "P-04",
+      "Text": "Tope de BLOCKED alcanzado"
+    },
+    {
+      "Id": "P-05",
+      "Text": "Invocación distinta del paquete aceptado"
+    },
+    {
+      "Id": "P-06",
+      "Text": "Aviso de límite de uso o de créditos en los eventos o la transcripción de una invocación"
+    },
+    {
+      "Id": "P-07",
+      "Text": "Una invocación excedería el tope de invocaciones"
+    },
+    {
+      "Id": "P-08",
+      "Text": "La sesión operó durante una cesión: la salida de esa invocación es inválida"
+    },
+    {
+      "Id": "C-01",
+      "Text": "origin/main cambia antes de escribir"
+    },
+    {
+      "Id": "C-02",
+      "Text": "ADR 0047 deja de estar libre"
+    },
+    {
+      "Id": "C-03",
+      "Text": "se necesita tocar Plugin/UI"
+    },
+    {
+      "Id": "C-04",
+      "Text": "se necesita AutoCAD"
+    },
+    {
+      "Id": "C-05",
+      "Text": "se necesita ampliar scope"
+    },
+    {
+      "Id": "C-06",
+      "Text": "aparece ambigüedad material del Freeze"
+    },
+    {
+      "Id": "C-07",
+      "Text": "cambia config.toml"
+    },
+    {
+      "Id": "C-08",
+      "Text": "hay conflicto de ownership"
+    },
+    {
+      "Id": "C-09",
+      "Text": "la tarea deriva hacia Host/Bridge"
+    },
+    {
+      "Id": "C-10",
+      "Text": "se intenta introducir métricas de I-63"
+    },
+    {
+      "Id": "C-11",
+      "Text": "se intenta modificar comandos existentes"
+    },
+    {
+      "Id": "C-12",
+      "Text": "presupuesto agotado"
+    }
+  ],
+  "EligibleCells": [
+    {
+      "Cell": "claude-sonnet-5-5|subagent",
+      "Provider": "Anthropic",
+      "Model": "claude-sonnet-5-5",
+      "Transport": "subagent",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "write-commit-push",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "medium"
+      ],
+      "Source": "docs/automation/agent-execution/model-catalog.md (sonda U-04 de I-61, evidencia de I-61 §15.1)",
+      "VerifiedOn": "2026-10-01"
+    }
+  ],
+  "RoutingEnforcement": "required",
+  "CorrectionsAuthorized": true,
+  "IssuedBy": "Coordinator I-64 (reemision tras confirmar P-03 y autorizar la segunda planificacion; orden en el chat de la sesion; transcrita literalmente por la sesion responsable)",
+  "IssuedUtc": "2026-10-02T00:38:28.000Z"
+}
