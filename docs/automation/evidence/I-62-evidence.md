@@ -961,3 +961,51 @@ cuerpo del commit. La CI de este commit se informa al Owner y al Coordinator.
 
 **Validación de esta entrega:** allowlist (superficies propias de I-62), enlaces, columnas de las tablas, hashes de los archivos custodiados, YAML del estado y
 `git diff --check`; resultado en el cuerpo del commit. La CI de este commit se informa al Owner y al Coordinator.
+
+## 28. F0 — Proposal V13 (corrección final del residuo de A62-V11-01)
+
+**CI del commit de custodia** (`4a4ceae712cecd3a0667b3ed3600a042b014e8d4`, §27): corrida **37032389467**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: UI Tests (110922172313), Tests (Domain + Application)
+(110922172694), Build UI (110922172717) y Build Plugin without AutoCAD (110922948088), los cuatro `success`. MEASURED por la sesión. Acredita solo
+`4a4ceae7`.
+
+**Orden recibida:** «I-62 — PROPOSAL V13 / FINAL FIDELITY RESIDUAL», texto pegado sin archivo de origen. 6 335 bytes en UTF-8, SHA-256
+`809df4c33ba5544acd69f8e997808f50c48b0bcf132209aca45128cce29e0525`, fuera del repositorio. Registro recuperable en
+`docs/initiatives/I-62-architect-review-v12-disposition.md`.
+
+**Apertura del tramo** (MEASURED en el primer comando del tramo, a las 16:35Z): `origin/main` = `819955d6…`, sin rebase; rama de I-62 en `4a4ceae7…` =
+remoto, árbol limpio.
+
+**Alcance estrecho:** el diff V12→V13 (141 inserciones y 54 supresiones) toca solo:
+- la cabecera, el mapa de la corrección, las fuentes, los cierres preservados y tres referencias a la versión vigente (§11.4, la tabla de retos y §20.13);
+- §13 (P-25);
+- §20.3.2 (compactación) y §20.3.3 (envoltorio, clausura de dependencias normativas, regla de fidelidad, representación entregada al revisor, GAP-10 y el
+  caso de V11 y V12);
+- §20.5 (una línea sobre P-25) y §20.11 (GAP-10 y GAP-11);
+- B.1, B.8.8 (tres campos e I-S18) y B.10.1;
+- C-42, G.1 y G.2.
+
+Las demás secciones quedan sin cambio, incluida la corrección de A62-V10-03, ya cerrada.
+
+**Revalidación antes del commit** (MEASURED, 16:43Z):
+- `origin/main` = `819955d6…` y la rama de I-62 en `4a4ceae7…`, sin cambios;
+- I-52 `fb6b5648`, sin commits nuevos;
+- I-63 `58e81b80..669d8a39`: 1 commit;
+- I-64 `bc24ebef..58d1140c`: 1 commit;
+- **ningún cruce** con superficies de I-62.
+
+**Identidad del contenido entregado** (blob calculado con `git hash-object` antes del commit; el commit lo da el recibo):
+- `docs/initiatives/I-62-proposal-v13.md` → `949c6403a04570dfa7b5dcd1a3509271819dc696`;
+- `docs/initiatives/I-62-architect-review-v12-disposition.md` → `3751ca998a908a37022126d23a519ab6c6aec77c`;
+- `docs/initiatives/I-62-architect-package-v13.md` → en el recibo del commit (el paquete no lleva su propio blob).
+
+**No se hizo:**
+- invocaciones de modelos, subagentes, Workers, Controllers, Architect, sondas, pilotos, sesiones nuevas, fixtures, remotos, pruebas, tooling ni esquemas en
+  producción;
+- tocar V1-V12, sus paquetes, los registros previos, la evidencia custodiada, el Discovery, el mandato, las normas compartidas ni ninguna superficie ajena;
+- reabrir un hallazgo cerrado, decidir OD-6 ni declarar AGREED o Freeze.
+
+Las trazas de V13 son **análisis del diseño**, no ensayos.
+
+**Validación de esta entrega:** allowlist, enlaces, columnas de las tablas, diff V12→V13 revisado, YAML del estado y `git diff --check`; resultado en el
+cuerpo del commit. La CI de este commit se informa al Owner y al Coordinator.
