@@ -3,23 +3,25 @@ automation_state:
   initiative: I-62
   branch: architecture/portabilidad-coordinador-principal
   claim_id: 5b661a17-8c18-4183-8554-3866059cba2b
-  current_phase: F1
-  state: review-ready
+  current_phase: F2
+  state: implementing
   gate: none
   attempts: 0
-  next_action: el Coordinator revisa la entrega de F1 (ADR-0048 propuesto, plano (b) inactivo, corrección de PROMPT_TEMPLATES §2, C-01..C-04 en evidence §34) con su CI exacta y decide C-01..C-04 y el GATE PASS de F1; F2 no se abre sin su orden.
-  last_evidence_commit: b64a3b640c7ee3bd77636e7a3218ae0ebac2dd43
+  next_action: custodiar la CI y el Core Full del SHA exacto del commit de F2, publicar el paquete de gate de F2 (C-05..C-10) y la preparación de F3, F4, F6 y F7 ordenada en decisions §33; sin implementar F3.
+  last_evidence_commit: 12660ea76f224694ea7fce1f13b122ffb9d9ade5
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-portabilidad-coordinador-principal
   g0_gate_pass_by_coordinator: 85ae4324988ac7564719664f8f05b3fa9c6cafbe (C62-G0-02; CI 36889478597 push success; decisions §7)
-  f0_scope: Discovery (C62-F0-01..07); diseño Proposal V1 a V8 y V9 (requisito R62-AUTO-01..20 del Coordinator), sin implementación (decisions §§10-18); invocación acotada del Architect de V9 autorizada por el Owner (decisions §19); Proposal V10 por disposición del Owner y del Coordinator (decisions §20); revisión formal limpia de V10 por invocación acotada del Owner (decisions §21); Proposal V11 por disposición del Owner y del Coordinator (decisions §22); revisión formal limpia de V11 con fidelidad probada (decisions §23); Proposal V12, corrección estrecha (decisions §24); revisión formal limpia de V12 (decisions §25); Proposal V13, corrección final del residuo de A62-V11-01 (decisions §26); revisión formal final de V13 (decisions §27); Proposal V14, grafo normativo canónico y acotado (decisions §28); revisión formal final de V14 (decisions §29); OD-6 = alternativa 1 por decisión del Owner (decisions §30); AGREED del Coordinator y Consensus Freeze (decisions §31); GATE PASS de F0 y apertura de F1 por el Coordinator (decisions §32)
+  f0_scope: Discovery (C62-F0-01..07); diseño Proposal V1 a V8 y V9 (requisito R62-AUTO-01..20 del Coordinator), sin implementación (decisions §§10-18); invocación acotada del Architect de V9 autorizada por el Owner (decisions §19); Proposal V10 por disposición del Owner y del Coordinator (decisions §20); revisión formal limpia de V10 por invocación acotada del Owner (decisions §21); Proposal V11 por disposición del Owner y del Coordinator (decisions §22); revisión formal limpia de V11 con fidelidad probada (decisions §23); Proposal V12, corrección estrecha (decisions §24); revisión formal limpia de V12 (decisions §25); Proposal V13, corrección final del residuo de A62-V11-01 (decisions §26); revisión formal final de V13 (decisions §27); Proposal V14, grafo normativo canónico y acotado (decisions §28); revisión formal final de V14 (decisions §29); OD-6 = alternativa 1 por decisión del Owner (decisions §30); AGREED del Coordinator y Consensus Freeze (decisions §31); GATE PASS de F0 y apertura de F1 por el Coordinator (decisions §32); GATE PASS de F1 y apertura de F2 (decisions §33)
   f0_discovery: docs/initiatives/I-62-discovery.md (R1 aceptada como base de diseño; C62-F0-08)
   archetype: NEW ARCHITECTURE confirmado por el Coordinator para el diseño (C62-F0-09); Architect = V6 y V7 CHANGES REQUIRED; V8 no enviada; V9 BLOCKED — OWNER DECISION, no acreditada como revisión formal limpia; A62-V9-01..06 ACCEPTED REQUIRED y corregidos en V10 (docs/initiatives/I-62-architect-review-v9-disposition.md); V10 CHANGES REQUIRED, revisión válida con excepción por hallazgo (A62-V10-02 no aceptado; docs/initiatives/I-62-architect-review-v10-disposition.md); V11 CHANGES REQUIRED, acreditada (A62-V10-03 y A62-V11-01; docs/initiatives/I-62-architect-review-v11-disposition.md); V12 CHANGES REQUIRED (A62-V10-03 CLOSED; residuo de A62-V11-01 ACCEPTED REQUIRED; revisión de V11 acreditada con su registro de evidencia corregido; docs/initiatives/I-62-architect-review-v12-disposition.md); V13 CHANGES REQUIRED (residuo final de A62-V11-01 ACCEPTED REQUIRED; revisión de V13 válida; docs/initiatives/I-62-architect-review-v13-disposition.md); V14 BLOCKED — OWNER DECISION solo por OD-6, con cero REQUIRED y A62-V11-01 CLOSED (docs/initiatives/I-62-architect-review-v14.md); lista para el Consensus Freeze tras OD-6 y el acuerdo del Coordinator
   f0_proposal: docs/initiatives/I-62-proposal-v14.md, CONGELADA por docs/initiatives/I-62-consensus-freeze.md (commit 4c617e82, blob 34ad80ea; paquete docs/initiatives/I-62-architect-package-v14.md; OD-6 = alternativa 1; el texto de V14 no cambia)
   f0_owner_pending: ninguno para el Freeze; OD-6 decidida = alternativa 1 (decisions §30); OD-1..OD-5 y OD-7 bloquean en su frontera real (Proposal V14 §18)
   f0_status: COMPLETE (GATE PASS del Coordinator al abrir F1, decisions §32); Freeze sin cambios (FREEZE_SHA b64a3b64, registro docs/initiatives/I-62-consensus-freeze.md)
-  f1_status: IN PROGRESS; una entrega en revisión del Coordinator, sin GATE PASS (decisions §32; evidence §34)
+  f1_status: GATE PASS / COMPLETE por el Coordinator sobre 12660ea7 (C-01..C-04 PASS; decisions §33)
   f1_scope: ADR-0048 propuesto; plano (b) inactivo en docs/AUTOMATION_PLAN.md (§16.1, 16.14-16.17) y docs/automation/agent-execution/README.md §12; corrección factual de PROMPT_TEMPLATES §2; guardas C-01 y C-03; MC de C-04
-  implementation_authorization: solo F1; F2 y siguientes = NO; I-61 sigue siendo el protocolo activo hasta la frontera efectiva de I-62
+  implementation_authorization: solo F2; F3 y siguientes = NO salvo una decisión posterior del Coordinator; I-61 sigue siendo el protocolo activo hasta la frontera efectiva de I-62
+  f2_status: IN PROGRESS; implementación publicada, paquete de gate pendiente (decisions §33; evidence §35)
+  f2_scope: AUTOMATION_PLAN 16.18-16.19; adapters/ (5 descriptores); preflight.v1, relay-record.v2, controller-verification.v2 y 5 esquemas de hechos; README §13; routing §8; guardas C-05, C-09, C-10 y C-19; MC C-06, C-07, C-08 y C-10

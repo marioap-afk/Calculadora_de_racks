@@ -1,0 +1,142 @@
+{
+  "Schema": "rackcad-preflight/v1",
+  "PreflightId": "P20261002T224500Z-f204",
+  "UnitId": "I-62",
+  "Role": "WORKER",
+  "Action": "IMPLEMENT",
+  "ProtocolSet": "rackcad-protocol/I62",
+  "Profile": {
+    "ProfileId": "ROUTINE_IMPLEMENTATION",
+    "RoutingBlob": "9dd94dfe6b65bee542d7184cbd9b0dfb5f371a1e"
+  },
+  "Host": {
+    "HostLabelHash": "63077eb13294b21695ab1d1c013de751a805000013ae0eaf238f5dc90fc51174",
+    "HostInstanceHash": "dc8562f9b88f24dc35dbb1b17114aa07abebc8d78f048ab42d0d377d9d44429a",
+    "HostInstanceState": "OBSERVED",
+    "Os": "Microsoft Windows NT 10.0.26200.0"
+  },
+  "ObservedUtc": "2026-10-02T22:45:00Z",
+  "Actor": {
+    "AdapterId": "claude-subagent",
+    "InstanceId": "NOT_STARTED",
+    "InstanceIdSource": "candidata sin sesión",
+    "Assurance": "NONE"
+  },
+  "Session": {
+    "AdapterId": "claude-subagent",
+    "SessionId": "local_f00c654e-0079-486a-99fc-575ebe82ca43",
+    "Assurance": "RUNTIME_OBSERVED"
+  },
+  "Adapter": {
+    "AdapterId": "claude-subagent",
+    "AdapterVersion": "UNKNOWN",
+    "BinaryPathHash": null,
+    "DescriptorRef": {
+      "Path": "adapters/claude-subagent.md",
+      "Blob": "e10926c048321227fa53fe839e01f113fb9adece"
+    }
+  },
+  "AdapterFacts": {
+    "SchemaRef": {
+      "SchemaId": "rackcad-adapter-claude-subagent-facts/v1",
+      "Path": "schemas/adapters/claude-subagent.facts.v1.schema.json",
+      "Blob": "3706be159871592e0c7e586fbaed3dcd3151b7a4"
+    },
+    "Facts": {
+      "SchemaId": "rackcad-adapter-claude-subagent-facts/v1",
+      "AuthState": "AUTHENTICATED",
+      "ParentSessionState": "OBSERVED",
+      "TranscriptSource": "NOT_STARTED",
+      "CallTimeoutMinutes": 60,
+      "CompletionNotified": "NOT_STARTED"
+    }
+  },
+  "Fingerprint": {
+    "Kind": "UNVERIFIED",
+    "Sha256": null,
+    "KeyNames": [],
+    "AcceptanceDecisionRef": null
+  },
+  "Requirements": [
+    {
+      "RequirementId": "ROUTINE_IMPLEMENTATION.effort",
+      "Mandatory": true,
+      "Required": "Routine",
+      "Observation": {
+        "State": "NOT_OBSERVED",
+        "Value": null,
+        "Source": null,
+        "Assurance": "NONE",
+        "ObservedUtc": null
+      },
+      "Status": "UNKNOWN",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "ROUTINE_IMPLEMENTATION.level",
+      "Mandatory": true,
+      "Required": "Eficiente",
+      "Observation": {
+        "State": "NOT_OBSERVED",
+        "Value": null,
+        "Source": null,
+        "Assurance": "NONE",
+        "ObservedUtc": null
+      },
+      "Status": "UNKNOWN",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "ROUTINE_IMPLEMENTATION.tool-use",
+      "Mandatory": true,
+      "Required": "measured",
+      "Observation": {
+        "State": "NOT_OBSERVED",
+        "Value": null,
+        "Source": null,
+        "Assurance": "NONE",
+        "ObservedUtc": null
+      },
+      "Status": "UNKNOWN",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "ROUTINE_IMPLEMENTATION.write-commit-push",
+      "Mandatory": true,
+      "Required": "measured",
+      "Observation": {
+        "State": "NOT_OBSERVED",
+        "Value": null,
+        "Source": null,
+        "Assurance": "NONE",
+        "ObservedUtc": null
+      },
+      "Status": "UNKNOWN",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    }
+  ],
+  "ConfigurationStatus": "UNKNOWN",
+  "Causes": [
+    "ROUTINE_IMPLEMENTATION.effort",
+    "ROUTINE_IMPLEMENTATION.level",
+    "ROUTINE_IMPLEMENTATION.tool-use",
+    "ROUTINE_IMPLEMENTATION.write-commit-push"
+  ],
+  "Disposition": "NOT_ELIGIBLE",
+  "StopConditions": [
+    "P-10"
+  ],
+  "Invalidators": {
+    "HostInstanceHash": "dc8562f9b88f24dc35dbb1b17114aa07abebc8d78f048ab42d0d377d9d44429a",
+    "AdapterVersion": "UNKNOWN",
+    "BinaryPathHash": null,
+    "AuthState": "AUTHENTICATED",
+    "FingerprintSha256": "UNKNOWN",
+    "CatalogEntryBlob": "166d978d114e635bbef67e295c2ec1da73af6d1f",
+    "RoutingBlob": "9dd94dfe6b65bee542d7184cbd9b0dfb5f371a1e"
+  }
+}

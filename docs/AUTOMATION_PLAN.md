@@ -794,3 +794,51 @@ Los contratos y las reglas de las partes I62 son neutrales: no contienen texto d
 el formato de prompt de un runtime. El adapter de cada runtime renderiza la invocación concreta (CLI o sesión) a partir del contrato neutral: es la
 operación «renderizar» de su contrato (Proposal V14 §7). El prompt renderizado es representación, nunca autoridad. Para las unidades I62, proveedores,
 ejecutables, modelos y recetas viven en los descriptores de adapter y en el catálogo, no en el núcleo.
+
+### 16.18 Observación de capacidad y comprobaciones de relevo (I62)
+
+Se separan dos objetos:
+
+| Objeto | Qué observa | Invalidadores pertinentes | Quién y cuándo |
+|---|---|---|---|
+| **Observación de capacidad** (`rackcad-preflight/v1`) | un runtime candidato para un rol y una acción: localización y versión del ejecutable, autenticación (sin credenciales), introspección y nivel de garantía, permisos y sandbox, huella de configuración, celda del catálogo, perfil y requisitos | cambio de **instancia de host**, runtime, versión o ruta del binario, estado de autenticación, huella, blob de la entrada de catálogo o versión de `routing.md`. **No** la invalidan el binding (que la consume) ni el SHA de la rama | la sesión, antes del binding y al abrir (Principal) |
+| **Comprobaciones de relevo** (16.4, sin cambio de semántica) | Git (`HEAD`, remoto, `origin/main`, árbol limpio, operaciones en curso), procesos, **estado de delegación derivado** (Proposal V14 B.8.2: como máximo una delegación abierta; ninguna aceptación nueva si es desconocido) y huella antes y después | se repiten en cada Exit/Entry | la sesión, en cada invocación |
+
+Una CLI encontrada o un esquema válido no acreditan una invocación. Los esperados de cualquier control del host son **lo observado en el momento del
+ensayo**, no una foto anterior.
+
+**Registro.** La observación de capacidad se registra en `rackcad-preflight/v1` (`agent-execution/schemas/preflight.v1.schema.json`), y el relevo y la
+verificación de una unidad I62 en `rackcad-relay-record/v2` y `rackcad-controller-verification/v2` (mismo directorio). Los esquemas `/v1` siguen para las
+unidades I61. Un `HostInstanceState` UNOBSERVED impide heredar una observación de capacidad entre sesiones.
+
+**Validación de los hechos del adapter**, que hace el productor:
+1. fase 1: `Test-Json` del artefacto contra el esquema del núcleo;
+2. fase 2: `Test-Json` de `Facts` contra `SchemaRef.Path`, con el blob comprobado en la `AuthorityRevision`;
+3. `Facts.SchemaId` = `SchemaRef.SchemaId`;
+4. registro de las dos validaciones (versión de PowerShell y resultado); sin él, el preflight no se acepta;
+5. contraste independiente: el aceptante compara los hechos que coinciden (estado de autenticación, versión del binario y huella) con los del Exit/Entry
+   de 16.4 tomados en la invocación. Una discrepancia es S-04;
+6. adapter desconocido, esquema ausente, blob distinto, versión incompatible, propiedad inesperada o requisito omitido → P-14.
+
+El procedimiento, las reglas de coherencia del registro y el saneamiento previo a la custodia están en el procedimiento subordinado
+([agent-execution/README](automation/agent-execution/README.md) §13).
+
+### 16.19 Frontera de adapters (I62)
+
+**Contrato del adapter.** Nueve operaciones: 1. describir; 2. observar; 3. renderizar; 4. invocar; 5. observar el resultado; 6. cancelar; 7. confirmar la
+terminación; 8. clasificar procesos; 9. declarar la huella.
+
+**Descriptor.** Cada adapter tiene un descriptor `agent-execution/adapters/<AdapterId>.md`, cuya ruta se deriva del id por patrón fijo, y un esquema de hechos
+estricto `agent-execution/schemas/adapters/<AdapterId>.facts.v<n>.schema.json`, derivado del id y de la versión que declara el descriptor, sin URLs ni
+descargas. El descriptor declara por operación DISPONIBLE, NO APLICA o UNVERIFIED. Una operación UNVERIFIED que el rol necesita hace que la celda no sea
+elegible para ese rol. Una sesión existente no acredita por sí misma invocación, cancelación ni terminación. `Facts` es el **único punto abierto** del
+esquema del núcleo, y su frontera estricta es el esquema del adapter: un adapter nuevo se añade con su descriptor y su esquema, sin tocar el núcleo.
+
+**Huella.** «Ninguna» solo con la demostración del descriptor y la aceptación registrada del Coordinator (para los adapters de I-62, en su gate F2). Un
+adapter cuya huella es un archivo de configuración la declara con el SHA-256 del archivo y los nombres de sus secciones y claves, sin valores; el archivo
+lo nombra su descriptor. P-01 se conserva, y P-11 lo generaliza a toda huella declarada.
+
+| Id | Condición | Comportamiento |
+|---|---|---|
+| P-11 | huella declarada cambiada durante una cesión | STOP (igual que P-01) |
+| P-14 | adapter desconocido, esquema ausente, versión incompatible o hechos inválidos | no elegible |

@@ -1339,3 +1339,111 @@ SHA-256 de los archivos de C-04 (LF, como en el repositorio): `c04-design-data.j
 - declarar el GATE PASS de F1.
 
 La CI del commit de esta entrega se informa al Owner y al Coordinator.
+
+## 35. F2 — Observación de capacidad, adapters y esquemas (orden del Coordinator)
+
+**CI del commit de F1** (`12660ea76f224694ea7fce1f13b122ffb9d9ade5`, §34): corrida **37071797018**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: Tests (Domain + Application) (111052715369), Build UI
+(111052715353), UI Tests (111052715243) y Build Plugin without AutoCAD (111053262137), los cuatro `success`. **Core Full del SHA exacto** con el árbol
+limpio: 12403/12403 (22:19:28Z, TRX SHA-256 `088080a3…`). MEASURED por la sesión.
+
+**Orden recibida:** «I-62 — MAXIMUM AUTONOMOUS PROGRESS WHILE OWNER IS AWAY», texto pegado sin archivo de origen. Cuerpo sin las etiquetas de pegado:
+13 947 bytes en UTF-8, SHA-256 `03b72b6388d44119aaa00c66c669b1b2d56bf7416abeaa5fc9b775da97ae89b0`. Resumen fiel en las decisiones, §33.
+
+### 35.1 DC-07 antes de escribir
+
+MEASURED tras `git fetch --prune` (22:37Z). `origin/main` = `819955d6…`, sin cambios. Ramas activas: I-52 `fb6b5648` (merge-base `95690c28`), I-63
+`138bc3d4` (avanzó desde `eb58a476` con su G3-T2) e I-64 `39b45f36`. Ninguna toca `docs/automation/agent-execution/`, `docs/AUTOMATION_PLAN.md` ni las clases
+de prueba de los protocolos; I-52 solo toca su ADR 0036 y el índice ADR, que F2 no toca. **Sin solapamiento.** El cuerpo del commit repite la
+comprobación antes del push.
+
+### 35.2 Materialización (plano b, inactivo hasta `I62_EFFECTIVE_SHA`)
+
+| Cláusula congelada (V14) | Destino |
+|---|---|
+| §6 (dos objetos, invalidadores); B.3 (validación en dos fases, registro, contraste, P-14); B.2 (`HostInstanceState`) | AUTOMATION_PLAN 16.18 |
+| §7 (contrato de nueve operaciones, descriptor, `Facts` única frontera abierta, huella); §13 (P-11, P-14) | AUTOMATION_PLAN 16.19 |
+| §7 (tabla por adapter); §10 (fuentes de introspección); §9.1 (terminación) | `agent-execution/adapters/<id>.md` × 5 |
+| B.4 | `schemas/preflight.v1.schema.json` |
+| B.7 sobre `/v1` (+ B.8.2, B.8.7, B.2) | `schemas/relay-record.v2.schema.json` |
+| B.7 sobre `/v1` (+ E.3.1 paso 5) | `schemas/controller-verification.v2.schema.json` |
+| B.3 (esquema estricto por adapter) | `schemas/adapters/<id>.facts.v1.schema.json` × 5 |
+| §6, B.3, B.4; C-07, C-08, C-10 | README §13 (producción, coherencia C1-C8, invalidación, contraste, saneamiento) |
+| B.2 (`RequirementId`: lista fija por perfil y acción en routing.md) | routing §8 |
+
+**Elecciones de implementación** (IMPLEMENTATION_CHOICE; preservan el contrato observable):
+1. Esquemas nuevos con nombre versionado `*.v<n>.schema.json`, como el patrón de B.2 para los hechos. Los cinco `/v1` no cambian (C-19).
+2. Sin `$ref`, `$defs`, `oneOf` ni condicionales, para que el oráculo de estrictez recorra todo. Las reglas entre campos van en README §13.2 (C1-C8),
+   como hizo I-61 con la verificación (README §8).
+3. Huella como un solo objeto neutral, con `Kind` CONFIG_FILE, NONE o UNVERIFIED: el archivo lo nombra el descriptor, no el núcleo.
+   `AcceptanceDecisionRef` = `{Path, CommitSha, Blob}`.
+4. `Action` = `LOCAL_EVIDENCE` para la «evidencia local» de §4.1; las demás acciones son las de B.9.
+5. Referencias: `DescriptorRef` = `{Path, Blob}`; `SchemaRef.Path` relativo a `agent-execution/`, en la forma literal de B.2.
+6. Valores:
+   - `BinaryPathHash` es nullable (no aplica) para sesiones y subagentes;
+   - `CatalogEntryBlob` = blob de `model-catalog.md`, la opción conservadora (cualquier cambio del catálogo invalida).
+7. `relay-record/v2`:
+   - `FingerprintChanged` sustituye a `ConfigChanged`;
+   - `Participant.Observation[]` = `{Name, Requested, State, Value, Source, SourceSha256, Assurance, ObservedUtc}`;
+   - `ReadAudit.Coverage` = RECORDED, PARTIAL, EMPTY o UNAVAILABLE, con el vocabulario de D.6;
+   - SHA-256 en minúsculas también en los campos conservados (B.1).
+8. `RebaseMap` de `relay-record/v2`: B.7 añade `StateFields` y `CiRuns`, y B.8.7 dice que el `RebaseMap` del diario lleva «los mismos campos» que el
+   mapa durable. Se materializa la **unión** (`BranchBeforeSha`, `BranchAfterSha`, `Unmapped`, `Commits[].PatchId`). Es una reconciliación de dos cláusulas
+   coherentes, no un conflicto.
+9. `controller-verification/v2`:
+   - `Verifier.Role` fijo en EXECUTION_CONTROLLER;
+   - cada entrada de `AuthorityResolution[]` lleva `{Path, Section, Class, Mode (NORMAL | COMPAT | COMPUESTA | ENTRY), RevisionSha, Parts[], EffectiveSha,
+     ClauseMapBlob, UnitProtocol}`: el registro del paso 5 de E.3.1, por entrada.
+10. routing §8: los requisitos de los perfiles de rol se derivan de §1 y §3 (effort, nivel y capacidades mínimas). El nivel requerido es el primero que
+    §3 lista para ese effort.
+11. Neutralidad (16.17): la fila P-11 de §13 dice «STOP (P-01 para Codex, igual)», y en 16.19 se redacta «STOP (igual que P-01)», sin cambio de
+    significado. El nombre del archivo de configuración vive en el descriptor de `codex-cli`. Las partes I62 de AUTOMATION_PLAN no contienen nombres de
+    proveedor ni de archivos de un runtime (barrido MEASURED).
+12. Descriptores: solo estados demostrados.
+    - `codex-cli` DISPONIBLE por la evidencia medida de I-61 y de las revisiones de I-62; versión, autenticación y registro de sesión solo invocando.
+    - `claude-desktop-session` operación 2 DISPONIBLE, medida en F2 con `get_session("self")`.
+    - Las demás huellas, UNVERIFIED (V14 §7, columna 9).
+13. C-01: el barrido de enums se limita al núcleo; los esquemas de hechos son la frontera del adapter (B.3) y pueden nombrar su runtime.
+
+**Huellas para aceptación del Coordinator en F2** (V14 §7): **ninguna**. Ningún adapter declara «ninguna». `codex-cli` declara CONFIG_FILE; los otros
+cuatro, UNVERIFIED.
+
+### 35.3 C-05..C-10 y C-19
+
+| Id | Clase | Evidencia | Resultado de la sesión |
+|---|---|---|---|
+| C-05 | (i) Core RG + mutation | `I62_C05_CoreSchemasAreStrictExceptFactsAndUseExactHashPatterns`; `I62_C05_CoreSchemaEnumsCarryNoProviderMark`; `I62_C05_AdapterFactsRequiresAStrictSchemaRefAndFactsIsTheOnlyOpenObject`. Mutaciones detectadas (`I62_C05_TheCoreOraclesDetect…`): `codex-cli` en un enum, un objeto anidado abierto, `Fingerprint` abierto, un patrón de SHA debilitado, `SchemaRef` fuera de `required` y `Facts` cerrado | PASS en local |
+| C-06 | (ii) MC (+ OV-I62-02) | `I-62-F2/preflights/`: siete `rackcad-preflight/v1` para los cinco adapters (Principal × RESUME_DECISION, CUSTODY y LOCAL_EVIDENCE), con fase 1, fase 2 y C1-C8 en VALID (`*.validation.json`, PowerShell 7.6.6). **Estado observado en el momento:** `claude-desktop-session`, MATCH / ELIGIBLE en las tres acciones (autoverificación real de esta sesión); `claude-subagent`, UNKNOWN / NOT_ELIGIBLE (P-10; candidata sin lanzar); `claude-cli`, UNKNOWN / NOT_ELIGIBLE (no está en el `PATH`; OD-3); `codex-cli`, UNKNOWN / NOT_ELIGIBLE (sin invocar: OD-2); `codex-desktop-session`, UNKNOWN / NOT_ELIGIBLE | PASS (MC); OV-I62-02 pendiente del Owner |
+| C-07 | (ii) MC | `f2-mc-result.json`, C-07. Sobre el preflight MATCH del Principal: versión, huella, instancia del host o blob de routing cambiados → requisitos UNKNOWN; un binding hipotético nuevo o la rama avanzada → sin invalidación | PASS |
+| C-08 | (ii) MC | En una copia temporal del protocolo: (a) `test-null` con `Facts` no vacío, VALID, con los esquemas del núcleo sin cambios (hash antes y después); (b) propiedad inesperada → fase 2 → P-14; (c) id desconocido → C1/C2 → P-14; (d) versión incompatible → C2 → P-14; (e) huella NONE sin aceptación → C4 → P-14; (f) contraste con un Exit/Entry discrepante → S-04, y coincidente → sin discrepancia. Un `relay-record/v2` y una `controller-verification/v2` sintéticos validan con `Test-Json` | PASS |
+| C-09 | (i) Core RG + mutation | `I62_C09_EachFrozenAdapterHasADescriptorWithTheNineOperationsAndAStrictFactsSchema`; mutaciones (operación omitida, estado inválido, versión del esquema rota) detectadas | PASS en local |
+| C-10 | (ii) MC + (i) guarda | MC: 10 de 10 valores sensibles **ficticios** redactados (SK, BEARER, PEM, URLCRED, GH, AWS, JWT, SLACK, GAPI, KV, nombres de clave con rutas), dos rechazos de custodia fuera del texto libre y un control benigno sin cambios. Guarda: `I62_C10_NoI62SchemaDeclaresACredentialField` + mutación | PASS |
+| C-19 | (i) Core G | `I62_C19_TheFiveI61SchemasAndTheI61GuardClassKeepTheirBlobs` (blobs fijados); las 17 pruebas de I-61 pasan sin cambios | PASS en local |
+
+### 35.4 Hechos del host y frontera de OD-2 (MEASURED, sin ejecutar ningún runtime bloqueado)
+
+- **`~/.codex/config.toml`:** SHA-256 `155933b3…` (`LastWriteTimeUtc` 21:34:25Z), igual a la línea base que el Owner aceptó **para I-63** a las 21:42Z tras
+  actualizar y reiniciar la app (evidencia de I-63 §45, rama de I-63).
+  - Las revisiones de I-62 vieron `40c27b57…` hasta las ~18:45Z.
+  - El Discovery registró `37DD3559…` frente a `42E15A03…` observado.
+  - 103 nombres de secciones y claves; 22 saneados como `<redactado>` (rutas de proyectos), como en I-61.
+- **Binarios de la CLI:** `bin/a51e250fa15c740a`, SHA-256 `fcd5eafe…` (la ruta verificada; `codex-cli 0.159.2` en I-61, I-62 e I-63), y `bin/be3fd7e5c1969ff6`,
+  SHA-256 `1722907a…` (instalado a las 15:39Z por la actualización de la app; `0.159.0-alpha.12.1` según I-63). En F2 **no se ejecutó** ningún binario.
+- **Host:** `HostLabelHash` `63077eb1…`; `HostInstanceHash` `dc8562f9…` (`MachineGuid` disponible: la verificación de B.2 en F2 es positiva).
+- **Sesión del Principal:** `get_session("self")` dio `claude-opus-5-5` y `xhigh`, que el catálogo traduce a `Long-horizon` y nivel Frontera.
+
+### 35.5 Pruebas y validación (antes del commit)
+
+- **RED** (22:42:17Z), con las guardas de F2 escritas y sin materializar: 16 seleccionadas, **8 fallidas** (artefactos de F2 ausentes) y 8 superadas
+  (las 7 de F1 y C-19, que es G y no RG). TRX `32fe9275…`.
+- **GREEN focal** (22:47:58Z), clases I62 + I61: **33/33**. TRX `f104082e…`.
+- **Core Full del árbol:** en el cuerpo del commit.
+- `Test-Json` de los ocho esquemas nuevos, como JSON válido y como esquemas que validan los registros de C-06 y C-08.
+
+**No se hizo:**
+- F3: binding, `binding/v1`, contratos `/v2` de gate y delegación, `role-invocation`, `input-closure`, `input-fidelity`, resultados por rol, B.11,
+  A1'-A8' y las 14 comprobaciones;
+- F4;
+- invocar `codex-cli` o `claude-cli`, autenticar, instalar o cambiar configuración;
+- leer credenciales o valores de configuración;
+- declarar el GATE PASS de F2.

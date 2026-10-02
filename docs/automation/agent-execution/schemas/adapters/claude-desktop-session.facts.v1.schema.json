@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rackcad-adapter-claude-desktop-session-facts/v1",
+  "description": "Hechos de la sesión de escritorio del Principal, leídos de los metadatos de sesión de la app (get_session). Esquema estricto del adapter (Proposal V14 Anexo B.3): define sus campos propios; lo valida la fase 2. Subordinado: no crea requisitos de evidencia, estados, gates, reglas Git ni decisiones del Owner. Inactivo hasta I62_EFFECTIVE_SHA (AUTOMATION_PLAN 16.14).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "SchemaId": {
+      "type": "string",
+      "enum": [
+        "rackcad-adapter-claude-desktop-session-facts/v1"
+      ]
+    },
+    "AuthState": {
+      "type": "string",
+      "enum": [
+        "AUTHENTICATED",
+        "NOT_AUTHENTICATED",
+        "NOT_APPLICABLE",
+        "UNKNOWN"
+      ]
+    },
+    "MetadataSource": {
+      "type": "string",
+      "enum": [
+        "get_session",
+        "UNAVAILABLE"
+      ]
+    },
+    "ReportedModel": {
+      "type": "object",
+      "description": "Modelo que declara la configuración del cliente; no es el backend.",
+      "additionalProperties": false,
+      "properties": {
+        "State": {
+          "type": "string",
+          "enum": [
+            "OBSERVED",
+            "NOT_OBSERVED"
+          ]
+        },
+        "Value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "State",
+        "Value"
+      ]
+    },
+    "ReportedEffort": {
+      "type": "object",
+      "description": "Effort que declara la configuración del cliente.",
+      "additionalProperties": false,
+      "properties": {
+        "State": {
+          "type": "string",
+          "enum": [
+            "OBSERVED",
+            "NOT_OBSERVED"
+          ]
+        },
+        "Value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "State",
+        "Value"
+      ]
+    },
+    "IsRunning": {
+      "type": "string",
+      "enum": [
+        "TRUE",
+        "FALSE",
+        "UNKNOWN"
+      ],
+      "description": "Visto por la propia sesión no acredita la terminación (§9.1)."
+    },
+    "PermissionMode": {
+      "type": "object",
+      "description": "Modo de permisos que informa la app.",
+      "additionalProperties": false,
+      "properties": {
+        "State": {
+          "type": "string",
+          "enum": [
+            "OBSERVED",
+            "NOT_OBSERVED"
+          ]
+        },
+        "Value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "State",
+        "Value"
+      ]
+    }
+  },
+  "required": [
+    "SchemaId",
+    "AuthState",
+    "MetadataSource",
+    "ReportedModel",
+    "ReportedEffort",
+    "IsRunning",
+    "PermissionMode"
+  ]
+}

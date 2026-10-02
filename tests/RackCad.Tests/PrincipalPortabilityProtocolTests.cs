@@ -54,6 +54,41 @@ namespace RackCad.Tests
             "codex", "claude", "anthropic", "openai", "chatgpt", "gpt", "gemini", "google", "copilot", "mistral", "llama", "deepseek",
         };
 
+        // Proposal V14 §17 F2 and Anexo B.1: the core schemas that F2 publishes. The adapter facts schemas under schemas/adapters/ are the provider boundary
+        // (Anexo B.3), not the core.
+        private static readonly string[] F2CoreSchemas = { "preflight.v1.schema.json", "relay-record.v2.schema.json", "controller-verification.v2.schema.json" };
+
+        // Anexo B.3: AdapterFacts.Facts is the only open object of the core.
+        private const string FactsPath = "$.AdapterFacts.Facts";
+
+        // Proposal V14 §7: the five adapters and the nine operations of the adapter contract, in their frozen order.
+        private static readonly string[] Adapters = { "claude-desktop-session", "claude-subagent", "claude-cli", "codex-cli", "codex-desktop-session" };
+
+        private static readonly string[] AdapterOperations =
+        {
+            "describir", "observar", "renderizar", "invocar", "observar el resultado", "cancelar", "confirmar la terminación", "clasificar procesos",
+            "declarar la huella",
+        };
+
+        private static readonly string[] OperationStates = { "DISPONIBLE", "NO APLICA", "UNVERIFIED" };
+
+        // C-10 (i): property names that would carry a credential. KeyNames carries names, never values, and is not one of them.
+        private static readonly string[] CredentialFieldPatterns =
+        {
+            "password", "passwd", "secret", "token", "apikey", "api_key", "credential", "bearer", "cookie", "privatekey", "private_key", "accesskey",
+        };
+
+        // C-19: the five I61 schemas and the I-61 guard class, pinned by their Git blobs (LF, as stored).
+        private static readonly (string Path, string Blob)[] PinnedI61Files =
+        {
+            ("docs/automation/agent-execution/schemas/gate-contract.schema.json", "56ced893586abc4a571d842f631e435342906f6a"),
+            ("docs/automation/agent-execution/schemas/delegation.schema.json", "62c026764a3b917c9b4ffeb6df049247ea613869"),
+            ("docs/automation/agent-execution/schemas/worker-handoff.schema.json", "cc3c9cf76b2247f3312e99bd447554326cc3700a"),
+            ("docs/automation/agent-execution/schemas/controller-verification.schema.json", "72747225daa2a83ba139ec1ffacb57d8943cf0af"),
+            ("docs/automation/agent-execution/schemas/relay-record.schema.json", "2deba19606d058fd82b389687934b0c3dfef8c06"),
+            ("tests/RackCad.Tests/AgentExecutionProtocolTests.cs", "c4af8853b466fa15039fdf0cfda7e4cfda0679ae"),
+        };
+
         // ---------------------------------------------------------------- C-01: roles without provider
 
         [Fact]
@@ -148,6 +183,127 @@ namespace RackCad.Tests
             Assert.NotEqual(FreezeBlob, GitBlobSha1(freezeText.Replace("UNKNOWN nunca → MATCH", "UNKNOWN → MATCH", StringComparison.Ordinal)));
         }
 
+        // ---------------------------------------------------------------- C-05: neutral and strict core schemas
+
+        [Fact]
+        public void I62_C05_CoreSchemasAreStrictExceptFactsAndUseExactHashPatterns()
+        {
+            foreach (var file in F2CoreSchemas)
+            {
+                var schema = CoreSchema(file);
+                Assert.Empty(StrictnessProblems(schema).Select(p => file + ": " + p));
+                Assert.Empty(UnwalkedKeywords(schema).Select(k => file + ": uses " + k));
+                Assert.Empty(HashPatternProblems(schema).Select(p => file + ": " + p));
+            }
+        }
+
+        [Fact]
+        public void I62_C05_CoreSchemaEnumsCarryNoProviderMark()
+        {
+            foreach (var file in F2CoreSchemas)
+            {
+                Assert.Empty(ProviderMarksIn(string.Join("\n", EnumValues(CoreSchema(file)))).Select(m => file + ": " + m));
+            }
+        }
+
+        [Fact]
+        public void I62_C05_AdapterFactsRequiresAStrictSchemaRefAndFactsIsTheOnlyOpenObject()
+        {
+            Assert.Empty(SchemaRefProblems(CoreSchema("preflight.v1.schema.json")));
+        }
+
+        [Fact]
+        public void I62_C05_TheCoreOraclesDetectAMarkAnOpenObjectALooseHashAndAMissingSchemaRef()
+        {
+            var marked = CoreSchema("relay-record.v2.schema.json");
+            ((JsonArray)marked["properties"]!["Participant"]!["properties"]!["Transport"]!["enum"]!).Add("codex-cli");
+            Assert.NotEmpty(ProviderMarksIn(string.Join("\n", EnumValues(marked))));
+
+            var open = CoreSchema("preflight.v1.schema.json");
+            ((JsonObject)open["properties"]!["Host"]!).Remove("additionalProperties");
+            Assert.NotEmpty(StrictnessProblems(open));
+
+            var openFingerprint = CoreSchema("relay-record.v2.schema.json");
+            ((JsonObject)openFingerprint["properties"]!["Exit"]!["properties"]!["Fingerprint"]!)["additionalProperties"] = true;
+            Assert.NotEmpty(StrictnessProblems(openFingerprint));
+
+            var loose = CoreSchema("controller-verification.v2.schema.json");
+            loose["properties"]!["VerifiedSha"]!["pattern"] = "^[0-9a-f]{7,40}$";
+            Assert.NotEmpty(HashPatternProblems(loose));
+
+            var noRef = CoreSchema("preflight.v1.schema.json");
+            var factsRequired = (JsonArray)noRef["properties"]!["AdapterFacts"]!["required"]!;
+            factsRequired.Remove(factsRequired.First(n => (string)n! == "SchemaRef"));
+            Assert.NotEmpty(SchemaRefProblems(noRef));
+
+            var closedFacts = CoreSchema("preflight.v1.schema.json");
+            ((JsonObject)closedFacts["properties"]!["AdapterFacts"]!["properties"]!["Facts"]!)["properties"] = new JsonObject { ["Extra"] = new JsonObject { ["type"] = "string" } };
+            Assert.NotEmpty(SchemaRefProblems(closedFacts));
+        }
+
+        // ---------------------------------------------------------------- C-09: complete descriptors
+
+        [Fact]
+        public void I62_C09_EachFrozenAdapterHasADescriptorWithTheNineOperationsAndAStrictFactsSchema()
+        {
+            Assert.Equal(Adapters.OrderBy(a => a, StringComparer.Ordinal), DescriptorIds().OrderBy(a => a, StringComparer.Ordinal));
+            foreach (var adapter in Adapters)
+            {
+                var descriptor = Read(ProtocolDir + "/adapters/" + adapter + ".md");
+                Assert.Empty(DescriptorProblems(adapter, descriptor).Select(p => adapter + ": " + p));
+                Assert.Empty(FactsSchemaProblems(adapter, descriptor).Select(p => adapter + ": " + p));
+            }
+        }
+
+        [Fact]
+        public void I62_C09_TheDescriptorOracleDetectsAMissingOperationAnInvalidStateAndABrokenFactsSchema()
+        {
+            var adapter = Adapters[3];
+            var descriptor = Read(ProtocolDir + "/adapters/" + adapter + ".md");
+            var lines = descriptor.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n');
+
+            var missing = string.Join("\n", lines.Where(l => !l.StartsWith("| 6 | cancelar |", StringComparison.Ordinal)));
+            Assert.NotEmpty(DescriptorProblems(adapter, missing));
+
+            var invalid = string.Join("\n", lines.Select(l => l.StartsWith("| 9 | declarar la huella |", StringComparison.Ordinal) ? l.Replace("| DISPONIBLE |", "| QUIZÁ |", StringComparison.Ordinal) : l));
+            Assert.NotEmpty(DescriptorProblems(adapter, invalid));
+
+            var unschema = string.Join("\n", lines.Select(l => l.Replace(".facts.v1.schema.json", ".facts.v9.schema.json", StringComparison.Ordinal)));
+            Assert.NotEmpty(FactsSchemaProblems(adapter, unschema));
+        }
+
+        // ---------------------------------------------------------------- C-10 (i): no credential field
+
+        [Fact]
+        public void I62_C10_NoI62SchemaDeclaresACredentialField()
+        {
+            var schemas = I62SchemaFiles().ToList();
+            Assert.True(schemas.Count >= F2CoreSchemas.Length + Adapters.Length, "the F2 schemas must exist");
+            foreach (var file in schemas)
+            {
+                Assert.Empty(CredentialFields(JsonNode.Parse(File.ReadAllText(file))).Select(f => Path.GetFileName(file) + ": " + f));
+            }
+        }
+
+        [Fact]
+        public void I62_C10_TheCredentialOracleDetectsAnInjectedField()
+        {
+            var schema = CoreSchema("preflight.v1.schema.json");
+            ((JsonObject)schema["properties"]!["Fingerprint"]!["properties"]!)["ApiKey"] = new JsonObject { ["type"] = "string" };
+            Assert.NotEmpty(CredentialFields(schema));
+        }
+
+        // ---------------------------------------------------------------- C-19: /v1 intact
+
+        [Fact]
+        public void I62_C19_TheFiveI61SchemasAndTheI61GuardClassKeepTheirBlobs()
+        {
+            foreach (var (path, blob) in PinnedI61Files)
+            {
+                Assert.True(GitBlobSha1(Read(path)) == blob, path + " changed: the I61 contracts and their tests are pinned");
+            }
+        }
+
         // ================================================================ oracles
 
         private static List<string>? RoleTable(string plan) => TableAfter(SectionLines(plan, PlanRolesSection), RolesHeader);
@@ -195,12 +351,296 @@ namespace RackCad.Tests
             return marks.ToList();
         }
 
-        private static IEnumerable<string> CoreSchemaFiles()
+        // The I62 core: every schema of the protocol directory except the five I61 ones and the adapter facts schemas (Anexo B.3).
+        private static IEnumerable<string> CoreSchemaFiles() =>
+            I62SchemaFiles().Where(f => !f.Replace('\\', '/').Contains("/schemas/adapters/", StringComparison.Ordinal));
+
+        private static IEnumerable<string> I62SchemaFiles()
         {
             var schemas = Path.Combine(RepoPath(ProtocolDir), "schemas");
             return Directory.GetFiles(schemas, "*.json", SearchOption.AllDirectories)
                 .Where(f => !I61Schemas.Contains(Path.GetRelativePath(schemas, f).Replace('\\', '/'), StringComparer.Ordinal))
                 .OrderBy(f => f, StringComparer.Ordinal);
+        }
+
+        private static JsonNode CoreSchema(string file)
+        {
+            var node = JsonNode.Parse(Read(ProtocolDir + "/schemas/" + file));
+            Assert.NotNull(node);
+            return node!;
+        }
+
+        // Every object is closed (additionalProperties false) and requires every property, except the declared open point AdapterFacts.Facts.
+        private static List<string> StrictnessProblems(JsonNode schema)
+        {
+            var problems = new List<string>();
+            Strictness(schema, "$", problems);
+            return problems;
+        }
+
+        private static void Strictness(JsonNode? node, string path, List<string> problems)
+        {
+            if (node is not JsonObject obj || path == FactsPath)
+            {
+                return;
+            }
+
+            if (TypesOf(obj).Contains("object") || obj["properties"] is JsonObject)
+            {
+                if (obj["additionalProperties"] is not JsonValue additional || !additional.TryGetValue<bool>(out var allowed) || allowed)
+                {
+                    problems.Add(path + ": additionalProperties must be false");
+                }
+
+                var properties = obj["properties"] as JsonObject;
+                var names = properties?.Select(p => p.Key).OrderBy(k => k, StringComparer.Ordinal).ToArray() ?? Array.Empty<string>();
+                var required = (obj["required"] as JsonArray)?.Select(n => (string)n!).OrderBy(k => k, StringComparer.Ordinal).ToArray() ?? Array.Empty<string>();
+                if (!names.SequenceEqual(required))
+                {
+                    problems.Add(path + ": required must list every property");
+                }
+
+                foreach (var property in properties ?? new JsonObject())
+                {
+                    Strictness(property.Value, path + "." + property.Key, problems);
+                }
+            }
+
+            Strictness(obj["items"], path + "[]", problems);
+        }
+
+        private static readonly string[] UnwalkedSchemaKeywords =
+            { "$defs", "definitions", "$ref", "anyOf", "oneOf", "allOf", "not", "if", "then", "else", "prefixItems", "patternProperties" };
+
+        private static List<string> UnwalkedKeywords(JsonNode? node)
+        {
+            var found = new List<string>();
+            if (node is JsonObject obj)
+            {
+                foreach (var (key, child) in obj)
+                {
+                    if (key == "properties" && child is JsonObject properties)
+                    {
+                        found.AddRange(properties.SelectMany(p => UnwalkedKeywords(p.Value)));
+                        continue;
+                    }
+
+                    if (UnwalkedSchemaKeywords.Contains(key, StringComparer.Ordinal))
+                    {
+                        found.Add(key);
+                    }
+
+                    found.AddRange(UnwalkedKeywords(child));
+                }
+            }
+            else if (node is JsonArray array)
+            {
+                found.AddRange(array.SelectMany(UnwalkedKeywords));
+            }
+
+            return found;
+        }
+
+        // Anexo B.1: a Git id (…Sha, …Blob, AuthorityRevision) is exactly 40 lowercase hex; a SHA-256 (…Sha256, …Hash) is 64 lowercase hex,
+        // optionally with explicit literal states such as UNKNOWN.
+        private static List<string> HashPatternProblems(JsonNode schema)
+        {
+            var problems = new List<string>();
+            foreach (var (name, path, node) in NamedProperties(schema, "$"))
+            {
+                var pattern = node["pattern"] is JsonValue value && value.TryGetValue<string>(out var text) ? text : null;
+                if (name.EndsWith("Sha256", StringComparison.Ordinal) || name.EndsWith("Hash", StringComparison.Ordinal))
+                {
+                    if (pattern == null || !pattern.Contains("[0-9a-f]{64}", StringComparison.Ordinal) || pattern.Contains("A-F", StringComparison.Ordinal)
+                        || !pattern.StartsWith("^", StringComparison.Ordinal) || !pattern.EndsWith("$", StringComparison.Ordinal))
+                    {
+                        problems.Add(path + ": a SHA-256 must use 64 lowercase hex");
+                    }
+                }
+                else if (name.EndsWith("Sha", StringComparison.Ordinal) || name.EndsWith("Blob", StringComparison.Ordinal) || name == "AuthorityRevision")
+                {
+                    if (pattern != "^[0-9a-f]{40}$")
+                    {
+                        problems.Add(path + ": a Git id must use exactly ^[0-9a-f]{40}$");
+                    }
+                }
+            }
+
+            return problems;
+        }
+
+        private static IEnumerable<(string Name, string Path, JsonObject Node)> NamedProperties(JsonNode? node, string path)
+        {
+            if (node is not JsonObject obj)
+            {
+                yield break;
+            }
+
+            foreach (var (key, child) in obj["properties"] as JsonObject ?? new JsonObject())
+            {
+                if (child is JsonObject childObject)
+                {
+                    yield return (key, path + "." + key, childObject);
+                    foreach (var nested in NamedProperties(childObject, path + "." + key))
+                    {
+                        yield return nested;
+                    }
+                }
+            }
+
+            foreach (var nested in NamedProperties(obj["items"], path + "[]"))
+            {
+                yield return nested;
+            }
+        }
+
+        // Anexo B.3: AdapterFacts = {SchemaRef (strict), Facts: {"type": "object"}}, both required.
+        private static List<string> SchemaRefProblems(JsonNode preflight)
+        {
+            var problems = new List<string>();
+            var facts = preflight["properties"]?["AdapterFacts"] as JsonObject;
+            if (facts == null)
+            {
+                return new List<string> { "AdapterFacts is missing" };
+            }
+
+            var required = (facts["required"] as JsonArray)?.Select(n => (string)n!).ToList() ?? new List<string>();
+            if (!required.Contains("SchemaRef") || !required.Contains("Facts"))
+            {
+                problems.Add("AdapterFacts must require SchemaRef and Facts");
+            }
+
+            var schemaRef = facts["properties"]?["SchemaRef"] as JsonObject;
+            var refNames = (schemaRef?["properties"] as JsonObject)?.Select(p => p.Key).OrderBy(k => k, StringComparer.Ordinal).ToArray() ?? Array.Empty<string>();
+            if (!refNames.SequenceEqual(new[] { "Blob", "Path", "SchemaId" }) || StrictnessProblems(schemaRef ?? new JsonObject()).Count > 0)
+            {
+                problems.Add("SchemaRef must be the strict object {SchemaId, Path, Blob}");
+            }
+
+            var open = facts["properties"]?["Facts"] as JsonObject;
+            if (open == null || (string?)open["type"] != "object" || open.Any(p => p.Key != "type" && p.Key != "description"))
+            {
+                problems.Add("Facts must be exactly the open object {\"type\": \"object\"}");
+            }
+
+            return problems;
+        }
+
+        private static IEnumerable<string> DescriptorIds() =>
+            Directory.Exists(Path.Combine(RepoPath(ProtocolDir), "adapters"))
+                ? Directory.GetFiles(Path.Combine(RepoPath(ProtocolDir), "adapters"), "*.md").Select(f => Path.GetFileNameWithoutExtension(f))
+                : Enumerable.Empty<string>();
+
+        // A descriptor names its AdapterId and declares the nine operations, in order, each DISPONIBLE, NO APLICA or UNVERIFIED (Proposal V14 §7).
+        private static List<string> DescriptorProblems(string adapter, string descriptor)
+        {
+            var problems = new List<string>();
+            var lines = descriptor.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n').ToList();
+            var id = Regex.Match(descriptor, @"\*\*AdapterId:\*\* `([^`]+)`");
+            if (!id.Success || id.Groups[1].Value != adapter)
+            {
+                problems.Add("the descriptor must declare **AdapterId:** `" + adapter + "`");
+            }
+
+            var table = TableAfter(lines, "| # | Operación | Estado | Evidencia |");
+            var rows = table?.Skip(2).Select(r => r.Trim('|').Split('|').Select(c => c.Trim()).ToArray()).ToList() ?? new List<string[]>();
+            for (var i = 0; i < AdapterOperations.Length; i++)
+            {
+                var row = rows.FirstOrDefault(r => r.Length >= 3 && r[0] == (i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                if (row == null || row[1] != AdapterOperations[i])
+                {
+                    problems.Add("operation " + (i + 1) + " («" + AdapterOperations[i] + "») is missing");
+                }
+                else if (!OperationStates.Contains(row[2], StringComparer.Ordinal))
+                {
+                    problems.Add("operation " + (i + 1) + " has an invalid state «" + row[2] + "»");
+                }
+            }
+
+            if (rows.Count != AdapterOperations.Length)
+            {
+                problems.Add("the operation table must have exactly nine rows");
+            }
+
+            return problems;
+        }
+
+        // The facts schema lives at the path derived from the id and the version the descriptor declares (Anexo B.2), is strict and fixes its SchemaId.
+        private static List<string> FactsSchemaProblems(string adapter, string descriptor)
+        {
+            var refs = Regex.Matches(descriptor, @"schemas/adapters/" + Regex.Escape(adapter) + @"\.facts\.v([0-9]+)\.schema\.json").Select(m => m.Groups[1].Value).Distinct().ToList();
+            if (refs.Count != 1)
+            {
+                return new List<string> { "the descriptor must declare exactly one facts schema version" };
+            }
+
+            var relative = ProtocolDir + "/schemas/adapters/" + adapter + ".facts.v" + refs[0] + ".schema.json";
+            if (!File.Exists(RepoPath(relative)))
+            {
+                return new List<string> { relative + " does not exist" };
+            }
+
+            var schema = JsonNode.Parse(File.ReadAllText(RepoPath(relative)))!;
+            var problems = StrictnessProblems(schema).Select(p => "facts schema: " + p).ToList();
+            problems.AddRange(UnwalkedKeywords(schema).Select(k => "facts schema uses " + k));
+            var schemaId = schema["properties"]?["SchemaId"]?["enum"] as JsonArray;
+            if (schemaId == null || schemaId.Count != 1 || (string?)schemaId[0] != "rackcad-adapter-" + adapter + "-facts/v" + refs[0])
+            {
+                problems.Add("facts schema must fix SchemaId = rackcad-adapter-" + adapter + "-facts/v" + refs[0]);
+            }
+
+            return problems;
+        }
+
+        private static List<string> CredentialFields(JsonNode? node)
+        {
+            var found = new List<string>();
+            if (node is JsonObject obj)
+            {
+                foreach (var (key, child) in obj)
+                {
+                    if (key == "properties" && child is JsonObject properties)
+                    {
+                        foreach (var (name, property) in properties)
+                        {
+                            if (CredentialFieldPatterns.Any(p => name.Contains(p, StringComparison.OrdinalIgnoreCase)))
+                            {
+                                found.Add(name);
+                            }
+
+                            found.AddRange(CredentialFields(property));
+                        }
+
+                        continue;
+                    }
+
+                    found.AddRange(CredentialFields(child));
+                }
+            }
+            else if (node is JsonArray array)
+            {
+                found.AddRange(array.SelectMany(CredentialFields));
+            }
+
+            return found;
+        }
+
+        private static HashSet<string> TypesOf(JsonObject obj)
+        {
+            var types = new HashSet<string>(StringComparer.Ordinal);
+            if (obj["type"] is JsonValue single && single.TryGetValue<string>(out var one))
+            {
+                types.Add(one);
+            }
+            else if (obj["type"] is JsonArray many)
+            {
+                foreach (var value in many)
+                {
+                    types.Add((string)value!);
+                }
+            }
+
+            return types;
         }
 
         private static List<string> EnumValues(JsonNode? node)

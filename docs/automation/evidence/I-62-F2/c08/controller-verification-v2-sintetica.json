@@ -1,0 +1,111 @@
+{
+  "Schema": "rackcad-controller-verification/v2",
+  "TaskId": "T1",
+  "RunId": "R20261002T230000Z-0001",
+  "DelegationRunId": "R20261002T225000Z-0001",
+  "WorkRunId": "R20261002T225500Z-0001",
+  "Attempt": 0,
+  "VerifiedSha": "3333333333333333333333333333333333333333",
+  "Verifier": {
+    "Role": "EXECUTION_CONTROLLER",
+    "BindingRef": {
+      "UnitId": "FX-U1",
+      "Scope": "TASK",
+      "TaskId": "T1",
+      "Role": "EXECUTION_CONTROLLER",
+      "BindingId": "B20261002T230000Z-0001",
+      "Sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "Location": {
+        "Kind": "CUSTODIED",
+        "Path": "docs/automation/evidence/FX-U1-agent/bindings/B20261002T230000Z-0001.json",
+        "CommitSha": "1111111111111111111111111111111111111111",
+        "Blob": "2222222222222222222222222222222222222222"
+      }
+    },
+    "Actor": {
+      "AdapterId": "codex-cli",
+      "InstanceId": "thread-sintetico",
+      "InstanceIdSource": "registro de sesión",
+      "Assurance": "RUNTIME_OBSERVED"
+    }
+  },
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "sintético"
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "sintético"
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "sintético"
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "sintético"
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "sintético"
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "sintético"
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "sintético"
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "sintético"
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "not_applicable",
+      "Evidence": "sintético"
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "not_applicable",
+      "Evidence": "sintético"
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "sintético"
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "sintético"
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "sintético"
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "sintético"
+    }
+  },
+  "AuthorityResolution": [
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "### 16.4 Transporte, relevo, cesión y orden de commits",
+      "Class": "EXTERNAL",
+      "Mode": "NORMAL",
+      "RevisionSha": "4444444444444444444444444444444444444444",
+      "Parts": [],
+      "EffectiveSha": "5555555555555555555555555555555555555555",
+      "ClauseMapBlob": "6666666666666666666666666666666666666666",
+      "UnitProtocol": "rackcad-protocol/I62"
+    }
+  ],
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [],
+  "RecommendedNextAction": "ninguna"
+}
