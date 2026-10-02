@@ -1082,3 +1082,56 @@ Los JSON de procesos solo llevan PID, padre, nombre, fecha y clase. Los TRX, eve
 los registros. Algunos archivos se escribieron con CRLF en el área transitoria: `worker-handoff.json`, los `processes-*.json`,
 `nc4-result.json` y `acceptance-precheck-reasons.json`. Su SHA-256 transitorio difiere del blob, normalizado a LF, y la identidad duradera es
 el blob del commit de custodia.
+
+## 23. F1-T1-MODEL — REWORK aceptado, análisis del Coordinator y `attempts` = 1
+
+Sección nueva; las anteriores no se reescriben. Hechos de la sesión responsable. Sin GATE PASS, F1 PASS ni ADR aceptado.
+
+**Decisión del Coordinator** (orden en el chat de la sesión, 2026-10-02; resumen saneado):
+- Acepta la verificación `R20261002T011239Z-647e` sobre el GREEN fallido `66d34af3`: **Disposition REWORK**, **FailureClass Ci**,
+  ChainRedSha `36c344dc`.
+- **STOP P-07 resuelto.**
+- Nuevo presupuesto:
+
+  | Tipo | Máximo | Consumidas | Restantes |
+  |---|---|---|---|
+  | Planificación | 3 | 2 | 1 |
+  | Trabajo | 4 | 1 | 3 |
+  | Verificación | 4 | 1 | 3 |
+
+  `MaxReworkLoops` sigue en 3.
+- La corrección entra como **attempt = 1**, sin cambio del Freeze, del alcance ni de la semántica de I-61.
+- No se repite nc4: README §10 lo limita a la primera delegación de la cadena.
+
+**Análisis de la corrección** (texto literal del Coordinator):
+- Ubicación: `artifacts/orchestration/I-64/F1-T1-MODEL/0/R20261002T011239Z-647e/analysis.md`, en el directorio de la verificación que lo
+  origina; custodiado en `docs/automation/evidence/I-64-pilot/F1-T1-MODEL/R20261002T011239Z-647e/analysis.md`.
+- 59 líneas, UTF-8 con LF. SHA-256 `b0ddc8de37199ba703efa180b6bf8caab1a2230dc1469d9a53c6159315b98664`, igual al del blob por estar en LF.
+- Contenido:
+  - ROOT CAUSE 1: espacio de nombres de las pruebas frente a `NamespaceFolderGuardTests`;
+  - ROOT CAUSE 2: la guarda de datos authored es demasiado amplia;
+  - alcance de la corrección;
+  - cadena: ChainBaseSha `e0587355`, ChainRedSha `36c344dc` y los 4 ChainRedFiles acreditados;
+  - la instrucción de no fabricar un RED artificial.
+- La delegación de corrección lo cita en `CorrectionOf`: `RunId` `R20261002T011239Z-647e`, `FailureClass` `Ci`, `AnalysisSha256` el de
+  arriba.
+
+**Lectura de la sesión para la planificación** (no vincula; la aceptación formal la decide el Coordinator):
+- La corrección cambia las 4 pruebas de `ChainRedFiles`: espacio de nombres `RackCad.Tests`, clases `Workspace…Tests` y guarda acotada.
+- Con la regla «exige RED» de AUTOMATION_PLAN 16.8, esa entrega exige un RED: el diff `BaseSha..CurrentSha` toca `ChainRedFiles`.
+- 16.8 e I-61 Proposal V9 §12.1 paso 6.1 lo definen como la **corrección desactivada** con todos los cambios de las pruebas de la cadena en el
+  mismo commit, y después un GREEN que no toque RT ∪ ChainRedFiles.
+- No es un RED artificial. Las pruebas corregidas tienen que fallar por aserción del comportamiento congelado con la implementación
+  desactivada, y el RED acreditado `36c344dc` sigue como `ChainRedSha` de la delegación.
+
+**Presupuesto:**
+
+| Tipo | Estado |
+|---|---|
+| Planificación | 2 de 3 |
+| Trabajo | 1 de 4 |
+| Verificación | 1 de 4 |
+| `attempts` | **1** de 3 |
+| Contador de la clase Ci | 1 al lanzar la corrección |
+
+`main` `819955d6`, Freeze `9b43dafb` (blob `dc1924ff`) intacto, `config.toml` sin cambio.
