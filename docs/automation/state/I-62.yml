@@ -4,18 +4,18 @@ automation_state:
   branch: architecture/portabilidad-coordinador-principal
   claim_id: 5b661a17-8c18-4183-8554-3866059cba2b
   current_phase: F0
-  state: review-ready
-  gate: none
+  state: waiting
+  gate: owner-decision
   attempts: 0
-  next_action: UNA revisión formal limpia del Architect de la Proposal V12, autorizada por el Owner o el Coordinator, con el mecanismo de fidelidad ya probado y lecturas acotadas para los archivos grandes, el cierre recalculado, la evidencia de runtime del invocador y la exención acotada de dotnet test si sigue haciendo falta; dispone A62-V10-03 (residuo) y A62-V11-01; OD-6 pendiente; sin implementación.
-  last_evidence_commit: 902c2cbad553f0927982fcd6561c66f96262a311
+  next_action: el Owner y el Coordinator disponen la revisión formal limpia de V12 (CHANGES REQUIRED; A62-V10-03 CLOSED por el Architect; residuo de A62-V11-01 abierto, destinos de referencias cruzadas del PremiseEnvelope) y la corrección de método sobre la evidencia de V11 (auditoría sobre la captura, no sobre lo visible por el modelo); si procede, autorizan una corrección estrecha; OD-6 pendiente; sin implementación.
+  last_evidence_commit: d0947c5d58280f8b0bfe2808dd8b7ff79e9f76bb
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-portabilidad-coordinador-principal
   g0_gate_pass_by_coordinator: 85ae4324988ac7564719664f8f05b3fa9c6cafbe (C62-G0-02; CI 36889478597 push success; decisions §7)
-  f0_scope: Discovery (C62-F0-01..07); diseño Proposal V1 a V8 y V9 (requisito R62-AUTO-01..20 del Coordinator), sin implementación (decisions §§10-18); invocación acotada del Architect de V9 autorizada por el Owner (decisions §19); Proposal V10 por disposición del Owner y del Coordinator (decisions §20); revisión formal limpia de V10 por invocación acotada del Owner (decisions §21); Proposal V11 por disposición del Owner y del Coordinator (decisions §22); revisión formal limpia de V11 con fidelidad probada (decisions §23); Proposal V12, corrección estrecha (decisions §24)
+  f0_scope: Discovery (C62-F0-01..07); diseño Proposal V1 a V8 y V9 (requisito R62-AUTO-01..20 del Coordinator), sin implementación (decisions §§10-18); invocación acotada del Architect de V9 autorizada por el Owner (decisions §19); Proposal V10 por disposición del Owner y del Coordinator (decisions §20); revisión formal limpia de V10 por invocación acotada del Owner (decisions §21); Proposal V11 por disposición del Owner y del Coordinator (decisions §22); revisión formal limpia de V11 con fidelidad probada (decisions §23); Proposal V12, corrección estrecha (decisions §24); revisión formal limpia de V12 (decisions §25)
   f0_discovery: docs/initiatives/I-62-discovery.md (R1 aceptada como base de diseño; C62-F0-08)
-  archetype: NEW ARCHITECTURE confirmado por el Coordinator para el diseño (C62-F0-09); Architect = V6 y V7 CHANGES REQUIRED; V8 no enviada; V9 BLOCKED — OWNER DECISION, no acreditada como revisión formal limpia; A62-V9-01..06 ACCEPTED REQUIRED y corregidos en V10 (docs/initiatives/I-62-architect-review-v9-disposition.md); V10 CHANGES REQUIRED, revisión válida con excepción por hallazgo (A62-V10-02 no aceptado; docs/initiatives/I-62-architect-review-v10-disposition.md); V11 CHANGES REQUIRED, acreditada (A62-V10-03 y A62-V11-01; docs/initiatives/I-62-architect-review-v11-disposition.md); V12 pendiente de una revisión limpia
+  archetype: NEW ARCHITECTURE confirmado por el Coordinator para el diseño (C62-F0-09); Architect = V6 y V7 CHANGES REQUIRED; V8 no enviada; V9 BLOCKED — OWNER DECISION, no acreditada como revisión formal limpia; A62-V9-01..06 ACCEPTED REQUIRED y corregidos en V10 (docs/initiatives/I-62-architect-review-v9-disposition.md); V10 CHANGES REQUIRED, revisión válida con excepción por hallazgo (A62-V10-02 no aceptado; docs/initiatives/I-62-architect-review-v10-disposition.md); V11 CHANGES REQUIRED, acreditada (A62-V10-03 y A62-V11-01; docs/initiatives/I-62-architect-review-v11-disposition.md); V12 CHANGES REQUIRED (A62-V10-03 CLOSED; residuo de A62-V11-01; docs/initiatives/I-62-architect-review-v12.md), pendiente de disposición
   f0_proposal: docs/initiatives/I-62-proposal-v12.md (Frozen = NO; paquete docs/initiatives/I-62-architect-package-v12.md; V11 histórica; corrección estrecha de A62-V10-03 residuo y A62-V11-01)
   f0_owner_pending: OD-6 (predicado de independencia de LIFECYCLE; Proposal V12 §11.4; dos alternativas); sin decisión no hay acuerdo ni Freeze

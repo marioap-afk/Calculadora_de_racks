@@ -900,3 +900,64 @@ Las trazas de V12 son **análisis del diseño**, no ensayos.
 
 **Validación de esta entrega:** allowlist, enlaces, columnas de las tablas, diff V11→V12 revisado, YAML del estado y `git diff --check`; resultado en el
 cuerpo del commit. La CI de este commit se informa al Owner y al Coordinator.
+
+## 27. F0 — Revisión formal limpia del Architect de la Proposal V12 (autorización del Owner y del Coordinator)
+
+**CI de la Proposal V12** (`d0947c5d58280f8b0bfe2808dd8b7ff79e9f76bb`, §26): corrida **37024119231**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: Build UI (110894292229), Tests (Domain + Application)
+(110894292758), UI Tests (110894293118) y Build Plugin without AutoCAD (110895062040), los cuatro `success`. MEASURED por la sesión. Acredita solo
+`d0947c5d`.
+
+**Autorización recibida:** «OWNER / COORDINATOR AUTHORIZATION — FORMAL CLEAN ARCHITECT REVIEW OF I-62 PROPOSAL V12», texto pegado sin archivo de origen.
+6 177 bytes en UTF-8, SHA-256 `deba08bb25684275c89969936642820ac74ab8c0b1d31cb0b26c8595fb8e8796`; va literal dentro de `prompt.md`. La exención de
+`dotnet test` (457 bytes, SHA-256 `0e2bd4d8…`) está transcrita en el README de la corrida, §2.
+
+**Invocación** (MEASURED; detalle en
+[`I-62-architect-v12/R20261002T151854Z-603d/README.md`](I-62-architect-v12/R20261002T151854Z-603d/README.md), con `closure.json`,
+`input-fidelity-preflight.json`, `input-fidelity-postrun.json`, `runtime-evidence.json` y `read-audit.json`):
+- **Antes:**
+  - `codex-cli 0.159.2` (SHA-256 `fcd5eafe…`) y autenticación existente;
+  - `config.toml` con hash `40c27b57…` antes y después;
+  - clon limpio `D:\r62-arch-v12` en `d0947c5d`, sin colisión de escritores;
+  - cierre de 48 insumos canónicos y 9 transitivos, cada uno con su blob y su SHA-256;
+  - **preflight FAITHFUL_NORMALIZED por el mismo camino**, sobre los 61 caracteres no ASCII del corpus. Los cuatro archivos de más de 150 000 bytes se
+    probaron y se leyeron solo por rangos de hasta 400 líneas; el control negativo detecta la pérdida.
+- **Ejecución:** una sola, de 15:27:42Z a 15:45:22Z, salida 0. `gpt-6.1-sol`/`high`/read-only RUNTIME_OBSERVED en los dos `turn_context`, con una
+  compactación a las 15:34:27Z que conservó el prompt completo. Consumo: entrada 3 975 060 tokens (3 633 024 en caché) y salida 26 793.
+- **Después:**
+  - clon limpio, configuración sin cambio y ningún proceso de la corrida vivo;
+  - prompt recibido fiel;
+  - 122 comandos de lectura por las formas acreditadas, todos sobre rutas del cierre, sin archivos grandes leídos enteros, sin lecturas directas en el
+    `pwsh` exterior y sin `dotnet test`.
+- **Fidelidad tras la corrida:** DEGRADED_BOUNDED, sin degradación de caracteres. La captura no se truncó. Lo visible por el modelo se truncó en 4 de 35
+  llamadas `exec`, con tres rangos transitivos nunca vistos. El objeto y el paquete fueron visibles enteros, y ningún envoltorio de premisa queda afectado.
+
+**Resultado:** CHANGES REQUIRED. A62-V10-03 CLOSED; A62-V11-01 sigue abierto como residuo (destinos de referencias cruzadas). Registro:
+[`I-62-architect-review-v12.md`](../../initiatives/I-62-architect-review-v12.md).
+
+**Hechos del transporte medidos en este tramo** (para el triaje; la sesión no cambia la Proposal):
+
+| Id | Hecho (MEASURED) | Efecto |
+|---|---|---|
+| GAP-10 (captura) | con rangos de hasta 400 líneas para los archivos grandes, ninguna salida capturada en `events.jsonl` se truncó | la política de rangos protegió la captura |
+| GAP-10 (lo visible por el modelo) | el revisor lee con la herramienta `exec`, cuyos límites de salida (del script y de cada comando) truncan lo que recibe el modelo aunque la captura esté completa. Pasó en 4 de 35 llamadas, al agrupar varias lecturas en un solo script, y cada vez con marca explícita «…N tokens truncated…». El preflight por `codex sandbox` no pasa por esa capa | la fidelidad tras la corrida debe medirse sobre las salidas de la herramienta en el log de sesión, no solo sobre `aggregated_output`. Una invocación futura puede limitar también la salida agregada de cada llamada |
+| — | las auditorías tras la corrida de V9, V10 y V11 midieron `aggregated_output`. La re-auditoría de V11 con su log de sesión, sin invocación nueva, da 11 de 34 llamadas truncadas y 7 232 líneas pedidas nunca vistas, todas de insumos transitivos o auxiliares; el objeto y el paquete de V11 fueron visibles enteros (`v11-model-visible-reaudit.json`) | corrección de método: la independencia de las premisas de V11 se mantiene. La evidencia de V11 describía el transporte. V9 y V10 no se re-auditan (UNKNOWN). Lo dispone el Owner |
+| — | la compactación conserva en el historial de reemplazo el prompt completo y un resumen cifrado. Las lecturas anteriores solo persisten en ese resumen; tras la compactación se volvieron a ver 420 de las 3 129 líneas de V12 | el efecto de la compactación sobre el razonamiento no es observable; las citas coinciden con el texto canónico |
+
+**Revalidación antes del commit** (MEASURED, 16:09Z):
+- `origin/main` = `819955d6…` y la rama de I-62 en `d0947c5d…`, sin cambios;
+- I-52 `fb6b5648`, sin commits nuevos;
+- I-63 `4a6c2d88..58e81b80`: 3 commits;
+- I-64 `747ead04..bc24ebef`: 1 commit;
+- **ningún cruce** con superficies de I-62.
+
+**No se hizo:**
+- reintentos, una segunda invocación, Workers, Controllers, subagentes, pilotos, autenticación ni cambios de configuración. El preflight usó
+  `codex sandbox`, que no invoca ningún modelo, y la re-auditoría de V11 solo leyó su log de sesión;
+- editar el clon, crear la Proposal V13, ni corregir, disponer, ratificar o rebajar hallazgos;
+- modificar la evidencia custodiada de V11: la corrección vive en la carpeta de esta corrida;
+- decidir OD-6 ni declarar Freeze;
+- tocar V1-V12, sus paquetes, los registros previos, el Discovery, el mandato, las normas compartidas o cualquier superficie ajena.
+
+**Validación de esta entrega:** allowlist (superficies propias de I-62), enlaces, columnas de las tablas, hashes de los archivos custodiados, YAML del estado y
+`git diff --check`; resultado en el cuerpo del commit. La CI de este commit se informa al Owner y al Coordinator.

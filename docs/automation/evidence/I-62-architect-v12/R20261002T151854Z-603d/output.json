@@ -1,0 +1,519 @@
+{
+  "Schema": "rackcad-architect-review-result/v1",
+  "ResultId": "AR20261002T151854Z-603d",
+  "LogicalReviewRequestId": "L20261002T151854Z-603d",
+  "InvocationId": "I20261002T151854Z-603d",
+  "AttemptSeq": 1,
+  "RequestedRole": "ARCHITECT",
+  "Action": "REVIEW_DESIGN",
+  "ReviewedUnit": "I-62",
+  "ReviewedCommit": "d0947c5d58280f8b0bfe2808dd8b7ff79e9f76bb",
+  "ReviewedPath": "docs/initiatives/I-62-proposal-v12.md",
+  "ReviewedBlob": "320cecc9bd1b68112509e510b97c768b6d505ba2",
+  "PackagePath": "docs/initiatives/I-62-architect-package-v12.md",
+  "PackageBlob": "f60873d15f4b62e1313bb03c9136076acbd08012",
+  "ReviewerBinding": "Invocación acotada ARCHITECT / REVIEW_DESIGN autorizada por el Owner y el Coordinator; BindingRef operativo no suministrado.",
+  "ReviewerDeclaredIdentity": {
+    "Runtime": "codex-cli, declarado por el invocador",
+    "Model": "UNKNOWN",
+    "Effort": "UNKNOWN",
+    "SessionOrThread": "UNKNOWN",
+    "Source": "Declaración informativa; la identidad efectiva corresponde a la evidencia observada y custodiada por el invocador."
+  },
+  "ReviewerMode": "SEPARATE SESSION",
+  "ReviewerAndAuthorSamePerson": "UNKNOWN respecto de las identidades humanas. El invocador declara una ejecución Codex distinta de la sesión Claude autora.",
+  "InjectedContextDeclaration": [
+    "Instrucciones de sistema: identidad general del asistente, formato JSON de salida y parámetros de respuesta.",
+    "Instrucciones de desarrollador: conducta de Codex, autonomía, comunicación, herramientas, reglas de lectura y trabajo, catálogo de skills y reglas de colaboración.",
+    "Configuración declarada por el runtime: sandbox de solo lectura, aprobación never y modo Default.",
+    "Contexto suministrado por el usuario: AGENTS.md, directorio, shell, fecha, zona horaria, cierre permitido, identidades exactas y autorización literal de esta revisión.",
+    "Resultados de herramientas de esta misma revisión: comprobaciones Git, lecturas permitidas, diagnósticos de shell, errores de sintaxis de búsquedas y avisos de truncamiento.",
+    "El primer arranque del shell produjo un diagnóstico automático de intento de dot-source del perfil bajo ConstrainedLanguage. No se solicitaron ni recibieron sus contenidos; las llamadas posteriores usaron login:false.",
+    "Una compactación automática conservó un resumen del trabajo de esta misma revisión. No se recibió transcripción ni memoria privada de la sesión autora."
+  ],
+  "InputsRead": [
+    "docs/initiatives/I-62-proposal-v12.md",
+    "docs/initiatives/I-62-architect-package-v12.md",
+    "docs/initiatives/I-62-proposal-v11.md",
+    "docs/initiatives/I-62-architect-package-v11.md",
+    "docs/initiatives/I-62-architect-review-v11-disposition.md",
+    "docs/initiatives/I-62-architect-review-v11.md",
+    "docs/automation/evidence/I-62-architect-v11/R20261002T140232Z-cdc5/README.md",
+    "docs/automation/evidence/I-62-architect-v11/R20261002T140232Z-cdc5/input-fidelity-postrun.json",
+    "docs/automation/evidence/I-62-architect-v11/R20261002T140232Z-cdc5/output.json",
+    "docs/automation/evidence/I-62-architect-v11/R20261002T140232Z-cdc5/schema.json",
+    "docs/initiatives/I-62-architect-review-v10-disposition.md",
+    "docs/initiatives/I-62-architect-review-v10.md",
+    "docs/initiatives/I-62-architect-review-v9-disposition.md",
+    "docs/initiatives/I-62-architect-review-v9.md",
+    "docs/initiatives/I-62-coordinator-requirement-auto.md",
+    "docs/initiatives/I-62-architect-review-v6.md",
+    "docs/initiatives/I-62-architect-review-v7.md",
+    "docs/initiatives/I-62-discovery.md",
+    "docs/automation/decisions/I-62-owner-mandate.txt",
+    "docs/initiatives/I-62-portabilidad-coordinador-principal.md",
+    "docs/automation/decisions/I-62.md",
+    "docs/automation/evidence/I-62-evidence.md",
+    "docs/automation/state/I-62.yml",
+    "docs/INITIATIVE_LIFECYCLE.md",
+    "docs/WORKFLOW.md",
+    "AGENTS.md",
+    "docs/AUTOMATION_PLAN.md",
+    "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md",
+    "docs/initiatives/I-61-proposal-v9.md",
+    "docs/automation/agent-execution/README.md",
+    "docs/automation/agent-execution/model-catalog.md",
+    "docs/automation/agent-execution/prompting-guide.md",
+    "docs/automation/agent-execution/routing.md",
+    "docs/automation/agent-execution/schemas/controller-verification.schema.json",
+    "docs/automation/agent-execution/schemas/delegation.schema.json",
+    "docs/automation/agent-execution/schemas/gate-contract.schema.json",
+    "docs/automation/agent-execution/schemas/relay-record.schema.json",
+    "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+    "docs/HANDOFF.md",
+    "README.md",
+    "docs/ARCHITECTURE.md",
+    "docs/context-packs/README.md",
+    "docs/context-packs/documentation-governance.md",
+    "docs/ROADMAP.md",
+    "docs/FOUNDATIONS.md",
+    "docs/initiatives/README.md",
+    "docs/initiatives/PROMPT_TEMPLATES.md"
+  ],
+  "InputFidelityEvidenceRef": "input-fidelity-preflight.json SHA-256 ea36ffe4efde568289660f3e42ae2b0b2f384d91544659ad9edbe704f27d1fe0",
+  "IndependenceEvidence": "SEPARATE SESSION y ausencia de contexto privado del autor declaradas por el invocador. HEAD y ambos blobs se comprobaron al empezar y al terminar; git status --porcelain quedó vacío en ambas comprobaciones. Se consultaron únicamente rutas del cierre mediante las formas autorizadas. Esta declaración no acredita la identidad del proceso, modelo, effort, separación humana ni fidelidad posterior: esas comprobaciones corresponden al invocador.",
+  "Verdict": "CHANGES REQUIRED",
+  "RequiredFindings": [
+    {
+      "FindingId": "A62-V11-01",
+      "LineageId": "A62-V11-01",
+      "Source": "Residuo del REQUIRED aceptado en I-62-architect-review-v11-disposition.md §2; contraejemplo del constructor mecánico de PremiseEnvelope de V12.",
+      "AffectedSection": "§20.3.3, punto 2, destinos de referencias cruzadas (líneas 1178-1186), en relación con el punto 3 y C-42.",
+      "Evidence": "V12 corrige la coincidencia de subcadenas, pero su constructor incorpora únicamente destinos que la evidencia del hallazgo también cita, y para una cláusula permite incorporar solo su título. El paquete V12 §5.2 reconoce expresamente esa restricción. Contraejemplo de diseño: una proposición completa A depende de una cláusula B referenciada para determinar su efecto; el hallazgo cita A y no añade una cita separada de B. La captura conserva A y el título de B, pero pierde una negación o altera un operador en el cuerpo normativo de B. La unión enumerada en el punto 2 puede excluir ese cuerpo y resultar íntegramente fiel aunque la dependencia que determina el significado esté degradada. Incluso incorporando el destino, su título intacto no demuestra fidelidad de la regla dependiente. El punto 3 exige todo el contexto de control, pero no resuelve mecánicamente esa exclusión del punto 2. Por tanto, el diseño no permite reproducir de forma suficiente la independencia exigida para este caso. No se afirma que esta corrupción haya ocurrido en la presente invocación.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Section": "§20.3.3, Envoltorio de premisa e independencia semántica, punto 2",
+          "LineStart": 1178,
+          "LineEnd": 1186,
+          "Quote": "2. **`PremiseEnvelope`.** Cuando algún insumo queda en DEGRADED_BOUNDED, el invocador determina de forma mecánica, para **cada** premisa de **cada**\n   hallazgo y disposición, un envoltorio suficiente para conservar el significado. Es la unión de:\n   - la **unidad estructural completa** que contiene la proposición: el elemento de lista entero, con sus líneas de continuación y, si está anidado, el\n     enunciado de su elemento padre; el párrafo entero (que contiene la oración completa); la **fila de tabla entera junto con la fila de cabecera**, para\n     conservar la asociación entre fila y columna; o la línea o el bloque de código entero;\n   - la **expresión completa** que contiene operadores lógicos o de comparación, aunque cruce unidades;\n   - la **cadena de títulos** que gobierna la unidad (el alcance);\n   - los **destinos de referencias cruzadas**: por cada identificador de cláusula del envoltorio (§n, B.n, I-S/I-P/I-H, C-n, P-n, T-n, F.n, OD-n…) que la\n     evidencia del hallazgo también cita, la unidad que identifica ese destino (su título o su fila)."
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Section": "§20.3.3, Envoltorio de premisa e independencia semántica, punto 3",
+          "LineStart": 1187,
+          "LineEnd": 1189,
+          "Quote": "3. **Independencia.** Una premisa es independiente solo si su envoltorio entero, y todo el contexto que lo controla, quedan **fuera** de los tramos\n   degradados y la representación que vio el revisor de ese envoltorio es igual a la canónica, tras la normalización permitida. Un hallazgo o una disposición\n   es independiente solo si lo son todas sus premisas."
+        },
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v11-disposition.md",
+          "Section": "§2, Dirección exigida, fila A62-V11-01",
+          "LineStart": 36,
+          "LineEnd": 36,
+          "Quote": "| A62-V11-01: independencia de las premisas ante degradación acotada | (1) Los `PremiseRefs` identifican la proposición normativa completa, no una subcadena. (2) Con algún insumo en DEGRADED_BOUNDED, determinar para cada premisa un `PremiseEnvelope` que conserve el significado: como mínimo la oración o el elemento normativo completos, la celda o fila completa en una regla tabular, la expresión completa con operadores lógicos o de comparación, y el título o contexto que fija el alcance cuando sea material. (3) Independencia acreditada solo si todos los envoltorios y su contexto de control quedan fuera de los rangos degradados y son fieles. (4) El análisis mecánico considera al menos negación perdida o cambiada, operadores de comparación o lógicos, cuantificadores, modalidad, identificadores o rutas referidos, asociación de filas y columnas, cambios de título o alcance, y el destino de una referencia cruzada cuando la premisa depende de otra cláusula. (5) Sin independencia demostrable, INVALID_PREMISE. (6) Si no se puede determinar mecánicamente qué hallazgos son independientes, se invalida toda la revisión. (7) La evidencia la observa y la custodia el invocador; el Architect aporta los `PremiseRefs`, pero no acredita la fidelidad. (8) Ampliar C-42 con (a)-(g). (9) Actualizar el contrato de fidelidad y la ingestión del resultado |"
+        },
+        {
+          "Path": "docs/INITIATIVE_LIFECYCLE.md",
+          "Section": "§5, clasificación de hallazgos",
+          "LineStart": 166,
+          "LineEnd": 169,
+          "Quote": "Un hallazgo es `REQUIRED` si activa M-01..08 sobre un elemento congelable, deja un invariante sin\nobligacion de prueba, produce comportamiento observable distinto o revela un elemento congelable\nmaterialmente incorrecto, no ejecutable o no verificable. Incluye oraculos ciegos y planes de gates\nimposibles o inconsistentes. Una precision sin cambio de significado puede ser `OPTIONAL`."
+        }
+      ],
+      "WhyItMatters": "La invalidación parcial permite ingerir disposiciones y modificar linajes. Una dependencia normativa degradada que quede fuera del envoltorio puede sostener una apertura, cierre o sustitución incorrectos. La prohibición de ARCHITECT_SATISFIED con DEGRADED_BOUNDED no protege esas modificaciones parciales. Es un residuo material del requisito de independencia, no una aclaración editorial.",
+      "CorrectionRequired": "Eliminar la condición de que el hallazgo también cite el destino. Definir la incorporación mecánica de las unidades normativas completas de las cláusulas que controlan el significado de la premisa, incluidos sus encabezados, expresiones y asociaciones tabulares; un título por sí solo no basta cuando la dependencia está en el cuerpo. Puede incorporarse conservadoramente cada destino referenciado y sus dependencias hasta un cierre estable, o utilizarse un mecanismo equivalente cuya exclusión de una dependencia esté demostrada mecánicamente por el invocador. Si una dependencia relevante no puede resolverse o delimitarse, conservar INVALID_PREMISE; si no pueden acotarse los hallazgos independientes, invalidar toda la revisión. Añadir a C-42 un negativo con proposición y título intactos, cuerpo del destino degradado y ausencia de cita separada del destino, y un positivo de degradación ajena al cierre de dependencias. Mantener la evidencia en el invocador y alinear la ingestión y premise_independence con esta regla."
+    }
+  ],
+  "OptionalFindings": [],
+  "FindingDispositions": [
+    {
+      "FindingId": "A62-V10-03",
+      "LineageId": "A62-V10-03",
+      "State": "CLOSED",
+      "SupersededBy": [],
+      "Rationale": "V12 distingue arranque anterior, no arranque probado, arranque desconocido y arranque posterior al fin de vigencia. §20.6 admite la cancelación desde LAUNCHING, I-P13 la incluye en el grafo y exige prueba custodiada, y F.8/C-40 conservan los mismos efectos. La cancelación es terminal, no libera presupuesto y nunca permite ingerir un resultado posterior. Un intento nuevo exige autorización vigente. El arranque posterior produce UNAUTHORIZED_LAUNCH / STOP. Se cierra el residuo de diseño; no se acredita ejecución de pruebas.",
+      "EvaluatedObject": {
+        "Commit": "d0947c5d58280f8b0bfe2808dd8b7ff79e9f76bb",
+        "Path": "docs/initiatives/I-62-proposal-v12.md",
+        "Blob": "320cecc9bd1b68112509e510b97c768b6d505ba2"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Section": "§20.5.1, Regla determinista para los intentos en curso",
+          "LineStart": 1352,
+          "LineEnd": 1358,
+          "Quote": "| Estado al fin de la vigencia | Evidencia del invocador | Destino |\n|---|---|---|\n| INVOCATION_PLANNED o BUDGET_RESERVED | — | CANCELLED_BEFORE_LAUNCH, sin liberar presupuesto |\n| LAUNCHING o LAUNCHED | el proceso o la sesión **arrancó antes** del fin (instante de arranque observado anterior a `ended_utc`) | la acreditación histórica cubre el intento: se completa (LAUNCHED, RESULT_RECEIVED, RESULT_INGESTED) y su resultado se ingiere con las reglas existentes |\n| LAUNCHING | el proceso o la sesión **no arrancó**: la operación 7 prueba, en un host accesible, que no hay ninguna instancia ligada al `RunId` | **CANCELLED_BEFORE_LAUNCH**, transición legal desde LAUNCHING. La prueba de no arranque se custodia, ningún resultado de ese intento se ingiere nunca, la reserva sigue contada (conteo conservador) y no hay lanzamiento nuevo bajo la autorización terminada |\n| LAUNCHING | el arranque **no se puede determinar** | **LAUNCH_UNCERTAIN**: conteo conservador y sin reintento silencioso. La recuperación sigue el presupuesto de reejecuciones de transporte y las reglas de STOP existentes, y un intento nuevo solo se lanza bajo una autorización vigente |\n| LAUNCHING | el proceso **arrancó después** del fin | es una acción nueva bajo una autorización terminada: el resultado no se ingiere y es STOP (P-20) |"
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Section": "B.8.8, I-P13, transiciones de intentos",
+          "LineStart": 2037,
+          "LineEnd": 2044,
+          "Quote": "  - un intento avanza solo por las transiciones de §20.6:\n    - INVOCATION_PLANNED → BUDGET_RESERVED o CANCELLED_BEFORE_LAUNCH;\n    - BUDGET_RESERVED → LAUNCHING, CANCELLED_BEFORE_LAUNCH, o BUDGET_RESERVED (replanificado, con `invocation` nueva);\n    - LAUNCHING → LAUNCHED, RESULT_RECEIVED, LAUNCH_UNCERTAIN, BUDGET_RESERVED (caso B.1, con la prueba de no arranque custodiada y la vigencia abierta) o\n      CANCELLED_BEFORE_LAUNCH (prueba de no arranque custodiada y vigencia terminada, §20.5.1);\n    - LAUNCHED → RESULT_RECEIVED o LAUNCH_UNCERTAIN;\n    - RESULT_RECEIVED → RESULT_INGESTED;\n    - RESULT_INGESTED, LAUNCH_UNCERTAIN y CANCELLED_BEFORE_LAUNCH son terminales;"
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Section": "§20.6, CANCELLED_BEFORE_LAUNCH",
+          "LineStart": 1415,
+          "LineEnd": 1417,
+          "Quote": "CANCELLED_BEFORE_LAUNCH cierra un intento cuyo último estado durable es INVOCATION_PLANNED o BUDGET_RESERVED cuando la vigencia termina, o que está en\nLAUNCHING con prueba custodiada de no arranque cuando la vigencia ya terminó (§20.5.1). Nunca libera presupuesto. Ningún resultado de un intento cancelado\nse ingiere: si aparece uno, contradice la prueba de no arranque, y es S-04 sin ingestión."
+        }
+      ]
+    },
+    {
+      "FindingId": "A62-V11-01",
+      "LineageId": "A62-V11-01",
+      "State": "STILL_OPEN",
+      "SupersededBy": [],
+      "Rationale": "Se corrigen las subcadenas y los envoltorios locales, pero permanece la restricción de referencias cruzadas descrita en RequiredFindings. La dependencia normativa no puede quedar condicionada a una cita adicional del hallazgo ni reducirse a un título intacto. No se rebaja ni se abre un linaje nuevo.",
+      "EvaluatedObject": {
+        "Commit": "d0947c5d58280f8b0bfe2808dd8b7ff79e9f76bb",
+        "Path": "docs/initiatives/I-62-proposal-v12.md",
+        "Blob": "320cecc9bd1b68112509e510b97c768b6d505ba2"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Section": "§20.3.3, Envoltorio de premisa e independencia semántica, punto 2",
+          "LineStart": 1178,
+          "LineEnd": 1186,
+          "Quote": "2. **`PremiseEnvelope`.** Cuando algún insumo queda en DEGRADED_BOUNDED, el invocador determina de forma mecánica, para **cada** premisa de **cada**\n   hallazgo y disposición, un envoltorio suficiente para conservar el significado. Es la unión de:\n   - la **unidad estructural completa** que contiene la proposición: el elemento de lista entero, con sus líneas de continuación y, si está anidado, el\n     enunciado de su elemento padre; el párrafo entero (que contiene la oración completa); la **fila de tabla entera junto con la fila de cabecera**, para\n     conservar la asociación entre fila y columna; o la línea o el bloque de código entero;\n   - la **expresión completa** que contiene operadores lógicos o de comparación, aunque cruce unidades;\n   - la **cadena de títulos** que gobierna la unidad (el alcance);\n   - los **destinos de referencias cruzadas**: por cada identificador de cláusula del envoltorio (§n, B.n, I-S/I-P/I-H, C-n, P-n, T-n, F.n, OD-n…) que la\n     evidencia del hallazgo también cita, la unidad que identifica ese destino (su título o su fila)."
+        }
+      ]
+    },
+    {
+      "FindingId": "O-V7-01",
+      "LineageId": "O-V7-01",
+      "State": "STILL_OPEN",
+      "SupersededBy": [],
+      "Rationale": "Se conserva como OPTIONAL no bloqueante. Los registros permitidos no transmiten suficientemente su contenido original para acreditar una corrección.",
+      "EvaluatedObject": {
+        "Commit": "d0947c5d58280f8b0bfe2808dd8b7ff79e9f76bb",
+        "Path": "docs/initiatives/I-62-proposal-v12.md",
+        "Blob": "320cecc9bd1b68112509e510b97c768b6d505ba2"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-architect-package-v12.md",
+          "Section": "§0, OpenFindings",
+          "LineStart": 55,
+          "LineEnd": 55,
+          "Quote": "- **OPTIONAL abiertos, no bloquean:** O-V7-01, O-V7-02, O-05 y O-07."
+        }
+      ]
+    },
+    {
+      "FindingId": "O-V7-02",
+      "LineageId": "O-V7-02",
+      "State": "STILL_OPEN",
+      "SupersededBy": [],
+      "Rationale": "Se conserva el seguimiento OPTIONAL abierto. No se acredita cierre ni se inventa el contenido ausente de los registros.",
+      "EvaluatedObject": {
+        "Commit": "d0947c5d58280f8b0bfe2808dd8b7ff79e9f76bb",
+        "Path": "docs/initiatives/I-62-proposal-v12.md",
+        "Blob": "320cecc9bd1b68112509e510b97c768b6d505ba2"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-architect-package-v12.md",
+          "Section": "§0, OpenFindings",
+          "LineStart": 55,
+          "LineEnd": 55,
+          "Quote": "- **OPTIONAL abiertos, no bloquean:** O-V7-01, O-V7-02, O-05 y O-07."
+        }
+      ]
+    },
+    {
+      "FindingId": "O-05",
+      "LineageId": "O-05",
+      "State": "STILL_OPEN",
+      "SupersededBy": [],
+      "Rationale": "Continúa OPTIONAL y no bloqueante; el registro V6 conserva la ausencia de su texto original, sin base para cerrar.",
+      "EvaluatedObject": {
+        "Commit": "d0947c5d58280f8b0bfe2808dd8b7ff79e9f76bb",
+        "Path": "docs/initiatives/I-62-proposal-v12.md",
+        "Blob": "320cecc9bd1b68112509e510b97c768b6d505ba2"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-architect-package-v12.md",
+          "Section": "§0, OpenFindings",
+          "LineStart": 55,
+          "LineEnd": 55,
+          "Quote": "- **OPTIONAL abiertos, no bloquean:** O-V7-01, O-V7-02, O-05 y O-07."
+        }
+      ]
+    },
+    {
+      "FindingId": "O-07",
+      "LineageId": "O-07",
+      "State": "STILL_OPEN",
+      "SupersededBy": [],
+      "Rationale": "Continúa OPTIONAL y no bloqueante por la misma insuficiencia documental de su contenido original.",
+      "EvaluatedObject": {
+        "Commit": "d0947c5d58280f8b0bfe2808dd8b7ff79e9f76bb",
+        "Path": "docs/initiatives/I-62-proposal-v12.md",
+        "Blob": "320cecc9bd1b68112509e510b97c768b6d505ba2"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-architect-package-v12.md",
+          "Section": "§0, OpenFindings",
+          "LineStart": 55,
+          "LineEnd": 55,
+          "Quote": "- **OPTIONAL abiertos, no bloquean:** O-V7-01, O-V7-02, O-05 y O-07."
+        }
+      ]
+    }
+  ],
+  "Downgrades": [],
+  "RequirementAssessments": [
+    {
+      "RequirementId": "R62-FIDELITY-01",
+      "Assessment": "SATISFIED",
+      "Rationale": "El diseño identifica bytes, blob, SHA-256, codificación y representación por insumo y prompt; exige el preflight por el mismo camino efectivo, cubre todos los caracteres no ASCII presentes y custodia la evidencia antes del lanzamiento. Evaluación del diseño, sin acreditar implementación.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Section": "§20.3.3, Antes de lanzar",
+          "LineStart": 1148,
+          "LineEnd": 1153,
+          "Quote": "**Antes de lanzar** (R62-FIDELITY-01, -05), el invocador:\n1. determina los bytes canónicos y el blob de cada insumo;\n2. configura en UTF-8 el transporte y el runtime, donde aplique;\n3. comprueba por el **mismo camino de lectura** que usará el revisor (mismo runtime, mismo shell, misma configuración y la forma de lectura que la\n   invocación le indica) que se conservan todos los caracteres no ASCII presentes en el corpus, y que el prompt renderizado llega igual;\n4. custodia la evidencia (`InputFidelityEvidenceRef`) a más tardar en el QU que reserva el intento (§20.6)."
+        }
+      ]
+    },
+    {
+      "RequirementId": "R62-FIDELITY-02",
+      "Assessment": "PARTIALLY_SATISFIED",
+      "Rationale": "La normalización está cerrada y el preflight no fiel o la degradación no acotable impiden la ingestión correspondiente. El residuo A62-V11-01 impide acreditar el fallo cerrado en una dependencia normativa degradada que el constructor del envoltorio excluya.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Section": "§20.3.3, Normalización permitida",
+          "LineStart": 1140,
+          "LineEnd": 1146,
+          "Quote": "**Normalización permitida** (distinción A de R62-FIDELITY-02): el único cambio de bytes que se acepta como semánticamente fiel es el fin de línea (CRLF ↔ LF)\ny la presencia o ausencia del salto final. Da FAITHFUL_NORMALIZED. **Cualquier otra diferencia es degradación semántica** (distinción B), por ejemplo:\n- ≤ → «=» o ≠ → «?»;\n- un identificador o una ruta corrompidos;\n- una negación eliminada;\n- U+FFFD en una palabra normativa;\n- la estructura de una tabla o de un operador perdida."
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Section": "§20.3.3, Fallo cerrado e invalidación acotada por hallazgo",
+          "LineStart": 1169,
+          "LineEnd": 1169,
+          "Quote": "| DEGRADED_BOUNDED: hay degradación y `DegradedSpans` la localiza | **INPUT_FIDELITY_INVALID** para lo afectado (P-25). Cada hallazgo y cada disposición se evalúa por sus `PremiseRefs` (B.10.1): es **independiente** solo si los envoltorios de todas sus premisas, con su contexto de control, quedan fuera de los tramos degradados y son fieles (abajo). Los independientes se ingieren; los demás quedan **INVALID_PREMISE / UNACCREDITED**, no abren, cierran ni sustituyen linajes, y el resultado registra sus `FindingId`. Un veredicto así nunca produce ARCHITECT_SATISFIED |"
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Section": "§20.3.3, Envoltorio de premisa e independencia semántica, punto 2",
+          "LineStart": 1178,
+          "LineEnd": 1186,
+          "Quote": "2. **`PremiseEnvelope`.** Cuando algún insumo queda en DEGRADED_BOUNDED, el invocador determina de forma mecánica, para **cada** premisa de **cada**\n   hallazgo y disposición, un envoltorio suficiente para conservar el significado. Es la unión de:\n   - la **unidad estructural completa** que contiene la proposición: el elemento de lista entero, con sus líneas de continuación y, si está anidado, el\n     enunciado de su elemento padre; el párrafo entero (que contiene la oración completa); la **fila de tabla entera junto con la fila de cabecera**, para\n     conservar la asociación entre fila y columna; o la línea o el bloque de código entero;\n   - la **expresión completa** que contiene operadores lógicos o de comparación, aunque cruce unidades;\n   - la **cadena de títulos** que gobierna la unidad (el alcance);\n   - los **destinos de referencias cruzadas**: por cada identificador de cláusula del envoltorio (§n, B.n, I-S/I-P/I-H, C-n, P-n, T-n, F.n, OD-n…) que la\n     evidencia del hallazgo también cita, la unidad que identifica ese destino (su título o su fila)."
+        }
+      ]
+    },
+    {
+      "RequirementId": "R62-FIDELITY-03",
+      "Assessment": "PARTIALLY_SATISFIED",
+      "Rationale": "V12 exige proposiciones completas, envoltorios locales, independencia de todas las premisas e invalidación conservadora. La construcción de las dependencias cruzadas sigue incompleta por A62-V11-01; no basta afirmar que todo contexto de control debe ser fiel si el procedimiento mecánico puede excluirlo.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+          "Section": "§3, R62-FIDELITY-03",
+          "LineStart": 45,
+          "LineEnd": 45,
+          "Quote": "| R62-FIDELITY-03 | **Invalidación acotada por hallazgo:** si la degradación se puede acotar mecánicamente a pasajes o hallazgos, los no afectados pueden seguir siendo utilizables solo si se prueba que su camino de evidencia es independiente del material corrompido; los afectados son INVALID_PREMISE / UNACCREDITED, y el resultado registra sus `FindingId`. Caso medido de V10: A62-V10-02 depende del «≤» corrompido; A62-V10-01, -03 y -04 no. Si no se puede establecer la independencia, se invalida toda la revisión |"
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Section": "§20.3.3, Envoltorio de premisa e independencia semántica, punto 2",
+          "LineStart": 1178,
+          "LineEnd": 1186,
+          "Quote": "2. **`PremiseEnvelope`.** Cuando algún insumo queda en DEGRADED_BOUNDED, el invocador determina de forma mecánica, para **cada** premisa de **cada**\n   hallazgo y disposición, un envoltorio suficiente para conservar el significado. Es la unión de:\n   - la **unidad estructural completa** que contiene la proposición: el elemento de lista entero, con sus líneas de continuación y, si está anidado, el\n     enunciado de su elemento padre; el párrafo entero (que contiene la oración completa); la **fila de tabla entera junto con la fila de cabecera**, para\n     conservar la asociación entre fila y columna; o la línea o el bloque de código entero;\n   - la **expresión completa** que contiene operadores lógicos o de comparación, aunque cruce unidades;\n   - la **cadena de títulos** que gobierna la unidad (el alcance);\n   - los **destinos de referencias cruzadas**: por cada identificador de cláusula del envoltorio (§n, B.n, I-S/I-P/I-H, C-n, P-n, T-n, F.n, OD-n…) que la\n     evidencia del hallazgo también cita, la unidad que identifica ese destino (su título o su fila)."
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Section": "§20.3.3, Envoltorio de premisa e independencia semántica, puntos 5 y 6",
+          "LineStart": 1205,
+          "LineEnd": 1207,
+          "Quote": "5. Si no se puede demostrar la independencia semántica, el hallazgo o la disposición es **INVALID_PREMISE**.\n6. Si no se puede determinar mecánicamente qué hallazgos son independientes, se invalida **toda** la revisión de forma conservadora\n   (INPUT_FIDELITY_INVALID). Ocurre, por ejemplo, si faltan las capturas, si no se puede delimitar un envoltorio o si un hallazgo no trae `PremiseRefs`."
+        }
+      ]
+    },
+    {
+      "RequirementId": "R62-FIDELITY-04",
+      "Assessment": "SATISFIED",
+      "Rationale": "La observación y custodia pertenecen al invocador. El Architect aporta referencias y no certifica fidelidad ni crea la evidencia. El cambio de runtime exige validación por intento.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Section": "§20.3.3, Observada por el invocador, no autodeclarada",
+          "LineStart": 1215,
+          "LineEnd": 1217,
+          "Quote": "**Observada por el invocador, no autodeclarada** (R62-FIDELITY-04). La fidelidad es evidencia de la capa de invocación y de transporte, como el\n`RuntimeEvidenceRef` (§20.3.2). El revisor no la certifica. Su resultado puede citar el `InputFidelityEvidenceRef` que recibe en la `RoleInvocation`, pero no\ncrea esa evidencia. Cambiar de proveedor, de runtime o de adapter no exime de la validación: cada intento lleva la suya."
+        }
+      ]
+    },
+    {
+      "RequirementId": "R62-FIDELITY-05",
+      "Assessment": "SATISFIED",
+      "Rationale": "El adapter debe establecer y verificar el transporte seguro; no presupone los valores de la terminal ni congela comandos. GAP-10 conserva ese mismo invariante para la estructura de la captura.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Section": "§20.3.3, Preflight de transporte",
+          "LineStart": 1157,
+          "LineEnd": 1159,
+          "Quote": "Para `codex-cli` con PowerShell en Windows, el adapter **establece y verifica** un transporte seguro en UTF-8 en lugar de asumir los valores por defecto de la\nterminal. Puede usar salida de consola en UTF-8, lectura directa de archivos sin conversión con pérdida, lecturas estructuradas u otro método verificado. **No**\nse congela ningún comando concreto: se congela el requisito observable de que el texto canónico que ve el revisor sea fiel (R62-FIDELITY-05)."
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Section": "§20.3.3, Precondición de lanzamiento",
+          "LineStart": 1155,
+          "LineEnd": 1155,
+          "Quote": "Sin un preflight FAITHFUL o FAITHFUL_NORMALIZED, no hay lanzamiento (P-24)."
+        }
+      ]
+    },
+    {
+      "RequirementId": "R62-FIDELITY-06",
+      "Assessment": "PARTIALLY_SATISFIED",
+      "Rationale": "C-42 conserva los ocho escenarios y añade los negativos locales solicitados: negación, operador, asociación tabular y alcance, junto con degradación ajena e independencia indeterminable. Falta exigir el negativo de dependencia cruzada excluida o reducida a su título. El oráculo podría implementar literalmente el constructor insuficiente y superar los casos enumerados. No se ejecutaron pruebas.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v12.md",
+          "Section": "Anexo C, C-42",
+          "LineStart": 2197,
+          "LineEnd": 2197,
+          "Quote": "| C-42 | fidelidad de los insumos (R62-FIDELITY-01..06) | MC sobre insumos reales del corpus y capturas sintéticas: (1) ≤ canónico; (2) ≠ canónico; (3) texto acentuado; (4) transporte con pérdida deliberada (consola sin UTF-8); (5) un hallazgo cuya única premisa es texto degradado intenta abrir, cerrar o sustituir un linaje; (6) un hallazgo no afectado, con `PremiseRefs` cuyas citas coinciden con el texto canónico; (7) un sucesor reconstruye la evidencia de fidelidad desde la custodia; (8) cambio de proveedor o de runtime entre intentos. Envoltorios de premisa (A62-V11-01): (a) premisa exacta fuera del tramo degradado; (b) cita intacta pero con la negación anterior degradada; (c) operador degradado fuera de la cita; (d) celda de tabla intacta con la etiqueta de fila o de columna degradada; (e) título que cambia el alcance, degradado; (f) tramo degradado sin relación con la premisa; (g) independencia que no se puede establecer | F4, F6 | contratos B.9-B.10, `input-fidelity/v1` y procedimiento F4 | (1)-(3) FAITHFUL: el carácter llega igual; (4) preflight no acreditado y sin lanzamiento (P-24); (5) INVALID_PREMISE, el linaje no cambia (P-25); (6) se ingiere solo con la independencia demostrada mecánicamente; si no, no; (7) mismo `FidelityStatus` y mismos `unaccredited`; (8) la validación se exige igual en el intento nuevo; (a) válido; (b), (c), (d) y (e) INVALID_PREMISE; (f) el hallazgo no afectado sigue válido; (g) toda la revisión, INPUT_FIDELITY_INVALID | (ii) MC + FX |"
+        }
+      ]
+    }
+  ],
+  "PreservedDispositionChecks": [
+    {
+      "FindingId": "A62-V10-01",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "El cierre canónico de V11 output.json y la disposición V11 §1 se conservan: V12 §20.3.1, B.9 y C-41 separan la exención acotada de HealthSignals y no convierten CI en evidencia local."
+    },
+    {
+      "FindingId": "A62-V10-04",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "El cierre canónico de V11 output.json permanece coherente con V12 §20.7, B.9 y C-30: PLAN usa delegation/v2 y VERIFY controller-verification/v2; no son intercambiables."
+    },
+    {
+      "FindingId": "A62-V9-04",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "V11 output.json lo cierra sobre el texto fiel. V12 §20.6 e I-S18 conservan solicitud lógica estable, review_rounds ≤ logical_requests y máximo derivado de nueve reservas; no se reintroduce la premisa corrupta de A62-V10-02."
+    },
+    {
+      "FindingId": "A62-V9-02",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Las disposiciones V10/V11 y V11 output.json conservan el cierre. V12 §20.6, B.8.8 y F.8 mantienen intención durable, reserva previa, recuperación conservadora e ingestión idempotente. La corrección de cancelación no los contradice."
+    },
+    {
+      "FindingId": "A62-V9-03",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "El cierre custodiado en V10 y preservado en V11 sigue compatible con V12 §20.5.2: disposiciones explícitas, omisión abierta, objeto exacto y rebaja exclusiva del emisor. El residuo de fidelidad se mantiene en A62-V11-01."
+    },
+    {
+      "FindingId": "A62-V9-05",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "V11 output.json confirma el cierre V10. V12 §20.7 y B.10 mantienen separados ARCHITECT y REVIEWER; REVIEWER no emite el acuerdo de diseño ni satisface ARCHITECT_SATISFIED."
+    },
+    {
+      "FindingId": "A62-V9-06",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "El cierre canónico V10/V11 permanece coherente con I-P13 y F.8: loop.object cambia en CORRECTING → PUBLISHED antes de CI y re-revisión. C-38 conserva el negativo de cambio tardío."
+    },
+    {
+      "FindingId": "A62-V7-01",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Contrastado con el registro V7 §2 y la preservación en V11 output.json: V12 B.8 conserva la excepción de reconciliación y el alcance de I-H02 fuera de Q0. No aparece contradicción nueva en V12."
+    },
+    {
+      "FindingId": "A62-V7-02",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "El registro V7 y V11 output.json sustentan el cierre. V12 §8.9 y F.7 mantienen REBASE_TAKEOVER acotado y QR combinado antes del trabajo ordinario."
+    },
+    {
+      "FindingId": "A62-V7-03",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "El cierre preservado en V11 output.json sigue compatible con V12 §11.4 y B.2: conjunto de autores limitado a unidad y objeto, sucesiones incluidas y operador humano autor incluido. No se decide OD-6."
+    },
+    {
+      "FindingId": "A62-V6-01",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "El registro V6 §2 y V11 output.json sustentan el cierre. V12 §8.8, B.8.7 y F.6 conservan RebaseMap durable, reconciliación y STOP ante imágenes no acreditables."
+    },
+    {
+      "FindingId": "A62-V6-02",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "El cierre canónico V10/V11 permanece compatible con V12 §4.1, §8.7, §14 y §20.12: opt-in, DIRECT_ONLY y CUSTODY acotada; no se vuelve obligatoria la ejecución delegada."
+    },
+    {
+      "FindingId": "A62-V6-03",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Frente al registro V6 y V11 output.json, V12 §11.4 conserva evidencia humana propia para EXTERNAL HUMAN, sin ActorRef o SessionRef ficticios, y comparación con los autores del conjunto acotado."
+    },
+    {
+      "FindingId": "A62-V9-01",
+      "PreservedState": "SUPERSEDED → A62-V10-03",
+      "Check": "CONFIRMED",
+      "Rationale": "Las disposiciones canónicas V10/V11 conservan esa sucesión. V12 §20.5.1 mantiene materialización autorizada con AuthorizationRef y MaterializationCheck reproducibles. Cerrar ahora A62-V10-03 no reabre ni elimina la sucesión histórica."
+    }
+  ],
+  "OwnerDecisions": [
+    "OD-6 permanece PENDING. Ambas alternativas de §11.4 siguen delimitadas; esta revisión no elige ninguna.",
+    "Esta invocación única no autoriza otra revisión, reintento, corrección documental, implementación ni Freeze. La continuación corresponde al Owner y al Coordinator bajo la autorización aplicable."
+  ],
+  "FocusAreas": [
+    {
+      "Area": "1. A62-V10-03 residual",
+      "Assessment": "CLOSED. §20.5.1, §20.6, I-P13, F.8 y C-40 concuerdan: arranque anterior conserva acreditación; no arranque probado admite cancelación terminal; arranque desconocido produce incertidumbre conservadora; arranque posterior produce UNAUTHORIZED_LAUNCH / STOP. No se ingieren resultados cancelados, no se libera la reserva y no se permite un lanzamiento nuevo con autorización terminada."
+    },
+    {
+      "Area": "2. A62-V11-01",
+      "Assessment": "STILL_OPEN. La proposición completa, negación, operadores, cuantificadores, modalidad, identificadores, tablas y alcance reciben reglas explícitas; la evidencia pertenece al invocador y la independencia indeterminable invalida toda la revisión. La dependencia cruzada sigue restringida a destinos también citados y puede limitarse a un título: falta el cierre mecánico suficiente del contexto normativo de control."
+    },
+    {
+      "Area": "3. GAP-10",
+      "Assessment": "Correctamente tratado como degradación estructural observable del transporte en §20.3.3 y §20.11. Las lecturas acotadas son una preferencia de implementación; no se congelan comandos ni cantidades de líneas. El invariante arquitectónico sigue siendo la representación fiel del envoltorio de cada premisa. Los límites de lectura de esta invocación son condiciones operativas del invocador."
+    },
+    {
+      "Area": "4. Revisión completa de Proposal V12",
+      "Assessment": "La revisión completa conserva la dirección de roles por capacidad, autoridad reservada, bindings verificables, adapters separados, custodia exacta, recuperación, presupuestos monotónicos, compatibilidad I61/I62, opt-in, pilotos y obligaciones de validación. No se identificó otra contradicción material nueva que invalide cierres anteriores. Permanece un REQUIRED: el residuo de A62-V11-01. Las trazas son especificación de diseño y no prueba de autonomía ejecutada."
+    }
+  ],
+  "FreezeAssessment": {
+    "A62V904State": "CLOSED; cierre preservado sobre V12.",
+    "BothOD6AlternativesExecutable": "SÍ como alternativas de diseño de §11.4, sujetas a capacidad y evidencia verificadas. La alternativa 1 define el predicado por modo y autores del conjunto acotado; la alternativa 2 conserva los modos y registra las preferencias. Ninguna fue elegida. El residuo de fidelidad es común a ambas.",
+    "ReadyForConsensusFreezeAfterOD6": "NO. La V12 exacta conserva A62-V11-01 REQUIRED; decidir OD-6 no lo corrige.",
+    "Notes": "A62-V10-03 = CLOSED. A62-V11-01 = STILL_OPEN. Todos los CLOSED enumerados siguen CLOSED y A62-V9-01 sigue SUPERSEDED por A62-V10-03. Los cuatro OPTIONAL permanecen abiertos sin bloquear. No se declara Consensus Freeze; implementación no autorizada e I-61 vigente hasta la integración de I-62."
+  },
+  "AutonomyAssessment": "La frontera LAUNCHING queda consistente y el diseño conserva un bucle limitado por autorización, presupuesto, objeto exacto y autoridad del emisor. Falta completar la independencia mecánica de premisas con dependencias cruzadas antes de considerar suficiente la ingestión parcial bajo DEGRADED_BOUNDED. Esta revisión excepcional no demuestra autonomía ejecutada del protocolo.",
+  "KnownLimitations": [
+    "Exención explícita del Owner y del Coordinator aplicada solo a esta invocación: no se ejecutó dotnet test. Tampoco se ejecutaron builds, pruebas, pilotos, Worker, Controller, subagentes ni otras invocaciones; no hubo escrituras ni uso de red.",
+    "HealthSignals: CI de publicación 37024119231 recibida como push sobre el head_sha exacto con cuatro jobs success. No se verificó en vivo y no constituye Core local, sustitución de clases locales ni evidencia de gate, Candidato, cierre o implementación.",
+    "InputFidelityEvidenceRef se copia literalmente y no se certifica. La comparación posterior de capturas, DegradedSpans, PremiseEnvelope e independencia de este resultado corresponde al invocador.",
+    "Se observaron truncamientos de salidas voluminosas, incluidos límites de agregación de herramientas. Se releyeron las premisas utilizadas mediante rangos menores o búsquedas. El invocador debe auditar los segmentos efectivamente capturados; esta declaración no convierte esas relecturas en una acreditación de fidelidad.",
+    "InputsRead identifica rutas consultadas, no lectura integral de cada documento auxiliar. Proposal V12 se revisó completa; V11 y varias autoridades y fuentes auxiliares se consultaron por rangos pertinentes.",
+    "No se consultaron contenidos de configuración, credenciales, binarios, sesiones ni memorias fuera del cierre. La identidad efectiva, autenticación, huella de configuración, proceso, terminación y auditoría de lecturas internas pertenecen a la evidencia del invocador.",
+    "El diagnóstico automático inicial del perfil y la compactación de esta revisión deben quedar incluidos en la auditoría de runtime. No se utilizaron como premisas normativas.",
+    "Los textos originales completos de O-V7-01, O-V7-02, O-05 y O-07 no están suficientemente transmitidos en los registros permitidos; se conservan abiertos.",
+    "El contraejemplo REQUIRED evalúa el contrato de diseño; no es un fallo observado de una implementación."
+  ],
+  "RecommendedNextAction": "Custodiar este resultado literal y completar la auditoría posterior de runtime, cierre, fidelidad y lecturas. El Coordinator debe disponer el cierre de A62-V10-03 y el residuo de A62-V11-01, y encauzar su corrección bajo la autorización aplicable. Una revisión posterior exige nueva autorización. Mantener OD-6 pendiente, Frozen: NO, IMPLEMENTATION AUTHORIZATION = NO e I-61 vigente."
+}
