@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rackcad-architect-review-result/v1 (representación experimental de Proposal V10 B.10.1 para la revisión del Architect de I-62 V10; no es esquema normativo)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["Schema", "ResultId", "LogicalReviewRequestId", "InvocationId", "AttemptSeq", "RequestedRole", "Action", "ReviewedUnit", "ReviewedCommit", "ReviewedPath", "ReviewedBlob", "PackagePath", "PackageBlob", "ReviewerBinding", "ReviewerDeclaredIdentity", "ReviewerMode", "ReviewerAndAuthorSamePerson", "InjectedContextDeclaration", "InputsRead", "IndependenceEvidence", "Verdict", "RequiredFindings", "OptionalFindings", "FindingDispositions", "Downgrades", "OwnerDecisions", "FocusAreas", "FreezeReadinessAfterOD6", "AutonomyAssessment", "KnownLimitations", "RecommendedNextAction"],
+  "properties": {
+    "Schema": { "type": "string", "enum": ["rackcad-architect-review-result/v1"] },
+    "ResultId": { "type": "string" },
+    "LogicalReviewRequestId": { "type": "string" },
+    "InvocationId": { "type": "string" },
+    "AttemptSeq": { "type": "integer" },
+    "RequestedRole": { "type": "string", "enum": ["ARCHITECT"] },
+    "Action": { "type": "string", "enum": ["REVIEW_DESIGN"] },
+    "ReviewedUnit": { "type": "string" },
+    "ReviewedCommit": { "type": "string" },
+    "ReviewedPath": { "type": "string" },
+    "ReviewedBlob": { "type": "string" },
+    "PackagePath": { "type": "string" },
+    "PackageBlob": { "type": "string" },
+    "ReviewerBinding": { "type": "string" },
+    "ReviewerDeclaredIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["Runtime", "Model", "Effort", "SessionOrThread", "Source"],
+      "properties": {
+        "Runtime": { "type": "string" },
+        "Model": { "type": "string" },
+        "Effort": { "type": "string" },
+        "SessionOrThread": { "type": "string" },
+        "Source": { "type": "string" }
+      }
+    },
+    "ReviewerMode": { "type": "string", "enum": ["SAME-SESSION ROLE", "SEPARATE SESSION", "EXTERNAL HUMAN"] },
+    "ReviewerAndAuthorSamePerson": { "type": "string" },
+    "InjectedContextDeclaration": { "type": "array", "items": { "type": "string" } },
+    "InputsRead": { "type": "array", "items": { "type": "string" } },
+    "IndependenceEvidence": { "type": "string" },
+    "Verdict": { "type": "string", "enum": ["AGREED", "CHANGES REQUIRED", "BLOCKED — OWNER DECISION"] },
+    "RequiredFindings": { "type": "array", "items": { "$ref": "#/$defs/finding" } },
+    "OptionalFindings": { "type": "array", "items": { "$ref": "#/$defs/finding" } },
+    "FindingDispositions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["FindingId", "LineageId", "State", "SupersededBy", "Rationale", "EvaluatedObject"],
+        "properties": {
+          "FindingId": { "type": "string" },
+          "LineageId": { "type": "string" },
+          "State": { "type": "string", "enum": ["OPEN", "CLOSED", "STILL_OPEN", "SUPERSEDED"] },
+          "SupersededBy": { "type": "array", "items": { "type": "string" } },
+          "Rationale": { "type": "string" },
+          "EvaluatedObject": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["Commit", "Path", "Blob"],
+            "properties": { "Commit": { "type": "string" }, "Path": { "type": "string" }, "Blob": { "type": "string" } }
+          }
+        }
+      }
+    },
+    "Downgrades": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["FindingId", "From", "To", "Classification", "Reason", "Evidence"],
+        "properties": {
+          "FindingId": { "type": "string" },
+          "From": { "type": "string", "enum": ["REQUIRED"] },
+          "To": { "type": "string", "enum": ["OPTIONAL"] },
+          "Classification": { "type": "string" },
+          "Reason": { "type": "string" },
+          "Evidence": { "type": "string" }
+        }
+      }
+    },
+    "OwnerDecisions": { "type": "array", "items": { "type": "string" } },
+    "FocusAreas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["Area", "Assessment"],
+        "properties": { "Area": { "type": "string" }, "Assessment": { "type": "string" } }
+      }
+    },
+    "FreezeReadinessAfterOD6": { "type": "string" },
+    "AutonomyAssessment": { "type": "string" },
+    "KnownLimitations": { "type": "array", "items": { "type": "string" } },
+    "RecommendedNextAction": { "type": "string" }
+  },
+  "$defs": {
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["FindingId", "LineageId", "Source", "AffectedSection", "Evidence", "WhyItMatters", "CorrectionRequired"],
+      "properties": {
+        "FindingId": { "type": "string" },
+        "LineageId": { "type": "string" },
+        "Source": { "type": "string" },
+        "AffectedSection": { "type": "string" },
+        "Evidence": { "type": "string" },
+        "WhyItMatters": { "type": "string" },
+        "CorrectionRequired": { "type": "string" }
+      }
+    }
+  }
+}

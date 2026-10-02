@@ -1,0 +1,644 @@
+{
+  "Schema": "read-audit (representación experimental de ReadAudit, Proposal V10 §20.3.1 y B.7; no autoridad normativa)",
+  "RunId": "R20261002T010757Z-ef59",
+  "Source": "events.jsonl (salida --json de codex exec; SHA-256 99d4e4cb42c2eb65ca29365831b3ec0ead05cd4a2324c419ca973c596bc33593)",
+  "Coverage": "comandos registrados por el runtime; no captura lecturas internas del runtime",
+  "CommandCount": 41,
+  "PathsRead": [
+    "AGENTS.md",
+    "README.md",
+    "docs/ARCHITECTURE.md",
+    "docs/AUTOMATION_PLAN.md",
+    "docs/FOUNDATIONS.md",
+    "docs/HANDOFF.md",
+    "docs/INITIATIVE_LIFECYCLE.md",
+    "docs/ROADMAP.md",
+    "docs/WORKFLOW.md",
+    "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md",
+    "docs/automation/agent-execution/README.md",
+    "docs/automation/agent-execution/model-catalog.md",
+    "docs/automation/agent-execution/prompting-guide.md",
+    "docs/automation/agent-execution/routing.md",
+    "docs/automation/agent-execution/schemas/controller-verification.schema.json",
+    "docs/automation/agent-execution/schemas/delegation.schema.json",
+    "docs/automation/agent-execution/schemas/gate-contract.schema.json",
+    "docs/automation/agent-execution/schemas/relay-record.schema.json",
+    "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+    "docs/automation/decisions/I-62-owner-mandate.txt",
+    "docs/automation/decisions/I-62.md",
+    "docs/automation/evidence/I-62-architect-v9/R20261002T000511Z-ba10/README.md",
+    "docs/automation/evidence/I-62-architect-v9/R20261002T000511Z-ba10/output.json",
+    "docs/automation/evidence/I-62-evidence.md",
+    "docs/automation/state/I-62.yml",
+    "docs/context-packs/README.md",
+    "docs/context-packs/documentation-governance.md",
+    "docs/initiatives/I-61-proposal-v9.md",
+    "docs/initiatives/I-62-architect-package-v10.md",
+    "docs/initiatives/I-62-architect-package-v9.md",
+    "docs/initiatives/I-62-architect-review-v6.md",
+    "docs/initiatives/I-62-architect-review-v7.md",
+    "docs/initiatives/I-62-architect-review-v9-disposition.md",
+    "docs/initiatives/I-62-architect-review-v9.md",
+    "docs/initiatives/I-62-coordinator-requirement-auto.md",
+    "docs/initiatives/I-62-coordinator-review-v1.md",
+    "docs/initiatives/I-62-coordinator-review-v2.md",
+    "docs/initiatives/I-62-coordinator-review-v3.md",
+    "docs/initiatives/I-62-coordinator-review-v4.md",
+    "docs/initiatives/I-62-coordinator-review-v5.md",
+    "docs/initiatives/I-62-discovery.md",
+    "docs/initiatives/I-62-portabilidad-coordinador-principal.md",
+    "docs/initiatives/I-62-proposal-v10.md",
+    "docs/initiatives/I-62-proposal-v9.md",
+    "docs/initiatives/PROMPT_TEMPLATES.md",
+    "docs/initiatives/README.md"
+  ],
+  "PathsReadCount": 46,
+  "ClosureSize": 46,
+  "ReadsOutsideClosure": [],
+  "ForbiddenOrWriteCommands": [],
+  "DotnetTestExecuted": false,
+  "AllCommandsNoProfile": true,
+  "Commands": [
+    {
+      "Index": 0,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/initiatives/I-62-architect-package-v10.md",
+        "docs/initiatives/I-62-proposal-v10.md"
+      ],
+      "GitActions": [
+        "git log --oneline -10",
+        "git rev-parse HEAD",
+        "git rev-parse HEAD:docs/initiatives/I-62-architect-package-v10.md",
+        "git rev-parse HEAD:docs/initiatives/I-62-proposal-v10.md",
+        "git status --porcelain"
+      ],
+      "OutputBytes": 1630,
+      "Note": ""
+    },
+    {
+      "Index": 1,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "AGENTS.md",
+        "README.md",
+        "docs/ARCHITECTURE.md",
+        "docs/FOUNDATIONS.md",
+        "docs/HANDOFF.md",
+        "docs/ROADMAP.md",
+        "docs/context-packs/README.md",
+        "docs/context-packs/documentation-governance.md",
+        "docs/initiatives/PROMPT_TEMPLATES.md",
+        "docs/initiatives/README.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 790325,
+      "Note": ""
+    },
+    {
+      "Index": 2,
+      "ExitCode": 1,
+      "NoProfile": true,
+      "Paths": [
+        "docs/initiatives/I-62-architect-package-v10.md",
+        "docs/initiatives/I-62-proposal-v10.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 498,
+      "Note": "rg no existe en el runtime; las lecturas Get-Content del mismo comando se completaron"
+    },
+    {
+      "Index": 3,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/initiatives/I-62-architect-package-v10.md",
+        "docs/initiatives/I-62-architect-review-v9-disposition.md",
+        "docs/initiatives/I-62-architect-review-v9.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 31936,
+      "Note": ""
+    },
+    {
+      "Index": 4,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v10.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 40491,
+      "Note": ""
+    },
+    {
+      "Index": 5,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v10.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 25492,
+      "Note": ""
+    },
+    {
+      "Index": 6,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/initiatives/I-62-architect-review-v6.md",
+        "docs/initiatives/I-62-architect-review-v7.md",
+        "docs/initiatives/I-62-coordinator-requirement-auto.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 28000,
+      "Note": ""
+    },
+    {
+      "Index": 7,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v10.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 38544,
+      "Note": ""
+    },
+    {
+      "Index": 8,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v10.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 18564,
+      "Note": ""
+    },
+    {
+      "Index": 9,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v10.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 22351,
+      "Note": ""
+    },
+    {
+      "Index": 10,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v10.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 27577,
+      "Note": ""
+    },
+    {
+      "Index": 11,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v10.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 24215,
+      "Note": ""
+    },
+    {
+      "Index": 12,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v10.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 27318,
+      "Note": ""
+    },
+    {
+      "Index": 13,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v10.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 16909,
+      "Note": ""
+    },
+    {
+      "Index": 14,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v10.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 16213,
+      "Note": ""
+    },
+    {
+      "Index": 15,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v10.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 20413,
+      "Note": ""
+    },
+    {
+      "Index": 16,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v10.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 27756,
+      "Note": ""
+    },
+    {
+      "Index": 17,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/AUTOMATION_PLAN.md",
+        "docs/INITIATIVE_LIFECYCLE.md",
+        "docs/WORKFLOW.md",
+        "docs/automation/decisions/I-62.md",
+        "docs/automation/evidence/I-62-evidence.md",
+        "docs/initiatives/I-61-proposal-v9.md",
+        "docs/initiatives/I-62-discovery.md",
+        "docs/initiatives/I-62-proposal-v9.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 17562,
+      "Note": ""
+    },
+    {
+      "Index": 18,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/INITIATIVE_LIFECYCLE.md",
+        "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 32779,
+      "Note": ""
+    },
+    {
+      "Index": 19,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/AUTOMATION_PLAN.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 16770,
+      "Note": ""
+    },
+    {
+      "Index": 20,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/AUTOMATION_PLAN.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 16438,
+      "Note": ""
+    },
+    {
+      "Index": 21,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/AUTOMATION_PLAN.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 23981,
+      "Note": ""
+    },
+    {
+      "Index": 22,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/automation/decisions/I-62-owner-mandate.txt",
+        "docs/initiatives/I-62-architect-review-v6.md",
+        "docs/initiatives/I-62-portabilidad-coordinador-principal.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 44841,
+      "Note": ""
+    },
+    {
+      "Index": 23,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/WORKFLOW.md",
+        "docs/context-packs/README.md",
+        "docs/context-packs/documentation-governance.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 15668,
+      "Note": ""
+    },
+    {
+      "Index": 24,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/automation/evidence/I-62-architect-v9/R20261002T000511Z-ba10/README.md",
+        "docs/automation/evidence/I-62-architect-v9/R20261002T000511Z-ba10/output.json",
+        "docs/automation/state/I-62.yml",
+        "docs/initiatives/I-62-architect-package-v9.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 45709,
+      "Note": ""
+    },
+    {
+      "Index": 25,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/automation/evidence/I-62-architect-v9/R20261002T000511Z-ba10/README.md",
+        "docs/automation/evidence/I-62-architect-v9/R20261002T000511Z-ba10/output.json"
+      ],
+      "GitActions": [],
+      "OutputBytes": 19626,
+      "Note": ""
+    },
+    {
+      "Index": 26,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/automation/agent-execution/README.md",
+        "docs/automation/agent-execution/model-catalog.md",
+        "docs/automation/agent-execution/prompting-guide.md",
+        "docs/automation/agent-execution/routing.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 1631,
+      "Note": ""
+    },
+    {
+      "Index": 27,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/automation/agent-execution/schemas/controller-verification.schema.json",
+        "docs/automation/agent-execution/schemas/delegation.schema.json",
+        "docs/automation/agent-execution/schemas/gate-contract.schema.json",
+        "docs/automation/agent-execution/schemas/relay-record.schema.json",
+        "docs/automation/agent-execution/schemas/worker-handoff.schema.json"
+      ],
+      "GitActions": [],
+      "OutputBytes": 28811,
+      "Note": ""
+    },
+    {
+      "Index": 28,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/automation/agent-execution/model-catalog.md",
+        "docs/automation/agent-execution/prompting-guide.md",
+        "docs/automation/agent-execution/routing.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 16037,
+      "Note": ""
+    },
+    {
+      "Index": 29,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/initiatives/I-62-coordinator-review-v1.md",
+        "docs/initiatives/I-62-coordinator-review-v2.md",
+        "docs/initiatives/I-62-coordinator-review-v3.md",
+        "docs/initiatives/I-62-coordinator-review-v4.md",
+        "docs/initiatives/I-62-coordinator-review-v5.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 54333,
+      "Note": ""
+    },
+    {
+      "Index": 30,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/automation/decisions/I-62.md",
+        "docs/initiatives/I-62-discovery.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 41854,
+      "Note": ""
+    },
+    {
+      "Index": 31,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/automation/evidence/I-62-evidence.md",
+        "docs/automation/state/I-62.yml",
+        "docs/initiatives/I-62-proposal-v10.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 15280,
+      "Note": ""
+    },
+    {
+      "Index": 32,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/automation/agent-execution/README.md",
+        "docs/initiatives/I-61-proposal-v9.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 21366,
+      "Note": ""
+    },
+    {
+      "Index": 33,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "README.md",
+        "docs/ARCHITECTURE.md",
+        "docs/FOUNDATIONS.md",
+        "docs/HANDOFF.md",
+        "docs/ROADMAP.md",
+        "docs/initiatives/README.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 18494,
+      "Note": ""
+    },
+    {
+      "Index": 34,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/initiatives/I-62-architect-package-v10.md",
+        "docs/initiatives/I-62-proposal-v10.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 3341,
+      "Note": ""
+    },
+    {
+      "Index": 35,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [],
+      "GitActions": [
+        "git status --porcelain"
+      ],
+      "OutputBytes": 0,
+      "Note": ""
+    },
+    {
+      "Index": 36,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/initiatives/I-62-architect-package-v10.md",
+        "docs/initiatives/I-62-proposal-v10.md"
+      ],
+      "GitActions": [
+        "git rev-parse --abbrev-ref HEAD",
+        "git rev-parse HEAD",
+        "git rev-parse HEAD:docs/initiatives/I-62-architect-package-v10.md",
+        "git rev-parse HEAD:docs/initiatives/I-62-proposal-v10.md"
+      ],
+      "OutputBytes": 128,
+      "Note": ""
+    },
+    {
+      "Index": 37,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v10.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 16021,
+      "Note": ""
+    },
+    {
+      "Index": 38,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/initiatives/I-62-architect-review-v6.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 10447,
+      "Note": ""
+    },
+    {
+      "Index": 39,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/initiatives/I-62-architect-review-v7.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 7904,
+      "Note": ""
+    },
+    {
+      "Index": 40,
+      "ExitCode": 0,
+      "NoProfile": true,
+      "Paths": [
+        "docs/initiatives/I-62-proposal-v10.md"
+      ],
+      "GitActions": [],
+      "OutputBytes": 19340,
+      "Note": ""
+    }
+  ],
+  "OutputEncodingDegradation": {
+    "Object": "docs/initiatives/I-62-proposal-v10.md, salidas de los comandos que lo leyeron",
+    "Counts": {
+      "≤": {
+        "InSource": 13,
+        "InReviewerToolOutput": 0
+      },
+      "≥": {
+        "InSource": 14,
+        "InReviewerToolOutput": 0
+      },
+      "≠": {
+        "InSource": 33,
+        "InReviewerToolOutput": 0
+      },
+      "→": {
+        "InSource": 352,
+        "InReviewerToolOutput": 0
+      },
+      "⇒": {
+        "InSource": 25,
+        "InReviewerToolOutput": 0
+      },
+      "⇔": {
+        "InSource": 14,
+        "InReviewerToolOutput": 0
+      },
+      "∈": {
+        "InSource": 8,
+        "InReviewerToolOutput": 0
+      },
+      "á": {
+        "InSource": 309,
+        "InReviewerToolOutput": 0
+      },
+      "é": {
+        "InSource": 104,
+        "InReviewerToolOutput": 0
+      },
+      "ó": {
+        "InSource": 1688,
+        "InReviewerToolOutput": 25
+      },
+      "«": {
+        "InSource": 72,
+        "InReviewerToolOutput": 0
+      },
+      "»": {
+        "InSource": 72,
+        "InReviewerToolOutput": 0
+      },
+      "�": {
+        "InSource": 0,
+        "InReviewerToolOutput": 5915
+      }
+    },
+    "Examples": [
+      "≤ → «=» (líneas 1295 y 1854: «`review_rounds` ≤ `logical_requests`» se vio como «`review_rounds` = `logical_requests`»)",
+      "≠ → «?»",
+      "→ → U+001A",
+      "letras acentuadas → U+FFFD"
+    ],
+    "Assessment": "MEASURED: la salida de consola del runtime degradó los caracteres no ASCII; el texto que leyó el revisor no es byte a byte el objeto revisado"
+  }
+}
