@@ -643,3 +643,67 @@ llegando pegadas (GAP-03).
 
 **Validación de esta entrega:** allowlist (superficies propias de I-62), enlaces, columnas de las tablas, hashes de los archivos custodiados y
 `git diff --check`; resultado en el cuerpo del commit. La CI de este commit se informa al Owner.
+
+## 22. F0 — Proposal V10 (corrección de A62-V9-01..06, GAP-07 y GAP-08)
+
+**CI del commit de custodia** (`08509a5592e6958dcea0b5e6d9b01ee851a15b01`, §21): corrida **36945699248**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: Tests (Domain + Application) (110647211240), Build UI
+(110647211343), UI Tests (110647211502) y Build Plugin without AutoCAD (110647777343), los cuatro `success`. MEASURED por la sesión. Acredita solo
+`08509a55`.
+
+**Orden recibida:** «I-62 — PROPOSAL V10 / ARCHITECT V9 REQUIRED CORRECTIONS», texto pegado sin archivo de origen. 8 170 bytes en UTF-8, SHA-256
+`c6d1e267b8f239b114284c91dd64a06450eb4cf14e24c7c584cc9864f9522b64`, fuera del repositorio. Registro recuperable en
+`docs/initiatives/I-62-architect-review-v9-disposition.md`.
+
+**Apertura del tramo** (MEASURED en el primer comando del tramo, tras recibir la orden a las 00:33Z): `origin/main` = `819955d6…`, sin rebase; rama de I-62 en `08509a55…` = remoto, árbol limpio.
+
+**Cierre efectivo previsto para la revisión de V10** (paquete §0). Calculado sobre los blobs de la rama, que en estas rutas son iguales a `origin/main`
+(`git diff --quiet origin/main HEAD` sobre ellas):
+
+| Archivo | Blob | Origen de la obligación |
+|---|---|---|
+| `AGENTS.md` | `dd0d5a2d9ac3d3d8502ef7a556c8a5f1d62c9c29` | instrucción automática del runtime; «Leer primero» (pasos 1-4) |
+| `docs/HANDOFF.md` | `f401093a27bb3125816b2d2478887a1cb4dc5c58` | AGENTS, paso 1 |
+| `README.md` | `50bd744a6407c1895ab20ae86ed4d97b4e0eab85` | AGENTS, paso 2 |
+| `docs/ARCHITECTURE.md` | `4402ff89146c1632064d45e66b94196289c55b20` | AGENTS, paso 3 |
+| `docs/context-packs/README.md` | `77b1c7b4e3cf781abad9ea80938d7dc08b2b31c8` | AGENTS, paso 3 (enlace a los Context Packs) |
+| `docs/context-packs/documentation-governance.md` | `fff168de38a785b3474d7f578a383740c6c65e3c` | AGENTS, paso 3, y `context_packs` del contrato de I-62 |
+| `docs/ROADMAP.md` | `58da0b9c30741a1619d91c80f59bd757c88a1aff` | índice de packs («Base obligatoria») y `required_docs` del pack |
+| `docs/FOUNDATIONS.md` | `a6162ffb46f595e94e199d04c8df3bc2bd36455c` | `required_docs` del pack |
+| `docs/initiatives/README.md` | `f3b98a0c9375d71827e51f0cfd84a1f16f858802` | `required_docs` del pack |
+| `docs/initiatives/PROMPT_TEMPLATES.md` | `0e3ed262add5154b975dab1931f729bcae2e31ea` | `required_docs` del pack |
+| `CLAUDE.md` | `793489779558234abbd299f2aaadc32b8e829e58` | solo para adapters de Claude; su «Lectura inicial» no añade rutas |
+
+En los archivos añadidos no se encontró ninguna otra obligación de lectura, con lo que el punto fijo se alcanza ahí. Las instrucciones de las plantillas de
+PROMPT_TEMPLATES (líneas 183, 216 y 246) se dirigen a otros prompts. WORKFLOW, LIFECYCLE, AUTOMATION_PLAN y el contrato ya son canónicos o entran por el
+índice de packs; el contrato cambia en este commit y su blob lo fija el cálculo sobre el commit exacto. El invocador recalcula el cierre sobre el commit
+exacto antes de lanzar.
+
+**Revalidación antes del commit** (MEASURED, 00:56Z):
+- `origin/main` y la rama de I-62 sin cambios;
+- I-52 `04692eb7..4d7fa61d`: 1 commit (§256 de I-52), solo archivos propios;
+- I-63 `658b35ad..1013449d`: 2 commits (contrato de gate de G1 y su RED), solo archivos propios;
+- I-64 `0a3fec30..e0587355`: 1 commit (STOP P-03 de F1-T1-MODEL), solo archivos propios;
+- **ningún cruce** con superficies de I-62.
+
+**Identidad del contenido entregado** (blob calculado con `git hash-object` antes del commit; el commit lo da el recibo):
+- `docs/initiatives/I-62-proposal-v10.md` → `58f88fc602d0d4eaf3900a3514259da6b94faba2`;
+- `docs/initiatives/I-62-architect-review-v9-disposition.md` → `865cf0d822d8184e2156e3f5e9196146917561d9`;
+- `docs/initiatives/I-62-architect-package-v10.md` → `4d9df7edb94d44633361621623a8eb33131d87d2`.
+
+**Defecto propio corregido** (MEASURED con PyYAML `safe_load`). `docs/automation/state/I-62.yml` no era YAML válido desde `3d7ec77f` (V7). Dos valores
+sin comillas de `execution_context` contenían «: » (`Architect: V6 …` y `(Frozen: NO; …`), y el parser fallaba en la línea 19. Pasan a « = », sin cambio de
+significado. `execution_context` es descriptivo y ningún lector del protocolo lo consume (B.8.1), pero el archivo debe parsear. Ahora parsea, con
+`automation_state` intacto en sus nueve campos.
+
+**No se hizo:**
+- invocaciones de modelos, subagentes, Workers, Controllers, Architect, sondas, pilotos, sesiones nuevas, fixtures, remotos, pruebas, tooling ni esquemas en
+  producción;
+- tocar V1-V9, sus paquetes, los registros previos (incluido el de la revisión de V9), el Discovery, el mandato, las normas compartidas ni ninguna superficie
+  ajena;
+- decidir OD-6 ni declarar AGREED o Freeze.
+
+Las trazas de V10 (§20 y Anexos D.8 y F.8) son **análisis del diseño**, no ensayos.
+
+**Validación de esta entrega:** allowlist, enlaces, columnas de las tablas, diff V9→V10 revisado y `git diff --check`; resultado en el cuerpo del commit. La
+CI de este commit se informa al Owner y al Coordinator.
