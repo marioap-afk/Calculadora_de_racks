@@ -1530,3 +1530,18 @@ transitorios R20261002T164522Z-a109/worker-handoff.json; su blob normalizado dif
     para el juicio de G3.
 - **Q-G3-04 (presupuesto).** `attempts` = 2/3: queda **una** corrección para G3 y G4 juntos, y G3 es el gate de mayor riesgo (el núcleo).
   Se señala para la decisión del Coordinator.
+
+## 40. Autorización escalonada de G3
+
+- **Orden del Coordinator**, pegada por el usuario en el chat el 2026-10-02. Resumen en las [decisiones](../decisions/I-63.md) §2.
+  - Respuestas a Q-G3-01..04: A-3 preautorizada con condiciones; `ExpressionSymbolModelTests.cs` autorizado como archivo exacto; revisión
+    del mismo Architect; presupuesto 2/3.
+- **Secuencia:** G3-T1 (solo pruebas) → RED publicado → análisis de INV-22 → A-3 → CI de la A-3 → contrato de T2 contra la A-3 → GREEN →
+  CI → verificación → `Scope` mecánico → revisión del Architect → juicio del Coordinator.
+- **Lectura de la sesión para ejecutarla bajo I-61:**
+  - T1 y T2 son dos delegaciones del mismo `TaskId` `G3-RACK-BUILTINS`, una cadena (16.8), en el directorio del intento 2.
+  - La entrega de T1 solo lleva RED. Se verifica para **acreditar** el RED (`RedPart` = `pass` en `Ci` y `Tests`) y fijar `ChainRedFiles`.
+    Por diseño, su `Ci` queda en `fail`, porque `CurrentSha` es el RED.
+  - T2 es la continuación autorizada, no una corrección: lleva `CorrectionOf` = null, `ChainRedSha` = el RED de T1 y `ChainRedFiles` = sus
+    pruebas. No consume `attempts` (orden del Coordinator).
+  - Los controles negativos nc1-nc3 se ejecutan una sola vez, sobre la verificación `EXECUTION_VERIFIED` de T2 (README §10).

@@ -4,20 +4,20 @@ automation_state:
   branch: architecture/parametros-calculados-resumen-proyecto
   claim_id: ce04f47f-ca53-4e75-b983-5ac57ab6c5e3
   current_phase: G3
-  state: waiting
+  state: implementing
   gate: none
   attempts: 2
-  next_action: Autorizacion formal de G3 por el Coordinator sobre el borrador de contrato R20261002T181856Z-68f0 (evidencia §39; preguntas Q-G3-01..04).
-  last_evidence_commit: 11207788bca71f173ee8c896c18c5c6af8f8cf5b
+  next_action: G3-T1 (RED-BUILTINS, solo pruebas) bajo I-61; despues A-3 (si bastan codigos existentes) con su CI, contrato T2 contra la A-3, GREEN, verificacion, Scope mecanico y revision del Architect.
+  last_evidence_commit: 5e3306e04770cf68f97e83696273771595865db2
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-parametros-calculados-resumen-proyecto
 execution_chain:
   gate: G3
-  task_id: G3-RACK-BUILTINS (borrador)
-  attempt: null
-  next_role: Coordinator (autorizacion formal de G3 sobre el contrato que prepara la sesion)
+  task_id: G3-RACK-BUILTINS (T1 RED-BUILTINS -> A-3 -> T2 GREEN-BUILTINS)
+  attempt: 2
+  next_role: Controller (CONTROLLER_PLANNING de G3-T1)
   next_action: Borrador de contrato artifacts/orchestration/I-63/G3-RACK-BUILTINS/draft/R20261002T181856Z-68f0/gate-contract.json (SHA-256 14C40A9AF502BBE247A1BD51833F4F085A3EBC82A3F70A8F5AA2126C6652B055); sin delegacion ni Worker hasta la autorizacion
   main_sha: 819955d61a6da4c811a11fbd11b5dca13f634b7c
   freeze_commit: f61d0aca859a11b15cbe1797069a83cba873ba95
@@ -29,6 +29,6 @@ execution_chain:
   debts: [DEBT-I63-G2-01 guarda legacy PushBackBomCommandGuardTests satisfecha por comentario; reparar o sustituir antes de READY con A-n Coordinator-only de solo pruebas]
   standing_rules: [comprobacion mecanica independiente de Scope antes de aceptar EXECUTION_VERIFIED en G3 y G4, puerta de PID en el ejecutor de controles]
   g3_invariants: [INV-15, INV-17, INV-18, INV-19, INV-20, INV-21, INV-22, INV-23, INV-24, INV-25, INV-26, INV-27, INV-28]
-  return_to_coordinator_when: contrato de G3 listo para autorizacion; STOP; cambio material, de autoridad o de alcance; AUTONOMY_GAP
-  not_authorized: [G3 (hasta la autorizacion formal), G4]
+  return_to_coordinator_when: G3 EXECUTION_VERIFIED con Scope mecanico PASS y revision del Architect; STOP real; codigo de diagnostico nuevo necesario (C-10); cambio de alcance o materialidad; presupuesto agotado; AUTONOMY_GAP
+  not_authorized: [G4]
   owner_escalation_conditions: OWNER-RESERVED; decision material del Owner; STOP que requiera al Owner; credenciales, autenticacion o compra; accion irreversible o destructiva
