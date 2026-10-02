@@ -860,3 +860,43 @@ SHA-256 `9f110074…`) está transcrita en el README de la corrida, §2.
 
 **Validación de esta entrega:** allowlist (superficies propias de I-62), enlaces, columnas de las tablas, hashes de los archivos custodiados, YAML del estado y
 `git diff --check`; resultado en el cuerpo del commit. La CI de este commit se informa al Owner.
+
+## 26. F0 — Proposal V12 (corrección estrecha de A62-V10-03 residuo y A62-V11-01)
+
+**CI del commit de custodia** (`902c2cbad553f0927982fcd6561c66f96262a311`, §25): corrida **37021436558**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: Tests (Domain + Application) (110885234896), Build UI
+(110885235063), UI Tests (110885235206) y Build Plugin without AutoCAD (110886024403), los cuatro `success`. MEASURED por la sesión. Acredita solo
+`902c2cba`.
+
+**Orden recibida:** «I-62 — PROPOSAL V12 / FINAL NARROW ARCHITECT CORRECTION», texto pegado sin archivo de origen. 6 591 bytes en UTF-8, SHA-256
+`79fea3d7fbf8ad7f121050bc7e1d79410d9831dd30d5f885cd6ddfe31ef4c4c9`, fuera del repositorio. Registro recuperable en
+`docs/initiatives/I-62-architect-review-v11-disposition.md`.
+
+**Apertura del tramo** (MEASURED en el primer comando del tramo, tras recibir la orden a las 14:55Z): `origin/main` = `819955d6…`, sin rebase; rama de I-62
+en `902c2cba…` = remoto, árbol limpio.
+
+**Alcance estrecho:** el diff V11→V12 toca solo §20.3.3, §20.5.1, §20.6, §20.11, B.8.8, B.10.1, F.8, C-38, C-40, C-42, G.2 y la cabecera (114 inserciones
+y 56 supresiones). Las demás secciones quedan sin cambio.
+
+**Revalidación antes del commit** (MEASURED, 15:00Z):
+- `origin/main` = `819955d6…` y la rama de I-62 en `902c2cba…`, sin cambios;
+- I-52 `fb6b5648`, sin commits nuevos;
+- I-63 `a2d2b0a6..4a6c2d88`: 1 commit;
+- I-64 `8d9a0c6e..747ead04`: 1 commit;
+- **ningún cruce** con superficies de I-62.
+
+**Identidad del contenido entregado** (blob calculado con `git hash-object` antes del commit; el commit lo da el recibo):
+- `docs/initiatives/I-62-proposal-v12.md` → `320cecc9bd1b68112509e510b97c768b6d505ba2`;
+- `docs/initiatives/I-62-architect-review-v11-disposition.md` → `9570cceaf7059aaf438b91aa769c906e4a136ce8`;
+- `docs/initiatives/I-62-architect-package-v12.md` → `f60873d15f4b62e1313bb03c9136076acbd08012`.
+
+**No se hizo:**
+- invocaciones de modelos, subagentes, Workers, Controllers, Architect, sondas, pilotos, sesiones nuevas, fixtures, remotos, pruebas, tooling ni esquemas en
+  producción;
+- tocar V1-V11, sus paquetes, los registros previos, el Discovery, el mandato, las normas compartidas ni ninguna superficie ajena;
+- reabrir un hallazgo cerrado, decidir OD-6 ni declarar AGREED o Freeze.
+
+Las trazas de V12 son **análisis del diseño**, no ensayos.
+
+**Validación de esta entrega:** allowlist, enlaces, columnas de las tablas, diff V11→V12 revisado, YAML del estado y `git diff --check`; resultado en el
+cuerpo del commit. La CI de este commit se informa al Owner y al Coordinator.
