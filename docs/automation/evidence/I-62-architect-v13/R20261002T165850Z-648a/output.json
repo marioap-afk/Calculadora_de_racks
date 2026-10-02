@@ -1,0 +1,636 @@
+{
+  "Schema": "rackcad-architect-review-result/v1",
+  "ResultId": "R20261002T165850Z-648a",
+  "LogicalReviewRequestId": "L20261002T165850Z-648a",
+  "InvocationId": "I20261002T165850Z-648a",
+  "AttemptSeq": 1,
+  "RequestedRole": "ARCHITECT",
+  "Action": "REVIEW_DESIGN",
+  "ReviewedUnit": "I-62 — Proposal V13",
+  "ReviewedCommit": "b337a59fa6879893229096f6e423d441b3c97bc6",
+  "ReviewedPath": "docs/initiatives/I-62-proposal-v13.md",
+  "ReviewedBlob": "949c6403a04570dfa7b5dcd1a3509271819dc696",
+  "PackagePath": "docs/initiatives/I-62-architect-package-v13.md",
+  "PackageBlob": "b1d3d6791e6addedaed8adccd171caefa3c7ed5b",
+  "ReviewerBinding": "ARCHITECT de la invocación I20261002T165850Z-648a; identidad observada del binding: UNKNOWN",
+  "ReviewerDeclaredIdentity": {
+    "Runtime": "Codex, según las instrucciones del runtime; versión observada: UNKNOWN",
+    "Model": "UNKNOWN",
+    "Effort": "UNKNOWN",
+    "SessionOrThread": "UNKNOWN",
+    "Source": "Declaración informativa del revisor; no sustituye RuntimeEvidenceRef ni acredita identidad o fidelidad."
+  },
+  "ReviewerMode": "SEPARATE SESSION",
+  "ReviewerAndAuthorSamePerson": "Sesiones IA distintas según la autorización: autora Claude, revisora Codex. Identidad y posible coincidencia del operador humano: UNKNOWN.",
+  "InjectedContextDeclaration": [
+    "Instrucciones de sistema sobre identidad general del asistente, canales, extensión de respuesta y esquema experimental de salida.",
+    "Instrucciones de desarrollador sobre el trabajo de Codex, autonomía, comunicación, herramientas, lectura de archivos, seguridad de comandos y convenciones de respuesta.",
+    "Catálogo automático de skills y sus ubicaciones; ninguna skill aplicada ni archivo de skill leído.",
+    "Configuración automática de permisos: filesystem de solo lectura, aprobación never y red restringida.",
+    "Configuración automática de colaboración: modo Default, rol /root, herramientas de agentes disponibles y prohibición de delegación proactiva. No se invocaron agentes.",
+    "AGENTS.md y contexto del entorno proporcionados en el mensaje inicial: directorio D:\\r62-arch-v13, PowerShell, fecha y zona horaria.",
+    "Diagnóstico inicial del shell sobre la carga de profile.ps1; las lecturas posteriores usaron login:false y el paquete V13 se releyó.",
+    "Se observó una compactación interna del contexto durante esta revisión. El resumen de continuidad no se usa como fuente canónica ni como evidencia de fidelidad; las premisas centrales del hallazgo se releyeron mediante la forma B.",
+    "No se recibió ni se accedió a transcripción o memoria de la sesión autora."
+  ],
+  "InputsRead": [
+    "docs/initiatives/I-62-architect-package-v13.md",
+    "docs/HANDOFF.md",
+    "README.md",
+    "docs/ARCHITECTURE.md",
+    "docs/context-packs/README.md",
+    "docs/context-packs/documentation-governance.md",
+    "docs/ROADMAP.md",
+    "docs/FOUNDATIONS.md",
+    "docs/initiatives/README.md",
+    "docs/initiatives/PROMPT_TEMPLATES.md",
+    "docs/initiatives/I-62-proposal-v13.md",
+    "docs/initiatives/I-62-architect-review-v12-disposition.md",
+    "docs/initiatives/I-62-architect-review-v10-disposition.md",
+    "docs/initiatives/I-62-architect-review-v11-disposition.md",
+    "docs/initiatives/I-62-architect-review-v12.md",
+    "docs/initiatives/I-62-architect-review-v11.md",
+    "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/output.json",
+    "docs/initiatives/I-62-proposal-v12.md",
+    "docs/INITIATIVE_LIFECYCLE.md",
+    "AGENTS.md",
+    "docs/AUTOMATION_PLAN.md",
+    "docs/initiatives/I-62-architect-review-v9-disposition.md",
+    "docs/initiatives/I-62-architect-review-v7.md",
+    "docs/initiatives/I-62-architect-review-v6.md",
+    "docs/initiatives/I-62-architect-package-v12.md",
+    "docs/initiatives/I-62-portabilidad-coordinador-principal.md",
+    "docs/automation/decisions/I-62-owner-mandate.txt",
+    "docs/automation/state/I-62.yml",
+    "docs/WORKFLOW.md",
+    "docs/initiatives/I-62-discovery.md",
+    "docs/automation/decisions/I-62.md",
+    "docs/automation/evidence/I-62-evidence.md",
+    "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/schema.json",
+    "docs/initiatives/I-62-coordinator-requirement-auto.md",
+    "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md",
+    "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/README.md"
+  ],
+  "InputFidelityEvidenceRef": "input-fidelity-preflight.json SHA-256 c91ccd48776c58558bd3b5b5464adbd333227b60060524563a39f0846ad35df3",
+  "IndependenceEvidence": "SEPARATE SESSION y ausencia de contexto privado del autor declaradas por la autorización. Las lecturas efectuadas pertenecen al cierre suministrado. La identidad efectiva, la auditoría de lo entregado al modelo y la independencia de las premisas deben acreditarse y custodiarse por el invocador; esta declaración no las certifica.",
+  "Verdict": "CHANGES REQUIRED",
+  "RequiredFindings": [
+    {
+      "FindingId": "A62-V11-01",
+      "LineageId": "A62-V11-01",
+      "Source": "Residuo REQUIRED aceptado por el Owner y el Coordinator; no se abre un linaje nuevo.",
+      "AffectedSection": "§20.3.3, Clausura de dependencias normativas, puntos 3 y 4; coherencia con B.8.8 I-S18 y cobertura C-42.",
+      "Evidence": "V13 elimina correctamente la condición de cita y deriva las dependencias del texto canónico. Sin embargo, el punto 3 convierte incondicionalmente un documento referido como un todo en fuente terminal y prohíbe seguir las referencias que contiene. Contraejemplo de diseño: A dispone «X solo se permite según el documento B»; dentro de B, una cláusula dispone «X solo si se cumple §C». A y todo B llegan fieles, pero C llega con una negación degradada. Al tratar B como terminal, el algoritmo puede excluir C y acreditar una independencia falsa. La misma excepción oculta una referencia C inexistente o ambigua. La dirección del Owner admite fuentes terminales acotadas, pero exige seguir las dependencias materialmente controlantes; no demuestra que cualquier documento completo sea semánticamente terminal. El paquete V13 §5, pregunta 2, identifica expresamente esta cuestión. El caso es una cadena A→B→C del residuo existente, con B referido como documento completo.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Section": "§20.3.3, Clausura de dependencias normativas, punto 3",
+          "LineStart": 1260,
+          "LineEnd": 1268,
+          "Quote": "3. **Unidad de control completa.** De cada dependencia entra la unidad necesaria para conservar su significado, nunca solo su título:\n   - un párrafo referido → el párrafo entero;\n   - un elemento de lista → el elemento, con su padre cuando lo controla;\n   - una regla de tabla → la cabecera y la fila o la celda pertinentes;\n   - un invariante → el invariante completo;\n   - un paso de un algoritmo → el bloque o los pasos que lo controlan;\n   - una sección con varias alternativas → solo la parte aplicable, si se puede establecer de forma determinista; si no, la sección pertinente entera;\n   - un documento referido como un todo → el documento entero, como fuente terminal explícita: no se siguen sus referencias internas, pero tiene que ser\n     fiel entero."
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Section": "§20.3.3, Clausura de dependencias normativas, punto 4",
+          "LineStart": 1269,
+          "LineEnd": 1272,
+          "Quote": "4. **Algoritmo.** Una lista de trabajo sobre unidades canónicas, identificadas por `{Path, LineStart, LineEnd}`, con un conjunto de **visitados**. Cada\n   unidad nueva entra una sola vez y se exploran sus dependencias. La clausura termina en el **punto fijo**, cuando no aparece ninguna unidad nueva, o en\n   fuentes terminales acotadas de forma explícita. Conserva cada dependencia única y nunca recurre de forma indefinida. Un **ciclo** (A ↔ B) no es un error\n   si la clausura es determinista."
+        },
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v12-disposition.md",
+          "Section": "§2, Dirección exigida, fila A62-V11-01",
+          "LineStart": 33,
+          "LineEnd": 33,
+          "Quote": "| A62-V11-01 (residuo): dependencias normativas transitivas | (1) Problema: V12 amplía bien el `PremiseEnvelope` más allá de la subcadena, pero solo incluye una referencia cruzada de control cuando el Architect la cita; no basta, porque una proposición puede depender de otra cláusula sin que el hallazgo la cite aparte. Ejemplo: «la acción X solo se permite en las condiciones de §B»; si el cuerpo de §B llegó degradado, la conclusión puede ser falsa aunque A y el título de §B sean fieles. (2) La fidelidad de una premisa sigue las dependencias normativas, no las citas del revisor: una `NormativeDependencyClosure` transitiva por cada `PremiseEnvelope`, determinada mecánicamente por el invocador desde la fuente canónica. (3) Como mínimo se siguen: referencias explícitas a secciones o cláusulas; «según», «sujeto a», «salvo», «a menos que», «solo si», «tal como se define en»; identificadores definidos fuera de la proposición; tablas, filas y enumeraciones referidas; invariantes; algoritmos y definiciones de transiciones de estado; cláusulas de autoridad o precedencia. (4) Recursión hasta un punto fijo o una fuente terminal acotada de forma explícita. (5) De cada dependencia, la unidad de control completa, no solo el título: párrafo entero; elemento con su padre cuando hace falta; cabecera con la fila o celda; invariante completo; bloque o pasos del algoritmo; de una sección con alternativas, solo la parte aplicable si se puede establecer de forma determinista, y si no, la sección pertinente entera |"
+        },
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+          "Section": "§3, R62-FIDELITY-03",
+          "LineStart": 45,
+          "LineEnd": 45,
+          "Quote": "| R62-FIDELITY-03 | **Invalidación acotada por hallazgo:** si la degradación se puede acotar mecánicamente a pasajes o hallazgos, los no afectados pueden seguir siendo utilizables solo si se prueba que su camino de evidencia es independiente del material corrompido; los afectados son INVALID_PREMISE / UNACCREDITED, y el resultado registra sus `FindingId`. Caso medido de V10: A62-V10-02 depende del «≤» corrompido; A62-V10-01, -03 y -04 no. Si no se puede establecer la independencia, se invalida toda la revisión |"
+        }
+      ],
+      "WhyItMatters": "La ingestión parcial con DEGRADED_BOUNDED puede abrir, cerrar o sustituir linajes. Recibir fielmente B no prueba independencia de C cuando C controla B. Prohibir ARCHITECT_SATISFIED para una revisión parcialmente degradada no impide esas modificaciones incorrectas de linaje. Es una insuficiencia conductual del cierre transitivo, no una precisión editorial.",
+      "CorrectionRequired": "Eliminar la terminalidad automática de todo documento referido como un todo. Incorporar el documento completo y explorar recursivamente las dependencias que controlen materialmente la premisa, aunque estén expresadas dentro de ese documento. Permitir una fuente terminal únicamente cuando su ausencia de dependencias controlantes pendientes esté establecida mecánicamente; si esa condición o la aplicabilidad no puede establecerse, independencia UNKNOWN y hallazgo no acreditado, o revisión inválida cuando no pueda acotarse. Mantener visitados y punto fijo para terminar ciclos. Alinear el punto 4 y B.8.8 I-S18 con esa condición. Añadir a C-42 el caso A→documento B completo→C con C degradada, el caso con C sin resolver y un positivo de fuente realmente terminal. Conservar la evidencia y la certificación en el invocador.",
+      "PremiseEnvelopeRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Section": "Título del objeto",
+          "LineStart": 1,
+          "LineEnd": 1
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Section": "§20, alcance de la orquestación",
+          "LineStart": 972,
+          "LineEnd": 981
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Section": "§20.3, contrato de invocación",
+          "LineStart": 1023,
+          "LineEnd": 1046
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Section": "§20.3.3 completo, incluido el algoritmo y sus condiciones",
+          "LineStart": 1127,
+          "LineEnd": 1301
+        },
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v12-disposition.md",
+          "Section": "§2, título, cabecera y tabla de dirección exigida",
+          "LineStart": 29,
+          "LineEnd": 39
+        },
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+          "Section": "§3, título, cabecera y requisitos R62-FIDELITY-01..06",
+          "LineStart": 39,
+          "LineEnd": 48
+        }
+      ],
+      "NormativeDependencyRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Section": "§20.3.1, cierre efectivo e identidad canónica",
+          "LineStart": 1047,
+          "LineEnd": 1105
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Section": "§20.3.2, observación del runtime y compactación",
+          "LineStart": 1106,
+          "LineEnd": 1126
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Section": "§20.3.3, fidelidad, envoltorios, dependencias e invalidación",
+          "LineStart": 1127,
+          "LineEnd": 1301
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Section": "§20.5.2, disposiciones y autoridad sobre linajes",
+          "LineStart": 1446,
+          "LineEnd": 1468
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Section": "§13, fallos y P-25",
+          "LineStart": 743,
+          "LineEnd": 768
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Section": "B.8.8, campos e invariantes completos de orchestration",
+          "LineStart": 2049,
+          "LineEnd": 2141
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Section": "B.10.1 y B.10.2, premisas del resultado e ingestión",
+          "LineStart": 2197,
+          "LineEnd": 2226
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Section": "Anexo C, alcance y cabecera de la matriz",
+          "LineStart": 2227,
+          "LineEnd": 2234
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Section": "C-42, obligación completa de fidelidad",
+          "LineStart": 2279,
+          "LineEnd": 2279
+        },
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v12-disposition.md",
+          "Section": "§2, dirección exigida completa",
+          "LineStart": 29,
+          "LineEnd": 39
+        },
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+          "Section": "§3, requisitos completos de fidelidad",
+          "LineStart": 39,
+          "LineEnd": 48
+        }
+      ]
+    }
+  ],
+  "OptionalFindings": [],
+  "FindingDispositions": [
+    {
+      "FindingId": "A62-V11-01",
+      "LineageId": "A62-V11-01",
+      "State": "STILL_OPEN",
+      "SupersededBy": [],
+      "Rationale": "Se corrige la dependencia de las citas del revisor y se incorporan unidades completas, recursión y fallos conservadores. Persiste una exclusión de dependencias controlantes por la terminalidad incondicional del documento completo. Es el mismo residuo de independencia transitiva; no hay rebaja ni linaje nuevo.",
+      "EvaluatedObject": {
+        "Commit": "b337a59fa6879893229096f6e423d441b3c97bc6",
+        "Path": "docs/initiatives/I-62-proposal-v13.md",
+        "Blob": "949c6403a04570dfa7b5dcd1a3509271819dc696"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Section": "§20.3.3, Clausura de dependencias normativas, punto 3, documento completo",
+          "LineStart": 1267,
+          "LineEnd": 1268,
+          "Quote": "   - un documento referido como un todo → el documento entero, como fuente terminal explícita: no se siguen sus referencias internas, pero tiene que ser\n     fiel entero."
+        }
+      ]
+    },
+    {
+      "FindingId": "O-V7-01",
+      "LineageId": "O-V7-01",
+      "State": "STILL_OPEN",
+      "SupersededBy": [],
+      "Rationale": "Se conserva abierto y no bloqueante. No se acredita una corrección ni se reconstruye su formulación original ausente de los registros consultados.",
+      "EvaluatedObject": {
+        "Commit": "b337a59fa6879893229096f6e423d441b3c97bc6",
+        "Path": "docs/initiatives/I-62-proposal-v13.md",
+        "Blob": "949c6403a04570dfa7b5dcd1a3509271819dc696"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Section": "Mapa de revisiones, OPTIONAL preservados",
+          "LineStart": 78,
+          "LineEnd": 78,
+          "Quote": "Los OPTIONAL abiertos (O-V7-01, O-V7-02, O-05, O-07) no bloquean."
+        }
+      ]
+    },
+    {
+      "FindingId": "O-V7-02",
+      "LineageId": "O-V7-02",
+      "State": "STILL_OPEN",
+      "SupersededBy": [],
+      "Rationale": "Se conserva abierto y no bloqueante; no se dispone un cierre sin evidencia de su corrección.",
+      "EvaluatedObject": {
+        "Commit": "b337a59fa6879893229096f6e423d441b3c97bc6",
+        "Path": "docs/initiatives/I-62-proposal-v13.md",
+        "Blob": "949c6403a04570dfa7b5dcd1a3509271819dc696"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Section": "Mapa de revisiones, OPTIONAL preservados",
+          "LineStart": 78,
+          "LineEnd": 78,
+          "Quote": "Los OPTIONAL abiertos (O-V7-01, O-V7-02, O-05, O-07) no bloquean."
+        }
+      ]
+    },
+    {
+      "FindingId": "O-05",
+      "LineageId": "O-05",
+      "State": "STILL_OPEN",
+      "SupersededBy": [],
+      "Rationale": "Se conserva abierto y no bloqueante; no se dispone un cierre sin evidencia de su corrección.",
+      "EvaluatedObject": {
+        "Commit": "b337a59fa6879893229096f6e423d441b3c97bc6",
+        "Path": "docs/initiatives/I-62-proposal-v13.md",
+        "Blob": "949c6403a04570dfa7b5dcd1a3509271819dc696"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Section": "Mapa de revisiones, OPTIONAL preservados",
+          "LineStart": 78,
+          "LineEnd": 78,
+          "Quote": "Los OPTIONAL abiertos (O-V7-01, O-V7-02, O-05, O-07) no bloquean."
+        }
+      ]
+    },
+    {
+      "FindingId": "O-07",
+      "LineageId": "O-07",
+      "State": "STILL_OPEN",
+      "SupersededBy": [],
+      "Rationale": "Se conserva abierto y no bloqueante; no se dispone un cierre sin evidencia de su corrección.",
+      "EvaluatedObject": {
+        "Commit": "b337a59fa6879893229096f6e423d441b3c97bc6",
+        "Path": "docs/initiatives/I-62-proposal-v13.md",
+        "Blob": "949c6403a04570dfa7b5dcd1a3509271819dc696"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Section": "Mapa de revisiones, OPTIONAL preservados",
+          "LineStart": 78,
+          "LineEnd": 78,
+          "Quote": "Los OPTIONAL abiertos (O-V7-01, O-V7-02, O-05, O-07) no bloquean."
+        }
+      ]
+    }
+  ],
+  "Downgrades": [],
+  "RequirementAssessments": [
+    {
+      "RequirementId": "R62-FIDELITY-01",
+      "Assessment": "SATISFIED",
+      "Rationale": "§20.3.3 define identidad canónica, UTF-8 según bytes reales, representación de transporte, verificación por el mismo camino y cobertura de cada carácter no ASCII presente. Es satisfacción del diseño; no certificación del preflight de esta corrida.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+          "Section": "§3, R62-FIDELITY-01",
+          "LineStart": 43,
+          "LineEnd": 43,
+          "Quote": "| R62-FIDELITY-01 | Contrato de **fidelidad de los insumos canónicos**: `CanonicalInputFidelity {InputRef, GitBlob, CanonicalSha256, Encoding, TransportRepresentation, TransportSha256 o verificación equivalente, FidelityStatus}`. Codificación canónica del texto del repositorio: UTF-8 según los bytes reales. Antes de lanzar: bytes y blob canónicos, transporte en UTF-8 donde aplique, verificación de que el camino de lectura conserva caracteres no ASCII representativos y registro de la evidencia. La verificación cubre las clases presentes en el corpus (letras latinas acentuadas, ≤, ≥, ≠, →, ⇒, ⇔, ∈ cuando aparecen), no clases ausentes |"
+        }
+      ]
+    },
+    {
+      "RequirementId": "R62-FIDELITY-02",
+      "Assessment": "PARTIALLY_SATISFIED",
+      "Rationale": "La normalización permitida, la degradación semántica, la salida efectivamente visible y UNVERIFIED están definidos. El fallo cerrado puede eludirse en una dependencia controlante omitida al detenerse automáticamente en un documento completo.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+          "Section": "§3, R62-FIDELITY-02",
+          "LineStart": 44,
+          "LineEnd": 44,
+          "Quote": "| R62-FIDELITY-02 | **Fallo cerrado:** si la representación visible para el revisor difiere materialmente del insumo canónico, INPUT_FIDELITY_INVALID; el resultado no se ingiere como disposición válida para lo afectado. Distinguir (A) diferencia de bytes con representación normalizada semánticamente fiel, si el contrato la permite de forma explícita, y (B) degradación semántica (≤ → «=», ≠ → «?», corrupción de identificadores o rutas, negación eliminada, caracteres de reemplazo en palabras normativas, estructura de tablas u operadores perdida): STOP o resultado inválido. No depender de que el Architect lo note |"
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Section": "§20.3.3, excepción terminal del documento completo",
+          "LineStart": 1267,
+          "LineEnd": 1268,
+          "Quote": "   - un documento referido como un todo → el documento entero, como fuente terminal explícita: no se siguen sus referencias internas, pero tiene que ser\n     fiel entero."
+        }
+      ]
+    },
+    {
+      "RequirementId": "R62-FIDELITY-03",
+      "Assessment": "PARTIALLY_SATISFIED",
+      "Rationale": "La independencia se calcula por el invocador desde el texto canónico y ya no depende de las citas. La fuente terminal incondicional todavía puede excluir una dependencia material y acreditar falsamente independencia del tramo degradado.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+          "Section": "§3, R62-FIDELITY-03",
+          "LineStart": 45,
+          "LineEnd": 45,
+          "Quote": "| R62-FIDELITY-03 | **Invalidación acotada por hallazgo:** si la degradación se puede acotar mecánicamente a pasajes o hallazgos, los no afectados pueden seguir siendo utilizables solo si se prueba que su camino de evidencia es independiente del material corrompido; los afectados son INVALID_PREMISE / UNACCREDITED, y el resultado registra sus `FindingId`. Caso medido de V10: A62-V10-02 depende del «≤» corrompido; A62-V10-01, -03 y -04 no. Si no se puede establecer la independencia, se invalida toda la revisión |"
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Section": "§20.3.3, excepción terminal del documento completo",
+          "LineStart": 1267,
+          "LineEnd": 1268,
+          "Quote": "   - un documento referido como un todo → el documento entero, como fuente terminal explícita: no se siguen sus referencias internas, pero tiene que ser\n     fiel entero."
+        }
+      ]
+    },
+    {
+      "RequirementId": "R62-FIDELITY-04",
+      "Assessment": "SATISFIED",
+      "Rationale": "§20.3.3 y B.10.1 mantienen la observación, el cálculo y la custodia de fidelidad y clausura en el invocador. Las referencias informativas del Architect no las certifican.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+          "Section": "§3, R62-FIDELITY-04",
+          "LineStart": 46,
+          "LineEnd": 46,
+          "Quote": "| R62-FIDELITY-04 | **Observada por el invocador, no autodeclarada:** el Architect no la certifica; el invocador o el adapter la registra, como el `RuntimeEvidenceRef`. El resultado puede citar `InputFidelityEvidenceRef`, pero no crea esa evidencia |"
+        }
+      ]
+    },
+    {
+      "RequirementId": "R62-FIDELITY-05",
+      "Assessment": "SATISFIED",
+      "Rationale": "§20.3.3 exige establecer y verificar el transporte por el mismo camino efectivo, sin asumir la terminal ni congelar comandos o tamaños de lectura.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+          "Section": "§3, R62-FIDELITY-05",
+          "LineStart": 47,
+          "LineEnd": 47,
+          "Quote": "| R62-FIDELITY-05 | **Preflight de transporte:** para `codex-cli` / PowerShell en Windows, el adapter establece y verifica de forma explícita un transporte seguro en UTF-8, sin asumir los valores por defecto de la terminal. No se congela un comando concreto de PowerShell; se congela el requisito observable de que el texto canónico visible para el revisor sea fiel |"
+        }
+      ]
+    },
+    {
+      "RequirementId": "R62-FIDELITY-06",
+      "Assessment": "PARTIALLY_SATISFIED",
+      "Rationale": "C-42 conserva los ocho casos originales y añade cuerpos referidos, cadenas, ciclos, referencias sin resolver, degradación ajena, tablas, truncamiento y compactación. Falta cubrir expresamente la rama que declara terminal a un documento completo con dependencias controlantes pendientes; esa rama mantiene insuficiente la obligación de independencia.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+          "Section": "§3, R62-FIDELITY-06",
+          "LineStart": 48,
+          "LineEnd": 48,
+          "Quote": "| R62-FIDELITY-06 | **Cobertura de pruebas:** (1) ≤ se mantiene; (2) ≠ se mantiene; (3) texto acentuado conservado; (4) transporte con pérdida deliberada rechazado; (5) un hallazgo apoyado solo en texto degradado no abre, cierra ni sustituye un linaje; (6) un hallazgo no afectado sigue válido solo con la independencia demostrada mecánicamente; (7) un Principal sucesor reconstruye la evidencia de fidelidad desde la custodia; (8) cambiar de proveedor o runtime no evita la validación. Añadir a contratos, estado y referencias de evidencia de la orquestación, semántica de fallos, matriz de invariantes y obligaciones, y FX-06 cuando aplique |"
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v13.md",
+          "Section": "§20.3.3, excepción terminal del documento completo",
+          "LineStart": 1267,
+          "LineEnd": 1268,
+          "Quote": "   - un documento referido como un todo → el documento entero, como fuente terminal explícita: no se siguen sus referencias internas, pero tiene que ser\n     fiel entero."
+        }
+      ]
+    }
+  ],
+  "PreservedDispositionChecks": [
+    {
+      "FindingId": "A62-V10-03",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Cierre literal en output.json de V12 y aceptación en la disposición V12 §1. V13 §20.5.1, §20.6 e I-P13 conservan cancelación desde LAUNCHING con prueba de no arranque, terminalidad, reserva contada y prohibición de ingerir resultados cancelados. Sin contradicción material nueva."
+    },
+    {
+      "FindingId": "A62-V10-01",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Disposición V11 y PreservedDispositionChecks del output.json V12. V13 §20.3.1 mantiene la exención separada de HealthSignals y niega equivalencia de CI con Core local."
+    },
+    {
+      "FindingId": "A62-V10-04",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Disposiciones V10/V11 y output.json V12. V13 §20.7 y B.9 conservan PLAN→delegation/v2 y VERIFY→controller-verification/v2, sin intercambiarlos."
+    },
+    {
+      "FindingId": "A62-V9-04",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Cierre preservado en la disposición V11 y output.json V12. V13 §20.6 e I-S18 conservan identidad lógica estable, review_rounds ≤ logical_requests y conteo conservador de reservas."
+    },
+    {
+      "FindingId": "A62-V9-02",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Disposiciones V10/V11 y output.json V12. V13 §20.6, B.8.8 y F.8 mantienen intención durable, reserva previa, recuperación conservadora e ingestión idempotente."
+    },
+    {
+      "FindingId": "A62-V9-03",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Disposición V10 y preservación canónica en V11/V12. V13 §20.5.2 mantiene disposición explícita, omisión abierta, objeto exacto y rebaja por el emisor. La insuficiencia de fidelidad permanece en A62-V11-01."
+    },
+    {
+      "FindingId": "A62-V9-05",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Disposición V10 y output.json V12. V13 §20.7 y B.10 conservan la separación de autoridad entre ARCHITECT y REVIEWER."
+    },
+    {
+      "FindingId": "A62-V9-06",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Disposiciones V10/V11 y output.json V12. V13 I-P13 y F.8 mantienen loop.object actualizado exclusivamente en CORRECTING→PUBLISHED; C-38 conserva el negativo de cambio tardío."
+    },
+    {
+      "FindingId": "A62-V7-01",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Registro V7 y preservación en output.json V12. V13 B.8 conserva la excepción de reconciliación y el alcance de I-H02 fuera de Q0."
+    },
+    {
+      "FindingId": "A62-V7-02",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Registro V7 y output.json V12. V13 §8.9 y F.7 conservan REBASE_TAKEOVER acotado y QR combinado antes del trabajo ordinario."
+    },
+    {
+      "FindingId": "A62-V7-03",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Registro V7 y preservación en output.json V12. V13 §11.4 y B.2 conservan el conjunto de autores acotado a unidad y objeto, sucesiones y operador humano incluidos."
+    },
+    {
+      "FindingId": "A62-V6-01",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Registro V6 y preservación V10/V11/V12. V13 §8.8, B.8.7 y F.6 conservan RebaseMap durable, reconciliación y STOP ante imágenes no acreditables."
+    },
+    {
+      "FindingId": "A62-V6-02",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Registro V6 y preservación canónica V10/V11/V12. V13 §4.1, §8.7, §14 y §20.12 conservan adopción opt-in, DIRECT_ONLY y custodia acotada."
+    },
+    {
+      "FindingId": "A62-V6-03",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Registro V6 y output.json V12. V13 §11.4 conserva evidencia propia para EXTERNAL HUMAN, sin ActorRef ni SessionRef ficticios."
+    },
+    {
+      "FindingId": "A62-V9-01",
+      "PreservedState": "SUPERSEDED → A62-V10-03",
+      "Check": "CONFIRMED",
+      "Rationale": "Sucesión registrada en las disposiciones V10/V11 y preservada en output.json V12. V13 mantiene la materialización autorizada y el cierre de A62-V10-03; no altera la sucesión histórica."
+    }
+  ],
+  "OwnerDecisions": [
+    "OD-6 permanece pendiente; esta revisión no selecciona ninguna alternativa.",
+    "La invocación única concluye con este resultado. No autoriza otra invocación, una versión nueva, implementación ni Freeze."
+  ],
+  "FocusAreas": [
+    {
+      "Area": "Revisión completa de Proposal V13",
+      "Assessment": "Proposal V13 leída completa mediante rangos acotados. Se conservan roles, autoridad, bindings, adapters, custodia, recuperación, presupuestos, adopción opt-in, compatibilidad I-61/I-62, gates y pilotos. Un único REQUIRED permanece abierto: A62-V11-01."
+    },
+    {
+      "Area": "A62-V11-01: inclusión independiente de las citas del Architect",
+      "Assessment": "Corregido: la clausura se deriva de las dependencias normativas aunque el Architect no cite el destino."
+    },
+    {
+      "Area": "A62-V11-01: derivación mecánica desde texto canónico",
+      "Assessment": "Corregido: §20.3.3 asigna el cálculo al invocador o adapter sobre AuthorityRevision."
+    },
+    {
+      "Area": "A62-V11-01: cláusulas de control completas",
+      "Assessment": "Se incorporan párrafos, elementos con padres, cabeceras y filas, invariantes y algoritmos completos. Persiste la exclusión de dependencias controlantes contenidas en un documento declarado terminal."
+    },
+    {
+      "Area": "A62-V11-01: recursión hasta punto fijo",
+      "Assessment": "Parcial: existe lista de trabajo con visitados, pero la terminalidad automática del documento completo puede interrumpir una cadena material A→B→C."
+    },
+    {
+      "Area": "A62-V11-01: terminación de ciclos",
+      "Assessment": "Correctamente especificada mediante unidades canónicas únicas y conjunto de visitados; los ciclos deterministas no son errores."
+    },
+    {
+      "Area": "A62-V11-01: referencias inexistentes o ambiguas",
+      "Assessment": "Fallo cerrado correctamente definido para las referencias exploradas. La excepción terminal puede impedir explorar una referencia controlante sin resolver."
+    },
+    {
+      "Area": "A62-V11-01: degradación ajena a un hallazgo independiente",
+      "Assessment": "La ingestión parcial conserva los hallazgos independientes y rechaza los afectados. Su aplicación segura requiere corregir la clausura incompleta identificada."
+    },
+    {
+      "Area": "A62-V11-01: truncamiento visible para el revisor",
+      "Assessment": "Corregido en el diseño: se audita lo entregado al modelo, con omisiones y truncamientos; una captura completa por sí sola no acredita visibilidad."
+    },
+    {
+      "Area": "A62-V11-01: compactación del contexto",
+      "Assessment": "Correctamente registrada como evidencia de runtime; no invalida por sí sola ni aporta evidencia propia. Las premisas posteriores conservan las mismas obligaciones."
+    },
+    {
+      "Area": "C-42 (h): cuerpo referido degradado",
+      "Assessment": "Caso y oráculo INVALID_PREMISE presentes, con proposición y título fieles."
+    },
+    {
+      "Area": "C-42 (i): párrafo de control completo fiel",
+      "Assessment": "Positivo presente y coherente con la incorporación de unidades completas."
+    },
+    {
+      "Area": "C-42 (j): cadena A→B→C",
+      "Assessment": "Negativo con C degradada presente. Debe abarcar expresamente B referido como documento completo para cubrir la excepción terminal."
+    },
+    {
+      "Area": "C-42 (k): ciclo",
+      "Assessment": "Positivo A↔B fiel, válido y con terminación presente."
+    },
+    {
+      "Area": "C-42 (l): referencia sin resolver",
+      "Assessment": "Caso inexistente, ambiguo o indistinguible presente con independencia UNKNOWN y hallazgo no acreditado; falta cubrirlo tras la frontera de documento completo."
+    },
+    {
+      "Area": "C-42 (m): degradación no relacionada",
+      "Assessment": "Positivo presente: el hallazgo sigue válido cuando la degradación queda fuera de su clausura."
+    },
+    {
+      "Area": "C-42 (n): tabla→definición",
+      "Assessment": "Negativo presente para enumeración o definición referida y degradada, con INVALID_PREMISE."
+    },
+    {
+      "Area": "C-42 (o): captura completa y salida visible truncada",
+      "Assessment": "Caso presente: truncamiento STRUCTURE; premisa afectada INVALID_PREMISE y captura sola UNVERIFIED."
+    },
+    {
+      "Area": "C-42 (p): compactación",
+      "Assessment": "Caso presente: evento registrado, sin invalidación automática y sin citar el resumen cifrado como evidencia."
+    },
+    {
+      "Area": "Cierres anteriores",
+      "Assessment": "Los catorce CLOSED y la sucesión SUPERSEDED solicitados se confirman sobre sus registros canónicos. V13 no introduce una contradicción material directa que los reabra."
+    }
+  ],
+  "FreezeAssessment": {
+    "A62V1101State": "STILL_OPEN — REQUIRED; terminalidad automática del documento completo.",
+    "PriorClosuresValid": "YES — todos los CLOSED y SUPERSEDED solicitados permanecen válidos.",
+    "BothOD6AlternativesExecutable": "YES — ambas alternativas de §11.4 conservan sus modos, alcance y evidencia propia; ninguna se selecciona.",
+    "ReadyForConsensusFreezeAfterOD6": "NO",
+    "Notes": "Decidir OD-6 no elimina el residuo de A62-V11-01. La V13 exacta necesita resolverlo antes del acuerdo y del Consensus Freeze. Esta revisión no declara Freeze ni autoriza implementación."
+  },
+  "AutonomyAssessment": "El diseño mantiene al Principal como orquestador sin transferirle autoridad de acuerdo, cierre de sus REQUIRED o decisión del Owner. Las trazas y los casos de prueba especifican obligaciones futuras; esta invocación no acredita ejecución autónoma ni pilotos.",
+  "KnownLimitations": [
+    "El invocador debe auditar la representación efectivamente entregada al modelo, la compactación observada y la clausura de dependencias de este resultado. Las referencias de envoltorio y dependencias son informativas; no certifican esa clausura.",
+    "La identidad efectiva del runtime, modelo, effort, hilo y operador humano no se comprobó mediante evidencia observada del invocador.",
+    "Algunos insumos históricos y transitivos se consultaron por secciones; InputsRead identifica rutas consultadas y no afirma lectura íntegra de todas ellas. Proposal V13 sí se leyó completa.",
+    "Las formulaciones originales de los OPTIONAL no se reconstruyen desde transcripciones privadas; sus estados abiertos se conservan según los registros canónicos.",
+    "La CI de publicación 37036044921 es una señal suministrada en la autorización, sin comprobación por red y sin equivalencia con Core local.",
+    "No se ejecutaron builds ni pruebas, conforme a los límites y a la exención explícita de esta invocación. No se acredita implementación, RED→GREEN, gate, Candidato o piloto.",
+    "No se leyeron archivos fuera del cierre autorizado ni evidencias privadas de sesiones. No se certifica retrospectivamente la visibilidad de revisiones anteriores."
+  ],
+  "RecommendedNextAction": "Custodiar este resultado literal y la evidencia de runtime, lecturas, fidelidad, envoltorios y clausuras. El Owner y el Coordinator deben disponer el residuo A62-V11-01 bajo la autoridad aplicable. Esta invocación termina sin edición, nueva versión, reintento, decisión de OD-6 ni Freeze."
+}

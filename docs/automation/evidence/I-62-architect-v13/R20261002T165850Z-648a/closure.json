@@ -1,0 +1,817 @@
+{
+  "Schema": "rackcad-input-closure/v1 (representación experimental; Proposal V13 §20.3.1 y B.9; no autoridad normativa)",
+  "AuthorityRevision": "b337a59fa6879893229096f6e423d441b3c97bc6",
+  "Adapter": "codex-cli 0.159.2 (exec), pwsh del runtime de Codex en ConstrainedLanguage",
+  "CanonicalInputs": [
+    {
+      "Path": "docs/initiatives/I-62-proposal-v13.md",
+      "Blob": "949c6403a04570dfa7b5dcd1a3509271819dc696",
+      "Sha256": "f9880c2ecd7b54c97751c4d07a5e13c944baa97fb8307fdea209781df0c844c1",
+      "Bytes": 330701,
+      "Lines": 3216,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "objeto exacto de la revisión"
+    },
+    {
+      "Path": "docs/initiatives/I-62-architect-package-v13.md",
+      "Blob": "b1d3d6791e6addedaed8adccd171caefa3c7ed5b",
+      "Sha256": "c7eb1bdef7abe94280710091c8a677b61bada6e33ee0e14ba9af84ad8babfa0c",
+      "Bytes": 12777,
+      "Lines": 136,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "paquete del Architect V13"
+    },
+    {
+      "Path": "docs/initiatives/I-62-proposal-v12.md",
+      "Blob": "320cecc9bd1b68112509e510b97c768b6d505ba2",
+      "Sha256": "4836d4b81f6e09abf9944be2d516e688f32bb506071872cc6e32b0a85b4610ad",
+      "Bytes": 319023,
+      "Lines": 3129,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "versión anterior (delta)"
+    },
+    {
+      "Path": "docs/initiatives/I-62-architect-package-v12.md",
+      "Blob": "f60873d15f4b62e1313bb03c9136076acbd08012",
+      "Sha256": "864c5a39f8239f3958ec2a47570014f83533b353e8a9d1a320f55ef8fa21834a",
+      "Bytes": 10384,
+      "Lines": 124,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "paquete anterior (delta)"
+    },
+    {
+      "Path": "docs/initiatives/I-62-architect-review-v12-disposition.md",
+      "Blob": "3751ca998a908a37022126d23a519ab6c6aec77c",
+      "Sha256": "012510d20210ad97f7d134993e472b199dfa3bda40d1c0e2aae14763c5354a0e",
+      "Bytes": 7877,
+      "Lines": 70,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "disposición sobre la revisión de V12"
+    },
+    {
+      "Path": "docs/initiatives/I-62-architect-review-v12.md",
+      "Blob": "1ac4e7a1e02b5759d1d0252c171ad5548a00e939",
+      "Sha256": "0138ba56acd2ae31bd3ad26d7bd2c5b6ec0840fe31249343b298cdb5abfd959f",
+      "Bytes": 8405,
+      "Lines": 84,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "registro de la revisión de V12"
+    },
+    {
+      "Path": "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/README.md",
+      "Blob": "454d002dc976f1e8ffaf9b735d02a4fa2afe9ab6",
+      "Sha256": "af7e61bc1ec6d54df88fc952529b20ce1f7ffdd5c64bb51411f0c2ad041cbd3f",
+      "Bytes": 14575,
+      "Lines": 166,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "evidencia de la revisión de V12"
+    },
+    {
+      "Path": "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/closure.json",
+      "Blob": "0b71c5780eb678c72e86d26a3d95307c31a2cd73",
+      "Sha256": "2f0010c9eb3b4a060f7a7d02d53c48c637c34f09383047a73eecda67d640a696",
+      "Bytes": 26352,
+      "Lines": 687,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "evidencia de la revisión de V12"
+    },
+    {
+      "Path": "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/input-fidelity-postrun.json",
+      "Blob": "610dc8c24669087fa60a127fc8661aadedab3467",
+      "Sha256": "82231e42903c2b3019ca58cb187a870179d3a5a5720c44938358f2075ecec7e9",
+      "Bytes": 31032,
+      "Lines": 1229,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "evidencia de la revisión de V12"
+    },
+    {
+      "Path": "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/input-fidelity-preflight.json",
+      "Blob": "1027fc1e8d9c9533dc569b783ebd17c726ae437c",
+      "Sha256": "ea36ffe4efde568289660f3e42ae2b0b2f384d91544659ad9edbe704f27d1fe0",
+      "Bytes": 55338,
+      "Lines": 1550,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "evidencia de la revisión de V12"
+    },
+    {
+      "Path": "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/output.json",
+      "Blob": "cdd37bd0b73f3d8fcc342e03833b8f3a1178858a",
+      "Sha256": "fb39b8cdc2434702a9520504df3a70c883d41ef61221aa68dbe85edf63c9346d",
+      "Bytes": 45120,
+      "Lines": 518,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "evidencia de la revisión de V12"
+    },
+    {
+      "Path": "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/prompt.md",
+      "Blob": "2fed48cb4796b11b42a8497e7e3427f44b8576f9",
+      "Sha256": "7e31b136945edeb22e5524c1e38271eab52985963b9720f20f2ffc71d5d112ca",
+      "Bytes": 15741,
+      "Lines": 319,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "evidencia de la revisión de V12"
+    },
+    {
+      "Path": "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/read-audit.json",
+      "Blob": "cb2c5554e54c103959b24b802d53b5cb8cee1096",
+      "Sha256": "0c6e131cb864a2e5075b083399f419dcdcfeec920372f21ed10deb7c77cab552",
+      "Bytes": 44791,
+      "Lines": 2110,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "evidencia de la revisión de V12"
+    },
+    {
+      "Path": "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/runtime-evidence.json",
+      "Blob": "bd32cb7032f5eb561bd84b98ea4d870c89b8c4aa",
+      "Sha256": "98413ee76a8f761cb2ee7a34bdd727715378c64fb23b33783e8bc645242bb5d5",
+      "Bytes": 6115,
+      "Lines": 150,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "evidencia de la revisión de V12"
+    },
+    {
+      "Path": "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/schema.json",
+      "Blob": "41c20a0472283debb52b66520f8010dc1341538f",
+      "Sha256": "8beabf5b6253fb1be45ef1335d732ba74e4cf4ac7b662a7ce1e16f930f9d44ea",
+      "Bytes": 10060,
+      "Lines": 483,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "evidencia de la revisión de V12"
+    },
+    {
+      "Path": "docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/v11-model-visible-reaudit.json",
+      "Blob": "94e6585722a54473cc9bf63b0f90118b57a45978",
+      "Sha256": "5439dfbbcfd0c39869aac4efeaa34180eff63ac0266305f1b1ba2e7753981f3c",
+      "Bytes": 8206,
+      "Lines": 408,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "evidencia de la revisión de V12"
+    },
+    {
+      "Path": "docs/initiatives/I-62-architect-review-v11-disposition.md",
+      "Blob": "9570cceaf7059aaf438b91aa769c906e4a136ce8",
+      "Sha256": "0ca374683825db43a4e4e360758a04731c6b2ae6972f6080035dc057168de30b",
+      "Bytes": 6997,
+      "Lines": 68,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "disposición sobre la revisión de V11"
+    },
+    {
+      "Path": "docs/initiatives/I-62-architect-review-v11.md",
+      "Blob": "9681adb50895bb35a93dec2e21ed9a3dbd13eee9",
+      "Sha256": "1d2ae2634a57056b9163d6cf8e590b1e048f82ffd83bc4d9fe9b0d5daf841c84",
+      "Bytes": 7764,
+      "Lines": 79,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "registro de la revisión de V11"
+    },
+    {
+      "Path": "docs/automation/evidence/I-62-architect-v11/R20261002T140232Z-cdc5/README.md",
+      "Blob": "0e4d953b2cc02bb5efab20e59c9f6e38f79331d7",
+      "Sha256": "3a36e1d17e9689ba82db77f26a0e484c58ddfa03619cee2130efbcd586e2b8e0",
+      "Bytes": 11043,
+      "Lines": 130,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "evidencia de la revisión de V11"
+    },
+    {
+      "Path": "docs/automation/evidence/I-62-architect-v11/R20261002T140232Z-cdc5/closure.json",
+      "Blob": "5586081dbaf83d2ed1c34142bda85186c6c2b19a",
+      "Sha256": "bd598fd5a1af0b45c44aea922098844e50141433e93fa10c30f793b1a6bbc72b",
+      "Bytes": 23966,
+      "Lines": 561,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "evidencia de la revisión de V11"
+    },
+    {
+      "Path": "docs/automation/evidence/I-62-architect-v11/R20261002T140232Z-cdc5/input-fidelity-postrun.json",
+      "Blob": "66f7a2ea3968592ae58fa1503ebd20edc38ab8a6",
+      "Sha256": "02b9dded2ae6860e4a0bc4ed4ccb0928632d41d261c328036e21299d8c2c7550",
+      "Bytes": 5779,
+      "Lines": 182,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "evidencia de la revisión de V11"
+    },
+    {
+      "Path": "docs/automation/evidence/I-62-architect-v11/R20261002T140232Z-cdc5/input-fidelity-preflight.json",
+      "Blob": "c19c9530fa1c02af12aec95b890c787f3d46dafa",
+      "Sha256": "c4ee320f2ac5e6940a4d6013ca31014208bb3d36c9b7e804c55e3373fb0bccf7",
+      "Bytes": 75839,
+      "Lines": 1737,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "evidencia de la revisión de V11"
+    },
+    {
+      "Path": "docs/automation/evidence/I-62-architect-v11/R20261002T140232Z-cdc5/output.json",
+      "Blob": "079e7468108d8d7cdcbc6cba910cef47dd2c489a",
+      "Sha256": "cf731d6ca6271121b8a2c9fdf50b8d5b60e19a59dfb5c59cc945a33b35e83cc6",
+      "Bytes": 40630,
+      "Lines": 644,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "evidencia de la revisión de V11"
+    },
+    {
+      "Path": "docs/automation/evidence/I-62-architect-v11/R20261002T140232Z-cdc5/prompt.md",
+      "Blob": "3d4ba5a3a162c7a3d5d2587053d0991a281ad5f3",
+      "Sha256": "aaa6bae438099537bdbfc68924fb0ee4fdd57c9c80e0afc56bff955a6f810de8",
+      "Bytes": 15781,
+      "Lines": 302,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "evidencia de la revisión de V11"
+    },
+    {
+      "Path": "docs/automation/evidence/I-62-architect-v11/R20261002T140232Z-cdc5/read-audit.json",
+      "Blob": "aed50fab2618737320d652f03e5a9080b8d00ae9",
+      "Sha256": "80fd5339a03eb9377683c474f6c3fd600c3d677923ad230fc60a1d734f736c60",
+      "Bytes": 25665,
+      "Lines": 1313,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "evidencia de la revisión de V11"
+    },
+    {
+      "Path": "docs/automation/evidence/I-62-architect-v11/R20261002T140232Z-cdc5/runtime-evidence.json",
+      "Blob": "ac37d241e83336fe9099b73864700118dcf050f7",
+      "Sha256": "91e6aa80ca772ee31a971542a2fc64a80c06930bf0b84b1df1a102e1ccbdf51e",
+      "Bytes": 4310,
+      "Lines": 121,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "evidencia de la revisión de V11"
+    },
+    {
+      "Path": "docs/automation/evidence/I-62-architect-v11/R20261002T140232Z-cdc5/schema.json",
+      "Blob": "05413cc1ee8dce52fac219d60702787def27bc1c",
+      "Sha256": "ae43421b282d6d83e1a4390153d99c49d0c30ce591b70f29838152a2dc012915",
+      "Bytes": 6985,
+      "Lines": 121,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "evidencia de la revisión de V11"
+    },
+    {
+      "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+      "Blob": "3328d1f5e11a1e3903cfd8ee3624f9d1d966efd8",
+      "Sha256": "fb8c5855c77996dcbea10cf427fa210ba9e27e0f5c7460a66f254112adf900ba",
+      "Bytes": 10674,
+      "Lines": 90,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "disposición sobre la revisión de V10"
+    },
+    {
+      "Path": "docs/initiatives/I-62-architect-review-v10.md",
+      "Blob": "a6ca44819f31d3558b485aeacc0b6caa8bc72f5e",
+      "Sha256": "f448038b1f431cc2718aa3677fc31ca9701c3b051a55ee353d720eebfb097177",
+      "Bytes": 7104,
+      "Lines": 79,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "registro de la revisión de V10"
+    },
+    {
+      "Path": "docs/initiatives/I-62-architect-review-v9-disposition.md",
+      "Blob": "865cf0d822d8184e2156e3f5e9196146917561d9",
+      "Sha256": "d4700575866a7e2896e33018cd5c931b13a4363341620dbd6d79297ba3bcbddd",
+      "Bytes": 9302,
+      "Lines": 86,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "disposición sobre la revisión de V9"
+    },
+    {
+      "Path": "docs/initiatives/I-62-architect-review-v9.md",
+      "Blob": "a9403323ab0a10919cf3697a5e162205f90b0288",
+      "Sha256": "954be3543110d68c4b6861398f867031437f73d8f4628f01df0ffa5c736c6cb5",
+      "Bytes": 7231,
+      "Lines": 70,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "registro de la revisión de V9"
+    },
+    {
+      "Path": "docs/initiatives/I-62-coordinator-requirement-auto.md",
+      "Blob": "fcf941669782ccbfc1e32efa7343b2be16dd6ac4",
+      "Sha256": "71e300a4d94f0fd262df84b56aa5c6be0716e6222984050e77dfd1fe7a4d4e21",
+      "Bytes": 9499,
+      "Lines": 70,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "requisito R62-AUTO"
+    },
+    {
+      "Path": "docs/initiatives/I-62-architect-review-v6.md",
+      "Blob": "2217239781eb47ec297c58d4313d511807c4e326",
+      "Sha256": "93858794d8e2bd9a25bf15f42f3122215f22373b5d59f8408ea0e939455b5e64",
+      "Bytes": 10200,
+      "Lines": 135,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "registro del Architect V6"
+    },
+    {
+      "Path": "docs/initiatives/I-62-architect-review-v7.md",
+      "Blob": "40a6d5205ff3edef9c781d69c4c9c116b76774a9",
+      "Sha256": "0c81d1fa11170f73806591de41bd8bb3e802a76af2ef3b89f06fc5dc5d0fcb4d",
+      "Bytes": 7719,
+      "Lines": 113,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "registro del Architect V7"
+    },
+    {
+      "Path": "docs/initiatives/I-62-coordinator-review-v1.md",
+      "Blob": "b518a4f977ee5b18157fc45c881a8ea06d69d7cc",
+      "Sha256": "9ca38c5777810d7cadbc280fbb2febaf601e90b23e08217624bb1a95dc553025",
+      "Bytes": 13700,
+      "Lines": 106,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "registro del Coordinator V1"
+    },
+    {
+      "Path": "docs/initiatives/I-62-coordinator-review-v2.md",
+      "Blob": "b431510af260da6f57b2c347f3378e3f1a52f6cb",
+      "Sha256": "75b2fd162a7209ed7700c709d02911e2cfb17980a73d9492ff52932cba2a5b73",
+      "Bytes": 16368,
+      "Lines": 123,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "registro del Coordinator V2"
+    },
+    {
+      "Path": "docs/initiatives/I-62-coordinator-review-v3.md",
+      "Blob": "461ef605ffc04b1df85ce6cf60d2a132e7506403",
+      "Sha256": "ed70227aa257742dcf23f792f475d2c917f41e881fcfc87d8f8f15a5b98121df",
+      "Bytes": 7744,
+      "Lines": 86,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "registro del Coordinator V3"
+    },
+    {
+      "Path": "docs/initiatives/I-62-coordinator-review-v4.md",
+      "Blob": "fb21c49e80377de6102e26a4ccc99785676c6526",
+      "Sha256": "5120eac994e9cc5d8cc6808f56c83ce92c108458b324ebffc45e329de1be99b1",
+      "Bytes": 8165,
+      "Lines": 129,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "registro del Coordinator V4"
+    },
+    {
+      "Path": "docs/initiatives/I-62-coordinator-review-v5.md",
+      "Blob": "4c51a94c4790629f91006db642915e1ae11ce25b",
+      "Sha256": "72106ba44b4d97d870248843dd62b32cde685ad5226bcd8c28cc6455336f783f",
+      "Bytes": 7040,
+      "Lines": 120,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "registro del Coordinator V5"
+    },
+    {
+      "Path": "docs/initiatives/I-62-discovery.md",
+      "Blob": "9279c4b26b066229ad42df0f62b08b6b82928127",
+      "Sha256": "769b427dc17ab2eddf1e038f0fe13a7fcb6ee832163b1337dd1ef1b0e93330aa",
+      "Bytes": 58480,
+      "Lines": 657,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "Discovery R1"
+    },
+    {
+      "Path": "docs/automation/decisions/I-62-owner-mandate.txt",
+      "Blob": "e352ce7e940280e6168b6a20af8192150245b95e",
+      "Sha256": "2364e892d050b939c910e6b5d22ea5960d7bb36dbfe3d4fe4c349ed0f6780f0a",
+      "Bytes": 19004,
+      "Lines": 857,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "mandato del Owner"
+    },
+    {
+      "Path": "docs/initiatives/I-62-portabilidad-coordinador-principal.md",
+      "Blob": "c4f4ee87136fdbb359901c8a674e73a2c7f3d920",
+      "Sha256": "38cdd37e54bc02f29683c003620484f5c85f6a5c9a2b35d885048690427c7580",
+      "Bytes": 15085,
+      "Lines": 213,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "contrato de I-62 (también transitivo)"
+    },
+    {
+      "Path": "docs/automation/decisions/I-62.md",
+      "Blob": "8349a4aa198e38e9ef82e57f12cc744483ef8966",
+      "Sha256": "510a020259e84551cccb33dbad5e1651afeae9c4151c723f9334649d09371367",
+      "Bytes": 62176,
+      "Lines": 473,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "decisiones de I-62"
+    },
+    {
+      "Path": "docs/automation/evidence/I-62-evidence.md",
+      "Blob": "1a4df3779e2d21808bc0be335926e8114061e78c",
+      "Sha256": "f6fe36eba9c514453ebf0c91dd92be5bc3e6d2393e565e4ca83e3f0015b4ff3b",
+      "Bytes": 80595,
+      "Lines": 1011,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "evidencia de I-62"
+    },
+    {
+      "Path": "docs/automation/state/I-62.yml",
+      "Blob": "86d29aaf4fe496eebc86887274f874970b5a8e6c",
+      "Sha256": "f4ea2f89d4023228e7ad2aa8e30f574aa828a5f32f0b3c038c882ad70e78a671",
+      "Bytes": 3061,
+      "Lines": 21,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "estado de I-62"
+    },
+    {
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "Blob": "6415c33bd2f86fa05444e00b630d7fed5e5d7a22",
+      "Sha256": "74d5ed42f0704b47637895feeea091642cbda9fb92c668a1655db8e3947ff119",
+      "Bytes": 22346,
+      "Lines": 342,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "autoridad"
+    },
+    {
+      "Path": "docs/WORKFLOW.md",
+      "Blob": "884ed305ce242bda575cef74a9eff8c28ce7b67c",
+      "Sha256": "5c6290d0cf4c5f7ee39604f6654fdb2a5ae489769016639bca96bcc8a882c149",
+      "Bytes": 43390,
+      "Lines": 610,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "autoridad (también transitiva)"
+    },
+    {
+      "Path": "AGENTS.md",
+      "Blob": "dd0d5a2d9ac3d3d8502ef7a556c8a5f1d62c9c29",
+      "Sha256": "5d66239153c294fb084979ddcd7521b3e24c449cba0fa371a8c4e3bc3bbed0d6",
+      "Bytes": 24587,
+      "Lines": 356,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "autoridad; instrucción automática del runtime"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Blob": "07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
+      "Sha256": "b5ca72945f64462f33b5efd6cf024e35b4c86630289d9b363e7f3eab8fde198d",
+      "Bytes": 56231,
+      "Lines": 696,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "autoridad, completo (también transitiva)"
+    },
+    {
+      "Path": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md",
+      "Blob": "da275e1a141a750fee2a8f501b36aa280d7aa534",
+      "Sha256": "3cdd80588e1565a64421831ae69919542ac984e948ced4784917fad63c806911",
+      "Bytes": 9871,
+      "Lines": 105,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "ADR-0046"
+    },
+    {
+      "Path": "docs/initiatives/I-61-proposal-v9.md",
+      "Blob": "8cf5f9f42eea00f1b828e5cccbb70e56691b27c7",
+      "Sha256": "ef551403c91fe781bfebf8857fb164794da645643dc289533be4229dd161eece",
+      "Bytes": 103362,
+      "Lines": 910,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "Freeze de I-61"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Blob": "64ae952b6fb01ce206200c64d2a1d8683b5a297d",
+      "Sha256": "fb3286bff818d5a9b5b8a1e982a6c47337b54820ef25085e78364a1816e1a793",
+      "Bytes": 17873,
+      "Lines": 241,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "agent-execution de I-61"
+    },
+    {
+      "Path": "docs/automation/agent-execution/model-catalog.md",
+      "Blob": "166d978d114e635bbef67e295c2ec1da73af6d1f",
+      "Sha256": "dc11c201d39b2e80017cb15e049c20f1a5008a8dd97a713c0d4ea3547b0770c3",
+      "Bytes": 10624,
+      "Lines": 137,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "agent-execution de I-61"
+    },
+    {
+      "Path": "docs/automation/agent-execution/prompting-guide.md",
+      "Blob": "79754c724c6b1f534fd2e97c04918d21db53d54d",
+      "Sha256": "c03fde58bcd4666b612bdc611696fbbe8ec97513509c030db0bd0e0f82a59fb9",
+      "Bytes": 2989,
+      "Lines": 38,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "agent-execution de I-61"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Blob": "82ca9b38865bd93e8de6134a368b905cba9fc627",
+      "Sha256": "36f487b8cf5d7e2d49775e82f2ce853c3bda9db950c75e48ee455d0a461ae320",
+      "Bytes": 6663,
+      "Lines": 93,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "agent-execution de I-61"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/controller-verification.schema.json",
+      "Blob": "72747225daa2a83ba139ec1ffacb57d8943cf0af",
+      "Sha256": "bacfa903b3b7b535e4813086bdd8e9b3db139ec5dde938b202d8eb90f6713c91",
+      "Bytes": 5627,
+      "Lines": 56,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "agent-execution de I-61"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/delegation.schema.json",
+      "Blob": "62c026764a3b917c9b4ffeb6df049247ea613869",
+      "Sha256": "0740a5ac36285e508db8b4dae782bd0f9e7b6a2c94069e61b654f81e8e88f085",
+      "Bytes": 6612,
+      "Lines": 152,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "agent-execution de I-61"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/gate-contract.schema.json",
+      "Blob": "56ced893586abc4a571d842f631e435342906f6a",
+      "Sha256": "c34ead0ce98a09d6f9932d5b8ed8ffbab78ad14224365495b19584d590b57caf",
+      "Bytes": 3482,
+      "Lines": 86,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "agent-execution de I-61"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/relay-record.schema.json",
+      "Blob": "2deba19606d058fd82b389687934b0c3dfef8c06",
+      "Sha256": "23933c47c7d6fe40878af2d596accd4c45477eac96523a66f6d76577f63057f5",
+      "Bytes": 11987,
+      "Lines": 243,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "agent-execution de I-61"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+      "Blob": "cc3c9cf76b2247f3312e99bd447554326cc3700a",
+      "Sha256": "c5b63fe7daf142c3b3689289f2ab9eeccd7083298ecffc986e1509c8fe860015",
+      "Bytes": 3814,
+      "Lines": 81,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "agent-execution de I-61"
+    }
+  ],
+  "AllowedTransitiveInputs": [
+    {
+      "Path": "docs/HANDOFF.md",
+      "Blob": "f401093a27bb3125816b2d2478887a1cb4dc5c58",
+      "Sha256": "04ae148fd220aff2fcecd071c1c399e1728902cc186ed73bec8b3d61e779ed84",
+      "Bytes": 445188,
+      "Lines": 5288,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "AGENTS.md «Leer primero» 1"
+    },
+    {
+      "Path": "README.md",
+      "Blob": "50bd744a6407c1895ab20ae86ed4d97b4e0eab85",
+      "Sha256": "2ca0337a565ea6d666063f08a92ef7275efbe27dafb96b8b120230ee8e7bfc8e",
+      "Bytes": 3696,
+      "Lines": 69,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "AGENTS.md «Leer primero» 2"
+    },
+    {
+      "Path": "docs/ARCHITECTURE.md",
+      "Blob": "4402ff89146c1632064d45e66b94196289c55b20",
+      "Sha256": "64798e183679599cc65fa8b2cda66487953b7d8b7c81f1a0c19061f83ae1f560",
+      "Bytes": 28890,
+      "Lines": 527,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "AGENTS.md «Leer primero» 3"
+    },
+    {
+      "Path": "docs/context-packs/README.md",
+      "Blob": "77b1c7b4e3cf781abad9ea80938d7dc08b2b31c8",
+      "Sha256": "3a51def8525f653059ba97d6ab56d66f9872e1009a3d7e4c42aaba576e53a756",
+      "Bytes": 1965,
+      "Lines": 42,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "AGENTS.md «Leer primero» 3 (enlace a los Context Packs)"
+    },
+    {
+      "Path": "docs/context-packs/documentation-governance.md",
+      "Blob": "fff168de38a785b3474d7f578a383740c6c65e3c",
+      "Sha256": "3d16c3090c6b4804ffce1bb321041a57cdbf6b1a9b1dd99ef0b3864bc2d266da",
+      "Bytes": 2030,
+      "Lines": 45,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "AGENTS.md «Leer primero» 3 + context_packs del contrato de I-62"
+    },
+    {
+      "Path": "docs/ROADMAP.md",
+      "Blob": "58da0b9c30741a1619d91c80f59bd757c88a1aff",
+      "Sha256": "bd7736c5945ea223b7ff2381100932503e00c623fd53e5f74ec1539b45c34feb",
+      "Bytes": 167184,
+      "Lines": 677,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "docs/context-packs/README.md «Base obligatoria»; required_docs del pack"
+    },
+    {
+      "Path": "docs/FOUNDATIONS.md",
+      "Blob": "a6162ffb46f595e94e199d04c8df3bc2bd36455c",
+      "Sha256": "bd8490d4f2687638c1903ef6b1fb702e8a3516cbb7d741b93a34294c02a20cfa",
+      "Bytes": 19499,
+      "Lines": 169,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "required_docs del pack"
+    },
+    {
+      "Path": "docs/initiatives/README.md",
+      "Blob": "f3b98a0c9375d71827e51f0cfd84a1f16f858802",
+      "Sha256": "88e7872baa70aa4915a8dfbad4b3251fa1067aebe15e6b98bb6f90eb4b7da64f",
+      "Bytes": 71987,
+      "Lines": 752,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "required_docs del pack"
+    },
+    {
+      "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+      "Blob": "0e3ed262add5154b975dab1931f729bcae2e31ea",
+      "Sha256": "2b0ea8166f87912c9ec9d626c0ec803db1d52d3f1d62214e2c1012de3da71cae",
+      "Bytes": 13424,
+      "Lines": 277,
+      "Encoding": "UTF-8 sin BOM",
+      "LineEndings": "LF",
+      "Reason": "required_docs del pack"
+    }
+  ],
+  "ReadPolicy": {
+    "LargeFileThresholdBytes": 150000,
+    "MaxRangeLines": 150,
+    "LargeFiles": [
+      "docs/initiatives/I-62-proposal-v13.md",
+      "docs/initiatives/I-62-proposal-v12.md",
+      "docs/HANDOFF.md",
+      "docs/ROADMAP.md"
+    ],
+    "Note": "parámetros operativos de esta invocación (GAP-10, lección de V12 sobre lo visible por el modelo); no son requisitos congelados de la arquitectura",
+    "FullReadFormAMaxBytes": 24000,
+    "ModelVisibleBudget": "cada llamada de herramienta debe devolver menos de ~8 000 tokens (≈ 28 000 caracteres): una lectura grande por llamada; tramos menores donde hay filas largas (Anexo C)"
+  },
+  "AllowedActions": [
+    {
+      "Action": "cmd /c type <ruta con barras invertidas>",
+      "RequiredBy": "lectura fiel de un archivo completo de hasta 24000 bytes",
+      "Class": "ACTION_COMPATIBLE"
+    },
+    {
+      "Action": "cmd /c 'chcp 65001 >nul & pwsh -NoProfile -Command \"Get-Content -LiteralPath <ruta> -Encoding utf8 | Select-Object -Skip N -First M\"'",
+      "RequiredBy": "lectura fiel por rangos (M <= 150); obligatoria para todo archivo de más de 24 000 bytes",
+      "Class": "ACTION_COMPATIBLE"
+    },
+    {
+      "Action": "cmd /c 'chcp 65001 >nul & pwsh -NoProfile -Command \"Select-String -LiteralPath <ruta> -Encoding utf8 -Pattern <patrón sin espacios ni comillas> | ForEach-Object { [string]$_.LineNumber + [char]58 + $_.Line }\"'",
+      "RequiredBy": "búsqueda fiel",
+      "Class": "ACTION_COMPATIBLE"
+    },
+    {
+      "Action": "git log --oneline -10",
+      "RequiredBy": "AGENTS.md «Leer primero» 4",
+      "Class": "ACTION_COMPATIBLE"
+    },
+    {
+      "Action": "git rev-parse / git status --porcelain",
+      "RequiredBy": "verificación de identidad del objeto",
+      "Class": "ACTION_COMPATIBLE"
+    }
+  ],
+  "ExemptedActions": [
+    {
+      "Action": "dotnet test",
+      "RequiredBy": "AGENTS.md «Leer primero» 4",
+      "Class": "EXEMPTED",
+      "ExemptionRef": "OWNER / COORDINATOR AUTHORIZATION — FINAL FORMAL ARCHITECT REVIEW OF I-62 PROPOSAL V13, sección «DOTNET TEST EXEMPTION» (texto pegado; SHA-256 4e6742b9f7b5884e9555f3e41c195c561a66328cae8be4eea129560c74116ec8)",
+      "ExemptionScope": "solo esta invocación del Architect y solo `dotnet test`; la acción se OMITE; la CI de publicación es solo una señal separada, no equivalente a Core local ni a ninguna clase de prueba local"
+    }
+  ],
+  "HealthSignals": [
+    {
+      "Kind": "PUBLICATION_CI",
+      "RunRef": "37036044921 (push, head_sha exacto b337a59f, cuatro jobs requeridos success)",
+      "Sha": "b337a59fa6879893229096f6e423d441b3c97bc6",
+      "Note": "señal separada de salud de publicación; NO es evidencia equivalente a Core local"
+    }
+  ],
+  "InputFidelityPreflight": {
+    "Path": "input-fidelity-preflight.json",
+    "Sha256": "c91ccd48776c58558bd3b5b5464adbd333227b60060524563a39f0846ad35df3",
+    "FidelityStatus": "FAITHFUL_NORMALIZED",
+    "CorpusDistinctNonAscii": 61,
+    "PriorRun": {
+      "Path": "preflight-run1-transient.json (no versionado)",
+      "Sha256": "33006ac9a7385ac4b5f33281acc42f7d5e44930de2448399dbae9f2c42b72161",
+      "FidelityStatus": "DEGRADED",
+      "Detail": "una lectura A de docs/automation/evidence/I-62-architect-v12/R20261002T151854Z-603d/input-fidelity-preflight.json difirió solo en ASCII (mismos recuentos de los 61 caracteres no ASCII); no se reprodujo en el diagnóstico ni en la segunda corrida completa"
+    }
+  },
+  "NotTriggered": [
+    {
+      "Source": "documentation-governance optional_docs (I-06)",
+      "Reason": "opcional; no obliga"
+    },
+    {
+      "Source": "documentation-governance code_globs",
+      "Reason": "orientan; no obligan"
+    },
+    {
+      "Source": "PROMPT_TEMPLATES (plantillas)",
+      "Reason": "dirigidas a otros prompts"
+    },
+    {
+      "Source": "HANDOFF cabecera y «no debe leerse como hecho»",
+      "Reason": "punteros y advertencias"
+    },
+    {
+      "Source": "AUTOMATION_PLAN «Modo normal» y «Autoridad y referencias obligatorias»",
+      "Reason": "obligaciones del ejecutor de automatización"
+    },
+    {
+      "Source": "menciones de «Leer primero» o required_docs en documentos y evidencia de I-62 (incluidas la Proposal V13 §20.3.1 y la evidencia de V12)",
+      "Reason": "citas descriptivas"
+    },
+    {
+      "Source": "CLAUDE.md",
+      "Reason": "solo adapters de Claude"
+    }
+  ],
+  "DeclaredRuntimeContext": [
+    "instrucciones base de codex-cli y mensajes developer del runtime",
+    "AGENTS.md del clon, inyectado automáticamente",
+    "~/.codex/AGENTS.md global: 0 bytes",
+    "features desactivadas por bandera: memories, apps, plugins, browser_use, browser_use_external, computer_use, in_app_browser, remote_plugin, hooks; mcp node_repl desactivado",
+    "pwsh del runtime en ConstrainedLanguage con salida de consola en página 850 (medido en el preflight)",
+    "herramienta exec del modelo, con límites de salida por llamada que pueden truncar lo que recibe el modelo (medido en V12)"
+  ],
+  "ForbiddenInputs": [
+    "transcripción y memoria de la sesión autora (~/.claude/projects/*)",
+    "sesiones de Codex ajenas (~/.codex/sessions/*)",
+    "el worktree real de I-62 y los de otras unidades",
+    "D:\\IDs",
+    "artefactos transitorios del autor",
+    "cualquier archivo del clon fuera de CanonicalInputs y AllowedTransitiveInputs",
+    "red",
+    "formas de lectura con pérdida medida: Get-Content, Select-String u otro lector directamente en el pwsh exterior; Select-String con su formato por defecto",
+    "lectura completa (forma A) de cualquier archivo de más de 24000 bytes"
+  ]
+}

@@ -130,8 +130,9 @@ Ninguna entrada se afirma sin la comprobación DC-08 de [INITIATIVE_LIFECYCLE](.
 - Proposal vigente para revisión: [I-62-proposal-v13.md](I-62-proposal-v13.md), `Frozen: NO`. Es la corrección final del residuo de A62-V11-01: la
   fidelidad de una premisa sigue sus dependencias normativas (`NormativeDependencyClosure`), y la evidencia de fidelidad describe la representación entregada
   al revisor, con la compactación como evidencia de runtime ([disposición del Owner y del Coordinator](I-62-architect-review-v12-disposition.md)). Conserva
-  todos los cierres de V12 y anteriores, incluido A62-V10-03. Paquete del Architect: [I-62-architect-package-v13.md](I-62-architect-package-v13.md),
-  **una revisión formal final pendiente**.
+  todos los cierres de V12 y anteriores, incluido A62-V10-03. Paquete del Architect: [I-62-architect-package-v13.md](I-62-architect-package-v13.md).
+  Revisión formal final de V13: **CHANGES REQUIRED** ([registro](I-62-architect-review-v13.md)), con el residuo de A62-V11-01 abierto (terminalidad
+  incondicional del documento completo) y los cierres anteriores confirmados; pendiente de la disposición del Owner y del Coordinator.
 - Versiones anteriores, conservadas sin cambios:
   - [V1](I-62-proposal-v1.md) … [V5](I-62-proposal-v5.md) y sus paquetes: CHANGES REQUIRED del Coordinator (registros
     [v1](I-62-coordinator-review-v1.md) … [v5](I-62-coordinator-review-v5.md));
