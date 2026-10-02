@@ -1,0 +1,183 @@
+{
+  "Schema": "rackcad-input-fidelity/v1 (representación experimental; Proposal V11 §20.3.3; no autoridad normativa) — COMPROBACIÓN TRAS LA CORRIDA",
+  "RunId": "R20261002T140232Z-cdc5",
+  "AuthorityRevision": "26127a69a7dbc1324566b081381cd11db6b20f35",
+  "Source": "aggregated_output de los 96 comandos en events.jsonl (SHA-256 658fc0b177b9c195739017d510763974be80db633db76bd3320bb6b519fcc0df)",
+  "Method": "lecturas A aisladas: comparación del archivo completo con su blob, tras normalizar el fin de línea; lecturas B: comparación con el tramo canónico exacto (Skip/First); búsquedas C: cada «número:línea» contra la línea canónica; Git: contra la salida de Git local; además, cada línea de cada salida contra el conjunto de líneas canónicas del cierre",
+  "FullReadsA": {
+    "Count": 52,
+    "Equal": 50,
+    "Details": [
+      {
+        "Command": 1,
+        "Path": "docs/initiatives/I-62-architect-package-v11.md",
+        "Status": "DIFFERENT",
+        "CanonicalChars": 13503,
+        "VisibleChars": 13678,
+        "OmittedCanonicalLines": [
+          1,
+          1
+        ],
+        "OmittedChars": 0,
+        "InsertedVisible": "profile.ps1: Cannot dot-source this command because it was defined in a different language mode. To invoke this command without importing its contents, omit the '.' operator.\n"
+      },
+      {
+        "Command": 2,
+        "Path": "docs/HANDOFF.md",
+        "Status": "TRUNCATED",
+        "CanonicalChars": 438341,
+        "VisibleChars": 435031,
+        "OmittedCanonicalLines": [
+          4639,
+          4672
+        ],
+        "OmittedChars": 3310,
+        "InsertedVisible": ""
+      }
+    ]
+  },
+  "RangeReadsB": {
+    "Count": 27,
+    "Equal": 27
+  },
+  "SearchesC": {
+    "Count": 13,
+    "Equal": 13
+  },
+  "Git": "salidas iguales a las de Git local (git log --oneline -10, rev-parse, status)",
+  "CharacterDegradations": 0,
+  "DegradedSpans": [
+    {
+      "Command": 1,
+      "Path": "docs/initiatives/I-62-architect-package-v11.md",
+      "Class": "STRUCTURE",
+      "Kind": "diagnóstico del runtime antepuesto (profile.ps1: Cannot dot-source … language mode)",
+      "CanonicalContentAffected": false,
+      "Note": "el contenido canónico llegó completo; el archivo se releyó íntegro y fiel en el comando 68"
+    },
+    {
+      "Command": 2,
+      "Path": "docs/HANDOFF.md",
+      "Class": "STRUCTURE",
+      "Kind": "truncamiento central de la captura de codex exec",
+      "CanonicalLines": [
+        4639,
+        4672
+      ],
+      "OmittedChars": 3310,
+      "Note": "una línea visible une el inicio de la 4639 con el final de la 4672; el resto, idéntico"
+    }
+  ],
+  "PromptFidelity": {
+    "Equal": "sí, salvo el salto de línea final (normalización permitida)",
+    "NonAsciiChars": 108,
+    "ReplacementChars": 0,
+    "SessionLogSha256": "663f86dd849f897890dd597cd8130fb888a3ffb296c7b73a7d73b4ba18d824b8"
+  },
+  "PremiseCheck": {
+    "Premises": 42,
+    "Exact": 35,
+    "SectionLevel": 7,
+    "Unmatched": 0,
+    "InDegradedSpan": 0,
+    "PremiseFiles": [
+      "docs/initiatives/I-62-architect-package-v11.md",
+      "docs/initiatives/I-62-architect-review-v10-disposition.md",
+      "docs/initiatives/I-62-architect-review-v6.md",
+      "docs/initiatives/I-62-architect-review-v7.md",
+      "docs/initiatives/I-62-proposal-v11.md"
+    ],
+    "PremiseFilesWithDegradedSpans": [],
+    "Note": "ninguna premisa cita HANDOFF; todas las lecturas de los archivos citados fueron íntegras y fieles, de modo que la independencia no descansa solo en coincidencias de subcadena (cf. A62-V11-01)"
+  },
+  "FindingIndependence": [
+    {
+      "Kind": "RequiredFindings",
+      "Id": "A62-V10-03",
+      "Independent": true
+    },
+    {
+      "Kind": "RequiredFindings",
+      "Id": "A62-V11-01",
+      "Independent": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "A62-V10-01",
+      "Independent": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "A62-V10-03",
+      "Independent": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "A62-V10-04",
+      "Independent": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "A62-V9-04",
+      "Independent": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "O-V7-01",
+      "Independent": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "O-V7-02",
+      "Independent": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "O-05",
+      "Independent": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "O-07",
+      "Independent": true
+    },
+    {
+      "Kind": "FindingDispositions",
+      "Id": "A62-V11-01",
+      "Independent": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-01",
+      "Independent": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-02",
+      "Independent": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-03",
+      "Independent": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-04",
+      "Independent": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-05",
+      "Independent": true
+    },
+    {
+      "Kind": "RequirementAssessments",
+      "Id": "R62-FIDELITY-06",
+      "Independent": true
+    }
+  ],
+  "Unaccredited": [],
+  "FidelityStatus": "DEGRADED_BOUNDED",
+  "Conclusion": "sin degradación de caracteres; dos tramos estructurales acotados que no afectan a ninguna premisa; todos los hallazgos, disposiciones y evaluaciones son independientes y quedan acreditados (Proposal V11 §20.3.3). Un resultado DEGRADED_BOUNDED nunca produce ARCHITECT_SATISFIED (el veredicto es CHANGES REQUIRED)"
+}

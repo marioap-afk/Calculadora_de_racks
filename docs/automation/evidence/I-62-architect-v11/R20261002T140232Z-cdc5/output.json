@@ -1,0 +1,645 @@
+{
+  "Schema": "rackcad-architect-review-result/v1",
+  "ResultId": "A62-V11-I20261002T140232Z-cdc5",
+  "LogicalReviewRequestId": "L20261002T140232Z-cdc5",
+  "InvocationId": "I20261002T140232Z-cdc5",
+  "AttemptSeq": 1,
+  "RequestedRole": "ARCHITECT",
+  "Action": "REVIEW_DESIGN",
+  "ReviewedUnit": "I-62 / Proposal V11",
+  "ReviewedCommit": "26127a69a7dbc1324566b081381cd11db6b20f35",
+  "ReviewedPath": "docs/initiatives/I-62-proposal-v11.md",
+  "ReviewedBlob": "3e8fa9d8eb8a875069224e8ed7fd5850145e4d0e",
+  "PackagePath": "docs/initiatives/I-62-architect-package-v11.md",
+  "PackageBlob": "10fe74796ac94cbeaf1945ee3e47a60cb8f39ee4",
+  "ReviewerBinding": "Invocación acotada del Owner como ARCHITECT. No se suministró una BindingRef operativa de I-62; I-61 continúa vigente.",
+  "ReviewerDeclaredIdentity": {
+    "Runtime": "Codex CLI según la invocación y las instrucciones visibles",
+    "Model": "UNKNOWN: las instrucciones declaran la familia GPT-6, sin acreditar el modelo efectivo",
+    "Effort": "UNKNOWN",
+    "SessionOrThread": "UNKNOWN",
+    "Source": "Declaración informativa del revisor; la acreditación corresponde exclusivamente a la evidencia observada por el invocador"
+  },
+  "ReviewerMode": "SEPARATE SESSION",
+  "ReviewerAndAuthorSamePerson": "La orden declara procesos y sesiones IA distintos: revisor Codex y autor Claude. La identidad y coincidencia de sus operadores humanos son UNKNOWN.",
+  "InjectedContextDeclaration": [
+    "Instrucciones de sistema: asistente accedido por API, canales de respuesta, concisión y esquema experimental de salida.",
+    "Instrucciones developer de Codex sobre autonomía, colaboración, comunicación, herramientas, instrucciones locales, skills, Git y validación.",
+    "Restricciones developer: filesystem de solo lectura, red restringida, aprobación never y modo Default.",
+    "Contexto multiagente: rol /root, herramientas de colaboración y prohibición de delegar sin autorización aplicable. No se crearon subagentes.",
+    "Definiciones automáticas de herramientas para ejecución, parches, preguntas, objetivos, imágenes, web, reloj y colaboración. Para esta revisión se utilizó únicamente ejecución de comandos de lectura.",
+    "Catálogo automático de skills imagegen, openai-docs, skill-creator y skill-installer, con descripciones y ubicaciones. No se abrieron ni aplicaron sus archivos.",
+    "AGENTS.md suministrado íntegramente por el usuario y posteriormente leído dentro del clon.",
+    "Contexto de entorno: D:\\r62-arch-v11, PowerShell, fecha 2026-10-02, zona America/Mexico_City y permisos de lectura.",
+    "Invocación del Owner, identidades exactas, cierre permitido, restricciones de lectura, referencia de fidelidad, señal CI y orden literal de revisión.",
+    "La primera ejecución del shell produjo automáticamente un diagnóstico de dot-sourcing de profile.ps1 incompatible con el modo de lenguaje. No se inspeccionó su contenido; las ejecuciones posteriores usaron login=false.",
+    "Salidas de herramientas correspondientes a archivos autorizados y comprobaciones de Git.",
+    "Resumen de continuidad generado durante una compactación de esta misma revisión. No procede de la sesión autora.",
+    "No se recibió ni consultó una transcripción o memoria privada de la sesión autora."
+  ],
+  "InputsRead": [
+    "AGENTS.md",
+    "docs/HANDOFF.md",
+    "README.md",
+    "docs/ARCHITECTURE.md",
+    "docs/context-packs/README.md",
+    "docs/context-packs/documentation-governance.md",
+    "docs/ROADMAP.md",
+    "docs/FOUNDATIONS.md",
+    "docs/initiatives/README.md",
+    "docs/initiatives/PROMPT_TEMPLATES.md",
+    "docs/initiatives/I-62-proposal-v11.md",
+    "docs/initiatives/I-62-architect-package-v11.md",
+    "docs/initiatives/I-62-proposal-v10.md",
+    "docs/initiatives/I-62-architect-package-v10.md",
+    "docs/initiatives/I-62-architect-review-v10-disposition.md",
+    "docs/initiatives/I-62-architect-review-v10.md",
+    "docs/automation/evidence/I-62-architect-v10/R20261002T010757Z-ef59/README.md",
+    "docs/automation/evidence/I-62-architect-v10/R20261002T010757Z-ef59/output.json",
+    "docs/automation/evidence/I-62-architect-v10/R20261002T010757Z-ef59/read-audit.json",
+    "docs/automation/evidence/I-62-architect-v10/R20261002T010757Z-ef59/runtime-evidence.json",
+    "docs/initiatives/I-62-architect-review-v9-disposition.md",
+    "docs/initiatives/I-62-architect-review-v9.md",
+    "docs/automation/evidence/I-62-architect-v9/R20261002T000511Z-ba10/output.json",
+    "docs/initiatives/I-62-coordinator-requirement-auto.md",
+    "docs/initiatives/I-62-architect-review-v6.md",
+    "docs/initiatives/I-62-architect-review-v7.md",
+    "docs/initiatives/I-62-coordinator-review-v1.md",
+    "docs/initiatives/I-62-coordinator-review-v2.md",
+    "docs/initiatives/I-62-coordinator-review-v3.md",
+    "docs/initiatives/I-62-coordinator-review-v4.md",
+    "docs/initiatives/I-62-coordinator-review-v5.md",
+    "docs/initiatives/I-62-discovery.md",
+    "docs/automation/decisions/I-62-owner-mandate.txt",
+    "docs/initiatives/I-62-portabilidad-coordinador-principal.md",
+    "docs/automation/decisions/I-62.md",
+    "docs/automation/evidence/I-62-evidence.md",
+    "docs/automation/state/I-62.yml",
+    "docs/INITIATIVE_LIFECYCLE.md",
+    "docs/WORKFLOW.md",
+    "docs/AUTOMATION_PLAN.md",
+    "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md",
+    "docs/initiatives/I-61-proposal-v9.md",
+    "docs/automation/agent-execution/README.md",
+    "docs/automation/agent-execution/model-catalog.md",
+    "docs/automation/agent-execution/prompting-guide.md",
+    "docs/automation/agent-execution/routing.md",
+    "docs/automation/agent-execution/schemas/controller-verification.schema.json",
+    "docs/automation/agent-execution/schemas/delegation.schema.json",
+    "docs/automation/agent-execution/schemas/gate-contract.schema.json",
+    "docs/automation/agent-execution/schemas/relay-record.schema.json",
+    "docs/automation/agent-execution/schemas/worker-handoff.schema.json"
+  ],
+  "InputFidelityEvidenceRef": "input-fidelity-preflight.json SHA-256 c4ee320f2ac5e6940a4d6013ca31014208bb3d36c9b7e804c55e3373fb0bccf7",
+  "IndependenceEvidence": "HEAD y ambos blobs se comprobaron antes de revisar y al terminar: coinciden con los objetos autorizados. HEAD permanece desacoplado y git status --porcelain estuvo vacío al inicio y al final. Todas las lecturas intencionales pertenecen al cierre autorizado y utilizaron las formas A, B o C. La separación respecto de la sesión autora está declarada por el Owner; no se consultaron sus historiales o memorias. La identidad efectiva, la cobertura del registro y la fidelidad posterior deben acreditarse mediante la auditoría del invocador; este resultado no las autocertifica.",
+  "Verdict": "CHANGES REQUIRED",
+  "RequiredFindings": [
+    {
+      "FindingId": "A62-V10-03",
+      "LineageId": "A62-V10-03",
+      "Source": "REQUIRED aceptado por el Coordinator; defecto residual de la regla determinista para intentos en curso",
+      "AffectedSection": "Proposal V11 §20.5.1, §20.6 definición de CANCELLED_BEFORE_LAUNCH y recuperación B.1; B.8.8 I-S18 e I-P13; F.8 caídas; C-29/C-38/C-40",
+      "Evidence": "Contraejemplo documental: un intento publica LAUNCHING con autorización OPEN; el Principal cae antes del arranque; la autorización caduca o se revoca; el sucesor prueba que no arrancó. §20.5.1 exige LAUNCHING → CANCELLED_BEFORE_LAUNCH. I-P13 enumera exclusivamente LAUNCHED, RESULT_RECEIVED, LAUNCH_UNCERTAIN o BUDGET_RESERVED como destinos de LAUNCHING, y omite CANCELLED_BEFORE_LAUNCH. Pasar primero por BUDGET_RESERVED tampoco resuelve el caso: I-S18 prohíbe ese estado con action_validity ENDED. §20.6 limita la cancelación a PLANNED/RESERVED y su caso B.1, repetido en F.8, prescribe volver a RESERVED sin distinguir la vigencia. No existe un par que cumpla simultáneamente estas reglas para el caso exigido.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "§20.5.1, Regla determinista para los intentos en curso",
+          "Quote": "un intento en LAUNCHING no arrancó, ese intento vuelve a BUDGET_RESERVED solo si la vigencia sigue abierta; si no, pasa a CANCELLED_BEFORE_LAUNCH."
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "§20.6, CANCELLED_BEFORE_LAUNCH",
+          "Quote": "CANCELLED_BEFORE_LAUNCH cierra un intento cuyo último estado durable es INVOCATION_PLANNED o BUDGET_RESERVED cuando la autorización se revoca o caduca."
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "B.8.8, I-P13, transiciones de intentos",
+          "Quote": "LAUNCHING → LAUNCHED, RESULT_RECEIVED, LAUNCH_UNCERTAIN, o BUDGET_RESERVED (caso B.1, con la prueba de no arranque custodiada);"
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "B.8.8, I-S18, vigencia",
+          "Quote": "`loop.action_validity.state` = ENDED ⇒ ningún intento en INVOCATION_PLANNED ni en BUDGET_RESERVED;"
+        },
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+          "Section": "§2, A62-V10-03",
+          "Quote": "Elegir y verificar una regla determinista para los intentos en curso."
+        }
+      ],
+      "WhyItMatters": "La recuperación por un sucesor se bloquea en un caso explícitamente contemplado por V11. Un validador fiel debe rechazar la cancelación requerida o aceptar una transición que contradice el contrato.",
+      "CorrectionRequired": "Alinear §20.6, I-P13 y F.8 con §20.5.1: permitir expresamente LAUNCHING → CANCELLED_BEFORE_LAUNCH cuando exista prueba custodiada de no arranque y la vigencia haya terminado; conservar LAUNCHING → BUDGET_RESERVED solamente con vigencia OPEN. Ampliar la definición de cancelación, mantener todos los contadores y explicitar el resultado de recuperación. Añadir un positivo completo de caída tras LAUNCHING, no arranque probado y caducidad/revocación, con todas las invariantes satisfechas; negativos de cancelación sin prueba y de nueva reserva o LAUNCHING bajo ENDED."
+    },
+    {
+      "FindingId": "A62-V11-01",
+      "LineageId": "NEW",
+      "Source": "R62-FIDELITY-02, -03 y -06; contraejemplo al criterio de independencia mecánica planteado por el paquete V11 §5.1",
+      "AffectedSection": "Proposal V11 §20.3.3, definición de premisa fiel con Quote no vacío; B.10.1 PremiseRefs; C-42 casos 5 y 6",
+      "Evidence": "El criterio para Quote no vacío solo exige coincidencia con algún texto canónico dentro de Section. No exige comparar la afirmación completa recibida por el revisor ni comprobar su relación con DegradedSpans. Contraejemplo sintético: el preflight pasa, pero la captura posterior muestra que en la frase canónica «Sin un preflight FAITHFUL o FAITHFUL_NORMALIZED, no hay lanzamiento (P-24).» el transporte eliminó «no». El revisor interpreta que hay lanzamiento y cita «hay lanzamiento (P-24)». Esa cita coincide literalmente con una subcadena canónica de la misma sección; el criterio escrito la considera fiel aunque su fundamento depende precisamente de la negación degradada. Una coincidencia textual parcial no demuestra independencia del camino de evidencia.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "§20.3.3, definición de premisa fiel",
+          "Quote": "- con `Quote` no vacío, la cita coincide con el texto canónico de `Path` dentro de `Section`, tras la normalización permitida. Una cita que solo coincide con\n  la representación degradada, o con ninguna, no es fiel;"
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "§20.3.3, normalización permitida y degradación",
+          "Quote": "- una negación eliminada;"
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "§20.3.3, preflight",
+          "Quote": "Sin un preflight FAITHFUL o FAITHFUL_NORMALIZED, no hay lanzamiento (P-24)."
+        },
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+          "Section": "§3, R62-FIDELITY-03",
+          "Quote": "los no afectados pueden seguir siendo utilizables solo si se prueba que su camino de evidencia es independiente del material corrompido"
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "Anexo C, C-42",
+          "Quote": ""
+        }
+      ],
+      "WhyItMatters": "Una disposición fundada en degradación semántica puede abrir, cerrar o sustituir un linaje bajo DEGRADED_BOUNDED. La prohibición de ARCHITECT_SATISFIED no protege esas modificaciones parciales. Se oculta incertidumbre justo donde el requisito exige demostrar independencia mecánica.",
+      "CorrectionRequired": "Vincular cada premisa a un pasaje identificable de la captura efectiva y del texto canónico. Para acreditar independencia, comparar la afirmación normativa completa que sustenta la premisa, incluidos negaciones, operadores y contexto estructural relevante, y verificarla contra DegradedSpans; una subcadena intacta no basta. Puede utilizarse localización inequívoca por rangos o un mecanismo equivalente sin cambiar necesariamente el sobre del revisor. Si el pasaje o su dependencia no pueden delimitarse mecánicamente, conservar INVALID_PREMISE; aplicar invalidación total cuando la incertidumbre no pueda acotarse. Extender C-42 con el negativo de negación degradada y cita parcial intacta, un caso de cita con ubicación ambigua y un positivo de premisa completa demostrablemente independiente."
+    }
+  ],
+  "OptionalFindings": [],
+  "FindingDispositions": [
+    {
+      "FindingId": "A62-V10-01",
+      "LineageId": "A62-V10-01",
+      "State": "CLOSED",
+      "SupersededBy": [],
+      "Rationale": "La acción se omite únicamente mediante exención explícita acotada. La CI se entrega como HealthSignals separado y no sustituye Core local ni se propaga a otras clases o gates. §20.3.1, B.9 y C-41 son coherentes con la dirección aceptada.",
+      "EvaluatedObject": {
+        "Commit": "26127a69a7dbc1324566b081381cd11db6b20f35",
+        "Path": "docs/initiatives/I-62-proposal-v11.md",
+        "Blob": "3e8fa9d8eb8a875069224e8ed7fd5850145e4d0e"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "§20.3.1, Exención acotada",
+          "Quote": "Una exención de opción B **omite** una acción; no la sustituye por otra evidencia."
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "B.9, HealthSignals",
+          "Quote": "señales canónicas separadas; **no** son evidencia equivalente a ninguna clase de prueba local ni se propagan a gates, Candidato, cierre o implementación"
+        }
+      ]
+    },
+    {
+      "FindingId": "A62-V10-03",
+      "LineageId": "A62-V10-03",
+      "State": "STILL_OPEN",
+      "SupersededBy": [],
+      "Rationale": "La acreditación histórica y la prohibición de acciones nuevas están corregidas. La regla de recuperación sigue incompleta: la cancelación exigida para LAUNCHING con no arranque probado y vigencia terminada está excluida del grafo permitido. Se conserva el id y el linaje del REQUIRED aceptado.",
+      "EvaluatedObject": {
+        "Commit": "26127a69a7dbc1324566b081381cd11db6b20f35",
+        "Path": "docs/initiatives/I-62-proposal-v11.md",
+        "Blob": "3e8fa9d8eb8a875069224e8ed7fd5850145e4d0e"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "§20.5.1, intentos en curso",
+          "Quote": "un intento en LAUNCHING no arrancó, ese intento vuelve a BUDGET_RESERVED solo si la vigencia sigue abierta; si no, pasa a CANCELLED_BEFORE_LAUNCH."
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "B.8.8, I-P13",
+          "Quote": "LAUNCHING → LAUNCHED, RESULT_RECEIVED, LAUNCH_UNCERTAIN, o BUDGET_RESERVED (caso B.1, con la prueba de no arranque custodiada);"
+        }
+      ]
+    },
+    {
+      "FindingId": "A62-V10-04",
+      "LineageId": "A62-V10-04",
+      "State": "CLOSED",
+      "SupersededBy": [],
+      "Rationale": "§20.7 y B.9 admiten los contratos distintos de PLAN y VERIFY y rechazan su intercambio. C-30 incorpora los positivos y negativos correspondientes. I-61 conserva sus contratos actuales.",
+      "EvaluatedObject": {
+        "Commit": "26127a69a7dbc1324566b081381cd11db6b20f35",
+        "Path": "docs/initiatives/I-62-proposal-v11.md",
+        "Blob": "3e8fa9d8eb8a875069224e8ed7fd5850145e4d0e"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "§20.7, correspondencia cerrada",
+          "Quote": "| EXECUTION_CONTROLLER / PLAN | `rackcad-delegation/v2` | los de §16 para la planificación | la planificación que §16 define | GATE PASS, Candidato; nunca `controller-verification/v2` |"
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "§20.7, correspondencia cerrada",
+          "Quote": "| EXECUTION_CONTROLLER / VERIFY | `rackcad-controller-verification/v2` | `EXECUTION_VERIFIED`, `EXECUTION_REWORK_REQUIRED`, `EXECUTION_BLOCKED` | la verificación que §16 define | GATE PASS, Candidato; nunca `delegation/v2` |"
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "B.9, OutputContract",
+          "Quote": ""
+        }
+      ]
+    },
+    {
+      "FindingId": "A62-V9-04",
+      "LineageId": "A62-V9-04",
+      "State": "CLOSED",
+      "SupersededBy": [],
+      "Rationale": "Evaluado contra el texto fiel, sin aplicar la premisa rechazada de A62-V10-02. La solicitud lógica es estable, todos sus intentos conservan presupuesto, los límites derivan de constantes cerradas y el total máximo es nueve reservas. Varias solicitudes sobre una versión explican correctamente review_rounds ≤ logical_requests. C-34/C-36 rechazan el cuarto intento y los reinicios por identidad o proveedor.",
+      "EvaluatedObject": {
+        "Commit": "26127a69a7dbc1324566b081381cd11db6b20f35",
+        "Path": "docs/initiatives/I-62-proposal-v11.md",
+        "Blob": "3e8fa9d8eb8a875069224e8ed7fd5850145e4d0e"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "§20.6, identidades",
+          "Quote": "La solicitud lógica es **estable durante sus reejecuciones de transporte**."
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "§20.6, presupuestos",
+          "Quote": "| tope derivado de lanzamientos | `MAX_ARCHITECT_LOGICAL_REQUESTS` × (1 + `MAX_TRANSPORT_RERUNS_PER_REQUEST`) = **9** | intentos reservados (`architect_launches`) | BUDGET_RESERVED de cada intento |"
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "§20.6, ilustración de solicitudes y versiones",
+          "Quote": "semántica: L1 y L2 sobre X, y después L3 sobre X2, dan `review_rounds` = 1 y `logical_requests` = 2, y después 2 y 3."
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "B.8.8, I-S18, budgets",
+          "Quote": "`review_rounds` ≤ `logical_requests`"
+        }
+      ]
+    },
+    {
+      "FindingId": "O-V7-01",
+      "LineageId": "O-V7-01",
+      "State": "STILL_OPEN",
+      "SupersededBy": [],
+      "Rationale": "Se conserva como OPTIONAL no bloqueante. Su texto original no fue transmitido en el registro canónico disponible; no hay base para acreditar una corrección o inventar su contenido.",
+      "EvaluatedObject": {
+        "Commit": "26127a69a7dbc1324566b081381cd11db6b20f35",
+        "Path": "docs/initiatives/I-62-proposal-v11.md",
+        "Blob": "3e8fa9d8eb8a875069224e8ed7fd5850145e4d0e"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v7.md",
+          "Section": "§3, O-V7-01",
+          "Quote": "| O-V7-01 | aplicar si es solo una aclaración de nombres o de historia del estado | **no aplicado**: su texto no se transmitió a la sesión autora |"
+        },
+        {
+          "Path": "docs/initiatives/I-62-architect-package-v11.md",
+          "Section": "§0, OpenFindings",
+          "Quote": "- **OPTIONAL abiertos, no bloquean:** O-V7-01, O-V7-02, O-05 y O-07."
+        }
+      ]
+    },
+    {
+      "FindingId": "O-V7-02",
+      "LineageId": "O-V7-02",
+      "State": "STILL_OPEN",
+      "SupersededBy": [],
+      "Rationale": "El registro conserva el seguimiento sin cambio y V11 lo presenta abierto. El contenido original no queda suficientemente especificado dentro del cierre para comprobar su resolución.",
+      "EvaluatedObject": {
+        "Commit": "26127a69a7dbc1324566b081381cd11db6b20f35",
+        "Path": "docs/initiatives/I-62-proposal-v11.md",
+        "Blob": "3e8fa9d8eb8a875069224e8ed7fd5850145e4d0e"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v7.md",
+          "Section": "§3",
+          "Quote": "| O-V7-02, O-05, O-07 | no ampliar V8 por ellos | sin cambio |"
+        },
+        {
+          "Path": "docs/initiatives/I-62-architect-package-v11.md",
+          "Section": "§0, OpenFindings",
+          "Quote": "- **OPTIONAL abiertos, no bloquean:** O-V7-01, O-V7-02, O-05 y O-07."
+        }
+      ]
+    },
+    {
+      "FindingId": "O-05",
+      "LineageId": "O-05",
+      "State": "STILL_OPEN",
+      "SupersededBy": [],
+      "Rationale": "Se conserva el OPTIONAL abierto. El registro V6 declara que su contenido no fue transmitido; no se acredita cierre.",
+      "EvaluatedObject": {
+        "Commit": "26127a69a7dbc1324566b081381cd11db6b20f35",
+        "Path": "docs/initiatives/I-62-proposal-v11.md",
+        "Blob": "3e8fa9d8eb8a875069224e8ed7fd5850145e4d0e"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v6.md",
+          "Section": "§3",
+          "Quote": "| O-01, O-05, O-07 | contenido no transmitido a la sesión autora | pueden quedar como seguimientos documentados si cambiarlos ampliara V7 de forma material |"
+        },
+        {
+          "Path": "docs/initiatives/I-62-architect-package-v11.md",
+          "Section": "§0, OpenFindings",
+          "Quote": "- **OPTIONAL abiertos, no bloquean:** O-V7-01, O-V7-02, O-05 y O-07."
+        }
+      ]
+    },
+    {
+      "FindingId": "O-07",
+      "LineageId": "O-07",
+      "State": "STILL_OPEN",
+      "SupersededBy": [],
+      "Rationale": "Se conserva el OPTIONAL abierto por la misma insuficiencia documental de su contenido original; no bloquea.",
+      "EvaluatedObject": {
+        "Commit": "26127a69a7dbc1324566b081381cd11db6b20f35",
+        "Path": "docs/initiatives/I-62-proposal-v11.md",
+        "Blob": "3e8fa9d8eb8a875069224e8ed7fd5850145e4d0e"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v6.md",
+          "Section": "§3",
+          "Quote": "| O-01, O-05, O-07 | contenido no transmitido a la sesión autora | pueden quedar como seguimientos documentados si cambiarlos ampliara V7 de forma material |"
+        },
+        {
+          "Path": "docs/initiatives/I-62-architect-package-v11.md",
+          "Section": "§0, OpenFindings",
+          "Quote": "- **OPTIONAL abiertos, no bloquean:** O-V7-01, O-V7-02, O-05 y O-07."
+        }
+      ]
+    },
+    {
+      "FindingId": "A62-V11-01",
+      "LineageId": "NEW",
+      "State": "OPEN",
+      "SupersededBy": [],
+      "Rationale": "REQUIRED nuevo: la coincidencia de una cita parcial con el texto canónico no demuestra que la premisa sea independiente de una afirmación recibida con degradación semántica.",
+      "EvaluatedObject": {
+        "Commit": "26127a69a7dbc1324566b081381cd11db6b20f35",
+        "Path": "docs/initiatives/I-62-proposal-v11.md",
+        "Blob": "3e8fa9d8eb8a875069224e8ed7fd5850145e4d0e"
+      },
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "§20.3.3, definición de premisa fiel",
+          "Quote": "- con `Quote` no vacío, la cita coincide con el texto canónico de `Path` dentro de `Section`, tras la normalización permitida. Una cita que solo coincide con\n  la representación degradada, o con ninguna, no es fiel;"
+        },
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+          "Section": "§3, R62-FIDELITY-03",
+          "Quote": "los no afectados pueden seguir siendo utilizables solo si se prueba que su camino de evidencia es independiente del material corrompido"
+        }
+      ]
+    }
+  ],
+  "Downgrades": [],
+  "RequirementAssessments": [
+    {
+      "RequirementId": "R62-FIDELITY-01",
+      "Assessment": "SATISFIED",
+      "Rationale": "El diseño identifica bytes, blob, SHA-256, codificación, representación y método de comparación por insumo y prompt; exige preflight por el camino efectivo y cobertura de todos los caracteres no ASCII presentes. Esta evaluación documental no acredita su implementación.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "§20.3.3, Contrato y Antes de lanzar",
+          "Quote": ""
+        }
+      ]
+    },
+    {
+      "RequirementId": "R62-FIDELITY-02",
+      "Assessment": "PARTIALLY_SATISFIED",
+      "Rationale": "La normalización permitida está cerrada y la degradación no acotable invalida todo el resultado. Sin embargo, el criterio de citas permite acreditar una premisa afectada en el caso acotado descrito por A62-V11-01.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "§20.3.3, Normalización permitida y Fallo cerrado",
+          "Quote": ""
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "§20.3.3, definición de premisa fiel",
+          "Quote": "- con `Quote` no vacío, la cita coincide con el texto canónico de `Path` dentro de `Section`, tras la normalización permitida."
+        }
+      ]
+    },
+    {
+      "RequirementId": "R62-FIDELITY-03",
+      "Assessment": "PARTIALLY_SATISFIED",
+      "Rationale": "Se distinguen hallazgos independientes, INVALID_PREMISE y unaccredited, y se conserva el linaje. Falta demostrar independencia del pasaje efectivamente recibido: coincidencia de subcadena canónica y ausencia de premisas omitidas no son equivalentes. A62-V11-01.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "§20.3.3, Fallo cerrado e invalidación acotada por hallazgo",
+          "Quote": ""
+        },
+        {
+          "Path": "docs/initiatives/I-62-architect-review-v10-disposition.md",
+          "Section": "§3, R62-FIDELITY-03",
+          "Quote": "Si no se puede establecer la independencia, se invalida toda la revisión"
+        }
+      ]
+    },
+    {
+      "RequirementId": "R62-FIDELITY-04",
+      "Assessment": "SATISFIED",
+      "Rationale": "La evidencia pertenece al invocador o adapter, se referencia desde el intento y se custodia antes y después de la corrida. El revisor solo copia la referencia; un sucesor puede reconstruir los hechos desde StateRef y los artefactos versionados.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "§20.3.3, Observada por el invocador",
+          "Quote": "El revisor no la certifica."
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "B.8.8, attempts.input_fidelity",
+          "Quote": "`InputFidelityEvidenceRef` (§20.3.3): el preflight desde la reserva y la comparación tras la corrida desde RESULT_RECEIVED"
+        }
+      ]
+    },
+    {
+      "RequirementId": "R62-FIDELITY-05",
+      "Assessment": "SATISFIED",
+      "Rationale": "El adapter establece y verifica el transporte seguro, sin confiar en valores por defecto ni congelar un comando. El preflight no fiel impide el lanzamiento y el cambio de proveedor o runtime exige validación nueva.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "§20.3.3, transporte",
+          "Quote": "Sin un preflight FAITHFUL o FAITHFUL_NORMALIZED, no hay lanzamiento (P-24)."
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "§20.3.3, Observada por el invocador",
+          "Quote": "Cambiar de proveedor, de runtime o de adapter no exime de la validación: cada intento lleva la suya."
+        }
+      ]
+    },
+    {
+      "RequirementId": "R62-FIDELITY-06",
+      "Assessment": "PARTIALLY_SATISFIED",
+      "Rationale": "C-42 incluye los ocho escenarios solicitados, con custodia y referencia en FX-06. Su oráculo de independencia necesita cubrir citas intactas dentro de afirmaciones degradadas y localización ambigua; de otro modo puede implementar el criterio insuficiente de §20.3.3 y quedar verde. No se ejecutaron pruebas.",
+      "PremiseRefs": [
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "Anexo C, C-42",
+          "Quote": ""
+        },
+        {
+          "Path": "docs/initiatives/I-62-proposal-v11.md",
+          "Section": "Anexo D.8, FX-06",
+          "Quote": ""
+        }
+      ]
+    }
+  ],
+  "PreservedDispositionChecks": [
+    {
+      "FindingId": "A62-V9-02",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "El resultado V10 y la disposición V10 §4 conservan el cierre. V11 §20.6, B.8.8 y F.8 mantienen reserva previa, LAUNCHING durable, recuperación conservadora e ingestión idempotente. La interacción nueva con la caducidad se dispone como defecto residual de A62-V10-03, sin reabrir el hallazgo histórico."
+    },
+    {
+      "FindingId": "A62-V9-03",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Frente al resultado V9 y al cierre custodiado en V10, V11 §20.5.2 y B.10.1 conservan disposiciones explícitas por id, omisión abierta, objeto exacto y rebaja exclusiva del emisor. A62-V11-01 trata la acreditación de fidelidad nueva, sin eliminar esta corrección."
+    },
+    {
+      "FindingId": "A62-V9-05",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "V11 §20.7 y B.10 separan Architect y Reviewer. REVIEWER no emite AGREED ni satisface ARCHITECT_SATISFIED ni cierra hallazgos del Architect. Coincide con el defecto original del resultado V9 y el cierre V10."
+    },
+    {
+      "FindingId": "A62-V9-06",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "V11 §20.5, I-P13 y F.8 pasos 10-15 fijan loop.object en CORRECTING → PUBLISHED antes de CI y re-revisión. C-31/C-38 conservan el positivo completo y el negativo de cambio tardío; no contradicen el cierre V10."
+    },
+    {
+      "FindingId": "A62-V7-01",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "Contrastado con el registro V7 §2 y el cierre V10: V11 B.8 conserva la excepción explícita de reconciliación, el alcance de I-H02 fuera de Q0 y el cierre Q7/QR dentro de ventana. C-15/C-18 mantienen positivos simultáneos."
+    },
+    {
+      "FindingId": "A62-V7-02",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "V11 §8.9 y F.7 conservan REBASE_TAKEOVER con designación acotada, las operaciones permitidas y un QR combinado antes del trabajo ordinario. Sigue la dirección del registro V7 §2 y el cierre V10."
+    },
+    {
+      "FindingId": "A62-V7-03",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "V11 §11.4 y B.2 conservan ReviewSubject acotado a la unidad y objeto, incluyen sucesiones y operadores humanos autores y excluyen historia anterior. EXTERNAL HUMAN no puede eludir la comparación con el operador autor. Coherente con V7 §2 y el cierre V10."
+    },
+    {
+      "FindingId": "A62-V6-01",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "V11 §8.8, B.8.7 y F.6 preservan publicación del rebase, RebaseMap durable, reconciliación de todos los SHA afectados y STOP ante imágenes no acreditables, conforme al registro V6 §2 y el cierre V10."
+    },
+    {
+      "FindingId": "A62-V6-02",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "V11 §4.1, §8.7, §14 y §20.12 conservan opt-in, DIRECT_ONLY y CUSTODY acotada. C-28 permite trabajo directo autorizado con CUSTODY delegada UNKNOWN. No introduce obligatoriedad contraria al registro V6 §2."
+    },
+    {
+      "FindingId": "A62-V6-03",
+      "PreservedState": "CLOSED",
+      "Check": "CONFIRMED",
+      "Rationale": "V11 §11.4 conserva referencias humanas reales para EXTERNAL HUMAN y comparación frente a todos los autores del conjunto acotado, sin ActorRef o SessionRef ficticios. Ambas alternativas permanecen sin decidir, conforme a V6 §2 y al cierre V10."
+    },
+    {
+      "FindingId": "A62-V9-01",
+      "PreservedState": "SUPERSEDED → A62-V10-03",
+      "Check": "CONFIRMED",
+      "Rationale": "La disposición V10 §4 conserva expresamente esta sucesión. V11 §20.5.1 materializa bindings bajo autorización cerrada, con AuthorizationRef y MaterializationCheck reproducibles; no fabrica Acceptance del Coordinator. A62-V10-03 continúa abierto por su defecto residual."
+    }
+  ],
+  "OwnerDecisions": [
+    "OD-6 permanece PENDING. Esta revisión no elige alternativa.",
+    "Una corrección documental posterior y cualquier nueva invocación requieren la autorización aplicable. Esta invocación única no autoriza reintento, V12, implementación ni Freeze."
+  ],
+  "FocusAreas": [
+    {
+      "Area": "1. Exenciones acotadas sin sustitución de evidencia",
+      "Assessment": "Correcto: §20.3.1 y B.9 distinguen omisión autorizada y HealthSignals. A62-V10-01 CLOSED."
+    },
+    {
+      "Area": "2. Acreditación histórica tras caducidad o revocación",
+      "Assessment": "Correcto: §20.5.1 e I-S18 validan contra AuthorizationRef exacta y conservan materialización, resultado y disposiciones previamente acreditados."
+    },
+    {
+      "Area": "3. Autorización terminada frente a acciones nuevas",
+      "Assessment": "La prohibición de materializar, reservar y publicar un nuevo LAUNCHING está expresa. La recuperación de LAUNCHING sin arranque probado no tiene una cancelación legal bajo ENDED: A62-V10-03 STILL_OPEN."
+    },
+    {
+      "Area": "4. OutputContracts distintos de Controller PLAN y VERIFY",
+      "Assessment": "Correcto en §20.7, B.9 y C-30: delegation/v2 y controller-verification/v2 no son intercambiables. A62-V10-04 CLOSED."
+    },
+    {
+      "Area": "5. Interpretación fiel de review_rounds ≤ logical_requests",
+      "Assessment": "Correcta: versiones distintas y solicitudes lógicas son contadores diferentes. Los topes y la solicitud estable resuelven A62-V9-04, que queda CLOSED."
+    },
+    {
+      "Area": "6. Evidencia de fidelidad observada por el invocador",
+      "Assessment": "Correcto: §20.3.3 y B.10.0 prohíben la autocertificación del revisor. La referencia recibida se copia sin certificarla."
+    },
+    {
+      "Area": "7. Fallo cerrado ante degradación material",
+      "Assessment": "Correcto para preflight no fiel y degradación no acotable. Parcial para DEGRADED_BOUNDED: una cita parcial coincidente puede acreditar una premisa afectada. A62-V11-01."
+    },
+    {
+      "Area": "8. Invalidación acotada sin ocultar incertidumbre",
+      "Assessment": "Insuficiente: coincidencia textual no demuestra independencia del pasaje recibido ni de su negación o contexto estructural. Requiere la corrección de A62-V11-01."
+    },
+    {
+      "Area": "9. Reconstrucción de fidelidad por un Principal sucesor",
+      "Assessment": "Los StateRef de preflight, captura posterior y unaccredited hacen reconstruible el resultado. El sucesor debe aplicar un criterio de independencia corregido, no perpetuar una acreditación incorrecta."
+    },
+    {
+      "Area": "10. Cambio de proveedor o runtime sin eludir fidelidad",
+      "Assessment": "Correcto: §20.3.3 e I-P13 exigen validación en cada intento; C-42 incluye el cambio de proveedor/runtime."
+    },
+    {
+      "Area": "11. Corrección y re-revisión autónomas acotadas",
+      "Assessment": "Preserva alcance autorizado, versiones exactas, CI, linaje, tres solicitudes y nueve intentos conservadores. Los dos REQUIRED pendientes impiden considerar completo el diseño en todos sus casos."
+    },
+    {
+      "Area": "12. Autonomía sin autoridad nueva",
+      "Assessment": "Mantiene decisiones del Coordinator y Owner, Acceptance reproducible, rechazo de UNKNOWN y separación de roles. No autoriza compras, credenciales, integración ni cierre de REQUIRED por el Principal."
+    }
+  ],
+  "FreezeAssessment": {
+    "A62V904State": "CLOSED sobre la V11 exacta y su representación fiel.",
+    "BothOD6AlternativesExecutable": "Sí como alternativas de diseño de §11.4: la primera exige independencia acreditada para revisiones mayores; la segunda conserva los modos actuales y registra las preferencias. Ninguna se ha elegido. La ejecutabilidad real depende de capacidades y autorizaciones verificadas; los REQUIRED comunes deben corregirse.",
+    "ReadyForConsensusFreezeAfterOD6": "NO. Decidir OD-6 no basta: permanecen A62-V10-03 y A62-V11-01 REQUIRED. La V11 exacta no queda lista para Consensus Freeze.",
+    "Notes": "A62-V10-01 y A62-V10-04 CLOSED; cierres preservados confirmados; cuatro OPTIONAL siguen abiertos sin bloquear. A62-V10-02 no se evaluó como REQUIRED abierto. No se declara Freeze ni autorización de implementación."
+  },
+  "AutonomyAssessment": "La dirección conserva un bucle autónomo limitado por autorización, alcance, presupuesto, evidencia y autoridad del emisor. La separación entre vigencia de acción y acreditación histórica es adecuada. Faltan una recuperación legal de cancelación y un criterio suficiente de independencia frente a degradación acotada. Las trazas siguen siendo especificación documental, no evidencia de autonomía ejecutada.",
+  "KnownLimitations": [
+    "No se ejecutaron builds, pruebas, pilotos, Worker, Controller ni otras invocaciones. No se crearon, editaron o borraron archivos y no se utilizó red.",
+    "La CI 36973392633 se recibió como señal de publicación declarada por el Owner; no se verificó en vivo y no acredita Core local.",
+    "El InputFidelityEvidenceRef se copia literalmente. Su contenido, la comparación posterior de capturas y la acreditación del runtime pertenecen al invocador.",
+    "No se verificaron binario, autenticación, config fingerprint, modelo efectivo, effort, identidad de sesión, colisiones de escritores ni terminación del proceso fuera del contexto permitido.",
+    "El diagnóstico automático inicial del perfil y la compactación deben conservarse en RuntimeEvidence. Las lecturas internas no expuestas por el runtime no pueden acreditarse mediante esta declaración.",
+    "Algunas lecturas voluminosas de documentación auxiliar y evidencia histórica tuvieron salida truncada; se utilizaron rangos y búsquedas para las premisas citadas. InputsRead declara rutas consultadas, no lectura integral de cada archivo auxiliar.",
+    "Los textos originales completos de O-V7-01, O-V7-02, O-05 y O-07 no están suficientemente especificados en los registros permitidos. Se mantienen abiertos sin inventar su contenido.",
+    "Los contraejemplos REQUIRED son análisis del contrato de diseño, no fallos observados de una implementación.",
+    "No se consultaron archivos citados fuera del cierre, fuentes externas, transcripciones ni memorias privadas."
+  ],
+  "RecommendedNextAction": "El invocador debe custodiar este resultado literal, el cierre, la evidencia de fidelidad, RuntimeEvidence y la auditoría de lecturas. El Coordinator debe disponer del defecto residual A62-V10-03 y del nuevo A62-V11-01 y tramitar una corrección documental acotada bajo autorización aplicable. Mantener OD-6 pendiente, IMPLEMENTATION AUTHORIZATION = NO e I-61 vigente; ninguna nueva revisión o reintento queda autorizado por este resultado."
+}

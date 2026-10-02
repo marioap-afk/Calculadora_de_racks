@@ -131,8 +131,9 @@ Ninguna entrada se afirma sin la comprobación DC-08 de [INITIATIVE_LIFECYCLE](.
   fidelidad de los insumos (R62-FIDELITY-01..06) ([disposición del Owner y del Coordinator](I-62-architect-review-v10-disposition.md)): exención acotada sin
   equivalencia de evidencia, vigencia de acción frente a acreditación histórica, contratos de salida por acción del Controller y fidelidad verificada de los
   insumos canónicos. A62-V10-02 no se aceptó (premisa inválida por degradación de la codificación), y A62-V9-04 queda pendiente de una nueva disposición.
-  Conserva todos los cierres de V10 y anteriores. Paquete del Architect: [I-62-architect-package-v11.md](I-62-architect-package-v11.md), **una revisión formal
-  limpia pendiente, con la fidelidad probada antes de lanzar**.
+  Conserva todos los cierres de V10 y anteriores. Paquete del Architect: [I-62-architect-package-v11.md](I-62-architect-package-v11.md). Revisión formal
+  limpia del Architect, con la fidelidad probada antes de lanzar: **CHANGES REQUIRED** (A62-V10-03 y A62-V11-01; A62-V9-04 CLOSED;
+  [registro](I-62-architect-review-v11.md)); el Owner y el Coordinator disponen el resultado.
 - Versiones anteriores, conservadas sin cambios:
   - [V1](I-62-proposal-v1.md) … [V5](I-62-proposal-v5.md) y sus paquetes: CHANGES REQUIRED del Coordinator (registros
     [v1](I-62-coordinator-review-v1.md) … [v5](I-62-coordinator-review-v5.md));

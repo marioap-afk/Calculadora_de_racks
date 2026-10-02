@@ -1,0 +1,122 @@
+{
+  "Schema": "runtime-evidence (representación experimental de InvokerObservedRuntimeIdentity / RuntimeEvidenceRef, Proposal V11 §20.3.2; no autoridad normativa)",
+  "LogicalReviewRequestId": "L20261002T140232Z-cdc5",
+  "InvocationId": "I20261002T140232Z-cdc5",
+  "AttemptSeq": 1,
+  "RunId": "R20261002T140232Z-cdc5",
+  "Invoker": "sesión autora de I-62 (Claude), con autorización acotada del Owner; observador no independiente",
+  "Binary": {
+    "Path": "%LOCALAPPDATA%\\OpenAI\\Codex\\bin\\a51e250fa15c740a\\codex.exe",
+    "Version": "codex-cli 0.159.2",
+    "Sha256": "fcd5eafefb4ff4a607f244e099e0974f66e17966b6ffda6948de2ef3a7a79530"
+  },
+  "Authentication": "existente: «Logged in using ChatGPT»; sin leer ni modificar credenciales",
+  "ConfigFingerprint": {
+    "Path": "~/.codex/config.toml",
+    "Sha256Before": "40c27b570b0056bc6d2b5aaf460628922c5ad39a405751e68b9001ffdf15f74f",
+    "Sha256After": "40c27b570b0056bc6d2b5aaf460628922c5ad39a405751e68b9001ffdf15f74f",
+    "Changed": false
+  },
+  "Requested": {
+    "Model": "gpt-6.1-sol",
+    "Effort": "high",
+    "Sandbox": "read-only",
+    "Flags": [
+      "--disable memories",
+      "--disable apps",
+      "--disable plugins",
+      "--disable browser_use",
+      "--disable browser_use_external",
+      "--disable computer_use",
+      "--disable in_app_browser",
+      "--disable remote_plugin",
+      "--disable hooks",
+      "-c mcp_servers.node_repl.enabled=false",
+      "--output-schema",
+      "-o",
+      "--json",
+      "stdin=/dev/null",
+      "timeout 3600",
+      "MSYS_NO_PATHCONV=1 (sin conversión de rutas del prompt por Git Bash)"
+    ]
+  },
+  "Observed": {
+    "Assurance": "RUNTIME_OBSERVED (registro de sesión del runtime)",
+    "SessionLog": {
+      "Path": "~/.codex/sessions/2026/10/02/rollout-2026-10-02T08-11-33-01a0fcf4-bff5-77d3-8db4-a104dc451ee5.jsonl",
+      "Sha256": "663f86dd849f897890dd597cd8130fb888a3ffb296c7b73a7d73b4ba18d824b8",
+      "Lines": 324,
+      "Versioned": false
+    },
+    "ThreadId": "01a0fcf4-bff5-77d3-8db4-a104dc451ee5",
+    "Originator": "codex_exec",
+    "CliVersion": "0.159.2",
+    "Cwd": "D:\\r62-arch-v11",
+    "TurnContexts": [
+      {
+        "Utc": "2026-10-02T14:11:35.138Z",
+        "Model": "gpt-6.1-sol",
+        "Effort": "high",
+        "ApprovalPolicy": "never",
+        "Sandbox": "read-only"
+      },
+      {
+        "Utc": "2026-10-02T14:20:00.147Z",
+        "Model": "gpt-6.1-sol",
+        "Effort": "high",
+        "ApprovalPolicy": "never",
+        "Sandbox": "read-only",
+        "Note": "tras la compactación"
+      }
+    ],
+    "Compactions": [
+      {
+        "Utc": "2026-10-02T14:20:00.146Z",
+        "Note": "compactación del contexto del revisor dentro del mismo hilo; mismo modelo, effort y sandbox"
+      }
+    ],
+    "ServedModelBehindProvider": "UNKNOWN (no observable)"
+  },
+  "InjectedContext": {
+    "BaseInstructionsChars": 21769,
+    "DeveloperMessagesChars": [
+      3233,
+      2429,
+      271
+    ],
+    "AgentsMdAutoInjectionChars": 25321,
+    "PromptChars": 15644,
+    "GlobalAgentsMdBytes": 0,
+    "RuntimeDiagnostic": "el primer comando recibió el diagnóstico de dot-sourcing de profile.ps1 (modo de lenguaje); contenido del perfil no inspeccionado",
+    "WorldState": "presente en el registro; no forma parte de los mensajes visibles"
+  },
+  "Execution": {
+    "StartUtc": "2026-10-02T14:11:32Z",
+    "EndUtc": "2026-10-02T14:31:04Z",
+    "ExitCode": 0,
+    "TurnCompleted": true,
+    "Usage": {
+      "InputTokens": 3807092,
+      "CachedInputTokens": 3479552,
+      "OutputTokens": 23956,
+      "ReasoningOutputTokens": 6827
+    },
+    "LimitWarnings": "ninguna"
+  },
+  "Termination": {
+    "ProcessesAliveAfter": 0,
+    "Method": "Win32_Process sin procesos con la ruta del clon ni codex exec/sandbox tras la salida"
+  },
+  "Clone": {
+    "Path": "D:\\r62-arch-v11",
+    "HeadBefore": "26127a69a7dbc1324566b081381cd11db6b20f35",
+    "HeadAfter": "26127a69a7dbc1324566b081381cd11db6b20f35",
+    "StatusBefore": "limpio",
+    "StatusAfter": "limpio (sin archivos ignorados)"
+  },
+  "WriterCollision": {
+    "RemoteBranchAtLaunch": "26127a69a7dbc1324566b081381cd11db6b20f35",
+    "ProcessesOnI62Paths": 0
+  },
+  "ReviewerDeclaredIdentity": "Model, Effort y SessionOrThread = UNKNOWN en output.json: no es contradicción (§20.3.2)"
+}

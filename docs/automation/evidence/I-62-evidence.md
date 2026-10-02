@@ -802,3 +802,61 @@ Las trazas de V11 (§20 y Anexos D.8 y F.8) son **análisis del diseño**, no en
 
 **Validación de esta entrega:** allowlist, enlaces, columnas de las tablas, diff V10→V11 revisado, YAML del estado y `git diff --check`; resultado en el
 cuerpo del commit. La CI de este commit se informa al Owner y al Coordinator.
+
+## 25. F0 — Revisión formal limpia del Architect de la Proposal V11 (decisión del Owner)
+
+**CI de la Proposal V11** (`26127a69a7dbc1324566b081381cd11db6b20f35`): corrida **36973392633**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: Tests (Domain + Application) (110731947026), Build UI
+(110731947103), UI Tests (110731947117) y Build Plugin without AutoCAD (110732443330), los cuatro `success`. MEASURED por la sesión. Acredita solo
+`26127a69`.
+
+**Decisión recibida:** «OWNER DECISION — FORMAL CLEAN ARCHITECT REVIEW OF I-62 PROPOSAL V11», texto pegado sin archivo de origen. 6 415 bytes en UTF-8,
+SHA-256 `f412b8ec87ea7f56a615a328fd4061933164ccce962dd0f204f498c15b5091c4`; va literal dentro de `prompt.md`. La excepción de `dotnet test` (662 bytes,
+SHA-256 `9f110074…`) está transcrita en el README de la corrida, §2.
+
+**Invocación** (MEASURED; detalle en
+[`I-62-architect-v11/R20261002T140232Z-cdc5/README.md`](I-62-architect-v11/R20261002T140232Z-cdc5/README.md), con `closure.json`,
+`input-fidelity-preflight.json`, `input-fidelity-postrun.json`, `runtime-evidence.json` y `read-audit.json`):
+- **Antes:**
+  - `codex-cli 0.159.2` (SHA-256 `fcd5eafe…`) y autenticación existente;
+  - `config.toml` con hash `40c27b57…` antes y después;
+  - clon limpio `D:\r62-arch-v11` en `26127a69`, sin colisión de escritores;
+  - cierre de 48 insumos canónicos y 9 transitivos, cada uno con su blob y su SHA-256;
+  - **preflight de fidelidad FAITHFUL_NORMALIZED por el mismo camino** (`codex sandbox` → el `pwsh` del runtime), sobre los 61 caracteres no ASCII del
+    corpus, con un control negativo que detecta la pérdida.
+- **Ejecución:** una sola, de 14:11:32Z a 14:31:04Z, salida 0. `gpt-6.1-sol`/`high`/read-only RUNTIME_OBSERVED en los dos `turn_context`, con una
+  compactación a las 14:20:00Z. Consumo: entrada 3 807 092 tokens (3 479 552 en caché) y salida 23 956.
+- **Después:**
+  - clon limpio, configuración sin cambio y ningún proceso vivo;
+  - prompt recibido fiel;
+  - 96 comandos de lectura por las formas acreditadas, todos sobre rutas del cierre, sin lecturas directas en el `pwsh` exterior y sin `dotnet test`.
+- **Fidelidad tras la corrida:** DEGRADED_BOUNDED, sin degradación de caracteres, con dos tramos estructurales acotados. Las 42 premisas son fieles y ningún
+  hallazgo queda INVALID_PREMISE.
+
+**Resultado:** CHANGES REQUIRED, con A62-V10-03 (sigue abierto) y A62-V11-01 (nuevo); CLOSED A62-V10-01, A62-V10-04 y A62-V9-04. Registro:
+[`I-62-architect-review-v11.md`](../../initiatives/I-62-architect-review-v11.md).
+
+**Hechos del transporte medidos en este tramo** (para el triaje; la sesión no cambia la Proposal):
+
+| Id | Hecho (MEASURED) | Efecto |
+|---|---|---|
+| GAP-09 (actualización) | en el sandbox de `codex-cli`, `pwsh` corre en ConstrainedLanguage con la salida de consola en la página 850. `[Console]::OutputEncoding` no se puede asignar, `chcp` no cambia la codificación ya fijada y la consola del sandbox no hereda la página del padre. `cmd /c type` (los bytes atraviesan el `pwsh` sin conversión) y un `pwsh` anidado tras `chcp 65001` sí son fieles | causa medida de GAP-09. Las formas acreditadas eliminaron la degradación de caracteres en esta revisión |
+| GAP-10 | la captura de `codex exec` trunca el centro de las salidas muy grandes. Una lectura completa de `docs/HANDOFF.md` (438 341 caracteres) perdió las líneas 4639-4672 y unió dos líneas. El preflight por `codex sandbox` no puede verlo, porque no pasa por esa captura | un tramo estructural acotado, sin efecto en ninguna premisa. Una invocación futura puede limitar el tamaño de cada lectura o exigir rangos para los archivos grandes; la comprobación tras la corrida sigue siendo la decisiva |
+| — | Git Bash puede reescribir como rutas los «/c» de un argumento; el prompt se pasó con `MSYS_NO_PATHCONV=1` | prompt recibido fiel (comprobado en el log de sesión) |
+
+**Revalidación antes del commit** (MEASURED, 14:38Z):
+- `origin/main` = `819955d6…` y la rama de I-62 en `26127a69…`, sin cambios;
+- I-52 `fb6b5648`, sin commits nuevos;
+- I-63 `b5ee157d..a2d2b0a6`: 6 commits;
+- I-64 `b2db5326..8d9a0c6e`: 6 commits;
+- **ningún cruce** con superficies de I-62.
+
+**No se hizo:**
+- reintentos, una segunda invocación, Workers, Controllers, subagentes, pilotos, autenticación ni cambios de configuración. El preflight usó
+  `codex sandbox`, que no invoca ningún modelo;
+- editar el clon, la Proposal V12, ni corregir, disponer, ratificar o rebajar hallazgos;
+- decidir OD-6;
+- tocar V1-V11, sus paquetes, los registros previos, el Discovery, el mandato, las normas compartidas o cualquier superficie ajena.
+
+**Validación de esta entrega:** allowlist (superficies propias de I-62), enlaces, columnas de las tablas, hashes de los archivos custodiados, YAML del estado y
+`git diff --check`; resultado en el cuerpo del commit. La CI de este commit se informa al Owner.
