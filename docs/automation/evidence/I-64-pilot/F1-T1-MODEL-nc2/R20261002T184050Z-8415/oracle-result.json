@@ -1,0 +1,47 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261002T184050Z-8415",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "MutatedCheck": {
+    "Scope": "pass"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": "39f7caa411a5ebb372614c233a32255de7398cca",
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha..CurrentSha returns only src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs. git show confirms the sole change is its XML summary comment. The path is within delegation and contract allowed scope, outside forbidden scope, and does not intersect ChainRedFiles."
+  },
+  "OutputSha256": "FB48EF6EBFAD7C14C59C10A24EE009B89341ACC4381208D2F71927FC94B84E4B",
+  "ManualFreeText1610": []
+}

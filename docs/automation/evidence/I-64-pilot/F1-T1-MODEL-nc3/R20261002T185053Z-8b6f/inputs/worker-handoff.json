@@ -1,0 +1,39 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F1-T1-MODEL",
+  "RunId": "R20261002T181905Z-faf1",
+  "DelegationRunId": "R20261002T171954Z-754a",
+  "Initiative": "I-64",
+  "Gate": "F1",
+  "Attempt": 3,
+  "BaseSha": "0b7db52f12ddbf7ed36c8c2d020645818335c0fa",
+  "RedSha": null,
+  "CurrentSha": "39f7caa411a5ebb372614c233a32255de7398cca",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-workspace-persistente-rackcad",
+  "Pushed": true,
+  "FilesChanged": ["src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs"],
+  "WorkCompleted": "Reescrito el comentario XML de la clase WorkspaceSessionRegistry (una linea): registro puro y transitorio en memoria de sesiones vivas, una por instancia abierta de documento (D-03), sin autoridad de persistencia. Sin cambios ejecutables, de API, pruebas ni ADR. Un solo commit, push fast-forward. GATE PASS.",
+  "TestsExecuted": [
+    {"RunRef": "filter-1", "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter FullyQualifiedName~RackCad.Tests.Workspace", "Phase": "GREEN", "TreeSha": "39f7caa411a5ebb372614c233a32255de7398cca", "ResultsFile": "artifacts/orchestration/I-64/F1-T1-MODEL/3/R20261002T181905Z-faf1/tests/filter/filter.trx"},
+    {"RunRef": "suite-1", "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj", "Phase": "RELEVANT", "TreeSha": "39f7caa411a5ebb372614c233a32255de7398cca", "ResultsFile": "artifacts/orchestration/I-64/F1-T1-MODEL/3/R20261002T181905Z-faf1/tests/suite/suite.trx"},
+    {"RunRef": "build-core", "Command": "dotnet build -c Release --no-incremental tests/RackCad.Tests/RackCad.Tests.csproj", "Phase": "RELEVANT", "TreeSha": "39f7caa411a5ebb372614c233a32255de7398cca", "ResultsFile": null},
+    {"RunRef": "build-ui", "Command": "dotnet build -c Release --no-incremental tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Phase": "RELEVANT", "TreeSha": "39f7caa411a5ebb372614c233a32255de7398cca", "ResultsFile": null}
+  ],
+  "TestResults": [
+    {"RunRef": "filter-1", "Selected": 51, "Passed": 51, "Failed": 0, "Skipped": 0, "FailedTests": []},
+    {"RunRef": "suite-1", "Selected": 12447, "Passed": 12447, "Failed": 0, "Skipped": 0, "FailedTests": []},
+    {"RunRef": "build-core", "Selected": 0, "Passed": 0, "Failed": 0, "Skipped": 0, "FailedTests": []},
+    {"RunRef": "build-ui", "Selected": 0, "Passed": 0, "Failed": 0, "Skipped": 0, "FailedTests": []}
+  ],
+  "Evidence": ["Builds Release: exit 0, 0 lineas con warning MSB/CS/NU/NETSDK, 0 errores (logs en artifacts/orchestration/I-64/F1-T1-MODEL/3/R20261002T181905Z-faf1/tests/)."],
+  "UnexpectedFindings": [],
+  "KnownLimitations": ["S-01 (Owner Validation) y S-10 (AutoCAD) son frontera y no se cruzaron.", "CI del CurrentSha pendiente: la espera la sesion."],
+  "Deviations": [],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "Verificacion del Controller y espera de la CI exacta del CurrentSha.",
+  "Worker": {"Provider": "Anthropic", "ModelRequested": "claude-sonnet-5-5", "EffortRequested": "medium", "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"}
+}

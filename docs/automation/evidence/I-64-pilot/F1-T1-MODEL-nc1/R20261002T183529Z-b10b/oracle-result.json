@@ -1,0 +1,49 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261002T183529Z-b10b",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Identity": "git rev-parse HEAD y refs/remotes/origin/architecture/workspace-persistente-rackcad dieron 39f7caa411a5ebb372614c233a32255de7398cca; git merge-base --is-ancestor BaseSha CurrentSha termino con codigo 0. Pero worker-handoff.json declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. relay Entry y RemoteFacts.CurrentRun dan 39f7caa411a5ebb372614c233a32255de7398cca."
+  },
+  "OutputSha256": "F7325752B2BF87400093F855F52E1A69D44BF11A80DE21611BD8DC06EEDCA20E",
+  "ManualFreeText1610": []
+}
