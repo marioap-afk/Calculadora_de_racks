@@ -1145,3 +1145,28 @@ difiere del SHA-256 transitorio por fin de línea (16.12).
   - `ChainRedSha` `fc30dc6c` (acreditado en `R20261002T062554Z-e271`).
   - `ChainRedFiles` sin cambio.
   - `CorrectionOf` = {`R20261002T062554Z-e271`, `Authority`, SHA-256 de este `analysis.md`}.
+
+## 29. Corrección 2: planificación rechazada en la aceptación (STOP P-03)
+
+- **Planificación** `R20261002T135956Z-2105` (Codex CLI, `gpt-6-luna`, `high`, efectivos = solicitados; cesión 14:01:27Z-14:03:15Z, código 0).
+  - El prompt transcribe literalmente las `Authorities` del contrato y ordena no añadir ninguna.
+  - El alcance es solo el archivo nuevo de la prueba de D-02.
+- **Delegación:** válida contra el esquema. `Authorities` es igual al contrato byte a byte y sin añadidos; la cadena y `CorrectionOf` son
+  iguales a los custodiados.
+- **Aceptación A1-A8, sin cortocircuito:** A5 en `fail` y las demás en `pass`.
+  - `StopConditions` = [S-03, P-03]: faltan 23 de las 25 del contrato. El Controller copió las paradas de su propia cabecera (línea 28 del
+    prompt) en lugar de las del contrato, aunque el delta le pedía «todos los del contrato».
+  - La disposición es **STOP (P-03)** y no se invoca al Worker.
+- **Defecto adicional**, que A1-A8 no mide: `ForbiddenWriteScope` añade el prefijo `tests/RackCad.Tests/ComputedParameters/`. Ese prefijo
+  cubre el único archivo de `AllowedWriteScope`, así que el paquete sería contradictorio para el Worker.
+- **Procesos transitorios:** la primera salida y la primera entrada vieron `git.exe` y `bash.exe` efímeros, hijos de otras sesiones de
+  Claude Code (`claude.exe` 7356 y 40860).
+  - Ya no existían al releerlos por PID y no llevaban la ruta del worktree, así que no son P-02.
+  - Las comprobaciones repetidas están limpias. Igual que DEV-G1-01 y la lección de I-61 sobre procesos del host.
+- **Contadores:** `attempts` = 2, sin cambio. Planificaciones del intento 2: 1.
+- **Custodia:** `docs/automation/evidence/I-63-pilot/G1-RACK-METRICS/R20261002T135956Z-2105/` (`gate-contract.json` transitorio con CRLF, 16.12).
+- **Propuesta de la sesión:** resolver el STOP sin cambio del trabajo, con una planificación nueva del intento 2 y un `RunId` nuevo.
+  - El prompt transcribe literalmente, además de `Authorities`, las `StopConditions`, `Invariants` y `RequiredTests` del contrato.
+  - La cabecera del Controller no usa una línea de paradas que pueda confundirse con las del paquete.
+  - `ForbiddenWriteScope` = el del contrato más los nueve archivos exactos, sin prefijos que cubran el archivo nuevo.
+  - La sesión añade a la aceptación la comprobación «ninguna entrada de `ForbiddenWriteScope` cubre `AllowedWriteScope`».

@@ -4,11 +4,11 @@ automation_state:
   branch: architecture/parametros-calculados-resumen-proyecto
   claim_id: ce04f47f-ca53-4e75-b983-5ac57ab6c5e3
   current_phase: G1
-  state: implementing
+  state: waiting
   gate: none
   attempts: 2
-  next_action: Correccion 2 de G1-RACK-METRICS (prueba de D-02 en archivo nuevo, Authorities exactas del contrato) -> planificacion, aceptacion, Worker, CI y verificacion.
-  last_evidence_commit: cc4765abdc246ef275a480bc835d18de596f5758
+  next_action: Decision del Coordinator sobre el STOP P-03 de la aceptacion de la correccion 2 (planificacion R20261002T135956Z-2105, A5 por StopConditions; evidencia §29).
+  last_evidence_commit: 943cbacc6d6ee4eccac6979f8d6241ba3f93ac34
 execution_context:
   mode: manual
   automation_enabled: false
@@ -17,12 +17,12 @@ execution_chain:
   gate: G1
   task_id: G1-RACK-METRICS
   attempt: 2
-  next_role: Controller (CONTROLLER_PLANNING, Codex CLI gpt-6-luna), delegacion de la correccion 2
+  next_role: Coordinator (STOP P-03 de la aceptacion de la correccion 2; A5 por StopConditions)
   next_action: Correccion 1 (CorrectionOf R20261002T005944Z-1192, FailureClass Ci, analysis.md SHA-256 6080f3d008d032d4c6565f5f38df849f294c1a3c981d8ce9c31a14c5259a1fb8) -> planificacion -> aceptacion A1-A8 -> Worker RED solo de pruebas + GREEN -> CI -> verificacion -> nc1-nc3 si VERIFIED -> custodia
   correction_rules: [Authorities byte a byte del contrato sin analysis.md, analysis.md solo por CorrectionOf, prueba D-02 en archivo nuevo tests/RackCad.Tests/ComputedParameters/ (namespace RackCad.Tests y clase ComputedParameters*), sin RED nuevo (no toca ChainRedFiles), sin tocar produccion (si hiciera falta -> STOP)]
   red_sha: fc30dc6cf0d2f97e6732bbb8c512623db91c305d (RED de la correccion 1, acreditado en R20261002T062554Z-e271; ChainRedFiles = las dos pruebas de tests/RackCad.Tests/ComputedParameters/)
   run_ids: {planning: R20261002T002817Z-6294, nc4: R20261002T003429Z-a139, work: R20261002T003840Z-f180, verification: [R20261002T005705Z-eccd (transporte), R20261002T005944Z-1192]}
-  limits_used: {verification_reruns_attempt0: 1 of 2, corrections: 2 (clase Ci = 1; clase Authority = 1), attempts: 2 of 3, planning_attempt1: 2 (R20261002T011628Z-7097 STOP P-03; R20261002T061154Z-9f77 aceptada), work_attempt1: R20261002T061533Z-8e64 (GREEN b5ee157d; CI 4/4), verification_attempt1: R20261002T062554Z-e271 (STOP S-12)}
+  limits_used: {verification_reruns_attempt0: 1 of 2, corrections: 2 (clase Ci = 1; clase Authority = 1), attempts: 2 of 3, planning_attempt1: 2 (R20261002T011628Z-7097 STOP P-03; R20261002T061154Z-9f77 aceptada), work_attempt1: R20261002T061533Z-8e64 (GREEN b5ee157d; CI 4/4), verification_attempt1: R20261002T062554Z-e271 (STOP S-12), planning_attempt2: 1 (R20261002T135956Z-2105 STOP P-03)}
   gate_contract: artifacts/orchestration/I-63/G1-RACK-METRICS/0/R20261002T002817Z-6294/gate-contract.json (SHA-256 87954E41E2F96B992DB7D02205E4102551DAC2A14351A8EBDFDD3838231B2068; no versionado)
   planning_run_id: R20261002T002817Z-6294
   authority_revision: 658b35ad498520ba3c832a96eea4389df16dfa60
