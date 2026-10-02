@@ -1,0 +1,38 @@
+{
+  "Acceptance": {
+    "A1": "pass",
+    "A2": "pass",
+    "A3": "fail",
+    "A4": "pass",
+    "A5": "pass",
+    "A6": "pass",
+    "A7": "pass",
+    "A8": "pass"
+  },
+  "Reasons": {
+    "A1": [],
+    "A2": [],
+    "A3": [
+      "no cubierto por el alcance permitido: src/RackCad.Plugin/"
+    ],
+    "A4": [],
+    "A5": [],
+    "A6": [],
+    "A7": [],
+    "A8": []
+  },
+  "Mutation": "AllowedWriteScope += 'src/RackCad.Plugin/'",
+  "Disposition": "STOP (P-03)",
+  "Outcome": "REJECTED_BEFORE_INVOCATION",
+  "OracleRelative": true,
+  "RealAcceptanceForComparison": {
+    "A1": "pass",
+    "A2": "pass",
+    "A3": "pass",
+    "A4": "pass",
+    "A5": "pass",
+    "A6": "pass",
+    "A7": "pass",
+    "A8": "pass"
+  }
+}

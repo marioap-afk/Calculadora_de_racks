@@ -961,3 +961,124 @@ porque la delegación real no pasa A1-A8.
 `events.jsonl` (SHA-256 `C31DF251…E90D5CAD07`), `stderr.txt` y el registro de sesión de Codex no se versionan; quedan como procedencia.
 `acceptance-precheck-reasons.json` y `nc4-result.json` se escribieron con CRLF en el área transitoria, así que su SHA-256 transitorio difiere
 del blob, normalizado a LF por `core.autocrlf`. La identidad duradera es el blob del commit de custodia.
+
+## 22. F1-T1-MODEL — Segunda planificación, aceptación, Worker, verificación REWORK y STOP P-07
+
+Sección nueva; las anteriores no se reescriben. Hechos de la sesión responsable. Sin GATE PASS, F1 PASS ni ADR aceptado.
+
+**Decisiones del Coordinator** (órdenes en el chat de la sesión, 2026-10-02; sin archivo y por tanto sin hash; resumen saneado):
+1. Sobre el STOP de §21:
+   - **P-03 = CONFIRMED.** La delegación `R20261002T001349Z-aad5` queda rechazada y nunca se entrega al Worker.
+   - **P-07.** Autoriza una segunda planificación sustitutiva. El tope de planificación pasa a **2 en total**; trabajo 4, verificación 4 y
+     `MaxReworkLoops` 3 no cambian.
+   - **P-02.** `bash.exe` 31724 y `git.exe` 38412 quedan **CLEARED_BY_REREAD**. Regla para I-64: un proceso no atribuible es STOP P-02 solo
+     si reaparece de forma persistente o toca Git, `config.toml` o el worktree.
+   - **Empaquetado.** Prohibidas sin expandir; siete colecciones opacas copiadas byte a byte; `TaskClass` del trabajo del Worker;
+     BaseSha `e0587355`; MainSha `819955d6`; nc4 repetido sobre la segunda planificación.
+2. **Aceptación formal.**
+   - A1-A8 = PASS sobre `R20261002T003827Z-3a76` (`delegation.json` SHA-256 `14058EA3…3FDE1A`): **ACCEPTED**.
+   - nc4 `R20261002T004303Z-8d3c` aceptado como control negativo válido.
+   - **AuthorityRevision `e0587355` ACCEPTED.**
+   - La colección completa de `Invariants[]` sigue siendo vinculante aunque `AcceptanceCriteria[]` sea menos exhaustiva.
+   - Worker autorizado. Cadena autónoma: Worker → RED → GREEN → push/CI → verificación → REWORK autorizados.
+
+**Contrato reemitido** (SHA-256 `A4D36818…991999D2`; transcripción literal por la sesión; mismo contrato material):
+- Invariantes, paradas C-01..C-12, objetivo y evidencia esperada: texto de la orden original, con sus tildes.
+- S-01..S-14 y P-01..P-08: de la tabla de AUTOMATION_PLAN §16 en MainSha.
+- `ForbiddenWriteScope`: 17 prefijos y rutas canónicos, sin expandir. «Fuera de Workspace/» y «otros docs/adr/» quedan cubiertos por
+  `AllowedWriteScope` y por `Scope` de 16.9 (precedente de I-61).
+- 24 autoridades con los encabezados comprobados byte a byte en Git.
+- **Supuesto aceptado:** AuthorityRevision = BaseSha = `e0587355`. 16.4 paso 1 no exigía commit, porque `e0587355` lleva el resumen de
+  estado, y el paso 3 prohíbe commit entre planificación y aceptación.
+
+**Segunda planificación** (`R20261002T003827Z-3a76`):
+- Ejecución: Codex `gpt-6-luna` / `high`, efectivo comprobado (`thread_id` `01a0fa0d-…`); código 0; `turn.completed`.
+- Salida: `delegation.json` = salida `-o`, SHA-256 `14058EA3…`.
+- Las siete colecciones y `Objective` son iguales byte a byte al contrato.
+- `TaskClass`: «Implementación de pruebas» (ROUTINE_IMPLEMENTATION, Balanced). Worker `claude-sonnet-5-5|subagent` / `medium`, sin escalado.
+- A1-A8: las ocho en pass.
+- **nc4** `R20261002T004303Z-8d3c`: A3 en fail y las demás iguales; `REJECTED_BEFORE_INVOCATION`.
+- Relevos de salida y de entrada limpios.
+
+**Worker** (`R20261002T005244Z-f656`; agent() de workflow `wf_b6d3c36c-5e2`, alias `sonnet`, effort `medium`):
+- Prompt: §G.1 + ROUTINE_IMPLEMENTATION + delta; 182 líneas; SHA-256 `BBB6C336…25EAE8`. El texto entregado, quitada la línea de marco y la
+  sangría, es igual al archivo: sin P-05. El harness añadió un turno previo con la orden del Coordinator, como contexto.
+- Cesión 00:55:00Z → 01:08:00Z; 705238 ms; 27 llamadas de herramienta.
+- Efectivos: `claude-sonnet-5-5` / `medium` en las 47 entradas de la transcripción (SHA-256 `3903E0B5…1FAA1A`).
+- Commits, ambos con `Co-Authored-By: Claude Sonnet 5.5`:
+  - RED `36c344dc283d4a9855110a31ca6b20a2da7fd972`: ADR 0047 `propuesto`, esqueleto y 37 pruebas;
+  - GREEN `66d34af31524c49214e38479d5892cd9ec985eb9`: los 5 archivos de producción, sin tocar pruebas.
+- Diff: 10 archivos dentro de `AllowedWriteScope`.
+- Entrega: `WorkerStatus` BLOCKED, `TriggeredStopConditions` C-05 y C-06, con dos hallazgos (abajo).
+- Relevo de entrada:
+  - HEAD = remoto = `66d34af3`, árbol limpio, `config.toml` sin cambio;
+  - cuatro procesos ilegibles efímeros (`bash.exe` 34280, 29336 y 34004; `git.exe` 7848) ya no existían en la lectura de detalle: CLEARED_BY_REREAD
+    por la regla del Coordinator;
+  - un `dotnet.exe` huérfano es servidor de compilación.
+  - 0 denegaciones. 4 órdenes fallidas, todas superadas. Sin P-06.
+
+**Hechos remotos:**
+
+| Corrida | SHA | Core | Build UI | UI Tests | Plugin | Filtro `FullyQualifiedName~RackCad.Tests.Workspace` (TRX Core) |
+|---|---|---|---|---|---|---|
+| 36948737576 (RedRun) | `36c344dc` | failure (32 fallidas) | success | success | skipped | 37 seleccionadas, 7 pass, 30 fail por aserción |
+| 36949370189 (CurrentRun) | `66d34af3` | **failure** (2 fallidas) | success | success | skipped | 37 seleccionadas, 36 pass, 1 fail |
+
+Las dos fallidas de CurrentRun:
+- `RackCad.Tests.Workspace.WorkspaceModelBoundaryTests.ModelDoesNotPersistNorWriteAuthoredData`
+- `RackCad.Tests.NamespaceFolderGuardTests.TestProjects_KeepExactlyOneAssemblyRootNamespace`
+
+**Verificación 1 de 4** (`R20261002T011239Z-647e`; Codex `gpt-6-luna` / `high`, efectivo comprobado):
+- Resultado: **EXECUTION_REWORK_REQUIRED / REWORK**, `FailureClass` **Ci**, `VerifiedSha` null.
+- Ci y Tests en fail, ambas con `RedPart` pass. Las otras 12 en pass.
+- Coherencia del README §8 comprobada.
+- **RED acreditado:** `ChainRedSha` `36c344dc`; `ChainRedFiles` = `tests/RackCad.Tests/Workspace/` {SelectionContextTests,
+  WorkspaceHintDrainTests, WorkspaceModelBoundaryTests, WorkspaceSessionTests}.cs.
+- Hallazgo del Controller: C-05 y C-06 de la entrega no se confirman. Git no muestra salida del alcance ni ambigüedad material del Freeze.
+
+**Causa raíz** (hechos de la sesión; el `analysis.md` formal es del Coordinator):
+1. **Defecto de la prueba RT.** La guarda `ModelDoesNotPersistNorWriteAuthoredData` prohíbe la expresión `Registry`, pensada para
+   `Microsoft.Win32.Registry`. Coincide con el tipo `WorkspaceSessionRegistry` del propio modelo, así que la guarda no puede pasar con ese
+   nombre.
+2. **Convención del repositorio.** `NamespaceFolderGuardTests.TestProjects_KeepExactlyOneAssemblyRootNamespace` exige que todo archivo de
+   `tests/RackCad.Tests` declare exactamente `namespace RackCad.Tests`.
+   - El criterio de aceptación de la delegación pide «el espacio de nombres RackCad.Tests.Workspace». Lo introdujo el delta de la
+     planificación que redactó la sesión: **error propio**, por no comprobar las guardas de convención antes de fijar un espacio de nombres.
+   - El filtro del contrato se cumple sin conflicto con `namespace RackCad.Tests` y clases con prefijo `Workspace`, porque
+     `FullyQualifiedName~` compara por subcadena: `RackCad.Tests.WorkspaceSelectionContextTests…` contiene `RackCad.Tests.Workspace`.
+   - Ambos arreglos quedan dentro de `tests/RackCad.Tests/Workspace/`.
+3. **Forma de la corrección.** Toca `ChainRedFiles`, así que exige un RED nuevo:
+   - commit RED con la corrección desactivada y los cambios de las pruebas de la cadena;
+   - después un GREEN que no toque las pruebas.
+
+   El criterio de espacio de nombres de la delegación debe cambiar, y eso exige una delegación de corrección emitida por una planificación
+   del Controller, con `CorrectionOf`.
+
+**STOP P-07.**
+- El REWORK está autorizado por el contrato (`CorrectionsAuthorized` true).
+- La corrección exige commit de `attempts` y volver a la planificación (I-61 Proposal V9 §12.1 paso 8; AUTOMATION_PLAN 16.8). El tope de
+  planificación está agotado (2 de 2), así que la invocación de planificación de la corrección **no se lanza**.
+- `attempts` sigue en 0 y el contador de la clase Ci en 0, porque la corrección no se ha lanzado. Decide el Coordinator: tope y `analysis.md`.
+
+**Presupuesto:**
+
+| Tipo | Uso |
+|---|---|
+| Planificación | 2 de 2 |
+| Trabajo | 1 de 4 |
+| Verificación | 1 de 4 |
+| `attempts` | 0 de 3 |
+| BLOCKED | 0 |
+
+nc1-nc3 no se ejecutan: solo se ejecutan tras un VERIFIED.
+
+**Custodia (16.12)** en `docs/automation/evidence/I-64-pilot/`:
+- `F1-T1-MODEL/R20261002T003827Z-3a76/` (planificación y aceptación);
+- `F1-T1-MODEL-nc4/R20261002T004303Z-8d3c/`;
+- `F1-T1-MODEL/R20261002T005244Z-f656/` (prompt, entrega y registro del trabajo);
+- `F1-T1-MODEL/R20261002T011239Z-647e/` (prompt, verificación y registro).
+
+Los JSON de procesos solo llevan PID, padre, nombre, fecha y clase. Los TRX, eventos y transcripciones no se versionan: sus SHA-256 están en
+los registros. Algunos archivos se escribieron con CRLF en el área transitoria: `worker-handoff.json`, los `processes-*.json`,
+`nc4-result.json` y `acceptance-precheck-reasons.json`. Su SHA-256 transitorio difiere del blob, normalizado a LF, y la identidad duradera es
+el blob del commit de custodia.
