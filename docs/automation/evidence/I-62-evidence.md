@@ -1502,3 +1502,12 @@ protocolo, AUTOMATION_PLAN, WORKFLOW, LIFECYCLE, las clases de prueba de los pro
 conflicto previsto solo en el cierre documental.
 
 **Artefactos locales:** generadores, prototipo del mapa y TRX en el scratchpad de la sesión, fuera del repositorio; el árbol queda limpio en el commit.
+
+### 36.5 Comprobación local de los planes de esquema de F3 (addendum)
+
+**CI del commit de preparación** (`d8c55a971c4a52684c853a79ac11a2d47323ec57`): corrida **37076587763**, `push`, SHA exacto, `success`. Jobs: Tests
+(Domain + Application) (111067750856), Build UI (111067751133), UI Tests (111067751132) y Build Plugin without AutoCAD (111068411038), los cuatro `success`.
+
+Los nueve esquemas de F3 se redactaron como borradores locales, sin commit (F3 no está autorizado). Son estrictos, sin `oneOf`, neutrales y compilan con
+`Test-Json` 2020-12. Detalle del campo `SizeOrSha256` en [f3-dossier.md](I-62-prep/f3-dossier.md) §3.10. Sin cambios en producto, pruebas ni superficies
+normativas.

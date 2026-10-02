@@ -169,6 +169,18 @@ Sobre común con `RequestedRole` = REVIEWER y `Action` = REVIEW_CHANGE. Campos p
 
 ### 3.9 `rackcad-normative-dependency-manifest/v1` (B.11): ver §5.
 
+### 3.10 Comprobación local de los planes (borradores fuera del repositorio)
+
+Los nueve esquemas de §3 y §5 se redactaron como borradores locales, en el scratchpad de la sesión y sin commit: F3 no está autorizado. Se comprobaron
+con la misma lógica de las guardas de F2. MEASURED:
+- los nueve, estrictos (cero objetos abiertos), sin `$ref`, `oneOf` ni condicionales y sin marcas de proveedor en sus enums;
+- los nueve compilan con `Test-Json` 2020-12 (PowerShell 7.6.6) y rechazan un objeto vacío por las propiedades requeridas;
+- `delegation/v2` se construye mecánicamente sobre el `/v1` real con el delta de B.7;
+- **un detalle de patrón:** el campo congelado `DeclaredRuntimeContext[].SizeOrSha256` (B.9) termina en `Sha256`, así que la guarda de patrones de F2
+  exigirá un patrón de 64 hex. Al materializarlo se usa `^([0-9]+|[0-9a-f]{64})$` (tamaño o hash), que la satisface sin renombrar el campo.
+
+Conclusión: los planes de campos de F3 se pueden expresar de forma estricta y validable sin cambiar el Freeze.
+
 ## 4. Plan de pruebas (RED → GREEN)
 
 Las seis obligaciones de F3 son de clase **(ii) MC** (Anexo C). Se ejecutan con un arnés reproducible en `docs/automation/evidence/I-62-F3/` (como `f2-mc.py`),
