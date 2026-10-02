@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-63
 title: Computed Parameters & Project Summary Foundation
 type: architecture
-status: f0-proposal-v3-agreed
+status: frozen-g1-pending
 workflow: V2
 conceptual_initiative: I-63
 delivery_unit: I-63
@@ -22,18 +22,18 @@ consumes: [UNKNOWN]
 extends: [UNKNOWN]
 introduces: [UNKNOWN]
 discovery_ref: docs/initiatives/I-63-discovery.md
-freeze_ref:
+freeze_ref: docs/initiatives/I-63-proposal-v3.md
 freeze_delta_ref:
-amendment_refs: []
+amendment_refs: [docs/initiatives/I-63-proposal-v3-amendment-a1-verificacion.md]
 ov_assignment_ref:
 decision_refs: [docs/automation/decisions/I-63.md, docs/automation/decisions/I-63-owner-mandate.original.txt]
 evidence_ref: docs/automation/evidence/I-63-evidence.md
 automation_state_path: docs/automation/state/I-63.yml
 requires_ci: true
-requires_plugin_build:
-requires_autocad:
+requires_plugin_build: true
+requires_autocad: false
 requires_owner_decision:
-requires_owner_validation:
+requires_owner_validation: false
 automation:
   enabled: false
   auto_merge: false
@@ -117,7 +117,8 @@ Son candidatos de intake, no afirmaciones: cada entrada se verifica con DC-08 en
 - Proposal vigente: [I-63-proposal-v3.md](I-63-proposal-v3.md) (Frozen: NO), con el paquete de re-revisión
   [I-63-architect-package-v3.md](I-63-architect-package-v3.md). V1 ([I-63-proposal-v1.md](I-63-proposal-v1.md)) y V2
   ([I-63-proposal-v2.md](I-63-proposal-v2.md)) son históricas: el Architect dio CHANGES REQUIRED en R1 y R2.
-- Freeze / Freeze delta / A-n: ninguno.
+- **Freeze:** la Proposal V3 congelada ([I-63-proposal-v3.md](I-63-proposal-v3.md), `Frozen: YES`), por consenso Coordinator + Architect R3.
+- **A-n:** [A-1](I-63-proposal-v3-amendment-a1-verificacion.md), solo del Coordinator: precisiones de verificación O-PV3-1..3.
 - Decisiones: [I-63.md](../automation/decisions/I-63.md); mandato: [I-63-owner-mandate.original.txt](../automation/decisions/I-63-owner-mandate.original.txt).
 
 Discovery debe responder las catorce preguntas del mandato («DISCOVERY REQUIRED») sobre DC-01..09, con EXP-01..09 evaluadas y sus
@@ -173,14 +174,14 @@ C-F0-RED queda registrado en las [decisiones](../automation/decisions/I-63.md) c
 G0: reclamo y bootstrap, **PASS** (CD-I63-G0-10). F0-DISCOVERY: R0 con CHANGES REQUIRED (CD-I63-F0-R1-01); R1 con CHANGES REQUIRED
 localizado (CD-I63-F0-R2-01); R2 **aceptada** (CD-I63-F0-R2-04), sin GATE PASS de F0 (Discovery + Freeze). P-14 quedó resuelta por
 el Owner, sin contrato común (§7). El Owner también resolvió P-01..P-05 ([Discovery](I-63-discovery.md) §25 y §26). Con la orden PV1, F0-DISCOVERY queda cerrado para pasar al diseño. Architect R1 (V1) y R2
-(V2) = CHANGES REQUIRED. **Architect R3 (V3) = AGREED, READY FOR FREEZE** sobre `fb3c8788` / blob `e4a94eff`. El Consensus Freeze
-lo decide el Coordinator; sin Freeze todavía. El plan provisional del mandato (F0 Discovery y Freeze; F1..F6; READY) **no está congelado** y se
+(V2) = CHANGES REQUIRED. **Architect R3 (V3) = AGREED** sobre `fb3c8788` / blob `e4a94eff`. **FREEZE** por orden del Coordinator, con la
+A-1 solo del Coordinator. Siguiente: autorización del gate G1 (I-61); sin implementación antes. El plan provisional del mandato (F0 Discovery y Freeze; F1..F6; READY) **no está congelado** y se
 revisa contra [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §7 antes del Freeze: ningún gate solo de capa, DTO o modelo sin
 resultado observable verificable. La conformidad final se referencia desde READY-06.
 
 ## 9. Owner Validation
 
-- Asignación OV: pendiente del Freeze.
+- **Owner Validation: NOT APPLICABLE para I-63 V1** (orden de Freeze). No hay UI, comandos, cambios de dibujo ni integración host.
 - Requiere AutoCAD / Owner Validation: **por determinar** según el workflow. El mandato prevé que pueda no aplicar si no se añade UI ni
   comportamiento visible de AutoCAD, y que se planifique si se añade un comando o un resumen visible. No se decide por anticipado ni se
   añade UI para forzarla.

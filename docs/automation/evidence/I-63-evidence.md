@@ -849,3 +849,36 @@ AGREED: cero REQUIRED abiertos. Válido exclusivamente para:
 
 IMPLEMENTATION AUTHORIZATION = NO hasta que Coordinator y Architect hayan acordado el mismo Freeze.
 ```
+
+## 21. Freeze, A-1 y preparación de G1
+
+### 21.1 CI de los commits de la cadena
+
+| Commit | SHA | Corrida `push` | Resultado |
+|---|---|---|---|
+| Cadena de revisión | `09637fa64096fe3972674f678ce59bfa71cd3875` | 36943762295 | `success`; cuatro jobs requeridos en `success` |
+| Architect R3 AGREED | `8fea037633916c7a8106525ec1ac5086e9c53bba` | 36943950908 | `success`; cuatro jobs requeridos en `success` |
+
+### 21.2 Freeze
+
+- **Orden:** «I-63 — COORDINATOR FREEZE ORDER», pegada por el usuario en el chat de la sesión responsable el 2026-10-02. No llegó como
+  archivo. Resumen en las [decisiones](../decisions/I-63.md) §2.
+- **Commit de Freeze:** `f61d0aca859a11b15cbe1797069a83cba873ba95`, hijo de `8fea0376`, sin force, con un **solo** archivo.
+  - Diff respecto del acuerdo (`fb3c8788:docs/initiatives/I-63-proposal-v3.md`, blob `e4a94eff`): exactamente una línea, `Frozen: NO` →
+    `Frozen: YES`.
+  - Proposal congelada: blob `4d5dedce15363fa6378e460c5b63005fe41b858b`.
+- **CI exact-SHA del Freeze:** corrida 36944741421: `event=push`, rama y `head_sha` exactos, `success` con los cuatro jobs requeridos.
+- **Owner Validation:** NOT APPLICABLE para I-63 V1, por la orden de Freeze.
+
+### 21.3 A-1 (Coordinator-only)
+
+- Archivo `docs/initiatives/I-63-proposal-v3-amendment-a1-verificacion.md`, blob `766d9ba9cf379daa077bed20fc6255b5ca656d60`. Contiene solo O-PV3-1, O-PV3-2 y O-PV3-3, sin activar ninguna M.
+- La CI exact-SHA del commit de la A-1 se informa al Coordinator; ese commit no puede registrarse a sí mismo.
+
+### 21.4 Preparación del gate G1 (I-61)
+
+- Borrador de `gate-contract.json` (esquema `rackcad-gate-contract/v1`) en `artifacts/orchestration/I-63/G1/1/R20261002T001347Z-ed7a/gate-contract.json`. `artifacts/` está en `.gitignore`
+  (README de ejecución delegada §2).
+- Lo prepara la sesión. Lo **emite y autoriza el Coordinator** (README §1); hasta entonces no hay delegación, Controller, Worker ni
+  implementación.
+- El `AuthorityRevision` del borrador es el commit de la A-1. Su SHA-256 y su validación contra el esquema se informan al Coordinator.
