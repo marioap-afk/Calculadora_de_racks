@@ -1,0 +1,86 @@
+{
+  "Status": "COORDINATOR_ACCEPTANCE_REQUIRED",
+  "PlanningRunId": "R20261002T061355Z-c5cd",
+  "DelegationPath": "artifacts/orchestration/I-64/F1-T1-MODEL/1/R20261002T061355Z-c5cd/delegation.json",
+  "DelegationSha256": "EC4EACA2297994EEA785DE7CA70F8F3FCB4A896E0B26F3E73225D36031D11027",
+  "GateContractSha256": "A4D3681828117B640B6FCFC04F2646CBA2A3AD78929DAE589F060230991999D2",
+  "PromptSha256": "81382E6961365111E3EBFDA4B450C1B54AA9A6651F68C3006CBBECCEA4240BB0",
+  "CorrectionOf": {
+    "RunId": "R20261002T011239Z-647e",
+    "FailureClass": "Ci",
+    "AnalysisSha256": "b0ddc8de37199ba703efa180b6bf8caab1a2230dc1469d9a53c6159315b98664"
+  },
+  "AnalysisSha256": "b0ddc8de37199ba703efa180b6bf8caab1a2230dc1469d9a53c6159315b98664",
+  "AnalysisBlob": "a6b74cec6614eea89d2d295daf61dd9ff8b7c500 (b2db5326)",
+  "Attempt": 1,
+  "AttemptsRemaining": 2,
+  "BaseSha": "b2db5326924cd66def7a83628bc6102db50b80f2",
+  "AuthorityRevision": "e0587355b0e84d98807057a56dfc50591da87489",
+  "MainSha": "819955d61a6da4c811a11fbd11b5dca13f634b7c",
+  "ChainBaseSha": "e0587355b0e84d98807057a56dfc50591da87489",
+  "ChainRedSha": "36c344dc283d4a9855110a31ca6b20a2da7fd972",
+  "ChainRedFiles": [
+    "tests/RackCad.Tests/Workspace/SelectionContextTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHintDrainTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceSessionTests.cs"
+  ],
+  "TaskClass": "Depuración",
+  "PromptProfile": "DEBUGGING",
+  "Worker": {
+    "Cell": "claude-sonnet-5-5|subagent",
+    "Model": "claude-sonnet-5-5",
+    "Effort": {
+      "Semantic": "Balanced",
+      "Provider": "medium"
+    }
+  },
+  "ModelEscalationReason": null,
+  "Acceptance": {
+    "A1": "pass",
+    "A2": "pass",
+    "A3": "pass",
+    "A4": "pass",
+    "A5": "pass",
+    "A6": "pass",
+    "A7": "pass",
+    "A8": "pass"
+  },
+  "AcceptanceReasons": {
+    "A1": [],
+    "A2": [],
+    "A3": [],
+    "A4": [],
+    "A5": [],
+    "A6": [],
+    "A7": [],
+    "A8": []
+  },
+  "SessionExtraChecks": {
+    "ExactCopy.Authorities": true,
+    "ExactCopy.AllowedWriteScope": true,
+    "ExactCopy.ForbiddenWriteScope": true,
+    "ExactCopy.Invariants": true,
+    "ExactCopy.RequiredTests": true,
+    "ExactCopy.ExpectedEvidence": true,
+    "ExactCopy.StopConditions": true,
+    "ExactCopy.Objective": true,
+    "CorrectionOfOk": true,
+    "TaskClass": "Depuración",
+    "RoutingRow": [
+      "DEBUGGING",
+      "Balanced"
+    ],
+    "TaskClassNotController": true,
+    "PromptProfileMatchesRow": true
+  },
+  "RelayRecordSha256": "8C00E6CD13EC5F83BE203491514871055F372C818D1E998264564A114E1AF2DF",
+  "Budget": {
+    "Planning": "3 de 3 consumidas",
+    "Work": "1 de 4 (3 restantes)",
+    "Verification": "1 de 4 (3 restantes)",
+    "Attempts": "1 de 3",
+    "MaxReworkLoops": 3
+  },
+  "NotCommitted": "AUTOMATION_PLAN 16.4 paso 3: aceptacion sin commit; custodia en el commit (7) tras la verificacion"
+}
