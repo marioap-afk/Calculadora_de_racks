@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using RackCad.Application.Workspace;
 using Xunit;
 
-namespace RackCad.Tests.Workspace;
+namespace RackCad.Tests;
 
 // I-64 F1-T1-MODEL: D-05, D-06 / INV-16, INV-17.
-public class SelectionContextTests
+public class WorkspaceSelectionContextTests
 {
     private static DefinitionFact Ok(string id) => new(true, id);
 
