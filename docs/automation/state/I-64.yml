@@ -6,9 +6,9 @@ automation_state:
   current_phase: F1
   state: waiting
   gate: scope
-  attempts: 1
-  next_action: "Coordinator: decidir el STOP P-07 de F1-T1-MODEL (la planificacion de la segunda correccion del REWORK Ci excederia el tope 3 de 3; evidencia §24); la sesion no lanza la correccion."
-  last_evidence_commit: b2db5326924cd66def7a83628bc6102db50b80f2
+  attempts: 2
+  next_action: "Sesion: planificacion de correccion 4 de 4 de F1-T1-MODEL (attempt 2, CorrectionOf R20261002T063546Z-0cd7 / Ci / AnalysisSha256 null); A1-A8 mecanicas y parada en COORDINATOR_ACCEPTANCE_REQUIRED sin invocar al Worker (area artifacts/orchestration/I-64/F1-T1-MODEL/2/)."
+  last_evidence_commit: 38b65f944cd389bff4e53e2e2c24c14c766ec352
 execution_context:
   mode: manual
   automation_enabled: false
@@ -17,21 +17,21 @@ execution_context:
   design_agreed: docs/initiatives/I-64-proposal-v5.md en 9e3d289a9b61339c162b2f791f6995a584207800, blob bd4e96264e538ffc679bfd9f088400b22b553931 (I64-CONSENSUS-V5-01; Architect AGREED; Coordinator AGREED)
   freeze: 9b43dafbe3b8874aa0ba5a85d62cbf953dbdd311 (Frozen YES; blob dc1924ff5a73a4e529fbc5f995621d29351a091b; CI 36941847270 push 4/4 success; evidencia §18)
   f0: COMPLETE
-  f1: "IN PROGRESS: cadena F1-T1-MODEL; verificacion 2 EXECUTION_REWORK_REQUIRED (FailureClass Ci: CS8632 en la build Release del job del Plugin) sobre b38e54f9; RED nuevo acreditado 189353f8; STOP P-07 antes de la planificacion de la segunda correccion (evidencia §24)"
+  f1: "IN PROGRESS: cadena F1-T1-MODEL; segundo REWORK Ci aceptado (CS8632 en WorkspaceSelectionContextTests.cs); STOP P-07 resuelto (cuarta y ultima planificacion); correccion attempt 2 en planificacion (evidencia §25)"
   relay_baseline: "config.toml SHA-256 40C27B570B0056BC6D2B5AAF460628922C5AD39A405751E68B9001FFDF15F74F (2026-10-02T00:03:20Z; 103 nombres, sin valores)"
-  f1_t1_model_budget: "planificacion 3 de 3; trabajo 2 de 4 (f656, de0f); verificacion 2 de 4 (647e, 0cd7); MaxReworkLoops 3; contador Ci 1 (2 al lanzar la siguiente correccion); attempts 1 de 3"
+  f1_t1_model_budget: "planificacion 3 de 4 (la cuarta es la ultima); trabajo 2 de 4; verificacion 2 de 4; MaxReworkLoops 3; contador Ci 2 al lanzar esta correccion; attempts 2 de 3"
   f1_t1_model_chain: "ChainBaseSha e0587355b0e84d98807057a56dfc50591da87489; ChainRedSha 189353f8df954b05cbbcdc0f15dca0cb3bf21002 (acreditado en R20261002T063546Z-0cd7); ChainRedFiles tests/RackCad.Tests/Workspace/{SelectionContextTests,WorkspaceHintDrainTests,WorkspaceModelBoundaryTests,WorkspaceSelectionContextTests,WorkspaceSessionTests}.cs (5 rutas; nunca decrece); CurrentSha b38e54f9f434fee7aa41ce6dcfd1804978afd619 (REWORK Ci); delegacion R20261002T061355Z-c5cd cerrada por verificacion valida"
   max_attempts: 3
   persistent_next_action:
-    NEXT_ROLE: "Coordinator (decision del STOP P-07; AUTONOMY_GAP-COORDINATOR: la orden llega por el chat)"
-    NEXT_ACTION: "decidir el STOP P-07: la segunda correccion del REWORK Ci (CS8632 por string? sin #nullable enable en tests/RackCad.Tests/Workspace/WorkspaceSelectionContextTests.cs:62, detectado por verify-autocad-references.ps1 -NoWarnings en el job del Plugin) exige volver a la planificacion y el tope 3 de 3 esta agotado. Con autorizacion: commit de attempts 2, planificacion de correccion con CorrectionOf {R20261002T063546Z-0cd7, Ci, analisis o null (misma clase)}, ChainBaseSha e0587355, ChainRedSha 189353f8, ChainRedFiles las 5 rutas; A1-A8 y parada en COORDINATOR_ACCEPTANCE_REQUIRED; despues Worker (RED de la correccion desactivada + #nullable, GREEN) y verificacion"
-    TARGET_SHA: "la punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo (git log -1 -- docs/automation/state/I-64.yml); su padre es b38e54f9f434fee7aa41ce6dcfd1804978afd619 (CurrentSha de la entrega verificada en REWORK)"
+    NEXT_ROLE: "Sesion responsable (relevo) y Controller Codex CLI gpt-6-luna/high (CONTROLLER_PLANNING de correccion 4/4); despues, Coordinator para la aceptacion formal A1-A8"
+    NEXT_ACTION: "relevo de salida, planificacion de correccion 4 de 4 con CorrectionOf {RunId R20261002T063546Z-0cd7, FailureClass Ci, AnalysisSha256 null}, Attempt 2, AttemptsRemaining 1, ChainBaseSha e0587355, ChainRedSha 189353f8, ChainRedFiles las 5 rutas; criterios: #nullable enable annotations local en WorkspaceSelectionContextTests.cs, RED nuevo, GREEN sin tocar pruebas, build Release sin CS8632 y comprobacion equivalente a Build Plugin without AutoCAD; A1-A8 mecanicas sin cortocircuito; si pasan, parada en COORDINATOR_ACCEPTANCE_REQUIRED"
+    TARGET_SHA: "la punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo (git log -1 -- docs/automation/state/I-64.yml); sera el BaseSha de la delegacion de correccion; su padre es 38b65f944cd389bff4e53e2e2c24c14c766ec352"
     GATE: F1 — Workspace Foundation
-    TASK: F1-T1-MODEL (segunda correccion pendiente del REWORK Ci)
-    INPUTS_REQUIRED: "decision del Coordinator sobre P-07 (tope de planificacion) y, si procede, analysis.md; contrato reemitido (A4D36818...); verificacion R20261002T063546Z-0cd7 y delegacion R20261002T061355Z-c5cd en la custodia; linea base de config.toml de relay_baseline"
-    EXPECTED_RESULT: "con autorizacion: delegacion de correccion valida que pase A1-A8 (Attempt 2, AttemptsRemaining 1) y quede en COORDINATOR_ACCEPTANCE_REQUIRED; tras la aceptacion, entrega con RED nuevo y GREEN, CI exacta con los cuatro jobs en success y verificacion EXECUTION_VERIFIED; despues nc1-nc3 y paquete de cierre de tarea"
-    REMAINING_BUDGET: "F1-T1-MODEL: planificacion 0 (3 de 3), trabajo 2 de 4, verificacion 2 de 4, MaxReworkLoops 3 (contador Ci 1); attempts 1 de 3 (la siguiente correccion lo deja en 2); BLOCKED 0"
-    STOP_CONDITION: "cualquier planificacion antes de la decision del Coordinator (P-07); origin/main distinto de 819955d61a6da4c811a11fbd11b5dca13f634b7c (S-13, 16.7); hash de config.toml distinto de relay_baseline (P-01); proceso no atribuible persistente o que toque Git, config o el worktree (P-02); contador de clase >= 3 o attempts >= 3 (S-11); modificar NamespaceFolderGuardTests, debilitar INV-F1-T1-03/04, Plugin, UI, Domain o AutoCAD; S-01..S-14 y P-01..P-08"
+    TASK: "F1-T1-MODEL (correccion attempt 2 del REWORK Ci: CS8632)"
+    INPUTS_REQUIRED: "contrato reemitido (A4D36818...); verificacion R20261002T063546Z-0cd7 y delegacion R20261002T061355Z-c5cd en la custodia; evidencia §24 y §25; linea base de config.toml de relay_baseline"
+    EXPECTED_RESULT: "delegation.json de correccion valido que pase A1-A8 (Attempt 2, AttemptsRemaining 1); paquete de aceptacion; tras la aceptacion: Worker (RED nuevo con la directiva nullable local y el comportamiento desactivado; GREEN), CI exacta con los cuatro jobs en success y verificacion"
+    REMAINING_BUDGET: "F1-T1-MODEL: planificacion 1 de 4 restante (la ultima), trabajo 2 de 4, verificacion 2 de 4, MaxReworkLoops 3; attempts 2 de 3; BLOCKED 0"
+    STOP_CONDITION: "falla la cuarta planificacion; el Worker agota su presupuesto; la correccion necesita salir del alcance o modificar CI, configuracion global, .csproj o Plugin; main cambia (S-13); OWNER-RESERVED; la verificacion vuelve a exigir planificacion sin presupuesto (P-07); hash de config.toml distinto (P-01); proceso no atribuible persistente (P-02); contador de clase >= 3 o attempts >= 3 (S-11); S-01..S-14 y P-01..P-08"
     OWNER_REQUIRED_IF: "OWNER-RESERVED (alcance, diferir sistemas, retirar OV); aceptacion del ADR 0047; Owner Validation y smokes (Smoke-1 tras F1 PASS y RELEASE de I-52); cambio de config.toml (P-01); credenciales, compras o sondas con consumo no cubierto; AutoCAD manual o cambios de seguridad; presupuesto agotado sin decision del Coordinator"
   autonomy_gaps:
     - ROLE_REQUIRED: "Coordinator (AUTONOMY_GAP-COORDINATOR: emision de gate-contract, decision de un STOP, aceptacion A1-A8, analysis.md y GATE PASS)"
