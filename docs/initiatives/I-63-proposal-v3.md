@@ -1,7 +1,7 @@
 # I-63 — Proposal V3 — ID20, Computed Parameters & Project Summary Foundation
 
 ```text
-Frozen: NO
+Frozen: YES
 Versión: V3 (2026-10-01). Sustituye a V2 como propuesta vigente. V1 y V2 quedan históricas e inmutables:
          V1 772ac242430084918d319a7683ce615daec39452, blob 48a68307be3f046c20c2405252dc8af3ad050342
          V2 dddc215f08123b64adbf7fe35de6d3776a241501, blob 9a84546fdccbe77593c78352521ab8bb926a3d96
