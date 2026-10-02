@@ -767,3 +767,58 @@ restricción de host de I-52 (§12.1 del Freeze).
 
 **Ejecución:** sesión responsable, sin AutoCAD, builds, pruebas, subagentes, Controller ni Worker. Este commit no toca la Proposal
 congelada.
+
+## 19. F1-T0-ADR — Contrato recibido, preflight, relevo de salida y STOP antes de la planificación
+
+Sección nueva; las anteriores no se reescriben.
+
+**Contrato de gate recibido** (orden del Coordinator en el chat de la sesión, 2026-10-02; sin archivo, así que sin hash). Resumen saneado:
+- Gate F1 — Workspace Foundation; `TaskId` **F1-T0-ADR**; `AuthorityRevision` `5570b9249e6398efdea826bb03fba43c6ad484d2`; `MainSha`
+  `819955d61a6da4c811a11fbd11b5dca13f634b7c`;
+- objetivo: crear solo `docs/adr/0047-workspace-persistente-modeless-rackcad.md`, en estado `propuesto`, como proyección fiel del
+  anexo A del Freeze;
+- `AllowedWriteScope`: ese archivo; prohibido todo lo demás;
+- invariantes F1-T0-01..F1-T0-08 (un solo archivo; ADR `propuesto` y subordinado al Freeze; nada que no venga de la Proposal V5;
+  MASTER-I63-I64-02; Actualizar como única frontera authored; RACKEDITAR fuera; sin AutoCAD, DLL, perfil, `TRUSTEDPATHS`, `SECURELOAD`, ACL
+  ni registro; sin opcionales no incorporados);
+- clase Documentación / Routine; Worker `claude-sonnet-5-5` × subagente × `medium`, con escalado de nivel autorizado y
+  `ModelEscalationReason` literal; Controller Codex CLI `gpt-6-luna` × `high`; `RoutingEnforcement` `required`; `CorrectionsAuthorized` `true`;
+- tope: 1 planificación, 4 trabajos, 4 verificaciones, `MaxReworkLoops` 3; los controles negativos fuera del tope;
+- STOP adicionales: avance de `main`, ADR 0047 ocupado, necesidad de cambiar el Freeze, AutoCAD, producto, ampliar el alcance, cambio de
+  `config.toml`, conflicto de propiedad, autoridad ausente y presupuesto agotado;
+- la aceptación A1-A8 la hace el Coordinator; si I-61 la reserva, la sesión se detiene en `COORDINATOR_ACCEPTANCE_REQUIRED`.
+
+**Preflight** (MEASURED, 2026-10-02T00:01:58Z):
+- `origin/main` = `819955d6…`; `HEAD` = `origin/…` = `git ls-remote` = `5570b9249e6398efdea826bb03fba43c6ad484d2`;
+- árbol limpio; ninguna operación Git en curso;
+- ADR 0047 libre: ninguna referencia remota contiene `docs/adr/0047*` (el último ADR en la base es 0046);
+- Proposal congelada intacta: blob `dc1924ff5a73a4e529fbc5f995621d29351a091b`.
+
+**Relevo de salida** (MEASURED desde PowerShell, 2026-10-02T00:03:20Z; AUTOMATION_PLAN 16.4 paso 1, README §3.1-§3.2):
+- `~/.codex/config.toml`: SHA-256 `40C27B570B0056BC6D2B5AAF460628922C5AD39A405751E68B9001FFDF15F74F`, última escritura 2026-10-01T23:09:21Z, 103
+  nombres de secciones y claves registrados sin valores en el área transitoria ignorada
+  (`artifacts/orchestration/I-64/F1-T0-ADR/0/preflight-20261002T0003Z/config-baseline.json`);
+- procesos: ningún `participant` con la ruta del worktree; ningún `unattributable`; tres procesos `codex*` del Owner sin la ruta del worktree
+  (`owner-app`); un `acad.exe` (PID 26000, desde 23:39:52Z) no iniciado ni tocado por esta sesión.
+
+**STOP antes de la planificación del Controller** (no se invocó a ningún participante):
+- **C-F0-RED aplica a F1-T0-ADR.** AUTOMATION_PLAN 16.8 exige RED en toda entrega cuyo `ChainRedSha` sea `null`, incluida la primera
+  delegación de cualquier tarea, y 16.9 lo comprueba en `Ci` y `Tests` (`RedPart` = `fail` → REWORK). Una tarea solo documental, cuyo
+  alcance prohíbe `tests/` y `src/`, no puede producir un RED legítimo, y fabricarlo está excluido. La cadena no puede llegar a
+  `EXECUTION_VERIFIED`: el protocolo forzaría correcciones hasta S-11. Es la misma limitación que I-63 registró y su Coordinator aceptó como no
+  corregida (decisiones de I-63, CD-I63-F0-01, leídas por referencia remota).
+- **Contrato incompleto respecto del esquema** `rackcad-gate-contract/v1`: la orden no enumera `Authorities` (ruta, sección y clase para
+  16.3 y la comprobación `Authority`), `RequiredTests`, `ExpectedEvidence` ni `IssuedUtc`. La sesión no los inventa.
+- Invocar ahora la única planificación del presupuesto la gastaría en una cadena que no puede cerrarse. Resolver un STOP corresponde al
+  Coordinator (16.11; README §1): **AUTONOMY_GAP-COORDINATOR**.
+
+**Opciones para el Coordinator** (la sesión no elige):
+- (a) Autorizar F1-T0-ADR como **trabajo directo** de la sesión responsable, sin delegación §16 ni `EXECUTION_VERIFIED` (el precedente de
+  I-63 para su Discovery), con revisión del Coordinator sobre el diff y la CI exacta. No modifica AUTOMATION_PLAN.
+- (b) Reemitir: incluir el ADR en el alcance de la primera tarea de F1 que sí tiene pruebas (F1-T1-MODEL), de modo que el RED de la cadena
+  venga de sus pruebas y el ADR se publique en el primer commit de esa cadena, antes de cualquier código.
+- (c) Mantener la delegación documental: no es viable sin cambiar AUTOMATION_PLAN 16.8, que es autoridad de I-61, fuera del alcance de I-64.
+
+Con (a) o (b), el Coordinator completa también `Authorities`, `RequiredTests`, `ExpectedEvidence` e `IssuedUtc` del contrato que emita.
+
+**Presupuesto:** intacto (0 planificaciones, 0 trabajos, 0 verificaciones; `attempts` 0).
