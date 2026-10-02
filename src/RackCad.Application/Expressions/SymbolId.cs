@@ -8,14 +8,16 @@ namespace RackCad.Application.Expressions
     /// The closed set of symbol namespaces (I-49, Proposal V6 P3.2 and P5.2; ADR-0040 D5).
     ///
     /// <para>
-    /// Exactly ONE is active, <c>projectVariable</c>. <c>rack</c> and <c>project</c> are reserved CONCEPTUALLY for ID20
-    /// and deliberately absent here: not registered, not resolvable, and no productive path creates them (P25.2). The
-    /// grammar reserves them too: <c>Rack.Frentes</c> is namespace syntax that binds to <c>UnknownNamespace</c>.
+    /// Two are active in memory: <c>projectVariable</c> (persistable) and <c>rack</c> (I-63 D-16.1: in memory only, never
+    /// persisted; the table of PERSISTED tokens is a different one and only knows <c>projectVariable</c>, D-18).
+    /// <c>project</c> stays out of the core: no member, no token and no key rule (D-02). The core knows the shape of the
+    /// key of each namespace, never the catalogue of any of them.
     /// </para>
     /// </summary>
     public enum SymbolNamespace
     {
         ProjectVariable = 1,
+        Rack = 2,
     }
 
     /// <summary>
@@ -25,7 +27,7 @@ namespace RackCad.Application.Expressions
     public static class SymbolNamespaces
     {
         private static readonly IReadOnlyList<SymbolNamespace> DeclaredNamespaces =
-            new ReadOnlyCollection<SymbolNamespace>(new[] { SymbolNamespace.ProjectVariable });
+            new ReadOnlyCollection<SymbolNamespace>(new[] { SymbolNamespace.ProjectVariable, SymbolNamespace.Rack });
 
         public static IReadOnlyList<SymbolNamespace> All => DeclaredNamespaces;
 
@@ -34,6 +36,7 @@ namespace RackCad.Application.Expressions
             switch (symbolNamespace)
             {
                 case SymbolNamespace.ProjectVariable: return "projectVariable";
+                case SymbolNamespace.Rack: return "rack";
                 default: throw new ArgumentOutOfRangeException(nameof(symbolNamespace), symbolNamespace, "Unregistered symbol namespace.");
             }
         }
@@ -46,6 +49,10 @@ namespace RackCad.Application.Expressions
                     symbolNamespace = SymbolNamespace.ProjectVariable;
                     return true;
 
+                case "rack":
+                    symbolNamespace = SymbolNamespace.Rack;
+                    return true;
+
                 default:
                     symbolNamespace = default;
                     return false;
@@ -55,18 +62,20 @@ namespace RackCad.Application.Expressions
         /// <summary>
         /// The comparer of keys in a namespace. For <c>projectVariable</c> the key is the <c>VariableId</c> text with its
         /// current equality, ordinal ignoring case (P8.1): a GUID written by different writers in different cases is one
-        /// identity.
+        /// identity. For <c>rack</c> the key is a declared token compared <c>Ordinal</c>, case sensitive (I-63 D-02).
         /// </summary>
         public static StringComparer KeyComparer(SymbolNamespace symbolNamespace)
         {
             switch (symbolNamespace)
             {
                 case SymbolNamespace.ProjectVariable: return StringComparer.OrdinalIgnoreCase;
+                case SymbolNamespace.Rack: return StringComparer.Ordinal;
                 default: throw new ArgumentOutOfRangeException(nameof(symbolNamespace), symbolNamespace, "Unregistered symbol namespace.");
             }
         }
 
-        internal static bool IsRegistered(SymbolNamespace symbolNamespace) => symbolNamespace == SymbolNamespace.ProjectVariable;
+        internal static bool IsRegistered(SymbolNamespace symbolNamespace)
+            => symbolNamespace == SymbolNamespace.ProjectVariable || symbolNamespace == SymbolNamespace.Rack;
     }
 
     /// <summary>
@@ -96,7 +105,16 @@ namespace RackCad.Application.Expressions
                 throw new ArgumentNullException(nameof(key));
             }
 
-            if (!IsValidProjectVariableKey(key))
+            if (symbolNamespace == SymbolNamespace.Rack)
+            {
+                if (!IsValidRackKey(key))
+                {
+                    throw new ArgumentException(
+                        "A rack key must be an ASCII token: it starts with a lower-case letter and holds only letters and digits.",
+                        nameof(key));
+                }
+            }
+            else if (!IsValidProjectVariableKey(key))
             {
                 throw new ArgumentException(
                     "A projectVariable key must be non-empty, equal to its own trim and a GUID in a layout the runtime reads.",
@@ -152,5 +170,31 @@ namespace RackCad.Application.Expressions
             => !string.IsNullOrEmpty(key)
                && string.Equals(key, key.Trim(), StringComparison.Ordinal)
                && Guid.TryParse(key, out _);
+
+        /// <summary>
+        /// The neutral validity of a <c>rack</c> key (I-63 D-02): an ASCII token that starts with a lower-case letter and
+        /// holds only ASCII letters and digits. It never derives from a name; the core knows the rule, not the catalogue.
+        /// </summary>
+        internal static bool IsValidRackKey(string key)
+        {
+            if (string.IsNullOrEmpty(key) || key[0] < 'a' || key[0] > 'z')
+            {
+                return false;
+            }
+
+            foreach (var character in key)
+            {
+                var isLower = character >= 'a' && character <= 'z';
+                var isUpper = character >= 'A' && character <= 'Z';
+                var isDigit = character >= '0' && character <= '9';
+
+                if (!isLower && !isUpper && !isDigit)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
     }
 }

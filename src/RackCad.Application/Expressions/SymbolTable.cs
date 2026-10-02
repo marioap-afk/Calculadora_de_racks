@@ -6,9 +6,9 @@ using System.Linq;
 namespace RackCad.Application.Expressions
 {
     /// <summary>
-    /// The scopes of V6 P5.3. <see cref="Project"/> is the only active one: one value per drawing. <see cref="Rack"/> —one
-    /// value per rack— is reserved for ID20; in V6 only synthetic test entries use it, to fix the scope rule (P25.4), and
-    /// no productive path creates a Rack symbol.
+    /// The scopes of V6 P5.3. <see cref="Project"/>: one value per drawing. <see cref="Rack"/>: one value per rack, the
+    /// scope of the <c>rack</c> entries and of the property consumers (I-63 D-04); a Project consumer that reads a Rack
+    /// symbol is a scope violation (P25.4).
     /// </summary>
     public enum SymbolScope
     {
@@ -20,11 +20,18 @@ namespace RackCad.Application.Expressions
     {
         Literal = 1,
         Expression = 2,
+
+        /// <summary>
+        /// A leaf without a value in the table (I-63 D-16.3, the case P25.2 reserved): it has no expression and no edges,
+        /// and whoever evaluates it supplies the value from outside the registry.
+        /// </summary>
+        Computed = 3,
     }
 
     /// <summary>
-    /// A symbol's definition in the neutral model (P5.1): a literal <c>double</c> or a bound expression. Reading the value
-    /// of the other case throws, with the same discipline as <c>VariableDefinition.LiteralValue</c>.
+    /// A symbol's definition in the neutral model (P5.1): a literal <c>double</c>, a bound expression or a
+    /// <see cref="SymbolDefinitionKind.Computed"/> leaf without a value. Reading the value of another case throws, with
+    /// the same discipline as <c>VariableDefinition.LiteralValue</c>.
     /// </summary>
     public sealed class SymbolDefinition
     {
@@ -43,12 +50,18 @@ namespace RackCad.Application.Expressions
         public double LiteralValue
             => Kind == SymbolDefinitionKind.Literal
                 ? _literal
-                : throw new InvalidOperationException("This definition is an expression, not a literal.");
+                : throw new InvalidOperationException(
+                    Kind == SymbolDefinitionKind.Computed
+                        ? "This definition is a computed leaf, not a literal."
+                        : "This definition is an expression, not a literal.");
 
         public BoundExpression Expression
             => Kind == SymbolDefinitionKind.Expression
                 ? _expression
-                : throw new InvalidOperationException("This definition is a literal, not an expression.");
+                : throw new InvalidOperationException(
+                    Kind == SymbolDefinitionKind.Computed
+                        ? "This definition is a computed leaf, not an expression."
+                        : "This definition is a literal, not an expression.");
 
         /// <summary>A literal definition: every value of the engine is a finite double (P5.4).</summary>
         public static SymbolDefinition FromLiteral(double value)
@@ -66,6 +79,10 @@ namespace RackCad.Application.Expressions
                 SymbolDefinitionKind.Expression,
                 0,
                 expression ?? throw new ArgumentNullException(nameof(expression)));
+
+        /// <summary>A leaf without a value (I-63 D-16.3): no expression, no edges and no literal.</summary>
+        public static SymbolDefinition FromComputed()
+            => new SymbolDefinition(SymbolDefinitionKind.Computed, 0, null);
     }
 
     /// <summary>
@@ -114,7 +131,10 @@ namespace RackCad.Application.Expressions
     /// </para>
     /// <para>
     /// Name lookup is exact equality ignoring case ordinally, with no trimming, no Unicode normalization and no partial
-    /// match (P7.2). Homonyms are legal and come back in the deterministic <see cref="SymbolId"/> order.
+    /// match (P7.2). Homonyms are legal and come back in the deterministic <see cref="SymbolId"/> order. The name indexes
+    /// are PER NAMESPACE (I-63 D-16.4): the lookup of a name without namespace only sees <c>projectVariable</c> entries,
+    /// a <c>rack</c> member only sees <c>rack</c> entries, and the <c>OperatorInName</c> patterns only come from
+    /// <c>projectVariable</c> names.
     /// </para>
     /// </summary>
     public sealed class SymbolTable
@@ -123,12 +143,14 @@ namespace RackCad.Application.Expressions
 
         private readonly Dictionary<SymbolId, SymbolEntry> _byId;
         private readonly Dictionary<string, IReadOnlyList<SymbolEntry>> _byName;
+        private readonly Dictionary<string, IReadOnlyList<SymbolEntry>> _rackByName;
 
         private SymbolTable(IReadOnlyList<SymbolEntry> entries)
         {
             Entries = entries;
             _byId = new Dictionary<SymbolId, SymbolEntry>();
             _byName = new Dictionary<string, IReadOnlyList<SymbolEntry>>(StringComparer.OrdinalIgnoreCase);
+            _rackByName = new Dictionary<string, IReadOnlyList<SymbolEntry>>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var entry in entries)
             {
@@ -140,10 +162,21 @@ namespace RackCad.Application.Expressions
                 _byId.Add(entry.Id, entry);
             }
 
-            foreach (var group in entries.GroupBy(entry => entry.DisplayName, StringComparer.OrdinalIgnoreCase))
+            foreach (var group in entries
+                         .Where(entry => entry.Id.Namespace == SymbolNamespace.ProjectVariable)
+                         .GroupBy(entry => entry.DisplayName, StringComparer.OrdinalIgnoreCase))
             {
                 _byName.Add(group.Key, new ReadOnlyCollection<SymbolEntry>(group.ToList()));
             }
+
+            foreach (var group in entries
+                         .Where(entry => entry.Id.Namespace == SymbolNamespace.Rack)
+                         .GroupBy(entry => entry.DisplayName, StringComparer.OrdinalIgnoreCase))
+            {
+                _rackByName.Add(group.Key, new ReadOnlyCollection<SymbolEntry>(group.ToList()));
+            }
+
+            HasRackEntries = _rackByName.Count > 0;
 
             OperatorNames = OperatorInNameDetector.PatternsOf(_byName);
         }
@@ -153,7 +186,10 @@ namespace RackCad.Application.Expressions
         /// <summary>Every entry, in the deterministic <see cref="SymbolId"/> order, whatever the input order was.</summary>
         public IReadOnlyList<SymbolEntry> Entries { get; }
 
-        /// <summary>The display names that contain operators, split once for the <c>OperatorInName</c> check.</summary>
+        /// <summary>Whether the table holds at least one <c>rack</c> entry: the binder offers <c>Rack.member</c> only then (D-16.5).</summary>
+        internal bool HasRackEntries { get; }
+
+        /// <summary>The <c>projectVariable</c> display names that contain operators, split once for the <c>OperatorInName</c> check.</summary>
         internal IReadOnlyList<OperatorInNameDetector.NamePattern> OperatorNames { get; }
 
         internal static SymbolTable Create(IEnumerable<SymbolEntry> entries)
@@ -180,8 +216,15 @@ namespace RackCad.Application.Expressions
             return id != null && _byId.TryGetValue(id, out entry);
         }
 
-        /// <summary>Every entry whose display name is exactly <paramref name="displayName"/>, ignoring case ordinally.</summary>
+        /// <summary>
+        /// Every <c>projectVariable</c> entry whose display name is exactly <paramref name="displayName"/>, ignoring case
+        /// ordinally: the lookup of a name without namespace, which never sees <c>rack</c> entries (I-63 D-16.4).
+        /// </summary>
         public IReadOnlyList<SymbolEntry> FindByDisplayName(string displayName)
             => displayName != null && _byName.TryGetValue(displayName, out var entries) ? entries : NoEntries;
+
+        /// <summary>Every <c>rack</c> entry whose display name is exactly <paramref name="displayName"/>, ignoring case ordinally.</summary>
+        internal IReadOnlyList<SymbolEntry> FindRackMember(string displayName)
+            => displayName != null && _rackByName.TryGetValue(displayName, out var entries) ? entries : NoEntries;
     }
 }

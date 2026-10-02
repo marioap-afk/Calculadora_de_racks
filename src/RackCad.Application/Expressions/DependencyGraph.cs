@@ -36,6 +36,8 @@ namespace RackCad.Application.Expressions
                 throw new ArgumentNullException(nameof(symbols));
             }
 
+            RejectComputedEntries(symbols);
+
             _nodes = ReadOnly(symbols.Entries.Select(entry => entry.Id));
             var nodeSet = new HashSet<SymbolId>(_nodes);
             _direct = new Dictionary<SymbolId, IReadOnlyList<SymbolId>>();
@@ -55,6 +57,22 @@ namespace RackCad.Application.Expressions
             _cyclicComponents = FindCyclicComponents(_components, _presentDirect);
             _cycles = BuildCycles(_components, _cyclicComponents);
             _evaluationOrder = BuildEvaluationOrder(_nodes, _presentDirect, _dependents, _componentByNode, _cyclicComponents);
+        }
+
+        /// <summary>
+        /// R4 (I-63 D-15, INV-27): a <c>Computed</c> entry is a leaf with no expression and no edges that lives outside the
+        /// registry. Handing one to the graph is a programming error of the caller, never a diagnostic.
+        /// </summary>
+        internal static void RejectComputedEntries(SymbolTable symbols)
+        {
+            foreach (var entry in symbols.Entries)
+            {
+                if (entry.Definition.Kind == SymbolDefinitionKind.Computed)
+                {
+                    throw new InvalidOperationException(
+                        "The symbol " + entry.Id + " is a Computed entry: a Computed leaf lives outside the registry and has no place in its graph or its evaluation.");
+                }
+            }
         }
 
         public IReadOnlyList<DependencyCycle> Cycles => _cycles;

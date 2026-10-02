@@ -202,7 +202,9 @@ namespace RackCad.Application.Expressions
                 throw new ArgumentNullException(nameof(entry));
             }
 
-            return NameForm(entry.DisplayName) + FormatQualifier(entry.Id.Key);
+            return entry.Id.Namespace == SymbolNamespace.Rack
+                ? RackMemberForm(entry.DisplayName)
+                : NameForm(entry.DisplayName) + FormatQualifier(entry.Id.Key);
         }
 
         /// <summary>
@@ -265,8 +267,24 @@ namespace RackCad.Application.Expressions
             return double.IsNegative(value) ? "-" + normalized : normalized;
         }
 
+        /// <summary>
+        /// A <c>rack</c> member is always written <c>Rack.member</c> (I-63 D-16.6): no qualifier, no braces. The shown name
+        /// is the CURRENT one of the table.
+        /// </summary>
+        private static string RackMemberForm(string member) => "Rack." + member;
+
         private static string FormatReference(SymbolId id, SymbolTable symbols)
         {
+            if (id.Namespace == SymbolNamespace.Rack)
+            {
+                // An absent rack id takes the diagnostic form Rack.#{token}: it displays, it never binds (the parser reads
+                // it as namespace syntax followed by a loose qualifier). The token is ASCII letters and digits, written
+                // exactly: its comparer is Ordinal, so no case is folded.
+                return symbols.TryGet(id, out var rackEntry)
+                    ? RackMemberForm(rackEntry.DisplayName)
+                    : "Rack.#{" + id.Key + "}";
+            }
+
             if (!symbols.TryGet(id, out var entry))
             {
                 // P4.5: the absent id alone, without taking a name from anywhere else. It displays, it never binds.

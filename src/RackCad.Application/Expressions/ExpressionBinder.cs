@@ -218,8 +218,7 @@ namespace RackCad.Application.Expressions
                         return new Bound(Resolve(reference), 1, 1);
 
                     case NamespaceReferenceSyntax reserved:
-                        Report(ExpressionDiagnosticCode.UnknownNamespace, reserved.Span);
-                        return new Bound(null, 1, 1);
+                        return new Bound(ResolveNamespaceReference(reserved), 1, 1);
 
                     case UnaryExpressionSyntax unary:
                         var operand = children[0];
@@ -311,6 +310,48 @@ namespace RackCad.Application.Expressions
                     : null;
 
                 return new Bound(expression, nodes, depth + 1);
+            }
+
+            /// <summary>
+            /// <c>word.member</c> (I-63 D-16.5). Only the word <c>Rack</c>, ignoring case ordinally, and only when the table
+            /// holds <c>rack</c> entries, is a namespace; any other word, <c>Project</c> included, is
+            /// <c>UnknownNamespace</c>. The member is looked up exactly, ignoring case ordinally, among the <c>rack</c>
+            /// entries only; then the scope rule applies.
+            /// </summary>
+            private BoundExpression ResolveNamespaceReference(NamespaceReferenceSyntax reference)
+            {
+                var symbols = _context.Symbols;
+
+                if (!symbols.HasRackEntries
+                    || !string.Equals(reference.Namespace.Text, "Rack", StringComparison.OrdinalIgnoreCase))
+                {
+                    Report(ExpressionDiagnosticCode.UnknownNamespace, reference.Span);
+                    return null;
+                }
+
+                if (reference.Member == null)
+                {
+                    Report(ExpressionDiagnosticCode.NameRequired, reference.Span);
+                    return null;
+                }
+
+                var matches = symbols.FindRackMember(reference.Member.Text);
+
+                if (matches.Count == 0)
+                {
+                    Report(ExpressionDiagnosticCode.UnknownSymbol, reference.Span);
+                    return null;
+                }
+
+                var entry = matches[0];
+
+                if (entry.Scope == SymbolScope.Rack && _consumerScope == SymbolScope.Project)
+                {
+                    Report(ExpressionDiagnosticCode.ScopeViolation, reference.Span, entry.Id);
+                    return null;
+                }
+
+                return BoundExpression.Reference(entry.Id);
             }
 
             /// <summary>The table of P7.1, row by row.</summary>
