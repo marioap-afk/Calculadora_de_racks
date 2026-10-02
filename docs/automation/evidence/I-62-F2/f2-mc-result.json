@@ -1,0 +1,446 @@
+{
+  "PowerShell": "7.6.6",
+  "C-06": {
+    "Expected": "un registro por adapter, válido por Test-Json (fases 1 y 2) y por C1-C8, con el estado observado en el momento",
+    "Records": [
+      {
+        "PreflightId": "P20261002T224500Z-f201",
+        "Adapter": "claude-desktop-session",
+        "Role": "PRINCIPAL_COORDINATOR",
+        "Action": "RESUME_DECISION",
+        "ConfigurationStatus": "MATCH",
+        "Causes": [],
+        "Disposition": "ELIGIBLE",
+        "StopConditions": [],
+        "Validation": "VALID",
+        "Redactions": 0
+      },
+      {
+        "PreflightId": "P20261002T224500Z-f202",
+        "Adapter": "claude-desktop-session",
+        "Role": "PRINCIPAL_COORDINATOR",
+        "Action": "CUSTODY",
+        "ConfigurationStatus": "MATCH",
+        "Causes": [],
+        "Disposition": "ELIGIBLE",
+        "StopConditions": [],
+        "Validation": "VALID",
+        "Redactions": 0
+      },
+      {
+        "PreflightId": "P20261002T224500Z-f203",
+        "Adapter": "claude-desktop-session",
+        "Role": "PRINCIPAL_COORDINATOR",
+        "Action": "LOCAL_EVIDENCE",
+        "ConfigurationStatus": "MATCH",
+        "Causes": [],
+        "Disposition": "ELIGIBLE",
+        "StopConditions": [],
+        "Validation": "VALID",
+        "Redactions": 0
+      },
+      {
+        "PreflightId": "P20261002T224500Z-f204",
+        "Adapter": "claude-subagent",
+        "Role": "WORKER",
+        "Action": "IMPLEMENT",
+        "ConfigurationStatus": "UNKNOWN",
+        "Causes": [
+          "ROUTINE_IMPLEMENTATION.effort",
+          "ROUTINE_IMPLEMENTATION.level",
+          "ROUTINE_IMPLEMENTATION.tool-use",
+          "ROUTINE_IMPLEMENTATION.write-commit-push"
+        ],
+        "Disposition": "NOT_ELIGIBLE",
+        "StopConditions": [
+          "P-10"
+        ],
+        "Validation": "VALID",
+        "Redactions": 0
+      },
+      {
+        "PreflightId": "P20261002T224500Z-f205",
+        "Adapter": "claude-cli",
+        "Role": "REVIEWER",
+        "Action": "REVIEW_CHANGE",
+        "ConfigurationStatus": "UNKNOWN",
+        "Causes": [
+          "ARCHITECTURE_REVIEW.effort",
+          "ARCHITECTURE_REVIEW.level",
+          "ARCHITECTURE_REVIEW.read"
+        ],
+        "Disposition": "NOT_ELIGIBLE",
+        "StopConditions": [
+          "P-10"
+        ],
+        "Validation": "VALID",
+        "Redactions": 0
+      },
+      {
+        "PreflightId": "P20261002T224500Z-f206",
+        "Adapter": "codex-cli",
+        "Role": "EXECUTION_CONTROLLER",
+        "Action": "VERIFY",
+        "ConfigurationStatus": "UNKNOWN",
+        "Causes": [
+          "CONTROLLER_VERIFICATION.effort",
+          "CONTROLLER_VERIFICATION.level",
+          "CONTROLLER_VERIFICATION.read",
+          "CONTROLLER_VERIFICATION.structured-output",
+          "CONTROLLER_VERIFICATION.tool-use"
+        ],
+        "Disposition": "NOT_ELIGIBLE",
+        "StopConditions": [
+          "P-10"
+        ],
+        "Validation": "VALID",
+        "Redactions": 0
+      },
+      {
+        "PreflightId": "P20261002T224500Z-f207",
+        "Adapter": "codex-desktop-session",
+        "Role": "PRINCIPAL_COORDINATOR",
+        "Action": "RESUME_DECISION",
+        "ConfigurationStatus": "UNKNOWN",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.effort",
+          "PRINCIPAL_COORDINATION.introspection",
+          "PRINCIPAL_COORDINATION.level",
+          "PRINCIPAL_COORDINATION.remote-facts"
+        ],
+        "Disposition": "NOT_ELIGIBLE",
+        "StopConditions": [
+          "P-10"
+        ],
+        "Validation": "VALID",
+        "Redactions": 0
+      }
+    ],
+    "Verdict": "PASS"
+  },
+  "C-07": {
+    "Expected": "un invalidador cambiado → requisitos UNKNOWN; un binding hipotético (o la rama) no invalida",
+    "BaseRecord": "P20261002T224500Z-f201",
+    "Cases": [
+      {
+        "Case": "versión del adapter cambiada",
+        "ChangedInvalidators": [
+          "AdapterVersion"
+        ],
+        "RequirementStatuses": [
+          "UNKNOWN"
+        ],
+        "ExpectedInvalid": true,
+        "Verdict": "PASS"
+      },
+      {
+        "Case": "huella cambiada",
+        "ChangedInvalidators": [
+          "FingerprintSha256"
+        ],
+        "RequirementStatuses": [
+          "UNKNOWN"
+        ],
+        "ExpectedInvalid": true,
+        "Verdict": "PASS"
+      },
+      {
+        "Case": "instancia del host cambiada",
+        "ChangedInvalidators": [
+          "HostInstanceHash"
+        ],
+        "RequirementStatuses": [
+          "UNKNOWN"
+        ],
+        "ExpectedInvalid": true,
+        "Verdict": "PASS"
+      },
+      {
+        "Case": "blob de routing.md cambiado",
+        "ChangedInvalidators": [
+          "RoutingBlob"
+        ],
+        "RequirementStatuses": [
+          "UNKNOWN"
+        ],
+        "ExpectedInvalid": true,
+        "Verdict": "PASS"
+      },
+      {
+        "Case": "binding hipotético nuevo (no es invalidador)",
+        "ChangedInvalidators": [],
+        "RequirementStatuses": [
+          "MATCH"
+        ],
+        "ExpectedInvalid": false,
+        "Verdict": "PASS"
+      },
+      {
+        "Case": "SHA de la rama avanzado (no es invalidador)",
+        "ChangedInvalidators": [],
+        "RequirementStatuses": [
+          "MATCH"
+        ],
+        "ExpectedInvalid": false,
+        "Verdict": "PASS"
+      }
+    ],
+    "Verdict": "PASS"
+  },
+  "C-08": {
+    "Expected": "(a) válido sin cambiar el núcleo; (b)-(e) P-14; (f) S-04",
+    "CoreSchemasUnchanged": true,
+    "Cases": [
+      {
+        "Case": "a-test-null-valido",
+        "Expected": "VALID",
+        "Got": "VALID",
+        "Phase1": true,
+        "Phase2": true,
+        "Detail": {
+          "C1": true,
+          "C2": true,
+          "C3": true,
+          "C4": true,
+          "C5": true,
+          "C6": true,
+          "C7": true,
+          "C8": true
+        },
+        "Verdict": "PASS"
+      },
+      {
+        "Case": "b-propiedad-inesperada",
+        "Expected": "P-14",
+        "Got": "P-14",
+        "Phase1": true,
+        "Phase2": false,
+        "Detail": {
+          "C1": true,
+          "C2": true,
+          "C3": true,
+          "C4": true,
+          "C5": true,
+          "C6": true,
+          "C7": true,
+          "C8": true
+        },
+        "Verdict": "PASS"
+      },
+      {
+        "Case": "c-id-desconocido",
+        "Expected": "P-14",
+        "Got": "P-14",
+        "Phase1": true,
+        "Phase2": false,
+        "Detail": {
+          "C1": false,
+          "C2": false,
+          "C3": true,
+          "C4": true,
+          "C5": true,
+          "C6": true,
+          "C7": true,
+          "C8": true
+        },
+        "Verdict": "PASS"
+      },
+      {
+        "Case": "d-version-incompatible",
+        "Expected": "P-14",
+        "Got": "P-14",
+        "Phase1": true,
+        "Phase2": false,
+        "Detail": {
+          "C1": true,
+          "C2": false,
+          "C3": true,
+          "C4": true,
+          "C5": true,
+          "C6": true,
+          "C7": true,
+          "C8": true
+        },
+        "Verdict": "PASS"
+      },
+      {
+        "Case": "e-huella-ninguna-sin-aceptacion",
+        "Expected": "P-14",
+        "Got": "P-14",
+        "Phase1": true,
+        "Phase2": true,
+        "Detail": {
+          "C1": true,
+          "C2": true,
+          "C3": true,
+          "C4": false,
+          "C5": true,
+          "C6": true,
+          "C7": true,
+          "C8": true
+        },
+        "Verdict": "PASS"
+      },
+      {
+        "Case": "f-contraste-coincidente",
+        "Expected": "NONE",
+        "Got": "NONE",
+        "Phase1": true,
+        "Phase2": true,
+        "Detail": {
+          "Discrepancies": [],
+          "PreflightValidation": "VALID"
+        },
+        "Verdict": "PASS"
+      },
+      {
+        "Case": "f-contraste-discrepante",
+        "Expected": "S-04",
+        "Got": "S-04",
+        "Phase1": true,
+        "Phase2": true,
+        "Detail": {
+          "Discrepancies": [
+            "Exit.Fingerprint",
+            "Entry.Fingerprint"
+          ],
+          "PreflightValidation": "VALID"
+        },
+        "Verdict": "PASS"
+      }
+    ],
+    "SyntheticRelayRecordV2Valid": true,
+    "SyntheticControllerVerificationV2Valid": true,
+    "Verdict": "PASS"
+  },
+  "C-10": {
+    "Expected": "100 % de los valores sensibles ficticios detectados o redactados; custodia rechazada fuera del texto libre; sin falsos positivos en los controles benignos",
+    "Cases": [
+      {
+        "Case": "Value con token=sk-",
+        "Expected": "REDACTED",
+        "Got": "REDACTED",
+        "Redactions": [
+          "KV",
+          "SK"
+        ],
+        "Rejections": [],
+        "LeakedAfterSanitizing": 0,
+        "Verdict": "PASS"
+      },
+      {
+        "Case": "Notes con Bearer",
+        "Expected": "REDACTED",
+        "Got": "REDACTED",
+        "Redactions": [
+          "BEARER"
+        ],
+        "Rejections": [],
+        "LeakedAfterSanitizing": 0,
+        "Verdict": "PASS"
+      },
+      {
+        "Case": "Evidence con clave PEM",
+        "Expected": "REDACTED",
+        "Got": "REDACTED",
+        "Redactions": [
+          "PEM"
+        ],
+        "Rejections": [],
+        "LeakedAfterSanitizing": 0,
+        "Verdict": "PASS"
+      },
+      {
+        "Case": "mensaje de error con credenciales en la URL",
+        "Expected": "REDACTED",
+        "Got": "REDACTED",
+        "Redactions": [
+          "URLCRED"
+        ],
+        "Rejections": [],
+        "LeakedAfterSanitizing": 0,
+        "Verdict": "PASS"
+      },
+      {
+        "Case": "Diagnosis con token de GitHub",
+        "Expected": "REDACTED",
+        "Got": "REDACTED",
+        "Redactions": [
+          "GH"
+        ],
+        "Rejections": [],
+        "LeakedAfterSanitizing": 0,
+        "Verdict": "PASS"
+      },
+      {
+        "Case": "ContradictionEvidence con clave AWS y JWT",
+        "Expected": "REDACTED",
+        "Got": "REDACTED",
+        "Redactions": [
+          "AWS",
+          "JWT"
+        ],
+        "Rejections": [],
+        "LeakedAfterSanitizing": 0,
+        "Verdict": "PASS"
+      },
+      {
+        "Case": "Notes con Slack, Google y password=",
+        "Expected": "REDACTED",
+        "Got": "REDACTED",
+        "Redactions": [
+          "GAPI",
+          "KV",
+          "SLACK"
+        ],
+        "Rejections": [],
+        "LeakedAfterSanitizing": 0,
+        "Verdict": "PASS"
+      },
+      {
+        "Case": "KeyNames con rutas",
+        "Expected": "REDACTED",
+        "Got": "REDACTED",
+        "Redactions": [
+          "KEYNAME"
+        ],
+        "Rejections": [],
+        "LeakedAfterSanitizing": 0,
+        "Verdict": "PASS"
+      },
+      {
+        "Case": "secreto en un campo estructurado (Facts.BinaryLabel)",
+        "Expected": "REJECTED",
+        "Got": "REJECTED",
+        "Redactions": [],
+        "Rejections": [
+          "SK"
+        ],
+        "LeakedAfterSanitizing": 1,
+        "Verdict": "PASS"
+      },
+      {
+        "Case": "secreto en Source (no es texto libre)",
+        "Expected": "REJECTED",
+        "Got": "REJECTED",
+        "Redactions": [],
+        "Rejections": [
+          "GH"
+        ],
+        "LeakedAfterSanitizing": 1,
+        "Verdict": "PASS"
+      },
+      {
+        "Case": "control benigno: texto sin secretos",
+        "Expected": "UNCHANGED",
+        "Got": "UNCHANGED",
+        "Redactions": [],
+        "Rejections": [],
+        "LeakedAfterSanitizing": 0,
+        "Verdict": "PASS"
+      }
+    ],
+    "SensitiveDetected": "10/10",
+    "Verdict": "PASS"
+  }
+}

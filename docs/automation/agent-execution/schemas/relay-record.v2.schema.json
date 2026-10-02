@@ -1,0 +1,1384 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rackcad-relay-record/v2",
+  "description": "Registro de relevo de una unidad I62 que escribe la sesión (Proposal V14 Anexo B.7 sobre rackcad-relay-record/v1). Registra hechos y la disposición de un fallo de transporte; nunca un veredicto EXECUTION_*. Forma parte del diario transitorio encadenado de la ventana. Subordinado: no crea requisitos de evidencia, estados, gates, reglas Git ni decisiones del Owner. Inactivo hasta I62_EFFECTIVE_SHA (AUTOMATION_PLAN 16.14).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "Schema": {
+      "type": "string",
+      "enum": [
+        "rackcad-relay-record/v2"
+      ]
+    },
+    "TaskId": {
+      "type": "string"
+    },
+    "RunId": {
+      "type": "string",
+      "pattern": "^R[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$"
+    },
+    "Attempt": {
+      "type": "integer"
+    },
+    "Phase": {
+      "type": "string",
+      "enum": [
+        "PLANNING",
+        "WORK",
+        "VERIFICATION",
+        "CONTROL",
+        "PROBE",
+        "REBASE",
+        "TRANSFER"
+      ]
+    },
+    "WindowSeq": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "PrevRelaySha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Encadena el diario; nullable = no aplica solo en el primer registro de la ventana."
+    },
+    "Host": {
+      "type": "object",
+      "description": "HostRef (B.2).",
+      "additionalProperties": false,
+      "properties": {
+        "HostLabelHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "SHA-256 del hostname en minúsculas: solo etiqueta, nunca acredita exclusividad."
+        },
+        "HostInstanceHash": {
+          "type": "string",
+          "pattern": "^([0-9a-f]{64}|UNKNOWN)$",
+          "description": "SHA-256 del identificador de instalación del SO (en Windows, MachineGuid)."
+        },
+        "HostInstanceState": {
+          "type": "string",
+          "enum": [
+            "OBSERVED",
+            "UNOBSERVED"
+          ]
+        },
+        "Os": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "HostLabelHash",
+        "HostInstanceHash",
+        "HostInstanceState",
+        "Os"
+      ]
+    },
+    "Participant": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "Role": {
+          "type": "string",
+          "enum": [
+            "PRINCIPAL_COORDINATOR",
+            "ARCHITECT",
+            "EXECUTION_CONTROLLER",
+            "WORKER",
+            "REVIEWER"
+          ]
+        },
+        "BindingRef": {
+          "type": "object",
+          "description": "BindingRef (B.2). Lo produce el binding (F3); aquí solo su forma.",
+          "additionalProperties": false,
+          "properties": {
+            "UnitId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "Scope": {
+              "type": "string",
+              "enum": [
+                "UNIT",
+                "TASK"
+              ]
+            },
+            "TaskId": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Nullable = no aplica, solo con Scope UNIT."
+            },
+            "Role": {
+              "type": "string",
+              "enum": [
+                "PRINCIPAL_COORDINATOR",
+                "ARCHITECT",
+                "EXECUTION_CONTROLLER",
+                "WORKER",
+                "REVIEWER"
+              ]
+            },
+            "BindingId": {
+              "type": "string",
+              "pattern": "^B[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$"
+            },
+            "Sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "Location": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "Kind": {
+                  "type": "string",
+                  "enum": [
+                    "TRANSIENT",
+                    "CUSTODIED"
+                  ]
+                },
+                "Path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "CommitSha": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^[0-9a-f]{40}$",
+                  "description": "Nullable = no aplica, solo con Kind TRANSIENT."
+                },
+                "Blob": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^[0-9a-f]{40}$",
+                  "description": "Nullable = no aplica, solo con Kind TRANSIENT."
+                }
+              },
+              "required": [
+                "Kind",
+                "Path",
+                "CommitSha",
+                "Blob"
+              ]
+            }
+          },
+          "required": [
+            "UnitId",
+            "Scope",
+            "TaskId",
+            "Role",
+            "BindingId",
+            "Sha256",
+            "Location"
+          ]
+        },
+        "Actor": {
+          "type": "object",
+          "description": "ActorRef (Proposal V14 Anexo B.2).",
+          "additionalProperties": false,
+          "properties": {
+            "AdapterId": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]+$"
+            },
+            "InstanceId": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Instancia observada del runtime; sin fuente, \"UNOBSERVED\"; candidata sin sesión, \"NOT_STARTED\" (B.2, B.4)."
+            },
+            "InstanceIdSource": {
+              "type": "string",
+              "minLength": 1
+            },
+            "Assurance": {
+              "type": "string",
+              "enum": [
+                "REQUESTED",
+                "CONFIGURED",
+                "RUNTIME_OBSERVED",
+                "SERVICE_ATTESTED",
+                "NONE"
+              ]
+            }
+          },
+          "required": [
+            "AdapterId",
+            "InstanceId",
+            "InstanceIdSource",
+            "Assurance"
+          ]
+        },
+        "Session": {
+          "type": "object",
+          "description": "SessionRef (B.2).",
+          "additionalProperties": false,
+          "properties": {
+            "AdapterId": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]+$"
+            },
+            "SessionId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "Assurance": {
+              "type": "string",
+              "enum": [
+                "REQUESTED",
+                "CONFIGURED",
+                "RUNTIME_OBSERVED",
+                "SERVICE_ATTESTED",
+                "NONE"
+              ]
+            }
+          },
+          "required": [
+            "AdapterId",
+            "SessionId",
+            "Assurance"
+          ]
+        },
+        "AdapterId": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$"
+        },
+        "AdapterVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "Transport": {
+          "type": "string",
+          "enum": [
+            "session-internal",
+            "external-process"
+          ]
+        },
+        "Observation": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "Name": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Dimensión observada, p. ej. model o effort."
+              },
+              "Requested": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Nullable = no aplica si no se solicitó."
+              },
+              "State": {
+                "type": "string",
+                "enum": [
+                  "OBSERVED",
+                  "NOT_OBSERVED"
+                ]
+              },
+              "Value": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "Source": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "SourceSha256": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "Assurance": {
+                "type": "string",
+                "enum": [
+                  "REQUESTED",
+                  "CONFIGURED",
+                  "RUNTIME_OBSERVED",
+                  "SERVICE_ATTESTED",
+                  "NONE"
+                ]
+              },
+              "ObservedUtc": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?Z$"
+              }
+            },
+            "required": [
+              "Name",
+              "Requested",
+              "State",
+              "Value",
+              "Source",
+              "SourceSha256",
+              "Assurance",
+              "ObservedUtc"
+            ]
+          },
+          "description": "Solicitado y efectivo del participante (B.6)."
+        }
+      },
+      "required": [
+        "Role",
+        "BindingRef",
+        "Actor",
+        "Session",
+        "AdapterId",
+        "AdapterVersion",
+        "Transport",
+        "Observation"
+      ]
+    },
+    "Exit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "HeadSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "LsRemoteSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "OriginMainSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "CleanTree": {
+          "type": "boolean"
+        },
+        "GitOperationInProgress": {
+          "type": "boolean"
+        },
+        "SummaryCommitSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "Fingerprint": {
+          "type": "object",
+          "description": "Huella de configuración (Proposal V14 §7; generaliza ConfigToml* de /v1).",
+          "additionalProperties": false,
+          "properties": {
+            "Kind": {
+              "type": "string",
+              "enum": [
+                "CONFIG_FILE",
+                "NONE",
+                "UNVERIFIED"
+              ],
+              "description": "Lo declara el descriptor: CONFIG_FILE (archivo de configuración del runtime), NONE (solo con la aceptación del Coordinator en F2) o UNVERIFIED."
+            },
+            "Sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Nullable = no aplica, salvo con Kind CONFIG_FILE."
+            },
+            "KeyNames": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Nombres ordenados de secciones y claves, sin valores y saneados (README §13)."
+            },
+            "AcceptanceDecisionRef": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "description": "Decisión del Coordinator que acepta la huella NONE; nullable = no aplica con otro Kind.",
+              "additionalProperties": false,
+              "properties": {
+                "Path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "CommitSha": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{40}$"
+                },
+                "Blob": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{40}$"
+                }
+              },
+              "required": [
+                "Path",
+                "CommitSha",
+                "Blob"
+              ]
+            }
+          },
+          "required": [
+            "Kind",
+            "Sha256",
+            "KeyNames",
+            "AcceptanceDecisionRef"
+          ]
+        },
+        "Processes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "Pid": {
+                "type": "integer"
+              },
+              "ParentPid": {
+                "type": "integer"
+              },
+              "Name": {
+                "type": "string"
+              },
+              "CreationDateUtc": {
+                "type": "string"
+              },
+              "Classification": {
+                "type": "string",
+                "enum": [
+                  "own-tree",
+                  "owner-app",
+                  "nominal-exclusion",
+                  "build-server",
+                  "participant",
+                  "unattributable",
+                  "session-descendant",
+                  "orphan"
+                ]
+              }
+            },
+            "required": [
+              "Pid",
+              "ParentPid",
+              "Name",
+              "CreationDateUtc",
+              "Classification"
+            ]
+          }
+        },
+        "OpenDelegations": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "1 si DelegationStatus es ACCEPTED_OPEN; 0 en otro caso (B.8.2)."
+        },
+        "DelegationStatus": {
+          "type": "string",
+          "enum": [
+            "NONE",
+            "PLANNED",
+            "ACCEPTED_OPEN",
+            "CLOSED_PENDING_CUSTODY"
+          ],
+          "description": "Estado derivado (B.8.2); con UNKNOWN no hay Exit válido (STOP)."
+        }
+      },
+      "required": [
+        "HeadSha",
+        "LsRemoteSha",
+        "OriginMainSha",
+        "CleanTree",
+        "GitOperationInProgress",
+        "SummaryCommitSha",
+        "Fingerprint",
+        "Processes",
+        "OpenDelegations",
+        "DelegationStatus"
+      ]
+    },
+    "Cession": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "StartUtc": {
+          "type": "string"
+        },
+        "EndUtc": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "SessionOperated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "StartUtc",
+        "EndUtc",
+        "SessionOperated"
+      ]
+    },
+    "Outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Kind": {
+          "type": "string",
+          "enum": [
+            "COMPLETED",
+            "TIMEOUT",
+            "FAILED_TURN",
+            "NO_OUTPUT",
+            "INVALID_OUTPUT",
+            "REJECTED_BEFORE_INVOCATION",
+            "LAUNCH_UNCERTAIN"
+          ]
+        },
+        "LaunchedPid": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "ExitCode": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "TerminalEvent": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "TreeKilled": {
+          "type": "boolean"
+        },
+        "DeathConfirmed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "OutputPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "OutputSha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "OutputWrittenUtc": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "Acceptance": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "A1": {
+              "type": "string",
+              "enum": [
+                "pass",
+                "fail"
+              ]
+            },
+            "A2": {
+              "type": "string",
+              "enum": [
+                "pass",
+                "fail"
+              ]
+            },
+            "A3": {
+              "type": "string",
+              "enum": [
+                "pass",
+                "fail"
+              ]
+            },
+            "A4": {
+              "type": "string",
+              "enum": [
+                "pass",
+                "fail"
+              ]
+            },
+            "A5": {
+              "type": "string",
+              "enum": [
+                "pass",
+                "fail"
+              ]
+            },
+            "A6": {
+              "type": "string",
+              "enum": [
+                "pass",
+                "fail"
+              ]
+            },
+            "A7": {
+              "type": "string",
+              "enum": [
+                "pass",
+                "fail"
+              ]
+            },
+            "A8": {
+              "type": "string",
+              "enum": [
+                "pass",
+                "fail"
+              ]
+            }
+          },
+          "required": [
+            "A1",
+            "A2",
+            "A3",
+            "A4",
+            "A5",
+            "A6",
+            "A7",
+            "A8"
+          ]
+        }
+      },
+      "required": [
+        "Kind",
+        "LaunchedPid",
+        "ExitCode",
+        "TerminalEvent",
+        "TreeKilled",
+        "DeathConfirmed",
+        "OutputPath",
+        "OutputSha256",
+        "OutputWrittenUtc",
+        "Acceptance"
+      ]
+    },
+    "Entry": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "HeadSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "LsRemoteSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "CleanTree": {
+          "type": "boolean"
+        },
+        "Fingerprint": {
+          "type": "object",
+          "description": "Huella de configuración (Proposal V14 §7; generaliza ConfigToml* de /v1).",
+          "additionalProperties": false,
+          "properties": {
+            "Kind": {
+              "type": "string",
+              "enum": [
+                "CONFIG_FILE",
+                "NONE",
+                "UNVERIFIED"
+              ],
+              "description": "Lo declara el descriptor: CONFIG_FILE (archivo de configuración del runtime), NONE (solo con la aceptación del Coordinator en F2) o UNVERIFIED."
+            },
+            "Sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Nullable = no aplica, salvo con Kind CONFIG_FILE."
+            },
+            "KeyNames": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Nombres ordenados de secciones y claves, sin valores y saneados (README §13)."
+            },
+            "AcceptanceDecisionRef": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "description": "Decisión del Coordinator que acepta la huella NONE; nullable = no aplica con otro Kind.",
+              "additionalProperties": false,
+              "properties": {
+                "Path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "CommitSha": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{40}$"
+                },
+                "Blob": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{40}$"
+                }
+              },
+              "required": [
+                "Path",
+                "CommitSha",
+                "Blob"
+              ]
+            }
+          },
+          "required": [
+            "Kind",
+            "Sha256",
+            "KeyNames",
+            "AcceptanceDecisionRef"
+          ]
+        },
+        "FingerprintChanged": {
+          "type": "boolean",
+          "description": "Cambio de huella durante la cesión: STOP P-11 (P-01 para la huella de config.toml)."
+        },
+        "Processes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "Pid": {
+                "type": "integer"
+              },
+              "ParentPid": {
+                "type": "integer"
+              },
+              "Name": {
+                "type": "string"
+              },
+              "CreationDateUtc": {
+                "type": "string"
+              },
+              "Classification": {
+                "type": "string",
+                "enum": [
+                  "own-tree",
+                  "owner-app",
+                  "nominal-exclusion",
+                  "build-server",
+                  "participant",
+                  "unattributable",
+                  "session-descendant",
+                  "orphan"
+                ]
+              }
+            },
+            "required": [
+              "Pid",
+              "ParentPid",
+              "Name",
+              "CreationDateUtc",
+              "Classification"
+            ]
+          }
+        }
+      },
+      "required": [
+        "HeadSha",
+        "LsRemoteSha",
+        "CleanTree",
+        "Fingerprint",
+        "FingerprintChanged",
+        "Processes"
+      ]
+    },
+    "RemoteFacts": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "CurrentRun": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "GhRunId": {
+              "type": "integer"
+            },
+            "Event": {
+              "type": "string"
+            },
+            "Ref": {
+              "type": "string"
+            },
+            "HeadSha": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            },
+            "Status": {
+              "type": "string"
+            },
+            "Conclusion": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "Jobs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Conclusion": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                },
+                "required": [
+                  "Name",
+                  "Conclusion"
+                ]
+              }
+            }
+          },
+          "required": [
+            "GhRunId",
+            "Event",
+            "Ref",
+            "HeadSha",
+            "Status",
+            "Conclusion",
+            "Jobs"
+          ]
+        },
+        "RedRun": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "GhRunId": {
+              "type": "integer"
+            },
+            "Event": {
+              "type": "string"
+            },
+            "Ref": {
+              "type": "string"
+            },
+            "HeadSha": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            },
+            "Status": {
+              "type": "string"
+            },
+            "Conclusion": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "Jobs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Conclusion": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                },
+                "required": [
+                  "Name",
+                  "Conclusion"
+                ]
+              }
+            }
+          },
+          "required": [
+            "GhRunId",
+            "Event",
+            "Ref",
+            "HeadSha",
+            "Status",
+            "Conclusion",
+            "Jobs"
+          ]
+        },
+        "TestArtifacts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "RunRef": {
+                "type": "string"
+              },
+              "Name": {
+                "type": "string"
+              },
+              "Sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "Selected": {
+                "type": "integer"
+              },
+              "Passed": {
+                "type": "integer"
+              },
+              "Failed": {
+                "type": "integer"
+              },
+              "Skipped": {
+                "type": "integer"
+              },
+              "FailedTests": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "RunRef",
+              "Name",
+              "Sha256",
+              "Selected",
+              "Passed",
+              "Failed",
+              "Skipped",
+              "FailedTests"
+            ]
+          }
+        },
+        "OriginMainSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "LsRemoteSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "Commands": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ObtainedUtc": {
+          "type": "string"
+        },
+        "Diagnosis": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "CurrentRun",
+        "RedRun",
+        "TestArtifacts",
+        "OriginMainSha",
+        "LsRemoteSha",
+        "Commands",
+        "ObtainedUtc",
+        "Diagnosis"
+      ]
+    },
+    "RebaseMap": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "MainBeforeSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "MainAfterSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "BranchBeforeSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$",
+          "description": "SHA esperado del --force-with-lease (B.8.7)."
+        },
+        "BranchAfterSha": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "MaterializationCloseSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "MaterializationCloseImageSha": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "AuthorityRevision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "AuthorityRevisionImageSha": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "UnitDocBlobsEqual": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "UnitChangeSectionsEqual": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "BaseSha": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "BaseImageSha": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "ChainBaseSha": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "ChainBaseImageSha": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "Commits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "OriginalSha": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              },
+              "ImageSha": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^[0-9a-f]{40}$"
+              },
+              "PatchId": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^[0-9a-f]{40}$"
+              },
+              "PatchIdEqual": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "OriginalSha",
+              "ImageSha",
+              "PatchId",
+              "PatchIdEqual"
+            ]
+          }
+        },
+        "StateFields": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "Field": {
+                "type": "string",
+                "minLength": 1
+              },
+              "OriginalSha": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              },
+              "ImageSha": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              }
+            },
+            "required": [
+              "Field",
+              "OriginalSha",
+              "ImageSha"
+            ]
+          },
+          "description": "Todos los campos SHA del estado, incluidos los que no cambian (B.8.7)."
+        },
+        "CiRuns": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "OriginalSha": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              },
+              "GhRunId": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "OriginalSha",
+              "GhRunId"
+            ]
+          },
+          "description": "Corridas que se siguen citando por el SHA original (B.8.7)."
+        },
+        "Unmapped": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Vacío por construcción: si no lo está, no hubo publicación (B.8.7)."
+        },
+        "ConflictPaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "CoordinatorDecision": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "MainBeforeSha",
+        "MainAfterSha",
+        "BranchBeforeSha",
+        "BranchAfterSha",
+        "MaterializationCloseSha",
+        "MaterializationCloseImageSha",
+        "AuthorityRevision",
+        "AuthorityRevisionImageSha",
+        "UnitDocBlobsEqual",
+        "UnitChangeSectionsEqual",
+        "BaseSha",
+        "BaseImageSha",
+        "ChainBaseSha",
+        "ChainBaseImageSha",
+        "Commits",
+        "StateFields",
+        "CiRuns",
+        "Unmapped",
+        "ConflictPaths",
+        "CoordinatorDecision"
+      ]
+    },
+    "RoleInvocation": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Nullable = no aplica fuera de una invocación de rol (§20.3, §20.6).",
+      "additionalProperties": false,
+      "properties": {
+        "LogicalReviewRequestId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^L[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$",
+          "description": "Nullable = no aplica fuera de un bucle de revisión."
+        },
+        "InvocationId": {
+          "type": "string",
+          "pattern": "^I[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$"
+        },
+        "AttemptSeq": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        }
+      },
+      "required": [
+        "LogicalReviewRequestId",
+        "InvocationId",
+        "AttemptSeq"
+      ]
+    },
+    "ReadAudit": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Nullable = no aplica fuera de una invocación de rol.",
+      "additionalProperties": false,
+      "properties": {
+        "Coverage": {
+          "type": "string",
+          "enum": [
+            "RECORDED",
+            "PARTIAL",
+            "EMPTY",
+            "UNAVAILABLE"
+          ],
+          "description": "Cobertura declarada del registro de lecturas (D.6): nunca garantiza las lecturas internas del runtime."
+        },
+        "ReadsOutsideClosure": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "Coverage",
+        "ReadsOutsideClosure"
+      ]
+    },
+    "InputFidelity": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "StateRef de rackcad-input-fidelity/v1; nullable = no aplica fuera de una invocación de rol.",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "blob": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      },
+      "required": [
+        "path",
+        "blob"
+      ]
+    },
+    "Disposition": {
+      "type": "string",
+      "enum": [
+        "NONE",
+        "BLOCKED",
+        "STOP"
+      ]
+    },
+    "Notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "Schema",
+    "TaskId",
+    "RunId",
+    "Attempt",
+    "Phase",
+    "WindowSeq",
+    "PrevRelaySha256",
+    "Host",
+    "Participant",
+    "Exit",
+    "Cession",
+    "Outcome",
+    "Entry",
+    "RemoteFacts",
+    "RebaseMap",
+    "RoleInvocation",
+    "ReadAudit",
+    "InputFidelity",
+    "Disposition",
+    "Notes"
+  ]
+}

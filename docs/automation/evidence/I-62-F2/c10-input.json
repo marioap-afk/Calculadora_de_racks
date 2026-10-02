@@ -1,0 +1,161 @@
+{
+ "Purpose": "I-62 F2, C-10: valores sensibles FICTICIOS (ninguno es una credencial real) para el saneamiento de README §13.4.",
+ "Cases": [
+  {
+   "Case": "Value con token=sk-",
+   "Expected": "REDACTED",
+   "Secrets": [
+    "sk-FAKEfakeFAKEfake0123456789"
+   ],
+   "Record": {
+    "Requirements": [
+     {
+      "Observation": {
+       "Value": "token=sk-FAKEfakeFAKEfake0123456789"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "Case": "Notes con Bearer",
+   "Expected": "REDACTED",
+   "Secrets": [
+    "abcdefghijklmnopqrstuvwxyz012345"
+   ],
+   "Record": {
+    "Notes": [
+     "Authorization: Bearer abcdefghijklmnopqrstuvwxyz012345"
+    ]
+   }
+  },
+  {
+   "Case": "Evidence con clave PEM",
+   "Expected": "REDACTED",
+   "Secrets": [
+    "-----BEGIN RSA PRIVATE KEY-----"
+   ],
+   "Record": {
+    "Evidence": "-----BEGIN RSA PRIVATE KEY-----\nMIIEfake\n-----END RSA PRIVATE KEY-----"
+   }
+  },
+  {
+   "Case": "mensaje de error con credenciales en la URL",
+   "Expected": "REDACTED",
+   "Secrets": [
+    "fakeuser:fakepa55"
+   ],
+   "Record": {
+    "ErrorMessages": [
+     "fatal: could not read https://fakeuser:fakepa55@example.invalid/repo.git"
+    ]
+   }
+  },
+  {
+   "Case": "Diagnosis con token de GitHub",
+   "Expected": "REDACTED",
+   "Secrets": [
+    "ghp_FAKEfakeFAKEfake0123456789ab"
+   ],
+   "Record": {
+    "Diagnosis": "gh auth: ghp_FAKEfakeFAKEfake0123456789ab"
+   }
+  },
+  {
+   "Case": "ContradictionEvidence con clave AWS y JWT",
+   "Expected": "REDACTED",
+   "Secrets": [
+    "AKIAFAKEFAKEFAKE0123",
+    "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlIn0.ZmFrZXNpZ25hdHVyZQ"
+   ],
+   "Record": {
+    "Requirements": [
+     {
+      "ContradictionEvidence": "AKIAFAKEFAKEFAKE0123 / eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmYWtlIn0.ZmFrZXNpZ25hdHVyZQ"
+     }
+    ]
+   }
+  },
+  {
+   "Case": "Notes con Slack, Google y password=",
+   "Expected": "REDACTED",
+   "Secrets": [
+    "xoxb-FAKE-0123456789-fake",
+    "AIzaFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+    "N0-real-pa55"
+   ],
+   "Record": {
+    "Notes": [
+     "xoxb-FAKE-0123456789-fake",
+     "AIzaFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+     "password=N0-real-pa55"
+    ]
+   }
+  },
+  {
+   "Case": "KeyNames con rutas",
+   "Expected": "REDACTED",
+   "Secrets": [
+    "c:\\users\\ejemplo\\proyecto-secreto",
+    "/home/ejemplo/privado"
+   ],
+   "Record": {
+    "Fingerprint": {
+     "KeyNames": [
+      "[projects.'c:\\users\\ejemplo\\proyecto-secreto']",
+      "projects./home/ejemplo/privado.trust_level",
+      "model"
+     ]
+    }
+   }
+  },
+  {
+   "Case": "secreto en un campo estructurado (Facts.BinaryLabel)",
+   "Expected": "REJECTED",
+   "Secrets": [
+    "sk-FAKEfakeFAKEfake0123456789"
+   ],
+   "Record": {
+    "AdapterFacts": {
+     "Facts": {
+      "BinaryLabel": "sk-FAKEfakeFAKEfake0123456789"
+     }
+    }
+   }
+  },
+  {
+   "Case": "secreto en Source (no es texto libre)",
+   "Expected": "REJECTED",
+   "Secrets": [
+    "ghp_FAKEfakeFAKEfake0123456789ab"
+   ],
+   "Record": {
+    "Requirements": [
+     {
+      "Observation": {
+       "Source": "gh ghp_FAKEfakeFAKEfake0123456789ab"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "Case": "control benigno: texto sin secretos",
+   "Expected": "UNCHANGED",
+   "Secrets": [],
+   "Record": {
+    "Notes": [
+     "tokens: 1200 usados; el token de CI no se registra",
+     "skip-ci",
+     "passwordless"
+    ],
+    "Fingerprint": {
+     "KeyNames": [
+      "[features]",
+      "model_reasoning_effort"
+     ]
+    }
+   }
+  }
+ ]
+}

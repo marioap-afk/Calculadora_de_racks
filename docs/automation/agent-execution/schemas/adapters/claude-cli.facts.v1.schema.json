@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rackcad-adapter-claude-cli-facts/v1",
+  "description": "Hechos de la CLI: ubicación, versión y autenticación, sin leer credenciales. Esquema estricto del adapter (Proposal V14 Anexo B.3): define sus campos propios; lo valida la fase 2. Subordinado: no crea requisitos de evidencia, estados, gates, reglas Git ni decisiones del Owner. Inactivo hasta I62_EFFECTIVE_SHA (AUTOMATION_PLAN 16.14).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "SchemaId": {
+      "type": "string",
+      "enum": [
+        "rackcad-adapter-claude-cli-facts/v1"
+      ]
+    },
+    "AuthState": {
+      "type": "string",
+      "enum": [
+        "AUTHENTICATED",
+        "NOT_AUTHENTICATED",
+        "NOT_APPLICABLE",
+        "UNKNOWN"
+      ]
+    },
+    "BinaryFound": {
+      "type": "string",
+      "enum": [
+        "YES",
+        "NO",
+        "UNKNOWN"
+      ]
+    },
+    "CliVersion": {
+      "type": "object",
+      "description": "Versión de la CLI; sin invocar, NOT_OBSERVED.",
+      "additionalProperties": false,
+      "properties": {
+        "State": {
+          "type": "string",
+          "enum": [
+            "OBSERVED",
+            "NOT_OBSERVED"
+          ]
+        },
+        "Value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "State",
+        "Value"
+      ]
+    }
+  },
+  "required": [
+    "SchemaId",
+    "AuthState",
+    "BinaryFound",
+    "CliVersion"
+  ]
+}

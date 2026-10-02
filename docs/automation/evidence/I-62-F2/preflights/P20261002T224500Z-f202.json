@@ -1,0 +1,160 @@
+{
+  "Schema": "rackcad-preflight/v1",
+  "PreflightId": "P20261002T224500Z-f202",
+  "UnitId": "I-62",
+  "Role": "PRINCIPAL_COORDINATOR",
+  "Action": "CUSTODY",
+  "ProtocolSet": "rackcad-protocol/I62",
+  "Profile": {
+    "ProfileId": "PRINCIPAL_COORDINATION",
+    "RoutingBlob": "9dd94dfe6b65bee542d7184cbd9b0dfb5f371a1e"
+  },
+  "Host": {
+    "HostLabelHash": "63077eb13294b21695ab1d1c013de751a805000013ae0eaf238f5dc90fc51174",
+    "HostInstanceHash": "dc8562f9b88f24dc35dbb1b17114aa07abebc8d78f048ab42d0d377d9d44429a",
+    "HostInstanceState": "OBSERVED",
+    "Os": "Microsoft Windows NT 10.0.26200.0"
+  },
+  "ObservedUtc": "2026-10-02T22:45:00Z",
+  "Actor": {
+    "AdapterId": "claude-desktop-session",
+    "InstanceId": "local_f00c654e-0079-486a-99fc-575ebe82ca43",
+    "InstanceIdSource": "get_session.sessionId",
+    "Assurance": "RUNTIME_OBSERVED"
+  },
+  "Session": {
+    "AdapterId": "claude-desktop-session",
+    "SessionId": "local_f00c654e-0079-486a-99fc-575ebe82ca43",
+    "Assurance": "RUNTIME_OBSERVED"
+  },
+  "Adapter": {
+    "AdapterId": "claude-desktop-session",
+    "AdapterVersion": "UNKNOWN",
+    "BinaryPathHash": null,
+    "DescriptorRef": {
+      "Path": "adapters/claude-desktop-session.md",
+      "Blob": "7f45923527a860713819d1ccf29dcb375b680369"
+    }
+  },
+  "AdapterFacts": {
+    "SchemaRef": {
+      "SchemaId": "rackcad-adapter-claude-desktop-session-facts/v1",
+      "Path": "schemas/adapters/claude-desktop-session.facts.v1.schema.json",
+      "Blob": "f246717f1cc2915bbac61ccd96fcd9676039b106"
+    },
+    "Facts": {
+      "SchemaId": "rackcad-adapter-claude-desktop-session-facts/v1",
+      "AuthState": "AUTHENTICATED",
+      "MetadataSource": "get_session",
+      "ReportedModel": {
+        "State": "OBSERVED",
+        "Value": "claude-opus-5-5"
+      },
+      "ReportedEffort": {
+        "State": "OBSERVED",
+        "Value": "xhigh"
+      },
+      "IsRunning": "TRUE",
+      "PermissionMode": {
+        "State": "OBSERVED",
+        "Value": "bypassPermissions"
+      }
+    }
+  },
+  "Fingerprint": {
+    "Kind": "UNVERIFIED",
+    "Sha256": null,
+    "KeyNames": [],
+    "AcceptanceDecisionRef": null
+  },
+  "Requirements": [
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.level",
+      "Mandatory": true,
+      "Required": "Frontera",
+      "Observation": {
+        "State": "OBSERVED",
+        "Value": "Frontera",
+        "Source": "get_session.model (claude-opus-5-5) + model-catalog.md «Nivel»",
+        "Assurance": "RUNTIME_OBSERVED",
+        "ObservedUtc": "2026-10-02T22:37:26Z"
+      },
+      "Status": "MATCH",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.effort",
+      "Mandatory": true,
+      "Required": "Long-horizon",
+      "Observation": {
+        "State": "OBSERVED",
+        "Value": "Long-horizon",
+        "Source": "get_session.effort (xhigh) + model-catalog.md «Effort»",
+        "Assurance": "RUNTIME_OBSERVED",
+        "ObservedUtc": "2026-10-02T22:37:26Z"
+      },
+      "Status": "MATCH",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.remote-facts",
+      "Mandatory": true,
+      "Required": "read",
+      "Observation": {
+        "State": "OBSERVED",
+        "Value": "read",
+        "Source": "git ls-remote origin refs/heads/architecture/portabilidad-coordinador-principal",
+        "Assurance": "RUNTIME_OBSERVED",
+        "ObservedUtc": "2026-10-02T22:31:00Z"
+      },
+      "Status": "MATCH",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.introspection",
+      "Mandatory": true,
+      "Required": "RUNTIME_OBSERVED",
+      "Observation": {
+        "State": "OBSERVED",
+        "Value": "RUNTIME_OBSERVED",
+        "Source": "get_session (metadatos de la app)",
+        "Assurance": "RUNTIME_OBSERVED",
+        "ObservedUtc": "2026-10-02T22:37:26Z"
+      },
+      "Status": "MATCH",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.repo-write",
+      "Mandatory": true,
+      "Required": "write",
+      "Observation": {
+        "State": "OBSERVED",
+        "Value": "write",
+        "Source": "push b64a3b64..12660ea7 aceptado por origin",
+        "Assurance": "RUNTIME_OBSERVED",
+        "ObservedUtc": "2026-10-02T22:18:30Z"
+      },
+      "Status": "MATCH",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    }
+  ],
+  "ConfigurationStatus": "MATCH",
+  "Causes": [],
+  "Disposition": "ELIGIBLE",
+  "StopConditions": [],
+  "Invalidators": {
+    "HostInstanceHash": "dc8562f9b88f24dc35dbb1b17114aa07abebc8d78f048ab42d0d377d9d44429a",
+    "AdapterVersion": "UNKNOWN",
+    "BinaryPathHash": null,
+    "AuthState": "AUTHENTICATED",
+    "FingerprintSha256": "UNKNOWN",
+    "CatalogEntryBlob": "166d978d114e635bbef67e295c2ec1da73af6d1f",
+    "RoutingBlob": "9dd94dfe6b65bee542d7184cbd9b0dfb5f371a1e"
+  }
+}

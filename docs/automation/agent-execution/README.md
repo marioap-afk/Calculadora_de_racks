@@ -283,3 +283,85 @@ Proposal V14 §13.
 | E11 | requisito obligatorio omitido en el preflight | UNKNOWN (falta acreditar) | P-10; `Causes` lo nombra |
 | E12 | Principal sin `repo-write` acreditado; lo demás en MATCH | CUSTODY: UNKNOWN; RESUME_DECISION: MATCH | no toma la custodia delegada (P-10); puede responder RESUME_DECISION |
 | E13 | unidad DIRECT_ONLY; CUSTODY sin observar | CUSTODY: UNKNOWN | sin efecto sobre el trabajo directo; ningún contrato delegado (P-15) |
+
+## 13. Observación de capacidad, preflight y saneamiento (unidades I62)
+
+Materializado por I-62 e **inactivo** hasta su vigencia ([AUTOMATION_PLAN](../../AUTOMATION_PLAN.md) 16.14). Las reglas están en AUTOMATION_PLAN 16.18
+(observación y validación) y 16.19 (adapters y huella); los hechos propios de cada runtime, en su descriptor ([adapters/](adapters/)). Aquí solo está
+cómo producir, comprobar, invalidar y sanear un `rackcad-preflight/v1`.
+
+### 13.1 Producción
+
+1. **Ámbito:** unidad, rol, acción y perfil. Los `RequirementId` y sus valores requeridos salen de [routing.md](routing.md) §8, con su blob en `RoutingBlob`.
+2. **Host:** `HostLabelHash` = SHA-256 del hostname en minúsculas; en Windows, `HostInstanceHash` = SHA-256 del `MachineGuid` en minúsculas
+   (`HKLM:\SOFTWARE\Microsoft\Cryptography`), con `HostInstanceState` OBSERVED; sin él, `UNKNOWN` y UNOBSERVED. Nunca se registran en claro.
+3. **Adapter:** `DescriptorRef` = ruta del descriptor y su blob en la `AuthorityRevision`; `AdapterVersion` y `BinaryPathHash` según el descriptor
+   (`UNKNOWN` o `null` donde el descriptor lo indica).
+4. **Actor y sesión:** la instancia observada; para una candidata sin sesión, `InstanceId` = `NOT_STARTED` con `Assurance` NONE.
+5. **Hechos:** los de la tabla «Hechos» del descriptor, con `Facts.SchemaId` igual al de `SchemaRef`. Lo que exige invocar el runtime y no se invoca
+   queda en su estado explícito (`UNKNOWN`, `NOT_OBSERVED`), nunca con un valor supuesto.
+6. **Huella:** el `Kind` que declara el descriptor. CONFIG_FILE: `Sha256` del archivo y `KeyNames` saneados (§13.4); NONE: `AcceptanceDecisionRef` de la
+   decisión del Coordinator; UNVERIFIED: sin hash ni nombres.
+7. **Requisitos:** una fila por requisito del perfil y la acción, con su observación, fuente y nivel; `Status`, agregado, `Causes` y `Disposition` según §12.
+8. **Invalidadores:** los valores observados de la instancia del host, la versión y la ruta del adapter, la autenticación, la huella, el blob de
+   `model-catalog.md` y el de `routing.md`.
+
+### 13.2 Validación y coherencia
+
+Fase 1 y fase 2 con `Test-Json` (AUTOMATION_PLAN 16.18), y después estas reglas mecánicas. Cualquier fallo es P-14, salvo la contradicción, que es S-04:
+
+```powershell
+$core = Join-Path $schemas 'preflight.v1.schema.json'
+Get-Content -Raw $preflight | Test-Json -SchemaFile $core                      # fase 1
+$p = Get-Content -Raw $preflight | ConvertFrom-Json
+$p.AdapterFacts.Facts | ConvertTo-Json -Depth 20 |
+  Test-Json -SchemaFile (Join-Path $protocol $p.AdapterFacts.SchemaRef.Path)    # fase 2
+```
+
+| Regla | Comprueba |
+|---|---|
+| C1 | el descriptor `adapters/<AdapterId>.md` existe y su blob es `DescriptorRef.Blob` |
+| C2 | `SchemaRef.Path` = `schemas/adapters/<AdapterId>.facts.v<n>.schema.json`, con la `<n>` que declara el descriptor, y su blob es `SchemaRef.Blob` |
+| C3 | `Facts.SchemaId` = `SchemaRef.SchemaId` |
+| C4 | huella: CONFIG_FILE con `Sha256`; NONE con `AcceptanceDecisionRef` y sin `Sha256`; UNVERIFIED sin `Sha256`, sin nombres y sin decisión |
+| C5 | `RequirementId` único; están todos los obligatorios del perfil y la acción |
+| C6 | `Status`, `ConfigurationStatus`, `Causes` y `Disposition` iguales a los que da §12 sobre las filas |
+| C7 | `Value`, `Source` y `ObservedUtc` nulos solo con NOT_OBSERVED, y `ContradictionEvidence` solo con `Contradiction` true |
+| C8 | `Invalidators.FingerprintSha256` = `Fingerprint.Sha256`, o `NONE` o `UNKNOWN` según el `Kind`; `Invalidators.AdapterVersion` y `BinaryPathHash` iguales a los de `Adapter` |
+
+El productor registra en `<PreflightId>.validation.json` la versión de PowerShell, el resultado de cada fase y el de cada regla. Sin ese registro el
+preflight no se acepta.
+
+### 13.3 Invalidación y contraste
+
+- Un preflight anterior deja de valer si cambia cualquiera de sus `Invalidators` frente a la observación actual. Sus requisitos pasan a UNKNOWN y hace
+  falta una observación nueva; nunca una reconfiguración automática ni un reset.
+- Cambiar o crear un binding, o avanzar el SHA de la rama, **no** invalida la observación: el binding la consume y no forma parte de los invalidadores.
+- En cada relevo, el aceptante compara la autenticación, la versión del binario y la huella del preflight con las del Exit/Entry del `relay-record/v2`. Una
+  discrepancia es S-04.
+
+### 13.4 Saneamiento previo a la custodia
+
+Antes de copiar un preflight, un `relay-record/v2` o su validación a la evidencia, la sesión los sanea con estas reglas:
+
+| Campo | Regla |
+|---|---|
+| `Fingerprint.KeyNames` | un nombre con una ruta o una unidad (`\`, `/` o `:`) se sustituye por su sección con `<redactado>` (p. ej., `[projects.<redactado>]`), conservando el número de nombres |
+| texto libre: `Observation.Value`, `ContradictionEvidence`, `Notes`, `Evidence`, `Diagnosis` y mensajes de error | cada coincidencia con un patrón de la tabla siguiente se sustituye por `<redactado:ID>` |
+| cualquier otro campo | una coincidencia con un patrón **rechaza la custodia**: se corrige el productor, nunca se publica |
+
+| ID | Patrón (expresión regular) |
+|---|---|
+| PEM | `-----BEGIN [A-Z ]*PRIVATE KEY-----` |
+| JWT | `eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]*` |
+| SK | `\bsk-[A-Za-z0-9_-]{16,}` |
+| GH | `\b(gh[pousr]_[A-Za-z0-9]{20,}\|github_pat_[A-Za-z0-9_]{20,})` |
+| AWS | `\bAKIA[0-9A-Z]{16}\b` |
+| SLACK | `\bxox[abposr]-[A-Za-z0-9-]{10,}` |
+| GAPI | `\bAIza[0-9A-Za-z_-]{35}\b` |
+| BEARER | `(?i)\bbearer\s+[A-Za-z0-9._~+/-]{16,}=*` |
+| KV | `(?i)\b(password\|passwd\|secret\|token\|api[_-]?key\|access[_-]?key\|client[_-]?secret)\b\s*[:=]\s*\S+` |
+| URLCRED | `[a-z][a-z0-9+.-]*://[^/\s:@]+:[^/\s@]+@` |
+
+Nunca se leen ni se registran valores de configuración ni credenciales: la huella solo lleva el hash y los nombres. Los esquemas I62 no tienen campos de
+credenciales.

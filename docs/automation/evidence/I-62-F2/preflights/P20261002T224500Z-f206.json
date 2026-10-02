@@ -1,0 +1,267 @@
+{
+  "Schema": "rackcad-preflight/v1",
+  "PreflightId": "P20261002T224500Z-f206",
+  "UnitId": "I-62",
+  "Role": "EXECUTION_CONTROLLER",
+  "Action": "VERIFY",
+  "ProtocolSet": "rackcad-protocol/I62",
+  "Profile": {
+    "ProfileId": "CONTROLLER_VERIFICATION",
+    "RoutingBlob": "9dd94dfe6b65bee542d7184cbd9b0dfb5f371a1e"
+  },
+  "Host": {
+    "HostLabelHash": "63077eb13294b21695ab1d1c013de751a805000013ae0eaf238f5dc90fc51174",
+    "HostInstanceHash": "dc8562f9b88f24dc35dbb1b17114aa07abebc8d78f048ab42d0d377d9d44429a",
+    "HostInstanceState": "OBSERVED",
+    "Os": "Microsoft Windows NT 10.0.26200.0"
+  },
+  "ObservedUtc": "2026-10-02T22:45:00Z",
+  "Actor": {
+    "AdapterId": "codex-cli",
+    "InstanceId": "NOT_STARTED",
+    "InstanceIdSource": "candidata sin sesión",
+    "Assurance": "NONE"
+  },
+  "Session": {
+    "AdapterId": "codex-cli",
+    "SessionId": "NOT_STARTED",
+    "Assurance": "NONE"
+  },
+  "Adapter": {
+    "AdapterId": "codex-cli",
+    "AdapterVersion": "UNKNOWN",
+    "BinaryPathHash": "38e9638ccb2ded574da445bc1092ae17156c6b7ca9d5b6a07ea9053e7dd534b8",
+    "DescriptorRef": {
+      "Path": "adapters/codex-cli.md",
+      "Blob": "155f3469e345e2397fa26347a9cb52d6fdb91122"
+    }
+  },
+  "AdapterFacts": {
+    "SchemaRef": {
+      "SchemaId": "rackcad-adapter-codex-cli-facts/v1",
+      "Path": "schemas/adapters/codex-cli.facts.v1.schema.json",
+      "Blob": "3d1b7478b433ebff2f882fb3edae82aff970d151"
+    },
+    "Facts": {
+      "SchemaId": "rackcad-adapter-codex-cli-facts/v1",
+      "AuthState": "UNKNOWN",
+      "BinaryLabel": "a51e250fa15c740a",
+      "BinarySha256": "fcd5eafefb4ff4a607f244e099e0974f66e17966b6ffda6948de2ef3a7a79530",
+      "CliVersion": {
+        "State": "NOT_OBSERVED",
+        "Value": null
+      },
+      "SandboxMode": "read-only",
+      "SessionLog": "PERSISTED",
+      "RuntimeShellFirstInPath": "YES"
+    }
+  },
+  "Fingerprint": {
+    "Kind": "CONFIG_FILE",
+    "Sha256": "155933b32e5178001700b1137a58435075c13aa0179ed9f530791f3f899726d7",
+    "KeyNames": [
+      "[desktop.open-in-target-preferences.perPath]",
+      "[desktop.open-in-target-preferences]",
+      "[desktop]",
+      "[features]",
+      "[marketplaces.openai-bundled]",
+      "[marketplaces.openai-primary-runtime]",
+      "[mcp_servers.node_repl.env]",
+      "[mcp_servers.node_repl]",
+      "[plugins.\"browser@openai-bundled\"]",
+      "[plugins.\"chrome@openai-bundled\"]",
+      "[plugins.\"code-review@openai-bundled\"]",
+      "[plugins.\"codex-app-tools@openai-bundled\"]",
+      "[plugins.\"computer-use@openai-bundled\"]",
+      "[plugins.\"documents@openai-primary-runtime\"]",
+      "[plugins.\"github@openai-curated\"]",
+      "[plugins.\"outlook-calendar@openai-curated\"]",
+      "[plugins.\"outlook-email@openai-curated\"]",
+      "[plugins.\"pdf@openai-primary-runtime\"]",
+      "[plugins.\"presentations@openai-primary-runtime\"]",
+      "[plugins.\"spreadsheets@openai-primary-runtime\"]",
+      "[plugins.\"teams@openai-curated\"]",
+      "[plugins.\"template-creator@openai-primary-runtime\"]",
+      "[plugins.\"unified-computer-use@openai-bundled\"]",
+      "[plugins.\"visualize@openai-bundled\"]",
+      "[projects.<redactado>]",
+      "[projects.<redactado>]",
+      "[projects.<redactado>]",
+      "[projects.<redactado>]",
+      "[projects.<redactado>]",
+      "[projects.<redactado>]",
+      "[projects.<redactado>]",
+      "[projects.<redactado>]",
+      "[projects.<redactado>]",
+      "[projects.<redactado>]",
+      "[projects.<redactado>]",
+      "[shell_environment_policy.set]",
+      "[tui]",
+      "[windows]",
+      "desktop.ambient-suggestions-enabled",
+      "desktop.conversationDetailMode",
+      "desktop.followUpQueueMode",
+      "desktop.keepRemoteControlAwakeWhilePluggedIn",
+      "desktop.open-in-target-preferences.global",
+      "desktop.reviewDelivery",
+      "features.js_repl",
+      "marketplaces.openai-bundled.source",
+      "marketplaces.openai-bundled.source_type",
+      "marketplaces.openai-primary-runtime.source",
+      "marketplaces.openai-primary-runtime.source_type",
+      "mcp_servers.node_repl.args",
+      "mcp_servers.node_repl.command",
+      "mcp_servers.node_repl.env.BROWSER_USE_AVAILABLE_BACKENDS",
+      "mcp_servers.node_repl.env.BROWSER_USE_CODEX_APP_BUILD_FLAVOR",
+      "mcp_servers.node_repl.env.BROWSER_USE_CODEX_APP_VERSION",
+      "mcp_servers.node_repl.env.BROWSER_USE_TINYSKY_ENABLED",
+      "mcp_servers.node_repl.env.CODEX_CLI_PATH",
+      "mcp_servers.node_repl.env.CODEX_HOME",
+      "mcp_servers.node_repl.env.NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER",
+      "mcp_servers.node_repl.env.NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME",
+      "mcp_servers.node_repl.env.NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS",
+      "mcp_servers.node_repl.env.NODE_REPL_NODE_MODULE_DIRS",
+      "mcp_servers.node_repl.env.NODE_REPL_NODE_PATH",
+      "mcp_servers.node_repl.env.NODE_REPL_TRUSTED_CODE_PATHS",
+      "mcp_servers.node_repl.env.NODE_REPL_TRUSTED_SERVICES",
+      "mcp_servers.node_repl.env.NODE_REPL_UNTRUSTED_ENV_ALLOWLIST",
+      "mcp_servers.node_repl.env.SKY_CUA_NATIVE_PIPE",
+      "mcp_servers.node_repl.env.SKY_CUA_NATIVE_PIPE_DIRECTORY",
+      "mcp_servers.node_repl.env_vars",
+      "mcp_servers.node_repl.startup_timeout_sec",
+      "model",
+      "model_reasoning_effort",
+      "notify",
+      "plugins.\"browser@openai-bundled\".enabled",
+      "plugins.\"chrome@openai-bundled\".enabled",
+      "plugins.\"code-review@openai-bundled\".enabled",
+      "plugins.\"codex-app-tools@openai-bundled\".enabled",
+      "plugins.\"computer-use@openai-bundled\".enabled",
+      "plugins.\"documents@openai-primary-runtime\".enabled",
+      "plugins.\"github@openai-curated\".enabled",
+      "plugins.\"outlook-calendar@openai-curated\".enabled",
+      "plugins.\"outlook-email@openai-curated\".enabled",
+      "plugins.\"pdf@openai-primary-runtime\".enabled",
+      "plugins.\"presentations@openai-primary-runtime\".enabled",
+      "plugins.\"spreadsheets@openai-primary-runtime\".enabled",
+      "plugins.\"teams@openai-curated\".enabled",
+      "plugins.\"template-creator@openai-primary-runtime\".enabled",
+      "plugins.\"unified-computer-use@openai-bundled\".enabled",
+      "plugins.\"visualize@openai-bundled\".enabled",
+      "<redactado>",
+      "<redactado>",
+      "<redactado>",
+      "<redactado>",
+      "<redactado>",
+      "<redactado>",
+      "<redactado>",
+      "<redactado>",
+      "<redactado>",
+      "<redactado>",
+      "<redactado>",
+      "service_tier",
+      "shell_environment_policy.set.NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S",
+      "tui.screen_reader_detection_done",
+      "windows.sandbox"
+    ],
+    "AcceptanceDecisionRef": null
+  },
+  "Requirements": [
+    {
+      "RequirementId": "CONTROLLER_VERIFICATION.effort",
+      "Mandatory": true,
+      "Required": "Balanced",
+      "Observation": {
+        "State": "NOT_OBSERVED",
+        "Value": null,
+        "Source": null,
+        "Assurance": "NONE",
+        "ObservedUtc": null
+      },
+      "Status": "UNKNOWN",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "CONTROLLER_VERIFICATION.level",
+      "Mandatory": true,
+      "Required": "Equilibrado",
+      "Observation": {
+        "State": "NOT_OBSERVED",
+        "Value": null,
+        "Source": null,
+        "Assurance": "NONE",
+        "ObservedUtc": null
+      },
+      "Status": "UNKNOWN",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "CONTROLLER_VERIFICATION.read",
+      "Mandatory": true,
+      "Required": "measured",
+      "Observation": {
+        "State": "NOT_OBSERVED",
+        "Value": null,
+        "Source": null,
+        "Assurance": "NONE",
+        "ObservedUtc": null
+      },
+      "Status": "UNKNOWN",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "CONTROLLER_VERIFICATION.tool-use",
+      "Mandatory": true,
+      "Required": "measured",
+      "Observation": {
+        "State": "NOT_OBSERVED",
+        "Value": null,
+        "Source": null,
+        "Assurance": "NONE",
+        "ObservedUtc": null
+      },
+      "Status": "UNKNOWN",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "CONTROLLER_VERIFICATION.structured-output",
+      "Mandatory": true,
+      "Required": "measured",
+      "Observation": {
+        "State": "NOT_OBSERVED",
+        "Value": null,
+        "Source": null,
+        "Assurance": "NONE",
+        "ObservedUtc": null
+      },
+      "Status": "UNKNOWN",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    }
+  ],
+  "ConfigurationStatus": "UNKNOWN",
+  "Causes": [
+    "CONTROLLER_VERIFICATION.effort",
+    "CONTROLLER_VERIFICATION.level",
+    "CONTROLLER_VERIFICATION.read",
+    "CONTROLLER_VERIFICATION.structured-output",
+    "CONTROLLER_VERIFICATION.tool-use"
+  ],
+  "Disposition": "NOT_ELIGIBLE",
+  "StopConditions": [
+    "P-10"
+  ],
+  "Invalidators": {
+    "HostInstanceHash": "dc8562f9b88f24dc35dbb1b17114aa07abebc8d78f048ab42d0d377d9d44429a",
+    "AdapterVersion": "UNKNOWN",
+    "BinaryPathHash": "38e9638ccb2ded574da445bc1092ae17156c6b7ca9d5b6a07ea9053e7dd534b8",
+    "AuthState": "UNKNOWN",
+    "FingerprintSha256": "155933b32e5178001700b1137a58435075c13aa0179ed9f530791f3f899726d7",
+    "CatalogEntryBlob": "166d978d114e635bbef67e295c2ec1da73af6d1f",
+    "RoutingBlob": "9dd94dfe6b65bee542d7184cbd9b0dfb5f371a1e"
+  }
+}

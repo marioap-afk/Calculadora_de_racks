@@ -1,0 +1,47 @@
+{
+  "PreflightId": "P20261002T224500Z-f206",
+  "PowerShell": "7.6.6",
+  "Phase1": {
+    "Ok": true,
+    "Detail": "True"
+  },
+  "Phase2": {
+    "Ok": true,
+    "Detail": "True"
+  },
+  "Rules": {
+    "C1": {
+      "Ok": true,
+      "Checks": "descriptor y blob"
+    },
+    "C2": {
+      "Ok": true,
+      "Checks": "ruta derivada y blob del esquema de hechos"
+    },
+    "C3": {
+      "Ok": true,
+      "Checks": "Facts.SchemaId"
+    },
+    "C4": {
+      "Ok": true,
+      "Checks": "coherencia de la huella"
+    },
+    "C5": {
+      "Ok": true,
+      "Checks": "requisitos únicos y obligatorios presentes"
+    },
+    "C6": {
+      "Ok": true,
+      "Checks": "estado, agregado, causas y disposición = §12"
+    },
+    "C7": {
+      "Ok": true,
+      "Checks": "nulos solo donde no aplica"
+    },
+    "C8": {
+      "Ok": true,
+      "Checks": "invalidadores coherentes"
+    }
+  },
+  "Outcome": "VALID"
+}

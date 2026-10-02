@@ -1,0 +1,136 @@
+{
+  "Schema": "rackcad-relay-record/v2",
+  "TaskId": "T1",
+  "RunId": "R20261002T230000Z-0001",
+  "Attempt": 0,
+  "Phase": "VERIFICATION",
+  "WindowSeq": 1,
+  "PrevRelaySha256": null,
+  "Host": {
+    "HostLabelHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "HostInstanceHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "HostInstanceState": "OBSERVED",
+    "Os": "sintético"
+  },
+  "Participant": {
+    "Role": "EXECUTION_CONTROLLER",
+    "BindingRef": {
+      "UnitId": "FX-U1",
+      "Scope": "TASK",
+      "TaskId": "T1",
+      "Role": "EXECUTION_CONTROLLER",
+      "BindingId": "B20261002T230000Z-0001",
+      "Sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "Location": {
+        "Kind": "CUSTODIED",
+        "Path": "docs/automation/evidence/FX-U1-agent/bindings/B20261002T230000Z-0001.json",
+        "CommitSha": "1111111111111111111111111111111111111111",
+        "Blob": "2222222222222222222222222222222222222222"
+      }
+    },
+    "Actor": {
+      "AdapterId": "codex-cli",
+      "InstanceId": "thread-sintetico",
+      "InstanceIdSource": "registro de sesión",
+      "Assurance": "RUNTIME_OBSERVED"
+    },
+    "Session": {
+      "AdapterId": "codex-cli",
+      "SessionId": "thread-sintetico",
+      "Assurance": "RUNTIME_OBSERVED"
+    },
+    "AdapterId": "codex-cli",
+    "AdapterVersion": "UNKNOWN",
+    "Transport": "external-process",
+    "Observation": [
+      {
+        "Name": "effort",
+        "Requested": "high",
+        "State": "OBSERVED",
+        "Value": "high",
+        "Source": "turn_context",
+        "SourceSha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "Assurance": "RUNTIME_OBSERVED",
+        "ObservedUtc": "2026-10-02T23:01:00Z"
+      }
+    ]
+  },
+  "Exit": {
+    "HeadSha": "3333333333333333333333333333333333333333",
+    "LsRemoteSha": "3333333333333333333333333333333333333333",
+    "OriginMainSha": "4444444444444444444444444444444444444444",
+    "CleanTree": true,
+    "GitOperationInProgress": false,
+    "SummaryCommitSha": "3333333333333333333333333333333333333333",
+    "Fingerprint": {
+      "Kind": "CONFIG_FILE",
+      "Sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "KeyNames": [
+        "[features]",
+        "model"
+      ],
+      "AcceptanceDecisionRef": null
+    },
+    "Processes": [
+      {
+        "Pid": 100,
+        "ParentPid": 1,
+        "Name": "pwsh.exe",
+        "CreationDateUtc": "2026-10-02T23:00:00Z",
+        "Classification": "own-tree"
+      }
+    ],
+    "OpenDelegations": 1,
+    "DelegationStatus": "ACCEPTED_OPEN"
+  },
+  "Cession": {
+    "StartUtc": "2026-10-02T23:00:30Z",
+    "EndUtc": "2026-10-02T23:05:00Z",
+    "SessionOperated": false
+  },
+  "Outcome": {
+    "Kind": "COMPLETED",
+    "LaunchedPid": 200,
+    "ExitCode": 0,
+    "TerminalEvent": "turn.completed",
+    "TreeKilled": false,
+    "DeathConfirmed": true,
+    "OutputPath": "artifacts/orchestration/FX-U1/T1/0/R20261002T230000Z-0001/controller-verification.json",
+    "OutputSha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "OutputWrittenUtc": "2026-10-02T23:04:59Z",
+    "Acceptance": null
+  },
+  "Entry": {
+    "HeadSha": "3333333333333333333333333333333333333333",
+    "LsRemoteSha": "3333333333333333333333333333333333333333",
+    "CleanTree": true,
+    "Fingerprint": {
+      "Kind": "CONFIG_FILE",
+      "Sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "KeyNames": [
+        "[features]",
+        "model"
+      ],
+      "AcceptanceDecisionRef": null
+    },
+    "FingerprintChanged": false,
+    "Processes": [
+      {
+        "Pid": 100,
+        "ParentPid": 1,
+        "Name": "pwsh.exe",
+        "CreationDateUtc": "2026-10-02T23:00:00Z",
+        "Classification": "own-tree"
+      }
+    ]
+  },
+  "RemoteFacts": null,
+  "RebaseMap": null,
+  "RoleInvocation": null,
+  "ReadAudit": null,
+  "InputFidelity": null,
+  "Disposition": "NONE",
+  "Notes": [
+    "registro sintético del control C-08 (f)"
+  ]
+}

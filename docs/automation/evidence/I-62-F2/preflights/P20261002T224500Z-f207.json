@@ -1,0 +1,144 @@
+{
+  "Schema": "rackcad-preflight/v1",
+  "PreflightId": "P20261002T224500Z-f207",
+  "UnitId": "I-62",
+  "Role": "PRINCIPAL_COORDINATOR",
+  "Action": "RESUME_DECISION",
+  "ProtocolSet": "rackcad-protocol/I62",
+  "Profile": {
+    "ProfileId": "PRINCIPAL_COORDINATION",
+    "RoutingBlob": "9dd94dfe6b65bee542d7184cbd9b0dfb5f371a1e"
+  },
+  "Host": {
+    "HostLabelHash": "63077eb13294b21695ab1d1c013de751a805000013ae0eaf238f5dc90fc51174",
+    "HostInstanceHash": "dc8562f9b88f24dc35dbb1b17114aa07abebc8d78f048ab42d0d377d9d44429a",
+    "HostInstanceState": "OBSERVED",
+    "Os": "Microsoft Windows NT 10.0.26200.0"
+  },
+  "ObservedUtc": "2026-10-02T22:45:00Z",
+  "Actor": {
+    "AdapterId": "codex-desktop-session",
+    "InstanceId": "NOT_STARTED",
+    "InstanceIdSource": "candidata sin sesión",
+    "Assurance": "NONE"
+  },
+  "Session": {
+    "AdapterId": "codex-desktop-session",
+    "SessionId": "NOT_STARTED",
+    "Assurance": "NONE"
+  },
+  "Adapter": {
+    "AdapterId": "codex-desktop-session",
+    "AdapterVersion": "UNKNOWN",
+    "BinaryPathHash": null,
+    "DescriptorRef": {
+      "Path": "adapters/codex-desktop-session.md",
+      "Blob": "02d6c33db60344943fbcd6fcdf347eefef06986f"
+    }
+  },
+  "AdapterFacts": {
+    "SchemaRef": {
+      "SchemaId": "rackcad-adapter-codex-desktop-session-facts/v1",
+      "Path": "schemas/adapters/codex-desktop-session.facts.v1.schema.json",
+      "Blob": "bdf5c491829948f113c8736e476ecb90edcc9760"
+    },
+    "Facts": {
+      "SchemaId": "rackcad-adapter-codex-desktop-session-facts/v1",
+      "AuthState": "UNKNOWN",
+      "AppPackage": {
+        "State": "NOT_OBSERVED",
+        "Value": null
+      },
+      "TurnContextSource": "CANDIDATE",
+      "SharesConfigFile": "UNKNOWN"
+    }
+  },
+  "Fingerprint": {
+    "Kind": "UNVERIFIED",
+    "Sha256": null,
+    "KeyNames": [],
+    "AcceptanceDecisionRef": null
+  },
+  "Requirements": [
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.level",
+      "Mandatory": true,
+      "Required": "Frontera",
+      "Observation": {
+        "State": "NOT_OBSERVED",
+        "Value": null,
+        "Source": null,
+        "Assurance": "NONE",
+        "ObservedUtc": null
+      },
+      "Status": "UNKNOWN",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.effort",
+      "Mandatory": true,
+      "Required": "Long-horizon",
+      "Observation": {
+        "State": "NOT_OBSERVED",
+        "Value": null,
+        "Source": null,
+        "Assurance": "NONE",
+        "ObservedUtc": null
+      },
+      "Status": "UNKNOWN",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.remote-facts",
+      "Mandatory": true,
+      "Required": "read",
+      "Observation": {
+        "State": "NOT_OBSERVED",
+        "Value": null,
+        "Source": null,
+        "Assurance": "NONE",
+        "ObservedUtc": null
+      },
+      "Status": "UNKNOWN",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.introspection",
+      "Mandatory": true,
+      "Required": "RUNTIME_OBSERVED",
+      "Observation": {
+        "State": "NOT_OBSERVED",
+        "Value": null,
+        "Source": null,
+        "Assurance": "NONE",
+        "ObservedUtc": null
+      },
+      "Status": "UNKNOWN",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    }
+  ],
+  "ConfigurationStatus": "UNKNOWN",
+  "Causes": [
+    "PRINCIPAL_COORDINATION.effort",
+    "PRINCIPAL_COORDINATION.introspection",
+    "PRINCIPAL_COORDINATION.level",
+    "PRINCIPAL_COORDINATION.remote-facts"
+  ],
+  "Disposition": "NOT_ELIGIBLE",
+  "StopConditions": [
+    "P-10"
+  ],
+  "Invalidators": {
+    "HostInstanceHash": "dc8562f9b88f24dc35dbb1b17114aa07abebc8d78f048ab42d0d377d9d44429a",
+    "AdapterVersion": "UNKNOWN",
+    "BinaryPathHash": null,
+    "AuthState": "UNKNOWN",
+    "FingerprintSha256": "UNKNOWN",
+    "CatalogEntryBlob": "166d978d114e635bbef67e295c2ec1da73af6d1f",
+    "RoutingBlob": "9dd94dfe6b65bee542d7184cbd9b0dfb5f371a1e"
+  }
+}

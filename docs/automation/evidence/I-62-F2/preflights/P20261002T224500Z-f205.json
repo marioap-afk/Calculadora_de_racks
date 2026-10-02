@@ -1,0 +1,127 @@
+{
+  "Schema": "rackcad-preflight/v1",
+  "PreflightId": "P20261002T224500Z-f205",
+  "UnitId": "I-62",
+  "Role": "REVIEWER",
+  "Action": "REVIEW_CHANGE",
+  "ProtocolSet": "rackcad-protocol/I62",
+  "Profile": {
+    "ProfileId": "ARCHITECTURE_REVIEW",
+    "RoutingBlob": "9dd94dfe6b65bee542d7184cbd9b0dfb5f371a1e"
+  },
+  "Host": {
+    "HostLabelHash": "63077eb13294b21695ab1d1c013de751a805000013ae0eaf238f5dc90fc51174",
+    "HostInstanceHash": "dc8562f9b88f24dc35dbb1b17114aa07abebc8d78f048ab42d0d377d9d44429a",
+    "HostInstanceState": "OBSERVED",
+    "Os": "Microsoft Windows NT 10.0.26200.0"
+  },
+  "ObservedUtc": "2026-10-02T22:45:00Z",
+  "Actor": {
+    "AdapterId": "claude-cli",
+    "InstanceId": "NOT_STARTED",
+    "InstanceIdSource": "candidata sin sesión",
+    "Assurance": "NONE"
+  },
+  "Session": {
+    "AdapterId": "claude-cli",
+    "SessionId": "NOT_STARTED",
+    "Assurance": "NONE"
+  },
+  "Adapter": {
+    "AdapterId": "claude-cli",
+    "AdapterVersion": "UNKNOWN",
+    "BinaryPathHash": null,
+    "DescriptorRef": {
+      "Path": "adapters/claude-cli.md",
+      "Blob": "ae570380509cacabf11f757a27573bf6fe616a36"
+    }
+  },
+  "AdapterFacts": {
+    "SchemaRef": {
+      "SchemaId": "rackcad-adapter-claude-cli-facts/v1",
+      "Path": "schemas/adapters/claude-cli.facts.v1.schema.json",
+      "Blob": "2298c37641efff835d8e49861b1dd2d0bf1239dc"
+    },
+    "Facts": {
+      "SchemaId": "rackcad-adapter-claude-cli-facts/v1",
+      "AuthState": "UNKNOWN",
+      "BinaryFound": "NO",
+      "CliVersion": {
+        "State": "NOT_OBSERVED",
+        "Value": null
+      }
+    }
+  },
+  "Fingerprint": {
+    "Kind": "UNVERIFIED",
+    "Sha256": null,
+    "KeyNames": [],
+    "AcceptanceDecisionRef": null
+  },
+  "Requirements": [
+    {
+      "RequirementId": "ARCHITECTURE_REVIEW.effort",
+      "Mandatory": true,
+      "Required": "Deep",
+      "Observation": {
+        "State": "NOT_OBSERVED",
+        "Value": null,
+        "Source": null,
+        "Assurance": "NONE",
+        "ObservedUtc": null
+      },
+      "Status": "UNKNOWN",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "ARCHITECTURE_REVIEW.level",
+      "Mandatory": true,
+      "Required": "Equilibrado",
+      "Observation": {
+        "State": "NOT_OBSERVED",
+        "Value": null,
+        "Source": null,
+        "Assurance": "NONE",
+        "ObservedUtc": null
+      },
+      "Status": "UNKNOWN",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "ARCHITECTURE_REVIEW.read",
+      "Mandatory": true,
+      "Required": "measured",
+      "Observation": {
+        "State": "NOT_OBSERVED",
+        "Value": null,
+        "Source": null,
+        "Assurance": "NONE",
+        "ObservedUtc": null
+      },
+      "Status": "UNKNOWN",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    }
+  ],
+  "ConfigurationStatus": "UNKNOWN",
+  "Causes": [
+    "ARCHITECTURE_REVIEW.effort",
+    "ARCHITECTURE_REVIEW.level",
+    "ARCHITECTURE_REVIEW.read"
+  ],
+  "Disposition": "NOT_ELIGIBLE",
+  "StopConditions": [
+    "P-10"
+  ],
+  "Invalidators": {
+    "HostInstanceHash": "dc8562f9b88f24dc35dbb1b17114aa07abebc8d78f048ab42d0d377d9d44429a",
+    "AdapterVersion": "UNKNOWN",
+    "BinaryPathHash": null,
+    "AuthState": "UNKNOWN",
+    "FingerprintSha256": "UNKNOWN",
+    "CatalogEntryBlob": "166d978d114e635bbef67e295c2ec1da73af6d1f",
+    "RoutingBlob": "9dd94dfe6b65bee542d7184cbd9b0dfb5f371a1e"
+  }
+}

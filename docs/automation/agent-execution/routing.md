@@ -91,3 +91,29 @@ La elegibilidad la aplica el Controller de planificación con la fecha de la del
 
 Su modelo y su effort los elige la sesión con este procedimiento (perfiles CONTROLLER_*), entre celdas elegibles. Se pasan con `-m` y `-c model_reasoning_effort=…`, y solicitado y
 efectivo quedan en el registro de relevo. Una diferencia se registra como desviación; si el modelo efectivo no corresponde a una celda elegible, la salida es inválida.
+
+## 8. Requisitos por perfil y acción (unidades I62)
+
+Materializado por I-62 e **inactivo** hasta su vigencia ([AUTOMATION_PLAN](../../AUTOMATION_PLAN.md) 16.14). Es la lista fija de requisitos que usa la
+observación de capacidad (`rackcad-preflight/v1`, AUTOMATION_PLAN 16.18). Un `RequirementId` es `<PERFIL>.<requisito>`. No nombra modelos.
+
+**Perfil del Principal** (PRINCIPAL_COORDINATION, AUTOMATION_PLAN 16.15). Todos obligatorios:
+
+| `RequirementId` | Requerido | RESUME_DECISION | CUSTODY | LOCAL_EVIDENCE |
+|---|---|---|---|---|
+| `PRINCIPAL_COORDINATION.level` | Frontera | sí | sí | sí |
+| `PRINCIPAL_COORDINATION.effort` | `Long-horizon` | sí | sí | sí |
+| `PRINCIPAL_COORDINATION.remote-facts` | lectura | sí | sí | sí |
+| `PRINCIPAL_COORDINATION.introspection` | RUNTIME_OBSERVED o superior | sí | sí | sí |
+| `PRINCIPAL_COORDINATION.repo-write` | escritura | — | sí | sí |
+| `PRINCIPAL_COORDINATION.build-test` | ejecución | — | — | sí |
+
+LOCAL_EVIDENCE es la acción «evidencia local» de AUTOMATION_PLAN 16.15: solo la acción que deba producir evidencia local la necesita.
+
+**Perfiles de los demás roles** (§1). Para el perfil de la clase de la tarea, todos obligatorios:
+- `<PERFIL>.effort`: el effort de la delegación; sin delegación, el effort de partida de la clase (§1, §2);
+- `<PERFIL>.level`: el nivel de capacidad de §3 para ese effort;
+- `<PERFIL>.<capacidad>`: una fila por cada capacidad mínima de la clase (§1): `read`, `tool-use`, `write-commit-push` y, para CONTROLLER_PLANNING y
+  CONTROLLER_VERIFICATION, `structured-output`.
+
+Los requisitos opcionales (p. ej., la cuota) se registran sin alterar el agregado. Un contrato de gate puede exigir más, nunca menos.

@@ -168,8 +168,9 @@ Autorizaciones de F0:
 - C62-F0-01: el tramo Discovery;
 - C62-F0-11: el diseño y la Proposal V1, **sin implementación**.
 
-La revisión del Architect, el acuerdo y el Consensus Freeze están hechos (decisiones §§29-31). **F0 = GATE PASS / COMPLETE** y **F1 abierto** por orden
-del Coordinator ([decisiones](../automation/decisions/I-62.md) §32): la implementación está autorizada **solo para F1**, y F2 y los siguientes no. I-61 sigue
+La revisión del Architect, el acuerdo y el Consensus Freeze están hechos (decisiones §§29-31). **F0 = GATE PASS / COMPLETE** (decisiones §32) y
+**F1 = GATE PASS / COMPLETE**, con F2 abierto por orden del Coordinator ([decisiones](../automation/decisions/I-62.md) §33): la implementación está autorizada
+**solo para F2**, y F3 y los siguientes no; se permite preparar los gates posteriores sin materializarlos. I-61 sigue
 siendo la autoridad de ejecución hasta la frontera efectiva de I-62.
 
 ## 7. Dependencias, archivos calientes y coordinación
@@ -186,8 +187,8 @@ G0 (este bootstrap) incluye reclamo, contrato, fila, estado, decisiones, mandato
 según [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §7; aquí no se prometen. Plan **congelado**: [Proposal V14](I-62-proposal-v14.md) §17, por el [Consensus Freeze](I-62-consensus-freeze.md) §5.
 
 - **F0:** GATE PASS del Coordinator ([decisiones](../automation/decisions/I-62.md) §32).
-- **F1:** en curso. La entrega (ADR sucesor propuesto, plano (b) inactivo, corrección de PROMPT_TEMPLATES §2 y C-01..C-04) está en revisión del Coordinator
-  ([evidencia](../automation/evidence/I-62-evidence.md) §34). Solo el Coordinator declara su GATE PASS.
+- **F1:** GATE PASS del Coordinator (C-01..C-04; [decisiones](../automation/decisions/I-62.md) §33; [evidencia](../automation/evidence/I-62-evidence.md) §34).
+- **F2:** en curso (evidencia §35). Solo el Coordinator declara su GATE PASS.
 
 ## 9. Owner Validation
 

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rackcad-adapter-test-null-facts/v1",
+  "description": "Esquema sintético del adapter test-null (C-08 a): un campo propio, probe.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "SchemaId": {
+      "type": "string",
+      "enum": [
+        "rackcad-adapter-test-null-facts/v1"
+      ]
+    },
+    "probe": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "SchemaId",
+    "probe"
+  ]
+}
