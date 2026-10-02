@@ -1701,7 +1701,8 @@ El Coordinator no emitió ningún analysis.md nuevo para esta parte.
 
 Notas de la custodia:
 - Cada directorio incluye `config-*.json` y `processes-*.json`.
-- Los `processes-*.json` conservan CRLF (salida de PowerShell); el resto usa LF.
+- Los 12 `processes-*.json` se escribieron con CRLF (salida de PowerShell) en el área transitoria y se normalizan a LF en el blob: su
+  SHA-256 transitorio difiere del blob solo por el fin de línea. Los otros 50 archivos de la custodia tienen el mismo SHA-256 en ambos.
 - `events.jsonl` y las transcripciones no se versionan: solo su SHA-256, en los registros de relevo.
 
 **Siguiente:** COORDINATOR_PROTOCOL_STOP_REVIEW_REQUIRED. F1-T2-BRIDGE no se prepara ni se implementa.
