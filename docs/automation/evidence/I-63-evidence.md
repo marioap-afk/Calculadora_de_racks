@@ -1445,3 +1445,21 @@ Las copias están en `docs/automation/evidence/I-63-pilot/G2-POPULATION/<RunId>/
 transitorios R20261002T164522Z-a109/worker-handoff.json; su blob normalizado difiere del SHA-256 transitorio por fin de línea (16.12).
 
 **Siguiente:** el Coordinator juzga G2 con esta evidencia. G3 y G4 no están autorizados.
+
+## 38. G2 PASS
+
+- **Veredicto del Coordinator**, pegado por el usuario en el chat el 2026-10-02: **G2 — Population, output verdict y agregación: PASS**.
+  Resumen en las [decisiones](../decisions/I-63.md) §2.
+- **Base del juicio:**
+  - `VerifiedSha` `844dabb6ffbb8b3ba11a2e9a796b78348857c088`; verificación `R20261002T172647Z-0aea`, `EXECUTION_VERIFIED`, 14/14.
+  - CI `37039086898` 4/4: Core 12477/12477 y filtro de G2 54/54.
+  - Custodia `abe0eae5`, CI `37043281164` 4/4.
+  - Revisión independiente del diff `669d8a39..844dabb6`: 11 archivos dentro del alcance.
+- **DEV-G2-01:** nc2 no discriminó una violación de `Scope` conocida. No bloquea y no se repite.
+  - Regla para G3 y G4: comprobación mecánica independiente de `Scope` antes de aceptar `EXECUTION_VERIFIED`.
+- **DEBT-I63-G2-01:** la guarda legacy `PushBackBomCommandGuardTests` queda satisfecha por un comentario XML; la autoridad es INV-33.
+  - Antes de READY: actualizarla o retirarla/sustituirla explícitamente, con una A-n Coordinator-only de solo pruebas.
+- **H-G2-02:** editorial, sin enmienda.
+- **S-04 de los TRX:** clasificación de la sesión aceptada (STOP no material).
+- **Contadores:** `attempts` 2/3 (`AttemptsRemaining` 1).
+- **Siguiente:** `current_phase` = G3. La sesión prepara el contrato de G3 y vuelve solo para la autorización formal. G4 no autorizado.

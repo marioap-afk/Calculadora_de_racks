@@ -3,30 +3,32 @@ automation_state:
   initiative: I-63
   branch: architecture/parametros-calculados-resumen-proyecto
   claim_id: ce04f47f-ca53-4e75-b983-5ac57ab6c5e3
-  current_phase: G2
-  state: review-ready
+  current_phase: G3
+  state: waiting
   gate: none
   attempts: 2
-  next_action: Juicio del Coordinator sobre G2 con la evidencia §37 (EXECUTION_VERIFIED R20261002T172647Z-0aea sobre 844dabb6; nc1, nc3 y nc4 conformes; nc2 NO superado; hallazgos H-G2-01 y H-G2-03).
-  last_evidence_commit: 844dabb6ffbb8b3ba11a2e9a796b78348857c088
+  next_action: Preparar el contrato de gate de G3 (built-ins en I-49) desde el Freeze + A-1 + A-2, con la comprobacion mecanica de Scope desde el inicio, y volver al Coordinator para su autorizacion formal; sin implementacion antes.
+  last_evidence_commit: abe0eae58432d07d160c45c05bf97bbda80863c3
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-parametros-calculados-resumen-proyecto
 execution_chain:
-  gate: G2
-  task_id: G2-POPULATION
-  attempt: 2
-  next_role: Coordinator (juicio de G2)
-  next_action: G2 EXECUTION_VERIFIED; vuelta al Coordinator para el juicio de G2
-  g2: {contract: R20261002T164053Z-586f (SHA-256 486EB708C2A66F37B854C12D4A634B7B87918EF8BD90D4620D10782B7883329D), authority_revision: 669d8a391f208e1077f136a406fd89058bc0ce6e, red_sha: cdc8bbd08655f8ecdf499eb09dfec6581befc682, verified_sha: 844dabb6ffbb8b3ba11a2e9a796b78348857c088, verification: R20261002T172647Z-0aea, ci: 37039086898 4/4, negative_controls: nc1 nc3 nc4 conformes y nc2 no superado (H-G2-03), findings: [H-G2-01 guarda PushBackBomCommandGuardTests satisfecha por comentario, H-G2-02 fixture 56-73]}
-  authority_revision_g1: 658b35ad498520ba3c832a96eea4389df16dfa60
+  gate: G3
+  task_id: null
+  attempt: null
+  next_role: Coordinator (autorizacion formal de G3 sobre el contrato que prepara la sesion)
+  next_action: Contrato de G3 en preparacion; sin delegacion ni Worker hasta la autorizacion
   main_sha: 819955d61a6da4c811a11fbd11b5dca13f634b7c
   freeze_commit: f61d0aca859a11b15cbe1797069a83cba873ba95
   frozen_proposal_blob: 4d5dedce15363fa6378e460c5b63005fe41b858b
-  amendments: [A-1 docs/initiatives/I-63-proposal-v3-amendment-a1-verificacion.md (blob 766d9ba9cf379daa077bed20fc6255b5ca656d60), A-2 docs/initiatives/I-63-proposal-v3-amendment-a2-gate-verification-sequencing.md]
+  amendments: [A-1 docs/initiatives/I-63-proposal-v3-amendment-a1-verificacion.md (658b35ad), A-2 docs/initiatives/I-63-proposal-v3-amendment-a2-gate-verification-sequencing.md (669d8a39)]
   g1: {verdict: PASS, verified_sha: 4a6c2d889fc2b421076b3165b26b97162439ad57, verification: R20261002T144842Z-0cf4, closure_evidence: 2f885759c79c916127d0613c8971ee058fa4f9d9, attempts_used: 2 of 3, red_sha: fc30dc6cf0d2f97e6732bbb8c512623db91c305d}
-  g2_invariants: [INV-01, INV-02, INV-03, INV-06, INV-07, INV-08, INV-10, INV-11, INV-12, INV-13, INV-32, INV-33, INV-35]
-  return_to_coordinator_when: G2 EXECUTION_VERIFIED con evidencia completa; STOP real; cambio material, de autoridad o de alcance; presupuesto agotado; AUTONOMY_GAP
-  not_authorized: [G3, G4]
+  g2: {verdict: PASS, contract: R20261002T164053Z-586f (SHA-256 486EB708C2A66F37B854C12D4A634B7B87918EF8BD90D4620D10782B7883329D), authority_revision: 669d8a391f208e1077f136a406fd89058bc0ce6e, red_sha: cdc8bbd08655f8ecdf499eb09dfec6581befc682, verified_sha: 844dabb6ffbb8b3ba11a2e9a796b78348857c088, verification: R20261002T172647Z-0aea, ci: 37039086898 4/4, negative_controls: nc1 nc3 nc4 conformes y nc2 no superado (H-G2-03), findings: [H-G2-01 guarda PushBackBomCommandGuardTests satisfecha por comentario, H-G2-02 fixture 56-73]}
+  deviations: [DEV-G1-03 ejecutor de controles sin revalidacion de PID (aceptada), DEV-G2-01 nc2 no discrimino Scope (no bloqueante)]
+  debts: [DEBT-I63-G2-01 guarda legacy PushBackBomCommandGuardTests satisfecha por comentario; reparar o sustituir antes de READY con A-n Coordinator-only de solo pruebas]
+  standing_rules: [comprobacion mecanica independiente de Scope antes de aceptar EXECUTION_VERIFIED en G3 y G4, puerta de PID en el ejecutor de controles]
+  g3_invariants: [INV-15, INV-17, INV-18, INV-19, INV-20, INV-21, INV-22, INV-23, INV-24, INV-25, INV-26, INV-27, INV-28]
+  return_to_coordinator_when: contrato de G3 listo para autorizacion; STOP; cambio material, de autoridad o de alcance; AUTONOMY_GAP
+  not_authorized: [G3 (hasta la autorizacion formal), G4]
   owner_escalation_conditions: OWNER-RESERVED; decision material del Owner; STOP que requiera al Owner; credenciales, autenticacion o compra; accion irreversible o destructiva
