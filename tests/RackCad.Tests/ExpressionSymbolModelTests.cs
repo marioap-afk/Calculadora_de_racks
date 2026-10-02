@@ -15,8 +15,9 @@ namespace RackCad.Tests
     ///
     /// <para>
     /// El núcleo no nombra ningún tipo de Project Variables: la relación <c>SymbolId → VariableType</c> vive en el
-    /// adaptador de G8 (P8.9). Aquí solo existe un namespace activo, <c>projectVariable</c>, y el ámbito <c>Rack</c> es
-    /// una reserva que solo usan entradas sintéticas de prueba (P25.4).
+    /// adaptador de G8 (P8.9). Los namespaces en memoria son <c>projectVariable</c> y <c>rack</c> (I-63 G3, D-16.1: el
+    /// segundo es de ID20, no persistible, y su tabla es distinta de la de tokens persistidos de D9); el ámbito <c>Rack</c>
+    /// es el de las entradas <c>rack</c> y de los consumidores de propiedad (P25.4, D-04).
     /// </para>
     /// </summary>
     public class ExpressionSymbolModelTests
@@ -26,23 +27,30 @@ namespace RackCad.Tests
         // ================================================================ namespaces e identidad (P3.2, P5.2)
 
         [Fact]
-        public void EL_UNICO_NAMESPACE_ACTIVO_ES_PROJECTVARIABLE_CON_TOKEN_ORDINAL()
+        public void LOS_NAMESPACES_EN_MEMORIA_SON_PROJECTVARIABLE_Y_RACK_CON_TOKEN_ORDINAL()
         {
-            Assert.Equal(new[] { SymbolNamespace.ProjectVariable }, SymbolNamespaces.All);
-            Assert.Equal(new[] { 1 }, Enum.GetValues<SymbolNamespace>().Select(value => (int)value));
+            // I-63 D-16.1: la tabla en memoria tiene projectVariable (1) y rack (2); project NO entra en el núcleo.
+            Assert.Equal(new[] { SymbolNamespace.ProjectVariable, (SymbolNamespace)2 }, SymbolNamespaces.All);
+            Assert.Equal(new[] { 1, 2 }, Enum.GetValues<SymbolNamespace>().Select(value => (int)value));
 
             Assert.Equal("projectVariable", SymbolNamespaces.Token(SymbolNamespace.ProjectVariable));
             Assert.True(SymbolNamespaces.TryParseToken("projectVariable", out var parsed));
             Assert.Equal(SymbolNamespace.ProjectVariable, parsed);
 
-            // rack y project quedan reservados conceptualmente para ID20: sin token, sin registro y sin resolución.
-            foreach (var token in new[] { "ProjectVariable", "projectvariable", "rack", "Rack", "project", "Project", "", " projectVariable" })
+            // rack es un token activo de la tabla en memoria, escrito explícitamente y nunca derivado de enum.ToString().
+            Assert.Equal("rack", SymbolNamespaces.Token((SymbolNamespace)2));
+            Assert.NotEqual(((SymbolNamespace)2).ToString(), SymbolNamespaces.Token((SymbolNamespace)2));
+            Assert.True(SymbolNamespaces.TryParseToken("rack", out var rack));
+            Assert.Equal((SymbolNamespace)2, rack);
+
+            // project sigue sin token, sin registro y sin resolución; los tokens se comparan en Ordinal.
+            foreach (var token in new[] { "ProjectVariable", "projectvariable", "Rack", "RACK", "project", "Project", "", " projectVariable", "rack " })
             {
                 Assert.False(SymbolNamespaces.TryParseToken(token, out _), "«" + token + "» no es un namespace activo");
             }
 
             Assert.False(SymbolNamespaces.TryParseToken(null, out _));
-            Assert.Throws<ArgumentOutOfRangeException>(() => SymbolNamespaces.Token((SymbolNamespace)2));
+            Assert.Throws<ArgumentOutOfRangeException>(() => SymbolNamespaces.Token((SymbolNamespace)3));
         }
 
         [Fact]
@@ -200,8 +208,10 @@ namespace RackCad.Tests
         [Fact]
         public void UN_NAMESPACE_NO_REGISTRADO_NO_CONSTRUYE_IDENTIDADES()
         {
-            Assert.ThrowsAny<ArgumentException>(() => new SymbolId((SymbolNamespace)2, Guid1));
+            // (SymbolNamespace)2 ya es rack (I-63 D-16.1): el siguiente valor sigue sin registrar.
+            Assert.ThrowsAny<ArgumentException>(() => new SymbolId((SymbolNamespace)3, Guid1));
             Assert.ThrowsAny<ArgumentException>(() => new SymbolId((SymbolNamespace)0, Guid1));
+            Assert.ThrowsAny<ArgumentException>(() => new SymbolId((SymbolNamespace)3, "frentes"));
         }
 
         /// <summary>P11.1: namespace en <c>Ordinal</c> y después la clave con el comparador de su namespace.</summary>
@@ -270,7 +280,8 @@ namespace RackCad.Tests
             Assert.ThrowsAny<ArgumentException>(() => SymbolDefinition.FromLiteral(double.NaN));
             Assert.ThrowsAny<ArgumentException>(() => SymbolDefinition.FromLiteral(double.PositiveInfinity));
             Assert.ThrowsAny<ArgumentException>(() => SymbolDefinition.FromExpression(null));
-            Assert.Equal(new[] { 1, 2 }, Enum.GetValues<SymbolDefinitionKind>().Select(value => (int)value));
+            // I-63 D-16.3: Computed (3) es una hoja sin valor, el caso reservado por P25.2.
+            Assert.Equal(new[] { 1, 2, 3 }, Enum.GetValues<SymbolDefinitionKind>().Select(value => (int)value));
         }
 
         // ================================================================ tabla (P3.6, P7.2)
