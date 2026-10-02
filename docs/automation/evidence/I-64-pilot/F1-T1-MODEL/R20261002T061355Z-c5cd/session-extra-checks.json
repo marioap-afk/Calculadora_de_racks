@@ -1,0 +1,18 @@
+{
+  "ExactCopy.Authorities": true,
+  "ExactCopy.AllowedWriteScope": true,
+  "ExactCopy.ForbiddenWriteScope": true,
+  "ExactCopy.Invariants": true,
+  "ExactCopy.RequiredTests": true,
+  "ExactCopy.ExpectedEvidence": true,
+  "ExactCopy.StopConditions": true,
+  "ExactCopy.Objective": true,
+  "CorrectionOfOk": true,
+  "TaskClass": "Depuración",
+  "RoutingRow": [
+    "DEBUGGING",
+    "Balanced"
+  ],
+  "TaskClassNotController": true,
+  "PromptProfileMatchesRow": true
+}

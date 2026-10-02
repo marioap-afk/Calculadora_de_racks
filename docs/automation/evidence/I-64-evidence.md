@@ -1135,3 +1135,88 @@ Sección nueva; las anteriores no se reescriben. Hechos de la sesión responsabl
 | Contador de la clase Ci | 1 al lanzar la corrección |
 
 `main` `819955d6`, Freeze `9b43dafb` (blob `dc1924ff`) intacto, `config.toml` sin cambio.
+
+## 24. F1-T1-MODEL — Corrección attempt 1: planificación, Worker, verificación REWORK (Ci) y STOP P-07
+
+Sección nueva; las anteriores no se reescriben. Hechos de la sesión responsable. Sin GATE PASS, F1 PASS ni ADR aceptado.
+
+**Planificación de corrección** (`R20261002T061355Z-c5cd`, 3 de 3; Codex `gpt-6-luna` / `high`, efectivo comprobado):
+- Delegación SHA-256 `EC4EACA2…D11027`. Contrato sin cambios (`A4D36818…`).
+- Attempt 1 y AttemptsRemaining 2. `CorrectionOf` = {`R20261002T011239Z-647e`, `Ci`, `b0ddc8de…98664`}.
+- Cadena: ChainBaseSha `e0587355`, ChainRedSha `36c344dc` y los 4 ChainRedFiles.
+- `TaskClass` «Depuración» (DEBUGGING, Balanced). Las siete colecciones y `Objective`, iguales byte a byte al contrato.
+- A1-A8: las ocho en pass. nc4 no aplica (README §10).
+
+**Aceptación formal del Coordinator** (chat, 2026-10-02): **ACCEPTED**.
+- La corrección exige un **RED nuevo**, porque modifica ChainRedFiles.
+- El RED anterior sigue siendo el de la emisión de la delegación.
+- Si Ci.RedPart y Tests.RedPart quedan en pass, el RED nuevo pasa a ser el vigente.
+
+**Worker de corrección** (`R20261002T062258Z-de0f`; agent() de workflow `wf_6903972a-b8d`, `sonnet` / `medium`):
+- Prompt: §G.1 + DEBUGGING + delta; 181 líneas; SHA-256 `15009B20…236115`. El texto entregado es igual al archivo: sin P-05.
+- Cesión 06:23:21Z → 06:32:11Z; 469750 ms; 23 llamadas de herramienta, 0 con error.
+- Efectivos `claude-sonnet-5-5` / `medium` en las 43 entradas de la transcripción (SHA-256 `61A10533…B22CCB3DA4E298`).
+- Commits:
+  - **RED nuevo** `189353f8df954b05cbbcdc0f15dca0cb3bf21002`:
+    - pruebas en `namespace RackCad.Tests` con clases `Workspace…Tests` (`SelectionContextTests.cs` → `WorkspaceSelectionContextTests.cs`);
+    - guarda de datos authored acotada, con mutaciones en memoria;
+    - comportamiento desactivado, con espacios de nombres de bloque.
+  - **GREEN** `b38e54f9f434fee7aa41ce6dcfd1804978afd619`: el comportamiento restaurado, sin tocar pruebas.
+- Diff `BaseSha..CurrentSha` = las 4 pruebas; `src` vuelve al estado de BaseSha. El ADR 0047 no cambia.
+- Entrega: `IMPLEMENTATION_COMPLETE`.
+- Relevo de entrada limpio: HEAD = remoto = `b38e54f9`; árbol limpio; `config.toml` sin cambio; sin participantes ni procesos no atribuibles. Un
+  `dotnet.exe` huérfano es servidor de compilación.
+
+**Hechos remotos:**
+
+| Corrida | SHA | Core | Build UI | UI Tests | Plugin | Filtro (TRX Core) |
+|---|---|---|---|---|---|---|
+| 36973700069 (RedRun) | `189353f8` | failure (29 fallidas, todas del filtro) | success | success | skipped | 51 seleccionadas, 22 pass, 29 fail por aserción |
+| 36973802008 (CurrentRun) | `b38e54f9` | **success** (12447/12447) | success | success | **failure** | 51/51 pass |
+
+Causa del fallo del Plugin:
+- El paso «Verify AutoCAD compile references» (`eng/ci/verify-autocad-references.ps1:113`, `-NoWarnings` sobre avisos MSB, CS, NU y NETSDK)
+  rechaza la build Release de la solución por **CS8632** en `tests/RackCad.Tests/Workspace/WorkspaceSelectionContextTests.cs(62,75)`.
+- Ahí, `string? id` está en un archivo sin `#nullable enable`. Hubo 0 errores de compilación.
+- El defecto viene del RED original `36c344dc` (misma línea). El job del Plugin quedó `skipped` mientras Core fallaba.
+
+**Verificación 2 de 4** (`R20261002T063546Z-0cd7`; Codex `gpt-6-luna` / `high`, efectivo comprobado):
+- Resultado: **EXECUTION_REWORK_REQUIRED / REWORK**, `FailureClass` **Ci**. Solo Ci en fail, con `RedPart` pass.
+- Tests en pass con `RedPart` pass; las otras 12 en pass. Coherencia del README §8 comprobada.
+- **RED nuevo acreditado:** `ChainRedSha` `189353f8`.
+- `ChainRedFiles` según 16.8, cálculo de la sesión: las 4 anteriores, incluida `SelectionContextTests.cs`, ∪ RT
+  (`WorkspaceHintDrainTests.cs`, `WorkspaceModelBoundaryTests.cs`, `WorkspaceSelectionContextTests.cs`, `WorkspaceSessionTests.cs`) = **5 rutas**.
+- Hallazgos de forma en la Evidence del Controller, sin efecto en el resultado:
+  - Tests dice «cuatro rutas» sin enumerar el conjunto;
+  - Scope menciona tres archivos de `src` que el diff no contiene;
+  - Identity cita el HEAD con dos caracteres omitidos.
+
+**STOP P-07.**
+- El REWORK está autorizado y es de la misma clase (Ci).
+- La siguiente corrección lleva `attempts` a 2 y el contador de Ci a 2; ambos están dentro de los topes (3).
+- La corrección exige volver a la planificación, y el tope de planificación está agotado (3 de 3). **No se lanza.**
+- **Análisis de la sesión** (no vincula):
+  - El arreglo es una línea `#nullable enable` en `WorkspaceSelectionContextTests.cs`, o quitar la anotación `?`.
+  - Toca ChainRedFiles, así que según 16.8 exige otra vez un RED (corrección desactivada + cambio de la prueba) y un GREEN.
+  - Como la `FailureClass` es la misma, 16.8 no exige un `analysis.md` nuevo (`AnalysisSha256` admite null).
+  - Para el siguiente paquete conviene un criterio verificable en local: la build Release del proyecto de pruebas sin avisos CS nuevos. Así se
+    detectaría lo que hoy solo ve el job del Plugin cuando Core está verde.
+  - **Lección propia:** el delta del Worker no exigía comprobar avisos en Release.
+
+**Presupuesto:**
+
+| Tipo | Uso |
+|---|---|
+| Planificación | 3 de 3 |
+| Trabajo | 2 de 4 |
+| Verificación | 2 de 4 |
+| `attempts` | 1 de 3 |
+| Contador de la clase Ci | 1 |
+
+**Custodia (16.12)** en `docs/automation/evidence/I-64-pilot/F1-T1-MODEL/`:
+- `R20261002T061355Z-c5cd/` (planificación y aceptación);
+- `R20261002T062258Z-de0f/` (prompt, entrega y registro);
+- `R20261002T063546Z-0cd7/` (prompt, verificación y registro).
+
+Los archivos escritos con CRLF en el área transitoria (`worker-handoff.json` y los `processes-*.json`) se normalizan a LF en el blob, que es la
+identidad duradera.

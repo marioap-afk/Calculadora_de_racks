@@ -1,0 +1,175 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F1-T1-MODEL",
+  "RunId": "R20261002T062258Z-de0f",
+  "DelegationRunId": "R20261002T061355Z-c5cd",
+  "Initiative": "I-64",
+  "Gate": "F1",
+  "Attempt": 1,
+  "BaseSha": "b2db5326924cd66def7a83628bc6102db50b80f2",
+  "RedSha": "189353f8df954b05cbbcdc0f15dca0cb3bf21002",
+  "CurrentSha": "b38e54f9f434fee7aa41ce6dcfd1804978afd619",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-workspace-persistente-rackcad",
+  "Pushed": true,
+  "FilesChanged": [
+    "tests/RackCad.Tests/Workspace/WorkspaceHintDrainTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceSelectionContextTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceSessionTests.cs"
+  ],
+  "WorkCompleted": "Correccion del REWORK Ci: las cuatro pruebas de la cadena declaran namespace RackCad.Tests con clases Workspace...Tests (SelectionContextTests renombrada a WorkspaceSelectionContextTests); la guarda de datos authored se acoto a autoridades concretas de persistencia/escritura y APIs prohibidas (sin el token suelto Registry) con mutaciones en memoria que demuestran cada familia y que WorkspaceSessionRegistry no se rechaza. RED nuevo: comportamiento desactivado en Application/Workspace con namespaces de bloque, 29 fallos por asercion y 22 guardas verdes (incluida NamespaceFolderGuardTests). GREEN: comportamiento restaurado sin tocar tests; contrato 51/51 y suite Core 12447/12447; build de UI Debug sin errores. ADR 0047 intacto.",
+  "TestsExecuted": [
+    {
+      "RunRef": "rel-contract",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.Workspace\"",
+      "Phase": "RELEVANT",
+      "TreeSha": "b2db5326924cd66def7a83628bc6102db50b80f2",
+      "ResultsFile": "artifacts/orchestration/I-64/F1-T1-MODEL/1/R20261002T062258Z-de0f/tests/rel-contract/rel-contract.trx"
+    },
+    {
+      "RunRef": "rel-guard",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~NamespaceFolderGuardTests\"",
+      "Phase": "RELEVANT",
+      "TreeSha": "b2db5326924cd66def7a83628bc6102db50b80f2",
+      "ResultsFile": "artifacts/orchestration/I-64/F1-T1-MODEL/1/R20261002T062258Z-de0f/tests/rel-guard/rel-guard.trx"
+    },
+    {
+      "RunRef": "red-commit",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.Workspace\"",
+      "Phase": "RED",
+      "TreeSha": "189353f8df954b05cbbcdc0f15dca0cb3bf21002",
+      "ResultsFile": "artifacts/orchestration/I-64/F1-T1-MODEL/1/R20261002T062258Z-de0f/tests/red-commit/red-commit.trx"
+    },
+    {
+      "RunRef": "red-guard",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --filter \"FullyQualifiedName~NamespaceFolderGuardTests\"",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F1-T1-MODEL/1/R20261002T062258Z-de0f/tests/red-guard/red-guard.trx"
+    },
+    {
+      "RunRef": "green-contract",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.Workspace\"",
+      "Phase": "GREEN",
+      "TreeSha": "b38e54f9f434fee7aa41ce6dcfd1804978afd619",
+      "ResultsFile": "artifacts/orchestration/I-64/F1-T1-MODEL/1/R20261002T062258Z-de0f/tests/green-contract/green-contract.trx"
+    },
+    {
+      "RunRef": "green-core",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Phase": "GREEN",
+      "TreeSha": "b38e54f9f434fee7aa41ce6dcfd1804978afd619",
+      "ResultsFile": "artifacts/orchestration/I-64/F1-T1-MODEL/1/R20261002T062258Z-de0f/tests/green-core/green-core.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "rel-contract",
+      "Selected": 37,
+      "Passed": 36,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.Workspace.WorkspaceModelBoundaryTests.ModelDoesNotPersistNorWriteAuthoredData"
+      ]
+    },
+    {
+      "RunRef": "rel-guard",
+      "Selected": 7,
+      "Passed": 6,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.NamespaceFolderGuardTests.TestProjects_KeepExactlyOneAssemblyRootNamespace"
+      ]
+    },
+    {
+      "RunRef": "red-commit",
+      "Selected": 51,
+      "Passed": 22,
+      "Failed": 29,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.WorkspaceSelectionContextTests.EqualContextsAreEqualSoTheSameSelectionDoesNotNavigate",
+        "RackCad.Tests.WorkspaceSessionTests.SameLiveDocumentInstanceYieldsTheSameSession",
+        "RackCad.Tests.WorkspaceSessionTests.DestroyedSessionDoesNotAcceptHintsOrContext",
+        "RackCad.Tests.WorkspaceHintDrainTests.HintsArrivingWhileBusyWaitAndDrainOnceConditionsHold(quiescent: True, modal: True, visible: True)",
+        "RackCad.Tests.WorkspaceHintDrainTests.SelectionHintsReadAndRecomputeWhileObjectHintsInvalidateAndMark",
+        "RackCad.Tests.WorkspaceSelectionContextTests.ABlankOrMissingIdIsNoIdentityAndNeverInventsARackId(id: \"\\t\\r\\n\")",
+        "RackCad.Tests.WorkspaceSessionTests.RequestFromTheSessionOfTheExecutingDocumentIsAccepted",
+        "RackCad.Tests.WorkspaceHintDrainTests.NHintsCoalesceIntoASingleDrain",
+        "RackCad.Tests.WorkspaceSelectionContextTests.ABlankOrMissingIdIsNoIdentityAndNeverInventsARackId(id: \"\")",
+        "RackCad.Tests.WorkspaceHintDrainTests.WithoutHintsThereIsNoWorkAtAnyQuiescence",
+        "RackCad.Tests.WorkspaceSelectionContextTests.ABlankOrMissingIdIsNoIdentityAndNeverInventsARackId(id: null)",
+        "RackCad.Tests.WorkspaceHintDrainTests.HintsAreQueuedAndNeverChangeTheContext",
+        "RackCad.Tests.WorkspaceSessionTests.RequestOfADestroyedSessionIsRejectedEvenIfTheNativeIdIsRecycled",
+        "RackCad.Tests.WorkspaceSessionTests.RequestBornInAExecutedWithBActiveIsRejectedWithoutEffects",
+        "RackCad.Tests.WorkspaceHintDrainTests.HintsArrivingWhileBusyWaitAndDrainOnceConditionsHold(quiescent: False, modal: True, visible: True)",
+        "RackCad.Tests.WorkspaceSelectionContextTests.SeveralReferencesOfTheSameRackAreStillOne",
+        "RackCad.Tests.WorkspaceSelectionContextTests.RacksPlusNonRackEntitiesCountBothSeparately",
+        "RackCad.Tests.WorkspaceSelectionContextTests.SeveralRacksAreASelectionWithTheirCount",
+        "RackCad.Tests.WorkspaceSelectionContextTests.ApplyingAnEqualContextIsNotAChange",
+        "RackCad.Tests.WorkspaceHintDrainTests.HintsArrivingWhileBusyWaitAndDrainOnceConditionsHold(quiescent: True, modal: False, visible: False)",
+        "RackCad.Tests.WorkspaceHintDrainTests.HintsKeepArrivingDuringAModalWithoutBeingDrained",
+        "RackCad.Tests.WorkspaceHintDrainTests.HintsArrivingWhileBusyWaitAndDrainOnceConditionsHold(quiescent: False, modal: False, visible: True)",
+        "RackCad.Tests.WorkspaceSessionTests.TwoOpenInstancesGiveTwoIndependentSessions",
+        "RackCad.Tests.WorkspaceHintDrainTests.DrainOnlyRunsTheOperationsAllowedInF1",
+        "RackCad.Tests.WorkspaceSessionTests.DestroyedSessionIsRetiredAndRecycledNativeIdGetsAFreshEmptySession",
+        "RackCad.Tests.WorkspaceSelectionContextTests.OneInterpretableReferenceWithAnIdIsOneWithThatId",
+        "RackCad.Tests.WorkspaceSelectionContextTests.AnUnreadableDefinitionIsADiagnosticEvenIfProbingAttributesAnId",
+        "RackCad.Tests.WorkspaceHintDrainTests.HintsOfOneSessionNeverReachAnother",
+        "RackCad.Tests.WorkspaceSelectionContextTests.ABlankOrMissingIdIsNoIdentityAndNeverInventsARackId(id: \"   \")"
+      ]
+    },
+    {
+      "RunRef": "red-guard",
+      "Selected": 7,
+      "Passed": 7,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-contract",
+      "Selected": 51,
+      "Passed": 51,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-core",
+      "Selected": 12447,
+      "Passed": 12447,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    }
+  ],
+  "Evidence": [
+    "Fallos baseline reproducidos: ModelDoesNotPersistNorWriteAuthoredData (token Registry sobre WorkspaceSessionRegistry) y TestProjects_KeepExactlyOneAssemblyRootNamespace (namespace RackCad.Tests.Workspace).",
+    "Todos los fallos del RED son Assert.* (True/Equal/NotEqual/Same/Contains); sin NotImplementedException ni error de compilacion.",
+    "red-guard corrido con --no-build sobre el arbol RED (mismo contenido que el commit RED): 7/7 pasan.",
+    "dotnet build src/RackCad.UI/RackCad.UI.csproj -c Debug: 0 errores, 0 advertencias."
+  ],
+  "UnexpectedFindings": [
+    "El esqueleto RED de 36c344dc usaba namespaces file-scoped, lo que habria hecho fallar EveryProductionFile_DeclaresExactlyOneBlockScopedNamespace; el RED nuevo usa namespaces de bloque."
+  ],
+  "KnownLimitations": [
+    "S-01 (Owner Validation) y S-10 (AutoCAD) son frontera y no se cruzan.",
+    "red-guard (TreeSha null) se corrio con --no-build sobre el arbol del RED antes del commit."
+  ],
+  "Deviations": [],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "Controller: verificar CI exacta del CurrentSha y la acreditacion del RED nuevo.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "medium",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}
