@@ -223,14 +223,185 @@ namespace RackCad.Application.ComputedParameters
                 throw new ArgumentNullException(nameof(input));
             }
 
-            // Esqueleto del RED: una poblacion vacia y sin acreditar; no anota la evaluacion.
-            var unavailable = MetricValue.Unavailable(UnavailableReason.Of(UnavailableReasonKind.CoverageNotAccredited));
-            return new ProjectPopulation(
-                new List<PopulationRack>(),
-                new List<PopulationDiagnostic>(),
-                false,
-                unavailable,
-                SystemOrder.Select(token => new SystemRackCount(token, unavailable)).ToList());
+            RackPopulationEvaluationCounter.Record();
+            var reader = designReader ?? new RackMetricDesignReader();
+            var diagnostics = new List<PopulationDiagnostic>();
+
+            // D-11.4: orden canonico por DefinitionKey (Ordinal) ANTES de E3, E4, E5 y E6.
+            var projections = RackMetricDefinitionProjection.CanonicalOrder(input.Definitions)
+                .Select(RackMetricDefinitionProjection.Project)
+                .ToList();
+
+            // E1: una definicion colocada sin identidad deja la cobertura sin acreditar; sin colocar se ignora.
+            var coverageGap = false;
+            foreach (var projection in projections.Where(item => !item.HasIdentity && item.DirectReferenceCount > 0))
+            {
+                coverageGap = true;
+                diagnostics.Add(new PopulationDiagnostic(
+                    PopulationDiagnosticCode.PlacedDefinitionWithoutIdentity,
+                    null,
+                    projection.DefinitionKey,
+                    projection.Classification.ToString()));
+            }
+
+            // D-11.1: igualdad de RackId OrdinalIgnoreCase. D-11.3: hermanas colocadas o no.
+            var groups = projections
+                .Where(item => item.HasIdentity)
+                .GroupBy(item => item.RackId, StringComparer.OrdinalIgnoreCase)
+                .Select(group => group.ToList())
+                .OrderBy(CanonicalSpelling, StringComparer.Ordinal)
+                .ToList();
+
+            var racks = groups
+                .Select(members => EvaluateRack(members, input.Catalog, reader, diagnostics))
+                .ToList();
+
+            var accredited = !coverageGap
+                             && racks.All(rack => rack.Membership.Kind != RackMembershipKind.Undetermined);
+
+            var included = racks.Where(rack => rack.Membership.Kind == RackMembershipKind.Included).ToList();
+
+            var totalRacks = accredited
+                ? MetricValue.Available(included.Count)
+                : MetricValue.Unavailable(UnavailableReason.Of(UnavailableReasonKind.CoverageNotAccredited));
+
+            var rackCounts = SystemOrder
+                .Select(token => new SystemRackCount(
+                    token,
+                    accredited
+                        ? MetricValue.Available(included.Count(
+                            rack => string.Equals(rack.KindToken, token, StringComparison.Ordinal)))
+                        : MetricValue.Unavailable(UnavailableReason.Of(UnavailableReasonKind.CoverageNotAccredited))))
+                .ToList();
+
+            var orderedDiagnostics = diagnostics
+                .OrderBy(item => (int)item.Code)
+                .ThenBy(item => item.DefinitionKey ?? string.Empty, StringComparer.Ordinal)
+                .ThenBy(item => item.RackId ?? string.Empty, StringComparer.Ordinal)
+                .ToList();
+
+            return new ProjectPopulation(racks, orderedDiagnostics, accredited, totalRacks, rackCounts);
+        }
+
+        /// <summary>D-11.2: la grafia canonica de un grupo es la minima en Ordinal de las observadas.</summary>
+        private static string CanonicalSpelling(IReadOnlyList<RackMetricDefinitionProjection> members)
+            => members.Select(member => member.RackId).OrderBy(spelling => spelling, StringComparer.Ordinal).First();
+
+        /// <summary>D-10, E2..E6 en el orden congelado; la primera condicion que decide gana.</summary>
+        private static PopulationRack EvaluateRack(
+            IReadOnlyList<RackMetricDefinitionProjection> members,
+            RackCatalogInput catalog,
+            IRackMetricDesignReader reader,
+            List<PopulationDiagnostic> diagnostics)
+        {
+            var rackId = CanonicalSpelling(members);
+            var keys = members.Select(member => member.DefinitionKey).ToList();
+
+            // D-11.6: primer Name no vacio en orden canonico, con Trim().
+            var displayName = members
+                .Select(member => member.Envelope?.Name)
+                .FirstOrDefault(name => !string.IsNullOrWhiteSpace(name))
+                ?.Trim();
+
+            var kindFailure = RackMetricRequest.ClassifyKind(members, out var coherentKind);
+            var kindToken = kindFailure == UnavailableReasonKind.KindUnknown ? members[0].KindToken : coherentKind;
+
+            // La vista que aprobo E4; queda nula mientras E4 no haya decidido.
+            string representative = null;
+
+            PopulationRack Result(RackMembership membership)
+                => new PopulationRack(rackId, kindToken, displayName, membership, representative, keys);
+
+            PopulationRack Excluded(RackExclusionReason reason)
+            {
+                if (reason != RackExclusionReason.NotPlaced)
+                {
+                    diagnostics.Add(new PopulationDiagnostic(
+                        PopulationDiagnosticCode.RackExcluded, rackId, keys[0], reason.ToString()));
+                }
+
+                return Result(RackMembership.Excluded(reason));
+            }
+
+            PopulationRack Undetermined(RackUndeterminedReason reason)
+            {
+                diagnostics.Add(new PopulationDiagnostic(
+                    PopulationDiagnosticCode.RackUndetermined, rackId, keys[0], reason.ToString()));
+                return Result(RackMembership.Undetermined(reason));
+            }
+
+            // E2: colocado, con alguna hermana con DirectReferenceCount > 0.
+            if (!members.Any(member => member.DirectReferenceCount > 0))
+            {
+                return Excluded(RackExclusionReason.NotPlaced);
+            }
+
+            // E3: kind coherente.
+            switch (kindFailure)
+            {
+                case UnavailableReasonKind.KindAbsent:
+                    return Excluded(RackExclusionReason.KindAbsent);
+
+                case UnavailableReasonKind.KindUnknown:
+                    return Excluded(RackExclusionReason.KindUnknown);
+
+                case UnavailableReasonKind.KindIncoherent:
+                    return Undetermined(RackUndeterminedReason.KindIncoherent);
+            }
+
+            // E5: diseno legible para CADA hermana (D-26).
+            foreach (var member in members)
+            {
+                if (!reader.IsReadable(coherentKind, member.Envelope.Design))
+                {
+                    return Undetermined(RackUndeterminedReason.DesignUnreadable);
+                }
+            }
+
+            // E4: autoridad authored sobre la entrada tipada, en orden canonico.
+            var entries = members
+                .Select(member => ProjectVariableScanProjection.Project(
+                    member.DefinitionKey, member.Envelope, member.DirectReferenceCount))
+                .ToList();
+
+            var authority = BomAuthoredAuthority.Resolve(rackId, entries);
+            if (!authority.IsSuccess)
+            {
+                return authority.Outcome == BomAuthorityOutcome.DivergentSiblings
+                    ? Excluded(RackExclusionReason.SiblingsDivergent)
+                    : Undetermined(RackUndeterminedReason.DesignUnreadable);
+            }
+
+            // E6: el veredicto de salida, sobre el diseno del representante.
+            representative = authority.RepresentativeDefinitionId;
+            var representativeView = members.First(member => member.DefinitionKey == representative);
+            var verdict = RackOutputVerdict.Evaluate(coherentKind, representativeView.Envelope.Design, catalog);
+            switch (verdict.Kind)
+            {
+                case RackOutputVerdictKind.Deny:
+                    return Excluded(RackExclusionReason.OutputDenied);
+
+                case RackOutputVerdictKind.Undetermined:
+                    return Undetermined(MapUndetermined(verdict.UndeterminedReason.Value));
+
+                default:
+                    return Result(RackMembership.Included);
+            }
+        }
+
+        private static RackUndeterminedReason MapUndetermined(RackOutputUndeterminedReason reason)
+        {
+            switch (reason)
+            {
+                case RackOutputUndeterminedReason.DesignUnreadable:
+                    return RackUndeterminedReason.DesignUnreadable;
+
+                case RackOutputUndeterminedReason.CatalogUnavailable:
+                    return RackUndeterminedReason.CatalogUnavailable;
+
+                default:
+                    return RackUndeterminedReason.ResolveFailed;
+            }
         }
     }
 }

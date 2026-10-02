@@ -64,13 +64,78 @@ namespace RackCad.Application.ComputedParameters
                 throw new ArgumentNullException(nameof(population));
             }
 
-            // Esqueleto del RED: los seis sistemas, pero sin agregar nada.
+            var metrics = rackMetrics ?? new Dictionary<string, RackMetricResults>();
             var bySystem = ProjectPopulation.SystemOrder
-                .Select(token => new SystemAggregate(
-                    token, MetricValue.NotSupported(), MetricValue.NotSupported(), MetricValue.NotSupported()))
+                .Select(token => AggregateSystem(population, token, metrics))
                 .ToList();
 
             return new ProjectPopulationAggregates(population.TotalRacks, bySystem);
+        }
+
+        private static SystemAggregate AggregateSystem(
+            ProjectPopulation population, string kindToken, IReadOnlyDictionary<string, RackMetricResults> metrics)
+        {
+            var rackCount = population.RackCountBySystem
+                .First(item => string.Equals(item.KindToken, kindToken, StringComparison.Ordinal))
+                .RackCount;
+
+            switch (kindToken)
+            {
+                case RackEmbedDocument.KindSelective:
+                    return new SystemAggregate(
+                        kindToken,
+                        rackCount,
+                        Sum(population, kindToken, metrics, RackMetricIds.Frentes),
+                        Sum(population, kindToken, metrics, RackMetricIds.FrentesVacios));
+
+                case RackEmbedDocument.KindCabecera:
+                case RackEmbedDocument.KindCama:
+                    return new SystemAggregate(
+                        kindToken, rackCount, MetricValue.NotApplicable(), MetricValue.NotApplicable());
+
+                default:
+                    return new SystemAggregate(
+                        kindToken, rackCount, MetricValue.NotSupported(), MetricValue.NotSupported());
+            }
+        }
+
+        /// <summary>Suma de una metrica por rack de los incluidos del sistema; nunca parcial (INV-08).</summary>
+        private static MetricValue Sum(
+            ProjectPopulation population,
+            string kindToken,
+            IReadOnlyDictionary<string, RackMetricResults> metrics,
+            MetricId metric)
+        {
+            if (!population.CoverageAccredited)
+            {
+                return MetricValue.Unavailable(UnavailableReason.Of(UnavailableReasonKind.CoverageNotAccredited));
+            }
+
+            var members = population.Racks
+                .Where(rack => rack.Membership.Kind == RackMembershipKind.Included
+                               && string.Equals(rack.KindToken, kindToken, StringComparison.Ordinal))
+                .ToList();
+
+            var total = 0.0;
+            var failed = new List<string>();
+            foreach (var rack in members)
+            {
+                if (metrics.TryGetValue(rack.RackId, out var results)
+                    && results != null
+                    && results.TryGet(metric, out var value)
+                    && value.Status == MetricStatus.Available)
+                {
+                    total += value.Value;
+                }
+                else
+                {
+                    failed.Add(rack.RackId);
+                }
+            }
+
+            return failed.Count == 0
+                ? MetricValue.Available(total)
+                : MetricValue.Unavailable(UnavailableReason.MemberMetricUnavailable(failed));
         }
     }
 }

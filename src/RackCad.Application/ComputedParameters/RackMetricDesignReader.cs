@@ -39,7 +39,15 @@ namespace RackCad.Application.ComputedParameters
     public sealed class RackMetricDesignReader : IRackMetricDesignReader
     {
         /// <summary>Las seis filas de D-26, en el orden de los seis kinds (INV-35).</summary>
-        public static IReadOnlyList<DesignPresenceRow> PresenceRows { get; } = new DesignPresenceRow[0];
+        public static IReadOnlyList<DesignPresenceRow> PresenceRows { get; } = new[]
+        {
+            new DesignPresenceRow(RackEmbedDocument.KindSelective, new[] { "SelectivePalletDesignStore" }),
+            new DesignPresenceRow(RackEmbedDocument.KindDynamic, new[] { "DynamicDesign", "DynamicSystem" }),
+            new DesignPresenceRow(RackEmbedDocument.KindPushBack, new[] { "PushBackDesign" }),
+            new DesignPresenceRow(RackEmbedDocument.KindCantilever, new[] { "CantileverLineDesign" }),
+            new DesignPresenceRow(RackEmbedDocument.KindCabecera, new[] { "Header" }),
+            new DesignPresenceRow(RackEmbedDocument.KindCama, new[] { "FlowBedConfigurationStore" }),
+        };
 
         public bool IsReadable(string kindToken, string designJson)
         {

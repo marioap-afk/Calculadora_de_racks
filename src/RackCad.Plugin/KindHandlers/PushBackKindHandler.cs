@@ -2,6 +2,7 @@ using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application.Bom;
 using RackCad.Application.Catalogs;
+using RackCad.Application.ComputedParameters;
 using RackCad.Application.Persistence;
 using RackCad.Application.Systems.PushBack;
 using RackCad.Domain.Systems.PushBack;
@@ -52,25 +53,16 @@ namespace RackCad.Plugin.KindHandlers
         /// <summary>
         /// I-42 (A1C/H11) — el motivo por el que este Push Back no puede cotizarse, si lo hay. Lo decide
         /// <see cref="RackBomOutputGate"/> sobre los MISMOS diagnosticos que bloquean los botones del editor.
+        ///
+        /// <para>
+        /// I-63 D-27 — la composicion de la puerta vive en UN solo sitio, <see cref="RackOutputVerdict"/>, que
+        /// resuelve el diseno con el resolver de Push Back y toma <c>RackBomOutputGate.For(system).Reason</c>.
+        /// Este metodo ya no compone nada: delega en la via del handler de esa funcion, que normaliza el catalogo
+        /// nulo a un catalogo vacio y conserva el <i>fail-open</i> (ilegible o indeterminado: <c>null</c>).
+        /// </para>
         /// </summary>
         public string OutputBlockedReason(RackEmbedDocument embed, RackCatalog catalog)
-        {
-            try
-            {
-                var project = new RackProjectStore().Deserialize(embed?.Design);
-                if (project?.PushBackDesign == null)
-                {
-                    return null;   // ilegible: lo reporta el camino del BOM, no esta puerta
-                }
-
-                var system = new PushBackResolver(catalog).Resolve(project.PushBackDesign);
-                return RackBomOutputGate.For(system).Reason;
-            }
-            catch (System.Exception)
-            {
-                return null;   // ilegible: mismo criterio
-            }
-        }
+            => RackOutputVerdict.HandlerBlockedReason(Kind, embed?.Design, catalog);
 
         public RestampResult RestampDesign(string designJson, string newId, string copyName) => RestampResult.Success(designJson);
     }

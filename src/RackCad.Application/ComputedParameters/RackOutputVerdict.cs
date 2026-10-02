@@ -81,8 +81,41 @@ namespace RackCad.Application.ComputedParameters
                 throw new ArgumentNullException(nameof(catalog));
             }
 
-            // Esqueleto del RED: aun no compone la puerta de salida.
-            return RackOutputDecision.Allow;
+            if (!string.Equals(kindToken, RackEmbedDocument.KindPushBack, StringComparison.Ordinal))
+            {
+                return RackOutputDecision.Allow;
+            }
+
+            RackProject project;
+            try
+            {
+                project = new RackProjectStore().Deserialize(designJson);
+            }
+            catch (Exception)
+            {
+                return RackOutputDecision.Undetermined(RackOutputUndeterminedReason.DesignUnreadable);
+            }
+
+            if (project?.PushBackDesign == null)
+            {
+                return RackOutputDecision.Undetermined(RackOutputUndeterminedReason.DesignUnreadable);
+            }
+
+            if (!catalog.IsLoaded)
+            {
+                return RackOutputDecision.Undetermined(RackOutputUndeterminedReason.CatalogUnavailable);
+            }
+
+            try
+            {
+                var system = new PushBackResolver(catalog.Catalog).Resolve(project.PushBackDesign);
+                var reason = RackBomOutputGate.For(system).Reason;
+                return reason == null ? RackOutputDecision.Allow : RackOutputDecision.Deny(reason);
+            }
+            catch (Exception)
+            {
+                return RackOutputDecision.Undetermined(RackOutputUndeterminedReason.ResolveFailed);
+            }
         }
 
         /// <summary>
@@ -92,8 +125,8 @@ namespace RackCad.Application.ComputedParameters
         /// </summary>
         public static string HandlerBlockedReason(string kindToken, string designJson, RackCatalog catalog)
         {
-            // Esqueleto del RED: aun no normaliza ni corresponde el veredicto.
-            return null;
+            var decision = Evaluate(kindToken, designJson, RackCatalogInput.Loaded(catalog ?? new RackCatalog()));
+            return decision.Kind == RackOutputVerdictKind.Deny ? decision.DenyReason : null;
         }
     }
 }

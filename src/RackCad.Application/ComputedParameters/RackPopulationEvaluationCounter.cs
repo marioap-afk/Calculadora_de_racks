@@ -36,7 +36,10 @@ namespace RackCad.Application.ComputedParameters
         /// <summary>Anota UNA evaluacion de poblacion en el ambito activo y en los que lo contienen.</summary>
         internal static void Record()
         {
-            // Esqueleto del RED: aun no anota evaluaciones.
+            for (var counter = Current.Value; counter != null; counter = counter._parent)
+            {
+                Interlocked.Increment(ref counter._count);
+            }
         }
 
         public void Dispose()
