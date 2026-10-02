@@ -1,0 +1,442 @@
+{
+  "Schema": "rackcad-architect-review-result/v1",
+  "ResultId": "A62-V10-REVIEW-I20261002T010757Z-ef59",
+  "LogicalReviewRequestId": "L20261002T010757Z-ef59",
+  "InvocationId": "I20261002T010757Z-ef59",
+  "AttemptSeq": 1,
+  "RequestedRole": "ARCHITECT",
+  "Action": "REVIEW_DESIGN",
+  "ReviewedUnit": "I-62",
+  "ReviewedCommit": "41ded86e6494e3d43e07ce97de9eedf4710a631f",
+  "ReviewedPath": "docs/initiatives/I-62-proposal-v10.md",
+  "ReviewedBlob": "58f88fc602d0d4eaf3900a3514259da6b94faba2",
+  "PackagePath": "docs/initiatives/I-62-architect-package-v10.md",
+  "PackageBlob": "4d9df7edb94d44633361621623a8eb33131d87d2",
+  "ReviewerBinding": "UNKNOWN: la orden autoriza esta invocación acotada; no proporciona un BindingRef contractual.",
+  "ReviewerDeclaredIdentity": {
+    "Runtime": "Codex, según las instrucciones visibles; declaración informativa",
+    "Model": "UNKNOWN",
+    "Effort": "UNKNOWN",
+    "SessionOrThread": "UNKNOWN",
+    "Source": "Contexto visible del revisor. No acredita identidad observada; esta corresponde al invocador y a RuntimeEvidenceRef."
+  },
+  "ReviewerMode": "SEPARATE SESSION",
+  "ReviewerAndAuthorSamePerson": "La orden declara sesiones IA distintas: autor Claude y revisor Codex. La identidad y posible coincidencia de los operadores humanos es UNKNOWN.",
+  "InjectedContextDeclaration": [
+    "Instrucciones de sistema: asistente accesible por API, canales, formato JSON experimental de rackcad-architect-review-result/v1 y preferencia de concisión.",
+    "Instrucciones globales del desarrollador: comportamiento de Codex, autonomía, comunicación, autorización, estilo, herramientas, archivos, Git, pruebas, skills, apps y plugins.",
+    "Definiciones de herramientas: functions.exec y herramientas anidadas, reloj, generación de imágenes, web y colaboración. Solo se utilizaron functions.exec y exec_command para acciones de lectura permitidas.",
+    "Catálogo de skills y sus ubicaciones externas al clon. Ningún SKILL.md fue abierto.",
+    "Restricciones del entorno: sandbox de solo lectura, red restringida, aprobación nunca y modo de colaboración Default.",
+    "Configuración multiagente: rol /root, herramientas de colaboración y prohibición de delegación proactiva. No se invocó ningún agente adicional.",
+    "AGENTS.md completo inyectado por el usuario; también se leyó AGENTS.md del clon autorizado.",
+    "Environment context: D:\\r62-arch-v10, PowerShell, fecha declarada 2026-10-01, zona America/Mexico_City y permisos de lectura del workspace.",
+    "Orden del usuario y del Owner: objeto exacto, identificadores, cierre permitido, hallazgos abiertos, alcance, límites y declaración de proceso separado sin transcripción ni memoria privada del autor.",
+    "Resultados de herramientas obtenidos exclusivamente de rutas del cierre y comandos Git permitidos. Los registros históricos de revisiones son insumos canónicos, no memoria privada de la sesión autora.",
+    "OWNER DECISION ON AGENTS.md `dotnet test`\nFor THIS Architect review only, I explicitly authorize an exception to AGENTS.md \"Leer primero\" step 4:\nDO NOT execute `dotnet test` from the Architect invocation.\nReason:\n\n* the Architect is intentionally executed in a read-only sandbox;\n* this action is an architectural/document review, not a product-validation gate;\n* `dotnet test` may create local build/test artifacts and conflicts with the intended read-only isolation;\n* publication health of the exact reviewed SHA is already independently recorded by CI run 36948649343.\n\nIMPORTANT:\nThe CI evidence is NOT declared equivalent to, or a substitute for, Core local evidence.\nAGENTS explicitly distinguishes local Core and CI Core as separate evidence classes.\nThis Owner decision is a narrowly scoped exception to the initial-read command for this Architect invocation only.\nIt does not:\n\n* change AGENTS;\n* establish a reusable CI-for-local substitution;\n* change Candidate requirements;\n* change gate test requirements;\n* apply to implementation, Controller, Worker, Candidato or closure validation."
+  ],
+  "InputsRead": [
+    "AGENTS.md",
+    "docs/HANDOFF.md",
+    "README.md",
+    "docs/ARCHITECTURE.md",
+    "docs/context-packs/README.md",
+    "docs/context-packs/documentation-governance.md",
+    "docs/ROADMAP.md",
+    "docs/FOUNDATIONS.md",
+    "docs/initiatives/README.md",
+    "docs/initiatives/PROMPT_TEMPLATES.md",
+    "docs/initiatives/I-62-proposal-v10.md",
+    "docs/initiatives/I-62-architect-package-v10.md",
+    "docs/initiatives/I-62-architect-review-v9-disposition.md",
+    "docs/initiatives/I-62-architect-review-v9.md",
+    "docs/automation/evidence/I-62-architect-v9/R20261002T000511Z-ba10/output.json",
+    "docs/automation/evidence/I-62-architect-v9/R20261002T000511Z-ba10/README.md",
+    "docs/initiatives/I-62-proposal-v9.md",
+    "docs/initiatives/I-62-architect-package-v9.md",
+    "docs/initiatives/I-62-coordinator-requirement-auto.md",
+    "docs/initiatives/I-62-architect-review-v6.md",
+    "docs/initiatives/I-62-architect-review-v7.md",
+    "docs/initiatives/I-62-coordinator-review-v1.md",
+    "docs/initiatives/I-62-coordinator-review-v2.md",
+    "docs/initiatives/I-62-coordinator-review-v3.md",
+    "docs/initiatives/I-62-coordinator-review-v4.md",
+    "docs/initiatives/I-62-coordinator-review-v5.md",
+    "docs/initiatives/I-62-discovery.md",
+    "docs/automation/decisions/I-62-owner-mandate.txt",
+    "docs/initiatives/I-62-portabilidad-coordinador-principal.md",
+    "docs/automation/decisions/I-62.md",
+    "docs/automation/evidence/I-62-evidence.md",
+    "docs/automation/state/I-62.yml",
+    "docs/INITIATIVE_LIFECYCLE.md",
+    "docs/WORKFLOW.md",
+    "docs/AUTOMATION_PLAN.md",
+    "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md",
+    "docs/initiatives/I-61-proposal-v9.md",
+    "docs/automation/agent-execution/README.md",
+    "docs/automation/agent-execution/model-catalog.md",
+    "docs/automation/agent-execution/prompting-guide.md",
+    "docs/automation/agent-execution/routing.md",
+    "docs/automation/agent-execution/schemas/controller-verification.schema.json",
+    "docs/automation/agent-execution/schemas/delegation.schema.json",
+    "docs/automation/agent-execution/schemas/gate-contract.schema.json",
+    "docs/automation/agent-execution/schemas/relay-record.schema.json",
+    "docs/automation/agent-execution/schemas/worker-handoff.schema.json"
+  ],
+  "IndependenceEvidence": "Objeto y paquete verificados mediante git rev-parse antes de revisar y nuevamente al terminar. HEAD coincide con el commit exigido, permanece desacoplado y git status --porcelain estuvo vacío al inicio y al final. Todas las lecturas ejecutadas pertenecen al cierre autorizado. No se abrió transcripción ni memoria privada del autor; las revisiones históricas leídas están expresamente incluidas como insumos canónicos. La separación de proceso/sesión y el runtime son declaraciones de la orden, pendientes de acreditación mediante evidencia observada del invocador. No se decide ni se afirma cumplimiento de una alternativa de OD-6.",
+  "Verdict": "CHANGES REQUIRED",
+  "RequiredFindings": [
+    {
+      "FindingId": "A62-V10-01",
+      "LineageId": "NEW",
+      "Source": "Revisión completa de V10 contra AGENTS.md, AUTOMATION_PLAN §16.9, ADR-0046 y la excepción literal del Owner.",
+      "AffectedSection": "Proposal V10 §20.3.1, regla propuesta para §16, líneas 1080–1083; paquete V10 §0; obligación C-41 relacionada.",
+      "Evidence": "V10 dice que el invocador aporta «la evidencia equivalente, que es la CI exacta del Target» y presenta al Controller de I-61 como precedente de verificar con CI en lugar de ejecutar pruebas. AGENTS.md establece que Core local y Core del CI son clases distintas sin sustitución permitida; AUTOMATION_PLAN §16.9 y ADR-0046 separan la verificación del Controller de la evidencia exigida para los gates. La orden del Owner exime una acción inicial exclusivamente para esta invocación y niega explícitamente la equivalencia CI/Core local.",
+      "WhyItMatters": "La resolución correcta de una incompatibilidad de permisos queda formulada como equivalencia entre clases de evidencia. Esa formulación podría propagarse a futuras invocaciones y reducir indebidamente exigencias locales, de gate o de Candidato.",
+      "CorrectionRequired": "Reemplazar la equivalencia y el precedente de sustitución por una exención explícita, acotada y autorizada de la acción inicial incompatible. Mantener la CI exacta como insumo separado sobre salud de publicación. La regla futura bajo OD-1 debe declarar que no sustituye ninguna clase de evidencia de gate, Candidato o cierre. Alinear paquete y C-41, con un caso que permita la revisión autorizada en solo lectura y preserve íntegramente las obligaciones locales independientes."
+    },
+    {
+      "FindingId": "A62-V10-02",
+      "LineageId": "A62-V9-04",
+      "Source": "Residuo de A62-V9-04 detectado mediante contraejemplo de una segunda solicitud autorizada sobre el mismo objeto.",
+      "AffectedSection": "Proposal V10 §20.6, identidades y presupuestos, especialmente líneas 1249 y 1295–1296; B.8.8, I-S18, línea 1854.",
+      "Evidence": "§20.6 admite una segunda LogicalReviewRequestId sobre la misma versión tras una decisión autorizante y define logical_requests para incluirla. Sin embargo, afirma que review_rounds = logical_requests siempre; I-S18 exige esa igualdad. Contraejemplo permitido: solicitud L1 sobre X termina BLOCKED_OWNER; una decisión autoriza L2 sobre el mismo X. Al reservar L2 hay una versión revisada y dos solicitudes, dentro de los topes propuestos, pero la igualdad rechaza el estado.",
+      "WhyItMatters": "El protocolo prohíbe mediante su validador una recuperación que él mismo autoriza, o fuerza a contar una versión inexistente. Las identidades separadas no producen una contabilidad consistente.",
+      "CorrectionRequired": "Definir por separado review_rounds como número de objetos exactos/versiones con intento reservado y logical_requests como número de solicitudes distintas con intento reservado. Eliminar la igualdad de §20.6 e I-S18; conservar los topes independientes y la agregación de reejecuciones por solicitud. Añadir un positivo completo para L1 y L2 sobre X, seguido de L3 sobre X2, con contadores 1/2 y luego 2/3, y negativos por agotamiento de cada tope."
+    },
+    {
+      "FindingId": "A62-V10-03",
+      "LineageId": "A62-V9-01",
+      "Source": "Residuo de A62-V9-01 detectado al comprobar la materialización contra el cierre ARCHITECT_SATISFIED de F.8.",
+      "AffectedSection": "Proposal V10 §20.5.1, Validity, línea 1202; B.2, AuthorizationRef, línea 1506; B.8.8, I-S18, líneas 1849–1857; F.8, cierre del bucle.",
+      "Evidence": "Validity termina en ARCHITECT_SATISFIED, agotamiento, revocación o caducidad. B.2 invalida un binding materializado si su autorización está revocada o caducada en el punto durable; I-S18 exige para todo binding materializado una autorización vigente en ese punto. F.8 debe publicar ARCHITECT_SATISFIED usando el resultado del binding autorizado. Ese cierre termina la autorización y deja incompatible el requisito de vigencia actual del mismo binding que acredita el cierre. Una caducidad o revocación posterior también puede invalidar estados que conservan intentos y resultados históricos.",
+      "WhyItMatters": "La autoridad para lanzar trabajo nuevo se confunde con la validez de evidencia ya producida bajo autorización. El bucle puede fallar precisamente al cerrarse o al reconstruirse posteriormente por un sucesor.",
+      "CorrectionRequired": "Separar vigencia para nuevas materializaciones/reservas/lanzamientos de aceptación histórica del binding y del resultado. Custodiar la autorización y comprobación válidas en el punto de materialización, con identidad temporal verificable y sin ciclos. El fin de vigencia debe impedir acciones nuevas sin invalidar retrospectivamente resultados aceptados. Explicitar el tratamiento de intentos en curso. Alinear B.2, I-S18 y F.8; añadir positivos del cierre ARCHITECT_SATISFIED y de reconstrucción tras caducidad/revocación, junto con negativos de nuevos lanzamientos."
+    },
+    {
+      "FindingId": "A62-V10-04",
+      "LineageId": "NEW",
+      "Source": "Revisión de consistencia de la correspondencia cerrada entre rol, acción y contrato de salida.",
+      "AffectedSection": "Proposal V10 §20.7, correspondencia EXECUTION_CONTROLLER / PLAN y VERIFY, línea 1326; B.9, OutputContract, línea 1897; B.1 y P-19.",
+      "Evidence": "§20.7 prescribe delegation/v2 para EXECUTION_CONTROLLER / PLAN y controller-verification/v2 para VERIFY. La lista de OutputContract de B.9 incluye architect-review-result, reviewer-result, controller-verification/v2 y worker-handoff/v1, pero omite delegation/v2. La propuesta exige esquemas cerrados y rechaza mediante P-19 cualquier salida que no corresponda al OutputContract de la invocación.",
+      "WhyItMatters": "La primera acción PLAN del Controller carece de contrato de salida representable de forma consistente en RoleInvocation. La futura materialización tendría que elegir entre dos definiciones incompatibles.",
+      "CorrectionRequired": "Añadir delegation/v2 a B.9 con el discriminador canónico exacto y expresar inequívocamente PLAN → delegation/v2 y VERIFY → controller-verification/v2, incluyendo cualquier alias neutral usado en la propuesta. Alinear esquemas y obligaciones de prueba: positivos de ambas acciones y negativos que intercambien sus contratos de salida."
+    }
+  ],
+  "OptionalFindings": [],
+  "FindingDispositions": [
+    {
+      "FindingId": "A62-V9-01",
+      "LineageId": "A62-V9-01",
+      "State": "SUPERSEDED",
+      "SupersededBy": ["A62-V10-03"],
+      "Rationale": "§20.5.1 y B.5 incorporan la autorización cerrada y AUTHORIZED_MATERIALIZATION, corrigiendo la ausencia del mecanismo de aceptación. Persiste la incompatibilidad temporal de esa aceptación, precisada por A62-V10-03.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "A62-V9-02",
+      "LineageId": "A62-V9-02",
+      "State": "CLOSED",
+      "SupersededBy": [],
+      "Rationale": "§20.6 define estados durables antes y después del lanzamiento, reserva previa, LAUNCH_UNCERTAIN, recuperación por casos e ingesta idempotente. Un sucesor no necesita inferir de ausencia de resultado que el proceso no se lanzó.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "A62-V9-03",
+      "LineageId": "A62-V9-03",
+      "State": "CLOSED",
+      "SupersededBy": [],
+      "Rationale": "§20.5.2 y B.10.1 exigen disposiciones explícitas por hallazgo, conservan abiertos los omitidos y separan cierre por corrección verificada de downgrade reservado al emisor. AGREED queda condicionado a ausencia de REQUIRED pendientes.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "A62-V9-04",
+      "LineageId": "A62-V9-04",
+      "State": "SUPERSEDED",
+      "SupersededBy": ["A62-V10-02"],
+      "Rationale": "V10 separa solicitud lógica, invocación e intento físico y cierra las fórmulas derivadas. La igualdad obligatoria entre versiones y solicitudes conserva una contradicción presupuestaria, precisada por A62-V10-02.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "A62-V9-05",
+      "LineageId": "A62-V9-05",
+      "State": "CLOSED",
+      "SupersededBy": [],
+      "Rationale": "§20.7 y B.10 separan Architect y Reviewer por rol, acción y esquema; el Reviewer no puede producir AGREED ni cerrar linajes del Architect. P-19/P-20 protegen la frontera. La omisión de PLAN en B.9 es un defecto nuevo distinto.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "A62-V9-06",
+      "LineageId": "A62-V9-06",
+      "State": "CLOSED",
+      "SupersededBy": [],
+      "Rationale": "§20.5, I-P13 y F.8 hacen explícita la transición del objeto en PUBLISHED y conservan los resultados anteriores ligados al objeto que evaluaron; la nueva invocación apunta al objeto corregido.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "A62-V7-01",
+      "LineageId": "A62-V7-01",
+      "State": "CLOSED",
+      "SupersededBy": [],
+      "Rationale": "§8.8, B.8.7 e invariantes I-P05/I-P10/I-P12/I-H02 distinguen reconciliación fuera de ventana y reconciliación en el cierre de una ventana activa, preservando StateFields afectados. C-15/C-18 contemplan positivos conjuntos.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "A62-V7-02",
+      "LineageId": "A62-V7-02",
+      "State": "CLOSED",
+      "SupersededBy": [],
+      "Rationale": "§8.9, T22, I-P02 y F.7 establecen REBASE_TAKEOVER acotado y un QR combinado antes de trabajo ordinario o Q0, evitando el ciclo QR-antes-de-rebase/rebase-antes-de-QR.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "A62-V7-03",
+      "LineageId": "A62-V7-03",
+      "State": "CLOSED",
+      "SupersededBy": [],
+      "Rationale": "§11.4 y B.2 acotan ReviewSubject a autoría de la unidad/objeto, incluyen sucesores y operadores humanos aplicables y excluyen historia anterior ajena. C-13 incorpora los casos exigidos sin decidir OD-6.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "A62-V6-01",
+      "LineageId": "A62-V6-01",
+      "State": "CLOSED",
+      "SupersededBy": [],
+      "Rationale": "§8.8, B.8.7 y las invariantes de reconciliación definen el QU posterior al rebase fuera de ventana, custodia del mapa, conservación de contadores y fallo cerrado ante imágenes no acreditables. F.6/C-15 requieren reconstrucción en clon limpio.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "A62-V6-02",
+      "LineageId": "A62-V6-02",
+      "State": "CLOSED",
+      "SupersededBy": [],
+      "Rationale": "§4.1, §8.7, §14.0 y §20.12 preservan opt-in, separan DIRECT_ONLY de I62_DELEGATED y exigen transición autorizada para adoptar delegación. E.2/C-28 permiten trabajo directo sin capacidades ni maquinaria delegada.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "A62-V6-03",
+      "LineageId": "A62-V6-03",
+      "State": "CLOSED",
+      "SupersededBy": [],
+      "Rationale": "§11.4 y B.2 representan múltiples autores y EXTERNAL HUMAN mediante identidad humana e instancia de revisión, sin ActorRef/SessionRef ficticios; mantienen los modos de Lifecycle y las alternativas pendientes de OD-6.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "A62-V9-O01",
+      "LineageId": "A62-V9-O01",
+      "State": "CLOSED",
+      "SupersededBy": [],
+      "Rationale": "§19 incorpora la correspondencia de los puntos del mandato con su tratamiento y riesgos residuales, haciendo auditable su cobertura.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "A62-V9-O02",
+      "LineageId": "A62-V9-O02",
+      "State": "CLOSED",
+      "SupersededBy": [],
+      "Rationale": "§17 explicita Owner Validation sobre FINAL_CANDIDATE_SHA; D.5/FX-06 y D.8 ofrecen escenarios y resumen de validación sin sustituir evidencia automatizada.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "O-02",
+      "LineageId": "O-02",
+      "State": "CLOSED",
+      "SupersededBy": [],
+      "Rationale": "B.8.4 mantiene I-S15 sin dependencias históricas y sitúa comprobaciones de ascendencia en la clase correspondiente, como I-H01.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "O-03",
+      "LineageId": "O-03",
+      "State": "CLOSED",
+      "SupersededBy": [],
+      "Rationale": "E.3.0 da al Controller la instrucción normativa y entradas del resolver para calcular independientemente; la comparación con el esperado del Coordinator es posterior.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "O-04",
+      "LineageId": "O-04",
+      "State": "CLOSED",
+      "SupersededBy": [],
+      "Rationale": "E.3.0/E.3.1 aplican la misma semántica de encabezados normalizados y exclusión de bloques de código al descubrimiento y resolución del punto de entrada.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "O-06",
+      "LineageId": "O-06",
+      "State": "CLOSED",
+      "SupersededBy": [],
+      "Rationale": "§11.4 localiza el registro recuperable de dimensiones PREFERRED de la alternativa 2 y sus estados SATISFIED, NOT_SATISFIED o UNKNOWN, sin elegir esa alternativa.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "O-01",
+      "LineageId": "O-01",
+      "State": "CLOSED",
+      "SupersededBy": [],
+      "Rationale": "C-18 incluye validación semántica de archivos /v2 reales presentes en el árbol, separada de comprobaciones históricas y sin introducir Level B. La ausencia actual de archivos /v2 no se presenta como prueba de su conducta futura.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "O-V7-03",
+      "LineageId": "O-V7-03",
+      "State": "CLOSED",
+      "SupersededBy": [],
+      "Rationale": "§8.6 localiza la plantilla de marcadores G0 en la materialización prevista de AUTOMATION_PLAN §16 y exige copiar la decisión correspondiente a la custodia de la unidad.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "O-V7-01",
+      "LineageId": "O-V7-01",
+      "State": "STILL_OPEN",
+      "SupersededBy": [],
+      "Rationale": "Permanece OPTIONAL. El registro V7 documenta que su texto no fue transmitido; la condición genérica sobre nombres o historia no permite verificar una corrección concreta ni acreditar cierre.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "O-V7-02",
+      "LineageId": "O-V7-02",
+      "State": "STILL_OPEN",
+      "SupersededBy": [],
+      "Rationale": "Permanece OPTIONAL. El registro ordena no ampliar V8 por este hallazgo y no aporta su texto original ni una corrección verificable; no se infiere cierre.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "O-05",
+      "LineageId": "O-05",
+      "State": "STILL_OPEN",
+      "SupersededBy": [],
+      "Rationale": "Permanece OPTIONAL. Los registros autorizados no contienen el texto original y documentan su no aplicación; no hay base para cerrar o reclasificar.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "O-07",
+      "LineageId": "O-07",
+      "State": "STILL_OPEN",
+      "SupersededBy": [],
+      "Rationale": "Permanece OPTIONAL. Los registros autorizados no contienen el texto original y documentan su no aplicación; no hay base para cerrar o reclasificar.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "A62-V10-01",
+      "LineageId": "NEW",
+      "State": "OPEN",
+      "SupersededBy": [],
+      "Rationale": "REQUIRED nuevo: la propuesta debe expresar una exención de acción y preservar la separación de clases de evidencia.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "A62-V10-02",
+      "LineageId": "A62-V9-04",
+      "State": "OPEN",
+      "SupersededBy": [],
+      "Rationale": "REQUIRED que precisa el residuo presupuestario de A62-V9-04: solicitudes y versiones no tienen cardinalidad necesariamente igual.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "A62-V10-03",
+      "LineageId": "A62-V9-01",
+      "State": "OPEN",
+      "SupersededBy": [],
+      "Rationale": "REQUIRED que precisa el residuo de A62-V9-01: la vigencia para acciones nuevas no debe invalidar aceptación y evidencia históricas.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    },
+    {
+      "FindingId": "A62-V10-04",
+      "LineageId": "NEW",
+      "State": "OPEN",
+      "SupersededBy": [],
+      "Rationale": "REQUIRED nuevo: B.9 debe representar el contrato delegation/v2 exigido para EXECUTION_CONTROLLER / PLAN.",
+      "EvaluatedObject": {"Commit": "41ded86e6494e3d43e07ce97de9eedf4710a631f", "Path": "docs/initiatives/I-62-proposal-v10.md", "Blob": "58f88fc602d0d4eaf3900a3514259da6b94faba2"}
+    }
+  ],
+  "Downgrades": [],
+  "OwnerDecisions": [
+    "OD-6 permanece PENDING. Corresponde exclusivamente al Owner elegir la alternativa de independencia; esta revisión no la decide.",
+    "Las cuatro correcciones REQUIRED son inconsistencias de diseño verificables y no requieren elegir OD-6 para formularse."
+  ],
+  "FocusAreas": [
+    {
+      "Area": "Revisión completa de Proposal V10",
+      "Assessment": "CHANGES REQUIRED por cuatro inconsistencias. El diseño cubre activación, compatibilidad, rebase, custodia, sucesión, revisión y matriz de conformidad, pero sus reglas no son todavía mutuamente ejecutables."
+    },
+    {
+      "Area": "Disposición de los seis REQUIRED aceptados de V9",
+      "Assessment": "A62-V9-02, 03, 05 y 06 CLOSED. A62-V9-01 y 04 SUPERSEDED por precisiones REQUIRED abiertas A62-V10-03 y 02, respectivamente."
+    },
+    {
+      "Area": "ReviewLoopAuthorization y materialización de bindings Architect",
+      "Assessment": "El mecanismo cerrado, criterios verificables y aceptación por materialización resuelven la ausencia anterior. Falta separar permiso vigente de validez histórica: A62-V10-03."
+    },
+    {
+      "Area": "Identidad de solicitud lógica, invocación y RunId",
+      "Assessment": "Las tres identidades están separadas y las reejecuciones conservan solicitud. La contabilidad contradice la posibilidad explícita de otra solicitud sobre el mismo objeto: A62-V10-02."
+    },
+    {
+      "Area": "Recuperación durable de reserva, lanzamiento e ingesta",
+      "Assessment": "Estados previos al lanzamiento, incertidumbre explícita, recuperación por estado e idempotencia ofrecen una recuperación conservadora sin lanzamiento inferido desde ausencia de resultado."
+    },
+    {
+      "Area": "Linaje y disposiciones explícitas",
+      "Assessment": "OpenFindings, disposiciones exhaustivas, conservación de omitidos, supersesión y autoridad de downgrade están definidos. Esta salida dispone individualmente los 24 hallazgos previos y los cuatro REQUIRED nuevos."
+    },
+    {
+      "Area": "Contratos de salida por rol",
+      "Assessment": "Architect y Reviewer quedan separados por autoridad. B.9 omite delegation/v2 para Controller / PLAN: A62-V10-04."
+    },
+    {
+      "Area": "Transición de objeto en F.8",
+      "Assessment": "PUBLISHED actualiza explícitamente loop.object y mantiene los resultados anteriores ligados a su objeto exacto. El cierre final depende de corregir la vigencia temporal de A62-V10-03."
+    },
+    {
+      "Area": "EffectiveInputClosure",
+      "Assessment": "El diseño distingue obligaciones transitivas, acciones, exenciones y auditoría posterior. Las lecturas de esta invocación respetaron la lista suministrada. La resolución textual de pruebas por «evidencia equivalente» requiere A62-V10-01."
+    },
+    {
+      "Area": "RuntimeEvidenceRef",
+      "Assessment": "La identidad observada corresponde al invocador y no al resultado autodeclarado. No se recibió RuntimeEvidenceRef para esta ejecución; modelo, effort y sesión observados quedan UNKNOWN en esta salida."
+    },
+    {
+      "Area": "Bucle autónomo de corrección y re-revisión Architect",
+      "Assessment": "La propuesta describe corrección, publicación, invocación, ingesta y repetición autorizadas sin solicitar aprobación por cada paso ordinario. Las inconsistencias de presupuesto y aceptación histórica impiden considerar cerrado ese bucle."
+    },
+    {
+      "Area": "Preservación de límites de autoridad",
+      "Assessment": "Se preservan Owner, Coordinator, Architect, Reviewer, Controller, Worker y Principal, incluido el veto a autoalojar I-62 antes de integración. La equivalencia de evidencia de §20.3.1 debe corregirse."
+    },
+    {
+      "Area": "Portabilidad a un Principal sucesor",
+      "Assessment": "Estado canónico, referencias custodiadas, recuperación por fase, mapas de rebase y REBASE_TAKEOVER permiten reconstrucción sin narrativa del Owner. La autorización histórica debe seguir siendo verificable tras finalizar o caducar."
+    },
+    {
+      "Area": "Presupuestos acotados",
+      "Assessment": "Reserva previa, límites por solicitud/linaje, fórmulas derivadas cerradas y conservación entre rebindings son adecuados. La igualdad review_rounds/logical_requests es incompatible con un caso autorizado: A62-V10-02."
+    },
+    {
+      "Area": "RELAY frente a ESCALATION",
+      "Assessment": "La propuesta distingue transporte de una acción ya autorizada de elevación por autoridad, capacidad o presupuesto faltantes. El respaldo manual produce AUTONOMY_GAP y no acredita orquestación autónoma."
+    },
+    {
+      "Area": "Aislamiento DIRECT_ONLY",
+      "Assessment": "Opt-in explícito; trabajo directo ordinario no depende de CUSTODY, bindings ni preflight delegado. La transición a delegación exige autoridad durable y no cambia silenciosamente una ventana abierta."
+    },
+    {
+      "Area": "Límite Level A",
+      "Assessment": "Contratos, archivos estructurados, adapters existentes y gestión por la sesión Principal mantienen Level A. No se autoriza scheduler, daemon, plataforma genérica ni servicio de orquestación."
+    }
+  ],
+  "FreezeReadinessAfterOD6": "V10 actualmente NO está lista: decidir OD-6 no elimina los cuatro REQUIRED. Una versión corregida que obtenga una revisión formal válida con cero REQUIRED pendientes y el acuerdo correspondiente del Coordinator sobre el mismo objeto podría pasar a Consensus Freeze una vez decidida OD-6. Los cuatro OPTIONAL STILL_OPEN no equivalen a REQUIRED ni se cierran por omisión. No se declara Freeze.",
+  "AutonomyAssessment": "El diseño materializa buena parte del bucle autónomo de corrección y re-revisión, incluidos permisos acotados, reservas durables, ingesta y relevo. A62-V10-02 y A62-V10-03 impiden aún su ejecución consistente; A62-V10-01 y A62-V10-04 afectan las fronteras contractuales. Esta invocación excepcional del Owner permite una revisión limpia acotada, pero no acredita que el Principal pueda repetir autónomamente el ciclo. I-61 sigue vigente y no aporta el contrato general de invocación Architect propuesto por I-62; por tanto persiste un AUTONOMY_GAP del protocolo activo. La autorización es para una sola ejecución y no habilita retry, segundo Architect, implementación ni autoalojamiento.",
+  "KnownLimitations": [
+    "Revisión documental de diseño: los cierres de hallazgos acreditan su representación en V10, no implementación, RED→GREEN ni ejecución de la matriz de conformidad. Los contraejemplos descritos no se ejecutaron.",
+    "No se ejecutaron builds ni pruebas ni se utilizó red. Se aplicó exclusivamente la excepción del Owner transcrita en InjectedContextDeclaration; ninguna clase de evidencia CI se trató como sustituto de evidencia local.",
+    "La CI de publicación 36948649343, event push, SHA exacto y cuatro jobs success fue suministrada por el Owner; no se verificó independientemente desde esta invocación.",
+    "Binary/hash de codex-cli, autenticación, fingerprints de configuración, modelo/effort efectivos, separación observada de proceso/thread/session y ausencia de colisión con escritores corresponden a la custodia externa del invocador. No se inspeccionaron archivos externos para acreditarlos.",
+    "La declaración cubre el contexto visible y los registros de herramientas de esta ejecución; no acredita lecturas internas invisibles del runtime.",
+    "Los registros V6/V7 conservan direcciones transmitidas por el Coordinator, no los dictámenes originales completos. O-V7-01, O-V7-02, O-05 y O-07 no pueden cerrarse con un texto original ausente.",
+    "docs/ideas-futuras.md y los artefactos de piloto citados fuera del cierre no fueron leídos. No se verifica independientemente su contenido ni sus datos históricos; esta revisión se apoya en los documentos permitidos.",
+    "No se recibió un ResultId contractual ni BindingRef ni RuntimeEvidenceRef. ResultId identifica informativamente esta respuesta experimental y no se confunde con InvocationId ni RunId.",
+    "La evidencia literal y el registro runtime deben ser custodiados por el invocador: el revisor no tiene autorización de escritura."
+  ],
+  "RecommendedNextAction": "Custodiar literalmente este resultado y la evidencia observada de la invocación R20261002T010757Z-ef59, incluida la excepción exacta y la auditoría de lecturas. El Coordinator debe disponer los cuatro REQUIRED y encauzar su corrección bajo autoridad vigente. Una nueva revisión necesita autorización aplicable distinta de esta invocación única. Mantener OD-6 pendiente, Freeze no declarado e IMPLEMENTATION AUTHORIZATION = NO."
+}

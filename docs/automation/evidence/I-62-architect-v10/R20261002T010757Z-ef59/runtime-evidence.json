@@ -1,0 +1,119 @@
+{
+  "Schema": "runtime-evidence (representación experimental de InvokerObservedRuntimeIdentity / RuntimeEvidenceRef, Proposal V10 §20.3.2; no autoridad normativa)",
+  "LogicalReviewRequestId": "L20261002T010757Z-ef59",
+  "InvocationId": "I20261002T010757Z-ef59",
+  "AttemptSeq": 1,
+  "RunId": "R20261002T010757Z-ef59",
+  "Invoker": "sesión autora de I-62 (Claude), con autorización acotada del Owner; observador no independiente",
+  "Binary": {
+    "Path": "%LOCALAPPDATA%\\OpenAI\\Codex\\bin\\a51e250fa15c740a\\codex.exe",
+    "Version": "codex-cli 0.159.2",
+    "Sha256": "fcd5eafefb4ff4a607f244e099e0974f66e17966b6ffda6948de2ef3a7a79530"
+  },
+  "Authentication": "existente: «Logged in using ChatGPT» (codex login status); sin leer ni modificar credenciales",
+  "ConfigFingerprint": {
+    "Path": "~/.codex/config.toml",
+    "Sha256Before": "40c27b570b0056bc6d2b5aaf460628922c5ad39a405751e68b9001ffdf15f74f",
+    "Sha256After": "40c27b570b0056bc6d2b5aaf460628922c5ad39a405751e68b9001ffdf15f74f",
+    "Changed": false
+  },
+  "Requested": {
+    "Model": "gpt-6.1-sol",
+    "Effort": "high",
+    "Sandbox": "read-only",
+    "Flags": [
+      "--disable memories",
+      "--disable apps",
+      "--disable plugins",
+      "--disable browser_use",
+      "--disable browser_use_external",
+      "--disable computer_use",
+      "--disable in_app_browser",
+      "--disable remote_plugin",
+      "--disable hooks",
+      "-c mcp_servers.node_repl.enabled=false",
+      "--output-schema",
+      "-o",
+      "--json",
+      "stdin=/dev/null",
+      "timeout 3600"
+    ]
+  },
+  "Observed": {
+    "Assurance": "RUNTIME_OBSERVED (registro de sesión del runtime)",
+    "SessionLog": {
+      "Path": "~/.codex/sessions/2026/10/01/rollout-2026-10-01T19-09-50-01a0fa29-0f9e-7321-88d3-a62f3c7bfe15.jsonl",
+      "Sha256": "339a1f25302dd35b8d82d2d5cbdb46caf5bd07b00128b3c9112ae38c51dfc5ba",
+      "Lines": 241,
+      "Versioned": false
+    },
+    "ThreadId": "01a0fa29-0f9e-7321-88d3-a62f3c7bfe15",
+    "Originator": "codex_exec",
+    "CliVersion": "0.159.2",
+    "Cwd": "D:\\r62-arch-v10",
+    "TurnContexts": [
+      {
+        "Utc": "2026-10-02T01:09:51.830Z",
+        "Model": "gpt-6.1-sol",
+        "Effort": "high",
+        "ApprovalPolicy": "never",
+        "Sandbox": "read-only"
+      },
+      {
+        "Utc": "2026-10-02T01:15:05.417Z",
+        "Model": "gpt-6.1-sol",
+        "Effort": "high",
+        "ApprovalPolicy": "never",
+        "Sandbox": "read-only",
+        "Note": "tras el evento compacted del runtime"
+      }
+    ],
+    "Compaction": {
+      "Utc": "2026-10-02T01:15:05.417Z",
+      "Note": "el runtime compactó el contexto del revisor dentro del mismo hilo; mismo modelo, effort y sandbox"
+    },
+    "ServedModelBehindProvider": "UNKNOWN (no observable)"
+  },
+  "InjectedContext": {
+    "BaseInstructionsChars": 21769,
+    "DeveloperMessagesChars": [
+      3233,
+      2429,
+      271
+    ],
+    "AgentsMdAutoInjectionChars": 25321,
+    "PromptChars": 12376,
+    "GlobalAgentsMdBytes": 0,
+    "WorldState": "presente en el registro (prefijos de comando aprobados del host); no forma parte de los mensajes visibles"
+  },
+  "Execution": {
+    "StartUtc": "2026-10-02T01:09:49Z",
+    "EndUtc": "2026-10-02T01:18:31Z",
+    "ExitCode": 0,
+    "TurnCompleted": true,
+    "Usage": {
+      "InputTokens": 3698817,
+      "CachedInputTokens": 3431040,
+      "OutputTokens": 19561,
+      "ReasoningOutputTokens": 4494
+    },
+    "LimitWarnings": "ninguna"
+  },
+  "Termination": {
+    "ProcessesAliveAfter": 0,
+    "Method": "Win32_Process sin procesos con la ruta del clon ni codex exec tras la salida"
+  },
+  "Clone": {
+    "Path": "D:\\r62-arch-v10",
+    "HeadBefore": "41ded86e6494e3d43e07ce97de9eedf4710a631f",
+    "HeadAfter": "41ded86e6494e3d43e07ce97de9eedf4710a631f",
+    "StatusBefore": "limpio",
+    "StatusAfter": "limpio (sin archivos ignorados)"
+  },
+  "WriterCollision": {
+    "RemoteBranchAtLaunch": "41ded86e6494e3d43e07ce97de9eedf4710a631f",
+    "ProcessesOnI62Paths": 0,
+    "OtherCodexProcess": "codex exec-server --remote del cliente de escritorio (sin ruta de I-62)"
+  },
+  "ReviewerDeclaredIdentity": "Model, Effort y SessionOrThread = UNKNOWN en output.json: no es contradicción (§20.3.2)"
+}

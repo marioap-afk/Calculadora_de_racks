@@ -132,7 +132,8 @@ Ninguna entrada se afirma sin la comprobación DC-08 de [INITIATIVE_LIFECYCLE](.
   intentos con reserva y recuperación, identidad lógica y presupuesto con fórmula cerrada, disposiciones explícitas por hallazgo, contratos de salida por rol,
   orden exacto del cambio de objeto, cierre efectivo de insumos e identidad observada por el invocador. Conserva todos los cierres de V9, incluida la
   orquestación autónoma de roles (R62-AUTO-01..20, [registro](I-62-coordinator-requirement-auto.md)). Paquete del Architect:
-  [I-62-architect-package-v10.md](I-62-architect-package-v10.md), **una revisión formal limpia pendiente**.
+  [I-62-architect-package-v10.md](I-62-architect-package-v10.md). Revisión formal limpia del Architect por invocación acotada del Owner: **CHANGES
+  REQUIRED** (A62-V10-01..04; [registro](I-62-architect-review-v10.md)); el Owner y el Coordinator disponen el resultado.
 - Versiones anteriores, conservadas sin cambios:
   - [V1](I-62-proposal-v1.md) … [V5](I-62-proposal-v5.md) y sus paquetes: CHANGES REQUIRED del Coordinator (registros
     [v1](I-62-coordinator-review-v1.md) … [v5](I-62-coordinator-review-v5.md));

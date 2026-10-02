@@ -707,3 +707,54 @@ Las trazas de V10 (§20 y Anexos D.8 y F.8) son **análisis del diseño**, no en
 
 **Validación de esta entrega:** allowlist, enlaces, columnas de las tablas, diff V9→V10 revisado y `git diff --check`; resultado en el cuerpo del commit. La
 CI de este commit se informa al Owner y al Coordinator.
+
+## 23. F0 — Revisión formal limpia del Architect de la Proposal V10 (decisión del Owner)
+
+**CI de la Proposal V10** (`41ded86e6494e3d43e07ce97de9eedf4710a631f`): corrida **36948649343**, attempt 1, event `push`, rama
+`architecture/portabilidad-coordinador-principal`, head_sha exacto, `completed/success`. Jobs: UI Tests (110656401671), Tests (Domain + Application)
+(110656401731), Build UI (110656401732) y Build Plugin without AutoCAD (110656808482), los cuatro `success`. MEASURED por la sesión. Acredita solo
+`41ded86e`.
+
+**Decisión recibida:** «OWNER DECISION — CLEAN ARCHITECT REVIEW OF I-62 PROPOSAL V10», texto pegado sin archivo de origen. 5 714 bytes en UTF-8, SHA-256
+`619b4fada8f9cb682b8e2e95013bbcbb6c221020a964d23303b62ee78f98dfb2`; va literal dentro de `prompt.md`. La excepción de `dotnet test` (1 158 bytes, SHA-256
+`68cfe8dc…`) está transcrita en el README de la corrida, §2.
+
+**Invocación** (MEASURED; detalle en
+[`I-62-architect-v10/R20261002T010757Z-ef59/README.md`](I-62-architect-v10/R20261002T010757Z-ef59/README.md), `runtime-evidence.json` y
+`read-audit.json`):
+- **Antes:**
+  - `codex-cli 0.159.2` (SHA-256 `fcd5eafe…`) y autenticación existente;
+  - `config.toml` con hash `40c27b57…` antes y después;
+  - `gpt-6.1-sol`/`high` solicitados y RUNTIME_OBSERVED en los dos `turn_context`; sandbox de solo lectura;
+  - hilo nuevo `01a0fa29-0f9e-7321-88d3-a62f3c7bfe15`;
+  - clon limpio `D:\r62-arch-v10` en `41ded86e`, sin memoria del autor ni transcripción;
+  - cierre de 37 insumos canónicos y 9 transitivos custodiado (`closure.json`);
+  - sin colisión de escritores.
+- **Ejecución:** una sola, de 01:09:49Z a 01:18:31Z, salida 0. Consumo: entrada 3 698 817 tokens (3 431 040 en caché) y salida 19 561. El runtime compactó
+  el contexto a las 01:15:05Z dentro del mismo hilo.
+- **Después:** clon limpio, configuración sin cambio y ningún proceso vivo. 41 comandos de lectura, todos sobre las 46 rutas del cierre, sin lecturas fuera de
+  él y sin `dotnet test`.
+
+**Resultado:** CHANGES REQUIRED, con A62-V10-01..04. Registro: [`I-62-architect-review-v10.md`](../../initiatives/I-62-architect-review-v10.md).
+
+**AUTONOMY_GAP nuevo** (R62-AUTO-18). Es un hecho para el triaje; la sesión no cambia la Proposal:
+
+| Id | Hecho (MEASURED) | Efecto |
+|---|---|---|
+| GAP-09 | La consola del runtime de `codex-cli` no conservó los caracteres no ASCII al leer el objeto: ≤ y ≥ → «=», ≠ → «?», → → U+001A, ⇒, ⇔ y ∈ perdidos, letras acentuadas → U+FFFD. La cabecera de la invocación no forzó UTF-8 en esa consola. La corrida de V9 ya tenía 8 781 U+FFFD en su `events.jsonl` (MEASURED ahora, fuera del repositorio; no se registró en §21) | el revisor no leyó el objeto byte a byte; en particular, «`review_rounds` ≤ `logical_requests`» (líneas 1295 y 1854) se leyó como «=», que es la premisa de A62-V10-02. Una invocación futura debe forzar la salida UTF-8 (o leer por un canal sin conversión) y comprobar la fidelidad de la lectura antes de aceptar el resultado |
+
+**Revalidación antes del commit** (MEASURED, 01:24Z):
+- `origin/main` = `819955d6…` y la rama de I-62 en `41ded86e…`, sin cambios;
+- I-52 `4d7fa61d`, sin commits nuevos;
+- I-63 `1013449d..29fad150`: 3 commits (cadena de G1);
+- I-64 `e0587355..24074abb`: 3 commits (F1-T1-MODEL);
+- **ningún cruce** con superficies de I-62.
+
+**No se hizo:**
+- reintentos, una segunda invocación, Workers, Controllers, subagentes, sondas, pilotos, autenticación ni cambios de configuración;
+- editar el clon, la Proposal V11, ni corregir, disponer, ratificar o rebajar hallazgos;
+- decidir OD-6 ni la validez de la revisión;
+- tocar V1-V10, sus paquetes, los registros previos, el Discovery, el mandato, las normas compartidas o cualquier superficie ajena.
+
+**Validación de esta entrega:** allowlist (superficies propias de I-62), enlaces, columnas de las tablas, hashes de los archivos custodiados, YAML del estado y
+`git diff --check`; resultado en el cuerpo del commit. La CI de este commit se informa al Owner.
