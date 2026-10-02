@@ -5,10 +5,10 @@ automation_state:
   claim_id: 614371d5-441f-4f14-bac9-f97017105610
   current_phase: F1
   state: waiting
-  gate: scope
+  gate: dependency
   attempts: 3
-  next_action: "Coordinator: revision del STOP formal de F1-T1-MODEL en el cierre de protocolo (COORDINATOR_PROTOCOL_STOP_REVIEW_REQUIRED; evidencia §31) y de su relacion con la progresion del gate F1 antes de autorizar F1-T2-BRIDGE."
-  last_evidence_commit: 0b7db52f12ddbf7ed36c8c2d020645818335c0fa
+  next_action: "Master Coordinator / iniciativa de protocolo: llevar el hallazgo de nc2 a la evolucion del protocolo de ejecucion (I-62); I-64 queda bloqueada (F1 BLOCKED_PROTOCOL_DEPENDENCY; evidencia §32)."
+  last_evidence_commit: db15122715e021db0ee6be33d789e22600690b0d
 execution_context:
   mode: manual
   automation_enabled: false
@@ -17,27 +17,32 @@ execution_context:
   design_agreed: docs/initiatives/I-64-proposal-v5.md en 9e3d289a9b61339c162b2f791f6995a584207800, blob bd4e96264e538ffc679bfd9f088400b22b553931 (I64-CONSENSUS-V5-01; Architect AGREED; Coordinator AGREED)
   freeze: 9b43dafbe3b8874aa0ba5a85d62cbf953dbdd311 (Frozen YES; blob dc1924ff5a73a4e529fbc5f995621d29351a091b; CI 36941847270 push 4/4 success; evidencia §18)
   f0: COMPLETE
-  f1: "IN PROGRESS: F1-T1-MODEL = STOPPED_AT_PROTOCOL_CLOSE (ProductStatus EXECUTION_VERIFIED sobre 39f7caa4; ProtocolClose FAILED_NEGATIVE_CONTROL_NC2; evidencia §31); F1-T2-BRIDGE no autorizada"
+  f1: "BLOCKED_PROTOCOL_DEPENDENCY: F1-T1-MODEL = STOPPED_AT_PROTOCOL_CLOSE (ProductStatus EXECUTION_VERIFIED sobre 39f7caa4; ProtocolClose FAILED_NEGATIVE_CONTROL_NC2); BlockedNextTask F1-T2-BRIDGE (no autorizada); BlockingDependency: execution-protocol Scope enforcement / Controller negative-control defect; evidencia §§31-32"
   relay_baseline: "config.toml SHA-256 40C27B570B0056BC6D2B5AAF460628922C5AD39A405751E68B9001FFDF15F74F (2026-10-02T00:03:20Z; 103 nombres, sin valores)"
   f1_t1_model_budget: "planificacion 7 de 7; trabajo 4 de 4; verificacion productiva 4 de 4; attempts 3 de 3; CONTROL de la recuperacion: nc1, nc2 y nc3 con una salida valida cada uno, sin reintentos"
   f1_t1_model_chain: "ChainBaseSha e0587355b0e84d98807057a56dfc50591da87489; ChainRedSha a9778068af566bc2b84ba6a0005711b6452a2666 (acreditado en R20261002T143410Z-ae0b); ChainRedFiles tests/RackCad.Tests/Workspace/{SelectionContextTests,WorkspaceHintDrainTests,WorkspaceModelBoundaryTests,WorkspaceSelectionContextTests,WorkspaceSessionTests}.cs; VerifiedSha 39f7caa411a5ebb372614c233a32255de7398cca (EXECUTION_VERIFIED, R20261002T182925Z-5c9b); delegacion R20261002T171954Z-754a cerrada; sin delegacion abierta"
   f1_t1_model_status: "STOPPED_AT_PROTOCOL_CLOSE; ProductStatus EXECUTION_VERIFIED; ProductVerifiedSha 39f7caa411a5ebb372614c233a32255de7398cca; ProtocolClose FAILED_NEGATIVE_CONTROL_NC2; nc1 PASS (R20261002T183529Z-b10b), nc2 FAIL final (R20261002T184050Z-8415), nc3 PASS (R20261002T185053Z-8b6f), nc4 PASS (R20261002T004303Z-8d3c); no COMPLETE"
+  f1_blocked_next_task: F1-T2-BRIDGE
+  f1_blocking_dependency: "execution-protocol Scope enforcement / Controller negative-control defect"
+  f1_resume_condition: "solo con una condicion autoritativa nueva: (A) evolucion integrada del protocolo que arregle o sustituya el control de Scope que fallo, o (B) enmienda autoritativa explicita con un control sustituto conforme y aplicable a I-64; al reanudar: rebase segun haga falta, conservar 39f7caa4 como evidencia historica de producto verificado, evaluar si basta repetir los controles o hace falta una verificacion nueva de la tarea, y no suponer que el nc2 anterior puede repetirse"
   max_attempts: 3
   persistent_next_action:
-    NEXT_ROLE: "Coordinator (revision del STOP de protocolo de F1-T1-MODEL; AUTONOMY_GAP-COORDINATOR: la orden llega por el chat)"
-    NEXT_ACTION: "revisar el STOP formal de F1-T1-MODEL (STOPPED_AT_PROTOCOL_CLOSE: producto EXECUTION_VERIFIED sobre 39f7caa4, nc2 FAIL final) y su relacion con la progresion del gate F1 antes de autorizar F1-T2-BRIDGE (evidencia §31)"
-    TARGET_SHA: "la punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo (git log -1 -- docs/automation/state/I-64.yml); su padre es 39f7caa411a5ebb372614c233a32255de7398cca"
+    NEXT_ROLE: "Master Coordinator / iniciativa de protocolo (I-62); AUTONOMY_GAP-COORDINATOR: las ordenes llegan por el chat"
+    NEXT_ACTION: "llevar el hallazgo de nc2 a la evolucion del protocolo de ejecucion y dejar I-64 bloqueada; I-64 no reanuda F1-T2-BRIDGE sin una condicion autoritativa nueva (f1_resume_condition)"
+    TARGET_SHA: "la punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo (git log -1 -- docs/automation/state/I-64.yml); su padre es db15122715e021db0ee6be33d789e22600690b0d"
     GATE: F1 — Workspace Foundation
-    TASK: "F1-T1-MODEL (STOPPED_AT_PROTOCOL_CLOSE)"
-    INPUTS_REQUIRED: "evidencia §31; custodia de 754a, faf1, 5c9b y de nc1..nc3 (b10b, 8415, 8b6f) con las decisiones del Coordinator versionadas"
-    EXPECTED_RESULT: "revision del Coordinator (COORDINATOR_PROTOCOL_STOP_REVIEW_REQUIRED)"
-    REMAINING_BUDGET: "F1-T1-MODEL sin presupuesto: planificacion 7 de 7, trabajo 4 de 4, verificacion productiva 4 de 4, attempts 3 de 3; nc1..nc3 consumidos"
-    STOP_CONDITION: "cualquier invocacion sin decision del Coordinator (P-07); preparar o implementar F1-T2-BRIDGE sin autorizacion; origin/main distinto de 819955d61a6da4c811a11fbd11b5dca13f634b7c; config.toml distinto (P-01); S-01..S-14 y P-01..P-08"
+    TASK: "F1-T2-BRIDGE (BLOCKED_PROTOCOL_DEPENDENCY; no autorizada)"
+    INPUTS_REQUIRED: "evidencia §§31-32; docs/automation/evidence/I-64-pilot/F1-T1-MODEL-nc2/R20261002T184050Z-8415/ (coordinator-protocol-stop-review.md, protocol-debt-handoff.md)"
+    EXPECTED_RESULT: "condicion autoritativa nueva (A: protocolo integrado que arregle o sustituya el control de Scope; B: enmienda autoritativa aplicable a I-64)"
+    REMAINING_BUDGET: "F1-T1-MODEL sin presupuesto (planificacion 7/7, trabajo 4/4, verificacion 4/4, attempts 3/3); F1-T2-BRIDGE sin contrato"
+    STOP_CONDITION: "cualquier implementacion o planificacion delegada de T2, Worker nuevo, cambio del producto de T1, debilitar nc2, cambiar I-61 o I-62 desde I-64, declarar COMPLETE o F1 PASS; origin/main distinto de 819955d61a6da4c811a11fbd11b5dca13f634b7c; config.toml distinto (P-01)"
     OWNER_REQUIRED_IF: "OWNER-RESERVED (alcance, diferir sistemas, retirar OV); aceptacion del ADR 0047; Owner Validation y smokes (Smoke-1 tras F1 PASS y RELEASE de I-52); cambio de config.toml (P-01); credenciales, compras o sondas con consumo no cubierto; AutoCAD manual o cambios de seguridad"
   protocol_debt:
     - FINDING: "El Controller gpt-6-luna/high, pese a leer correctamente una delegacion con AllowedWriteScope que excluye el unico archivo modificado, puede emitir Scope=pass despues de que falle su operacion auxiliar de comparacion (nc2 R20261002T184050Z-8415; mismo patron en nc2 R20261002T151201Z-abb1)."
       OWNER: "protocolo/Controller del sistema de ejecucion (I-62 / deuda del protocolo); fuera del producto de I-64; no se corrige en el Workspace ni se modifica I-61 desde I-64"
-      SOURCE: "decision del Coordinator versionada en docs/automation/evidence/I-64-pilot/F1-T1-MODEL-nc2/R20261002T184050Z-8415/coordinator-decision.md; evidencia §31"
+      SOURCE: "decisiones del Coordinator versionadas en docs/automation/evidence/I-64-pilot/F1-T1-MODEL-nc2/R20261002T184050Z-8415/ (coordinator-decision.md y coordinator-protocol-stop-review.md); evidencia §§31-32"
+      STATUS: "BLOQUEA F1 (BLOCKED_PROTOCOL_DEPENDENCY; BlockedNextTask F1-T2-BRIDGE); I-62 en F0 (Proposal V14, Frozen NO) sin implementacion integrada consumible por I-64"
+      HANDOFF: "docs/automation/evidence/I-64-pilot/F1-T1-MODEL-nc2/R20261002T184050Z-8415/protocol-debt-handoff.md (hallazgo, ejecuciones afectadas, analisis de solo lectura e hipotesis H1-H3)"
   autonomy_gaps:
     - ROLE_REQUIRED: "Coordinator (AUTONOMY_GAP-COORDINATOR: emision de gate-contract, decision de un STOP, aceptacion A1-A8, analysis.md y GATE PASS)"
       MISSING_CAPABILITY: no hay sesion ni agente Coordinator direccionable; las ordenes del Coordinator llegan solo por el chat del Owner (ListAgents 2026-10-01T23:4xZ sin sesion Coordinator)
