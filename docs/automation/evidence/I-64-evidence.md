@@ -857,3 +857,107 @@ Dos campos que el esquema exige y que la orden no da con forma literal se fijan 
 en la sesión, e `IssuedBy` = el Coordinator de I-64. Las rutas `docs/adr/00NN-*.md` del contrato se resuelven a su único archivo en la base.
 
 **Presupuesto de `F1-T1-MODEL`:** planificación 0 de 1; trabajo 0 de 4; verificación 0 de 4; `attempts` 0 de 3.
+
+## 21. F1-T1-MODEL — Planificación del Controller, nc4, A1-A8 mecánicas y STOP P-03
+
+Sección nueva; las anteriores no se reescriben. Hechos de la sesión responsable. No hay aceptación, GATE PASS, F1 PASS ni ADR aceptado.
+No se invocó al Worker.
+
+**Relevo de salida (16.4, paso 1).** Commit de estado `0a3fec301a18ef38646729e20b8a276f80feb36e`.
+- HEAD = `ls-remote` = `0a3fec30`; `origin/main` = `819955d61a6da4c811a11fbd11b5dca13f634b7c`; árbol limpio; sin operación de Git en curso.
+- `config.toml`: SHA-256 `40C27B57…F15F74F`, igual que `relay_baseline`.
+- Procesos (PowerShell): sin participantes y sin procesos no atribuibles.
+- ADR 0047 libre en HEAD y en `origin/main`.
+- Rama y worktree: los de la unidad.
+
+**Planificación** (`RunId` `R20261002T001349Z-aad5`; intento 0; fase PLANNING):
+- Invocación: Codex CLI 0.159.2, `-s read-only`, `gpt-6-luna` × `high`, con `--output-schema delegation.schema.json`.
+  - Modelo y effort efectivos: `gpt-6-luna` / `high` (`turn_context` del registro de sesión; `thread_id` `01a0f9f8-348e-74f0-8646-edcdf8af1a22`;
+    SHA-256 del registro `6DDC0638…26E49150FC3EF`).
+- Cesión 00:16:27Z → 00:18:51Z, sin operación de la sesión.
+- Fin: `turn.completed`, código 0, muerte del lanzador (PID Windows 26504) confirmada.
+- Salida: SHA-256 `B3B081BC…CD8D9430788F`, escrita a las 00:18:51.0454129Z; `delegation.json` es su copia byte a byte.
+- Uso: 438001 tokens de entrada (367360 en caché) y 9407 de salida (2970 de razonamiento).
+- Ejecución: 9 órdenes, una con código distinto de 0 (pwsh en modo de lenguaje restringido; el Controller la rodeó).
+- Coincidencias de patrones de límite: 4, todas contenido de archivos leídos. P-06 no aplica.
+- La delegación propone:
+  - Worker `claude-sonnet-5-5|subagent`, `Balanced` / `medium`, sin escalado, `ROUTINE_IMPLEMENTATION`;
+  - `BaseSha` = `ChainBaseSha` = `0a3fec30`; `ChainRedSha` null; `ChainRedFiles` vacío;
+  - `AllowedWriteScope` de archivos exactos: el ADR 0047, 8 archivos en `src/RackCad.Application/Workspace/` y 6 de pruebas en
+    `tests/RackCad.Tests/Workspace/`;
+  - 7 criterios de aceptación.
+
+**Relevo de entrada.**
+- HEAD = `ls-remote` = `0a3fec30`; árbol limpio; `config.toml` sin cambios; sin participantes vivos.
+- Dos procesos no atribuibles: `bash.exe` 31724 y `git.exe` 38412, con la línea de órdenes ilegible.
+  - En la lectura de detalle y en la relectura ya no existían, así que no se pudieron medir el padre ni la hora de creación.
+  - Por la letra de 16.4 esto es **P-02**.
+  - El criterio de relectura de DEV-G3-02 lo decidió el Coordinator de I-61 para su G3; aquí no se aplica sin una decisión del Coordinator
+    de I-64.
+- Desviación declarada (DEV-F1T1-01): el registro de procesos de la salida solo midió las clases `participant` y `unattributable`, y no
+  listó `own-tree`, `owner-app` ni `nominal-exclusion`.
+
+**A1-A8, evaluación mecánica sin cortocircuito.** La aceptación formal es del Coordinator. Resultado:
+
+| | A1 | A2 | A3 | A4 | A5 | A6 | A7 | A8 |
+|---|---|---|---|---|---|---|---|---|
+| delegación real | pass | pass | pass | **fail** | **fail** | pass | pass | pass |
+| nc4 | pass | pass | **fail** | fail | fail | pass | pass | pass |
+
+- **A4.** Faltan 497 de las 593 entradas prohibidas.
+  - El `gate-contract.json` transcrito por la sesión expandió «fuera de Workspace/» y «cualquier otro docs/adr/» en 593 rutas, con
+    `git ls-tree` sobre la base.
+  - El Controller copió 97 entradas:
+    - `docs/initiatives/`, `docs/automation/`, Plugin, UI, Domain y UI.Tests;
+    - las 19 de `src/RackCad.Application/`;
+    - 49 de `docs/adr/`;
+    - 23 de las 512 de `tests/RackCad.Tests/`.
+  - Omitió 489 entradas de `tests/RackCad.Tests/` y 8 de raíz: `.github/`, `assets/`, `eng/`, `deploy/`, `global.json`,
+    `Directory.Build.props`, `Directory.Build.targets` y `RackCad.sln`.
+  - El alcance permitido de la delegación (A3) sí está dentro del contrato. El hueco es de copia, no de ampliación.
+- **A5, invariantes.** Faltan 5 de 12 (INV-F1-T1-02, 08, 09, 10 y 11).
+  - Causa raíz propia: la transcripción de la sesión pasó los invariantes del Coordinator a ASCII.
+  - El Controller les devolvió las tildes y la eñe («sesión», «título», «pestaña», «destrucción», «métrica», «añade», «semántica»).
+  - El contenido es idéntico salvo los diacríticos, pero A5 compara texto exacto.
+- **A5, autoridades.** Faltan 3 de 24, con el encabezado de sección alterado:
+  - evidencia §19, con «-» en lugar de «—»;
+  - I-55 V5 §4.4 y §4.6, con «transacción» y «colocación», mientras que los encabezados reales no llevan tilde.
+  - Añade, como estaba permitido, `docs/adr/README.md` y `docs/adr/plantilla.md`.
+- **A5, resto.** Las 34 paradas y la prueba requerida están completas.
+- **Defecto de contenido no cubierto por A1-A8.** `TaskClass` = «Controller: planificación / verificación», que es la clase del Controller y
+  no la del trabajo del Worker.
+- **nc4** (`RunId` `R20261002T002047Z-f0b0`). Copia de la delegación real en la que solo cambia `AllowedWriteScope` (+ `src/RackCad.Plugin/`).
+  - A3 queda en fail; las demás coinciden con la real.
+  - Se cumple el oráculo relativo.
+  - Resultado: `REJECTED_BEFORE_INVOCATION`, STOP (P-03) confinado al control y fuera de todo tope.
+
+**Disposición (tabla de 16.5): STOP P-03**, «delegación fuera del contrato». En este punto no aplica `COORDINATOR_ACCEPTANCE_REQUIRED`,
+porque la delegación real no pasa A1-A8.
+
+**Presupuesto.**
+- Planificación: **1 de 1, consumida**. Trabajo: 0 de 4. Verificación: 0 de 4.
+- `attempts`: 0 de 3. BLOCKED: 0.
+- Replanificar excede el tope (P-07) mientras el Coordinator no lo decida.
+
+**Opciones para el Coordinator.** Son de la sesión y no vinculan.
+1. **Reemitir el contrato con los invariantes literales del Coordinator**, con tildes y tal como los dio en el chat.
+2. **Prohibiciones compactas.** `ForbiddenWriteScope` como prefijos de primer nivel (`docs/initiatives/`, `docs/automation/`,
+   `src/RackCad.Plugin/`, `src/RackCad.UI/`, `src/RackCad.Domain/`, `tests/RackCad.UI.Tests/`, `.github/`, `assets/`, `eng/`, `deploy/`,
+   `global.json`, `Directory.Build.*`, solución).
+   - «Fuera de Workspace/» y «otros docs/adr/» quedan cubiertos por A3 y por la comprobación de alcance de 16.9, que exige
+     `diff ⊆ AllowedWriteScope`.
+   - Así A4 no depende de que el Controller copie cientos de rutas.
+3. **Prompt de planificación con copia byte a byte.** Invariantes, `Section` de las autoridades, paradas y prohibidas se copian sin
+   normalizar acentos, guiones ni tildes; `TaskClass` es la clase del trabajo del Worker.
+4. **Autorizar una segunda planificación** (P-07 resuelto por el Coordinator), con un `RunId` nuevo, sobre la base vigente.
+5. **Decidir el P-02 efímero de la entrada.** Las opciones son adoptar para I-64 el criterio de relectura de DEV-G3-02 o tratarlo como STOP
+   propio.
+
+**Custodia (16.12)** en `docs/automation/evidence/I-64-pilot/`:
+- `F1-T1-MODEL/R20261002T001349Z-aad5/`: `gate-contract.json`, `prompt.md`, `delegation.json`, `relay-record.json`, `acceptance-precheck.json`
+  y `acceptance-precheck-reasons.json`;
+- `F1-T1-MODEL-nc4/R20261002T002047Z-f0b0/`: `delegation.json`, `nc4-result.json` y `relay-record.json`.
+
+`events.jsonl` (SHA-256 `C31DF251…E90D5CAD07`), `stderr.txt` y el registro de sesión de Codex no se versionan; quedan como procedencia.
+`acceptance-precheck-reasons.json` y `nc4-result.json` se escribieron con CRLF en el área transitoria, así que su SHA-256 transitorio difiere
+del blob, normalizado a LF por `core.autocrlf`. La identidad duradera es el blob del commit de custodia.
