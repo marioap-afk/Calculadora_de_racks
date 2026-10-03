@@ -190,7 +190,7 @@ según [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §7; aquí no se prome
 - **F1:** GATE PASS del Coordinator (C-01..C-04; [decisiones](../automation/decisions/I-62.md) §33; [evidencia](../automation/evidence/I-62-evidence.md) §34).
 - **F2:** GATE PASS del Coordinator (C-05..C-10 y C-19; [decisiones](../automation/decisions/I-62.md) §34; [evidencia](../automation/evidence/I-62-evidence.md) §§35-36).
 - **F3:** IN PROGRESS: implementación en la [evidencia](../automation/evidence/I-62-evidence.md) §37. Solo el Coordinator declara su GATE PASS.
-- **F4:** BLOCKED ON A-1 (FC-01, FC-02) solo para la materialización afectada; producción no autorizada.
+- **F4:** BLOCKED ON A-1 (FC-01, FC-02; [registro](I-62-A-1.md) y [paquete del Architect](I-62-architect-package-A-1.md)) solo para la materialización afectada; producción no autorizada.
 - **F6-F7, READY y cierre:** preparados sin materializar ([I-62-prep](../automation/evidence/I-62-prep/README.md)).
 
 ## 9. Owner Validation
