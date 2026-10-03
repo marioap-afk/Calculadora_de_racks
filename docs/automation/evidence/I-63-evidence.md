@@ -1897,3 +1897,82 @@ Copias en `docs/automation/evidence/I-63-pilot/G3-RACK-BUILTINS/R20261002T212850
 - **Siguiente:** `current_phase` = G4.
   - La sesión prepara el contrato de G4 y vuelve solo para la autorización formal.
   - La implementación de G4 no está autorizada.
+
+## 48. G4: borrador del contrato de gate (sin emitir)
+
+### 48.1 Cierre de G3
+
+Commit `49ed359e`: G3 PASS, disposición de O-G3-1..5 y DEBT-I63-G3-01; `current_phase` = G4. Corrida `push` 37081933485 `success` (cuatro jobs).
+
+### 48.2 Borrador
+
+- **Archivo:** `artifacts/orchestration/I-63/G4-PROJECT-SUMMARY/draft/R20261003T002705Z-0618/gate-contract.json`.
+  - SHA-256 `584FA8AEF955A5FC1897B1F983AB2524C4B07F22A8B8D621724B2A2AC553AE72`; válido contra el esquema; sin conflicto de alcance.
+  - `IssuedBy` = borrador; `CorrectionsAuthorized` = false.
+  - `TaskId` `G4-PROJECT-SUMMARY`.
+- **Alcance:**
+  - Permitido: `src/RackCad.Application/ComputedParameters/` y `tests/RackCad.Tests/ComputedParameters/`.
+  - Prohibido: Expressions, Persistence, ProjectVariables, Systems, Bom, Catalogs, Units, Domain, Plugin, UI, `tests/RackCad.UI.Tests/`, los
+    `.csproj` de Application y de pruebas, las suites de INV-28, `ExpressionCoreGuardTests`, `ExpressionDiagnosticCatalogTests`,
+    `ExpressionSymbolModelTests`, `NamespaceFolderGuardTests`, `PushBackBomCommandGuardTests` (DEBT-I63-G2-01), `docs/` y la configuración
+    del repositorio.
+  - Ninguna entrada prohibida cubre una permitida.
+- **Invariantes** (12):
+  - parte de G4 de INV-11 (A-2.2) e INV-32 (A-2.1);
+  - INV-29, INV-30, INV-31 e INV-34 (resumen);
+  - D-20, D-21, D-24 y D-25;
+  - conservación de G1, G2 y G3 (sin modificar sus pruebas);
+  - sin consumidores, sin persistencia y sin abrir `Create`.
+- **Pruebas:** filtro `FullyQualifiedName~RackCad.Tests.ComputedParametersSummary`, `MinSelected` 10 y `ExpectRed` true.
+- **Paradas:** las 19 de base (S-/P-) y C-01..C-09 de G4:
+  - C-07: la provenance cambiaría la igualdad de G1-G3;
+  - C-08: persistir o presentar, o abrir `Create`;
+  - C-09: un tiempo usado como oráculo, o N = 1000 que no cabe en la CI.
+- **`ExpectedEvidence`:**
+  - RED, GREEN y caracterización de D-24 por contadores;
+  - comprobación mecánica independiente de `Scope`, ampliada: además de alcance y prohibidos, ningún archivo de prueba existente en
+    `BaseSha` se modifica ni se borra (solo archivos nuevos en `tests/`);
+  - CI 4/4.
+- **Celdas y emisor:** celdas y `RoutingEnforcement` de G2.
+- **`AuthorityRevision` propuesta:** el commit que registre la autorización de G4, como en G3 (`e99621f9`). El borrador lleva `49ed359e`
+  solo como marcador.
+
+### 48.3 Hechos medidos que condicionan G4
+
+- **Provenance (D-21):**
+  - hoy `MetricValue` no tiene provenance y su igualdad compara estado, valor y razón (`RackMetricModels.cs`). Las pruebas de G1 y G2
+    comparan `MetricValue` por igualdad. Si la provenance entrara en `Equals`, esas pruebas cambiarían: la provenance debe quedar fuera de
+    la igualdad o en una estructura paralela (C-07);
+  - `RackComputedEvaluation` (G3) no conserva el `BoundExpression` ni los `SymbolId` leídos que pide D-21.
+- **`ProjectPopulationAggregator`:** ya es la función pura de D-12 que «en G4, `ProjectSummary` `Full`» alimenta con las métricas por rack.
+- **INV-29 (b), los `.csproj`:**
+  - `RackCad.Application.csproj` solo referencia Domain;
+  - `RackCad.UI.csproj` tiene `UseWPF`;
+  - `RackCad.Plugin.csproj` tiene `UseWPF` y AutoCAD por dos vías condicionales: `PackageReference AutoCAD.NET` (CI) y
+    `Reference … HintPath AcCoreMgd/AcDbMgd/AcMgd` (local).
+  - El detector debe reconocer las dos vías.
+  - Ya existe una guarda parcial de texto (`RegistryCommitAccreditationTests.cs:228-232`), sin cierre recursivo.
+- **O-G3-1:** `ProjectSummary` indexa `Racks.Metrics` por `MetricId`, no por nombre de miembro. No hace falta trasladar `Frentes` y
+  `FrentesVacios` al catálogo, así que el borrador no lo incluye.
+
+### 48.4 Preguntas para la autorización
+
+- **Q-G4-01 (D-21 en `RackComputedExpressionContext`):** D-21 pide que el contexto conserve el `BoundExpression` y los `SymbolId` leídos.
+  Eso exige un cambio aditivo en `RackComputedExpressionContext.cs` (G3), dentro del alcance.
+  - Propuesta: permitirlo solo de forma aditiva, sin cambiar el comportamiento ni las pruebas de G3.
+  - Alternativa: diferirlo junto a O-G3-4, como obligación del primer consumidor.
+- **Q-G4-02 (pruebas existentes):** el prefijo permitido de pruebas cubre las de G1-G3.
+  - Propuesta: protegerlas con el invariante, la parada C-01 y la comprobación mecánica ampliada (solo archivos nuevos en `tests/`), sin
+    entradas prohibidas dentro del prefijo permitido.
+- **Q-G4-03 (D-24 con N = 1000):** la caracterización corre en la suite Core de la CI, con contadores como oráculo y tiempos solo
+  registrados.
+  - Propuesta: si N = 1000 con tres vistas no cabe en un tiempo razonable de CI, STOP C-09 y vuelta, sin rebajar N por cuenta propia.
+- **Q-G4-04 (RED de INV-29 (b)):** el objetivo (Application → ninguna familia) ya pasa hoy. Su RED observable es el control positivo con
+  la misma función.
+  - Precedentes: INV-09 en G1 e INV-35 en G2.
+  - INV-29 (a), INV-30, INV-31, INV-34 (resumen) y las partes de G4 de INV-11 e INV-32 tienen RED por «API inexistente».
+  - Se pide confirmar.
+- **Q-G4-05 (ejecución):**
+  - Propuesta: una sola delegación con RED y GREEN, como G1 y G2 (no escalonada como G3), con `ROUTINE_IMPLEMENTATION` +
+    `CHARACTERIZATION` según §21 y `attempts` 2/3 (`AttemptsRemaining` 1).
+  - ¿Revisión de arquitectura antes del cierre de G4? La §21 solo la exige en G3.

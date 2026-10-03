@@ -18,7 +18,7 @@ execution_chain:
   task_id: null
   attempt: null
   next_role: Coordinator (autorizacion formal de G4 sobre el contrato que prepara la sesion)
-  next_action: Contrato de G4 en preparacion; sin delegacion ni Worker hasta la autorizacion
+  next_action: Borrador de contrato artifacts/orchestration/I-63/G4-PROJECT-SUMMARY/draft/R20261003T002705Z-0618/gate-contract.json (SHA-256 584FA8AEF955A5FC1897B1F983AB2524C4B07F22A8B8D621724B2A2AC553AE72); preguntas Q-G4-01..05 (evidencia §48); sin delegacion ni Worker hasta la autorizacion
   main_sha: 819955d61a6da4c811a11fbd11b5dca13f634b7c
   freeze_commit: f61d0aca859a11b15cbe1797069a83cba873ba95
   frozen_proposal_blob: 4d5dedce15363fa6378e460c5b63005fe41b858b
