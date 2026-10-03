@@ -1666,3 +1666,42 @@ I-64, que es una unidad I61 (Proposal V14 §14.1, sin efecto retroactivo), y no 
 | `docs/automation/evidence/I-62-F3/manifest-report.json` | `6adcac3abcdd7abc1171dcee7ced1c1bad036379` |
 | `docs/automation/evidence/I-62-F3/f3-mc.py` | `1bab344fe24339c322c53204c99649cb1c415371` |
 | `docs/automation/evidence/I-62-F3/f3-mc-result.json` | `5a8923e34b1792fdf56011ca44a37e3b5ccc8fd3` |
+
+## 38. F3 sobre el SHA exacto y paquete de la enmienda A-1 (orden §34)
+
+### 38.1 F3 sobre `f9234cb98f84b11f79acacb7677223424b63abc4`
+
+- **CI exacta:** corrida **37084798120**, attempt 1, event `push`, rama `architecture/portabilidad-coordinador-principal`, head_sha exacto,
+  `completed/success`. Jobs: Tests (Domain + Application) (111092723125), Build UI (111092723032), UI Tests (111092722900) y Build Plugin without AutoCAD
+  (111093089874), los cuatro `success`.
+- **Core Full del SHA exacto,** con el árbol limpio antes y después: 12 419/12 419 (inicio 01:06:44Z), TRX SHA-256 `5106755b58e2ab43…`.
+- `git ls-remote` de la rama = `f9234cb9…` tras el push. MEASURED por la sesión.
+
+### 38.2 Enmienda A-1 (FC-01, FC-02): preparada, sin aplicar y sin invocación
+
+- **Registro:** [I-62-A-1.md](../../initiatives/I-62-A-1.md), con el formato de LIFECYCLE §6: Freeze identificado (FREEZE_SHA `b64a3b64…`, V14
+  `4c617e82…`/`34ad80ea…`), `Applies-to: I-62`, cláusulas anteriores literales, delta exacto (D1-1..D1-9 y D2-1..D2-8), motivo, M-01..M-08 (M-02, M-03,
+  M-04 y M-05 activados), efecto en C-29, C-31, C-34, C-36, C-38 y en las pruebas de rebase de C-15, consecuencias del Owner (ninguna identificada) y
+  autoridades Architect + Coordinator con veredictos PENDING.
+- **Paquete del Architect:** [I-62-architect-package-A-1.md](../../initiatives/I-62-architect-package-A-1.md): identidad del objeto, veredicto que se
+  solicita, insumos canónicos con su blob, resumen del delta, siete preguntas y condiciones de la invocación.
+- **Contra-ejemplos exactos** (preparación de F4, no producción): [a1-counterexamples.py](I-62-A1/a1-counterexamples.py) codifica, solo para los campos que
+  tocan FC-01 y FC-02, el texto literal de V14 y el delta, y recorre 15 trazas simbólicas. MEASURED (resultado en
+  [a1-counterexamples-result.json](I-62-A1/a1-counterexamples-result.json), todas con su esperado):
+  - literal: abrir un segundo bucle es inválido por los dos caminos (§20.5 sin transición e I-P13 por `loop.object`), y además nace agotado (I-S18, P-18);
+    reconciliar la orquestación tras un rebase viola I-P13, B.8.8 e I-P05; no reconciliarla es **válido** para el validador literal aunque el `Target`
+    del intento siguiente ya no esté en la rama (el hueco);
+  - enmendado: LOOP_CLOSED y un bucle nuevo con otra autorización son válidos; reutilizar la autorización, reiniciar o cambiar su entrada, cerrar con una
+    solicitud abierta y poner `loop.object` a `null` fuera del cierre son inválidos; la reconciliación con imágenes es válida, su omisión la detecta I-H02,
+    un intento LAUNCHED conserva su `Target`, y reescribirlo, cambiar el blob o cambiar contadores son inválidos.
+- **Frontera de invocación:** la orden vigente no autoriza lanzar una sesión nueva del Architect. La sesión se detiene ahí con el paquete completo; no elige
+  runtime ni declara veredicto. OD-2 sigue sin resolver.
+- **Efecto:** solo la materialización de F4 que toca `orchestration.budgets`, `orchestration.loop`, `review_requests`, `StateFields` y la reconciliación de
+  §8.8 queda bloqueada hasta el veredicto. La preparación de F4 puede continuar. F3 no cambia.
+
+| Archivo | Blob |
+|---|---|
+| `docs/initiatives/I-62-A-1.md` | `09ca93285975c4b7af6471d6ae91bfa12c94a1fc` |
+| `docs/initiatives/I-62-architect-package-A-1.md` | `071cecba1fb8bdefc9a4e5554dd47a0459f8a1d2` |
+| `docs/automation/evidence/I-62-A1/a1-counterexamples.py` | `d7a5d1ef5558fd76c5ffe224fe71e807b44b240d` |
+| `docs/automation/evidence/I-62-A1/a1-counterexamples-result.json` | `9fa501b607d56c9bd902769dcd5f669450a3cb4c` |

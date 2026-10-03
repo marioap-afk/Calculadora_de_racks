@@ -1,0 +1,155 @@
+{
+ "Script": "a1-counterexamples.py",
+ "Freeze": {
+  "commit": "4c617e82b32b6c810b68d75fc19472efed22b393",
+  "blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa"
+ },
+ "Traces": {
+  "fc01-enmendado-cerrar-y-abrir-con-A2": {
+   "Validator": "enmendado (A-1)",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Violations": [],
+   "Verdict": "PASS"
+  },
+  "fc01-enmendado-cierra-con-solicitud-abierta": {
+   "Validator": "enmendado (A-1)",
+   "Expected": "INVALID",
+   "Got": "INVALID",
+   "Violations": [
+    "par 0→1 (LOOP_CLOSED → NONE): A-1: LOOP_CLOSED con una solicitud OPEN o un intento no terminal"
+   ],
+   "Verdict": "PASS"
+  },
+  "fc01-enmendado-object-null-fuera-del-cierre": {
+   "Validator": "enmendado (A-1)",
+   "Expected": "INVALID",
+   "Got": "INVALID",
+   "Violations": [
+    "par 0→1 (objeto null fuera del cierre): §20.5: transición ARCHITECT_SATISFIED → REVIEW_PENDING no existe",
+    "par 0→1 (objeto null fuera del cierre): I-P13: loop.object cambia en ARCHITECT_SATISFIED → REVIEW_PENDING"
+   ],
+   "Verdict": "PASS"
+  },
+  "fc01-enmendado-reinicia-A1": {
+   "Validator": "enmendado (A-1)",
+   "Expected": "INVALID",
+   "Got": "INVALID",
+   "Violations": [
+    "par 1→2 (A2 abre y reinicia A1): I-P13: review_rounds decrece en A1",
+    "par 1→2 (A2 abre y reinicia A1): I-P13: logical_requests decrece en A1",
+    "par 1→2 (A2 abre y reinicia A1): A-1: cambia el presupuesto de una autorización cerrada (A1)"
+   ],
+   "Verdict": "PASS"
+  },
+  "fc01-enmendado-reutiliza-A1": {
+   "Validator": "enmendado (A-1)",
+   "Expected": "INVALID",
+   "Got": "INVALID",
+   "Violations": [
+    "punto 2 (reabre con A1): I-S18: review_rounds = 4 supera su tope 3 en A1 (P-18)",
+    "punto 2 (reabre con A1): I-S18: logical_requests = 4 supera su tope 3 en A1 (P-18)",
+    "par 1→2 (reabre con A1): A-1: un bucle nuevo exige una ReviewLoopAuthorization nueva (reutiliza A1)"
+   ],
+   "Verdict": "PASS"
+  },
+  "fc01-literal-cerrar-y-abrir": {
+   "Validator": "literal (V14)",
+   "Expected": "INVALID",
+   "Got": "INVALID",
+   "Violations": [
+    "par 0→1 (NONE): §20.5: transición ARCHITECT_SATISFIED → NONE no existe",
+    "par 0→1 (NONE): I-P13: loop.object cambia en ARCHITECT_SATISFIED → NONE",
+    "punto 2 (REVIEW_PENDING sobre Y (A2)): I-S18: review_rounds = 4 supera su tope 3 (P-18)",
+    "punto 2 (REVIEW_PENDING sobre Y (A2)): I-S18: logical_requests = 4 supera su tope 3 (P-18)"
+   ],
+   "Verdict": "PASS"
+  },
+  "fc01-literal-reabrir-sobre-Y": {
+   "Validator": "literal (V14)",
+   "Expected": "INVALID",
+   "Got": "INVALID",
+   "Violations": [
+    "punto 1 (REVIEW_PENDING sobre Y (A2)): I-S18: review_rounds = 4 supera su tope 3 (P-18)",
+    "punto 1 (REVIEW_PENDING sobre Y (A2)): I-S18: logical_requests = 4 supera su tope 3 (P-18)",
+    "par 0→1 (REVIEW_PENDING sobre Y (A2)): §20.5: transición ARCHITECT_SATISFIED → REVIEW_PENDING no existe",
+    "par 0→1 (REVIEW_PENDING sobre Y (A2)): I-P13: loop.object cambia en ARCHITECT_SATISFIED → REVIEW_PENDING"
+   ],
+   "Verdict": "PASS"
+  },
+  "fc02-enmendado-LAUNCHED-conserva-su-Target": {
+   "Validator": "enmendado (A-1)",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Violations": [],
+   "Verdict": "PASS"
+  },
+  "fc02-enmendado-imagen-con-otro-blob": {
+   "Validator": "enmendado (A-1)",
+   "Expected": "INVALID",
+   "Got": "INVALID",
+   "Violations": [
+    "par 0→1 (imagen con otro blob): I-P13: loop.object cambia en REVIEW_PENDING → REVIEW_PENDING",
+    "par 0→1 (imagen con otro blob): B.8.8: review_requests[L1].object es inmutable",
+    "par 0→1 (imagen con otro blob): A-1: el Target replanificado no es la imagen del original (L1/1)"
+   ],
+   "Verdict": "PASS"
+  },
+  "fc02-enmendado-no-reconciliar-lo-detecta-I-H02": {
+   "Validator": "enmendado (A-1)",
+   "Expected": "INVALID",
+   "Got": "INVALID",
+   "Violations": [
+    "punto 1 (QU REBASE_RECONCILIATION (no reconcilia)): I-H02: loop.object.commit = c1 no es ancestro de HEAD",
+    "punto 1 (QU REBASE_RECONCILIATION (no reconcilia)): I-H02: review_requests[L1].object.commit = c1 no es ancestro de HEAD",
+    "punto 1 (QU REBASE_RECONCILIATION (no reconcilia)): I-H02: review_requests[L1].attempts[1].Target.commit = c1 no es ancestro de HEAD"
+   ],
+   "Verdict": "PASS"
+  },
+  "fc02-enmendado-reconcilia": {
+   "Validator": "enmendado (A-1)",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Violations": [],
+   "Verdict": "PASS"
+  },
+  "fc02-enmendado-reconciliacion-cambia-contadores": {
+   "Validator": "enmendado (A-1)",
+   "Expected": "INVALID",
+   "Got": "INVALID",
+   "Violations": [
+    "punto 1 (la reconciliación cambia contadores): I-S18: architect_launches ≠ intentos reservados de A1",
+    "par 0→1 (la reconciliación cambia contadores): I-P05: la reconciliación cambia contadores"
+   ],
+   "Verdict": "PASS"
+  },
+  "fc02-enmendado-reescribir-un-LAUNCHED": {
+   "Validator": "enmendado (A-1)",
+   "Expected": "INVALID",
+   "Got": "INVALID",
+   "Violations": [
+    "par 0→1 (QU REBASE_RECONCILIATION (reescribe un LAUNCHED)): I-P13/B.8.8: Target de un intento lanzado o terminal reescrito (L1/1, LAUNCHED)"
+   ],
+   "Verdict": "PASS"
+  },
+  "fc02-literal-no-reconciliar-hueco": {
+   "Validator": "literal (V14)",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Violations": [],
+   "Verdict": "PASS"
+  },
+  "fc02-literal-reconciliar-orquestacion": {
+   "Validator": "literal (V14)",
+   "Expected": "INVALID",
+   "Got": "INVALID",
+   "Violations": [
+    "par 0→1 (QU REBASE_RECONCILIATION (reconcilia)): I-P13: loop.object cambia en REVIEW_PENDING → REVIEW_PENDING",
+    "par 0→1 (QU REBASE_RECONCILIATION (reconcilia)): B.8.8: review_requests[L1].object es inmutable",
+    "par 0→1 (QU REBASE_RECONCILIATION (reconcilia)): I-P05: la reconciliación cambia campos fuera de StateFields ['orchestration.loop.object.commit', 'orchestration.review_requests[].object.commit']"
+   ],
+   "Verdict": "PASS"
+  }
+ },
+ "AllAsExpected": true
+}
