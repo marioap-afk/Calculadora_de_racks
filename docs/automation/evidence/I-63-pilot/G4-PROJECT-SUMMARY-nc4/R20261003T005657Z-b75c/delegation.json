@@ -1,0 +1,329 @@
+{
+  "Schema": "rackcad-delegation/v1",
+  "TaskId": "G4-PROJECT-SUMMARY",
+  "RunId": "R20261003T005345Z-66f3",
+  "Initiative": "I-63",
+  "Unit": "I-63",
+  "Gate": "G4",
+  "Attempt": 2,
+  "AuthorityRevision": "527e4b9185173e2f50c10d39a882749c09b77d2f",
+  "MainSha": "819955d61a6da4c811a11fbd11b5dca13f634b7c",
+  "BaseSha": "527e4b9185173e2f50c10d39a882749c09b77d2f",
+  "ExpectedBranch": "architecture/parametros-calculados-resumen-proyecto",
+  "ExpectedWorktree": "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-parametros-calculados-resumen-proyecto",
+  "Owner": {
+    "Kind": "subagent",
+    "Id": "subagent:R20261003T005345Z-66f3"
+  },
+  "TaskClass": "Implementación de pruebas y caracterización",
+  "Dimensions": {
+    "Ambiguity": "Low",
+    "ArchitecturalSensitivity": "High",
+    "Breadth": "High",
+    "ToolUse": "High",
+    "FailureCost": "High",
+    "MechanicalRepetition": "Low",
+    "Horizon": "Medium"
+  },
+  "Executor": {
+    "Provider": "Anthropic",
+    "Transport": "subagente de la sesión de escritorio",
+    "Role": "Worker",
+    "Cell": "anthropic/subagent/claude-sonnet-5-5"
+  },
+  "Model": "claude-sonnet-5-5",
+  "Effort": {
+    "Semantic": "Deep",
+    "Provider": "high"
+  },
+  "PromptProfile": "ROUTINE_IMPLEMENTATION",
+  "RoutingReason": "2026-10-03: G4 combina implementación de pruebas con caracterización, según Proposal V3 §21. Parto de Balanced por implementación de pruebas/caracterización; ArchitecturalSensitivity y FailureCost High elevan un escalón a Deep según routing.md §2, sin ajuste por repetición mecánica Low. Horizon Medium corresponde a una sola tarea de gate con alcance congelado. La celda elegida es la opción elegible del contrato con write-commit-push y effort-applied probado; su catálogo registra claude-sonnet-5-5 como Equilibrado, recomendado para ROUTINE_IMPLEMENTATION y CHARACTERIZATION, con medium/high medidos en la sonda U-04 y el piloto G3 (VerifiedOn 2026-09-30). Deep corresponde al nivel Equilibrado y high es TestedEffort. La otra celda elegible del contrato es solo lectura, por lo que no satisface el trabajo asignado. Ejecuté las órdenes requeridas: rama architecture/parametros-calculados-resumen-proyecto; HEAD 527e4b9185173e2f50c10d39a882749c09b77d2f; origin/main 819955d61a6da4c811a11fbd11b5dca13f634b7c; log: 527e4b91, 4207b528, 49ed359e. MainSha coincide con origin/main. Preflight: Authorities, AllowedWriteScope, ForbiddenWriteScope, Invariants, RequiredTests y StopConditions comparados elemento a elemento y en orden con el contrato; igualdad exacta, incluidos Path/Section/Class y las cadenas de Invariants.",
+  "ModelEscalationReason": null,
+  "RoutingEnforcement": "required",
+  "Authorities": [
+    {
+      "Path": "docs/initiatives/I-63-proposal-v3.md",
+      "Section": "archivo completo (Frozen: YES); en especial D-11, D-12, D-17, D-20, D-21, D-24, D-25, D-28 y §8, §10, §14, §15, §18-§21",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-63-proposal-v3-amendment-a1-verificacion.md",
+      "Section": "archivo completo (A-1.1 para INV-29 (b) y A-1.3 para INV-34)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-63-proposal-v3-amendment-a2-gate-verification-sequencing.md",
+      "Section": "archivo completo (A-2.1 para INV-32 y A-2.2 para INV-11: partes de G4)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-63-proposal-v3-amendment-a3-inv22-diagnostico.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-63-parametros-calculados-resumen-proyecto.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/decisions/I-63.md",
+      "Section": "§2 y §6",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "Section": "## 7. Gates funcionales",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "AGENTS.md",
+      "Section": "## Convenciones arquitectonicas (obligatorias)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0043-motor-expresiones-parametricas-causas-multiples-y-recuperacion-segura.md",
+      "Section": "D1 (nucleo neutral) y D24",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "## 16. Ejecución delegada bajo orden del Coordinator",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "## 1. Clases de tarea y ## 4. Algoritmo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+      "Section": "## G. Delegación de ejecución",
+      "Class": "EXTERNAL"
+    }
+  ],
+  "Objective": "Implementar G4 conforme a la Proposal V3 congelada y A-1, A-2 y A-3: crear ProjectSummary Full determinista sobre G1+G2, Totals, BySystem, Racks con RackSummary.Metrics conforme a D-28, Diagnostics y provenance en memoria conforme a D-21; preservar ProjectPopulation y el comportamiento de G1-G3; añadir la caracterización de rendimiento D-24. Producción nueva en src/RackCad.Application/ComputedParameters/ProjectSummary.cs, RackSummary.cs y ProjectSummaryProvenance.cs; cambio aditivo únicamente en RackComputedExpressionContext.cs. Pruebas nuevas: tests/RackCad.Tests/ComputedParameters/ComputedParametersSummaryModelTests.cs, ComputedParametersSummaryDeterminismTests.cs, ComputedParametersSummaryNeutralityTests.cs, ComputedParametersSummaryProvenanceTests.cs y ComputedParametersSummaryPerformanceTests.cs. Cada clase de prueba tendrá nombre con prefijo ComputedParametersSummary y namespace RackCad.Tests. No modificar, borrar ni renombrar pruebas existentes.",
+  "AllowedWriteScope": [
+    "src/RackCad.Application/ComputedParameters/",
+    "tests/RackCad.Tests/ComputedParameters/",
+    "src/RackCad.Application/"
+  ],
+  "ForbiddenWriteScope": [
+    "src/RackCad.Application/Expressions/",
+    "src/RackCad.Application/Persistence/",
+    "src/RackCad.Application/ProjectVariables/",
+    "src/RackCad.Application/Systems/",
+    "src/RackCad.Application/Bom/",
+    "src/RackCad.Application/Catalogs/",
+    "src/RackCad.Application/Units/",
+    "src/RackCad.Application/RackCad.Application.csproj",
+    "src/RackCad.Domain/",
+    "src/RackCad.Plugin/",
+    "src/RackCad.UI/",
+    "tests/RackCad.UI.Tests/",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "tests/RackCad.Tests/ExpressionRoundTripTests.cs",
+    "tests/RackCad.Tests/ExpressionFormatterTests.cs",
+    "tests/RackCad.Tests/ExpressionBinderTests.cs",
+    "tests/RackCad.Tests/G8PersistenceIntegrationContractTests.cs",
+    "tests/RackCad.Tests/ExpressionCoreGuardTests.cs",
+    "tests/RackCad.Tests/ExpressionDiagnosticCatalogTests.cs",
+    "tests/RackCad.Tests/ExpressionSymbolModelTests.cs",
+    "tests/RackCad.Tests/NamespaceFolderGuardTests.cs",
+    "tests/RackCad.Tests/PushBackBomCommandGuardTests.cs",
+    "assets/",
+    "deploy/",
+    "eng/",
+    "tools/",
+    ".github/",
+    "RackCad.sln",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json",
+    "NuGet.Config",
+    ".gitattributes",
+    ".gitignore",
+    ".editorconfig",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "README.md",
+    "docs/"
+  ],
+  "Invariants": [
+    "INV-11 (parte de G4 segun A-2.2): con el snapshot de entrada invertido, ProjectSummary Full(original) == ProjectSummary Full(invertido), incluidos el orden determinista, el representante, el DisplayName, la grafia canonica del RackId, la Membership, las metricas y los Diagnostics; la parte de G2 sobre ProjectPopulation sigue en verde sin cambios",
+    "INV-29: resumen determinista y neutral: (a) mismo snapshot en otro orden -> mismo ProjectSummary; ProjectPopulation (Population) no tiene campos de metricas por rack. (b) una sola funcion ForbiddenReferenceFamilies(proyecto) recorre el cierre de referencias declaradas de un .csproj (ProjectReference recursivo, PackageReference, Reference y UseWPF) y las clasifica en WPF o AutoCAD: RackCad.Application.csproj -> ninguna; controles positivos con la MISMA funcion: RackCad.UI.csproj -> WPF y RackCad.Plugin.csproj -> contiene AutoCAD; el RED discriminante de (b) es ese control positivo (patron de INV-09 e INV-35). Detector segun A-1.1: AutoCAD por PackageReference Include=AutoCAD.NET o Reference Include AcCoreMgd, AcDbMgd o AcMgd; WPF por UseWPF=true o Reference a PresentationFramework, PresentationCore o WindowsBase; union de todos los ItemGroup y PropertyGroup sin evaluar Condition; sin dependencias transitivas; solo se leen los .csproj, no se modifican",
+    "INV-30: una resolucion por RackId y peticion: N racks con 3 vistas -> N resoluciones del Selectivo en Full y 0 en Population (contador del costado de resolucion); nunca 3N",
+    "INV-31: identificadores de autoridad estables: la tabla cerrada de D-21 (selective.resolved.fondo0.bays, selective.resolved.fondo0.emptyBays, population.cotizable y aggregate.sum) coincide con la de la prueba, en los dos sentidos",
+    "INV-32 (parte de G4 segun A-2.1): con el MISMO contador del orquestador real de poblacion: RackMetricRequest directo -> 0 evaluaciones de poblacion; ProjectPopulation -> > 0 (G2, sin cambios); ProjectSummary Full sobre el mismo rack -> > 0 (G4)",
+    "INV-34 (resumen): precedencia D-28 por RackSummary.Metrics con el MISMO resultado que RackMetricRequest: Push Back con diseno ilegible -> NotSupported con 0 lecturas y 0 resoluciones; Cabecera -> NotApplicable, idem; Selectivo con hermanas divergentes -> Unavailable(SiblingsDivergent) con 0 resoluciones; Selectivo ilegible -> Unavailable(DesignUnreadable); Selectivo valido -> Available",
+    "D-20: ProjectSummary Full con el modelo congelado completo (Totals, BySystem[6], Racks con todos los RackIds atribuibles, Diagnostics y provenance), puro, inmutable, en memoria y no persistido: Totals (Project, totalRacks); BySystem con los seis tokens en orden fijo y sus tres metricas siempre presentes; Racks con TODOS los RackIds atribuibles (incluidos, excluidos tambien NotPlaced, e indeterminados), cada uno con RackId canonico, KindToken, DisplayName, Membership y Metrics (Rack, *) siempre presentes segun D-28 (la misma tabla que RackMetricRequest, sin otra regla); Diagnostics en orden determinista (codigo, DefinitionKey Ordinal); Racks en orden de RackId canonico Ordinal; sin UI, sin textos localizados obligatorios y sin dependencias de WPF ni del Plugin; el nivel Population (ProjectPopulation) no cambia y nunca ejecuta Phi2 ni Phi3 de metricas",
+    "D-21: provenance en memoria y sin persistir (ADR-0043 D24), FUERA de la igualdad semantica de MetricValue (MetricValue.Equals no cambia; estructura asociada o envoltorio del resumen: valor semantico == MetricValue existente y provenance == metadato adicional): cada MetricValue del resumen conserva el MetricId (y el SymbolId si es ComputedParameter), el RackId canonico, un identificador de autoridad fuente de la tabla cerrada de INV-31, la fase, la DefinitionKey del representante y los outcomes de E4 y E6 y el efectivo; cada agregado conserva los RackIds canonicos incluidos y los excluidos con su motivo; RackComputedExpressionContext conserva y expone, como cambio ADITIVO, el BoundExpression evaluado y la coleccion determinista de SymbolId efectivamente leidos, sin cambiar el resultado de Evaluate, la propagacion de estados, el binder ni el evaluador ni la semantica de G3, sin abrir Create y sin motor de dependencias; sin UI; la igualdad y el comportamiento observable de G1, G2 y G3 no cambian",
+    "D-24: por peticion un contrato de captura, una lectura del registro y un catalogo; por RackId una proyeccion y una autoridad; una Phi2+Phi3 solo para los Selectivos con Full y un veredicto E6 por cada Push Back; nunca por vista; sin caches ni resolucion repetida dentro de una peticion; RackMetricRequest resuelve como maximo un rack. Caracterizacion sintetica en Core con N = 1, 10, 100 y 1000 racks de tres vistas, Population frente a Full, lecturas repetidas y una sola peticion por rack: los contadores inyectados son el oraculo, los relojes nunca; los tiempos medidos se registran sin umbrales inventados",
+    "D-25: todo en Application pura (RackCad.Application.ComputedParameters); el contrato de entrada lo construyen las pruebas; ningun componente nuevo del Plugin ni de la UI",
+    "G1, G2 y G3 se conservan: RackMetricRequest (con su precondicion ArgumentException), ProjectPopulation, agregacion, RackOutputVerdict, RackComputedExpressionContext y los cambios del nucleo, con sus pruebas, siguen en verde y sin modificar; las pruebas existentes de tests/RackCad.Tests/ComputedParameters/ (G1-G3) no se modifican, borran ni renombran: git diff --name-status BaseSha..CurrentSha -- tests/RackCad.Tests/ComputedParameters/ solo contiene altas de G4",
+    "Ningun consumidor existente cambia de comportamiento; ProjectSummary no se persiste ni se presenta; RackComputedExpressionContext.Create sigue interno (O-G3-4 es deuda del primer consumidor, no de G4); los opcionales O-G3-1..5, DEBT-I63-G2-01 y DEBT-I63-G3-01 no se tocan en G4 (O-G3-1 solo si ProjectSummary lo necesitara de verdad)"
+  ],
+  "AcceptanceCriteria": [
+    "Primero crear pruebas RED compilables contra un esqueleto que compila; deben fallar por aserción o excepción, nunca por error de compilación. Ejecutar el filtro del contrato y acreditar al menos 10 pruebas seleccionadas. Cubrir INV-11 (parte G4), INV-29, INV-30, INV-31, INV-32 (parte G4), INV-34 (resumen), D-20, D-21 y D-24.",
+    "Publicar el commit RED antes del GREEN para que exista una corrida push propia y el job Core del SHA RED falle. Para INV-29 (b), implementar una sola función ForbiddenReferenceFamilies(proyecto), recorrer referencias ProjectReference recursivas y los elementos PackageReference, Reference y UseWPF de todos los ItemGroup/PropertyGroup sin evaluar Condition, sin dependencias transitivas; cubrir Application sin familias y controles positivos UI→WPF y Plugin→AutoCAD con esa misma función. Reconocer las familias según A-1.1.",
+    "Implementar ProjectSummary Full determinista e inmutable con Totals, los seis tokens BySystem en orden fijo y tres métricas presentes por token, todos los RackIds atribuibles y Diagnostics; ordenar Racks por RackId canónico Ordinal y Diagnostics por código y DefinitionKey Ordinal. Cada RackSummary incluye RackId canónico, KindToken, DisplayName, Membership y Metrics; la precedencia D-28 y los estados de Metrics coinciden con RackMetricRequest.",
+    "Probar INV-11 con snapshot invertido y verificar que Full conserva orden, representante, DisplayName, grafía canónica del RackId, Membership, métricas y Diagnostics. Probar INV-29 (a) con el mismo snapshot en otro orden y comprobar igualdad del resumen; verificar que ProjectPopulation no adquiere métricas por rack.",
+    "Probar INV-30 con N racks y tres vistas: N resoluciones Selectivo en Full, 0 en Population y nunca 3N, observadas en el contador del costado de resolución.",
+    "Probar INV-31 en ambos sentidos contra la tabla cerrada de D-21: selective.resolved.fondo0.bays, selective.resolved.fondo0.emptyBays, population.cotizable y aggregate.sum.",
+    "Probar INV-32 con el mismo contador del orquestador real de población: RackMetricRequest directo da 0 evaluaciones; ProjectSummary Full sobre el mismo rack da más de 0; el control de ProjectPopulation de G2 permanece en verde sin cambios.",
+    "Probar INV-34 en RackSummary.Metrics y comparar con RackMetricRequest: Push Back ilegible NotSupported con 0 lecturas y 0 resoluciones; Cabecera NotApplicable con 0 lecturas y 0 resoluciones; Selectivo con hermanas divergentes Unavailable(SiblingsDivergent) con 0 resoluciones; Selectivo ilegible Unavailable(DesignUnreadable); Selectivo válido Available.",
+    "La provenance de D-21 permanece en memoria y fuera de MetricValue.Equals; MetricValue.Equals no cambia. Cada valor conserva su MetricId y, si corresponde, SymbolId, RackId canónico, autoridad fuente cerrada, fase, DefinitionKey del representante, outcomes E4/E6 y efectivo; los agregados conservan RackIds incluidos y excluidos con su motivo.",
+    "El cambio de RackComputedExpressionContext.cs es aditivo: conserva y expone BoundExpression evaluado y la colección determinista de SymbolId efectivamente leídos, sin cambiar Evaluate, propagación de estados, binder, evaluador ni semántica G3; no abrir Create. Si la provenance exige alterar igualdad o comportamiento G1-G3, o modificar sus pruebas, detenerse en C-07.",
+    "Caracterizar D-24 en Core para N=1, 10, 100 y 1000 racks, tres vistas, Population frente a Full, lecturas repetidas y una petición por rack. Los contadores inyectados son el oráculo, nunca los tiempos; registrar los tiempos medidos en la entrega sin umbrales. Si N=1000 con tres vistas no cabe en la CI por límite material de recursos o tiempo, detenerse en C-09 sin reducir N, dividir el caso ni omitirlo.",
+    "El GREEN no modifica ningún archivo de pruebas del RED ni las pruebas existentes G1, G2 y G3. Ejecutar la suite Core completa en verde, incluidas las pruebas G1-G3, las suites de INV-28, ExpressionCoreGuardTests, ExpressionDiagnosticCatalogTests y NamespaceFolderGuardTests.",
+    "Crear únicamente los archivos nuevos de producción ProjectSummary.cs, RackSummary.cs y ProjectSummaryProvenance.cs bajo src/RackCad.Application/ComputedParameters/, además del cambio aditivo autorizado en RackComputedExpressionContext.cs. Crear los archivos de prueba nuevos nombrados en Objective bajo tests/RackCad.Tests/ComputedParameters/, con namespace RackCad.Tests y clases cuyo nombre comience por ComputedParametersSummary. No tocar pruebas existentes ni proyectos UI/Plugin.",
+    "Los campos de texto libre de la entrega no contienen términos de AUTOMATION_PLAN §16.10, ni las palabras «candidato» o «candidate»."
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.ComputedParametersSummary",
+      "MinSelected": 10,
+      "ExpectRed": true
+    }
+  ],
+  "ExpectedEvidence": [
+    "Commit RED: pruebas focales de INV-11 (parte G4), 29, 30, 31, 32 (parte G4) y 34 (resumen), y de D-20, D-21 y D-24, que fallan por asercion o excepcion contra la API actual (sin errores de compilacion), con seleccion >= 10; INV-29 (b) con su control positivo sobre la misma funcion",
+    "Commit GREEN: implementacion en src/RackCad.Application/ComputedParameters/ sin modificar las pruebas del RED ni las existentes; suite Core completa en verde, incluidas las pruebas de G1, G2 y G3, las suites de INV-28, ExpressionCoreGuardTests, ExpressionDiagnosticCatalogTests y NamespaceFolderGuardTests",
+    "Caracterizacion de D-24 (N = 1, 10, 100 y 1000 con tres vistas; Population frente a Full; lecturas repetidas): contadores como oraculo y tiempos medidos registrados en la entrega, sin umbrales",
+    "Comprobacion mecanica independiente de la sesion antes de aceptar EXECUTION_VERIFIED: (1) Scope (DEV-G2-01): git diff --name-only BaseSha..CurrentSha contenido en AllowedWriteScope y sin interseccion con ForbiddenWriteScope; (2) pruebas existentes sin cambios: git diff --name-status BaseSha..CurrentSha -- tests/RackCad.Tests/ComputedParameters/ con 0 modificados, 0 borrados y 0 renombrados y solo altas de G4",
+    "worker-handoff.json conforme al esquema, con los SHA de RED y GREEN y el trailer real del Worker",
+    "Push de la rama sin force; corrida push del SHA exacto de GREEN con los cuatro jobs requeridos en success"
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive/irreversible action not authorized"
+    },
+    {
+      "Id": "S-06",
+      "Text": "missing credentials/permissions"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch/worktree ownership conflict"
+    },
+    {
+      "Id": "S-09",
+      "Text": "dependency not integrated"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify authority revision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "main movement invalidates exact-SHA assumptions"
+    },
+    {
+      "Id": "S-14",
+      "Text": "initiative contract explicitly says STOP"
+    },
+    {
+      "Id": "P-01",
+      "Text": "Cambio del hash de config.toml"
+    },
+    {
+      "Id": "P-02",
+      "Text": "Participante vivo ajeno, proceso no atribuible o mas de una delegacion abierta"
+    },
+    {
+      "Id": "P-03",
+      "Text": "Delegacion fuera del contrato"
+    },
+    {
+      "Id": "P-04",
+      "Text": "Tope de BLOCKED alcanzado"
+    },
+    {
+      "Id": "P-05",
+      "Text": "Invocacion distinta del paquete aceptado"
+    },
+    {
+      "Id": "P-06",
+      "Text": "Aviso de limite de uso o de creditos"
+    },
+    {
+      "Id": "P-07",
+      "Text": "Una invocacion excederia el tope de invocaciones"
+    },
+    {
+      "Id": "P-08",
+      "Text": "La sesion opero durante una cesion"
+    },
+    {
+      "Id": "C-01",
+      "Text": "Hace falta tocar Expressions, Persistence, ProjectVariables, Systems, Bom, Catalogs, Units, Domain, Plugin, UI, cualquier .csproj o modificar, borrar o renombrar una prueba existente (incluidas las de G1, G2 y G3)"
+    },
+    {
+      "Id": "C-02",
+      "Text": "D-20, D-21, D-24 o D-28 no pueden implementarse tal como estan congelados (requiere A-n o Architect)"
+    },
+    {
+      "Id": "C-03",
+      "Text": "Contradiccion entre el Freeze y el codigo consumido (EXP-01)"
+    },
+    {
+      "Id": "C-04",
+      "Text": "Necesidad de leer o consumir codigo no integrado de I-64, I-62 o I-52"
+    },
+    {
+      "Id": "C-05",
+      "Text": "Cualquier escritura fuera de AllowedWriteScope"
+    },
+    {
+      "Id": "C-06",
+      "Text": "Un INV de G4 no puede mostrar un RED observable antes del cambio correcto"
+    },
+    {
+      "Id": "C-07",
+      "Text": "La provenance de D-21 cambiaria la igualdad o el comportamiento observable de G1, G2 o G3, o exigiria modificar sus pruebas"
+    },
+    {
+      "Id": "C-08",
+      "Text": "Hace falta persistir ProjectSummary, presentarlo en UI o en el Plugin, habilitar Rack.* en otro consumidor (D-14) o abrir RackComputedExpressionContext.Create (O-G3-4)"
+    },
+    {
+      "Id": "C-09",
+      "Text": "Un tiempo medido tendria que usarse como oraculo o umbral, o la caracterizacion con N = 1000 y 3 vistas no puede ejecutarse en la CI disponible por limite material de recursos o tiempo; no se rebaja N, no se divide el caso ni se marca omitido (D-24)"
+    },
+    {
+      "Id": "C-10",
+      "Text": "Aparece una cuestion material de arquitectura, autoridad o semantica congelada (se reconsidera la revision del Architect)"
+    }
+  ],
+  "MaxReworkLoops": 3,
+  "AttemptsRemaining": 1,
+  "ChainBaseSha": "527e4b9185173e2f50c10d39a882749c09b77d2f",
+  "ChainRedSha": null,
+  "ChainRedFiles": [],
+  "CorrectionOf": null,
+  "ExpectedHandoffPath": "artifacts/orchestration/I-63/G4-PROJECT-SUMMARY/2/{WorkRunId}/worker-handoff.json",
+  "IssuedBy": "Controller Codex (planificacion G4, CONTROLLER_PLANNING)"
+}

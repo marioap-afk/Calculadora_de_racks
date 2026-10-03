@@ -1993,3 +1993,89 @@ Commit `49ed359e`: G3 PASS, disposición de O-G3-1..5 y DEBT-I63-G3-01; `current
 - **`AuthorityRevision`:** el SHA de este commit de autorización.
 - **Sin mezclar en G4:** DEBT-I63-G2-01, DEBT-I63-G3-01 ni O-G3-1..5.
 - **Contadores:** `attempts` 2/3 (`AttemptsRemaining` 1).
+
+## 50. G4-PROJECT-SUMMARY bajo I-61: STOP S-03/C-10 en la verificación
+
+### 50.1 Invocaciones
+
+| `RunId` | Fase | Participante (solicitado = efectivo) | Resultado |
+|---|---|---|---|
+| `R20261003T005345Z-66f3` | PLANNING | Codex CLI, `gpt-6-luna`, `high` | Seis colecciones iguales al contrato; A1-A8 en `pass`; celda `claude-sonnet-5-5` `high` (Deep), `ROUTINE_IMPLEMENTATION` |
+| `R20261003T005657Z-b75c` | CONTROL nc4 | — (sin invocar) | A3 en `fail` y las demás iguales a la real: oráculo cumplido |
+| `R20261003T005720Z-2b14` | WORK | Subagente, `claude-sonnet-5-5`, `high` | RED `55d6b274`, GREEN `4f45f446`; `IMPLEMENTATION_COMPLETE` (1509 s, 77 llamadas) |
+| `R20261003T012440Z-ef71` | VERIFICATION | Codex CLI, `gpt-6-luna`, `high` | **`EXECUTION_BLOCKED/STOP`, `Contract`, [S-03, C-10]**; las otras 13 en `pass` |
+
+- **Contrato:** emitido contra la autorización (`AuthorityRevision` `527e4b91`, CI `37083561563` 4/4), SHA-256 `923D2B2CE69D3A65F124E307C298D0BC67C4845337E688F1943EEFBC9F523950`.
+- **`config.toml`:** igual a la línea base del Owner (`155933B3`) en todas las cesiones.
+- **Puerta de PID:** sin procesos marcados vivos.
+- **Comprobación de entrada de la verificación:** la primera, a las 01:30Z, falló por un corte de red (`git fetch`: «Could not resolve
+  host: github.com») y no escribió `entry.json`. Se reintentó a petición del usuario a las 02:23Z y salió limpia. La cesión del
+  Controller no se vio afectada.
+
+### 50.2 Entrega, CI y comprobaciones mecánicas
+
+- **RED `55d6b274`:** corrida 37085428743 en `failure`. Fallan 26 pruebas del filtro (29 seleccionadas) y ninguna fuera de él.
+  - Pasan 3 en el RED: las 2 de INV-29 (b), por su control positivo (patrón autorizado), y `D24_UnaSolaPeticionPorRack` (G1 sin
+    cambio).
+- **GREEN `4f45f446`:** corrida 37085650331, **`success`, cuatro jobs**. Core 12595/12595; filtro 29/29; UI 1637 superadas y 17 omitidas
+  por `Skip`.
+- **Comprobaciones mecánicas de la sesión** (`docs/automation/evidence/I-63-pilot/G4-PROJECT-SUMMARY/R20261003T005720Z-2b14/scope-check.json`):
+  - **`Scope` PASS:** 12 archivos (7 de producción en `ComputedParameters/` y 5 pruebas nuevas), ninguno prohibido.
+  - **Pruebas existentes sin cambios PASS:** `git diff --name-status` da 5 altas y 0 modificados, borrados o renombrados entre las 12
+    existentes. El GREEN no toca las pruebas del RED.
+- **Contadores observados** (oráculo D-24; N con tres vistas):
+  - `Population`: 3N lecturas, 1 evaluación de población y 0 resoluciones.
+  - `Full`: 3N lecturas, 1 evaluación y N resoluciones, nunca 3N.
+  - Para N = 1000: 3000/1/0 y 3000/1/1000.
+  - INV-32: `RackMetricRequest` 0; `ProjectPopulation` > 0; `Full` 1.
+- **Tiempos registrados** (no son oráculo): N = 1000, `Population` ≈ 406 ms y `Full` ≈ 394 ms. N = 1000 cabe sin rebajar N: C-09 no se
+  activa.
+- **Provenance:**
+  - Hay una `MetricProvenance` por métrica `(Rack, *)` y una `AggregateProvenance` por agregado. La tabla cerrada `MetricAuthorityIds.All`
+    tiene 4 identificadores.
+  - `MetricValue.Equals` no cambia; se comprueba por reflexión.
+  - `RackComputedEvaluation` gana `Expression` y `ReadSymbols` (aditivo; `Evaluate` sin cambios; las 89 pruebas de G3 en verde).
+
+### 50.3 STOP de la verificación (motivo del Controller)
+
+- El GREEN añade el getter público **`RackSummary.RepresentativeDefinitionId`**, que consume la prueba de INV-11.
+- La Proposal V3 §14 (D-20) enumera para `RackSummary` solo RackId, KindToken, DisplayName, Membership y Metrics.
+- La entrega ya lo planteaba como pregunta abierta.
+- El Controller lo trata como extensión pública del modelo congelado, que requiere resolución (S-03 y C-10).
+
+### 50.4 Lectura de la sesión (para el juicio del Coordinator)
+
+- **Hechos:**
+  - `PopulationRack.RepresentativeDefinitionId` (`ProjectPopulation.cs:147`) existe desde G2 y se aceptó en G2 PASS. `RackSummary` repite
+    ese mismo dato, de solo lectura.
+  - D-21 ya congela «la `DefinitionKey` del representante» en la provenance de cada métrica (`MetricProvenance.RepresentativeDefinitionKey`).
+  - La orden de G4 define INV-11 como `Full(original)` == `Full(invertido)` «incluyendo […] representative».
+- **Lectura:** el campo es aditivo, no persiste nada, no cambia comportamiento ni la semántica de las métricas, y expone un dato que el
+  modelo congelado ya contiene. Por eso la sesión lo considera no material (M-01..M-08 no activados). Pero la decisión normativa es del
+  Coordinator.
+- **Opciones:**
+  - **1 (recomendada):** aceptar el miembro como precisión no material de D-20 y repetir la verificación con un `RunId` nuevo citando la
+    decisión, sin cambiar el trabajo y sin consumir `attempts`. Si el Coordinator lo prefiere, puede fijarlo con una A-4 solo del
+    Coordinator, lo que exigiría reemitir el contrato y replanificar.
+  - **2:** exigir que se retire y se observe el representante por la provenance. Es una corrección de trabajo: `attempts` 2 → 3 y, después,
+    STOP S-11 ante cualquier otra.
+- **Otros hallazgos para la revisión del diff:**
+  - H-G4-01: desviación declarada. El Worker validó en local, sin commit, una implementación provisional antes del RED; restauró el
+    esqueleto con `git checkout --` y publicó RED y GREEN en ese orden.
+  - H-G4-02: en `Full`, un Push Back ilegible **colocado** registra 1 lectura del lector D-26, que es la E5 de la pertenencia (D-10); las
+    métricas no añaden ninguna. El oráculo de 0 de INV-34 se cumple literalmente en el caso sin colocar y en la Cabecera.
+  - H-G4-03: refactor sin cambio de comportamiento para que `RackMetricRequest` y `RackSummary.Metrics` usen la misma tabla D-28.
+    `RackMetricOrchestrator` es nuevo; `RackMetricRequest.cs` y `ProjectPopulation.cs` cambian, con las pruebas de G1 y G2 intactas y en
+    verde.
+  - H-G4-04: limitaciones declaradas.
+    - `MetricProvenance.EffectiveOutcome` solo se informa con `EffectiveFailed`.
+    - `AuthorityId` se informa para métricas `Supported` aunque el valor sea `Unavailable`.
+    - En `Full`, los Selectivos excluidos o `NotPlaced` también reciben sus métricas D-28 (R-14 de la Proposal).
+    - `ProjectSummary.Equals` compara su texto canónico `Describe()`.
+
+### 50.5 Contadores
+
+- `attempts` 2/3, sin cambio.
+- Planificaciones de G4: 1. Verificaciones: 1, cerrada en STOP.
+- nc4 cumplido. nc1-nc3 no se ejecutan, porque no hay `EXECUTION_VERIFIED`.
+- Copias en `docs/automation/evidence/I-63-pilot/G4-PROJECT-SUMMARY/<RunId>/` y `docs/automation/evidence/I-63-pilot/G4-PROJECT-SUMMARY-nc4/<RunId>/`.

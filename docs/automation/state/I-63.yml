@@ -4,11 +4,11 @@ automation_state:
   branch: architecture/parametros-calculados-resumen-proyecto
   claim_id: ce04f47f-ca53-4e75-b983-5ac57ab6c5e3
   current_phase: G4
-  state: implementing
+  state: waiting
   gate: none
   attempts: 2
-  next_action: G4 autorizado; CI exacta del commit de autorizacion, contrato G4 contra ese SHA, planificacion, A1-A8, nc4, RED, GREEN, CI 4/4, verificacion, Scope mecanico, pruebas existentes sin cambios, nc1-nc3 y custodia.
-  last_evidence_commit: 4207b528ee34c6fa58e25ce287e6cc2aa1655db3
+  next_action: Decision del Coordinator sobre el STOP S-03/C-10 de la verificacion de G4 (RackSummary.RepresentativeDefinitionId fuera de la lista de D-20; evidencia §50). Sin correccion ni nueva verificacion hasta entonces.
+  last_evidence_commit: 4f45f4464f5d434f7fa478fea1117d82283ee997
 execution_context:
   mode: manual
   automation_enabled: false
@@ -17,8 +17,9 @@ execution_chain:
   gate: G4
   task_id: G4-PROJECT-SUMMARY
   attempt: 2
-  next_role: Controller (CONTROLLER_PLANNING de G4)
-  next_action: Contrato de G4 a emitir contra el commit de autorizacion tras su CI 4/4
+  next_role: Coordinator (STOP S-03/C-10 de la verificacion de G4)
+  next_action: STOP S-03/C-10 (verificacion R20261003T012440Z-ef71, EXECUTION_BLOCKED/STOP, Contract) sobre GREEN 4f45f446 (CI 37085650331 4/4; Scope y pruebas existentes PASS)
+  g4: {contract: R20261003T005345Z-66f3 (SHA-256 923D2B2CE69D3A65F124E307C298D0BC67C4845337E688F1943EEFBC9F523950), authority_revision: 527e4b9185173e2f50c10d39a882749c09b77d2f, red_sha: 55d6b27457c966be1f3988ff8fe1bca4fc3df126, current_sha: 4f45f4464f5d434f7fa478fea1117d82283ee997, ci: 37085650331 4/4, verification: R20261003T012440Z-ef71 STOP S-03/C-10, mechanical_checks: PASS}
   main_sha: 819955d61a6da4c811a11fbd11b5dca13f634b7c
   freeze_commit: f61d0aca859a11b15cbe1797069a83cba873ba95
   frozen_proposal_blob: 4d5dedce15363fa6378e460c5b63005fe41b858b
