@@ -58,12 +58,16 @@ namespace RackCad.Application.ComputedParameters
             RackComputedEvaluationOutcome outcome,
             double value,
             IReadOnlyList<RackComputedNotAvailableReference> notAvailable,
-            IReadOnlyList<ExpressionDiagnostic> diagnostics)
+            IReadOnlyList<ExpressionDiagnostic> diagnostics,
+            BoundExpression expression,
+            IReadOnlyList<SymbolId> readSymbols)
         {
             Outcome = outcome;
             _value = value;
             NotAvailableReferences = notAvailable;
             Diagnostics = diagnostics;
+            Expression = expression;
+            ReadSymbols = new ReadOnlyCollection<SymbolId>(readSymbols.ToList());
         }
 
         public RackComputedEvaluationOutcome Outcome { get; }
@@ -82,27 +86,41 @@ namespace RackCad.Application.ComputedParameters
         /// <summary>Los diagnosticos del evaluador. Vacia salvo con <see cref="RackComputedEvaluationOutcome.EvaluationFailed"/>.</summary>
         public IReadOnlyList<ExpressionDiagnostic> Diagnostics { get; }
 
-        /// <summary>El arbol enlazado que se evaluo (D-21). Solo lectura: no cambia el resultado de <c>Evaluate</c>.</summary>
-        public BoundExpression Expression => null;
+        /// <summary>
+        /// El arbol enlazado que se evaluo (I-63 D-21): la misma instancia que recibio <c>Evaluate</c>, en cualquier
+        /// outcome. Es solo lectura: no cambia el valor, los estados ni los diagnosticos de la evaluacion.
+        /// </summary>
+        public BoundExpression Expression { get; }
 
-        /// <summary>Los <see cref="SymbolId"/> efectivamente leidos (D-21), en orden de <see cref="SymbolId"/> y sin repetir.</summary>
-        public IReadOnlyList<SymbolId> ReadSymbols => NoSymbols;
+        /// <summary>
+        /// Los <see cref="SymbolId"/> efectivamente leidos (D-21), en orden de <see cref="SymbolId"/> y sin repetir:
+        /// con <see cref="RackComputedEvaluationOutcome.Evaluated"/> y <see cref="RackComputedEvaluationOutcome.EvaluationFailed"/>,
+        /// todas las referencias del arbol; con <see cref="RackComputedEvaluationOutcome.ComputedReferencesNotAvailable"/>
+        /// (que no evalua), las referencias <c>rack</c> cuyo estado se leyo. No es un motor de dependencias.
+        /// </summary>
+        public IReadOnlyList<SymbolId> ReadSymbols { get; }
 
-        private static readonly IReadOnlyList<SymbolId> NoSymbols =
-            new ReadOnlyCollection<SymbolId>(Array.Empty<SymbolId>());
+        internal static RackComputedEvaluation Evaluated(
+            double value, BoundExpression expression, IReadOnlyList<SymbolId> readSymbols)
+            => new RackComputedEvaluation(
+                RackComputedEvaluationOutcome.Evaluated, value, NoReferences, NoDiagnostics, expression, readSymbols);
 
-        internal static RackComputedEvaluation Evaluated(double value)
-            => new RackComputedEvaluation(RackComputedEvaluationOutcome.Evaluated, value, NoReferences, NoDiagnostics);
-
-        internal static RackComputedEvaluation NotAvailable(IReadOnlyList<RackComputedNotAvailableReference> references)
+        internal static RackComputedEvaluation NotAvailable(
+            IReadOnlyList<RackComputedNotAvailableReference> references,
+            BoundExpression expression,
+            IReadOnlyList<SymbolId> readSymbols)
             => new RackComputedEvaluation(
                 RackComputedEvaluationOutcome.ComputedReferencesNotAvailable,
                 0.0,
                 new ReadOnlyCollection<RackComputedNotAvailableReference>(references.ToList()),
-                NoDiagnostics);
+                NoDiagnostics,
+                expression,
+                readSymbols);
 
-        internal static RackComputedEvaluation Failed(IReadOnlyList<ExpressionDiagnostic> diagnostics)
-            => new RackComputedEvaluation(RackComputedEvaluationOutcome.EvaluationFailed, 0.0, NoReferences, diagnostics);
+        internal static RackComputedEvaluation Failed(
+            IReadOnlyList<ExpressionDiagnostic> diagnostics, BoundExpression expression, IReadOnlyList<SymbolId> readSymbols)
+            => new RackComputedEvaluation(
+                RackComputedEvaluationOutcome.EvaluationFailed, 0.0, NoReferences, diagnostics, expression, readSymbols);
     }
 
     /// <summary>
@@ -199,9 +217,11 @@ namespace RackCad.Application.ComputedParameters
 
             var notAvailable = new List<RackComputedNotAvailableReference>();
             var rackValues = new Dictionary<SymbolId, double>();
+            var consulted = new List<SymbolId>();
 
             // DirectDependencies ya viene en orden de SymbolId y sin repetidos.
-            foreach (var dependency in BoundExpressionDependencies.DirectDependencies(expression))
+            var dependencies = BoundExpressionDependencies.DirectDependencies(expression);
+            foreach (var dependency in dependencies)
             {
                 if (dependency.Namespace != SymbolNamespace.Rack || !Expressions.Symbols.TryGet(dependency, out _))
                 {
@@ -209,6 +229,7 @@ namespace RackCad.Application.ComputedParameters
                     continue;
                 }
 
+                consulted.Add(dependency);
                 var value = _results[new MetricId(MetricScope.Rack, dependency.Key)];
 
                 if (value.Status == MetricStatus.Available)
@@ -223,7 +244,7 @@ namespace RackCad.Application.ComputedParameters
 
             if (notAvailable.Count > 0)
             {
-                return RackComputedEvaluation.NotAvailable(notAvailable);
+                return RackComputedEvaluation.NotAvailable(notAvailable, expression, consulted);
             }
 
             var values = new Dictionary<SymbolId, double>();
@@ -243,8 +264,8 @@ namespace RackCad.Application.ComputedParameters
             var result = ExpressionEvaluator.Evaluate(expression, Expressions, values);
 
             return result.Succeeded
-                ? RackComputedEvaluation.Evaluated(result.Value)
-                : RackComputedEvaluation.Failed(result.Diagnostics);
+                ? RackComputedEvaluation.Evaluated(result.Value, expression, dependencies)
+                : RackComputedEvaluation.Failed(result.Diagnostics, expression, dependencies);
         }
 
         /// <summary>El nombre de miembro del catalogo (D-03): solo sirve para mostrar y para resolver al escribir.</summary>

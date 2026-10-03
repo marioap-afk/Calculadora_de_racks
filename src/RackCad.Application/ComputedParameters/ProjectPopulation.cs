@@ -217,6 +217,14 @@ namespace RackCad.Application.ComputedParameters
         /// </summary>
         public static ProjectPopulation Evaluate(
             RackMetricPopulationInput input, IRackMetricDesignReader designReader = null)
+            => EvaluateAssessed(input, designReader).Population;
+
+        /// <summary>
+        /// La misma evaluacion (UNA anotada en <see cref="RackPopulationEvaluationCounter"/>) que ademas entrega, por rack,
+        /// las etapas E4/E5/E6 que ya decidio, para que <see cref="ProjectSummary"/> no las repita (D-24).
+        /// </summary>
+        internal static AssessedPopulation EvaluateAssessed(
+            RackMetricPopulationInput input, IRackMetricDesignReader designReader = null)
         {
             if (input == null)
             {
@@ -252,9 +260,14 @@ namespace RackCad.Application.ComputedParameters
                 .OrderBy(CanonicalSpelling, StringComparer.Ordinal)
                 .ToList();
 
-            var racks = groups
-                .Select(members => EvaluateRack(members, input.Catalog, reader, diagnostics))
-                .ToList();
+            var racks = new List<PopulationRack>();
+            var assessments = new List<RackAssessment>();
+            foreach (var members in groups)
+            {
+                var stages = new RackAssessedStages();
+                racks.Add(EvaluateRack(members, input.Catalog, reader, diagnostics, stages));
+                assessments.Add(new RackAssessment(members, stages));
+            }
 
             var accredited = !coverageGap
                              && racks.All(rack => rack.Membership.Kind != RackMembershipKind.Undetermined);
@@ -280,7 +293,8 @@ namespace RackCad.Application.ComputedParameters
                 .ThenBy(item => item.RackId ?? string.Empty, StringComparer.Ordinal)
                 .ToList();
 
-            return new ProjectPopulation(racks, orderedDiagnostics, accredited, totalRacks, rackCounts);
+            return new AssessedPopulation(
+                new ProjectPopulation(racks, orderedDiagnostics, accredited, totalRacks, rackCounts), assessments);
         }
 
         /// <summary>D-11.2: la grafia canonica de un grupo es la minima en Ordinal de las observadas.</summary>
@@ -292,7 +306,8 @@ namespace RackCad.Application.ComputedParameters
             IReadOnlyList<RackMetricDefinitionProjection> members,
             RackCatalogInput catalog,
             IRackMetricDesignReader reader,
-            List<PopulationDiagnostic> diagnostics)
+            List<PopulationDiagnostic> diagnostics,
+            RackAssessedStages stages)
         {
             var rackId = CanonicalSpelling(members);
             var keys = members.Select(member => member.DefinitionKey).ToList();
@@ -350,12 +365,20 @@ namespace RackCad.Application.ComputedParameters
             }
 
             // E5: diseno legible para CADA hermana (D-26).
+            var readable = true;
             foreach (var member in members)
             {
                 if (!reader.IsReadable(coherentKind, member.Envelope.Design))
                 {
-                    return Undetermined(RackUndeterminedReason.DesignUnreadable);
+                    readable = false;
+                    break;
                 }
+            }
+
+            stages.DesignReadable = readable;
+            if (!readable)
+            {
+                return Undetermined(RackUndeterminedReason.DesignUnreadable);
             }
 
             // E4: autoridad authored sobre la entrada tipada, en orden canonico.
@@ -365,6 +388,7 @@ namespace RackCad.Application.ComputedParameters
                 .ToList();
 
             var authority = BomAuthoredAuthority.Resolve(rackId, entries);
+            stages.Authority = authority;
             if (!authority.IsSuccess)
             {
                 return authority.Outcome == BomAuthorityOutcome.DivergentSiblings
@@ -376,6 +400,7 @@ namespace RackCad.Application.ComputedParameters
             representative = authority.RepresentativeDefinitionId;
             var representativeView = members.First(member => member.DefinitionKey == representative);
             var verdict = RackOutputVerdict.Evaluate(coherentKind, representativeView.Envelope.Design, catalog);
+            stages.OutputVerdict = verdict;
             switch (verdict.Kind)
             {
                 case RackOutputVerdictKind.Deny:
@@ -403,5 +428,33 @@ namespace RackCad.Application.ComputedParameters
                     return RackUndeterminedReason.ResolveFailed;
             }
         }
+    }
+
+    /// <summary>La poblacion y, por rack (en el mismo orden de <see cref="ProjectPopulation.Racks"/>), lo que la pertenencia decidio.</summary>
+    internal sealed class AssessedPopulation
+    {
+        public AssessedPopulation(ProjectPopulation population, IReadOnlyList<RackAssessment> assessments)
+        {
+            Population = population;
+            Assessments = assessments;
+        }
+
+        public ProjectPopulation Population { get; }
+
+        public IReadOnlyList<RackAssessment> Assessments { get; }
+    }
+
+    /// <summary>Las hermanas de un RackId, en orden canonico, y las etapas que la pertenencia ya evaluo sobre ellas.</summary>
+    internal sealed class RackAssessment
+    {
+        public RackAssessment(IReadOnlyList<RackMetricDefinitionProjection> members, RackAssessedStages stages)
+        {
+            Members = members;
+            Stages = stages;
+        }
+
+        public IReadOnlyList<RackMetricDefinitionProjection> Members { get; }
+
+        public RackAssessedStages Stages { get; }
     }
 }

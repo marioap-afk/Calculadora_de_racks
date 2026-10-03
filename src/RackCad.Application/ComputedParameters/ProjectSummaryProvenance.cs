@@ -22,6 +22,25 @@ namespace RackCad.Application.ComputedParameters
         {
             SelectiveFondo0Bays, SelectiveFondo0EmptyBays, PopulationCotizable, AggregateSum,
         };
+
+        /// <summary>
+        /// La autoridad fuente de una metrica de rack <c>Supported</c> para un kind: el Selectivo lee el fondo 0 del
+        /// sistema resuelto (D-07). Nula cuando el kind no tiene fuente para esa metrica.
+        /// </summary>
+        internal static string ForRackMetric(string kindToken, MetricId metric)
+        {
+            if (!string.Equals(kindToken, RackCad.Application.Persistence.RackEmbedDocument.KindSelective, StringComparison.Ordinal))
+            {
+                return null;
+            }
+
+            if (metric == RackMetricIds.Frentes)
+            {
+                return SelectiveFondo0Bays;
+            }
+
+            return metric == RackMetricIds.FrentesVacios ? SelectiveFondo0EmptyBays : null;
+        }
     }
 
     /// <summary>

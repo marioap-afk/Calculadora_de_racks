@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text;
+using RackCad.Application.Expressions;
 
 namespace RackCad.Application.ComputedParameters
 {
@@ -73,6 +76,8 @@ namespace RackCad.Application.ComputedParameters
     /// </summary>
     public sealed class ProjectSummary : IEquatable<ProjectSummary>
     {
+        private string _description;
+
         public ProjectSummary(
             ProjectSummaryTotals totals,
             IReadOnlyList<SystemAggregate> bySystem,
@@ -103,8 +108,10 @@ namespace RackCad.Application.ComputedParameters
 
         /// <summary>
         /// La peticion <c>Full</c>: una captura, una lectura del registro y un catalogo; por RackId una proyeccion y una
-        /// autoridad; una Phi2+Phi3 solo por Selectivo (D-24). Anota UNA evaluacion en
-        /// <see cref="RackPopulationEvaluationCounter"/> (INV-32).
+        /// autoridad; una Phi2+Phi3 solo por Selectivo y un veredicto E6 por Push Back; nunca por vista (D-24). Anota UNA
+        /// evaluacion en <see cref="RackPopulationEvaluationCounter"/> (INV-32). Las metricas por rack usan la MISMA
+        /// tabla D-28 que <see cref="RackMetricRequest"/>, reutilizando lo que la pertenencia ya decidio, sin cachear
+        /// ni repetir ninguna lectura o resolucion.
         /// </summary>
         public static ProjectSummary Evaluate(
             RackMetricPopulationInput input,
@@ -117,17 +124,117 @@ namespace RackCad.Application.ComputedParameters
                 throw new ArgumentNullException(nameof(input));
             }
 
-            var unavailable = MetricValue.Unavailable(UnavailableReason.Of(UnavailableReasonKind.CoverageNotAccredited));
-            var bySystem = ProjectPopulation.SystemOrder
-                .Select(token => new SystemAggregate(token, unavailable, unavailable, unavailable))
-                .ToList();
+            var reader = designReader ?? new RackMetricDesignReader();
+            var side = resolutionSide ?? new RackMetricResolutionSide();
+            var registry = providers ?? RackMetricProviderRegistry.Default;
+
+            // La unica evaluacion de poblacion de la peticion: pertenencia, E1..E6 y las etapas que decidio.
+            var assessed = ProjectPopulation.EvaluateAssessed(input, reader);
+            var population = assessed.Population;
+
+            var racks = new List<RackSummary>(population.Racks.Count);
+            var metricsByRack = new Dictionary<string, RackMetricResults>(StringComparer.Ordinal);
+            for (var index = 0; index < population.Racks.Count; index++)
+            {
+                var member = population.Racks[index];
+                var assessment = assessed.Assessments[index];
+
+                var evaluation = RackMetricOrchestrator.Compute(
+                    member.RackId, assessment.Members, input.Registry, input.Catalog, reader, side, registry, assessment.Stages);
+
+                metricsByRack.Add(member.RackId, evaluation.Results);
+                racks.Add(new RackSummary(
+                    member.RackId,
+                    member.KindToken,
+                    member.DisplayName,
+                    member.Membership,
+                    member.RepresentativeDefinitionId,
+                    evaluation.Results,
+                    RackProvenance(member.RackId, evaluation)));
+            }
+
+            // D-12: la agregacion de G2 (funcion pura), alimentada con las metricas por rack del resumen.
+            var aggregates = ProjectPopulationAggregator.Aggregate(population, metricsByRack);
 
             return new ProjectSummary(
-                new ProjectSummaryTotals(unavailable),
-                bySystem,
-                new List<RackSummary>(),
-                new List<PopulationDiagnostic>(),
-                new ProjectSummaryProvenance(new List<AggregateProvenance>()));
+                new ProjectSummaryTotals(aggregates.TotalRacks),
+                aggregates.BySystem,
+                racks,
+                population.Diagnostics,
+                new ProjectSummaryProvenance(AggregateProvenances(population, aggregates)));
+        }
+
+        private static IReadOnlyList<MetricProvenance> RackProvenance(string rackId, RackMetricEvaluation evaluation)
+        {
+            var provenance = new List<MetricProvenance>();
+            foreach (var metric in RackMetricIds.RackMetrics)
+            {
+                string authorityId = null;
+                RackMetricPhase? phase = null;
+
+                var declaration = evaluation.Provider?.Declare(metric);
+                if (declaration != null && declaration.Support == RackMetricSupport.Supported)
+                {
+                    authorityId = MetricAuthorityIds.ForRackMetric(evaluation.KindToken, metric);
+                    phase = declaration.MinimumPhase;
+                }
+
+                provenance.Add(new MetricProvenance(
+                    metric,
+                    new SymbolId(SymbolNamespace.Rack, metric.Token),
+                    rackId,
+                    authorityId,
+                    phase,
+                    evaluation.Trace.RepresentativeDefinitionKey,
+                    evaluation.Trace.AuthorityOutcome,
+                    evaluation.Trace.OutputVerdict,
+                    evaluation.Trace.ResolutionOutcome,
+                    evaluation.Trace.EffectiveOutcome));
+            }
+
+            return provenance;
+        }
+
+        /// <summary><c>totalRacks</c> y, por sistema, sus tres metricas: autoridad, RackIds incluidos y excluidos con su motivo (D-21).</summary>
+        private static IReadOnlyList<AggregateProvenance> AggregateProvenances(
+            ProjectPopulation population, ProjectPopulationAggregates aggregates)
+        {
+            AggregateProvenance Of(MetricId metric, string kindToken, string authorityId)
+            {
+                var scoped = population.Racks
+                    .Where(rack => kindToken == null || string.Equals(rack.KindToken, kindToken, StringComparison.Ordinal))
+                    .ToList();
+
+                return new AggregateProvenance(
+                    metric,
+                    kindToken,
+                    authorityId,
+                    scoped.Where(rack => rack.Membership.Kind == RackMembershipKind.Included)
+                        .Select(rack => rack.RackId)
+                        .ToList(),
+                    scoped.Where(rack => rack.Membership.Kind == RackMembershipKind.Excluded)
+                        .Select(rack => new ExcludedRackProvenance(rack.RackId, rack.Membership.ExclusionReason.Value))
+                        .ToList());
+            }
+
+            string SumAuthority(MetricValue value)
+                => value.Status == MetricStatus.NotSupported || value.Status == MetricStatus.NotApplicable
+                    ? null
+                    : MetricAuthorityIds.AggregateSum;
+
+            var result = new List<AggregateProvenance>
+            {
+                Of(RackMetricIds.TotalRacks, null, MetricAuthorityIds.PopulationCotizable),
+            };
+
+            foreach (var system in aggregates.BySystem)
+            {
+                result.Add(Of(RackMetricIds.RackCount, system.KindToken, MetricAuthorityIds.PopulationCotizable));
+                result.Add(Of(RackMetricIds.TotalFrentes, system.KindToken, SumAuthority(system.TotalFrentes)));
+                result.Add(Of(RackMetricIds.TotalFrentesVacios, system.KindToken, SumAuthority(system.TotalFrentesVacios)));
+            }
+
+            return result;
         }
 
         /// <summary>El resumen de un rack por su RackId canonico (Ordinal), o nulo.</summary>
@@ -135,12 +242,89 @@ namespace RackCad.Application.ComputedParameters
             => Racks.FirstOrDefault(rack => string.Equals(rack.RackId, rackId, StringComparison.Ordinal));
 
         /// <summary>El texto canonico y determinista de todo el resumen (incluida la provenance), con cultura invariante.</summary>
-        public string Describe() => string.Empty;
+        public string Describe()
+        {
+            if (_description == null)
+            {
+                _description = BuildDescription();
+            }
 
-        public bool Equals(ProjectSummary other) => ReferenceEquals(this, other);
+            return _description;
+        }
+
+        private string BuildDescription()
+        {
+            var text = new StringBuilder();
+            text.Append("totalRacks=").Append(Text(Totals.TotalRacks)).Append('\n');
+
+            foreach (var system in BySystem)
+            {
+                text.Append("system ").Append(system.KindToken)
+                    .Append(" rackCount=").Append(Text(system.RackCount))
+                    .Append(" totalFrentes=").Append(Text(system.TotalFrentes))
+                    .Append(" totalFrentesVacios=").Append(Text(system.TotalFrentesVacios))
+                    .Append('\n');
+            }
+
+            foreach (var rack in Racks)
+            {
+                text.Append("rack ").Append(rack.RackId)
+                    .Append(" kind=").Append(rack.KindToken ?? "-")
+                    .Append(" name=").Append(rack.DisplayName ?? "-")
+                    .Append(" membership=").Append(rack.Membership)
+                    .Append(" representative=").Append(rack.RepresentativeDefinitionId ?? "-");
+                foreach (var metric in rack.Metrics.Metrics)
+                {
+                    text.Append(' ').Append(metric.Token).Append('=').Append(Text(rack.Metrics[metric]));
+                }
+
+                text.Append('\n');
+
+                foreach (var item in rack.Provenance ?? new List<MetricProvenance>())
+                {
+                    text.Append("  provenance ").Append(item.MetricId)
+                        .Append(" symbol=").Append(item.SymbolId == null ? "-" : item.SymbolId.Namespace + "/" + item.SymbolId.Key)
+                        .Append(" rack=").Append(item.RackId)
+                        .Append(" authority=").Append(item.AuthorityId ?? "-")
+                        .Append(" phase=").Append(item.Phase?.ToString() ?? "-")
+                        .Append(" representative=").Append(item.RepresentativeDefinitionKey ?? "-")
+                        .Append(" e4=").Append(item.AuthorityOutcome?.ToString() ?? "-")
+                        .Append(" e6=").Append(item.OutputVerdict?.ToString() ?? "-")
+                        .Append(" resolution=").Append(item.ResolutionOutcome?.ToString() ?? "-")
+                        .Append(" effective=").Append(item.EffectiveOutcome?.ToString() ?? "-")
+                        .Append('\n');
+                }
+            }
+
+            foreach (var diagnostic in Diagnostics)
+            {
+                text.Append("diagnostic ").Append(diagnostic).Append('\n');
+            }
+
+            foreach (var aggregate in Provenance?.Aggregates ?? new List<AggregateProvenance>())
+            {
+                text.Append("aggregate ").Append(aggregate.MetricId)
+                    .Append(" kind=").Append(aggregate.KindToken ?? "-")
+                    .Append(" authority=").Append(aggregate.AuthorityId ?? "-")
+                    .Append(" included=[").Append(string.Join(",", aggregate.IncludedRackIds)).Append(']')
+                    .Append(" excluded=[").Append(string.Join(",", aggregate.Excluded.Select(item => item.RackId + ":" + item.Reason)))
+                    .Append("]\n");
+            }
+
+            return text.ToString();
+        }
+
+        private static string Text(MetricValue value)
+            => value == null ? "-"
+                : value.Status == MetricStatus.Available
+                    ? "Available(" + value.Value.ToString("R", CultureInfo.InvariantCulture) + ")"
+                    : value.ToString();
+
+        public bool Equals(ProjectSummary other)
+            => other != null && string.Equals(Describe(), other.Describe(), StringComparison.Ordinal);
 
         public override bool Equals(object obj) => Equals(obj as ProjectSummary);
 
-        public override int GetHashCode() => System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(this);
+        public override int GetHashCode() => StringComparer.Ordinal.GetHashCode(Describe());
     }
 }

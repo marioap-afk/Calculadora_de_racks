@@ -74,6 +74,9 @@ namespace RackCad.Application.ComputedParameters
                 throw new ArgumentNullException(nameof(catalog));
             }
 
+            // INV-30: el contador scoped observa cada resolucion Phi2+Phi3 que ejecuta este costado REAL.
+            RackMetricResolutionCounter.Record();
+
             if (registry == null
                 || registry.Outcome == ProjectVariablesReadOutcome.PresentButUnreadable
                 || registry.Outcome == ProjectVariablesReadOutcome.IncompatibleMajor)
@@ -160,26 +163,10 @@ namespace RackCad.Application.ComputedParameters
             // D-11.2: la grafia canonica es la minima en Ordinal.
             var rackId = spellings.OrderBy(spelling => spelling, StringComparer.Ordinal).First();
 
-            // Paso 1 de D-28: identidad y kind.
-            var kindFailure = ClassifyKind(members, out var kindToken);
-            if (kindFailure != null)
-            {
-                return RackMetricResults.Uniform(rackId, MetricValue.Unavailable(UnavailableReason.Of(kindFailure.Value)));
-            }
-
-            if (!_providers.TryGet(kindToken, out var provider))
-            {
-                return RackMetricResults.Uniform(
-                    rackId, MetricValue.Unavailable(UnavailableReason.Of(UnavailableReasonKind.KindUnknown)));
-            }
-
-            // Paso 2: el soporte lo declara el provider. Sin ninguna metrica Supported, no se lee ni se resuelve.
-            var needsPrerequisite = RackMetricIds.RackMetrics
-                .Any(metric => provider.Declare(metric).Support == RackMetricSupport.Supported);
-
-            var prerequisite = needsPrerequisite ? BuildPrerequisite(rackId, kindToken, members) : null;
-
-            return provider.Compute(new RackMetricInput(rackId, kindToken, prerequisite));
+            // D-28 (pasos 1 a 6): la tabla UNICA que tambien usa RackSummary.Metrics. Aqui no hay etapas previas.
+            return RackMetricOrchestrator.Compute(
+                rackId, members, _registry, _catalog, _designReader, _resolutionSide, _providers, RackAssessedStages.None)
+                .Results;
         }
 
         /// <summary>Paso 1 de D-28. Devuelve la razon si el kind no decide, o null y el token coherente.</summary>
@@ -209,62 +196,5 @@ namespace RackCad.Application.ComputedParameters
 
             return UnavailableReasonKind.KindIncoherent;
         }
-
-        /// <summary>Pasos 3 a 5 de D-28, una sola vez por peticion.</summary>
-        private RackMetricPrerequisite BuildPrerequisite(
-            string rackId, string kindToken, IReadOnlyList<RackMetricDefinitionProjection> members)
-        {
-            if (!string.Equals(kindToken, RackEmbedDocument.KindSelective, StringComparison.Ordinal))
-            {
-                throw new InvalidOperationException("En V1 solo el Selectivo declara metricas Supported.");
-            }
-
-            // Paso 3 (E5): diseno legible para cada hermana, con el lector D-26.
-            foreach (var member in members)
-            {
-                if (!_designReader.IsReadable(kindToken, member.Envelope.Design))
-                {
-                    return Failure(UnavailableReasonKind.DesignUnreadable);
-                }
-            }
-
-            // Paso 4 (E4): autoridad authored. La proyeccion vigente solo ve hermanas Known, coherentes y legibles.
-            var entries = members
-                .Select(member => ProjectVariableScanProjection.Project(
-                    member.DefinitionKey, member.Envelope, member.DirectReferenceCount))
-                .ToList();
-
-            var authority = BomAuthoredAuthority.Resolve(rackId, entries);
-            if (!authority.IsSuccess)
-            {
-                return Failure(authority.Outcome == BomAuthorityOutcome.DivergentSiblings
-                    ? UnavailableReasonKind.SiblingsDivergent
-                    : UnavailableReasonKind.DesignUnreadable);
-            }
-
-            // Paso 5: efectivo y resuelto, UNA vez.
-            var resolution = _resolutionSide.Resolve(authority.Authored, _registry, _catalog);
-            switch (resolution.Outcome)
-            {
-                case RackMetricResolutionOutcome.Resolved:
-                    return RackMetricPrerequisite.Resolved(resolution.ResolvedSystem);
-
-                case RackMetricResolutionOutcome.RegistryUnreadable:
-                    return Failure(UnavailableReasonKind.RegistryUnreadable);
-
-                case RackMetricResolutionOutcome.EffectiveFailed:
-                    return RackMetricPrerequisite.Unavailable(
-                        UnavailableReason.EffectiveFailed(resolution.EffectiveOutcome.Value));
-
-                case RackMetricResolutionOutcome.CatalogUnavailable:
-                    return Failure(UnavailableReasonKind.CatalogUnavailable);
-
-                default:
-                    return Failure(UnavailableReasonKind.ResolveFailed);
-            }
-        }
-
-        private static RackMetricPrerequisite Failure(UnavailableReasonKind kind)
-            => RackMetricPrerequisite.Unavailable(UnavailableReason.Of(kind));
     }
 }
