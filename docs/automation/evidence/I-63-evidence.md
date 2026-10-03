@@ -1976,3 +1976,20 @@ Commit `49ed359e`: G3 PASS, disposición de O-G3-1..5 y DEBT-I63-G3-01; `current
   - Propuesta: una sola delegación con RED y GREEN, como G1 y G2 (no escalonada como G3), con `ROUTINE_IMPLEMENTATION` +
     `CHARACTERIZATION` según §21 y `attempts` 2/3 (`AttemptsRemaining` 1).
   - ¿Revisión de arquitectura antes del cierre de G4? La §21 solo la exige en G3.
+
+## 49. Autorización de G4
+
+- **Orden del Coordinator**, pegada por el usuario en el chat el 2026-10-02, tras verificar el cierre de G3 y el borrador de §48. Resumen en
+  las [decisiones](../decisions/I-63.md) §2.
+- **Respuestas:**
+  - **Q-G4-01:** D-21 en `RackComputedExpressionContext` se hace en G4, como cambio aditivo (`BoundExpression` evaluado y `SymbolId`
+    leídos). O-G3-4 sigue diferido.
+  - **Q-G4-02:** condición mecánica adicional: las pruebas existentes de G1-G3 sin modificar, borrar ni renombrar; G4 solo añade. Lo
+    contrario es STOP.
+  - **Q-G4-03:** N = 1000 obligatorio; si no cabe en la CI, STOP C-09.
+  - **Q-G4-04:** confirmado el RED de INV-29 (b) por control positivo, con la A-1.1.
+  - **Q-G4-05:** una cadena RED → GREEN; Architect no exigido por defecto.
+- **Provenance:** fuera de `MetricValue.Equals`. Si no es posible, STOP C-07.
+- **`AuthorityRevision`:** el SHA de este commit de autorización.
+- **Sin mezclar en G4:** DEBT-I63-G2-01, DEBT-I63-G3-01 ni O-G3-1..5.
+- **Contadores:** `attempts` 2/3 (`AttemptsRemaining` 1).

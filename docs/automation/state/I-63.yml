@@ -4,21 +4,21 @@ automation_state:
   branch: architecture/parametros-calculados-resumen-proyecto
   claim_id: ce04f47f-ca53-4e75-b983-5ac57ab6c5e3
   current_phase: G4
-  state: waiting
+  state: implementing
   gate: none
   attempts: 2
-  next_action: Preparar el contrato de gate de G4 (ProjectSummary, determinismo, procedencia y rendimiento) desde el Freeze + A-1 + A-2 + A-3, con la segunda mitad de INV-11 e INV-32 (A-2), INV-29..31, INV-34 por RackSummary.Metrics y la comprobacion mecanica de Scope; volver al Coordinator para su autorizacion formal; sin implementacion antes.
-  last_evidence_commit: 138bc3d45a5cd14d72853a8a494472e35943465e
+  next_action: G4 autorizado; CI exacta del commit de autorizacion, contrato G4 contra ese SHA, planificacion, A1-A8, nc4, RED, GREEN, CI 4/4, verificacion, Scope mecanico, pruebas existentes sin cambios, nc1-nc3 y custodia.
+  last_evidence_commit: 4207b528ee34c6fa58e25ce287e6cc2aa1655db3
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-parametros-calculados-resumen-proyecto
 execution_chain:
   gate: G4
-  task_id: null
-  attempt: null
-  next_role: Coordinator (autorizacion formal de G4 sobre el contrato que prepara la sesion)
-  next_action: Borrador de contrato artifacts/orchestration/I-63/G4-PROJECT-SUMMARY/draft/R20261003T002705Z-0618/gate-contract.json (SHA-256 584FA8AEF955A5FC1897B1F983AB2524C4B07F22A8B8D621724B2A2AC553AE72); preguntas Q-G4-01..05 (evidencia §48); sin delegacion ni Worker hasta la autorizacion
+  task_id: G4-PROJECT-SUMMARY
+  attempt: 2
+  next_role: Controller (CONTROLLER_PLANNING de G4)
+  next_action: Contrato de G4 a emitir contra el commit de autorizacion tras su CI 4/4
   main_sha: 819955d61a6da4c811a11fbd11b5dca13f634b7c
   freeze_commit: f61d0aca859a11b15cbe1797069a83cba873ba95
   frozen_proposal_blob: 4d5dedce15363fa6378e460c5b63005fe41b858b
@@ -30,8 +30,8 @@ execution_chain:
   g3_t2: {contract: R20261002T214309Z-19d7 (SHA-256 2E43EAE22C3254F7CDF31EC9AC0C07B11409E7274E2A6D307DF3B7FB8D889CB7), authority_revision: ea70e3b333efec49d3c3b9bc1e5d0395adc71a01, base_sha: 712052354e33f84da552fe0be3393df41e0521f4, verified_sha: eb58a4768d5a68892cce8d85b527f2a1ad1bdc64, verification: R20261002T220419Z-26c9, ci: 37069993992 4/4, scope_check: PASS, negative_controls: nc1 nc2 nc3 cumplidos, architect_review: CONFORMING sin REQUIRED (O-G3-1..5 opcionales), config_toml_baseline: 155933B3}
   deviations: [DEV-G1-03 ejecutor de controles sin revalidacion de PID (aceptada), DEV-G2-01 nc2 no discrimino Scope (no bloqueante)]
   debts: [DEBT-I63-G2-01 guarda legacy PushBackBomCommandGuardTests satisfecha por comentario; reparar o sustituir antes de READY con A-n Coordinator-only de solo pruebas, DEBT-I63-G3-01 comentario de ExpressionFormatter para Rack.#<token> obsoleto frente a la A-3; resolver antes de READY sin alterar comportamiento]
-  standing_rules: [comprobacion mecanica independiente de Scope antes de aceptar EXECUTION_VERIFIED en G4, puerta de PID en el ejecutor de controles, linea base de config.toml del Owner 155933B3 (un cambio en una cesion es P-01)]
+  standing_rules: [comprobacion mecanica independiente de Scope antes de aceptar EXECUTION_VERIFIED en G4, pruebas existentes de tests/RackCad.Tests/ComputedParameters/ sin modificar ni borrar ni renombrar (git diff --name-status), puerta de PID en el ejecutor de controles, linea base de config.toml del Owner 155933B3 (un cambio en una cesion es P-01)]
   g4_obligations: [segunda mitad de INV-11 (A-2), segunda mitad de INV-32 (A-2), INV-29, INV-30, INV-31, INV-34 por RackSummary.Metrics]
-  return_to_coordinator_when: contrato de G4 listo para autorizacion; STOP; cambio material, de autoridad o de alcance; AUTONOMY_GAP
-  not_authorized: [G4 (hasta la autorizacion formal)]
+  return_to_coordinator_when: G4 EXECUTION_VERIFIED con Scope mecanico PASS, pruebas existentes sin cambios, nc1-nc3 y custodia; STOP real (incluidos C-07 y C-09); cuestion material de arquitectura, autoridad o semantica congelada; presupuesto agotado; AUTONOMY_GAP
+  not_authorized: [READY (tras G4), O-G3-1..5, DEBT-I63-G2-01 y DEBT-I63-G3-01 dentro de G4]
   owner_escalation_conditions: OWNER-RESERVED; decision material del Owner; STOP que requiera al Owner; credenciales, autenticacion o compra; accion irreversible o destructiva
