@@ -1872,3 +1872,28 @@ Copias en `docs/automation/evidence/I-63-pilot/G3-RACK-BUILTINS/R20261002T212850
 - Copias en `docs/automation/evidence/I-63-pilot/G3-RACK-BUILTINS/<RunId>/`, `docs/automation/evidence/I-63-pilot/G3-RACK-BUILTINS-ncN/<RunId>/` y `docs/automation/evidence/I-63-pilot/G3-RACK-BUILTINS/architect-review/`.
 
 **Siguiente:** el Coordinator juzga G3 con esta evidencia. G4 no está autorizado.
+
+## 47. G3 PASS
+
+- **Veredicto del Coordinator**, pegado por el usuario en el chat el 2026-10-02: **G3 — Rack built-ins / Expression Engine: PASS**.
+  Resumen en las [decisiones](../decisions/I-63.md) §2.
+- **Base del juicio:**
+  - `VerifiedSha` `eb58a4768d5a68892cce8d85b527f2a1ad1bdc64`; verificación `R20261002T220419Z-26c9`, `EXECUTION_VERIFIED`, 14/14.
+  - CI `37069993992` 4/4: Core 12566/12566 y foco de G3 89/89.
+  - `Scope` mecánico PASS; nc1, nc2 y nc3 PASS.
+  - Architect CONFORMING con 0 REQUIRED.
+  - Custodia `138bc3d4`, CI `37072855039` 4/4.
+- **A-3 vigente:** `Rack.#{zzz}` → `InvalidQualifier`, código 11, span 5+6, sin árbol sintáctico ni enlazado. El caso hexadecimal de 32
+  caracteres queda fuera.
+- **Opcionales O-G3-1..5:** ninguno bloquea y no se autoriza corregirlos ahora.
+  - O-G3-1: diferido; solo se evalúa en G4 si `ProjectSummary` lo necesita.
+  - O-G3-2: diferido.
+  - O-G3-3: diferido.
+  - O-G3-4: deuda del primer consumidor de `RackComputedExpressionContext`.
+  - O-G3-5: diferido.
+- **DEBT-I63-G3-01:** comentario obsoleto de `ExpressionFormatter` para `Rack.#{token}` frente a la A-3. Se resuelve antes de READY, sin
+  alterar comportamiento.
+- **Contadores:** `attempts` 2/3 (`AttemptsRemaining` 1). DEBT-I63-G2-01 y DEBT-I63-G3-01 quedan abiertas hasta READY.
+- **Siguiente:** `current_phase` = G4.
+  - La sesión prepara el contrato de G4 y vuelve solo para la autorización formal.
+  - La implementación de G4 no está autorizada.
