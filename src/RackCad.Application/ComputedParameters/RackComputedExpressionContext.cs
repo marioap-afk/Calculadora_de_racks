@@ -82,6 +82,15 @@ namespace RackCad.Application.ComputedParameters
         /// <summary>Los diagnosticos del evaluador. Vacia salvo con <see cref="RackComputedEvaluationOutcome.EvaluationFailed"/>.</summary>
         public IReadOnlyList<ExpressionDiagnostic> Diagnostics { get; }
 
+        /// <summary>El arbol enlazado que se evaluo (D-21). Solo lectura: no cambia el resultado de <c>Evaluate</c>.</summary>
+        public BoundExpression Expression => null;
+
+        /// <summary>Los <see cref="SymbolId"/> efectivamente leidos (D-21), en orden de <see cref="SymbolId"/> y sin repetir.</summary>
+        public IReadOnlyList<SymbolId> ReadSymbols => NoSymbols;
+
+        private static readonly IReadOnlyList<SymbolId> NoSymbols =
+            new ReadOnlyCollection<SymbolId>(Array.Empty<SymbolId>());
+
         internal static RackComputedEvaluation Evaluated(double value)
             => new RackComputedEvaluation(RackComputedEvaluationOutcome.Evaluated, value, NoReferences, NoDiagnostics);
 
