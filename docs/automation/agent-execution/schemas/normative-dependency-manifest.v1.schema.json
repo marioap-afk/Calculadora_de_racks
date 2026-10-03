@@ -1,0 +1,274 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rackcad-normative-dependency-manifest/v1",
+  "description": "Manifiesto de las dependencias de control entre unidades normativas canónicas (Proposal V14 §20.3.3, punto 5, y Anexo B.11). Acotado a las superficies de I-62; el tiempo de ejecución no infiere aristas de la prosa, lee el manifiesto. Subordinado: no crea requisitos de evidencia, estados, gates, reglas Git ni decisiones del Owner. Inactivo hasta I62_EFFECTIVE_SHA (AUTOMATION_PLAN 16.14).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "Schema": {
+      "type": "string",
+      "enum": [
+        "rackcad-normative-dependency-manifest/v1"
+      ]
+    },
+    "Unit": {
+      "type": "string",
+      "minLength": 1
+    },
+    "AuthorityRevision": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "Scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "Entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Source": {
+            "type": "object",
+            "description": "NormativeUnitRef (§20.3.3): Document, UnitId estable, Anchor y Revision (commit y blob del documento).",
+            "additionalProperties": false,
+            "properties": {
+              "Document": {
+                "type": "string",
+                "minLength": 1
+              },
+              "UnitId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "Anchor": {
+                "type": "string",
+                "minLength": 1
+              },
+              "Revision": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "Commit": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{40}$"
+                  },
+                  "Blob": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{40}$"
+                  }
+                },
+                "required": [
+                  "Commit",
+                  "Blob"
+                ]
+              }
+            },
+            "required": [
+              "Document",
+              "UnitId",
+              "Anchor",
+              "Revision"
+            ]
+          },
+          "DependsOn": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "Target": {
+                  "type": "object",
+                  "description": "Exactamente uno de Unit, Proposed y WholeDocument no es null, según Kind.",
+                  "additionalProperties": false,
+                  "properties": {
+                    "Kind": {
+                      "type": "string",
+                      "enum": [
+                        "UNIT",
+                        "PROPOSED",
+                        "WHOLE_DOCUMENT"
+                      ]
+                    },
+                    "Unit": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "description": "NormativeUnitRef (§20.3.3): Document, UnitId estable, Anchor y Revision (commit y blob del documento).",
+                      "additionalProperties": false,
+                      "properties": {
+                        "Document": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "UnitId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "Anchor": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "Revision": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "Commit": {
+                              "type": "string",
+                              "pattern": "^[0-9a-f]{40}$"
+                            },
+                            "Blob": {
+                              "type": "string",
+                              "pattern": "^[0-9a-f]{40}$"
+                            }
+                          },
+                          "required": [
+                            "Commit",
+                            "Blob"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "Document",
+                        "UnitId",
+                        "Anchor",
+                        "Revision"
+                      ]
+                    },
+                    "Proposed": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "description": "ProposedNormativeTarget (§3.1).",
+                      "additionalProperties": false,
+                      "properties": {
+                        "FutureDocument": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "FutureAnchor": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "DesignSource": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "State": {
+                          "type": "string",
+                          "enum": [
+                            "PROPOSED",
+                            "MATERIALIZED"
+                          ]
+                        },
+                        "MaterializedAnchor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "FutureDocument",
+                        "FutureAnchor",
+                        "DesignSource",
+                        "State",
+                        "MaterializedAnchor"
+                      ]
+                    },
+                    "WholeDocument": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "additionalProperties": false,
+                      "properties": {
+                        "Document": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "Class": {
+                          "type": "string",
+                          "enum": [
+                            "BOUNDED_ENTRY_SET",
+                            "COMPOSITE_RULE"
+                          ]
+                        },
+                        "EntrySet": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        },
+                        "CompositeRuleRef": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "Document",
+                        "Class",
+                        "EntrySet",
+                        "CompositeRuleRef"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "Kind",
+                    "Unit",
+                    "Proposed",
+                    "WholeDocument"
+                  ]
+                },
+                "EdgeKind": {
+                  "type": "string",
+                  "enum": [
+                    "ONLY_IF",
+                    "EXCEPT",
+                    "SUBJECT_TO",
+                    "DEFINITION",
+                    "ENUM",
+                    "INVARIANT",
+                    "ALGORITHM",
+                    "STATE_TRANSITION",
+                    "AUTHORITY",
+                    "PRECEDENCE"
+                  ]
+                }
+              },
+              "required": [
+                "Target",
+                "EdgeKind"
+              ]
+            }
+          },
+          "Complete": {
+            "type": "boolean",
+            "description": "true = la entrada declara todas las dependencias de control de su unidad; false = INCOMPLETE_METADATA → UNKNOWN."
+          }
+        },
+        "required": [
+          "Source",
+          "DependsOn",
+          "Complete"
+        ]
+      }
+    }
+  },
+  "required": [
+    "Schema",
+    "Unit",
+    "AuthorityRevision",
+    "Scope",
+    "Entries"
+  ]
+}

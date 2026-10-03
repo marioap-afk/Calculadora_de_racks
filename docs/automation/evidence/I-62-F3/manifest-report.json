@@ -1,0 +1,1715 @@
+{
+ "Stats": {
+  "Sections": 116,
+  "Units": 1709,
+  "ExternalUnits": 32,
+  "Entries": 1857,
+  "Edges": 2896,
+  "CompleteFalseProposalUnits": 280,
+  "ProposedTargets": 10
+ },
+ "IncompleteUnits": [
+  {
+   "UnitId": "§0#row1",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§0#row2",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§0#row3",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§0#row4",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§0#row5",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§0#row6",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§0#row7",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§0#row8",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§0#row9",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§0#row10",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§0#row11",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§0#row12",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§1#row9",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a"
+   ]
+  },
+  {
+   "UnitId": "§2#row8",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.4"
+   ]
+  },
+  {
+   "UnitId": "§3#row11",
+   "Problems": [
+    "WHOLE_DOCUMENT_UNBOUNDED: AGENTS"
+   ]
+  },
+  {
+   "UnitId": "§4.1#p3",
+   "Problems": [
+    "WHOLE_DOCUMENT_UNBOUNDED: AGENTS"
+   ]
+  },
+  {
+   "UnitId": "§6#row2",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.4"
+   ]
+  },
+  {
+   "UnitId": "§7#p4",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.4"
+   ]
+  },
+  {
+   "UnitId": "§8#p1",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.4"
+   ]
+  },
+  {
+   "UnitId": "§8.1#row2",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.4",
+    "AMBIGUOUS_REFERENCE: 16.8"
+   ]
+  },
+  {
+   "UnitId": "§8.1#row3",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.4"
+   ]
+  },
+  {
+   "UnitId": "§8.2#li1",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.4"
+   ]
+  },
+  {
+   "UnitId": "§8.2#li2",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.4",
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "§8.3#row2",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.6"
+   ]
+  },
+  {
+   "UnitId": "§8.5#row4",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.1"
+   ]
+  },
+  {
+   "UnitId": "§8.8#p1",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "§8.8#p2",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "§8.8#li5",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "§8.8#li7",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "§8.8#li9",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "§8.8#field:task_intent.contract` y los SHAs del contrato (`AuthorityRevision`, `MainSha`, `SupersededBaseSha`, `SupersededCommits`)",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "§8.8#field:counters.rebase_recoveries[].last_rebase_map",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "§8.8#li11",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "§8.9#li5",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "T1",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.4"
+   ]
+  },
+  {
+   "UnitId": "T10",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "T19",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "§9.2#li3",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.11"
+   ]
+  },
+  {
+   "UnitId": "§9.3#field:attempts",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.8"
+   ]
+  },
+  {
+   "UnitId": "§9.3#row4",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "§12#li4",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a",
+    "AMBIGUOUS_REFERENCE: FX-04b"
+   ]
+  },
+  {
+   "UnitId": "§12#p2",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04b"
+   ]
+  },
+  {
+   "UnitId": "§14.0#li1",
+   "Problems": [
+    "WHOLE_DOCUMENT_UNBOUNDED: AGENTS"
+   ]
+  },
+  {
+   "UnitId": "§14.0#row1",
+   "Problems": [
+    "WHOLE_DOCUMENT_UNBOUNDED: AGENTS"
+   ]
+  },
+  {
+   "UnitId": "§15#li11",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.4"
+   ]
+  },
+  {
+   "UnitId": "§16#p1",
+   "Problems": [
+    "WHOLE_DOCUMENT_UNBOUNDED: AGENTS"
+   ]
+  },
+  {
+   "UnitId": "§16#li2",
+   "Problems": [
+    "WHOLE_DOCUMENT_UNBOUNDED: AGENTS"
+   ]
+  },
+  {
+   "UnitId": "§17#row6",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a",
+    "AMBIGUOUS_REFERENCE: FX-04b"
+   ]
+  },
+  {
+   "UnitId": "§18#row5",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a",
+    "AMBIGUOUS_REFERENCE: FX-04b"
+   ]
+  },
+  {
+   "UnitId": "OD-2",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04b"
+   ]
+  },
+  {
+   "UnitId": "OD-4",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04b"
+   ]
+  },
+  {
+   "UnitId": "OD-7",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04b"
+   ]
+  },
+  {
+   "UnitId": "§19#p1",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§19#row1",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§19#row2",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§19#row3",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§19#row4",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§19#row5",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§19#row6",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§19#row7",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§19#row8",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§19#row9",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§19#row10",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§19#row11",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§19#row12",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "§20.3.1#field:AllowedTransitiveInputs[]",
+   "Problems": [
+    "WHOLE_DOCUMENT_UNBOUNDED: AGENTS"
+   ]
+  },
+  {
+   "UnitId": "§20.3.1#li1",
+   "Problems": [
+    "WHOLE_DOCUMENT_UNBOUNDED: AGENTS"
+   ]
+  },
+  {
+   "UnitId": "§20.3.1#p4",
+   "Problems": [
+    "WHOLE_DOCUMENT_UNBOUNDED: AGENTS"
+   ]
+  },
+  {
+   "UnitId": "§20.3.1#li7",
+   "Problems": [
+    "WHOLE_DOCUMENT_UNBOUNDED: AGENTS"
+   ]
+  },
+  {
+   "UnitId": "§20.6#li7",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.8"
+   ]
+  },
+  {
+   "UnitId": "§20.11#row7",
+   "Problems": [
+    "WHOLE_DOCUMENT_UNBOUNDED: AGENTS"
+   ]
+  },
+  {
+   "UnitId": "§20.11#p4",
+   "Problems": [
+    "UNRESOLVED_REFERENCE: §21"
+   ]
+  },
+  {
+   "UnitId": "B.3#li6",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.4"
+   ]
+  },
+  {
+   "UnitId": "B.8.1#field:automation_state",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.8"
+   ]
+  },
+  {
+   "UnitId": "B.8.1#field:…task_intent.kind",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "B.8.1#field:…last_window.closure",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.9"
+   ]
+  },
+  {
+   "UnitId": "B.8.1#field:…chains.state",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.6"
+   ]
+  },
+  {
+   "UnitId": "B.8.1#field:…chains.chain_base_sha",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "B.8.1#field:…chains.chain_red_sha",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.8"
+   ]
+  },
+  {
+   "UnitId": "B.8.2#field:L.window.state` = CLOSED y `L.task_intent` = `null",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.6"
+   ]
+  },
+  {
+   "UnitId": "B.8.2#field:L.window.state` = CLOSED y `L.task_intent` ≠ `null",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.6"
+   ]
+  },
+  {
+   "UnitId": "B.8.2#row3",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.6"
+   ]
+  },
+  {
+   "UnitId": "B.8.2#row4",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.6"
+   ]
+  },
+  {
+   "UnitId": "B.8.2#row5",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.6"
+   ]
+  },
+  {
+   "UnitId": "B.8.2#row6",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.6"
+   ]
+  },
+  {
+   "UnitId": "I-P03",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "I-P12",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "I-H02",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "B.8.5#li5",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a"
+   ]
+  },
+  {
+   "UnitId": "B.8.5#li6",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.4",
+    "AMBIGUOUS_REFERENCE: 16.5"
+   ]
+  },
+  {
+   "UnitId": "B.8.6#li1",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.1"
+   ]
+  },
+  {
+   "UnitId": "B.8.6#li3",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.1",
+    "AMBIGUOUS_REFERENCE: 16.8",
+    "AMBIGUOUS_REFERENCE: 16.9"
+   ]
+  },
+  {
+   "UnitId": "B.8.7#field:RunId`, `TaskId",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "B.8.7#p2",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "C-01",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: §16.1",
+    "WHOLE_DOCUMENT_UNBOUNDED: AGENTS"
+   ]
+  },
+  {
+   "UnitId": "C-14",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.8",
+    "AMBIGUOUS_REFERENCE: 16.9"
+   ]
+  },
+  {
+   "UnitId": "C-15",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "C-20c",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "C-25a",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a"
+   ]
+  },
+  {
+   "UnitId": "C-25b",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04b"
+   ]
+  },
+  {
+   "UnitId": "C-41",
+   "Problems": [
+    "WHOLE_DOCUMENT_UNBOUNDED: AGENTS"
+   ]
+  },
+  {
+   "UnitId": "D.1#li2",
+   "Problems": [
+    "WHOLE_DOCUMENT_UNBOUNDED: AGENTS"
+   ]
+  },
+  {
+   "UnitId": "D.2#row1",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.9",
+    "WHOLE_DOCUMENT_UNBOUNDED: AGENTS"
+   ]
+  },
+  {
+   "UnitId": "D.2#p2",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a",
+    "AMBIGUOUS_REFERENCE: FX-04b"
+   ]
+  },
+  {
+   "UnitId": "D.3#p2",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a"
+   ]
+  },
+  {
+   "UnitId": "D.3#li2",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a"
+   ]
+  },
+  {
+   "UnitId": "D.3#li5",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a"
+   ]
+  },
+  {
+   "UnitId": "D.3#p4",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a"
+   ]
+  },
+  {
+   "UnitId": "D.3#p5",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a",
+    "AMBIGUOUS_REFERENCE: FX-04b"
+   ]
+  },
+  {
+   "UnitId": "D.3#p6",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a",
+    "AMBIGUOUS_REFERENCE: FX-04b"
+   ]
+  },
+  {
+   "UnitId": "D.3#FX-04a",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a"
+   ]
+  },
+  {
+   "UnitId": "D.3#FX-04a~2",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a"
+   ]
+  },
+  {
+   "UnitId": "D.3#FX-04a~3",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a"
+   ]
+  },
+  {
+   "UnitId": "D.3#FX-04b",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a",
+    "AMBIGUOUS_REFERENCE: FX-04b"
+   ]
+  },
+  {
+   "UnitId": "D.3#FX-04b~2",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04b"
+   ]
+  },
+  {
+   "UnitId": "D.3#FX-04b~3",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04b"
+   ]
+  },
+  {
+   "UnitId": "D.3#FX-04a~4",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a"
+   ]
+  },
+  {
+   "UnitId": "D.3#FX-04b~4",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a",
+    "AMBIGUOUS_REFERENCE: FX-04b"
+   ]
+  },
+  {
+   "UnitId": "D.4#row7",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a"
+   ]
+  },
+  {
+   "UnitId": "D.4#FX-04b",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04b"
+   ]
+  },
+  {
+   "UnitId": "D.4#li2",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a",
+    "AMBIGUOUS_REFERENCE: FX-04b"
+   ]
+  },
+  {
+   "UnitId": "D.4#li3",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a"
+   ]
+  },
+  {
+   "UnitId": "D.5#li3",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a"
+   ]
+  },
+  {
+   "UnitId": "D.5#li4",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04b"
+   ]
+  },
+  {
+   "UnitId": "D.6#row2",
+   "Problems": [
+    "WHOLE_DOCUMENT_UNBOUNDED: AGENTS"
+   ]
+  },
+  {
+   "UnitId": "D.6#row5",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04a"
+   ]
+  },
+  {
+   "UnitId": "D.7#field:codex-cli",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: FX-04b"
+   ]
+  },
+  {
+   "UnitId": "E.3.0#p3",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "E.3.0#row11",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.1"
+   ]
+  },
+  {
+   "UnitId": "E.3.0#li6",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.1"
+   ]
+  },
+  {
+   "UnitId": "E.3.1#li3",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "E.3.1#li11",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "E.3.1#li14",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "E.3.1#li15",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "E.5#field:docs/AUTOMATION_PLAN.md",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.1",
+    "AMBIGUOUS_REFERENCE: 16.11",
+    "AMBIGUOUS_REFERENCE: 16.12",
+    "AMBIGUOUS_REFERENCE: 16.4",
+    "AMBIGUOUS_REFERENCE: 16.9"
+   ]
+  },
+  {
+   "UnitId": "E.5#field:AGENTS.md`, `CLAUDE.md",
+   "Problems": [
+    "WHOLE_DOCUMENT_UNBOUNDED: AGENTS"
+   ]
+  },
+  {
+   "UnitId": "E.6#li3",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.4"
+   ]
+  },
+  {
+   "UnitId": "E.6#row2",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "E.6#row8",
+   "Problems": [
+    "WHOLE_DOCUMENT_UNBOUNDED: AGENTS"
+   ]
+  },
+  {
+   "UnitId": "E.6#row26",
+   "Problems": [
+    "WHOLE_DOCUMENT_UNBOUNDED: AGENTS"
+   ]
+  },
+  {
+   "UnitId": "N-d",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.4"
+   ]
+  },
+  {
+   "UnitId": "N-s",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.1"
+   ]
+  },
+  {
+   "UnitId": "Anexo F#p1",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "Anexo F#li1",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "Anexo F#li2",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "Anexo F#li3",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "Anexo F#li4",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "Anexo F#li5",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "Anexo F#li6",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "Anexo F#li7",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.1#row1",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.1#row2",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.1#row3",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.1#row4",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.1#row5",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.1#row6",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.1#row7",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.1#row8",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.1#row9",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.2#row1",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.2#row2",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.2#row3",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.2#row4",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.2#row5",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.2#row6",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.2#row7",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.2#row8",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.2#row9",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.3#row1",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.3#row2",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.3#row3",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.3#row4",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.3#row5",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.3#row6",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.3#p1",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.4#row1",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.4#row2",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.4#row3",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.4#row4",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.4#row5",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.4#row6",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.4#row7",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.4#row8",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.4#row9",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.4#row10",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.4#row11",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.4#row12",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.4#row13",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.4#p1",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.4#p2",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.4#li1",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.4#li2",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.4#li3",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.4#p3",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.5#row1",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.5#row2",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.5#row3",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.5#row4",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.6#p1",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.6#li1",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.6#li2",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.6#li3",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.6#row1",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.6#row2",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.6#row3",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.6#row4",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.6#row5",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.6#row6",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.6#row7",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.6#row8",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.6#p2",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.6#li4",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.6#li5",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.6#li6",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.7#row1",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.7#row2",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.7#row3",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.7#row4",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.7#row5",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.7#row6",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.7#row7",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.7#p1",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.7#li1",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.7#li2",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.7#li3",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#p1",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row1",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row2",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row3",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row4",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row5",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row6",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row7",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row8",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row9",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row10",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row11",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row12",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row13",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row14",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row15",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row16",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row17",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#p2",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#p3",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row18",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row19",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row20",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row21",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row22",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row23",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#p4",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row24",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row25",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row26",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row27",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row28",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row29",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row30",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "F.8#row31",
+   "Problems": [
+    "NON_NORMATIVE_SECTION"
+   ]
+  },
+  {
+   "UnitId": "G.1#row1",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.11"
+   ]
+  },
+  {
+   "UnitId": "G.1#field:Routing` (16.9 #12) con `required`/`advisory",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.9"
+   ]
+  },
+  {
+   "UnitId": "G.1#field:Handoff` (16.9 #2): «inválida u otra corrida → REWORK si `Identity` pasa; si no, STOP»",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.9"
+   ]
+  },
+  {
+   "UnitId": "G.1#field:Termination` (16.9 #1): registro COMPLETED; si fue un proceso, muerte confirmada",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.9"
+   ]
+  },
+  {
+   "UnitId": "G.1#field:Ci` (16.9 #9): cuatro jobs de AGENTS",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.9",
+    "WHOLE_DOCUMENT_UNBOUNDED: AGENTS"
+   ]
+  },
+  {
+   "UnitId": "G.1#field:Tests` (16.9 #10)",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.9"
+   ]
+  },
+  {
+   "UnitId": "G.1#field:Trailer` (16.9 #11)",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.9"
+   ]
+  },
+  {
+   "UnitId": "G.1#field:Scope` (16.9 #7)",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.9"
+   ]
+  },
+  {
+   "UnitId": "G.1#field:Contract` (16.9 #4) / A3-A5",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.9"
+   ]
+  },
+  {
+   "UnitId": "G.1#field:Authority` (16.9 #3) y 16.3",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.9"
+   ]
+  },
+  {
+   "UnitId": "G.1#row21",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.1"
+   ]
+  },
+  {
+   "UnitId": "G.1#row22",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.4"
+   ]
+  },
+  {
+   "UnitId": "G.1#row23",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.4"
+   ]
+  },
+  {
+   "UnitId": "G.1#row24",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.6"
+   ]
+  },
+  {
+   "UnitId": "G.1#row25",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.6"
+   ]
+  },
+  {
+   "UnitId": "G.1#row26",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.8"
+   ]
+  },
+  {
+   "UnitId": "G.1#row27",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.7"
+   ]
+  },
+  {
+   "UnitId": "G.1#row36",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.8"
+   ]
+  },
+  {
+   "UnitId": "G.1#row37",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.12"
+   ]
+  },
+  {
+   "UnitId": "G.1#row39",
+   "Problems": [
+    "AMBIGUOUS_REFERENCE: 16.9"
+   ]
+  }
+ ]
+}

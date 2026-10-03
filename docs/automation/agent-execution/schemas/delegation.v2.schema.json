@@ -1,0 +1,1002 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rackcad-delegation/v2",
+  "description": "Delegación del Controller de planificación en una unidad I62 (Proposal V14 Anexo B.7 sobre rackcad-delegation/v1): Owner.Kind neutral, BindingRef del ejecutor, RoleRequirements y SupersededCommits copiados del contrato. Subordinado: no crea requisitos de evidencia, estados, gates, reglas Git ni decisiones del Owner. Inactivo hasta I62_EFFECTIVE_SHA (AUTOMATION_PLAN 16.14).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "Schema": {
+      "type": "string",
+      "enum": [
+        "rackcad-delegation/v2"
+      ]
+    },
+    "TaskId": {
+      "type": "string"
+    },
+    "RunId": {
+      "type": "string",
+      "pattern": "^R[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$"
+    },
+    "Initiative": {
+      "type": "string"
+    },
+    "Unit": {
+      "type": "string"
+    },
+    "Gate": {
+      "type": "string"
+    },
+    "Attempt": {
+      "type": "integer"
+    },
+    "AuthorityRevision": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "MainSha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "BaseSha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "ExpectedBranch": {
+      "type": "string"
+    },
+    "ExpectedWorktree": {
+      "type": "string"
+    },
+    "Owner": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Kind": {
+          "type": "string",
+          "enum": [
+            "session-internal",
+            "external-process"
+          ]
+        },
+        "Id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "Kind",
+        "Id"
+      ]
+    },
+    "TaskClass": {
+      "type": "string"
+    },
+    "Dimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Ambiguity": {
+          "type": "string",
+          "enum": [
+            "Low",
+            "Medium",
+            "High"
+          ]
+        },
+        "ArchitecturalSensitivity": {
+          "type": "string",
+          "enum": [
+            "Low",
+            "Medium",
+            "High"
+          ]
+        },
+        "Breadth": {
+          "type": "string",
+          "enum": [
+            "Low",
+            "Medium",
+            "High"
+          ]
+        },
+        "ToolUse": {
+          "type": "string",
+          "enum": [
+            "Low",
+            "Medium",
+            "High"
+          ]
+        },
+        "FailureCost": {
+          "type": "string",
+          "enum": [
+            "Low",
+            "Medium",
+            "High"
+          ]
+        },
+        "MechanicalRepetition": {
+          "type": "string",
+          "enum": [
+            "Low",
+            "Medium",
+            "High"
+          ]
+        },
+        "Horizon": {
+          "type": "string",
+          "enum": [
+            "Low",
+            "Medium",
+            "High"
+          ]
+        }
+      },
+      "required": [
+        "Ambiguity",
+        "ArchitecturalSensitivity",
+        "Breadth",
+        "ToolUse",
+        "FailureCost",
+        "MechanicalRepetition",
+        "Horizon"
+      ]
+    },
+    "Executor": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Provider": {
+          "type": "string"
+        },
+        "Transport": {
+          "type": "string"
+        },
+        "Role": {
+          "type": "string"
+        },
+        "Cell": {
+          "type": "string"
+        },
+        "BindingRef": {
+          "type": "object",
+          "description": "BindingRef (B.2).",
+          "additionalProperties": false,
+          "properties": {
+            "UnitId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "Scope": {
+              "type": "string",
+              "enum": [
+                "UNIT",
+                "TASK"
+              ]
+            },
+            "TaskId": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Nullable = no aplica, solo con Scope UNIT."
+            },
+            "Role": {
+              "type": "string",
+              "enum": [
+                "PRINCIPAL_COORDINATOR",
+                "ARCHITECT",
+                "EXECUTION_CONTROLLER",
+                "WORKER",
+                "REVIEWER"
+              ]
+            },
+            "BindingId": {
+              "type": "string",
+              "pattern": "^B[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$"
+            },
+            "Sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "Location": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "Kind": {
+                  "type": "string",
+                  "enum": [
+                    "TRANSIENT",
+                    "CUSTODIED"
+                  ]
+                },
+                "Path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "Commit": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^[0-9a-f]{40}$",
+                  "description": "Nullable = no aplica, solo con TRANSIENT."
+                },
+                "Blob": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^[0-9a-f]{40}$",
+                  "description": "Nullable = no aplica, solo con TRANSIENT."
+                }
+              },
+              "required": [
+                "Kind",
+                "Path",
+                "Commit",
+                "Blob"
+              ]
+            }
+          },
+          "required": [
+            "UnitId",
+            "Scope",
+            "TaskId",
+            "Role",
+            "BindingId",
+            "Sha256",
+            "Location"
+          ]
+        }
+      },
+      "required": [
+        "Provider",
+        "Transport",
+        "Role",
+        "Cell",
+        "BindingRef"
+      ]
+    },
+    "Model": {
+      "type": "string"
+    },
+    "Effort": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Semantic": {
+          "type": "string",
+          "enum": [
+            "Routine",
+            "Balanced",
+            "Deep",
+            "Long-horizon",
+            "Maximum"
+          ]
+        },
+        "Provider": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "Semantic",
+        "Provider"
+      ]
+    },
+    "PromptProfile": {
+      "type": "string",
+      "enum": [
+        "ROUTINE_IMPLEMENTATION",
+        "DEBUGGING",
+        "LONG_HORIZON_IMPLEMENTATION",
+        "ARCHITECTURE_REVIEW",
+        "CHARACTERIZATION",
+        "DOCUMENTATION",
+        "CONTROLLER_PLANNING",
+        "CONTROLLER_VERIFICATION"
+      ]
+    },
+    "RoutingReason": {
+      "type": "string"
+    },
+    "ModelEscalationReason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "RoutingEnforcement": {
+      "type": "string",
+      "enum": [
+        "required",
+        "advisory"
+      ]
+    },
+    "Authorities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Path": {
+            "type": "string"
+          },
+          "Section": {
+            "type": "string"
+          },
+          "Class": {
+            "type": "string",
+            "enum": [
+              "UNIT_DOC",
+              "UNIT_CHANGE",
+              "EXTERNAL"
+            ]
+          }
+        },
+        "required": [
+          "Path",
+          "Section",
+          "Class"
+        ]
+      }
+    },
+    "Objective": {
+      "type": "string"
+    },
+    "AllowedWriteScope": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "ForbiddenWriteScope": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "Invariants": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "AcceptanceCriteria": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "RequiredTests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Project": {
+            "type": "string"
+          },
+          "Filter": {
+            "type": "string"
+          },
+          "MinSelected": {
+            "type": "integer"
+          },
+          "ExpectRed": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "Project",
+          "Filter",
+          "MinSelected",
+          "ExpectRed"
+        ]
+      }
+    },
+    "ExpectedEvidence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "StopConditions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Id": {
+            "type": "string"
+          },
+          "Text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "Id",
+          "Text"
+        ]
+      }
+    },
+    "MaxReworkLoops": {
+      "type": "integer",
+      "enum": [
+        3
+      ]
+    },
+    "AttemptsRemaining": {
+      "type": "integer"
+    },
+    "ChainBaseSha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "ChainRedSha": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "ChainRedFiles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "CorrectionOf": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "RunId": {
+          "type": "string",
+          "pattern": "^R[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$"
+        },
+        "FailureClass": {
+          "type": "string",
+          "enum": [
+            "Termination",
+            "Handoff",
+            "Authority",
+            "Contract",
+            "Identity",
+            "Remote",
+            "Scope",
+            "CleanTree",
+            "Ci",
+            "Tests",
+            "Trailer",
+            "Routing",
+            "FreeText",
+            "Denials",
+            "StopCondition"
+          ]
+        },
+        "AnalysisSha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "RunId",
+        "FailureClass",
+        "AnalysisSha256"
+      ]
+    },
+    "ExpectedHandoffPath": {
+      "type": "string",
+      "pattern": "^artifacts/orchestration/.+/\\{WorkRunId\\}/worker-handoff\\.json$"
+    },
+    "IssuedBy": {
+      "type": "string"
+    },
+    "RoleRequirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Role": {
+            "type": "string",
+            "enum": [
+              "PRINCIPAL_COORDINATOR",
+              "ARCHITECT",
+              "EXECUTION_CONTROLLER",
+              "WORKER",
+              "REVIEWER"
+            ]
+          },
+          "Profile": {
+            "type": "string",
+            "minLength": 1
+          },
+          "Action": {
+            "type": "string",
+            "enum": [
+              "RESUME_DECISION",
+              "CUSTODY",
+              "LOCAL_EVIDENCE",
+              "REVIEW_DESIGN",
+              "REVIEW_CHANGE",
+              "PLAN",
+              "VERIFY",
+              "IMPLEMENT"
+            ]
+          },
+          "Mandatory": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z_]+\\.[a-z0-9-]+$"
+            }
+          },
+          "Independence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "ReferenceRole": {
+                  "type": "string",
+                  "enum": [
+                    "PRINCIPAL_COORDINATOR",
+                    "ARCHITECT",
+                    "EXECUTION_CONTROLLER",
+                    "WORKER",
+                    "REVIEWER",
+                    "AUTHOR",
+                    "PROPOSER",
+                    "EVIDENCE_AUTHOR"
+                  ]
+                },
+                "Actor": {
+                  "type": "string",
+                  "enum": [
+                    "REQUIRED",
+                    "PREFERRED",
+                    "NOT_REQUIRED"
+                  ]
+                },
+                "Session": {
+                  "type": "string",
+                  "enum": [
+                    "REQUIRED",
+                    "PREFERRED",
+                    "NOT_REQUIRED"
+                  ]
+                },
+                "Context": {
+                  "type": "string",
+                  "enum": [
+                    "REQUIRED",
+                    "PREFERRED",
+                    "NOT_REQUIRED"
+                  ]
+                },
+                "Provider": {
+                  "type": "string",
+                  "enum": [
+                    "REQUIRED",
+                    "PREFERRED",
+                    "NOT_REQUIRED"
+                  ]
+                }
+              },
+              "required": [
+                "ReferenceRole",
+                "Actor",
+                "Session",
+                "Context",
+                "Provider"
+              ]
+            }
+          },
+          "EligibleCells": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "description": "Celda con la forma de gate-contract/v1.",
+              "additionalProperties": false,
+              "properties": {
+                "Cell": {
+                  "type": "string"
+                },
+                "Provider": {
+                  "type": "string"
+                },
+                "Model": {
+                  "type": "string"
+                },
+                "Transport": {
+                  "type": "string"
+                },
+                "Capabilities": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "TestedEfforts": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "Source": {
+                  "type": "string"
+                },
+                "VerifiedOn": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "Cell",
+                "Provider",
+                "Model",
+                "Transport",
+                "Capabilities",
+                "TestedEfforts",
+                "Source",
+                "VerifiedOn"
+              ]
+            }
+          },
+          "Materialization": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "Autorización de materialización del REVIEWER con los campos de §20.5.1; null = no aplica (otros roles o sin autorización).",
+            "additionalProperties": false,
+            "properties": {
+              "Role": {
+                "type": "string",
+                "enum": [
+                  "REVIEWER"
+                ]
+              },
+              "AuthorizedActions": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "REVIEW_CHANGE"
+                  ]
+                }
+              },
+              "MinimumCapabilities": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "RequirementId": {
+                      "type": "string",
+                      "pattern": "^[A-Z_]+\\.[a-z0-9-]+$"
+                    },
+                    "Required": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "RequirementId",
+                    "Required"
+                  ]
+                }
+              },
+              "RequiredIndependence": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ReferenceRole": {
+                      "type": "string",
+                      "enum": [
+                        "PRINCIPAL_COORDINATOR",
+                        "ARCHITECT",
+                        "EXECUTION_CONTROLLER",
+                        "WORKER",
+                        "REVIEWER",
+                        "AUTHOR",
+                        "PROPOSER",
+                        "EVIDENCE_AUTHOR"
+                      ]
+                    },
+                    "Actor": {
+                      "type": "string",
+                      "enum": [
+                        "REQUIRED",
+                        "PREFERRED",
+                        "NOT_REQUIRED"
+                      ]
+                    },
+                    "Session": {
+                      "type": "string",
+                      "enum": [
+                        "REQUIRED",
+                        "PREFERRED",
+                        "NOT_REQUIRED"
+                      ]
+                    },
+                    "Context": {
+                      "type": "string",
+                      "enum": [
+                        "REQUIRED",
+                        "PREFERRED",
+                        "NOT_REQUIRED"
+                      ]
+                    },
+                    "Provider": {
+                      "type": "string",
+                      "enum": [
+                        "REQUIRED",
+                        "PREFERRED",
+                        "NOT_REQUIRED"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "ReferenceRole",
+                    "Actor",
+                    "Session",
+                    "Context",
+                    "Provider"
+                  ]
+                }
+              },
+              "EligibleCells": {
+                "type": "object",
+                "description": "Lista cerrada de celdas, o el criterio cerrado de ADR-0046 #4 (Cells vacía).",
+                "additionalProperties": false,
+                "properties": {
+                  "Mode": {
+                    "type": "string",
+                    "enum": [
+                      "LIST",
+                      "CRITERION"
+                    ]
+                  },
+                  "Cells": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                "required": [
+                  "Mode",
+                  "Cells"
+                ]
+              },
+              "ModelEffortBounds": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "MinLevel": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "MinEffort": {
+                    "type": "string",
+                    "enum": [
+                      "Routine",
+                      "Balanced",
+                      "Deep",
+                      "Long-horizon",
+                      "Maximum"
+                    ]
+                  },
+                  "MaxLevel": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "MaxEffort": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "enum": [
+                      "Routine",
+                      "Balanced",
+                      "Deep",
+                      "Long-horizon",
+                      "Maximum",
+                      null
+                    ]
+                  }
+                },
+                "required": [
+                  "MinLevel",
+                  "MinEffort",
+                  "MaxLevel",
+                  "MaxEffort"
+                ]
+              },
+              "Permissions": {
+                "type": "string",
+                "enum": [
+                  "READ_ONLY"
+                ]
+              },
+              "Budget": {
+                "type": "object",
+                "description": "Topes menores o iguales que los congelados (§20.6).",
+                "additionalProperties": false,
+                "properties": {
+                  "MaxReviewRounds": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "MaxLogicalRequests": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "MaxTransportRerunsPerRequest": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "MaxCorrectionsPerLineage": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                },
+                "required": [
+                  "MaxReviewRounds",
+                  "MaxLogicalRequests",
+                  "MaxTransportRerunsPerRequest",
+                  "MaxCorrectionsPerLineage"
+                ]
+              },
+              "ObjectFamily": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "Unit": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "PathPattern": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "InitialVersion": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "CorrectionScope": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "Unit",
+                  "PathPattern",
+                  "InitialVersion",
+                  "CorrectionScope"
+                ]
+              },
+              "Validity": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "FromRecordVersion": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "Until": {
+                    "type": "string",
+                    "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?Z$"
+                  }
+                },
+                "required": [
+                  "FromRecordVersion",
+                  "Until"
+                ]
+              }
+            },
+            "required": [
+              "Role",
+              "AuthorizedActions",
+              "MinimumCapabilities",
+              "RequiredIndependence",
+              "EligibleCells",
+              "ModelEffortBounds",
+              "Permissions",
+              "Budget",
+              "ObjectFamily",
+              "Validity"
+            ]
+          }
+        },
+        "required": [
+          "Role",
+          "Profile",
+          "Action",
+          "Mandatory",
+          "Independence",
+          "EligibleCells",
+          "Materialization"
+        ]
+      },
+      "description": "Copia del contrato, nunca menor (B.7)."
+    },
+    "SupersededCommits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Sha": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "WindowSeq": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "Sha",
+          "WindowSeq"
+        ]
+      },
+      "description": "Copia exacta del contrato (B.7)."
+    }
+  },
+  "required": [
+    "Schema",
+    "TaskId",
+    "RunId",
+    "Initiative",
+    "Unit",
+    "Gate",
+    "Attempt",
+    "AuthorityRevision",
+    "MainSha",
+    "BaseSha",
+    "ExpectedBranch",
+    "ExpectedWorktree",
+    "Owner",
+    "TaskClass",
+    "Dimensions",
+    "Executor",
+    "Model",
+    "Effort",
+    "PromptProfile",
+    "RoutingReason",
+    "ModelEscalationReason",
+    "RoutingEnforcement",
+    "Authorities",
+    "Objective",
+    "AllowedWriteScope",
+    "ForbiddenWriteScope",
+    "Invariants",
+    "AcceptanceCriteria",
+    "RequiredTests",
+    "ExpectedEvidence",
+    "StopConditions",
+    "MaxReworkLoops",
+    "AttemptsRemaining",
+    "ChainBaseSha",
+    "ChainRedSha",
+    "ChainRedFiles",
+    "CorrectionOf",
+    "ExpectedHandoffPath",
+    "IssuedBy",
+    "RoleRequirements",
+    "SupersededCommits"
+  ]
+}

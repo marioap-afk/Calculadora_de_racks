@@ -117,3 +117,26 @@ LOCAL_EVIDENCE es la acción «evidencia local» de AUTOMATION_PLAN 16.15: solo 
   CONTROLLER_VERIFICATION, `structured-output`.
 
 Los requisitos opcionales (p. ej., la cuota) se registran sin alterar el agregado. Un contrato de gate puede exigir más, nunca menos.
+
+## 9. Binding por capacidad (unidades I62)
+
+Materializado por I-62 e **inactivo** hasta su vigencia ([AUTOMATION_PLAN](../../AUTOMATION_PLAN.md) 16.14). Regla: AUTOMATION_PLAN 16.20; registro y
+coherencia: [README](README.md) §14. Sustituye, solo para las unidades I62, la selección entre `EligibleCells` de §4: en lugar de elegir una celda por su
+modelo, se elige por los requisitos observados del rol y de la acción.
+
+**Identidad de una celda.** `CellId` = `<AdapterId>:<modelo>:<EffortSemantic>`, con `-` como modelo cuando el adapter no lo controla. Se deriva del
+descriptor del adapter y de la entrada del catálogo; no es una fila nueva del catálogo, y `Cell.CatalogBlob` fija la versión del catálogo leída.
+
+**Algoritmo:**
+1. requisitos del perfil y la acción (§8) más los `Mandatory` del rol en el contrato de gate;
+2. candidatas: las celdas cuyo adapter tiene descriptor (AUTOMATION_PLAN 16.19) y, si el contrato las limita, las de `RoleRequirements[].EligibleCells` o, en
+   una materialización autorizada, las de su `EligibleCells`;
+3. por candidata, un preflight vigente (README §13) para la unidad, el rol y la acción;
+4. filtro de capacidad: todos los obligatorios en MATCH o ABOVE_REQUIRED (README §12). Un obligatorio UNKNOWN, BELOW_REQUIRED u omitido descarta la candidata
+   (P-10);
+5. filtro de elegibilidad (§5, conservado): invocación medida de la celda, consumo cubierto y celda no `STALE`. Una medición autorizada no es un binding;
+6. filtro de independencia (README §14.5) frente a cada referencia;
+7. entre las que quedan, el nivel más bajo adecuado y el transporte más preferido; `RoutingReason` y `RejectedAlternatives` con el motivo de cada descarte.
+
+Sin candidata, no hay binding ni invocación, y no se sube de nivel en silencio. El nombre de un proveedor o de un modelo, una fila del catálogo o el runtime
+solicitado nunca sustituyen a un paso.

@@ -175,6 +175,21 @@ de otro modo es `CHANGES REQUIRED`, o `BLOCKED — OWNER DECISION` si falta auto
 Toda revision declara `SAME-SESSION ROLE`, `SEPARATE SESSION` o `EXTERNAL HUMAN` y si revisor y autor
 son la misma persona. El Coordinator sigue revisando Discovery y gates; esos controles no se sustituyen.
 
+**Unidades I62 (materializado por I-62; inactivo hasta su vigencia, AUTOMATION_PLAN 16.14).** En una unidad que adopta la ejecucion delegada I62
+(I62_DELEGATED), la revision de diseño de NEW ARCHITECTURE y de FOUNDATION EVOLUTION antes del Freeze y la conformidad de READY-06 (§9) acreditan su
+independencia frente a `ReviewSubject`: la version exacta revisada y las identidades de autor de su conjunto acotado a la unidad y al objeto, incluidos cada
+titular Principal de cada sucesion o rebinding, cada Worker, cada autor humano y el operador humano de cada sesion IA autora.
+
+| Modo | Predicado |
+|---|---|
+| `SEPARATE SESSION` (revisor IA o runtime) | REQUIRED Actor (`ActorRef` distinto del de cada autor IA), Sesion (`SessionRef` distinta de cada sesion autora) y Contexto (solo el cierre efectivo de insumos, con el contexto inyectado declarado antes de revisar y la auditoria de lecturas); Proveedor PREFERRED |
+| `EXTERNAL HUMAN` | REQUIRED Actor (`HumanReviewerRef` distinto de toda identidad humana de autor, incluido el operador que dirigio una sesion IA autora), Sesion (una `ReviewInstanceRef` propia de la revision) y Contexto (los insumos canonicos revisados, declarados); sin `ActorRef` ni `SessionRef` ficticios |
+| `SAME-SESSION ROLE` | sigue siendo un modo valido para las demas revisiones, pero no basta para estas |
+
+Un autor que no se puede establecer dentro del conjunto cuenta como UNKNOWN y no satisface. La evidencia va en la cabecera del registro recuperable de la
+revision. No se retira ningun modo, no es retroactivo (no aplica a I-62, I-63, I-64 ni a ninguna unidad I61) y las unidades DIRECT_ONLY siguen con la regla
+anterior. Una revision del Coordinator no se convierte en dictamen del Architect. Procedimiento: [agent-execution/README](automation/agent-execution/README.md) §14.5.
+
 ## 6. Consensus Freeze y enmiendas
 
 Antes de implementar se congelan: autoridad; persistencia; comportamiento observable; semantica de
@@ -272,6 +287,9 @@ registro versionado y A-n si cambia Freeze; despues de READY-04 crea SHA nuevo y
 
 Un rebase posterior obliga a repetir la conformidad completa sobre el SHA nuevo. Range-diff, patch-id o
 igualdad de arbol no trasladan el resultado.
+
+En una unidad I62, la conformidad de READY-06 acredita ademas el predicado de independencia de §5 (unidades I62; materializado por I-62
+e inactivo hasta su vigencia).
 
 ## 10. Referencia sobre repeticion
 

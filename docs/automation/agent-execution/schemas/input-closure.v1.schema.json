@@ -1,0 +1,282 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rackcad-input-closure/v1",
+  "description": "Cierre efectivo de insumos de una invocación de rol (Proposal V14 §20.3.1): listas, obligaciones con su clase y su resolución, y blobs de origen. Subordinado: no crea requisitos de evidencia, estados, gates, reglas Git ni decisiones del Owner. Inactivo hasta I62_EFFECTIVE_SHA (AUTOMATION_PLAN 16.14).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "Schema": {
+      "type": "string",
+      "enum": [
+        "rackcad-input-closure/v1"
+      ]
+    },
+    "AuthorityRevision": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "CanonicalInputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "Blob": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          }
+        },
+        "required": [
+          "Path",
+          "Blob"
+        ]
+      }
+    },
+    "AutomaticInstructions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "Blob": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "Adapter": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          }
+        },
+        "required": [
+          "Path",
+          "Blob",
+          "Adapter"
+        ]
+      },
+      "description": "Instrucciones que el runtime inyecta en el directorio (p. ej., AGENTS.md)."
+    },
+    "Obligations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "SourcePath": {
+            "type": "string",
+            "minLength": 1
+          },
+          "SourceSection": {
+            "type": "string",
+            "minLength": 1
+          },
+          "SourceBlob": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "Text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "Class": {
+            "type": "string",
+            "enum": [
+              "READ",
+              "ACTION_COMPATIBLE",
+              "ACTION_INCOMPATIBLE",
+              "CONDITIONAL_NOT_TRIGGERED"
+            ]
+          },
+          "Resolution": {
+            "type": "string",
+            "enum": [
+              "INCLUDED",
+              "ALLOWED",
+              "EXEMPTED",
+              "NOT_TRIGGERED"
+            ]
+          },
+          "Target": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Archivo que obliga a leer (READ) o acción; null = no aplica."
+          },
+          "Authority": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Exención explícita y acotada (EXEMPTED); null = no aplica."
+          },
+          "Reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Motivo de CONDITIONAL_NOT_TRIGGERED; null = no aplica."
+          }
+        },
+        "required": [
+          "SourcePath",
+          "SourceSection",
+          "SourceBlob",
+          "Text",
+          "Class",
+          "Resolution",
+          "Target",
+          "Authority",
+          "Reason"
+        ]
+      }
+    },
+    "AllowedTransitiveInputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "Blob": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "RequiredBy": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "Path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "Section": {
+                "type": "string",
+                "minLength": 1
+              },
+              "Blob": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              }
+            },
+            "required": [
+              "Path",
+              "Section",
+              "Blob"
+            ]
+          }
+        },
+        "required": [
+          "Path",
+          "Blob",
+          "RequiredBy"
+        ]
+      }
+    },
+    "AllowedActions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Action": {
+            "type": "string",
+            "minLength": 1
+          },
+          "RequiredBy": {
+            "type": "string",
+            "minLength": 1
+          },
+          "Class": {
+            "type": "string",
+            "enum": [
+              "ACTION_COMPATIBLE",
+              "EXEMPTED"
+            ]
+          },
+          "ExemptionRef": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "null = no aplica salvo con EXEMPTED."
+          },
+          "ExemptionScope": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "null = no aplica salvo con EXEMPTED."
+          }
+        },
+        "required": [
+          "Action",
+          "RequiredBy",
+          "Class",
+          "ExemptionRef",
+          "ExemptionScope"
+        ]
+      }
+    },
+    "DeclaredRuntimeContext": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Kind": {
+            "type": "string",
+            "minLength": 1
+          },
+          "Source": {
+            "type": "string",
+            "minLength": 1
+          },
+          "SizeOrSha256": {
+            "type": "string",
+            "pattern": "^([0-9]+|[0-9a-f]{64})$",
+            "description": "Tamaño en bytes o SHA-256."
+          }
+        },
+        "required": [
+          "Kind",
+          "Source",
+          "SizeOrSha256"
+        ]
+      }
+    },
+    "ForbiddenInputs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "FixedPointIterations": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "required": [
+    "Schema",
+    "AuthorityRevision",
+    "CanonicalInputs",
+    "AutomaticInstructions",
+    "Obligations",
+    "AllowedTransitiveInputs",
+    "AllowedActions",
+    "DeclaredRuntimeContext",
+    "ForbiddenInputs",
+    "FixedPointIterations"
+  ]
+}

@@ -842,3 +842,264 @@ lo nombra su descriptor. P-01 se conserva, y P-11 lo generaliza a toda huella de
 |---|---|---|
 | P-11 | huella declarada cambiada durante una cesión | STOP (igual que P-01) |
 | P-14 | adapter desconocido, esquema ausente, versión incompatible o hechos inválidos | no elegible |
+
+### 16.20 Binding y aceptación (I62)
+
+Origen: Proposal V14 §5, §20.5.1 y §20.7, y Anexo B.2 y B.5. El binding asigna un rol a una celda concreta para una unidad o una tarea. Se registra en
+`rackcad-binding/v1` (`agent-execution/schemas/binding.v1.schema.json`) y se referencia con `BindingRef` (B.2).
+
+**Entradas:** los requisitos del rol y de la acción ([routing.md](automation/agent-execution/routing.md) §8), la independencia (16.21), una observación de
+capacidad vigente (16.18) y la **elegibilidad** de ADR-0046 #4, que se conserva: invocación **medida** de la celda (MEASURED), consumo cubierto (OFFICIAL o
+MEASURED, nunca UNKNOWN) y celda no `Stale`. Una cuota desconocida no equivale a consumo autorizado, y una entrada de catálogo no acredita los hechos.
+
+**Nunca se infiere.** Ni el nombre de un proveedor o de un modelo, ni una fila del catálogo, ni el runtime solicitado, ni la autodeclaración de un runtime
+acreditan un requisito ni producen un binding. Un requisito obligatorio sin acreditar es UNKNOWN, y UNKNOWN nunca se convierte en MATCH: no hay valor por
+defecto optimista.
+
+**Orden, sin ciclos.** El binding consume la observación; la observación no depende del binding:
+1. candidatas del catálogo;
+2. observación de capacidad (preflight);
+3. invocación medida previa, de una medición autorizada que no es un binding;
+4. registro del binding, transitorio hasta su custodia;
+5. aceptación: individual (A7', por el Coordinator) o **materialización autorizada** bajo una autorización vigente, transitoria hasta la custodia;
+6. cesión al rol.
+
+**Algoritmo:**
+1. requisitos del rol y de la acción;
+2. candidatas con descriptor de adapter (16.19);
+3. filtro: todos los obligatorios en MATCH o ABOVE_REQUIRED (16.16) y la elegibilidad completa;
+4. independencia sobre `ActorRef`, `SessionRef`, entradas y proveedor (16.21);
+5. el nivel más bajo adecuado, y el transporte;
+6. registro `rackcad-binding/v1`;
+7. aceptación: individual, o materialización autorizada con **todos** los criterios en SATISFIED.
+
+Una celda sin medición previa no se vincula. **Sin celda elegible no se invoca** (P-10). **Rebinding:** un registro nuevo con el mismo ámbito y la misma
+`TaskId`, sin tocar los contadores; el binding anterior del mismo rol y ámbito queda **obsoleto**.
+
+**Cuatro estados distintos.** Ninguno implica al siguiente:
+
+| Estado | Qué es | Qué permite |
+|---|---|---|
+| Candidato | binding registrado con `Acceptance.State` = PENDING, o candidata observada sin registro | nada: no se invoca |
+| Aceptación individual | `ACCEPTED` con `Basis` = INDIVIDUAL_DECISION: decisión del Coordinator en `decisions/<unit>.md` (`DecisionRef`) | invocar el rol |
+| Materialización autorizada | `ACCEPTED` con `Basis` = AUTHORIZED_MATERIALIZATION, `DecisionRef` = `null`, `AuthorizationRef` y `MaterializationCheck` con todos los criterios en SATISFIED | invocar el rol, dentro de la autorización |
+| Binding aceptado | cualquiera de los dos `ACCEPTED`, custodiado a más tardar en el punto durable que reserva la invocación | lo que su `Role` y su acción permiten (16.23) |
+
+`Acceptance` admite una sola transición, PENDING → ACCEPTED o REJECTED; el binding aceptado es una versión nueva del mismo `BindingId` con el resto del
+contenido idéntico. Un contenido distinto con el mismo `BindingId` es S-04.
+
+**Materialización autorizada.** Solo para ARCHITECT, bajo una `ReviewLoopAuthorization` del Coordinator (marcador `I62-REVIEW-LOOP-AUTHORIZATION:
+<AuthorizationId>` en `decisions/<unit>.md`), y para REVIEWER, bajo la autorización que el Coordinator incluya en `RoleRequirements[].Materialization` del
+contrato de gate (`rackcad-gate-contract/v2`). La autorización fija, como mínimo: `Role`, `AuthorizedActions`, `MinimumCapabilities` (cada una en MATCH o
+ABOVE_REQUIRED), `RequiredIndependence`, `EligibleCells` (lista cerrada o el criterio cerrado de ADR-0046 #4), `ModelEffortBounds`, `Permissions` =
+READ_ONLY, `Budget`, `ObjectFamily` y `Validity`. El Principal, **solo si se cumple exactamente**:
+1. observa un candidato (16.18);
+2. comprueba cada criterio y registra `{CriterionId, Required, Observed, Result, Evidence}`;
+3. materializa el binding con `DecisionRef` = `null` y `AuthorizationRef` = `{Path, Marker, AuthorizationId, Commit, Blob}`; `Commit` es un ancestro del
+   punto que custodia el binding en el que la autorización ya figura, nunca ese mismo punto;
+4. lo custodia con su preflight y su comprobación;
+5. lo invoca.
+
+No relaja ningún criterio: **UNKNOWN cuenta como NOT_SATISFIED**. Si ningún candidato satisface la autorización, no hay invocación: STOP y
+COORDINATOR_DECISION (autorización nueva o enmendada), o ESCALATION_OWNER si lo que falta es materia del Owner. **Sin aceptación fingida:** un binding
+materializado nunca lleva un `DecisionRef` que simule una decisión individual que no ocurrió. Quien lo acepta o lo valida **reproduce** la comprobación con
+el preflight custodiado y con la autorización tal como figura en `AuthorizationRef.Commit`/`Blob`; si no la reproduce, el binding es inválido (P-20).
+
+**Vigencia de acción y acreditación histórica.** Una materialización nueva exige la vigencia de acción de la autorización: termina en el punto que registra
+ARCHITECT_SATISFIED, en el agotamiento, con la revocación, la sustitución o la enmienda custodiadas por el Coordinator, o al pasar `Validity.Until`. Una
+autorización terminada nunca se reutiliza para un binding nuevo. Un binding ya materializado y usado durante la vigencia conserva su acreditación
+histórica: se valida contra la autorización de su `AuthorizationRef`, no contra la vigente. El destino de los intentos en curso al terminar la vigencia es
+de la orquestación (Proposal V14 §20.5.1 y §20.6).
+
+**Referencias (A2').** Un `BindingRef` es válido solo si es de la misma unidad, la misma tarea (o `Scope` = UNIT con `TaskId` nulo) y la revisión
+custodiada, no está obsoleto por un rebinding y, si se presenta como custodiado, es CUSTODIED con su commit y su blob. TRANSIENT nunca es evidencia
+custodiada.
+
+| Id | Condición | Comportamiento |
+|---|---|---|
+| P-10 | requisito obligatorio de un rol o acción en UNKNOWN o BELOW_REQUIRED (16.16) | no se vincula ni se invoca; no consume `attempts` |
+| P-20 | el Principal intenta un acto de autoridad que no tiene: declarar AGREED, cerrar o rebajar un REQUIRED, elegir una decisión del Owner, declarar Freeze o PASS, materializar un binding fuera de los criterios de la autorización, usar un resultado de REVIEWER para satisfacer al ARCHITECT | rechazo y STOP |
+
+Procedimiento, reglas de coherencia del registro y casos: [agent-execution/README](automation/agent-execution/README.md) §14; algoritmo de selección de
+celda: [routing.md](automation/agent-execution/routing.md) §9.
+
+### 16.21 Independencia por riesgo (I62)
+
+Origen: Proposal V14 §11 y Anexo B.2. La independencia se evalúa sobre identidades **observadas**, nunca sobre identificadores de binding ni sobre
+autodeclaraciones:
+
+| Dimensión | Se satisface cuando … | Evidencia |
+|---|---|---|
+| **Actor** | `ActorRef` distinto (instancia de runtime observada). **No** basta un `BindingId` distinto: dos bindings con el mismo `ActorRef` son el mismo actor | `ActorRef` con `Assurance` RUNTIME_OBSERVED |
+| **Sesión** | `SessionRef` distinta (sesión de runtime de nivel superior; un subagente comparte la de su padre) | `SessionRef` RUNTIME_OBSERVED |
+| **Contexto** | las entradas son solo el cierre efectivo de insumos (16.24), sin transcripción, memoria ni razonamiento de la referencia, y con las entradas automáticas del runtime enumeradas | invocación custodiada + `EffectiveInputClosure` + entradas automáticas + auditoría de lecturas cuando exista |
+| **Proveedor** | proveedor distinto según los descriptores de adapter | descriptores |
+
+Valores: REQUIRED, PREFERRED, NOT_REQUIRED. UNKNOWN en una dimensión REQUIRED no satisface; `Assurance` NONE deja la dimensión en UNKNOWN. Un proveedor
+distinto con el contexto de la referencia **no** satisface Contexto. Una marca no se prohíbe si la independencia se acredita.
+
+**Combinación.** Por (referencia, dimensión) rige el **máximo** (REQUIRED > PREFERRED > NOT_REQUIRED); las referencias distintas se evalúan por separado. Si
+falta un REQUIRED, el binding del revisor o del verificador **no se acepta**, la revisión sigue pendiente y la operación dependiente se bloquea. Un PREFERRED
+no satisfecho se registra.
+
+**Referencia.** Es el conjunto de actores que escribieron el rango evaluado (`BaseSha..CurrentSha` y, con `SupersededCommits`, también los de esos commits).
+La independencia se comprueba contra **cada** uno.
+
+| Disparador | Rol o revisión | Referencia | Actor | Sesión | Contexto | Proveedor | Si falta un REQUIRED |
+|---|---|---|---|---|---|---|---|
+| Toda delegación | EXECUTION_CONTROLLER (verificación) | WORKER | REQUIRED | REQUIRED | REQUIRED | NOT_REQUIRED | no es posible VERIFIED: BLOCKED de planificación |
+| Coordinator y Worker en la misma sesión | EXECUTION_CONTROLLER | sesión Coordinator/Worker | REQUIRED | REQUIRED | REQUIRED | PREFERRED | ídem |
+| Cambio de autoridad compartida | EXECUTION_CONTROLLER + REVIEWER | WORKER | REQUIRED | REQUIRED | REQUIRED | PREFERRED | revisión pendiente; la tarea no se cierra |
+| Operación destructiva o irreversible | REVIEWER de la autorización (además de S-05) | quien la propone | REQUIRED | REQUIRED | REQUIRED | NOT_REQUIRED | no se ejecuta |
+| Cambio sensible a la seguridad | REVIEWER | WORKER | REQUIRED | REQUIRED | REQUIRED | PREFERRED | revisión pendiente |
+| Evidencia ambigua de alto coste | REVIEWER | autor de la evidencia | REQUIRED | PREFERRED | REQUIRED | PREFERRED | la evidencia no se usa para decidir |
+| Alto coste de fallo (dimensión `High`) | EXECUTION_CONTROLLER | WORKER | REQUIRED | REQUIRED | REQUIRED | PREFERRED | como «toda delegación», con el proveedor registrado |
+| Acumulación de roles | según 16.1 | — | — | — | — | — | combinación prohibida → binding rechazado |
+| Cableado rutinario acotado | REVIEWER (si se pide) | WORKER | NOT_REQUIRED | NOT_REQUIRED | NOT_REQUIRED | NOT_REQUIRED | — |
+
+**Revisiones mayores de LIFECYCLE.** La revisión de diseño de NEW ARCHITECTURE y de FOUNDATION EVOLUTION antes del Freeze, y la conformidad de READY-06,
+de una unidad I62_DELEGATED siguen el predicado de independencia de [INITIATIVE_LIFECYCLE](INITIATIVE_LIFECYCLE.md) §5 para unidades I62, que se evalúa
+frente a `ReviewSubject` (B.2). Los tres modos de revisión se conservan.
+
+### 16.22 Aceptación del paquete y comprobaciones de la verificación (I62)
+
+Origen: Proposal V14 Anexo G.1. Para una unidad I62, la aceptación del paquete (16.5, A1-A8) y las comprobaciones de la verificación (16.9) se aplican con
+estos deltas. Lo que no figura aquí no cambia: la precedencia de 16.9, el primer fallo, y `Identity`, `Remote`, `CleanTree`, `FreeText`, `Denials` y
+`Handoff`.
+
+| Comprobación | Tratamiento I62 | Tipo |
+|---|---|---|
+| A1' | + validación contra los esquemas del conjunto I62 (`delegation/v2`, `gate-contract/v2`, `binding/v1`) y de los hechos del adapter (16.18) | ampliado |
+| A2' | + `BindingRef` válido según 16.20: misma unidad, misma tarea, revisión custodiada y no obsoleto | ampliado |
+| A3'-A5' | + `RoleRequirements` de la delegación ⊇ los del contrato por rol (`Mandatory` ⊇ y cada dimensión de `Independence` ≥ la del contrato, con REQUIRED > PREFERRED > NOT_REQUIRED) + `SupersededCommits` igual al del contrato | ampliado |
+| A6' | + `ProtocolSet` = protocolo de la unidad; distinto → P-15 | ampliado |
+| A7' | elegibilidad mediante un binding **aceptado** (individual o materializado bajo autorización, con acreditación histórica; 16.20) + observación de capacidad vigente | sustituido (misma regla de ADR-0046 #4) |
+| A8' | + `CountersSnapshot` = autoridad | ampliado |
+| `Routing` (16.9 #12) | `required`: efectivo ≠ solicitado → fail (BLOCKED); `advisory`: pass con la discrepancia en `Evidence`, `Findings` y `Deviations`. **Caso añadido:** efectivo no observado al nivel mínimo → `required`: fail (BLOCKED); `advisory`: pass con la limitación anotada | ampliado |
+| `Termination` (16.9 #1) | `Outcome` COMPLETED **y**, si es un proceso o una sesión, la operación 7 del adapter acreditada (16.19). Un proceso muerto con FAILED_TURN → fail (BLOCKED de transporte) | ampliado |
+| `Ci` (16.9 #9) | los jobs que exige el AGENTS del repositorio de la unidad | sustituido (mismo significado en RackCad) |
+| `Tests` (16.9 #10) | igual + `Skipped` coherente | ampliado |
+| `Trailer` (16.9 #11) | coherente con el proveedor y el modelo del binding; con `SupersededCommits`, además presencia y celda de catálogo de los commits sustituidos | ampliado |
+| `Scope` (16.9 #7) | sin cambio; con `SupersededCommits`, además el alcance acumulado | ampliado (solo con sustitución) |
+| `Contract` (16.9 #4) | + `RoleRequirements` y `SupersededCommits`, como A3'-A5' | ampliado |
+
+**Comparación no establecida.** Una comprobación cuya comparación no se pudo ejecutar o no terminó es `not_run`, y `not_run` cuenta como fail; nunca es
+pass (ADR-0046 #6, conservado por ADR-0048). En particular, `Scope` = pass exige en su `Evidence` la salida reproducible de
+`git diff --name-only BaseSha..CurrentSha` y la entrada de `AllowedWriteScope` que contiene cada ruta. Sin esa pertenencia por ruta, o si la comparación
+auxiliar falló, `Scope` es `not_run`, y el Coordinator, que hace las comprobaciones entre artefactos de la verificación, rechaza un VERIFIED que la omita.
+
+El procedimiento y los casos de cierre con su esperado exacto están en [agent-execution/README](automation/agent-execution/README.md) §14.
+
+### 16.23 Orquestación de roles (I62): invocación de rol y contratos de salida
+
+Origen: Proposal V14 §20.3, §20.5 y §20.7, y Anexo B.9 y B.10. `rackcad-role-invocation/v1` (`agent-execution/schemas/role-invocation.v1.schema.json`) es
+el contrato semántico de toda invocación de rol en una unidad I62_DELEGATED. En una unidad I61, el Controller sigue con sus contratos de I-61 sin cambio.
+
+**Propiedades:**
+- sin texto de prompt de ningún proveedor: el adapter renderiza la invocación concreta (16.17);
+- **objeto exacto obligatorio** cuando se revisa o se verifica algo: `Target` = commit, ruta y blob; solo PLAN puede no tenerlo;
+- la salida del rol identifica el objeto exacto revisado o ejecutado;
+- tres identidades distintas: la solicitud lógica (`LogicalReviewRequestId`), el contrato de cada intento (`InvocationId`) y el lanzamiento (`RunId`);
+- permisos mínimos: ARCHITECT, EXECUTION_CONTROLLER y REVIEWER son de solo lectura (`Permissions` = READ_ONLY);
+- contrato de salida fijado por el rol y la acción.
+
+**Invocación limpia de una revisión.** Una sesión o un proceso elegible y distinto; el commit, la ruta y el blob exactos; solo el cierre efectivo de insumos
+(16.24), sin transcripción ni memoria privada del autor; el contexto inyectado automáticamente, declarado en el resultado y contrastado con el cierre; la
+fidelidad de los insumos acreditada antes de lanzar y comprobada después (16.24); un resultado estructurado; la terminación acreditada, y la identidad del
+runtime observada por el invocador. En las revisiones mayores de LIFECYCLE se aplica además su predicado (16.21). Sin binding elegible no hay invocación
+(P-10).
+
+**Correspondencia cerrada entre rol, acción y contrato de salida:**
+
+| `RequestedRole` / `Action` | `OutputContract` | Puede satisfacer | Nunca |
+|---|---|---|---|
+| ARCHITECT / REVIEW_DESIGN | `rackcad-architect-review-result/v1` (AGREED \| CHANGES REQUIRED \| BLOCKED — OWNER DECISION) | ARCHITECT_SATISFIED sobre el blob exacto; cierre o sustitución de hallazgos del ARCHITECT | GATE PASS, `EXECUTION_*` |
+| REVIEWER / REVIEW_CHANGE | `rackcad-reviewer-result/v1` (hallazgos, recomendaciones y `Disposition` NO_FINDINGS \| FINDINGS) | el requisito de revisión operativa de 16.21 que lo pidió; el cierre de sus propios hallazgos | AGREED u otro veredicto de LIFECYCLE, ARCHITECT_SATISFIED, cierre o rebaja de hallazgos del ARCHITECT |
+| EXECUTION_CONTROLLER / PLAN | `rackcad-delegation/v2` | la planificación de 16.5 | GATE PASS, Candidato; nunca `controller-verification/v2` |
+| EXECUTION_CONTROLLER / VERIFY | `rackcad-controller-verification/v2` | la verificación de 16.9 | GATE PASS, Candidato; nunca `delegation/v2` |
+| WORKER / IMPLEMENT | `rackcad-worker-handoff/v1` | — | verificación, GATE PASS |
+
+PLAN y VERIFY no son intercambiables. El triple `RequestedRole` + `Action` + `OutputContract` debe coincidir con el binding aceptado y con la invocación: un
+resultado cuyo esquema no es el `OutputContract` de su invocación es INVALID (P-19). Usar un resultado de REVIEWER para satisfacer al ARCHITECT, o para cerrar
+un hallazgo del ARCHITECT, es P-20.
+
+**Resultado inválido o incompleto** (no avanza el estado, P-19): falla el esquema o no es el `OutputContract`; el commit o el blob no coinciden con la
+invocación; falta la declaración de contexto inyectado o la evidencia de independencia; un REQUIRED no tiene id, sección, evidencia o corrección; AGREED con un
+REQUIRED abierto sin disposición; o hay una lectura fuera del cierre (P-22), una contradicción de identidad (P-23) o una representación no fiel (P-25), para lo
+afectado.
+
+| Id | Condición | Comportamiento |
+|---|---|---|
+| P-19 | salida de rol inválida o incompleta | no avanza; reejecución de transporte dentro del tope; agotado → STOP |
+
+El ciclo de la revisión (estados, intentos, presupuestos y linaje) es de la orquestación (Proposal V14 §20.5 y §20.6). Procedimiento de construcción y de
+validación: [agent-execution/README](automation/agent-execution/README.md) §15 y §16.
+
+### 16.24 Orquestación de roles (I62): cierre de insumos, identidad del revisor y fidelidad
+
+Origen: Proposal V14 §20.3.1, §20.3.2 y §20.3.3, y Anexo B.9 y B.11.
+
+**Cierre efectivo de insumos** (`rackcad-input-closure/v1`). Una invocación distingue:
+
+| Clase | Contenido | Quién la fija |
+|---|---|---|
+| `CanonicalInputs[]` | los artefactos versionados que la acción necesita: el objeto exacto, sus registros de revisión y sus autoridades | el Principal |
+| `AllowedTransitiveInputs[]` | los archivos que un insumo canónico, o una instrucción que el runtime inyecta automáticamente, **obliga normativamente** a leer, cada uno con la obligación que lo exige (ruta, sección y blob) | el cálculo del cierre, antes de lanzar |
+| `DeclaredRuntimeContext[]` | instrucciones del sistema y del runtime, mensajes de herramientas y catálogos que inyecta el adapter, con su tamaño o su hash cuando el adapter los expone | el adapter (operación 1) |
+| `ForbiddenInputs[]` | transcripción y memoria del autor, sesiones ajenas, worktrees reales de otras unidades, artefactos transitorios | el contrato, siempre |
+
+Cálculo, antes de cualquier lanzamiento:
+1. se parte de `CanonicalInputs` y de las instrucciones automáticas que el descriptor del adapter declara para el directorio de trabajo;
+2. cada obligación se clasifica: **READ** → transitivo permitido (opción A, por defecto); **ACTION_COMPATIBLE** → acción permitida;
+   **ACTION_INCOMPATIBLE** → solo se omite con una **exención explícita y acotada** a esa invocación y esa acción, de una autoridad aplicable (opción B); sin
+   exención no hay lanzamiento (STOP, COORDINATOR_DECISION); **CONDITIONAL_NOT_TRIGGERED** → se registra con su motivo; una condición ambigua se trata como
+   READ;
+3. se repite hasta el punto fijo; un ciclo no añade nada;
+4. el cierre fija la `AuthorityRevision` y los blobs; si cambia uno, se recalcula antes de lanzar.
+
+Una exención **omite** una acción; no la sustituye por otra evidencia. Una señal de salud de publicación (`HealthSignals`) no es evidencia equivalente a
+ninguna prueba local, no satisface ninguna clase de prueba de AGENTS y no se propaga a gates, Candidato, cierre ni implementación. Tras la terminación, una
+lectura registrada fuera del cierre es INVALID_REVIEW_CONTEXT (P-22), y un registro de lecturas sin lecturas o incompleto deja Contexto en UNKNOWN.
+
+**Identidad del revisor.** `ReviewerDeclaredIdentity` es informativa: nunca acredita modelo, effort, sesión ni hilo, y nunca declara MATCH.
+`InvokerObservedRuntimeIdentity`, que el invocador toma de los hechos del adapter, es la única fuente de la identidad efectiva. Una contradicción entre una
+declaración concreta y la observada es S-04 (P-23); una declaración UNKNOWN no es contradicción. Una compactación del contexto del revisor se registra, no
+invalida la revisión por sí sola y no aporta evidencia propia.
+
+**Fidelidad de los insumos** (`rackcad-input-fidelity/v1`). Un registro `CanonicalInputFidelity` por cada insumo del cierre y por la invocación
+renderizada, con los bytes canónicos (blob y SHA-256), su codificación (UTF-8 según los bytes reales, BOM y fin de línea), la representación de transporte,
+su hash o el método de comparación, cada carácter no ASCII distinto del corpus contado en ambos lados, el estado (FAITHFUL \| FAITHFUL_NORMALIZED \|
+DEGRADED_BOUNDED \| DEGRADED_UNBOUNDED \| UNVERIFIED) y los tramos degradados. La única normalización fiel es el fin de línea y el salto final
+(FAITHFUL_NORMALIZED); cualquier otra diferencia es degradación semántica.
+- **Antes de lanzar:** bytes canónicos, transporte en UTF-8 y comprobación por el **mismo camino de lectura** que usará el revisor. Sin FAITHFUL o
+  FAITHFUL_NORMALIZED no hay lanzamiento (P-24).
+- **Después de la terminación:** se compara la **representación entregada al revisor**, con sus truncamientos y omisiones; sin una fuente que la represente,
+  UNVERIFIED.
+- **Fallo cerrado:** con DEGRADED_BOUNDED, solo se ingieren los hallazgos y las disposiciones cuyas premisas son independientes de la degradación; los demás
+  son INVALID_PREMISE y no cambian linajes; con DEGRADED_UNBOUNDED o UNVERIFIED no se ingiere nada (P-25).
+
+**Independencia de una premisa.** Cada premisa identifica la proposición normativa completa (`PremiseRefs`). Con algún insumo en DEGRADED_BOUNDED, es
+independiente solo si su envoltorio directo es fiel (unidad estructural completa, expresión completa y cadena de títulos), si **todas** las unidades de su
+clausura de dependencias normativas llegaron fieles al revisor, si todas sus dependencias se resolvieron de forma determinista y si su contexto de control es
+fiel. La clausura recorre el **manifiesto de dependencias normativas** (`rackcad-normative-dependency-manifest/v1`,
+`agent-execution/schemas/normative-dependency-manifest.v1.schema.json`), nunca la prosa:
+- la resolución sigue este orden: referencia calificada → sección del mismo documento → destino propuesto de la Proposal → identificador definido →
+  AMBIGUOUS_REFERENCE (sin calificador y con algún destino posible en otro documento, aunque sea uno solo) → UNRESOLVED_REFERENCE;
+- un documento entero entra solo por un conjunto de entrada acotado o por una regla compuesta; si no, WHOLE_DOCUMENT_UNBOUNDED;
+- solo se siguen aristas de control declaradas; un enlace informativo, una cita histórica, un ejemplo o una procedencia nunca amplían la clausura;
+- una unidad sin entrada, o con `Complete` = false, tiene metadatos incompletos;
+- los ciclos terminan por los visitados y los duplicados se funden por su identidad canónica; un nodo es terminal solo con cero dependencias de control sin
+  resolver.
+
+AMBIGUOUS_REFERENCE, UNRESOLVED_REFERENCE, WHOLE_DOCUMENT_UNBOUNDED y los metadatos incompletos dejan la independencia en **UNKNOWN**, que no acredita. El
+manifiesto de las superficies congeladas de I-62 es [I-62-normative-dependency-manifest.json](initiatives/I-62-normative-dependency-manifest.json); lo
+revisa el Architect como parte del objeto. La evidencia de fidelidad y de independencia la observa y la custodia el **invocador**, no el revisor.
+
+| Id | Condición | Comportamiento |
+|---|---|---|
+| P-22 | lectura registrada fuera del `EffectiveInputClosure` | INVALID_REVIEW_CONTEXT: el resultado no se ingiere como dictamen; el intento cuenta; reejecución de transporte dentro del tope; agotado → STOP |
+| P-23 | contradicción entre `ReviewerDeclaredIdentity` e `InvokerObservedRuntimeIdentity` | S-04: el resultado no se ingiere y la orquestación se detiene hasta la decisión |
+| P-24 | preflight de fidelidad no acreditado: transporte UTF-8 no establecido o camino de lectura que degrada algún carácter del corpus | no se lanza; no consume presupuesto si no se llegó a reservar |
+| P-25 | degradación semántica observada en la representación entregada al revisor | INPUT_FIDELITY_INVALID: los hallazgos y las disposiciones cuyo envoltorio o cuya clausura la contienen, o cuya independencia queda UNKNOWN, son INVALID_PREMISE y no cambian linajes; si no se puede acotar, no se ingiere nada; el intento cuenta |
+
+Procedimiento del cierre, del preflight de fidelidad y del validador del manifiesto: [agent-execution/README](automation/agent-execution/README.md) §15.

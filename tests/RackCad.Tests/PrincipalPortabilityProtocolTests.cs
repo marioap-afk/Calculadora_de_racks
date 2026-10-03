@@ -61,6 +61,51 @@ namespace RackCad.Tests
         // Anexo B.3: AdapterFacts.Facts is the only open object of the core.
         private const string FactsPath = "$.AdapterFacts.Facts";
 
+        // Proposal V14 §17 F3 and Anexo B.1: the core schemas that F3 publishes.
+        private static readonly string[] F3CoreSchemas =
+        {
+            "binding.v1.schema.json", "gate-contract.v2.schema.json", "delegation.v2.schema.json", "role-invocation.v1.schema.json",
+            "input-closure.v1.schema.json", "input-fidelity.v1.schema.json", "architect-review-result.v1.schema.json", "reviewer-result.v1.schema.json",
+            "normative-dependency-manifest.v1.schema.json",
+        };
+
+        // Proposal V14 §20.7: the closed set of output contracts.
+        private static readonly string[] OutputContracts =
+        {
+            "rackcad-architect-review-result/v1", "rackcad-reviewer-result/v1", "rackcad-delegation/v2", "rackcad-controller-verification/v2",
+            "rackcad-worker-handoff/v1",
+        };
+
+        // Anexo B.11: the I-62 manifest of the frozen surfaces (path fixed in F3).
+        private const string ManifestPath = "docs/initiatives/I-62-normative-dependency-manifest.json";
+
+        // Proposal V14 §17 F3 and §3.1: where F3 materializes binding, independence, the checks and the role contracts (AUTOMATION_PLAN), their procedures
+        // (README), the binding algorithm (routing) and the OD-6 alternative 1 predicate (LIFECYCLE).
+        private static readonly (string Path, string Heading)[] F3NormativeSections =
+        {
+            (PlanPath, "### 16.20 Binding y aceptación (I62)"),
+            (PlanPath, "### 16.21 Independencia por riesgo (I62)"),
+            (PlanPath, "### 16.22 Aceptación del paquete y comprobaciones de la verificación (I62)"),
+            (PlanPath, "### 16.23 Orquestación de roles (I62): invocación de rol y contratos de salida"),
+            (PlanPath, "### 16.24 Orquestación de roles (I62): cierre de insumos, identidad del revisor y fidelidad"),
+            ("docs/automation/agent-execution/README.md", "## 14. Binding, aceptación, independencia y comprobaciones (unidades I62)"),
+            ("docs/automation/agent-execution/README.md", "## 15. Invocación de rol, cierre de insumos y fidelidad (unidades I62)"),
+            ("docs/automation/agent-execution/README.md", "## 16. Validación de los resultados por rol (unidades I62)"),
+            ("docs/automation/agent-execution/routing.md", "## 9. Binding por capacidad (unidades I62)"),
+            ("docs/INITIATIVE_LIFECYCLE.md", "## 5. Participacion del Architect"),
+        };
+        private const string FreezeCommit = "4c617e82b32b6c810b68d75fc19472efed22b393";
+
+        // Controlling edges that Proposal V14 states explicitly; the manifest must declare each one (source unit → target unit).
+        private static readonly (string Source, string Target)[] ExpectedManifestEdges =
+        {
+            ("C-03", "§4.2"),
+            ("P-15", "E.4"),
+            ("I-S15", "I-H01"),
+            ("T19", "§8.8"),
+            ("C-11", "P-10"),
+        };
+
         // Proposal V14 §7: the five adapters and the nine operations of the adapter contract, in their frozen order.
         private static readonly string[] Adapters = { "claude-desktop-session", "claude-subagent", "claude-cli", "codex-cli", "codex-desktop-session" };
 
@@ -304,9 +349,313 @@ namespace RackCad.Tests
             }
         }
 
+        // ---------------------------------------------------------------- F3: the I62 contracts (Anexo B.1, B.5, B.7, B.9, B.10, B.11)
+
+        [Fact]
+        public void I62_F3_CoreSchemasAreStrictNeutralAndUseExactHashPatterns()
+        {
+            foreach (var file in F3CoreSchemas)
+            {
+                var schema = CoreSchema(file);
+                Assert.Empty(StrictnessProblems(schema).Select(p => file + ": " + p));
+                Assert.Empty(UnwalkedKeywords(schema).Select(k => file + ": uses " + k));
+                Assert.Empty(HashPatternProblems(schema).Select(p => file + ": " + p));
+                Assert.Empty(ProviderMarksIn(string.Join("\n", EnumValues(schema))).Select(m => file + ": " + m));
+                Assert.Empty(CredentialFields(schema).Select(f => file + ": " + f));
+            }
+        }
+
+        [Fact]
+        public void I62_F3_OutputContractsAreTheClosedSetAndResultsFixTheirRoleAndAction()
+        {
+            Assert.Empty(OutputContractProblems(
+                CoreSchema("role-invocation.v1.schema.json"), CoreSchema("architect-review-result.v1.schema.json"), CoreSchema("reviewer-result.v1.schema.json")));
+        }
+
+        [Fact]
+        public void I62_F3_TheContractOraclesDetectAVerdictInTheReviewerResultAndAnExtraOutputContract()
+        {
+            var invocation = CoreSchema("role-invocation.v1.schema.json");
+            var architect = CoreSchema("architect-review-result.v1.schema.json");
+            var reviewer = CoreSchema("reviewer-result.v1.schema.json");
+
+            var withVerdict = CoreSchema("reviewer-result.v1.schema.json");
+            ((JsonObject)withVerdict["properties"]!)["Verdict"] = new JsonObject { ["type"] = "string", ["enum"] = new JsonArray("AGREED") };
+            Assert.NotEmpty(OutputContractProblems(invocation, architect, withVerdict));
+
+            var extra = CoreSchema("role-invocation.v1.schema.json");
+            ((JsonArray)extra["properties"]!["OutputContract"]!["enum"]!).Add("rackcad-reviewer-result/v2");
+            Assert.NotEmpty(OutputContractProblems(extra, architect, reviewer));
+
+            var looseCommit = CoreSchema("binding.v1.schema.json");
+            looseCommit["properties"]!["PreflightRef"]!["properties"]!["Location"]!["properties"]!["Commit"]!["pattern"] = "^[0-9a-f]+$";
+            Assert.NotEmpty(HashPatternProblems(looseCommit));
+        }
+
+        // ---------------------------------------------------------------- B.11: the I-62 normative dependency manifest
+
+        [Fact]
+        public void I62_B11_TheManifestIsClosedUniqueAndAnchoredInTheFrozenProposal()
+        {
+            Assert.Empty(ManifestProblems(Manifest(), Read(FreezePath)));
+        }
+
+        [Fact]
+        public void I62_B11_TheManifestDeclaresTheExplicitControllingEdgesOfTheProposal()
+        {
+            Assert.Empty(MissingEdges(Manifest(), ExpectedManifestEdges));
+        }
+
+        [Fact]
+        public void I62_B11_TheManifestOracleDetectsMissingEntryDanglingTargetDuplicateUnitAmbiguityAndAnUndeclaredDependency()
+        {
+            var freeze = Read(FreezePath);
+            var entries = (JsonArray)Manifest()["Entries"]!;
+            Assert.True(entries.Count > 0);
+
+            // Missing entry: drop the entry of a unit that some entry depends on.
+            var missing = Manifest();
+            var target = FirstUnitTarget(missing);
+            var targetKey = UnitKey(target);
+            var missingEntries = (JsonArray)missing["Entries"]!;
+            missingEntries.Remove(missingEntries.First(e => UnitKey(e!["Source"]!) == targetKey));
+            Assert.NotEmpty(ManifestProblems(missing, freeze));
+
+            // Dangling target: a dependency on a unit of the frozen Proposal under an anchor that does not exist there.
+            var dangling = Manifest();
+            var danglingTarget = FirstUnitTarget(dangling);
+            danglingTarget["UnitId"] = "§99.9#p1";
+            danglingTarget["Anchor"] = "§99.9";
+            Assert.NotEmpty(ManifestProblems(dangling, freeze));
+
+            // Duplicate unit: the same source twice.
+            var duplicate = Manifest();
+            var duplicateEntries = (JsonArray)duplicate["Entries"]!;
+            duplicateEntries.Add(duplicateEntries[0]!.DeepClone());
+            Assert.NotEmpty(ManifestProblems(duplicate, freeze));
+
+            // Ambiguous reference: an anchor that matches two headings of the document.
+            Assert.NotEmpty(ManifestProblems(Manifest(), freeze + "\n## 4. Perfil duplicado\n"));
+
+            // Undeclared controlling dependency: the edge C-03 → §4.2 removed.
+            var undeclared = Manifest();
+            foreach (var entry in ((JsonArray)undeclared["Entries"]!).Where(e => (string?)e!["Source"]!["UnitId"] == ExpectedManifestEdges[0].Source))
+            {
+                var depends = (JsonArray)entry!["DependsOn"]!;
+                foreach (var edge in depends.Where(d => (string?)d!["Target"]!["Unit"]?["UnitId"] == ExpectedManifestEdges[0].Target).ToList())
+                {
+                    depends.Remove(edge);
+                }
+            }
+
+            Assert.NotEmpty(MissingEdges(undeclared, ExpectedManifestEdges));
+        }
+
+        // ---------------------------------------------------------------- F3: the materialized texts (plane b, inactive)
+
+        [Fact]
+        public void I62_F3_TheNormativeTextsAreMaterializedOnceAndCarryNoProviderMark()
+        {
+            foreach (var (path, heading) in F3NormativeSections)
+            {
+                var section = SectionLines(Read(path), heading);
+                Assert.True(section.Count > 1, path + ": «" + heading + "» must exist exactly once");
+                Assert.Empty(ProviderMarksIn(string.Join("\n", section)).Select(m => heading + ": " + m));
+            }
+
+            // Mutations: a duplicated heading is not «exactly once», and a provider name inside a section is a mark.
+            var (planPath, planHeading) = F3NormativeSections[0];
+            var plan = Read(planPath);
+            Assert.Empty(SectionLines(plan + "\n" + planHeading + "\n", planHeading));
+            Assert.NotEmpty(ProviderMarksIn(string.Join("\n", SectionLines(plan, planHeading)) + "\nCodex"));
+        }
+
         // ================================================================ oracles
 
         private static List<string>? RoleTable(string plan) => TableAfter(SectionLines(plan, PlanRolesSection), RolesHeader);
+
+        // Proposal V14 §20.7: the invocation names exactly the five output contracts; each review result fixes its role and action; the reviewer result
+        // has no verdict (B.10.2).
+        private static List<string> OutputContractProblems(JsonNode invocation, JsonNode architect, JsonNode reviewer)
+        {
+            var problems = new List<string>();
+            var outputs = (invocation["properties"]?["OutputContract"]?["enum"] as JsonArray)?.Select(n => (string)n!).ToList() ?? new List<string>();
+            if (outputs.Count != OutputContracts.Length || OutputContracts.Any(o => !outputs.Contains(o)))
+            {
+                problems.Add("OutputContract must be exactly the closed set of §20.7");
+            }
+
+            foreach (var (schema, role, action) in new[] { (architect, "ARCHITECT", "REVIEW_DESIGN"), (reviewer, "REVIEWER", "REVIEW_CHANGE") })
+            {
+                var roles = (schema["properties"]?["RequestedRole"]?["enum"] as JsonArray)?.Select(n => (string)n!).ToArray() ?? Array.Empty<string>();
+                var actions = (schema["properties"]?["Action"]?["enum"] as JsonArray)?.Select(n => (string)n!).ToArray() ?? Array.Empty<string>();
+                if (!roles.SequenceEqual(new[] { role }) || !actions.SequenceEqual(new[] { action }))
+                {
+                    problems.Add((string?)schema["title"] + " must fix " + role + " / " + action);
+                }
+            }
+
+            var verdicts = (architect["properties"]?["Verdict"]?["enum"] as JsonArray)?.Select(n => (string)n!).ToArray() ?? Array.Empty<string>();
+            if (!verdicts.SequenceEqual(new[] { "AGREED", "CHANGES REQUIRED", "BLOCKED — OWNER DECISION" }))
+            {
+                problems.Add("the architect result must use the LIFECYCLE verdicts");
+            }
+
+            if ((reviewer["properties"] as JsonObject)?.ContainsKey("Verdict") ?? true)
+            {
+                problems.Add("the reviewer result must not admit a Verdict");
+            }
+
+            return problems;
+        }
+
+        private static JsonNode Manifest()
+        {
+            var node = JsonNode.Parse(Read(ManifestPath));
+            Assert.NotNull(node);
+            return node!;
+        }
+
+        private static string UnitKey(JsonNode unit) => (string?)unit["Document"] + "|" + (string?)unit["UnitId"];
+
+        private static JsonNode FirstUnitTarget(JsonNode manifest) =>
+            ((JsonArray)manifest["Entries"]!).SelectMany(e => ((JsonArray)e!["DependsOn"]!).Select(d => d!["Target"]!))
+                .First(t => (string?)t["Kind"] == "UNIT" && (string?)t["Unit"]!["Document"] == FreezePath)["Unit"]!;
+
+        // Anexo B.11 validation that needs no Git history: unique sources, closure under DependsOn, one shape per target kind, proposed targets taken
+        // from §3.1, and units of the frozen Proposal pinned to its revision and anchored in exactly one of its headings.
+        private static List<string> ManifestProblems(JsonNode manifest, string freeze)
+        {
+            var problems = new List<string>();
+            if ((string?)manifest["Schema"] != "rackcad-normative-dependency-manifest/v1")
+            {
+                problems.Add("Schema must be rackcad-normative-dependency-manifest/v1");
+            }
+
+            var scope = (manifest["Scope"] as JsonArray)?.Select(n => (string)n!).ToHashSet(StringComparer.Ordinal) ?? new HashSet<string>();
+            var entries = (manifest["Entries"] as JsonArray)?.OfType<JsonNode>().ToList() ?? new List<JsonNode>();
+            var keys = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var entry in entries)
+            {
+                if (!keys.Add(UnitKey(entry["Source"]!)))
+                {
+                    problems.Add("duplicate unit " + UnitKey(entry["Source"]!));
+                }
+            }
+
+            var anchors = ProposalAnchors(freeze);
+            var proposed = ProposedTargets(freeze);
+            foreach (var entry in entries)
+            {
+                problems.AddRange(UnitRefProblems(entry["Source"]!, scope, anchors, "source"));
+                foreach (var target in (entry["DependsOn"] as JsonArray)?.OfType<JsonNode>().Select(d => d["Target"]!) ?? Enumerable.Empty<JsonNode>())
+                {
+                    var (unit, proposal, whole) = (target["Unit"], target["Proposed"], target["WholeDocument"]);
+                    switch ((string?)target["Kind"])
+                    {
+                        case "UNIT" when unit != null && proposal == null && whole == null:
+                            problems.AddRange(UnitRefProblems(unit, scope, anchors, "target"));
+                            if (!keys.Contains(UnitKey(unit)))
+                            {
+                                problems.Add("missing entry for " + UnitKey(unit));
+                            }
+
+                            break;
+                        case "PROPOSED" when proposal != null && unit == null && whole == null:
+                            if (!proposed.Contains((string?)proposal["FutureDocument"] + "|" + Normalize((string?)proposal["FutureAnchor"] ?? string.Empty)))
+                            {
+                                problems.Add("proposed target outside §3.1: " + (string?)proposal["FutureAnchor"]);
+                            }
+
+                            break;
+                        case "WHOLE_DOCUMENT" when whole != null && unit == null && proposal == null:
+                            var bounded = (string?)whole["Class"] == "BOUNDED_ENTRY_SET" && ((whole["EntrySet"] as JsonArray)?.Count ?? 0) > 0;
+                            var composite = (string?)whole["Class"] == "COMPOSITE_RULE" && whole["CompositeRuleRef"] != null;
+                            if (!bounded && !composite)
+                            {
+                                problems.Add("a whole document needs an entry set or a composite rule: " + (string?)whole["Document"]);
+                            }
+
+                            break;
+                        default:
+                            problems.Add("target with an inconsistent kind: " + (string?)target["Kind"]);
+                            break;
+                    }
+                }
+            }
+
+            return problems;
+        }
+
+        private static IEnumerable<string> UnitRefProblems(JsonNode unit, HashSet<string> scope, Dictionary<string, int> anchors, string role)
+        {
+            var document = (string?)unit["Document"];
+            if (document == null || !scope.Contains(document))
+            {
+                yield return role + " document outside Scope: " + document;
+            }
+
+            if (document == FreezePath)
+            {
+                if ((string?)unit["Revision"]?["Blob"] != FreezeBlob || (string?)unit["Revision"]?["Commit"] != FreezeCommit)
+                {
+                    yield return role + " is not pinned to the Freeze: " + (string?)unit["UnitId"];
+                }
+
+                var anchor = (string?)unit["Anchor"] ?? string.Empty;
+                anchors.TryGetValue(anchor, out var count);
+                if (count == 0)
+                {
+                    yield return "dangling " + role + ": " + anchor + " is not a heading of the Proposal";
+                }
+                else if (count > 1)
+                {
+                    yield return "ambiguous " + role + ": " + anchor + " matches " + count + " headings";
+                }
+            }
+        }
+
+        private static List<string> MissingEdges(JsonNode manifest, IEnumerable<(string Source, string Target)> expected)
+        {
+            var edges = ((JsonArray)manifest["Entries"]!)
+                .Where(e => (string?)e!["Source"]!["Document"] == FreezePath)
+                .SelectMany(e => ((JsonArray)e!["DependsOn"]!).Select(d => ((string?)e["Source"]!["UnitId"], (string?)d!["Target"]!["Unit"]?["UnitId"])))
+                .ToHashSet();
+            return expected.Where(x => !edges.Contains((x.Source, x.Target))).Select(x => x.Source + " → " + x.Target + " is not declared").ToList();
+        }
+
+        // Section anchors of the Proposal: «§N», «§N.M», «Anexo X» and «X.N…», from its headings outside fenced blocks.
+        private static Dictionary<string, int> ProposalAnchors(string text)
+        {
+            var counts = new Dictionary<string, int>(StringComparer.Ordinal);
+            var inFence = false;
+            foreach (var line in text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n'))
+            {
+                if (line.TrimStart().StartsWith("```", StringComparison.Ordinal))
+                {
+                    inFence = !inFence;
+                    continue;
+                }
+
+                var m = inFence ? Match.Empty : Regex.Match(line, @"^#{2,4} (?:Anexo ([A-G]) —|([0-9]+(?:\.[0-9]+)*)\.? |([A-G](?:\.[0-9]+)+) )");
+                if (m.Success)
+                {
+                    var anchor = m.Groups[1].Success ? "Anexo " + m.Groups[1].Value : m.Groups[2].Success ? "§" + m.Groups[2].Value : m.Groups[3].Value;
+                    counts[anchor] = counts.TryGetValue(anchor, out var c) ? c + 1 : 1;
+                }
+            }
+
+            return counts;
+        }
+
+        // Proposal V14 §3.1: «FutureDocument|FutureAnchor» of each proposed normative target.
+        private static HashSet<string> ProposedTargets(string freeze)
+        {
+            var section = SectionLines(freeze, "### 3.1 Destinos normativos propuestos (`ProposedNormativeTarget`; A62-V11-01)");
+            var rows = TableAfter(section, "| `FutureDocument` | `FutureAnchor` | `DesignSource` | `State` |") ?? new List<string>();
+            return rows.Skip(2).Select(r => r.Trim('|').Split('|').Select(c => c.Trim()).ToArray())
+                .Select(c => c[0].Trim('`') + "|" + Normalize(c[1])).ToHashSet(StringComparer.Ordinal);
+        }
 
         private static List<string> RolesIn(IEnumerable<string> table) =>
             table.Skip(2)
@@ -457,7 +806,8 @@ namespace RackCad.Tests
                         problems.Add(path + ": a SHA-256 must use 64 lowercase hex");
                     }
                 }
-                else if (name.EndsWith("Sha", StringComparison.Ordinal) || name.EndsWith("Blob", StringComparison.Ordinal) || name == "AuthorityRevision")
+                else if (name.EndsWith("Sha", StringComparison.Ordinal) || name.EndsWith("Blob", StringComparison.Ordinal) || name == "AuthorityRevision"
+                         || name == "Commit" || name == "commit" || name == "blob")
                 {
                     if (pattern != "^[0-9a-f]{40}$")
                     {

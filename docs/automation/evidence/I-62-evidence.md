@@ -1511,3 +1511,158 @@ conflicto previsto solo en el cierre documental.
 Los nueve esquemas de F3 se redactaron como borradores locales, sin commit (F3 no está autorizado). Son estrictos, sin `oneOf`, neutrales y compilan con
 `Test-Json` 2020-12. Detalle del campo `SizeOrSha256` en [f3-dossier.md](I-62-prep/f3-dossier.md) §3.10. Sin cambios en producto, pruebas ni superficies
 normativas.
+
+## 37. F3 — Binding, independencia, comprobaciones y contratos de rol (orden del Coordinator)
+
+**CI de la entrega de F2:** `d8c55a971c4a52684c853a79ac11a2d47323ec57` → corrida **37076587763** y `c783e4d9353670e8a93cf5de1e3dee21eedddc7a` →
+corrida **37076965738**: las dos con attempt 1, event `push`, head_sha exacto y `completed/success`, con los cuatro jobs `success` (Tests (Domain +
+Application), UI Tests, Build UI y Build Plugin without AutoCAD). MEASURED por la sesión.
+
+**Orden recibida:** «I-62 — COORDINATOR DECISION: F2 GATE PASS / OPEN F3 / PREPARE MATERIAL AMENDMENT A-1 FOR FC-01 / FC-02», texto pegado sin archivo de
+origen. Cuerpo sin las etiquetas de pegado: 12 784 bytes en UTF-8, SHA-256 `d915ff9997caa7395fc8da2ec570996b6f9f9ec938152b47e4813aa382fe9d54`. Resumen fiel
+en las decisiones, §34.
+
+### 37.1 DC-07 antes de escribir
+
+MEASURED tras `git fetch` (01:05Z del 2026-10-03): `origin/main` = `819955d6…`, sin cambios. Ramas activas no integradas: I-52 `fb6b5648` (merge-base
+`95690c28`), I-63 `527e4b91` (avanzó a su G4 desde `138bc3d4`) e I-64 `39b45f36`. El diff de cada una desde su merge-base con `origin/main` no toca
+`docs/AUTOMATION_PLAN.md`, `docs/INITIATIVE_LIFECYCLE.md`, `docs/automation/agent-execution/`, `docs/initiatives/I-62*` ni las clases de prueba de los
+protocolos. **Sin solapamiento.** LIFECYCLE es una autoridad caliente (WORKFLOW §7): ninguna hermana la toca. El cuerpo del commit repite la comprobación
+antes del push.
+
+### 37.2 Materialización (plano b, inactivo hasta `I62_EFFECTIVE_SHA`)
+
+| Cláusula congelada (V14) | Destino |
+|---|---|
+| §5; B.5; B.2 (`BindingRef`, `AuthorizationRef`); §20.5.1 (aceptación, materialización, vigencia de acción y acreditación histórica); P-10, P-20 | AUTOMATION_PLAN 16.20 |
+| §11.1-11.3 (dimensiones, combinación, referencia, disparadores); §11.4 (puntero a LIFECYCLE) | AUTOMATION_PLAN 16.21 |
+| Anexo G.1 (A1'-A8' y los deltas de `Routing`, `Termination`, `Ci`, `Tests`, `Trailer`, `Scope` y `Contract`); ADR-0046 #6 (`not_run`) | AUTOMATION_PLAN 16.22 |
+| §20.3 (propiedades, invocación limpia); §20.5 (resultado inválido); §20.7 (correspondencia cerrada); P-19 | AUTOMATION_PLAN 16.23 |
+| §20.3.1 (cierre); §20.3.2 (identidad); §20.3.3 (fidelidad, envoltorio, clausura, manifiesto); P-22..P-25 | AUTOMATION_PLAN 16.24 |
+| §11.4, alternativa 1 (OD-6); §3.1, fila LIFECYCLE | INITIATIVE_LIFECYCLE §5 (párrafo «Unidades I62») y puntero en §9 |
+| B.5, B.2, §20.5.1, §11, Anexo G.1 y G.2 | README §14 (B1-B10, criterios de §14.3, A2', evaluación de la independencia y casos C-13, G1-G7, A1'-A8', `Scope` y casos C-14) |
+| B.9, §20.3.1, §20.3.3, B.11 | README §15 (R1-R9, I1-I6, F1-F7, M1-M8) |
+| B.10, §20.5, §20.7 | README §16 (V1-V11 y casos C-30) |
+| §5 (algoritmo); B.5 (`Cell`) | routing §9 |
+| B.5, B.7, B.9, B.10, §20.3.1, §20.3.3, B.11 | los nueve esquemas (§37.3) |
+| §20.3.3 punto 5; B.11 («la ruta exacta se fija en F3») | `docs/initiatives/I-62-normative-dependency-manifest.json` (§37.4) |
+
+**No materializado** (F4 o posterior, sin autorización): `state/v2`, `orchestration`, fases del bucle, `NextAction`, QU/QH/QR, rebase, §16.13, punto de
+entrada de WORKFLOW, generador de producción del mapa de cláusulas, MC_I62, el destino de los intentos en curso al terminar una vigencia y la validación
+exhaustiva del manifiesto en una corrida. `model-catalog.md` no cambia: `CellId` se deriva en routing §9 (E.7 deja el catálogo para secciones nuevas
+cuando hagan falta).
+
+### 37.3 Esquemas
+
+Todos en `docs/automation/agent-execution/schemas/`, generados por un guion de la sesión a partir de V14 campo a campo (los borradores locales de §36.5 no
+se usaron como fuente). JSON Schema 2020-12, `additionalProperties: false` en todos los objetos, todo campo declarado obligatorio, `null` solo como «no
+aplica», sin `$ref`, `oneOf` ni condicionales (las reglas entre campos van en README §14-§16), sin marcas de proveedor en los enums y con patrones exactos
+de hash (40 hex para commit y blob; 64 hex para SHA-256; `SizeOrSha256` = `^([0-9]+|[0-9a-f]{64})$`).
+
+| Esquema | Fuente congelada (V14) | Blob |
+|---|---|---|
+| `binding.v1.schema.json` | B.5; B.2 (`ActorRef`, `SessionRef`, `PreflightRef`, `AuthorizationRef`); §20.5.1 | `13501476b775ca18c4c61ba3e1793796b51067d9` |
+| `gate-contract.v2.schema.json` | B.7 sobre `gate-contract/v1`; §20.5.1 (`Materialization` del REVIEWER); B.8.6 | `f644bb1941656b65c62ee474bf37752d328fd091` |
+| `delegation.v2.schema.json` | B.7 sobre `delegation/v1` | `dfdbe461270e8fd92200c36bab78b9fdc3385014` |
+| `role-invocation.v1.schema.json` | B.9; §20.3; §20.7 | `d54a7ae783ec83d055babdae090899908b616082` |
+| `input-closure.v1.schema.json` | §20.3.1; B.9 | `6bdf71843e2c70362a5e2d0ea19c8891e22bcff6` |
+| `input-fidelity.v1.schema.json` | §20.3.3; B.8.8 (`premise_independence`); B.9 | `e54990fc541b6420c3cddb45e1a7cc2fefd6c76b` |
+| `architect-review-result.v1.schema.json` | B.10.0; B.10.1; §20.5.2 | `e7f5747ba3812c181237828fe72243523038e64f` |
+| `reviewer-result.v1.schema.json` | B.10.0; B.10.2 | `a74288eb0e9da43f8a73701098cbff5086fee512` |
+| `normative-dependency-manifest.v1.schema.json` | B.11; §20.3.3 (puntos 1-7) | `7ff2127d28de2f126b98da7d4fb2ebb9520374ef` |
+
+**Corrección en dos esquemas de F2** (determinación 2 de las decisiones §34): `BindingRef.Location.CommitSha` → `Commit` en `relay-record.v2` y
+`controller-verification.v2`, el nombre congelado de B.2. `AcceptanceDecisionRef.CommitSha` (huella NONE) no es un campo congelado y se conserva.
+
+### 37.4 Manifiesto de dependencias normativas (B.11)
+
+- **Ruta:** `docs/initiatives/I-62-normative-dependency-manifest.json` (IMPLEMENTATION_CHOICE que B.11 deja a F3). Valida contra
+  `normative-dependency-manifest.v1.schema.json` con `Test-Json` (PowerShell 7.6.6): `True`.
+- **Generador determinista:** `docs/automation/evidence/I-62-F3/gen-manifest.py`. Lee V14 y las autoridades con `git show 4c617e82:<ruta>`, así que no
+  depende del disco ni de los finales de línea. Sus reglas (U1-U2, R1-R6, N, D, O, E, X) están declaradas en su cabecera. Dos ejecuciones dan el mismo
+  archivo (SHA-256 `e4de08c6…` en LF). El informe `manifest-report.json` lista cada unidad incompleta y su motivo.
+- **Contenido (MEASURED):** 116 secciones y 1 709 unidades de V14 (una entrada por cada una) y 32 unidades externas de seis autoridades (AUTOMATION_PLAN,
+  LIFECYCLE, WORKFLOW, ADR-0046, README y PROMPT_TEMPLATES), en total 1 857 entradas y 2 896 aristas (2 823 a unidades y 73 a destinos propuestos de §3.1).
+  `Revision` = `{4c617e82…, blob}` de cada documento.
+- **Metadatos incompletos (`Complete` = false), sin aristas inventadas** (una unidad puede tener más de un motivo): 138 unidades con AMBIGUOUS_REFERENCE (sobre todo «16.N» sin calificador, que
+  §20.3.3 punto 2.5 obliga a tratar como ambigua aunque el candidato sea uno solo, y FX-04a/FX-04b, definidos en varias filas), 20 con
+  WHOLE_DOCUMENT_UNBOUNDED («AGENTS» sin conjunto de entrada), 1 con UNRESOLVED_REFERENCE (§21), 143 unidades y 11 secciones de partes que se declaran no
+  normativas (§0 «resumen», §19 «Riesgos», Anexo F «análisis, no ensayo») y las 32 externas, cuyas dependencias quedan fuera de esta versión. Su
+  independencia es UNKNOWN, nunca acreditada por defecto.
+- **Superconjunto conservador** (determinación 3 de §34): dentro de una unidad normativa, toda referencia explícita resoluble se declara arista de control.
+  Solo puede agrandar una clausura. La revisión del Architect, que B.11 exige, decide qué aristas informativas se retiran.
+- **Guardas Core:** clausura, unicidad, anclaje en la revisión congelada, destinos de §3.1 y documentos enteros (`I62_B11_TheManifestIsClosedUnique…`);
+  cinco aristas de control explícitas de la Proposal (C-03 → §4.2, P-15 → E.4, I-S15 → I-H01, T19 → §8.8, C-11 → P-10); y el oráculo detecta entrada
+  ausente, destino colgante, unidad duplicada, referencia ambigua y una dependencia de control no declarada.
+
+### 37.5 Obligaciones
+
+| Obligación | Clase | Control | Resultado |
+|---|---|---|---|
+| B.1 en F3 | (i) Core RG | `I62_F3_CoreSchemasAreStrictNeutralAndUseExactHashPatterns`, `I62_F3_OutputContracts…`, `I62_F3_TheContractOracles…` | GREEN |
+| textos de F3 | (i) Core RG | `I62_F3_TheNormativeTextsAreMaterializedOnceAndCarryNoProviderMark` | GREEN |
+| B.11 | (i) Core RG | las tres guardas `I62_B11_*` | GREEN |
+| C-11 | (ii) MC | `f3-mc.py`: positivo ACCEPTED; obligatorio UNKNOWN, NOT_MEASURED, cobertura UNKNOWN y requisito omitido → REJECTED/P-10; adapter, effort y modelo incompatibles → REJECTED (B3) | PASS |
+| C-12 | (ii) MC | `BindingRef` vigente → pass; otra unidad, otra tarea, otra revisión, obsoleto, TRANSIENT como custodiado y commit no ancestro → rechazo A2'; candidato PENDING ≠ aceptado; `DecisionRef` fabricado → P-20; observación obsoleta o de otra acción → P-10; transición única PENDING → ACCEPTED; mismo `BindingId` con otro contenido → S-04 | PASS |
+| C-13 | (ii) MC | casos 1-11 con sus esperados exactos y SAME-SESSION ROLE insuficiente en una revisión mayor | PASS |
+| C-14 | (ii) MC | G.2 filas 1-7, precedencia STOP > REWORK y `c14-scope-sin-pertenencia` (comparación fallida y sin pertenencia → `not_run` → BLOCKED/STOP; fuera de alcance → fail; con pertenencia → pass) | PASS |
+| C-30 | (ii) MC | (a)-(i), REVIEWER presentado como ARCHITECT → P-20 y `reviewer-result` con `Verdict` → el esquema lo rechaza | PASS |
+| C-40, parte F3 | (ii) MC | (a) materializado y reproducido; (b) siete clases de candidato no elegible; (c) COORDINATOR_DECISION frente a ESCALATION_OWNER; (d) `DecisionRef` fabricado, sin `AuthorizationRef` o en el propio commit → P-20; (h) autorización caducada → rechazo | PASS |
+
+Cada control del MC se ejecuta además con una **mutación** de su procedimiento que debe cambiar algún resultado, y la cambia: C-11, UNKNOWN como satisfecho;
+C-12, sin el rebinding posterior; C-13, contexto compartido en (2) y commit dentro de la unidad en (10); C-14, precedencia invertida; C-30, fila PLAN/VERIFY
+intercambiada; C-40, UNKNOWN como SATISFIED. Los registros positivos y los negativos que rechaza una regla son válidos por `Test-Json`, así que los
+rechaza la regla y no el esquema. Resultado completo: `docs/automation/evidence/I-62-F3/f3-mc-result.json`. **No forman parte de F3:** G.2 filas 8-27 y C-40
+(e)-(g) e (i)-(n), que necesitan `state/v2`, la orquestación o los intentos (F4).
+
+**Deuda de I-64:** la regla de `Scope` (AUTOMATION_PLAN 16.22 y README §14.7) es un control de procedimiento para las unidades I62. No repara la deuda nc2 de
+I-64, que es una unidad I61 (Proposal V14 §14.1, sin efecto retroactivo), y no lleva A-n.
+
+### 37.6 RED → GREEN
+
+- **Core:** RED antes de los artefactos, 22 seleccionadas y 6 fallidas por ausencia (esquemas y manifiesto); RED de la guarda de textos con los cuatro
+  documentos retirados del árbol (1/1 fallida). GREEN: la clase completa en verde (§37.8).
+- **MC:** el mismo `f3-mc.py` sobre el árbol de `c783e4d9` (antes de F3) da los seis controles en FAIL (esquemas y procedimientos ausentes); sobre el
+  árbol de F3, los seis en PASS.
+
+### 37.7 Elecciones de implementación (preservan el contrato observable)
+
+1. Mismas convenciones que F2: nombres `*.v<n>.schema.json`, sin `$ref`/`oneOf`/condicionales, reglas entre campos en el README.
+2. `input-fidelity/v1` como objeto discriminado (`Kind` FIDELITY | SPAN_MAP | PREMISE_INDEPENDENCE con una sola sección no nula): V14 nombra tres artefactos
+   (`InputFidelityEvidenceRef`, el mapa `DegradedSpans` y `premise_independence`) con el mismo esquema de B.9.
+3. `gate-contract/v2` conserva para `RoleRequirements[].EligibleCells` la forma de celda de `/v1`; `Materialization.EligibleCells` es `{Mode, Cells}` (lista
+   cerrada o criterio de ADR-0046 #4).
+4. `CellId` = `<AdapterId>:<modelo o ->:<EffortSemantic>`, derivado en routing §9, sin filas nuevas en el catálogo.
+5. La evidencia de independencia de una revisión mayor con revisor humano va en la cabecera del registro recuperable de la revisión (V14 §11.4); F3 no
+   crea un esquema para esa cabecera.
+6. En C-30 (d), la alternativa 2 se evalúa como contrafactual (no está vigente) para mostrar que el binding es válido con ambas políticas.
+
+### 37.8 Pruebas y validación (antes del commit)
+
+- **Guardas focales:** `PrincipalPortabilityProtocolTests` y `AgentExecutionProtocolTests` (I-61), 40/40 (23 de I-62 + 17 de I-61). Siguen en verde las de F1
+  (C-01, C-03), las de F2 (C-05, C-09, C-10, C-19: los cinco `/v1` byte a byte) y las de I-61.
+- **Core Full sobre el árbol** (antes del commit, con los esquemas, los textos y las pruebas de F3): 12 419/12 419. El Core Full del SHA exacto se registra
+  después del commit.
+- **MC:** `python docs/automation/evidence/I-62-F3/f3-mc.py . docs/automation/evidence/I-62-F3` → C-11, C-12, C-13, C-14, C-30 y C-40 en PASS
+  (PowerShell 7.6.6).
+- **Validación:** 44 enlaces relativos de los cuatro documentos tocados, 0 rotos; tablas con el mismo número de columnas por fila; `git diff --check`
+  limpio; todos los JSON nuevos parsean y el manifiesto valida contra su esquema; el estado sigue siendo YAML válido.
+- **Neutralidad:** los textos nuevos de AUTOMATION_PLAN, README, routing y LIFECYCLE y los enums de los nueve esquemas no contienen marcas de proveedor
+  (guardas Core).
+
+**Blobs** de los demás archivos de la entrega (los cuatro registros de custodia no se listan a sí mismos):
+
+| Archivo | Blob |
+|---|---|
+| `docs/automation/agent-execution/schemas/relay-record.v2.schema.json` | `dca5b29c1a260b679efc0fb249c73850925302f0` |
+| `docs/automation/agent-execution/schemas/controller-verification.v2.schema.json` | `e1faa9eca5c50b2b3a9f91575575614366962720` |
+| `docs/initiatives/I-62-normative-dependency-manifest.json` | `cce3699fec82726c446996d11f9abe77ba728706` |
+| `docs/AUTOMATION_PLAN.md` | `52fd8f66591da49b3fb78f7bbe4580d76f8339e3` |
+| `docs/INITIATIVE_LIFECYCLE.md` | `f19896a8f1a7c82f74bac7231636f68462a87271` |
+| `docs/automation/agent-execution/README.md` | `3fb9a44b9cdcb72ddd1a575bb919f1c265d9b8ae` |
+| `docs/automation/agent-execution/routing.md` | `bba08fc4686d7192deeb559752636a467103b4b1` |
+| `tests/RackCad.Tests/PrincipalPortabilityProtocolTests.cs` | `0d39ea71656586231457657fa600ddb5079cc2ef` |
+| `docs/automation/evidence/I-62-F3/gen-manifest.py` | `9ed08ac21160ed5287a8a462610d4d7017108ff1` |
+| `docs/automation/evidence/I-62-F3/manifest-report.json` | `6adcac3abcdd7abc1171dcee7ced1c1bad036379` |
+| `docs/automation/evidence/I-62-F3/f3-mc.py` | `1bab344fe24339c322c53204c99649cb1c415371` |
+| `docs/automation/evidence/I-62-F3/f3-mc-result.json` | `5a8923e34b1792fdf56011ca44a37e3b5ccc8fd3` |

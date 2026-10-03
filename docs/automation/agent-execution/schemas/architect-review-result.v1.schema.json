@@ -1,0 +1,872 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rackcad-architect-review-result/v1",
+  "description": "Resultado de una revisión del ARCHITECT (Proposal V14 §20.5, §20.7 y Anexo B.10.0-B.10.1). Lo ingiere el Principal mecánicamente; su autoridad la discrimina el triple RequestedRole + Action + OutputContract. Subordinado: no crea requisitos de evidencia, estados, gates, reglas Git ni decisiones del Owner. Inactivo hasta I62_EFFECTIVE_SHA (AUTOMATION_PLAN 16.14).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "Schema": {
+      "type": "string",
+      "enum": [
+        "rackcad-architect-review-result/v1"
+      ]
+    },
+    "ResultId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "LogicalReviewRequestId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^L[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$"
+    },
+    "InvocationId": {
+      "type": "string",
+      "pattern": "^I[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$"
+    },
+    "AttemptSeq": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "RequestedRole": {
+      "type": "string",
+      "enum": [
+        "ARCHITECT"
+      ]
+    },
+    "Action": {
+      "type": "string",
+      "enum": [
+        "REVIEW_DESIGN"
+      ]
+    },
+    "ReviewedUnit": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ReviewedCommit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "ReviewedPath": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ReviewedBlob": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "ReviewerBinding": {
+      "type": "object",
+      "description": "BindingRef (B.2).",
+      "additionalProperties": false,
+      "properties": {
+        "UnitId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "Scope": {
+          "type": "string",
+          "enum": [
+            "UNIT",
+            "TASK"
+          ]
+        },
+        "TaskId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Nullable = no aplica, solo con Scope UNIT."
+        },
+        "Role": {
+          "type": "string",
+          "enum": [
+            "PRINCIPAL_COORDINATOR",
+            "ARCHITECT",
+            "EXECUTION_CONTROLLER",
+            "WORKER",
+            "REVIEWER"
+          ]
+        },
+        "BindingId": {
+          "type": "string",
+          "pattern": "^B[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$"
+        },
+        "Sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "Location": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Kind": {
+              "type": "string",
+              "enum": [
+                "TRANSIENT",
+                "CUSTODIED"
+              ]
+            },
+            "Path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "Commit": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[0-9a-f]{40}$",
+              "description": "Nullable = no aplica, solo con TRANSIENT."
+            },
+            "Blob": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[0-9a-f]{40}$",
+              "description": "Nullable = no aplica, solo con TRANSIENT."
+            }
+          },
+          "required": [
+            "Kind",
+            "Path",
+            "Commit",
+            "Blob"
+          ]
+        }
+      },
+      "required": [
+        "UnitId",
+        "Scope",
+        "TaskId",
+        "Role",
+        "BindingId",
+        "Sha256",
+        "Location"
+      ]
+    },
+    "ReviewerDeclaredIdentity": {
+      "type": "object",
+      "description": "Informativa (§20.3.2): cada campo puede ser UNKNOWN; nunca un estado MATCH.",
+      "additionalProperties": false,
+      "properties": {
+        "Runtime": {
+          "type": "string",
+          "minLength": 1
+        },
+        "Model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "Effort": {
+          "type": "string",
+          "minLength": 1
+        },
+        "SessionOrThread": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "Runtime",
+        "Model",
+        "Effort",
+        "SessionOrThread"
+      ]
+    },
+    "ReviewerMode": {
+      "type": "string",
+      "enum": [
+        "SAME-SESSION ROLE",
+        "SEPARATE SESSION",
+        "EXTERNAL HUMAN"
+      ]
+    },
+    "InjectedContextDeclaration": {
+      "type": "object",
+      "description": "Obligatoria: «ninguno» se declara como NONE_DECLARED.",
+      "additionalProperties": false,
+      "properties": {
+        "State": {
+          "type": "string",
+          "enum": [
+            "NONE_DECLARED",
+            "DECLARED"
+          ]
+        },
+        "Items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "Kind": {
+                "type": "string",
+                "minLength": 1
+              },
+              "Source": {
+                "type": "string",
+                "minLength": 1
+              },
+              "SizeOrSha256": {
+                "type": "string",
+                "pattern": "^([0-9]+|[0-9a-f]{64})$",
+                "description": "Tamaño en bytes o SHA-256."
+              }
+            },
+            "required": [
+              "Kind",
+              "Source",
+              "SizeOrSha256"
+            ]
+          }
+        }
+      },
+      "required": [
+        "State",
+        "Items"
+      ]
+    },
+    "InputsRead": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "InputFidelityEvidenceRef": {
+      "type": "object",
+      "description": "Copia informativa de la referencia recibida; el revisor no la certifica.",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "blob": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      },
+      "required": [
+        "path",
+        "blob"
+      ]
+    },
+    "IndependenceEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Dimensions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "ReferenceRole": {
+                "type": "string",
+                "enum": [
+                  "PRINCIPAL_COORDINATOR",
+                  "ARCHITECT",
+                  "EXECUTION_CONTROLLER",
+                  "WORKER",
+                  "REVIEWER",
+                  "AUTHOR",
+                  "PROPOSER",
+                  "EVIDENCE_AUTHOR"
+                ]
+              },
+              "Dimension": {
+                "type": "string",
+                "enum": [
+                  "Actor",
+                  "Session",
+                  "Context",
+                  "Provider"
+                ]
+              },
+              "Result": {
+                "type": "string",
+                "enum": [
+                  "SATISFIED",
+                  "NOT_SATISFIED",
+                  "UNKNOWN"
+                ]
+              },
+              "Evidence": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "ReferenceRole",
+              "Dimension",
+              "Result",
+              "Evidence"
+            ]
+          }
+        },
+        "ReviewSubject": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "description": "ReviewSubject (B.2): conjunto acotado a la unidad y al objeto; null = no aplica fuera de una revisión mayor (§11.4).",
+          "additionalProperties": false,
+          "properties": {
+            "Kind": {
+              "type": "string",
+              "enum": [
+                "DESIGN",
+                "IMPLEMENTATION"
+              ]
+            },
+            "Commit": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            },
+            "Paths": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "Blobs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              }
+            },
+            "RangeBase": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[0-9a-f]{40}$",
+              "description": "merge-base de IMPLEMENTATION; null = no aplica en DESIGN."
+            },
+            "Authors": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "description": "AuthorRef (B.2).",
+                "additionalProperties": false,
+                "properties": {
+                  "Kind": {
+                    "type": "string",
+                    "enum": [
+                      "AI_SESSION",
+                      "HUMAN",
+                      "UNKNOWN"
+                    ]
+                  },
+                  "Actor": {
+                    "type": [
+                      "object",
+                      "null"
+                    ],
+                    "description": "ActorRef (B.2).",
+                    "additionalProperties": false,
+                    "properties": {
+                      "AdapterId": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9-]+$"
+                      },
+                      "InstanceId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "InstanceIdSource": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "Assurance": {
+                        "type": "string",
+                        "enum": [
+                          "REQUESTED",
+                          "CONFIGURED",
+                          "RUNTIME_OBSERVED",
+                          "SERVICE_ATTESTED",
+                          "NONE"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "AdapterId",
+                      "InstanceId",
+                      "InstanceIdSource",
+                      "Assurance"
+                    ]
+                  },
+                  "Session": {
+                    "type": [
+                      "object",
+                      "null"
+                    ],
+                    "description": "SessionRef (B.2).",
+                    "additionalProperties": false,
+                    "properties": {
+                      "AdapterId": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9-]+$"
+                      },
+                      "SessionId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "Assurance": {
+                        "type": "string",
+                        "enum": [
+                          "REQUESTED",
+                          "CONFIGURED",
+                          "RUNTIME_OBSERVED",
+                          "SERVICE_ATTESTED",
+                          "NONE"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "AdapterId",
+                      "SessionId",
+                      "Assurance"
+                    ]
+                  },
+                  "HumanId": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "Operator": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "HumanId o \"UNKNOWN\"; null = no aplica según el Kind."
+                  },
+                  "Commits": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{40}$"
+                    }
+                  },
+                  "Evidence": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "Kind",
+                  "Actor",
+                  "Session",
+                  "HumanId",
+                  "Operator",
+                  "Commits",
+                  "Evidence"
+                ]
+              }
+            }
+          },
+          "required": [
+            "Kind",
+            "Commit",
+            "Paths",
+            "Blobs",
+            "RangeBase",
+            "Authors"
+          ]
+        }
+      },
+      "required": [
+        "Dimensions",
+        "ReviewSubject"
+      ]
+    },
+    "KnownLimitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "RecommendedNextAction": {
+      "type": "string",
+      "description": "Informativa; no es autoridad."
+    },
+    "Verdict": {
+      "type": "string",
+      "enum": [
+        "AGREED",
+        "CHANGES REQUIRED",
+        "BLOCKED — OWNER DECISION"
+      ]
+    },
+    "RequiredFindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "FindingId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "LineageId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "null = linaje nuevo o por asignar en la ingestión."
+          },
+          "Source": {
+            "type": "string"
+          },
+          "AffectedSection": {
+            "type": "string",
+            "minLength": 1
+          },
+          "Evidence": {
+            "type": "string",
+            "minLength": 1
+          },
+          "PremiseRefs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "Path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "Section": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "LineStart": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "LineEnd": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "Quote": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "La proposición normativa completa (§20.3.3)."
+                }
+              },
+              "required": [
+                "Path",
+                "Section",
+                "LineStart",
+                "LineEnd",
+                "Quote"
+              ]
+            }
+          },
+          "WhyItMatters": {
+            "type": "string",
+            "minLength": 1
+          },
+          "CorrectionRequired": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "FindingId",
+          "LineageId",
+          "Source",
+          "AffectedSection",
+          "Evidence",
+          "PremiseRefs",
+          "WhyItMatters",
+          "CorrectionRequired"
+        ]
+      }
+    },
+    "OptionalFindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "FindingId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "LineageId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "null = linaje nuevo o por asignar en la ingestión."
+          },
+          "Source": {
+            "type": "string"
+          },
+          "AffectedSection": {
+            "type": "string",
+            "minLength": 1
+          },
+          "Evidence": {
+            "type": "string",
+            "minLength": 1
+          },
+          "PremiseRefs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "Path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "Section": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "LineStart": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "LineEnd": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "Quote": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "La proposición normativa completa (§20.3.3)."
+                }
+              },
+              "required": [
+                "Path",
+                "Section",
+                "LineStart",
+                "LineEnd",
+                "Quote"
+              ]
+            }
+          },
+          "WhyItMatters": {
+            "type": "string",
+            "minLength": 1
+          },
+          "CorrectionRequired": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "FindingId",
+          "LineageId",
+          "Source",
+          "AffectedSection",
+          "Evidence",
+          "PremiseRefs",
+          "WhyItMatters",
+          "CorrectionRequired"
+        ]
+      }
+    },
+    "FindingDispositions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "FindingId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "LineageId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "State": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSED",
+              "STILL_OPEN",
+              "SUPERSEDED"
+            ]
+          },
+          "SupersededBy": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "Rationale": {
+            "type": "string"
+          },
+          "EvaluatedObject": {
+            "type": "object",
+            "description": "Objeto exacto {commit, path, blob}.",
+            "additionalProperties": false,
+            "properties": {
+              "commit": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "blob": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              }
+            },
+            "required": [
+              "commit",
+              "path",
+              "blob"
+            ]
+          },
+          "PremiseRefs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "Path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "Section": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "LineStart": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "LineEnd": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "Quote": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "La proposición normativa completa (§20.3.3)."
+                }
+              },
+              "required": [
+                "Path",
+                "Section",
+                "LineStart",
+                "LineEnd",
+                "Quote"
+              ]
+            }
+          }
+        },
+        "required": [
+          "FindingId",
+          "LineageId",
+          "State",
+          "SupersededBy",
+          "Rationale",
+          "EvaluatedObject",
+          "PremiseRefs"
+        ]
+      },
+      "description": "Una por cada OpenFindings de la invocación y por cada hallazgo nuevo (§20.5.2)."
+    },
+    "Downgrades": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "FindingId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "From": {
+            "type": "string",
+            "enum": [
+              "REQUIRED"
+            ]
+          },
+          "To": {
+            "type": "string",
+            "enum": [
+              "OPTIONAL"
+            ]
+          },
+          "Classification": {
+            "type": "string",
+            "minLength": 1
+          },
+          "Reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "Evidence": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "FindingId",
+          "From",
+          "To",
+          "Classification",
+          "Reason",
+          "Evidence"
+        ]
+      },
+      "description": "Solo válidas si el revisor es el emisor (LIFECYCLE §5)."
+    },
+    "OwnerDecisions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "required": [
+    "Schema",
+    "ResultId",
+    "LogicalReviewRequestId",
+    "InvocationId",
+    "AttemptSeq",
+    "RequestedRole",
+    "Action",
+    "ReviewedUnit",
+    "ReviewedCommit",
+    "ReviewedPath",
+    "ReviewedBlob",
+    "ReviewerBinding",
+    "ReviewerDeclaredIdentity",
+    "ReviewerMode",
+    "InjectedContextDeclaration",
+    "InputsRead",
+    "InputFidelityEvidenceRef",
+    "IndependenceEvidence",
+    "KnownLimitations",
+    "RecommendedNextAction",
+    "Verdict",
+    "RequiredFindings",
+    "OptionalFindings",
+    "FindingDispositions",
+    "Downgrades",
+    "OwnerDecisions"
+  ]
+}

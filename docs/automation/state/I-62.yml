@@ -3,18 +3,18 @@ automation_state:
   initiative: I-62
   branch: architecture/portabilidad-coordinador-principal
   claim_id: 5b661a17-8c18-4183-8554-3866059cba2b
-  current_phase: F2
-  state: review-ready
+  current_phase: F3
+  state: in-progress
   gate: none
   attempts: 0
-  next_action: el Coordinator revisa el paquete de gate de F2 (docs/automation/evidence/I-62-F2/f2-gate-packet.json; evidence §§35-36) y decide su GATE PASS; F3 no se implementa sin su orden; el dossier de F3 está en docs/automation/evidence/I-62-prep/.
-  last_evidence_commit: 1eddbf48dbefd9685e68d63c0560bacf484d2dcb
+  next_action: completar la entrega de F3 (CI exacta y Core Full del SHA de implementación) y el paquete de la enmienda A-1 (FC-01, FC-02) para el Architect; la invocación del Architect espera una autorización; el Coordinator decide el GATE PASS de F3 (evidence §37).
+  last_evidence_commit: c783e4d9353670e8a93cf5de1e3dee21eedddc7a
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-portabilidad-coordinador-principal
   g0_gate_pass_by_coordinator: 85ae4324988ac7564719664f8f05b3fa9c6cafbe (C62-G0-02; CI 36889478597 push success; decisions §7)
-  f0_scope: Discovery (C62-F0-01..07); diseño Proposal V1 a V8 y V9 (requisito R62-AUTO-01..20 del Coordinator), sin implementación (decisions §§10-18); invocación acotada del Architect de V9 autorizada por el Owner (decisions §19); Proposal V10 por disposición del Owner y del Coordinator (decisions §20); revisión formal limpia de V10 por invocación acotada del Owner (decisions §21); Proposal V11 por disposición del Owner y del Coordinator (decisions §22); revisión formal limpia de V11 con fidelidad probada (decisions §23); Proposal V12, corrección estrecha (decisions §24); revisión formal limpia de V12 (decisions §25); Proposal V13, corrección final del residuo de A62-V11-01 (decisions §26); revisión formal final de V13 (decisions §27); Proposal V14, grafo normativo canónico y acotado (decisions §28); revisión formal final de V14 (decisions §29); OD-6 = alternativa 1 por decisión del Owner (decisions §30); AGREED del Coordinator y Consensus Freeze (decisions §31); GATE PASS de F0 y apertura de F1 por el Coordinator (decisions §32); GATE PASS de F1 y apertura de F2 (decisions §33)
+  f0_scope: Discovery (C62-F0-01..07); diseño Proposal V1 a V8 y V9 (requisito R62-AUTO-01..20 del Coordinator), sin implementación (decisions §§10-18); invocación acotada del Architect de V9 autorizada por el Owner (decisions §19); Proposal V10 por disposición del Owner y del Coordinator (decisions §20); revisión formal limpia de V10 por invocación acotada del Owner (decisions §21); Proposal V11 por disposición del Owner y del Coordinator (decisions §22); revisión formal limpia de V11 con fidelidad probada (decisions §23); Proposal V12, corrección estrecha (decisions §24); revisión formal limpia de V12 (decisions §25); Proposal V13, corrección final del residuo de A62-V11-01 (decisions §26); revisión formal final de V13 (decisions §27); Proposal V14, grafo normativo canónico y acotado (decisions §28); revisión formal final de V14 (decisions §29); OD-6 = alternativa 1 por decisión del Owner (decisions §30); AGREED del Coordinator y Consensus Freeze (decisions §31); GATE PASS de F0 y apertura de F1 por el Coordinator (decisions §32); GATE PASS de F1 y apertura de F2 (decisions §33); GATE PASS de F2, apertura de F3 y preparación de la enmienda A-1 (decisions §34)
   f0_discovery: docs/initiatives/I-62-discovery.md (R1 aceptada como base de diseño; C62-F0-08)
   archetype: NEW ARCHITECTURE confirmado por el Coordinator para el diseño (C62-F0-09); Architect = V6 y V7 CHANGES REQUIRED; V8 no enviada; V9 BLOCKED — OWNER DECISION, no acreditada como revisión formal limpia; A62-V9-01..06 ACCEPTED REQUIRED y corregidos en V10 (docs/initiatives/I-62-architect-review-v9-disposition.md); V10 CHANGES REQUIRED, revisión válida con excepción por hallazgo (A62-V10-02 no aceptado; docs/initiatives/I-62-architect-review-v10-disposition.md); V11 CHANGES REQUIRED, acreditada (A62-V10-03 y A62-V11-01; docs/initiatives/I-62-architect-review-v11-disposition.md); V12 CHANGES REQUIRED (A62-V10-03 CLOSED; residuo de A62-V11-01 ACCEPTED REQUIRED; revisión de V11 acreditada con su registro de evidencia corregido; docs/initiatives/I-62-architect-review-v12-disposition.md); V13 CHANGES REQUIRED (residuo final de A62-V11-01 ACCEPTED REQUIRED; revisión de V13 válida; docs/initiatives/I-62-architect-review-v13-disposition.md); V14 BLOCKED — OWNER DECISION solo por OD-6, con cero REQUIRED y A62-V11-01 CLOSED (docs/initiatives/I-62-architect-review-v14.md); lista para el Consensus Freeze tras OD-6 y el acuerdo del Coordinator
   f0_proposal: docs/initiatives/I-62-proposal-v14.md, CONGELADA por docs/initiatives/I-62-consensus-freeze.md (commit 4c617e82, blob 34ad80ea; paquete docs/initiatives/I-62-architect-package-v14.md; OD-6 = alternativa 1; el texto de V14 no cambia)
@@ -22,7 +22,11 @@ execution_context:
   f0_status: COMPLETE (GATE PASS del Coordinator al abrir F1, decisions §32); Freeze sin cambios (FREEZE_SHA b64a3b64, registro docs/initiatives/I-62-consensus-freeze.md)
   f1_status: GATE PASS / COMPLETE por el Coordinator sobre 12660ea7 (C-01..C-04 PASS; decisions §33)
   f1_scope: ADR-0048 propuesto; plano (b) inactivo en docs/AUTOMATION_PLAN.md (§16.1, 16.14-16.17) y docs/automation/agent-execution/README.md §12; corrección factual de PROMPT_TEMPLATES §2; guardas C-01 y C-03; MC de C-04
-  implementation_authorization: solo F2; F3 y siguientes = NO salvo una decisión posterior del Coordinator; I-61 sigue siendo el protocolo activo hasta la frontera efectiva de I-62
-  f2_status: REVIEW_READY sobre 1eddbf48 (CI 37075239120 4/4; Core Full exacto 12412/12412; C-05..C-10 y C-19 PASS; sin GATE PASS propio)
+  implementation_authorization: solo F3; producción de F4 = NO; F6 y siguientes = NO; I-61 sigue siendo el protocolo activo hasta la frontera efectiva de I-62
+  f2_status: GATE PASS / COMPLETE por el Coordinator sobre 1eddbf48 (C-05..C-10 y C-19 PASS; decisions §34); codex-cli sigue UNKNOWN / NOT_ELIGIBLE hasta su primera invocación afectada (OD-2)
   f2_scope: AUTOMATION_PLAN 16.18-16.19; adapters/ (5 descriptores); preflight.v1, relay-record.v2, controller-verification.v2 y 5 esquemas de hechos; README §13; routing §8; guardas C-05, C-09, C-10 y C-19; MC C-06, C-07, C-08 y C-10
   preparation: docs/automation/evidence/I-62-prep/ (F3, F4, F6, F7, READY, OV y cierre; FC-01 y FC-02 como A-n candidatas sin aplicar; paquetes OD-2, OD-3, OD-4, OD-5, OD-7 y DEP-F4-YAML sin solicitar)
+  f3_status: IN_PROGRESS (implementación entregada sin GATE PASS propio; evidence §37)
+  f3_scope: nueve esquemas del núcleo; manifiesto B.11 docs/initiatives/I-62-normative-dependency-manifest.json; AUTOMATION_PLAN 16.20-16.24; README §14-§16; routing §9; LIFECYCLE §5 y §9 (alternativa 1 de OD-6, inactivo); guardas Core de B.1, B.11 y textos; MC C-11..C-14, C-30 y C-40 (parte F3)
+  f4_status: BLOCKED ON A-1 (FC-01, FC-02) solo para la materialización afectada; la preparación de F4 puede continuar; producción no autorizada
+  a1_status: en preparación (enmienda MATERIAL; paquete para el Architect; sin dictamen propio)

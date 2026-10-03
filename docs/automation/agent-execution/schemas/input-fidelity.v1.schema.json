@@ -1,0 +1,578 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rackcad-input-fidelity/v1",
+  "description": "Fidelidad de los insumos canónicos (Proposal V14 §20.3.3): un documento por Kind. FIDELITY lleva los registros CanonicalInputFidelity del preflight o de la comparación tras la corrida; SPAN_MAP, el mapa de tramos degradados; PREMISE_INDEPENDENCE, la evidencia del invocador sobre los envoltorios de las premisas y su NormativeDependencyClosure sobre el manifiesto (B.11). Observada por el invocador, nunca autodeclarada. Subordinado: no crea requisitos de evidencia, estados, gates, reglas Git ni decisiones del Owner. Inactivo hasta I62_EFFECTIVE_SHA (AUTOMATION_PLAN 16.14).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "Schema": {
+      "type": "string",
+      "enum": [
+        "rackcad-input-fidelity/v1"
+      ]
+    },
+    "Kind": {
+      "type": "string",
+      "enum": [
+        "FIDELITY",
+        "SPAN_MAP",
+        "PREMISE_INDEPENDENCE"
+      ]
+    },
+    "InvocationId": {
+      "type": "string",
+      "pattern": "^I[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$"
+    },
+    "Fidelity": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "Phase": {
+          "type": "string",
+          "enum": [
+            "PREFLIGHT",
+            "POSTRUN"
+          ]
+        },
+        "AuthorityRevision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "DeliveredRepresentationSource": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Fuente que representa lo entregado al modelo revisor, declarada por el adapter."
+        },
+        "CorpusCharacters": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Cada carácter no ASCII distinto presente en el corpus del cierre."
+        },
+        "Records": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "InputRef": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Ruta del cierre o PROMPT."
+              },
+              "GitBlob": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^[0-9a-f]{40}$",
+                "description": "null = no aplica: PROMPT aún no custodiado."
+              },
+              "CanonicalSha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "Encoding": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "Charset": {
+                    "type": "string",
+                    "enum": [
+                      "UTF-8"
+                    ]
+                  },
+                  "Bom": {
+                    "type": "boolean"
+                  },
+                  "LineEnding": {
+                    "type": "string",
+                    "enum": [
+                      "LF",
+                      "CRLF",
+                      "MIXED"
+                    ]
+                  },
+                  "FinalNewline": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "Charset",
+                  "Bom",
+                  "LineEnding",
+                  "FinalNewline"
+                ]
+              },
+              "TransportRepresentation": {
+                "type": "string",
+                "minLength": 1
+              },
+              "TransportSha256": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^[0-9a-f]{64}$",
+                "description": "Exactamente uno de TransportSha256 y VerificationMethod no es null."
+              },
+              "VerificationMethod": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "CharacterClassesChecked": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "Character": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "CountCanonical": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "CountTransport": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "Character",
+                    "CountCanonical",
+                    "CountTransport"
+                  ]
+                }
+              },
+              "FidelityStatus": {
+                "type": "string",
+                "enum": [
+                  "FAITHFUL",
+                  "FAITHFUL_NORMALIZED",
+                  "DEGRADED_BOUNDED",
+                  "DEGRADED_UNBOUNDED",
+                  "UNVERIFIED"
+                ]
+              },
+              "DegradedSpans": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "description": "StateRef de un documento SPAN_MAP; null con FAITHFUL o FAITHFUL_NORMALIZED.",
+                "additionalProperties": false,
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "blob": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{40}$"
+                  }
+                },
+                "required": [
+                  "path",
+                  "blob"
+                ]
+              }
+            },
+            "required": [
+              "InputRef",
+              "GitBlob",
+              "CanonicalSha256",
+              "Encoding",
+              "TransportRepresentation",
+              "TransportSha256",
+              "VerificationMethod",
+              "CharacterClassesChecked",
+              "FidelityStatus",
+              "DegradedSpans"
+            ]
+          }
+        }
+      },
+      "required": [
+        "Phase",
+        "AuthorityRevision",
+        "DeliveredRepresentationSource",
+        "CorpusCharacters",
+        "Records"
+      ]
+    },
+    "SpanMap": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "Spans": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "Path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "Line": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "Column": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "Kind": {
+                "type": "string",
+                "enum": [
+                  "CHANGED",
+                  "DELETED",
+                  "INSERTED"
+                ]
+              },
+              "Canonical": {
+                "type": "string"
+              },
+              "Visible": {
+                "type": "string"
+              },
+              "Class": {
+                "type": "string",
+                "enum": [
+                  "NEGATION",
+                  "OPERATOR",
+                  "QUANTIFIER",
+                  "MODALITY",
+                  "IDENTIFIER",
+                  "TABLE_ASSOCIATION",
+                  "SCOPE",
+                  "CROSS_REFERENCE",
+                  "LETTER",
+                  "STRUCTURE",
+                  "OTHER"
+                ]
+              }
+            },
+            "required": [
+              "Path",
+              "Line",
+              "Column",
+              "Kind",
+              "Canonical",
+              "Visible",
+              "Class"
+            ]
+          }
+        }
+      },
+      "required": [
+        "Spans"
+      ]
+    },
+    "PremiseIndependence": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "Manifest": {
+          "type": "object",
+          "description": "Manifiesto B.11 validado de la AuthorityRevision.",
+          "additionalProperties": false,
+          "properties": {
+            "Path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "Blob": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          },
+          "required": [
+            "Path",
+            "Blob"
+          ]
+        },
+        "Premises": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "FindingId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "PremiseIndex": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "PremiseRef": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "Path": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "Section": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "LineStart": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "LineEnd": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "Quote": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "La proposición normativa completa (§20.3.3)."
+                  }
+                },
+                "required": [
+                  "Path",
+                  "Section",
+                  "LineStart",
+                  "LineEnd",
+                  "Quote"
+                ]
+              },
+              "Envelope": {
+                "type": "object",
+                "description": "PremiseEnvelope (§20.3.3, punto 2).",
+                "additionalProperties": false,
+                "properties": {
+                  "Path": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "LineStart": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "LineEnd": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "Units": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "description": "NormativeUnitRef (§20.3.3): Document, UnitId estable, Anchor y Revision (commit y blob del documento).",
+                      "additionalProperties": false,
+                      "properties": {
+                        "Document": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "UnitId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "Anchor": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "Revision": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "Commit": {
+                              "type": "string",
+                              "pattern": "^[0-9a-f]{40}$"
+                            },
+                            "Blob": {
+                              "type": "string",
+                              "pattern": "^[0-9a-f]{40}$"
+                            }
+                          },
+                          "required": [
+                            "Commit",
+                            "Blob"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "Document",
+                        "UnitId",
+                        "Anchor",
+                        "Revision"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "Path",
+                  "LineStart",
+                  "LineEnd",
+                  "Units"
+                ]
+              },
+              "Closure": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "Unit": {
+                      "type": "object",
+                      "description": "NormativeUnitRef (§20.3.3): Document, UnitId estable, Anchor y Revision (commit y blob del documento).",
+                      "additionalProperties": false,
+                      "properties": {
+                        "Document": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "UnitId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "Anchor": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "Revision": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "Commit": {
+                              "type": "string",
+                              "pattern": "^[0-9a-f]{40}$"
+                            },
+                            "Blob": {
+                              "type": "string",
+                              "pattern": "^[0-9a-f]{40}$"
+                            }
+                          },
+                          "required": [
+                            "Commit",
+                            "Blob"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "Document",
+                        "UnitId",
+                        "Anchor",
+                        "Revision"
+                      ]
+                    },
+                    "IntroducedBy": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "UnitId de la unidad que la introdujo; null = unidad del envoltorio."
+                    },
+                    "EdgeKind": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "enum": [
+                        "ONLY_IF",
+                        "EXCEPT",
+                        "SUBJECT_TO",
+                        "DEFINITION",
+                        "ENUM",
+                        "INVARIANT",
+                        "ALGORITHM",
+                        "STATE_TRANSITION",
+                        "AUTHORITY",
+                        "PRECEDENCE",
+                        null
+                      ]
+                    },
+                    "Visible": {
+                      "type": "boolean"
+                    },
+                    "OverlapsDegraded": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "Unit",
+                    "IntroducedBy",
+                    "EdgeKind",
+                    "Visible",
+                    "OverlapsDegraded"
+                  ]
+                },
+                "description": "NormativeDependencyClosure en punto fijo."
+              },
+              "Resolutions": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "AMBIGUOUS_REFERENCE",
+                    "UNRESOLVED_REFERENCE",
+                    "WHOLE_DOCUMENT_UNBOUNDED",
+                    "INCOMPLETE_METADATA"
+                  ]
+                },
+                "description": "Vacío si todo resolvió."
+              },
+              "Independent": {
+                "type": "string",
+                "enum": [
+                  "TRUE",
+                  "FALSE",
+                  "UNKNOWN"
+                ]
+              }
+            },
+            "required": [
+              "FindingId",
+              "PremiseIndex",
+              "PremiseRef",
+              "Envelope",
+              "Closure",
+              "Resolutions",
+              "Independent"
+            ]
+          }
+        },
+        "Unaccredited": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "FindingId INVALID_PREMISE."
+        }
+      },
+      "required": [
+        "Manifest",
+        "Premises",
+        "Unaccredited"
+      ]
+    }
+  },
+  "required": [
+    "Schema",
+    "Kind",
+    "InvocationId",
+    "Fidelity",
+    "SpanMap",
+    "PremiseIndependence"
+  ]
+}
