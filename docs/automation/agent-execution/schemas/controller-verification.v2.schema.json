@@ -102,7 +102,7 @@
                   "type": "string",
                   "minLength": 1
                 },
-                "CommitSha": {
+                "Commit": {
                   "type": [
                     "string",
                     "null"
@@ -122,7 +122,7 @@
               "required": [
                 "Kind",
                 "Path",
-                "CommitSha",
+                "Commit",
                 "Blob"
               ]
             }

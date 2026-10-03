@@ -1,0 +1,858 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rackcad-role-invocation/v1",
+  "description": "Contrato neutral de invocación de un rol (Proposal V14 §20.3 y Anexo B.9): sin texto de prompt de ningún proveedor; el adapter renderiza la invocación. Subordinado: no crea requisitos de evidencia, estados, gates, reglas Git ni decisiones del Owner. Inactivo hasta I62_EFFECTIVE_SHA (AUTOMATION_PLAN 16.14).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "Schema": {
+      "type": "string",
+      "enum": [
+        "rackcad-role-invocation/v1"
+      ]
+    },
+    "InvocationId": {
+      "type": "string",
+      "pattern": "^I[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$"
+    },
+    "LogicalReviewRequestId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^L[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$",
+      "description": "null = no aplica fuera de un bucle de revisión."
+    },
+    "AttemptSeq": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1,
+      "description": "null = no aplica fuera de un bucle de revisión."
+    },
+    "UnitId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "Gate": {
+      "type": "string",
+      "minLength": 1
+    },
+    "TaskId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "null = no aplica en una revisión de diseño."
+    },
+    "ProtocolSet": {
+      "type": "string",
+      "enum": [
+        "rackcad-protocol/I61",
+        "rackcad-protocol/I62"
+      ]
+    },
+    "RequestedRole": {
+      "type": "string",
+      "enum": [
+        "PRINCIPAL_COORDINATOR",
+        "ARCHITECT",
+        "EXECUTION_CONTROLLER",
+        "WORKER",
+        "REVIEWER"
+      ]
+    },
+    "Action": {
+      "type": "string",
+      "enum": [
+        "RESUME_DECISION",
+        "CUSTODY",
+        "LOCAL_EVIDENCE",
+        "REVIEW_DESIGN",
+        "REVIEW_CHANGE",
+        "PLAN",
+        "VERIFY",
+        "IMPLEMENT"
+      ]
+    },
+    "Target": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Objeto exacto; obligatorio en revisión y verificación; null = no aplica solo en PLAN.",
+      "additionalProperties": false,
+      "properties": {
+        "commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "blob": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      },
+      "required": [
+        "commit",
+        "path",
+        "blob"
+      ]
+    },
+    "AuthorityRevision": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "CanonicalInputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "Blob": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          }
+        },
+        "required": [
+          "Path",
+          "Blob"
+        ]
+      }
+    },
+    "AllowedTransitiveInputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "Blob": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "RequiredBy": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "Path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "Section": {
+                "type": "string",
+                "minLength": 1
+              },
+              "Blob": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              }
+            },
+            "required": [
+              "Path",
+              "Section",
+              "Blob"
+            ]
+          }
+        },
+        "required": [
+          "Path",
+          "Blob",
+          "RequiredBy"
+        ]
+      }
+    },
+    "AllowedActions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Action": {
+            "type": "string",
+            "minLength": 1
+          },
+          "RequiredBy": {
+            "type": "string",
+            "minLength": 1
+          },
+          "Class": {
+            "type": "string",
+            "enum": [
+              "ACTION_COMPATIBLE",
+              "EXEMPTED"
+            ]
+          },
+          "ExemptionRef": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "null = no aplica salvo con EXEMPTED."
+          },
+          "ExemptionScope": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "null = no aplica salvo con EXEMPTED."
+          }
+        },
+        "required": [
+          "Action",
+          "RequiredBy",
+          "Class",
+          "ExemptionRef",
+          "ExemptionScope"
+        ]
+      }
+    },
+    "HealthSignals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Kind": {
+            "type": "string",
+            "enum": [
+              "PUBLICATION_CI"
+            ]
+          },
+          "RunRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "Sha": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          }
+        },
+        "required": [
+          "Kind",
+          "RunRef",
+          "Sha"
+        ]
+      },
+      "description": "Señales separadas; nunca evidencia equivalente (§20.3.1)."
+    },
+    "DeclaredRuntimeContext": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Kind": {
+            "type": "string",
+            "minLength": 1
+          },
+          "Source": {
+            "type": "string",
+            "minLength": 1
+          },
+          "SizeOrSha256": {
+            "type": "string",
+            "pattern": "^([0-9]+|[0-9a-f]{64})$",
+            "description": "Tamaño en bytes o SHA-256."
+          }
+        },
+        "required": [
+          "Kind",
+          "Source",
+          "SizeOrSha256"
+        ]
+      }
+    },
+    "ForbiddenInputs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "EffectiveInputClosure": {
+      "type": "object",
+      "description": "StateRef de rackcad-input-closure/v1.",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "blob": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      },
+      "required": [
+        "path",
+        "blob"
+      ]
+    },
+    "InputFidelityPreflight": {
+      "type": "object",
+      "description": "StateRef de rackcad-input-fidelity/v1 (preflight); sin FAITHFUL o FAITHFUL_NORMALIZED no se lanza.",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "blob": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      },
+      "required": [
+        "path",
+        "blob"
+      ]
+    },
+    "OpenFindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "FindingId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "LineageId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "Severity": {
+            "type": "string",
+            "enum": [
+              "REQUIRED",
+              "OPTIONAL",
+              "BLOCKING",
+              "ADVISORY"
+            ]
+          },
+          "Issuer": {
+            "type": "string",
+            "enum": [
+              "ARCHITECT",
+              "COORDINATOR",
+              "REVIEWER"
+            ]
+          }
+        },
+        "required": [
+          "FindingId",
+          "LineageId",
+          "Severity",
+          "Issuer"
+        ]
+      }
+    },
+    "RequiredCapabilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "RequirementId": {
+            "type": "string",
+            "pattern": "^[A-Z_]+\\.[a-z0-9-]+$"
+          },
+          "Required": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "RequirementId",
+          "Required"
+        ]
+      }
+    },
+    "IndependenceRequirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Requirements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "ReferenceRole": {
+                "type": "string",
+                "enum": [
+                  "PRINCIPAL_COORDINATOR",
+                  "ARCHITECT",
+                  "EXECUTION_CONTROLLER",
+                  "WORKER",
+                  "REVIEWER",
+                  "AUTHOR",
+                  "PROPOSER",
+                  "EVIDENCE_AUTHOR"
+                ]
+              },
+              "Actor": {
+                "type": "string",
+                "enum": [
+                  "REQUIRED",
+                  "PREFERRED",
+                  "NOT_REQUIRED"
+                ]
+              },
+              "Session": {
+                "type": "string",
+                "enum": [
+                  "REQUIRED",
+                  "PREFERRED",
+                  "NOT_REQUIRED"
+                ]
+              },
+              "Context": {
+                "type": "string",
+                "enum": [
+                  "REQUIRED",
+                  "PREFERRED",
+                  "NOT_REQUIRED"
+                ]
+              },
+              "Provider": {
+                "type": "string",
+                "enum": [
+                  "REQUIRED",
+                  "PREFERRED",
+                  "NOT_REQUIRED"
+                ]
+              }
+            },
+            "required": [
+              "ReferenceRole",
+              "Actor",
+              "Session",
+              "Context",
+              "Provider"
+            ]
+          }
+        },
+        "ReviewSubject": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "description": "ReviewSubject (B.2): conjunto acotado a la unidad y al objeto; null = no aplica fuera de una revisión mayor (§11.4).",
+          "additionalProperties": false,
+          "properties": {
+            "Kind": {
+              "type": "string",
+              "enum": [
+                "DESIGN",
+                "IMPLEMENTATION"
+              ]
+            },
+            "Commit": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            },
+            "Paths": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "Blobs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              }
+            },
+            "RangeBase": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[0-9a-f]{40}$",
+              "description": "merge-base de IMPLEMENTATION; null = no aplica en DESIGN."
+            },
+            "Authors": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "description": "AuthorRef (B.2).",
+                "additionalProperties": false,
+                "properties": {
+                  "Kind": {
+                    "type": "string",
+                    "enum": [
+                      "AI_SESSION",
+                      "HUMAN",
+                      "UNKNOWN"
+                    ]
+                  },
+                  "Actor": {
+                    "type": [
+                      "object",
+                      "null"
+                    ],
+                    "description": "ActorRef (B.2).",
+                    "additionalProperties": false,
+                    "properties": {
+                      "AdapterId": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9-]+$"
+                      },
+                      "InstanceId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "InstanceIdSource": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "Assurance": {
+                        "type": "string",
+                        "enum": [
+                          "REQUESTED",
+                          "CONFIGURED",
+                          "RUNTIME_OBSERVED",
+                          "SERVICE_ATTESTED",
+                          "NONE"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "AdapterId",
+                      "InstanceId",
+                      "InstanceIdSource",
+                      "Assurance"
+                    ]
+                  },
+                  "Session": {
+                    "type": [
+                      "object",
+                      "null"
+                    ],
+                    "description": "SessionRef (B.2).",
+                    "additionalProperties": false,
+                    "properties": {
+                      "AdapterId": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9-]+$"
+                      },
+                      "SessionId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "Assurance": {
+                        "type": "string",
+                        "enum": [
+                          "REQUESTED",
+                          "CONFIGURED",
+                          "RUNTIME_OBSERVED",
+                          "SERVICE_ATTESTED",
+                          "NONE"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "AdapterId",
+                      "SessionId",
+                      "Assurance"
+                    ]
+                  },
+                  "HumanId": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "Operator": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "HumanId o \"UNKNOWN\"; null = no aplica según el Kind."
+                  },
+                  "Commits": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{40}$"
+                    }
+                  },
+                  "Evidence": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "Kind",
+                  "Actor",
+                  "Session",
+                  "HumanId",
+                  "Operator",
+                  "Commits",
+                  "Evidence"
+                ]
+              }
+            }
+          },
+          "required": [
+            "Kind",
+            "Commit",
+            "Paths",
+            "Blobs",
+            "RangeBase",
+            "Authors"
+          ]
+        }
+      },
+      "required": [
+        "Requirements",
+        "ReviewSubject"
+      ]
+    },
+    "Permissions": {
+      "type": "string",
+      "enum": [
+        "READ_ONLY",
+        "WRITE_IN_SCOPE"
+      ],
+      "description": "READ_ONLY para ARCHITECT, EXECUTION_CONTROLLER y REVIEWER."
+    },
+    "Binding": {
+      "type": "object",
+      "description": "BindingRef (B.2).",
+      "additionalProperties": false,
+      "properties": {
+        "UnitId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "Scope": {
+          "type": "string",
+          "enum": [
+            "UNIT",
+            "TASK"
+          ]
+        },
+        "TaskId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Nullable = no aplica, solo con Scope UNIT."
+        },
+        "Role": {
+          "type": "string",
+          "enum": [
+            "PRINCIPAL_COORDINATOR",
+            "ARCHITECT",
+            "EXECUTION_CONTROLLER",
+            "WORKER",
+            "REVIEWER"
+          ]
+        },
+        "BindingId": {
+          "type": "string",
+          "pattern": "^B[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$"
+        },
+        "Sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "Location": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Kind": {
+              "type": "string",
+              "enum": [
+                "TRANSIENT",
+                "CUSTODIED"
+              ]
+            },
+            "Path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "Commit": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[0-9a-f]{40}$",
+              "description": "Nullable = no aplica, solo con TRANSIENT."
+            },
+            "Blob": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[0-9a-f]{40}$",
+              "description": "Nullable = no aplica, solo con TRANSIENT."
+            }
+          },
+          "required": [
+            "Kind",
+            "Path",
+            "Commit",
+            "Blob"
+          ]
+        }
+      },
+      "required": [
+        "UnitId",
+        "Scope",
+        "TaskId",
+        "Role",
+        "BindingId",
+        "Sha256",
+        "Location"
+      ]
+    },
+    "OutputContract": {
+      "type": "string",
+      "enum": [
+        "rackcad-architect-review-result/v1",
+        "rackcad-reviewer-result/v1",
+        "rackcad-delegation/v2",
+        "rackcad-controller-verification/v2",
+        "rackcad-worker-handoff/v1"
+      ],
+      "description": "Exactamente uno, según la correspondencia cerrada de §20.7."
+    },
+    "BudgetSnapshot": {
+      "type": "object",
+      "description": "Copia de los contadores en la reserva (§9.3, §20.6).",
+      "additionalProperties": false,
+      "properties": {
+        "ReviewRounds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "LogicalRequests": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ArchitectLaunches": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "TransportReruns": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "CorrectionRounds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "CorrectionsByLineage": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "LineageId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "Count": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "LineageId",
+              "Count"
+            ]
+          }
+        }
+      },
+      "required": [
+        "ReviewRounds",
+        "LogicalRequests",
+        "ArchitectLaunches",
+        "TransportReruns",
+        "CorrectionRounds",
+        "CorrectionsByLineage"
+      ]
+    },
+    "StopConditions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[PS]-[0-9]{2}$"
+      }
+    },
+    "EscalationConditions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "Authorization": {
+      "type": "object",
+      "description": "StateRef del contrato de gate o de la ReviewLoopAuthorization.",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "blob": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      },
+      "required": [
+        "path",
+        "blob"
+      ]
+    }
+  },
+  "required": [
+    "Schema",
+    "InvocationId",
+    "LogicalReviewRequestId",
+    "AttemptSeq",
+    "UnitId",
+    "Gate",
+    "TaskId",
+    "ProtocolSet",
+    "RequestedRole",
+    "Action",
+    "Target",
+    "AuthorityRevision",
+    "CanonicalInputs",
+    "AllowedTransitiveInputs",
+    "AllowedActions",
+    "HealthSignals",
+    "DeclaredRuntimeContext",
+    "ForbiddenInputs",
+    "EffectiveInputClosure",
+    "InputFidelityPreflight",
+    "OpenFindings",
+    "RequiredCapabilities",
+    "IndependenceRequirements",
+    "Permissions",
+    "Binding",
+    "OutputContract",
+    "BudgetSnapshot",
+    "StopConditions",
+    "EscalationConditions",
+    "Authorization"
+  ]
+}

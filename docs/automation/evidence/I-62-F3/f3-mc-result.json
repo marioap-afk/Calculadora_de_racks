@@ -1,0 +1,762 @@
+{
+ "Harness": "f3-mc.py",
+ "PowerShell": "7.6.6",
+ "Unit": "I-62-MC",
+ "Results": {
+  "C-11": {
+   "Cases": [
+    {
+     "Case": "c11-positivo",
+     "Expected": "ACCEPTED",
+     "Got": "ACCEPTED",
+     "Verdict": "PASS",
+     "SchemaValid": true,
+     "Rules": []
+    },
+    {
+     "Case": "c11-obligatorio-UNKNOWN",
+     "Expected": "REJECTED/P-10",
+     "Got": "REJECTED/P-10",
+     "Verdict": "PASS",
+     "SchemaValid": true,
+     "Rules": [
+      "B4"
+     ]
+    },
+    {
+     "Case": "c11-MeasuredInvocation-NOT_MEASURED",
+     "Expected": "REJECTED/P-10",
+     "Got": "REJECTED/P-10",
+     "Verdict": "PASS",
+     "SchemaValid": true,
+     "Rules": [
+      "B5"
+     ]
+    },
+    {
+     "Case": "c11-cobertura-UNKNOWN",
+     "Expected": "REJECTED/P-10",
+     "Got": "REJECTED/P-10",
+     "Verdict": "PASS",
+     "SchemaValid": true,
+     "Rules": [
+      "B5"
+     ]
+    },
+    {
+     "Case": "c11-requisito-omitido-E11",
+     "Expected": "REJECTED/P-10",
+     "Got": "REJECTED/P-10",
+     "Verdict": "PASS",
+     "SchemaValid": true,
+     "Rules": [
+      "B4"
+     ]
+    },
+    {
+     "Case": "c11-celda-adapter-incompatible",
+     "Expected": "REJECTED",
+     "Got": "REJECTED",
+     "Verdict": "PASS",
+     "SchemaValid": true,
+     "Rules": [
+      "B3"
+     ]
+    },
+    {
+     "Case": "c11-effort-incompatible",
+     "Expected": "REJECTED",
+     "Got": "REJECTED",
+     "Verdict": "PASS",
+     "SchemaValid": true,
+     "Rules": [
+      "B3"
+     ]
+    },
+    {
+     "Case": "c11-modelo-fuera-de-las-celdas",
+     "Expected": "REJECTED",
+     "Got": "REJECTED",
+     "Verdict": "PASS",
+     "SchemaValid": true,
+     "Rules": [
+      "B3"
+     ]
+    }
+   ],
+   "Mutation": {
+    "Change": "el procedimiento trata UNKNOWN como satisfecho",
+    "Case": "c11-obligatorio-UNKNOWN",
+    "GotUnderMutation": "ACCEPTED",
+    "Detected": true
+   },
+   "Anchors": {
+    "docs/automation/agent-execution/README.md :: ### 14.2 Coherencia del binding": true,
+    "docs/AUTOMATION_PLAN.md :: ### 16.20 Binding y aceptación (I62)": true
+   },
+   "Verdict": "PASS"
+  },
+  "C-12": {
+   "Cases": [
+    {
+     "Case": "c12-pass-custodiado-vigente",
+     "Expected": "pass",
+     "Got": "pass",
+     "Verdict": "PASS",
+     "Reasons": []
+    },
+    {
+     "Case": "c12-otra-unidad",
+     "Expected": "rechazo A2'",
+     "Got": "rechazo A2'",
+     "Verdict": "PASS",
+     "Reasons": [
+      "otra unidad"
+     ]
+    },
+    {
+     "Case": "c12-otra-tarea",
+     "Expected": "rechazo A2'",
+     "Got": "rechazo A2'",
+     "Verdict": "PASS",
+     "Reasons": [
+      "otra tarea"
+     ]
+    },
+    {
+     "Case": "c12-otra-revision",
+     "Expected": "rechazo A2'",
+     "Got": "rechazo A2'",
+     "Verdict": "PASS",
+     "Reasons": [
+      "otra revisión o no resuelve"
+     ]
+    },
+    {
+     "Case": "c12-obsoleto-por-rebinding",
+     "Expected": "rechazo A2'",
+     "Got": "rechazo A2'",
+     "Verdict": "PASS",
+     "Reasons": [
+      "obsoleto por rebinding"
+     ]
+    },
+    {
+     "Case": "c12-TRANSIENT-presentado-como-custodiado",
+     "Expected": "rechazo A2'",
+     "Got": "rechazo A2'",
+     "Verdict": "PASS",
+     "Reasons": [
+      "TRANSIENT presentado como custodiado"
+     ]
+    },
+    {
+     "Case": "c12-commit-no-ancestro",
+     "Expected": "rechazo A2'",
+     "Got": "rechazo A2'",
+     "Verdict": "PASS",
+     "Reasons": [
+      "otra revisión o no resuelve"
+     ]
+    },
+    {
+     "Case": "c12-candidato-PENDING-no-es-aceptado",
+     "Expected": "PENDING",
+     "Got": "PENDING",
+     "Verdict": "PASS",
+     "Rules": []
+    },
+    {
+     "Case": "c12-DecisionRef-fabricado",
+     "Expected": "REJECTED/P-20",
+     "Got": "REJECTED/P-20",
+     "Verdict": "PASS",
+     "Rules": [
+      "B9"
+     ]
+    },
+    {
+     "Case": "c12-individual-con-AuthorizationRef",
+     "Expected": "REJECTED/P-20",
+     "Got": "REJECTED/P-20",
+     "Verdict": "PASS",
+     "Rules": [
+      "B7"
+     ]
+    },
+    {
+     "Case": "c12-observacion-obsoleta",
+     "Expected": "REJECTED/P-10",
+     "Got": "REJECTED/P-10",
+     "Verdict": "PASS",
+     "Rules": [
+      "B4"
+     ]
+    },
+    {
+     "Case": "c12-observacion-incompatible-otra-accion",
+     "Expected": "REJECTED/P-10",
+     "Got": "REJECTED/P-10",
+     "Verdict": "PASS",
+     "Rules": [
+      "B4"
+     ]
+    },
+    {
+     "Case": "c12-transicion-unica-PENDING-ACCEPTED",
+     "Expected": "ACCEPTED",
+     "Got": "ACCEPTED",
+     "Verdict": "PASS",
+     "Rules": []
+    },
+    {
+     "Case": "c12-mismo-BindingId-otro-contenido",
+     "Expected": "S-04",
+     "Got": "S-04",
+     "Verdict": "PASS",
+     "Rules": [
+      "B10"
+     ]
+    }
+   ],
+   "SchemaValid": true,
+   "Mutation": {
+    "Change": "se quita el rebinding posterior (el «obsoleto» deja de serlo)",
+    "Case": "c12-obsoleto-por-rebinding",
+    "GotUnderMutation": "pass",
+    "Detected": true
+   },
+   "Anchors": {
+    "docs/automation/agent-execution/README.md :: ### 14.4 Referencias (A2')": true
+   },
+   "Verdict": "PASS"
+  },
+  "C-13": {
+   "Cases": [
+    {
+     "Case": "c13-1-dos-requisitos-simultaneos",
+     "Expected": {
+      "Actor": "REQUIRED",
+      "Session": "REQUIRED",
+      "Context": "REQUIRED",
+      "Provider": "PREFERRED"
+     },
+     "Got": {
+      "Actor": "REQUIRED",
+      "Session": "REQUIRED",
+      "Context": "REQUIRED",
+      "Provider": "PREFERRED"
+     },
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c13-2-mismo-proveedor-contexto-separado",
+     "Expected": {
+      "Context": "SATISFIED",
+      "Provider": "NOT_SATISFIED"
+     },
+     "Got": {
+      "Context": "SATISFIED",
+      "Provider": "NOT_SATISFIED"
+     },
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c13-3-distinto-proveedor-contexto-compartido",
+     "Expected": {
+      "Context": "NOT_SATISFIED",
+      "Provider": "SATISFIED"
+     },
+     "Got": {
+      "Context": "NOT_SATISFIED",
+      "Provider": "SATISFIED"
+     },
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c13-4-misma-instancia-dos-BindingId",
+     "Expected": "NOT_ACCEPTED",
+     "Got": "NOT_ACCEPTED",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c13-5-PREFERRED-frente-a-REQUIRED",
+     "Expected": {
+      "PreferredUnmet": "ACCEPTABLE (registrado)",
+      "RequiredUnmet": "NOT_ACCEPTED (bloqueo)"
+     },
+     "Got": {
+      "PreferredUnmet": "ACCEPTABLE (registrado)",
+      "RequiredUnmet": "NOT_ACCEPTED (bloqueo)"
+     },
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c13-6-EXTERNAL-HUMAN-ajeno",
+     "Expected": "SATISFIED",
+     "Got": "SATISFIED",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c13-7-revisor-igual-al-primer-titular",
+     "Expected": "NOT_SATISFIED",
+     "Got": "NOT_SATISFIED",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c13-8-autor-no-establecible",
+     "Expected": "UNKNOWN",
+     "Got": "UNKNOWN",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c13-9-Controller-igual-Worker-de-SupersededCommits",
+     "Expected": "NOT_ACCEPTED",
+     "Got": "NOT_ACCEPTED",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c13-10-commit-anterior-a-la-unidad",
+     "Expected": "SATISFIED",
+     "Got": "SATISFIED",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c13-11-operador-humano-como-EXTERNAL-HUMAN",
+     "Expected": "NOT_SATISFIED",
+     "Got": "NOT_SATISFIED",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c13-SAME-SESSION-ROLE-no-basta-en-revision-mayor",
+     "Expected": "NOT_SATISFIED",
+     "Got": "NOT_SATISFIED",
+     "Verdict": "PASS"
+    }
+   ],
+   "Mutation": {
+    "Change": "(2) con el contexto compartido; (10) con el commit dentro de la unidad",
+    "GotUnderMutation": {
+     "2": "NOT_SATISFIED",
+     "10": "NOT_SATISFIED"
+    },
+    "Detected": true
+   },
+   "Anchors": {
+    "docs/automation/agent-execution/README.md :: ### 14.5 Evaluación de la independencia": true,
+    "docs/AUTOMATION_PLAN.md :: ### 16.21 Independencia por riesgo (I62)": true,
+    "docs/INITIATIVE_LIFECYCLE.md :: **Unidades I62 (materializado por I-62; inactivo hasta su vigencia, AUTOMATION_PLAN 16.14).**": true
+   },
+   "Verdict": "PASS"
+  },
+  "C-14": {
+   "Cases": [
+    {
+     "Case": "c14-1-dos-verificaciones-misma-entrega",
+     "Expected": {
+      "attempts": 0,
+      "per_class": {},
+      "blocked": {
+       "verificación": 1
+      },
+      "invocations": 2,
+      "final": "VERIFIED"
+     },
+     "Got": {
+      "attempts": 0,
+      "per_class": {},
+      "blocked": {
+       "verificación": 1
+      },
+      "invocations": 2,
+      "final": "VERIFIED"
+     },
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c14-2-correccion-sin-entrega",
+     "Expected": {
+      "attempts": 1,
+      "per_class": {
+       "Tests": 1
+      },
+      "blocked": {
+       "WORK": 1
+      },
+      "verification": "BLOCKED/BLOCKED"
+     },
+     "Got": {
+      "attempts": 1,
+      "per_class": {
+       "Tests": 1
+      },
+      "blocked": {
+       "WORK": 1
+      },
+      "verification": "BLOCKED/BLOCKED"
+     },
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c14-3-perdida-de-contexto-del-Controller",
+     "Expected": {
+      "stop": "STOP (S-12)",
+      "attempts": 0,
+      "blocked": {
+       "verificación": 1
+      }
+     },
+     "Got": {
+      "stop": "STOP (S-12)",
+      "attempts": 0,
+      "blocked": {
+       "verificación": 1
+      }
+     },
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c14-4-Routing-efectivo-distinto",
+     "Expected": {
+      "required": "BLOCKED/BLOCKED",
+      "advisory": "VERIFIED/NONE",
+      "required-no-observado": "BLOCKED/BLOCKED"
+     },
+     "Got": {
+      "required": "BLOCKED/BLOCKED",
+      "advisory": "VERIFIED/NONE",
+      "required-no-observado": "BLOCKED/BLOCKED"
+     },
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c14-5-handoff-otra-corrida-Identity-pass",
+     "Expected": {
+      "FailureClass": "Handoff",
+      "Classification": "REWORK_REQUIRED",
+      "Disposition": "REWORK"
+     },
+     "Got": {
+      "FailureClass": "Handoff",
+      "Classification": "REWORK_REQUIRED",
+      "Disposition": "REWORK"
+     },
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c14-6-handoff-otra-corrida-Identity-fail",
+     "Expected": {
+      "FailureClass": "Handoff",
+      "Classification": "BLOCKED",
+      "Disposition": "STOP"
+     },
+     "Got": {
+      "FailureClass": "Handoff",
+      "Classification": "BLOCKED",
+      "Disposition": "STOP"
+     },
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c14-7-turno-fallido",
+     "Expected": {
+      "FailureClass": "Termination",
+      "Classification": "BLOCKED",
+      "Disposition": "BLOCKED"
+     },
+     "Got": {
+      "FailureClass": "Termination",
+      "Classification": "BLOCKED",
+      "Disposition": "BLOCKED"
+     },
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c14-scope-sin-pertenencia",
+     "Expected": {
+      "comparacion-fallida": "not_run",
+      "sin-pertenencia": "not_run",
+      "fuera-de-alcance": "fail",
+      "con-pertenencia": "pass",
+      "verificacion-comparacion-fallida": "BLOCKED/STOP"
+     },
+     "Got": {
+      "comparacion-fallida": "not_run",
+      "sin-pertenencia": "not_run",
+      "fuera-de-alcance": "fail",
+      "con-pertenencia": "pass",
+      "verificacion-comparacion-fallida": "BLOCKED/STOP"
+     },
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c14-precedencia-STOP-sobre-REWORK",
+     "Expected": {
+      "FailureClass": "Identity",
+      "Classification": "BLOCKED",
+      "Disposition": "STOP"
+     },
+     "Got": {
+      "FailureClass": "Identity",
+      "Classification": "BLOCKED",
+      "Disposition": "STOP"
+     },
+     "Verdict": "PASS"
+    }
+   ],
+   "Mutation": {
+    "Change": "se intercambia la precedencia STOP > REWORK",
+    "Case": "c14-precedencia-STOP-sobre-REWORK",
+    "GotUnderMutation": {
+     "FailureClass": "Identity",
+     "Classification": "REWORK_REQUIRED",
+     "Disposition": "REWORK"
+    },
+    "Detected": true
+   },
+   "NotInF3": "G.2 filas 8-9 (R-1, R-2) necesitan state/v2 → C-15 (F4); 10-11 (resolver, PENDING_G0) → C-20c (F4); 12-27 (bucle y fidelidad) → C-29..C-42 (F4)",
+   "Note": "la regla de Scope es un control de procedimiento de F3 para unidades I62; no repara la deuda nc2 de I-64, que es una unidad I61",
+   "Anchors": {
+    "docs/automation/agent-execution/README.md :: ### 14.7 A1'-A8' y las comprobaciones de la verificación": true,
+    "docs/AUTOMATION_PLAN.md :: ### 16.22 Aceptación del paquete y comprobaciones de la verificación (I62)": true
+   },
+   "Verdict": "PASS"
+  },
+  "C-30": {
+   "Cases": [
+    {
+     "Case": "c30-a-binding-misma-sesion-que-el-autor",
+     "Expected": "REJECTED/P-10",
+     "Got": "REJECTED/P-10",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c30-b-insumos-con-la-transcripcion-del-autor",
+     "Expected": "REJECTED",
+     "Got": "REJECTED",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c30-c-sin-declaracion-de-contexto-inyectado",
+     "Expected": "INVALID/P-19",
+     "Got": "INVALID/P-19",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c30-d-binding-valido-alternativas-1-y-2",
+     "Expected": {
+      "ALT1 (vigente)": "SATISFIED",
+      "ALT2 (contrafactual)": "SATISFIED",
+      "invocacion": "ACCEPTED"
+     },
+     "Got": {
+      "ALT1 (vigente)": "SATISFIED",
+      "ALT2 (contrafactual)": "SATISFIED",
+      "invocacion": "ACCEPTED"
+     },
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c30-e-OutputContract-cruzado",
+     "Expected": {
+      "ARCHITECT+reviewer-result": "INVALID/P-19",
+      "REVIEWER+architect-review-result": "INVALID/P-19"
+     },
+     "Got": {
+      "ARCHITECT+reviewer-result": "INVALID/P-19",
+      "REVIEWER+architect-review-result": "INVALID/P-19"
+     },
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c30-f-sin-EffectiveInputClosure",
+     "Expected": "REJECTED",
+     "Got": "REJECTED",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c30-g-PLAN-con-controller-verification",
+     "Expected": "INVALID/P-19",
+     "Got": "INVALID/P-19",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c30-h-VERIFY-con-delegation",
+     "Expected": "INVALID/P-19",
+     "Got": "INVALID/P-19",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c30-i-PLAN-delegation-VERIFY-controller-verification",
+     "Expected": {
+      "PLAN": "ACCEPTED",
+      "VERIFY": "ACCEPTED"
+     },
+     "Got": {
+      "PLAN": "ACCEPTED",
+      "VERIFY": "ACCEPTED"
+     },
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c30-REVIEWER-no-satisface-al-ARCHITECT",
+     "Expected": "REJECTED/P-20",
+     "Got": "REJECTED/P-20",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c30-reviewer-result-con-Verdict",
+     "Expected": "schema rejects",
+     "Got": "schema rejects",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c30-resultado-architect-valido",
+     "Expected": "INGESTED",
+     "Got": "INGESTED",
+     "Verdict": "PASS"
+    }
+   ],
+   "Mutation": {
+    "Change": "se intercambia la fila PLAN/VERIFY de la correspondencia de 16.23",
+    "Case": "c30-i (PLAN)",
+    "GotUnderMutation": "INVALID/P-19",
+    "Detected": true
+   },
+   "NotInF3": "la ingestión dentro del bucle (estados, intentos, presupuestos) y C-41/C-42 → F4",
+   "SchemaValid": true,
+   "Anchors": {
+    "docs/automation/agent-execution/README.md :: ### 15.1 Construcción de la `RoleInvocation`": true,
+    "docs/automation/agent-execution/README.md :: ## 16. Validación de los resultados por rol (unidades I62)": true,
+    "docs/AUTOMATION_PLAN.md :: ### 16.23 Orquestación de roles (I62): invocación de rol y contratos de salida": true
+   },
+   "Verdict": "PASS"
+  },
+  "C-40": {
+   "Cases": [
+    {
+     "Case": "c40-a-Architect-nuevo-materializado",
+     "Expected": {
+      "criteria": true,
+      "binding": "ACCEPTED",
+      "reproduction": "ACCEPTED",
+      "DecisionRef": null
+     },
+     "Got": {
+      "criteria": true,
+      "binding": "ACCEPTED",
+      "reproduction": "ACCEPTED",
+      "DecisionRef": null
+     },
+     "Verdict": "PASS",
+     "Rules": []
+    },
+    {
+     "Case": "c40-b-capacidad-UNKNOWN",
+     "Expected": "rechazo sin invocación",
+     "Got": "rechazo sin invocación",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c40-b-effort-fuera-de-ModelEffortBounds",
+     "Expected": "rechazo sin invocación",
+     "Got": "rechazo sin invocación",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c40-b-misma-sesion-que-un-autor",
+     "Expected": "rechazo sin invocación",
+     "Got": "rechazo sin invocación",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c40-b-celda-fuera-de-EligibleCells",
+     "Expected": "rechazo sin invocación",
+     "Got": "rechazo sin invocación",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c40-b-permisos-de-escritura",
+     "Expected": "rechazo sin invocación",
+     "Got": "rechazo sin invocación",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c40-b-objeto-fuera-de-ObjectFamily",
+     "Expected": "rechazo sin invocación",
+     "Got": "rechazo sin invocación",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c40-b-autorizacion-revocada",
+     "Expected": "rechazo sin invocación",
+     "Got": "rechazo sin invocación",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c40-b-autorizacion-caducada",
+     "Expected": "rechazo sin invocación",
+     "Got": "rechazo sin invocación",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c40-c-ningun-candidato-satisface",
+     "Expected": {
+      "criterios": "STOP + COORDINATOR_DECISION",
+      "autenticacion": "STOP + ESCALATION_OWNER"
+     },
+     "Got": {
+      "criterios": "STOP + COORDINATOR_DECISION",
+      "autenticacion": "STOP + ESCALATION_OWNER"
+     },
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c40-d-DecisionRef-fabricado",
+     "Expected": "REJECTED/P-20",
+     "Got": "REJECTED/P-20",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c40-d-sin-AuthorizationRef",
+     "Expected": "REJECTED/P-20",
+     "Got": "REJECTED/P-20",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c40-d-AuthorizationRef-en-el-propio-commit",
+     "Expected": "REJECTED/P-20",
+     "Got": "REJECTED/P-20",
+     "Verdict": "PASS"
+    },
+    {
+     "Case": "c40-h-reutilizar-autorizacion-caducada",
+     "Expected": "rechazo",
+     "Got": "rechazo",
+     "Verdict": "PASS",
+     "Validity": "NOT_SATISFIED"
+    }
+   ],
+   "Mutation": {
+    "Change": "un criterio UNKNOWN se cuenta como SATISFIED",
+    "Case": "c40-b-capacidad-UNKNOWN",
+    "GotUnderMutation": "materializable",
+    "Detected": true
+   },
+   "NotInF3": "(e)-(g) e (i)-(n): vigencia de acción con intentos (LAUNCHING, LAUNCHED, CANCELLED_BEFORE_LAUNCH, LAUNCH_UNCERTAIN) → F4",
+   "SchemaValid": true,
+   "Anchors": {
+    "docs/automation/agent-execution/README.md :: ### 14.3 Materialización autorizada": true
+   },
+   "Verdict": "PASS"
+  }
+ },
+ "Summary": {
+  "C-11": "PASS",
+  "C-12": "PASS",
+  "C-13": "PASS",
+  "C-14": "PASS",
+  "C-30": "PASS",
+  "C-40": "PASS"
+ }
+}
