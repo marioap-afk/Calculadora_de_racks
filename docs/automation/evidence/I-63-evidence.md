@@ -2196,3 +2196,108 @@ config_toml_sha256: 091540ED2DE6CFAC5C12110337305FFCABCEEEE0D8CB696F7E04EA057F9F
 - **Estado:** G1, G2, G3 y G4 = PASS; gates funcionales completos; `attempts` 2/3.
 - **Siguiente:** `current_phase` = READY, aún no declarado.
   - La sesión prepara el plan de READY sin ejecutar cambios y vuelve para la autorización formal.
+
+## 53. Plan de READY (preparado, sin ejecutar)
+
+El cierre documental de G4 es `da4fe5ee` (corrida `push` 37253956168 `success` (cuatro jobs)). Punto de partida:
+- G1-G4 en PASS; `attempts` 2/3;
+- HEAD = remoto = `da4fe5ee`;
+- `origin/main` = `819955d6`, sin avance desde el reclamo.
+
+Nada de lo que sigue se ejecuta sin la autorización formal de READY.
+
+### 53.1 Bloque A — Deudas de pruebas y documentación de I-63
+
+Una sola A-n solo del Coordinator (A-4) de pruebas y documentación, sin cambio funcional. Cubre:
+
+- **DEBT-I63-G2-01:** `tests/RackCad.Tests/PushBackBomCommandGuardTests.cs:98-102`
+  (`ThePushBackHandler_ConsumesTheSharedGateAndNotASecondRule`). Exige el literal `RackBomOutputGate.For(system).Reason` en el texto de
+  `PushBackKindHandler.cs`, y hoy solo lo cumple un comentario XML.
+  - Propuesta: que la guarda lea el código sin comentarios, como `CantileverPluginSourceGuardTests` e INV-33, y que afirme la nueva
+    autoridad. Es decir, que el handler delegue en la función de Application (`RackOutputVerdict`) y no componga una segunda regla.
+  - La autoridad es INV-33; la guarda vieja queda como redundante o se retira explícitamente, según decida el Coordinator.
+  - RED natural: con la guarda leyendo el código sin comentarios, la aserción literal vigente falla. GREEN: la aserción contra la
+    delegación.
+  - Sin tocar el Plugin.
+- **DEBT-I63-G3-01:** comentario de `src/RackCad.Application/Expressions/ExpressionFormatter.cs` sobre `Rack.#{token}`.
+  - Hay que reescribirlo con el mecanismo de la A-3: para el oráculo, el lexer rechaza la clave como `InvalidQualifier`.
+  - Es solo un comentario: sin cambio de comportamiento, con `ExpressionCoreGuardTests` y las suites de INV-28 en verde.
+- **Ejecución propuesta:** una cadena I-61 corta (`READY-DEBTS`), con contrato de archivos exactos: la guarda legacy y
+  `ExpressionFormatter.cs` (solo comentario). RED → GREEN, CI 4/4 y comprobación mecánica de `Scope`.
+  - Es trabajo nuevo autorizado, no una corrección: no consume `attempts`.
+  - Si el Coordinator prefiere que lo haga la sesión directamente, AUTOMATION_PLAN §8-9 lo permite con CI exacta.
+- **DEBT-I63-PROTOCOL-01 en los prompts:** las plantillas de verificación de esa cadena no nombrarán el SHA de la entrega ni
+  presentarán hechos de la sesión como conclusiones.
+
+### 53.2 Bloque B — Deuda de protocolo de I-61 (DEBT-I63-PROTOCOL-01)
+
+- Es del protocolo, no del producto I-63. La entrada «Agent Execution Protocol» de FOUNDATIONS y los documentos normativos de I-61
+  (`docs/automation/agent-execution/README.md`, AUTOMATION_PLAN §16) no se editan desde I-63: un consumidor solo verifica.
+- **Propuesta:**
+  - registrarla en `docs/ideas-futuras.md` y en el HANDOFF del cierre, con DEV-G2-01 y DEV-I63-G4-02/03 como evidencia;
+  - tres reglas propuestas para el protocolo:
+    - el prompt no inyecta el `CurrentSha` esperado;
+    - `Scope` sale de la delegación verificada;
+    - `Identity` y `Scope` salen de campos parseados;
+  - el Coordinator decide si se avisa a la iniciativa dueña del protocolo (I-61 integrada; I-62 activa sobre el protocolo).
+
+### 53.3 Bloque C — Requisitos READY congelados
+
+- **Contrato de la iniciativa (READY-02):** la cabecera aún tiene `materiality: [UNKNOWN]` y `consumes`, `extends` e `introduces` en
+  `[UNKNOWN]`.
+  - La materialidad la fija la Proposal V3 §3: M-01 y M-04..M-08 activados; M-02 y M-03 no activados.
+  - `consumes`, `extends` e `introduces` no están escritos en el Freeze.
+  - Propuesta, para decisión del Coordinator sin inventar valores:
+    - `consumes`: el motor de expresiones de I-49 (ADR-0043) y Project Variables;
+    - `extends`: el núcleo del motor con el namespace `rack` (M-05);
+    - `introduces`: Computed Parameters / Project Summary (M-01, M-06, M-07).
+- **ADR (M-08; §23 y anexo A):** sucesor parcial de ADR-0043, con número asignado al integrar.
+  - La sesión redacta el ADR desde el anexo A, actualizado con lo integrado (A-1..A-3, D-16..D-21 tal como quedaron).
+  - El Architect de R1-R3 lo revisa. Queda aceptado con Architect + Coordinator.
+  - El número se fija en la integración para no colisionar con otras iniciativas activas.
+- **FOUNDATIONS (LIFECYCLE §4.1):** quien introduce o extiende redacta la entrada factual antes de READY-04.
+  - Propuesta: una entrada nueva, «Computed Parameters & Project Summary», con el esquema de entrada completo.
+    - Autoridad: `RackMetricRequest`, `ProjectPopulation`, `ProjectSummary` y la tabla D-28.
+    - Persistencia: ninguna.
+    - Contrato de mutación: solo lectura.
+    - Punto de extensión: providers por kind (D-08) y `RackComputedExpressionContext.Create` interno, con O-G3-4 para el primer
+      consumidor.
+    - Pruebas protectoras: `ComputedParameters*`.
+    - Limitaciones conocidas: O-G3-1..5, R-14 y la ausencia de consumidores productivos.
+  - Estado `STABLE` solo con el Freeze integrado. Se propone también revisar si la entrada «Project Variables» necesita nota de la
+    extensión del núcleo; I-63 solo la verifica.
+- **Owner Validation (READY-08):** NOT APPLICABLE, decidido en el Freeze (§22): sin UI, comandos ni cambios de dibujo.
+- **Documentos de cierre (WORKFLOW §5 y §8):**
+  - HANDOFF §8-12;
+  - `docs/ideas-futuras.md`: O-G3-1..5, O-G3-4 como obligación del primer consumidor, R-14 y DEBT-I63-PROTOCOL-01;
+  - ROADMAP: archivo caliente, con acuse de ventana de los escritores activos (I-52, I-62, I-64), según la estrategia de coordinación
+    del contrato.
+- **Secuencia READY-01..09 (LIFECYCLE §8), en orden:**
+  - 01: alcance congelado completo; los diferimientos O-G3-1..5 los decidió el Coordinator.
+  - 02: gates cerrados; Bloque A, ADR, FOUNDATIONS y documentos de producto versionados.
+  - 03: sin REQUIRED ni decisión pendiente.
+  - 04: fetch, preflight y, si `main` avanzó, rebase final (WORKFLOW).
+  - 05: suites Core y UI en local, builds de UI y Plugin, CI exact-SHA 4/4.
+  - 06: conformidad completa CONFORMING de Architect + Coordinator sobre ese SHA.
+  - 07: árbol limpio.
+  - 08: OV NOT APPLICABLE.
+  - 09: identidad del Freeze (`f61d0aca`, blob `4d5dedce`) y A-1..A-n append-only.
+  - Solo después, `FINAL_CANDIDATE_SHA` y la sesión de integración (WORKFLOW §4.5), que no forman parte de esta autorización.
+
+### 53.4 Preguntas para la autorización de READY
+
+- **Q-R-01:** ¿A-4 solo del Coordinator para DEBT-I63-G2-01 y DEBT-I63-G3-01? ¿Ejecutada como cadena I-61 corta o por la sesión
+  directamente?
+  - Para la guarda legacy: ¿reapuntarla a la delegación o retirarla en favor de INV-33?
+- **Q-R-02:** ¿Basta registrar DEBT-I63-PROTOCOL-01 en `ideas-futuras` y en el HANDOFF? ¿Se avisa a la iniciativa del protocolo?
+- **Q-R-03:** valores de `consumes`, `extends` e `introduces` del contrato; y la materialidad de la §3.
+- **Q-R-04:** ADR: ¿redacción por la sesión, revisión del mismo Architect y número al integrar?
+- **Q-R-05:** FOUNDATIONS: ¿una entrada nueva «Computed Parameters & Project Summary»?
+- **Q-R-06:** orden de ejecución propuesto:
+  - Bloque A;
+  - después ADR, FOUNDATIONS y documentos;
+  - READY-04 (rebase si hace falta);
+  - READY-05;
+  - conformidad READY-06 del Architect + Coordinator;
+  - READY-07..09;
+  - vuelta para el Candidato y la integración.
