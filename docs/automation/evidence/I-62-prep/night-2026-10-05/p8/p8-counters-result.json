@@ -1,0 +1,723 @@
+{
+ "Label": "EXPERIMENTAL — NOT AUTHORIZED FOR PRODUCTION",
+ "Script": "p8-counters-harness.py",
+ "Purpose": "dossier P8 para una A-2 futura (orden nocturna §7); nada se aplica; los perfiles de topes son fixtures de prueba",
+ "Profiles": [
+  {
+   "Name": "perfil de prueba A (no tope aprobado)",
+   "Global": 3,
+   "Gate": 3,
+   "Class": 3
+  },
+  {
+   "Name": "perfil de prueba B (no tope aprobado)",
+   "Global": 6,
+   "Gate": 2,
+   "Class": 3
+  }
+ ],
+ "V14Literal": {
+  "max_attempts": 3,
+  "class_cap": 3
+ },
+ "Scenarios": {
+  "p8-01-replica-i63-presupuesto-por-unidad": {
+   "Covers": [
+    "case",
+    "gates-independientes"
+   ],
+   "Note": "I-63: dos correcciones en G1 (Ci y Authority) dejan una sola para G2-G4 (evidencia §27, Q-G2-03, Q-G3-04)",
+   "Runs": {
+    "V14": {
+     "Expected": [
+      [],
+      [],
+      [],
+      [
+       "V14-S11"
+      ]
+     ],
+     "Got": [
+      [],
+      [],
+      [],
+      [
+       "V14-S11"
+      ]
+     ],
+     "Result": "PASS"
+    },
+    "perfil de prueba A (no tope aprobado)": {
+     "Expected": [
+      [],
+      [],
+      [],
+      [
+       "P8-G"
+      ]
+     ],
+     "Got": [
+      [],
+      [],
+      [],
+      [
+       "P8-G"
+      ]
+     ],
+     "Result": "PASS"
+    },
+    "perfil de prueba B (no tope aprobado)": {
+     "Expected": [
+      [],
+      [],
+      [],
+      []
+     ],
+     "Got": [
+      [],
+      [],
+      [],
+      []
+     ],
+     "Result": "PASS"
+    }
+   }
+  },
+  "p8-02-gates-independientes": {
+   "Covers": [
+    "gates-independientes"
+   ],
+   "Note": "con un techo global mayor que el local, el agotamiento de un gate no consume el presupuesto local de otro",
+   "Runs": {
+    "V14": {
+     "Expected": [
+      [],
+      [],
+      [],
+      [
+       "V14-S11"
+      ]
+     ],
+     "Got": [
+      [],
+      [],
+      [],
+      [
+       "V14-S11"
+      ]
+     ],
+     "Result": "PASS"
+    },
+    "perfil de prueba A (no tope aprobado)": {
+     "Expected": [
+      [],
+      [],
+      [],
+      [
+       "P8-G"
+      ]
+     ],
+     "Got": [
+      [],
+      [],
+      [],
+      [
+       "P8-G"
+      ]
+     ],
+     "Result": "PASS"
+    },
+    "perfil de prueba B (no tope aprobado)": {
+     "Expected": [
+      [],
+      [],
+      [
+       "P8-LG"
+      ],
+      []
+     ],
+     "Got": [
+      [],
+      [],
+      [
+       "P8-LG"
+      ],
+      []
+     ],
+     "Result": "PASS"
+    }
+   }
+  },
+  "p8-03a-mismo-defecto-con-otro-TaskId-sin-continuidad": {
+   "Covers": [
+    "renombre",
+    "mismo-defecto"
+   ],
+   "Note": "el literal solo hereda con ContinuesTaskId declarado; el propuesto detecta el linaje del defecto",
+   "Runs": {
+    "V14": {
+     "Expected": [
+      [],
+      [],
+      []
+     ],
+     "Got": [
+      [],
+      [],
+      []
+     ],
+     "Result": "PASS"
+    },
+    "perfil de prueba A (no tope aprobado)": {
+     "Expected": [
+      [],
+      [],
+      [
+       "P8-R1"
+      ]
+     ],
+     "Got": [
+      [],
+      [],
+      [
+       "P8-R1"
+      ]
+     ],
+     "Result": "PASS"
+    },
+    "perfil de prueba B (no tope aprobado)": {
+     "Expected": [
+      [],
+      [],
+      [
+       "P8-LG",
+       "P8-R1"
+      ]
+     ],
+     "Got": [
+      [],
+      [],
+      [
+       "P8-LG",
+       "P8-R1"
+      ]
+     ],
+     "Result": "PASS"
+    }
+   }
+  },
+  "p8-03b-mismo-defecto-con-continuidad-declarada": {
+   "Covers": [
+    "renombre",
+    "mismo-defecto"
+   ],
+   "Note": "",
+   "Runs": {
+    "V14": {
+     "Expected": [
+      [],
+      [],
+      [],
+      [
+       "V14-CLASS",
+       "V14-S11"
+      ]
+     ],
+     "Got": [
+      [],
+      [],
+      [],
+      [
+       "V14-CLASS",
+       "V14-S11"
+      ]
+     ],
+     "Result": "PASS"
+    },
+    "perfil de prueba A (no tope aprobado)": {
+     "Expected": [
+      [],
+      [],
+      [],
+      [
+       "P8-G",
+       "P8-LC",
+       "P8-LG"
+      ]
+     ],
+     "Got": [
+      [],
+      [],
+      [],
+      [
+       "P8-G",
+       "P8-LC",
+       "P8-LG"
+      ]
+     ],
+     "Result": "PASS"
+    },
+    "perfil de prueba B (no tope aprobado)": {
+     "Expected": [
+      [],
+      [],
+      [
+       "P8-LG"
+      ],
+      [
+       "P8-LG"
+      ]
+     ],
+     "Got": [
+      [],
+      [],
+      [
+       "P8-LG"
+      ],
+      [
+       "P8-LG"
+      ]
+     ],
+     "Result": "PASS"
+    }
+   }
+  },
+  "p8-04-cambio-de-modelo-y-sesion": {
+   "Covers": [
+    "modelo-sesion"
+   ],
+   "Note": "",
+   "Runs": {
+    "V14": {
+     "Expected": [
+      [],
+      [],
+      [],
+      [
+       "V14-CLASS",
+       "V14-S11"
+      ]
+     ],
+     "Got": [
+      [],
+      [],
+      [],
+      [
+       "V14-CLASS",
+       "V14-S11"
+      ]
+     ],
+     "Result": "PASS"
+    },
+    "perfil de prueba A (no tope aprobado)": {
+     "Expected": [
+      [],
+      [],
+      [],
+      [
+       "P8-G",
+       "P8-LC",
+       "P8-LG"
+      ]
+     ],
+     "Got": [
+      [],
+      [],
+      [],
+      [
+       "P8-G",
+       "P8-LC",
+       "P8-LG"
+      ]
+     ],
+     "Result": "PASS"
+    },
+    "perfil de prueba B (no tope aprobado)": {
+     "Expected": [
+      [],
+      [],
+      [
+       "P8-LG"
+      ],
+      [
+       "P8-LG"
+      ]
+     ],
+     "Got": [
+      [],
+      [],
+      [
+       "P8-LG"
+      ],
+      [
+       "P8-LG"
+      ]
+     ],
+     "Result": "PASS"
+    }
+   }
+  },
+  "p8-05-reinicio-del-proceso": {
+   "Covers": [
+    "reinicio"
+   ],
+   "Note": "los contadores salen del registro durable; reiniciar no cambia ninguna decisión",
+   "Runs": {
+    "V14": {
+     "Expected": [
+      [],
+      [],
+      [],
+      []
+     ],
+     "Got": [
+      [],
+      [],
+      [],
+      []
+     ],
+     "Result": "PASS"
+    },
+    "perfil de prueba A (no tope aprobado)": {
+     "Expected": [
+      [],
+      [],
+      [],
+      []
+     ],
+     "Got": [
+      [],
+      [],
+      [],
+      []
+     ],
+     "Result": "PASS"
+    },
+    "perfil de prueba B (no tope aprobado)": {
+     "Expected": [
+      [],
+      [],
+      [],
+      [
+       "P8-LG"
+      ]
+     ],
+     "Got": [
+      [],
+      [],
+      [],
+      [
+       "P8-LG"
+      ]
+     ],
+     "Result": "PASS"
+    }
+   }
+  },
+  "p8-06-contador-desconocido": {
+   "Covers": [
+    "desconocido"
+   ],
+   "Note": "una unidad migrada sin historia por gate falla cerrada hasta reconstruirla con evidencia",
+   "Runs": {
+    "V14": {
+     "Expected": [
+      [],
+      [],
+      [],
+      [],
+      []
+     ],
+     "Got": [
+      [],
+      [],
+      [],
+      [],
+      []
+     ],
+     "Result": "PASS"
+    },
+    "perfil de prueba A (no tope aprobado)": {
+     "Expected": [
+      [],
+      [
+       "P8-U"
+      ],
+      [],
+      [],
+      []
+     ],
+     "Got": [
+      [],
+      [
+       "P8-U"
+      ],
+      [],
+      [],
+      []
+     ],
+     "Result": "PASS"
+    },
+    "perfil de prueba B (no tope aprobado)": {
+     "Expected": [
+      [],
+      [
+       "P8-U"
+      ],
+      [],
+      [],
+      []
+     ],
+     "Got": [
+      [],
+      [
+       "P8-U"
+      ],
+      [],
+      [],
+      []
+     ],
+     "Result": "PASS"
+    }
+   }
+  },
+  "p8-07-techo-global-agotado": {
+   "Covers": [
+    "techo-global"
+   ],
+   "Note": "",
+   "Runs": {
+    "V14": {
+     "Expected": [
+      [],
+      [],
+      [],
+      [
+       "V14-S11"
+      ],
+      [
+       "V14-S11"
+      ],
+      [
+       "V14-S11"
+      ],
+      [
+       "V14-S11"
+      ]
+     ],
+     "Got": [
+      [],
+      [],
+      [],
+      [
+       "V14-S11"
+      ],
+      [
+       "V14-S11"
+      ],
+      [
+       "V14-S11"
+      ],
+      [
+       "V14-S11"
+      ]
+     ],
+     "Result": "PASS"
+    },
+    "perfil de prueba A (no tope aprobado)": {
+     "Expected": [
+      [],
+      [],
+      [],
+      [
+       "P8-G"
+      ],
+      [
+       "P8-G"
+      ],
+      [
+       "P8-G"
+      ],
+      [
+       "P8-G"
+      ]
+     ],
+     "Got": [
+      [],
+      [],
+      [],
+      [
+       "P8-G"
+      ],
+      [
+       "P8-G"
+      ],
+      [
+       "P8-G"
+      ],
+      [
+       "P8-G"
+      ]
+     ],
+     "Result": "PASS"
+    },
+    "perfil de prueba B (no tope aprobado)": {
+     "Expected": [
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [
+       "P8-G"
+      ]
+     ],
+     "Got": [
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [
+       "P8-G"
+      ]
+     ],
+     "Result": "PASS"
+    }
+   }
+  },
+  "p8-08-renombre-de-gate": {
+   "Covers": [
+    "renombre"
+   ],
+   "Note": "el gate se identifica por su linaje de contrato; renombrarlo no abre presupuesto",
+   "Runs": {
+    "V14": {
+     "Expected": [
+      [],
+      [],
+      [],
+      []
+     ],
+     "Got": [
+      [],
+      [],
+      [],
+      []
+     ],
+     "Result": "PASS"
+    },
+    "perfil de prueba A (no tope aprobado)": {
+     "Expected": [
+      [],
+      [],
+      [],
+      []
+     ],
+     "Got": [
+      [],
+      [],
+      [],
+      []
+     ],
+     "Result": "PASS"
+    },
+    "perfil de prueba B (no tope aprobado)": {
+     "Expected": [
+      [],
+      [],
+      [],
+      [
+       "P8-LG"
+      ]
+     ],
+     "Got": [
+      [],
+      [],
+      [],
+      [
+       "P8-LG"
+      ]
+     ],
+     "Result": "PASS"
+    }
+   }
+  },
+  "p8-09-rondas-de-revision-no-cuentan": {
+   "Covers": [
+    "revision-separada"
+   ],
+   "Note": "las rondas del bucle de revisión (A-1) son otra familia de presupuesto",
+   "Runs": {
+    "V14": {
+     "Expected": [
+      [],
+      [],
+      [],
+      []
+     ],
+     "Got": [
+      [],
+      [],
+      [],
+      []
+     ],
+     "Result": "PASS"
+    },
+    "perfil de prueba A (no tope aprobado)": {
+     "Expected": [
+      [],
+      [],
+      [],
+      []
+     ],
+     "Got": [
+      [],
+      [],
+      [],
+      []
+     ],
+     "Result": "PASS"
+    },
+    "perfil de prueba B (no tope aprobado)": {
+     "Expected": [
+      [],
+      [],
+      [],
+      []
+     ],
+     "Got": [
+      [],
+      [],
+      [],
+      []
+     ],
+     "Result": "PASS"
+    }
+   }
+  }
+ },
+ "Covers": [
+  "case",
+  "desconocido",
+  "gates-independientes",
+  "mismo-defecto",
+  "modelo-sesion",
+  "reinicio",
+  "renombre",
+  "revision-separada",
+  "techo-global"
+ ],
+ "RulesExercised": [
+  "P8-G",
+  "P8-LC",
+  "P8-LG",
+  "P8-R1",
+  "P8-U",
+  "V14-CLASS",
+  "V14-S11"
+ ],
+ "AllAsExpected": true
+}

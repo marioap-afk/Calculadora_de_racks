@@ -2035,3 +2035,23 @@ CI de la custodia de la revisión formal, `1614908d37e0e5bb56d8ddf8e677551527833
   - preflight de Read 3/3 fiel (108 líneas).
 - **Lanzamiento:** HUMAN_LAUNCH_REQUIRED. La tarea de la app `task_7b4dd3ee` se creó una sola vez; la sesión no la lanza.
 - **Límites:** sin veredicto ni acreditación. La segunda invocación que permite la orden queda sin usar.
+
+## 46. Dossiers P4 y P8 para una A-2 futura (orden nocturna §7; sin aplicar)
+
+CI de la custodia del kit v3, `ff424a483e5ee0ffd1d37493bab4e98aed633d70`: corrida **37273621297**, push, head_sha exacto, cuatro jobs en `success`.
+
+| Dossier | Caso de I-63 reproducido | Prototipo (EXPERIMENTAL — NOT AUTHORIZED FOR PRODUCTION) | Resultado (MEASURED) |
+|---|---|---|---|
+| [P4](I-62-prep/night-2026-10-05/p4-dossier.md): `VerificationTargetSha` / `CustodyHeadSha` | §51.1: custodia `7bd5a743` sobre el GREEN `4f45f446` (CI 37085650331 medida con `gh`); §61.4: cierre `3c5019bf` sobre el Candidato `55a66b3c` | `p4/p4-custody-harness.py`: repositorios Git desechables, regla literal de 16.1 y §8.5 frente a la propuesta | 20 escenarios sintéticos y 2 reales, todos con el resultado esperado; 10 contraejemplos en los que 16.1 admite y la propuesta bloquea; 12 reglas ejercitadas; dos corridas con el mismo SHA-256 |
+| [P8](I-62-prep/night-2026-10-05/p8-dossier.md): granularidad de los reintentos | §27, §35 (Q-G2-03), §39 (Q-G3-04): `attempts` 2/3 tras G1 | `p8/p8-counters-harness.py`: contadores global, por gate y por clase, con linaje del defecto | 10 escenarios × 3 validadores (literal y dos perfiles de prueba), todos PASS; 7 reglas ejercitadas; ningún tope elegido |
+
+**Hallazgo de P4.** 16.9 #5 exige HEAD = `CurrentSha`, y 16.1 admite commits de la sesión por prefijo del diff final. En I-63, la reverificación de la
+misma entrega con custodia encima obligó al Controller a improvisar una excepción. Además, la regla por prefijo admite:
+- un cambio y reversión de producción;
+- una autoridad normativa bajo `docs/automation/`;
+- un renombre de producción hacia la custodia;
+- un enlace simbólico;
+- una cabeza que no desciende del SHA verificado.
+
+**Límites.** Son propuestas para una A-2 que nadie ha acordado. No se consumió ni se declaró A-2, y nada se aplicó a V14, al Freeze, a `/v1`, a I-61 ni a
+I-63.

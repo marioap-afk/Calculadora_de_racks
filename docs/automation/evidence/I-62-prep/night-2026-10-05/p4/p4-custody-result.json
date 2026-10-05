@@ -1,0 +1,597 @@
+{
+ "Label": "EXPERIMENTAL — NOT AUTHORIZED FOR PRODUCTION",
+ "Script": "p4-custody-harness.py",
+ "Purpose": "dossier P4 para una A-2 futura (orden nocturna §7); nada se aplica",
+ "Git": "git version 2.54.0.windows.1",
+ "Synthetic": {
+  "p4-01-replica-i63-custodia-solo-docs": {
+   "Covers": [
+    "case"
+   ],
+   "Note": "réplica sintética de I-63 §51.1: custodia de docs sobre el GREEN",
+   "V14Literal": {
+    "Expected": [],
+    "Got": [],
+    "Verdict": "ALLOWED"
+   },
+   "P4Proposed": {
+    "Expected": [],
+    "Got": [],
+    "Verdict": "ALLOWED",
+    "CustodyCommits": 1
+   },
+   "Delta": "same",
+   "Result": "PASS"
+  },
+  "p4-01b-sin-custodia-Y-igual-a-X": {
+   "Covers": [
+    "case"
+   ],
+   "Note": "rango vacío: la excepción no hace falta",
+   "V14Literal": {
+    "Expected": [],
+    "Got": [],
+    "Verdict": "ALLOWED"
+   },
+   "P4Proposed": {
+    "Expected": [],
+    "Got": [],
+    "Verdict": "ALLOWED",
+    "CustodyCommits": 0
+   },
+   "Delta": "same",
+   "Result": "PASS"
+  },
+  "p4-02-cambia-y-revierte-produccion": {
+   "Covers": [
+    "revert"
+   ],
+   "Note": "el diff final parece vacío en src/",
+   "V14Literal": {
+    "Expected": [],
+    "Got": [],
+    "Verdict": "ALLOWED"
+   },
+   "P4Proposed": {
+    "Expected": [
+     "P4-P1",
+     "P4-P2"
+    ],
+    "Got": [
+     "P4-P1",
+     "P4-P2"
+    ],
+    "Verdict": "BLOCKED",
+    "CustodyCommits": 3
+   },
+   "Delta": "V14 ALLOWED / P4 BLOCKED",
+   "Result": "PASS"
+  },
+  "p4-03-autoridad-normativa-bajo-docs-automation": {
+   "Covers": [
+    "normative"
+   ],
+   "Note": "16.1 lo admite por prefijo",
+   "V14Literal": {
+    "Expected": [],
+    "Got": [],
+    "Verdict": "ALLOWED"
+   },
+   "P4Proposed": {
+    "Expected": [
+     "P4-N1",
+     "P4-P1"
+    ],
+    "Got": [
+     "P4-N1",
+     "P4-P1"
+    ],
+    "Verdict": "BLOCKED",
+    "CustodyCommits": 1
+   },
+   "Delta": "V14 ALLOWED / P4 BLOCKED",
+   "Result": "PASS"
+  },
+  "p4-04-md-bajo-src": {
+   "Covers": [
+    "md"
+   ],
+   "Note": "terminar en .md no basta",
+   "V14Literal": {
+    "Expected": [
+     "V14-PREFIX"
+    ],
+    "Got": [
+     "V14-PREFIX"
+    ],
+    "Verdict": "BLOCKED"
+   },
+   "P4Proposed": {
+    "Expected": [
+     "P4-P1",
+     "P4-P2"
+    ],
+    "Got": [
+     "P4-P1",
+     "P4-P2"
+    ],
+    "Verdict": "BLOCKED",
+    "CustodyCommits": 1
+   },
+   "Delta": "same",
+   "Result": "PASS"
+  },
+  "p4-04b-md-normativo-fuera-de-la-custodia": {
+   "Covers": [
+    "md",
+    "normative"
+   ],
+   "Note": "",
+   "V14Literal": {
+    "Expected": [
+     "V14-PREFIX"
+    ],
+    "Got": [
+     "V14-PREFIX"
+    ],
+    "Verdict": "BLOCKED"
+   },
+   "P4Proposed": {
+    "Expected": [
+     "P4-N1",
+     "P4-P1"
+    ],
+    "Got": [
+     "P4-N1",
+     "P4-P1"
+    ],
+    "Verdict": "BLOCKED",
+    "CustodyCommits": 1
+   },
+   "Delta": "same",
+   "Result": "PASS"
+  },
+  "p4-05-Y-no-desciende-de-X": {
+   "Covers": [
+    "descent"
+   ],
+   "Note": "mismo árbol funcional, otra historia",
+   "V14Literal": {
+    "Expected": [],
+    "Got": [],
+    "Verdict": "ALLOWED"
+   },
+   "P4Proposed": {
+    "Expected": [
+     "P4-D1"
+    ],
+    "Got": [
+     "P4-D1"
+    ],
+    "Verdict": "BLOCKED",
+    "CustodyCommits": null
+   },
+   "Delta": "V14 ALLOWED / P4 BLOCKED",
+   "Result": "PASS"
+  },
+  "p4-06-merge-dentro-del-rango": {
+   "Covers": [
+    "linear"
+   ],
+   "Note": "la rama lateral solo trae custodia, pero no es lineal y su commit lleva el árbol funcional anterior a X",
+   "V14Literal": {
+    "Expected": [],
+    "Got": [],
+    "Verdict": "ALLOWED"
+   },
+   "P4Proposed": {
+    "Expected": [
+     "P4-D2",
+     "P4-P2"
+    ],
+    "Got": [
+     "P4-D2",
+     "P4-P2"
+    ],
+    "Verdict": "BLOCKED",
+    "CustodyCommits": 3
+   },
+   "Delta": "V14 ALLOWED / P4 BLOCKED",
+   "Result": "PASS"
+  },
+  "p4-07-configuracion-relevante": {
+   "Covers": [
+    "config"
+   ],
+   "Note": "",
+   "V14Literal": {
+    "Expected": [
+     "V14-PREFIX"
+    ],
+    "Got": [
+     "V14-PREFIX"
+    ],
+    "Verdict": "BLOCKED"
+   },
+   "P4Proposed": {
+    "Expected": [
+     "P4-N1",
+     "P4-P1"
+    ],
+    "Got": [
+     "P4-N1",
+     "P4-P1"
+    ],
+    "Verdict": "BLOCKED",
+    "CustodyCommits": 1
+   },
+   "Delta": "same",
+   "Result": "PASS"
+  },
+  "p4-08-objetivo-solo-en-el-prompt": {
+   "Covers": [
+    "P1"
+   ],
+   "Note": "la entrega no trae CurrentSha; el validador literal usa el SHA del prompt",
+   "V14Literal": {
+    "Expected": [],
+    "Got": [],
+    "Verdict": "ALLOWED"
+   },
+   "P4Proposed": {
+    "Expected": [
+     "P4-T1"
+    ],
+    "Got": [
+     "P4-T1"
+    ],
+    "Verdict": "BLOCKED",
+    "CustodyCommits": null
+   },
+   "Delta": "V14 ALLOWED / P4 BLOCKED",
+   "Result": "PASS"
+  },
+  "p4-09-objetivo-inexistente": {
+   "Covers": [
+    "P1"
+   ],
+   "Note": "nc1 de I-63 G4: CurrentSha mutado a un SHA inexistente",
+   "V14Literal": {
+    "Expected": [],
+    "Got": [],
+    "Verdict": "ALLOWED"
+   },
+   "P4Proposed": {
+    "Expected": [
+     "P4-T2"
+    ],
+    "Got": [
+     "P4-T2"
+    ],
+    "Verdict": "BLOCKED",
+    "CustodyCommits": null
+   },
+   "Delta": "V14 ALLOWED / P4 BLOCKED",
+   "Result": "PASS"
+  },
+  "p4-10-ci-solo-en-la-cabeza-de-custodia": {
+   "Covers": [
+    "ci"
+   ],
+   "Note": "la CI de Y es salud de custodia, no evidencia de X",
+   "V14Literal": {
+    "Expected": [
+     "V14-CI"
+    ],
+    "Got": [
+     "V14-CI"
+    ],
+    "Verdict": "BLOCKED"
+   },
+   "P4Proposed": {
+    "Expected": [
+     "P4-C1"
+    ],
+    "Got": [
+     "P4-C1"
+    ],
+    "Verdict": "BLOCKED",
+    "CustodyCommits": 1
+   },
+   "Delta": "same",
+   "Result": "PASS"
+  },
+  "p4-11a-rebase-con-mapa-ci-solo-en-X": {
+   "Covers": [
+    "rebase",
+    "ci"
+   ],
+   "Note": "la identidad de la CI no se traslada a la imagen (16.7 ya lo exige: Ci usa la corrida de CurrentSha')",
+   "V14Literal": {
+    "Expected": [
+     "V14-CI"
+    ],
+    "Got": [
+     "V14-CI"
+    ],
+    "Verdict": "BLOCKED"
+   },
+   "P4Proposed": {
+    "Expected": [
+     "P4-C1"
+    ],
+    "Got": [
+     "P4-C1"
+    ],
+    "Verdict": "BLOCKED",
+    "CustodyCommits": 1
+   },
+   "Delta": "same",
+   "Result": "PASS"
+  },
+  "p4-11b-rebase-con-mapa-ci-en-la-imagen": {
+   "Covers": [
+    "rebase"
+   ],
+   "Note": "",
+   "V14Literal": {
+    "Expected": [],
+    "Got": [],
+    "Verdict": "ALLOWED"
+   },
+   "P4Proposed": {
+    "Expected": [],
+    "Got": [],
+    "Verdict": "ALLOWED",
+    "CustodyCommits": 1
+   },
+   "Delta": "same",
+   "Result": "PASS"
+  },
+  "p4-12-rebase-sin-mapa": {
+   "Covers": [
+    "rebase",
+    "map"
+   ],
+   "Note": "sin mapa custodiado la imagen no es el objetivo verificado",
+   "V14Literal": {
+    "Expected": [
+     "V14-PREFIX"
+    ],
+    "Got": [
+     "V14-PREFIX"
+    ],
+    "Verdict": "BLOCKED"
+   },
+   "P4Proposed": {
+    "Expected": [
+     "P4-T2"
+    ],
+    "Got": [
+     "P4-T2"
+    ],
+    "Verdict": "BLOCKED",
+    "CustodyCommits": null
+   },
+   "Delta": "same",
+   "Result": "PASS"
+  },
+  "p4-13-renombre-de-produccion-hacia-la-custodia": {
+   "Covers": [
+    "rename"
+   ],
+   "Note": "git diff --name-only con detección de renombres solo muestra el destino",
+   "V14Literal": {
+    "Expected": [],
+    "Got": [],
+    "Verdict": "ALLOWED"
+   },
+   "P4Proposed": {
+    "Expected": [
+     "P4-P1",
+     "P4-P2"
+    ],
+    "Got": [
+     "P4-P1",
+     "P4-P2"
+    ],
+    "Verdict": "BLOCKED",
+    "CustodyCommits": 1
+   },
+   "Delta": "V14 ALLOWED / P4 BLOCKED",
+   "Result": "PASS"
+  },
+  "p4-14-borrado-de-prueba": {
+   "Covers": [
+    "delete"
+   ],
+   "Note": "",
+   "V14Literal": {
+    "Expected": [
+     "V14-PREFIX"
+    ],
+    "Got": [
+     "V14-PREFIX"
+    ],
+    "Verdict": "BLOCKED"
+   },
+   "P4Proposed": {
+    "Expected": [
+     "P4-P1",
+     "P4-P2"
+    ],
+    "Got": [
+     "P4-P1",
+     "P4-P2"
+    ],
+    "Verdict": "BLOCKED",
+    "CustodyCommits": 1
+   },
+   "Delta": "same",
+   "Result": "PASS"
+  },
+  "p4-15-enlace-simbolico-en-la-custodia": {
+   "Covers": [
+    "non-regular"
+   ],
+   "Note": "",
+   "V14Literal": {
+    "Expected": [],
+    "Got": [],
+    "Verdict": "ALLOWED"
+   },
+   "P4Proposed": {
+    "Expected": [
+     "P4-P3"
+    ],
+    "Got": [
+     "P4-P3"
+    ],
+    "Verdict": "BLOCKED",
+    "CustodyCommits": 1
+   },
+   "Delta": "V14 ALLOWED / P4 BLOCKED",
+   "Result": "PASS"
+  },
+  "p4-16-sin-mapa-de-custodia": {
+   "Covers": [
+    "map"
+   ],
+   "Note": "",
+   "V14Literal": {
+    "Expected": [],
+    "Got": [],
+    "Verdict": "ALLOWED"
+   },
+   "P4Proposed": {
+    "Expected": [
+     "P4-M0"
+    ],
+    "Got": [
+     "P4-M0"
+    ],
+    "Verdict": "BLOCKED",
+    "CustodyCommits": null
+   },
+   "Delta": "V14 ALLOWED / P4 BLOCKED",
+   "Result": "PASS"
+  },
+  "p4-17-documento-de-la-unidad-fuera-del-mapa": {
+   "Covers": [
+    "map"
+   ],
+   "Note": "16.1 admite los documentos de la unidad; el mapa propuesto los enumera y este no figura",
+   "V14Literal": {
+    "Expected": [],
+    "Got": [],
+    "Verdict": "ALLOWED"
+   },
+   "P4Proposed": {
+    "Expected": [
+     "P4-P1"
+    ],
+    "Got": [
+     "P4-P1"
+    ],
+    "Verdict": "BLOCKED",
+    "CustodyCommits": 1
+   },
+   "Delta": "V14 ALLOWED / P4 BLOCKED",
+   "Result": "PASS"
+  }
+ },
+ "Real": [
+  {
+   "Name": "real-i63-g4-custodia-7bd5a743-sobre-green-4f45f446",
+   "Source": "I-63 evidencia §51.1; worker-handoff.json del run R20261003T005720Z-2b14",
+   "X": "4f45f4464f5d434f7fa478fea1117d82283ee997",
+   "Y": "7bd5a7438c9327b82203ae77d0312104c07509bb",
+   "V14Literal": [],
+   "P4Proposed": [],
+   "Facts": {
+    "VerificationTargetSha": "4f45f4464f5d434f7fa478fea1117d82283ee997",
+    "EffectiveTarget": "4f45f4464f5d434f7fa478fea1117d82283ee997",
+    "CustodyHeadSha": "7bd5a7438c9327b82203ae77d0312104c07509bb",
+    "CustodyCommits": 1,
+    "CustodyHealth": [],
+    "EvidenceSha": "4f45f4464f5d434f7fa478fea1117d82283ee997"
+   },
+   "Expected": {
+    "V14Literal": [],
+    "P4Proposed": []
+   }
+  },
+  {
+   "Name": "real-i63-cierre-3c5019bf-sobre-candidato-55a66b3c (informativo)",
+   "Source": "tag integration/I-63; WORKFLOW §11.5: el cierre tiene su propia CI y nunca sustituye la del Candidato",
+   "X": "55a66b3c412fa63a445dc1985977ad660ea72dd7",
+   "Y": "3c5019bf5fd31de73c3c65675e17c8a2ec9b9362",
+   "V14Literal": [
+    "V14-PREFIX"
+   ],
+   "P4Proposed": [
+    "P4-P1"
+   ],
+   "Facts": {
+    "VerificationTargetSha": "55a66b3c412fa63a445dc1985977ad660ea72dd7",
+    "EffectiveTarget": "55a66b3c412fa63a445dc1985977ad660ea72dd7",
+    "CustodyHeadSha": "3c5019bf5fd31de73c3c65675e17c8a2ec9b9362",
+    "CustodyCommits": 1,
+    "CustodyHealth": [],
+    "EvidenceSha": "55a66b3c412fa63a445dc1985977ad660ea72dd7"
+   },
+   "Expected": {
+    "V14Literal": [
+     "V14-PREFIX"
+    ],
+    "P4Proposed": [
+     "P4-P1"
+    ]
+   },
+   "Reading": "el cierre de integración no es custodia de gate: lo rige WORKFLOW §11.5 y no esta excepción"
+  }
+ ],
+ "Covers": [
+  "P1",
+  "case",
+  "ci",
+  "config",
+  "delete",
+  "descent",
+  "linear",
+  "map",
+  "md",
+  "non-regular",
+  "normative",
+  "rebase",
+  "rename",
+  "revert"
+ ],
+ "RulesExercised": [
+  "P4-C1",
+  "P4-D1",
+  "P4-D2",
+  "P4-M0",
+  "P4-N1",
+  "P4-P1",
+  "P4-P2",
+  "P4-P3",
+  "P4-T1",
+  "P4-T2",
+  "V14-CI",
+  "V14-PREFIX"
+ ],
+ "Deltas": [
+  "p4-02-cambia-y-revierte-produccion",
+  "p4-03-autoridad-normativa-bajo-docs-automation",
+  "p4-05-Y-no-desciende-de-X",
+  "p4-06-merge-dentro-del-rango",
+  "p4-08-objetivo-solo-en-el-prompt",
+  "p4-09-objetivo-inexistente",
+  "p4-13-renombre-de-produccion-hacia-la-custodia",
+  "p4-15-enlace-simbolico-en-la-custodia",
+  "p4-16-sin-mapa-de-custodia",
+  "p4-17-documento-de-la-unidad-fuera-del-mapa"
+ ],
+ "AllAsExpected": true
+}
