@@ -700,6 +700,45 @@ namespace RackCad.Tests
                 }
             }
 
+            // P-19 and §20.5.2: a lineage opens only from a finding of a VALID result ingested in this pair (a COORDINATOR lineage, from a decision);
+            // an invalid or incomplete output never changes the lineage.
+            foreach (var f in nfind.Where(f => !pfind.ContainsKey(Y.S(f, "lineage_id")!)))
+            {
+                var lid = Y.S(f, "lineage_id");
+                if (Y.S(f, "issuer") == "COORDINATOR")
+                {
+                    add(IsDecisionsRef(f["opened_in"]), lid + ": a COORDINATOR lineage opened without a decision", "P-19");
+                    continue;
+                }
+
+                var source = ingestedNow.FirstOrDefault(x => YamlSubset.DeepEquals(x.Attempt["result"], f["opened_in"]));
+                var result = source.Attempt == null ? null : Result(n, source.Attempt);
+                var reported = new[] { "RequiredFindings", "OptionalFindings", "Findings" }
+                    .SelectMany(k => (result?[k] as JsonArray)?.OfType<JsonObject>().Select(o => J.S(o, "FindingId")) ?? Enumerable.Empty<string?>())
+                    .OfType<string>().ToHashSet();
+                add(source.Attempt != null && Y.S(source.Attempt, "outcome") == "VALID" && Y.L(f, "finding_ids").Cast<string>().All(reported.Contains),
+                    lid + ": a lineage opened outside a finding of a VALID result ingested in this pair", "P-19");
+            }
+
+            // §20.5: the ingestion point publishes the phase its verdict gives; an INVALID output only allows a transport rerun (or an escalation).
+            var loop = Y.M(n.State, "orchestration.loop");
+            if (ingestedNow.Count > 0 && Y.S(loop, "type") == ArchitectReview)
+            {
+                var (_, last) = ingestedNow[ingestedNow.Count - 1];
+                var nphase = Y.S(loop, "phase");
+                var verdict = J.S(Result(n, last), "Verdict");
+                var expected = Y.S(last, "outcome") != "VALID" ? new[] { "REVIEW_PENDING", "REREVIEW_PENDING" }
+                    : verdict switch
+                    {
+                        "AGREED" => new[] { "ARCHITECT_SATISFIED" },
+                        "CHANGES REQUIRED" => new[] { "CORRECTING" },
+                        "BLOCKED — OWNER DECISION" => new[] { "ESCALATE_OWNER" },
+                        _ => Array.Empty<string>(),
+                    };
+                add(expected.Contains(nphase) || (Y.S(last, "outcome") != "VALID" && Y.S(n.State, "orchestration.escalation.state") != None),
+                    "the ingestion of an " + Y.S(last, "outcome") + " result publishes the phase " + nphase + ", not the one its verdict gives", "P-19");
+            }
+
             foreach (var (r, a) in ingestedNow)
             {
                 var tag = Y.S(r, "logical_review_request_id") + "/" + Y.N(a, "attempt_seq");

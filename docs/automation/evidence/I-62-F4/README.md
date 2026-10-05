@@ -157,3 +157,8 @@ El RED se captura sustituyendo solo los cuerpos de los métodos nombrados por `t
   verificación válida = registro VERIFICATION con `Outcome.Kind` COMPLETED; cierre declarado = registro posterior a la aceptación con `Disposition`
   BLOCKED o STOP (la sesión detiene la ventana y la devuelve al Coordinator). Para el Q7, un lanzamiento cuenta salvo `REJECTED_BEFORE_INVOCATION`, y
   `LAUNCH_UNCERTAIN` cuenta como incierto (§9.3).
+- **F4-OBS-17 — P-19 y §20.5 en la ingestión.** Al escribir el MC de C-35 apareció un hueco del validador de F4-D. Un resultado INVALID podía abrir
+  linajes, y la ingestión podía publicar una fase distinta de la que da el veredicto. El texto congelado lo prohíbe: P-19 («no avanza»), el diagrama de
+  §20.5 (AGREED → ARCHITECT_SATISFIED; CHANGES REQUIRED → CORRECTING; BLOCKED — OWNER DECISION → ESCALATE_OWNER; INVALID → reejecución) y §20.5.2 (un
+  linaje nace de un hallazgo de un resultado con autoridad). Se añadieron como cláusula P-19 de I-P13, con positivos y negativos en
+  `I62F4OrchestrationMcTests`. Es un defecto localizado de la implementación, corregido dentro de F4; no cambia ninguna semántica congelada.

@@ -118,7 +118,7 @@ namespace RackCad.Tests
                     f["last_disposition_in"] = null;
                 }
             }, s16 => ArchitectResult(s16, "docs/automation/evidence/I-99-agent/review/L2/1/result.json", L2, Obj(C2, X, B2), "CHANGES REQUIRED",
-                new[] { "A62-X-03" }, new (string, string)[0])), "I-S18");
+                new[] { "A62-X-03" }, new (string, string)[0])), "I-S18", "I-P13");
             yield return Case("inconsistent escalation", () => Mutate(6, 7, n => Orch(n)["next_action"] = NextAction("OWNER", "DECIDE", null)), "I-S18");
             yield return Case("cap exceeded", () => Mutate(12, 13, n =>
             {
@@ -263,7 +263,7 @@ namespace RackCad.Tests
                 Orch(n)["findings"] = L(M(("lineage_id", "LIN-R1"), ("finding_ids", L("R-01")), ("issuer", "REVIEWER"),
                     ("opened_in", Clone((YamlMap)AttemptOf(n, ReviewerSamples.R1, 1)["result"]!)), ("severity", "BLOCKING"), ("class", "defecto"),
                     ("affected_section", "§1"), ("state", "OPEN"), ("response", null), ("last_disposition_in", null), ("omitted_in", L()), ("closed_by", null),
-                    ("downgraded_by", null)))), "I-S18");
+                    ("downgraded_by", null)))), "I-S18", "I-P13");
             yield return Case("REVIEWER with a loop identity of the Architect", () => ReviewerMutate(0, 1, n => Loop(n)["instance_id"] = "ARL-6"), "I-S18", "I-P13");
             yield return Case("REVIEWER with ARCHITECT_SATISFIED", () => ReviewerMutate(3, 4, n =>
             {
