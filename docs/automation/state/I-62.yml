@@ -7,8 +7,8 @@ automation_state:
   state: waiting
   gate: dependency
   attempts: 0
-  next_action: el Coordinator autoriza la revisión formal acreditada de la A-1 corregida (blob 9c621fce; paquete docs/initiatives/I-62-architect-package-A-1.md; decisions §38 y §39; evidence §42); F4 sigue sin abrir.
-  last_evidence_commit: fff3bbb070b065137401f81f85118ea851ea5888
+  next_action: el Coordinator dispone la revisión formal del Architect de la A-1 corregida (CHANGES REQUIRED A62-A1R-01..03; acreditación a decidir; docs/initiatives/I-62-architect-review-A-1-r2.md; evidence §43); F4 sigue sin abrir.
+  last_evidence_commit: 0ad410f894a9411cc9e4f454481ba14791109133
 execution_context:
   mode: manual
   automation_enabled: false
@@ -29,4 +29,4 @@ execution_context:
   f3_status: GATE PASS / COMPLETE por el Coordinator sobre f9234cb9 (C-11..C-14, C-30 y C-40 parte F3 PASS; LIFECYCLE §5/§9 se queda en F3; decisions §35)
   f3_scope: nueve esquemas del núcleo; manifiesto B.11 docs/initiatives/I-62-normative-dependency-manifest.json; AUTOMATION_PLAN 16.20-16.24; README §14-§16; routing §9; LIFECYCLE §5 y §9 (alternativa 1 de OD-6, inactivo); guardas Core de B.1, B.11 y textos; MC C-11..C-14, C-30 y C-40 (parte F3)
   f4_status: IMPLEMENTATION_READY_PENDING_A1 (prototipos medidos y plano de pruebas en I-62-prep/f4; producción no autorizada; la parte afectada por FC-01 y FC-02 espera A-1)
-  a1_status: CORRECCIÓN PUBLICADA (blob 9c621fce, PROPUESTA) para A62-A1-01..06 (decisions §38) y OBS-A1-01 (ACCEPTED REQUIRED, decisions §39); la corrida R20261003T023945Z-cab7 NO quedó acreditada formalmente y es solo insumo técnico; revisión formal nueva del Architect REQUIRED, pendiente de autorización; veredicto del Coordinator PENDING; Owner NOT REQUIRED
+  a1_status: revisión formal R20261005T044948Z-ac67 sobre el blob 9c621fce (decisions §40) = CHANGES REQUIRED (A62-A1R-01..03 REQUIRED, O1..O5 OPTIONAL; A62-A1-01..06 CLOSED; OBS-A1-01 STILL_OPEN); auditor v2 NOT_ACCREDITED por defectos propios y v2.1 ACCREDITED, la acreditación la decide el Coordinator; veredicto del Coordinator PENDING; Owner NOT REQUIRED

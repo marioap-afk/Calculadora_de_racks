@@ -1,0 +1,298 @@
+{
+ "Schema": "clasificación del invocador sobre la auditoría v2 (no la sustituye; audit.json queda literal)",
+ "MechanicalV2": {
+  "Status": "NOT_ACCREDITED",
+  "Reasons": 57,
+  "ByClass": {
+   "HEREDOC_BODY_AS_COMMANDS": 54,
+   "SHELL_VARIABLE_NOT_EXPANDED": 2,
+   "DOTNET_TEST_PROJECT_PATH": 1,
+   "OTHER": 0
+  }
+ },
+ "Verification": {
+  "HEREDOC_BODY_AS_COMMANDS": "llamadas 39 y 40: `python - <<'EOF' … EOF`; el único archivo que tocan es el arnés del cierre (importlib sobre D:/r62-arch-a1r2/docs/automation/evidence/I-62-A1/a1-counterexamples.py); construyen trazas en memoria e imprimen el resultado; sin open(), os, subprocess ni escritura. Es EX-1 («python que lea solo esa salida y archivos del cierre»). El auditor v2 partía el cuerpo del heredoc por líneas y tomaba cada línea por un comando",
+  "SHELL_VARIABLE_NOT_EXPANDED": "llamada 36: S=\"C:/Users/ALEJAN~1/AppData/Local/Temp/claude/D--Documentos-Worktrees-r62-arch-a1r2-modest-goldberg-d89b01/f77f08c9-…/scratchpad\" (salidas propias); el auditor v2 no expandía `$S`",
+  "DOTNET_TEST_PROJECT_PATH": "llamada 51: dotnet test D:\\r62-arch-a1r2\\tests\\RackCad.Tests\\RackCad.Tests.csproj con el log en el scratchpad propio: EX-2. El auditor v2 solo admitía rutas del cierre, y el proyecto de pruebas no es un insumo de lectura"
+ },
+ "MethodCorrection": {
+  "Script": "post-review-v2.1.py (patch_v21.py: solo esos tres defectos)",
+  "SelfTest": "selftest-post-review-v2.1.py: PASS (la transcripción buena da ACCREDITED; la mala, NOT_ACCREDITED por sus ocho motivos exactos)",
+  "ResultOnThisRun": {
+   "Status": "ACCREDITED",
+   "Reasons": 0
+  }
+ },
+ "ReviewerDeclaredLiteralDeviations": [
+  {
+   "Call": 4,
+   "Command": "cd D:/r62-arch-a1r2 && wc -c -l <archivos del cierre, rutas relativas>",
+   "Note": "`cd` no figura en la tabla de acciones del prompt; no lee nada; los auditores v2 y v2.1 lo admiten hacia el clon"
+  },
+  {
+   "Call": 20,
+   "Command": "cd /d/r62-arch-a1r2 2>/dev/null; awk <longitud de línea> <archivos del cierre>",
+   "Note": "ídem"
+  },
+  {
+   "Call": 36,
+   "Command": "git -C D:/r62-arch-a1r2 show 0ad410f8:…/a1-counterexamples-result.json | sha256sum",
+   "Note": "RD-1 no enumera sha256sum como destino de la tubería (RD-2 sí lo permite sobre archivos del cierre); solo calcula un hash"
+  },
+  {
+   "Call": 57,
+   "Command": "git -C <worktree propio> rev-parse HEAD; status --porcelain (comprobación final de limpieza)",
+   "Note": "ID-1 enumera la forma sin -C en el directorio actual; es equivalente. La verificación inicial del worktree (llamada 2) usó la forma literal"
+  }
+ ],
+ "KitInconsistency": "los auditores v2 y v2.1 admiten `cd` hacia el clon, `| sha256sum` y `git -C <worktree>`, más amplios que la tabla literal del prompt; por eso esas cuatro desviaciones no aparecen como motivos",
+ "Facts": {
+  "OutOfClosureReads": "ninguna (todas las rutas son del cierre, order/prompt o salidas propias; once Grep, cada uno sobre un archivo del cierre)",
+  "Fidelity": "30 registros, todos ['FAITHFUL_NORMALIZED']",
+  "Premises": "32 citas en PremiseRefs: todas encontradas en sus líneas y entregadas fielmente al revisor",
+  "IdentityOrder": {
+   "PromptHashSeen": true,
+   "OrderHashSeen": true,
+   "PromptReadFaithful": true,
+   "OrderReadComplete": true,
+   "CloneHeadVerifiedBeforeReading": true,
+   "WorktreeHeadVerifiedBeforeReading": true,
+   "FirstSubstantiveCall": 5
+  },
+  "ResultSchemaValid": true,
+  "Coherence": [],
+  "Writes": "ninguna en el repositorio: el clon y el worktree del revisor siguen limpios en 0ad410f8"
+ },
+ "Decision": "La acreditación formal la decide el Coordinator. La sesión no la declara. Sin reintento.",
+ "OwnerRelayEqualsTranscript": true,
+ "Rows": [
+  {
+   "Reason": "llamada 36 (Bash): ruta fuera del cierre: $S/a1-result.json",
+   "Class": "SHELL_VARIABLE_NOT_EXPANDED"
+  },
+  {
+   "Reason": "llamada 36 (Bash): ruta fuera del cierre: $S/a1-result.json",
+   "Class": "SHELL_VARIABLE_NOT_EXPANDED"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: import",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: spec",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: m",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: spec.loader.exec_module(m)",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: st,",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: ANC",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: Y",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: def",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: return",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: blk",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: #",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: Coordinator",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: vx",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: p",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: rec",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: n",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: print(\"T1",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: #",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: M",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: M[\"MY\"]",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: m.MAPS.update(M)",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: m.BLOBS[(\"y1p\",",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: Yp",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: p2",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: n2",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: print(\"T2",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: n2b",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: print(\"T2b",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: #",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: VS",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: sat",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: rec3",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: closed",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: reopen",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: print(\"T3",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 39 (Bash): comando no permitido: EOF",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 40 (Bash): comando no permitido: import",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 40 (Bash): comando no permitido: spec",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 40 (Bash): comando no permitido: m",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 40 (Bash): comando no permitido: spec.loader.exec_module(m)",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 40 (Bash): comando no permitido: st,",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 40 (Bash): comando no permitido: ANC",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 40 (Bash): comando no permitido: Y",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 40 (Bash): comando no permitido: def",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 40 (Bash): comando no permitido: return",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 40 (Bash): comando no permitido: blk",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 40 (Bash): comando no permitido: vr",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 40 (Bash): comando no permitido: p7",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 40 (Bash): comando no permitido: rec",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 40 (Bash): comando no permitido: n7",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 40 (Bash): comando no permitido: reopen",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 40 (Bash): comando no permitido: [rq(\"R1\",\"INGESTED\",\"RESULT_INGESTED\",\"VALID\"),",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 40 (Bash): comando no permitido: print(\"T4",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 40 (Bash): comando no permitido: EOF",
+   "Class": "HEREDOC_BODY_AS_COMMANDS"
+  },
+  {
+   "Reason": "llamada 51 (PowerShell): ruta fuera del clon o de las salidas propias: D:\\r62-arch-a1r2\\tests\\RackCad.Tests\\RackCad.Tests.csproj",
+   "Class": "DOTNET_TEST_PROJECT_PATH"
+  }
+ ]
+}

@@ -1908,3 +1908,55 @@ CI de la corrección anterior, `fff3bbb070b065137401f81f85118ea851ea5888`: corri
   cierre para siempre sin fingir la satisfacción.
 - **Límites:** sin F4, sin A-2 y sin lanzar al Architect.
 - **Ventana de I-63:** ya liberada antes de la orden (merge `bb0d5522`). Sin rebase, sin `docs/ROADMAP.md` ni `docs/HANDOFF.md` y sin push a `main`.
+
+## 43. Revisión formal del Architect de la A-1 corregida (decisiones §40)
+
+CI de la corrección de OBS-A1-01, `0ad410f894a9411cc9e4f454481ba14791109133`: corrida **37264373929**, push, head_sha exacto, cuatro jobs en `success`.
+
+### 43.1 Kit y lanzamiento
+
+- **Clon y corrida:** clon `D:\r62-arch-a1r2` (`git clone --no-local`; `main` = `0ad410f8`; sin remoto ni otras ramas); corrida `D:\r62-arch-a1r2-run`, RunId
+  R20261005T044948Z-ac67.
+- **Cierre:** 26 insumos canónicos y 12 transitivos, con el contrato de acciones ID-1, ID-2, RD-1, RD-2, EX-1, EX-2 y OWN-1.
+- **Prompt:** SHA-256 `03281e4f…`.
+- **Auditor v2:** autoprueba PASS antes del lanzamiento.
+- **Preflight:** 3 lecturas y 63 líneas FAITHFUL_NORMALIZED.
+- **Lanzamiento:** el Owner pulsó `task_434932cc`. La sesión `local_aa66b6f6-77e5-43f5-b703-a06e48da8de8` corrió de 04:57:08Z a 05:19:16Z del 2026-10-05.
+
+### 43.2 Identidad observada (MEASURED)
+
+`claude-opus-5-5`, effort `xhigh`, Claude Code 2.1.286, 110 mensajes, sin subagentes. El worktree `modest-goldberg-d89b01` nació sobre `main` = `0ad410f8`, y el
+de esta vez sí quedó en el commit exacto. La memoria `D--r62-arch-a1r2/memory` está vacía. Después de la corrida, el clon y el worktree están limpios.
+
+### 43.3 Auditoría y acreditación
+
+| Auditor | Resultado | Detalle |
+|---|---|---|
+| v2 (el del kit) | **NOT_ACCREDITED**, 57 motivos | 54 por líneas de dos heredocs `python - <<'EOF'` tomadas por comandos (EX-1: solo importan el arnés del cierre); 2 por la variable `$S` (salidas propias) sin expandir; 1 por la ruta del proyecto de `dotnet test` (EX-2) |
+| v2.1 (corrección de método, solo esos tres defectos; autoprueba PASS) | **ACCREDITED**, 0 motivos | — |
+
+- **Hechos:** sin lecturas fuera del cierre. Once Grep, cada uno sobre un archivo. Fidelidad: 30/30 FAITHFUL_NORMALIZED. Premisas: 32/32 encontradas y
+  entregadas fielmente. El resultado cumple el esquema y no tiene observaciones de coherencia.
+- **Desviaciones literales declaradas por el revisor:** las llamadas 4 y 20 (`cd` al clon), 36 (`git show … | sha256sum`) y 57 (`git -C <worktree>` en la
+  comprobación final). Todas son de solo lectura y los dos auditores las admiten, así que el kit es inconsistente entre la tabla y la lista blanca.
+- **Decisión:** la acreditación es del Coordinator, sin reintento.
+
+### 43.4 Resultado literal
+
+**CHANGES REQUIRED.**
+- **REQUIRED:**
+  - A62-A1R-01: un bucle REVIEWER agotado (EXHAUSTED) no tiene cierre;
+  - A62-A1R-02: `loop.object` del REVIEWER (y de EXECUTION) en un rebase, D1-10 frente a D2-1..D2-5;
+  - A62-A1R-03: la reapertura de un bucle REVIEWER con una autoridad terminada, y la enmienda F3 no declarada de la vigencia de 16.20 y del criterio
+    VALIDITY de README §14.3.
+- **OPTIONAL:** A62-A1R-O1..O5.
+- **Disposiciones:** A62-A1-01..06 CLOSED; OBS-A1-01 STILL_OPEN.
+- **Owner:** `OwnerDecisionRequired` = false.
+- **Materialidad:** global, de acuerdo; para OBS-A1-01, M-05 = SÍ.
+
+Custodia en `docs/automation/evidence/I-62-architect-A-1/R20261005T044948Z-ac67/`. Registro: `docs/initiatives/I-62-architect-review-A-1-r2.md`.
+Transcripción no versionada: 2 299 386 bytes, SHA-256 `50b38f31…`.
+
+### 43.5 Límites
+
+Sin editar A-1, sin A-2, sin F4, sin rebase, sin ROADMAP ni HANDOFF y sin decidir materias del Owner. STOP.
