@@ -18,7 +18,7 @@
       "Path": "docs/AUTOMATION_PLAN.md",
       "FileKind": "MODIFIED",
       "BaseBlob": "07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
-      "EffBlob": "8b06b845a905a9d3bef251c5fa232ce8439a56d5"
+      "EffBlob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
     },
     {
       "Path": "docs/INITIATIVE_LIFECYCLE.md",
@@ -42,7 +42,7 @@
       "Path": "docs/automation/agent-execution/README.md",
       "FileKind": "MODIFIED",
       "BaseBlob": "64ae952b6fb01ce206200c64d2a1d8683b5a297d",
-      "EffBlob": "3fb9a44b9cdcb72ddd1a575bb919f1c265d9b8ae"
+      "EffBlob": "14152bdfb832053af12e61940ae1b15c3df771b8"
     },
     {
       "Path": "docs/automation/agent-execution/adapters/claude-cli.md",
@@ -121,6 +121,12 @@
       "FileKind": "ADDED",
       "BaseBlob": null,
       "EffBlob": "e7f5747ba3812c181237828fe72243523038e64f"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/automation-state.v2.schema.json",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "b1105dc1c5ea29d1a717eefea03e5242423762d8"
     },
     {
       "Path": "docs/automation/agent-execution/schemas/binding.v1.schema.json",
@@ -210,6 +216,12 @@
     },
     {
       "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "## 8. Implementacion, estado versionado y Pull Requests",
+      "Level": 2,
+      "Kind": "MODIFIED"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
       "Section": "### 16.1 Participantes y declaraciones",
       "Level": 3,
       "Kind": "MODIFIED"
@@ -288,9 +300,45 @@
     },
     {
       "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "### 16.25 Custodia por unidad (I62): puntos durables, ventana, CAS y rebase",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "### 16.26 Recuperación y transiciones (I62)",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "### 16.27 Conteo y presupuestos de la ejecución delegada (I62)",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "### 16.28 Arranque, adopción y marcadores (I62)",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "### 16.29 Orquestación de roles (I62): bucles de revisión, intentos y presupuestos",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
       "Section": "### 16.3 Lectura de autoridades",
       "Level": 3,
       "Kind": "MODIFIED"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "### 16.30 Planos y MaterializationClose (I62)",
+      "Level": 3,
+      "Kind": "ADDED"
     },
     {
       "Path": "docs/INITIATIVE_LIFECYCLE.md",
@@ -367,6 +415,18 @@
     {
       "Path": "docs/automation/agent-execution/README.md",
       "Section": "## 16. Validación de los resultados por rol (unidades I62)",
+      "Level": 2,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "## 17. Custodia, diario, rebase y reconstrucción (unidades I62)",
+      "Level": 2,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "## 18. Bucles de revisión, intentos y AUTONOMY_GAP (unidades I62)",
       "Level": 2,
       "Kind": "ADDED"
     },
@@ -457,6 +517,78 @@
     {
       "Path": "docs/automation/agent-execution/README.md",
       "Section": "### 15.4 Validador del manifiesto de dependencias normativas",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 17.1 Escribir un punto durable",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 17.2 Diario de una ventana",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 17.3 Rebase y reconciliación",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 17.4 Reconstrucción sin diario",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 17.5 Validación mecánica",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 18.1 Apertura de un bucle del Architect",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 18.2 Lanzamiento, resultado e ingestión",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 18.3 Corrección y re-revisión",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 18.4 Caídas durante un intento",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 18.5 Cierre y bucle nuevo",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 18.6 Bucle REVIEWER",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 18.7 AUTONOMY_GAP",
       "Level": 3,
       "Kind": "ADDED"
     },

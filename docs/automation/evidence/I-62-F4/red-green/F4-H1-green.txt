@@ -1,0 +1,23 @@
+$ dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter "FullyQualifiedName~I62F4StateSchemaTests"  (exit 0; esquema emitido desde StateV2Shape)
+Serie de pruebas para C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll (.NETCoreApp,Version=v8.0)
+1 archivos de prueba en total coincidieron con el patrón especificado.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.29)
+[xUnit.net 00:00:00.24]   Discovering: RackCad.Tests
+[xUnit.net 00:00:07.21]   Discovered:  RackCad.Tests
+[xUnit.net 00:00:07.27]   Starting:    RackCad.Tests
+  Correctas RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(mutation: "integer") [78 ms]
+  Correctas RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(mutation: "stateref") [8 ms]
+  Correctas RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(mutation: "unknown key") [6 ms]
+  Correctas RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(mutation: "null") [5 ms]
+  Correctas RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(mutation: "enum") [5 ms]
+  Correctas RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(mutation: "sha") [13 ms]
+  Correctas RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(mutation: "missing key") [7 ms]
+  Correctas RackCad.Tests.I62F4StateSchemaTests.I62_C18_TheDeclaredOpenPointsStayOpenAndNothingElse [19 ms]
+  Correctas RackCad.Tests.I62F4StateSchemaTests.I62_C18_EveryValidSyntheticStateValidatesAgainstTheSchema [88 ms]
+[xUnit.net 00:00:07.61]   Finished:    RackCad.Tests
+  Correctas RackCad.Tests.I62F4StateSchemaTests.I62_C18_TheMaterializedSchemaIsTheEmissionOfTheValidatorsDeclaredTree [15 ms]
+
+La serie de pruebas se ejecutó correctamente.
+Pruebas totales: 10
+     Correcto: 10
+ Tiempo total: 8.4767 Segundos

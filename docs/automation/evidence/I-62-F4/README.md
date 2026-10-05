@@ -28,6 +28,14 @@ Estado:     en curso (cortes F4-A..F4-H); este archivo se completa con el paquet
     `TrxReading.cs` (P6: lectura normalizada del TRX con estados inesperados y cruce con las declaraciones `Skip =`). Son helpers deterministas dentro de
     la frontera de verificación del Controller (decisiones §43), puertos de `I-62-prep/night-2026-10-05/helpers/`; ni rol, ni servicio, ni autoridad.
   - `NextActionDerivation.cs`: `NextAction` derivable de forma única (V14 §20.4; I-S18; P-17), integrada en el validador de archivo.
+- Textos normativos de F4 (plano b, inactivos hasta `I62_EFFECTIVE_SHA`): `docs/AUTOMATION_PLAN.md` §8 (formato `/v2` de las unidades I62), 16.25
+  (custodia, ventana, CAS, rebase con las filas de la orquestación de A-1, `RebaseMap`, ResolveBranchRef, EquivalentReviewedObject y toma con rebase), 16.26
+  (recuperación y transiciones T0..T22, reconstrucción, commits sin verificar, P-12 y P-13), 16.27 (conteo), 16.28 (arranque, adopción y plantillas
+  literales de los marcadores), 16.29 (orquestación: siguiente acción, bucles del Architect y del REVIEWER, intentos, presupuestos, AUTONOMY_GAP, P-17,
+  P-18 y P-21) y 16.30 (planos, MaterializationClose y P-16). Enmiendas de A-1 a textos F3: 16.20 (paso 3 con ResolveBranchRef, `ContinuesLoopInstanceId`
+  y vigencia del REVIEWER) y README §14.3 (`VALIDITY` y «Reproducción») y §14.4 (regla 3). README de `agent-execution` §17 y §18 (procedimientos).
+- `docs/automation/agent-execution/schemas/automation-state.v2.schema.json`: la emisión exacta de `StateV2Shape.ToJsonSchema()` (guarda C-18 en
+  `I62F4StateSchemaTests`).
 - Textos de la adopción de compatibilidad (Anexo E), inactivos hasta `I62_EFFECTIVE_SHA`: `docs/WORKFLOW.md` §12 (punto de entrada, texto
   congelado de E.3.0), §4 paso 2 (referencia «al abrir») y §10 (fila ampliada); `docs/AUTOMATION_PLAN.md` §16.13 (resolver) y los punteros de §16 y
   16.3; `docs/automation/agent-execution/compatibility/clause-map.schema.json` e `I62-clause-map.json`, derivado con `compat/clause_map.py`.
@@ -47,6 +55,7 @@ Estado:     en curso (cortes F4-A..F4-H); este archivo se completa con el paquet
 | F4-G2 | `I62F4VerificationHelperTests` P5 | 3/3 en error (`Compare`, `CessionGate` y `FingerprintProblems`) | 3/3 |
 | F4-G3 | `I62F4VerificationHelperTests` P6 | 3/3 en error (`Read` y `DeclaredSkipMethods`) | 3/3 |
 | F4-G4 | `I62F4NextActionTests` | 5/5 en error (`Derive` y `Check`) | 5/5 |
+| F4-H1 | `I62F4StateSchemaTests` (C-18, esquema `/v2`) | 10/10 en error **sin el archivo del esquema** | 10/10 |
 
 El RED se captura sustituyendo solo los cuerpos de los métodos nombrados por `throw new NotImplementedException` y restaurando el archivo byte a byte
 (`redgreen.py` en el scratchpad de la sesión; la salida queda aquí). La selección es mayor que cero en todos los cortes.
@@ -128,3 +137,13 @@ El RED se captura sustituyendo solo los cuerpos de los métodos nombrados por `t
   distintos son P-17. Los demás estados dejan libre el `next_action` guardado dentro de las otras reglas de I-S18.
 - **F4-OBS-12 — P6 y los estados inesperados.** El prototipo solo marcaba Failed y NotExecuted sin motivo. La orden exige distinguir Passed,
   Failed, omitidas y estados inesperados: cualquier otro `outcome` (Timeout, Aborted, Inconclusive, Error…) falla y se informa aparte.
+- **F4-OBS-13 — plantillas literales de los marcadores (16.28).** V14 §8.6 manda materializar en F4 el texto literal de los marcadores. Siguiendo
+  F4-OBS-03, cada decisión va en un bloque cercado con la línea exacta del marcador y campos `Clave: valor`. Para la entrada de G0 se usan `Claim-Id` y
+  `BootstrapRecordVersion`, porque V14 exige el `Claim-Id` y la `record_version` del BOOTSTRAP. Los demás nombres de campo vienen de V14 §20.5 y de A-1.
+- **F4-OBS-14 — numeración de los textos de F4.** El dossier de F4 preveía 16.25-16.29. Se añade 16.30 (planos y MaterializationClose, V14 §15), porque
+  MaterializationClose es una regla I62 que generaliza el cierre de G2 sin tocar 16.3 (C-21). Las previsiones de E.5 para README §§1, 3, 5, 6 y 11 siguen
+  sin materializarse: el contenido I62 está en secciones nuevas (§17 y §18), clasificado en C-20b.
+- **F4-OBS-15 — esquema `/v2` emitido desde el validador.** El esquema no se escribe a mano. Es la emisión del árbol declarativo con el que el validador
+  comprueba la forma, en el subconjunto que valida `MiniJsonSchema`. La guarda exige igualdad exacta, así que el contrato y el validador no pueden
+  divergir. Al escribir la guarda apareció un defecto real de `MiniJsonSchema`: un entero creado como `long` no contaba como número y `minimum` no se
+  comprobaba. Se corrigió.

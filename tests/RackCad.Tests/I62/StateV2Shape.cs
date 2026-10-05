@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 
 namespace RackCad.Tests
@@ -51,6 +52,31 @@ namespace RackCad.Tests
 
         public static bool IsStateRef(object? v) =>
             v is YamlMap m && m.Count == 2 && m.TryGetValue("path", out var p) && p is string ps && ps.Length > 0 && m.TryGetValue("blob", out var b) && IsSha(b);
+
+        /// <summary>
+        /// The JSON Schema (draft 2020-12) of the declared tree, in the closed subset that <see cref="MiniJsonSchema"/> validates: the materialized
+        /// <c>agent-execution/schemas/automation-state.v2.schema.json</c> is exactly this emission, so the schema and the validator cannot drift (C-18).
+        /// </summary>
+        public static JsonObject ToJsonSchema()
+        {
+            var root = Tree.Schema();
+            var schema = new JsonObject
+            {
+                ["$schema"] = "https://json-schema.org/draft/2020-12/schema",
+                ["title"] = Schema,
+                ["description"] = "Estado canónico de una unidad I62_DELEGATED (Proposal V14 Anexo B.8 con la A-1 acordada; AUTOMATION_PLAN 16.25). Forma: todos los "
+                                  + "campos obligatorios y cerrados, salvo execution_context (descriptivo; ningún lector lo consume) y next_action.budget_remaining "
+                                  + "(por contador, sin tipo congelado). Las invariantes de archivo, de pares y con historia no son de forma: las comprueba el "
+                                  + "validador semántico. Subordinado; inactivo hasta I62_EFFECTIVE_SHA (AUTOMATION_PLAN 16.14).",
+            };
+            foreach (var (k, v) in root.ToList())
+            {
+                root.Remove(k);
+                schema[k] = v;
+            }
+
+            return schema;
+        }
 
         /// <summary>Shape violations (invariant id «B.8.1») of a whole state, with the exact path of each.</summary>
         public static IReadOnlyList<StateViolation> Check(YamlMap state)
@@ -161,25 +187,37 @@ namespace RackCad.Tests
 
         private static ListNode List(Node item, int min = 0) => new ListNode(item, min);
 
-        private static Node Str() => new LeafNode("non-empty string", v => v is string s && s.Length > 0);
+        private static JsonObject Json(string type, params (string Key, JsonNode? Value)[] extra)
+        {
+            var o = new JsonObject { ["type"] = type };
+            foreach (var (k, v) in extra)
+            {
+                o[k] = v;
+            }
 
-        private static Node Sha() => new LeafNode("40-hex SHA", IsSha);
+            return o;
+        }
 
-        private static Node Uuid() => new LeafNode("UUID", v => v is string s && UuidRx.IsMatch(s));
+        private static Node Str() => new LeafNode("non-empty string", v => v is string s && s.Length > 0, () => Json("string", ("minLength", 1)));
+
+        private static Node Sha() => new LeafNode("40-hex SHA", IsSha, () => Json("string", ("pattern", ShaRx.ToString())));
+
+        private static Node Uuid() => new LeafNode("UUID", v => v is string s && UuidRx.IsMatch(s), () => Json("string", ("pattern", UuidRx.ToString())));
 
         private static Node Instant() => new LeafNode("UTC instant", v => v is string s && InstantRx.IsMatch(s)
-            && DateTime.TryParse(s, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out _));
+            && DateTime.TryParse(s, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out _), () => Json("string", ("pattern", InstantRx.ToString())));
 
-        private static Node Bool() => new LeafNode("bool", v => v is bool);
+        private static Node Bool() => new LeafNode("bool", v => v is bool, () => Json("boolean"));
 
         private static Node Int(long min, long max = long.MaxValue) => new LeafNode("integer in " + min + ".." + (max == long.MaxValue ? "∞" : max.ToString(CultureInfo.InvariantCulture)),
-            v => v is long n && n >= min && n <= max);
+            v => v is long n && n >= min && n <= max, () => max == long.MaxValue ? Json("integer", ("minimum", min)) : Json("integer", ("minimum", min), ("maximum", max)));
 
-        private static Node Const(string value) => new LeafNode("«" + value + "»", v => v is string s && s == value);
+        private static Node Const(string value) => new LeafNode("«" + value + "»", v => v is string s && s == value, () => Json("string", ("enum", new JsonArray(value))));
 
-        private static Node Enum(params string[] values) => new LeafNode(string.Join(" | ", values), v => v is string s && values.Contains(s));
+        private static Node Enum(params string[] values) => new LeafNode(string.Join(" | ", values), v => v is string s && values.Contains(s),
+            () => Json("string", ("enum", new JsonArray(values.Select(x => (JsonNode)x).ToArray()))));
 
-        private static Node Pattern(Regex rx, string label) => new LeafNode(label, v => v is string s && rx.IsMatch(s));
+        private static Node Pattern(Regex rx, string label) => new LeafNode(label, v => v is string s && rx.IsMatch(s), () => Json("string", ("pattern", rx.ToString())));
 
         private abstract class Node
         {
@@ -200,6 +238,24 @@ namespace RackCad.Tests
                 c.IsOptional = true;
                 return c;
             }
+
+            /// <summary>The JSON Schema of this node; a nullable node admits null in its type (and in its enumeration).</summary>
+            public JsonObject Schema()
+            {
+                var s = OwnSchema();
+                if (Nullable)
+                {
+                    s["type"] = new JsonArray((string)s["type"]!, "null");
+                    if (s["enum"] is JsonArray e)
+                    {
+                        e.Add(null);
+                    }
+                }
+
+                return s;
+            }
+
+            protected abstract JsonObject OwnSchema();
 
             public void Check(object? value, string path, List<StateViolation> violations)
             {
@@ -225,14 +281,18 @@ namespace RackCad.Tests
         {
             private readonly string label;
             private readonly Func<object?, bool> accepts;
+            private readonly Func<JsonObject> schema;
 
-            public LeafNode(string label, Func<object?, bool> accepts)
+            public LeafNode(string label, Func<object?, bool> accepts, Func<JsonObject> schema)
             {
                 this.label = label;
                 this.accepts = accepts;
+                this.schema = schema;
             }
 
             protected override string Expected => label;
+
+            protected override JsonObject OwnSchema() => schema();
 
             protected override void CheckValue(object value, string path, List<StateViolation> violations)
             {
@@ -247,6 +307,13 @@ namespace RackCad.Tests
         {
             protected override string Expected => "StateRef {path, blob}";
 
+            protected override JsonObject OwnSchema() => new JsonObject
+            {
+                ["type"] = "object", ["additionalProperties"] = false,
+                ["properties"] = new JsonObject { ["path"] = Json("string", ("minLength", 1)), ["blob"] = Json("string", ("pattern", ShaRx.ToString())) },
+                ["required"] = new JsonArray("blob", "path"),
+            };
+
             protected override void CheckValue(object value, string path, List<StateViolation> violations)
             {
                 if (!IsStateRef(value))
@@ -259,6 +326,8 @@ namespace RackCad.Tests
         private sealed class OpenMapNode : Node
         {
             protected override string Expected => "mapping";
+
+            protected override JsonObject OwnSchema() => Json("object");
 
             protected override void CheckValue(object value, string path, List<StateViolation> violations)
             {
@@ -279,6 +348,18 @@ namespace RackCad.Tests
             }
 
             protected override string Expected => "mapping";
+
+            protected override JsonObject OwnSchema()
+            {
+                var properties = new JsonObject();
+                foreach (var (key, shape) in fields)
+                {
+                    properties[key] = shape.Schema();
+                }
+
+                var required = fields.Where(f => !f.Shape.IsOptional).Select(f => f.Key).OrderBy(k => k, StringComparer.Ordinal).Select(k => (JsonNode)k).ToArray();
+                return new JsonObject { ["type"] = "object", ["additionalProperties"] = false, ["properties"] = properties, ["required"] = new JsonArray(required) };
+            }
 
             protected override void CheckValue(object value, string path, List<StateViolation> violations)
             {
@@ -322,6 +403,17 @@ namespace RackCad.Tests
             }
 
             protected override string Expected => "sequence";
+
+            protected override JsonObject OwnSchema()
+            {
+                var s = new JsonObject { ["type"] = "array", ["items"] = item.Schema() };
+                if (min > 0)
+                {
+                    s["minItems"] = min;
+                }
+
+                return s;
+            }
 
             protected override void CheckValue(object value, string path, List<StateViolation> violations)
             {

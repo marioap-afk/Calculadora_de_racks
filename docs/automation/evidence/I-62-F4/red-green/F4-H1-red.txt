@@ -1,0 +1,303 @@
+$ dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter "FullyQualifiedName~I62F4StateSchemaTests"  (exit 1; sin automation-state.v2.schema.json)
+Serie de pruebas para C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll (.NETCoreApp,Version=v8.0)
+1 archivos de prueba en total coincidieron con el patrón especificado.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.29)
+[xUnit.net 00:00:00.28]   Discovering: RackCad.Tests
+[xUnit.net 00:00:10.89]   Discovered:  RackCad.Tests
+[xUnit.net 00:00:10.93]   Starting:    RackCad.Tests
+[xUnit.net 00:00:11.09]     RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(mutation: "integer") [FAIL]
+[xUnit.net 00:00:11.09]       System.IO.FileNotFoundException : Could not find file 'C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\docs\automation\agent-execution\schemas\automation-state.v2.schema.json'.
+[xUnit.net 00:00:11.09]       Stack Trace:
+[xUnit.net 00:00:11.09]            at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+[xUnit.net 00:00:11.09]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.09]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.09]            at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.09]            at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)
+[xUnit.net 00:00:11.09]            at System.IO.File.ReadAllText(String path, Encoding encoding)
+[xUnit.net 00:00:11.10]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\I62Repo.cs(26,0): at RackCad.Tests.I62Repo.ReadText(String relative)
+[xUnit.net 00:00:11.10]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs(21,0): at RackCad.Tests.I62F4StateSchemaTests.Committed()
+[xUnit.net 00:00:11.10]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs(83,0): at RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(String mutation)
+[xUnit.net 00:00:11.10]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:11.10]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:11.11]     RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(mutation: "stateref") [FAIL]
+[xUnit.net 00:00:11.11]       System.IO.FileNotFoundException : Could not find file 'C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\docs\automation\agent-execution\schemas\automation-state.v2.schema.json'.
+[xUnit.net 00:00:11.11]       Stack Trace:
+[xUnit.net 00:00:11.11]            at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+[xUnit.net 00:00:11.11]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.11]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.11]            at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.11]            at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)
+[xUnit.net 00:00:11.11]            at System.IO.File.ReadAllText(String path, Encoding encoding)
+[xUnit.net 00:00:11.11]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\I62Repo.cs(26,0): at RackCad.Tests.I62Repo.ReadText(String relative)
+[xUnit.net 00:00:11.11]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs(21,0): at RackCad.Tests.I62F4StateSchemaTests.Committed()
+[xUnit.net 00:00:11.11]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs(83,0): at RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(String mutation)
+[xUnit.net 00:00:11.11]            at InvokeStub_I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(Object, Span`1)
+[xUnit.net 00:00:11.11]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:11.11]     RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(mutation: "unknown key") [FAIL]
+[xUnit.net 00:00:11.11]       System.IO.FileNotFoundException : Could not find file 'C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\docs\automation\agent-execution\schemas\automation-state.v2.schema.json'.
+[xUnit.net 00:00:11.11]       Stack Trace:
+[xUnit.net 00:00:11.11]            at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+[xUnit.net 00:00:11.11]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.11]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.11]            at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.11]            at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)
+[xUnit.net 00:00:11.12]            at System.IO.File.ReadAllText(String path, Encoding encoding)
+[xUnit.net 00:00:11.12]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\I62Repo.cs(26,0): at RackCad.Tests.I62Repo.ReadText(String relative)
+[xUnit.net 00:00:11.12]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs(21,0): at RackCad.Tests.I62F4StateSchemaTests.Committed()
+[xUnit.net 00:00:11.12]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs(83,0): at RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(String mutation)
+[xUnit.net 00:00:11.12]            at InvokeStub_I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(Object, Span`1)
+[xUnit.net 00:00:11.12]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:11.12]     RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(mutation: "null") [FAIL]
+[xUnit.net 00:00:11.12]       System.IO.FileNotFoundException : Could not find file 'C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\docs\automation\agent-execution\schemas\automation-state.v2.schema.json'.
+[xUnit.net 00:00:11.12]       Stack Trace:
+[xUnit.net 00:00:11.12]            at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+[xUnit.net 00:00:11.12]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.12]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.12]            at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.12]            at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)
+[xUnit.net 00:00:11.12]            at System.IO.File.ReadAllText(String path, Encoding encoding)
+[xUnit.net 00:00:11.12]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\I62Repo.cs(26,0): at RackCad.Tests.I62Repo.ReadText(String relative)
+[xUnit.net 00:00:11.12]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs(21,0): at RackCad.Tests.I62F4StateSchemaTests.Committed()
+[xUnit.net 00:00:11.12]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs(83,0): at RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(String mutation)
+[xUnit.net 00:00:11.12]            at InvokeStub_I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(Object, Span`1)
+[xUnit.net 00:00:11.12]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:11.12]     RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(mutation: "enum") [FAIL]
+[xUnit.net 00:00:11.12]       System.IO.FileNotFoundException : Could not find file 'C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\docs\automation\agent-execution\schemas\automation-state.v2.schema.json'.
+[xUnit.net 00:00:11.12]       Stack Trace:
+[xUnit.net 00:00:11.12]            at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+[xUnit.net 00:00:11.12]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.12]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.12]            at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.12]            at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)
+[xUnit.net 00:00:11.12]            at System.IO.File.ReadAllText(String path, Encoding encoding)
+[xUnit.net 00:00:11.12]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\I62Repo.cs(26,0): at RackCad.Tests.I62Repo.ReadText(String relative)
+[xUnit.net 00:00:11.12]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs(21,0): at RackCad.Tests.I62F4StateSchemaTests.Committed()
+[xUnit.net 00:00:11.12]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs(83,0): at RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(String mutation)
+[xUnit.net 00:00:11.12]            at InvokeStub_I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(Object, Span`1)
+[xUnit.net 00:00:11.12]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:11.12]     RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(mutation: "sha") [FAIL]
+[xUnit.net 00:00:11.12]       System.IO.FileNotFoundException : Could not find file 'C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\docs\automation\agent-execution\schemas\automation-state.v2.schema.json'.
+[xUnit.net 00:00:11.12]       Stack Trace:
+[xUnit.net 00:00:11.12]            at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+[xUnit.net 00:00:11.12]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.12]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.12]            at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.12]            at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)
+[xUnit.net 00:00:11.12]            at System.IO.File.ReadAllText(String path, Encoding encoding)
+[xUnit.net 00:00:11.12]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\I62Repo.cs(26,0): at RackCad.Tests.I62Repo.ReadText(String relative)
+[xUnit.net 00:00:11.12]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs(21,0): at RackCad.Tests.I62F4StateSchemaTests.Committed()
+[xUnit.net 00:00:11.12]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs(83,0): at RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(String mutation)
+[xUnit.net 00:00:11.12]            at InvokeStub_I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(Object, Span`1)
+[xUnit.net 00:00:11.12]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:11.12]     RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(mutation: "missing key") [FAIL]
+[xUnit.net 00:00:11.12]       System.IO.FileNotFoundException : Could not find file 'C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\docs\automation\agent-execution\schemas\automation-state.v2.schema.json'.
+[xUnit.net 00:00:11.12]       Stack Trace:
+[xUnit.net 00:00:11.12]            at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+[xUnit.net 00:00:11.12]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.12]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.12]            at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.12]            at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)
+[xUnit.net 00:00:11.12]            at System.IO.File.ReadAllText(String path, Encoding encoding)
+[xUnit.net 00:00:11.12]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\I62Repo.cs(26,0): at RackCad.Tests.I62Repo.ReadText(String relative)
+[xUnit.net 00:00:11.12]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs(21,0): at RackCad.Tests.I62F4StateSchemaTests.Committed()
+[xUnit.net 00:00:11.12]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs(83,0): at RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(String mutation)
+[xUnit.net 00:00:11.12]            at InvokeStub_I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(Object, Span`1)
+[xUnit.net 00:00:11.12]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:11.12]     RackCad.Tests.I62F4StateSchemaTests.I62_C18_TheDeclaredOpenPointsStayOpenAndNothingElse [FAIL]
+[xUnit.net 00:00:11.12]       System.IO.FileNotFoundException : Could not find file 'C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\docs\automation\agent-execution\schemas\automation-state.v2.schema.json'.
+[xUnit.net 00:00:11.12]       Stack Trace:
+[xUnit.net 00:00:11.12]            at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+[xUnit.net 00:00:11.12]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.12]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.12]            at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.12]            at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)
+[xUnit.net 00:00:11.12]            at System.IO.File.ReadAllText(String path, Encoding encoding)
+[xUnit.net 00:00:11.12]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\I62Repo.cs(26,0): at RackCad.Tests.I62Repo.ReadText(String relative)
+[xUnit.net 00:00:11.12]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs(21,0): at RackCad.Tests.I62F4StateSchemaTests.Committed()
+[xUnit.net 00:00:11.12]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs(92,0): at RackCad.Tests.I62F4StateSchemaTests.I62_C18_TheDeclaredOpenPointsStayOpenAndNothingElse()
+[xUnit.net 00:00:11.12]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:11.12]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:11.12]     RackCad.Tests.I62F4StateSchemaTests.I62_C18_EveryValidSyntheticStateValidatesAgainstTheSchema [FAIL]
+[xUnit.net 00:00:11.12]       System.IO.FileNotFoundException : Could not find file 'C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\docs\automation\agent-execution\schemas\automation-state.v2.schema.json'.
+[xUnit.net 00:00:11.14]       Stack Trace:
+[xUnit.net 00:00:11.14]            at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+[xUnit.net 00:00:11.14]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.14]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.14]            at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.14]            at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)
+[xUnit.net 00:00:11.14]            at System.IO.File.ReadAllText(String path, Encoding encoding)
+[xUnit.net 00:00:11.14]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\I62Repo.cs(26,0): at RackCad.Tests.I62Repo.ReadText(String relative)
+[xUnit.net 00:00:11.14]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs(21,0): at RackCad.Tests.I62F4StateSchemaTests.Committed()
+[xUnit.net 00:00:11.14]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs(37,0): at RackCad.Tests.I62F4StateSchemaTests.I62_C18_EveryValidSyntheticStateValidatesAgainstTheSchema()
+[xUnit.net 00:00:11.14]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:11.15]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Con error RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(mutation: "integer") [49 ms]
+  Mensaje de error:
+   System.IO.FileNotFoundException : Could not find file 'C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\docs\automation\agent-execution\schemas\automation-state.v2.schema.json'.
+  Seguimiento de la pila:
+     at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)
+   at System.IO.File.ReadAllText(String path, Encoding encoding)
+   at RackCad.Tests.I62Repo.ReadText(String relative) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\I62Repo.cs:line 26
+   at RackCad.Tests.I62F4StateSchemaTests.Committed() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs:line 21
+   at RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(String mutation) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs:line 83
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Con error RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(mutation: "stateref") [1 ms]
+  Mensaje de error:
+   System.IO.FileNotFoundException : Could not find file 'C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\docs\automation\agent-execution\schemas\automation-state.v2.schema.json'.
+  Seguimiento de la pila:
+     at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)
+   at System.IO.File.ReadAllText(String path, Encoding encoding)
+   at RackCad.Tests.I62Repo.ReadText(String relative) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\I62Repo.cs:line 26
+   at RackCad.Tests.I62F4StateSchemaTests.Committed() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs:line 21
+   at RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(String mutation) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs:line 83
+   at InvokeStub_I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(mutation: "unknown key") [1 ms]
+  Mensaje de error:
+   System.IO.FileNotFoundException : Could not find file 'C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\docs\automation\agent-execution\schemas\automation-state.v2.schema.json'.
+  Seguimiento de la pila:
+     at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)
+   at System.IO.File.ReadAllText(String path, Encoding encoding)
+   at RackCad.Tests.I62Repo.ReadText(String relative) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\I62Repo.cs:line 26
+   at RackCad.Tests.I62F4StateSchemaTests.Committed() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs:line 21
+   at RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(String mutation) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs:line 83
+   at InvokeStub_I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(mutation: "null") [2 ms]
+  Mensaje de error:
+   System.IO.FileNotFoundException : Could not find file 'C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\docs\automation\agent-execution\schemas\automation-state.v2.schema.json'.
+  Seguimiento de la pila:
+     at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)
+   at System.IO.File.ReadAllText(String path, Encoding encoding)
+   at RackCad.Tests.I62Repo.ReadText(String relative) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\I62Repo.cs:line 26
+   at RackCad.Tests.I62F4StateSchemaTests.Committed() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs:line 21
+   at RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(String mutation) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs:line 83
+   at InvokeStub_I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(mutation: "enum") [2 ms]
+  Mensaje de error:
+   System.IO.FileNotFoundException : Could not find file 'C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\docs\automation\agent-execution\schemas\automation-state.v2.schema.json'.
+  Seguimiento de la pila:
+     at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)
+   at System.IO.File.ReadAllText(String path, Encoding encoding)
+   at RackCad.Tests.I62Repo.ReadText(String relative) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\I62Repo.cs:line 26
+   at RackCad.Tests.I62F4StateSchemaTests.Committed() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs:line 21
+   at RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(String mutation) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs:line 83
+   at InvokeStub_I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(mutation: "sha") [1 ms]
+  Mensaje de error:
+   System.IO.FileNotFoundException : Could not find file 'C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\docs\automation\agent-execution\schemas\automation-state.v2.schema.json'.
+  Seguimiento de la pila:
+     at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)
+   at System.IO.File.ReadAllText(String path, Encoding encoding)
+   at RackCad.Tests.I62Repo.ReadText(String relative) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\I62Repo.cs:line 26
+   at RackCad.Tests.I62F4StateSchemaTests.Committed() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs:line 21
+   at RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(String mutation) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs:line 83
+   at InvokeStub_I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(mutation: "missing key") [1 ms]
+  Mensaje de error:
+   System.IO.FileNotFoundException : Could not find file 'C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\docs\automation\agent-execution\schemas\automation-state.v2.schema.json'.
+  Seguimiento de la pila:
+     at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)
+   at System.IO.File.ReadAllText(String path, Encoding encoding)
+   at RackCad.Tests.I62Repo.ReadText(String relative) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\I62Repo.cs:line 26
+   at RackCad.Tests.I62F4StateSchemaTests.Committed() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs:line 21
+   at RackCad.Tests.I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(String mutation) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs:line 83
+   at InvokeStub_I62F4StateSchemaTests.I62_C18_AShapeMutationIsRejectedByTheSchemaAndByTheShapeCheck(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateSchemaTests.I62_C18_TheDeclaredOpenPointsStayOpenAndNothingElse [1 ms]
+  Mensaje de error:
+   System.IO.FileNotFoundException : Could not find file 'C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\docs\automation\agent-execution\schemas\automation-state.v2.schema.json'.
+  Seguimiento de la pila:
+     at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)
+   at System.IO.File.ReadAllText(String path, Encoding encoding)
+   at RackCad.Tests.I62Repo.ReadText(String relative) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\I62Repo.cs:line 26
+   at RackCad.Tests.I62F4StateSchemaTests.Committed() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs:line 21
+   at RackCad.Tests.I62F4StateSchemaTests.I62_C18_TheDeclaredOpenPointsStayOpenAndNothingElse() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs:line 92
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Con error RackCad.Tests.I62F4StateSchemaTests.I62_C18_EveryValidSyntheticStateValidatesAgainstTheSchema [< 1 ms]
+  Mensaje de error:
+   System.IO.FileNotFoundException : Could not find file 'C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\docs\automation\agent-execution\schemas\automation-state.v2.schema.json'.
+  Seguimiento de la pila:
+     at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)
+   at System.IO.File.ReadAllText(String path, Encoding encoding)
+   at RackCad.Tests.I62Repo.ReadText(String relative) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\I62Repo.cs:line 26
+   at RackCad.Tests.I62F4StateSchemaTests.Committed() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs:line 21
+   at RackCad.Tests.I62F4StateSchemaTests.I62_C18_EveryValidSyntheticStateValidatesAgainstTheSchema() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs:line 37
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:11.17]     RackCad.Tests.I62F4StateSchemaTests.I62_C18_TheMaterializedSchemaIsTheEmissionOfTheValidatorsDeclaredTree [FAIL]
+[xUnit.net 00:00:11.17]       System.IO.FileNotFoundException : Could not find file 'C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\docs\automation\agent-execution\schemas\automation-state.v2.schema.json'.
+[xUnit.net 00:00:11.17]       Stack Trace:
+[xUnit.net 00:00:11.17]            at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+[xUnit.net 00:00:11.17]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.17]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.17]            at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.17]            at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)
+[xUnit.net 00:00:11.17]            at System.IO.File.ReadAllText(String path, Encoding encoding)
+[xUnit.net 00:00:11.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\I62Repo.cs(26,0): at RackCad.Tests.I62Repo.ReadText(String relative)
+[xUnit.net 00:00:11.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs(21,0): at RackCad.Tests.I62F4StateSchemaTests.Committed()
+[xUnit.net 00:00:11.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs(30,0): at RackCad.Tests.I62F4StateSchemaTests.I62_C18_TheMaterializedSchemaIsTheEmissionOfTheValidatorsDeclaredTree()
+[xUnit.net 00:00:11.17]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:11.17]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:11.18]   Finished:    RackCad.Tests
+  Con error RackCad.Tests.I62F4StateSchemaTests.I62_C18_TheMaterializedSchemaIsTheEmissionOfTheValidatorsDeclaredTree [9 ms]
+  Mensaje de error:
+   System.IO.FileNotFoundException : Could not find file 'C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\docs\automation\agent-execution\schemas\automation-state.v2.schema.json'.
+  Seguimiento de la pila:
+     at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)
+   at System.IO.File.ReadAllText(String path, Encoding encoding)
+   at RackCad.Tests.I62Repo.ReadText(String relative) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\I62Repo.cs:line 26
+   at RackCad.Tests.I62F4StateSchemaTests.Committed() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs:line 21
+   at RackCad.Tests.I62F4StateSchemaTests.I62_C18_TheMaterializedSchemaIsTheEmissionOfTheValidatorsDeclaredTree() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateSchemaTests.cs:line 30
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+No se pudo ejecutar la serie de pruebas.
+Pruebas totales: 10
+     Incorrecto: 10
+ Tiempo total: 12.3843 Segundos

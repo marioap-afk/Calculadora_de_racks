@@ -205,6 +205,34 @@ namespace RackCad.Tests
             }
         }
 
+        /// <summary>The JSON model of a subset value (mapping → object, sequence → array, integer, bool, string or null), for schema validation.</summary>
+        public static System.Text.Json.Nodes.JsonNode? ToJson(object? v)
+        {
+            switch (v)
+            {
+                case null:
+                    return null;
+                case YamlMap m:
+                    var o = new System.Text.Json.Nodes.JsonObject();
+                    foreach (var kv in m)
+                    {
+                        o[kv.Key] = ToJson(kv.Value);
+                    }
+
+                    return o;
+                case List<object?> l:
+                    return new System.Text.Json.Nodes.JsonArray(l.Select(ToJson).ToArray());
+                case long n:
+                    return System.Text.Json.Nodes.JsonValue.Create(n);
+                case bool b:
+                    return System.Text.Json.Nodes.JsonValue.Create(b);
+                case string s:
+                    return System.Text.Json.Nodes.JsonValue.Create(s);
+                default:
+                    throw new ArgumentException("not a value of the YAML subset: " + v.GetType().Name);
+            }
+        }
+
         private static void WriteMap(YamlMap map, int indent, List<string> lines)
         {
             var pad = new string(' ', indent);

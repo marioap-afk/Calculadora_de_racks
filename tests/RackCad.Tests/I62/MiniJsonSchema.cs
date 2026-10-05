@@ -76,15 +76,14 @@ namespace RackCad.Tests
                 }
             }
 
-            if (x is JsonValue n && Is("number", x))
+            if (TryNumber(x, out var d))
             {
-                var d = n.GetValue<double>();
-                if (s["minimum"] is JsonNode min && d < (double)min)
+                if (TryNumber(s["minimum"], out var min) && d < min)
                 {
                     problems.Add(at + ": below the minimum");
                 }
 
-                if (s["maximum"] is JsonNode max && d > (double)max)
+                if (TryNumber(s["maximum"], out var max) && d > max)
                 {
                     problems.Add(at + ": above the maximum");
                 }
@@ -137,6 +136,30 @@ namespace RackCad.Tests
             }
         }
 
+        /// <summary>A JSON number whatever its backing (parsed text, or a value created from a long, an int or a double).</summary>
+        private static bool TryNumber(JsonNode? x, out double d)
+        {
+            d = 0;
+            if (x is not JsonValue v)
+            {
+                return false;
+            }
+
+            if (v.TryGetValue<long>(out var l))
+            {
+                d = l;
+                return true;
+            }
+
+            if (v.TryGetValue<int>(out var i))
+            {
+                d = i;
+                return true;
+            }
+
+            return v.TryGetValue<double>(out d);
+        }
+
         private static bool Is(string type, JsonNode? x) => type switch
         {
             "null" => x == null,
@@ -144,8 +167,8 @@ namespace RackCad.Tests
             "array" => x is JsonArray,
             "string" => x is JsonValue v && v.TryGetValue<string>(out _),
             "boolean" => x is JsonValue b && b.TryGetValue<bool>(out _),
-            "integer" => x is JsonValue i && (i.TryGetValue<long>(out _) || (i.TryGetValue<double>(out var d) && Math.Floor(d) == d)),
-            "number" => x is JsonValue n && n.TryGetValue<double>(out _),
+            "integer" => TryNumber(x, out var d) && Math.Floor(d) == d,
+            "number" => TryNumber(x, out _),
             _ => false,
         };
     }

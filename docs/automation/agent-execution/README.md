@@ -416,14 +416,14 @@ diferencia con lo registrado es S-04.
 | `MODEL_EFFORT` | nivel y effort dentro de `ModelEffortBounds` (los máximos nulos no limitan) |
 | `PERMISSIONS` | la invocación será READ_ONLY |
 | `OBJECT` | el objeto a revisar pertenece a `ObjectFamily` (unidad y patrón de rutas) |
-| `VALIDITY` | la vigencia de acción no terminó: sin ARCHITECT_SATISFIED, agotamiento, revocación, sustitución ni enmienda posterior registrados, y el instante de la materialización ≤ `Until` |
+| `VALIDITY` | la vigencia de acción no terminó: sin ARCHITECT_SATISFIED (para el REVIEWER, sin REVIEWER_SATISFIED), agotamiento, revocación, sustitución ni enmienda posterior registrados, y el instante de la materialización ≤ `Until` |
 
 Cada criterio se registra como `{CriterionId, Required, Observed, Result, Evidence}`. **UNKNOWN cuenta como NOT_SATISFIED.** Solo con todos en SATISFIED se
 materializa. Si ninguna candidata satisface la autorización: sin invocación, STOP y COORDINATOR_DECISION, o ESCALATION_OWNER cuando lo que falta es
 materia del Owner (autenticación, huella, compra).
 
-**Reproducción (A7' y validador).** El aceptante relee la autorización en `AuthorizationRef.Commit`/`Blob` y comprueba que `Commit` es un ancestro del punto de
-custodia del binding (nunca ese mismo commit), que el marcador `I62-REVIEW-LOOP-AUTHORIZATION: <AuthorizationId>` figura en ese blob y que cada criterio da
+**Reproducción (A7' y validador).** El aceptante relee la autorización en `AuthorizationRef.Commit`/`Blob` y comprueba que `Commit` es resoluble por ResolveBranchRef
+([AUTOMATION_PLAN](../../AUTOMATION_PLAN.md) 16.25) desde el punto de custodia del binding (su imagen nunca es la de ese mismo commit), que el marcador `I62-REVIEW-LOOP-AUTHORIZATION: <AuthorizationId>` figura en ese blob y que cada criterio da
 el mismo resultado con el preflight custodiado. Una diferencia, un `DecisionRef` no nulo o un `AuthorizationRef` ausente → binding inválido (P-20).
 
 ### 14.4 Referencias (A2')
@@ -431,8 +431,8 @@ el mismo resultado con el preflight custodiado. Una diferencia, un `DecisionRef`
 Un `BindingRef` se acepta solo si cumple todas:
 1. `UnitId` = la unidad del contrato;
 2. con `Scope` = TASK, `TaskId` = la tarea del contrato; con UNIT, `TaskId` nulo;
-3. resuelve a un binding cuyo contenido tiene el `Sha256` declarado y, si es CUSTODIED, `Commit` es un ancestro del punto que lo usa y `Blob` es el del archivo en
-   ese commit;
+3. resuelve a un binding cuyo contenido tiene el `Sha256` declarado y, si es CUSTODIED, `Commit` es resoluble por ResolveBranchRef desde el punto que lo usa
+   (16.25) y `Blob` es el del archivo en ese commit;
 4. no hay un binding posterior del mismo rol, unidad y ámbito (rebinding) que lo deje obsoleto;
 5. un artefacto custodiado nunca usa un `BindingRef` TRANSIENT; en Q7, toda referencia TRANSIENT se resuelve a CUSTODIED por el manifiesto de custodia.
 
@@ -626,3 +626,127 @@ rechazo (R6); (c) sin declaración de contexto inyectado → rechazo (P-19); (d)
 cruzado (REVIEWER con `architect-review-result/v1`, o ARCHITECT con `reviewer-result/v1`) → rechazo (P-19); (f) sin `EffectiveInputClosure` → rechazo;
 (g) PLAN con `controller-verification/v2` y (h) VERIFY con `delegation/v2` → INVALID (P-19); (i) PLAN con `delegation/v2` y VERIFY con
 `controller-verification/v2` → aceptadas.
+
+## 17. Custodia, diario, rebase y reconstrucción (unidades I62)
+
+Procedimiento subordinado de [AUTOMATION_PLAN](../../AUTOMATION_PLAN.md) 16.25-16.28. No crea estados, transiciones ni decisiones: los pasos aplican esas
+subsecciones y el contrato de `rackcad-automation-state/v2` ([esquema](schemas/automation-state.v2.schema.json); Proposal V14 Anexo B.8 con la A-1).
+Inactivo hasta `I62_EFFECTIVE_SHA` (16.14).
+
+### 17.1 Escribir un punto durable
+
+1. Comprobar `HEAD` = `origin/<rama>` y leer `custody.record_version` n del estado en `HEAD`.
+2. Escribir el estado con el **escritor canónico** del subconjunto YAML de `state/v2` (claves en el orden del contrato, dos espacios, cadenas entre comillas
+   cuando cambiarían de tipo, sin escalares de bloque ni claves duplicadas) y `record_version` = n+1.
+3. Copiar al mismo commit cada artefacto que el estado cita por `StateRef` (`{path, blob}`): el blob debe ser el del archivo en el árbol de ese commit, nunca
+   uno futuro ni el del propio estado.
+4. Validar el punto antes de publicar: invariantes de archivo, del par con el punto anterior y, con historia, las de 16.25 (véase §17.5). Una violación no se
+   publica.
+5. `git push` sin force. Un rechazo se clasifica con la tabla de 16.25 antes de repetir; el commit local se conserva.
+
+### 17.2 Diario de una ventana
+
+Entre el Q0 y el Q7 cada hecho de la ventana es un `relay-record/v2` en el directorio transitorio del intento, con `WindowSeq` = `window.seq` del Q0 y
+`PrevRelaySha256` = el SHA-256 del registro anterior (el primero, `null`). Un registro que rompe la cadena, o que contradice un hecho físico, invalida el diario
+desde ese registro (S-04). En el Q7, el manifiesto de custodia copia el diario a `docs/automation/evidence/<unit>-agent/<task>/…` y pasa cada referencia de
+TRANSIENT a CUSTODIED; desde entonces el estado solo cita las rutas custodiadas.
+
+### 17.3 Rebase y reconciliación
+
+1. **Registro previo:** `branch_before` = `git rev-parse origin/<rama>`, `main_before` = `git merge-base origin/main <rama>`, `main_after` =
+   `git rev-parse origin/main`.
+2. **Rebase** de la rama sobre `main_after`; con conflictos, `git rebase --abort` y STOP.
+3. **Mapa:**
+   - `Commits[]`: los commits de `git rev-list --reverse main_before..branch_before` emparejados en orden con los de
+     `git rev-list --reverse main_after..branch_after`; `PatchId` = `git patch-id --stable` de la imagen, y `PatchIdEqual` = la igualdad con el del original;
+   - comprobación de publicación: cada `OriginalSha` está en `main_before..branch_before` (una entrada solo acredita un commit que ese rebase reescribió),
+     cada `ImageSha` en `main_after..branch_after`, ambos lados con la misma longitud y orden, sin duplicados y `Unmapped` vacío;
+   - `StateFields[]`: una entrada por campo SHA con estos nombres: `chains[<task_id>].chain_base_sha`, `chains[<task_id>].chain_red_sha`,
+     `last_window.verified_sha`, `unverified_commits[<i>].sha`, `last_evidence_commit`, `orchestration.loop.object.commit`,
+     `orchestration.review_requests[<id>].object.commit` (solicitudes OPEN) y `orchestration.review_requests[<id>].attempts[<seq>].Target.commit` (intentos
+     en INVOCATION_PLANNED o BUDGET_RESERVED); `ImageSha` = `OriginalSha` cuando no cambia.
+4. Si falla cualquier comprobación: `git reset --hard <branch_before>` en la rama local, nada publicado, STOP.
+5. `git push --force-with-lease=<rama>:<branch_before>`.
+6. **QU o QR de reconciliación** (16.25): el mapa en `docs/automation/evidence/<unit>-agent/rebase/<RunId>/rebase-map.json`, `custody.last_rebase`, el mapa
+   añadido al final de `custody.rebase_history[]`, cada campo con su imagen, los intentos no lanzados replanificados y los LAUNCHING comprobados con
+   ResolveBranchRef sobre la historia del punto nuevo y la punta rebasada.
+7. **Comprobación en otra máquina:** en `git clone --no-local --single-branch --branch <rama>`, donde los commits originales no existen, cada referencia de rama
+   viva del estado es ancestro de `HEAD` y cada referencia histórica resuelve con ResolveBranchRef desde los mapas custodiados, recalculando el `patch-id` sobre
+   la imagen. Un clon local sin `--no-local` copia objetos inalcanzables y falsea la prueba.
+
+### 17.4 Reconstrucción sin diario
+
+Con el último punto Q0 y el diario no disponible o roto, la sesión designada aplica 16.26 en este orden: terminación acreditada del titular (si no, P-12) y
+host accesible (si no, P-13); procesos de la lista cerrada de 16.4 en ese host; clasificación R-1, R-2 o R-3 de los commits posteriores al Q0 con
+`git log <Q0>..origin/<rama>`, el `AllowedWriteScope` del contrato de la intención y los trailers; contadores por fase con el conteo conservador; y el QR
+ABANDONED con `reconstruction` custodiada. El Coordinator puede fijar contadores mayores, nunca menores.
+
+### 17.5 Validación mecánica
+
+Los validadores deterministas de `tests/RackCad.Tests` (Nivel A) comprueban el punto sin servicio:
+- la forma del contrato y las invariantes de archivo (I-S01..I-S18) sobre el estado y el árbol de su commit;
+- las de pares (I-P01..I-P13) entre puntos consecutivos;
+- con historia (I-H01, I-H02, I-P03, I-P08 y las resoluciones de ResolveBranchRef) sobre un clon con la historia de la rama.
+
+Un evaluador que no puede ejecutar una invariante la registra como no ejecutada; nunca como superada.
+
+## 18. Bucles de revisión, intentos y AUTONOMY_GAP (unidades I62)
+
+Procedimiento subordinado de [AUTOMATION_PLAN](../../AUTOMATION_PLAN.md) 16.29 (orquestación), 16.20 (materialización), 16.23-16.24 (invocación, cierre
+y fidelidad) y 16.28 (marcadores). Inactivo hasta `I62_EFFECTIVE_SHA`.
+
+### 18.1 Apertura de un bucle del Architect
+
+En un QU ORDINARY, con la `ReviewLoopAuthorization` ya registrada en el archivo de decisiones (`ContinuesLoopInstanceId: null`):
+1. `loop`: `type` ARCHITECT_REVIEW, `phase` REVIEW_PENDING, `instance_id` = `ARL-<record_version de este QU>`, `object` = `{commit, path, blob}` exacto,
+   `authorization` = la `StateRef` del archivo de decisiones y `action_validity` OPEN con su `authorization_id`;
+2. una entrada nueva de `architect_budgets[]` para esa instancia, con la autorización en OPEN y `caps` = el mínimo de los congelados y su `Budget.*`;
+3. la solicitud OPEN (`loop_instance_id` = la instancia; `object` = `loop.object`) con su primer intento en BUDGET_RESERVED: invocación custodiada
+   (`role-invocation/v1` con `BudgetSnapshot` y `OpenFindings`), binding materializado (16.20), preflight de fidelidad y `reserved_at` = este punto;
+4. los contadores de la entrada que la reserva consume, y `next_action` = ARCHITECT con `target` = el objeto de la solicitud,
+   `invocation_permission` = la autorización y `expected_output` = `rackcad-architect-review-result/v1`.
+
+### 18.2 Lanzamiento, resultado e ingestión
+
+1. **LAUNCHING** (QU): `run_id` y `launching_utc`; fase ARCHITECT_INVOKED. Desde aquí la invocación es inmutable.
+2. **LAUNCHED** (QU): `launch_evidence` = el `relay-record/v2` del arranque.
+3. **RESULT_RECEIVED** (QU): el resultado custodiado, `output_state`, `runtime_evidence` (identidad observada por el invocador), `read_audit` frente al
+   cierre de insumos y `fidelity_status`.
+4. **RESULT_INGESTED** (QU): `outcome` (VALID o la causa de invalidez), `ingested_at`, la solicitud INGESTED, las disposiciones aplicadas a los linajes y la
+   fase siguiente según el veredicto. Un resultado INVALID no cambia ningún linaje; la reejecución es un intento nuevo de la misma solicitud, dentro de
+   `transport_reruns_per_request`.
+
+### 18.3 Corrección y re-revisión
+
+Con CHANGES REQUIRED: CORRECTING (`next_action` = PRINCIPAL_COORDINATOR / CORRECT_AND_REREVIEW sobre `loop.object`); la versión corregida se publica en su
+propio commit; PUBLISHED fija `loop.object` en ella, suma `correction_rounds` y `corrections_by_lineage`, y custodia las respuestas del Principal; CI_VERIFIED
+registra la CI exacta de ese commit; REREVIEW_PENDING abre la solicitud siguiente con su intento reservado y `OpenFindings` = los linajes abiertos. Un intento
+que superaría un tope es P-18 antes de reservar.
+
+### 18.4 Caídas durante un intento
+
+- tras BUDGET_RESERVED: se reanuda el mismo intento, sin lanzamiento nuevo;
+- tras LAUNCHING: decide la operación 7 del adapter ligada al `RunId`. Si arrancó, LAUNCHED o RESULT_RECEIVED; si no arrancó, con la vigencia abierta, vuelve
+  a BUDGET_RESERVED con una invocación nueva reconstruida sobre las imágenes, la misma reserva y la invocación anterior custodiada como histórica; si es
+  indeterminado, LAUNCH_UNCERTAIN con conteo conservador;
+- con la vigencia terminada, un intento no lanzado pasa a CANCELLED_BEFORE_LAUNCH con su prueba de no arranque.
+
+### 18.5 Cierre y bucle nuevo
+
+LOOP_CLOSED se publica en un QU ORDINARY: `loop` vuelve a NONE y la entrada de `architect_budgets[]` se cierra (`closed_at`, `closed_by`). Desde
+ARCHITECT_SATISFIED no hace falta decisión; en otro caso, la decisión `I62-REVIEW-LOOP-CLOSE: <LoopInstanceId>` (con la revocación si la vigencia seguía
+abierta). Un bucle nuevo exige una autorización nueva, empieza otra entrada en cero y hereda en `OpenFindings` los linajes abiertos.
+
+### 18.6 Bucle REVIEWER
+
+Se abre con la autoridad `<path>@<blob>#REVIEWER` del contrato de gate custodiado, sin `instance_id`; sus solicitudes llevan `loop_instance_id` = `null` y
+cuentan en `budgets`. Sigue los pasos de §18.2-§18.4 con `reviewer-result/v1`. REVIEWER_SATISFIED se publica en el QU de la ingestión cuando se cumplen sus
+cuatro condiciones (16.29), y termina la vigencia. LOOP_CLOSED añade su registro a `reviewer_closures[]`, sin decisión desde REVIEWER_SATISFIED o con
+`I62-REVIEWER-LOOP-CLOSE` en otro caso. Una autoridad terminada o sustituida no se reutiliza.
+
+### 18.7 AUTONOMY_GAP
+
+Cuando un relevo lo hace un humano (el Owner o el Coordinator moviendo un artefacto, una orden o un resultado entre roles), la sesión custodia un registro
+AUTONOMY_GAP con: la ronda y la solicitud afectadas, quién hizo el relevo y por qué medio, el artefacto movido con su blob, y la causa (transporte bloqueado,
+OD pendiente u otra). Lo añade a `orchestration.autonomy_gaps[]` en el QU siguiente. Una ronda con un relevo manual sin ese registro no vale como evidencia de
+orquestación autónoma (P-21).

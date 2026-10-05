@@ -278,6 +278,10 @@ disponibles se inspeccionan antes de actuar. AutoCAD debe identificar el commit/
 build local debe registrar commit y resultado. En la siguiente reanudacion el agente verifica esa
 evidencia antes de cambiar un gate a `none`.
 
+**Unidades I62 (inactivo hasta `I62_EFFECTIVE_SHA`, 16.14).** El estado de una unidad I62_DELEGATED no usa el formato de esta sección: es
+`rackcad-automation-state/v2` ([esquema](automation/agent-execution/schemas/automation-state.v2.schema.json)), se escribe solo en los puntos durables
+de 16.25 y conserva los nueve campos de `automation_state` con el mismo significado. Las unidades I61 y DIRECT_ONLY siguen con este formato (16.28).
+
 ## 9. CI fallido y reintentos
 
 Ante CI fallido se inspeccionan el check y sus logs antes de editar. Un intento es una secuencia de
@@ -1105,11 +1109,12 @@ contenido idéntico. Un contenido distinto con el mismo `BindingId` es S-04.
 <AuthorizationId>` en `decisions/<unit>.md`), y para REVIEWER, bajo la autorización que el Coordinator incluya en `RoleRequirements[].Materialization` del
 contrato de gate (`rackcad-gate-contract/v2`). La autorización fija, como mínimo: `Role`, `AuthorizedActions`, `MinimumCapabilities` (cada una en MATCH o
 ABOVE_REQUIRED), `RequiredIndependence`, `EligibleCells` (lista cerrada o el criterio cerrado de ADR-0046 #4), `ModelEffortBounds`, `Permissions` =
-READ_ONLY, `Budget`, `ObjectFamily` y `Validity`. El Principal, **solo si se cumple exactamente**:
+READ_ONLY, `Budget`, `ObjectFamily` y `Validity`; la `ReviewLoopAuthorization` fija además `ContinuesLoopInstanceId` (16.29). El Principal, **solo si se
+cumple exactamente**:
 1. observa un candidato (16.18);
 2. comprueba cada criterio y registra `{CriterionId, Required, Observed, Result, Evidence}`;
-3. materializa el binding con `DecisionRef` = `null` y `AuthorizationRef` = `{Path, Marker, AuthorizationId, Commit, Blob}`; `Commit` es un ancestro del
-   punto que custodia el binding en el que la autorización ya figura, nunca ese mismo punto;
+3. materializa el binding con `DecisionRef` = `null` y `AuthorizationRef` = `{Path, Marker, AuthorizationId, Commit, Blob}`; `Commit` es resoluble por
+   ResolveBranchRef (16.25) desde el punto que custodia el binding, en el que la autorización ya figura, y su imagen nunca es la de ese mismo punto;
 4. lo custodia con su preflight y su comprobación;
 5. lo invoca.
 
@@ -1119,8 +1124,8 @@ materializado nunca lleva un `DecisionRef` que simule una decisión individual q
 el preflight custodiado y con la autorización tal como figura en `AuthorizationRef.Commit`/`Blob`; si no la reproduce, el binding es inválido (P-20).
 
 **Vigencia de acción y acreditación histórica.** Una materialización nueva exige la vigencia de acción de la autorización: termina en el punto que registra
-ARCHITECT_SATISFIED, en el agotamiento, con la revocación, la sustitución o la enmienda custodiadas por el Coordinator, o al pasar `Validity.Until`. Una
-autorización terminada nunca se reutiliza para un binding nuevo. Un binding ya materializado y usado durante la vigencia conserva su acreditación
+ARCHITECT_SATISFIED (en una materialización del REVIEWER, en el que registra REVIEWER_SATISFIED), en el agotamiento, con la revocación, la sustitución o la enmienda custodiadas por el Coordinator, o al pasar `Validity.Until`. Una
+autorización terminada nunca se reutiliza para un binding nuevo ni vuelve a abrir un bucle (16.29). Un binding ya materializado y usado durante la vigencia conserva su acreditación
 histórica: se valida contra la autorización de su `AuthorizationRef`, no contra la vigente. El destino de los intentos en curso al terminar la vigencia es
 de la orquestación (Proposal V14 §20.5.1 y §20.6).
 
@@ -1316,3 +1321,412 @@ revisa el Architect como parte del objeto. La evidencia de fidelidad y de indepe
 | P-25 | degradación semántica observada en la representación entregada al revisor | INPUT_FIDELITY_INVALID: los hallazgos y las disposiciones cuyo envoltorio o cuya clausura la contienen, o cuya independencia queda UNKNOWN, son INVALID_PREMISE y no cambian linajes; si no se puede acotar, no se ingiere nada; el intento cuenta |
 
 Procedimiento del cierre, del preflight de fidelidad y del validador del manifiesto: [agent-execution/README](automation/agent-execution/README.md) §15.
+
+### 16.25 Custodia por unidad (I62): puntos durables, ventana, CAS y rebase
+
+Origen: Proposal V14 §8.1-§8.5, §8.8, §8.9 y Anexo B.8, con la [A-1](initiatives/I-62-A-1.md) acordada (D2-1..D2-12). El estado canónico de una unidad
+I62_DELEGATED es `docs/automation/state/<unit>.yml` con `rackcad-automation-state/v2`
+([esquema](automation/agent-execution/schemas/automation-state.v2.schema.json); contrato semántico, invariantes y reconstrucción: Proposal V14 Anexo B.8 con
+A-1). Cada escritura de ese archivo es un **punto durable**: un commit de la sesión en la rama de la unidad, publicado por CAS, con `record_version` + 1. Solo
+hay puntos durables donde 16.4 permite escrituras Git de la sesión. Procedimiento: [agent-execution/README](automation/agent-execution/README.md) §17.
+
+**Puntos durables:**
+
+| Punto | Cuándo | `window.state` | `principal.state` | Fija |
+|---|---|---|---|---|
+| **BOOTSTRAP** | arranque de la unidad, antes de la revisión de G0, o BOOTSTRAP de adopción (16.28) | CLOSED | HELD | `protocol` con la evidencia de clasificación y `g0_acceptance` PENDING; titular con su preflight y su binding propuesto (`principal.acceptance` PENDING), custodiados en el mismo commit; contadores vacíos |
+| **Q0** | paso (1) de 16.4, obligatorio antes de cada ventana | OPENABLE | HELD | `task_intent` con el contrato custodiado; si es una corrección, `attempts` +1 y su `CorrectionLaunch` (16.27) en el mismo commit |
+| **Q7** | paso (7) de 16.4: tras la verificación y los controles, o tras el cierre declarado de la ventana | CLOSED | HELD | `last_window`, cadenas, contadores desde el diario, manifiesto de custodia |
+| **QU** | actualización del titular sin ventana | CLOSED | HELD | fase, `state`, `gate`, `next_action`, `last_evidence_commit`, la intención siguiente u `orchestration` (16.29); no toca `window`, `last_window` ni los contadores de ventana. `custody.point_kind` = ORDINARY, o REBASE_RECONCILIATION tras un rebase fuera de ventana |
+| **QH** | el titular libera la unidad | CLOSED | RELEASED | la intención siguiente, si existe, y la liberación; el titular liberado no opera después |
+| **QR** | recuperación o transferencia del titular | CLOSED | HELD (nuevo titular) | la designación del Coordinator; si había una ventana posiblemente abierta, su cierre ABANDONED (16.26). Con avance de `main`, es el QR REBASE_RECONCILIATION de una toma con rebase |
+
+Todo commit que modifica el archivo de estado es exactamente uno de estos puntos. Los demás commits de la sesión fuera de una ventana (documentos, evidencia)
+no son puntos durables. Tras un Q0, cualquier commit de la sesión impide abrir la ventana y obliga a cerrarla (T18) y a emitir un Q0 nuevo.
+
+**Ventana de cesión.** Se abre con la primera cesión posterior a un Q0 y se cierra con el Q7 o el QR siguiente:
+- **W-1:** solo se abre con `HEAD` = `origin/<rama>` = un commit Q0;
+- **W-2:** entre el Q0 y el cierre no hay escrituras Git de la sesión; la única excepción es el rebase de 16.7, que no escribe el archivo de estado;
+- **W-3:** el Worker nunca escribe el archivo de estado.
+
+El último punto durable de la rama dice, por sí solo, si puede existir una ventana: **solo si es un Q0**.
+
+**Estado de delegación derivado** (no se almacena; Proposal V14 B.8.2): `DS(L, J)` con `L` = el último punto durable en `origin/<rama>` y `J` = el diario de
+la ventana `L.window.seq` (los `relay-record/v2` con ese `WindowSeq`, encadenados por `PrevRelaySha256`):
+
+| Condición | `DS` | En I-61 (16.6) |
+|---|---|---|
+| CLOSED y `task_intent` = `null` | NONE | ninguna delegación abierta |
+| CLOSED y `task_intent` ≠ `null` | PLANNED | ninguna delegación abierta (solo intención) |
+| OPENABLE; `J` íntegro; sin aceptación | PLANNED | ninguna delegación abierta |
+| OPENABLE; `J` íntegro; aceptación de `d` sin verificación válida ni cierre declarado | **ACCEPTED_OPEN** | **delegación abierta** |
+| OPENABLE; `J` íntegro; aceptación + verificación válida o cierre declarado | CLOSED_PENDING_CUSTODY | ninguna delegación abierta; falta el Q7 |
+| OPENABLE; `J` no disponible o con la cadena rota | UNKNOWN | posiblemente abierta: ninguna aceptación nueva (P-02); reconstrucción (16.26) |
+
+`Exit.OpenDelegations` = 1 con ACCEPTED_OPEN y 0 con NONE, PLANNED o CLOSED_PENDING_CUSTODY. Con UNKNOWN no hay Exit válido (STOP).
+
+**Durable y transitorio.** Es durable en Q0 la intención (`TaskId`, `Attempt`, clase, contrato custodiado, roles planificados con los bindings ya aceptados),
+`attempts` y el `CorrectionLaunch` de una corrección. Entre Q0 y Q7 es transitorio el diario encadenado: aceptación de bindings nuevos, delegación y su
+aceptación, cesiones, terminaciones, handoff, verificación, controles negativos, lanzamientos (también los inciertos), reejecuciones, `RebaseMap` y, en su
+caso, el TRANSFER de T12a. Es durable en Q7 el cierre de la ventana, la custodia del diario (manifiesto TRANSIENT → CUSTODIED en
+`docs/automation/evidence/<unit>-agent/<task>/…`), las cadenas y los contadores. Una referencia transitoria nunca se presenta como evidencia custodiada.
+Ningún SHA se escribe dentro de su propio commit: `ChainBaseSha` (el Q0 de la primera ventana de la tarea) y `VerifiedSha` se fijan en el Q7 siguiente.
+
+**SHAs y CAS.** `BaseSha` = `HEAD` al abrir la delegación = el Q0 de la ventana; `RedSha` y `CurrentSha` son commits del Worker; `Identity` (16.9) no cambia.
+En cada punto durable se lee `record_version` n en `HEAD` = `origin/<rama>`, se escribe n+1 y se publica sin force. Un push rechazado es una transición **no
+acreditada en el remoto**: el commit local se conserva y se inspecciona la causa antes de repetir.
+
+| Causa observada | Tratamiento |
+|---|---|
+| no fast-forward (el remoto avanzó) | `fetch` y clasificación según T10 (16.26) |
+| permisos o autenticación | S-06 |
+| transporte | reintento acotado tras la inspección |
+| estado remoto desconocido | STOP |
+
+Sin servicio de locks ni registro global: Git prueba identidad y remoto, no quién opera en otra máquina.
+
+**Rebase dentro de una ventana activa** (último punto Q0). Rige la reverificación de 16.7 y **no** se inserta ningún QU en la ventana. El `RebaseMap` del
+diario incluye en `StateFields[]` todo SHA persistido del estado que la reescritura afecta (las cadenas de todas las tareas, `chain_red_sha`,
+`last_window.verified_sha`, `unverified_commits[].sha`, `last_evidence_commit` y los campos vivos de la orquestación de abajo). El Q7 o QR que cierra la
+ventana hace la reconciliación durable: fija `custody.last_rebase`, añade a `custody.rebase_history[]` todos los mapas de los rebases de la ventana en el orden
+en que ocurrieron (nunca una composición que pierda un paso) y escribe cada campo afectado con su imagen. Los resultados propios de la ventana se registran ya
+sobre la rama rebasada, y la corrida de CI del RED se sigue citando por el SHA original (`CiRuns`).
+
+**Rebase fuera de una ventana** (titular vigente; T19):
+1. `git fetch`; se registran `branch_before` (= `origin/<rama>`), `main_before` y `main_after`;
+2. rebase; con conflictos, `git rebase --abort` y STOP (16.7);
+3. construcción del `RebaseMap`: cada commit reescrito, del original a su imagen, con `git patch-id` igual, y cada campo SHA del estado, del original a su
+   imagen;
+4. si una imagen o una identidad de parche no se acredita, la rama local vuelve a `branch_before`, no se publica nada y STOP (16.7);
+5. publicación con `git push --force-with-lease=<rama>:<branch_before>`; un rechazo es STOP (T10), sin reintento a ciegas. Este force-push no es un punto
+   durable;
+6. **QU REBASE_RECONCILIATION**, obligatorio antes de cualquier Q0 o acción delegada: custodia el mapa en
+   `docs/automation/evidence/<unit>-agent/rebase/<RunId>/rebase-map.json`, fija `custody.last_rebase`, lo añade a `custody.rebase_history[]`, reescribe cada
+   campo según la tabla siguiente y deja intactos los contadores y las `TaskId` (sin cadena en curso, `TaskId` = SESSION). Se publica por CAS normal, en
+   fast-forward sobre `branch_after`.
+
+Entre los pasos 5 y 6, `HEAD` contiene la imagen del último punto durable con SHAs sin reconciliar. Un evaluador lo detecta (I-H02: un SHA de rama vivo del
+estado que no es ancestro de `HEAD`) y no admite Q0 ni acción delegada hasta el QU.
+
+| Campo | En el QU (o QR) de reconciliación |
+|---|---|
+| `chains[].chain_base_sha`, `chains[].chain_red_sha`, `last_window.verified_sha`, `unverified_commits[].sha` | imagen (`window_seq` y `superseded_by` iguales) |
+| `automation_state.last_evidence_commit` | imagen si es un commit reescrito de la rama; sin cambio si es ancestro de `main_before` |
+| `orchestration.loop.object.commit` | imagen; `path`, `blob`, fase, contadores y linajes iguales |
+| `orchestration.review_requests[].object.commit` (solicitud OPEN) | imagen; mismo `path` y `blob` |
+| intento en INVOCATION_PLANNED o BUDGET_RESERVED | **replanificado**: invocación nueva (`InvocationId` nuevo) reconstruida entera sobre las imágenes (el `Target` y cada referencia de rama de la invocación, resueltos con ResolveBranchRef a su imagen con el mismo `path` y `blob`), con la misma reserva (`reserved_at`, contadores y `BudgetSnapshot` iguales); una referencia que no resuelve es STOP sin publicar |
+| intento en LAUNCHING | **sin cambio**: conserva su invocación y su `Target` como intención histórica; su `Target` debe resolver por ResolveBranchRef con la historia completa de n (`n.custody.rebase_history[]`, que ya termina en el mapa nuevo) y la punta rebasada; si no resuelve, STOP sin publicar. Su destino lo decide después la evidencia de arranque (16.29) |
+| intento en LAUNCHED o posterior; solicitud terminal | sin cambio: histórico, acreditado por su `blob` y resuelto con ResolveBranchRef y EquivalentReviewedObject cuando hace falta |
+| `next_action.target.commit` | imagen del objeto que copia, con el mismo `path` y `blob` |
+| `task_intent.contract` | el contrato custodiado es inmutable; si contiene SHAs reescritos o un `MainSha` obsoleto se reemite (16.7) y el QU lleva la intención con `kind` = REISSUE, o `task_intent` = `null` hasta la reemisión |
+| `counters.rebase_recoveries[].last_rebase_map` | la `StateRef` nueva si el rebase pertenece a esa tarea; `count` según 16.7 |
+| `protocol.effective_sha`, `protocol.basis.*` | sin cambio |
+| `StateRef` (`{path, blob}`) | sin cambio; cada ruta existe con su blob en el árbol del propio punto |
+| `custody.rebase_history[]` | recibe el mapa nuevo (append-only) |
+
+**Ningún SHA se descarta en silencio:** un campo con un SHA de la rama reescrita sin imagen acreditada es STOP, nunca `null` ni borrado. `chain_red_files`
+es durable y no se recalcula. **Otra máquina:** la reconciliación y la Q0 siguiente solo usan lo que hay en el remoto (las imágenes, los mapas custodiados y
+sus `patch-id`); los commits originales no hacen falta.
+
+**`RebaseMap`** (Proposal V14 B.8.7 con A-1 D2-1): `RunId`, `TaskId`, `MainBeforeSha`, `MainAfterSha`, `BranchBeforeSha`, `BranchAfterSha`;
+`Commits[]` = `{OriginalSha, ImageSha, PatchId, PatchIdEqual}` por cada commit que **ese** rebase reescribió (`MainBefore..BranchBefore`), en orden;
+`StateFields[]` = `{Field, OriginalSha, ImageSha}` por cada campo SHA del estado, incluidos los que no cambian y los vivos de la orquestación
+(`orchestration.loop.object.commit`, `orchestration.review_requests[<id>].object.commit` de cada solicitud OPEN y
+`orchestration.review_requests[<id>].attempts[<seq>].Target.commit` de cada intento en INVOCATION_PLANNED o BUDGET_RESERVED); `CiRuns[]`; `Unmapped[]`
+vacío. Un campo sin entrada, una entrada duplicada o una imagen fuera de la rama publicada invalidan el mapa: no se publica y es STOP. **Una entrada solo
+acredita un commit que ese rebase reescribió de verdad:** una entrada compuesta X → X'' de un rebase que no reescribió X nunca sustituye al paso que falta.
+
+**ResolveBranchRef(ref, H, HEAD)**, con `ref` = `{Commit, Path, Blob}` y `H` = `custody.rebase_history[]` del punto que consume la referencia: (1) si
+`Commit` es ancestro de `HEAD` y el blob de `Path` en `Commit` es `Blob`, resuelve a `Commit`; (2) si no, se toma el primer mapa de `H` con `Commit` como
+`OriginalSha` (ninguno → UNRESOLVED) y su `ImageSha` (con `PatchIdEqual`; si no, UNRESOLVED); para cada mapa posterior, en orden, la imagen sigue si figura
+como `OriginalSha`, o debe ser ancestro de su `MainBeforeSha` (si no, falta un paso → UNRESOLVED); (3) resuelve a la imagen solo si es ancestro de `HEAD` y
+el blob de `Path` en ella es `Blob`, con el `PatchId` recalculado igual al del mapa. Nunca se adivina una correspondencia (ni por parecido de parches fuera de
+los mapas, ni por ruta, ni por árbol). UNRESOLVED tiene el efecto que el texto da a una referencia sin ancestro válido (binding inválido, P-20; rechazo de
+A2'; I-S18 en fallo).
+
+**Lectura de la ancestría de las referencias de rama.** Donde un texto exige que el `Commit` de una referencia de rama custodiada (`BindingRef.Location.Commit`
+CUSTODIED, `AuthorizationRef.Commit`, la `AuthorityRevision` de una invocación, los commits de `IndependenceRequirements.ReviewSubject`) sea ancestro del
+punto, se lee: **resoluble por ResolveBranchRef desde el punto que la consume**. La condición sin ciclos se conserva sobre las imágenes. Los artefactos
+históricos nunca se reescriben; una invocación nueva o replanificada reconstruye sus referencias vivas sobre las imágenes.
+
+**EquivalentReviewedObject(A, B, H)** es verdadero solo si `A.path` = `B.path`, `A.blob` = `B.blob` y, además, `A.commit` = `B.commit` o la cadena de mapas de
+`H` prueba que uno es la imagen del otro. Rige toda comparación de `Target`, `EvaluatedObject`, objeto de la solicitud o `loop.object` tras un rebase probado:
+mismo `path` con otro `blob`, o una imagen no probada, no son equivalentes.
+
+**Toma de custodia con avance de `main`** (REBASE_TAKEOVER, T22). Un Principal entrante tras un QH o tras T12b, con `main` avanzado, sigue un solo orden:
+1. **designación acotada** del Coordinator con el marcador `I62-REBASE-TAKEOVER: <BindingId>`, la aceptación de su binding (16.28) y, para T12b, la constancia
+   de la terminación acreditada del titular anterior;
+2. **autoridad limitada a cinco acciones:** `git fetch`; el rebase de WORKFLOW §4; la publicación con `--force-with-lease=<rama>:<branch_before>`; la
+   construcción y custodia del `RebaseMap`; y la publicación de **un** QR combinado. Nada más: ni trabajo ordinario, ni Q0, ni relevos, ni delegaciones;
+3. **QR combinado** (`point_kind` = REBASE_RECONCILIATION) que registra al nuevo titular y su designación, reconcilia todos los SHA con la tabla anterior y, en
+   T12b con último punto Q0, cierra la ventana como ABANDONED con la reconstrucción de 16.26;
+4. solo después del QR el nuevo titular hace trabajo ordinario o publica Q0.
+
+Una imagen o un `patch-id` no acreditables devuelven la rama local a `branch_before`, sin publicar, y STOP. Un `--force-with-lease` rechazado es STOP (T10).
+Una caída entre el force-push y el QR deja el estado sin reconciliar (I-H02): solo el mismo designado, o uno nuevo por decisión del Coordinator, completa el
+QR. Sin avance de `main`, T16 y T12b siguen con un QR ORDINARY sin rebase.
+
+### 16.26 Recuperación y transiciones (I62)
+
+Origen: Proposal V14 §9.1, §9.2 (análisis con SHAs simbólicos en el Anexo F) y Anexo B.8.5-B.8.6.
+
+**Evidencia de fin de un escritor:**
+
+| Evidencia | Definición | Basta para |
+|---|---|---|
+| **TERMINATION_ACCREDITED** | operación 7 del adapter ligada al escritor exacto (`ActorRef`/`RunId`, PID + `CreationDateUtc`) y, para invocaciones de trabajo, `Outcome` registrado. Para sesiones de Principal, la observa otra sesión autorizada o la atesta el Owner, nunca la propia sesión observada | cerrar la cesión o transferir la custodia, con las demás comprobaciones |
+| **ISOLATION_ACCREDITED** | no se admite (no hay mecanismo medido) | — |
+| **NO_OBSERVATION** | ausencia de observación | nada |
+
+Estados del escritor: WRITER_ALIVE, TERMINATION_UNACCREDITED y ORPHAN_CONFIRMED (terminación acreditada sin entrega ni cesión resuelta). Los dos últimos no
+autorizan por sí mismos tomar posesión.
+
+**Transiciones** (P = titular; N y B = titulares nuevos; cada registro durable por CAS):
+
+| # | Desde | Evento y evidencia | Decide | Registro | Límite |
+|---|---|---|---|---|---|
+| T0 | BOOTSTRAP (aceptaciones PENDING) | decisión de G0 con los marcadores (16.28) | Coordinator / P | QU con las aceptaciones y el binding aceptado | Q0 solo tras ACCEPTED en ambas |
+| T1-T7 | Q0 (ventana k) | cesiones al Controller y al Worker, aceptación A1'-A8', entrega (`HEAD` = remoto = G), verificación y controles | P / Coordinator | diario con `WindowSeq` k; **Q7** con `last_window` | sin escritura Git dentro de la ventana |
+| T3' | tras planificar | rechazo en la aceptación | Coordinator | diario; Q7 NOT_ACCEPTED | ningún Worker |
+| T8 | cesión activa | tope vencido: operaciones 6 + 7 | P | diario | sin terminación acreditada → T11 |
+| T9 | cesión al Worker | Worker caído con commits sin handoff, terminación acreditada | P | diario | `Handoff` → BLOCKED; se verifican los commits verificables |
+| T10 | cualquiera | `HEAD`/remoto ≠ lo esperado: (a) avance del Worker en su alcance → normal; (b) commit local de la sesión sin publicar → publicarlo en un punto permitido o P-08 si estaba en cesión; (c) escritura ajena → STOP P-02/S-07; (d) `main` cambió → S-13 / 16.7 | — | según el caso | no todo desajuste va a rebase |
+| T11 | titular ausente | NO_OBSERVATION | Coordinator | ninguno; STOP P-12 | prohibido tomar posesión, reset, borrado o matar procesos |
+| T12a | ORPHAN_CONFIRMED(P), último punto Q0, diario íntegro | designación de N + terminación de P acreditada | Coordinator / N | TRANSFER encadenado en el diario; el Q7 fija el titular | N opera solo tras el TRANSFER |
+| T12b | ORPHAN_CONFIRMED(P), último punto ≠ Q0, o Q0 sin diario o roto | designación + inspección que preserva el trabajo + reconstrucción | Coordinator / N | **QR**; con Q0 previo, cierre ABANDONED | con avance de `main`: T22 |
+| T13 | cualquiera | dos recuperaciones concurrentes | — | gana el primer CAS o la única designación | el perdedor no opera |
+| T14 | cualquiera | cambio de máquina sin acreditar | Coordinator | ninguno; STOP P-13 | no se reconstruye trabajo inaccesible |
+| T15 | cualquiera | registro que contradice el hecho físico | Coordinator | ninguno; S-04/P-02 | prevalecen los hechos (WORKFLOW §10) |
+| T16 | QH, o Q7, QU o QR con titular P, sin avance de `main` | transferencia: terminación de P acreditada + designación con la aceptación del binding de B | Coordinator / B | **QR** ORDINARY con el binding aceptado custodiado | con avance de `main`: T22 |
+| T17 | BOOTSTRAP, Q7, QU o QR | liberación (último punto ≠ Q0) | P | **QH** | P no opera después |
+| T18 | Q0 sin cesión registrada | retirada de la intención (decisión del Coordinator) | P | **Q7** WITHDRAWN | — |
+| T19 | BOOTSTRAP, Q7, QU o QR | rebase de 16.7 (16.25) | P | force-push y **QU** REBASE_RECONCILIATION | ni Q0 ni acción delegada entre ambos |
+| T20 | `/v1` DIRECT_ONLY, unidad posterior, sin delegación | adopción (16.28) | P / Coordinator | BOOTSTRAP de adopción → decisión → **QU** | Q0 solo tras ACCEPTED en ambas |
+| T21 | BOOTSTRAP `/v2` con aceptaciones PENDING y `window.seq` = 0 | decisión DIRECT_ONLY | Coordinator / P | el commit que la registra vuelve a `/v1` | sin pérdida de custodia |
+| T22 | QH, T12b o T16, con avance de `main` | toma con rebase (16.25) | Coordinator / designado | force-push y **un** QR REBASE_RECONCILIATION | antes del QR, solo las cinco acciones |
+
+**Fallos del mandato:** Principal ausente → T11, T12a, T12b o T16; Worker caído → T9; Controller sin contexto → S-12 (16.11); cuota agotada → P-06;
+autenticación perdida → S-06; cambio de máquina → T14; handoff ausente → T9 / `Handoff`; diario perdido → reconstrucción (nunca cero lanzamientos; commits sin
+verificar declarados); artefactos transitorios y trabajo sin commit en el host → se conservan; SHA distinto → T10.
+
+**Reconstrucción sin diario** (Proposal V14 B.8.5). Fuentes admitidas: la historia de `origin/<rama>`, el último punto durable `L` y lo custodiado hasta él,
+las corridas de CI y los procesos de los hosts accesibles; nunca transcripciones ni registros de otras sesiones. Con `L` ≠ Q0, la reconstrucción es completa
+desde Git (`DS` = NONE o PLANNED, contadores durables). Con `L` = Q0 y el diario no disponible o roto:
+1. **terminación:** sin terminación acreditada del titular → STOP P-12; host inaccesible → STOP P-13; si no, los procesos de la lista cerrada de 16.4 en ese
+   host, sin participantes vivos;
+2. **commits posteriores a `L` en el remoto:** R-1 ninguno; R-2 solo commits dentro del `AllowedWriteScope` del contrato de la intención y con el trailer de
+   una celda del catálogo (hubo un Worker y una delegación aceptada); R-3 cualquier otro → T10(c), STOP;
+3. **cierre:** la decisión del Coordinator designa a N, que publica un QR con `closure` ABANDONED, `closure_source` COORDINATOR, `delegation_run_id` =
+   `"UNKNOWN"` (o el probado) y `reconstruction` = el registro; en R-2 los commits del Worker van a `unverified_commits` y la cadena sigue IN_COURSE;
+4. **contadores, por fase en orden** (PLANNING, WORK, VERIFICATION, NEGATIVE): `launched_p` = los lanzamientos que prueba una fuente admitida (R-2 prueba
+   PLANNING = 1 y WORK = 1); `uncertain_p` = 1 si la fase pudo lanzarse y ninguna fuente la prueba ni la excluye; `reconstructed` = true; el Coordinator
+   puede fijar valores mayores, **nunca menores**; `attempts` no cambia;
+5. **reejecución:** la ventana siguiente de la misma tarea cuenta como reejecución de la fase perdida (R-1: PLANNING; R-2: WORK); la tercera → P-04.
+
+Un diario íntegro hasta un registro y roto después, o con un registro que contradice un hecho físico, es S-04 y se trata como no disponible desde el primer
+registro inválido.
+
+**Commits sin verificar.** Mientras `unverified_commits` tenga entradas de una tarea sin `superseded_by`: ninguna verificación de esa tarea cuenta como
+trabajo delegado terminado; la delegación siguiente exige un contrato con `SupersededCommits` = esas entradas y `SupersededBaseSha` = el Q0 de la ventana
+abandonada (si no, A-n); y su verificación evalúa además el `Scope` acumulado de `SupersededBaseSha..CurrentSha` (sin los commits de la sesión), el `Trailer`
+de los sustituidos y el RED con `chain_base_sha`. Con VERIFIED, el Q7 fija `superseded_by`.
+
+| Id | Condición | Comportamiento |
+|---|---|---|
+| P-12 | TERMINATION_UNACCREDITED u ORPHAN_CONFIRMED sin decisión | STOP; sin toma de posesión |
+| P-13 | cambio de máquina sin acreditación | STOP |
+
+### 16.27 Conteo y presupuestos de la ejecución delegada (I62)
+
+Origen: Proposal V14 §9.3 y Anexo B.8.5. Los contadores del bucle de revisión están en 16.29.
+
+| Contador | Evento que cuenta | Autoridad durable | Entre Q0 y Q7 | Sin diario |
+|---|---|---|---|---|
+| `attempts` | **corrección lanzada** (16.8) | `automation_state.attempts`, +1 en el Q0 de la corrección | — | durable |
+| por clase (`TaskId`, `FailureClass`) | corrección lanzada de esa clase, no verificaciones | `counters.correction_launches`, entrada en el mismo Q0 | — | durable; dos verificaciones de la misma entrega no son dos correcciones; una corrección lanzada y caída antes de verificar sí cuenta |
+| reejecuciones BLOCKED (`TaskId`, fase) | reejecución lanzada | `counters.blocked_reruns`, en Q7 | diario | la ventana abandonada cuenta como reejecución de la fase en que se perdió; nunca cero |
+| recuperaciones de 16.7 | recuperación | `counters.rebase_recoveries`, en Q7 | diario | las que prueben los commits reescritos observables |
+| invocaciones | **lanzamiento**, cada uno con `RunId`; un lanzamiento incierto cuenta como lanzado (`LAUNCH_UNCERTAIN`) | `counters.invocations`, en Q7 | diario | lanzados probados + inciertos por fase (16.26); P-07 compara lanzados + inciertos con el tope **antes** de lanzar |
+
+Un rebinding conserva `TaskId` y los contadores. Una `TaskId` nueva solo por decisión del Coordinator; si continúa el mismo trabajo, declara
+`ContinuesTaskId` y **hereda** los contadores. No se puede reiniciar la misma cadena ni la misma clase de fallo. Un contador ausente o contradictorio con
+su evidencia es S-04, y una reconstrucción con valores menores que los probados es inválida.
+
+### 16.28 Arranque, adopción y marcadores (I62)
+
+Origen: Proposal V14 §8.6, §8.7 y §14.0, con A-1 (D1-12, D1-18, D1-20). Este es el texto literal de los marcadores que exige §8.6: la decisión del
+Coordinator los copia literalmente y la entrada de `docs/automation/decisions/<unit>.md` los conserva.
+
+**Aplicabilidad.** La ejecución delegada I62 sigue siendo opt-in (Proposal V14 §14.0). Una unidad **DIRECT_ONLY** usa `rackcad-automation-state/v1` (§8),
+sin `protocol`, `custody`, `counters` ni `orchestration`, y trabaja sin la maquinaria delegada: ni contrato de gate, ni delegación, ni bindings, ni preflight
+del Principal; su trabajo directo autorizado por WORKFLOW, LIFECYCLE y AGENTS no se ve afectado. Una unidad **I62_DELEGATED** usa
+`rackcad-automation-state/v2` con el arranque siguiente. No hay transición inversa: una unidad I62_DELEGATED que deja de delegar no abre ventanas y sigue en
+`/v2` con QU.
+
+**Arranque (Modelo A: observación → propuesta → aceptación → referencia durable):**
+
+| Paso | Quién | Artefacto | Aceptación |
+|---|---|---|---|
+| 1. Observación | la sesión que reclama | su `preflight/v1` con `Action` CUSTODY (TRANSIENT) | — |
+| 2. Propuesta | la sesión | `binding/v1` del Principal: `Scope` UNIT, `Role` PRINCIPAL_COORDINATOR, `Acceptance.State` PENDING | PENDING |
+| 3. **BOOTSTRAP** + push | la sesión | custodia de 1 y 2 en `docs/automation/evidence/<unit>-agent/bootstrap/` y estado `/v2` con `record_version` 1: `protocol.basis` con la evidencia, `g0_acceptance` PENDING, `principal.preflight` y `principal.binding` a esos blobs, `principal.acceptance` PENDING | PENDING / PENDING |
+| 4. Revisión de G0 | Coordinator | decisión con los tres marcadores (abajo) | decidida |
+| 5. Registro + **QU** + push | la sesión | en **un solo commit**: la entrada de decisiones con los marcadores, el `Claim-Id` y la `record_version` del BOOTSTRAP; la versión del binding con `Acceptance` decidida, `DecisionRef` = {ruta de decisiones, marcador} y `Utc`; y un QU con `g0_acceptance` y `principal.acceptance` transicionados y sus `StateRef` a esos blobs | ACCEPTED o REJECTED |
+
+**Reglas:** sin referencias futuras ni propias (los `StateRef` apuntan a blobs del mismo commit; el estado nunca cita su propio blob ni su commit);
+`protocol.basis.claim_commit` = el commit de reclamo si es anterior al BOOTSTRAP, o `null` cuando el reclamo es el BOOTSTRAP. Antes del paso 5, la
+clasificación es PENDING_G0 (STOP P-15 de contratos y delegaciones), Q0 está prohibido (solo QU, QH y QR) y el trabajo no delegado de G0 sigue según
+WORKFLOW. **La aceptación nunca se infiere:** un G0 GATE PASS sin los marcadores no transiciona nada. Clasificación REJECTED → UNKNOWN → STOP, remediable solo
+por una decisión posterior del Coordinator (16.13). Binding del Principal REJECTED → sin Principal aceptado, Q0 sigue prohibido; se remedia con observación y
+propuesta nuevas aceptadas en un QU, o con una transferencia (QR). `protocol.g0_acceptance` cambia una sola vez y `principal.acceptance` una vez por
+titular; `protocol.set`, `protocol.effective_sha` y `protocol.basis` son inmutables desde el BOOTSTRAP.
+
+**Adopción.** En G0, la decisión lleva `I62-DELEGATED-EXECUTION: I62_DELEGATED` con los otros dos marcadores (`protocol.basis.adoption_at` = G0); si es
+DIRECT_ONLY, el commit que la registra vuelve a un `/v1` con los mismos nueve campos de `automation_state` (T21). **Posterior** (de DIRECT_ONLY a
+I62_DELEGATED, T20), con fallo cerrado: (1) unidad posterior a `I62_EFFECTIVE_SHA` (una unidad ANTERIOR sigue en I61 toda su vida), estado `/v1` y ninguna
+delegación abierta; (2) observación y propuesta como en los pasos 1-2; (3) BOOTSTRAP de adopción: `/v2` con `record_version` 1, `adoption_at` =
+MID_INITIATIVE, las dos aceptaciones PENDING, los nueve campos copiados (incluidos `attempts` y `claim_id`) y los contadores de ventana vacíos (los commits
+directos anteriores no son trabajo delegado); (4) decisión de adopción con los tres marcadores, que `g0_acceptance` registra aunque no sea la de G0; (5) QU
+con las transiciones; solo entonces Q0; (6) rechazo DIRECT_ONLY → vuelta a `/v1` (T21).
+
+**Marcadores.** Cada decisión va en un bloque cercado de `docs/automation/decisions/<unit>.md`. La línea del marcador es exacta y los demás campos son líneas
+`Clave: valor`:
+
+```text
+I62-DELEGATED-EXECUTION: I62_DELEGATED | DIRECT_ONLY
+I62-CLASSIFICATION: I62 | REJECTED
+I62-PRINCIPAL-BINDING: <BindingId> ACCEPTED | REJECTED
+Claim-Id: <Claim-Id de la unidad>
+BootstrapRecordVersion: <record_version del BOOTSTRAP>
+```
+
+- **Titular nuevo** (QR, T12a): `I62-PRINCIPAL-BINDING: <BindingId> ACCEPTED` con `Claim-Id`, en la designación del Coordinator.
+- **Toma con rebase** (16.25): `I62-REBASE-TAKEOVER: <BindingId>` junto con `I62-PRINCIPAL-BINDING: <BindingId> ACCEPTED` y, en T12b, la referencia a la
+  terminación acreditada del titular anterior.
+- **Autorización del bucle del Architect** (16.29; materialización: 16.20):
+
+```text
+I62-REVIEW-LOOP-AUTHORIZATION: <AuthorizationId>
+Role: ARCHITECT
+ContinuesLoopInstanceId: null | <loop.instance_id del bucle que sustituye, enmienda o continúa>
+ObjectFamily: <unidad y patrón de rutas>
+CorrectionScope: <alcance de corrección permitido y cierres que no se reabren>
+Budget.<tope>: <entero no mayor que el congelado; un tope ausente no rebaja el congelado>
+Validity.Until: <instante>
+Claim-Id: <Claim-Id de la unidad>
+```
+
+  Los criterios de materialización (`AuthorizedActions`, `MinimumCapabilities`, `RequiredIndependence`, `EligibleCells`, `ModelEffortBounds`, `Permissions`)
+  y las exenciones de opción B van en el mismo bloque, con las claves de 16.20. Los nombres de `Budget.<tope>` son los de `architect_budgets[].caps`:
+  `review_rounds`, `logical_requests`, `transport_reruns_per_request`, `corrections_per_lineage`, `correction_rounds` y `architect_launches`.
+- **Cierre de un bucle del Architect** salvo desde ARCHITECT_SATISFIED: `I62-REVIEW-LOOP-CLOSE: <LoopInstanceId>`; si la vigencia seguía abierta, la misma
+  decisión lleva `I62-REVIEW-LOOP-REVOCATION: <AuthorizationId>`.
+- **Cierre de un bucle REVIEWER por vigencia terminada:** `I62-REVIEWER-LOOP-CLOSE: <LogicalReviewRequestId de la última solicitud del bucle>`; con la vigencia
+  abierta, la misma decisión lleva `I62-REVIEW-LOOP-REVOCATION: <authorization_id>` con la identidad `<path>@<blob>#REVIEWER` (16.29).
+- **Sustitución de una autoridad REVIEWER:** `I62-REVIEWER-AUTHORITY-SUPERSEDED: <authorization_id>`.
+
+### 16.29 Orquestación de roles (I62): bucles de revisión, intentos y presupuestos
+
+Origen: Proposal V14 §20.1, §20.2, §20.4-§20.6, §20.8-§20.11 y Anexo B.8.8, con A-1 (D1-1..D1-21, D2-2, D2-5, D2-6, D2-12). La invocación, los contratos de
+salida, el cierre de insumos y la fidelidad están en 16.23 y 16.24; la materialización autorizada, en 16.20. Solo para unidades I62_DELEGATED.
+Procedimiento: [agent-execution/README](automation/agent-execution/README.md) §18.
+
+**Relevo frente a escalada.** Un RELAY (mover un artefacto de un rol a otro dentro de la autoridad vigente) lo hace el Principal sin intervención del Owner;
+una ESCALATION (decisión del Owner o del Coordinator) se registra con `orchestration.escalation` = OWNER o COORDINATOR y la decisión exacta requerida. **El
+Principal orquesta; la autoridad no cambia:** no declara AGREED, no cierra ni rebaja un REQUIRED, no elige una decisión del Owner, no declara Freeze ni PASS,
+no materializa fuera de los criterios de la autorización y no usa un resultado de REVIEWER para satisfacer al ARCHITECT (P-20).
+
+**Siguiente acción.** El estado `/v2` lleva `orchestration.next_action` estructurado (rol, acción, `target`, unidad, gate, tarea, insumos, capacidades,
+independencia, `invocation_permission`, `budget_remaining`, `expected_output`, condiciones). **Es una función del estado y de los artefactos custodiados y da
+una sola acción:** la escalada nombra el rol que decide; CORRECTING es PRINCIPAL / CORRECT_AND_REREVIEW sobre `loop.object`; una fase pendiente cuya
+solicitud OPEN tiene un intento en INVOCATION_PLANNED o BUDGET_RESERVED, con la vigencia abierta, invoca al revisor del bucle (ARCHITECT o REVIEWER) sobre
+el objeto de esa solicitud, con la autorización vigente como `invocation_permission` y el contrato de salida de su rol (16.23). Si el estado no la determina
+de forma única: STOP (P-17). Ningún hecho de continuación vive solo en un chat, una memoria privada o un prompt copiado a mano.
+
+**Bucle del Architect.** Se ejecuta bajo una `ReviewLoopAuthorization` del Coordinator (16.28), custodiada como `StateRef`. Fases (`loop.phase`):
+
+```text
+REVIEW_PENDING → ARCHITECT_INVOKED → RESULT_INGESTED → { AGREED            → ARCHITECT_SATISFIED(objeto exacto) → siguiente gate / decisión del Owner
+                                                        { CHANGES_REQUIRED  → CORRECTING → PUBLISHED → CI_VERIFIED → REREVIEW_PENDING → ARCHITECT_INVOKED …
+                                                        { BLOCKED_OWNER     → ESCALATE_OWNER (decisión exacta requerida)
+                                                        { INVALID           → reejecución de transporte dentro del tope; agotado → STOP (P-19)
+```
+
+Cada fase se publica en un QU ORDINARY; la ingestión publica directamente la fase siguiente según el veredicto. **`loop.object` cambia solo en CORRECTING →
+PUBLISHED** (y su `commit` pasa a la imagen en una reconciliación, 16.25); se fija al abrir el bucle (NONE → REVIEW_PENDING) y pasa a `null` solo en
+LOOP_CLOSED. La versión corregida se publica en un commit propio para que su CI corra sobre él. ARCHITECT_SATISFIED exige el último intento ingerido VALID
+con un `architect-review-result/v1` AGREED sobre el blob de `loop.object` y ningún linaje REQUIRED en OPEN o STILL_OPEN.
+
+**Identidad del bucle y presupuestos por instancia.** `loop.instance_id` = `ARL-<record_version del QU que abre el bucle>`, inmutable con el bucle abierto.
+`orchestration.architect_budgets[]` lleva una entrada append-only por instancia (`authorizations[]`, contadores, `caps` y cierre): toda solicitud del bucle
+lleva su `loop_instance_id` y cuenta en su entrada, nunca en `budgets`. Los topes efectivos son el mínimo componente a componente de los congelados y del
+`Budget.*` de cada autorización que ha gobernado el bucle; nunca suben sin A-n. Una sustitución, enmienda o continuación (`ContinuesLoopInstanceId` = el
+`loop.instance_id`) no crea entrada ni reinicia contadores; el registro anterior queda ENDED con SUPERSEDED. **LOOP_CLOSED** (cualquier fase → NONE, en un
+QU ORDINARY) exige ninguna solicitud OPEN, ningún intento no terminal, la escalada resuelta y la vigencia terminada (ARCHITECT_SATISFIED, EXHAUSTED, EXPIRED o
+REVOKED), o revocada por la propia decisión de cierre con `I62-REVIEW-LOOP-CLOSE`. Un bucle nuevo exige una autorización nueva con `ContinuesLoopInstanceId`
+= `null` y empieza su entrada en cero; lo consumido se conserva.
+
+| Tope congelado | Valor |
+|---|---|
+| `review_rounds` (versiones revisadas por bucle) | 3 |
+| `logical_requests` | 3 |
+| `transport_reruns_per_request` | 2 |
+| `corrections_per_lineage` | 2 |
+| `correction_rounds` | 2 |
+| `architect_launches` | 9 |
+
+**Intentos.** Una solicitud lógica (`LogicalReviewRequestId`) tiene intentos (`attempt_seq`, cada uno con su `InvocationId` y, desde el lanzamiento, su
+`RunId`). Estados: INVOCATION_PLANNED → BUDGET_RESERVED → LAUNCHING → LAUNCHED → RESULT_RECEIVED → RESULT_INGESTED, más LAUNCH_UNCERTAIN y
+CANCELLED_BEFORE_LAUNCH. La reserva se publica **antes** de lanzar, con `BudgetSnapshot` (los contadores de su entrada de `architect_budgets[]`, o de `budgets`
+para el REVIEWER) y `OpenFindings` (para el ARCHITECT, todo linaje de la unidad con `issuer` ARCHITECT o COORDINATOR en OPEN o STILL_OPEN; para el REVIEWER,
+los de `issuer` REVIEWER; incluidos los heredados de bucles anteriores). Una caída tras BUDGET_RESERVED se reanuda sin lanzamiento nuevo; tras LAUNCHING
+decide la evidencia del invocador (operación 7 ligada al `RunId`): arrancó → LAUNCHED o RESULT_RECEIVED con su invocación original; no arrancó, con la
+vigencia abierta → BUDGET_RESERVED con una invocación nueva reconstruida sobre las imágenes, sin consumir otro lanzamiento; indeterminado → LAUNCH_UNCERTAIN
+con conteo conservador. **Un intento en LAUNCHING o posterior nunca cambia su invocación en sitio.** Un intento nuevo que superaría un tope es P-18 antes de
+reservar. Cambiar de proveedor, modelo, sesión, binding, Principal o etiqueta no reinicia ningún contador.
+
+**Ingestión y linaje.** Cada hallazgo REQUIRED del Architect abre un linaje (`orchestration.findings[]`) que solo cierra o rebaja un resultado con
+autoridad para él: un `architect-review-result/v1` de un binding ARCHITECT del bucle cuyo `EvaluatedObject` es **equivalente** (EquivalentReviewedObject,
+16.25) al objeto de su solicitud, o una decisión del Coordinator para un linaje COORDINATOR; nunca un `reviewer-result/v1`. Una omisión no cierra; AGREED con
+un REQUIRED abierto omitido es INVALID; un resultado cuyo esquema no es el `OutputContract` de su invocación es INVALID (P-19).
+
+**Bucle REVIEWER.** Se abre bajo la autoridad del contrato de gate (`RoleRequirements[].Materialization`), con la identidad
+`<path>@<blob>#REVIEWER`, sin `loop.instance_id`; sus solicitudes llevan `loop_instance_id` = `null` y cuentan en `budgets`. Su `loop.object` cambia en
+CORRECTING → PUBLISHED y la re-revisión se abre sobre el objeto corregido. **REVIEWER_SATISFIED** se publica en el QU que ingiere el resultado, solo si la
+última solicitud del bucle tiene un `reviewer-result/v1` ingerido VALID, ningún intento del bucle es no terminal, ningún linaje BLOCKING con `issuer`
+REVIEWER de la unidad queda en OPEN o STILL_OPEN y el requisito operativo exacto del contrato está satisfecho; la vigencia termina en ese punto.
+ARCHITECT_SATISFIED es solo del bucle del Architect y REVIEWER_SATISFIED solo del REVIEWER; NO_FINDINGS no es ARCHITECT_SATISFIED. **LOOP_CLOSED de
+REVIEWER** (→ NONE en un QU ORDINARY): (S) desde REVIEWER_SATISFIED, sin decisión; o (E) con la vigencia terminada por EXHAUSTED, EXPIRED o REVOKED y la
+decisión `I62-REVIEWER-LOOP-CLOSE` (con la vigencia abierta, la misma decisión la revoca). Cada cierre añade un registro a
+`orchestration.reviewer_closures[]` (append-only), del que se lee el fin histórico. Una autoridad REVIEWER terminada o sustituida
+(`I62-REVIEWER-AUTHORITY-SUPERSEDED`) nunca vuelve a abrir un bucle.
+
+**Portabilidad.** Otro Principal, solo con el estado custodiado y los artefactos de la rama, reconstruye el bucle: el objeto, el resultado, los linajes
+abiertos, el presupuesto y la siguiente acción. **Respaldo manual:** un relevo hecho a mano (el Owner como transporte) se registra como AUTONOMY_GAP en
+`orchestration.autonomy_gaps[]`; sin ese registro, la evidencia de orquestación no vale para el criterio 15 (P-21). **Nivel A:** todo esto son textos,
+esquemas, validadores deterministas y controles reproducibles; ningún servicio. I-62 no se usa como autoridad para desarrollarse a sí misma.
+
+| Id | Condición | Comportamiento |
+|---|---|---|
+| P-17 | `NextAction` no derivable de forma única desde el estado canónico | STOP por ambigüedad material |
+| P-18 | presupuesto del bucle de revisión agotado, o un intento nuevo lo superaría | STOP y escalada, antes de reservar o lanzar |
+| P-21 | relevo manual sin registro AUTONOMY_GAP | la evidencia de orquestación no vale para el criterio 15 |
+
+### 16.30 Planos y MaterializationClose (I62)
+
+Origen: Proposal V14 §15.
+
+| Plano | Qué incluye | Autoridad | Nunca puede |
+|---|---|---|---|
+| (a) real | la sesión de I-62 y la gobernanza | I-61 y el Workflow vigentes | usar reglas de I-62 sin integrar como autoridad |
+| (b) materializado inactivo | las partes I62 de este plan y de los procedimientos subordinados, con la cláusula de vigencia de 16.14 | ninguna hasta la vigencia | gobernar operaciones reales |
+| (c) sistema bajo prueba | un repositorio fixture con su propia activación de prueba (merge marcado `TEST-ACTIVATION`) | las reglas de (b) activadas dentro del fixture | acreditar GATE PASS, READY, aprobación del Owner o integración reales; cambiar `main`, contadores, decisiones o custodia reales (P-16) |
+
+**MaterializationClose** (generaliza el cierre de G2 de 16.3 para las unidades I62): para una unidad con cambios normativos propios, el commit que cierra el
+gate con el **último** cambio a superficies normativas o de plantilla, revisado por el Coordinator contra el Freeze; para una unidad sin cambios normativos,
+el commit de bootstrap o el último de `UNIT_DOC` aceptado por el Coordinator. `AuthorityRevision` sigue 16.3 con ese hito. Un cambio posterior a esas
+superficies invalida el cierre: se cierra de nuevo y se repiten las pruebas afectadas.
+
+| Id | Condición | Comportamiento |
+|---|---|---|
+| P-16 | un resultado del plano (c) intenta actuar sobre el plano (a) | rechazo, sin efecto real |
