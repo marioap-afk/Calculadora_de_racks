@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "G1-RACK-METRICS",
+  "RunId": "R20261002T145411Z-2850",
+  "DelegationRunId": "R20261002T143522Z-0c4d",
+  "WorkRunId": "R20261002T143849Z-3698",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, TerminalEvent=resultado final del subagente; Cession.StartUtc=2026-10-02T14:38:52Z y Outcome.OutputWrittenUtc=2026-10-02T14:43:49.5151479Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json está en ExpectedHandoffPath con {WorkRunId} sustituido. TaskId, Attempt, DelegationRunId y RunId coinciden con la delegación y el registro; OutputWrittenUtc es posterior a StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git cat-file -e confirmó las cuatro autoridades UNIT_DOC en 658b35ad498520ba3c832a96eea4389df16dfa60 y las siete EXTERNAL en 819955d61a6da4c811a1fbd11b5dca13f634b7c; git show leyó Proposal V3, AUTOMATION_PLAN §16, README §8 y AGENTS.md desde esas revisiones. Authorities de delegación y contrato coinciden elemento por elemento."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparación de delegation.json con gate-contract.json: Authorities, Invariants, RequiredTests y StopConditions son iguales; AllowedWriteScope delegado es subconjunto del permitido por el contrato y ForbiddenWriteScope coincide. El registro de planificación informa A1-A8=pass."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git branch --show-current coincide con la rama esperada. git rev-parse HEAD y refs/remotes/origin/architecture/parametros-calculados-resumen-proyecto dieron 4a6c2d889fc2b421076b3165b26b97162439ad57; merge-base --is-ancestor BaseSha CurrentSha y ChainRedSha CurrentSha devolvieron 0. RedSha de la entrega es null."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra LsRemoteSha=4a6c2d889fc2b421076b3165b26b97162439ad57 y OriginMainSha=819955d61a6da4c811a1fbd11b5dca13f634b7c; rev-parse de la rama remota y origin/main confirmó ambos valores."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only BaseSha CurrentSha produjo tests/RackCad.Tests/ComputedParameters/RackMetricIdsTests.cs. Esa ruta está permitida por el contrato, pero no por AllowedWriteScope de la delegación, que contiene solo src/RackCad.Application/ComputedParameters/."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 no produjo cambios. git check-ignore -v sobre worker-handoff.json confirmó la regla .gitignore:3 artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "not_applicable",
+      "Evidence": "RemoteFacts.CurrentRun: push, ref refs/heads/architecture/parametros-calculados-resumen-proyecto, head_sha 4a6c2d889fc2b421076b3165b26b97162439ad57, completed/success; los cuatro jobs requeridos terminaron success. TRX actual: Core 12423/12423; UI 1637 pasadas, 0 fallidas, 17 no ejecutadas. RedPart no aplica: ChainRedSha fc30dc6cf0d2f97e6732bbb8c512623db91c305d ya está acreditado; se cita su corrida push 36972851773, cuyo job Core falló."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "not_applicable",
+      "Evidence": "RequiredTests: FullyQualifiedName~RackCad.Tests.ComputedParameters, mínimo 6. TRX de CurrentSha selecciona 27 y pasa 27; el TRX Core completo pasa 12423, incluida NamespaceFolderGuardTests (7 casos). G1-IDS registra 10/10 y coincide con el TRX de la prueba nueva. git diff --name-only BaseSha CurrentSha -- tests/ contiene solo RackMetricIdsTests.cs y no toca ChainRedFiles; RT calculado desde ChainBaseSha a ChainRedSha contiene RackMetricProviderPurityTests.cs y RackMetricRequestTests.cs. En git show CurrentSha, D-02 lo observa ComputedParametersRackMetricIdsTests; INV-04/05/14/16/34 tienen los casos nombrados en RackMetricRequestTests; INV-09 usa ForbiddenProviderDependencies sobre providers reales y fixture inválido con SelectiveGeometryResolver. Todos esos casos pasan en el TRX actual. RedPart no aplica a esta entrega."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "Worker.Trailer literal: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. git log --format=%H%n%B BaseSha..CurrentSha muestra un commit y el mismo trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegación solicita claude-sonnet-5-5 con effort medium y RoutingEnforcement=required. relay-record-work registra modelo efectivo claude-sonnet-5-5 y effort medium."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisados WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json contra la lista de AUTOMATION_PLAN §16.10: cero coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "Notes del registro de trabajo informa 6 llamadas, 0 denegaciones de permisos o credenciales, 0 avisos de límite y 0 órdenes fallidas."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "TriggeredStopConditions": [
+    "S-04",
+    "P-03"
+  ],
+  "Findings": [
+    "La entrega añade tests/RackCad.Tests/ComputedParameters/RackMetricIdsTests.cs, fuera del AllowedWriteScope registrado en la delegación, aunque dentro del AllowedWriteScope del contrato.",
+    "El registro de planificación afirma igualdad de las seis colecciones entre delegación y contrato; la comparación real muestra que AllowedWriteScope no es igual."
+  ],
+  "RecommendedNextAction": "Resolver la discrepancia entre objetivo y AllowedWriteScope de la delegación, corregir el registro contradictorio y solicitar una nueva verificación."
+}

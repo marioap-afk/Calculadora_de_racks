@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "G3-RACK-BUILTINS",
+  "RunId": "R20261002T220928Z-5706",
+  "DelegationRunId": "R20261002T214309Z-19d7",
+  "WorkRunId": "R20261002T214618Z-be6d",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra Outcome.Kind=COMPLETED, ExitCode=0, TerminalEvent=turn.completed y DeathConfirmed=true."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json está presente; TaskId=G3-RACK-BUILTINS, RunId=R20261002T214618Z-be6d, DelegationRunId=R20261002T214309Z-19d7 y Attempt=2 coinciden. Outcome.OutputWrittenUtc=2026-10-02T21:59:48Z es posterior a Cession.StartUtc=2026-10-02T21:46:22Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leí las autoridades UNIT_DOC en ea70e3b333efec49d3c3b9bc1e5d0395adc71a01, incluidas Proposal V3, A-1.2, A-2, A-3 y decisions/I-63.md §2; las autoridades EXTERNAL en MainSha 819955d61a6da4c811a11fbd11b5dca13f634b7c. La autorización y corrección de secuencia constan en f5c4a5a2; la decisión del Owner consta en BaseSha 712052354e33f84da552fe0be3393df41e0521f4."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json y delegation.json coinciden en TaskId, AuthorityRevision, MainSha, BaseSha, rama, worktree y ámbitos. relay-record-planning.json registra A1-A8=pass."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "git rev-parse HEAD dio eb58a4768d5a68892cce8d85b527f2a1ad1bdc64; git rev-parse --verify 0123456789abcdef0123456789abcdef01234567^{commit} falló (fatal: Needed a single revision; exit 128). worker-handoff.json declara ese valor inexistente como CurrentSha. git merge-base --is-ancestor 712052354e33f84da552fe0be3393df41e0521f4 eb58a4768d5a68892cce8d85b527f2a1ad1bdc64 terminó con exit 0. La rama y el worktree declarados coinciden con los actuales, pero la identidad exigida no."
+    },
+    "Remote": {
+      "Result": "not_run",
+      "Evidence": "16.9 deja sin entrada las comprobaciones posteriores a Identity fallida. Como contraste, RemoteFacts registra CurrentRun 37069993992 con push, ref refs/heads/architecture/parametros-calculados-resumen-proyecto y HeadSha eb58a4768d5a68892cce8d85b527f2a1ad1bdc64; OriginMainSha coincide con MainSha. git ls-remote no devolvió referencias en este entorno."
+    },
+    "Scope": {
+      "Result": "not_run",
+      "Evidence": "16.9 deja esta comprobación sin ejecutar tras Identity fallida. Inspección auxiliar: git diff --name-only 712052354e33f84da552fe0be3393df41e0521f4..eb58a4768d5a68892cce8d85b527f2a1ad1bdc64 mostró 8 archivos, todos bajo AllowedWriteScope; no aparecen archivos de pruebas. git diff --name-only e99621f9 637dce7e5e7811992330b3c305358d9a7542b9f6 -- tests/ mostró 8 rutas de pruebas del RT; el diff actual no las toca."
+    },
+    "CleanTree": {
+      "Result": "not_run",
+      "Evidence": "16.9 deja esta comprobación sin ejecutar tras Identity fallida. Inspección auxiliar: git status --porcelain no mostró cambios; git check-ignore -v sobre gate-contract.json indicó .gitignore:3: artifacts/."
+    },
+    "Ci": {
+      "Result": "not_run",
+      "RedPart": "not_applicable",
+      "Evidence": "No atribuible al CurrentSha declarado, por Identity fallida. Leí relay-record-work.json y TRX: la corrida 37069993992 registra push sobre la ref esperada, HeadSha eb58a4768d5a68892cce8d85b527f2a1ad1bdc64 y cuatro jobs en success; la corrida 37053113058 corresponde al ChainRedSha. El diff de BaseSha a HEAD no toca RT ni ChainRedFiles."
+    },
+    "Tests": {
+      "Result": "not_run",
+      "RedPart": "not_applicable",
+      "Evidence": "No atribuibles al CurrentSha declarado, por Identity fallida. Conteo directo de TRX: CurrentRun 37069993992 Core 12566/12566 aprobadas, 0 fallidas; filtro ComputedParametersSymbols 89/89 aprobadas. RedRun 37053113058 Core 12478 aprobadas, 88 fallidas; filtro 89 seleccionadas, 3 aprobadas y 86 fallidas. UI CurrentRun y RedRun: 1654 resultados, 1637 aprobados, 0 fallidos y 17 NotExecuted; los contadores indican executed=1637 y notExecuted=0. El diff actual no toca RT ni ChainRedFiles."
+    },
+    "Trailer": {
+      "Result": "not_run",
+      "Evidence": "16.9 deja esta comprobación sin ejecutar tras Identity fallida. La entrega declara literalmente `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`; git log --format=%B HEAD muestra ese mismo trailer."
+    },
+    "Routing": {
+      "Result": "not_run",
+      "Evidence": "16.9 deja esta comprobación sin ejecutar tras Identity fallida. relay-record-work.json registra modelo efectivo claude-sonnet-5-5 y esfuerzo high."
+    },
+    "FreeText": {
+      "Result": "not_run",
+      "Evidence": "16.9 deja esta comprobación sin ejecutar tras Identity fallida."
+    },
+    "Denials": {
+      "Result": "not_run",
+      "Evidence": "16.9 deja esta comprobación sin ejecutar tras Identity fallida. El registro de trabajo anota 0 denegaciones de permisos o credenciales y 0 avisos de límite; no se evaluó la transcripción para esta comprobación."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "worker-handoff.json declara CurrentSha=0123456789abcdef0123456789abcdef01234567, que no resuelve a un commit. Git y RemoteFacts identifican eb58a4768d5a68892cce8d85b527f2a1ad1bdc64 como HEAD y como SHA de la corrida push registrada.",
+    "El diff del HEAD real contiene 8 archivos de producción dentro del alcance permitido y no toca RT ni ChainRedFiles. Los TRX inspeccionados coinciden con los conteos registrados, pero no pueden atribuirse al CurrentSha declarado en la entrega.",
+    "El worktree está limpio; git check-ignore confirma que la ruta de entradas queda bajo artifacts/."
+  ],
+  "RecommendedNextAction": "Corregir y volver a entregar worker-handoff.json con el SHA verificado por Git antes de reanudar la verificación."
+}

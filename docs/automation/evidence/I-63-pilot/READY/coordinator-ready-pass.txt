@@ -1,0 +1,172 @@
+I-63 — READY PASS / FINAL CANDIDATE DECLARED
+Doy mi conformidad final de READY-06 sobre:
+
+```
+55a66b3c412fa63a445dc1985977ad660ea72dd7
+```
+
+y clasifico la implementación como CONFORMING contra Freeze V3 + A-1..A-4 + ADR-0049.
+Con eso, READY-01..09 = PASS.
+Disposición de los hallazgos
+DEV-1 — NON-MATERIAL, aceptada. `ProjectPopulationAggregator` duplica la matriz congelada de soporte en vez de derivarla de los providers, pero produce exactamente D-06 y no crea hoy un comportamiento distinto.
+No se corrige en I-63 antes de integrar.
+Registrar como seguimiento:
+
+```
+FOLLOWUP-I63-01
+
+Unificar la fuente de soporte usada por ProjectPopulationAggregator
+con las declaraciones de los providers, evitando dos representaciones
+de la matriz D-06.
+
+No cambiar semántica observable.
+```
+
+O-R6-1 queda unido a ese seguimiento.
+DEV-2 — EDITORIAL, aceptada. El `state/I-63.yml` está atrasado. Debe actualizarse en el commit documental final de integración, no creando ahora otro SHA candidato.
+O-R6-2 se aplica allí.
+O-R6-3 y O-R6-4 se difieren. No son necesarios para READY ni para la corrección de una afirmación normativa falsa. No modifiques ADR-0043 ni FOUNDATIONS antes de integrar solo por esos opcionales.
+FINAL_CANDIDATE_SHA
+Declaro formalmente:
+
+```
+FINAL_CANDIDATE_SHA =
+55a66b3c412fa63a445dc1985977ad660ea72dd7
+```
+
+Este es el SHA de producto validado.
+Base de la declaración:
+
+* READY-01..09 satisfechos;
+* Architect READY-06 = CONFORMING, REQUIRED = 0;
+* Coordinator READY-06 = CONFORMING;
+* `origin/main = 819955d6` en READY-04;
+* CI `37258162825` = 4/4;
+* Core local = `12595/12595`;
+* UI local = `1637 PASS / 17 SKIP`;
+* Build UI = PASS;
+* Build Plugin = PASS;
+* OV = NOT APPLICABLE;
+* Freeze `f61d0aca` / blob `4d5dedce` y A-1..A-4 acreditados;
+* árbol limpio, HEAD/remoto exactos.
+
+El texto literal del Architect puede custodiarse después en el commit documental de integración. Ese commit no se convierte en Candidato.
+Integración autorizada
+Autorizo iniciar la sesión serializada de integración de I-63.
+No autoriza ningún cambio funcional adicional.
+Precondición inicial crítica
+Al abrir la integración:
+
+```
+git fetch origin
+```
+
+y comprobar:
+
+```
+origin/main == 819955d61a6da4c811a11fbd11b5dca13f634b7c
+```
+
+Si main sigue igual
+Continuar. El rebase final debe ser efectivamente no-op respecto del Candidato y:
+
+```
+HEAD == FINAL_CANDIDATE_SHA
+```
+
+debe seguir siendo cierto antes del commit documental.
+Si main avanzó
+STOP.
+No rebases y sigas automáticamente como si `55a66b3c` siguiera siendo Candidato. Un rebase crea otra identidad y obliga a repetir:
+
+```
+READY-04
+→ READY-05
+→ Architect READY-06
+→ Coordinator READY-06
+→ READY-07..09
+→ nuevo FINAL_CANDIDATE_SHA
+```
+
+Commit documental final de la rama
+Después de confirmar que el Candidato sigue válido, abre las ventanas necesarias para los archivos calientes y crea un último commit documental que incluya:
+
+* custodia literal del Architect READY-06;
+* evidencia READY-04..09;
+* decisión `READY = PASS`;
+* `FINAL_CANDIDATE_SHA = 55a66b3c...`;
+* actualización correcta de `state/I-63.yml`;
+* `FOLLOWUP-I63-01` / DEV-1 en `ideas-futuras.md`;
+* DEBT-I63-PROTOCOL-01 ya documentada;
+* `HANDOFF.md` §8–12;
+* `ROADMAP.md` marcado conforme al cierre de integración.
+
+No aplicar O-R6-3 ni O-R6-4.
+Comprobar mecánicamente:
+
+```
+diff FINAL_CANDIDATE_SHA..closing_HEAD
+= documentación únicamente
+```
+
+y exigir CI exacta 4/4 de ese closing SHA.
+Ese SHA de cierre documental no sustituye al Candidato.
+Merge
+Con el cierre documental verde:
+
+```
+git checkout main
+git merge --no-ff architecture/parametros-calculados-resumen-proyecto
+git push origin main
+```
+
+Registrar:
+
+```
+MERGE_SHA = nuevo SHA de main
+```
+
+Luego exigir sobre MERGE_SHA exacto:
+
+```
+Tests Domain + Application = success
+UI Tests                  = success
+Build UI                  = success
+Build Plugin              = success
+coverage artifact         = present
+```
+
+Después ejecutar la comprobación diferida de cobertura del Candidato sobre:
+
+```
+candidate_sha =
+55a66b3c412fa63a445dc1985977ad660ea72dd7
+```
+
+verificando el SHA realmente medido.
+Solo cuando post-merge CI + cobertura de Candidato estén acreditados puede hacerse la limpieza segura de rama/worktree según WORKFLOW.
+Estado formal
+
+```
+G1 = PASS
+G2 = PASS
+G3 = PASS
+G4 = PASS
+
+READY = PASS
+
+Architect READY-06 = CONFORMING
+Coordinator READY-06 = CONFORMING
+
+FINAL_CANDIDATE_SHA =
+55a66b3c412fa63a445dc1985977ad660ea72dd7
+
+OV = NOT APPLICABLE
+
+Integration = AUTHORIZED
+Functional changes during integration = FORBIDDEN
+
+attempts = 2 / 3
+```
+
+El siguiente retorno debe ser integración completa y verificada —con `MERGE_SHA`, CI post-merge, cobertura del Candidato y limpieza— o un STOP real.

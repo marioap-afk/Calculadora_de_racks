@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "G2-POPULATION",
+  "RunId": "R20261002T173233Z-22f2",
+  "DelegationRunId": "R20261002T164053Z-586f",
+  "WorkRunId": "R20261002T164522Z-a109",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra Outcome.Kind=COMPLETED, DeathConfirmed=true, Cession.SessionOperated=false. OutputWrittenUtc=2026-10-02T17:17:32.4181705Z es posterior a Cession.StartUtc=2026-10-02T16:45:28Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json está presente y Test-Json contra docs/automation/agent-execution/schemas/worker-handoff.schema.json devolvió True. TaskId, Attempt, DelegationRunId y RunId coinciden con la delegación y el registro del trabajo; OutputWrittenUtc es posterior a StartUtc. La discordancia de CurrentSha se evalúa en Identity."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leí con git show las autoridades UNIT_DOC en AuthorityRevision 669d8a391f208e1077f136a406fd89058bc0ce6e, incluida Proposal V3 y A-2; leí AUTOMATION_PLAN.md, agent-execution/README.md y AGENTS.md en MainSha 819955d61a6da4c811a11fbd11b5dca13f634b7c. A-2 confirma que G2 verifica la parte de INV-11 sobre ProjectPopulation y la parte de INV-32 sobre ProjectPopulation."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "El registro de planificación marca A1-A8 pass y sus Notes registran igualdad de Authorities, AllowedWriteScope, ForbiddenWriteScope, Invariants, RequiredTests y StopConditions con el contrato. El diff BaseSha..HEAD contiene solo rutas cubiertas por AllowedWriteScope y ninguna ruta de ForbiddenWriteScope."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "git branch --show-current = architecture/parametros-calculados-resumen-proyecto; git rev-parse --show-toplevel = C:/Users/alejandra-mendoza/.codex/worktrees/architecture-parametros-calculados-resumen-proyecto; git rev-parse HEAD y refs/remotes/origin/architecture/parametros-calculados-resumen-proyecto = 844dabb6ffbb8b3ba11a2e9a796b78348857c088. merge-base --is-ancestor BaseSha HEAD y merge-base --is-ancestor RedSha HEAD devolvieron 0. Pero worker-handoff.json declara CurrentSha=0123456789abcdef0123456789abcdef01234567, distinto de HEAD y del remoto."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "El registro del trabajo documenta Exit.HeadSha y Exit.LsRemoteSha = BaseSha 669d8a391f208e1077f136a406fd89058bc0ce6e antes de la cesión, y Entry.HeadSha y Entry.LsRemoteSha = 844dabb6ffbb8b3ba11a2e9a796b78348857c088 después; origin/main y MainSha = 819955d61a6da4c811a11fbd11b5dca13f634b7c. La transición durante la cesión coincide con la semántica indicada. RemoteFacts identifica la corrida push 37039086898 para 844dabb6 y la corrida 37038578016 para RedSha cdc8bbd08655f8ecdf499eb09dfec6581befc682."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha HEAD enumera 11 rutas, todas bajo src/RackCad.Application/ComputedParameters/, tests/RackCad.Tests/ComputedParameters/ o src/RackCad.Plugin/KindHandlers/PushBackKindHandler.cs. No hay cambios en los archivos y directorios prohibidos. No aparecen ProjectSummary Full, RackSummary.Metrics ni RackComputedExpressionContext."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain no produjo salida. git check-ignore -v confirmó que worker-handoff.json, relay-record-work.json y los TRX consultados están ignorados por .gitignore:3 (artifacts/)."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun 37039086898 es event=push, ref=refs/heads/architecture/parametros-calculados-resumen-proyecto, head_sha=844dabb6ffbb8b3ba11a2e9a796b78348857c088, completed/success; los cuatro jobs requeridos constan en success. Su core.trx registra 12477/12477 pasadas y el filtro requerido 54/54 pasadas; ui.trx registra 1637 pasadas y 17 NotExecuted. RemoteFacts.RedRun 37038578016 corresponde al RedSha y su job Core terminó failure; el TRX Core registra 54 seleccionadas, 52 fallidas, 2 pasadas y error=0."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "El filtro del contrato selecciona 54 pruebas en el TRX Core del RedSha: 52 fallidas por aserción y 2 pasadas; error=0, y el nodo fallido inspeccionado muestra una aserción de pertenencia, no un fallo de compilación. En el TRX Core de CurrentSha hay 54/54 pasadas y el total de suite 12477/12477. En el código de CurrentSha, las pruebas verdes incluyen INV-01 TresDefinicionesConReferencias..., INV-02 RackAYrackA..., INV-03 los casos E1-E6, INV-06 UnDisenoIlegible_DeCadaKind..., INV-07 BySystem_SeisTokens..., INV-08 UnIncluidoConFrentesUnavailable..., INV-10 UnaVariableRota..., INV-11 HermanaNoColocadaYDivergente..., INV-12 Allow/Deny/Undetermined, INV-13 ElHandler_AllowNull_DenyMotivo_Undetermined y CatalogoNulo..., INV-32 UnRackMetricRequestDirecto..., INV-33 LaMismaGuardaRechazaElTextoLiteralDe819955d6_YAceptaElOutputBlockedReasonActual, e INV-35 CadaFilaDeD26EstaEnElBuildBomDeSuHandler.... git diff --name-only BaseSha RedSha -- tests/ (RT) contiene ComputedParametersPopulationGuardTests.cs y ComputedParametersPopulationTests.cs; git diff --name-only RedSha CurrentSha -- tests/ está vacío. ChainRedFiles resultantes: esos dos archivos. Las pruebas de G1 permanecen sin cambios entre RED y GREEN y están dentro del TRX Core completo verde."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "El literal declarado en Worker.Trailer es \"Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>\". git log --format=%B BaseSha..HEAD muestra ese trailer en los dos commits del rango."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high; coinciden con la celda/modelo y effort solicitados por la delegación aceptada."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "La búsqueda de los términos de AUTOMATION_PLAN §16.10 en worker-handoff.json no produjo coincidencias; revisé los campos WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "La señal Denials en Notes del registro del trabajo informa cero denegaciones de permisos o credenciales, cero avisos de límite y ninguna orden fallida pendiente. Las dos órdenes fallidas registradas fueron resueltas por llamadas posteriores."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "worker-handoff.json declara CurrentSha=0123456789abcdef0123456789abcdef01234567, mientras que el registro del trabajo, HEAD y refs/remotes/origin de la rama indican 844dabb6ffbb8b3ba11a2e9a796b78348857c088; la evidencia es contradictoria.",
+    "La entrega señala que PushBackBomCommandGuardTests.ThePushBackHandler_ConsumesTheSharedGateAndNotASecondRule depende de texto literal en un comentario, no de comprobar conductualmente la delegación."
+  ],
+  "RecommendedNextAction": "Solicitar al Coordinator que rectifique la discrepancia de CurrentSha en la entrega y vuelva a ejecutar la verificación con el SHA confirmado por Git."
+}

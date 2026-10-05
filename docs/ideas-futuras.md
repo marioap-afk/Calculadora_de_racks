@@ -1586,3 +1586,67 @@ Mientras tanto, la memoria local de Claude conserva una ayuda operativa con la m
 - La fila de I-59 en `docs/ROADMAP.md` de `main` conserva «integracion en proceso … merge/post-merge/cleanup/receipt pendientes» aunque I-59 está integrada. WORKFLOW §2 impide
   corregir una fila ajena fuera de sus tres momentos: lo corrige la propia I-59 o una unidad documental con autoridad. Lección para los cierres preparados antes de integrar:
   la sesión de integración debe reescribir el registro a «integrada (fecha)» en su commit documental final (decisiones de I-61 §20).
+
+## I-63 — hallazgos fuera de alcance y seguimientos (2026-10-05, registrados sin corregir)
+
+Origen: [evidencia de I-63](automation/evidence/I-63-evidence.md) §§37, 46-47 y 50-52 y [decisiones](automation/decisions/I-63.md) §2. Nada de
+esto cambia el Freeze de I-63 (Proposal V3 + A-1..A-4). Cada punto exige una unidad posterior o una A-n con la autoridad que corresponda.
+
+### DEBT-I63-PROTOCOL-01 — discriminación de la verificación del Controller (protocolo de I-61)
+
+**Hallazgo.** Los controles negativos nc1 y nc2 de la verificación del Controller no discriminaron en dos gates de I-63.
+
+| Desviación | Qué pasó |
+|---|---|
+| DEV-G2-01 | nc2 no detectó un `AllowedWriteScope` mutado |
+| DEV-I63-G4-02 | nc1 no detectó un `CurrentSha` inexistente: el Controller tomó el SHA del GREEN que el prompt citaba como contexto narrativo |
+| DEV-I63-G4-03 | nc2 no detectó el `AllowedWriteScope` mutado |
+
+En los tres casos la entrega real se verificó de forma independiente, con la comprobación mecánica de la sesión. El defecto es del
+mecanismo de verificación, no del producto.
+
+**Recomendaciones para la iniciativa propietaria del protocolo (o el Master):**
+1. `Identity` lee el `CurrentSha` de la entrega (mutada en nc1), nunca de la prosa del prompt.
+2. `Scope` se calcula desde la delegación concreta que se verifica, no desde la prosa del contrato ni desde notas de la sesión.
+3. `Identity` y `Scope` toman como fuente con autoridad campos de entrada parseados mecánicamente.
+
+I-63 es consumidor del protocolo: no edita sus documentos (AUTOMATION_PLAN §16, `docs/automation/agent-execution/`) ni su entrada de
+FOUNDATIONS.
+
+### Opcionales de la revisión de arquitectura de G3, diferidos por el Coordinator
+
+- **O-G3-1:** declarar los nombres de miembro `Frentes` y `FrentesVacios` en el catálogo (`RackMetricIds`) y no en
+  `RackComputedExpressionContext`, para que D-03 tenga un solo sitio.
+- **O-G3-2:** error de programación si dos entradas `rack` comparten nombre (`OrdinalIgnoreCase`). Hoy el catálogo cerrado lo impide y el
+  binder toma la primera.
+- **O-G3-3:** quitar la llamada duplicada a `RejectComputedEntries` en `RegistryEvaluation`. Es limpieza no observable.
+- **O-G3-4 — obligación del PRIMER consumidor de `RackComputedExpressionContext`:**
+  - imponer que las entradas `projectVariable` y los valores de `Evaluate` vengan del mismo documento de registro que la Φ2 del rack;
+  - decidir cómo se propaga una variable de proyecto fallida;
+  - abrir `Create`, hoy interno, con su propia iniciativa.
+- **O-G3-5:** aserción de que una entrada `rack` es de ámbito `Rack`.
+
+### Riesgo R-14 de la Proposal V3
+
+Con `ProjectSummary` `Full`, los Selectivos excluidos o no colocados también reciben sus métricas D-28 y, si D-28 llega al paso 5, su
+resolución. El coste se midió en G4 (caracterización con N = 1000). Limitar el paso 5 a los racks incluidos exigiría un estado nuevo, y
+eso queda para una decisión futura.
+
+### FOLLOWUP-I63-01 — una sola fuente para el soporte por sistema del agregador (DEV-1 de READY-06)
+
+**Hallazgo** (Architect, READY-06; NON-MATERIAL, aceptado por el Coordinator). `ProjectPopulationAggregator` escribe a mano el estado de los
+totales de frentes por sistema: `NotApplicable` para Cabecera y Cama y `NotSupported` para el resto. No lo deriva de las declaraciones de
+soporte de los providers (D-06/D-08). Los valores coinciden hoy con la matriz congelada D-06, pero la matriz queda representada en dos
+sitios.
+
+**Seguimiento** (texto del Coordinator): unificar la fuente de soporte usada por `ProjectPopulationAggregator` con las declaraciones de los
+providers, evitando dos representaciones de la matriz D-06. **No cambiar semántica observable.** O-R6-1 queda unido a este seguimiento.
+
+### Opcionales de READY-06 diferidos por el Coordinator
+
+- **O-R6-3:** precisar en la nota posterior de ADR-0043 que el namespace `rack` existe en el núcleo y que sus símbolos solo se ofrecen en
+  `RackComputedExpressionContext`. Sería solo una corrección editorial de la nota.
+- **O-R6-4:** añadir a la entrada de FOUNDATIONS las rutas de las clases de prueba, cuyos archivos tienen otro nombre (por ejemplo,
+  `ComputedParametersRackMetricIdsTests` vive en `RackMetricIdsTests.cs`).
+
+Ninguno es necesario para READY ni corrige una afirmación normativa falsa; no se aplicaron antes de integrar.

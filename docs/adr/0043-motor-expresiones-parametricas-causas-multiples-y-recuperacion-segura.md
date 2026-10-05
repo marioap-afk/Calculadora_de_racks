@@ -2362,3 +2362,14 @@ G7. No se amplían sistemas, propiedades, lenguaje, BOM ni las exclusiones de D2
   [ADR-0021](0021-identidad-unidades-y-presentacion-de-secciones.md),
   [ADR-0025](0025-brazo-cantilever-cuerpo-compuesto-y-conexion.md) y
   [ADR-0035](0035-visibilidad-de-cotas-por-tipo-de-vista.md).
+
+## Notas posteriores
+
+- **2026-10-04 — Sucesor parcial: [ADR-0049](0049-parametros-calculados-namespace-rack-y-resumen-de-proyecto.md)** (I-63),
+  que el Owner aceptó ese mismo día sobre el blob `0b43332248523f206f21a8dcbe383748dde8edef`. ADR-0049 **no reemplaza** a este ADR:
+  lo modifica o sustituye solo en las cláusulas que enumera expresamente en «Se modifica» (D4, D5, D6, D9, D24, D25 y
+  V6 P25.1-P25.4) y «Se sustituye» (V6 P25.5). Activa en memoria el namespace `rack`, reservado aquí para ID20, solo
+  dentro de `RackComputedExpressionContext`; `project` sigue reservado y el único namespace persistible sigue siendo
+  `projectVariable`. Este ADR sigue `aceptado` y vigente en todo lo demás, y su contenido técnico y la aceptación del
+  Owner registrados aquí permanecen inmutables. Registro en
+  [`docs/automation/decisions/I-63.md`](../automation/decisions/I-63.md) §2.

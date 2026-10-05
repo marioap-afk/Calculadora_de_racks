@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "G1-RACK-METRICS",
+  "RunId": "R20261002T145412Z-f0cd",
+  "DelegationRunId": "R20261002T143522Z-0c4d",
+  "WorkRunId": "R20261002T143849Z-3698",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra Outcome.Kind=COMPLETED, DeathConfirmed=true y OutputWrittenUtc=2026-10-02T14:43:49.5151479Z; Cession.StartUtc=2026-10-02T14:38:52Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json existe en las entradas de esta verificación; TaskId=G1-RACK-METRICS, Attempt=2, DelegationRunId=R20261002T143522Z-0c4d, RunId=R20261002T143849Z-3698; su fecha de salida es posterior al inicio de la cesión."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Comparé Authorities de delegation.json con gate-contract.json: igualdad exacta, orden incluido. AuthorityRevision 658b35ad498520ba3c832a96eea4389df16dfa60 es ancestro de BaseSha a2d2b0a60709156b557292eb019957898db1fb09. Leí UNIT_DOC desde AuthorityRevision y EXTERNAL desde MainSha 819955d61a6da4c811a11fbd11b5dca13f634b7c; la punta de origin/main coincide con MainSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Las seis colecciones Authorities, AllowedWriteScope, ForbiddenWriteScope, Invariants, RequiredTests y StopConditions de delegation.json coinciden exactamente con gate-contract.json. RequiredTests: RackCad.Tests.csproj, filtro FullyQualifiedName~RackCad.Tests.ComputedParameters, MinSelected=6, ExpectRed=true."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD y la rama remota dieron 4a6c2d889fc2b421076b3165b26b97162439ad57; la rama es architecture/parametros-calculados-resumen-proyecto. git merge-base --is-ancestor confirmó BaseSha a2d2b0a60709156b557292eb019957898db1fb09 como ancestro. RedSha es null."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra LsRemoteSha=4a6c2d889fc2b421076b3165b26b97162439ad57 y OriginMainSha=819955d61a6da4c811a11fbd11b5dca13f634b7c; ambos coinciden con la punta de rama y origin/main verificadas."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only a2d2b0a60709156b557292eb019957898db1fb09 4a6c2d889fc2b421076b3165b26b97162439ad57 muestra solo tests/RackCad.Tests/ComputedParameters/RackMetricIdsTests.cs, dentro de AllowedWriteScope. El diff no modifica producción ni los dos ChainRedFiles."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 no mostró cambios; HEAD está en la punta remota. git check-ignore sobre la ruta de worker-handoff.json devolvió artifacts/orchestration/I-63/G1-RACK-METRICS-nc3/2/R20261002T145412Z-f0cd/inputs/worker-handoff.json."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "not_applicable",
+      "Evidence": "RemoteFacts.CurrentRun y TRX 37021876416 acreditan event=push, ref=refs/heads/architecture/parametros-calculados-resumen-proyecto, head_sha=4a6c2d889fc2b421076b3165b26b97162439ad57 y los cuatro jobs requeridos en success. El TRX Core registra 12423/12423 pasadas. RedPart not_applicable: ChainRedSha fc30dc6cf0d2f97e6732bbb8c512623db91c305d ya tiene corrida push 36972851773; esa corrida Core registró 17 fallos esperados."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "not_applicable",
+      "Evidence": "TRX CurrentSha 37021876416: el filtro requerido seleccionó 27, pasaron 27 y fallaron 0; suite Core 12423 pasaron y 0 fallaron; NamespaceFolderGuardTests: 7 pasaron. La prueba nueva ComputedParametersRackMetricIdsTests aporta los seis pares D-02 en ambos sentidos, catálogo de seis IDs, regla del token y comparación Ordinal; el TRX CurrentSha muestra sus diez casos pasados. Pruebas intactas que observan INV-04: INV04_Fondo0Con4FrentesUnoVacio_Y_Fondo1Con6_FrentesEsCuatro e INV04_DisenoSinCeldas_DaLoMismo_LasBahiasDelFondo0; INV-05: INV05_TarimaDePisoSinLarguero_NoEsVacia_UnFrenteSinCeldasSi; INV-09: INV09_LaGuardaPasaEnCadaArchivoRealDeProvider_Y_DetectaElFixtureInvalido; INV-14: INV14_Selectivo_UnaSolaResolucion_EnElCostadoDeResolucion e INV14_PushBack/Cabecera_CeroResolucionesYCeroLecturas_EnElCostadoDelLector; INV-16: INV16_KindsMezclados_DanUnavailableKindIncoherent e INV16_KindAusente_DaUnavailableKindAbsent; INV-34: pruebas PushBack, Cabecera, Selectivo divergente, ilegible y válido. Todas aparecen pasadas en el TRX CurrentSha. ChainRedFiles calculados con git diff ChainBaseSha..ChainRedSha -- tests/: RackMetricProviderPurityTests.cs y RackMetricRequestTests.cs; el diff BaseSha..CurrentSha no toca esos archivos. No se exige un RED nuevo para esta entrega."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B a2d2b0a60709156b557292eb019957898db1fb09..4a6c2d889fc2b421076b3165b26b97162439ad57 muestra el trailer declarado literalmente: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. Concuerda con el modelo efectivo claude-sonnet-5-5 del registro."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "La delegación solicita la celda anthropic/subagent/claude-sonnet-5-5 con effort medium; relay-record-work.json registra ModelEffective=claude-sonnet-5-5 y EffortEffective=medium. RoutingEnforcement=required y no hay discrepancia."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json.WorkCompleted contiene un término reservado por AUTOMATION_PLAN §16.10; por ello el texto libre de la entrega no cumple esta comprobación."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "La señal Denials de relay-record-work.json registra 0 denegaciones de permisos o credenciales, 0 avisos de límite y 0 órdenes fallidas; no hay denegaciones pendientes."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "WorkCompleted incluye un término reservado de §16.10; las demás comprobaciones evaluadas pasan.",
+    "La sesión registra que la ejecución de pruebas local se hizo antes del commit (TreeSha=null); las corridas CI verificadas corresponden al SHA actual."
+  ],
+  "RecommendedNextAction": "Solicitar una entrega corregida cuyo texto libre cumpla §16.10 y volver a verificarla."
+}

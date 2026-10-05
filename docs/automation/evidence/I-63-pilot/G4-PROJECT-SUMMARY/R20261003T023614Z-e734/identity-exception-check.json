@@ -1,0 +1,19 @@
+{
+  "GreenSha": "4f45f4464f5d434f7fa478fea1117d82283ee997",
+  "HeadSha": "7bd5a7438c9327b82203ae77d0312104c07509bb",
+  "OriginBranchSha": "7bd5a7438c9327b82203ae77d0312104c07509bb",
+  "Ancestor": true,
+  "DiffFiles": 20,
+  "NonDocsFiles": [],
+  "FunctionalPathsChanged": [],
+  "SrcTree": [
+    "5d3bba74042ca62adcb1986b0276f9a30b01923d",
+    "5d3bba74042ca62adcb1986b0276f9a30b01923d"
+  ],
+  "TestsTree": [
+    "28bc25cbeab630d996b883dbc2e408a12d8c448e",
+    "28bc25cbeab630d996b883dbc2e408a12d8c448e"
+  ],
+  "FunctionalCi": "37085650331 (push, 4f45f446, cuatro jobs success)",
+  "Result": "PASS"
+}

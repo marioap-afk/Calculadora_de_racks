@@ -1,0 +1,56 @@
+I-63 — Encargo de ARCHITECTURE_REVIEW de G3 (diff del núcleo verificado), del Coordinator de I-63, por relevo de la sesión principal.
+
+Eres el mismo Architect de R1-R3 de I-63. Revisión en SEPARATE SESSION y de SOLO LECTURA: no escribas en el repositorio, no hagas commits ni push, y no ejecutes nada que modifique el worktree.
+
+1. IDENTIDAD DE LA REVISIÓN
+- Worktree: C:\Users\alejandra-mendoza\.codex\worktrees\architecture-parametros-calculados-resumen-proyecto (rama architecture/parametros-calculados-resumen-proyecto).
+- SHA verificado exacto: eb58a4768d5a68892cce8d85b527f2a1ad1bdc64 (VerifiedSha de la verificación R20261002T220419Z-26c9: EXECUTION_VERIFIED, 14/14 en pass).
+- CI push del SHA exacto: corrida 37069993992, success en los cuatro jobs; Core 12566/12566; filtro ComputedParametersSymbols 89/89; UI 1637 superadas y 17 omitidas por Skip.
+- Comprobación mecánica de Scope de la sesión: PASS. Son 8 archivos, todos de producción dentro del alcance; ninguno prohibido ni del RED de la cadena.
+- Controles negativos nc1-nc3: los tres cumplen su oráculo (nc1 Identity, nc2 Scope con C-05, nc3 FreeText).
+- Diff a revisar (orden del Coordinator: AuthorityRevision de G3 .. VerifiedSha): git diff ea70e3b333efec49d3c3b9bc1e5d0395adc71a01..eb58a4768d5a68892cce8d85b527f2a1ad1bdc64
+  - Código: los 8 archivos de src/ (git diff ea70e3b3..eb58a4768d5a68892cce8d85b527f2a1ad1bdc64 -- src/).
+  - El resto del rango es documentación de la unidad.
+  - El GREEN es el commit eb58a4768d5a68892cce8d85b527f2a1ad1bdc64 sobre 71205235.
+- Contexto de solo lectura:
+  - las pruebas RED protegidas que fijan la API: git diff e99621f9..637dce7e -- tests/ (RED de G3-T1, acreditado en R20261002T194212Z-73b1);
+  - la A-3, en docs/initiatives/I-63-proposal-v3-amendment-a3-inv22-diagnostico.md.
+
+2. AUTORIDADES
+- Proposal V3 congelada: docs/initiatives/I-63-proposal-v3.md, Freeze f61d0aca, blob 4d5dedce.
+- A-1 (658b35ad), A-2 (669d8a39) y A-3 (ea70e3b3).
+- ADR-0043 D1, D9 y D24.
+- AGENTS.md, «Convenciones arquitectónicas».
+
+3. FOCO OBLIGATORIO (orden del Coordinator)
+- D-16:
+  - núcleo neutral; namespace rack en memoria; validez de clave por namespace;
+  - índices por namespace en SymbolTable; binder y formatter según D-16.5-6; CanonicalShape según D-16.7;
+  - sin cambios en lexer, parser, evaluador, límites ni catálogo de diagnósticos;
+  - guarda R4 en DependencyGraph y RegistryEvaluation.
+- D-18 y D-19: persistencia cerrada con la tabla de tokens persistidos de D9 (solo projectVariable), NO ampliada; fuera del contexto de rack, nombres, formatter y diagnósticos sin cambios.
+- Conservación de projectVariable: claves, comparador, búsqueda, AmbiguousName/OperatorInName, formato y persistencia.
+- Namespace rack; índices por namespace; binder; formatter.
+- Computed como hoja fuera del registro (INV-27); sin segundo motor de evaluación (RackComputedExpressionContext evalúa con ExpressionEvaluator).
+- D-17 (4-6): RackComputedExpressionContext fuera de Expressions, construido con resultados terminados y con propagación por estado sin valor parcial.
+- INV-28 intacto (las cuatro suites sin modificar y en verde).
+- INV-22 (A-3):
+  - Rack.#{zzz} da un InvalidQualifier (11, SyntaxAndLimits) en 5+6, sin árbol;
+  - el caso de una clave de 32 caracteres hexadecimales conserva su UnexpectedToken; no es requisito de G3, y alterarlo sería STOP C-12.
+
+4. PUNTOS DECLARADOS QUE CONVIENE QUE JUZGUES
+- Limitaciones conocidas declaradas por el Worker de T2:
+  - RackComputedExpressionContext.Create es interno (costura como ExpressionContext.Create); el consumo desde Plugin o ID23 queda para su iniciativa;
+  - los nombres de miembro Frentes y FrentesVacios están declarados en RackComputedExpressionContext, porque el catálogo de G1 no los traía.
+- Pregunta abierta del Worker de T1, que la sesión remitió a esta revisión:
+  - si los nombres de API que fijan las pruebas RED son aceptables;
+  - si basta que el mensaje del rechazo de INV-27 contenga «Computed»;
+  - si es aceptable que no haya una API con nombre para la tabla de tokens persistidos de D9 (se prueba por comportamiento).
+
+5. RESULTADO ESPERADO (uno de tres)
+- CONFORMING;
+- CHANGES REQUIRED, con cada REQUIRED numerado, archivo y línea, y la regla del Freeze que incumple (los cerrarás tú mismo cuando se corrijan);
+- BLOCKED — OWNER DECISION, con la decisión que hace falta.
+- Separa REQUIRED de OPCIONALES.
+- Formato como en R1-R3: identidad de la revisión, disposición por punto del foco, puntos acordados, desacuerdos, riesgos materiales y veredicto.
+- Responde a la sesión «I - 63» por SendMessage.

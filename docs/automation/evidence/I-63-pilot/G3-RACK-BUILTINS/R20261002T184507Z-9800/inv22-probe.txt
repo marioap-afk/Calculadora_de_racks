@@ -1,0 +1,12 @@
+TEXT: Rack.#{zzz}
+  parse.Succeeded=False
+  parse diagnostics: InvalidQualifier@5+6
+    InvalidQualifier class=SyntaxAndLimits span=5+6 limit=
+TEXT: Rack.#{zzz} * 2
+  parse.Succeeded=False
+  parse diagnostics: InvalidQualifier@5+6
+    InvalidQualifier class=SyntaxAndLimits span=5+6 limit=
+TEXT: Rack.#{zzz}+1
+  parse.Succeeded=False
+  parse diagnostics: InvalidQualifier@5+6
+    InvalidQualifier class=SyntaxAndLimits span=5+6 limit=

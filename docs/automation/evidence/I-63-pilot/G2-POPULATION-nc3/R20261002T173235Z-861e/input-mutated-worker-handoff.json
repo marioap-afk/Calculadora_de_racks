@@ -1,0 +1,206 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "G2-POPULATION",
+  "RunId": "R20261002T164522Z-a109",
+  "DelegationRunId": "R20261002T164053Z-586f",
+  "Initiative": "I-63",
+  "Gate": "G2",
+  "Attempt": 2,
+  "BaseSha": "669d8a391f208e1077f136a406fd89058bc0ce6e",
+  "RedSha": "cdc8bbd08655f8ecdf499eb09dfec6581befc682",
+  "CurrentSha": "844dabb6ffbb8b3ba11a2e9a796b78348857c088",
+  "Branch": "architecture/parametros-calculados-resumen-proyecto",
+  "Worktree": "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-parametros-calculados-resumen-proyecto",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.Application/ComputedParameters/ProjectPopulation.cs",
+    "src/RackCad.Application/ComputedParameters/ProjectPopulationAggregator.cs",
+    "src/RackCad.Application/ComputedParameters/RackMetricDesignReader.cs",
+    "src/RackCad.Application/ComputedParameters/RackMetricModels.cs",
+    "src/RackCad.Application/ComputedParameters/RackMetricPopulationInput.cs",
+    "src/RackCad.Application/ComputedParameters/RackMetricRequest.cs",
+    "src/RackCad.Application/ComputedParameters/RackOutputVerdict.cs",
+    "src/RackCad.Application/ComputedParameters/RackPopulationEvaluationCounter.cs",
+    "src/RackCad.Plugin/KindHandlers/PushBackKindHandler.cs",
+    "tests/RackCad.Tests/ComputedParameters/ComputedParametersPopulationGuardTests.cs",
+    "tests/RackCad.Tests/ComputedParameters/ComputedParametersPopulationTests.cs"
+  ],
+  "WorkCompleted": "Implementado en Application, bajo ComputedParameters, la poblacion cotizable de D-10 (E1..E6 con D-10a y D-11) sobre el contrato de entrada sintetico RackMetricPopulationInput, ProjectPopulation (D-20 nivel Population, sin metricas por rack), la agregacion de D-12 como funcion pura (ProjectPopulationAggregator), el veredicto unico RackOutputVerdict de D-27 con su via del handler, las seis filas de D-26 declaradas por RackMetricDesignReader (INV-35) y el contador unico de evaluaciones de poblacion (RackPopulationEvaluationCounter, INV-32). En el Plugin, PushBackKindHandler.OutputBlockedReason delega en RackOutputVerdict.HandlerBlockedReason sin cambiar su comportamiento observable. Ampliaciones sin cambio de comportamiento de archivos de G1: dos razones de agregado en UnavailableReasonKind y UnavailableReason (D-09), ClassifyKind de RackMetricRequest pasa de private a internal para reutilizar la unica regla de E3, y PresenceRows en RackMetricDesignReader. RED en cdc8bbd0 (54 seleccionadas, 52 fallan por asercion, 2 pasan: INV12 Allow trivial y D-20 estructural); GREEN en 844dabb6 con el filtro 54/54 y la suite Core completa 12477/12477. No se modifico ninguna prueba del RED entre los dos commits. No se implementa ProjectSummary Full, RackSummary.Metrics ni RackComputedExpressionContext. GATE PASS.",
+  "TestsExecuted": [
+    {
+      "RunRef": "RED-1",
+      "Command": "/c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.ComputedParametersPopulation\" --logger \"trx;LogFileName=RED-1.trx\" --results-directory artifacts/orchestration/I-63/G2-POPULATION/2/R20261002T164522Z-a109/tests/RED-1 --nologo -v q",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-63/G2-POPULATION/2/R20261002T164522Z-a109/tests/RED-1/RED-1.trx"
+    },
+    {
+      "RunRef": "GREEN-1",
+      "Command": "/c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.ComputedParametersPopulation\" --logger \"trx;LogFileName=GREEN-1.trx\" --results-directory artifacts/orchestration/I-63/G2-POPULATION/2/R20261002T164522Z-a109/tests/GREEN-1 --nologo -v q",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-63/G2-POPULATION/2/R20261002T164522Z-a109/tests/GREEN-1/GREEN-1.trx"
+    },
+    {
+      "RunRef": "GREEN-2",
+      "Command": "/c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.ComputedParametersPopulation\" --logger \"trx;LogFileName=GREEN-2.trx\" --results-directory artifacts/orchestration/I-63/G2-POPULATION/2/R20261002T164522Z-a109/tests/GREEN-2 --nologo -v q",
+      "Phase": "GREEN",
+      "TreeSha": "844dabb6ffbb8b3ba11a2e9a796b78348857c088",
+      "ResultsFile": "artifacts/orchestration/I-63/G2-POPULATION/2/R20261002T164522Z-a109/tests/GREEN-2/GREEN-2.trx"
+    },
+    {
+      "RunRef": "GREEN-FULL",
+      "Command": "/c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=GREEN-FULL.trx\" --results-directory artifacts/orchestration/I-63/G2-POPULATION/2/R20261002T164522Z-a109/tests/GREEN-FULL --nologo -v q",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-63/G2-POPULATION/2/R20261002T164522Z-a109/tests/GREEN-FULL/GREEN-FULL.trx"
+    },
+    {
+      "RunRef": "GREEN-FULL-2",
+      "Command": "/c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=GREEN-FULL-2.trx\" --results-directory artifacts/orchestration/I-63/G2-POPULATION/2/R20261002T164522Z-a109/tests/GREEN-FULL-2 --nologo -v q",
+      "Phase": "GREEN",
+      "TreeSha": "844dabb6ffbb8b3ba11a2e9a796b78348857c088",
+      "ResultsFile": "artifacts/orchestration/I-63/G2-POPULATION/2/R20261002T164522Z-a109/tests/GREEN-FULL-2/GREEN-FULL-2.trx"
+    },
+    {
+      "RunRef": "RELEVANT-1",
+      "Command": "/c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~ComputedParameters|FullyQualifiedName~NamespaceFolderGuardTests|FullyQualifiedName~PushBackBomCommandGuardTests|FullyQualifiedName~PushBackOutputGateTests\" --logger \"trx;LogFileName=RELEVANT-1.trx\" --results-directory artifacts/orchestration/I-63/G2-POPULATION/2/R20261002T164522Z-a109/tests/RELEVANT-1 --nologo -v q",
+      "Phase": "RELEVANT",
+      "TreeSha": "844dabb6ffbb8b3ba11a2e9a796b78348857c088",
+      "ResultsFile": "artifacts/orchestration/I-63/G2-POPULATION/2/R20261002T164522Z-a109/tests/RELEVANT-1/RELEVANT-1.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "RED-1",
+      "Selected": 54,
+      "Passed": 2,
+      "Failed": 52,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.ComputedParametersPopulationTests.INV03_E3_KindCoherente_CadaMezclaDaSuClasificacion(scenario: \"comparador-Ordinal-Selective\", expected: \"Excluded(KindUnknown)\")",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV03_E3_KindCoherente_CadaMezclaDaSuClasificacion(scenario: \"Known-y-KindUnknown\", expected: \"Undetermined(KindIncoherent)\")",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV06_UnDisenoSinLaSeccionDeSuKind_EsIlegible_NuncaSeExcluyeNiSeCuentaEnSilencio(kind: \"dynamic\")",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV03_E1_UnaDefinicionColocadaSinIdentidadDejaLaCoberturaSinAcreditar_SinColocarSeIgnora(shape: \"unreadable\", references: 0, accredited: True)",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV03_E3_KindCoherente_CadaMezclaDaSuClasificacion(scenario: \"KindUnknown-tokens-distintos\", expected: \"Undetermined(KindIncoherent)\")",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV03_E6_ElVeredictoDeSalida_DeterminaLaPertenenciaDePushBack(scenario: \"resolvefailed\", expected: \"Undetermined(ResolveFailed)\")",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV03_E4_HermanasDivergentes_SonExcluidasSiblingsDivergent_ConDiagnostico",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV32_UnRackMetricRequestDirecto_DejaElContadorEnCero_ProjectPopulationDelMismoRackLoIncrementa",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV03_E4_UnaHermanaIlegibleParaLaAutoridad_DaUndeterminedDesignUnreadable",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV03_ElOrdenDeD10_LaPrimeraCondicionQueDecideGana",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV06_UnDisenoIlegible_DeCadaKind_EsUndeterminedDesignUnreadable_YElTotalNoSeAcredita(kind: \"cama\")",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV07_ConLosSeisKindsPresentes_CadaRackCountEsUno_Y_LaSumaEsSeis",
+        "RackCad.Tests.ComputedParametersPopulationGuardTests.INV35_LaProduccionDeclaraLasSeisFilasDeD26_EnElOrdenDeLosSeisKinds",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV01_VariasVistasYColocacionesNoAumentanElConteo_DosRacksDan2",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV03_E6_ElVeredictoDeSalida_DeterminaLaPertenenciaDePushBack(scenario: \"deny-catalogo-vacio\", expected: \"Excluded(OutputDenied)\")",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV06_UnDisenoSinLaSeccionDeSuKind_EsIlegible_NuncaSeExcluyeNiSeCuentaEnSilencio(kind: \"cabecera\")",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV03_E2_UnRackSinColocar_EsExcluidoNotPlaced_SinDiagnostico",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV03_E6_ElVeredictoDeSalida_DeterminaLaPertenenciaDePushBack(scenario: \"loadfailed\", expected: \"Undetermined(CatalogUnavailable)\")",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV03_E3_KindCoherente_CadaMezclaDaSuClasificacion(scenario: \"Known-distintos\", expected: \"Undetermined(KindIncoherent)\")",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV02_RackAYrackA_SonUnRack_ConLaGrafiaMinimaOrdinal_AunConElOrdenInvertido",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV06_UnDisenoIlegible_DeCadaKind_EsUndeterminedDesignUnreadable_YElTotalNoSeAcredita(kind: \"cantilever\")",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV13_CatalogoNulo_SeNormalizaAVacioYSeEvaluaComoHoy_NoEsCatalogUnavailable",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV10_UnaVariableRota_NoCambiaTotalRacks_ElSelectivoSigueIncluido_ConFrentesUnavailableEffectiveFailed",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV06_UnDisenoIlegible_DeCadaKind_EsUndeterminedDesignUnreadable_YElTotalNoSeAcredita(kind: \"pushback\")",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV03_E3_KindCoherente_CadaMezclaDaSuClasificacion(scenario: \"todas-KindAbsent\", expected: \"Excluded(KindAbsent)\")",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV07_BySystem_SeisTokensEnOrdenFijo_SistemasAusentesRackCountCero_Y_SumaIgualATotalRacks",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV11_HermanaNoColocadaYDivergente_ExcluyeSiblingsDivergent_YEsDeterministaAnteElOrdenDeEntrada",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV08_UnIncluidoConFrentesUnavailable_HaceUnavailableElAgregado_SinParcial_YTotalRacksSigueAvailable",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV08_UnRackSinMetricaEnLaEntrada_NuncaSeSaltaEnSilencio",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV03_E3_KindCoherente_CadaMezclaDaSuClasificacion(scenario: \"KindAbsent-y-Known\", expected: \"Undetermined(KindIncoherent)\")",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV12_Deny_PushBackConMotivoDeRackBomOutputGate_AunConCatalogoVacioCargado",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV03_E6_ElVeredictoDeSalida_DeterminaLaPertenenciaDePushBack(scenario: \"allow\", expected: \"Included\")",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV03_E6_LosKindsDistintosDePushBack_NoLeenDisenoNiCatalogo_SeIncluyen",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV06_UnDisenoSinLaSeccionDeSuKind_EsIlegible_NuncaSeExcluyeNiSeCuentaEnSilencio(kind: \"cantilever\")",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV03_E1_UnaDefinicionColocadaSinIdentidadDejaLaCoberturaSinAcreditar_SinColocarSeIgnora(shape: \"idabsent\", references: 0, accredited: True)",
+        "RackCad.Tests.ComputedParametersPopulationGuardTests.INV35_CadaFilaDeD26EstaEnElBuildBomDeSuHandler_YElMismoChequeoRechazaUnFixtureSinLaComprobacion",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV12_Undetermined_DisenoIlegible_LoadFailed_Y_ExcepcionDelResolver",
+        "RackCad.Tests.ComputedParametersPopulationGuardTests.INV33_LaMismaGuardaRechazaElTextoLiteralDe819955d6_YAceptaElOutputBlockedReasonActual",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV02_UnSobreIlegibleConTanteoRackA_NoFusiona_ElTotalQuedaUnavailable",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV03_E1_UnaDefinicionColocadaSinIdentidadDejaLaCoberturaSinAcreditar_SinColocarSeIgnora(shape: \"idabsent\", references: 1, accredited: False)",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV01_TresDefinicionesConReferencias_2_1_0_DelMismoRackId_SonUnSoloRack",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV06_UnDisenoIlegible_DeCadaKind_EsUndeterminedDesignUnreadable_YElTotalNoSeAcredita(kind: \"cabecera\")",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV06_UnDisenoIlegible_DeCadaKind_EsUndeterminedDesignUnreadable_YElTotalNoSeAcredita(kind: \"dynamic\")",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV03_O_PV2_4_UnaHermanaSinColocarConKindAusenteSiPerteneceAlGrupo_PeroUnaIlegibleSeIgnora",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV07_ConLaCoberturaSinAcreditar_LosSeisTokensSiguenPresentes_Y_RackCountEsUnavailable",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV03_E3_KindCoherente_CadaMezclaDaSuClasificacion(scenario: \"todas-KindUnknown-mismo-token\", expected: \"Excluded(KindUnknown)\")",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV06_UnDisenoIlegible_DeCadaKind_EsUndeterminedDesignUnreadable_YElTotalNoSeAcredita(kind: \"selective\")",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV03_E6_ElVeredictoDeSalida_DeterminaLaPertenenciaDePushBack(scenario: \"deny-catalogo-real\", expected: \"Excluded(OutputDenied)\")",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV06_UnDisenoSinLaSeccionDeSuKind_EsIlegible_NuncaSeExcluyeNiSeCuentaEnSilencio(kind: \"pushback\")",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV13_LaViaDeI63ConLoadFailed_EsUndeterminedCatalogUnavailable_Y_ElHandlerNuncaProduceLoadFailed",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV03_E1_UnaDefinicionColocadaSinIdentidadDejaLaCoberturaSinAcreditar_SinColocarSeIgnora(shape: \"unreadable\", references: 1, accredited: False)",
+        "RackCad.Tests.ComputedParametersPopulationTests.INV13_ElHandler_AllowNull_DenyMotivo_UndeterminedNull"
+      ]
+    },
+    {
+      "RunRef": "GREEN-1",
+      "Selected": 54,
+      "Passed": 54,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "GREEN-2",
+      "Selected": 54,
+      "Passed": 54,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "GREEN-FULL",
+      "Selected": 12477,
+      "Passed": 12477,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "GREEN-FULL-2",
+      "Selected": 12477,
+      "Passed": 12477,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "RELEVANT-1",
+      "Selected": 100,
+      "Passed": 100,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    }
+  ],
+  "Evidence": [
+    "INV-32, contador de evaluaciones de poblacion observado en el orquestador real (ProjectPopulation.Evaluate), salida de la prueba INV32 en RELEVANT-1: tras RackMetricRequest directo = 0; tras ProjectPopulation del mismo rack = 1 (el mismo contador, ambito RackPopulationEvaluationCounter.Begin).",
+    "INV-33, RED observable: sobre el OutputBlockedReason vigente en 819955d6 la guarda DelegationViolations falla con las violaciones \"no llama a RackOutputVerdict.HandlerBlockedReason | PushBackResolver | RackBomOutputGate.For\" (RED-1); en GREEN la misma funcion acepta el metodo delegado y sigue rechazando el fixture con el texto literal de PushBackKindHandler.cs:56-73 en 819955d6.",
+    "INV-35, RED observable: RackMetricDesignReader.PresenceRows vacio en el esqueleto (las seis filas de D-26 aun no declaradas); en GREEN cada fila se comprueba contra el BuildBom o Build del handler y un fixture sin la comprobacion es rechazado por la misma funcion.",
+    "Compilacion del Plugin con salida temporal (dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug -o artifacts/orchestration/I-63/G2-POPULATION/2/R20261002T164522Z-a109/work/plugin-build): 0 errores y 2 advertencias MSB3277 de conflicto de versiones de referencias.",
+    "Corrida push del SHA exacto 844dabb6ffbb8b3ba11a2e9a796b78348857c088: la recoge el Principal; el Worker no espero a la CI."
+  ],
+  "UnexpectedFindings": [
+    "Una guarda existente fuera del alcance, PushBackBomCommandGuardTests.ThePushBackHandler_ConsumesTheSharedGateAndNotASecondRule, exige el texto literal \"RackBomOutputGate.For(system).Reason\" en cualquier parte de PushBackKindHandler.cs. Tras la delegacion exigida por D-27 e INV-33 ese texto ya no esta en el codigo; sigue presente solo en el comentario de documentacion del metodo, que describe con veracidad la composicion que ahora vive en RackOutputVerdict, y por eso esa prueba sigue en verde. Lee el archivo sin quitar comentarios, asi que queda satisfecha de forma textual y no por conducta. Conviene reapuntarla mediante una iniciativa o enmienda que lo autorice."
+  ],
+  "KnownLimitations": [
+    "La delegacion del handler no se ejerce en tiempo de ejecucion en esta suite (el Plugin referencia AutoCAD, ADR-0003): su comportamiento se prueba por la funcion de Application (INV-12, INV-13) y la delegacion por la guarda de fuente (INV-33).",
+    "Las corridas RED-1, GREEN-1 y GREEN-FULL se hicieron con el arbol de trabajo sin confirmar (TreeSha null); GREEN-2, GREEN-FULL-2 y RELEVANT-1 se hicieron con el arbol limpio en 844dabb6.",
+    "El caso UnreadableSibling de E4 solo es alcanzable tras E5 sustituyendo el lector D-26 por uno que aprueba todo (parametro opcional designReader de ProjectPopulation.Evaluate); con el lector real, E5 lo intercepta antes."
+  ],
+  "Deviations": [],
+  "OpenQuestions": [
+    "D-27 no dice donde cae una excepcion del store al deserializar el diseno de Push Back: se aplico D-26 (cualquier excepcion del store es ilegible) y da Undetermined(DesignUnreadable); solo las excepciones del resolver o de la puerta dan Undetermined(ResolveFailed). No cambia el comportamiento observable del handler (ambos dan null).",
+    "D-11 no fija la RepresentativeDefinitionId de un rack que no llega a E4: queda nula; con E4 resuelta es la primera definicion en orden canonico, tambien en las exclusiones OutputDenied y en las indeterminaciones de E6."
+  ],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "Verificacion del Controller sobre el SHA exacto 844dabb6ffbb8b3ba11a2e9a796b78348857c088: confirmar la corrida push con los cuatro jobs requeridos, el RED en cdc8bbd0 y la ausencia de cambios en las pruebas entre RED y GREEN; decidir el reapuntado de la guarda PushBackBomCommandGuardTests mencionada en UnexpectedFindings.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

@@ -23,6 +23,34 @@ namespace RackCad.Application.Persistence
             options.Converters.Add(new Converter());
         }
 
+        /// <summary>
+        /// The table of PERSISTED namespace tokens (ADR-0043 D9, I-63 D-18): only <c>projectVariable</c>. It is not the
+        /// in-memory table of <see cref="SymbolNamespaces"/>, which also knows <c>rack</c>: a namespace that is not
+        /// persistable is a structural failure when read and a programming error when written, and is never written.
+        /// </summary>
+        private static class PersistedNamespaceTokens
+        {
+            internal static bool TryParse(string token, out SymbolNamespace symbolNamespace)
+            {
+                if (string.Equals(token, ProjectVariableToken, StringComparison.Ordinal))
+                {
+                    symbolNamespace = SymbolNamespace.ProjectVariable;
+                    return true;
+                }
+
+                symbolNamespace = default;
+                return false;
+            }
+
+            internal static string Token(SymbolNamespace symbolNamespace)
+                => symbolNamespace == SymbolNamespace.ProjectVariable
+                    ? ProjectVariableToken
+                    : throw new InvalidOperationException(
+                        "The symbol namespace '" + SymbolNamespaces.Token(symbolNamespace) + "' is not persistable and is never written.");
+
+            private const string ProjectVariableToken = "projectVariable";
+        }
+
         private sealed class Converter : JsonConverter<BoundExpression>
         {
             public override BoundExpression Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -45,7 +73,42 @@ namespace RackCad.Application.Persistence
                     throw new JsonException("The bound expression exceeds its normative persistence limits.");
                 }
 
+                RequirePersistableNamespaces(value);
                 WriteNode(writer, value);
+            }
+
+            /// <summary>Checks the whole tree BEFORE the first byte is written: a non-persistable reference writes nothing.</summary>
+            private static void RequirePersistableNamespaces(BoundExpression root)
+            {
+                var pending = new Stack<BoundExpression>();
+                pending.Push(root);
+
+                while (pending.Count > 0)
+                {
+                    switch (pending.Pop())
+                    {
+                        case BoundReference reference:
+                            PersistedNamespaceTokens.Token(reference.Symbol.Namespace);
+                            break;
+
+                        case BoundNegate negate:
+                            pending.Push(negate.Operand);
+                            break;
+
+                        case BoundBinary binary:
+                            pending.Push(binary.Right);
+                            pending.Push(binary.Left);
+                            break;
+
+                        case BoundCall call:
+                            foreach (var argument in call.Arguments)
+                            {
+                                pending.Push(argument);
+                            }
+
+                            break;
+                    }
+                }
             }
 
             private static BoundExpression ReadNode(JsonElement element, int depth, ref int nodeCount)
@@ -92,7 +155,7 @@ namespace RackCad.Application.Persistence
                     case BoundExpressionKind.Reference:
                         RequireOnly(fields, "Node", "Namespace", "Id");
                         var namespaceToken = RequiredString(fields, "Namespace");
-                        if (!SymbolNamespaces.TryParseToken(namespaceToken, out var symbolNamespace))
+                        if (!PersistedNamespaceTokens.TryParse(namespaceToken, out var symbolNamespace))
                         {
                             throw new JsonException("Unknown persisted symbol namespace '" + namespaceToken + "'.");
                         }
@@ -167,7 +230,7 @@ namespace RackCad.Application.Persistence
                         break;
 
                     case BoundReference reference:
-                        writer.WriteString("Namespace", SymbolNamespaces.Token(reference.Symbol.Namespace));
+                        writer.WriteString("Namespace", PersistedNamespaceTokens.Token(reference.Symbol.Namespace));
                         writer.WriteString("Id", reference.Symbol.Key);
                         break;
 

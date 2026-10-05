@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "G1-RACK-METRICS",
+  "RunId": "R20261002T005705Z-eccd",
+  "DelegationRunId": "R20261002T002817Z-6294",
+  "WorkRunId": "R20261002T003840Z-f180",
+  "Attempt": 0,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "not_run",
+      "Evidence": "No se pudo leer relay-record-work.json. La orden Get-Location fue rechazada antes de iniciar el proceso: CreateProcessAsUserW failed: 5 (Acceso denegado.)."
+    },
+    "Handoff": {
+      "Result": "not_run",
+      "Evidence": "No se pudo leer worker-handoff.json ni comprobar su identidad o contenido en Git; el acceso al proceso de lectura fue rechazado."
+    },
+    "Authority": {
+      "Result": "not_run",
+      "Evidence": "No se pudo leer AUTOMATION_PLAN.md, README.md ni los documentos de I-63 desde AuthorityRevision y MainSha; no se ejecutaron órdenes Git."
+    },
+    "Contract": {
+      "Result": "not_run",
+      "Evidence": "No se pudo leer inputs/gate-contract.json para comprobar los requisitos del contrato."
+    },
+    "Identity": {
+      "Result": "not_run",
+      "Evidence": "No se pudo ejecutar git rev-parse ni leer delegation.json y relay-record-work.json; CurrentSha, BaseSha y las identidades declaradas no se verificaron."
+    },
+    "Remote": {
+      "Result": "not_run",
+      "Evidence": "No se pudo comprobar el estado remoto ni contrastar RemoteFacts del registro de trabajo."
+    },
+    "Scope": {
+      "Result": "not_run",
+      "Evidence": "No se pudo ejecutar git diff --name-only entre las revisiones de la entrega para verificar el alcance."
+    },
+    "CleanTree": {
+      "Result": "not_run",
+      "Evidence": "No se pudo ejecutar git status ni comprobar el estado del árbol de trabajo."
+    },
+    "Ci": {
+      "Result": "not_run",
+      "RedPart": "not_applicable",
+      "Evidence": "No se pudieron leer los registros de trabajo ni los resultados CI asociados a RedRun y CurrentRun."
+    },
+    "Tests": {
+      "Result": "not_run",
+      "RedPart": "not_applicable",
+      "Evidence": "No se pudieron leer los TRX ni comparar selección, resultados y TestResults de la entrega. Tampoco se pudo obtener RT, ChainRedFiles o inspeccionar pruebas con git show."
+    },
+    "Trailer": {
+      "Result": "not_run",
+      "Evidence": "No se pudo ejecutar git log --format=%B ni leer el campo Worker.Trailer de la entrega."
+    },
+    "Routing": {
+      "Result": "not_run",
+      "Evidence": "No se pudo leer relay-record-planning.json ni relay-record-work.json para comprobar el relevo y el enrutamiento."
+    },
+    "FreeText": {
+      "Result": "not_run",
+      "Evidence": "No se pudieron leer los campos de texto libre de los registros para contrastarlos con AUTOMATION_PLAN §16.10."
+    },
+    "Denials": {
+      "Result": "not_run",
+      "Evidence": "No se pudo leer Notes en relay-record-work.json para comprobar la señal de denegaciones."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "BLOCKED",
+  "FailureClass": "Termination",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "Las órdenes de lectura no pudieron iniciarse: CreateProcessAsUserW failed: 5 (Acceso denegado.).",
+    "No se ejecutaron las órdenes Git requeridas ni se pudieron leer los archivos de entrada; por ello no hay evidencia verificable para evaluar las 14 comprobaciones.",
+    "El estado BLOCKED y S-04 mencionados en la solicitud no se pudieron contrastar con el registro de trabajo y no se registran como condición disparada."
+  ],
+  "RecommendedNextAction": "Repetir la verificación desde un entorno con acceso de lectura al worktree y a sus entradas."
+}

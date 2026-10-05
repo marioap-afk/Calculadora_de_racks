@@ -1,0 +1,77 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "G3-RACK-BUILTINS",
+  "RunId": "R20261002T220930Z-2504",
+  "DelegationRunId": "R20261002T214309Z-19d7",
+  "WorkRunId": "R20261002T214618Z-be6d",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, TerminalEvent=resultado final del subagente. Cession.StartUtc=2026-10-02T21:46:22Z y Outcome.OutputWrittenUtc=2026-10-02T21:59:48.8286413Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json presente; TaskId=G3-RACK-BUILTINS, Attempt=2, DelegationRunId=R20261002T214309Z-19d7, RunId=R20261002T214618Z-be6d; coincide con la delegación y el relevo. BaseSha=712052354e33f84da552fe0be3393df41e0521f4 y CurrentSha=eb58a4768d5a68892cce8d85b527f2a1ad1bdc64."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Git confirma AuthorityRevision ea70e3b333efec49d3c3b9bc1e5d0395adc71a01 como ancestro de BaseSha. Proposal V3 y A-1/A-2/A-3 leídas allí; fuentes EXTERNAL verificadas iguales a MainSha 819955d61a6da4c811a11fbd11b5dca13f634b7c. git show en f5c4a5a2 confirma la orden para T2 y corrección de la condición A-3; git show en BaseSha confirma la decisión de nueva línea base de config.toml."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparación exacta de gate-contract.json y delegation.json: Authorities, AllowedWriteScope, ForbiddenWriteScope, Invariants, RequiredTests y StopConditions coinciden. RequiredTests es FullyQualifiedName~RackCad.Tests.ComputedParametersSymbols, MinSelected=12, ExpectRed=true; AuthorityRevision coincide."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "Get-Location y git rev-parse --show-toplevel confirman el worktree esperado; git branch --show-current devuelve architecture/parametros-calculados-resumen-proyecto. git rev-parse HEAD y origin/architecture/parametros-calculados-resumen-proyecto devuelven eb58a4768d5a68892cce8d85b527f2a1ad1bdc64. git merge-base --is-ancestor BaseSha HEAD devuelve 0; RedSha=null según handoff."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "RemoteFacts.CurrentRun: push, ref refs/heads/architecture/parametros-calculados-resumen-proyecto, HeadSha eb58a4768d5a68892cce8d85b527f2a1ad1bdc64, completed/success. git ls-remote no pudo conectar; según la alternativa indicada, RemoteFacts registra LsRemoteSha=CurrentSha y OriginMainSha=819955d61a6da4c811a11fbd11b5dca13f634b7c, igual a MainSha y a git rev-parse origin/main."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha arroja 8 archivos: RackComputedExpressionContext.cs; DependencyGraph.cs; ExpressionBinder.cs; ExpressionFormatter.cs; RegistryEvaluation.cs; SymbolId.cs; SymbolTable.cs; PersistedBoundExpressionJson.cs. Todos cubiertos por AllowedWriteScope; cero cubiertos por ForbiddenWriteScope y cero en ChainRedFiles. Sin cambios en ExpressionLexer.cs, ExpressionSyntaxParser.cs ni ExpressionDiagnosticCode.cs."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --short --branch muestra rama alineada con origin y sin cambios. relay-record-work.json registra Exit.CleanTree=true y Entry.CleanTree=true. git check-ignore -v sobre el handoff de entrada devuelve .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "not_applicable",
+      "Evidence": "RemoteFacts.CurrentRun 37069993992 es push de la ref exacta y del CurrentSha; los cuatro jobs requeridos terminan success. Los TRX de CurrentSha registran Core 12566/12566 y UI 1637/1637 ejecutadas, cero fallidas y 17 NotExecuted. No se exige RED: diff BaseSha..CurrentSha no toca ChainRedFiles. La corrida de cadena 37053113058 corresponde al ChainRedSha 637dce7e5e7811992330b3c305358d9a7542b9f6; su Core tuvo 88 fallidas y UI 1637 pasadas."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "not_applicable",
+      "Evidence": "TRX CurrentSha: filtro requerido selecciona 89, pasan 89, fallan 0; suite Core 12566/12566, fallan 0. Coincide con TestResults del handoff. Cobertura: INV-15 y D-14/D-15/D-17, ComputedParametersSymbolsContextTests; INV-17/19/20/25/26, BindingTests; INV-18, ConsumersTests; INV-21/22/23, FormattingTests; INV-24 y D-18/D-19, PersistenceTests; INV-27, IdentityTests; D-16 e identidad, ExpressionSymbolModelTests e IdentityTests. A-3: handoff registra InvalidQualifier (11, SyntaxAndLimits), span 5+6, sin árbol para Rack.#{zzz}, y UnexpectedToken vigente para la clave hexadecimal de 32 caracteres; el diff no toca lexer, parser ni catálogo. INV-28 y ExpressionCoreGuardTests, ExpressionDiagnosticCatalogTests y NamespaceFolderGuardTests pasan sin cambios: en el TRX 12/54/65/53, 6/6, 2/2 y 7/7 respectivamente. ChainRedSha 637dce7e: TRX Core 12566 total, 89 filtradas, 86 filtradas fallidas; redPart no aplica a esta entrega."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha y git show HEAD muestran un commit; su trailer literal es \"Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>\", igual a worker-handoff.json Worker.Trailer y coherente con ModelEffective=claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json pide claude-sonnet-5-5, effort high, RoutingEnforcement=required. relay-record-work.json registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high; el handoff registra Provider Anthropic, ModelRequested claude-sonnet-5-5 y EffortRequested high."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "Comparé WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction del handoff con la lista de AUTOMATION_PLAN §16.10. Hay una coincidencia restringida en WorkCompleted."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes: 47 llamadas, cero denegaciones de permisos o credenciales y cero avisos de límite. Una orden Bash falló por heredoc con comillas sin cerrar (código 2); las llamadas siguientes la superaron y el registro indica que no quedó ninguna orden fallida pendiente."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La coincidencia en WorkCompleted hace fallar FreeText; las comprobaciones restantes pasan."
+  ],
+  "RecommendedNextAction": "Corregir WorkCompleted para retirar el término restringido y solicitar una nueva verificación."
+}

@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "G4-PROJECT-SUMMARY",
+  "RunId": "R20261005T012438Z-27b5",
+  "DelegationRunId": "R20261003T005345Z-66f3",
+  "WorkRunId": "R20261003T005720Z-2b14",
+  "Attempt": 2,
+  "VerifiedSha": "4f45f4464f5d434f7fa478fea1117d82283ee997",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession StartUtc=2026-10-03T00:57:23Z, EndUtc=2026-10-03T01:22:44Z, SessionOperated=false. OutputWrittenUtc=2026-10-03T01:22:38.4883564Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json is present and matches TaskId=G4-PROJECT-SUMMARY, Attempt=2, DelegationRunId=R20261003T005345Z-66f3 and WorkRunId=R20261003T005720Z-2b14; its recorded output time follows Cession.StartUtc. BaseSha=527e4b9185173e2f50c10d39a882749c09b77d2f, RedSha=55d6b27457c966be1f3988ff8fe1bca4fc3df126, CurrentSha=4f45f4464f5d434f7fa478fea1117d82283ee997."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Read AUTOMATION_PLAN §16.3, §16.8–16.10 and agent-execution README §8 at MainSha 819955d61a6da4c811a11fbd11b5dca13f634b7c; read I-63 proposal, A-1, A-2, A-3 and decision §2 at AuthorityRevision 527e4b9185173e2f50c10d39a882749c09b77d2f. git diff MainSha..AuthorityRevision over the declared EXTERNAL paths was empty. coordinator-decision-stop-g4.md resolves S-03 and states C-10 is not activated. At CurrentSha, ProjectPopulation assigns the already selected RepresentativeDefinitionId; ProjectSummary projects member.RepresentativeDefinitionId, consistent with that decision."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Compared gate-contract.json and delegation.json: contract scope, forbidden scope, invariants, stop conditions, authorities, and RequiredTests are carried into the accepted delegation; RequiredTests is FullyQualifiedName~RackCad.Tests.ComputedParametersSummary, MinSelected=10, ExpectRed=true. Diff checks show 7 production files under src/RackCad.Application/ComputedParameters/ and 5 new tests under tests/RackCad.Tests/ComputedParameters/; no forbidden paths."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD and origin/architecture/parametros-calculados-resumen-proyecto both returned 7bd5a7438c9327b82203ae77d0312104c07509bb. git merge-base --is-ancestor GREEN 7bd5a743 exited 0. GREEN..7bd5a743 contains 20 docs/custody paths only; no src, tests, project, CI, or build-config changes. git rev-parse GREEN:src = custody:src = 5d3bba74042ca62adcb1986b0276f9a30b01923d and GREEN:tests = custody:tests = 28bc25cbeab630d996b883dbc2e408a12d8c448e. RED is an ancestor of GREEN; BaseSha is an ancestor of GREEN. Functional CI is run 37085650331 on GREEN."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: OriginMainSha=819955d61a6da4c811a11fbd11b5dca13f634b7c, matching git rev-parse origin/main; CurrentRun 37085650331 is push on refs/heads/architecture/parametros-calculados-resumen-proyecto at GREEN, success; RedRun 37085428743 is push on the same ref at RED. The identity exception and identity-exception-check.json report the branch origin SHA as 7bd5a743, the docs-only descendant. Live git ls-remote could not connect to github.com in this sandbox; remote values are taken from those recorded facts."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..GREEN returned 12 paths: 7 in src/RackCad.Application/ComputedParameters/ and 5 in tests/RackCad.Tests/ComputedParameters/. All are within AllowedWriteScope and none intersect ForbiddenWriteScope. git diff --name-status BaseSha..GREEN -- tests/RackCad.Tests/ComputedParameters/ returned exactly five additions (A), with no modifications, deletions, or renames."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --short --branch showed the branch tracking origin with no working-tree changes. git check-ignore -v for the verification package path matched .gitignore:3 (artifacts/)."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts and local TRX inputs: CurrentRun 37085650331 is completed/success on the exact GREEN push ref, with all four required jobs success. RedRun 37085428743 is the exact RED push; Tests (Domain + Application) failed. The live ls-remote query was unavailable; see Remote evidence."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Parsed the four supplied TRX files. RED Core: 12595 total/executed, 12569 passed, 26 failed; focal filter selected 29, passed 3, failed 26. GREEN Core: 12595/12595 passed; focal 29/29 passed. RED focal failures are test results, consistent with the handoff's no-compilation-error report. GREEN UI: 1654 total, 1637 executed/passed, 0 failed; the 17 NotExecuted entries are the documented VSTest Skip convention (Counters.notExecuted=0). Invariant tests present and green on GREEN: INV-11 snapshot reversal/representative; INV-29 order-independence and the single ForbiddenReferenceFamilies guard (Application empty, UI WPF, Plugin AutoCAD); INV-30 resolution counter; INV-31 closed authority table both directions; INV-32 population evaluation counter; INV-34 D-28 outcomes and read/resolution counters. D-20 summary tests, D-21 provenance/context tests, and D-24 N=1/10/100/1000 counter characterization are also green. RT and ChainRedFiles contain these five new files: ComputedParametersSummaryContextTests.cs, ComputedParametersSummaryGuardTests.cs, ComputedParametersSummaryKit.cs, ComputedParametersSummaryPerformanceTests.cs, ComputedParametersSummaryTests.cs. git diff --name-only RED GREEN -- tests/ was empty."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "Literal Worker.Trailer in worker-handoff.json: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. git show --format=%B --no-patch for both RED and GREEN contains that exact trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Accepted delegation requests claude-sonnet-5-5 at high effort with required routing. relay-record-work.json Participant records ModelRequested=sonnet, EffortRequested=high, ModelEffective=claude-sonnet-5-5, EffortEffective=high; the handoff reports the matching requested model and effort."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions, and RecommendedNextAction in worker-handoff.json against the §16.10 term list; no matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report 0 permission/credential denials and 0 limit warnings. Two tool errors were superseded by later calls; no failed command remains pending."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La entrega registra una ejecución provisional local antes del commit RED; el Coordinator la aceptó como desviación operativa no bloqueante. La cadena publicada verifica RED 55d6b274 seguido por GREEN 4f45f446.",
+    "La consulta directa git ls-remote no pudo alcanzar github.com desde el sandbox; la comprobación remota usa los hechos registrados y la excepción de identidad, contrastados con la referencia remota local."
+  ],
+  "RecommendedNextAction": "Registrar esta verificación y continuar la secuencia de comprobaciones del Coordinator sobre el mismo SHA verificado."
+}

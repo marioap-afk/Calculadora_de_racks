@@ -1,0 +1,77 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "G3-RACK-BUILTINS",
+  "RunId": "R20261002T214618Z-be6d",
+  "DelegationRunId": "R20261002T214309Z-19d7",
+  "Initiative": "I-63",
+  "Gate": "G3",
+  "Attempt": 2,
+  "BaseSha": "712052354e33f84da552fe0be3393df41e0521f4",
+  "RedSha": null,
+  "CurrentSha": "eb58a4768d5a68892cce8d85b527f2a1ad1bdc64",
+  "Branch": "architecture/parametros-calculados-resumen-proyecto",
+  "Worktree": "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-parametros-calculados-resumen-proyecto",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.Application/ComputedParameters/RackComputedExpressionContext.cs",
+    "src/RackCad.Application/Expressions/DependencyGraph.cs",
+    "src/RackCad.Application/Expressions/ExpressionBinder.cs",
+    "src/RackCad.Application/Expressions/ExpressionFormatter.cs",
+    "src/RackCad.Application/Expressions/RegistryEvaluation.cs",
+    "src/RackCad.Application/Expressions/SymbolId.cs",
+    "src/RackCad.Application/Expressions/SymbolTable.cs",
+    "src/RackCad.Application/Persistence/PersistedBoundExpressionJson.cs"
+  ],
+  "WorkCompleted": "G3-T2 GREEN en un solo commit (eb58a476) con push propio, sin RED nuevo (RED de la cadena 637dce7e, sin modificar). D-16 en el nucleo: SymbolNamespace.Rack (2) con token 'rack' y comparador Ordinal, validez de clave por namespace (token ASCII), SymbolDefinitionKind.Computed (3) con SymbolDefinition.FromComputed(), indices por namespace en SymbolTable (busqueda por nombre y patrones OperatorInName solo de projectVariable; FindRackMember y HasRackEntries internos), binder con Rack.<miembro> (UnknownNamespace sin entradas rack o con otra palabra, NameRequired, UnknownSymbol, ScopeViolation) y formatter (Rack.<miembro> siempre; Rack.#{token} si el id esta ausente). R4: DependencyGraph y RegistryEvaluation rechazan entradas Computed con InvalidOperationException que nombra Computed. D-18: PersistedBoundExpressionJson usa una tabla propia de tokens persistidos (solo projectVariable): leer rack da JsonException (registro PresentButUnreadable); escribir rack lanza InvalidOperationException antes de escribir ningun byte. D-17 (4-6): RackComputedExpressionContext (ComputedParameters, fuera de Expressions) con Create(RackMetricResults, IEnumerable<SymbolEntry>) interno, tabla projectVariable + rack Computed, Evaluate con propagacion por estado (Evaluated, ComputedReferencesNotAvailable, EvaluationFailed), sin valor parcial.",
+  "TestsExecuted": [
+    {
+      "RunRef": "G3T2-focal-1",
+      "Command": "cd C:/Users/alejandra-mendoza/.codex/worktrees/architecture-parametros-calculados-resumen-proyecto && /c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.ComputedParametersSymbols\" --logger \"trx;LogFileName=G3T2-focal-1.trx\" --results-directory artifacts/orchestration/I-63/G3-RACK-BUILTINS/2/R20261002T214618Z-be6d/tests/G3T2-focal-1",
+      "Phase": "GREEN",
+      "TreeSha": "4d0aa6d58fbd8bcc9bc442e950f83dd7c0e6080d",
+      "ResultsFile": "artifacts/orchestration/I-63/G3-RACK-BUILTINS/2/R20261002T214618Z-be6d/tests/G3T2-focal-1/G3T2-focal-1.trx"
+    },
+    {
+      "RunRef": "G3T2-core-1",
+      "Command": "cd C:/Users/alejandra-mendoza/.codex/worktrees/architecture-parametros-calculados-resumen-proyecto && /c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=G3T2-core-1.trx\" --results-directory artifacts/orchestration/I-63/G3-RACK-BUILTINS/2/R20261002T214618Z-be6d/tests/G3T2-core-1",
+      "Phase": "RELEVANT",
+      "TreeSha": "4d0aa6d58fbd8bcc9bc442e950f83dd7c0e6080d",
+      "ResultsFile": "artifacts/orchestration/I-63/G3-RACK-BUILTINS/2/R20261002T214618Z-be6d/tests/G3T2-core-1/G3T2-core-1.trx"
+    },
+    {
+      "RunRef": "G3T2-ui-1",
+      "Command": "cd C:/Users/alejandra-mendoza/.codex/worktrees/architecture-parametros-calculados-resumen-proyecto && /c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --logger \"trx;LogFileName=G3T2-ui-1.trx\" --results-directory artifacts/orchestration/I-63/G3-RACK-BUILTINS/2/R20261002T214618Z-be6d/tests/G3T2-ui-1",
+      "Phase": "RELEVANT",
+      "TreeSha": "4d0aa6d58fbd8bcc9bc442e950f83dd7c0e6080d",
+      "ResultsFile": "artifacts/orchestration/I-63/G3-RACK-BUILTINS/2/R20261002T214618Z-be6d/tests/G3T2-ui-1/G3T2-ui-1.trx"
+    }
+  ],
+  "TestResults": [
+    { "RunRef": "G3T2-focal-1", "Selected": 89, "Passed": 89, "Failed": 0, "Skipped": 0, "FailedTests": [] },
+    { "RunRef": "G3T2-core-1", "Selected": 12566, "Passed": 12566, "Failed": 0, "Skipped": 0, "FailedTests": [] },
+    { "RunRef": "G3T2-ui-1", "Selected": 1654, "Passed": 1637, "Failed": 0, "Skipped": 17, "FailedTests": [] }
+  ],
+  "Evidence": [
+    "(1) Por INV. INV-15 (ComputedParametersSymbolsContextTests: PushBack legible e ilegible NotSupported, Cabecera NotApplicable, hermanas divergentes Unavailable(SiblingsDivergent), variable rota Unavailable(EffectiveFailed), Selectivo de 4 frentes = 8, dos estados distintos en orden de SymbolId, lista solo de las no Available, referencia repetida una vez, sin referencias rack se evalua): RackComputedExpressionContext.Evaluate revisa cada referencia rack de BoundExpressionDependencies y devuelve ComputedReferencesNotAvailable sin evaluar, o evalua con ExpressionEvaluator. INV-17 y INV-25 (ComputedParametersSymbolsBindingTests): ExpressionBinder.ResolveNamespaceReference (Rack.<miembro> solo con entradas rack, UnknownNamespace en otro caso, miembro entre entradas rack, ScopeViolation con consumidor Project). INV-18 (ComputedParametersSymbolsConsumersTests): sin cambios de produccion necesarios; las tablas de RACKEDITAR y RACKVARIABLES solo traen projectVariable y siguen dando UnknownNamespace. INV-19 y INV-20 con A-1.2 (BindingTests): SymbolTable con indices por namespace (FindByDisplayName y OperatorNames solo de projectVariable; FindRackMember aparte). INV-21 (FormattingTests): ExpressionFormatter.FormatReference escribe Rack.<miembro> y cuenta homonimos solo entre projectVariable. INV-22: ExpressionFormatter escribe Rack.#{token} para un id rack ausente; el parser no cambia. INV-23: CanonicalShape.Classify ya cae en Expression para namespace rack (sin cambio). INV-24 (PersistenceTests): PersistedBoundExpressionJson.PersistedNamespaceTokens (solo projectVariable) para leer y escribir, con RequirePersistableNamespaces antes de escribir. INV-26 (BindingTests): el arbol lleva SymbolId (rack, token); el nombre solo se usa al enlazar y al mostrar. INV-27 (IdentityTests): DependencyGraph.RejectComputedEntries, llamada desde DependencyGraph y RegistryEvaluation. D-02 (IdentityTests y ExpressionSymbolModelTests): SymbolId.IsValidRackKey, comparador Ordinal, orden projectVariable < rack. D-16.3: SymbolDefinition.FromComputed.",
+    "(2) INV-22 tras el GREEN, observado de verdad con ExpressionParser.Parse sobre RackCad.Application.dll compilado de este commit: 'Rack.#{zzz}' => Succeeded=False, un solo diagnostico InvalidQualifier (11), clase SyntaxAndLimits, lapso 5+6, sin arbol sintactico. 'Rack.#{abcdef0123456789abcdef0123456789}' => Succeeded=False, un solo diagnostico UnexpectedToken (3), clase SyntaxAndLimits, lapso 5+35: igual que antes del cambio (no se disparo C-12).",
+    "(3) Cambios del nucleo frente a D-16: solo SymbolId.cs (namespace, tabla en memoria, validez de clave), SymbolTable.cs (Computed, indices por namespace), ExpressionBinder.cs (resolucion de NamespaceReferenceSyntax), ExpressionFormatter.cs (referencias rack) y la guarda R4 en DependencyGraph.cs y RegistryEvaluation.cs; ningun tipo del nucleo nombra racks reales, sistemas ni metricas del catalogo (el nombre de miembro Frentes/FrentesVacios vive en ComputedParameters). ExpressionLexer.cs, ExpressionSyntaxParser.cs, ExpressionParser.cs, ExpressionEvaluator.cs, ExpressionDiagnosticCode.cs, ExpressionDiagnostic.cs y ExpressionLimits (ExpressionContext.cs) no aparecen en git diff --name-only BaseSha..HEAD: lexer, parser, evaluador, limites y catalogo de diagnosticos no cambian. Sin codigo de diagnostico nuevo. projectVariable intacto (claves, comparador OrdinalIgnoreCase, busqueda, formato y persistencia). Suites de INV-28, ExpressionCoreGuardTests, ExpressionDiagnosticCatalogTests y NamespaceFolderGuardTests en verde dentro de la suite Core (12566/12566). dotnet build src/RackCad.UI/RackCad.UI.csproj -c Debug: 0 advertencias, 0 errores. Ningun archivo de ChainRedFiles ni fuera de alcance en el diff.",
+    "El TreeSha es el arbol del commit GREEN (HEAD^{tree}); las corridas se hicieron sobre el arbol de trabajo con ese mismo contenido antes de confirmar."
+  ],
+  "UnexpectedFindings": [],
+  "KnownLimitations": [
+    "RackComputedExpressionContext.Create es interno (costura del nucleo, como ExpressionContext.Create); el consumo desde Plugin o ID23 queda para su iniciativa.",
+    "El nombre de miembro de cada metrica rack (Frentes, FrentesVacios) esta declarado en RackComputedExpressionContext; el catalogo de G1 no lo traia."
+  ],
+  "Deviations": [],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "Revision del Coordinator de la entrega G3-T2 contra los criterios del paquete aceptado.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

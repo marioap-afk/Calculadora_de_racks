@@ -1,0 +1,301 @@
+{
+  "Schema": "rackcad-gate-contract/v1",
+  "Unit": "I-63",
+  "Gate": "G2",
+  "TaskId": "G2-POPULATION",
+  "Objective": "G2, poblacion, veredicto unico y agregados (Proposal V3 congelada + A-1, §21). Implementar en Application pura, bajo src/RackCad.Application/ComputedParameters/: la poblacion cotizable de D-10 (E1..E6) sobre un contrato de entrada sintetico (D-25: lista de (DefinitionKey, envelopeJson, DirectReferenceCount), lectura del registro y CatalogInput Loaded|LoadFailed), con la proyeccion D-10a y el orden canonico D-11 de G1, el lector D-26 para los seis kinds, la autoridad authored E4 con su entrada tipada y el veredicto unico de salida RackOutputVerdict de D-27 (E6); ProjectPopulation (D-20, nivel Population: pertenencia, totalRacks y rackCount, sin metricas por rack); la agregacion de D-12 (BySystem con los seis tokens; totalFrentes y totalFrentesVacios por suma de los valores por rack de los incluidos, sin parciales) como funcion pura; el contador unico de evaluaciones de poblacion (INV-32); y la correspondencia pura del handler Deny(m)->m, Allow->null, Undetermined->null con catalogo nulo normalizado a Loaded(vacio). En el Plugin, SOLO src/RackCad.Plugin/KindHandlers/PushBackKindHandler.cs: OutputBlockedReason delega en esa funcion de Application y elimina su composicion propia (sin PushBackResolver ni RackBomOutputGate.For). Pruebas en tests/RackCad.Tests/ComputedParameters/ con namespace RackCad.Tests (guarda de I-23) y clases cuyo nombre empieza por ComputedParametersPopulation. NO incluye ProjectSummary Full (G4) ni RackComputedExpressionContext ni cambios del nucleo de Expressions (G3).",
+  "AuthorityRevision": "669d8a391f208e1077f136a406fd89058bc0ce6e",
+  "MainSha": "819955d61a6da4c811a11fbd11b5dca13f634b7c",
+  "Authorities": [
+    {
+      "Path": "docs/initiatives/I-63-proposal-v3.md",
+      "Section": "archivo completo (Frozen: YES); en especial D-10, D-10a, D-11, D-12, D-13, D-20 (nivel Population), D-25, D-26, D-27 y §19-§22",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-63-proposal-v3-amendment-a1-verificacion.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-63-proposal-v3-amendment-a2-gate-verification-sequencing.md",
+      "Section": "archivo completo (A-2.1 para INV-32 y A-2.2 para INV-11)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-63-parametros-calculados-resumen-proyecto.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/decisions/I-63.md",
+      "Section": "§2 y §6",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "Section": "## 7. Gates funcionales",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "AGENTS.md",
+      "Section": "## Convenciones arquitectonicas (obligatorias)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0043-motor-expresiones-parametricas-causas-multiples-y-recuperacion-segura.md",
+      "Section": "D1 (nucleo neutral) y D24",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "## 16. Ejecución delegada bajo orden del Coordinator",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "## 1. Clases de tarea y ## 4. Algoritmo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+      "Section": "## G. Delegación de ejecución",
+      "Class": "EXTERNAL"
+    }
+  ],
+  "AllowedWriteScope": [
+    "src/RackCad.Application/ComputedParameters/",
+    "tests/RackCad.Tests/ComputedParameters/",
+    "src/RackCad.Plugin/KindHandlers/PushBackKindHandler.cs"
+  ],
+  "ForbiddenWriteScope": [
+    "src/RackCad.Application/Expressions/",
+    "src/RackCad.Application/Persistence/",
+    "src/RackCad.Application/ProjectVariables/",
+    "src/RackCad.Application/Systems/",
+    "src/RackCad.Application/Bom/",
+    "src/RackCad.Domain/",
+    "src/RackCad.Plugin/KindHandlers/CabeceraKindHandler.cs",
+    "src/RackCad.Plugin/KindHandlers/CamaKindHandler.cs",
+    "src/RackCad.Plugin/KindHandlers/CantileverKindHandler.cs",
+    "src/RackCad.Plugin/KindHandlers/DynamicKindHandler.cs",
+    "src/RackCad.Plugin/KindHandlers/SelectiveKindHandler.cs",
+    "src/RackCad.Plugin/KindHandlers/IRackKindHandler.cs",
+    "src/RackCad.Plugin/KindHandlers/KindHandlerDispatch.cs",
+    "src/RackCad.Plugin/KindHandlers/KindHandlerRegistry.cs",
+    "src/RackCad.Plugin/Drawing/",
+    "src/RackCad.Plugin/Systems/",
+    "src/RackCad.Plugin/Views/",
+    "src/RackCad.Plugin/RackCad.Plugin.csproj",
+    "src/RackCad.UI/",
+    "tests/RackCad.UI.Tests/",
+    "assets/",
+    "deploy/",
+    "eng/",
+    "tools/",
+    ".github/",
+    "RackCad.sln",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json",
+    "NuGet.Config",
+    ".gitattributes",
+    ".gitignore",
+    ".editorconfig",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "README.md",
+    "docs/",
+    "tests/RackCad.Tests/NamespaceFolderGuardTests.cs"
+  ],
+  "Invariants": [
+    "INV-01: N vistas o colocaciones -> 1 rack; 3 definiciones con referencias directas 2/1/0 del mismo RackId -> totalRacks 1",
+    "INV-02: igualdad de RackId OrdinalIgnoreCase y grafia canonica minima en Ordinal (Rack-A y rack-a -> 1 rack con grafia Rack-A); el tanteo de RackEnvelopeIdProbe no fusiona: un sobre ilegible con tanteo Rack-A -> cobertura no acreditada (totalRacks Unavailable), no un rack mas",
+    "INV-03: E1..E6 de D-10 y los casos de D-10a: una prueba por fila de D-10, por caso de D-10a y por mezcla de E3 (incluida la asimetria de hermanas sin colocar O-PV2-4)",
+    "INV-06: diseno ilegible por kind (selective, dynamic, pushback, cantilever, cabecera, cama) -> Undetermined(DesignUnreadable) y totalRacks Unavailable; nunca se excluye ni se cuenta en silencio",
+    "INV-07: BySystem con los seis tokens siempre, en orden fijo selective, dynamic, pushback, cantilever, cabecera, cama; sistema ausente -> rackCount Available(0); Push Back totalFrentes NotSupported; Cabecera NotApplicable; suma de rackCount = totalRacks cuando es Available",
+    "INV-08: un agregado nunca es parcial: un incluido con frentes Unavailable -> totalFrentes Unavailable; totalRacks sigue Available",
+    "INV-10: una variable rota no cambia totalRacks: Selectivo incluido con referencia rota -> Included; frentes Unavailable(EffectiveFailed(BrokenProjectVariableReference))",
+    "INV-11 (parte de G2 segun A-2.2): hermana no colocada y divergente -> Excluded(SiblingsDivergent); con el orden de entrada invertido, misma Membership, mismo representante (RepresentativeDefinitionId), mismo DisplayName, misma grafia canonica de RackId, mismo ProjectPopulation y mismos agregados materializados por G2; la comparacion de ProjectSummary Full es de G4",
+    "INV-12: veredicto E6 unico RackOutputVerdict(kindToken, designJson, CatalogInput): Allow (Push Back sin motivo y los demas kinds sin leer), Deny(m) (Push Back con motivo de RackBomOutputGate), Undetermined(DesignUnreadable | CatalogUnavailable con LoadFailed | ResolveFailed); Loaded(catalogo vacio) se evalua y puede dar Deny",
+    "INV-13: el handler conserva su comportamiento: Allow -> null; Deny(m) -> m; catalogo nulo -> Loaded(vacio) evaluado como hoy; Undetermined -> null (fail-open); la via de I-63 con LoadFailed -> Undetermined(CatalogUnavailable); la funcion que normaliza y corresponde es de Application y es la que llama el handler",
+    "INV-32 (parte de G2 segun A-2.1): un solo contador en el orquestador real de poblacion; RackMetricRequest directo -> contador de poblacion = 0; ProjectPopulation sobre el mismo rack -> el mismo contador > 0; el control con ProjectSummary Full es de G4",
+    "INV-33: una sola guarda DelegatesToOutputVerdict(textoDelMetodo), sobre el codigo sin comentarios: el OutputBlockedReason actual de src/RackCad.Plugin/KindHandlers/PushBackKindHandler.cs pasa (llama a RackOutputVerdict y a la correspondencia del handler, sin PushBackResolver ni RackBomOutputGate.For) y el fixture con el texto literal del metodo en 819955d6 (PushBackKindHandler.cs:56-71) es rechazado por la misma funcion",
+    "INV-35: una sola guarda de fuente comprueba, por cada fila de D-26, que el BuildBom (o Build) del handler correspondiente contiene la comprobacion de presencia que la fila reproduce (DynamicDesign y DynamicSystem; PushBackDesign; CantileverLineDesign; Header; FlowBedConfigurationStore; SelectivePalletDesignStore); control positivo con la misma funcion: un fixture sin la comprobacion es rechazado",
+    "D-10/D-10a/D-11/D-12/D-26/D-27: proyeccion pura con comparador Ordinal de kind; orden canonico por DefinitionKey Ordinal antes de E3..E6; representante = el de E4; E1..E6 en el orden congelado; lector D-26 por kind; veredicto E6 como unica composicion de la puerta; agregacion sin parciales",
+    "D-20 (nivel Population): ProjectPopulation es un tipo sin campos de metricas por rack (pertenencia, totalRacks, rackCount) y nunca ejecuta Phi2 ni Phi3 de metricas (solo la Phi3 de E6 en Push Back); ProjectSummary Full y RackComputedExpressionContext NO son de G2",
+    "G1 se conserva: RackMetricRequest (incluida la precondicion ArgumentException de la decision del Coordinator sobre D-17) y sus pruebas siguen en verde sin cambios",
+    "Ningun consumidor existente cambia de comportamiento; la unica edicion del Plugin es la delegacion de OutputBlockedReason en D-27, que conserva el comportamiento observable (INV-13)"
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.ComputedParametersPopulation",
+      "MinSelected": 13,
+      "ExpectRed": true
+    }
+  ],
+  "ExpectedEvidence": [
+    "Commit RED: pruebas focales de INV-01, 02, 03, 06, 07, 08, 10, 11, 12, 13, 32, 33 y 35 que fallan por asercion contra un esqueleto compilable, con seleccion >= 13; el RED de INV-33 se observa sobre el OutputBlockedReason vigente (819955d6) con la misma funcion de guarda",
+    "Commit GREEN: implementacion en el AllowedWriteScope (Application y la delegacion del handler) sin modificar las pruebas del RED; suite Core completa en verde, incluidas las pruebas de G1 y NamespaceFolderGuardTests",
+    "Contador de evaluaciones de poblacion observado en el orquestador real (INV-32)",
+    "Build del Plugin sin AutoCAD en verde en la CI (unica edicion del Plugin: PushBackKindHandler.OutputBlockedReason)",
+    "worker-handoff.json conforme al esquema, con los SHA de RED y GREEN y el trailer real del Worker",
+    "Push de la rama sin force; corrida push del SHA exacto de GREEN con los cuatro jobs requeridos en success"
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive/irreversible action not authorized"
+    },
+    {
+      "Id": "S-06",
+      "Text": "missing credentials/permissions"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch/worktree ownership conflict"
+    },
+    {
+      "Id": "S-09",
+      "Text": "dependency not integrated"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify authority revision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "main movement invalidates exact-SHA assumptions"
+    },
+    {
+      "Id": "S-14",
+      "Text": "initiative contract explicitly says STOP"
+    },
+    {
+      "Id": "P-01",
+      "Text": "Cambio del hash de config.toml"
+    },
+    {
+      "Id": "P-02",
+      "Text": "Participante vivo ajeno, proceso no atribuible o mas de una delegacion abierta"
+    },
+    {
+      "Id": "P-03",
+      "Text": "Delegacion fuera del contrato"
+    },
+    {
+      "Id": "P-04",
+      "Text": "Tope de BLOCKED alcanzado"
+    },
+    {
+      "Id": "P-05",
+      "Text": "Invocacion distinta del paquete aceptado"
+    },
+    {
+      "Id": "P-06",
+      "Text": "Aviso de limite de uso o de creditos"
+    },
+    {
+      "Id": "P-07",
+      "Text": "Una invocacion excederia el tope de invocaciones"
+    },
+    {
+      "Id": "P-08",
+      "Text": "La sesion opero durante una cesion"
+    },
+    {
+      "Id": "C-01",
+      "Text": "Hace falta tocar Expressions, Persistence, ProjectVariables, Systems, Bom, Domain, UI o cualquier archivo del Plugin distinto de src/RackCad.Plugin/KindHandlers/PushBackKindHandler.cs"
+    },
+    {
+      "Id": "C-02",
+      "Text": "D-10, D-10a, D-11, D-12, D-26 o D-27 no pueden implementarse tal como estan congelados (requiere A-n o Architect)"
+    },
+    {
+      "Id": "C-03",
+      "Text": "Contradiccion entre el Freeze y el codigo consumido (EXP-01)"
+    },
+    {
+      "Id": "C-04",
+      "Text": "Necesidad de leer o consumir codigo no integrado de I-64, I-62 o I-52"
+    },
+    {
+      "Id": "C-05",
+      "Text": "Cualquier escritura fuera de AllowedWriteScope"
+    },
+    {
+      "Id": "C-06",
+      "Text": "Un INV de G2 no puede mostrar un RED observable antes del cambio correcto"
+    },
+    {
+      "Id": "C-07",
+      "Text": "La delegacion del handler cambiaria el comportamiento observable vigente de OutputBlockedReason (INV-13)"
+    },
+    {
+      "Id": "C-08",
+      "Text": "Hace falta implementar ProjectSummary Full, RackComputedExpressionContext o cambios del nucleo de Expressions (G3/G4)"
+    }
+  ],
+  "EligibleCells": [
+    {
+      "Cell": "anthropic/subagent/claude-sonnet-5-5",
+      "Provider": "Anthropic",
+      "Model": "claude-sonnet-5-5",
+      "Transport": "subagente de la sesion de escritorio",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "write-commit-push",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "medium",
+        "high"
+      ],
+      "Source": "docs/automation/agent-execution/model-catalog.md (medido en la sonda U-04 y en el piloto de G3 de I-61; evidencia de I-61 §15)",
+      "VerifiedOn": "2026-09-30"
+    },
+    {
+      "Cell": "openai/codex-cli/gpt-6-luna",
+      "Provider": "OpenAI",
+      "Model": "gpt-6-luna",
+      "Transport": "Codex CLI, solo lectura",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "high"
+      ],
+      "Source": "docs/automation/agent-execution/model-catalog.md (medido en la sonda PR-1 y en G3 de I-61; evidencia de I-61 §§14-15)",
+      "VerifiedOn": "2026-09-30"
+    }
+  ],
+  "RoutingEnforcement": "required",
+  "CorrectionsAuthorized": true,
+  "IssuedBy": "Coordinator I-63",
+  "IssuedUtc": "2026-10-02T16:40:53Z"
+}

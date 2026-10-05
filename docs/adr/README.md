@@ -85,6 +85,7 @@ en una sesión. Esas van en comentarios de código o en el cuerpo del commit.
 | [0045](0045-workflow-v2-ciclo-evidencia-e-integracion.md) | Workflow V2 — Initiative lifecycle, evidence and integration governance | aceptado |
 | [0044](0044-hechos-neutrales-de-vistas-compartidas.md) | Hechos neutrales de vistas compartidas y consumo desde main | aceptado |
 | [0046](0046-protocolo-de-ejecucion-delegada-de-agentes.md) | Protocolo de ejecución delegada de agentes (Controller Codex, Worker y entrega estructurada) | aceptado |
+| [0049](0049-parametros-calculados-namespace-rack-y-resumen-de-proyecto.md) | Parámetros calculados de solo lectura, namespace built-in `rack` del motor de expresiones y resumen de proyecto (sucesor parcial de ADR-0043) | aceptado |
 
 Iniciativa `docs/adr-retroactivos` (I-07): los ADR-0006…0018 retro-documentan las trece decisiones de la
 antigua tabla de HANDOFF §7, una por ADR, y fueron **aceptados por el dueño el 2026-07-22** («Sí,

@@ -36,6 +36,7 @@ namespace RackCad.Application.Expressions
         private RegistryEvaluation(ExpressionContext context)
         {
             Context = context ?? throw new ArgumentNullException(nameof(context));
+            DependencyGraph.RejectComputedEntries(context.Symbols);
             DependencyGraph = new DependencyGraph(context.Symbols);
             EvaluationOrder = DependencyGraph.EvaluationOrder;
             Cycles = DependencyGraph.Cycles;

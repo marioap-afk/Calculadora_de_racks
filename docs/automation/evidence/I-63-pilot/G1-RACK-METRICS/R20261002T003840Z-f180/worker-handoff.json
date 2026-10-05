@@ -1,0 +1,123 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "G1-RACK-METRICS",
+  "RunId": "R20261002T003840Z-f180",
+  "DelegationRunId": "R20261002T002817Z-6294",
+  "Initiative": "I-63",
+  "Gate": "G1",
+  "Attempt": 0,
+  "BaseSha": "f71de12b33567e8b4109d3a17c60a17d54e96fdc",
+  "RedSha": "1013449d61b8292b77273ceeac30b82282b975a2",
+  "CurrentSha": "1013449d61b8292b77273ceeac30b82282b975a2",
+  "Branch": "architecture/parametros-calculados-resumen-proyecto",
+  "Worktree": "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-parametros-calculados-resumen-proyecto",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.Application/ComputedParameters/RackMetricDefinitionProjection.cs",
+    "src/RackCad.Application/ComputedParameters/RackMetricDesignReader.cs",
+    "src/RackCad.Application/ComputedParameters/RackMetricIds.cs",
+    "src/RackCad.Application/ComputedParameters/RackMetricModels.cs",
+    "src/RackCad.Application/ComputedParameters/RackMetricProviderRegistry.cs",
+    "src/RackCad.Application/ComputedParameters/RackMetricProviders.cs",
+    "src/RackCad.Application/ComputedParameters/RackMetricRequest.cs",
+    "tests/RackCad.Tests/ComputedParameters/RackMetricProviderPurityTests.cs",
+    "tests/RackCad.Tests/ComputedParameters/RackMetricRequestTests.cs"
+  ],
+  "WorkCompleted": "RED hecho y empujado (1013449d): esqueleto compilable de los siete archivos de produccion y dos clases de prueba con 16 pruebas para INV-04, 05, 09, 14, 16 y 34; la corrida filtrada compila y falla por asercion 16 de 16. La implementacion GREEN completa se construyo y verifico localmente (16 de 16 en verde en el filtro), pero NO se commiteo ni se empujo: la suite Core completa tiene 1 fallo (NamespaceFolderGuardTests.TestProjects_KeepExactlyOneAssemblyRootNamespace) causado por el namespace RackCad.Tests.ComputedParameters que exige la delegacion y que las pruebas RT ya usan. La guarda de I-23 exige UN solo namespace RackCad.Tests en los proyectos de prueba. Corregirlo exige cambiar los archivos RT (prohibido tras el RED) o la guarda (fuera del alcance). El candidato GREEN queda como parche y copias bajo green-candidate/ en el directorio de la corrida (ignorado por git); el worktree queda limpio en HEAD = RED = remoto.",
+  "TestsExecuted": [
+    {
+      "RunRef": "RED-1",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.ComputedParameters\" --logger \"trx;LogFileName=red.trx\" --results-directory artifacts/orchestration/I-63/G1-RACK-METRICS/0/R20261002T003840Z-f180/tests/RED-1",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-63/G1-RACK-METRICS/0/R20261002T003840Z-f180/tests/RED-1/red.trx"
+    },
+    {
+      "RunRef": "GREEN-1",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.ComputedParameters\" --logger \"trx;LogFileName=green.trx\" --results-directory artifacts/orchestration/I-63/G1-RACK-METRICS/0/R20261002T003840Z-f180/tests/GREEN-1 (sobre el candidato GREEN no commiteado)",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-63/G1-RACK-METRICS/0/R20261002T003840Z-f180/tests/GREEN-1/green.trx"
+    },
+    {
+      "RunRef": "RELEVANT-1",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-63/G1-RACK-METRICS/0/R20261002T003840Z-f180/tests/RELEVANT-1 (suite Core completa sobre el candidato GREEN no commiteado)",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-63/G1-RACK-METRICS/0/R20261002T003840Z-f180/tests/RELEVANT-1/core.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "RED-1",
+      "Selected": 16,
+      "Passed": 0,
+      "Failed": 16,
+      "Skipped": 0,
+      "FailedTests": [
+        "16 de 16 por asercion (RackMetricRequestTests y RackMetricProviderPurityTests)"
+      ]
+    },
+    {
+      "RunRef": "GREEN-1",
+      "Selected": 16,
+      "Passed": 16,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "RELEVANT-1",
+      "Selected": 12412,
+      "Passed": 12411,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.NamespaceFolderGuardTests.TestProjects_KeepExactlyOneAssemblyRootNamespace"
+      ]
+    }
+  ],
+  "Evidence": [
+    "Contadores observados en el candidato GREEN (resoluciones en el costado de resolucion, lecturas en el costado del lector D-26), por prueba:",
+    "INV-14 selectivo valido: resoluciones=1 lecturas=2 (Available 4 / 0)",
+    "INV-14 pushback legible (control: el lector lo lee como legible): resoluciones=0 lecturas=0 (NotSupported)",
+    "INV-14 cabecera legible (control idem): resoluciones=0 lecturas=0 (NotApplicable)",
+    "INV-34 pushback ilegible: resoluciones=0 lecturas=0 (NotSupported)",
+    "INV-34 cabecera ilegible: resoluciones=0 lecturas=0 (NotApplicable)",
+    "INV-34 selectivo divergente: resoluciones=0 lecturas=2 (Unavailable SiblingsDivergent)",
+    "INV-34 selectivo ilegible: resoluciones=0 lecturas=2 (Unavailable DesignUnreadable)",
+    "INV-34 selectivo valido: resoluciones=1 lecturas=2 (Available 4 / 0)",
+    "INV-16 kinds mezclados: resoluciones=0 lecturas=0 (KindIncoherent); kind ausente: resoluciones=0 lecturas=0 (KindAbsent)",
+    "INV-04 fondo0=4 (1 vacio) y fondo1=6: frentes=4 vacios=1; diseno sin celdas en fondo 0: frentes=4 vacios=4",
+    "INV-05 piso sin larguero / sin celdas / larguero a piso: frentes=3 vacios=1",
+    "INV-09: registro con los seis tokens por KindDispatch; la guarda unica ForbiddenProviderDependencies pasa en RackMetricProviders.cs y RackMetricProviderRegistry.cs y detecta el fixture que llama a SelectiveGeometryResolver",
+    "Candidato GREEN: artifacts/orchestration/I-63/G1-RACK-METRICS/0/R20261002T003840Z-f180/green-candidate/ (copias de los siete archivos y green-over-red.patch)"
+  ],
+  "UnexpectedFindings": [
+    "La guarda NamespaceFolderGuardTests.TestProjects_KeepExactlyOneAssemblyRootNamespace (I-23) exige que todo archivo de tests/RackCad.Tests declare exactamente el namespace RackCad.Tests; la delegacion exige RackCad.Tests.ComputedParameters y el filtro FullyQualifiedName~RackCad.Tests.ComputedParameters. Las dos exigencias son incompatibles con una suite Core verde."
+  ],
+  "KnownLimitations": [
+    "GREEN no commiteado ni empujado por el bloqueo; el candidato verifico 16 de 16 en el filtro.",
+    "Sin hermanas con identidad atribuible el candidato devuelve Unavailable(EnvelopeUnreadable) en ambas metricas: el Freeze no decide ese caso y ningun INV de G1 lo pide (supuesto del Worker, no verificado por prueba).",
+    "Hermanas con RackId distintos (OrdinalIgnoreCase) lanzan ArgumentException: la peticion es de UN RackId."
+  ],
+  "Deviations": [
+    "Ningun commit GREEN: parada por contradiccion entre la delegacion y la guarda de I-23."
+  ],
+  "OpenQuestions": [
+    "Que resolucion adopta el Coordinator: (a) nuevo RED con las clases en namespace RackCad.Tests y nombres que empiecen por ComputedParameters (p. ej. ComputedParametersRackMetricRequestTests) para que el filtro FullyQualifiedName~RackCad.Tests.ComputedParameters siga seleccionando, sin tocar la guarda; o (b) ampliar el alcance para modificar NamespaceFolderGuardTests (fuera del alcance de la delegacion).",
+    "Confirmar el supuesto de lista de hermanas sin identidad atribuible (ver KnownLimitations)."
+  ],
+  "WorkerStatus": "BLOCKED",
+  "Disposition": "BLOCKED",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "RecommendedNextAction": "El Coordinator decide entre (a) y (b) de OpenQuestions y reemite la delegacion; el candidato GREEN en green-candidate/ solo cambia a verde tras ajustar las pruebas RT.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "medium",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

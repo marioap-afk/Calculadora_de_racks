@@ -1,0 +1,16 @@
+{
+  "A2": [],
+  "A3": [
+    "fuera del contrato: src/RackCad.Application/",
+    "permitido cubierto por prohibido de la propia delegacion: src/RackCad.Application/ ~ src/RackCad.Application/Expressions/",
+    "permitido cubierto por prohibido de la propia delegacion: src/RackCad.Application/ ~ src/RackCad.Application/Persistence/",
+    "permitido cubierto por prohibido de la propia delegacion: src/RackCad.Application/ ~ src/RackCad.Application/ProjectVariables/",
+    "permitido cubierto por prohibido de la propia delegacion: src/RackCad.Application/ ~ src/RackCad.Application/Systems/",
+    "permitido cubierto por prohibido de la propia delegacion: src/RackCad.Application/ ~ src/RackCad.Application/Bom/"
+  ],
+  "A4": [],
+  "A5": [],
+  "A6": [],
+  "A7": [],
+  "A8": []
+}

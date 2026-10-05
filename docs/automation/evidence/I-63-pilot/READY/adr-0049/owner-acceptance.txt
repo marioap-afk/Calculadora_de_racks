@@ -1,0 +1,68 @@
+Owner Decision — ADR-0049
+Acepto explícitamente el ADR-0049 sobre el objeto exacto revisado por el Architect:
+
+```
+commit =
+238da7a6
+
+path =
+docs/adr/0049-parametros-calculados-namespace-rack-y-resumen-de-proyecto.md
+
+blob =
+0b43332248523f206f21a8dcbe383748dde8edef
+
+Architect =
+AGREED
+
+REQUIRED =
+0
+```
+
+La aceptación es sobre ese blob exacto. El opcional cosmético O-ADR-6 no forma parte de la aceptación y no debe cambiar el contenido antes de registrar el ADR como aceptado.
+Autorizo ahora
+
+1. Cambiar:
+
+
+```
+Estado: propuesto
+```
+
+a:
+
+```
+Estado: aceptado
+```
+
+2. Registrar esta aceptación explícita del Owner en las decisiones/evidencia de I-63.
+3. Añadir la nota posterior correspondiente en ADR-0043 indicando que ADR-0049 es su sucesor parcial, sin marcar ADR-0043 como reemplazado.
+4. Actualizar `docs/adr/README.md` con ADR-0049 como `aceptado`.
+5. Después de la aceptación, O-ADR-6 puede corregirse solo como corrección tipográfica, sin alterar significado normativo.
+
+Estado formal
+
+```
+ADR-0049 = OWNER ACCEPTED
+
+Accepted source blob =
+0b43332248523f206f21a8dcbe383748dde8edef
+
+Architect review =
+AGREED
+
+A63-ADR-01 =
+CLOSED
+```
+
+Continúa autónomamente con:
+
+```
+FOUNDATIONS
+→ READY-04
+→ READY-05
+→ READY-06 Architect
+→ READY-07..09
+→ Coordinator para juicio final READY / Candidato
+```
+
+Todavía no autorizo Candidato ni integración.

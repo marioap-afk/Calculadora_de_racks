@@ -1,0 +1,141 @@
+{
+ "BaseSha": "527e4b9185173e2f50c10d39a882749c09b77d2f",
+ "CurrentSha": "4f45f4464f5d434f7fa478fea1117d82283ee997",
+ "Scope": {
+  "Command": "git diff --name-only 527e4b9185173e2f50c10d39a882749c09b77d2f..4f45f4464f5d434f7fa478fea1117d82283ee997",
+  "Files": [
+   {
+    "Path": "src/RackCad.Application/ComputedParameters/ProjectPopulation.cs",
+    "AllowedBy": [
+     "src/RackCad.Application/ComputedParameters/"
+    ],
+    "ForbiddenBy": [],
+    "Ok": true
+   },
+   {
+    "Path": "src/RackCad.Application/ComputedParameters/ProjectSummary.cs",
+    "AllowedBy": [
+     "src/RackCad.Application/ComputedParameters/"
+    ],
+    "ForbiddenBy": [],
+    "Ok": true
+   },
+   {
+    "Path": "src/RackCad.Application/ComputedParameters/ProjectSummaryProvenance.cs",
+    "AllowedBy": [
+     "src/RackCad.Application/ComputedParameters/"
+    ],
+    "ForbiddenBy": [],
+    "Ok": true
+   },
+   {
+    "Path": "src/RackCad.Application/ComputedParameters/RackComputedExpressionContext.cs",
+    "AllowedBy": [
+     "src/RackCad.Application/ComputedParameters/"
+    ],
+    "ForbiddenBy": [],
+    "Ok": true
+   },
+   {
+    "Path": "src/RackCad.Application/ComputedParameters/RackMetricOrchestrator.cs",
+    "AllowedBy": [
+     "src/RackCad.Application/ComputedParameters/"
+    ],
+    "ForbiddenBy": [],
+    "Ok": true
+   },
+   {
+    "Path": "src/RackCad.Application/ComputedParameters/RackMetricRequest.cs",
+    "AllowedBy": [
+     "src/RackCad.Application/ComputedParameters/"
+    ],
+    "ForbiddenBy": [],
+    "Ok": true
+   },
+   {
+    "Path": "src/RackCad.Application/ComputedParameters/RackMetricResolutionCounter.cs",
+    "AllowedBy": [
+     "src/RackCad.Application/ComputedParameters/"
+    ],
+    "ForbiddenBy": [],
+    "Ok": true
+   },
+   {
+    "Path": "tests/RackCad.Tests/ComputedParameters/ComputedParametersSummaryContextTests.cs",
+    "AllowedBy": [
+     "tests/RackCad.Tests/ComputedParameters/"
+    ],
+    "ForbiddenBy": [],
+    "Ok": true
+   },
+   {
+    "Path": "tests/RackCad.Tests/ComputedParameters/ComputedParametersSummaryGuardTests.cs",
+    "AllowedBy": [
+     "tests/RackCad.Tests/ComputedParameters/"
+    ],
+    "ForbiddenBy": [],
+    "Ok": true
+   },
+   {
+    "Path": "tests/RackCad.Tests/ComputedParameters/ComputedParametersSummaryKit.cs",
+    "AllowedBy": [
+     "tests/RackCad.Tests/ComputedParameters/"
+    ],
+    "ForbiddenBy": [],
+    "Ok": true
+   },
+   {
+    "Path": "tests/RackCad.Tests/ComputedParameters/ComputedParametersSummaryPerformanceTests.cs",
+    "AllowedBy": [
+     "tests/RackCad.Tests/ComputedParameters/"
+    ],
+    "ForbiddenBy": [],
+    "Ok": true
+   },
+   {
+    "Path": "tests/RackCad.Tests/ComputedParameters/ComputedParametersSummaryTests.cs",
+    "AllowedBy": [
+     "tests/RackCad.Tests/ComputedParameters/"
+    ],
+    "ForbiddenBy": [],
+    "Ok": true
+   }
+  ],
+  "Result": "PASS"
+ },
+ "ExistingTestsUnchanged": {
+  "Command": "git diff --name-status -M 527e4b9185173e2f50c10d39a882749c09b77d2f..4f45f4464f5d434f7fa478fea1117d82283ee997 -- tests/RackCad.Tests/ComputedParameters/",
+  "ExistingAtBase": 12,
+  "Counts": {
+   "A": 5,
+   "M": 0,
+   "D": 0,
+   "R": 0,
+   "other": 0
+  },
+  "Entries": [
+   [
+    "A",
+    "tests/RackCad.Tests/ComputedParameters/ComputedParametersSummaryContextTests.cs"
+   ],
+   [
+    "A",
+    "tests/RackCad.Tests/ComputedParameters/ComputedParametersSummaryGuardTests.cs"
+   ],
+   [
+    "A",
+    "tests/RackCad.Tests/ComputedParameters/ComputedParametersSummaryKit.cs"
+   ],
+   [
+    "A",
+    "tests/RackCad.Tests/ComputedParameters/ComputedParametersSummaryPerformanceTests.cs"
+   ],
+   [
+    "A",
+    "tests/RackCad.Tests/ComputedParameters/ComputedParametersSummaryTests.cs"
+   ]
+  ],
+  "Violations": [],
+  "Result": "PASS"
+ }
+}

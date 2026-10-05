@@ -1,0 +1,328 @@
+{
+  "Schema": "rackcad-delegation/v1",
+  "TaskId": "G3-RACK-BUILTINS",
+  "RunId": "R20261002T184114Z-1c2f",
+  "Initiative": "I-63",
+  "Unit": "I-63",
+  "Gate": "G3",
+  "Attempt": 2,
+  "AuthorityRevision": "e99621f9e285b1a7ddfcf51cd8ccf970828e0b66",
+  "MainSha": "819955d61a6da4c811a11fbd11b5dca13f634b7c",
+  "BaseSha": "e99621f9e285b1a7ddfcf51cd8ccf970828e0b66",
+  "ExpectedBranch": "architecture/parametros-calculados-resumen-proyecto",
+  "ExpectedWorktree": "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-parametros-calculados-resumen-proyecto",
+  "Owner": {
+    "Kind": "subagent",
+    "Id": "subagent:R20261002T184114Z-1c2f"
+  },
+  "TaskClass": "Implementacion de pruebas",
+  "Dimensions": {
+    "Ambiguity": "Low",
+    "ArchitecturalSensitivity": "High",
+    "Breadth": "Medium",
+    "ToolUse": "High",
+    "FailureCost": "High",
+    "MechanicalRepetition": "Medium",
+    "Horizon": "Medium"
+  },
+  "Executor": {
+    "Provider": "Anthropic",
+    "Transport": "subagente de la sesion de escritorio",
+    "Role": "Worker",
+    "Cell": "anthropic/subagent/claude-sonnet-5-5"
+  },
+  "Model": "claude-sonnet-5-5",
+  "Effort": {
+    "Semantic": "Deep",
+    "Provider": "high"
+  },
+  "PromptProfile": "ROUTINE_IMPLEMENTATION",
+  "RoutingReason": "2026-10-02: clasificacion Implementacion de pruebas (routing.md §1), Balanced; sensibilidad arquitectonica y coste de fallo High elevan un escalon a Deep. Repeticion mecanica y horizonte no son High. anthropic/subagent/claude-sonnet-5-5 es la celda elegible del contrato con write-commit-push y effort-applied; TestedEfforts medium/high, verificada 2026-09-30, con U-04 y piloto G3 I-61 citados por el contrato/catalogo; high corresponde a Deep. Comandos ejecutados: rama architecture/parametros-calculados-resumen-proyecto; HEAD/BaseSha e99621f9e285b1a7ddfcf51cd8ccf970828e0b66; origin/main 819955d61a6da4c811a11fbd11b5dca13f634b7c igual a MainSha; log inicia e99621f9. Preflight: igualdad elemento a elemento y en orden en las seis colecciones, incluido Path, Section y Class de Authorities.",
+  "ModelEscalationReason": null,
+  "RoutingEnforcement": "required",
+  "Authorities": [
+    {
+      "Path": "docs/initiatives/I-63-proposal-v3.md",
+      "Section": "archivo completo (Frozen: YES); en especial D-02, D-03, D-04, D-14, D-15, D-16, D-17 (puntos 4-6), D-18, D-19, D-23 y §11-§13, §19-§21",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-63-proposal-v3-amendment-a1-verificacion.md",
+      "Section": "archivo completo (A-1.2 para INV-20)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-63-proposal-v3-amendment-a2-gate-verification-sequencing.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-63-parametros-calculados-resumen-proyecto.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/decisions/I-63.md",
+      "Section": "§2 y §6",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "Section": "## 7. Gates funcionales",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "AGENTS.md",
+      "Section": "## Convenciones arquitectonicas (obligatorias)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0043-motor-expresiones-parametricas-causas-multiples-y-recuperacion-segura.md",
+      "Section": "D1 (nucleo neutral), D9 (tokens persistidos) y D24",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "## 16. Ejecución delegada bajo orden del Coordinator",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "## 1. Clases de tarea y ## 4. Algoritmo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+      "Section": "## G. Delegación de ejecución",
+      "Class": "EXTERNAL"
+    }
+  ],
+  "Objective": "G3-T1 (RED-BUILTINS): anadir exclusivamente pruebas RED para INV-15 e INV-17..27 bajo tests/RackCad.Tests/ComputedParameters/, namespace RackCad.Tests y clases ComputedParametersSymbols; actualizar tests/RackCad.Tests/ExpressionSymbolModelTests.cs solo en aserciones pre-ID20 afectadas por D-16. Compilar contra la API actual sin editar src/. Para INV-22, ejecutar parser y binder y fijar el diagnostico observado para Rack.#{zzz}, con codigos V6, spans y ausencia de arbol. Registrar en la entrega la API esperada para G3-T2.",
+  "AllowedWriteScope": [
+    "tests/RackCad.Tests/ComputedParameters/",
+    "tests/RackCad.Tests/ExpressionSymbolModelTests.cs",
+    "src/RackCad.Application/"
+  ],
+  "ForbiddenWriteScope": [
+    "src/",
+    "tests/RackCad.UI.Tests/",
+    "tests/RackCad.Tests/ExpressionRoundTripTests.cs",
+    "tests/RackCad.Tests/ExpressionFormatterTests.cs",
+    "tests/RackCad.Tests/ExpressionBinderTests.cs",
+    "tests/RackCad.Tests/G8PersistenceIntegrationContractTests.cs",
+    "tests/RackCad.Tests/ExpressionCoreGuardTests.cs",
+    "tests/RackCad.Tests/ExpressionDiagnosticCatalogTests.cs",
+    "tests/RackCad.Tests/NamespaceFolderGuardTests.cs",
+    "assets/",
+    "deploy/",
+    "eng/",
+    "tools/",
+    ".github/",
+    "RackCad.sln",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json",
+    "NuGet.Config",
+    ".gitattributes",
+    ".gitignore",
+    ".editorconfig",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "README.md",
+    "docs/"
+  ],
+  "Invariants": [
+    "INV-15: propagacion por estado en RackComputedExpressionContext: Push Back -> ComputedReferencesNotAvailable[(rack/frentes, NotSupported)]; Cabecera -> NotApplicable; variable rota -> Unavailable(EffectiveFailed(BrokenProjectVariableReference)); Selectivo legible con fondo 0 de 4 frentes -> Rack.Frentes * 2 = 8; dos referencias con estados distintos -> lista de ambas en orden de SymbolId; nunca valor parcial ni colapso en BrokenReference",
+    "INV-17: disponibilidad D-14: en el contexto de rack, Rack.Frentes enlaza y Project.TotalRacks da UnknownNamespace",
+    "INV-18: formulas de propiedad (RACKEDITAR) y definiciones de variables (RACKVARIABLES) sin Rack.*: =Rack.Frentes da UnknownNamespace con los mismos mensajes; control positivo: la misma expresion enlaza en una tabla sintetica con entradas rack",
+    "INV-19: homonimos entre namespaces: contexto de rack con la variable Frentes y rack/frentes: {Frentes} -> variable; Frentes -> variable; Rack.Frentes -> calculado; sin AmbiguousName ni OperatorInName nuevos; sin la variable homonima, {Frentes} -> UnknownSymbol, nunca el calculado",
+    "INV-20 (con A-1.2): OperatorInName por namespace: entrada rack sintetica Frentes-Vacios sin variables con operador -> el texto Frentes-Vacios sin llaves no da OperatorInName (resta y UnknownSymbol por Frentes); control explicito con la variable A-B y la misma entrada rack: A-B sin llaves sigue dando OperatorInName; un mismo helper para ambos",
+    "INV-21: Format -> Parse -> Bind con homonimo: Rack.Frentes * {Frentes} con la variable Frentes presente formatea Rack.Frentes * Frentes y vuelve al mismo arbol",
+    "INV-22: SymbolId rack ausente de la tabla -> el formatter muestra Rack.#{zzz}; parsearlo y enlazarlo produce diagnosticos deterministas y ningun arbol; el codigo concreto se fija en el commit RED de G3 y es uno del catalogo V6 vigente (sin codigo nuevo; ver Q-G3-01)",
+    "INV-23: CanonicalShape.Classify(Rack.Frentes) = Expression, nunca DirectReference",
+    "INV-24: persistencia cerrada en los dos sentidos (D-18): leer \"Namespace\":\"rack\" -> PresentButUnreadable (caso G8 existente); escribir un arbol rack -> excepcion; control positivo: la tabla de namespaces en memoria SI conoce rack",
+    "INV-25: regla de ambito para rack: consumidor Project con una entrada rack en la tabla -> ScopeViolation",
+    "INV-26: el nombre visible no es identidad: renombrar el miembro en una tabla de prueba no cambia el SymbolId ni el arbol",
+    "INV-27: Computed es hoja fuera del registro: RegistryEvaluation o DependencyGraph con una entrada Computed -> error de programacion",
+    "INV-28: projectVariable intacto: ExpressionRoundTripTests, ExpressionFormatterTests, ExpressionBinderTests y G8PersistenceIntegrationContractTests siguen verdes sin modificarse",
+    "D-14/D-15: Rack.* solo en RackComputedExpressionContext (Rack); ningun simbolo rack en Phi2 ni antes; el contexto solo se construye con resultados terminados de RackMetricRequest y evaluar nunca resuelve (R1-R6)",
+    "D-16: cambios neutrales del nucleo (ningun tipo del nucleo nombra racks, sistemas ni metricas mas alla del miembro de namespace y su token): SymbolNamespace.Rack y tabla de namespaces en memoria projectVariable y rack; validez de clave por namespace (projectVariable sin cambios); SymbolDefinitionKind.Computed hoja; indices por namespace en SymbolTable; binder y formatter segun D-16.5-6; CanonicalShape segun D-16.7; sin cambios en lexer, parser, evaluador, limites, DependencyGraph ni RegistryEvaluation salvo la guarda R4; ExpressionCoreGuardTests (P26.1) en verde sin modificarse",
+    "D-17 (4-6): RackComputedExpressionContext vive FUERA de RackCad.Application.Expressions; su tabla une las entradas projectVariable del mismo documento de registro de la Phi2 del rack y las entradas rack Computed; se enlaza con ambito Rack; propagacion por estado sin valor parcial",
+    "D-18/D-19: PersistedBoundExpressionJson usa solo la tabla de tokens persistidos de D9 (projectVariable): leer rack -> PresentButUnreadable, escribir rack -> error de programacion; fuera del contexto de rack, nombres, formatter y diagnosticos sin cambios (M-03 no activado)",
+    "G1 y G2 se conservan: RackMetricRequest (con la precondicion ArgumentException), ProjectPopulation, agregacion y RackOutputVerdict y sus pruebas siguen en verde sin cambios de comportamiento",
+    "Ningun consumidor existente cambia de comportamiento; ProjectSummary Full (G4) no se implementa",
+    "G3-T1: solo pruebas; ningun archivo de src/ cambia; el RED compila contra la API actual y falla en ejecucion, nunca por compilacion",
+    "G3-T1: ExpressionSymbolModelTests.cs solo cambia en las aserciones pre-ID20 que D-16 cambia; queda protegido desde el RED",
+    "G3-T1: el resultado diagnostico de INV-22 se observa en el RED (codigos del catalogo V6, spans y ausencia de arbol); un codigo nuevo necesario es STOP C-10"
+  ],
+  "AcceptanceCriteria": [
+    "INV-15: RED observa los estados Push Back (ComputedReferencesNotAvailable para rack/frentes NotSupported), Cabecera (NotApplicable), variable rota (Unavailable), Rack.Frentes * 2 = 8 para rack legible y lista de estados distintos en orden SymbolId; sin valor parcial ni BrokenReference.",
+    "INV-17: en contexto Rack, Rack.Frentes enlaza y Project.TotalRacks da UnknownNamespace.",
+    "INV-18: propiedad y definicion de variable con =Rack.Frentes dan UnknownNamespace con mensajes iguales; control positivo enlaza en tabla sintetica con rack.",
+    "INV-19: con Frentes variable y rack/frentes calculado, {Frentes} y Frentes resuelven variable, Rack.Frentes calculado, sin AmbiguousName ni OperatorInName nuevos; sin homonimo, {Frentes} da UnknownSymbol.",
+    "INV-20 con A-1.2: el mismo helper comprueba que Frentes-Vacios sin variable con operador en tabla sintetica rack da resta y UnknownSymbol, y que A-B con variable control conserva OperatorInName.",
+    "INV-21: Rack.Frentes * {Frentes} formatea Rack.Frentes * Frentes y Format -> Parse -> Bind devuelve el mismo arbol.",
+    "INV-22: ejecutar parser y binder para Rack.#{zzz} y fijar codigos exactos del catalogo V6, spans y ausencia de arbol; no elegir por inspeccion estatica. Si requiere codigo nuevo, detener por C-10.",
+    "INV-23: CanonicalShape.Classify(Rack.Frentes) = Expression, no DirectReference.",
+    "INV-24: leer Namespace rack da PresentButUnreadable; escribir arbol rack lanza excepcion; tabla en memoria conoce rack y se conserva caso G8.",
+    "INV-25: consumidor Project con entrada rack produce ScopeViolation.",
+    "INV-26: renombrar miembro no cambia SymbolId ni arbol.",
+    "INV-27: RegistryEvaluation o DependencyGraph con Computed produce error de programacion.",
+    "INV-28: ExpressionRoundTripTests, ExpressionFormatterTests, ExpressionBinderTests y G8PersistenceIntegrationContractTests no se modifican.",
+    "Los archivos nuevos quedan bajo tests/RackCad.Tests/ComputedParameters/, namespace RackCad.Tests y clases ComputedParametersSymbols; ExpressionSymbolModelTests.cs solo cambia en aserciones pre-ID20 afectadas por D-16.",
+    "Un solo commit RED, solo pruebas y con push propio; compila contra API actual sin editar src/, selecciona al menos 12 y falla al ejecutar; la corrida push tiene Core en failure por esas pruebas, sin error de compilacion.",
+    "La entrega registra nombres de tipos y miembros de API que las pruebas fijan para G3-T2.",
+    "No se modifican ExpressionCoreGuardTests, ExpressionDiagnosticCatalogTests ni las pruebas de G1 y G2.",
+    "El handoff registra resultados tecnicos y API esperada sin formular decisiones reservadas al Coordinator."
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.ComputedParametersSymbols",
+      "MinSelected": 12,
+      "ExpectRed": true
+    }
+  ],
+  "ExpectedEvidence": [
+    "Commit RED unico (solo pruebas) con push propio: corrida push del RedSha con el job Core en failure por las pruebas focales (seleccion >= 12) y sin errores de compilacion",
+    "Resultado diagnostico observado de INV-22 para Rack.#{zzz}: codigo o secuencia exacta de codigos existentes, spans y ausencia de arbol enlazado, registrado en la entrega",
+    "API que las pruebas fijan para G3-T2 (nombres de tipos y miembros nuevos esperados) registrada en la entrega",
+    "Comprobacion mecanica independiente de la sesion: git diff --name-only BaseSha..CurrentSha contenido en AllowedWriteScope y sin interseccion con ForbiddenWriteScope",
+    "worker-handoff.json conforme al esquema, con RedSha = CurrentSha y el trailer real del Worker"
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive/irreversible action not authorized"
+    },
+    {
+      "Id": "S-06",
+      "Text": "missing credentials/permissions"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch/worktree ownership conflict"
+    },
+    {
+      "Id": "S-09",
+      "Text": "dependency not integrated"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify authority revision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "main movement invalidates exact-SHA assumptions"
+    },
+    {
+      "Id": "S-14",
+      "Text": "initiative contract explicitly says STOP"
+    },
+    {
+      "Id": "P-01",
+      "Text": "Cambio del hash de config.toml"
+    },
+    {
+      "Id": "P-02",
+      "Text": "Participante vivo ajeno, proceso no atribuible o mas de una delegacion abierta"
+    },
+    {
+      "Id": "P-03",
+      "Text": "Delegacion fuera del contrato"
+    },
+    {
+      "Id": "P-04",
+      "Text": "Tope de BLOCKED alcanzado"
+    },
+    {
+      "Id": "P-05",
+      "Text": "Invocacion distinta del paquete aceptado"
+    },
+    {
+      "Id": "P-06",
+      "Text": "Aviso de limite de uso o de creditos"
+    },
+    {
+      "Id": "P-07",
+      "Text": "Una invocacion excederia el tope de invocaciones"
+    },
+    {
+      "Id": "P-08",
+      "Text": "La sesion opero durante una cesion"
+    },
+    {
+      "Id": "C-01",
+      "Text": "Hace falta tocar ProjectVariables, Systems, Bom, Catalogs, Units, Domain, Plugin, UI, cualquier archivo de Persistence distinto de PersistedBoundExpressionJson.cs o cualquier prueba existente distinta de ExpressionSymbolModelTests.cs"
+    },
+    {
+      "Id": "C-02",
+      "Text": "D-14, D-15, D-16, D-17 (4-6), D-18 o D-19 no pueden implementarse tal como estan congelados (requiere A-n o Architect)"
+    },
+    {
+      "Id": "C-03",
+      "Text": "Contradiccion entre el Freeze y el codigo consumido (EXP-01)"
+    },
+    {
+      "Id": "C-04",
+      "Text": "Necesidad de leer o consumir codigo no integrado de I-64, I-62 o I-52"
+    },
+    {
+      "Id": "C-05",
+      "Text": "Cualquier escritura fuera de AllowedWriteScope"
+    },
+    {
+      "Id": "C-06",
+      "Text": "Un INV de G3 no puede mostrar un RED observable antes del cambio correcto"
+    },
+    {
+      "Id": "C-07",
+      "Text": "Un cambio del nucleo nombraria racks, sistemas o metricas mas alla de D-16, o romperia ExpressionCoreGuardTests (P26.1)"
+    },
+    {
+      "Id": "C-08",
+      "Text": "Hace falta ProjectSummary Full (G4), habilitar Rack.* en otro consumidor (D-14) o persistir referencias calculadas (ID23)"
+    },
+    {
+      "Id": "C-09",
+      "Text": "Cambiaria la semantica de projectVariable, su formato persistido o alguna de las suites de INV-28"
+    },
+    {
+      "Id": "C-10",
+      "Text": "INV-22 exigiria un codigo de diagnostico nuevo fuera del catalogo V6 (ExpressionDiagnosticCatalogTests)"
+    },
+    {
+      "Id": "C-11",
+      "Text": "Una expectativa de G3 no puede expresarse en una prueba que compile contra la API actual sin tocar src/"
+    }
+  ],
+  "MaxReworkLoops": 3,
+  "AttemptsRemaining": 1,
+  "ChainBaseSha": "e99621f9e285b1a7ddfcf51cd8ccf970828e0b66",
+  "ChainRedSha": null,
+  "ChainRedFiles": [],
+  "CorrectionOf": null,
+  "ExpectedHandoffPath": "artifacts/orchestration/I-63/G3-RACK-BUILTINS/2/{WorkRunId}/worker-handoff.json",
+  "IssuedBy": "Controller Codex (planificacion G3-T1, CONTROLLER_PLANNING)"
+}

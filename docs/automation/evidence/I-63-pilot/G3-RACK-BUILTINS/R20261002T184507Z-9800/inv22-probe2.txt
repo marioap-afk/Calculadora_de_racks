@@ -1,0 +1,10 @@
+TEXT: Rack.#{zzz} parse.Succeeded=False diags=InvalidQualifier@5+6
+    InvalidQualifier class=SyntaxAndLimits span=5+6
+  Syntax throws InvalidOperationException
+TEXT: Rack.#{frentes} parse.Succeeded=False diags=InvalidQualifier@5+10
+    InvalidQualifier class=SyntaxAndLimits span=5+10
+  Syntax throws InvalidOperationException
+TEXT: Rack.#3f2b1c9e-6d4a-4f38-9b71-0c2a5e8d1f44 parse.Succeeded=False diags=UnexpectedToken@5+37
+    UnexpectedToken class=SyntaxAndLimits span=5+37
+  Syntax throws InvalidOperationException
+serialize throws System.InvalidOperationException : boom

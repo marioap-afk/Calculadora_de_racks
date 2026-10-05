@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "G1-RACK-METRICS",
+  "RunId": "R20261002T144842Z-0cf4",
+  "DelegationRunId": "R20261002T143522Z-0c4d",
+  "WorkRunId": "R20261002T143849Z-3698",
+  "Attempt": 2,
+  "VerifiedSha": "4a6c2d889fc2b421076b3165b26b97162439ad57",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra Outcome.Kind=COMPLETED, DeathConfirmed=true y Cession.SessionOperated=false; StartUtc=14:38:52Z. OutputWrittenUtc=14:43:49.5151479Z, posterior al inicio."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json coincide con TaskId=G1-RACK-METRICS, Attempt=2, DelegationRunId=R20261002T143522Z-0c4d y RunId=R20261002T143849Z-3698. CurrentSha=4a6c2d889fc2b421076b3165b26b97162439ad57; Worktree y Branch coinciden. El registro identifica OutputPath terminado en R20261002T143849Z-3698/worker-handoff.json y SHA-256 87039BF3E456A474429BDDFF3F0477A61D5E5DB7A436A499090703D459724628; la fecha de salida es posterior al inicio."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git show de AuthorityRevision 658b35ad498520ba3c832a96eea4389df16dfa60 leyó I-63-proposal-v3.md y amendment-a1-verificacion.md; git show de MainSha 819955d61a6da4c811a11fbd11b5dca13f634b7c leyó AUTOMATION_PLAN.md §16, agent-execution/README.md §8 y AGENTS.md. git merge-base da MainSha y los diffs de rutas EXTERNAL contra AuthorityRevision y BaseSha no muestran cambios. Las colecciones Authorities de contrato y delegación son iguales; no se tomó analysis.md como autoridad."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "La comparación de gate-contract.json y delegation.json confirma igualdad en AllowedWriteScope, ForbiddenWriteScope, Invariants, StopConditions, RequiredTests y AuthorityRevision. relay-record-planning.json registra A1-A8 todas pass."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git branch --show-current devuelve architecture/parametros-calculados-resumen-proyecto; git rev-parse HEAD devuelve 4a6c2d889fc2b421076b3165b26b97162439ad57, igual a git rev-parse refs/remotes/origin/architecture/parametros-calculados-resumen-proyecto. git merge-base --is-ancestor BaseSha a CurrentSha termina con código 0. BaseSha=a2d2b0a60709156b557292eb019957898db1fb09; RedSha=null."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra LsRemoteSha=4a6c2d889fc2b421076b3165b26b97162439ad57, igual a CurrentSha, y OriginMainSha=819955d61a6da4c811a11fbd11b5dca13f634b7c, igual a MainSha. git rev-parse origin/main devuelve ese MainSha."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha enumera solo tests/RackCad.Tests/ComputedParameters/RackMetricIdsTests.cs. La ruta está bajo AllowedWriteScope; no hay rutas de producción ni de ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 no devuelve cambios. git check-ignore -v sobre el paquete de entrada devuelve .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "not_applicable",
+      "Evidence": "RemoteFacts.CurrentRun: push, ref refs/heads/architecture/parametros-calculados-resumen-proyecto, head_sha 4a6c2d889fc2b421076b3165b26b97162439ad57, completed/success; los cuatro jobs requeridos están en success. TRX actuales: Core 12423/12423 pass; UI 1654 seleccionadas, 1637 pass, 0 fail y 17 no ejecutadas. No se exige RED: RedSha=null, ChainRedSha=fc30dc6cf0d2f97e6732bbb8c512623db91c305d; RemoteFacts.RedRun 36972851773 es push del ChainRedSha y su job Core terminó en failure."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "not_applicable",
+      "Evidence": "El TRX Core actual selecciona 27 pruebas FullyQualifiedName~RackCad.Tests.ComputedParameters: 27 pass, 0 fail; el contrato exige mínimo 6. El TRX confirma verdes las pruebas INV-04, INV-05, INV-09, INV-14, INV-16 e INV-34; los contadores INV-14/34 están en CountingReader y CountingSide, los costados del lector y resolución. La nueva ComputedParametersRackMetricIdsTests compara los seis pares congelados con RackMetricIds.All en ambos sentidos y comprueba catálogo cerrado y regla del token; sus 10 casos están en verde. NamespaceFolderGuardTests conserva su archivo y sus 7 resultados del TRX están en verde. Handoff TestResults declara 10/10, 27/27 y Core 12423/12423, coincidentes con los conteos del TRX actual. git diff ChainBaseSha ChainRedSha -- tests/ enumera ChainRedFiles: RackMetricProviderPurityTests.cs y RackMetricRequestTests.cs; git diff RedSha CurrentSha -- tests/ solo enumera RackMetricIdsTests.cs, sin tocar RT ni ChainRedFiles. El TRX de ChainRedSha registra 17 seleccionadas y 17 fallidas del filtro requerido."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha muestra un commit con `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`, igual al literal Worker.Trailer de la entrega. relay-record-work.json declara modelo efectivo sonnet (alias claude-sonnet-5-5) y effort medium."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "La delegación declara RoutingEnforcement=required y solicita claude-sonnet-5-5 con effort medium. relay-record-work.json registra sonnet (alias claude-sonnet-5-5), effort medium; el handoff no declara Deviations."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisión de WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction del handoff: ninguno contiene los términos enumerados en AUTOMATION_PLAN §16.10."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "La señal Denials de relay-record-work.json registra 0 denegaciones de permisos o credenciales, 0 avisos de límite y 0 órdenes fallidas."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "El intento de repetir git ls-remote durante esta verificación no pudo conectar con GitHub; el registro de trabajo conserva el resultado obtenido a las 14:48:19Z, y coincide con CurrentSha y MainSha locales.",
+    "El handoff informa que algunas pruebas locales se ejecutaron antes del commit con TreeSha=null; los conteos contrastados para esta verificación proceden de los TRX de CI asociados al SHA actual."
+  ],
+  "RecommendedNextAction": "Registrar esta verificación y continuar con el siguiente paso de la sesión conforme a la autoridad aplicable."
+}

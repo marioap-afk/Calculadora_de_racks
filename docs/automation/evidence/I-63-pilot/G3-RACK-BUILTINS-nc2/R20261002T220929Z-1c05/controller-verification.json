@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "G3-RACK-BUILTINS",
+  "RunId": "R20261002T220929Z-1c05",
+  "DelegationRunId": "R20261002T214309Z-19d7",
+  "WorkRunId": "R20261002T214618Z-be6d",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-10-02T21:46:22Z. OutputWrittenUtc=2026-10-02T21:59:48Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json coincide en TaskId, Attempt=2 y DelegationRunId; RunId=R20261002T214618Z-be6d. OutputWrittenUtc es posterior al inicio de la cesión. CurrentSha=eb58a4768d5a68892cce8d85b527f2a1ad1bdc64."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Contrato y delegación declaran AuthorityRevision=ea70e3b333efec49d3c3b9bc1e5d0395adc71a01 y MainSha=819955d61a6da4c811a11fbd11b5dca13f634b7c. git merge-base --is-ancestor ea70... 712052... devolvió 0. git show ea70... confirmó A-1.2 para INV-20 y A-3: Rack.#{zzz} produce InvalidQualifier (11), SyntaxAndLimits, span 5+6. Se leyó la autorización operativa desde Git en la base indicada; las autoridades EXTERNAL se leyeron en MainSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparación contrato/delegación: el AllowedWriteScope delegado es subconjunto del contrato; ForbiddenWriteScope cubre el alcance prohibido; Invariants, StopConditions, Authorities y RequiredTests cubren los del contrato. RequiredTests coincide: filtro FullyQualifiedName~RackCad.Tests.ComputedParametersSymbols, mínimo 12, ExpectRed=true."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD y git rev-parse refs/remotes/origin/architecture/parametros-calculados-resumen-proyecto devolvieron eb58a4768d5a68892cce8d85b527f2a1ad1bdc64. La rama y worktree coinciden con la delegación. git merge-base --is-ancestor BaseSha CurrentSha devolvió 0; RedSha=null."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "RemoteFacts registra LsRemoteSha=eb58a4768d5a68892cce8d85b527f2a1ad1bdc64 y OriginMainSha=819955d61a6da4c811a11fbd11b5dca13f634b7c, igual a MainSha. git ls-remote origin no pudo conectar por la restricción de red; se usaron los RemoteFacts indicados."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only 712052354e33f84da552fe0be3393df41e0521f4 eb58a4768d5a68892cce8d85b527f2a1ad1bdc64 devuelve 8 rutas. Una, src/RackCad.Application/ComputedParameters/RackComputedExpressionContext.cs, está fuera del AllowedWriteScope de la delegación aceptada, que no incluye ComputedParameters/. El contrato de gate sí incluye esa carpeta. El resto de las rutas cabe en el alcance delegado; no hay intersección con ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --short --branch muestra árbol limpio. git check-ignore -v confirmó que los archivos de inputs y TRX están bajo la regla ignorada artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "not_applicable",
+      "Evidence": "RemoteFacts.CurrentRun: event=push, ref=refs/heads/architecture/parametros-calculados-resumen-proyecto, head_sha=eb58a4768d5a68892cce8d85b527f2a1ad1bdc64; los cuatro jobs requeridos están en success. El diff no toca ChainRedFiles. Para la cadena, RemoteFacts.RedRun 37053113058 es push del ChainRedSha 637dce7e5e7811992330b3c305358d9a7542b9f6; su job Core falló como registra el TRX del RED."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "not_applicable",
+      "Evidence": "TRX Core de CurrentSha, run 37069993992: 12566/12566 pasaron; filtro requerido 89 seleccionadas, 89 pasaron, 0 fallaron, coincidente con TestResults. TRX del RED de cadena 37053113058: filtro 89, 3 pasaron y 86 fallaron. git diff BaseSha..CurrentSha no toca pruebas; RT y ChainRedFiles son las mismas 8 rutas de pruebas del RED, ninguna modificada por GREEN. Cobertura en el TRX actual: INV-15 ComputedParametersSymbolsContextTests (11); INV-17/19/20/25/26 BindingTests; INV-18 ConsumersTests (4); INV-21/22/23 FormattingTests; INV-24 PersistenceTests (4); INV-27 IdentityTests (3). A-1.2 está cubierto por las dos pruebas INV-20. D-14/D-15/D-17 tienen pruebas de contexto; las guardias de núcleo D-16 pasan. Las siete suites de INV-28 y guardias requeridas suman 199/199 pasadas. Las dos pruebas INV-22 pasan; la entrega registra Rack.#{zzz} como un InvalidQualifier@5+6 y conserva el resultado UnexpectedToken para la clave hexadecimal de 32 caracteres. En UI, ambos TRX registran 1654 resultados, 1637 pasados, 0 fallidos y 17 NotExecuted; el contador del logger reporta notExecuted=0."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha muestra un commit. git show --format=%B CurrentSha contiene literalmente `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`, igual a Worker.Trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "La delegación solicita claude-sonnet-5-5 y effort high. relay-record-work registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high; ModelRequested=sonnet consta como alias en Notes. Coinciden modelo efectivo y esfuerzo con el paquete."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Se revisaron los campos de texto libre de worker-handoff.json contra la lista de AUTOMATION_PLAN §16.10; no hubo coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "Notes del registro de trabajo: 0 denegaciones de permisos o credenciales y 0 avisos de límite. Se registra una orden con código 2 por comillas incompletas, seguida de llamadas que la superaron; ninguna orden fallida quedó pendiente."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "TriggeredStopConditions": [
+    "C-05"
+  ],
+  "Findings": [
+    "El diff incluye RackComputedExpressionContext.cs, fuera del alcance permitido por la delegación aunque esté dentro del alcance más amplio del contrato de gate; corresponde C-05.",
+    "La entrega y el registro describen los cambios como dentro de alcance, pero la comparación del diff con AllowedWriteScope de la delegación identifica esa ruta fuera de alcance.",
+    "Las demás comprobaciones pasaron, incluidas CI y las suites Core/UI de los TRX proporcionados."
+  ],
+  "RecommendedNextAction": "Remitir al Coordinator para resolver la ruta fuera de alcance y emitir una nueva verificación."
+}

@@ -1,0 +1,77 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "G3-RACK-BUILTINS",
+  "RunId": "R20261002T220419Z-26c9",
+  "DelegationRunId": "R20261002T214309Z-19d7",
+  "WorkRunId": "R20261002T214618Z-be6d",
+  "Attempt": 2,
+  "VerifiedSha": "eb58a4768d5a68892cce8d85b527f2a1ad1bdc64",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Phase=WORK, Outcome.Kind=COMPLETED, DeathConfirmed=true; la notificacion final confirma la terminacion del subagente."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json presente y con Schema=rackcad-worker-handoff/v1; TaskId=G3-RACK-BUILTINS, RunId=R20261002T214618Z-be6d, DelegationRunId=R20261002T214309Z-19d7, Attempt=2; OutputWrittenUtc=2026-10-02T21:59:48.8286413Z, posterior a Cession.StartUtc=2026-10-02T21:46:22Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json fija AuthorityRevision=ea70e3b333efec49d3c3b9bc1e5d0395adc71a01 y MainSha=819955d61a6da4c811a11fbd11b5dca13f634b7c. Las propuestas y enmiendas A-1/A-2/A-3 existen en AuthorityRevision; AUTOMATION_PLAN §16 y AGENTS.md se contrastaron con MainSha. decisions/I-63.md §2 en f5c4a5a2 autoriza T2; la decisión de P-01 y la línea base 155933B32E5178001700B1137A58435075C13AA0179ED9F530791F3F899726D7 constan en BaseSha 71205235. La aceptación de planificación registra A1-A8=pass."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Paquete aceptado y gate-contract coinciden en identidad, AuthorityRevision, MainSha, alcance, pruebas requeridas y cadena RED. El registro de planificación confirma igualdad de las seis colecciones proyectadas y A1-A8=pass; la autorización de T2 documenta GREEN sin RED nuevo."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "Git: HEAD=eb58a4768d5a68892cce8d85b527f2a1ad1bdc64, rama architecture/parametros-calculados-resumen-proyecto y refs/remotes/origin/architecture/parametros-calculados-resumen-proyecto=ese SHA. git merge-base --is-ancestor devuelve 0 para BaseSha 712052354e33f84da552fe0be3393df41e0521f4 y ChainRedSha 637dce7e5e7811992330b3c305358d9a7542b9f6; RedSha de la entrega es null."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra Exit HEAD/ls-remote=BaseSha, Entry HEAD/ls-remote=eb58a4768d5a68892cce8d85b527f2a1ad1bdc64 y RemoteFacts.OriginMainSha=819955d61a6da4c811a11fbd11b5dca13f634b7c=MainSha. Mi git ls-remote no pudo conectar a github.com; uso los RemoteFacts registrados, según la instrucción."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha muestra 8 archivos de producción, todos cubiertos por AllowedWriteScope; ninguno está en ForbiddenWriteScope. git diff --name-only BaseSha CurrentSha -- tests/ no devuelve archivos. La comprobación mecánica independiente registrada también informa 8 archivos, ninguno fuera de alcance, prohibido, ChainRedFiles o RT."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 no devuelve cambios; el paquete de entrada worker-handoff.json obtiene coincidencia de git check-ignore."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "not_applicable",
+      "Evidence": "RemoteFacts.CurrentRun: 37069993992, event=push, ref=refs/heads/architecture/parametros-calculados-resumen-proyecto, head_sha=eb58a4768d5a68892cce8d85b527f2a1ad1bdc64, completed/success; los cuatro jobs requeridos están en success. Current TRX: Core 12566/12566, UI 1637 pass, 0 fail y 17 NotExecuted. El diff no toca ChainRedFiles; para RedPart se cita el push del ChainRedSha, 37053113058."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "not_applicable",
+      "Evidence": "TRX 37069993992: filtro FullyQualifiedName~RackCad.Tests.ComputedParametersSymbols selecciona 89, pasa 89, falla 0; Core completa 12566/12566, sin fallidas. Las pruebas cubren INV-15 (ComputedParametersSymbolsContextTests), INV-17/19/20/A-1.2/25/26 (BindingTests), INV-18 (ConsumersTests), INV-21/22/23 (FormattingTests), INV-24 y D-18/D-19 (PersistenceTests), INV-27 (IdentityTests), D-14/D-15/D-17 (ContextTests), D-16 (IdentityTests y ExpressionSymbolModelTests), e INV-28 (ExpressionRoundTripTests, ExpressionFormatterTests, ExpressionBinderTests y G8PersistenceIntegrationContractTests). También pasan ExpressionCoreGuardTests, ExpressionDiagnosticCatalogTests y NamespaceFolderGuardTests; ninguna de esas suites cambia en el diff. La corrida RED 37053113058 seleccionó 89 focales y tuvo 86 fallidas; el GREEN no cambia RT ni ChainRedFiles, por lo que RedPart no aplica."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..CurrentSha muestra un commit. Su trailer literal es `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`, idéntico a Worker.Trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "El paquete aceptado solicita anthropic/subagent/claude-sonnet-5-5 con effort high. El registro de trabajo indica modelo efectivo claude-sonnet-5-5 y effort high; documenta `sonnet` como alias de ese modelo. Sin desviación de modelo ni esfuerzo."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisé WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de la entrega conforme a AUTOMATION_PLAN §16.10; no aparece ninguno de sus términos restringidos."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "La señal de denegaciones registrada desde la transcripción del Worker informa 0 denegaciones de permisos o credenciales y 0 avisos de límite. Una orden falló por sintaxis en la llamada 31, código 2, y fue superada por llamadas posteriores; no queda ninguna orden fallida pendiente."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La conexión de este Controller no permitió consultar GitHub con git ls-remote; Remote se verificó con RemoteFacts del registro de trabajo y con la referencia remota local."
+  ],
+  "RecommendedNextAction": "Registrar la revisión arquitectónica separada sobre eb58a4768d5a68892cce8d85b527f2a1ad1bdc64 antes de continuar la secuencia autorizada."
+}
