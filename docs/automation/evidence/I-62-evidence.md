@@ -2074,3 +2074,25 @@ CI de los dossiers P4/P8, `75e93e91c1197dcb7e4095c7d0fb83421cfb1494`: corrida **
 - P5 solo usa archivos ficticios.
 - Ningún comportamiento congelado cambia.
 - Los huecos (comodines, mayúsculas, enlaces, `Skip` dinámico) se informan sin interpretarse.
+
+## 48. F4 experimental: secuencias combinadas y A62-A1A-01 (orden nocturna §9 y §3.A)
+
+CI de los helpers, `4eb3ce6b82bd90c776bdd20dd1c2b652e927cba8`: ver la cola (N-07).
+
+- **Secuencias combinadas** (`I-62-prep/night-2026-10-05/f4-exp/`; EXPERIMENTAL — NOT AUTHORIZED FOR PRODUCTION):
+  - cinco combinaciones de la orden §9, con positivas y negativas, sobre el motor del arnés de A-1;
+  - expectativas y conjuntos de reglas exactos fijados antes de la primera corrida; una corrección declarada en el README;
+  - 16/16 PASS con el arnés corregido.
+- **A62-A1A-01** (defecto de A-1 hallado por el autor; MEASURED):
+  - **Defecto:** con el arnés del objeto revisado (blob `39c2f831`), un bucle REVIEWER nuevo con otra autoridad llegaba a REVIEWER_SATISFIED con el
+    BLOCKING heredado LIN-R1 abierto (`combo-result-before.json`). D1-17 (3) solo contaba los BLOCKING «abiertos en una solicitud del bucle», en contra
+    de B.10.2 y de D1-18 (E).
+  - **Corrección:** D1-17 (3), su explicación y D1-18 (S) cuentan ahora todo BLOCKING con `issuer` REVIEWER de la unidad.
+  - **Arnés:** 96 trazas (33 VALID y 63 INVALID), todas PASS y deterministas. Dos son nuevas: `a62-a1a-01-*`.
+  - **Blobs:** A-1 `cdcd98d2752d384272285536b3874ae45c9d9832`; arnés `6b71ace7…`; resultado `75cf92f6…`; disposición `fab9896a…`.
+  - **Paquete:** preguntas 16 y 17.
+- **Observaciones sin cambio en A-1:**
+  - **F4X-OBS-01:** un segundo rebase con un LAUNCHING sin resolver para sin publicar (D2-2).
+  - **F4X-OBS-02:** una autorización sustituta con topes menores que lo consumido no se puede registrar (I-S18).
+- **Efecto en la revisión:** el kit v3 (R20261005T063359Z-86e3, objeto `39c2f831`) queda sustituido sin haberse lanzado. Hace falta un kit nuevo para
+  el objeto corregido.

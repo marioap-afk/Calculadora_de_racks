@@ -1,6 +1,6 @@
 {
  "Script": "a1-counterexamples.py",
- "Version": "A-1 corregida (2026-10-05), con OBS-A1-01 y A62-A1R-01..03",
+ "Version": "A-1 corregida (2026-10-05), con OBS-A1-01, A62-A1R-01..03 y A62-A1A-01",
  "Freeze": {
   "commit": "4c617e82b32b6c810b68d75fc19472efed22b393",
   "blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa"
@@ -23,7 +23,7 @@
   "A1-P06": "D1-6 · las entradas no desaparecen, sus contadores no decrecen, una entrada cerrada no cambia, los topes no suben y un registro de autorización terminado no cambia",
   "A1-P07": "D1-9/D1-13 · LOOP_CLOSED de ARCHITECT_REVIEW solo sin trabajo vivo, con la escalada resuelta, la vigencia terminada (o revocada por la decisión de cierre) y la decisión exigida; ninguna variante de LOOP_CLOSED se aplica a EXECUTION",
   "A1-R01": "D1-16 · ARCHITECT_SATISFIED (fase o fin de vigencia) solo con ARCHITECT_REVIEW y REVIEWER_SATISFIED solo con REVIEWER",
-  "A1-R02": "D1-17 · REVIEWER_SATISFIED solo con un resultado de REVIEWER VALID ingerido en la última solicitud del bucle, sin intentos no terminales, sin linajes BLOCKING abiertos del bucle y con la vigencia terminada por REVIEWER_SATISFIED",
+  "A1-R02": "D1-17 · REVIEWER_SATISFIED solo con un resultado de REVIEWER VALID ingerido en la última solicitud del bucle, sin intentos no terminales, sin linajes BLOCKING de REVIEWER abiertos en la unidad (también los heredados, A62-A1A-01) y con la vigencia terminada por REVIEWER_SATISFIED",
   "A1-R03": "D1-18 · LOOP_CLOSED de REVIEWER: desde REVIEWER_SATISFIED sin decisión, o (E) tras EXHAUSTED/EXPIRED/REVOKED (o con la vigencia OPEN revocada por la misma decisión) con la decisión I62-REVIEWER-LOOP-CLOSE; sin trabajo vivo, escalada resuelta, nada borrado ni reiniciado y el registro de cierre con el motivo real",
   "A1-R04": "D1-19 · reviewer_closures[] es append-only y crece exactamente en uno en cada LOOP_CLOSED de REVIEWER, y en ningún otro par",
   "V14-P20-reviewer": "V14 §20.5.2/§20.7 · un resultado de REVIEWER nunca cierra ni rebaja un linaje del ARCHITECT (P-20)",
@@ -125,6 +125,10 @@
   ],
   "A62-A1-O5": [
    "fc01-enmendado-object-null-fuera-del-cierre"
+  ],
+  "A62-A1A-01": [
+   "a62-a1a-01-bucle-nuevo-cierra-el-BLOCKING-heredado-y-se-satisface",
+   "a62-a1a-01-satisfecho-con-el-BLOCKING-heredado-abierto"
   ],
   "A62-A1R-01": [
    "a62-a1r-01-exhausted-con-intento-vivo",
@@ -1472,6 +1476,44 @@
     "par 0→1 (apertura sin cerrar el REVIEWER): transición REVIEWER_SATISFIED → REVIEW_PENDING no existe",
     "par 0→1 (apertura sin cerrar el REVIEWER): loop.object cambia en REVIEWER_SATISFIED → REVIEW_PENDING",
     "par 0→1 (apertura sin cerrar el REVIEWER): entrada nueva ['ARL-56'] fuera de la apertura"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1a-01-bucle-nuevo-cierra-el-BLOCKING-heredado-y-se-satisface": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1A-01"
+   ],
+   "Expected": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Got": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Violations": [],
+   "Verdict": "PASS"
+  },
+  "a62-a1a-01-satisfecho-con-el-BLOCKING-heredado-abierto": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1A-01"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R02"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R02"
+    ]
+   },
+   "Violations": [
+    "par 0→1 (REVIEWER_SATISFIED con el LIN-R1 heredado abierto): REVIEWER_SATISFIED sin sus condiciones"
    ],
    "Verdict": "PASS"
   },

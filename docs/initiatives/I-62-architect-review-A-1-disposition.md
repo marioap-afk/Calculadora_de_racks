@@ -11,8 +11,9 @@ Segunda disposición: «I-62 — COORDINATOR DISPOSITION OF OBS-A1-01» (8 674 b
                   recibido 2026-10-05T04:24Z; decisiones §39): OBS-A1-01 = ACCEPTED REQUIRED / MATERIAL;
                   A62-A1-01..06 correctamente atendidos en 23dd16b2
 Objeto corregido: docs/initiatives/I-62-A-1.md, blob 9c621fce0588f32115e3151b6f75413c0a167c2e (sigue siendo A-1 y PROPUESTA; intermedio 23dd16b2);
-                  después corregido para A62-A1R-01..03 y O1..O5 en el blob 39c2f8317ec381fa60c3564a834278df8898101c (§4; decisiones §41)
-Estado:           A-1 PROPUESTA (blob 39c2f831); Architect REQUIRED — PENDING (revisión formal nueva autorizada por la orden nocturna, decisiones §41:
+                  después corregido para A62-A1R-01..03 y O1..O5 en el blob 39c2f8317ec381fa60c3564a834278df8898101c (§4; decisiones §41) y,
+                  por el autor, para A62-A1A-01 en el blob cdcd98d2752d384272285536b3874ae45c9d9832 (evidencia §48)
+Estado:           A-1 PROPUESTA (blob cdcd98d2); Architect REQUIRED — PENDING (revisión formal nueva autorizada por la orden nocturna, decisiones §41:
                   hasta dos invocaciones, solo con un transporte limpio; HUMAN_LAUNCH_REQUIRED); Coordinator PENDING; F4 producción BLOCKED;
                   Owner NOT REQUIRED; I-61 vigente
 ```

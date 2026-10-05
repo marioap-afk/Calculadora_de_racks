@@ -15,7 +15,8 @@ reservation, branch-local references, result and outcome, the RebaseMap chain (c
 and (OBS-A1-01, decisions §39) the REVIEWER completion REVIEWER_SATISFIED, its two-path LOOP_CLOSED, reviewer_closures[] and the loop-type guard (R1..R10);
 and (decisions §41, formal review R20261005T044948Z-ac67) the closure (E) after EXHAUSTED or with a revoking decision, the REVIEWER opening without
 resurrecting an ended authority, the per-type rebase of loop.object (REVIEWER and EXECUTION), OpenFindings by reviewer authority, every window map in
-rebase_history and the positive-only operational satisfaction.
+rebase_history and the positive-only operational satisfaction; and (A62-A1A-01, author correction) an inherited REVIEWER BLOCKING lineage
+blocks REVIEWER_SATISFIED.
 The two phase edges ARCHITECT_INVOKED -> REVIEW_PENDING / REREVIEW_PENDING are SM-05 (non-material, freeze-issues.md), not part of A-1.
 
 Usage: python a1-counterexamples.py <output json>
@@ -61,7 +62,7 @@ RULES = {
     "A1-P06": "D1-6 · las entradas no desaparecen, sus contadores no decrecen, una entrada cerrada no cambia, los topes no suben y un registro de autorización terminado no cambia",
     "A1-P07": "D1-9/D1-13 · LOOP_CLOSED de ARCHITECT_REVIEW solo sin trabajo vivo, con la escalada resuelta, la vigencia terminada (o revocada por la decisión de cierre) y la decisión exigida; ninguna variante de LOOP_CLOSED se aplica a EXECUTION",
     "A1-R01": "D1-16 · ARCHITECT_SATISFIED (fase o fin de vigencia) solo con ARCHITECT_REVIEW y REVIEWER_SATISFIED solo con REVIEWER",
-    "A1-R02": "D1-17 · REVIEWER_SATISFIED solo con un resultado de REVIEWER VALID ingerido en la última solicitud del bucle, sin intentos no terminales, sin linajes BLOCKING abiertos del bucle y con la vigencia terminada por REVIEWER_SATISFIED",
+    "A1-R02": "D1-17 · REVIEWER_SATISFIED solo con un resultado de REVIEWER VALID ingerido en la última solicitud del bucle, sin intentos no terminales, sin linajes BLOCKING de REVIEWER abiertos en la unidad (también los heredados, A62-A1A-01) y con la vigencia terminada por REVIEWER_SATISFIED",
     "A1-R03": "D1-18 · LOOP_CLOSED de REVIEWER: desde REVIEWER_SATISFIED sin decisión, o (E) tras EXHAUSTED/EXPIRED/REVOKED (o con la vigencia OPEN revocada por la misma decisión) con la decisión I62-REVIEWER-LOOP-CLOSE; sin trabajo vivo, escalada resuelta, nada borrado ni reiniciado y el registro de cierre con el motivo real",
     "A1-R04": "D1-19 · reviewer_closures[] es append-only y crece exactamente en uno en cada LOOP_CLOSED de REVIEWER, y en ningún otro par",
     "V14-P20-reviewer": "V14 §20.5.2/§20.7 · un resultado de REVIEWER nunca cierra ni rebaja un linaje del ARCHITECT (P-20)",
@@ -304,8 +305,8 @@ def pair_a1(p, n):
         ids = {r["id"] for r in lr}
         ok = bool(lr) and lr[-1]["state"] == "INGESTED" and any(a["state"] == "RESULT_INGESTED" and a["outcome"] == "VALID" for a in lr[-1]["attempts"])
         ok = ok and all(a["state"] in TERMINAL for r in lr for a in r["attempts"])
-        ok = ok and not any(f["issuer"] == "REVIEWER" and f["severity"] == "BLOCKING" and f["state"] in ("OPEN", "STILL_OPEN") and f["request"] in ids
-                            for f in n["findings"])
+        ok = ok and not any(f["issuer"] == "REVIEWER" and f["severity"] == "BLOCKING" and f["state"] in ("OPEN", "STILL_OPEN")
+                            for f in n["findings"])  # D1-17 (3): de la unidad, también heredados (A62-A1A-01)
         ok = ok and n["validity"] == val(nl["authorization"], "ENDED", "REVIEWER_SATISFIED")
         if not ok:
             add("A1-R02", "REVIEWER_SATISFIED sin sus condiciones")
@@ -321,8 +322,8 @@ def pair_a1(p, n):
         bad = bad or (p["escalation"]["state"] != NONE and not p["escalation"]["resolved_by"]) or n["escalation"]["state"] != NONE
         vp, decision = p["validity"], None
         if vp and vp["state"] == "ENDED" and vp["reason"] == "REVIEWER_SATISFIED" and pl["phase"] == "REVIEWER_SATISFIED":
-            bad = bad or any(f["issuer"] == "REVIEWER" and f["severity"] == "BLOCKING" and f["state"] in ("OPEN", "STILL_OPEN") and f["request"] in ids
-                             for f in p["findings"])
+            bad = bad or any(f["issuer"] == "REVIEWER" and f["severity"] == "BLOCKING" and f["state"] in ("OPEN", "STILL_OPEN")
+                             for f in p["findings"])  # D1-18 (S) con D1-17 (3)
         elif vp and vp["state"] == "ENDED" and vp["reason"] in ("EXHAUSTED", "EXPIRED", "REVOKED"):
             decision = n["rclosures"][-1]["closed_by"] if n["rclosures"] else None
             dd = n["decisions"].get(decision, {})
@@ -823,6 +824,26 @@ def traces():
         t.update(rv=62, validity=val("GC-2"), v14=snap(2, 2, 2)), t["loop"].update(type=RV, phase="REVIEW_PENDING", object=Y, authorization="GC-2"),
         t["requests"].append(copy.deepcopy(r2c))))
     T["a62-a1r-03-nueva-autoridad-hereda-BLOCKING"] = ("A1", ["A62-A1R-03", "A62-A1R-O3"], "VALID", set(), [pe, ne, cont2])
+
+    # ---- A62-A1A-01 (author correction, night order §3.A; found by the F4 combined sequences): an inherited BLOCKING blocks REVIEWER_SATISFIED
+    def r2step(t, rv, phase, astate, result=None, outcome=None, rstate="OPEN", findings=None, validity=None):
+        t.update(rv=rv)
+        t["loop"].update(phase=phase)
+        t["requests"][-1].update(state=rstate)
+        t["requests"][-1]["attempts"][0].update(state=astate, result=result, outcome=outcome)
+        if findings is not None:
+            t.update(findings=copy.deepcopy(findings))
+        if validity is not None:
+            t.update(validity=validity)
+    g2 = mod(cont2, "R2/1 LAUNCHING (GC-2)", lambda t: r2step(t, 63, "ARCHITECT_INVOKED", "LAUNCHING"))
+    g3 = mod(g2, "R2/1 LAUNCHED", lambda t: r2step(t, 64, "ARCHITECT_INVOKED", "LAUNCHED"))
+    g4 = mod(g3, "R2/1 RESULT_RECEIVED", lambda t: r2step(t, 65, "ARCHITECT_INVOKED", "RESULT_RECEIVED", {"evaluated": Y}))
+    blk_c = [lin("LIN-R1", "CLOSED", "BLOCKING", "REVIEWER", "R1")]
+    g5 = mod(g4, "REVIEWER_SATISFIED de GC-2: el LIN-R1 heredado lo cierra su emisor", lambda t: r2step(
+        t, 66, "REVIEWER_SATISFIED", "RESULT_INGESTED", {"evaluated": Y}, "VALID", "INGESTED", blk_c, val("GC-2", "ENDED", "REVIEWER_SATISFIED")))
+    T["a62-a1a-01-bucle-nuevo-cierra-el-BLOCKING-heredado-y-se-satisface"] = ("A1", ["A62-A1A-01"], "VALID", set(), [pe, ne, cont2, g2, g3, g4, g5])
+    T["a62-a1a-01-satisfecho-con-el-BLOCKING-heredado-abierto"] = ("A1", ["A62-A1A-01"], "INVALID", {"A1-R02"},
+                                                                   [g4, mod(g5, "REVIEWER_SATISFIED con el LIN-R1 heredado abierto", lambda t: t.update(findings=copy.deepcopy(blk)))])
     T["a62-a1r-o3-reviewer-sin-su-linaje-heredado"] = ("A1", ["A62-A1R-O3"], "INVALID", {"A1-P16"},
                                                        [pe, ne, mod(cont2, "OpenFindings sin LIN-R1", lambda t: t["requests"][-1]["attempts"][0].update(open_findings=[]))])
     l8 = req("L8", "ARL-62", obj("x1"), "OPEN", [att(1, "BUDGET_RESERVED", "I8", obj("x1"), 62, REFS0, open_findings=["LIN-R1"], snapshot=snap(1, 1, 1))])
@@ -985,11 +1006,11 @@ def main():
         for tag in tags:
             coverage.setdefault(tag, []).append(name)
     required = ["A62-A1-0%d" % i for i in range(1, 7)] + ["A62-A1-O%d" % i for i in range(1, 6)] + ["OBS-A1-01"] + ["OBS-A1-01/R%d" % i for i in range(1, 11)] \
-        + ["A62-A1R-0%d" % i for i in range(1, 4)] + ["A62-A1R-O%d" % i for i in range(1, 6)]
+        + ["A62-A1R-0%d" % i for i in range(1, 4)] + ["A62-A1R-O%d" % i for i in range(1, 6)] + ["A62-A1A-01"]
     missing = [t for t in required if t not in coverage]
     ok = ok and not missing
     with open(sys.argv[1], "w", encoding="utf-8", newline="\n") as f:
-        json.dump({"Script": "a1-counterexamples.py", "Version": "A-1 corregida (2026-10-05), con OBS-A1-01 y A62-A1R-01..03",
+        json.dump({"Script": "a1-counterexamples.py", "Version": "A-1 corregida (2026-10-05), con OBS-A1-01, A62-A1R-01..03 y A62-A1A-01",
                    "Freeze": {"commit": "4c617e82b32b6c810b68d75fc19472efed22b393", "blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa"},
                    "Rules": RULES, "Coverage": {k: coverage[k] for k in sorted(coverage)}, "MissingCoverage": missing,
                    "Traces": results, "AllAsExpected": ok}, f, ensure_ascii=False, indent=1)
