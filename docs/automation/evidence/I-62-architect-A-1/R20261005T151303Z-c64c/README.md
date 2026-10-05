@@ -9,7 +9,10 @@ Objeto:         commit ca09ade8bb31b1ecb57b2b0d6220628c8434e78d (CI de publicaci
                 docs/initiatives/I-62-architect-review-A-1-disposition.md   blob 81a84996a7cec1398785ae3df31618e9abd616ab
 Clon:           D:\r62-arch-a1t01 (git clone --no-local -c core.autocrlf=false --single-branch; main = el commit; sin remoto; sin enlaces)
 Run:            D:\r62-arch-a1t01-run (order.txt = la orden exacta, 13 157 bytes, SHA-256 588d6289…; prompt.md)
-Estado:         kit custodiado ANTES del lanzamiento; lanzamiento = HUMAN_LAUNCH_REQUIRED (tarea de la app que pulsa el Owner)
+Estado:         kit custodiado ANTES del lanzamiento (6a87e525); LANZADA por el Owner (task_44fd8237) · sesión local_30428fbf, 15:47:29Z-16:04:38Z ·
+                AGREED (cero REQUIRED; trece hallazgos CLOSED; A62-A1U-O1 OPTIONAL)
+Acreditación:   auditor v4 (sin cambios desde su custodia) = ACCREDITED, 0 motivos en 62 llamadas (audit.json); la decide el Coordinator
+Registro:       docs/initiatives/I-62-architect-review-A-1-r5.md
 ```
 
 ## Contrato y auditor (orden §7, fijados antes de invocar)
@@ -41,3 +44,10 @@ Estado:         kit custodiado ANTES del lanzamiento; lanzamiento = HUMAN_LAUNCH
 - **Manifiesto:** `kit/kit-manifest.json` (SHA-256 de cada archivo del run).
 
 El cierre y las acciones no se amplían después de ejecutar. Este kit no cambia el contrato de ninguna revisión anterior.
+
+## Resultado custodiado (después de la corrida)
+
+- `output.json`: el bloque JSON literal del mensaje final, extraído de la transcripción (SHA-256 `67d2cc50…`); coincide con la copia pegada por el Owner.
+- `audit.json`: auditor v4 literal: ACCREDITED, 0 motivos (SHA-256 `57a06f9d…`).
+- `runtime-evidence.json`: identidad observada de la sesión, transcripción (no versionada; ruta y SHA-256), clon y worktree después de la corrida e
+  integridad del kit.

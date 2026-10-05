@@ -2293,3 +2293,26 @@ solo desde artefactos custodiados.
   - fidelidad previa 3/3.
 - **Transporte:** la única vía limpia es una tarea de la app que lanza el Owner con un clic: HUMAN_LAUNCH_REQUIRED. La sesión prepara la acción
   una vez; no afirma que la revisión arrancó. No hay reintento automático.
+
+## 57. Revisión formal R20261005T151303Z-c64c: resultado y custodia (orden nueva, decisiones §42, puntos E y F)
+
+- **CI de la custodia del kit** `6a87e525860a273e2b51be8b72b2086eff8fd880`: corrida **37332220109**, push, head_sha exacto, cuatro jobs
+  requeridos en `success`.
+- **Lanzamiento:** la sesión autora creó una vez la tarea `task_44fd8237` (HUMAN_LAUNCH_REQUIRED), y el Owner la pulsó. La sesión
+  `local_30428fbf` (`claude-opus-5-5`, `xhigh`, Claude Code 2.1.286) corrió de 15:47:29Z a 16:04:38Z en el worktree `goofy-grothendieck-4ead60`, sobre
+  `main` = `ca09ade8`. No hubo reintento ni otra invocación.
+- **Resultado** ([registro r5](../../initiatives/I-62-architect-review-A-1-r5.md); `output.json` literal, SHA-256 `67d2cc50…`):
+  - **AGREED** sobre `ca09ade8` / A-1 `c01899a7`: cero REQUIRED;
+  - A62-A1T-01 y los doce cierres, CLOSED; A62-A1T-O1..O3, CONFIRMED;
+  - A62-A1U-O1, OPTIONAL: comprobar mecánicamente que un mapa no tiene una entrada compuesta;
+  - sin decisión del Owner; F3 compatible; materialidad M-02..M-05 = sí.
+- **Acreditación (MEASURED):**
+  - **auditor v4, literal: ACCREDITED, 0 motivos** en 62 llamadas (`audit.json`, SHA-256 `57a06f9d…`);
+  - el auditor no cambió después de la corrida: los 11 archivos del run coinciden con `kit-manifest.json`;
+  - identidad y orden verificados antes de leer; 28 registros de fidelidad FAITHFUL_NORMALIZED; 16 premisas encontradas y entregadas fielmente;
+    resultado válido contra el esquema y coherente; clon y worktree limpios en `ca09ade8`; sin cadenas laterales;
+  - declaraciones del revisor, registradas sin reclasificar: `git diff` (MD-1) por tubería a `grep`, `sed -n` y `cut` (el auditor no lo cuenta);
+    `combo_sequences.py` reejecutado con `runpy` (medido: sin procesos); T8 no reejecutado;
+  - la acreditación la decide el Coordinator.
+- **Siguiente (orden §12):** AGREED con la corrida acreditada por el auditor → A-1 (`ca09ade8`, blob `c01899a7`) se entrega para el acuerdo del
+  Coordinator. Sin F4, sin A-2 y sin otra ronda. A62-A1U-O1 queda para la decisión del Coordinator: obligación de F4 o incorporación con un blob nuevo.

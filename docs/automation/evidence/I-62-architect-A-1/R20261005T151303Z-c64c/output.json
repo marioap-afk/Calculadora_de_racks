@@ -1,0 +1,222 @@
+{
+  "Schema": "rackcad-architect-review-result/v1 (representación experimental; rigen I-61 y LIFECYCLE)",
+  "RunId": "R20261005T151303Z-c64c",
+  "InvocationId": "I20261005T151303Z-c64c",
+  "LogicalReviewRequestId": "L20261005T151303Z-c64c",
+  "AttemptSeq": 1,
+  "RequestedRole": "ARCHITECT",
+  "Action": "REVIEW_DESIGN",
+  "ReviewedUnit": "I-62",
+  "ReviewedCommit": "ca09ade8bb31b1ecb57b2b0d6220628c8434e78d",
+  "ReviewedPath": "docs/initiatives/I-62-A-1.md",
+  "ReviewedBlob": "c01899a72b940503bb85a0fab42bc085c603fd0f",
+  "ReviewerMode": "SEPARATE SESSION",
+  "SamePersonAsAuthor": "Soy una sesión nueva de Claude Code (app de escritorio, pestaña Code). No soy la sesión autora de A-1, que es la sesión principal de I-62, ni ninguna de las sesiones revisoras anteriores (cab7, ac67, 86e3 y 2dfe). No tengo su transcripción ni su memoria, no leí la memoria del proyecto y no invoqué a otros agentes. No puedo observar la identidad de la sesión autora. Según los registros (r4, §1), quien lanza estas revisiones es el mismo Owner que dirige la sesión autora. Por tanto, el revisor IA es distinto, pero el operador humano probablemente es la misma persona. Evaluar la independencia corresponde al invocador y al Coordinator.",
+  "ReviewerDeclaredIdentity": {
+    "Runtime": "Claude Code (app de escritorio, pestaña Code; Claude Agent SDK) en Windows 11 Pro",
+    "Model": "claude-opus-5-5",
+    "Effort": "UNKNOWN",
+    "SessionOrThread": "UNKNOWN (carpeta de sesión del scratchpad 26508c44-52c9-4ed5-a89d-e6ba2eff2619; worktree goofy-grothendieck-4ead60)"
+  },
+  "InjectedContextDeclaration": {
+    "State": "DECLARED",
+    "Items": [
+      "Prompt de sistema de Claude Code: herramientas y sus esquemas, reglas del harness y de seguridad, permisos y entorno. El entorno: Windows 11 Pro, PowerShell y Git Bash; worktree D:/Documentos/Worktrees/r62-arch-a1t01/goofy-grothendieck-4ead60; directorio adicional D:/r62-arch-a1t01; scratchpad de la sesión; fecha 2026-10-05; modelo claude-opus-5-5",
+      "CLAUDE.md del worktree (índice de arranque del proyecto), inyectado como instrucciones del proyecto",
+      "Instantánea de gitStatus: rama claude/goofy-grothendieck-4ead60, árbol limpio y los cinco commits recientes, el último ca09ade8",
+      "Contexto de cuenta: el email del usuario, solo como identificación; no se usó",
+      "Recordatorio de atribución de commits y PR; no se usó porque no hubo commits",
+      "Aviso de que la sesión trabaja en un worktree",
+      "Instrucciones del directorio de memoria persistente (C:/Users/alejandra-mendoza/.claude/projects/D--r62-arch-a1t01/memory/), sin contenido de memoria inyectado; ese directorio no se leyó",
+      "Listas de herramientas diferidas, de servidores MCP (con el aviso de fallo de conexión de plugin:github), de skills y de tipos de agente; no se cargó ni se usó ninguna",
+      "Instrucciones de servidores MCP (Claude Docs, claude-in-chrome y computer-use) y de los dos navegadores; no se usaron",
+      "El mensaje del usuario que designa D:/r62-arch-a1t01-run/prompt.md como única instrucción",
+      "Avisos posteriores del harness: el aviso del modo de permisos sobre el uso de Bash; los recordatorios periódicos de informar al usuario del progreso; los cambios del directorio de trabajo principal tras un cd (al clon, una vez a docs/automation/evidence/I-62-A1/a1t01 y de vuelta al clon); y la notificación de fin de la tarea en segundo plano de dotnet test"
+    ]
+  },
+  "IdentityCheck": {
+    "CloneHeadMatches": true,
+    "WorktreeHeadMatches": true,
+    "ObjectBlobMatches": true,
+    "PackageBlobMatches": true,
+    "DispositionBlobMatches": true,
+    "CleanTree": true,
+    "OrderSha256Matches": true
+  },
+  "InputsRead": [
+    "D:/r62-arch-a1t01-run/prompt.md: 1-235 (su SHA-256 es 5abd5fe4…)",
+    "D:/r62-arch-a1t01-run/order.txt: 1-430 (SHA-256 588d6289… comprobado)",
+    "docs/initiatives/I-62-A-1.md: 1-150, 151-300 y 301-437, completo",
+    "Delta MD-1 (git diff 411e01ce ca09ade8): --stat sobre A-1, el paquete, la disposición, el arnés y su resultado. Para A-1, la lista de hunks, -U0 y --word-diff, guardados en salidas propias. Las filas D1-17, D2-2, D2-3, D2-8, D2-9 y D2-11, antes y después, se compararon con un script propio. Además, --stat vacío sobre V14, el Freeze, LIFECYCLE, WORKFLOW, AUTOMATION_PLAN, el README de agent-execution, los ocho esquemas F3 y ADR-0046/0048",
+    "docs/initiatives/I-62-architect-package-A-1.md: 1-217",
+    "docs/initiatives/I-62-architect-review-A-1-disposition.md: 1-164",
+    "docs/initiatives/I-62-architect-review-A-1-r4.md: 1-73",
+    "docs/automation/evidence/I-62-architect-A-1/R20261005T073911Z-2dfe/output.json: 1-665. La línea larga 85 se entregó, pero no se cita",
+    "docs/initiatives/I-62-proposal-v14.md: 497-592 (§8.8 y §8.9), 1555-1594 (§20.6), 2110-2222 (B.8.7 y B.8.8) y 3153-3246 (F.6-F.8); las filas C-15, C-29 y C-38 del Anexo C (2330-2383), con git show | sed -n | grep",
+    "docs/automation/decisions/I-62.md: encabezados (git show | grep) y 797-810 (§42). La línea larga 805 no se cita",
+    "docs/INITIATIVE_LIFECYCLE.md: 152-223 (§5 y §6)",
+    "docs/automation/evidence/I-62-A1/a1-counterexamples.py: 44-99, 100-169, 328-343, 370-479 y 995-1170, más Grep sobre el archivo. Ejecutado con EX-1 e importado por su ruta literal en dos scripts propios",
+    "docs/automation/evidence/I-62-A1/a1-counterexamples-result.json: hash (git show | sha256sum y git rev-parse) igual al de mi salida, y recuentos",
+    "docs/automation/evidence/I-62-A1/a1t01/: green.diff, t8-clean-clone.py y t8-result.json completos; red-result.json y green-result.json, comparados traza a traza con un script propio",
+    "docs/automation/evidence/I-62-prep/night-2026-10-05/f4-exp/: README.md y combo_sequences.py completos. combo_sequences.py se reejecutó con un script propio (runpy, sin procesos). combo-result-a1t01.json y combo-result.json se resumieron con un script propio",
+    "docs/automation/agent-execution/schemas/relay-record.v2.schema.json y role-invocation.v1.schema.json: Grep de campos; los demás esquemas, solo su blob y diff --stat",
+    "docs/AUTOMATION_PLAN.md y docs/automation/agent-execution/README.md: Grep de los pasajes de ancestría (899; 425 y 434)",
+    "docs/WORKFLOW.md (transitivo): Grep y 150-159; AGENTS.md (transitivo): Grep de «Leer primero» y de dotnet test",
+    "Blobs del paquete §2 comprobados con git rev-parse ca09ade8:<ruta>: todos coinciden",
+    "Salidas propias (scratchpad): a1-result.json, cmp_rg.py, combo_view.py, run_combo.py, combo-own.json, a1-udiff.txt, a1-wdiff.txt, d117.py, adhoc_composite.py y adhoc_composite.out.json, quotes.py y dotnet-test.log"
+  ],
+  "Verdict": "AGREED",
+  "RequiredFindings": [],
+  "OptionalFindings": [
+    {
+      "FindingId": "A62-A1U-O1",
+      "AffectedDelta": "§3.3: D2-2 (cont.) («nunca una entrada compuesta X → X''») y D2-10 (2) («el primer mapa de H con `Commit` como `OriginalSha`»); §5: C-15 (e2) y C-38 (cuarta revisión); en la evidencia, el arnés (validez de cada mapa)",
+      "Note": "La prohibición de una entrada compuesta está escrita, pero nada la comprueba mecánicamente. D2-10 (2) toma el primer mapa de H que tiene el commit como OriginalSha. La lista de invalidez de V14 B.8.7 no rechaza una entrada cuyo OriginalSha no reescribió ese rebase: solo rechaza un campo sin entrada, una entrada duplicada o una Image fuera de la rama publicada. Comprobación ad hoc sobre el arnés custodiado (adhoc_composite.out.json): a62-a1t-01-t3a (M1 sin el eslabón de c1) con una entrada c1 → c1pp añadida a M2 da VALID, en lugar de INVALID {A1-P08}. t3b con esa entrada sigue INVALID, pero solo por {A1-P11, A1-F10}. No es material. Un mapa construido según §8.8, paso 3, y B.8.7 (Commits[] = cada commit que reescribió ese rebase, sacado de Git real, como hace T8) no puede contener esa entrada. Además, el M1 incompleto ya viola B.8.7. El texto ya declara inválido un mapa con una entrada compuesta, así que se trata de una precisión sin cambio de significado. Precisión sugerida: en D2-10, o en D2-2 (cont.), decir que un mapa cuenta en H solo si cada OriginalSha de Commits[] es un commit reescrito por su rebase (rango MainBeforeSha..BranchBeforeSha), y que quien reconcilia lo comprueba antes de publicar (§8.8, paso 4). Y añadir a C-15 (e2) o a C-38 (cuarta revisión), y al arnés, el negativo «M2 con una entrada compuesta X → X'' cuando M1 no tiene el eslabón o falta: mapa inválido, STOP sin publicar».",
+      "PremiseRefs": [
+        {"Path": "docs/initiatives/I-62-A-1.md", "Section": "§3.3, D2-2 (cont.)", "LineStart": 211, "LineEnd": 211, "Quote": "Cada eslabón necesario debe estar en un mapa custodiado de H: no basta con que exista el último mapa, ni con igualdad de path, parecido de parches o una sustitución de SHA sin prueba. El mapa nuevo solo contiene los commits reescritos por su rebase (B.8.7), nunca una entrada compuesta X → X'' que oculte el paso intermedio. Si falta un mapa o un eslabón, o el blob es otro, la referencia queda UNRESOLVED: STOP sin publicar (§8.8, paso 4)."},
+        {"Path": "docs/initiatives/I-62-A-1.md", "Section": "§3.3, D2-10", "LineStart": 219, "LineEnd": 219, "Quote": "(2) si no, sea i el primer mapa de H con `Commit` como `OriginalSha` en `Commits[]`; si no hay ninguno → UNRESOLVED."},
+        {"Path": "docs/initiatives/I-62-proposal-v14.md", "Section": "B.8.7, Commits[]", "LineStart": 2120, "LineEnd": 2120, "Quote": "`{Original, Image, PatchId}` por cada commit reescrito de la rama; `PatchId` calculado en el rebase; en otra máquina se comprueba recalculándolo sobre la imagen"},
+        {"Path": "docs/initiatives/I-62-proposal-v14.md", "Section": "B.8.7, invalidez del mapa", "LineStart": 2125, "LineEnd": 2126, "Quote": "Un campo SHA del estado sin entrada, una entrada duplicada o una `Image` que no está en la rama publicada hacen el mapa inválido: el QU no se publica y es STOP (16.7)."},
+        {"Path": "docs/INITIATIVE_LIFECYCLE.md", "Section": "§5", "LineStart": 169, "LineEnd": 169, "Quote": "Una precision sin cambio de significado puede ser `OPTIONAL`."}
+      ]
+    }
+  ],
+  "FindingDispositions": [
+    {
+      "FindingId": "A62-A1T-01",
+      "State": "CLOSED",
+      "Rationale": "D2-2 (cont.) sustituye la condición sobre el mapa en curso. El Target de un intento en LAUNCHING ahora resuelve por ResolveBranchRef con la historia completa de n, que ya termina en el mapa nuevo (D2-9), y con la punta rebasada como HEAD. Con M1: X → X' y M2: X' → X'', el segundo QU o QR reconcilia, también en una toma (§8.9, QR combinado) y en una sesión nueva que rebasa al abrir (WORKFLOW §4.2; §8.8, paso 6). Después, D2-6 decide en un QU ORDINARY. El contraejemplo de 2dfe, con la toma B, el rebase 1, la caída y C que rebasa, tiene ahora una transición válida. Los demás requisitos se mantienen. Falla cerrado sin M1, sin el eslabón o con otro blob. El intento no cambia. D2-6 no cambia: el diff no tiene ningún hunk entre D2-4 y D2-7. No hay autorreferencia ni punto extra. D2-3, D2-8, D2-9, D2-11, C-15 (d)(e)(d2)(e2)(i), C-29 (i) y C-38 están alineados. Reproducción: el arnés da GREEN 118/118, byte a byte. En RED fallan exactamente las 12 trazas que cruzan el segundo rebase, y cada una solo por un A1-P08 de más. c3-obs reconcilia por la cadena, y combo-result-a1t01 se reproduce idéntico. T8 con Git real valida la historia candidata sobre BranchAfterSha antes de que exista n2.",
+      "PremiseRefs": [
+        {"Path": "docs/initiatives/I-62-A-1.md", "Section": "§3.3, D2-2 (cont.)", "LineStart": 211, "LineEnd": 211, "Quote": "Su `Target` debe resolver por ResolveBranchRef (D2-10) con `H` = la historia completa y ordenada de mapas de n (`n.custody.rebase_history[]`, que ya termina en el mapa de esta reconciliación, D2-9) y HEAD = la punta rebasada que n consume: commit no reescrito, imagen en el mapa nuevo o imagen probada por la cadena completa (M1: X → X' y M2: X' → X'' llevan X a X''), con el mismo `Path` y `Blob` y las comprobaciones de D2-10 sobre ese HEAD."},
+        {"Path": "docs/initiatives/I-62-A-1.md", "Section": "§3.3, D2-2 (cont.)", "LineStart": 211, "LineEnd": 211, "Quote": "La comprobación usa la historia candidata de n y la punta rebasada, nunca el commit todavía inexistente de n, y no exige publicar antes otro punto para hacer visible el mapa nuevo. Resolver acredita la referencia histórica, no decide si el proceso arrancó, y no cambia la invocación, el `Target` original, el estado del intento, `RunId`, `reserved_at`, `BudgetSnapshot`, contadores, fase ni linajes (D2-7, D2-8). Su destino lo decide después la evidencia de arranque (D2-6, sus tres ramas sin cambio)"},
+        {"Path": "docs/initiatives/I-62-A-1.md", "Section": "§3.3, D2-3", "LineStart": 212, "LineEnd": 212, "Quote": "**El `Target` conservado de un intento en LAUNCHING no tiene requisito de ancestría**: cada reconciliación lo acredita por ResolveBranchRef con la historia de n (D2-2)"},
+        {"Path": "docs/initiatives/I-62-A-1.md", "Section": "§3.3, D2-6", "LineStart": 215, "LineEnd": 215, "Quote": "(2) **no arrancó**, con la vigencia abierta → LAUNCHING → BUDGET_RESERVED (caso B.1) con una invocación **nueva** (`InvocationId` nuevo) reconstruida sobre las imágenes como en D2-2: el `Target` pasa a la imagen de ResolveBranchRef cuando el original ya no es ancestro de HEAD; `reserved_at` no cambia y no se consume otro lanzamiento; la invocación anterior queda custodiada como intención histórica; (3) **indeterminado** → LAUNCH_UNCERTAIN, con conteo conservador y el `Target` original como histórico. Con la vigencia terminada rige §20.5.1 sin cambio"},
+        {"Path": "docs/initiatives/I-62-A-1.md", "Section": "§3.3, D2-8", "LineStart": 217, "LineEnd": 217, "Quote": "se añade: «… y en la orquestación, `loop.phase`, `architect_budgets[]`, `budgets`, `findings[]`, los estados, `reserved_at`, `run_id` y `BudgetSnapshot` de los intentos, y el `path` y el `blob` de todo objeto, iguales»"},
+        {"Path": "docs/initiatives/I-62-A-1.md", "Section": "§3.3, D2-9", "LineStart": 218, "LineEnd": 218, "Quote": "En un punto REBASE_RECONCILIATION, las resoluciones de D2-2 usan ese `rebase_history[]` de n, que ya incluye el mapa nuevo"},
+        {"Path": "docs/initiatives/I-62-proposal-v14.md", "Section": "§8.8, Secuencia, paso 4", "LineStart": 520, "LineEnd": 520, "Quote": "4. Si alguna imagen o identidad de parche no se acredita: la rama local vuelve a `branch_before`, **no se publica nada** y STOP (16.7). No se continúa a Q0."},
+        {"Path": "docs/initiatives/I-62-proposal-v14.md", "Section": "§8.9, Problema que resuelve", "LineStart": 559, "LineEnd": 560, "Quote": "WORKFLOW §4 le exige rebasar antes de escribir si `main` avanzó, y el QR es una escritura."},
+        {"Path": "docs/initiatives/I-62-proposal-v14.md", "Section": "§8.9, Orden, 3", "LineStart": 576, "LineEnd": 576, "Quote": "3. **QR combinado** (`point_kind` = REBASE_RECONCILIATION), que en el mismo punto:"},
+        {"Path": "docs/WORKFLOW.md", "Section": "§4, punto 2", "LineStart": 154, "LineEnd": 155, "Quote": "**Cada sesión — al abrir**: si el trunk avanzó, **rebase** sobre su punta antes de escribir una línea."}
+      ]
+    },
+    {"FindingId": "A62-A1-01", "State": "CLOSED", "Rationale": "No hay contraejemplo nuevo. D1-1..D1-3, D1-5, D1-6, D1-8, D1-11 y D1-12 no cambian en el delta. La identidad del bucle es la clave de una sola entrada, con topes mínimos y sin reinicio. Las trazas a62-a1-01-* se reproducen.", "PremiseRefs": []},
+    {"FindingId": "A62-A1-02", "State": "CLOSED", "Rationale": "No hay contraejemplo nuevo. D1-8 y D1-9 no cambian: el cierre y la continuación conservan EXPIRED y REVOKED, y el cierre exige la decisión. Las trazas a62-a1-02-* se reproducen.", "PremiseRefs": []},
+    {"FindingId": "A62-A1-03", "State": "CLOSED", "Rationale": "D1-4, D1-10 y D1-13 no cambian. El REVIEWER sigue siendo representable sin ReviewLoopAuthorization ni entrada, y EXECUTION conserva su autoridad. Las trazas a62-a1-03-* se reproducen.", "PremiseRefs": []},
+    {"FindingId": "A62-A1-04", "State": "CLOSED", "Rationale": "El caso de un rebase sigue resuelto: t1 da VALID y las trazas a62-a1-04-* pasan. a62-a1-04-LAUNCHING-sin-imagen-en-el-mapa sigue INVALID {A1-P02, A1-P08}, y solo cambia el texto del mensaje. La corrección amplía la fila LAUNCHING a dos rebases sin tocar las tres ramas de D2-6.", "PremiseRefs": []},
+    {"FindingId": "A62-A1-05", "State": "CLOSED", "Rationale": "D2-12 no cambia: exige el mismo path y blob, y el mismo commit o una imagen probada por la cadena, que ahora también cubre X → X''. Las trazas a62-a1-05-* y fc02-enmendado-LAUNCHED-conserva-su-Target se reproducen.", "PremiseRefs": []},
+    {"FindingId": "A62-A1-06", "State": "CLOSED", "Rationale": "D2-10 no cambia. D2-11 solo añade el Target conservado de un intento en LAUNCHING a los artefactos históricos que se validan con ResolveBranchRef. Uno y dos rebases, el mapa intermedio ausente, el blob cambiado y el clon limpio se reproducen (a62-a1-06-*). La precisión sobre la validez de cada mapa es OPTIONAL (A62-A1U-O1) y no reabre este hallazgo.", "PremiseRefs": []},
+    {
+      "FindingId": "OBS-A1-01",
+      "State": "CLOSED",
+      "Rationale": "D1-16 y D1-18..D1-21 no cambian. Partir D1-17 en dos filas conserva el texto: D1-17 (cont.) es idéntica, byte a byte, al resto de la fila anterior (comprobado con d117.py). El único cambio es la precisión O1, inclusiva y coherente con V14 §20.5 y con A62-A1S-01. R1..R10 y las trazas a62-a1r-*, a62-a1a-*, a62-a1s-* y a62-a1t-o1 pasan.",
+      "PremiseRefs": [
+        {"Path": "docs/initiatives/I-62-A-1.md", "Section": "§2.3, D1-17", "LineStart": 159, "LineEnd": 159, "Quote": "**Solicitudes del bucle REVIEWER:** las de `loop_instance_id` = `null` abiertas **en** el par NONE → REVIEW_PENDING que abrió el bucle **o después** (la primera se abre en ese mismo par, V14 §20.5), bajo cualquier autoridad que lo haya gobernado (también una sustituida), nunca por la autoridad vigente (A62-A1S-01; A62-A1T-O1)."}
+      ]
+    },
+    {"FindingId": "A62-A1R-01", "State": "CLOSED", "Rationale": "D1-18 (E) no cambia: EXHAUSTED, EXPIRED o REVOKED, con la decisión y conservando el motivo. Las trazas a62-a1r-01-* se reproducen, cada negativa por {A1-R03}.", "PremiseRefs": []},
+    {"FindingId": "A62-A1R-02", "State": "CLOSED", "Rationale": "D1-10 y D2-4 no cambian: una regla de imagen por tipo, con el mismo path y blob. Las trazas a62-a1r-02-* fallan por I-H02 o pasan según lo esperado.", "PremiseRefs": []},
+    {"FindingId": "A62-A1R-03", "State": "CLOSED", "Rationale": "D1-20 y D1-21 no cambian. A1-R05 ahora también rechaza una autoridad SUPERSEDED por una decisión custodiada (O3), lo que es más estricto y coherente con el texto. Las trazas a62-a1r-03-reapertura-* siguen INVALID {A1-R05}.", "PremiseRefs": []},
+    {"FindingId": "A62-A1S-01", "State": "CLOSED", "Rationale": "La pertenencia por apertura se conserva y O1 la hace inclusiva sin cambiar su significado. El conjunto de (3), con los heredados y STILL_OPEN, está en D1-17 (cont.) sin cambio. Las trazas a62-a1s-01-* siguen INVALID {A1-R02}.", "PremiseRefs": []},
+    {"FindingId": "A62-A1S-02", "State": "CLOSED", "Rationale": "La cláusula REVIEWER de D1-10 no cambia: CORRECTING → PUBLISHED, y la re-revisión sobre el objeto corregido. a62-a1s-02-re-revision-sobre-el-objeto-anterior sigue INVALID {A1-P18}, y su positivo da VALID.", "PremiseRefs": []}
+  ],
+  "OptionalCorrections": [
+    {"Id": "A62-A1T-O1", "Assessment": "CONFIRMED", "Note": "D1-17 dice ahora «en el par NONE → REVIEW_PENDING que abrió el bucle o después», y la reconstrucción va por la `last_request` del último registro de `reviewer_closures[]`, o por todas las solicitudes con `loop_instance_id` nulo si no hay ningún registro. Es equivalente mientras el bucle REVIEWER está activo. Toda solicitud con `loop_instance_id` nulo es de un bucle REVIEWER (D1-3), todo LOOP_CLOSED de REVIEWER añade un registro con su última solicitud (D1-18, D1-19) y, con O1, todo bucle tiene al menos una solicitud. No cambia el significado. La traza a62-a1t-o1 da VALID."},
+    {"Id": "A62-A1T-O2", "Assessment": "CONFIRMED", "Note": "Al día en A-1: §1, §5 (118 = 39 VALID + 79 INVALID, comprobado), §7, §8, §9 (filas de OBS-A1-01, A62-A1S y A62-A1T), §10 y §11 (r2, r3 y r4). En el paquete: la cabecera, el Cierre, las preguntas 12, 15 y 17 y la tabla de blobs (todos comprobados). También la descripción de A1-P02 y la etiqueta «Asserted» de combo-result-a1t01.json, que nombra el arnés leído (a1f4b07f). Los históricos combo-result.json y combo-result-before.json se conservan sin reescribir. Queda un resto cosmético sin efecto: el docstring de `rv_loop_requests` (arnés, 149-150) todavía dice «opened after the pair that opened the loop», aunque su código es inclusivo."},
+    {"Id": "A62-A1T-O3", "Assessment": "CONFIRMED", "Note": "C-38 (cuarta revisión) tiene el negativo de una autoridad SUPERSEDED. En el arnés, A1-R05 (línea 337) incluye las autoridades sustituidas, y a62-a1t-o3 falla exactamente por {A1-R05}. GC-4 no figura en `reviewer_closures[]`, así que la traza aísla la regla SUPERSEDED. C-15 (i) añade el A2' de EXECUTION a través de uno y de dos rebases, con sus negativos. Va en C-15 porque C-14 no ejerce rebases. El arnés no modela A2', y §5 lo declara. No hay cambio semántico fuera del defecto."}
+  ],
+  "Focus": [
+    {"Item": 1, "Assessment": "CONFIRMED", "Note": "La fila «D2-2 (cont.)» cierra el bloqueo. Con un segundo rebase y el intento todavía en LAUNCHING, el QU (§8.8, paso 6) o el QR combinado de una toma (§8.9, F.7) resuelve el Target X por [M1, M2] a X'' sobre la punta rebasada, publica, y después rige D2-6. Lo mismo vale en una sesión nueva que rebasa al abrir (WORKFLOW §4.2). Usar `n.custody.rebase_history[]` (la historia candidata) y la punta rebasada como HEAD es correcto, y no se refiere al commit de n. Reproducido: t2 da VALID (era INVALID {A1-P08} en RED), c3-obs reconcilia por la cadena y T8 da RESOLVED antes de crear n2."},
+    {"Item": 2, "Assessment": "CONFIRMED", "Note": "Falla cerrado. Sin M1 (t3b: {A1-F10, A1-P08, A1-P11}), sin el eslabón de X (t3a: {A1-P08}) o con otro blob (t4, y T8n con Git real), el resultado es UNRESOLVED y STOP antes del force-push. D2-10 excluye la ruta, el parecido de parches y la sustitución de SHA. El texto prohíbe la entrada compuesta X → X'', pero nada lo comprueba mecánicamente: con un M1 incompleto, una entrada compuesta en M2 resolvería. No es material, porque exige mapas que ya violan B.8.7 y §8.8, paso 3. La precisión es OPTIONAL A62-A1U-O1."},
+    {"Item": 3, "Assessment": "CONFIRMED", "Note": "La resolución no toca el intento. D2-8 nombra ahora `run_id` y `BudgetSnapshot`. t5a..t5g fallan cada una solo por su regla: A1-P09 al reescribir la invocación, A1-P10 al cambiar RunId, la reserva, el estado, los linajes o el BudgetSnapshot, y {A1-F01, A1-P10} al cambiar el presupuesto. T8 lee los campos del intento sin cambio desde el estado custodiado."},
+    {"Item": 4, "Assessment": "CONFIRMED", "Note": "D2-6 no cambia. Sus ramas sobre X'': t6 (no arrancó, vigencia abierta) pasa a BUDGET_RESERVED con InvocationId nuevo sobre c1pp, el mismo `reserved_at` y los contadores iguales, y da VALID. t7 (desconocido) pasa a LAUNCH_UNCERTAIN con el Target original. t7a (prueba de no arranque fabricada) da INVALID por la regla literal de V14 B.8.8. t7b (relanzar el incierto) da INVALID {A1-P09}. Con la autorización terminada rige §20.5.1."},
+    {"Item": 5, "Assessment": "CONFIRMED", "Note": "La comprobación usa la historia candidata (la StateRef del mapa nuevo, `{path, blob}`, se puede calcular antes del commit) y la punta rebasada. Falla en §8.8, paso 4, sin publicar, y el mapa se custodia en el QU o QR del paso 6. No exige publicar otro punto ni se refiere al commit de n: T8 valida sobre BranchAfterSha cuando n2 aún no existe."},
+    {"Item": 6, "Assessment": "CONFIRMED", "Note": "Alineados: D2-3 (el Target de LAUNCHING no tiene requisito de ancestría y se acredita en cada reconciliación), D2-9 (las resoluciones de D2-2 usan la historia de n), D2-11 (Target histórico) y C-15 (d)(e)(d2)(e2)(i), incluidas la toma y la sesión que rebasa al abrir. También C-29 (i), con la reconstrucción por un sucesor y el negativo sin M1, y C-38 (cuarta revisión). D2-10 y D2-12 no cambian."},
+    {"Item": 7, "Assessment": "CONFIRMED", "Note": "El arnés se reproduce byte a byte: SHA-256 dfe0e666…, blob ac77596e. RED tiene exactamente 12 FAIL (t2, t5a-g, t6, t7, t7a y t7b), cada uno solo con un A1-P08 de más. GREEN es igual al resultado custodiado, 118/118. Las secuencias de F4 experimental se reproducen idénticas, 17/17, con el arnés a1f4b07f. T8 no lo reejecuté, porque usa subprocess, fuera de EX-1; leí el script y el resultado. Nota sobre t4: su A1-P08 coincide con el A1-P08 que da la comparación del objeto de la solicitud, pero las violaciones muestran el mensaje propio del Target, y T8n aísla la identidad de contenido."},
+    {"Item": 8, "Assessment": "CONFIRMED", "Note": "O1 recoge «abiertas en ese par o después» y la reconstrucción por `last_request`, sin cambio de significado. Ver A62-A1T-O1."},
+    {"Item": 9, "Assessment": "CONFIRMED", "Note": "Coherencia documental al día, sin reescribir resultados históricos. Ver A62-A1T-O2; queda un docstring cosmético en el arnés."},
+    {"Item": 10, "Assessment": "CONFIRMED", "Note": "El negativo SUPERSEDED (C-38 y A1-R05) discrimina, y C-15 (i) cubre el A2' de EXECUTION a través de uno y de dos rebases, con sus negativos. Ver A62-A1T-O3."},
+    {"Item": 11, "Assessment": "CONFIRMED", "Note": "Los doce cierres se conservan. Las dos particiones de fila conservan el texto byte a byte, salvo los cambios declarados. D1-1..D1-16, D1-18..D1-21, D2-1, D2-4..D2-7, D2-10 y D2-12 no cambian, y todas las trazas de esos hallazgos pasan."},
+    {"Item": 12, "Assessment": "CONFIRMED", "Note": "No hace falta ninguna decisión del Owner. Los contratos F3 no cambian: el diff de los esquemas y de los textos es vacío, y los blobs coinciden con el paquete. La corrección usa campos existentes de RebaseMap (MainBeforeSha y Commits[] con OriginalSha, ImageSha, PatchId y PatchIdEqual). La materialidad se mantiene: M-02..M-05 = sí."}
+  ],
+  "F3ContractCrossCheck": [
+    {"Contract": "relay-record.v2.schema.json (RebaseMap: MainBeforeSha, Commits[] {OriginalSha, ImageSha, PatchId, PatchIdEqual}, StateFields[])", "Assessment": "COMPATIBLE", "Note": "La cadena de D2-2 (cont.) y D2-10 usa campos existentes (Grep). El blob es dca5b29c y no cambia en el delta. La precisión A62-A1U-O1 tampoco exige ningún campo: MainBeforeSha y BranchBefore ya existen."},
+    {"Contract": "role-invocation.v1.schema.json (Target {Commit, Path, Blob}, BudgetSnapshot)", "Assessment": "COMPATIBLE", "Note": "La invocación en LAUNCHING no cambia, y la replanificada es un registro nuevo con el mismo BudgetSnapshot. El blob es d54a7ae7, sin cambio."},
+    {"Contract": "gate-contract.v2.schema.json y reviewer-result.v1.schema.json", "Assessment": "COMPATIBLE", "Note": "No cambian (diff vacío). O1 es semántica de `state/v2`, que aún no está materializado."},
+    {"Contract": "architect-review-result.v1.schema.json", "Assessment": "COMPATIBLE", "Note": "No cambia. D2-12 tampoco cambia: la cadena de dos mapas solo amplía la relación de imagen probada."},
+    {"Contract": "binding.v1.schema.json / V14 B.2 (BindingRef, AuthorizationRef)", "Assessment": "TEXT_AMENDMENT_DECLARED", "Note": "Es el mismo D2-11 sin cambio de forma. Ahora nombra también el Target conservado de un intento en LAUNCHING como artefacto histórico."},
+    {"Contract": "AUTOMATION_PLAN 16.20 (paso 3, lista «como mínimo», «Vigencia de acción y acreditación histórica»)", "Assessment": "TEXT_AMENDMENT_DECLARED", "Note": "D1-12, D2-11 y D1-21 siguen como propuestas sin vigencia hasta el acuerdo y F4. El texto materializado no cambia (diff vacío)."},
+    {"Contract": "agent-execution/README §14.3 («Reproducción», criterio VALIDITY) y §14.4 regla 3", "Assessment": "TEXT_AMENDMENT_DECLARED", "Note": "D2-11 y D1-21 están declarados para I-62, sin cambio en el delta."},
+    {"Contract": "input-closure.v1 e input-fidelity.v1", "Assessment": "COMPATIBLE", "Note": "A-1 no los toca y no cambian (diff vacío). No los leí en detalle."}
+  ],
+  "CounterexampleVerification": {
+    "Traces": 118,
+    "Valid": 39,
+    "Invalid": 79,
+    "AllAsExpected": true,
+    "Notes": [
+      {"Trace": "a62-a1t-01-t2-dos-rebases-resuelve-por-la-cadena", "ClaimedReasonHolds": true, "Note": "En GREEN da VALID. En red-result.json da INVALID {A1-P08}, con la regla anterior («Target de LAUNCHING L1/1 sin imagen en el mapa»)."},
+      {"Trace": "RED frente a GREEN (red-result.json, green-result.json)", "ClaimedReasonHolds": true, "Note": "Cambian 16 trazas. Las 12 FAIL de RED (t2, t5a-g, t6, t7, t7a y t7b) solo añaden A1-P08. Las otras 4 (a62-a1-04-LAUNCHING-sin-imagen-en-el-mapa, t3a, t3b y t4) solo cambian el texto del mensaje. green-result.json es igual al resultado custodiado y a mi ejecución."},
+      {"Trace": "a62-a1t-01-t3a-cadena-sin-el-eslabon-de-X", "ClaimedReasonHolds": true, "Note": "Da INVALID exactamente por {A1-P08}, y la única violación es la del Target. Discrimina la cadena incompleta."},
+      {"Trace": "a62-a1t-01-t3b-M1-ausente-de-la-historia", "ClaimedReasonHolds": true, "Note": "Da INVALID {A1-F10, A1-P08, A1-P11}: falta el primer eslabón y la historia pierde un mapa."},
+      {"Trace": "a62-a1t-01-t4-cadena-completa-con-otro-contenido", "ClaimedReasonHolds": true, "Note": "Da INVALID {A1-P02, A1-P08}. A1-P08 también lo dispara el objeto de la solicitud, pero la violación propia del Target («no resuelve por ResolveBranchRef») está presente, y T8n («el blob … no es …») aísla la identidad de contenido con Git real."},
+      {"Trace": "a62-a1t-01-t5a..t5g", "ClaimedReasonHolds": true, "Note": "Cada una falla solo por su invariante: A1-P09, A1-P10 o {A1-F01, A1-P10}."},
+      {"Trace": "a62-a1t-01-t6, t7, t7a y t7b", "ClaimedReasonHolds": true, "Note": "t6 y t7 dan VALID. t7a da INVALID {V14-S18-no-arranque}, y t7b da INVALID {A1-P09}."},
+      {"Trace": "a62-a1t-o3-reapertura-con-una-autoridad-SUPERSEDED", "ClaimedReasonHolds": true, "Note": "Da INVALID exactamente por {A1-R05}. GC-4 no figura en `reviewer_closures[]`, así que falla solo por la regla SUPERSEDED."},
+      {"Trace": "c3-obs-segundo-rebase-con-LAUNCHING-pendiente-reconcilia-por-la-cadena y c3-obs-n-sin-M1-no-resuelve (F4 experimental)", "ClaimedReasonHolds": true, "Note": "La primera da VALID y la segunda INVALID {A1-P08}. Lo reproduje con un runner propio: las 17 secuencias son idénticas a combo-result-a1t01.json, y el arnés es a1f4b07f."},
+      {"Trace": "T8 (t8-result.json)", "ClaimedReasonHolds": true, "Note": "Lo leí, no lo reejecuté. La historia candidata [M1, M2] resuelve X sobre BranchAfterSha antes de n2, y M2 no contiene X: la regla de 03dd822d habría dado STOP. En el clon limpio, X y X' son inalcanzables. Los tres negativos dan UNRESOLVED por la causa declarada."}
+    ]
+  },
+  "Materiality": {
+    "Overall": {"M01": "NO", "M02": "YES", "M03": "YES", "M04": "YES", "M05": "YES", "M06": "NO", "M07": "NO", "M08": "NO"},
+    "ObsA101": {"M01": "NO", "M02": "YES", "M03": "YES", "M04": "YES", "M05": "YES", "M06": "NO", "M07": "NO", "M08": "NO"},
+    "Note": "Coincido con A-1 y con el Coordinator. La corrección de A62-A1T-01 queda dentro de M-03 (la reconciliación de un intento en LAUNCHING a través de dos rebases) y de M-04 (el fallo cerrado por la cadena) de FC-02. No añade ningún disparador, esquema ni autoridad. M-05 de OBS-A1-01 = sí, por D1-21. M-08 = no: `attempts` y ADR-0046 #7 no cambian."
+  },
+  "OwnerAuthorityCheck": {
+    "Spending": "NONE: la resolución no consume lanzamientos (t6 conserva la reserva), cada lanzamiento sigue exigiendo elegibilidad con consumo cubierto y los topes nunca suben",
+    "Credentials": "NONE",
+    "Destructive": "NONE",
+    "NewOVScenario": "NONE",
+    "OVRemovalOrReassignment": "NONE",
+    "OwnerPolicyChoice": "NONE",
+    "NewOwnerAuthority": "NONE",
+    "OwnerDecisionRequired": false
+  },
+  "LegacyApplicability": {
+    "AppliesOnlyToI62": true,
+    "NoRetroactiveI61Change": true,
+    "NoI64FixClaim": true,
+    "Note": "Applies-to: I-62. Las enmiendas de texto F3 son «para I-62», sobre superficies inactivas, y no cambian en el delta. A-1 no toca `/v1`, las unidades I61, F1 ni F2. El paquete (§6) declara que no repara la deuda nc2 de I-64 ni absorbe P4/P8 de I-63."
+  },
+  "IfAgreed": {
+    "A62_A1_01_CLOSED": true,
+    "A62_A1_02_CLOSED": true,
+    "A62_A1_03_CLOSED": true,
+    "A62_A1_04_CLOSED": true,
+    "A62_A1_05_CLOSED": true,
+    "A62_A1_06_CLOSED": true,
+    "OBS_A1_01_CLOSED": true,
+    "A62_A1R_01_CLOSED": true,
+    "A62_A1R_02_CLOSED": true,
+    "A62_A1R_03_CLOSED": true,
+    "A62_A1S_01_CLOSED": true,
+    "A62_A1S_02_CLOSED": true,
+    "A62_A1T_01_CLOSED": true,
+    "FC01Resolved": true,
+    "FC02Resolved": true,
+    "NoOwnerDecisionRequired": true,
+    "SuitableForCoordinatorAgreement": true,
+    "F4MayProceedAfterCoordinatorAgreed": true
+  },
+  "KnownLimitations": [
+    "Acciones usadas, todas de la tabla del prompt. ID-1: rev-parse HEAD y <commit>:<ruta>, status --porcelain, log --oneline -8 y config --get core.autocrlf (false). MD-1: git diff 411e01ce ca09ade8 -- <rutas del cierre> con --stat, -U0, --no-color y --word-diff; sha256sum; wc; hash-object de una salida propia. RD-1: git show ca09ade8:<ruta> con sed -n, grep, cut, wc o sha256sum. RD-2: head, tail y echo. EX-1: el arnés con un argumento de salida propia, y scripts propios (heredoc) que leen archivos del cierre o salidas propias, o importan el arnés y combo_sequences.py por su ruta literal (importlib y runpy), sin listados, procesos ni red. EX-2: dotnet test. NAV-1: cd al clon y a docs/automation/evidence/I-62-A1/a1t01. OWN-1 y OWN-2 en el scratchpad. Grep solo con `path` = un archivo. No hubo escrituras en el repositorio, commits, push ni agentes.",
+    "Desviación de forma declarada: dos veces pasé por tubería la salida de git diff (MD-1) a grep -n, a sed -n y a cut, para ver los hunks de A-1. Fue de solo lectura y sobre el diff de un archivo del cierre entre los dos commits fijados. RD-2 nombra esas herramientas sobre archivos del cierre, y RD-1 admite la tubería solo para git show. Después redirigí el diff a salidas propias (a1-udiff.txt y a1-wdiff.txt).",
+    "Interpretación de EX-1 declarada: reejecuté combo_sequences.py, que está en el cierre, desde un script propio con runpy.run_path, sin procesos, con el arnés del clon y la salida en el scratchpad. El resultado coincide en las 17 secuencias y en el blob del arnés.",
+    "No reejecuté T8 (t8-clean-clone.py), porque necesita subprocess y un repositorio Git desechable, fuera de EX-1. La versión C# experimental tampoco la reejecuté, porque su clon está fuera del cierre. Las evalué por su script y su resultado custodiado.",
+    "Comprobación ad hoc (salida propia adhoc_composite.out.json): t3a con una entrada compuesta c1 → c1pp en M2 da VALID; t3b con esa entrada da INVALID {A1-F10, A1-P11}; t2 con esa entrada da VALID. Sostiene A62-A1U-O1 (OPTIONAL). Es evidencia de apoyo, no autoridad.",
+    "Lecturas parciales o no hechas, que no considero necesarias para el veredicto: evidencia §40-§55; decisiones §34-§41 (solo §42); HANDOFF, ROADMAP, ARCHITECTURE, FOUNDATIONS, README y los Context Packs; freeze-issues.md, f4-dossier.md, rebase-map.json y la portabilidad (README y reconstruct.py); I-62-portabilidad-coordinador-principal.md; ADR-0046 y ADR-0048 (solo diff --stat vacío); el registro del Freeze (solo su blob); r2, r3, I-62-architect-review-A-1.md y los output.json de ac67 y 86e3, además de audit-classification.json de 2dfe. Los doce cierres los ratifico sobre el texto actual, el delta y las trazas, no sobre esas corridas, cuya acreditación decide el Coordinator. De V14 leí §8.8, §8.9, §20.6 (1555-1594), B.8.7, B.8.8, F.6-F.8 y las filas C-15, C-29 y C-38 del Anexo C.",
+    "Fidelidad: todo llegó en UTF-8, sin U+FFFD ni «?» sustitutos. Las citas de PremiseRefs se comprobaron como subcadenas literales de sus líneas con un script propio (quotes.py), sobre los archivos del clon en ca09ade8 (core.autocrlf = false), además de leerlas con Read. Las líneas largas conocidas que llegaron por Read (la 85 de output.json de 2dfe y la 805 de las decisiones) no se citan.",
+    "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj en el clon (EX-2; paso 4 de «Leer primero» de AGENTS.md): 12 618/12 618 correctas, 0 errores, 0 omitidas, 1 m 39 s, con el log en el scratchpad. Es una comprobación local del revisor, no evidencia de gate. No ejecuté la suite UI. Después, el clon sigue limpio en ca09ade8 y el worktree sigue limpio.",
+    "No puedo observar mi effort ni el identificador de mi sesión, así que los declaro UNKNOWN; la identidad efectiva la aporta el invocador. Envié al usuario avisos breves de progreso, que pidió el harness, sin contenido del veredicto."
+  ],
+  "RecommendedNextAction": "Custodiar este resultado literal, el cierre de insumos, la identidad observada y la auditoría de lecturas. El Coordinator decide la acreditación de esta corrida y, si la acredita, emite su propio veredicto sobre la A-1 exacta (commit ca09ade8, blob c01899a7). Este dictamen no sustituye ese acuerdo. A62-A1U-O1 es OPTIONAL. El Coordinator puede trasladarla a las obligaciones de F4 (validez de cada mapa y negativo de una entrada compuesta) o incorporarla a A-1; en ese caso cambia el blob, y el acuerdo debe identificar la versión exacta (LIFECYCLE §6). La producción de F4 sigue bloqueada hasta el veredicto del Coordinator y su orden de apertura. No hace falta ninguna decisión del Owner, e I-61 sigue vigente."
+}
