@@ -1,6 +1,6 @@
 {
  "Script": "a1-counterexamples.py",
- "Version": "A-1 corregida (2026-10-05), con OBS-A1-01",
+ "Version": "A-1 corregida (2026-10-05), con OBS-A1-01 y A62-A1R-01..03",
  "Freeze": {
   "commit": "4c617e82b32b6c810b68d75fc19472efed22b393",
   "blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa"
@@ -24,18 +24,20 @@
   "A1-P07": "D1-9/D1-13 · LOOP_CLOSED de ARCHITECT_REVIEW solo sin trabajo vivo, con la escalada resuelta, la vigencia terminada (o revocada por la decisión de cierre) y la decisión exigida; ninguna variante de LOOP_CLOSED se aplica a EXECUTION",
   "A1-R01": "D1-16 · ARCHITECT_SATISFIED (fase o fin de vigencia) solo con ARCHITECT_REVIEW y REVIEWER_SATISFIED solo con REVIEWER",
   "A1-R02": "D1-17 · REVIEWER_SATISFIED solo con un resultado de REVIEWER VALID ingerido en la última solicitud del bucle, sin intentos no terminales, sin linajes BLOCKING abiertos del bucle y con la vigencia terminada por REVIEWER_SATISFIED",
-  "A1-R03": "D1-18 · LOOP_CLOSED de REVIEWER: desde REVIEWER_SATISFIED sin decisión, o tras EXPIRED/REVOKED con la decisión I62-REVIEWER-LOOP-CLOSE; sin trabajo vivo, escalada resuelta, nada borrado ni reiniciado y el registro de cierre añadido",
+  "A1-R03": "D1-18 · LOOP_CLOSED de REVIEWER: desde REVIEWER_SATISFIED sin decisión, o (E) tras EXHAUSTED/EXPIRED/REVOKED (o con la vigencia OPEN revocada por la misma decisión) con la decisión I62-REVIEWER-LOOP-CLOSE; sin trabajo vivo, escalada resuelta, nada borrado ni reiniciado y el registro de cierre con el motivo real",
   "A1-R04": "D1-19 · reviewer_closures[] es append-only y crece exactamente en uno en cada LOOP_CLOSED de REVIEWER, y en ningún otro par",
   "V14-P20-reviewer": "V14 §20.5.2/§20.7 · un resultado de REVIEWER nunca cierra ni rebaja un linaje del ARCHITECT (P-20)",
+  "A1-R05": "D1-20 · un bucle REVIEWER se abre con una autoridad OPEN, la de loop.authorization, que no figura en ningún registro de reviewer_closures[]",
+  "A1-R06": "D1-17/D1-19 · el requisito operativo de una autoridad REVIEWER solo está satisfecho con evidencia REVIEWER_SATISFIED de esa autoridad",
   "A1-P08": "D2-2/D2-5 · la reconciliación lleva cada objeto vivo a su imagen probada (mismo path y blob) y exige imagen en el mapa para el Target de un intento en LAUNCHING",
   "A1-P09": "D2-6 · transiciones de intento; un intento en LAUNCHING o posterior nunca cambia su invocación en sitio; B.1 tras un rebase replanifica sobre la imagen",
   "A1-P10": "D2-8 · la reconciliación no cambia fase, presupuestos, linajes, estados de intento ni reserved_at",
-  "A1-P11": "D2-9 · rebase_history recibe exactamente el mapa nuevo en cada reconciliación y no cambia en otro caso",
+  "A1-P11": "D2-9 · rebase_history recibe exactamente el mapa nuevo en cada reconciliación, todos los mapas de la ventana en orden al cerrarla, y no cambia en otro caso",
   "A1-P12": "D2-12 · un resultado solo cierra linajes y solo es VALID si su EvaluatedObject es EquivalentReviewedObject del objeto de su solicitud",
   "A1-P13": "V14 I-P13 · una acción nueva (reserva, LAUNCHING) exige la vigencia de acción OPEN",
   "A1-P14": "D1-3 · loop_instance_id de una solicitud es inmutable",
   "A1-P15": "D2-2/D2-11 · una invocación nueva o replanificada tras un rebase reconstruye sus referencias de rama sobre las imágenes",
-  "A1-P16": "D1-15 · el OpenFindings de una reserva ARCHITECT incluye todo linaje en OPEN o STILL_OPEN, también los heredados",
+  "A1-P16": "D1-15 · el OpenFindings de una reserva es exactamente el conjunto de linajes abiertos que su revisor debe disponer: ARCHITECT y COORDINATOR para el Architect, REVIEWER para el REVIEWER, también los heredados",
   "A1-P17": "D1-14 · el BudgetSnapshot de una reserva ARCHITECT copia la entrada de su loop_instance_id, no una cuenta por autorización",
   "I-H02": "D2-3 · todo SHA de rama vivo del estado (incluidos loop.object, objetos OPEN y Targets no lanzados) es ancestro de HEAD fuera de una ventana",
   "V14-S18-target": "V14 §20.6 · el Target de un intento no lanzado es el objeto de su solicitud",
@@ -124,6 +126,47 @@
   "A62-A1-O5": [
    "fc01-enmendado-object-null-fuera-del-cierre"
   ],
+  "A62-A1R-01": [
+   "a62-a1r-01-exhausted-con-intento-vivo",
+   "a62-a1r-01-exhausted-se-cierra-conservando-el-motivo",
+   "a62-a1r-01-exhausted-sin-decision",
+   "a62-a1r-01-registro-finge-REVIEWER_SATISFIED"
+  ],
+  "A62-A1R-02": [
+   "a62-a1r-02-execution-rebase-reconcilia",
+   "a62-a1r-02-execution-rebase-sin-reconciliar",
+   "a62-a1r-02-reviewer-ingesta-tras-rebase",
+   "a62-a1r-02-reviewer-rebase-loop-object-sin-reconciliar",
+   "a62-a1r-02-reviewer-rebase-reconcilia"
+  ],
+  "A62-A1R-03": [
+   "a62-a1r-03-nueva-autoridad-hereda-BLOCKING",
+   "a62-a1r-03-reapertura-tras-E-revocada",
+   "a62-a1r-03-reapertura-tras-S",
+   "a62-a1r-03-reapertura-tras-rebase"
+  ],
+  "A62-A1R-O1": [
+   "a62-a1r-02-execution-rebase-reconcilia",
+   "a62-a1r-02-reviewer-rebase-reconcilia"
+  ],
+  "A62-A1R-O2": [
+   "a62-a1r-o2-cierre-E-con-revocacion-en-la-decision",
+   "a62-a1r-o2-vigencia-OPEN-sin-revocacion"
+  ],
+  "A62-A1R-O3": [
+   "a62-a1r-03-nueva-autoridad-hereda-BLOCKING",
+   "a62-a1r-o3-architect-con-linaje-del-reviewer",
+   "a62-a1r-o3-reviewer-sin-su-linaje-heredado"
+  ],
+  "A62-A1R-O4": [
+   "a62-a1r-o4-ventana-con-dos-rebases",
+   "a62-a1r-o4-ventana-solo-ultimo-mapa"
+  ],
+  "A62-A1R-O5": [
+   "a62-a1r-01-registro-finge-REVIEWER_SATISFIED",
+   "a62-a1r-o5-satisfaccion-con-evidencia",
+   "a62-a1r-o5-satisfaccion-sin-evidencia"
+  ],
   "FC-01": [
    "fc01-literal-cerrar-y-abrir",
    "fc01-literal-reabrir-sobre-Y"
@@ -158,7 +201,8 @@
    "a62-a1-obs01-r8-cierre-borra-historia",
    "a62-a1-obs01-r8-cierre-reinicia-budgets",
    "a62-a1-obs01-r9-architect-abre-tras-el-cierre-del-reviewer",
-   "a62-a1-obs01-r9-sin-cierre-no-se-abre-otro-bucle"
+   "a62-a1-obs01-r9-sin-cierre-no-se-abre-otro-bucle",
+   "a62-a1r-01-exhausted-se-cierra-conservando-el-motivo"
   ],
   "OBS-A1-01/R1": [
    "a62-a1-obs01-r1-NO_FINDINGS-no-es-ARCHITECT_SATISFIED",
@@ -1034,7 +1078,7 @@
     ]
    },
    "Violations": [
-    "par 1→2 (bucle nuevo ARL-42 con A2): OpenFindings de L5/1 sin ['LIN-1']"
+    "par 1→2 (bucle nuevo ARL-42 con A2): OpenFindings de L5/1 = [], debe ser ['LIN-1']"
    ],
    "Verdict": "PASS"
   },
@@ -1428,6 +1472,429 @@
     "par 0→1 (apertura sin cerrar el REVIEWER): transición REVIEWER_SATISFIED → REVIEW_PENDING no existe",
     "par 0→1 (apertura sin cerrar el REVIEWER): loop.object cambia en REVIEWER_SATISFIED → REVIEW_PENDING",
     "par 0→1 (apertura sin cerrar el REVIEWER): entrada nueva ['ARL-56'] fuera de la apertura"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1r-01-exhausted-con-intento-vivo": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1R-01"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R03"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R03"
+    ]
+   },
+   "Violations": [
+    "par 0→1 (cierre con R2/1 vivo): LOOP_CLOSED de REVIEWER sin sus condiciones"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1r-01-exhausted-se-cierra-conservando-el-motivo": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1R-01",
+    "OBS-A1-01"
+   ],
+   "Expected": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Got": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Violations": [],
+   "Verdict": "PASS"
+  },
+  "a62-a1r-01-exhausted-sin-decision": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1R-01"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R03"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R03"
+    ]
+   },
+   "Violations": [
+    "par 0→1 (sin RCLOSE-R1): LOOP_CLOSED de REVIEWER sin sus condiciones"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1r-01-registro-finge-REVIEWER_SATISFIED": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1R-01",
+    "A62-A1R-O5"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R03"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R03"
+    ]
+   },
+   "Violations": [
+    "par 0→1 (registro con REVIEWER_SATISFIED): LOOP_CLOSED de REVIEWER sin sus condiciones"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1r-02-execution-rebase-reconcilia": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1R-02",
+    "A62-A1R-O1"
+   ],
+   "Expected": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Got": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Violations": [],
+   "Verdict": "PASS"
+  },
+  "a62-a1r-02-execution-rebase-sin-reconciliar": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1R-02"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "I-H02"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "I-H02"
+    ]
+   },
+   "Violations": [
+    "punto 1 (loop.object de EXECUTION sin reconciliar): loop.object = c1 no es ancestro de HEAD"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1r-02-reviewer-ingesta-tras-rebase": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1R-02"
+   ],
+   "Expected": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Got": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Violations": [],
+   "Verdict": "PASS"
+  },
+  "a62-a1r-02-reviewer-rebase-loop-object-sin-reconciliar": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1R-02"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "I-H02"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "I-H02"
+    ]
+   },
+   "Violations": [
+    "punto 1 (loop.object del REVIEWER sin reconciliar): loop.object = y1 no es ancestro de HEAD"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1r-02-reviewer-rebase-reconcilia": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1R-02",
+    "A62-A1R-O1"
+   ],
+   "Expected": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Got": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Violations": [],
+   "Verdict": "PASS"
+  },
+  "a62-a1r-03-nueva-autoridad-hereda-BLOCKING": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1R-03",
+    "A62-A1R-O3"
+   ],
+   "Expected": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Got": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Violations": [],
+   "Verdict": "PASS"
+  },
+  "a62-a1r-03-reapertura-tras-E-revocada": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1R-03"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R05"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R05"
+    ]
+   },
+   "Violations": [
+    "par 1→2 (bucle REVIEWER reabierto con GC-1 revocada): bucle REVIEWER abierto con una autoridad terminada o distinta de loop.authorization"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1r-03-reapertura-tras-S": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1R-03"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R05"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R05"
+    ]
+   },
+   "Violations": [
+    "par 1→2 (bucle REVIEWER reabierto con GC-1 (terminada por REVIEWER_SATISFIED)): bucle REVIEWER abierto con una autoridad terminada o distinta de loop.authorization"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1r-03-reapertura-tras-rebase": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1R-03"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R05"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R05"
+    ]
+   },
+   "Violations": [
+    "par 2→3 (bucle REVIEWER reabierto con GC-1 tras el rebase): bucle REVIEWER abierto con una autoridad terminada o distinta de loop.authorization"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1r-o2-cierre-E-con-revocacion-en-la-decision": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1R-O2"
+   ],
+   "Expected": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Got": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Violations": [],
+   "Verdict": "PASS"
+  },
+  "a62-a1r-o2-vigencia-OPEN-sin-revocacion": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1R-O2"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R03"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R03"
+    ]
+   },
+   "Violations": [
+    "par 0→1 (decisión de cierre sin revocación): LOOP_CLOSED de REVIEWER sin sus condiciones"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1r-o3-architect-con-linaje-del-reviewer": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1R-O3"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-P16"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-P16"
+    ]
+   },
+   "Violations": [
+    "par 1→2 (ARCHITECT_REVIEW con un linaje del REVIEWER en OpenFindings): OpenFindings de L8/1 = ['LIN-R1'], debe ser []"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1r-o3-reviewer-sin-su-linaje-heredado": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1R-O3"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-P16"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-P16"
+    ]
+   },
+   "Violations": [
+    "par 1→2 (OpenFindings sin LIN-R1): OpenFindings de R2/1 = [], debe ser ['LIN-R1']"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1r-o4-ventana-con-dos-rebases": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1R-O4"
+   ],
+   "Expected": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Got": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Violations": [],
+   "Verdict": "PASS"
+  },
+  "a62-a1r-o4-ventana-solo-ultimo-mapa": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1R-O4"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-F10",
+     "A1-P11"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-F10",
+     "A1-P11"
+    ]
+   },
+   "Violations": [
+    "punto 1 (Q7 que custodia solo el último mapa): referencia docs/automation/decisions/U.md@a0 de L1/1 no resuelve",
+    "punto 1 (Q7 que custodia solo el último mapa): referencia docs/automation/evidence/U-agent/bindings/B1.json@k0 de L1/1 no resuelve",
+    "par 0→1 (Q7 que custodia solo el último mapa): el cierre de la ventana no custodia todos sus mapas en orden"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1r-o5-satisfaccion-con-evidencia": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1R-O5"
+   ],
+   "Expected": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Got": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Violations": [],
+   "Verdict": "PASS"
+  },
+  "a62-a1r-o5-satisfaccion-sin-evidencia": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1R-O5"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R06"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R06"
+    ]
+   },
+   "Violations": [
+    "punto 0 (requisito de GC-1 dado por satisfecho sin REVIEWER_SATISFIED): requisito de GC-1 dado por satisfecho sin evidencia REVIEWER_SATISFIED"
    ],
    "Verdict": "PASS"
   },

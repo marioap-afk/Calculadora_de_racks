@@ -1960,3 +1960,54 @@ Transcripción no versionada: 2 299 386 bytes, SHA-256 `50b38f31…`.
 ### 43.5 Límites
 
 Sin editar A-1, sin A-2, sin F4, sin rebase, sin ROADMAP ni HANDOFF y sin decidir materias del Owner. STOP.
+
+## 44. Orden nocturna: rebase y A-1 corregida para A62-A1R-01..03 (decisiones §41)
+
+CI de la custodia de la revisión formal, `1614908d37e0e5bb56d8ddf8e6775515278332c8`: corrida **37268887992**, push, head_sha exacto, cuatro jobs en
+`success`.
+
+### 44.1 Rebase (WORKFLOW §4.2)
+
+- **Motivo:** `main` avanzó de `819955d6` a `bb0d5522` con la integración de I-63. La ventana de I-63 ya estaba liberada y no había otras ventanas
+  activas. I-63 no tocó ninguna autoridad compartida (AUTOMATION_PLAN, LIFECYCLE, WORKFLOW, agent-execution, AGENTS, PROMPT_TEMPLATES ni CLAUDE).
+  `git merge-tree` salió limpio.
+- **Resultado:** 38 commits rebasados con patch-id igual. Nueva punta `83035d99`. Core 12618/12618 en local, por las pruebas que aportó I-63.
+- **Publicación:** `git push --force-with-lease=…:1614908d`. CI de la punta rebasada `83035d99`: corrida **37270782878**, push, head_sha exacto, cuatro
+  jobs en `success`.
+- **Mapa original → imagen:** `I-62-prep/night-2026-10-05/rebase-map.json`. Identidades clave:
+
+  | Original | Imagen |
+  |---|---|
+  | V14 `4c617e82` | `1d5cdbec` |
+  | Freeze `b64a3b64` | `fb49fceb` |
+  | F1 `12660ea7` | `02a81831` |
+  | F2 `1eddbf48` | `ffb509e8` |
+  | F3 `f9234cb9` | `42115503` |
+  | `0ad410f8` | `4e36d77c` |
+  | `1614908d` | `83035d99` |
+
+  Las identidades por blob no cambian, y los registros siguen citando los SHAs originales como hechos históricos.
+
+### 44.2 A-1 corregida
+
+| Archivo | Blob | Contenido |
+|---|---|---|
+| `docs/initiatives/I-62-A-1.md` | `39c2f8317ec381fa60c3564a834278df8898101c` | D1-18 (E) con EXHAUSTED y con la revocación en la propia decisión (O2); D1-10, D1-13 y D2-4 (una regla de rebase por tipo; delta de EXECUTION declarado; enumeración exacta, O1); D1-15 (`OpenFindings` por autoridad, O3); D1-17 y D1-19 (satisfacción positiva, O5); D1-20 (identidad de la autoridad REVIEWER y no resurrección); D1-21 (enmienda propuesta de 16.20 y VALIDITY de §14.3); D2-9 (cada mapa en orden, O4); M-05 de OBS-A1-01 = sí |
+| `docs/automation/evidence/I-62-A1/a1-counterexamples.py` | `078bd48c75dec242e373e10413b988f35a7ad3cf` | reglas nuevas A1-R05 y A1-R06; A1-R03, A1-P11 y A1-P16 ampliadas; 21 trazas nuevas |
+| `docs/automation/evidence/I-62-A1/a1-counterexamples-result.json` | `1e534996c7a9d70d2dfbf3e0605566735009187a` | 94 trazas (32 VALID y 62 INVALID), todas PASS; determinista |
+| paquete y disposición | (en este commit) | objeto nuevo, preguntas 13-15, lecciones de la revisión formal y matriz de A62-A1R-01..03 y O1..O5 |
+
+**Contra-ejemplos (MEASURED):**
+- **Antes:** 73 trazas, todas PASS. **Ahora:** 94, todas PASS, y ninguna regla queda sin ejercitar.
+- **Cobertura nueva:** A62-A1R-01: 4 trazas; 02: 5; 03: 4; O1: 2; O2: 2; O3: 3; O4: 2; O5: 3.
+- **Negativos:** cada uno falla por la regla buscada:
+  - EXHAUSTED sin decisión, con un intento vivo o con un registro que finge REVIEWER_SATISFIED → A1-R03;
+  - `loop.object` del REVIEWER o de EXECUTION sin reconciliar → I-H02;
+  - reapertura tras S, tras E o tras un rebase → A1-R05;
+  - satisfacción sin evidencia → A1-R06.
+
+### 44.3 Límites
+
+- Sin acreditar la revisión anterior ni declarar su acuerdo.
+- Sin tocar V14, el Freeze, `/v1`, `main`, ROADMAP, HANDOFF, FOUNDATIONS ni el índice ADR.
+- Los textos F3 de D1-21 y D2-11 son enmiendas propuestas, sin editar.

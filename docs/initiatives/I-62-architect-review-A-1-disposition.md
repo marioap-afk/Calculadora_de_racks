@@ -100,7 +100,29 @@ lista de 16.20 en D1-12).
 **Requisito más estricto del contrato de gate (OBS-A1-01):** `gate-contract/v2` no tiene ningún campo que endurezca la regla de B.10.2; por eso, en I-62 un
 ADVISORY abierto no impide REVIEWER_SATISFIED. Permitir que un contrato lo endurezca exigiría un campo nuevo (cambio de esquema, M-05), que A-1 no introduce.
 
-## 4. Lo que este registro no hace
+## 4. Revisión formal R20261005T044948Z-ac67 y orden nocturna (decisiones §40 y §41)
+
+La revisión formal de `9c621fce` dio CHANGES REQUIRED: A62-A1-01..06 CLOSED en su dictamen, OBS-A1-01 STILL_OPEN y A62-A1R-01..03 REQUIRED
+([registro](I-62-architect-review-A-1-r2.md)). Su acreditación la decide el Coordinator: el auditor v2 dio NOT_ACCREDITED por defectos propios y la
+corrección v2.1 dio ACCREDITED. La orden nocturna (decisiones §41) adopta A62-A1R-01..03 como REQUIRED técnicos, **sin acreditar la corrida y sin
+sustituir el acuerdo Architect + Coordinator**. Pide incorporar O1, O3, O4 y O5, preparar O2 con la autoridad existente y no reabrir A62-A1-01..06 sin
+un contraejemplo nuevo.
+
+| Hallazgo | Tratamiento en A-1 (blob `39c2f831`) | Reglas del arnés | Trazas (todas PASS) |
+|---|---|---|---|
+| A62-A1R-01 | D1-18: (E) con EXHAUSTED, EXPIRED o REVOKED, conservando el motivo; los BLOCKING siguen abiertos y el requisito sin satisfacer | A1-R03 | `a62-a1r-01-exhausted-se-cierra-conservando-el-motivo`, `a62-a1r-01-exhausted-sin-decision`, `a62-a1r-01-exhausted-con-intento-vivo`, `a62-a1r-01-registro-finge-REVIEWER_SATISFIED` |
+| A62-A1R-02 | D1-10, D1-13 y D2-4: el `commit` de `loop.object` pasa a la imagen en REBASE_RECONCILIATION para ARCHITECT_REVIEW, REVIEWER y EXECUTION; el delta de EXECUTION queda declarado (§1, §4) | A1-P02, I-H02, A1-P12 | `a62-a1r-02-reviewer-rebase-reconcilia`, `a62-a1r-02-reviewer-rebase-loop-object-sin-reconciliar`, `a62-a1r-02-reviewer-ingesta-tras-rebase`, `a62-a1r-02-execution-rebase-reconcilia`, `a62-a1r-02-execution-rebase-sin-reconciliar` |
+| A62-A1R-03 | D1-20: identidad de la autoridad REVIEWER (`StateRef` del contrato + rol), apertura con autoridad OPEN que no figure en `reviewer_closures[]`, sin resurrección tras S, E o rebase; D1-21: enmienda propuesta de 16.20 y VALIDITY de §14.3; M-05 de OBS-A1-01 = sí | A1-R05 | `a62-a1r-03-reapertura-tras-S`, `a62-a1r-03-reapertura-tras-E-revocada`, `a62-a1r-03-reapertura-tras-rebase`, `a62-a1r-03-nueva-autoridad-hereda-BLOCKING` |
+| A62-A1R-O1 | D1-13: enumeración exacta por tipo; D1-8 solo para ARCHITECT_REVIEW | — | `a62-a1r-02-reviewer-rebase-reconcilia`, `a62-a1r-02-execution-rebase-reconcilia` |
+| A62-A1R-O2 | D1-18: (E) con la vigencia OPEN revocada por la misma decisión (autoridad de revocación existente de §20.5.1 y §20.7); sin campos ni política nuevos | A1-R03 | `a62-a1r-o2-cierre-E-con-revocacion-en-la-decision`, `a62-a1r-o2-vigencia-OPEN-sin-revocacion` |
+| A62-A1R-O3 | D1-15: `OpenFindings` según la autoridad del revisor | A1-P16 | `a62-a1r-o3-architect-con-linaje-del-reviewer`, `a62-a1r-o3-reviewer-sin-su-linaje-heredado`, `a62-a1r-03-nueva-autoridad-hereda-BLOCKING` |
+| A62-A1R-O4 | D2-9: cada mapa en orden, también los de una ventana | A1-P11, A1-F10 | `a62-a1r-o4-ventana-con-dos-rebases`, `a62-a1r-o4-ventana-solo-ultimo-mapa` |
+| A62-A1R-O5 | D1-17 y D1-19: satisfacción solo con evidencia REVIEWER_SATISFIED | A1-R06, A1-R03 | `a62-a1r-o5-satisfaccion-sin-evidencia`, `a62-a1r-o5-satisfaccion-con-evidencia`, `a62-a1r-01-registro-finge-REVIEWER_SATISFIED` |
+
+Las disposiciones históricas no se reabren: A62-A1-01..06 siguen CLOSED en el dictamen de la revisión formal, y esta corrección del autor no equivale a
+su cierre por el Architect para A62-A1R-01..03 ni para OBS-A1-01.
+
+## 5. Lo que este registro no hace
 
 No acredita la revisión anterior ni la presenta como acuerdo del Architect. No declara AGREED, no lanza la revisión formal nueva (necesita otra autorización),
 no crea A-2, no implementa F4 y no decide nada del Owner.

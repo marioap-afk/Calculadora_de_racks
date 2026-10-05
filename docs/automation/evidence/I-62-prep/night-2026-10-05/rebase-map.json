@@ -1,0 +1,255 @@
+{
+ "Schema": "registro del rebase de la rama de I-62 (evidencia; NO es un RebaseMap del protocolo I62, que no rige a I-62)",
+ "Utc": "2026-10-05T06:05Z",
+ "Authority": "WORKFLOW §4.2 (rebase al abrir sesión si el trunk avanzó); orden nocturna §4",
+ "MainBefore": "819955d61a6da4c811a11fbd11b5dca13f634b7c",
+ "MainAfter": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+ "BranchBefore": "1614908d37e0e5bb56d8ddf8e6775515278332c8",
+ "BranchAfter": "83035d999599384ea74f7b178e3d6761ffa5bb01",
+ "Push": "git push --force-with-lease=architecture/portabilidad-coordinador-principal:1614908d37e0e5bb56d8ddf8e6775515278332c8",
+ "Conflicts": "ninguno (git merge-tree previo limpio)",
+ "PatchIdsEqual": true,
+ "Commits": [
+  {
+   "Original": "a851841ae40d63f59ac18ff64f792efd07ca036c",
+   "Image": "288649b682eb8cc5aba20b22f58983f23ac43121",
+   "PatchId": null,
+   "Subject": "I-62: reclamo de architecture/portabilidad-coordinador-principal"
+  },
+  {
+   "Original": "85ae4324988ac7564719664f8f05b3fa9c6cafbe",
+   "Image": "c652b2e693ad1143902ae3e5c005cf63f39fd8d6",
+   "PatchId": "3358d3f6170ee1759a826d62abcaf24e217123c7",
+   "Subject": "I-62 G0: bootstrap de la iniciativa (contrato, fila de ROADMAP, estado, decisiones, mandato, evidencia)"
+  },
+  {
+   "Original": "f25dd1d53ca5da3b2d8ad1842f2c2eb8b3cf4d8c",
+   "Image": "cb68242aec8cee1cd9e1bdd557daed77e866de3d",
+   "PatchId": "8271eac46786d8de7a2d437c9c245ca623e5265c",
+   "Subject": "I-62 F0: Discovery delta (DC-01..09, EXP-09) y registro de G0 GATE PASS"
+  },
+  {
+   "Original": "2b7976b02a44e2aca7feee2df473a86eda852fb0",
+   "Image": "d0911c19b1f36c78097f4c3bbefddeff894c25c5",
+   "PatchId": "256c6cba6a9aff95b2159e904d4b15a7099a8000",
+   "Subject": "I-62 F0-R1: correcciones del Discovery y expansiones acotadas (EXP-09/02/04/05/06/08/01)"
+  },
+  {
+   "Original": "ea0555913202efc96e1007f021942579b989b43d",
+   "Image": "bdc57a4620310038664489844d43b5c18925f824",
+   "PatchId": "8300418f9f005079e8c918d1bd7de4047494dc87",
+   "Subject": "I-62 F0: Proposal V1, paquete del Architect y borrador del ADR sucesor (diseño; sin implementación)"
+  },
+  {
+   "Original": "a1f5e0035f0e109d02a336c0a01917e53a53b88a",
+   "Image": "95251479535a140e25473033c845f853b60ffb2a",
+   "PatchId": "1516dd99253316ff7c50ceea9df1dfefb3331d8f",
+   "Subject": "I-62 F0: Proposal V2, paquete V2 y registro de la revisión del Coordinator de V1 (diseño; sin implementación)"
+  },
+  {
+   "Original": "486e45e797642ad589980584e16b3e50e53c1fb9",
+   "Image": "7d32ef1689e2d97f29dbfab7476b9689e44ddfe4",
+   "PatchId": "9f1887a4b70b3e49137c6194d4e253c0baa2edb9",
+   "Subject": "I-62 F0: Proposal V3, paquete V3 y registro de la revisión del Coordinator de V2 (diseño; sin implementación)"
+  },
+  {
+   "Original": "2960b28614da14ad6ebe9eeaa9631fd787041ac3",
+   "Image": "5102aa08c5f029b18632f9a61fdd9cdc2f80349c",
+   "PatchId": "d15a78a4b5bda15a7e5f29292959d41f179e87ed",
+   "Subject": "I-62 F0: Proposal V4, paquete V4 y registro de la revisión del Coordinator de V3 (diseño; sin implementación)"
+  },
+  {
+   "Original": "acd88eafa4847e4740fdf9e7899a6988508ec24a",
+   "Image": "55d12b7868cea31699d7b7bef8c1e7a941948dd7",
+   "PatchId": "2a73ad4f9c701a840212f26748042c151199d835",
+   "Subject": "I-62 F0: Proposal V5, paquete V5 y registro de la revisión del Coordinator de V4 (diseño; sin implementación)"
+  },
+  {
+   "Original": "3888c5c8de19b5abaf479983e56836ef2bcef76e",
+   "Image": "59888d9d859673b9c4e2bab927690197a4e6dd0b",
+   "PatchId": "26ca04bec93e7c64ee2e2238052455a44f2ac9c9",
+   "Subject": "I-62 F0: Proposal V6 (corrección acotada), paquete V6 y registro de la revisión del Coordinator de V5 (diseño; sin implementación)"
+  },
+  {
+   "Original": "3d7ec77f07d374704f2bc0b888a07bb182c32203",
+   "Image": "fc02f576ecd0f5885abebe53f9f15f2e019c530c",
+   "PatchId": "df73e8f914d00812d71d52fd62a3c19bff2d43df",
+   "Subject": "I-62 F0: Proposal V7 (corrección de A62-V6-01..03), paquete del Architect V7 y registro de la revisión del Architect de V6 (diseño; sin implementación)"
+  },
+  {
+   "Original": "d66463a5b04f79911580e2ef6e6f67263b51b5c3",
+   "Image": "aaa11cffd53e1b8429bb7a64b9bcc5e081f4c67d",
+   "PatchId": "a04dfed5867a79a1a709674e04d2e5142f8970aa",
+   "Subject": "I-62 F0: Proposal V8 (corrección acotada de A62-V7-01..03), paquete del Architect V8 y registro de la revisión del Architect de V7 (diseño; sin implementación)"
+  },
+  {
+   "Original": "b0725114e60319079c3abacf10542743ebb9303c",
+   "Image": "c6ff8618be1facea8f26884a663e8ae5eeb04546",
+   "PatchId": "6d868a9f898877a4d4178e611ced1b513192e3fe",
+   "Subject": "I-62 F0: Proposal V9 (orquestación autónoma de roles, R62-AUTO-01..20), paquete del Architect V9 y registro del requisito del Coordinator (diseño; sin implementación)"
+  },
+  {
+   "Original": "08509a5592e6958dcea0b5e6d9b01ee851a15b01",
+   "Image": "a4204f1215cd40191c20b4a845ac0de7cb13ebac",
+   "PatchId": "f72242fc9bf59c57e557af922ec0b26a62429cfc",
+   "Subject": "I-62 F0: custodia de la revisión del Architect de la Proposal V9 (invocación acotada de codex-cli autorizada por el Owner): BLOCKED — OWNER DECISION"
+  },
+  {
+   "Original": "41ded86e6494e3d43e07ce97de9eedf4710a631f",
+   "Image": "078fcba2f5d1303fe80df771e69fbc2ae0def03b",
+   "PatchId": "7aab31f4a7b7d672ea952e4526723257bfe3ed53",
+   "Subject": "I-62 F0: Proposal V10 (corrección de A62-V9-01..06, GAP-07 y GAP-08), paquete del Architect V10 y registro de la disposición del Owner y del Coordinator (diseño; sin implementación)"
+  },
+  {
+   "Original": "c2e2ecede5810dbd1c7fb108a7e9742c0663ee46",
+   "Image": "9069b072a0e2d53f7bd6dca22f197a5485a01203",
+   "PatchId": "14bc4d1c3385302ed3f1b08a7e9df0592a883ac7",
+   "Subject": "I-62 F0: custodia de la revisión formal limpia del Architect de la Proposal V10 (invocación acotada de codex-cli autorizada por el Owner): CHANGES REQUIRED"
+  },
+  {
+   "Original": "26127a69a7dbc1324566b081381cd11db6b20f35",
+   "Image": "b6edb0def4aed7f8d5b6785b833b8b50b7a4bae5",
+   "PatchId": "eb2c4d0f587a32f9bb852a1f2b44d5850df3ca9b",
+   "Subject": "I-62 F0: Proposal V11 (A62-V10-01, -03, -04 y fidelidad de los insumos R62-FIDELITY-01..06), paquete del Architect V11 y registro de la disposición sobre la revisión de V10 (diseño; sin implementación)"
+  },
+  {
+   "Original": "902c2cbad553f0927982fcd6561c66f96262a311",
+   "Image": "0604e6394e2dba313dc88ce41bd53d888fa5b64f",
+   "PatchId": "02552b295398d2615c40ce240bd81f3f7869dc71",
+   "Subject": "I-62 F0: custodia de la revisión formal limpia del Architect de la Proposal V11, con fidelidad de insumos probada (invocación acotada de codex-cli autorizada por el Owner): CHANGES REQUIRED"
+  },
+  {
+   "Original": "d0947c5d58280f8b0bfe2808dd8b7ff79e9f76bb",
+   "Image": "0b026c54257dc44f93a2f460b63bbf794182ebcd",
+   "PatchId": "00fef9c8fb10229ae2c8c36ae36e86e4acd59323",
+   "Subject": "I-62 F0: Proposal V12 (corrección estrecha de A62-V10-03 residuo y A62-V11-01), paquete del Architect V12 y registro de la disposición sobre la revisión de V11 (diseño; sin implementación)"
+  },
+  {
+   "Original": "4a4ceae712cecd3a0667b3ed3600a042b014e8d4",
+   "Image": "9d769a5db26f43fe34c5fea72aed73f629e0a667",
+   "PatchId": "f2928f94335151de744035400c8b53a462e96120",
+   "Subject": "I-62 F0: custodia de la revisión formal limpia del Architect de la Proposal V12 (invocación acotada de codex-cli autorizada por el Owner y el Coordinator): CHANGES REQUIRED"
+  },
+  {
+   "Original": "b337a59fa6879893229096f6e423d441b3c97bc6",
+   "Image": "5aecd7899660784c8e4479f26259d47cbf5649e9",
+   "PatchId": "633a252af765b24867b242f83031642e929d04c4",
+   "Subject": "I-62 F0: Proposal V13 (corrección final del residuo de A62-V11-01: clausura de dependencias normativas), paquete del Architect V13 y registro de la disposición sobre la revisión de V12 (diseño; sin implementación)"
+  },
+  {
+   "Original": "f51eda39d56a498a4ec56b4604acbe3a9be25746",
+   "Image": "54265047eca6197d49af13a28592752a1c603fe2",
+   "PatchId": "3a839497c49b58cf686bb938d51c566c3e2a3a52",
+   "Subject": "I-62 F0: custodia de la revisión formal final del Architect de la Proposal V13 (invocación acotada de codex-cli autorizada por el Owner y el Coordinator, con relanzamiento autorizado): CHANGES REQUIRED"
+  },
+  {
+   "Original": "4c617e82b32b6c810b68d75fc19472efed22b393",
+   "Image": "1d5cdbec1dd6375fb3a30ac772ef1e888e9fd902",
+   "PatchId": "d244e146de46646fadd3b25a1dfcd80449a0b78b",
+   "Subject": "I-62 F0: Proposal V14 (grafo normativo canónico y acotado; corrección final del residuo de A62-V11-01), paquete del Architect V14 y registro de la disposición sobre la revisión de V13 (diseño; sin implementación)"
+  },
+  {
+   "Original": "b90b01d6dc865b41370d2f9140341e5b7fd6b522",
+   "Image": "f944080253fbe7b3b1a77e83e29788aba666dbe2",
+   "PatchId": "03b80831af46980a2a1c2bb309fbf373897d9384",
+   "Subject": "I-62 F0: custodia de la revisión formal final del Architect de la Proposal V14 (invocación acotada de codex-cli autorizada por el Owner y el Coordinator): BLOCKED — OWNER DECISION solo por OD-6, cero REQUIRED, A62-V11-01 CLOSED"
+  },
+  {
+   "Original": "59bf98552774b4422b70afe6066a435447ab4d65",
+   "Image": "abfef77c7f98744768707fbd5bd1d7a77baa5ab5",
+   "PatchId": "acf9ad902a461ebbd9338b4a5153e0bf0dd47309",
+   "Subject": "I-62 F0: registro de la decisión del Owner OD-6 = alternativa 1 (sin cambios en la Proposal V14; AGREED y Freeze quedan en manos del Coordinator)"
+  },
+  {
+   "Original": "b64a3b640c7ee3bd77636e7a3218ae0ebac2dd43",
+   "Image": "fb49fceb129bea7d27724f2487eb20f449f517dd",
+   "PatchId": "b8a5d17ce6da308e5e67f53e13eeeb0eb17737c2",
+   "Subject": "I-62 Freeze: Consensus Freeze de la Proposal V14 exacta con OD-6 = alternativa 1 (AGREED del Coordinator; documentación y custodia, sin implementación)"
+  },
+  {
+   "Original": "12660ea76f224694ea7fce1f13b122ffb9d9ade5",
+   "Image": "02a81831d50998af33980898ed1c5c324eba0928",
+   "PatchId": "8c4f01a739fcacda6f66e74e284f11021c556935",
+   "Subject": "I-62 F1: ADR-0048 propuesto, plano (b) inactivo y corrección de PROMPT_TEMPLATES §2, con C-01..C-04"
+  },
+  {
+   "Original": "1eddbf48dbefd9685e68d63c0560bacf484d2dcb",
+   "Image": "ffb509e8247cf039f601e4e69cab6366812e968f",
+   "PatchId": "e5c8327457006d36c586ed22c9cfe53e20af91a4",
+   "Subject": "I-62 F2: observación de capacidad, cinco adapters, preflight/v1, relay-record/v2 y controller-verification/v2 (plano b inactivo), con C-05..C-10 y C-19"
+  },
+  {
+   "Original": "d8c55a971c4a52684c853a79ac11a2d47323ec57",
+   "Image": "f5714ef2ac8dbf97b29ad11e6d43bb83ae582351",
+   "PatchId": "4e24c52cf4659c86dfc60dea1671675cc2a512a2",
+   "Subject": "I-62 F2 REVIEW_READY: paquete de gate de F2 y preparación de F3, F4, F6, F7, READY y cierre (sin materializar)"
+  },
+  {
+   "Original": "c783e4d9353670e8a93cf5de1e3dee21eedddc7a",
+   "Image": "0b6f0ed52984e6b861e1e4f26a78ca7e3fcf5218",
+   "PatchId": "5ad1410f65ee3498f4a4d2cff16e3fce9069b4c2",
+   "Subject": "I-62 prep: comprobación local de los planes de esquema de F3 (addendum) y CI del commit de preparación"
+  },
+  {
+   "Original": "f9234cb98f84b11f79acacb7677223424b63abc4",
+   "Image": "421155030d997700a9e81cf31da28c27f9bf1e62",
+   "PatchId": "dd0bb8badf24abeeb1d39261f13e55bf9dff71fc",
+   "Subject": "I-62 F3: binding, independencia, comprobaciones y contratos de rol (plano b, inactivo)"
+  },
+  {
+   "Original": "bf7b0d9c4ec79e38350bad55e0debcde55b3cec9",
+   "Image": "2c50dc69fd5552751b35727cd34a7e66223cc8ba",
+   "PatchId": "8cabe199a517137e9b67f24eb661db330d5e662b",
+   "Subject": "I-62: evidencia de F3 sobre el SHA exacto y paquete de la enmienda A-1 (FC-01, FC-02)"
+  },
+  {
+   "Original": "f89b5284c7c80306f13e95328b4b42c5c5c947c8",
+   "Image": "f49c75bcd12f070a5495428627a2a5d038c7fc34",
+   "PatchId": "1ce81e13622113456db5701ffb782b5dd7714eb7",
+   "Subject": "I-62 prep: revision de A-1 lista para lanzar y preparacion de F4, F6, READY, OV y cierre"
+  },
+  {
+   "Original": "68152b580cd6b78b2b9db8a9e26636cb9f8f2112",
+   "Image": "0ec6d4b1c959c3c3793ae3c4b92d81da93fcbabb",
+   "PatchId": "427914f75ae2c1a3173b652ed57861fd9bd7958a",
+   "Subject": "I-62 prep: riesgo operativo NDC-01 (clausura normativa sobre el manifiesto B.11)"
+  },
+  {
+   "Original": "576006e83ad56f50df6c816f18f95297589de399",
+   "Image": "47e0ceba94eac8b146dc29bd6469fe736f60259f",
+   "PatchId": "4b8c2200535cede10e6ef64d05bf17b25eb5f0fd",
+   "Subject": "I-62: custodia de la revisión del Architect de A-1 (CHANGES REQUIRED)"
+  },
+  {
+   "Original": "fff3bbb070b065137401f81f85118ea851ea5888",
+   "Image": "22b3e98a5e4ea04feb72bcd49cf88bdf26104f8b",
+   "PatchId": "2d9ba7cf60f96b731629cdbfc07b3314e5cf710c",
+   "Subject": "I-62: A-1 corregida tras la disposición del Coordinator (A62-A1-01..06)"
+  },
+  {
+   "Original": "0ad410f894a9411cc9e4f454481ba14791109133",
+   "Image": "4e36d77ca2abd5c6d066f14b8d4478c79df28259",
+   "PatchId": "7b1ea8530ed0133280cb5cc7d3eb13d8b5c9777a",
+   "Subject": "I-62: A-1 corregida para OBS-A1-01 (cierre del bucle REVIEWER)"
+  },
+  {
+   "Original": "1614908d37e0e5bb56d8ddf8e6775515278332c8",
+   "Image": "83035d999599384ea74f7b178e3d6761ffa5bb01",
+   "PatchId": "2b28f370a87343e359596718f0d8bd2a8dc4ef98",
+   "Subject": "I-62: custodia de la revisión formal del Architect de la A-1 corregida"
+  }
+ ],
+ "KeyIdentities": {
+  "4c617e82": "1d5cdbec1dd6375fb3a30ac772ef1e888e9fd902",
+  "b64a3b64": "fb49fceb129bea7d27724f2487eb20f449f517dd",
+  "12660ea7": "02a81831d50998af33980898ed1c5c324eba0928",
+  "1eddbf48": "ffb509e8247cf039f601e4e69cab6366812e968f",
+  "f9234cb9": "421155030d997700a9e81cf31da28c27f9bf1e62",
+  "bf7b0d9c": "2c50dc69fd5552751b35727cd34a7e66223cc8ba",
+  "576006e8": "47e0ceba94eac8b146dc29bd6469fe736f60259f",
+  "fff3bbb0": "22b3e98a5e4ea04feb72bcd49cf88bdf26104f8b",
+  "0ad410f8": "4e36d77ca2abd5c6d066f14b8d4478c79df28259",
+  "1614908d": "83035d999599384ea74f7b178e3d6761ffa5bb01"
+ },
+ "Note": "los registros de I-62 citan los SHAs originales como hechos históricos; las identidades por blob (V14 34ad80ea, registro del Freeze 0f6b8608, A-1 9c621fce…) no cambian. Core 12618/12618 en la punta rebasada"
+}

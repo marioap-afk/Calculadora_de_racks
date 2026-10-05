@@ -1,27 +1,30 @@
-# I-62 — Paquete de revisión del Architect (enmienda A-1 corregida: FC-01, FC-02 y OBS-A1-01)
+# I-62 — Paquete de revisión del Architect (enmienda A-1 corregida: FC-01, FC-02, OBS-A1-01 y A62-A1R-01..03)
 
 ```text
 A-1            = PROPUESTA (versión corregida) — sin revisión formal acreditada
 Revisión previa = la corrida R20261003T023945Z-cab7 sobre 09ca9328 NO quedó FORMALMENTE ACREDITADA; el Coordinator adoptó sus hallazgos técnicos
                  A62-A1-01..06 como REQUIRED (decisiones §38) y añadió OBS-A1-01 como REQUIRED / MATERIAL (decisiones §39). Esa corrida es solo
-                 insumo técnico histórico
+                 insumo técnico histórico. La revisión formal R20261005T044948Z-ac67 sobre 9c621fce (decisiones §40) dio CHANGES REQUIRED; su
+                 acreditación la decide el Coordinator, que adoptó A62-A1R-01..03 como REQUIRED técnicos (decisiones §41)
 Architect      = REVIEW REQUIRED: una revisión formal acreditada de la A-1 corregida exacta (cambio MATERIAL: LIFECYCLE §6 exige Architect + Coordinator)
 Coordinator    = veredicto PENDING
 Owner          = sin decisión identificada; si aparece una consecuencia OWNER-RESERVED, la enmienda se detiene
-Invocación     = NOT LAUNCHED: necesita una autorización nueva (la de decisiones §35 se consumió en la corrida anterior)
+Invocación     = autorizada por la orden nocturna (decisiones §41: hasta dos invocaciones, solo con un transporte limpio); el único transporte limpio
+                 exige el clic del Owner: HUMAN_LAUNCH_REQUIRED
 Implementación = producción de F4 BLOCKED hasta el veredicto del Architect, el del Coordinator y la orden de apertura
 
 Objeto de la revisión (identidad por contenido; el commit lo da el recibo de publicación):
-  docs/initiatives/I-62-A-1.md                                          blob 9c621fce0588f32115e3151b6f75413c0a167c2e
-Blobs anteriores (historia):                                            09ca93285975c4b7af6471d6ae91bfa12c94a1fc (commit bf7b0d9c)
-                                                                        23dd16b2b135cdb7e1e2b1e18e2b6595253e92d8 (commit fff3bbb0)
+  docs/initiatives/I-62-A-1.md                                          blob 39c2f8317ec381fa60c3564a834278df8898101c
+Blobs anteriores (historia; commits anteriores al rebase del 2026-10-05):  09ca93285975c4b7af6471d6ae91bfa12c94a1fc (bf7b0d9c)
+                                                                        23dd16b2b135cdb7e1e2b1e18e2b6595253e92d8 (fff3bbb0)
+                                                                        9c621fce0588f32115e3151b6f75413c0a167c2e (0ad410f8, imagen 4e36d77c)
 Freeze que enmienda:
   FREEZE_SHA b64a3b640c7ee3bd77636e7a3218ae0ebac2dd43
   docs/initiatives/I-62-proposal-v14.md   commit 4c617e82b32b6c810b68d75fc19472efed22b393   blob 34ad80ea1bfff144bfc5169f62920a4c904c1bfa
-Base de main: 819955d61a6da4c811a11fbd11b5dca13f634b7c
+Base de main: bb0d5522e8411f66a51fdfb3f1f0d0514b737453 (rama rebasada el 2026-10-05; mapa en docs/automation/evidence/I-62-prep/night-2026-10-05/rebase-map.json)
 ```
 
-> **Identidad exacta.** El revisor comprueba que `git rev-parse <commit>:docs/initiatives/I-62-A-1.md` = `9c621fce…` en el commit del recibo de publicación.
+> **Identidad exacta.** El revisor comprueba que `git rev-parse <commit>:docs/initiatives/I-62-A-1.md` = `39c2f831…` en el commit del recibo de publicación.
 > Si no coincide, revisa la versión designada o rechaza la discordancia. Este paquete no lleva su propio blob.
 
 ## 1. Veredicto que se solicita (LIFECYCLE §5 y §6)
@@ -29,7 +32,7 @@ Base de main: 819955d61a6da4c811a11fbd11b5dca13f634b7c
 ```text
 Resultado: AGREED | CHANGES REQUIRED | BLOCKED — OWNER DECISION
 Hallazgos: REQUIRED | OPTIONAL; ID, sección exacta, premisa canónica completa (PremiseRefs con líneas), autoridad o contraejemplo, por qué importa, corrección.
-Cierre:    disposición explícita de cada A62-A1-01..06 y de OBS-A1-01 (CLOSED | STILL_OPEN) sobre la versión exacta.
+Cierre:    disposición explícita de A62-A1-01..06, OBS-A1-01 y A62-A1R-01..03 (CLOSED | STILL_OPEN) sobre la versión exacta.
 Modo:      declarado (SAME-SESSION ROLE | SEPARATE SESSION | EXTERNAL HUMAN) y si revisor y autor son la misma persona; contexto inyectado declarado.
 Identidad: commit, ruta y blob revisados.
 ```
@@ -41,7 +44,8 @@ Un REQUIRED abierto lo cierra o lo rebaja solo quien lo emitió o quien tenga es
 
 | Insumo | Blob | Para qué |
 |---|---|---|
-| `docs/initiatives/I-62-A-1.md` | `9c621fce…` | el objeto: cláusulas anteriores, deltas D1-1..D1-19 y D2-1..D2-12, materialidad (también la propia de OBS-A1-01), pruebas, matriz (§9) y cambios frente a los blobs anteriores (§10) |
+| `docs/initiatives/I-62-A-1.md` | `39c2f831…` | el objeto: cláusulas anteriores, deltas D1-1..D1-21 y D2-1..D2-12, materialidad (también la propia de OBS-A1-01), pruebas, matriz (§9) y cambios frente a los blobs anteriores (§10) |
+| `docs/initiatives/I-62-architect-review-A-1-r2.md` y `docs/automation/evidence/I-62-architect-A-1/R20261005T044948Z-ac67/output.json` | (en el mismo commit) | registro y resultado literal de la revisión formal anterior (A62-A1R-01..03 y sus OPTIONAL) |
 | `docs/initiatives/I-62-architect-review-A-1-disposition.md` | `396c7a14…` | las dos disposiciones del Coordinator: acreditación, hallazgos adoptados, OPTIONAL, OBS-A1-01 y matriz exacta |
 | `docs/initiatives/I-62-architect-review-A-1.md` | `18987532…` | registro de la revisión técnica anterior (hallazgos A62-A1-01..06, con sus premisas) |
 | `docs/initiatives/I-62-proposal-v14.md` en `4c617e82` | `34ad80ea…` | cláusulas enmendadas: §8.8, §20.5, §20.5.1, §20.5.2, §20.6, §20.7, B.2, B.8.1, B.8.4 (I-S17, I-P05, I-P10, I-H02), B.8.7, B.8.8 (I-S18, I-P13), B.9 |
@@ -51,10 +55,10 @@ Un REQUIRED abierto lo cierra o lo rebaja solo quien lo emitió o quien tenga es
 | `docs/automation/agent-execution/schemas/role-invocation.v1.schema.json` (`BudgetSnapshot`) | `d54a7ae7…` | escalares sin cambio (D1-14) |
 | `docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json` | `a74288eb…` | `Disposition` y `Severity` (BLOCKING \| ADVISORY) sin cambio (D1-17) |
 | `docs/automation/agent-execution/schemas/gate-contract.v2.schema.json` (`RoleRequirements`) | `f644bb19…` | autoridad del REVIEWER sin cambio; ningún campo endurece B.10.2 (D1-17) |
-| `docs/automation/evidence/I-62-A1/a1-counterexamples.py` | `3f5129fa…` | arnés de trazas: V14 literal y A-1 corregida; conjuntos exactos de reglas |
-| `docs/automation/evidence/I-62-A1/a1-counterexamples-result.json` | `4db4aac4…` | 73 trazas, todas PASS; cobertura por hallazgo y R1..R10 de OBS-A1-01 |
+| `docs/automation/evidence/I-62-A1/a1-counterexamples.py` | `078bd48c…` | arnés de trazas: V14 literal y A-1 corregida; conjuntos exactos de reglas |
+| `docs/automation/evidence/I-62-A1/a1-counterexamples-result.json` | `1e534996…` | 94 trazas (32 VALID y 62 INVALID), todas PASS; cobertura por hallazgo, R1..R10 de OBS-A1-01 y A62-A1R-01..03 con O1..O5 |
 | `docs/INITIATIVE_LIFECYCLE.md` §3, §5 y §6 | `f19896a8…` | formato de A-n, REQUIRED y M-01..M-08 |
-| `docs/automation/decisions/I-62.md` §34, §35, §38 y §39 | (en el mismo commit) | clasificación, autorización anterior y las dos disposiciones del Coordinator |
+| `docs/automation/decisions/I-62.md` §34, §35 y §38-§41 | (en el mismo commit) | clasificación, autorizaciones, disposiciones del Coordinator y la orden nocturna que adopta A62-A1R-01..03 |
 
 Para leer las cláusulas de V14 basta su sección: el insumo es un archivo grande, y no hace falta expandir los documentos que su prosa cita.
 
@@ -76,7 +80,15 @@ Para leer las cláusulas de V14 basta su sección: el insumo es un archivo grand
 - LOOP_CLOSED de REVIEWER por dos caminos: (S) desde REVIEWER_SATISFIED, sin decisión; (E) tras EXPIRED o REVOKED, con la decisión
   `I62-REVIEWER-LOOP-CLOSE`, conservando el motivo.
 - El fin histórico queda en `reviewer_closures[]`, append-only.
-- Sin identidad de bucle, sin `ReviewLoopAuthorization` y sin `architect_budgets[]`; `budgets` sin cambio de modelo; EXECUTION sin cambio.
+- Sin identidad de bucle, sin `ReviewLoopAuthorization` y sin `architect_budgets[]`; `budgets` sin cambio de modelo.
+
+**Segunda revisión (A62-A1R-01..03 y opcionales).**
+- (E) también tras EXHAUSTED, y con la vigencia OPEN revocada por la misma decisión.
+- Una regla de rebase por tipo: el `commit` de `loop.object` pasa a la imagen en REBASE_RECONCILIATION para los tres tipos. El delta de EXECUTION queda
+  declarado.
+- D1-20: identidad de la autoridad REVIEWER por la `StateRef` del contrato; apertura sin resucitar autoridades terminadas.
+- D1-21: enmienda de semántica propuesta de 16.20 y del criterio VALIDITY de §14.3. M-05 de OBS-A1-01 = sí.
+- Enumeración exacta por tipo; `OpenFindings` según la autoridad del revisor; cada mapa de rebase en orden; satisfacción solo con evidencia REVIEWER_SATISFIED.
 
 **FC-02.**
 - Los commits vivos de la orquestación entran en `StateFields` y en I-H02, y los intentos no lanzados se replanifican sobre las imágenes con la invocación
@@ -118,13 +130,21 @@ La corrida anterior no acreditada es solo insumo técnico histórico.
 11. **Cierre (E) del REVIEWER.** D1-18 deja cerrar tras EXPIRED o REVOKED aunque quede un BLOCKING abierto: el linaje sigue abierto y el requisito operativo
     queda sin satisfacer, así que la operación dependiente sigue bloqueada. ¿Es la lectura correcta de «no quedar sin cierre para siempre»?
 12. **Pertenencia al bucle REVIEWER.** Sin identidad de bucle, D1-17 identifica las solicitudes del bucle por la `Authorization` de su invocación (el contrato
-    de gate). ¿Es determinista y suficiente?
+    de gate). Con D1-20 esa autoridad no se reabre. ¿Es determinista y suficiente?
+13. **A62-A1R-01..03.** ¿Cierran D1-18, D1-10/D1-13/D2-4 y D1-20/D1-21 los tres REQUIRED de la revisión formal anterior sin abrir otro camino?
+14. **Identidad de la autoridad REVIEWER (D1-20).** ¿Es correcto derivarla de la `StateRef` del contrato de gate (`{path, blob}` + rol), que no cambia con
+    un rebase y cambia con una reemisión?
+15. **Delta de EXECUTION.** ¿Es aceptable declarar como único delta para EXECUTION la reconciliación de su `loop.object` no nulo, frente a la alternativa de
+    fijarlo en `null`?
 
 ## 5. Condiciones de la invocación (para quien la autorice)
 
 - **Frontera:** lanzar la revisión necesita una autorización nueva; la de decisiones §35 se consumió. La sesión entrega el paquete y se detiene.
 - **Protocolo:** I-61 sigue siendo el activo; la invocación sigue sus reglas y las del registro de la revisión (LIFECYCLE §5). OD-2 y OD-3 no están
   resueltas: la invocación no usa los runtimes que bloquean.
+- **Lecciones de la revisión formal R20261005T044948Z-ac67 (evidencia §43):** la tabla de acciones del prompt y la lista blanca del auditor deben ser
+  la misma, de modo que `cd` hacia el clon, `| sha256sum` sobre salidas de RD-1 y `git -C <worktree>` figuren en ambas o en ninguna; el auditor debe
+  tratar heredocs y variables de shell y admitir el proyecto de `dotnet test`. Ya lo hace la versión v2.1, custodiada.
 - **Lecciones de la corrida no acreditada (evidencia §40):**
   - el árbol de trabajo del revisor se fija en el commit exacto, ya sea con `git checkout --detach <commit>` como primer paso obligatorio o con la rama por
     defecto del clon en ese commit; la tarea anterior abrió el worktree sobre `main`;
