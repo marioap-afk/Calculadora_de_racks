@@ -1,0 +1,26 @@
+{
+  "Control": "C-17",
+  "Host": "this workstation (Windows, PowerShell 7.6.6)",
+  "Positive": {
+    "Pid": 1956,
+    "Name": "pwsh.exe",
+    "Classification": "participant",
+    "Pass": true
+  },
+  "Ephemeral": {
+    "Pid": 36740,
+    "ExitCode": 0,
+    "AliveAfterReread": false,
+    "Pass": true
+  },
+  "OwnTreeContainsSelf": true,
+  "ClassCounts": {
+    "nominal-exclusion": 1,
+    "participant": 1,
+    "build-server": 3,
+    "owner-app": 4,
+    "own-tree": 6
+  },
+  "LaunchedTreeExcludedFromStop": true,
+  "Pass": true
+}
