@@ -4,7 +4,7 @@
 Autoridad:  decisiones §43 (veredicto del Coordinator sobre A-1 y orden de apertura de F4)
 A-1:        AGREED sobre ca09ade8 / docs/initiatives/I-62-A-1.md / blob c01899a7 (no se edita)
 Nivel:      A (V14 §20.10): textos normativos, esquemas, validadores deterministas en tests/RackCad.Tests y controles reproducibles; sin servicio
-Estado:     en curso (cortes F4-A..F4-H); este archivo se completa con el paquete del gate (F4-H)
+Estado:     paquete del gate (F4-H) para la revisión del Coordinator; F4 GATE PASS no se autodeclara
 ```
 
 ## Superficies de producción
@@ -35,10 +35,13 @@ Estado:     en curso (cortes F4-A..F4-H); este archivo se completa con el paquet
   P-18 y P-21) y 16.30 (planos, MaterializationClose y P-16). Enmiendas de A-1 a textos F3: 16.20 (paso 3 con ResolveBranchRef, `ContinuesLoopInstanceId`
   y vigencia del REVIEWER) y README §14.3 (`VALIDITY` y «Reproducción») y §14.4 (regla 3). README de `agent-execution` §17 y §18 (procedimientos).
 - `DelegationJournal.cs`: diario encadenado (`PrevRelaySha256`, `WindowSeq`), `DS(L, J)` de B.8.2 con la coherencia del `Exit`, los contadores del Q7
-  desde el diario (S-04), el mínimo conservador de B.8.5 y la clasificación R-1/R-2/R-3 de los commits posteriores a un Q0 sin diario.
+  desde el diario (S-04), el mínimo conservador de B.8.5, la clasificación R-1/R-2/R-3 de los commits posteriores a un Q0 sin diario y el conteo por
+  clase que hereda una continuación (`ContinuesTaskId`, C-16).
   `GitCommitStateTree` lee el árbol del commit de cada punto (los blobs con un solo `ls-tree`); `GitProcessHistory` memoriza los hechos de ids completos.
 - `Adoption.cs` (T20/T21), `ProcessFacts.cs` (README §3.2, C-17), `InputClosure.cs` (16.24, C-41) e `InputFidelity.cs` (§20.3.3, C-42: preflight,
   representación entregada, envoltorios, unidades canónicas de B.11 con la segmentación de `gen-manifest.py`, clausura, resolución e independencia).
+- `MaterializationClose.cs`: la invalidación del cierre de materialización (C-21) y los registros AUTONOMY_GAP (C-37) con la auditoría del transporte
+  (`OWNER_AS_MESSAGE_BUS`, C-32).
 - `docs/automation/agent-execution/schemas/automation-state.v2.schema.json`: la emisión exacta de `StateV2Shape.ToJsonSchema()` (guarda C-18 en
   `I62F4StateSchemaTests`).
 - Textos de la adopción de compatibilidad (Anexo E), inactivos hasta `I62_EFFECTIVE_SHA`: `docs/WORKFLOW.md` §12 (punto de entrada, texto
@@ -67,9 +70,76 @@ Estado:     en curso (cortes F4-A..F4-H); este archivo se completa con el paquet
 | F4-G8 | `I62F4InputFidelityTests` (C-42) | 6/6 en error (`Preflight`, `Compare`, `Units`, `Independence`, `Ingest`, `Resolve`) | 6/6 |
 | F4-G9 | `I62F4CloseAndGapTests` (C-21, C-37) | 2/2 en error (`Invalidating`, `Missing`) | 2/2 |
 | F4-G10 | adopción en `I62F4CustodyRebaseMcTests` (T20/T21) | 1/1 en error (`T20Problems`, `T21Problems`) | 1/1 |
+| F4-H2 | `I62F4A1RegressionTests` (regresión de A-1) y C-40 (F4) | 103/110 en error (`FileOrchestration` y `PairOrchestration`; pasan el control de cobertura y seis trazas solo de historia) | 110/110 |
+| F4-H3 | `I62F4CustodyTransferMcTests` y `I62F4CustodyReconstructionMcTests` (C-15: T16, T17, F.3, T12a, T12b) | 5/5 en error (`PairPrincipal`) | 5/5 |
+| F4-H4 | `I62F4JournalCounterTests` (C-16: correcciones frente a verificaciones, `ContinuesTaskId`) | 1/6 en error (`ClassLaunches`, `ContinuationLineage`, `ContinuationProblems`; los demás no los llaman) | 6/6 |
+| F4-H5 | `I62F4LoopRecoveryMcTests` (C-29: caídas en cada frontera de F.8) | 1/1 en error (`PairOrchestration`) | 1/1 |
+| F4-H6 | `I62F4CloseAndGapTests` (C-32: auditoría del transporte) | 1/3 en error (`OwnerAsMessageBus`) | 3/3 |
 
 El RED se captura sustituyendo solo los cuerpos de los métodos nombrados por `throw new NotImplementedException` y restaurando el archivo byte a byte
-(`redgreen.py` en el scratchpad de la sesión; la salida queda aquí). La selección es mayor que cero en todos los cortes.
+(`redgreen.py` en el scratchpad de la sesión; la salida queda aquí). La selección es mayor que cero en todos los cortes. F4-H2, F4-H3 y F4-H5
+son controles nuevos sobre reglas ya implementadas en F4-B..F4-E: su RED quita el método del validador que las aplica.
+
+## Regresión de A-1 (`I62F4A1RegressionTests`)
+
+Cada traza del arnés de A-1 (`docs/automation/evidence/I-62-A1/a1-counterexamples-result.json`) de los hallazgos que nombra la orden se reproduce sobre
+el validador de producción con su nombre y su veredicto. Una traza VALID pasa todos los puntos, pares e invariantes con historia. Una INVALID falla
+en su paso defectuoso por la invariante y la cláusula de A-1 que la guardan, y por nada fuera del conjunto declarado. Las trazas que ya eran negativos
+con nombre de C-38 se reutilizan por nombre. Un control comprueba que ninguna traza de esos hallazgos queda sin reproducir ni sin cubrir.
+
+| Hallazgo | Trazas del arnés | Reproducidas: VALID / INVALID / negativo C-38 | Cubiertas por otra prueba |
+|---|---|---|---|
+| A62-A1-01 | 7 | 1 / 2 / 4 | — |
+| A62-A1-02 | 12 | 6 / 2 / 4 | — |
+| A62-A1-03 | 4 | 1 / 1 / 2 | — |
+| A62-A1-04 | 6 | 3 / 3 / 0 | — |
+| A62-A1-05 | 4 | 2 / 2 / 0 | — |
+| A62-A1-06 | 10 | 3 / 5 / 0 | `a62-a1-06-sucesor-en-clon-limpio` (Git real: `I62F4RebaseChainTests` E_F y `I62F4CustodyMcTests`); `fc06-literal-referencias-tras-rebase` (contraejemplo del I-S18 literal de V14; con A-1 es `a62-a1-06-referencias-tras-un-rebase`, VALID) |
+| OBS-A1-01 | 21 | 8 / 7 / 6 | — |
+| A62-A1R-01 | 4 | 1 / 3 / 0 | — |
+| A62-A1R-02 | 5 | 3 / 2 / 0 | — |
+| A62-A1R-03 | 4 | 1 / 2 / 1 | — |
+| A62-A1S-01 | 2 | 0 / 2 / 0 | — |
+| A62-A1S-02 | 2 | 1 / 1 / 0 | — |
+| A62-A1T-01 | 16 | 4 / 12 / 0 | — |
+| A62-A1U-O1 | obligación de F4 | 0 / 1 / 0 (entrada compuesta fabricada) | `I62F4RebaseChainTests` C y `I62F4HistoryInvariantTests` (A62-A1T-01) |
+
+Son 94 trazas distintas: 92 reproducidas y 2 cubiertas por otra prueba (algunas trazas pertenecen a dos hallazgos). Además, 14 mutaciones en memoria:
+desactivar la cláusula que guarda un negativo de cada hallazgo lo deja pasar (D1-5, D1-8, D1-9, D1-13, D1-17, D1-18, D1-20, D2-2, D2-3, D2-8, D2-11,
+D2-12 y A62-A1S-02).
+
+## Controles por obligación (C-15..C-42; solo la parte de F4)
+
+Las clases de prueba se citan sin el prefijo `I62F4`. «Mutación» se exige para la evidencia (i) Core RG + mutation; en las obligaciones (ii) MC el
+negativo de cada control hace ese papel. «Verde» significa que los controles pasan en el SHA de implementación. No es un GATE PASS.
+
+| C | Parte de F4 | Superficie | Positivo | Negativo | Mutación | Evidencia | Resultado |
+|---|---|---|---|---|---|---|---|
+| C-15 | completa | `RebaseChain.cs`, `StateV2Validator.History.cs`, `DelegationJournal.cs`, `StateTree.cs`, `Adoption.cs`; 16.25, 16.26; README §17 | BOOTSTRAP → G0 → QU, F.1 y QU entre ventanas, rebase entre ventanas (F.6) con la Q0 siguiente desde un clon limpio `--no-local` (`CustodyMc`); rebase dentro de una ventana, toma con rebase (F.7) y adopción T20/T21 (`CustodyRebaseMc`); T17, T16 y F.3 con T12b (`CustodyTransferMc`); T12b desde Q0 con R-1 y R-2 y T12a con TRANSFER (`CustodyReconstructionMc`); `DS` en cada paso (`JournalCounter`); positivos de `HistoryInvariant` y `RebaseChain` | las doce mutaciones sembradas de la fila (`CustodyMutationMc`); push rechazado y fallo de transporte (`CustodyCasMc`); un segundo recuperador sin designación; negativos A–H de la cadena y A62-A1U-O1; trazas INVALID de A62-A1-04/05/06, A62-A1R-02 y A62-A1T-01 | desactivar I-H01, I-H02, D2-3, D2-11, D2-2, D2-6 o I-P08 deja pasar su negativo | F4-E1, E2, G5, G10, H2, H3 | verde |
+| C-16 | completa | `DelegationJournal.cs` (conteo, Q7, mínimo conservador, R-1/R-2/R-3, `ClassLaunches`, `ContinuationProblems`); 16.27 | contadores del Q7 = diario; incierto contado; mínimo conservador; dos verificaciones no son dos correcciones; una corrección caída antes de verificar cuenta; `ContinuesTaskId` hereda la clase; R-1/R-2 en Git real | contador ausente o contradictorio → S-04; reconstrucción bajo el mínimo; continuación de sí misma, de una tarea sin cadena o en ciclo → S-04; R-3 sin reconstrucción | — | F4-G5, H3, H4 | verde |
+| C-17 | completa | `ProcessFacts.cs`; 16.4; README §3.2 | clases sobre instantáneas sintéticas; `c17/c17-processes.ps1` en el host (positivo `pwsh` con la ruta) | efímero no vivo tras relectura; participante ajeno o no atribuible → P-02 | — | F4-G6; `c17/c17-result.json` | verde |
+| C-18 | completa | `YamlSubset.cs`, `StateV2Shape.cs`, `StateV2Validator*.cs`; esquema `/v2` | estados `/v2` reales e historia sintética, cada punto y cada par | 35 negativos de archivo y 22 de pares, uno por invariante | desactivar la invariante deja pasar su negativo (11 casos) | F4-A, B, C, H1 | verde |
+| C-19 | — (F2) | — | — | — | — | guarda de F2 en el Full | no se reclama |
+| C-20a | completa | `CompatibilityGuard.cs`, `MiniJsonSchema.cs`, `MarkdownSections.cs`; WORKFLOW §12, 16.13, mapa y esquema | árbol materializado | 19 comprobaciones con su negativo | sobre el árbol sin materializar, 7/10 en error | F4-F | verde |
+| C-20b | F4 (la repetición sobre el merge es de la integración) | `compat/clause_map.py` | mapa custodiado = derivación (EQUAL) | negativos de mapa dentro de C-20c (MAP_INVALID) | — | `compat/c20b-result.json` | verde; la tabla E.5/derivado espera la revisión del Coordinator |
+| C-20c | completa | `compat/c20c.py` | C-20c-1 (a)(b), C-20c-2 y lecturas compuestas | N-a..N-s y negativos de mapa | — | `compat/c20c-result.json` | verde (32/32 con C-28) |
+| C-21 | completa | `MaterializationClose.cs`; 16.30 | sin cambio normativo tras el cierre | cambio normativo posterior → invalidación (Git real) | — | F4-G9 | verde; revisión del Coordinator |
+| C-22..C-27 | — (F6) | — | — | — | — | — | no se reclama |
+| C-28 | completa | 16.13, 16.28 y el clasificador | (a), (c), (e) trabajo directo sin maquinaria delegada; (d) contrato tras el QU con aceptaciones | (b) contrato en DIRECT_ONLY → P-15; (d) contrato antes del QU → PENDING_G0 | — | `compat/c20c-result.json` (C-28) | verde |
+| C-29 | completa | `NextActionDerivation.cs`, validador; `LoopMc` | sucesor en clon limpio reconstruye X, resultado, REQUIRED abiertos, presupuesto y CORRECT_AND_REREVIEW (`LoopReconstructionMc`); caídas A–D con la evidencia de fidelidad y la acreditación histórica desde la custodia (`LoopRecoveryMc`) | segunda reserva, relanzar un incierto, segunda ingestión con otro blob, recuento | — | F4-G4, H5 | verde |
+| C-30 | F4: (e) en el estado | F3: contratos (`f3-mc.py`); F4: ingestión (I-P13) | resultado del rol correcto (F.8) | resultado con el contrato de otro rol, nunca VALID (`OrchestrationMc`) | — | F3: `f3-mc-result.json` (12 casos); F4: `OrchestrationMc` | verde (parte de F4) |
+| C-31 | completa | validador; `LoopMc` | F.8 en Git real, todas las invariantes en cada punto y sin escalada | negativos de C-38 sobre F.8 | las de C-38 | F4-D | verde |
+| C-32 | F4: auditoría de la secuencia de C-31 | `AutonomyGaps.OwnerAsMessageBus` | `OWNER_AS_MESSAGE_BUS` = false (sintético y Git real) | un relevo del Owner registrado → true | — | F4-H6 | verde (parte de F4); FX-06 es de F6 |
+| C-33 | completa | validador (P-19, escalada) | BLOCKED — OWNER DECISION → ESCALATE_OWNER con la decisión exacta | corrección o invocación tras la escalada | — | `OrchestrationMc` | verde |
+| C-34 | completa | validador (topes, P-18) | topes congelados y rebajados | (a)–(e): cada tope para antes de reservar | — | `OrchestrationMc` | verde |
+| C-35 | completa | validador (P-19, D2-12, contrato de salida) | VALID CHANGES REQUIRED abre sus linajes | INVALID no abre ni avanza; blob distinto, AGREED con REQUIRED, omisión, otra versión, otro rol | desactivar P-19 deja pasar | `OrchestrationMc`, C-38 | verde |
+| C-36 | completa | validador | cambio de proveedor, modelo, Principal y etiquetas continúa contadores y linaje | reinicio de un contador | — | `OrchestrationMc` | verde |
+| C-37 | F4: registro y P-21 | `AutonomyGaps.Missing` y `Record`; README §18.7 | relevo manual con registro custodiado | relevo sin registro; registro que no resuelve (I-S13) | — | F4-G9 | verde (parte de F4); el FX es de F6 |
+| C-38 | completa | `StateV2Validator.Orchestration.cs`, `NextActionDerivation.cs` | F.8 verde en cada punto y par; positivos de A-1 | 39 negativos de C-38 y 93 casos de la regresión de A-1 | 7 + 14 cláusulas desactivadas | F4-D, G4, H2 | verde |
+| C-39 | — (F6) | — | — | — | — | — | no se reclama |
+| C-40 | F4: vigencia de acción | F3: materialización (`f3-mc.py`); F4: validador e I-P13 | (a) binding materializado en F.8; (e) acreditación tras AGREED; (g) revisión antigua acreditada; (i) LAUNCHED se completa tras revocar; (j) arrancó antes del fin | (f) LAUNCHING tras revocar; (k) cancelación sin prueba; (l) reintento del incierto; (m) resultado de un cancelado; (n) UNAUTHORIZED_LAUNCH no abre linajes ni avanza | — | `OrchestrationMc` | verde (parte de F4); F4-OBS-20 |
+| C-41 | completa | `InputClosure.cs`; 16.24 | (a) cierre sobre el `AGENTS.md` real | (b)–(f) | — | F4-G7 | verde |
+| C-42 | F4: corpus y capturas sintéticas | `InputFidelity.cs`; §20.3.3 | (1)–(3), (a), (f), (i), (k), (m), (r), (t), (v), (w), (z), (6), (7) | (4), (5), (b)–(e), (g), (h), (j), (l), (n), (o), (p), (q), (s), (u), (x), (y), (8) | — | F4-G8 | verde (parte de F4); las capturas reales de runtime son de F6 |
 
 ## Compatibilidad: C-20b y C-20c (MC; se repiten sobre el SHA final de F4 y sobre el merge local de la integración)
 
@@ -178,3 +248,20 @@ El RED se captura sustituyendo solo los cuerpos de los métodos nombrados por `t
   «Leer primero», CLAUDE.md «Lectura inicial» y «Comandos esenciales», y `required_docs` / `optional_docs` de un Context Pack. Un enlace es READ; un
   comando `git` de solo lectura es ACTION_COMPATIBLE; otro comando, con permisos READ_ONLY, es ACTION_INCOMPATIBLE; `optional_docs` es
   CONDITIONAL_NOT_TRIGGERED. El runtime no infiere obligaciones de otra prosa.
+- **F4-OBS-20 — C-40 (n): el instante de arranque observado.** V14 §20.5.1 decide el destino de un intento en LAUNCHING al terminar la vigencia por
+  la evidencia del invocador frente a `ended_utc` (operación 7, PID y `CreationDateUtc`). Ningún campo congelado de `relay-record/v2` ni de B.8.8 fija
+  ese instante. Por eso la clasificación (completar o UNAUTHORIZED_LAUNCH) es del procedimiento del invocador (README §18.4). El validador hace
+  cumplir sus consecuencias: un UNAUTHORIZED_LAUNCH no abre ni cierra linajes, no satisface y no avanza la fase (P-19). No se reclama una comprobación
+  mecánica de la clasificación.
+- **F4-OBS-21 — README §18.4.** El procedimiento cubría el no arranque con la vigencia terminada, pero no los otros tres destinos de V14 §20.5.1. Se
+  completó con el texto congelado (arrancó antes, no arrancó, indeterminado, arrancó después → UNAUTHORIZED_LAUNCH y STOP P-20) y se regeneró el
+  mapa de cláusulas (EffBlob de README). Es una corrección localizada de F4; DC-07 previo sin cambios en los hermanos.
+- **F4-OBS-22 — lectura de C-32.** `OWNER_AS_MESSAGE_BUS` se lee de la custodia: es true si algún punto custodia un AUTONOMY_GAP con `RelayedBy`
+  OWNER. Todo relevo manual tiene su registro (P-21); sin él la evidencia ya es inválida. Un relevo del Coordinator es AUTONOMY_GAP (C-37, el
+  criterio 15 no es PASS), pero no convierte al Owner en el bus. La exigencia de FX-06 de no tener decisiones intermedias del Coordinator es de F6.
+- **F4-OBS-23 — lectura de «hereda los contadores» (C-16).** §9.3 y 16.27 no fijan la forma. El conteo por clase sigue la cadena de continuación
+  declarada en `task_intent` y `chains[]` (`ContinuesTaskId`, transitiva). Una continuación de sí misma, de una tarea sin cadena o en ciclo no puede
+  heredar y es S-04 (contador ausente).
+- **F4-OBS-24 — fase de un bucle EXECUTION.** B.8.8 dice «la fase de §8 (ejecución)» sin enumerarla. El validador no restringe ese valor, y las
+  trazas de A-1 usan un valor simbólico como el arnés. Sí aplica las reglas de A-1 al tipo: sin `instance_id`, sin LOOP_CLOSED (D1-13) y con la
+  reconciliación de `loop.object` en un rebase (D2-4).

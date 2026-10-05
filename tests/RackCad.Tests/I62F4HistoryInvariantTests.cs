@@ -19,22 +19,22 @@ namespace RackCad.Tests
     /// </summary>
     public class I62F4HistoryInvariantTests
     {
-        private const string StatePath = "docs/automation/state/I-99.yml";
-        private const string E = "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
-        private static readonly string K3 = H("3a"), M1 = H("e1"), C1i = H("c3"), K3i = H("3b"), Kn1 = H("4a"), M2 = H("e2"), C1ii = H("c4"), K3ii = H("3c"),
+        internal const string StatePath = "docs/automation/state/I-99.yml";
+        internal const string E = "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
+        internal static readonly string K3 = H("3a"), M1 = H("e1"), C1i = H("c3"), K3i = H("3b"), Kn1 = H("4a"), M2 = H("e2"), C1ii = H("c4"), K3ii = H("3c"),
             Kn1i = H("4b"), Kn2 = H("5a"), Z = H("9f"), Q0k = H("0a"), Q7k = H("7a"), S = H("5e"), Q0ki = H("0b"), P1 = H("15"), Pk = H("16"), Pn = H("17"),
             Other = H("ff");
 
-        private static string H(string two) => string.Concat(Enumerable.Repeat(two, 20));
+        internal static string H(string two) => string.Concat(Enumerable.Repeat(two, 20));
 
-        private static List<string> Ids(IEnumerable<StateViolation> v) => v.Select(x => x.Invariant + (x.Clause.Length > 0 ? "/" + x.Clause : string.Empty)).ToList();
+        internal static List<string> Ids(IEnumerable<StateViolation> v) => v.Select(x => x.Invariant + (x.Clause.Length > 0 ? "/" + x.Clause : string.Empty)).ToList();
 
         // ------------------------------------------------------------------ the F.8 loop reconciled twice
 
         // Sha ← Sha2 ← Sha3 (main before) ← C1 {X: B1} ← K3 (the commit of s3); main: Sha3 ← M1 ← M2. Rebase 1: M1 ← C1' ← K3' ← Kn1 (the commit of
         // the first reconciliation). Rebase 2: M2 ← C1'' {X: imageBlob} ← K3'' ← Kn1' ← Kn2. Z is an unrelated root. Sha holds the decisions blob that the
         // materialized binding's AuthorizationRef cites.
-        private static SyntheticGitHistory LoopGraph(string authorizationBlob, string? imageBlob = null) => new SyntheticGitHistory()
+        internal static SyntheticGitHistory LoopGraph(string authorizationBlob, string? imageBlob = null) => new SyntheticGitHistory()
             .Commit(Sha, null, null, (OrchestrationSamples.Decisions, authorizationBlob))
             .Commit(Sha2, Sha)
             .Commit(Sha3, Sha2)
@@ -51,14 +51,14 @@ namespace RackCad.Tests
             .Commit(Kn2, Kn1i, null, (StatePath, "n2"))
             .Commit(Z, null);
 
-        private static string AuthorizationBlob(StatePoint p) => Y.S((YamlMap)Loop(p)["authorization"]!, "blob")!;
+        internal static string AuthorizationBlob(StatePoint p) => Y.S((YamlMap)Loop(p)["authorization"]!, "blob")!;
 
         /// <summary>
         /// A QU REBASE_RECONCILIATION after <paramref name="p"/> (§8.8 with A-1 D2-1, D2-2, D2-4, D2-9): the live orchestration commits, the stored
         /// next_action target and the state SHA fields pass to their images; the map is custodied with one StateFields entry per field and appended to
         /// rebase_history. Attempts in LAUNCHING are untouched; the caller replans INVOCATION_PLANNED / BUDGET_RESERVED attempts itself.
         /// </summary>
-        private static StatePoint Reconcile(StatePoint p, string runId, string mainBefore, string mainAfter, string branchBefore, string branchAfter,
+        internal static StatePoint Reconcile(StatePoint p, string runId, string mainBefore, string mainAfter, string branchBefore, string branchAfter,
             params (string O, string I, string Pid)[] commits)
         {
             var n = Next(p);
@@ -109,7 +109,7 @@ namespace RackCad.Tests
         }
 
         /// <summary>s3 of F.8 (a1.1 LAUNCHING on X {c1, b1}) reconciled once (n1, map R1) and, optionally, twice (n2, map R2).</summary>
-        private static (StatePoint S3, StatePoint N1, StatePoint N2) Reconciled()
+        internal static (StatePoint S3, StatePoint N1, StatePoint N2) Reconciled()
         {
             var s3 = F8Step(3);
             var n1 = Reconcile(s3, "R20261006T040404Z-0001", Sha3, M1, K3, K3i, (C1, C1i, P1), (K3, K3i, Pk));
@@ -117,9 +117,9 @@ namespace RackCad.Tests
             return (s3, n1, n2);
         }
 
-        private static void DropFirstMap(StatePoint n) => Y.L(n.State, "custody.rebase_history").RemoveAt(0);
+        internal static void DropFirstMap(StatePoint n) => Y.L(n.State, "custody.rebase_history").RemoveAt(0);
 
-        private static void Replan(StatePoint n, string request, long seq, YamlMap target, string to = "BUDGET_RESERVED")
+        internal static void Replan(StatePoint n, string request, long seq, YamlMap target, string to = "BUDGET_RESERVED")
         {
             var a = AttemptOf(n, request, seq);
             var old = Orchestration.Invocation(n, a)!;

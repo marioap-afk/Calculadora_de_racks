@@ -332,7 +332,7 @@ namespace RackCad.Tests
 
         // ------------------------------------------------------------------ scenario builders
 
-        private static List<string> Problems(List<StatePoint> points)
+        internal static List<string> Problems(List<StatePoint> points)
         {
             var problems = new List<string>();
             for (var i = 0; i < points.Count; i++)
@@ -350,7 +350,7 @@ namespace RackCad.Tests
         private static readonly int[] Steps = { 0, 2, 3, 4, 6, 7, 9, 11, 12, 13, 14, 16, 17 };
 
         /// <summary>Takes the F.8 pair (pStep → nStep), lets <paramref name="early"/> rewrite an artifact of the step before n, and mutates n.</summary>
-        private static (StatePoint P, StatePoint N) Mutate(int pStep, int nStep, Action<StatePoint>? mutation, Func<StatePoint, YamlMap>? early = null)
+        internal static (StatePoint P, StatePoint N) Mutate(int pStep, int nStep, Action<StatePoint>? mutation, Func<StatePoint, YamlMap>? early = null)
         {
             var f8 = F8();
             var p = f8[Array.IndexOf(Steps, pStep)];
@@ -382,7 +382,7 @@ namespace RackCad.Tests
             return (p, n);
         }
 
-        private static (StatePoint P, StatePoint N) ReviewerMutate(int pIndex, int nIndex, Action<StatePoint> mutation)
+        internal static (StatePoint P, StatePoint N) ReviewerMutate(int pIndex, int nIndex, Action<StatePoint> mutation)
         {
             var loop = ReviewerSamples.Loop();
             var n = loop[nIndex];
@@ -395,7 +395,7 @@ namespace RackCad.Tests
         private static object[] Case(string name, Func<(StatePoint, StatePoint)> build, string required, params string[] allowed) =>
             new object[] { name, build, new[] { required }, allowed };
 
-        private static StatePoint CloseFromSatisfied(StatePoint satisfied)
+        internal static StatePoint CloseFromSatisfied(StatePoint satisfied)
         {
             var n = Next(satisfied);
             var e = (YamlMap)Y.L(n.State, "orchestration.architect_budgets")[0]!;
@@ -404,7 +404,7 @@ namespace RackCad.Tests
             return Blank(n, closedBy: null, touchEntry: false);
         }
 
-        private static StatePoint Blank(StatePoint n, YamlMap? closedBy, bool touchEntry = true)
+        internal static StatePoint Blank(StatePoint n, YamlMap? closedBy, bool touchEntry = true)
         {
             var loop = Loop(n);
             if (touchEntry)
@@ -424,7 +424,7 @@ namespace RackCad.Tests
             return n;
         }
 
-        private static StatePoint Expire(StatePoint p)
+        internal static StatePoint Expire(StatePoint p)
         {
             var n = Next(p);
             var at = Rv(n);
@@ -433,7 +433,7 @@ namespace RackCad.Tests
             return n;
         }
 
-        private static StatePoint CloseWithDecision(StatePoint p, bool revoke)
+        internal static StatePoint CloseWithDecision(StatePoint p, bool revoke)
         {
             var n = Next(p);
             var block = "```text\nI62-REVIEW-LOOP-CLOSE: ARL-6\n" + (revoke ? "I62-REVIEW-LOOP-REVOCATION: RLA-1\n" : string.Empty) + "Claim-Id: " + ClaimId + "\n```";
@@ -447,7 +447,7 @@ namespace RackCad.Tests
             return Blank(n, closedBy: decisions);
         }
 
-        private static StatePoint Substitute(StatePoint p, string newId)
+        internal static StatePoint Substitute(StatePoint p, string newId)
         {
             var n = Next(p);
             var rla2 = "```text\nI62-REVIEW-LOOP-AUTHORIZATION: " + newId + "\nRole: ARCHITECT\nContinuesLoopInstanceId: ARL-6\nClaim-Id: " + ClaimId + "\n```";
@@ -467,7 +467,7 @@ namespace RackCad.Tests
             return n;
         }
 
-        private static StatePoint OpenSecondLoop(StatePoint closed, string authorizationId)
+        internal static StatePoint OpenSecondLoop(StatePoint closed, string authorizationId)
         {
             var n = Next(closed);
             var rla = "```text\nI62-REVIEW-LOOP-AUTHORIZATION: " + authorizationId + "\nRole: ARCHITECT\nContinuesLoopInstanceId: null\nClaim-Id: " + ClaimId + "\n```";
@@ -495,13 +495,13 @@ namespace RackCad.Tests
             return n;
         }
 
-        private static (StatePoint, StatePoint) OpenSecondLoopPair(string authorizationId)
+        internal static (StatePoint, StatePoint) OpenSecondLoopPair(string authorizationId)
         {
             var closed = CloseFromSatisfied(F8Step(17));
             return (closed, OpenSecondLoop(closed, authorizationId));
         }
 
-        private static StatePoint ReviewerExpire(StatePoint open)
+        internal static StatePoint ReviewerExpire(StatePoint open)
         {
             var n = Next(open);
             var a = AttemptOf(n, ReviewerSamples.R1, 1);
@@ -511,7 +511,7 @@ namespace RackCad.Tests
             return n;
         }
 
-        private static StatePoint ReviewerClose(StatePoint expired, bool decision)
+        internal static StatePoint ReviewerClose(StatePoint expired, bool decision)
         {
             var n = Next(expired);
             YamlMap? closedBy = null;
@@ -532,7 +532,7 @@ namespace RackCad.Tests
             return n;
         }
 
-        private static StatePoint ReviewerReopen(StatePoint closed, bool newContract)
+        internal static StatePoint ReviewerReopen(StatePoint closed, bool newContract)
         {
             var n = Next(closed);
             var contract = newContract ? ReviewerSamples.Contract(n, "T-03") : Clone((YamlMap)Y.Get((YamlMap)Y.L(n.State, "orchestration.reviewer_closures")[0]!, "authorization")!);

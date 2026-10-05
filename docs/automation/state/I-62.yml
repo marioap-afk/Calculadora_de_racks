@@ -4,10 +4,10 @@ automation_state:
   branch: architecture/portabilidad-coordinador-principal
   claim_id: 5b661a17-8c18-4183-8554-3866059cba2b
   current_phase: F4
-  state: implementing
+  state: validating
   gate: none
   attempts: 0
-  next_action: F4 abierto por el Coordinator (decisions §43; A-1 AGREED ca09ade8/c01899a7): implementar los cortes F4-A..F4-H desde la preparación (evidence §58), con RED→GREEN, Full y CI del SHA exacto, y entregar la evidencia del gate sin autodeclarar GATE PASS.
+  next_action: F4-A..F4-H materializados (paquete del gate en docs/automation/evidence/I-62-F4/README.md); Full Core + UI sobre el SHA exacto de implementación con árbol limpio, push, CI del push con sus cuatro jobs, y entrega al Coordinator sin autodeclarar F4 GATE PASS.
   last_evidence_commit: 83035d999599384ea74f7b178e3d6761ffa5bb01
 execution_context:
   mode: manual

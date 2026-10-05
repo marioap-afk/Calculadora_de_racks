@@ -730,6 +730,10 @@ que superaría un tope es P-18 antes de reservar.
   a BUDGET_RESERVED con una invocación nueva reconstruida sobre las imágenes, la misma reserva y la invocación anterior custodiada como histórica; si es
   indeterminado, LAUNCH_UNCERTAIN con conteo conservador;
 - con la vigencia terminada, un intento no lanzado pasa a CANCELLED_BEFORE_LAUNCH con su prueba de no arranque.
+- al terminar la vigencia, el destino de un intento en LAUNCHING o LAUNCHED lo decide la operación 7 frente a `ended_utc` (Proposal V14 §20.5.1), nunca
+  una declaración del revisor. Si arrancó antes, se completa y su resultado se ingiere. Si no arrancó, pasa a CANCELLED_BEFORE_LAUNCH con su prueba, la
+  reserva sigue contada y no hay lanzamiento nuevo. Si es indeterminado, pasa a LAUNCH_UNCERTAIN, sin reintento silencioso. Si arrancó después, el
+  resultado no se ingiere (UNAUTHORIZED_LAUNCH) y es STOP (P-20).
 
 ### 18.5 Cierre y bucle nuevo
 

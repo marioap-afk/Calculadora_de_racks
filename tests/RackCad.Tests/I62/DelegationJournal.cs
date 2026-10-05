@@ -211,6 +211,78 @@ namespace RackCad.Tests
             return "R-2";
         }
 
+        /// <summary>
+        /// §9.3 and 16.27: the corrections launched for (<paramref name="taskId"/>, <paramref name="failureClass"/>) — the entries of
+        /// <c>counters.correction_launches</c> of the task and of every task it continues (<c>ContinuesTaskId</c>, transitively). A continuation inherits the
+        /// counters and never restarts the chain or the class; verifications never count, and a correction launched and lost before its verification does.
+        /// </summary>
+        public static int ClassLaunches(YamlMap state, string taskId, string failureClass)
+        {
+            var lineage = ContinuationLineage(state, taskId);
+            return Y.L(state, "counters.correction_launches").Cast<YamlMap>()
+                .Count(e => lineage.Contains(Y.S(e, "task_id") ?? string.Empty) && Y.S(e, "failure_class") == failureClass);
+        }
+
+        private static Dictionary<string, string> Continues(YamlMap state)
+        {
+            var next = new Dictionary<string, string>(StringComparer.Ordinal);
+            foreach (var c in Y.L(state, "custody.chains").Cast<YamlMap>().Where(c => Y.S(c, "continues_task_id") != null))
+            {
+                next[Y.S(c, "task_id")!] = Y.S(c, "continues_task_id")!;
+            }
+
+            var intent = Y.M(state, "custody.task_intent");
+            if (intent != null && Y.S(intent, "continues_task_id") != null)
+            {
+                next[Y.S(intent, "task_id")!] = Y.S(intent, "continues_task_id")!;
+            }
+
+            return next;
+        }
+
+        /// <summary>The task followed by the tasks it continues, by the durable declarations (<c>task_intent</c> and <c>chains</c>), stopping at a cycle.</summary>
+        public static List<string> ContinuationLineage(YamlMap state, string taskId)
+        {
+            var next = Continues(state);
+            var lineage = new List<string>();
+            for (string? t = taskId; t != null && !lineage.Contains(t); t = next.TryGetValue(t, out var c) ? c : null)
+            {
+                lineage.Add(t);
+            }
+
+            return lineage;
+        }
+
+        /// <summary>
+        /// A continuation that cannot inherit its counters (16.27: an absent counter is S-04): it names itself, a task without a durable chain, or closes a
+        /// cycle.
+        /// </summary>
+        public static List<string> ContinuationProblems(YamlMap state)
+        {
+            var problems = new List<string>();
+            var next = Continues(state);
+            var chains = Y.L(state, "custody.chains").Cast<YamlMap>().Select(c => Y.S(c, "task_id")).ToHashSet(StringComparer.Ordinal);
+            foreach (var (task, continued) in next)
+            {
+                if (continued == task)
+                {
+                    problems.Add("S-04: " + task + " continues itself");
+                }
+                else if (!chains.Contains(continued))
+                {
+                    problems.Add("S-04: " + task + " continues " + continued + ", which has no durable chain to inherit from");
+                }
+
+                var lineage = ContinuationLineage(state, task);
+                if (next.TryGetValue(lineage[lineage.Count - 1], out var after) && lineage.Contains(after))
+                {
+                    problems.Add("S-04: the continuation of " + task + " closes a cycle");
+                }
+            }
+
+            return problems;
+        }
+
         /// <summary>A reconstructed QR may fix higher counters, never lower (B.8.5): the invocation counter grows at least by the conservative minimum.</summary>
         public static List<string> ReconstructionProblems(YamlMap q0, YamlMap qr, string scope, string remoteCase)
         {

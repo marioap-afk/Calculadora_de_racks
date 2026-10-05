@@ -81,5 +81,33 @@ namespace RackCad.Tests
         }
 
         public static void Rv(YamlMap s, long rv) => ((YamlMap)s["custody"]!)["record_version"] = rv;
+
+        /// <summary>
+        /// A new holder at <paramref name="rv"/> (QR by default; T12a's Q7 passes <paramref name="point"/>): the binding <paramref name="bindingId"/> HELD
+        /// and ACCEPTED, with the Coordinator's designation appended to the decisions file. The designation names <paramref name="designated"/>
+        /// (a session that is not the designated one carries another BindingId). Returns the state and the tree of the files to write (a synthetic
+        /// point's own files plus the new ones; a point read from Git already has its files in the repository).
+        /// </summary>
+        public static (YamlMap State, InMemoryStateTree Tree) NewHolder(StatePoint from, long rv, string bindingId, string designated, string point = "QR")
+        {
+            var tree = from.Tree is InMemoryStateTree own ? own.Clone() : new InMemoryStateTree();
+            var decisions = tree.Put("docs/automation/decisions/I-99.md", Decisions(G0Entry, "## Designación\n\n```text\nI62-PRINCIPAL-BINDING: " + designated
+                + " ACCEPTED\nClaim-Id: " + ClaimId + "\n```"));
+            var binding = tree.PutJson("docs/automation/evidence/I-99-agent/" + bindingId + "/binding.json", new JsonObject
+            {
+                ["Schema"] = "rackcad-binding/v1", ["BindingId"] = bindingId, ["UnitId"] = Unit, ["Scope"] = "UNIT", ["TaskId"] = null,
+                ["Role"] = "PRINCIPAL_COORDINATOR", ["Acceptance"] = new JsonObject { ["State"] = "ACCEPTED", ["Basis"] = "INDIVIDUAL_DECISION" },
+            });
+            var preflight = tree.Put("docs/automation/evidence/I-99-agent/" + bindingId + "/preflight.json", "{\"Schema\": \"rackcad-preflight/v1\", \"Action\": \"CUSTODY\"}\n");
+            var s = Clone(from.State);
+            var custody = (YamlMap)s["custody"]!;
+            custody["record_version"] = rv;
+            custody["point"] = point;
+            custody["point_kind"] = point == "QR" ? "ORDINARY" : null;
+            custody["principal"] = M(("state", "HELD"), ("binding", binding), ("acceptance", M(("state", "ACCEPTED"), ("decision", Clone(decisions)))),
+                ("preflight", preflight), ("designation", Clone(decisions)), ("since_record_version", rv));
+            ((YamlMap)Y.M(s, "protocol.g0_acceptance")!)["decision"] = Clone(decisions);
+            return (s, tree);
+        }
     }
 }

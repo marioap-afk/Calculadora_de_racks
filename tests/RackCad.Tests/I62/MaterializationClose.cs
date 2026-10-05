@@ -24,7 +24,7 @@ namespace RackCad.Tests
     /// <summary>
     /// The manual fallback of the orchestration (AUTOMATION_PLAN 16.29 and agent-execution README §18.7; Proposal V14 §20.9; C-37): every relay done by a
     /// human (the Owner or the Coordinator as transport) has an AUTONOMY_GAP record in <c>orchestration.autonomy_gaps[]</c> for its request; a manual
-    /// relay without one makes the orchestration evidence invalid for criterion 15 (P-21).
+    /// relay without one makes the orchestration evidence invalid for criterion 15 (P-21). The transport audit of C-32 reads the same records.
     /// </summary>
     public static class AutonomyGaps
     {
@@ -34,6 +34,17 @@ namespace RackCad.Tests
             var recorded = Y.L(point.State, "orchestration.autonomy_gaps").Select(r => StateTreeReader.Json(point.Tree, r))
                 .Where(j => j != null && J.S(j, "Kind") == "AUTONOMY_GAP").Select(j => J.S(j, "LogicalReviewRequestId")).OfType<string>().ToHashSet(StringComparer.Ordinal);
             return manuallyRelayedRequests.Distinct(StringComparer.Ordinal).Where(r => !recorded.Contains(r)).ToList();
+        }
+
+        /// <summary>
+        /// C-32 (V14 §20.9, FX-06): the Owner is the message bus of a sequence when some relay of it was done by the Owner, that is, some point custodies
+        /// an AUTONOMY_GAP record with <c>RelayedBy</c> OWNER. Every manual relay has its record (P-21), so the audit reads only the custody; an unrecorded
+        /// relay already invalidates the evidence (<see cref="Missing"/>).
+        /// </summary>
+        public static bool OwnerAsMessageBus(IEnumerable<StatePoint> points)
+        {
+            return points.Any(p => Y.L(p.State, "orchestration.autonomy_gaps").Select(r => StateTreeReader.Json(p.Tree, r))
+                .Any(j => j != null && J.S(j, "Kind") == "AUTONOMY_GAP" && J.S(j, "RelayedBy") == "OWNER"));
         }
 
         /// <summary>An AUTONOMY_GAP record with the fields of README §18.7.</summary>

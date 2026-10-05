@@ -10,7 +10,7 @@ namespace RackCad.Tests
     /// <summary>
     /// I-62 F4 (slice F4-G), C-42 in its F4 part: the fidelity of the canonical inputs (<see cref="InputFidelity"/>; Proposal V14 §20.3.3) over a
     /// synthetic corpus — the preflight (1)-(4), the bounded invalidation by finding with premise envelopes (a)-(g), the normative dependency closure
-    /// over a manifest (h)-(n), the delivered representation (o), the canonical and bounded graph (q)-(z), and the reconstruction from custody (7). The
+    /// over a manifest (h)-(n), the delivered representation (o), a context compaction (p), the canonical and bounded graph (q)-(z), and the reconstruction from custody (7). The
     /// orchestration cases (5) and (8) are in <see cref="I62F4OrchestrationMcTests"/>.
     /// </summary>
     public class I62F4InputFidelityTests
@@ -188,6 +188,30 @@ namespace RackCad.Tests
             Assert.Equal("INPUT_FIDELITY_INVALID", InputFidelity.Ingest("UNVERIFIED", outcomes).Result);
             Assert.Equal("INPUT_FIDELITY_INVALID", InputFidelity.Ingest("DEGRADED_UNBOUNDED", outcomes).Result);
             Assert.Equal("NORMAL", InputFidelity.Ingest("FAITHFUL_NORMALIZED", outcomes).Result);
+        }
+
+        [Fact]
+        public void I62_C42_p_ACompactionIsRecordedAndDoesNotInvalidateByItselfButItsSummaryIsNeverAPremise()
+        {
+            // The reviewer's context was compacted after reading A; the runtime evidence records it. The comparison reads only what was delivered, so the
+            // compaction by itself changes neither the status nor the spans.
+            var runtime = new JsonObject { ["ObservedActor"] = "other", ["Compactions"] = new JsonArray(new JsonObject { ["AfterRead"] = A, ["Summary"] = "ENCRYPTED" }) };
+            Assert.Single((JsonArray)runtime["Compactions"]!);
+            Assert.Equal("FAITHFUL", InputFidelity.Compare(Corpus, Delivered()).Status);
+            var degraded = Delivered((A, 13, null));
+            var (status, spans, _) = InputFidelity.Compare(Corpus, degraded);
+            Assert.Equal("DEGRADED_BOUNDED", status);
+
+            // A premise used after the compaction is evaluated with the visible evidence like any other: independent when its envelope is faithful.
+            Assert.Equal("INDEPENDENT", Independence(Premise(5, "La sesión NO debe publicar un Q0 sin las dos aceptaciones."), degraded, BaseManifest(), new UnitRef(A, "§1#p1")));
+
+            // A premise that cites the compacted summary instead of the canonical text is not resolvable: UNKNOWN, and its finding is not accredited.
+            var summary = new PremiseRef("<resumen de compactación>", "§1", 1, 1, "La sesión NO debe publicar un Q0");
+            var (_, s, visible) = InputFidelity.Compare(Corpus, degraded);
+            Assert.Equal("UNKNOWN", InputFidelity.Independence(summary, Corpus, s, visible, BaseManifest(), new[] { new UnitRef(A, "§1#p1") }, A));
+            var outcomes = new Dictionary<string, IReadOnlyList<string>> { ["A62-X-01"] = new[] { "UNKNOWN" }, ["A62-X-02"] = new[] { "INDEPENDENT" } };
+            Assert.Equal(new[] { "A62-X-01" }, InputFidelity.Ingest(status, outcomes).Unaccredited);
+            Assert.Equal(spans, s);
         }
 
         [Fact]

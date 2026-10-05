@@ -125,5 +125,52 @@ namespace RackCad.Tests
             Assert.NotEmpty(DelegationJournal.ReconstructionProblems(Q0(), Qr(2, 1, false), "F4", "R-2"));
             Assert.Empty(DelegationJournal.ReconstructionProblems(Q0(), Qr(0, 1, true), "F4", "R-1"));
         }
+
+        [Fact]
+        public void I62_C16_CorrectionsCountLaunchesNotVerificationsAndAContinuationInheritsThem()
+        {
+            // T-01 has one correction of class Ci, launched in its Q0 (§9.3: the entry of counters.correction_launches in the same Q0).
+            var s = Clone(Point(4).State);
+            var launches = Y.L(s, "counters.correction_launches");
+            YamlMap Launch(long seq, string task, string failureClass) => M(("seq", seq), ("task_id", task), ("failure_class", failureClass),
+                ("correction_of_run_id", "R20261003T010101Z-ab12"), ("attempts_after", seq), ("record_version", 3L));
+            launches.Add(Launch(1, "T-01", "Ci"));
+
+            // Two verifications of the same delivery are two launches of the journal, never two corrections.
+            var journal = Chain(Planning(Pass()), Work(), Verification(), Verification());
+            Assert.Equal(4, DelegationJournal.Counts(journal).Launched);
+            Assert.Equal(1, DelegationJournal.ClassLaunches(s, "T-01", "Ci"));
+            Assert.Equal(0, DelegationJournal.ClassLaunches(s, "T-01", "Red"));
+
+            // A correction launched and lost before its verification still counts (the window closes ABANDONED; the entry is durable).
+            var lost = Clone(s);
+            ((YamlMap)Y.M(lost, "custody.last_window")!)["closure"] = "ABANDONED";
+            Assert.Equal(1, DelegationJournal.ClassLaunches(lost, "T-01", "Ci"));
+
+            // T-02 continues T-01 (a new TaskId by the Coordinator's decision): it inherits the class count and its next correction is the second.
+            var custody = (YamlMap)s["custody"]!;
+            custody["task_intent"] = M(("task_id", "T-02"), ("attempt", 1L), ("kind", "CORRECTION"), ("contract", null), ("continues_task_id", "T-01"),
+                ("planned_roles", L()));
+            Assert.Equal(new[] { "T-02", "T-01" }, DelegationJournal.ContinuationLineage(s, "T-02"));
+            Assert.Equal(1, DelegationJournal.ClassLaunches(s, "T-02", "Ci"));
+            Assert.Empty(DelegationJournal.ContinuationProblems(s));
+            launches.Add(Launch(2, "T-02", "Ci"));
+            Assert.Equal(2, DelegationJournal.ClassLaunches(s, "T-02", "Ci"));
+            Assert.Equal(1, DelegationJournal.ClassLaunches(s, "T-01", "Ci"));
+
+            // Without ContinuesTaskId the same work would restart the class at zero; a continuation of itself, of a task without a chain, or in a cycle is S-04.
+            var restarted = Clone(s);
+            ((YamlMap)Y.M(restarted, "custody.task_intent")!)["continues_task_id"] = null;
+            Assert.Equal(1, DelegationJournal.ClassLaunches(restarted, "T-02", "Ci"));
+            var self = Clone(s);
+            ((YamlMap)Y.M(self, "custody.task_intent")!)["continues_task_id"] = "T-02";
+            Assert.Contains(DelegationJournal.ContinuationProblems(self), p => p.Contains("continues itself", StringComparison.Ordinal));
+            var unknown = Clone(s);
+            ((YamlMap)Y.M(unknown, "custody.task_intent")!)["continues_task_id"] = "T-09";
+            Assert.Contains(DelegationJournal.ContinuationProblems(unknown), p => p.Contains("no durable chain", StringComparison.Ordinal));
+            var cycle = Clone(s);
+            ((YamlMap)Y.L(cycle, "custody.chains")[0]!)["continues_task_id"] = "T-02";
+            Assert.Contains(DelegationJournal.ContinuationProblems(cycle), p => p.Contains("cycle", StringComparison.Ordinal));
+        }
     }
 }

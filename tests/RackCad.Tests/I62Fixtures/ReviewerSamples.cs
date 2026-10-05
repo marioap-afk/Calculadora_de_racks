@@ -25,8 +25,12 @@ namespace RackCad.Tests
 
         public static string AuthorityOf(YamlMap contractRef) => Orchestration.ReviewerAuthorityId(contractRef)!;
 
-        /// <summary>The REVIEWER points: [base, open (6), LAUNCHING (7), RESULT_RECEIVED (8), REVIEWER_SATISFIED (9), LOOP_CLOSED (10)].</summary>
-        public static List<StatePoint> Loop()
+        /// <summary>
+        /// The REVIEWER points: [base, open (6), LAUNCHING (7), RESULT_RECEIVED (8), REVIEWER_SATISFIED (9), LOOP_CLOSED (10)]. With
+        /// <paramref name="findings"/>, the result reports them (FINDINGS) and the ingestion opens one REVIEWER lineage per finding (LIN-R1, LIN-R2, …); a
+        /// BLOCKING finding sends the loop to CORRECTING at the ingestion and the list ends there: [base, open, LAUNCHING, RESULT_RECEIVED, CORRECTING].
+        /// </summary>
+        public static List<StatePoint> Loop(params (string Id, string Severity)[] findings)
         {
             var points = new List<StatePoint> { Point(5) };
             var obj = Obj(C1, X, B1);
@@ -62,7 +66,8 @@ namespace RackCad.Tests
 
             var r3 = Next(points[^1]);
             a = AttemptOf(r3, R1, 1);
-            Received(r3, a, ReviewerResult(r3, "NO_FINDINGS", obj));
+            var result = ReviewerResult(r3, findings.Length == 0 ? "NO_FINDINGS" : "FINDINGS", obj, findings);
+            Received(r3, a, result);
             points.Add(r3);
 
             var r4 = Next(points[^1]);
@@ -71,6 +76,17 @@ namespace RackCad.Tests
             a["outcome"] = "VALID";
             a["ingested_at"] = Rv(r4);
             RequestOf(r4, R1)["state"] = "INGESTED";
+            Orch(r4)["findings"] = L(findings.Select((f, i) => (object?)M(("lineage_id", "LIN-R" + (i + 1)), ("finding_ids", L(f.Id)), ("issuer", "REVIEWER"),
+                ("opened_in", Clone(result)), ("severity", f.Severity), ("class", "defecto"), ("affected_section", "§1"), ("state", "OPEN"), ("response", null),
+                ("last_disposition_in", null), ("omitted_in", L()), ("closed_by", null), ("downgraded_by", null))).ToArray());
+            if (findings.Any(f => f.Severity == "BLOCKING"))
+            {
+                OrchestrationSamples.Loop(r4)["phase"] = "CORRECTING";
+                Orch(r4)["next_action"] = NextAction("PRINCIPAL_COORDINATOR", "CORRECT_AND_REREVIEW", obj);
+                points.Add(r4);
+                return points;
+            }
+
             OrchestrationSamples.Loop(r4)["phase"] = "REVIEWER_SATISFIED";
             End((YamlMap)OrchestrationSamples.Loop(r4)["action_validity"]!, "REVIEWER_SATISFIED", Rv(r4), null);
             Orch(r4)["next_action"] = NextAction("PRINCIPAL_COORDINATOR", "NEXT_GATE", null);

@@ -10,7 +10,8 @@ namespace RackCad.Tests
 {
     /// <summary>
     /// I-62 F4 (slice F4-G): C-21 (a normative change after the MaterializationClose invalidates it, on a real disposable history) and C-37 in its F4
-    /// part (a manual relay needs its custodied AUTONOMY_GAP record; without it the orchestration evidence is not valid, P-21).
+    /// part (a manual relay needs its custodied AUTONOMY_GAP record; without it the orchestration evidence is not valid, P-21) and C-32 in its F4 part
+    /// (the transport audit of the C-31 sequence: no relay by the Owner).
     /// </summary>
     public class I62F4CloseAndGapTests
     {
@@ -62,6 +63,26 @@ namespace RackCad.Tests
             ((YamlMap)Y.L(dangling.State, "orchestration.autonomy_gaps")[0]!)["blob"] = new string('b', 40);
             Assert.Contains(new StateV2Validator().ValidateFile(dangling), v => v.Invariant == "I-S13");
             Assert.Equal(new[] { L1 }, AutonomyGaps.Missing(dangling, new[] { L1 }));
+        }
+
+        [Fact]
+        public void I62_C32_TheTransportAuditOfTheC31SequenceFindsNoRelayByTheOwner()
+        {
+            // The F.8 sequence of C-31 (its real-Git version runs in I62F4LoopReconstructionMcTests): no relay by the Owner.
+            var f8 = F8();
+            Assert.False(AutonomyGaps.OwnerAsMessageBus(f8));
+
+            // One relay carried by the Owner, recorded as P-21 requires, makes the Owner the message bus; a relay by the Coordinator is an AUTONOMY_GAP
+            // (criterion 15 is not PASS, C-37) but not the Owner as bus.
+            YamlMap Gap(StatePoint p, string by) => Tree(p).PutJson("docs/automation/evidence/I-99-agent/review/L2/1/autonomy-gap.json",
+                AutonomyGaps.Record(L2, 2, by, "resultado copiado a mano", "docs/automation/evidence/I-99-agent/review/L2/1/result.json", new string('a', 40), "sin transporte"));
+            var byOwner = f8.Select(Copy).ToList();
+            Orch(byOwner[^2])["autonomy_gaps"] = L(Gap(byOwner[^2], "OWNER"));
+            Assert.True(AutonomyGaps.OwnerAsMessageBus(byOwner));
+            var byCoordinator = f8.Select(Copy).ToList();
+            Orch(byCoordinator[^2])["autonomy_gaps"] = L(Gap(byCoordinator[^2], "COORDINATOR"));
+            Assert.False(AutonomyGaps.OwnerAsMessageBus(byCoordinator));
+            Assert.Empty(AutonomyGaps.Missing(byCoordinator[^2], new[] { L2 }));
         }
     }
 }
