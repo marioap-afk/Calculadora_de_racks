@@ -1,6 +1,6 @@
 {
  "Script": "a1-counterexamples.py",
- "Version": "A-1 corregida (2026-10-05), con OBS-A1-01, A62-A1R-01..03 y A62-A1A-01",
+ "Version": "A-1 corregida (2026-10-05), con OBS-A1-01, A62-A1R-01..03, A62-A1A-01 y A62-A1S-01..02",
  "Freeze": {
   "commit": "4c617e82b32b6c810b68d75fc19472efed22b393",
   "blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa"
@@ -28,6 +28,7 @@
   "A1-R04": "D1-19 · reviewer_closures[] es append-only y crece exactamente en uno en cada LOOP_CLOSED de REVIEWER, y en ningún otro par",
   "V14-P20-reviewer": "V14 §20.5.2/§20.7 · un resultado de REVIEWER nunca cierra ni rebaja un linaje del ARCHITECT (P-20)",
   "A1-R05": "D1-20 · un bucle REVIEWER se abre con una autoridad OPEN, la de loop.authorization, que no figura en ningún registro de reviewer_closures[]",
+  "A1-P18": "V14 B.8.8 (review_requests.object) · una solicitud nueva se abre con object = loop.object del punto en que se abre (A62-A1S-02)",
   "A1-R06": "D1-17/D1-19 · el requisito operativo de una autoridad REVIEWER solo está satisfecho con evidencia REVIEWER_SATISFIED de esa autoridad",
   "A1-P08": "D2-2/D2-5 · la reconciliación lleva cada objeto vivo a su imagen probada (mismo path y blob) y exige imagen en el mapa para el Target de un intento en LAUNCHING",
   "A1-P09": "D2-6 · transiciones de intento; un intento en LAUNCHING o posterior nunca cambia su invocación en sitio; B.1 tras un rebase replanifica sobre la imagen",
@@ -170,6 +171,14 @@
    "a62-a1r-01-registro-finge-REVIEWER_SATISFIED",
    "a62-a1r-o5-satisfaccion-con-evidencia",
    "a62-a1r-o5-satisfaccion-sin-evidencia"
+  ],
+  "A62-A1S-01": [
+   "a62-a1s-01-continuacion-satisfecha-con-STILL_OPEN-heredado",
+   "a62-a1s-01-sustitucion-con-intento-vivo-de-la-autoridad-sustituida"
+  ],
+  "A62-A1S-02": [
+   "a62-a1s-02-re-revision-sobre-el-objeto-anterior",
+   "a62-a1s-02-reviewer-corrige-y-re-revisa-la-correccion"
   ],
   "FC-01": [
    "fc01-literal-cerrar-y-abrir",
@@ -1938,6 +1947,88 @@
    "Violations": [
     "punto 0 (requisito de GC-1 dado por satisfecho sin REVIEWER_SATISFIED): requisito de GC-1 dado por satisfecho sin evidencia REVIEWER_SATISFIED"
    ],
+   "Verdict": "PASS"
+  },
+  "a62-a1s-01-continuacion-satisfecha-con-STILL_OPEN-heredado": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1S-01"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R02"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R02"
+    ]
+   },
+   "Violations": [
+    "par 0→1 (REVIEWER_SATISFIED con LIN-R1 heredado en STILL_OPEN): REVIEWER_SATISFIED sin sus condiciones"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1s-01-sustitucion-con-intento-vivo-de-la-autoridad-sustituida": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1S-01"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R02"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R02"
+    ]
+   },
+   "Violations": [
+    "par 3→4 (REVIEWER_SATISFIED de GC-1b con R1 de GC-1 todavía LAUNCHED): REVIEWER_SATISFIED sin sus condiciones"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1s-02-re-revision-sobre-el-objeto-anterior": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1S-02"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-P18"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-P18"
+    ]
+   },
+   "Violations": [
+    "par 0→1 (R2 abierta sobre Y (anterior a la corrección)): solicitud nueva R2 abierta sobre un objeto distinto de loop.object"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1s-02-reviewer-corrige-y-re-revisa-la-correccion": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "A62-A1S-02"
+   ],
+   "Expected": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Got": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Violations": [],
    "Verdict": "PASS"
   },
   "fc01-enmendado-cerrar-y-abrir-con-A2": {

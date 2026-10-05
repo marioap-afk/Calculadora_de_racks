@@ -1,4 +1,4 @@
-# I-62 — Paquete de revisión del Architect (enmienda A-1 corregida: FC-01, FC-02, OBS-A1-01, A62-A1R-01..03 y A62-A1A-01)
+# I-62 — Paquete de revisión del Architect (enmienda A-1 corregida: FC-01, FC-02, OBS-A1-01, A62-A1R-01..03, A62-A1A-01 y A62-A1S-01..02)
 
 ```text
 A-1            = PROPUESTA (versión corregida) — sin revisión formal acreditada
@@ -6,7 +6,8 @@ Revisión previa = la corrida R20261003T023945Z-cab7 sobre 09ca9328 NO quedó FO
                  A62-A1-01..06 como REQUIRED (decisiones §38) y añadió OBS-A1-01 como REQUIRED / MATERIAL (decisiones §39). Esa corrida es solo
                  insumo técnico histórico. La revisión formal R20261005T044948Z-ac67 sobre 9c621fce (decisiones §40) dio CHANGES REQUIRED; su
                  acreditación la decide el Coordinator, que adoptó A62-A1R-01..03 como REQUIRED técnicos (decisiones §41). Antes de lanzar la
-                 revisión siguiente, el autor halló y corrigió A62-A1A-01 (un BLOCKING heredado no impedía REVIEWER_SATISFIED)
+                 revisión siguiente, el autor halló y corrigió A62-A1A-01 (un BLOCKING heredado no impedía REVIEWER_SATISFIED). La revisión formal
+                 R20261005T063359Z-86e3 sobre 39c2f831 dio CHANGES REQUIRED (A62-A1S-01..02, O1..O4); su acreditación la decide el Coordinator
 Architect      = REVIEW REQUIRED: una revisión formal acreditada de la A-1 corregida exacta (cambio MATERIAL: LIFECYCLE §6 exige Architect + Coordinator)
 Coordinator    = veredicto PENDING
 Owner          = sin decisión identificada; si aparece una consecuencia OWNER-RESERVED, la enmienda se detiene
@@ -15,18 +16,19 @@ Invocación     = autorizada por la orden nocturna (decisiones §41: hasta dos i
 Implementación = producción de F4 BLOCKED hasta el veredicto del Architect, el del Coordinator y la orden de apertura
 
 Objeto de la revisión (identidad por contenido; el commit lo da el recibo de publicación):
-  docs/initiatives/I-62-A-1.md                                          blob cdcd98d2752d384272285536b3874ae45c9d9832
+  docs/initiatives/I-62-A-1.md                                          blob 03dd822d1310a0ce298eba6da2321383aa5e4887
 Blobs anteriores (historia; commits anteriores al rebase del 2026-10-05):  09ca93285975c4b7af6471d6ae91bfa12c94a1fc (bf7b0d9c)
                                                                         23dd16b2b135cdb7e1e2b1e18e2b6595253e92d8 (fff3bbb0)
                                                                         9c621fce0588f32115e3151b6f75413c0a167c2e (0ad410f8, imagen 4e36d77c)
                                                                         39c2f8317ec381fa60c3564a834278df8898101c (252be61e, 9dcfc08d)
+                                                                        cdcd98d2752d384272285536b3874ae45c9d9832 (e15ecc35, d97ce3d0)
 Freeze que enmienda:
   FREEZE_SHA b64a3b640c7ee3bd77636e7a3218ae0ebac2dd43
   docs/initiatives/I-62-proposal-v14.md   commit 4c617e82b32b6c810b68d75fc19472efed22b393   blob 34ad80ea1bfff144bfc5169f62920a4c904c1bfa
 Base de main: bb0d5522e8411f66a51fdfb3f1f0d0514b737453 (rama rebasada el 2026-10-05; mapa en docs/automation/evidence/I-62-prep/night-2026-10-05/rebase-map.json)
 ```
 
-> **Identidad exacta.** El revisor comprueba que `git rev-parse <commit>:docs/initiatives/I-62-A-1.md` = `cdcd98d2…` en el commit del recibo de publicación.
+> **Identidad exacta.** El revisor comprueba que `git rev-parse <commit>:docs/initiatives/I-62-A-1.md` = `03dd822d…` en el commit del recibo de publicación.
 > Si no coincide, revisa la versión designada o rechaza la discordancia. Este paquete no lleva su propio blob.
 
 ## 1. Veredicto que se solicita (LIFECYCLE §5 y §6)
@@ -46,9 +48,9 @@ Un REQUIRED abierto lo cierra o lo rebaja solo quien lo emitió o quien tenga es
 
 | Insumo | Blob | Para qué |
 |---|---|---|
-| `docs/initiatives/I-62-A-1.md` | `cdcd98d2…` | el objeto: cláusulas anteriores, deltas D1-1..D1-21 y D2-1..D2-12, materialidad (también la propia de OBS-A1-01), pruebas, matriz (§9) y cambios frente a los blobs anteriores (§10) |
+| `docs/initiatives/I-62-A-1.md` | `03dd822d…` | el objeto: cláusulas anteriores, deltas D1-1..D1-21 y D2-1..D2-12, materialidad (también la propia de OBS-A1-01), pruebas, matriz (§9) y cambios frente a los blobs anteriores (§10) |
 | `docs/initiatives/I-62-architect-review-A-1-r2.md` y `docs/automation/evidence/I-62-architect-A-1/R20261005T044948Z-ac67/output.json` | (en el mismo commit) | registro y resultado literal de la revisión formal anterior (A62-A1R-01..03 y sus OPTIONAL) |
-| `docs/initiatives/I-62-architect-review-A-1-disposition.md` | `fab9896a…` | las dos disposiciones del Coordinator: acreditación, hallazgos adoptados, OPTIONAL, OBS-A1-01 y matriz exacta |
+| `docs/initiatives/I-62-architect-review-A-1-disposition.md` | `eeb29ba0…` | las dos disposiciones del Coordinator: acreditación, hallazgos adoptados, OPTIONAL, OBS-A1-01 y matriz exacta |
 | `docs/initiatives/I-62-architect-review-A-1.md` | `18987532…` | registro de la revisión técnica anterior (hallazgos A62-A1-01..06, con sus premisas) |
 | `docs/initiatives/I-62-proposal-v14.md` en `4c617e82` | `34ad80ea…` | cláusulas enmendadas: §8.8, §20.5, §20.5.1, §20.5.2, §20.6, §20.7, B.2, B.8.1, B.8.4 (I-S17, I-P05, I-P10, I-H02), B.8.7, B.8.8 (I-S18, I-P13), B.9 |
 | `docs/AUTOMATION_PLAN.md` §16.20 (líneas 846-925) | `52fd8f66…` | texto F3 materializado: lista de la autorización y paso 3 (D1-12, D2-11) |
@@ -57,8 +59,8 @@ Un REQUIRED abierto lo cierra o lo rebaja solo quien lo emitió o quien tenga es
 | `docs/automation/agent-execution/schemas/role-invocation.v1.schema.json` (`BudgetSnapshot`) | `d54a7ae7…` | escalares sin cambio (D1-14) |
 | `docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json` | `a74288eb…` | `Disposition` y `Severity` (BLOCKING \| ADVISORY) sin cambio (D1-17) |
 | `docs/automation/agent-execution/schemas/gate-contract.v2.schema.json` (`RoleRequirements`) | `f644bb19…` | autoridad del REVIEWER sin cambio; ningún campo endurece B.10.2 (D1-17) |
-| `docs/automation/evidence/I-62-A1/a1-counterexamples.py` | `6b71ace7…` | arnés de trazas: V14 literal y A-1 corregida; conjuntos exactos de reglas |
-| `docs/automation/evidence/I-62-A1/a1-counterexamples-result.json` | `75cf92f6…` | 96 trazas (33 VALID y 63 INVALID), todas PASS; cobertura por hallazgo, R1..R10 de OBS-A1-01 y A62-A1R-01..03 con O1..O5 |
+| `docs/automation/evidence/I-62-A1/a1-counterexamples.py` | `6b051db7…` | arnés de trazas: V14 literal y A-1 corregida; conjuntos exactos de reglas |
+| `docs/automation/evidence/I-62-A1/a1-counterexamples-result.json` | `71c46ef9…` | 100 trazas (34 VALID y 66 INVALID), todas PASS; cobertura por hallazgo, R1..R10 de OBS-A1-01 y A62-A1R-01..03 con O1..O5 |
 | `docs/INITIATIVE_LIFECYCLE.md` §3, §5 y §6 | `f19896a8…` | formato de A-n, REQUIRED y M-01..M-08 |
 | `docs/automation/decisions/I-62.md` §34, §35 y §38-§41 | (en el mismo commit) | clasificación, autorizaciones, disposiciones del Coordinator y la orden nocturna que adopta A62-A1R-01..03 |
 
@@ -72,14 +74,15 @@ Para leer las cláusulas de V14 basta su sección: el insumo es un archivo grand
 - Sustitución, enmienda y continuación dentro del bucle (`ContinuesLoopInstanceId`) siguen en la misma entrada y sin reinicio. EXPIRED y REVOKED nunca se
   reescriben.
 - LOOP_CLOSED cierra desde cualquier fase sin trabajo vivo, con la decisión exigida.
-- REVIEWER y EXECUTION conservan la semántica de V14.
+- REVIEWER y EXECUTION conservan la semántica de V14 salvo los deltas declarados: los de OBS-A1-01 para REVIEWER, y para EXECUTION los dos de §1
+  (reconciliación de `loop.object` si no es `null`; D2-11 en sus referencias de binding).
 - `BudgetSnapshot` copia la entrada del bucle, y `OpenFindings` incluye los linajes heredados.
 
 **OBS-A1-01 (solo REVIEWER).**
 - `REVIEWER_SATISFIED`, como fase y como fin de vigencia, con una guarda de tipo: ARCHITECT_SATISFIED nunca se aplica a un REVIEWER.
-- Se alcanza solo con un resultado VALID ingerido, sin intentos no terminales y sin ningún BLOCKING abierto del bucle; ADVISORY no bloquea con
-  `gate-contract/v2`.
-- LOOP_CLOSED de REVIEWER por dos caminos: (S) desde REVIEWER_SATISFIED, sin decisión; (E) tras EXPIRED o REVOKED, con la decisión
+- Se alcanza solo con un resultado VALID ingerido, sin intentos no terminales en las solicitudes del bucle (abiertas tras su apertura, con cualquier
+  autoridad) y sin ningún BLOCKING de REVIEWER abierto en la unidad, tampoco heredado ni en STILL_OPEN; ADVISORY no bloquea con `gate-contract/v2`.
+- LOOP_CLOSED de REVIEWER por dos caminos: (S) desde REVIEWER_SATISFIED, sin decisión; (E) tras EXHAUSTED, EXPIRED o REVOKED, con la decisión
   `I62-REVIEWER-LOOP-CLOSE`, conservando el motivo.
 - El fin histórico queda en `reviewer_closures[]`, append-only.
 - Sin identidad de bucle, sin `ReviewLoopAuthorization` y sin `architect_budgets[]`; `budgets` sin cambio de modelo.
@@ -114,7 +117,8 @@ en contra de B.10.2 y de lo que D1-18 dice del cierre (E). Ahora D1-17 (3) y D1-
 - (e) que cada bucle de revisión aplicable se pueda cerrar sin crear autoridad;
 - (f) la compatibilidad con los contratos F3 materializados;
 - (g) A62-A1R-01..03 y los opcionales O1..O5 de la revisión formal R20261005T044948Z-ac67 (preguntas 13-15);
-- (h) la corrección del autor A62-A1A-01 y la observación sobre un segundo rebase con un intento en LAUNCHING (preguntas 16 y 17).
+- (h) la corrección del autor A62-A1A-01 y la observación sobre un segundo rebase con un intento en LAUNCHING (preguntas 16 y 17);
+- (i) A62-A1S-01..02 y O1..O4 de la revisión formal R20261005T063359Z-86e3 (pregunta 18).
 
 La corrida anterior no acreditada es solo insumo técnico histórico.
 
@@ -126,16 +130,16 @@ La corrida anterior no acreditada es solo insumo técnico histórico.
    LOOP_CLOSED. ¿Falta algún camino legítimo?
 4. **LOOP_CLOSED desde ARCHITECT_SATISFIED** sin decisión del Coordinator (D1-9). ¿Es aceptable, dado que no crea autoridad y el bucle ya terminó?
 5. **REVIEWER.** D1-4 deja en `budgets` solo las solicitudes sin `loop_instance_id`, para no contar dos veces las del Architect. ¿Es el cambio mínimo
-   necesario? Sobre OBS-A1-01 (salida a NONE de un bucle REVIEWER, que V14 no define y A-1 no cambia): ¿la consideráis fuera del delta?
+   necesario? Sobre OBS-A1-01 (salida a NONE de un bucle REVIEWER, que V14 no define): ¿la cubren D1-16..D1-21?
 6. **ResolveBranchRef.** ¿Es correcta y suficiente la regla de la cadena (D2-10), con un paso no reescrito aceptado solo si es ancestro de `MainBeforeSha`,
    y con UNRESOLVED con la semántica de fallo congelada?
 7. **Equivalencia.** D2-12 deja B.10.0 en igualdad cruda (resultado frente al `Target` de su propia invocación). ¿Hay alguna comparación tras un rebase que
    no esté cubierta?
 8. **Textos F3.** ¿Son los tres pasajes de D2-11 y la lista de 16.20 de D1-12 todos los textos F3 materializados que necesitan la enmienda para I-62?
-9. **Materialidad y Owner.** ¿Coinciden las dos tablas de §4 (M-01 = no; para OBS-A1-01, M-05 = no)? ¿Hay alguna consecuencia OWNER-RESERVED?
+9. **Materialidad y Owner.** ¿Coinciden las dos tablas de §4 (M-01 = no; para OBS-A1-01, M-05 = sí)? ¿Hay alguna consecuencia OWNER-RESERVED?
 10. **Finalización del REVIEWER.** ¿Son suficientes las condiciones de REVIEWER_SATISFIED (D1-17)? ¿Es correcto que, con `gate-contract/v2`, un ADVISORY
     nunca bloquee, porque ningún campo permite endurecerlo?
-11. **Cierre (E) del REVIEWER.** D1-18 deja cerrar tras EXPIRED o REVOKED aunque quede un BLOCKING abierto: el linaje sigue abierto y el requisito operativo
+11. **Cierre (E) del REVIEWER.** D1-18 deja cerrar tras EXHAUSTED, EXPIRED o REVOKED aunque quede un BLOCKING abierto: el linaje sigue abierto y el requisito operativo
     queda sin satisfacer, así que la operación dependiente sigue bloqueada. ¿Es la lectura correcta de «no quedar sin cierre para siempre»?
 12. **Pertenencia al bucle REVIEWER.** Sin identidad de bucle, D1-17 identifica las solicitudes del bucle por la `Authorization` de su invocación (el contrato
     de gate). Con D1-20 esa autoridad no se reabre. ¿Es determinista y suficiente?
@@ -151,6 +155,10 @@ La corrida anterior no acreditada es solo insumo técnico histórico.
     en el `RebaseMap` nuevo o sea ancestro de `main_before`. Tras un primer rebase, el `Target` conservado es el commit original, que el segundo mapa ya
     no contiene: el segundo rebase para sin publicar hasta que la evidencia de arranque resuelva el intento. ¿Es el comportamiento querido (conservador),
     o debe resolverse el `Target` por la cadena con ResolveBranchRef (D2-10)? Las secuencias de F4 experimental documentan los dos caminos.
+
+18. **A62-A1S-01..02.** ¿Cierran la pertenencia por apertura de D1-17, el conjunto de (3) con STILL_OPEN y la cláusula REVIEWER de D1-10 (que conserva
+    CORRECTING → PUBLISHED) los dos REQUIRED de la revisión formal R20261005T063359Z-86e3 sin abrir otro camino? En el arnés, A1-R02 y A1-R03 usan la
+    pertenencia por apertura, y A1-P18 exige que una solicitud nueva se abra sobre `loop.object`.
 
 ## 5. Condiciones de la invocación (para quien la autorice)
 

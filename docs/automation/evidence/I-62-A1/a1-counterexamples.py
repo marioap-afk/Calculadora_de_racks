@@ -16,7 +16,8 @@ and (OBS-A1-01, decisions §39) the REVIEWER completion REVIEWER_SATISFIED, its 
 and (decisions §41, formal review R20261005T044948Z-ac67) the closure (E) after EXHAUSTED or with a revoking decision, the REVIEWER opening without
 resurrecting an ended authority, the per-type rebase of loop.object (REVIEWER and EXECUTION), OpenFindings by reviewer authority, every window map in
 rebase_history and the positive-only operational satisfaction; and (A62-A1A-01, author correction) an inherited REVIEWER BLOCKING lineage
-blocks REVIEWER_SATISFIED.
+blocks REVIEWER_SATISFIED; and (A62-A1S-01..02, formal review R20261005T063359Z-ac67-86e3) the REVIEWER loop membership by opening
+and the REVIEWER correction cycle CORRECTING -> PUBLISHED with a new request on the corrected object.
 The two phase edges ARCHITECT_INVOKED -> REVIEW_PENDING / REREVIEW_PENDING are SM-05 (non-material, freeze-issues.md), not part of A-1.
 
 Usage: python a1-counterexamples.py <output json>
@@ -67,6 +68,7 @@ RULES = {
     "A1-R04": "D1-19 · reviewer_closures[] es append-only y crece exactamente en uno en cada LOOP_CLOSED de REVIEWER, y en ningún otro par",
     "V14-P20-reviewer": "V14 §20.5.2/§20.7 · un resultado de REVIEWER nunca cierra ni rebaja un linaje del ARCHITECT (P-20)",
     "A1-R05": "D1-20 · un bucle REVIEWER se abre con una autoridad OPEN, la de loop.authorization, que no figura en ningún registro de reviewer_closures[]",
+    "A1-P18": "V14 B.8.8 (review_requests.object) · una solicitud nueva se abre con object = loop.object del punto en que se abre (A62-A1S-02)",
     "A1-R06": "D1-17/D1-19 · el requisito operativo de una autoridad REVIEWER solo está satisfecho con evidencia REVIEWER_SATISFIED de esa autoridad",
     "A1-P08": "D2-2/D2-5 · la reconciliación lleva cada objeto vivo a su imagen probada (mismo path y blob) y exige imagen en el mapa para el Target de un intento en LAUNCHING",
     "A1-P09": "D2-6 · transiciones de intento; un intento en LAUNCHING o posterior nunca cambia su invocación en sitio; B.1 tras un rebase replanifica sobre la imagen",
@@ -138,6 +140,17 @@ def equivalent(a, b, s):
     if (a["path"], a["blob"]) != (b["path"], b["blob"]):
         return False
     return a["commit"] == b["commit"] or chain(a["commit"], s) == b["commit"] or chain(b["commit"], s) == a["commit"]
+
+
+def rv_loop_requests(s):
+    """D1-17 (A62-A1S-01): requests of the active REVIEWER loop = loop_instance_id null, opened after the pair that opened the loop (i.e. after the
+    last REVIEWER closure), under any authority that governed it; never identified by the current authority."""
+    last = max([c["closed_at"] for c in s["rclosures"]] or [-1])
+
+    def opened(r):
+        rs = [a["reserved_at"] for a in r["attempts"] if a["reserved_at"] is not None]
+        return min(rs) if rs else float("inf")
+    return [r for r in s["requests"] if r["loop"] is None and opened(r) > last]
 
 
 def open_validity(s):
@@ -300,8 +313,12 @@ def pair_a1(p, n):
                 add("A1-P06", "cambia un registro de autorización de %s" % iid)
     if any(n["v14"][k] < p["v14"][k] for k in COUNTERS):
         add("A1-P06", "decrece un contador de budgets (V14)")
+    p_ids = {r["id"] for r in p["requests"]}
+    for r in n["requests"]:
+        if r["id"] not in p_ids and r["object"] != nl["object"]:
+            add("A1-P18", "solicitud nueva %s abierta sobre un objeto distinto de loop.object" % r["id"])
     if nl["type"] == RV and nl["phase"] == "REVIEWER_SATISFIED" and pl["phase"] != "REVIEWER_SATISFIED":
-        lr = [r for r in n["requests"] if r["loop"] is None and r["authz"] == nl["authorization"]]
+        lr = rv_loop_requests(n)
         ids = {r["id"] for r in lr}
         ok = bool(lr) and lr[-1]["state"] == "INGESTED" and any(a["state"] == "RESULT_INGESTED" and a["outcome"] == "VALID" for a in lr[-1]["attempts"])
         ok = ok and all(a["state"] in TERMINAL for r in lr for a in r["attempts"])
@@ -316,7 +333,7 @@ def pair_a1(p, n):
         if not nv or nv["state"] != "OPEN" or nv["auth"] != nl["authorization"] or nv["auth"] in ended_ids:
             add("A1-R05", "bucle REVIEWER abierto con una autoridad terminada o distinta de loop.authorization")
     if rv_closing:
-        lr = [r for r in p["requests"] if r["loop"] is None and r["authz"] == pl["authorization"]]
+        lr = rv_loop_requests(p)
         ids = {r["id"] for r in lr}
         bad = not lr or any(r["state"] == "OPEN" for r in lr) or any(a["state"] not in TERMINAL for r in lr for a in r["attempts"])
         bad = bad or (p["escalation"]["state"] != NONE and not p["escalation"]["resolved_by"]) or n["escalation"]["state"] != NONE
@@ -500,7 +517,7 @@ BLOBS = {}
 for c, path, blob in [("x1", DOC, "b-X1"), ("x1p", DOC, "b-X1"), ("x1pp", DOC, "b-X1"), ("x2", DOC, "b-X2"), ("x3", DOC, "b-X3"), ("y1", IMPL, "b-Y1"),
                       ("c1", DOC, "b-C"), ("c1p", DOC, "b-C"), ("c1pp", DOC, "b-C"),
                       ("a0", DEC, "b-D"), ("a0p", DEC, "b-D"), ("a0pp", DEC, "b-D"), ("k0", BND, "b-K"), ("k0p", BND, "b-K"), ("k0pp", BND, "b-K"),
-                      ("y1p", IMPL, "b-Y1")]:
+                      ("y1p", IMPL, "b-Y1"), ("y2", IMPL, "b-Y2")]:
     BLOBS[(c, path)] = blob
 MAPS = {"M1": {"commits": {"c1": "c1p", "a0": "a0p", "k0": "k0p", "x1": "x1p"}, "main_before": {"m0"}},
         "M2": {"commits": {"c1p": "c1pp", "a0p": "a0pp", "k0p": "k0pp", "x1p": "x1pp"}, "main_before": {"m0", "m1"}},
@@ -515,7 +532,8 @@ DECISIONS = {"A1": {"kind": "RLA", "continues": None, "budget": dict(FROZEN)},
              "GC-1": {"kind": "GATE_CONTRACT", "budget": {}},
              "RCLOSE-R1": {"kind": "REVIEWER_CLOSE", "request": "R1"},
              "RCLOSE-R1-REV": {"kind": "REVIEWER_CLOSE", "request": "R1", "revokes": True},
-             "GC-2": {"kind": "GATE_CONTRACT", "budget": {}}}
+             "GC-2": {"kind": "GATE_CONTRACT", "budget": {}},
+             "GC-1b": {"kind": "GATE_CONTRACT", "budget": {}}}
 REFS0 = [{"commit": "a0", "path": DEC, "blob": "b-D"}, {"commit": "k0", "path": BND, "blob": "b-K"}]
 REFS1 = [{"commit": "a0p", "path": DEC, "blob": "b-D"}, {"commit": "k0p", "path": BND, "blob": "b-K"}]
 
@@ -844,6 +862,48 @@ def traces():
     T["a62-a1a-01-bucle-nuevo-cierra-el-BLOCKING-heredado-y-se-satisface"] = ("A1", ["A62-A1A-01"], "VALID", set(), [pe, ne, cont2, g2, g3, g4, g5])
     T["a62-a1a-01-satisfecho-con-el-BLOCKING-heredado-abierto"] = ("A1", ["A62-A1A-01"], "INVALID", {"A1-R02"},
                                                                    [g4, mod(g5, "REVIEWER_SATISFIED con el LIN-R1 heredado abierto", lambda t: t.update(findings=copy.deepcopy(blk)))])
+
+    # ---- A62-A1S-01..02 (formal review R20261005T063359Z-86e3)
+    T["a62-a1s-01-continuacion-satisfecha-con-STILL_OPEN-heredado"] = ("A1", ["A62-A1S-01"], "INVALID", {"A1-R02"},
+        [g4, mod(g5, "REVIEWER_SATISFIED con LIN-R1 heredado en STILL_OPEN", lambda t: t.update(findings=[lin("LIN-R1", "STILL_OPEN", "BLOCKING", "REVIEWER", "R1")]))])
+    r1live = req("R1", None, Y, "OPEN", [att(1, "LAUNCHED", "IR1", Y, 51, REFS0)], authz="GC-1")
+    sub_p = st("REVIEWER GC-1 con R1/1 LAUNCHED", 52, RV, "ARCHITECT_INVOKED", None, Y, "GC-1", val("GC-1"), [r1live], v14=(1, 1, 1), anc=ANC)
+    sub_n = mod(sub_p, "GC-1b sustituye a GC-1 dentro del bucle (decisión custodiada); R1 sigue LAUNCHED",
+                lambda t: (t.update(rv=53, validity=val("GC-1b")), t["loop"].update(authorization="GC-1b")))
+    r2s = req("R2", None, Y, "OPEN", [att(1, "BUDGET_RESERVED", "IR2s", Y, 54, REFS0)], authz="GC-1b")
+    sub_m1 = mod(sub_n, "R2/1 BUDGET_RESERVED bajo GC-1b", lambda t: (t.update(rv=54, v14=snap(2, 2, 2)), t["requests"].append(copy.deepcopy(r2s))))
+    sub_m2 = mod(sub_m1, "R2/1 LAUNCHING", lambda t: (t.update(rv=55), t["requests"][-1]["attempts"][0].update(state="LAUNCHING")))
+    sub_m3 = mod(sub_m2, "R2/1 RESULT_RECEIVED", lambda t: (t.update(rv=56), t["requests"][-1]["attempts"][0].update(state="RESULT_RECEIVED", result={"evaluated": Y})))
+    sub_sat = mod(sub_m3, "REVIEWER_SATISFIED de GC-1b con R1 de GC-1 todavía LAUNCHED", lambda t: (
+        t.update(rv=57, validity=val("GC-1b", "ENDED", "REVIEWER_SATISFIED")), t["loop"].update(phase="REVIEWER_SATISFIED"),
+        t["requests"][-1].update(state="INGESTED"), t["requests"][-1]["attempts"][0].update(state="RESULT_INGESTED", outcome="VALID")))
+    T["a62-a1s-01-sustitucion-con-intento-vivo-de-la-autoridad-sustituida"] = ("A1", ["A62-A1S-01"], "INVALID", {"A1-R02"},
+                                                                                [sub_n, sub_m1, sub_m2, sub_m3, sub_sat])
+    Y2 = obj("y2", IMPL)
+    blk1 = [lin("LIN-R1", "OPEN", "BLOCKING", "REVIEWER", "R1")]
+    r1f = req("R1", None, Y, "INGESTED", [att(1, "RESULT_INGESTED", "IR1", Y, 51, REFS0, {"evaluated": Y}, "VALID")], authz="GC-1")
+    cor0 = st("REVIEWER GC-1: R1 FINDINGS con LIN-R1 BLOCKING → CORRECTING", 60, RV, "CORRECTING", None, Y, "GC-1", val("GC-1"), [r1f], blk1,
+              v14=(1, 1, 1), anc=ANC | {"y2"})
+    cor1 = mod(cor0, "PUBLISHED: loop.object = Y2 (corrección)", lambda t: (t.update(rv=61), t["loop"].update(phase="PUBLISHED", object=Y2)))
+    cor2 = mod(cor1, "CI_VERIFIED", lambda t: (t.update(rv=62), t["loop"].update(phase="CI_VERIFIED")))
+    r2c2 = req("R2", None, Y2, "OPEN", [att(1, "BUDGET_RESERVED", "IR2c", Y2, 63, REFS0, open_findings=["LIN-R1"])], authz="GC-1")
+    cor3 = mod(cor2, "REREVIEW_PENDING: R2 sobre Y2", lambda t: (t.update(rv=63, v14=snap(2, 2, 2)), t["loop"].update(phase="REREVIEW_PENDING"),
+                                                             t["requests"].append(copy.deepcopy(r2c2))))
+
+    def r2c_step(t, rv, phase, astate, result=None, outcome=None, rstate="OPEN"):
+        t.update(rv=rv)
+        t["loop"].update(phase=phase)
+        t["requests"][-1].update(state=rstate)
+        t["requests"][-1]["attempts"][0].update(state=astate, result=result, outcome=outcome)
+    cor4 = mod(cor3, "R2/1 LAUNCHING", lambda t: r2c_step(t, 64, "ARCHITECT_INVOKED", "LAUNCHING"))
+    cor5 = mod(cor4, "R2/1 RESULT_RECEIVED", lambda t: r2c_step(t, 65, "ARCHITECT_INVOKED", "RESULT_RECEIVED", {"evaluated": Y2}))
+    cor6 = mod(cor5, "REVIEWER_SATISFIED: LIN-R1 cerrado frente a la corrección", lambda t: (
+        r2c_step(t, 66, "REVIEWER_SATISFIED", "RESULT_INGESTED", {"evaluated": Y2}, "VALID", "INGESTED"),
+        t.update(validity=val("GC-1", "ENDED", "REVIEWER_SATISFIED"), findings=[lin("LIN-R1", "CLOSED", "BLOCKING", "REVIEWER", "R1")])))
+    T["a62-a1s-02-reviewer-corrige-y-re-revisa-la-correccion"] = ("A1", ["A62-A1S-02"], "VALID", set(), [cor0, cor1, cor2, cor3, cor4, cor5, cor6])
+    T["a62-a1s-02-re-revision-sobre-el-objeto-anterior"] = ("A1", ["A62-A1S-02"], "INVALID", {"A1-P18"},
+        [cor2, mod(cor3, "R2 abierta sobre Y (anterior a la corrección)", lambda t: (t["requests"][-1].update(object=Y),
+                                                                                       t["requests"][-1]["attempts"][0].update(target=Y)))])
     T["a62-a1r-o3-reviewer-sin-su-linaje-heredado"] = ("A1", ["A62-A1R-O3"], "INVALID", {"A1-P16"},
                                                        [pe, ne, mod(cont2, "OpenFindings sin LIN-R1", lambda t: t["requests"][-1]["attempts"][0].update(open_findings=[]))])
     l8 = req("L8", "ARL-62", obj("x1"), "OPEN", [att(1, "BUDGET_RESERVED", "I8", obj("x1"), 62, REFS0, open_findings=["LIN-R1"], snapshot=snap(1, 1, 1))])
@@ -1006,11 +1066,11 @@ def main():
         for tag in tags:
             coverage.setdefault(tag, []).append(name)
     required = ["A62-A1-0%d" % i for i in range(1, 7)] + ["A62-A1-O%d" % i for i in range(1, 6)] + ["OBS-A1-01"] + ["OBS-A1-01/R%d" % i for i in range(1, 11)] \
-        + ["A62-A1R-0%d" % i for i in range(1, 4)] + ["A62-A1R-O%d" % i for i in range(1, 6)] + ["A62-A1A-01"]
+        + ["A62-A1R-0%d" % i for i in range(1, 4)] + ["A62-A1R-O%d" % i for i in range(1, 6)] + ["A62-A1A-01", "A62-A1S-01", "A62-A1S-02"]
     missing = [t for t in required if t not in coverage]
     ok = ok and not missing
     with open(sys.argv[1], "w", encoding="utf-8", newline="\n") as f:
-        json.dump({"Script": "a1-counterexamples.py", "Version": "A-1 corregida (2026-10-05), con OBS-A1-01, A62-A1R-01..03 y A62-A1A-01",
+        json.dump({"Script": "a1-counterexamples.py", "Version": "A-1 corregida (2026-10-05), con OBS-A1-01, A62-A1R-01..03, A62-A1A-01 y A62-A1S-01..02",
                    "Freeze": {"commit": "4c617e82b32b6c810b68d75fc19472efed22b393", "blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa"},
                    "Rules": RULES, "Coverage": {k: coverage[k] for k in sorted(coverage)}, "MissingCoverage": missing,
                    "Traces": results, "AllAsExpected": ok}, f, ensure_ascii=False, indent=1)

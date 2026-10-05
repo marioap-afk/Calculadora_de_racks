@@ -2096,3 +2096,33 @@ CI de los helpers, `4eb3ce6b82bd90c776bdd20dd1c2b652e927cba8`: corrida **3727582
   - **F4X-OBS-02:** una autorización sustituta con topes menores que lo consumido no se puede registrar (I-S18).
 - **Efecto en la revisión:** el kit v3 (R20261005T063359Z-86e3, objeto `39c2f831`) queda sustituido sin haberse lanzado. Hace falta un kit nuevo para
   el objeto corregido.
+
+## 49. Revisión formal 1 de la orden nocturna (R20261005T063359Z-86e3) y ciclo de corrección 1
+
+- **Lanzamiento:**
+  - el Owner pulsó `task_7b4dd3ee` (kit v3, objeto `39c2f831`, commit `9dcfc08d`);
+  - la sesión revisora `local_5ac1ec2e` (`claude-opus-5-5`, `xhigh`) corrió de 06:40:39Z a 07:02:35Z;
+  - es la primera de las dos invocaciones que permite la orden (punto E);
+  - la sesión autora no supo del lanzamiento hasta intentar retirar la tarea; la tarea v3b (`task_008b4c96`) se retiró para no gastar la segunda
+    invocación antes de ver el resultado.
+- **Resultado** ([registro](../../initiatives/I-62-architect-review-A-1-r3.md); `output.json` literal):
+  - CHANGES REQUIRED: A62-A1S-01 (BLOCKING heredado o de una autoridad sustituida; pertenencia por la autoridad vigente; STILL_OPEN) y A62-A1S-02
+    (D1-10 quitaba al REVIEWER CORRECTING → PUBLISHED), con A62-A1S-O1..O4;
+  - A62-A1-01..06 y A62-A1R-01..03 CLOSED; OBS-A1-01 STILL_OPEN; sin decisión del Owner.
+- **Acreditación (MEASURED):**
+  - **auditor v3:** NOT_ACCREDITED con 4 motivos, un único defecto propio: la palabra `requests`, clave del modelo del arnés, en un heredoc de solo
+    lectura;
+  - **corrección de método v3.1:** en archivo aparte, autoprueba PASS; ACCREDITED, 0 motivos;
+  - la acreditación la decide el Coordinator.
+- **Ciclo de corrección 1** (punto F):
+  - **A-1 blob `03dd822d1310a0ce298eba6da2321383aa5e4887`:**
+    - D1-17 con pertenencia por apertura y STILL_OPEN;
+    - D1-10 REVIEWER con CORRECTING → PUBLISHED;
+    - D1-10 EXECUTION y §1 con los dos deltas de EXECUTION;
+    - D1-20 frente a las autoridades SUPERSEDED;
+    - recuentos al día; C-38 ampliado.
+  - **Arnés `6b051db7…`:** 100 trazas (34 VALID y 66 INVALID), todas PASS. Incluye la pertenencia por apertura en A1-R02/A1-R03, la regla nueva A1-P18
+    y cuatro trazas nuevas `a62-a1s-*`. La traza de sustitución da VALID con la pertenencia antigua, así que discrimina.
+  - **Resultado `71c46ef9…`; secuencias combinadas:** 16/16 PASS.
+  - **Paquete `a97dea77…`:** pregunta 18 y textos al día (O4).
+  - **Disposición `eeb29ba0…`.**

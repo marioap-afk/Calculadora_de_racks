@@ -3,7 +3,7 @@
  "Script": "combo_sequences.py",
  "Engine": {
   "Harness": "docs/automation/evidence/I-62-A1/a1-counterexamples.py",
-  "GitBlobOfFileRead": "6b71ace75dec8666d593bfe188d8c5f5a1a4d232"
+  "GitBlobOfFileRead": "6b051db7f94414199997bf4102d0feee16810df4"
  },
  "Variants": {
   "Asserted": "Freeze + A-1 propuesta (blob 39c2f831)",

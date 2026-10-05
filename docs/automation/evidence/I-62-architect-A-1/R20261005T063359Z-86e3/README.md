@@ -1,4 +1,4 @@
-# I-62 — Kit v3 de la revisión formal del Architect de la A-1 corregida (R20261005T063359Z-86e3)
+# I-62 — Revisión formal del Architect de la A-1 corregida para A62-A1R-01..03 (R20261005T063359Z-86e3)
 
 ```text
 LogicalReviewRequestId: L20261005T063359Z-86e3   InvocationId: I20261005T063359Z-86e3   AttemptSeq: 1   RunId: R20261005T063359Z-86e3
@@ -8,7 +8,9 @@ Objeto:         commit 9dcfc08d5171b01df97b3a492a60218c5ab2453e (CI de publicaci
                 docs/initiatives/I-62-A-1.md                                blob 39c2f8317ec381fa60c3564a834278df8898101c
                 docs/initiatives/I-62-architect-package-A-1.md              blob 82bea6e61cd0712dfe3d235420d5d7cabb0507be
                 docs/initiatives/I-62-architect-review-A-1-disposition.md   blob 2c7a8e7e030c3d76516bbc9889237aca0a35bfc6
-Estado:         KIT PREPARADO · lanzamiento HUMAN_LAUNCH_REQUIRED (tarea de la app task_7b4dd3ee, creada una vez) · sin veredicto
+Estado:         LANZADA por el Owner (task_7b4dd3ee) · sesión local_5ac1ec2e, 06:40:39Z-07:02:35Z · CHANGES REQUIRED (A62-A1S-01..02)
+Acreditación:   auditor v3 = NOT_ACCREDITED (4 motivos, un único defecto del auditor); v3.1 = ACCREDITED; la decide el Coordinator
+Registro:       docs/initiatives/I-62-architect-review-A-1-r3.md
 Naturaleza:     preparación; los JSON son representaciones EXPERIMENTALES (§20.3.2, B.10.1). Rigen I-61 y LIFECYCLE. F4 producción = NO AUTORIZADA
 ```
 
@@ -59,7 +61,17 @@ Orden §6: «comprueba rutas y efectos, no solo igualdad literal de cadenas de c
   - focos 1-16;
   - con AGREED, los quince campos de `IfAgreed` en `true`.
 
-## 4. Lanzamiento
+## 4. Corrida y custodia (después del lanzamiento)
+
+| Archivo | Papel |
+|---|---|
+| `output.json` (SHA-256 `4f866afa…`) | bloque JSON final del revisor, literal, extraído de la transcripción |
+| `audit.json` | auditor v3 del kit, literal: NOT_ACCREDITED, 4 motivos (llamada 29, la palabra `requests` dentro de un heredoc de solo lectura) |
+| `post-review-v3.1.py`, `patch_v31.py`, `selftest-post-review-v3.1.py`, `selftest-v3.1-result.json` | corrección de método v3.1 (literales fuera; módulos solo si se usan como módulos) y su autoprueba (PASS) |
+| `audit-v3.1.json` | auditor v3.1: ACCREDITED, 0 motivos; 33 registros de fidelidad y 25 premisas entregadas fielmente |
+| `runtime-evidence.json` | identidad observada (get_session y transcripción, que no se versiona: SHA-256 `759e01be…`) |
+
+## 5. Lanzamiento (preparación)
 
 El único transporte limpio es una tarea de la app que abre una sesión nueva sobre el clon `D:\r62-arch-a1r3`. Codex sigue bloqueado por OD-2, y Claude
 CLI sin autenticar por OD-3.

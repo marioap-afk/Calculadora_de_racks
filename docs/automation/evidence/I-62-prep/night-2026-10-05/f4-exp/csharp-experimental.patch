@@ -1,0 +1,285 @@
+diff --git a/tests/RackCad.Tests/Experimental/I62/I62OrchestrationExperimentalTests.cs b/tests/RackCad.Tests/Experimental/I62/I62OrchestrationExperimentalTests.cs
+new file mode 100644
+index 00000000..1f1fd76e
+--- /dev/null
++++ b/tests/RackCad.Tests/Experimental/I62/I62OrchestrationExperimentalTests.cs
+@@ -0,0 +1,279 @@
++// EXPERIMENTAL — NOT AUTHORIZED FOR PRODUCTION.
++// I-62 night order §9: experimental C# model of a subset of the state/v2 orchestration (Freeze + A-1 proposed), inside the test project of an
++// isolated clone. It is NOT F4, not a materialization and not evidence of C-15..C-42. Variants are kept separate:
++//   ReviewerBlockingScope.LoopOnly = A-1 blob 39c2f831 (defect A62-A1A-01); ReviewerBlockingScope.Unit = A-1 blob cdcd98d2;
++//   LaunchingTargetRule.CurrentMapOnly = A-1 D2-2 as written (F4X-OBS-01); LaunchingTargetRule.Chain = the alternative of package question 17.
++#nullable enable
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using Xunit;
++
++namespace RackCad.Tests.Experimental.I62
++{
++    public enum ReviewerBlockingScope { LoopOnly, Unit }
++    public enum LaunchingTargetRule { CurrentMapOnly, Chain }
++    public enum AttemptState { Planned, BudgetReserved, Launching, Launched, LaunchUncertain, ResultReceived, ResultIngested, CancelledBeforeLaunch }
++
++    public sealed class ProtocolViolation : Exception
++    {
++        public ProtocolViolation(string rule, string message) : base(rule + ": " + message) { Rule = rule; }
++        public string Rule { get; }
++    }
++
++    public sealed record Budget(int ReviewRounds, int LogicalRequests, int ArchitectLaunches)
++    {
++        public static readonly Budget Frozen = new Budget(3, 3, 9);
++        public Budget Min(Budget o) => new Budget(Math.Min(ReviewRounds, o.ReviewRounds), Math.Min(LogicalRequests, o.LogicalRequests), Math.Min(ArchitectLaunches, o.ArchitectLaunches));
++        public bool Covers(Budget used) => used.ReviewRounds <= ReviewRounds && used.LogicalRequests <= LogicalRequests && used.ArchitectLaunches <= ArchitectLaunches;
++    }
++
++    public sealed class AuthorizationRecord
++    {
++        public AuthorizationRecord(string id, Budget budget) { Id = id; Budget = budget; }
++        public string Id { get; }
++        public Budget Budget { get; }
++        public string State { get; private set; } = "OPEN";
++        public string? EndedReason { get; private set; }
++        public void End(string reason)
++        {
++            if (State != "OPEN") throw new ProtocolViolation("A1-P06", "un registro de autorización terminado no cambia (" + Id + ")");
++            State = "ENDED";
++            EndedReason = reason;
++        }
++    }
++
++    /// <summary>D1-2, D1-5, D1-6, D1-8, D1-9: per-loop budget entry of an ARCHITECT_REVIEW loop.</summary>
++    public sealed class ArchitectBudgetEntry
++    {
++        private readonly List<AuthorizationRecord> _auths = new();
++        public ArchitectBudgetEntry(string loopInstanceId, AuthorizationRecord opening) { LoopInstanceId = loopInstanceId; _auths.Add(opening); }
++        public string LoopInstanceId { get; }
++        public IReadOnlyList<AuthorizationRecord> Authorizations => _auths;
++        public Budget Used { get; private set; } = new Budget(0, 0, 0);
++        public bool Closed { get; private set; }
++        public Budget Caps => _auths.Aggregate(Budget.Frozen, (c, a) => c.Min(a.Budget));
++        public AuthorizationRecord Current => _auths[^1];
++
++        public void Replace(AuthorizationRecord next)
++        {
++            if (Closed) throw new ProtocolViolation("A1-P06", "una entrada cerrada no cambia");
++            if (Current.State == "OPEN") Current.End("SUPERSEDED");               // EXPIRED / REVOKED are never rewritten
++            var caps = Caps.Min(next.Budget);
++            if (!caps.Covers(Used)) throw new ProtocolViolation("A1-F01", "la sustituta deja un contador por encima de su tope (I-S18)");
++            _auths.Add(next);
++        }
++
++        public void Reserve(bool newVersion, bool newLogicalRequest)
++        {
++            if (Closed) throw new ProtocolViolation("A1-P06", "una entrada cerrada no cambia");
++            if (Current.State != "OPEN") throw new ProtocolViolation("A1-P13", "una acción nueva exige la vigencia OPEN");
++            var next = new Budget(Used.ReviewRounds + (newVersion ? 1 : 0), Used.LogicalRequests + (newLogicalRequest ? 1 : 0), Used.ArchitectLaunches + 1);
++            if (!Caps.Covers(next)) throw new ProtocolViolation("A1-F01", "la reserva supera el tope efectivo");
++            Used = next;
++        }
++
++        public void Close(string? decision, bool liveWork)
++        {
++            if (liveWork) throw new ProtocolViolation("A1-P07", "LOOP_CLOSED con trabajo vivo");
++            var reason = Current.State == "ENDED" ? Current.EndedReason : null;
++            if (reason == null) throw new ProtocolViolation("A1-P07", "LOOP_CLOSED con la vigencia OPEN y sin revocación en la decisión");
++            if (reason != "ARCHITECT_SATISFIED" && decision == null) throw new ProtocolViolation("A1-P07", "LOOP_CLOSED sin la decisión exigida");
++            Closed = true;
++        }
++    }
++
++    public sealed record Lineage(string Id, string Issuer, string Severity, string OpenedInRequest, bool Open);
++
++    /// <summary>D1-16..D1-20: REVIEWER loops of one unit, with the scope of the BLOCKING rule as a variant.</summary>
++    public sealed class ReviewerLoops
++    {
++        private readonly ReviewerBlockingScope _scope;
++        private readonly List<(string Authority, string Reason, string? Decision)> _closures = new();
++        public ReviewerLoops(ReviewerBlockingScope scope) { _scope = scope; }
++        public List<Lineage> Lineages { get; } = new();
++        public string? OpenAuthority { get; private set; }
++        public HashSet<string> LoopRequests { get; } = new();
++        public string? EndedReason { get; private set; }
++        public IReadOnlyList<(string Authority, string Reason, string? Decision)> Closures => _closures;
++
++        public void Open(string authority)
++        {
++            if (OpenAuthority != null) throw new ProtocolViolation("A1-P01", "ya hay un bucle abierto");
++            if (_closures.Any(c => c.Authority == authority)) throw new ProtocolViolation("A1-R05", "autoridad terminada: no se resucita (" + authority + ")");
++            OpenAuthority = authority;
++            EndedReason = null;
++            LoopRequests.Clear();
++        }
++
++        public void Request(string id) => LoopRequests.Add(id);
++
++        public void Satisfy(bool validResultIngested)
++        {
++            var blocking = Lineages.Where(l => l.Open && l.Issuer == "REVIEWER" && l.Severity == "BLOCKING");
++            if (_scope == ReviewerBlockingScope.LoopOnly) blocking = blocking.Where(l => LoopRequests.Contains(l.OpenedInRequest));
++            if (!validResultIngested || blocking.Any()) throw new ProtocolViolation("A1-R02", "REVIEWER_SATISFIED sin sus condiciones");
++            EndedReason = "REVIEWER_SATISFIED";
++        }
++
++        public void End(string reason) => EndedReason = reason;
++
++        public void Close(string? decision)
++        {
++            if (OpenAuthority == null) throw new ProtocolViolation("A1-R03", "no hay bucle REVIEWER");
++            var closable = EndedReason == "REVIEWER_SATISFIED" || (new[] { "EXHAUSTED", "EXPIRED", "REVOKED" }.Contains(EndedReason) && decision != null);
++            if (!closable) throw new ProtocolViolation("A1-R03", "LOOP_CLOSED de REVIEWER sin camino (S) ni (E) con decisión");
++            _closures.Add((OpenAuthority, EndedReason!, decision));
++            OpenAuthority = null;
++        }
++
++        public void CloseLineage(string id) => Lineages[Lineages.FindIndex(l => l.Id == id)] = Lineages.First(l => l.Id == id) with { Open = false };
++    }
++
++    /// <summary>§20.6 attempt edges (V14) with D2-6; LAUNCH_UNCERTAIN and CANCELLED_BEFORE_LAUNCH are terminal.</summary>
++    public sealed class Attempt
++    {
++        private static readonly HashSet<(AttemptState, AttemptState)> Edges = new()
++        {
++            (AttemptState.Planned, AttemptState.BudgetReserved), (AttemptState.Planned, AttemptState.CancelledBeforeLaunch),
++            (AttemptState.BudgetReserved, AttemptState.Launching), (AttemptState.BudgetReserved, AttemptState.CancelledBeforeLaunch),
++            (AttemptState.BudgetReserved, AttemptState.BudgetReserved), (AttemptState.Launching, AttemptState.Launched),
++            (AttemptState.Launching, AttemptState.ResultReceived), (AttemptState.Launching, AttemptState.LaunchUncertain),
++            (AttemptState.Launching, AttemptState.BudgetReserved), (AttemptState.Launching, AttemptState.CancelledBeforeLaunch),
++            (AttemptState.Launched, AttemptState.ResultReceived), (AttemptState.Launched, AttemptState.LaunchUncertain),
++            (AttemptState.ResultReceived, AttemptState.ResultIngested),
++        };
++        public AttemptState State { get; private set; } = AttemptState.BudgetReserved;
++        public List<string> LateEvidence { get; } = new();
++        public string Target { get; private set; } = "c1";
++        public void Move(AttemptState next)
++        {
++            if (!Edges.Contains((State, next))) throw new ProtocolViolation("A1-P09", State + " → " + next + " no existe");
++            State = next;
++        }
++        public void LateResult(string blob)
++        {
++            if (State == AttemptState.LaunchUncertain) { LateEvidence.Add(blob); return; }    // V14 §20.6 case B.5: recorded, never ingested
++            throw new ProtocolViolation("A1-P09", "resultado tardío fuera de LAUNCH_UNCERTAIN");
++        }
++
++        /// <summary>D2-2 for an attempt in LAUNCHING during a REBASE_RECONCILIATION.</summary>
++        public static void CheckLaunchingTarget(string target, IReadOnlyList<IReadOnlyDictionary<string, string>> history, LaunchingTargetRule rule)
++        {
++            var current = history[^1];
++            if (current.ContainsKey(target)) return;
++            if (rule == LaunchingTargetRule.Chain)
++            {
++                var c = target;
++                foreach (var map in history) if (map.TryGetValue(c, out var img)) c = img;
++                if (c != target && current.Values.Contains(c)) return;
++            }
++            throw new ProtocolViolation("A1-P08", "el Target del intento en LAUNCHING no figura en el mapa nuevo: STOP sin publicar");
++        }
++    }
++
++    public class I62OrchestrationExperimentalTests
++    {
++        private static ArchitectBudgetEntry Loop(int consumedVersions)
++        {
++            var e = new ArchitectBudgetEntry("ARL-10", new AuthorizationRecord("A1", Budget.Frozen));
++            for (var i = 0; i < consumedVersions; i++) e.Reserve(newVersion: true, newLogicalRequest: true);
++            return e;
++        }
++
++        [Fact]
++        public void C4_ReplacementWithCapsEqualToConsumption_IsAccepted_AndTheNextReservationIsRefused()
++        {
++            var e = Loop(2);
++            e.Replace(new AuthorizationRecord("A2eq", new Budget(2, 2, 3)));
++            Assert.Equal(new Budget(2, 2, 3), e.Caps);
++            Assert.Equal(new Budget(2, 2, 2), e.Used);                                       // no reset
++            Assert.Equal("SUPERSEDED", e.Authorizations[0].EndedReason);
++            Assert.Equal("A1-F01", Assert.Throws<ProtocolViolation>(() => e.Reserve(true, true)).Rule);
++        }
++
++        [Fact]
++        public void C4_ReplacementWithCapsBelowConsumption_CannotBeRecorded()
++        {
++            var e = Loop(2);
++            Assert.Equal("A1-F01", Assert.Throws<ProtocolViolation>(() => e.Replace(new AuthorizationRecord("A2low", new Budget(1, 1, 3)))).Rule);
++        }
++
++        [Fact]
++        public void C1_ExpiredLoop_ClosesOnlyWithTheDecision_AndExpiredIsNeverRewritten()
++        {
++            var e = Loop(1);
++            e.Current.End("EXPIRED");
++            Assert.Equal("A1-P07", Assert.Throws<ProtocolViolation>(() => e.Close(decision: null, liveWork: false)).Rule);
++            Assert.Equal("A1-P06", Assert.Throws<ProtocolViolation>(() => e.Current.End("SUPERSEDED")).Rule);
++            e.Close("CLOSE-10", liveWork: false);
++            Assert.True(e.Closed);
++        }
++
++        [Theory]
++        [InlineData(ReviewerBlockingScope.LoopOnly, true)]      // A-1 39c2f831: defect A62-A1A-01 reproduced
++        [InlineData(ReviewerBlockingScope.Unit, false)]         // A-1 cdcd98d2: corrected
++        public void C2_InheritedBlocking_AndANewAuthority(ReviewerBlockingScope scope, bool satisfiedWithInheritedBlockingOpen)
++        {
++            var r = new ReviewerLoops(scope);
++            r.Open("GC-1");
++            r.Request("R1");
++            r.Lineages.Add(new Lineage("LIN-R1", "REVIEWER", "BLOCKING", "R1", Open: true));
++            r.End("EXHAUSTED");
++            r.Close("RCLOSE-R1");                                                              // (E): EXHAUSTED kept, BLOCKING still open
++            Assert.Equal("A1-R05", Assert.Throws<ProtocolViolation>(() => r.Open("GC-1")).Rule);   // no resurrection
++            r.Open("GC-2");
++            r.Request("R2");
++            var attempt = Record.Exception(() => r.Satisfy(validResultIngested: true));
++            Assert.Equal(satisfiedWithInheritedBlockingOpen, attempt == null);
++            if (attempt != null)
++            {
++                Assert.Equal("A1-R02", ((ProtocolViolation)attempt).Rule);
++                r.CloseLineage("LIN-R1");                                                     // the REVIEWER disposes its inherited lineage
++                r.Satisfy(validResultIngested: true);
++            }
++            r.Close(decision: null);                                                          // (S)
++            Assert.Equal(2, r.Closures.Count);
++            Assert.Equal("EXHAUSTED", r.Closures[0].Reason);
++        }
++
++        [Fact]
++        public void C5_LateResultAfterUncertainLaunch_IsEvidenceOnly_AndACancelledAttemptNeverRelaunches()
++        {
++            var first = new Attempt();
++            first.Move(AttemptState.Launching);
++            first.Move(AttemptState.Launched);
++            first.Move(AttemptState.LaunchUncertain);
++            var rerun = new Attempt();
++            rerun.Move(AttemptState.CancelledBeforeLaunch);
++            first.LateResult("blob-late");
++            Assert.Single(first.LateEvidence);
++            Assert.Equal(AttemptState.LaunchUncertain, first.State);
++            Assert.Equal("A1-P09", Assert.Throws<ProtocolViolation>(() => first.Move(AttemptState.ResultReceived)).Rule);
++            Assert.Equal("A1-P09", Assert.Throws<ProtocolViolation>(() => rerun.Move(AttemptState.Launching)).Rule);
++        }
++
++        [Theory]
++        [InlineData(LaunchingTargetRule.CurrentMapOnly, false)]  // A-1 D2-2 as written: second rebase STOPs (F4X-OBS-01)
++        [InlineData(LaunchingTargetRule.Chain, true)]            // alternative of package question 17
++        public void C3_SecondRebaseWithAPendingLaunching(LaunchingTargetRule rule, bool accepted)
++        {
++            var m1 = new Dictionary<string, string> { ["c1"] = "c1p", ["a0"] = "a0p" };
++            var m2 = new Dictionary<string, string> { ["c1p"] = "c1pp", ["a0p"] = "a0pp" };
++            Attempt.CheckLaunchingTarget("c1", new[] { m1 }, rule);                            // first rebase: fine under both rules
++            var second = Record.Exception(() => Attempt.CheckLaunchingTarget("c1", new IReadOnlyDictionary<string, string>[] { m1, m2 }, rule));
++            Assert.Equal(accepted, second == null);
++            if (second != null) Assert.Equal("A1-P08", ((ProtocolViolation)second).Rule);
++        }
++
++        [Fact]
++        public void TwoRebases_WithTheCrashResolvedBetweenThem_ReplanTheUnlaunchedAttempt()
++        {
++            var a = new Attempt();
++            a.Move(AttemptState.Launching);
++            a.Move(AttemptState.BudgetReserved);                                                // B.1: not started, validity open
++            a.Move(AttemptState.BudgetReserved);                                                // replanned in the second reconciliation (D2-2)
++            Assert.Equal(AttemptState.BudgetReserved, a.State);
++        }
++    }
++}

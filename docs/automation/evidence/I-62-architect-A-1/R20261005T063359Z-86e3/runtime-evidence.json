@@ -1,0 +1,34 @@
+{
+ "RunId": "R20261005T063359Z-86e3",
+ "LaunchedBy": "Owner, desde la tarea de la app task_7b4dd3ee (creada una vez por la sesión autora)",
+ "Session": {
+  "SessionId": "local_5ac1ec2e-cc4f-46ab-87f8-6ad54055efd6",
+  "CreatedAt": "2026-10-05T06:40:39.871Z",
+  "LastActivityAt": "2026-10-05T07:02:35.555Z",
+  "Model": "claude-opus-5-5",
+  "Effort": "xhigh",
+  "FastMode": "off",
+  "IsRemote": false,
+  "OriginCwd": "D:/r62-arch-a1r3",
+  "Worktree": "D:/Documentos/Worktrees/r62-arch-a1r3/beautiful-ellis-b9fc99",
+  "SourceBranch": "main",
+  "Source": "get_session (metadatos de la app), medidos por la sesión autora"
+ },
+ "Transcript": {
+  "Versioned": false,
+  "Path": "~/.claude/projects/D--Documentos-Worktrees-r62-arch-a1r3-beautiful-ellis-b9fc99/9b040689-5d34-4f6c-8210-fa48f4d2832c.jsonl",
+  "Bytes": 2389753,
+  "Sha256": "759e01beb64f7229600dac725257d75f52ee8ae790e4f84871027fb4cb34782c",
+  "RuntimeVersion": "2.1.286",
+  "AssistantMessagesByModel": {
+   "claude-opus-5-5": 106
+  },
+  "SidechainEntries": 0
+ },
+ "CloneAfterRun": {
+  "Head": "9dcfc08d5171b01df97b3a492a60218c5ab2453e",
+  "StatusPorcelain": "",
+  "WorktreeHead": "9dcfc08d"
+ },
+ "Independence": "sesión nueva y separada; cwd en el clon D:/r62-arch-a1r3 (otro repositorio), sin la memoria ni la transcripción de la sesión autora; la lanzó el mismo operador humano (Owner)"
+}
