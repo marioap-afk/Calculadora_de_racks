@@ -34,6 +34,9 @@ Estado:     en curso (cortes F4-A..F4-H); este archivo se completa con el paquet
   literales de los marcadores), 16.29 (orquestación: siguiente acción, bucles del Architect y del REVIEWER, intentos, presupuestos, AUTONOMY_GAP, P-17,
   P-18 y P-21) y 16.30 (planos, MaterializationClose y P-16). Enmiendas de A-1 a textos F3: 16.20 (paso 3 con ResolveBranchRef, `ContinuesLoopInstanceId`
   y vigencia del REVIEWER) y README §14.3 (`VALIDITY` y «Reproducción») y §14.4 (regla 3). README de `agent-execution` §17 y §18 (procedimientos).
+- `DelegationJournal.cs`: diario encadenado (`PrevRelaySha256`, `WindowSeq`), `DS(L, J)` de B.8.2 con la coherencia del `Exit`, los contadores del Q7
+  desde el diario (S-04), el mínimo conservador de B.8.5 y la clasificación R-1/R-2/R-3 de los commits posteriores a un Q0 sin diario.
+  `GitCommitStateTree` lee el árbol del commit de cada punto (los blobs con un solo `ls-tree`); `GitProcessHistory` memoriza los hechos de ids completos.
 - `docs/automation/agent-execution/schemas/automation-state.v2.schema.json`: la emisión exacta de `StateV2Shape.ToJsonSchema()` (guarda C-18 en
   `I62F4StateSchemaTests`).
 - Textos de la adopción de compatibilidad (Anexo E), inactivos hasta `I62_EFFECTIVE_SHA`: `docs/WORKFLOW.md` §12 (punto de entrada, texto
@@ -120,7 +123,9 @@ El RED se captura sustituyendo solo los cuerpos de los métodos nombrados por `t
 - **F4-OBS-07 — commits de la ventana (I-P03, I-P08).** V14 dice «entre p y n solo hay commits del Worker o imágenes del rebase de 16.7» (W-2)
   y «ningún commit del Worker modifica el archivo de estado» (W-3), sin nombrar cómo se reconoce un commit del Worker. El validador usa los hechos
   custodiados por n: un commit de la ventana es del Worker si es ancestro de uno de sus resultados (`last_window.verified_sha`,
-  `unverified_commits[].sha` o el `chain_red_sha` de la tarea de la ventana). Esto equivale a la cadena `BaseSha..CurrentSha` de I-61. La ventana
+  `unverified_commits[].sha` o el `chain_red_sha` de la tarea de la ventana), lo que equivale a la cadena `BaseSha..CurrentSha` de I-61, y si no es
+  un commit de la sesión. Para eso se usa la definición congelada de 16.1 y B.8.6: un commit de la sesión solo toca `docs/automation/` o los documentos
+  de la unidad. El MC de C-15 mostró que el primer criterio solo no basta: un commit de la sesión anterior a los del Worker es ancestro del GREEN. La ventana
   empieza en el Q0, o en su imagen cuando el rebase de la propia ventana lo reescribió (I-P12). Las dos reglas aplican solo con p = Q0: fuera de una
   ventana no hay commits del Worker, y un par de reconciliación no puede contar la imagen de p como escritura del Worker.
 - **F4-OBS-08 — posición de 16.13.** E.1 dice «al final de §16» con la numeración anterior a F1. Las decisiones §32 (punto 4, aceptadas con el GATE PASS
@@ -147,3 +152,8 @@ El RED se captura sustituyendo solo los cuerpos de los métodos nombrados por `t
   comprueba la forma, en el subconjunto que valida `MiniJsonSchema`. La guarda exige igualdad exacta, así que el contrato y el validador no pueden
   divergir. Al escribir la guarda apareció un defecto real de `MiniJsonSchema`: un entero creado como `long` no contaba como número y `minimum` no se
   comprobaba. Se corrigió.
+- **F4-OBS-16 — lectura del diario para `DS`.** B.8.2 nombra la aceptación de `d`, la verificación válida y el cierre declarado sin fijar su forma en
+  `relay-record/v2`. Se leen así: aceptación = registro PLANNING cuyo `Outcome.Acceptance` tiene A1..A8 en `pass` (donde README §4 anota la aceptación);
+  verificación válida = registro VERIFICATION con `Outcome.Kind` COMPLETED; cierre declarado = registro posterior a la aceptación con `Disposition`
+  BLOCKED o STOP (la sesión detiene la ventana y la devuelve al Coordinator). Para el Q7, un lanzamiento cuenta salvo `REJECTED_BEFORE_INVOCATION`, y
+  `LAUNCH_UNCERTAIN` cuenta como incierto (§9.3).

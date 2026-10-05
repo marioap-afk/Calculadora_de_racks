@@ -112,11 +112,15 @@ namespace RackCad.Tests
                 }
 
                 // W-2: the commits of the window are the Worker's — the chain BaseSha..CurrentSha whose results n records (verified_sha,
-                // unverified_commits[], the chain_red_sha of the window's task) — and their images; W-3: none of them writes the state file.
+                // unverified_commits[], the chain_red_sha of the window's task) — and their images, never a commit of the session (16.1 and B.8.6: one that
+                // only touches docs/automation/ or the unit's documents); W-3: none of them writes the state file.
                 var results = WindowResults(n.State);
+                var unitDocs = "docs/initiatives/" + Y.S(n.State, "automation_state.initiative") + "-";
                 foreach (var c in git.Range(start, nCommit).Where(c => c != nCommit))
                 {
-                    Add("I-P03", results.Any(r => git.IsAncestor(c, r)), Short(c) + " is not a commit of the Worker inside the window (W-2)");
+                    var paths = git.ChangedPaths(c);
+                    var session = paths.Count > 0 && paths.All(x => x.StartsWith("docs/automation/", StringComparison.Ordinal) || x.StartsWith(unitDocs, StringComparison.Ordinal));
+                    Add("I-P03", results.Any(r => git.IsAncestor(c, r)) && !session, Short(c) + " is not a commit of the Worker inside the window (W-2)");
                     Add("I-P08", !git.ChangedPaths(c).Contains(statePath), Short(c) + ", a commit of the Worker, modifies the state file (W-3)");
                 }
             }

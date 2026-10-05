@@ -285,13 +285,17 @@ namespace RackCad.Tests
 
         // ------------------------------------------------------------------ a window: I-P03 and I-P08
 
-        // Sha ← Q0k (the Q0) ← Sha3 (RED of T-01) ← Sha2 (GREEN, verified) [← S, a session commit] ← Q7k (the Q7).
-        private static SyntheticGitHistory WindowGraph(bool sessionCommit = false, bool workerWritesState = false)
+        // Sha ← Q0k (the Q0) [← S, a session commit before the Worker] ← Sha3 (RED of T-01) ← Sha2 (GREEN, verified) [← S, a session commit after it]
+        // ← Q7k (the Q7).
+        private static SyntheticGitHistory WindowGraph(bool sessionCommit = false, bool workerWritesState = false, bool sessionFirst = false)
         {
-            var g = new SyntheticGitHistory()
-                .Commit(Sha, null)
-                .Commit(Q0k, Sha, null, (StatePath, "q0"))
-                .Commit(Sha3, Q0k, null, workerWritesState ? new[] { ("tests/RackCad.Tests/EjemploTests.cs", "r"), (StatePath, "w") } : new[] { ("tests/RackCad.Tests/EjemploTests.cs", "r") })
+            var g = new SyntheticGitHistory().Commit(Sha, null).Commit(Q0k, Sha, null, (StatePath, "q0"));
+            if (sessionFirst)
+            {
+                g.Commit(S, Q0k, null, ("docs/automation/evidence/I-99-agent/nota.md", "s"));
+            }
+
+            g.Commit(Sha3, sessionFirst ? S : Q0k, null, workerWritesState ? new[] { ("tests/RackCad.Tests/EjemploTests.cs", "r"), (StatePath, "w") } : new[] { ("tests/RackCad.Tests/EjemploTests.cs", "r") })
                 .Commit(Sha2, Sha3, null, ("src/Ejemplo.cs", "g"));
             if (sessionCommit)
             {
@@ -309,6 +313,7 @@ namespace RackCad.Tests
 
             // W-2: a session commit inside the window.
             Assert.Contains("I-P03", Ids(validator.ValidatePairHistory(Point(3), Q0k, Point(4), Q7k, WindowGraph(sessionCommit: true), StatePath)));
+            Assert.Contains("I-P03", Ids(validator.ValidatePairHistory(Point(3), Q0k, Point(4), Q7k, WindowGraph(sessionFirst: true), StatePath)));
 
             // W-3: a commit of the Worker writes the state file.
             var w3 = Ids(validator.ValidatePairHistory(Point(3), Q0k, Point(4), Q7k, WindowGraph(workerWritesState: true), StatePath));

@@ -37,37 +37,70 @@ namespace RackCad.Tests
 
         /// <summary>The rows of <c>git diff --no-renames --raw from to</c>, or null when the comparison could not run (never an empty pass).</summary>
         IReadOnlyList<GitDiffRow>? DiffRaw(string from, string to) => null;
+
+        /// <summary>The full message of a commit, or null when it is unknown.</summary>
+        string? Message(string commit) => null;
     }
 
     /// <summary>One row of a raw diff: the status letter, both modes and the path (a rename is a delete plus an add; no rename detection).</summary>
     public sealed record GitDiffRow(string Status, string OldMode, string NewMode, string Path);
 
-    /// <summary>The Git CLI over a local repository (used by the reproducible controls on disposable repositories and clean clones).</summary>
+    /// <summary>
+    /// The Git CLI over a local repository (used by the reproducible controls on disposable repositories and clean clones). Facts about full 40-hex ids
+    /// of existing objects never change, so they are memoized per instance; facts about names (refs) or absent objects are always asked again.
+    /// </summary>
     public sealed class GitProcessHistory : IGitHistory
     {
         private readonly string repo;
+        private readonly Dictionary<string, object?> memo = new Dictionary<string, object?>(StringComparer.Ordinal);
 
         public GitProcessHistory(string repo)
         {
             this.repo = repo;
         }
 
-        public bool Exists(string commit) => Run(out _, "cat-file", "-e", commit + "^{commit}") == 0;
+        private static bool FullIds(params string[] ids) => ids.All(i => i.Length == 40 && i.All(ch => (ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f')));
+
+        private T Memo<T>(string key, bool fixedInputs, Func<T> compute, Func<T, bool> stable)
+        {
+            if (fixedInputs && memo.TryGetValue(key, out var known))
+            {
+                return (T)known!;
+            }
+
+            var value = compute();
+            if (fixedInputs && stable(value))
+            {
+                memo[key] = value;
+            }
+
+            return value;
+        }
+
+        public bool Exists(string commit) => Memo("e|" + commit, FullIds(commit), () => Run(out _, "cat-file", "-e", commit + "^{commit}") == 0, v => v);
 
         public bool IsAncestor(string ancestor, string descendant) =>
-            Exists(ancestor) && Exists(descendant) && Run(out _, "merge-base", "--is-ancestor", ancestor, descendant) == 0;
+            Exists(ancestor) && Exists(descendant)
+            && Memo("a|" + ancestor + "|" + descendant, FullIds(ancestor, descendant), () => Run(out _, "merge-base", "--is-ancestor", ancestor, descendant) == 0, _ => true);
 
-        public string? BlobAt(string commit, string path) => Run(out var o, "rev-parse", commit + ":" + path) == 0 ? o.Trim() : null;
+        public string? BlobAt(string commit, string path) =>
+            Memo("b|" + commit + "|" + path, FullIds(commit), () => Run(out var o, "rev-parse", commit + ":" + path) == 0 ? o.Trim() : null, v => v != null);
 
         public IReadOnlyList<string> Range(string from, string to) =>
-            Run(out var o, "rev-list", "--reverse", from + ".." + to) == 0 ? o.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToList() : new List<string>();
+            Memo("r|" + from + "|" + to, FullIds(from, to) && Exists(from) && Exists(to),
+                () => Run(out var o, "rev-list", "--reverse", from + ".." + to) == 0 ? o.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToList() : new List<string>(),
+                _ => true);
 
         public IReadOnlyList<string> ChangedPaths(string commit) =>
-            Run(out var o, "diff-tree", "--no-commit-id", "--name-only", "-r", "--root", commit) == 0
-                ? o.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToList()
-                : new List<string>();
+            Memo("c|" + commit, FullIds(commit) && Exists(commit),
+                () => Run(out var o, "diff-tree", "--no-commit-id", "--name-only", "-r", "--root", commit) == 0
+                    ? o.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToList()
+                    : new List<string>(),
+                _ => true);
 
-        public string? PatchId(string commit)
+        public string? PatchId(string commit) => Memo("p|" + commit, FullIds(commit), () => ComputePatchId(commit), v => v != null);
+
+        private string? ComputePatchId(string commit)
         {
             if (Run(out var show, "show", commit) != 0)
             {
@@ -85,7 +118,9 @@ namespace RackCad.Tests
             return p.ExitCode == 0 ? first : null;
         }
 
-        public string? ObjectType(string sha) => Run(out var o, "cat-file", "-t", sha) == 0 ? o.Trim() : null;
+        public string? ObjectType(string sha) => Memo("t|" + sha, FullIds(sha), () => Run(out var o, "cat-file", "-t", sha) == 0 ? o.Trim() : null, v => v != null);
+
+        public string? Message(string commit) => Memo("m|" + commit, FullIds(commit), () => Run(out var o, "log", "-1", "--format=%B", commit) == 0 ? o : null, v => v != null);
 
         public IReadOnlyList<GitDiffRow>? DiffRaw(string from, string to)
         {
