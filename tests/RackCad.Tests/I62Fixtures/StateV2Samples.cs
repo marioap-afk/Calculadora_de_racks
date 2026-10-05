@@ -280,6 +280,41 @@ namespace RackCad.Tests
             return p.State;
         }
 
+        public const string WindowMapPath = "docs/automation/evidence/I-99-agent/T-01/w1/rebase-map.json";
+
+        /// <summary>The RebaseMap of a rebase of 16.7 inside window 1, recorded in its journal: the Worker's W1 (Sha2) → Img2.</summary>
+        public static JsonObject WindowRebaseMapJson() => new JsonObject
+        {
+            ["RunId"] = "R20261003T020202Z-ef01",
+            ["TaskId"] = "T-01",
+            ["MainBeforeSha"] = Sha,
+            ["MainAfterSha"] = "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            ["BranchBeforeSha"] = Sha2,
+            ["BranchAfterSha"] = Img2,
+            ["Commits"] = new JsonArray(
+                new JsonObject { ["OriginalSha"] = Sha2, ["ImageSha"] = Img2, ["PatchId"] = "3333333333333333333333333333333333333333", ["PatchIdEqual"] = true }),
+            ["StateFields"] = new JsonArray(new JsonObject { ["Field"] = "last_evidence_commit", ["OriginalSha"] = Sha, ["ImageSha"] = Sha }),
+            ["CiRuns"] = new JsonArray(),
+            ["Unmapped"] = new JsonArray(),
+        };
+
+        /// <summary>
+        /// The Q7 that closes window 1 after a rebase of 16.7 inside it (I-P12): last_rebase of its own record_version, the window's map custodied
+        /// and appended to rebase_history (A-1 D2-9), and the window's own results (verified_sha) on the rebased branch.
+        /// </summary>
+        public static StatePoint WindowRebaseClose()
+        {
+            var q7 = Point(4);
+            var tree = (InMemoryStateTree)q7.Tree;
+            var map = tree.PutJson(WindowMapPath, WindowRebaseMapJson());
+            var custody = (YamlMap)q7.State["custody"]!;
+            custody["last_rebase"] = M(("map", map), ("main_before", Sha), ("main_after", "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"), ("branch_before", Sha2),
+                ("branch_after", Img2), ("record_version", 4L));
+            custody["rebase_history"] = L(Clone(map));
+            ((YamlMap)custody["last_window"]!)["verified_sha"] = Img2;
+            return q7;
+        }
+
         /// <summary>The point with the given record_version from a fresh custody history (each call builds independent copies).</summary>
         public static StatePoint Point(long rv) => CustodyHistory().Single(x => Y.N(x.State, "custody.record_version") == rv);
 

@@ -9,5 +9,10 @@ namespace RackCad.Tests
         private void FileOrchestration(StatePoint point, List<StateViolation> v)
         {
         }
+
+        // I-P13 (orchestration pair invariants, with A-1): slice F4-D.
+        private void PairOrchestration(StatePoint p, StatePoint n, PairContext ctx, List<StateViolation> v)
+        {
+        }
     }
 }

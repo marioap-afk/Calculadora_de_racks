@@ -1,0 +1,463 @@
+$ dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter "FullyQualifiedName~I62F4StateV2PairInvariantTests"  (exit 1)
+Serie de pruebas para C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll (.NETCoreApp,Version=v8.0)
+1 archivos de prueba en total coincidieron con el patrón especificado.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.29)
+[xUnit.net 00:00:00.25]   Discovering: RackCad.Tests
+[xUnit.net 00:00:05.03]   Discovered:  RackCad.Tests
+[xUnit.net 00:00:05.06]   Starting:    RackCad.Tests
+[xUnit.net 00:00:05.13]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.13]       Stack Trace:
+[xUnit.net 00:00:05.13]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.13]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(153,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(String mutation, String caseName)
+[xUnit.net 00:00:05.13]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:05.13]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:05.13]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.13]       Stack Trace:
+[xUnit.net 00:00:05.13]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.13]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(153,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(String mutation, String caseName)
+[xUnit.net 00:00:05.13]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(Object, Span`1)
+[xUnit.net 00:00:05.13]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.14]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.14]       Stack Trace:
+[xUnit.net 00:00:05.14]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.14]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(153,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(String mutation, String caseName)
+[xUnit.net 00:00:05.14]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(Object, Span`1)
+[xUnit.net 00:00:05.14]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.14]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.14]       Stack Trace:
+[xUnit.net 00:00:05.14]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.14]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(153,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(String mutation, String caseName)
+[xUnit.net 00:00:05.14]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(Object, Span`1)
+[xUnit.net 00:00:05.14]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.14]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.14]       Stack Trace:
+[xUnit.net 00:00:05.14]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.14]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(153,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(String mutation, String caseName)
+[xUnit.net 00:00:05.14]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(Object, Span`1)
+[xUnit.net 00:00:05.14]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.14]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.14]       Stack Trace:
+[xUnit.net 00:00:05.14]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.14]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(39,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheThreeKindsOfPositivePairAreGreenAtTheSameTime()
+[xUnit.net 00:00:05.14]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:05.14]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:05.14]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.14]       Stack Trace:
+[xUnit.net 00:00:05.14]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.14]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(114,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed)
+[xUnit.net 00:00:05.14]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:05.14]            at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.14]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.14]       Stack Trace:
+[xUnit.net 00:00:05.14]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.14]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(114,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed)
+[xUnit.net 00:00:05.14]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+[xUnit.net 00:00:05.14]            at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.14]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.14]       Stack Trace:
+[xUnit.net 00:00:05.14]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.15]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(114,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed)
+[xUnit.net 00:00:05.15]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+[xUnit.net 00:00:05.15]            at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.15]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.15]       Stack Trace:
+[xUnit.net 00:00:05.15]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.15]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(114,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed)
+[xUnit.net 00:00:05.15]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+[xUnit.net 00:00:05.15]            at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(mutation: "I-P05:attempts", caseName: "I-P05 attempts decreases") [17 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(String mutation, String caseName) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 153
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(mutation: "I-P11", caseName: "I-P11/D2-9 reconciliation without the new map in t"···) [1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(String mutation, String caseName) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 153
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(mutation: "I-P10", caseName: "I-P10 reconciliation loses verified_sha") [3 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(String mutation, String caseName) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 153
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(mutation: "I-P09:g0-once", caseName: "I-P09 second g0 transition") [< 1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(String mutation, String caseName) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 153
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(mutation: "I-P02", caseName: "I-P02 Q0 omitted (QU → Q7)") [< 1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(String mutation, String caseName) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 153
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheThreeKindsOfPositivePairAreGreenAtTheSameTime [1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheThreeKindsOfPositivePairAreGreenAtTheSameTime() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 39
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P01 record_version skipped", prv: 4, nrv: 5, mutation: Action`2 { Method = Void <Negatives>b__4_0(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P01"], allowed: []) [1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 114
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P02 Q0 omitted (QU → Q7)", prv: 2, nrv: 4, mutation: Action`2 { Method = Void <Negatives>b__4_1(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P02"], allowed: ["I-P05"]) [1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 114
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P02 two Q0 in a window", prv: 3, nrv: 3, mutation: Action`2 { Method = Void <Negatives>b__4_2(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P02"], allowed: []) [< 1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 114
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P02 QH → QU", prv: 7, nrv: 8, mutation: Action`2 { Method = Void <Negatives>b__4_3(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P02"], allowed: ["I-P07", "I-P09"]) [8 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 114
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.17]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.17]       Stack Trace:
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(114,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed)
+[xUnit.net 00:00:05.17]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+[xUnit.net 00:00:05.17]            at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.17]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.17]       Stack Trace:
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(114,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed)
+[xUnit.net 00:00:05.17]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+[xUnit.net 00:00:05.17]            at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.17]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.17]       Stack Trace:
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(114,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed)
+[xUnit.net 00:00:05.17]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+[xUnit.net 00:00:05.17]            at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.17]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.17]       Stack Trace:
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(114,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed)
+[xUnit.net 00:00:05.17]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+[xUnit.net 00:00:05.17]            at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.17]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.17]       Stack Trace:
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(114,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed)
+[xUnit.net 00:00:05.17]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+[xUnit.net 00:00:05.17]            at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.17]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.17]       Stack Trace:
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(114,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed)
+[xUnit.net 00:00:05.17]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+[xUnit.net 00:00:05.17]            at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.17]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.17]       Stack Trace:
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(114,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed)
+[xUnit.net 00:00:05.17]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+[xUnit.net 00:00:05.17]            at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.17]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.17]       Stack Trace:
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(114,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed)
+[xUnit.net 00:00:05.17]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+[xUnit.net 00:00:05.17]            at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.17]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.17]       Stack Trace:
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(114,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed)
+[xUnit.net 00:00:05.17]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+[xUnit.net 00:00:05.17]            at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.17]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.17]       Stack Trace:
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(114,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed)
+[xUnit.net 00:00:05.17]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+[xUnit.net 00:00:05.17]            at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P04 Q0 without seq + 1", prv: 2, nrv: 3, mutation: Action`2 { Method = Void <Negatives>b__4_4(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P04"], allowed: []) [1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 114
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P05 attempts decreases", prv: 4, nrv: 5, mutation: Action`2 { Method = Void <Negatives>b__4_5(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P05"], allowed: []) [1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 114
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P05 attempts in a Q0 that is not a correction", prv: 2, nrv: 3, mutation: Action`2 { Method = Void <Negatives>b__4_6(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P05"], allowed: []) [1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 114
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P05 QU ORDINARY touches the window", prv: 4, nrv: 5, mutation: Action`2 { Method = Void <Negatives>b__4_7(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P05"], allowed: []) [< 1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 114
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P05 QU ORDINARY touches a counter", prv: 4, nrv: 5, mutation: Action`2 { Method = Void <Negatives>b__4_8(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P05"], allowed: []) [< 1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 114
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P05 counter decreases", prv: 4, nrv: 5, mutation: Action`2 { Method = Void <Negatives>b__4_9(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P05"], allowed: []) [< 1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 114
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P05 correction_launches rewritten", prv: 4, nrv: 5, mutation: Action`2 { Method = Void <Negatives>b__4_10(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P05"], allowed: []) [1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 114
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P06 effective_sha", prv: 4, nrv: 5, mutation: Action`2 { Method = Void <Negatives>b__4_11(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P06"], allowed: []) [2 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 114
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P07 binding in a QU ORDINARY", prv: 4, nrv: 5, mutation: Action`2 { Method = Void <Negatives>b__4_12(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P07"], allowed: []) [< 1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 114
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P09 second g0 transition", prv: 2, nrv: 3, mutation: Action`2 { Method = Void <Negatives>b__4_13(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P09"], allowed: []) [1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 114
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.17]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.17]       Stack Trace:
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(114,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed)
+[xUnit.net 00:00:05.17]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+[xUnit.net 00:00:05.17]            at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.17]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.17]       Stack Trace:
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(114,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed)
+[xUnit.net 00:00:05.17]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+[xUnit.net 00:00:05.17]            at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.17]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.17]       Stack Trace:
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(114,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed)
+[xUnit.net 00:00:05.17]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+[xUnit.net 00:00:05.17]            at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.17]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.17]       Stack Trace:
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.17]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(114,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed)
+[xUnit.net 00:00:05.17]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+[xUnit.net 00:00:05.17]            at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.18]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.18]       Stack Trace:
+[xUnit.net 00:00:05.18]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.18]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(114,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed)
+[xUnit.net 00:00:05.18]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+[xUnit.net 00:00:05.18]            at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.18]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.18]       Stack Trace:
+[xUnit.net 00:00:05.18]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.18]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(114,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed)
+[xUnit.net 00:00:05.18]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+[xUnit.net 00:00:05.18]            at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.18]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.18]       Stack Trace:
+[xUnit.net 00:00:05.18]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.18]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(114,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed)
+[xUnit.net 00:00:05.18]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+[xUnit.net 00:00:05.18]            at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.18]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.18]       Stack Trace:
+[xUnit.net 00:00:05.18]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.18]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(114,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed)
+[xUnit.net 00:00:05.18]            at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+[xUnit.net 00:00:05.18]            at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.18]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.18]       Stack Trace:
+[xUnit.net 00:00:05.18]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.18]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(31,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_ConsecutivePointsOfAValidHistoryPassEveryPairInvariant()
+[xUnit.net 00:00:05.18]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:05.18]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P09 acceptance without the delegation marker", prv: 1, nrv: 2, mutation: Action`2 { Method = Void <Negatives>b__4_14(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P09"], allowed: []) [1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 114
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P10 reconciliation loses verified_sha", prv: 5, nrv: 6, mutation: Action`2 { Method = Void <Negatives>b__4_15(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P10"], allowed: []) [1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 114
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P10 chain RED is not the image", prv: 5, nrv: 6, mutation: Action`2 { Method = Void <Negatives>b__4_16(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P10"], allowed: []) [1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 114
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P10 reconciliation changes attempts", prv: 5, nrv: 6, mutation: Action`2 { Method = Void <Negatives>b__4_17(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P10"], allowed: ["I-P05"]) [1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 114
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P10 map without a StateFields entry", prv: 5, nrv: 6, mutation: Action`2 { Method = Void <Negatives>b__4_18(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P10"], allowed: []) [3 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 114
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P05/D2-7 reconciliation changes the phase", prv: 5, nrv: 6, mutation: Action`2 { Method = Void <Negatives>b__4_19(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P05"], allowed: []) [1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 114
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P11/D2-9 reconciliation without the new map in t"···, prv: 5, nrv: 6, mutation: Action`2 { Method = Void <Negatives>b__4_20(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P11"], allowed: []) [1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 114
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P11/D2-9 history changes without a reconciliatio"···, prv: 6, nrv: 7, mutation: Action`2 { Method = Void <Negatives>b__4_21(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P11"], allowed: []) [1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(String name, Int64 prv, Int64 nrv, Action`2 mutation, String[] required, String[] allowed) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 114
+   at InvokeStub_I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_ConsecutivePointsOfAValidHistoryPassEveryPairInvariant [< 1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_ConsecutivePointsOfAValidHistoryPassEveryPairInvariant() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 31
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:05.19]       System.NotImplementedException : F4-C RED
+[xUnit.net 00:00:05.19]       Stack Trace:
+[xUnit.net 00:00:05.19]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs(39,0): at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context)
+[xUnit.net 00:00:05.19]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs(125,0): at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_I_P12_TheWindowCloseMustReconcileTheWindowsMapsInOrder()
+[xUnit.net 00:00:05.19]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:05.19]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:05.19]   Finished:    RackCad.Tests
+  Con error RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_I_P12_TheWindowCloseMustReconcileTheWindowsMapsInOrder [2 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-C RED
+  Seguimiento de la pila:
+     at RackCad.Tests.StateV2Validator.ValidatePair(StatePoint p, StatePoint n, PairContext context) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\StateV2Validator.Pair.cs:line 39
+   at RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_I_P12_TheWindowCloseMustReconcileTheWindowsMapsInOrder() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4StateV2PairInvariantTests.cs:line 125
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+Pruebas totales: 30
+     Incorrecto: 30
+ Tiempo total: 6.0663 Segundos
+[xUnit.net 00:00:05.13]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(mutation: "I-P05:attempts", caseName: "I-P05 attempts decreases") [FAIL]
+[xUnit.net 00:00:05.13]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(mutation: "I-P11", caseName: "I-P11/D2-9 reconciliation without the new map in t"···) [FAIL]
+[xUnit.net 00:00:05.14]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(mutation: "I-P10", caseName: "I-P10 reconciliation loses verified_sha") [FAIL]
+[xUnit.net 00:00:05.14]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(mutation: "I-P09:g0-once", caseName: "I-P09 second g0 transition") [FAIL]
+[xUnit.net 00:00:05.14]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheMutationClassesOfThePairInvariantsAreDetected(mutation: "I-P02", caseName: "I-P02 Q0 omitted (QU → Q7)") [FAIL]
+[xUnit.net 00:00:05.14]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_TheThreeKindsOfPositivePairAreGreenAtTheSameTime [FAIL]
+[xUnit.net 00:00:05.14]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P01 record_version skipped", prv: 4, nrv: 5, mutation: Action`2 { Method = Void <Negatives>b__4_0(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P01"], allowed: []) [FAIL]
+[xUnit.net 00:00:05.14]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P02 Q0 omitted (QU → Q7)", prv: 2, nrv: 4, mutation: Action`2 { Method = Void <Negatives>b__4_1(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P02"], allowed: ["I-P05"]) [FAIL]
+[xUnit.net 00:00:05.14]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P02 two Q0 in a window", prv: 3, nrv: 3, mutation: Action`2 { Method = Void <Negatives>b__4_2(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P02"], allowed: []) [FAIL]
+[xUnit.net 00:00:05.15]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P02 QH → QU", prv: 7, nrv: 8, mutation: Action`2 { Method = Void <Negatives>b__4_3(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P02"], allowed: ["I-P07", "I-P09"]) [FAIL]
+[xUnit.net 00:00:05.17]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P04 Q0 without seq + 1", prv: 2, nrv: 3, mutation: Action`2 { Method = Void <Negatives>b__4_4(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P04"], allowed: []) [FAIL]
+[xUnit.net 00:00:05.17]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P05 attempts decreases", prv: 4, nrv: 5, mutation: Action`2 { Method = Void <Negatives>b__4_5(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P05"], allowed: []) [FAIL]
+[xUnit.net 00:00:05.17]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P05 attempts in a Q0 that is not a correction", prv: 2, nrv: 3, mutation: Action`2 { Method = Void <Negatives>b__4_6(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P05"], allowed: []) [FAIL]
+[xUnit.net 00:00:05.17]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P05 QU ORDINARY touches the window", prv: 4, nrv: 5, mutation: Action`2 { Method = Void <Negatives>b__4_7(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P05"], allowed: []) [FAIL]
+[xUnit.net 00:00:05.17]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P05 QU ORDINARY touches a counter", prv: 4, nrv: 5, mutation: Action`2 { Method = Void <Negatives>b__4_8(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P05"], allowed: []) [FAIL]
+[xUnit.net 00:00:05.17]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P05 counter decreases", prv: 4, nrv: 5, mutation: Action`2 { Method = Void <Negatives>b__4_9(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P05"], allowed: []) [FAIL]
+[xUnit.net 00:00:05.17]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P05 correction_launches rewritten", prv: 4, nrv: 5, mutation: Action`2 { Method = Void <Negatives>b__4_10(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P05"], allowed: []) [FAIL]
+[xUnit.net 00:00:05.17]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P06 effective_sha", prv: 4, nrv: 5, mutation: Action`2 { Method = Void <Negatives>b__4_11(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P06"], allowed: []) [FAIL]
+[xUnit.net 00:00:05.17]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P07 binding in a QU ORDINARY", prv: 4, nrv: 5, mutation: Action`2 { Method = Void <Negatives>b__4_12(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P07"], allowed: []) [FAIL]
+[xUnit.net 00:00:05.17]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P09 second g0 transition", prv: 2, nrv: 3, mutation: Action`2 { Method = Void <Negatives>b__4_13(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P09"], allowed: []) [FAIL]
+[xUnit.net 00:00:05.17]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P09 acceptance without the delegation marker", prv: 1, nrv: 2, mutation: Action`2 { Method = Void <Negatives>b__4_14(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P09"], allowed: []) [FAIL]
+[xUnit.net 00:00:05.17]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P10 reconciliation loses verified_sha", prv: 5, nrv: 6, mutation: Action`2 { Method = Void <Negatives>b__4_15(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P10"], allowed: []) [FAIL]
+[xUnit.net 00:00:05.17]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P10 chain RED is not the image", prv: 5, nrv: 6, mutation: Action`2 { Method = Void <Negatives>b__4_16(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P10"], allowed: []) [FAIL]
+[xUnit.net 00:00:05.17]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P10 reconciliation changes attempts", prv: 5, nrv: 6, mutation: Action`2 { Method = Void <Negatives>b__4_17(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P10"], allowed: ["I-P05"]) [FAIL]
+[xUnit.net 00:00:05.18]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P10 map without a StateFields entry", prv: 5, nrv: 6, mutation: Action`2 { Method = Void <Negatives>b__4_18(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P10"], allowed: []) [FAIL]
+[xUnit.net 00:00:05.18]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P05/D2-7 reconciliation changes the phase", prv: 5, nrv: 6, mutation: Action`2 { Method = Void <Negatives>b__4_19(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P05"], allowed: []) [FAIL]
+[xUnit.net 00:00:05.18]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P11/D2-9 reconciliation without the new map in t"···, prv: 5, nrv: 6, mutation: Action`2 { Method = Void <Negatives>b__4_20(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P11"], allowed: []) [FAIL]
+[xUnit.net 00:00:05.18]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_EachPairInvariantRejectsItsNegativeCase(name: "I-P11/D2-9 history changes without a reconciliatio"···, prv: 6, nrv: 7, mutation: Action`2 { Method = Void <Negatives>b__4_21(RackCad.Tests.StatePoint, RackCad.Tests.StatePoint), Target = <>c { } }, required: ["I-P11"], allowed: []) [FAIL]
+[xUnit.net 00:00:05.18]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_ConsecutivePointsOfAValidHistoryPassEveryPairInvariant [FAIL]
+[xUnit.net 00:00:05.19]     RackCad.Tests.I62F4StateV2PairInvariantTests.I62_C18_I_P12_TheWindowCloseMustReconcileTheWindowsMapsInOrder [FAIL]
+No se pudo ejecutar la serie de pruebas.
