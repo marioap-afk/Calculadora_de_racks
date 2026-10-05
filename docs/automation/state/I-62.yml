@@ -7,7 +7,7 @@ automation_state:
   state: waiting
   gate: dependency
   attempts: 0
-  next_action: orden nueva del Coordinator (decisions §42): A62-A1T-01 ACCEPTED REQUIRED y O1..O3 corregidos en A-1 (blob c01899a7, PROPUESTA; evidence §55); siguiente = CI del commit de corrección, kit v4 con contrato de acciones y auditor nuevos, y UNA revisión formal del Architect sobre ese objeto exacto (HUMAN_LAUNCH_REQUIRED si exige un clic); tras ella, custodia y parada; F4 sigue sin abrir.
+  next_action: orden nueva del Coordinator (decisions §42): A-1 corregida para A62-A1T-01 y O1..O3 (blob c01899a7, commit ca09ade8, CI 37329298556 success; evidence §55-§56); kit v4 R20261005T151303Z-c64c custodiado antes del lanzamiento (auditor v4, selftest 11/11); UNA revisión formal del Architect = HUMAN_LAUNCH_REQUIRED (tarea de la app); tras ella, auditoría, custodia, CI y parada; F4 sigue sin abrir.
   last_evidence_commit: 83035d999599384ea74f7b178e3d6761ffa5bb01
 execution_context:
   mode: manual

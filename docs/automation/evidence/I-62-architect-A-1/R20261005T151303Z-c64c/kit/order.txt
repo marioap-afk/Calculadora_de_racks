@@ -1,0 +1,430 @@
+I-62 — ORDEN NUEVA DEL COORDINATOR
+CORRECCIÓN A62-A1T-01 + REVISIÓN POSTERIOR ACOTADA
+
+1. NATURALEZA Y ALCANCE
+
+Esta es una autorización NUEVA.
+
+No prorroga retrospectivamente la orden nocturna.
+No restaura sus invocaciones consumidas.
+No modifica retrospectivamente el contrato de ninguna revisión anterior.
+
+Autoriza:
+
+A. Corregir A62-A1T-01 en la A-1 todavía PROPUESTA.
+B. Incorporar A62-A1T-O1..O3 dentro del alcance indicado.
+C. Actualizar el arnés, las pruebas experimentales afectadas y los registros propios.
+D. Publicar la corrección y obtener su evidencia y CI exigibles.
+E. Ejecutar UNA nueva revisión Architect del objeto corregido, exclusivamente
+   mediante un transporte limpio, disponible y autorizado.
+F. Custodiar su resultado y obtener la CI de esa custodia.
+
+No detener toda la ejecución entre D y E solo para pedir otra autorización:
+esta orden ya autoriza esa única revisión, sujeta a las condiciones siguientes.
+
+No autoriza F4 de producción, aplicación de A-1, A-2, integración,
+decisiones Owner ni un segundo intento Architect.
+
+La autorización termina al completar estos entregables, ante revocación
+o al alcanzar una frontera que impida continuar legalmente.
+
+
+2. REFERENCIAS DE PARTIDA
+
+Rama:
+architecture/portabilidad-coordinador-principal
+
+Custodia de la revisión:
+b76a6dabb35acf09436f16d8ac7dacc3a9179f7f
+
+CI de esa custodia:
+37323117283
+push sobre el SHA anterior
+cuatro jobs requeridos en success
+
+Objeto revisado:
+411e01ce4176e4fe6648ea3e9ff2febc219ff438
+
+A-1:
+docs/initiatives/I-62-A-1.md
+
+Blob revisado:
+03dd822d1310a0ce298eba6da2321383aa5e4887
+
+Paquete revisado:
+docs/initiatives/I-62-architect-package-A-1.md
+
+Blob:
+a97dea77b0f9ebec3af4f7d1d7a08fb41030ab26
+
+Registro:
+docs/initiatives/I-62-architect-review-A-1-r4.md
+
+Corrida:
+R20261005T073911Z-2dfe
+
+Estas referencias identifican la entrega dispuesta.
+Antes de escribir, comprueba si existen decisiones o commits posteriores.
+No retrocedas ni sobrescribas avances.
+
+
+3. DISPOSICIÓN DEL COORDINATOR
+
+A62-A1T-01 = ACCEPTED REQUIRED.
+
+A62-A1T-O1 = incorporar precisión.
+A62-A1T-O2 = corregir coherencia documental.
+A62-A1T-O3 = añadir negativos faltantes.
+
+La corrida anterior permanece:
+
+FORMAL_ACCREDITATION = NOT_ACCREDITED.
+
+Su hallazgo A62-A1T-01 se adopta como corrección técnica del Coordinator,
+porque la contradicción se reproduce directamente en las cláusulas canónicas.
+
+Conserva el resultado literal del auditor v3.1 y la clasificación posterior.
+No los reemplaces por una corrida “acreditada” retrospectivamente.
+
+Los doce cierres del dictamen permanecen como disposiciones técnicas
+registradas:
+
+- A62-A1-01..06;
+- OBS-A1-01;
+- A62-A1R-01..03;
+- A62-A1S-01..02.
+
+No se ordena reabrirlos ni reimplementar sus correcciones.
+La próxima revisión formal debe ratificar su conservación.
+
+A-1 sigue PROPUESTA.
+No crear A-2 para corregir esta propuesta.
+Preservar mediante Git los blobs anteriores.
+
+No declarar AGREED ni aplicar la enmienda.
+
+
+4. CORRECCIÓN EXACTA DE A62-A1T-01
+
+Problema:
+
+D2-2 exige que el Target.commit histórico de un intento LAUNCHING
+aparezca en el RebaseMap actual o sea ancestro de main_before.
+
+Esa condición no admite el caso:
+
+M1: X → X'
+M2: X' → X''
+
+cuando el intento sigue conservando Target.commit = X.
+
+La historia completa sí resuelve X a X'', pero el mapa actual M2
+no contiene directamente X.
+
+Dirección obligatoria:
+
+D2-2 debe resolver el Target histórico mediante ResolveBranchRef,
+usando la historia completa y ordenada de mapas del estado n
+que se propone publicar, incluido el mapa de la reconciliación actual.
+
+Mantener estas condiciones:
+
+1. La invocación LAUNCHING y su Target original no se reescriben.
+
+2. La resolución acredita la referencia histórica; no determina
+   si el proceso arrancó.
+
+3. El estado del intento, RunId, reserved_at, BudgetSnapshot,
+   contadores, fase y linajes no cambian por esa comprobación.
+
+4. La imagen resuelta debe conservar Path y Blob y cumplir
+   las comprobaciones de D2-10 sobre el HEAD de consumo.
+
+5. Cada eslabón necesario de la cadena debe estar acreditado.
+
+6. No basta con que el último mapa exista.
+   No basta con igualdad de path, semejanza de parches o una
+   sustitución de SHA sin prueba.
+
+7. No inventes en M2 una entrada X → X'' para ocultar que se
+   necesitaba M1. Conserva la historia real.
+
+8. Si falta M1 o cualquier eslabón necesario, la referencia
+   continúa UNRESOLVED y falla cerrado.
+
+9. No publiques primero un punto adicional solo para hacer
+   visible el mapa nuevo. Valida la reconciliación con la historia
+   candidata conforme al procedimiento vigente y custódiala
+   en el punto que corresponde.
+
+10. Evita una referencia autorreferente al commit todavía inexistente
+    del punto n. Usa las identidades ya disponibles según el
+    procedimiento de reconciliación.
+
+Después de reconciliar, D2-6 sigue determinando la recuperación:
+
+- arranque acreditado:
+  continuar con la invocación histórica;
+
+- no arranque acreditado y autorización vigente:
+  replanificar sobre la imagen con InvocationId nuevo y la misma reserva;
+
+- arranque desconocido:
+  LAUNCH_UNCERTAIN, sin relanzamiento silencioso;
+
+- autorización terminada:
+  aplicar las reglas existentes de vigencia y cancelación.
+
+No cambiar estas ramas para resolver el problema del segundo rebase.
+
+
+5. PRUEBAS Y ARTEFACTOS AFECTADOS
+
+Alinear al menos:
+
+- D2-2;
+- sus referencias a D2-6, D2-9, D2-10 y D2-11;
+- C-15 (d)/(e);
+- C-29 (i);
+- A1-P08 del arnés;
+- secuencia experimental c3-obs;
+- descripción y resultados experimentales que todavía esperen
+  el STOP anterior.
+
+Casos obligatorios:
+
+T1. LAUNCHING con un rebase:
+    conserva el comportamiento válido anterior.
+
+T2. LAUNCHING con dos rebases:
+    X → X' → X'', Target histórico X.
+    La reconciliación es válida por la cadena completa.
+
+T3. Mismo caso sin M1:
+    UNRESOLVED por cadena incompleta.
+
+T4. Cadena completa pero contenido distinto:
+    rechazo por identidad de contenido.
+
+T5. Cadena completa:
+    comprobar expresamente que no cambian invocación histórica,
+    RunId, reserva, presupuesto, estado del intento ni linajes.
+
+T6. Después de los dos rebases:
+    prueba de no arranque + vigencia abierta permite replanificar
+    sobre X'' sin consumir otra reserva.
+
+T7. Mismo estado con arranque desconocido:
+    no se fabrica una prueba de no arranque ni se relanza.
+
+T8. Reconstrucción por un sucesor desde un clon limpio:
+    funciona sin depender de objetos originales inalcanzables,
+    memoria, reflog o archivos privados del host anterior.
+
+Usa el método ya establecido para que el clon de prueba no copie
+accidentalmente todos los objetos de un repositorio local.
+
+Captura el fallo del caso T2 antes de corregir A1-P08 y su resultado
+después. No cambies solo el resultado esperado.
+
+Cada negativo debe declarar la regla que debe fallar y demostrar
+que no lo hace por una causa incidental.
+
+
+6. OPCIONALES DE LA REVISIÓN
+
+O1:
+Precisar en D1-17 “abiertas en ese par o después” y la reconstrucción
+mediante last_request, conforme al dictamen.
+
+O2:
+Actualizar las referencias desfasadas de A-1, paquete, descripción
+de A1-P02 y resultados experimentales.
+
+No reescribir resultados históricos: conservarlos y añadir
+la nueva ejecución con su identidad.
+
+O3:
+Añadir los negativos indicados para autoridad SUPERSEDED y para
+A2' de EXECUTION en C-14/C-15.
+
+Si cualquiera de estas tareas exige otro cambio semántico material
+fuera del defecto dispuesto, registrarlo como propuesta separada.
+No incorporarlo silenciosamente.
+
+
+7. CONTRATO DE LA PRÓXIMA REVISIÓN
+
+Antes de invocar, fija un contrato nuevo de acciones y su auditoría.
+La corrida anterior conserva su contrato anterior.
+
+Para evitar repetir los mismos falsos rechazos, el nuevo contrato
+debe declarar expresamente:
+
+A. Navegación a la raíz y a subdirectorios del clon o worktree
+   de revisión. Cambiar de directorio no autoriza leer archivos
+   fuera del cierre.
+
+B. Lecturas y búsquedas únicamente sobre archivos concretos
+   del cierre, en el commit fijado.
+
+C. Comandos de metadatos y hashing que se necesiten, enumerados
+   antes del lanzamiento.
+
+D. Creación y edición de scripts temporales propios exclusivamente
+   dentro del scratchpad de esta corrida, incluido sed -i si se
+   necesita y queda declarado.
+
+E. Lectura de las salidas propias necesarias para comprobar
+   pruebas y tareas de la corrida.
+
+Ningún permiso sobre salidas propias autoriza editar los insumos
+canónicos, scripts custodiados, fuentes del repositorio ni archivos
+de otra sesión.
+
+Comprueba rutas efectivas y posibles escapes por enlaces.
+No uses solo comparación de prefijos de texto.
+
+El auditor debe probar antes del lanzamiento:
+
+- los dos bucles for que antes interpretó como un comando “n”;
+- cd a subdirectorio permitido;
+- edición de un script propio;
+- rechazo de edición de un archivo canónico;
+- rechazo de lectura fuera del cierre;
+- comandos fallidos sin contenido devuelto.
+
+Distingue las rutas del sistema de archivos de las rutas de objetos Git.
+
+Un git show rechazado por Git sigue siendo una lectura fallida:
+normalizar una ruta para auditar su destino NO convierte la operación
+en una lectura exitosa ni acredita contenido que nunca se entregó.
+
+No amplíes el cierre ni las acciones después de ejecutar para
+hacer pasar la auditoría.
+
+Preserva la evidencia de fidelidad de lo realmente entregado al modelo.
+
+
+8. PUBLICACIÓN Y REVISIÓN ENCADENADAS
+
+Trabaja directamente hasta:
+
+1. Corrección de A-1 y paquete.
+2. Arnés y pruebas experimentales alineados.
+3. Validaciones exigibles.
+4. Commit y push de la corrección.
+5. CI del SHA exacto.
+6. Preparación final de la revisión sobre ese objeto exacto.
+7. Una invocación Architect, si el transporte es elegible y autorizado.
+8. Auditoría y custodia del resultado.
+9. CI de la custodia.
+10. Informe consolidado y parada.
+
+La revisión recibe la A-1 completa, el delta explícito y la disposición
+por ID. Su foco mínimo es A62-A1T-01 y las regresiones del cambio.
+
+No se prohíbe al Architect señalar otro defecto material que encuentre.
+Tampoco se le pide reabrir hallazgos solo porque aparecen en el historial.
+
+Debe disponer expresamente:
+
+- A62-A1T-01;
+- las precisiones O1..O3;
+- conservación de los doce cierres anteriores;
+- necesidad o no de una decisión Owner;
+- compatibilidad con los contratos F3.
+
+
+9. TRANSPORTE Y PRESUPUESTO
+
+Se autoriza UNA nueva invocación Architect bajo esta orden.
+
+No hay reintento automático.
+No hay autorización para Worker, Controller o subagentes adicionales.
+Se conservan los topes de tiempo y consumo aplicables al transporte.
+
+OD-2 y OD-3 no se resuelven por esta orden.
+No usar una celda bloqueada ni cambiar credenciales/configuración.
+
+Si la única vía limpia exige un clic, prepara la acción una vez y
+registra HUMAN_LAUNCH_REQUIRED. No afirmes que la revisión arrancó.
+
+No hay nueva exención de dotnet test.
+Aplicar las instrucciones y permisos correspondientes al clon desechable.
+
+El código experimental y el arnés no son una ejecución de F4 en producción.
+
+
+10. LÍMITES Y AUTORIDADES
+
+I-61 y docs/WORKFLOW.md siguen gobernando este trabajo.
+
+No usar una herramienta llamada Workflow ni subagentes no significa
+que las reglas de docs/WORKFLOW.md dejen de aplicar.
+
+Revalida DC-07 y las ventanas vigentes.
+
+No rebases solo para revisar un objeto histórico exacto.
+Si otra acción exige rebase según WORKFLOW, aplica su procedimiento
+y vuelve a fijar las identidades; no reutilices evidencia invalidada.
+
+No modificar:
+
+- Proposal V14;
+- Consensus Freeze;
+- main;
+- ROADMAP;
+- HANDOFF;
+- FOUNDATIONS;
+- índice ADR;
+- superficies normativas de producción de F4.
+
+No absorber P4/P8 de I-63 en esta corrección.
+Su propuesta futura conserva su trámite separado.
+
+No declarar A-1 AGREED, GATE PASS, F4 abierto ni integración.
+
+
+11. CUSTODIA DE CI
+
+En la próxima actualización legítima de evidencia, registra:
+
+CI 37323117283
+→ b76a6dabb35acf09436f16d8ac7dacc3a9179f7f
+→ push
+→ cuatro jobs requeridos en success.
+
+No hace falta otro commit exclusivamente para que un commit cite
+su propia CI. No crear una cadena infinita de commits de recibo.
+
+Cada evidencia conserva el SHA y la corrida que realmente acredita.
+
+
+12. SALIDA
+
+El informe final debe contener:
+
+- A-1 corregida: commit, path y blob;
+- paquete exacto;
+- delta D2-2;
+- RED/GREEN y pruebas de cadena incompleta;
+- resultado de c3-obs;
+- estado de O1..O3;
+- CI de corrección y custodia;
+- invocación usada y su acreditación, separada del veredicto técnico;
+- disposición de A62-A1T-01 y ratificación de cierres;
+- siguiente frontera real.
+
+Si el Architect devuelve AGREED y la corrida queda acreditada:
+entregar A-1 para acuerdo del Coordinator, sin abrir F4 por cuenta propia.
+
+Si devuelve CHANGES REQUIRED:
+custodiar los nuevos hallazgos y parar; esta orden no autoriza
+otra ronda de corrección ni otra invocación.
+
+Si queda NOT_ACCREDITED:
+conservar el resultado y la causa exacta, sin repetir automáticamente.
+
+Empieza por verificar el estado publicado y reproducir el segundo
+rebase que falla. No respondas únicamente con un plan.

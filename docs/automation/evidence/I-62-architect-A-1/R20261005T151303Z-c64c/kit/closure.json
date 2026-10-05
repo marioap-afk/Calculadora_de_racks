@@ -1,0 +1,1062 @@
+{
+ "Schema": "rackcad-input-closure/v1 (representación experimental; Proposal V14 §20.3.1; no autoridad normativa: rigen I-61 y LIFECYCLE)",
+ "Ids": {
+  "RunId": "R20261005T151303Z-c64c",
+  "InvocationId": "I20261005T151303Z-c64c",
+  "LogicalReviewRequestId": "L20261005T151303Z-c64c",
+  "AttemptSeq": 1
+ },
+ "AuthorityRevision": "ca09ade8bb31b1ecb57b2b0d6220628c8434e78d",
+ "DiffBases": [
+  "411e01ce4176e4fe6648ea3e9ff2febc219ff438"
+ ],
+ "FocusItems": 12,
+ "Adapter": "claude-desktop-session: sesión nueva y separada lanzada por el Owner desde una tarea de la app, con cwd en el clon limpio D:\\r62-arch-a1t01 (rama main = el commit exacto; sin remoto)",
+ "CanonicalInputs": [
+  {
+   "Path": "docs/initiatives/I-62-A-1.md",
+   "Blob": "c01899a72b940503bb85a0fab42bc085c603fd0f",
+   "Bytes": 77984,
+   "Lines": 437,
+   "Sha256": "acd5db2665b436d830dd271375f0032d234b815d9b9b63cb7c3a2ed0b00e13f4",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "objeto de la revisión (A-1 corregida para A62-A1T-01 y O1..O3)"
+  },
+  {
+   "Path": "docs/initiatives/I-62-architect-package-A-1.md",
+   "Blob": "5d6a107cb2bdafc0a98a87f5f66aeb115ed47b4b",
+   "Bytes": 23084,
+   "Lines": 217,
+   "Sha256": "a8aed5ef6a6e0445dc2bd830f88fada64007c0b91cd54448aca2b21befe182ac",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "paquete del Architect"
+  },
+  {
+   "Path": "docs/initiatives/I-62-architect-review-A-1-disposition.md",
+   "Blob": "81a84996a7cec1398785ae3df31618e9abd616ab",
+   "Bytes": 22420,
+   "Lines": 164,
+   "Sha256": "903238ca17a80824f421a2a15a147f0b8c87950a3573115e08b832480ccce31c",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "disposiciones del Coordinator; §5 = disposición de A62-A1T-01 y O1..O3"
+  },
+  {
+   "Path": "docs/initiatives/I-62-architect-review-A-1.md",
+   "Blob": "1898753286beab0cdbc88e613f23fd485e20e5de",
+   "Bytes": 9697,
+   "Lines": 76,
+   "Sha256": "b65b5080ea7642c20cecb78a08e8789af62037c26090045daefaa5b5a8c44a44",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "registro de la revisión no acreditada (solo insumo técnico histórico)"
+  },
+  {
+   "Path": "docs/initiatives/I-62-architect-review-A-1-r2.md",
+   "Blob": "36026298270402fc2fe4fb8810aa499a1cd9886b",
+   "Bytes": 7952,
+   "Lines": 75,
+   "Sha256": "4f76240be9dc2811accb65af802fdfeb6c60466e3362c61d701f512e495dd8e2",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "registro de la revisión formal R20261005T044948Z-ac67"
+  },
+  {
+   "Path": "docs/initiatives/I-62-architect-review-A-1-r3.md",
+   "Blob": "21cb35bd0cb2f349a6853a66715edab460405356",
+   "Bytes": 5052,
+   "Lines": 63,
+   "Sha256": "cfaed41e6deb7aeb3c21245c93f25b7df90145461719997921a33a97a60166da",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "registro de la revisión formal R20261005T063359Z-86e3"
+  },
+  {
+   "Path": "docs/initiatives/I-62-architect-review-A-1-r4.md",
+   "Blob": "2c486e9fdcb1e1f758bb14b401ea82db04e4f16a",
+   "Bytes": 5572,
+   "Lines": 73,
+   "Sha256": "3227e7cf8ee9b6ff13da02e0688a5e041f34020b4aa784d6923d6f227ad5ccb1",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "registro de la revisión formal R20261005T073911Z-2dfe (A62-A1T-01)"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-architect-A-1/R20261005T044948Z-ac67/output.json",
+   "Blob": "59040a1e497ae5fbf244b419006a273b368b600b",
+   "Bytes": 54200,
+   "Lines": 252,
+   "Sha256": "a88583b811bd6a3bb3750628deee7c2dc3ce67e393c862c6f86c8722eb642b03",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "resultado literal de la revisión formal ac67"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-architect-A-1/R20261005T063359Z-86e3/output.json",
+   "Blob": "648e7f2b7273fe43a83a99d4a730cdae2ad6ca6f",
+   "Bytes": 54055,
+   "Lines": 657,
+   "Sha256": "4f866afa45e61949bed454d590079699826f29e9db6d6b4a035e1289960c2115",
+   "LinesOver2000Chars": [
+    79
+   ],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "resultado literal de la revisión formal 86e3"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-architect-A-1/R20261005T073911Z-2dfe/output.json",
+   "Blob": "be8bb819c2d91a06dbffedcb06fd4bbf0f1b5466",
+   "Bytes": 52854,
+   "Lines": 665,
+   "Sha256": "bada687d878a47e1f4bf6abd922666997849d9463a6d014c3e99fe33df3c4ae1",
+   "LinesOver2000Chars": [
+    85
+   ],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "resultado literal de la revisión formal 2dfe (A62-A1T-01, O1..O3, doce cierres)"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-architect-A-1/R20261005T073911Z-2dfe/audit-classification.json",
+   "Blob": "a71347582245eb9a86964705b5baf94ec2d02b78",
+   "Bytes": 3090,
+   "Lines": 44,
+   "Sha256": "7550d6c8e195de4c2443891d63926d0502111076ed5510ed245cdfe54436d3c9",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "clasificación del NOT_ACCREDITED del auditor v3.1 (conservada)"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-prep/night-2026-10-05/rebase-map.json",
+   "Blob": "ff014c1e5aa5dbb4a08bfdd4a92ebf71e13a129c",
+   "Bytes": 14070,
+   "Lines": 254,
+   "Sha256": "cda8416b08b50cffd0ac42b244ed46f41755a6a145c865947751c8bd970ea4d9",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "mapa del rebase de la rama (SHAs históricos citados por los registros)"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-prep/night-2026-10-05/f4-exp/README.md",
+   "Blob": "1b3d86c9662f1898267b81940a6ac47997d0a6c0",
+   "Bytes": 6496,
+   "Lines": 75,
+   "Sha256": "4666529c60f8f5336f38c17615c4eeea56196627b6ddeae27f640944d5d603ed",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "F4 experimental: secuencias combinadas, A62-A1A-01 y F4X-OBS-01 → A62-A1T-01"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-prep/night-2026-10-05/f4-exp/combo_sequences.py",
+   "Blob": "d1a4ab9dc0f9da4f7047c0607dfa23da7ce831b4",
+   "Bytes": 17624,
+   "Lines": 203,
+   "Sha256": "da39cd9b8b49d45967ac390278ed439fad0b940a8b8917e4f1081b87e0aea9dd",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "script de las secuencias combinadas"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-prep/night-2026-10-05/f4-exp/combo-result-before.json",
+   "Blob": "42d52d5b17ce15df16c8e594eafd9d9a4673cbbf",
+   "Bytes": 10551,
+   "Lines": 472,
+   "Sha256": "c59e7a763f7f1cbef0568cd0f0d13a2d81b70006560d9c352bbc7e42bd54974e",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "ejecución con el arnés de 39c2f831 (histórica)"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-prep/night-2026-10-05/f4-exp/combo-result.json",
+   "Blob": "2af365a2768782b03d8fc54e47e82f014ae543d9",
+   "Bytes": 10659,
+   "Lines": 475,
+   "Sha256": "ce5b776472e616e46350dff85450efa3dd9d3cfd19e9cc2833acfd0816a2295e",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "ejecución con el arnés 6b051db7 (histórica; esperaba el STOP de c3-obs)"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-prep/night-2026-10-05/f4-exp/combo-result-a1t01.json",
+   "Blob": "641de89e99e968720ed42beadc5ae452cb7c1825",
+   "Bytes": 11077,
+   "Lines": 498,
+   "Sha256": "55204a93fbaf8bc9bf6dda7d0ab0c7c8bf8655d302e85b96c03c1b2b49d84d36",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "ejecución con el arnés corregido a1f4b07f (c3-obs por la cadena)"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-prep/night-2026-10-05/portability/README.md",
+   "Blob": "ac5d23baaf94375257ca5adba5323d0798881cc8",
+   "Bytes": 2869,
+   "Lines": 39,
+   "Sha256": "55c76abf6c0baad4958944aff4505d3dd035d75db3942dc9c5d64779e6b0188e",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "portabilidad: reconstrucción en un clon limpio"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-prep/night-2026-10-05/portability/reconstruct.py",
+   "Blob": "4e471b686fb5b2186d5142be50353469f11fd73d",
+   "Bytes": 8742,
+   "Lines": 146,
+   "Sha256": "d98bc4991ebc8233285ec1600d94b8035907ad495b20fe8be38e248d9f8adefd",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "script de reconstrucción (paso 2 y paso 2b T8)"
+  },
+  {
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa",
+   "Bytes": 342761,
+   "Lines": 3323,
+   "Sha256": "ab55ad4f4addef8455543ed06a4c60aa0a1901affc0ba3686146dfeedd9279af",
+   "LinesOver2000Chars": [
+    2352,
+    2380,
+    2382
+   ],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "Freeze: cláusulas que se enmiendan"
+  },
+  {
+   "Path": "docs/initiatives/I-62-consensus-freeze.md",
+   "Blob": "0f6b860837e2478db8525e1fb30a485bc4646816",
+   "Bytes": 7134,
+   "Lines": 113,
+   "Sha256": "71809873a89aafcb58883c507a42cc825a0c14cd70c84bda6d26fd0af9e9a4a4",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "registro del Freeze"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A1/a1-counterexamples.py",
+   "Blob": "a1f4b07f7e289e7090c5e3284babd5ff51602f27",
+   "Bytes": 101785,
+   "Lines": 1170,
+   "Sha256": "e80c102f7bfc9c8d24769a33933fc9dd8c9357556a13f2d8bf27ff574ac69aee",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "arnés de contra-ejemplos (evidencia de apoyo, no autoridad)"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A1/a1-counterexamples-result.json",
+   "Blob": "ac77596ef468191297bf1800b8bb21585f932fe8",
+   "Bytes": 67435,
+   "Lines": 2796,
+   "Sha256": "dfe0e666060563145a6e20a315b6a3c5bb6f8c64ccd129ba338ff0ac6dc08917",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "resultado del arnés (118 trazas)"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A1/a1t01/red-result.json",
+   "Blob": "7430cddcbc0f4fb6377ee2451089542c15e8d187",
+   "Bytes": 68853,
+   "Lines": 2826,
+   "Sha256": "3cd9852c576ef4c93209f50762ed869a54688472f826c62a7af2a65fa64ec356",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "RED de A1-P08 antes de la corrección"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A1/a1t01/green-result.json",
+   "Blob": "ac77596ef468191297bf1800b8bb21585f932fe8",
+   "Bytes": 67435,
+   "Lines": 2796,
+   "Sha256": "dfe0e666060563145a6e20a315b6a3c5bb6f8c64ccd129ba338ff0ac6dc08917",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "GREEN después de la corrección"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A1/a1t01/green.diff",
+   "Blob": "35cf1fd2520385ce063766b56ff4e8a8f12063a5",
+   "Bytes": 2803,
+   "Lines": 23,
+   "Sha256": "35588ad01bf4f0e49cd86ffe60b467d932b4339b3398ff554f555336844c7e0c",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "diff RED → GREEN de A1-P08"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A1/a1t01/t8-clean-clone.py",
+   "Blob": "17a35dd18c87c90c60db2d12f4ba6de12412a6a9",
+   "Bytes": 11346,
+   "Lines": 208,
+   "Sha256": "83588e104aa1d022770841ec5d2b295dd0a8a549606d5b0ed89e1e63af26a12f",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "T8: dos rebases reales y un sucesor en un clon limpio"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A1/a1t01/t8-result.json",
+   "Blob": "7604e754f5d1634094a3ff7f5aeb21fa143200c0",
+   "Bytes": 3006,
+   "Lines": 109,
+   "Sha256": "ea8865e8fdecea8a99ba914adabb19f8298a107b418cfa5006b8d44e84200d63",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "resultado de T8"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-prep/freeze-issues.md",
+   "Blob": "d63430afca2457618457f9b3a6f411afdd9aff5c",
+   "Bytes": 8633,
+   "Lines": 80,
+   "Sha256": "2cc020c74e2e886354b029de1d3d24f22c7027e142227b2bde3c09e49cdda725",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "hallazgo original de FC-01/FC-02 y SM-05"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-prep/f4-dossier.md",
+   "Blob": "4009a6a7172389a69cea9ab939cc2e8a6ed3ccf3",
+   "Bytes": 24745,
+   "Lines": 220,
+   "Sha256": "657883816bcc3b8eeab9fb489ac3321c1d40086f31169d56fedac70bc7eeca9f",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "auditoría de transiciones (§4); citado por A-1 §8"
+  },
+  {
+   "Path": "docs/INITIATIVE_LIFECYCLE.md",
+   "Blob": "f19896a8f1a7c82f74bac7231636f68462a87271",
+   "Bytes": 24334,
+   "Lines": 360,
+   "Sha256": "93e9c6ca73460ae46ca896f4447d9f8b517624e0acbae82750d4ba613ff0b994",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "§3 (M-01..M-08), §5 y §6 (A-n)"
+  },
+  {
+   "Path": "docs/automation/decisions/I-62.md",
+   "Blob": "9c854e10bfa94028c909ce0e40253e6391f77af2",
+   "Bytes": 115594,
+   "Lines": 810,
+   "Sha256": "95169008ed39e482b80ff15609c442537da5c029176e39b4ece7892c3afde6b7",
+   "LinesOver2000Chars": [
+    657,
+    734,
+    750,
+    768,
+    787,
+    805
+   ],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "§34-§42 (clasificación, autorizaciones, disposiciones del Coordinator, orden nocturna y orden nueva)"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-evidence.md",
+   "Blob": "cbfa3feb766f4b7871e2a3693b79fa4ecaed2507",
+   "Bytes": 188787,
+   "Lines": 2277,
+   "Sha256": "44add01c72e92c58bc9ee652130ecaa7b11366a61918ccbc4e0875762437f491",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "CRLF"
+   },
+   "Why": "§40-§55 (revisiones, correcciones, kits, F4 experimental, portabilidad y corrección de A62-A1T-01)"
+  },
+  {
+   "Path": "docs/initiatives/I-62-portabilidad-coordinador-principal.md",
+   "Blob": "331d108d775c2cdb04a13822e183cb67ed394e22",
+   "Bytes": 18351,
+   "Lines": 227,
+   "Sha256": "b47ea119ef49cf54a04169090e17d46ab4029de36bd7fd50cfd33d447e8f0503",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "contrato: alcance y no-objetivos"
+  },
+  {
+   "Path": "docs/AUTOMATION_PLAN.md",
+   "Blob": "52fd8f66591da49b3fb78f7bbe4580d76f8339e3",
+   "Bytes": 94682,
+   "Lines": 1105,
+   "Sha256": "370c212a4870bb739a21462eaf036117b4a9603e7dc9b8a9480413a140576d02",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "§16 (I-61) y 16.20-16.24 (F3, inactivo)"
+  },
+  {
+   "Path": "docs/automation/agent-execution/README.md",
+   "Blob": "3fb9a44b9cdcb72ddd1a575bb919f1c265d9b8ae",
+   "Bytes": 49770,
+   "Lines": 628,
+   "Sha256": "89639fbabe39a3a56e9355ae2a7839a970013182f32c67d9001834b9eae8564f",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "§13-§16 (F3, inactivo)"
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json",
+   "Blob": "d54a7ae783ec83d055babdae090899908b616082",
+   "Bytes": 21758,
+   "Lines": 858,
+   "Sha256": "476d1dafedfe5b2994ed99e3b9db6e48b1a0a9880e8a107dcd9da5d6eaa79e79",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "contrato F3: Target, BudgetSnapshot, Authorization"
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/binding.v1.schema.json",
+   "Blob": "13501476b775ca18c4c61ba3e1793796b51067d9",
+   "Bytes": 18871,
+   "Lines": 759,
+   "Sha256": "6042b2ebed0de0c12e4a61cd731fc4a0bf214d87da85c04b8d440e18b13e5773",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "contrato F3: BindingRef, AuthorizationRef, Acceptance"
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/input-closure.v1.schema.json",
+   "Blob": "6bdf71843e2c70362a5e2d0ea19c8891e22bcff6",
+   "Bytes": 6911,
+   "Lines": 282,
+   "Sha256": "7792455febda47fd65d8f50b3d64343ac090e66441f332b6f86820e288a86e36",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "contrato F3: cierre de insumos (AuthorityRevision)"
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/input-fidelity.v1.schema.json",
+   "Blob": "e54990fc541b6420c3cddb45e1a7cc2fefd6c76b",
+   "Bytes": 17883,
+   "Lines": 578,
+   "Sha256": "f6d1fef24332d1a4572955a8d188f1194feacca53eaaed16de0d9a933c30c729",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "contrato F3: fidelidad"
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/relay-record.v2.schema.json",
+   "Blob": "dca5b29c1a260b679efc0fb249c73850925302f0",
+   "Bytes": 35251,
+   "Lines": 1384,
+   "Sha256": "dcb629dc8cfda9bd1781a458e1bed54b63f0ce282fd34d685131531f731cbec7",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "contrato F2: RebaseMap (Commits[], StateFields[])"
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/gate-contract.v2.schema.json",
+   "Blob": "f644bb1941656b65c62ee474bf37752d328fd091",
+   "Bytes": 17854,
+   "Lines": 650,
+   "Sha256": "fa440a95fd377ff6934c6251a17073bf22c750c017bae729cd1b5f9ce5c5c90d",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "contrato F3: RoleRequirements, Materialization"
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json",
+   "Blob": "a74288eb0e9da43f8a73701098cbff5086fee512",
+   "Bytes": 18116,
+   "Lines": 697,
+   "Sha256": "aed72cbf0ecaa05e32f25b4b86eb09a6f145a3c81fbe19739c407ee967591ca1",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "contrato F3: Disposition, Severity"
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/architect-review-result.v1.schema.json",
+   "Blob": "e7f5747ba3812c181237828fe72243523038e64f",
+   "Bytes": 22794,
+   "Lines": 872,
+   "Sha256": "a2187324bd9bfb53a1563e72ccc2cf7852984078095318889113c2bda1f9b3ae",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "contrato F3: resultado del Architect"
+  },
+  {
+   "Path": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md",
+   "Blob": "da275e1a141a750fee2a8f501b36aa280d7aa534",
+   "Bytes": 9871,
+   "Lines": 105,
+   "Sha256": "3cdd80588e1565a64421831ae69919542ac984e948ced4784917fad63c806911",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "ADR aceptado (M-08)"
+  },
+  {
+   "Path": "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md",
+   "Blob": "e1bd8d91f10cb4c86eaf7753f9ef2531ae62498e",
+   "Bytes": 10832,
+   "Lines": 146,
+   "Sha256": "fb22065c6ea43daa897063c41230105fb0ceea0073d5b412026cdccab6929a5c",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "ADR propuesto (M-08)"
+  }
+ ],
+ "AllowedTransitiveInputs": [
+  {
+   "Path": "CLAUDE.md",
+   "Blob": "793489779558234abbd299f2aaadc32b8e829e58",
+   "Bytes": 1006,
+   "Lines": 25,
+   "Sha256": "74d76dbe2ff92b116a7c5a01aedc40a61c245431233ae2a8f2da4cca62f6ed8c",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "AUTOMATIC_INSTRUCTION",
+   "RequiredBy": "el runtime la inyecta"
+  },
+  {
+   "Path": "docs/HANDOFF.md",
+   "Blob": "474361bfc2d0c4f16e36e68811b04e63bda12a5a",
+   "Bytes": 448804,
+   "Lines": 5327,
+   "Sha256": "3b907fb433150f500aa0820181da4608d3a6ae8d9e59a2dae46b5fb4f6391578",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "READ",
+   "RequiredBy": "CLAUDE.md «Lectura inicial» 1; AGENTS.md «Leer primero» 1"
+  },
+  {
+   "Path": "AGENTS.md",
+   "Blob": "dd0d5a2d9ac3d3d8502ef7a556c8a5f1d62c9c29",
+   "Bytes": 24587,
+   "Lines": 356,
+   "Sha256": "5d66239153c294fb084979ddcd7521b3e24c449cba0fa371a8c4e3bc3bbed0d6",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "READ",
+   "RequiredBy": "CLAUDE.md «Lectura inicial» 2"
+  },
+  {
+   "Path": "docs/WORKFLOW.md",
+   "Blob": "884ed305ce242bda575cef74a9eff8c28ce7b67c",
+   "Bytes": 43390,
+   "Lines": 610,
+   "Sha256": "5c6290d0cf4c5f7ee39604f6654fdb2a5ae489769016639bca96bcc8a882c149",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "READ",
+   "RequiredBy": "CLAUDE.md «Lectura inicial» 3; Context Pack documentation-governance; WORKFLOW §4.2 (rebase al abrir)"
+  },
+  {
+   "Path": "docs/ARCHITECTURE.md",
+   "Blob": "4402ff89146c1632064d45e66b94196289c55b20",
+   "Bytes": 28890,
+   "Lines": 527,
+   "Sha256": "64798e183679599cc65fa8b2cda66487953b7d8b7c81f1a0c19061f83ae1f560",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "READ",
+   "RequiredBy": "CLAUDE.md «Lectura inicial» 4; AGENTS.md «Leer primero» 3"
+  },
+  {
+   "Path": "docs/ROADMAP.md",
+   "Blob": "80bcf108404bbbce1abdcba4b9951e1d1866efb8",
+   "Bytes": 168867,
+   "Lines": 678,
+   "Sha256": "2cdb8a90d6ba441988985f4b0571163578fabc4dc301c69e9fc40da83d2f75eb",
+   "LinesOver2000Chars": [
+    408,
+    425,
+    454,
+    457,
+    458,
+    459,
+    461,
+    462,
+    463,
+    464,
+    465,
+    466,
+    467,
+    468,
+    469,
+    470,
+    471,
+    473,
+    474,
+    475,
+    476,
+    480,
+    498,
+    501
+   ],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "READ",
+   "RequiredBy": "CLAUDE.md «Lectura inicial» 5; Context Pack"
+  },
+  {
+   "Path": "docs/context-packs/README.md",
+   "Blob": "77b1c7b4e3cf781abad9ea80938d7dc08b2b31c8",
+   "Bytes": 1965,
+   "Lines": 42,
+   "Sha256": "3a51def8525f653059ba97d6ab56d66f9872e1009a3d7e4c42aaba576e53a756",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "READ",
+   "RequiredBy": "CLAUDE.md «Lectura inicial» 6; AGENTS.md «Leer primero» 3"
+  },
+  {
+   "Path": "docs/context-packs/documentation-governance.md",
+   "Blob": "fff168de38a785b3474d7f578a383740c6c65e3c",
+   "Bytes": 2030,
+   "Lines": 45,
+   "Sha256": "3d16c3090c6b4804ffce1bb321041a57cdbf6b1a9b1dd99ef0b3864bc2d266da",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "READ",
+   "RequiredBy": "Context Pack declarado por I-62 (contrato, context_packs)"
+  },
+  {
+   "Path": "README.md",
+   "Blob": "50bd744a6407c1895ab20ae86ed4d97b4e0eab85",
+   "Bytes": 3696,
+   "Lines": 69,
+   "Sha256": "2ca0337a565ea6d666063f08a92ef7275efbe27dafb96b8b120230ee8e7bfc8e",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "READ",
+   "RequiredBy": "AGENTS.md «Leer primero» 2"
+  },
+  {
+   "Path": "docs/FOUNDATIONS.md",
+   "Blob": "748c74baff01bba9d71ab27ff23109554211ece1",
+   "Bytes": 23217,
+   "Lines": 180,
+   "Sha256": "97b0d1e252642e01ac8a6a07841009318adbe9b7ef449dafb50a0b4afec8561d",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "READ",
+   "RequiredBy": "Context Pack documentation-governance, required_docs"
+  },
+  {
+   "Path": "docs/initiatives/README.md",
+   "Blob": "f3b98a0c9375d71827e51f0cfd84a1f16f858802",
+   "Bytes": 71987,
+   "Lines": 752,
+   "Sha256": "88e7872baa70aa4915a8dfbad4b3251fa1067aebe15e6b98bb6f90eb4b7da64f",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "READ",
+   "RequiredBy": "Context Pack documentation-governance, required_docs"
+  },
+  {
+   "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+   "Blob": "384d0b0c3734ab7df881ad17fa740fdb8a6422d5",
+   "Bytes": 13465,
+   "Lines": 277,
+   "Sha256": "9ab149dabb7b3dc43ac68cf0a7d013ae2988f55d3d8700d24e8f12fbc36e2991",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "READ",
+   "RequiredBy": "Context Pack documentation-governance, required_docs"
+  }
+ ],
+ "RunFiles": [
+  "order.txt",
+  "prompt.md"
+ ],
+ "ReadPolicy": {
+  "Read": "ruta absoluta de un archivo del cierre, bajo el clon o bajo el worktree propio (que está en el mismo commit), con offset y limit; también order.txt y prompt.md, y salidas propias",
+  "Grep": "solo con `path` = un ARCHIVO del cierre; nunca un directorio ni `glob`",
+  "LargeFileThresholdBytes": 60000,
+  "MaxRangeLines": 300,
+  "LargeFiles": [
+   "docs/initiatives/I-62-A-1.md",
+   "docs/initiatives/I-62-proposal-v14.md",
+   "docs/automation/evidence/I-62-A1/a1-counterexamples.py",
+   "docs/automation/evidence/I-62-A1/a1-counterexamples-result.json",
+   "docs/automation/evidence/I-62-A1/a1t01/red-result.json",
+   "docs/automation/evidence/I-62-A1/a1t01/green-result.json",
+   "docs/automation/decisions/I-62.md",
+   "docs/automation/evidence/I-62-evidence.md",
+   "docs/AUTOMATION_PLAN.md",
+   "docs/HANDOFF.md",
+   "docs/ROADMAP.md",
+   "docs/initiatives/README.md"
+  ],
+  "LongLines": {
+   "docs/automation/evidence/I-62-architect-A-1/R20261005T063359Z-86e3/output.json": [
+    79
+   ],
+   "docs/automation/evidence/I-62-architect-A-1/R20261005T073911Z-2dfe/output.json": [
+    85
+   ],
+   "docs/initiatives/I-62-proposal-v14.md": [
+    2352,
+    2380,
+    2382
+   ],
+   "docs/automation/decisions/I-62.md": [
+    657,
+    734,
+    750,
+    768,
+    787,
+    805
+   ],
+   "docs/ROADMAP.md": [
+    408,
+    425,
+    454,
+    457,
+    458,
+    459,
+    461,
+    462,
+    463,
+    464,
+    465,
+    466,
+    467,
+    468,
+    469,
+    470,
+    471,
+    473,
+    474,
+    475,
+    476,
+    480,
+    498,
+    501
+   ]
+  },
+  "Premises": "toda premisa (PremiseRefs) se cita de líneas leídas con Read, o con `git -C D:/r62-arch-a1t01 show ca09ade8:<ruta> | sed -n 'N,Mp'` para las líneas largas; una lectura fallida nunca cuenta",
+  "FailedReads": "un comando que falla o no devuelve contenido (también un git show que Git rechaza) es una lectura fallida: no acredita contenido"
+ },
+ "AllowedActions": [
+  {
+   "Id": "ID-1",
+   "Action": "git (con -C D:/r62-arch-a1t01, -C <worktree propio o un subdirectorio suyo> o desde el cwd del clon o del worktree): rev-parse HEAD | rev-parse <commit>:<ruta del cierre> | cat-file -p|-t|-s <commit>:<ruta del cierre> | status [--porcelain] | log --oneline [-N] | worktree list | config --get <clave>",
+   "RequiredBy": "identidad del objeto y del árbol; AGENTS.md «Leer primero» 4",
+   "Class": "ACTION_COMPATIBLE"
+  },
+  {
+   "Id": "ID-2",
+   "Action": "git checkout --detach ca09ade8bb31b1ecb57b2b0d6220628c8434e78d en el worktree propio, solo si su HEAD no es el commit",
+   "RequiredBy": "fijar el árbol de la sesión revisora",
+   "Class": "ACTION_COMPATIBLE"
+  },
+  {
+   "Id": "MD-1",
+   "Action": "metadatos y hashing enumerados: git hash-object <archivo del cierre o salida propia> (sin -w ni --stdin); git diff [--stat|--numstat|--no-color|--word-diff|-U<N>] 411e01ce ca09ade8 -- <rutas del cierre> (la base es el commit del blob revisado antes, 03dd822d); sha256sum y wc sobre archivos del cierre, del run o salidas propias; pwd; date",
+   "RequiredBy": "delta exacto frente a 03dd822d (paquete §2) y hashes de identidad",
+   "Class": "ACTION_COMPATIBLE"
+  },
+  {
+   "Id": "NAV-1",
+   "Action": "cd (o Set-Location en PowerShell) hacia la raíz o CUALQUIER SUBDIRECTORIO del clon o del worktree propio, o hacia un directorio de salidas propias. Cambiar de directorio no autoriza leer nada fuera del cierre: las rutas posteriores se resuelven desde ahí y se clasifican por su efecto",
+   "RequiredBy": "lecturas relativas y ejecución de EX-1/EX-2",
+   "Class": "ACTION_COMPATIBLE"
+  },
+  {
+   "Id": "RD-1",
+   "Action": "git show ca09ade8:<ruta del cierre> (o HEAD:<ruta del cierre> con HEAD ya verificado), sola o con tubería a sed -n, head, tail, wc, grep, awk, sha256sum, sort, uniq, cut, tr o nl. La ruta de un objeto Git es de árbol: Git no normaliza `..` y un git show rechazado es una lectura fallida",
+   "RequiredBy": "lectura fiel de líneas largas y metadatos de archivos del cierre",
+   "Class": "ACTION_COMPATIBLE"
+  },
+  {
+   "Id": "RD-2",
+   "Action": "sed -n, wc, awk, grep (sin -r, -R ni --recursive), head, tail, cat, sha256sum, sort, uniq, cut, tr, nl, diff, cmp, echo, printf, true y read, solo sobre ARCHIVOS del cierre (bajo el clon o el worktree propio), sobre order.txt y prompt.md, o sobre salidas propias; combinables con |, ;, &&, || y bucles for/while; redirección solo hacia salidas propias o /dev/null; ningún directorio como argumento",
+   "RequiredBy": "metadatos de solo lectura (tamaños, líneas largas, secciones) y comprobación del hash del prompt",
+   "Class": "ACTION_COMPATIBLE"
+  },
+  {
+   "Id": "EX-1",
+   "Action": "python D:/r62-arch-a1t01/docs/automation/evidence/I-62-A1/a1-counterexamples.py <salida propia>; y python (heredoc, -c o un script propio) cuyas rutas literales sean solo archivos del cierre, archivos del run y salidas propias; sin listar directorios, sin procesos, sin red y sin borrar ni mover archivos",
+   "RequiredBy": "verificación del arnés",
+   "Class": "ACTION_COMPATIBLE"
+  },
+  {
+   "Id": "EX-2",
+   "Action": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj dentro del clon (Bash o PowerShell; SDK en %LOCALAPPDATA%\\Microsoft\\dotnet\\dotnet.exe), con el log en una salida propia",
+   "RequiredBy": "AGENTS.md «Leer primero» 4 y CLAUDE.md «Comandos esenciales»",
+   "Class": "ACTION_COMPATIBLE",
+   "Note": "la orden no trae exención; escribe solo bin/obj del clon desechable; comprobación local del revisor, no evidencia de gate"
+  },
+  {
+   "Id": "OWN-1",
+   "Action": "leer (Read, cat, tail, grep, Get-Content) las salidas propias",
+   "RequiredBy": "comprobar pruebas y tareas de la corrida",
+   "Class": "OWN_OUTPUT",
+   "Note": "salidas propias del revisor: archivos que la propia sesión revisora crea en su scratchpad o en su directorio de tareas (C:/Users/<usuario>/AppData/Local/Temp/claude/D--Documentos-Worktrees-r62-arch-a1t01-<worktree>/<sesión>/…)"
+  },
+  {
+   "Id": "OWN-2",
+   "Action": "crear y editar scripts y archivos temporales propios SOLO en las salidas propias: Write, Edit, redirección, mkdir -p y sed -i (declarado). Ningún permiso sobre salidas propias autoriza editar insumos canónicos, scripts custodiados, fuentes del repositorio ni archivos de otra sesión",
+   "RequiredBy": "scripts ad hoc de verificación (p. ej., trazas propias con el modelo del arnés)",
+   "Class": "OWN_OUTPUT",
+   "Note": "salidas propias del revisor: archivos que la propia sesión revisora crea en su scratchpad o en su directorio de tareas (C:/Users/<usuario>/AppData/Local/Temp/claude/D--Documentos-Worktrees-r62-arch-a1t01-<worktree>/<sesión>/…)"
+  }
+ ],
+ "HealthSignals": [
+  {
+   "Kind": "PUBLICATION_CI",
+   "RunRef": "37329298556 (push, head_sha exacto ca09ade8, cuatro jobs requeridos success)",
+   "Sha": "ca09ade8bb31b1ecb57b2b0d6220628c8434e78d",
+   "Note": "señal separada de salud de publicación; NO es evidencia equivalente a Core local"
+  }
+ ],
+ "NotTriggered": [
+  {
+   "Source": "CLAUDE.md, validación de dibujo (docs/guias/validacion-manual-autocad.md)",
+   "Reason": "condicionada a una validación de dibujo, que la revisión no hace"
+  },
+  {
+   "Source": "documentation-governance optional_docs y code_globs",
+   "Reason": "opcionales u orientativos"
+  },
+  {
+   "Source": "enlaces de A-1 y de la evidencia a otros documentos fuera del cierre",
+   "Reason": "citas descriptivas; el cierre ya contiene las autoridades"
+  }
+ ],
+ "DeclaredRuntimeContext": [
+  "instrucciones base de la aplicación de escritorio y del runtime (no inspeccionables por el invocador)",
+  "CLAUDE.md del worktree (mismo commit que el clon), inyectado automáticamente",
+  "~/.claude/CLAUDE.md de usuario: no existe (medido)",
+  "memoria automática: el clon es otro repositorio (D:\\r62-arch-a1t01), así que no carga la memoria del proyecto de la sesión autora",
+  "herramientas, skills y conectores habilitados por defecto en una sesión nueva"
+ ],
+ "ForbiddenInputs": [
+  "transcripción y memoria de la sesión autora (~/.claude/projects/D--Documentos-Codex-Calculadora-de-racks/*) y toda otra entrada de ~/.claude/projects",
+  "otras sesiones, incluidas las de las revisiones anteriores y las de I-52, I-63 e I-64",
+  "el worktree real de I-62 (~/.codex/worktrees/*), el repositorio de trabajo y los clones de revisiones anteriores (D:\\r62-arch-*, salvo D:\\r62-arch-a1t01)",
+  "los archivos de D:\\r62-arch-a1t01-run distintos de order.txt y prompt.md",
+  "cualquier archivo fuera de CanonicalInputs y AllowedTransitiveInputs, salvo las salidas propias",
+  "Grep o búsqueda sobre directorios; listados de directorios",
+  "red (fetch, web)",
+  "invocar otros agentes, subagentes, Worker o Controller",
+  "escribir, hacer commit o push en el repositorio"
+ ],
+ "CorpusDistinctNonAscii": 61
+}

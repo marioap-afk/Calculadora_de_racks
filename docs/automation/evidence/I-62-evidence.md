@@ -2275,3 +2275,21 @@ solo desde artefactos custodiados.
   resultado). No hay exención nueva de `dotnet test`.
 - **Límites:** sin tocar V14, el Freeze, `main`, ROADMAP, HANDOFF, FOUNDATIONS, el índice ADR ni superficies normativas de F4; sin P4/P8 de I-63; sin
   A-2; sin AGREED, GATE PASS ni F4.
+
+## 56. CI de la corrección, reconstrucción por un sucesor y kit v4 (orden nueva, decisiones §42)
+
+- **CI de la corrección** `ca09ade8bb31b1ecb57b2b0d6220628c8434e78d` (A-1 blob `c01899a7`): corrida **37329298556**, push, head_sha exacto,
+  cuatro jobs requeridos en `success`.
+- **Reconstrucción por un sucesor (T8, orden §5)** (`portability/portability-result-a1t01.json`):
+  - `reconstruct.py` corre en un clon `--no-local --single-branch -c core.autocrlf=false` de `ca09ade8`, sin remoto, donde `4c617e82` es
+    inalcanzable;
+  - 8/8 pasos: el arnés de A-1 y `combo-result-a1t01.json` salen idénticos byte a byte; T8 da PASS por relaciones; P4, P8 y las lecturas P1/P2,
+    idénticos; el unittest de los helpers, PASS; B.11, idéntico tras el mapeo declarado (PORT-01).
+- **Kit v4** (`I-62-architect-A-1/R20261005T151303Z-c64c/`, custodiado antes del lanzamiento):
+  - clon `D:\r62-arch-a1t01` con `main` = `ca09ade8`, sin remoto y sin enlaces;
+  - `order.txt` = la orden exacta (13 157 bytes, SHA-256 `588d6289…`);
+  - contrato de acciones de la orden §7 y auditor v4;
+  - selftest 11/11 PASS (los casos de la orden §7, más el escape por unión y los metadatos), con el clon limpio al terminar;
+  - fidelidad previa 3/3.
+- **Transporte:** la única vía limpia es una tarea de la app que lanza el Owner con un clic: HUMAN_LAUNCH_REQUIRED. La sesión prepara la acción
+  una vez; no afirma que la revisión arrancó. No hay reintento automático.

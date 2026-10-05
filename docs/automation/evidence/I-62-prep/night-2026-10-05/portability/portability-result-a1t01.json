@@ -1,0 +1,69 @@
+{
+ "Label": "EXPERIMENTAL — NOT AUTHORIZED FOR PRODUCTION",
+ "Script": "portability/reconstruct.py",
+ "CloneHead": "ca09ade8bb31b1ecb57b2b0d6220628c8434e78d",
+ "Clone": "git clone --no-local -c core.autocrlf=false (sin remoto); proceso distinto del primero, sin su memoria",
+ "Python": "3.13.14",
+ "Git": "git version 2.54.0.windows.1",
+ "Steps": [
+  {
+   "Step": "a1-counterexamples",
+   "Custodied": "docs/automation/evidence/I-62-A1/a1-counterexamples-result.json",
+   "ProducedSha256": "dfe0e666060563145a6e20a315b6a3c5bb6f8c64ccd129ba338ff0ac6dc08917",
+   "CustodiedSha256": "dfe0e666060563145a6e20a315b6a3c5bb6f8c64ccd129ba338ff0ac6dc08917",
+   "Result": "IDENTICAL",
+   "ExitCode": 0
+  },
+  {
+   "Step": "f4-exp/combo_sequences",
+   "Custodied": "docs/automation/evidence/I-62-prep/night-2026-10-05/f4-exp/combo-result-a1t01.json",
+   "ProducedSha256": "55204a93fbaf8bc9bf6dda7d0ab0c7c8bf8655d302e85b96c03c1b2b49d84d36",
+   "CustodiedSha256": "55204a93fbaf8bc9bf6dda7d0ab0c7c8bf8655d302e85b96c03c1b2b49d84d36",
+   "Result": "IDENTICAL",
+   "ExitCode": 0
+  },
+  {
+   "Step": "a1t01/t8-clean-clone (relaciones, no SHAs)",
+   "ExitCode": 0,
+   "Result": "PASS"
+  },
+  {
+   "Step": "p4/p4-custody-harness",
+   "Custodied": "docs/automation/evidence/I-62-prep/night-2026-10-05/p4/p4-custody-result.json",
+   "ProducedSha256": "e0c2a3e20438de7f44d62fc8727da2e80781c0cddd715c376761931e5a4ff093",
+   "CustodiedSha256": "e0c2a3e20438de7f44d62fc8727da2e80781c0cddd715c376761931e5a4ff093",
+   "Result": "IDENTICAL",
+   "ExitCode": 0
+  },
+  {
+   "Step": "p8/p8-counters-harness",
+   "Custodied": "docs/automation/evidence/I-62-prep/night-2026-10-05/p8/p8-counters-result.json",
+   "ProducedSha256": "e0efa281ebd6f3fac059bc4e2381ee311e2323a2b3a367791b0ea50bdc44a141",
+   "CustodiedSha256": "e0efa281ebd6f3fac059bc4e2381ee311e2323a2b3a367791b0ea50bdc44a141",
+   "Result": "IDENTICAL",
+   "ExitCode": 0
+  },
+  {
+   "Step": "helpers (P1/P2 de G1-G4 desde artefactos de la rama)",
+   "Result": "IDENTICAL",
+   "Different": [],
+   "NotReconstructible": "lecturas P6: los TRX no se versionan (16.12); sus SHA-256 están en real-readings.json"
+  },
+  {
+   "Step": "helpers unittest (sin TRX: P6 omitido por la propia prueba)",
+   "ExitCode": 0,
+   "Tail": "OK (skipped=6)",
+   "Result": "PASS"
+  },
+  {
+   "Step": "B.11 (gen-manifest + b11_precision)",
+   "PinnedCommitReachable": false,
+   "Gap": "PORTABILITY_GAP: el generador fija el commit histórico 4c617e82, inalcanzable en un clon limpio",
+   "Resolution": "imagen por el rebase-map custodiado 1d5cdbec, con el mismo blob de V14 (True)",
+   "ManifestReport": "IDENTICAL",
+   "B11Precision": "IDENTICAL",
+   "Result": "IDENTICAL_AFTER_DECLARED_MAPPING"
+  }
+ ],
+ "AllReconstructed": true
+}

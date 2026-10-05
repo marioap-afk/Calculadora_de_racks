@@ -1,0 +1,53 @@
+{
+ "Kit": "I-62 A-1 formal Architect review kit v4 (ONE invocation of the new Coordinator order, decisions §42)",
+ "RunId": "R20261005T151303Z-c64c",
+ "Commit": "ca09ade8bb31b1ecb57b2b0d6220628c8434e78d",
+ "Auditor": "v4 (declared and self-tested before the run: selftest-result.json AllPass)",
+ "Clone": "D:/r62-arch-a1t01 (git clone --no-local -c core.autocrlf=false --single-branch; main = the commit; no remote)",
+ "Files": {
+  "closure.json": {
+   "Bytes": 34946,
+   "Sha256": "c2dabf156deeddd3122989dd6d974116de09a431b6f63566b625d26c98734db9"
+  },
+  "corpus.json": {
+   "Bytes": 402,
+   "Sha256": "81573c339ca9163ad5e1f546993b462add8225df2f662f7582bfdc94781c0995"
+  },
+  "make_closure.py": {
+   "Bytes": 17380,
+   "Sha256": "cc3b8b8a210bbd5cab44012576969217199c55a819cfe46c321144f5aa610f90"
+  },
+  "order.txt": {
+   "Bytes": 13157,
+   "Sha256": "588d62896bfc4a96b5451474cc991cb66c12c8342a33041df4fbb34442741c4d"
+  },
+  "post-review.py": {
+   "Bytes": 43804,
+   "Sha256": "321e627375b7e3d458388eb6c078ecdd0f3638f3eba2e9a8779eb201eabdc6fa"
+  },
+  "preflight-read-fidelity.json": {
+   "Bytes": 1022,
+   "Sha256": "3ea534269cd57ff483b12dbafb1bb521c1cb48945a59c68452dd2f075ff2f0db"
+  },
+  "prompt.md": {
+   "Bytes": 22865,
+   "Sha256": "5abd5fe4be014c96b5c81dabbc3053606b56610ca2a91b3f7236dc886004c20e"
+  },
+  "read_fidelity.py": {
+   "Bytes": 3792,
+   "Sha256": "3c27d83cb1ebb3408263f319d3b6a80f237d4f82ede15dfd7a4f3f9a57182ea6"
+  },
+  "result.schema.json": {
+   "Bytes": 12750,
+   "Sha256": "5efdd06f0547e7c29981d8936cf2efaf25d81bbd17aa2c47dec143000d7d35b3"
+  },
+  "selftest-post-review.py": {
+   "Bytes": 18091,
+   "Sha256": "ba1a61fb4341d4502f4e0111c81dda0a2d971fe193377dd00ec4eb31e56225cd"
+  },
+  "selftest-result.json": {
+   "Bytes": 5549,
+   "Sha256": "ae7875c4957a8bc69a6bd0c9dc9cee1ca6e2481dcf72e0dfc3dd2704ec234d9f"
+  }
+ }
+}

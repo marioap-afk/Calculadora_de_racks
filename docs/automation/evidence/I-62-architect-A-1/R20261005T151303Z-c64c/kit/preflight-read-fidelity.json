@@ -1,0 +1,45 @@
+{
+ "Transcript": "C:/Users/alejandra-mendoza/.claude/projects/D--Documentos-Codex-Calculadora-de-racks/e5124bf0-ed19-48a1-97ba-574baf9d33a2.jsonl",
+ "Rev": "ca09ade8bb31b1ecb57b2b0d6220628c8434e78d",
+ "Calls": [
+  {
+   "Path": "docs/initiatives/I-62-A-1.md",
+   "Offset": 205,
+   "Limit": 10,
+   "Lines": 10,
+   "Faithful": 10,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-1.md",
+   "Offset": 158,
+   "Limit": 3,
+   "Lines": 3,
+   "Faithful": 3,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  },
+  {
+   "Path": "docs/initiatives/I-62-architect-review-A-1-disposition.md",
+   "Offset": 134,
+   "Limit": 31,
+   "Lines": 31,
+   "Faithful": 31,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  }
+ ],
+ "Summary": {
+  "Calls": 3,
+  "Faithful": 3,
+  "Degraded": 0,
+  "DeliveredLinesByPath": {
+   "docs/initiatives/I-62-A-1.md": 13,
+   "docs/initiatives/I-62-architect-review-A-1-disposition.md": 31
+  }
+ }
+}
