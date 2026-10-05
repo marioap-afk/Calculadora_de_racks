@@ -2020,3 +2020,18 @@ CI de la custodia de la revisión formal, `1614908d37e0e5bb56d8ddf8e677551527833
   - la «Frontera» de §5 todavía decía que lanzar la revisión necesitaba una autorización nueva, aunque la orden nocturna (decisiones §41, punto E) ya la da;
   - la cabecera y §5 de la disposición seguían en el estado anterior.
 - **Corrección:** paquete y disposición actualizados en el commit siguiente, sin cambiar A-1: el blob `39c2f831` y el arnés siguen iguales.
+
+## 45. Kit v3 de la revisión formal de la A-1 corregida (decisiones §41, punto E)
+
+- **Objeto:** commit `9dcfc08d5171b01df97b3a492a60218c5ab2453e` (CI **37272599376**, push, head_sha exacto, cuatro jobs en `success`).
+  - A-1: blob `39c2f831`;
+  - paquete: `82bea6e6`;
+  - disposición: `2c7a8e7e`.
+- **Kit:** `docs/automation/evidence/I-62-architect-A-1/R20261005T063359Z-86e3/`, con README y `kit/`. Contiene:
+  - cierre de 29 insumos canónicos y 12 transitivos;
+  - contrato de acciones idéntico a la lista blanca del auditor v3;
+  - prompt SHA-256 `b221c079…`;
+  - autoprueba del auditor PASS: dos transcripciones conformes ACCREDITED; la desviada, NOT_ACCREDITED por exactamente sus 17 motivos;
+  - preflight de Read 3/3 fiel (108 líneas).
+- **Lanzamiento:** HUMAN_LAUNCH_REQUIRED. La tarea de la app `task_7b4dd3ee` se creó una sola vez; la sesión no la lanza.
+- **Límites:** sin veredicto ni acreditación. La segunda invocación que permite la orden queda sin usar.

@@ -7,7 +7,7 @@ automation_state:
   state: waiting
   gate: dependency
   attempts: 0
-  next_action: revisión formal acreditada de la A-1 corregida (blob 39c2f831; HUMAN_LAUNCH_REQUIRED, orden nocturna decisions §41); después veredicto del Coordinator; F4 sigue sin abrir.
+  next_action: revisión formal acreditada de la A-1 corregida (blob 39c2f831, commit 9dcfc08d; kit v3 R20261005T063359Z-86e3, evidence §45; HUMAN_LAUNCH_REQUIRED, orden nocturna decisions §41); después veredicto del Coordinator; F4 sigue sin abrir.
   last_evidence_commit: 83035d999599384ea74f7b178e3d6761ffa5bb01
 execution_context:
   mode: manual
