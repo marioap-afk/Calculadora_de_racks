@@ -2397,3 +2397,30 @@ Valores aprobados por el Coordinator (Q-R-03):
   - O-ADR-4: «tres conteos distintos, sin una autoridad común», según P-08.
   - O-ADR-5: fecha local 2026-10-04.
 - **Siguiente:** el Architect cierra A63-ADR-01 sobre el blob nuevo; después, aceptación explícita del Owner.
+
+## 58. ADR-0049: AGREED del Architect; pendiente de la aceptación del Owner
+
+- **Revisión 2 del Architect: AGREED** sobre el commit `238da7a63fb9daafa1077fe29bf79561c8dc52cf`, ruta
+  `docs/adr/0049-parametros-calculados-namespace-rack-y-resumen-de-proyecto.md`, blob **`0b43332248523f206f21a8dcbe383748dde8edef`**.
+  - A63-ADR-01 queda CLOSED, con la opción (b).
+  - Los opcionales O-ADR-1..5 se aplicaron y son fieles al Freeze.
+  - No hay REQUIRED.
+  - Texto literal: `docs/automation/evidence/I-63-pilot/READY/adr-0049/architect-review-2.txt`, igual al `SendMessage` de la transcripción del Architect.
+  - El Architect corrige una errata del mensaje de la sesión: `238da7a6` es **hijo** directo de `8466e20b`, no su padre.
+- **Opcional cosmético O-ADR-6** (no bloquea): el salto de línea suelto de «Contexto».
+  - No se aplica ahora, porque cambiaría el blob acordado. Puede hacerse después de la aceptación como corrección tipográfica, que el
+    README de `docs/adr` permite.
+- **CI exact-SHA de los commits de READY:**
+
+  | Commit | Contenido | Corrida | Resultado |
+  |---|---|---|---|
+  | `17215ab2` | A-4 | 37255044487 | 4/4 |
+  | `a0835bf7` | Limpieza | 37255791325 | 4/4 |
+  | `d5f64197` | Bloques A, B y C | 37256147153 | 4/4 |
+  | `8466e20b` | ADR propuesto | 37256190319 | 4/4 |
+  | `238da7a6` | ADR corregido (blob `0b433322`) | 37256414459 | 4/4 |
+
+- **Siguiente: aceptación explícita del Owner** del ADR exacto (blob `0b433322`). Es el único retorno obligatorio al Owner dentro de
+  READY.
+  - Tras la aceptación: estado `aceptado`, registro de la aceptación, nota posterior en ADR-0043 y fila del índice.
+  - Después, CI exact-SHA y el bloque E (FOUNDATIONS).

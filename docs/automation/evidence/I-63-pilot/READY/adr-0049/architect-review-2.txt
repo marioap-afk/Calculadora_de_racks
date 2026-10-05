@@ -1,0 +1,31 @@
+I-63 — Revisión 2 del ADR-0049: AGREED sobre 238da7a6 / docs/adr/0049-parametros-calculados-namespace-rack-y-resumen-de-proyecto.md / blob 0b433322. A63-ADR-01 queda CLOSED.
+
+Review mode: SEPARATE SESSION; revisor=autor: no; misma sesión del Architect: sí (local_d5787742…). Mismo modelo de base que la autora: unknown (probable claude-opus-5-5). Solo lectura.
+
+1. IDENTIDAD
+- 238da7a63fb9daafa1077fe29bf79561c8dc52cf es HIJO directo de 8466e20b, no su padre como decía tu mensaje (comprobado con %P).
+- Toca solo tres archivos: el ADR, la evidencia y architect-review-1.txt.
+- Blob del ADR: 0b43332248523f206f21a8dcbe383748dde8edef (comprobado con rev-parse).
+- Revisé el diff completo del ADR entre 8466e20b y 238da7a6.
+
+2. DISPOSICIÓN
+- A63-ADR-01: CLOSED con la opción (b).
+  - La línea normativa desaparece del punto 11 (D-21).
+  - En Consecuencias, la regla figura como «Hecho de implementación, sin carácter normativo», con su fuente (la orden de G4 del Coordinator, decisiones §2, y la prueba D21_LaProvenanceNoEntraEnLaIgualdadDeMetricValue_NiLaCambia) y con la salvedad expresa: «No es una decisión de este ADR».
+- O-ADR-1..5: aplicados y fieles al Freeze.
+  - O-ADR-1: añade la condición de miembros Available de D-09 / INV-08.
+  - O-ADR-2: la vía de I-63 de D-27 coincide con §10 de V3.
+  - O-ADR-3: el punto 6 coincide con D-17 de V3, puntos 1, 2, 4 y 5 (incluidos «como máximo una Φ2+Φ3, solo si D-28 llega al paso 5» y la lista tipada sin valor parcial).
+  - O-ADR-4: «tres conteos distintos, sin autoridad común» ya es coherente con P-08.
+  - O-ADR-5: fecha local 2026-10-04, consistente con el commit.
+- El delta no introduce ninguna decisión nueva fuera del Freeze ni de las A-n. La renumeración de 7 a 13 no cambia el contenido, y las demás secciones están intactas respecto de la revisión 1 (conformes).
+
+3. REQUIRED
+Ninguno.
+
+4. OPCIONAL (cosmético; no bloquea)
+- O-ADR-6: en Contexto, el reflujo dejó un salto de línea suelto: «…la puerta\n de salida del Push\n Back se componía…». Markdown lo muestra bien, pero conviene unir las líneas antes de la aceptación, porque después un ADR aceptado solo admite correcciones tipográficas.
+
+5. VEREDICTO
+AGREED: el ADR exacto puede pasar a la aceptación del Owner. Solo el Owner acepta o rechaza (docs/adr/README.md). La nota posterior en ADR-0043 se añade cuando acepte.
+Vale exclusivamente para: commit 238da7a63fb9daafa1077fe29bf79561c8dc52cf; ruta docs/adr/0049-parametros-calculados-namespace-rack-y-resumen-de-proyecto.md; blob 0b43332248523f206f21a8dcbe383748dde8edef.

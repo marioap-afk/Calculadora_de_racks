@@ -4,10 +4,10 @@ automation_state:
   branch: architecture/parametros-calculados-resumen-proyecto
   claim_id: ce04f47f-ca53-4e75-b983-5ac57ab6c5e3
   current_phase: READY
-  state: implementing
+  state: waiting
   gate: none
   attempts: 2
-  next_action: ADR-0049 propuesto (evidencia §56); revision del Architect R1-R3 sobre el archivo exacto y despues aceptacion explicita del Owner.
+  next_action: Aceptacion explicita del Owner del ADR-0049 exacto (blob 0b43332248523f206f21a8dcbe383748dde8edef en 238da7a6; Architect AGREED; evidencia §58).
   last_evidence_commit: a0835bf79d0e16bbe9dd142049aaab2ba5bb814f
 execution_context:
   mode: manual
@@ -17,7 +17,7 @@ execution_chain:
   gate: READY
   task_id: null
   attempt: null
-  next_role: Architect (revision de ADR-0049) y despues Owner (aceptacion)
+  next_role: Owner (aceptacion explicita del ADR-0049)
   next_action: READY con A (A-4, a0835bf7, CI 37255791325 4/4), B y C hechos; D en curso
   g4: {verdict: PASS, closure_ci_custody: fdd4b651 (37253017255 4/4), contract: R20261003T005345Z-66f3 (SHA-256 923D2B2CE69D3A65F124E307C298D0BC67C4845337E688F1943EEFBC9F523950), authority_revision: 527e4b9185173e2f50c10d39a882749c09b77d2f, red_sha: 55d6b27457c966be1f3988ff8fe1bca4fc3df126, current_sha: 4f45f4464f5d434f7fa478fea1117d82283ee997, ci: 37085650331 4/4, verification: R20261005T011832Z-cc42 EXECUTION_VERIFIED (tras STOP S-03/C-10 resuelto), verified_sha: 4f45f4464f5d434f7fa478fea1117d82283ee997, mechanical_checks: PASS, identity_exception: 7bd5a743 docs-only, negative_controls: nc4 y nc3 cumplidos y nc1 y nc2 NO superados, controller_binary: bin/8aaf1547b825b104 codex-cli 0.160.0}
   main_sha: 819955d61a6da4c811a11fbd11b5dca13f634b7c
