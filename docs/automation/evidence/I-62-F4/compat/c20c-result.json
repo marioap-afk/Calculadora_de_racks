@@ -1,9 +1,9 @@
 {
  "Scenario": {
   "M0": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
-  "I62Tip": "e501634bc1d69f9d5ee6b8faccd9a9197703b820",
-  "EFF": "6da5135aa243875dd8623da6bce2d88184b5df64",
-  "M2": "25b2ab03ea16f59b5dd9a68898753e7643ddba2b",
+  "I62Tip": "6f0187cb30852971b49153c2763c8ba6caeaa64d",
+  "EFF": "f1600fac189c4c43b87e2482ab9f17f3b2b89917",
+  "M2": "99b496a288da7edfd2e90da6aae68fa5ec6f42ad",
   "ContractBlob": "9b5ef6dfed25347310a6c2a8ecb91e48976928cc",
   "I64Docs": [
    "docs/initiatives/I-64-architect-package-v1.md",
@@ -285,10 +285,10 @@
       "AR"
      ]
     ],
-    "MapBlob": "f877c5a5f7c9bd001d93462797698620ac237a05",
+    "MapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
     "Discovery": {
      "E1": "be5389efab934cc3768dc2668e386e5c2b8eb263",
-     "EFF": "6da5135aa243875dd8623da6bce2d88184b5df64",
+     "EFF": "f1600fac189c4c43b87e2482ab9f17f3b2b89917",
      "E2": "## 12. Coexistencia de protocolos de ejecución delegada (I61/I62)",
      "E3": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
      "AutomationPlanBlob": "b06708bbc29237f592f685f98967dca06f5c605c",
@@ -556,10 +556,10 @@
       "AR"
      ]
     ],
-    "MapBlob": "f877c5a5f7c9bd001d93462797698620ac237a05",
+    "MapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
     "Discovery": {
      "E1": "be5389efab934cc3768dc2668e386e5c2b8eb263",
-     "EFF": "6da5135aa243875dd8623da6bce2d88184b5df64",
+     "EFF": "f1600fac189c4c43b87e2482ab9f17f3b2b89917",
      "E2": "## 12. Coexistencia de protocolos de ejecución delegada (I61/I62)",
      "E3": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
      "AutomationPlanBlob": "b06708bbc29237f592f685f98967dca06f5c605c",
@@ -891,10 +891,10 @@
       ]
      ]
     ],
-    "MapBlob": "f877c5a5f7c9bd001d93462797698620ac237a05",
+    "MapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
     "Discovery": {
      "E1": "be5389efab934cc3768dc2668e386e5c2b8eb263",
-     "EFF": "6da5135aa243875dd8623da6bce2d88184b5df64",
+     "EFF": "f1600fac189c4c43b87e2482ab9f17f3b2b89917",
      "E2": "## 12. Coexistencia de protocolos de ejecución delegada (I61/I62)",
      "E3": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
      "AutomationPlanBlob": "b06708bbc29237f592f685f98967dca06f5c605c",
@@ -1340,10 +1340,10 @@
       "AR"
      ]
     ],
-    "MapBlob": "f877c5a5f7c9bd001d93462797698620ac237a05",
+    "MapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
     "Discovery": {
      "E1": "be5389efab934cc3768dc2668e386e5c2b8eb263",
-     "EFF": "6da5135aa243875dd8623da6bce2d88184b5df64",
+     "EFF": "f1600fac189c4c43b87e2482ab9f17f3b2b89917",
      "E2": "## 12. Coexistencia de protocolos de ejecución delegada (I61/I62)",
      "E3": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
      "AutomationPlanBlob": "ff8396eb2112858fb97bc83b156661cfc6e77219",
@@ -1611,10 +1611,10 @@
       "AR"
      ]
     ],
-    "MapBlob": "f877c5a5f7c9bd001d93462797698620ac237a05",
+    "MapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
     "Discovery": {
      "E1": "be5389efab934cc3768dc2668e386e5c2b8eb263",
-     "EFF": "6da5135aa243875dd8623da6bce2d88184b5df64",
+     "EFF": "f1600fac189c4c43b87e2482ab9f17f3b2b89917",
      "E2": "## 12. Coexistencia de protocolos de ejecución delegada (I61/I62)",
      "E3": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
      "AutomationPlanBlob": "ff8396eb2112858fb97bc83b156661cfc6e77219",
@@ -1666,7 +1666,7 @@
    "Expected": "DIRECT_ONLY sin orchestration",
    "Got": "DIRECT_ONLY sin orchestration",
    "Detail": {
-    "DirectCommit": "8f49ee918ac8a086aad1e91f3d3e65d1e1f80521",
+    "DirectCommit": "e82b8dd4a6afd6efc67ffe292f666112620c0029",
     "ResolverCalled": false
    },
    "Pass": true
@@ -1809,10 +1809,10 @@
       "AR"
      ]
     ],
-    "MapBlob": "f877c5a5f7c9bd001d93462797698620ac237a05",
+    "MapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
     "Discovery": {
      "E1": "be5389efab934cc3768dc2668e386e5c2b8eb263",
-     "EFF": "6da5135aa243875dd8623da6bce2d88184b5df64",
+     "EFF": "f1600fac189c4c43b87e2482ab9f17f3b2b89917",
      "E2": "## 12. Coexistencia de protocolos de ejecución delegada (I61/I62)",
      "E3": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
      "AutomationPlanBlob": "b06708bbc29237f592f685f98967dca06f5c605c",

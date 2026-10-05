@@ -4,11 +4,11 @@ automation_state:
   branch: architecture/portabilidad-coordinador-principal
   claim_id: 5b661a17-8c18-4183-8554-3866059cba2b
   current_phase: F4
-  state: validating
+  state: review-ready
   gate: none
   attempts: 0
-  next_action: F4-A..F4-H materializados (paquete del gate en docs/automation/evidence/I-62-F4/README.md); Full Core + UI sobre el SHA exacto de implementación con árbol limpio, push, CI del push con sus cuatro jobs, y entrega al Coordinator sin autodeclarar F4 GATE PASS.
-  last_evidence_commit: 83035d999599384ea74f7b178e3d6761ffa5bb01
+  next_action: Revisión del Coordinator del paquete del gate de F4 (implementación 6f0187cb, Full verde, CI 37391012002 con cuatro jobs en success; docs/automation/evidence/I-62-F4/README.md); F4 GATE PASS no autodeclarado.
+  last_evidence_commit: 6f0187cb30852971b49153c2763c8ba6caeaa64d
 execution_context:
   mode: manual
   automation_enabled: false
@@ -28,5 +28,5 @@ execution_context:
   preparation: docs/automation/evidence/I-62-prep/ (F3, F4, F6, F7, READY, OV y cierre; FC-01 y FC-02 como A-n candidatas sin aplicar; paquetes OD-2, OD-3, OD-4, OD-5, OD-7 y DEP-F4-YAML sin solicitar)
   f3_status: GATE PASS / COMPLETE por el Coordinator sobre f9234cb9 (C-11..C-14, C-30 y C-40 parte F3 PASS; LIFECYCLE §5/§9 se queda en F3; decisions §35)
   f3_scope: nueve esquemas del núcleo; manifiesto B.11 docs/initiatives/I-62-normative-dependency-manifest.json; AUTOMATION_PLAN 16.20-16.24; README §14-§16; routing §9; LIFECYCLE §5 y §9 (alternativa 1 de OD-6, inactivo); guardas Core de B.1, B.11 y textos; MC C-11..C-14, C-30 y C-40 (parte F3)
-  f4_status: OPEN / IMPLEMENTING (decisions §43); evidencia en docs/automation/evidence/I-62-F4/
+  f4_status: IMPLEMENTADO / REVIEW-READY sobre 6f0187cb (Full Core 12962/12962, UI 1637 + 17 omitidas; CI 37391012002 success); evidencia en docs/automation/evidence/I-62-F4/; GATE PASS pendiente del Coordinator
   a1_status: AGREED (Coordinator, decisions §43) sobre ca09ade8 / docs/initiatives/I-62-A-1.md / blob c01899a7 (inmutable); Architect AGREED en R20261005T151303Z-c64c, ACCREDITED (registro r5; evidence §57-§58); A62-A1U-O1 = obligación de F4, no material; Owner NOT REQUIRED

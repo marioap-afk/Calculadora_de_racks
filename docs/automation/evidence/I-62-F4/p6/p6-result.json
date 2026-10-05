@@ -1,0 +1,167 @@
+{
+  "Helper": "TrxReading.Read (P6)",
+  "ImplementationSha": "6f0187cb30852971b49153c2763c8ba6caeaa64d",
+  "Core": {
+    "Trx": "core.trx",
+    "Sha256": "2af7eea26f7b1efef7fa515f259fb87bf45d302c0f0c2f03b3b4ef77c39b1a85",
+    "Status": "PASS",
+    "Counters": {
+      "total": 12962,
+      "executed": 12962,
+      "passed": 12962,
+      "failed": 0,
+      "error": 0,
+      "timeout": 0,
+      "aborted": 0,
+      "inconclusive": 0,
+      "passedButRunAborted": 0,
+      "notRunnable": 0,
+      "notExecuted": 0,
+      "disconnected": 0,
+      "warning": 0,
+      "completed": 0,
+      "inProgress": 0,
+      "pending": 0
+    },
+    "Outcomes": {
+      "Passed": 12962
+    },
+    "Passed": 12962,
+    "Failed": 0,
+    "Skipped": [],
+    "DeclaredSkipMethods": [
+      "Again",
+      "Later"
+    ],
+    "UnexplainedNotExecuted": [],
+    "UnexpectedOutcomes": [],
+    "Failures": [],
+    "Notes": [
+      "declared with Skip but not skipped in this TRX: Again, Later"
+    ]
+  },
+  "UI": {
+    "Trx": "ui.trx",
+    "Sha256": "527c50d42c7e23d5ca8603e31ff0b6d2f9c650d60635e984f9fbc2f3f5f08e38",
+    "Status": "PASS",
+    "Counters": {
+      "total": 1654,
+      "executed": 1637,
+      "passed": 1637,
+      "failed": 0,
+      "error": 0,
+      "timeout": 0,
+      "aborted": 0,
+      "inconclusive": 0,
+      "passedButRunAborted": 0,
+      "notRunnable": 0,
+      "notExecuted": 0,
+      "disconnected": 0,
+      "warning": 0,
+      "completed": 0,
+      "inProgress": 0,
+      "pending": 0
+    },
+    "Outcomes": {
+      "Passed": 1637,
+      "NotExecuted": 17
+    },
+    "Passed": 1637,
+    "Failed": 0,
+    "Skipped": [
+      {
+        "Test": "RackCad.UI.Tests.RichEditorCharacterizationTests.NeitherDeclaredScopeIsConsultedWhenTheWindowCloses",
+        "Reason": "Evidencia de la BASE anterior a I-39B; el contrato nuevo lo prueba RichEditorCloseContractTests. Ver docs/automation/evidence/I-39B-caracterizacion-base-vs-contrato.md"
+      },
+      {
+        "Test": "RackCad.UI.Tests.BoundedEditorCharacterizationTests.ElLargueroDeclaraSuTamanoAManoYNoAplicaNingunEstiloDeVentana",
+        "Reason": "Evidencia de la BASE anterior a I-39C; el contrato nuevo lo prueba BoundedEditorContractTests. Ver docs/automation/evidence/I-39C-caracterizacion-base-vs-contrato.md"
+      },
+      {
+        "Test": "RackCad.UI.Tests.DialogWindowCharacterizationTests.NingunaDeLasDieciseisConsumeEditorActionNiEditorActionBar",
+        "Reason": "Evidencia de la BASE anterior a I-39D; el contrato nuevo lo prueba DialogWindowContractTests. Ver docs/automation/evidence/I-39D-caracterizacion-base-vs-contrato.md"
+      },
+      {
+        "Test": "RackCad.UI.Tests.StructuralSectionInspectorWindowTests.TheWindowDeclaresNoInitialFocus",
+        "Reason": "Evidencia de la BASE anterior a I-39C, que paga la deuda que esta misma prueba registraba; el contrato nuevo lo prueba BoundedEditorContractTests. Ver docs/automation/evidence/I-39C-caracterizacion-base-vs-contrato.md"
+      },
+      {
+        "Test": "RackCad.UI.Tests.RichEditorCharacterizationTests.NoRichEditorInterceptsItsClosing",
+        "Reason": "Evidencia de la BASE anterior a I-39B; el contrato nuevo lo prueba RichEditorCloseContractTests. Ver docs/automation/evidence/I-39B-caracterizacion-base-vs-contrato.md"
+      },
+      {
+        "Test": "RackCad.UI.Tests.BoundedEditorCharacterizationTests.CadaCantileverDeclaraUnTamanoQueSuMinimoHeredadoNoRESPETA",
+        "Reason": "Evidencia de la BASE anterior a I-39C; el contrato nuevo lo prueba BoundedEditorContractTests. Ver docs/automation/evidence/I-39C-caracterizacion-base-vs-contrato.md"
+      },
+      {
+        "Test": "RackCad.UI.Tests.BoundedEditorCharacterizationTests.NingunaDeLasCuatroCantileverDeclaraFocoInicial",
+        "Reason": "Evidencia de la BASE anterior a I-39C; el contrato nuevo lo prueba BoundedEditorContractTests. Ver docs/automation/evidence/I-39C-caracterizacion-base-vs-contrato.md"
+      },
+      {
+        "Test": "RackCad.UI.Tests.DialogWindowCharacterizationTests.NingunaDeLasDieciseisAplicaUnEstiloDeVentanaCompartido",
+        "Reason": "Evidencia de la BASE anterior a I-39D; el contrato nuevo lo prueba DialogWindowContractTests. Ver docs/automation/evidence/I-39D-caracterizacion-base-vs-contrato.md"
+      },
+      {
+        "Test": "RackCad.UI.Tests.StructuralSectionInspectorWindowTests.InsertarIsNeverDisabledAndWithoutSelectionItIsASilentNoOp",
+        "Reason": "Evidencia de la BASE anterior a I-39C, que paga la deuda que esta misma prueba registraba; el contrato nuevo lo prueba BoundedEditorContractTests. Ver docs/automation/evidence/I-39C-caracterizacion-base-vs-contrato.md"
+      },
+      {
+        "Test": "RackCad.UI.Tests.BoundedEditorCharacterizationTests.ElLargueroNoUsaNingunShellYArmaSuChromeAMano",
+        "Reason": "Evidencia de la BASE anterior a I-39C; el contrato nuevo lo prueba BoundedEditorContractTests. Ver docs/automation/evidence/I-39C-caracterizacion-base-vs-contrato.md"
+      },
+      {
+        "Test": "RackCad.UI.Tests.RichEditorCharacterizationTests.FiveOfTheSixCloseWithEscapeAndPushBackDoesNot",
+        "Reason": "Evidencia de la BASE anterior a I-39B; el contrato nuevo lo prueba RichEditorCloseContractTests. Ver docs/automation/evidence/I-39B-caracterizacion-base-vs-contrato.md"
+      },
+      {
+        "Test": "RackCad.UI.Tests.BoundedEditorCharacterizationTests.LosCuatroXAMLNombranUnShellConNombreDeSISTEMA",
+        "Reason": "Evidencia de la BASE anterior a I-39C; el contrato nuevo lo prueba BoundedEditorContractTests. Ver docs/automation/evidence/I-39C-caracterizacion-base-vs-contrato.md"
+      },
+      {
+        "Test": "RackCad.UI.Tests.RichEditorCharacterizationTests.FiveDeclareAnInitialFocusAndTheHeaderConfiguratorDoesNot",
+        "Reason": "Evidencia de la BASE anterior a I-39B; el contrato nuevo lo prueba RichEditorCloseContractTests. Ver docs/automation/evidence/I-39B-caracterizacion-base-vs-contrato.md"
+      },
+      {
+        "Test": "RackCad.UI.Tests.BoundedEditorCharacterizationTests.NingunaDeLasCincoLeeLosTokensDelArquetipoB",
+        "Reason": "Evidencia de la BASE anterior a I-39C; el contrato nuevo lo prueba BoundedEditorContractTests. Ver docs/automation/evidence/I-39C-caracterizacion-base-vs-contrato.md"
+      },
+      {
+        "Test": "RackCad.UI.Tests.BoundedEditorCharacterizationTests.SeparadorYTensorDejanInsertarHabilitadoSinLineaResuelta",
+        "Reason": "Evidencia de la BASE anterior a I-39C; el contrato nuevo lo prueba BoundedEditorContractTests. Ver docs/automation/evidence/I-39C-caracterizacion-base-vs-contrato.md"
+      },
+      {
+        "Test": "RackCad.UI.Tests.DialogWindowCharacterizationTests.SafetyDefensaEsLaUNICAQueNoAsignaChromeYSuDeltaREALEsElFONDO",
+        "Reason": "Evidencia de la BASE anterior a I-39D; el contrato nuevo lo prueba DialogWindowContractTests. Ver docs/automation/evidence/I-39D-caracterizacion-base-vs-contrato.md"
+      },
+      {
+        "Test": "RackCad.UI.Tests.BoundedEditorCharacterizationTests.LasCuatroCantileverAplicanElContratoDeTamanoDelArquetipoRICO",
+        "Reason": "Evidencia de la BASE anterior a I-39C; el contrato nuevo lo prueba BoundedEditorContractTests. Ver docs/automation/evidence/I-39C-caracterizacion-base-vs-contrato.md"
+      }
+    ],
+    "DeclaredSkipMethods": [
+      "CadaCantileverDeclaraUnTamanoQueSuMinimoHeredadoNoRESPETA",
+      "ElLargueroDeclaraSuTamanoAManoYNoAplicaNingunEstiloDeVentana",
+      "ElLargueroNoUsaNingunShellYArmaSuChromeAMano",
+      "FiveDeclareAnInitialFocusAndTheHeaderConfiguratorDoesNot",
+      "FiveOfTheSixCloseWithEscapeAndPushBackDoesNot",
+      "InsertarIsNeverDisabledAndWithoutSelectionItIsASilentNoOp",
+      "LasCuatroCantileverAplicanElContratoDeTamanoDelArquetipoRICO",
+      "LosCuatroXAMLNombranUnShellConNombreDeSISTEMA",
+      "NeitherDeclaredScopeIsConsultedWhenTheWindowCloses",
+      "NingunaDeLasCincoLeeLosTokensDelArquetipoB",
+      "NingunaDeLasCuatroCantileverDeclaraFocoInicial",
+      "NingunaDeLasDieciseisAplicaUnEstiloDeVentanaCompartido",
+      "NingunaDeLasDieciseisConsumeEditorActionNiEditorActionBar",
+      "NoRichEditorInterceptsItsClosing",
+      "SafetyDefensaEsLaUNICAQueNoAsignaChromeYSuDeltaREALEsElFONDO",
+      "SeparadorYTensorDejanInsertarHabilitadoSinLineaResuelta",
+      "TheWindowDeclaresNoInitialFocus"
+    ],
+    "UnexplainedNotExecuted": [],
+    "UnexpectedOutcomes": [],
+    "Failures": [],
+    "Notes": [
+      "VSTest TRX logger convention: skips as NotExecuted with Counters.notExecuted = 0 (I-63 evidence §37.4)"
+    ]
+  }
+}

@@ -141,6 +141,25 @@ negativo de cada control hace ese papel. «Verde» significa que los controles p
 | C-41 | completa | `InputClosure.cs`; 16.24 | (a) cierre sobre el `AGENTS.md` real | (b)–(f) | — | F4-G7 | verde |
 | C-42 | F4: corpus y capturas sintéticas | `InputFidelity.cs`; §20.3.3 | (1)–(3), (a), (f), (i), (k), (m), (r), (t), (v), (w), (z), (6), (7) | (4), (5), (b)–(e), (g), (h), (j), (l), (n), (o), (p), (q), (s), (u), (x), (y), (8) | — | F4-G8 | verde (parte de F4); las capturas reales de runtime son de F6 |
 
+## Full y CI del SHA de implementación
+
+```text
+SHA:   6f0187cb30852971b49153c2763c8ba6caeaa64d (árbol limpio antes y después del Full; HEAD igual al empezar y al terminar)
+Core:  dotnet test tests/RackCad.Tests/RackCad.Tests.csproj      12962 total, 12962 correctas, 0 con error, 0 omitidas
+UI:    dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj  1654 total, 1637 correctas, 0 con error, 17 omitidas
+CI:    corrida 37391012002, event push, ref refs/heads/architecture/portabilidad-coordinador-principal, head_sha exacto;
+       Tests (Domain + Application), Build Plugin without AutoCAD, Build UI y UI Tests en success
+```
+
+- **P6 sobre los TRX reales** (`p6/p6-trx.ps1`, que carga `TrxReading` del ensamblado de pruebas; resultado en `p6/p6-result.json`, sin copiar los
+  TRX): Core PASS (SHA-256 `2af7eea2…`), 12962 correctas y ninguna omitida. UI PASS (SHA-256 `527c50d4…`): 1637 correctas y 17 omitidas, cada una
+  cruzada con un método declarado con `Skip =` en las fuentes de UI. El número de omisiones no está fijado en el helper. Nota de Core: «Again» y
+  «Later» aparecen como declarados y no omitidos porque son el texto de una fuente sintética dentro de `I62F4VerificationHelperTests`; es una nota,
+  no un fallo.
+- **C-20b sobre el SHA:** `compat/clause_map.py check bb0d5522 6f0187cb` = EQUAL (31 archivos, 70 entradas).
+- **C-20c sobre la punta publicada:** `compat/c20c.py` = 32/32, mapa VALID (MV-1..MV-7), EFF local `f1600fac`. La ruta del repositorio de origen
+  debe ser absoluta: el arnés hace `git -C <clon> fetch <origen>`, y con `.` leería el propio clon.
+
 ## Compatibilidad: C-20b y C-20c (MC; se repiten sobre el SHA final de F4 y sobre el merge local de la integración)
 
 - **C-20b** (`compat/clause_map.py check <base> <tip>`): el mapa custodiado es igual a la derivación MV-2..MV-6 entre `origin/main`

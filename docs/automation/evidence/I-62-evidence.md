@@ -2177,7 +2177,8 @@ solo desde artefactos custodiados.
 
 - **Revisión 2** (kit v3c, `task_b5714b45`):
   - la lanzó el Owner (sesión `local_8e95d755`, worktree `sad-cray-fd84e8` sobre `411e01ce`);
-  - su primera llamada, `sha256sum` del prompt en `D:62-arch-a1r5-run` (fuera de su worktree), no tiene resultado desde las 08:08:10Z: la sesión
+  - su primera llamada, `sha256sum` del prompt en `D:
+62-arch-a1r5-run` (fuera de su worktree), no tiene resultado desde las 08:08:10Z: la sesión
     espera una aprobación de permiso;
   - no hay veredicto; la invocación está lanzada, así que cuenta como la segunda y última.
 - **Interrupción de la sesión principal:** el registro de CI muestra un hueco entre los commits `c891863d` (07:46Z) y `01ade261` (12:33Z), consistente
@@ -2330,3 +2331,19 @@ solo desde artefactos custodiados.
 - **F4:** implementación de producción autorizada desde la preparación (`I-62-prep/f4-dossier.md` y `I-62-prep/f4/`); la evidencia de F4 vive en
   `docs/automation/evidence/I-62-F4/`.
 - **DC-07 (18:47Z):** `origin/main` = `bb0d5522`; I-52 `fb6b5648` e I-64 `39b45f36` sin cambios; ninguna ventana activa.
+
+## 59. F4-A..F4-H materializados: paquete del gate de F4 (decisiones §43)
+
+- **Implementación:** `6f0187cb` (árbol limpio). Superficies, RED/GREEN por corte (F4-A..F4-H6), regresión de A-1, matriz C-15..C-42 y observaciones
+  F4-OBS-01..24 en [I-62-F4/README.md](I-62-F4/README.md).
+- **Full sobre `6f0187cb` (AGENTS):** Core **12962/12962**; UI **1637 correctas y 17 omitidas de 1654**. Lectura P6 de los TRX reales en
+  [I-62-F4/p6/p6-result.json](I-62-F4/p6/p6-result.json) (SHA-256 de cada TRX, sin copiar sus bytes).
+- **CI del push de `6f0187cb`:** corrida **37391012002**, `event` = push, `ref` = `refs/heads/architecture/portabilidad-coordinador-principal`,
+  `head_sha` exacto, cuatro jobs requeridos en `success`.
+- **C-20b y C-20c sobre `6f0187cb`:** mapa = derivación (EQUAL, 31 archivos, 70 entradas); C-20c 32/32 con el mapa VALID (MV-1..MV-7).
+- **A-1:** acordada sin cambios (`ca09ade8`, blob `c01899a7`). A62-A1U-O1 cubierta (negativo de la entrada compuesta fabricada en el validador,
+  en `RebaseChain.Creditable` y en C-15/C-38).
+- **DC-07 (23:41Z y antes de esta custodia):** `origin/main` = `bb0d5522`; I-52 `fb6b5648` e I-64 `39b45f36` sin cambios; los hermanos no
+  tocan WORKFLOW, AUTOMATION_PLAN ni `agent-execution/`.
+- **Siguiente:** revisión del Coordinator. F4 GATE PASS no se autodeclara; quedan para su decisión la tabla E.5/derivado de C-20b, C-21 y las
+  observaciones F4-OBS-20..24.
