@@ -2301,3 +2301,14 @@ Una sola A-n solo del Coordinator (A-4) de pruebas y documentación, sin cambio 
   - conformidad READY-06 del Architect + Coordinator;
   - READY-07..09;
   - vuelta para el Candidato y la integración.
+
+## 54. Autorización de READY y A-4
+
+- **Orden del Coordinator**, pegada en el chat. Resumen en las [decisiones](../decisions/I-63.md) §2.
+- **Estado:** READY = AUTHORIZED; Candidato e integración no autorizados.
+- **A-4:** `docs/initiatives/I-63-proposal-v3-amendment-a4-ready-debts.md`, solo del Coordinator.
+  - Cubre DEBT-I63-G2-01 (guarda legacy reapuntada) y DEBT-I63-G3-01 (comentario).
+  - Alcance de dos archivos exactos; la ejecuta la sesión directamente.
+- **Secuencia autorizada:** A → B → C → D → E → F (READY-04) → G (READY-05) → H (READY-06) → I (READY-07..09) → J.
+  - Único retorno obligatorio intermedio: la aceptación explícita del ADR por el Owner.
+- **HANDOFF y ROADMAP:** no se tocan en READY.
