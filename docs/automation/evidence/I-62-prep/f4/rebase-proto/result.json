@@ -1,0 +1,77 @@
+{
+ "TempRoot": "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\r62-rebase-xm6p38jm",
+ "Steps": {
+  "rebase": {
+   "Originals": 5,
+   "Images": 5,
+   "AllPatchIdsEqual": true
+  },
+  "lease": {
+   "WithIntruder": "REJECTED",
+   "Retry": "ACCEPTED"
+  },
+  "successor": {
+   "ReadsStateStrict": true,
+   "IH02_A1": "VALID",
+   "OriginalTargetPresent": false,
+   "ImageTargetPresent": true,
+   "ImagePatchIdsRecomputed": true
+  }
+ },
+ "Variants": {
+  "LITERAL": {
+   "PairAndFile": "VALID",
+   "IH02_Literal": "VALID",
+   "IH02_A1": [
+    [
+     "I-H02",
+     "orchestration.loop.object.commit = 1980acb59d43f5a33eb4bc35abeba083f1537f5f no es ancestro de HEAD"
+    ],
+    [
+     "I-H02",
+     "review_requests[L1].object.commit = 1980acb59d43f5a33eb4bc35abeba083f1537f5f no es ancestro de HEAD"
+    ],
+    [
+     "I-H02",
+     "review_requests[L1].attempts[1].Target.commit = 1980acb59d43f5a33eb4bc35abeba083f1537f5f no es ancestro de HEAD"
+    ]
+   ],
+   "LiveTarget": "1980acb59d43f5a33eb4bc35abeba083f1537f5f",
+   "ReconcileOrchestration": [
+    [
+     "I-P05",
+     "la reconciliación cambia campos fuera de StateFields: ['orchestration.loop.object.commit', 'orchestration.review_requests']"
+    ],
+    [
+     "I-P13",
+     "loop.object cambia en REVIEW_PENDING → REVIEW_PENDING"
+    ],
+    [
+     "I-P13",
+     "review_requests.object es inmutable"
+    ]
+   ],
+   "StateRoundTrip": true
+  },
+  "A1": {
+   "PairAndFile": "VALID",
+   "IH02_Literal": "VALID",
+   "IH02_A1": "VALID",
+   "LiveTarget": "eabc64a168c47f391b628913785ceb83437ba433",
+   "StateRoundTrip": true
+  }
+ },
+ "Checks": {
+  "rebase.AllPatchIdsEqual": true,
+  "lease rejected with an intruder": true,
+  "lease accepted on retry": true,
+  "LITERAL reconciliation valid for the literal fields": true,
+  "LITERAL rejects reconciling the orchestration": true,
+  "LITERAL leaves a stale live target (A-1 I-H02 detects it)": true,
+  "A1 reconciliation valid": true,
+  "successor: I-H02 valid under A1": true,
+  "successor: original target absent, image present": true,
+  "successor: patch-ids recomputed equal": true
+ },
+ "AllPass": true
+}

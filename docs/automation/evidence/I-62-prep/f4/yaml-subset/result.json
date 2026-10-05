@@ -1,0 +1,479 @@
+{
+ "Cases": [
+  {
+   "Case": "valid-minimal",
+   "Expected": "OK",
+   "Got": "OK",
+   "Pass": true
+  },
+  {
+   "Case": "nested-list-map",
+   "Expected": "OK",
+   "Got": "OK",
+   "Pass": true
+  },
+  {
+   "Case": "quoted-colon",
+   "Expected": "OK",
+   "Got": "OK",
+   "Pass": true
+  },
+  {
+   "Case": "plain-colon",
+   "Expected": "contains ': '",
+   "Got": "line 1: plain scalar contains ': ' (quote it)",
+   "Pass": true
+  },
+  {
+   "Case": "invalid-indentation",
+   "Expected": "unexpected indentation",
+   "Got": "line 4: unexpected indentation",
+   "Pass": true
+  },
+  {
+   "Case": "duplicate-key",
+   "Expected": "duplicate key",
+   "Got": "line 2: duplicate key: a",
+   "Pass": true
+  },
+  {
+   "Case": "anchor",
+   "Expected": "anchors, aliases and tags",
+   "Got": "line 1: anchors, aliases and tags are not supported",
+   "Pass": true
+  },
+  {
+   "Case": "alias",
+   "Expected": "anchors, aliases and tags",
+   "Got": "line 2: anchors, aliases and tags are not supported",
+   "Pass": true
+  },
+  {
+   "Case": "multiline-folded",
+   "Expected": "block scalars",
+   "Got": "line 1: block scalars (| >) are not supported",
+   "Pass": true
+  },
+  {
+   "Case": "multiline-plain",
+   "Expected": "multi-line scalar",
+   "Got": "line 2: indented content after a scalar value (multi-line scalar)",
+   "Pass": true
+  },
+  {
+   "Case": "multiline-quoted",
+   "Expected": "unterminated or multi-line",
+   "Got": "line 1: unterminated or multi-line double-quoted scalar",
+   "Pass": true
+  },
+  {
+   "Case": "malformed-list",
+   "Expected": "mapping key where a sequence item was expected",
+   "Got": "line 3: mapping key where a sequence item was expected",
+   "Pass": true
+  },
+  {
+   "Case": "list-not-indented",
+   "Expected": "sequence must be indented",
+   "Got": "line 2: sequence must be indented under its key",
+   "Pass": true
+  },
+  {
+   "Case": "empty-value",
+   "Expected": "empty value without a nested block",
+   "Got": "line 1: empty value without a nested block (write null, [] or {})",
+   "Pass": true
+  },
+  {
+   "Case": "tab-indent",
+   "Expected": "tab in indentation",
+   "Got": "line 2: tab in indentation",
+   "Pass": true
+  },
+  {
+   "Case": "flow-nonempty",
+   "Expected": "flow collections",
+   "Got": "line 1: flow collections other than [] and {} are not supported",
+   "Pass": true
+  },
+  {
+   "Case": "tag",
+   "Expected": "anchors, aliases and tags",
+   "Got": "line 1: anchors, aliases and tags are not supported",
+   "Pass": true
+  },
+  {
+   "Case": "doc-marker",
+   "Expected": "document markers",
+   "Got": "line 1: document markers are not supported",
+   "Pass": true
+  },
+  {
+   "Case": "ambiguous-yes",
+   "Expected": "ambiguous plain scalar",
+   "Got": "line 1: ambiguous plain scalar (YAML would type it differently): yes",
+   "Pass": true
+  },
+  {
+   "Case": "ambiguous-octal",
+   "Expected": "ambiguous plain scalar",
+   "Got": "line 1: ambiguous plain scalar (YAML would type it differently): 0123",
+   "Pass": true
+  },
+  {
+   "Case": "trailing-comment",
+   "Expected": "' #'",
+   "Got": "line 1: plain scalar contains ' #' (comment or ambiguity: quote it)",
+   "Pass": true
+  },
+  {
+   "Case": "comment-lines",
+   "Expected": "OK",
+   "Got": "OK",
+   "Pass": true
+  },
+  {
+   "Case": "HEADER:v1-folded-next-action",
+   "Expected": "fade0f8a-1438-4bfb-a894-2a9671685e60",
+   "Got": "fade0f8a-1438-4bfb-a894-2a9671685e60",
+   "Pass": true
+  },
+  {
+   "Case": "HEADER:v1-duplicate-claim-id",
+   "Expected": "duplicate key",
+   "Got": "line 4: duplicate key: claim_id",
+   "Pass": true
+  },
+  {
+   "Case": "HEADER:v1-folded-claim-id",
+   "Expected": "plain scalar starts with an indicator",
+   "Got": "line 3: plain scalar starts with an indicator: >-",
+   "Pass": true
+  },
+  {
+   "Case": "HEADER:v1-claim-id-continuation",
+   "Expected": "continuation found",
+   "Got": "line 4: claim_id must be a single-line scalar (continuation found)",
+   "Pass": true
+  },
+  {
+   "Case": "HEADER:v1-claim-id-colon",
+   "Expected": "contains ': '",
+   "Got": "line 3: plain scalar contains ': ' (quote it)",
+   "Pass": true
+  }
+ ],
+ "RoundTripStateV2": {
+  "Lines": 217,
+  "Equal": true
+ },
+ "DigitShaQuoted": true,
+ "Mutations": {
+  "accept-duplicate-keys": {
+   "FailingCases": [
+    "duplicate-key"
+   ],
+   "Detected": true
+  },
+  "accept-plain-colon": {
+   "FailingCases": [
+    "plain-colon",
+    "HEADER:v1-claim-id-colon"
+   ],
+   "Detected": true
+  },
+  "accept-block-scalars": {
+   "FailingCases": [
+    "multiline-folded"
+   ],
+   "Detected": true
+  },
+  "accept-multiline-plain": {
+   "FailingCases": [
+    "multiline-plain"
+   ],
+   "Detected": true
+  }
+ },
+ "RealStateFiles": {
+  "Distinct": 39,
+  "StrictOK": 17,
+  "HeaderOK": 38,
+  "Rows": [
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-03.yml",
+    "Blob": "cca373ca",
+    "STRICT": "OK",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-05.yml",
+    "Blob": "3f645b0c",
+    "STRICT": "OK",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-06.yml",
+    "Blob": "c72890be",
+    "STRICT": "OK",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-07.yml",
+    "Blob": "99758193",
+    "STRICT": "OK",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-11.yml",
+    "Blob": "66ed5033",
+    "STRICT": "OK",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-12.yml",
+    "Blob": "ee7135ba",
+    "STRICT": "OK",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-14.yml",
+    "Blob": "1e0534f9",
+    "STRICT": "OK",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-15.yml",
+    "Blob": "d1ab545a",
+    "STRICT": "OK",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-17.yml",
+    "Blob": "e232513d",
+    "STRICT": "OK",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-18.yml",
+    "Blob": "2b285186",
+    "STRICT": "ERR: line 21: block scalars (| >) are not supported",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-19.yml",
+    "Blob": "f2bb2d76",
+    "STRICT": "ERR: line 23: empty value without a nested block (write null, [] or {})",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-20.yml",
+    "Blob": "147de29b",
+    "STRICT": "OK",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-21.yml",
+    "Blob": "1aa10b78",
+    "STRICT": "OK",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-22.yml",
+    "Blob": "3932189a",
+    "STRICT": "OK",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-23.yml",
+    "Blob": "cb3558bb",
+    "STRICT": "ERR: line 10: block scalars (| >) are not supported",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-24.yml",
+    "Blob": "906f2a75",
+    "STRICT": "OK",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-30.yml",
+    "Blob": "45542833",
+    "STRICT": "ERR: line 20: block scalars (| >) are not supported",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-31.yml",
+    "Blob": "f8511633",
+    "STRICT": "ERR: line 12: block scalars (| >) are not supported",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-32.yml",
+    "Blob": "611f907a",
+    "STRICT": "ERR: line 10: block scalars (| >) are not supported",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-33.yml",
+    "Blob": "d953aaaf",
+    "STRICT": "ERR: line 11: block scalars (| >) are not supported",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-34.yml",
+    "Blob": "5b61730d",
+    "STRICT": "ERR: line 10: block scalars (| >) are not supported",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-35.yml",
+    "Blob": "3d6092a1",
+    "STRICT": "ERR: line 10: block scalars (| >) are not supported",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-36A.yml",
+    "Blob": "e9973381",
+    "STRICT": "ERR: line 10: block scalars (| >) are not supported",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-36B.yml",
+    "Blob": "df109517",
+    "STRICT": "ERR: line 10: block scalars (| >) are not supported",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-36C.yml",
+    "Blob": "94d93839",
+    "STRICT": "ERR: line 10: block scalars (| >) are not supported",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-36D.yml",
+    "Blob": "b7326c17",
+    "STRICT": "ERR: line 10: block scalars (| >) are not supported",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-37A.yml",
+    "Blob": "98ecc8c8",
+    "STRICT": "ERR: line 10: block scalars (| >) are not supported",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-37B.yml",
+    "Blob": "442e76d7",
+    "STRICT": "ERR: line 10: block scalars (| >) are not supported",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-37C.yml",
+    "Blob": "097459e1",
+    "STRICT": "ERR: line 10: block scalars (| >) are not supported",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-37D.yml",
+    "Blob": "8c1110df",
+    "STRICT": "ERR: line 12: block scalars (| >) are not supported",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-39A.yml",
+    "Blob": "37876a64",
+    "STRICT": "ERR: line 10: block scalars (| >) are not supported",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-39B.yml",
+    "Blob": "db48ff37",
+    "STRICT": "ERR: line 10: block scalars (| >) are not supported",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-39C.yml",
+    "Blob": "eed4cb94",
+    "STRICT": "ERR: line 10: block scalars (| >) are not supported",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-39D.yml",
+    "Blob": "ec195e6c",
+    "STRICT": "ERR: line 10: block scalars (| >) are not supported",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-58.yml",
+    "Blob": "9b1e6f9a",
+    "STRICT": "OK",
+    "HEADER": "NO_CLAIM_ID (no es un estado rackcad-automation-state)"
+   },
+   {
+    "Ref": "origin/main",
+    "File": "docs/automation/state/I-61.yml",
+    "Blob": "c9bb9816",
+    "STRICT": "OK",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/architecture/portabilidad-coordinador-principal",
+    "File": "docs/automation/state/I-62.yml",
+    "Blob": "decb38c6",
+    "STRICT": "OK",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/architecture/parametros-calculados-resumen-proyecto",
+    "File": "docs/automation/state/I-63.yml",
+    "Blob": "0618a216",
+    "STRICT": "ERR: line 22: flow collections other than [] and {} are not supported",
+    "HEADER": "OK"
+   },
+   {
+    "Ref": "origin/architecture/workspace-persistente-rackcad",
+    "File": "docs/automation/state/I-64.yml",
+    "Blob": "07e983b9",
+    "STRICT": "OK",
+    "HEADER": "OK"
+   }
+  ]
+ },
+ "AllPass": true
+}

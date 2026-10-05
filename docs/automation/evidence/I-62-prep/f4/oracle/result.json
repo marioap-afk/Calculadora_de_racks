@@ -1,0 +1,2172 @@
+{
+ "Summary": {
+  "Transitions": 62,
+  "Pass": 62,
+  "Mutations": 45,
+  "MutationsDetected": 45,
+  "AllPass": true
+ },
+ "Results": [
+  {
+   "Transition": "BOOTSTRAP (archivo)",
+   "Variant": "LITERAL",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true
+  },
+  {
+   "Transition": "T0 BOOTSTRAP → QU (decisión de G0)",
+   "Variant": "LITERAL",
+   "From": "BOOTSTRAP",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.point",
+    "custody.point_kind",
+    "custody.principal.acceptance.decision",
+    "custody.principal.acceptance.decision.blob",
+    "custody.principal.acceptance.decision.path",
+    "custody.principal.acceptance.state",
+    "custody.principal.binding.path",
+    "custody.record_version",
+    "protocol.g0_acceptance.decision",
+    "protocol.g0_acceptance.decision.blob",
+    "protocol.g0_acceptance.decision.path",
+    "protocol.g0_acceptance.state"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "Coordinator: I62-CLASSIFICATION, I62-DELEGATED-EXECUTION, I62-PRINCIPAL-BINDING",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "sin marcadores",
+     "Expected": "I-P09",
+     "Got": "I-P09",
+     "Pass": true
+    },
+    {
+     "Mutation": "solo el marcador del binding (sin los de G0)",
+     "Expected": "I-P09",
+     "Got": "I-P09",
+     "Pass": true
+    },
+    {
+     "Mutation": "cambia attempts",
+     "Expected": "I-P05",
+     "Got": "I-P05",
+     "Pass": true
+    },
+    {
+     "Mutation": "cambia protocol.basis",
+     "Expected": "I-P06",
+     "Got": "I-P06",
+     "Pass": true
+    },
+    {
+     "Mutation": "record_version + 2",
+     "Expected": "I-P01",
+     "Got": "I-P01",
+     "Pass": true
+    },
+    {
+     "Mutation": "decision nula con ACCEPTED",
+     "Expected": "I-S16",
+     "Got": "I-S16",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "BOOTSTRAP → Q0 (SM-01: inalcanzable)",
+   "Variant": "LITERAL",
+   "From": "BOOTSTRAP",
+   "To": "Q0",
+   "Expected": "I-S15",
+   "Got": "I-S15",
+   "Pass": true,
+   "Changed": [
+    "custody.point",
+    "custody.record_version",
+    "custody.task_intent",
+    "custody.task_intent.attempt",
+    "custody.task_intent.continues_task_id",
+    "custody.task_intent.contract.blob",
+    "custody.task_intent.contract.path",
+    "custody.task_intent.kind",
+    "custody.task_intent.planned_roles",
+    "custody.task_intent.task_id",
+    "custody.window.seq",
+    "custody.window.state"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [
+    [
+     "I-S15",
+     "Q0 sin aceptaciones"
+    ]
+   ],
+   "Mutations": []
+  },
+  {
+   "Transition": "Q0 FIRST (paso 1 de 16.4)",
+   "Variant": "LITERAL",
+   "From": "QU",
+   "To": "Q0",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.point",
+    "custody.point_kind",
+    "custody.record_version",
+    "custody.task_intent",
+    "custody.task_intent.attempt",
+    "custody.task_intent.continues_task_id",
+    "custody.task_intent.contract.blob",
+    "custody.task_intent.contract.path",
+    "custody.task_intent.kind",
+    "custody.task_intent.planned_roles",
+    "custody.task_intent.task_id",
+    "custody.window.seq",
+    "custody.window.state"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "Principal (intención fijada por el Coordinator)",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "window.seq + 2",
+     "Expected": "I-P04",
+     "Got": "I-P04",
+     "Pass": true
+    },
+    {
+     "Mutation": "cambia chains",
+     "Expected": "I-P05",
+     "Got": "I-P05",
+     "Pass": true
+    },
+    {
+     "Mutation": "attempts + 1 sin CORRECTION",
+     "Expected": "I-P05",
+     "Got": "I-P05",
+     "Pass": true
+    },
+    {
+     "Mutation": "task_intent nula",
+     "Expected": "I-S03",
+     "Got": "I-S03",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "T7 Q0 → Q7 VERIFIED",
+   "Variant": "LITERAL",
+   "From": "Q0",
+   "To": "Q7",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.chains",
+    "custody.last_window",
+    "custody.last_window.attempt",
+    "custody.last_window.closure",
+    "custody.last_window.closure_source",
+    "custody.last_window.delegation_run_id",
+    "custody.last_window.journal.blob",
+    "custody.last_window.journal.path",
+    "custody.last_window.reconstruction",
+    "custody.last_window.seq",
+    "custody.last_window.task_id",
+    "custody.last_window.verification.blob",
+    "custody.last_window.verification.path",
+    "custody.last_window.verified_sha",
+    "custody.point",
+    "custody.record_version",
+    "custody.task_intent",
+    "custody.task_intent.attempt",
+    "custody.task_intent.continues_task_id",
+    "custody.task_intent.contract.blob",
+    "custody.task_intent.contract.path",
+    "custody.task_intent.kind",
+    "custody.task_intent.planned_roles",
+    "custody.task_intent.task_id",
+    "custody.window.state"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "Principal (verificación del Controller)",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "VERIFIED sin verified_sha",
+     "Expected": "I-S08",
+     "Got": "I-S08",
+     "Pass": true
+    },
+    {
+     "Mutation": "ventana sigue OPENABLE",
+     "Expected": "I-S03",
+     "Got": "I-S03",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "Q0 → QU (prohibido, W-2)",
+   "Variant": "LITERAL",
+   "From": "Q0",
+   "To": "QU",
+   "Expected": "I-P02",
+   "Got": "I-P02",
+   "Pass": true,
+   "Changed": [
+    "custody.point",
+    "custody.point_kind",
+    "custody.record_version",
+    "custody.window.state"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [
+    [
+     "I-P02",
+     "Q0 → QU"
+    ],
+    [
+     "I-P05",
+     "QU cambia campos que no le corresponden: ['custody.window.state']"
+    ],
+    [
+     "I-S07",
+     "last_window/window.seq fuera de Q0"
+    ]
+   ],
+   "Mutations": []
+  },
+  {
+   "Transition": "T3' Q0 → Q7 NOT_ACCEPTED",
+   "Variant": "LITERAL",
+   "From": "Q0",
+   "To": "Q7",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.last_window",
+    "custody.last_window.attempt",
+    "custody.last_window.closure",
+    "custody.last_window.closure_source",
+    "custody.last_window.delegation_run_id",
+    "custody.last_window.journal.blob",
+    "custody.last_window.journal.path",
+    "custody.last_window.reconstruction",
+    "custody.last_window.seq",
+    "custody.last_window.task_id",
+    "custody.last_window.verification",
+    "custody.last_window.verified_sha",
+    "custody.point",
+    "custody.record_version",
+    "custody.task_intent",
+    "custody.task_intent.attempt",
+    "custody.task_intent.continues_task_id",
+    "custody.task_intent.contract.blob",
+    "custody.task_intent.contract.path",
+    "custody.task_intent.kind",
+    "custody.task_intent.planned_roles",
+    "custody.task_intent.task_id",
+    "custody.window.state"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "Coordinator (A1'-A8' en fail)",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "run id con NOT_ACCEPTED",
+     "Expected": "I-S08",
+     "Got": "I-S08",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "T18 Q0 → Q7 WITHDRAWN",
+   "Variant": "LITERAL",
+   "From": "Q0",
+   "To": "Q7",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.last_window",
+    "custody.last_window.attempt",
+    "custody.last_window.closure",
+    "custody.last_window.closure_source",
+    "custody.last_window.delegation_run_id",
+    "custody.last_window.journal.blob",
+    "custody.last_window.journal.path",
+    "custody.last_window.reconstruction",
+    "custody.last_window.seq",
+    "custody.last_window.task_id",
+    "custody.last_window.verification",
+    "custody.last_window.verified_sha",
+    "custody.point",
+    "custody.record_version",
+    "custody.task_intent",
+    "custody.task_intent.attempt",
+    "custody.task_intent.continues_task_id",
+    "custody.task_intent.contract.blob",
+    "custody.task_intent.contract.path",
+    "custody.task_intent.kind",
+    "custody.task_intent.planned_roles",
+    "custody.task_intent.task_id",
+    "custody.window.state"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "Coordinator (retirada)",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": []
+  },
+  {
+   "Transition": "Q0 CORRECTION (attempts + 1 y CorrectionLaunch)",
+   "Variant": "LITERAL",
+   "From": "Q7",
+   "To": "Q0",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "automation_state.attempts",
+    "counters.correction_launches",
+    "custody.point",
+    "custody.record_version",
+    "custody.task_intent",
+    "custody.task_intent.attempt",
+    "custody.task_intent.continues_task_id",
+    "custody.task_intent.contract.blob",
+    "custody.task_intent.contract.path",
+    "custody.task_intent.kind",
+    "custody.task_intent.planned_roles",
+    "custody.task_intent.task_id",
+    "custody.window.seq",
+    "custody.window.state"
+   ],
+   "CounterDeltas": {
+    "attempts": 1,
+    "correction_launches": 1,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "sin CorrectionLaunch",
+     "Expected": "I-S05",
+     "Got": "I-S05",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "T12b Q0 → QR ABANDONED (R-1)",
+   "Variant": "LITERAL",
+   "From": "Q0",
+   "To": "QR",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.last_window",
+    "custody.last_window.attempt",
+    "custody.last_window.closure",
+    "custody.last_window.closure_source",
+    "custody.last_window.delegation_run_id",
+    "custody.last_window.journal",
+    "custody.last_window.reconstruction.blob",
+    "custody.last_window.reconstruction.path",
+    "custody.last_window.seq",
+    "custody.last_window.task_id",
+    "custody.last_window.verification",
+    "custody.last_window.verified_sha",
+    "custody.point",
+    "custody.point_kind",
+    "custody.principal.binding.path",
+    "custody.principal.designation",
+    "custody.principal.designation.blob",
+    "custody.principal.designation.path",
+    "custody.principal.preflight.path",
+    "custody.principal.since_record_version",
+    "custody.record_version",
+    "custody.task_intent",
+    "custody.task_intent.attempt",
+    "custody.task_intent.continues_task_id",
+    "custody.task_intent.contract.blob",
+    "custody.task_intent.contract.path",
+    "custody.task_intent.kind",
+    "custody.task_intent.planned_roles",
+    "custody.task_intent.task_id",
+    "custody.window.state"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "Coordinator: designación de N; reconstrucción B.8.5",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "sin reconstrucción",
+     "Expected": "I-S08",
+     "Got": "I-S08",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "T12a Q0 → Q7 con TRANSFER",
+   "Variant": "LITERAL",
+   "From": "Q0",
+   "To": "Q7",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.chains",
+    "custody.last_window",
+    "custody.last_window.attempt",
+    "custody.last_window.closure",
+    "custody.last_window.closure_source",
+    "custody.last_window.delegation_run_id",
+    "custody.last_window.journal.blob",
+    "custody.last_window.journal.path",
+    "custody.last_window.reconstruction",
+    "custody.last_window.seq",
+    "custody.last_window.task_id",
+    "custody.last_window.verification.blob",
+    "custody.last_window.verification.path",
+    "custody.last_window.verified_sha",
+    "custody.point",
+    "custody.principal.binding.path",
+    "custody.principal.designation",
+    "custody.principal.designation.blob",
+    "custody.principal.designation.path",
+    "custody.principal.since_record_version",
+    "custody.record_version",
+    "custody.task_intent",
+    "custody.task_intent.attempt",
+    "custody.task_intent.continues_task_id",
+    "custody.task_intent.contract.blob",
+    "custody.task_intent.contract.path",
+    "custody.task_intent.kind",
+    "custody.task_intent.planned_roles",
+    "custody.task_intent.task_id",
+    "custody.window.state"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "Coordinator: designación + terminación de P acreditada",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "sin registro TRANSFER",
+     "Expected": "I-P07",
+     "Got": "I-P07",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "T17 Q7 → QH (liberación)",
+   "Variant": "LITERAL",
+   "From": "Q7",
+   "To": "QH",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.point",
+    "custody.principal.state",
+    "custody.record_version"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "QH con HELD",
+     "Expected": "I-S04",
+     "Got": "I-S04",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "QH → Q0 (prohibido)",
+   "Variant": "LITERAL",
+   "From": "QH",
+   "To": "Q0",
+   "Expected": "I-P02",
+   "Got": "I-P02",
+   "Pass": true,
+   "Changed": [
+    "custody.point",
+    "custody.record_version",
+    "custody.task_intent",
+    "custody.task_intent.attempt",
+    "custody.task_intent.continues_task_id",
+    "custody.task_intent.contract.blob",
+    "custody.task_intent.contract.path",
+    "custody.task_intent.kind",
+    "custody.task_intent.planned_roles",
+    "custody.task_intent.task_id",
+    "custody.window.seq",
+    "custody.window.state"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [
+    [
+     "I-P02",
+     "QH → Q0"
+    ],
+    [
+     "I-S03",
+     "Q0 sin intención o sin HELD"
+    ],
+    [
+     "I-S04",
+     "RELEASED ⇔ QH"
+    ]
+   ],
+   "Mutations": []
+  },
+  {
+   "Transition": "T16 QH → QR ORDINARY (transferencia A→B)",
+   "Variant": "LITERAL",
+   "From": "QH",
+   "To": "QR",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.point",
+    "custody.point_kind",
+    "custody.principal.binding.path",
+    "custody.principal.designation",
+    "custody.principal.designation.blob",
+    "custody.principal.designation.path",
+    "custody.principal.since_record_version",
+    "custody.principal.state",
+    "custody.record_version"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "Coordinator: designación de B con aceptación de su binding",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "QR sin designación",
+     "Expected": "I-S14",
+     "Got": "I-S14",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "QH → QU (prohibido)",
+   "Variant": "LITERAL",
+   "From": "QH",
+   "To": "QU",
+   "Expected": "I-P02",
+   "Got": "I-P02",
+   "Pass": true,
+   "Changed": [
+    "custody.point",
+    "custody.point_kind",
+    "custody.record_version"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [
+    [
+     "I-P02",
+     "QH → QU"
+    ],
+    [
+     "I-S04",
+     "RELEASED ⇔ QH"
+    ]
+   ],
+   "Mutations": []
+  },
+  {
+   "Transition": "T19 Q7 → QU REBASE_RECONCILIATION",
+   "Variant": "LITERAL",
+   "From": "Q7",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "automation_state.last_evidence_commit",
+    "custody.chains",
+    "custody.last_rebase",
+    "custody.last_rebase.branch_after",
+    "custody.last_rebase.branch_before",
+    "custody.last_rebase.main_after",
+    "custody.last_rebase.main_before",
+    "custody.last_rebase.map.blob",
+    "custody.last_rebase.map.path",
+    "custody.last_rebase.record_version",
+    "custody.last_window.verified_sha",
+    "custody.point",
+    "custody.point_kind",
+    "custody.record_version"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "Principal (RebaseMap acreditado; force-with-lease)",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "imagen equivocada",
+     "Expected": "I-P10",
+     "Got": "I-P10",
+     "Pass": true
+    },
+    {
+     "Mutation": "cambia la ventana",
+     "Expected": "I-P05",
+     "Got": "I-P05",
+     "Pass": true
+    },
+    {
+     "Mutation": "sin last_rebase",
+     "Expected": "I-S17",
+     "Got": "I-S17",
+     "Pass": true
+    },
+    {
+     "Mutation": "cambia attempts",
+     "Expected": "I-P05",
+     "Got": "I-P05",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "T22 QH → QR REBASE_RECONCILIATION (toma con rebase)",
+   "Variant": "LITERAL",
+   "From": "QH",
+   "To": "QR",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "automation_state.last_evidence_commit",
+    "custody.chains",
+    "custody.last_rebase",
+    "custody.last_rebase.branch_after",
+    "custody.last_rebase.branch_before",
+    "custody.last_rebase.main_after",
+    "custody.last_rebase.main_before",
+    "custody.last_rebase.map.blob",
+    "custody.last_rebase.map.path",
+    "custody.last_rebase.record_version",
+    "custody.last_window.verified_sha",
+    "custody.point",
+    "custody.point_kind",
+    "custody.principal.binding.path",
+    "custody.principal.designation",
+    "custody.principal.designation.blob",
+    "custody.principal.designation.path",
+    "custody.principal.since_record_version",
+    "custody.principal.state",
+    "custody.record_version"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "Coordinator: I62-REBASE-TAKEOVER + aceptación del binding",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": []
+  },
+  {
+   "Transition": "T13 segunda recuperación concurrente (pierde el CAS)",
+   "Variant": "LITERAL",
+   "From": "QR",
+   "To": "QR",
+   "Expected": "I-P01",
+   "Got": "I-P01",
+   "Pass": true,
+   "Changed": [
+    "custody.principal.binding.path",
+    "custody.principal.designation.path"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [
+    [
+     "I-P01",
+     "record_version + 1"
+    ]
+   ],
+   "Mutations": []
+  },
+  {
+   "Transition": "T20 /v1 DIRECT_ONLY → BOOTSTRAP de adopción",
+   "Variant": "LITERAL",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true
+  },
+  {
+   "Transition": "/v1 → Q0 directo (prohibido)",
+   "Variant": "LITERAL",
+   "Expected": "I-P11",
+   "Got": "I-P11",
+   "Pass": true
+  },
+  {
+   "Transition": "T21 BOOTSTRAP (seq 0) → /v1 DIRECT_ONLY",
+   "Variant": "LITERAL",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true
+  },
+  {
+   "Transition": "T21 con ventana ya abierta (prohibido)",
+   "Variant": "LITERAL",
+   "Expected": "I-P11",
+   "Got": "I-P11",
+   "Pass": true
+  },
+  {
+   "Transition": "bucle: NONE → REVIEW_PENDING (abre)",
+   "Variant": "LITERAL",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.loop.action_validity",
+    "orchestration.loop.action_validity.authorization_id",
+    "orchestration.loop.action_validity.ended_at",
+    "orchestration.loop.action_validity.ended_by",
+    "orchestration.loop.action_validity.ended_reason",
+    "orchestration.loop.action_validity.ended_utc",
+    "orchestration.loop.action_validity.state",
+    "orchestration.loop.authorization",
+    "orchestration.loop.authorization.blob",
+    "orchestration.loop.authorization.path",
+    "orchestration.loop.object",
+    "orchestration.loop.object.blob",
+    "orchestration.loop.object.commit",
+    "orchestration.loop.object.path",
+    "orchestration.loop.phase",
+    "orchestration.loop.type",
+    "orchestration.next_action.action",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "Coordinator: ReviewLoopAuthorization (marcador I62-REVIEW-LOOP-AUTHORIZATION)",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": []
+  },
+  {
+   "Transition": "intento: INVOCATION_PLANNED → BUDGET_RESERVED",
+   "Variant": "LITERAL",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.budgets.architect_launches",
+    "orchestration.budgets.logical_requests",
+    "orchestration.budgets.review_rounds",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 1
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "sin architect_launches + 1",
+     "Expected": "I-P13",
+     "Got": "I-P13",
+     "Pass": true
+    },
+    {
+     "Mutation": "reserva con la vigencia terminada",
+     "Expected": "I-P13",
+     "Got": "I-P13",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "intento: BUDGET_RESERVED → BUDGET_RESERVED (replanificado)",
+   "Variant": "LITERAL",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "reserved_at cambia",
+     "Expected": "I-P13",
+     "Got": "I-P13",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "intento: BUDGET_RESERVED → LAUNCHING (ARCHITECT_INVOKED)",
+   "Variant": "LITERAL",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.loop.phase",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "run_id nulo",
+     "Expected": "I-S18",
+     "Got": "I-S18",
+     "Pass": true
+    },
+    {
+     "Mutation": "objeto cambia (cambio tardío)",
+     "Expected": "I-P13",
+     "Got": "I-P13",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "intento: LAUNCHING → LAUNCHED",
+   "Variant": "LITERAL",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": []
+  },
+  {
+   "Transition": "intento: LAUNCHED → RESULT_RECEIVED",
+   "Variant": "LITERAL",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": []
+  },
+  {
+   "Transition": "intento: RESULT_RECEIVED → RESULT_INGESTED",
+   "Variant": "LITERAL",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.loop.phase",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "ingestión saltando RESULT_RECEIVED",
+     "Expected": null,
+     "Got": "VALID",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "fase: RESULT_INGESTED → CORRECTING",
+   "Variant": "LITERAL",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.loop.phase"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": []
+  },
+  {
+   "Transition": "fase: CORRECTING → PUBLISHED (único cambio de loop.object)",
+   "Variant": "LITERAL",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.budgets.correction_rounds",
+    "orchestration.loop.object.blob",
+    "orchestration.loop.object.commit",
+    "orchestration.loop.object.path",
+    "orchestration.loop.phase"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "sin correction_rounds + 1",
+     "Expected": "I-P13",
+     "Got": "I-P13",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "fase: RESULT_INGESTED → ARCHITECT_SATISFIED",
+   "Variant": "LITERAL",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.loop.action_validity.ended_at",
+    "orchestration.loop.action_validity.ended_by",
+    "orchestration.loop.action_validity.ended_by.blob",
+    "orchestration.loop.action_validity.ended_by.path",
+    "orchestration.loop.action_validity.ended_reason",
+    "orchestration.loop.action_validity.ended_utc",
+    "orchestration.loop.action_validity.state",
+    "orchestration.loop.phase"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": []
+  },
+  {
+   "Transition": "intento: BUDGET_RESERVED → CANCELLED_BEFORE_LAUNCH (fin de vigencia)",
+   "Variant": "LITERAL",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.loop.action_validity.ended_reason",
+    "orchestration.loop.action_validity.state",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "cancelado con resultado",
+     "Expected": "I-S18",
+     "Got": "I-S18",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "intento: LAUNCHING → LAUNCH_UNCERTAIN (fase vuelve a REVIEW_PENDING, SM-05)",
+   "Variant": "LITERAL",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.loop.phase",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "fase sigue en ARCHITECT_INVOKED",
+     "Expected": "I-S18",
+     "Got": "I-S18",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "intento: LAUNCHING → BUDGET_RESERVED (caso B.1, vigencia abierta; SM-05)",
+   "Variant": "LITERAL",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.loop.phase",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "fase sigue en ARCHITECT_INVOKED",
+     "Expected": "I-S18",
+     "Got": "I-S18",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "intento terminal que cambia (prohibido)",
+   "Variant": "LITERAL",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "I-P13",
+   "Got": "I-P13",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [
+    [
+     "I-P13",
+     "intento LAUNCH_UNCERTAIN → LAUNCHED"
+    ],
+    [
+     "I-P13",
+     "un intento terminal cambia"
+    ],
+    [
+     "I-S18",
+     "fase PENDING con intento lanzado"
+    ]
+   ],
+   "Mutations": []
+  },
+  {
+   "Transition": "tope: cuarta solicitud lógica (P-18)",
+   "Variant": "LITERAL",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "I-S18",
+   "Got": "I-S18",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.budgets.logical_requests",
+    "orchestration.budgets.review_rounds"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [
+    [
+     "I-S18",
+     "review_rounds supera su tope (P-18)"
+    ],
+    [
+     "I-S18",
+     "logical_requests supera su tope (P-18)"
+    ]
+   ],
+   "Mutations": []
+  },
+  {
+   "Transition": "FC-01: ARCHITECT_SATISFIED → NONE (literal)",
+   "Variant": "LITERAL",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "I-P13",
+   "Got": "I-P13",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.loop.action_validity",
+    "orchestration.loop.action_validity.authorization_id",
+    "orchestration.loop.action_validity.ended_at",
+    "orchestration.loop.action_validity.ended_by.blob",
+    "orchestration.loop.action_validity.ended_by.path",
+    "orchestration.loop.action_validity.ended_reason",
+    "orchestration.loop.action_validity.ended_utc",
+    "orchestration.loop.action_validity.state",
+    "orchestration.loop.authorization",
+    "orchestration.loop.authorization.blob",
+    "orchestration.loop.authorization.path",
+    "orchestration.loop.object",
+    "orchestration.loop.object.blob",
+    "orchestration.loop.object.commit",
+    "orchestration.loop.object.path",
+    "orchestration.loop.phase",
+    "orchestration.loop.type"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [
+    [
+     "I-P13",
+     "fase ARCHITECT_SATISFIED → NONE"
+    ],
+    [
+     "I-P13",
+     "loop.object cambia en ARCHITECT_SATISFIED → NONE"
+    ]
+   ],
+   "Mutations": []
+  },
+  {
+   "Transition": "FC-02 literal: reconciliar la orquestación",
+   "Variant": "LITERAL",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "I-P05",
+   "Got": "I-P05",
+   "Pass": true,
+   "Changed": [
+    "custody.last_rebase",
+    "custody.last_rebase.branch_after",
+    "custody.last_rebase.branch_before",
+    "custody.last_rebase.main_after",
+    "custody.last_rebase.main_before",
+    "custody.last_rebase.map.blob",
+    "custody.last_rebase.map.path",
+    "custody.last_rebase.record_version",
+    "custody.point_kind",
+    "custody.record_version",
+    "orchestration.loop.object.commit",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [
+    [
+     "I-P05",
+     "la reconciliación cambia campos fuera de StateFields: ['orchestration.loop.object.commit', 'orchestration.review_requests']"
+    ],
+    [
+     "I-P13",
+     "loop.object cambia en REVIEW_PENDING → REVIEW_PENDING"
+    ],
+    [
+     "I-P13",
+     "review_requests.object es inmutable"
+    ]
+   ],
+   "Mutations": []
+  },
+  {
+   "Transition": "FC-02 literal: no reconciliar (hueco: válido)",
+   "Variant": "LITERAL",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.last_rebase",
+    "custody.last_rebase.branch_after",
+    "custody.last_rebase.branch_before",
+    "custody.last_rebase.main_after",
+    "custody.last_rebase.main_before",
+    "custody.last_rebase.map.blob",
+    "custody.last_rebase.map.path",
+    "custody.last_rebase.record_version",
+    "custody.point_kind",
+    "custody.record_version"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": []
+  },
+  {
+   "Transition": "bucle: NONE → REVIEW_PENDING (abre)",
+   "Variant": "A1",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.budgets",
+    "orchestration.loop.action_validity",
+    "orchestration.loop.action_validity.authorization_id",
+    "orchestration.loop.action_validity.ended_at",
+    "orchestration.loop.action_validity.ended_by",
+    "orchestration.loop.action_validity.ended_reason",
+    "orchestration.loop.action_validity.ended_utc",
+    "orchestration.loop.action_validity.state",
+    "orchestration.loop.authorization",
+    "orchestration.loop.authorization.blob",
+    "orchestration.loop.authorization.path",
+    "orchestration.loop.object",
+    "orchestration.loop.object.blob",
+    "orchestration.loop.object.commit",
+    "orchestration.loop.object.path",
+    "orchestration.loop.phase",
+    "orchestration.loop.type",
+    "orchestration.next_action.action",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "Coordinator: ReviewLoopAuthorization (marcador I62-REVIEW-LOOP-AUTHORIZATION)",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": []
+  },
+  {
+   "Transition": "intento: INVOCATION_PLANNED → BUDGET_RESERVED",
+   "Variant": "A1",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.budgets",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 1
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "sin architect_launches + 1",
+     "Expected": "I-P13",
+     "Got": "I-P13",
+     "Pass": true
+    },
+    {
+     "Mutation": "reserva con la vigencia terminada",
+     "Expected": "I-P13",
+     "Got": "I-P13",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "intento: BUDGET_RESERVED → BUDGET_RESERVED (replanificado)",
+   "Variant": "A1",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "reserved_at cambia",
+     "Expected": "I-P13",
+     "Got": "I-P13",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "intento: BUDGET_RESERVED → LAUNCHING (ARCHITECT_INVOKED)",
+   "Variant": "A1",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.loop.phase",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "run_id nulo",
+     "Expected": "I-S18",
+     "Got": "I-S18",
+     "Pass": true
+    },
+    {
+     "Mutation": "objeto cambia (cambio tardío)",
+     "Expected": "I-P13",
+     "Got": "I-P13",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "intento: LAUNCHING → LAUNCHED",
+   "Variant": "A1",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": []
+  },
+  {
+   "Transition": "intento: LAUNCHED → RESULT_RECEIVED",
+   "Variant": "A1",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": []
+  },
+  {
+   "Transition": "intento: RESULT_RECEIVED → RESULT_INGESTED",
+   "Variant": "A1",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.loop.phase",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "ingestión saltando RESULT_RECEIVED",
+     "Expected": null,
+     "Got": "VALID",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "fase: RESULT_INGESTED → CORRECTING",
+   "Variant": "A1",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.loop.phase"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": []
+  },
+  {
+   "Transition": "fase: CORRECTING → PUBLISHED (único cambio de loop.object)",
+   "Variant": "A1",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.budgets",
+    "orchestration.loop.object.blob",
+    "orchestration.loop.object.commit",
+    "orchestration.loop.object.path",
+    "orchestration.loop.phase"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "sin correction_rounds + 1",
+     "Expected": "I-P13",
+     "Got": "I-P13",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "fase: RESULT_INGESTED → ARCHITECT_SATISFIED",
+   "Variant": "A1",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.loop.action_validity.ended_at",
+    "orchestration.loop.action_validity.ended_by",
+    "orchestration.loop.action_validity.ended_by.blob",
+    "orchestration.loop.action_validity.ended_by.path",
+    "orchestration.loop.action_validity.ended_reason",
+    "orchestration.loop.action_validity.ended_utc",
+    "orchestration.loop.action_validity.state",
+    "orchestration.loop.phase"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": []
+  },
+  {
+   "Transition": "intento: BUDGET_RESERVED → CANCELLED_BEFORE_LAUNCH (fin de vigencia)",
+   "Variant": "A1",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.loop.action_validity.ended_reason",
+    "orchestration.loop.action_validity.state",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "cancelado con resultado",
+     "Expected": "I-S18",
+     "Got": "I-S18",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "intento: LAUNCHING → LAUNCH_UNCERTAIN (fase vuelve a REVIEW_PENDING, SM-05)",
+   "Variant": "A1",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.loop.phase",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "fase sigue en ARCHITECT_INVOKED",
+     "Expected": "I-S18",
+     "Got": "I-S18",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "intento: LAUNCHING → BUDGET_RESERVED (caso B.1, vigencia abierta; SM-05)",
+   "Variant": "A1",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.loop.phase",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "fase sigue en ARCHITECT_INVOKED",
+     "Expected": "I-S18",
+     "Got": "I-S18",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "intento terminal que cambia (prohibido)",
+   "Variant": "A1",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "I-P13",
+   "Got": "I-P13",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [
+    [
+     "I-P13",
+     "intento LAUNCH_UNCERTAIN → LAUNCHED"
+    ],
+    [
+     "I-P13",
+     "un intento terminal cambia"
+    ],
+    [
+     "I-S18",
+     "fase PENDING con intento lanzado"
+    ]
+   ],
+   "Mutations": []
+  },
+  {
+   "Transition": "tope: cuarta solicitud lógica (P-18)",
+   "Variant": "A1",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "I-S18",
+   "Got": "I-S18",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.budgets"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [
+    [
+     "I-S18",
+     "review_rounds supera su tope (P-18)"
+    ],
+    [
+     "I-S18",
+     "logical_requests supera su tope (P-18)"
+    ]
+   ],
+   "Mutations": []
+  },
+  {
+   "Transition": "A-1 LOOP_CLOSED: ARCHITECT_SATISFIED → NONE",
+   "Variant": "A1",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.loop.action_validity",
+    "orchestration.loop.action_validity.authorization_id",
+    "orchestration.loop.action_validity.ended_at",
+    "orchestration.loop.action_validity.ended_by.blob",
+    "orchestration.loop.action_validity.ended_by.path",
+    "orchestration.loop.action_validity.ended_reason",
+    "orchestration.loop.action_validity.ended_utc",
+    "orchestration.loop.action_validity.state",
+    "orchestration.loop.authorization",
+    "orchestration.loop.authorization.blob",
+    "orchestration.loop.authorization.path",
+    "orchestration.loop.object",
+    "orchestration.loop.object.blob",
+    "orchestration.loop.object.commit",
+    "orchestration.loop.object.path",
+    "orchestration.loop.phase",
+    "orchestration.loop.type"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "Principal (tras ARCHITECT_SATISFIED; ninguna decisión nueva)",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "deja loop.object",
+     "Expected": "A1-D1-5",
+     "Got": "A1-D1-5",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "A-1: bucle nuevo con RLA-2 (presupuesto propio)",
+   "Variant": "A1",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.budgets",
+    "orchestration.loop.action_validity",
+    "orchestration.loop.action_validity.authorization_id",
+    "orchestration.loop.action_validity.ended_at",
+    "orchestration.loop.action_validity.ended_by",
+    "orchestration.loop.action_validity.ended_reason",
+    "orchestration.loop.action_validity.ended_utc",
+    "orchestration.loop.action_validity.state",
+    "orchestration.loop.authorization",
+    "orchestration.loop.authorization.blob",
+    "orchestration.loop.authorization.path",
+    "orchestration.loop.object",
+    "orchestration.loop.object.blob",
+    "orchestration.loop.object.commit",
+    "orchestration.loop.object.path",
+    "orchestration.loop.phase",
+    "orchestration.loop.type",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "Coordinator: ReviewLoopAuthorization nueva (RLA-2)",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": []
+  },
+  {
+   "Transition": "A-1: bucle nuevo reutilizando RLA-1 (prohibido)",
+   "Variant": "A1",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "A1-D1-1",
+   "Got": "A1-D1-1",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.budgets",
+    "orchestration.loop.action_validity",
+    "orchestration.loop.action_validity.authorization_id",
+    "orchestration.loop.action_validity.ended_at",
+    "orchestration.loop.action_validity.ended_by",
+    "orchestration.loop.action_validity.ended_reason",
+    "orchestration.loop.action_validity.ended_utc",
+    "orchestration.loop.action_validity.state",
+    "orchestration.loop.authorization",
+    "orchestration.loop.authorization.blob",
+    "orchestration.loop.authorization.path",
+    "orchestration.loop.object",
+    "orchestration.loop.object.blob",
+    "orchestration.loop.object.commit",
+    "orchestration.loop.object.path",
+    "orchestration.loop.phase",
+    "orchestration.loop.type",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [
+    [
+     "A1-D1-1",
+     "budgets[] con un authorization_id duplicado"
+    ],
+    [
+     "A1-D1-4",
+     "bucle nuevo con una autorización ya usada"
+    ],
+    [
+     "I-P13",
+     "review_rounds decrece"
+    ],
+    [
+     "I-P13",
+     "logical_requests decrece"
+    ]
+   ],
+   "Mutations": []
+  },
+  {
+   "Transition": "A-1: bucle nuevo con RLA-1 sobre su entrada antigua (prohibido)",
+   "Variant": "A1",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "A1-D1-4",
+   "Got": "A1-D1-4",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.loop.action_validity",
+    "orchestration.loop.action_validity.authorization_id",
+    "orchestration.loop.action_validity.ended_at",
+    "orchestration.loop.action_validity.ended_by",
+    "orchestration.loop.action_validity.ended_reason",
+    "orchestration.loop.action_validity.ended_utc",
+    "orchestration.loop.action_validity.state",
+    "orchestration.loop.authorization",
+    "orchestration.loop.authorization.blob",
+    "orchestration.loop.authorization.path",
+    "orchestration.loop.object",
+    "orchestration.loop.object.blob",
+    "orchestration.loop.object.commit",
+    "orchestration.loop.object.path",
+    "orchestration.loop.phase",
+    "orchestration.loop.type",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [
+    [
+     "A1-D1-4",
+     "bucle nuevo con una autorización ya usada"
+    ]
+   ],
+   "Mutations": []
+  },
+  {
+   "Transition": "A-1: LOOP_CLOSED con una solicitud OPEN (prohibido)",
+   "Variant": "A1",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "A1-D1-5",
+   "Got": "A1-D1-5",
+   "Pass": true,
+   "Changed": [
+    "custody.record_version",
+    "orchestration.loop.action_validity",
+    "orchestration.loop.action_validity.authorization_id",
+    "orchestration.loop.action_validity.ended_at",
+    "orchestration.loop.action_validity.ended_by.blob",
+    "orchestration.loop.action_validity.ended_by.path",
+    "orchestration.loop.action_validity.ended_reason",
+    "orchestration.loop.action_validity.ended_utc",
+    "orchestration.loop.action_validity.state",
+    "orchestration.loop.authorization",
+    "orchestration.loop.authorization.blob",
+    "orchestration.loop.authorization.path",
+    "orchestration.loop.object",
+    "orchestration.loop.object.blob",
+    "orchestration.loop.object.commit",
+    "orchestration.loop.object.path",
+    "orchestration.loop.phase",
+    "orchestration.loop.type"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [
+    [
+     "A1-D1-5",
+     "LOOP_CLOSED con solicitud OPEN o intento no terminal"
+    ]
+   ],
+   "Mutations": []
+  },
+  {
+   "Transition": "A-1: reconciliación de la orquestación",
+   "Variant": "A1",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "VALID",
+   "Got": "VALID",
+   "Pass": true,
+   "Changed": [
+    "custody.last_rebase",
+    "custody.last_rebase.branch_after",
+    "custody.last_rebase.branch_before",
+    "custody.last_rebase.main_after",
+    "custody.last_rebase.main_before",
+    "custody.last_rebase.map.blob",
+    "custody.last_rebase.map.path",
+    "custody.last_rebase.record_version",
+    "custody.point_kind",
+    "custody.record_version",
+    "orchestration.loop.object.commit",
+    "orchestration.review_requests"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [],
+   "Mutations": [
+    {
+     "Mutation": "Target replanificado que no es la imagen",
+     "Expected": "A1-D2-2",
+     "Got": "A1-D2-2",
+     "Pass": true
+    },
+    {
+     "Mutation": "loop.object con otro blob",
+     "Expected": "I-P05",
+     "Got": "I-P05",
+     "Pass": true
+    }
+   ]
+  },
+  {
+   "Transition": "A-1: no reconciliar (I-H02 lo detecta)",
+   "Variant": "A1",
+   "From": "QU",
+   "To": "QU",
+   "Expected": "I-H02",
+   "Got": "I-H02",
+   "Pass": true,
+   "Changed": [
+    "custody.last_rebase",
+    "custody.last_rebase.branch_after",
+    "custody.last_rebase.branch_before",
+    "custody.last_rebase.main_after",
+    "custody.last_rebase.main_before",
+    "custody.last_rebase.map.blob",
+    "custody.last_rebase.map.path",
+    "custody.last_rebase.record_version",
+    "custody.point_kind",
+    "custody.record_version"
+   ],
+   "CounterDeltas": {
+    "attempts": 0,
+    "correction_launches": 0,
+    "architect_launches": 0
+   },
+   "Authority": "—",
+   "Evidence": [],
+   "Violations": [
+    [
+     "I-H02",
+     "orchestration.loop.object.commit = 1111111111111111111111111111111111111111 no es ancestro de HEAD"
+    ],
+    [
+     "I-H02",
+     "review_requests[L1].object.commit = 1111111111111111111111111111111111111111 no es ancestro de HEAD"
+    ],
+    [
+     "I-H02",
+     "review_requests[L1].attempts[1].Target.commit = 1111111111111111111111111111111111111111 no es ancestro de HEAD"
+    ]
+   ],
+   "Mutations": []
+  }
+ ]
+}

@@ -189,8 +189,8 @@ según [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §7; aquí no se prome
 - **F0:** GATE PASS del Coordinator ([decisiones](../automation/decisions/I-62.md) §32).
 - **F1:** GATE PASS del Coordinator (C-01..C-04; [decisiones](../automation/decisions/I-62.md) §33; [evidencia](../automation/evidence/I-62-evidence.md) §34).
 - **F2:** GATE PASS del Coordinator (C-05..C-10 y C-19; [decisiones](../automation/decisions/I-62.md) §34; [evidencia](../automation/evidence/I-62-evidence.md) §§35-36).
-- **F3:** IN PROGRESS: implementación en la [evidencia](../automation/evidence/I-62-evidence.md) §37. Solo el Coordinator declara su GATE PASS.
-- **F4:** BLOCKED ON A-1 (FC-01, FC-02; [registro](I-62-A-1.md) y [paquete del Architect](I-62-architect-package-A-1.md)) solo para la materialización afectada; producción no autorizada.
+- **F3:** GATE PASS del Coordinator (C-11..C-14, C-30, C-40 parte F3; [decisiones](../automation/decisions/I-62.md) §35; [evidencia](../automation/evidence/I-62-evidence.md) §§37-38).
+- **F4:** IMPLEMENTATION_READY_PENDING_A1 (preparación en la [evidencia](../automation/evidence/I-62-evidence.md) §39); producción no autorizada. La revisión del Architect de A-1 ([registro](I-62-A-1.md), [paquete](I-62-architect-package-A-1.md)) está lista y espera el lanzamiento (AUTONOMY_GAP).
 - **F6-F7, READY y cierre:** preparados sin materializar ([I-62-prep](../automation/evidence/I-62-prep/README.md)).
 
 ## 9. Owner Validation

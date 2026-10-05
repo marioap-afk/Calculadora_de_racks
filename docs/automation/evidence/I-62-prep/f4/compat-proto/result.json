@@ -1,0 +1,1540 @@
+{
+ "Scenario": {
+  "M0": "819955d61a6da4c811a11fbd11b5dca13f634b7c",
+  "I62Tip": "bf7b0d9c4ec79e38350bad55e0debcde55b3cec9",
+  "EFF": "3899245557ca5fc1f350d8c84c029c343d128567",
+  "M2": "5a051767a0c5ff0bfe624960fd73b077bcf3400d",
+  "ContractBlob": "9b5ef6dfed25347310a6c2a8ecb91e48976928cc",
+  "I64Docs": [
+   "docs/initiatives/I-64-architect-package-v1.md",
+   "docs/initiatives/I-64-architect-package-v2.md",
+   "docs/initiatives/I-64-architect-package-v3.md"
+  ]
+ },
+ "MapValidation": "VALID (MV-1..MV-7)",
+ "MapSummary": {
+  "Files": 30,
+  "Modified": 6,
+  "Entries": {
+   "MODIFIED": 15,
+   "REMOVED": 0,
+   "ADDED": 33,
+   "ENTRY": 2
+  }
+ },
+ "Cases": [
+  {
+   "Case": "C-20c-1 (a) MainSha = 95690c28 (antes de EFF)",
+   "Expected": "PRE_ACTIVATION",
+   "Got": "PRE_ACTIVATION",
+   "Pass": true,
+   "Detail": {
+    "Outcome": "PRE_ACTIVATION",
+    "Discovery": {
+     "E1": "e8a473774f93e95dbd75fad21e5aab2d199052d6"
+    },
+    "Resolution": [
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "preámbulo",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 2. Fuentes del plan y modos de ejecucion",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 3. Limites de seguridad",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 16. Ejecución delegada bajo orden del Coordinator",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 3. Worktrees",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 4. Ciclo de vida de una iniciativa (el proceso repetible)",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 10. Autoridad por dominio",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "AGENTS.md",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha"
+     ],
+     [
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "## G. Delegación de ejecución",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/automation/agent-execution/README.md",
+      "documento completo",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/automation/agent-execution/routing.md",
+      "documento completo",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/automation/agent-execution/schemas/delegation.schema.json",
+      "documento completo",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+      "documento completo",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/automation/agent-execution/schemas/controller-verification.schema.json",
+      "documento completo",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/initiatives/I-61-proposal-v9.md",
+      "documento completo",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/initiatives/I-61-protocolo-ejecucion-agentes.md",
+      "documento completo",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/initiatives/I-61-discovery.md",
+      "## 19. Piloto: caracterización completa (Cama / `RACKEDITAR` / `Name`)",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ]
+    ]
+   }
+  },
+  {
+   "Case": "C-20c-1 (b) reverificación con MainSha_eval = M2",
+   "Expected": "I61",
+   "Got": "I61",
+   "Pass": true,
+   "Detail": {
+    "Outcome": "RESOLVED",
+    "Class": "I61",
+    "Resolution": [
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "preámbulo",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 2. Fuentes del plan y modos de ejecucion",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 3. Limites de seguridad",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 16. Ejecución delegada bajo orden del Coordinator",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 3. Worktrees",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 4. Ciclo de vida de una iniciativa (el proceso repetible)",
+      "EXTERNAL",
+      "COMPAT",
+      "EFF^1"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 10. Autoridad por dominio",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "AGENTS.md",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "## G. Delegación de ejecución",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/automation/agent-execution/README.md",
+      "documento completo",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/automation/agent-execution/routing.md",
+      "documento completo",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/automation/agent-execution/schemas/delegation.schema.json",
+      "documento completo",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+      "documento completo",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/automation/agent-execution/schemas/controller-verification.schema.json",
+      "documento completo",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/initiatives/I-61-proposal-v9.md",
+      "documento completo",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/initiatives/I-61-protocolo-ejecucion-agentes.md",
+      "documento completo",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/initiatives/I-61-discovery.md",
+      "## 19. Piloto: caracterización completa (Cama / `RACKEDITAR` / `Name`)",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ]
+    ],
+    "MapBlob": "5d3d20d4a24f797823c67e527263e6e2b8d374fb",
+    "Discovery": {
+     "E1": "68b218cd5a15ec0e5dc66309be49c115ef4c9520",
+     "EFF": "3899245557ca5fc1f350d8c84c029c343d128567",
+     "E2": "## 12. Coexistencia de protocolos de ejecución delegada (I61/I62)",
+     "E3": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
+     "AutomationPlanBlob": "bc739fe92416f0c75f84df15af3e4fbe056c9f5f"
+    },
+    "ExpectedDiffs": []
+   }
+  },
+  {
+   "Case": "C-20c-2 mismo contrato para I-64 (MainSha = M2)",
+   "Expected": "I61",
+   "Got": "I61",
+   "Pass": true,
+   "Detail": {
+    "Outcome": "RESOLVED",
+    "Class": "I61",
+    "Resolution": [
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "preámbulo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 2. Fuentes del plan y modos de ejecucion",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 3. Limites de seguridad",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 16. Ejecución delegada bajo orden del Coordinator",
+      "EXTERNAL",
+      "COMPAT",
+      "EFF^1"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 3. Worktrees",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 4. Ciclo de vida de una iniciativa (el proceso repetible)",
+      "EXTERNAL",
+      "COMPAT",
+      "EFF^1"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 10. Autoridad por dominio",
+      "EXTERNAL",
+      "COMPAT",
+      "EFF^1"
+     ],
+     [
+      "AGENTS.md",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "## G. Delegación de ejecución",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/automation/agent-execution/README.md",
+      "documento completo",
+      "EXTERNAL",
+      "COMPUESTA",
+      [
+       [
+        "preámbulo",
+        "MainSha_eval"
+       ],
+       [
+        "## 1. Participantes",
+        "MainSha_eval"
+       ],
+       [
+        "## 2. Área transitoria",
+        "MainSha_eval"
+       ],
+       [
+        "## 3. Relevo",
+        "MainSha_eval"
+       ],
+       [
+        "## 4. Aceptación del paquete (A1-A8)",
+        "MainSha_eval"
+       ],
+       [
+        "## 5. Invocación del Controller (Codex)",
+        "MainSha_eval"
+       ],
+       [
+        "## 6. Invocación del Worker (subagente)",
+        "MainSha_eval"
+       ],
+       [
+        "## 7. Hechos remotos",
+        "MainSha_eval"
+       ],
+       [
+        "## 8. Coherencia de la verificación",
+        "MainSha_eval"
+       ],
+       [
+        "## 9. Escenarios de conteo (OBL-08)",
+        "MainSha_eval"
+       ],
+       [
+        "## 10. Controles negativos",
+        "MainSha_eval"
+       ],
+       [
+        "## 11. Custodia",
+        "MainSha_eval"
+       ],
+       [
+        "## 12. Autoverificación del Principal y `CONFIGURATION_STATUS` (unidades I62)",
+        "OMITIDA (solo I62)"
+       ],
+       [
+        "## 13. Observación de capacidad, preflight y saneamiento (unidades I62)",
+        "OMITIDA (solo I62)"
+       ],
+       [
+        "## 14. Binding, aceptación, independencia y comprobaciones (unidades I62)",
+        "OMITIDA (solo I62)"
+       ],
+       [
+        "## 15. Invocación de rol, cierre de insumos y fidelidad (unidades I62)",
+        "OMITIDA (solo I62)"
+       ],
+       [
+        "## 16. Validación de los resultados por rol (unidades I62)",
+        "OMITIDA (solo I62)"
+       ]
+      ]
+     ],
+     [
+      "docs/automation/agent-execution/routing.md",
+      "documento completo",
+      "EXTERNAL",
+      "COMPUESTA",
+      [
+       [
+        "preámbulo",
+        "MainSha_eval"
+       ],
+       [
+        "## 1. Clases de tarea",
+        "MainSha_eval"
+       ],
+       [
+        "## 2. Dimensiones",
+        "MainSha_eval"
+       ],
+       [
+        "## 3. Effort semántico y nivel de capacidad",
+        "MainSha_eval"
+       ],
+       [
+        "## 4. Algoritmo",
+        "MainSha_eval"
+       ],
+       [
+        "## 5. Elegibilidad de una celda",
+        "MainSha_eval"
+       ],
+       [
+        "## 6. Exigencia del enrutamiento",
+        "MainSha_eval"
+       ],
+       [
+        "## 7. El propio Controller",
+        "MainSha_eval"
+       ],
+       [
+        "## 8. Requisitos por perfil y acción (unidades I62)",
+        "OMITIDA (solo I62)"
+       ],
+       [
+        "## 9. Binding por capacidad (unidades I62)",
+        "OMITIDA (solo I62)"
+       ]
+      ]
+     ],
+     [
+      "docs/automation/agent-execution/schemas/delegation.schema.json",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/automation/agent-execution/schemas/controller-verification.schema.json",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/initiatives/I-64-architect-package-v1.md",
+      "documento completo",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/initiatives/I-64-architect-package-v2.md",
+      "documento completo",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/initiatives/I-64-architect-package-v3.md",
+      "documento completo",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ]
+    ],
+    "MapBlob": "5d3d20d4a24f797823c67e527263e6e2b8d374fb",
+    "Discovery": {
+     "E1": "68b218cd5a15ec0e5dc66309be49c115ef4c9520",
+     "EFF": "3899245557ca5fc1f350d8c84c029c343d128567",
+     "E2": "## 12. Coexistencia de protocolos de ejecución delegada (I61/I62)",
+     "E3": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
+     "AutomationPlanBlob": "bc739fe92416f0c75f84df15af3e4fbe056c9f5f"
+    },
+    "ExpectedDiffs": []
+   }
+  },
+  {
+   "Case": "C-20c-2 positivo: WORKFLOW documento completo incluye X3",
+   "Expected": "I61",
+   "Got": "I61",
+   "Pass": true,
+   "Detail": {
+    "Outcome": "RESOLVED",
+    "Class": "I61",
+    "Resolution": [
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "preámbulo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 2. Fuentes del plan y modos de ejecucion",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 3. Limites de seguridad",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 16. Ejecución delegada bajo orden del Coordinator",
+      "EXTERNAL",
+      "COMPAT",
+      "EFF^1"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 3. Worktrees",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 4. Ciclo de vida de una iniciativa (el proceso repetible)",
+      "EXTERNAL",
+      "COMPAT",
+      "EFF^1"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 10. Autoridad por dominio",
+      "EXTERNAL",
+      "COMPAT",
+      "EFF^1"
+     ],
+     [
+      "AGENTS.md",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "## G. Delegación de ejecución",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/automation/agent-execution/README.md",
+      "documento completo",
+      "EXTERNAL",
+      "COMPUESTA",
+      [
+       [
+        "preámbulo",
+        "MainSha_eval"
+       ],
+       [
+        "## 1. Participantes",
+        "MainSha_eval"
+       ],
+       [
+        "## 2. Área transitoria",
+        "MainSha_eval"
+       ],
+       [
+        "## 3. Relevo",
+        "MainSha_eval"
+       ],
+       [
+        "## 4. Aceptación del paquete (A1-A8)",
+        "MainSha_eval"
+       ],
+       [
+        "## 5. Invocación del Controller (Codex)",
+        "MainSha_eval"
+       ],
+       [
+        "## 6. Invocación del Worker (subagente)",
+        "MainSha_eval"
+       ],
+       [
+        "## 7. Hechos remotos",
+        "MainSha_eval"
+       ],
+       [
+        "## 8. Coherencia de la verificación",
+        "MainSha_eval"
+       ],
+       [
+        "## 9. Escenarios de conteo (OBL-08)",
+        "MainSha_eval"
+       ],
+       [
+        "## 10. Controles negativos",
+        "MainSha_eval"
+       ],
+       [
+        "## 11. Custodia",
+        "MainSha_eval"
+       ],
+       [
+        "## 12. Autoverificación del Principal y `CONFIGURATION_STATUS` (unidades I62)",
+        "OMITIDA (solo I62)"
+       ],
+       [
+        "## 13. Observación de capacidad, preflight y saneamiento (unidades I62)",
+        "OMITIDA (solo I62)"
+       ],
+       [
+        "## 14. Binding, aceptación, independencia y comprobaciones (unidades I62)",
+        "OMITIDA (solo I62)"
+       ],
+       [
+        "## 15. Invocación de rol, cierre de insumos y fidelidad (unidades I62)",
+        "OMITIDA (solo I62)"
+       ],
+       [
+        "## 16. Validación de los resultados por rol (unidades I62)",
+        "OMITIDA (solo I62)"
+       ]
+      ]
+     ],
+     [
+      "docs/automation/agent-execution/routing.md",
+      "documento completo",
+      "EXTERNAL",
+      "COMPUESTA",
+      [
+       [
+        "preámbulo",
+        "MainSha_eval"
+       ],
+       [
+        "## 1. Clases de tarea",
+        "MainSha_eval"
+       ],
+       [
+        "## 2. Dimensiones",
+        "MainSha_eval"
+       ],
+       [
+        "## 3. Effort semántico y nivel de capacidad",
+        "MainSha_eval"
+       ],
+       [
+        "## 4. Algoritmo",
+        "MainSha_eval"
+       ],
+       [
+        "## 5. Elegibilidad de una celda",
+        "MainSha_eval"
+       ],
+       [
+        "## 6. Exigencia del enrutamiento",
+        "MainSha_eval"
+       ],
+       [
+        "## 7. El propio Controller",
+        "MainSha_eval"
+       ],
+       [
+        "## 8. Requisitos por perfil y acción (unidades I62)",
+        "OMITIDA (solo I62)"
+       ],
+       [
+        "## 9. Binding por capacidad (unidades I62)",
+        "OMITIDA (solo I62)"
+       ]
+      ]
+     ],
+     [
+      "docs/automation/agent-execution/schemas/delegation.schema.json",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/automation/agent-execution/schemas/controller-verification.schema.json",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/initiatives/I-64-architect-package-v1.md",
+      "documento completo",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/initiatives/I-64-architect-package-v2.md",
+      "documento completo",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/initiatives/I-64-architect-package-v3.md",
+      "documento completo",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "documento completo",
+      "EXTERNAL",
+      "COMPUESTA",
+      [
+       [
+        "preámbulo",
+        "MainSha_eval"
+       ],
+       [
+        "## 1. Estrategia de ramas",
+        "MainSha_eval"
+       ],
+       [
+        "## 2. Iniciativas: la unidad de trabajo",
+        "MainSha_eval"
+       ],
+       [
+        "## 3. Worktrees",
+        "MainSha_eval"
+       ],
+       [
+        "## 4. Ciclo de vida de una iniciativa (el proceso repetible)",
+        "EFF^1"
+       ],
+       [
+        "## 5. Checklist de cierre de iniciativa",
+        "MainSha_eval"
+       ],
+       [
+        "## 6. Validación manual en AutoCAD (a mitad o al cierre de una iniciativa)",
+        "MainSha_eval"
+       ],
+       [
+        "## 7. Archivos calientes (alto riesgo de conflicto)",
+        "MainSha_eval"
+       ],
+       [
+        "## 8. Cuándo actualizar cada documento",
+        "MainSha_eval"
+       ],
+       [
+        "## 9. Migración inicial — ejecutada el 2026-07-17",
+        "MainSha_eval"
+       ],
+       [
+        "## 10. Autoridad por dominio",
+        "EFF^1"
+       ],
+       [
+        "## 11. Workflow V2 materializado — todavía no efectivo",
+        "MainSha_eval"
+       ],
+       [
+        "## 12. Coexistencia de protocolos de ejecución delegada (I61/I62)",
+        "MainSha_eval (ENTRY)"
+       ],
+       [
+        "## 13. Sección posterior de otra iniciativa (X3)",
+        "MainSha_eval (posterior a EFF)"
+       ]
+      ]
+     ]
+    ],
+    "MapBlob": "5d3d20d4a24f797823c67e527263e6e2b8d374fb",
+    "Discovery": {
+     "E1": "68b218cd5a15ec0e5dc66309be49c115ef4c9520",
+     "EFF": "3899245557ca5fc1f350d8c84c029c343d128567",
+     "E2": "## 12. Coexistencia de protocolos de ejecución delegada (I61/I62)",
+     "E3": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
+     "AutomationPlanBlob": "bc739fe92416f0c75f84df15af3e4fbe056c9f5f"
+    }
+   }
+  }
+ ],
+ "Negatives": [
+  {
+   "Case": "N-a unidad sin Claim-Id en PRE, /v1, sin decisión",
+   "Expected": "UNKNOWN",
+   "Got": "UNKNOWN",
+   "Pass": true,
+   "Detail": {
+    "Stop": "UNKNOWN: Classify"
+   }
+  },
+  {
+   "Case": "N-b contrato /v1 para una unidad I62",
+   "Expected": "P-15",
+   "Got": "P-15",
+   "Pass": true,
+   "Detail": {
+    "Stop": "P-15: protocolo del contrato ≠ protocolo de la unidad"
+   }
+  },
+  {
+   "Case": "N-c mapa con una entrada duplicada",
+   "Expected": "MAP_INVALID",
+   "Got": "MAP_INVALID",
+   "Pass": true,
+   "Detail": {
+    "Stop": "MAP_INVALID: MV-5,MV-6"
+   }
+  },
+  {
+   "Case": "N-d mapa sin una sección que sí cambió (### 16.3)",
+   "Expected": "MAP_INVALID",
+   "Got": "MAP_INVALID",
+   "Pass": true,
+   "Detail": {
+    "Stop": "MAP_INVALID: MV-6"
+   }
+  },
+  {
+   "Case": "N-e mapa que lista ## 3 como MODIFIED (texto igual)",
+   "Expected": "MAP_INVALID",
+   "Got": "MAP_INVALID",
+   "Pass": true,
+   "Detail": {
+    "Stop": "MAP_INVALID: MV-6"
+   }
+  },
+  {
+   "Case": "N-f cita individual de una subsección ADDED de §16",
+   "Expected": "P-15",
+   "Got": "P-15",
+   "Pass": true,
+   "Detail": {
+    "Stop": "P-15: NOT_APPLICABLE: sección ADDED ### 16.20 Binding y aceptación (I62)"
+   }
+  },
+  {
+   "Case": "N-g encabezado inexistente",
+   "Expected": "S-12",
+   "Got": "S-12",
+   "Pass": true,
+   "Detail": {
+    "Stop": "S-12: sección inexistente o ambigua: ## 99. No existe"
+   }
+  },
+  {
+   "Case": "N-h C-20c-2 con MainSha_eval = M0",
+   "Expected": "PRE_ACTIVATION",
+   "Got": "PRE_ACTIVATION",
+   "Pass": true,
+   "Detail": {
+    "Outcome": "PRE_ACTIVATION",
+    "Discovery": {
+     "E1": "884ed305ce242bda575cef74a9eff8c28ce7b67c"
+    },
+    "Resolution": [
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "preámbulo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 2. Fuentes del plan y modos de ejecucion",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 3. Limites de seguridad",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 16. Ejecución delegada bajo orden del Coordinator",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 3. Worktrees",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 4. Ciclo de vida de una iniciativa (el proceso repetible)",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 10. Autoridad por dominio",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha"
+     ],
+     [
+      "AGENTS.md",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha"
+     ],
+     [
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "## G. Delegación de ejecución",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha"
+     ],
+     [
+      "docs/automation/agent-execution/README.md",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha"
+     ],
+     [
+      "docs/automation/agent-execution/routing.md",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha"
+     ],
+     [
+      "docs/automation/agent-execution/schemas/delegation.schema.json",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha"
+     ],
+     [
+      "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha"
+     ],
+     [
+      "docs/automation/agent-execution/schemas/controller-verification.schema.json",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha"
+     ],
+     [
+      "docs/initiatives/I-64-architect-package-v1.md",
+      "documento completo",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/initiatives/I-64-architect-package-v2.md",
+      "documento completo",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/initiatives/I-64-architect-package-v3.md",
+      "documento completo",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ]
+    ]
+   }
+  },
+  {
+   "Case": "N-i documento completo de un archivo ADDED",
+   "Expected": "P-15",
+   "Got": "P-15",
+   "Pass": true,
+   "Detail": {
+    "Stop": "P-15: NOT_APPLICABLE: archivo ADDED docs/automation/agent-execution/schemas/binding.v1.schema.json"
+   }
+  },
+  {
+   "Case": "N-j dos commits con el trailer normativo",
+   "Expected": "ACTIVATION_INVALID",
+   "Got": "ACTIVATION_INVALID",
+   "Pass": true,
+   "Detail": {
+    "Stop": "ACTIVATION_INVALID: trailer duplicado"
+   }
+  },
+  {
+   "Case": "N-k EXTERNAL fuera de Surfaces cambiada por I-62",
+   "Expected": "S-12",
+   "Got": "S-12",
+   "Pass": true,
+   "Detail": {
+    "Stop": "S-12: ruta fuera de Surfaces cambiada por I-62: docs/automation/decisions/I-62.md"
+   }
+  },
+  {
+   "Case": "N-l unidad I62 con g0_acceptance PENDING",
+   "Expected": "PENDING_G0",
+   "Got": "PENDING_G0",
+   "Pass": true,
+   "Detail": {
+    "Stop": "PENDING_G0: Classify"
+   }
+  },
+  {
+   "Case": "N-m §16.13 retirada con EFF presente",
+   "Expected": "ENTRY_INVALID",
+   "Got": "ENTRY_INVALID",
+   "Pass": true,
+   "Detail": {
+    "Stop": "ENTRY_INVALID: E3: §16.13 nombrada 0 veces"
+   }
+  },
+  {
+   "Case": "N-n sin sección de entrada (EFF presente)",
+   "Expected": "ENTRY_INVALID",
+   "Got": "ENTRY_INVALID",
+   "Pass": true,
+   "Detail": {
+    "Stop": "ENTRY_INVALID: E2: 0 secciones de entrada"
+   }
+  },
+  {
+   "Case": "N-o sección de entrada repetida",
+   "Expected": "ENTRY_INVALID",
+   "Got": "ENTRY_INVALID",
+   "Pass": true,
+   "Detail": {
+    "Stop": "ENTRY_INVALID: E2: 2 secciones de entrada"
+   }
+  },
+  {
+   "Case": "N-p la entrada nombra una §16.13 inexistente",
+   "Expected": "ENTRY_INVALID",
+   "Got": "ENTRY_INVALID",
+   "Pass": true,
+   "Detail": {
+    "Stop": "ENTRY_INVALID: E3: §16.13 nombrada 0 veces"
+   }
+  },
+  {
+   "Case": "N-q sin punteros: C-20c-1 resuelve igual",
+   "Expected": "I61",
+   "Got": "I61",
+   "Pass": true,
+   "Detail": {
+    "Outcome": "RESOLVED",
+    "Class": "I61",
+    "Resolution": [
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "preámbulo",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 2. Fuentes del plan y modos de ejecucion",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 3. Limites de seguridad",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 16. Ejecución delegada bajo orden del Coordinator",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 3. Worktrees",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 4. Ciclo de vida de una iniciativa (el proceso repetible)",
+      "EXTERNAL",
+      "COMPAT",
+      "EFF^1"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 10. Autoridad por dominio",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "AGENTS.md",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "## G. Delegación de ejecución",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/automation/agent-execution/README.md",
+      "documento completo",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/automation/agent-execution/routing.md",
+      "documento completo",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/automation/agent-execution/schemas/delegation.schema.json",
+      "documento completo",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+      "documento completo",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/automation/agent-execution/schemas/controller-verification.schema.json",
+      "documento completo",
+      "UNIT_CHANGE",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/initiatives/I-61-proposal-v9.md",
+      "documento completo",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/initiatives/I-61-protocolo-ejecucion-agentes.md",
+      "documento completo",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/initiatives/I-61-discovery.md",
+      "## 19. Piloto: caracterización completa (Cama / `RACKEDITAR` / `Name`)",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ]
+    ],
+    "MapBlob": "5d3d20d4a24f797823c67e527263e6e2b8d374fb",
+    "Discovery": {
+     "E1": "68b218cd5a15ec0e5dc66309be49c115ef4c9520",
+     "EFF": "3899245557ca5fc1f350d8c84c029c343d128567",
+     "E2": "## 12. Coexistencia de protocolos de ejecución delegada (I61/I62)",
+     "E3": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
+     "AutomationPlanBlob": "80c3af13ec0c9d8b8ac9b4315b7da3965532dff3"
+    },
+    "ExpectedDiffs": []
+   }
+  },
+  {
+   "Case": "N-q sin punteros: C-20c-2 resuelve igual",
+   "Expected": "I61",
+   "Got": "I61",
+   "Pass": true,
+   "Detail": {
+    "Outcome": "RESOLVED",
+    "Class": "I61",
+    "Resolution": [
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "preámbulo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 2. Fuentes del plan y modos de ejecucion",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 3. Limites de seguridad",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 16. Ejecución delegada bajo orden del Coordinator",
+      "EXTERNAL",
+      "COMPAT",
+      "EFF^1"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 3. Worktrees",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 4. Ciclo de vida de una iniciativa (el proceso repetible)",
+      "EXTERNAL",
+      "COMPAT",
+      "EFF^1"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 10. Autoridad por dominio",
+      "EXTERNAL",
+      "COMPAT",
+      "EFF^1"
+     ],
+     [
+      "AGENTS.md",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "## G. Delegación de ejecución",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/automation/agent-execution/README.md",
+      "documento completo",
+      "EXTERNAL",
+      "COMPUESTA",
+      [
+       [
+        "preámbulo",
+        "MainSha_eval"
+       ],
+       [
+        "## 1. Participantes",
+        "MainSha_eval"
+       ],
+       [
+        "## 2. Área transitoria",
+        "MainSha_eval"
+       ],
+       [
+        "## 3. Relevo",
+        "MainSha_eval"
+       ],
+       [
+        "## 4. Aceptación del paquete (A1-A8)",
+        "MainSha_eval"
+       ],
+       [
+        "## 5. Invocación del Controller (Codex)",
+        "MainSha_eval"
+       ],
+       [
+        "## 6. Invocación del Worker (subagente)",
+        "MainSha_eval"
+       ],
+       [
+        "## 7. Hechos remotos",
+        "MainSha_eval"
+       ],
+       [
+        "## 8. Coherencia de la verificación",
+        "MainSha_eval"
+       ],
+       [
+        "## 9. Escenarios de conteo (OBL-08)",
+        "MainSha_eval"
+       ],
+       [
+        "## 10. Controles negativos",
+        "MainSha_eval"
+       ],
+       [
+        "## 11. Custodia",
+        "MainSha_eval"
+       ],
+       [
+        "## 12. Autoverificación del Principal y `CONFIGURATION_STATUS` (unidades I62)",
+        "OMITIDA (solo I62)"
+       ],
+       [
+        "## 13. Observación de capacidad, preflight y saneamiento (unidades I62)",
+        "OMITIDA (solo I62)"
+       ],
+       [
+        "## 14. Binding, aceptación, independencia y comprobaciones (unidades I62)",
+        "OMITIDA (solo I62)"
+       ],
+       [
+        "## 15. Invocación de rol, cierre de insumos y fidelidad (unidades I62)",
+        "OMITIDA (solo I62)"
+       ],
+       [
+        "## 16. Validación de los resultados por rol (unidades I62)",
+        "OMITIDA (solo I62)"
+       ]
+      ]
+     ],
+     [
+      "docs/automation/agent-execution/routing.md",
+      "documento completo",
+      "EXTERNAL",
+      "COMPUESTA",
+      [
+       [
+        "preámbulo",
+        "MainSha_eval"
+       ],
+       [
+        "## 1. Clases de tarea",
+        "MainSha_eval"
+       ],
+       [
+        "## 2. Dimensiones",
+        "MainSha_eval"
+       ],
+       [
+        "## 3. Effort semántico y nivel de capacidad",
+        "MainSha_eval"
+       ],
+       [
+        "## 4. Algoritmo",
+        "MainSha_eval"
+       ],
+       [
+        "## 5. Elegibilidad de una celda",
+        "MainSha_eval"
+       ],
+       [
+        "## 6. Exigencia del enrutamiento",
+        "MainSha_eval"
+       ],
+       [
+        "## 7. El propio Controller",
+        "MainSha_eval"
+       ],
+       [
+        "## 8. Requisitos por perfil y acción (unidades I62)",
+        "OMITIDA (solo I62)"
+       ],
+       [
+        "## 9. Binding por capacidad (unidades I62)",
+        "OMITIDA (solo I62)"
+       ]
+      ]
+     ],
+     [
+      "docs/automation/agent-execution/schemas/delegation.schema.json",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/automation/agent-execution/schemas/controller-verification.schema.json",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/initiatives/I-64-architect-package-v1.md",
+      "documento completo",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/initiatives/I-64-architect-package-v2.md",
+      "documento completo",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/initiatives/I-64-architect-package-v3.md",
+      "documento completo",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ]
+    ],
+    "MapBlob": "5d3d20d4a24f797823c67e527263e6e2b8d374fb",
+    "Discovery": {
+     "E1": "68b218cd5a15ec0e5dc66309be49c115ef4c9520",
+     "EFF": "3899245557ca5fc1f350d8c84c029c343d128567",
+     "E2": "## 12. Coexistencia de protocolos de ejecución delegada (I61/I62)",
+     "E3": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
+     "AutomationPlanBlob": "80c3af13ec0c9d8b8ac9b4315b7da3965532dff3"
+    },
+    "ExpectedDiffs": []
+   }
+  },
+  {
+   "Case": "N-r sección de entrada en una main sin trailer",
+   "Expected": "ACTIVATION_INVALID",
+   "Got": "ACTIVATION_INVALID",
+   "Pass": true,
+   "Detail": {
+    "Stop": "ACTIVATION_INVALID: punto de entrada sin EFF"
+   }
+  },
+  {
+   "Case": "N-s verificación sin registro de descubrimiento y resolución",
+   "Expected": "REJECTED",
+   "Got": "REJECTED",
+   "Pass": true
+  }
+ ],
+ "DeterministicSha256": "662ebd2fefbd33ecab975749cb203ae214ae4a13a581e28207a8d2471ed96ef0",
+ "AllPass": true
+}

@@ -1705,3 +1705,59 @@ I-64, que es una unidad I61 (Proposal V14 §14.1, sin efecto retroactivo), y no 
 | `docs/initiatives/I-62-architect-package-A-1.md` | `071cecba1fb8bdefc9a4e5554dd47a0459f8a1d2` |
 | `docs/automation/evidence/I-62-A1/a1-counterexamples.py` | `d7a5d1ef5558fd76c5ffe224fe71e807b44b240d` |
 | `docs/automation/evidence/I-62-A1/a1-counterexamples-result.json` | `9fa501b607d56c9bd902769dcd5f669450a3cb4c` |
+
+## 39. Preparación tras F3 GATE PASS: kit de la revisión de A-1 y preparación de F4, F6, READY, OV y cierre (órdenes §35 y §36)
+
+**Órdenes recibidas:** §35, 7 435 bytes, SHA-256 `a2d96afb…`; §36, 12 452 bytes, SHA-256 `750640c6…` (identidades completas en las decisiones). Nada de
+esta sección materializa F4 ni F6: son preparación y prototipos en `docs/automation/evidence/I-62-prep/`.
+
+### 39.1 Revisión del Architect de A-1: lista, no lanzada (AUTONOMY_GAP)
+
+- **Kit:** `a1-review-kit/`. MEASURED:
+  - clon limpio `D:\r62-arch-a1`, detached en `bf7b0d9c`; los blobs del objeto (`09ca9328…`) y del paquete (`071cecba…`) coinciden con la orden;
+  - cierre de 22 insumos canónicos y 12 transitivos con blob y SHA-256 (61 caracteres no ASCII);
+  - prompt (SHA-256 `428eb581…`) y orden literal (`a2d96afb…`);
+  - preflight del camino de lectura (Read): 64 líneas FAITHFUL_NORMALIZED, incluida una de 3 683 caracteres;
+  - esquema estricto del resultado;
+  - auditoría posterior `post-review.py`, cuya autoprueba da ACCEPTED/NOT_ACCREDITED con los motivos exactos.
+- **Por qué no se lanzó:** OD-2 bloquea `codex-cli` y `codex-desktop-session`; OD-3 bloquea `claude-cli`; esta sesión no tiene `start_session`; las sesiones
+  existentes («ARC - 02» es de otro proyecto, y las de revisiones anteriores arrastran contexto) no son limpias. Se creó la tarea `task_fce8049e`: un clic
+  del Owner abre la sesión revisora en el clon limpio. **AUTONOMY_GAP = OWNER_CLICK_REQUIRED**. No se rodeó ninguna frontera.
+- **Transportes** (`transport-options.md`, MEASURED sin invocar): `claude-cli` está instalado en `~/.local/bin/claude.exe` (Claude Code 2.1.270, fuera del
+  `PATH`), con autenticación UNKNOWN (OD-3); `codex-cli` cumple, pero espera OD-2.
+
+### 39.2 F4: IMPLEMENTATION_READY_PENDING_A1 (prototipos medidos, fuera de producción)
+
+| Pieza | Resultado (MEASURED) |
+|---|---|
+| matriz de campos `f4/state-v2-fields.{json,md}` | 91 campos; 12 con SHA; los SHA fuera de `StateFields` literal son los históricos de `protocol`, `last_rebase` y los tres de la orquestación (= FC-02) |
+| lector YAML `f4/yaml-subset/` | 27/27 casos; ida y vuelta de un `state/v2` de 217 líneas; 4/4 mutaciones; HEADER extrae `claim_id` de 38/39 estados reales (el otro no es un estado `rackcad-automation-state`). **DEP-F4-YAML = NOT NEEDED** |
+| oráculo `f4/oracle/` | 62 transiciones, literal y A-1; 45/45 mutaciones de estado y 11/11 mutaciones del validador detectadas |
+| rebase `f4/rebase-proto/` | rebase real con patch-ids iguales; lease rechazado con una escritura ajena y aceptado al reintentar; FC-02 demostrado (el `Target` vivo no existe en un clon limpio `--no-local`); A-1 reconcilia y el sucesor pasa I-H02 |
+| resolver `f4/compat-proto/` | contrato real de G3 (blob `9b5ef6df`) byte a byte; Evaluate, Classify, Resolve, lectura compuesta y Validate MV-1..MV-7; C-20c-1 (a, b), C-20c-2 y N-a..N-s: 24/24; salida determinista `662ebd2f…` |
+| `f4/a1-impact-map.md`, `f4/test-blueprint.md` | delta de F4 en las dos variantes; plano de pruebas C-15..C-42 con clase, fixture, casos, mutaciones, primera invariante y superficie |
+
+**Hallazgo no material SM-05** (`freeze-issues.md`): la recuperación (§20.6 caso B.1, LAUNCH_UNCERTAIN) devuelve la fase de ARCHITECT_INVOKED a
+(RE)REVIEW_PENDING; el diagrama de §20.5 no lista esa arista e I-P13 no enumera aristas de fase. Tratamiento en F4: coherencia fase/intento de I-S18 y las dos
+aristas de recuperación. Ningún hallazgo material nuevo.
+
+### 39.3 F6, decisiones del Owner, READY, OV y cierre
+
+- **F6:** `f6/recipes.md` (fixture completo y recetas FX-01..FX-06 con la clasificación del AUTONOMY_GAP: limitación esperada hoy bajo I61; en FX-06, UNVERIFIED
+  si falta una OD y UNSUPPORTED si con las OD no hay transporte); `f6/fx04a/fx04a_proto.py`: ensayo mecánico PASS (QH válido, reconstrucción desde un clon
+  limpio, comparación igual con un oráculo con hash previo, artefacto transitorio invisible, N11 → UNKNOWN).
+- **OD:** `owner-decision-packets.md` en formato de una línea. **OD-2, medición pasiva** (sin ejecutar binarios):
+  - `config.toml` con SHA-256 `091540ED2DE6CFAC…`, escrito el 2026-10-04 a las 21:39Z, con 110 nombres (20 saneados);
+  - paquete `OpenAI.Codex_26.930.3930.0`; la ruta antes verificada `bin/a51e250fa15c740a` ya no aparece;
+  - la huella actual no coincide con ninguna anterior (`37DD3559`, `42E15A03`, `40c27b57`, `155933B3`), así que la línea base de I-63 también envejeció.
+  Recomendación de la sesión, no decisión: `OD-2 = B`.
+- **READY/OV/cierre:** `ready-candidate.md`, `ov-scripts.md` y `closure-plan.md`. En el cierre, las hermanas tocan ROADMAP (todas) y el índice ADR (I-52;
+  I-64 en su cierre).
+- **Investigación del repositorio:** `repo-research.md` (CI de Core superficial, sin dependencias de YAML ni de JSON Schema, sin procesos ni Git en las
+  pruebas).
+
+### 39.4 DC-07 y límites
+
+DC-07 (2026-10-05): `origin/main` = `819955d6`; I-52 `fb6b5648`, I-63 `fdd4b651` e I-64 `39b45f36` no tocan ningún archivo de esta entrega, que está entera
+bajo `docs/automation/evidence/I-62-prep/`, más las decisiones, la evidencia, el estado y el contrato de I-62. Sin cambios en superficies normativas ni de producción;
+A-1 y su paquete, intactos.

@@ -1,5 +1,12 @@
 # I-62 — Dossier de ejecución de F4 (preparación; F4 no está abierto)
 
+```text
+Estado de preparación (2026-10-04) = IMPLEMENTATION_READY_PENDING_A1
+  producción de F4     = NO AUTORIZADA; la parte afectada por FC-01/FC-02 espera el veredicto de A-1 (Architect + Coordinator)
+  prototipos medidos   = f4/yaml-subset, f4/oracle, f4/rebase-proto, f4/compat-proto (§8)
+  plano de pruebas     = f4/test-blueprint.md;  impacto de A-1 = f4/a1-impact-map.md;  matriz de campos = f4/state-v2-fields.{json,md}
+```
+
 > **Preparación, no materialización.** Orden del Coordinator de [decisiones](../../decisions/I-62.md) §33 (clase B). Sin cambios en superficies normativas
 > compartidas. Referencias «V14 §…» a la Proposal congelada (blob `34ad80ea`). Los conflictos posibles del Freeze están en
 > [freeze-issues.md](freeze-issues.md).
@@ -22,11 +29,11 @@
 
 ## 2. Mapa de archivos
 
-`AE/` = `docs/automation/agent-execution/`. Blobs actuales en `1eddbf48`.
+`AE/` = `docs/automation/agent-execution/`. Blobs actuales en `bf7b0d9c` (tras F3).
 
 | Path | CurrentBlob | Cláusula | Acción | Obligación | Conflicto posible |
 |---|---|---|---|---|---|
-| `docs/AUTOMATION_PLAN.md` | `f0e0fd31` | E.1 (16.13, ENTRY de encabezado fijo `### 16.13 Compatibilidad de protocolos de ejecución delegada`); E.1 (punteros: primera frase de §16 y última de 16.3); §8 (`state/v2`, MODIFIED); §3.1 (subsecciones de custodia, recuperación, conteo y adopción, con los marcadores literales de §8.6/§8.9, y la subsección «Orquestación de roles»); §13 (P-12, P-13, P-15..P-25) | MODIFY: 16.13 ENTRY; punteros; `## 8` (formato `/v2`, solo unidades I62); subsecciones I62 nuevas 16.23 custodia, 16.24 recuperación, 16.25 conteo y presupuestos, 16.26 arranque, adopción y marcadores, 16.27 orquestación de roles | C-15..C-18, C-20a, C-28..C-38 | ninguno hoy |
+| `docs/AUTOMATION_PLAN.md` | `52fd8f66` | E.1 (16.13, ENTRY de encabezado fijo `### 16.13 Compatibilidad de protocolos de ejecución delegada`); E.1 (punteros: primera frase de §16 y última de 16.3); §8 (`state/v2`, MODIFIED); §3.1 (subsecciones de custodia, recuperación, conteo y adopción, con los marcadores literales de §8.6/§8.9, y la subsección «Orquestación de roles»); §13 (P-12, P-13, P-15..P-25) | MODIFY: 16.13 ENTRY; punteros; `## 8` (formato `/v2`, solo unidades I62); subsecciones I62 nuevas desde **16.25** (16.20-16.24 las ocupó F3): 16.25 custodia, 16.26 recuperación, 16.27 conteo y presupuestos, 16.28 arranque, adopción y marcadores, 16.29 orquestación de roles: bucle del Architect, intentos y presupuestos | C-15..C-18, C-20a, C-28..C-38 | ninguno hoy |
 | `docs/WORKFLOW.md` | `884ed305` | E.1/E.3.0: `## 12. Coexistencia de protocolos de ejecución delegada (I61/I62)` (ENTRY, texto congelado en E.3.0); §3 fila «WORKFLOW §§3-4»; §3 fila «WORKFLOW §10» | MODIFY: `## 12` nueva (ENTRY); `## 4` (referencia «al abrir» → autoverificación de 16.15 para I62_DELEGATED); `## 10` (fila «Operación del ejecutor y ejecución delegada» ampliada) | C-20a, C-20c, C-28 | autoridad caliente (WORKFLOW §7): cualquier hermana que toque WORKFLOW obliga a coordinar |
 | `AE/compatibility/clause-map.schema.json` | — | E.1, E.4 (`rackcad-clause-map/v1`) | ADD (archivo ENTRY) | C-20a | ninguno |
 | `AE/compatibility/I62-clause-map.json` | — | E.1, E.4, E.5, E.7 | ADD: derivado en F4 (base `origin/main` → punta de F4) y **regenerado sobre el merge local** antes del push de integración (C-20b) | C-20a, C-20b | se regenera en la integración |
@@ -45,9 +52,9 @@
 
 1. **Lector y validador de `state/v2`** (forma B.8.1, I-S01..I-S17, pares I-P01, I-P02, I-P04..I-P07, I-P09..I-P12) + guarda C-18. RED: esquema y validador
    ausentes.
-2. **Textos de custodia, recuperación y conteo** (16.23-16.25) y de arranque y adopción con los **marcadores literales** (16.26). MC C-15, C-16 y C-17 en un
+2. **Textos de custodia, recuperación y conteo** (16.25-16.27) y de arranque y adopción con los **marcadores literales** (16.28). MC C-15, C-16 y C-17 en un
    repositorio Git desechable.
-3. **`orchestration`** (B.8.8) en el esquema y en el validador (I-S18, I-P13) + guarda C-38; texto 16.27. MC C-29..C-37, C-40 (parte de F4), C-41 y C-42.
+3. **`orchestration`** (B.8.8) en el esquema y en el validador (I-S18, I-P13) + guarda C-38; texto 16.29. MC C-29..C-37, C-40 (parte de F4), C-41 y C-42.
 4. **Compatibilidad:** `### 16.13` (Classify, Resolve, Validate, mapa), los punteros, `## 12` de WORKFLOW, el esquema del mapa y el mapa derivado + guarda
    C-20a. MC C-20b y C-20c.
 5. **Aplicabilidad:** MC C-28 (DIRECT_ONLY sin la maquinaria).
@@ -123,7 +130,7 @@ INVALID → reejecución dentro del tope o STOP P-19}.
     con su guarda y rechazo de lo que no entienda. Sin dependencia nueva;
   - **B:** YamlDotNet en `RackCad.Tests`, con el acuerdo del Owner.
 
-  Paquete de decisión en [owner-decision-packets.md](owner-decision-packets.md) (DEP-F4-YAML).
+  **Resuelto (2026-10-04): opción A, sin dependencia.** El prototipo `f4/yaml-subset` lo demuestra (DEP-F4-YAML = NOT NEEDED; [owner-decision-packets.md](owner-decision-packets.md)).
 - **Validador de `orchestration`** (I-S18, I-P13): misma clase, y la guarda C-38 con un positivo (la secuencia completa de F.8) y los negativos del Anexo C.
 - **Validador del mapa** (E.4, MV-1..MV-7): la guarda Core C-20a, sin historia, comprueba la forma, la unicidad, `Surfaces`, ENTRY y los punteros. MV-3..MV-6
   con historia van al MC de C-20b.
@@ -184,3 +191,21 @@ INVALID → reejecución dentro del tope o STOP P-19}.
 
 **Dependencia de las posibles A-n:** si el Coordinator dispone FC-01 o FC-02 antes de F4, los esperados de C-29, C-31, C-34, C-36, C-38 y C-15 (rebase) se
 derivan del texto enmendado.
+
+## 8. Prototipos medidos (2026-10-04; preparación, fuera de producción)
+
+| Prototipo | Qué demuestra (MEASURED) | Uso en F4 |
+|---|---|---|
+| `f4/state-v2-fields.py` → `state-v2-fields.{json,md}` | 91 campos de `state/v2` con fuente, escritor, lectores, puntos, invariantes, SHA, rebase, A-1 e inválidos; 12 con SHA: 5 en `StateFields` literal y, fuera, los históricos de `protocol`, `last_rebase` y los tres de la orquestación (= FC-02) | esquema y validador |
+| `f4/yaml-subset/` | lector con fallo cerrado + escritor canónico: 27/27 casos, ida y vuelta de un `state/v2` de 217 líneas, 4/4 mutaciones; HEADER extrae `claim_id` de 38/39 estados reales | `YamlSubsetReader` en C#; DEP-F4-YAML = NOT NEEDED |
+| `f4/oracle/` | validador de archivo y de pares en dos variantes (literal y A-1): 62 transiciones (T0..T22 donde aplican, intentos, fases, presupuestos, LOOP_CLOSED, reconciliación) con 45 mutaciones de estado y 11/11 mutaciones del validador detectadas | `StateV2Validator` (C-18) y validador de `orchestration` (C-38) |
+| `f4/rebase-proto/` | rebase real en un repositorio desechable: patch-ids iguales, lease rechazado con una escritura ajena y aceptado al reintentar, reconciliación literal válida y la de la orquestación rechazada (I-P05), hueco FC-02 visible (el `Target` vivo no existe en un clon limpio), A-1 válida, sucesor limpio con I-H02 en verde | C-15 (rebase) |
+| `f4/compat-proto/` | resolver completo en un clon desechable con la historia real: Evaluate E1-E5, Classify, Resolve/R61, lectura compuesta, derivación y Validate MV-1..MV-7; C-20c-1 (a, b), C-20c-2 y N-a..N-s: 24/24; salida determinista (SHA-256 `662ebd2f…`) | C-20a/C-20b/C-20c |
+
+**RED esperado antes de materializar F4:** C-18 y C-38 fallan por validador ausente; C-20a por entrada, §16.13 y mapa ausentes; en el repositorio real, `Evaluate`
+devuelve PRE_ACTIVATION para todo (sin EFF), y los MC de C-15..C-17, C-20b, C-20c y C-28..C-42 fallan por procedimiento ausente.
+
+**Elecciones de implementación que siguen abiertas (no cambian el Freeze):** número y texto de la sección de entrada de WORKFLOW (`## 12.` está libre en `main`);
+formato de la tabla PRE (se propone el de `8a021fb6`: «Derived formal claim table» con la columna `Claim-Id`); la comprobación `BaseSha` de 16.3 en el arnés de
+C-20c necesita una delegación real; el escritor canónico de `state/v2` (pasos de dos espacios, listas sangradas bajo su clave, cadenas entre comillas cuando
+otro tipo las leería) se fija en el procedimiento.

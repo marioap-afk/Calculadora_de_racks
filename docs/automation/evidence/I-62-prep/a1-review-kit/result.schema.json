@@ -1,0 +1,515 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "rackcad-a1-architect-result (I-62 prep; representación experimental de architect-review-result/v1; no normativa)",
+ "title": "I-62 A-1 Architect review result",
+ "type": "object",
+ "additionalProperties": false,
+ "properties": {
+  "Schema": {
+   "type": "string"
+  },
+  "RunId": {
+   "type": "string",
+   "const": "R20261003T023945Z-cab7"
+  },
+  "InvocationId": {
+   "type": "string",
+   "const": "I20261003T023945Z-cab7"
+  },
+  "LogicalReviewRequestId": {
+   "type": "string",
+   "const": "L20261003T023945Z-cab7"
+  },
+  "AttemptSeq": {
+   "type": "integer",
+   "const": 1
+  },
+  "RequestedRole": {
+   "const": "ARCHITECT"
+  },
+  "Action": {
+   "const": "REVIEW_DESIGN"
+  },
+  "ReviewedUnit": {
+   "const": "I-62"
+  },
+  "ReviewedCommit": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{40}$"
+  },
+  "ReviewedPath": {
+   "const": "docs/initiatives/I-62-A-1.md"
+  },
+  "ReviewedBlob": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{40}$"
+  },
+  "ReviewerMode": {
+   "enum": [
+    "SAME-SESSION ROLE",
+    "SEPARATE SESSION",
+    "EXTERNAL HUMAN"
+   ]
+  },
+  "SamePersonAsAuthor": {
+   "type": "string"
+  },
+  "ReviewerDeclaredIdentity": {
+   "type": "object",
+   "additionalProperties": false,
+   "properties": {
+    "Runtime": {
+     "type": "string"
+    },
+    "Model": {
+     "type": "string"
+    },
+    "Effort": {
+     "type": "string"
+    },
+    "SessionOrThread": {
+     "type": "string"
+    }
+   },
+   "required": [
+    "Runtime",
+    "Model",
+    "Effort",
+    "SessionOrThread"
+   ]
+  },
+  "InjectedContextDeclaration": {
+   "type": "object",
+   "additionalProperties": false,
+   "properties": {
+    "State": {
+     "enum": [
+      "DECLARED",
+      "NONE_DECLARED"
+     ]
+    },
+    "Items": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    }
+   },
+   "required": [
+    "State",
+    "Items"
+   ]
+  },
+  "IdentityCheck": {
+   "type": "object",
+   "additionalProperties": false,
+   "properties": {
+    "HeadMatches": {
+     "type": "boolean"
+    },
+    "ObjectBlobMatches": {
+     "type": "boolean"
+    },
+    "PackageBlobMatches": {
+     "type": "boolean"
+    },
+    "CleanTree": {
+     "type": "boolean"
+    }
+   },
+   "required": [
+    "HeadMatches",
+    "ObjectBlobMatches",
+    "PackageBlobMatches",
+    "CleanTree"
+   ]
+  },
+  "InputsRead": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  },
+  "Verdict": {
+   "enum": [
+    "AGREED",
+    "CHANGES REQUIRED",
+    "BLOCKED — OWNER DECISION",
+    "NOT ACCREDITED"
+   ]
+  },
+  "RequiredFindings": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+     "FindingId": {
+      "type": "string",
+      "pattern": "^A62-A1-[0-9]{2}$"
+     },
+     "AffectedDelta": {
+      "type": "string"
+     },
+     "ViolatedInvariant": {
+      "type": "string"
+     },
+     "Counterexample": {
+      "type": "string"
+     },
+     "CorrectionRequired": {
+      "type": "string"
+     },
+     "PremiseRefs": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "additionalProperties": false,
+       "properties": {
+        "Path": {
+         "type": "string"
+        },
+        "Section": {
+         "type": "string"
+        },
+        "LineStart": {
+         "type": "integer"
+        },
+        "LineEnd": {
+         "type": "integer"
+        },
+        "Quote": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "Path",
+        "Section",
+        "LineStart",
+        "LineEnd",
+        "Quote"
+       ]
+      },
+      "minItems": 1
+     },
+     "WhyItMatters": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "FindingId",
+     "AffectedDelta",
+     "ViolatedInvariant",
+     "Counterexample",
+     "CorrectionRequired",
+     "PremiseRefs",
+     "WhyItMatters"
+    ]
+   }
+  },
+  "OptionalFindings": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+     "FindingId": {
+      "type": "string",
+      "pattern": "^A62-A1-O[0-9]+$"
+     },
+     "AffectedDelta": {
+      "type": "string"
+     },
+     "Note": {
+      "type": "string"
+     },
+     "PremiseRefs": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "additionalProperties": false,
+       "properties": {
+        "Path": {
+         "type": "string"
+        },
+        "Section": {
+         "type": "string"
+        },
+        "LineStart": {
+         "type": "integer"
+        },
+        "LineEnd": {
+         "type": "integer"
+        },
+        "Quote": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "Path",
+        "Section",
+        "LineStart",
+        "LineEnd",
+        "Quote"
+       ]
+      }
+     }
+    },
+    "required": [
+     "FindingId",
+     "AffectedDelta",
+     "Note",
+     "PremiseRefs"
+    ]
+   }
+  },
+  "FC01": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+     "Item": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10
+     },
+     "Assessment": {
+      "enum": [
+       "CONFIRMED",
+       "CHALLENGED"
+      ]
+     },
+     "Note": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "Item",
+     "Assessment",
+     "Note"
+    ]
+   }
+  },
+  "FC02": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+     "Item": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10
+     },
+     "Assessment": {
+      "enum": [
+       "CONFIRMED",
+       "CHALLENGED"
+      ]
+     },
+     "Note": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "Item",
+     "Assessment",
+     "Note"
+    ]
+   }
+  },
+  "F3ContractCrossCheck": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+     "Contract": {
+      "type": "string"
+     },
+     "Assessment": {
+      "enum": [
+       "COMPATIBLE",
+       "REQUIRES_CHANGE"
+      ]
+     },
+     "Note": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "Contract",
+     "Assessment",
+     "Note"
+    ]
+   }
+  },
+  "CounterexampleVerification": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+     "Trace": {
+      "type": "string"
+     },
+     "ClaimedReasonHolds": {
+      "type": "boolean"
+     },
+     "Note": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "Trace",
+     "ClaimedReasonHolds",
+     "Note"
+    ]
+   }
+  },
+  "OwnerAuthorityCheck": {
+   "type": "object",
+   "additionalProperties": false,
+   "properties": {
+    "Spending": {
+     "type": "string"
+    },
+    "Credentials": {
+     "type": "string"
+    },
+    "Destructive": {
+     "type": "string"
+    },
+    "NewOVScenario": {
+     "type": "string"
+    },
+    "OVRemovalOrReassignment": {
+     "type": "string"
+    },
+    "OwnerPolicyChoice": {
+     "type": "string"
+    },
+    "OwnerDecisionRequired": {
+     "type": "boolean"
+    }
+   },
+   "required": [
+    "Spending",
+    "Credentials",
+    "Destructive",
+    "NewOVScenario",
+    "OVRemovalOrReassignment",
+    "OwnerPolicyChoice",
+    "OwnerDecisionRequired"
+   ]
+  },
+  "LegacyApplicability": {
+   "type": "object",
+   "additionalProperties": false,
+   "properties": {
+    "AppliesOnlyToI62": {
+     "type": "boolean"
+    },
+    "NoRetroactiveI61Change": {
+     "type": "boolean"
+    },
+    "NoI64FixClaim": {
+     "type": "boolean"
+    },
+    "Note": {
+     "type": "string"
+    }
+   },
+   "required": [
+    "AppliesOnlyToI62",
+    "NoRetroactiveI61Change",
+    "NoI64FixClaim",
+    "Note"
+   ]
+  },
+  "IfAgreed": {
+   "type": "object",
+   "additionalProperties": false,
+   "properties": {
+    "FC01Resolved": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "FC02Resolved": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "NoOwnerDecisionRequired": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "SuitableForCoordinatorAgreement": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "F4MayUseFreezePlusA1AfterCoordinatorVerdict": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    }
+   },
+   "required": [
+    "FC01Resolved",
+    "FC02Resolved",
+    "NoOwnerDecisionRequired",
+    "SuitableForCoordinatorAgreement",
+    "F4MayUseFreezePlusA1AfterCoordinatorVerdict"
+   ]
+  },
+  "KnownLimitations": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  },
+  "RecommendedNextAction": {
+   "type": "string"
+  }
+ },
+ "required": [
+  "Schema",
+  "RunId",
+  "InvocationId",
+  "LogicalReviewRequestId",
+  "AttemptSeq",
+  "RequestedRole",
+  "Action",
+  "ReviewedUnit",
+  "ReviewedCommit",
+  "ReviewedPath",
+  "ReviewedBlob",
+  "ReviewerMode",
+  "SamePersonAsAuthor",
+  "ReviewerDeclaredIdentity",
+  "InjectedContextDeclaration",
+  "IdentityCheck",
+  "InputsRead",
+  "Verdict",
+  "RequiredFindings",
+  "OptionalFindings",
+  "FC01",
+  "FC02",
+  "F3ContractCrossCheck",
+  "CounterexampleVerification",
+  "OwnerAuthorityCheck",
+  "LegacyApplicability",
+  "IfAgreed",
+  "KnownLimitations",
+  "RecommendedNextAction"
+ ]
+}

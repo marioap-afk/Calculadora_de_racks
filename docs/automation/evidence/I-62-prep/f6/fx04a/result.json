@@ -1,0 +1,29 @@
+{
+ "Fixture": {
+  "F_seed": "56937a80d34c08dc6bc5c1658c24957ef45aa939",
+  "F_norm": "16a6204a01e13d1445c42996f6043e7645fe2d2a",
+  "F_eff": "a15ccba881f2263f5512c9aafc6a8157fcb8dc8a",
+  "QH": "7d973b4280d71076c3b26731729aaa23f9990479"
+ },
+ "StateAtQH": {
+  "FileInvariants": "VALID"
+ },
+ "OracleSha256": "9523a301991f7a9ff3d94915475ff44604f3e57f39fd9fb54a183c4a126faa90",
+ "ResponseSha256": "9523a301991f7a9ff3d94915475ff44604f3e57f39fd9fb54a183c4a126faa90",
+ "ResponsePublishedBeforeOracle": true,
+ "Isolation": {
+  "TransientArtifactVisibleToB": false,
+  "ReadsByB": [
+   "HEAD:docs/automation/state/FX-U1.yml"
+  ]
+ },
+ "Comparison": {
+  "Diffs": [],
+  "Result": "PASS"
+ },
+ "N11": {
+  "DeclaredUnknown": true,
+  "HiddenValueNotInvented": true
+ },
+ "AllPass": true
+}

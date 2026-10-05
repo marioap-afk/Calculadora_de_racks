@@ -1,0 +1,94 @@
+{
+ "I-P01 record_version": {
+  "SuiteExit": 1,
+  "Detected": true,
+  "FailingTransitions": [
+   "T0 BOOTSTRAP → QU (decisión de G0)",
+   "T13 segunda recuperación concurrente (pierde el CAS)"
+  ],
+  "Crash": ""
+ },
+ "I-P02 transiciones": {
+  "SuiteExit": 1,
+  "Detected": true,
+  "FailingTransitions": [
+   "Q0 → QU (prohibido, W-2)",
+   "QH → Q0 (prohibido)",
+   "QH → QU (prohibido)"
+  ],
+  "Crash": ""
+ },
+ "I-P04 window.seq": {
+  "SuiteExit": 1,
+  "Detected": true,
+  "FailingTransitions": [
+   "Q0 FIRST (paso 1 de 16.4)"
+  ],
+  "Crash": ""
+ },
+ "I-P06 inmutables": {
+  "SuiteExit": 1,
+  "Detected": true,
+  "FailingTransitions": [
+   "T0 BOOTSTRAP → QU (decisión de G0)"
+  ],
+  "Crash": ""
+ },
+ "I-P09 marcadores de G0": {
+  "SuiteExit": 1,
+  "Detected": true,
+  "FailingTransitions": [
+   "T0 BOOTSTRAP → QU (decisión de G0)"
+  ],
+  "Crash": ""
+ },
+ "I-P10 imágenes": {
+  "SuiteExit": 1,
+  "Detected": true,
+  "FailingTransitions": [
+   "T19 Q7 → QU REBASE_RECONCILIATION"
+  ],
+  "Crash": ""
+ },
+ "I-S08 ABANDONED": {
+  "SuiteExit": 1,
+  "Detected": true,
+  "FailingTransitions": [
+   "T12b Q0 → QR ABANDONED (R-1)"
+  ],
+  "Crash": ""
+ },
+ "I-S15 Q0 con aceptaciones": {
+  "SuiteExit": 1,
+  "Detected": true,
+  "FailingTransitions": [
+   "BOOTSTRAP → Q0 (SM-01: inalcanzable)"
+  ],
+  "Crash": ""
+ },
+ "I-P13 loop.object": {
+  "SuiteExit": 1,
+  "Detected": true,
+  "FailingTransitions": [
+   "intento: BUDGET_RESERVED → LAUNCHING (ARCHITECT_INVOKED)",
+   "intento: BUDGET_RESERVED → LAUNCHING (ARCHITECT_INVOKED)"
+  ],
+  "Crash": ""
+ },
+ "A1-D1-5 LOOP_CLOSED": {
+  "SuiteExit": 1,
+  "Detected": true,
+  "FailingTransitions": [
+   "A-1: LOOP_CLOSED con una solicitud OPEN (prohibido)"
+  ],
+  "Crash": ""
+ },
+ "A1-D1-4 reutilización": {
+  "SuiteExit": 1,
+  "Detected": true,
+  "FailingTransitions": [
+   "A-1: bucle nuevo con RLA-1 sobre su entrada antigua (prohibido)"
+  ],
+  "Crash": ""
+ }
+}

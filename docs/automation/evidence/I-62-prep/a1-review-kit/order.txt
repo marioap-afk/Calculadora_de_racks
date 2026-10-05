@@ -1,0 +1,237 @@
+I-62 — COORDINATOR DECISION
+F3 GATE PASS
+AUTHORIZE FORMAL ARCHITECT REVIEW OF AMENDMENT A-1
+CURRENT STATE
+F2 = COMPLETE
+F3 = GATE PASS / COMPLETE
+F3 implementation SHA:
+f9234cb98f84b11f79acacb7677223424b63abc4
+F3 implementation CI:
+37084798120
+push
+exact SHA
+4/4 required jobs = success
+F3 exact-SHA Core Full:
+12419 / 12419
+clean tree
+A-1 custody/package commit:
+bf7b0d9c
+A-1 custody CI:
+37085558300
+4/4 required jobs = success
+Consensus Freeze:
+b64a3b640c7ee3bd77636e7a3218ae0ebac2dd43
+Frozen Proposal:
+V14
+commit 4c617e82b32b6c810b68d75fc19472efed22b393
+blob 34ad80ea1bfff144bfc5169f62920a4c904c1bfa
+F3 COORDINATOR DISPOSITION
+C-11 = PASS
+C-12 = PASS
+C-13 = PASS
+C-14 = PASS
+C-30 = PASS
+C-40 F3 portion = PASS
+F3 = GATE PASS / COMPLETE.
+The LIFECYCLE §5/§9 OD-6 materialization remains in F3.
+Reason:
+F3 owns the independence result and C-13 verifies it; V14 §3.1 identifies LIFECYCLE §5/§9 as the corresponding materialization target.
+No A-n is required for that placement.
+F2 FIELD-NAME CORRECTION
+The F3 delivery corrected:
+BindingRef.Location.CommitSha
+→
+BindingRef.Location.Commit
+in the two F2 schemas.
+Coordinator disposition:
+ACCEPTED — NON-MATERIAL FREEZE-CONFORMING CORRECTION.
+The frozen B.2 field name is `Commit`.
+The correction restores fidelity to the Freeze and changes no behavior, cardinality or authority.
+F2 remains CLOSED.
+No A-n required.
+A-1 CLASSIFICATION
+FC-01 = MATERIAL
+FC-02 = MATERIAL
+A-1 triggers M-02, M-03, M-04 and M-05.
+No OWNER-RESERVED consequence is currently identified.
+Required authority:
+ARCHITECT + COORDINATOR.
+F4 production remains blocked on the affected semantics until A-1 is agreed.
+ARCHITECT REVIEW OBJECT
+Review exactly:
+docs/initiatives/I-62-A-1.md
+Blob:
+09ca93285975c4b7af6471d6ae91bfa12c94a1fc
+Architect package:
+docs/initiatives/I-62-architect-package-A-1.md
+Blob:
+071cecba1fb8bdefc9a4e5554dd47a0459f8a1d2
+Review the exact branch object at the current published A-1 package commit.
+ONE bounded Architect invocation is authorized.
+No retry without another authorization.
+REVIEW AUTHORITY
+This is a MATERIAL Freeze amendment review under:
+INITIATIVE_LIFECYCLE §6.
+The Architect must determine whether A-1:
+
+* resolves FC-01 and FC-02;
+* preserves the existing Freeze outside the exact delta;
+* introduces no hidden authority or Owner-reserved change;
+* leaves legacy/I61 behavior intact;
+* produces deterministic invariants and testable behavior.
+
+The review is not implementation authorization for F4.
+FOCUS AREA — FC-01
+Review the proposed per-ReviewLoopAuthorization budgets.
+Confirm or challenge:
+
+1. `budgets[]` keyed by `authorization_id`;
+2. one immutable historical budget entry per authorization;
+3. requests are tied to exactly one authorization;
+4. provider/model/session/binding/Principal changes do not reset counters;
+5. a new review loop requires a NEW Coordinator-issued ReviewLoopAuthorization;
+6. previous budget history is preserved;
+7. LOOP_CLOSED is the only normal transition returning:
+   * loop.phase → NONE;
+   * loop.object → null;
+8. LOOP_CLOSED is legal only when:
+   * no request remains OPEN;
+   * no non-terminal attempt exists;
+   * action validity is ENDED;
+   * required escalation/decision is resolved;
+9. READY-06 can therefore use a later independent review loop without inheriting the old loop's budget;
+10. unresolved REQUIRED lineages remain unit-level and are not erased by closing a loop.
+
+Look specifically for:
+
+* silent budget resets;
+* reuse of an old authorization;
+* ability to hide an open REQUIRED by closing a loop;
+* inconsistent counters between requests and budget entry.
+
+FOCUS AREA — FC-02
+Review the rebase reconciliation delta.
+Confirm or challenge:
+
+1. live orchestration SHAs are included in StateFields/I-H02;
+2. OPEN review-request object commits are reconciled;
+3. INVOCATION_PLANNED/BUDGET_RESERVED Targets may be re-planned to the rebase image;
+4. the re-planned invocation receives a new InvocationId;
+5. the same reservation is retained;
+6. path and blob remain unchanged;
+7. loop phase, counters, findings and lineages remain unchanged;
+8. LAUNCHING/LAUNCHED/terminal attempts preserve historical Targets;
+9. completed/terminal requests are not rewritten;
+10. a stale live Target cannot silently pass I-H02 after rebase.
+
+Look specifically for:
+
+* historical evidence being rewritten;
+* double-counted launches;
+* accidental budget release;
+* rebase changing reviewed content instead of only commit identity;
+* inability of a clean successor clone to reconstruct the live target.
+
+CROSS-CHECK WITH F3 CONTRACTS
+A-1 must remain compatible with the F3 contracts now materialized.
+Check especially:
+
+* role-invocation/v1 Target;
+* BindingRef;
+* AuthorizationRef;
+* BudgetSnapshot semantics;
+* input closure/fidelity identities;
+* historical accreditation.
+
+If A-1 requires changing a frozen/materialized F3 contract beyond the explicit amendment:
+identify it as REQUIRED.
+Do not assume F4 can reinterpret the contract silently.
+COUNTEREXAMPLES
+Use the prepared evidence:
+docs/automation/evidence/I-62-A1/a1-counterexamples.py
+and:
+docs/automation/evidence/I-62-A1/a1-counterexamples-result.json
+Treat them as supporting evidence, not authority.
+Verify that:
+
+* literal V14 fails the intended FC-01/FC-02 traces for the claimed reason;
+* A-1 accepts the intended corrected traces;
+* abuse/negative traces still fail.
+
+If a trace passes for an incidental reason, report it.
+OWNER AUTHORITY CHECK
+Explicitly determine whether either delta creates:
+
+* new spending/consumption authority;
+* new credentials/auth authority;
+* new destructive permission;
+* new Owner Validation scenario;
+* removal/reassignment of an OV scenario;
+* new Owner-reserved policy choice.
+
+Expected current assessment:
+NONE.
+If any exists:
+verdict must identify OWNER DECISION REQUIRED.
+Do not silently absorb it.
+LEGACY / APPLICABILITY
+Confirm A-1 applies only to I-62.
+It must not retroactively modify I61 units.
+It must not claim to fix I-64.
+I-64's protocol debt remains under its own authority.
+RESULT
+Return exactly one:
+AGREED
+CHANGES REQUIRED
+BLOCKED — OWNER DECISION
+Every REQUIRED must include:
+
+* stable ID;
+* exact A-1 section/delta;
+* violated Freeze/LIFECYCLE invariant;
+* concrete counterexample;
+* exact correction required.
+
+If AGREED with zero REQUIRED, explicitly state:
+
+* FC-01 resolved;
+* FC-02 resolved;
+* no Owner decision required;
+* A-1 is suitable for Coordinator agreement;
+* F4 may use Freeze + A-1 after the Coordinator records its verdict.
+
+INDEPENDENCE / REVIEW CONDITIONS
+Use a clean separate Architect session.
+Apply the same reviewed-input safeguards already established for I-62 architecture reviews where practical:
+
+* exact object identity;
+* clean clone/read-only review;
+* bounded inputs;
+* runtime identity evidence;
+* reviewer-visible content auditing if the invocation transport is used.
+
+Do not let a transport artifact become a false technical finding.
+If the review cannot be accredited:
+report the exact reason rather than inventing a verdict.
+BOUNDARIES
+ONE Architect invocation only.
+Do not:
+
+* edit A-1;
+* implement F4;
+* create A-2;
+* decide Owner matters;
+* change configuration;
+* invoke Worker/Controller;
+* alter the Freeze.
+
+After the review:
+custody the literal Architect result and review evidence.
+STOP.
+F4 implementation remains NOT AUTHORIZED until:
+
+1. Architect verdict on A-1;
+2. Coordinator verdict on A-1;
+3. explicit F4 opening order.
+
+I-61 remains active.

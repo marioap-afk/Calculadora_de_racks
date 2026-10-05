@@ -48,3 +48,6 @@ FX-06 ─┴─ OD-5 + OD-7 + (OD-2 | OD-3) ─ F3 (role-invocation, resultados,
 | FX-04b | ≤ 6 | 0 | 0 | 0 nuevas |
 | B (FX-03) | ≤ 12 | 0 | ≤ 6 | ≤ 2 |
 | FX-06 | Architect ≤ 4 | 0 | (alternativa) | ≤ 2 |
+
+> **Revisión del 2026-10-04:** las recetas ejecutables y el diseño del fixture están en [f6/recipes.md](f6/recipes.md); el ensayo mecánico de FX-04a, en
+> [f6/fx04a/](f6/fx04a/fx04a_proto.py).

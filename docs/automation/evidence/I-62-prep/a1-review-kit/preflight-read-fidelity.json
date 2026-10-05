@@ -1,0 +1,45 @@
+{
+ "Transcript": "C:/Users/alejandra-mendoza/.claude/projects/D--Documentos-Codex-Calculadora-de-racks/e5124bf0-ed19-48a1-97ba-574baf9d33a2.jsonl",
+ "Rev": "bf7b0d9c4ec79e38350bad55e0debcde55b3cec9",
+ "Calls": [
+  {
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Offset": 2190,
+   "Limit": 33,
+   "Lines": 33,
+   "Faithful": 33,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  },
+  {
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Offset": 2382,
+   "Limit": 1,
+   "Lines": 1,
+   "Faithful": 1,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-1.md",
+   "Offset": 60,
+   "Limit": 30,
+   "Lines": 30,
+   "Faithful": 30,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  }
+ ],
+ "Summary": {
+  "Calls": 3,
+  "Faithful": 3,
+  "Degraded": 0,
+  "DeliveredLinesByPath": {
+   "docs/initiatives/I-62-A-1.md": 30,
+   "docs/initiatives/I-62-proposal-v14.md": 34
+  }
+ }
+}

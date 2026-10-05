@@ -3,12 +3,12 @@ automation_state:
   initiative: I-62
   branch: architecture/portabilidad-coordinador-principal
   claim_id: 5b661a17-8c18-4183-8554-3866059cba2b
-  current_phase: F3
-  state: in-progress
-  gate: none
+  current_phase: F4
+  state: waiting
+  gate: dependency
   attempts: 0
-  next_action: el Coordinator revisa la entrega de F3 (f9234cb9; evidence §§37-38) y decide su GATE PASS; la revisión del Architect de la enmienda A-1 (docs/initiatives/I-62-architect-package-A-1.md) espera una autorización para invocarlo.
-  last_evidence_commit: f9234cb98f84b11f79acacb7677223424b63abc4
+  next_action: el Owner pulsa la tarea task_fce8049e para lanzar la revisión limpia del Architect de A-1; la sesión audita y custodia el resultado; F4 espera los veredictos de A-1 y la orden explícita de apertura (preparación en docs/automation/evidence/I-62-prep/; evidence §39).
+  last_evidence_commit: bf7b0d9c4ec79e38350bad55e0debcde55b3cec9
 execution_context:
   mode: manual
   automation_enabled: false
@@ -22,11 +22,11 @@ execution_context:
   f0_status: COMPLETE (GATE PASS del Coordinator al abrir F1, decisions §32); Freeze sin cambios (FREEZE_SHA b64a3b64, registro docs/initiatives/I-62-consensus-freeze.md)
   f1_status: GATE PASS / COMPLETE por el Coordinator sobre 12660ea7 (C-01..C-04 PASS; decisions §33)
   f1_scope: ADR-0048 propuesto; plano (b) inactivo en docs/AUTOMATION_PLAN.md (§16.1, 16.14-16.17) y docs/automation/agent-execution/README.md §12; corrección factual de PROMPT_TEMPLATES §2; guardas C-01 y C-03; MC de C-04
-  implementation_authorization: solo F3; producción de F4 = NO; F6 y siguientes = NO; I-61 sigue siendo el protocolo activo hasta la frontera efectiva de I-62
-  f2_status: GATE PASS / COMPLETE por el Coordinator sobre 1eddbf48 (C-05..C-10 y C-19 PASS; decisions §34); codex-cli sigue UNKNOWN / NOT_ELIGIBLE hasta su primera invocación afectada (OD-2)
+  implementation_authorization: ninguna implementación abierta tras el GATE PASS de F3; producción de F4 = NO hasta los veredictos de A-1 y la orden de apertura; preparación de F4, F6, F7, READY, OV y cierre autorizada (decisions §36); I-61 sigue activa
+  f2_status: COMPLETE (GATE PASS sobre 1eddbf48; corrección CommitSha a Commit aceptada como no material, decisions §35)
   f2_scope: AUTOMATION_PLAN 16.18-16.19; adapters/ (5 descriptores); preflight.v1, relay-record.v2, controller-verification.v2 y 5 esquemas de hechos; README §13; routing §8; guardas C-05, C-09, C-10 y C-19; MC C-06, C-07, C-08 y C-10
   preparation: docs/automation/evidence/I-62-prep/ (F3, F4, F6, F7, READY, OV y cierre; FC-01 y FC-02 como A-n candidatas sin aplicar; paquetes OD-2, OD-3, OD-4, OD-5, OD-7 y DEP-F4-YAML sin solicitar)
-  f3_status: IN_PROGRESS; implementación entregada en f9234cb9 (CI 37084798120 4/4; Core Full exacto 12419/12419; MC C-11..C-14, C-30 y C-40 parte F3 PASS); sin GATE PASS propio (evidence §§37-38)
+  f3_status: GATE PASS / COMPLETE por el Coordinator sobre f9234cb9 (C-11..C-14, C-30 y C-40 parte F3 PASS; LIFECYCLE §5/§9 se queda en F3; decisions §35)
   f3_scope: nueve esquemas del núcleo; manifiesto B.11 docs/initiatives/I-62-normative-dependency-manifest.json; AUTOMATION_PLAN 16.20-16.24; README §14-§16; routing §9; LIFECYCLE §5 y §9 (alternativa 1 de OD-6, inactivo); guardas Core de B.1, B.11 y textos; MC C-11..C-14, C-30 y C-40 (parte F3)
-  f4_status: BLOCKED ON A-1 (FC-01, FC-02) solo para la materialización afectada; la preparación de F4 puede continuar; producción no autorizada
-  a1_status: PROPUESTA (docs/initiatives/I-62-A-1.md); paquete del Architect listo (docs/initiatives/I-62-architect-package-A-1.md); invocación NO lanzada por falta de autorización; veredictos del Architect y del Coordinator PENDING
+  f4_status: IMPLEMENTATION_READY_PENDING_A1 (prototipos medidos y plano de pruebas en I-62-prep/f4; producción no autorizada; la parte afectada por FC-01 y FC-02 espera A-1)
+  a1_status: READY_TO_LAUNCH; AUTONOMY_GAP OWNER_CLICK_REQUIRED (tarea task_fce8049e; kit I-62-prep/a1-review-kit); veredictos del Architect y del Coordinator PENDING
