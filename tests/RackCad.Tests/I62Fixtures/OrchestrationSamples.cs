@@ -42,7 +42,7 @@ namespace RackCad.Tests
                 ("authorization", Clone(decisions)), ("action_validity", Validity("RLA-1")));
             o["review_requests"] = L(Request(L1, obj1, 1, Attempt(s2, L1, 1, obj1, bindingB, reservedAt: 6, openFindings: new string[0], snapshot: (1, 1, 1, 0, 0))));
             o["architect_budgets"] = L(Entry("ARL-6", decisions, rounds: 1, requests: 1, launches: 1, reruns: new[] { (L1, 0L) }, corrections: 0));
-            o["next_action"] = NextAction("ARCHITECT", "REVIEW", obj1);
+            o["next_action"] = NextAction("ARCHITECT", "REVIEW", obj1, decisions);
             points.Add(s2);
 
             // Step 3: a1.1 LAUNCHING with run_id R1; ARCHITECT_INVOKED.
@@ -128,7 +128,7 @@ namespace RackCad.Tests
             e["logical_requests"] = 2L;
             e["architect_launches"] = 2L;
             Y.L(e, "transport_reruns").Add(M(("logical_review_request_id", L2), ("count", 0L)));
-            Orch(s13)["next_action"] = NextAction("ARCHITECT", "REVIEW", obj2);
+            Orch(s13)["next_action"] = NextAction("ARCHITECT", "REVIEW", obj2, (YamlMap)Loop(s13)["authorization"]!);
             points.Add(s13);
 
             // Step 14: a2.1 LAUNCHING with run_id R2; ARCHITECT_INVOKED.
@@ -258,9 +258,10 @@ namespace RackCad.Tests
             validity["ended_by"] = by;
         }
 
-        public static YamlMap NextAction(string role, string action, YamlMap? target) => M(("role", role), ("action", action),
+        public static YamlMap NextAction(string role, string action, YamlMap? target, YamlMap? permission = null) => M(("role", role), ("action", action),
             ("target", target == null ? null : Clone(target)), ("unit", Unit), ("gate", "F4"), ("task_id", null), ("required_inputs", L()), ("required_capabilities", L()),
-            ("required_independence", "NONE"), ("invocation_permission", null), ("budget_remaining", M()), ("expected_output", "rackcad-architect-review-result/v1"),
+            ("required_independence", "NONE"), ("invocation_permission", permission == null ? null : Clone(permission)), ("budget_remaining", M()),
+            ("expected_output", role == "REVIEWER" ? "rackcad-reviewer-result/v1" : "rackcad-architect-review-result/v1"),
             ("completion_condition", "RESULT_INGESTED"), ("stop_conditions", L("P-18", "P-19")), ("escalation_conditions", L()));
 
         public static YamlMap Entry(string iid, YamlMap authorization, long rounds, long requests, long launches, (string, long)[] reruns, long corrections) => M(

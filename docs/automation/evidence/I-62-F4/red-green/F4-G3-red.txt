@@ -1,0 +1,58 @@
+$ dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter "FullyQualifiedName~I62F4VerificationHelperTests.I62_P6"  (exit 1)
+Serie de pruebas para C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll (.NETCoreApp,Version=v8.0)
+1 archivos de prueba en total coincidieron con el patrón especificado.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.29)
+[xUnit.net 00:00:00.27]   Discovering: RackCad.Tests
+[xUnit.net 00:00:05.32]   Discovered:  RackCad.Tests
+[xUnit.net 00:00:05.33]   Starting:    RackCad.Tests
+[xUnit.net 00:00:05.39]       System.NotImplementedException : F4-G3 RED
+[xUnit.net 00:00:05.39]       Stack Trace:
+[xUnit.net 00:00:05.40]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\TrxReading.cs(54,0): at RackCad.Tests.TrxReading.DeclaredSkipMethods(IEnumerable`1 sources)
+[xUnit.net 00:00:05.40]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4VerificationHelperTests.cs(307,0): at RackCad.Tests.I62F4VerificationHelperTests.I62_P6_SkipsAreCrossCheckedWithTheSourceDeclarationsWithoutAFixedCount()
+[xUnit.net 00:00:05.40]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:05.40]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:05.40]       System.NotImplementedException : F4-G3 RED
+[xUnit.net 00:00:05.40]       Stack Trace:
+[xUnit.net 00:00:05.40]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\TrxReading.cs(48,0): at RackCad.Tests.TrxReading.Read(Byte[] trx, ISet`1 declaredSkipMethods)
+[xUnit.net 00:00:05.40]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4VerificationHelperTests.cs(295,0): at RackCad.Tests.I62F4VerificationHelperTests.I62_P6_ContradictionsAndAnEmptySelectionFailAndSkipsAreNeverPassed()
+[xUnit.net 00:00:05.40]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:05.40]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:05.40]       System.NotImplementedException : F4-G3 RED
+[xUnit.net 00:00:05.40]       Stack Trace:
+[xUnit.net 00:00:05.40]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\TrxReading.cs(48,0): at RackCad.Tests.TrxReading.Read(Byte[] trx, ISet`1 declaredSkipMethods)
+[xUnit.net 00:00:05.40]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4VerificationHelperTests.cs(273,0): at RackCad.Tests.I62F4VerificationHelperTests.I62_P6_PassedFailedSkippedAndUnexpectedStatesAreDistinguished()
+[xUnit.net 00:00:05.40]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:05.40]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:05.40]   Finished:    RackCad.Tests
+  Con error RackCad.Tests.I62F4VerificationHelperTests.I62_P6_SkipsAreCrossCheckedWithTheSourceDeclarationsWithoutAFixedCount [7 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-G3 RED
+  Seguimiento de la pila:
+     at RackCad.Tests.TrxReading.DeclaredSkipMethods(IEnumerable`1 sources) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\TrxReading.cs:line 54
+   at RackCad.Tests.I62F4VerificationHelperTests.I62_P6_SkipsAreCrossCheckedWithTheSourceDeclarationsWithoutAFixedCount() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4VerificationHelperTests.cs:line 307
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Con error RackCad.Tests.I62F4VerificationHelperTests.I62_P6_ContradictionsAndAnEmptySelectionFailAndSkipsAreNeverPassed [1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-G3 RED
+  Seguimiento de la pila:
+     at RackCad.Tests.TrxReading.Read(Byte[] trx, ISet`1 declaredSkipMethods) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\TrxReading.cs:line 48
+   at RackCad.Tests.I62F4VerificationHelperTests.I62_P6_ContradictionsAndAnEmptySelectionFailAndSkipsAreNeverPassed() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4VerificationHelperTests.cs:line 295
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Con error RackCad.Tests.I62F4VerificationHelperTests.I62_P6_PassedFailedSkippedAndUnexpectedStatesAreDistinguished [< 1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-G3 RED
+  Seguimiento de la pila:
+     at RackCad.Tests.TrxReading.Read(Byte[] trx, ISet`1 declaredSkipMethods) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\TrxReading.cs:line 48
+   at RackCad.Tests.I62F4VerificationHelperTests.I62_P6_PassedFailedSkippedAndUnexpectedStatesAreDistinguished() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4VerificationHelperTests.cs:line 273
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+Pruebas totales: 3
+     Incorrecto: 3
+ Tiempo total: 6.5529 Segundos
+[xUnit.net 00:00:05.39]     RackCad.Tests.I62F4VerificationHelperTests.I62_P6_SkipsAreCrossCheckedWithTheSourceDeclarationsWithoutAFixedCount [FAIL]
+[xUnit.net 00:00:05.40]     RackCad.Tests.I62F4VerificationHelperTests.I62_P6_ContradictionsAndAnEmptySelectionFailAndSkipsAreNeverPassed [FAIL]
+[xUnit.net 00:00:05.40]     RackCad.Tests.I62F4VerificationHelperTests.I62_P6_PassedFailedSkippedAndUnexpectedStatesAreDistinguished [FAIL]
+No se pudo ejecutar la serie de pruebas.

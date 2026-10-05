@@ -31,7 +31,16 @@ namespace RackCad.Tests
 
         /// <summary>The stable patch id of a commit (<c>git patch-id --stable</c>), or null.</summary>
         string? PatchId(string commit);
+
+        /// <summary>The type of the object a full id names (<c>git cat-file -t</c>), or null when it does not exist.</summary>
+        string? ObjectType(string sha) => Exists(sha) ? "commit" : null;
+
+        /// <summary>The rows of <c>git diff --no-renames --raw from to</c>, or null when the comparison could not run (never an empty pass).</summary>
+        IReadOnlyList<GitDiffRow>? DiffRaw(string from, string to) => null;
     }
+
+    /// <summary>One row of a raw diff: the status letter, both modes and the path (a rename is a delete plus an add; no rename detection).</summary>
+    public sealed record GitDiffRow(string Status, string OldMode, string NewMode, string Path);
 
     /// <summary>The Git CLI over a local repository (used by the reproducible controls on disposable repositories and clean clones).</summary>
     public sealed class GitProcessHistory : IGitHistory
@@ -74,6 +83,26 @@ namespace RackCad.Tests
             p.WaitForExit();
             var first = output.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
             return p.ExitCode == 0 ? first : null;
+        }
+
+        public string? ObjectType(string sha) => Run(out var o, "cat-file", "-t", sha) == 0 ? o.Trim() : null;
+
+        public IReadOnlyList<GitDiffRow>? DiffRaw(string from, string to)
+        {
+            if (Run(out var o, "diff", "--no-renames", "--raw", "-z", from, to) != 0)
+            {
+                return null;
+            }
+
+            var parts = o.Split('\0', StringSplitOptions.RemoveEmptyEntries);
+            var rows = new List<GitDiffRow>();
+            for (var i = 0; i + 1 < parts.Length; i += 2)
+            {
+                var meta = parts[i].Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                rows.Add(new GitDiffRow(meta[^1], meta[0].TrimStart(':'), meta[1], parts[i + 1]));
+            }
+
+            return rows;
         }
 
         private ProcessStartInfo Start(params string[] args)

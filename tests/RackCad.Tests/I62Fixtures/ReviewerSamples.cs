@@ -49,7 +49,7 @@ namespace RackCad.Tests
             b["logical_requests"] = 1L;
             b["architect_launches"] = 1L;
             b["transport_reruns"] = L(M(("logical_review_request_id", R1), ("count", 0L)));
-            o["next_action"] = NextAction("REVIEWER", "REVIEW_CHANGE", obj);
+            o["next_action"] = NextAction("REVIEWER", "REVIEW_CHANGE", obj, contract);
             points.Add(r1);
 
             var r2 = Next(points[^1]);

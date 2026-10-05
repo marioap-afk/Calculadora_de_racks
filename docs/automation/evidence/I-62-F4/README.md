@@ -23,6 +23,11 @@ Estado:     en curso (cortes F4-A..F4-H); este archivo se completa con el paquet
     prueba, `SyntheticGitHistory` (grafo sintético); `GitScratch` crea repositorios Git desechables para los negativos E y F.
   - `MarkdownSections.cs`, `MiniJsonSchema.cs` y `CompatibilityGuard.cs`: secciones de 16.3/E.4, validación del subconjunto de JSON Schema
     del mapa (con fallo cerrado ante una palabra clave no soportada; sin dependencias nuevas) y la guarda C-20a sin historia.
+  - `VerificationFacts.cs` (P1 identidad, 16.9 #5; P2 alcance, 16.9 #7; P3 hechos sin veredicto), `ConfigurationFacts.cs` (P5: invalidación
+    por los `Invalidators` de `preflight/v1`, STOP por huella cambiada en una cesión, huellas sin valores ni secretos; sin operación de aceptar) y
+    `TrxReading.cs` (P6: lectura normalizada del TRX con estados inesperados y cruce con las declaraciones `Skip =`). Son helpers deterministas dentro de
+    la frontera de verificación del Controller (decisiones §43), puertos de `I-62-prep/night-2026-10-05/helpers/`; ni rol, ni servicio, ni autoridad.
+  - `NextActionDerivation.cs`: `NextAction` derivable de forma única (V14 §20.4; I-S18; P-17), integrada en el validador de archivo.
 - Textos de la adopción de compatibilidad (Anexo E), inactivos hasta `I62_EFFECTIVE_SHA`: `docs/WORKFLOW.md` §12 (punto de entrada, texto
   congelado de E.3.0), §4 paso 2 (referencia «al abrir») y §10 (fila ampliada); `docs/AUTOMATION_PLAN.md` §16.13 (resolver) y los punteros de §16 y
   16.3; `docs/automation/agent-execution/compatibility/clause-map.schema.json` e `I62-clause-map.json`, derivado con `compat/clause_map.py`.
@@ -38,6 +43,10 @@ Estado:     en curso (cortes F4-A..F4-H); este archivo se completa con el paquet
 | F4-E1 | `I62F4RebaseChainTests` (negativos A–H de la cadena, A62-A1U-O1, D2-12) | 8/8 en error (`Resolve`, `PublicationProblems` y `Equivalent`) | 8/8 |
 | F4-E2 | `I62F4HistoryInvariantTests` | 9/10 en error (`ValidateHistory`, `ValidatePairHistory` y `ValidateB1History`; la admisión por los validadores de archivo y de pares no los llama) | 10/10 |
 | F4-F | `I62F4CompatibilityGuardTests` (C-20a) | 7/10 en error **sobre el árbol sin materializar** (sin punto de entrada, 16.13, punteros ni mapa); pasan la procedencia de 16.3, el subconjunto de esquema y un control que también detecta el puntero ausente | 10/10 |
+| F4-G1 | `I62F4VerificationHelperTests` P1-P3 (Git real) | 4/4 en error (`Identity`, `Scope` y `VerdictProblems`) | 4/4 |
+| F4-G2 | `I62F4VerificationHelperTests` P5 | 3/3 en error (`Compare`, `CessionGate` y `FingerprintProblems`) | 3/3 |
+| F4-G3 | `I62F4VerificationHelperTests` P6 | 3/3 en error (`Read` y `DeclaredSkipMethods`) | 3/3 |
+| F4-G4 | `I62F4NextActionTests` | 5/5 en error (`Derive` y `Check`) | 5/5 |
 
 El RED se captura sustituyendo solo los cuerpos de los métodos nombrados por `throw new NotImplementedException` y restaurando el archivo byte a byte
 (`redgreen.py` en el scratchpad de la sesión; la salida queda aquí). La selección es mayor que cero en todos los cortes.
@@ -112,3 +121,10 @@ El RED se captura sustituyendo solo los cuerpos de los métodos nombrados por `t
   I62_DELEGATED»; «texto de la fila ampliado» con el delta «obligaciones de la sesión principal fuera de una delegación»), pero no el literal. La
   redacción es mínima e inactiva («desde `I62_EFFECTIVE_SHA`»). Sus dueños son WORKFLOW y el Owner (OD-1, antes de READY-03).
 - **F4-OBS-10 — P-15 en 16.13.** 16.13 define P-15 con el texto exacto de la fila de V14 §13, igual que las subsecciones F3 definen sus códigos P.
+- **F4-OBS-11 — alcance de la derivación de `NextAction`.** V14 fija la regla de unicidad (§20.4, I-S18, P-17) y algunos pares rol/acción, pero no un
+  vocabulario completo de acciones. La derivación solo determina lo congelado: la escalada nombra el rol que decide; CORRECTING es
+  PRINCIPAL / CORRECT_AND_REREVIEW sobre `loop.object`; una fase pendiente con un intento reservable invoca al revisor del bucle sobre el objeto de su
+  solicitud, con la autorización vigente como `invocation_permission` y el contrato de salida de su rol (16.23). Dos determinaciones con roles
+  distintos son P-17. Los demás estados dejan libre el `next_action` guardado dentro de las otras reglas de I-S18.
+- **F4-OBS-12 — P6 y los estados inesperados.** El prototipo solo marcaba Failed y NotExecuted sin motivo. La orden exige distinguir Passed,
+  Failed, omitidas y estados inesperados: cualquier otro `outcome` (Timeout, Aborted, Inconclusive, Error…) falla y se informa aparte.

@@ -1,0 +1,58 @@
+$ dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter "FullyQualifiedName~I62F4VerificationHelperTests.I62_P5"  (exit 1)
+Serie de pruebas para C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll (.NETCoreApp,Version=v8.0)
+1 archivos de prueba en total coincidieron con el patrón especificado.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.29)
+[xUnit.net 00:00:00.22]   Discovering: RackCad.Tests
+[xUnit.net 00:00:06.85]   Discovered:  RackCad.Tests
+[xUnit.net 00:00:06.89]   Starting:    RackCad.Tests
+[xUnit.net 00:00:07.00]       System.NotImplementedException : F4-G2 RED
+[xUnit.net 00:00:07.00]       Stack Trace:
+[xUnit.net 00:00:07.00]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\ConfigurationFacts.cs(50,0): at RackCad.Tests.ConfigurationFacts.Compare(JsonObject accepted, JsonObject observed)
+[xUnit.net 00:00:07.00]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4VerificationHelperTests.cs(192,0): at RackCad.Tests.I62F4VerificationHelperTests.I62_P5_AnObservationIsInvalidatedByEachFrozenInvalidatorAndOnlyByThem()
+[xUnit.net 00:00:07.00]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:07.00]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:07.01]       System.NotImplementedException : F4-G2 RED
+[xUnit.net 00:00:07.01]       Stack Trace:
+[xUnit.net 00:00:07.01]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\ConfigurationFacts.cs(59,0): at RackCad.Tests.ConfigurationFacts.CessionGate(String exitFingerprint, String entryFingerprint)
+[xUnit.net 00:00:07.01]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4VerificationHelperTests.cs(222,0): at RackCad.Tests.I62F4VerificationHelperTests.I62_P5_AFingerprintChangeDuringACessionIsAStop()
+[xUnit.net 00:00:07.01]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:07.01]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:07.01]       System.NotImplementedException : F4-G2 RED
+[xUnit.net 00:00:07.01]       Stack Trace:
+[xUnit.net 00:00:07.01]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\ConfigurationFacts.cs(72,0): at RackCad.Tests.ConfigurationFacts.FingerprintProblems(JsonObject fingerprint)
+[xUnit.net 00:00:07.01]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4VerificationHelperTests.cs(232,0): at RackCad.Tests.I62F4VerificationHelperTests.I62_P5_AFingerprintCarriesOnlyAHashAndSanitizedNamesNeverValuesOrSecrets()
+[xUnit.net 00:00:07.01]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:07.01]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:07.02]   Finished:    RackCad.Tests
+  Con error RackCad.Tests.I62F4VerificationHelperTests.I62_P5_AnObservationIsInvalidatedByEachFrozenInvalidatorAndOnlyByThem [14 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-G2 RED
+  Seguimiento de la pila:
+     at RackCad.Tests.ConfigurationFacts.Compare(JsonObject accepted, JsonObject observed) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\ConfigurationFacts.cs:line 50
+   at RackCad.Tests.I62F4VerificationHelperTests.I62_P5_AnObservationIsInvalidatedByEachFrozenInvalidatorAndOnlyByThem() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4VerificationHelperTests.cs:line 192
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Con error RackCad.Tests.I62F4VerificationHelperTests.I62_P5_AFingerprintChangeDuringACessionIsAStop [< 1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-G2 RED
+  Seguimiento de la pila:
+     at RackCad.Tests.ConfigurationFacts.CessionGate(String exitFingerprint, String entryFingerprint) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\ConfigurationFacts.cs:line 59
+   at RackCad.Tests.I62F4VerificationHelperTests.I62_P5_AFingerprintChangeDuringACessionIsAStop() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4VerificationHelperTests.cs:line 222
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Con error RackCad.Tests.I62F4VerificationHelperTests.I62_P5_AFingerprintCarriesOnlyAHashAndSanitizedNamesNeverValuesOrSecrets [2 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-G2 RED
+  Seguimiento de la pila:
+     at RackCad.Tests.ConfigurationFacts.FingerprintProblems(JsonObject fingerprint) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\ConfigurationFacts.cs:line 72
+   at RackCad.Tests.I62F4VerificationHelperTests.I62_P5_AFingerprintCarriesOnlyAHashAndSanitizedNamesNeverValuesOrSecrets() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4VerificationHelperTests.cs:line 232
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+Pruebas totales: 3
+     Incorrecto: 3
+ Tiempo total: 7.8159 Segundos
+[xUnit.net 00:00:07.00]     RackCad.Tests.I62F4VerificationHelperTests.I62_P5_AnObservationIsInvalidatedByEachFrozenInvalidatorAndOnlyByThem [FAIL]
+[xUnit.net 00:00:07.01]     RackCad.Tests.I62F4VerificationHelperTests.I62_P5_AFingerprintChangeDuringACessionIsAStop [FAIL]
+[xUnit.net 00:00:07.01]     RackCad.Tests.I62F4VerificationHelperTests.I62_P5_AFingerprintCarriesOnlyAHashAndSanitizedNamesNeverValuesOrSecrets [FAIL]
+No se pudo ejecutar la serie de pruebas.

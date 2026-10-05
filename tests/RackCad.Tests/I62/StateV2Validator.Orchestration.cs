@@ -209,6 +209,16 @@ namespace RackCad.Tests
             Add((escalation == None) == (role != "OWNER" && role != "COORDINATOR"), "escalation NONE ⇔ next_action.role ∉ {OWNER, COORDINATOR}");
             Add(escalation != None || (Y.Get(s, "orchestration.escalation.reason") == null && Y.Get(s, "orchestration.escalation.required_decision") == null),
                 "escalation NONE with a reason or a required decision");
+            var (ambiguities, mismatches) = NextActionDerivation.Check(point);
+            foreach (var a in ambiguities)
+            {
+                Add(false, "NextAction is not uniquely derivable: " + a, "P-17");
+            }
+
+            foreach (var m in mismatches)
+            {
+                Add(false, m, "NextAction");
+            }
 
             // Per-loop budgets (A-1 D1-2, D1-4, D1-5).
             foreach (var e in entries)

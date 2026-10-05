@@ -491,7 +491,7 @@ namespace RackCad.Tests
             var entry = Entry(iid, decisions, rounds: 1, requests: 1, launches: 1, reruns: new[] { (request, 0L) }, corrections: 0);
             ((YamlMap)Y.L(entry, "authorizations")[0]!)["authorization_id"] = authorizationId;
             Y.L(n.State, "orchestration.architect_budgets").Add(entry);
-            Orch(n)["next_action"] = NextAction("ARCHITECT", "REVIEW", obj);
+            Orch(n)["next_action"] = NextAction("ARCHITECT", "REVIEW", obj, decisions);
             return n;
         }
 
@@ -543,7 +543,7 @@ namespace RackCad.Tests
             loop["object"] = Clone(obj);
             loop["authorization"] = Clone(contract);
             loop["action_validity"] = Validity(ReviewerSamples.AuthorityOf(contract));
-            Orch(n)["next_action"] = NextAction("REVIEWER", "REVIEW_CHANGE", obj);
+            Orch(n)["next_action"] = NextAction("REVIEWER", "REVIEW_CHANGE", obj, contract);
             return n;
         }
     }
