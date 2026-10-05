@@ -46,7 +46,7 @@ Un REQUIRED abierto lo cierra o lo rebaja solo quien lo emitió o quien tenga es
 |---|---|---|
 | `docs/initiatives/I-62-A-1.md` | `39c2f831…` | el objeto: cláusulas anteriores, deltas D1-1..D1-21 y D2-1..D2-12, materialidad (también la propia de OBS-A1-01), pruebas, matriz (§9) y cambios frente a los blobs anteriores (§10) |
 | `docs/initiatives/I-62-architect-review-A-1-r2.md` y `docs/automation/evidence/I-62-architect-A-1/R20261005T044948Z-ac67/output.json` | (en el mismo commit) | registro y resultado literal de la revisión formal anterior (A62-A1R-01..03 y sus OPTIONAL) |
-| `docs/initiatives/I-62-architect-review-A-1-disposition.md` | `396c7a14…` | las dos disposiciones del Coordinator: acreditación, hallazgos adoptados, OPTIONAL, OBS-A1-01 y matriz exacta |
+| `docs/initiatives/I-62-architect-review-A-1-disposition.md` | `2c7a8e7e…` | las dos disposiciones del Coordinator: acreditación, hallazgos adoptados, OPTIONAL, OBS-A1-01 y matriz exacta |
 | `docs/initiatives/I-62-architect-review-A-1.md` | `18987532…` | registro de la revisión técnica anterior (hallazgos A62-A1-01..06, con sus premisas) |
 | `docs/initiatives/I-62-proposal-v14.md` en `4c617e82` | `34ad80ea…` | cláusulas enmendadas: §8.8, §20.5, §20.5.1, §20.5.2, §20.6, §20.7, B.2, B.8.1, B.8.4 (I-S17, I-P05, I-P10, I-H02), B.8.7, B.8.8 (I-S18, I-P13), B.9 |
 | `docs/AUTOMATION_PLAN.md` §16.20 (líneas 846-925) | `52fd8f66…` | texto F3 materializado: lista de la autorización y paso 3 (D1-12, D2-11) |
@@ -100,13 +100,14 @@ Para leer las cláusulas de V14 basta su sección: el insumo es un archivo grand
 
 ## 4. Preguntas para la revisión
 
-**Lo que la revisión debe cubrir de forma explícita** (orden del Coordinator, decisiones §39):
+**Lo que la revisión debe cubrir de forma explícita** (órdenes del Coordinator, decisiones §39 y §41):
 - (a) las correcciones de A62-A1-01..06;
 - (b) la corrección de OBS-A1-01;
 - (c) la separación de tipos ARCHITECT_REVIEW, REVIEWER y EXECUTION;
 - (d) que no haya un reinicio oculto de los presupuestos del REVIEWER ni del Architect;
 - (e) que cada bucle de revisión aplicable se pueda cerrar sin crear autoridad;
-- (f) la compatibilidad con los contratos F3 materializados.
+- (f) la compatibilidad con los contratos F3 materializados;
+- (g) A62-A1R-01..03 y los opcionales O1..O5 de la revisión formal R20261005T044948Z-ac67 (preguntas 13-15).
 
 La corrida anterior no acreditada es solo insumo técnico histórico.
 
@@ -139,7 +140,9 @@ La corrida anterior no acreditada es solo insumo técnico histórico.
 
 ## 5. Condiciones de la invocación (para quien la autorice)
 
-- **Frontera:** lanzar la revisión necesita una autorización nueva; la de decisiones §35 se consumió. La sesión entrega el paquete y se detiene.
+- **Frontera:** la orden nocturna (decisiones §41, punto E) autoriza hasta dos invocaciones del Architect para revisar estas correcciones, solo con un
+  transporte limpio; la autorización de decisiones §40 se consumió en R20261005T044948Z-ac67. El único transporte limpio es una tarea de la app que
+  lanza el Owner con un clic (HUMAN_LAUNCH_REQUIRED); la sesión prepara el kit una vez y sigue con otras tareas.
 - **Protocolo:** I-61 sigue siendo el activo; la invocación sigue sus reglas y las del registro de la revisión (LIFECYCLE §5). OD-2 y OD-3 no están
   resueltas: la invocación no usa los runtimes que bloquean.
 - **Lecciones de la revisión formal R20261005T044948Z-ac67 (evidencia §43):** la tabla de acciones del prompt y la lista blanca del auditor deben ser

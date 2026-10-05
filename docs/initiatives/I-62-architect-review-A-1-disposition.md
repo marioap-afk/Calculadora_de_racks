@@ -10,9 +10,11 @@ Hallazgos:        A62-A1-01..06 = ACCEPTED REQUIRED (adoptados por el Coordinato
 Segunda disposición: «I-62 — COORDINATOR DISPOSITION OF OBS-A1-01» (8 674 bytes; SHA-256 7009fc18b918096134c9f9f56b9e59e534055743f070c71c4eb43754ea6f563e;
                   recibido 2026-10-05T04:24Z; decisiones §39): OBS-A1-01 = ACCEPTED REQUIRED / MATERIAL;
                   A62-A1-01..06 correctamente atendidos en 23dd16b2
-Objeto corregido: docs/initiatives/I-62-A-1.md, blob 9c621fce0588f32115e3151b6f75413c0a167c2e (sigue siendo A-1 y PROPUESTA; intermedio 23dd16b2)
-Estado:           A-1 corregida para A62-A1-01..06 y OBS-A1-01; Architect REQUIRED — PENDING (revisión formal nueva, sin autorización todavía);
-                  Coordinator PENDING; F4 producción BLOCKED; Owner NOT REQUIRED; I-61 vigente
+Objeto corregido: docs/initiatives/I-62-A-1.md, blob 9c621fce0588f32115e3151b6f75413c0a167c2e (sigue siendo A-1 y PROPUESTA; intermedio 23dd16b2);
+                  después corregido para A62-A1R-01..03 y O1..O5 en el blob 39c2f8317ec381fa60c3564a834278df8898101c (§4; decisiones §41)
+Estado:           A-1 PROPUESTA (blob 39c2f831); Architect REQUIRED — PENDING (revisión formal nueva autorizada por la orden nocturna, decisiones §41:
+                  hasta dos invocaciones, solo con un transporte limpio; HUMAN_LAUNCH_REQUIRED); Coordinator PENDING; F4 producción BLOCKED;
+                  Owner NOT REQUIRED; I-61 vigente
 ```
 
 Registro redactado por la sesión autora como custodia de la disposición. Resume fielmente la orden; si hay discrepancia, manda el texto de la orden. La
@@ -124,5 +126,5 @@ su cierre por el Architect para A62-A1R-01..03 ni para OBS-A1-01.
 
 ## 5. Lo que este registro no hace
 
-No acredita la revisión anterior ni la presenta como acuerdo del Architect. No declara AGREED, no lanza la revisión formal nueva (necesita otra autorización),
-no crea A-2, no implementa F4 y no decide nada del Owner.
+No acredita la revisión anterior ni la presenta como acuerdo del Architect. No declara AGREED, no lanza la revisión formal nueva (la autoriza la orden nocturna,
+decisiones §41, y la lanza el Owner con un clic), no crea A-2, no implementa F4 y no decide nada del Owner.

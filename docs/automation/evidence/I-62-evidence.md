@@ -2011,3 +2011,12 @@ CI de la custodia de la revisión formal, `1614908d37e0e5bb56d8ddf8e677551527833
 - Sin acreditar la revisión anterior ni declarar su acuerdo.
 - Sin tocar V14, el Freeze, `/v1`, `main`, ROADMAP, HANDOFF, FOUNDATIONS ni el índice ADR.
 - Los textos F3 de D1-21 y D2-11 son enmiendas propuestas, sin editar.
+
+### 44.4 Publicación y coherencia del paquete
+
+- **CI de `252be61ed5f17c66a425a983d31baf419543f66c`:** corrida **37272010368**, push, head_sha exacto, cuatro jobs en `success`.
+- **Coherencia del paquete** (detectada al preparar el kit de revisión v3, antes de fijar el objeto de la revisión):
+  - el paquete citaba el blob `396c7a14…` de la disposición, que ya no era el vigente;
+  - la «Frontera» de §5 todavía decía que lanzar la revisión necesitaba una autorización nueva, aunque la orden nocturna (decisiones §41, punto E) ya la da;
+  - la cabecera y §5 de la disposición seguían en el estado anterior.
+- **Corrección:** paquete y disposición actualizados en el commit siguiente, sin cambiar A-1: el blob `39c2f831` y el arnés siguen iguales.
