@@ -7,6 +7,10 @@ Comando:    python docs/automation/evidence/I-62-prep/night-2026-10-05/portabili
 Resultado:  7/7 pasos reconstruidos (AllReconstructed = true); Python 3.13.14, git 2.54.0
 ```
 
+Desde A62-A1T-01 (decisiones §42), el paso 2 compara con `f4-exp/combo-result-a1t01.json` y hay un paso 2b: T8, dos rebases reales y un sucesor
+en un clon limpio (`I-62-A1/a1t01/t8-clean-clone.py`), comparado por relaciones porque los SHAs cambian en cada corrida. La corrida de `aeda77c4`
+comparó con `combo-result.json`, y sigue siendo reproducible con el script de ese commit. La nueva corrida queda en su propia evidencia.
+
 | Paso | Resultado |
 |---|---|
 | arnés de A-1 (100 trazas) | IDÉNTICO byte a byte al resultado custodiado |

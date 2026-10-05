@@ -101,17 +101,21 @@ c3_2 = mod(c3_1, "segundo rebase (M2): LAUNCHING sigue con su invocación origin
     t.update(rv=62, last_rebase="M2", history=["M1", "M2"], anc={"c1pp", "a0pp", "k0pp"}), t["loop"].update(object=opp), t["requests"][0].update(object=opp)))
 c3_3 = mod(c3_2, "caída: no arrancó (prueba custodiada) → BUDGET_RESERVED replanificado sobre la imagen de la cadena", lambda t: (
     t.update(rv=63, kind="ORDINARY"), t["loop"].update(phase="REVIEW_PENDING"),
-    t["requests"][0]["attempts"][0].update(state="BUDGET_RESERVED", inv="I1c", target=opp, refs=copy.deepcopy(REFS2))))
+    t["requests"][0]["attempts"][0].update(state="BUDGET_RESERVED", inv="I1c", target=opp, refs=copy.deepcopy(REFS2), not_started="NS-1")))
 c3_r1 = mod(c3_1, "caída resuelta tras el primer rebase: no arrancó → BUDGET_RESERVED replanificado sobre c1p", lambda t: (
     t.update(rv=62, kind="ORDINARY"), t["loop"].update(phase="REVIEW_PENDING"),
-    t["requests"][0]["attempts"][0].update(state="BUDGET_RESERVED", inv="I1b", target=op, refs=copy.deepcopy(REFS1))))
+    t["requests"][0]["attempts"][0].update(state="BUDGET_RESERVED", inv="I1b", target=op, refs=copy.deepcopy(REFS1), not_started="NS-1")))
 c3_r2 = mod(c3_r1, "segundo rebase (M2): el intento no lanzado se replanifica sobre c1pp", lambda t: (
     t.update(rv=63, kind="REBASE_RECONCILIATION", last_rebase="M2", history=["M1", "M2"], anc={"c1pp", "a0pp", "k0pp"}),
     t["loop"].update(object=opp), t["requests"][0].update(object=opp),
     t["requests"][0]["attempts"][0].update(inv="I1c", target=opp, refs=copy.deepcopy(REFS2))))
 S["c3-dos-rebases-con-la-caida-resuelta-entre-ambos"] = ("dos rebases + caída en LAUNCHING", "VALID", set(), [c3_0, c3_1, c3_r1, c3_r2])
-S["c3-obs-segundo-rebase-con-LAUNCHING-pendiente-para-sin-publicar"] = ("dos rebases + caída en LAUNCHING", "INVALID", {"A1-P08"}, [c3_0, c3_1, c3_2])
-S["c3n-segundo-rebase-reescribe-el-LAUNCHING"] = ("dos rebases + caída en LAUNCHING", "INVALID", {"A1-P08", "A1-P09"},
+# A62-A1T-01 (Coordinator order after R20261005T073911Z-2dfe): formerly "c3-obs-segundo-rebase-con-LAUNCHING-pendiente-para-sin-publicar", INVALID {A1-P08}
+S["c3-obs-segundo-rebase-con-LAUNCHING-pendiente-reconcilia-por-la-cadena"] = ("dos rebases + caída en LAUNCHING", "VALID", set(), [c3_0, c3_1, c3_2])
+S["c3-obs-n-sin-M1-no-resuelve"] = ("dos rebases + caída en LAUNCHING", "INVALID", {"A1-P08"},
+                                   [mod(c3_1, "rebase 1 con M1 sin el eslabón c1", lambda t: t.update(last_rebase="M1-sin-c1", history=["M1-sin-c1"])),
+                                    mod(c3_2, "rebase 2 sin eslabón para c1", lambda t: t.update(history=["M1-sin-c1", "M2"]))])
+S["c3n-segundo-rebase-reescribe-el-LAUNCHING"] = ("dos rebases + caída en LAUNCHING", "INVALID", {"A1-P09"},  # A62-A1T-01: no longer A1-P08
                                                   [c3_0, c3_1, mod(c3_2, "LAUNCHING reescrito en el segundo rebase",
                                                                    lambda t: t["requests"][0]["attempts"][0].update(target=op))])
 # expectation corrected after the first run (declared in the README): A1-P15 applies only to replanned invocations; the stale Target is caught by I-H02 and V14-S18-target
@@ -182,7 +186,8 @@ def main():
     blob = hashlib.sha1(b"blob %d\0" % len(open(HARNESS, "rb").read()) + open(HARNESS, "rb").read()).hexdigest()
     doc = {"Label": "EXPERIMENTAL — NOT AUTHORIZED FOR PRODUCTION", "Script": "combo_sequences.py",
            "Engine": {"Harness": "docs/automation/evidence/I-62-A1/a1-counterexamples.py", "GitBlobOfFileRead": blob},
-           "Variants": {"Asserted": "Freeze + A-1 propuesta (blob 39c2f831)", "Informative": "Freeze literal (validador V14), nunca atribuido a la variante ampliada"},
+           "Variants": {"Asserted": "Freeze + A-1 propuesta del mismo commit que el arnés leído (Engine.GitBlobOfFileRead)",
+                        "Informative": "Freeze literal (validador V14), nunca atribuido a la variante ampliada"},
            "Sequences": results, "AllAsExpected": ok}
     with open(OUT, "w", encoding="utf-8", newline="\n") as f:
         json.dump(doc, f, ensure_ascii=False, indent=1)

@@ -2210,3 +2210,68 @@ solo desde artefactos custodiados.
   - la orden nocturna terminó a las 13:58Z (ocho horas); la custodia se hizo a las 14:1xZ, como preservación del resultado de una invocación de la orden;
   - **A-1 no se corrige** (N-14, BLOCKED_AUTHORITY);
   - no queda ninguna invocación del Architect bajo la orden nocturna.
+
+## 55. Corrección de A62-A1T-01 y O1..O3 (orden nueva del Coordinator, decisiones §42)
+
+- **Estado de partida (MEASURED, 14:44Z):** la punta `b76a6dab` = remoto; `origin/main` = `bb0d5522`, sin avance; sin rebase. DC-07: I-52
+  `fb6b5648` (merge-base `95690c28`) e I-64 `39b45f36` (merge-base `819955d6`) no tocan `I-62*`, AUTOMATION_PLAN, LIFECYCLE ni `agent-execution/`;
+  I-63 integrada; ninguna ventana activa.
+- **CI de la custodia de la revisión formal 2 (orden §11):** CI 37323117283 → `b76a6dabb35acf09436f16d8ac7dacc3a9179f7f` → push → cuatro jobs
+  requeridos en `success` (comprobado con `gh run view`).
+- **A-1 corregida:** `docs/initiatives/I-62-A-1.md`, blob `c01899a72b940503bb85a0fab42bc085c603fd0f` (antes `03dd822d`), PROPUESTA. El delta está
+  en su §10, «Frente a `03dd822d`»:
+  - **D2-2 (cont.):** el `Target` de un intento en LAUNCHING resuelve por ResolveBranchRef con la historia completa de n, incluido el mapa nuevo, y la
+    punta rebasada como HEAD;
+  - **fallo cerrado:** sin un eslabón o con otro blob, UNRESOLVED y STOP;
+  - **sin efecto sobre el intento:** la resolución no cambia invocación, `Target`, estado, `RunId`, `reserved_at`, `BudgetSnapshot`, contadores, fase
+    ni linajes; D2-6 sin cambio;
+  - D2-3, D2-8, D2-9 y D2-11 alineados; C-15 (d)(e)(d2)(e2)(i), C-29 (i) y C-38 (cuarta revisión);
+  - **O1:** D1-17; **O2:** §1, §5, §7, §8, §9, §11, el paquete, la descripción de A1-P02 y la etiqueta «Asserted»; **O3:** C-38, C-15 (i) y A1-R05.
+  - Ninguna línea llega a 2000 caracteres: D1-17 y D2-2 se parten en dos filas.
+- **RED → GREEN de A1-P08 (T2 capturado antes de corregir):**
+  - el arnés RED es el final con la condición de A1-P08 de `03dd822d`, que exigía el `Target` en el mapa en curso o como ancestro de `main_before`
+    (`I-62-A1/a1t01/green.diff`);
+  - **RED** (`a1t01/red-result.json`): 106/118. Fallan exactamente las 12 trazas que cruzan el segundo rebase con un LAUNCHING pendiente (T2, T5a..g,
+    T6, T7, T7a y T7b), y cada una solo por un A1-P08 de más;
+  - **GREEN** (`a1t01/green-result.json` = `a1-counterexamples-result.json`, blob `ac77596e`; arnés `a1f4b07f`): 118/118 PASS, 39 VALID y 79 INVALID,
+    sin cobertura faltante. Determinista;
+  - las 100 trazas anteriores conservan su esperado.
+- **Negativos, cada uno con su regla y como mutación única de un positivo:**
+
+  | Traza | Mutación | Reglas exactas |
+  |---|---|---|
+  | T3a `cadena-sin-el-eslabon-de-X` | M1 sin la entrada de X | A1-P08 |
+  | T3b `M1-ausente-de-la-historia` | `rebase_history` sin M1 | A1-P08, A1-P11, A1-F10 |
+  | T4 `cadena-completa-con-otro-contenido` | imagen con otro blob | A1-P02, A1-P08 |
+  | T5a | invocación reescrita | A1-P09 |
+  | T5b, c, e, f, g | `RunId`, reserva, estado, linajes y `BudgetSnapshot` | A1-P10 |
+  | T5d | presupuesto cambiado | A1-F01, A1-P10 |
+  | T7a | salida de LAUNCHING sin prueba de no arranque | V14-S18-no-arranque (V14 B.8.8 literal) |
+  | T7b | relanzamiento del LAUNCH_UNCERTAIN | A1-P09 |
+  | O3 | reapertura con una autoridad SUPERSEDED | A1-R05 |
+
+  Positivos: T1 (un rebase), T2 (dos rebases), T6 (no arrancó → BUDGET_RESERVED sobre X'' con la misma reserva), T7 (desconocido → LAUNCH_UNCERTAIN) y
+  O1 (la primera solicitud, abierta en el par de apertura).
+- **Cambios del arnés, además de A1-P08:**
+  - A1-P10 incluye `run_id` y `BudgetSnapshot`;
+  - comprobación literal de V14 B.8.8 sobre `not_started_evidence`; las dos trazas anteriores que salen de LAUNCHING ganan su prueba (`NS-0`);
+  - A1-R05 también frente a las autoridades SUPERSEDED;
+  - A1-P02, en el rebase, y A1-P08, en el objeto de la solicitud, comprueban también el contenido.
+- **T8 con Git real** (`a1t01/t8-clean-clone.py`, `a1t01/t8-result.json`; repositorio desechable en `D:\r62-a1t01-t8`):
+  - dos rebases reales con los mapas custodiados como `StateRef`;
+  - la regla de `03dd822d` daría STOP en el segundo rebase;
+  - con la historia candidata [M1, M2], X → X' → X'' se resuelve **antes** de crear n2, sobre la punta rebasada; M2 no contiene X;
+  - en un clon `--no-local --single-branch`, X y X' son inalcanzables. El sucesor lee el estado y los mapas por `{path, blob}`, recalcula el PatchId de
+    la imagen y resuelve X → X''. Sin M1, sin el eslabón de X o con otro blob: UNRESOLVED;
+  - los SHAs cambian en cada corrida; se repiten las relaciones.
+- **F4 experimental** (`combo-result-a1t01.json`, 17/17, arnés `a1f4b07f`):
+  - `c3-obs-…-reconcilia-por-la-cadena` pasa a VALID (antes `…-para-sin-publicar`, INVALID por A1-P08);
+  - nuevo `c3-obs-n-sin-M1-no-resuelve` → A1-P08;
+  - `c3n-segundo-rebase-reescribe-el-LAUNCHING` pasa a {A1-P09}: la reescritura sigue fallando, y A1-P08 ya no aplica porque el `Target` resuelve;
+  - `combo-result.json` y `combo-result-before.json` no se reescriben.
+- **Portabilidad:** `portability/reconstruct.py` compara el paso 2 con `combo-result-a1t01.json` y añade T8 (paso 2b). Su corrida en un clon limpio
+  del commit de esta corrección se custodia aparte.
+- **Validaciones:** el arnés, las secuencias combinadas y T8 están en verde; la suite Core se ejecuta antes del commit (el cuerpo del commit da el
+  resultado). No hay exención nueva de `dotnet test`.
+- **Límites:** sin tocar V14, el Freeze, `main`, ROADMAP, HANDOFF, FOUNDATIONS, el índice ADR ni superficies normativas de F4; sin P4/P8 de I-63; sin
+  A-2; sin AGREED, GATE PASS ni F4.

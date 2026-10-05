@@ -7,7 +7,7 @@ automation_state:
   state: waiting
   gate: dependency
   attempts: 0
-  next_action: el Coordinator dispone la revisión formal R20261005T063359Z-86e3 (CHANGES REQUIRED A62-A1S-01..02; acreditación a decidir: v3 NOT_ACCREDITED por defecto del auditor, v3.1 ACCREDITED; evidence §49); A-1 ya corregida (blob 03dd822d); revisión formal 2 R20261005T073911Z-2dfe sobre 03dd822d = CHANGES REQUIRED A62-A1T-01 (D2-2; acreditación a decidir: v3.1 NOT_ACCREDITED, 3 desviaciones literales declaradas y 3 defectos del auditor; evidence §54); corregir A62-A1T-01 exige una orden nueva (la nocturna terminó); F4 sigue sin abrir.
+  next_action: orden nueva del Coordinator (decisions §42): A62-A1T-01 ACCEPTED REQUIRED y O1..O3 corregidos en A-1 (blob c01899a7, PROPUESTA; evidence §55); siguiente = CI del commit de corrección, kit v4 con contrato de acciones y auditor nuevos, y UNA revisión formal del Architect sobre ese objeto exacto (HUMAN_LAUNCH_REQUIRED si exige un clic); tras ella, custodia y parada; F4 sigue sin abrir.
   last_evidence_commit: 83035d999599384ea74f7b178e3d6761ffa5bb01
 execution_context:
   mode: manual
@@ -29,4 +29,4 @@ execution_context:
   f3_status: GATE PASS / COMPLETE por el Coordinator sobre f9234cb9 (C-11..C-14, C-30 y C-40 parte F3 PASS; LIFECYCLE §5/§9 se queda en F3; decisions §35)
   f3_scope: nueve esquemas del núcleo; manifiesto B.11 docs/initiatives/I-62-normative-dependency-manifest.json; AUTOMATION_PLAN 16.20-16.24; README §14-§16; routing §9; LIFECYCLE §5 y §9 (alternativa 1 de OD-6, inactivo); guardas Core de B.1, B.11 y textos; MC C-11..C-14, C-30 y C-40 (parte F3)
   f4_status: IMPLEMENTATION_READY_PENDING_A1 (prototipos medidos y plano de pruebas en I-62-prep/f4; producción no autorizada; la parte afectada por FC-01 y FC-02 espera A-1)
-  a1_status: CORRECCIÓN PUBLICADA (blob 03dd822d, PROPUESTA) para A62-A1R-01..03, O1..O5 (decisions §41), A62-A1A-01 del autor (evidence §48) y A62-A1S-01..02 con O1..O4 de la revisión formal R20261005T063359Z-86e3 (evidence §49); revisión formal anterior R20261005T044948Z-ac67 sobre 9c621fce = CHANGES REQUIRED, con la acreditación a decidir por el Coordinator; revisión formal nueva REQUIRED (HUMAN_LAUNCH_REQUIRED); veredicto del Coordinator PENDING; Owner NOT REQUIRED
+  a1_status: CORRECCIÓN PUBLICADA (blob c01899a7, PROPUESTA) para A62-A1T-01 y O1..O3 (decisions §42; evidence §55), sobre 03dd822d (A62-A1R-01..03, A62-A1A-01 y A62-A1S-01..02); revisión formal R20261005T073911Z-2dfe sobre 03dd822d = CHANGES REQUIRED A62-A1T-01, doce cierres CLOSED, NOT_ACCREDITED (auditor v3.1; resultado literal conservado); revisión formal nueva REQUIRED (UNA invocación autorizada, decisions §42); veredicto del Coordinator PENDING; Owner NOT REQUIRED

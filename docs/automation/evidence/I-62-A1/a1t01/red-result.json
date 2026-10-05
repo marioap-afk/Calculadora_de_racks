@@ -30,7 +30,7 @@
   "A1-R05": "D1-20 · un bucle REVIEWER se abre con una autoridad OPEN, la de loop.authorization, que no figura en ningún registro de reviewer_closures[] ni es una autoridad SUPERSEDED por una decisión custodiada (A62-A1T-O3)",
   "A1-P18": "V14 B.8.8 (review_requests.object) · una solicitud nueva se abre con object = loop.object del punto en que se abre (A62-A1S-02)",
   "A1-R06": "D1-17/D1-19 · el requisito operativo de una autoridad REVIEWER solo está satisfecho con evidencia REVIEWER_SATISFIED de esa autoridad",
-  "A1-P08": "D2-2/D2-5 · la reconciliación lleva cada objeto vivo a su imagen probada (mismo path y blob) y el Target de un intento en LAUNCHING resuelve por ResolveBranchRef con la historia completa de n (A62-A1T-01)",
+  "A1-P08": "D2-2/D2-5 · la reconciliación lleva cada objeto vivo a su imagen probada (mismo path y blob) y exige imagen en el mapa para el Target de un intento en LAUNCHING",
   "A1-P09": "D2-6 · transiciones de intento; un intento en LAUNCHING o posterior nunca cambia su invocación en sitio; B.1 tras un rebase replanifica sobre la imagen",
   "A1-P10": "D2-8 · la reconciliación no cambia fase, presupuestos, linajes, estados de intento, reserved_at, RunId ni BudgetSnapshot",
   "A1-P11": "D2-9 · rebase_history recibe exactamente el mapa nuevo en cada reconciliación, todos los mapas de la ventana en orden al cerrarla, y no cambia en otro caso",
@@ -760,7 +760,7 @@
    "Violations": [
     "par 0→1 (mapa sin c1): loop.object cambia en ARCHITECT_INVOKED → ARCHITECT_INVOKED",
     "par 0→1 (mapa sin c1): objeto de L1 cambia sin imagen probada",
-    "par 0→1 (mapa sin c1): Target de LAUNCHING L1/1 no resuelve por ResolveBranchRef con la historia de n"
+    "par 0→1 (mapa sin c1): Target de LAUNCHING L1/1 sin imagen en el mapa"
    ],
    "Verdict": "PASS"
   },
@@ -2082,11 +2082,15 @@
     "Rules": []
    },
    "Got": {
-    "Verdict": "VALID",
-    "Rules": []
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-P08"
+    ]
    },
-   "Violations": [],
-   "Verdict": "PASS"
+   "Violations": [
+    "par 1→2 (rebase 2 (M2): el Target histórico c1 resuelve por la cadena M1 → M2): Target de LAUNCHING L1/1 sin imagen en el mapa"
+   ],
+   "Verdict": "FAIL"
   },
   "a62-a1t-01-t3a-cadena-sin-el-eslabon-de-X": {
    "Validator": "A-1 corregida",
@@ -2106,7 +2110,7 @@
     ]
    },
    "Violations": [
-    "par 0→1 (rebase 2 (M2) sin un eslabón para c1): Target de LAUNCHING L1/1 no resuelve por ResolveBranchRef con la historia de n"
+    "par 0→1 (rebase 2 (M2) sin un eslabón para c1): Target de LAUNCHING L1/1 sin imagen en el mapa"
    ],
    "Verdict": "PASS"
   },
@@ -2134,7 +2138,7 @@
    "Violations": [
     "punto 2 (rebase 2 que pierde M1 de la historia): referencia docs/automation/decisions/U.md@a0 de L1/1 no resuelve",
     "punto 2 (rebase 2 que pierde M1 de la historia): referencia docs/automation/evidence/U-agent/bindings/B1.json@k0 de L1/1 no resuelve",
-    "par 1→2 (rebase 2 que pierde M1 de la historia): Target de LAUNCHING L1/1 no resuelve por ResolveBranchRef con la historia de n",
+    "par 1→2 (rebase 2 que pierde M1 de la historia): Target de LAUNCHING L1/1 sin imagen en el mapa",
     "par 1→2 (rebase 2 que pierde M1 de la historia): rebase_history no recibe exactamente el mapa nuevo"
    ],
    "Verdict": "PASS"
@@ -2161,7 +2165,7 @@
    "Violations": [
     "par 1→2 (rebase 2 (M2b): imagen con otro blob real): loop.object cambia en ARCHITECT_INVOKED → ARCHITECT_INVOKED",
     "par 1→2 (rebase 2 (M2b): imagen con otro blob real): objeto de L1 cambia sin imagen probada",
-    "par 1→2 (rebase 2 (M2b): imagen con otro blob real): Target de LAUNCHING L1/1 no resuelve por ResolveBranchRef con la historia de n"
+    "par 1→2 (rebase 2 (M2b): imagen con otro blob real): Target de LAUNCHING L1/1 sin imagen en el mapa"
    ],
    "Verdict": "PASS"
   },
@@ -2179,13 +2183,15 @@
    "Got": {
     "Verdict": "INVALID",
     "Rules": [
+     "A1-P08",
      "A1-P09"
     ]
    },
    "Violations": [
-    "par 1→2 (rebase 2 reescribe la invocación): invocación o Target de L1/1 (LAUNCHING) reescritos en sitio"
+    "par 1→2 (rebase 2 reescribe la invocación): invocación o Target de L1/1 (LAUNCHING) reescritos en sitio",
+    "par 1→2 (rebase 2 reescribe la invocación): Target de LAUNCHING L1/1 sin imagen en el mapa"
    ],
-   "Verdict": "PASS"
+   "Verdict": "FAIL"
   },
   "a62-a1t-01-t5b-cambia-el-RunId": {
    "Validator": "A-1 corregida",
@@ -2201,13 +2207,15 @@
    "Got": {
     "Verdict": "INVALID",
     "Rules": [
+     "A1-P08",
      "A1-P10"
     ]
    },
    "Violations": [
+    "par 1→2 (rebase 2 cambia el RunId): Target de LAUNCHING L1/1 sin imagen en el mapa",
     "par 1→2 (rebase 2 cambia el RunId): la reconciliación cambia el intento L1/1"
    ],
-   "Verdict": "PASS"
+   "Verdict": "FAIL"
   },
   "a62-a1t-01-t5c-cambia-la-reserva": {
    "Validator": "A-1 corregida",
@@ -2223,13 +2231,15 @@
    "Got": {
     "Verdict": "INVALID",
     "Rules": [
+     "A1-P08",
      "A1-P10"
     ]
    },
    "Violations": [
+    "par 1→2 (rebase 2 cambia reserved_at): Target de LAUNCHING L1/1 sin imagen en el mapa",
     "par 1→2 (rebase 2 cambia reserved_at): la reconciliación cambia el intento L1/1"
    ],
-   "Verdict": "PASS"
+   "Verdict": "FAIL"
   },
   "a62-a1t-01-t5d-cambia-el-presupuesto": {
    "Validator": "A-1 corregida",
@@ -2247,14 +2257,16 @@
     "Verdict": "INVALID",
     "Rules": [
      "A1-F01",
+     "A1-P08",
      "A1-P10"
     ]
    },
    "Violations": [
     "punto 2 (rebase 2 cambia architect_launches): contadores de ARL-10 incoherentes o sobre su tope (P-18)",
+    "par 1→2 (rebase 2 cambia architect_launches): Target de LAUNCHING L1/1 sin imagen en el mapa",
     "par 1→2 (rebase 2 cambia architect_launches): la reconciliación cambia fase, presupuestos o linajes"
    ],
-   "Verdict": "PASS"
+   "Verdict": "FAIL"
   },
   "a62-a1t-01-t5e-cambia-el-estado-del-intento": {
    "Validator": "A-1 corregida",
@@ -2270,13 +2282,15 @@
    "Got": {
     "Verdict": "INVALID",
     "Rules": [
+     "A1-P08",
      "A1-P10"
     ]
    },
    "Violations": [
+    "par 1→2 (rebase 2 pasa el intento a LAUNCHED): Target de LAUNCHING L1/1 sin imagen en el mapa",
     "par 1→2 (rebase 2 pasa el intento a LAUNCHED): la reconciliación cambia el intento L1/1"
    ],
-   "Verdict": "PASS"
+   "Verdict": "FAIL"
   },
   "a62-a1t-01-t5f-cambia-los-linajes": {
    "Validator": "A-1 corregida",
@@ -2292,13 +2306,15 @@
    "Got": {
     "Verdict": "INVALID",
     "Rules": [
+     "A1-P08",
      "A1-P10"
     ]
    },
    "Violations": [
+    "par 1→2 (rebase 2 añade un linaje): Target de LAUNCHING L1/1 sin imagen en el mapa",
     "par 1→2 (rebase 2 añade un linaje): la reconciliación cambia fase, presupuestos o linajes"
    ],
-   "Verdict": "PASS"
+   "Verdict": "FAIL"
   },
   "a62-a1t-01-t5g-cambia-el-BudgetSnapshot": {
    "Validator": "A-1 corregida",
@@ -2314,13 +2330,15 @@
    "Got": {
     "Verdict": "INVALID",
     "Rules": [
+     "A1-P08",
      "A1-P10"
     ]
    },
    "Violations": [
+    "par 1→2 (rebase 2 cambia el BudgetSnapshot): Target de LAUNCHING L1/1 sin imagen en el mapa",
     "par 1→2 (rebase 2 cambia el BudgetSnapshot): la reconciliación cambia el intento L1/1"
    ],
-   "Verdict": "PASS"
+   "Verdict": "FAIL"
   },
   "a62-a1t-01-t6-no-arranco-replanifica-sobre-X2": {
    "Validator": "A-1 corregida",
@@ -2332,11 +2350,15 @@
     "Rules": []
    },
    "Got": {
-    "Verdict": "VALID",
-    "Rules": []
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-P08"
+    ]
    },
-   "Violations": [],
-   "Verdict": "PASS"
+   "Violations": [
+    "par 1→2 (rebase 2 (M2): el Target histórico c1 resuelve por la cadena M1 → M2): Target de LAUNCHING L1/1 sin imagen en el mapa"
+   ],
+   "Verdict": "FAIL"
   },
   "a62-a1t-01-t7-arranque-desconocido-LAUNCH_UNCERTAIN": {
    "Validator": "A-1 corregida",
@@ -2348,11 +2370,15 @@
     "Rules": []
    },
    "Got": {
-    "Verdict": "VALID",
-    "Rules": []
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-P08"
+    ]
    },
-   "Violations": [],
-   "Verdict": "PASS"
+   "Violations": [
+    "par 1→2 (rebase 2 (M2): el Target histórico c1 resuelve por la cadena M1 → M2): Target de LAUNCHING L1/1 sin imagen en el mapa"
+   ],
+   "Verdict": "FAIL"
   },
   "a62-a1t-01-t7a-prueba-de-no-arranque-fabricada": {
    "Validator": "A-1 corregida",
@@ -2368,13 +2394,15 @@
    "Got": {
     "Verdict": "INVALID",
     "Rules": [
+     "A1-P08",
      "V14-S18-no-arranque"
     ]
    },
    "Violations": [
+    "par 1→2 (rebase 2 (M2): el Target histórico c1 resuelve por la cadena M1 → M2): Target de LAUNCHING L1/1 sin imagen en el mapa",
     "par 2→3 (replanificado sin prueba de no arranque): L1/1 sale de LAUNCHING sin la prueba de no arranque"
    ],
-   "Verdict": "PASS"
+   "Verdict": "FAIL"
   },
   "a62-a1t-01-t7b-relanza-el-incierto": {
    "Validator": "A-1 corregida",
@@ -2390,13 +2418,15 @@
    "Got": {
     "Verdict": "INVALID",
     "Rules": [
+     "A1-P08",
      "A1-P09"
     ]
    },
    "Violations": [
+    "par 1→2 (rebase 2 (M2): el Target histórico c1 resuelve por la cadena M1 → M2): Target de LAUNCHING L1/1 sin imagen en el mapa",
     "par 3→4 (LAUNCH_UNCERTAIN vuelve a LAUNCHING): intento L1/1 LAUNCH_UNCERTAIN → LAUNCHING"
    ],
-   "Verdict": "PASS"
+   "Verdict": "FAIL"
   },
   "a62-a1t-o1-primera-solicitud-abierta-en-el-par-de-apertura": {
    "Validator": "A-1 corregida",
@@ -2792,5 +2822,5 @@
    "Verdict": "PASS"
   }
  },
- "AllAsExpected": true
+ "AllAsExpected": false
 }

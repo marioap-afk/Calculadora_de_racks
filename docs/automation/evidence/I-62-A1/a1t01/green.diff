@@ -1,0 +1,23 @@
+--- a/a1-counterexamples.py (RED)
++++ b/a1-counterexamples.py (GREEN)
+@@ -72,7 +72,7 @@
+     "A1-R05": "D1-20 · un bucle REVIEWER se abre con una autoridad OPEN, la de loop.authorization, que no figura en ningún registro de reviewer_closures[] ni es una autoridad SUPERSEDED por una decisión custodiada (A62-A1T-O3)",
+     "A1-P18": "V14 B.8.8 (review_requests.object) · una solicitud nueva se abre con object = loop.object del punto en que se abre (A62-A1S-02)",
+     "A1-R06": "D1-17/D1-19 · el requisito operativo de una autoridad REVIEWER solo está satisfecho con evidencia REVIEWER_SATISFIED de esa autoridad",
+-    "A1-P08": "D2-2/D2-5 · la reconciliación lleva cada objeto vivo a su imagen probada (mismo path y blob) y exige imagen en el mapa para el Target de un intento en LAUNCHING",
++    "A1-P08": "D2-2/D2-5 · la reconciliación lleva cada objeto vivo a su imagen probada (mismo path y blob) y el Target de un intento en LAUNCHING resuelve por ResolveBranchRef con la historia completa de n (A62-A1T-01)",
+     "A1-P09": "D2-6 · transiciones de intento; un intento en LAUNCHING o posterior nunca cambia su invocación en sitio; B.1 tras un rebase replanifica sobre la imagen",
+     "A1-P10": "D2-8 · la reconciliación no cambia fase, presupuestos, linajes, estados de intento, reserved_at, RunId ni BudgetSnapshot",
+     "A1-P11": "D2-9 · rebase_history recibe exactamente el mapa nuevo en cada reconciliación, todos los mapas de la ventana en orden al cerrarla, y no cambia en otro caso",
+@@ -435,9 +435,8 @@
+                     add("A1-P09", "invocación o Target de %s/%d (%s) reescritos en sitio" % (r["id"], a["seq"], b["state"]))
+             elif tr == ("LAUNCHING", "BUDGET_RESERVED") and b["target"]["commit"] not in n["anc"]:
+                 add("A1-P09", "B.1 de %s/%d tras un rebase sin invocación nueva sobre la imagen" % (r["id"], a["seq"]))
+-            if rebase and b["state"] == "LAUNCHING" and b["target"]["commit"] not in n["anc"] and b["target"]["commit"] not in mp \
+-                    and b["target"]["commit"] not in n["maps"][n["last_rebase"]]["main_before"]:
+-                add("A1-P08", "Target de LAUNCHING %s/%d sin imagen en el mapa" % (r["id"], a["seq"]))
++            if rebase and b["state"] == "LAUNCHING" and resolve(b["target"], n) is None:  # A62-A1T-01: ResolveBranchRef with the history of n
++                add("A1-P08", "Target de LAUNCHING %s/%d no resuelve por ResolveBranchRef con la historia de n" % (r["id"], a["seq"]))
+             if rebase and (a["state"] != b["state"] or a["reserved_at"] != b["reserved_at"] or a.get("run_id") != b.get("run_id")
+                            or a.get("snapshot") != b.get("snapshot")):
+                 add("A1-P10", "la reconciliación cambia el intento %s/%d" % (r["id"], a["seq"]))

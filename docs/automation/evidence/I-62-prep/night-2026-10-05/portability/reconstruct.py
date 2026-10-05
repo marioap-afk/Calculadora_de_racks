@@ -59,7 +59,16 @@ steps.append(dict(compare("a1-counterexamples", p, "docs/automation/evidence/I-6
 # 2. combined sequences (F4 experimental)
 p = os.path.join(WORK, "combo.json")
 rc, tail = run([os.path.join(CLONE, NIGHT + "f4-exp/combo_sequences.py"), h, p])
-steps.append(dict(compare("f4-exp/combo_sequences", p, NIGHT + "f4-exp/combo-result.json"), ExitCode=rc))
+# A62-A1T-01 (Coordinator order after R20261005T073911Z-2dfe): the harness now resolves the Target of a LAUNCHING attempt through the chain, so the
+# custodied counterpart is the new execution combo-result-a1t01.json. The portability run of c66137b9 compared against combo-result.json, which is
+# kept unchanged and reproducible with this script at that commit.
+steps.append(dict(compare("f4-exp/combo_sequences", p, NIGHT + "f4-exp/combo-result-a1t01.json"), ExitCode=rc))
+
+# 2b. T8 of A62-A1T-01: two real rebases and a successor in a clean clone (disposable repository; SHAs differ per run, relations must hold)
+p = os.path.join(WORK, "t8.json")
+rc, tail = run([os.path.join(CLONE, "docs/automation/evidence/I-62-A1/a1t01/t8-clean-clone.py"), os.path.join(WORK, "t8-repo"), p])
+t8 = json.load(open(p, encoding="utf-8")) if os.path.exists(p) else {}
+steps.append({"Step": "a1t01/t8-clean-clone (relaciones, no SHAs)", "ExitCode": rc, "Result": "PASS" if rc == 0 and t8.get("AllAsExpected") else "FAIL"})
 
 # 3. P4 harness (synthetic and real I-63 objects, reachable through main)
 p = os.path.join(WORK, "p4.json")

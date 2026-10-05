@@ -1,0 +1,109 @@
+{
+ "Label": "EXPERIMENTAL — NOT AUTHORIZED FOR PRODUCTION",
+ "Script": "docs/automation/evidence/I-62-A1/a1t01/t8-clean-clone.py",
+ "Case": "T8 de la orden del Coordinator (A62-A1T-01)",
+ "Git": "git version 2.54.0.windows.1",
+ "Python": "3.13.14",
+ "Note": "Los SHAs son de esta ejecución (repositorio desechable); se repiten las relaciones, no los valores.",
+ "Steps": [
+  {
+   "Step": "rebase 1 + n1",
+   "Resolve(Target X, [M1])": [
+    "RESOLVED",
+    [
+     "32aa9398e672b687a2867ba2b35adbfa38d6867f",
+     "c04b50c0db64d2060ee0e4b701c9b9dd5d692e62"
+    ]
+   ],
+   "XImage1": "c04b50c0db64d2060ee0e4b701c9b9dd5d692e62"
+  },
+  {
+   "Step": "rebase 2, validación con la historia candidata antes de n2",
+   "Resolve(Target X, [M1, M2], branch_after)": [
+    "RESOLVED",
+    [
+     "32aa9398e672b687a2867ba2b35adbfa38d6867f",
+     "c04b50c0db64d2060ee0e4b701c9b9dd5d692e62",
+     "dd2c86e98566d2c4db18bc3a7664ef73b87d3591"
+    ]
+   ],
+   "M2ContieneX": false,
+   "ReglaDe03dd822d": "STOP",
+   "ValidadoSobre": "BranchAfterSha 26f579a5 (n2 aún no existía)",
+   "n2": "21a0379955d0b0793217cc80842057ce5eacc125"
+  },
+  {
+   "Step": "sucesor en un clon limpio",
+   "CloneHead": "21a0379955d0b0793217cc80842057ce5eacc125",
+   "XReachableInClone": false,
+   "XImage1ReachableInClone": false,
+   "AttemptFieldsReadFromState": {
+    "state": "LAUNCHING",
+    "invocation": "I1",
+    "run_id": "R-L1",
+    "reserved_at": 3,
+    "budget_snapshot": {
+     "architect_launches": 1,
+     "logical_requests": 1,
+     "review_rounds": 1
+    },
+    "target": {
+     "Blob": "90abe96de4f5f9df12b597a1e20cc71977c75a1e",
+     "Commit": "32aa9398e672b687a2867ba2b35adbfa38d6867f",
+     "Path": "docs/U-proposal.md"
+    },
+    "lineages": [
+     "LIN-1"
+    ]
+   },
+   "Cases": {
+    "T8-sucesor-clon-limpio-cadena-completa": {
+     "Expected": "RESOLVED",
+     "Got": [
+      "RESOLVED",
+      [
+       "32aa9398e672b687a2867ba2b35adbfa38d6867f",
+       "c04b50c0db64d2060ee0e4b701c9b9dd5d692e62",
+       "dd2c86e98566d2c4db18bc3a7664ef73b87d3591"
+      ]
+     ],
+     "Result": "PASS"
+    },
+    "T8n-sin-M1-en-la-historia (A1-P08: falta el primer eslabón)": {
+     "Expected": "UNRESOLVED",
+     "Got": [
+      "UNRESOLVED",
+      [
+       "32aa9398 no figura como OriginalSha en ningún mapa de H"
+      ]
+     ],
+     "Result": "PASS"
+    },
+    "T8n-M1-sin-el-eslabon-de-X (A1-P08)": {
+     "Expected": "UNRESOLVED",
+     "Got": [
+      "UNRESOLVED",
+      [
+       "32aa9398 no figura como OriginalSha en ningún mapa de H"
+      ]
+     ],
+     "Result": "PASS"
+    },
+    "T8n-cadena-completa-con-otro-blob (identidad de contenido)": {
+     "Expected": "UNRESOLVED",
+     "Got": [
+      "UNRESOLVED",
+      [
+       "32aa9398e672b687a2867ba2b35adbfa38d6867f",
+       "c04b50c0db64d2060ee0e4b701c9b9dd5d692e62",
+       "dd2c86e98566d2c4db18bc3a7664ef73b87d3591",
+       "el blob de docs/U-proposal.md en dd2c86e9 no es 285d0cad"
+      ]
+     ],
+     "Result": "PASS"
+    }
+   }
+  }
+ ],
+ "AllAsExpected": true
+}

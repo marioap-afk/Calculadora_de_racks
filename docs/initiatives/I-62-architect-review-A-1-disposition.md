@@ -13,9 +13,14 @@ Segunda disposición: «I-62 — COORDINATOR DISPOSITION OF OBS-A1-01» (8 674 b
 Objeto corregido: docs/initiatives/I-62-A-1.md, blob 9c621fce0588f32115e3151b6f75413c0a167c2e (sigue siendo A-1 y PROPUESTA; intermedio 23dd16b2);
                   después corregido para A62-A1R-01..03 y O1..O5 en el blob 39c2f8317ec381fa60c3564a834278df8898101c (§4; decisiones §41) y,
                   por el autor, para A62-A1A-01 en el blob cdcd98d2752d384272285536b3874ae45c9d9832 (evidencia §48); y para A62-A1S-01..02 y
-                  O1..O4 de la revisión formal R20261005T063359Z-86e3 en el blob 03dd822d1310a0ce298eba6da2321383aa5e4887 (evidencia §49)
-Estado:           A-1 PROPUESTA (blob 03dd822d); Architect REQUIRED — PENDING (revisión formal nueva autorizada por la orden nocturna, decisiones §41:
-                  hasta dos invocaciones, solo con un transporte limpio; HUMAN_LAUNCH_REQUIRED); Coordinator PENDING; F4 producción BLOCKED;
+                  O1..O4 de la revisión formal R20261005T063359Z-86e3 en el blob 03dd822d1310a0ce298eba6da2321383aa5e4887 (evidencia §49); y para
+                  A62-A1T-01 y O1..O3 de la revisión formal R20261005T073911Z-2dfe en el blob c01899a72b940503bb85a0fab42bc085c603fd0f (§5;
+                  decisiones §42)
+Tercera disposición: «I-62 — ORDEN NUEVA DEL COORDINATOR / CORRECCIÓN A62-A1T-01 + REVISIÓN POSTERIOR ACOTADA» (13 157 bytes;
+                  SHA-256 588d62896bfc4a96b5451474cc991cb66c12c8342a33041df4fbb34442741c4d; recibido 2026-10-05T14:33Z; decisiones §42):
+                  A62-A1T-01 = ACCEPTED REQUIRED; O1..O3 incorporados; la corrida 2dfe sigue NOT_ACCREDITED
+Estado:           A-1 PROPUESTA (blob c01899a7); Architect REQUIRED — PENDING (UNA revisión formal nueva autorizada por la orden nueva,
+                  decisiones §42, solo con un transporte limpio); Coordinator PENDING; F4 producción BLOCKED;
                   Owner NOT REQUIRED; I-61 vigente
 ```
 
@@ -126,7 +131,34 @@ un contraejemplo nuevo.
 Las disposiciones históricas no se reabren: A62-A1-01..06 siguen CLOSED en el dictamen de la revisión formal, y esta corrección del autor no equivale a
 su cierre por el Architect para A62-A1R-01..03 ni para OBS-A1-01.
 
-## 5. Lo que este registro no hace
+## 5. Revisión formal R20261005T073911Z-2dfe y orden nueva del Coordinator (decisiones §42)
 
-No acredita la revisión anterior ni la presenta como acuerdo del Architect. No declara AGREED, no lanza la revisión formal nueva (la autoriza la orden nocturna,
-decisiones §41, y la lanza el Owner con un clic), no crea A-2, no implementa F4 y no decide nada del Owner.
+La revisión formal de `03dd822d` dio CHANGES REQUIRED: A62-A1T-01 REQUIRED y A62-A1T-O1..O3 OPTIONAL. Dejó CLOSED los doce cierres anteriores:
+A62-A1-01..06, OBS-A1-01, A62-A1R-01..03 y A62-A1S-01..02 ([registro](I-62-architect-review-A-1-r4.md)). Su auditor v3.1 dio NOT_ACCREDITED con seis
+motivos: tres desviaciones literales declaradas y tres defectos del auditor (`audit-classification.json`). Ese resultado literal y su clasificación se
+conservan; no se sustituyen por una corrida «acreditada» retrospectivamente.
+
+La orden nueva del Coordinator:
+- deja la corrida en **FORMAL_ACCREDITATION = NOT_ACCREDITED**;
+- adopta **A62-A1T-01 como ACCEPTED REQUIRED**, porque la contradicción se reproduce directamente en las cláusulas canónicas;
+- pide incorporar la precisión O1, corregir la coherencia documental O2 y añadir los negativos O3;
+- conserva los doce cierres como disposiciones técnicas registradas, sin reabrirlos ni reimplementarlos. La próxima revisión formal debe ratificar su
+  conservación;
+- mantiene A-1 PROPUESTA: no crea A-2, no declara AGREED y no la aplica.
+
+| Hallazgo | Tratamiento en A-1 (blob `c01899a7`) | Reglas del arnés | Trazas (todas PASS) |
+|---|---|---|---|
+| A62-A1T-01 | D2-2 (cont.): el `Target` de un intento en LAUNCHING resuelve por ResolveBranchRef con la historia completa de n, incluido el mapa nuevo, y la punta rebasada; sin un eslabón o con otro blob, UNRESOLVED y STOP; la resolución no cambia el intento; D2-6 sin cambio. D2-3, D2-8 (`run_id` y `BudgetSnapshot`), D2-9 y D2-11 alineados; C-15 (d)(e)(d2)(e2), C-29 (i) y C-38 (cuarta revisión) | A1-P08 (RED → GREEN), A1-P09, A1-P10, A1-P11, A1-F10, A1-P02, A1-F01, V14-S18-no-arranque | `a62-a1t-01-t1..t7*`; T8 con Git real en `a1t01/t8-result.json`; F4 experimental `c3-obs-*` |
+| A62-A1T-O1 | D1-17: abiertas en el par de apertura o después; reconstrucción por `last_request`; fila partida en D1-17 y D1-17 (cont.) | A1-R02, A1-R03 | `a62-a1t-o1-primera-solicitud-abierta-en-el-par-de-apertura` |
+| A62-A1T-O2 | §1, §5, §7, §8, §9, §10 y §11 de A-1; paquete (cierre y preguntas 12, 15 y 17); descripción de A1-P02; etiqueta «Asserted» de F4 experimental en la ejecución nueva | — | — |
+| A62-A1T-O3 | C-38 (cuarta revisión): reapertura con una autoridad SUPERSEDED; C-15 (i): A2' de EXECUTION a través de uno y de dos rebases (el arnés no modela A2') | A1-R05 | `a62-a1t-o3-reapertura-con-una-autoridad-SUPERSEDED` |
+
+**RED/GREEN de A62-A1T-01:** con la regla de `03dd822d`, las 12 trazas que cruzan el segundo rebase con un LAUNCHING pendiente fallan, y solo por
+A1-P08. Con la regla corregida pasan las 118. Los negativos T3 (sin M1 o sin el eslabón de X) y T4 (otro blob) fallan por A1-P08 en las dos versiones,
+porque la cadena no los resuelve; T3 añade A1-P11 y A1-F10 cuando M1 falta de la historia. Ningún resultado histórico se reescribe: la ejecución nueva
+de las secuencias combinadas es `combo-result-a1t01.json`.
+
+## 6. Lo que este registro no hace
+
+No acredita ninguna revisión anterior ni la presenta como acuerdo del Architect. No declara AGREED, no lanza la revisión formal nueva (la autoriza la orden
+nueva, decisiones §42, una sola vez y solo con un transporte limpio), no crea A-2, no implementa F4 y no decide nada del Owner.

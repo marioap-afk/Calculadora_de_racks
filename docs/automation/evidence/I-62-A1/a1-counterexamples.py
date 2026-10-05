@@ -17,7 +17,9 @@ and (decisions §41, formal review R20261005T044948Z-ac67) the closure (E) after
 resurrecting an ended authority, the per-type rebase of loop.object (REVIEWER and EXECUTION), OpenFindings by reviewer authority, every window map in
 rebase_history and the positive-only operational satisfaction; and (A62-A1A-01, author correction) an inherited REVIEWER BLOCKING lineage
 blocks REVIEWER_SATISFIED; and (A62-A1S-01..02, formal review R20261005T063359Z-ac67-86e3) the REVIEWER loop membership by opening
-and the REVIEWER correction cycle CORRECTING -> PUBLISHED with a new request on the corrected object.
+and the REVIEWER correction cycle CORRECTING -> PUBLISHED with a new request on the corrected object; and (A62-A1T-01, Coordinator order after
+R20261005T073911Z-2dfe) the Target of an attempt in LAUNCHING resolved through the whole map history across two rebases (T1..T7), the V14
+not-started evidence, the D2-8 invariance of RunId and BudgetSnapshot, the content identity of reconciled objects and SUPERSEDED REVIEWER authorities.
 The two phase edges ARCHITECT_INVOKED -> REVIEW_PENDING / REREVIEW_PENDING are SM-05 (non-material, freeze-issues.md), not part of A-1.
 
 Usage: python a1-counterexamples.py <output json>
@@ -56,7 +58,7 @@ RULES = {
     "A1-F09": "D2-9 · custody.rebase_history[] termina en last_rebase.map",
     "A1-F10": "D2-10/D2-11 · toda referencia de rama de una invocación resuelve por ResolveBranchRef",
     "A1-P01": "§20.5 + D1-9 (+ SM-05) · la transición de fase existe",
-    "A1-P02": "D1-10/D2-4 · loop.object cambia solo en CORRECTING → PUBLISHED, en la apertura, a null solo en LOOP_CLOSED de ARCHITECT_REVIEW y a su imagen probada en REBASE_RECONCILIATION",
+    "A1-P02": "D1-10/D2-4 · loop.object cambia solo en CORRECTING → PUBLISHED, en la apertura, a null solo en LOOP_CLOSED (de ARCHITECT_REVIEW o de REVIEWER) y a su imagen probada (mismo path y blob, también en el contenido) en REBASE_RECONCILIATION",
     "A1-P03": "D1-1 · instance_id = ARL-<record_version> en la apertura, inmutable con el bucle abierto, null tras LOOP_CLOSED",
     "A1-P04": "D1-7 · entrada nueva solo en la apertura: exactamente una, con una ReviewLoopAuthorization nueva sin ContinuesLoopInstanceId y nunca usada",
     "A1-P05": "D1-8 · sustitución o continuación dentro del bucle abierto: misma entrada, sin reinicio, SUPERSEDED solo desde OPEN, EXPIRED/REVOKED intactos",
@@ -67,12 +69,12 @@ RULES = {
     "A1-R03": "D1-18 · LOOP_CLOSED de REVIEWER: desde REVIEWER_SATISFIED sin decisión, o (E) tras EXHAUSTED/EXPIRED/REVOKED (o con la vigencia OPEN revocada por la misma decisión) con la decisión I62-REVIEWER-LOOP-CLOSE; sin trabajo vivo, escalada resuelta, nada borrado ni reiniciado y el registro de cierre con el motivo real",
     "A1-R04": "D1-19 · reviewer_closures[] es append-only y crece exactamente en uno en cada LOOP_CLOSED de REVIEWER, y en ningún otro par",
     "V14-P20-reviewer": "V14 §20.5.2/§20.7 · un resultado de REVIEWER nunca cierra ni rebaja un linaje del ARCHITECT (P-20)",
-    "A1-R05": "D1-20 · un bucle REVIEWER se abre con una autoridad OPEN, la de loop.authorization, que no figura en ningún registro de reviewer_closures[]",
+    "A1-R05": "D1-20 · un bucle REVIEWER se abre con una autoridad OPEN, la de loop.authorization, que no figura en ningún registro de reviewer_closures[] ni es una autoridad SUPERSEDED por una decisión custodiada (A62-A1T-O3)",
     "A1-P18": "V14 B.8.8 (review_requests.object) · una solicitud nueva se abre con object = loop.object del punto en que se abre (A62-A1S-02)",
     "A1-R06": "D1-17/D1-19 · el requisito operativo de una autoridad REVIEWER solo está satisfecho con evidencia REVIEWER_SATISFIED de esa autoridad",
-    "A1-P08": "D2-2/D2-5 · la reconciliación lleva cada objeto vivo a su imagen probada (mismo path y blob) y exige imagen en el mapa para el Target de un intento en LAUNCHING",
+    "A1-P08": "D2-2/D2-5 · la reconciliación lleva cada objeto vivo a su imagen probada (mismo path y blob) y el Target de un intento en LAUNCHING resuelve por ResolveBranchRef con la historia completa de n (A62-A1T-01)",
     "A1-P09": "D2-6 · transiciones de intento; un intento en LAUNCHING o posterior nunca cambia su invocación en sitio; B.1 tras un rebase replanifica sobre la imagen",
-    "A1-P10": "D2-8 · la reconciliación no cambia fase, presupuestos, linajes, estados de intento ni reserved_at",
+    "A1-P10": "D2-8 · la reconciliación no cambia fase, presupuestos, linajes, estados de intento, reserved_at, RunId ni BudgetSnapshot",
     "A1-P11": "D2-9 · rebase_history recibe exactamente el mapa nuevo en cada reconciliación, todos los mapas de la ventana en orden al cerrarla, y no cambia en otro caso",
     "A1-P12": "D2-12 · un resultado solo cierra linajes y solo es VALID si su EvaluatedObject es EquivalentReviewedObject del objeto de su solicitud",
     "A1-P13": "V14 I-P13 · una acción nueva (reserva, LAUNCHING) exige la vigencia de acción OPEN",
@@ -83,6 +85,7 @@ RULES = {
     "I-H02": "D2-3 · todo SHA de rama vivo del estado (incluidos loop.object, objetos OPEN y Targets no lanzados) es ancestro de HEAD fuera de una ventana",
     "V14-S18-target": "V14 §20.6 · el Target de un intento no lanzado es el objeto de su solicitud",
     "V14-S18-vigencia": "V14 I-S18 · con la vigencia terminada no hay intentos en INVOCATION_PLANNED ni en BUDGET_RESERVED",
+    "V14-S18-no-arranque": "V14 B.8.8 (attempts.not_started_evidence) · un intento que sale de LAUNCHING hacia BUDGET_RESERVED o CANCELLED_BEFORE_LAUNCH lleva la prueba de no arranque",
     "V14-§20.5": "V14 literal · la transición de fase existe (sin vuelta a NONE)",
     "V14-I-P13-object": "V14 literal · loop.object cambia solo en CORRECTING → PUBLISHED o NONE → REVIEW_PENDING",
     "V14-B.8.8-object": "V14 literal · review_requests[].object es inmutable",
@@ -259,7 +262,8 @@ def pair_a1(p, n):
              (pl["type"] == NONE and pl["object"] is None and nl["object"] is not None and edge == ("NONE", "REVIEW_PENDING")) or \
              ((closing or rv_closing) and nl["object"] is None)
         if rebase and pl["object"] and nl["object"] and pl["phase"] == nl["phase"] and \
-                (pl["object"]["path"], pl["object"]["blob"]) == (nl["object"]["path"], nl["object"]["blob"]) and mp.get(pl["object"]["commit"]) == nl["object"]["commit"]:
+                (pl["object"]["path"], pl["object"]["blob"]) == (nl["object"]["path"], nl["object"]["blob"]) and mp.get(pl["object"]["commit"]) == nl["object"]["commit"] \
+                and n["blobs"].get((nl["object"]["commit"], nl["object"]["path"]), nl["object"]["blob"]) == nl["object"]["blob"]:
             ok = True
         if not ok:
             add("A1-P02", "loop.object cambia en %s → %s" % edge)
@@ -330,6 +334,7 @@ def pair_a1(p, n):
     if pl["type"] == NONE and nl["type"] == RV:
         nv = n["validity"]
         ended_ids = {(r["validity"] or {}).get("auth") for r in p["rclosures"]}
+        ended_ids |= {d["supersedes"] for d in n["decisions"].values() if d.get("supersedes")}  # D1-20: SUPERSEDED by a custodied decision
         if not nv or nv["state"] != "OPEN" or nv["auth"] != nl["authorization"] or nv["auth"] in ended_ids:
             add("A1-R05", "bucle REVIEWER abierto con una autoridad terminada o distinta de loop.authorization")
     if rv_closing:
@@ -397,7 +402,8 @@ def pair_a1(p, n):
             add("A1-P14", "cambia loop_instance_id de %s" % r["id"])
         if q["object"] != r["object"]:
             if not (rebase and q["state"] == "OPEN" and (q["object"]["path"], q["object"]["blob"]) == (r["object"]["path"], r["object"]["blob"])
-                    and mp.get(q["object"]["commit"]) == r["object"]["commit"]):
+                    and mp.get(q["object"]["commit"]) == r["object"]["commit"]
+                    and n["blobs"].get((r["object"]["commit"], r["object"]["path"]), r["object"]["blob"]) == r["object"]["blob"]):
                 add("A1-P08", "objeto de %s cambia sin imagen probada" % r["id"])
         qa = {a["seq"]: a for a in q["attempts"]}
         for a in r["attempts"]:
@@ -429,11 +435,13 @@ def pair_a1(p, n):
                     add("A1-P09", "invocación o Target de %s/%d (%s) reescritos en sitio" % (r["id"], a["seq"], b["state"]))
             elif tr == ("LAUNCHING", "BUDGET_RESERVED") and b["target"]["commit"] not in n["anc"]:
                 add("A1-P09", "B.1 de %s/%d tras un rebase sin invocación nueva sobre la imagen" % (r["id"], a["seq"]))
-            if rebase and b["state"] == "LAUNCHING" and b["target"]["commit"] not in n["anc"] and b["target"]["commit"] not in mp \
-                    and b["target"]["commit"] not in n["maps"][n["last_rebase"]]["main_before"]:
-                add("A1-P08", "Target de LAUNCHING %s/%d sin imagen en el mapa" % (r["id"], a["seq"]))
-            if rebase and (a["state"] != b["state"] or a["reserved_at"] != b["reserved_at"]):
+            if rebase and b["state"] == "LAUNCHING" and resolve(b["target"], n) is None:  # A62-A1T-01: ResolveBranchRef with the history of n
+                add("A1-P08", "Target de LAUNCHING %s/%d no resuelve por ResolveBranchRef con la historia de n" % (r["id"], a["seq"]))
+            if rebase and (a["state"] != b["state"] or a["reserved_at"] != b["reserved_at"] or a.get("run_id") != b.get("run_id")
+                           or a.get("snapshot") != b.get("snapshot")):
                 add("A1-P10", "la reconciliación cambia el intento %s/%d" % (r["id"], a["seq"]))
+            if b["state"] == "LAUNCHING" and a["state"] in ("BUDGET_RESERVED", "CANCELLED_BEFORE_LAUNCH") and not a.get("not_started"):
+                add("V14-S18-no-arranque", "%s/%d sale de LAUNCHING sin la prueba de no arranque" % (r["id"], a["seq"]))
             if b["reserved_at"] is None and a["reserved_at"] is not None:
                 new_reservation(v, a, r, n)
             if a["state"] == "LAUNCHING" and b["state"] != "LAUNCHING" and not open_validity(n):
@@ -517,12 +525,13 @@ BLOBS = {}
 for c, path, blob in [("x1", DOC, "b-X1"), ("x1p", DOC, "b-X1"), ("x1pp", DOC, "b-X1"), ("x2", DOC, "b-X2"), ("x3", DOC, "b-X3"), ("y1", IMPL, "b-Y1"),
                       ("c1", DOC, "b-C"), ("c1p", DOC, "b-C"), ("c1pp", DOC, "b-C"),
                       ("a0", DEC, "b-D"), ("a0p", DEC, "b-D"), ("a0pp", DEC, "b-D"), ("k0", BND, "b-K"), ("k0p", BND, "b-K"), ("k0pp", BND, "b-K"),
-                      ("y1p", IMPL, "b-Y1"), ("y2", IMPL, "b-Y2")]:
+                      ("y1p", IMPL, "b-Y1"), ("y2", IMPL, "b-Y2"), ("c1pp2", DOC, "b-C2")]:
     BLOBS[(c, path)] = blob
 MAPS = {"M1": {"commits": {"c1": "c1p", "a0": "a0p", "k0": "k0p", "x1": "x1p"}, "main_before": {"m0"}},
         "M2": {"commits": {"c1p": "c1pp", "a0p": "a0pp", "k0p": "k0pp", "x1p": "x1pp"}, "main_before": {"m0", "m1"}},
         "M1-sin-c1": {"commits": {"a0": "a0p", "k0": "k0p", "x1": "x1p"}, "main_before": {"m0"}},
-        "MY": {"commits": {"y1": "y1p", "a0": "a0p", "k0": "k0p"}, "main_before": {"m0"}}}
+        "MY": {"commits": {"y1": "y1p", "a0": "a0p", "k0": "k0p"}, "main_before": {"m0"}},
+        "M2b": {"commits": {"c1p": "c1pp2", "a0p": "a0pp", "k0p": "k0pp"}, "main_before": {"m0", "m1"}}}
 DECISIONS = {"A1": {"kind": "RLA", "continues": None, "budget": dict(FROZEN)},
              "A2": {"kind": "RLA", "continues": None, "budget": dict(FROZEN)},
              "A2c": {"kind": "RLA", "continues": "ARL-10", "budget": {"review_rounds": 2, "logical_requests": 2, "architect_launches": 6}},
@@ -533,7 +542,9 @@ DECISIONS = {"A1": {"kind": "RLA", "continues": None, "budget": dict(FROZEN)},
              "RCLOSE-R1": {"kind": "REVIEWER_CLOSE", "request": "R1"},
              "RCLOSE-R1-REV": {"kind": "REVIEWER_CLOSE", "request": "R1", "revokes": True},
              "GC-2": {"kind": "GATE_CONTRACT", "budget": {}},
-             "GC-1b": {"kind": "GATE_CONTRACT", "budget": {}}}
+             "GC-1b": {"kind": "GATE_CONTRACT", "budget": {}},
+             "GC-3": {"kind": "GATE_CONTRACT", "budget": {}, "supersedes": "GC-4"},
+             "GC-4": {"kind": "GATE_CONTRACT", "budget": {}}}
 REFS0 = [{"commit": "a0", "path": DEC, "blob": "b-D"}, {"commit": "k0", "path": BND, "blob": "b-K"}]
 REFS1 = [{"commit": "a0p", "path": DEC, "blob": "b-D"}, {"commit": "k0p", "path": BND, "blob": "b-K"}]
 
@@ -552,9 +563,10 @@ def entry(iid, auths, rr, lr, al, closed_at=None, closed_by=None):
     return e
 
 
-def att(seq, state, inv, target, reserved_at, refs=(), result=None, outcome=None, open_findings=(), snapshot=None):
+def att(seq, state, inv, target, reserved_at, refs=(), result=None, outcome=None, open_findings=(), snapshot=None, run_id=None, not_started=None):
     return {"seq": seq, "state": state, "inv": inv, "target": target, "reserved_at": reserved_at, "refs": copy.deepcopy(list(refs)),
-            "result": result, "outcome": outcome, "open_findings": list(open_findings), "snapshot": snapshot}
+            "result": result, "outcome": outcome, "open_findings": list(open_findings), "snapshot": snapshot, "run_id": run_id,
+            "not_started": not_started}
 
 
 def req(rid, loop, o, state, attempts, authz=None):
@@ -977,18 +989,91 @@ def traces():
     T["a62-a1-04-LAUNCHING-tras-rebase-arranco"] = ("A1", ["A62-A1-04"], "VALID", set(), [inv0, rb, started])
     not_started = mod(rb, "no arrancó: BUDGET_RESERVED replanificado sobre la imagen",
                       lambda t: (t.update(rv=62, kind="ORDINARY"), t["loop"].update(phase="REVIEW_PENDING"),
-                                 t["requests"][0]["attempts"][0].update(state="BUDGET_RESERVED", inv="I1b", target=op, refs=copy.deepcopy(REFS1))))
+                                 t["requests"][0]["attempts"][0].update(state="BUDGET_RESERVED", inv="I1b", target=op, refs=copy.deepcopy(REFS1), not_started="NS-0")))
     T["a62-a1-04-LAUNCHING-tras-rebase-no-arranco"] = ("A1", ["A62-A1-04"], "VALID", set(), [inv0, rb, not_started])
     uncertain = mod(rb, "indeterminado: LAUNCH_UNCERTAIN con el Target original",
                     lambda t: (t.update(rv=62, kind="ORDINARY"), t["loop"].update(phase="REVIEW_PENDING"), t["requests"][0]["attempts"][0].update(state="LAUNCH_UNCERTAIN")))
     T["a62-a1-04-LAUNCHING-tras-rebase-incierto"] = ("A1", ["A62-A1-04"], "VALID", set(), [inv0, rb, uncertain])
     no_replan = mod(rb, "no arrancó sin replanificar", lambda t: (t.update(rv=62, kind="ORDINARY"), t["loop"].update(phase="REVIEW_PENDING"),
-                                                                  t["requests"][0]["attempts"][0].update(state="BUDGET_RESERVED")))
+                                                                  t["requests"][0]["attempts"][0].update(state="BUDGET_RESERVED", not_started="NS-0")))
     T["a62-a1-04-no-arranco-sin-replanificar"] = ("A1", ["A62-A1-04"], "INVALID", {"A1-P09", "I-H02", "V14-S18-target"}, [inv0, rb, no_replan])
     T["a62-a1-04-LAUNCHING-reescrito-en-la-reconciliacion"] = ("A1", ["A62-A1-04"], "INVALID", {"A1-P09"},
                                                                [inv0, mod(rb, "LAUNCHING reescrito", lambda t: t["requests"][0]["attempts"][0].update(target=op))])
     T["a62-a1-04-LAUNCHING-sin-imagen-en-el-mapa"] = ("A1", ["A62-A1-04"], "INVALID", {"A1-P02", "A1-P08"},
                                                       [inv0, mod(rb, "mapa sin c1", lambda t: t.update(last_rebase="M1-sin-c1", history=["M1-sin-c1"]))])
+
+    # ---- A62-A1T-01 (formal review R20261005T073911Z-2dfe; Coordinator order): a LAUNCHING Target through two rebases resolves by the chain
+    opp = obj("c1pp")
+    REFS2 = [{"commit": "a0pp", "path": DEC, "blob": "b-D"}, {"commit": "k0pp", "path": BND, "blob": "b-K"}]
+    t_inv0 = st("ARCHITECT_INVOKED con L1/1 en LAUNCHING (RunId R-L1)", 60, AR, "ARCHITECT_INVOKED", "ARL-10", o, "A1", val("A1"),
+                [req("L1", "ARL-10", o, "OPEN", [att(1, "LAUNCHING", "I1", o, 55, REFS0, snapshot=snap(1, 1, 1), run_id="R-L1")])], entries=[e1],
+                anc={"c1", "a0", "k0"})
+    t_rb1 = mod(t_inv0, "rebase 1 (M1): LAUNCHING conserva invocación, Target, RunId y reserva", lambda t: (
+        t.update(rv=61, kind="REBASE_RECONCILIATION", last_rebase="M1", history=["M1"], anc={"c1p", "a0p", "k0p"}),
+        t["loop"].update(object=op), t["requests"][0].update(object=op)))
+
+    def rb2(prev, label, mapname, image, history, extra=None):
+        def fn(t):
+            t.update(rv=62, kind="REBASE_RECONCILIATION", last_rebase=mapname, history=list(history), anc={image["commit"], "a0pp", "k0pp"})
+            t["loop"].update(object=image)
+            t["requests"][0].update(object=image)
+            if extra:
+                extra(t)
+        return mod(prev, label, fn)
+    t_rb2 = rb2(t_rb1, "rebase 2 (M2): el Target histórico c1 resuelve por la cadena M1 → M2", "M2", opp, ["M1", "M2"])
+    T["a62-a1t-01-t1-un-rebase-sin-cambio"] = ("A1", ["A62-A1T-01"], "VALID", set(), [t_inv0, t_rb1])
+    T["a62-a1t-01-t2-dos-rebases-resuelve-por-la-cadena"] = ("A1", ["A62-A1T-01"], "VALID", set(), [t_inv0, t_rb1, t_rb2])
+    t_rb1_bad = mod(t_rb1, "rebase 1 con M1 sin el eslabón c1 → c1p (punto de partida)", lambda t: t.update(last_rebase="M1-sin-c1", history=["M1-sin-c1"]))
+    T["a62-a1t-01-t3a-cadena-sin-el-eslabon-de-X"] = ("A1", ["A62-A1T-01"], "INVALID", {"A1-P08"},
+                                                       [t_rb1_bad, rb2(t_rb1_bad, "rebase 2 (M2) sin un eslabón para c1", "M2", opp, ["M1-sin-c1", "M2"])])
+    T["a62-a1t-01-t3b-M1-ausente-de-la-historia"] = ("A1", ["A62-A1T-01"], "INVALID", {"A1-P08", "A1-P11", "A1-F10"},
+                                                      [t_inv0, t_rb1, rb2(t_rb1, "rebase 2 que pierde M1 de la historia", "M2", opp, ["M2"])])
+    T["a62-a1t-01-t4-cadena-completa-con-otro-contenido"] = ("A1", ["A62-A1T-01"], "INVALID", {"A1-P02", "A1-P08"},
+                                                              [t_inv0, t_rb1, rb2(t_rb1, "rebase 2 (M2b): imagen con otro blob real", "M2b",
+                                                                                  obj("c1pp2", DOC, "b-C"), ["M1", "M2b"])])
+    a0 = lambda t: t["requests"][0]["attempts"][0]
+    T["a62-a1t-01-t5a-reescribe-la-invocacion"] = ("A1", ["A62-A1T-01"], "INVALID", {"A1-P09"},
+                                                   [t_inv0, t_rb1, rb2(t_rb1, "rebase 2 reescribe la invocación", "M2", opp, ["M1", "M2"], lambda t: a0(t).update(inv="I1x"))])
+    T["a62-a1t-01-t5b-cambia-el-RunId"] = ("A1", ["A62-A1T-01"], "INVALID", {"A1-P10"},
+                                           [t_inv0, t_rb1, rb2(t_rb1, "rebase 2 cambia el RunId", "M2", opp, ["M1", "M2"], lambda t: a0(t).update(run_id="R-OTRO"))])
+    T["a62-a1t-01-t5c-cambia-la-reserva"] = ("A1", ["A62-A1T-01"], "INVALID", {"A1-P10"},
+                                             [t_inv0, t_rb1, rb2(t_rb1, "rebase 2 cambia reserved_at", "M2", opp, ["M1", "M2"], lambda t: a0(t).update(reserved_at=62))])
+    T["a62-a1t-01-t5d-cambia-el-presupuesto"] = ("A1", ["A62-A1T-01"], "INVALID", {"A1-F01", "A1-P10"},
+                                                 [t_inv0, t_rb1, rb2(t_rb1, "rebase 2 cambia architect_launches", "M2", opp, ["M1", "M2"],
+                                                                     lambda t: t["entries"][0].update(architect_launches=2))])
+    T["a62-a1t-01-t5e-cambia-el-estado-del-intento"] = ("A1", ["A62-A1T-01"], "INVALID", {"A1-P10"},
+                                                        [t_inv0, t_rb1, rb2(t_rb1, "rebase 2 pasa el intento a LAUNCHED", "M2", opp, ["M1", "M2"],
+                                                                            lambda t: a0(t).update(state="LAUNCHED"))])
+    T["a62-a1t-01-t5f-cambia-los-linajes"] = ("A1", ["A62-A1T-01"], "INVALID", {"A1-P10"},
+                                              [t_inv0, t_rb1, rb2(t_rb1, "rebase 2 añade un linaje", "M2", opp, ["M1", "M2"],
+                                                                  lambda t: t.update(findings=[lin("LIN-9", "OPEN")]))])
+    T["a62-a1t-01-t5g-cambia-el-BudgetSnapshot"] = ("A1", ["A62-A1T-01"], "INVALID", {"A1-P10"},
+                                                    [t_inv0, t_rb1, rb2(t_rb1, "rebase 2 cambia el BudgetSnapshot", "M2", opp, ["M1", "M2"],
+                                                                        lambda t: a0(t).update(snapshot=snap(2, 2, 2)))])
+    t_ns = mod(t_rb2, "no arrancó (prueba NS-1), vigencia abierta: BUDGET_RESERVED replanificado sobre c1pp con la misma reserva", lambda t: (
+        t.update(rv=63, kind="ORDINARY"), t["loop"].update(phase="REVIEW_PENDING"),
+        a0(t).update(state="BUDGET_RESERVED", inv="I1c", target=opp, refs=copy.deepcopy(REFS2), not_started="NS-1")))
+    T["a62-a1t-01-t6-no-arranco-replanifica-sobre-X2"] = ("A1", ["A62-A1T-01"], "VALID", set(), [t_inv0, t_rb1, t_rb2, t_ns])
+    t_unc = mod(t_rb2, "arranque desconocido: LAUNCH_UNCERTAIN con el Target original", lambda t: (
+        t.update(rv=63, kind="ORDINARY"), t["loop"].update(phase="REVIEW_PENDING"), a0(t).update(state="LAUNCH_UNCERTAIN", outcome="UNCERTAIN")))
+    T["a62-a1t-01-t7-arranque-desconocido-LAUNCH_UNCERTAIN"] = ("A1", ["A62-A1T-01"], "VALID", set(), [t_inv0, t_rb1, t_rb2, t_unc])
+    T["a62-a1t-01-t7a-prueba-de-no-arranque-fabricada"] = ("A1", ["A62-A1T-01"], "INVALID", {"V14-S18-no-arranque"},
+                                                            [t_inv0, t_rb1, t_rb2, mod(t_ns, "replanificado sin prueba de no arranque", lambda t: a0(t).update(not_started=None))])
+    T["a62-a1t-01-t7b-relanza-el-incierto"] = ("A1", ["A62-A1T-01"], "INVALID", {"A1-P09"},
+                                               [t_inv0, t_rb1, t_rb2, t_unc, mod(t_unc, "LAUNCH_UNCERTAIN vuelve a LAUNCHING", lambda t: (
+                                                   t.update(rv=64), t["loop"].update(phase="ARCHITECT_INVOKED"), a0(t).update(state="LAUNCHING", outcome=None)))])
+    # ---- A62-A1T-O1: the first request of a REVIEWER loop is opened in the opening pair and belongs to the loop
+    T["a62-a1t-o1-primera-solicitud-abierta-en-el-par-de-apertura"] = ("A1", ["A62-A1T-O1"], "VALID", set(),
+                                                                       [rev_none, rev_open, rv_launch, rv_recv, sat_nf, closed_nf])
+    # ---- A62-A1T-O3: a REVIEWER authority SUPERSEDED by a custodied decision never reopens a loop
+    rec_s = {"last_request": "R1", "authorization": "GC-3", "validity": val("GC-3", "ENDED", "REVIEWER_SATISFIED"), "closed_at": 70, "closed_by": None}
+    r1s = req("R1", None, Y, "INGESTED", [att(1, "RESULT_INGESTED", "IR1", Y, 51, REFS0, {"evaluated": Y}, "VALID")], authz="GC-3")
+    closed_s = st("NONE tras cerrar (S) el bucle de GC-3, que sustituyó a GC-4", 70, requests=[r1s], v14=(1, 1, 1), anc=ANC, rclosures=[rec_s])
+    r2s4 = req("R2", None, Y, "OPEN", [att(1, "BUDGET_RESERVED", "IR2", Y, 71, REFS0)], authz="GC-4")
+    reopen_s = mod(closed_s, "bucle REVIEWER abierto con GC-4 (SUPERSEDED por GC-3)", lambda t: (
+        t.update(rv=71, validity=val("GC-4"), v14=snap(2, 2, 2)), t["loop"].update(type=RV, phase="REVIEW_PENDING", object=Y, authorization="GC-4"),
+        t["requests"].append(copy.deepcopy(r2s4))))
+    T["a62-a1t-o3-reapertura-con-una-autoridad-SUPERSEDED"] = ("A1", ["A62-A1T-O3"], "INVALID", {"A1-R05"}, [closed_s, reopen_s])
 
     # ---- A62-A1-05: reviewed-object equivalence through a rebase
     inv5 = st("ARCHITECT_INVOKED con L1/1 LAUNCHED", 70, AR, "ARCHITECT_INVOKED", "ARL-10", o, "A1", val("A1"),
@@ -1066,11 +1151,11 @@ def main():
         for tag in tags:
             coverage.setdefault(tag, []).append(name)
     required = ["A62-A1-0%d" % i for i in range(1, 7)] + ["A62-A1-O%d" % i for i in range(1, 6)] + ["OBS-A1-01"] + ["OBS-A1-01/R%d" % i for i in range(1, 11)] \
-        + ["A62-A1R-0%d" % i for i in range(1, 4)] + ["A62-A1R-O%d" % i for i in range(1, 6)] + ["A62-A1A-01", "A62-A1S-01", "A62-A1S-02"]
+        + ["A62-A1R-0%d" % i for i in range(1, 4)] + ["A62-A1R-O%d" % i for i in range(1, 6)] + ["A62-A1A-01", "A62-A1S-01", "A62-A1S-02", "A62-A1T-01", "A62-A1T-O1", "A62-A1T-O3"]
     missing = [t for t in required if t not in coverage]
     ok = ok and not missing
     with open(sys.argv[1], "w", encoding="utf-8", newline="\n") as f:
-        json.dump({"Script": "a1-counterexamples.py", "Version": "A-1 corregida (2026-10-05), con OBS-A1-01, A62-A1R-01..03, A62-A1A-01 y A62-A1S-01..02",
+        json.dump({"Script": "a1-counterexamples.py", "Version": "A-1 corregida (2026-10-05), con OBS-A1-01, A62-A1R-01..03, A62-A1A-01, A62-A1S-01..02, A62-A1T-01 y A62-A1T-O1..O3",
                    "Freeze": {"commit": "4c617e82b32b6c810b68d75fc19472efed22b393", "blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa"},
                    "Rules": RULES, "Coverage": {k: coverage[k] for k in sorted(coverage)}, "MissingCoverage": missing,
                    "Traces": results, "AllAsExpected": ok}, f, ensure_ascii=False, indent=1)
