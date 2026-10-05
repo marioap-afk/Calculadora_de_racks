@@ -2157,3 +2157,18 @@ al custodiado. Clasifica seis aristas reales de V14: dos de control, dos informa
   - 66 líneas de V14, en 25 secciones, nombran una de sus 14 comprobaciones (candidatas, aproximado).
 - **Ambigüedad legítima:** «16.1» ya falla cerrado.
 - **Límites:** `Complete` nunca pasa a true. No se cambian el manifiesto ni el generador; la decisión es de la revisión B.11 del Architect.
+
+## 52. Portabilidad: reconstrucción en un clon limpio (orden nocturna §10; EXPERIMENTAL)
+
+CI de la precisión de B.11, `c891863d…`, y de las correcciones `01ade261…` y `aeda77c4…`: ver la cola. El kit v3c (`e77c51bd`) tiene la corrida
+**37279114391**, push, head_sha exacto, cuatro jobs en `success`.
+
+`portability/reconstruct.py` corre en un clon limpio (`--no-local`, sin conversión de fin de línea, sin remoto) de `aeda77c4`, como proceso distinto y
+solo desde artefactos custodiados.
+- **Resultado:** 7/7 pasos reconstruidos. El arnés de A-1, las secuencias combinadas, P4, P8 y las lecturas P1/P2 salen idénticos byte a byte; el
+  unittest de los helpers da PASS; B.11 es idéntico tras el mapeo declarado.
+- **PORT-01:** el generador F3 fija el commit histórico `4c617e82`, inalcanzable en un clon limpio. Se resuelve por el `rebase-map.json` custodiado
+  (imagen `1d5cdbec`, mismo blob).
+- **PORT-02:** las pruebas de los helpers dependían del cwd o de `I62_REPO`. Corregido.
+- **PORT-03:** un defecto del propio script en su primera corrida. Corregido y declarado.
+- **No es un piloto FX.**
