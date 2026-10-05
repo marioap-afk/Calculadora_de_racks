@@ -1,15 +1,18 @@
-"""I-62 A-1 (FC-01, FC-02): exact counterexamples against the literal Freeze, and the same traces against the proposed delta.
+"""I-62 A-1 (FC-01, FC-02), corrected version (2026-10-05): exact counterexamples against the literal Freeze and against the corrected delta.
 
-F4 PREPARATION, not F4 production: this is not the state/v2 validator and implements no state machine. It encodes, for the few fields that FC-01 and
-FC-02 touch, the literal text of Proposal V14 (commit 4c617e82, blob 34ad80ea) and the delta proposed in docs/initiatives/I-62-A-1.md, and runs
-symbolic traces through both. A trace is a list of durable points; each pair (p, n) is checked like I-P13 / I-P05 / I-P10 check pairs, each point like
-I-S18 / I-H02 check files. The expected verdict of each trace is written next to it; the checks never read it.
+F4 PREPARATION, not F4 production: this is not the state/v2 validator and implements no state machine. It encodes, for the fields that FC-01 and FC-02
+touch, the literal text of Proposal V14 (commit 4c617e82, blob 34ad80ea) and the corrected delta of docs/initiatives/I-62-A-1.md, and runs symbolic
+traces through both. A trace is a list of durable points; each pair (p, n) is checked like I-P13 / I-P05 / I-P10 check pairs, each point like
+I-S18 / I-H02 check files.
 
-Literal clauses encoded (V14):
-  §20.5 states and «loop.object cambia en un solo par de puntos durables: CORRECTING → PUBLISHED»; B.8.8 orchestration.loop.object, review_requests[].object
-  («inmutable»), orchestration.budgets (one object per unit); I-S18 (architect_launches = intents with reserved_at ≠ null; no counter above its cap);
-  I-P13 (counters never decrease; loop.object only in CORRECTING → PUBLISHED or NONE → REVIEW_PENDING; attempt transitions of §20.6); I-P05 (a
-  REBASE_RECONCILIATION point changes exactly the SHA fields of StateFields); B.8.7 StateFields (closed list); I-H02 (ancestry of that same list).
+Every trace declares its expected verdict AND, for INVALID, the EXACT set of rule ids it must violate. A trace passes only if both match, so no negative
+trace can pass by an incidental failure (Coordinator disposition of A62-A1-O5). Each trace is tagged with the findings it covers; the result lists the
+coverage of A62-A1-01..06 and of the accepted OPTIONAL O1..O5.
+
+Modelled (O5): loop.type (ARCHITECT_REVIEW, REVIEWER, NONE), loop.instance_id, escalation, findings (lineages), action validity with replacement,
+continuation, EXPIRED and REVOKED, the per-loop budget entries with their authorization history, review requests and attempts with invocation, Target,
+reservation, branch-local references, result and outcome, the RebaseMap chain (custody.rebase_history), ResolveBranchRef and EquivalentReviewedObject.
+The two phase edges ARCHITECT_INVOKED -> REVIEW_PENDING / REREVIEW_PENDING are SM-05 (non-material, freeze-issues.md), not part of A-1.
 
 Usage: python a1-counterexamples.py <output json>
 """
@@ -17,296 +20,747 @@ import copy
 import json
 import sys
 
-CAPS = {"review_rounds": 3, "logical_requests": 3, "architect_launches": 9}
-LITERAL_STATE_FIELDS = ["chains.chain_base_sha", "chains.chain_red_sha", "last_window.verified_sha", "unverified_commits.sha", "last_evidence_commit"]
-REVIEW_TRANSITIONS = {  # §20.5 (only the edges used here) + the A-1 closing edge
-    ("NONE", "REVIEW_PENDING"), ("REVIEW_PENDING", "ARCHITECT_INVOKED"), ("ARCHITECT_INVOKED", "RESULT_INGESTED"),
-    ("RESULT_INGESTED", "ARCHITECT_SATISFIED"), ("RESULT_INGESTED", "CORRECTING"), ("CORRECTING", "PUBLISHED"), ("PUBLISHED", "CI_VERIFIED"),
-    ("CI_VERIFIED", "REREVIEW_PENDING"), ("REREVIEW_PENDING", "ARCHITECT_INVOKED"), ("RESULT_INGESTED", "ESCALATE_OWNER"),
-}
-CLOSING_FROM = {"ARCHITECT_SATISFIED", "ESCALATE_OWNER", "EXHAUSTED"}
-ATTEMPT_TRANSITIONS = {("INVOCATION_PLANNED", "BUDGET_RESERVED"), ("BUDGET_RESERVED", "LAUNCHING"), ("BUDGET_RESERVED", "BUDGET_RESERVED"),
-                       ("LAUNCHING", "LAUNCHED"), ("LAUNCHED", "RESULT_RECEIVED"), ("RESULT_RECEIVED", "RESULT_INGESTED")}
+AR, RV, NONE = "ARCHITECT_REVIEW", "REVIEWER", "NONE"
+FROZEN = {"review_rounds": 3, "logical_requests": 3, "architect_launches": 9}
+COUNTERS = ("review_rounds", "logical_requests", "architect_launches")
+EDGES = {("NONE", "REVIEW_PENDING"), ("REVIEW_PENDING", "ARCHITECT_INVOKED"), ("ARCHITECT_INVOKED", "RESULT_INGESTED"),
+         ("ARCHITECT_INVOKED", "ARCHITECT_SATISFIED"), ("ARCHITECT_INVOKED", "CORRECTING"), ("ARCHITECT_INVOKED", "ESCALATE_OWNER"),
+         ("RESULT_INGESTED", "ARCHITECT_SATISFIED"), ("RESULT_INGESTED", "CORRECTING"), ("RESULT_INGESTED", "ESCALATE_OWNER"),
+         ("CORRECTING", "PUBLISHED"), ("PUBLISHED", "CI_VERIFIED"), ("CI_VERIFIED", "REREVIEW_PENDING"), ("REREVIEW_PENDING", "ARCHITECT_INVOKED"),
+         ("ARCHITECT_INVOKED", "REVIEW_PENDING"), ("ARCHITECT_INVOKED", "REREVIEW_PENDING")}  # last two: SM-05
+ATTEMPT_EDGES_V14 = {("INVOCATION_PLANNED", "BUDGET_RESERVED"), ("INVOCATION_PLANNED", "CANCELLED_BEFORE_LAUNCH"), ("BUDGET_RESERVED", "LAUNCHING"),
+                     ("BUDGET_RESERVED", "CANCELLED_BEFORE_LAUNCH"), ("BUDGET_RESERVED", "BUDGET_RESERVED"), ("LAUNCHING", "LAUNCHED"),
+                     ("LAUNCHING", "RESULT_RECEIVED"), ("LAUNCHING", "LAUNCH_UNCERTAIN"), ("LAUNCHING", "BUDGET_RESERVED"),
+                     ("LAUNCHING", "CANCELLED_BEFORE_LAUNCH"), ("LAUNCHED", "RESULT_RECEIVED"), ("LAUNCHED", "LAUNCH_UNCERTAIN"),
+                     ("RESULT_RECEIVED", "RESULT_INGESTED")}
+ATTEMPT_EDGES_A1 = ATTEMPT_EDGES_V14 | {("INVOCATION_PLANNED", "INVOCATION_PLANNED")}  # D2-6: only in REBASE_RECONCILIATION
 TERMINAL = {"RESULT_INGESTED", "LAUNCH_UNCERTAIN", "CANCELLED_BEFORE_LAUNCH"}
 NOT_LAUNCHED = {"INVOCATION_PLANNED", "BUDGET_RESERVED"}
+CLOSABLE_REASONS = {"ARCHITECT_SATISFIED", "EXHAUSTED", "EXPIRED", "REVOKED"}
+
+RULES = {
+    "A1-F01": "D1-5 · I-S18: contadores de cada entrada de architect_budgets[] (architect_launches = intentos reservados de sus solicitudes; review_rounds ≤ logical_requests; ningún contador sobre su tope)",
+    "A1-F02": "D1-2 · topes efectivos = mínimo entre las constantes congeladas y el Budget de cada autorización de la entrada",
+    "A1-F03": "D1-5 · un bucle ARCHITECT_REVIEW activo tiene instance_id, su entrada abierta y su última autorización = action_validity",
+    "A1-F04": "D1-5 · como máximo una entrada abierta, la del bucle activo",
+    "A1-F05": "D1-5 · toda solicitud con loop_instance_id tiene su entrada",
+    "A1-F06": "D1-13 · un bucle REVIEWER o EXECUTION no tiene instance_id ni solicitudes abiertas con loop_instance_id",
+    "A1-F07": "D1-4 · el objeto budgets de V14 cuenta solo las solicitudes con loop_instance_id = null",
+    "A1-F09": "D2-9 · custody.rebase_history[] termina en last_rebase.map",
+    "A1-F10": "D2-10/D2-11 · toda referencia de rama de una invocación resuelve por ResolveBranchRef",
+    "A1-P01": "§20.5 + D1-9 (+ SM-05) · la transición de fase existe",
+    "A1-P02": "D1-10/D2-4 · loop.object cambia solo en CORRECTING → PUBLISHED, en la apertura, a null solo en LOOP_CLOSED de ARCHITECT_REVIEW y a su imagen probada en REBASE_RECONCILIATION",
+    "A1-P03": "D1-1 · instance_id = ARL-<record_version> en la apertura, inmutable con el bucle abierto, null tras LOOP_CLOSED",
+    "A1-P04": "D1-7 · entrada nueva solo en la apertura: exactamente una, con una ReviewLoopAuthorization nueva sin ContinuesLoopInstanceId y nunca usada",
+    "A1-P05": "D1-8 · sustitución o continuación dentro del bucle abierto: misma entrada, sin reinicio, SUPERSEDED solo desde OPEN, EXPIRED/REVOKED intactos",
+    "A1-P06": "D1-6 · las entradas no desaparecen, sus contadores no decrecen, una entrada cerrada no cambia, los topes no suben y un registro de autorización terminado no cambia",
+    "A1-P07": "D1-9/D1-13 · LOOP_CLOSED solo para ARCHITECT_REVIEW y solo sin trabajo vivo, con la escalada resuelta, la vigencia terminada (o revocada por la decisión de cierre) y la decisión exigida",
+    "A1-P08": "D2-2/D2-5 · la reconciliación lleva cada objeto vivo a su imagen probada (mismo path y blob) y exige imagen en el mapa para el Target de un intento en LAUNCHING",
+    "A1-P09": "D2-6 · transiciones de intento; un intento en LAUNCHING o posterior nunca cambia su invocación en sitio; B.1 tras un rebase replanifica sobre la imagen",
+    "A1-P10": "D2-8 · la reconciliación no cambia fase, presupuestos, linajes, estados de intento ni reserved_at",
+    "A1-P11": "D2-9 · rebase_history recibe exactamente el mapa nuevo en cada reconciliación y no cambia en otro caso",
+    "A1-P12": "D2-12 · un resultado solo cierra linajes y solo es VALID si su EvaluatedObject es EquivalentReviewedObject del objeto de su solicitud",
+    "A1-P13": "V14 I-P13 · una acción nueva (reserva, LAUNCHING) exige la vigencia de acción OPEN",
+    "A1-P14": "D1-3 · loop_instance_id de una solicitud es inmutable",
+    "A1-P15": "D2-2/D2-11 · una invocación nueva o replanificada tras un rebase reconstruye sus referencias de rama sobre las imágenes",
+    "A1-P16": "D1-15 · el OpenFindings de una reserva ARCHITECT incluye todo linaje en OPEN o STILL_OPEN, también los heredados",
+    "A1-P17": "D1-14 · el BudgetSnapshot de una reserva ARCHITECT copia la entrada de su loop_instance_id, no una cuenta por autorización",
+    "I-H02": "D2-3 · todo SHA de rama vivo del estado (incluidos loop.object, objetos OPEN y Targets no lanzados) es ancestro de HEAD fuera de una ventana",
+    "V14-S18-target": "V14 §20.6 · el Target de un intento no lanzado es el objeto de su solicitud",
+    "V14-S18-vigencia": "V14 I-S18 · con la vigencia terminada no hay intentos en INVOCATION_PLANNED ni en BUDGET_RESERVED",
+    "V14-§20.5": "V14 literal · la transición de fase existe (sin vuelta a NONE)",
+    "V14-I-P13-object": "V14 literal · loop.object cambia solo en CORRECTING → PUBLISHED o NONE → REVIEW_PENDING",
+    "V14-B.8.8-object": "V14 literal · review_requests[].object es inmutable",
+    "V14-I-P05": "V14 literal · la reconciliación cambia solo los campos SHA de StateFields",
+    "V14-I-S18": "V14 literal · un solo objeto budgets por unidad; ningún contador sobre su tope",
+    "V14-I-S18-ancestro": "V14 literal · AuthorizationRef y BindingRef CUSTODIED con Commit ancestro del punto",
+}
 
 
-# ------------------------------------------------------------------ helpers over the symbolic state
-def attempts(state):
-    for r in state["review_requests"]:
-        for a in r["attempts"]:
-            yield r, a
+# ------------------------------------------------------------------ helpers
+def entry_of(s, iid):
+    return next((e for e in s["entries"] if e["id"] == iid), None)
 
 
-def reserved(state, auth=None):
-    return sum(1 for r, a in attempts(state) if a["reserved_at"] is not None and (auth is None or r.get("authorization_id") == auth))
+def reserved(s, pred):
+    return sum(1 for r in s["requests"] if pred(r) for a in r["attempts"] if a["reserved_at"] is not None)
 
 
-def budget_entries(state):
-    b = state["budgets"]
-    return b if isinstance(b, list) else [dict(b, authorization_id=None)]
+def caps_of(s, e):
+    caps = dict(FROZEN)
+    for a in e["auths"]:
+        for k, v in s["decisions"][a["auth"]]["budget"].items():
+            caps[k] = min(caps[k], v)
+    return caps
 
 
-def live_commit_fields(state, amended):
-    """SHA fields that I-H02 checks (literal: B.8.7 list; amended: + loop object, OPEN request objects, Targets of not-launched attempts)."""
-    out = {"last_evidence_commit": state["last_evidence_commit"]}
-    if amended:
-        if state["loop"]["object"] is not None:
-            out["loop.object.commit"] = state["loop"]["object"]["commit"]
-        for r in state["review_requests"]:
-            if r["state"] == "OPEN":
-                out["review_requests[%s].object.commit" % r["id"]] = r["object"]["commit"]
-            for a in r["attempts"]:
-                if a["state"] in NOT_LAUNCHED:
-                    out["review_requests[%s].attempts[%d].Target.commit" % (r["id"], a["seq"])] = a["target"]["commit"]
-    return out
+def chain(c, s):
+    """Image of commit c through the custodied RebaseMap chain (D2-10, without the final HEAD and blob checks); None if unproven."""
+    hist, maps = s["history"], s["maps"]
+    first = next((i for i, m in enumerate(hist) if c in maps[m]["commits"]), None)
+    if first is None:
+        return None
+    cur = maps[hist[first]]["commits"][c]
+    for m in hist[first + 1:]:
+        if cur in maps[m]["commits"]:
+            cur = maps[m]["commits"][cur]
+        elif cur not in maps[m]["main_before"]:
+            return None  # a step of the chain is missing: never guessed
+    return cur
 
 
-# ------------------------------------------------------------------ file invariants (I-S18 subset, I-H02 subset)
-def file_checks(state, amended):
+def resolve(ref, s):
+    """ResolveBranchRef (D2-10): RESOLVED commit or None."""
+    c = ref["commit"]
+    if c in s["anc"] and s["blobs"].get((c, ref["path"])) == ref["blob"]:
+        return c
+    img = chain(c, s)
+    if img is not None and img in s["anc"] and s["blobs"].get((img, ref["path"])) == ref["blob"]:
+        return img
+    return None
+
+
+def equivalent(a, b, s):
+    """EquivalentReviewedObject (D2-12)."""
+    if (a["path"], a["blob"]) != (b["path"], b["blob"]):
+        return False
+    return a["commit"] == b["commit"] or chain(a["commit"], s) == b["commit"] or chain(b["commit"], s) == a["commit"]
+
+
+def open_validity(s):
+    return s["validity"] is not None and s["validity"]["state"] == "OPEN"
+
+
+def mapped(s):
+    return s["maps"][s["last_rebase"]]["commits"] if s["last_rebase"] else {}
+
+
+# ------------------------------------------------------------------ corrected A-1: file checks
+def file_a1(s):
     v = []
-    for entry in budget_entries(state):
-        auth = entry["authorization_id"]
-        if entry["architect_launches"] != reserved(state, auth if amended else None):
-            v.append("I-S18: architect_launches ≠ intentos reservados%s" % ("" if not amended else " de " + str(auth)))
-        for k, cap in CAPS.items():
-            if entry[k] > cap:
-                v.append("I-S18: %s = %d supera su tope %d%s (P-18)" % (k, entry[k], cap, "" if auth is None else " en " + auth))
-    if amended:
-        ids = [e["authorization_id"] for e in budget_entries(state)]
-        if len(ids) != len(set(ids)):
-            v.append("A-1: budgets[] único por authorization_id")
-        if any(r.get("authorization_id") is None for r in state["review_requests"]):
-            v.append("A-1: review_requests[] sin authorization_id")
-    for r, a in attempts(state):
-        if a["state"] in NOT_LAUNCHED and a["target"] != r["object"]:
-            v.append("§20.6: el Target del intento no lanzado %s/%d ≠ el objeto de su solicitud" % (r["id"], a["seq"]))
-    for field, sha in live_commit_fields(state, amended).items():
-        if sha not in state["head_ancestors"] and state["last_point"] != "Q0":
-            v.append("I-H02: %s = %s no es ancestro de HEAD" % (field, sha))
+    add = lambda rule, msg: v.append((rule, msg))
+    for e in s["entries"]:
+        al = reserved(s, lambda r, i=e["id"]: r["loop"] == i)
+        if e["architect_launches"] != al or e["review_rounds"] > e["logical_requests"] or any(e[k] > e["caps"][k] for k in COUNTERS):
+            add("A1-F01", "contadores de %s incoherentes o sobre su tope (P-18)" % e["id"])
+        if e["caps"] != caps_of(s, e):
+            add("A1-F02", "topes de %s ≠ mínimo de las autorizaciones %s" % (e["id"], caps_of(s, e)))
+    lp = s["loop"]
+    if lp["type"] == AR:
+        e = entry_of(s, lp["instance"])
+        val = s["validity"]
+        last = e["auths"][-1] if e else None
+        if e is None or e["closed_at"] is not None or val is None or last is None or \
+                (last["auth"], last["state"], last["reason"]) != (val["auth"], val["state"], val["reason"]):
+            add("A1-F03", "bucle activo sin su entrada abierta coherente con action_validity")
+    for e in s["entries"]:
+        if e["closed_at"] is None and not (lp["type"] == AR and e["id"] == lp["instance"]):
+            add("A1-F04", "entrada abierta %s que no es la del bucle activo" % e["id"])
+    for r in s["requests"]:
+        if r["loop"] is not None and entry_of(s, r["loop"]) is None:
+            add("A1-F05", "solicitud %s sin entrada %s" % (r["id"], r["loop"]))
+    if lp["type"] in (RV, "EXECUTION") and (lp["instance"] is not None or any(r["state"] == "OPEN" and r["loop"] is not None for r in s["requests"])):
+        add("A1-F06", "bucle %s con identidad de bucle del Architect" % lp["type"])
+    al14 = reserved(s, lambda r: r["loop"] is None)
+    if s["v14"]["architect_launches"] != al14 or any(s["v14"][k] > FROZEN[k] for k in COUNTERS):
+        add("A1-F07", "el objeto budgets de V14 no cuenta solo las solicitudes sin loop_instance_id")
+    for r in s["requests"]:
+        for a in r["attempts"]:
+            if a["state"] in NOT_LAUNCHED and a["target"] != r["object"]:
+                add("V14-S18-target", "Target de %s/%d ≠ objeto de su solicitud" % (r["id"], a["seq"]))
+            if a["state"] in NOT_LAUNCHED and s["validity"] is not None and s["validity"]["state"] == "ENDED":
+                add("V14-S18-vigencia", "intento %s/%d no lanzado con la vigencia terminada" % (r["id"], a["seq"]))
+            for ref in a["refs"]:
+                if resolve(ref, s) is None:
+                    add("A1-F10", "referencia %s@%s de %s/%d no resuelve" % (ref["path"], ref["commit"], r["id"], a["seq"]))
+    if s["last_point"] != "Q0":
+        live = []
+        if lp["object"] is not None:
+            live.append(("loop.object", lp["object"]["commit"]))
+        for r in s["requests"]:
+            if r["state"] == "OPEN":
+                live.append(("review_requests[%s].object" % r["id"], r["object"]["commit"]))
+            live += [("%s/%d.Target" % (r["id"], a["seq"]), a["target"]["commit"]) for a in r["attempts"] if a["state"] in NOT_LAUNCHED]
+        for field, c in live:
+            if c not in s["anc"]:
+                add("I-H02", "%s = %s no es ancestro de HEAD" % (field, c))
+    if s["last_rebase"] is not None and (not s["history"] or s["history"][-1] != s["last_rebase"]):
+        add("A1-F09", "rebase_history no termina en last_rebase")
     return v
 
 
-# ------------------------------------------------------------------ pair invariants (I-P13, I-P05, §20.5)
-def pair_checks(p, n, amended):
+# ------------------------------------------------------------------ corrected A-1: pair checks
+def new_reservation(v, a, r, n):
+    if not open_validity(n):
+        v.append(("A1-P13", "reserva de %s/%d sin vigencia OPEN" % (r["id"], a["seq"])))
+    if r["loop"] is None:
+        return
+    e = entry_of(n, r["loop"])
+    if e is not None and a["snapshot"] != {k: e[k] for k in COUNTERS}:
+        v.append(("A1-P17", "BudgetSnapshot de %s/%d ≠ entrada %s" % (r["id"], a["seq"], e["id"])))
+    open_lineages = {f["lineage"] for f in n["findings"] if f["state"] in ("OPEN", "STILL_OPEN")}
+    if not open_lineages <= set(a["open_findings"]):
+        v.append(("A1-P16", "OpenFindings de %s/%d sin %s" % (r["id"], a["seq"], sorted(open_lineages - set(a["open_findings"])))))
+
+
+def pair_a1(p, n):
     v = []
+    add = lambda rule, msg: v.append((rule, msg))
     pl, nl = p["loop"], n["loop"]
     edge = (pl["phase"], nl["phase"])
-    rebase = n["point_kind"] == "REBASE_RECONCILIATION"
-    closing = amended and pl["phase"] in CLOSING_FROM and nl["phase"] == "NONE"
-    if pl["phase"] != nl["phase"] and edge not in REVIEW_TRANSITIONS and not closing:
-        v.append("§20.5: transición %s → %s no existe" % edge)
+    rebase = n["kind"] == "REBASE_RECONCILIATION"
+    closing = pl["type"] == AR and nl["type"] == NONE
+    opening = pl["type"] == NONE and nl["type"] == AR
+    same = pl["type"] == AR and nl["type"] == AR
+    mp = mapped(n)
+    if pl["phase"] != nl["phase"] and edge not in EDGES and not closing:
+        add("A1-P01", "transición %s → %s no existe" % edge)
+    if pl["type"] not in (NONE, AR) and nl["type"] == NONE:
+        add("A1-P07", "LOOP_CLOSED no se aplica a un bucle %s" % pl["type"])
     if pl["object"] != nl["object"]:
-        allowed = edge in {("CORRECTING", "PUBLISHED"), ("NONE", "REVIEW_PENDING")}
-        if amended and closing and nl["object"] is None:
-            allowed = True
-        if amended and rebase and pl["object"] and nl["object"] and pl["phase"] == nl["phase"] \
-                and (pl["object"]["path"], pl["object"]["blob"]) == (nl["object"]["path"], nl["object"]["blob"]) \
-                and n["rebase_map"].get(pl["object"]["commit"]) == nl["object"]["commit"]:
-            allowed = True
-        if not allowed:
-            v.append("I-P13: loop.object cambia en %s → %s" % edge)
-    if closing:
-        if any(a["state"] not in TERMINAL for _, a in attempts(p)) or any(r["state"] == "OPEN" for r in p["review_requests"]):
-            v.append("A-1: LOOP_CLOSED con una solicitud OPEN o un intento no terminal")
-        if nl["authorization"] is not None or n["action_validity"] is not None:
-            v.append("A-1: LOOP_CLOSED deja autorización o vigencia")
-        if p["action_validity"] is None or p["action_validity"]["state"] != "ENDED":
-            v.append("A-1: LOOP_CLOSED sin vigencia de acción terminada")
-    if amended and edge == ("NONE", "REVIEW_PENDING"):
-        used = {e["authorization_id"] for e in budget_entries(p)}
-        if nl["authorization"] in used:
-            v.append("A-1: un bucle nuevo exige una ReviewLoopAuthorization nueva (reutiliza %s)" % nl["authorization"])
-    # budgets never decrease and never reset (literal: one object; amended: per authorization, append-only)
-    pe = {e["authorization_id"]: e for e in budget_entries(p)}
-    ne = {e["authorization_id"]: e for e in budget_entries(n)}
-    for auth, e in pe.items():
-        if auth not in ne:
-            v.append("I-P13: desaparece la entrada de presupuesto %s" % auth)
+        ok = (edge == ("CORRECTING", "PUBLISHED") and nl["object"] is not None) or \
+             (pl["type"] == NONE and pl["object"] is None and nl["object"] is not None and edge == ("NONE", "REVIEW_PENDING")) or \
+             (closing and nl["object"] is None)
+        if rebase and pl["object"] and nl["object"] and pl["phase"] == nl["phase"] and \
+                (pl["object"]["path"], pl["object"]["blob"]) == (nl["object"]["path"], nl["object"]["blob"]) and mp.get(pl["object"]["commit"]) == nl["object"]["commit"]:
+            ok = True
+        if not ok:
+            add("A1-P02", "loop.object cambia en %s → %s" % edge)
+    if (opening and nl["instance"] != "ARL-%d" % n["rv"]) or (same and nl["instance"] != pl["instance"]) or (closing and nl["instance"] is not None):
+        add("A1-P03", "instance_id incorrecto")
+    pe = {e["id"]: e for e in p["entries"]}
+    ne = {e["id"]: e for e in n["entries"]}
+    used = {a["auth"] for e in p["entries"] for a in e["auths"]}
+    new_ids = set(ne) - set(pe)
+    if opening:
+        a_id = n["validity"]["auth"] if n["validity"] else None
+        d = n["decisions"].get(a_id, {})
+        e = ne.get(nl["instance"])
+        if new_ids != {nl["instance"]} or e is None or e["auths"] != [auth(a_id)] or d.get("kind") != "RLA" or d.get("continues") is not None \
+                or a_id in used or nl["authorization"] != a_id:
+            add("A1-P04", "apertura sin exactamente una entrada nueva con una autorización nueva no usada")
+    elif new_ids:
+        add("A1-P04", "entrada nueva %s fuera de la apertura" % sorted(new_ids))
+    if same and p["validity"] and n["validity"] and n["validity"]["auth"] != p["validity"]["auth"]:
+        a2 = n["validity"]["auth"]
+        d = n["decisions"].get(a2, {})
+        ep, en = pe.get(pl["instance"]), ne.get(nl["instance"])
+        bad = d.get("kind") != "RLA" or d.get("continues") != pl["instance"] or a2 in used or ep is None or en is None
+        if not bad:
+            last = ep["auths"][-1]
+            if last["state"] == "OPEN":
+                prev = dict(last, state="ENDED", reason="SUPERSEDED", by=a2)
+            elif last["reason"] in ("EXPIRED", "REVOKED"):
+                prev = last
+            else:
+                prev, bad = None, True
+            if prev is not None and en["auths"] != ep["auths"][:-1] + [prev, auth(a2)]:
+                bad = True
+            if any(en[k] != ep[k] for k in COUNTERS):
+                bad = True
+        if pl["phase"] != nl["phase"] or pl["object"] != nl["object"]:
+            bad = True
+        if bad:
+            add("A1-P05", "sustitución o continuación inválida dentro del bucle %s" % pl["instance"])
+    for iid, e in pe.items():
+        f = ne.get(iid)
+        if f is None:
+            add("A1-P06", "desaparece la entrada %s" % iid)
             continue
-        for k in CAPS:
-            if ne[auth][k] < e[k]:
-                v.append("I-P13: %s decrece%s" % (k, "" if auth is None else " en " + auth))
-        if amended and auth != nl["authorization"] and ne[auth] != e:
-            v.append("A-1: cambia el presupuesto de una autorización cerrada (%s)" % auth)
-    # review requests: append-only; object immutable (amended: OPEN requests take their image in a reconciliation)
-    prs = {r["id"]: r for r in p["review_requests"]}
-    for r in n["review_requests"]:
+        active = pl["type"] == AR and pl["instance"] == iid
+        if any(f[k] < e[k] for k in COUNTERS) or (not active and f != e) or any(f["caps"][k] > e["caps"][k] for k in COUNTERS):
+            add("A1-P06", "la entrada %s decrece, sube sus topes o cambia cerrada" % iid)
+        for i, a in enumerate(e["auths"]):
+            g = f["auths"][i] if i < len(f["auths"]) else None
+            if g is None or (a["state"] == "ENDED" and g != a) or g["auth"] != a["auth"]:
+                add("A1-P06", "cambia un registro de autorización de %s" % iid)
+    if closing:
+        iid = pl["instance"]
+        ep, en = pe.get(iid), ne.get(iid)
+        reqs = [r for r in p["requests"] if r["loop"] == iid]
+        bad = any(r["state"] == "OPEN" for r in reqs) or any(a["state"] not in TERMINAL for r in reqs for a in r["attempts"])
+        bad = bad or (p["escalation"]["state"] != NONE and not p["escalation"]["resolved_by"]) or n["escalation"]["state"] != NONE
+        bad = bad or en is None or ep is None or en["closed_at"] != n["rv"]
+        vp = p["validity"]
+        need = True
+        if not bad and vp and vp["state"] == "ENDED" and vp["reason"] in CLOSABLE_REASONS:
+            need = vp["reason"] != "ARCHITECT_SATISFIED"
+            bad = en["auths"] != ep["auths"]
+        elif not bad and vp and vp["state"] == "OPEN":
+            dd = n["decisions"].get(en["closed_by"], {})
+            bad = not dd.get("revokes") or en["auths"] != ep["auths"][:-1] + [dict(ep["auths"][-1], state="ENDED", reason="REVOKED", by=en["closed_by"])]
+        else:
+            bad = True
+        if not bad and need:
+            dd = n["decisions"].get(en["closed_by"], {})
+            bad = dd.get("kind") != "CLOSE" or dd.get("loop") != iid
+        bad = bad or nl["authorization"] is not None or n["validity"] is not None or nl["object"] is not None or nl["phase"] != NONE
+        bad = bad or p["requests"] != n["requests"] or p["findings"] != n["findings"] or (en is not None and ep is not None and any(en[k] != ep[k] for k in COUNTERS))
+        if bad:
+            add("A1-P07", "LOOP_CLOSED de %s sin sus condiciones" % iid)
+    prs = {r["id"]: r for r in p["requests"]}
+    pf = {f["lineage"]: f for f in p["findings"]}
+    for r in n["requests"]:
         q = prs.get(r["id"])
         if q is None:
+            for a in r["attempts"]:
+                if a["reserved_at"] is not None:
+                    new_reservation(v, a, r, n)
             continue
+        if q["loop"] != r["loop"]:
+            add("A1-P14", "cambia loop_instance_id de %s" % r["id"])
         if q["object"] != r["object"]:
-            ok = amended and rebase and q["state"] == "OPEN" and (q["object"]["path"], q["object"]["blob"]) == (r["object"]["path"], r["object"]["blob"]) \
-                and n["rebase_map"].get(q["object"]["commit"]) == r["object"]["commit"]
-            if not ok:
-                v.append("B.8.8: review_requests[%s].object es inmutable" % r["id"])
+            if not (rebase and q["state"] == "OPEN" and (q["object"]["path"], q["object"]["blob"]) == (r["object"]["path"], r["object"]["blob"])
+                    and mp.get(q["object"]["commit"]) == r["object"]["commit"]):
+                add("A1-P08", "objeto de %s cambia sin imagen probada" % r["id"])
         qa = {a["seq"]: a for a in q["attempts"]}
         for a in r["attempts"]:
             b = qa.get(a["seq"])
             if b is None:
+                if a["reserved_at"] is not None:
+                    new_reservation(v, a, r, n)
                 continue
-            if b["state"] != a["state"] and (b["state"], a["state"]) not in ATTEMPT_TRANSITIONS:
-                v.append("I-P13: intento %s/%d %s → %s" % (r["id"], a["seq"], b["state"], a["state"]))
-            if b["target"] != a["target"]:
-                # §20.6 / I-P13: only a not-launched attempt may be replanned, with a new InvocationId and inside the same reservation; a LAUNCHING or
-                # later attempt keeps its Target (B.8.8: invocation immutable from LAUNCHING)
-                if b["state"] not in NOT_LAUNCHED or a["state"] != b["state"]:
-                    v.append("I-P13/B.8.8: Target de un intento lanzado o terminal reescrito (%s/%d, %s)" % (r["id"], a["seq"], b["state"]))
-                elif a["invocation_id"] == b["invocation_id"] or a["reserved_at"] != b["reserved_at"]:
-                    v.append("§20.6: replanificación sin InvocationId nuevo o fuera de la misma reserva (%s/%d)" % (r["id"], a["seq"]))
-                elif amended and rebase and (n["rebase_map"].get(b["target"]["commit"]) != a["target"]["commit"]
-                                             or (b["target"]["path"], b["target"]["blob"]) != (a["target"]["path"], a["target"]["blob"])):
-                    v.append("A-1: el Target replanificado no es la imagen del original (%s/%d)" % (r["id"], a["seq"]))
-            if b["state"] in TERMINAL and a != b:
-                v.append("I-P13: un intento terminal cambia")
-    if missing := [r for r in p["review_requests"] if r["id"] not in {x["id"] for x in n["review_requests"]}]:
-        v.append("I-P13: desaparecen solicitudes %s" % [r["id"] for r in missing])
-    # I-P05: what a reconciliation may change
-    if rebase:
-        if any(pe.get(a) != ne.get(a) for a in set(pe) | set(ne)):
-            v.append("I-P05: la reconciliación cambia contadores")
-        if pl["phase"] != nl["phase"]:
-            v.append("I-P05: la reconciliación cambia la fase")
-        if not amended:
-            changed = []
-            if pl["object"] != nl["object"]:
-                changed.append("orchestration.loop.object.commit")
-            if [r["object"] for r in p["review_requests"]] != [r["object"] for r in n["review_requests"]]:
-                changed.append("orchestration.review_requests[].object.commit")
-            if changed:
-                v.append("I-P05: la reconciliación cambia campos fuera de StateFields %s" % changed)
+            tr = (b["state"], a["state"])
+            if (b["state"] != a["state"] and tr not in ATTEMPT_EDGES_A1) or (tr == ("INVOCATION_PLANNED", "INVOCATION_PLANNED") and not rebase) \
+                    or (b["state"] in TERMINAL and a != b):
+                add("A1-P09", "intento %s/%d %s → %s" % (r["id"], a["seq"], b["state"], a["state"]))
+            if b["target"] != a["target"] or b["inv"] != a["inv"]:
+                if b["state"] in NOT_LAUNCHED and a["state"] == b["state"]:
+                    if a["inv"] == b["inv"] or a["reserved_at"] != b["reserved_at"]:
+                        add("A1-P09", "replanificación de %s/%d sin InvocationId nuevo o fuera de su reserva" % (r["id"], a["seq"]))
+                    if rebase and (mp.get(b["target"]["commit"]) != a["target"]["commit"] or
+                                   (b["target"]["path"], b["target"]["blob"]) != (a["target"]["path"], a["target"]["blob"])):
+                        add("A1-P08", "Target replanificado de %s/%d no es la imagen probada" % (r["id"], a["seq"]))
+                    if rebase and any(x["commit"] not in n["anc"] for x in a["refs"]):
+                        add("A1-P15", "invocación replanificada de %s/%d con referencias originales" % (r["id"], a["seq"]))
+                elif tr == ("LAUNCHING", "BUDGET_RESERVED"):
+                    img = b["target"]["commit"] if b["target"]["commit"] in n["anc"] else chain(b["target"]["commit"], n)
+                    if a["inv"] == b["inv"] or a["reserved_at"] != b["reserved_at"] or a["target"] != dict(b["target"], commit=img):
+                        add("A1-P09", "B.1 de %s/%d sin invocación nueva sobre la imagen" % (r["id"], a["seq"]))
+                    if any(x["commit"] not in n["anc"] for x in a["refs"]):
+                        add("A1-P15", "invocación replanificada de %s/%d con referencias originales" % (r["id"], a["seq"]))
+                else:
+                    add("A1-P09", "invocación o Target de %s/%d (%s) reescritos en sitio" % (r["id"], a["seq"], b["state"]))
+            elif tr == ("LAUNCHING", "BUDGET_RESERVED") and b["target"]["commit"] not in n["anc"]:
+                add("A1-P09", "B.1 de %s/%d tras un rebase sin invocación nueva sobre la imagen" % (r["id"], a["seq"]))
+            if rebase and b["state"] == "LAUNCHING" and b["target"]["commit"] not in n["anc"] and b["target"]["commit"] not in mp \
+                    and b["target"]["commit"] not in n["maps"][n["last_rebase"]]["main_before"]:
+                add("A1-P08", "Target de LAUNCHING %s/%d sin imagen en el mapa" % (r["id"], a["seq"]))
+            if rebase and (a["state"] != b["state"] or a["reserved_at"] != b["reserved_at"]):
+                add("A1-P10", "la reconciliación cambia el intento %s/%d" % (r["id"], a["seq"]))
+            if b["reserved_at"] is None and a["reserved_at"] is not None:
+                new_reservation(v, a, r, n)
+            if a["state"] == "LAUNCHING" and b["state"] != "LAUNCHING" and not open_validity(n):
+                add("A1-P13", "LAUNCHING de %s/%d sin vigencia OPEN" % (r["id"], a["seq"]))
+            if a["state"] == "RESULT_INGESTED" and b["state"] != "RESULT_INGESTED":
+                eq = equivalent(a["result"]["evaluated"], r["object"], n)
+                closed_now = [f for f in n["findings"] if f["state"] == "CLOSED" and pf.get(f["lineage"], {}).get("state") != "CLOSED"]
+                if (a["outcome"] == "VALID" and not eq) or (closed_now and (not eq or a["outcome"] != "VALID")):
+                    add("A1-P12", "resultado de %s/%d ingerido sin objeto equivalente" % (r["id"], a["seq"]))
+    if rebase and (pl["phase"] != nl["phase"] or p["findings"] != n["findings"] or p["v14"] != n["v14"]
+                   or any(pe[i][k] != ne.get(i, pe[i])[k] for i in pe for k in COUNTERS)):
+        add("A1-P10", "la reconciliación cambia fase, presupuestos o linajes")
+    if n["last_rebase"] != p["last_rebase"]:
+        if not rebase or n["history"] != p["history"] + [n["last_rebase"]]:
+            add("A1-P11", "rebase_history no recibe exactamente el mapa nuevo")
+    elif n["history"] != p["history"]:
+        add("A1-P11", "rebase_history cambia sin reconciliación")
     return v
 
 
-def run(trace, amended):
+# ------------------------------------------------------------------ literal V14 (the Freeze as written)
+def file_v14(s):
+    v = []
+    al = reserved(s, lambda r: True)
+    if s["v14"]["architect_launches"] != al or any(s["v14"][k] > FROZEN[k] for k in COUNTERS):
+        v.append(("V14-I-S18", "budgets único de la unidad: incoherente o sobre su tope (P-18)"))
+    for r in s["requests"]:
+        for a in r["attempts"]:
+            for ref in a["refs"]:
+                if ref["commit"] not in s["anc"] or s["blobs"].get((ref["commit"], ref["path"])) != ref["blob"]:
+                    v.append(("V14-I-S18-ancestro", "%s@%s no es ancestro del punto" % (ref["path"], ref["commit"])))
+    return v
+
+
+def pair_v14(p, n):
+    v = []
+    pl, nl = p["loop"], n["loop"]
+    edge = (pl["phase"], nl["phase"])
+    if pl["phase"] != nl["phase"] and edge not in EDGES:
+        v.append(("V14-§20.5", "transición %s → %s no existe" % edge))
+    if pl["object"] != nl["object"] and edge not in {("CORRECTING", "PUBLISHED"), ("NONE", "REVIEW_PENDING")}:
+        v.append(("V14-I-P13-object", "loop.object cambia en %s → %s" % edge))
+    prs = {r["id"]: r for r in p["requests"]}
+    changed_orch = pl["object"] != nl["object"]
+    for r in n["requests"]:
+        q = prs.get(r["id"])
+        if q is None:
+            continue
+        if q["object"] != r["object"]:
+            v.append(("V14-B.8.8-object", "review_requests[%s].object es inmutable" % r["id"]))
+            changed_orch = True
+        if any(a != b for a, b in zip(q["attempts"], r["attempts"])):
+            changed_orch = True
+    if n["kind"] == "REBASE_RECONCILIATION" and changed_orch:
+        v.append(("V14-I-P05", "la reconciliación cambia campos fuera de StateFields"))
+    if any(n["v14"][k] < p["v14"][k] for k in COUNTERS):
+        v.append(("V14-I-P13-contadores", "un contador decrece"))
+    return v
+
+
+def run(trace, validator):
+    ff, pp = (file_a1, pair_a1) if validator == "A1" else (file_v14, pair_v14)
     out = []
     for k, point in enumerate(trace):
-        for x in file_checks(point, amended):
-            out.append("punto %d (%s): %s" % (k, point["label"], x))
+        out += [(rule, "punto %d (%s): %s" % (k, point["label"], msg)) for rule, msg in ff(point)]
         if k:
-            for x in pair_checks(trace[k - 1], point, amended):
-                out.append("par %d→%d (%s): %s" % (k - 1, k, point["label"], x))
-    return ("VALID" if not out else "INVALID"), out
+            out += [(rule, "par %d→%d (%s): %s" % (k - 1, k, point["label"], msg)) for rule, msg in pp(trace[k - 1], point)]
+    return ("VALID" if not out else "INVALID"), sorted({r for r, _ in out}), [m for _, m in out]
 
 
-# ------------------------------------------------------------------ symbolic states
-def obj(commit, path="docs/initiatives/U-proposal-v1.md", blob="b-X1"):
-    return {"commit": commit, "path": path, "blob": blob}
+# ------------------------------------------------------------------ symbolic world
+DOC, DEC, BND, IMPL = "docs/initiatives/U-proposal.md", "docs/automation/decisions/U.md", "docs/automation/evidence/U-agent/bindings/B1.json", "src/impl.cs"
+BLOBS = {}
+for c, path, blob in [("x1", DOC, "b-X1"), ("x1p", DOC, "b-X1"), ("x1pp", DOC, "b-X1"), ("x2", DOC, "b-X2"), ("x3", DOC, "b-X3"), ("y1", IMPL, "b-Y1"),
+                      ("c1", DOC, "b-C"), ("c1p", DOC, "b-C"), ("c1pp", DOC, "b-C"),
+                      ("a0", DEC, "b-D"), ("a0p", DEC, "b-D"), ("a0pp", DEC, "b-D"), ("k0", BND, "b-K"), ("k0p", BND, "b-K"), ("k0pp", BND, "b-K")]:
+    BLOBS[(c, path)] = blob
+MAPS = {"M1": {"commits": {"c1": "c1p", "a0": "a0p", "k0": "k0p", "x1": "x1p"}, "main_before": {"m0"}},
+        "M2": {"commits": {"c1p": "c1pp", "a0p": "a0pp", "k0p": "k0pp", "x1p": "x1pp"}, "main_before": {"m0", "m1"}},
+        "M1-sin-c1": {"commits": {"a0": "a0p", "k0": "k0p", "x1": "x1p"}, "main_before": {"m0"}}}
+DECISIONS = {"A1": {"kind": "RLA", "continues": None, "budget": dict(FROZEN)},
+             "A2": {"kind": "RLA", "continues": None, "budget": dict(FROZEN)},
+             "A2c": {"kind": "RLA", "continues": "ARL-10", "budget": {"review_rounds": 2, "logical_requests": 2, "architect_launches": 6}},
+             "A3up": {"kind": "RLA", "continues": "ARL-10", "budget": dict(FROZEN)},
+             "CLOSE-10": {"kind": "CLOSE", "loop": "ARL-10", "revokes": False},
+             "CLOSE-10-REV": {"kind": "CLOSE", "loop": "ARL-10", "revokes": True},
+             "GC-1": {"kind": "GATE_CONTRACT", "budget": {}}}
+REFS0 = [{"commit": "a0", "path": DEC, "blob": "b-D"}, {"commit": "k0", "path": BND, "blob": "b-K"}]
+REFS1 = [{"commit": "a0p", "path": DEC, "blob": "b-D"}, {"commit": "k0p", "path": BND, "blob": "b-K"}]
 
 
-def state(label, phase, loop_obj, auth, requests, budgets, ancestors, point_kind="ORDINARY", rebase_map=None, validity="OPEN", last_point="QU"):
-    return {"label": label, "loop": {"type": "NONE" if phase == "NONE" else "ARCHITECT_REVIEW", "phase": phase, "object": loop_obj, "authorization": auth},
-            "action_validity": None if auth is None else {"authorization_id": auth, "state": validity}, "review_requests": requests, "budgets": budgets,
-            "last_evidence_commit": "e1", "head_ancestors": set(ancestors), "point_kind": point_kind, "rebase_map": rebase_map or {}, "last_point": last_point}
+def obj(c, path=DOC, blob=None):
+    return {"commit": c, "path": path, "blob": blob or BLOBS[(c, path)]}
 
 
-def request(rid, o, st, atts, auth=None):
-    r = {"id": rid, "object": o, "state": st, "attempts": atts}
-    if auth is not None:
-        r["authorization_id"] = auth
-    return r
+def auth(a, state="OPEN", reason=None, by=None):
+    return {"auth": a, "state": state, "reason": reason, "by": by}
 
 
-def attempt(seq, st, target, reserved_at, inv):
-    return {"seq": seq, "state": st, "target": target, "reserved_at": reserved_at, "invocation_id": inv}
+def entry(iid, auths, rr, lr, al, closed_at=None, closed_by=None):
+    e = {"id": iid, "auths": auths, "review_rounds": rr, "logical_requests": lr, "architect_launches": al, "closed_at": closed_at, "closed_by": closed_by}
+    e["caps"] = caps_of({"decisions": DECISIONS}, e)
+    return e
 
 
-def literal_budget(rounds, requests, launches):
-    return {"review_rounds": rounds, "logical_requests": requests, "architect_launches": launches}
+def att(seq, state, inv, target, reserved_at, refs=(), result=None, outcome=None, open_findings=(), snapshot=None):
+    return {"seq": seq, "state": state, "inv": inv, "target": target, "reserved_at": reserved_at, "refs": copy.deepcopy(list(refs)),
+            "result": result, "outcome": outcome, "open_findings": list(open_findings), "snapshot": snapshot}
 
 
-def amended_budget(auth, rounds, requests, launches):
-    return {"authorization_id": auth, "review_rounds": rounds, "logical_requests": requests, "architect_launches": launches}
+def req(rid, loop, o, state, attempts):
+    return {"id": rid, "loop": loop, "object": o, "state": state, "attempts": attempts}
 
 
-def fc01_traces():
-    """Design loop over three versions (X1, X2, X3) under A1 reaches ARCHITECT_SATISFIED; READY-06 then needs a second loop over the implementation Y."""
-    anc = {"e1", "x1", "x2", "x3", "y1"}
-    r3 = lambda auth=None: [request("L%d" % i, obj("x%d" % i, blob="b-X%d" % i), "INGESTED",
-                                    [attempt(1, "RESULT_INGESTED", obj("x%d" % i, blob="b-X%d" % i), 10 + i, "I%d" % i)], auth) for i in (1, 2, 3)]
-    yreq = lambda auth=None: request("L4", obj("y1", "src/impl.cs", "b-Y1"), "OPEN", [attempt(1, "BUDGET_RESERVED", obj("y1", "src/impl.cs", "b-Y1"), 20, "I4")], auth)
-    sat_lit = state("ARCHITECT_SATISFIED de A1", "ARCHITECT_SATISFIED", obj("x3", blob="b-X3"), "A1", r3(), literal_budget(3, 3, 3), anc, validity="ENDED")
-    traces = {}
-    # literal 1: reopen directly over Y
-    traces["fc01-literal-reabrir-sobre-Y"] = ("INVALID", False, [
-        sat_lit, state("REVIEW_PENDING sobre Y (A2)", "REVIEW_PENDING", obj("y1", "src/impl.cs", "b-Y1"), "A2", r3() + [yreq()], literal_budget(4, 4, 4), anc)])
-    # literal 2: close to NONE, then open over Y
-    traces["fc01-literal-cerrar-y-abrir"] = ("INVALID", False, [
-        sat_lit, state("NONE", "NONE", None, None, r3(), literal_budget(3, 3, 3), anc),
-        state("REVIEW_PENDING sobre Y (A2)", "REVIEW_PENDING", obj("y1", "src/impl.cs", "b-Y1"), "A2", r3() + [yreq()], literal_budget(4, 4, 4), anc)])
-    # amended: LOOP_CLOSED, then a new loop under a NEW authorization with its own budget entry; A1's entry stays as history
-    sat_am = state("ARCHITECT_SATISFIED de A1", "ARCHITECT_SATISFIED", obj("x3", blob="b-X3"), "A1", r3("A1"), [amended_budget("A1", 3, 3, 3)], anc, validity="ENDED")
-    closed = state("LOOP_CLOSED → NONE", "NONE", None, None, r3("A1"), [amended_budget("A1", 3, 3, 3)], anc)
-    opened = state("REVIEW_PENDING sobre Y (A2)", "REVIEW_PENDING", obj("y1", "src/impl.cs", "b-Y1"), "A2", r3("A1") + [yreq("A2")],
-                   [amended_budget("A1", 3, 3, 3), amended_budget("A2", 1, 1, 1)], anc)
-    traces["fc01-enmendado-cerrar-y-abrir-con-A2"] = ("VALID", True, [sat_am, closed, opened])
-    # amended negatives
-    reuse = copy.deepcopy(opened); reuse["loop"]["authorization"] = "A1"; reuse["action_validity"]["authorization_id"] = "A1"
-    reuse["review_requests"][-1]["authorization_id"] = "A1"; reuse["budgets"] = [amended_budget("A1", 4, 4, 4)]; reuse["label"] = "reabre con A1"
-    traces["fc01-enmendado-reutiliza-A1"] = ("INVALID", True, [sat_am, closed, reuse])
-    open_req = copy.deepcopy(sat_am); open_req["review_requests"][-1]["state"] = "OPEN"; open_req["label"] = "ARCHITECT_SATISFIED con L3 OPEN (sintético)"
-    traces["fc01-enmendado-cierra-con-solicitud-abierta"] = ("INVALID", True, [open_req, closed])
-    reset = copy.deepcopy(opened); reset["budgets"][0] = amended_budget("A1", 0, 0, 3); reset["label"] = "A2 abre y reinicia A1"
-    traces["fc01-enmendado-reinicia-A1"] = ("INVALID", True, [sat_am, closed, reset])
-    null_late = state("objeto null fuera del cierre", "REVIEW_PENDING", None, "A1", r3("A1"), [amended_budget("A1", 3, 3, 3)], anc)
-    traces["fc01-enmendado-object-null-fuera-del-cierre"] = ("INVALID", True, [sat_am, null_late])
-    return traces
+def lin(lid, state, severity="REQUIRED"):
+    return {"lineage": lid, "severity": severity, "issuer": "ARCHITECT", "state": state}
 
 
-def fc02_traces():
-    """An out-of-window rebase during an active loop: X@c1 OPEN in L1 with a BUDGET_RESERVED attempt; the rebase maps c1 → c1'."""
-    before_anc, after_anc = {"e1", "c1"}, {"e1", "c1p"}
+def snap(rr, lr, al):
+    return {"review_rounds": rr, "logical_requests": lr, "architect_launches": al}
+
+
+def st(label, rv, ltype=NONE, phase="NONE", instance=None, o=None, authz=None, validity=None, requests=(), findings=(), entries=(), v14=(0, 0, 0),
+       anc=(), kind="ORDINARY", last_rebase=None, history=(), escalation=(NONE, None), blobs=None):
+    return {"label": label, "rv": rv, "kind": kind, "last_point": "QU",
+            "loop": {"type": ltype, "phase": phase, "instance": instance, "object": o, "authorization": authz},
+            "validity": validity, "escalation": {"state": escalation[0], "resolved_by": escalation[1]},
+            "requests": copy.deepcopy(list(requests)), "findings": copy.deepcopy(list(findings)), "entries": copy.deepcopy(list(entries)),
+            "v14": snap(*v14), "history": list(history), "last_rebase": last_rebase, "anc": set(anc), "blobs": dict(BLOBS if blobs is None else blobs),
+            "decisions": DECISIONS, "maps": MAPS}
+
+
+def val(a, state="OPEN", reason=None, by=None):
+    return {"auth": a, "state": state, "reason": reason, "by": by}
+
+
+def mod(s, label, fn):
+    t = copy.deepcopy(s)
+    t["label"] = label
+    fn(t)
+    return t
+
+
+# ------------------------------------------------------------------ traces
+def traces():
+    T = {}
+    ANC = {"x1", "x2", "x3", "y1", "a0", "k0", "c1"}
+
+    def ing(i, loop):
+        o = obj("x%d" % i)
+        return req("L%d" % i, loop, o, "INGESTED", [att(1, "RESULT_INGESTED", "I%d" % i, o, 10 + i, REFS0, {"evaluated": o}, "VALID")])
+
+    # ---- FC-01 literal (the defect in the Freeze)
+    sat_lit = st("ARCHITECT_SATISFIED (V14)", 20, AR, "ARCHITECT_SATISFIED", None, obj("x3"), "A1", val("A1", "ENDED", "ARCHITECT_SATISFIED"),
+                 [ing(i, None) for i in (1, 2, 3)], [lin("LIN-1", "CLOSED")], v14=(3, 3, 3), anc=ANC)
+    y_lit = req("L4", None, obj("y1", IMPL), "OPEN", [att(1, "BUDGET_RESERVED", "I4", obj("y1", IMPL), 22, REFS0)])
+    reopen_lit = st("REVIEW_PENDING sobre Y (A2)", 22, AR, "REVIEW_PENDING", None, obj("y1", IMPL), "A2", val("A2"),
+                    [ing(i, None) for i in (1, 2, 3)] + [y_lit], [lin("LIN-1", "CLOSED")], v14=(4, 4, 4), anc=ANC)
+    none_lit = st("NONE", 21, findings=[lin("LIN-1", "CLOSED")], requests=[ing(i, None) for i in (1, 2, 3)], v14=(3, 3, 3), anc=ANC)
+    T["fc01-literal-reabrir-sobre-Y"] = ("V14", ["FC-01"], "INVALID", {"V14-§20.5", "V14-I-P13-object", "V14-I-S18"}, [sat_lit, reopen_lit])
+    T["fc01-literal-cerrar-y-abrir"] = ("V14", ["FC-01"], "INVALID", {"V14-§20.5", "V14-I-P13-object", "V14-I-S18"}, [sat_lit, none_lit, reopen_lit])
+
+    # ---- FC-01 corrected: close and open a new loop; negatives
+    e10_sat = entry("ARL-10", [auth("A1", "ENDED", "ARCHITECT_SATISFIED")], 3, 3, 3)
+    sat = st("ARCHITECT_SATISFIED de ARL-10", 20, AR, "ARCHITECT_SATISFIED", "ARL-10", obj("x3"), "A1", val("A1", "ENDED", "ARCHITECT_SATISFIED"),
+             [ing(i, "ARL-10") for i in (1, 2, 3)], [lin("LIN-1", "CLOSED")], [e10_sat], anc=ANC)
+    closed = st("LOOP_CLOSED → NONE", 21, requests=sat["requests"], findings=sat["findings"], entries=[dict(e10_sat, closed_at=21)], anc=ANC)
+    y = req("L4", "ARL-22", obj("y1", IMPL), "OPEN", [att(1, "BUDGET_RESERVED", "I4", obj("y1", IMPL), 22, REFS0, snapshot=snap(1, 1, 1))])
+    opened = st("apertura de ARL-22 con A2", 22, AR, "REVIEW_PENDING", "ARL-22", obj("y1", IMPL), "A2", val("A2"), sat["requests"] + [y], sat["findings"],
+                [dict(e10_sat, closed_at=21), entry("ARL-22", [auth("A2")], 1, 1, 1)], anc=ANC)
+    T["fc01-enmendado-cerrar-y-abrir-con-A2"] = ("A1", ["A62-A1-02", "A62-A1-O1"], "VALID", set(), [sat, closed, opened])
+
+    def reuse_fn(t):
+        t["loop"]["authorization"] = "A1"
+        t["validity"] = val("A1")
+        t["entries"][1] = entry("ARL-22", [auth("A1")], 1, 1, 1)
+    T["fc01-enmendado-reutiliza-A1"] = ("A1", ["A62-A1-O1"], "INVALID", {"A1-P04"}, [sat, closed, mod(opened, "reabre con A1", reuse_fn)])
+    T["fc01-enmendado-cierra-con-solicitud-abierta"] = ("A1", ["A62-A1-02"], "INVALID", {"A1-P07"},
+                                                        [mod(sat, "L3 OPEN (sintético)", lambda t: t["requests"][2].update(state="OPEN")), closed])
+
+    def reset_fn(t):
+        t["entries"][0].update(review_rounds=0, logical_requests=0)
+    T["fc01-enmendado-reinicia-A1"] = ("A1", ["A62-A1-01"], "INVALID", {"A1-P06"}, [sat, closed, mod(opened, "A2 abre y reinicia ARL-10", reset_fn)])
+
+    e10 = entry("ARL-10", [auth("A1")], 1, 1, 1)
+    corr = st("CORRECTING (A1 OPEN)", 30, AR, "CORRECTING", "ARL-10", obj("x1"), "A1", val("A1"), [ing(1, "ARL-10")], [lin("LIN-1", "OPEN")], [e10], anc=ANC)
+    T["fc01-enmendado-object-null-fuera-del-cierre"] = ("A1", ["A62-A1-O5"], "INVALID", {"A1-P02"},
+                                                        [corr, mod(corr, "PUBLISHED con loop.object = null", lambda t: (t["loop"].update(phase="PUBLISHED", object=None), t.update(rv=31)))])
+
+    # ---- A62-A1-01: replacement inside an open loop
+    e10_rep = entry("ARL-10", [auth("A1", "ENDED", "SUPERSEDED", "A2c"), auth("A2c")], 1, 1, 1)
+    rep = st("A2c sustituye a A1 (continúa ARL-10)", 31, AR, "CORRECTING", "ARL-10", obj("x1"), "A2c", val("A2c"), [ing(1, "ARL-10")], [lin("LIN-1", "OPEN")],
+             [e10_rep], anc=ANC)
+
+    def rereview(prev, rv0, auth_id, entry_after, snapshot):
+        pub = mod(prev, "PUBLISHED x2", lambda t: (t["loop"].update(phase="PUBLISHED", object=obj("x2")), t.update(rv=rv0)))
+        civ = mod(pub, "CI_VERIFIED", lambda t: (t["loop"].update(phase="CI_VERIFIED"), t.update(rv=rv0 + 1)))
+        l2 = req("L2", "ARL-10", obj("x2"), "OPEN", [att(1, "BUDGET_RESERVED", "I2", obj("x2"), rv0 + 2, REFS0, open_findings=["LIN-1"], snapshot=snapshot)])
+        rr = mod(civ, "REREVIEW_PENDING: reserva en la misma entrada", lambda t: (t["loop"].update(phase="REREVIEW_PENDING"), t.update(rv=rv0 + 2),
+                                                                                    t["requests"].append(l2), t.update(entries=[entry_after])))
+        return [pub, civ, rr]
+    e10_rep2 = entry("ARL-10", [auth("A1", "ENDED", "SUPERSEDED", "A2c"), auth("A2c")], 2, 2, 2)
+    T["a62-a1-01-sustitucion-continua-la-misma-entrada"] = ("A1", ["A62-A1-01", "A62-A1-O2"], "VALID", set(),
+                                                            [corr, rep] + rereview(rep, 32, "A2c", e10_rep2, snap(2, 2, 2)))
+    T["a62-a1-o2-snapshot-por-autorizacion"] = ("A1", ["A62-A1-O2"], "INVALID", {"A1-P17"},
+                                                [corr, rep] + rereview(rep, 32, "A2c", e10_rep2, snap(1, 1, 1)))
+
+    def new_entry_fn(t):
+        t["entries"] = [entry("ARL-10", [auth("A1", "ENDED", "SUPERSEDED", "A2c")], 1, 1, 1), entry("ARL-31", [auth("A2c")], 0, 0, 0)]
+    T["a62-a1-01-sustitucion-crea-entrada-nueva"] = ("A1", ["A62-A1-01"], "INVALID", {"A1-F03", "A1-F04", "A1-P04", "A1-P05"},
+                                                     [corr, mod(rep, "A2c abre otra entrada", new_entry_fn)])
+    T["a62-a1-01-sustitucion-reinicia-contadores"] = ("A1", ["A62-A1-01"], "INVALID", {"A1-P05", "A1-P06"},
+                                                      [corr, mod(rep, "A2c reinicia contadores", lambda t: t["entries"][0].update(review_rounds=0, logical_requests=0))])
+
+    def up_fn(t):
+        t.update(rv=32)
+        t["loop"]["authorization"] = "A3up"
+        t["validity"] = val("A3up")
+        e = entry("ARL-10", [auth("A1", "ENDED", "SUPERSEDED", "A2c"), auth("A2c", "ENDED", "SUPERSEDED", "A3up"), auth("A3up")], 1, 1, 1)
+        e["caps"] = dict(FROZEN)
+        t["entries"] = [e]
+    T["a62-a1-01-sustitucion-sube-topes"] = ("A1", ["A62-A1-01"], "INVALID", {"A1-F02", "A1-P06"}, [corr, rep, mod(rep, "A3up sube los topes", up_fn)])
+
+    # ---- A62-A1-02: EXPIRED / REVOKED
+    e10_exp = entry("ARL-10", [auth("A1", "ENDED", "EXPIRED")], 1, 1, 1)
+    exp = st("CORRECTING con A1 EXPIRED", 40, AR, "CORRECTING", "ARL-10", obj("x1"), "A1", val("A1", "ENDED", "EXPIRED"), [ing(1, "ARL-10")],
+             [lin("LIN-1", "OPEN")], [e10_exp], anc=ANC, escalation=("COORDINATOR", "CLOSE-10"))
+    closed_exp = st("LOOP_CLOSED por CLOSE-10", 41, requests=exp["requests"], findings=exp["findings"],
+                    entries=[dict(e10_exp, closed_at=41, closed_by="CLOSE-10")], anc=ANC)
+    T["a62-a1-02-expirada-y-cerrada"] = ("A1", ["A62-A1-02", "A62-A1-O3", "A62-A1-O4"], "VALID", set(), [exp, closed_exp])
+    e10_rev = entry("ARL-10", [auth("A1", "ENDED", "REVOKED", "REV-A1")], 1, 1, 1)
+    rev = mod(exp, "CORRECTING con A1 REVOKED", lambda t: (t.update(validity=val("A1", "ENDED", "REVOKED", "REV-A1"), entries=[copy.deepcopy(e10_rev)])))
+    T["a62-a1-02-revocada-y-cerrada"] = ("A1", ["A62-A1-02", "A62-A1-O4"], "VALID", set(),
+                                         [rev, mod(closed_exp, "LOOP_CLOSED tras REVOKED", lambda t: t.update(entries=[dict(e10_rev, closed_at=41, closed_by="CLOSE-10")]))])
+    open_close_p = mod(exp, "CORRECTING con A1 OPEN", lambda t: t.update(validity=val("A1"), entries=[copy.deepcopy(e10)], escalation={"state": NONE, "resolved_by": None}))
+    open_close_n = mod(closed_exp, "LOOP_CLOSED que revoca A1", lambda t: t.update(entries=[dict(entry("ARL-10", [auth("A1", "ENDED", "REVOKED", "CLOSE-10-REV")], 1, 1, 1),
+                                                                                                 closed_at=41, closed_by="CLOSE-10-REV")]))
+    T["a62-a1-02-cierre-que-revoca-la-vigente"] = ("A1", ["A62-A1-02", "A62-A1-O4"], "VALID", set(), [open_close_p, open_close_n])
+    T["a62-a1-02-cierre-sin-decision"] = ("A1", ["A62-A1-02"], "INVALID", {"A1-P07"},
+                                          [exp, mod(closed_exp, "LOOP_CLOSED sin decisión", lambda t: t["entries"][0].update(closed_by=None))])
+    T["a62-a1-02-cierre-con-escalada-sin-resolver"] = ("A1", ["A62-A1-02"], "INVALID", {"A1-P07"},
+                                                       [mod(exp, "escalada al Owner sin resolver", lambda t: t.update(escalation={"state": "OWNER", "resolved_by": None})), closed_exp])
+    exp_c = mod(exp, "CORRECTING con A1 EXPIRED (sin escalada)",lambda t: t.update(escalation={"state": NONE, "resolved_by": None}))
+    e10_cont = entry("ARL-10", [auth("A1", "ENDED", "EXPIRED"), auth("A2c")], 1, 1, 1)
+    cont = mod(exp_c, "A2c continúa ARL-10 tras EXPIRED", lambda t: (t.update(rv=41, validity=val("A2c"), entries=[copy.deepcopy(e10_cont)]),
+                                                                     t["loop"].update(authorization="A2c")))
+    T["a62-a1-02-expirada-y-continuada"] = ("A1", ["A62-A1-02"], "VALID", set(),
+                                            [exp_c, cont] + rereview(cont, 42, "A2c", entry("ARL-10", [auth("A1", "ENDED", "EXPIRED"), auth("A2c")], 2, 2, 2), snap(2, 2, 2)))
+    T["a62-a1-02-reescribe-EXPIRED-como-SUPERSEDED"] = ("A1", ["A62-A1-02"], "INVALID", {"A1-P05", "A1-P06"},
+                                                        [exp_c, mod(cont, "EXPIRED reescrito", lambda t: t["entries"][0]["auths"][0].update(reason="SUPERSEDED", by="A2c"))])
+    T["a62-a1-02-continuacion-crea-entrada"] = ("A1", ["A62-A1-02"], "INVALID", {"A1-F03", "A1-F04", "A1-P04", "A1-P05"},
+                                                [exp_c, mod(cont, "A2c abre otra entrada", lambda t: t.update(entries=[copy.deepcopy(e10_exp), entry("ARL-41", [auth("A2c")], 0, 0, 0)]))])
+    civ_exp = mod(exp_c, "CI_VERIFIED con A1 EXPIRED", lambda t: (t.update(rv=43), t["loop"].update(phase="CI_VERIFIED", object=obj("x2"))))
+    l2x = req("L2", "ARL-10", obj("x2"), "OPEN", [att(1, "BUDGET_RESERVED", "I2", obj("x2"), 44, REFS0, open_findings=["LIN-1"], snapshot=snap(2, 2, 2))])
+    act = mod(civ_exp, "reserva bajo A1 EXPIRED", lambda t: (t.update(rv=44, entries=[entry("ARL-10", [auth("A1", "ENDED", "EXPIRED")], 2, 2, 2)]),
+                                                            t["loop"].update(phase="REREVIEW_PENDING"), t["requests"].append(l2x)))
+    T["a62-a1-02-accion-nueva-con-vigencia-terminada"] = ("A1", ["A62-A1-02"], "INVALID", {"A1-P13", "V14-S18-vigencia"}, [civ_exp, act])
+
+    # ---- A62-A1-03: loop.type scope
+    r1 = req("R1", None, obj("y1", IMPL), "OPEN", [att(1, "BUDGET_RESERVED", "IR1", obj("y1", IMPL), 51, REFS0)])
+    rev_none = st("NONE", 50, anc=ANC)
+    rev_open = st("bucle REVIEWER autorizado por el contrato de gate GC-1", 51, RV, "REVIEW_PENDING", None, obj("y1", IMPL), "GC-1", val("GC-1"), [r1], v14=(1, 1, 1), anc=ANC)
+    T["a62-a1-03-reviewer-autorizado-por-contrato-de-gate"] = ("A1", ["A62-A1-03"], "VALID", set(), [rev_none, rev_open])
+    T["a62-a1-03-reviewer-con-identidad-de-architect"] = ("A1", ["A62-A1-03"], "INVALID", {"A1-F06"},
+                                                          [rev_none, mod(rev_open, "REVIEWER con instance_id", lambda t: t["loop"].update(instance="ARL-51"))])
+    l9 = req("L9", "ARL-51", obj("y1", IMPL), "OPEN", [att(1, "BUDGET_RESERVED", "I9", obj("y1", IMPL), 51, REFS0, snapshot=snap(1, 1, 1))])
+    T["a62-a1-03-architect-sin-entrada"] = ("A1", ["A62-A1-03"], "INVALID", {"A1-F03", "A1-F05", "A1-P04"},
+                                            [rev_none, st("ARCHITECT_REVIEW sin entrada", 51, AR, "REVIEW_PENDING", "ARL-51", obj("y1", IMPL), "A2", val("A2"), [l9], anc=ANC)])
+    r1i = req("R1", None, obj("y1", IMPL), "INGESTED", [att(1, "RESULT_INGESTED", "IR1", obj("y1", IMPL), 51, REFS0, {"evaluated": obj("y1", IMPL)}, "VALID")])
+    rev_done = st("REVIEWER RESULT_INGESTED", 52, RV, "RESULT_INGESTED", None, obj("y1", IMPL), "GC-1", val("GC-1", "ENDED", "ARCHITECT_SATISFIED"), [r1i], v14=(1, 1, 1), anc=ANC)
+    T["a62-a1-03-LOOP_CLOSED-no-se-extiende-a-REVIEWER"] = ("A1", ["A62-A1-03"], "INVALID", {"A1-P01", "A1-P02", "A1-P07"},
+                                                            [rev_done, st("NONE", 53, requests=[r1i], v14=(1, 1, 1), anc=ANC)])
+
+    # ---- FC-02 literal
     o, op = obj("c1"), obj("c1p")
-    base = lambda auth=None: [request("L1", o, "OPEN", [attempt(1, "BUDGET_RESERVED", o, 5, "I1")], auth)]
-    traces = {}
-    p_lit = state("REVIEW_PENDING antes del rebase", "REVIEW_PENDING", o, "A1", base(), literal_budget(1, 1, 1), before_anc)
-    # literal option 1: reconcile orchestration in the QU
-    rec_lit = state("QU REBASE_RECONCILIATION (reconcilia)", "REVIEW_PENDING", op, "A1",
-                    [request("L1", op, "OPEN", [attempt(1, "BUDGET_RESERVED", op, 5, "I1b")])], literal_budget(1, 1, 1), after_anc,
-                    point_kind="REBASE_RECONCILIATION", rebase_map={"c1": "c1p"})
-    traces["fc02-literal-reconciliar-orquestacion"] = ("INVALID", False, [p_lit, rec_lit])
-    # literal option 2: leave them; the literal validator ACCEPTS a stale Target that is not on the branch (the hole)
-    stale_lit = state("QU REBASE_RECONCILIATION (no reconcilia)", "REVIEW_PENDING", o, "A1", base(), literal_budget(1, 1, 1), after_anc,
-                      point_kind="REBASE_RECONCILIATION", rebase_map={"c1": "c1p"})
-    traces["fc02-literal-no-reconciliar-hueco"] = ("VALID", False, [p_lit, stale_lit])
-    # amended: images with the same path/blob/phase/counters; the not-launched attempt replanned within the same reservation
-    p_am = state("REVIEW_PENDING antes del rebase", "REVIEW_PENDING", o, "A1", base("A1"), [amended_budget("A1", 1, 1, 1)], before_anc)
-    rec_am = state("QU REBASE_RECONCILIATION", "REVIEW_PENDING", op, "A1",
-                   [request("L1", op, "OPEN", [attempt(1, "BUDGET_RESERVED", op, 5, "I1b")], "A1")], [amended_budget("A1", 1, 1, 1)], after_anc,
-                   point_kind="REBASE_RECONCILIATION", rebase_map={"c1": "c1p"})
-    traces["fc02-enmendado-reconcilia"] = ("VALID", True, [p_am, rec_am])
-    stale_am = state("QU REBASE_RECONCILIATION (no reconcilia)", "REVIEW_PENDING", o, "A1", base("A1"), [amended_budget("A1", 1, 1, 1)], after_anc,
-                     point_kind="REBASE_RECONCILIATION", rebase_map={"c1": "c1p"})
-    traces["fc02-enmendado-no-reconciliar-lo-detecta-I-H02"] = ("INVALID", True, [p_am, stale_am])
-    # a LAUNCHED attempt keeps its historical Target (and so does its OPEN request? no: the request object takes its image; the attempt keeps the original)
-    launched = lambda tgt, rid_obj, inv: [request("L1", rid_obj, "OPEN", [attempt(1, "LAUNCHED", tgt, 5, inv)], "A1")]
-    p_l = state("ARCHITECT_INVOKED antes del rebase", "ARCHITECT_INVOKED", o, "A1", launched(o, o, "I1"), [amended_budget("A1", 1, 1, 1)], before_anc)
-    keep = state("QU REBASE_RECONCILIATION", "ARCHITECT_INVOKED", op, "A1", launched(o, op, "I1"), [amended_budget("A1", 1, 1, 1)], after_anc,
-                 point_kind="REBASE_RECONCILIATION", rebase_map={"c1": "c1p"})
-    traces["fc02-enmendado-LAUNCHED-conserva-su-Target"] = ("VALID", True, [p_l, keep])
-    rewrite = state("QU REBASE_RECONCILIATION (reescribe un LAUNCHED)", "ARCHITECT_INVOKED", op, "A1", launched(op, op, "I1"), [amended_budget("A1", 1, 1, 1)],
-                    after_anc, point_kind="REBASE_RECONCILIATION", rebase_map={"c1": "c1p"})
-    traces["fc02-enmendado-reescribir-un-LAUNCHED"] = ("INVALID", True, [p_l, rewrite])
-    other_blob = copy.deepcopy(rec_am); other_blob["loop"]["object"]["blob"] = "b-otro"; other_blob["label"] = "imagen con otro blob"
-    traces["fc02-enmendado-imagen-con-otro-blob"] = ("INVALID", True, [p_am, other_blob])
-    counters = copy.deepcopy(rec_am); counters["budgets"] = [amended_budget("A1", 1, 1, 2)]; counters["label"] = "la reconciliación cambia contadores"
-    counters["review_requests"][0]["attempts"][0]["reserved_at"] = 5
-    traces["fc02-enmendado-reconciliacion-cambia-contadores"] = ("INVALID", True, [p_am, counters])
-    return traces
+    p_lit = st("REVIEW_PENDING antes del rebase (V14)", 90, AR, "REVIEW_PENDING", None, o, "A1", val("A1"),
+               [req("L1", None, o, "OPEN", [att(1, "BUDGET_RESERVED", "I1", o, 85)])], v14=(1, 1, 1), anc={"c1"})
+    rec_lit = st("QU REBASE_RECONCILIATION (reconcilia)", 91, AR, "REVIEW_PENDING", None, op, "A1", val("A1"),
+                 [req("L1", None, op, "OPEN", [att(1, "BUDGET_RESERVED", "I1b", op, 85)])], v14=(1, 1, 1), anc={"c1p"},
+                 kind="REBASE_RECONCILIATION", last_rebase="M1", history=["M1"])
+    stale_lit = mod(p_lit, "QU REBASE_RECONCILIATION (no reconcilia)", lambda t: t.update(rv=91, kind="REBASE_RECONCILIATION", last_rebase="M1",
+                                                                                         history=["M1"], anc={"c1p"}))
+    T["fc02-literal-reconciliar-orquestacion"] = ("V14", ["FC-02"], "INVALID", {"V14-I-P05", "V14-I-P13-object", "V14-B.8.8-object"}, [p_lit, rec_lit])
+    T["fc02-literal-no-reconciliar-hueco"] = ("V14", ["FC-02"], "VALID", set(), [p_lit, stale_lit])
+
+    # ---- FC-02 corrected: reconciliation of the orchestration
+    e1 = entry("ARL-10", [auth("A1")], 1, 1, 1)
+    p_am = st("REVIEW_PENDING antes del rebase", 90, AR, "REVIEW_PENDING", "ARL-10", o, "A1", val("A1"),
+              [req("L1", "ARL-10", o, "OPEN", [att(1, "BUDGET_RESERVED", "I1", o, 85, REFS0)])], entries=[e1], anc={"c1", "a0", "k0"})
+    rec_am = st("QU REBASE_RECONCILIATION", 91, AR, "REVIEW_PENDING", "ARL-10", op, "A1", val("A1"),
+                [req("L1", "ARL-10", op, "OPEN", [att(1, "BUDGET_RESERVED", "I1b", op, 85, REFS1)])], entries=[e1], anc={"c1p", "a0p", "k0p"},
+                kind="REBASE_RECONCILIATION", last_rebase="M1", history=["M1"])
+    T["fc02-enmendado-reconcilia"] = ("A1", ["FC-02", "A62-A1-06"], "VALID", set(), [p_am, rec_am])
+    stale_am = mod(p_am, "QU REBASE_RECONCILIATION (no reconcilia)", lambda t: t.update(rv=91, kind="REBASE_RECONCILIATION", last_rebase="M1",
+                                                                                       history=["M1"], anc={"c1p", "a0p", "k0p"}))
+    T["fc02-enmendado-no-reconciliar-lo-detecta-I-H02"] = ("A1", ["FC-02"], "INVALID", {"I-H02"}, [p_am, stale_am])
+    T["fc02-enmendado-imagen-con-otro-blob"] = ("A1", ["FC-02"], "INVALID", {"A1-P02"},
+                                                [p_am, mod(rec_am, "imagen con otro blob", lambda t: t["loop"].update(object=obj("c1p", DOC, "b-otro")))])
+    T["fc02-enmendado-reconciliacion-cambia-contadores"] = ("A1", ["FC-02"], "INVALID", {"A1-F01", "A1-P10"},
+                                                            [p_am, mod(rec_am, "la reconciliación cambia contadores", lambda t: t["entries"][0].update(architect_launches=2))])
+    T["a62-a1-06-replanificada-con-referencias-originales"] = ("A1", ["A62-A1-06"], "INVALID", {"A1-P15"},
+                                                               [p_am, mod(rec_am, "replanificada sin reconstruir referencias", lambda t: t["requests"][0]["attempts"][0].update(refs=copy.deepcopy(REFS0)))])
+
+    # ---- A62-A1-04: LAUNCHING across a rebase
+    inv0 = st("ARCHITECT_INVOKED con L1/1 en LAUNCHING", 60, AR, "ARCHITECT_INVOKED", "ARL-10", o, "A1", val("A1"),
+              [req("L1", "ARL-10", o, "OPEN", [att(1, "LAUNCHING", "I1", o, 55, REFS0)])], entries=[e1], anc={"c1", "a0", "k0"})
+    rb = st("QU REBASE_RECONCILIATION (LAUNCHING conserva su invocación)", 61, AR, "ARCHITECT_INVOKED", "ARL-10", op, "A1", val("A1"),
+            [req("L1", "ARL-10", op, "OPEN", [att(1, "LAUNCHING", "I1", o, 55, REFS0)])], entries=[e1], anc={"c1p", "a0p", "k0p"},
+            kind="REBASE_RECONCILIATION", last_rebase="M1", history=["M1"])
+    started = mod(rb, "arrancó: LAUNCHED con el Target original", lambda t: (t.update(rv=62, kind="ORDINARY"), t["requests"][0]["attempts"][0].update(state="LAUNCHED")))
+    T["a62-a1-04-LAUNCHING-tras-rebase-arranco"] = ("A1", ["A62-A1-04"], "VALID", set(), [inv0, rb, started])
+    not_started = mod(rb, "no arrancó: BUDGET_RESERVED replanificado sobre la imagen",
+                      lambda t: (t.update(rv=62, kind="ORDINARY"), t["loop"].update(phase="REVIEW_PENDING"),
+                                 t["requests"][0]["attempts"][0].update(state="BUDGET_RESERVED", inv="I1b", target=op, refs=copy.deepcopy(REFS1))))
+    T["a62-a1-04-LAUNCHING-tras-rebase-no-arranco"] = ("A1", ["A62-A1-04"], "VALID", set(), [inv0, rb, not_started])
+    uncertain = mod(rb, "indeterminado: LAUNCH_UNCERTAIN con el Target original",
+                    lambda t: (t.update(rv=62, kind="ORDINARY"), t["loop"].update(phase="REVIEW_PENDING"), t["requests"][0]["attempts"][0].update(state="LAUNCH_UNCERTAIN")))
+    T["a62-a1-04-LAUNCHING-tras-rebase-incierto"] = ("A1", ["A62-A1-04"], "VALID", set(), [inv0, rb, uncertain])
+    no_replan = mod(rb, "no arrancó sin replanificar", lambda t: (t.update(rv=62, kind="ORDINARY"), t["loop"].update(phase="REVIEW_PENDING"),
+                                                                  t["requests"][0]["attempts"][0].update(state="BUDGET_RESERVED")))
+    T["a62-a1-04-no-arranco-sin-replanificar"] = ("A1", ["A62-A1-04"], "INVALID", {"A1-P09", "I-H02", "V14-S18-target"}, [inv0, rb, no_replan])
+    T["a62-a1-04-LAUNCHING-reescrito-en-la-reconciliacion"] = ("A1", ["A62-A1-04"], "INVALID", {"A1-P09"},
+                                                               [inv0, mod(rb, "LAUNCHING reescrito", lambda t: t["requests"][0]["attempts"][0].update(target=op))])
+    T["a62-a1-04-LAUNCHING-sin-imagen-en-el-mapa"] = ("A1", ["A62-A1-04"], "INVALID", {"A1-P02", "A1-P08"},
+                                                      [inv0, mod(rb, "mapa sin c1", lambda t: t.update(last_rebase="M1-sin-c1", history=["M1-sin-c1"]))])
+
+    # ---- A62-A1-05: reviewed-object equivalence through a rebase
+    inv5 = st("ARCHITECT_INVOKED con L1/1 LAUNCHED", 70, AR, "ARCHITECT_INVOKED", "ARL-10", o, "A1", val("A1"),
+              [req("L1", "ARL-10", o, "OPEN", [att(1, "LAUNCHED", "I1", o, 65, REFS0)])], [lin("LIN-1", "OPEN")], [e1], anc={"c1", "a0", "k0"})
+    rb5 = st("QU REBASE_RECONCILIATION", 71, AR, "ARCHITECT_INVOKED", "ARL-10", op, "A1", val("A1"),
+             [req("L1", "ARL-10", op, "OPEN", [att(1, "LAUNCHED", "I1", o, 65, REFS0)])], [lin("LIN-1", "OPEN")], [e1], anc={"c1p", "a0p", "k0p"},
+             kind="REBASE_RECONCILIATION", last_rebase="M1", history=["M1"])
+    T["fc02-enmendado-LAUNCHED-conserva-su-Target"] = ("A1", ["FC-02", "A62-A1-05"], "VALID", set(), [inv5, rb5])
+    T["fc02-enmendado-reescribir-un-LAUNCHED"] = ("A1", ["FC-02"], "INVALID", {"A1-P09"},
+                                                  [inv5, mod(rb5, "LAUNCHED reescrito", lambda t: t["requests"][0]["attempts"][0].update(target=op))])
+
+    def ingest(evaluated):
+        recv = mod(rb5, "RESULT_RECEIVED", lambda t: (t.update(rv=72, kind="ORDINARY"),
+                                                      t["requests"][0]["attempts"][0].update(state="RESULT_RECEIVED", result={"evaluated": evaluated})))
+        done = mod(recv, "ingestión AGREED: ARCHITECT_SATISFIED", lambda t: (
+            t.update(rv=73, validity=val("A1", "ENDED", "ARCHITECT_SATISFIED"), entries=[entry("ARL-10", [auth("A1", "ENDED", "ARCHITECT_SATISFIED")], 1, 1, 1)],
+                     findings=[lin("LIN-1", "CLOSED")]),
+            t["loop"].update(phase="ARCHITECT_SATISFIED"), t["requests"][0].update(state="INGESTED"),
+            t["requests"][0]["attempts"][0].update(state="RESULT_INGESTED", outcome="VALID")))
+        return [inv5, rb5, recv, done]
+    T["a62-a1-05-ingesta-de-un-LAUNCHED-tras-rebase"] = ("A1", ["A62-A1-05"], "VALID", set(), ingest(o))
+    T["a62-a1-05-ingesta-con-otro-blob"] = ("A1", ["A62-A1-05"], "INVALID", {"A1-P12"}, ingest(obj("c1", DOC, "b-otro")))
+    T["a62-a1-05-ingesta-con-imagen-no-probada"] = ("A1", ["A62-A1-05"], "INVALID", {"A1-P12"}, ingest(obj("c9", DOC, "b-C")))
+
+    # ---- A62-A1-06: branch-local references after one and two rebases
+    hist_att = [att(1, "RESULT_INGESTED", "I1", obj("x1"), 75, REFS0, {"evaluated": obj("x1")}, "VALID")]
+    base6 = st("CORRECTING con referencias en a0/k0", 80, AR, "CORRECTING", "ARL-10", obj("x1"), "A1", val("A1"),
+               [req("L1", "ARL-10", obj("x1"), "INGESTED", hist_att)], [lin("LIN-1", "OPEN")], [e1], anc={"x1", "a0", "k0"})
+    rb6a = mod(base6, "primer rebase (M1)", lambda t: (t.update(rv=81, kind="REBASE_RECONCILIATION", last_rebase="M1", history=["M1"], anc={"x1p", "a0p", "k0p"}),
+                                                       t["loop"].update(object=obj("x1p"))))
+    rb6b = mod(rb6a, "segundo rebase (M2)", lambda t: (t.update(rv=82, last_rebase="M2", history=["M1", "M2"], anc={"x1pp", "a0pp", "k0pp"}),
+                                                       t["loop"].update(object=obj("x1pp"))))
+    T["a62-a1-06-referencias-tras-un-rebase"] = ("A1", ["A62-A1-06"], "VALID", set(), [base6, rb6a])
+    T["a62-a1-06-referencias-tras-dos-rebases"] = ("A1", ["A62-A1-06"], "VALID", set(), [base6, rb6a, rb6b])
+    clean = {k: v for k, v in BLOBS.items() if k[0] in {"x1pp", "a0pp", "k0pp"}}
+    T["a62-a1-06-sucesor-en-clon-limpio"] = ("A1", ["A62-A1-06"], "VALID", set(), [mod(rb6b, "clon limpio: solo imágenes", lambda t: t.update(blobs=dict(clean)))])
+    T["a62-a1-06-mapa-intermedio-ausente"] = ("A1", ["A62-A1-06"], "INVALID", {"A1-F10"}, [mod(rb6b, "sin M1 en la cadena", lambda t: t.update(history=["M2"]))])
+    T["a62-a1-06-blob-cambiado"] = ("A1", ["A62-A1-06"], "INVALID", {"A1-F10"},
+                                    [mod(rb6b, "decisiones con otro blob en la imagen", lambda t: t["blobs"].update({("a0pp", DEC): "b-otro"}))])
+    lit6 = mod(rb6b, "referencias tras dos rebases (V14 literal)", lambda t: (t.update(v14=snap(1, 1, 1)), t["requests"][0].update(loop=None)))
+    T["fc06-literal-referencias-tras-rebase"] = ("V14", ["A62-A1-06"], "INVALID", {"V14-I-S18-ancestro"}, [lit6])
+
+    # ---- O3: inherited open lineages
+    def new_loop(open_findings):
+        l5 = req("L5", "ARL-42", obj("y1", IMPL), "OPEN", [att(1, "BUDGET_RESERVED", "I5", obj("y1", IMPL), 42, REFS0, open_findings=open_findings, snapshot=snap(1, 1, 1))])
+        return mod(closed_exp, "bucle nuevo ARL-42 con A2", lambda t: (
+            t.update(rv=42, validity=val("A2"), entries=t["entries"] + [entry("ARL-42", [auth("A2")], 1, 1, 1)]),
+            t["loop"].update(type=AR, phase="REVIEW_PENDING", instance="ARL-42", object=obj("y1", IMPL), authorization="A2"), t["requests"].append(l5)))
+    T["a62-a1-o3-bucle-nuevo-hereda-linajes-abiertos"] = ("A1", ["A62-A1-O3", "A62-A1-02"], "VALID", set(), [exp, closed_exp, new_loop(["LIN-1"])])
+    T["a62-a1-o3-bucle-nuevo-sin-linajes-heredados"] = ("A1", ["A62-A1-O3"], "INVALID", {"A1-P16"}, [exp, closed_exp, new_loop([])])
+
+    # ---- one specific negative for each remaining rule
+    T["a62-a1-01-instance-id-distinto-del-QU-de-apertura"] = ("A1", ["A62-A1-01"], "INVALID", {"A1-P03"}, [closed, mod(opened, "apertura con ARL-99", lambda t: (
+        t["loop"].update(instance="ARL-99"), t["requests"][3].update(loop="ARL-99"), t["entries"][1].update(id="ARL-99")))])
+    T["a62-a1-01-solicitud-cambia-de-bucle"] = ("A1", ["A62-A1-01"], "INVALID", {"A1-F01", "A1-P14"},
+                                                [closed, mod(opened, "L1 pasa a ARL-22", lambda t: t["requests"][0].update(loop="ARL-22"))])
+    T["a62-a1-03-budgets-de-V14-cuenta-una-solicitud-del-architect"] = ("A1", ["A62-A1-03"], "INVALID", {"A1-F07"},
+                                                                        [mod(opened, "budgets de V14 cuenta L4", lambda t: t.update(v14=snap(1, 1, 1)))])
+    T["a62-a1-06-historia-de-mapas-sin-last_rebase-al-final"] = ("A1", ["A62-A1-06"], "INVALID", {"A1-F09"},
+                                                                 [mod(rb6b, "last_rebase = M1 con historia [M1, M2]", lambda t: t.update(last_rebase="M1"))])
+    T["a62-a1-06-historia-cambia-sin-reconciliacion"] = ("A1", ["A62-A1-06"], "INVALID", {"A1-P11"},
+                                                         [corr, mod(corr, "historia con M1 sin reconciliación", lambda t: t.update(rv=31, history=["M1"]))])
+    return T
 
 
 def main():
-    results, ok = {}, True
-    for name, (expected, amended, trace) in sorted({**fc01_traces(), **fc02_traces()}.items()):
-        got, why = run(trace, amended)
-        results[name] = {"Validator": "enmendado (A-1)" if amended else "literal (V14)", "Expected": expected, "Got": got, "Violations": why,
-                         "Verdict": "PASS" if got == expected else "FAIL"}
-        ok = ok and got == expected
+    results, coverage, ok = {}, {}, True
+    for name, (validator, tags, expected, rules, trace) in sorted(traces().items()):
+        got, got_rules, why = run(trace, validator)
+        passed = got == expected and set(got_rules) == set(rules)
+        ok = ok and passed
+        results[name] = {"Validator": "A-1 corregida" if validator == "A1" else "V14 literal", "Covers": tags,
+                         "Expected": {"Verdict": expected, "Rules": sorted(rules)}, "Got": {"Verdict": got, "Rules": got_rules},
+                         "Violations": why, "Verdict": "PASS" if passed else "FAIL"}
+        for tag in tags:
+            coverage.setdefault(tag, []).append(name)
+    required = ["A62-A1-0%d" % i for i in range(1, 7)] + ["A62-A1-O%d" % i for i in range(1, 6)]
+    missing = [t for t in required if t not in coverage]
+    ok = ok and not missing
     with open(sys.argv[1], "w", encoding="utf-8", newline="\n") as f:
-        json.dump({"Script": "a1-counterexamples.py", "Freeze": {"commit": "4c617e82b32b6c810b68d75fc19472efed22b393", "blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa"},
+        json.dump({"Script": "a1-counterexamples.py", "Version": "A-1 corregida (2026-10-05)",
+                   "Freeze": {"commit": "4c617e82b32b6c810b68d75fc19472efed22b393", "blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa"},
+                   "Rules": RULES, "Coverage": {k: coverage[k] for k in sorted(coverage)}, "MissingCoverage": missing,
                    "Traces": results, "AllAsExpected": ok}, f, ensure_ascii=False, indent=1)
         f.write("\n")
-    print(json.dumps({k: v["Got"] + (" ok" if v["Verdict"] == "PASS" else " MISMATCH") for k, v in results.items()}, ensure_ascii=False, indent=0))
+    print(json.dumps({k: v["Got"]["Verdict"] + (" ok" if v["Verdict"] == "PASS" else " MISMATCH %s" % v["Got"]["Rules"]) for k, v in results.items()},
+                     ensure_ascii=False, indent=0))
+    print("traces", len(results), "all", ok, "missing", missing)
     return 0 if ok else 1
 
 

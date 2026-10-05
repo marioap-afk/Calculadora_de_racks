@@ -1831,3 +1831,39 @@ La transcripción no se versiona: 2 294 522 bytes, SHA-256 `53ea184a…`.
 
 No se edita A-1, no se crea su versión corregida ni A-2, no se abre F4 y no se decide nada del Owner. STOP: el Coordinator dispone la acreditación y los
 hallazgos.
+
+## 41. A-1 corregida tras la disposición del Coordinator (decisiones §38)
+
+CI de la custodia de la revisión, `576006e83ad56f50df6c816f18f95297589de399`: corrida **37259840766**, push, head_sha exacto, cuatro jobs en `success`.
+
+### 41.1 Objetos
+
+| Archivo | Blob | Contenido |
+|---|---|---|
+| `docs/initiatives/I-62-A-1.md` | `23dd16b2b135cdb7e1e2b1e18e2b6595253e92d8` | A-1 corregida, todavía PROPUESTA: D1-1..D1-15 (identidad y presupuesto del bucle, sustitución y continuación, LOOP_CLOSED, alcance por tipo, `BudgetSnapshot`, linajes) y D2-1..D2-12 (reconciliación, LAUNCHING, `rebase_history`, ResolveBranchRef, aplicación a F3, EquivalentReviewedObject); materialidad; pruebas; OBS-A1-01; matriz y cambios frente a `09ca9328` |
+| `docs/initiatives/I-62-architect-package-A-1.md` | (se publica en este commit; no lleva su propio blob) | paquete para la revisión formal nueva: insumos con blobs, nueve preguntas y condiciones con las lecciones de la corrida no acreditada |
+| `docs/initiatives/I-62-architect-review-A-1-disposition.md` | `adf77aa5e529771d598239d72be020ebd5767f17` | disposición del Coordinator y matriz exacta hallazgo → delta → regla → traza |
+| `docs/automation/evidence/I-62-A1/a1-counterexamples.py` | `ba7e6f951df9a4006cce3c570bae4fa8f9a3159e` | arnés reescrito (O5) |
+| `docs/automation/evidence/I-62-A1/a1-counterexamples-result.json` | `70cc85d6ee84ee2847441be033acd9e52b2370d5` | resultado determinista (dos corridas idénticas byte a byte) |
+
+### 41.2 Contra-ejemplos (MEASURED)
+
+- **Cobertura:** 56 trazas (18 VALID, 38 INVALID), todas PASS.
+  - Cada traza negativa fija el conjunto **exacto** de reglas que debe violar, y una regla incidental la haría fallar.
+  - Ninguna regla del catálogo queda sin ejercitar: cada una aparece en algún conjunto esperado.
+- **Por hallazgo:** A62-A1-01: 7 trazas; 02: 12; 03: 5; 04: 6; 05: 4; 06: 10. O1: 2; O2: 2; O3: 3; O4: 3; O5: 1.
+- **`fc01-enmendado-object-null-fuera-del-cierre`** falla ahora solo por A1-P02.
+- **V14 literal:** cinco trazas siguen mostrando los defectos del Freeze; la nueva, `fc06-literal-referencias-tras-rebase`, muestra el de las referencias de
+  rama.
+- **Lo modelado:** `loop.type`, la escalada, los linajes, la sustitución, la continuación, EXPIRED y REVOKED, las tres ramas de LAUNCHING, la equivalencia en la
+  ingestión y la cadena de mapas con uno y dos rebases, un mapa intermedio ausente, un blob cambiado y un clon sucesor limpio.
+
+### 41.3 Contratos F3 y límites
+
+- **Esquemas F3:** ninguno cambia. `RebaseMap.Commits[]` ya lleva la cadena y `BudgetSnapshot` sigue siendo escalar. Se enmiendan solo **textos** F3 para
+  I-62 (AUTOMATION_PLAN 16.20 paso 3 y su lista de la autorización; README §14.3 «Reproducción» y §14.4 regla 3).
+- **OBS-A1-01** (fuera del delta, para el Coordinator): V14 no define la salida a NONE de un bucle REVIEWER.
+- **Prototipos de F4 desactualizados:** el oráculo y el mapa de impacto de `I-62-prep/f4/` modelan el blob anterior. Se actualizan al abrir F4; no son
+  producción.
+- **Límites:** sin F4, sin A-2 y sin lanzar la revisión formal nueva, que necesita una autorización nueva.
+- **DC-07:** I-63 avanzó a `55a66b3c` sin tocar archivos de I-62; I-52 e I-64 siguen igual.
