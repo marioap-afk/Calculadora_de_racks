@@ -1,0 +1,55 @@
+I-63 — Revisión del ADR-0049 (READY, bloque D): CHANGES REQUIRED, con un único REQUIRED (A63-ADR-01) y de corrección trivial. Ligado a 8466e20b / docs/adr/0049-parametros-calculados-namespace-rack-y-resumen-de-proyecto.md / blob 4d0d7e67.
+
+Review mode: SEPARATE SESSION; revisor=autor: no; misma sesión del Architect que R1-R3 y G3: sí (local_d5787742…). Mismo modelo de base que la autora: unknown (probable claude-opus-5-5). Revisión de solo lectura.
+
+1. IDENTIDAD
+- Commit 8466e20b (2026-10-04 20:38 -0600, es decir 2026-10-05 02:38 UTC).
+- Blob del ADR: 4d0d7e673023dd32d6bf2ede5e3838b045c4b14c (comprobado con rev-parse).
+- En ese commit, la Proposal V3 tiene el blob 4d5dedce (el del Freeze) y existen A-1..A-4.
+- Contrasté el ADR con: el anexo A y §§3, 5-21 de V3; A-3; A-4; README y plantilla de docs/adr.
+
+2. DISPOSICIÓN POR SECCIÓN
+- Cabecera y estado: CONFORME. Estado «propuesto»; «sucesor parcial, no lo reemplaza»; la nota posterior en ADR-0043 queda para cuando el Owner acepte; decisores correctos. Cumple el README (solo el dueño acepta) y lleva las secciones de la plantilla.
+- Base exacta: CONFORME. Freeze f61d0aca/4d5dedce, A-1..A-4, G1-G4 en PASS y materialidad igual a V3 §3.
+- «Se conserva»: CONFORME y FIEL al anexo A. Solo añade lo integrado: la ubicación en ComputedParameters y que lexer y parser no cambian.
+- «Se modifica»: CONFORME y FIEL. Las filas D4, D5, D6 (regla 4, reglas 5-6, formatter), D9, D24, D25, P25.1, P25.2, P25.3 y P25.4 coinciden con el anexo. Las únicas actualizaciones son las autorizadas:
+  - D4 incorpora el resultado de la A-3 (un solo InvalidQualifier y ningún árbol);
+  - D9 incorpora el detalle de D-18 (lectura PresentButUnreadable; escritura como error de programación que no escribe nada);
+  - D6 regla 4 precisa «tabla con entradas rack», que ya decía D-16.5.
+- «Se sustituye»: CONFORME. P25.5 por RackComputedExpressionContext, con el motivo R1, igual que el anexo.
+- Decisiones nuevas: CONFORMES salvo un punto.
+  - Coinciden con el Freeze: D-02, D-07, D-28, D-10..D-12 y D-26 (orden E1, E2, E3, E5, E4, E6), D-27, D-14, D-15 R1..R6, D-18, D-20, D-21 (tabla cerrada de autoridades), D-24 y D-25.
+  - EXCEPCIÓN: el punto 10, ver A63-ADR-01.
+- Alternativas: COHERENTES con la Proposal (R1, R6, M-02, el índice global de INV-19/20, sin segundo motor, D-07, el resumen no persistido).
+- Consecuencias: COHERENTES (R-14, O-G3-4, O-G3-1..5 diferidas, coste de RegistryEvaluation). Comprobé que la A-4 solo cierra DEBT-I63-G2-01 y G3-01 y no toca ningún O-G3, así que «diferidas» es correcto.
+- Relación con otros ADR: CORRECTA. ADR-0043 como sucesor parcial; ADR-0009 consumido; ADR-0046 sin modificar. DEBT-I63-PROTOCOL-01 existe en ideas-futuras.md:1595.
+
+3. REQUIRED
+A63-ADR-01 — Decisión nueva fuera del Freeze y de las A-n.
+- Sección: «Decisiones nuevas», punto 10 (D-21), línea 141: «La provenance queda **fuera** de la igualdad de `MetricValue`».
+- Regla: el encargo dice que las únicas diferencias admisibles respecto del anexo A son las actualizaciones por lo integrado de la A-3 y de D-18. LIFECYCLE §6 dice lo mismo: nada normativo fuera del Freeze ni de las A-n.
+- Evidencia:
+  - ni V3 (D-21, §15) ni A-1..A-4 contienen esa regla;
+  - nace del contrato de delegación de G4 (evidencia §§ de G4, I-63-evidence.md:1928-1944 y los JSON de nc1/nc2 de G4) y de la prueba D21_LaProvenanceNoEntraEnLaIgualdadDeMetricValue_NiLaCambia.
+  Es un hecho verdadero del código integrado, pero no es una decisión congelada.
+- Consecuencia: si el Owner acepta el ADR, esa línea se vuelve inmutable y pasa a restringir el diseño futuro (la igualdad de MetricValue) con una autoridad que el Freeze nunca le dio.
+- Corrección mínima, una de dos:
+  (a) quitar la línea del punto 10;
+  (b) moverla a «Consecuencias» como hecho de implementación, sin carácter normativo, con su fuente (el contrato de G4 y la prueba citada).
+
+4. OPCIONALES (no bloquean)
+- O-ADR-1: el punto 4 dice «un agregado es Available solo con la cobertura acreditada». Es una condición necesaria pero no la regla completa de D-09 / INV-08. Conviene añadir «y con todos sus miembros Available en esa métrica».
+- O-ADR-2: el punto 5 (D-27) solo describe la vía del handler. Conviene añadir la vía de I-63, que es la decisión M-04: Undetermined → Undetermined (cobertura no acreditada), y CatalogUnavailable solo con LoadFailed.
+- O-ADR-3: falta un resumen de D-17, la vía de ID23. Hoy solo la mencionan la fila D24 y el punto 3 (D-28). Conviene añadir: RackMetricRequest no enumera el proyecto, hace como máximo una resolución y devuelve ComputedReferencesNotAvailable con la lista tipada, sin valor parcial.
+- O-ADR-4: en Contexto, «tres conteos de racks divergentes» choca con P-08 de la Proposal (§10): son magnitudes distintas, no duplicados. Mejor «tres conteos distintos, sin una autoridad común».
+- O-ADR-5: la fecha 2026-10-05 corresponde a la hora UTC del commit; en local es 2026-10-04. Conviene unificarla o indicar «UTC». Un ADR aceptado es inmutable salvo correcciones tipográficas.
+
+5. DESACUERDOS
+Solo A63-ADR-01.
+
+6. RIESGOS
+Si no se corrige, la regla de igualdad se fija como decisión arquitectónica inmutable. No hay ningún otro riesgo material: el ADR no amplía ni recorta el Freeze en ninguna otra cláusula.
+
+7. VEREDICTO
+CHANGES REQUIRED: A63-ADR-01 abierto. Lo cerraré yo sobre el blob nuevo; basta con la corrección (a) o la (b).
+Vale exclusivamente para: commit 8466e20b0312c30ace976e4c61c4726b6220e44d; ruta docs/adr/0049-parametros-calculados-namespace-rack-y-resumen-de-proyecto.md; blob 4d0d7e673023dd32d6bf2ede5e3838b045c4b14c.

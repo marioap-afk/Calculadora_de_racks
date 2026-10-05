@@ -1,7 +1,7 @@
 # ADR-0049: Parámetros calculados de solo lectura, namespace built-in `rack` del motor de expresiones y resumen de proyecto
 
 - **Estado:** propuesto
-- **Fecha:** 2026-10-05 (propuesto)
+- **Fecha:** 2026-10-04 (propuesto)
 - **Decisores:** Owner del proyecto (acepta o rechaza; pendiente). Coordinador y Arquitecto de I-63 (consenso técnico
   pendiente sobre este archivo exacto). Claude (redacción, sesión principal de I-63).
 - **Sucesor parcial de:** [ADR-0043](0043-motor-expresiones-parametricas-causas-multiples-y-recuperacion-segura.md).
@@ -40,7 +40,8 @@
   - la población cotizable de un proyecto;
   - sus agregados.
 
-  Existían tres conteos de racks divergentes (RACKLISTA, RACKBOMTOTAL y «N racks · M copias»). Además, la puerta de salida del Push
+  Existían tres conteos de racks distintos, sin una autoridad común (RACKLISTA, RACKBOMTOTAL y «N racks · M copias»). Además, la puerta
+  de salida del Push
   Back se componía dentro del handler del Plugin.
 - **Las restricciones.** I-63 tenía que:
   - dar esas autoridades en Application pura;
@@ -110,41 +111,51 @@
 4. **Población cotizable (D-10..D-12, D-26).**
    - Pasos E1..E6 en orden congelado: identidad, colocación, kind coherente, diseño legible, autoridad *authored* y veredicto de salida.
    - Deduplicación por RackId `OrdinalIgnoreCase`, con grafía canónica.
-   - Agregados que nunca son parciales: un agregado es `Available` solo con la cobertura acreditada.
+   - Agregados que nunca son parciales: un agregado es `Available` solo con la cobertura acreditada y con todos sus miembros
+     `Available` en esa métrica.
    - Un lector de diseño por kind.
-5. **Veredicto de salida único (D-27).** `RackOutputVerdict` (Application) compone la puerta de salida del Push Back. El handler del
-   Plugin delega en él y conserva su comportamiento observable (*fail-open* y catálogo nulo normalizado a vacío).
-6. **Disponibilidad por consumidor (D-14).** `Rack.*` solo existe en `RackComputedExpressionContext`. Las fórmulas de propiedad
+5. **Veredicto de salida único (D-27).** `RackOutputVerdict` (Application) compone la puerta de salida del Push Back.
+   - El handler del Plugin delega en él y conserva su comportamiento observable: *fail-open* y catálogo nulo normalizado a vacío.
+   - En la vía de I-63, `Undetermined` pasa a ser `Undetermined(razón)` de pertenencia, es decir, cobertura no acreditada.
+     `CatalogUnavailable` solo aparece cuando la entrada tipada dice `LoadFailed`: un fallo de carga no es un catálogo válido vacío.
+6. **Operación por rack, vía de ID23 (D-17).**
+   - `RackMetricRequest` recibe las hermanas de UN RackId, la lectura del registro y el catálogo.
+   - No enumera el proyecto, no construye el resumen y no evalúa la población.
+   - Calcula cada métrica `(Rack, *)` con la tabla D-28 y resuelve como máximo ese rack: una sola Φ2+Φ3, y solo si D-28 llega al paso 5.
+   - Sus resultados terminados construyen `RackComputedExpressionContext`. Su tabla une las entradas `projectVariable` del mismo
+     documento de registro que usó la Φ2 de ese rack y las entradas `rack` (`Computed`), y se enlaza con ámbito `Rack`.
+   - Antes de evaluar, revisa el estado de cada referencia `rack` del árbol. Si alguna no está `Available`, devuelve sin evaluar
+     `ComputedReferencesNotAvailable` con la lista ordenada `(SymbolId, estado, razón)` de todas ellas, sin valor parcial.
+7. **Disponibilidad por consumidor (D-14).** `Rack.*` solo existe en `RackComputedExpressionContext`. Las fórmulas de propiedad
    (RACKEDITAR) y las definiciones de variable (RACKVARIABLES) no lo ofrecen. Habilitarlo en otro consumidor exige demostrar que su
    fase es anterior e independiente, con prueba y una enmienda aprobada por Arquitecto y Coordinador.
-7. **Ciclos (D-15, R1..R6).**
+8. **Ciclos (D-15, R1..R6).**
    - Ningún símbolo `rack` está disponible en Φ2 ni antes.
    - El contexto calculado se construye solo con resultados terminados, y evaluar nunca resuelve.
    - Los *providers* son puros.
    - `Computed` es hoja, y `RegistryEvaluation` y `DependencyGraph` la rechazan como error de programación.
    - Ningún consumidor escribe en un rack a partir de un valor calculado.
    - No hay símbolos `project`.
-8. **Persistencia cerrada con dos tablas (D-18).** Ver la modificación de D9.
-9. **Resumen de proyecto neutral (D-20).**
-   - `Population` devuelve `ProjectPopulation`, sin métricas por rack.
-   - `Full` devuelve `ProjectSummary`:
-     - `Totals`;
-     - `BySystem` con seis sistemas en orden fijo;
-     - `Racks` con todos los RackIds atribuibles y sus `Metrics` por la misma tabla D-28;
-     - `Diagnostics` en orden determinista.
-   - Es puro, inmutable, en memoria y **no persistido**. Los consumidores presentan; no recalculan.
-10. **Provenance en memoria (D-21).**
+9. **Persistencia cerrada con dos tablas (D-18).** Ver la modificación de D9.
+10. **Resumen de proyecto neutral (D-20).**
+    - `Population` devuelve `ProjectPopulation`, sin métricas por rack.
+    - `Full` devuelve `ProjectSummary`:
+      - `Totals`;
+      - `BySystem` con seis sistemas en orden fijo;
+      - `Racks` con todos los RackIds atribuibles y sus `Metrics` por la misma tabla D-28;
+      - `Diagnostics` en orden determinista.
+    - Es puro, inmutable, en memoria y **no persistido**. Los consumidores presentan; no recalculan.
+11. **Provenance en memoria (D-21).**
     - Cada métrica del resumen conserva su `MetricId`, el RackId, un identificador de autoridad de una tabla cerrada
       (`selective.resolved.fondo0.bays`, `selective.resolved.fondo0.emptyBays`, `population.cotizable` y `aggregate.sum`), la fase, el
       representante y los *outcomes*.
     - Los agregados conservan los RackIds incluidos y excluidos con su motivo.
-    - La provenance queda **fuera** de la igualdad de `MetricValue`.
     - `RackComputedExpressionContext` conserva el árbol evaluado y los `SymbolId` leídos.
-11. **Rendimiento (D-24).**
+12. **Rendimiento (D-24).**
     - Por petición: una captura, una lectura del registro y un catálogo.
     - Una resolución por RackId (Selectivo) en `Full` y ninguna en `Population`; nunca por vista.
     - La caracterización usa contadores como oráculo, y los tiempos solo se registran.
-12. **Capas (D-25).**
+13. **Capas (D-25).**
     - Todo en Application pura.
     - El contrato de entrada (captura, lectura del registro y `CatalogInput` = `Loaded | LoadFailed`) lo construyen hoy las pruebas.
     - Ningún componente nuevo del Plugin ni de la UI.
@@ -178,6 +189,11 @@
   - Riesgo R-14: en `Full`, los Selectivos excluidos o no colocados también reciben sus métricas D-28.
   - El coste por rack de `RegistryEvaluation` se mide; no se cambia.
   - Las opcionales O-G3-1..5 quedan diferidas.
+- **Hecho de implementación, sin carácter normativo:** la provenance de D-21 se guarda en una estructura asociada al resumen y no
+  entra en la igualdad de `MetricValue`, cuyo `Equals` no cambió. Lo fijó la orden de autorización de G4 del Coordinator
+  ([decisiones de I-63](../automation/decisions/I-63.md) §2) para conservar G1-G3, y lo comprueba
+  `ComputedParametersSummaryTests.D21_LaProvenanceNoEntraEnLaIgualdadDeMetricValue_NiLaCambia`. No es una decisión de este ADR:
+  un cambio futuro de esa igualdad se decide con su propia autoridad.
 
 ## Relación con otros ADR
 

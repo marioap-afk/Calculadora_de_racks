@@ -2377,3 +2377,23 @@ Valores aprobados por el Coordinator (Q-R-03):
   3. **aceptación explícita del Owner** del ADR exacto (no delegable);
   4. estado `aceptado` y CI exact-SHA.
 - **ADR-0043:** recibe su nota posterior fechada solo cuando el Owner acepte el ADR-0049.
+
+## 57. ADR-0049: revisión 1 del Architect y corrección
+
+- **Revisión 1** del mismo Architect R1-R3, en SEPARATE SESSION y de solo lectura, sobre `8466e20b` y el blob `4d0d7e67`: **CHANGES
+  REQUIRED**, con un único REQUIRED.
+  - **A63-ADR-01:** el punto 10 de «Decisiones nuevas» («la provenance queda fuera de la igualdad de `MetricValue`») era una decisión
+    fuera del Freeze y de las A-n. Viene de la orden de G4 y de una prueba, no de D-21.
+  - El resto, conforme y fiel al anexo A.
+  - Hay 5 opcionales, O-ADR-1..5.
+  - Texto literal: `docs/automation/evidence/I-63-pilot/READY/adr-0049/architect-review-1.txt`. Es igual al `SendMessage` de la
+    transcripción del Architect, `fdd2a979-cce9-4391-83aa-e7dfe5effcc4.jsonl`.
+- **Corrección (opción b):** la línea sale de las decisiones y pasa a «Consecuencias» como hecho de implementación sin carácter
+  normativo, con su fuente: la orden de G4 y la prueba `D21_LaProvenanceNoEntraEnLaIgualdadDeMetricValue_NiLaCambia`.
+- **Opcionales aplicados con el texto del Freeze:**
+  - O-ADR-1: los agregados exigen además todos sus miembros `Available`.
+  - O-ADR-2: la vía de I-63 de D-27.
+  - O-ADR-3: un punto nuevo para D-17, la operación por rack y vía de ID23; las decisiones se renumeran a 13.
+  - O-ADR-4: «tres conteos distintos, sin una autoridad común», según P-08.
+  - O-ADR-5: fecha local 2026-10-04.
+- **Siguiente:** el Architect cierra A63-ADR-01 sobre el blob nuevo; después, aceptación explícita del Owner.
