@@ -1,0 +1,19 @@
+$ dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter "FullyQualifiedName~I62F4InputFidelityTests"  (exit 0)
+Serie de pruebas para C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll (.NETCoreApp,Version=v8.0)
+1 archivos de prueba en total coincidieron con el patrón especificado.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.29)
+[xUnit.net 00:00:00.24]   Discovering: RackCad.Tests
+[xUnit.net 00:00:06.04]   Discovered:  RackCad.Tests
+[xUnit.net 00:00:06.07]   Starting:    RackCad.Tests
+[xUnit.net 00:00:06.25]   Finished:    RackCad.Tests
+  Correctas RackCad.Tests.I62F4InputFidelityTests.I62_C42_q_z_TheGraphIsCanonicalAndBoundedAndResolvesWithoutGuessing [55 ms]
+  Correctas RackCad.Tests.I62F4InputFidelityTests.I62_C42_a_f_g_AFindingIsIndependentOnlyWhenItsWholeEnvelopeIsFaithful [1 ms]
+  Correctas RackCad.Tests.I62F4InputFidelityTests.I62_C42_TheCanonicalUnitsAreTheSegmentationOfTheB11Generator [54 ms]
+  Correctas RackCad.Tests.I62F4InputFidelityTests.I62_C42_1_4_ThePreflightKeepsEveryNonAsciiCharacterOrStopsTheLaunch [7 ms]
+  Correctas RackCad.Tests.I62F4InputFidelityTests.I62_C42_o_7_TheEvidenceDescribesWhatTheReviewerReceivedAndASuccessorRecomputesIt [2 ms]
+  Correctas RackCad.Tests.I62F4InputFidelityTests.I62_C42_h_n_TheClosureFollowsOnlyDeclaredControlEdgesAndAnyDegradedUnitInItInvalidates [2 ms]
+
+La serie de pruebas se ejecutó correctamente.
+Pruebas totales: 6
+     Correcto: 6
+ Tiempo total: 7.0769 Segundos

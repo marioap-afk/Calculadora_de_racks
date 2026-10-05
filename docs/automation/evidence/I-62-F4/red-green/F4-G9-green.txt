@@ -1,0 +1,15 @@
+$ dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter "FullyQualifiedName~I62F4CloseAndGapTests"  (exit 0)
+Serie de pruebas para C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll (.NETCoreApp,Version=v8.0)
+1 archivos de prueba en total coincidieron con el patrón especificado.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.29)
+[xUnit.net 00:00:00.24]   Discovering: RackCad.Tests
+[xUnit.net 00:00:06.91]   Discovered:  RackCad.Tests
+[xUnit.net 00:00:06.94]   Starting:    RackCad.Tests
+  Correctas RackCad.Tests.I62F4CloseAndGapTests.I62_C21_ANormativeOrTemplateChangeAfterTheCloseInvalidatesItAndEvidenceDoesNot [3 s]
+[xUnit.net 00:00:10.94]   Finished:    RackCad.Tests
+  Correctas RackCad.Tests.I62F4CloseAndGapTests.I62_C37_AManualRelayNeedsItsCustodiedAutonomyGapRecord [152 ms]
+
+La serie de pruebas se ejecutó correctamente.
+Pruebas totales: 2
+     Correcto: 2
+ Tiempo total: 11.8281 Segundos

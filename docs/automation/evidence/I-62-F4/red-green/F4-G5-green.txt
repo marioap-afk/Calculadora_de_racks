@@ -1,0 +1,18 @@
+$ dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter "FullyQualifiedName~I62F4JournalCounterTests"  (exit 0)
+Serie de pruebas para C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll (.NETCoreApp,Version=v8.0)
+1 archivos de prueba en total coincidieron con el patrón especificado.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.29)
+[xUnit.net 00:00:00.23]   Discovering: RackCad.Tests
+[xUnit.net 00:00:07.06]   Discovered:  RackCad.Tests
+[xUnit.net 00:00:07.09]   Starting:    RackCad.Tests
+[xUnit.net 00:00:07.29]   Finished:    RackCad.Tests
+  Correctas RackCad.Tests.I62F4JournalCounterTests.I62_C16_AReconstructionWithoutJournalIsConservativeAndCanOnlyRaiseTheCounters [74 ms]
+  Correctas RackCad.Tests.I62F4JournalCounterTests.I62_C15_ABrokenForeignOrTamperedChainIsUnknownAndNeverAnOpenOrClosedDelegation [14 ms]
+  Correctas RackCad.Tests.I62F4JournalCounterTests.I62_C15_TheDerivedDelegationStateFollowsEveryRowOfB82 [15 ms]
+  Correctas RackCad.Tests.I62F4JournalCounterTests.I62_C16_TheQ7CountersAreExactlyWhatTheJournalProves [13 ms]
+  Correctas RackCad.Tests.I62F4JournalCounterTests.I62_C15_TheExitOfEachRecordStatesTheJournalBeforeIt [7 ms]
+
+La serie de pruebas se ejecutó correctamente.
+Pruebas totales: 5
+     Correcto: 5
+ Tiempo total: 8.2692 Segundos

@@ -1,0 +1,28 @@
+$ dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter "FullyQualifiedName~I62F4CustodyRebaseMcTests.I62_C15_TheAdoption"  (exit 1)
+Serie de pruebas para C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll (.NETCoreApp,Version=v8.0)
+1 archivos de prueba en total coincidieron con el patrón especificado.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.29)
+[xUnit.net 00:00:00.27]   Discovering: RackCad.Tests
+[xUnit.net 00:00:05.93]   Discovered:  RackCad.Tests
+[xUnit.net 00:00:05.97]   Starting:    RackCad.Tests
+[xUnit.net 00:00:08.60]       System.NotImplementedException : F4-G10 RED
+[xUnit.net 00:00:08.60]       Stack Trace:
+[xUnit.net 00:00:08.60]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\Adoption.cs(25,0): at RackCad.Tests.Adoption.T20Problems(YamlMap v1, YamlMap bootstrap)
+[xUnit.net 00:00:08.60]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4CustodyRebaseMcTests.cs(188,0): at RackCad.Tests.I62F4CustodyRebaseMcTests.I62_C15_TheAdoptionOfADirectOnlyUnitAndTheReturnToV1KeepTheNineFields()
+[xUnit.net 00:00:08.60]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:08.60]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:08.61]   Finished:    RackCad.Tests
+  Con error RackCad.Tests.I62F4CustodyRebaseMcTests.I62_C15_TheAdoptionOfADirectOnlyUnitAndTheReturnToV1KeepTheNineFields [2 s]
+  Mensaje de error:
+   System.NotImplementedException : F4-G10 RED
+  Seguimiento de la pila:
+     at RackCad.Tests.Adoption.T20Problems(YamlMap v1, YamlMap bootstrap) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\Adoption.cs:line 25
+   at RackCad.Tests.I62F4CustodyRebaseMcTests.I62_C15_TheAdoptionOfADirectOnlyUnitAndTheReturnToV1KeepTheNineFields() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4CustodyRebaseMcTests.cs:line 188
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+Pruebas totales: 1
+     Incorrecto: 1
+ Tiempo total: 9.5647 Segundos
+[xUnit.net 00:00:08.60]     RackCad.Tests.I62F4CustodyRebaseMcTests.I62_C15_TheAdoptionOfADirectOnlyUnitAndTheReturnToV1KeepTheNineFields [FAIL]
+No se pudo ejecutar la serie de pruebas.

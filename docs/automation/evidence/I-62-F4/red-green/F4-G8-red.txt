@@ -1,0 +1,109 @@
+$ dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter "FullyQualifiedName~I62F4InputFidelityTests"  (exit 1)
+Serie de pruebas para C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll (.NETCoreApp,Version=v8.0)
+1 archivos de prueba en total coincidieron con el patrón especificado.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.29)
+[xUnit.net 00:00:00.45]   Discovering: RackCad.Tests
+[xUnit.net 00:00:05.97]   Discovered:  RackCad.Tests
+[xUnit.net 00:00:05.99]   Starting:    RackCad.Tests
+[xUnit.net 00:00:06.07]       System.NotImplementedException : F4-G8 RED
+[xUnit.net 00:00:06.07]       Stack Trace:
+[xUnit.net 00:00:06.07]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\InputFidelity.cs(113,0): at RackCad.Tests.InputFidelity.Compare(IReadOnlyDictionary`2 canonical, IReadOnlyList`1 delivered)
+[xUnit.net 00:00:06.07]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4InputFidelityTests.cs(96,0): at RackCad.Tests.I62F4InputFidelityTests.Independence(PremiseRef premise, List`1 delivered, JsonObject manifest, UnitRef[] start)
+[xUnit.net 00:00:06.07]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4InputFidelityTests.cs(203,0): at RackCad.Tests.I62F4InputFidelityTests.I62_C42_q_z_TheGraphIsCanonicalAndBoundedAndResolvesWithoutGuessing()
+[xUnit.net 00:00:06.07]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:06.07]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:06.08]       System.NotImplementedException : F4-G8 RED
+[xUnit.net 00:00:06.08]       Stack Trace:
+[xUnit.net 00:00:06.08]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\InputFidelity.cs(113,0): at RackCad.Tests.InputFidelity.Compare(IReadOnlyDictionary`2 canonical, IReadOnlyList`1 delivered)
+[xUnit.net 00:00:06.08]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4InputFidelityTests.cs(96,0): at RackCad.Tests.I62F4InputFidelityTests.Independence(PremiseRef premise, List`1 delivered, JsonObject manifest, UnitRef[] start)
+[xUnit.net 00:00:06.08]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4InputFidelityTests.cs(126,0): at RackCad.Tests.I62F4InputFidelityTests.I62_C42_a_f_g_AFindingIsIndependentOnlyWhenItsWholeEnvelopeIsFaithful()
+[xUnit.net 00:00:06.08]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:06.08]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:06.08]       System.NotImplementedException : F4-G8 RED
+[xUnit.net 00:00:06.08]       Stack Trace:
+[xUnit.net 00:00:06.08]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\InputFidelity.cs(137,0): at RackCad.Tests.InputFidelity.Units(String text)
+[xUnit.net 00:00:06.08]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4InputFidelityTests.cs(248,0): at RackCad.Tests.I62F4InputFidelityTests.I62_C42_TheCanonicalUnitsAreTheSegmentationOfTheB11Generator()
+[xUnit.net 00:00:06.08]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:06.08]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:06.08]       System.NotImplementedException : F4-G8 RED
+[xUnit.net 00:00:06.08]       Stack Trace:
+[xUnit.net 00:00:06.08]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\InputFidelity.cs(44,0): at RackCad.Tests.InputFidelity.Preflight(IReadOnlyDictionary`2 canonical, IReadOnlyDictionary`2 transport)
+[xUnit.net 00:00:06.08]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4InputFidelityTests.cs(104,0): at RackCad.Tests.I62F4InputFidelityTests.I62_C42_1_4_ThePreflightKeepsEveryNonAsciiCharacterOrStopsTheLaunch()
+[xUnit.net 00:00:06.08]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:06.08]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:06.08]       System.NotImplementedException : F4-G8 RED
+[xUnit.net 00:00:06.08]       Stack Trace:
+[xUnit.net 00:00:06.08]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\InputFidelity.cs(113,0): at RackCad.Tests.InputFidelity.Compare(IReadOnlyDictionary`2 canonical, IReadOnlyList`1 delivered)
+[xUnit.net 00:00:06.08]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4InputFidelityTests.cs(172,0): at RackCad.Tests.I62F4InputFidelityTests.I62_C42_o_7_TheEvidenceDescribesWhatTheReviewerReceivedAndASuccessorRecomputesIt()
+[xUnit.net 00:00:06.08]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:06.08]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:06.08]       System.NotImplementedException : F4-G8 RED
+[xUnit.net 00:00:06.08]       Stack Trace:
+[xUnit.net 00:00:06.08]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\InputFidelity.cs(113,0): at RackCad.Tests.InputFidelity.Compare(IReadOnlyDictionary`2 canonical, IReadOnlyList`1 delivered)
+[xUnit.net 00:00:06.08]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4InputFidelityTests.cs(96,0): at RackCad.Tests.I62F4InputFidelityTests.Independence(PremiseRef premise, List`1 delivered, JsonObject manifest, UnitRef[] start)
+[xUnit.net 00:00:06.08]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4InputFidelityTests.cs(150,0): at RackCad.Tests.I62F4InputFidelityTests.I62_C42_h_n_TheClosureFollowsOnlyDeclaredControlEdgesAndAnyDegradedUnitInItInvalidates()
+[xUnit.net 00:00:06.08]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:06.08]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:06.08]   Finished:    RackCad.Tests
+  Con error RackCad.Tests.I62F4InputFidelityTests.I62_C42_q_z_TheGraphIsCanonicalAndBoundedAndResolvesWithoutGuessing [22 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-G8 RED
+  Seguimiento de la pila:
+     at RackCad.Tests.InputFidelity.Compare(IReadOnlyDictionary`2 canonical, IReadOnlyList`1 delivered) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\InputFidelity.cs:line 113
+   at RackCad.Tests.I62F4InputFidelityTests.Independence(PremiseRef premise, List`1 delivered, JsonObject manifest, UnitRef[] start) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4InputFidelityTests.cs:line 96
+   at RackCad.Tests.I62F4InputFidelityTests.I62_C42_q_z_TheGraphIsCanonicalAndBoundedAndResolvesWithoutGuessing() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4InputFidelityTests.cs:line 203
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Con error RackCad.Tests.I62F4InputFidelityTests.I62_C42_a_f_g_AFindingIsIndependentOnlyWhenItsWholeEnvelopeIsFaithful [< 1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-G8 RED
+  Seguimiento de la pila:
+     at RackCad.Tests.InputFidelity.Compare(IReadOnlyDictionary`2 canonical, IReadOnlyList`1 delivered) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\InputFidelity.cs:line 113
+   at RackCad.Tests.I62F4InputFidelityTests.Independence(PremiseRef premise, List`1 delivered, JsonObject manifest, UnitRef[] start) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4InputFidelityTests.cs:line 96
+   at RackCad.Tests.I62F4InputFidelityTests.I62_C42_a_f_g_AFindingIsIndependentOnlyWhenItsWholeEnvelopeIsFaithful() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4InputFidelityTests.cs:line 126
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Con error RackCad.Tests.I62F4InputFidelityTests.I62_C42_TheCanonicalUnitsAreTheSegmentationOfTheB11Generator [< 1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-G8 RED
+  Seguimiento de la pila:
+     at RackCad.Tests.InputFidelity.Units(String text) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\InputFidelity.cs:line 137
+   at RackCad.Tests.I62F4InputFidelityTests.I62_C42_TheCanonicalUnitsAreTheSegmentationOfTheB11Generator() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4InputFidelityTests.cs:line 248
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Con error RackCad.Tests.I62F4InputFidelityTests.I62_C42_1_4_ThePreflightKeepsEveryNonAsciiCharacterOrStopsTheLaunch [< 1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-G8 RED
+  Seguimiento de la pila:
+     at RackCad.Tests.InputFidelity.Preflight(IReadOnlyDictionary`2 canonical, IReadOnlyDictionary`2 transport) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\InputFidelity.cs:line 44
+   at RackCad.Tests.I62F4InputFidelityTests.I62_C42_1_4_ThePreflightKeepsEveryNonAsciiCharacterOrStopsTheLaunch() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4InputFidelityTests.cs:line 104
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Con error RackCad.Tests.I62F4InputFidelityTests.I62_C42_o_7_TheEvidenceDescribesWhatTheReviewerReceivedAndASuccessorRecomputesIt [< 1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-G8 RED
+  Seguimiento de la pila:
+     at RackCad.Tests.InputFidelity.Compare(IReadOnlyDictionary`2 canonical, IReadOnlyList`1 delivered) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\InputFidelity.cs:line 113
+   at RackCad.Tests.I62F4InputFidelityTests.I62_C42_o_7_TheEvidenceDescribesWhatTheReviewerReceivedAndASuccessorRecomputesIt() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4InputFidelityTests.cs:line 172
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Con error RackCad.Tests.I62F4InputFidelityTests.I62_C42_h_n_TheClosureFollowsOnlyDeclaredControlEdgesAndAnyDegradedUnitInItInvalidates [1 ms]
+  Mensaje de error:
+   System.NotImplementedException : F4-G8 RED
+  Seguimiento de la pila:
+     at RackCad.Tests.InputFidelity.Compare(IReadOnlyDictionary`2 canonical, IReadOnlyList`1 delivered) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62\InputFidelity.cs:line 113
+   at RackCad.Tests.I62F4InputFidelityTests.Independence(PremiseRef premise, List`1 delivered, JsonObject manifest, UnitRef[] start) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4InputFidelityTests.cs:line 96
+   at RackCad.Tests.I62F4InputFidelityTests.I62_C42_h_n_TheClosureFollowsOnlyDeclaredControlEdgesAndAnyDegradedUnitInItInvalidates() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4InputFidelityTests.cs:line 150
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+Pruebas totales: 6
+     Incorrecto: 6
+ Tiempo total: 6.8548 Segundos
+[xUnit.net 00:00:06.07]     RackCad.Tests.I62F4InputFidelityTests.I62_C42_q_z_TheGraphIsCanonicalAndBoundedAndResolvesWithoutGuessing [FAIL]
+[xUnit.net 00:00:06.08]     RackCad.Tests.I62F4InputFidelityTests.I62_C42_a_f_g_AFindingIsIndependentOnlyWhenItsWholeEnvelopeIsFaithful [FAIL]
+[xUnit.net 00:00:06.08]     RackCad.Tests.I62F4InputFidelityTests.I62_C42_TheCanonicalUnitsAreTheSegmentationOfTheB11Generator [FAIL]
+[xUnit.net 00:00:06.08]     RackCad.Tests.I62F4InputFidelityTests.I62_C42_1_4_ThePreflightKeepsEveryNonAsciiCharacterOrStopsTheLaunch [FAIL]
+[xUnit.net 00:00:06.08]     RackCad.Tests.I62F4InputFidelityTests.I62_C42_o_7_TheEvidenceDescribesWhatTheReviewerReceivedAndASuccessorRecomputesIt [FAIL]
+[xUnit.net 00:00:06.08]     RackCad.Tests.I62F4InputFidelityTests.I62_C42_h_n_TheClosureFollowsOnlyDeclaredControlEdgesAndAnyDegradedUnitInItInvalidates [FAIL]
+No se pudo ejecutar la serie de pruebas.

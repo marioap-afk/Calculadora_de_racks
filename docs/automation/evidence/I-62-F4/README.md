@@ -61,6 +61,12 @@ Estado:     en curso (cortes F4-A..F4-H); este archivo se completa con el paquet
 | F4-G3 | `I62F4VerificationHelperTests` P6 | 3/3 en error (`Read` y `DeclaredSkipMethods`) | 3/3 |
 | F4-G4 | `I62F4NextActionTests` | 5/5 en error (`Derive` y `Check`) | 5/5 |
 | F4-H1 | `I62F4StateSchemaTests` (C-18, esquema `/v2`) | 10/10 en error **sin el archivo del esquema** | 10/10 |
+| F4-G5 | `I62F4JournalCounterTests` (C-15 DS, C-16) | 5/5 en error (`ChainProblems`, `Derive`, `ExitProblems`, `Counts`, `Q7CounterProblems`, `ConservativeMinimum`, `ReconstructionProblems`) | 5/5 |
+| F4-G6 | `I62F4ProcessFactsTests` (C-17) | 3/3 en error (`Classify`, `WorkerClasses`) | 3/3 |
+| F4-G7 | `I62F4InputClosureTests` (C-41) | 4/5 en error (`ObligationsOf`, `AuditReads`; la comparación de identidad no los llama) | 5/5 |
+| F4-G8 | `I62F4InputFidelityTests` (C-42) | 6/6 en error (`Preflight`, `Compare`, `Units`, `Independence`, `Ingest`, `Resolve`) | 6/6 |
+| F4-G9 | `I62F4CloseAndGapTests` (C-21, C-37) | 2/2 en error (`Invalidating`, `Missing`) | 2/2 |
+| F4-G10 | adopción en `I62F4CustodyRebaseMcTests` (T20/T21) | 1/1 en error (`T20Problems`, `T21Problems`) | 1/1 |
 
 El RED se captura sustituyendo solo los cuerpos de los métodos nombrados por `throw new NotImplementedException` y restaurando el archivo byte a byte
 (`redgreen.py` en el scratchpad de la sesión; la salida queda aquí). La selección es mayor que cero en todos los cortes.
