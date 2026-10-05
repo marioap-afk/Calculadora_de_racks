@@ -195,6 +195,12 @@ namespace RackCad.Tests
                 return null;
             }
 
+            if (!Creditable(history[first], commit, git))
+            {
+                reason = "map " + first + " credits " + Short(commit) + ", which its rebase did not rewrite (A62-A1U-O1)";
+                return null;
+            }
+
             var c = start.Image;
             for (var j = first + 1; j < history.Count; j++)
             {
@@ -204,6 +210,12 @@ namespace RackCad.Tests
                     if (!e.PatchIdEqual || e.Image == null)
                     {
                         reason = "the map entry of " + Short(c) + " has no image with PatchIdEqual";
+                        return null;
+                    }
+
+                    if (!Creditable(history[j], c, git))
+                    {
+                        reason = "map " + j + " credits " + Short(c) + ", which its rebase did not rewrite (A62-A1U-O1)";
                         return null;
                     }
 
@@ -318,6 +330,21 @@ namespace RackCad.Tests
             }
 
             return problems;
+        }
+
+        /// <summary>
+        /// A62-A1U-O1: an entry is creditable only when its OriginalSha was really rewritten by that map's rebase (MainBefore..BranchBefore). Where the
+        /// pre-rebase objects exist (the reconciling host) this is checked; in a clean successor clone they may be unreachable, and the map is credited as
+        /// custodied, because the reconciling host could not have published it otherwise (§8.8 step 4, <see cref="PublicationProblems"/>).
+        /// </summary>
+        private static bool Creditable(RebaseMapDoc map, string original, IGitHistory? git)
+        {
+            if (git == null || !git.Exists(map.BranchBefore) || !git.Exists(map.MainBefore))
+            {
+                return true;
+            }
+
+            return git.Range(map.MainBefore, map.BranchBefore).Contains(original);
         }
 
         private static string Short(string sha) => sha.Length > 8 ? sha.Substring(0, 8) : sha;

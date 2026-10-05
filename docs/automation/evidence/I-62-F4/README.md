@@ -18,6 +18,9 @@ Estado:     en curso (cortes F4-A..F4-H); este archivo se completa con el paquet
   - `Orchestration.cs`: constantes, aristas y lectores de la orquestación (topes congelados, entradas de decisión, autoridad REVIEWER, D1-17).
   - `RebaseChain.cs`: cadena de mapas, ResolveBranchRef (D2-10), EquivalentReviewedObject (D2-12) y validez de un mapa en su publicación (B.8.7 y
     A62-A1U-O1).
+  - `StateV2Validator.History.cs`: invariantes con historia (I-H01, I-H02 con D2-3, I-P03, I-P08) y las comprobaciones de A-1 que necesitan Git
+    (D2-2 cont. con A62-A1T-01, D2-6 (2), D2-11). `IGitHistory` tiene dos implementaciones: `GitProcessHistory` (Git real) y, en los datos de
+    prueba, `SyntheticGitHistory` (grafo sintético); `GitScratch` crea repositorios Git desechables para los negativos E y F.
 
 ## RED → GREEN por corte (`red-green/`)
 
@@ -27,6 +30,8 @@ Estado:     en curso (cortes F4-A..F4-H); este archivo se completa con el paquet
 | F4-B | `I62F4StateV2FileInvariantTests` | 42/43 en error (`ValidateFile`; el barrido de los estados v2 reales no lo llama) | 43/43 |
 | F4-C | `I62F4StateV2PairInvariantTests` | 30/30 en error (`ValidatePair`) | 30/30 |
 | F4-D | `I62F4OrchestrationValidatorTests` | 51/51 en error (`FileOrchestration` y `PairOrchestration`) | 51/51 |
+| F4-E1 | `I62F4RebaseChainTests` (negativos A–H de la cadena, A62-A1U-O1, D2-12) | 8/8 en error (`Resolve`, `PublicationProblems` y `Equivalent`) | 8/8 |
+| F4-E2 | `I62F4HistoryInvariantTests` | 9/10 en error (`ValidateHistory`, `ValidatePairHistory` y `ValidateB1History`; la admisión por los validadores de archivo y de pares no los llama) | 10/10 |
 
 El RED se captura sustituyendo solo los cuerpos de los métodos nombrados por `throw new NotImplementedException` y restaurando el archivo byte a byte
 (`redgreen.py` en el scratchpad de la sesión; la salida queda aquí). La selección es mayor que cero en todos los cortes.
@@ -56,3 +61,9 @@ El RED se captura sustituyendo solo los cuerpos de los métodos nombrados por `t
 - **F4-OBS-06 — aristas de fase.** Además del diagrama de §20.5 (el QU de ingestión publica la fase siguiente directamente) y de las dos de SM-05, el
   validador admite la reejecución de transporte tras un resultado INVALID (RESULT_INGESTED → (RE)REVIEW_PENDING) y la segunda solicitud tras una
   decisión del Owner (ESCALATE_OWNER → REREVIEW_PENDING, §20.6), como el oráculo de la preparación.
+- **F4-OBS-07 — commits de la ventana (I-P03, I-P08).** V14 dice «entre p y n solo hay commits del Worker o imágenes del rebase de 16.7» (W-2)
+  y «ningún commit del Worker modifica el archivo de estado» (W-3), sin nombrar cómo se reconoce un commit del Worker. El validador usa los hechos
+  custodiados por n: un commit de la ventana es del Worker si es ancestro de uno de sus resultados (`last_window.verified_sha`,
+  `unverified_commits[].sha` o el `chain_red_sha` de la tarea de la ventana). Esto equivale a la cadena `BaseSha..CurrentSha` de I-61. La ventana
+  empieza en el Q0, o en su imagen cuando el rebase de la propia ventana lo reescribió (I-P12). Las dos reglas aplican solo con p = Q0: fuera de una
+  ventana no hay commits del Worker, y un par de reconciliación no puede contar la imagen de p como escritura del Worker.

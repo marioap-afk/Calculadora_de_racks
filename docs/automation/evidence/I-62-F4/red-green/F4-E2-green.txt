@@ -1,0 +1,23 @@
+$ dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter "FullyQualifiedName~I62F4HistoryInvariantTests"  (exit 0)
+Serie de pruebas para C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll (.NETCoreApp,Version=v8.0)
+1 archivos de prueba en total coincidieron con el patrón especificado.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.29)
+[xUnit.net 00:00:00.25]   Discovering: RackCad.Tests
+[xUnit.net 00:00:06.69]   Discovered:  RackCad.Tests
+[xUnit.net 00:00:06.71]   Starting:    RackCad.Tests
+  Correctas RackCad.Tests.I62F4HistoryInvariantTests.I62_C15_D2_11_AReplannedInvocationIsRebuiltOnTheImages [115 ms]
+  Correctas RackCad.Tests.I62F4HistoryInvariantTests.I62_C15_IP03_AWindowWithItsOwnRebaseStartsAtTheImageOfTheQ0 [10 ms]
+  Correctas RackCad.Tests.I62F4HistoryInvariantTests.I62_C15_IP03_IP08_BetweenAQ0AndItsClosureOnlyTheWorkersCommitsAndNoneWritesTheState [21 ms]
+  Correctas RackCad.Tests.I62F4HistoryInvariantTests.I62_C15_TheReconciledLoopPointsAreAdmittedByTheFileAndPairValidators [130 ms]
+  Correctas RackCad.Tests.I62F4HistoryInvariantTests.I62_C15_D2_11_InvocationAndAuthorizationReferencesResolveByResolveBranchRef [12 ms]
+  Correctas RackCad.Tests.I62F4HistoryInvariantTests.I62_C15_A62_A1T_01_ALaunchingTargetResolvesWithTheWholeHistoryOfNAndTheRebasedTip [14 ms]
+  Correctas RackCad.Tests.I62F4HistoryInvariantTests.I62_C15_IH02_D2_3_ShaFieldsAndLiveOrchestrationCommitsAreAncestorsOfHeadOutsideAWindow [4 ms]
+  Correctas RackCad.Tests.I62F4HistoryInvariantTests.I62_C15_D2_6_CaseB1ReplansTheLaunchingAttemptOnTheImageOfResolveBranchRef [3 ms]
+  Correctas RackCad.Tests.I62F4HistoryInvariantTests.I62_C15_IH01_AQ0OnAnObsoleteBaseNeedsTheBranchToContainEffectiveSha [1 ms]
+[xUnit.net 00:00:07.08]   Finished:    RackCad.Tests
+  Correctas RackCad.Tests.I62F4HistoryInvariantTests.I62_C15_IH02_ADurableShaFieldOffTheRebasedBranchFailsUntilTheReconciliation [10 ms]
+
+La serie de pruebas se ejecutó correctamente.
+Pruebas totales: 10
+     Correcto: 10
+ Tiempo total: 7.9731 Segundos
