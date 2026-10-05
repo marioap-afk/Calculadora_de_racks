@@ -1,16 +1,34 @@
 # ADR-0049: Parámetros calculados de solo lectura, namespace built-in `rack` del motor de expresiones y resumen de proyecto
 
-- **Estado:** propuesto
-- **Fecha:** 2026-10-04 (propuesto)
-- **Decisores:** Owner del proyecto (acepta o rechaza; pendiente). Coordinador y Arquitecto de I-63 (consenso técnico
-  pendiente sobre este archivo exacto). Claude (redacción, sesión principal de I-63).
+- **Estado:** aceptado
+- **Fecha:** 2026-10-04 (propuesto) · 2026-10-04 (aceptado)
+- **Decisores:** Owner del proyecto (**acepta**, 2026-10-04). Arquitecto de I-63 (**AGREED**, revisión 2, sin REQUIRED,
+  sobre el blob propuesto exacto `0b43332248523f206f21a8dcbe383748dde8edef`). Coordinador de I-63 (ordenó su redacción en la
+  autorización de READY). Claude (redacción, sesión principal de I-63).
 - **Sucesor parcial de:** [ADR-0043](0043-motor-expresiones-parametricas-causas-multiples-y-recuperacion-segura.md).
   **No lo reemplaza.** ADR-0043 sigue `aceptado` y vigente en todo lo que este ADR no modifica o sustituye
-  expresamente. Al aceptarse este ADR, ADR-0043 recibe una nota posterior fechada que remite aquí.
+  expresamente. Con esta aceptación, ADR-0043 recibe una nota posterior fechada que remite aquí.
 - **Iniciativa relacionada:** I-63 (ID20) — `architecture/parametros-calculados-resumen-proyecto`
   ([contrato](../initiatives/I-63-parametros-calculados-resumen-proyecto.md),
   [Discovery](../initiatives/I-63-discovery.md), [registro](../automation/decisions/I-63.md),
   [evidencia](../automation/evidence/I-63-evidence.md)).
+
+> **Aceptación del Owner (2026-10-04).** El Owner del proyecto acepta esta decisión de forma explícita en la orden
+> «Owner Decision — ADR-0049», pegada en el chat de la sesión principal de I-63, con la respuesta literal: «**Acepto
+> explícitamente el ADR-0049 sobre el objeto exacto revisado por el Architect**». La orden nombra el commit `238da7a6`, la
+> ruta de este archivo, el blob `0b43332248523f206f21a8dcbe383748dde8edef`, Architect = AGREED y REQUIRED = 0. El registro durable
+> está en [`docs/automation/decisions/I-63.md`](../automation/decisions/I-63.md) §2 y en la
+> [evidencia](../automation/evidence/I-63-evidence.md) §59, con el texto literal en custodia.
+>
+> **Dos actos, dos autoridades.** El Arquitecto de I-63 aportó el consenso técnico exacto, AGREED en su revisión 2 sobre
+> ese blob, con A63-ADR-01 cerrado. El Owner ejerce aquí el acto distinto de aceptación.
+>
+> **Inmutabilidad del contenido.** En esta aceptación solo cambian el encabezado y este preámbulo. Desde «Base exacta»
+> hasta el final, el texto es el del blob aceptado y desde ahora es inmutable salvo correcciones tipográficas
+> ([README](README.md)). El opcional cosmético O-ADR-6 no forma parte de la aceptación; el Owner autoriza corregirlo
+> después solo como corrección tipográfica, sin alterar el significado normativo.
+>
+> **Alcance.** La aceptación no autoriza el Candidato ni la integración de I-63.
 
 ## Base exacta
 

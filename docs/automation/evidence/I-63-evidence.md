@@ -2424,3 +2424,31 @@ Valores aprobados por el Coordinator (Q-R-03):
   READY.
   - Tras la aceptación: estado `aceptado`, registro de la aceptación, nota posterior en ADR-0043 y fila del índice.
   - Después, CI exact-SHA y el bloque E (FOUNDATIONS).
+
+## 59. ADR-0049 aceptado por el Owner
+
+- **Decisión del Owner** («Owner Decision — ADR-0049», pegada en el chat; texto literal en
+  `docs/automation/evidence/I-63-pilot/READY/adr-0049/owner-acceptance.txt`): acepta explícitamente el ADR-0049 sobre el objeto
+  exacto revisado por el Architect.
+  - Objeto aceptado: commit `238da7a63fb9daafa1077fe29bf79561c8dc52cf`, ruta
+    `docs/adr/0049-parametros-calculados-namespace-rack-y-resumen-de-proyecto.md`, blob **`0b43332248523f206f21a8dcbe383748dde8edef`**.
+  - Architect = AGREED; REQUIRED = 0; A63-ADR-01 = CLOSED.
+  - O-ADR-6 no forma parte de la aceptación. Puede corregirse después solo como corrección tipográfica.
+  - Candidato e integración siguen **NO autorizados**.
+- **Comprobaciones previas** (antes de editar):
+  - `HEAD` = `origin/architecture/parametros-calculados-resumen-proyecto` = `20c1cef20fa5f9deb2e4e2c56cb09b0fde03570a`, árbol limpio.
+  - `git rev-parse HEAD:<ruta del ADR>` = `0b43332248523f206f21a8dcbe383748dde8edef`: el ADR no cambió desde `238da7a6`.
+  - `origin/main` = `819955d61a6da4c811a11fbd11b5dca13f634b7c`, sin cambios.
+  - CI exact-SHA de `20c1cef2` (custodia de la revisión 2): corrida 37256676343, 4/4.
+- **Cambios de este commit:**
+  - **ADR-0049:** `Estado: aceptado`, la fecha de aceptación, los decisores, la línea de la nota de ADR-0043 en tiempo presente
+    y un preámbulo con la aceptación, según el precedente de ADR-0043. El texto desde «## Base exacta» hasta el final es byte a
+    byte el del blob aceptado; el script de la sesión lo comprueba antes de escribir.
+  - **ADR-0043:** solo se añade al final la sección «Notas posteriores», con una nota fechada que remite a ADR-0049 como
+    sucesor parcial. No se marca como reemplazado; su estado sigue `aceptado` y el resto del archivo no cambia.
+  - **Índice** (`docs/adr/README.md`): ADR-0049 pasa a `aceptado`.
+  - **Decisiones de I-63** §2: fila de la aceptación.
+  - **Estado:** READY sigue en curso; el bloque D queda cerrado y el siguiente es el bloque E (FOUNDATIONS).
+- **Siguiente:**
+  - O-ADR-6, solo tipográfico, en un commit propio.
+  - Bloque E (FOUNDATIONS); después READY-04..09 y el retorno al Coordinator sin integración.
