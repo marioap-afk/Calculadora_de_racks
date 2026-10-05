@@ -1,0 +1,381 @@
+{
+ "Base": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+ "Tip": "HEAD",
+ "MapBlob": "b8e1b5217f5f0587f82fa824f85bf3e2be7147be",
+ "Result": "EQUAL (MV-2..MV-6)",
+ "Files": [
+  [
+   "docs/AUTOMATION_PLAN.md",
+   "MODIFIED"
+  ],
+  [
+   "docs/INITIATIVE_LIFECYCLE.md",
+   "MODIFIED"
+  ],
+  [
+   "docs/WORKFLOW.md",
+   "MODIFIED"
+  ],
+  [
+   "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/README.md",
+   "MODIFIED"
+  ],
+  [
+   "docs/automation/agent-execution/adapters/claude-cli.md",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/adapters/claude-desktop-session.md",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/adapters/claude-subagent.md",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/adapters/codex-cli.md",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/adapters/codex-desktop-session.md",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/compatibility/clause-map.schema.json",
+   "ENTRY"
+  ],
+  [
+   "docs/automation/agent-execution/routing.md",
+   "MODIFIED"
+  ],
+  [
+   "docs/automation/agent-execution/schemas/adapters/claude-cli.facts.v1.schema.json",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/schemas/adapters/claude-subagent.facts.v1.schema.json",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/schemas/adapters/codex-cli.facts.v1.schema.json",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/schemas/adapters/codex-desktop-session.facts.v1.schema.json",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/schemas/architect-review-result.v1.schema.json",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/schemas/binding.v1.schema.json",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/schemas/delegation.v2.schema.json",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/schemas/gate-contract.v2.schema.json",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/schemas/input-closure.v1.schema.json",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/schemas/input-fidelity.v1.schema.json",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/schemas/normative-dependency-manifest.v1.schema.json",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/schemas/preflight.v1.schema.json",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/schemas/relay-record.v2.schema.json",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json",
+   "ADDED"
+  ],
+  [
+   "docs/initiatives/PROMPT_TEMPLATES.md",
+   "MODIFIED"
+  ]
+ ],
+ "EntriesByKind": {
+  "MODIFIED": 14,
+  "REMOVED": 0,
+  "ADDED": 33,
+  "ENTRY": 2
+ },
+ "Entries": [
+  [
+   "docs/AUTOMATION_PLAN.md",
+   "# Plan del ejecutor nocturno",
+   "MODIFIED"
+  ],
+  [
+   "docs/AUTOMATION_PLAN.md",
+   "## 16. Ejecución delegada bajo orden del Coordinator",
+   "MODIFIED"
+  ],
+  [
+   "docs/AUTOMATION_PLAN.md",
+   "### 16.1 Participantes y declaraciones",
+   "MODIFIED"
+  ],
+  [
+   "docs/AUTOMATION_PLAN.md",
+   "### 16.13 Compatibilidad de protocolos de ejecución delegada",
+   "ENTRY"
+  ],
+  [
+   "docs/AUTOMATION_PLAN.md",
+   "### 16.14 Vigencia de las partes I62",
+   "ADDED"
+  ],
+  [
+   "docs/AUTOMATION_PLAN.md",
+   "### 16.15 Perfil del Principal y autoverificación (I62)",
+   "ADDED"
+  ],
+  [
+   "docs/AUTOMATION_PLAN.md",
+   "### 16.16 `CONFIGURATION_STATUS` y disposición (I62)",
+   "ADDED"
+  ],
+  [
+   "docs/AUTOMATION_PLAN.md",
+   "### 16.17 Frontera de renderizado (I62)",
+   "ADDED"
+  ],
+  [
+   "docs/AUTOMATION_PLAN.md",
+   "### 16.18 Observación de capacidad y comprobaciones de relevo (I62)",
+   "ADDED"
+  ],
+  [
+   "docs/AUTOMATION_PLAN.md",
+   "### 16.19 Frontera de adapters (I62)",
+   "ADDED"
+  ],
+  [
+   "docs/AUTOMATION_PLAN.md",
+   "### 16.20 Binding y aceptación (I62)",
+   "ADDED"
+  ],
+  [
+   "docs/AUTOMATION_PLAN.md",
+   "### 16.21 Independencia por riesgo (I62)",
+   "ADDED"
+  ],
+  [
+   "docs/AUTOMATION_PLAN.md",
+   "### 16.22 Aceptación del paquete y comprobaciones de la verificación (I62)",
+   "ADDED"
+  ],
+  [
+   "docs/AUTOMATION_PLAN.md",
+   "### 16.23 Orquestación de roles (I62): invocación de rol y contratos de salida",
+   "ADDED"
+  ],
+  [
+   "docs/AUTOMATION_PLAN.md",
+   "### 16.24 Orquestación de roles (I62): cierre de insumos, identidad del revisor y fidelidad",
+   "ADDED"
+  ],
+  [
+   "docs/AUTOMATION_PLAN.md",
+   "### 16.3 Lectura de autoridades",
+   "MODIFIED"
+  ],
+  [
+   "docs/INITIATIVE_LIFECYCLE.md",
+   "# Initiative Lifecycle",
+   "MODIFIED"
+  ],
+  [
+   "docs/INITIATIVE_LIFECYCLE.md",
+   "## 5. Participacion del Architect",
+   "MODIFIED"
+  ],
+  [
+   "docs/INITIATIVE_LIFECYCLE.md",
+   "## 9. Conformidad final",
+   "MODIFIED"
+  ],
+  [
+   "docs/WORKFLOW.md",
+   "# WORKFLOW — flujo Git, worktrees y trabajo multi-agente",
+   "MODIFIED"
+  ],
+  [
+   "docs/WORKFLOW.md",
+   "## 10. Autoridad por dominio",
+   "MODIFIED"
+  ],
+  [
+   "docs/WORKFLOW.md",
+   "## 12. Coexistencia de protocolos de ejecución delegada (I61/I62)",
+   "ENTRY"
+  ],
+  [
+   "docs/WORKFLOW.md",
+   "## 4. Ciclo de vida de una iniciativa (el proceso repetible)",
+   "MODIFIED"
+  ],
+  [
+   "docs/automation/agent-execution/README.md",
+   "# Ejecución delegada de agentes — procedimiento",
+   "MODIFIED"
+  ],
+  [
+   "docs/automation/agent-execution/README.md",
+   "## 12. Autoverificación del Principal y `CONFIGURATION_STATUS` (unidades I62)",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/README.md",
+   "## 13. Observación de capacidad, preflight y saneamiento (unidades I62)",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/README.md",
+   "## 14. Binding, aceptación, independencia y comprobaciones (unidades I62)",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/README.md",
+   "## 15. Invocación de rol, cierre de insumos y fidelidad (unidades I62)",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/README.md",
+   "## 16. Validación de los resultados por rol (unidades I62)",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/README.md",
+   "### 13.1 Producción",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/README.md",
+   "### 13.2 Validación y coherencia",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/README.md",
+   "### 13.3 Invalidación y contraste",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/README.md",
+   "### 13.4 Saneamiento previo a la custodia",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/README.md",
+   "### 14.1 Producción de un binding",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/README.md",
+   "### 14.2 Coherencia del binding",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/README.md",
+   "### 14.3 Materialización autorizada",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/README.md",
+   "### 14.4 Referencias (A2')",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/README.md",
+   "### 14.5 Evaluación de la independencia",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/README.md",
+   "### 14.6 Coherencia de `gate-contract/v2` y `delegation/v2`",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/README.md",
+   "### 14.7 A1'-A8' y las comprobaciones de la verificación",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/README.md",
+   "### 15.1 Construcción de la `RoleInvocation`",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/README.md",
+   "### 15.2 Cierre efectivo de insumos",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/README.md",
+   "### 15.3 Preflight y comprobación de fidelidad",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/README.md",
+   "### 15.4 Validador del manifiesto de dependencias normativas",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/routing.md",
+   "# Enrutamiento estable de la ejecución delegada",
+   "MODIFIED"
+  ],
+  [
+   "docs/automation/agent-execution/routing.md",
+   "## 8. Requisitos por perfil y acción (unidades I62)",
+   "ADDED"
+  ],
+  [
+   "docs/automation/agent-execution/routing.md",
+   "## 9. Binding por capacidad (unidades I62)",
+   "ADDED"
+  ],
+  [
+   "docs/initiatives/PROMPT_TEMPLATES.md",
+   "# Prompt Templates for Initiative Workflow V2",
+   "MODIFIED"
+  ],
+  [
+   "docs/initiatives/PROMPT_TEMPLATES.md",
+   "## 2. Traza y vigencia",
+   "MODIFIED"
+  ]
+ ]
+}

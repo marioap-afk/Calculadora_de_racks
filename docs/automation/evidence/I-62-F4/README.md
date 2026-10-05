@@ -42,6 +42,38 @@ Estado:     en curso (cortes F4-A..F4-H); este archivo se completa con el paquet
 El RED se captura sustituyendo solo los cuerpos de los métodos nombrados por `throw new NotImplementedException` y restaurando el archivo byte a byte
 (`redgreen.py` en el scratchpad de la sesión; la salida queda aquí). La selección es mayor que cero en todos los cortes.
 
+## Compatibilidad: C-20b y C-20c (MC; se repiten sobre el SHA final de F4 y sobre el merge local de la integración)
+
+- **C-20b** (`compat/clause_map.py check <base> <tip>`): el mapa custodiado es igual a la derivación MV-2..MV-6 entre `origin/main`
+  (`bb0d5522`) y la punta. Resultado en `compat/c20b-result.json`. Los negativos de mapa (MV-3 sin un archivo modificado, MV-4 `BaseBlob` distinto,
+  MV-5/N-c entrada duplicada, MV-6/N-d sección cambiada no listada, N-e sección igual listada como MODIFIED y MV-6 sin la ENTRY de WORKFLOW) corren
+  dentro de C-20c y dan MAP_INVALID.
+- **C-20c** (`compat/c20c.py <repo> <out>`, port del prototipo `I-62-prep/f4/compat-proto` sobre los **textos reales**). Usa un clon desechable con
+  la historia real; EFF es el merge local de la punta más un commit vacío **local** con el trailer normativo, que nunca se publica, y M2 = EFF + X1 + X2 + X3.
+  Cada caso ejecuta `Evaluate` desde E1, y el arnés obtiene 16.13 del punto de entrada y el mapa, su esquema y las superficies del texto de 16.13.
+  Resultado en `compat/c20c-result.json`.
+  C-20c-1 (a) PRE_ACTIVATION y (b) I61 con la tabla de E.6 cita por cita. C-20c-2 (I-64, contrato real con `Path` y `Section` idénticos) da I61, más el
+  positivo de WORKFLOW «documento completo» con X3. N-a..N-s y los tres negativos de mapa de C-20b: **27/27**.
+- **Lecturas compuestas, unidad por unidad** (C-20c-2, filas 10 y 11): en README y `routing.md`, todo `##` de EFF^1 se lee en `MainSha_eval` y las
+  secciones solo I62 se omiten. Hay 8 diferencias con el literal de E.6 (README §§1, 3, 5, 6 y 11; routing §§4, 5 y 7, que E.6 lee en EFF^1). Todas
+  derivan de la diferencia E.5/derivación de la tabla siguiente: esas secciones no están MODIFIED en el mapa derivado.
+
+**Mapa previsto (E.5) frente al derivado** (C-20b; la clasificación es una propuesta para la revisión del Coordinator):
+
+| Archivo | Previsto (E.5) | Derivado | Propuesta |
+|---|---|---|---|
+| `docs/AUTOMATION_PLAN.md` | MODIFIED `## 8.` (`/v2`), `## 16.` (ancestro), 16.1, 16.3 (puntero), 16.4-16.9, 16.11 y 16.12 «donde cambian»; ADDED subsecciones I62; ENTRY 16.13 | MODIFIED `## 16.`, 16.1, 16.3 y el `#` del documento; ADDED 16.14-16.24; ENTRY 16.13 | `## 8.` llega con F4-H (formato `/v2`) y se compara de nuevo. 16.4-16.9, 16.11 y 16.12 no cambian: la previsión era condicional («donde cambian») |
+| `docs/WORKFLOW.md` | MODIFIED `## 4.` y `## 10.`; ENTRY `## 12.` | igual (más el `#` del documento) | igual |
+| `docs/INITIATIVE_LIFECYCLE.md` | §5/§9 solo con OD-6 alternativa 1 | MODIFIED §5 y §9 | igual |
+| `docs/initiatives/PROMPT_TEMPLATES.md` | `## G.` si cambia; `## 2.` | MODIFIED `## 2.`; `## G.` sin cambio | igual |
+| `agent-execution/README.md` | MODIFIED §§1, 3, 5, 6 y 11; ADDED secciones I62 | solo el `#` del documento; ADDED §§12-16 y sus subsecciones | **diferencia**: F1 aplazó esas modificaciones sin contenido (decisiones §32.5), y ningún texto congelado fija un cambio en ellas; el contenido I62 está en secciones nuevas (E.7). Propuesta: la previsión no se materializa. No es una corrección (la materialización no se aparta de un texto congelado) ni una A-n (el Freeze no queda incompleto). Decide el Coordinator |
+| `agent-execution/routing.md` | MODIFIED §§4-5 y §7; clase nueva en sección nueva | solo el `#`; ADDED §8 y §9 (F2, con GATE PASS) | **diferencia**: misma propuesta que README |
+| `agent-execution/model-catalog.md` | secciones nuevas (E.7) | sin cambio | **diferencia**: los requisitos por perfil y acción están en `routing.md` §8 (F2). Misma propuesta |
+| adapters, esquemas `/v2` y nuevos | ADDED | ADDED (19 archivos) | igual |
+| `compatibility/clause-map.schema.json` | ENTRY | ENTRY | igual |
+| esquemas `/v1`; `AGENTS.md`, `CLAUDE.md` | ninguna | ninguna | igual |
+| `docs/adr/`, `docs/FOUNDATIONS.md` | índice y entrada en el cierre documental; ADR sucesor ADDED | ADR-0048 ADDED | el índice y FOUNDATIONS llegan con el cierre documental |
+
 ## Decisiones de implementación (sin cambio de semántica congelada; para revisión del Coordinator)
 
 - **F4-OBS-01 — `next_action` en la reconciliación.** I-P05 enumera lo que puede cambiar un QU REBASE_RECONCILIATION, y no nombra `next_action`. Pero
