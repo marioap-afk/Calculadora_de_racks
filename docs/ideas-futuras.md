@@ -1631,3 +1631,22 @@ FOUNDATIONS.
 Con `ProjectSummary` `Full`, los Selectivos excluidos o no colocados también reciben sus métricas D-28 y, si D-28 llega al paso 5, su
 resolución. El coste se midió en G4 (caracterización con N = 1000). Limitar el paso 5 a los racks incluidos exigiría un estado nuevo, y
 eso queda para una decisión futura.
+
+### FOLLOWUP-I63-01 — una sola fuente para el soporte por sistema del agregador (DEV-1 de READY-06)
+
+**Hallazgo** (Architect, READY-06; NON-MATERIAL, aceptado por el Coordinator). `ProjectPopulationAggregator` escribe a mano el estado de los
+totales de frentes por sistema: `NotApplicable` para Cabecera y Cama y `NotSupported` para el resto. No lo deriva de las declaraciones de
+soporte de los providers (D-06/D-08). Los valores coinciden hoy con la matriz congelada D-06, pero la matriz queda representada en dos
+sitios.
+
+**Seguimiento** (texto del Coordinator): unificar la fuente de soporte usada por `ProjectPopulationAggregator` con las declaraciones de los
+providers, evitando dos representaciones de la matriz D-06. **No cambiar semántica observable.** O-R6-1 queda unido a este seguimiento.
+
+### Opcionales de READY-06 diferidos por el Coordinator
+
+- **O-R6-3:** precisar en la nota posterior de ADR-0043 que el namespace `rack` existe en el núcleo y que sus símbolos solo se ofrecen en
+  `RackComputedExpressionContext`. Sería solo una corrección editorial de la nota.
+- **O-R6-4:** añadir a la entrada de FOUNDATIONS las rutas de las clases de prueba, cuyos archivos tienen otro nombre (por ejemplo,
+  `ComputedParametersRackMetricIdsTests` vive en `RackMetricIdsTests.cs`).
+
+Ninguno es necesario para READY ni corrige una afirmación normativa falsa; no se aplicaron antes de integrar.

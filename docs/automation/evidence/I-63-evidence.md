@@ -2485,3 +2485,94 @@ Valores aprobados por el Coordinator (Q-R-03):
   | Protecting tests | Las 15 clases de `tests/RackCad.Tests/ComputedParameters/`, más `ExpressionSymbolModelTests` (modificada en G3) y `PushBackBomCommandGuardTests` (reapuntada en la A-4) |
 
 - **Siguiente:** READY-04, con fetch, preflight y rebase si `main` avanzó.
+
+## 61. READY = PASS, Candidato final e integración
+
+### 61.1 READY-04..09 sobre `55a66b3c412fa63a445dc1985977ad660ea72dd7`
+
+Ninguno de estos hechos se commiteó antes del Candidato: la punta de producto se publica sola (WORKFLOW §11.5) y los hechos van a este
+cierre.
+
+| READY | Evidencia |
+|---|---|
+| 04 | `git fetch`; `origin/main` = `819955d61a6da4c811a11fbd11b5dca13f634b7c` = merge-base, sin rebase; árbol y stash limpios; `HEAD` = upstream |
+| 05 | CI `push` 37258162825: `head_sha` = Candidato, los cuatro jobs en `success`. Local, con el SDK 8.0.423 del usuario y `HEAD` y árbol limpio antes y después: Core Full 12595/12595; UI Full 1654 (1637 superadas y 17 omitidas por `Skip`, 0 fallos); build Debug de UI con 0 errores y 0 advertencias; build Debug del Plugin con salida temporal, 0 errores y solo las 2 advertencias MSB3277 conocidas |
+| 06 | Architect: **CONFORMING**, REQUIRED = 0 (SEPARATE SESSION, el mismo de R1-R3, G3 y el ADR-0049; literal en `docs/automation/evidence/I-63-pilot/READY/ready-06/architect-ready06.txt`). Coordinator: **CONFORMING** (§61.2) |
+| 07 | Árbol limpio; `HEAD` = remoto = Candidato |
+| 08 | Owner Validation NOT APPLICABLE, decidida en el Freeze §22: sin UI, comandos, cambios de dibujo ni adaptador. Ningún escenario OV asignado ni retirado |
+| 09 | El commit de Freeze `f61d0aca` solo cambia `Frozen: NO` → `Frozen: YES` sobre el blob acordado `e4a94eff` (`fb3c8788`); el blob `4d5dedce` es igual en el Candidato y ningún commit posterior toca la Proposal. A-1..A-4 tienen un solo commit cada una (`658b35ad`, `669d8a39`, `ea70e3b3`, `17215ab2`) y el mismo blob en el Candidato; secuencia continua. Los 67 commits de `819955d6..55a66b3c` son lineales y llevan exactamente un `Co-Authored-By` (57 Opus 5.5 y 10 Sonnet 5.5 del Worker) |
+
+### 61.2 READY-06 y decisión del Coordinator
+
+- **Architect: CONFORMING.**
+  - Verificó READY-04, el CI y READY-09; tomó las suites locales como declaración de la sesión.
+  - Conformes: autoridad (D-07, D-27 con equivalencia al handler antiguo), población, núcleo, persistencia NONE, legacy (INV-28),
+    no-objetivos y puntos de extensión.
+  - ADR-0049: desde «Base exacta» solo difiere O-ADR-6. ADR-0043 solo recibe «Notas posteriores».
+  - FOUNDATIONS conforme con DC-08 y con Q-R-05.
+  - Sobre la observación de la sesión (WORKFLOW §11.4 frente a LIFECYCLE §4.1): **no es desviación**.
+  - **DEV-1** NON-MATERIAL (matriz D-06 duplicada en el agregador) y **DEV-2** EDITORIAL (estado atrasado). Opcionales O-R6-1..4.
+- **Coordinator: CONFORMING**; READY-01..09 = PASS; **FINAL_CANDIDATE_SHA = `55a66b3c412fa63a445dc1985977ad660ea72dd7`**; integración autorizada (decisiones §2;
+  literal en `docs/automation/evidence/I-63-pilot/READY/coordinator-ready-pass.txt`).
+  - DEV-1 → **FOLLOWUP-I63-01** en `docs/ideas-futuras.md`, con O-R6-1.
+  - DEV-2 → este commit (O-R6-2).
+  - O-R6-3 y O-R6-4 diferidos, registrados en `docs/ideas-futuras.md` sin aplicarse.
+
+### 61.3 Preflight de integración
+
+- `git fetch --prune --tags`: `origin/main` = `819955d61a6da4c811a11fbd11b5dca13f634b7c`, sin cambios; `HEAD` = remoto = Candidato; árbol
+  limpio.
+- No existe el tag `integration/I-63`. El `Claim-Id` del commit de reclamo `cdae6421` es `ce04f47f-ca53-4e75-b983-5ac57ab6c5e3`, el del
+  estado.
+- `git merge-tree` del Candidato con las ramas activas:
+  - I-62 (`architecture/portabilidad-coordinador-principal`) e I-52 (`feature/rackmirror-espejo-semantico`): sin conflicto;
+  - I-64 (`architecture/workspace-persistente-rackcad`): conflicto textual en `docs/ROADMAP.md`. Son las filas adyacentes tras I-60
+    que el DC-07 ya preveía; lo resuelve I-64 al rebasar. No afecta al merge de I-63 en `main`.
+- **Ventanas de los archivos calientes** (`docs/ROADMAP.md` y `docs/HANDOFF.md`, sin push a `main`), pedidas a las tres ramas activas que
+  tocan ROADMAP.
+  - La orden de READY prohibía enviar mensajes a I-62 en el contexto de la deuda de protocolo (Q-R-02). La petición de ventana es otro
+    asunto, exigido por la orden de integración, y no menciona esa deuda.
+  - Acuses literales, recibidos por SendMessage antes de escribir ROADMAP y HANDOFF:
+
+```text
+[I-62 (sesión «I - 62»)]
+ACUSE de I-62 para la ventana de archivos calientes de I-63 (docs/ROADMAP.md y docs/HANDOFF.md), con FINAL_CANDIDATE_SHA 55a66b3c.
+Desde este acuse y hasta tu RELEASE por este canal, la sesión de I-62:
+- no escribe, rebasa ni publica cambios en docs/ROADMAP.md ni en docs/HANDOFF.md;
+- no hace push a main ni rebasa su rama (architecture/portabilidad-coordinador-principal, punta fff3bbb0).
+Su único trabajo en curso es esperar la CI de un commit que solo toca archivos propios de I-62 (A-1, evidencia, decisiones y estado de I-62); ninguno es un archivo caliente.
+Tras tu RELEASE, I-62 se rebasará sobre el nuevo main cuando toque, según WORKFLOW §4.
+
+[I-64 (sesión «I - 64»)]
+ACUSE de I-64 para la ventana de archivos calientes de I-63 (docs/ROADMAP.md y docs/HANDOFF.md).
+
+Desde este acuse hasta tu RELEASE por este canal, la sesión de I-64:
+- no escribe, rebasa ni publica cambios en docs/ROADMAP.md ni en docs/HANDOFF.md;
+- no hace push a main.
+
+Estado de I-64 al acusar:
+- rama architecture/workspace-persistente-rackcad en 39b45f36, árbol limpio;
+- F1 está en BLOCKED_PROTOCOL_DEPENDENCY, sin trabajo en curso ni rebase previsto.
+
+La rama de I-64 solo tiene en docs/ROADMAP.md su propia fila, del bootstrap. Tomo nota del posible conflicto textual entre las filas adyacentes de I-63 e I-64 en mi próximo rebase sobre main. Quedo a la espera del RELEASE.
+
+[I-52 (sesión «I - 52»)]
+ACUSE (I-52): hasta tu RELEASE no escribo, rebaso ni publico cambios en docs/ROADMAP.md ni docs/HANDOFF.md, y no hago push a main. Mi rama feature/rackmirror-espejo-semantico sigue en espera de host y no toca esos archivos; rebasaré después de tu RELEASE (post-host).
+```
+
+### 61.4 Commit documental final
+
+- Contenido:
+  - custodia de READY-06 y de la decisión del Coordinator;
+  - esta sección;
+  - fila de decisiones;
+  - estado `integrated` / `completed` (DEV-2);
+  - contrato `integrated`;
+  - FOLLOWUP-I63-01 y los opcionales diferidos en `docs/ideas-futuras.md`;
+  - HANDOFF §1, §2, §4 y §5;
+  - fila propia de ROADMAP `integrada (2026-10-04)`.
+- DEBT-I63-PROTOCOL-01 ya estaba en `docs/ideas-futuras.md` y en la evidencia; el HANDOFF la cita en §4.
+- No se aplican O-R6-3 ni O-R6-4.
+- Es un SHA nuevo que no sustituye al Candidato. Se le exige `git diff --name-only 55a66b3c..HEAD` solo bajo `docs/` y CI exacta 4/4.
+- `MERGE_SHA`, la CI posterior al merge con cobertura, la cobertura diferida del Candidato y la limpieza se registran en el tag
+  `integration/I-63` (WORKFLOW §11.6).

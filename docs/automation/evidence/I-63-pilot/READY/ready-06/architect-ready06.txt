@@ -1,0 +1,87 @@
+I-63 — READY-06, conformidad final del Architect: CONFORMING sobre 55a66b3c412fa63a445dc1985977ad660ea72dd7. Sin REQUIRED; dos desviaciones (una NON-MATERIAL y una EDITORIAL) y cuatro opcionales.
+
+Review mode: SEPARATE SESSION; revisor=autor: no; mismo Architect de R1-R3, de G3 y del ADR-0049: sí (local_d5787742…). Mismo modelo de base que la autora: unknown (probable claude-opus-5-5). Solo lectura: no ejecuté nada que escriba en el worktree.
+
+1. IDENTIDAD Y DECLARACIONES DE LA SESIÓN (verificadas salvo donde se indica)
+- READY-04, VERIFICADA.
+  - Tras git fetch: HEAD = origin/architecture/... = 55a66b3c.
+  - origin/main = 819955d6 = merge-base, así que no hubo rebase.
+  - git status vacío y stash vacío.
+- READY-05, CI VERIFICADA con gh run view 37258162825: headSha = 55a66b3c, conclusion success, los cuatro jobs en success (Tests Domain+Application, UI Tests, Build UI, Build Plugin without AutoCAD).
+- READY-05, local NO VERIFICADA por mí: Core 12595/12595, UI 1637+17 Skip, builds de UI y Plugin y SDK 8.0.423. No la reejecuté para no escribir bin/obj en el worktree; la tomo como declaración de la sesión.
+- READY-09, VERIFICADA.
+  - f61d0aca^:proposal-v3 = e4a94eff y f61d0aca solo cambia «Frozen: NO» → «Frozen: YES»; el blob en HEAD es 4d5dedce.
+  - Ningún commit posterior a f61d0aca toca la Proposal.
+  - A-1..A-4: un solo commit cada una (658b35ad, 669d8a39, ea70e3b3, 17215ab2).
+  - Son 67 commits, cada uno con exactamente un Co-Authored-By (57 Opus 5.5 y 10 Sonnet 5.5).
+
+2. (a) IMPLEMENTACIÓN: 819955d6..55a66b3c -- src tests (44 archivos)
+- Autoridad: CONFORME.
+  - D-07: un solo cálculo, el orquestador con D-28. RackMetricOrchestrator recorre kind (paso 1) → soporte declarado por el provider, sin leer (2) → E5 con el lector D-26 (3) → E4 con BomAuthoredAuthority sobre la entrada tipada (4) → una sola resolución (5).
+  - RackMetricRequest y ProjectSummary comparten el orquestador y las etapas ya evaluadas (RackAssessedStages).
+  - D-27: RackOutputVerdict.Evaluate es la única composición de la puerta. El handler queda en una línea, RackOutputVerdict.HandlerBlockedReason(Kind, embed?.Design, catalog).
+  - Comprobé la equivalencia con el handler antiguo de 819955d6. Excepción al deserializar, o sin PushBackDesign → null. Catálogo nulo → catálogo vacío, igual que el `?? new RackCatalog()` de PushBackResolver. Resultado del resolver → Deny(motivo) o null. Excepción del resolver → null. For(null) → Allow → null.
+  - La vía de I-63 da Undetermined(CatalogUnavailable) solo con LoadFailed.
+- Población (D-10a, D-10, D-11, D-12): CONFORME.
+  - Proyección con cinco clases y comparador Ordinal.
+  - Orden canónico por DefinitionKey antes de E3; E1 ignora las definiciones sin colocar.
+  - Grupos con OrdinalIgnoreCase y grafía mínima en Ordinal; hermanas colocadas y sin colocar.
+  - Orden E2, E3, E5, E4, E6, con E6 sobre el diseño del representante. DisplayName = primer Name no vacío en orden canónico, con Trim.
+  - totalRacks y rackCount (seis tokens en orden fijo) pasan a Unavailable(CoverageNotAccredited) sin cobertura. La suma por sistema exige cobertura y todos los miembros Available; si falta alguno, MemberMetricUnavailable(RackIds).
+  - Diagnósticos ordenados por (código, DefinitionKey Ordinal, RackId).
+- Núcleo (D-16, D-18, D-19): CONFORME. El estado es el de mi revisión de G3 (eb58a476). Después solo cambian el comentario de ExpressionFormatter (A-4, sin cambio de tokens) y el agregado aditivo de provenance en RackComputedExpressionContext (Expression y ReadSymbols, D-21; Evaluate, la propagación de estados y el evaluador no cambian).
+- Persistencia: NONE. No hay DTO, store ni serializer nuevos; la tabla de D9 sigue siendo solo projectVariable.
+- Comportamiento observable y legacy: CONFORME. ExpressionRoundTripTests, ExpressionFormatterTests, ExpressionBinderTests y G8PersistenceIntegrationContractTests no cambian entre 819955d6 y 55a66b3c (INV-28). Solo cambian dos pruebas existentes:
+  - ExpressionSymbolModelTests: la reserva P25.2, en el RED de G3;
+  - PushBackBomCommandGuardTests: la guarda legacy reapuntada a código sin comentarios y al cuerpo del método, como manda A-4 / Q-R-01.
+- No-objetivos: CONFORME. El único cambio del Plugin es la delegación; no hay UI, comandos, adaptador ni namespace project.
+- Puntos de extensión: CONFORME. Catálogo cerrado (RackMetricIds), registro cerrado de providers (RackMetricProviderRegistry.Default) y Create interno.
+- INV→prueba: hay suites por gate en tests/RackCad.Tests/ComputedParameters (17 archivos). La verificación por gate es del Coordinator (G1-G4 en PASS); no la rehago.
+
+3. (b) ADR-0049 Y ADR-0043: CONFORME
+- Diff entre el blob 0b433322 y HEAD desde «## Base exacta» hasta el final: la única diferencia es O-ADR-6 («…de salida del Push Back se componía…», unión de línea).
+- Cabecera: el estado pasa a aceptado, con la fecha de aceptación, los decisores (Architect AGREED sobre 0b433322 y Owner) y el preámbulo de aceptación. owner-acceptance.txt contiene la frase literal «Acepto explícitamente el ADR-0049…».
+- ADR-0043: solo se añade al final «## Notas posteriores» (2026-10-04) y sigue aceptado.
+- README: la fila 0049 pasa de propuesto a aceptado.
+
+4. (c) FOUNDATIONS: CONFORME (DC-08 contra el código)
+- La entrada «Computed Parameters & Project Summary» se añadió al final, en 55a66b3c, que es el único commit de la rama que toca FOUNDATIONS. Ninguna otra entrada cambia, ni siquiera Project Variables o Authored vs Effective (Q-R-05).
+- Los símbolos citados existen: RackMetricIds, RackMetricRequest, ProjectPopulation.Evaluate, ProjectSummary.Evaluate, RackMetricOrchestrator, RackMetricProviderRegistry.Default, RackOutputVerdict y RackComputedExpressionContext.
+- Persistence NONE y read-only coinciden con el código.
+- Las nueve clases de prueba nombradas existen (grep «class X»), igual que ComputedParametersSymbols*, ExpressionSymbolModelTests y PushBackBomCommandGuardTests.
+- Decision source = ADR-0049 aceptado + Freeze V3 + A-1..A-4.
+- Known limitations: Project.*, sin adaptador, O-G3-4, R-14 y O-G3-1..5 (en ideas-futuras.md:1618-1627).
+- STABLE es válido según el esquema: hay ADR aceptado, código, pruebas y un punto de extensión declarado.
+
+5. (d) CONTRATO, IDEAS-FUTURAS, ESTADO Y EVIDENCIA
+- Contrato: CONFORME con Q-R-03 (materiality, consumes, extends, introduces). amendment_refs tiene las cuatro A-n y freeze_ref es la Proposal V3.
+- ideas-futuras: CONFORME. Sección I-63 en la línea 1590, con DEBT-I63-PROTOCOL-01 y O-G3-1..5.
+- Evidencia §55-§60: revisada solo en lo que cita esta conformidad; no audité su texto completo.
+- state/I-63.yml: ver DEV-2.
+
+6. (e) OBSERVACIÓN DE PROCEDIMIENTO: NO ES DESVIACIÓN
+- WORKFLOW §11 se titula «Workflow V2 materializado — todavía no efectivo»: hasta la activación de §11.2 no gobierna. §11.4 no es, por tanto, política efectiva.
+- La norma vigente es LIFECYCLE §4.1: «Quien introduce o extiende redacta antes de READY-04 la entrada factual que revisara la conformidad». Eso es exactamente lo que se hizo, por orden del Coordinator (Q-R-05/06). El momento de publicación lo remite a WORKFLOW, que aún no es efectivo.
+- El índice de ADR se versionó con la autorización del Owner y es coherente con la aceptación.
+- No procede ningún cambio, ni SHA nuevo, ni reinicio de READY-02. Cuando §11.4 sea efectivo, que la sesión de integración se limite a confirmar que la entrada ya conformada no cambió.
+
+7. DESVIACIONES
+- DEV-1 — NON-MATERIAL.
+  - ProjectPopulationAggregator.AggregateSystem codifica a mano NotApplicable para cabecera y cama y NotSupported para el resto de los totales de frentes, en vez de derivarlo de la declaración de soporte de los providers (D-06/D-08).
+  - Los valores coinciden con la matriz congelada D-06 (INV-07 en verde), así que no hay comportamiento distinto.
+  - Pero la matriz queda en dos sitios (AGENTS, «regla en un solo sitio»).
+  - Seguimiento, no corrección ahora (LIFECYCLE §9: la conformidad no rediseña).
+- DEV-2 — EDITORIAL. state/I-63.yml en 55a66b3c tiene campos atrasados: last_evidence_commit = a0835bf7 y next_action «READY-04 … tras el bloque E», cuando E y READY-04 ya están hechos. Es estado mutable; se corrige en el siguiente commit documental. No requiere SHA nuevo para esta conformidad.
+
+8. REQUIRED
+Ninguno.
+
+9. OPCIONALES
+- O-R6-1: derivar en el agregador el soporte por sistema de RackMetricProviderRegistry o de una sola tabla D-06 (DEV-1). Llevarlo a ideas-futuras junto a O-G3-1..5.
+- O-R6-2: actualizar state/I-63.yml en el próximo commit documental (DEV-2).
+- O-R6-3: precisar en la nota posterior de ADR-0043 que el namespace rack existe en el núcleo y que sus símbolos solo se ofrecen en RackComputedExpressionContext. La redacción actual, «Activa en memoria el namespace rack … solo dentro de RackComputedExpressionContext», es algo laxa. Es solo editorial; si se toca, debe ser como corrección tipográfica de la nota.
+- O-R6-4: las clases de prueba de FOUNDATIONS (ComputedParametersRackMetricIdsTests, etc.) viven en archivos con otro nombre (RackMetricIdsTests.cs, etc.). Puede añadirse la ruta para facilitar DC-08.
+
+10. VEREDICTO
+CONFORMING. No hay EXP-01 A abierta ni desviaciones MATERIAL u OWNER-RESERVED. La conformidad del Coordinator es un acto aparte.
+Vale exclusivamente para: commit 55a66b3c412fa63a445dc1985977ad660ea72dd7

@@ -12,6 +12,18 @@ RackCad es un plugin de AutoCAD 2025 (.NET 8, C#/WPF) para diseñar y dibujar ra
 con BOM. El trunk único es `main`; Domain y Application son puros, UI usa WPF sin AutoCAD y Plugin
 es el único adaptador de la API de AutoCAD.
 
+**I-63 — Computed Parameters & Project Summary Foundation (ID20) — INTEGRADA** el **2026-10-04**
+(`architecture/parametros-calculados-resumen-proyecto`, Workflow V2). Fundación de **parámetros calculados de solo lectura** y
+**resumen neutral de proyecto** en Application pura (`RackCad.Application.ComputedParameters`): métricas por rack `Rack.Frentes` y
+`Rack.FrentesVacios` (fondo 0 del Selectivo resuelto) con una sola tabla de precedencia; población cotizable por RackId lógico, no por
+vista, y agregados de proyecto que nunca son parciales; `ProjectSummary` en memoria con provenance; el namespace built-in `rack` del
+motor de I-49 solo en `RackComputedExpressionContext`, sin segundo motor ni persistencia nueva; y la puerta de salida del Push Back
+compuesta en un solo sitio (`RackOutputVerdict`). Sin UI, comandos ni cambios de dibujo: Owner Validation NOT APPLICABLE. Decisión en
+[ADR-0049](adr/0049-parametros-calculados-namespace-rack-y-resumen-de-proyecto.md), **aceptado** por el Owner y sucesor parcial de
+ADR-0043; entrada de [FOUNDATIONS](FOUNDATIONS.md) «Computed Parameters & Project Summary». Gates ejecutados con el protocolo de I-61.
+[Evidencia](automation/evidence/I-63-evidence.md), [decisiones](automation/decisions/I-63.md) y tag `integration/I-63` (SHAs de cierre y
+merge, CI posterior, cobertura y limpieza).
+
 **I-61 — Agent Execution, Model Routing & Prompting Protocol — INTEGRADA** el **2026-10-01**
 (`architecture/protocolo-ejecucion-agentes`, Workflow V2). Protocolo estable para que el Coordinator delegue gates en un Controller Codex de solo lectura y en Workers, con
 paquetes, entregas y verificaciones estructuradas (`rackcad-*/v1`), relevo con cesión, exact-SHA, STOP y routing por perfil semántico con catálogo de modelos mutable: reglas en
@@ -1490,6 +1502,10 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
+**I-63 (2026-10-04) — SIN OWNER VALIDATION (NOT APPLICABLE, Freeze §22).** Candidato final con READY-01..09 PASS, conformidad
+READY-06 CONFORMING del Architect y del Coordinator, evidencia local Full, builds y CI exacta; identidades en la
+[evidencia](automation/evidence/I-63-evidence.md) §61.
+
 **I-61 (2026-10-01) — OWNER VALIDATION PASS.** Candidato final validado por el Owner en AutoCAD (OV-I61-01..05 PASS; OV-I61-05, revisión del protocolo, aceptada), con
 evidencia local Full, builds, CI exacta y cobertura; identidades del Candidato y del DLL en la [evidencia](automation/evidence/I-61-evidence.md) §16.
 
@@ -2041,6 +2057,25 @@ veredicto.
   catálogos sigue decorativa. `RACKDUPLICAR` no avisa por diseño (clona geometría ya dibujada a la misma escala).
 
 ## 4. Siguiente acción
+
+### Sin trabajo activo de I-63 (integrada el 2026-10-04)
+
+La fundación de I-63 ([ADR-0049](adr/0049-parametros-calculados-namespace-rack-y-resumen-de-proyecto.md); FOUNDATIONS «Computed Parameters &
+Project Summary») queda disponible. ID23 es la vía por rack (`RackMetricRequest` y `RackComputedExpressionContext`), y los consumidores
+presentan `ProjectSummary` sin recalcular. Al integrarse I-63, las ramas activas se rebasan sobre el nuevo `main` antes de su propia
+integración: **I-64** tiene un conflicto textual conocido en `docs/ROADMAP.md` (su fila y la de I-63 son adyacentes tras I-60); I-52 e
+I-62 se fusionan sin conflicto (`git merge-tree`).
+
+Seguimientos fuera del Freeze, registrados en [ideas-futuras](ideas-futuras.md) (sección de I-63):
+
+- **FOLLOWUP-I63-01** (DEV-1 de READY-06, con O-R6-1): que `ProjectPopulationAggregator` tome el soporte por sistema de las
+  declaraciones de los providers, con una sola representación de la matriz D-06 y sin cambio observable.
+- **O-G3-4**, obligación del primer consumidor de `RackComputedExpressionContext`: procedencia del registro, variable de proyecto fallida
+  y apertura de `Create`. **R-14**: en `Full`, los Selectivos excluidos o no colocados también reciben sus métricas.
+- **DEBT-I63-PROTOCOL-01**: los controles nc1 y nc2 de la verificación del Controller no discriminaron en G2 y G4. Recomendaciones para la
+  iniciativa propietaria del protocolo: `Identity` y `Scope` desde campos parseados de la entrega y de la delegación, nunca desde la prosa
+  del prompt.
+- Opcionales diferidos: O-G3-1..5, O-R6-3 y O-R6-4.
 
 ### Sin trabajo activo de I-61 (integrada el 2026-10-01)
 
@@ -3876,6 +3911,10 @@ visualmente** y no debe presentarse como tal.
 la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
+
+**Cierre de I-63 — 2026-10-04:** Candidato final con READY PASS (Architect y Coordinator CONFORMING), evidencia local Full, builds y
+CI exacta; Owner Validation NOT APPLICABLE. El commit de cierre (solo documental) lleva su propio CI; merge `--no-ff`, CI posterior al
+merge con cobertura, cobertura diferida del Candidato y limpieza se registran en `integration/I-63`.
 
 **Cierre de I-61 — 2026-10-01:** Candidato final aprobado por el Owner con evidencia local Full, CI y cobertura exactas; el commit de cierre (solo documental) lleva su
 propio CI; merge `--no-ff`, CI posterior al merge con cobertura y limpieza se registran en `integration/I-61`.
