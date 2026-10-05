@@ -3,23 +3,23 @@ automation_state:
   initiative: I-63
   branch: architecture/parametros-calculados-resumen-proyecto
   claim_id: ce04f47f-ca53-4e75-b983-5ac57ab6c5e3
-  current_phase: G4
-  state: review-ready
+  current_phase: READY
+  state: waiting
   gate: none
   attempts: 2
-  next_action: Juicio del Coordinator sobre G4 con la evidencia §50-§51 (EXECUTION_VERIFIED R20261005T011832Z-cc42 sobre 4f45f446; CI 37085650331 4/4; Scope y pruebas existentes PASS; nc3 cumplido; nc1 y nc2 NO superados).
-  last_evidence_commit: 4f45f4464f5d434f7fa478fea1117d82283ee997
+  next_action: Preparar el plan de READY (deudas de pruebas/documentacion de I-63, deuda de protocolo de I-61, FOUNDATIONS, ADR y conformidad final) sin ejecutar cambios, y volver al Coordinator para su autorizacion formal.
+  last_evidence_commit: fdd4b651e11a22d9c25e62c0a2318eac18a3c53b
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-parametros-calculados-resumen-proyecto
 execution_chain:
-  gate: G4
-  task_id: G4-PROJECT-SUMMARY
-  attempt: 2
-  next_role: Coordinator (juicio de G4)
-  next_action: G4 EXECUTION_VERIFIED; vuelta al Coordinator para el juicio de G4
-  g4: {contract: R20261003T005345Z-66f3 (SHA-256 923D2B2CE69D3A65F124E307C298D0BC67C4845337E688F1943EEFBC9F523950), authority_revision: 527e4b9185173e2f50c10d39a882749c09b77d2f, red_sha: 55d6b27457c966be1f3988ff8fe1bca4fc3df126, current_sha: 4f45f4464f5d434f7fa478fea1117d82283ee997, ci: 37085650331 4/4, verification: R20261005T011832Z-cc42 EXECUTION_VERIFIED (tras STOP S-03/C-10 resuelto), verified_sha: 4f45f4464f5d434f7fa478fea1117d82283ee997, mechanical_checks: PASS, identity_exception: 7bd5a743 docs-only, negative_controls: nc4 y nc3 cumplidos y nc1 y nc2 NO superados, controller_binary: bin/8aaf1547b825b104 codex-cli 0.160.0}
+  gate: READY
+  task_id: null
+  attempt: null
+  next_role: Coordinator (autorizacion formal de READY sobre el plan que prepara la sesion)
+  next_action: Plan de READY en preparacion; sin cambios hasta la autorizacion
+  g4: {verdict: PASS, closure_ci_custody: fdd4b651 (37253017255 4/4), contract: R20261003T005345Z-66f3 (SHA-256 923D2B2CE69D3A65F124E307C298D0BC67C4845337E688F1943EEFBC9F523950), authority_revision: 527e4b9185173e2f50c10d39a882749c09b77d2f, red_sha: 55d6b27457c966be1f3988ff8fe1bca4fc3df126, current_sha: 4f45f4464f5d434f7fa478fea1117d82283ee997, ci: 37085650331 4/4, verification: R20261005T011832Z-cc42 EXECUTION_VERIFIED (tras STOP S-03/C-10 resuelto), verified_sha: 4f45f4464f5d434f7fa478fea1117d82283ee997, mechanical_checks: PASS, identity_exception: 7bd5a743 docs-only, negative_controls: nc4 y nc3 cumplidos y nc1 y nc2 NO superados, controller_binary: bin/8aaf1547b825b104 codex-cli 0.160.0}
   main_sha: 819955d61a6da4c811a11fbd11b5dca13f634b7c
   freeze_commit: f61d0aca859a11b15cbe1797069a83cba873ba95
   frozen_proposal_blob: 4d5dedce15363fa6378e460c5b63005fe41b858b
@@ -29,10 +29,10 @@ execution_chain:
   g3: {verdict: PASS, verified_sha: eb58a4768d5a68892cce8d85b527f2a1ad1bdc64, verification: R20261002T220419Z-26c9, ci: 37069993992 4/4, closure_evidence: 138bc3d45a5cd14d72853a8a494472e35943465e (CI 37072855039 4/4), architect: CONFORMING 0 REQUIRED, optionals: O-G3-1..5 diferidos (O-G3-4 = deuda del primer consumidor de RackComputedExpressionContext), attempts_used: 2 of 3}
   g3_t1: {contract: R20261002T184114Z-1c2f (SHA-256 C35EFC7C2D90014A2E1553AB8EA25242588CAF4E88EA581A80D5D3FBDC404DC8), authority_revision: e99621f9e285b1a7ddfcf51cd8ccf970828e0b66, chain_base_sha: e99621f9e285b1a7ddfcf51cd8ccf970828e0b66, chain_red_sha: 637dce7e5e7811992330b3c305358d9a7542b9f6, red_ci: 37053113058, verification: R20261002T194212Z-73b1 (REWORK por diseno; RedPart pass en Ci y Tests), verification_reruns_used: 2 of 2 (no se arrastran a T2)}
   g3_t2: {contract: R20261002T214309Z-19d7 (SHA-256 2E43EAE22C3254F7CDF31EC9AC0C07B11409E7274E2A6D307DF3B7FB8D889CB7), authority_revision: ea70e3b333efec49d3c3b9bc1e5d0395adc71a01, base_sha: 712052354e33f84da552fe0be3393df41e0521f4, verified_sha: eb58a4768d5a68892cce8d85b527f2a1ad1bdc64, verification: R20261002T220419Z-26c9, ci: 37069993992 4/4, scope_check: PASS, negative_controls: nc1 nc2 nc3 cumplidos, architect_review: CONFORMING sin REQUIRED (O-G3-1..5 opcionales), config_toml_baseline: 155933B3}
-  deviations: [DEV-G1-03 ejecutor de controles sin revalidacion de PID (aceptada), DEV-G2-01 nc2 no discrimino Scope (no bloqueante)]
-  debts: [DEBT-I63-G2-01 guarda legacy PushBackBomCommandGuardTests satisfecha por comentario; reparar o sustituir antes de READY con A-n Coordinator-only de solo pruebas, DEBT-I63-G3-01 comentario de ExpressionFormatter para Rack.#<token> obsoleto frente a la A-3; resolver antes de READY sin alterar comportamiento]
+  deviations: [DEV-G1-03 ejecutor de controles sin revalidacion de PID (aceptada), DEV-G2-01 nc2 no discrimino Scope (no bloqueante), DEV-I63-G4-02 nc1 no discrimino un CurrentSha invalido (el prompt aporto el SHA del GREEN como contexto; identidad verificada de forma independiente), DEV-I63-G4-03 nc2 no discrimino el AllowedWriteScope mutado (el oraculo mecanico si)]
+  debts: [DEBT-I63-G2-01 guarda legacy PushBackBomCommandGuardTests satisfecha por comentario; reparar o sustituir antes de READY con A-n Coordinator-only de solo pruebas, DEBT-I63-G3-01 comentario de ExpressionFormatter para Rack.#<token> obsoleto frente a la A-3; resolver antes de READY sin alterar comportamiento, DEBT-I63-PROTOCOL-01 los prompts de verificacion no deben inyectar hechos de la entrega como conclusiones; Identity y Scope desde campos de entrada parseados (protocolo/I-61; documentar en READY)]
   standing_rules: [comprobacion mecanica independiente de Scope antes de aceptar EXECUTION_VERIFIED en G4, pruebas existentes de tests/RackCad.Tests/ComputedParameters/ sin modificar ni borrar ni renombrar (git diff --name-status), puerta de PID en el ejecutor de controles, linea base de config.toml del Owner 091540ED (decision del 2026-10-05; un cambio en una cesion es P-01)]
-  g4_obligations: [segunda mitad de INV-11 (A-2), segunda mitad de INV-32 (A-2), INV-29, INV-30, INV-31, INV-34 por RackSummary.Metrics]
-  return_to_coordinator_when: G4 EXECUTION_VERIFIED con Scope mecanico PASS, pruebas existentes sin cambios, nc1-nc3 y custodia; STOP real (incluidos C-07 y C-09); cuestion material de arquitectura, autoridad o semantica congelada; presupuesto agotado; AUTONOMY_GAP
-  not_authorized: [READY (tras G4), O-G3-1..5, DEBT-I63-G2-01 y DEBT-I63-G3-01 dentro de G4]
+  ready_requirements: [conformidad final Architect + Coordinator, entrada factual de FOUNDATIONS, ADR aceptado (M-08), cierre de DEBT-I63-G2-01, DEBT-I63-G3-01 y DEBT-I63-PROTOCOL-01 sin cambios funcionales]
+  return_to_coordinator_when: plan de READY listo para autorizacion; STOP; cambio material, de autoridad o de alcance; AUTONOMY_GAP
+  not_authorized: [READY (hasta la autorizacion formal), limpieza de deudas, ADR, FOUNDATIONS, integracion]
   owner_escalation_conditions: OWNER-RESERVED; decision material del Owner; STOP que requiera al Owner; credenciales, autenticacion o compra; accion irreversible o destructiva

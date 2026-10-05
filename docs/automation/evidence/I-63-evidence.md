@@ -2176,3 +2176,23 @@ config_toml_sha256: 091540ED2DE6CFAC5C12110337305FFCABCEEEE0D8CB696F7E04EA057F9F
   R20261003T023614Z-e734/identity-exception-check.json.
 
 **Siguiente:** el Coordinator juzga G4 con esta evidencia y revisa el diff `527e4b91..4f45f446` contra Freeze + A-1 + A-2 + A-3.
+
+## 52. G4 PASS: gates funcionales completos
+
+- **Veredicto del Coordinator**, pegado por el usuario en el chat: **G4 — ProjectSummary, provenance y rendimiento: PASS**. Resumen en
+  las [decisiones](../decisions/I-63.md) §2.
+- **Base del juicio:**
+  - `VerifiedSha` `4f45f4464f5d434f7fa478fea1117d82283ee997`; verificación `R20261005T011832Z-cc42`, `EXECUTION_VERIFIED`, 14/14.
+  - CI `37085650331` 4/4: Core 12595/12595 y foco de G4 29/29.
+  - `Scope` mecánico PASS; pruebas existentes de G1-G3 sin cambios PASS.
+  - Custodia `fdd4b651`, CI `37253017255` 4/4.
+  - Revisión del Coordinator del diff funcional `527e4b91..4f45f446`.
+- **Desviaciones (no bloquean):**
+  - DEV-I63-G4-02: nc1 no discriminó, porque el prompt aportó el SHA del GREEN como contexto.
+  - DEV-I63-G4-03: nc2 no discriminó; el oráculo mecánico sí.
+  - nc3 cumplido.
+- **DEBT-I63-PROTOCOL-01** (protocolo/I-61): los prompts de verificación no deben inyectar hechos de la entrega como conclusiones, e
+  `Identity` y `Scope` deben salir de campos de entrada parseados. Se documenta en READY.
+- **Estado:** G1, G2, G3 y G4 = PASS; gates funcionales completos; `attempts` 2/3.
+- **Siguiente:** `current_phase` = READY, aún no declarado.
+  - La sesión prepara el plan de READY sin ejecutar cambios y vuelve para la autorización formal.
