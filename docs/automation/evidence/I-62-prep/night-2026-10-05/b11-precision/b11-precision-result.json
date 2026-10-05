@@ -1,0 +1,138 @@
+{
+ "Label": "EXPERIMENTAL — NOT AUTHORIZED FOR PRODUCTION",
+ "Script": "b11_precision.py",
+ "Manifest": {
+  "Schema": "rackcad-normative-dependency-manifest/v1",
+  "AuthorityRevision": "4c617e82b32b6c810b68d75fc19472efed22b393",
+  "Entries": 1857,
+  "Edges": 2896
+ },
+ "Examples": {
+  "§8.4#p1 → B.8.3": {
+   "Label": "INFORMATIVE",
+   "Line": 382,
+   "Text": "«Tabla completa en B.8.3.»",
+   "Why": "puntero desde un resumen; la unidad no tiene contenido normativo propio que dependa de la tabla",
+   "Original": {
+    "ClosureSize": 12,
+    "Unknown": 0,
+    "PremiseCredible": true
+   },
+   "ExperimentalCopy": {
+    "ClosureSize": 1,
+    "Unknown": 0,
+    "PremiseCredible": true
+   }
+  },
+  "B.3#p1 → C-08": {
+   "Label": "INFORMATIVE",
+   "Line": 1849,
+   "Text": "«… valida sin tocar el núcleo (C-08).»",
+   "Why": "nombra la obligación que lo prueba; la regla no depende de C-08 (cierra el ciclo B.3 → B.3#p1 → C-08 → B.3)",
+   "Original": {
+    "ClosureSize": 12,
+    "Unknown": 2,
+    "PremiseCredible": false
+   },
+   "ExperimentalCopy": {
+    "ClosureSize": 1,
+    "Unknown": 0,
+    "PremiseCredible": true
+   }
+  },
+  "§8.5#row6 → T10": {
+   "Label": "CONTROL",
+   "Line": 416,
+   "Text": "«no fast-forward (el remoto avanzó) | `fetch` y clasificar según T10»",
+   "Why": "el tratamiento lo define T10",
+   "Original": {
+    "ClosureSize": 7,
+    "Unknown": 5,
+    "PremiseCredible": false
+   },
+   "ExperimentalCopy": {
+    "ClosureSize": 7,
+    "Unknown": 5,
+    "PremiseCredible": false
+   }
+  },
+  "C-08 → B.3": {
+   "Label": "CONTROL",
+   "Line": 2345,
+   "Text": "«B.3: (a) adapter `test-null` …»",
+   "Why": "la obligación prueba las reglas de B.3",
+   "Original": {
+    "ClosureSize": 12,
+    "Unknown": 2,
+    "PremiseCredible": false
+   },
+   "ExperimentalCopy": {
+    "ClosureSize": 12,
+    "Unknown": 2,
+    "PremiseCredible": false
+   }
+  },
+  "§8.5#row4 → (sin arista)": {
+   "Label": "AMBIGUOUS",
+   "Line": 405,
+   "Text": "«… (16.1, sin cambio)»",
+   "Why": "«16.1» sin documento: V14 no tiene 16.1 y §3.1 no lo mapea; el generador ya lo deja Complete = false (regla R5), y su resolución correcta (AUTOMATION_PLAN 16.1) sería externa e incompleta: UNKNOWN igual",
+   "Original": {
+    "ClosureSize": 1,
+    "Unknown": 1,
+    "PremiseCredible": false
+   },
+   "ExperimentalCopy": {
+    "ClosureSize": 1,
+    "Unknown": 1,
+    "PremiseCredible": false
+   }
+  },
+  "§8.5#p1 → 16.9#5 Identity": {
+   "Label": "MISSING",
+   "Line": 408,
+   "Text": "«`Identity` (`HEAD` = remoto = `CurrentSha`) **no cambia**.»",
+   "Why": "afirma la vigencia de la comprobación 16.9 #5 por su NOMBRE; sin referencia de sección no hay arista y la unidad queda Complete con clausura {sí misma}",
+   "Original": {
+    "ClosureSize": 1,
+    "Unknown": 0,
+    "PremiseCredible": true
+   },
+   "ExperimentalCopy": {
+    "ClosureSize": 2,
+    "Unknown": 1,
+    "PremiseCredible": false
+   }
+  }
+ },
+ "CandidateOmissions16_9": {
+  "ManifestHasAUnitFor16_9": false,
+  "LinesNamingACheck": 66,
+  "ByCheck": {
+   "Authority": 11,
+   "Identity": 9,
+   "Ci": 9,
+   "Scope": 8,
+   "Handoff": 8,
+   "Remote": 5,
+   "Termination": 3,
+   "Routing": 3,
+   "Trailer": 3,
+   "Denials": 2,
+   "Tests": 2,
+   "Contract": 1,
+   "CleanTree": 1,
+   "FreeText": 1
+  },
+  "SectionsWithMentions": 25,
+  "Note": "aproximado por sección; cada mención es candidata, no una arista confirmada"
+ },
+ "CompleteFlippedToTrue": 0,
+ "Checks": {
+  "ExcessEdgesShrinkClosures": true,
+  "ControlEdgesKept": true,
+  "AmbiguityStaysUnknown": true,
+  "MissingEdgeWasCreditedAndBecomesUnknown": true
+ },
+ "AllAsExpected": true
+}

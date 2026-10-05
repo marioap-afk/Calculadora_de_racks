@@ -2142,3 +2142,18 @@ CI de la custodia de la revisión 1 y del ciclo 1, `411e01ce4176e4fe6648ea3e9ff2
 - **F4 experimental en C#** (N-08):
   - 9/9 en el clon aislado `D:\r62-f4-exp`;
   - diff en `I-62-prep/night-2026-10-05/f4-exp/csharp-experimental.patch`; TRX fuera del repo (SHA-256 `c07b6f52…`).
+
+## 51. Precisión del manifiesto B.11 en clausuras pequeñas (orden nocturna §10; EXPERIMENTAL)
+
+CI del kit v3c, `e77c51bd45dd8fcbdd95e13ee8eb79e04579e056`: ver la cola (N-13).
+
+`I-62-prep/night-2026-10-05/b11-precision/` trabaja sobre una copia del manifiesto F3, regenerado con `gen-manifest.py` y con un informe semánticamente igual
+al custodiado. Clasifica seis aristas reales de V14: dos de control, dos informativas, una ambigua y una de control que falta.
+
+- **B11-P1 (exceso):** los punteros y las referencias de prueba son aristas de control. `B.3#p1` queda UNKNOWN por una arista informativa hacia C-08.
+- **B11-P2 (omisión peligrosa):**
+  - `§8.5#p1` («`Identity` … no cambia») se acredita con clausura {sí misma}, porque nombra la comprobación 16.9 #5 sin referencia de sección;
+  - el manifiesto no tiene ninguna unidad de 16.9;
+  - 66 líneas de V14, en 25 secciones, nombran una de sus 14 comprobaciones (candidatas, aproximado).
+- **Ambigüedad legítima:** «16.1» ya falla cerrado.
+- **Límites:** `Complete` nunca pasa a true. No se cambian el manifiesto ni el generador; la decisión es de la revisión B.11 del Architect.
