@@ -40,6 +40,30 @@ otras correcciones posteriores a la primera corrida son errores de construcción
 | F4X-OBS-01 | observación | un segundo rebase con un intento en LAUNCHING sin resolver para sin publicar (D2-2 exige el `Target` en el mapa nuevo). Es conservador, pero puede bloquear la apertura de sesión hasta resolver el intento | pregunta 17 del paquete; sin cambio en A-1 |
 | F4X-OBS-02 | observación | una autorización sustituta con topes menores que lo consumido no se puede registrar (I-S18 «ningún contador sobre su tope»; es el mismo comportamiento que V14). Para cortar el bucle se usa la revocación o los topes iguales al consumo | sin cambio; se documenta aquí |
 
+## Versión C# experimental (clon aislado)
+
+```text
+Clon:        D:/r62-f4-exp (git clone --no-local; rama exp-f4 en d97ce3d0; sin remoto); nada se publica en la rama de I-62
+Archivo:     tests/RackCad.Tests/Experimental/I62/I62OrchestrationExperimentalTests.cs (diff completo: csharp-experimental.patch)
+Herramientas: SDK .NET 8.0.423 del usuario; xunit 2.9.2 y Microsoft.NET.Test.Sdk 17.11.1, los del proyecto (ningún paquete nuevo)
+Comando:     dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter "FullyQualifiedName~RackCad.Tests.Experimental.I62"
+Resultado:   9/9 superadas, 0 omitidas (TRX fuera del repo: D:/r62-exp-night/csharp/i62-exp.trx, SHA-256 c07b6f52…); sin avisos propios
+```
+
+Modelo mínimo:
+- presupuesto por bucle con topes mínimos, sin reinicio y con EXPIRED inmutable;
+- bucles REVIEWER con cierre (S)/(E) y sin resurrección;
+- aristas de intento de §20.6, con el resultado tardío tras LAUNCH_UNCERTAIN registrado como evidencia;
+- la regla de D2-2 para un intento en LAUNCHING.
+
+Las variantes van separadas como parámetros:
+- `ReviewerBlockingScope.LoopOnly`: A-1 `39c2f831`; reproduce el defecto A62-A1A-01.
+- `ReviewerBlockingScope.Unit`: el texto corregido.
+- `LaunchingTargetRule.CurrentMapOnly`: D2-2 tal como está escrito.
+- `LaunchingTargetRule.Chain`: la alternativa de la pregunta 17.
+
+No modela la pertenencia por apertura de A62-A1S-01, que llegó después; esa la cubre el arnés simbólico.
+
 ## Límites
 
 Esto no es la máquina de estados de F4. Los veredictos son del modelo simbólico del arnés, que es evidencia de apoyo y no autoridad, y no hay PASS de

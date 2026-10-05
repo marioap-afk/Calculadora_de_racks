@@ -1,0 +1,348 @@
+I-62 — COORDINATOR AUTHORIZATION
+FORMAL ARCHITECT REVIEW OF CORRECTED AMENDMENT A-1
+OBJECT
+Commit:
+0ad410f894a9411cc9e4f454481ba14791109133
+Amendment:
+docs/initiatives/I-62-A-1.md
+A-1 blob:
+9c621fce0588f32115e3151b6f75413c0a167c2e
+Architect package:
+docs/initiatives/I-62-architect-package-A-1.md
+Package blob:
+bcbc90a6a70b4eef142e564478f2dc8f08565fe3
+Publication CI:
+37264373929
+push
+exact SHA
+4/4 required jobs = success
+Core local:
+12419 / 12419
+PURPOSE
+Perform ONE formally accredited Architect review of the corrected A-1.
+This is the Architect verdict required by LIFECYCLE §6 for a MATERIAL amendment.
+The previous Architect run:
+R20261003T023945Z-cab7
+is historical technical input only.
+It was:
+FORMAL_ACCREDITATION = NOT_ACCREDITED.
+Its technical findings were adopted by the Coordinator and corrected.
+Do NOT use that previous run as the required formal Architect agreement.
+REVIEW SCOPE
+Review the complete corrected A-1.
+Explicitly disposition:
+A62-A1-01
+A62-A1-02
+A62-A1-03
+A62-A1-04
+A62-A1-05
+A62-A1-06
+OBS-A1-01
+Confirm the incorporated optional corrections O1..O5 where they materially support those fixes.
+O6 remains rejected by the Coordinator.
+FOCUS 1 — ARCHITECT LOOP IDENTITY / BUDGETS
+Verify:
+
+* loop identity is independent from current authorization identity;
+* one ARCHITECT_REVIEW loop has one immutable `loop.instance_id`;
+* one corresponding `architect_budgets[]` entry exists;
+* replacement/renewed authorization keeps the same loop budget;
+* no counter resets;
+* caps can only stay equal or narrow;
+* historical authorization records remain append-only;
+* a NEW loop after LOOP_CLOSED receives a NEW instance/budget;
+* previous budgets remain historical.
+
+Check especially the replacement paths:
+OPEN → SUPERSEDED → replacement
+and:
+EXPIRED / REVOKED → continuation under new authorization
+without rewriting the historical ended_reason.
+FOCUS 2 — ARCHITECT LOOP CLOSURE
+Verify `LOOP_CLOSED` for ARCHITECT_REVIEW.
+It must not:
+
+* close REQUIRED findings;
+* erase history;
+* reset counters;
+* permit reuse of an old authorization;
+* permit closure with live requests/attempts;
+* permit silent authority creation.
+
+A later Architect loop must inherit applicable open REQUIRED lineages through `OpenFindings`.
+FOCUS 3 — LOOP.TYPE SEPARATION
+Verify the corrected type separation:
+ARCHITECT_REVIEW:
+
+* loop.instance_id;
+* architect_budgets[];
+* ReviewLoopAuthorization;
+* Architect-specific closure semantics.
+
+REVIEWER:
+
+* gate-contract authority;
+* existing `budgets`;
+* no Architect loop identity;
+* no architect_budgets;
+* no ReviewLoopAuthorization requirement.
+
+EXECUTION:
+
+* unchanged by A-1.
+
+No semantics may leak between these three types.
+FOCUS 4 — REVIEWER_SATISFIED
+Verify OBS-A1-01 correction.
+REVIEWER_SATISFIED is valid only for:
+loop.type = REVIEWER.
+It is not:
+ARCHITECT_SATISFIED.
+A REVIEWER may satisfy only the operational review requirement that requested it.
+Conditions must include:
+
+* valid ingested reviewer-result/v1;
+* no non-terminal attempt;
+* no applicable BLOCKING Reviewer finding still open;
+* operational gate requirement satisfied.
+
+Coordinator clarification:
+ADVISORY findings do NOT block REVIEWER_SATISFIED under the currently materialized F3 contracts.
+Reason:
+gate-contract/v2 provides no stricter field that elevates ADVISORY to blocking.
+Do NOT require a schema change merely to permit such policy.
+If a future design wants advisory findings to block, that is a separate contract change.
+FOCUS 5 — REVIEWER LOOP CLOSURE
+Confirm both Reviewer closure paths.
+A. SATISFIED
+REVIEWER_SATISFIED
+→ LOOP_CLOSED
+→ NONE
+with no Coordinator decision required merely to close a successfully completed Reviewer loop.
+B. EXPIRED / REVOKED
+When:
+
+* authorization = EXPIRED or REVOKED;
+* no request remains OPEN;
+* no attempt is non-terminal;
+* escalation requirements are resolved;
+
+the Coordinator may close the Reviewer loop.
+IMPORTANT:
+This administrative closure does NOT mean the operational review requirement was satisfied.
+A BLOCKING Reviewer finding may remain OPEN.
+In that case:
+
+* finding remains OPEN;
+* requirement remains unsatisfied;
+* dependent operation remains blocked;
+* loop may nevertheless close to avoid a permanently active zombie loop.
+
+Confirm no text accidentally converts this path into REVIEWER_SATISFIED.
+FOCUS 6 — REVIEWER HISTORY
+Verify `reviewer_closures[]` is:
+
+* append-only;
+* not a budget;
+* not a loop identity;
+* one record per Reviewer closure;
+* sufficient to recover authorization termination/closure history after active loop fields return to null.
+
+Closing the loop must not erase:
+
+* review requests;
+* attempts;
+* results;
+* finding history;
+* budgets;
+* authorization-end evidence.
+
+FOCUS 7 — REBASE / LAUNCHING
+Verify A62-A1-04:
+For LAUNCHING during rebase:
+
+* original invocation/Target remains historical while process-start status is unresolved;
+* Original→Image mapping is preserved;
+* actual STARTED → historical original target continues;
+* proven NOT STARTED → same reservation, new InvocationId, image Target;
+* UNKNOWN → LAUNCH_UNCERTAIN;
+* no double budget consumption.
+
+Check clean-successor reconstruction.
+FOCUS 8 — EQUIVALENT REVIEWED OBJECT
+Verify `EquivalentReviewedObject`.
+Required:
+same path
+AND
+same blob
+AND
+(
+same commit
+OR
+proven Original→Image relationship through the custodied RebaseMap chain
+)
+Must NOT accept equivalence based only on:
+
+* path;
+* tree equality;
+* patch similarity;
+* guesswork.
+
+Different blob:
+INVALID.
+Missing mapping:
+fail closed.
+FOCUS 9 — BRANCH REFERENCES AFTER REBASE
+Verify `ResolveBranchRef`.
+Review at least:
+
+* BindingRef.Location.Commit;
+* AuthorizationRef.Commit;
+* AuthorityRevision;
+* applicable branch-local StateRefs.
+
+Historical references remain immutable.
+A reference is usable only if:
+
+* original Commit is ancestor of current HEAD;
+OR
+* complete custodied rebase-history chain yields an image with required identity and image is ancestor of HEAD.
+
+Test conceptually:
+
+* one rebase;
+* two rebases;
+* missing middle map;
+* changed blob;
+* clean successor clone.
+
+Confirm this is an explicit A-1 semantic amendment to applicable F3 ancestry rules, not silent reinterpretation.
+FOCUS 10 — F3 CONTRACT COMPATIBILITY
+Confirm whether the corrected A-1 requires any actual schema-shape change to F3.
+Current implementation conclusion:
+NO F3 schema shape change required.
+Only applicable semantics/text are amended.
+If the Architect finds a schema change is actually necessary:
+emit REQUIRED with exact contract and counterexample.
+FOCUS 11 — COUNTEREXAMPLE HARNESS
+Review the updated evidence:
+73 traces
+24 valid
+49 invalid
+Requirements:
+
+* A62-A1-01..06 covered;
+* OBS-A1-01 R1..R10 covered;
+* O1..O5 covered where applicable;
+* every invalid trace fails for the intended rule set;
+* no incidental pass/failure used as evidence;
+* previous `fc01-enmendado-object-null-fuera-del-cierre` problem corrected.
+
+Supporting evidence is not authority; verify against A-1 text.
+FOCUS 12 — MATERIALITY / OWNER
+Current Coordinator classification:
+A-1 overall:
+M-02 = YES
+M-03 = YES
+M-04 = YES
+M-05 = YES
+M-01 = NO
+M-06 = NO
+M-07 = NO
+M-08 = NO
+OBS-A1-01 specifically:
+M-02 = YES
+M-03 = YES
+M-04 = YES
+M-01/M-05/M-06/M-07/M-08 = NO
+OwnerDecisionRequired expected:
+false.
+Explicitly challenge this if A-1 creates any:
+
+* new Owner authority;
+* spending;
+* credentials;
+* destructive permission;
+* OV change;
+* owner-reserved policy choice.
+
+FORMAL REVIEW CONDITIONS
+ONE clean separate Architect review only.
+The previous run exposed review-harness problems.
+For this run:
+
+* exact review commit must be 0ad410f894a9411cc9e4f454481ba14791109133;
+* reviewer worktree must be verified at that exact object before substantive reading;
+* effective input closure must be computed and custodied;
+* Grep/search may operate ONLY on individual files in the allowed closure, never directories;
+* allowed shell actions must be enumerated explicitly;
+* read-only metadata commands such as `wc`, `awk`, `grep`, `sed`, `git show`, hashing and permitted test commands may be allowed only when their paths/actions are explicitly in the review contract;
+* reviewer self-output and task-output reads required for execution/audit must be classified explicitly rather than accidentally treated as prohibited inputs;
+* no author transcript/private project memory;
+* fidelity audited on what the reviewer actually saw;
+* runtime model/effort/session observed by the invoker;
+* clone remains clean.
+
+If review context cannot be formally accredited:
+return NOT_ACCREDITED.
+Do not manufacture an Architect verdict.
+DOTNET TEST
+No special exemption is granted by this order.
+If repository instructions require `dotnet test`, it may run inside the disposable clean review clone.
+It is reviewer-local verification, not gate evidence.
+RESULT
+Return exactly one formal Architect verdict:
+AGREED
+CHANGES REQUIRED
+BLOCKED — OWNER DECISION
+or:
+NOT_ACCREDITED
+if the review conditions fail.
+Every REQUIRED must cite:
+
+* stable ID;
+* exact A-1 delta/section;
+* exact canonical premise;
+* concrete counterexample;
+* exact required correction.
+
+If AGREED:
+explicitly state:
+
+* A62-A1-01 CLOSED;
+* A62-A1-02 CLOSED;
+* A62-A1-03 CLOSED;
+* A62-A1-04 CLOSED;
+* A62-A1-05 CLOSED;
+* A62-A1-06 CLOSED;
+* OBS-A1-01 CLOSED;
+* FC-01 resolved;
+* FC-02 resolved;
+* no Owner decision required;
+* A-1 is suitable for Coordinator agreement;
+* F4 may proceed against Freeze + A-1 once Coordinator records AGREED.
+
+BOUNDARIES
+Do NOT:
+
+* edit A-1;
+* create A-2;
+* implement F4;
+* rebase I-62 merely for this review;
+* edit ROADMAP/HANDOFF;
+* decide Owner matters;
+* invoke Worker or Controller;
+* change runtime configuration.
+
+After completion:
+
+* custody literal result;
+* custody input closure;
+* custody runtime identity;
+* custody fidelity/read audit;
+* commit/push custody;
+* obtain exact CI;
+* STOP.
+
+F4 remains NOT AUTHORIZED until Coordinator disposes the formal Architect verdict.
+I-61 remains active.

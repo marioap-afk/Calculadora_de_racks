@@ -1,0 +1,46 @@
+{
+ "Transcript": "C:/Users/alejandra-mendoza/.claude/projects/D--Documentos-Codex-Calculadora-de-racks/e5124bf0-ed19-48a1-97ba-574baf9d33a2.jsonl",
+ "Rev": "411e01ce4176e4fe6648ea3e9ff2febc219ff438",
+ "Calls": [
+  {
+   "Path": "docs/initiatives/I-62-A-1.md",
+   "Offset": 145,
+   "Limit": 14,
+   "Lines": 14,
+   "Faithful": 14,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  },
+  {
+   "Path": "docs/initiatives/I-62-architect-review-A-1-r3.md",
+   "Offset": null,
+   "Limit": null,
+   "Lines": 64,
+   "Faithful": 64,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  },
+  {
+   "Path": "docs/initiatives/I-62-architect-package-A-1.md",
+   "Offset": 150,
+   "Limit": 15,
+   "Lines": 15,
+   "Faithful": 15,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  }
+ ],
+ "Summary": {
+  "Calls": 3,
+  "Faithful": 3,
+  "Degraded": 0,
+  "DeliveredLinesByPath": {
+   "docs/initiatives/I-62-A-1.md": 14,
+   "docs/initiatives/I-62-architect-package-A-1.md": 15,
+   "docs/initiatives/I-62-architect-review-A-1-r3.md": 64
+  }
+ }
+}

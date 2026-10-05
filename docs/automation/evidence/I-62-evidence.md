@@ -2126,3 +2126,19 @@ CI de los helpers, `4eb3ce6b82bd90c776bdd20dd1c2b652e927cba8`: corrida **3727582
   - **Resultado `71c46ef9…`; secuencias combinadas:** 16/16 PASS.
   - **Paquete `a97dea77…`:** pregunta 18 y textos al día (O4).
   - **Disposición `eeb29ba0…`.**
+
+## 50. Kit v3c de la revisión formal 2 (última de la orden nocturna)
+
+CI de la custodia de la revisión 1 y del ciclo 1, `411e01ce4176e4fe6648ea3e9ff2febc219ff438`: corrida **37278429319**, push, head_sha exacto, cuatro jobs en
+`success`.
+
+- **Kit:** `docs/automation/evidence/I-62-architect-A-1/R20261005T073911Z-2dfe/`. Objeto: `411e01ce`, A-1 `03dd822d`.
+  - auditor v3.1 declarado antes de la corrida;
+  - coherencia para 12 disposiciones, 14 opcionales y focos 1-19;
+  - prompt SHA-256 `302898f8…`;
+  - autoprueba PASS; preflight 3/3.
+- **Lanzamiento:** HUMAN_LAUNCH_REQUIRED, con la tarea de la app `task_b5714b45` creada una sola vez.
+- **Kit v3b** (R20261005T072212Z-e65c, para `cdcd98d2`): retirado sin lanzarse; quedan su prompt, su cierre y su manifiesto.
+- **F4 experimental en C#** (N-08):
+  - 9/9 en el clon aislado `D:\r62-f4-exp`;
+  - diff en `I-62-prep/night-2026-10-05/f4-exp/csharp-experimental.patch`; TRX fuera del repo (SHA-256 `c07b6f52…`).

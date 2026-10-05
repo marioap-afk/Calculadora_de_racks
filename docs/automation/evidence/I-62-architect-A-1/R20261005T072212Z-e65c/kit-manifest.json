@@ -1,0 +1,56 @@
+{
+ "Kit": "I-62 A-1 formal Architect review kit v3b",
+ "RunId": "R20261005T072212Z-e65c",
+ "Commit": "d97ce3d0a5c4d5656c184bea4176ef16abf9cc91",
+ "Supersedes": "R20261005T063359Z-86e3 (kit v3, not launched)",
+ "Files": {
+  "closure.json": {
+   "Bytes": 26556,
+   "Sha256": "63a90732ef73ef2a0897bdc6a6af45e1248cb302b2ec87cda921bf567457b6f0"
+  },
+  "corpus.json": {
+   "Bytes": 402,
+   "Sha256": "81573c339ca9163ad5e1f546993b462add8225df2f662f7582bfdc94781c0995"
+  },
+  "make_closure.py": {
+   "Bytes": 14497,
+   "Sha256": "cdfa8042479dad3ccbd157d9b7bc63703fbd726a7121da2ea8b4b3d52d4ba407"
+  },
+  "order.txt": {
+   "Bytes": 20652,
+   "Sha256": "4fc5883f3adba35f23e5b3af22602e8229064b51bc64303d4399abcc78dd8d09"
+  },
+  "post-review.py": {
+   "Bytes": 34413,
+   "Sha256": "dcb8d4f7e374fb1ffdd22a40799226952c8f2227ae1704d470c28c8d1815cdd6"
+  },
+  "preflight-read-fidelity.json": {
+   "Bytes": 1120,
+   "Sha256": "f9d9c0a8ae33136ef5b31758f9a2b424fd804297f3d58b57b4a6fa839d2b6307"
+  },
+  "prior-authorization.txt": {
+   "Bytes": 9954,
+   "Sha256": "046089940e9f11dbc94d01818dac63e745ca5be8890a949c37dfb5fe1b47c837"
+  },
+  "prompt.md": {
+   "Bytes": 20110,
+   "Sha256": "220644a1fb3338bc82b818bc7dd496977859667d661f822ccd298ab6468458bd"
+  },
+  "read_fidelity.py": {
+   "Bytes": 3792,
+   "Sha256": "3c27d83cb1ebb3408263f319d3b6a80f237d4f82ede15dfd7a4f3f9a57182ea6"
+  },
+  "result.schema.json": {
+   "Bytes": 9613,
+   "Sha256": "42d31dd8bacd20b8385a8de3ba79096fc6e4bbd57c5d506eea2d2cec1dc994b6"
+  },
+  "selftest-post-review.py": {
+   "Bytes": 15893,
+   "Sha256": "ca4cc4736f8bbadcf728fc0bd36ccae772b094e97a46dc60917c209d00e40253"
+  },
+  "selftest-result.json": {
+   "Bytes": 393,
+   "Sha256": "2338432a77bb7d80d2b36c22626c5aa24a87ba61d5026e6355af9e73a1e4ada8"
+  }
+ }
+}

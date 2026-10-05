@@ -1,0 +1,532 @@
+I-62 — ORDEN NOCTURNA DE AVANCE AUTÓNOMO ACOTADO
+
+1. OBJETIVO Y DURACIÓN
+
+El Owner estará dormido. Trabaja ahora, durante esta ejecución, hasta agotar el trabajo útil autorizado o alcanzar un máximo de ocho horas desde la recepción de esta orden. No interpretes las ocho horas como un mínimo de consumo.
+
+Prioriza entregables verificables, código experimental reutilizable, correcciones concretas y evidencia reproducible. No prolongues la ejecución con documentación redundante, búsquedas repetidas, esperas sin trabajo disponible o pruebas idénticas sin invalidación.
+
+Un bloqueo de una tarea no bloquea las tareas independientes. Registra la frontera, continúa con el siguiente trabajo elegible y vuelve solo si aparece evidencia nueva que la desbloquee.
+
+Esta orden sustituye los STOP intermedios de órdenes anteriores únicamente para permitir continuar con los otros frentes aquí autorizados. NO sustituye STOP de seguridad, topes vigentes, decisiones Owner, independencia, aprobaciones de enmiendas ni requisitos de apertura/cierre de gates.
+
+
+2. ESTADO DE REFERENCIA: COMPROBAR, NO ASUMIR
+
+Repositorio:
+marioap-afk/Calculadora_de_racks
+
+Rama:
+architecture/portabilidad-coordinador-principal
+
+Última punta observada al redactar esta orden:
+1614908d37e0e5bb56d8ddf8e6775515278332c8
+
+Freeze:
+b64a3b640c7ee3bd77636e7a3218ae0ebac2dd43
+
+Proposal V14 congelada:
+commit 4c617e82b32b6c810b68d75fc19472efed22b393
+blob 34ad80ea1bfff144bfc5169f62920a4c904c1bfa
+
+A-1 revisada:
+commit 0ad410f894a9411cc9e4f454481ba14791109133
+blob 9c621fce0588f32115e3151b6f75413c0a167c2e
+
+Registro de la segunda revisión:
+docs/initiatives/I-62-architect-review-A-1-r2.md
+
+El registro publicado dice CHANGES REQUIRED por A62-A1R-01..03; A62-A1-01..06 aparecen CLOSED en ese dictamen y OBS-A1-01 sigue abierto.
+
+Su acreditación definitiva y el acuerdo de la enmienda no deben inferirse de un resultado del auditor.
+
+F0–F3 tienen cierre registrado.
+F4 no está abierto.
+OD-6 ya está decidida: Alternative 1. No volver a solicitarla.
+
+I-61 sigue siendo el protocolo integrado activo.
+
+I-63 está integrada: no buscar su antigua rama como requisito ni reabrirla.
+
+I-64 conserva su régimen aplicable; esta orden no la migra ni la desbloquea retroactivamente.
+
+Si el remoto avanzó, lee las decisiones posteriores y ajusta la cola. Nunca regreses la rama a estas referencias ni repitas una acción ya completada.
+
+
+3. AUTORIZACIÓN NUEVA DE ESTA ORDEN
+
+El Coordinator adopta A62-A1R-01, A62-A1R-02 y A62-A1R-03 como REQUIRED técnicos para corregir la A-1 todavía PROPUESTA.
+
+Esto no acredita retrospectivamente la corrida ni sustituye el acuerdo Architect + Coordinator.
+
+Queda autorizado:
+
+A. Corregir la propuesta A-1, su paquete, trazas y registros propios dentro del alcance definido abajo.
+
+B. Preparar el delta propuesto de P4/P8 de I-63 para una futura A-2, sin aplicarlo ni atribuirle vigencia.
+
+C. Desarrollar y probar helpers y prototipos experimentales para P1/P2/P3/P5/P6, sin convertirlos en un nuevo rol o servicio.
+
+D. Actualizar y ampliar el prototipo de F4 en un clon experimental desechable, sin publicar F4 en las superficies de producción de la rama.
+
+E. Preparar y ejecutar hasta DOS invocaciones adicionales de Architect exclusivamente para revisar las correcciones de A-1 autorizadas aquí, solo si existe un transporte limpio, técnicamente disponible y cubierto por las autorizaciones de consumo y entorno aplicables.
+
+Una segunda invocación puede revisar una corrección o sustituir una corrida inválida; también cuenta contra este máximo.
+
+F. Corregir localmente los defectos reproducibles que esas revisiones encuentren dentro de esta misma familia de cambios. Máximo dos ciclos de corrección y revisión durante esta orden.
+
+G. Publicar documentación de propuesta, preparación y evidencia propia conforme al workflow, con CI.
+
+No queda autorizado:
+
+- decidir OD-1, OD-2, OD-3, OD-4, OD-5 u OD-7;
+- aceptar huellas nuevas, obtener credenciales, instalar herramientas o paquetes nuevos, modificar configuración persistente o ampliar suscripciones;
+- levantar los bloqueos de transportes asociados a OD-2/OD-3;
+- atribuirte un veredicto del Architect o el acuerdo del Coordinator;
+- abrir F4/F6, declarar GATE PASS, fijar FINAL_CANDIDATE, ejecutar OV o integrar;
+- modificar V14 o el Freeze, materializar una enmienda no acordada, alterar /v1 o reabrir I-61/I-63;
+- escribir en main, ROADMAP, HANDOFF, FOUNDATIONS o el índice ADR.
+
+Si una autorización vigente es más restrictiva, prevalece.
+
+El permiso para revisar A-1 no convierte en elegible un transporte bloqueado.
+
+
+4. ARRANQUE: UNA SOLA LECTURA ORIENTADA AL DELTA
+
+Comprueba árbol, rama, remoto, procesos/escritores, ventanas de coordinación y decisiones nuevas.
+
+Lee las cláusulas aplicables de LIFECYCLE §§6–9 y WORKFLOW antes de las acciones que gobiernan.
+
+Revalida el perfil requerido del Principal según el mandato vigente:
+claude-opus-5-5 / xhigh.
+
+Registra lo observado; no infieras MATCH ni cambies silenciosamente el perfil.
+
+No rebases solo para preparar una revisión de un objeto histórico exacto.
+
+Si el workflow exige rebase para otro trabajo, comprueba las ventanas y aplica su procedimiento vigente; si no puedes hacerlo, trabaja en el clon experimental y deja bloqueada únicamente la publicación afectada.
+
+Crea o actualiza una cola de trabajo recuperable en el área propia de preparación de I-62. No es un nuevo contrato del protocolo.
+
+Cada tarea tendrá:
+
+ID
+entrada exacta
+autoridad
+resultado esperado
+dependencias
+estado
+evidencia
+próxima acción
+
+Estados de esa cola:
+
+TODO
+RUNNING
+DONE
+BLOCKED_AUTHORITY
+BLOCKED_TECHNICAL
+SUPERSEDED
+
+No introducir estos valores en enums canónicos del estado.
+
+Reutiliza lo existente. El parser YAML, las matrices, los prototipos de rebase y compatibilidad y los planes READY/OV ya existen; no volver a producirlos desde cero.
+
+
+5. PRIORIDAD 1: CORREGIR A-1 SEGÚN LA SEGUNDA REVISIÓN
+
+Lee el resultado literal, no solo su resumen.
+
+Usa como base el último blob de A-1 que siga PROPUESTA.
+
+Si A-1 ya fue acordada por autoridades válidas después de esta orden, no la edites: cualquier cambio posterior sigue LIFECYCLE §6.
+
+A62-A1R-01 — CIERRE DEL REVIEWER AGOTADO
+
+Añade EXHAUSTED al camino administrativo de cierre del REVIEWER junto a EXPIRED y REVOKED, con decisión del Coordinator y sin reescribir el motivo histórico.
+
+El cierre no satisface el requisito operativo.
+
+Los BLOCKING abiertos permanecen abiertos y la operación dependiente sigue bloqueada.
+
+No debe quedar trabajo vivo incompatible con el cierre.
+
+Añade trazas positivas tras EXHAUSTED y negativas sin decisión, con intento vivo y con falso REVIEWER_SATISFIED.
+
+Alinea texto, estados, condiciones, historial y C-38.
+
+A62-A1R-02 — UNA REGLA COHERENTE DE REBASE POR TIPO
+
+Elimina la contradicción entre D1-10 y D2 para REVIEWER.
+
+Declara exactamente cuándo su loop.object cambia por cierre y cuándo cambia solo su commit por reconciliación, conservando path/blob.
+
+Para EXECUTION, determina una única regla consistente con la autoridad congelada.
+
+No digas simultáneamente «sin cambios» y que una regla genérica nueva lo modifica.
+
+Si hace falta un delta observable, decláralo expresamente en la propuesta y su materialidad.
+
+Prueba REVIEWER y EXECUTION por separado, antes/después del rebase y de la ingestión.
+
+El negativo debe fallar por la contradicción concreta, no por un error incidental.
+
+A62-A1R-03 — NO RESUCITAR AUTORIZACIONES DEL REVIEWER
+
+Cerrar un bucle y poner action_validity en null no vuelve válida una autorización terminada.
+
+Define la apertura con autoridad vigente y comprobación del historial reviewer_closures.
+
+Una autorización ya finalizada no vuelve a OPEN por reiniciar campos, cambiar sesión o rebasar.
+
+Continuar con otra autoridad requiere la decisión custodiada correspondiente.
+
+Conserva el historial y el presupuesto consumido.
+
+Declara los deltas de vigencia necesarios en AUTOMATION_PLAN 16.20 y README §14.3 como parte de la propuesta, no como edición normativa ya vigente.
+
+Actualiza M-05 de OBS-A1-01 a SÍ si, como indica el dictamen, cambia la semántica consumida de esos textos F3.
+
+La ausencia de cambios de forma del JSON no basta para afirmar M-05 = NO.
+
+OPCIONALES DE ESTA REVISIÓN
+
+Incorpora O1, O3, O4 y O5 dentro de esta corrección:
+
+- alcance exacto por tipo;
+- OpenFindings compatible con la autoridad de cada revisor;
+- todos los mapas de rebase necesarios conservados;
+- satisfacción operativa acreditada positivamente, no inferida de ausencia de BLOCKING.
+
+Para O2, prepara el camino de revocación y cierre atómico por decisión del Coordinator si se expresa con la autoridad ya existente.
+
+Si requiere campos, permisos o política nuevos, identifica el delta y déjalo explícitamente propuesto, sin materializarlo ni ocultarlo como detalle.
+
+No reabras los seis hallazgos anteriores sin un contraejemplo nuevo.
+
+Conserva sus disposiciones históricas; una corrección del autor no equivale al cierre por el Architect.
+
+
+6. PRIORIDAD 2: LLEVAR A-1 HASTA LA FRONTERA REAL DE REVISIÓN
+
+Publica una entrega coherente de la corrección con sus pruebas y evidencia exigible.
+
+No finalices toda la ejecución al aparecer CI verde: continúa con los demás frentes.
+
+Para una nueva revisión:
+
+- fija commit, rutas y blobs exactos;
+- usa una sesión/proceso distinto de la autoría, sin su memoria ni transcripción;
+- verifica el checkout real antes de leer;
+- calcula y custodia el cierre de insumos y las acciones permitidas;
+- incluye expresamente lecturas de salidas propias y comandos de metadatos necesarios;
+- comprueba rutas y efectos, no solo igualdad literal de cadenas de comandos;
+- no permitas búsquedas sobre directorios fuera del cierre;
+- audita contenido efectivamente entregado, Unicode, truncamientos, runtime y terminación;
+- no cambies el contrato retrospectivamente para acreditar una corrida fallida.
+
+No hay nueva exención de dotnet test en esta orden.
+
+Si corresponde ejecutarlo, usa el clon desechable y el permiso local aplicable; los artefactos de build/test no son una edición autorizada de las fuentes.
+
+No se autoriza usar Codex mientras OD-2 siga bloqueando esa invocación ni autenticar Claude CLI por tu cuenta.
+
+Si el único transporte necesita un clic, prepara la acción una vez, registra HUMAN_LAUNCH_REQUIRED y continúa otras tareas.
+
+No vuelvas a dedicar tiempo a buscar un start_session que ya comprobaste ausente, salvo cambio observable del entorno.
+
+Si la revisión termina CHANGES REQUIRED:
+corrige dentro del alcance de esta orden y del presupuesto restante.
+
+Si termina AGREED:
+custodia el resultado sin inventar el acuerdo del Coordinator ni abrir F4.
+
+Si queda NOT_ACCREDITED:
+preserva el resultado y diagnostica el auditor/transporte sin fingir acreditación.
+
+
+7. PRIORIDAD 3: PREPARAR P4 Y P8 PARA UNA FUTURA A-2
+
+El handoff de I-63 aporta observaciones, no una autorización para implementarlo todo.
+
+Preserva el triage del Coordinator:
+
+P1/P2/P3/P5/P6:
+dentro del Freeze, sujeto a contraste con las cláusulas exactas.
+
+P4/P8:
+propuesta de cambio material.
+
+P7:
+DEFER.
+
+P9:
+SEPARATE_FOLLOWUP.
+
+Mientras A-1 siga pendiente, guarda este trabajo como dossier de propuesta futura, sin consumir ni declarar acordada A-2 y sin mezclarlo en la revisión de A-1.
+
+P4 — VERIFICATIONTARGETSHA Y CUSTODYHEADSHA
+
+Reproduce el caso de I-63 desde sus artefactos canónicos.
+
+Diseña el delta mínimo para separar el SHA funcional verificado del HEAD que custodia el resultado.
+
+Prepara reglas y un arnés Git desechable que demuestren:
+
+- el objetivo proviene del handoff estructurado;
+- X es ancestro de Y;
+- cada commit X..Y contiene solo custodia expresamente permitida;
+- ningún commit intermedio cambia y luego revierte producción, pruebas, configuración relevante o autoridad aplicable;
+- no basta con que la ruta termine en .md ni con que el diff final parezca vacío;
+- CI y pruebas conservan su identidad exacta en X;
+- la salud/custodia de Y queda separada;
+- cambio funcional, cambio normativo, mapa ausente o descendencia no demostrada impiden la excepción.
+
+No uses la equivalencia de objetos de revisión de A-1 para trasladar automáticamente CI, READY-06 o evidencia de gate a otro SHA.
+
+P8 — GRANULARIDAD DE REINTENTOS
+
+Diseña contadores separados de unidad, gate y TaskId/clase, con un límite global y límites locales finitos.
+
+No elijas como aprobado un nuevo tope numérico.
+
+Prueba:
+
+- gates realmente independientes;
+- continuidad del mismo defecto con otro nombre;
+- cambio de modelo/sesión;
+- reinicio del proceso;
+- contador desconocido;
+- agotamiento del techo global.
+
+Renombrar una tarea o gate no abre presupuesto.
+
+Distingue estos contadores de correcciones del Worker de los presupuestos de review loop que corrige A-1.
+
+Evalúa expresamente ADR-0046 #7, ADR-0048, M-08 y posibles decisiones reservadas.
+
+No des por hecho que la clasificación de A-1 sirve para P8.
+
+Entrega cláusula anterior, delta, contraejemplo, alternativas, afectación de schemas/textos, obligaciones y matriz de autoridad.
+
+Nada se aplica aún.
+
+
+8. PRIORIDAD 4: HELPERS DETERMINISTAS Y CONTROLES P1/P2/P3/P5/P6
+
+Implementa y prueba versiones experimentales usando bibliotecas ya disponibles.
+
+No crees un sexto rol, servicio, daemon ni autoridad MechanicalVerifier.
+
+P1:
+
+Parsea CurrentSha del artefacto estructurado y compruébalo con Git.
+
+Una narrativa con el SHA correcto no rescata un handoff inválido.
+
+Si identidad falta o contradice Git, falla según la política; nunca sustituyas por el SHA del prompt.
+
+P2:
+
+Compara mecánicamente rutas cambiadas contra AllowedWriteScope y ForbiddenWriteScope de la delegación.
+
+Incluye prefijos, rutas anidadas, cambios de nombre, borrados y comparación no ejecutada.
+
+Una regla permisiva del contrato superior o la prosa no amplían la delegación.
+
+No inventes una semántica nueva de mayúsculas, enlaces o rutas: documenta cualquier hueco.
+
+P3:
+
+Separa extracción de hechos y clasificación semántica.
+
+El Controller conserva juicio, independencia y veredicto.
+
+Los helpers no firman EXECUTION_VERIFIED ni GATE PASS.
+
+P5:
+
+Con configuración y binarios ficticios, prueba invalidación, STOP, nueva observación, referencia a decisión y reanudación solo cuando corresponda.
+
+No toques config.toml real ni ejecutes una sonda real bloqueada.
+
+Preflight nuevo no equivale por sí mismo a línea base aceptada.
+
+P6:
+
+Usa el TRX real de I-63 si está disponible.
+
+Conserva sus bytes y deriva una lectura normalizada auditable.
+
+Identifica skips por evidencia del framework/runner y prueba conocidos, inesperados, resultados contradictorios y selección vacía.
+
+SKIPPED nunca se suma a Passed.
+
+No conviertas cualquier NotExecuted en éxito ni fijes «17 skips» como constante futura.
+
+Si la implementación exige cambiar un comportamiento congelado, detén únicamente ese cambio y registra el delta material.
+
+No lo presentes como helper inocuo.
+
+
+9. PRIORIDAD 5: F4 EXPERIMENTAL, NO OTRA COLECCIÓN DE PLANES
+
+Actualiza los prototipos existentes al último A-1 propuesto.
+
+Si queda capacidad, desarrolla una versión C# experimental dentro del proyecto de pruebas de un clon aislado, usando sus dependencias existentes.
+
+Es autorización de desarrollo experimental, NO de materialización F4 en la rama oficial.
+
+Integra por etapas:
+
+- lector/escritor del subconjunto YAML y rechazo de entradas no soportadas;
+- invariantes de archivo, pares e historia;
+- cálculo determinista de NextAction;
+- cierre/reapertura por tipo de bucle;
+- presupuesto persistente, sustitución de autorización y vigencia;
+- reservas, LAUNCHING, terminación, ingestión idempotente y resultados tardíos;
+- cadena de RebaseMaps, referencias históricas y clon sucesor sin objetos inalcanzables;
+- compatibilidad I61 y controles del contrato G3 real.
+
+Mantén variantes separadas:
+
+1. Freeze literal.
+2. Freeze + A-1 propuesta.
+3. Experimentos P4/P8.
+
+No mezcles sus oráculos ni atribuyas al Freeze resultados de la variante ampliada.
+
+Reproduce secuencias completas, no solo pares felices.
+
+Incluye combinaciones:
+
+- expiración + rebase;
+- REVIEWER con BLOCKING heredado + cierre administrativo + nueva autorización;
+- dos rebases + caída en LAUNCHING;
+- autorización sustituta con límites menores a lo consumido;
+- respuesta tardía + intento cancelado.
+
+Guarda código/diff, instrucciones de reproducción, versiones de herramientas y resultados.
+
+Marca todo:
+EXPERIMENTAL — NOT AUTHORIZED FOR PRODUCTION.
+
+No publiques estos cambios como F4 ni les atribuyas PASS de C-15..C-42.
+
+
+10. PRIORIDAD 6: PRECISIÓN DE B.11 Y PORTABILIDAD
+
+No vuelvas a emitir el mismo informe NDC-01.
+
+Investiga únicamente diferencias nuevas y medibles.
+
+En una copia experimental del manifiesto distingue:
+
+- dependencia de control;
+- referencia informativa;
+- ambigüedad legítima;
+- dependencia faltante.
+
+No cambies Complete a true para hacer pasar una prueba.
+
+Construye ejemplos con clausura pequeña que incluyan dependencias transitivas reales y excluyan enlaces históricos.
+
+Comprueba tanto el exceso de aristas como la omisión peligrosa de una arista de control.
+
+Conserva aparte el manifiesto F3 aprobado hasta una orden aplicable.
+
+Para portabilidad, una segunda ejecución/clon debe reconstruir resultados solo desde artefactos custodiados, sin variables globales, memoria ni narrativa del primer proceso.
+
+Usa clones que no hereden por accidente objetos Git inalcanzables.
+
+No lo llames piloto FX real si no se abrieron las sesiones exigidas.
+
+
+11. CALIDAD, PERSISTENCIA Y RECURSOS
+
+Antes de cambiar un programa, conserva su resultado anterior y define el resultado esperado de la nueva prueba.
+
+Asegura selección mayor que cero y negativos que fallen por la regla esperada.
+
+Usa primero focales, luego suites afectadas y la evidencia completa exigible para cada entrega.
+
+No repitas Full por cada párrafo ni heredes evidencia invalidada por cambios/rebase.
+
+Respeta las clases de evidencia de AGENTS y WORKFLOW; una corrida experimental no satisface un gate real.
+
+Un escritor por worktree.
+
+No añadas paralelismo si no existe autoridad y aislamiento demostrables.
+
+No dejes dos watchers para la misma CI.
+
+Respeta todos los topes vigentes; las dos invocaciones Architect aquí acotadas no autorizan otros roles ni levantan restricciones de consumo.
+
+Publica solo cambios propios autorizados de propuesta/preparación/custodia, en commits coherentes.
+
+Los cambios experimentales quedan en su clon o como paquete/diff inequívocamente experimental.
+
+No publiques secretos, transcripciones privadas ni configuración sensible.
+
+Tras cada hito o antes de compactación, actualiza la cola con:
+
+- archivos;
+- hashes;
+- decisiones;
+- comandos de reproducción;
+- siguiente tarea.
+
+Una sesión sucesora debe poder continuar sin que el Owner reconstruya el chat.
+
+No actives state/v2 para la propia I-62, que sigue bajo su protocolo aplicable.
+
+
+12. CONDICIÓN DE PARADA E INFORME FINAL
+
+No finalices porque terminó una tarea, porque espera una CI o porque falta un clic mientras quedan tareas independientes.
+
+Finaliza cuando ocurra una de estas condiciones:
+
+- se agotó la cola útil y todo lo restante exige autoridad externa;
+- se alcanzó el máximo de ocho horas;
+- un límite vigente de recursos/seguridad exige parar;
+- no puedes preservar un estado seguro y recuperable.
+
+No prometas trabajo posterior al cierre de la ejecución.
+
+Si el runtime interrumpe, deja el checkpoint real; no declares trabajo que no ejecutaste.
+
+El informe final empieza con un resumen de no más de diez líneas:
+
+1. Qué cambió realmente y qué sigue siendo experimental.
+2. A-1: objeto exacto, hallazgos, revisión/acreditación y acuerdo pendiente.
+3. Propuesta P4/P8: madurez y decisiones necesarias.
+4. Pruebas nuevas y defectos detectados.
+5. Commits, CI y estado del árbol.
+6. Bloqueo exacto y próxima decisión mínima.
+
+Después enlaza la evidencia detallada:
+
+- matriz de tareas;
+- resultados reproducibles;
+- código/diffs experimentales;
+- hallazgos abiertos;
+- decisiones pendientes.
+
+No listes como pendientes tareas ya hechas ni digas «falta autorización» sin identificar exactamente cuál.
+
+META DE ESTA EJECUCIÓN
+
+Dejar:
+
+- A-1 corregida y, si el transporte lo permite, revisada;
+- P4/P8 listos para su evaluación material;
+- controles deterministas probados;
+- F4 experimental actualizado y reproducible.
+
+Ningún gate, enmienda o decisión Owner se da por aprobado por el mero hecho de terminar esta noche.
+
+Empieza ahora por el estado real y la segunda revisión de A-1.
+
+No respondas únicamente con un plan.

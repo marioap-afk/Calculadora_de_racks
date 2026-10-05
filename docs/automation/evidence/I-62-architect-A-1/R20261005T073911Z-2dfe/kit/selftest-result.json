@@ -1,0 +1,22 @@
+{
+ "good": {
+  "Status": "ACCREDITED",
+  "Reasons": []
+ },
+ "good2": {
+  "Status": "ACCREDITED",
+  "Reasons": []
+ },
+ "good2_truncated_known": [
+  {
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Line": 2352,
+   "DeliveredChars": 2000,
+   "CanonicalChars": 2076
+  }
+ ],
+ "bad_status": "NOT_ACCREDITED",
+ "bad_unexpected": [],
+ "bad_missing": [],
+ "PASS": true
+}
