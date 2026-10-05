@@ -424,7 +424,7 @@ algoritmo puede seleccionar es I-06.
 
 ## 16. Ejecución delegada bajo orden del Coordinator
 
-La **ejecución delegada** es la ejecución de un trabajo de gate por participantes delegados (un Controller Codex de solo lectura y un Worker) bajo una orden explícita del Coordinator.
+Antes de aplicar esta sección, toda unidad aplica §16.13. La **ejecución delegada** es la ejecución de un trabajo de gate por participantes delegados (un Controller Codex de solo lectura y un Worker) bajo una orden explícita del Coordinator.
 **No es el ejecutor nocturno:** no selecciona iniciativas, no reclama, no exige activación ni `automation.enabled: true` y no abre ni actualiza Pull Requests. Origen: Freeze de I-61
 (`docs/initiatives/I-61-proposal-v9.md`). Vigencia: desde la integración de I-61 con ADR-0046 aceptado; antes, solo en el piloto de I-61, bajo la autoridad del Owner y sin rebajar
 ninguna regla vigente. Ninguna otra iniciativa lo adopta por estar escrito. El procedimiento, las órdenes y las plantillas viven en `docs/automation/agent-execution/` (subordinados) y
@@ -498,7 +498,7 @@ Clases, declaradas en el contrato por ruta y sección:
   secciones `UNIT_CHANGE`.
 
 Una **sección** va desde su encabezado hasta el siguiente encabezado con el mismo número de `#` o menos (incluye sus subsecciones); el **preámbulo** es el texto anterior al primer
-encabezado `##`. Si algo de esto no es verificable → STOP (S-12).
+encabezado `##`. Si algo de esto no es verificable → STOP (S-12). Antes de aplicar esta sección, toda unidad aplica §16.13.
 
 ### 16.4 Transporte, relevo, cesión y orden de commits
 
@@ -709,6 +709,219 @@ Antes de que el Coordinator registre una decisión, la sesión copia los JSON y 
 blob de Git del commit de custodia; el SHA-256 del archivo transitorio es procedencia, y si difiere del de `git cat-file -p <blob>` por fin de línea se declara. Eventos, registros de
 sesión y transcripciones no se versionan: quedan su SHA-256 y los campos extraídos, como procedencia no reverificable tras la limpieza. Una decisión solo cita artefactos versionados.
 Esta custodia aplica la evidencia por unidad de `WORKFLOW.md` §11.4 y no añade condiciones de cierre de gate.
+
+### 16.13 Compatibilidad de protocolos de ejecución delegada
+
+Origen: Freeze de I-62 ([Proposal V14](initiatives/I-62-proposal-v14.md) Anexo E, E.1-E.5 y E.7). **Rige desde `I62_EFFECTIVE_SHA` (16.14, «Punto
+efectivo») para toda unidad**, sea cual sea su protocolo: es la excepción declarada de 16.14 y la subsección que nombra el punto de entrada de
+[WORKFLOW](WORKFLOW.md) §12. Antes de `I62_EFFECTIVE_SHA` no rige ninguna evaluación: la lectura de autoridades es la de 16.3, sin cambios
+(PRE_ACTIVATION). No edita unidades I61, no muta los esquemas `/v1` y no congela archivos enteros. Ningún contrato I61 necesita cambiar.
+
+**Componentes:**
+
+| Componente | Ubicación | Se lee en | Identidad |
+|---|---|---|---|
+| Punto de entrada | `WORKFLOW.md`, `## 12. Coexistencia de protocolos de ejecución delegada (I61/I62)` | `MainSha_eval`, por toda unidad, como gobierno de proceso | encabezado único; nombra esta subsección por su línea de encabezado exacta; con `I62_EFFECTIVE_SHA` presente y la sección ausente, repetida o ambigua → ENTRY_INVALID |
+| Resolver | esta subsección | `MainSha_eval`, por toda unidad | su texto; con `I62_EFFECTIVE_SHA` presente y esta subsección ausente o repetida → ENTRY_INVALID |
+| Punteros | primera frase de §16 y última frase de 16.3 | `MainSha` | vía redundante para los contratos que leen §16 en `MainSha`; la cadena no depende de ellos |
+| Mapa de cláusulas | `docs/automation/agent-execution/compatibility/I62-clause-map.json` | **`I62_EFFECTIVE_SHA`**, nunca `MainSha` | `git rev-parse <I62_EFFECTIVE_SHA>:<ruta>`; el tag `integration/I-62` repite el blob. Esta subsección no cita el blob: el mapa contiene el de AUTOMATION_PLAN y la cita crearía un ciclo |
+| Esquema del mapa | `docs/automation/agent-execution/compatibility/clause-map.schema.json` (`rackcad-clause-map/v1`) | `I62_EFFECTIVE_SHA` | ruta fija; el mapa lo lista como ENTRY con su blob |
+| Tabla PRE | cuerpo del commit `I62_EFFECTIVE_SHA` (precedente: `WORKFLOW.md` §11.3) | `git show -s --format=%B <I62_EFFECTIVE_SHA>` | el propio commit |
+| Tabla POST | informe posterior al merge y tag | solo para casos DESCONOCIDA | tag |
+
+16.3 conserva literalmente el texto de I-61 más la frase puntero. Las reglas de autoridad propias de I62 viven en las subsecciones I62, no en 16.3.
+
+**Superficies** (lista cerrada): `AGENTS.md`, `CLAUDE.md`, `docs/AUTOMATION_PLAN.md`, `docs/FOUNDATIONS.md`, `docs/INITIATIVE_LIFECYCLE.md`,
+`docs/WORKFLOW.md`, `docs/adr/`, `docs/automation/agent-execution/`, `docs/initiatives/PROMPT_TEMPLATES.md`.
+
+**Clasificación** (`Classify`):
+
+```text
+Classify(unidad u, MainSha_eval):
+ 1. EFF := Derive(MainSha_eval)                     -- primer merge first-parent con el trailer único (16.14, «Punto efectivo»)
+    ninguno            → PRE_ACTIVATION (esa main no contiene I-62: lectura de I-61 sin resolver)
+    duplicado/ambiguo  → ACTIVATION_INVALID → STOP al Owner
+ 2. cid := claim_id del estado de u en BaseSha (o en la punta de su rama fuera de una tarea)
+ 3. PRE := tabla del cuerpo de EFF; mal formada o con Claim-Id duplicado → ACTIVATION_INVALID
+ 4. cid aparece exactamente una vez en PRE                                   → I61 (ANTERIOR_DEMOSTRADA)
+ 5. si no, estado de u en /v2 con protocol.set = I62, protocol.effective_sha = EFF y basis.claim_id = cid:
+      g0_acceptance.state = PENDING                                          → PENDING_G0
+      g0_acceptance.state = ACCEPTED y decision válida (blob presente; marcadores
+        `I62-CLASSIFICATION: I62` e `I62-DELEGATED-EXECUTION: I62_DELEGATED`, y cid) → I62 (POSTERIOR_DEMOSTRADA; base obsoleta
+                                                                                si basis.claim_parent_contains_effective = false)
+      g0_acceptance.state = REJECTED, o decision inválida                    → paso 6
+ 5b. si no, estado de u en /v1 y cid fuera de PRE:
+      decisión de G0 con `I62-DELEGATED-EXECUTION: DIRECT_ONLY`               → DIRECT_ONLY (sin protocolo delegado)
+      sin ese marcador                                                       → UNKNOWN (solo para la ejecución delegada)
+ 6. si no: decisión del Coordinator para cid, con marcador `I62-CLASSIFICATION: I61|I62`
+    y su evidencia (WORKFLOW §11.3), emitida tras un STOP                     → ese valor
+ 7. si no                                                                    → UNKNOWN
+```
+
+| `g0_acceptance.state` | Resultado | Contratos y delegaciones | Puntos durables admitidos |
+|---|---|---|---|
+| PENDING (desde BOOTSTRAP hasta el QU de aceptación) | PENDING_G0 | STOP (P-15) | QU, QH, QR (Q0 prohibido) |
+| ACCEPTED | I62 | permitidos; con base obsoleta, STOP de delegaciones mientras la rama no contenga `effective_sha` | todos |
+| REJECTED | UNKNOWN, salvo una decisión posterior (paso 6) | STOP | QU, QH, QR |
+| (estado `/v1`, DIRECT_ONLY) | DIRECT_ONLY | STOP (P-15) hasta una adopción; el trabajo directo no se ve afectado | — (sin puntos `/v2`) |
+
+- **Quién:** el Coordinator, en el G0 de cada unidad nueva (acepta o rechaza la evidencia del BOOTSTRAP) y antes de emitir cualquier contrato posterior a
+  EFF. El Coordinator al aceptar y el Controller en `Authority` la vuelven a aplicar sobre las mismas fuentes; una discrepancia es S-04.
+- **Durabilidad:** nunca se rederiva por ascendencia actual (`WORKFLOW.md` §11.1). Las fuentes son la tabla PRE, el `protocol` del estado `/v2` (evidencia
+  del BOOTSTRAP más la aceptación registrada) o una decisión registrada.
+- **Unidades I61:** se clasifican sin escribir en su rama.
+
+**Evaluación** (`Evaluate`; el punto de entrada la impone a toda evaluación de un contrato de ejecución delegada: la emisión, la aceptación A1-A8, la
+comprobación `Authority` de la verificación y la decisión del Coordinator sobre un `EXECUTION_VERIFIED`; `Resolve` nunca se invoca directamente):
+
+```text
+Evaluate(K, MainSha_eval):
+ E1. W := docs/WORKFLOW.md en MainSha_eval                     -- gobierno de proceso
+ E2. EFF := Derive(MainSha_eval); X := Match(MainSha_eval, WORKFLOW, <línea de encabezado del punto de entrada>)
+     (misma semántica que Match: línea normalizada, nivel ##, fuera de bloques de código)
+       EFF ausente y X = ∅           → PRE_ACTIVATION: 16.3 de la revisión que gobierne K, sin cambios (fin)
+       EFF ausente y X ≠ ∅           → ACTIVATION_INVALID → STOP al Owner
+       EFF duplicado o ambiguo        → ACTIVATION_INVALID → STOP al Owner
+       EFF presente y |X| ≠ 1         → ENTRY_INVALID → STOP (S-12; P-15)
+ E3. R := Match(MainSha_eval, AUTOMATION_PLAN, <línea de 16.13 que nombra X>), con la misma semántica
+       |R| ≠ 1                        → ENTRY_INVALID → STOP (S-12; P-15)
+ E4. Resolve(K, MainSha_eval), pasos 1-5, con el algoritmo de R
+ E5. Registro de descubrimiento: blobs de WORKFLOW y de AUTOMATION_PLAN en MainSha_eval, EFF, encabezados hallados; se une al registro de Resolve
+```
+
+| Estado en `MainSha_eval` | Resultado |
+|---|---|
+| sin EFF y sin punto de entrada | PRE_ACTIVATION: I-61 sin cambios |
+| punto de entrada sin EFF derivable, o trailer duplicado | ACTIVATION_INVALID → STOP al Owner |
+| EFF presente y punto de entrada ausente, repetido o con encabezado ambiguo | ENTRY_INVALID → STOP (S-12; P-15) |
+| el punto de entrada nombra una 16.13 ausente o repetida | ENTRY_INVALID → STOP |
+| mapa inválido | MAP_INVALID → STOP |
+| verificación de una unidad I61 tras EFF sin registro de descubrimiento y de resolución en `Authority.Evidence`, o con una resolución distinta de la del Coordinator | el Coordinator no la acepta (16.1); reverificación (BLOCKED, fase VERIFICATION) |
+
+- **Coordinator:** ejecuta `Evaluate` al aceptar (A1-A8) y antes de aceptar un VERIFIED.
+- **Sesión responsable:** registra el descubrimiento en `Notes` del relevo. En cada invocación de verificación de una unidad I61 tras EFF, añade a las
+  entradas canónicas del prompt la **entrada de compatibilidad**: la instrucción normativa de ejecutar `Evaluate` antes de 16.3 y las líneas de encabezado
+  del punto de entrada y de esta subsección. **No** le pasa el resultado esperado ni su propio registro, y no la añade al contrato ni a la delegación.
+- **Controller:** ejecuta `Evaluate` de forma independiente (es de solo lectura) y registra en `Authority.Evidence` el descubrimiento y la resolución.
+- **Comparación posterior:** terminada la verificación, el Coordinator compara el registro del Controller con el suyo; una diferencia hace que el VERIFIED no
+  se acepte (16.1).
+
+**Resolución** (`Resolve`). Entradas: el contrato K (`gate-contract/v1` o `/v2`), tal como se emitió; `AR` = `K.AuthorityRevision`; `MainSha_eval` =
+`K.MainSha`, salvo en una reverificación de 16.7 sin conflictos, donde es el `MainSha` nuevo del `RebaseMap` y el contrato no cambia. El contrato no necesita
+citar esta subsección ni el mapa, ni campos nuevos, ni reemitirse.
+
+```text
+Resolve(K, MainSha_eval):                       -- solo desde Evaluate, E4
+ 0. Precondición: Evaluate pasó E1-E3; EFF y 16.13 ya están identificados.
+ 1. P := Classify(K.Unit, MainSha_eval). UNKNOWN o PENDING_G0 → STOP. P = I62 con K /v1, o P = I61 con K /v2 → P-15.
+ 2. M := mapa en EFF (ruta fija); válido contra el esquema en EFF; Validate(M).
+    Cualquier fallo → MAP_INVALID → `Authority` fail; STOP (S-12; P-15).
+ 3. Para cada cita a = (Path, Section, Class) de K.Authorities, en el orden del contrato:
+      Class ∈ {UNIT_DOC, UNIT_CHANGE}            → AR                               (sin cambio)
+      EXTERNAL y P = I62                         → MainSha_eval                     (normal)
+      EXTERNAL y P = I61                         → R61(Path, Section)
+ 4. Comprobaciones de 16.3 con el texto de 16.3 resuelto (para I61, el de EFF^1), donde
+    «se lee en MainSha» se lee como «se lee en la revisión resuelta en el paso 3».
+    MB = merge-base(MainSha_eval, AR) y las demás comprobaciones de 16.3, sin cambio.
+ 5. Registro: lista ordenada (Path | Section | Class | NORMAL|COMPAT|COMPUESTA|ENTRY | revisión, o revisión por unidad si es compuesta)
+    + EFF + blob del mapa + clase. /v1: `Authority.Evidence` de la verificación. /v2: `AuthorityResolution[]`.
+
+R61(Path, Section):
+ a. Path = ruta del mapa, o archivo con FileKind ENTRY                  → EFF
+ b. Path con FileKind ADDED (no existía en EFF^1)                       → NOT_APPLICABLE → fallo (P-15)
+ c. Path con FileKind MODIFIED:
+    c1. Section = "documento completo":
+          archivo Markdown                                             → LECTURA COMPUESTA (abajo)
+          otro archivo                                                 → EFF^1, entero (compromiso declarado)
+    c2. (Path, Section) con Kind ENTRY                                 → MainSha_eval          (16.13)
+    c3. Match(EFF^1, Path, Section) = un único h:
+          (Path, h) con Kind MODIFIED o REMOVED                        → EFF^1                 (compatibilidad)
+          si no, Match(MainSha_eval) = uno                             → MainSha_eval          (normal)
+          si no                                                        → fallo (S-12)
+    c4. Match(EFF^1) = 0:
+          Match(EFF) = uno, con Kind ADDED                             → NOT_APPLICABLE → fallo (P-15)
+          Match(EFF) = 0 y Match(MainSha_eval) = uno                   → MainSha_eval  (sección posterior a EFF, de otra iniciativa)
+          cualquier otro caso                                          → fallo (S-12)
+    c5. Match(EFF^1) > 1                                               → fallo (S-12)
+ d. Path fuera de M.Files:
+      dentro de M.Surfaces                                             → MainSha_eval          (I-62 no lo modificó)
+      fuera: blob(EFF^1,Path) = blob(EFF,Path) → MainSha_eval; si difiere → fallo (S-12)
+```
+
+**Lectura compuesta de «documento completo»** (archivo Markdown modificado por I-62). La cita se conserva tal cual y se lee como la lista de sus secciones en
+el sentido de 16.3, el preámbulo y cada `##`:
+
+| Unidad de lectura | Revisión |
+|---|---|
+| preámbulo, o `##` de EFF^1 con Kind MODIFIED o REMOVED | EFF^1 (texto de I-61) |
+| preámbulo, o `##` de EFF^1 sin entrada en el mapa | `MainSha_eval`; si ya no existe allí, se omite, como en la lectura de I-61 de un documento completo en `MainSha` |
+| `##` con Kind ADDED (solo I62) | **omitida**: no forma parte de la lectura I61 |
+| `##` con Kind ENTRY (el punto de entrada de WORKFLOW) | `MainSha_eval`, **incluida**: es gobierno de toda unidad |
+| `##` presente en `MainSha_eval` y ausente de EFF (posterior a EFF, de otra iniciativa) | `MainSha_eval` |
+
+Orden: el de EFF^1, seguido de las secciones posteriores a EFF en el orden de `MainSha_eval`. El registro (paso 5) enumera cada unidad con su revisión.
+
+**Compromiso declarado:** una sección `##` que I-62 modificó se lee **entera** en EFF^1, incluidas sus subsecciones no tocadas, que dejan de evolucionar
+para las unidades I61, y lo mismo vale para la cita individual de esa sección; un archivo modificado que no es Markdown se lee entero en EFF^1; las secciones
+solo I62 no se leen; todo lo demás sigue la evolución normal de `MainSha`, exactamente como en I-61.
+
+**`Match(rev, Path, Section)`:** «preámbulo» designa el texto anterior al primer `##`; si no, cuenta los encabezados del archivo en `rev` cuya línea,
+normalizada, es igual a `Section` normalizado (normalizar = espacios colapsados y extremos recortados); se ignoran las líneas dentro de bloques de código.
+
+**Significado `/v1` conservado:** `MainSha` sigue siendo `origin/main` al emitir (A6 lo compara con un `origin/main` recién obtenido, la comprobación
+`Remote` lo usa y `MB` se calcula con él, o con el nuevo en la reverificación de 16.7); `AuthorityRevision` sigue siendo el commit de los documentos y
+cambios propios de la unidad. Lo único que cambia, y solo para unidades I61 y cláusulas del mapa, es la revisión en la que se lee el texto `EXTERNAL`. Una
+delegación en curso que cruza EFF no exige nada nuevo al contrato: antes de escribir, el avance de `main` ya obliga a reemitir por 16.7 (S-13), y el contrato
+reemitido conserva sus citas; después de escribir, la reverificación de 16.7 usa el `MainSha` nuevo con el contrato intacto, y `Evaluate` se ejecuta con ese
+`MainSha_eval`.
+
+**Mapa de cláusulas** (`rackcad-clause-map/v1`):
+
+```json
+{
+  "Schema": "rackcad-clause-map/v1",
+  "Protocol": "rackcad-protocol/I62",
+  "LegacyProtocol": "rackcad-protocol/I61",
+  "Surfaces": ["<la lista cerrada de esta subsección, en su orden>"],
+  "Files":   [ { "Path": "...", "FileKind": "MODIFIED | ADDED | ENTRY", "BaseBlob": "<40 hex> | null", "EffBlob": "<40 hex>" } ],
+  "Entries": [ { "Path": "...", "Section": "<línea de encabezado exacta | preámbulo>", "Level": 0, "Kind": "MODIFIED | REMOVED | ADDED | ENTRY" } ]
+}
+```
+
+`Files` excluye el propio mapa. `BaseBlob` es `null` solo con ADDED o ENTRY. `Level` 0 corresponde al preámbulo. Una sección va desde su encabezado hasta el
+siguiente con el mismo número de `#` o menos, e incluye sus subsecciones; el texto se normaliza con CRLF → LF y espacios colapsados.
+
+**`Validate(M)`, en EFF:**
+
+| Id | Regla |
+|---|---|
+| MV-1 | el mapa existe en EFF en la ruta fija, se interpreta como JSON y valida contra su esquema en EFF |
+| MV-2 | `Surfaces` = la lista cerrada de esta subsección |
+| MV-3 | **completitud de archivos:** {p bajo `Surfaces` : blob(EFF^1, p) ≠ blob(EFF, p)} ∖ {mapa} = {`Files.Path`}, sin duplicados; un archivo borrado no tiene clase → inválido |
+| MV-4 | MODIFIED ⇒ `BaseBlob` = blob(EFF^1, p) ∧ `EffBlob` = blob(EFF, p); ADDED o ENTRY ⇒ `BaseBlob` = `null` ∧ `EffBlob` = blob(EFF, p); ENTRY de archivo ⊆ {esquema del mapa} |
+| MV-5 | `Entries` único por (`Path`, `Section`), con `Path` de un archivo MODIFIED |
+| MV-6 | **igualdad con la derivación**, por archivo MODIFIED p, con H1 = secciones en EFF^1 y H2 = secciones en EFF (todos los niveles + preámbulo): MODIFIED = {h ∈ H1 ∩ H2 : texto normalizado distinto}; REMOVED = H1 ∖ H2; ADDED ∪ ENTRY = H2 ∖ H1; ENTRY = {(AUTOMATION_PLAN, esta subsección), (WORKFLOW, el `##` del punto de entrada)}, ni más ni menos; encabezados únicos por archivo en ambas revisiones |
+| MV-7 | el punto de entrada de WORKFLOW existe una sola vez en EFF y nombra esta subsección por su línea exacta; punteros presentes en §16 y 16.3 en EFF; 16.3 en EFF sin el puntero = 16.3 en EFF^1 (normalizado) |
+
+| Defecto | Efecto |
+|---|---|
+| mapa ausente, ilegible o inválido contra su esquema | MAP_INVALID |
+| entrada o archivo duplicado | MAP_INVALID |
+| archivo modificado ausente de `Files`, o listado sin modificarse | MAP_INVALID |
+| `BaseBlob` o `EffBlob` distintos de los observados | MAP_INVALID |
+| entrada que contradice la derivación (MODIFIED con texto igual; modificada no listada; ADDED que existe en EFF^1; REMOVED que existe en EFF) | MAP_INVALID |
+| ENTRY fuera de la lista cerrada; encabezados duplicados | MAP_INVALID |
+| punto de entrada de WORKFLOW, 16.13 o punteros ausentes con EFF presente | MAP_INVALID |
+
+**Con MAP_INVALID, ningún contrato I61 pasa `Authority` tras EFF.** STOP (S-12; P-15) al Coordinator. La corrección es un cambio normativo con su propia
+autoridad, nunca un parche local del resolver.
+
+**Encabezados estables:** una sección de I-61 modificada conserva su línea de encabezado exacta, y los encabezados son únicos por archivo en las superficies.
+El encabezado del punto de entrada de WORKFLOW y el de esta subsección son fijos: cambiarlos es un cambio normativo con su propia compatibilidad.
+
+| Id | Condición | Comportamiento |
+|---|---|---|
+| P-15 | `ProtocolSet` o esquema del contrato ≠ protocolo de la unidad; clasificación UNKNOWN, PENDING_G0 o DIRECT_ONLY (sin protocolo delegado adoptado) en un paso que depende de ella; cita de una unidad I61 a una superficie solo I62; mapa de cláusulas inválido | STOP |
 
 ### 16.14 Vigencia de las partes I62
 

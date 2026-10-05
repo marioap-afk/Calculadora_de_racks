@@ -1,0 +1,134 @@
+$ dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter "FullyQualifiedName~I62F4CompatibilityGuardTests"  (exit 1; árbol sin materializar: sin punto de entrada, §16.13, punteros ni mapa)
+Serie de pruebas para C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll (.NETCoreApp,Version=v8.0)
+1 archivos de prueba en total coincidieron con el patrón especificado.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.29)
+[xUnit.net 00:00:00.42]   Discovering: RackCad.Tests
+[xUnit.net 00:00:10.25]   Discovered:  RackCad.Tests
+[xUnit.net 00:00:10.28]   Starting:    RackCad.Tests
+[xUnit.net 00:00:10.54]     RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_TheEntryPointResolverPointersAndClauseMapAreWellFormed [FAIL]
+[xUnit.net 00:00:10.54]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:10.54]       Collection: ["ENTRY-ONCE: the WORKFLOW entry point appears 0 tim"···, "16.13-ONCE: §16.13 appears 0 times", "SURFACES-16.13: §16.13 does not state the closed s"···, "POINTER-16: §16 does not open with the pointer to "···, "POINTER-16.3: §16.3 does not close with the pointe"···, ···]
+[xUnit.net 00:00:10.54]       Stack Trace:
+[xUnit.net 00:00:10.54]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4CompatibilityGuardTests.cs(44,0): at RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_TheEntryPointResolverPointersAndClauseMapAreWellFormed()
+[xUnit.net 00:00:10.54]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:10.54]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:10.59]     RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_ASurfaceChangedWithoutRegeneratingTheMapIsDetectedByItsEffBlob [FAIL]
+[xUnit.net 00:00:10.59]       Assert.Contains() Failure: Item not found in collection
+[xUnit.net 00:00:10.59]       Collection: ["ENTRY-ONCE", "16.13-ONCE", "SURFACES-16.13", "POINTER-16", "POINTER-16.3", ···]
+[xUnit.net 00:00:10.59]       Not found:  "EFFBLOB"
+[xUnit.net 00:00:10.59]       Stack Trace:
+[xUnit.net 00:00:10.59]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4CompatibilityGuardTests.cs(127,0): at RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_ASurfaceChangedWithoutRegeneratingTheMapIsDetectedByItsEffBlob()
+[xUnit.net 00:00:10.59]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:10.59]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:10.60]     RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_MutationTheEntryPointDeletedOrRepeatedIsDetected [FAIL]
+[xUnit.net 00:00:10.60]       System.ArgumentNullException : Value cannot be null. (Parameter 'values')
+[xUnit.net 00:00:10.60]       Stack Trace:
+[xUnit.net 00:00:10.60]            at System.String.Join(String separator, IEnumerable`1 values)
+[xUnit.net 00:00:10.60]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4CompatibilityGuardTests.cs(52,0): at RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_MutationTheEntryPointDeletedOrRepeatedIsDetected()
+[xUnit.net 00:00:10.60]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:10.60]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:10.60]     RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_MutationARepeatedMapEntryOrFileAndAnExtraEntryAreDetected [FAIL]
+[xUnit.net 00:00:10.60]       System.ArgumentNullException : Value cannot be null. (Parameter 'json')
+[xUnit.net 00:00:10.60]       Stack Trace:
+[xUnit.net 00:00:10.60]            at System.Text.Json.ThrowHelper.ThrowArgumentNullException(String parameterName)
+[xUnit.net 00:00:10.60]            at System.Text.Json.Nodes.JsonNode.Parse(String json, Nullable`1 nodeOptions, JsonDocumentOptions documentOptions)
+[xUnit.net 00:00:10.60]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4CompatibilityGuardTests.cs(30,0): at RackCad.Tests.I62F4CompatibilityGuardTests.Map()
+[xUnit.net 00:00:10.60]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4CompatibilityGuardTests.cs(85,0): at RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_MutationARepeatedMapEntryOrFileAndAnExtraEntryAreDetected()
+[xUnit.net 00:00:10.60]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:10.60]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:10.81]     RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_MutationSection1613AbsentRepeatedOrWithoutTheClosedListIsDetected [FAIL]
+[xUnit.net 00:00:10.81]       System.ArgumentNullException : Value cannot be null. (Parameter 'values')
+[xUnit.net 00:00:10.81]       Stack Trace:
+[xUnit.net 00:00:10.81]            at System.String.Join(String separator, IEnumerable`1 values)
+[xUnit.net 00:00:10.81]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4CompatibilityGuardTests.cs(76,0): at RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_MutationSection1613AbsentRepeatedOrWithoutTheClosedListIsDetected()
+[xUnit.net 00:00:10.81]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:10.81]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:10.89]     RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_HeadingsAreUniquePerFileInTheSurfaces [FAIL]
+[xUnit.net 00:00:10.89]       Assert.Contains() Failure: Item not found in collection
+[xUnit.net 00:00:10.89]       Collection: ["ENTRY-ONCE", "16.13-ONCE", "SURFACES-16.13", "POINTER-16", "POINTER-16.3", ···]
+[xUnit.net 00:00:10.89]       Not found:  "HEADINGS-UNIQUE"
+[xUnit.net 00:00:10.89]       Stack Trace:
+[xUnit.net 00:00:10.89]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4CompatibilityGuardTests.cs(143,0): at RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_HeadingsAreUniquePerFileInTheSurfaces()
+[xUnit.net 00:00:10.89]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:10.89]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Correctas RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_TheSchemaSubsetFailsClosedOnAnUnsupportedKeyword [31 ms]
+  Con error RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_TheEntryPointResolverPointersAndClauseMapAreWellFormed [137 ms]
+  Mensaje de error:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["ENTRY-ONCE: the WORKFLOW entry point appears 0 tim"···, "16.13-ONCE: §16.13 appears 0 times", "SURFACES-16.13: §16.13 does not state the closed s"···, "POINTER-16: §16 does not open with the pointer to "···, "POINTER-16.3: §16.3 does not close with the pointe"···, ···]
+  Seguimiento de la pila:
+     at RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_TheEntryPointResolverPointersAndClauseMapAreWellFormed() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4CompatibilityGuardTests.cs:line 44
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Con error RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_ASurfaceChangedWithoutRegeneratingTheMapIsDetectedByItsEffBlob [54 ms]
+  Mensaje de error:
+   Assert.Contains() Failure: Item not found in collection
+Collection: ["ENTRY-ONCE", "16.13-ONCE", "SURFACES-16.13", "POINTER-16", "POINTER-16.3", ···]
+Not found:  "EFFBLOB"
+  Seguimiento de la pila:
+     at RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_ASurfaceChangedWithoutRegeneratingTheMapIsDetectedByItsEffBlob() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4CompatibilityGuardTests.cs:line 127
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Con error RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_MutationTheEntryPointDeletedOrRepeatedIsDetected [5 ms]
+  Mensaje de error:
+   System.ArgumentNullException : Value cannot be null. (Parameter 'values')
+  Seguimiento de la pila:
+     at System.String.Join(String separator, IEnumerable`1 values)
+   at RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_MutationTheEntryPointDeletedOrRepeatedIsDetected() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4CompatibilityGuardTests.cs:line 52
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Con error RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_MutationARepeatedMapEntryOrFileAndAnExtraEntryAreDetected [1 ms]
+  Mensaje de error:
+   System.ArgumentNullException : Value cannot be null. (Parameter 'json')
+  Seguimiento de la pila:
+     at System.Text.Json.ThrowHelper.ThrowArgumentNullException(String parameterName)
+   at System.Text.Json.Nodes.JsonNode.Parse(String json, Nullable`1 nodeOptions, JsonDocumentOptions documentOptions)
+   at RackCad.Tests.I62F4CompatibilityGuardTests.Map() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4CompatibilityGuardTests.cs:line 30
+   at RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_MutationARepeatedMapEntryOrFileAndAnExtraEntryAreDetected() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4CompatibilityGuardTests.cs:line 85
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Correctas RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_MutationAPointerDeletedOrSection163ChangedIsDetected [197 ms]
+  Correctas RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_TheI61Section163FixtureIsTheTextPinnedWithItsSourceBlob [5 ms]
+  Con error RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_MutationSection1613AbsentRepeatedOrWithoutTheClosedListIsDetected [12 ms]
+  Mensaje de error:
+   System.ArgumentNullException : Value cannot be null. (Parameter 'values')
+  Seguimiento de la pila:
+     at System.String.Join(String separator, IEnumerable`1 values)
+   at RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_MutationSection1613AbsentRepeatedOrWithoutTheClosedListIsDetected() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4CompatibilityGuardTests.cs:line 76
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Con error RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_HeadingsAreUniquePerFileInTheSurfaces [79 ms]
+  Mensaje de error:
+   Assert.Contains() Failure: Item not found in collection
+Collection: ["ENTRY-ONCE", "16.13-ONCE", "SURFACES-16.13", "POINTER-16", "POINTER-16.3", ···]
+Not found:  "HEADINGS-UNIQUE"
+  Seguimiento de la pila:
+     at RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_HeadingsAreUniquePerFileInTheSurfaces() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4CompatibilityGuardTests.cs:line 143
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:10.91]     RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_TheMapMustValidateAgainstItsSchemaAndKeepTheClosedSurfaces [FAIL]
+[xUnit.net 00:00:10.91]       System.ArgumentNullException : Value cannot be null. (Parameter 'json')
+[xUnit.net 00:00:10.91]       Stack Trace:
+[xUnit.net 00:00:10.91]            at System.Text.Json.ThrowHelper.ThrowArgumentNullException(String parameterName)
+[xUnit.net 00:00:10.91]            at System.Text.Json.Nodes.JsonNode.Parse(String json, Nullable`1 nodeOptions, JsonDocumentOptions documentOptions)
+[xUnit.net 00:00:10.91]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4CompatibilityGuardTests.cs(30,0): at RackCad.Tests.I62F4CompatibilityGuardTests.Map()
+[xUnit.net 00:00:10.91]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4CompatibilityGuardTests.cs(107,0): at RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_TheMapMustValidateAgainstItsSchemaAndKeepTheClosedSurfaces()
+[xUnit.net 00:00:10.91]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:10.91]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:10.91]   Finished:    RackCad.Tests
+  Con error RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_TheMapMustValidateAgainstItsSchemaAndKeepTheClosedSurfaces [1 ms]
+  Mensaje de error:
+   System.ArgumentNullException : Value cannot be null. (Parameter 'json')
+  Seguimiento de la pila:
+     at System.Text.Json.ThrowHelper.ThrowArgumentNullException(String parameterName)
+   at System.Text.Json.Nodes.JsonNode.Parse(String json, Nullable`1 nodeOptions, JsonDocumentOptions documentOptions)
+   at RackCad.Tests.I62F4CompatibilityGuardTests.Map() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4CompatibilityGuardTests.cs:line 30
+   at RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_TheMapMustValidateAgainstItsSchemaAndKeepTheClosedSurfaces() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\I62F4CompatibilityGuardTests.cs:line 107
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+No se pudo ejecutar la serie de pruebas.
+Pruebas totales: 10
+     Correcto: 3
+     Incorrecto: 7
+ Tiempo total: 12.4333 Segundos

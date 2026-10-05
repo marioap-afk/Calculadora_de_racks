@@ -1,0 +1,23 @@
+$ dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter "FullyQualifiedName~I62F4CompatibilityGuardTests"  (exit 0; textos, esquema y mapa materializados)
+Serie de pruebas para C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll (.NETCoreApp,Version=v8.0)
+1 archivos de prueba en total coincidieron con el patrón especificado.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.29)
+[xUnit.net 00:00:00.23]   Discovering: RackCad.Tests
+[xUnit.net 00:00:10.36]   Discovered:  RackCad.Tests
+[xUnit.net 00:00:10.38]   Starting:    RackCad.Tests
+  Correctas RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_TheSchemaSubsetFailsClosedOnAnUnsupportedKeyword [26 ms]
+  Correctas RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_TheEntryPointResolverPointersAndClauseMapAreWellFormed [579 ms]
+  Correctas RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_ASurfaceChangedWithoutRegeneratingTheMapIsDetectedByItsEffBlob [1 s]
+  Correctas RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_MutationTheEntryPointDeletedOrRepeatedIsDetected [1 s]
+  Correctas RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_MutationARepeatedMapEntryOrFileAndAnExtraEntryAreDetected [1 s]
+  Correctas RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_MutationAPointerDeletedOrSection163ChangedIsDetected [1 s]
+  Correctas RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_TheI61Section163FixtureIsTheTextPinnedWithItsSourceBlob [6 ms]
+  Correctas RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_MutationSection1613AbsentRepeatedOrWithoutTheClosedListIsDetected [1 s]
+[xUnit.net 00:00:19.14]   Finished:    RackCad.Tests
+  Correctas RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_HeadingsAreUniquePerFileInTheSurfaces [410 ms]
+  Correctas RackCad.Tests.I62F4CompatibilityGuardTests.I62_C20a_TheMapMustValidateAgainstItsSchemaAndKeepTheClosedSurfaces [721 ms]
+
+La serie de pruebas se ejecutó correctamente.
+Pruebas totales: 10
+     Correcto: 10
+ Tiempo total: 20.0736 Segundos

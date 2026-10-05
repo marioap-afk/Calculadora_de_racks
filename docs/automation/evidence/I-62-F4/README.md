@@ -21,6 +21,11 @@ Estado:     en curso (cortes F4-A..F4-H); este archivo se completa con el paquet
   - `StateV2Validator.History.cs`: invariantes con historia (I-H01, I-H02 con D2-3, I-P03, I-P08) y las comprobaciones de A-1 que necesitan Git
     (D2-2 cont. con A62-A1T-01, D2-6 (2), D2-11). `IGitHistory` tiene dos implementaciones: `GitProcessHistory` (Git real) y, en los datos de
     prueba, `SyntheticGitHistory` (grafo sintético); `GitScratch` crea repositorios Git desechables para los negativos E y F.
+  - `MarkdownSections.cs`, `MiniJsonSchema.cs` y `CompatibilityGuard.cs`: secciones de 16.3/E.4, validación del subconjunto de JSON Schema
+    del mapa (con fallo cerrado ante una palabra clave no soportada; sin dependencias nuevas) y la guarda C-20a sin historia.
+- Textos de la adopción de compatibilidad (Anexo E), inactivos hasta `I62_EFFECTIVE_SHA`: `docs/WORKFLOW.md` §12 (punto de entrada, texto
+  congelado de E.3.0), §4 paso 2 (referencia «al abrir») y §10 (fila ampliada); `docs/AUTOMATION_PLAN.md` §16.13 (resolver) y los punteros de §16 y
+  16.3; `docs/automation/agent-execution/compatibility/clause-map.schema.json` e `I62-clause-map.json`, derivado con `compat/clause_map.py`.
 
 ## RED → GREEN por corte (`red-green/`)
 
@@ -32,6 +37,7 @@ Estado:     en curso (cortes F4-A..F4-H); este archivo se completa con el paquet
 | F4-D | `I62F4OrchestrationValidatorTests` | 51/51 en error (`FileOrchestration` y `PairOrchestration`) | 51/51 |
 | F4-E1 | `I62F4RebaseChainTests` (negativos A–H de la cadena, A62-A1U-O1, D2-12) | 8/8 en error (`Resolve`, `PublicationProblems` y `Equivalent`) | 8/8 |
 | F4-E2 | `I62F4HistoryInvariantTests` | 9/10 en error (`ValidateHistory`, `ValidatePairHistory` y `ValidateB1History`; la admisión por los validadores de archivo y de pares no los llama) | 10/10 |
+| F4-F | `I62F4CompatibilityGuardTests` (C-20a) | 7/10 en error **sobre el árbol sin materializar** (sin punto de entrada, 16.13, punteros ni mapa); pasan la procedencia de 16.3, el subconjunto de esquema y un control que también detecta el puntero ausente | 10/10 |
 
 El RED se captura sustituyendo solo los cuerpos de los métodos nombrados por `throw new NotImplementedException` y restaurando el archivo byte a byte
 (`redgreen.py` en el scratchpad de la sesión; la salida queda aquí). La selección es mayor que cero en todos los cortes.
@@ -67,3 +73,10 @@ El RED se captura sustituyendo solo los cuerpos de los métodos nombrados por `t
   `unverified_commits[].sha` o el `chain_red_sha` de la tarea de la ventana). Esto equivale a la cadena `BaseSha..CurrentSha` de I-61. La ventana
   empieza en el Q0, o en su imagen cuando el rebase de la propia ventana lo reescribió (I-P12). Las dos reglas aplican solo con p = Q0: fuera de una
   ventana no hay commits del Worker, y un par de reconciliación no puede contar la imagen de p como escritura del Worker.
+- **F4-OBS-08 — posición de 16.13.** E.1 dice «al final de §16» con la numeración anterior a F1. Las decisiones §32 (punto 4, aceptadas con el GATE PASS
+  de F1) reservaron 16.13 y numeraron las partes I62 desde 16.14. Por eso 16.13 va entre 16.12 y 16.14. Su identidad es la línea de encabezado exacta
+  (E.3.0, E3), no la posición.
+- **F4-OBS-09 — redacción de WORKFLOW §4 y §10.** V14 §3 fija el contenido («solo referencias: paso “al abrir” → autoverificación de §16 para unidades
+  I62_DELEGATED»; «texto de la fila ampliado» con el delta «obligaciones de la sesión principal fuera de una delegación»), pero no el literal. La
+  redacción es mínima e inactiva («desde `I62_EFFECTIVE_SHA`»). Sus dueños son WORKFLOW y el Owner (OD-1, antes de READY-03).
+- **F4-OBS-10 — P-15 en 16.13.** 16.13 define P-15 con el texto exacto de la fila de V14 §13, igual que las subsecciones F3 definen sus códigos P.

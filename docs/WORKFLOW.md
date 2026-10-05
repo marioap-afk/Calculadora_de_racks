@@ -153,7 +153,9 @@ inmediatamente después (sección 2, que es la autoridad de esta regla).
      Claim-Id de la apertura). Eliminarlo en el rebase final antes de integrar es opcional.
 2. **Cada sesión — al abrir**: si el trunk avanzó, **rebase** sobre su punta antes de escribir una
    línea. Una rama que se queda atrás acumula conflictos semánticos (caso real: la rama del dinámico
-   bifurcó justo antes de fixes de persistencia de su propia área).
+   bifurcó justo antes de fixes de persistencia de su propia área). En una unidad I62_DELEGATED, desde
+   `I62_EFFECTIVE_SHA`, «al abrir» incluye además la autoverificación del Principal ([AUTOMATION_PLAN](AUTOMATION_PLAN.md)
+   16.15), que solo condiciona la maquinaria delegada, nunca el trabajo directo.
 3. **Cada sesión — al cerrar**: commit + push de la rama. Tras un rebase de una rama ya pusheada,
    publicar con `git push --force-with-lease` (seguro aquí: 1 iniciativa = 1 worktree = 1 sesión
    activa). **Push de rama = respaldo, siempre, sin esperar aprobación; integrar es otra cosa.**
@@ -393,7 +395,7 @@ falsa. Cada regla tiene un solo dueño:
 | Ciclo de diseño, Discovery, Architect, Freeze/A-n, gates funcionales, READY y conformidad | [INITIATIVE_LIFECYCLE.md](INITIATIVE_LIFECYCLE.md) cuando V2 sea efectivo | WORKFLOW y plantillas enlazan |
 | Procedimiento de Owner Validation | [validacion-manual-autocad.md](guias/validacion-manual-autocad.md) | Freeze asigna escenarios; lifecycle verifica asignación |
 | Arquitectura | `AGENTS.md`, ADR aceptado y Freeze+A-n dentro de su alcance | [FOUNDATIONS.md](FOUNDATIONS.md) solo resume hechos verificados |
-| Operación del ejecutor y ejecución delegada | [AUTOMATION_PLAN.md](AUTOMATION_PLAN.md), dentro de las reglas de los dueños anteriores | [docs/automation/agent-execution/](automation/agent-execution/README.md) (subordinados) |
+| Operación del ejecutor y ejecución delegada; desde `I62_EFFECTIVE_SHA`, en las unidades I62_DELEGATED, también las obligaciones de la sesión principal fuera de una delegación | [AUTOMATION_PLAN.md](AUTOMATION_PLAN.md), dentro de las reglas de los dueños anteriores | [docs/automation/agent-execution/](automation/agent-execution/README.md) (subordinados) |
 | Prompts | [PROMPT_TEMPLATES.md](initiatives/PROMPT_TEMPLATES.md) | Siempre subordinadas a los dueños anteriores |
 | Decisiones del Owner | `docs/automation/decisions/<I>.md`, dentro del alcance registrado | Contrato y evidencia enlazan |
 | Estado y plan | `HANDOFF.md` y `ROADMAP.md` | No crean política normativa |
@@ -608,3 +610,18 @@ emergencia/fix aprobada explícitamente por el Owner.
 La pausa termina únicamente después de completar y verificar los pasos V1 4.5.6 y 4.5.7 y registrar
 durablemente su fin en el registro de activación `integration/I-56`. Un bloqueo prolongado vuelve al
 Owner; no autoriza relajar la pausa. Hasta el registro durable de fin, la pausa sigue activa.
+
+## 12. Coexistencia de protocolos de ejecución delegada (I61/I62)
+
+**Coexistencia de protocolos de ejecución delegada (I61/I62).** Desde `I62_EFFECTIVE_SHA`
+(AUTOMATION_PLAN `### 16.13 Compatibilidad de protocolos de ejecución delegada`), toda evaluación de un
+contrato de ejecución delegada aplica primero esa subsección, leída en el `MainSha` de evaluación, y
+después la lectura de autoridades de 16.3 con las revisiones que resulten. Son evaluaciones la emisión,
+la aceptación A1-A8, la comprobación `Authority` de la verificación y la decisión del Coordinator sobre
+un `EXECUTION_VERIFIED`. Es una regla de transición (§10) y prevalece sobre la regla de lectura de la
+versión de 16.3 que gobierne el contrato. El contrato no cambia. En cada invocación de verificación, la
+sesión responsable pasa al Controller la entrada de compatibilidad. Sin un punto de entrada válido, la
+evaluación se detiene.
+
+Origen: Freeze de I-62 (Proposal V14 Anexo E.1 y E.3.0). Antes de `I62_EFFECTIVE_SHA` esta sección no
+rige ninguna evaluación ([AUTOMATION_PLAN](AUTOMATION_PLAN.md) 16.14).

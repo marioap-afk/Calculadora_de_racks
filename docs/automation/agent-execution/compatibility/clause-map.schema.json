@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rackcad-clause-map/v1",
+  "description": "Mapa de cláusulas de I-62 (Proposal V14 Anexo E.4; AUTOMATION_PLAN 16.13): archivos y secciones de las superficies que I-62 modificó respecto de EFF^1, derivados y validados con fallo cerrado. Se lee en I62_EFFECTIVE_SHA, nunca en MainSha. Subordinado: no crea requisitos de evidencia, estados, gates, reglas Git ni decisiones del Owner.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "Schema": {
+      "type": "string",
+      "enum": [
+        "rackcad-clause-map/v1"
+      ]
+    },
+    "Protocol": {
+      "type": "string",
+      "enum": [
+        "rackcad-protocol/I62"
+      ]
+    },
+    "LegacyProtocol": {
+      "type": "string",
+      "enum": [
+        "rackcad-protocol/I61"
+      ]
+    },
+    "Surfaces": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "Files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "FileKind": {
+            "type": "string",
+            "enum": [
+              "MODIFIED",
+              "ADDED",
+              "ENTRY"
+            ]
+          },
+          "BaseBlob": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "EffBlob": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          }
+        },
+        "required": [
+          "BaseBlob",
+          "EffBlob",
+          "FileKind",
+          "Path"
+        ]
+      }
+    },
+    "Entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "Section": {
+            "type": "string",
+            "minLength": 1
+          },
+          "Level": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 6
+          },
+          "Kind": {
+            "type": "string",
+            "enum": [
+              "MODIFIED",
+              "REMOVED",
+              "ADDED",
+              "ENTRY"
+            ]
+          }
+        },
+        "required": [
+          "Kind",
+          "Level",
+          "Path",
+          "Section"
+        ]
+      }
+    }
+  },
+  "required": [
+    "Entries",
+    "Files",
+    "LegacyProtocol",
+    "Protocol",
+    "Schema",
+    "Surfaces"
+  ]
+}

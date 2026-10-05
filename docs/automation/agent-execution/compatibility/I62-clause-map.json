@@ -1,0 +1,494 @@
+{
+  "Schema": "rackcad-clause-map/v1",
+  "Protocol": "rackcad-protocol/I62",
+  "LegacyProtocol": "rackcad-protocol/I61",
+  "Surfaces": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "docs/AUTOMATION_PLAN.md",
+    "docs/FOUNDATIONS.md",
+    "docs/INITIATIVE_LIFECYCLE.md",
+    "docs/WORKFLOW.md",
+    "docs/adr/",
+    "docs/automation/agent-execution/",
+    "docs/initiatives/PROMPT_TEMPLATES.md"
+  ],
+  "Files": [
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "FileKind": "MODIFIED",
+      "BaseBlob": "07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
+      "EffBlob": "8b06b845a905a9d3bef251c5fa232ce8439a56d5"
+    },
+    {
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "FileKind": "MODIFIED",
+      "BaseBlob": "6415c33bd2f86fa05444e00b630d7fed5e5d7a22",
+      "EffBlob": "f19896a8f1a7c82f74bac7231636f68462a87271"
+    },
+    {
+      "Path": "docs/WORKFLOW.md",
+      "FileKind": "MODIFIED",
+      "BaseBlob": "884ed305ce242bda575cef74a9eff8c28ce7b67c",
+      "EffBlob": "446c32ba6a91f9a712a0758038ae0a46ab1c970f"
+    },
+    {
+      "Path": "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "e1bd8d91f10cb4c86eaf7753f9ef2531ae62498e"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "FileKind": "MODIFIED",
+      "BaseBlob": "64ae952b6fb01ce206200c64d2a1d8683b5a297d",
+      "EffBlob": "3fb9a44b9cdcb72ddd1a575bb919f1c265d9b8ae"
+    },
+    {
+      "Path": "docs/automation/agent-execution/adapters/claude-cli.md",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "ae570380509cacabf11f757a27573bf6fe616a36"
+    },
+    {
+      "Path": "docs/automation/agent-execution/adapters/claude-desktop-session.md",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "7f45923527a860713819d1ccf29dcb375b680369"
+    },
+    {
+      "Path": "docs/automation/agent-execution/adapters/claude-subagent.md",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "e10926c048321227fa53fe839e01f113fb9adece"
+    },
+    {
+      "Path": "docs/automation/agent-execution/adapters/codex-cli.md",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "155f3469e345e2397fa26347a9cb52d6fdb91122"
+    },
+    {
+      "Path": "docs/automation/agent-execution/adapters/codex-desktop-session.md",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "02d6c33db60344943fbcd6fcdf347eefef06986f"
+    },
+    {
+      "Path": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
+      "FileKind": "ENTRY",
+      "BaseBlob": null,
+      "EffBlob": "6b54dda9579d694200d8fc9ec26a4a846eef529b"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "FileKind": "MODIFIED",
+      "BaseBlob": "82ca9b38865bd93e8de6134a368b905cba9fc627",
+      "EffBlob": "bba08fc4686d7192deeb559752636a467103b4b1"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/adapters/claude-cli.facts.v1.schema.json",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "2298c37641efff835d8e49861b1dd2d0bf1239dc"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "f246717f1cc2915bbac61ccd96fcd9676039b106"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/adapters/claude-subagent.facts.v1.schema.json",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "3706be159871592e0c7e586fbaed3dcd3151b7a4"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/adapters/codex-cli.facts.v1.schema.json",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "3d1b7478b433ebff2f882fb3edae82aff970d151"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/adapters/codex-desktop-session.facts.v1.schema.json",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "bdf5c491829948f113c8736e476ecb90edcc9760"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/architect-review-result.v1.schema.json",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "e7f5747ba3812c181237828fe72243523038e64f"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/binding.v1.schema.json",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "13501476b775ca18c4c61ba3e1793796b51067d9"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "e1faa9eca5c50b2b3a9f91575575614366962720"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/delegation.v2.schema.json",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "dfdbe461270e8fd92200c36bab78b9fdc3385014"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/gate-contract.v2.schema.json",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "f644bb1941656b65c62ee474bf37752d328fd091"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/input-closure.v1.schema.json",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "6bdf71843e2c70362a5e2d0ea19c8891e22bcff6"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/input-fidelity.v1.schema.json",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "e54990fc541b6420c3cddb45e1a7cc2fefd6c76b"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/normative-dependency-manifest.v1.schema.json",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "7ff2127d28de2f126b98da7d4fb2ebb9520374ef"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/preflight.v1.schema.json",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "6a0540796a473e887677e5043d2105b932b5865f"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/relay-record.v2.schema.json",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "dca5b29c1a260b679efc0fb249c73850925302f0"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "a74288eb0e9da43f8a73701098cbff5086fee512"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json",
+      "FileKind": "ADDED",
+      "BaseBlob": null,
+      "EffBlob": "d54a7ae783ec83d055babdae090899908b616082"
+    },
+    {
+      "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+      "FileKind": "MODIFIED",
+      "BaseBlob": "0e3ed262add5154b975dab1931f729bcae2e31ea",
+      "EffBlob": "384d0b0c3734ab7df881ad17fa740fdb8a6422d5"
+    }
+  ],
+  "Entries": [
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "# Plan del ejecutor nocturno",
+      "Level": 1,
+      "Kind": "MODIFIED"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "## 16. Ejecución delegada bajo orden del Coordinator",
+      "Level": 2,
+      "Kind": "MODIFIED"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "### 16.1 Participantes y declaraciones",
+      "Level": 3,
+      "Kind": "MODIFIED"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
+      "Level": 3,
+      "Kind": "ENTRY"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "### 16.14 Vigencia de las partes I62",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "### 16.15 Perfil del Principal y autoverificación (I62)",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "### 16.16 `CONFIGURATION_STATUS` y disposición (I62)",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "### 16.17 Frontera de renderizado (I62)",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "### 16.18 Observación de capacidad y comprobaciones de relevo (I62)",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "### 16.19 Frontera de adapters (I62)",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "### 16.20 Binding y aceptación (I62)",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "### 16.21 Independencia por riesgo (I62)",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "### 16.22 Aceptación del paquete y comprobaciones de la verificación (I62)",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "### 16.23 Orquestación de roles (I62): invocación de rol y contratos de salida",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "### 16.24 Orquestación de roles (I62): cierre de insumos, identidad del revisor y fidelidad",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "### 16.3 Lectura de autoridades",
+      "Level": 3,
+      "Kind": "MODIFIED"
+    },
+    {
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "Section": "# Initiative Lifecycle",
+      "Level": 1,
+      "Kind": "MODIFIED"
+    },
+    {
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "Section": "## 5. Participacion del Architect",
+      "Level": 2,
+      "Kind": "MODIFIED"
+    },
+    {
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "Section": "## 9. Conformidad final",
+      "Level": 2,
+      "Kind": "MODIFIED"
+    },
+    {
+      "Path": "docs/WORKFLOW.md",
+      "Section": "# WORKFLOW — flujo Git, worktrees y trabajo multi-agente",
+      "Level": 1,
+      "Kind": "MODIFIED"
+    },
+    {
+      "Path": "docs/WORKFLOW.md",
+      "Section": "## 10. Autoridad por dominio",
+      "Level": 2,
+      "Kind": "MODIFIED"
+    },
+    {
+      "Path": "docs/WORKFLOW.md",
+      "Section": "## 12. Coexistencia de protocolos de ejecución delegada (I61/I62)",
+      "Level": 2,
+      "Kind": "ENTRY"
+    },
+    {
+      "Path": "docs/WORKFLOW.md",
+      "Section": "## 4. Ciclo de vida de una iniciativa (el proceso repetible)",
+      "Level": 2,
+      "Kind": "MODIFIED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "# Ejecución delegada de agentes — procedimiento",
+      "Level": 1,
+      "Kind": "MODIFIED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "## 12. Autoverificación del Principal y `CONFIGURATION_STATUS` (unidades I62)",
+      "Level": 2,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "## 13. Observación de capacidad, preflight y saneamiento (unidades I62)",
+      "Level": 2,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "## 14. Binding, aceptación, independencia y comprobaciones (unidades I62)",
+      "Level": 2,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "## 15. Invocación de rol, cierre de insumos y fidelidad (unidades I62)",
+      "Level": 2,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "## 16. Validación de los resultados por rol (unidades I62)",
+      "Level": 2,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 13.1 Producción",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 13.2 Validación y coherencia",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 13.3 Invalidación y contraste",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 13.4 Saneamiento previo a la custodia",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 14.1 Producción de un binding",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 14.2 Coherencia del binding",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 14.3 Materialización autorizada",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 14.4 Referencias (A2')",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 14.5 Evaluación de la independencia",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 14.6 Coherencia de `gate-contract/v2` y `delegation/v2`",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 14.7 A1'-A8' y las comprobaciones de la verificación",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 15.1 Construcción de la `RoleInvocation`",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 15.2 Cierre efectivo de insumos",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 15.3 Preflight y comprobación de fidelidad",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "### 15.4 Validador del manifiesto de dependencias normativas",
+      "Level": 3,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "# Enrutamiento estable de la ejecución delegada",
+      "Level": 1,
+      "Kind": "MODIFIED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "## 8. Requisitos por perfil y acción (unidades I62)",
+      "Level": 2,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "## 9. Binding por capacidad (unidades I62)",
+      "Level": 2,
+      "Kind": "ADDED"
+    },
+    {
+      "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+      "Section": "# Prompt Templates for Initiative Workflow V2",
+      "Level": 1,
+      "Kind": "MODIFIED"
+    },
+    {
+      "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+      "Section": "## 2. Traza y vigencia",
+      "Level": 2,
+      "Kind": "MODIFIED"
+    }
+  ]
+}
