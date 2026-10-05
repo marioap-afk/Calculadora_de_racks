@@ -19,8 +19,11 @@ Objeto corregido: docs/initiatives/I-62-A-1.md, blob 9c621fce0588f32115e3151b6f7
 Tercera disposición: «I-62 — ORDEN NUEVA DEL COORDINATOR / CORRECCIÓN A62-A1T-01 + REVISIÓN POSTERIOR ACOTADA» (13 157 bytes;
                   SHA-256 588d62896bfc4a96b5451474cc991cb66c12c8342a33041df4fbb34442741c4d; recibido 2026-10-05T14:33Z; decisiones §42):
                   A62-A1T-01 = ACCEPTED REQUIRED; O1..O3 incorporados; la corrida 2dfe sigue NOT_ACCREDITED
-Estado:           A-1 PROPUESTA (blob c01899a7); Architect REQUIRED — PENDING (UNA revisión formal nueva autorizada por la orden nueva,
-                  decisiones §42, solo con un transporte limpio); Coordinator PENDING; F4 producción BLOCKED;
+Cuarta disposición: «I-62 — COORDINATOR VERDICT ON A-1 + F4 OPENING ORDER» (12 717 bytes; SHA-256
+                  d1f740ab101894e6d6607f779f0dd426940b371c197b1618270eaf3324e9490a; recibido 2026-10-05T18:46Z; decisiones §43):
+                  R20261005T151303Z-c64c ACCREDITED; A-1 = AGREED; A62-A1U-O1 = obligación de F4, no material; F4 abierto
+Estado:           A-1 AGREED (Architect AGREED en R20261005T151303Z-c64c, acreditada; Coordinator AGREED, decisiones §43) sobre la identidad exacta
+                  ca09ade8 / docs/initiatives/I-62-A-1.md / blob c01899a7, que no se edita; F4 producción AUTORIZADA;
                   Owner NOT REQUIRED; I-61 vigente
 ```
 
@@ -158,7 +161,23 @@ A1-P08. Con la regla corregida pasan las 118. Los negativos T3 (sin M1 o sin el 
 porque la cadena no los resuelve; T3 añade A1-P11 y A1-F10 cuando M1 falta de la historia. Ningún resultado histórico se reescribe: la ejecución nueva
 de las secuencias combinadas es `combo-result-a1t01.json`.
 
-## 6. Lo que este registro no hace
+## 6. Revisión formal R20261005T151303Z-c64c y veredicto del Coordinator (decisiones §43)
 
-No acredita ninguna revisión anterior ni la presenta como acuerdo del Architect. No declara AGREED, no lanza la revisión formal nueva (la autoriza la orden
-nueva, decisiones §42, una sola vez y solo con un transporte limpio), no crea A-2, no implementa F4 y no decide nada del Owner.
+La revisión formal de `c01899a7` (commit `ca09ade8`) dio **AGREED**: cero REQUIRED, A62-A1T-01 y los doce cierres CLOSED, A62-A1T-O1..O3 CONFIRMED y
+A62-A1U-O1 OPTIONAL ([registro r5](I-62-architect-review-A-1-r5.md)). Su auditor v4, fijado y probado antes del lanzamiento, dio ACCREDITED sin motivos.
+
+El Coordinator:
+- acepta la corrida como **FORMAL_ACCREDITATION = ACCREDITED**;
+- declara **A-1 = AGREED** con la identidad exacta commit `ca09ade8bb31b1ecb57b2b0d6220628c8434e78d`, `docs/initiatives/I-62-A-1.md`, blob
+  `c01899a72b940503bb85a0fab42bc085c603fd0f`, con el paquete y el registro r5. El archivo acordado no se edita, ni para escribir AGREED en su cabecera;
+  el acuerdo se registra aquí, en las decisiones, en la evidencia y en el estado. Un cambio semántico MATERIAL posterior exige la A-n siguiente
+  (LIFECYCLE §6);
+- dispone **A62-A1U-O1** como obligación de implementación y verificación de F4, NO MATERIAL y sin A-n: A-1 ya prohíbe la entrada compuesta, y falta
+  solo su comprobación mecánica. F4 añade el negativo (M1: X → X' y M2: X' → X'' valen por la cadena; una entrada fabricada M2: X → X'' no sustituye a
+  M1; una entrada de `RebaseMap` solo acredita si su `OriginalSha` lo reescribió de verdad ese rebase) a la cobertura de C-15/C-38 y al validador;
+- abre **F4** con la autoridad del Freeze V14 + A-1 AGREED.
+
+## 7. Lo que este registro no hace
+
+Registra decisiones del Coordinator; no las toma. No acredita por sí mismo ninguna revisión, no edita la A-1 acordada, no crea A-2 y no decide nada del
+Owner. La implementación de F4 vive en su propia evidencia.

@@ -4,10 +4,10 @@ automation_state:
   branch: architecture/portabilidad-coordinador-principal
   claim_id: 5b661a17-8c18-4183-8554-3866059cba2b
   current_phase: F4
-  state: waiting
-  gate: dependency
+  state: implementing
+  gate: none
   attempts: 0
-  next_action: revisión formal R20261005T151303Z-c64c (orden nueva, decisions §42) = AGREED sobre ca09ade8 / A-1 c01899a7 (cero REQUIRED; A62-A1T-01 y los doce cierres CLOSED; A62-A1U-O1 OPTIONAL); auditor v4 ACCREDITED (evidence §57; registro r5); siguiente = acreditación y veredicto del Coordinator sobre la A-1 exacta; F4 sigue sin abrir; la orden no autoriza otra ronda.
+  next_action: F4 abierto por el Coordinator (decisions §43; A-1 AGREED ca09ade8/c01899a7): implementar los cortes F4-A..F4-H desde la preparación (evidence §58), con RED→GREEN, Full y CI del SHA exacto, y entregar la evidencia del gate sin autodeclarar GATE PASS.
   last_evidence_commit: 83035d999599384ea74f7b178e3d6761ffa5bb01
 execution_context:
   mode: manual
@@ -22,11 +22,11 @@ execution_context:
   f0_status: COMPLETE (GATE PASS del Coordinator al abrir F1, decisions §32); Freeze sin cambios (FREEZE_SHA b64a3b64, registro docs/initiatives/I-62-consensus-freeze.md)
   f1_status: GATE PASS / COMPLETE por el Coordinator sobre 12660ea7 (C-01..C-04 PASS; decisions §33)
   f1_scope: ADR-0048 propuesto; plano (b) inactivo en docs/AUTOMATION_PLAN.md (§16.1, 16.14-16.17) y docs/automation/agent-execution/README.md §12; corrección factual de PROMPT_TEMPLATES §2; guardas C-01 y C-03; MC de C-04
-  implementation_authorization: ninguna implementación abierta tras el GATE PASS de F3; producción de F4 = NO hasta los veredictos de A-1 y la orden de apertura; preparación de F4, F6, F7, READY, OV y cierre autorizada (decisions §36); I-61 sigue activa
+  implementation_authorization: F4 producción AUTORIZADA por el Coordinator (decisions §43) con la autoridad del Freeze V14 + A-1 AGREED; I-61 sigue activa; superficies I62 inactivas hasta I62_EFFECTIVE_SHA
   f2_status: COMPLETE (GATE PASS sobre 1eddbf48; corrección CommitSha a Commit aceptada como no material, decisions §35)
   f2_scope: AUTOMATION_PLAN 16.18-16.19; adapters/ (5 descriptores); preflight.v1, relay-record.v2, controller-verification.v2 y 5 esquemas de hechos; README §13; routing §8; guardas C-05, C-09, C-10 y C-19; MC C-06, C-07, C-08 y C-10
   preparation: docs/automation/evidence/I-62-prep/ (F3, F4, F6, F7, READY, OV y cierre; FC-01 y FC-02 como A-n candidatas sin aplicar; paquetes OD-2, OD-3, OD-4, OD-5, OD-7 y DEP-F4-YAML sin solicitar)
   f3_status: GATE PASS / COMPLETE por el Coordinator sobre f9234cb9 (C-11..C-14, C-30 y C-40 parte F3 PASS; LIFECYCLE §5/§9 se queda en F3; decisions §35)
   f3_scope: nueve esquemas del núcleo; manifiesto B.11 docs/initiatives/I-62-normative-dependency-manifest.json; AUTOMATION_PLAN 16.20-16.24; README §14-§16; routing §9; LIFECYCLE §5 y §9 (alternativa 1 de OD-6, inactivo); guardas Core de B.1, B.11 y textos; MC C-11..C-14, C-30 y C-40 (parte F3)
-  f4_status: IMPLEMENTATION_READY_PENDING_A1 (prototipos medidos y plano de pruebas en I-62-prep/f4; producción no autorizada; la parte afectada por FC-01 y FC-02 espera A-1)
-  a1_status: PROPUESTA (blob c01899a7, commit ca09ade8) con A62-A1T-01 y O1..O3 corregidos (decisions §42; evidence §55); revisión formal R20261005T151303Z-c64c = AGREED (cero REQUIRED; trece hallazgos CLOSED; A62-A1U-O1 OPTIONAL), auditor v4 ACCREDITED (evidence §57); veredicto del Coordinator PENDING; Owner NOT REQUIRED
+  f4_status: OPEN / IMPLEMENTING (decisions §43); evidencia en docs/automation/evidence/I-62-F4/
+  a1_status: AGREED (Coordinator, decisions §43) sobre ca09ade8 / docs/initiatives/I-62-A-1.md / blob c01899a7 (inmutable); Architect AGREED en R20261005T151303Z-c64c, ACCREDITED (registro r5; evidence §57-§58); A62-A1U-O1 = obligación de F4, no material; Owner NOT REQUIRED

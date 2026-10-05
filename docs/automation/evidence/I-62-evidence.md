@@ -2316,3 +2316,17 @@ solo desde artefactos custodiados.
   - la acreditación la decide el Coordinator.
 - **Siguiente (orden §12):** AGREED con la corrida acreditada por el auditor → A-1 (`ca09ade8`, blob `c01899a7`) se entrega para el acuerdo del
   Coordinator. Sin F4, sin A-2 y sin otra ronda. A62-A1U-O1 queda para la decisión del Coordinator: obligación de F4 o incorporación con un blob nuevo.
+
+## 58. A-1 AGREED (decisiones §43): custodia y apertura de F4
+
+- **CI de la custodia de la revisión** `847cdb5f2c732459035454c6a722955ba2d335c8`: corrida **37347313693**, push, head_sha exacto, cuatro jobs
+  requeridos en `success`.
+- **Custodia del acuerdo (orden §21):**
+  - corrida del Architect R20261005T151303Z-c64c: veredicto **AGREED**, acreditación **ACCREDITED** (Coordinator);
+  - veredicto del Coordinator: **AGREED**;
+  - A-1 acordada: `ca09ade8bb31b1ecb57b2b0d6220628c8434e78d`, `docs/initiatives/I-62-A-1.md`, blob `c01899a72b940503bb85a0fab42bc085c603fd0f`. El
+    archivo no se edita; el acuerdo se registra en decisiones §43, en la disposición (§6), en el estado y en el contrato.
+- **A62-A1U-O1:** obligación de F4 (negativo mecánico de la entrada compuesta en C-15/C-38 y en el validador), no material, sin A-n.
+- **F4:** implementación de producción autorizada desde la preparación (`I-62-prep/f4-dossier.md` y `I-62-prep/f4/`); la evidencia de F4 vive en
+  `docs/automation/evidence/I-62-F4/`.
+- **DC-07 (18:47Z):** `origin/main` = `bb0d5522`; I-52 `fb6b5648` e I-64 `39b45f36` sin cambios; ninguna ventana activa.
