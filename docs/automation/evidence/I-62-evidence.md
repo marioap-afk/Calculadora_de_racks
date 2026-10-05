@@ -2055,3 +2055,22 @@ misma entrega con custodia encima obligó al Controller a improvisar una excepci
 
 **Límites.** Son propuestas para una A-2 que nadie ha acordado. No se consumió ni se declaró A-2, y nada se aplicó a V14, al Freeze, a `/v1`, a I-61 ni a
 I-63.
+
+## 47. Helpers deterministas P1/P2/P3/P5/P6 (orden nocturna §8; EXPERIMENTAL)
+
+CI de los dossiers P4/P8, `75e93e91c1197dcb7e4095c7d0fb83421cfb1494`: corrida **37275024919**, push, head_sha exacto, cuatro jobs en `success`.
+
+**Código y pruebas.** `I-62-prep/night-2026-10-05/helpers/`: stdlib más git. 18 pruebas OK con `python -X dev`, sin avisos.
+
+**Lecturas reales** (`real-readings.json`):
+- **P1:** detecta los cuatro `CurrentSha` mutados de nc1. El de G4 falla aunque el prompt contenga el GREEN.
+- **P2:** detecta las cuatro delegaciones mutadas de nc2, y las cuatro reales pasan. El Controller de I-63 no detectó nc2 de G2 ni nc1/nc2 de G4.
+- **P6:** el `ui.trx` de READY-05 de I-63 da 1637 superadas y 17 omitidas con su motivo del runner. Coinciden una a una con los `Skip =` del código en
+  `55a66b3c`, sin ningún número fijado. Los TRX `core` de READY-05 y los dos focales de F0, estos con su SHA-256 registrado, también dan PASS.
+- **No encontrado:** `core.trx` `00779B64…`.
+
+**Límites.**
+- Hechos, no veredictos: `assert_no_verdict` rechaza cualquier campo o valor de veredicto.
+- P5 solo usa archivos ficticios.
+- Ningún comportamiento congelado cambia.
+- Los huecos (comodines, mayúsculas, enlaces, `Skip` dinámico) se informan sin interpretarse.

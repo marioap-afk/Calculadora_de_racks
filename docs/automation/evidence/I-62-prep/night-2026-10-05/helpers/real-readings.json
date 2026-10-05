@@ -1,0 +1,266 @@
+{
+ "Label": "EXPERIMENTAL — NOT AUTHORIZED FOR PRODUCTION",
+ "Repo": "HEAD de la rama de I-62 (objetos de I-63 integrados en main)",
+ "Gates": {
+  "G1": {
+   "Handoff": "docs/automation/evidence/I-63-pilot/G1-RACK-METRICS/R20261002T143849Z-3698/worker-handoff.json",
+   "Delegation": "docs/automation/evidence/I-63-pilot/G1-RACK-METRICS/R20261002T143522Z-0c4d/delegation.json",
+   "Range": "a2d2b0a6..4a6c2d88",
+   "P1Real": {
+    "Status": "PASS",
+    "Failures": []
+   },
+   "P1Nc1": {
+    "Status": "FAIL",
+    "Failures": [
+     "CurrentSha no es un commit existente en el repositorio"
+    ],
+    "MutatedCurrentSha": "0123456789abcdef0123456789abcdef01234567"
+   },
+   "P2Real": {
+    "Status": "PASS",
+    "Paths": 1,
+    "Failures": [],
+    "Gaps": []
+   },
+   "P2Nc2": {
+    "Status": "FAIL",
+    "Failures": [
+     "fuera de AllowedWriteScope: tests/RackCad.Tests/ComputedParameters/RackMetricIdsTests.cs (A)"
+    ],
+    "Gaps": []
+   },
+   "ControllerOutcomeInI63": "nc1/nc2 NO CUMPLIDOS en G2 y G4 según la evidencia de I-63 (DEV-G2-01, DEV-I63-G4-02/03); comparar con P1Nc1/P2Nc2"
+  },
+  "G2": {
+   "Handoff": "docs/automation/evidence/I-63-pilot/G2-POPULATION/R20261002T164522Z-a109/worker-handoff.json",
+   "Delegation": "docs/automation/evidence/I-63-pilot/G2-POPULATION/R20261002T164053Z-586f/delegation.json",
+   "Range": "669d8a39..844dabb6",
+   "P1Real": {
+    "Status": "PASS",
+    "Failures": []
+   },
+   "P1Nc1": {
+    "Status": "FAIL",
+    "Failures": [
+     "CurrentSha no es un commit existente en el repositorio"
+    ],
+    "MutatedCurrentSha": "0123456789abcdef0123456789abcdef01234567"
+   },
+   "P2Real": {
+    "Status": "PASS",
+    "Paths": 11,
+    "Failures": [],
+    "Gaps": []
+   },
+   "P2Nc2": {
+    "Status": "FAIL",
+    "Failures": [
+     "fuera de AllowedWriteScope: src/RackCad.Application/ComputedParameters/ProjectPopulation.cs (A)"
+    ],
+    "Gaps": []
+   },
+   "ControllerOutcomeInI63": "nc1/nc2 NO CUMPLIDOS en G2 y G4 según la evidencia de I-63 (DEV-G2-01, DEV-I63-G4-02/03); comparar con P1Nc1/P2Nc2"
+  },
+  "G3": {
+   "Handoff": "docs/automation/evidence/I-63-pilot/G3-RACK-BUILTINS/R20261002T214618Z-be6d/worker-handoff.json",
+   "Delegation": "docs/automation/evidence/I-63-pilot/G3-RACK-BUILTINS/R20261002T214309Z-19d7/delegation.json",
+   "Range": "71205235..eb58a476",
+   "P1Real": {
+    "Status": "PASS",
+    "Failures": []
+   },
+   "P1Nc1": {
+    "Status": "FAIL",
+    "Failures": [
+     "CurrentSha no es un commit existente en el repositorio"
+    ],
+    "MutatedCurrentSha": "0123456789abcdef0123456789abcdef01234567"
+   },
+   "P2Real": {
+    "Status": "PASS",
+    "Paths": 8,
+    "Failures": [],
+    "Gaps": []
+   },
+   "P2Nc2": {
+    "Status": "FAIL",
+    "Failures": [
+     "fuera de AllowedWriteScope: src/RackCad.Application/ComputedParameters/RackComputedExpressionContext.cs (A)"
+    ],
+    "Gaps": []
+   },
+   "ControllerOutcomeInI63": "nc1/nc2 NO CUMPLIDOS en G2 y G4 según la evidencia de I-63 (DEV-G2-01, DEV-I63-G4-02/03); comparar con P1Nc1/P2Nc2"
+  },
+  "G4": {
+   "Handoff": "docs/automation/evidence/I-63-pilot/G4-PROJECT-SUMMARY/R20261003T005720Z-2b14/worker-handoff.json",
+   "Delegation": "docs/automation/evidence/I-63-pilot/G4-PROJECT-SUMMARY/R20261003T005345Z-66f3/delegation.json",
+   "Range": "527e4b91..4f45f446",
+   "P1Real": {
+    "Status": "PASS",
+    "Failures": []
+   },
+   "P1Nc1": {
+    "Status": "FAIL",
+    "Failures": [
+     "CurrentSha no es un commit existente en el repositorio"
+    ],
+    "MutatedCurrentSha": "0123456789abcdef0123456789abcdef01234567"
+   },
+   "P2Real": {
+    "Status": "PASS",
+    "Paths": 12,
+    "Failures": [],
+    "Gaps": []
+   },
+   "P2Nc2": {
+    "Status": "FAIL",
+    "Failures": [
+     "fuera de AllowedWriteScope: src/RackCad.Application/ComputedParameters/ProjectPopulation.cs (M)"
+    ],
+    "Gaps": []
+   },
+   "ControllerOutcomeInI63": "nc1/nc2 NO CUMPLIDOS en G2 y G4 según la evidencia de I-63 (DEV-G2-01, DEV-I63-G4-02/03); comparar con P1Nc1/P2Nc2"
+  }
+ },
+ "Trx": {
+  "i63-f0-focal.trx": {
+   "Sha256": "f5a9d461424b4c2b88130384e88e992ed039a414a87fa4051fa42404fe23da21",
+   "Bytes": 271900,
+   "Counters": {
+    "total": 179,
+    "executed": 179,
+    "passed": 179,
+    "failed": 0,
+    "error": 0,
+    "timeout": 0,
+    "aborted": 0,
+    "inconclusive": 0,
+    "passedButRunAborted": 0,
+    "notRunnable": 0,
+    "notExecuted": 0,
+    "disconnected": 0,
+    "warning": 0,
+    "completed": 0,
+    "inProgress": 0,
+    "pending": 0
+   },
+   "Outcomes": {
+    "Passed": 179
+   },
+   "Passed": 179,
+   "Skipped": 0,
+   "UnexpectedNotExecuted": [],
+   "Notes": [],
+   "Failures": [],
+   "Status": "PASS"
+  },
+  "i63-f0r1-focal.trx": {
+   "Sha256": "a1f5a8fa2a8db24f505bc3ccf7bde3c6678985ebb225f8d9db8657dc4b7560e9",
+   "Bytes": 17256,
+   "Counters": {
+    "total": 9,
+    "executed": 9,
+    "passed": 9,
+    "failed": 0,
+    "error": 0,
+    "timeout": 0,
+    "aborted": 0,
+    "inconclusive": 0,
+    "passedButRunAborted": 0,
+    "notRunnable": 0,
+    "notExecuted": 0,
+    "disconnected": 0,
+    "warning": 0,
+    "completed": 0,
+    "inProgress": 0,
+    "pending": 0
+   },
+   "Outcomes": {
+    "Passed": 9
+   },
+   "Passed": 9,
+   "Skipped": 0,
+   "UnexpectedNotExecuted": [],
+   "Notes": [],
+   "Failures": [],
+   "Status": "PASS"
+  },
+  "i63-ready05-core.trx": {
+   "Sha256": "d6e4a5777c9cecb8e735b313ec74653bddc2ef8f8da00544ebce4b7c0ab8fc2b",
+   "Bytes": 17192135,
+   "Counters": {
+    "total": 12595,
+    "executed": 12595,
+    "passed": 12595,
+    "failed": 0,
+    "error": 0,
+    "timeout": 0,
+    "aborted": 0,
+    "inconclusive": 0,
+    "passedButRunAborted": 0,
+    "notRunnable": 0,
+    "notExecuted": 0,
+    "disconnected": 0,
+    "warning": 0,
+    "completed": 0,
+    "inProgress": 0,
+    "pending": 0
+   },
+   "Outcomes": {
+    "Passed": 12595
+   },
+   "Passed": 12595,
+   "Skipped": 0,
+   "UnexpectedNotExecuted": [],
+   "Notes": [],
+   "Failures": [],
+   "Status": "PASS"
+  },
+  "i63-ready05-ui.trx": {
+   "Sha256": "07f2cf5d624a74169fe899416dd7ec39500e87eb687a441919d669a1f14d6b11",
+   "Bytes": 2539211,
+   "Counters": {
+    "total": 1654,
+    "executed": 1637,
+    "passed": 1637,
+    "failed": 0,
+    "error": 0,
+    "timeout": 0,
+    "aborted": 0,
+    "inconclusive": 0,
+    "passedButRunAborted": 0,
+    "notRunnable": 0,
+    "notExecuted": 0,
+    "disconnected": 0,
+    "warning": 0,
+    "completed": 0,
+    "inProgress": 0,
+    "pending": 0
+   },
+   "Outcomes": {
+    "Passed": 1637,
+    "NotExecuted": 17
+   },
+   "Passed": 1637,
+   "Skipped": 17,
+   "UnexpectedNotExecuted": [],
+   "Notes": [
+    "convención del logger TRX de VSTest: omitidas como NotExecuted con Counters.notExecuted = 0 (I-63 evidencia §37.4)"
+   ],
+   "Failures": [],
+   "Status": "PASS",
+   "DeclaredSkips": {
+    "Declared": 17,
+    "Known": 17,
+    "NotDeclared": [],
+    "DeclaredButExecuted": []
+   }
+  }
+ },
+ "Provenance": {
+  "i63-ready05-ui.trx / i63-ready05-core.trx": "scratchpad de la sesión de I-63 (…/2d2cc72a-…/scratchpad/ready05/tests/), READY-05 sobre el Candidato 55a66b3c (evidencia de I-63 §61.1: UI 1654, 1637 superadas y 17 omitidas). Identidad por procedencia: su SHA-256 no figura en la evidencia",
+  "i63-f0-focal.trx / i63-f0r1-focal.trx": "identidad por SHA-256 registrado en la evidencia de I-63 (F5A9D461…, A1F5A8FA…)",
+  "NotFound": "core.trx 00779B64… (evidencia de I-63 §46-47) no está en disco"
+ }
+}
