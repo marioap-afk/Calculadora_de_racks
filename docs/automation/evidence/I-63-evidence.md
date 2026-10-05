@@ -2452,3 +2452,36 @@ Valores aprobados por el Coordinator (Q-R-03):
 - **Siguiente:**
   - O-ADR-6, solo tipográfico, en un commit propio.
   - Bloque E (FOUNDATIONS); después READY-04..09 y el retorno al Coordinator sin integración.
+
+## 60. O-ADR-6 y READY bloque E (FOUNDATIONS)
+
+- **CI exact-SHA:**
+
+  | Commit | Contenido | Corrida | Resultado |
+  |---|---|---|---|
+  | `13c6bee0` | ADR-0049 aceptado (§59) | 37257733640 | 4/4 |
+  | `5366777e` | O-ADR-6 | 37257869579 | 4/4 |
+
+- **O-ADR-6** (`5366777e4db37ec7035334e4ffe4c09b48018a2c`): une el salto de línea suelto de «Contexto» del ADR-0049.
+  - Toca solo el ADR; blob nuevo `a13732477f1e495408711e4226f1db227a66a686`.
+  - `git diff --word-diff=porcelain` no da ninguna palabra añadida ni quitada, y la secuencia de palabras es idéntica: es una
+    corrección tipográfica, autorizada por el Owner después de la aceptación, sin cambio normativo.
+- **Entrada nueva de FOUNDATIONS «Computed Parameters & Project Summary»**, al final del registro y con el esquema completo. El contenido
+  es el que aprobó Q-R-05. No se modifican `Project Variables` ni `Authored vs Effective`, ni ninguna otra entrada.
+- **`Status: STABLE`.** Se cumplen las condiciones del esquema:
+  - la fuente es un ADR aceptado (ADR-0049, §59);
+  - el código existe y lo protegen pruebas identificables;
+  - autoridad, persistencia, mutación y extensión coinciden con el código actual;
+  - no hay discrepancia de clase A abierta;
+  - hay un punto de extensión declarado.
+- **Verificación DC-08 contra el código de la rama:**
+
+  | Campo | Hecho comprobado |
+  |---|---|
+  | Authority | `RackMetricIds` (catálogo y `MetricId`), `RackMetricRequest.Execute` y `ProjectSummary.Evaluate` llaman a `RackMetricOrchestrator.Compute` (D-28). `ProjectPopulation.Evaluate`. `RackMetricProviderRegistry.Default` con seis providers: Selectivo `Supported` (`SelectiveDepthLayout.BaysOfFondo(…, 0)`), Dinámico, Push Back y Cantilever `NotSupported`, Cabecera y Cama `NotApplicable`. `PushBackKindHandler` delega en `RackOutputVerdict.HandlerBlockedReason` |
+  | Persistence | El diff de `src/` contra `main` no añade DTO, store ni Xrecord; los lectores solo deserializan con los stores existentes. `PersistedBoundExpressionJson.PersistedNamespaceTokens` solo admite `projectVariable`. `ComputedParametersSymbolsPersistenceTests` comprueba `PresentButUnreadable` al leer y que no se escribe nada |
+  | Mutation contract | `RackComputedExpressionContext.Create` solo acepta entradas `projectVariable` que no sean `Computed`, y añade las entradas `rack` del catálogo. `ComputedReferencesNotAvailable` es un resultado de `RackComputedEvaluationOutcome` |
+  | Extension point | `RackComputedExpressionContext.Create` es `internal` (visible para `RackCad.Tests` por `InternalsVisibleTo`). Ningún archivo de `src/` fuera de `ComputedParameters/` construye el contexto |
+  | Protecting tests | Las 15 clases de `tests/RackCad.Tests/ComputedParameters/`, más `ExpressionSymbolModelTests` (modificada en G3) y `PushBackBomCommandGuardTests` (reapuntada en la A-4) |
+
+- **Siguiente:** READY-04, con fetch, preflight y rebase si `main` avanzó.
