@@ -1,0 +1,1894 @@
+{
+ "Transcript": {
+  "Path": "C:/Users/alejandra-mendoza/.claude/projects/D--Documentos-Worktrees-r62-arch-a1r5-sad-cray-fd84e8/f5ebef63-4da4-4d52-be38-a6dea96fa436.jsonl",
+  "Sha256": "0393968f23f7c8e3c3824ac99db3944bfccc324810584cb22fa9b7d4264388e2",
+  "Entries": 535
+ },
+ "RuntimeIdentity": {
+  "SessionIds": [
+   "f5ebef63-4da4-4d52-be38-a6dea96fa436"
+  ],
+  "Cwds": [
+   "D:\\Documentos\\Worktrees\\r62-arch-a1r5\\sad-cray-fd84e8",
+   "D:\\r62-arch-a1r5",
+   "D:\\r62-arch-a1r5\\docs\\automation\\evidence\\I-62-prep\\night-2026-10-05\\f4-exp"
+  ],
+  "Versions": [
+   "2.1.286"
+  ],
+  "Models": {
+   "claude-opus-5-5": 119
+  },
+  "SidechainEntries": 0
+ },
+ "AuditorVersion": "v3.1 (kit v3c; rules declared before the run; focus 1-19)",
+ "IdentityAndOrderChecks": {
+  "PromptHashSeen": true,
+  "OrderHashSeen": true,
+  "PriorHashSeen": true,
+  "PromptReadFaithful": true,
+  "OrderReadComplete": true,
+  "PriorReadComplete": true,
+  "CloneHeadVerifiedBeforeReading": true,
+  "WorktreeHeadVerifiedBeforeReading": true,
+  "FirstSubstantiveCall": 5,
+  "CloneCleanAfterRun": true,
+  "NoSidechain": true,
+  "FinalAssistantText": true
+ },
+ "CloneAfterRun": {
+  "Head": "411e01ce4176e4fe6648ea3e9ff2febc219ff438",
+  "StatusPorcelain": ""
+ },
+ "ReadAudit": {
+  "Calls": 58,
+  "WithProblems": [
+   {
+    "Index": 28,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a1r5/docs/automation/evidence/I-62-prep/night-2026-10-05/f4-exp; head -c 1200 combo-result.json; echo; echo ----; grep -n '\"c2n\\|\"c3n\\|\"c3-\\|expected\\|got\\|\"ok\"\\|PASS\\|FAIL' combo-result-before.json | head -60",
+     "description": "Inspect combo result structure and before/after outcomes"
+    },
+    "Class": "BASH",
+    "Problems": [
+     "cd fuera del clon, del worktree o de las salidas propias: D:/r62-arch-a1r5/docs/automation/evidence/I-62-prep/night-2026-10-05/f4-exp"
+    ]
+   },
+   {
+    "Index": 37,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a1r5/docs/automation/agent-execution/schemas 2>/dev/null; cd D:/r62-arch-a1r5; S=docs/automation/agent-execution/schemas; grep -n '\"OpenFindings\"\\|\"Severity\"\\|BLOCKING\\|ADVISORY\\|\"Issuer\"\\|\"BudgetSnapshot\"' $S/role-invocation.v1.schema.json | head -30; echo ---RR; grep -n '\"State\"\\|STILL_OPEN\\|\"Disposition\"\\|NO_FINDINGS\\|\"FindingDispositions\"\\|\"EvaluatedObject\"' $S/reviewer-result.v…",
+     "description": "Grep F3 schemas for fields consumed by A-1"
+    },
+    "Class": "BASH",
+    "Problems": [
+     "cd fuera del clon, del worktree o de las salidas propias: D:/r62-arch-a1r5/docs/automation/agent-execution/schemas"
+    ]
+   },
+   {
+    "Index": 47,
+    "Tool": "Bash",
+    "Input": {
+     "command": "S=\"C:/Users/ALEJAN~1/AppData/Local/Temp/claude/D--Documentos-Worktrees-r62-arch-a1r5-sad-cray-fd84e8/f5ebef63-4da4-4d52-be38-a6dea96fa436/scratchpad\"; sed -i 's#^print(json.dumps(out, ensure_ascii=False, indent=1))$#open(\"C:/Users/ALEJAN~1/AppData/Local/Temp/claude/D--Documentos-Worktrees-r62-arch-a1r5-sad-cray-fd84e8/f5ebef63-4da4-4d52-be38-a6dea96fa436/scratchpad/adhoc_two_rebases.out.json\", \"w\"…",
+     "description": "Write ad hoc output as UTF-8 file and show it"
+    },
+    "Class": "BASH",
+    "Problems": [
+     "sed sin -n"
+    ]
+   },
+   {
+    "Index": 50,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a1r5; for n in 202 203 206 207 208 209 210 211 152; do printf \"A1 %s: \" $n; git show 411e01ce:docs/initiatives/I-62-A-1.md | sed -n \"${n}p\" | awk '{print length($0)}'; done; for n in 520 560 590 591 1558 1582 1430; do printf \"V14 %s: \" $n; git show 411e01ce:docs/initiatives/I-62-proposal-v14.md | sed -n \"${n}p\" | awk '{print length($0)}'; done",
+     "description": "Check character lengths of lines to be cited"
+    },
+    "Class": "BASH",
+    "Problems": [
+     "comando no permitido: n",
+     "comando no permitido: n"
+    ]
+   },
+   {
+    "Index": 57,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a1r5; git show 411e01ce:docs/initiatives/I-62-A-1.md | sed -n '152p' | grep -o '\\*\\*REVIEWER_SATISFIED\\*\\* se publica[^.]*\\.'; git show 411e01ce:docs/initiatives/I-62-A-1.md | sed -n '145p' | grep -o '\\*\\*Con REVIEWER:\\*\\*[^.]*\\.'; git show 411e01ce:docs/initiatives/I-62-proposal-v14.md | sed -n '1430p;1652p'; git show 411e01ce:docs/automation/agent-execution/../../AUTOMATION_PLAN.m…",
+     "description": "Extract exact D1-17, D1-10 REVIEWER, V14 and 16.11 quotes"
+    },
+    "Class": "BASH",
+    "Problems": [
+     "git show fuera del cierre: 411e01ce:docs/automation/agent-execution/../../AUTOMATION_PLAN.md"
+    ]
+   }
+  ],
+  "Rows": [
+   {
+    "Index": 0,
+    "Tool": "Bash",
+    "Input": {
+     "command": "sha256sum D:/r62-arch-a1r5-run/prompt.md",
+     "description": "Compute SHA-256 of the instructions file"
+    },
+    "Class": "BASH",
+    "Problems": []
+   },
+   {
+    "Index": 1,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5-run\\prompt.md"
+    },
+    "Class": "RUN",
+    "Problems": []
+   },
+   {
+    "Index": 2,
+    "Tool": "Bash",
+    "Input": {
+     "command": "git -C D:/r62-arch-a1r5 rev-parse HEAD; git -C D:/r62-arch-a1r5 rev-parse HEAD:docs/initiatives/I-62-A-1.md; git -C D:/r62-arch-a1r5 rev-parse HEAD:docs/initiatives/I-62-architect-package-A-1.md; git -C D:/r62-arch-a1r5 rev-parse HEAD:docs/initiatives/I-62-architect-review-A-1-disposition.md; git -C D:/r62-arch-a1r5 status --porcelain; echo \"---wt\"; git rev-parse HEAD; echo \"---sha\"; sha256sum D:/…",
+     "description": "Verify clone/worktree HEAD, blobs, clean tree and run-file hashes"
+    },
+    "Class": "BASH",
+    "Problems": []
+   },
+   {
+    "Index": 3,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5-run\\order.txt"
+    },
+    "Class": "RUN",
+    "Problems": []
+   },
+   {
+    "Index": 4,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5-run\\prior-authorization.txt"
+    },
+    "Class": "RUN",
+    "Problems": []
+   },
+   {
+    "Index": 5,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\initiatives\\I-62-A-1.md",
+     "offset": 1,
+     "limit": 160
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 6,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\initiatives\\I-62-A-1.md",
+     "offset": 161,
+     "limit": 140
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 7,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\initiatives\\I-62-A-1.md",
+     "offset": 301,
+     "limit": 98
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 8,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a1r5; awk 'length($0)>1900 {print FILENAME\": \"NR\": \"length($0)}' docs/initiatives/I-62-A-1.md docs/initiatives/I-62-architect-package-A-1.md docs/initiatives/I-62-architect-review-A-1-disposition.md docs/initiatives/I-62-architect-review-A-1-r2.md docs/initiatives/I-62-architect-review-A-1-r3.md; wc -c docs/initiatives/I-62-A-1.md; wc -l docs/initiatives/I-62-architect-package-A-1.m…",
+     "description": "Check long lines and sizes of review files"
+    },
+    "Class": "BASH",
+    "Problems": []
+   },
+   {
+    "Index": 9,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a1r5; git cat-file -s HEAD:docs/initiatives/I-62-A-1.md; git config --get core.autocrlf; git show HEAD:docs/initiatives/I-62-A-1.md | sha256sum; git show HEAD:docs/initiatives/I-62-A-1.md | wc -l",
+     "description": "Check blob size and line-ending config"
+    },
+    "Class": "BASH",
+    "Problems": []
+   },
+   {
+    "Index": 10,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\initiatives\\I-62-architect-package-A-1.md"
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 11,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\initiatives\\I-62-architect-review-A-1-r3.md"
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 12,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\automation\\evidence\\I-62-architect-A-1\\R20261005T063359Z-86e3\\output.json"
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 13,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\automation\\evidence\\I-62-architect-A-1\\R20261005T063359Z-86e3\\output.json",
+     "offset": 526,
+     "limit": 133
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 14,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\initiatives\\I-62-architect-review-A-1-r2.md"
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 15,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\initiatives\\I-62-architect-review-A-1-disposition.md"
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 16,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a1r5; wc -l -c docs/automation/evidence/I-62-architect-A-1/R20261005T044948Z-ac67/output.json docs/initiatives/I-62-architect-review-A-1.md docs/initiatives/I-62-consensus-freeze.md docs/automation/evidence/I-62-A1/a1-counterexamples.py docs/automation/evidence/I-62-A1/a1-counterexamples-result.json docs/automation/evidence/I-62-prep/night-2026-10-05/f4-exp/README.md docs/automation…",
+     "description": "Sizes of closure files and long-line check"
+    },
+    "Class": "BASH",
+    "Problems": []
+   },
+   {
+    "Index": 17,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\automation\\evidence\\I-62-architect-A-1\\R20261005T044948Z-ac67\\output.json",
+     "offset": 1,
+     "limit": 130
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 18,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\automation\\evidence\\I-62-architect-A-1\\R20261005T044948Z-ac67\\output.json",
+     "offset": 131,
+     "limit": 122
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 19,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\initiatives\\I-62-architect-review-A-1.md"
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 20,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\initiatives\\I-62-consensus-freeze.md"
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 21,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\automation\\evidence\\I-62-prep\\night-2026-10-05\\f4-exp\\README.md"
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 22,
+    "Tool": "Bash",
+    "Input": {
+     "command": "S=\"C:/Users/ALEJAN~1/AppData/Local/Temp/claude/D--Documentos-Worktrees-r62-arch-a1r5-sad-cray-fd84e8/f5ebef63-4da4-4d52-be38-a6dea96fa436/scratchpad\"; python D:/r62-arch-a1r5/docs/automation/evidence/I-62-A1/a1-counterexamples.py \"$S/a1-result.json\"; echo \"exit=$?\"; sha256sum \"$S/a1-result.json\"; git -C D:/r62-arch-a1r5 show 411e01ce:docs/automation/evidence/I-62-A1/a1-counterexamples-result.json …",
+     "description": "Run counterexample harness into scratchpad and compare hash with custodied result"
+    },
+    "Class": "BASH",
+    "Problems": []
+   },
+   {
+    "Index": 23,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\automation\\evidence\\I-62-A1\\a1-counterexamples.py",
+     "offset": 1,
+     "limit": 300
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 24,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\automation\\evidence\\I-62-A1\\a1-counterexamples.py",
+     "offset": 300,
+     "limit": 300
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 25,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\initiatives\\I-62-proposal-v14.md",
+     "offset": 1403,
+     "limit": 253
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 26,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\initiatives\\I-62-proposal-v14.md",
+     "offset": 2128,
+     "limit": 180
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 27,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\AUTOMATION_PLAN.md",
+     "offset": 846,
+     "limit": 260
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 28,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a1r5/docs/automation/evidence/I-62-prep/night-2026-10-05/f4-exp; head -c 1200 combo-result.json; echo; echo ----; grep -n '\"c2n\\|\"c3n\\|\"c3-\\|expected\\|got\\|\"ok\"\\|PASS\\|FAIL' combo-result-before.json | head -60",
+     "description": "Inspect combo result structure and before/after outcomes"
+    },
+    "Class": "BASH",
+    "Problems": [
+     "cd fuera del clon, del worktree o de las salidas propias: D:/r62-arch-a1r5/docs/automation/evidence/I-62-prep/night-2026-10-05/f4-exp"
+    ]
+   },
+   {
+    "Index": 29,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a1r5; F=docs/automation/evidence/I-62-prep/night-2026-10-05/f4-exp; sed -n '152,232p' $F/combo-result-before.json; echo =====; grep -n '\"Result\"\\|\"c[0-9]' $F/combo-result.json | head -40; grep -n 'Asserted\\|GitBlob' $F/combo-result-before.json $F/combo-result.json",
+     "description": "Show c2n/c3 entries before and results after"
+    },
+    "Class": "BASH",
+    "Problems": []
+   },
+   {
+    "Index": 30,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a1r5; sed -n '152,176p' docs/automation/evidence/I-62-prep/night-2026-10-05/f4-exp/combo-result.json; grep -n 'a62-a1s\\|a62-a1a\\|def ing\\|def rv_\\|T\\[\"a62-a1r-03-nueva' docs/automation/evidence/I-62-A1/a1-counterexamples.py",
+     "description": "Show c2n after-result and locate A1S/A1A traces in harness"
+    },
+    "Class": "BASH",
+    "Problems": []
+   },
+   {
+    "Index": 31,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\automation\\evidence\\I-62-A1\\a1-counterexamples.py",
+     "offset": 720,
+     "limit": 200
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 32,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\INITIATIVE_LIFECYCLE.md",
+     "offset": 66,
+     "limit": 228
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 33,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\automation\\decisions\\I-62.md",
+     "offset": 650,
+     "limit": 146
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 34,
+    "Tool": "Grep",
+    "Input": {
+     "pattern": "^## (4[0-9])\\.",
+     "path": "D:\\r62-arch-a1r5\\docs\\automation\\evidence\\I-62-evidence.md",
+     "output_mode": "content"
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 35,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\automation\\evidence\\I-62-evidence.md",
+     "offset": 1964,
+     "limit": 165
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 36,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\automation\\agent-execution\\README.md",
+     "offset": 287,
+     "limit": 180
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 37,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a1r5/docs/automation/agent-execution/schemas 2>/dev/null; cd D:/r62-arch-a1r5; S=docs/automation/agent-execution/schemas; grep -n '\"OpenFindings\"\\|\"Severity\"\\|BLOCKING\\|ADVISORY\\|\"Issuer\"\\|\"BudgetSnapshot\"' $S/role-invocation.v1.schema.json | head -30; echo ---RR; grep -n '\"State\"\\|STILL_OPEN\\|\"Disposition\"\\|NO_FINDINGS\\|\"FindingDispositions\"\\|\"EvaluatedObject\"' $S/reviewer-result.v…",
+     "description": "Grep F3 schemas for fields consumed by A-1"
+    },
+    "Class": "BASH",
+    "Problems": [
+     "cd fuera del clon, del worktree o de las salidas propias: D:/r62-arch-a1r5/docs/automation/agent-execution/schemas"
+    ]
+   },
+   {
+    "Index": 38,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a1r5; S=docs/automation/agent-execution/schemas; sed -n '322,360p' $S/role-invocation.v1.schema.json; echo ---RR; sed -n '557,600p' $S/reviewer-result.v1.schema.json; echo ---GC; sed -n '148,200p' $S/gate-contract.v2.schema.json",
+     "description": "Show relevant schema fragments"
+    },
+    "Class": "BASH",
+    "Problems": []
+   },
+   {
+    "Index": 39,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\initiatives\\I-62-proposal-v14.md",
+     "offset": 497,
+     "limit": 96
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 40,
+    "Tool": "Grep",
+    "Input": {
+     "pattern": "^#{1,3} ",
+     "path": "D:\\r62-arch-a1r5\\docs\\WORKFLOW.md",
+     "output_mode": "content"
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 41,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a1r5; grep -n -i 'rebase' docs/WORKFLOW.md | sed -n '1,60p'",
+     "description": "Locate rebase rules in WORKFLOW"
+    },
+    "Class": "BASH",
+    "Problems": []
+   },
+   {
+    "Index": 42,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\WORKFLOW.md",
+     "offset": 148,
+     "limit": 14
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 43,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a1r5; grep -n '^### 16\\.[0-9]*' docs/AUTOMATION_PLAN.md | sed -n '1,40p'",
+     "description": "List AUTOMATION_PLAN 16.x headings with line numbers"
+    },
+    "Class": "BASH",
+    "Problems": []
+   },
+   {
+    "Index": 44,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\AUTOMATION_PLAN.md",
+     "offset": 578,
+     "limit": 130
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 45,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\automation\\evidence\\I-62-A1\\a1-counterexamples.py",
+     "offset": 995,
+     "limit": 91
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 46,
+    "Tool": "Bash",
+    "Input": {
+     "command": "S=\"C:/Users/ALEJAN~1/AppData/Local/Temp/claude/D--Documentos-Worktrees-r62-arch-a1r5-sad-cray-fd84e8/f5ebef63-4da4-4d52-be38-a6dea96fa436/scratchpad\"; cat > \"$S/adhoc_two_rebases.py\" <<'EOF'\nimport importlib.util, json\nspec = importlib.util.spec_from_file_location(\"h\", \"D:/r62-arch-a1r5/docs/automation/evidence/I-62-A1/a1-counterexamples.py\")\nh = importlib.util.module_from_spec(spec); spec.loader.…",
+     "description": "Run ad hoc two-rebase LAUNCHING trace against harness model"
+    },
+    "Class": "BASH",
+    "Problems": []
+   },
+   {
+    "Index": 47,
+    "Tool": "Bash",
+    "Input": {
+     "command": "S=\"C:/Users/ALEJAN~1/AppData/Local/Temp/claude/D--Documentos-Worktrees-r62-arch-a1r5-sad-cray-fd84e8/f5ebef63-4da4-4d52-be38-a6dea96fa436/scratchpad\"; sed -i 's#^print(json.dumps(out, ensure_ascii=False, indent=1))$#open(\"C:/Users/ALEJAN~1/AppData/Local/Temp/claude/D--Documentos-Worktrees-r62-arch-a1r5-sad-cray-fd84e8/f5ebef63-4da4-4d52-be38-a6dea96fa436/scratchpad/adhoc_two_rebases.out.json\", \"w\"…",
+     "description": "Write ad hoc output as UTF-8 file and show it"
+    },
+    "Class": "BASH",
+    "Problems": [
+     "sed sin -n"
+    ]
+   },
+   {
+    "Index": 48,
+    "Tool": "Bash",
+    "Input": {
+     "command": "S=\"C:/Users/ALEJAN~1/AppData/Local/Temp/claude/D--Documentos-Worktrees-r62-arch-a1r5-sad-cray-fd84e8/f5ebef63-4da4-4d52-be38-a6dea96fa436/scratchpad\"; cat > \"$S/adhoc_checks.py\" <<'EOF'\nimport importlib.util, json\nspec = importlib.util.spec_from_file_location(\"h\", \"D:/r62-arch-a1r5/docs/automation/evidence/I-62-A1/a1-counterexamples.py\")\nh = importlib.util.module_from_spec(spec); spec.loader.exec_…",
+     "description": "Count trace verdicts and test membership discrimination ad hoc"
+    },
+    "Class": "BASH",
+    "Problems": []
+   },
+   {
+    "Index": 49,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a1r5; S=docs/automation/agent-execution/schemas; grep -n '\"RebaseMap\"\\|\"Commits\"\\|\"OriginalSha\"\\|\"ImageSha\"\\|\"PatchIdEqual\"\\|\"MainBeforeSha\"\\|\"StateFields\"\\|\"Field\"' $S/relay-record.v2.schema.json | head -20; echo ---B; grep -n '\"AuthorizationRef\"\\|\"Location\"\\|\"Commit\"\\|\"Kind\"\\|CUSTODIED\\|TRANSIENT' $S/binding.v1.schema.json | head -20; echo ---AR; grep -n '\"EvaluatedObject\"\\|\"Findi…",
+     "description": "Grep RebaseMap and binding schema fields; confirm clone clean"
+    },
+    "Class": "BASH",
+    "Problems": []
+   },
+   {
+    "Index": 50,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a1r5; for n in 202 203 206 207 208 209 210 211 152; do printf \"A1 %s: \" $n; git show 411e01ce:docs/initiatives/I-62-A-1.md | sed -n \"${n}p\" | awk '{print length($0)}'; done; for n in 520 560 590 591 1558 1582 1430; do printf \"V14 %s: \" $n; git show 411e01ce:docs/initiatives/I-62-proposal-v14.md | sed -n \"${n}p\" | awk '{print length($0)}'; done",
+     "description": "Check character lengths of lines to be cited"
+    },
+    "Class": "BASH",
+    "Problems": [
+     "comando no permitido: n",
+     "comando no permitido: n"
+    ]
+   },
+   {
+    "Index": 51,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a1r5; git show 411e01ce:docs/initiatives/I-62-A-1.md | sed -n '152p' | grep -o 'Solicitudes del bucle REVIEWER:\\*\\* [^.]*\\.'; git show 411e01ce:docs/initiatives/I-62-A-1.md | sed -n '202p' | grep -o 'intento en LAUNCHING → [^»]*'; git show 411e01ce:docs/initiatives/I-62-A-1.md | sed -n '206p' | grep -o '(2) \\*\\*no arrancó\\*\\*[^;]*;'; git show 411e01ce:docs/initiatives/I-62-A-1.md | …",
+     "description": "Extract exact quoted clauses from A-1 blob"
+    },
+    "Class": "BASH",
+    "Problems": []
+   },
+   {
+    "Index": 52,
+    "Tool": "Grep",
+    "Input": {
+     "pattern": "Leer primero|dotnet test|^\\s*4\\.",
+     "path": "D:\\r62-arch-a1r5\\AGENTS.md",
+     "output_mode": "content",
+     "-n": true,
+     "head_limit": 20
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 53,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a1r5; git log --oneline -10; S=\"C:/Users/ALEJAN~1/AppData/Local/Temp/claude/D--Documentos-Worktrees-r62-arch-a1r5-sad-cray-fd84e8/f5ebef63-4da4-4d52-be38-a6dea96fa436/scratchpad\"; \"$LOCALAPPDATA/Microsoft/dotnet/dotnet.exe\" test tests/RackCad.Tests/RackCad.Tests.csproj > \"$S/dotnet-test.log\" 2>&1; echo \"exit=$?\"; tail -5 \"$S/dotnet-test.log\"",
+     "description": "Show recent log and run Core test suite in the clone",
+     "timeout": 600000
+    },
+    "Class": "BASH",
+    "Problems": []
+   },
+   {
+    "Index": 54,
+    "Tool": "Bash",
+    "Input": {
+     "command": "git -C D:/r62-arch-a1r5 status --porcelain; git -C D:/r62-arch-a1r5 rev-parse HEAD; git -C \"D:/Documentos/Worktrees/r62-arch-a1r5/sad-cray-fd84e8\" status --porcelain; git -C \"D:/Documentos/Worktrees/r62-arch-a1r5/sad-cray-fd84e8\" rev-parse HEAD",
+     "description": "Confirm clone and worktree remain clean at the exact commit"
+    },
+    "Class": "BASH",
+    "Problems": []
+   },
+   {
+    "Index": 55,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a1r5; grep -n -i '^7\\.\\|#7\\|reinici\\|^4\\.\\|elegib' docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md | head -12; echo ---48; grep -n -i '#7\\|ADR-0046 #7\\|reinici' docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md | head -8; echo ---C; grep -n -i 'no-objetivo\\|no objetivo\\|Owner' docs/initiatives/I-62-portabilidad-coordinador-principal.md | head …",
+     "description": "Grep ADR-0046/0048 and I-62 contract for #7 and no-objectives"
+    },
+    "Class": "BASH",
+    "Problems": []
+   },
+   {
+    "Index": 56,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a1r5\\docs\\initiatives\\I-62-portabilidad-coordinador-principal.md",
+     "offset": 82,
+     "limit": 40
+    },
+    "Class": "CLOSURE",
+    "Problems": []
+   },
+   {
+    "Index": 57,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a1r5; git show 411e01ce:docs/initiatives/I-62-A-1.md | sed -n '152p' | grep -o '\\*\\*REVIEWER_SATISFIED\\*\\* se publica[^.]*\\.'; git show 411e01ce:docs/initiatives/I-62-A-1.md | sed -n '145p' | grep -o '\\*\\*Con REVIEWER:\\*\\*[^.]*\\.'; git show 411e01ce:docs/initiatives/I-62-proposal-v14.md | sed -n '1430p;1652p'; git show 411e01ce:docs/automation/agent-execution/../../AUTOMATION_PLAN.m…",
+     "description": "Extract exact D1-17, D1-10 REVIEWER, V14 and 16.11 quotes"
+    },
+    "Class": "BASH",
+    "Problems": [
+     "git show fuera del cierre: 411e01ce:docs/automation/agent-execution/../../AUTOMATION_PLAN.md"
+    ]
+   }
+  ]
+ },
+ "Fidelity": {
+  "Records": [
+   {
+    "Path": "prompt.md",
+    "Via": "Read",
+    "Lines": 234,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "order.txt",
+    "Via": "Read",
+    "Lines": 532,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "prior-authorization.txt",
+    "Via": "Read",
+    "Lines": 348,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/initiatives/I-62-A-1.md",
+    "Via": "Read",
+    "Lines": 160,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/initiatives/I-62-A-1.md",
+    "Via": "Read",
+    "Lines": 140,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/initiatives/I-62-A-1.md",
+    "Via": "Read",
+    "Lines": 98,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/initiatives/I-62-architect-package-A-1.md",
+    "Via": "Read",
+    "Lines": 191,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/initiatives/I-62-architect-review-A-1-r3.md",
+    "Via": "Read",
+    "Lines": 64,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-architect-A-1/R20261005T063359Z-86e3/output.json",
+    "Via": "Read",
+    "Lines": 525,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-architect-A-1/R20261005T063359Z-86e3/output.json",
+    "Via": "Read",
+    "Lines": 133,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/initiatives/I-62-architect-review-A-1-r2.md",
+    "Via": "Read",
+    "Lines": 76,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/initiatives/I-62-architect-review-A-1-disposition.md",
+    "Via": "Read",
+    "Lines": 133,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-architect-A-1/R20261005T044948Z-ac67/output.json",
+    "Via": "Read",
+    "Lines": 130,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-architect-A-1/R20261005T044948Z-ac67/output.json",
+    "Via": "Read",
+    "Lines": 122,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/initiatives/I-62-architect-review-A-1.md",
+    "Via": "Read",
+    "Lines": 77,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/initiatives/I-62-consensus-freeze.md",
+    "Via": "Read",
+    "Lines": 114,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-prep/night-2026-10-05/f4-exp/README.md",
+    "Via": "Read",
+    "Lines": 47,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-A1/a1-counterexamples.py",
+    "Via": "Read",
+    "Lines": 300,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-A1/a1-counterexamples.py",
+    "Via": "Read",
+    "Lines": 300,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/initiatives/I-62-proposal-v14.md",
+    "Via": "Read",
+    "Lines": 253,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/initiatives/I-62-proposal-v14.md",
+    "Via": "Read",
+    "Lines": 180,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/AUTOMATION_PLAN.md",
+    "Via": "Read",
+    "Lines": 260,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-A1/a1-counterexamples.py",
+    "Via": "Read",
+    "Lines": 200,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/INITIATIVE_LIFECYCLE.md",
+    "Via": "Read",
+    "Lines": 228,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/automation/decisions/I-62.md",
+    "Via": "Read",
+    "Lines": 146,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-evidence.md",
+    "Via": "Read",
+    "Lines": 165,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/automation/agent-execution/README.md",
+    "Via": "Read",
+    "Lines": 180,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/initiatives/I-62-proposal-v14.md",
+    "Via": "Read",
+    "Lines": 96,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/WORKFLOW.md",
+    "Via": "Read",
+    "Lines": 14,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/AUTOMATION_PLAN.md",
+    "Via": "Read",
+    "Lines": 130,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-A1/a1-counterexamples.py",
+    "Via": "Read",
+    "Lines": 91,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/initiatives/I-62-portabilidad-coordinador-principal.md",
+    "Via": "Read",
+    "Lines": 40,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   }
+  ],
+  "DeliveredLinesByPath": {
+   "docs/AUTOMATION_PLAN.md": 390,
+   "docs/INITIATIVE_LIFECYCLE.md": 228,
+   "docs/WORKFLOW.md": 14,
+   "docs/automation/agent-execution/README.md": 180,
+   "docs/automation/decisions/I-62.md": 146,
+   "docs/automation/evidence/I-62-A1/a1-counterexamples.py": 890,
+   "docs/automation/evidence/I-62-architect-A-1/R20261005T044948Z-ac67/output.json": 252,
+   "docs/automation/evidence/I-62-architect-A-1/R20261005T063359Z-86e3/output.json": 658,
+   "docs/automation/evidence/I-62-evidence.md": 165,
+   "docs/automation/evidence/I-62-prep/night-2026-10-05/f4-exp/README.md": 47,
+   "docs/initiatives/I-62-A-1.md": 398,
+   "docs/initiatives/I-62-architect-package-A-1.md": 191,
+   "docs/initiatives/I-62-architect-review-A-1-disposition.md": 133,
+   "docs/initiatives/I-62-architect-review-A-1-r2.md": 76,
+   "docs/initiatives/I-62-architect-review-A-1-r3.md": 64,
+   "docs/initiatives/I-62-architect-review-A-1.md": 77,
+   "docs/initiatives/I-62-consensus-freeze.md": 114,
+   "docs/initiatives/I-62-portabilidad-coordinador-principal.md": 40,
+   "docs/initiatives/I-62-proposal-v14.md": 529,
+   "order.txt": 532,
+   "prior-authorization.txt": 348,
+   "prompt.md": 234
+  },
+  "TruncatedKnownLongLines": [],
+  "UnicodeReplacementChars": [],
+  "GrepContentLines": {
+   "Total": 37,
+   "Exact": 37
+  }
+ },
+ "Result": {
+  "Check": {
+   "Found": true,
+   "SchemaValid": true,
+   "Coherence": [],
+   "SchemaDetail": "True"
+  },
+  "Literal": {
+   "Schema": "rackcad-architect-review-result/v1 (representación experimental; rigen I-61 y LIFECYCLE)",
+   "RunId": "R20261005T073911Z-2dfe",
+   "InvocationId": "I20261005T073911Z-2dfe",
+   "LogicalReviewRequestId": "L20261005T073911Z-2dfe",
+   "AttemptSeq": 1,
+   "RequestedRole": "ARCHITECT",
+   "Action": "REVIEW_DESIGN",
+   "ReviewedUnit": "I-62",
+   "ReviewedCommit": "411e01ce4176e4fe6648ea3e9ff2febc219ff438",
+   "ReviewedPath": "docs/initiatives/I-62-A-1.md",
+   "ReviewedBlob": "03dd822d1310a0ce298eba6da2321383aa5e4887",
+   "ReviewerMode": "SEPARATE SESSION",
+   "SamePersonAsAuthor": "Soy una sesión nueva de Claude Code (app de escritorio, pestaña Code). No soy la sesión autora de A-1 (la sesión principal de I-62) ni ninguna de las dos sesiones revisoras anteriores. No tengo su transcripción ni su memoria, no leí la memoria del proyecto y no invoqué a otros agentes. No puedo observar la identidad de la sesión autora. Según los registros, quien lanza esta revisión es el mismo Owner que dirige la sesión autora. Por tanto, el revisor IA es distinto, pero el operador humano probablemente es la misma persona. La evaluación de la independencia corresponde al invocador y al Coordinator.",
+   "ReviewerDeclaredIdentity": {
+    "Runtime": "Claude Code (app de escritorio, pestaña Code; Claude Agent SDK) en Windows 11 Pro",
+    "Model": "claude-opus-5-5",
+    "Effort": "UNKNOWN",
+    "SessionOrThread": "UNKNOWN (carpeta de sesión del scratchpad f5ebef63-4da4-4d52-be38-a6dea96fa436; worktree sad-cray-fd84e8)"
+   },
+   "InjectedContextDeclaration": {
+    "State": "DECLARED",
+    "Items": [
+     "Prompt de sistema de Claude Code, con las herramientas y sus esquemas, las reglas del harness y de seguridad, los permisos y el entorno: Windows, PowerShell y Git Bash; worktree D:/Documentos/Worktrees/r62-arch-a1r5/sad-cray-fd84e8; directorio adicional D:/r62-arch-a1r5; scratchpad; fecha 2026-10-05; modelo claude-opus-5-5",
+     "CLAUDE.md del worktree (índice de arranque del proyecto), inyectado como instrucciones del proyecto",
+     "Instantánea de gitStatus: rama claude/sad-cray-fd84e8, árbol limpio y los cinco commits recientes, el último 411e01ce",
+     "Contexto de cuenta: el email del usuario, solo como identificación; no se usó",
+     "Recordatorio de atribución de commits y PR; no se usó, porque no hubo commits",
+     "Aviso de que la sesión trabaja en un worktree",
+     "Instrucciones del directorio de memoria persistente (C:/Users/alejandra-mendoza/.claude/projects/D--r62-arch-a1r5/memory/), sin contenido de memoria inyectado; ese directorio no se leyó",
+     "Listas de herramientas diferidas, de servidores MCP (con el aviso de fallo de conexión de plugin:github), de skills y de tipos de agente; no se cargó ni se usó ninguna",
+     "Instrucciones de servidores MCP (Claude Docs, claude-in-chrome, computer-use) y de los dos navegadores; no se usaron",
+     "El mensaje del usuario que designa D:/r62-arch-a1r5-run/prompt.md y su SHA-256",
+     "Avisos posteriores del harness: el del modo de permisos sobre el uso de Bash; los periódicos para informar al usuario del progreso; y los de cambio del directorio de trabajo principal tras un cd (al clon, una vez a f4-exp y de vuelta al clon)"
+    ]
+   },
+   "IdentityCheck": {
+    "CloneHeadMatches": true,
+    "WorktreeHeadMatches": true,
+    "ObjectBlobMatches": true,
+    "PackageBlobMatches": true,
+    "CleanTree": true,
+    "OrderSha256Matches": true,
+    "PriorAuthorizationSha256Matches": true
+   },
+   "InputsRead": [
+    "D:/r62-arch-a1r5-run/prompt.md: 1-234 (SHA-256 302898f8… comprobado)",
+    "D:/r62-arch-a1r5-run/order.txt: 1-532 (SHA-256 4fc5883f… comprobado)",
+    "D:/r62-arch-a1r5-run/prior-authorization.txt: 1-348 (SHA-256 04608994… comprobado)",
+    "docs/initiatives/I-62-A-1.md: 1-160, 161-300 y 301-398, completo. Blob de 68 032 bytes (git cat-file -s); la línea más larga es la 152, con 1 979 caracteres. Las cláusulas citadas se contrastaron con git show | sed -n",
+    "docs/initiatives/I-62-architect-package-A-1.md: 1-190",
+    "docs/initiatives/I-62-architect-review-A-1-r2.md: 1-75",
+    "docs/automation/evidence/I-62-architect-A-1/R20261005T044948Z-ac67/output.json: 1-130 y 131-252",
+    "docs/initiatives/I-62-architect-review-A-1-r3.md: 1-63",
+    "docs/automation/evidence/I-62-architect-A-1/R20261005T063359Z-86e3/output.json: 1-525 y 526-658 (la línea 79, de 2 300 caracteres, no se cita)",
+    "docs/initiatives/I-62-architect-review-A-1-disposition.md: 1-132",
+    "docs/initiatives/I-62-architect-review-A-1.md: 1-76 (insumo técnico histórico)",
+    "docs/initiatives/I-62-proposal-v14.md: 497-592, 1403-1655 y 2128-2307; además, las líneas 520, 560, 590, 591, 1430, 1558, 1582 y 1652 con git show | sed -n",
+    "docs/initiatives/I-62-consensus-freeze.md: 1-113",
+    "docs/automation/evidence/I-62-A1/a1-counterexamples.py: 1-300, 300-599, 720-919 y 995-1085. Ejecutado (EX-1) e importado por su ruta literal en dos scripts propios",
+    "docs/automation/evidence/I-62-A1/a1-counterexamples-result.json: solo su hash (git show | sha256sum), igual al de mi salida",
+    "docs/automation/evidence/I-62-prep/night-2026-10-05/f4-exp/README.md: 1-46",
+    "docs/automation/evidence/I-62-prep/night-2026-10-05/f4-exp/combo-result-before.json: 152-232 y grep; combo-result.json: los primeros 1 200 bytes, 152-176 y grep",
+    "docs/INITIATIVE_LIFECYCLE.md: 66-293",
+    "docs/automation/decisions/I-62.md: 650-795 con Read (las líneas largas 657, 734, 750, 768 y 787 no se citan)",
+    "docs/automation/evidence/I-62-evidence.md: Grep de encabezados (sobre el archivo) y 1964-2128",
+    "docs/AUTOMATION_PLAN.md: 578-707 y 846-1105; grep de los encabezados 16.x",
+    "docs/automation/agent-execution/README.md: 287-466",
+    "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json: grep y 322-360",
+    "docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json: grep y 557-600",
+    "docs/automation/agent-execution/schemas/gate-contract.v2.schema.json: grep y 148-200",
+    "docs/automation/agent-execution/schemas/relay-record.v2.schema.json, binding.v1.schema.json y architect-review-result.v1.schema.json: solo grep",
+    "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md y docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md: solo grep (#4 y #7)",
+    "docs/initiatives/I-62-portabilidad-coordinador-principal.md: grep y 82-121 (alcance y no-objetivos)",
+    "docs/WORKFLOW.md (transitivo): Grep de encabezados, grep de «rebase» y 148-161",
+    "AGENTS.md (transitivo): Grep de «Leer primero» y de dotnet test",
+    "Salidas propias (scratchpad): a1-result.json, adhoc_two_rebases.py y adhoc_two_rebases.out.json, adhoc_checks.py y adhoc_checks.out.json, dotnet-test.log"
+   ],
+   "Verdict": "CHANGES REQUIRED",
+   "RequiredFindings": [
+    {
+     "FindingId": "A62-A1T-01",
+     "AffectedDelta": "§3.3, D2-2 (fila «intento en LAUNCHING»), frente a D2-6 (2), D2-9, D2-10 y D2-11; §5, C-15 (d)(e) y C-29 (i); en la evidencia, la regla A1-P08 del arnés y la secuencia c3-obs de F4 experimental (pregunta 17 del paquete; F4X-OBS-01)",
+     "ViolatedInvariant": "Un intento a medias debe poder recuperarse por estado, por el mismo Principal o por un sucesor, solo desde lo custodiado (V14 §20.6, caso B; §20.8). A-1 demuestra la relación Original→Imagen de un commit histórico con la cadena custodiada de mapas (D2-9, D2-10 y D2-11). La fila LAUNCHING de D2-2 exige, en cambio, que el `Target.commit` conservado figure en el `RebaseMap` del rebase en curso o sea ancestro de su `main_before`; si no, STOP sin publicar. Tras un primer rebase, ese `Target` es el commit original, y ningún mapa posterior lo contiene. Si el intento sigue en LAUNCHING cuando llega un segundo rebase, sea el de apertura de una sesión o el de una toma, la reconciliación se detiene. Resolver el intento exige un punto durable, y ese punto no se puede publicar antes del rebase (WORKFLOW §4.2; V14 §8.9). La reconciliación tampoco puede cambiar el estado de un intento (D2-7, D2-8). Ninguna transición del Freeze + A-1 sale de ahí: es un elemento congelable no ejecutable (LIFECYCLE §5). Además, contradice a D2-6 (2), que ya resuelve ese mismo `Target` por la cadena.",
+     "Counterexample": "Bucle ARCHITECT_REVIEW ARL-10 (igual con REVIEWER), con `loop.object` = X1 {x1, docs/initiatives/U-proposal.md, b-X1} y la solicitud L1 OPEN. (1) El titular A publica L1/1 en LAUNCHING con `Target` = X1, lanza y cae antes de acreditar el arranque (T12b). (2) `main` avanza. (3) B entra por REBASE_TAKEOVER (§8.9) y hace el rebase 1 con M1 {x1→x1p, a0→a0p, k0→k0p}. Su QR REBASE_RECONCILIATION lleva `loop.object` y L1.object a x1p y deja L1/1 en LAUNCHING con `Target` x1. D2-2 se cumple, porque x1 ∈ M1.Commits, y `rebase_history` = [M1]. B cae antes de resolver L1/1 con la operación 7. (4) `main` vuelve a avanzar. (5) Entra C, por una toma o como el mismo titular en una sesión nueva. WORKFLOW §4.2 le obliga a rebasar antes de escribir una línea, y en una toma su autoridad se limita al rebase y a un QR REBASE_RECONCILIATION (§8.9). En el rebase 2, con M2 {x1p→x1pp, a0p→a0pp, k0p→k0pp}, L1/1 sigue en LAUNCHING. Su `Target.commit` = x1 no figura en M2.Commits ni es ancestro de `main_before`. Por D2-2, STOP sin publicar; por §8.8, paso 4, la rama vuelve a `branch_before`. (6) C no puede publicar el LAUNCHED, el BUDGET_RESERVED ni el LAUNCH_UNCERTAIN que resolverían L1/1. Cada uno es un QU ORDINARY (§20.6) que necesita el rebase previo. D2-7 y D2-8 impiden resolverlo en el QU de reconciliación, y LOOP_CLOSED exige que ningún intento quede sin terminar. La unidad queda detenida y solo sale por una excepción no prevista o por una A-n (16.7, 16.11). Sin embargo, la imagen sí es demostrable: la cadena [M1, M2] lleva x1 a x1pp, con el mismo blob, y es exactamente lo que D2-6 (2) usará después para replanificar. Lo reproduje sobre el modelo del arnés custodiado (traza ad hoc; salida propia adhoc_two_rebases.out.json): [antes, rebase 1] = VALID; [antes, rebase 1, rebase 2] = INVALID con exactamente {A1-P08} («Target de LAUNCHING L1/1 sin imagen en el mapa»); chain(x1, [M1, M2]) = resolve(Target) = x1pp; desde el punto del rebase 2, la rama (2) de D2-6 (BUDGET_RESERVED con un InvocationId nuevo sobre x1pp y el mismo reserved_at) da VALID; y si falta M1 en la historia, chain = null. La secuencia c3-obs-segundo-rebase-con-LAUNCHING-pendiente-para-sin-publicar de F4 experimental documenta el mismo STOP como esperado.",
+     "CorrectionRequired": "En D2-2, fila LAUNCHING, sustituir «Su `Target.commit` debe figurar en `RebaseMap.Commits[]` con su imagen acreditada, o ser ancestro de `main_before`; si no, STOP sin publicar» por «Su `Target` debe resolver por ResolveBranchRef (D2-10) con `H` = el `custody.rebase_history[]` de n, que ya incluye el mapa nuevo (D2-9): imagen en el mapa nuevo, commit no reescrito o imagen probada por la cadena completa, con el mismo `path` y `blob`. Si no resuelve (falta un mapa intermedio, `PatchIdEqual` es falso o el blob es otro), STOP sin publicar». El intento no cambia: conserva su invocación y su `Target` como intención histórica, y D2-3, D2-6, D2-7 y D2-8 siguen igual. En C-15 (d)/(e) y C-29 (i), añadir el caso «LAUNCHING sin resolver a través de dos rebases, también en una toma». Positivo: el segundo QU o QR reconcilia, y después se aplican las tres ramas de D2-6 con la imagen de la cadena. Negativo: con un mapa intermedio ausente o con otro blob, STOP sin publicar. En el arnés, A1-P08 debe resolver por la cadena el `Target` de un intento en LAUNCHING; hacen falta una traza positiva con dos rebases y su negativa sin M1, y la secuencia c3-obs pasa a VALID. Responder la pregunta 17 del paquete y declarar el cambio en §10. Alternativa admisible solo si A-1 la declara con su delta y su materialidad: conservar el STOP y fijar una salida determinista, por ejemplo permitir sobre `branch_before` el QU que resuelve el intento antes del rebase de apertura, como excepción explícita a WORKFLOW §4.2 y a V14 §8.9. Ningún esquema F3 cambia: `RebaseMap.Commits[]` ya contiene la cadena.",
+     "PremiseRefs": [
+      {
+       "Path": "docs/initiatives/I-62-A-1.md",
+       "Section": "§3.3, D2-2",
+       "LineStart": 202,
+       "LineEnd": 202,
+       "Quote": "intento en LAUNCHING → **sin cambio**: conserva su invocación y su `Target` como intención histórica. Su `Target.commit` debe figurar en `RebaseMap.Commits[]` con su imagen acreditada, o ser ancestro de `main_before`; si no, STOP sin publicar. Su destino lo decide después la evidencia de arranque (D2-6)"
+      },
+      {
+       "Path": "docs/initiatives/I-62-A-1.md",
+       "Section": "§3.3, D2-6",
+       "LineStart": 206,
+       "LineEnd": 206,
+       "Quote": "(2) **no arrancó**, con la vigencia abierta → LAUNCHING → BUDGET_RESERVED (caso B.1) con una invocación **nueva** (`InvocationId` nuevo) reconstruida sobre las imágenes como en D2-2: el `Target` pasa a la imagen de ResolveBranchRef cuando el original ya no es ancestro de HEAD; `reserved_at` no cambia y no se consume otro lanzamiento; la invocación anterior queda custodiada como intención histórica;"
+      },
+      {
+       "Path": "docs/initiatives/I-62-A-1.md",
+       "Section": "§3.3, D2-8",
+       "LineStart": 208,
+       "LineEnd": 208,
+       "Quote": "se añade: «… y en la orquestación, `loop.phase`, `architect_budgets[]`, `budgets`, `findings[]`, los estados y `reserved_at` de los intentos, y el `path` y el `blob` de todo objeto, iguales»"
+      },
+      {
+       "Path": "docs/initiatives/I-62-A-1.md",
+       "Section": "§3.3, D2-9",
+       "LineStart": 209,
+       "LineEnd": 209,
+       "Quote": "Recibe, en orden, **cada** `RebaseMap` reconciliado: exactamente uno en un QU o QR REBASE_RECONCILIATION, y en el Q7 o QR que cierra una ventana, todos los mapas de los rebases de esa ventana en el orden en que ocurrieron (A62-A1R-O4; nunca una composición que pierda un paso)."
+      },
+      {
+       "Path": "docs/initiatives/I-62-A-1.md",
+       "Section": "§3.3, D2-10",
+       "LineStart": 210,
+       "LineEnd": 210,
+       "Quote": "(2) si no, sea i el primer mapa de H con `Commit` como `OriginalSha` en `Commits[]`; si no hay ninguno → UNRESOLVED. Se toma c = su `ImageSha` (con `PatchIdEqual` = true; si no, UNRESOLVED). Para cada mapa j posterior a i, en orden: si c figura como `OriginalSha` en j, c pasa a su `ImageSha` con las mismas condiciones; si no, c debe ser ancestro de `MainBeforeSha` de j (no reescrito); si tampoco lo es, falta un paso de la cadena → UNRESOLVED;"
+      },
+      {
+       "Path": "docs/initiatives/I-62-A-1.md",
+       "Section": "§3.3, D2-11",
+       "LineStart": 211,
+       "LineEnd": 211,
+       "Quote": "Los artefactos históricos nunca se reescriben: los intentos y resultados completados conservan sus referencias originales y se validan con ResolveBranchRef cuando hay que reconstruirlos; una invocación nueva o replanificada reconstruye sus referencias vivas sobre las imágenes (D2-2, D2-6)"
+      },
+      {
+       "Path": "docs/initiatives/I-62-proposal-v14.md",
+       "Section": "§8.8, Secuencia, paso 4",
+       "LineStart": 520,
+       "LineEnd": 520,
+       "Quote": "4. Si alguna imagen o identidad de parche no se acredita: la rama local vuelve a `branch_before`, **no se publica nada** y STOP (16.7). No se continúa a Q0."
+      },
+      {
+       "Path": "docs/initiatives/I-62-proposal-v14.md",
+       "Section": "§8.9, Problema que resuelve",
+       "LineStart": 559,
+       "LineEnd": 560,
+       "Quote": "WORKFLOW §4 le exige rebasar antes de escribir si `main` avanzó, y el QR es una escritura."
+      },
+      {
+       "Path": "docs/initiatives/I-62-proposal-v14.md",
+       "Section": "§8.9, sin avance de main",
+       "LineStart": 590,
+       "LineEnd": 591,
+       "Quote": "**Sin avance de `main`,** T16 y T12b siguen como hasta ahora: un QR ORDINARY sin rebase. Esto es una especialización declarada del orden de toma bajo OD-1, no un permiso para trabajar antes de rebasar."
+      },
+      {
+       "Path": "docs/WORKFLOW.md",
+       "Section": "§4, punto 2",
+       "LineStart": 154,
+       "LineEnd": 155,
+       "Quote": "**Cada sesión — al abrir**: si el trunk avanzó, **rebase** sobre su punta antes de escribir una línea."
+      },
+      {
+       "Path": "docs/initiatives/I-62-proposal-v14.md",
+       "Section": "§20.6, estados durables de un intento",
+       "LineStart": 1558,
+       "LineEnd": 1558,
+       "Quote": "**Estados durables de un intento** (A62-V9-02). Cada uno se publica en un QU ORDINARY (§8.1) por CAS; el `pending_invocation` de V9 desaparece:"
+      },
+      {
+       "Path": "docs/initiatives/I-62-proposal-v14.md",
+       "Section": "§20.6, recuperación, caso B",
+       "LineStart": 1582,
+       "LineEnd": 1582,
+       "Quote": "**no se relanza** hasta resolver la terminación y la identidad con la operación 7 del adapter ligada al `RunId`."
+      },
+      {
+       "Path": "docs/initiatives/I-62-proposal-v14.md",
+       "Section": "§20.8",
+       "LineStart": 1652,
+       "LineEnd": 1652,
+       "Quote": "Si A desaparece con un intento a medias, C aplica la recuperación por estado de §20.6 (casos A-D)."
+      },
+      {
+       "Path": "docs/AUTOMATION_PLAN.md",
+       "Section": "16.11, Recuperación",
+       "LineStart": 672,
+       "LineEnd": 673,
+       "Quote": "**Recuperación:** REWORK → corrección según 16.8, si el contrato la autoriza, volviendo al paso (1) de 16.4; BLOCKED → el Coordinator resuelve la precondición y se reejecuta dentro del tope de 16.8; STOP → causa raíz en `analysis.md` y decisión del Coordinator, o del Owner si la materia es OWNER-RESERVED. No hay continuación especulativa."
+      },
+      {
+       "Path": "docs/INITIATIVE_LIFECYCLE.md",
+       "Section": "§5",
+       "LineStart": 166,
+       "LineEnd": 168,
+       "Quote": "Un hallazgo es `REQUIRED` si activa M-01..08 sobre un elemento congelable, deja un invariante sin obligacion de prueba, produce comportamiento observable distinto o revela un elemento congelable materialmente incorrecto, no ejecutable o no verificable."
+      }
+     ],
+     "WhyItMatters": "Combina el caso de portabilidad que V14 hace obligatorio (§20.8, C-29) con el rebase de apertura que WORKFLOW exige cuando `main` avanza. Basta una caída entre el QR de una toma y la resolución del intento. El resultado no es un fallo cerrado recuperable: la unidad queda sin ninguna transición válida, para un bucle de cualquier tipo, y solo sale por una excepción no prevista o por una A-n. Es M-03 y M-04 dentro de FC-02. Además, la regla contradice al resto de A-1: D2-6, D2-10, D2-11 y D2-12 aceptan la cadena custodiada como prueba de imagen, y esta fila es la única que exige el mapa del rebase en curso. El oráculo previsto codifica el bloqueo como esperado: C-15, C-29, A1-P08 y c3-obs."
+    }
+   ],
+   "OptionalFindings": [
+    {
+     "FindingId": "A62-A1T-O1",
+     "AffectedDelta": "§2.3, D1-17 («Solicitudes del bucle REVIEWER»), con efecto en (1), en el marcador de D1-18 (E) y en `last_request` de D1-19",
+     "Note": "«abiertas después del par NONE → REVIEW_PENDING que abrió el bucle» admite una lectura que excluye la primera solicitud. Por V14 §20.5, el QU que publica REVIEW_PENDING abre la solicitud lógica, así que la primera se abre en ese mismo par. Con esa lectura, un bucle de una ronda no tendría ninguna «solicitud del bucle»: faltaría la «última solicitud» para (1), para el marcador de (E) y para `last_request`. El arnés usa la lectura inclusiva (una reserva posterior al último cierre del REVIEWER). Conviene escribir «abiertas en ese par o después». Para la reconstrucción sin historia, también conviene decir que son las solicitudes con `loop_instance_id` = `null` posteriores, en el orden append-only de `review_requests[]`, a la `last_request` del último registro de `reviewer_closures[]`. Es una precisión sin cambio de significado.",
+     "PremiseRefs": [
+      {
+       "Path": "docs/initiatives/I-62-A-1.md",
+       "Section": "§2.3, D1-17",
+       "LineStart": 152,
+       "LineEnd": 152,
+       "Quote": "**Solicitudes del bucle REVIEWER:** las de `loop_instance_id` = `null` abiertas después del par NONE → REVIEW_PENDING que abrió el bucle, bajo cualquier autoridad que lo haya gobernado (también una sustituida), nunca por la autoridad vigente (A62-A1S-01)."
+      },
+      {
+       "Path": "docs/initiatives/I-62-proposal-v14.md",
+       "Section": "§20.5, puntos durables",
+       "LineStart": 1430,
+       "LineEnd": 1430,
+       "Quote": "| REVIEW_PENDING / REREVIEW_PENDING | QU ORDINARY | solicitud lógica abierta; su intento en INVOCATION_PLANNED o BUDGET_RESERVED (§20.6) | `loop.object` |"
+      }
+     ]
+    },
+    {
+     "FindingId": "A62-A1T-O2",
+     "AffectedDelta": "A-1 §1 (57-59), §7 (281-286), §9 (fila OBS-A1-01) y §11; paquete §1 («Cierre») y preguntas 12 y 15; arnés (descripción de A1-P02); f4-exp/combo-result.json («Asserted») y README de f4-exp",
+     "Note": "Hay textos desfasados, sin cambio de significado. En A-1: §1 no cita A62-A1A-01 ni A62-A1S-01..02 entre lo incorporado; §7 solo cierra los caminos de la revisión ac67; la fila OBS-A1-01 de §9 no lista las trazas a62-a1a-01-* ni a62-a1s-*; y §11 solo enlaza el registro r2. En el paquete: «Cierre» omite A62-A1S-01..02; la pregunta 12 todavía dice que D1-17 identifica las solicitudes «por la `Authorization` de su invocación», cuando esta versión lo sustituye por la pertenencia por apertura; y la pregunta 15 habla de un «único delta para EXECUTION», aunque §1 declara dos. En la evidencia: la descripción de A1-P02 dice «a null solo en LOOP_CLOSED de ARCHITECT_REVIEW», pero el código también admite el cierre del REVIEWER; y combo-result.json declara «Asserted: … blob 39c2f831» aunque se generó con el arnés 6b051db7.",
+     "PremiseRefs": [
+      {
+       "Path": "docs/initiatives/I-62-architect-package-A-1.md",
+       "Section": "§4, pregunta 12",
+       "LineStart": 144,
+       "LineEnd": 145,
+       "Quote": "**Pertenencia al bucle REVIEWER.** Sin identidad de bucle, D1-17 identifica las solicitudes del bucle por la `Authorization` de su invocación (el contrato de gate). Con D1-20 esa autoridad no se reabre. ¿Es determinista y suficiente?"
+      }
+     ]
+    },
+    {
+     "FindingId": "A62-A1T-O3",
+     "AffectedDelta": "§5, C-38 (tercera revisión) y C-14/C-15; en el arnés, A1-R05",
+     "Note": "A62-A1S-O3 está en el texto de D1-20: no se abre con una autoridad SUPERSEDED por una decisión custodiada. Pero C-38 no tiene su negativo, y A1-R05 solo consulta `reviewer_closures[]`, así que ninguna traza lo ejerce. Lo mismo pasa con el segundo delta de EXECUTION (A62-A1S-O1: D2-11 en el A2' de `Executor.BindingRef`), que no tiene un caso propio en C-14 ni en C-15. Conviene añadir el negativo «apertura de un bucle REVIEWER con una autoridad SUPERSEDED en un bucle anterior», en C-38 y en A1-R05, y el caso «A2' de una delegación de EXECUTION con un `BindingRef` CUSTODIED a través de uno y de dos rebases», en C-14 o C-15. Las dos reglas ya están en el texto, y las cubren en general la no resurrección de C-38 y C-15 (f).",
+     "PremiseRefs": [
+      {
+       "Path": "docs/initiatives/I-62-A-1.md",
+       "Section": "§2.3, D1-20",
+       "LineStart": 155,
+       "LineEnd": 155,
+       "Quote": "**Apertura (regla de par):** en NONE → REVIEW_PENDING con `n.loop.type` = REVIEWER, `n.loop.action_validity` está OPEN, su `authorization_id` es el de `n.loop.authorization`, y no figura en el `validity.authorization_id` de ningún registro de `p.reviewer_closures[]` ni es una autoridad sustituida (SUPERSEDED) por una decisión custodiada del Coordinator (A62-A1S-O3)."
+      }
+     ]
+    }
+   ],
+   "FindingDispositions": [
+    {
+     "FindingId": "A62-A1-01",
+     "State": "CLOSED",
+     "Rationale": "No hay contraejemplo nuevo. `loop.instance_id` = ARL-<record_version> es la clave de una sola entrada de `architect_budgets[]`, con `authorizations[]` append-only y `caps` mínimos que nunca suben. Las solicitudes se ligan al bucle, y una sustitución o una enmienda continúa la misma entrada sin reinicio (D1-1..D1-3, D1-5, D1-6, D1-8, D1-11 y D1-12). Las trazas a62-a1-01-* se reproducen.",
+     "PremiseRefs": []
+    },
+    {
+     "FindingId": "A62-A1-02",
+     "State": "CLOSED",
+     "Rationale": "No hay contraejemplo nuevo. D1-9 cierra con ARCHITECT_SATISFIED, EXHAUSTED, EXPIRED o REVOKED, o con la revocación en la propia decisión, sin trabajo vivo y conservando el `ended_reason`. D1-8 (ii) continúa sin reescribir EXPIRED ni REVOKED. Las trazas a62-a1-02-* se reproducen.",
+     "PremiseRefs": []
+    },
+    {
+     "FindingId": "A62-A1-03",
+     "State": "CLOSED",
+     "Rationale": "La identidad y el presupuesto de FC-01 siguen limitados a ARCHITECT_REVIEW (D1-13). El REVIEWER es representable sin `ReviewLoopAuthorization`, sin `instance_id` y sin entrada, y `budgets` solo cuenta las solicitudes con `loop_instance_id` = `null` (D1-4). La cláusula REVIEWER de D1-10 ya conserva CORRECTING → PUBLISHED.",
+     "PremiseRefs": []
+    },
+    {
+     "FindingId": "A62-A1-04",
+     "State": "CLOSED",
+     "Rationale": "Su caso queda resuelto: un intento en LAUNCHING a través de un rebase, con el caso B.1 (D2-2, D2-3 y D2-6, las tres ramas, sin doble consumo; trazas a62-a1-04-*). El bloqueo con un segundo rebase y el intento aún en LAUNCHING es un defecto nuevo de la condición de D2-2, con contraejemplo propio: A62-A1T-01. No es un resto del contraejemplo de A62-A1-04.",
+     "PremiseRefs": []
+    },
+    {
+     "FindingId": "A62-A1-05",
+     "State": "CLOSED",
+     "Rationale": "No hay contraejemplo nuevo. D2-12 exige el mismo `path` y el mismo `blob`, y el mismo commit o una imagen probada por la cadena. Con otro blob, INVALID; sin mapa, fallo cerrado. B.10.0 no cambia. Las trazas a62-a1-05-* y a62-a1r-02-reviewer-ingesta-tras-rebase se reproducen.",
+     "PremiseRefs": []
+    },
+    {
+     "FindingId": "A62-A1-06",
+     "State": "CLOSED",
+     "Rationale": "La resolución de las referencias de rama es correcta y falla cerrado. D2-9 custodia cada mapa en orden; D2-10 y D2-11 enmiendan de forma explícita los tres pasajes F3. Uno y dos rebases, el mapa intermedio ausente, el blob cambiado y el clon limpio se reproducen. A62-A1T-01 afecta a la condición de D2-2 sobre el `Target` de un intento en LAUNCHING, que no usa esta resolución, y se dispone aparte.",
+     "PremiseRefs": []
+    },
+    {
+     "FindingId": "OBS-A1-01",
+     "State": "CLOSED",
+     "Rationale": "El objetivo dispuesto en decisiones §39 se cumple. REVIEWER_SATISFIED tiene su guarda de tipo (D1-16). Sus condiciones usan la pertenencia por apertura y el conjunto de todos los BLOCKING del REVIEWER de la unidad, incluidos los heredados; STILL_OPEN nunca satisface; y ADVISORY no bloquea con `gate-contract/v2` (D1-17). Los cierres son (S) y (E), con EXHAUSTED, EXPIRED o REVOKED, o con la revocación en la decisión, conservando el motivo y sin satisfacer el requisito (D1-18). `reviewer_closures[]` es append-only (D1-19). D1-20 impide la resurrección, también la de una autoridad SUPERSEDED, y D1-21 declara la enmienda de los textos F3. CORRECTING → PUBLISHED se conserva. R1..R10 y las trazas a62-a1r-*, a62-a1a-* y a62-a1s-* se reproducen. A62-A1T-01 es de FC-02 y no depende del tipo de bucle.",
+     "PremiseRefs": [
+      {
+       "Path": "docs/initiatives/I-62-A-1.md",
+       "Section": "§2.3, D1-17",
+       "LineStart": 152,
+       "LineEnd": 152,
+       "Quote": "**REVIEWER_SATISFIED** se publica en el QU que ingiere el resultado, y solo si: (1) la última solicitud del bucle tiene un `reviewer-result/v1` ingerido con `outcome` VALID; (2) ningún intento de las solicitudes del bucle es no terminal; (3) ningún linaje BLOCKING con `issuer` REVIEWER **de la unidad** queda en OPEN o STILL_OPEN: ni los abiertos en una solicitud del bucle ni los heredados de bucles REVIEWER anteriores, que D1-15 pone en su `OpenFindings` (A62-A1A-01, A62-A1S-01); una disposición STILL_OPEN nunca satisface; y (4) el requisito operativo exacto del contrato de gate está satisfecho."
+      }
+     ]
+    },
+    {
+     "FindingId": "A62-A1R-01",
+     "State": "CLOSED",
+     "Rationale": "D1-18 (E) admite EXHAUSTED junto a EXPIRED y REVOKED. Exige la decisión `I62-REVIEWER-LOOP-CLOSE`, conserva el motivo y nunca lo reescribe. El requisito queda sin satisfacer, los BLOCKING siguen abiertos y la operación sigue bloqueada, sin trabajo vivo. D1-19, §7, §9 y C-38 están alineados. Las trazas a62-a1r-01-* se reproducen: el positivo y los negativos (sin decisión, con un intento vivo y con un registro que finge REVIEWER_SATISFIED), cada negativo por {A1-R03}.",
+     "PremiseRefs": []
+    },
+    {
+     "FindingId": "A62-A1R-02",
+     "State": "CLOSED",
+     "Rationale": "Hay una regla por tipo. Con REVIEWER, `loop.object` cambia en CORRECTING → PUBLISHED, pasa a `null` solo en su cierre, y su `commit` pasa a la imagen solo en REBASE_RECONCILIATION, con el mismo `path` y `blob`. Con EXECUTION rige V14 (`null`) y, si alguna vez no lo es, la misma regla de imagen; el delta está declarado en §1 y §4. No queda ninguna afirmación simultánea de «sin cambio». Las trazas a62-a1r-02-* fallan por I-H02.",
+     "PremiseRefs": []
+    },
+    {
+     "FindingId": "A62-A1R-03",
+     "State": "CLOSED",
+     "Rationale": "D1-20 fija la identidad (`<path>@<blob>#REVIEWER`) y la apertura: autoridad OPEN = `loop.authorization`, ausente de `reviewer_closures[]` y no SUPERSEDED. No hay resurrección por cierre, sesión ni rebase; la continuación exige otra autoridad con su decisión; y el historial y lo consumido se conservan. D1-21 es una enmienda propuesta de 16.20 y de VALIDITY de §14.3, y M-05 de OBS-A1-01 = sí. Las trazas a62-a1r-03-reapertura-* fallan por {A1-R05}.",
+     "PremiseRefs": []
+    },
+    {
+     "FindingId": "A62-A1S-01",
+     "State": "CLOSED",
+     "Rationale": "La pertenencia al bucle va por apertura, bajo cualquier autoridad que lo haya gobernado. (3) cuenta todo BLOCKING del REVIEWER de la unidad, también los heredados; STILL_OPEN nunca satisface; y (S) usa el mismo conjunto. C-38 tiene el positivo y los negativos pedidos. Lo comprobé sobre el arnés: la traza de sustitución da VALID con la pertenencia por autoridad e INVALID {A1-R02} con la de apertura, así que discrimina; la de STILL_OPEN heredado da INVALID {A1-R02}. No abre otro camino: el conjunto de la unidad es conservador, y ningún requisito se satisface sin evidencia positiva (A62-A1R-O5).",
+     "PremiseRefs": []
+    },
+    {
+     "FindingId": "A62-A1S-02",
+     "State": "CLOSED",
+     "Rationale": "La cláusula REVIEWER de D1-10 conserva CORRECTING → PUBLISHED de V14 y abre la re-revisión sobre el objeto corregido; §10 lo declara. C-38 tiene el positivo (corrección, re-revisión y BLOCKING CLOSED, hasta REVIEWER_SATISFIED) y el negativo. Las trazas a62-a1s-02-* se reproducen: la de la re-revisión sobre el objeto anterior falla por {A1-P18}.",
+     "PremiseRefs": [
+      {
+       "Path": "docs/initiatives/I-62-A-1.md",
+       "Section": "§2.3, D1-10",
+       "LineStart": 145,
+       "LineEnd": 145,
+       "Quote": "**Con REVIEWER:** se fija en la apertura (NONE → REVIEW_PENDING, V14); **cambia en CORRECTING → PUBLISHED (V14 I-P13), al objeto corregido, y la re-revisión se abre sobre él** (A62-A1S-02); su `commit` pasa a la imagen solo en REBASE_RECONCILIATION (D2-4), con el **mismo** `path` y `blob`; pasa a `null` solo en su LOOP_CLOSED (D1-18); en ningún otro par cambia."
+      }
+     ]
+    }
+   ],
+   "OptionalCorrections": [
+    {
+     "Id": "A62-A1-O1",
+     "Assessment": "CONFIRMED",
+     "Note": "D1-7 es una regla de par exacta: una entrada nueva, ARL-<n.record_version>, con una RLA nunca usada."
+    },
+    {
+     "Id": "A62-A1-O2",
+     "Assessment": "CONFIRMED",
+     "Note": "D1-14: el `BudgetSnapshot` copia la entrada del bucle, o `budgets` para el REVIEWER, y se conserva al replanificar."
+    },
+    {
+     "Id": "A62-A1-O3",
+     "Assessment": "CONFIRMED",
+     "Note": "D1-15: los linajes son de la unidad y se heredan en `OpenFindings` según la autoridad del revisor (A62-A1R-O3). Ahora la herencia del REVIEWER sí bloquea (D1-17 (3))."
+    },
+    {
+     "Id": "A62-A1-O4",
+     "Assessment": "CONFIRMED",
+     "Note": "El fin histórico se lee de `authorizations[]` con `closed_at`/`closed_by` (D1-9), o de `reviewer_closures[]` (D1-19)."
+    },
+    {
+     "Id": "A62-A1-O5",
+     "Assessment": "CONFIRMED",
+     "Note": "El arnés se reproduce byte a byte (100 trazas, conjuntos exactos y cobertura completa). Límite: A1-P08 codifica la condición de D2-2 que A62-A1T-01 pide cambiar."
+    },
+    {
+     "Id": "A62-A1R-O1",
+     "Assessment": "CONFIRMED",
+     "Note": "D1-13 enumera con exactitud las cláusulas por tipo, y D1-8 rige solo para ARCHITECT_REVIEW."
+    },
+    {
+     "Id": "A62-A1R-O2",
+     "Assessment": "CONFIRMED",
+     "Note": "D1-18 (E) admite la vigencia OPEN si la revoca la misma decisión. Usa la autoridad de revocación existente (§20.5.1 y §20.7), con el identificador que declara D1-20, sin campos, permisos ni política nuevos."
+    },
+    {
+     "Id": "A62-A1R-O3",
+     "Assessment": "CONFIRMED",
+     "Note": "D1-15: ARCHITECT y COORDINATOR para el Architect, y REVIEWER para el REVIEWER. Las trazas a62-a1r-o3-* fallan por {A1-P16}."
+    },
+    {
+     "Id": "A62-A1R-O4",
+     "Assessment": "CONFIRMED",
+     "Note": "D2-9 recibe cada mapa en orden, también los de una ventana."
+    },
+    {
+     "Id": "A62-A1R-O5",
+     "Assessment": "CONFIRMED",
+     "Note": "La satisfacción solo se acredita en positivo con REVIEWER_SATISFIED de esa autoridad, y nunca por inferencia ni por un cierre (E)."
+    },
+    {
+     "Id": "A62-A1S-O1",
+     "Assessment": "CONFIRMED",
+     "Note": "§1 y el paquete §3 declaran los dos deltas de EXECUTION. El caso de prueba sugerido (A2' a través de un rebase) no se añadió: A62-A1T-O3."
+    },
+    {
+     "Id": "A62-A1S-O2",
+     "Assessment": "CONFIRMED",
+     "Note": "D1-10 y §1 dicen que, por V14, el `loop.object` de EXECUTION es `null`, y que la cláusula solo rige si alguna vez no lo es."
+    },
+    {
+     "Id": "A62-A1S-O3",
+     "Assessment": "CONFIRMED",
+     "Note": "D1-20 excluye las autoridades SUPERSEDED por una decisión custodiada. Faltan el negativo de C-38 y su regla en el arnés: A62-A1T-O3."
+    },
+    {
+     "Id": "A62-A1S-O4",
+     "Assessment": "CONFIRMED",
+     "Note": "Los recuentos de §5 y §10 y el paquete §3 están al día. Quedan otros textos desfasados: A62-A1T-O2."
+    }
+   ],
+   "Focus": [
+    {
+     "Item": 1,
+     "Assessment": "CONFIRMED",
+     "Note": "La identidad del bucle no depende de la autorización vigente, y hay una entrada por instancia. OPEN → SUPERSEDED → sustituta y EXPIRED/REVOKED → continuación siguen en la misma entrada, sin reescribir el motivo. No hay reinicios; los topes son el mínimo y nunca suben; `authorizations[]` es append-only. Un bucle nuevo tras LOOP_CLOSED recibe una instancia y una entrada nuevas."
+    },
+    {
+     "Item": 2,
+     "Assessment": "CONFIRMED",
+     "Note": "D1-9 no cierra REQUIRED, no borra historia, no reinicia contadores ni reutiliza autorizaciones (D1-7). Exige que no quede trabajo vivo, no crea autoridad y pide decisión salvo desde ARCHITECT_SATISFIED. Los REQUIRED abiertos se heredan en `OpenFindings`."
+    },
+    {
+     "Item": 3,
+     "Assessment": "CONFIRMED",
+     "Note": "ARCHITECT_REVIEW tiene instancia, `architect_budgets[]` y RLA. REVIEWER tiene la autoridad del contrato de gate y `budgets`, sin identidad ni RLA, y conserva su ciclo de corrección. EXECUTION conserva su autoridad, sus fases, su entrada y su salida, con dos deltas declarados (D1-10 y D2-11). Ninguna semántica se filtra de un tipo a otro."
+    },
+    {
+     "Item": 4,
+     "Assessment": "CONFIRMED",
+     "Note": "REVIEWER_SATISFIED solo con REVIEWER, y nunca ARCHITECT_SATISFIED. Exige: resultado VALID ingerido en la última solicitud del bucle; ningún intento no terminal; ningún BLOCKING del REVIEWER de la unidad abierto (también los heredados), donde STILL_OPEN no satisface; y el requisito del contrato. ADVISORY no bloquea, porque `gate-contract/v2` no tiene ningún campo que endurezca B.10.2 (lo comprobé en RoleRequirements). Precisión de pertenencia: A62-A1T-O1."
+    },
+    {
+     "Item": 5,
+     "Assessment": "CONFIRMED",
+     "Note": "(S): REVIEWER_SATISFIED → LOOP_CLOSED → NONE, sin decisión y con el mismo conjunto de BLOCKING. (E): EXHAUSTED, EXPIRED o REVOKED, o la vigencia OPEN revocada por la decisión. Conserva el motivo, deja el BLOCKING abierto, el requisito sin satisfacer y la operación bloqueada. Ningún texto convierte (E) en REVIEWER_SATISFIED (D1-17 y A62-A1R-O5)."
+    },
+    {
+     "Item": 6,
+     "Assessment": "CONFIRMED",
+     "Note": "`reviewer_closures[]` es append-only, con un registro por cierre, y no es presupuesto ni identidad. Basta para recuperar el fin con los campos activos en `null`. El cierre no borra solicitudes, intentos, resultados, linajes, `budgets` ni la evidencia del fin."
+    },
+    {
+     "Item": 7,
+     "Assessment": "CHALLENGED",
+     "Note": "Con un solo rebase está confirmado: el `Target` original queda como histórico y su imagen en el mapa; STARTED, NOT STARTED (misma reserva, `InvocationId` nuevo, imagen) y UNKNOWN → LAUNCH_UNCERTAIN; sin doble consumo; y un sucesor limpio reconstruye por la cadena. Con un segundo rebase y el intento todavía en LAUNCHING, D2-2 exige el `Target` en el mapa nuevo, y la reconciliación se detiene sin salida: A62-A1T-01."
+    },
+    {
+     "Item": 8,
+     "Assessment": "CONFIRMED",
+     "Note": "D2-12: el mismo `path`, el mismo `blob` y el mismo commit, o una imagen probada por la cadena; nunca ruta, árbol, parches ni conjeturas. Con otro blob, INVALID; sin mapa, fallo cerrado."
+    },
+    {
+     "Item": 9,
+     "Assessment": "CONFIRMED",
+     "Note": "ResolveBranchRef cubre BindingRef.Location.Commit, AuthorizationRef.Commit, AuthorityRevision y ReviewSubject; las StateRef no cambian. Uno y dos rebases y el clon limpio resuelven; el mapa intermedio ausente o el blob cambiado dan UNRESOLVED. Es una enmienda declarada de la ancestría F3 para I-62. La fila LAUNCHING de D2-2 no usa esta resolución: A62-A1T-01."
+    },
+    {
+     "Item": 10,
+     "Assessment": "CONFIRMED",
+     "Note": "Ningún contrato F3 cambia de forma. `OpenFindings.Severity` admite BLOCKING y ADVISORY; `FindingDispositions.State` de reviewer-result admite STILL_OPEN; y `RebaseMap.Commits[]` trae OriginalSha, ImageSha y PatchIdEqual, con MainBeforeSha. La corrección de A62-A1T-01 tampoco exige ningún esquema."
+    },
+    {
+     "Item": 11,
+     "Assessment": "CONFIRMED",
+     "Note": "El resultado custodiado se reproduce byte a byte (SHA-256 3befd242…): 100 trazas, 34 VALID y 66 INVALID, todas con su conjunto exacto y cobertura completa. Cada negativa falla por la regla buscada, y fc01-enmendado-object-null-fuera-del-cierre falla solo por {A1-P02}. Es evidencia de apoyo: A1-P08 encoda la condición de D2-2 de A62-A1T-01."
+    },
+    {
+     "Item": 12,
+     "Assessment": "CONFIRMED",
+     "Note": "Global: M-02..M-05 sí; M-01, M-06, M-07 y M-08 no. Para OBS-A1-01, M-05 = sí. A-1 no crea autoridad del Owner, gasto, credenciales, permisos destructivos, cambios de OV ni elecciones reservadas. OwnerDecisionRequired = false."
+    },
+    {
+     "Item": 13,
+     "Assessment": "CONFIRMED",
+     "Note": "EXHAUSTED está junto a EXPIRED y REVOKED, con la decisión del Coordinator y sin reescribir el motivo. No satisface el requisito, deja los BLOCKING abiertos y la operación bloqueada, y exige que no quede trabajo vivo. Texto, estados, historial (D1-19) y C-38 están alineados."
+    },
+    {
+     "Item": 14,
+     "Assessment": "CONFIRMED",
+     "Note": "REVIEWER: `loop.object` cambia por el cierre (`null` en D1-18) y por CORRECTING → PUBLISHED; en REBASE_RECONCILIATION solo cambia su `commit`, con el mismo `path` y `blob`. EXECUTION: una sola regla compatible con V14 (`null`) y un delta condicional declarado, con su materialidad en §4."
+    },
+    {
+     "Item": 15,
+     "Assessment": "CONFIRMED",
+     "Note": "La apertura exige la autoridad vigente, ausente de `reviewer_closures[]` y no SUPERSEDED. La continuación exige otra autoridad custodiada con su decisión; el historial y el presupuesto se conservan. D1-21 declara como propuesta los deltas de 16.20 y de README §14.3, y M-05 de OBS-A1-01 = SÍ. Consecuencia que conviene tener presente: cada autoridad REVIEWER sirve a un solo bucle, así que otro requisito REVIEWER del mismo gate necesita un contrato reemitido. Es conservador y sin materia del Owner."
+    },
+    {
+     "Item": 16,
+     "Assessment": "CONFIRMED",
+     "Note": "O1, O3, O4 y O5 están incorporados (D1-13, D1-15, D2-9, D1-17 y D1-19). O2 está preparado con la autoridad de revocación existente y el identificador de D1-20, sin campos, permisos ni política nuevos."
+    },
+    {
+     "Item": 17,
+     "Assessment": "CONFIRMED",
+     "Note": "D1-17 (3) y D1-18 (S) cuentan todo BLOCKING del REVIEWER de la unidad. El camino de combo-result-before.json (c2n daba VALID) queda INVALID {A1-R02} en combo-result.json, y las trazas a62-a1a-01-* se reproducen. No abre otro camino. El efecto es conservador: un REVIEWER posterior, aunque sea de otro requisito, debe disponer los BLOCKING abiertos que recibe en `OpenFindings`, y puede hacerlo; y ningún requisito se satisface sin evidencia positiva propia."
+    },
+    {
+     "Item": 18,
+     "Assessment": "CHALLENGED",
+     "Note": "El STOP de D2-2 no es aceptable como está. Con un rebase de apertura de sesión o de toma, ni la resolución del intento ni la reconciliación pueden publicarse (WORKFLOW §4.2; V14 §8.8 y §8.9; D2-7 y D2-8), y la unidad queda sin transición válida. Hay que resolver el `Target` por la cadena (D2-10), como ya hace D2-6 (2), o declarar una salida determinista: REQUIRED A62-A1T-01, con su contraejemplo."
+    },
+    {
+     "Item": 19,
+     "Assessment": "CONFIRMED",
+     "Note": "D1-17: pertenencia por apertura, (3) con los heredados y STILL_OPEN, y D1-18 (S) con el mismo conjunto. D1-10 REVIEWER conserva CORRECTING → PUBLISHED. En el arnés, A1-R02 y A1-R03 usan la apertura, y A1-P18 exige que una solicitud nueva se abra sobre `loop.object`. Cierran A62-A1S-01..02 sin abrir otro camino; la traza de sustitución discrimina (comprobación propia)."
+    }
+   ],
+   "F3ContractCrossCheck": [
+    {
+     "Contract": "role-invocation.v1.schema.json (OpenFindings {FindingId, LineageId, Severity, Issuer}, BudgetSnapshot, Authorization, Target)",
+     "Assessment": "COMPATIBLE",
+     "Note": "Severity admite BLOCKING y ADVISORY, e Issuer admite REVIEWER. D1-14 y D1-15 son semántica, y la invocación replanificada es un registro nuevo."
+    },
+    {
+     "Contract": "relay-record.v2.schema.json (RebaseMap: MainBeforeSha, Commits[] {OriginalSha, ImageSha, PatchId, PatchIdEqual}, StateFields[])",
+     "Assessment": "COMPATIBLE",
+     "Note": "La cadena de D2-10 ya está en `Commits[]`, y `StateFields[].Field` es texto libre. La corrección de A62-A1T-01 usa los mismos campos."
+    },
+    {
+     "Contract": "gate-contract.v2.schema.json (RoleRequirements[], Materialization {Budget, Validity.Until})",
+     "Assessment": "COMPATIBLE",
+     "Note": "Ningún campo endurece B.10.2, así que ADVISORY no bloquea. D1-20 deriva la identidad de la StateRef del contrato sin ningún campo nuevo."
+    },
+    {
+     "Contract": "reviewer-result.v1.schema.json (Disposition, Findings[].Severity, FindingDispositions[].State)",
+     "Assessment": "COMPATIBLE",
+     "Note": "STILL_OPEN y BLOCKING/ADVISORY existen. La regla «STILL_OPEN nunca satisface» es semántica de `state/v2`."
+    },
+    {
+     "Contract": "architect-review-result.v1.schema.json",
+     "Assessment": "COMPATIBLE",
+     "Note": "`FindingDispositions[].EvaluatedObject` existe; D2-12 solo cambia la comparación. Lo revisé solo por grep."
+    },
+    {
+     "Contract": "binding.v1.schema.json / B.2 (BindingRef.Location, Acceptance.AuthorizationRef)",
+     "Assessment": "TEXT_AMENDMENT_DECLARED",
+     "Note": "Sin cambio de forma. Para I-62, la ancestría de `Commit` se lee con ResolveBranchRef (D2-11), también en las referencias de EXECUTION (§1)."
+    },
+    {
+     "Contract": "AUTOMATION_PLAN 16.20 (paso 3, lista «como mínimo», «Vigencia de acción y acreditación histórica»)",
+     "Assessment": "TEXT_AMENDMENT_DECLARED",
+     "Note": "D2-11, D1-12 (solo la RLA) y D1-21 son propuestas sin vigencia hasta el acuerdo y F4."
+    },
+    {
+     "Contract": "agent-execution/README §14.3 («Reproducción», criterio VALIDITY) y §14.4 regla 3",
+     "Assessment": "TEXT_AMENDMENT_DECLARED",
+     "Note": "D2-11 y D1-21 están declarados para I-62."
+    },
+    {
+     "Contract": "input-closure.v1 e input-fidelity.v1",
+     "Assessment": "COMPATIBLE",
+     "Note": "A-1 no los toca. No los leí en detalle."
+    }
+   ],
+   "CounterexampleVerification": {
+    "Traces": 100,
+    "Valid": 34,
+    "Invalid": 66,
+    "AllAsExpected": true,
+    "Notes": [
+     {
+      "Trace": "a62-a1s-01-sustitucion-con-intento-vivo-de-la-autoridad-sustituida",
+      "ClaimedReasonHolds": true,
+      "Note": "INVALID {A1-R02}. Con la pertenencia por autoridad da VALID (comprobación propia), así que discrimina A62-A1S-01."
+     },
+     {
+      "Trace": "a62-a1s-01-continuacion-satisfecha-con-STILL_OPEN-heredado",
+      "ClaimedReasonHolds": true,
+      "Note": "INVALID {A1-R02}, por el conjunto de (3) de la unidad."
+     },
+     {
+      "Trace": "a62-a1a-01-satisfecho-con-el-BLOCKING-heredado-abierto",
+      "ClaimedReasonHolds": true,
+      "Note": "INVALID {A1-R02}. Corresponde a c2n de F4 experimental, que daba VALID en combo-result-before.json y ahora da INVALID {A1-R02}."
+     },
+     {
+      "Trace": "a62-a1s-02-re-revision-sobre-el-objeto-anterior",
+      "ClaimedReasonHolds": true,
+      "Note": "INVALID {A1-P18}. Su positivo, a62-a1s-02-reviewer-corrige-y-re-revisa-la-correccion, da VALID."
+     },
+     {
+      "Trace": "a62-a1-04-LAUNCHING-sin-imagen-en-el-mapa",
+      "ClaimedReasonHolds": true,
+      "Note": "INVALID {A1-P08} con un solo rebase. Mi traza ad hoc con dos rebases y el intento en LAUNCHING también da INVALID {A1-P08}, aunque chain(x1, [M1, M2]) = x1pp resuelve: es el bloqueo de A62-A1T-01."
+     },
+     {
+      "Trace": "c3-obs-segundo-rebase-con-LAUNCHING-pendiente-para-sin-publicar (F4 experimental)",
+      "ClaimedReasonHolds": true,
+      "Note": "Falla por {A1-P08} como se declara, pero ese esperado codifica el defecto A62-A1T-01. No pude reejecutar combo_sequences.py, que no está en el cierre."
+     },
+     {
+      "Trace": "fc01-enmendado-object-null-fuera-del-cierre",
+      "ClaimedReasonHolds": true,
+      "Note": "INVALID exactamente {A1-P02}."
+     }
+    ]
+   },
+   "Materiality": {
+    "Overall": {
+     "M01": "NO",
+     "M02": "YES",
+     "M03": "YES",
+     "M04": "YES",
+     "M05": "YES",
+     "M06": "NO",
+     "M07": "NO",
+     "M08": "NO"
+    },
+    "ObsA101": {
+     "M01": "NO",
+     "M02": "YES",
+     "M03": "YES",
+     "M04": "YES",
+     "M05": "YES",
+     "M06": "NO",
+     "M07": "NO",
+     "M08": "NO"
+    },
+    "Note": "Coincido con A-1 y con el Coordinator. M-01 = no: el Coordinator ya decide las RLA, los contratos de gate, las revocaciones y los cierres. M-08 = no: ADR-0046 #7, conservado por ADR-0048, rige `attempts`, que no cambia. Para OBS-A1-01, M-05 = SÍ por D1-21. A62-A1T-01 queda dentro de M-03 y M-04 de FC-02: su corrección no añade ningún disparador, esquema ni materia del Owner."
+   },
+   "OwnerAuthorityCheck": {
+    "Spending": "NONE: cada lanzamiento sigue exigiendo elegibilidad con consumo cubierto (ADR-0046 #4); los topes nunca suben; y cada bucle nuevo o continuación exige una decisión del Coordinator",
+    "Credentials": "NONE",
+    "Destructive": "NONE",
+    "NewOVScenario": "NONE",
+    "OVRemovalOrReassignment": "NONE",
+    "OwnerPolicyChoice": "NONE",
+    "NewOwnerAuthority": "NONE",
+    "OwnerDecisionRequired": false
+   },
+   "LegacyApplicability": {
+    "AppliesOnlyToI62": true,
+    "NoRetroactiveI61Change": true,
+    "NoI64FixClaim": true,
+    "Note": "Applies-to: I-62. Las enmiendas de texto F3 son «para I-62», sobre superficies inactivas hasta I62_EFFECTIVE_SHA. A-1 no toca `/v1`, las unidades I61, F1 ni F2, y el paquete declara que no repara la deuda nc2 de I-64."
+   },
+   "IfAgreed": {
+    "A62_A1_01_CLOSED": null,
+    "A62_A1_02_CLOSED": null,
+    "A62_A1_03_CLOSED": null,
+    "A62_A1_04_CLOSED": null,
+    "A62_A1_05_CLOSED": null,
+    "A62_A1_06_CLOSED": null,
+    "OBS_A1_01_CLOSED": null,
+    "A62_A1R_01_CLOSED": null,
+    "A62_A1R_02_CLOSED": null,
+    "A62_A1R_03_CLOSED": null,
+    "A62_A1S_01_CLOSED": null,
+    "A62_A1S_02_CLOSED": null,
+    "FC01Resolved": null,
+    "FC02Resolved": null,
+    "NoOwnerDecisionRequired": null,
+    "SuitableForCoordinatorAgreement": null,
+    "F4MayProceedAfterCoordinatorAgreed": null
+   },
+   "KnownLimitations": [
+    "Acciones usadas, todas de la tabla del prompt. ID-1: rev-parse de HEAD y de <commit>:<ruta>, status --porcelain, log --oneline -10, config --get core.autocrlf y cat-file -s HEAD:<ruta>, este último con HEAD ya verificado, como admite RD-1. RD-1: git show 411e01ce|HEAD:<ruta> con sed -n, awk, grep, wc o sha256sum. RD-2: sed -n, awk, grep, wc, head, tail, cat, printf y echo sobre archivos del cierre y salidas propias. EX-1: el arnés con un argumento de salida propia, y dos scripts propios (escritos con cat y heredoc) que lo importan por su ruta literal, sin listados, procesos ni red. EX-2: dotnet test. Grep solo con `path` = un archivo (I-62-evidence.md, WORKFLOW.md y AGENTS.md). No hubo escrituras en el repositorio, commits, push ni agentes.",
+    "Desviaciones literales de forma, todas de solo lectura o sobre salidas propias. (1) Dos `cd` fueron a subdirectorios del clon y no a su raíz. Uno fue a …/f4-exp, para leer archivos del cierre; el harness avisó de que el directorio principal pasó allí, y volví a la raíz del clon en el comando siguiente. El otro fue a …/schemas, seguido en el mismo comando de `cd D:/r62-arch-a1r5`. (2) Usé una vez `sed -i` para editar mi propio script del scratchpad; RD-2 solo lista `sed -n`. (3) Un bucle `for` envolvió `printf` y `git show | sed -n | awk` para medir la longitud de las líneas citadas.",
+    "Trazas ad hoc (evidencia de apoyo, no autoridad; el REQUIRED se apoya en A-1, V14, WORKFLOW, AUTOMATION_PLAN y LIFECYCLE). adhoc_two_rebases.out.json: dos rebases con un intento en LAUNCHING (VALID tras el primero; INVALID {A1-P08} con el segundo; cadena y ResolveBranchRef = x1pp; D2-6 (2) VALID desde ese punto; cadena nula sin M1). adhoc_checks.out.json: recuentos 100/34/66 y la discriminación de la pertenencia por apertura.",
+    "Mi ejecución del arnés coincide byte a byte con el blob del resultado custodiado (SHA-256 3befd242…; blob 71c46ef9). El clon tiene core.autocrlf = true: el archivo de A-1 en el árbol ocupa 68 430 bytes con CRLF, frente a 68 032 del blob, con la misma numeración de líneas.",
+    "Lecturas parciales o no hechas, que no considero necesarias para el veredicto: HANDOFF, ROADMAP, ARCHITECTURE, FOUNDATIONS, README, los Context Packs, PROMPT_TEMPLATES y el README de initiatives; freeze-issues.md, f4-dossier.md y rebase-map.json; ADR-0046 y ADR-0048, solo por grep; binding.v1, relay-record.v2 y architect-review-result.v1, solo por grep; input-closure.v1 e input-fidelity.v1, sin leer. De V14 leí solo 497-592, 1403-1655 y 2128-2307; de AUTOMATION_PLAN, solo 578-707 y 846-1105; de README de agent-execution, solo 287-466. Las líneas 601-719 y 920-994 del arnés no las leí, pero se ejecutaron. No pude reejecutar combo_sequences.py, que no está en el cierre.",
+    "Fidelidad: todo llegó en UTF-8, sin U+FFFD ni «?» sustitutos. Las líneas citadas tienen menos de 2 000 caracteres y las contrasté con git show | sed -n (la mayor es la 152 de A-1, con 1 979). Las líneas largas de las decisiones (657, 734, 750, 768 y 787) y la línea 79 de output.json de 86e3 no se citan.",
+    "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj en el clon (paso 4 de «Leer primero» de AGENTS; EX-2): 12 618/12 618 correctas, 0 errores, 0 omitidas, 1 m 34 s, con el log en el scratchpad. Es una comprobación local del revisor, no evidencia de gate. No ejecuté la suite UI. Después, el clon y el worktree siguen limpios en 411e01ce.",
+    "No puedo observar mi effort ni el identificador de mi sesión, así que los declaro UNKNOWN; la identidad efectiva la aporta el invocador. Envié al usuario dos avisos breves de progreso, que pidió el harness, sin contenido del veredicto."
+   ],
+   "RecommendedNextAction": "Custodiar este resultado literal, el cierre de insumos, la identidad observada y la auditoría de lecturas. El Coordinator dispone A62-A1T-01 (REQUIRED) y A62-A1T-O1..O3 (OPTIONAL), y decide la acreditación de esta corrida. La corrección es acotada: en D2-2, resolver por ResolveBranchRef, con la historia de mapas, el `Target` de un intento en LAUNCHING, o declarar una salida determinista alternativa con su delta; y alinear C-15, C-29, el arnés (A1-P08 y una traza de dos rebases) y la secuencia c3-obs. A62-A1-01..06, OBS-A1-01, A62-A1R-01..03 y A62-A1S-01..02 quedan CLOSED en este dictamen y no deberían reabrirse sin un contraejemplo nuevo. Según el prompt, esta es la última invocación del Architect que permite la orden nocturna (§3.E). La revisión de la versión corregida, que puede limitarse al delta de D2-2 y a sus obligaciones, necesita una autorización nueva del Coordinator. La producción de F4 sigue bloqueada; no hace falta ninguna decisión del Owner; I-61 sigue activo."
+  }
+ },
+ "PremiseCheck": [
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A1T-01",
+   "Path": "docs/initiatives/I-62-A-1.md",
+   "Lines": [
+    202,
+    202
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A1T-01",
+   "Path": "docs/initiatives/I-62-A-1.md",
+   "Lines": [
+    206,
+    206
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A1T-01",
+   "Path": "docs/initiatives/I-62-A-1.md",
+   "Lines": [
+    208,
+    208
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A1T-01",
+   "Path": "docs/initiatives/I-62-A-1.md",
+   "Lines": [
+    209,
+    209
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A1T-01",
+   "Path": "docs/initiatives/I-62-A-1.md",
+   "Lines": [
+    210,
+    210
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A1T-01",
+   "Path": "docs/initiatives/I-62-A-1.md",
+   "Lines": [
+    211,
+    211
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A1T-01",
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Lines": [
+    520,
+    520
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A1T-01",
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Lines": [
+    559,
+    560
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A1T-01",
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Lines": [
+    590,
+    591
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A1T-01",
+   "Path": "docs/WORKFLOW.md",
+   "Lines": [
+    154,
+    155
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A1T-01",
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Lines": [
+    1558,
+    1558
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A1T-01",
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Lines": [
+    1582,
+    1582
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A1T-01",
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Lines": [
+    1652,
+    1652
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A1T-01",
+   "Path": "docs/AUTOMATION_PLAN.md",
+   "Lines": [
+    672,
+    673
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A1T-01",
+   "Path": "docs/INITIATIVE_LIFECYCLE.md",
+   "Lines": [
+    166,
+    168
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings",
+   "Finding": "A62-A1T-O1",
+   "Path": "docs/initiatives/I-62-A-1.md",
+   "Lines": [
+    152,
+    152
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings",
+   "Finding": "A62-A1T-O1",
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Lines": [
+    1430,
+    1430
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings",
+   "Finding": "A62-A1T-O2",
+   "Path": "docs/initiatives/I-62-architect-package-A-1.md",
+   "Lines": [
+    144,
+    145
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings",
+   "Finding": "A62-A1T-O3",
+   "Path": "docs/initiatives/I-62-A-1.md",
+   "Lines": [
+    155,
+    155
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "FindingDispositions",
+   "Finding": "OBS-A1-01",
+   "Path": "docs/initiatives/I-62-A-1.md",
+   "Lines": [
+    152,
+    152
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "FindingDispositions",
+   "Finding": "A62-A1S-02",
+   "Path": "docs/initiatives/I-62-A-1.md",
+   "Lines": [
+    145,
+    145
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  }
+ ],
+ "Accreditation": {
+  "Status": "NOT_ACCREDITED",
+  "Reasons": [
+   "llamada 28 (Bash): cd fuera del clon, del worktree o de las salidas propias: D:/r62-arch-a1r5/docs/automation/evidence/I-62-prep/night-2026-10-05/f4-exp",
+   "llamada 37 (Bash): cd fuera del clon, del worktree o de las salidas propias: D:/r62-arch-a1r5/docs/automation/agent-execution/schemas",
+   "llamada 47 (Bash): sed sin -n",
+   "llamada 50 (Bash): comando no permitido: n",
+   "llamada 50 (Bash): comando no permitido: n",
+   "llamada 57 (Bash): git show fuera del cierre: 411e01ce:docs/automation/agent-execution/../../AUTOMATION_PLAN.md"
+  ]
+ }
+}

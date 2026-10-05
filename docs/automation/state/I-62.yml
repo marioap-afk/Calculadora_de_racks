@@ -7,7 +7,7 @@ automation_state:
   state: waiting
   gate: dependency
   attempts: 0
-  next_action: el Coordinator dispone la revisión formal R20261005T063359Z-86e3 (CHANGES REQUIRED A62-A1S-01..02; acreditación a decidir: v3 NOT_ACCREDITED por defecto del auditor, v3.1 ACCREDITED; evidence §49); A-1 ya corregida (blob 03dd822d); segunda y última invocación del Architect lanzada por el Owner pero parada en una aprobación de permiso de su sesión (local_8e95d755, evidence §53); F4 sigue sin abrir.
+  next_action: el Coordinator dispone la revisión formal R20261005T063359Z-86e3 (CHANGES REQUIRED A62-A1S-01..02; acreditación a decidir: v3 NOT_ACCREDITED por defecto del auditor, v3.1 ACCREDITED; evidence §49); A-1 ya corregida (blob 03dd822d); revisión formal 2 R20261005T073911Z-2dfe sobre 03dd822d = CHANGES REQUIRED A62-A1T-01 (D2-2; acreditación a decidir: v3.1 NOT_ACCREDITED, 3 desviaciones literales declaradas y 3 defectos del auditor; evidence §54); corregir A62-A1T-01 exige una orden nueva (la nocturna terminó); F4 sigue sin abrir.
   last_evidence_commit: 83035d999599384ea74f7b178e3d6761ffa5bb01
 execution_context:
   mode: manual

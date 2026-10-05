@@ -7,7 +7,9 @@ Objeto:         commit 411e01ce4176e4fe6648ea3e9ff2febc219ff438 (CI de publicaci
                 docs/initiatives/I-62-A-1.md                                blob 03dd822d1310a0ce298eba6da2321383aa5e4887
                 docs/initiatives/I-62-architect-package-A-1.md              blob a97dea77b0f9ebec3af4f7d1d7a08fb41030ab26
                 docs/initiatives/I-62-architect-review-A-1-disposition.md   blob eeb29ba061752c7ae79c51ceaf8eb48ad3e67186
-Estado:         KIT PREPARADO · HUMAN_LAUNCH_REQUIRED (tarea de la app task_b5714b45, creada una vez) · sin veredicto
+Estado:         LANZADA por el Owner (task_b5714b45) · sesión local_8e95d755, 08:08:03Z-13:54:38Z · CHANGES REQUIRED (A62-A1T-01)
+Acreditación:   auditor v3.1 = NOT_ACCREDITED (3 desviaciones literales declaradas + 3 defectos del auditor; audit-classification.json); la decide el Coordinator
+Registro:       docs/initiatives/I-62-architect-review-A-1-r4.md
 Naturaleza:     preparación; los JSON son representaciones EXPERIMENTALES (§20.3.2, B.10.1). Rigen I-61 y LIFECYCLE. F4 producción = NO AUTORIZADA
 ```
 
@@ -36,3 +38,12 @@ En `../R20261005T072212Z-e65c/` quedan su prompt, su cierre y su manifiesto:
 
 `prompt.md` (SHA-256 `302898f8…`), `order.txt`, `prior-authorization.txt`, `closure.json`, `corpus.json`, `make_closure.py`, `result.schema.json`,
 `post-review.py` (v3.1), `selftest-post-review.py`, `selftest-result.json`, `preflight-read-fidelity.json` y `read_fidelity.py`.
+
+## Corrida y custodia (después del lanzamiento)
+
+| Archivo | Papel |
+|---|---|
+| `output.json` (SHA-256 `bada687d…`) | bloque JSON final del revisor, literal, extraído de la transcripción |
+| `audit.json` | auditor v3.1 del kit, literal: NOT_ACCREDITED, 6 motivos |
+| `audit-classification.json` | clasificación de los 6 motivos con su efecto y su diagnóstico: 3 desviaciones literales declaradas, 3 defectos del auditor |
+| `runtime-evidence.json` | identidad observada (get_session y transcripción, que no se versiona: SHA-256 `0393968f…`) |

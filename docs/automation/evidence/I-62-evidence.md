@@ -2188,3 +2188,25 @@ solo desde artefactos custodiados.
   - las dos con push, head_sha exacto y cuatro jobs en `success`.
   - `aeda77c4` (37314793355) y `c66137b9` (37315042133) seguían en curso al escribir.
 - **Informe final:** `I-62-prep/night-2026-10-05/final-report.md`.
+
+## 54. Revisión formal 2 (R20261005T073911Z-2dfe): resultado y custodia (después del cierre de la orden nocturna)
+
+- **Lanzamiento y corrida:**
+  - el Owner pulsó `task_b5714b45`;
+  - la sesión `local_8e95d755` (`claude-opus-5-5`, `xhigh`) se creó a las 08:08:03Z;
+  - su primera llamada esperó una aprobación de permiso hasta que el Owner la dio, y terminó a las 13:54:38Z, dentro de la ventana de la orden.
+- **Resultado** ([registro](../../initiatives/I-62-architect-review-A-1-r4.md); `output.json` literal):
+  - CHANGES REQUIRED: A62-A1T-01 (D2-2: el `Target` de un intento en LAUNCHING debe resolverse por la cadena de mapas; con un segundo rebase la unidad
+    queda sin transición válida) y A62-A1T-O1..O3;
+  - los doce hallazgos anteriores, CLOSED; sin decisión del Owner.
+- **Acreditación (MEASURED):**
+  - **auditor v3.1, literal:** NOT_ACCREDITED con 6 motivos (`audit-classification.json`):
+    - 3 desviaciones literales declaradas: dos `cd` a subdirectorios del clon y un `sed -i` sobre una salida propia;
+    - 3 defectos del auditor: el bucle `for` mal analizado, dos veces, y la ruta con `..` no normalizada, que Git rechazó sin leer nada;
+  - **sin corrección de método retroactiva:** las desviaciones literales seguirían;
+  - lo demás, en verde: identidad, orden, 32 lecturas fieles, 21 premisas, clon limpio y esquema;
+  - la acreditación la decide el Coordinator.
+- **Límites:**
+  - la orden nocturna terminó a las 13:58Z (ocho horas); la custodia se hizo a las 14:1xZ, como preservación del resultado de una invocación de la orden;
+  - **A-1 no se corrige** (N-14, BLOCKED_AUTHORITY);
+  - no queda ninguna invocación del Architect bajo la orden nocturna.

@@ -1,0 +1,35 @@
+{
+ "RunId": "R20261005T073911Z-2dfe",
+ "LaunchedBy": "Owner, desde la tarea de la app task_b5714b45 (creada una vez por la sesión autora)",
+ "Session": {
+  "SessionId": "local_8e95d755-e64a-46b6-b332-cfe7513d39c8",
+  "CreatedAt": "2026-10-05T08:08:03.022Z",
+  "LastActivityAt": "2026-10-05T13:54:38.012Z",
+  "Model": "claude-opus-5-5",
+  "Effort": "xhigh",
+  "FastMode": "off",
+  "IsRemote": false,
+  "OriginCwd": "D:/r62-arch-a1r5",
+  "Worktree": "D:/Documentos/Worktrees/r62-arch-a1r5/sad-cray-fd84e8",
+  "SourceBranch": "main",
+  "Source": "get_session (metadatos de la app), medidos por la sesión autora"
+ },
+ "Pause": "la primera llamada (sha256sum del prompt, 08:08:10Z) esperó una aprobación de permiso hasta que el Owner la dio; la sesión terminó a las 13:54:38Z",
+ "Transcript": {
+  "Versioned": false,
+  "Path": "~/.claude/projects/D--Documentos-Worktrees-r62-arch-a1r5-sad-cray-fd84e8/f5ebef63-4da4-4d52-be38-a6dea96fa436.jsonl",
+  "Bytes": 2422823,
+  "Sha256": "0393968f23f7c8e3c3824ac99db3944bfccc324810584cb22fa9b7d4264388e2",
+  "RuntimeVersion": "2.1.286",
+  "AssistantMessagesByModel": {
+   "claude-opus-5-5": 119
+  },
+  "SidechainEntries": 0
+ },
+ "CloneAfterRun": {
+  "Head": "411e01ce4176e4fe6648ea3e9ff2febc219ff438",
+  "StatusPorcelain": "",
+  "WorktreeHead": "411e01ce"
+ },
+ "Independence": "sesión nueva y separada; cwd en el clon D:/r62-arch-a1r5 (otro repositorio), sin la memoria ni la transcripción de la sesión autora; la lanzó el mismo operador humano (Owner)"
+}

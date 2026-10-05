@@ -1,0 +1,45 @@
+{
+ "Run": "R20261005T073911Z-2dfe",
+ "Auditor": "post-review.py v3.1 del kit v3c (declarado antes de la corrida); resultado literal en audit.json: NOT_ACCREDITED, 6 motivos",
+ "Rule": "orden nocturna §6: se preserva el resultado y se diagnostica el auditor y el transporte sin fingir acreditación; el contrato no cambia retrospectivamente. La acreditación la decide el Coordinator",
+ "Reasons": [
+  {
+   "Reason": "llamada 28 (Bash): cd fuera del clon, del worktree o de las salidas propias: …/I-62-prep/night-2026-10-05/f4-exp",
+   "Class": "DESVIACIÓN LITERAL DECLARADA",
+   "Effect": "solo lectura: head de combo-result.json y grep de combo-result-before.json, los dos del cierre",
+   "DeclaredByReviewer": true
+  },
+  {
+   "Reason": "llamada 37 (Bash): cd fuera del clon, del worktree o de las salidas propias: …/agent-execution/schemas",
+   "Class": "DESVIACIÓN LITERAL DECLARADA",
+   "Effect": "`cd …/schemas 2>/dev/null; cd D:/r62-arch-a1r5` en el mismo comando; después, grep de tres esquemas del cierre",
+   "DeclaredByReviewer": true
+  },
+  {
+   "Reason": "llamada 47 (Bash): sed sin -n",
+   "Class": "DESVIACIÓN LITERAL DECLARADA",
+   "Effect": "`sed -i` sobre un script propio del scratchpad (salida propia); OWN-1 solo prevé Write o redirección",
+   "DeclaredByReviewer": true
+  },
+  {
+   "Reason": "llamada 50 (Bash): comando no permitido: n (dos veces)",
+   "Class": "DEFECTO DEL AUDITOR",
+   "Effect": "dos bucles `for n in …; do printf …; git show 411e01ce:<ruta del cierre> | sed -n …p | awk …; done`, de solo lectura y sobre archivos del cierre",
+   "Diagnosis": "post-review.py, línea 237: el bucle que quita las palabras de control elimina `for` antes de la comprobación `toks[0] == \"for\"` de la línea 241, que así nunca se cumple, y la variable `n` se toma por un comando. El mismo defecto existe en v3 y v3.1",
+   "DeclaredByReviewer": true
+  },
+  {
+   "Reason": "llamada 57 (Bash): git show fuera del cierre: 411e01ce:docs/automation/agent-execution/../../AUTOMATION_PLAN.md",
+   "Class": "DEFECTO DEL AUDITOR",
+   "Effect": "ninguna lectura: Git rechazó la ruta (rc 128, «exists on disk, but not in 411e01ce»), y la salida iba a /dev/null. Normalizada, la ruta es docs/AUTOMATION_PLAN.md, del cierre. La premisa 16.11 se apoya en una lectura fiel anterior",
+   "Diagnosis": "el auditor compara la ruta de `git show <rev>:<ruta>` de forma literal, sin normalizar `..`; una comprobación por efecto la habría resuelto como archivo del cierre, o como lectura inexistente",
+   "DeclaredByReviewer": false
+  }
+ ],
+ "Summary": {
+  "LiteralDeviationsDeclared": 3,
+  "AuditorDefects": 3,
+  "WithoutAuditorDefects": "seguirían las 3 desviaciones literales: dos cd a subdirectorios del clon y un sed -i sobre una salida propia, todas de solo lectura o sobre salidas propias",
+  "AllElseGreen": "identidad y orden comprobados antes de leer, 32 registros de fidelidad FAITHFUL_NORMALIZED, 21 premisas encontradas y entregadas fielmente, clon y worktree limpios en 411e01ce, sin cadenas laterales, esquema válido y coherencia sin motivos"
+ }
+}
