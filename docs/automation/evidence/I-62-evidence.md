@@ -2077,7 +2077,7 @@ CI de los dossiers P4/P8, `75e93e91c1197dcb7e4095c7d0fb83421cfb1494`: corrida **
 
 ## 48. F4 experimental: secuencias combinadas y A62-A1A-01 (orden nocturna §9 y §3.A)
 
-CI de los helpers, `4eb3ce6b82bd90c776bdd20dd1c2b652e927cba8`: ver la cola (N-07).
+CI de los helpers, `4eb3ce6b82bd90c776bdd20dd1c2b652e927cba8`: corrida **37275825561**, push, head_sha exacto, cuatro jobs en `success`.
 
 - **Secuencias combinadas** (`I-62-prep/night-2026-10-05/f4-exp/`; EXPERIMENTAL — NOT AUTHORIZED FOR PRODUCTION):
   - cinco combinaciones de la orden §9, con positivas y negativas, sobre el motor del arnés de A-1;

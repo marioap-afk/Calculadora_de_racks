@@ -12,9 +12,9 @@ Motor:      el de docs/automation/evidence/I-62-A1/a1-counterexamples.py, import
 python combo_sequences.py <a1-counterexamples.py> combo-result.json
 ```
 
-- **Harness at the reviewed object** (`D:\r62-arch-a1r3`, A-1 blob `39c2f831`): `combo-result-before.json`. The defect A62-A1-A-01 shows up here:
-  `c2n-satisfecho-con-el-BLOCKING-heredado-abierto` → VALID when INVALID was expected.
-- **Harness corrected in the same commit as A-1** (blob `cdcd98d2`): `combo-result.json`. All 16 sequences pass.
+- **Arnés del objeto revisado** (`D:\r62-arch-a1r3`, A-1 blob `39c2f831`): `combo-result-before.json`. Ahí aparece el defecto A62-A1A-01:
+  `c2n-satisfecho-con-el-BLOCKING-heredado-abierto` da VALID cuando se esperaba INVALID.
+- **Arnés corregido en el mismo commit que A-1** (blob `cdcd98d2`): `combo-result.json`. Las 16 secuencias pasan.
 
 ## Secuencias
 
