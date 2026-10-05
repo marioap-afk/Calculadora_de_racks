@@ -1,0 +1,22 @@
+$ dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter "FullyQualifiedName~I62F4YamlSubsetTests"  (exit 0)
+Serie de pruebas para C:\Users\alejandra-mendoza\.codex\worktrees\architecture-portabilidad-coordinador-principal\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll (.NETCoreApp,Version=v8.0)
+1 archivos de prueba en total coincidieron con el patrón especificado.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.29)
+[xUnit.net 00:00:00.24]   Discovering: RackCad.Tests
+[xUnit.net 00:00:05.59]   Discovered:  RackCad.Tests
+[xUnit.net 00:00:05.61]   Starting:    RackCad.Tests
+[xUnit.net 00:00:05.79]   Finished:    RackCad.Tests
+  Correctas RackCad.Tests.I62F4YamlSubsetTests.I62_C18_DisablingARejectionInMemoryMakesItsCaseFail(mutation: AcceptMultilinePlain, detectingCase: "multiline-plain") [16 ms]
+  Correctas RackCad.Tests.I62F4YamlSubsetTests.I62_C18_DisablingARejectionInMemoryMakesItsCaseFail(mutation: AcceptBlockScalars, detectingCase: "multiline-folded") [1 ms]
+  Correctas RackCad.Tests.I62F4YamlSubsetTests.I62_C18_DisablingARejectionInMemoryMakesItsCaseFail(mutation: AcceptPlainColon, detectingCase: "plain-colon") [< 1 ms]
+  Correctas RackCad.Tests.I62F4YamlSubsetTests.I62_C18_DisablingARejectionInMemoryMakesItsCaseFail(mutation: AcceptDuplicateKeys, detectingCase: "duplicate-key") [< 1 ms]
+  Correctas RackCad.Tests.I62F4YamlSubsetTests.I62_C18_EveryRealStateFileOfTheTreeIsReadableByTheModeItsSchemaRequires [87 ms]
+  Correctas RackCad.Tests.I62F4YamlSubsetTests.I62_C18_TheCanonicalWriterIsAFixedPointForAFullStateV2 [14 ms]
+  Correctas RackCad.Tests.I62F4YamlSubsetTests.I62_C18_TheHeaderModeConsumesOnlySchemaAndTheIdentityFieldsOfAV1State [< 1 ms]
+  Correctas RackCad.Tests.I62F4YamlSubsetTests.I62_C18_TheReaderAcceptsTheSubsetAndRejectsEveryConstructOutsideItWithItsReason [< 1 ms]
+  Correctas RackCad.Tests.I62F4YamlSubsetTests.I62_C18_TheWriterQuotesEveryStringThatWouldReadAsAnotherType [2 ms]
+
+La serie de pruebas se ejecutó correctamente.
+Pruebas totales: 9
+     Correcto: 9
+ Tiempo total: 6.6623 Segundos
