@@ -2312,3 +2312,48 @@ Una sola A-n solo del Coordinator (A-4) de pruebas y documentación, sin cambio 
 - **Secuencia autorizada:** A → B → C → D → E → F (READY-04) → G (READY-05) → H (READY-06) → I (READY-07..09) → J.
   - Único retorno obligatorio intermedio: la aceptación explícita del ADR por el Owner.
 - **HANDOFF y ROADMAP:** no se tocan en READY.
+
+## 55. READY bloques A, B y C
+
+### 55.1 Bloque A — A-4 ejecutada por la sesión (sin cadena I-61)
+
+1. **La guarda vieja habría fallado sin el comentario.**
+   - Variante temporal, no confirmada: la aserción vieja `Assert.Contains("RackBomOutputGate.For(system).Reason", …)` aplicada al código
+     de `PushBackKindHandler.cs` sin comentarios.
+   - Resultado: `ThePushBackHandler_ConsumesTheSharedGateAndNotASecondRule` **Failed** con «Not found:
+     "RackBomOutputGate.For(system).Reason"». Las otras 3 pruebas de la clase siguen en verde (TRX local `demo-old-guard`).
+   - El archivo se restauró con `git checkout --`.
+2. **Cambios aplicados:**
+   - La guarda lee el código sin comentarios y el cuerpo de `OutputBlockedReason`, que hoy es un cuerpo de expresión que delega.
+   - Exige `RackOutputVerdict.` y prohíbe `PushBackResolver` y `RackBomOutputGate.For`. Conserva las aserciones de «no hay una segunda
+     regla» sobre el código sin comentarios.
+   - Comentario de `ExpressionFormatter.FormatReference` reescrito según la A-3. Comprobado mecánicamente: el código sin comentarios ni
+     espacios es idéntico antes y después, sin cambio de tokens.
+3. **Focales:** 156/156 en verde.
+   - Cubren `PushBackBomCommandGuardTests` (4), `ComputedParametersPopulationGuardTests` (INV-33; 3), `ComputedParametersSymbols*` (89),
+     `ExpressionCoreGuardTests` (6) y `ExpressionFormatterTests` (54).
+4. **Suites completas y builds locales:**
+   - Core 12595/12595;
+   - UI 1637 superadas y 17 omitidas por `Skip`;
+   - build de UI con 0 errores y 0 advertencias;
+   - build del Plugin con 0 errores (solo los MSB3277 conocidos), con salida temporal.
+5. **Commit:** `a0835bf79d0e16bbe9dd142049aaab2ba5bb814f` con push, sobre la A-4 `17215ab2`.
+6. **CI exact-SHA:** corrida `push` 37255791325, **`success` en los cuatro jobs**.
+7. **Diff mecánico:** `git diff --name-only 17215ab2..a0835bf7` da exactamente
+   `src/RackCad.Application/Expressions/ExpressionFormatter.cs` y `tests/RackCad.Tests/PushBackBomCommandGuardTests.cs`.
+
+DEBT-I63-G2-01 y DEBT-I63-G3-01 quedan **cerradas**. No consumen `attempts` (2/3).
+
+### 55.2 Bloque B — cabecera del contrato de la iniciativa
+
+Valores aprobados por el Coordinator (Q-R-03):
+- `materiality: [M-01, M-04, M-05, M-06, M-07, M-08]`. M-02 no está activado; M-03 tampoco, sujeto a las condiciones congeladas
+  (Proposal V3 §3).
+- `consumes: [Rack Identity, Project Variables, Authored vs Effective]`.
+- `extends: [Expression Engine (ADR-0043)]`.
+- `introduces: [Computed Parameters & Project Summary]`.
+
+### 55.3 Bloque C — DEBT-I63-PROTOCOL-01
+
+- Registrada en `docs/ideas-futuras.md` (sección de I-63), con DEV-G2-01 y DEV-I63-G4-02/03 como evidencia y las tres recomendaciones.
+- No se editan I-61 ni I-62. El HANDOFF se actualiza en la sesión de integración.
