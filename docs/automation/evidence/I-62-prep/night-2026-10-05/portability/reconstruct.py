@@ -116,7 +116,8 @@ step["ManifestReport"] = compare("manifest-report", rep, "docs/automation/eviden
                                  lambda b: canon_report(norm(b) if norm else b))["Result"]
 v14 = os.path.join(WORK, "v14.md")
 open(v14, "wb").write(git("show", (image or orig) + ":docs/initiatives/I-62-proposal-v14.md").stdout)
-open(man, "wb").write(norm(open(man, "rb").read()) if norm else open(man, "rb").read())
+raw_manifest = open(man, "rb").read()          # read first: opening for write truncates (defect of the first run, fixed and declared)
+open(man, "wb").write(norm(raw_manifest) if norm else raw_manifest)
 p = os.path.join(WORK, "b11.json")
 rc2, tail = run([os.path.join(CLONE, NIGHT + "b11-precision/b11_precision.py"), man, v14, p])
 step["B11Precision"] = compare("b11-precision", p, NIGHT + "b11-precision/b11-precision-result.json")["Result"]
