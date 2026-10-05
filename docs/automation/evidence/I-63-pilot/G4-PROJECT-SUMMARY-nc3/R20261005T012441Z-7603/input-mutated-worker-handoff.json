@@ -1,0 +1,236 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "G4-PROJECT-SUMMARY",
+  "RunId": "R20261003T005720Z-2b14",
+  "DelegationRunId": "R20261003T005345Z-66f3",
+  "Initiative": "I-63",
+  "Gate": "G4",
+  "Attempt": 2,
+  "BaseSha": "527e4b9185173e2f50c10d39a882749c09b77d2f",
+  "RedSha": "55d6b27457c966be1f3988ff8fe1bca4fc3df126",
+  "CurrentSha": "4f45f4464f5d434f7fa478fea1117d82283ee997",
+  "Branch": "architecture/parametros-calculados-resumen-proyecto",
+  "Worktree": "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-parametros-calculados-resumen-proyecto",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.Application/ComputedParameters/ProjectPopulation.cs",
+    "src/RackCad.Application/ComputedParameters/ProjectSummary.cs",
+    "src/RackCad.Application/ComputedParameters/ProjectSummaryProvenance.cs",
+    "src/RackCad.Application/ComputedParameters/RackComputedExpressionContext.cs",
+    "src/RackCad.Application/ComputedParameters/RackMetricOrchestrator.cs",
+    "src/RackCad.Application/ComputedParameters/RackMetricRequest.cs",
+    "src/RackCad.Application/ComputedParameters/RackMetricResolutionCounter.cs",
+    "tests/RackCad.Tests/ComputedParameters/ComputedParametersSummaryContextTests.cs",
+    "tests/RackCad.Tests/ComputedParameters/ComputedParametersSummaryGuardTests.cs",
+    "tests/RackCad.Tests/ComputedParameters/ComputedParametersSummaryKit.cs",
+    "tests/RackCad.Tests/ComputedParameters/ComputedParametersSummaryPerformanceTests.cs",
+    "tests/RackCad.Tests/ComputedParameters/ComputedParametersSummaryTests.cs"
+  ],
+  "WorkCompleted": "ProjectSummary Full (D-20) en Application sobre G1+G2: Totals, BySystem con los seis sistemas (agregacion de G2 alimentada con las metricas por rack), Racks con todos los RackIds atribuibles (RackSummary.Metrics por la tabla D-28 compartida con RackMetricRequest), Diagnostics y provenance en memoria (D-21, tabla cerrada de autoridades) fuera de MetricValue.Equals; cambio aditivo de RackComputedExpressionContext (Expression y ReadSymbols); estrategia de rendimiento de D-24 (una evaluacion de poblacion, una lectura por vista, una resolucion por RackId, sin caches) con la caracterizacion N = 1, 10, 100 y 1000 de tres vistas por contadores; 29 pruebas ComputedParametersSummary en archivos nuevos (INV-11, 29, 30, 31, 32, 34, D-20, D-21, D-24). Commit RED y commit GREEN publicados; suite Core 12595/12595 en verde. GATE PASS.",
+  "TestsExecuted": [
+    {
+      "RunRef": "RED2",
+      "Command": "cd /c/Users/alejandra-mendoza/.codex/worktrees/architecture-parametros-calculados-resumen-proyecto && /c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.ComputedParametersSummary\" --logger \"trx;LogFileName=RED2.trx\" --results-directory artifacts/orchestration/I-63/G4-PROJECT-SUMMARY/2/R20261003T005720Z-2b14/tests/RED2",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-63/G4-PROJECT-SUMMARY/2/R20261003T005720Z-2b14/tests/RED2/RED2.trx"
+    },
+    {
+      "RunRef": "MUT1",
+      "Command": "cd /c/Users/alejandra-mendoza/.codex/worktrees/architecture-parametros-calculados-resumen-proyecto && (copia temporal de ComputedParametersSummaryGuardTests.cs con el detector de AutoCAD desactivado, restaurada despues) && /c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~ComputedParametersSummaryGuardTests\" --logger \"trx;LogFileName=MUT1.trx\" --results-directory artifacts/orchestration/I-63/G4-PROJECT-SUMMARY/2/R20261003T005720Z-2b14/tests/MUT1",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-63/G4-PROJECT-SUMMARY/2/R20261003T005720Z-2b14/tests/MUT1/MUT1.trx"
+    },
+    {
+      "RunRef": "RED3",
+      "Command": "cd /c/Users/alejandra-mendoza/.codex/worktrees/architecture-parametros-calculados-resumen-proyecto && /c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.ComputedParametersSummary\" --logger \"trx;LogFileName=RED3.trx\" --results-directory artifacts/orchestration/I-63/G4-PROJECT-SUMMARY/2/R20261003T005720Z-2b14/tests/RED3",
+      "Phase": "RED",
+      "TreeSha": "55d6b27457c966be1f3988ff8fe1bca4fc3df126",
+      "ResultsFile": "artifacts/orchestration/I-63/G4-PROJECT-SUMMARY/2/R20261003T005720Z-2b14/tests/RED3/RED3.trx"
+    },
+    {
+      "RunRef": "GREEN1",
+      "Command": "cd /c/Users/alejandra-mendoza/.codex/worktrees/architecture-parametros-calculados-resumen-proyecto && /c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.ComputedParametersSummary\" --logger \"trx;LogFileName=GREEN1.trx\" --results-directory artifacts/orchestration/I-63/G4-PROJECT-SUMMARY/2/R20261003T005720Z-2b14/tests/GREEN1",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-63/G4-PROJECT-SUMMARY/2/R20261003T005720Z-2b14/tests/GREEN1/GREEN1.trx"
+    },
+    {
+      "RunRef": "GREENFULL1",
+      "Command": "cd /c/Users/alejandra-mendoza/.codex/worktrees/architecture-parametros-calculados-resumen-proyecto && /c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --logger \"trx;LogFileName=GREENFULL1.trx\" --results-directory artifacts/orchestration/I-63/G4-PROJECT-SUMMARY/2/R20261003T005720Z-2b14/tests/GREENFULL1",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-63/G4-PROJECT-SUMMARY/2/R20261003T005720Z-2b14/tests/GREENFULL1/GREENFULL1.trx"
+    },
+    {
+      "RunRef": "GREEN2",
+      "Command": "cd /c/Users/alejandra-mendoza/.codex/worktrees/architecture-parametros-calculados-resumen-proyecto && /c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.ComputedParametersSummary\" --logger \"trx;LogFileName=GREEN2.trx\" --results-directory artifacts/orchestration/I-63/G4-PROJECT-SUMMARY/2/R20261003T005720Z-2b14/tests/GREEN2",
+      "Phase": "GREEN",
+      "TreeSha": "4f45f4464f5d434f7fa478fea1117d82283ee997",
+      "ResultsFile": "artifacts/orchestration/I-63/G4-PROJECT-SUMMARY/2/R20261003T005720Z-2b14/tests/GREEN2/GREEN2.trx"
+    },
+    {
+      "RunRef": "GREENFULL2",
+      "Command": "cd /c/Users/alejandra-mendoza/.codex/worktrees/architecture-parametros-calculados-resumen-proyecto && /c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --logger \"trx;LogFileName=GREENFULL2.trx\" --results-directory artifacts/orchestration/I-63/G4-PROJECT-SUMMARY/2/R20261003T005720Z-2b14/tests/GREENFULL2",
+      "Phase": "RELEVANT",
+      "TreeSha": "4f45f4464f5d434f7fa478fea1117d82283ee997",
+      "ResultsFile": "artifacts/orchestration/I-63/G4-PROJECT-SUMMARY/2/R20261003T005720Z-2b14/tests/GREENFULL2/GREENFULL2.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "RED2",
+      "Selected": 29,
+      "Passed": 3,
+      "Failed": 26,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.ComputedParametersSummaryContextTests.D21_ConUnaReferenciaNoDisponible_ElContextoConservaElArbolYLosSimbolosConsultados_SinValorParcial",
+        "RackCad.Tests.ComputedParametersSummaryContextTests.D21_Evaluate_ExponeElBoundExpressionEvaluado_YLosSymbolIdLeidos_SinCambiarSuResultado",
+        "RackCad.Tests.ComputedParametersSummaryContextTests.D21_LosSymbolIdLeidos_SonDeterministas_SinRepetidos_YEnOrdenDeSymbolId",
+        "RackCad.Tests.ComputedParametersSummaryPerformanceTests.D24_Caracterizacion_PopulationFrenteAFull_ConContadoresComoOraculo(racks: 1)",
+        "RackCad.Tests.ComputedParametersSummaryPerformanceTests.D24_Caracterizacion_PopulationFrenteAFull_ConContadoresComoOraculo(racks: 10)",
+        "RackCad.Tests.ComputedParametersSummaryPerformanceTests.D24_Caracterizacion_PopulationFrenteAFull_ConContadoresComoOraculo(racks: 100)",
+        "RackCad.Tests.ComputedParametersSummaryPerformanceTests.D24_Caracterizacion_PopulationFrenteAFull_ConContadoresComoOraculo(racks: 1000)",
+        "RackCad.Tests.ComputedParametersSummaryPerformanceTests.INV30_NRacksConTresVistas_DanNResolucionesEnFull_YCeroEnPopulation_NuncaTresN",
+        "RackCad.Tests.ComputedParametersSummaryTests.D20_BySystem_TieneLosSeisSistemasEnOrdenFijo_ConLaAgregacionDeG2AlimentadaPorLasMetricasPorRack",
+        "RackCad.Tests.ComputedParametersSummaryTests.D20_ConUnRackIndeterminado_LaCoberturaNoSeAcredita_YElRackSigueConSusMetricasD28",
+        "RackCad.Tests.ComputedParametersSummaryTests.D20_Full_TieneTotalsRacksYDiagnostics_ConTodosLosRackIdsAtribuiblesEnOrdenCanonico",
+        "RackCad.Tests.ComputedParametersSummaryTests.D21_CadaAgregado_ConservaLosRackIdsIncluidosYLosExcluidosConSuMotivo",
+        "RackCad.Tests.ComputedParametersSummaryTests.D21_CadaMetricaDelResumen_ConservaMetricIdSymbolIdRackIdAutoridadFaseRepresentanteYOutcomes",
+        "RackCad.Tests.ComputedParametersSummaryTests.D21_ElFalloDelEfectivo_ConstaEnLaProvenanceDeLaMetrica",
+        "RackCad.Tests.ComputedParametersSummaryTests.D21_LaProvenanceNoEntraEnLaIgualdadDeMetricValue_NiLaCambia",
+        "RackCad.Tests.ComputedParametersSummaryTests.INV11_Full_ConElSnapshotInvertido_EsIgualAlOriginal_ConRepresentanteNombreGrafiaMetricasYDiagnosticos",
+        "RackCad.Tests.ComputedParametersSummaryTests.INV29_ElMismoSnapshotEnOtroOrden_DaElMismoProjectSummary_YPopulationNoTieneMetricasPorRack",
+        "RackCad.Tests.ComputedParametersSummaryTests.INV31_LaTablaCerradaDeAutoridades_CoincideConLaDeLaPrueba_EnLosDosSentidos",
+        "RackCad.Tests.ComputedParametersSummaryTests.INV32_RackMetricRequestDirecto_NoEvaluaPoblacion_YProjectSummaryFullSobreElMismoRackSi",
+        "RackCad.Tests.ComputedParametersSummaryTests.INV34_Cabecera_EsNotApplicable_ConCeroLecturasYCeroResoluciones",
+        "RackCad.Tests.ComputedParametersSummaryTests.INV34_PushBackIlegibleColocado_ConservaNotSupported_YLasMetricasNoAgreganLecturas",
+        "RackCad.Tests.ComputedParametersSummaryTests.INV34_PushBackIlegible_EsNotSupported_ConCeroLecturasYCeroResoluciones",
+        "RackCad.Tests.ComputedParametersSummaryTests.INV34_SelectivoConHermanasDivergentes_EsUnavailableSiblingsDivergent_ConCeroResoluciones",
+        "RackCad.Tests.ComputedParametersSummaryTests.INV34_SelectivoIlegible_EsUnavailableDesignUnreadable_ConCeroResoluciones",
+        "RackCad.Tests.ComputedParametersSummaryTests.INV34_SelectivoValido_EsAvailable_ConUnaSolaResolucionYUnaLecturaPorVista",
+        "RackCad.Tests.ComputedParametersSummaryTests.INV34_VariableRota_EsUnavailableEffectiveFailed_ConUnaResolucion_YKindIncoherenteNoResuelve"
+      ]
+    },
+    {
+      "RunRef": "MUT1",
+      "Selected": 2,
+      "Passed": 0,
+      "Failed": 2,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.ComputedParametersSummaryGuardTests.INV29_ApplicationNoDeclaraFamiliasProhibidas_YLosControlesPositivosSiLasReconocenConLaMismaFuncion",
+        "RackCad.Tests.ComputedParametersSummaryGuardTests.INV29_LaMismaFuncionDiscrimina_LasFormasDeA11_YElCierreDeProjectReference"
+      ]
+    },
+    {
+      "RunRef": "RED3",
+      "Selected": 29,
+      "Passed": 3,
+      "Failed": 26,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.ComputedParametersSummaryContextTests.D21_ConUnaReferenciaNoDisponible_ElContextoConservaElArbolYLosSimbolosConsultados_SinValorParcial",
+        "RackCad.Tests.ComputedParametersSummaryContextTests.D21_Evaluate_ExponeElBoundExpressionEvaluado_YLosSymbolIdLeidos_SinCambiarSuResultado",
+        "RackCad.Tests.ComputedParametersSummaryContextTests.D21_LosSymbolIdLeidos_SonDeterministas_SinRepetidos_YEnOrdenDeSymbolId",
+        "RackCad.Tests.ComputedParametersSummaryPerformanceTests.D24_Caracterizacion_PopulationFrenteAFull_ConContadoresComoOraculo(racks: 1)",
+        "RackCad.Tests.ComputedParametersSummaryPerformanceTests.D24_Caracterizacion_PopulationFrenteAFull_ConContadoresComoOraculo(racks: 10)",
+        "RackCad.Tests.ComputedParametersSummaryPerformanceTests.D24_Caracterizacion_PopulationFrenteAFull_ConContadoresComoOraculo(racks: 100)",
+        "RackCad.Tests.ComputedParametersSummaryPerformanceTests.D24_Caracterizacion_PopulationFrenteAFull_ConContadoresComoOraculo(racks: 1000)",
+        "RackCad.Tests.ComputedParametersSummaryPerformanceTests.INV30_NRacksConTresVistas_DanNResolucionesEnFull_YCeroEnPopulation_NuncaTresN",
+        "RackCad.Tests.ComputedParametersSummaryTests.D20_BySystem_TieneLosSeisSistemasEnOrdenFijo_ConLaAgregacionDeG2AlimentadaPorLasMetricasPorRack",
+        "RackCad.Tests.ComputedParametersSummaryTests.D20_ConUnRackIndeterminado_LaCoberturaNoSeAcredita_YElRackSigueConSusMetricasD28",
+        "RackCad.Tests.ComputedParametersSummaryTests.D20_Full_TieneTotalsRacksYDiagnostics_ConTodosLosRackIdsAtribuiblesEnOrdenCanonico",
+        "RackCad.Tests.ComputedParametersSummaryTests.D21_CadaAgregado_ConservaLosRackIdsIncluidosYLosExcluidosConSuMotivo",
+        "RackCad.Tests.ComputedParametersSummaryTests.D21_CadaMetricaDelResumen_ConservaMetricIdSymbolIdRackIdAutoridadFaseRepresentanteYOutcomes",
+        "RackCad.Tests.ComputedParametersSummaryTests.D21_ElFalloDelEfectivo_ConstaEnLaProvenanceDeLaMetrica",
+        "RackCad.Tests.ComputedParametersSummaryTests.D21_LaProvenanceNoEntraEnLaIgualdadDeMetricValue_NiLaCambia",
+        "RackCad.Tests.ComputedParametersSummaryTests.INV11_Full_ConElSnapshotInvertido_EsIgualAlOriginal_ConRepresentanteNombreGrafiaMetricasYDiagnosticos",
+        "RackCad.Tests.ComputedParametersSummaryTests.INV29_ElMismoSnapshotEnOtroOrden_DaElMismoProjectSummary_YPopulationNoTieneMetricasPorRack",
+        "RackCad.Tests.ComputedParametersSummaryTests.INV31_LaTablaCerradaDeAutoridades_CoincideConLaDeLaPrueba_EnLosDosSentidos",
+        "RackCad.Tests.ComputedParametersSummaryTests.INV32_RackMetricRequestDirecto_NoEvaluaPoblacion_YProjectSummaryFullSobreElMismoRackSi",
+        "RackCad.Tests.ComputedParametersSummaryTests.INV34_Cabecera_EsNotApplicable_ConCeroLecturasYCeroResoluciones",
+        "RackCad.Tests.ComputedParametersSummaryTests.INV34_PushBackIlegibleColocado_ConservaNotSupported_YLasMetricasNoAgreganLecturas",
+        "RackCad.Tests.ComputedParametersSummaryTests.INV34_PushBackIlegible_EsNotSupported_ConCeroLecturasYCeroResoluciones",
+        "RackCad.Tests.ComputedParametersSummaryTests.INV34_SelectivoConHermanasDivergentes_EsUnavailableSiblingsDivergent_ConCeroResoluciones",
+        "RackCad.Tests.ComputedParametersSummaryTests.INV34_SelectivoIlegible_EsUnavailableDesignUnreadable_ConCeroResoluciones",
+        "RackCad.Tests.ComputedParametersSummaryTests.INV34_SelectivoValido_EsAvailable_ConUnaSolaResolucionYUnaLecturaPorVista",
+        "RackCad.Tests.ComputedParametersSummaryTests.INV34_VariableRota_EsUnavailableEffectiveFailed_ConUnaResolucion_YKindIncoherenteNoResuelve"
+      ]
+    },
+    {
+      "RunRef": "GREEN1",
+      "Selected": 29,
+      "Passed": 29,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "GREENFULL1",
+      "Selected": 12595,
+      "Passed": 12595,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "GREEN2",
+      "Selected": 29,
+      "Passed": 29,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "GREENFULL2",
+      "Selected": 12595,
+      "Passed": 12595,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    }
+  ],
+  "Evidence": [
+    "(1) Por INV, la prueba que lo observa (clases ComputedParametersSummary* en tests/RackCad.Tests/ComputedParameters/, archivos nuevos): INV-11 (G4) = ComputedParametersSummaryTests.INV11_Full_ConElSnapshotInvertido_EsIgualAlOriginal_*; INV-29 (a) = ComputedParametersSummaryTests.INV29_ElMismoSnapshotEnOtroOrden_*; INV-29 (b) = ComputedParametersSummaryGuardTests.INV29_ApplicationNoDeclaraFamiliasProhibidas_* (objetivo y controles con la misma funcion ForbiddenReferenceFamilies) y INV29_LaMismaFuncionDiscrimina_* (fixtures A-1.1); INV-30 = ComputedParametersSummaryPerformanceTests.INV30_NRacksConTresVistas_*; INV-31 = ComputedParametersSummaryTests.INV31_LaTablaCerradaDeAutoridades_*; INV-32 (G4) = ComputedParametersSummaryTests.INV32_RackMetricRequestDirecto_*; INV-34 (resumen) = ComputedParametersSummaryTests.INV34_* (7 pruebas); D-20 = ComputedParametersSummaryTests.D20_* (3 pruebas); D-21 = ComputedParametersSummaryTests.D21_* (4 pruebas) y ComputedParametersSummaryContextTests.D21_* (3 pruebas); D-24 = ComputedParametersSummaryPerformanceTests.D24_* (caracterizacion N = 1, 10, 100 y 1000, y la peticion por rack).",
+    "RED real: RED3 sobre el commit RED 55d6b27457c966be1f3988ff8fe1bca4fc3df126 (arbol limpio) selecciono 29 pruebas, 26 fallaron por asercion y 3 pasaron: las dos de INV-29 (b) (el objetivo ya pasa hoy; discrimina el control positivo con la misma funcion y su fixture, comprobado por la mutacion MUT1: con el detector de AutoCAD desactivado las 2 fallan) y D24_UnaSolaPeticionPorRack (comportamiento de G1 sin cambio). Sin errores de compilacion en el RED. GREEN2 sobre 4f45f4464f5d434f7fa478fea1117d82283ee997 (arbol limpio): 29/29 en verde; suite Core completa GREENFULL2: 12595/12595 (12566 previas de G1-G3 y el resto + 29 nuevas), 0 fallos, 0 omitidas.",
+    "(2) Contadores observados (oraculo; costado del lector D-26, costado de resolucion y contador unico de poblacion), por N con tres vistas por RackId: Population = lecturas 3N, evaluaciones de poblacion 1, resoluciones 0; Full = lecturas 3N (las mismas que Population: Full no repite ninguna), evaluaciones de poblacion 1, resoluciones N (nunca 3N). N=1: Population 3/1/0, Full 3/1/1; N=10: 30/1/0 y 30/1/10; N=100: 300/1/0 y 300/1/100; N=1000: 3000/1/0 y 3000/1/1000. INV-30 (N=20): Full 20 resoluciones (inyectadas y por el contador scoped del costado real), Population 0. INV-32: RackMetricRequest directo = 0 evaluaciones de poblacion; ProjectPopulation = > 0; ProjectSummary Full = 1 (mismo contador RackPopulationEvaluationCounter, ambito propio por prueba). INV-34 (resumen): Selectivo valido 1 resolucion y 3 lecturas (una por vista); divergente 0 resoluciones; ilegible 0 resoluciones; variable rota 1 resolucion; Push Back ilegible sin colocar y Cabecera 0 lecturas y 0 resoluciones; Push Back ilegible colocado 1 lectura (la de la pertenencia) y 0 resoluciones; kind incoherente 0 lecturas y 0 resoluciones; el mismo resultado que RackMetricRequest en todos.",
+    "Tiempos medidos (ms, Stopwatch dentro de la prueba, una medicion por celda; se registran y NO se asertan; GREEN2 sobre 4f45f4464f5d434f7fa478fea1117d82283ee997): N=1 Population 0, Full 0; N=10 Population 2, Full 3; N=100 Population 26, Full 28; N=1000 Population 406, Full 394. Corrida GREEN anterior (GREEN1, arbol con cambios): N=1000 Population y Full del orden de 400-560 ms. Las mediciones incluyen calentamiento (JIT) y ejecucion paralela de xunit; N=1000 con tres vistas cabe sin rebajar N (sin C-09).",
+    "(3) Forma de la provenance (D-21, en memoria, no persistida, fuera de MetricValue.Equals): RackSummary.Provenance = una MetricProvenance por metrica (Rack, *) en orden de catalogo { MetricId, SymbolId (rack/frentes o rack/frentesVacios), RackId canonico, AuthorityId (selective.resolved.fondo0.bays o ...emptyBays si la metrica es Supported para el kind; nulo si no), Phase (Resolved si Supported; nula si no), RepresentativeDefinitionKey (E4), AuthorityOutcome (E4), OutputVerdict (E6), ResolutionOutcome, EffectiveOutcome (solo con EffectiveFailed) }; ProjectSummary.Provenance.Aggregates = AggregateProvenance por (totalRacks) y por sistema (rackCount, totalFrentes, totalFrentesVacios) { MetricId, KindToken, AuthorityId (population.cotizable o aggregate.sum; nulo en NotSupported/NotApplicable), IncludedRackIds, Excluded (RackId, RackExclusionReason) }. Tabla cerrada MetricAuthorityIds.All = selective.resolved.fondo0.bays, selective.resolved.fondo0.emptyBays, population.cotizable, aggregate.sum; INV-31 la compara con la de la prueba en los dos sentidos (todo lo emitido esta en la tabla y toda la tabla se emite). MetricValue.Equals no cambia: MetricValue sigue teniendo solo Status, Value y Reason (comprobado por reflexion en D21_LaProvenanceNoEntraEnLaIgualdadDeMetricValue_NiLaCambia) y el valor del resumen es Equals y de igual hash que el de RackMetricRequest. ProjectSummary.Equals compara su texto canonico Describe() (incluye la provenance, cultura invariante).",
+    "(4) Cambio aditivo de RackComputedExpressionContext (D-21, Q-G4-01): RackComputedEvaluation gana las propiedades de solo lectura Expression (el BoundExpression evaluado, la misma instancia, en cualquier outcome) y ReadSymbols (coleccion determinista de SymbolId, en orden de SymbolId y sin repetidos: con Evaluated y EvaluationFailed todas las referencias del arbol; con ComputedReferencesNotAvailable, que no evalua, las referencias rack cuyo estado se leyo). Evaluate devuelve exactamente lo mismo que antes (Outcome, Value, NotAvailableReferences, Diagnostics sin cambio; las 89 pruebas de G3 en verde y sin modificar); Create sigue interno; no hay motor de dependencias.",
+    "Refactor sin cambio de comportamiento para que RackMetricRequest y RackSummary.Metrics usen la MISMA tabla D-28: nuevo RackMetricOrchestrator (interno); RackMetricRequest.Execute delega en el con etapas previas vacias; ProjectPopulation.Evaluate delega en el interno EvaluateAssessed (misma evaluacion y UNA anotacion del contador) que ademas devuelve las etapas E4/E5/E6 que ya decidio para que Full no las repita. Contador RackMetricResolutionCounter (patron de RackPopulationEvaluationCounter, ambito AsyncLocal) anotado por RackMetricResolutionSide.Resolve real.",
+    "Comprobaciones mecanicas: git diff --name-only 527e4b9185173e2f50c10d39a882749c09b77d2f..4f45f4464f5d434f7fa478fea1117d82283ee997 = 7 archivos de src/RackCad.Application/ComputedParameters/ y 5 de tests/RackCad.Tests/ComputedParameters/, todos dentro de AllowedWriteScope y sin interseccion con ForbiddenWriteScope; git diff --name-status 527e4b9185173e2f50c10d39a882749c09b77d2f..4f45f4464f5d434f7fa478fea1117d82283ee997 -- tests/RackCad.Tests/ComputedParameters/ = 5 altas (A) y 0 modificados, borrados o renombrados; ningun archivo de prueba del RED se modifico despues de su commit (el diff RED..GREEN no toca tests/). ChainRedFiles de esta cadena = los 5 archivos de tests/RackCad.Tests/ComputedParameters/ComputedParametersSummary*.cs.",
+    "Commits: RED 55d6b27457c966be1f3988ff8fe1bca4fc3df126 y GREEN 4f45f4464f5d434f7fa478fea1117d82283ee997 (HEAD = remoto); cada commit lleva el Co-Authored-By de quien ejecuta; el cuerpo del commit GREEN lleva la linea de estado exigida. Sin force, rebase, stash ni amend."
+  ],
+  "UnexpectedFindings": [
+    "Un documento Selectivo sin ningun frente (Bays vacio) no es legible para SelectivePalletDesignStore: un fixture de variable rota debe llevar frentes; el fixture de G4 los lleva. No afecta al producto.",
+    "INV-29 (b) pasa ya en el RED por contrato (el objetivo ya pasa hoy): su RED discriminante es el control positivo con la misma funcion y los fixtures de A-1.1, no un fallo del objetivo.",
+    "Antes de publicar el RED se compilo y ejecuto una implementacion provisional local (sin commit) para validar las expectativas de las pruebas; revelo un fixture de variable rota mal formado (sin frentes), corregido ANTES del commit RED; despues se restauro el esqueleto, se corrio el RED y se publico."
+  ],
+  "KnownLimitations": [
+    "Los tiempos son una medicion por celda dentro de la prueba, incluyen calentamiento (JIT) y ejecucion paralela de xunit: se registran y nunca son oraculo.",
+    "MetricProvenance.EffectiveOutcome solo se informa con EffectiveFailed (el costado de resolucion de G1 no devuelve el outcome del efectivo en el exito); en el exito consta ResolutionOutcome = Resolved.",
+    "MetricProvenance.AuthorityId se informa para toda metrica Supported del kind (la fuente prevista), aunque el valor sea Unavailable por los pasos 3 a 5 de D-28; para NotSupported, NotApplicable y fallos de kind es nulo.",
+    "Con Full, un Selectivo no colocado o excluido por pertenencia (por ejemplo NotPlaced o SiblingsDivergent) tambien recibe sus metricas D-28 y, si D-28 llega al paso 5, su unica resolucion; la pertenencia no altera la tabla D-28 (Freeze D-28 y D-20).",
+    "ProjectSummary.Equals compara el texto canonico Describe() e incluye la provenance; RackComputedEvaluation.ReadSymbols de ComputedReferencesNotAvailable son las referencias rack consultadas (el Freeze no fija ese caso; se documento).",
+    "O-G3-1..5, DEBT-I63-G2-01 y DEBT-I63-G3-01 no se tocaron."
+  ],
+  "Deviations": [
+    "El Worker ejecuto de forma local y sin commit una implementacion provisional antes del commit RED para validar las pruebas; el flujo publicado es RED primero (esqueleto) y GREEN despues."
+  ],
+  "OpenQuestions": [
+    "RackSummary expone ademas RepresentativeDefinitionId (dato ya presente en PopulationRack) para observar el representante de INV-11 en todos los kinds; D-20 no lo lista. Aditivo y solo de lectura: confirmar que es aceptable."
+  ],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "Verificacion del Controller sobre el SHA exacto 4f45f4464f5d434f7fa478fea1117d82283ee997: CI push de ese SHA con los cuatro jobs requeridos, RED en la corrida de 55d6b27457c966be1f3988ff8fe1bca4fc3df126, Scope mecanico y pruebas existentes sin cambios.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

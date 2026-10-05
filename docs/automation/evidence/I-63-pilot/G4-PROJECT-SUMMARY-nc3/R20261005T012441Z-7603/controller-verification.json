@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "G4-PROJECT-SUMMARY",
+  "RunId": "R20261005T012441Z-7603",
+  "DelegationRunId": "R20261003T005345Z-66f3",
+  "WorkRunId": "R20261003T005720Z-2b14",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, TerminalEvent=resultado final del subagente, LaunchedPid=null y DeathConfirmed=true. Cession.StartUtc=2026-10-03T00:57:23Z; Outcome.OutputWrittenUtc=2026-10-03T01:22:38.4883564Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "inputs/worker-handoff.json está presente con Schema=rackcad-worker-handoff/v1. TaskId, DelegationRunId y Attempt coinciden con el paquete; RunId=R20261003T005720Z-2b14; BaseSha=527e4b9185173e2f50c10d39a882749c09b77d2f, RedSha=55d6b27457c966be1f3988ff8fe1bca4fc3df126 y CurrentSha=4f45f4464f5d434f7fa478fea1117d82283ee997. La fecha de entrega es posterior a Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor MainSha AuthorityRevision devolvió 0. git cat-file -e confirmó los documentos UNIT_DOC en AuthorityRevision=527e4b9185173e2f50c10d39a882749c09b77d2f y los EXTERNAL en MainSha=819955d61a6da4c811a11fbd11b5dca13f634b7c. git show leyó Proposal V3, A-1, A-2, A-3 y decisions/I-63.md en AuthorityRevision; AUTOMATION_PLAN.md, agent-execution/README.md, AGENTS.md e INITIATIVE_LIFECYCLE.md en MainSha. Se revisaron 16.3, 16.8–16.10, README §8 y la autorización/resoluciones suministradas."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparación JSON exacta contrato/delegación: Unit, Gate, TaskId, AuthorityRevision, MainSha, AllowedWriteScope, ForbiddenWriteScope, Invariants, StopConditions, Authorities y RequiredTests coinciden; aceptación A1–A8 consta pass. La decisión del Coordinator en coordinator-decision-stop-g4.md resuelve S-03 y no activa C-10 bajo sus condiciones."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD y refs/remotes/origin/architecture/parametros-calculados-resumen-proyecto dieron 7bd5a7438c9327b82203ae77d0312104c07509bb. merge-base --is-ancestor devolvió 0 para BaseSha→RedSha, RedSha→GREEN y GREEN→7bd5a743. git diff GREEN 7bd5a743 enumeró 20 rutas, todas bajo docs/; no hay cambios en src/, tests/, proyectos, CI ni configuración de build. git rev-parse GREEN:src = 7bd5a743:src (5d3bba74042ca62adcb1986b0276f9a30b01923d) y GREEN:tests = 7bd5a743:tests (28bc25cbeab630d996b883dbc2e408a12d8c448e). La excepción identifica CI funcional 37085650331 sobre el GREEN."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts.OriginMainSha=819955d61a6da4c811a11fbd11b5dca13f634b7c; git rev-parse origin/main dio el mismo SHA. `git ls-remote origin refs/heads/architecture/parametros-calculados-resumen-proyecto` no pudo conectar por la restricción de red. Para la rama, la excepción de identidad y identity-exception-check.json registran 7bd5a7438c9327b82203ae77d0312104c07509bb, coincidente con HEAD y origin/branch locales; el LsRemoteSha=GREEN del relevo corresponde al estado previo a la custodia documental."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha GREEN enumeró 12 rutas: 7 bajo src/RackCad.Application/ComputedParameters/ y 5 bajo tests/RackCad.Tests/ComputedParameters/. Todas están dentro de AllowedWriteScope y ninguna intersecta ForbiddenWriteScope. git diff --name-status -M BaseSha GREEN -- tests/RackCad.Tests/ComputedParameters/ mostró solo 5 altas; cero cambios, borrados o renombres de pruebas existentes."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --short no produjo salida. git check-ignore para artifacts/orchestration/I-63/G4-PROJECT-SUMMARY-nc3/2/R20261005T012441Z-7603/inputs/worker-handoff.json devolvió esa ruta como ignorada."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun 37085650331: event=push, ref=refs/heads/architecture/parametros-calculados-resumen-proyecto, head_sha=4f45f4464f5d434f7fa478fea1117d82283ee997; los cuatro jobs requeridos constan success. TRX leídos: Core 12595 seleccionadas, 12595 pass, 0 fail; UI 1654 seleccionadas, 1637 pass, 0 fail y 17 NotExecuted. RedRun 37085428743 es push del RedSha en la misma rama y su job Core terminó failure, coherente con RED. `ls-remote` directo no conectó; la rama actual se verificó con la excepción documental."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "El filtro FullyQualifiedName~RackCad.Tests.ComputedParametersSummary seleccionó 29 (mínimo 10) en ambos TRX Core: RED 37085428743 = 3 pass/26 fail; GREEN 37085650331 = 29 pass/0 fail; coinciden con TestResults de la entrega. El TRX RED registra ejecuciones de pruebas fallidas, no ausencia de selección; el commit RED indica 26 fallos por aserción. MUT1 registra las 2 pruebas de guarda seleccionadas y fallidas con el control positivo. git diff --name-only BaseSha RedSha -- tests/ define RT; enumera estos ChainRedFiles: ComputedParametersSummaryContextTests.cs, ComputedParametersSummaryGuardTests.cs, ComputedParametersSummaryKit.cs, ComputedParametersSummaryPerformanceTests.cs y ComputedParametersSummaryTests.cs. git diff --name-only RedSha GREEN -- tests/ está vacío. En GREEN, las 29 focales pasan: INV-11 por INV11_Full_ConElSnapshotInvertido; INV-29 por INV29_ElMismoSnapshotEnOtroOrden y las dos pruebas guard de ForbiddenReferenceFamilies (Application vacío, UI WPF y Plugin AutoCAD con la misma función); INV-30 por NRacksConTresVistas; INV-31 por LaTablaCerradaDeAutoridades; INV-32 por RackMetricRequestDirecto; INV-34 por sus siete casos; D-20 por las tres pruebas D20; D-21 por provenance/agregados/contexto; D-24 por caracterización con InlineData N=1, 10, 100 y 1000 y tres vistas, usando contadores. git show GREEN:ProjectSummary.cs confirma que RepresentativeDefinitionId se copia de member.RepresentativeDefinitionId de ProjectPopulation."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B -1 RedSha y el mismo comando para GREEN muestran en ambos commits `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`, idéntico al valor literal Worker.Trailer. relay-record-work.json registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita la celda anthropic/subagent/claude-sonnet-5-5 con effort high; relay-record-work.json registra modelo efectivo claude-sonnet-5-5 y effort high. Ambos coinciden."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "Búsqueda sin distinción de mayúsculas por el vocabulario completo de AUTOMATION_PLAN §16.10 en los campos libres encontró una coincidencia en WorkCompleted. Los demás campos revisados no produjeron coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 denegaciones de permisos/credenciales y 0 avisos de límite. Registra dos errores de invocación recuperados (llamadas 21 y 55) y ninguna orden fallida pendiente."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "WorkCompleted contiene una coincidencia con el vocabulario reservado por §16.10; es la única comprobación no aprobada.",
+    "La resolución del Coordinator acepta RepresentativeDefinitionId como proyección informativa bajo las condiciones indicadas; git show GREEN:ProjectSummary.cs confirma que procede de ProjectPopulation. H-G4-01 queda como desviación operativa no bloqueante; H-G4-02, H-G4-03 y H-G4-04 constan aceptados."
+  ],
+  "RecommendedNextAction": "Corregir WorkCompleted para retirar la coincidencia reservada y presentar una entrega corregida para reverificación."
+}

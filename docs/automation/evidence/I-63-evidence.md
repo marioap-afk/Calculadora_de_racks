@@ -2079,3 +2079,100 @@ Commit `49ed359e`: G3 PASS, disposición de O-G3-1..5 y DEBT-I63-G3-01; `current
 - Planificaciones de G4: 1. Verificaciones: 1, cerrada en STOP.
 - nc4 cumplido. nc1-nc3 no se ejecutan, porque no hay `EXECUTION_VERIFIED`.
 - Copias en `docs/automation/evidence/I-63-pilot/G4-PROJECT-SUMMARY/<RunId>/` y `docs/automation/evidence/I-63-pilot/G4-PROJECT-SUMMARY-nc4/<RunId>/`.
+
+## 51. G4: STOP resuelto, P-01 del Owner y `EXECUTION_VERIFIED`
+
+### 51.1 Resoluciones
+
+- **STOP S-03/C-10 de §50:** el Coordinator acepta `RackSummary.RepresentativeDefinitionId` como precisión no material de D-20.
+  - No hace falta A-4 ni cambio de trabajo.
+  - La sesión comprobó la condición en el código: el valor es `member.RepresentativeDefinitionId` del `PopulationRack`, es decir, el
+    representante de E4 de la población (`ProjectSummary.cs:146-153`), sin otra ruta de cálculo.
+- **Excepción de `Identity`:** el commit de custodia `7bd5a743`, solo de docs, quedó encima del GREEN.
+  - Comprobación mecánica de la sesión: PASS.
+  - `4f45f446` es ancestro de `7bd5a743`; el rango tiene 20 rutas, todas en `docs/`; no hay rutas funcionales.
+  - Los árboles son idénticos: `src` `5d3bba74…` y `tests` `28bc25cb…`.
+  - CI funcional: `37085650331`.
+- **Lección de la sesión:** tras un STOP que puede resolverse reverificando el mismo SHA, el commit de custodia espera a la decisión, como
+  en 16.7.
+
+### 51.2 P-01 y binario del Controller (Owner)
+
+- **Intento `R20261003T023614Z-e734`:** abortado antes de ceder.
+  - `config.toml` = `091540ED…`, distinto de la línea base `155933B3…`.
+  - Además, el binario verificado `bin/a51e250fa15c740a` (`codex-cli 0.159.2`) había desaparecido.
+  - Causa: actualización de la app Codex a `26.930.3930.0`, el 2026-10-04 a las 21:38Z.
+- **Decisión del Owner:**
+  - nueva línea base `091540ED2DE6CFAC5C12110337305FFCABCEEEE0D8CB696F7E04EA057F9F3D66`;
+  - binario nuevo verificado antes de su uso:
+
+```text
+path: C:\Users\alejandra-mendoza\AppData\Local\OpenAI\Codex\bin\8aaf1547b825b104\codex.exe
+sha256: 37762753B554982EEF1C109303D1BE652B6397F1479E844794353A85650199C6
+size: 326872368
+mtime: 2026-10-03 12:48:16.614091200 -0600
+version: codex-cli 0.160.0
+checked_utc: 2026-10-05T01:18:02Z
+config_toml_sha256: 091540ED2DE6CFAC5C12110337305FFCABCEEEE0D8CB696F7E04EA057F9F3D66
+```
+
+- **Primera invocación con el binario nuevo (`R20261005T011832Z-cc42`):**
+  - modelo y effort efectivos = solicitados (`gpt-6-luna`, `high`);
+  - `cli_version` 0.160.0;
+  - `config.toml` igual a la línea base nueva en salida y entrada.
+
+### 51.3 Reverificación y controles
+
+| `RunId` | Fase | Resultado |
+|---|---|---|
+| `R20261005T011832Z-cc42` | VERIFICATION (tras STOP resuelto) | **`EXECUTION_VERIFIED`**, `VerifiedSha` `4f45f4464f5d434f7fa478fea1117d82283ee997`, 14 de 14 en `pass` (`Identity` con la excepción comprobada por el Controller con `git`) |
+| `R20261005T012438Z-27b5` | CONTROL nc1 | `EXECUTION_VERIFIED/NONE`, `NONE` [] |
+| `R20261005T012440Z-1e98` | CONTROL nc2 | `EXECUTION_VERIFIED/NONE`, `NONE` [] |
+| `R20261005T012441Z-7603` | CONTROL nc3 | `EXECUTION_REWORK_REQUIRED/REWORK`, `FreeText` [] |
+
+- **nc3 CUMPLIDO:** un término de gate en `WorkCompleted` da `FreeText` en `fail` y REWORK. Las demás comprobaciones quedan igual que en la
+  real.
+- **nc1 NO CUMPLIDO:** la entrega mutada lleva `CurrentSha` `0123…` (inexistente). El oráculo era `Identity` en `fail` con STOP.
+  - El Controller devolvió `EXECUTION_VERIFIED` con `VerifiedSha` `4f45f446`.
+  - Su `Evidence` de `Handoff` afirma `CurrentSha` = `4f45f446`, contra el valor de la entrega.
+- **nc2 NO CUMPLIDO:** la delegación mutada excluye `ProjectPopulation.cs` de `AllowedWriteScope`. El oráculo era `Scope` en `fail` con STOP.
+  - El Controller devolvió `EXECUTION_VERIFIED` y afirma que las 12 rutas están permitidas.
+  - Es el mismo modo de fallo que DEV-G2-01.
+- **Comprobaciones mecánicas de la sesión sobre `527e4b91..4f45f446`:** `Scope` PASS y pruebas existentes sin cambios PASS.
+  - Con la delegación de nc2, la misma comprobación da `Scope` en `fail`.
+  - El `CurrentSha` real de la entrega (`4f45f446`) existe, es el GREEN y es el `VerifiedSha` de la verificación real.
+
+### 51.4 Lectura de la sesión sobre nc1 y nc2 (para el juicio del Coordinator)
+
+- **nc1:**
+  - El prompt de la reverificación nombra el GREEN `4f45f446` como `CurrentSha` de la entrega, en el párrafo de la excepción de
+    `Identity`. Los textos literales del Coordinator, incluidos como entradas, también lo nombran.
+  - El Controller tomó ese SHA del prompt en lugar del `CurrentSha` de la entrega.
+  - Es un defecto de discriminación introducido por cómo la sesión redactó la excepción: justo lo que el Coordinator pidió evitar («la
+    excepción no debe debilitar nc1»).
+  - La verificación real no queda afectada en los hechos. Su entrega lleva `CurrentSha` `4f45f446`, y la sesión lo comprobó por su
+    cuenta: existe, es el GREEN y su CI es 4/4.
+  - Pero el Controller de esta configuración no demuestra que una entrega con otro `CurrentSha` fallaría.
+- **nc2:**
+  - El Controller juzgó `Scope` contra el alcance del contrato, o contra la nota de la comprobación mecánica de la sesión del registro
+    del trabajo, y no contra la delegación mutada.
+  - DEV-G2-01 ya lo previó. La comprobación mecánica independiente de la sesión, PASS en la real, es la regla vigente que lo cubre.
+- **Reejecución:** no procede (README §10). Las salidas son válidas, así que no son fallos de transporte. Quedan como controles no
+  superados para el juicio del Coordinator.
+- **Recomendación de la sesión:**
+  - Aceptar la verificación real, apoyada en las comprobaciones mecánicas independientes de `Scope` y de la excepción de `Identity`.
+  - Registrar nc1/nc2 como deuda del protocolo de verificación:
+    - un prompt de verificación no debe nombrar el SHA de la entrega;
+    - los hechos de la sesión no deben presentarse al Controller como conclusiones.
+  - O, si el Coordinator lo exige, repetir los controles con un prompt sin el SHA del GREEN, mediante una decisión explícita, porque
+    README §10 no lo prevé.
+
+### 51.5 Contadores y custodia
+
+- `attempts` = 2 de 3, sin cambio: no hubo corrección de trabajo.
+- Verificaciones de G4: 2, más 1 intento abortado antes de ceder.
+- Controles: nc4 y nc3 cumplidos; **nc1 y nc2 no superados** (ver 51.4).
+- Copias en `docs/automation/evidence/I-63-pilot/G4-PROJECT-SUMMARY/<RunId>/` y `docs/automation/evidence/I-63-pilot/G4-PROJECT-SUMMARY-ncN/<RunId>/`. Llevan CRLF los transitorios
+  R20261003T023614Z-e734/identity-exception-check.json.
+
+**Siguiente:** el Coordinator juzga G4 con esta evidencia y revisa el diff `527e4b91..4f45f446` contra Freeze + A-1 + A-2 + A-3.

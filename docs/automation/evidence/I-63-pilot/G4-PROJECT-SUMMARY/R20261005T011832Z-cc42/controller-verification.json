@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "G4-PROJECT-SUMMARY",
+  "RunId": "R20261005T011832Z-cc42",
+  "DelegationRunId": "R20261003T005345Z-66f3",
+  "WorkRunId": "R20261003T005720Z-2b14",
+  "Attempt": 2,
+  "VerifiedSha": "4f45f4464f5d434f7fa478fea1117d82283ee997",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-10-03T00:57:23Z, EndUtc=2026-10-03T01:22:44Z, SessionOperated=false; handoff OutputWrittenUtc=2026-10-03T01:22:38.4883564Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json valida como rackcad-worker-handoff/v1; TaskId=G4-PROJECT-SUMMARY, Attempt=2, DelegationRunId=R20261003T005345Z-66f3, RunId=R20261003T005720Z-2b14; su salida ocurrió después del inicio de cesión."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leí los UNIT_DOC en AuthorityRevision 527e4b9185173e2f50c10d39a882749c09b77d2f y los EXTERNAL en MainSha 819955d61a6da4c811a11fbd11b5dca13f634b7c. git merge-base dio 819955d61a6da4c811a11fbd11b5dca13f634b7c; git diff de referencias EXTERNAL MainSha..AuthorityRevision y AuthorityRevision..BaseSha no mostró cambios. La decisión literal del Coordinator resuelve S-03 y aclara que C-10 no se activa; el código proyecta member.RepresentativeDefinitionId desde ProjectPopulation/E4."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Contrato, delegación y registro de planificación coinciden en unidad I-63, G4, tarea, revisión 527e4b9 y MainSha 819955d; las aceptaciones A1-A8 constan pass. El alcance observado coincide con el contrato; la decisión del Coordinator acepta la proyección informativa del representante bajo las restricciones indicadas."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD=7bd5a7438c9327b82203ae77d0312104c07509bb; rama y worktree coinciden con la delegación. git merge-base --is-ancestor confirmó BaseSha→RedSha, RedSha→CurrentSha y CurrentSha GREEN 4f45f446→HEAD. git diff --name-only GREEN..HEAD contiene 20 rutas docs/ únicamente; git rev-parse GREEN:src = HEAD:src (5d3bba74042ca62adcb1986b0276f9a30b01923d) y GREEN:tests = HEAD:tests (28bc25cbeab630d996b883dbc2e408a12d8c448e). refs/remotes/origin/architecture/parametros-calculados-resumen-proyecto=7bd5a743; identity-exception-check.json reporta el mismo SHA remoto y que la CI funcional es run 37085650331 sobre GREEN."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts.OriginMainSha=819955d61a6da4c811a11fbd11b5dca13f634b7c, igual a MainSha; origin/main local coincide. El ref de seguimiento de la rama es 7bd5a743 y identity-exception-check.json registra OriginBranchSha=7bd5a743. La consulta git ls-remote no pudo conectar; la verificación usa esos registros y el ref local, según la alternativa indicada."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only 527e4b9185173e2f50c10d39a882749c09b77d2f..4f45f4464f5d434f7fa478fea1117d82283ee997 listó 12 rutas: 7 bajo src/RackCad.Application/ComputedParameters/ y 5 bajo tests/RackCad.Tests/ComputedParameters/. Todas están en AllowedWriteScope y ninguna en ForbiddenWriteScope. git diff --name-status -- tests/RackCad.Tests/ComputedParameters/ mostró solo cinco altas."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --short no mostró cambios. git check-ignore confirmó que artifacts/orchestration/I-63/G4-PROJECT-SUMMARY/2/R20261005T011832Z-cc42/inputs/worker-handoff.json está ignorado."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun 37085650331: event=push, ref=refs/heads/architecture/parametros-calculados-resumen-proyecto, head_sha=4f45f4464f5d434f7fa478fea1117d82283ee997, completed/success; los cuatro jobs requeridos están en success. Su core.trx registra 12595/12595 y filtro 29/29; ui.trx 1654 total, 1637 ejecutadas aprobadas, 0 fallidas y total−executed=17 no ejecutadas. RemoteFacts.RedRun 37085428743 es push del RedSha en la misma rama; job Core en failure y TRX adjunto."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Lectura directa de los TRX: GREEN Core filtro FullyQualifiedName~RackCad.Tests.ComputedParametersSummary seleccionó 29, pasó 29, falló 0; RED seleccionó 29, pasó 3, falló 26. El TRX RED contiene resultados de pruebas fallidas y no un fallo de compilación. INV-11: INV11_Full_ConElSnapshotInvertido… pasó; INV-29: la prueba de orden y ambas guardas pasaron en GREEN; ForbiddenReferenceFamilies es la misma función para Application vacío y controles UI/WPF y Plugin/AutoCAD. INV-30: NRacksConTresVistas pasó; INV-31: tabla cerrada en ambos sentidos pasó; INV-32: contador de evaluaciones pasó; INV-34: las siete pruebas de estados/resoluciones/lecturas pasaron. También pasaron pruebas D-20, D-21 y D-24; la caracterización registra N=1,10,100,1000, tres vistas, contadores y tiempos sin umbral. El TRX RED y la entrega coinciden en 29/3/26; el TRX GREEN coincide en 29/29/0. RT y ChainRedFiles son las cinco altas: ComputedParametersSummaryContextTests.cs, ComputedParametersSummaryGuardTests.cs, ComputedParametersSummaryKit.cs, ComputedParametersSummaryPerformanceTests.cs y ComputedParametersSummaryTests.cs. git diff --name-only RedSha CurrentSha -- tests/ está vacío."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..GREEN muestra RED y GREEN con el trailer declarado literalmente: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. El commit de custodia docs-only no forma parte de BaseSha..CurrentSha verificado."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita claude-sonnet-5-5, effort high. relay-record-work.json Participant.ModelEffective=claude-sonnet-5-5 y EffortEffective=high; coinciden con Worker.ModelRequested y Worker.EffortRequested de la entrega."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisé WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json contra los términos de AUTOMATION_PLAN §16.10; no encontré coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra Outcome COMPLETED, notificación final y DeathConfirmed=true; Notes no registra denegaciones ni órdenes fallidas pendientes."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "No pude consultar el servidor con git ls-remote por falta de conexión; el ref remoto local y identity-exception-check.json indican 7bd5a743, y el registro del Worker conserva OriginMainSha=819955d6.",
+    "El TRX UI informa 1654 resultados totales, 1637 ejecutados y Counters.notExecuted=0; la diferencia de 17 coincide con los resultados NotExecuted documentados para esa suite."
+  ],
+  "RecommendedNextAction": "Devolver este informe al Coordinator para el siguiente control del relevo."
+}
