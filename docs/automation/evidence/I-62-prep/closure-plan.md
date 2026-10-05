@@ -36,14 +36,14 @@
    `MERGE_SHA` y la CI posterior al merge (precedentes `integration/I-56` e `integration/I-61`).
 8. **Recibo** en la evidencia de I-62 y estado final.
 
-## 3. Conflictos previsibles con las hermanas (MEASURED al 2026-10-04)
+## 3. Conflictos previsibles con las hermanas (MEASURED al 2026-10-05)
 
 | Rama | Punta | Superficies de cierre que toca | Serialización |
 |---|---|---|---|
 | I-52 `feature/rackmirror-espejo-semantico` | `fb6b5648` (merge-base `95690c28`) | `docs/adr/README.md` (fila 0036), `docs/HANDOFF.md`, `docs/ROADMAP.md` | si integra antes, I-62 rebasa y añade la fila 0048 detrás de la 0036; si después, I-52 rebasa |
-| I-63 `architecture/parametros-calculados-resumen-proyecto` | `fdd4b651` | `docs/ROADMAP.md` (su fila) | acuse de ventana; sin solape de líneas |
+| I-63 `architecture/parametros-calculados-resumen-proyecto` | `33032f61` | `docs/ROADMAP.md` (su fila) | acuse de ventana; sin solape de líneas |
 | I-64 `architecture/workspace-persistente-rackcad` | `39b45f36` | `docs/ROADMAP.md` (su fila); en su cierre, la fila 0047 del índice ADR | la 0047 precede a la 0048: quien integre después rebasa |
-| I-62 | `bf7b0d9c` | AUTOMATION_PLAN, LIFECYCLE, agent-execution, ROADMAP (fila del bootstrap) | AUTOMATION_PLAN y LIFECYCLE son autoridades calientes (WORKFLOW §7): ninguna hermana las toca hoy; DC-07 antes de cada escritura |
+| I-62 | `f89b5284` | AUTOMATION_PLAN, LIFECYCLE, agent-execution, ROADMAP (fila del bootstrap) | AUTOMATION_PLAN y LIFECYCLE son autoridades calientes (WORKFLOW §7): ninguna hermana las toca hoy; DC-07 antes de cada escritura |
 
 **Regla de la evidencia por SHA:** una integración de una hermana antes que I-62 cambia `origin/main` → READY-04 de I-62 rebasa → SHA nuevo → READY-02..09 y la
 conformidad de READY-06 se repiten (LIFECYCLE §9). Previsión: si I-52, I-63 o I-64 integran antes, el mapa regenerado en el merge local debe seguir igual

@@ -1,0 +1,123 @@
+{
+ "Units": 1825,
+ "CredibleClosures": 919,
+ "UnknownClosures": 906,
+ "ClosureSize": {
+  "min": 1,
+  "p50": 1,
+  "p90": 1674,
+  "max": 1692
+ },
+ "TopBlockers": [
+  [
+   "§8 (externa)",
+   1112
+  ],
+  [
+   "S-04 (externa)",
+   589
+  ],
+  [
+   "S-13 (externa)",
+   579
+  ],
+  [
+   "P-02 (externa)",
+   579
+  ],
+  [
+   "T10",
+   578
+  ],
+  [
+   "B.8.6#li3",
+   578
+  ],
+  [
+   "B.8.6#li1",
+   578
+  ],
+  [
+   "P-08 (externa)",
+   578
+  ],
+  [
+   "S-07 (externa)",
+   578
+  ],
+  [
+   "B.8.5#li6",
+   572
+  ],
+  [
+   "P-04 (externa)",
+   572
+  ],
+  [
+   "B.8.5#li5",
+   572
+  ],
+  [
+   "B.8.2#row5",
+   565
+  ],
+  [
+   "B.8.2#row3",
+   565
+  ],
+  [
+   "B.8.2#field:L.window.state` = CLOSED y `L.task_intent` ≠ `null",
+   565
+  ]
+ ],
+ "Sample": {
+  "C-03": {
+   "Unit": "C-03",
+   "Size": 1674,
+   "Incomplete": 163,
+   "Credible": false
+  },
+  "C-11": {
+   "Unit": "C-11",
+   "Size": 2,
+   "Incomplete": 0,
+   "Credible": true
+  },
+  "P-15": {
+   "Unit": "P-15",
+   "Size": 1674,
+   "Incomplete": 163,
+   "Credible": false
+  },
+  "I-S15": {
+   "Unit": "I-S15",
+   "Size": 2,
+   "Incomplete": 0,
+   "Credible": true
+  },
+  "T19": {
+   "Unit": "T19",
+   "Size": 1674,
+   "Incomplete": 163,
+   "Credible": false
+  },
+  "§20.6": {
+   "Unit": "§20.6",
+   "Size": 1674,
+   "Incomplete": 163,
+   "Credible": false
+  },
+  "§20.5": {
+   "Unit": "§20.5",
+   "Size": 1674,
+   "Incomplete": 163,
+   "Credible": false
+  },
+  "B.8.8": {
+   "Unit": "B.8.8",
+   "Size": 1674,
+   "Incomplete": 163,
+   "Credible": false
+  }
+ }
+}

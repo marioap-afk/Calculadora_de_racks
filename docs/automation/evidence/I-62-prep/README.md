@@ -23,6 +23,7 @@ Estado de referencia: F2 en `1eddbf48dbefd9685e68d63c0560bacf484d2dcb` (CI 37075
 |---|---|
 | `a1-review-kit/` | kit de la revisión del Architect de A-1, listo para lanzar (prompt, cierre, preflight de fidelidad, esquema del resultado, auditoría posterior con autoprueba, plantilla de custodia) |
 | `f4/` | matriz de campos de `state/v2`, mapa de impacto de A-1, plano de pruebas C-15..C-42 y cuatro prototipos medidos (YAML, oráculo, rebase, resolver) |
+| `f4/ndc-proto/` | clausura normativa de las 1 825 unidades sobre el manifiesto B.11: riesgo operativo NDC-01 (`f4-dossier.md` §8) |
 | `f6/recipes.md`, `f6/fx04a/` | recetas de FX-01..FX-06, diseño del fixture y ensayo mecánico de FX-04a |
 | `owner-decision-packets.md` | paquetes en formato de una línea; OD-2 con la medición del 2026-10-04; DEP-F4-YAML ya no hace falta |
 | `ready-candidate.md`, `ov-scripts.md`, `closure-plan.md` | READY-01..09 ejecutable, plantillas de READY-06 y del Candidato, guiones de OV y plan de cierre |

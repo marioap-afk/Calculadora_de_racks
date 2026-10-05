@@ -205,6 +205,15 @@ derivan del texto enmendado.
 **RED esperado antes de materializar F4:** C-18 y C-38 fallan por validador ausente; C-20a por entrada, §16.13 y mapa ausentes; en el repositorio real, `Evaluate`
 devuelve PRE_ACTIVATION para todo (sin EFF), y los MC de C-15..C-17, C-20b, C-20c y C-28..C-42 fallan por procedimiento ausente.
 
+**Riesgo operativo medido NDC-01 (no es del Freeze; 2026-10-05):** `f4/ndc-proto/ndc_stats.py` calcula la `NormativeDependencyClosure` de las 1 825 unidades de
+V14 sobre el manifiesto B.11 entregado en F3. Las clausuras son bimodales: la mediana es 1 (unidades hoja) y el p90 es 1 674 unidades (casi toda la Proposal).
+906 de 1 825 alcanzan una unidad con `Complete` = false y quedan en UNKNOWN. Los bloqueos más frecuentes son las unidades externas de I-61 (AUTOMATION_PLAN §8,
+S-04, S-13, P-02, P-08), incompletas por la regla X del generador, y las referencias en cascada a través de las aristas sección → miembros (regla U2) y
+de la sobreaproximación de aristas (regla O). **Consecuencia:** con un transporte DEGRADED_BOUNDED, casi ningún hallazgo que cite algo podría acreditarse.
+La regla actúa bien (UNKNOWN no acredita), pero la utilidad es baja. Con FAITHFUL o FAITHFUL_NORMALIZED no hace falta clausura (§20.3.3).
+**Remedio, que necesita autoridad:** la revisión del manifiesto por el Architect (B.11), que retira las aristas informativas y da entrada a las unidades externas
+de definición (S-nn, P-nn) como terminales cuando no tienen dependencias de control. El manifiesto es un artefacto de F3 (GATE PASS): no lo cambia la sesión.
+
 **Elecciones de implementación que siguen abiertas (no cambian el Freeze):** número y texto de la sección de entrada de WORKFLOW (`## 12.` está libre en `main`);
 formato de la tabla PRE (se propone el de `8a021fb6`: «Derived formal claim table» con la columna `Claim-Id`); la comprobación `BaseSha` de 16.3 en el arnés de
 C-20c necesita una delegación real; el escritor canónico de `state/v2` (pasos de dos espacios, listas sangradas bajo su clave, cadenas entre comillas cuando

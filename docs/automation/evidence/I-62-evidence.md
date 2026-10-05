@@ -1761,3 +1761,17 @@ aristas de recuperación. Ningún hallazgo material nuevo.
 DC-07 (2026-10-05): `origin/main` = `819955d6`; I-52 `fb6b5648`, I-63 `fdd4b651` e I-64 `39b45f36` no tocan ningún archivo de esta entrega, que está entera
 bajo `docs/automation/evidence/I-62-prep/`, más las decisiones, la evidencia, el estado y el contrato de I-62. Sin cambios en superficies normativas ni de producción;
 A-1 y su paquete, intactos.
+
+### 39.5 Riesgo operativo NDC-01: precisión del manifiesto B.11 (medido tras el commit de preparación)
+
+CI del commit de preparación `f89b5284c7c80306f13e95328b4b42c5c5c947c8`: corrida **37254512086**, push, head_sha exacto, cuatro jobs en `success`. DC-07
+repetido: I-63 avanzó a `33032f61` sin tocar ningún archivo de I-62.
+
+`f4/ndc-proto/ndc_stats.py` (MEASURED) recorre la clausura de cada una de las 1 825 unidades de V14 sobre el manifiesto de F3:
+- 919 clausuras son acreditables y 906 son UNKNOWN;
+- el tamaño es bimodal (mediana 1; p90 1 674; máximo 1 692);
+- los bloqueos más frecuentes son las unidades externas de I-61, incompletas por diseño del generador.
+
+Con un transporte DEGRADED_BOUNDED, casi ningún hallazgo con premisas referidas podría acreditarse. No es un defecto del Freeze: la regla falla cerrado
+como debe. Es un límite de la precisión del manifiesto, cuyo remedio (retirar aristas informativas y dar entrada terminal a las definiciones externas) corresponde a la
+revisión del manifiesto por el Architect (B.11). La sesión no cambia el manifiesto, que es un artefacto de F3 con GATE PASS. Detalle en `f4-dossier.md` §8.
