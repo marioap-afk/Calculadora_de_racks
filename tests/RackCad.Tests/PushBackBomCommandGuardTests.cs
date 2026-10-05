@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using Xunit;
 
 namespace RackCad.Tests
@@ -94,15 +95,79 @@ namespace RackCad.Tests
             Assert.Contains("editor.WriteMessage", block, StringComparison.Ordinal);
         }
 
+        /// <summary>El codigo sin comentarios: un comentario XML nunca puede hacer pasar una guarda de fuente.</summary>
+        private static string CodeOnly(string source)
+        {
+            var withoutBlocks = Regex.Replace(source, @"/\*.*?\*/", string.Empty, RegexOptions.Singleline);
+            return Regex.Replace(withoutBlocks, @"//[^\n]*", string.Empty);
+        }
+
+        /// <summary>
+        /// El cuerpo del metodo <paramref name="name"/> (con cuerpo de expresion hasta el <c>;</c>, o con bloque hasta su llave de
+        /// cierre), o una cadena vacia si no existe.
+        /// </summary>
+        private static string MethodText(string code, string name)
+        {
+            var signature = Regex.Match(code, @"\b" + name + @"\s*\(");
+            if (!signature.Success)
+            {
+                return string.Empty;
+            }
+
+            var depth = 0;
+            var index = signature.Index + signature.Length - 1;
+            for (; index < code.Length; index++)
+            {
+                if (code[index] == '(')
+                {
+                    depth++;
+                }
+                else if (code[index] == ')' && --depth == 0)
+                {
+                    break;
+                }
+            }
+
+            var rest = code.Substring(index + 1).TrimStart();
+            if (rest.StartsWith("=>", StringComparison.Ordinal))
+            {
+                var end = rest.IndexOf(';');
+                return end < 0 ? rest : rest.Substring(0, end + 1);
+            }
+
+            depth = 0;
+            for (var position = 0; position < rest.Length; position++)
+            {
+                if (rest[position] == '{')
+                {
+                    depth++;
+                }
+                else if (rest[position] == '}' && --depth == 0)
+                {
+                    return rest.Substring(0, position + 1);
+                }
+            }
+
+            return rest;
+        }
+
         [Fact]
         public void ThePushBackHandler_ConsumesTheSharedGateAndNotASecondRule()
         {
-            var source = PushBackHandler;
+            // I-63 A-4 (DEBT-I63-G2-01): desde D-27 la puerta se compone en UN solo sitio de Application, RackOutputVerdict.
+            // La guarda lee el codigo sin comentarios y fija la arquitectura vigente: OutputBlockedReason delega y no compone.
+            // La autoridad primaria es INV-33 (ComputedParametersPopulationGuardTests); esta es su defensa legacy redundante.
+            var code = CodeOnly(PushBackHandler);
+            var method = MethodText(code, "OutputBlockedReason");
 
-            Assert.Contains("RackBomOutputGate.For(system).Reason", source, StringComparison.Ordinal);
+            Assert.False(string.IsNullOrWhiteSpace(method), "el handler sigue declarando OutputBlockedReason");
+            Assert.Matches(@"\bRackOutputVerdict\s*\.", method);
+            Assert.DoesNotMatch(@"\bPushBackResolver\b", method);
+            Assert.DoesNotMatch(@"\bRackBomOutputGate\s*\.\s*For\b", method);
+
             // No hay una segunda regla de validez escrita a mano en el Plugin.
-            Assert.DoesNotContain("IsInvalidForBom", source, StringComparison.Ordinal);
-            Assert.DoesNotContain("RequiredBedLength", source, StringComparison.Ordinal);
+            Assert.DoesNotContain("IsInvalidForBom", code, StringComparison.Ordinal);
+            Assert.DoesNotContain("RequiredBedLength", code, StringComparison.Ordinal);
         }
     }
 }

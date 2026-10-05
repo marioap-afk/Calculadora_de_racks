@@ -277,9 +277,11 @@ namespace RackCad.Application.Expressions
         {
             if (id.Namespace == SymbolNamespace.Rack)
             {
-                // An absent rack id takes the diagnostic form Rack.#{token}: it displays, it never binds (the parser reads
-                // it as namespace syntax followed by a loose qualifier). The token is ASCII letters and digits, written
-                // exactly: its comparer is Ordinal, so no case is folded.
+                // An absent rack id takes the diagnostic form Rack.#{token}: it displays, it never binds (I-63 A-3). A token
+                // that is not a GUID Guid.TryParse reads -every key of the closed catalogue- makes the lexer reject the whole
+                // #{token} as ONE InvalidQualifier, so there is no tree; only a key readable as a GUID (32 hex digits, N form)
+                // lexes as a qualifier, and the parser then rejects it, loose after Rack., as UnexpectedToken. The token is
+                // ASCII letters and digits, written exactly: its comparer is Ordinal, so no case is folded.
                 return symbols.TryGet(id, out var rackEntry)
                     ? RackMemberForm(rackEntry.DisplayName)
                     : "Rack.#{" + id.Key + "}";
