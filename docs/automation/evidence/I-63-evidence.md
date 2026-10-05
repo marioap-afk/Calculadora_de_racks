@@ -2357,3 +2357,23 @@ Valores aprobados por el Coordinator (Q-R-03):
 
 - Registrada en `docs/ideas-futuras.md` (sección de I-63), con DEV-G2-01 y DEV-I63-G4-02/03 como evidencia y las tres recomendaciones.
 - No se editan I-61 ni I-62. El HANDOFF se actualiza en la sesión de integración.
+
+## 56. READY bloque D — ADR-0049 propuesto
+
+- **Reserva del número** (consulta del 2026-10-05):
+  - `main` llega hasta ADR-0046;
+  - en ramas activas, ADR-0047 está en `architecture/workspace-persistente-rackcad` (I-64) y ADR-0048 en
+    `architecture/portabilidad-coordinador-principal` (I-62);
+  - ninguna rama, remota o local, usa o reserva ADR-0049 (las coincidencias de «0049» en `docs/` son GUID dentro de TRX);
+  - número reservado: **ADR-0049**. Es secuencial y nunca se reutiliza (`docs/adr/README.md`).
+- **Archivo:** `docs/adr/0049-parametros-calculados-namespace-rack-y-resumen-de-proyecto.md`, en estado **`propuesto`**.
+  - Es sucesor **parcial** de ADR-0043, que sigue aceptado.
+  - Deriva del anexo A de la Proposal V3, actualizado con lo integrado en la rama: A-1..A-4 y D-02, D-07, D-10..D-21, D-24, D-25 y D-28
+    tal como quedaron en los gates.
+  - Índice de `docs/adr/README.md` con la fila 0049 en `propuesto`.
+- **Siguiente:**
+  1. revisión del mismo Architect R1-R3 sobre el archivo exacto (blob de este commit);
+  2. resolver los REQUIRED que haya;
+  3. **aceptación explícita del Owner** del ADR exacto (no delegable);
+  4. estado `aceptado` y CI exact-SHA.
+- **ADR-0043:** recibe su nota posterior fechada solo cuando el Owner acepte el ADR-0049.
