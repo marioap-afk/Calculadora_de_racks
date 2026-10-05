@@ -2172,3 +2172,19 @@ solo desde artefactos custodiados.
 - **PORT-02:** las pruebas de los helpers dependían del cwd o de `I62_REPO`. Corregido.
 - **PORT-03:** un defecto del propio script en su primera corrida. Corregido y declarado.
 - **No es un piloto FX.**
+
+## 53. Cierre de la orden nocturna
+
+- **Revisión 2** (kit v3c, `task_b5714b45`):
+  - la lanzó el Owner (sesión `local_8e95d755`, worktree `sad-cray-fd84e8` sobre `411e01ce`);
+  - su primera llamada, `sha256sum` del prompt en `D:62-arch-a1r5-run` (fuera de su worktree), no tiene resultado desde las 08:08:10Z: la sesión
+    espera una aprobación de permiso;
+  - no hay veredicto; la invocación está lanzada, así que cuenta como la segunda y última.
+- **Interrupción de la sesión principal:** el registro de CI muestra un hueco entre los commits `c891863d` (07:46Z) y `01ade261` (12:33Z), consistente
+  con una espera de aprobación de herramienta. La sesión no lo vio mientras ocurría: sus lecturas de hora intermedias se tomaron antes del hueco.
+- **CI:**
+  - `c891863d` → 37279632155;
+  - `01ade261` → 37310363590;
+  - las dos con push, head_sha exacto y cuatro jobs en `success`.
+  - `aeda77c4` (37314793355) y `c66137b9` (37315042133) seguían en curso al escribir.
+- **Informe final:** `I-62-prep/night-2026-10-05/final-report.md`.
