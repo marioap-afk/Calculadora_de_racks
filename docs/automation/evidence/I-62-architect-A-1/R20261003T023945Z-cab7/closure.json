@@ -1,0 +1,562 @@
+{
+ "Schema": "rackcad-input-closure/v1 (representación experimental; Proposal V14 §20.3.1; no autoridad normativa: rigen I-61 y LIFECYCLE)",
+ "Ids": {
+  "RunId": "R20261003T023945Z-cab7",
+  "InvocationId": "I20261003T023945Z-cab7",
+  "LogicalReviewRequestId": "L20261003T023945Z-cab7"
+ },
+ "AuthorityRevision": "bf7b0d9c4ec79e38350bad55e0debcde55b3cec9",
+ "Adapter": "claude-desktop-session: sesión nueva y separada, lanzada desde un clon limpio fuera del repositorio de trabajo (D:\\r62-arch-a1)",
+ "CanonicalInputs": [
+  {
+   "Path": "docs/initiatives/I-62-A-1.md",
+   "Blob": "09ca93285975c4b7af6471d6ae91bfa12c94a1fc",
+   "Bytes": 18667,
+   "Lines": 170,
+   "Sha256": "996cddeb72a4717de854c0cf99c9a805346c2f3d05ba9f5cd7e4166c218babf4",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "objeto de la revisión"
+  },
+  {
+   "Path": "docs/initiatives/I-62-architect-package-A-1.md",
+   "Blob": "071cecba1fb8bdefc9a4e5554dd47a0459f8a1d2",
+   "Bytes": 7567,
+   "Lines": 93,
+   "Sha256": "a069bd2800ca2bfcd75eb32004eeb8f7dc21c24d1181c376fed7e2695c342f9b",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "paquete del Architect"
+  },
+  {
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa",
+   "Bytes": 342761,
+   "Lines": 3323,
+   "Sha256": "ab55ad4f4addef8455543ed06a4c60aa0a1901affc0ba3686146dfeedd9279af",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "Freeze: cláusulas que se enmiendan"
+  },
+  {
+   "Path": "docs/initiatives/I-62-consensus-freeze.md",
+   "Blob": "0f6b860837e2478db8525e1fb30a485bc4646816",
+   "Bytes": 7134,
+   "Lines": 113,
+   "Sha256": "71809873a89aafcb58883c507a42cc825a0c14cd70c84bda6d26fd0af9e9a4a4",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "registro del Freeze"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A1/a1-counterexamples.py",
+   "Blob": "d7a5d1ef5558fd76c5ffe224fe71e807b44b240d",
+   "Bytes": 21369,
+   "Lines": 314,
+   "Sha256": "a5f3bd5ffa3fb2f988c731e80664d1190b9389a81faa1520564dfb610ff94f25",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "contra-ejemplos (evidencia de apoyo, no autoridad)"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A1/a1-counterexamples-result.json",
+   "Blob": "9fa501b607d56c9bd902769dcd5f669450a3cb4c",
+   "Bytes": 5945,
+   "Lines": 155,
+   "Sha256": "3a93940cc16adcb410a4a1adcc115cc5b6ced65005401ce340153d6265df1b62",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "resultado de los contra-ejemplos"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-prep/freeze-issues.md",
+   "Blob": "7be7f8e9dac9a84c59934d001af3de084237440f",
+   "Bytes": 7868,
+   "Lines": 74,
+   "Sha256": "6ab049688e0942ffe66df209184c68315c2891681080d196fac0913ac548ce4e",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "hallazgo original de FC-01 y FC-02"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-prep/f4-dossier.md",
+   "Blob": "6ae3f9fe6527c73aab522fdb3160335603a2c5c8",
+   "Bytes": 20335,
+   "Lines": 186,
+   "Sha256": "12d3f2dc8900f6ea481bb22cc087962ae04bc315ce529cb0a76db1aba36685a2",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "auditoría de transiciones (§4)"
+  },
+  {
+   "Path": "docs/INITIATIVE_LIFECYCLE.md",
+   "Blob": "f19896a8f1a7c82f74bac7231636f68462a87271",
+   "Bytes": 24334,
+   "Lines": 360,
+   "Sha256": "93e9c6ca73460ae46ca896f4447d9f8b517624e0acbae82750d4ba613ff0b994",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "§3 (M-01..M-08), §5 y §6 (A-n)"
+  },
+  {
+   "Path": "docs/automation/decisions/I-62.md",
+   "Blob": "a06ed5b50afc1295e04d6b81e0cc4230be93da52",
+   "Bytes": 92909,
+   "Lines": 678,
+   "Sha256": "0aa77d2b06e855ba9cc136360d5732624b312c84537dc211044261dfaa932aef",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "§34 (clasificación y dirección del Coordinator)"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-evidence.md",
+   "Blob": "6c9133b70e500017ba8bf318725e61d92be1d535",
+   "Bytes": 143536,
+   "Lines": 1707,
+   "Sha256": "c33a612c9bb36811ca030fbefeee87a9dca3caa27dfe9f5ca8e1b8674953eab4",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "§37-§38 (F3 y paquete de A-1)"
+  },
+  {
+   "Path": "docs/initiatives/I-62-portabilidad-coordinador-principal.md",
+   "Blob": "0a133fb4e924c3c6334063a3ba5cab424c2f0914",
+   "Bytes": 17303,
+   "Lines": 227,
+   "Sha256": "4059de65f9c185d7c27900bb6b59f284172278bc066989f61685e2e0d31d1690",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "contrato: alcance y no-objetivos"
+  },
+  {
+   "Path": "docs/AUTOMATION_PLAN.md",
+   "Blob": "52fd8f66591da49b3fb78f7bbe4580d76f8339e3",
+   "Bytes": 94682,
+   "Lines": 1105,
+   "Sha256": "370c212a4870bb739a21462eaf036117b4a9603e7dc9b8a9480413a140576d02",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "§16 (I-61) y 16.20-16.24 (F3, inactivo)"
+  },
+  {
+   "Path": "docs/automation/agent-execution/README.md",
+   "Blob": "3fb9a44b9cdcb72ddd1a575bb919f1c265d9b8ae",
+   "Bytes": 49770,
+   "Lines": 628,
+   "Sha256": "89639fbabe39a3a56e9355ae2a7839a970013182f32c67d9001834b9eae8564f",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "§14-§16 (F3, inactivo)"
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json",
+   "Blob": "d54a7ae783ec83d055babdae090899908b616082",
+   "Bytes": 21758,
+   "Lines": 858,
+   "Sha256": "476d1dafedfe5b2994ed99e3b9db6e48b1a0a9880e8a107dcd9da5d6eaa79e79",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "contrato F3: Target, BudgetSnapshot, Authorization"
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/binding.v1.schema.json",
+   "Blob": "13501476b775ca18c4c61ba3e1793796b51067d9",
+   "Bytes": 18871,
+   "Lines": 759,
+   "Sha256": "6042b2ebed0de0c12e4a61cd731fc4a0bf214d87da85c04b8d440e18b13e5773",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "contrato F3: BindingRef, AuthorizationRef, Acceptance"
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/input-closure.v1.schema.json",
+   "Blob": "6bdf71843e2c70362a5e2d0ea19c8891e22bcff6",
+   "Bytes": 6911,
+   "Lines": 282,
+   "Sha256": "7792455febda47fd65d8f50b3d64343ac090e66441f332b6f86820e288a86e36",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "contrato F3: cierre de insumos"
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/input-fidelity.v1.schema.json",
+   "Blob": "e54990fc541b6420c3cddb45e1a7cc2fefd6c76b",
+   "Bytes": 17883,
+   "Lines": 578,
+   "Sha256": "f6d1fef24332d1a4572955a8d188f1194feacca53eaaed16de0d9a933c30c729",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "contrato F3: fidelidad"
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/relay-record.v2.schema.json",
+   "Blob": "dca5b29c1a260b679efc0fb249c73850925302f0",
+   "Bytes": 35251,
+   "Lines": 1384,
+   "Sha256": "dcb629dc8cfda9bd1781a458e1bed54b63f0ce282fd34d685131531f731cbec7",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "contrato F2: RebaseMap.StateFields"
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/gate-contract.v2.schema.json",
+   "Blob": "f644bb1941656b65c62ee474bf37752d328fd091",
+   "Bytes": 17854,
+   "Lines": 650,
+   "Sha256": "fa440a95fd377ff6934c6251a17073bf22c750c017bae729cd1b5f9ce5c5c90d",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "contrato F3: RoleRequirements, Materialization"
+  },
+  {
+   "Path": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md",
+   "Blob": "da275e1a141a750fee2a8f501b36aa280d7aa534",
+   "Bytes": 9871,
+   "Lines": 105,
+   "Sha256": "3cdd80588e1565a64421831ae69919542ac984e948ced4784917fad63c806911",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "ADR aceptado (M-08)"
+  },
+  {
+   "Path": "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md",
+   "Blob": "e1bd8d91f10cb4c86eaf7753f9ef2531ae62498e",
+   "Bytes": 10832,
+   "Lines": 146,
+   "Sha256": "fb22065c6ea43daa897063c41230105fb0ceea0073d5b412026cdccab6929a5c",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Why": "ADR propuesto (M-08)"
+  }
+ ],
+ "AllowedTransitiveInputs": [
+  {
+   "Path": "CLAUDE.md",
+   "Blob": "793489779558234abbd299f2aaadc32b8e829e58",
+   "Bytes": 1006,
+   "Lines": 25,
+   "Sha256": "74d76dbe2ff92b116a7c5a01aedc40a61c245431233ae2a8f2da4cca62f6ed8c",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "AUTOMATIC_INSTRUCTION",
+   "RequiredBy": "el runtime la inyecta"
+  },
+  {
+   "Path": "docs/HANDOFF.md",
+   "Blob": "f401093a27bb3125816b2d2478887a1cb4dc5c58",
+   "Bytes": 445188,
+   "Lines": 5288,
+   "Sha256": "04ae148fd220aff2fcecd071c1c399e1728902cc186ed73bec8b3d61e779ed84",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "READ",
+   "RequiredBy": "CLAUDE.md «Lectura inicial» 1; AGENTS.md «Leer primero» 1"
+  },
+  {
+   "Path": "AGENTS.md",
+   "Blob": "dd0d5a2d9ac3d3d8502ef7a556c8a5f1d62c9c29",
+   "Bytes": 24587,
+   "Lines": 356,
+   "Sha256": "5d66239153c294fb084979ddcd7521b3e24c449cba0fa371a8c4e3bc3bbed0d6",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "READ",
+   "RequiredBy": "CLAUDE.md «Lectura inicial» 2"
+  },
+  {
+   "Path": "docs/WORKFLOW.md",
+   "Blob": "884ed305ce242bda575cef74a9eff8c28ce7b67c",
+   "Bytes": 43390,
+   "Lines": 610,
+   "Sha256": "5c6290d0cf4c5f7ee39604f6654fdb2a5ae489769016639bca96bcc8a882c149",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "READ",
+   "RequiredBy": "CLAUDE.md «Lectura inicial» 3; Context Pack documentation-governance"
+  },
+  {
+   "Path": "docs/ARCHITECTURE.md",
+   "Blob": "4402ff89146c1632064d45e66b94196289c55b20",
+   "Bytes": 28890,
+   "Lines": 527,
+   "Sha256": "64798e183679599cc65fa8b2cda66487953b7d8b7c81f1a0c19061f83ae1f560",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "READ",
+   "RequiredBy": "CLAUDE.md «Lectura inicial» 4; AGENTS.md «Leer primero» 3"
+  },
+  {
+   "Path": "docs/ROADMAP.md",
+   "Blob": "58da0b9c30741a1619d91c80f59bd757c88a1aff",
+   "Bytes": 167184,
+   "Lines": 677,
+   "Sha256": "bd7736c5945ea223b7ff2381100932503e00c623fd53e5f74ec1539b45c34feb",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "READ",
+   "RequiredBy": "CLAUDE.md «Lectura inicial» 5; Context Pack"
+  },
+  {
+   "Path": "docs/context-packs/README.md",
+   "Blob": "77b1c7b4e3cf781abad9ea80938d7dc08b2b31c8",
+   "Bytes": 1965,
+   "Lines": 42,
+   "Sha256": "3a51def8525f653059ba97d6ab56d66f9872e1009a3d7e4c42aaba576e53a756",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "READ",
+   "RequiredBy": "CLAUDE.md «Lectura inicial» 6; AGENTS.md «Leer primero» 3"
+  },
+  {
+   "Path": "docs/context-packs/documentation-governance.md",
+   "Blob": "fff168de38a785b3474d7f578a383740c6c65e3c",
+   "Bytes": 2030,
+   "Lines": 45,
+   "Sha256": "3d16c3090c6b4804ffce1bb321041a57cdbf6b1a9b1dd99ef0b3864bc2d266da",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "READ",
+   "RequiredBy": "Context Pack declarado por I-62 (contrato, context_packs)"
+  },
+  {
+   "Path": "README.md",
+   "Blob": "50bd744a6407c1895ab20ae86ed4d97b4e0eab85",
+   "Bytes": 3696,
+   "Lines": 69,
+   "Sha256": "2ca0337a565ea6d666063f08a92ef7275efbe27dafb96b8b120230ee8e7bfc8e",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "READ",
+   "RequiredBy": "AGENTS.md «Leer primero» 2"
+  },
+  {
+   "Path": "docs/FOUNDATIONS.md",
+   "Blob": "a6162ffb46f595e94e199d04c8df3bc2bd36455c",
+   "Bytes": 19499,
+   "Lines": 169,
+   "Sha256": "bd8490d4f2687638c1903ef6b1fb702e8a3516cbb7d741b93a34294c02a20cfa",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "READ",
+   "RequiredBy": "Context Pack documentation-governance, required_docs"
+  },
+  {
+   "Path": "docs/initiatives/README.md",
+   "Blob": "f3b98a0c9375d71827e51f0cfd84a1f16f858802",
+   "Bytes": 71987,
+   "Lines": 752,
+   "Sha256": "88e7872baa70aa4915a8dfbad4b3251fa1067aebe15e6b98bb6f90eb4b7da64f",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "READ",
+   "RequiredBy": "Context Pack documentation-governance, required_docs"
+  },
+  {
+   "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+   "Blob": "384d0b0c3734ab7df881ad17fa740fdb8a6422d5",
+   "Bytes": 13465,
+   "Lines": 277,
+   "Sha256": "9ab149dabb7b3dc43ac68cf0a7d013ae2988f55d3d8700d24e8f12fbc36e2991",
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF"
+   },
+   "Class": "READ",
+   "RequiredBy": "Context Pack documentation-governance, required_docs"
+  }
+ ],
+ "ReadPolicy": {
+  "Tools": "Read (ruta absoluta bajo el clon, con offset y limit) y Grep (solo sobre rutas del cierre); git show bf7b0d9c:<ruta> si el árbol no está en el commit",
+  "LargeFileThresholdBytes": 60000,
+  "MaxRangeLines": 300,
+  "LargeFiles": [
+   "docs/initiatives/I-62-proposal-v14.md",
+   "docs/automation/decisions/I-62.md",
+   "docs/automation/evidence/I-62-evidence.md",
+   "docs/AUTOMATION_PLAN.md",
+   "docs/HANDOFF.md",
+   "docs/ROADMAP.md",
+   "docs/initiatives/README.md"
+  ]
+ },
+ "AllowedActions": [
+  {
+   "Action": "git rev-parse / git status --porcelain / git log --oneline -10",
+   "RequiredBy": "identidad del objeto; AGENTS.md «Leer primero» 4",
+   "Class": "ACTION_COMPATIBLE"
+  },
+  {
+   "Action": "git checkout --detach bf7b0d9c4ec79e38350bad55e0debcde55b3cec9",
+   "RequiredBy": "fijar el árbol de la sesión revisora en el commit exacto (su worktree es desechable)",
+   "Class": "ACTION_COMPATIBLE"
+  },
+  {
+   "Action": "python docs/automation/evidence/I-62-A1/a1-counterexamples.py <archivo temporal fuera del clon>",
+   "RequiredBy": "verificación de los contra-ejemplos que pide la orden",
+   "Class": "ACTION_COMPATIBLE"
+  },
+  {
+   "Action": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj, solo dentro del clon desechable",
+   "RequiredBy": "AGENTS.md «Leer primero» 4 y CLAUDE.md «Comandos esenciales»",
+   "Class": "ACTION_COMPATIBLE",
+   "Note": "escribe solo bin/obj del clon desechable y no modifica archivos versionados; la orden vigente no trae exención, así que la acción no se omite"
+  }
+ ],
+ "HealthSignals": [
+  {
+   "Kind": "PUBLICATION_CI",
+   "RunRef": "37085558300 (push, head_sha exacto bf7b0d9c, cuatro jobs requeridos success)",
+   "Sha": "bf7b0d9c4ec79e38350bad55e0debcde55b3cec9",
+   "Note": "señal separada de salud de publicación; NO es evidencia equivalente a Core local"
+  }
+ ],
+ "NotTriggered": [
+  {
+   "Source": "CLAUDE.md, validación de dibujo (docs/guias/validacion-manual-autocad.md)",
+   "Reason": "condicionada a una validación de dibujo, que la revisión no hace"
+  },
+  {
+   "Source": "documentation-governance optional_docs y code_globs",
+   "Reason": "opcionales u orientativos"
+  },
+  {
+   "Source": "menciones de «Leer primero» o required_docs dentro de documentos y evidencia de I-62",
+   "Reason": "citas descriptivas"
+  }
+ ],
+ "DeclaredRuntimeContext": [
+  "instrucciones base de la aplicación de escritorio y del runtime (no inspeccionables por el invocador)",
+  "CLAUDE.md del clon, inyectado automáticamente",
+  "~/.claude/CLAUDE.md de usuario: no existe (medido)",
+  "memoria automática: el clon es otro repositorio (D:\\r62-arch-a1), así que no carga la memoria del proyecto de la sesión autora",
+  "herramientas, skills y conectores habilitados por defecto en una sesión nueva"
+ ],
+ "ForbiddenInputs": [
+  "transcripción y memoria de la sesión autora (~/.claude/projects/D--Documentos-Codex-Calculadora-de-racks/*)",
+  "otras sesiones, incluidas las de revisiones anteriores de I-62, I-63 e I-64",
+  "el worktree real de I-62 y los de otras unidades",
+  "cualquier archivo fuera de CanonicalInputs y AllowedTransitiveInputs (salvo la salida del script de contra-ejemplos en un archivo temporal)",
+  "red (fetch, web)",
+  "invocar otros agentes, subagentes, Worker o Controller",
+  "escribir, hacer commit o push en el repositorio"
+ ],
+ "CorpusDistinctNonAscii": 61,
+ "RunArtifacts": [
+  {
+   "Path": "D:\\r62-arch-a1-run\\prompt.md",
+   "Bytes": 10126,
+   "Sha256": "428eb5810055602b2f4411364140128d52f3741ab93baef7fd0b1f29a05a52bb",
+   "Role": "instrucciones completas de la invocación (el revisor las lee por la herramienta Read)"
+  },
+  {
+   "Path": "D:\\r62-arch-a1-run\\order.txt",
+   "Bytes": 7435,
+   "Sha256": "a2d96afb1533821b0d6f9badebb3b61989a92a331bca02edc3e11811167af521",
+   "Role": "orden literal del Coordinator: autoridad y foco de la revisión"
+  }
+ ],
+ "Launch": {
+  "Transport": "chip de tarea de la aplicación de escritorio (spawn_task) con cwd = D:\r62-arch-a1; el Owner lo pulsa: AUTONOMY_GAP registrado",
+  "Why": "sin start_session en la sesión autora; codex-cli y codex-desktop-session bloqueados por OD-2; claude-cli sin autenticar y fuera del PATH (OD-3); las sesiones existentes no son limpias"
+ }
+}

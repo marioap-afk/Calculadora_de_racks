@@ -1,0 +1,145 @@
+{
+ "Schema": "clasificación del invocador sobre la auditoría mecánica (no la sustituye); sin re-auditar ni cambiar audit.json",
+ "MechanicalAccreditation": "NOT_ACCREDITED",
+ "MechanicalReasons": 16,
+ "Counts": {
+  "ALLOWED_ACTION_FORM": 5,
+  "UNLISTED_READONLY_METADATA": 6,
+  "OUTSIDE_CLOSURE_SEARCH": 2,
+  "OWN_OUTPUT_READ": 2,
+  "AUDIT_FALSE_NEGATIVE": 1
+ },
+ "DeviationsFromPromptText": {
+  "OUTSIDE_CLOSURE_SEARCH": "infringe «Grep solo sobre rutas del cierre» (prompt.md, Forma de lectura); declarado por el revisor",
+  "UNLISTED_READONLY_METADATA": "comandos de solo lectura fuera de la lista enumerada de «Acciones permitidas», todos sobre archivos del cierre",
+  "OWN_OUTPUT_READ": "lecturas de salidas propias de acciones permitidas; el prompt no las enumera"
+ },
+ "AuditPrecisionDefects": {
+  "ALLOWED_ACTION_FORM": "acciones permitidas en otra forma sintáctica o con otra herramienta; las expresiones de post-review.py están ancladas a comandos únicos",
+  "AUDIT_FALSE_NEGATIVE": "la comprobación del hash sí ocurrió"
+ },
+ "Facts": {
+  "ForbiddenTargets": "ninguno (closure-scan.json: sin ~/.claude/projects, ~/.codex/worktrees, D:/r62-arch-v*, otros archivos de la corrida ni red)",
+  "FilePathsOutsideClosure": "ninguna; solo dos rutas de directorio (los dos Grep y un cd)",
+  "Fidelity": "36 registros, todos FAITHFUL_NORMALIZED",
+  "Premises": "39 citas de PremiseRefs encontradas en su archivo y líneas; ninguna premisa usa material fuera del cierre",
+  "ResultSchema": "válido contra result.schema.json; coherencia sin observaciones",
+  "Writes": "ninguna: clon y worktree del revisor con status --porcelain vacío; dotnet test solo escribe bin/obj ignorados"
+ },
+ "Decision": "La acreditación (P-22, exposición fuera del cierre y desviaciones de la lista de acciones) es del Coordinator; la sesión no la declara. Sin reintento (una sola invocación autorizada).",
+ "OwnerRelayEqualsTranscript": true,
+ "Rows": [
+  {
+   "Index": 0,
+   "Tool": "Bash",
+   "MechanicalViolation": "acción no permitida",
+   "Class": "ALLOWED_ACTION_FORM",
+   "Note": "sha256sum de prompt.md (lo exige el primer mensaje de la tarea) + wc -c del mismo archivo permitido; la expresión de la auditoría está anclada a un comando único"
+  },
+  {
+   "Index": 1,
+   "Tool": "Bash",
+   "MechanicalViolation": "acción no permitida",
+   "Class": "UNLISTED_READONLY_METADATA",
+   "Note": "wc y awk (tamaños y líneas largas) sobre archivos del cierre"
+  },
+  {
+   "Index": 2,
+   "Tool": "Bash",
+   "MechanicalViolation": "acción no permitida",
+   "Class": "ALLOWED_ACTION_FORM",
+   "Note": "a1-counterexamples.py (acción permitida) con salida en el scratchpad del revisor y comparación con el resultado publicado (archivo del cierre)"
+  },
+  {
+   "Index": 3,
+   "Tool": "Bash",
+   "MechanicalViolation": "acción no permitida",
+   "Class": "UNLISTED_READONLY_METADATA",
+   "Note": "wc, grep de encabezados y awk sobre decisiones y evidencia (archivos del cierre); encabezados fuera de los rangos, declarado"
+  },
+  {
+   "Index": 4,
+   "Tool": "Bash",
+   "MechanicalViolation": "acción no permitida",
+   "Class": "ALLOWED_ACTION_FORM",
+   "Note": "git show | sed -n '657p' (acción permitida) con wc -m y grep -o para comprobar la línea larga"
+  },
+  {
+   "Index": 5,
+   "Tool": "Bash",
+   "MechanicalViolation": "acción no permitida",
+   "Class": "UNLISTED_READONLY_METADATA",
+   "Note": "cd a schemas/ y wc/awk sobre los seis esquemas del cierre"
+  },
+  {
+   "Index": 6,
+   "Tool": "Grep",
+   "MechanicalViolation": "búsqueda fuera del cierre (ruta no listada o directorio entero)",
+   "Class": "OUTSIDE_CLOSURE_SEARCH",
+   "Note": "Grep 'ancestr' sobre el directorio agent-execution entero; el contenido devuelto es solo de archivos del cierre (README 88, 425 y 434; binding.v1 638); revela ausencia de coincidencias en archivos no listados; declarado en KnownLimitations"
+  },
+  {
+   "Index": 7,
+   "Tool": "Grep",
+   "MechanicalViolation": "búsqueda fuera del cierre (ruta no listada o directorio entero)",
+   "Class": "OUTSIDE_CLOSURE_SEARCH",
+   "Note": "Grep de conteo sobre schemas/ entero: nombres y números de coincidencias de nueve esquemas no listados, sin contenido; declarado en KnownLimitations"
+  },
+  {
+   "Index": 8,
+   "Tool": "Bash",
+   "MechanicalViolation": "acción no permitida",
+   "Class": "UNLISTED_READONLY_METADATA",
+   "Note": "wc y awk sobre los dos ADR del cierre"
+  },
+  {
+   "Index": 9,
+   "Tool": "Bash",
+   "MechanicalViolation": "acción no permitida",
+   "Class": "UNLISTED_READONLY_METADATA",
+   "Note": "wc, grep de encabezados y awk sobre AGENTS.md y CLAUDE.md (transitivos permitidos)"
+  },
+  {
+   "Index": 10,
+   "Tool": "PowerShell",
+   "MechanicalViolation": "herramienta no permitida (PowerShell)",
+   "Class": "ALLOWED_ACTION_FORM",
+   "Note": "dotnet test dentro del clon desechable (acción permitida) lanzado con la herramienta PowerShell; el prompt no fija la herramienta"
+  },
+  {
+   "Index": 11,
+   "Tool": "Bash",
+   "MechanicalViolation": "acción no permitida",
+   "Class": "UNLISTED_READONLY_METADATA",
+   "Note": "wc y grep de encabezados sobre WORKFLOW, context packs, HANDOFF y ARCHITECTURE (transitivos permitidos)"
+  },
+  {
+   "Index": 12,
+   "Tool": "Bash",
+   "MechanicalViolation": "acción no permitida",
+   "Class": "OWN_OUTPUT_READ",
+   "Note": "tail y cat del log de dotnet test en el scratchpad del propio revisor (salida de una acción permitida)"
+  },
+  {
+   "Index": 13,
+   "Tool": "Bash",
+   "MechanicalViolation": "acción no permitida",
+   "Class": "ALLOWED_ACTION_FORM",
+   "Note": "git show | sed de las líneas largas de V14 (acción permitida) con wc -m y tail -c; sha256sum del resultado publicado, conteo de CR de su copia y core.autocrlf del clon"
+  },
+  {
+   "Index": 14,
+   "Tool": "Bash",
+   "MechanicalViolation": "acción no permitida",
+   "Class": "OWN_OUTPUT_READ",
+   "Note": "cat y grep de la salida de la tarea de fondo y del log de dotnet test; git status --porcelain y rev-parse del clon (permitidos)"
+  },
+  {
+   "Index": "PromptCheck",
+   "Tool": "Bash",
+   "MechanicalViolation": "el revisor no comprobó el SHA-256 de prompt.md",
+   "Class": "AUDIT_FALSE_NEGATIVE",
+   "Note": "la transcripción muestra `sha256sum D:/r62-arch-a1-run/prompt.md` con salida 428eb5810055602b2f4411364140128d52f3741ab93baef7fd0b1f29a05a52bb; la auditoría solo acredita la comprobación si el comando es exactamente ese, sin `; wc -c` detrás"
+  }
+ ]
+}

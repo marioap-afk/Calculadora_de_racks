@@ -1,0 +1,14 @@
+{
+ "Tools": {
+  "Bash": 13,
+  "Read": 36,
+  "Grep": 11,
+  "PowerShell": 1
+ },
+ "ForbiddenHits": [],
+ "PathsNotInClosure": {
+  "docs/automation/agent-execution": 1,
+  "docs/automation/agent-execution/schemas": 2
+ },
+ "PathsInClosure": 27
+}

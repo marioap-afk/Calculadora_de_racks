@@ -1775,3 +1775,59 @@ repetido: I-63 avanzó a `33032f61` sin tocar ningún archivo de I-62.
 Con un transporte DEGRADED_BOUNDED, casi ningún hallazgo con premisas referidas podría acreditarse. No es un defecto del Freeze: la regla falla cerrado
 como debe. Es un límite de la precisión del manifiesto, cuyo remedio (retirar aristas informativas y dar entrada terminal a las definiciones externas) corresponde a la
 revisión del manifiesto por el Architect (B.11). La sesión no cambia el manifiesto, que es un artefacto de F3 con GATE PASS. Detalle en `f4-dossier.md` §8.
+
+## 40. Revisión formal del Architect de A-1: lanzamiento, identidad observada, auditoría y resultado (orden §35; instrucción §37)
+
+CI del commit `68152b580cd6b78b2b9db8a9e26636cb9f8f2112` (riesgo NDC-01, §39.5): corrida **37255159204**, push, head_sha exacto, cuatro jobs en
+`success`.
+
+### 40.1 Lanzamiento
+
+La tarea `task_fce8049e` salió de la cola sin lanzarse. Por la instrucción del Owner (§37), la sesión creó `task_c6305551` con el mismo texto. El control
+del escritorio no sirvió (la app Claude se oculta mientras se la controla) y una tarea programada no sería limpia. El Owner la pulsó: la sesión revisora
+`local_d5130a91-c4df-409d-916a-9405b506836c` corrió entre las 02:47:22Z y las 03:22:17Z del 2026-10-05. Hubo una sola invocación.
+
+### 40.2 Identidad observada (MEASURED por el invocador)
+
+- `claude-opus-5-5`, effort `xhigh`, Claude Code 2.1.286, sin subagentes y sin memoria del proyecto del autor (`D--r62-arch-a1/memory` vacío).
+- El worktree `exciting-jones-a687da` se abrió sobre `main` del clon (`819955d6`), no sobre `bf7b0d9c`. El revisor leyó por ruta absoluta el clon detached en
+  `bf7b0d9c` y comprobó HEAD, blobs y árbol limpio. `CLAUDE.md` y `AGENTS.md` son iguales en ambos commits.
+- Independencia: sesión y contexto distintos; mismo operador humano y mismo proveedor y modelo. La valoración es del Coordinator.
+- Al terminar, el clon y el worktree del revisor están limpios.
+
+### 40.3 Auditoría y acreditación
+
+`post-review.py` = **NOT_ACCREDITED**, con 16 motivos. Fidelidad: 36/36 FAITHFUL_NORMALIZED. Premisas: 39/39 citas encontradas. Esquema válido. Escaneo: sin
+destinos prohibidos ni rutas de archivo fuera del cierre.
+
+Clasificación del invocador (`audit-classification.json`):
+
+| Clase | Motivos |
+|---|---|
+| OUTSIDE_CLOSURE_SEARCH (dos Grep sobre directorios; declarados) | 2 |
+| UNLISTED_READONLY_METADATA (`wc`/`awk`/`grep` sobre archivos del cierre) | 6 |
+| OWN_OUTPUT_READ | 2 |
+| ALLOWED_ACTION_FORM (defecto de precisión de la auditoría) | 5 |
+| AUDIT_FALSE_NEGATIVE (sí comprobó el hash) | 1 |
+
+La acreditación (P-22) la decide el Coordinator; no hay reintento.
+
+### 40.4 Resultado literal
+
+**CHANGES REQUIRED**:
+- REQUIRED A62-A1-01 a 06: presupuestos frente a sustitución con el bucle abierto; LOOP_CLOSED tras EXPIRED o REVOKED; alcance por `loop.type`
+  (REVIEWER); Target de LAUNCHING en el caso B.1 tras un rebase; ingestión tras reconciliar el objeto; identidades de rama de los bindings custodiados
+  frente a I-S18 y F3.
+- OPTIONAL A62-A1-O1 a O6.
+- `OwnerDecisionRequired` = false.
+
+Custodia:
+- `docs/automation/evidence/I-62-architect-A-1/R20261003T023945Z-cab7/` (`output.json`, SHA-256 `1a6f2c4b…`);
+- registro `docs/initiatives/I-62-architect-review-A-1.md`.
+
+La transcripción no se versiona: 2 294 522 bytes, SHA-256 `53ea184a…`.
+
+### 40.5 Límites
+
+No se edita A-1, no se crea su versión corregida ni A-2, no se abre F4 y no se decide nada del Owner. STOP: el Coordinator dispone la acreditación y los
+hallazgos.
