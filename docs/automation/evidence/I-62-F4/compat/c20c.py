@@ -528,6 +528,27 @@ def v2state(unit, cid, g0):
 write("docs/automation/state/I-97.yml", v2state("I-97", "97979797-0000-0000-0000-000000000097", "ACCEPTED"))
 write("docs/automation/state/I-96.yml", v2state("I-96", "96969696-0000-0000-0000-000000000096", "PENDING"))
 UNITS = commit("estados de prueba")
+# C-28 (opt-in): I-95 is a later unit with a /v1 state and a G0 decision DIRECT_ONLY; I-94 adopts I62_DELEGATED (T20)
+write("docs/automation/state/I-95.yml", "schema: rackcad-automation-state/v1\nautomation_state:\n  initiative: I-95\n  branch: feature/i95\n"
+      "  claim_id: 95959595-0000-0000-0000-000000000095\n")
+write("docs/automation/decisions/I-95.md", "## G0\n\n```text\nI62-DELEGATED-EXECUTION: DIRECT_ONLY\nClaim-Id: 95959595-0000-0000-0000-000000000095\n```\n")
+C28_DIRECT = commit("I-95: G0 DIRECT_ONLY")
+write("docs/x-i95.md", "trabajo directo de I-95\n")
+C28_WORK = commit("I-95: trabajo directo (commit ordinario, sin maquinaria delegada)")
+def v2state_for(unit, cid, g0, dec_path, dec_blob):
+    s = {"schema": "rackcad-automation-state/v2", "automation_state": {"initiative": unit, "branch": "x", "claim_id": cid},
+         "protocol": {"set": "rackcad-protocol/I62", "effective_sha": EFF, "basis": {"claim_id": cid, "adoption_at": "MID_INITIATIVE"},
+                      "g0_acceptance": {"state": g0, "decision": {"path": dec_path, "blob": dec_blob} if g0 == "ACCEPTED" else None}}}
+    return Y.dumps(s)
+write("docs/automation/state/I-94.yml", v2state_for("I-94", "94949494-0000-0000-0000-000000000094", "PENDING", None, None))
+C28_BOOT = commit("I-94: BOOTSTRAP de adopción (PENDING)")
+write("docs/automation/decisions/I-94.md", "## Adopción\n\n```text\nI62-DELEGATED-EXECUTION: I62_DELEGATED\nI62-CLASSIFICATION: I62\n"
+      "I62-PRINCIPAL-BINDING: B20261005T000000Z-aa94 ACCEPTED\nClaim-Id: 94949494-0000-0000-0000-000000000094\n```\n")
+git("add", ".")
+commit("I-94: decisión de adopción")
+write("docs/automation/state/I-94.yml", v2state_for("I-94", "94949494-0000-0000-0000-000000000094", "ACCEPTED", "docs/automation/decisions/I-94.md",
+                                                  blob("HEAD", "docs/automation/decisions/I-94.md")))
+C28_QU = commit("I-94: QU con las aceptaciones")
 
 # ------------------------------------------------------------------ cases
 K = json.loads(show(I62TIP, "docs/automation/evidence/I-61-pilot/g3-cama-d1a/R20261001T032333Z-4a2d/gate-contract.json"))
@@ -604,6 +625,18 @@ neg.append(run("N-m §16.13 retirada con EFF presente", K, M2m, M2m, "ENTRY_INVA
 neg.append(run("N-n sin sección de entrada (EFF presente)", K, M2n, M2n, "ENTRY_INVALID"))
 neg.append(run("N-o sección de entrada repetida", K, M2o, M2o, "ENTRY_INVALID"))
 neg.append(run("N-p la entrada nombra una §16.13 inexistente", K, M2p, M2p, "ENTRY_INVALID"))
+c28 = []
+K95 = copy.deepcopy(K2); K95["Unit"] = "I-95"
+c28.append(run("C-28 (b) contrato de una unidad posterior DIRECT_ONLY", K95, M2, C28_WORK, "P-15"))
+c28.append({"Case": "C-28 (a)/(c)/(e) trabajo directo sin maquinaria delegada", "Expected": "DIRECT_ONLY sin orchestration",
+            "Got": classify("I-95", C28_WORK, EFF) + (" sin orchestration" if "orchestration" not in (Y.loads(show(C28_WORK, "docs/automation/state/I-95.yml"), "HEADER")) else " con orchestration"),
+            "Detail": {"DirectCommit": C28_WORK, "ResolverCalled": False}})
+c28[-1]["Pass"] = c28[-1]["Got"] == c28[-1]["Expected"]
+K94 = copy.deepcopy(K2); K94["Unit"] = "I-94"
+K94v2 = copy.deepcopy(K94); K94v2["Schema"] = "rackcad-gate-contract/v2"
+c28.append(run("C-28 (d) adopción: contrato antes del QU con aceptaciones", K94v2, M2, C28_BOOT, "PENDING_G0"))
+c28.append(run("C-28 (d) adopción: contrato /v2 tras el QU con aceptaciones", K94v2, M2, C28_QU, "I62"))
+c28.append(run("C-28 (d) adopción: contrato /v1 tras la adopción", K94, M2, C28_QU, "P-15"))
 q1 = run("N-q sin punteros: C-20c-1 resuelve igual", K, M2q, M2q, "I61", compare=EXP1)
 q2 = run("N-q sin punteros: C-20c-2 resuelve igual", dict(K2, MainSha=M2q), M2q, I64TIP, "I61", compare=EXP2)
 neg += [q1, q2]
@@ -637,16 +670,16 @@ out = {"Scenario": {"M0": M0, "I62Tip": I62TIP, "EFF": EFF, "M2": M2, "ContractB
        "MapValidation": map_check or "VALID (MV-1..MV-7)",
        "MapSummary": {"Files": len(good_map["Files"]), "Modified": sum(f["FileKind"] == "MODIFIED" for f in good_map["Files"]),
                       "Entries": {k: sum(e["Kind"] == k for e in good_map["Entries"]) for k in ("MODIFIED", "REMOVED", "ADDED", "ENTRY")}},
-       "Cases": cases, "Negatives": neg, "CompositeUnits": composite_rows, "E6LiteralDifferences": e6_diffs,
+       "Cases": cases, "Negatives": neg, "C28": c28, "CompositeUnits": composite_rows, "E6LiteralDifferences": e6_diffs,
        "DiscoveredFromTexts": {"R_HEADING": R_HEADING, "MapPath": MAP_PATH, "SchemaPath": SCHEMA_PATH, "Surfaces": SURFACES,
                                "SurfacesEqualFrozen": SURFACES == FROZEN_SURFACES},
        "DeterministicSha256": hashlib.sha256(json.dumps(record, ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()}
-out["AllPass"] = not map_check and all(c["Pass"] for c in cases + neg)
+out["AllPass"] = not map_check and all(c["Pass"] for c in cases + neg + c28)
 json.dump(out, open(OUT, "w", encoding="utf-8", newline="\n"), ensure_ascii=False, indent=1, default=str)
 shutil.rmtree(ROOT, ignore_errors=True)
-print(json.dumps({"map": out["MapValidation"], "summary": out["MapSummary"], "pass": "%d/%d" % (sum(c["Pass"] for c in cases + neg), len(cases + neg)),
+print(json.dumps({"map": out["MapValidation"], "summary": out["MapSummary"], "pass": "%d/%d" % (sum(c["Pass"] for c in cases + neg + c28), len(cases + neg + c28)),
                   "sha256": out["DeterministicSha256"][:16], "all": out["AllPass"]}, ensure_ascii=False))
-for c in cases + neg:
+for c in cases + neg + c28:
     if not c["Pass"]:
         print("FAIL", c["Case"], c["Expected"], c["Got"], str(c.get("Detail", {}).get("Stop", ""))[:120], str(c.get("Detail", {}).get("ExpectedDiffs", ""))[:300])
 sys.exit(0 if out["AllPass"] else 1)

@@ -1,9 +1,9 @@
 {
  "Scenario": {
   "M0": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
-  "I62Tip": "3078538b2506921ac40604b67635d7a23ee20b72",
-  "EFF": "3e6b17e06d280cfc93727a54363a4b6622d49226",
-  "M2": "467965d5e54fd73d7041840afdbb40d660e990a0",
+  "I62Tip": "e501634bc1d69f9d5ee6b8faccd9a9197703b820",
+  "EFF": "6da5135aa243875dd8623da6bce2d88184b5df64",
+  "M2": "25b2ab03ea16f59b5dd9a68898753e7643ddba2b",
   "ContractBlob": "9b5ef6dfed25347310a6c2a8ecb91e48976928cc",
   "I64Docs": [
    "docs/initiatives/I-64-architect-package-v1.md",
@@ -13,12 +13,12 @@
  },
  "MapValidation": "VALID (MV-1..MV-7)",
  "MapSummary": {
-  "Files": 30,
+  "Files": 31,
   "Modified": 6,
   "Entries": {
-   "MODIFIED": 14,
+   "MODIFIED": 15,
    "REMOVED": 0,
-   "ADDED": 33,
+   "ADDED": 53,
    "ENTRY": 2
   }
  },
@@ -285,13 +285,13 @@
       "AR"
      ]
     ],
-    "MapBlob": "b8e1b5217f5f0587f82fa824f85bf3e2be7147be",
+    "MapBlob": "f877c5a5f7c9bd001d93462797698620ac237a05",
     "Discovery": {
      "E1": "be5389efab934cc3768dc2668e386e5c2b8eb263",
-     "EFF": "3e6b17e06d280cfc93727a54363a4b6622d49226",
+     "EFF": "6da5135aa243875dd8623da6bce2d88184b5df64",
      "E2": "## 12. Coexistencia de protocolos de ejecución delegada (I61/I62)",
      "E3": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
-     "AutomationPlanBlob": "115bb9c918112bcd282519fcbdc1ef2408479cbe",
+     "AutomationPlanBlob": "b06708bbc29237f592f685f98967dca06f5c605c",
      "MapPath": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
      "SchemaPath": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
      "Surfaces": [
@@ -454,6 +454,14 @@
        [
         "## 16. Validación de los resultados por rol (unidades I62)",
         "OMITIDA (solo I62)"
+       ],
+       [
+        "## 17. Custodia, diario, rebase y reconstrucción (unidades I62)",
+        "OMITIDA (solo I62)"
+       ],
+       [
+        "## 18. Bucles de revisión, intentos y AUTONOMY_GAP (unidades I62)",
+        "OMITIDA (solo I62)"
        ]
       ]
      ],
@@ -548,13 +556,13 @@
       "AR"
      ]
     ],
-    "MapBlob": "b8e1b5217f5f0587f82fa824f85bf3e2be7147be",
+    "MapBlob": "f877c5a5f7c9bd001d93462797698620ac237a05",
     "Discovery": {
      "E1": "be5389efab934cc3768dc2668e386e5c2b8eb263",
-     "EFF": "3e6b17e06d280cfc93727a54363a4b6622d49226",
+     "EFF": "6da5135aa243875dd8623da6bce2d88184b5df64",
      "E2": "## 12. Coexistencia de protocolos de ejecución delegada (I61/I62)",
      "E3": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
-     "AutomationPlanBlob": "115bb9c918112bcd282519fcbdc1ef2408479cbe",
+     "AutomationPlanBlob": "b06708bbc29237f592f685f98967dca06f5c605c",
      "MapPath": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
      "SchemaPath": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
      "Surfaces": [
@@ -717,6 +725,14 @@
        [
         "## 16. Validación de los resultados por rol (unidades I62)",
         "OMITIDA (solo I62)"
+       ],
+       [
+        "## 17. Custodia, diario, rebase y reconstrucción (unidades I62)",
+        "OMITIDA (solo I62)"
+       ],
+       [
+        "## 18. Bucles de revisión, intentos y AUTONOMY_GAP (unidades I62)",
+        "OMITIDA (solo I62)"
        ]
       ]
      ],
@@ -875,13 +891,13 @@
       ]
      ]
     ],
-    "MapBlob": "b8e1b5217f5f0587f82fa824f85bf3e2be7147be",
+    "MapBlob": "f877c5a5f7c9bd001d93462797698620ac237a05",
     "Discovery": {
      "E1": "be5389efab934cc3768dc2668e386e5c2b8eb263",
-     "EFF": "3e6b17e06d280cfc93727a54363a4b6622d49226",
+     "EFF": "6da5135aa243875dd8623da6bce2d88184b5df64",
      "E2": "## 12. Coexistencia de protocolos de ejecución delegada (I61/I62)",
      "E3": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
-     "AutomationPlanBlob": "115bb9c918112bcd282519fcbdc1ef2408479cbe",
+     "AutomationPlanBlob": "b06708bbc29237f592f685f98967dca06f5c605c",
      "MapPath": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
      "SchemaPath": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
      "Surfaces": [
@@ -1324,13 +1340,13 @@
       "AR"
      ]
     ],
-    "MapBlob": "b8e1b5217f5f0587f82fa824f85bf3e2be7147be",
+    "MapBlob": "f877c5a5f7c9bd001d93462797698620ac237a05",
     "Discovery": {
      "E1": "be5389efab934cc3768dc2668e386e5c2b8eb263",
-     "EFF": "3e6b17e06d280cfc93727a54363a4b6622d49226",
+     "EFF": "6da5135aa243875dd8623da6bce2d88184b5df64",
      "E2": "## 12. Coexistencia de protocolos de ejecución delegada (I61/I62)",
      "E3": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
-     "AutomationPlanBlob": "88c80519284be1ca873bf6fc11f47ecc7b2b64ba",
+     "AutomationPlanBlob": "ff8396eb2112858fb97bc83b156661cfc6e77219",
      "MapPath": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
      "SchemaPath": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
      "Surfaces": [
@@ -1493,6 +1509,14 @@
        [
         "## 16. Validación de los resultados por rol (unidades I62)",
         "OMITIDA (solo I62)"
+       ],
+       [
+        "## 17. Custodia, diario, rebase y reconstrucción (unidades I62)",
+        "OMITIDA (solo I62)"
+       ],
+       [
+        "## 18. Bucles de revisión, intentos y AUTONOMY_GAP (unidades I62)",
+        "OMITIDA (solo I62)"
        ]
       ]
      ],
@@ -1587,13 +1611,13 @@
       "AR"
      ]
     ],
-    "MapBlob": "b8e1b5217f5f0587f82fa824f85bf3e2be7147be",
+    "MapBlob": "f877c5a5f7c9bd001d93462797698620ac237a05",
     "Discovery": {
      "E1": "be5389efab934cc3768dc2668e386e5c2b8eb263",
-     "EFF": "3e6b17e06d280cfc93727a54363a4b6622d49226",
+     "EFF": "6da5135aa243875dd8623da6bce2d88184b5df64",
      "E2": "## 12. Coexistencia de protocolos de ejecución delegada (I61/I62)",
      "E3": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
-     "AutomationPlanBlob": "88c80519284be1ca873bf6fc11f47ecc7b2b64ba",
+     "AutomationPlanBlob": "ff8396eb2112858fb97bc83b156661cfc6e77219",
      "MapPath": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
      "SchemaPath": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
      "Surfaces": [
@@ -1625,6 +1649,197 @@
    "Expected": "REJECTED",
    "Got": "REJECTED",
    "Pass": true
+  }
+ ],
+ "C28": [
+  {
+   "Case": "C-28 (b) contrato de una unidad posterior DIRECT_ONLY",
+   "Expected": "P-15",
+   "Got": "P-15",
+   "Pass": true,
+   "Detail": {
+    "Stop": "P-15: Classify"
+   }
+  },
+  {
+   "Case": "C-28 (a)/(c)/(e) trabajo directo sin maquinaria delegada",
+   "Expected": "DIRECT_ONLY sin orchestration",
+   "Got": "DIRECT_ONLY sin orchestration",
+   "Detail": {
+    "DirectCommit": "8f49ee918ac8a086aad1e91f3d3e65d1e1f80521",
+    "ResolverCalled": false
+   },
+   "Pass": true
+  },
+  {
+   "Case": "C-28 (d) adopción: contrato antes del QU con aceptaciones",
+   "Expected": "PENDING_G0",
+   "Got": "PENDING_G0",
+   "Pass": true,
+   "Detail": {
+    "Stop": "PENDING_G0: Classify"
+   }
+  },
+  {
+   "Case": "C-28 (d) adopción: contrato /v2 tras el QU con aceptaciones",
+   "Expected": "I62",
+   "Got": "I62",
+   "Pass": true,
+   "Detail": {
+    "Outcome": "RESOLVED",
+    "Class": "I62",
+    "Resolution": [
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "preámbulo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 2. Fuentes del plan y modos de ejecucion",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 3. Limites de seguridad",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/AUTOMATION_PLAN.md",
+      "## 16. Ejecución delegada bajo orden del Coordinator",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 3. Worktrees",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 4. Ciclo de vida de una iniciativa (el proceso repetible)",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/WORKFLOW.md",
+      "## 10. Autoridad por dominio",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "AGENTS.md",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "## G. Delegación de ejecución",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/automation/agent-execution/README.md",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/automation/agent-execution/routing.md",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/automation/agent-execution/schemas/delegation.schema.json",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/automation/agent-execution/schemas/controller-verification.schema.json",
+      "documento completo",
+      "EXTERNAL",
+      "NORMAL",
+      "MainSha_eval"
+     ],
+     [
+      "docs/initiatives/I-64-architect-package-v1.md",
+      "documento completo",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/initiatives/I-64-architect-package-v2.md",
+      "documento completo",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ],
+     [
+      "docs/initiatives/I-64-architect-package-v3.md",
+      "documento completo",
+      "UNIT_DOC",
+      "NORMAL",
+      "AR"
+     ]
+    ],
+    "MapBlob": "f877c5a5f7c9bd001d93462797698620ac237a05",
+    "Discovery": {
+     "E1": "be5389efab934cc3768dc2668e386e5c2b8eb263",
+     "EFF": "6da5135aa243875dd8623da6bce2d88184b5df64",
+     "E2": "## 12. Coexistencia de protocolos de ejecución delegada (I61/I62)",
+     "E3": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
+     "AutomationPlanBlob": "b06708bbc29237f592f685f98967dca06f5c605c",
+     "MapPath": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+     "SchemaPath": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
+     "Surfaces": [
+      "AGENTS.md",
+      "CLAUDE.md",
+      "docs/AUTOMATION_PLAN.md",
+      "docs/FOUNDATIONS.md",
+      "docs/INITIATIVE_LIFECYCLE.md",
+      "docs/WORKFLOW.md",
+      "docs/adr/",
+      "docs/automation/agent-execution/",
+      "docs/initiatives/PROMPT_TEMPLATES.md"
+     ]
+    }
+   }
+  },
+  {
+   "Case": "C-28 (d) adopción: contrato /v1 tras la adopción",
+   "Expected": "P-15",
+   "Got": "P-15",
+   "Pass": true,
+   "Detail": {
+    "Stop": "P-15: protocolo del contrato ≠ protocolo de la unidad"
+   }
   }
  ],
  "CompositeUnits": {
@@ -1695,6 +1910,14 @@
    ],
    [
     "## 16. Validación de los resultados por rol (unidades I62)",
+    "OMITIDA (solo I62)"
+   ],
+   [
+    "## 17. Custodia, diario, rebase y reconstrucción (unidades I62)",
+    "OMITIDA (solo I62)"
+   ],
+   [
+    "## 18. Bucles de revisión, intentos y AUTONOMY_GAP (unidades I62)",
     "OMITIDA (solo I62)"
    ]
   ],
@@ -1816,6 +2039,6 @@
   ],
   "SurfacesEqualFrozen": true
  },
- "DeterministicSha256": "72d0e55b35124ed5dadc26be39de7a2f41d2f2922351d75bc88d39f1934cf698",
+ "DeterministicSha256": "8c4964f3d6b2074cbd7081d563f04571c8b83e3d3011c73ddc77261694d16ea6",
  "AllPass": true
 }
