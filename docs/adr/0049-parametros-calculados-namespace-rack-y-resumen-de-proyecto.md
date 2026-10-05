@@ -59,8 +59,7 @@
   - sus agregados.
 
   Existían tres conteos de racks distintos, sin una autoridad común (RACKLISTA, RACKBOMTOTAL y «N racks · M copias»). Además, la puerta
-  de salida del Push
-  Back se componía dentro del handler del Plugin.
+  de salida del Push Back se componía dentro del handler del Plugin.
 - **Las restricciones.** I-63 tenía que:
   - dar esas autoridades en Application pura;
   - exponer las métricas por rack a fórmulas mediante el motor de I-49, sin un segundo motor;
