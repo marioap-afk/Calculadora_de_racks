@@ -89,6 +89,13 @@ namespace RackCad.Tests
                         Add(validity == null || Y.S(validity, "state") != "ENDED", tag + ": a not-launched attempt with the action validity ended");
                     }
 
+                    // §20.3.3: every attempt carries its own fidelity validation; a change of provider or runtime does not exempt the new attempt.
+                    if (a["reserved_at"] != null)
+                    {
+                        Add(J.S(StateTreeReader.Json(point.Tree, a["input_fidelity"]), "InvocationId") == J.S(Invocation(point, a), "InvocationId"),
+                            tag + ": the input fidelity evidence is not the one of this attempt's invocation");
+                    }
+
                     if (Launched.Contains(st) && st != "LAUNCH_UNCERTAIN")
                     {
                         var fidelity = StateTreeReader.Json(point.Tree, a["input_fidelity"]);
@@ -718,6 +725,8 @@ namespace RackCad.Tests
                     .OfType<string>().ToHashSet();
                 add(source.Attempt != null && Y.S(source.Attempt, "outcome") == "VALID" && Y.L(f, "finding_ids").Cast<string>().All(reported.Contains),
                     lid + ": a lineage opened outside a finding of a VALID result ingested in this pair", "P-19");
+                add(source.Attempt == null || !Y.L(f, "finding_ids").Cast<string>().Any(Y.L(source.Attempt, "unaccredited").Cast<string>().Contains),
+                    lid + ": a lineage opened by an UNACCREDITED finding (INVALID_PREMISE never opens, closes or replaces a lineage)", "P-25");
             }
 
             // §20.5: the ingestion point publishes the phase its verdict gives; an INVALID output only allows a transport rerun (or an escalation).

@@ -37,6 +37,8 @@ Estado:     en curso (cortes F4-A..F4-H); este archivo se completa con el paquet
 - `DelegationJournal.cs`: diario encadenado (`PrevRelaySha256`, `WindowSeq`), `DS(L, J)` de B.8.2 con la coherencia del `Exit`, los contadores del Q7
   desde el diario (S-04), el mínimo conservador de B.8.5 y la clasificación R-1/R-2/R-3 de los commits posteriores a un Q0 sin diario.
   `GitCommitStateTree` lee el árbol del commit de cada punto (los blobs con un solo `ls-tree`); `GitProcessHistory` memoriza los hechos de ids completos.
+- `Adoption.cs` (T20/T21), `ProcessFacts.cs` (README §3.2, C-17), `InputClosure.cs` (16.24, C-41) e `InputFidelity.cs` (§20.3.3, C-42: preflight,
+  representación entregada, envoltorios, unidades canónicas de B.11 con la segmentación de `gen-manifest.py`, clausura, resolución e independencia).
 - `docs/automation/agent-execution/schemas/automation-state.v2.schema.json`: la emisión exacta de `StateV2Shape.ToJsonSchema()` (guarda C-18 en
   `I62F4StateSchemaTests`).
 - Textos de la adopción de compatibilidad (Anexo E), inactivos hasta `I62_EFFECTIVE_SHA`: `docs/WORKFLOW.md` §12 (punto de entrada, texto
@@ -162,3 +164,11 @@ El RED se captura sustituyendo solo los cuerpos de los métodos nombrados por `t
   §20.5 (AGREED → ARCHITECT_SATISFIED; CHANGES REQUIRED → CORRECTING; BLOCKED — OWNER DECISION → ESCALATE_OWNER; INVALID → reejecución) y §20.5.2 (un
   linaje nace de un hallazgo de un resultado con autoridad). Se añadieron como cláusula P-19 de I-P13, con positivos y negativos en
   `I62F4OrchestrationMcTests`. Es un defecto localizado de la implementación, corregido dentro de F4; no cambia ninguna semántica congelada.
+- **F4-OBS-18 — fidelidad por intento y hallazgos UNACCREDITED.** Al escribir C-42 (5) y (8) aparecieron dos huecos de la misma clase que F4-OBS-17. Uno:
+  un hallazgo UNACCREDITED podía abrir un linaje. V14 §20.3.3 dice que «no abren, cierran ni sustituyen linajes» (cláusula P-25 de I-P13). Otro: un
+  intento nuevo podía reutilizar la evidencia de fidelidad del anterior, y «cada intento lleva la suya» (I-S18: el `InvocationId` del registro es el de la
+  invocación del intento). Ambos se corrigieron dentro de F4.
+- **F4-OBS-19 — obligaciones del cierre de insumos (C-41).** El cálculo lee las obligaciones solo de las secciones normativas de forma fija: AGENTS.md
+  «Leer primero», CLAUDE.md «Lectura inicial» y «Comandos esenciales», y `required_docs` / `optional_docs` de un Context Pack. Un enlace es READ; un
+  comando `git` de solo lectura es ACTION_COMPATIBLE; otro comando, con permisos READ_ONLY, es ACTION_INCOMPATIBLE; `optional_docs` es
+  CONDITIONAL_NOT_TRIGGERED. El runtime no infiere obligaciones de otra prosa.

@@ -234,7 +234,7 @@ namespace RackCad.Tests
                 var a = AttemptOf(n, L1, 1);
                 a["invocation"] = Tree(n).PutJson("docs/automation/evidence/I-99-agent/review/L1/1/invocation-bis.json",
                     InvocationJson("I20261006T999999Z-0001", L1, 1, Obj(C1, X, B1), new string[0], (1, 1, 1, 0, 0)));
-            }), "I-P13");
+            }), "I-P13", "I-S18");
             yield return Case("replanning without a new InvocationId", () =>
             {
                 var p = F8Step(2);

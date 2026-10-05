@@ -134,6 +134,30 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void I62_C42_5_8_AnUnaccreditedFindingNeverOpensALineageAndEveryAttemptCarriesItsOwnFidelity()
+        {
+            // (5) DEGRADED_BOUNDED: the finding whose only premise is degraded is UNACCREDITED and cannot open its lineage (P-25); the other one can.
+            var s6 = F8Step(6);
+            var res1 = (YamlMap)AttemptOf(s6, L1, 1)["result"]!;
+            StatePoint Bounded(params string[] lineages) => IngestedAs("VALID", n =>
+            {
+                var a = AttemptOf(n, L1, 1);
+                a["fidelity_status"] = "DEGRADED_BOUNDED";
+                a["unaccredited"] = L("A62-X-01");
+                a["premise_independence"] = Tree(n).Put("docs/automation/evidence/I-99-agent/review/L1/1/premise-independence.json", "{\"Premises\": []}\n");
+                Orch(n)["findings"] = new List<object?>(lineages.Select(l => (object?)Lineage(l, l == "LIN-1" ? "A62-X-01" : "A62-X-02", res1)));
+            });
+            Assert.Empty(Pair(s6, Bounded("LIN-2")));
+            Assert.Contains("I-P13/P-25", Pair(s6, Bounded("LIN-1", "LIN-2")));
+
+            // (8) after a change of provider the new attempt needs its own fidelity evidence: reusing the previous attempt's is caught (I-S18).
+            var s13 = F8Step(13);
+            AttemptOf(s13, L2, 1)["input_fidelity"] = Clone((YamlMap)AttemptOf(s13, L1, 1)["input_fidelity"]!);
+            Assert.Contains("I-S18", Ids(new StateV2Validator().ValidateFile(s13)));
+            Assert.Empty(Ids(new StateV2Validator().ValidateFile(F8Step(13))));
+        }
+
+        [Fact]
         public void I62_C36_ChangingProviderModelPrincipalOrLabelsContinuesTheCountersAndTheLineage()
         {
             var points = F8();
