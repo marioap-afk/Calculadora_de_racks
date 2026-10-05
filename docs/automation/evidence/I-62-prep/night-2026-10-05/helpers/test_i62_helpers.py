@@ -10,7 +10,7 @@ import unittest
 
 import i62_helpers as H
 
-REPO = os.environ.get("I62_REPO", ".")
+REPO = os.environ.get("I62_REPO") or subprocess.check_output(["git", "rev-parse", "--show-toplevel"], text=True).strip()  # no cwd dependency (portability, N-10)
 TRX_UI = os.environ.get("I62_TRX_UI")
 TRX_FOCAL = os.environ.get("I62_TRX_FOCAL", "").split(os.pathsep) if os.environ.get("I62_TRX_FOCAL") else []
 EV = "docs/automation/evidence/I-63-pilot/"
@@ -32,7 +32,7 @@ def show_text(path):
 
 def real_pair(gate):
     """The real (non-mutated) handoff and delegation of the gate, located from the nc directories' siblings."""
-    files = subprocess.check_output(["git", "-C", REPO, "ls-tree", "-r", "--name-only", "HEAD", EV]).decode().split()
+    files = subprocess.check_output(["git", "-C", REPO, "ls-tree", "-r", "--full-tree", "--name-only", "HEAD", EV]).decode().split()
     unit = GATES[gate][0].split("-nc1")[0]
     handoffs = sorted(f for f in files if f.startswith(EV + unit + "/") and f.endswith("/worker-handoff.json"))
     delegations = sorted(f for f in files if f.startswith(EV + unit + "/") and f.endswith("/delegation.json"))

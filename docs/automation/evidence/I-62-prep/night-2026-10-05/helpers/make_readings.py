@@ -21,7 +21,7 @@ def show(p):
     return json.loads(subprocess.check_output(["git", "-C", REPO, "show", "HEAD:" + p]))
 
 
-files = subprocess.check_output(["git", "-C", REPO, "ls-tree", "-r", "--name-only", "HEAD", EV]).decode().split()
+files = subprocess.check_output(["git", "-C", REPO, "ls-tree", "-r", "--full-tree", "--name-only", "HEAD", EV]).decode().split()
 doc = {"Label": "EXPERIMENTAL — NOT AUTHORIZED FOR PRODUCTION", "Repo": "HEAD de la rama de I-62 (objetos de I-63 integrados en main)",
        "Gates": {}, "Trx": {}}
 for gate, (unit, nc1, nc2) in CASES.items():
