@@ -7,9 +7,12 @@ Revisión dispuesta: corrida R20261003T023945Z-cab7 sobre docs/initiatives/I-62-
                   custodiada en 576006e83ad56f50df6c816f18f95297589de399 (registro: I-62-architect-review-A-1.md)
 Acreditación:     FORMAL_ACCREDITATION = NOT_ACCREDITED
 Hallazgos:        A62-A1-01..06 = ACCEPTED REQUIRED (adoptados por el Coordinator); O1..O5 = ACCEPT; O6 = DO NOT ACCEPT
-Objeto corregido: docs/initiatives/I-62-A-1.md, blob 23dd16b2b135cdb7e1e2b1e18e2b6595253e92d8 (sigue siendo A-1 y PROPUESTA)
-Estado:           A-1 = CHANGES REQUIRED / CORRECTION AUTHORIZED → corrección publicada; Architect REQUIRED — PENDING (revisión formal nueva, sin
-                  autorización todavía); Coordinator PENDING; F4 producción BLOCKED; Owner NOT REQUIRED; I-61 vigente
+Segunda disposición: «I-62 — COORDINATOR DISPOSITION OF OBS-A1-01» (8 674 bytes; SHA-256 7009fc18b918096134c9f9f56b9e59e534055743f070c71c4eb43754ea6f563e;
+                  recibido 2026-10-05T04:24Z; decisiones §39): OBS-A1-01 = ACCEPTED REQUIRED / MATERIAL;
+                  A62-A1-01..06 correctamente atendidos en 23dd16b2
+Objeto corregido: docs/initiatives/I-62-A-1.md, blob 9c621fce0588f32115e3151b6f75413c0a167c2e (sigue siendo A-1 y PROPUESTA; intermedio 23dd16b2)
+Estado:           A-1 corregida para A62-A1-01..06 y OBS-A1-01; Architect REQUIRED — PENDING (revisión formal nueva, sin autorización todavía);
+                  Coordinator PENDING; F4 producción BLOCKED; Owner NOT REQUIRED; I-61 vigente
 ```
 
 Registro redactado por la sesión autora como custodia de la disposición. Resume fielmente la orden; si hay discrepancia, manda el texto de la orden. La
@@ -53,13 +56,26 @@ corregido recibe una revisión formal nueva del Architect.
 **Materialidad:** M-02 = M-03 = M-04 = M-05 = sí; M-01 = M-06 = M-07 = M-08 = no, salvo que el diseño corregido revele otro hecho. No hace falta ninguna
 decisión del Owner.
 
+**OBS-A1-01** (segunda disposición, decisiones §39): ACCEPTED REQUIRED / MATERIAL. V14 permite que un REVIEWER independiente complete su revisión
+(§20.7) pero no define ninguna transición que cierre su bucle y vuelva a NONE, así que un bucle REVIEWER válido puede quedar activo para siempre. Corrección
+exigida:
+- extender LOOP_CLOSED al REVIEWER con semántica propia, sin aplicarle la identidad de bucle, la `ReviewLoopAuthorization` ni `architect_budgets[]`;
+- una representación determinista de la finalización, `REVIEWER_SATISFIED`, sin sobrecargar ARCHITECT_SATISFIED, con condiciones exactas: resultado VALID
+  ingerido, ningún intento no terminal, ningún BLOCKING abierto aplicable, y el requisito del contrato de gate;
+- un camino de cierre tras EXPIRED o REVOKED que conserve el motivo;
+- `budgets` de V14 sin cambio de modelo e historia append-only sin reinicios;
+- la guarda de tipo final (ARCHITECT_REVIEW, REVIEWER, EXECUTION), comprobable mecánicamente;
+- las trazas R1..R10.
+
+Materialidad de OBS-A1-01: M-02, M-03 y M-04 sí; M-01, M-05, M-06, M-07 y M-08 no. Sin decisión del Owner.
+
 **Identidad de la enmienda:** A-1 sigue PROPUESTA y nunca fue AGREED. Se corrige el mismo artefacto con un blob nuevo, sin crear A-2; el blob anterior queda
 como historia en Git. Una A-2 solo hace falta cuando una A-1 ya es enmienda acordada.
 
 ## 3. Matriz exacta de disposición → corrección
 
-Sobre `docs/initiatives/I-62-A-1.md`, blob `23dd16b2…`. Trazas de
-[a1-counterexamples-result.json](../automation/evidence/I-62-A1/a1-counterexamples-result.json): 56, todas PASS; cada negativa con su conjunto exacto de reglas.
+Sobre `docs/initiatives/I-62-A-1.md`, blob `9c621fce…`. Trazas de
+[a1-counterexamples-result.json](../automation/evidence/I-62-A1/a1-counterexamples-result.json): 73, todas PASS; cada negativa con su conjunto exacto de reglas.
 
 | Hallazgo | Deltas de la A-1 corregida | Reglas del arnés | Trazas (todas PASS) |
 |---|---|---|---|
@@ -75,12 +91,14 @@ Sobre `docs/initiatives/I-62-A-1.md`, blob `23dd16b2…`. Trazas de
 | A62-A1-O4 | D1-2 (`authorizations[]`, `closed_at`, `closed_by`), D1-9 (fin histórico) | A1-P07 | `a62-a1-02-expirada-y-cerrada`, `-revocada-y-cerrada`, `-cierre-que-revoca-la-vigente` |
 | A62-A1-O5 | evidencia: arnés reescrito con conjuntos exactos y cobertura obligatoria | todas | `fc01-enmendado-object-null-fuera-del-cierre` falla solo por A1-P02 |
 | A62-A1-O6 | ninguno | — | — |
+| OBS-A1-01 | D1-10 (`null` del REVIEWER), D1-13 (guarda de tipo final), D1-16 REVIEWER_SATISFIED, D1-17 condiciones y severidad, D1-18 LOOP_CLOSED de REVIEWER (S y E), D1-19 `reviewer_closures[]` | A1-R01, A1-R02, A1-R03, A1-R04, V14-P20-reviewer, A1-F04, A1-F06, A1-P01, A1-P04, A1-P06, A1-P07 | R1 `a62-a1-obs01-r1-reviewer-NO_FINDINGS-se-cierra`, `a62-a1-obs01-r1-NO_FINDINGS-no-es-ARCHITECT_SATISFIED`; R2 `a62-a1-obs01-r2-solo-ADVISORY-se-cierra`; R3 `a62-a1-obs01-r3-BLOCKING-abierto-impide-REVIEWER_SATISFIED`, `a62-a1-obs01-r3-BLOCKING-abierto-impide-el-cierre`; R4 `a62-a1-obs01-r4-reviewer-cierra-un-linaje-del-architect`; R5 `a62-a1-obs01-r5-reviewer-con-architect_budgets`, `a62-a1-03-reviewer-con-identidad-de-architect`; R6 `a62-a1-03-reviewer-autorizado-por-contrato-de-gate`; R7 `a62-a1-obs01-r7-expired-se-cierra-conservando-el-motivo`, `a62-a1-obs01-r7-revoked-se-cierra-conservando-el-motivo`, `a62-a1-obs01-r7-EXPIRED-reescrito-como-SUPERSEDED`, `a62-a1-obs01-r7-cierre-sin-decision`; R8 `a62-a1-obs01-r8-cierre-reinicia-budgets`, `a62-a1-obs01-r8-cierre-borra-historia`; R9 `a62-a1-obs01-r9-architect-abre-tras-el-cierre-del-reviewer`, `a62-a1-obs01-r9-sin-cierre-no-se-abre-otro-bucle`; R10 `a62-a1-obs01-r10-execution-sin-cambio`, `a62-a1-obs01-r10-execution-con-identidad-de-architect`, `a62-a1-obs01-r10-LOOP_CLOSED-no-se-aplica-a-EXECUTION` |
 
 **Contratos F3:** ninguno necesita cambio de esquema. `RebaseMap.Commits[]` (`relay-record/v2`) ya contiene la cadena; `BudgetSnapshot`
 (`role-invocation/v1`) sigue siendo escalar. Los campos nuevos son de `state/v2`, aún sin materializar. Se enmiendan solo **textos** F3 para I-62 (D2-11 y la
 lista de 16.20 en D1-12).
 
-**Observación fuera del delta:** OBS-A1-01 (A-1 §7): V14 no define la salida a NONE de un bucle REVIEWER, y A-1 la conserva por la regla del Coordinator.
+**Requisito más estricto del contrato de gate (OBS-A1-01):** `gate-contract/v2` no tiene ningún campo que endurezca la regla de B.10.2; por eso, en I-62 un
+ADVISORY abierto no impide REVIEWER_SATISFIED. Permitir que un contrato lo endurezca exigiría un campo nuevo (cambio de esquema, M-05), que A-1 no introduce.
 
 ## 4. Lo que este registro no hace
 

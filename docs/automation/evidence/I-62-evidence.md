@@ -1867,3 +1867,44 @@ CI de la custodia de la revisión, `576006e83ad56f50df6c816f18f95297589de399`: c
   producción.
 - **Límites:** sin F4, sin A-2 y sin lanzar la revisión formal nueva, que necesita una autorización nueva.
 - **DC-07:** I-63 avanzó a `55a66b3c` sin tocar archivos de I-62; I-52 e I-64 siguen igual.
+
+## 42. A-1 corregida para OBS-A1-01 (decisiones §39)
+
+CI de la corrección anterior, `fff3bbb070b065137401f81f85118ea851ea5888`: corrida **37262643940**, push, head_sha exacto, cuatro jobs en `success`.
+
+### 42.1 Objetos
+
+| Archivo | Blob | Contenido |
+|---|---|---|
+| `docs/initiatives/I-62-A-1.md` | `9c621fce0588f32115e3151b6f75413c0a167c2e` | D1-16 REVIEWER_SATISFIED y guarda de tipo; D1-17 condiciones, pertenencia y severidad BLOCKING/ADVISORY; D1-18 LOOP_CLOSED de REVIEWER (S y E); D1-19 `reviewer_closures[]`; D1-13 regla final por tipo; materialidad propia de OBS-A1-01; pruebas; matriz y cambios frente a `23dd16b2` |
+| `docs/initiatives/I-62-architect-package-A-1.md` | (en este commit; no lleva su propio blob) | objeto nuevo, insumos con los esquemas `reviewer-result/v1` y `gate-contract/v2`, lo que la revisión debe cubrir según §39 y preguntas 10-12 |
+| `docs/initiatives/I-62-architect-review-A-1-disposition.md` | `396c7a1451561e912529cff933b8df07ba3ef596` | segunda disposición y fila de OBS-A1-01 en la matriz, con R1..R10 |
+| `docs/automation/evidence/I-62-A1/a1-counterexamples.py` | `3f5129fa6f9dcbf7120d16954fd56c0d48c24863` | reglas A1-R01..A1-R04 y V14-P20-reviewer; trazas R1..R10 |
+| `docs/automation/evidence/I-62-A1/a1-counterexamples-result.json` | `4db4aac4983741b0a5454b84056b44483aa12e51` | resultado determinista (dos corridas idénticas byte a byte) |
+
+### 42.2 Contra-ejemplos (MEASURED)
+
+- **Cobertura:** 73 trazas (24 VALID, 49 INVALID), todas PASS. Cada negativa fija el conjunto exacto de reglas, y ninguna regla queda sin ejercitar.
+- **OBS-A1-01:** 20 trazas.
+  - R1: 2 (cierre con NO_FINDINGS; REVIEWER con ARCHITECT_SATISFIED → A1-R01).
+  - R2: 1.
+  - R3: 2 (REVIEWER_SATISFIED → A1-R02; cierre → A1-R03).
+  - R4: 1 (V14-P20-reviewer).
+  - R5: 2 (`instance_id` → A1-F06; entrada del Architect → A1-F04 y A1-P04).
+  - R6: 1.
+  - R7: 4 (EXPIRED y REVOKED válidos; reescritura a SUPERSEDED y cierre sin decisión → A1-R03).
+  - R8: 2 (reinicio → A1-P06 y A1-R03; historia borrada → solo A1-R04).
+  - R9: 2 (ARCHITECT_REVIEW se abre tras el cierre; sin cierre → A1-P01, A1-P02 y A1-P04).
+  - R10: 3 (EXECUTION sin cambio; con identidad del Architect → A1-F06; LOOP_CLOSED aplicado a EXECUTION → A1-P01 y A1-P07).
+- **Traza retirada:** `a62-a1-03-LOOP_CLOSED-no-se-extiende-a-REVIEWER` documentaba el comportamiento anterior (el REVIEWER sin cierre); la sustituyen las
+  trazas R1..R10.
+
+### 42.3 Contratos F3 y límites
+
+- **Esquemas F3:** ninguno cambia. `reviewer-result/v1` ya trae `Disposition` y `Severity`, y `gate-contract/v2` no gana campos.
+- **Requisito más estricto del contrato de gate:** ningún campo de `RoleRequirements[]` endurece la regla de B.10.2, así que en I-62 un ADVISORY no bloquea.
+  Permitirlo exigiría un campo nuevo (M-05), que A-1 no introduce; se señala al Coordinator.
+- **Cierre (E) del REVIEWER:** se permite con un BLOCKING abierto, que sigue abierto, y el requisito operativo queda sin satisfacer. Así se evita un bucle sin
+  cierre para siempre sin fingir la satisfacción.
+- **Límites:** sin F4, sin A-2 y sin lanzar al Architect.
+- **Ventana de I-63:** ya liberada antes de la orden (merge `bb0d5522`). Sin rebase, sin `docs/ROADMAP.md` ni `docs/HANDOFF.md` y sin push a `main`.

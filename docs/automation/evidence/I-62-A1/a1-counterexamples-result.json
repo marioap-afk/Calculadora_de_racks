@@ -1,6 +1,6 @@
 {
  "Script": "a1-counterexamples.py",
- "Version": "A-1 corregida (2026-10-05)",
+ "Version": "A-1 corregida (2026-10-05), con OBS-A1-01",
  "Freeze": {
   "commit": "4c617e82b32b6c810b68d75fc19472efed22b393",
   "blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa"
@@ -21,7 +21,12 @@
   "A1-P04": "D1-7 · entrada nueva solo en la apertura: exactamente una, con una ReviewLoopAuthorization nueva sin ContinuesLoopInstanceId y nunca usada",
   "A1-P05": "D1-8 · sustitución o continuación dentro del bucle abierto: misma entrada, sin reinicio, SUPERSEDED solo desde OPEN, EXPIRED/REVOKED intactos",
   "A1-P06": "D1-6 · las entradas no desaparecen, sus contadores no decrecen, una entrada cerrada no cambia, los topes no suben y un registro de autorización terminado no cambia",
-  "A1-P07": "D1-9/D1-13 · LOOP_CLOSED solo para ARCHITECT_REVIEW y solo sin trabajo vivo, con la escalada resuelta, la vigencia terminada (o revocada por la decisión de cierre) y la decisión exigida",
+  "A1-P07": "D1-9/D1-13 · LOOP_CLOSED de ARCHITECT_REVIEW solo sin trabajo vivo, con la escalada resuelta, la vigencia terminada (o revocada por la decisión de cierre) y la decisión exigida; ninguna variante de LOOP_CLOSED se aplica a EXECUTION",
+  "A1-R01": "D1-16 · ARCHITECT_SATISFIED (fase o fin de vigencia) solo con ARCHITECT_REVIEW y REVIEWER_SATISFIED solo con REVIEWER",
+  "A1-R02": "D1-17 · REVIEWER_SATISFIED solo con un resultado de REVIEWER VALID ingerido en la última solicitud del bucle, sin intentos no terminales, sin linajes BLOCKING abiertos del bucle y con la vigencia terminada por REVIEWER_SATISFIED",
+  "A1-R03": "D1-18 · LOOP_CLOSED de REVIEWER: desde REVIEWER_SATISFIED sin decisión, o tras EXPIRED/REVOKED con la decisión I62-REVIEWER-LOOP-CLOSE; sin trabajo vivo, escalada resuelta, nada borrado ni reiniciado y el registro de cierre añadido",
+  "A1-R04": "D1-19 · reviewer_closures[] es append-only y crece exactamente en uno en cada LOOP_CLOSED de REVIEWER, y en ningún otro par",
+  "V14-P20-reviewer": "V14 §20.5.2/§20.7 · un resultado de REVIEWER nunca cierra ni rebaja un linaje del ARCHITECT (P-20)",
   "A1-P08": "D2-2/D2-5 · la reconciliación lleva cada objeto vivo a su imagen probada (mismo path y blob) y exige imagen en el mapa para el Target de un intento en LAUNCHING",
   "A1-P09": "D2-6 · transiciones de intento; un intento en LAUNCHING o posterior nunca cambia su invocación en sitio; B.1 tras un rebase replanifica sobre la imagen",
   "A1-P10": "D2-8 · la reconciliación no cambia fase, presupuestos, linajes, estados de intento ni reserved_at",
@@ -67,7 +72,6 @@
    "fc01-enmendado-cierra-con-solicitud-abierta"
   ],
   "A62-A1-03": [
-   "a62-a1-03-LOOP_CLOSED-no-se-extiende-a-REVIEWER",
    "a62-a1-03-architect-sin-entrada",
    "a62-a1-03-budgets-de-V14-cuenta-una-solicitud-del-architect",
    "a62-a1-03-reviewer-autorizado-por-contrato-de-gate",
@@ -133,6 +137,68 @@
    "fc02-enmendado-reescribir-un-LAUNCHED",
    "fc02-literal-no-reconciliar-hueco",
    "fc02-literal-reconciliar-orquestacion"
+  ],
+  "OBS-A1-01": [
+   "a62-a1-03-reviewer-autorizado-por-contrato-de-gate",
+   "a62-a1-03-reviewer-con-identidad-de-architect",
+   "a62-a1-obs01-r1-NO_FINDINGS-no-es-ARCHITECT_SATISFIED",
+   "a62-a1-obs01-r1-reviewer-NO_FINDINGS-se-cierra",
+   "a62-a1-obs01-r10-LOOP_CLOSED-no-se-aplica-a-EXECUTION",
+   "a62-a1-obs01-r10-execution-con-identidad-de-architect",
+   "a62-a1-obs01-r10-execution-sin-cambio",
+   "a62-a1-obs01-r2-solo-ADVISORY-se-cierra",
+   "a62-a1-obs01-r3-BLOCKING-abierto-impide-REVIEWER_SATISFIED",
+   "a62-a1-obs01-r3-BLOCKING-abierto-impide-el-cierre",
+   "a62-a1-obs01-r4-reviewer-cierra-un-linaje-del-architect",
+   "a62-a1-obs01-r5-reviewer-con-architect_budgets",
+   "a62-a1-obs01-r7-EXPIRED-reescrito-como-SUPERSEDED",
+   "a62-a1-obs01-r7-cierre-sin-decision",
+   "a62-a1-obs01-r7-expired-se-cierra-conservando-el-motivo",
+   "a62-a1-obs01-r7-revoked-se-cierra-conservando-el-motivo",
+   "a62-a1-obs01-r8-cierre-borra-historia",
+   "a62-a1-obs01-r8-cierre-reinicia-budgets",
+   "a62-a1-obs01-r9-architect-abre-tras-el-cierre-del-reviewer",
+   "a62-a1-obs01-r9-sin-cierre-no-se-abre-otro-bucle"
+  ],
+  "OBS-A1-01/R1": [
+   "a62-a1-obs01-r1-NO_FINDINGS-no-es-ARCHITECT_SATISFIED",
+   "a62-a1-obs01-r1-reviewer-NO_FINDINGS-se-cierra"
+  ],
+  "OBS-A1-01/R10": [
+   "a62-a1-obs01-r10-LOOP_CLOSED-no-se-aplica-a-EXECUTION",
+   "a62-a1-obs01-r10-execution-con-identidad-de-architect",
+   "a62-a1-obs01-r10-execution-sin-cambio"
+  ],
+  "OBS-A1-01/R2": [
+   "a62-a1-obs01-r2-solo-ADVISORY-se-cierra"
+  ],
+  "OBS-A1-01/R3": [
+   "a62-a1-obs01-r3-BLOCKING-abierto-impide-REVIEWER_SATISFIED",
+   "a62-a1-obs01-r3-BLOCKING-abierto-impide-el-cierre"
+  ],
+  "OBS-A1-01/R4": [
+   "a62-a1-obs01-r4-reviewer-cierra-un-linaje-del-architect"
+  ],
+  "OBS-A1-01/R5": [
+   "a62-a1-03-reviewer-con-identidad-de-architect",
+   "a62-a1-obs01-r5-reviewer-con-architect_budgets"
+  ],
+  "OBS-A1-01/R6": [
+   "a62-a1-03-reviewer-autorizado-por-contrato-de-gate"
+  ],
+  "OBS-A1-01/R7": [
+   "a62-a1-obs01-r7-EXPIRED-reescrito-como-SUPERSEDED",
+   "a62-a1-obs01-r7-cierre-sin-decision",
+   "a62-a1-obs01-r7-expired-se-cierra-conservando-el-motivo",
+   "a62-a1-obs01-r7-revoked-se-cierra-conservando-el-motivo"
+  ],
+  "OBS-A1-01/R8": [
+   "a62-a1-obs01-r8-cierre-borra-historia",
+   "a62-a1-obs01-r8-cierre-reinicia-budgets"
+  ],
+  "OBS-A1-01/R9": [
+   "a62-a1-obs01-r9-architect-abre-tras-el-cierre-del-reviewer",
+   "a62-a1-obs01-r9-sin-cierre-no-se-abre-otro-bucle"
   ]
  },
  "MissingCoverage": [],
@@ -476,34 +542,6 @@
    "Violations": [],
    "Verdict": "PASS"
   },
-  "a62-a1-03-LOOP_CLOSED-no-se-extiende-a-REVIEWER": {
-   "Validator": "A-1 corregida",
-   "Covers": [
-    "A62-A1-03"
-   ],
-   "Expected": {
-    "Verdict": "INVALID",
-    "Rules": [
-     "A1-P01",
-     "A1-P02",
-     "A1-P07"
-    ]
-   },
-   "Got": {
-    "Verdict": "INVALID",
-    "Rules": [
-     "A1-P01",
-     "A1-P02",
-     "A1-P07"
-    ]
-   },
-   "Violations": [
-    "par 0→1 (NONE): transición RESULT_INGESTED → NONE no existe",
-    "par 0→1 (NONE): LOOP_CLOSED no se aplica a un bucle REVIEWER",
-    "par 0→1 (NONE): loop.object cambia en RESULT_INGESTED → NONE"
-   ],
-   "Verdict": "PASS"
-  },
   "a62-a1-03-architect-sin-entrada": {
    "Validator": "A-1 corregida",
    "Covers": [
@@ -557,7 +595,9 @@
   "a62-a1-03-reviewer-autorizado-por-contrato-de-gate": {
    "Validator": "A-1 corregida",
    "Covers": [
-    "A62-A1-03"
+    "A62-A1-03",
+    "OBS-A1-01",
+    "OBS-A1-01/R6"
    ],
    "Expected": {
     "Verdict": "VALID",
@@ -573,7 +613,9 @@
   "a62-a1-03-reviewer-con-identidad-de-architect": {
    "Validator": "A-1 corregida",
    "Covers": [
-    "A62-A1-03"
+    "A62-A1-03",
+    "OBS-A1-01",
+    "OBS-A1-01/R5"
    ],
    "Expected": {
     "Verdict": "INVALID",
@@ -993,6 +1035,399 @@
    },
    "Violations": [
     "par 1→2 (bucle nuevo ARL-42 con A2): OpenFindings de L5/1 sin ['LIN-1']"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1-obs01-r1-NO_FINDINGS-no-es-ARCHITECT_SATISFIED": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "OBS-A1-01",
+    "OBS-A1-01/R1"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R01"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R01"
+    ]
+   },
+   "Violations": [
+    "punto 1 (REVIEWER con ARCHITECT_SATISFIED): fase o fin de vigencia SATISFIED de otro tipo de bucle (REVIEWER)"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1-obs01-r1-reviewer-NO_FINDINGS-se-cierra": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "OBS-A1-01",
+    "OBS-A1-01/R1"
+   ],
+   "Expected": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Got": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Violations": [],
+   "Verdict": "PASS"
+  },
+  "a62-a1-obs01-r10-LOOP_CLOSED-no-se-aplica-a-EXECUTION": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "OBS-A1-01",
+    "OBS-A1-01/R10"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-P01",
+     "A1-P07"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-P01",
+     "A1-P07"
+    ]
+   },
+   "Violations": [
+    "par 0→1 (NONE): transición WINDOW_OPEN → NONE no existe",
+    "par 0→1 (NONE): LOOP_CLOSED no se aplica a un bucle EXECUTION"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1-obs01-r10-execution-con-identidad-de-architect": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "OBS-A1-01",
+    "OBS-A1-01/R10"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-F06"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-F06"
+    ]
+   },
+   "Violations": [
+    "punto 0 (EXECUTION con instance_id): bucle EXECUTION con identidad de bucle del Architect"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1-obs01-r10-execution-sin-cambio": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "OBS-A1-01",
+    "OBS-A1-01/R10"
+   ],
+   "Expected": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Got": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Violations": [],
+   "Verdict": "PASS"
+  },
+  "a62-a1-obs01-r2-solo-ADVISORY-se-cierra": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "OBS-A1-01",
+    "OBS-A1-01/R2"
+   ],
+   "Expected": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Got": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Violations": [],
+   "Verdict": "PASS"
+  },
+  "a62-a1-obs01-r3-BLOCKING-abierto-impide-REVIEWER_SATISFIED": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "OBS-A1-01",
+    "OBS-A1-01/R3"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R02"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R02"
+    ]
+   },
+   "Violations": [
+    "par 0→1 (REVIEWER_SATISFIED (resultado VALID ingerido)): REVIEWER_SATISFIED sin sus condiciones"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1-obs01-r3-BLOCKING-abierto-impide-el-cierre": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "OBS-A1-01",
+    "OBS-A1-01/R3"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R03"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R03"
+    ]
+   },
+   "Violations": [
+    "par 0→1 (LOOP_CLOSED con un BLOCKING abierto): LOOP_CLOSED de REVIEWER sin sus condiciones"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1-obs01-r4-reviewer-cierra-un-linaje-del-architect": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "OBS-A1-01",
+    "OBS-A1-01/R4"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "V14-P20-reviewer"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "V14-P20-reviewer"
+    ]
+   },
+   "Violations": [
+    "par 0→1 (REVIEWER_SATISFIED (resultado VALID ingerido)): un resultado de REVIEWER cierra un linaje del ARCHITECT (P-20)"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1-obs01-r5-reviewer-con-architect_budgets": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "OBS-A1-01",
+    "OBS-A1-01/R5"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-F04",
+     "A1-P04"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-F04",
+     "A1-P04"
+    ]
+   },
+   "Violations": [
+    "punto 1 (REVIEWER con una entrada de architect_budgets): entrada abierta ARL-51 que no es la del bucle activo",
+    "par 0→1 (REVIEWER con una entrada de architect_budgets): entrada nueva ['ARL-51'] fuera de la apertura"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1-obs01-r7-EXPIRED-reescrito-como-SUPERSEDED": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "OBS-A1-01",
+    "OBS-A1-01/R7"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R03"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R03"
+    ]
+   },
+   "Violations": [
+    "par 0→1 (registro con SUPERSEDED): LOOP_CLOSED de REVIEWER sin sus condiciones"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1-obs01-r7-cierre-sin-decision": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "OBS-A1-01",
+    "OBS-A1-01/R7"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R03"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R03"
+    ]
+   },
+   "Violations": [
+    "par 0→1 (sin RCLOSE-R1): LOOP_CLOSED de REVIEWER sin sus condiciones"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1-obs01-r7-expired-se-cierra-conservando-el-motivo": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "OBS-A1-01",
+    "OBS-A1-01/R7"
+   ],
+   "Expected": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Got": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Violations": [],
+   "Verdict": "PASS"
+  },
+  "a62-a1-obs01-r7-revoked-se-cierra-conservando-el-motivo": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "OBS-A1-01",
+    "OBS-A1-01/R7"
+   ],
+   "Expected": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Got": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Violations": [],
+   "Verdict": "PASS"
+  },
+  "a62-a1-obs01-r8-cierre-borra-historia": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "OBS-A1-01",
+    "OBS-A1-01/R8"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R04"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-R04"
+    ]
+   },
+   "Violations": [
+    "par 0→1 (LOOP_CLOSED de REVIEWER): reviewer_closures cambia fuera de un cierre de REVIEWER o pierde historia"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1-obs01-r8-cierre-reinicia-budgets": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "OBS-A1-01",
+    "OBS-A1-01/R8"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-P06",
+     "A1-R03"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-P06",
+     "A1-R03"
+    ]
+   },
+   "Violations": [
+    "par 0→1 (cierre que reinicia budgets): decrece un contador de budgets (V14)",
+    "par 0→1 (cierre que reinicia budgets): LOOP_CLOSED de REVIEWER sin sus condiciones"
+   ],
+   "Verdict": "PASS"
+  },
+  "a62-a1-obs01-r9-architect-abre-tras-el-cierre-del-reviewer": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "OBS-A1-01",
+    "OBS-A1-01/R9"
+   ],
+   "Expected": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Got": {
+    "Verdict": "VALID",
+    "Rules": []
+   },
+   "Violations": [],
+   "Verdict": "PASS"
+  },
+  "a62-a1-obs01-r9-sin-cierre-no-se-abre-otro-bucle": {
+   "Validator": "A-1 corregida",
+   "Covers": [
+    "OBS-A1-01",
+    "OBS-A1-01/R9"
+   ],
+   "Expected": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-P01",
+     "A1-P02",
+     "A1-P04"
+    ]
+   },
+   "Got": {
+    "Verdict": "INVALID",
+    "Rules": [
+     "A1-P01",
+     "A1-P02",
+     "A1-P04"
+    ]
+   },
+   "Violations": [
+    "par 0→1 (apertura sin cerrar el REVIEWER): transición REVIEWER_SATISFIED → REVIEW_PENDING no existe",
+    "par 0→1 (apertura sin cerrar el REVIEWER): loop.object cambia en REVIEWER_SATISFIED → REVIEW_PENDING",
+    "par 0→1 (apertura sin cerrar el REVIEWER): entrada nueva ['ARL-56'] fuera de la apertura"
    ],
    "Verdict": "PASS"
   },
