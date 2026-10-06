@@ -2488,3 +2488,16 @@ solo desde artefactos custodiados.
   `BROWSER_USE_CODEX_APP_VERSION` y `NODE_REPL_TRUSTED_SERVICES`). No se puede probar cuál sin el archivo anterior, que nunca se guarda.
 - **Disposición:** P-01, STOP de `codex-cli`; no se acepta la huella ni el binario nuevos; paquete **OD-2d** para el Owner. FX-01 y FX-04a no usan
   `codex-cli`. Mitigación: instantánea local con digests HMAC por clave (clave solo en el scratchpad) para localizar cambios futuros por nombre de clave.
+
+## 68. Disposición tras R2 (decisiones §50): medición pasiva para OD-2d y comprobación D.6 de las entradas de Codex
+
+- **Custodia** (decisiones §50): R2 aceptado; mensajes «continúa» de la supervisión a A autorizados para G0, QU y QH; FX-01 ya; OD-2d no aprobada; FX-06
+  con la celda del Architect obsoleta.
+- **Medición pasiva** ([result.json](I-62-F6/OD-2/R20261006T200612Z-od2d-passive/result.json), 20:06:12Z): `config.toml` = `723A6898…`, estable desde las
+  19:18:38Z (comparación HMAC por clave sin cambios); 107 nombres de clave; app `26.930.7945.0`; binario `bin\5ea220ae823df3d7`
+  (`3b8f6e33…`), el único. **Sin medir** (exigen ejecutar el binario nuevo y no hay autoridad vigente: OD-2b-PROBE se consumió con el binario anterior):
+  versión de la CLI, autenticación, modelo, effort y sandbox observados, y estabilidad en sondas de solo lectura. Se propone OD-2d-PROBE.
+- **D.6, entradas automáticas de Codex para B:** `AGENTS.md` global de 0 bytes; memorias vacías (`memories_1.sqlite` sin filas de memoria ni trabajos;
+  `memories/` sin archivos); 49 archivos en `skills/` sin identificadores de la unidad; `rules/default.rules` (política de comandos, no contexto del modelo)
+  menciona el repositorio real, sin hechos de FX-U1. **Limpias**; se repite con SHA-256 antes de abrir B.
+- **A:** no abierta todavía (20:06Z): ninguna sesión en `D:\r62-fixture`; `fx/u1` en `54f2a4a8`.

@@ -187,7 +187,12 @@ Paquete pedido por el Coordinator (decisiones §47) tras las dos sondas de OD-2b
 | Aprobar | `OD-2c = A (línea base 9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E)` |
 | Rechazar | `OD-2c = RECHAZAR` — `codex-cli` sigue en STOP: FX-02 y FX-06 UNVERIFIED |
 
-## OD-2d — Línea base de `codex-cli` tras la actualización de la app de Codex (2026-10-06T19:16Z; pendiente de decisión del Owner)
+## OD-2d — Línea base de `codex-cli` tras la actualización de la app de Codex (2026-10-06T19:16Z; NO aprobada; el Coordinator pide antes una medición, §50)
+
+> **Disposición del Coordinator (§50):** no se pide OD-2d hasta medir de forma controlada el binario y el runtime nuevos. Medición pasiva hecha
+> ([result.json](../I-62-F6/OD-2/R20261006T200612Z-od2d-passive/result.json)): huella estable desde las 19:18Z, app `26.930.7945.0`, binario `3b8f6e33…`.
+> Falta lo que exige ejecutar el binario nuevo (versión, autenticación, modelo, effort y sandbox observados, estabilidad en sondas de solo lectura):
+> **OD-2d-PROBE** (ver al final de esta sección). Las opciones de abajo quedan en suspenso hasta esa medición.
 
 **Hecho (P-01, [result.json](../I-62-F6/OD-2/R20261006T191621Z-p01/result.json)):** sin ninguna invocación de Codex de la sesión, la huella pasó de la
 línea base de OD-2c `9002E854…` a **`723A68985165BAE40689172F4E573C47FC45D1BA0D19F9192E3120DDD28B18C8`** (escrita a las 18:58:51Z). Coincide con una
@@ -214,6 +219,11 @@ ya no existe. **STOP del transporte `codex-cli`**; FX-01 y FX-04a no lo usan y s
   solo cambiaran valores ligados a ella. FX-02 y FX-06 necesitan `codex-cli`; FX-01 y FX-04a no.
 - **Aprobar:** `OD-2d = A (línea base 723A68985165BAE40689172F4E573C47FC45D1BA0D19F9192E3120DDD28B18C8; binario 3b8f6e33caa75f232558a3cf76ff9b87bb5ef6dbcf4996372f24e55c78b1b91)`
 - **Rechazar:** `OD-2d = RECHAZAR`
+
+**OD-2d-PROBE (autorización pedida; necesaria para completar la medición del §50):** `codex --version` y `codex login status` del binario nuevo, y
+≤ 2 sondas de solo lectura (en `D:\r62-fixture\A` con la celda del Controller y en `D:\r62-fixture\arch` con la del Architect, que así se vuelve a medir), con la huella y
+la comparación por clave antes y después de cada paso. No acepta ninguna huella ni permite editar `config.toml`, `trust_level`, `windows.sandbox` o
+credenciales, ni empezar FX-02 o FX-06. Línea: `OD-2d-PROBE = A (--version, login status y ≤ 2 sondas read-only en D:\r62-fixture\A y D:\r62-fixture\arch)`
 
 ## OD-3 — hecho nuevo de OD-4 (2026-10-06T07:24Z; OD-3 sigue RECHAZADA)
 

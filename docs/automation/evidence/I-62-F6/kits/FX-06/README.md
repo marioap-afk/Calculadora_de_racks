@@ -11,7 +11,7 @@ copia a esta evidencia después de la corrida.
 `docs/initiatives/FX-U1-proposal.md` del fixture.
 
 **Elegibilidad del Architect (hecho de este preflight):** ARCHITECTURE_REVIEW es Deep → nivel Equilibrado o Frontera (routing §1 y §3). `gpt-6-luna` es
-Eficiente: no sirve. `gpt-6-astra` es de créditos: no elegible. Queda `codex-cli:gpt-6.1-sol:Deep` (`high`). **Medida el 2026-10-06** por la sonda 2 de
+Eficiente: no sirve. `gpt-6-astra` es de créditos: no elegible. Queda `codex-cli:gpt-6.1-sol:Deep` (`high`). **Medición OBSOLETA** desde la actualización de la app de Codex (binario nuevo, decisiones §50): hay que volver a medirla antes de usarla. Medida el 2026-10-06 con el binario anterior por la sonda 2 de
 OD-2b-PROBE en `D:\r62-fixture\arch` ([result.json](../../OD-2b-PROBE/R20261006T150704Z-od2b/result.json)): `gpt-6.1-sol`/`high` observados en
 `turn_context`, `read-only`, salida estructurada válida, sin aviso de límite ni de créditos; queda medida para `read` y `tool-use` con effort `high`
 (routing §5). La elegibilidad la aplica el Controller de planificación en la fecha de la delegación. Los Architects B y C usan `D:\r62-fixture\arch`

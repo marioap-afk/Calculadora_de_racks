@@ -2,7 +2,7 @@
 
 ```text
 Autoridad:  Freeze V14 + A-1 AGREED + F4 GATE PASS; decisiones del Owner OD-5/OD-7/OD-2/OD-4 = A, OD-3 = RECHAZAR (§46), OD-2b-PROBE = A (§47), OD-7 corregida a PÚBLICO y OD-2c = A (§48)
-Orden:      orden nocturna (§46), disposición tras la primera ejecución (§47), corrección de OD-7 (§48) y orden de continuación (§49); I-61 sigue activa; superficies I62 inactivas en RackCad
+Orden:      §46 (nocturna), §47, §48, §49 (continuación) y §50 (disposición tras R2); I-61 sigue activa; superficies I62 inactivas en RackCad
 Estado:     F6 EN CURSO; F6 GATE PASS no se autodeclara
 ```
 
@@ -11,7 +11,7 @@ Estado:     F6 EN CURSO; F6 GATE PASS no se autodeclara
 | Escenario | Estado | Causa exacta | Próximo paso |
 |---|---|---|---|
 | F6-A fixture D.1 | **hecho** (pasos 1-4) | — | pasos 5-6 los publica el Principal A (su preflight CUSTODY es suyo, §8.6) |
-| CI del fixture | **recuperada de forma provisional (clasificación A, §49)** | público desde 15:50:43Z (§48); R1 (deshabilitar y habilitar el flujo, commit vacío `4a276c75`): 0 corridas; R2 (`workflow_dispatch:` solo en `ci/smoke`, commit `7d053246`): corrida `push` 37515854486 y manual 37515901956, ambas con `fixture-build` y `fixture-tests` en `success` ([actions-recovery-r1-r2.json](CI/actions-recovery-r1-r2.json)) | confirmar push sin cambio del flujo en `fx/u1` (BOOTSTRAP de A); si no corre, clasificación B |
+| CI del fixture | **ejecución restablecida (R2 aceptado, §50); clasificación provisional** | R2: corridas `push` 37515854486 y manual 37515901956 en `ci/smoke` con los dos jobs en `success` ([actions-recovery-r1-r2.json](CI/actions-recovery-r1-r2.json)); R1 sin efecto | el push del BOOTSTRAP de A a `fx/u1`: si corre, A; si no, B |
 | FX-05 / C-27 | **PASS** (corrida 2; confirmado por el Coordinator, §47) | la corrida 1 se conserva como inválida | no se repite salvo que su evidencia se invalide |
 | OD-4 sondas | **medido**: sonda 1 de ≤ 2 | escritura de archivos y herramientas SUPPORTED; **commit UNSUPPORTED** (`.git/index.lock` denegado por el sandbox); fuera del espacio bloqueado | sin segunda sonda: transporte en STOP |
 | OD-2b-PROBE | **hecho** (2 sondas `read-only`, §47) | sonda 1 en `A` (`gpt-6-luna`/`high`) y sonda 2 en `arch` (`gpt-6.1-sol`/`high`): huella `9002E854…` antes y después de cada una; ninguna entrada nueva; `read-only` no crea entradas, `workspace-write` sí ([result.json](OD-2b-PROBE/R20261006T150704Z-od2b/result.json)) | — |
@@ -20,7 +20,7 @@ Estado:     F6 EN CURSO; F6 GATE PASS no se autodeclara
 | FX-02 / C-24 | **UNVERIFIED** (bloqueado) | sin sesión A; `codex-cli` en STOP P-01 hasta OD-2d; CI recuperada de forma provisional | sesión A + OD-2d + confirmar CI en `fx/u1` |
 | FX-04a / C-25a | **HUMAN_LAUNCH_REQUIRED** | QH de A tras el BOOTSTRAP con T1 planificada (hechos más pobres), terminación de A acreditada, entradas automáticas de B enumeradas y sesión B abierta por el Owner; decisión previa sobre la huella al abrir B | tarjeta §4 |
 | FX-04b / C-25b | **UNSUPPORTED** (medido) | el Worker Codex no puede hacer commit (OD-4, sonda 1); ningún otro adapter lanzable por B tiene escritura acreditada (`claude-cli` rechazado, OD-3) | decisión del Owner sobre la limitación (OV-I62-05 b) |
-| FX-06 / C-39 | **UNVERIFIED** | sin sesión A; `codex-cli` en STOP P-01 hasta OD-2d (celda del Architect medida con el binario anterior: revalidar tras OD-2d) | sesión A + OD-2d + CI |
+| FX-06 / C-39 | **UNVERIFIED** (solo preparación) | sin sesión A; `codex-cli` en STOP P-01 hasta OD-2d; la celda del Architect medida es del binario anterior y queda **obsoleta** (§50): volver a medirla | sesión A + OD-2d-PROBE/OD-2d + CI |
 | FX-03 / C-26 | **UNVERIFIED** (OD-3 = RECHAZAR) | además, el Worker Codex no puede hacer commit: con OD-3 sería UNSUPPORTED | limitación para OV-I62-04; no se retira |
 
 ## Identidad del fixture

@@ -1,0 +1,38 @@
+{
+  "RunId": "R20261006T200612Z-od2d-passive",
+  "Authority": "disposición del Coordinator tras R2 (decisiones §50, punto 5): medición controlada del binario y runtime nuevos bajo la autoridad pasiva o de sonda existente donde se permita, sin cambiar config.toml a mano",
+  "ObservedUtc": "2026-10-06T20:06:12Z",
+  "Config": {
+    "Sha256": "723A68985165BAE40689172F4E573C47FC45D1BA0D19F9192E3120DDD28B18C8",
+    "Length": 4775,
+    "LastWriteTimeUtc": "2026-10-06T18:58:51.308Z",
+    "SanitizedKeyNames": "107 (los mismos que en 9002E854…), 39 secciones; secciones de proyecto del fixture: solo d:\\r62-fixture\\probe-od4-1 (trust_level)",
+    "KeyedDigestBaseline": "instantánea local HMAC por clave tomada a las 19:18:38Z sobre 723A6898… (clave solo en el scratchpad)",
+    "ChangedKeyNamesVsNewBaseline": [],
+    "StableSince": "2026-10-06T19:18:38Z (comparación por clave a las 20:06Z: sin cambios)"
+  },
+  "App": {
+    "Package": "OpenAI.Codex 26.930.7945.0 (antes 26.930.3930.0)"
+  },
+  "Binary": {
+    "Path": "%LOCALAPPDATA%\\OpenAI\\Codex\\bin\\5ea220ae823df3d7\\codex.exe",
+    "Sha256": "3b8f6e33caa75f232558a3cf76ff9b87bb5ef6dbcf4996372f24e55c78b1b91",
+    "WrittenLocal": "2026-10-06 12:56:03 -0600",
+    "OnlyCodexExeUnderBin": true,
+    "VersionMetadata": "ninguna (el ejecutable no tiene recurso de versión)"
+  },
+  "NotMeasured": {
+    "CliVersion": "exige ejecutar el binario (codex --version)",
+    "AuthState": "exige ejecutar codex login status",
+    "ObservedModelEffortSandbox": "exige una sonda de solo lectura con modelo (turn_context)",
+    "StabilityAcrossReadOnlyProbes": "exige sondas de solo lectura",
+    "Reason": "la autoridad de sondas existente (OD-2b-PROBE: 2 sondas de solo lectura) se consumió con el binario anterior y codex-cli está en STOP P-01; no hay autoridad vigente para ejecutar el binario nuevo. Se pide OD-2d-PROBE"
+  },
+  "D6CodexAutomaticInputs": {
+    "GlobalAgentsMd": "~/.codex/AGENTS.md: 0 bytes (SHA-256 e3b0c442…b855)",
+    "Memories": "memories_1.sqlite: stage1_outputs 0 filas, jobs 0 filas; directorio memories/ sin archivos; 0 identificadores de la unidad",
+    "Skills": "49 archivos; 0 con identificadores de la unidad o del fixture",
+    "Rules": "rules/default.rules (política de comandos de la app, no contexto del modelo): menciona el repositorio real (RackCad ×1, Calculadora ×2); ningún hecho de FX-U1",
+    "Verdict": "sin hechos de FX-U1 en las entradas automáticas de Codex; se repite la comprobación con SHA-256 justo antes de abrir B"
+  }
+}
