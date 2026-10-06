@@ -1,0 +1,366 @@
+{
+  "RunId": "R20261006T150704Z-od2b",
+  "Scenario": "OD-2b-PROBE: 2 sondas preparatorias de solo lectura de codex-cli (D:\\r62-fixture\\A y D:\\r62-fixture\\arch)",
+  "Authority": "OD-2b-PROBE = A del Owner, por la disposición del Coordinator tras la primera ejecución de F6 (decisiones §47); no acepta ninguna huella",
+  "Binary": {
+    "Path": "%LOCALAPPDATA%\\OpenAI\\Codex\\bin\\8aaf1547b825b104\\codex.exe",
+    "BinaryLabel": "8aaf1547b825b104",
+    "Sha256": "37762753b554982eef1c109303d1be652b6397f1479e844794353a85650199c6",
+    "LastWriteLocal": "2026-10-03 12:48:16 -0600 (único codex.exe bajo bin/)",
+    "CliVersion": "codex-cli 0.160.0",
+    "AuthState": "Logged in using ChatGPT (codex login status)"
+  },
+  "NonModelInvocations": [
+    {
+      "Command": "codex --version",
+      "Utc": "2026-10-06T15:07:04Z"
+    },
+    {
+      "Command": "codex login status",
+      "Utc": "2026-10-06T15:07:04Z"
+    }
+  ],
+  "NonModelFingerprint": {
+    "Before": "9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E",
+    "After": "9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E"
+  },
+  "Recipe": "codex exec -C <dir> -s read-only -m <model> -c model_reasoning_effort=\"high\" --output-schema probe-schema.json -o probe<n>-last.json --json <prompt>; stdin cerrado; pwsh del runtime primero en el PATH del hijo; sin --ephemeral (receta 16.4)",
+  "Probes": [
+    {
+      "Probe": 1,
+      "Directory": "D:\\r62-fixture\\A",
+      "CellRole": "EXECUTION_CONTROLLER (celda medida)",
+      "Model": "gpt-6-luna",
+      "Effort": "high",
+      "Sandbox": "read-only",
+      "StartedUtc": "2026-10-06T15:07:15Z",
+      "EndedUtc": "2026-10-06T15:08:21Z",
+      "Exit": "exit=0",
+      "BinarySha256": "37762753b554982eef1c109303d1be652b6397f1479e844794353a85650199c6",
+      "Head": {
+        "Before": "54f2a4a8f53eb6834448394781600f6343d9a246",
+        "After": "54f2a4a8f53eb6834448394781600f6343d9a246"
+      },
+      "WorkingTree": {
+        "StatusIgnoredLinesBefore": 0,
+        "StatusIgnoredLinesAfter": 0
+      },
+      "Introspection": {
+        "SessionLog": "~/.codex/sessions/2026/10/06/rollout-2026-10-06T09-07-16-01a111c1-3211-7550-bb3c-2cf78df9e51c.jsonl",
+        "SessionLogSha256": "4db61aaf88fe67d890f7b202bd015809606353b1a828048a533b71ca18196437",
+        "SessionMeta": {
+          "id": "01a111c1-3211-7550-bb3c-2cf78df9e51c",
+          "cli_version": "0.160.0",
+          "originator": "codex_exec",
+          "source": "exec",
+          "model_provider": "openai",
+          "cwd": "D:\\r62-fixture\\A"
+        },
+        "TurnContext": [
+          {
+            "model": "gpt-6-luna",
+            "effort": "high",
+            "approval_policy": "never",
+            "sandbox_policy": {
+              "type": "read-only"
+            },
+            "cwd": "D:\\r62-fixture\\A"
+          }
+        ]
+      },
+      "Usage": {
+        "input_tokens": 69231,
+        "cached_input_tokens": 48384,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1528,
+        "reasoning_output_tokens": 314
+      },
+      "Fingerprint": {
+        "Before": {
+          "Sha256": "9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E",
+          "Length": 4775,
+          "LastWriteTimeUtc": "2026-10-06T07:23:07.616Z",
+          "KeyNames": 107
+        },
+        "After": {
+          "Sha256": "9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E",
+          "Length": 4775,
+          "LastWriteTimeUtc": "2026-10-06T07:23:07.616Z",
+          "KeyNames": 107
+        },
+        "SanitizedDelta": {
+          "Added": {},
+          "Removed": {}
+        },
+        "FixtureProjectSectionsBefore": [
+          {
+            "path": "d:\\r62-fixture\\probe-od4-1",
+            "header_line": 114,
+            "key_names": [
+              "trust_level"
+            ]
+          }
+        ],
+        "FixtureProjectSectionsAfter": [
+          {
+            "path": "d:\\r62-fixture\\probe-od4-1",
+            "header_line": 114,
+            "key_names": [
+              "trust_level"
+            ]
+          }
+        ]
+      },
+      "Answer": {
+        "steps": [
+          {
+            "id": 1,
+            "action": "git rev-parse HEAD",
+            "ok": true,
+            "output": "54f2a4a8f53eb6834448394781600f6343d9a246",
+            "error": null
+          },
+          {
+            "id": 2,
+            "action": "git branch --show-current",
+            "ok": true,
+            "output": "fx/u1",
+            "error": null
+          },
+          {
+            "id": 3,
+            "action": "git --no-optional-locks status --porcelain",
+            "ok": true,
+            "output": "",
+            "error": null
+          },
+          {
+            "id": 4,
+            "action": "git status --porcelain",
+            "ok": true,
+            "output": "",
+            "error": null
+          },
+          {
+            "id": 5,
+            "action": "git log -1 --format=%s",
+            "ok": true,
+            "output": "FX-U1: orden FX-U1-O1 del Coordinator del fixture (apertura por su Principal)",
+            "error": null
+          },
+          {
+            "id": 6,
+            "action": "git ls-files (count)",
+            "ok": true,
+            "output": "41",
+            "error": null
+          },
+          {
+            "id": 7,
+            "action": "dotnet --version",
+            "ok": true,
+            "output": "10.0.401",
+            "error": null
+          },
+          {
+            "id": 8,
+            "action": "Read README.md first line",
+            "ok": true,
+            "output": "# rackcad-i62-fixture",
+            "error": null
+          }
+        ],
+        "head_sha": "54f2a4a8f53eb6834448394781600f6343d9a246"
+      }
+    },
+    {
+      "Probe": 2,
+      "Directory": "D:\\r62-fixture\\arch",
+      "CellRole": "ARCHITECT (Deep; primera invocación medida de la celda)",
+      "Model": "gpt-6.1-sol",
+      "Effort": "high",
+      "Sandbox": "read-only",
+      "StartedUtc": "2026-10-06T15:09:35Z",
+      "EndedUtc": "2026-10-06T15:10:13Z",
+      "Exit": "exit=0",
+      "BinarySha256": "37762753b554982eef1c109303d1be652b6397f1479e844794353a85650199c6",
+      "Head": {
+        "Before": "fbe25347799e5b801ef708454212335537448bd1",
+        "After": "fbe25347799e5b801ef708454212335537448bd1"
+      },
+      "WorkingTree": {
+        "StatusIgnoredLinesBefore": 0,
+        "StatusIgnoredLinesAfter": 0
+      },
+      "Introspection": {
+        "SessionLog": "~/.codex/sessions/2026/10/06/rollout-2026-10-06T09-09-36-01a111c3-555d-7c01-8398-c9fc427eabd5.jsonl",
+        "SessionLogSha256": "6fb0d9a170a338aa1b7f0a0b875fee7032414c8fe4c840ae8e0c78edc12f0eba",
+        "SessionMeta": {
+          "id": "01a111c3-555d-7c01-8398-c9fc427eabd5",
+          "cli_version": "0.160.0",
+          "originator": "codex_exec",
+          "source": "exec",
+          "model_provider": "openai",
+          "cwd": "D:\\r62-fixture\\arch"
+        },
+        "TurnContext": [
+          {
+            "model": "gpt-6.1-sol",
+            "effort": "high",
+            "approval_policy": "never",
+            "sandbox_policy": {
+              "type": "read-only"
+            },
+            "cwd": "D:\\r62-fixture\\arch"
+          }
+        ]
+      },
+      "Usage": {
+        "input_tokens": 121745,
+        "cached_input_tokens": 102656,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1090,
+        "reasoning_output_tokens": 39
+      },
+      "Fingerprint": {
+        "Before": {
+          "Sha256": "9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E",
+          "Length": 4775,
+          "LastWriteTimeUtc": "2026-10-06T07:23:07.616Z",
+          "KeyNames": 107
+        },
+        "After": {
+          "Sha256": "9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E",
+          "Length": 4775,
+          "LastWriteTimeUtc": "2026-10-06T07:23:07.616Z",
+          "KeyNames": 107
+        },
+        "SanitizedDelta": {
+          "Added": {},
+          "Removed": {}
+        },
+        "FixtureProjectSectionsBefore": [
+          {
+            "path": "d:\\r62-fixture\\probe-od4-1",
+            "header_line": 114,
+            "key_names": [
+              "trust_level"
+            ]
+          }
+        ],
+        "FixtureProjectSectionsAfter": [
+          {
+            "path": "d:\\r62-fixture\\probe-od4-1",
+            "header_line": 114,
+            "key_names": [
+              "trust_level"
+            ]
+          }
+        ]
+      },
+      "Answer": {
+        "steps": [
+          {
+            "id": 1,
+            "action": "git rev-parse HEAD",
+            "ok": true,
+            "output": "fbe25347799e5b801ef708454212335537448bd1",
+            "error": null
+          },
+          {
+            "id": 2,
+            "action": "git log --format=%h -n 3",
+            "ok": true,
+            "output": "fbe2534\na9f6c92\n930288c",
+            "error": null
+          },
+          {
+            "id": 3,
+            "action": "git diff --stat 930288c5 a9f6c929",
+            "ok": true,
+            "output": " 1 file changed, 6 insertions(+), 1 deletion(-)",
+            "error": null
+          },
+          {
+            "id": 4,
+            "action": "git --no-optional-locks status --porcelain",
+            "ok": true,
+            "output": "",
+            "error": null
+          },
+          {
+            "id": 5,
+            "action": "git hash-object README.md",
+            "ok": true,
+            "output": "6744a160f14c84bed8e74b1a97d74efcd9a96b31",
+            "error": null
+          },
+          {
+            "id": 6,
+            "action": "Leer src/Fixture.Lib/Calculator.cs y registrar sus métodos públicos",
+            "ok": true,
+            "output": "Add",
+            "error": null
+          }
+        ],
+        "head_sha": "fbe25347799e5b801ef708454212335537448bd1"
+      }
+    }
+  ],
+  "Final": {
+    "Sha256": "9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E",
+    "Length": 4775,
+    "LastWriteTimeUtc": "2026-10-06T07:23:07.616Z",
+    "AcceptedBaseline": "091540ED2DE6CFAC5C12110337305FFCABCEEEE0D8CB696F7E04EA057F9F3D66",
+    "SanitizedDeltaFromAcceptedBaseline": {
+      "Added": {
+        "<redactado>": 1,
+        "[projects.<redactado>]": 1
+      },
+      "Removed": {}
+    },
+    "FixtureProjectSections": [
+      {
+        "path": "d:\\r62-fixture\\probe-od4-1",
+        "header_line": 114,
+        "key_names": [
+          "trust_level"
+        ]
+      }
+    ],
+    "OtherProjectSections": 11,
+    "ExactRemainderProof": [
+      {
+        "removed": [
+          "d:\\r62-fixture\\probe-od4-1"
+        ],
+        "variant": "plus_preceding_blank",
+        "sha256": "091540ED2DE6CFAC5C12110337305FFCABCEEEE0D8CB696F7E04EA057F9F3D66",
+        "matches": [
+          "091540ED2DE6CFAC5C12110337305FFCABCEEEE0D8CB696F7E04EA057F9F3D66"
+        ]
+      },
+      {
+        "removed": [
+          "d:\\r62-fixture\\probe-od4-1"
+        ],
+        "variant": "plus_trailing_blank",
+        "sha256": "091540ED2DE6CFAC5C12110337305FFCABCEEEE0D8CB696F7E04EA057F9F3D66",
+        "matches": [
+          "091540ED2DE6CFAC5C12110337305FFCABCEEEE0D8CB696F7E04EA057F9F3D66"
+        ]
+      }
+    ],
+    "RemainderMeaning": "el archivo final sin la sección [projects.'d:\\r62-fixture\\probe-od4-1'] (y su línea en blanco) tiene exactamente el SHA-256 de la línea base aceptada: nada más cambió, byte a byte; ningún valor se leyó para publicarlo"
+  },
+  "Measured": {
+    "ReadOnlyCreatesProjectEntry": "NO (2 de 2: A y arch; huella 9002E854 antes y después de cada sonda; mtime sin cambios desde 07:23:07.616Z)",
+    "WorkspaceWriteCreatesProjectEntry": "SÍ (2 de 2: P2 de I-61, DEV-G1C-01; sonda 1 de OD-4, 2026-10-06T07:23Z)",
+    "ConsequenceForF6": "la receta 16.4 de codex-cli es read-only (Controller y Architects de FX-02 y FX-06): la huella final es estable para esas cesiones salvo reinicio o actualización de la app de Codex; solo un Worker codex-cli en workspace-write (FX-03, FX-04b; hoy UNVERIFIED y UNSUPPORTED) añadiría una entrada nueva",
+    "HypothesisFalsified": "el paquete OD-2b (§OD-2b) predijo +2 secciones; la medición da +0: la predicción era falsa para read-only",
+    "SandboxPwsh": "el pwsh del sandbox corre en ConstrainedLanguage (ya documentado en el descriptor de codex-cli); la sonda 1 reintentó cada paso por separado",
+    "UsageLimit": "ninguna de las dos sondas registró aviso de límite o de créditos: rate_limit_reached_type y spend_control_reached vacíos en el último token_count del registro de sesión (autenticación por suscripción de ChatGPT, sin clave de API); balance y plan no se publican",
+    "ArchitectCell": "codex-cli:gpt-6.1-sol, effort high: celda MEDIDA para read y tool-use con effort-applied high (sonda completada sin aviso de límite; routing §5). La elegibilidad la aplica el Controller de planificación en la fecha de la delegación"
+  },
+  "Disposition": "codex-cli sigue en STOP P-01 hasta que el Owner decida OD-2c; ninguna invocación más; FX-02 y FX-06 no empiezan"
+}

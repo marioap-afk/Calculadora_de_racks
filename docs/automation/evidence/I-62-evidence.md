@@ -2412,3 +2412,27 @@ solo desde artefactos custodiados.
 - **F7:** el borrador factual de FOUNDATIONS sustituye los «previsto» de F3/F4 por hechos y añade las limitaciones medidas en F6
   ([f7-ready-closure.md](I-62-prep/f7-ready-closure.md) §1.1). **OD-1** preparado sin pedirlo: ADR-0048 tal cual; aviso de que editarlo invalida `MC_I62`.
 
+## 64. Disposición del Coordinator tras la primera ejecución de F6 (decisiones §47): OD-2b-PROBE, OD-2c y diagnóstico de Actions
+
+- **Custodia** (decisiones §47): FX-05 y C-27 PASS por el Coordinator; A2 no adoptada; OD-2b-PROBE = A del Owner; ADR-0048 sin cambios antes de los
+  pilotos de F6.
+- **Preflight** (15:03:52Z): punta `880e6814` = remoto; `origin/main` = `bb0d5522`; I-52 `fb6b5648` e I-64 `39b45f36` sin cambios; huella de
+  `config.toml` = `9002E854…` (la de la sonda de OD-4, no aceptada), sin cambios desde 07:23:07Z; binario `8aaf1547b825b104` (`37762753…`) sin cambios;
+  clon `A` en `54f2a4a8`, limpio.
+- **OD-2b-PROBE** ([`R20261006T150704Z-od2b`](I-62-F6/OD-2b-PROBE/R20261006T150704Z-od2b/result.json)): `codex --version` = `codex-cli 0.160.0` y
+  `codex login status` = ChatGPT, sin cambio de huella. Sonda 1 en `D:\r62-fixture\A`: `gpt-6-luna`/`high`, `read-only`, 8 pasos de lectura OK,
+  69 231 tokens de entrada (48 384 en caché) y 1 528 de salida. Sonda 2 en `D:\r62-fixture\arch` (clon limpio nuevo en F_eff): `gpt-6.1-sol`/`high`,
+  `read-only`, 6 pasos OK, 121 745 de entrada (102 656 en caché) y 1 090 de salida; es la primera invocación medida de la celda del Architect. **Huella
+  `9002E854…` antes y después de cada sonda**, deltas saneados vacíos; HEAD y árboles de `A` y `arch` sin cambios (`status --ignored` vacío).
+- **Hecho nuevo medido:** `read-only` no crea entradas de proyecto (2 de 2); `workspace-write` sí (2 de 2: DEV-G1C-01 de I-61 y la sonda de OD-4). La
+  predicción de +2 secciones del paquete OD-2b era falsa. Para la receta 16.4 (`read-only`: Controller y Architects de FX-02 y FX-06), la huella final es
+  estable salvo un reinicio o una actualización de la app de Codex.
+- **Prueba exacta sin valores** (`cfg_projects.py`): el `config.toml` final, sin la sección `[projects.'d:\r62-fixture\probe-od4-1']` (clave
+  `trust_level`) y su línea en blanco, tiene exactamente el SHA-256 de la línea base aceptada `091540ED…`: nada más cambió.
+- **OD-2c preparado** ([paquetes](I-62-prep/owner-decision-packets.md) §OD-2c): hash exacto `9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E`,
+  recomendación ACEPTAR. `codex-cli` sigue en STOP P-01 hasta la decisión del Owner.
+- **Actions** ([diagnóstico](I-62-F6/CI/actions-diagnostic.json), 15:13:20Z): 0 corridas. Actions habilitado (`allowed_actions` all), flujo `fixture`
+  activo y bien formado (`on: push` sin filtros), `PushEvent` de `fx/u1` entregado, check suites solo de la app `claude`. El repositorio **público** de
+  la misma cuenta sí ejecuta Actions. Causa probable: la facturación de Actions de la cuenta para repositorios privados; el token no tiene el alcance
+  `user` para leerla y la sesión no amplía credenciales. Lista de comprobación del Owner en la [tarjeta](I-62-F6/kits/README.md) §1.
+- **Corrección:** se elimina una línea duplicada del paquete OD-2b, resto de la corrupción de rutas del bloque 1.

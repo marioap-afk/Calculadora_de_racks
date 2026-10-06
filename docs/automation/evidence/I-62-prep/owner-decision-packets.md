@@ -9,6 +9,10 @@
 > `091540ED…`), OD-4 = A (solo `D:\r62-fixture`), **OD-3 = RECHAZAR**. No se vuelven a pedir mientras sus condiciones sigan válidas. Los paquetes de
 > abajo quedan como el registro de lo que se decidió.
 
+> **Disposición del Coordinator (decisiones §47):** OD-2b A2 no se adopta; OD-2b-PROBE = A (autorizada por el Owner; ejecutada). **Pendiente del Owner:
+> OD-2c** (huella exacta `9002E854…`; paquete abajo). Orden preferido del Coordinator: A. GitHub Actions del fixture; B-C. sondas y paquete (hechos); D. OD-2c; E. apertura del
+> Principal A.
+
 ## Respuesta en una línea
 
 | Decisión | Recomendación de la sesión (no decisión) | Aprobar | Rechazar |
@@ -118,7 +122,13 @@ FX-06 puede usar `claude-cli` como alternativa a `codex-cli` para sus Architects
 | Aprobar | `OD-3 = A (el Owner autentica claude.exe 2.1.270)` |
 | Rechazar | `OD-3 = RECHAZAR` — FX-03 UNVERIFIED (falta OD-3); FX-06 solo con `codex-cli` |
 
-## OD-2b — Línea base nueva de `codex-cli` tras P-01 (2026-10-06T07:24Z; pendiente de decisión)
+## OD-2b — Línea base nueva de `codex-cli` tras P-01 (2026-10-06T07:24Z; SUSTITUIDO por la disposición del Coordinator, decisiones §47)
+
+> **Disposición del Coordinator (§47):** la opción A2 **no se adopta**: aceptar automáticamente un hash futuro según su delta es demasiado amplio para
+> la frontera de OD-2. Se divide en **OD-2b-PROBE** (A, autorizada por el Owner; ejecutada:
+> [`R20261006T150704Z-od2b`](../I-62-F6/OD-2b-PROBE/R20261006T150704Z-od2b/result.json)) y **OD-2c** (abajo). Esta sección se conserva como historial
+> con dos correcciones medidas: su predicción de +2 secciones era falsa (las sondas `read-only` no crearon ninguna entrada) y, en la topología A, el
+> Worker es `claude-subagent`, no `codex-cli` (receta de FX-02).
 
 **Hecho nuevo medido** (sonda 1 de OD-4, [result.json](../I-62-F6/OD-4/R20261006T072306Z-od41/result.json)): la primera invocación de `codex-cli` en un
 directorio nuevo **reescribe `~/.codex/config.toml`**: un segundo después de arrancar añadió una sección `[projects.<redactado>]` con una clave (+65 bytes;
@@ -146,8 +156,29 @@ trabajo del Principal A) y `D:\r62-fixture\arch` (clon limpio único de los Arch
 - **Recomendación: A2.** Motivo: es la única opción conforme a P-01 que deja FX-02 y FX-06 sin una segunda pregunta, porque fija los directorios antes de
   las cesiones y acepta solo el delta exacto que la conducta medida produce.
 - **Aprobar:** `OD-2b = A2 (sondas en D:\r62-fixture\A y D:\r62-fixture\arch; aceptar el hash resultante si el delta saneado es exactamente +2 secciones [projects.<redactado>] de una clave)`
-62-fixture\A y D:\r62-fixture\arch; aceptar el hash resultante si el delta saneado es exactamente +2 secciones [projects.<redactado>] de una clave)`
 - **Rechazar:** `OD-2b = RECHAZAR`
+
+## OD-2c — Aceptación de la huella exacta de `codex-cli` (2026-10-06T15:10Z; pendiente de decisión del Owner)
+
+Paquete pedido por el Coordinator (decisiones §47) tras las dos sondas de OD-2b-PROBE
+([result.json](../I-62-F6/OD-2b-PROBE/R20261006T150704Z-od2b/result.json)). `codex-cli` sigue en **STOP P-01** hasta esta decisión: ninguna invocación más.
+
+| Campo | Valor medido |
+|---|---|
+| Huella final de `~/.codex/config.toml` (SHA-256) | **`9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E`**: 4 775 bytes; `LastWriteTimeUtc` 2026-10-06T07:23:07.616Z, sin cambios desde la sonda de OD-4 |
+| Huella anterior aceptada (OD-2 = A) | `091540ED2DE6CFAC5C12110337305FFCABCEEEE0D8CB696F7E04EA057F9F3D66` (4 710 bytes) |
+| Delta estructural saneado desde la aceptada | +1 sección `[projects.<ruta>]` con 1 clave; nada eliminado (105 → 107 nombres saneados) |
+| Secciones de proyecto añadidas (exactas) | `[projects.'d:\r62-fixture\probe-od4-1']` con la clave `trust_level` (valor no leído). La escribió la sonda 1 de OD-4 (`workspace-write`, 2026-10-06T07:23:07Z). Las sondas de OD-2b no añadieron ninguna |
+| ¿Cambió algo más? | **No, byte a byte.** El archivo final, sin esa sección y su línea en blanco, tiene exactamente el SHA-256 `091540ED…` (`cfg_projects.py`, sin publicar valores) |
+| Huella antes y después de cada paso | `--version` y `login status`: `9002E854…` → `9002E854…`; sonda 1 (`A`): `9002E854…` → `9002E854…`; sonda 2 (`arch`): `9002E854…` → `9002E854…`; deltas saneados vacíos |
+| Binario | `%LOCALAPPDATA%\OpenAI\Codex\bin\8aaf1547b825b104\codex.exe`, SHA-256 `37762753b554982eef1c109303d1be652b6397f1479e844794353a85650199c6`, `codex-cli 0.160.0` (igual que el `cli_version` del registro de sesión); único `codex.exe` bajo `bin\`, escrito el 2026-10-03 |
+| Runtime observado (RUNTIME_OBSERVED, `turn_context`) | sonda 1: `gpt-6-luna`/`high`, `read-only`, `approval_policy` never, proveedor `openai`, cwd `D:\r62-fixture\A`; sonda 2: `gpt-6.1-sol`/`high`, `read-only`, cwd `D:\r62-fixture\arch`, primera invocación medida de la celda del Architect (ejecuta y devuelve salida estructurada válida) |
+| Autenticación | `Logged in using ChatGPT` (`codex login status`; la sesión no lee `auth.json`) |
+| Estabilidad medida | `read-only` no crea entradas de proyecto (2 de 2); `workspace-write` sí (2 de 2: DEV-G1C-01 de I-61 y la sonda de OD-4). La receta 16.4 de `codex-cli` es `read-only` (Controller y Architects de FX-02 y FX-06): esta huella es estable para esas cesiones. La cambiarían un reinicio o una actualización de la app de Codex, o un Worker `codex-cli` en `workspace-write` en un directorio nuevo (FX-03 y FX-04b, hoy UNVERIFIED y UNSUPPORTED) |
+| Qué NO autoriza | editar `config.toml`; cambiar `trust_level`, `windows.sandbox`, credenciales o permisos; aceptar otro hash; ejecutar `codex-cli` en `workspace-write` |
+| Recomendación | **ACEPTAR `9002E854…` exacto.** Motivo: el único cambio desde la línea base aceptada es la entrada de directorio medida de la sonda de OD-4, demostrado byte a byte |
+| Aprobar | `OD-2c = A (línea base 9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E)` |
+| Rechazar | `OD-2c = RECHAZAR` — `codex-cli` sigue en STOP: FX-02 y FX-06 UNVERIFIED |
 
 ## OD-3 — hecho nuevo de OD-4 (2026-10-06T07:24Z; OD-3 sigue RECHAZADA)
 
@@ -163,7 +194,8 @@ No se autentica `claude-cli` ni se decide nada.
   §20) y no cita A-1; A-1 §6 declara que no cambia ninguna decisión del Owner (OD-1..OD-7), así que el ADR puede presentarse tal cual. **Aviso de
   momento:** `docs/adr/` está en la lista cerrada de superficies de 16.13; cualquier edición de ADR-0048 antes de la integración (p. ej., para citar A-1)
   invalida `MC_I62` (C-21), obliga a resembrar el fixture y a repetir los pilotos afectados. Si el Coordinator quiere esa edición, el momento más barato
-  es antes de ejecutar los pilotos de F6.
+  es antes de ejecutar los pilotos de F6. **Disposición del Coordinator (decisiones §47): ADR-0048 = NO CHANGE BEFORE F6 PILOTS**; la relación factual
+  con A-1 puede documentarse más tarde en el material de cierre o de historial, sin reescribir el `MC_I62` vigente.
 - **DEP-F4-YAML:** no hizo falta (F4 cerrado sin dependencia nueva).
 
 ---

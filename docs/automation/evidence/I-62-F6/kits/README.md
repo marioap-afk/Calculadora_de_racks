@@ -1,21 +1,42 @@
-# I-62 F6 — Tarjeta del Owner para la mañana (fronteras humanas; nada de esto lo hace la sesión)
+# I-62 F6 — Tarjeta del Owner (fronteras humanas; nada de esto lo hace la sesión)
 
-Orden recomendado. Cada paso es independiente salvo donde se indica.
+Orden preferido del Coordinator ([decisiones](../../../decisions/I-62.md) §47): **A.** GitHub Actions del fixture → **B.** dos sondas de OD-2b-PROBE
+(hechas) → **C.** paquete OD-2c (hecho) → **D.** el Owner decide OD-2c → **E.** solo entonces se pide abrir el Principal A. La apertura de A **no se pide
+todavía**.
 
-## 1. CI del fixture (desbloquea el cierre de F6, FX-02, FX-04b y el paso 5 de FX-06)
+## 1. A — GitHub Actions del fixture (bloqueo principal: sin CI, FX-02 no puede ser PASS y F6 no cierra)
 
-GitHub Actions no crea ninguna corrida en `marioap-afk/rackcad-i62-fixture` (privado): tres pushes, ninguna check suite de Actions, Actions habilitado en el
-repositorio, flujo `fixture` activo, estado de GitHub operativo. La sesión no tiene un alcance de facturación y no busca un bypass.
-- **Acción del Owner:** revisar en GitHub la configuración de Actions y la facturación de la cuenta para repositorios privados (cuota, límite de gasto,
-  política de Actions de la cuenta) y, si se corrige, decírselo a la sesión. La sesión empuja entonces un commit vacío en `ci/smoke` y verifica la corrida.
+**Diagnóstico de solo lectura** ([CI/actions-diagnostic.json](../CI/actions-diagnostic.json), 2026-10-06T15:13:20Z): `marioap-afk/rackcad-i62-fixture`
+(privado) tiene 0 corridas. Actions está habilitado (`allowed_actions` all); el flujo `fixture` está activo y bien formado (`on: push`, sin filtros); el
+`PushEvent` de `fx/u1` llegó (07:35:53Z); en cada SHA solo hay check suites de la app `claude`. El repositorio **público** de RackCad, de la misma cuenta,
+sí ejecuta Actions. La causa más probable está en la cuenta y afecta solo a repositorios privados (facturación, presupuesto o método de pago de Actions).
+La sesión no puede leer la facturación (el token no tiene el alcance `user`) y no amplía credenciales ni busca un bypass.
 
-## 2. OD-2b — nueva línea base de `codex-cli` (desbloquea FX-02 y FX-06)
+**Comprobación del Owner en la interfaz de GitHub, en este orden** (anota el texto literal de cualquier aviso):
+1. `https://github.com/marioap-afk/rackcad-i62-fixture/actions`: ¿hay un aviso arriba (Actions deshabilitado, cuenta bloqueada, facturación)?
+2. `https://github.com/settings/billing`: avisos de pago fallido o de cuenta bloqueada; en el uso del mes, los minutos de Actions usados frente a los
+   incluidos.
+3. En la página de presupuestos y alertas de la facturación (*Budgets and alerts*): un presupuesto de Actions en 0 con «detener el uso al alcanzar el límite»
+   bloquea los repositorios privados cuando no quedan minutos incluidos.
+4. En la información de pago (*Payment information*): método de pago caducado o rechazado.
+5. `https://github.com/marioap-afk/rackcad-i62-fixture/settings/actions`: debe decir «Allow all actions» (la API ya lo confirma; no hace falta cambiarlo).
 
-Ver `../../I-62-prep/owner-decision-packets.md` §OD-2b. Respuesta en una línea, por ejemplo:
-`OD-2b = A2 (sondas en D:\r62-fixture\A y D:\r62-fixture\arch; aceptar el hash resultante si el delta saneado es exactamente +2 secciones [projects.<redactado>] de una clave)`
+**Después:**
+- si encuentras y corriges la causa, dile a la sesión «Actions corregido»: la sesión empuja un commit vacío en `ci/smoke` del fixture y registra la corrida
+  (id, evento, ref, SHA exacto, jobs `fixture-build` y `fixture-tests`, conclusión), sin heredar CI entre SHAs;
+- si no hay ningún aviso, dile a la sesión el texto que veas en el paso 1. Hacer público el fixture sería cambiar OD-7 (decisión tuya, no un arreglo de la
+  sesión); un ticket a GitHub Support puede citar el repositorio `1406872390` y los SHAs `fbe25347`, `7cf79ffc` y `54f2a4a8`.
 
-## 3. Abrir el Principal A (FX-01; después el arranque, FX-02, FX-06 y el QH de FX-04a)
+## 2. D — OD-2c: huella exacta de `codex-cli` (paquete listo)
 
+Ver [owner-decision-packets.md](../../I-62-prep/owner-decision-packets.md) §OD-2c. Las sondas de OD-2b-PROBE no cambiaron la huella; el único cambio desde la
+línea base aceptada es la entrada de la sonda de OD-4, comprobado byte a byte. Respuesta en una línea:
+- **Aprobar:** `OD-2c = A (línea base 9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E)`
+- **Rechazar:** `OD-2c = RECHAZAR`
+
+## 3. E — Abrir el Principal A (FX-01; después el arranque, FX-02, FX-06 y el QH de FX-04a) — todavía no
+
+Se pedirá cuando A y D estén resueltos. El procedimiento queda preparado:
 1. En la app de Claude, una **sesión nueva** con directorio `D:\r62-fixture\A`, modelo `claude-opus-5-5`, effort **`high`** (insuficiente a propósito: el
    requerido de PRINCIPAL_COORDINATION es Long-horizon = `xhigh`).
 2. Primer mensaje (sin hechos de la unidad):
@@ -42,11 +63,11 @@ contenido de `FX-04a/B-prompt.md` con `FX-04a/response.schema.json`. Después, B
 
 ## 6. Acciones de la sesión de supervisión (no del Owner) cuando se abran las fronteras
 
-- **CI:** tras el aviso del Owner, un commit vacío en `ci/smoke` del fixture (`supervisor`), push a `github`, y registro de la corrida (id, evento, ref, SHA
-  exacto, jobs `fixture-build` y `fixture-tests`, conclusión). Sin CI heredada entre SHAs.
-- **OD-2b = A2:** antes de cada sonda, huella = `9002E854…`; sonda de solo lectura en `D:\r62-fixture\A` (Controller, `gpt-6-luna`/`high`) y en un clon limpio
-  `D:\r62-fixture\arch` (Architect, `gpt-6.1-sol`/`high`); después, el delta saneado debe ser exactamente +2 secciones `[projects.<redactado>]` de una clave.
-  Si es así, la huella medida es la línea base; si no, P-01 y STOP.
+- **CI:** tras el aviso del Owner, un commit vacío en `ci/smoke` del fixture (`supervisor`), push a `github`, y registro de la corrida. Sin CI heredada
+  entre SHAs.
+- **`codex-cli` tras OD-2c = A:** antes de cada invocación, huella = `9002E854…` y binario `37762753…`; si cambian, P-01 y STOP sin aceptar nada. Solo la
+  receta 16.4 (`read-only`): Controller en `D:\r62-fixture\A` (`gpt-6-luna`/`high`, medida); Architects B y C de FX-06 en `D:\r62-fixture\arch`
+  (`gpt-6.1-sol`/`high`, invocación medida en la sonda 2), cada uno con su `thread_id`. Ningún `workspace-write` (crearía una entrada nueva: P-01).
 - **G0 del Coordinator del fixture**, después del BOOTSTRAP de A (16.28; se añade a `docs/automation/decisions/FX-U1.md` del fixture en `fx/u1`):
 
 ```text
@@ -58,7 +79,7 @@ BootstrapRecordVersion: 1
 ```
 
 - **Contrato de T1** (`gate-contract/v2`), después del QU de A: `ProtocolSet` I62, `AuthorityRevision` = commit del BOOTSTRAP de FX-U1, `EXTERNAL` = F_eff
-  `fbe25347`; tarea mínima sobre `Fixture.Lib` (p. ej., una operación nueva con su prueba). El Controller y el Architect esperan a OD-2b.
+  `fbe25347`; tarea mínima sobre `Fixture.Lib` (p. ej., una operación nueva con su prueba). El Controller y el Architect esperan a OD-2c.
 - **FX-04a:** al QH de A, terminación de A acreditada por los metadatos de la app (`isRunning`) o atestada por el Owner; `fx04a_real.py oracle` →
   SHA-256 en la evidencia real antes de crear `D:\r62-fixture\B` (`git clone --no-local` en el QH); `hash` de la respuesta de B antes de entregar el
   oráculo; `compare`; `n11` para B2.

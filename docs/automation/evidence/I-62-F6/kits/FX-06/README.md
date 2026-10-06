@@ -1,6 +1,6 @@
 # FX-06 / C-39 — kit (preparado; no ejecutado)
 
-**Estado:** UNVERIFIED. Faltan: `codex-cli` (STOP P-01, OD-2b); CI del fixture (`Ci` = `not_run`, para el paso 5); la sesión del Principal A (la abre el
+**Estado:** UNVERIFIED. Faltan: `codex-cli` (STOP P-01 hasta OD-2c; decisiones §47); CI del fixture (`Ci` = `not_run`, para el paso 5); la sesión del Principal A (la abre el
 Owner); G0 y la `ReviewLoopAuthorization` de FX-U1 (después del BOOTSTRAP de A).
 
 **Oráculo:** SHA-256 `43b9a2388e619937548287ae44d2f80dde5679ffafe4a5cdf5aba69237f0fb72`, fijado el 2026-10-06 antes de cualquier invocación. El texto está
@@ -11,9 +11,11 @@ copia a esta evidencia después de la corrida.
 `docs/initiatives/FX-U1-proposal.md` del fixture.
 
 **Elegibilidad del Architect (hecho de este preflight):** ARCHITECTURE_REVIEW es Deep → nivel Equilibrado o Frontera (routing §1 y §3). `gpt-6-luna` es
-Eficiente: no sirve. `gpt-6-astra` es de créditos: no elegible. Queda `codex-cli:gpt-6.1-sol:Deep` (`high`), con la celda **sin invocación medida**: su
-primera sonda (la de `D:\r62-fixture\arch` en OD-2b) es a la vez la medición de elegibilidad (routing §5). Sin esa medición, FX-06 sigue UNVERIFIED; si
-la celda resultara no elegible y no hubiera otra (OD-3 = RECHAZAR), FX-06 sería UNSUPPORTED con esa causa.
+Eficiente: no sirve. `gpt-6-astra` es de créditos: no elegible. Queda `codex-cli:gpt-6.1-sol:Deep` (`high`). **Medida el 2026-10-06** por la sonda 2 de
+OD-2b-PROBE en `D:\r62-fixture\arch` ([result.json](../../OD-2b-PROBE/R20261006T150704Z-od2b/result.json)): `gpt-6.1-sol`/`high` observados en
+`turn_context`, `read-only`, salida estructurada válida, sin aviso de límite ni de créditos; queda medida para `read` y `tool-use` con effort `high`
+(routing §5). La elegibilidad la aplica el Controller de planificación en la fecha de la delegación. Los Architects B y C usan `D:\r62-fixture\arch`
+(la sonda `read-only` no creó entrada de proyecto en `config.toml`).
 
 **`ReviewLoopAuthorization` prevista** (la emite el Coordinator del fixture en `docs/automation/decisions/FX-U1.md` después de G0; borrador):
 

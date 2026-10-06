@@ -29,15 +29,17 @@ Mutation contract: las reglas cambian solo en AUTOMATION_PLAN §16 con sus autor
   descriptor y su esquema de hechos sin tocar el núcleo; el catálogo es mutable con fuente y fecha; un cambio posterior a las superficies normativas
   invalida el MaterializationClose (16.30).
 Extension point: adapter nuevo (descriptor + esquema de hechos); entrada de catálogo; requisito por perfil y acción en routing.md §8; versión nueva de esquema.
-Decision source: ADR-0046 (aceptado) y ADR-0048 (sucesor parcial; pendiente de OD-1); Freeze de I-61 (Proposal V9) y de I-62 (Proposal V14, Consensus
+Decision source: ADR-0046 (aceptado) y ADR-0048 (sucesor parcial; pendiente de OD-1; sin cambios antes de los pilotos de F6 por disposición del
+  Coordinator, decisiones §47); Freeze de I-61 (Proposal V9) y de I-62 (Proposal V14, Consensus
   Freeze b64a3b64) con la enmienda A-1 AGREED.
 Protecting tests: AgentExecutionProtocolTests (I-61, sin cambios); PrincipalPortabilityProtocolTests (F1-F3: C-01, C-03, C-05, C-09, C-10, C-11..C-14, C-19);
   guardas de F4 en tests/RackCad.Tests/I62F4*Tests (validador de state/v2, invariantes de archivo, pares e historia, orquestación, compatibilidad, regresión
-  de A-1 y controles reproducibles de C-15..C-42 sobre Git real); MC de C-04, C-06, C-07, C-08, C-10, C-20b, C-20c y C-28; pendiente: la parte F6
-  (C-22..C-27, C-39 y la de C-32, C-37 y C-42).
+  de A-1 y controles reproducibles de C-15..C-42 sobre Git real); MC de C-04, C-06, C-07, C-08, C-10, C-20b, C-20c y C-28; F6: C-27 PASS
+  (FX-05); pendiente: C-22..C-26, C-39 y la parte F6 de C-32, C-37 y C-42.
 Known limitations: el modelo servido detrás de un proveedor no es observable; la autoverificación depende de una fuente RUNTIME_OBSERVED por adapter; la
-  auditoría de lecturas no captura lecturas internas del runtime; Git no prueba quién opera en otra máquina; `codex-cli` reescribe `config.toml` al
-  ejecutarse por primera vez en un directorio (entrada de confianza; P-01), así que sus directorios de trabajo se fijan antes de las cesiones; el Worker
+  auditoría de lecturas no captura lecturas internas del runtime; Git no prueba quién opera en otra máquina; `codex-cli` en `workspace-write` reescribe
+  `config.toml` la primera vez que corre en un directorio (entrada de confianza; P-01); en `read-only`, la receta de 16.4, no la reescribe (medido en F6),
+  y un reinicio o una actualización de la app de Codex también cambian la huella; el Worker
   `codex-cli` en `workspace-write` no puede hacer commit (sandbox; medido en F6); la topología B depende de OD-3 (rechazada por el Owner el 2026-10-06).
 Last changed by: I-62
 ```

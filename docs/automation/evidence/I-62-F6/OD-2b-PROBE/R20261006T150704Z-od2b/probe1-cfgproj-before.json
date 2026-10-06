@@ -1,0 +1,39 @@
+{
+  "Path": "~/.codex/config.toml",
+  "Sha256": "9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E",
+  "Length": 4775,
+  "FixtureProjectSections": [
+    {
+      "path": "d:\\r62-fixture\\probe-od4-1",
+      "header_line": 114,
+      "key_names": [
+        "trust_level"
+      ]
+    }
+  ],
+  "OtherProjectSections": 11,
+  "TotalSections": 39,
+  "Remainders": [
+    {
+      "removed": [
+        "d:\\r62-fixture\\probe-od4-1"
+      ],
+      "variant": "plus_preceding_blank",
+      "sha256": "091540ED2DE6CFAC5C12110337305FFCABCEEEE0D8CB696F7E04EA057F9F3D66",
+      "matches": [
+        "091540ED2DE6CFAC5C12110337305FFCABCEEEE0D8CB696F7E04EA057F9F3D66"
+      ]
+    },
+    {
+      "removed": [
+        "d:\\r62-fixture\\probe-od4-1"
+      ],
+      "variant": "plus_trailing_blank",
+      "sha256": "091540ED2DE6CFAC5C12110337305FFCABCEEEE0D8CB696F7E04EA057F9F3D66",
+      "matches": [
+        "091540ED2DE6CFAC5C12110337305FFCABCEEEE0D8CB696F7E04EA057F9F3D66"
+      ]
+    }
+  ],
+  "RemainderCandidatesTested": 3
+}

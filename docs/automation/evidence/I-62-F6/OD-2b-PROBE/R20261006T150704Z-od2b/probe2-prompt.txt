@@ -1,0 +1,10 @@
+Eres una sonda de solo lectura (OD-2b-PROBE 2) en un repositorio de prueba. No eres ningún rol de este repositorio y no ejecutas ninguna orden suya. No modifiques ningún archivo, no cambies ninguna configuración, no uses la red. Ejecuta estos pasos en orden, sin saltarte ninguno, y registra para cada uno si tuvo éxito, la salida relevante (como máximo 300 caracteres) y el error exacto si falló:
+
+1. Ejecutar `git rev-parse HEAD`.
+2. Ejecutar `git log --format=%h -n 3`.
+3. Ejecutar `git diff --stat 930288c5 a9f6c929` y registrar solo la última línea (el resumen).
+4. Ejecutar `git --no-optional-locks status --porcelain`.
+5. Ejecutar `git hash-object README.md`.
+6. Leer src/Fixture.Lib/Calculator.cs y registrar los nombres de sus métodos públicos.
+
+Responde solo con el objeto JSON del esquema: un elemento de "steps" por paso (id 1 a 6) y "head_sha" con el SHA del paso 1.

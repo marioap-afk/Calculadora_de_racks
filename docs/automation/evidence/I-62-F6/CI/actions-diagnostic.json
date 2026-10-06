@@ -1,0 +1,108 @@
+{
+  "ObservedUtc": "2026-10-06T15:13:20Z",
+  "Method": "gh api de solo lectura con el token actual (alcances gist, read:org, repo, workflow); sin cambios en GitHub; sin push",
+  "Repository": {
+    "full_name": "marioap-afk/rackcad-i62-fixture",
+    "private": true,
+    "visibility": "private",
+    "default_branch": "main",
+    "created_at": "2026-10-06T07:19:09Z",
+    "pushed_at": "2026-10-06T07:35:53Z",
+    "archived": false,
+    "disabled": false
+  },
+  "ActionsPermissions": {
+    "enabled": true,
+    "allowed_actions": "all",
+    "sha_pinning_required": false
+  },
+  "WorkflowPermissions": {
+    "default_workflow_permissions": "read",
+    "can_approve_pull_request_reviews": false
+  },
+  "Workflows": [
+    {
+      "id": 376133872,
+      "name": "fixture",
+      "path": ".github/workflows/fixture.yml",
+      "state": "active",
+      "created_at": "2026-10-06T01:19:23.000-06:00"
+    }
+  ],
+  "WorkflowRuns": 0,
+  "Runners": 0,
+  "CheckSuitesBySha": {
+    "fbe25347799e5b801ef708454212335537448bd1": [
+      {
+        "app": "claude",
+        "status": "queued",
+        "conclusion": null,
+        "created_at": "2026-10-06T07:19:23Z"
+      }
+    ],
+    "7cf79ffcd02c3d55e6740225a6138d0c66e099e0": [
+      {
+        "app": "claude",
+        "status": "queued",
+        "conclusion": null,
+        "created_at": "2026-10-06T07:25:25Z"
+      }
+    ],
+    "54f2a4a8f53eb6834448394781600f6343d9a246": [
+      {
+        "app": "claude",
+        "status": "queued",
+        "conclusion": null,
+        "created_at": "2026-10-06T07:35:54Z"
+      }
+    ]
+  },
+  "Events": [
+    {
+      "type": "CreateEvent",
+      "ref": "ci/smoke",
+      "head": null,
+      "created_at": "2026-10-06T07:25:25Z"
+    },
+    {
+      "type": "PushEvent",
+      "ref": "refs/heads/fx/u1",
+      "head": "54f2a4a8f53eb6834448394781600f6343d9a246",
+      "created_at": "2026-10-06T07:35:53Z"
+    },
+    {
+      "type": "CreateEvent",
+      "ref": "fx/u1",
+      "head": null,
+      "created_at": "2026-10-06T07:19:23Z"
+    }
+  ],
+  "BillingApi": {
+    "users/marioap-afk/settings/billing/actions": "HTTP 404: el token no tiene el alcance user",
+    "users/marioap-afk/settings/billing/usage": "HTTP 404: el token no tiene el alcance user"
+  },
+  "Comparison": {
+    "repo": "marioap-afk/Calculadora_de_racks",
+    "visibility": "public",
+    "actions_runs_on_push": "sí (CI 37431108479 y 37431692975 de I-62, success)"
+  },
+  "StaticWorkflowCheck": {
+    "file": ".github/workflows/fixture.yml",
+    "on": "push (sin filtros de rama ni de ruta)",
+    "permissions": "contents: read",
+    "jobs": [
+      "fixture-build",
+      "fixture-tests"
+    ],
+    "runs_on": "ubuntu-latest",
+    "uses": [
+      "actions/checkout@v4",
+      "actions/setup-dotnet@v4"
+    ],
+    "secrets": "ninguno",
+    "deployments": "ninguno",
+    "parsed_by_github": "sí: el flujo figura con nombre «fixture» y estado active (un YAML inválido aparecería con la ruta como nombre y una corrida fallida)",
+    "skip_markers_in_commit_messages": "ninguno ([skip ci], [ci skip], skip-checks)"
+  },
+  "Diagnosis": "GitHub recibe los pushes (PushEvent de fx/u1 a las 07:35:53Z; check suites de la app claude en cada SHA) y el flujo está activo y bien formado, pero Actions no crea ninguna corrida ni check suite propia. El repositorio público de la misma cuenta sí ejecuta Actions. La causa más probable es de la cuenta y específica de repositorios privados (facturación, presupuesto o método de pago de Actions); no se puede leer con el token actual y la sesión no amplía credenciales."
+}
