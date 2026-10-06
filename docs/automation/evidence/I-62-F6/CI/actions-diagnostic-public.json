@@ -1,0 +1,59 @@
+{
+  "ObservedUtc": "2026-10-06T16:04:51Z",
+  "Authority": "corrección del Owner a OD-7 (público; decisiones §48)",
+  "VisibilityChange": {
+    "Command": "gh repo edit marioap-afk/rackcad-i62-fixture --visibility public --accept-visibility-change-consequences",
+    "BeforeUtc": "2026-10-06T15:50:43Z",
+    "Result": {
+      "full_name": "marioap-afk/rackcad-i62-fixture",
+      "private": false,
+      "visibility": "public",
+      "default_branch": "main"
+    }
+  },
+  "RefsAfterChange": [
+    "fbe25347799e5b801ef708454212335537448bd1\tHEAD",
+    "a0a3d48379c316e455049b62fe881446bcdc50f5\trefs/heads/ci/smoke",
+    "a9f6c929e74ef92edfee557c3572b090f48bc318\trefs/heads/fixture/i62-norm",
+    "54f2a4a8f53eb6834448394781600f6343d9a246\trefs/heads/fx/u1",
+    "fbe25347799e5b801ef708454212335537448bd1\trefs/heads/main",
+    "f38762375293d34d5cfefddadda8f770279db1cb\trefs/tags/test-activation/I-62",
+    "fbe25347799e5b801ef708454212335537448bd1\trefs/tags/test-activation/I-62^{}"
+  ],
+  "RackCadVisibility": "public",
+  "ActionsPermissions": {
+    "enabled": true,
+    "allowed_actions": "all",
+    "sha_pinning_required": false
+  },
+  "Workflows": [
+    {
+      "id": 376133872,
+      "name": "fixture",
+      "path": ".github/workflows/fixture.yml",
+      "state": "active"
+    }
+  ],
+  "TriggerCommit": {
+    "Ref": "refs/heads/ci/smoke",
+    "Parent": "7cf79ffcd02c3d55e6740225a6138d0c66e099e0",
+    "Sha": "a0a3d48379c316e455049b62fe881446bcdc50f5",
+    "PushedUtc": "2026-10-06T15:51:00Z",
+    "Author": "fixture <fixture@example.invalid>",
+    "Empty": true
+  },
+  "CheckSuitesOnTrigger": [
+    {
+      "app": "claude",
+      "status": "queued",
+      "conclusion": null,
+      "created_at": "2026-10-06T15:51:06Z"
+    }
+  ],
+  "WorkflowRuns": 0,
+  "PollWindow": "consultas cada 5-10 s de 15:51:00Z a 16:03:50Z; 0 corridas; la página pública de Actions dice «0 workflow runs» sin aviso",
+  "GitHubStatus": "Actions, Git Operations, Webhooks y API Requests operational; sin incidentes (15:56Z)",
+  "Comparison": "RackCad (público, misma cuenta, mismo `on: push:` vacío): corrida 37487498710 creada por push a las 15:26:20Z",
+  "Diagnosis": "La visibilidad pública NO restableció Actions: queda refutada la hipótesis de la facturación de repositorios privados. GitHub procesa los pushes (check suite de la app claude a las 15:51:06Z) y el flujo está activo, con bytes limpios (567 bytes, LF, sin BOM) y la misma sintaxis de disparo que RackCad, pero no crea ninguna corrida. Causa desconocida y específica de este repositorio (hipótesis no comprobadas: registro del flujo en mal estado desde el primer push, o una restricción visible solo para el administrador en la pestaña Actions o en Settings → Actions).",
+  "Ci": "not_run"
+}

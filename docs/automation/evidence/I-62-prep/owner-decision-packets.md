@@ -9,8 +9,12 @@
 > `091540ED…`), OD-4 = A (solo `D:\r62-fixture`), **OD-3 = RECHAZAR**. No se vuelven a pedir mientras sus condiciones sigan válidas. Los paquetes de
 > abajo quedan como el registro de lo que se decidió.
 
-> **Disposición del Coordinator (decisiones §47):** OD-2b A2 no se adopta; OD-2b-PROBE = A (autorizada por el Owner; ejecutada). **Pendiente del Owner:
-> OD-2c** (huella exacta `9002E854…`; paquete abajo). Orden preferido del Coordinator: A. GitHub Actions del fixture; B-C. sondas y paquete (hechos); D. OD-2c; E. apertura del
+> **Corrección del Owner (decisiones §48):** **OD-7 = A, repositorio PÚBLICO** (sustituye «privado»); regla general: todo repositorio de CI temporal,
+> de fixture, de validación o piloto de I-62 es público por defecto y uno privado exige autorización explícita. **OD-2c = A** (línea base exacta
+> `9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E`).
+>
+> **Disposición del Coordinator (decisiones §47):** OD-2b A2 no se adopta; OD-2b-PROBE = A (autorizada por el Owner; ejecutada). OD-2c (huella exacta
+> `9002E854…`; paquete abajo), decidida en §48. Orden preferido del Coordinator: A. GitHub Actions del fixture; B-C. sondas y paquete (hechos); D. OD-2c; E. apertura del
 > Principal A.
 
 ## Respuesta en una línea
@@ -158,7 +162,7 @@ trabajo del Principal A) y `D:\r62-fixture\arch` (clon limpio único de los Arch
 - **Aprobar:** `OD-2b = A2 (sondas en D:\r62-fixture\A y D:\r62-fixture\arch; aceptar el hash resultante si el delta saneado es exactamente +2 secciones [projects.<redactado>] de una clave)`
 - **Rechazar:** `OD-2b = RECHAZAR`
 
-## OD-2c — Aceptación de la huella exacta de `codex-cli` (2026-10-06T15:10Z; pendiente de decisión del Owner)
+## OD-2c — Aceptación de la huella exacta de `codex-cli` (2026-10-06T15:10Z; DECIDIDA: A, decisiones §48)
 
 Paquete pedido por el Coordinator (decisiones §47) tras las dos sondas de OD-2b-PROBE
 ([result.json](../I-62-F6/OD-2b-PROBE/R20261006T150704Z-od2b/result.json)). `codex-cli` sigue en **STOP P-01** hasta esta decisión: ninguna invocación más.

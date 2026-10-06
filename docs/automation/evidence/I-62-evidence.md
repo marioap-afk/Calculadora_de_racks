@@ -2436,3 +2436,22 @@ solo desde artefactos custodiados.
   la misma cuenta sí ejecuta Actions. Causa probable: la facturación de Actions de la cuenta para repositorios privados; el token no tiene el alcance
   `user` para leerla y la sesión no amplía credenciales. Lista de comprobación del Owner en la [tarjeta](I-62-F6/kits/README.md) §1.
 - **Corrección:** se elimina una línea duplicada del paquete OD-2b, resto de la corrupción de rutas del bloque 1.
+
+## 65. Corrección del Owner a OD-7 (decisiones §48): auditoría previa, fixture público y CI todavía sin corridas
+
+- **Custodia** (decisiones §48): OD-7 = A público; regla general (repositorios de CI de I-62 públicos por defecto; uno privado exige autorización
+  explícita); OD-2c = A con la línea base exacta `9002E854…`: `codex-cli` sale del STOP P-01, con la huella revalidada antes de cada invocación.
+- **Auditoría previa a la publicación** ([public-audit.json](I-62-F6/CI/public-audit.json), 15:48:32Z; detector
+  [public_audit.py](I-62-F6/CI/public_audit.py), con los patrones de identidad del Owner fuera de la copia publicada): clon espejo de GitHub, 5 refs, 75
+  objetos (6 commits, 1 etiqueta, 19 árboles, 49 blobs, ningún binario). 40 coincidencias, todas en 7 blobs idénticos a los de `MC_I62` (`6f0187cb`, ya
+  públicos en la rama de I-62 de RackCad): menciones documentales de rutas genéricas y marcadores `AUTHORIZATION: <AuthorizationId>`. Los 11 archivos
+  propios del fixture, sin coincidencias. Identidades sintéticas (`fixture <fixture@example.invalid>`). Del lado de GitHub: 0 secretos, variables, claves
+  de despliegue, releases, issues, PRs, artefactos, entornos, despliegues, webhooks o cachés; sin Pages ni wiki; sin eventos de borrado. **Veredicto:
+  nada no apto; sin STOP.**
+- **Visibilidad** ([diagnóstico](I-62-F6/CI/actions-diagnostic-public.json)): `gh repo edit … --visibility public` a las 15:50:43Z; `private` = false;
+  las 5 refs y la etiqueta intactas; flujo `fixture` activo; RackCad sigue público y sin cambios. No se recreó nada.
+- **Disparo:** commit vacío `a0a3d48379c316e455049b62fe881446bcdc50f5` en `ci/smoke` (padre `7cf79ffc`), empujado a las 15:51:00Z. GitHub lo procesó (check
+  suite de la app `claude` a las 15:51:06Z), pero **Actions no creó ninguna corrida** (consultas de 15:51Z a 16:03:50Z; la página pública dice «0 workflow
+  runs», sin aviso). GitHub Actions operativo; RackCad, con el mismo `on: push:` vacío, sí corre.
+- **Resultado: `Ci` = `not_run` sigue.** La hipótesis de la facturación de repositorios privados queda **refutada**. La causa es desconocida y específica de
+  este repositorio. Siguiente paso: inspección del Owner con sesión de administrador, o una acción nueva autorizada sobre el fixture (ver la tarjeta §1).

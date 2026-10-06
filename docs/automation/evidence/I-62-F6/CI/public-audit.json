@@ -1,0 +1,481 @@
+{
+ "mirror": "D:/r62-fixture/audit-mirror.git",
+ "refs": [
+  "7cf79ffcd02c3d55e6740225a6138d0c66e099e0 refs/heads/ci/smoke",
+  "a9f6c929e74ef92edfee557c3572b090f48bc318 refs/heads/fixture/i62-norm",
+  "54f2a4a8f53eb6834448394781600f6343d9a246 refs/heads/fx/u1",
+  "fbe25347799e5b801ef708454212335537448bd1 refs/heads/main",
+  "f38762375293d34d5cfefddadda8f770279db1cb refs/tags/test-activation/I-62"
+ ],
+ "object_counts": {
+  "commit": 6,
+  "tag": 1,
+  "tree": 19,
+  "blob": 49
+ },
+ "binary_blobs": [],
+ "rules": [
+  "private-key",
+  "github-token",
+  "openai-key",
+  "anthropic-key",
+  "aws-key",
+  "slack-token",
+  "jwt",
+  "bearer",
+  "assignment-secret",
+  "temp-clone-token",
+  "windows-user-path",
+  "posix-user-path",
+  "short-name-path",
+  "appdata",
+  "codex-home",
+  "claude-home",
+  "transcript",
+  "config-toml",
+  "email",
+  "ipv4",
+  "owner-identity",
+  "env-username",
+  "env-hostname"
+ ],
+ "findings_by_rule": {
+  "bearer": 3,
+  "codex-home": 7,
+  "config-toml": 20,
+  "appdata": 2,
+  "posix-user-path": 1,
+  "transcript": 7
+ },
+ "findings": [
+  {
+   "rule": "bearer",
+   "type": "blob",
+   "oid": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "paths": [
+    "docs/AUTOMATION_PLAN.md"
+   ],
+   "line": 1108,
+   "match": "AUTHORIZATION:\n<AuthorizationId>`"
+  },
+  {
+   "rule": "bearer",
+   "type": "blob",
+   "oid": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "paths": [
+    "docs/AUTOMATION_PLAN.md"
+   ],
+   "line": 1609,
+   "match": "AUTHORIZATION: <AuthorizationId>"
+  },
+  {
+   "rule": "codex-home",
+   "type": "blob",
+   "oid": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "paths": [
+    "docs/AUTOMATION_PLAN.md"
+   ],
+   "line": 518,
+   "match": "~/.codex"
+  },
+  {
+   "rule": "config-toml",
+   "type": "blob",
+   "oid": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "paths": [
+    "docs/AUTOMATION_PLAN.md"
+   ],
+   "line": 518,
+   "match": "config.toml"
+  },
+  {
+   "rule": "config-toml",
+   "type": "blob",
+   "oid": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "paths": [
+    "docs/AUTOMATION_PLAN.md"
+   ],
+   "line": 522,
+   "match": "config.toml"
+  },
+  {
+   "rule": "config-toml",
+   "type": "blob",
+   "oid": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "paths": [
+    "docs/AUTOMATION_PLAN.md"
+   ],
+   "line": 541,
+   "match": "model_reasoning_effort="
+  },
+  {
+   "rule": "config-toml",
+   "type": "blob",
+   "oid": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "paths": [
+    "docs/AUTOMATION_PLAN.md"
+   ],
+   "line": 665,
+   "match": "config.toml"
+  },
+  {
+   "rule": "config-toml",
+   "type": "blob",
+   "oid": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "paths": [
+    "docs/AUTOMATION_PLAN.md"
+   ],
+   "line": 698,
+   "match": "config.toml"
+  },
+  {
+   "rule": "appdata",
+   "type": "blob",
+   "oid": "446c32ba6a91f9a712a0758038ae0a46ab1c970f",
+   "paths": [
+    "docs/WORKFLOW.md"
+   ],
+   "line": 96,
+   "match": "%USERPROFILE%"
+  },
+  {
+   "rule": "codex-home",
+   "type": "blob",
+   "oid": "446c32ba6a91f9a712a0758038ae0a46ab1c970f",
+   "paths": [
+    "docs/WORKFLOW.md"
+   ],
+   "line": 96,
+   "match": ".codex\\worktrees"
+  },
+  {
+   "rule": "bearer",
+   "type": "blob",
+   "oid": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "paths": [
+    "docs/automation/agent-execution/README.md"
+   ],
+   "line": 426,
+   "match": "AUTHORIZATION: <AuthorizationId>`"
+  },
+  {
+   "rule": "posix-user-path",
+   "type": "blob",
+   "oid": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "paths": [
+    "docs/automation/agent-execution/README.md"
+   ],
+   "line": 143,
+   "match": "/c/Users/"
+  },
+  {
+   "rule": "appdata",
+   "type": "blob",
+   "oid": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "paths": [
+    "docs/automation/agent-execution/README.md"
+   ],
+   "line": 141,
+   "match": "APPDATA/"
+  },
+  {
+   "rule": "codex-home",
+   "type": "blob",
+   "oid": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "paths": [
+    "docs/automation/agent-execution/README.md"
+   ],
+   "line": 66,
+   "match": ".codex\\config"
+  },
+  {
+   "rule": "codex-home",
+   "type": "blob",
+   "oid": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "paths": [
+    "docs/automation/agent-execution/README.md"
+   ],
+   "line": 149,
+   "match": "~/.codex"
+  },
+  {
+   "rule": "transcript",
+   "type": "blob",
+   "oid": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "paths": [
+    "docs/automation/agent-execution/README.md"
+   ],
+   "line": 38,
+   "match": ".jsonl"
+  },
+  {
+   "rule": "transcript",
+   "type": "blob",
+   "oid": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "paths": [
+    "docs/automation/agent-execution/README.md"
+   ],
+   "line": 146,
+   "match": ".jsonl"
+  },
+  {
+   "rule": "transcript",
+   "type": "blob",
+   "oid": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "paths": [
+    "docs/automation/agent-execution/README.md"
+   ],
+   "line": 149,
+   "match": "session_meta"
+  },
+  {
+   "rule": "transcript",
+   "type": "blob",
+   "oid": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "paths": [
+    "docs/automation/agent-execution/README.md"
+   ],
+   "line": 149,
+   "match": "turn_context"
+  },
+  {
+   "rule": "config-toml",
+   "type": "blob",
+   "oid": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "paths": [
+    "docs/automation/agent-execution/README.md"
+   ],
+   "line": 66,
+   "match": "config.toml"
+  },
+  {
+   "rule": "config-toml",
+   "type": "blob",
+   "oid": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "paths": [
+    "docs/automation/agent-execution/README.md"
+   ],
+   "line": 112,
+   "match": "config.toml"
+  },
+  {
+   "rule": "config-toml",
+   "type": "blob",
+   "oid": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "paths": [
+    "docs/automation/agent-execution/README.md"
+   ],
+   "line": 134,
+   "match": "model_reasoning_effort="
+  },
+  {
+   "rule": "config-toml",
+   "type": "blob",
+   "oid": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "paths": [
+    "docs/automation/agent-execution/README.md"
+   ],
+   "line": 136,
+   "match": "config.toml"
+  },
+  {
+   "rule": "config-toml",
+   "type": "blob",
+   "oid": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "paths": [
+    "docs/automation/agent-execution/README.md"
+   ],
+   "line": 144,
+   "match": "model_reasoning_effort="
+  },
+  {
+   "rule": "config-toml",
+   "type": "blob",
+   "oid": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "paths": [
+    "docs/automation/agent-execution/README.md"
+   ],
+   "line": 349,
+   "match": "[projects."
+  },
+  {
+   "rule": "codex-home",
+   "type": "blob",
+   "oid": "155f3469e345e2397fa26347a9cb52d6fdb91122",
+   "paths": [
+    "docs/automation/agent-execution/adapters/codex-cli.md"
+   ],
+   "line": 30,
+   "match": "~/.codex"
+  },
+  {
+   "rule": "codex-home",
+   "type": "blob",
+   "oid": "155f3469e345e2397fa26347a9cb52d6fdb91122",
+   "paths": [
+    "docs/automation/agent-execution/adapters/codex-cli.md"
+   ],
+   "line": 40,
+   "match": "~/.codex"
+  },
+  {
+   "rule": "transcript",
+   "type": "blob",
+   "oid": "155f3469e345e2397fa26347a9cb52d6fdb91122",
+   "paths": [
+    "docs/automation/agent-execution/adapters/codex-cli.md"
+   ],
+   "line": 36,
+   "match": "turn_context"
+  },
+  {
+   "rule": "config-toml",
+   "type": "blob",
+   "oid": "155f3469e345e2397fa26347a9cb52d6fdb91122",
+   "paths": [
+    "docs/automation/agent-execution/adapters/codex-cli.md"
+   ],
+   "line": 23,
+   "match": "config.toml"
+  },
+  {
+   "rule": "config-toml",
+   "type": "blob",
+   "oid": "155f3469e345e2397fa26347a9cb52d6fdb91122",
+   "paths": [
+    "docs/automation/agent-execution/adapters/codex-cli.md"
+   ],
+   "line": 24,
+   "match": "model_reasoning_effort="
+  },
+  {
+   "rule": "config-toml",
+   "type": "blob",
+   "oid": "155f3469e345e2397fa26347a9cb52d6fdb91122",
+   "paths": [
+    "docs/automation/agent-execution/adapters/codex-cli.md"
+   ],
+   "line": 30,
+   "match": "config.toml"
+  },
+  {
+   "rule": "config-toml",
+   "type": "blob",
+   "oid": "155f3469e345e2397fa26347a9cb52d6fdb91122",
+   "paths": [
+    "docs/automation/agent-execution/adapters/codex-cli.md"
+   ],
+   "line": 40,
+   "match": "config.toml"
+  },
+  {
+   "rule": "config-toml",
+   "type": "blob",
+   "oid": "155f3469e345e2397fa26347a9cb52d6fdb91122",
+   "paths": [
+    "docs/automation/agent-execution/adapters/codex-cli.md"
+   ],
+   "line": 57,
+   "match": "config.toml"
+  },
+  {
+   "rule": "codex-home",
+   "type": "blob",
+   "oid": "02d6c33db60344943fbcd6fcdf347eefef06986f",
+   "paths": [
+    "docs/automation/agent-execution/adapters/codex-desktop-session.md"
+   ],
+   "line": 30,
+   "match": "~/.codex"
+  },
+  {
+   "rule": "transcript",
+   "type": "blob",
+   "oid": "02d6c33db60344943fbcd6fcdf347eefef06986f",
+   "paths": [
+    "docs/automation/agent-execution/adapters/codex-desktop-session.md"
+   ],
+   "line": 23,
+   "match": "turn_context"
+  },
+  {
+   "rule": "transcript",
+   "type": "blob",
+   "oid": "02d6c33db60344943fbcd6fcdf347eefef06986f",
+   "paths": [
+    "docs/automation/agent-execution/adapters/codex-desktop-session.md"
+   ],
+   "line": 36,
+   "match": "turn_context"
+  },
+  {
+   "rule": "config-toml",
+   "type": "blob",
+   "oid": "02d6c33db60344943fbcd6fcdf347eefef06986f",
+   "paths": [
+    "docs/automation/agent-execution/adapters/codex-desktop-session.md"
+   ],
+   "line": 30,
+   "match": "config.toml"
+  },
+  {
+   "rule": "config-toml",
+   "type": "blob",
+   "oid": "02d6c33db60344943fbcd6fcdf347eefef06986f",
+   "paths": [
+    "docs/automation/agent-execution/adapters/codex-desktop-session.md"
+   ],
+   "line": 40,
+   "match": "config.toml"
+  },
+  {
+   "rule": "config-toml",
+   "type": "blob",
+   "oid": "bba08fc4686d7192deeb559752636a467103b4b1",
+   "paths": [
+    "docs/automation/agent-execution/routing.md"
+   ],
+   "line": 92,
+   "match": "model_reasoning_effort="
+  },
+  {
+   "rule": "config-toml",
+   "type": "blob",
+   "oid": "dca5b29c1a260b679efc0fb249c73850925302f0",
+   "paths": [
+    "docs/automation/agent-execution/schemas/relay-record.v2.schema.json"
+   ],
+   "line": 776,
+   "match": "config.toml"
+  }
+ ],
+ "ObservedUtc": "2026-10-06T15:48:32Z",
+ "GitHubSide": {
+  "actions_secrets": 0,
+  "actions_variables": 0,
+  "deploy_keys": 0,
+  "releases": 0,
+  "issues": 0,
+  "pulls": 0,
+  "artifacts": 0,
+  "environments": 0,
+  "deployments": 0,
+  "hooks": 0,
+  "caches": 0,
+  "pages": "none",
+  "wiki": false,
+  "delete_events": 0,
+  "description": "I-62 F6 test fixture (plane c, system under test). Not RackCad."
+ },
+ "Identities": "commits y etiqueta: fixture <fixture@example.invalid> (sintético); zona horaria -0600, igual que la historia pública de RackCad",
+ "FlaggedBlobsPublicInRackCad": {
+  "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5": "docs/AUTOMATION_PLAN.md",
+  "446c32ba6a91f9a712a0758038ae0a46ab1c970f": "docs/WORKFLOW.md",
+  "592dcfd45e8743fd83b3423249fbd3c73e3d3055": "docs/automation/agent-execution/README.md",
+  "155f3469e345e2397fa26347a9cb52d6fdb91122": "docs/automation/agent-execution/adapters/codex-cli.md",
+  "02d6c33db60344943fbcd6fcdf347eefef06986f": "docs/automation/agent-execution/adapters/codex-desktop-session.md",
+  "bba08fc4686d7192deeb559752636a467103b4b1": "docs/automation/agent-execution/routing.md",
+  "dca5b29c1a260b679efc0fb249c73850925302f0": "docs/automation/agent-execution/schemas/relay-record.v2.schema.json"
+ },
+ "Verdict": "SIN DATOS NO APTOS: las 40 coincidencias están en 7 blobs idénticos a los de MC_I62 (6f0187cb, ya públicos en la rama de I-62 de RackCad): menciones documentales de rutas genéricas (~/.codex/config.toml, %USERPROFILE%, /c/Users/) y marcadores AUTHORIZATION: <AuthorizationId>. Los 11 archivos propios del fixture, sin coincidencias. Ningún secreto, credencial, token, ruta privada real, nombre de usuario o de máquina, transcripción ni valor de configuración."
+}
