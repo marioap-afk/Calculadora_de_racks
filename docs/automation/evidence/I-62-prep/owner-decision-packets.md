@@ -1,9 +1,13 @@
-# I-62 — Paquetes de decisión del Owner para F6 (vigentes; ninguno decidido)
+# I-62 — Paquetes de decisión del Owner para F6 (DECIDIDOS el 2026-10-06; decisiones §46)
 
 > **Preflight de F6.** Orden del Coordinator «I-62 — F6 OWNER-DECISION PREFLIGHT» ([decisiones](../../decisions/I-62.md) §45), con la autoridad del
 > Freeze V14 + A-1 AGREED + F4 GATE PASS (§44). La sesión evalúa y recomienda; **no decide** ninguna OD. Cada decisión es independiente: el Owner puede
 > aprobar unas y rechazar otras. Fuente congelada: Proposal V14 §15, §17 (fila F6), §18 y Anexo D (blob `34ad80ea`).
 > **Revisión: 2026-10-06** (medición pasiva 2026-10-06T02:26:14Z). La revisión del 2026-10-04 se conserva como historial al final.
+
+> **Decisiones del Owner (2026-10-06T07:14Z, decisiones §46):** OD-5 = A, OD-7 = A (privado `marioap-afk/rackcad-i62-fixture`), OD-2 = A (huella
+> `091540ED…`), OD-4 = A (solo `D:\r62-fixture`), **OD-3 = RECHAZAR**. No se vuelven a pedir mientras sus condiciones sigan válidas. Los paquetes de
+> abajo quedan como el registro de lo que se decidió.
 
 ## Respuesta en una línea
 
@@ -113,6 +117,40 @@ FX-06 puede usar `claude-cli` como alternativa a `codex-cli` para sus Architects
 | Recomendación | **RECHAZAR por ahora**; antes era condicional. Motivo medido: FX-03 solo puede ser PASS si el Worker Codex escribe, y la medición de I-61 (P2) indica que esa escritura falla con el sandbox no elevado. Así, autenticar ahora añadiría una credencial con poco valor esperado. FX-06 no depende de OD-3 si se aprueba OD-2 (Architects `codex-cli`, proveedor distinto del de A, PREFERRED). FX-03 no se retira: queda UNVERIFIED y el Owner decide su limitación (OV-I62-04). **Revisión prevista:** si la sonda de OD-4 demuestra la escritura de Codex, la sesión volverá a pedir OD-3 con ese hecho |
 | Aprobar | `OD-3 = A (el Owner autentica claude.exe 2.1.270)` |
 | Rechazar | `OD-3 = RECHAZAR` — FX-03 UNVERIFIED (falta OD-3); FX-06 solo con `codex-cli` |
+
+## OD-2b — Línea base nueva de `codex-cli` tras P-01 (2026-10-06T07:24Z; pendiente de decisión)
+
+**Hecho nuevo medido** (sonda 1 de OD-4, [result.json](../I-62-F6/OD-4/R20261006T072306Z-od41/result.json)): la primera invocación de `codex-cli` en un
+directorio nuevo **reescribe `~/.codex/config.toml`**: un segundo después de arrancar añadió una sección `[projects.<redactado>]` con una clave (+65 bytes;
+valores no leídos), y la huella pasó de `091540ED…` a **`9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E`**. Es la conducta que I-61
+registró como DEV-G1C-01 y la causa, antes UNKNOWN, de los cambios de huella de la cronología. P-01 es literal (cualquier cambio del hash es STOP; el
+descriptor fija la línea base solo por OD-2), así que: **STOP del transporte `codex-cli`**, la huella nueva no se acepta y no hay más invocaciones hasta
+esta decisión. También cambia la huella un reinicio o una actualización de la app de Codex (proceso iniciado 2026-10-04T21:39:15Z, archivo escrito 21:39:14Z).
+
+**Consecuencia para F6:** cada directorio nuevo en el que corra `codex-cli` añade su entrada. Para que ninguna cesión vea un cambio, los directorios de
+trabajo de `codex-cli` deben fijarse antes y medirse fuera de las cesiones: `D:\r62-fixture\A` (Controller y Worker de la topología A; directorio de
+trabajo del Principal A) y `D:\r62-fixture\arch` (clon limpio único de los Architects B y C de FX-06, en invocaciones distintas con su `thread_id`).
+
+| Opción | Efecto | Riesgo |
+|---|---|---|
+| **A2** | autorizar ≤ 2 sondas previas de solo lectura (D.3, «sondas previas 1 +1») en `D:\r62-fixture\A` y `D:\r62-fixture\arch`, y aceptar como línea base el hash medido después **si el delta saneado frente a `9002E854…` es exactamente +2 secciones `[projects.<redactado>]` con una clave cada una y nada más**; si no, P-01 y otra decisión | si la app de Codex se reinicia o se actualiza antes de las cesiones, P-01 de nuevo |
+| A | aceptar ahora `9002E854…` | la primera invocación en `A` o en `arch` lo cambiará: P-01 y otra decisión |
+| C | no autorizar | `codex-cli` sigue en STOP: FX-02 y FX-06 UNVERIFIED |
+
+- **Qué NO autoriza:** escribir `config.toml`, crear entradas de confianza a mano, cambiar `trust_level`, `windows.sandbox` o permisos; aceptar otro delta.
+- **Consumo:** 2 sondas de solo lectura (dentro de las «sondas previas» de D.3); después, los topes de D.3.
+- **Seguridad:** solo el hash y nombres saneados; nunca valores; la comprobación del delta se hace sobre nombres saneados.
+- **Recomendación: A2.** Motivo: es la única opción conforme a P-01 que deja FX-02 y FX-06 sin una segunda pregunta, porque fija los directorios antes de
+  las cesiones y acepta solo el delta exacto que la conducta medida produce.
+- **Aprobar:** `OD-2b = A2 (sondas en D:\r62-fixture\A y D:\r62-fixture\arch; aceptar el hash resultante si el delta saneado es exactamente +2 secciones [projects.<redactado>] de una clave)`
+62-fixture\A y D:\r62-fixture\arch; aceptar el hash resultante si el delta saneado es exactamente +2 secciones [projects.<redactado>] de una clave)`
+- **Rechazar:** `OD-2b = RECHAZAR`
+
+## OD-3 — hecho nuevo de OD-4 (2026-10-06T07:24Z; OD-3 sigue RECHAZADA)
+
+La sonda de OD-4 midió que el Worker `codex-cli` en `workspace-write` **no puede hacer commit** (el sandbox deniega `.git/index.lock`). FX-03 necesita ese
+Worker, así que con OD-3 aprobada FX-03 quedaría UNSUPPORTED por la misma causa. El hecho nuevo **no** hace útil reconsiderar OD-3: refuerza el rechazo.
+No se autentica `claude-cli` ni se decide nada.
 
 ## Recordatorios (sin solicitud)
 

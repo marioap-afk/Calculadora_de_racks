@@ -1,0 +1,79 @@
+{
+  "RunId": "R20261006T072306Z-od41",
+  "Scenario": "OD-4 sonda de escritura 1 de ≤ 2 (F6-E)",
+  "Authority": "OD-4 = A, OD-2 = A (decisiones §46)",
+  "StartedUtc": "2026-10-06T07:23:06Z",
+  "EndedUtc": "2026-10-06T07:24:00Z",
+  "ExitCode": 0,
+  "Binary": {
+    "Path": "%LOCALAPPDATA%\\OpenAI\\Codex\\bin\\8aaf1547b825b104\\codex.exe",
+    "BinaryLabel": "8aaf1547b825b104",
+    "Sha256": "37762753b554982eef1c109303d1be652b6397f1479e844794353a85650199c6",
+    "CliVersion": "codex-cli 0.160.0 (nuevo; antes 0.159.2)",
+    "AuthState": "Logged in using ChatGPT (codex login status)"
+  },
+  "Recipe": "codex exec -C D:\\r62-fixture\\probe-od4-1 -s workspace-write -m gpt-6-luna -c model_reasoning_effort=\"high\" --output-schema probe-schema.json -o probe1-last.json --json <prompt>; stdin cerrado; pwsh del runtime primero en el PATH del hijo; sin --ephemeral",
+  "Workspace": {
+    "Clone": "D:\\r62-fixture\\probe-od4-1 (git clone --no-local del origen del fixture, rama probe/od4-1 desde F_eff)",
+    "Base": "fbe25347799e5b801ef708454212335537448bd1"
+  },
+  "Introspection": {
+    "Source": "registro de sesión de esta invocación (turn_context), RUNTIME_OBSERVED",
+    "SessionLog": "~/.codex/sessions/2026/10/06/rollout-2026-10-06T01-23-08-01a11018-4202-7060-98b7-5b80bffd31c0.jsonl",
+    "SessionLogSha256": "1198198067de68df92ef4a2d062e859c43b48dafc3d9c20fd815be879660129f",
+    "ThreadId": "01a11018-4202-7060-98b7-5b80bffd31c0",
+    "TurnContext": [
+      {
+        "model": "gpt-6-luna",
+        "effort": "high",
+        "approval_policy": "never",
+        "sandbox_policy": {
+          "type": "workspace-write",
+          "network_access": false,
+          "exclude_tmpdir_env_var": false,
+          "exclude_slash_tmp": false
+        },
+        "cwd": "D:\\r62-fixture\\probe-od4-1"
+      }
+    ]
+  },
+  "Usage": {
+    "input_tokens": 147250,
+    "cached_input_tokens": 123136,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 2229,
+    "reasoning_output_tokens": 757
+  },
+  "Capability": {
+    "CreateFileInWorkspace": "SUPPORTED (paso 1: probe/od4-allowed.txt creado, 12 bytes)",
+    "RunTools": "SUPPORTED (pasos 2-3: dotnet --version = 10.0.401; git version 2.54.0.windows.1)",
+    "GitCommit": "UNSUPPORTED (paso 4: fatal: Unable to create 'D:/r62-fixture/probe-od4-1/.git/index.lock': Permission denied)",
+    "WriteOutsideWorkspaceBlocked": "SUPPORTED (paso 6: acceso denegado a D:\\r62-fixture\\od4-outside.txt; el archivo no existe después)",
+    "Termination": "proceso terminado con exit 0; ningún proceso huérfano (los git.exe vivos son hijos de la app de Codex)",
+    "WorkerCodexWithCommits": "UNSUPPORTED — causa medida: el sandbox workspace-write deniega crear .git/index.lock, así que el Worker no puede hacer commit"
+  },
+  "Fingerprint": {
+    "Before": {
+      "Sha256": "091540ED2DE6CFAC5C12110337305FFCABCEEEE0D8CB696F7E04EA057F9F3D66",
+      "Length": 4710,
+      "LastWriteTimeUtc": "2026-10-04T21:39:14.936Z",
+      "KeyNames": 105
+    },
+    "After": {
+      "Sha256": "9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E",
+      "Length": 4775,
+      "LastWriteTimeUtc": "2026-10-06T07:23:07.616Z",
+      "KeyNames": 107
+    },
+    "SanitizedDelta": {
+      "Added": {
+        "[projects.<redactado>]": 1,
+        "<redactado>": 1
+      },
+      "Removed": {}
+    },
+    "Cause": "la CLI añadió una sección [projects.<ruta>] con una clave para el directorio nuevo de la sonda, 1 s después de arrancar (como DEV-G1C-01 de I-61); valores no leídos",
+    "Disposition": "P-01: STOP del transporte codex-cli; la huella nueva NO se acepta; ninguna invocación de Codex más hasta una decisión OD-2 nueva"
+  },
+  "SecondProbe": "no se lanza: el transporte está en STOP por P-01"
+}

@@ -1,0 +1,116 @@
+{
+  "Scenario": "FX-05 / C-27",
+  "Plane": "c (fixture) frente a a (RackCad)",
+  "RealUnitIds": 39,
+  "IncludesI62": true,
+  "Run": 2,
+  "RealClaimIds": 38,
+  "Base": "eea0114ac78badf89d4bc497b5a69fb591ed923b",
+  "Legit": {
+    "Commit": "6b51b3787819b6be2cc410b2641415c5034c874f",
+    "Guard": {
+      "Decision": "ACCEPT",
+      "Findings": []
+    }
+  },
+  "Violation1": {
+    "Commit": "d9b742ef9d64245c08983e09b76847a44641e58e",
+    "What": "artefacto que nombra la unidad real I-62 como sujeto de un gate",
+    "Guard": {
+      "Decision": "REJECT",
+      "Findings": [
+        {
+          "Kind": "REAL_UNIT_NAMED",
+          "Path": "docs/automation/decisions/FX-U1.md",
+          "Id": "I-62"
+        },
+        {
+          "Kind": "REAL_UNIT_IN_COMMIT",
+          "Id": "I-62"
+        }
+      ]
+    }
+  },
+  "Violation2": {
+    "What": "remoto de RackCad configurado en un clon del fixture (sin fetch ni push)",
+    "Guard": {
+      "Decision": "REJECT",
+      "Findings": [
+        {
+          "Kind": "RACKCAD_REMOTE_CONFIGURED",
+          "Remote": "remote.rackcad.url"
+        }
+      ]
+    }
+  },
+  "Rejection": {
+    "PublishedFixtureRef": "6b51b3787819b6be2cc410b2641415c5034c874f",
+    "PublishedIsLegit": true,
+    "RejectedCommitInFixtureOrigin": false,
+    "RemoteRemoved": true
+  },
+  "RealBefore": {
+    "RackCadRemoteRefs": {
+      "Count": 71,
+      "Sha256": "ebd8f0a7693cd526961f835a1c4d091bb74b35f23d9ed3744c12d9392df7327e"
+    },
+    "LocalRefs": {
+      "Count": 45,
+      "Sha256": "2a1bb70a07f3e4adb3ad2a8d3f88ef185a2f167a87f5c0a679dad5449151fc4e"
+    },
+    "Worktrees": {
+      "Count": 5,
+      "Sha256": "1bb068b6f8b746ac4de602e500f65cf80f75ca5b0af70270b8e6f299c0fa7c1e"
+    },
+    "Remotes": {
+      "Lines": [
+        "remote.origin.url https://github.com/marioap-afk/Calculadora_de_racks.git",
+        "remote.origin.fetch +refs/heads/*:refs/remotes/origin/*"
+      ],
+      "Sha256": "2db15672eb9f3a6e7aa55773dc3d596667c8555d3a5c03672efead88625d2f3c"
+    },
+    "I62TipBlobs": {
+      "docs/automation/state/I-62.yml": "990f802817a01003fe8692b68ed1cf48007b76f7",
+      "docs/automation/decisions/I-62.md": "2b9557d8a8b61226a3d4a146985d6ff5547ed630"
+    },
+    "MainStateTree": {
+      "Entries": 37,
+      "Sha256": "3780a1b7c990f071c0d30049ead71faaf7579a62cb9ae7489d5a3868e1f7f9f9"
+    },
+    "OriginMain": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+    "I62Tip": "b2f453cd469b803ea8c7a88779df6e71a41c71b9"
+  },
+  "RealAfter": {
+    "RackCadRemoteRefs": {
+      "Count": 71,
+      "Sha256": "ebd8f0a7693cd526961f835a1c4d091bb74b35f23d9ed3744c12d9392df7327e"
+    },
+    "LocalRefs": {
+      "Count": 45,
+      "Sha256": "2a1bb70a07f3e4adb3ad2a8d3f88ef185a2f167a87f5c0a679dad5449151fc4e"
+    },
+    "Worktrees": {
+      "Count": 5,
+      "Sha256": "1bb068b6f8b746ac4de602e500f65cf80f75ca5b0af70270b8e6f299c0fa7c1e"
+    },
+    "Remotes": {
+      "Lines": [
+        "remote.origin.url https://github.com/marioap-afk/Calculadora_de_racks.git",
+        "remote.origin.fetch +refs/heads/*:refs/remotes/origin/*"
+      ],
+      "Sha256": "2db15672eb9f3a6e7aa55773dc3d596667c8555d3a5c03672efead88625d2f3c"
+    },
+    "I62TipBlobs": {
+      "docs/automation/state/I-62.yml": "990f802817a01003fe8692b68ed1cf48007b76f7",
+      "docs/automation/decisions/I-62.md": "2b9557d8a8b61226a3d4a146985d6ff5547ed630"
+    },
+    "MainStateTree": {
+      "Entries": 37,
+      "Sha256": "3780a1b7c990f071c0d30049ead71faaf7579a62cb9ae7489d5a3868e1f7f9f9"
+    },
+    "OriginMain": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+    "I62Tip": "b2f453cd469b803ea8c7a88779df6e71a41c71b9"
+  },
+  "RealDifferences": [],
+  "Result": "PASS"
+}

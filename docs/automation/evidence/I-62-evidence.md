@@ -2379,3 +2379,23 @@ solo desde artefactos custodiados.
   - OD-3: **rechazar por ahora** (FX-03 necesita además la escritura de Codex, que la medición de I-61 hace improbable; FX-06 no lo necesita con
     OD-2; revisión prevista si la sonda de OD-4 demuestra la escritura).
 - **Matriz de la orden = Freeze**; ningún escenario real empieza; el siguiente paso son las decisiones del Owner.
+
+## 62. F6 nocturno, bloque 1: decisiones del Owner, fixture, OD-4, FX-05 y kits (decisiones §46)
+
+- **Decisiones del Owner custodiadas** (decisiones §46): OD-5, OD-7, OD-2 y OD-4 = A; OD-3 = RECHAZAR.
+- **Preflight** (07:14:30Z): punta `b2f453cd` = remoto; `origin/main` = `bb0d5522`; I-52 `fb6b5648` e I-64 `39b45f36` sin cambios; sin decisiones
+  posteriores; fixture inexistente.
+- **F6-A, fixture D.1 pasos 1-4** ([I-62-F6](I-62-F6/README.md)): F_seed `930288c5` (37 autoridades de `MC_I62` byte a byte), F_norm `a9f6c929`,
+  F_eff `fbe25347` (TEST-ACTIVATION), reclamo de FX-U1 `eea0114a`, orden FX-U1-O1 `54f2a4a8`; remoto privado `marioap-afk/rackcad-i62-fixture`.
+- **CI del fixture: `Ci` = `not_run`.** GitHub Actions no crea corridas en el repositorio privado (3 pushes, sin check suite de Actions; Actions
+  habilitado; flujo activo; GitHub operativo). Frontera humana: el Owner revisa Actions y la facturación de la cuenta. Sin bypass.
+- **OD-4, sonda 1 de ≤ 2** (`R20261006T072306Z-od41`): archivos y herramientas SUPPORTED; commit UNSUPPORTED (`.git/index.lock` denegado por el
+  sandbox); escritura fuera del espacio bloqueada; `codex-cli 0.160.0`, `gpt-6-luna`/`high` observados. **La sonda reescribió `config.toml`**
+  (`091540ED…` → `9002E854…`, +1 sección `[projects.<redactado>]` con una clave): **P-01, STOP de `codex-cli`**, sin aceptar la huella nueva.
+- **FX-05 / C-27: PASS** (corrida 2; la 1 se conserva como inválida por un defecto del detector): rechazo P-16 de un artefacto que nombra I-62 y del
+  remoto de RackCad configurado; 0 diferencias en el estado real.
+- **Clasificaciones:** FX-04b UNSUPPORTED medido (Worker Codex sin commit; sin otro adapter con escritura acreditada lanzable por B); FX-03 UNVERIFIED
+  (OD-3) y, con OD-3, seguiría limitado por el mismo commit; FX-01, FX-04a HUMAN_LAUNCH_REQUIRED; FX-02 y FX-06 UNVERIFIED (P-01, sin sesión A,
+  sin CI).
+- **Kits** ([I-62-F6/kits](I-62-F6/kits/README.md)): tarjeta del Owner (CI, OD-2b, apertura de A con la secuencia de effort de FX-01), herramienta del
+  oráculo y la comparación de FX-04a con su esquema de respuesta y la instrucción de B; paquete OD-2b y hecho nuevo de OD-3 en los paquetes.

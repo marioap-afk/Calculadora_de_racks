@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["steps", "commit_sha"],
+  "properties": {
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "action", "ok", "output", "error"],
+        "properties": {
+          "id": { "type": "integer" },
+          "action": { "type": "string" },
+          "ok": { "type": "boolean" },
+          "output": { "type": "string" },
+          "error": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "commit_sha": { "type": ["string", "null"] }
+  }
+}

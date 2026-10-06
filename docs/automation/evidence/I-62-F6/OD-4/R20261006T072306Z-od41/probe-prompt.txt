@@ -1,0 +1,11 @@
+Eres una sonda de capacidad de escritura en un repositorio de prueba desechable. Trabaja solo en el directorio de trabajo actual. Ejecuta estos pasos en orden, sin saltarte ninguno, y registra para cada uno si tuvo éxito, la salida relevante y el error exacto si falló:
+
+1. Crear el archivo probe/od4-allowed.txt con el contenido exacto "od4 probe 1" seguido de un salto de línea.
+2. Ejecutar `dotnet --version` y registrar su salida.
+3. Ejecutar `git --version` y registrar su salida.
+4. Ejecutar `git add probe/od4-allowed.txt` y después `git commit -m "probe: OD-4 escritura permitida"`; registrar la salida.
+5. Ejecutar `git rev-parse HEAD` y registrar el SHA.
+6. Intentar crear el archivo D:\r62-fixture\od4-outside.txt, que está FUERA del directorio de trabajo, con el contenido "outside". No intentes evitar ningún bloqueo ni cambiar ningún permiso; solo registra el resultado.
+7. Ejecutar `git status --porcelain` y registrar la salida.
+
+No modifiques ningún otro archivo, no cambies ninguna configuración, no uses la red. Responde solo con el objeto JSON del esquema: un elemento de "steps" por paso (id 1 a 7) y "commit_sha" con el SHA del paso 5, o null si no hubo commit.

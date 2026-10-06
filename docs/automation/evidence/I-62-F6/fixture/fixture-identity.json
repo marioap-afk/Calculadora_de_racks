@@ -1,0 +1,12 @@
+{
+  "Root": "D:\\r62-fixture",
+  "Origin": "D:\\r62-fixture\\fixture-origin.git",
+  "SourceCommit": "6f0187cb30852971b49153c2763c8ba6caeaa64d",
+  "F_seed": "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+  "F_norm": "a9f6c929e74ef92edfee557c3572b090f48bc318",
+  "F_eff": "fbe25347799e5b801ef708454212335537448bd1",
+  "FX_U1_Claim": "eea0114ac78badf89d4bc497b5a69fb591ed923b",
+  "ClaimId": "fc62f1c7-0000-4000-8000-000000000001",
+  "CopiedFiles": 37,
+  "LocalFiles": 10
+}

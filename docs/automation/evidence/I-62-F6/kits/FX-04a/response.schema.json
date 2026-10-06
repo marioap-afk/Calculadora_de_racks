@@ -1,0 +1,44 @@
+{
+  "$comment": "I-62 F6 FX-04a: the response of Principal B (RESUME_DECISION). Same fields as the oracle; no value is given to B. A fact that the canonical state does not establish is the string UNKNOWN.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["facts", "decision", "inputs", "preflight"],
+  "properties": {
+    "facts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["branch", "claim_id", "last_point", "record_version", "protocol", "principal_state", "attempts", "correction_launches", "invocations", "chains", "last_window", "task_intent"],
+      "properties": {
+        "branch": { "type": "string" },
+        "claim_id": { "type": "string" },
+        "last_point": { "type": "string" },
+        "record_version": { "type": ["integer", "string"] },
+        "protocol": { "type": "string" },
+        "principal_state": { "type": "string" },
+        "attempts": { "type": ["integer", "string"] },
+        "correction_launches": { "type": ["array", "string"], "items": { "type": "array" } },
+        "invocations": { "type": ["array", "string"], "items": { "type": "array" } },
+        "chains": { "type": ["array", "string"], "items": { "type": "array" } },
+        "last_window": { "type": ["array", "string"] },
+        "task_intent": { "type": ["array", "string"] }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["next_points", "next_window_seq", "task_id", "attempt", "role", "protocol_set", "binding", "worker"],
+      "properties": {
+        "next_points": { "type": "array", "items": { "enum": ["QR", "Q0", "CONTROLLER_PLANNING", "STOP"] } },
+        "next_window_seq": { "type": ["integer", "null"] },
+        "task_id": { "type": ["string", "null"] },
+        "attempt": { "type": ["integer", "null"] },
+        "role": { "enum": ["EXECUTION_CONTROLLER", "WORKER", "PRINCIPAL_COORDINATOR", "ARCHITECT", "REVIEWER"] },
+        "protocol_set": { "type": "string" },
+        "binding": { "enum": ["REUSE_IF_INVALIDATORS_UNCHANGED_ELSE_REBIND", "REBIND", "REUSE", "UNKNOWN"] },
+        "worker": { "type": ["string", "null"] }
+      }
+    },
+    "inputs": { "type": "array", "items": { "type": "object", "required": ["path", "kind"], "properties": { "path": { "type": "string" }, "kind": { "enum": ["CANONICAL", "TECHNICAL", "AUTOMATIC"] }, "sha256": { "type": ["string", "null"] } } } },
+    "preflight": { "type": "object", "description": "the rackcad-preflight/v1 of B for RESUME_DECISION (README §12-§13)" }
+  }
+}
