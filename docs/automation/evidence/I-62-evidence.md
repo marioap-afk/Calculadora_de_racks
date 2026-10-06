@@ -2361,3 +2361,21 @@ solo desde artefactos custodiados.
   inactivas hasta `I62_EFFECTIVE_SHA`.
 - **DC-07 (2026-10-06T01:59Z):** `origin/main` = `bb0d5522`; I-52 `fb6b5648` e I-64 `39b45f36` sin cambios.
 - **Custodia:** un único commit de registro con su CI; sin cadena de acuses posterior.
+
+## 61. Preflight de las decisiones del Owner de F6 (decisiones §45)
+
+- **Medición pasiva** (2026-10-06T02:26:14Z; [od-passive.json](I-62-prep/f6/od-preflight/od-passive.json), script
+  [od-passive.ps1](I-62-prep/f6/od-preflight/od-passive.ps1)): `config.toml` SHA-256 `091540ED…` (mismos bytes que el 2026-10-04, escrito
+  2026-10-04T21:39:14Z); app Codex `26.930.3930.0`; binarios `codex.exe` `37762753…` y `081E4DE4…` sin ejecutar; `codex` y `claude` fuera del `PATH`;
+  `claude.exe` 2.1.270.0 (`FD7F35EC…`), autenticación UNKNOWN sin invocar; `gh` como `marioap-afk` con alcances `repo` y `workflow`; RackCad público;
+  sin `marioap-afk/rackcad-i62-fixture` ni `D:\r62-fixture`. `MC_I62` = `6f0187cb`.
+- **Hecho previo que cambia dos paquetes:** la sonda P2 de I-61 (`workspace-write`, 2026-09-30) tuvo 4 rechazos del sandbox al crear procesos y la
+  CLI añadió una entrada de confianza a `config.toml` (DEV-G1C-01).
+- **Paquetes vigentes** en [owner-decision-packets.md](I-62-prep/owner-decision-packets.md), con la revisión del 2026-10-04 como historial:
+  - OD-5: **aprobar** (precondición de todo F6; FX-01, FX-04a y FX-05 con ella sola; sin credenciales ni infraestructura);
+  - OD-7: **aprobar, privado** (sin CI F6 no cierra; los alcances ya existen; privado por la evidencia del host);
+  - OD-2: **aprobar con la línea base actual** `091540ED…` (antes B: lleva ≈ 29 h estable y P-01 cubre un cambio posterior);
+  - OD-4: **aprobar solo en el fixture** (convierte FX-04b en un resultado medido, PASS o UNSUPPORTED con causa; sin sandbox elevado ni permisos);
+  - OD-3: **rechazar por ahora** (FX-03 necesita además la escritura de Codex, que la medición de I-61 hace improbable; FX-06 no lo necesita con
+    OD-2; revisión prevista si la sonda de OD-4 demuestra la escritura).
+- **Matriz de la orden = Freeze**; ningún escenario real empieza; el siguiente paso son las decisiones del Owner.

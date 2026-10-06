@@ -25,6 +25,6 @@ Estado de referencia: F2 en `1eddbf48dbefd9685e68d63c0560bacf484d2dcb` (CI 37075
 | `f4/` | matriz de campos de `state/v2`, mapa de impacto de A-1, plano de pruebas C-15..C-42 y cuatro prototipos medidos (YAML, oráculo, rebase, resolver) |
 | `f4/ndc-proto/` | clausura normativa de las 1 825 unidades sobre el manifiesto B.11: riesgo operativo NDC-01 (`f4-dossier.md` §8) |
 | `f6/recipes.md`, `f6/fx04a/` | recetas de FX-01..FX-06, diseño del fixture y ensayo mecánico de FX-04a |
-| `owner-decision-packets.md` | paquetes en formato de una línea; OD-2 con la medición del 2026-10-04; DEP-F4-YAML ya no hace falta |
+| `owner-decision-packets.md` | paquetes en formato de una línea; **revisión del 2026-10-06** (preflight de F6, decisiones §45) con la del 2026-10-04 como historial; medición en `f6/od-preflight/` |
 | `ready-candidate.md`, `ov-scripts.md`, `closure-plan.md` | READY-01..09 ejecutable, plantillas de READY-06 y del Candidato, guiones de OV y plan de cierre |
 | `transport-options.md`, `repo-research.md` | transportes para una revisión limpia y hechos del repositorio para F4 |

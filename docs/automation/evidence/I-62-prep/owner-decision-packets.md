@@ -1,36 +1,136 @@
-# I-62 — Paquetes de decisión del Owner (preparados; ninguno se solicita todavía)
+# I-62 — Paquetes de decisión del Owner para F6 (vigentes; ninguno decidido)
 
-> **Preparación.** Órdenes del Coordinator de [decisiones](../../decisions/I-62.md) §33 y §34 y orden de continuación del 2026-10-04. Ninguna decisión se
-> pide hasta que el trabajo autorizado llegue a su frontera exacta; la sesión no decide ninguna. Fuente: Proposal V14 §18 y Anexo D (blob `34ad80ea`).
-> Revisión: 2026-10-04 (formato de respuesta en una línea; OD-2 con medición nueva; DEP-F4-YAML ya no hace falta).
+> **Preflight de F6.** Orden del Coordinator «I-62 — F6 OWNER-DECISION PREFLIGHT» ([decisiones](../../decisions/I-62.md) §45), con la autoridad del
+> Freeze V14 + A-1 AGREED + F4 GATE PASS (§44). La sesión evalúa y recomienda; **no decide** ninguna OD. Cada decisión es independiente: el Owner puede
+> aprobar unas y rechazar otras. Fuente congelada: Proposal V14 §15, §17 (fila F6), §18 y Anexo D (blob `34ad80ea`).
+> **Revisión: 2026-10-06** (medición pasiva 2026-10-06T02:26:14Z). La revisión del 2026-10-04 se conserva como historial al final.
 
 ## Respuesta en una línea
 
-| Decisión | Recomendación de la sesión (no decisión) | Respuesta en una línea | Desbloquea | Si no |
+| Decisión | Recomendación de la sesión (no decisión) | Aprobar | Rechazar |
+|---|---|---|---|
+| OD-5 | **APROBAR (A)** | `OD-5 = A` | `OD-5 = RECHAZAR` |
+| OD-7 | **APROBAR (A, repositorio privado)** | `OD-7 = A (privado marioap-afk/rackcad-i62-fixture)` | `OD-7 = RECHAZAR` |
+| OD-2 | **APROBAR (A, línea base actual)** — antes B | `OD-2 = A (línea base 091540ED2DE6CFAC5C12110337305FFCABCEEEE0D8CB696F7E04EA057F9F3D66)` | `OD-2 = RECHAZAR` |
+| OD-4 | **APROBAR (A, solo en el fixture)** | `OD-4 = A (workspace-write solo en D:\r62-fixture)` | `OD-4 = RECHAZAR` |
+| OD-3 | **RECHAZAR por ahora** — antes condicional | `OD-3 = A (el Owner autentica claude.exe 2.1.270)` | `OD-3 = RECHAZAR` |
+
+**Matriz de dependencias, comprobada contra el Freeze** (§17 fila F6; D.2; D.4): OD-5 antes de todo F6. OD-7 es precondición del cierre de F6 (FX-02 no
+llega a VERIFIED sin CI) y la usa FX-04b. OD-2 antes de toda invocación afectada de `codex-cli` (topología A, B, FX-04b; FX-06 si usa `codex-cli`).
+OD-3 antes de `claude-cli` en la topología B. OD-4 antes de los Workers Codex con escritura (B y FX-04b). **FX-04a no depende de OD-3, OD-4 ni OD-7**,
+pero es un escenario real de F6 y no corre antes de OD-5. La matriz de la orden coincide con el Freeze; sin diferencias.
+
+**Hechos comunes** (medidos el 2026-10-06, sin ejecutar ningún binario ni leer credenciales; [od-passive.json](f6/od-preflight/od-passive.json), script
+[od-passive.ps1](f6/od-preflight/od-passive.ps1)):
+- `MC_I62` = cierre de F4 = `6f0187cb` (último cambio a superficies normativas; `a8c6af16` y `c1448687` no las tocan). El fixture se siembra desde ahí.
+- El fixture no existe: `D:\r62-fixture` ausente; `marioap-afk/rackcad-i62-fixture` no existe en GitHub.
+- Procesos vivos por nombre: `claude`, `codex`, `codex-code-mode-host`, `codex-computer-use-swift`, `codex-windows-sandbox-service`.
+
+---
+
+## OD-5 — Permiso de ensayo y sesiones del sistema bajo prueba
+
+**Definición congelada** (§18; §15 «OD-5, una sola semántica»): permiso de ensayo con la semántica única de §15 y apertura de sesiones del sistema bajo
+prueba, incluidas las invocaciones de Architect de FX-06 (autorización previa de apertura y consumo, no de transporte). **Bloquea:** todo F6.
+
+| Punto | Contenido |
+|---|---|
+| Hechos medidos | fixture inexistente; `MC_I62` = `6f0187cb`; app Codex `26.930.3930.0` instalada (Principal B); la app de Claude de esta sesión está activa (Principal A); ninguna OD concedida |
+| Qué se autoriza | (1) aceptar que los ensayos son **pruebas del plano (c) en otro repositorio con sus propias autoridades**, no ejecución delegada de §16 de una unidad de RackCad; (2) que la sesión de supervisión cree el fixture local `D:\r62-fixture\` (D.1: remoto bare local, siembra byte a byte desde `MC_I62`, F_norm/F_eff marcado `TEST-ACTIVATION`, FX-U1); (3) que el Owner abra, cuando la receta lo pida, las sesiones A, B y B2; (4) el consumo dentro de los topes de D.3; (5) las salvaguardas del host de 16.4 aplicadas al worktree del fixture (procesos, huella antes y después, cesión) |
+| Qué desbloquea | **FX-01, FX-04a y FX-05** con OD-5 sola. Es la precondición de FX-02, FX-03, FX-04b y FX-06, que además necesitan sus otras OD |
+| Qué NO autoriza | invocar `codex-cli` (OD-2), autenticar o usar `claude-cli` (OD-3), escritura de Codex (OD-4), crear un remoto en GitHub (OD-7); superar un tope de D.3; acreditar GATE PASS, READY, aprobación del Owner o integración reales; tocar `main`, contadores, decisiones o custodia de RackCad (P-16, FX-05); leer entradas privadas (D.6) |
+| Consumo, coste y tiempo | Topes de D.3: ronda A ≤ 2 sesiones de Principal y ≤ 4 subagentes de Claude (las invocaciones de Codex cuentan solo con OD-2); FX-04a ≤ 2 sesiones de B + 1 de B2, **0 invocaciones de modelo**; FX-06 ≤ 2 sesiones de A. Acciones del Owner: abrir A (FX-01, cambio de effort a mitad de sesión), atestar la terminación de A (FX-04a), abrir B y B2 en clones limpios. Sin gasto externo nuevo |
+| Seguridad | todo ocurre en `D:\r62-fixture\`, fuera de RackCad; las sesiones usan los ajustes de permisos que el Owner ya tiene (no se cambia ninguno); el oráculo de FX-04a se publica solo como SHA-256 antes de la respuesta de B; FX-05 compara el estado real antes y después |
+| Recomendación | **APROBAR (A).** Motivo: es la precondición de cualquier escenario real; con ella sola ya corren FX-01, FX-04a (la prueba de portabilidad, sin invocaciones de modelo) y FX-05; no añade credenciales, infraestructura ni configuración |
+| Aprobar | `OD-5 = A` |
+| Rechazar | `OD-5 = RECHAZAR` — F6 no procede; otra vía exigiría una A-n (§15: no se congelan dos semánticas) |
+
+## OD-7 — Remoto del fixture con CI
+
+**Definición congelada** (§18; §15; D.1; D.2): remoto del fixture con CI; permiso de infraestructura, no excepción normativa. **Bloquea:** el **cierre de
+F6** (sin CI, `Ci` = `not_run`: FX-02 y FX-04b no pueden ser PASS) y FX-04b; FX-06 lo usa en su paso 5 (CI_VERIFIED).
+
+| Punto | Contenido |
+|---|---|
+| Hechos medidos | `gh` autenticado como `marioap-afk` (almacén del sistema), protocolo Git `https`, alcances del token `gist`, `read:org`, `repo`, `workflow` (bastan para crear un repositorio y publicar un flujo; el token no se lee); `marioap-afk/rackcad-i62-fixture` no existe; RackCad es **público** y tiene Actions habilitadas |
+| Qué se autoriza | que la sesión de supervisión, con la autenticación de `gh` ya existente, cree **un** repositorio **privado** `marioap-afk/rackcad-i62-fixture`, lo añada como segundo remoto **del fixture** (nunca de RackCad) y publique un flujo con los jobs `fixture-build` y `fixture-tests` (`ubuntu-latest`, `dotnet test`, `permissions: contents: read`, solo `actions/checkout` y `actions/setup-dotnet`, sin secretos), y que empuje allí los refs del fixture |
+| Qué desbloquea | el cierre de F6 (FX-02 VERIFIED con `Ci` pass); FX-04b (VERIFIED sobre G'); FX-06 paso 5 |
+| Qué NO autoriza | secretos de Actions, despliegues o permisos de escritura del flujo; un repositorio público; tocar los remotos o los ajustes de RackCad; borrar el repositorio (lo archiva o borra el Owner al terminar); cualquier otro repositorio |
+| Consumo, coste y tiempo | estimación: ≈ 20 pushes con CI en F6 (puntos durables, RED/GREEN de FX-02 y FX-04b, X2 de FX-06) × 2 jobs × ≈ 1-2 min ≈ **≤ 80 minutos de runner Linux** (referencia: los jobs ligeros de RackCad, Build UI y Build Plugin, tardaron ≈ 1 min en la corrida 37391012002). Al ser privado, consume la cuota de Actions de la cuenta; la cuota restante **no se midió** (exige un alcance de facturación). Si se agotara, `Ci` = `not_run` y F6 queda pendiente |
+| Seguridad | el repositorio privado contiene copias de documentos ya públicos de RackCad, una biblioteca mínima y la evidencia del ensayo (preflights saneados, registros de relevo, identificadores de sesión); privado porque esa evidencia describe el host aunque esté saneada. El token sigue en el almacén del sistema; nada se escribe en el repositorio. FX-05 comprueba que ningún ref del fixture llega a RackCad |
+| Recomendación | **APROBAR (A, privado).** Motivo: sin CI F6 no puede cerrarse por definición (D.2), y los alcances `repo` y `workflow` ya existen, así que no hace falta cambiar credenciales. Una variante pública evitaría la cuota pero publicaría la evidencia del host; no se recomienda |
+| Aprobar | `OD-7 = A (privado marioap-afk/rackcad-i62-fixture)` |
+| Rechazar | `OD-7 = RECHAZAR` — `Ci` = `not_run`; FX-02 y FX-04b UNVERIFIED; F6 no cierra (aceptar la limitación no convierte en PASS una verificación incompleta) |
+
+## OD-2 — Línea base de la huella de `codex-cli`
+
+**Definición congelada** (§18): línea base de huella por adapter (`config.toml`; el Freeze cita `37DD3559…` registrada frente a `42E15A03…` observada).
+**Bloquea:** toda invocación afectada: `codex-cli` en A, B y FX-04b (y FX-06 si sus Architects son `codex-cli`); `codex-desktop-session` solo si comparte
+`config.toml` (en F2 sigue UNVERIFIED). Momento: antes de la primera invocación afectada.
+
+| Punto | Contenido |
+|---|---|
+| Hechos medidos | `~/.codex/config.toml`: SHA-256 **`091540ED2DE6CFAC5C12110337305FFCABCEEEE0D8CB696F7E04EA057F9F3D66`**, 4 710 bytes, escrito 2026-10-04T21:39:14Z: **los mismos bytes que el 2026-10-04**, sin cambios desde hace ≈ 29 h. App Codex `26.930.3930.0`, igual que el 2026-10-04. Binarios sin ejecutar: `…\app\resources\codex.exe` y `~/.codex/plugins/.plugin-appserver/codex.exe`, SHA-256 `37762753…` (iguales entre sí); `~/.codex/.sandbox-bin/codex.exe`, SHA-256 `081E4DE4…` (2026-09-12). `codex` no está en el `PATH`. Nombres de secciones y claves, saneados: 105 con este escáner (24 sustituidos por `<redactado>`); el 2026-10-04 se contaron 110 con otro escáner sobre el mismo archivo (mismo SHA-256): la diferencia es del método, no del archivo |
+| Qué se autoriza | fijar como línea base de la huella del adapter `codex-cli` el SHA-256 `091540ED…` de `~/.codex/config.toml`, con sus nombres saneados, para las invocaciones del fixture dentro de los topes de D.3, incluidas las sondas previas (≤ 2) |
+| Qué desbloquea | las sondas y FX-02 (con OD-5 y OD-7); FX-04b (con OD-4 y OD-7); FX-06 con Architects `codex-cli` (con OD-5 y OD-7); FX-03 (con OD-3 y OD-4) |
+| Qué NO autoriza | cambiar `config.toml`, la autenticación o el sandbox; aceptar en silencio otra huella: si el archivo difiere en la invocación (o lo reescribe una invocación, DEV-G1C-01 de I-61), es **P-01 → STOP** y una solicitud nueva de OD-2 con el valor nuevo; invocar `codex-cli` fuera del fixture |
+| Consumo, coste y tiempo | invocaciones de `codex-cli` dentro de los topes: ronda A ≤ 15 + 2 sondas; FX-04b ≤ 6; FX-06 ≤ 4; FX-03 ≤ 12 si se desbloquea. Cuota de la suscripción ChatGPT existente; en I-61 cada invocación usó ≈ 45 000-115 000 tokens de entrada; coste monetario UNKNOWN |
+| Seguridad | solo el hash del archivo y nombres saneados; nunca valores; `auth.json` no se lee. P-01/P-11 comparan la huella en cada cesión |
+| Recomendación | **APROBAR (A, línea base actual)**; antes era B. Motivo medido: la huella lleva ≈ 29 h sin cambiar y la app no se ha actualizado, así que aceptarla ahora deja F6 sin otra pregunta. Si cambia antes del uso, P-01 la detecta y se vuelve a preguntar, que es exactamente lo que B haría siempre |
+| Aprobar | `OD-2 = A (línea base 091540ED2DE6CFAC5C12110337305FFCABCEEEE0D8CB696F7E04EA057F9F3D66)` |
+| Rechazar | `OD-2 = RECHAZAR` — ninguna invocación de `codex-cli`: FX-02, FX-04b y FX-03 UNVERIFIED; FX-06 solo con `claude-cli` (OD-3); F6 no cierra por FX-02 |
+
+## OD-4 — Sandbox de `codex-cli` con escritura (Worker Codex)
+
+**Definición congelada** (§18; D.3; D.4): sandbox de Codex para escritura. **Bloquea:** los Workers Codex con escritura de la topología B (FX-03) y de
+FX-04b (rebinding a `codex-cli` con escritura porque B no puede lanzar subagentes de Claude).
+
+| Punto | Contenido |
+|---|---|
+| Hechos medidos | la clave `windows.sandbox` existe en `config.toml` (valor no leído; I-61 registró `unelevated` el 2026-09-30); servicio `codex-windows-sandbox-service` vivo; `~/.codex/.sandbox-bin/codex.exe` de 2026-09-12. **Medición previa de I-61 (sonda P2, 2026-09-30, `workspace-write` en una réplica de `%TEMP%`):** 4 rechazos del sandbox al crear procesos (incluido `dotnet --version`) y un commit fallido; además, la propia CLI añadió a `config.toml` una entrada `[projects.<ruta>] trust_level` (DEV-G1C-01). Desde entonces la app se actualizó (26.930.x); la capacidad no se ha vuelto a medir |
+| Qué se autoriza | invocar `codex-cli` con `-s workspace-write` **solo** con `-C` dentro de `D:\r62-fixture\` y `AllowedWriteScope` del contrato: ≤ 2 sondas de escritura y el Worker de FX-04b (y de FX-03 si se desbloquea), ≤ 2 por escenario |
+| Qué desbloquea | medir la escritura de Codex: FX-04b pasa de UNVERIFIED a PASS o a **UNSUPPORTED con causa medida** (resultado legítimo para la decisión del Owner, OV-I62-05 b); el Worker de FX-03 |
+| Qué NO autoriza | cambiar `windows.sandbox`, activar el sandbox elevado o crear cualquier permiso del sandbox o del sistema; escribir fuera del fixture o en RackCad; aceptar un cambio de huella: si la CLI añade otra vez una entrada de confianza a `config.toml`, es **P-01 → STOP** y una solicitud nueva de OD-2 |
+| Consumo, coste y tiempo | dentro de los topes de Codex de OD-2 (sondas de escritura ≤ 2; Worker ≤ 2 por escenario); misma cuota de suscripción |
+| Seguridad | escritura acotada al worktree del fixture por el sandbox de Codex y por `AllowedWriteScope`; el push al fixture usa la autenticación de Git del Owner (con OD-7); riesgo conocido: reescritura de `config.toml` por la CLI, contenida por P-01 |
+| Recomendación | **APROBAR (A, solo en el fixture).** Motivo: con coste acotado convierte la incógnita de FX-04b en un resultado medido. La medición de I-61 hace probable un UNSUPPORTED con el sandbox no elevado, y ese UNSUPPORTED con causa ya es la evidencia que el Freeze pide para la decisión del Owner. Sin OD-4 solo queda UNVERIFIED |
+| Aprobar | `OD-4 = A (workspace-write solo en D:\r62-fixture)` |
+| Rechazar | `OD-4 = RECHAZAR` — FX-04b y FX-03 UNVERIFIED por falta de OD; FX-04a no cambia |
+
+## OD-3 — Autenticar la CLI de Claude
+
+**Definición congelada** (§18): autenticar Claude CLI. **Bloquea:** `claude-cli` en la topología B (Reviewer y Architect de FX-03). Momento: antes de F6 B.
+FX-06 puede usar `claude-cli` como alternativa a `codex-cli` para sus Architects.
+
+| Punto | Contenido |
+|---|---|
+| Hechos medidos | `~/.local/bin/claude.exe` versión de archivo **2.1.270.0**, SHA-256 `FD7F35EC7761195A…`, de 2026-09-12: los mismos que en la preparación anterior; **no** está en el `PATH`, pero puede invocarse por ruta absoluta (no hace falta tocar el `PATH`). Estado de autenticación: **UNKNOWN**; observarlo exige ejecutar la CLI (no se hizo) y nunca se leen credenciales; el Discovery de I-62 la registró NOT_AUTHENTICATED |
+| Qué se autoriza | que **el Owner** (nunca la sesión) autentique `claude.exe` 2.1.270 en su perfil; después, ≤ 2 sondas de medición (operaciones 2-9 del descriptor) y el Reviewer y el Architect de FX-03 (≤ 4 invocaciones) dentro del fixture |
+| Qué desbloquea | `claude-cli` en FX-03 (que además necesita OD-2, OD-4 y la escritura de Codex); un Architect alternativo para FX-06 |
+| Qué NO autoriza | que la sesión vea o lea credenciales; cambiar el `PATH`; usar `claude-cli` fuera del fixture o en un rol real de RackCad; superar los topes |
+| Consumo, coste y tiempo | `claude-cli` ≤ 4 + 2 sondas en FX-03 (+ hasta 4 si FX-06 lo usara); cuota del plan de Claude del Owner; una autenticación interactiva hecha por el Owner (minutos) |
+| Seguridad | la CLI guarda una credencial nueva en el perfil del usuario, que el protocolo nunca lee; corre sin sandbox del SO, con las herramientas que permita la receta (solo lectura para Reviewer y Architect) |
+| Recomendación | **RECHAZAR por ahora**; antes era condicional. Motivo medido: FX-03 solo puede ser PASS si el Worker Codex escribe, y la medición de I-61 (P2) indica que esa escritura falla con el sandbox no elevado. Así, autenticar ahora añadiría una credencial con poco valor esperado. FX-06 no depende de OD-3 si se aprueba OD-2 (Architects `codex-cli`, proveedor distinto del de A, PREFERRED). FX-03 no se retira: queda UNVERIFIED y el Owner decide su limitación (OV-I62-04). **Revisión prevista:** si la sonda de OD-4 demuestra la escritura de Codex, la sesión volverá a pedir OD-3 con ese hecho |
+| Aprobar | `OD-3 = A (el Owner autentica claude.exe 2.1.270)` |
+| Rechazar | `OD-3 = RECHAZAR` — FX-03 UNVERIFIED (falta OD-3); FX-06 solo con `codex-cli` |
+
+## Recordatorios (sin solicitud)
+
+- **OD-6:** decidida (alternativa 1, decisiones §30); no se revisa.
+- **OD-1:** antes de READY-03 (aceptación de ADR-0048 y deltas OWNER-RESERVED); no bloquea F6 y no se pide todavía.
+- **DEP-F4-YAML:** no hizo falta (F4 cerrado sin dependencia nueva).
+
+---
+
+## Historial — revisión del 2026-10-04 (conservada; sustituida por la de arriba)
+
+| Decisión | Recomendación de entonces | Respuesta en una línea | Desbloquea | Si no |
 |---|---|---|---|---|
 | OD-2 | **B** | `OD-2 = B` (medir justo antes de la primera invocación de `codex-cli` y aceptar ese valor) | sondas y FX-02, FX-03, FX-04b, FX-06 por `codex-cli`; observación completa de C-06 | esos escenarios UNVERIFIED; `codex-cli` sigue UNKNOWN/NOT_ELIGIBLE |
 | OD-3 | según el uso deseado de la topología B | `OD-3 = A` o `OD-3 = B` | FX-03; FX-06 por `claude-cli`; un transporte limpio de Architect sin clic (Track H) | FX-03 UNVERIFIED |
 | OD-4 | **A** solo en el fixture | `OD-4 = A` | Worker Codex de FX-03 y FX-04b | FX-03/FX-04b UNVERIFIED o UNSUPPORTED |
 | OD-5 | **A** | `OD-5 = A` | todo F6, empezando por FX-04a (listo para un comando) | F6 no se ejecuta |
 | OD-7 | **A** | `OD-7 = A` (repositorio privado del fixture con CI) | cierre de F6 (FX-02), FX-04b, FX-06 paso 5 | F6 no cierra |
-| DEP-F4-YAML | — | **ninguna**: no hace falta (§DEP-F4-YAML) | — | — |
-| OD-1 | — | antes de READY-03 (recordatorio) | aceptación de ADR-0048 y deltas OWNER-RESERVED | READY-03 no avanza |
-
-## OD-2 — Línea base de huella de `codex-cli`
-
-**Recomendación: B.** La huella cambia sola con las actualizaciones de la app, así que una línea base aceptada por adelantado envejece antes de usarse (MEASURED,
-abajo).
-
-| Opción | Efecto | Riesgo |
-|---|---|---|
-| A | aceptar ahora `091540ED…` (observada el 2026-10-04) como línea base | puede quedar obsoleta otra vez antes de F6; la primera invocación daría P-01 y habría que volver a decidir |
-| **B** | justo antes de la primera invocación afectada, la sesión mide (sin invocar) y el Owner acepta ese valor en una línea | ninguno nuevo; cada cesión compara salida con la línea base y entrada con salida (P-01/P-11) |
-| C | no autorizar ahora | FX-02, FX-03, FX-04b y FX-06 por `codex-cli` quedan UNVERIFIED; F6 no cierra por FX-02 |
-
-- **Seguridad:** solo el hash del archivo y los nombres de secciones y claves, saneados; nunca valores ni credenciales. `auth.json` no se lee.
-- **Consumo:** suscripción existente con autenticación por ChatGPT; sondas ≤ 2; después, los topes de D.3.
-- **Sigue bloqueado con cualquier opción:** la escritura del Worker Codex (OD-4) y el cierre de F6 sin CI (OD-7).
-- **Se desbloquea:** la primera invocación medida de `codex-cli` (sondas de F6) y, con ello, la elegibilidad de su celda.
 
 **Medición pasiva del 2026-10-04 (MEASURED, sin ejecutar ningún binario):**
 
@@ -44,7 +144,7 @@ abajo).
 | binarios `codex.exe` (sin ejecutar) | `…\app\resources\codex.exe` (paquete actual), SHA-256 `37762753B554982E…`, idéntico a `~/.codex/plugins/.plugin-appserver/codex.exe`; `~/.codex/.sandbox-bin/codex.exe`, SHA-256 `081E4DE4BE8E38FA…`, de 2026-09-12. La ruta antes verificada (`bin/a51e250fa15c740a`, `0.159.2`) ya no aparece |
 | `codex` en el `PATH` | no |
 
-**Cronología de la huella:**
+**Cronología de la huella (con la medición del 2026-10-06):**
 
 | SHA-256 | Momento | Causa del cambio desde la anterior |
 |---|---|---|
@@ -52,62 +152,9 @@ abajo).
 | `42E15A03…` | G0 de I-62 | UNKNOWN |
 | `40c27b57…` | revisiones del Architect de I-62, hasta ~18:45Z del 2026-10-02 | UNKNOWN |
 | `155933B3…` | línea base aceptada por el Owner para I-63, 21:42Z del 2026-10-02 | KNOWN: actualización y reinicio de la app (21:31Z) |
-| `091540ED…` | observada el 2026-10-04 (escrita a las 21:39Z) | UNKNOWN; coincide con una actualización de la app (2377 → 3930), sin demostrar la relación |
+| `091540ED…` | observada el 2026-10-04 (escrita a las 21:39Z); **sin cambios el 2026-10-06T02:26Z** | UNKNOWN; coincide con una actualización de la app (2377 → 3930), sin demostrar la relación |
 
-**Nota para el Coordinator (otra unidad):** la línea base de I-63 (`155933B3…`) ya no es la huella actual. No se actúa sobre I-63; se informa.
-
-## OD-3 — Autenticar la CLI de Claude
-
-**Recomendación:** A si el Owner quiere la topología B y un transporte de Architect que no exija un clic (Track H); si no, B.
-
-| Opción | Efecto | Riesgo |
-|---|---|---|
-| A | el Owner instala `claude` en el `PATH` y lo autentica antes de F6 B | un archivo de credenciales en el perfil del usuario, que el protocolo nunca lee; la huella del adapter se demuestra después |
-| B | no autenticar | FX-03 UNVERIFIED; el Owner decide la limitación (OV-I62-04); FX-06 solo por `codex-cli` |
-
-- **Seguridad:** la sesión nunca ve credenciales. **Consumo:** el del plan autenticado; sondas ≤ 2.
-- **Desbloquea:** FX-03; FX-06 por `claude-cli`; la revisión limpia de un Architect lanzada por un proceso, sin clic. **Sigue bloqueado:** FX-03 necesita además OD-4.
-
-## OD-4 — Sandbox de `codex-cli` con escritura (Worker Codex)
-
-**Recomendación: A**, limitada al worktree del fixture.
-
-| Opción | Efecto | Riesgo |
-|---|---|---|
-| **A** | `workspace-write` para el Worker Codex solo en el fixture | escritura acotada por `AllowedWriteScope`; un cambio de `config.toml` sería P-01 |
-| B | no autorizar | FX-04b y FX-03 UNVERIFIED o UNSUPPORTED; FX-04a no cambia |
-
-- **Seguridad:** nunca en el worktree de RackCad. **Consumo:** Worker ≤ 2 por escenario. **Credenciales:** el push al fixture usa la autenticación de Git del Owner (OD-7).
-
-## OD-5 — Permiso de ensayo y sesiones del sistema bajo prueba
-
-**Recomendación: A.**
-
-| Opción | Efecto | Riesgo |
-|---|---|---|
-| **A** | aceptar la semántica única de §15 y autorizar F6 con los topes de D.3; el Owner abre las sesiones A, B y B2 cuando la receta lo pide | consumo dentro de los topes; P-16 y FX-05 protegen el plano real |
-| B | no aceptar | F6 no procede; otra vía exige una A-n (§15) |
-
-- **Desbloquea:** FX-01 y **FX-04a**, que tiene receta de un comando (`f6/recipes.md`; prototipo `f6/fx04a/fx04a_proto.py` PASS); FX-05. **Sigue bloqueado:** FX-02/FX-04b/FX-06 sin OD-7 y OD-2.
-
-## OD-7 — Remoto del fixture con CI
-
-**Recomendación: A** (repositorio privado del Owner, sin secretos, solo FX-U1).
-
-| Opción | Efecto | Riesgo |
-|---|---|---|
-| **A** | repositorio del fixture con un flujo `fixture-build` + `fixture-tests` | minutos de CI; ningún dato real |
-| B | no crearlo | `Ci` = `not_run`: F6 queda pendiente con UNVERIFIED; aceptar la limitación no convierte en PASS una verificación incompleta |
-
-## DEP-F4-YAML — ya no hace falta (sin decisión)
-
-Prototipo medido en `f4/yaml-subset/`: lector con fallo cerrado del subconjunto exacto de `state/v2` y su escritor canónico. 27/27 casos (incluidos dos puntos
-con comillas, sangría inválida, clave duplicada, ancla, alias, escalar multilínea y lista mal formada), ida y vuelta exacta de un `state/v2` completo de 217
-líneas, 4/4 mutaciones del lector detectadas. Sobre los 39 archivos de estado reales: el modo HEADER (lo que lee el clasificador E.2) extrae `claim_id` de 38;
-el que falta no es un estado `rackcad-automation-state`. **Resultado: DEP-F4-YAML = NOT NEEDED**, a condición de que F4 fije el escritor canónico en el
-procedimiento y que el validador rechace todo lo demás (22 de los 39 `/v1` reales usan construcciones fuera del subconjunto, como escalares plegados `>-`).
-No se solicita YamlDotNet.
-
-## OD-1 — ADR sucesor y deltas reservados (recordatorio)
-
-Aceptación de ADR-0048 y de los deltas OWNER-RESERVED. **Momento:** antes de READY-03 (V14 §18). Hoy no bloquea ningún gate de implementación.
+**OD-3 en 2026-10-04:** A si el Owner quería la topología B y un transporte de Architect sin clic (Track H); si no, B. Opción A de entonces: «el Owner
+instala `claude` en el `PATH` y lo autentica» (sustituida: no hace falta tocar el `PATH`). **OD-4 en 2026-10-04:** A, `workspace-write` solo en el
+fixture. **OD-5 en 2026-10-04:** A. **OD-7 en 2026-10-04:** A, repositorio privado del Owner, sin secretos, solo FX-U1. **DEP-F4-YAML:** no hacía falta
+(prototipo `f4/yaml-subset/`, 27/27 casos).
