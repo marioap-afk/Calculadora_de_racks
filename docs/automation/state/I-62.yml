@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: F6 en el fixture: A. GitHub Actions del fixture (bloqueo principal) sigue sin corridas aunque el repositorio ya es público (decisions §48; facturación de privados refutada); el Owner lo inspecciona con su sesión o autoriza R1 (deshabilitar y habilitar el flujo) u otra acción de docs/automation/evidence/I-62-F6/kits/README.md §1; OD-2c = A (codex-cli disponible con revalidación); E. después se pide abrir el Principal A; Ci = not_run; F6 GATE PASS no autodeclarado.
+  next_action: F6 en el fixture (decisions §49): el Owner abre el Principal A en D:/r62-fixture/A para FX-01 (secuencia de effort en docs/automation/evidence/I-62-F6/kits/README.md §3); después G0, QU, contrato de T1, QH y terminación de A para FX-04a; CI del fixture recuperada de forma provisional (R2), a confirmar con el push del BOOTSTRAP a fx/u1; F6 GATE PASS no autodeclarado.
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual

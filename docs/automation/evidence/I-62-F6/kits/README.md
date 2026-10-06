@@ -1,34 +1,17 @@
 # I-62 F6 — Tarjeta del Owner (fronteras humanas; nada de esto lo hace la sesión)
 
-Orden preferido del Coordinator ([decisiones](../../../decisions/I-62.md) §47): **A.** GitHub Actions del fixture → **B.** dos sondas de OD-2b-PROBE
-(hechas) → **C.** paquete OD-2c (hecho) → **D.** OD-2c (**decidida: A**, §48) → **E.** solo entonces se pide abrir el Principal A. La apertura de A
-**no se pide todavía**: falta A.
+Orden del Coordinator ([decisiones](../../../decisions/I-62.md) §47 y §49): A. GitHub Actions del fixture (R1 sin efecto; R2 con corridas,
+clasificación A provisional) → B-C. sondas y paquete OD-2c (hechos) → D. OD-2c (decidida: A, §48) → E. **apertura del Principal A autorizada sin esperar
+a Actions (§49) y pedida al Owner** para FX-01 y FX-04a.
 
-## 1. A — GitHub Actions del fixture (bloqueo principal: sin CI, FX-02 no puede ser PASS y F6 no cierra)
+## 1. A — GitHub Actions del fixture (recuperado de forma provisional, decisiones §49)
 
-**Estado (2026-10-06T16:04Z;** [diagnóstico](../CI/actions-diagnostic-public.json)**):** el fixture es **público** desde las 15:50:43Z (OD-7 corregida,
-§48), tras una auditoría previa limpia ([public-audit.json](../CI/public-audit.json)). El commit vacío `a0a3d483` en `ci/smoke` (15:51:00Z) **no creó
-ninguna corrida**: la hipótesis de la facturación de repositorios privados queda refutada. GitHub procesa los pushes (check suite de la app `claude`), el
-flujo `fixture` está activo, con bytes limpios y el mismo `on: push:` vacío que el de RackCad, que sí corre. La causa es desconocida y específica de este
-repositorio. El diagnóstico anterior, con el repositorio privado, está en [actions-diagnostic.json](../CI/actions-diagnostic.json).
-
-**Comprobación del Owner con su sesión de GitHub** (ve avisos que la API y la vista anónima no muestran; anota el texto literal):
-1. `https://github.com/marioap-afk/rackcad-i62-fixture/actions`: ¿hay un aviso arriba (flujos que no se ejecutan, botón para habilitarlos, restricción
-   de la cuenta)? ¿Aparece el flujo `fixture` como deshabilitado?
-2. `https://github.com/marioap-afk/rackcad-i62-fixture/actions/workflows/fixture.yml`: ¿aviso propio del flujo?
-3. `https://github.com/marioap-afk/rackcad-i62-fixture/settings/actions`: debe decir «Allow all actions and reusable workflows» (la API ya lo confirma);
-   anota cualquier aviso.
-
-**Acciones posibles sobre el fixture** (cada una necesita una autorización tuya; ninguna toca RackCad ni expone nada):
-- **R1 (recomendada):** la sesión deshabilita y vuelve a habilitar el flujo `fixture` (`gh workflow disable` / `enable`; reversible) y empuja otro commit
-  vacío en `ci/smoke`. Fuerza un registro nuevo del flujo, que pudo quedar mal desde el primer push al repositorio vacío.
-- **R2:** la sesión empuja solo en `ci/smoke` un cambio del archivo del flujo que añade `workflow_dispatch:` (sin tocar `main` ni `fx/u1`) y lo
-  dispara a mano; si corre, el registro estaba roto.
-- **R3:** recrear el repositorio público con las mismas refs, solo si GitHub lo exige (cambia el id del repositorio y la evidencia de CI anterior).
-- Ticket a GitHub Support con el repositorio `1406872390` y los SHAs `7cf79ffc`, `54f2a4a8` y `a0a3d483`.
-
-Si encuentras y corriges la causa, dile a la sesión «Actions corregido»: empuja un commit vacío en `ci/smoke` y registra la corrida (id, evento, ref,
-SHA exacto, jobs `fixture-build` y `fixture-tests`, conclusión), sin heredar CI entre SHAs.
+**R1** (flujo deshabilitado y habilitado, commit vacío `4a276c75` en `ci/smoke`): 0 corridas. **R2** (solo en `ci/smoke`, `workflow_dispatch:` añadido
+al flujo, commit `7d053246`): corrida `push` 37515854486 y corrida manual 37515901956, las dos con `fixture-build` y `fixture-tests` en `success`
+([actions-recovery-r1-r2.json](../CI/actions-recovery-r1-r2.json)). **Clasificación A provisional:** falta un push sin cambio del flujo en una rama con el
+archivo original; lo dará el primer push real a `fx/u1` (el BOOTSTRAP del Principal A). Si ese push no crea corrida: clasificación B (push defectuoso) y
+nueva decisión del Coordinator; R3 sigue sin autorizar. Historial: con el repositorio privado y después público, 0 corridas
+([actions-diagnostic.json](../CI/actions-diagnostic.json), [actions-diagnostic-public.json](../CI/actions-diagnostic-public.json)).
 
 ## 2. D — OD-2c: decidida (A, decisiones §48)
 
@@ -36,10 +19,9 @@ Línea base aceptada: `9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2B
 el binario antes de cada invocación, y un cambio vuelve a ser P-01 / STOP sin aceptar nada. Paquete en
 [owner-decision-packets.md](../../I-62-prep/owner-decision-packets.md) §OD-2c.
 
-## 3. E — Abrir el Principal A (FX-01; después el arranque, FX-02, FX-06 y el QH de FX-04a) — todavía no
+## 3. E — Abrir el Principal A (FX-01; después el arranque, el QH de FX-04a, y FX-02 y FX-06 con la CI) — autorizado (§49), pedido al Owner
 
-Se pedirá cuando A (Actions) esté resuelto; D ya está decidida. FX-01 y FX-04a no necesitan la CI del fixture: adelantarlos es decisión del Coordinator.
-El procedimiento queda preparado:
+El Coordinator autorizó FX-01 y FX-04a sin esperar a Actions (§49). Procedimiento:
 1. En la app de Claude, una **sesión nueva** con directorio `D:\r62-fixture\A`, modelo `claude-opus-5-5`, effort **`high`** (insuficiente a propósito: el
    requerido de PRINCIPAL_COORDINATION es Long-horizon = `xhigh`).
 2. Primer mensaje (sin hechos de la unidad):
@@ -57,6 +39,17 @@ Los mensajes `continúa` son estímulos del ensayo FX-01, no relevos de un rol: 
 La sesión de supervisión acredita la terminación de A, calcula el oráculo (`FX-04a/fx04a_real.py oracle`) y publica solo su SHA-256 antes de que B
 empiece; prepara el clon limpio `D:\r62-fixture\B` en el QH. El Owner abre una sesión de la **app de Codex** en `D:\r62-fixture\B` y le pega el
 contenido de `FX-04a/B-prompt.md` con `FX-04a/response.schema.json`. Después, B2 para N11 igual, en `D:\r62-fixture\B2`.
+
+**Antes de abrir B (preparación de la sesión de supervisión; decisión del Coordinator donde se indica):**
+- **QH sin el Q7 de FX-02** (D.3, FX-04a paso 1): tras el QU de A, el Coordinator del fixture emite el contrato de T1 y una orden de QH; A publica QH con
+  `task_intent` = T1 (`Attempt` vigente, FIRST, contrato custodiado, Controller de planificación con binding pendiente), `principal.state` = RELEASED y
+  `window` CLOSED, y termina. Se registra como «hechos más pobres». FX-02 llegará después con A reabierto (tope de 2 sesiones de A, D.3).
+- **Entradas automáticas de B (D.6):** se enumeran con ruta y SHA-256 antes de que B empiece: `~/.codex/AGENTS.md` (hoy 0 bytes), `config.toml` (solo
+  hash), `rules/`, `skills/` y las memorias de Codex (`memories_1.sqlite`, `memories/`). La comprobación de que ninguna lleva hechos de FX-U1 o del
+  fixture es mecánica (búsqueda de identificadores, sin publicar contenido). Si una los lleva: aislamiento UNVERIFIED y decisión antes de abrir B.
+- **Huella (decisión del Coordinator):** abrir B y B2 en directorios nuevos con la app de Codex puede añadir entradas de proyecto a `config.toml` (D.7:
+  `codex-desktop-session` comparte el archivo, UNVERIFIED en F2) y dejaría `codex-cli` en P-01 hasta una nueva línea base exacta. Opciones: aceptar ese
+  riesgo y medir antes y después de B (paquete exacto si cambia), o decidir otra cosa antes de abrir B.
 
 ## 5. Límites ya medidos (para decidir, no para ejecutar)
 

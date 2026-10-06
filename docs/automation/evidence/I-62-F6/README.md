@@ -2,7 +2,7 @@
 
 ```text
 Autoridad:  Freeze V14 + A-1 AGREED + F4 GATE PASS; decisiones del Owner OD-5/OD-7/OD-2/OD-4 = A, OD-3 = RECHAZAR (§46), OD-2b-PROBE = A (§47), OD-7 corregida a PÚBLICO y OD-2c = A (§48)
-Orden:      orden nocturna de F6 (§46) y disposición del Coordinator tras la primera ejecución (§47); I-61 sigue activa; superficies I62 inactivas en RackCad
+Orden:      orden nocturna (§46), disposición tras la primera ejecución (§47), corrección de OD-7 (§48) y orden de continuación (§49); I-61 sigue activa; superficies I62 inactivas en RackCad
 Estado:     F6 EN CURSO; F6 GATE PASS no se autodeclara
 ```
 
@@ -11,14 +11,14 @@ Estado:     F6 EN CURSO; F6 GATE PASS no se autodeclara
 | Escenario | Estado | Causa exacta | Próximo paso |
 |---|---|---|---|
 | F6-A fixture D.1 | **hecho** (pasos 1-4) | — | pasos 5-6 los publica el Principal A (su preflight CUSTODY es suyo, §8.6) |
-| CI del fixture | **`Ci` = `not_run`** (bloqueo principal) | repositorio **público** desde 15:50:43Z (§48; auditoría previa limpia en [CI/public-audit.json](CI/public-audit.json)); commit vacío `a0a3d483` en `ci/smoke` (15:51:00Z) sin corrida hasta 16:03:50Z. Antes, privado: 3 pushes sin corrida. GitHub procesa los pushes; flujo activo y bien formado, igual que el de RackCad, que sí corre. Facturación de privados **refutada**; causa desconocida ([diagnóstico](CI/actions-diagnostic-public.json)) | comprobación del Owner con su sesión de administrador o una acción nueva autorizada (R1-R3 en `kits/README.md` §1); sin bypass |
+| CI del fixture | **recuperada de forma provisional (clasificación A, §49)** | público desde 15:50:43Z (§48); R1 (deshabilitar y habilitar el flujo, commit vacío `4a276c75`): 0 corridas; R2 (`workflow_dispatch:` solo en `ci/smoke`, commit `7d053246`): corrida `push` 37515854486 y manual 37515901956, ambas con `fixture-build` y `fixture-tests` en `success` ([actions-recovery-r1-r2.json](CI/actions-recovery-r1-r2.json)) | confirmar push sin cambio del flujo en `fx/u1` (BOOTSTRAP de A); si no corre, clasificación B |
 | FX-05 / C-27 | **PASS** (corrida 2; confirmado por el Coordinator, §47) | la corrida 1 se conserva como inválida | no se repite salvo que su evidencia se invalide |
 | OD-4 sondas | **medido**: sonda 1 de ≤ 2 | escritura de archivos y herramientas SUPPORTED; **commit UNSUPPORTED** (`.git/index.lock` denegado por el sandbox); fuera del espacio bloqueado | sin segunda sonda: transporte en STOP |
 | OD-2b-PROBE | **hecho** (2 sondas `read-only`, §47) | sonda 1 en `A` (`gpt-6-luna`/`high`) y sonda 2 en `arch` (`gpt-6.1-sol`/`high`): huella `9002E854…` antes y después de cada una; ninguna entrada nueva; `read-only` no crea entradas, `workspace-write` sí ([result.json](OD-2b-PROBE/R20261006T150704Z-od2b/result.json)) | — |
 | OD-2 | **OD-2c = A** (§48): línea base `9002E854…` | la sonda de OD-4 había añadido `[projects.'d:\r62-fixture\probe-od4-1']` (`trust_level`): `091540ED…` → `9002E854…` | `codex-cli` disponible con la huella y el binario revalidados antes de cada invocación; un cambio es P-01 / STOP |
-| FX-01 / C-23 | **HUMAN_LAUNCH_REQUIRED** (no se pide todavía) | la sesión A del sistema bajo prueba la abre el Owner; el effort lo cambia el Owner entre los tres preflights | después de Actions (orden del Coordinator, §47; OD-2c ya decidida); no necesita CI: adelantarlo lo decide el Coordinator |
+| FX-01 / C-23 | **HUMAN_LAUNCH_REQUIRED** (pedida al Owner, §49) | la sesión A la abre el Owner y cambia el effort entre los tres preflights; comprobaciones previas hechas (evidencia §66) | tarjeta `kits/README.md` §3 |
 | FX-02 / C-24 | **UNVERIFIED** (bloqueado) | sin sesión A; `Ci` = `not_run` (`codex-cli` ya disponible: OD-2c = A) | Actions + sesión A |
-| FX-04a / C-25a | **HUMAN_LAUNCH_REQUIRED** | necesita QH publicado por A, la terminación de A acreditada y la sesión B abierta por el Owner | kit `kits/FX-04a/` listo |
+| FX-04a / C-25a | **HUMAN_LAUNCH_REQUIRED** | QH de A tras el BOOTSTRAP con T1 planificada (hechos más pobres), terminación de A acreditada, entradas automáticas de B enumeradas y sesión B abierta por el Owner; decisión previa sobre la huella al abrir B | tarjeta §4 |
 | FX-04b / C-25b | **UNSUPPORTED** (medido) | el Worker Codex no puede hacer commit (OD-4, sonda 1); ningún otro adapter lanzable por B tiene escritura acreditada (`claude-cli` rechazado, OD-3) | decisión del Owner sobre la limitación (OV-I62-05 b) |
 | FX-06 / C-39 | **UNVERIFIED** | sin sesión A; sin CI para el paso 5 (`codex-cli` disponible: OD-2c = A; celda del Architect `gpt-6.1-sol`/`high` medida) | Actions + sesión A |
 | FX-03 / C-26 | **UNVERIFIED** (OD-3 = RECHAZAR) | además, el Worker Codex no puede hacer commit: con OD-3 sería UNSUPPORTED | limitación para OV-I62-04; no se retira |

@@ -2455,3 +2455,24 @@ solo desde artefactos custodiados.
   runs», sin aviso). GitHub Actions operativo; RackCad, con el mismo `on: push:` vacío, sí corre.
 - **Resultado: `Ci` = `not_run` sigue.** La hipótesis de la facturación de repositorios privados queda **refutada**. La causa es desconocida y específica de
   este repositorio. Siguiente paso: inspección del Owner con sesión de administrador, o una acción nueva autorizada sobre el fixture (ver la tarjeta §1).
+
+## 66. Orden de continuación (decisiones §49): R1 sin corridas, R2 con corridas push y manual, y preparación de FX-01
+
+- **R1** ([actions-recovery-r1-r2.json](I-62-F6/CI/actions-recovery-r1-r2.json)): flujo `fixture` (id `376133872`) deshabilitado a las 18:52:01Z
+  (`disabled_manually`) y habilitado a las 18:52:04Z (`active`), sin tocar el archivo; commit vacío `4a276c75f98811881d10b831048406016be41a08` en
+  `refs/heads/ci/smoke` (padre `a0a3d483`), ref remota verificada a las 18:52:09Z. **0 corridas** hasta las 19:01:28Z: R1 no basta.
+- **R2:** commit `7d053246526861247cc117d4e2a95203bbe20eb2` en `ci/smoke` (padre `4a276c75`) que añade solo la línea `  workflow_dispatch:` bajo `on:`,
+  tras `  push:`; jobs, permisos, runner, acciones y comandos sin cambios; `main`, `fx/u1` y `fixture/i62-norm` conservan el flujo original. El push
+  (19:01:39Z) creó la corrida **`push` 37515854486** (`refs/heads/ci/smoke`, `head_sha` `7d053246`, `fixture-build` y `fixture-tests` en `success`); el
+  disparo manual (19:02:07Z) creó la corrida **`workflow_dispatch` 37515901956** (mismo ref y SHA, los dos jobs en `success`).
+- **Clasificación de `Ci`: A, provisional.** La ejecución funciona y el disparo `push` volvió con el commit que cambió el archivo del flujo. Falta ver un
+  push sin cambio del flujo en una rama con el archivo original: lo probará el siguiente push real a `fx/u1` (el BOOTSTRAP del Principal A). Hipótesis
+  compatible, no demostrada: el registro del flujo del primer push al repositorio vacío quedó mal y el cambio del archivo lo renovó. R3 no se usó.
+- **Comprobaciones antes de abrir A** (18:54Z): clon `D:\r62-fixture\A` en `54f2a4a8` (`fx/u1`), igual a `origin` y a `github`, `status --ignored` vacío,
+  identidad local `fixture <fixture@example.invalid>`; ninguna sesión de la app (activa ni archivada) en `D:\r62-fixture`; ningún directorio de memoria de
+  Claude para `D:\r62-fixture`; sin `CLAUDE.md` global; huella de `config.toml` = `9002E854…` (OD-2c). La apertura de A se pidió al Owner con la secuencia
+  de effort de FX-01 (tarjeta §3); sin respuestas del oráculo en ningún mensaje.
+- **Preparación de B (FX-04a), hecho nuevo para decidir antes de abrir B:** `~/.codex` tiene memorias de Codex (`memories_1.sqlite`) y un `AGENTS.md`
+  global vacío; D.6 exige enumerar con su SHA-256 las entradas automáticas de B y comprobar que ninguna lleve hechos de la unidad. Además, abrir B en
+  un directorio nuevo con la app de Codex puede añadir una entrada de proyecto a `config.toml` (la app comparte el archivo según D.7: UNVERIFIED en F2),
+  lo que sería P-01 para `codex-cli`. Ver la tarjeta §4.

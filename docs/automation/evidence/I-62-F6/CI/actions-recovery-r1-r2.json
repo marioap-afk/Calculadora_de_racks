@@ -1,0 +1,107 @@
+{
+  "ObservedUtc": "2026-10-06T19:03:32Z",
+  "Authority": "orden de continuación del Coordinator (decisiones §49): R1 autorizado; R2 autorizado si R1 falla; R3 no autorizado",
+  "Workflow": {
+    "id": 376133872,
+    "name": "fixture",
+    "path": ".github/workflows/fixture.yml"
+  },
+  "R1": {
+    "Disable": {
+      "Utc": "2026-10-06T18:52:01Z",
+      "StateAfter": "disabled_manually"
+    },
+    "Enable": {
+      "Utc": "2026-10-06T18:52:04Z",
+      "StateAfter": "active",
+      "updated_at": "2026-10-06T18:52:04Z"
+    },
+    "FileModified": false,
+    "EmptyCommit": {
+      "Ref": "refs/heads/ci/smoke",
+      "Parent": "a0a3d48379c316e455049b62fe881446bcdc50f5",
+      "Sha": "4a276c75f98811881d10b831048406016be41a08",
+      "PushedUtc": "2026-10-06T18:52:09Z",
+      "RemoteRefVerified": true
+    },
+    "Poll": "cada 10 s de 18:52:09Z a 19:01:28Z",
+    "Runs": 0,
+    "Result": "FAIL: 0 corridas tras deshabilitar y habilitar el flujo"
+  },
+  "R2": {
+    "Commit": {
+      "Ref": "refs/heads/ci/smoke",
+      "Parent": "4a276c75f98811881d10b831048406016be41a08",
+      "Sha": "7d053246526861247cc117d4e2a95203bbe20eb2",
+      "PushedUtc": "2026-10-06T19:01:39Z",
+      "Diff": ".github/workflows/fixture.yml: +1 línea «  workflow_dispatch:» bajo «on:», tras «  push:»; jobs, permisos, runner, versiones de checkout/setup-dotnet y comandos sin cambios; solo en ci/smoke (main, fx/u1 y fixture/i62-norm conservan el flujo original)"
+    },
+    "Dispatch": {
+      "Utc": "2026-10-06T19:02:07Z",
+      "Api": "POST /repos/{o}/{r}/actions/workflows/376133872/dispatches ref=ci/smoke",
+      "Exit": 0
+    },
+    "Runs": [
+      {
+        "id": 37515854486,
+        "workflow_id": 376133872,
+        "name": "fixture",
+        "event": "push",
+        "ref": "refs/heads/ci/smoke",
+        "head_sha": "7d053246526861247cc117d4e2a95203bbe20eb2",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-06T19:01:47Z",
+        "run_attempt": 1,
+        "html_url": "https://github.com/marioap-afk/rackcad-i62-fixture/actions/runs/37515854486",
+        "jobs": [
+          {
+            "name": "fixture-tests",
+            "conclusion": "success",
+            "started_at": "2026-10-06T19:01:50Z",
+            "completed_at": "2026-10-06T19:02:14Z",
+            "runner_os": "ubuntu-latest"
+          },
+          {
+            "name": "fixture-build",
+            "conclusion": "success",
+            "started_at": "2026-10-06T19:01:51Z",
+            "completed_at": "2026-10-06T19:02:06Z",
+            "runner_os": "ubuntu-latest"
+          }
+        ]
+      },
+      {
+        "id": 37515901956,
+        "workflow_id": 376133872,
+        "name": "fixture",
+        "event": "workflow_dispatch",
+        "ref": "refs/heads/ci/smoke",
+        "head_sha": "7d053246526861247cc117d4e2a95203bbe20eb2",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-06T19:02:08Z",
+        "run_attempt": 1,
+        "html_url": "https://github.com/marioap-afk/rackcad-i62-fixture/actions/runs/37515901956",
+        "jobs": [
+          {
+            "name": "fixture-build",
+            "conclusion": "success",
+            "started_at": "2026-10-06T19:02:12Z",
+            "completed_at": "2026-10-06T19:02:27Z",
+            "runner_os": "ubuntu-latest"
+          },
+          {
+            "name": "fixture-tests",
+            "conclusion": "success",
+            "started_at": "2026-10-06T19:02:12Z",
+            "completed_at": "2026-10-06T19:02:23Z",
+            "runner_os": "ubuntu-latest"
+          }
+        ]
+      }
+    ]
+  },
+  "Classification": "A (provisional): la corrida push 37515854486 apareció con el push del commit de R2, que modificó el archivo del flujo, y la manual 37515901956 también: la ejecución funciona y el disparo push volvió. Lo que no se ha probado todavía es un push que no toque el flujo en una rama con el archivo original (fx/u1): lo probará el siguiente push real a fx/u1 (el BOOTSTRAP del Principal A). Hipótesis compatible, no demostrada: el registro del flujo del primer push quedó mal y el cambio del archivo lo renovó.",
+  "Ci_ci_smoke_7d053246": "pass (fixture-build y fixture-tests en success en la corrida push del SHA exacto)"
+}
