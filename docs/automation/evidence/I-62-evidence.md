@@ -2476,3 +2476,15 @@ solo desde artefactos custodiados.
   global vacío; D.6 exige enumerar con su SHA-256 las entradas automáticas de B y comprobar que ninguna lleve hechos de la unidad. Además, abrir B en
   un directorio nuevo con la app de Codex puede añadir una entrada de proyecto a `config.toml` (la app comparte el archivo según D.7: UNVERIFIED en F2),
   lo que sería P-01 para `codex-cli`. Ver la tarjeta §4.
+
+## 67. P-01 por la actualización de la app de Codex: huella `723A6898…` y binario nuevo (`codex-cli` en STOP; OD-2d)
+
+- **Hecho** ([result.json](I-62-F6/OD-2/R20261006T191621Z-p01/result.json)): en la comprobación de cierre de turno (19:16:21Z), sin ninguna invocación de
+  Codex de la sesión desde las sondas de OD-2b, la huella era `723A68985165BAE40689172F4E573C47FC45D1BA0D19F9192E3120DDD28B18C8` (escrita a las
+  18:58:51Z) en lugar de la línea base de OD-2c `9002E854…`. La app de Codex se actualizó (paquete `26.930.3930.0` → `26.930.7945.0`; binario nuevo
+  `bin\5ea220ae823df3d7`, SHA-256 `3b8f6e33…`, escrito a las 18:56:03Z; el binario aceptado `8aaf1547b825b104` desapareció).
+- **Delta sin valores:** mismos 107 nombres de clave, 39 secciones y 4 775 bytes; cambian valores. La etiqueta del binario nuevo está en
+  `mcp_servers.node_repl.env.CODEX_CLI_PATH`; revertirla sola no reproduce `9002E854…`, así que cambió al menos otro valor (la versión de la app está en
+  `BROWSER_USE_CODEX_APP_VERSION` y `NODE_REPL_TRUSTED_SERVICES`). No se puede probar cuál sin el archivo anterior, que nunca se guarda.
+- **Disposición:** P-01, STOP de `codex-cli`; no se acepta la huella ni el binario nuevos; paquete **OD-2d** para el Owner. FX-01 y FX-04a no usan
+  `codex-cli`. Mitigación: instantánea local con digests HMAC por clave (clave solo en el scratchpad) para localizar cambios futuros por nombre de clave.

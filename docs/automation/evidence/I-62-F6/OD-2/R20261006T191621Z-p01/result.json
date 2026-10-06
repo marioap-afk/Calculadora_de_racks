@@ -1,0 +1,35 @@
+{
+  "RunId": "R20261006T191621Z-p01",
+  "Event": "P-01: cambio de la huella de ~/.codex/config.toml sin ninguna invocación de Codex de la sesión",
+  "Authority": "OD-2c = A (decisiones §48): línea base 9002E854…; todo cambio posterior es P-01 / STOP (decisiones §49 punto 9)",
+  "Before": {
+    "Sha256": "9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E",
+    "Length": 4775,
+    "LastWriteTimeUtc": "2026-10-06T07:23:07.616Z",
+    "ObservedUtc": "2026-10-06T18:54:00Z (comprobación previa a abrir A)"
+  },
+  "After": {
+    "Sha256": "723A68985165BAE40689172F4E573C47FC45D1BA0D19F9192E3120DDD28B18C8",
+    "Length": 4775,
+    "LastWriteTimeUtc": "2026-10-06T18:58:51.308Z",
+    "ObservedUtc": "2026-10-06T19:16:21Z"
+  },
+  "SanitizedStructuralDelta": {
+    "Added": {},
+    "Removed": {},
+    "KeyNames": "107 → 107, idénticos; secciones 39 → 39; misma longitud"
+  },
+  "Cause": {
+    "Observed": "actualización de la app de Codex: paquete OpenAI.Codex 26.930.3930.0 → 26.930.7945.0; binario nuevo bin\\5ea220ae823df3d7\\codex.exe escrito a las 18:56:03Z (directorio creado 18:57:53Z); el binario aceptado bin\\8aaf1547b825b104 ya no existe; config.toml reescrito a las 18:58:51Z",
+    "ValueFreeLocalization": "la etiqueta del binario nuevo aparece una vez, en mcp_servers.node_repl.env.CODEX_CLI_PATH; la versión de la app (token de 12 caracteres) en mcp_servers.node_repl.env.BROWSER_USE_CODEX_APP_VERSION y mcp_servers.node_repl.env.NODE_REPL_TRUSTED_SERVICES",
+    "RevertCheck": "revertir solo la etiqueta del binario da F24C6DCE…, no 9002E854: hay al menos otro valor cambiado; sin el archivo anterior (nunca se guarda) no se puede probar cuál ni que sea solo de la actualización"
+  },
+  "NewBinary": {
+    "Path": "%LOCALAPPDATA%\\OpenAI\\Codex\\bin\\5ea220ae823df3d7\\codex.exe",
+    "Sha256": "3b8f6e33caa75f232558a3cf76ff9b87bb5ef6dbcf4996372f24e55c78b1b91",
+    "Version": "UNKNOWN (sin metadatos de versión; no se ejecuta en STOP)",
+    "AuthState": "UNKNOWN (no se ejecuta login status en STOP)"
+  },
+  "Disposition": "P-01: STOP del transporte codex-cli; la huella nueva y el binario nuevo NO se aceptan; ninguna invocación de Codex hasta una decisión exacta del Owner (paquete OD-2d). FX-01 y FX-04a no usan codex-cli y siguen.",
+  "Mitigation": "desde ahora, una instantánea local con digests HMAC por clave (clave solo en el scratchpad, nunca publicada) permite localizar por nombre de clave un cambio futuro sin guardar valores (cfg_keyed_digest.py)"
+}

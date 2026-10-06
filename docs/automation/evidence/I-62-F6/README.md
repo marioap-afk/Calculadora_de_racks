@@ -15,12 +15,12 @@ Estado:     F6 EN CURSO; F6 GATE PASS no se autodeclara
 | FX-05 / C-27 | **PASS** (corrida 2; confirmado por el Coordinator, §47) | la corrida 1 se conserva como inválida | no se repite salvo que su evidencia se invalide |
 | OD-4 sondas | **medido**: sonda 1 de ≤ 2 | escritura de archivos y herramientas SUPPORTED; **commit UNSUPPORTED** (`.git/index.lock` denegado por el sandbox); fuera del espacio bloqueado | sin segunda sonda: transporte en STOP |
 | OD-2b-PROBE | **hecho** (2 sondas `read-only`, §47) | sonda 1 en `A` (`gpt-6-luna`/`high`) y sonda 2 en `arch` (`gpt-6.1-sol`/`high`): huella `9002E854…` antes y después de cada una; ninguna entrada nueva; `read-only` no crea entradas, `workspace-write` sí ([result.json](OD-2b-PROBE/R20261006T150704Z-od2b/result.json)) | — |
-| OD-2 | **OD-2c = A** (§48): línea base `9002E854…` | la sonda de OD-4 había añadido `[projects.'d:\r62-fixture\probe-od4-1']` (`trust_level`): `091540ED…` → `9002E854…` | `codex-cli` disponible con la huella y el binario revalidados antes de cada invocación; un cambio es P-01 / STOP |
+| OD-2 | **P-01 / STOP de `codex-cli`** (2026-10-06T19:16Z) | OD-2c aceptó `9002E854…`; la actualización de la app de Codex (`26.930.7945.0`) reescribió `config.toml` (`723A6898…`, mismos nombres de clave, valores cambiados) y sustituyó el binario (`3b8f6e33…`) ([result.json](OD-2/R20261006T191621Z-p01/result.json)) | **OD-2d** del Owner (paquete listo); FX-01 y FX-04a no usan `codex-cli` |
 | FX-01 / C-23 | **HUMAN_LAUNCH_REQUIRED** (pedida al Owner, §49) | la sesión A la abre el Owner y cambia el effort entre los tres preflights; comprobaciones previas hechas (evidencia §66) | tarjeta `kits/README.md` §3 |
-| FX-02 / C-24 | **UNVERIFIED** (bloqueado) | sin sesión A; `Ci` = `not_run` (`codex-cli` ya disponible: OD-2c = A) | Actions + sesión A |
+| FX-02 / C-24 | **UNVERIFIED** (bloqueado) | sin sesión A; `codex-cli` en STOP P-01 hasta OD-2d; CI recuperada de forma provisional | sesión A + OD-2d + confirmar CI en `fx/u1` |
 | FX-04a / C-25a | **HUMAN_LAUNCH_REQUIRED** | QH de A tras el BOOTSTRAP con T1 planificada (hechos más pobres), terminación de A acreditada, entradas automáticas de B enumeradas y sesión B abierta por el Owner; decisión previa sobre la huella al abrir B | tarjeta §4 |
 | FX-04b / C-25b | **UNSUPPORTED** (medido) | el Worker Codex no puede hacer commit (OD-4, sonda 1); ningún otro adapter lanzable por B tiene escritura acreditada (`claude-cli` rechazado, OD-3) | decisión del Owner sobre la limitación (OV-I62-05 b) |
-| FX-06 / C-39 | **UNVERIFIED** | sin sesión A; sin CI para el paso 5 (`codex-cli` disponible: OD-2c = A; celda del Architect `gpt-6.1-sol`/`high` medida) | Actions + sesión A |
+| FX-06 / C-39 | **UNVERIFIED** | sin sesión A; `codex-cli` en STOP P-01 hasta OD-2d (celda del Architect medida con el binario anterior: revalidar tras OD-2d) | sesión A + OD-2d + CI |
 | FX-03 / C-26 | **UNVERIFIED** (OD-3 = RECHAZAR) | además, el Worker Codex no puede hacer commit: con OD-3 sería UNSUPPORTED | limitación para OV-I62-04; no se retira |
 
 ## Identidad del fixture
@@ -65,7 +65,7 @@ de I-62, árbol de estados de `main`). El rechazo lo aplica la sesión de superv
 | Rol | Binding posible | Estado |
 |---|---|---|
 | Principal | `codex-desktop-session` (la abre el Owner) | disponible tras OD-5; huella del adapter UNVERIFIED (F2) |
-| Controller | `codex-cli` (`gpt-6-luna`/`high`) | disponible (OD-2c = A, §48) |
+| Controller | `codex-cli` (`gpt-6-luna`/`high`) | STOP P-01 hasta OD-2d (decisiones §49; evidencia §67) |
 | Worker | `codex-cli` con escritura | **UNSUPPORTED medido**: commit denegado por el sandbox |
 | Reviewer y Architect | `claude-cli` | no autenticado: OD-3 = RECHAZAR (decisión del Owner, no se cambia) |
 

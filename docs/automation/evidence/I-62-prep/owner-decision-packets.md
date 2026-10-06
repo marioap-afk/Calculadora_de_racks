@@ -13,6 +13,9 @@
 > de fixture, de validación o piloto de I-62 es público por defecto y uno privado exige autorización explícita. **OD-2c = A** (línea base exacta
 > `9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E`).
 >
+> **P-01 por la actualización de la app de Codex (2026-10-06T18:58Z):** huella `723A6898…` y binario nuevo; `codex-cli` en STOP; **pendiente del
+> Owner: OD-2d** (paquete abajo).
+>
 > **Disposición del Coordinator (decisiones §47):** OD-2b A2 no se adopta; OD-2b-PROBE = A (autorizada por el Owner; ejecutada). OD-2c (huella exacta
 > `9002E854…`; paquete abajo), decidida en §48. Orden preferido del Coordinator: A. GitHub Actions del fixture; B-C. sondas y paquete (hechos); D. OD-2c; E. apertura del
 > Principal A.
@@ -183,6 +186,34 @@ Paquete pedido por el Coordinator (decisiones §47) tras las dos sondas de OD-2b
 | Recomendación | **ACEPTAR `9002E854…` exacto.** Motivo: el único cambio desde la línea base aceptada es la entrada de directorio medida de la sonda de OD-4, demostrado byte a byte |
 | Aprobar | `OD-2c = A (línea base 9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E)` |
 | Rechazar | `OD-2c = RECHAZAR` — `codex-cli` sigue en STOP: FX-02 y FX-06 UNVERIFIED |
+
+## OD-2d — Línea base de `codex-cli` tras la actualización de la app de Codex (2026-10-06T19:16Z; pendiente de decisión del Owner)
+
+**Hecho (P-01, [result.json](../I-62-F6/OD-2/R20261006T191621Z-p01/result.json)):** sin ninguna invocación de Codex de la sesión, la huella pasó de la
+línea base de OD-2c `9002E854…` a **`723A68985165BAE40689172F4E573C47FC45D1BA0D19F9192E3120DDD28B18C8`** (escrita a las 18:58:51Z). Coincide con una
+actualización de la app (paquete `26.930.3930.0` → `26.930.7945.0`) que sustituyó el binario: el aceptado (`bin\8aaf1547b825b104`, `37762753…`)
+ya no existe. **STOP del transporte `codex-cli`**; FX-01 y FX-04a no lo usan y siguen.
+
+| Campo | Valor medido |
+|---|---|
+| Huella nueva (SHA-256) | `723A68985165BAE40689172F4E573C47FC45D1BA0D19F9192E3120DDD28B18C8` (4 775 bytes) |
+| Huella anterior aceptada (OD-2c) | `9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E` |
+| Delta estructural saneado | ninguno: los mismos 107 nombres de clave y 39 secciones, misma longitud; cambian **valores** |
+| Dónde cambian (solo nombres de clave) | `mcp_servers.node_repl.env.CODEX_CLI_PATH` lleva la etiqueta del binario nuevo; la versión de la app está en `mcp_servers.node_repl.env.BROWSER_USE_CODEX_APP_VERSION` y `mcp_servers.node_repl.env.NODE_REPL_TRUSTED_SERVICES`. Revertir solo la etiqueta del binario no reproduce `9002E854…`: cambió al menos otro valor |
+| ¿Solo cambios de la actualización? | **No demostrable sin valores:** el archivo anterior nunca se guardó (solo su hash y nombres saneados). Desde ahora, una instantánea local con digests por clave localiza cambios futuros por nombre de clave sin guardar valores |
+| Binario nuevo | `%LOCALAPPDATA%\OpenAI\Codex\bin\5ea220ae823df3d7\codex.exe`, SHA-256 `3b8f6e33caa75f232558a3cf76ff9b87bb5ef6dbcf4996372f24e55c78b1b91`; versión y autenticación UNKNOWN (no se ejecuta en STOP; el ejecutable no tiene metadatos de versión) |
+| Qué NO autoriza | editar `config.toml`; cambiar `trust_level`, `windows.sandbox`, credenciales o permisos; aceptar otro hash |
+
+| Opción | Efecto |
+|---|---|
+| **A** | aceptar `723A6898…` exacto y el binario `3b8f6e33…`; antes de la primera invocación de modelo, la sesión mide `codex --version` y `codex login status` (sin modelo) con la huella antes y después |
+| B | antes de decidir, el Owner revisa él mismo en su archivo los valores que le importen (p. ej., `windows.sandbox`, `model`, `model_reasoning_effort`, `service_tier`); la sesión no los lee ni los publica |
+| C | no aceptar: `codex-cli` sigue en STOP; FX-02 y FX-06 UNVERIFIED |
+
+- **Recomendación: B y después A.** La estructura no cambia y el cambio coincide con una actualización de la app, pero no se puede probar, sin valores, que
+  solo cambiaran valores ligados a ella. FX-02 y FX-06 necesitan `codex-cli`; FX-01 y FX-04a no.
+- **Aprobar:** `OD-2d = A (línea base 723A68985165BAE40689172F4E573C47FC45D1BA0D19F9192E3120DDD28B18C8; binario 3b8f6e33caa75f232558a3cf76ff9b87bb5ef6dbcf4996372f24e55c78b1b91)`
+- **Rechazar:** `OD-2d = RECHAZAR`
 
 ## OD-3 — hecho nuevo de OD-4 (2026-10-06T07:24Z; OD-3 sigue RECHAZADA)
 

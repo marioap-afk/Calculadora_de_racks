@@ -1,0 +1,18 @@
+{
+  "Path": "~/.codex/config.toml",
+  "Sha256": "723A68985165BAE40689172F4E573C47FC45D1BA0D19F9192E3120DDD28B18C8",
+  "Length": 4775,
+  "FixtureProjectSections": [
+    {
+      "path": "d:\\r62-fixture\\probe-od4-1",
+      "header_line": 114,
+      "key_names": [
+        "trust_level"
+      ]
+    }
+  ],
+  "OtherProjectSections": 11,
+  "TotalSections": 39,
+  "Remainders": "none-match",
+  "RemainderCandidatesTested": 3
+}

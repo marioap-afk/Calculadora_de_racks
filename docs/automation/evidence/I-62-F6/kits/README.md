@@ -13,7 +13,14 @@ archivo original; lo dará el primer push real a `fx/u1` (el BOOTSTRAP del Princ
 nueva decisión del Coordinator; R3 sigue sin autorizar. Historial: con el repositorio privado y después público, 0 corridas
 ([actions-diagnostic.json](../CI/actions-diagnostic.json), [actions-diagnostic-public.json](../CI/actions-diagnostic-public.json)).
 
-## 2. D — OD-2c: decidida (A, decisiones §48)
+## 2. D — OD-2d: nueva línea base tras la actualización de la app de Codex (pendiente)
+
+La app de Codex se actualizó a las 18:56Z y reescribió `config.toml` (`723A6898…`) y el binario (`3b8f6e33…`): P-01, `codex-cli` en STOP. Paquete en
+[owner-decision-packets.md](../../I-62-prep/owner-decision-packets.md) §OD-2d. Recomendación: revisa tú los valores que te importen y después responde
+`OD-2d = A (línea base 723A68985165BAE40689172F4E573C47FC45D1BA0D19F9192E3120DDD28B18C8; binario 3b8f6e33caa75f232558a3cf76ff9b87bb5ef6dbcf4996372f24e55c78b1b91)`.
+Solo afecta a FX-02 y FX-06; FX-01 y FX-04a siguen.
+
+### Historial: OD-2c, decidida (A, decisiones §48)
 
 Línea base aceptada: `9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E`. `codex-cli` sale del STOP P-01: la sesión revalida la huella y
 el binario antes de cada invocación, y un cambio vuelve a ser P-01 / STOP sin aceptar nada. Paquete en
