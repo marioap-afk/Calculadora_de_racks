@@ -2399,3 +2399,16 @@ solo desde artefactos custodiados.
   sin CI).
 - **Kits** ([I-62-F6/kits](I-62-F6/kits/README.md)): tarjeta del Owner (CI, OD-2b, apertura de A con la secuencia de effort de FX-01), herramienta del
   oráculo y la comparación de FX-04a con su esquema de respuesta y la instrucción de B; paquete OD-2b y hecho nuevo de OD-3 en los paquetes.
+
+## 63. F6 nocturno, bloque 2: kits de FX-06 y de la supervisión, matriz de obligaciones de F6, preparación de F7 y de OD-1
+
+- **CI de RackCad del bloque 1** `b3e83419`: corrida 37431108479, push, `head_sha` exacto, cuatro jobs en `success`.
+- **CI del fixture:** sin corridas hasta las 07:41Z (espera acotada de 10 min): `Ci` = `not_run` se mantiene.
+- **FX-06** ([kit](I-62-F6/kits/FX-06/README.md)): oráculo fijado por hash (`43b9a238…`) fuera de todo clon; objeto X v1 con un defecto sembrado;
+  borrador de la `ReviewLoopAuthorization`; directorios fijados. **Hecho de elegibilidad:** ARCHITECTURE_REVIEW (Deep) exige Equilibrado o Frontera;
+  la única celda Codex posible es `gpt-6.1-sol`/`high`, sin invocación medida: su sonda de OD-2b es su medición (routing §5).
+- **Matriz de F6** ([README](I-62-F6/README.md)): C-27 PASS; C-25b UNSUPPORTED medido; C-22..C-24, C-25a, C-26, C-39 y las partes F6 de C-32, C-37
+  y C-42, UNVERIFIED con causa exacta. FX-03 preparado y limitado por OD-3.
+- **F7:** el borrador factual de FOUNDATIONS sustituye los «previsto» de F3/F4 por hechos y añade las limitaciones medidas en F6
+  ([f7-ready-closure.md](I-62-prep/f7-ready-closure.md) §1.1). **OD-1** preparado sin pedirlo: ADR-0048 tal cual; aviso de que editarlo invalida `MC_I62`.
+

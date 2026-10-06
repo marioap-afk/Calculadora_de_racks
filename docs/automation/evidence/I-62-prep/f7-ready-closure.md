@@ -7,30 +7,38 @@
 
 ### 1.1 Borrador factual de la entrada de FOUNDATIONS
 
-Se publicaría en el cierre documental (WORKFLOW §11.4). Hoy describe la entrada «Agent Execution Protocol» que **extiende** I-62 (Extends, contrato §5). Lo
-marcado «previsto» depende de F3/F4 y se reescribe con hechos al llegar a F7.
+Se publicaría en el cierre documental (WORKFLOW §11.4). Describe la entrada «Agent Execution Protocol» que **extiende** I-62 (Extends, contrato §5).
+**Revisión del 2026-10-06** (F1-F4 con GATE PASS; F6 en curso): los «previsto» de F3/F4 se sustituyen por hechos; lo que depende de F6, OD-1 o la
+integración queda marcado «pendiente».
 
 ```text
 Name: Agent Execution Protocol
 Status: STABLE
 Authority: AUTOMATION_PLAN §16 fija la ejecución delegada. Para las unidades I61 rige el texto de I-61 (leído en EFF^1 en las cláusulas que I-62 modificó,
-  §16.13). Para las unidades I62 rigen además las subsecciones I62: roles sin proveedor (16.1), vigencia (16.14), perfil del Principal y autoverificación
-  (16.15), CONFIGURATION_STATUS (16.16), renderizado (16.17), observación de capacidad (16.18), adapters (16.19) y [previsto] binding, independencia,
-  custodia, recuperación, conteo, adopción y orquestación; [previsto] compatibilidad (16.13) y el punto de entrada de WORKFLOW §12. WORKFLOW §3 rige el
-  relevo entre sesiones y AGENTS.md la evidencia.
+  16.13). Para las unidades I62 rigen además las subsecciones I62: roles sin proveedor (16.1), vigencia (16.14), perfil del Principal y autoverificación
+  (16.15), CONFIGURATION_STATUS (16.16), renderizado (16.17), observación de capacidad (16.18), adapters (16.19), binding y aceptación (16.20),
+  independencia (16.21), aceptación del paquete y verificación (16.22), invocación de rol y contratos de salida (16.23), cierre de insumos, identidad y
+  fidelidad (16.24), custodia (16.25), recuperación (16.26), conteo (16.27), arranque, adopción y marcadores (16.28), bucles de revisión (16.29) y planos y
+  MaterializationClose (16.30); la compatibilidad (16.13) y el punto de entrada de WORKFLOW §12. WORKFLOW §3 rige el relevo entre sesiones y AGENTS.md la
+  evidencia.
 Persistence: tráfico transitorio en artifacts/orchestration/; custodia en docs/automation/evidence/<unit>-pilot/ (I61) y <unit>-agent/ (I62); esquemas
-  rackcad-*/v1 (I61) y el conjunto I62 (preflight/v1, relay-record/v2, controller-verification/v2, esquemas de hechos por adapter y [previsto] binding/v1,
-  gate-contract/v2, delegation/v2, role-invocation/v1, input-closure/v1, input-fidelity/v1, resultados por rol, automation-state/v2,
-  normative-dependency-manifest/v1, clause-map/v1); descriptores en agent-execution/adapters/.
+  rackcad-*/v1 (I61) y el conjunto I62 (preflight/v1, relay-record/v2, controller-verification/v2, esquemas de hechos por adapter, binding/v1,
+  gate-contract/v2, delegation/v2, role-invocation/v1, input-closure/v1, input-fidelity/v1, architect-review-result/v1, reviewer-result/v1,
+  automation-state/v2, normative-dependency-manifest/v1, clause-map/v1); descriptores en agent-execution/adapters/.
 Mutation contract: las reglas cambian solo en AUTOMATION_PLAN §16 con sus autoridades; un esquema cambia por versión nueva; un adapter nuevo se añade con su
-  descriptor y su esquema de hechos sin tocar el núcleo; el catálogo es mutable con fuente y fecha.
+  descriptor y su esquema de hechos sin tocar el núcleo; el catálogo es mutable con fuente y fecha; un cambio posterior a las superficies normativas
+  invalida el MaterializationClose (16.30).
 Extension point: adapter nuevo (descriptor + esquema de hechos); entrada de catálogo; requisito por perfil y acción en routing.md §8; versión nueva de esquema.
-Decision source: ADR-0046 (aceptado) y ADR-0048 (sucesor parcial; [previsto] aceptado por OD-1); Freeze de I-61 (Proposal V9) y de I-62 (Proposal V14,
-  Consensus Freeze b64a3b64).
-Protecting tests: AgentExecutionProtocolTests (I-61, sin cambios); PrincipalPortabilityProtocolTests (C-01, C-03, C-05, C-09, C-10, C-19 y [previsto]
-  C-18, C-20a, C-38); MC de C-04, C-06, C-07, C-08, C-10 y [previsto] C-11..C-17, C-20b, C-20c, C-21, C-28..C-42.
+Decision source: ADR-0046 (aceptado) y ADR-0048 (sucesor parcial; pendiente de OD-1); Freeze de I-61 (Proposal V9) y de I-62 (Proposal V14, Consensus
+  Freeze b64a3b64) con la enmienda A-1 AGREED.
+Protecting tests: AgentExecutionProtocolTests (I-61, sin cambios); PrincipalPortabilityProtocolTests (F1-F3: C-01, C-03, C-05, C-09, C-10, C-11..C-14, C-19);
+  guardas de F4 en tests/RackCad.Tests/I62F4*Tests (validador de state/v2, invariantes de archivo, pares e historia, orquestación, compatibilidad, regresión
+  de A-1 y controles reproducibles de C-15..C-42 sobre Git real); MC de C-04, C-06, C-07, C-08, C-10, C-20b, C-20c y C-28; pendiente: la parte F6
+  (C-22..C-27, C-39 y la de C-32, C-37 y C-42).
 Known limitations: el modelo servido detrás de un proveedor no es observable; la autoverificación depende de una fuente RUNTIME_OBSERVED por adapter; la
-  auditoría de lecturas no captura lecturas internas del runtime; Git no prueba quién opera en otra máquina; topología B y continuación según OD-3/OD-4.
+  auditoría de lecturas no captura lecturas internas del runtime; Git no prueba quién opera en otra máquina; `codex-cli` reescribe `config.toml` al
+  ejecutarse por primera vez en un directorio (entrada de confianza; P-01), así que sus directorios de trabajo se fijan antes de las cesiones; el Worker
+  `codex-cli` en `workspace-write` no puede hacer commit (sandbox; medido en F6); la topología B depende de OD-3 (rechazada por el Owner el 2026-10-06).
 Last changed by: I-62
 ```
 

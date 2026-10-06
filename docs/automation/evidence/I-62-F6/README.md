@@ -42,3 +42,31 @@ los identificadores reales solo de `main` y no vio I-62, cuyo estado vive en su 
 los identificadores de todas las puntas remotas: gate legítimo ACCEPT; artefacto que nombra I-62 REJECT; remoto de RackCad configurado REJECT; el commit
 rechazado no llegó al origen del fixture; **0 diferencias** en el estado real (refs remotas, refs locales, worktrees, remotos, blobs de estado y decisiones
 de I-62, árbol de estados de `main`). El rechazo lo aplica la sesión de supervisión del plano (a) a los resultados del plano (c).
+
+## Obligaciones de F6 (Anexo C; estado de esta ejecución)
+
+| C | Escenario | Estado | Evidencia o causa |
+|---|---|---|---|
+| C-22 | fixture arrancable (D.1 hasta un contrato I62 válido) | UNVERIFIED | pasos 1-4 hechos; 5-6 (BOOTSTRAP, G0, QU, contrato de T1) esperan al Principal A, cuyo preflight CUSTODY solo puede producir él (§8.6) |
+| C-23 | FX-01 autoverificación | UNVERIFIED (HUMAN_LAUNCH_REQUIRED) | la sesión A la abre el Owner; secuencia de effort en `kits/README.md` |
+| C-24 | FX-02 topología A | UNVERIFIED | `codex-cli` en STOP P-01 (OD-2b), `Ci` = `not_run`, sin sesión A |
+| C-25a | FX-04a portabilidad | UNVERIFIED (HUMAN_LAUNCH_REQUIRED) | QH de A, terminación acreditada y sesión B; herramienta del oráculo lista |
+| C-25b | FX-04b continuación | UNSUPPORTED (medido) | Worker Codex sin commit en `workspace-write`; ningún otro adapter con escritura acreditada lanzable por B; decide el Owner (OV-I62-05 b) |
+| C-26 | FX-03 topología B | UNVERIFIED | OD-3 = RECHAZAR; además el Worker Codex no puede hacer commit; limitación para OV-I62-04; no se retira |
+| C-27 | FX-05 | **PASS** | `FX-05/R20261006T072900Z-fx05/` |
+| C-39 | FX-06 autonomía real | UNVERIFIED | `codex-cli` en STOP P-01, celda del Architect sin medir, `Ci` = `not_run`, sin sesión A; kit en `kits/FX-06/` |
+| C-32 (F6) | auditoría del transporte de FX-06 | UNVERIFIED | FX-06 no ejecutado |
+| C-37 (F6) | relevo manual → AUTONOMY_GAP | sin relevos | ninguna ejecución de esta noche tuvo un relevo humano; FX-06 no ejecutado |
+| C-42 (F6: 7, 8) | reconstrucción de la fidelidad desde la custodia; cambio de proveedor o de runtime entre intentos | UNVERIFIED | ningún intento real de revisión todavía (necesitan FX-02/FX-06) |
+
+## FX-03 — preparación (OD-3 = RECHAZAR)
+
+| Rol | Binding posible | Estado |
+|---|---|---|
+| Principal | `codex-desktop-session` (la abre el Owner) | disponible tras OD-5; huella del adapter UNVERIFIED (F2) |
+| Controller | `codex-cli` (`gpt-6-luna`/`high`) | STOP P-01 hasta OD-2b |
+| Worker | `codex-cli` con escritura | **UNSUPPORTED medido**: commit denegado por el sandbox |
+| Reviewer y Architect | `claude-cli` | no autenticado: OD-3 = RECHAZAR (decisión del Owner, no se cambia) |
+
+Resultado esperado si las OD estuvieran concedidas: VERIFIED + Q7 en la topología B. Limitación exacta hoy: **UNVERIFIED por la frontera de OD-3**, con la
+limitación medida del Worker que lo haría UNSUPPORTED aun con OD-3. Sigue a OV-I62-04.

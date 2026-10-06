@@ -139,6 +139,9 @@ trabajo del Principal A) y `D:\r62-fixture\arch` (clon limpio único de los Arch
 
 - **Qué NO autoriza:** escribir `config.toml`, crear entradas de confianza a mano, cambiar `trust_level`, `windows.sandbox` o permisos; aceptar otro delta.
 - **Consumo:** 2 sondas de solo lectura (dentro de las «sondas previas» de D.3); después, los topes de D.3.
+- **Celdas de las sondas:** en `A`, la celda del Controller medida (`gpt-6-luna`/`high`); en `arch`, la del Architect `gpt-6.1-sol`/`high` (Deep), que
+  no tiene invocación medida: esa sonda es también su medición de elegibilidad (routing §5). `gpt-6-luna` no sirve de Architect (Eficiente; Deep exige
+  Equilibrado o Frontera).
 - **Seguridad:** solo el hash y nombres saneados; nunca valores; la comprobación del delta se hace sobre nombres saneados.
 - **Recomendación: A2.** Motivo: es la única opción conforme a P-01 que deja FX-02 y FX-06 sin una segunda pregunta, porque fija los directorios antes de
   las cesiones y acepta solo el delta exacto que la conducta medida produce.
@@ -155,7 +158,12 @@ No se autentica `claude-cli` ni se decide nada.
 ## Recordatorios (sin solicitud)
 
 - **OD-6:** decidida (alternativa 1, decisiones §30); no se revisa.
-- **OD-1:** antes de READY-03 (aceptación de ADR-0048 y deltas OWNER-RESERVED); no bloquea F6 y no se pide todavía.
+- **OD-1:** antes de READY-03 (aceptación de ADR-0048 y deltas OWNER-RESERVED); no bloquea F6 y no se pide todavía. **Preparación (2026-10-06; no
+  aceptada, no solicitada):** ADR-0048 sigue «propuesto», blob `e1bd8d91` en `MC_I62` (`6f0187cb`). Enuncia la orquestación a nivel de principio (V14
+  §20) y no cita A-1; A-1 §6 declara que no cambia ninguna decisión del Owner (OD-1..OD-7), así que el ADR puede presentarse tal cual. **Aviso de
+  momento:** `docs/adr/` está en la lista cerrada de superficies de 16.13; cualquier edición de ADR-0048 antes de la integración (p. ej., para citar A-1)
+  invalida `MC_I62` (C-21), obliga a resembrar el fixture y a repetir los pilotos afectados. Si el Coordinator quiere esa edición, el momento más barato
+  es antes de ejecutar los pilotos de F6.
 - **DEP-F4-YAML:** no hizo falta (F4 cerrado sin dependencia nueva).
 
 ---
