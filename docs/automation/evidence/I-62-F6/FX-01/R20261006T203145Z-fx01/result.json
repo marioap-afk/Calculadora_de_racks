@@ -1,0 +1,149 @@
+{
+  "RunId": "R20261006T203145Z-fx01",
+  "Scenario": "FX-01 autoverificación (C-23)",
+  "Authority": "decisiones §49 y §50 (FX-01 autorizado; secuencia esperada high→xhigh→medium→xhigh)",
+  "Session": {
+    "AdapterId": "claude-desktop-session",
+    "SessionId": "local_6dde7eb6-06c0-4d21-ad94-94849115d6c4",
+    "Model": "claude-opus-5-5",
+    "Cwd": "D:\\r62-fixture\\A",
+    "CreatedUtc": "2026-10-06T20:29:43.691Z",
+    "OpenedBy": "Owner"
+  },
+  "FixtureCommits": {
+    "Preflights": "b9c554c4d90667e28e477aa3bdf90663964c4321",
+    "Bootstrap": "1746b404e57d69170ecfc084fd24fa3e699916d7"
+  },
+  "Rows": [
+    {
+      "Preflight": 1,
+      "PreflightId": "P20261006T203145Z-483e",
+      "ObservedUtc": "2026-10-06T20:31:45.707Z",
+      "Action": "CUSTODY",
+      "EffortObserved": "Long-horizon (effort de cliente 'xhigh')",
+      "EffortStatus": "MATCH",
+      "Assurance": "RUNTIME_OBSERVED",
+      "Source": "get_session(\"self\").effort; traducción por model-catalog.md blob 166d978d114e635bbef67e295c2ec1da73af6d1f; ventana UTC [2026-10-06T20:31:45.461Z, 2026-10-06T20:31:46.606Z]",
+      "OracleCase": "E1",
+      "Expected": {
+        "ConfigurationStatus": "MATCH",
+        "Causes": [],
+        "Disposition": "ELIGIBLE",
+        "StopConditions": []
+      },
+      "Observed": {
+        "ConfigurationStatus": "MATCH",
+        "Causes": [],
+        "Disposition": "ELIGIBLE",
+        "StopConditions": []
+      },
+      "Match": true,
+      "SupervisorGetSession": {
+        "Utc": "2026-10-06T20:34:35Z",
+        "Effort": "xhigh"
+      }
+    },
+    {
+      "Preflight": 2,
+      "PreflightId": "P20261006T204713Z-77a7",
+      "ObservedUtc": "2026-10-06T20:47:13.551Z",
+      "Action": "CUSTODY",
+      "EffortObserved": "Deep (effort de cliente 'high')",
+      "EffortStatus": "BELOW_REQUIRED",
+      "Assurance": "RUNTIME_OBSERVED",
+      "Source": "get_session(\"self\").effort; traducción por model-catalog.md blob 166d978d114e635bbef67e295c2ec1da73af6d1f; ventana UTC [2026-10-06T20:47:13.297Z, 2026-10-06T20:47:14.483Z]",
+      "OracleCase": "E3",
+      "Expected": {
+        "ConfigurationStatus": "BELOW_REQUIRED",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.effort"
+        ],
+        "Disposition": "STOP",
+        "StopConditions": [
+          "P-09"
+        ]
+      },
+      "Observed": {
+        "ConfigurationStatus": "BELOW_REQUIRED",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.effort"
+        ],
+        "Disposition": "STOP",
+        "StopConditions": [
+          "P-09"
+        ]
+      },
+      "Match": true,
+      "SupervisorGetSession": {
+        "Utc": "2026-10-06T20:47:51Z",
+        "Effort": "high"
+      }
+    },
+    {
+      "Preflight": 3,
+      "PreflightId": "P20261006T220048Z-65bf",
+      "ObservedUtc": "2026-10-06T22:00:48.619Z",
+      "Action": "CUSTODY",
+      "EffortObserved": "Balanced (effort de cliente 'medium')",
+      "EffortStatus": "BELOW_REQUIRED",
+      "Assurance": "RUNTIME_OBSERVED",
+      "Source": "get_session(\"self\").effort; traducción por model-catalog.md blob 166d978d114e635bbef67e295c2ec1da73af6d1f; ventana UTC [2026-10-06T22:00:48.349Z, 2026-10-06T22:00:49.635Z]",
+      "OracleCase": "E3",
+      "Expected": {
+        "ConfigurationStatus": "BELOW_REQUIRED",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.effort"
+        ],
+        "Disposition": "STOP",
+        "StopConditions": [
+          "P-09"
+        ]
+      },
+      "Observed": {
+        "ConfigurationStatus": "BELOW_REQUIRED",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.effort"
+        ],
+        "Disposition": "STOP",
+        "StopConditions": [
+          "P-09"
+        ]
+      },
+      "Match": true,
+      "SupervisorGetSession": "no tomada en ese instante (monitor sin armar)"
+    },
+    {
+      "Preflight": 4,
+      "PreflightId": "P20261006T220134Z-20ab",
+      "ObservedUtc": "2026-10-06T22:01:34.503Z",
+      "Action": "CUSTODY",
+      "EffortObserved": "Long-horizon (effort de cliente 'xhigh')",
+      "EffortStatus": "MATCH",
+      "Assurance": "RUNTIME_OBSERVED",
+      "Source": "get_session(\"self\").effort; traducción por model-catalog.md blob 166d978d114e635bbef67e295c2ec1da73af6d1f; ventana UTC [2026-10-06T22:01:34.205Z, 2026-10-06T22:01:35.660Z]",
+      "OracleCase": "E1",
+      "Expected": {
+        "ConfigurationStatus": "MATCH",
+        "Causes": [],
+        "Disposition": "ELIGIBLE",
+        "StopConditions": []
+      },
+      "Observed": {
+        "ConfigurationStatus": "MATCH",
+        "Causes": [],
+        "Disposition": "ELIGIBLE",
+        "StopConditions": []
+      },
+      "Match": true,
+      "SupervisorGetSession": {
+        "Utc": "2026-10-06T22:09:3xZ",
+        "Effort": "xhigh"
+      }
+    }
+  ],
+  "AllMatchOracle": true,
+  "NoCustodyBeforeMatch": "el BOOTSTRAP (1746b404) es posterior al preflight 4 (MATCH); tras los STOP de los preflights 2 y 3 no hubo commit ni custodia",
+  "SequenceDeviation": "la sesión se abrió en xhigh, no en high: el preflight 1 observó MATCH. El caso «por debajo» se observó después, como bajada tras un MATCH (preflight 2 en high) y en medium (preflight 3); el último, en xhigh (MATCH). Cuatro preflights en lugar de tres. Los cuatro estados de la secuencia del Coordinator (§50) están observados; el orden difiere solo en el MATCH inicial. Decide el Coordinator",
+  "OwnerActions": "apertura de la sesión; cambios de effort y mensajes «continúa» de FX-01 (estímulos del ensayo, no relevos)",
+  "C23": "PASS por la evidencia (4 de 4 disposiciones conformes al oráculo E1/E3, observación RUNTIME_OBSERVED por get_session en cada instante), con la desviación de secuencia registrada; la aceptación del gate es del Coordinator"
+}

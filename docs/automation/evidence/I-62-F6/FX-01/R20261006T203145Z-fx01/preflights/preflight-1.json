@@ -1,0 +1,160 @@
+{
+  "Schema": "rackcad-preflight/v1",
+  "PreflightId": "P20261006T203145Z-483e",
+  "UnitId": "FX-U1",
+  "Role": "PRINCIPAL_COORDINATOR",
+  "Action": "CUSTODY",
+  "ProtocolSet": "rackcad-protocol/I62",
+  "Profile": {
+    "ProfileId": "PRINCIPAL_COORDINATION",
+    "RoutingBlob": "bba08fc4686d7192deeb559752636a467103b4b1"
+  },
+  "Host": {
+    "HostLabelHash": "63077eb13294b21695ab1d1c013de751a805000013ae0eaf238f5dc90fc51174",
+    "HostInstanceHash": "dc8562f9b88f24dc35dbb1b17114aa07abebc8d78f048ab42d0d377d9d44429a",
+    "HostInstanceState": "OBSERVED",
+    "Os": "Microsoft Windows 10.0.26300"
+  },
+  "ObservedUtc": "2026-10-06T20:31:45.707Z",
+  "Actor": {
+    "AdapterId": "claude-desktop-session",
+    "InstanceId": "local_6dde7eb6-06c0-4d21-ad94-94849115d6c4",
+    "InstanceIdSource": "get_session(\"self\").sessionId",
+    "Assurance": "RUNTIME_OBSERVED"
+  },
+  "Session": {
+    "AdapterId": "claude-desktop-session",
+    "SessionId": "local_6dde7eb6-06c0-4d21-ad94-94849115d6c4",
+    "Assurance": "RUNTIME_OBSERVED"
+  },
+  "Adapter": {
+    "AdapterId": "claude-desktop-session",
+    "AdapterVersion": "UNKNOWN",
+    "BinaryPathHash": null,
+    "DescriptorRef": {
+      "Path": "adapters/claude-desktop-session.md",
+      "Blob": "7f45923527a860713819d1ccf29dcb375b680369"
+    }
+  },
+  "AdapterFacts": {
+    "SchemaRef": {
+      "SchemaId": "rackcad-adapter-claude-desktop-session-facts/v1",
+      "Path": "schemas/adapters/claude-desktop-session.facts.v1.schema.json",
+      "Blob": "f246717f1cc2915bbac61ccd96fcd9676039b106"
+    },
+    "Facts": {
+      "SchemaId": "rackcad-adapter-claude-desktop-session-facts/v1",
+      "AuthState": "AUTHENTICATED",
+      "MetadataSource": "get_session",
+      "ReportedModel": {
+        "State": "OBSERVED",
+        "Value": "claude-opus-5-5"
+      },
+      "ReportedEffort": {
+        "State": "OBSERVED",
+        "Value": "xhigh"
+      },
+      "IsRunning": "TRUE",
+      "PermissionMode": {
+        "State": "OBSERVED",
+        "Value": "bypassPermissions"
+      }
+    }
+  },
+  "Fingerprint": {
+    "Kind": "UNVERIFIED",
+    "Sha256": null,
+    "KeyNames": [],
+    "AcceptanceDecisionRef": null
+  },
+  "Requirements": [
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.level",
+      "Mandatory": true,
+      "Required": "Frontera",
+      "Observation": {
+        "State": "OBSERVED",
+        "Value": "Frontera (modelo de cliente 'claude-opus-5-5')",
+        "Source": "get_session(\"self\").model; nivel por model-catalog.md blob 166d978d114e635bbef67e295c2ec1da73af6d1f; ventana UTC [2026-10-06T20:31:45.461Z, 2026-10-06T20:31:46.606Z]",
+        "Assurance": "RUNTIME_OBSERVED",
+        "ObservedUtc": "2026-10-06T20:31:45.707Z"
+      },
+      "Status": "MATCH",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.effort",
+      "Mandatory": true,
+      "Required": "Long-horizon",
+      "Observation": {
+        "State": "OBSERVED",
+        "Value": "Long-horizon (effort de cliente 'xhigh')",
+        "Source": "get_session(\"self\").effort; traducción por model-catalog.md blob 166d978d114e635bbef67e295c2ec1da73af6d1f; ventana UTC [2026-10-06T20:31:45.461Z, 2026-10-06T20:31:46.606Z]",
+        "Assurance": "RUNTIME_OBSERVED",
+        "ObservedUtc": "2026-10-06T20:31:45.707Z"
+      },
+      "Status": "MATCH",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.remote-facts",
+      "Mandatory": true,
+      "Required": "lectura",
+      "Observation": {
+        "State": "OBSERVED",
+        "Value": "lectura",
+        "Source": "git ls-remote origin y git ls-remote github en invocación de esta sesión: rc=0 ambos; refs/heads/fx/u1=54f2a4a8f53eb6834448394781600f6343d9a246 y refs/heads/main=fbe25347799e5b801ef708454212335537448bd1 en los dos; ventana UTC [2026-10-06T20:31:56.002Z, 2026-10-06T20:31:57.500Z]",
+        "Assurance": "RUNTIME_OBSERVED",
+        "ObservedUtc": "2026-10-06T20:31:57.500Z"
+      },
+      "Status": "MATCH",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.introspection",
+      "Mandatory": true,
+      "Required": "RUNTIME_OBSERVED",
+      "Observation": {
+        "State": "OBSERVED",
+        "Value": "RUNTIME_OBSERVED",
+        "Source": "get_session(\"self\") respondió con model, effort y sessionId; nivel de la fuente según adapters/claude-desktop-session.md blob 7f45923527a860713819d1ccf29dcb375b680369; ventana UTC [2026-10-06T20:31:45.461Z, 2026-10-06T20:31:46.606Z]",
+        "Assurance": "RUNTIME_OBSERVED",
+        "ObservedUtc": "2026-10-06T20:31:45.707Z"
+      },
+      "Status": "MATCH",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.repo-write",
+      "Mandatory": true,
+      "Required": "escritura",
+      "Observation": {
+        "State": "OBSERVED",
+        "Value": "escritura",
+        "Source": "get_session(\"self\").permissionMode=bypassPermissions; git push --dry-run --porcelain fx/u1 a origin y a github en invocación de esta sesión: rc=0 ambos (anuncio de receive-pack aceptado, [up to date]); refs del bare de origin y árbol de trabajo escribibles (test -w); ventana UTC [2026-10-06T20:32:00.453Z, 2026-10-06T20:32:03.003Z]",
+        "Assurance": "RUNTIME_OBSERVED",
+        "ObservedUtc": "2026-10-06T20:32:03.003Z"
+      },
+      "Status": "MATCH",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    }
+  ],
+  "ConfigurationStatus": "MATCH",
+  "Causes": [],
+  "Disposition": "ELIGIBLE",
+  "StopConditions": [],
+  "Invalidators": {
+    "HostInstanceHash": "dc8562f9b88f24dc35dbb1b17114aa07abebc8d78f048ab42d0d377d9d44429a",
+    "AdapterVersion": "UNKNOWN",
+    "BinaryPathHash": null,
+    "AuthState": "AUTHENTICATED",
+    "FingerprintSha256": "UNKNOWN",
+    "CatalogEntryBlob": "166d978d114e635bbef67e295c2ec1da73af6d1f",
+    "RoutingBlob": "bba08fc4686d7192deeb559752636a467103b4b1"
+  }
+}

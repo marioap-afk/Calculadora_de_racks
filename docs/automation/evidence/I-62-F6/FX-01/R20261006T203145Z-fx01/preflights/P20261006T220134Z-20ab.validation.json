@@ -1,0 +1,40 @@
+{
+  "PreflightId": "P20261006T220134Z-20ab",
+  "File": "preflight-4.json",
+  "FileSha256": "3f591d1498c0bba5e50c197a0072c356145edb4aa7ca72f1eddea6343123f406",
+  "AuthorityRevision": "54f2a4a8f53eb6834448394781600f6343d9a246",
+  "PowerShell": {
+    "Edition": "Core",
+    "Version": "7.6.6"
+  },
+  "Phase1": {
+    "Schema": "docs/automation/agent-execution/schemas/preflight.v1.schema.json",
+    "Blob": "6a0540796a473e887677e5043d2105b932b5865f",
+    "Command": "Test-Json -SchemaFile",
+    "Result": true
+  },
+  "Phase2": {
+    "Schema": "docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json",
+    "Blob": "f246717f1cc2915bbac61ccd96fcd9676039b106",
+    "Command": "Test-Json -SchemaFile",
+    "Result": true
+  },
+  "Rules": {
+    "C1": true,
+    "C2": true,
+    "C3": true,
+    "C4": true,
+    "C5": true,
+    "C6": true,
+    "C7": true,
+    "C8": true
+  },
+  "Sanitization": {
+    "Rule": "README §13.4",
+    "PatternHits": [],
+    "Redactions": 0,
+    "Result": "CLEAN"
+  },
+  "ValidatedUtc": "2026-10-06T22:01:57.434Z",
+  "Accepted": true
+}

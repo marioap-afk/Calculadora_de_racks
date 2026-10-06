@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: F6 en el fixture (decisions §50): el Owner abre el Principal A en D:/r62-fixture/A para FX-01 (docs/automation/evidence/I-62-F6/kits/README.md §3) y hace los cambios de effort; la supervisión envía los «continúa» de G0, QU y QH; el push del BOOTSTRAP confirma la CI (A o B); codex-cli en STOP P-01 hasta OD-2d (antes, OD-2d-PROBE para medir el binario nuevo); F6 GATE PASS no autodeclarado.
+  next_action: F6 (decisions §50; evidencia §69): disposición del Coordinator sobre F6-OBS-01 (QH de FX-U1 con violación de I-S13 por el conflicto README §17.1 paso 3 / 16.28) y sobre el oráculo de FX-04a antes de abrir B; C-22 y C-23 PASS por la evidencia, para su aceptación; CI del fixture clasificación A; codex-cli en STOP P-01 (OD-2d-PROBE y OD-2d); F6 GATE PASS no autodeclarado.
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual

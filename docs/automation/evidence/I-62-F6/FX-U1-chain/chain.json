@@ -1,0 +1,102 @@
+{
+  "Unit": "FX-U1",
+  "Branch": "fx/u1",
+  "Origin": "D:/r62-fixture/fixture-origin.git",
+  "Remote": "marioap-afk/rackcad-i62-fixture (público)",
+  "Commits": [
+    {
+      "Sha": "b9c554c4d90667e28e477aa3bdf90663964c4321",
+      "By": "Principal A",
+      "What": "autoverificación: preflights CUSTODY 1-4 y validaciones",
+      "Ci": null
+    },
+    {
+      "Sha": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+      "By": "Principal A",
+      "What": "BOOTSTRAP (record_version 1; binding B20261006T220601Z-cfe1 PENDING; g0_acceptance PENDING)",
+      "Ci": {
+        "Run": 37538606357,
+        "Event": "push",
+        "Ref": "refs/heads/fx/u1",
+        "Jobs": {
+          "fixture-build": "success",
+          "fixture-tests": "success"
+        },
+        "Conclusion": "success"
+      }
+    },
+    {
+      "Sha": "5a3a7d69d650dfa9d0349c5464e245936dc2e187",
+      "By": "Coordinator del fixture (supervisión)",
+      "What": "G0: I62_DELEGATED, I62, binding ACCEPTED, Claim-Id, BootstrapRecordVersion 1",
+      "Ci": {
+        "Run": 37538952116,
+        "Conclusion": "success"
+      }
+    },
+    {
+      "Sha": "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+      "By": "Principal A",
+      "What": "QU ORDINARY (record_version 2; g0_acceptance y principal.acceptance ACCEPTED)",
+      "Ci": {
+        "Run": 37543264455,
+        "Conclusion": "success"
+      }
+    },
+    {
+      "Sha": "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+      "By": "Coordinator del fixture (supervisión)",
+      "What": "contrato de T1 (gate-contract/v2, blob 628d89af) y orden FX-U1-O2 (QH)",
+      "Ci": {
+        "Run": 37543386267,
+        "Conclusion": "success"
+      }
+    },
+    {
+      "Sha": "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+      "By": "Principal A",
+      "What": "QH (record_version 3; task_intent T1 FIRST, contrato custodiado, Controller sin binding; principal RELEASED; ventana CLOSED)",
+      "Ci": {
+        "Run": 37545694131,
+        "Conclusion": "success"
+      }
+    }
+  ],
+  "Validation": {
+    "Bootstrap": "state/v2, binding/v1 y preflight/v1 válidos (Test-Json); blobs citados coinciden; preflight CUSTODY = copia byte a byte del preflight 4",
+    "QU": "state/v2 y binding/v1 válidos; decisión G0 en el blob bdc8e4dd (FX-U1.md en 5a3a7d69 y en 1a4fc9c6); binding ACCEPTED por INDIVIDUAL_DECISION",
+    "T1Contract": "gate-contract/v2 válido (Test-Json); ProtocolSet rackcad-protocol/I62; AuthorityRevision y MaterializationCloseSha = BOOTSTRAP 1746b404; MainSha = F_eff fbe25347",
+    "QH": "forma de QH correcta, pero protocol.g0_acceptance.decision y custody.principal.acceptance.decision citan FX-U1.md con el blob bdc8e4dd, y en el árbol del QH ese archivo tiene el blob 7001b419: viola I-S13 del validador de producción de F4 (cada StateRef resuelve en el árbol del punto con su blob; AUTOMATION_PLAN tabla B.8.4)"
+  },
+  "TerminationOfA": {
+    "Observer": "sesión de supervisión, get_session(local_6dde7eb6-06c0-4d21-ad94-94849115d6c4)",
+    "Observations": [
+      {
+        "Utc": "2026-10-06T23:17:3xZ",
+        "isRunning": false,
+        "lastActivityAt": "2026-10-06T23:17:18.360Z"
+      },
+      {
+        "Utc": "2026-10-06T23:21:2xZ",
+        "isRunning": false,
+        "lastActivityAt": "2026-10-06T23:17:18.360Z"
+      }
+    ],
+    "QhPushedUtc": "2026-10-06T23:17:0xZ",
+    "Basis": "D.3 FX-04a paso 2: metadatos isRunning de la app; sin actividad tras el QH"
+  },
+  "OwnerInterventionsInA": [
+    {
+      "Kind": "apertura y cambios de effort de FX-01 con «continúa»",
+      "Role": "estímulos del ensayo"
+    },
+    {
+      "Kind": "«continúa» para el QU y para el QH",
+      "Role": "control del fixture (los envió el Owner: el mensaje de la supervisión llevaría el título de la sesión real)"
+    },
+    {
+      "Kind": "respuesta a AskUserQuestion de A (2026-10-06T23:07:46Z → 23:16:13Z): «Mantener bdc8e4d (Recommended)» ante el conflicto README §17.1 paso 3 / 16.28",
+      "Role": "decisión humana dentro del sistema bajo prueba; A la atribuyó al «Coordinator» en el commit y en su validación; no está en decisions/FX-U1.md"
+    }
+  ]
+}

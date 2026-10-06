@@ -2501,3 +2501,29 @@ solo desde artefactos custodiados.
   `memories/` sin archivos); 49 archivos en `skills/` sin identificadores de la unidad; `rules/default.rules` (política de comandos, no contexto del modelo)
   menciona el repositorio real, sin hechos de FX-U1. **Limpias**; se repite con SHA-256 antes de abrir B.
 - **A:** no abierta todavía (20:06Z): ninguna sesión en `D:\r62-fixture`; `fx/u1` en `54f2a4a8`.
+
+## 69. FX-01 ejecutado, D.1 completo hasta el contrato de T1, CI A, QH de A con violación de I-S13 (F6-OBS-01) y FX-04a detenido antes de B
+
+- **FX-01** ([result.json](I-62-F6/FX-01/R20261006T203145Z-fx01/result.json)): sesión A `local_6dde7eb6…` (`claude-opus-5-5`, abierta por el Owner en
+  `D:\r62-fixture\A`). Cuatro preflights CUSTODY con `get_session` ligado al instante: 1 `xhigh` → MATCH / ELIGIBLE (20:31:45Z); 2 `high` →
+  BELOW_REQUIRED / STOP P-09 (20:47:13Z); 3 `medium` → BELOW_REQUIRED / STOP P-09 (22:00:48Z); 4 `xhigh` → MATCH / ELIGIBLE (22:01:34Z). Los cuatro
+  conformes al oráculo congelado (casos E1 y E3: agregado, causas y disposición). Sin custodia antes del MATCH final. Contraste de la supervisión con
+  `get_session` en 3 de los 4 instantes. **Desviación:** la sesión se abrió en `xhigh`, no en `high` (cuatro preflights en vez de tres; el primer
+  BELOW_REQUIRED llegó como bajada tras un MATCH). **C-23: PASS por la evidencia**, con la desviación para la aceptación del Coordinator.
+- **D.1 pasos 5-6** ([chain.json](I-62-F6/FX-U1-chain/chain.json)): BOOTSTRAP `1746b404` (válido), G0 `5a3a7d69` (Coordinator del fixture, tres
+  marcadores), QU `1a4fc9c6` (válido) y contrato de T1 `d30fb6a9` (`gate-contract/v2` válido, I62, `AuthorityRevision` = BOOTSTRAP, `MainSha` = F_eff).
+  **C-22: PASS por la evidencia** (estado de contrato I62 válido de D.1), para la aceptación del Coordinator.
+- **CI del fixture: clasificación A.** El push ordinario del BOOTSTRAP a `fx/u1`, sin tocar el flujo, creó la corrida 37538606357 (`fixture-build` y
+  `fixture-tests` en `success`); también corrieron y pasaron G0 (37538952116), QU (37543264455), T1 (37543386267) y QH (37545694131).
+- **QH** `ae25b596` (orden FX-U1-O2): forma correcta (T1 FIRST, contrato custodiado, Controller sin binding, Principal RELEASED, ventana CLOSED);
+  **terminación de A acreditada** por `isRunning` = false desde las 23:17:18Z (dos observaciones de la supervisión, sin actividad tras el QH).
+- **F6-OBS-01 (posible defecto material del texto congelado; decide el Coordinator):** con el archivo de decisiones ampliado después de G0 (lo exige 16.28:
+  cada decisión en un bloque de `decisions/<unit>.md`), los dos `StateRef` a la decisión G0 no pueden cumplir a la vez la invariante de archivo de B.8.4
+  («cada ruta existe con su blob en el árbol del propio punto»; I-S13 del validador de F4) y la lectura literal de 16.28 («`g0_acceptance` cambia una
+  sola vez»). A lo detectó y lo preguntó en su sesión; el Owner eligió «mantener `bdc8e4d`». Según el código del validador de producción, esa opción
+  **viola I-S13** en el QH (el árbol tiene `7001b419`), mientras que refrescar el blob cumpliría I-S13 e I-P09 (que solo vigila el estado). A atribuyó la
+  elección al «Coordinator»; fue el Owner. No ejecutado: el validador de producción contra el árbol real del QH.
+- **FX-04a: STOP de la línea antes de abrir B.** El oráculo depende de si el QH es canónico. Además, el kit tiene tres huecos frente a D.3 para un QH sin
+  FX-02: binding del Controller sin valor previo (el oráculo asumía uno reutilizable), «STOP vigentes» y precondiciones sin campo en el esquema, y N11 sin
+  entrada de `correction_launches`. Antes de abrir B: disposición del Coordinator sobre F6-OBS-01 y sobre el oráculo.
+- **Huella:** `723A6898…`, estable (comparación por clave sin cambios a las 23:21Z); `codex-cli` sigue en STOP P-01 (OD-2d). D.6 de Codex, limpio (§68).

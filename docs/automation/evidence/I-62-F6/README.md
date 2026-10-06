@@ -11,14 +11,14 @@ Estado:     F6 EN CURSO; F6 GATE PASS no se autodeclara
 | Escenario | Estado | Causa exacta | Próximo paso |
 |---|---|---|---|
 | F6-A fixture D.1 | **hecho** (pasos 1-4) | — | pasos 5-6 los publica el Principal A (su preflight CUSTODY es suyo, §8.6) |
-| CI del fixture | **ejecución restablecida (R2 aceptado, §50); clasificación provisional** | R2: corridas `push` 37515854486 y manual 37515901956 en `ci/smoke` con los dos jobs en `success` ([actions-recovery-r1-r2.json](CI/actions-recovery-r1-r2.json)); R1 sin efecto | el push del BOOTSTRAP de A a `fx/u1`: si corre, A; si no, B |
+| CI del fixture | **operativa: clasificación A** (§50) | R2 restableció la ejecución; el push ordinario del BOOTSTRAP a `fx/u1` (sin tocar el flujo) creó la corrida 37538606357 con los dos jobs en `success`; G0, QU, T1 y QH también pasaron ([chain.json](FX-U1-chain/chain.json)) | — |
 | FX-05 / C-27 | **PASS** (corrida 2; confirmado por el Coordinator, §47) | la corrida 1 se conserva como inválida | no se repite salvo que su evidencia se invalide |
 | OD-4 sondas | **medido**: sonda 1 de ≤ 2 | escritura de archivos y herramientas SUPPORTED; **commit UNSUPPORTED** (`.git/index.lock` denegado por el sandbox); fuera del espacio bloqueado | sin segunda sonda: transporte en STOP |
 | OD-2b-PROBE | **hecho** (2 sondas `read-only`, §47) | sonda 1 en `A` (`gpt-6-luna`/`high`) y sonda 2 en `arch` (`gpt-6.1-sol`/`high`): huella `9002E854…` antes y después de cada una; ninguna entrada nueva; `read-only` no crea entradas, `workspace-write` sí ([result.json](OD-2b-PROBE/R20261006T150704Z-od2b/result.json)) | — |
 | OD-2 | **P-01 / STOP de `codex-cli`** (2026-10-06T19:16Z) | OD-2c aceptó `9002E854…`; la actualización de la app de Codex (`26.930.7945.0`) reescribió `config.toml` (`723A6898…`, mismos nombres de clave, valores cambiados) y sustituyó el binario (`3b8f6e33…`) ([result.json](OD-2/R20261006T191621Z-p01/result.json)) | **OD-2d** del Owner (paquete listo); FX-01 y FX-04a no usan `codex-cli` |
-| FX-01 / C-23 | **HUMAN_LAUNCH_REQUIRED** (pedida al Owner, §49) | la sesión A la abre el Owner y cambia el effort entre los tres preflights; comprobaciones previas hechas (evidencia §66) | tarjeta `kits/README.md` §3 |
+| FX-01 / C-23 | **PASS por la evidencia** (aceptación del Coordinator) | 4 preflights conformes al oráculo E1/E3 (`xhigh` MATCH, `high` y `medium` BELOW_REQUIRED/P-09, `xhigh` MATCH); desviación: la sesión se abrió en `xhigh` ([result.json](FX-01/R20261006T203145Z-fx01/result.json)) | disposición del Coordinator |
 | FX-02 / C-24 | **UNVERIFIED** (bloqueado) | sin sesión A; `codex-cli` en STOP P-01 hasta OD-2d; CI recuperada de forma provisional | sesión A + OD-2d + confirmar CI en `fx/u1` |
-| FX-04a / C-25a | **HUMAN_LAUNCH_REQUIRED** | QH de A tras el BOOTSTRAP con T1 planificada (hechos más pobres), terminación de A acreditada, entradas automáticas de B enumeradas y sesión B abierta por el Owner; decisión previa sobre la huella al abrir B | tarjeta §4 |
+| FX-04a / C-25a | **UNVERIFIED — línea detenida antes de abrir B** | QH `ae25b596` publicado y A terminada, pero el QH viola I-S13 (F6-OBS-01) y el oráculo del kit tiene huecos para un QH sin FX-02 | disposición del Coordinator sobre F6-OBS-01 y el oráculo |
 | FX-04b / C-25b | **UNSUPPORTED** (medido) | el Worker Codex no puede hacer commit (OD-4, sonda 1); ningún otro adapter lanzable por B tiene escritura acreditada (`claude-cli` rechazado, OD-3) | decisión del Owner sobre la limitación (OV-I62-05 b) |
 | FX-06 / C-39 | **UNVERIFIED** (solo preparación) | sin sesión A; `codex-cli` en STOP P-01 hasta OD-2d; la celda del Architect medida es del binario anterior y queda **obsoleta** (§50): volver a medirla | sesión A + OD-2d-PROBE/OD-2d + CI |
 | FX-03 / C-26 | **UNVERIFIED** (OD-3 = RECHAZAR) | además, el Worker Codex no puede hacer commit: con OD-3 sería UNSUPPORTED | limitación para OV-I62-04; no se retira |
@@ -48,10 +48,10 @@ de I-62, árbol de estados de `main`). El rechazo lo aplica la sesión de superv
 
 | C | Escenario | Estado | Evidencia o causa |
 |---|---|---|---|
-| C-22 | fixture arrancable (D.1 hasta un contrato I62 válido) | UNVERIFIED | pasos 1-4 hechos; 5-6 (BOOTSTRAP, G0, QU, contrato de T1) esperan al Principal A, cuyo preflight CUSTODY solo puede producir él (§8.6) |
-| C-23 | FX-01 autoverificación | UNVERIFIED (HUMAN_LAUNCH_REQUIRED) | la sesión A la abre el Owner; secuencia de effort en `kits/README.md` |
+| C-22 | fixture arrancable (D.1 hasta un contrato I62 válido) | **PASS por la evidencia** (aceptación del Coordinator) | BOOTSTRAP `1746b404`, G0 `5a3a7d69`, QU `1a4fc9c6` y contrato de T1 `d30fb6a9` válidos ([chain.json](FX-U1-chain/chain.json)) |
+| C-23 | FX-01 autoverificación | **PASS por la evidencia** (aceptación del Coordinator) | 4/4 conformes al oráculo; desviación de la secuencia registrada |
 | C-24 | FX-02 topología A | UNVERIFIED | `Ci` = `not_run`, sin sesión A (`codex-cli` disponible tras OD-2c) |
-| C-25a | FX-04a portabilidad | UNVERIFIED (HUMAN_LAUNCH_REQUIRED) | QH de A, terminación acreditada y sesión B; herramienta del oráculo lista |
+| C-25a | FX-04a portabilidad | UNVERIFIED (línea detenida) | QH con violación de I-S13 (F6-OBS-01); oráculo por ajustar; B sin abrir |
 | C-25b | FX-04b continuación | UNSUPPORTED (medido) | Worker Codex sin commit en `workspace-write`; ningún otro adapter con escritura acreditada lanzable por B; decide el Owner (OV-I62-05 b) |
 | C-26 | FX-03 topología B | UNVERIFIED | OD-3 = RECHAZAR; además el Worker Codex no puede hacer commit; limitación para OV-I62-04; no se retira |
 | C-27 | FX-05 | **PASS** (Coordinator, §47) | `FX-05/R20261006T072900Z-fx05/` |
