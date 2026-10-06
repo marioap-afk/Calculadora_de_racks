@@ -4,7 +4,7 @@
 Autoridad:  decisiones §43 (veredicto del Coordinator sobre A-1 y orden de apertura de F4)
 A-1:        AGREED sobre ca09ade8 / docs/initiatives/I-62-A-1.md / blob c01899a7 (no se edita)
 Nivel:      A (V14 §20.10): textos normativos, esquemas, validadores deterministas en tests/RackCad.Tests y controles reproducibles; sin servicio
-Estado:     paquete del gate (F4-H) para la revisión del Coordinator; F4 GATE PASS no se autodeclara
+Estado:     F4 GATE PASS / COMPLETE por el Coordinator (decisiones §44) sobre 6f0187cb; evidencia a8c6af16
 ```
 
 ## Superficies de producción

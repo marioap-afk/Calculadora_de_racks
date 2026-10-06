@@ -2347,3 +2347,17 @@ solo desde artefactos custodiados.
   tocan WORKFLOW, AUTOMATION_PLAN ni `agent-execution/`.
 - **Siguiente:** revisión del Coordinator. F4 GATE PASS no se autodeclara; quedan para su decisión la tabla E.5/derivado de C-20b, C-21 y las
   observaciones F4-OBS-20..24.
+
+## 60. F4 GATE PASS del Coordinator (decisiones §44): custodia
+
+- **Disposición:** F4 = GATE PASS / COMPLETE sobre `6f0187cb` (evidencia `a8c6af16`). C-20b PASS con la tabla E.5/derivado
+  clasificada como divergencias de previsión NO MATERIALES (sin A-n); C-21 PASS; F4-OBS-20..24 ACCEPTED (NO MATERIALES); sin hallazgo MATERIAL
+  nuevo ni decisión del Owner.
+- **CI de la evidencia** `a8c6af16`: corrida **37391578392**, push, `head_sha` exacto, cuatro jobs requeridos en `success` (comprobada).
+- **No se hace:** cambiar la implementación para igualar las filas de E.5; reclamar las partes F6 de C-32, C-37 y C-42; decidir OD-2, OD-3, OD-4,
+  OD-5 u OD-7.
+- **Siguiente frontera: F6.** Antes de cualquier escenario real (FX-01..FX-06), evaluar sus prerrequisitos de decisión del Owner tal como están
+  congelados (Proposal V14 §17, fila F6, y §18). La preparación de `I-62-prep/f6/` puede seguir. I-61 sigue activa; las superficies I62 siguen
+  inactivas hasta `I62_EFFECTIVE_SHA`.
+- **DC-07 (2026-10-06T01:59Z):** `origin/main` = `bb0d5522`; I-52 `fb6b5648` e I-64 `39b45f36` sin cambios.
+- **Custodia:** un único commit de registro con su CI; sin cadena de acuses posterior.
