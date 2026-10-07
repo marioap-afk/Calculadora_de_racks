@@ -1,0 +1,144 @@
+{
+  "RunId": "R20261007T034100Z-fx04a",
+  "Scenario": "FX-04a (C-25a), preparación previa a B",
+  "Authority": "decisiones §51 puntos 6-9 y 11",
+  "StartPoint": {
+    "QH2": "cabed54738f56e846bd77be321cace10d053094d",
+    "RecordVersion": 5,
+    "Chain": {
+      "QH_r3_defect": "ae25b596 (conservado)",
+      "Order_O3": "cc21e1d2",
+      "R_observation": "badbf930",
+      "R_proposal": "9ce50a5e",
+      "Designation": "1d2f14bf (+ fe de erratas f4f5929f)",
+      "QR_r4": "ead6119f08bf118bef1538269a3954c63ddae142",
+      "QH2_r5": "cabed54738f56e846bd77be321cace10d053094d"
+    },
+    "Validation": {
+      "QR_r4": "validador de producción: archivo 0, par desde QH r3 0, historia 0, historia del par 0, B1 0",
+      "QH2_r5": "validador de producción: archivo 0 (todos los StateRef a FX-U1.md en b7cff537), par desde QR 0, historia 0, historia del par 0, B1 0"
+    },
+    "CI": {
+      "ead6119f": "run 37567554756 success",
+      "cabed547": "run 37567674783 success"
+    }
+  },
+  "RepairPrincipal": {
+    "SessionId": "local_b70524e3-5788-4772-9f90-e2f45d83c350",
+    "Model": "claude-opus-5-5",
+    "Effort": "xhigh",
+    "OpenedBy": "Owner",
+    "Cwd": "D:\\r62-fixture\\R",
+    "BindingId": "B20261007T023706Z-5fdd",
+    "Preflight": "P20261007T023103Z-01b1 (CUSTODY MATCH, ELIGIBLE)",
+    "HumanMessages": [
+      "mensaje inicial (02:29:24Z)",
+      "«Continúa» del Owner tras la designación (03:29:27Z)"
+    ],
+    "AskUserQuestion": 0,
+    "Termination": {
+      "Status": "TERMINATION_ACCREDITED",
+      "Observations": [
+        {
+          "Utc": "2026-10-07T03:38:55Z",
+          "isRunning": false
+        },
+        {
+          "Utc": "2026-10-07T03:40:0xZ",
+          "isRunning": false
+        }
+      ],
+      "LastActivityUtc": "2026-10-07T03:38:41.255Z",
+      "QH2PushedUtc": "2026-10-07T03:38:1xZ"
+    }
+  },
+  "Oracle": {
+    "ComputedFrom": "cabed54738f56e846bd77be321cace10d053094d (nunca desde ae25b596)",
+    "Location": "D:/r62-fixture/evidence-out/oracles/fx04a-qh2/oracle.json (fuera de todo clon de B)",
+    "OracleSha256Canonical": "7fd1ef395643e985e0dbe98569aa19c6a3f6677168092aac11d854790c317dcb",
+    "OracleFileSha256": "75d779e448d25648bf92735416b13deff8e1f21a68a7528879543a56c9a51ed3",
+    "Fields": {
+      "facts": [
+        "branch",
+        "claim_id",
+        "last_point",
+        "record_version",
+        "protocol",
+        "principal_state",
+        "attempts",
+        "correction_launches",
+        "invocations",
+        "chains",
+        "last_window",
+        "task_intent",
+        "stops_in_force"
+      ],
+      "decision": [
+        "next_points",
+        "next_window_seq",
+        "task_id",
+        "attempt",
+        "role",
+        "protocol_set",
+        "binding",
+        "worker",
+        "preconditions"
+      ]
+    },
+    "Values": "no se publican antes de la respuesta de B"
+  },
+  "N11": {
+    "Status": "NOT_APPLICABLE",
+    "Reason": "no correction launch exists in this poorer-facts starting state (counters.correction_launches vacío en QH2)"
+  },
+  "Kit": {
+    "B-prompt.md": "5e05ee014a66bbdd4460e601c5b3437be345547722f33d8053b0366e5d5e0ee3",
+    "response.schema.json": "24ed2d5f7ce1fe5467079ea96a00da1b04f3e821e02080709f4447e0bded1263",
+    "fx04a_real.py": "b494becf26921fbc117a68f8969e91c6d8acdecdaf9aabc9df09a30bf1f3bace"
+  },
+  "BClone": {
+    "Path": "D:\\r62-fixture\\B",
+    "Head": "cabed54738f56e846bd77be321cace10d053094d",
+    "Branch": "fx/u1",
+    "Remotes": [
+      "origin = D:/r62-fixture/fixture-origin.git"
+    ],
+    "Clean": true,
+    "AutoFiles": {
+      "AGENTS.md": "aa7dcd2cb5308aff43b0e190d780aa92216830ad079a102a5999498452ab89ce",
+      "CLAUDE.md": "c16f28f314936e4df41e61e53e7292d7438c081f5bc5b5e20837f296bedc87c6"
+    },
+    "PriorSessions": "ninguna sesión de Claude ni de Codex en esa carpeta (sin directorio de proyecto de Claude; 0 entradas en el índice de sesiones de Codex)"
+  },
+  "D6CodexInputs": "AGENTS.md global 0 bytes; memorias vacías (stage1_outputs 0, jobs 0, memories/ sin archivos, 0 identificadores de la unidad); 49 skills sin identificadores; rules/default.rules menciona el repositorio real sin hechos de FX-U1; config.toml solo por hash. Limpias (d6-prelaunch.json, 2026-10-07T03:40:25Z)",
+  "FingerprintBeforeB": {
+    "Sha256": "9EA26634078B314A72A815B37CDD17657D7D0406E4911FC4CC4FEC42845153C3",
+    "Length": 4777,
+    "LastWriteTimeUtc": "2026-10-07T03:29:05.722Z",
+    "App": "OpenAI.Codex 26.1002.6548.0 (antes 26.930.7945.0)",
+    "Binary": {
+      "Path": "%LOCALAPPDATA%\\OpenAI\\Codex\\bin\\979a96ce184041d1\\codex.exe",
+      "Sha256": "97c57e4eb64257bcd7a470757950886f2c59eec4aa8537908979c6475d41cc08",
+      "WrittenUtc": "2026-10-07T02:14:49Z"
+    },
+    "ChangedKeyNamesVs723A6898": [
+      "mcp_servers.node_repl.command",
+      "mcp_servers.node_repl.env.BROWSER_USE_CODEX_APP_VERSION",
+      "mcp_servers.node_repl.env.CODEX_CLI_PATH",
+      "mcp_servers.node_repl.env.NODE_REPL_NODE_MODULE_DIRS",
+      "mcp_servers.node_repl.env.NODE_REPL_NODE_PATH",
+      "mcp_servers.node_repl.env.NODE_REPL_TRUSTED_CODE_PATHS",
+      "mcp_servers.node_repl.env.NODE_REPL_TRUSTED_SERVICES",
+      "mcp_servers.node_repl.env.SKY_CUA_NATIVE_PIPE_DIRECTORY",
+      "notify"
+    ],
+    "Structure": "107 nombres de clave y 39 secciones, iguales; secciones de proyecto del fixture sin cambios",
+    "Disposition": "P-01 para el uso futuro de codex-cli (segunda actualización automática de la app); la propuesta OD-2d sobre 723A6898 queda obsoleta; no afecta a FX-04a (§51 punto 11)"
+  },
+  "BEligibilityGap": {
+    "Finding": "el catálogo de modelos congelado (copia del fixture) no tiene ninguna celda de Codex elegible de nivel Frontera: gpt-6-astra es Frontera pero de créditos/API (no elegible); gpt-6.1-sol es Equilibrado; gpt-6-luna, Eficiente; gpt-5.5 sin nivel y con retiro el 2026-10-14",
+    "Consequence": "una B codex-desktop-session no puede cumplir PRINCIPAL_COORDINATION.level = Frontera para RESUME_DECISION: su preflight daría BELOW_REQUIRED y FX-04a quedaría UNVERIFIED (D.3 paso 5)",
+    "FrozenAlternative": "D.3 paso 4: una sesión de Claude nueva es una variante de mismo proveedor que se registra aparte",
+    "Status": "B NO abierta; decisión del Coordinator sobre la variante antes de abrirla"
+  }
+}

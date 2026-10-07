@@ -187,7 +187,12 @@ Paquete pedido por el Coordinator (decisiones §47) tras las dos sondas de OD-2b
 | Aprobar | `OD-2c = A (línea base 9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E)` |
 | Rechazar | `OD-2c = RECHAZAR` — `codex-cli` sigue en STOP: FX-02 y FX-06 UNVERIFIED |
 
-## OD-2d — Línea base exacta de `codex-cli` tras la actualización de la app de Codex (2026-10-07; LISTA para la decisión del Owner tras OD-2d-PROBE, §51)
+## OD-2d — Línea base exacta de `codex-cli` tras la actualización de la app de Codex (2026-10-07; OBSOLETA antes de decidirse: segunda actualización de la app)
+
+> **Obsoleta (2026-10-07T03:40Z, evidencia §71):** la app de Codex se actualizó otra vez (`26.1002.6548.0`; binario `979a96ce184041d1`,
+> `97c57e4eb64257bcd7a470757950886f2c59eec4aa8537908979c6475d41cc08`) y `config.toml` pasó a `9EA26634078B314A72A815B37CDD17657D7D0406E4911FC4CC4FEC42845153C3`
+> (9 claves de `mcp_servers.node_repl` y `notify`, localizadas por la comparación por clave). No responder a la propuesta de abajo: hará falta una medición
+> nueva (con autorización) y un paquete con la huella vigente, mejor después de abrir B, que puede volver a cambiarla.
 
 > **Medición completa (OD-2d-PROBE = A, §51;** [result.json](../I-62-F6/OD-2/R20261007T013200Z-od2d-probe/result.json)**):** huella
 > **`723A68985165BAE40689172F4E573C47FC45D1BA0D19F9192E3120DDD28B18C8`** estable en las seis mediciones (antes y después de `--version`, `login status` y

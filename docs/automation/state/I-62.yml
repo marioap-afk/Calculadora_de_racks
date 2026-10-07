@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: F6 (decisions §51): el Owner abre la sesión de reparación R en D:/r62-fixture/R (orden FX-U1-O3); R observa y propone su binding, la supervisión lo designa, R publica QR y QH2 válidos y termina; después oráculo de FX-04a desde QH2 (solo su SHA-256), auditoría D.6 y apertura de B; OD-2d listo para el Owner (723A6898…, binario 3b8f6e33…); F6 GATE PASS no autodeclarado.
+  next_action: F6 (decisions §51; evidencia §71): QH2 de FX-U1 válido (cabed547), R terminada, oráculo de FX-04a publicado por su SHA (7fd1ef39…), D.6 limpias; antes de abrir B, decisión del Coordinator sobre la variante (ninguna celda de Codex elegible de nivel Frontera); codex-cli en STOP P-01 por la segunda actualización de la app (9EA26634…), OD-2d obsoleta; F6 GATE PASS no autodeclarado.
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual

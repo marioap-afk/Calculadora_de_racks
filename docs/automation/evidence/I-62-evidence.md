@@ -2549,3 +2549,26 @@ solo desde artefactos custodiados.
   `Logged in using ChatGPT`, app `26.930.7945.0`. Sonda 1 en `A`: `gpt-6-luna`/`high`/`read-only` (66 841 / 1 254 tokens); sonda 2 en `arch`:
   `gpt-6.1-sol`/`high`/`read-only` (128 885 / 1 091), sin aviso de límite; la celda del Architect vuelve a quedar medida con el binario nuevo. **Huella
   `723A6898…` en las seis mediciones** y comparación por clave sin cambios: estable. Paquete OD-2d con esa huella y ese binario.
+
+## 71. Reparación del QH de FX-U1 por R (QR r4, QH2 r5), oráculo de FX-04a publicado por su SHA y preparación de B (decisiones §51)
+
+- **R** (`local_b70524e3…`, `claude-opus-5-5`/`xhigh`, abierta por el Owner en `D:\r62-fixture\R`): observación `P20261007T023103Z-01b1`
+  (CUSTODY MATCH, ELIGIBLE; `badbf930`) y propuesta `B20261007T023706Z-5fdd` (`9ce50a5e`), válidas; designación acotada del Coordinator del fixture
+  `1d2f14bf` (+ fe de erratas `f4f5929f` del commit citado). Mensajes humanos a R: el inicial y un «Continúa»; ninguna pregunta.
+- **QR r4** `ead6119f` (T16): todos los `StateRef` a `FX-U1.md` refrescados al blob del árbol (`b7cff537`), G0 sin cambio semántico, T1 y contadores
+  iguales. **Validador de producción: archivo 0, par desde el QH r3 0, historia 0, historia del par 0, B1 0.** CI 37567554756 success.
+- **QH2 r5** `cabed547` (T17): RELEASED, ventana CLOSED, sin cambios semánticos, todos los `StateRef` en su árbol. **Validador: 0 en todas las
+  categorías.** CI 37567674783 success ([chain](I-62-F6/FX-U1-chain/), [validator-qr-qh2.json](I-62-F6/FX-U1-chain/validator-qr-qh2.json)).
+- **Terminación de R acreditada** por `isRunning` = false (03:38:55Z y ~03:40Z; última actividad 03:38:41Z, tras el push del QH2).
+- **Oráculo de FX-04a desde QH2** (nunca desde `ae25b596`), guardado fuera de todo clon: **SHA-256 canónico
+  `7fd1ef395643e985e0dbe98569aa19c6a3f6677168092aac11d854790c317dcb`** (archivo `75d779e4…`). Valores no publicados. N11 = NOT_APPLICABLE (sin
+  `correction_launches`). [prelaunch.json](I-62-F6/FX-04a/R20261007T034100Z-fx04a/prelaunch.json).
+- **Clon de B:** `D:\r62-fixture\B` en `cabed547`, limpio, solo `origin`, sin sesiones previas. **D.6 (03:40:25Z): limpias** (AGENTS.md global 0 B, memorias
+  vacías, skills sin identificadores; `rules/default.rules` nombra el repositorio real sin hechos de FX-U1).
+- **Segunda actualización automática de la app de Codex** (`26.1002.6548.0`; binario `979a96ce184041d1`, `97c57e4e…`, escrito a las 02:14:49Z):
+  `config.toml` = `9EA26634…` (03:29:05Z), con 9 claves cambiadas, localizadas por la comparación HMAC por clave (todas de `mcp_servers.node_repl` y
+  `notify`); estructura igual. **P-01 para el uso futuro de `codex-cli`; la propuesta OD-2d sobre `723A6898…` queda obsoleta.** No afecta a FX-04a.
+- **Hecho de elegibilidad para B (antes de abrirla):** el catálogo congelado no tiene ninguna celda de Codex elegible de nivel Frontera (`gpt-6-astra`
+  es Frontera pero de créditos; `gpt-6.1-sol`, Equilibrado; `gpt-6-luna`, Eficiente). Una B `codex-desktop-session` no puede cumplir
+  `PRINCIPAL_COORDINATION.level` para RESUME_DECISION: su preflight daría BELOW_REQUIRED y FX-04a quedaría UNVERIFIED (D.3 paso 5). D.3 paso 4 admite
+  como variante registrada aparte una sesión de Claude nueva. **B no se abre hasta la decisión del Coordinator.**
