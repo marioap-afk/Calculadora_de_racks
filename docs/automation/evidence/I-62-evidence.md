@@ -2602,3 +2602,20 @@ solo desde artefactos custodiados.
   QH2 (el titular nuevo actúa primero con el QR) y el oráculo, el rol de la delegación que se planificará.
 - **Sin cambios a posteriori:** el oráculo y el esquema no se ajustan tras ver la respuesta; el FAIL mecánico se conserva. Preflight de B MATCH/ELIGIBLE y
   aislamiento no UNVERIFIED. **La clasificación de FX-04a y C-25a es del Coordinator.**
+
+## 74. FX-04a: B1 acreditada INVALID_TEST_ORACLE, contrato y oráculo v2 desde QH2, SHA del oráculo v2 publicado antes de B2 (decisiones §53)
+
+- **B1 intacta:** oráculo `7fd1ef39…`, respuesta `e17265ea…`, comparación 19/22 (FAIL bruto); acreditación **INVALID_TEST_ORACLE** (§53). F6-OBS-02 =
+  defecto no material del arnés.
+- **comparison-contract-v2** ([documento](I-62-F6/kits/FX-04a/comparison-contract-v2.md), [esquema](I-62-F6/kits/FX-04a/response.v2.schema.json)):
+  `facts.last_window` = `{"present": false}` o un objeto cerrado; `facts.task_intent` = `{"task_id", "kind", "attempt"}` o `null`; `decision.role`
+  sustituido por `next_actor_role` y `planned_delegated_role`; contadores y cadenas como objetos cerrados (sin cambio de valor: `[]` en QH2); igualdad
+  exacta de 23 campos, con `stops_in_force` y `preconditions` como conjuntos y `next_points` en orden. Herramienta: `fx04a_real.py oracle2` / `compare2`
+  (v1 intacta), con una salvaguarda que se detiene si `next_actor_role` no coincide con el `orchestration.next_action.role` canónico.
+- **Oráculo v2** solo desde QH2 `cabed547`, fuera de todo clon: **SHA-256 canónico `5e7a78d311735e4299925a9d97ac4760fe3595f1decb4d97440e17c947b64a03`**
+  (archivo `ae384682…`), 23 campos, conforme al esquema v2; ningún valor tomado de B1. Publicado en este commit, antes de B2
+  ([oracle-v2-published.json](I-62-F6/FX-04a/R20261007T061300Z-fx04a-b2/oracle-v2-published.json)).
+- **B2 preparada** ([prelaunch-B2.json](I-62-F6/FX-04a/R20261007T061300Z-fx04a-b2/prelaunch-B2.json)): clon `D:\r62-fixture\B2` en `cabed547`, limpio, solo
+  `origin`, sin referencias a B1 ni a los oráculos; sin sesión previa en esa carpeta; sin `CLAUDE.md` global; gancho de Orca `{}`; plugin `github`. Texto
+  inicial neutro `B2-kickoff.md` (SHA-256 `233b0582…`): instrucción y esquema v2, sin valores esperados. Segunda sesión de Principal B (reapertura +1,
+  tope 2).

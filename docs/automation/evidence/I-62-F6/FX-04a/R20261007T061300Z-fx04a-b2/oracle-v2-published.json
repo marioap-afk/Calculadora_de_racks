@@ -1,0 +1,17 @@
+{
+  "OracleV2": {
+    "ComputedFrom": "cabed54738f56e846bd77be321cace10d053094d",
+    "Location": "D:/r62-fixture/evidence-out/oracles/fx04a-qh2-v2/oracle-v2.json (fuera de todo clon)",
+    "CanonicalSha256": "5e7a78d311735e4299925a9d97ac4760fe3595f1decb4d97440e17c947b64a03",
+    "FileSha256": "ae3846828d03b134985e8a9326d36b937232aadcdf62714b5221bfe7a6fd5cb1",
+    "Fields": 23,
+    "ConformsToContractV2Schema": true,
+    "Values": "no publicados antes de la respuesta de B2; nada tomado de la respuesta de B1"
+  },
+  "ContractV2": {
+    "Document": "kits/FX-04a/comparison-contract-v2.md",
+    "Schema": "kits/FX-04a/response.v2.schema.json",
+    "Tool": "kits/FX-04a/fx04a_real.py (oracle2, compare2)"
+  },
+  "B1": "sin cambios: oráculo 7fd1ef39…, respuesta e17265ea…, comparación 19/22 FAIL bruto, acreditación INVALID_TEST_ORACLE (§53)"
+}

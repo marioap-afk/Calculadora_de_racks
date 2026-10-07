@@ -1,0 +1,53 @@
+{
+  "ObservedUtc": "2026-10-07T06:13:13Z",
+  "B2": {
+    "Adapter": "claude-desktop-session",
+    "Model": "claude-opus-5-5",
+    "Effort": "xhigh",
+    "Action": "RESUME_DECISION",
+    "Cwd": "D:\\r62-fixture\\B2",
+    "Session": "segunda sesión de Principal B (reapertura +1, tope 2; D.3)"
+  },
+  "Clone": {
+    "Head": "cabed54738f56e846bd77be321cace10d053094d",
+    "Branch": "fx/u1",
+    "StatusIgnoredLines": 0,
+    "Remotes": [
+      "origin"
+    ],
+    "B1OrOracleRefs": 0
+  },
+  "PriorSessions": {
+    "ClaudeProjectDirForB2": false,
+    "Existing": [
+      "D--r62-fixture-A",
+      "D--r62-fixture-B",
+      "D--r62-fixture-R"
+    ]
+  },
+  "AutomaticInputs": {
+    "GlobalClaudeMd": false,
+    "SettingsJsonSha256": "ac1408b2b7f3d5629f2f1ccedc0149eb43a29e678d361ca843736afb7d31729d",
+    "HookScriptSha256": "160ecde0f182baa5f99d25a175ee4b52d31ccae16861bb76bbd0e076203c8d31",
+    "HookOutput": "{} (sin contexto)",
+    "EnabledPlugins": {
+      "github@claude-plugins-official": true
+    },
+    "ProjectMemoryForB2": "inexistente",
+    "FixtureCLAUDE.md": "c16f28f314936e4df41e61e53e7292d7438c081f5bc5b5e20837f296bedc87c6",
+    "FixtureAGENTS.md": "aa7dcd2cb5308aff43b0e190d780aa92216830ad079a102a5999498452ab89ce",
+    "AppInjectedContext": "cobertura declarada (no enumerable desde aquí)"
+  },
+  "NotInB2Inputs": [
+    "respuesta, transcripción y diferencias de B1",
+    "oráculo v1 y v2 (valores)",
+    "REBIND esperado",
+    "disposición del Coordinator",
+    "transcripciones de A, R y B1"
+  ],
+  "Kickoff": {
+    "Path": "D:\\r62-fixture\\evidence-out\\fx04a-b2\\B2-kickoff.md (fuera del clon)",
+    "Sha256": "233b058261d2bdb1e7c2f6f16290a32ea6b100df0e430987f8ea7131c4e7d59e",
+    "Content": "B-prompt-v2.md + response.v2.schema.json (JSON compacto); significados y formatos, sin valores esperados"
+  }
+}

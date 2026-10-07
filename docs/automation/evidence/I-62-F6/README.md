@@ -18,7 +18,7 @@ Estado:     F6 EN CURSO; F6 GATE PASS no se autodeclara
 | OD-2 | **P-01 / STOP de `codex-cli`** | segunda actualización de la app (`26.1002.6548.0`, binario `97c57e4e…`): huella `9EA26634…`, 9 claves cambiadas (comparación por clave); la propuesta OD-2d sobre `723A6898…` queda obsoleta | nueva medición y paquete después de B (abrir B puede volver a cambiarla) |
 | FX-01 / C-23 | **PASS** (Coordinator, §51) | 4 preflights conformes al oráculo; la observación inicial de más en `xhigh` es una desviación no material; se conservan las cuatro ([result.json](FX-01/R20261006T203145Z-fx01/result.json)) | — |
 | FX-02 / C-24 | **UNVERIFIED** (bloqueado) | sin sesión A; `codex-cli` en STOP P-01 hasta OD-2d; CI recuperada de forma provisional | sesión A + OD-2d + confirmar CI en `fx/u1` |
-| FX-04a / C-25a | **comparación mecánica FAIL (3 de 22); clasificación pendiente del Coordinator** | B (variante de Claude, §52) con preflight MATCH/ELIGIBLE y aislamiento no UNVERIFIED; respuesta `e17265ea…` registrada antes de comparar; diferencias en `last_window` y `task_intent` (representación sin formato en el esquema del kit) y `role` (significado no definido; B da el `next_action.role` canónico) ([análisis](FX-04a/R20261007T034100Z-fx04a/comparison-analysis.json)) | disposición del Coordinator |
+| FX-04a / C-25a | **UNVERIFIED — pendiente de B2** (§53) | B1: 19/22 FAIL bruto, acreditada INVALID_TEST_ORACLE (F6-OBS-02, arnés no material); contrato y oráculo v2 desde QH2 (`5e7a78d3…`, publicado antes de B2) | B2 (sesión limpia nueva) y comparación con el contrato v2 |
 | FX-04b / C-25b | **UNSUPPORTED** (medido) | el Worker Codex no puede hacer commit (OD-4, sonda 1); ningún otro adapter lanzable por B tiene escritura acreditada (`claude-cli` rechazado, OD-3) | decisión del Owner sobre la limitación (OV-I62-05 b) |
 | FX-06 / C-39 | **UNVERIFIED** (solo preparación) | sin sesión A; `codex-cli` en STOP P-01 hasta OD-2d; la celda del Architect medida es del binario anterior y queda **obsoleta** (§50): volver a medirla | sesión A + OD-2d-PROBE/OD-2d + CI |
 | FX-03 / C-26 | **UNVERIFIED** (OD-3 = RECHAZAR) | además, el Worker Codex no puede hacer commit: con OD-3 sería UNSUPPORTED | limitación para OV-I62-04; no se retira |
@@ -51,7 +51,7 @@ de I-62, árbol de estados de `main`). El rechazo lo aplica la sesión de superv
 | C-22 | fixture arrancable (D.1 hasta un contrato I62 válido) | **PASS** (Coordinator, §51) | BOOTSTRAP `1746b404`, G0 `5a3a7d69`, QU `1a4fc9c6`, contrato de T1 `d30fb6a9` ([chain.json](FX-U1-chain/chain.json)) |
 | C-23 | FX-01 autoverificación | **PASS** (Coordinator, §51) | 4/4 conformes; desviación no material |
 | C-24 | FX-02 topología A | UNVERIFIED | `Ci` = `not_run`, sin sesión A (`codex-cli` disponible tras OD-2c) |
-| C-25a | FX-04a portabilidad | **pendiente del Coordinator** (comparación mecánica FAIL por la capa de comparación) | 19/22 iguales; ver §73 |
+| C-25a | FX-04a portabilidad | UNVERIFIED pendiente de B2 | B1 INVALID_TEST_ORACLE; oráculo v2 publicado |
 | C-25b | FX-04b continuación | UNSUPPORTED (medido) | Worker Codex sin commit en `workspace-write`; ningún otro adapter con escritura acreditada lanzable por B; decide el Owner (OV-I62-05 b) |
 | C-26 | FX-03 topología B | UNVERIFIED | OD-3 = RECHAZAR; además el Worker Codex no puede hacer commit; limitación para OV-I62-04; no se retira |
 | C-27 | FX-05 | **PASS** (Coordinator, §47) | `FX-05/R20261006T072900Z-fx05/` |

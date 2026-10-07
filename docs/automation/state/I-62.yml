@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: F6 (decisions §52; evidencia §72-§73): clasificar FX-04a/C-25a por el Coordinator (comparación mecánica FAIL, 19/22, diferencias de la capa de comparación del kit); después, petición nueva de OD-2d-PROBE para FX-02 y FX-06 contra la instalación vigente de Codex; codex-cli en STOP P-01; F6 GATE PASS no autodeclarado.
+  next_action: F6 (decisions §53): el Owner abre B2 (claude-opus-5-5 xhigh) en D:/r62-fixture/B2 con el texto inicial neutro v2; la supervisión registra el SHA de la respuesta antes de comparar con el oráculo v2 (5e7a78d3…); después, OD-2d-PROBE nueva; codex-cli en STOP P-01; F6 GATE PASS no autodeclarado.
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual

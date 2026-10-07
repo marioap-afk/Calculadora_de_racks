@@ -8,6 +8,8 @@ The oracle and the field-by-field comparison are those of the measured prototype
 B's response follows `response.schema.json` (same fields as the oracle; no value is given to B). Usage: python fx04a_real.py <command> ...
 Revision 2026-10-07 (decisiones §51 punto 8, «hechos más pobres» sin FX-02): binding REBIND when the canonical state carries no Controller binding;
 facts.stops_in_force and decision.preconditions in a closed vocabulary (compared as sets); N11 NOT_APPLICABLE without a correction_launches entry.
+comparison-contract-v2 (decisiones §53): commands oracle2 / compare2 with closed representations (last_window object, task_intent object, counters
+as closed objects) and decision.role split into next_actor_role and planned_delegated_role (response.v2.schema.json). The v1 commands stay unchanged.
 """
 import hashlib
 import json
@@ -90,6 +92,45 @@ def compare(o, r):
     return diffs
 
 
+
+# ---- comparison-contract-v2 (decisiones §53): closed representations; role split; v1 functions above stay as historical evidence ----
+def facts_and_decision_v2(s):
+    v1 = facts_and_decision(s)
+    f, d = dict(v1["facts"]), dict(v1["decision"])
+    lw = get(s, "custody.last_window")
+    f["last_window"] = {"present": False} if not lw else {"present": True, "seq": lw.get("seq"), "task_id": lw.get("task_id"), "attempt": lw.get("attempt"),
+                                                            "closure": lw.get("closure"), "verified_sha": lw.get("verified_sha")}
+    ti = get(s, "custody.task_intent")
+    f["task_intent"] = None if not ti else {"task_id": ti.get("task_id"), "kind": ti.get("kind"), "attempt": ti.get("attempt")}
+    f["correction_launches"] = [{"seq": e["seq"], "task_id": e["task_id"], "failure_class": e["failure_class"]} for e in (get(s, "counters.correction_launches") or [])]
+    f["invocations"] = [{"scope": e["scope"], "launched": e["launched"], "uncertain": e["uncertain"]} for e in (get(s, "counters.invocations") or [])]
+    f["chains"] = [{"task_id": c["task_id"], "state": c["state"], "chain_red_sha": c["chain_red_sha"]} for c in (get(s, "custody.chains") or [])]
+    # next_actor_role: at a QH with the holder RELEASED the next durable point is the QR of a newly designated Principal (16.26 T16), i.e. the canonical
+    # orchestration.next_action.role; planned_delegated_role: the role whose planning follows QR/Q0 (CONTROLLER_PLANNING -> EXECUTION_CONTROLLER).
+    first = d["next_points"][0] if d["next_points"] else None
+    d["next_actor_role"] = "PRINCIPAL_COORDINATOR" if first in ("QR", "Q0") else ("EXECUTION_CONTROLLER" if first == "CONTROLLER_PLANNING" else "UNKNOWN")
+    canon = get(s, "orchestration.next_action.role")
+    if canon and canon != d["next_actor_role"]:
+        raise SystemExit("next_actor_role derivation disagrees with the canonical next_action.role: " + str(canon))
+    d["planned_delegated_role"] = "EXECUTION_CONTROLLER" if "CONTROLLER_PLANNING" in d["next_points"] else None
+    del d["role"]
+    order_f = ["branch", "claim_id", "last_point", "record_version", "protocol", "principal_state", "attempts", "correction_launches", "invocations", "chains",
+               "last_window", "task_intent", "stops_in_force"]
+    order_d = ["next_points", "next_window_seq", "task_id", "attempt", "next_actor_role", "planned_delegated_role", "protocol_set", "binding", "worker", "preconditions"]
+    return {"facts": {k: f[k] for k in order_f}, "decision": {k: d[k] for k in order_d}}
+
+
+def compare_v2(o, r):
+    diffs = []
+    for part in ("facts", "decision"):
+        for k in o[part]:
+            got = (r.get(part) or {}).get(k, "<<missing>>")
+            if (part, k) in SETS and isinstance(got, list):
+                got = sorted(set(got))
+            if o[part][k] != got:
+                diffs.append({"Field": part + "." + k, "Oracle": o[part][k], "Response": got})
+    return diffs
+
 def main():
     cmd = sys.argv[1]
     if cmd == "oracle":
@@ -99,6 +140,20 @@ def main():
         with open(os.path.join(out, "oracle.json"), "w", encoding="utf-8", newline="\n") as f:
             json.dump(oracle, f, ensure_ascii=False, indent=1)
         print(json.dumps({"QH": commit, "OracleSha256": sha(oracle)}))
+    elif cmd == "oracle2":
+        origin, commit, out = sys.argv[2:5]
+        oracle = facts_and_decision_v2(state_at(origin, commit))
+        os.makedirs(out, exist_ok=True)
+        with open(os.path.join(out, "oracle-v2.json"), "w", encoding="utf-8", newline="\n") as f:
+            json.dump(oracle, f, ensure_ascii=False, indent=1)
+        print(json.dumps({"QH": commit, "OracleV2Sha256": sha(oracle)}))
+    elif cmd == "compare2":
+        o = json.load(open(sys.argv[2], encoding="utf-8"))
+        r = json.load(open(sys.argv[3], encoding="utf-8"))
+        fields = sum(len(o[p]) for p in ("facts", "decision"))
+        diffs = compare_v2(o, r)
+        print(json.dumps({"Contract": "comparison-contract-v2", "Fields": fields, "Equal": fields - len(diffs), "Diffs": diffs,
+                          "Comparison": "PASS" if not diffs else "FAIL"}, ensure_ascii=False, indent=1))
     elif cmd == "hash":
         print(json.dumps({"ResponseSha256": sha(json.load(open(sys.argv[2], encoding="utf-8")))}))
     elif cmd == "compare":
