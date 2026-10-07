@@ -1,0 +1,62 @@
+{
+  "RevealedAfter": "commit 096e6162 (SHA-256 de la respuesta de B durable, 05:19:30Z)",
+  "OracleCanonicalSha256Verified": "7fd1ef395643e985e0dbe98569aa19c6a3f6677168092aac11d854790c317dcb",
+  "Comparison": "FAIL (mecánica)",
+  "FieldsCompared": 22,
+  "FieldsEqual": 19,
+  "Diffs": [
+    {
+      "Field": "facts.last_window",
+      "Oracle": [
+        null,
+        null
+      ],
+      "B": [],
+      "Kind": "REPRESENTATION",
+      "Analysis": "ambos dicen que no hay última ventana; el esquema de respuesta (capa del fixture) no fijaba el formato de tupla [closure, verified_sha]"
+    },
+    {
+      "Field": "facts.task_intent",
+      "Oracle": [
+        "T1",
+        "FIRST",
+        0
+      ],
+      "B": "el objeto completo de custody.task_intent (T1, attempt 0, FIRST, contrato 628d89af, Controller sin binding)",
+      "Kind": "REPRESENTATION",
+      "Analysis": "mismo contenido (y más); el esquema no fijaba el formato de tupla [task_id, kind, attempt]"
+    },
+    {
+      "Field": "decision.role",
+      "Oracle": "EXECUTION_CONTROLLER",
+      "B": "PRINCIPAL_COORDINATOR",
+      "Kind": "SEMANTICS",
+      "Analysis": "el esquema no definía el significado de role. B da el rol de quien actúa primero (el titular nuevo hace el QR), que es el orchestration.next_action.role canónico del QH2 (PRINCIPAL_COORDINATOR, TAKE_CUSTODY_AFTER_DESIGNATION); el oráculo da el rol de la delegación que se planificará (EXECUTION_CONTROLLER), herencia del prototipo"
+    }
+  ],
+  "Equal": [
+    "branch",
+    "claim_id",
+    "last_point QH",
+    "record_version 5",
+    "protocol I62",
+    "principal_state RELEASED",
+    "attempts 0",
+    "correction_launches []",
+    "invocations []",
+    "chains []",
+    "stops_in_force {P-01, P-10, P-16}",
+    "next_points QR → Q0 → CONTROLLER_PLANNING",
+    "next_window_seq 1",
+    "task_id T1",
+    "attempt 0",
+    "protocol_set I62",
+    "binding REBIND",
+    "worker null",
+    "preconditions (las cinco)"
+  ],
+  "Preflight": "RESUME_DECISION MATCH / ELIGIBLE (los cuatro obligatorios en MATCH)",
+  "Isolation": "no UNVERIFIED (cobertura declarada); ninguna lectura prohibida",
+  "NoPostHocChange": "ni el oráculo ni el esquema se cambian después de ver la respuesta; el resultado mecánico se conserva",
+  "Classification": "pendiente del Coordinator: las tres diferencias nacen de una capa de comparación (kit del fixture) poco especificada, no de una reconstrucción errónea ni de una lectura prohibida"
+}

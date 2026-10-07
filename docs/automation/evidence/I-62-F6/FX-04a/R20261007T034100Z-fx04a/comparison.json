@@ -1,0 +1,44 @@
+{
+ "Diffs": [
+  {
+   "Field": "facts.last_window",
+   "Oracle": [
+    null,
+    null
+   ],
+   "Response": []
+  },
+  {
+   "Field": "facts.task_intent",
+   "Oracle": [
+    "T1",
+    "FIRST",
+    0
+   ],
+   "Response": [
+    {
+     "task_id": "T1",
+     "attempt": 0,
+     "kind": "FIRST",
+     "contract": {
+      "path": "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+      "blob": "628d89af5f21e4e14cbe7c3c14f0dd8fb5a490e0"
+     },
+     "continues_task_id": null,
+     "planned_roles": [
+      {
+       "role": "EXECUTION_CONTROLLER",
+       "binding": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "Field": "decision.role",
+   "Oracle": "EXECUTION_CONTROLLER",
+   "Response": "PRINCIPAL_COORDINATOR"
+  }
+ ],
+ "Comparison": "FAIL"
+}

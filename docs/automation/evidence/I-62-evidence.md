@@ -2587,3 +2587,18 @@ solo desde artefactos custodiados.
 - **Respuesta de B** ([B-response.json](I-62-F6/FX-04a/R20261007T034100Z-fx04a/B-response.json)): **SHA-256 canónico
   `e17265eab843aef230cac26b2bad8128bc350a246e67655c0b98f9b15ae280b0`**, registrado en este commit **antes** de la comparación con el oráculo
   (`7fd1ef39…`, publicado en `5121c8e3`). 27 entradas enumeradas (CANONICAL, TECHNICAL, AUTOMATIC). B2 no necesaria (N11 = NOT_APPLICABLE).
+
+## 73. FX-04a: comparación mecánica con el oráculo de QH2 = FAIL (3 diferencias de la capa de comparación); clasificación pendiente del Coordinator
+
+- **Orden:** el SHA-256 de la respuesta de B se hizo durable en `096e6162` (CI 37575739429 success) antes de comparar; después se publica el oráculo
+  ([oracle.json](I-62-F6/FX-04a/R20261007T034100Z-fx04a/oracle.json), SHA-256 canónico verificado `7fd1ef39…`) y la comparación
+  ([comparison.json](I-62-F6/FX-04a/R20261007T034100Z-fx04a/comparison.json), [análisis](I-62-F6/FX-04a/R20261007T034100Z-fx04a/comparison-analysis.json)).
+- **Resultado mecánico: FAIL**, 19 de 22 campos iguales: rama, Claim-Id, QH, `record_version` 5, I62, RELEASED, intentos 0, sin lanzamientos ni
+  invocaciones ni cadenas, STOP vigentes {P-01, P-10, P-16}, QR → Q0 → CONTROLLER_PLANNING, ventana 1, T1, intento 0, I62, **REBIND**, sin Worker y las
+  cinco precondiciones.
+- **Diferencias:** `facts.last_window` (oráculo `[null, null]`, B `[]`: los dos sin última ventana) y `facts.task_intent` (oráculo `["T1","FIRST",0]`, B el
+  objeto completo con el mismo contenido) son de **representación**: el esquema de respuesta del kit no fijaba esos formatos de tupla. `decision.role`
+  (oráculo `EXECUTION_CONTROLLER`, B `PRINCIPAL_COORDINATOR`) es de **significado**: el esquema no definía el campo; B da el `next_action.role` canónico del
+  QH2 (el titular nuevo actúa primero con el QR) y el oráculo, el rol de la delegación que se planificará.
+- **Sin cambios a posteriori:** el oráculo y el esquema no se ajustan tras ver la respuesta; el FAIL mecánico se conserva. Preflight de B MATCH/ELIGIBLE y
+  aislamiento no UNVERIFIED. **La clasificación de FX-04a y C-25a es del Coordinator.**

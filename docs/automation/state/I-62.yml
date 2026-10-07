@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: F6 (decisions §51; evidencia §71): QH2 de FX-U1 válido (cabed547), R terminada, oráculo de FX-04a publicado por su SHA (7fd1ef39…), D.6 limpias; antes de abrir B, decisión del Coordinator sobre la variante (ninguna celda de Codex elegible de nivel Frontera); codex-cli en STOP P-01 por la segunda actualización de la app (9EA26634…), OD-2d obsoleta; F6 GATE PASS no autodeclarado.
+  next_action: F6 (decisions §52; evidencia §72-§73): clasificar FX-04a/C-25a por el Coordinator (comparación mecánica FAIL, 19/22, diferencias de la capa de comparación del kit); después, petición nueva de OD-2d-PROBE para FX-02 y FX-06 contra la instalación vigente de Codex; codex-cli en STOP P-01; F6 GATE PASS no autodeclarado.
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual
