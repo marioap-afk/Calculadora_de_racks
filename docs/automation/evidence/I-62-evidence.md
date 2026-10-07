@@ -2684,3 +2684,23 @@ solo desde artefactos custodiados.
   bloque de respuesta. No contiene valores esperados.
 - **Sin ejecuciones:** ningún `codex-cli`, `claude-cli`, sesión, mensaje ni escritura en el fixture. A las 08:20Z la huella seguía en `9EA26634…` y el
   binario en `97c57e4e…`. `fx/u1` = `cabed547`, con la última CI del fixture (37567674783) en `success` sobre ese SHA.
+
+## 78. FX-04a B2: corrida terminada y SHA de la respuesta durable antes de cargar el oráculo v2 (decisiones §53)
+
+- **Lanzamiento:** el Owner abrió B2 (`local_97ac0196…`) a las 20:06:01Z en `D:\r62-fixture\B2`, con `claude-opus-5-5` y `xhigh`; el modo de permisos lo
+  eligió el Owner (`bypassPermissions`, registrado del transcript). Las entradas automáticas no cambiaron respecto de `prelaunch-B2.json`.
+- **Desviación del texto inicial (KICKOFF_SCHEMA_NOT_DELIVERED), causada por la supervisión:** la copia de referencia de la tarjeta de la mañana publicada
+  en el chat sustituía el esquema JSON por un marcador, y el Owner pegó esa copia. B2 recibió la instrucción íntegra, pero **no**
+  `response.v2.schema.json`: el mensaje tiene 1 394 caracteres (SHA-256 `fcfdfda7…`), frente a los 8 065 bytes de `B2-kickoff.md` (`233b0582…`). La
+  supervisión preparó la parte que faltaba (`B2-kickoff-part2-schema.md`, `9ec1be82…`) y recomendó pegarla, pero no se pegó: la sesión tiene un solo
+  mensaje humano. B2 detectó la ausencia, buscó el esquema en todas las revisiones del clon, declaró `UNKNOWN` la conformidad y entregó las cuatro claves
+  pedidas con una estructura propia.
+- **Terminación acreditada:** `isRunning` = false en dos observaciones (20:58:59Z y 21:00:04Z), sin actividad desde las 20:18:03Z.
+- **Preflight de B2:** `P20261007T201013Z-25e8`, RESUME_DECISION, **MATCH / ELIGIBLE** (Frontera, Long-horizon, lectura y RUNTIME_OBSERVED en MATCH).
+- **Aislamiento:** no queda UNVERIFIED. B2 solo usó `get_session("self")` (2 veces); leyó solo el clon y su propio scratchpad; escribió solo en su
+  scratchpad; el clon sigue sin cambios (`cabed547`, árbol limpio, refs sin cambio). La cobertura es la declarada (D.6).
+- **Respuesta registrada antes de comparar:** [B2-response.json](I-62-F6/FX-04a/R20261007T061300Z-fx04a-b2/B2-response.json), **SHA-256 canónico
+  `74e69f35b7c3fcfb0bcdac63da98339d25c58bf07f35c24402b798463d009587`** (archivo `5226a77d…`; igual al JSON del mensaje final), con el registro de la
+  corrida en [b2-run.json](I-62-F6/FX-04a/R20261007T061300Z-fx04a-b2/b2-run.json). El oráculo v2 **no** se ha cargado todavía.
+- **Estado:** `docs/automation/state/I-62.yml` no era YAML válido desde las ediciones de F6 (valores de `next_action` y `f6_status` con «: » sin comillas);
+  corregido con comillas, sin cambiar ningún valor (comprobado por ida y vuelta con `yaml.safe_load`).

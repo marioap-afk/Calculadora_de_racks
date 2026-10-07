@@ -1,0 +1,41 @@
+{
+  "PreflightId": "P20261007T201013Z-25e8",
+  "File": "P20261007T201013Z-25e8.json",
+  "FileSha256": "28ef856456588c4957c1505303a957f0745a22e3c607a512d20565acd8313c3d",
+  "AuthorityRevision": "cabed54738f56e846bd77be321cace10d053094d",
+  "PowerShell": {
+    "Edition": "Core",
+    "Version": "7.6.6"
+  },
+  "Phase1": {
+    "Schema": "docs/automation/agent-execution/schemas/preflight.v1.schema.json",
+    "Blob": "6a0540796a473e887677e5043d2105b932b5865f",
+    "Command": "Test-Json -SchemaFile",
+    "Result": true
+  },
+  "Phase2": {
+    "Schema": "docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json",
+    "Blob": "f246717f1cc2915bbac61ccd96fcd9676039b106",
+    "Command": "Test-Json -SchemaFile",
+    "Result": true
+  },
+  "Rules": {
+    "C1": true,
+    "C2": true,
+    "C3": true,
+    "C4": true,
+    "C5": true,
+    "C6": true,
+    "C7": true,
+    "C8": true
+  },
+  "Sanitization": {
+    "Rule": "README §13.4",
+    "PatternHits": [],
+    "Redactions": 0,
+    "Result": "CLEAN"
+  },
+  "ValidatedUtc": "2026-10-07T20:11:23.754Z",
+  "Custody": "NOT_CUSTODIED (RESUME_DECISION sin escritura en el repositorio; solo en el scratchpad de la sesión)",
+  "Accepted": true
+}

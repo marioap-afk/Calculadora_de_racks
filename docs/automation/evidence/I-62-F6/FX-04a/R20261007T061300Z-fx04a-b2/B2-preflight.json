@@ -1,0 +1,160 @@
+{
+  "Schema": "rackcad-preflight/v1",
+  "PreflightId": "P20261007T201013Z-25e8",
+  "UnitId": "FX-U1",
+  "Role": "PRINCIPAL_COORDINATOR",
+  "Action": "RESUME_DECISION",
+  "ProtocolSet": "rackcad-protocol/I62",
+  "Profile": {
+    "ProfileId": "PRINCIPAL_COORDINATION",
+    "RoutingBlob": "bba08fc4686d7192deeb559752636a467103b4b1"
+  },
+  "Host": {
+    "HostLabelHash": "63077eb13294b21695ab1d1c013de751a805000013ae0eaf238f5dc90fc51174",
+    "HostInstanceHash": "UNKNOWN",
+    "HostInstanceState": "UNOBSERVED",
+    "Os": "Microsoft Windows NT 10.0.26300.0"
+  },
+  "ObservedUtc": "2026-10-07T20:10:13.004Z",
+  "Actor": {
+    "AdapterId": "claude-desktop-session",
+    "InstanceId": "local_97ac0196-9d30-49df-a3b7-86720a5aa801",
+    "InstanceIdSource": "get_session(\"self\").sessionId",
+    "Assurance": "RUNTIME_OBSERVED"
+  },
+  "Session": {
+    "AdapterId": "claude-desktop-session",
+    "SessionId": "local_97ac0196-9d30-49df-a3b7-86720a5aa801",
+    "Assurance": "RUNTIME_OBSERVED"
+  },
+  "Adapter": {
+    "AdapterId": "claude-desktop-session",
+    "AdapterVersion": "UNKNOWN",
+    "BinaryPathHash": null,
+    "DescriptorRef": {
+      "Path": "adapters/claude-desktop-session.md",
+      "Blob": "7f45923527a860713819d1ccf29dcb375b680369"
+    }
+  },
+  "AdapterFacts": {
+    "SchemaRef": {
+      "SchemaId": "rackcad-adapter-claude-desktop-session-facts/v1",
+      "Path": "schemas/adapters/claude-desktop-session.facts.v1.schema.json",
+      "Blob": "f246717f1cc2915bbac61ccd96fcd9676039b106"
+    },
+    "Facts": {
+      "SchemaId": "rackcad-adapter-claude-desktop-session-facts/v1",
+      "AuthState": "AUTHENTICATED",
+      "MetadataSource": "get_session",
+      "ReportedModel": {
+        "State": "OBSERVED",
+        "Value": "claude-opus-5-5"
+      },
+      "ReportedEffort": {
+        "State": "OBSERVED",
+        "Value": "xhigh"
+      },
+      "IsRunning": "TRUE",
+      "PermissionMode": {
+        "State": "OBSERVED",
+        "Value": "bypassPermissions"
+      }
+    }
+  },
+  "Fingerprint": {
+    "Kind": "UNVERIFIED",
+    "Sha256": null,
+    "KeyNames": [],
+    "AcceptanceDecisionRef": null
+  },
+  "Requirements": [
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.level",
+      "Mandatory": true,
+      "Required": "Frontera",
+      "Observation": {
+        "State": "OBSERVED",
+        "Value": "Frontera (modelo de cliente 'claude-opus-5-5')",
+        "Source": "get_session(\"self\").model; nivel por model-catalog.md blob 166d978d114e635bbef67e295c2ec1da73af6d1f; ventana UTC [2026-10-07T20:10:12.686Z, 2026-10-07T20:10:14.681Z]",
+        "Assurance": "RUNTIME_OBSERVED",
+        "ObservedUtc": "2026-10-07T20:10:13.004Z"
+      },
+      "Status": "MATCH",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.effort",
+      "Mandatory": true,
+      "Required": "Long-horizon",
+      "Observation": {
+        "State": "OBSERVED",
+        "Value": "Long-horizon (effort de cliente 'xhigh')",
+        "Source": "get_session(\"self\").effort; traducción por model-catalog.md blob 166d978d114e635bbef67e295c2ec1da73af6d1f (claude-opus-5-5: Long-horizon -> xhigh, medido); ventana UTC [2026-10-07T20:10:12.686Z, 2026-10-07T20:10:14.681Z]",
+        "Assurance": "RUNTIME_OBSERVED",
+        "ObservedUtc": "2026-10-07T20:10:13.004Z"
+      },
+      "Status": "MATCH",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.remote-facts",
+      "Mandatory": true,
+      "Required": "lectura",
+      "Observation": {
+        "State": "OBSERVED",
+        "Value": "lectura (remoto origin; github no configurado en este clon)",
+        "Source": "git ls-remote origin en invocación de esta sesión: rc=0; refs/heads/fx/u1=cabed54738f56e846bd77be321cace10d053094d y refs/heads/main=fbe25347799e5b801ef708454212335537448bd1; ventana UTC [2026-10-07T20:08:03.188Z, 2026-10-07T20:08:03.543Z]",
+        "Assurance": "RUNTIME_OBSERVED",
+        "ObservedUtc": "2026-10-07T20:08:03.543Z"
+      },
+      "Status": "MATCH",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.introspection",
+      "Mandatory": true,
+      "Required": "RUNTIME_OBSERVED",
+      "Observation": {
+        "State": "OBSERVED",
+        "Value": "RUNTIME_OBSERVED",
+        "Source": "get_session(\"self\") respondió con model, effort y sessionId (dos lecturas con valores iguales, 20:07:03.834Z y 20:10:13.004Z); nivel de la fuente según adapters/claude-desktop-session.md blob 7f45923527a860713819d1ccf29dcb375b680369; ventana UTC [2026-10-07T20:10:12.686Z, 2026-10-07T20:10:14.681Z]",
+        "Assurance": "RUNTIME_OBSERVED",
+        "ObservedUtc": "2026-10-07T20:10:13.004Z"
+      },
+      "Status": "MATCH",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.repo-write",
+      "Mandatory": false,
+      "Required": "escritura",
+      "Observation": {
+        "State": "NOT_OBSERVED",
+        "Value": null,
+        "Source": null,
+        "Assurance": "NONE",
+        "ObservedUtc": null
+      },
+      "Status": "UNKNOWN",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    }
+  ],
+  "ConfigurationStatus": "MATCH",
+  "Causes": [],
+  "Disposition": "ELIGIBLE",
+  "StopConditions": [],
+  "Invalidators": {
+    "HostInstanceHash": "UNKNOWN",
+    "AdapterVersion": "UNKNOWN",
+    "BinaryPathHash": null,
+    "AuthState": "AUTHENTICATED",
+    "FingerprintSha256": "UNKNOWN",
+    "CatalogEntryBlob": "166d978d114e635bbef67e295c2ec1da73af6d1f",
+    "RoutingBlob": "bba08fc4686d7192deeb559752636a467103b4b1"
+  }
+}

@@ -1,0 +1,424 @@
+{
+  "facts": {
+    "unit": "FX-U1",
+    "plane": "c (TEST-ACTIVATION del fixture; nada acredita gates, READY ni decisiones de RackCad, P-16)",
+    "branch": "fx/u1",
+    "claim_id": "fc62f1c7-0000-4000-8000-000000000001",
+    "last_durable_point": {
+      "commit": "cabed54738f56e846bd77be321cace10d053094d",
+      "state_path": "docs/automation/state/FX-U1.yml",
+      "state_blob": "a9fea86d076d3a21a6217fa82641e33013fb1340",
+      "state_sha256": "517170cfaab9dc72690141fc6507dd6100ab7d7338d9cff4dd77a2abdb2c8585",
+      "state_sha256_matches_custodied_validation": true,
+      "schema": "rackcad-automation-state/v2",
+      "record_version": 5,
+      "point": "QH",
+      "point_kind": null,
+      "transition": "T17 (según docs/automation/evidence/FX-U1-agent/repair/qh/state-r5.validation.json)",
+      "previous_point": {
+        "commit": "ead6119f08bf118bef1538269a3954c63ddae142",
+        "record_version": 4,
+        "point": "QR",
+        "point_kind_source": "asunto del commit («QR ORDINARY»); el estado r4 no se leyó"
+      },
+      "state_refs": {
+        "count": 9,
+        "all_resolve_in_own_tree": true,
+        "method": "git rev-parse HEAD:<path> = blob registrado, para cada StateRef distinto",
+        "decisions_blob": "b7cff537185c8347a5ea3dc3935a2333d03045cf",
+        "contract_blob": "628d89af5f21e4e14cbe7c3c14f0dd8fb5a490e0",
+        "holder_binding_blob": "432198b272b4aaf88baea51dcae45dc477d7c95d",
+        "holder_preflight_blob": "5bdc18c0b67ac7b38020c041999bd9635fac8dd0",
+        "caps_blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
+      },
+      "invariant_validators": "NOT_RUN: I-S01..I-S18, I-P01..I-P13, I-H01 e I-H02 no existen en este fixture (README §17.5); ni el productor ni esta sesión los ejecutaron"
+    },
+    "durable_history": [
+      { "record_version": 1, "point": "BOOTSTRAP", "commit": "1746b404e57d69170ecfc084fd24fa3e699916d7", "source": "asunto del commit" },
+      { "record_version": 2, "point": "QU", "commit": "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf", "source": "asunto del commit (aceptación G0, I62_DELEGATED)" },
+      { "record_version": 3, "point": "QH", "commit": "ae25b596a11fe3508ac60a3ef7de5dc23df971ce", "source": "asunto del commit y orden FX-U1-O3", "note": "viola I-S13 e I-S16 (StateRef al archivo de decisiones con blob bdc8e4dd… no resoluble); se conserva como evidencia histórica, no se reescribe; su titular no vuelve a operar" },
+      { "record_version": 4, "point": "QR", "point_kind": "ORDINARY", "commit": "ead6119f08bf118bef1538269a3954c63ddae142", "source": "asunto del commit y state-r5.validation.json" },
+      { "record_version": 5, "point": "QH", "commit": "cabed54738f56e846bd77be321cace10d053094d", "source": "estado en HEAD" }
+    ],
+    "remote": {
+      "observed_utc": "2026-10-07T20:08:03.543Z",
+      "method": "git ls-remote origin (solo lectura; sin fetch para no escribir refs en .git)",
+      "origin_url_kind": "repositorio bare local del fixture (D:/r62-fixture/fixture-origin.git)",
+      "origin_fx_u1": "cabed54738f56e846bd77be321cace10d053094d",
+      "head_equals_origin_branch": true,
+      "worktree_clean": true,
+      "origin_main": "fbe25347799e5b801ef708454212335537448bd1",
+      "main_advanced_vs_effective_sha": false,
+      "github_remote": "UNKNOWN (no hay remoto «github» configurado en este clon; las órdenes O1-O3 y el binding de R lo citan)",
+      "ci_runs": "UNKNOWN (no observadas; no hacen falta para esta acción)"
+    },
+    "automation_state": {
+      "initiative": "FX-U1",
+      "current_phase": "T1",
+      "state": "waiting",
+      "gate": "owner-decision",
+      "attempts": 0,
+      "next_action": "Designación por el Coordinator de un titular nuevo de FX-U1 (QR, T16; T22 con avance de main) para planificar T1; el titular liberado no opera",
+      "last_evidence_commit": "f4f5929ff1ba995ae8e0c387b76a79eeca7ca886"
+    },
+    "protocol": {
+      "set": "rackcad-protocol/I62",
+      "classification": "I62_DELEGATED (decisión G0 del Coordinator; marcadores en docs/automation/decisions/FX-U1.md)",
+      "effective_sha": "fbe25347799e5b801ef708454212335537448bd1",
+      "effective_sha_derivation_checked": "único commit con el trailer Agent-Protocol-Normative: I-62 = a9f6c929e74ef92edfee557c3572b090f48bc318; fbe2534 es el primer merge en first-parent de main con segundo padre a9f6c92 y primer padre 930288c, que no lo alcanza; tag test-activation/I-62 → fbe2534",
+      "basis": {
+        "claim_commit": "eea0114ac78badf89d4bc497b5a69fb591ed923b",
+        "claim_parent_sha": "fbe25347799e5b801ef708454212335537448bd1",
+        "claim_parent_contains_effective": true,
+        "adoption_at": "G0"
+      },
+      "g0_acceptance": "ACCEPTED (decisión en docs/automation/decisions/FX-U1.md, blob b7cff537185c8347a5ea3dc3935a2333d03045cf)"
+    },
+    "custody": {
+      "principal_state": "RELEASED",
+      "last_holder": {
+        "label": "titular de reparación R",
+        "binding_id": "B20261007T023706Z-5fdd",
+        "session_id": "local_b70524e3-5788-4772-9f90-e2f45d83c350",
+        "cell_id": "claude-desktop-session:claude-opus-5-5:Long-horizon",
+        "preflight_id": "P20261007T023103Z-01b1 (CUSTODY, MATCH, ELIGIBLE)",
+        "acceptance": "ACCEPTED, INDIVIDUAL_DECISION, marcador «I62-PRINCIPAL-BINDING: B20261007T023706Z-5fdd ACCEPTED»",
+        "designation_scope": "acotada a la reparación de la orden FX-U1-O3 (QR ORDINARY + QH inmediato; nada más): agotada con el QH r5",
+        "since_record_version": 4,
+        "operates_after_qh": false,
+        "termination_accredited": "UNKNOWN (ni el estado ni el archivo de decisiones registran la terminación de R; la operación 7 del adapter es UNVERIFIED y la propia sesión no la acredita; esta sesión no la observó)"
+      },
+      "earlier_holder": {
+        "binding_id": "B20261006T220601Z-cfe1",
+        "session_id": "local_6dde7eb6-06c0-4d21-ad94-94849115d6c4 (según RejectedAlternatives del binding de R)",
+        "released_at": "QH r3 ae25b596",
+        "termination_accredited": "sí, por la sesión de supervisión: isRunning = false desde 2026-10-06T23:17:18Z (designación de R en el archivo de decisiones)"
+      },
+      "new_holder_designation": "ABSENT: el archivo de decisiones (blob b7cff537…) no contiene ninguna designación posterior a la de R",
+      "pending_principal_binding": "NONE: no hay ninguna propuesta binding/v1 PENDING posterior al QH r5 en la rama",
+      "window": { "seq": 0, "state": "CLOSED" },
+      "last_window": null,
+      "derived_delegation_state": "PLANNED (window CLOSED y task_intent ≠ null; 16.25): ninguna delegación abierta, Exit.OpenDelegations = 0",
+      "task_intent": {
+        "task_id": "T1",
+        "attempt": 0,
+        "kind": "FIRST",
+        "contract": { "path": "docs/automation/decisions/FX-U1-T1.gate-contract.json", "blob": "628d89af5f21e4e14cbe7c3c14f0dd8fb5a490e0", "main_sha": "fbe25347799e5b801ef708454212335537448bd1", "routing_enforcement": "required" },
+        "planned_roles": [ { "role": "EXECUTION_CONTROLLER", "binding": null } ]
+      },
+      "chains": [],
+      "unverified_commits": [],
+      "last_rebase": null,
+      "rebase_history": []
+    },
+    "counters": {
+      "correction_launches": [],
+      "blocked_reruns": [],
+      "rebase_recoveries": [],
+      "invocations": []
+    },
+    "orchestration": {
+      "loop": "NONE",
+      "review_requests": [],
+      "findings": [],
+      "budgets_consumed": "todos en 0",
+      "escalation": "NONE",
+      "autonomy_gaps": [],
+      "next_action": {
+        "role": "PRINCIPAL_COORDINATOR",
+        "action": "TAKE_CUSTODY_AFTER_DESIGNATION",
+        "target": { "commit": "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99", "path": "docs/automation/decisions/FX-U1-T1.gate-contract.json", "blob": "628d89af5f21e4e14cbe7c3c14f0dd8fb5a490e0", "resolves": true },
+        "required_capabilities": [ "PRINCIPAL_COORDINATION.level", "PRINCIPAL_COORDINATION.effort", "PRINCIPAL_COORDINATION.remote-facts", "PRINCIPAL_COORDINATION.introspection", "PRINCIPAL_COORDINATION.repo-write" ],
+        "required_independence": "NOT_REQUIRED",
+        "completion_condition": "designación del Coordinator en docs/automation/decisions/FX-U1.md con I62-PRINCIPAL-BINDING: <BindingId> ACCEPTED y el Claim-Id de la unidad",
+        "expected_output": "QR ORDINARY con el titular nuevo y su binding aceptado; después, Q0 de T1 con el binding aceptado del Controller de planificación",
+        "stop_conditions": [ "QH: el titular liberado no opera después", "P-10: Controller de planificación sin binding aceptado: no se vincula ni se invoca", "P-01: codex-cli detenido hasta autorización del Coordinator", "P-16: ningún repositorio real" ],
+        "escalation_conditions": [ "main avanzado respecto de effective_sha: toma con rebase (T22, I62-REBASE-TAKEOVER) y un QR REBASE_RECONCILIATION" ]
+      }
+    },
+    "transports": {
+      "codex_cli": "detenido por P-01 (cambio de huella) pendiente de decisión del Owner y de autorización del Coordinator (orden FX-U1-O1 §4); no hay autorización registrada después",
+      "subagents": "prohibidos en las órdenes O2 y O3 para sus titulares; ninguna orden vigente los autoriza"
+    },
+    "execution_context_in_state": {
+      "adapter_id": "claude-desktop-session",
+      "session_id": "local_b70524e3-5788-4772-9f90-e2f45d83c350",
+      "reported_model": "claude-opus-5-5",
+      "reported_effort": "xhigh",
+      "observed_utc": "2026-10-07T03:36:54.283Z"
+    },
+    "this_session": {
+      "label": "Principal B",
+      "session_id": "local_97ac0196-9d30-49df-a3b7-86720a5aa801",
+      "is_holder": false,
+      "binding": null,
+      "resume_decision": "MATCH / ELIGIBLE (preflight P20261007T201013Z-25e8)",
+      "custody": "UNKNOWN: repo-write no observado (caso E12); no toma la custodia",
+      "repository_writes": 0,
+      "preflight_validation": {
+        "file_sha256": "28ef856456588c4957c1505303a957f0745a22e3c607a512d20565acd8313c3d",
+        "phase1": true,
+        "phase2": true,
+        "rules": { "C1": true, "C2": true, "C3": true, "C4": true, "C5": true, "C6": true, "C7": true, "C8": true },
+        "sanitization": "CLEAN (README §13.4, 0 coincidencias)",
+        "powershell": "Core 7.6.6",
+        "validated_utc": "2026-10-07T20:11:23.754Z",
+        "accepted": true,
+        "custody": "NOT_CUSTODIED: solo en el scratchpad de la sesión, fuera del repositorio"
+      }
+    },
+    "observations": [
+      "El campo Notes de docs/automation/evidence/FX-U1-agent/repair/qh/state-r5.validation.json tiene UTF-8 doblemente codificado (p. ej. «despuÃ©s», bytes c3 83 c2 a9). Es texto libre y no altera el estado (el FileSha256 coincide); no bloquea."
+    ],
+    "unknown": [
+      "terminación acreditada del titular R (local_b70524e3-5788-4772-9f90-e2f45d83c350)",
+      "identidad y BindingId del titular nuevo",
+      "estado del remoto github de la unidad",
+      "corridas de CI de fx/u1",
+      "resolución de P-01 de codex-cli y candidata para EXECUTION_CONTROLLER (CONTROLLER_PLANNING)",
+      "si origin/main seguirá en effective_sha en el momento de la toma (observado solo a las 2026-10-07T20:08:03.543Z)",
+      "HostInstanceHash de esta sesión (no se leyó MachineGuid del registro: fuera del clon)",
+      "esquema response.v2.schema.json (no transcrito en la orden; no existe en ningún ref del clon)"
+    ]
+  },
+  "decision": {
+    "action": "RESUME_DECISION",
+    "custody_taken": false,
+    "proposed_next_decision": {
+      "transition": "T16",
+      "summary": "Transferencia de la custodia tras el QH r5: el Coordinator designa un titular nuevo (B) con su binding aceptado; B publica un QR ORDINARY sin rebase.",
+      "decides": "Coordinator del fixture (designación) / titular designado (registro QR)",
+      "steps": [
+        "1. Coordinator: acreditar la terminación de R (operación 7: get_session(\"local_b70524e3-5788-4772-9f90-e2f45d83c350\").isRunning = false, observado por otra sesión autorizada, o atestación del Owner) y dejar constancia en docs/automation/decisions/FX-U1.md. Hoy: UNKNOWN.",
+        "2. Coordinator: orden a la candidata para observarse y proponerse. La candidata produce su rackcad-preflight/v1 CUSTODY (con repo-write) en MATCH o ABOVE_REQUIRED y su rackcad-binding/v1 (PRINCIPAL_COORDINATOR, Scope UNIT, Acceptance PENDING, Custody.FromBindingId = B20261007T023706Z-5fdd, CountersSnapshot = contadores durables vacíos y attempts 0), y los publica en docs/automation/evidence/FX-U1-agent/ sin escribir el estado.",
+        "3. Coordinator: designación en docs/automation/decisions/FX-U1.md con «I62-PRINCIPAL-BINDING: <BindingId> ACCEPTED» y «Claim-Id: fc62f1c7-0000-4000-8000-000000000001».",
+        "4. Titular designado: QR ORDINARY con record_version 6, por CAS sobre cabed54 (HEAD = origin/fx/u1): principal HELD con su binding aceptado y su preflight custodiados; designación por StateRef; todo StateRef al archivo de decisiones refrescado al blob de ese árbol; g0_acceptance, protocol, contadores, task_intent y contrato de T1 sin cambios; window CLOSED. Ni Q0 ni delegación en el mismo punto."
+      ],
+      "after_qr": "Q0 de T1 solo con binding aceptado para EXECUTION_CONTROLLER (CONTROLLER_PLANNING; independencia Actor/Session/Context REQUIRED frente al WORKER). Hoy el rol no tiene binding (P-10) y codex-cli sigue detenido (P-01): la planificación de T1 necesita antes una decisión del Coordinator o del Owner. Esta respuesta no la decide."
+    },
+    "conditional_branch": {
+      "condition": "origin/main = protocol.effective_sha (fbe25347799e5b801ef708454212335537448bd1) en el momento de la toma",
+      "observed": { "value": true, "observed_utc": "2026-10-07T20:08:03.543Z", "source": "git ls-remote origin refs/heads/main" },
+      "if_true": "T16 → QR ORDINARY sin rebase (la rama aplicable según lo observado)",
+      "if_false": "T22 (REBASE_TAKEOVER, 16.25): designación acotada con «I62-REBASE-TAKEOVER: <BindingId>» junto con «I62-PRINCIPAL-BINDING: <BindingId> ACCEPTED»; el designado solo hace cinco acciones (fetch, rebase de WORKFLOW §4, push --force-with-lease=fx/u1:<branch_before>, RebaseMap custodiado en docs/automation/evidence/FX-U1-agent/rebase/<RunId>/rebase-map.json y un único QR REBASE_RECONCILIATION). El contrato de T1 tiene un MainSha obsoleto: se reemite (task_intent.kind = REISSUE, o task_intent = null hasta la reemisión). Una imagen o un patch-id no acreditables, o un --force-with-lease rechazado, son STOP.",
+      "stop_branches": [
+        "terminación de R no acreditada: no hay transferencia; STOP sin toma de posesión (P-12 / T11)",
+        "candidata con CUSTODY en BELOW_REQUIRED: STOP P-09 de CUSTODY; en UNKNOWN: P-10, sin binding (puede seguir dando RESUME_DECISION)",
+        "binding REJECTED en la designación: sin titular aceptado y sin QR",
+        "dos recuperaciones concurrentes: gana el primer CAS o la única designación (T13); la perdedora no opera",
+        "push del QR rechazado: no-fast-forward → T10; permisos → S-06; estado remoto desconocido → STOP; el commit local se conserva",
+        "cualquier referencia a un repositorio real: STOP P-16"
+      ]
+    },
+    "this_session_does_not": [
+      "tomar la custodia ni publicar puntos durables",
+      "escribir en el repositorio (incluidos fetch, commits y propuestas de binding)",
+      "producir un binding ni un preflight CUSTODY",
+      "invocar codex-cli ni lanzar subagentes",
+      "acreditar la terminación de R"
+    ]
+  },
+  "inputs": [
+    { "kind": "PROMPT", "class": "AUTOMATIC", "ref": "orden de invocación del operador (Principal B, RESUME_DECISION), turno inicial", "sha256": null, "note": "el esquema response.v2.schema.json que declara adjunto viene como marcador sin transcribir" },
+    { "kind": "FILE", "class": "AUTOMATIC", "path": "CLAUDE.md", "sha256": "c16f28f314936e4df41e61e53e7292d7438c081f5bc5b5e20837f296bedc87c6", "blob": "d0f12c8ea396d7916abd44290daa3a0b958f3ebc", "scope": "inyectado por el runtime al iniciar la sesión" },
+    { "kind": "RUNTIME_CONTEXT", "class": "AUTOMATIC", "ref": "instrucciones del sistema de Claude Code (app de escritorio): entorno, instantánea de git status del arranque, lista de herramientas y skills", "sha256": null, "note": "la autodeclaración de modelo del sistema no se usa como fuente; no se inyectó contenido de memoria" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "AGENTS.md", "sha256": "aa7dcd2cb5308aff43b0e190d780aa92216830ad079a102a5999498452ab89ce", "blob": "69b1f03282a128993ba348ba1e44a1b6b9c95040", "scope": "completo" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "README.md", "sha256": "f39fd5878d54758c09c231bc557c46200d8f6edf43235d05e35b5878bbf6ef42", "blob": "6744a160f14c84bed8e74b1a97d74efcd9a96b31", "scope": "completo" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "FIXTURE-MANIFEST.json", "sha256": "7e987970b00722e2cd6384cf9f5f87217be6cae57f2592228ba7f050bfeb7a06", "blob": "b8ac6f51340754f57b0d8d3e81733f46e9992307", "scope": "completo" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/AUTOMATION_PLAN.md", "sha256": "6dc9f5d5cb90b2242a8d21140674c0b88dc6472a36dd8c65dc988e8cac6a19f5", "blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5", "scope": "encabezados; §5; §16.14-16.16; §16.18-16.19; §16.25-16.28" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/agent-execution/README.md", "sha256": "2070e629151846afc90bb76348c47fc0ccd28fcfe5fbc9ad4e78959df93d8dc1", "blob": "592dcfd45e8743fd83b3423249fbd3c73e3d3055", "scope": "completo" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/agent-execution/routing.md", "sha256": "5a5d02bd9e3ae1979b891c418c1680dd600c1f9857b14852ef3ce733a44cd4ac", "blob": "bba08fc4686d7192deeb559752636a467103b4b1", "scope": "completo" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/agent-execution/model-catalog.md", "sha256": "dc11c201d39b2e80017cb15e049c20f1a5008a8dd97a713c0d4ea3547b0770c3", "blob": "166d978d114e635bbef67e295c2ec1da73af6d1f", "scope": "completo" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/agent-execution/adapters/claude-desktop-session.md", "sha256": "759098ebde125d49fb587bb697565cff297af9a4932678f8c4431759eda979b5", "blob": "7f45923527a860713819d1ccf29dcb375b680369", "scope": "completo" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/agent-execution/schemas/preflight.v1.schema.json", "sha256": "30be5648d789e8ba8ac0cc05ddd1f47fbf61efcdbc2a559e6bad7d37c940f5b7", "blob": "6a0540796a473e887677e5043d2105b932b5865f", "scope": "completo" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json", "sha256": "2c8fb7cc00d01e9917114ff11fd53e34ec1e2a33171d1631546176f95189c9f0", "blob": "f246717f1cc2915bbac61ccd96fcd9676039b106", "scope": "completo" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/state/FX-U1.yml", "sha256": "517170cfaab9dc72690141fc6507dd6100ab7d7338d9cff4dd77a2abdb2c8585", "blob": "a9fea86d076d3a21a6217fa82641e33013fb1340", "scope": "completo" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/decisions/FX-U1.md", "sha256": "351345bfd6843ac3109f9cd884dc5162e85a7ebd221eb321fb93208e20e802aa", "blob": "b7cff537185c8347a5ea3dc3935a2333d03045cf", "scope": "completo" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/decisions/FX-U1-T1.gate-contract.json", "sha256": "8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc", "blob": "628d89af5f21e4e14cbe7c3c14f0dd8fb5a490e0", "scope": "completo" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/evidence/FX-U1-agent/repair/P20261007T023103Z-01b1.json", "sha256": "c4448aa99c3d3bfd727774e498e3ee17a9cf271e5ff47c58397fe0dd48aa0fec", "blob": "5bdc18c0b67ac7b38020c041999bd9635fac8dd0", "scope": "completo" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/evidence/FX-U1-agent/repair/P20261007T023103Z-01b1.validation.json", "sha256": "80b5c970ab37dc8cc194f8c6636bf319e2d14df010acb8ff48d9b3afd62ad3a8", "blob": "30df9a961890c2d0f81ae1086e93aa35bb92b765", "scope": "completo" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/evidence/FX-U1-agent/repair/qr/B20261007T023706Z-5fdd.json", "sha256": "a0d979f2945ac2318bd35c7cd597b3f9d1d8a62c0f2a0abf6aebe43e6719c5e6", "blob": "432198b272b4aaf88baea51dcae45dc477d7c95d", "scope": "completo" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/evidence/FX-U1-agent/repair/qh/state-r5.validation.json", "sha256": "f6b497484ca521ae748d6c03e8c29b6bdd98a44aca079af7113e712cc67f2a3b", "blob": "3ef6571e21c4a539e4d89d709ad736c2d9cb200c", "scope": "completo" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/agent-execution/adapters/claude-cli.md", "sha256": "0f184e1a4f2e5cc2cae7564eed4ba26452878dcb97ab5af87396a1327efe1bc0", "blob": "ae570380509cacabf11f757a27573bf6fe616a36", "scope": "líneas sueltas de una búsqueda (terminación)" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/agent-execution/adapters/claude-subagent.md", "sha256": "863814841f1834e8bf7aee6c8d0dd53bf23df958efe9bcaa6da23269b3945872", "blob": "e10926c048321227fa53fe839e01f113fb9adece", "scope": "líneas sueltas de una búsqueda (terminación)" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/agent-execution/adapters/codex-cli.md", "sha256": "cf8a2d01e0e828c9fe56593228d5303ce1124ca30dd57ce3e091f81444ee4ec0", "blob": "155f3469e345e2397fa26347a9cb52d6fdb91122", "scope": "líneas sueltas de una búsqueda (terminación)" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/agent-execution/adapters/codex-desktop-session.md", "sha256": "11a9ce65c2a545ecb31ae543b7141ceb06f5de62d8097c62a92275b81a06fe6b", "blob": "02d6c33db60344943fbcd6fcdf347eefef06986f", "scope": "líneas sueltas de una búsqueda (terminación)" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/agent-execution/schemas/controller-verification.schema.json", "sha256": "bacfa903b3b7b535e4813086bdd8e9b3db139ec5dde938b202d8eb90f6713c91", "blob": "72747225daa2a83ba139ec1ffacb57d8943cf0af", "scope": "líneas sueltas de una búsqueda" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json", "sha256": "af862e7142c7c264d73a4edd5e8de227b97594730cb778b7b7ee444a04c78739", "blob": "e1faa9eca5c50b2b3a9f91575575614366962720", "scope": "líneas sueltas de una búsqueda" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/agent-execution/schemas/delegation.schema.json", "sha256": "0740a5ac36285e508db8b4dae782bd0f9e7b6a2c94069e61b654f81e8e88f085", "blob": "62c026764a3b917c9b4ffeb6df049247ea613869", "scope": "líneas sueltas de una búsqueda" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/agent-execution/schemas/delegation.v2.schema.json", "sha256": "870a8dcb63c50c395a6d41655958652036300990499e404a44ad6733d2054806", "blob": "dfdbe461270e8fd92200c36bab78b9fdc3385014", "scope": "líneas sueltas de una búsqueda" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-1.json", "sha256": "8fd2bdedb4a20b0dcc08896aa90dafaba52142e72deaddc58a84e4609ca64269", "blob": "5efc2533b6f1865f2772f510b2abc0f305a5a09b", "scope": "una línea de una búsqueda (IsRunning)" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-2.json", "sha256": "28a854c04d01841814fc7f0e894763886b50a1cb243cbd52c9378904869fdbea", "blob": "c657fb2f6fc18ec4d8924937cd17c4b1ae04560a", "scope": "una línea de una búsqueda (IsRunning)" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-3.json", "sha256": "4bad6d847584cf6bb50476b42af9e67087908e32c18221791760ac2e0b2b7373", "blob": "0e1ff4d526b78b0cb5965b83159d611f691edae5", "scope": "una línea de una búsqueda (IsRunning)" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-4.json", "sha256": "3f591d1498c0bba5e50c197a0072c356145edb4aa7ca72f1eddea6343123f406", "blob": "1e5bffb480bd978805ae8ecaa9ca89a7c43eac99", "scope": "una línea de una búsqueda (IsRunning)" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/evidence/FX-U1-agent/bootstrap/P20261006T220134Z-20ab.json", "sha256": "3f591d1498c0bba5e50c197a0072c356145edb4aa7ca72f1eddea6343123f406", "blob": "1e5bffb480bd978805ae8ecaa9ca89a7c43eac99", "scope": "una línea de una búsqueda (IsRunning)" },
+    { "kind": "FILE", "class": "CANONICAL", "path": "docs/automation/evidence/FX-U1-agent/repair/qr/state-r4.validation.json", "sha256": "eb128d67c20be2c8fb5427233f1b02591d2890dd835dcd8ba2270c2454949f9b", "blob": "9ba2e816f1d569af34c2115ddcd046bf5525c440", "scope": "solo coincidencia de búsqueda; la línea se omitió y su contenido no se leyó" },
+    { "kind": "GIT", "class": "CANONICAL", "ref": "historia de fx/u1 y main: git log, git rev-list --first-parent --parents, git log --all --grep (trailer), git cat-file del tag test-activation/I-62, git merge-base --is-ancestor, git rev-parse <commit>:<path> de cada StateRef", "sha256": null },
+    { "kind": "GIT_REMOTE", "class": "TECHNICAL", "ref": "git ls-remote origin (bare local D:/r62-fixture/fixture-origin.git), 2026-10-07T20:08:03.188Z-20:08:03.543Z, rc=0", "sha256": null },
+    { "kind": "GIT", "class": "TECHNICAL", "ref": "git ls-tree -r --name-only sobre todas las revisiones (búsqueda de response.v2.schema.json: no existe); git remote -v; git config --local --list (sin URLs); git status; git worktree list; git stash list", "sha256": null },
+    { "kind": "LISTING", "class": "TECHNICAL", "ref": "listado del árbol de trabajo (rutas, tamaños y número de líneas; sin interpretar contenido)", "sha256": null },
+    { "kind": "RUNTIME_INTROSPECTION", "class": "TECHNICAL", "ref": "get_session(\"self\") (ccd_session_mgmt), 2 lecturas: lastActivityAt 2026-10-07T20:07:03.834Z y 2026-10-07T20:10:13.004Z (ventana [20:10:12.686Z, 20:10:14.681Z])", "sha256": null },
+    { "kind": "DEPENDENCIES", "class": "TECHNICAL", "ref": "git 2.54.0.windows.1 (%LOCALAPPDATA%\\Programs\\Git\\cmd\\git.exe); PowerShell Core 7.6.6 (pwsh, WindowsApps) con Test-Json, Get-FileHash, ConvertTo/ConvertFrom-Json; .NET System.Net.Dns.GetHostName, Environment.OSVersion, SHA256; herramientas de Claude Code Read, Grep, PowerShell, Write (solo el scratchpad) y ToolSearch", "sha256": null },
+    { "kind": "NOT_READ", "class": "TECHNICAL", "ref": "MachineGuid (HKLM:\\SOFTWARE\\Microsoft\\Cryptography), ~/.codex/config.toml, otras sesiones, otros clones y el directorio de memoria: no se leyeron (fuera del clon)", "sha256": null }
+  ],
+  "preflight": {
+    "Schema": "rackcad-preflight/v1",
+    "PreflightId": "P20261007T201013Z-25e8",
+    "UnitId": "FX-U1",
+    "Role": "PRINCIPAL_COORDINATOR",
+    "Action": "RESUME_DECISION",
+    "ProtocolSet": "rackcad-protocol/I62",
+    "Profile": {
+      "ProfileId": "PRINCIPAL_COORDINATION",
+      "RoutingBlob": "bba08fc4686d7192deeb559752636a467103b4b1"
+    },
+    "Host": {
+      "HostLabelHash": "63077eb13294b21695ab1d1c013de751a805000013ae0eaf238f5dc90fc51174",
+      "HostInstanceHash": "UNKNOWN",
+      "HostInstanceState": "UNOBSERVED",
+      "Os": "Microsoft Windows NT 10.0.26300.0"
+    },
+    "ObservedUtc": "2026-10-07T20:10:13.004Z",
+    "Actor": {
+      "AdapterId": "claude-desktop-session",
+      "InstanceId": "local_97ac0196-9d30-49df-a3b7-86720a5aa801",
+      "InstanceIdSource": "get_session(\"self\").sessionId",
+      "Assurance": "RUNTIME_OBSERVED"
+    },
+    "Session": {
+      "AdapterId": "claude-desktop-session",
+      "SessionId": "local_97ac0196-9d30-49df-a3b7-86720a5aa801",
+      "Assurance": "RUNTIME_OBSERVED"
+    },
+    "Adapter": {
+      "AdapterId": "claude-desktop-session",
+      "AdapterVersion": "UNKNOWN",
+      "BinaryPathHash": null,
+      "DescriptorRef": {
+        "Path": "adapters/claude-desktop-session.md",
+        "Blob": "7f45923527a860713819d1ccf29dcb375b680369"
+      }
+    },
+    "AdapterFacts": {
+      "SchemaRef": {
+        "SchemaId": "rackcad-adapter-claude-desktop-session-facts/v1",
+        "Path": "schemas/adapters/claude-desktop-session.facts.v1.schema.json",
+        "Blob": "f246717f1cc2915bbac61ccd96fcd9676039b106"
+      },
+      "Facts": {
+        "SchemaId": "rackcad-adapter-claude-desktop-session-facts/v1",
+        "AuthState": "AUTHENTICATED",
+        "MetadataSource": "get_session",
+        "ReportedModel": {
+          "State": "OBSERVED",
+          "Value": "claude-opus-5-5"
+        },
+        "ReportedEffort": {
+          "State": "OBSERVED",
+          "Value": "xhigh"
+        },
+        "IsRunning": "TRUE",
+        "PermissionMode": {
+          "State": "OBSERVED",
+          "Value": "bypassPermissions"
+        }
+      }
+    },
+    "Fingerprint": {
+      "Kind": "UNVERIFIED",
+      "Sha256": null,
+      "KeyNames": [],
+      "AcceptanceDecisionRef": null
+    },
+    "Requirements": [
+      {
+        "RequirementId": "PRINCIPAL_COORDINATION.level",
+        "Mandatory": true,
+        "Required": "Frontera",
+        "Observation": {
+          "State": "OBSERVED",
+          "Value": "Frontera (modelo de cliente 'claude-opus-5-5')",
+          "Source": "get_session(\"self\").model; nivel por model-catalog.md blob 166d978d114e635bbef67e295c2ec1da73af6d1f; ventana UTC [2026-10-07T20:10:12.686Z, 2026-10-07T20:10:14.681Z]",
+          "Assurance": "RUNTIME_OBSERVED",
+          "ObservedUtc": "2026-10-07T20:10:13.004Z"
+        },
+        "Status": "MATCH",
+        "Contradiction": false,
+        "ContradictionEvidence": null
+      },
+      {
+        "RequirementId": "PRINCIPAL_COORDINATION.effort",
+        "Mandatory": true,
+        "Required": "Long-horizon",
+        "Observation": {
+          "State": "OBSERVED",
+          "Value": "Long-horizon (effort de cliente 'xhigh')",
+          "Source": "get_session(\"self\").effort; traducción por model-catalog.md blob 166d978d114e635bbef67e295c2ec1da73af6d1f (claude-opus-5-5: Long-horizon -> xhigh, medido); ventana UTC [2026-10-07T20:10:12.686Z, 2026-10-07T20:10:14.681Z]",
+          "Assurance": "RUNTIME_OBSERVED",
+          "ObservedUtc": "2026-10-07T20:10:13.004Z"
+        },
+        "Status": "MATCH",
+        "Contradiction": false,
+        "ContradictionEvidence": null
+      },
+      {
+        "RequirementId": "PRINCIPAL_COORDINATION.remote-facts",
+        "Mandatory": true,
+        "Required": "lectura",
+        "Observation": {
+          "State": "OBSERVED",
+          "Value": "lectura (remoto origin; github no configurado en este clon)",
+          "Source": "git ls-remote origin en invocación de esta sesión: rc=0; refs/heads/fx/u1=cabed54738f56e846bd77be321cace10d053094d y refs/heads/main=fbe25347799e5b801ef708454212335537448bd1; ventana UTC [2026-10-07T20:08:03.188Z, 2026-10-07T20:08:03.543Z]",
+          "Assurance": "RUNTIME_OBSERVED",
+          "ObservedUtc": "2026-10-07T20:08:03.543Z"
+        },
+        "Status": "MATCH",
+        "Contradiction": false,
+        "ContradictionEvidence": null
+      },
+      {
+        "RequirementId": "PRINCIPAL_COORDINATION.introspection",
+        "Mandatory": true,
+        "Required": "RUNTIME_OBSERVED",
+        "Observation": {
+          "State": "OBSERVED",
+          "Value": "RUNTIME_OBSERVED",
+          "Source": "get_session(\"self\") respondió con model, effort y sessionId (dos lecturas con valores iguales, 20:07:03.834Z y 20:10:13.004Z); nivel de la fuente según adapters/claude-desktop-session.md blob 7f45923527a860713819d1ccf29dcb375b680369; ventana UTC [2026-10-07T20:10:12.686Z, 2026-10-07T20:10:14.681Z]",
+          "Assurance": "RUNTIME_OBSERVED",
+          "ObservedUtc": "2026-10-07T20:10:13.004Z"
+        },
+        "Status": "MATCH",
+        "Contradiction": false,
+        "ContradictionEvidence": null
+      },
+      {
+        "RequirementId": "PRINCIPAL_COORDINATION.repo-write",
+        "Mandatory": false,
+        "Required": "escritura",
+        "Observation": {
+          "State": "NOT_OBSERVED",
+          "Value": null,
+          "Source": null,
+          "Assurance": "NONE",
+          "ObservedUtc": null
+        },
+        "Status": "UNKNOWN",
+        "Contradiction": false,
+        "ContradictionEvidence": null
+      }
+    ],
+    "ConfigurationStatus": "MATCH",
+    "Causes": [],
+    "Disposition": "ELIGIBLE",
+    "StopConditions": [],
+    "Invalidators": {
+      "HostInstanceHash": "UNKNOWN",
+      "AdapterVersion": "UNKNOWN",
+      "BinaryPathHash": null,
+      "AuthState": "AUTHENTICATED",
+      "FingerprintSha256": "UNKNOWN",
+      "CatalogEntryBlob": "166d978d114e635bbef67e295c2ec1da73af6d1f",
+      "RoutingBlob": "bba08fc4686d7192deeb559752636a467103b4b1"
+    }
+  }
+}
