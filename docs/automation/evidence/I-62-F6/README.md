@@ -1,8 +1,8 @@
 # I-62 — Evidencia de F6 (pilotos en el fixture; plano c)
 
 ```text
-Autoridad:  Freeze V14 + A-1 AGREED + F4 GATE PASS; decisiones del Owner OD-5/OD-7/OD-2/OD-4 = A, OD-3 = RECHAZAR (§46), OD-2b-PROBE = A (§47), OD-7 corregida a PÚBLICO y OD-2c = A (§48)
-Orden:      §46 (nocturna), §47, §48, §49 (continuación) y §50 (disposición tras R2); I-61 sigue activa; superficies I62 inactivas en RackCad
+Autoridad:  Freeze V14 + A-1 AGREED + F4 GATE PASS; decisiones del Owner OD-5/OD-7/OD-2/OD-4 = A, OD-3 = RECHAZAR (§46), OD-2b-PROBE = A (§47), OD-7 corregida a PÚBLICO y OD-2c = A (§48), OD-2d-PROBE = A (§51, sobre la instalación anterior)
+Orden:      §46 (nocturna), §47-§50, §51 (C-22/C-23 PASS, F6-OBS-01), §52 (selección de B), §53 (B1 INVALID_TEST_ORACLE; contrato y oráculo v2) y §54 (modo nocturno); I-61 sigue activa; superficies I62 inactivas en RackCad
 Estado:     F6 EN CURSO; F6 GATE PASS no se autodeclara
 ```
 
@@ -15,12 +15,12 @@ Estado:     F6 EN CURSO; F6 GATE PASS no se autodeclara
 | FX-05 / C-27 | **PASS** (corrida 2; confirmado por el Coordinator, §47) | la corrida 1 se conserva como inválida | no se repite salvo que su evidencia se invalide |
 | OD-4 sondas | **medido**: sonda 1 de ≤ 2 | escritura de archivos y herramientas SUPPORTED; **commit UNSUPPORTED** (`.git/index.lock` denegado por el sandbox); fuera del espacio bloqueado | sin segunda sonda: transporte en STOP |
 | OD-2b-PROBE | **hecho** (2 sondas `read-only`, §47) | sonda 1 en `A` (`gpt-6-luna`/`high`) y sonda 2 en `arch` (`gpt-6.1-sol`/`high`): huella `9002E854…` antes y después de cada una; ninguna entrada nueva; `read-only` no crea entradas, `workspace-write` sí ([result.json](OD-2b-PROBE/R20261006T150704Z-od2b/result.json)) | — |
-| OD-2 | **P-01 / STOP de `codex-cli`** | instalación actual estable desde 03:29Z: huella `9EA26634…`, binario `97c57e4e…`, app `26.1002.6548.0` ([result.json](OD-2/R20261007T061915Z-od2d-night-passive/result.json)) | **OD-2d vigente** del Owner (paquete listo: aceptación exacta condicionada a OD-2d-PROBE) |
+| OD-2 | **P-01 / STOP de `codex-cli`** | instalación actual estable desde 03:29Z (comprobada a las 08:20Z): huella `9EA26634…`, binario `97c57e4e…`, app `26.1002.6548.0` ([result.json](OD-2/R20261007T061915Z-od2d-night-passive/result.json)) | tras clasificar FX-04a: OD-2d-PROBE (tarjeta de mañana, acción 2) y después OD-2d sobre el paquete medido (acción 3) |
 | FX-01 / C-23 | **PASS** (Coordinator, §51) | 4 preflights conformes al oráculo; la observación inicial de más en `xhigh` es una desviación no material; se conservan las cuatro ([result.json](FX-01/R20261006T203145Z-fx01/result.json)) | — |
-| FX-02 / C-24 | **UNVERIFIED — staging completo hasta sus fronteras** (§54, evidencia §76) | kit en `kits/FX-02/`; bloquean FX-04a abierto (sin escrituras en el origen), OD-2d + OD-2d-PROBE, disposiciones CD-01..CD-21 del Coordinator, apertura de A2 por el Owner y la CI real del fixture | tarjeta de mañana, acciones 1-4 |
-| FX-04a / C-25a | **HUMAN_LAUNCH_REQUIRED** (B2) | B1 INVALID_TEST_ORACLE; contrato y oráculo v2 (`5e7a78d3…`, durable en `707b4daa` antes de B2); clon B2 y texto inicial neutro listos | el Owner abre B2 (tarjeta de mañana) |
+| FX-02 / C-24 | **UNVERIFIED — staging completo hasta sus fronteras** (§54, evidencia §76-§77) | kit en `kits/FX-02/`; bloquean FX-04a abierto (sin escrituras en el origen), su clasificación, OD-2d-PROBE y OD-2d, el grupo (b) del Coordinator (CD-01..CD-06, CD-08..CD-11, CD-13..CD-15, CD-17..CD-25; `kits/coordinator-disposition-request.md`), la apertura de A2 y la CI real del fixture | tarjeta de mañana, acciones 1-4 |
+| FX-04a / C-25a | **HUMAN_LAUNCH_REQUIRED** (B2) | B1 INVALID_TEST_ORACLE; contrato y oráculo v2 (`5e7a78d3…`, durable en `707b4daa` antes de B2); clon B2 en `cabed547` y texto inicial neutro listos | el Owner abre B2 (tarjeta de mañana, acción 1); el Coordinator clasifica (acción 2) |
 | FX-04b / C-25b | **UNSUPPORTED** (medido) | el Worker Codex no puede hacer commit (OD-4, sonda 1); ningún otro adapter lanzable por B tiene escritura acreditada (`claude-cli` rechazado, OD-3) | decisión del Owner sobre la limitación (OV-I62-05 b) |
-| FX-06 / C-39 | **UNVERIFIED — staging completo hasta sus fronteras** (§54, evidencia §76) | kit en `kits/FX-06/staging/` (auditor de `OWNER_AS_MESSAGE_BUS` 40/40 con entradas sintéticas); bloquean FX-04a, OD-2d y la re-medición de la celda del Architect, FX-02 hasta su Q7, decisiones FX06-F05 y la apertura del Principal | tarjeta de mañana, acción 5 |
+| FX-06 / C-39 | **UNVERIFIED — staging completo hasta sus fronteras** (§54, evidencia §76-§77) | kit en `kits/FX-06/staging/` (auditor de `OWNER_AS_MESSAGE_BUS` v3.1.0, autoprueba 64/64 con entradas sintéticas); bloquean la clasificación de FX-04a, OD-2d-PROBE (re-medición de la celda del Architect), P1b y OD-2d, el QH de FX-02 con la terminación de A2 acreditada y las precondiciones de FX06-F04, las decisiones de FX06-F05 y la apertura del Principal en `D:\r62-fixture\A6` | tarjeta de mañana, acción 5 |
 | FX-03 / C-26 | **UNVERIFIED** (OD-3 = RECHAZAR) | además, el Worker Codex no puede hacer commit: con OD-3 sería UNSUPPORTED | limitación para OV-I62-04; no se retira |
 
 ## Identidad del fixture
@@ -50,12 +50,12 @@ de I-62, árbol de estados de `main`). El rechazo lo aplica la sesión de superv
 |---|---|---|---|
 | C-22 | fixture arrancable (D.1 hasta un contrato I62 válido) | **PASS** (Coordinator, §51) | BOOTSTRAP `1746b404`, G0 `5a3a7d69`, QU `1a4fc9c6`, contrato de T1 `d30fb6a9` ([chain.json](FX-U1-chain/chain.json)) |
 | C-23 | FX-01 autoverificación | **PASS** (Coordinator, §51) | 4/4 conformes; desviación no material |
-| C-24 | FX-02 topología A | UNVERIFIED | `Ci` = `not_run`, sin sesión A (`codex-cli` disponible tras OD-2c) |
-| C-25a | FX-04a portabilidad | UNVERIFIED pendiente de B2 | B1 INVALID_TEST_ORACLE; oráculo v2 publicado |
+| C-24 | FX-02 topología A | UNVERIFIED — staging | bloquean FX-04a (B2 y su clasificación), OD-2d-PROBE y OD-2d, el grupo (b) del Coordinator y la apertura de A2; CI del fixture en clasificación A |
+| C-25a | FX-04a portabilidad | UNVERIFIED — HUMAN_LAUNCH_REQUIRED (B2) | B1 INVALID_TEST_ORACLE; oráculo v2 publicado antes de B2 |
 | C-25b | FX-04b continuación | UNSUPPORTED (medido) | Worker Codex sin commit en `workspace-write`; ningún otro adapter con escritura acreditada lanzable por B; decide el Owner (OV-I62-05 b) |
 | C-26 | FX-03 topología B | UNVERIFIED | OD-3 = RECHAZAR; además el Worker Codex no puede hacer commit; limitación para OV-I62-04; no se retira |
 | C-27 | FX-05 | **PASS** (Coordinator, §47) | `FX-05/R20261006T072900Z-fx05/` |
-| C-39 | FX-06 autonomía real | UNVERIFIED | `Ci` = `not_run`, sin sesión A; `codex-cli` disponible y celda del Architect medida; kit en `kits/FX-06/` |
+| C-39 | FX-06 autonomía real | UNVERIFIED — staging | bloquean la clasificación de FX-04a, OD-2d-PROBE con la re-medición de la celda del Architect, P1b, OD-2d, FX-02 hasta su QH, FX06-F05 y la apertura del Principal; kit en `kits/FX-06/staging/` |
 | C-32 (F6) | auditoría del transporte de FX-06 | UNVERIFIED | FX-06 no ejecutado |
 | C-37 (F6) | relevo manual → AUTONOMY_GAP | sin relevos | ninguna ejecución de esta noche tuvo un relevo humano; FX-06 no ejecutado |
 | C-42 (F6: 7, 8) | reconstrucción de la fidelidad desde la custodia; cambio de proveedor o de runtime entre intentos | UNVERIFIED | ningún intento real de revisión todavía (necesitan FX-02/FX-06) |

@@ -1,6 +1,6 @@
 {
- "Schema": "fx06-transport-audit-selftest/v2",
- "AuditorVersion": "2.0.0",
+ "Schema": "fx06-transport-audit-selftest/v3",
+ "AuditorVersion": "3.1.0",
  "Cases": [
   {
    "Case": "T01 corrida limpia",
@@ -111,7 +111,7 @@
    "PassEligibleOnTransport": false
   },
   {
-   "Case": "T10 mensaje de la supervision a la sesion del fixture",
+   "Case": "T10 mensaje de la supervision con la etiqueta de una sesion real observada en el fixture",
    "Expected": {
     "PassEligibleOnTransport": false,
     "FlagPresent": "SUPERVISION_LABEL_LEAK"
@@ -314,16 +314,18 @@
    "PassEligibleOnTransport": false
   },
   {
-   "Case": "T28 commit del Principal en el archivo de decisiones en la ventana: no es decision del Coordinator",
+   "Case": "T28 commit del Principal en el archivo de decisiones en la ventana: no es decision del Coordinator, pero exige disposicion (sustituye al T28 de v2, que lo daba por elegible)",
    "Expected": {
     "OWNER_AS_MESSAGE_BUS": "FALSE",
-    "PassEligibleOnTransport": true,
-    "Intermediate": 0
+    "PassEligibleOnTransport": false,
+    "Intermediate": 0,
+    "DispositionClass": "DECISIONS_FILE_COMMIT_BY_PRINCIPAL",
+    "FlagAbsent": "DECISIONS_FILE_MARKER_BY_NON_COORDINATOR"
    },
    "Result": "PASS",
    "Problems": [],
    "OWNER_AS_MESSAGE_BUS": "FALSE",
-   "PassEligibleOnTransport": true
+   "PassEligibleOnTransport": false
   },
   {
    "Case": "T29 commit del Owner en el archivo de decisiones en la ventana: disposicion",
@@ -419,13 +421,255 @@
    "Result": "PASS",
    "Problems": [],
    "Rejected": "Decisions[].Issuer obligatorio en COORDINATOR/OTHER/OWNER/PRINCIPAL: '8888888888888888888888888888888888888888'"
+  },
+  {
+   "Case": "T41 el Principal escribe marcadores I62-* en el archivo de decisiones dentro de la ventana (autorizacion falsificada)",
+   "Expected": {
+    "PassEligibleOnTransport": false,
+    "Intermediate": 0,
+    "FlagPresent": "DECISIONS_FILE_MARKER_BY_NON_COORDINATOR"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T42 commit del Coordinator en fx/u1 fuera del archivo de decisiones dentro de la ventana",
+   "Expected": {
+    "PassEligibleOnTransport": false,
+    "Intermediate": 0,
+    "FlagPresent": "NON_PRINCIPAL_COMMIT_IN_WINDOW"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T43 commit del Owner en main del fixture dentro de la ventana (fuerza un rebase)",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "FALSE",
+    "PassEligibleOnTransport": false,
+    "FlagPresent": "NON_PRINCIPAL_COMMIT_IN_WINDOW"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T44 commit de decisiones de la ventana ausente de BranchCommits",
+   "Result": "PASS",
+   "Problems": [],
+   "Rejected": "el commit de decisiones 'cccccccccccccccccccccccccccccccccccccccc' (desde el commit de la RLA o el primer evento de la sesion del Principal) no figura en BranchCommits (entrada incompleta)"
+  },
+  {
+   "Case": "T45 Issuer del commit de decisiones distinto del autor del commit",
+   "Result": "PASS",
+   "Problems": [],
+   "Rejected": "Decisions[].Issuer distinto del AuthorRole del mismo commit en BranchCommits (el Issuer es la identidad del autor del commit, no el autor que declara el bloque): 'cccccccccccccccccccccccccccccccccccccccc'"
+  },
+  {
+   "Case": "T46 arranque designado despues del push del paso 1",
+   "Result": "PASS",
+   "Problems": [],
+   "Rejected": "el arranque no es anterior al push del paso 1 (Window.Step1Commit): arranque designado despues del paso 1"
+  },
+  {
+   "Case": "T47 arranque con instrucciones libres (no es el literal ni la plantilla neutra)",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "FALSE",
+    "PassEligibleOnTransport": false,
+    "ClassOf3": "KICKOFF_NONSTANDARD"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T48 arranque que responde a una pregunta del Principal (decision del Coordinator transportada)",
+   "Expected": {
+    "PassEligibleOnTransport": false,
+    "ClassOf3": "KICKOFF_NONSTANDARD"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T49 arranque igual a la plantilla neutra publicada (por su SHA-256)",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "FALSE",
+    "PassEligibleOnTransport": true,
+    "ClassOf3": "KICKOFF"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": true
+  },
+  {
+   "Case": "T50 commit del paso 1 ausente de BranchCommits",
+   "Result": "PASS",
+   "Problems": [],
+   "Rejected": "Window.Step1Commit no figura en BranchCommits con el mismo PushedUtc"
+  },
+  {
+   "Case": "T51 el Owner abre otra sesion dentro de la ventana",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "UNDETERMINED",
+    "PassEligibleOnTransport": false,
+    "Sessions": 1,
+    "ClassOf4": "OWNER_OPENED_OTHER_SESSION_IN_LOOP"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "UNDETERMINED",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T52 el Owner abre otra sesion antes de la ventana: sin efecto y fuera del tope del Principal",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "FALSE",
+    "PassEligibleOnTransport": true,
+    "Sessions": 1,
+    "ClassOf0": "OWNER_OPENED_OTHER_SESSION"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": true
+  },
+  {
+   "Case": "T53 reapertura de la sesion del Principal dentro de la ventana: sin efecto, cuenta para el tope",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "FALSE",
+    "PassEligibleOnTransport": true,
+    "Sessions": 2,
+    "ClassOf4": "OWNER_OPENED_SESSION"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": true
+  },
+  {
+   "Case": "T54 AUTONOMY_GAP en la ventana sin RelayedBy: bus indeterminado",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "UNDETERMINED",
+    "PassEligibleOnTransport": false,
+    "GapCount": 1,
+    "FlagPresent": "AUTONOMY_GAP_RELAYER_UNKNOWN"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "UNDETERMINED",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T55 «continua» literal de la supervision antes de la ventana: disposicion, sin bandera",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "FALSE",
+    "PassEligibleOnTransport": false,
+    "ClassOf3": "FIXTURE_CONTROL_CONTINUE_PRE_WINDOW",
+    "FlagAbsent": "SUPERVISION_LABEL_LEAK"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T56 «continua» literal de la supervision dentro de la ventana, sin etiqueta: disposicion, sin bandera",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "FALSE",
+    "PassEligibleOnTransport": false,
+    "ClassOf4": "SUPERVISION_CONTINUE_IN_LOOP",
+    "FlagAbsent": "SUPERVISION_LABEL_LEAK"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T57 arranque en una sesion distinta de la del Principal",
+   "Result": "PASS",
+   "Problems": [],
+   "Rejected": "el arranque no es un evento de la sesion del Principal (Session distinta de Window.PrincipalSession)"
+  },
+  {
+   "Case": "T58 el Principal escribe un marcador I62-* entre la apertura de su sesion y el arranque (RLA falsificada antes de la ventana)",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "FALSE",
+    "PassEligibleOnTransport": false,
+    "Intermediate": 0,
+    "FlagPresent": "DECISIONS_FILE_MARKER_BY_NON_COORDINATOR",
+    "DispositionClass": "DECISIONS_FILE_COMMIT_BY_PRINCIPAL_PRE_WINDOW"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T59 commit del Principal sin marcadores en el archivo de decisiones antes del arranque y despues de la RLA: disposicion, sin bandera",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "FALSE",
+    "PassEligibleOnTransport": false,
+    "FlagAbsent": "DECISIONS_FILE_MARKER_BY_NON_COORDINATOR",
+    "DispositionClass": "DECISIONS_FILE_COMMIT_BY_PRINCIPAL_PRE_WINDOW"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T60 commit de decisiones anterior a la RLA vigente y a la sesion del Principal: fuera del ambito, sin bandera",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "FALSE",
+    "PassEligibleOnTransport": true,
+    "FlagAbsent": "DECISIONS_FILE_MARKER_BY_NON_COORDINATOR"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": true
+  },
+  {
+   "Case": "T61 arranque MESSAGE sin Text con el SHA-256 de la plantilla neutra",
+   "Result": "PASS",
+   "Problems": [],
+   "Rejected": "el arranque (Kind MESSAGE) necesita Text: sin texto no se comprueban el literal, la plantilla neutra ni los tokens"
+  },
+  {
+   "Case": "T62 commit de decisiones entre la RLA y el arranque ausente de BranchCommits",
+   "Result": "PASS",
+   "Problems": [],
+   "Rejected": "el commit de decisiones 'cccccccccccccccccccccccccccccccccccccccc' (desde el commit de la RLA o el primer evento de la sesion del Principal) no figura en BranchCommits (entrada incompleta)"
+  },
+  {
+   "Case": "T63 commit de la RLA ausente de BranchCommits (su Issuer no se contrasta)",
+   "Result": "PASS",
+   "Problems": [],
+   "Rejected": "el commit de decisiones '8888888888888888888888888888888888888888' (desde el commit de la RLA o el primer evento de la sesion del Principal) no figura en BranchCommits (entrada incompleta)"
+  },
+  {
+   "Case": "T64 RLA con Issuer COORDINATOR cuyo commit es del Principal",
+   "Result": "PASS",
+   "Problems": [],
+   "Rejected": "Decisions[].Issuer distinto del AuthorRole del mismo commit en BranchCommits (el Issuer es la identidad del autor del commit, no el autor que declara el bloque): '8888888888888888888888888888888888888888'"
   }
  ],
  "Summary": {
-  "Total": 40,
-  "Passed": 40,
-  "AuditCases": 30,
-  "RejectionCases": 10
+  "Total": 64,
+  "Passed": 64,
+  "AuditCases": 45,
+  "RejectionCases": 19
  },
  "AllPassed": true
 }

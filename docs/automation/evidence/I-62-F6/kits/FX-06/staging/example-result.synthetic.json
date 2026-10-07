@@ -1,13 +1,20 @@
 {
- "Schema": "fx06-transport-audit-result/v2",
- "AuditorVersion": "2.0.0",
+ "Schema": "fx06-transport-audit-result/v3",
+ "AuditorVersion": "3.1.0",
  "Unit": "SYN-U9",
  "Window": {
   "KickoffEventSeq": 3,
   "OpenUtc": "2030-01-01T09:50:00Z",
+  "Step1Commit": {
+   "Commit": "9999999999999999999999999999999999999999",
+   "PushedUtc": "2030-01-01T10:00:00Z"
+  },
+  "PrincipalSession": "SYN-PRINCIPAL",
   "Step7RecordVersion": 18,
   "CloseUtc": "2030-01-01T11:30:00Z",
-  "PhaseBasis": "instantes (Utc de los eventos, PushedUtc de los puntos); el Seq solo identifica el arranque"
+  "DecisionsFileScopeUtc": "2030-01-01T09:00:00Z",
+  "DecisionsFileScopeBasis": "RLA_COMMIT",
+  "PhaseBasis": "instantes (Utc de los eventos, PushedUtc de los puntos y commits); el Seq solo identifica el arranque"
  },
  "OWNER_AS_MESSAGE_BUS": "FALSE",
  "OwnerAsMessageBusF4Rule": false,
@@ -19,6 +26,7 @@
  "MissingAutonomyGapRecords": [],
  "IntermediateCoordinatorDecisions": [],
  "PrincipalCommitsToDecisionsFileInWindow": [],
+ "NonPrincipalCommitsInWindow": [],
  "TransportChecks": [
   {
    "LogicalReviewRequestId": "L20300101T100000Z-0001",
@@ -92,5 +100,5 @@
  "PassEligibleOnTransport": true,
  "ReasonsNotEligible": [],
  "Note": "Elegibilidad por transporte, no un resultado de FX-06: el PASS exige ademas los pasos 1-8 completos (D.8) y lo decide el Coordinator.",
- "InputSha256": "aad24d24510d9ff9dafec5af3b29757c8abb27c1ca3cb8c7228c9b3bed327fb4"
+ "InputSha256": "13aedf98ae4b85735f345e0e1b00a361ddd5f5ea5a30534b01aa22ed7f8fc842"
 }

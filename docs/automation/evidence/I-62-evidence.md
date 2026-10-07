@@ -2649,3 +2649,38 @@ solo desde artefactos custodiados.
   (evidencia disponible y faltante, acciones del Owner y del Coordinator, comandos), lista de cierre documental e integración, paquetes OV, disposición de
   ideas futuras y OD-1 (sin solicitarla); ningún READY declarado; valores esperados de OV sellados.
 - **Sin ejecuciones:** ningún `codex-cli`, ningún `claude-cli`, ninguna sesión abierta ni mensaje a sesiones del fixture, ninguna escritura en el fixture.
+
+## 77. Noche (decisiones §54), segunda ronda: críticos, tarjeta de la mañana reordenada, kits corregidos y solicitud consolidada al Coordinator
+
+- **Críticos de segunda pasada** (workflow de 4 agentes sobre `2cef994f`): 50 hallazgos, 0 BLOCKING; entre líneas 9 (4 MAJOR), FX-02 14 (8 MAJOR), FX-06 12
+  (4 MAJOR) y F7 15 (5 MAJOR). Hallazgo principal: la tarjeta de la mañana pedía OD-2d antes de clasificar FX-04a y con una sola línea que autorizaba la
+  sonda y aceptaba su resultado de antemano, y debajo de ella quedaban respuestas obsoletas listas para pegar.
+- **Tarjeta de la mañana** ([kits/README.md](I-62-F6/kits/README.md)), reescrita por la supervisión: 1) B2; 2) una sola ronda de disposiciones del
+  Coordinator, empezando por la clasificación de FX-04a, con el alcance de OD-2d-PROBE (operaciones, directorios, tope, P1b); 3) OD-2d sobre el paquete
+  medido; 4) A2; 5) Principal de FX-06 en `D:\r62-fixture\A6`, solo tras el QH de FX-02 con la terminación de A2 acreditada y las precondiciones de FX06-F04.
+  Cada acción lleva escenario, carpeta, runtime, modelo, effort, texto inicial, qué hacer, qué no pegar y evento de compleción; el modo de permisos lo
+  elige el Owner. Las secciones anteriores pasan a [HISTORY-owner-card-2026-10-06.md](I-62-F6/kits/HISTORY-owner-card-2026-10-06.md) («no ejecutar»),
+  con las respuestas obsoletas tachadas. En el paquete OD-2d, la línea condicionada se sustituye por dos actos (OD-2d-PROBE y después OD-2d), y las
+  respuestas obsoletas quedan tachadas.
+- **Aplicación** (workflow de 10 agentes: un autor por línea en el scratchpad, verificador adversarial, una pasada de reparación y un registro único;
+  0 errores, ningún hallazgo rechazado; los verificadores encontraron 1 MAJOR y 22 MINOR, todos reparados):
+  - **FX-02:** commit GREEN con el resumen de estado; bindings del Worker y del Controller de verificación dentro de la ventana (S18b, S21b); caminos
+    no VERIFIED (S25n) y ciclo de corrección (S30); listas A y B del aislamiento de A2 y auditoría posterior; colocación de N8-N10 pendiente de CD-11;
+    preguntas nuevas OQ-28..OQ-32 (CD-22..CD-25). Archivos de supervisión **resellados**: `negatives.md` `63e84ba3d7f06371e4c44a7c2cf671757ac34d61caf35bf56fed94524507b0e7` y
+    `supervision-checks.md` `444943584d3d792a8d152377fd62ee07aa8a54de110aeb61ea3fbbf933a28512`; la versión anterior queda archivada fuera del repositorio
+    ([sealed-supervision-files.json](I-62-F6/kits/sealed-supervision-files.json)).
+  - **FX-06:** auditor v3.1.0, autoprueba **64/64** con entradas sintéticas, `prepublish_scan.py` 9/9, ambas reproducidas byte a byte por la
+    supervisión. La ventana queda anclada al commit del paso 1, y los marcadores del archivo de decisiones que no ponga el Coordinator se marcan desde
+    la RLA. Se cubren también las aperturas de otras sesiones, el relevo sin relevador conocido, el «continúa» de la supervisión anterior a la ventana
+    (sin bandera hasta OQ-20), la reproducción de la materialización y la auditoría de lecturas tras la corrida, y la transición B1 con una invocación y
+    un `RunId` nuevos. El texto de permisos es neutro (OQ-25) y el kit anterior queda marcado como sustituido.
+  - **F7:** F-04 se separa en A2 y en el Principal de FX-06, y F-06 exige F-05. La entrada de FOUNDATIONS se limita a hechos firmes. Con `main` movido,
+    la fila 8 del cierre aplica la ruta R. C-20b compara con E.5 y el Coordinator clasifica las diferencias. Las líneas de READY-09 son del cuerpo del
+    commit (el único trailer de Git es `Co-Authored-By`; Q18). El ensayo de C-20b está custodiado: `EQUAL (MV-2..MV-6)`,
+    [c20b-dryrun-e9473425.json](I-62-prep/f7/measured/c20b-dryrun-e9473425.json). Preguntas Q18-Q20.
+- **Solicitud consolidada** ([coordinator-disposition-request.md](I-62-F6/kits/coordinator-disposition-request.md)): 65 preguntas únicas (U-01..U-65).
+  Las 6 de compuerta van primero: U-01, la clasificación de FX-04a; U-02..U-05, OD-2d-PROBE, directorios, tope y P1b; U-06, los «continúa». Además: 5
+  actos procedimentales de la supervisión, 9 duplicados fusionados, 10 divergencias con decisor único propuesto (el Coordinator de I-62) y un solo
+  bloque de respuesta. No contiene valores esperados.
+- **Sin ejecuciones:** ningún `codex-cli`, `claude-cli`, sesión, mensaje ni escritura en el fixture. A las 08:20Z la huella seguía en `9EA26634…` y el
+  binario en `97c57e4e…`. `fx/u1` = `cabed547`, con la última CI del fixture (37567674783) en `success` sobre ese SHA.

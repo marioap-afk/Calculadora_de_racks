@@ -3,10 +3,12 @@
 > **Preparación de staging.** Orden nocturna, decisiones §54 (fila «F7 y READY»: «paquetes OV»). Autoridades: Proposal V14 §18 (matriz OV y asignación a
 > I-62), Anexo D.3 (hoja de invocaciones), D.4 (resultados y matriz de cierre), **D.5 (ejecución compacta sobre FINAL_CANDIDATE_SHA)**, D.6 (entradas y
 > aislamiento), D.8 (FX-06); LIFECYCLE §8 (OV sobre el Candidato; retirar un escenario exige al Owner); decisiones §51 («Para OV-I62-01 sobre
-> FINAL_CANDIDATE se usa la secuencia compacta congelada exacta»), §52 y §53. Actualiza `I-62-prep/ov-scripts.md` (2026-10-04), que se conserva.
+> FINAL_CANDIDATE se usa la secuencia compacta congelada exacta»), §52 y §53. Autoridad de la ejecución de la OV: `docs/guias/validacion-manual-autocad.md`
+> (LIFECYCLE §1: «Matriz y ejecucion de Owner Validation, entrega del DLL»; guía §7.2); la aplicabilidad de su checklist de §5 está sin registrar y
+> tiene una propuesta para el Coordinator en `ready-dry-run.md`, READY-08. Actualiza `I-62-prep/ov-scripts.md` (2026-10-04), que se conserva.
 >
 > **Separación obligatoria:** este archivo no contiene ningún valor esperado (oráculos, disposiciones o estados esperados). Esos valores viven solo en
-> [ov-supervision-only.md](ov-supervision-only.md), archivo exclusivo de la sesión de supervisión, que se guarda fuera de todo clon del fixture y nunca se
+> `ov-supervision-only.md` (sellado fuera del repositorio; SHA-256 en [sealed-supervision-files.json](../../I-62-F6/kits/sealed-supervision-files.json)), archivo exclusivo de la sesión de supervisión, que se guarda fuera de todo clon del fixture y nunca se
 > copia, cita ni resume en una tarjeta de lanzamiento.
 
 ## 0. Reglas comunes de la ejecución compacta
@@ -19,8 +21,11 @@
 - **Sesiones del sistema bajo prueba:** las abre el Owner (HUMAN_LAUNCH_REQUIRED), en una carpeta limpia, sin worktree, con `claude-opus-5-5`; el effort lo
   fija cada tarjeta. Cada Principal hace su preflight antes de trabajar (16.15). Abrir una sesión asignada al Owner no es AUTONOMY_GAP; transportar a mano
   prompts o resultados entre roles sí (decisiones §49, §54).
-- **Mensajes de continuación** a una sesión del fixture: los teclea el Owner, con el texto literal mínimo de la tarjeta; la sesión de supervisión no los
-  envía (llevarían la etiqueta de una unidad real: P-16, D.6).
+- **Mensajes de continuación** a una sesión del fixture (**propuesta para el Coordinator, no regla ratificada: Q19**): las tarjetas siguen la práctica
+  vigente de la supervisión: los teclea el Owner cuando la supervisión lo indica, con el texto literal mínimo de la tarjeta, y la sesión de supervisión no
+  los envía (lectura de la supervisión: llevarían la etiqueta de una unidad real, P-16, D.6; `FX-U1-chain/chain.json`, `OwnerInterventionsInA`).
+  Decisiones §50 dispuso lo contrario para A («la sesión de supervisión puede enviar a A el mensaje literal mínimo «continúa» para G0, QU y QH»; «El
+  Owner solo hace los cambios de effort de FX-01») y ninguna disposición posterior lo sustituye.
 - **Oráculos** (OV-I62-03 para nc1, OV-I62-05 a y OV-I62-06): calculados por la supervisión, que actúa como Coordinator del fixture, desde el estado
   canónico, y guardados fuera de todo clon; solo su SHA-256 se publica de forma durable antes de abrir la sesión evaluada (en OV-I62-03, antes de abrir el
   Principal A, porque nc1 ocurre dentro de su sesión); la respuesta se guarda fuera del clon y su SHA-256 se hace durable **antes** de cargar el oráculo
@@ -40,7 +45,9 @@
 
 ```text
 I-62-ov/
-  README.md                      matriz OV-I62-01..06: escenario, SHA del Candidato, estado, decisión del Owner sobre limitaciones, enlaces
+  README.md                      matriz OV-I62-01..06: escenario, SHA del Candidato, estado, decisión del Owner sobre limitaciones, enlaces;
+                                 identidad del DLL: NOT_APPLICABLE (sin AutoCAD, V14 §18; campo del esqueleto de WORKFLOW §11.4), propuesta
+                                 a confirmar por el Coordinator junto con la aplicabilidad del checklist de la guía (READY-08)
   reseed/                        identidad del fixture resembrado: SourceCommit = FINAL_CANDIDATE_SHA, F_seed', F_norm', F_eff', manifiesto,
                                  reclamo de FX-U1, remoto y clasificación de la CI del fixture (corrida push del primer push ordinario)
   oracles-published.json         SHA-256 de cada oráculo, con la hora de publicación (commit durable anterior a la sesión evaluada)
@@ -66,7 +73,7 @@ Los oráculos y el archivo de la supervisión se copian a `OV-I62-0N/<RunId>/` *
 |---|---|
 | Fila congelada | V14 §18: «el Owner abre una sesión del sistema bajo prueba en el fixture resembrado desde el Candidato, con effort inferior y después correcto» |
 | Requiere | OD-5; fixture resembrado hasta la orden de apertura del Principal (D.1 paso 4; FX-01 precede al BOOTSTRAP, como en F6) |
-| Secuencia | **la compacta congelada exacta (§51)**; su número de observaciones y efforts los fija el Coordinator (Q4: §18 dice dos estados; D.3 dice tres preflights). No se repite la secuencia de cuatro del ensayo |
+| Secuencia | **la compacta congelada exacta (§51)**, redactada como la define V14 §18 en su columna «Ejecución final sobre FINAL_CANDIDATE_SHA»: dos estados, «con effort inferior y después correcto» (los guiones de `ov-scripts.md`, 2026-10-04, ya la usaban). Los tres preflights de D.3 son la forma del ensayo (columna «Ensayo» = C-23, F6). Queda abierto en Q4 solo si el «FX-01» de D.5 importa los tres preflights de D.3. No se repite la secuencia de cuatro del ensayo |
 | Sesión | **Supuesto registrado, pendiente de Q4:** OV-I62-01 y OV-I62-03 corren en **una sola sesión** del Principal A. Base: D.3, fila Principal A de la topología A (FX-01, FX-02, FX-05): «toda la ronda», «1 sesión», FX-01 con sus preflights «dentro de esta sesión», «+1 reapertura», tope «2 sesiones»; D.5: FX-02 «Principal 1». Si el Coordinator dispone sesiones separadas, la segunda consume la reapertura y no queda reserva |
 | Topes | Principal A: 1 sesión (+1 reapertura), D.3, compartida con OV-I62-03 |
 | Acción del Owner | abrir la sesión con el effort inicial de la tarjeta; cambiar el effort en la app cuando la supervisión lo pida; teclear solo los mensajes literales mínimos de continuación de la tarjeta |
@@ -75,9 +82,10 @@ Los oráculos y el archivo de la supervisión se copian a `OV-I62-0N/<RunId>/` *
 
 ```text
 [TARJETA OV-I62-01 + OV-I62-03 — una sesión del Principal A (supuesto de Q4); texto para la sesión del fixture; sin valores esperados]
-Carpeta: <RAÍZ_OV>\A        Modelo: claude-opus-5-5        Effort inicial: <EFFORT_INICIAL fijado por Q4>
+Carpeta: <RAÍZ_OV>\A        Modelo: claude-opus-5-5        Effort inicial: <un effort inferior al requerido (V14 §18)>
+Segundo estado de OV-I62-01: el Owner pone en la app el effort requerido cuando la supervisión lo pida (no se teclea; Q4 solo puede añadir el tercer preflight de D.3)
 Mensaje 1: Eres el Principal de la unidad FX-U1 de este repositorio. Sigue AGENTS.md y la orden <ORDEN_APERTURA> de docs/automation/decisions/FX-U1.md.
-Mensajes de OV-I62-01 (solo tras cada cambio de effort que pida la supervisión): continúa
+Mensaje de OV-I62-01 (solo tras el cambio de effort que pida la supervisión): continúa
 Effort para la parte de OV-I62-03: xhigh (lo fija el Owner en la app; no se teclea)
 Mensaje de OV-I62-03 (solo cuando la supervisión lo indique como control del fixture, tras publicarse la orden <ORDEN_FX02> en docs/automation/decisions/FX-U1.md): continúa
 ```
@@ -104,7 +112,7 @@ Produce el preflight de los cinco adapters con el procedimiento del Candidato <F
 |---|---|
 | Fila congelada | V14 §18: «ejecución compacta (D.5)» |
 | Requiere | OD-5, OD-7 (CI del fixture resembrado, clasificación A comprobada en su primer push ordinario), **OD-2 vigente para el binario de ese momento** (hoy OD-2d pendiente; P-01 si la app se actualiza), celdas del Controller re-medidas con ese binario; `ProtocolSet` I62; G0 y contrato del Coordinator del fixture |
-| Topes (D.5) | Codex: planificación 1 + verificación 1 + nc1 1 + pool 2 = 5; Worker (`claude-subagent`) 1 (+1); Principal 1 (la misma sesión de OV-I62-01, supuesto de Q4) |
+| Topes (D.5) | Codex: planificación 1 + verificación 1 + nc1 1 + pool 2 = 5; Worker (`claude-subagent`) 1 (+1); Principal 1 (la misma sesión de OV-I62-01, supuesto de Q4). **Abierto en el kit de FX-02 si este compacto basta:** CD-05 (colocación del bucle del Architect: con la opción A, `kits/FX-02/README.md` S16b, el bucle va antes del Q0, fuera del compacto «hasta VERIFIED» de D.5; la opción B, S26, lo deja después del Q7) y OQ-25 (una invocación de observación de la celda candidata del Controller no tiene tope en D.3, D.5 ni en la orden O4). Si CD-05 elige la opción A o hacen falta invocaciones de observación, el compacto necesita una disposición del Coordinator, o una A-n si cambia el presupuesto congelado de D.5 (LIFECYCLE §6) |
 | Oráculo | nc1: SHA-256 publicado antes de abrir el Principal A (§0) |
 | Acción del Owner | continuar la sesión de §2 con su tarjeta; teclear «continúa» solo cuando la supervisión lo indique como control del fixture; no transportar nada entre roles |
 | Acción de la supervisión | Coordinator del fixture (G0, contrato, orden); huella de `config.toml` y binario antes de cada invocación de `codex-cli` (P-01 → STOP sin aceptar nada); registrar cada corrida de CI con id, ref, SHA, jobs y conclusión |
@@ -168,25 +176,29 @@ Respuesta en una línea: OV-I62-05b = LIMITACIÓN DECIDIDA (<UNSUPPORTED | UNVER
 | Requiere | OD-5, OD-7 (CI del paso 5), OD-2 vigente para el binario de ese momento (OD-3 rechazada); celda del Architect `codex-cli:gpt-6.1-sol` `high` `read-only` re-medida con ese binario (la medición de F6 quedó obsoleta, §50); `ReviewLoopAuthorization` del Coordinator del fixture con su autorización de materialización (§20.5.1); objeto X con su defecto sembrado conocido solo por el oráculo |
 | Topes (D.5/D.8) | Architect 2 + reejecuciones 2 (≤ 4); Principal A propio de D.8: 1 sesión (+1 reapertura), sin compartir con la sesión de OV-I62-01/03 |
 | Regla de autonomía | entre los pasos 1 y 7 de D.8 no hay ningún mensaje legítimo del Owner ni decisión intermedia del Coordinator; todo relevo manual es AUTONOMY_GAP y el resultado no es PASS (C-37); `OWNER_AS_MESSAGE_BUS` se calcula de la custodia (F4-OBS-22), nunca del informe |
-| Acción del Owner | abrir el Principal A con la tarjeta y **no intervenir** |
+| Acción del Owner | abrir el Principal A con la tarjeta y **no intervenir** entre los pasos 1 y 7 de D.8. Si la ejecución compacta repite la designación del Principal nuevo y su QR antes del paso 1 de D.8 (P8 de `kits/FX-06/staging/README.md` §2.1), el mensaje de continuación para ese QR depende de Q19, como P8 y OQ-20 del kit de FX-06; este paquete no lo decide |
 | Acción de la supervisión | RLA y objeto X en el fixture antes de abrir A; huella y binario antes de cada invocación; auditoría de transporte al final |
 | Evidencia | `custody/` (cada QU con `orchestration`), resultados custodiados, `transport-audit.json`, `ci.json` |
 
 ```text
 [TARJETA OV-I62-06 — texto para la sesión del fixture; sin valores esperados]
 Carpeta: <RAÍZ_OV>\A        Modelo: claude-opus-5-5        Effort: xhigh
-Mensaje único: Eres el Principal de la unidad FX-U1 de este repositorio. Sigue AGENTS.md y la orden <ORDEN_FX06> de docs/automation/decisions/FX-U1.md.
+Mensaje 1: Eres el Principal de la unidad FX-U1 de este repositorio. Sigue AGENTS.md y la orden <ORDEN_FX06> de docs/automation/decisions/FX-U1.md.
+Mensaje de continuación para el QR tras la designación, antes del paso 1 de D.8 (si aplica): quién lo teclea y con qué texto, pendiente de Q19 (§0); entre los pasos 1 y 7 no se teclea nada
 ```
 
 ## 8. Bloqueos de estos paquetes (detalle en `closure-integration-checklist.md` §10)
 
 | Bloqueo | Paquetes | Quién |
 |---|---|---|
-| Q4 secuencia exacta de OV-I62-01 y sesión compartida con OV-I62-03 (supuesto) | 01, 03 | Coordinator |
+| Q4 si el «FX-01» de D.5 importa los tres preflights de D.3, y sesión compartida con OV-I62-03 (supuesto) | 01, 03 | Coordinator |
 | Q5 método de resiembra y su infraestructura | 01, 03, 05, 06 | Owner + Coordinator |
 | Q6 Principal B de la OV | 05 (a) | Coordinator |
 | Q17 N11 dentro del compacto de D.5 | 05 (a) | Coordinator |
 | Q16 FX-04b con la B de mismo proveedor de §52 | 05 (b) | Coordinator |
 | Regla de preguntas del fixture al Owner (texto fijo de §0) | 01, 03, 05 (a), 06 | Coordinator (aprobación) |
+| Q19 regla de los mensajes de continuación (propuesta de §0 frente a decisiones §50; en 06, el mensaje para el QR del Principal nuevo antes del paso 1 de D.8, como P8 y OQ-20 del kit de FX-06) | 01, 03, 06 | Coordinator |
+| CD-05 y OQ-25 del kit de FX-02 (presupuesto del compacto de FX-02 frente a D.5) | 03 | Coordinator (A-n si cambia D.5) |
+| Aplicabilidad del checklist de la guía e identidad del DLL NOT_APPLICABLE (READY-08) | 01..06 | Coordinator |
 | OD-2 vigente para el binario del momento (hoy OD-2d; P-01 con cada actualización de la app de Codex) | 03, 06 | Owner |
 | Limitaciones (FX-03, FX-04b; FX-06 si no hay PASS) | 04, 05 (b), 06 | Owner |

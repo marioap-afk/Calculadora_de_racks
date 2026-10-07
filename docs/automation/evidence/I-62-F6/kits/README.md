@@ -1,105 +1,73 @@
 # I-62 F6 — Tarjeta del Owner (fronteras humanas; nada de esto lo hace la sesión)
 
-## Tarjeta de la mañana del 2026-10-07 (modo nocturno, decisiones §54) — sustituye a las secciones anteriores como orden de acción
+## Tarjeta de la mañana del 2026-10-07 (modo nocturno, decisiones §54) — única orden de acción vigente
 
-Orden por dependencia. Ninguna sesión del fixture recibe valores esperados, oráculos, resultados de otras sesiones ni texto de RackCad o de I-62.
+Cinco acciones del Owner, en este orden. Entre una y otra, la supervisión trabaja sola. Ninguna sesión del fixture recibe valores esperados, oráculos,
+resultados de otras sesiones ni texto de RackCad o de I-62. El modo de permisos de cada sesión lo elige el Owner y la supervisión lo registra. Las
+secciones anteriores están en [HISTORY-owner-card-2026-10-06.md](HISTORY-owner-card-2026-10-06.md) y **no se ejecutan**.
 
-1. **B2 de FX-04a** (independiente; primero): sesión nueva de la app de Claude en `D:\r62-fixture\B2`, `claude-opus-5-5`, `xhigh`; texto inicial = el
-   contenido exacto de `D:\r62-fixture\evidence-out\fx04a-b2\B2-kickoff.md` (SHA-256 `233b0582…`); nada más; avisar «B2 terminó».
-2. **OD-2d** (una línea; paquete vigente en `../../I-62-prep/owner-decision-packets.md`): aceptación exacta de `9EA26634…` y del binario `97c57e4e…`
-   condicionada a OD-2d-PROBE sin cambios.
-3. **Disposiciones del Coordinator** que necesita la preparación (FX-02 grupo b: CD-01..CD-21 de `FX-02/frontiers.json`; FX-06: FX06-F05 y OQ-01..OQ-24 de
-   `FX-06/staging/README.md`; F7: Q1-Q17 de `../../I-62-prep/f7/`): las trae el Owner desde el Coordinator; la supervisión solo las registra.
-4. **A2 de FX-02** (después de 1, 2 y 3): sesión nueva en `D:\r62-fixture\A2` según [FX-02/launch-card-A2.md](FX-02/launch-card-A2.md); después, solo los
-   «continúa» que la supervisión indique.
-5. **Principal de FX-06** (después del Q7 de FX-02): sesión nueva en la carpeta limpia que prepare la supervisión, según
-   [FX-06/staging/README.md](FX-06/staging/README.md) P6-P8.
+### Acción 1 — Abrir B2 (FX-04a / C-25a; HUMAN_LAUNCH_REQUIRED)
+
+| Campo | Valor |
+|---|---|
+| Escenario | FX-04a: segunda sesión limpia del Principal B (RESUME_DECISION), decisiones §53 |
+| Carpeta exacta | `D:\r62-fixture\B2` (clon en `cabed547`, árbol limpio, sin sesión previa) |
+| Runtime / app | app de escritorio de Claude, **sesión nueva** (`claude-desktop-session`) |
+| Modelo / effort | `claude-opus-5-5` / `xhigh` |
+| Texto inicial exacto | el contenido íntegro de `D:\r62-fixture\evidence-out\fx04a-b2\B2-kickoff.md` (8 065 bytes, SHA-256 `233b058261d2bdb1e7c2f6f16290a32ea6b100df0e430987f8ea7131c4e7d59e`), como primer y único mensaje |
+| Después de abrir | nada. Si B2 pregunta algo, no contestes: avisa en la sesión de I-62 |
+| Qué NO pegar | el oráculo o su hash, nada de B1 (respuesta, comparación, análisis), transcripciones, textos de RackCad o de I-62, explicaciones |
+| Evento de compleción | B2 entrega su objeto JSON y se detiene; el Owner escribe «B2 terminó» en la sesión de I-62 |
+| Lo que sigue sin el Owner | la supervisión acredita la terminación, guarda la respuesta fuera del clon, publica su SHA-256 de forma durable y solo entonces carga el oráculo v2 y compara con el contrato v2; ninguna escritura en el origen del fixture hasta que el Coordinator clasifique FX-04a |
+
+### Acción 2 — Una sola ronda de disposiciones del Coordinator (incluye la autorización de OD-2d-PROBE)
+
+| Campo | Valor |
+|---|---|
+| Escenario | clasificación de FX-04a; FX-02 grupo (b); preguntas de FX-06 previas a la ventana; F7; alcance de OD-2d-PROBE |
+| Carpeta / runtime / modelo / effort | no aplica: no se abre ninguna sesión del fixture |
+| Qué hacer | llevar al Coordinator de I-62 el informe de la supervisión tras B2 y la solicitud consolidada [coordinator-disposition-request.md](coordinator-disposition-request.md). Primero van los puntos de compuerta: clasificación de FX-04a; operaciones, directorios y tope de OD-2d-PROBE y la medición `codex sandbox` (P1b); regla de los «continúa». Después, pegar en la sesión de I-62 la disposición que devuelva, con la línea `OD-2d-PROBE = A (…)` si se concede |
+| Qué NO pegar | nada en sesiones del fixture; ningún valor del oráculo |
+| Evento de compleción | disposición pegada en la sesión de I-62. La supervisión la custodia en las decisiones de I-62 y, si está autorizada y FX-04a ya está clasificada, ejecuta OD-2d-PROBE |
+
+### Acción 3 — OD-2d sobre el paquete medido
+
+| Campo | Valor |
+|---|---|
+| Escenario | OD-2d (línea base exacta de `codex-cli`); bloquea FX-02 y FX-06 |
+| Carpeta / runtime / modelo / effort | no aplica |
+| Qué hacer | tras OD-2d-PROBE, la supervisión publica el paquete exacto medido (`../../I-62-prep/owner-decision-packets.md`, §OD-2d vigente). El Owner responde una línea: `OD-2d = A (línea base <huella medida>; binario <SHA-256 medido>)` u `OD-2d = RECHAZAR`. Si la medición no cambia nada, los valores son `9EA26634078B314A72A815B37CDD17657D7D0406E4911FC4CC4FEC42845153C3` y `97c57e4eb64257bcd7a470757950886f2c59eec4aa8537908979c6475d41cc08` |
+| Qué NO pegar | contenido de `config.toml` o de credenciales |
+| Evento de compleción | línea pegada en la sesión de I-62 |
+
+### Acción 4 — Abrir A2 (FX-02 / C-24; HUMAN_LAUNCH_REQUIRED)
+
+| Campo | Valor |
+|---|---|
+| Requisitos (los comprueba la supervisión antes de avisar) | acciones 1-3 hechas; orden FX-U1-O4 publicada en `fx/u1` con la CI registrada; clon preparado; parte 1 de [FX-02/launch-card-A2.md](FX-02/launch-card-A2.md) completa |
+| Escenario | FX-02: Principal A2 de FX-U1, de QH2 a Q7 de T1 (topología A) |
+| Carpeta exacta | `D:\r62-fixture\A2` |
+| Runtime / app | app de escritorio de Claude, **sesión nueva** (`claude-desktop-session`) |
+| Modelo / effort | `claude-opus-5-5` / `xhigh`; sin cambiar modelo, effort ni modo de permisos durante la sesión |
+| Texto inicial exacto | `Eres el Principal de la unidad FX-U1 de este repositorio. Sigue AGENTS.md y la orden FX-U1-O4 de docs/automation/decisions/FX-U1.md.` |
+| Después de abrir | solo `continúa`, y solo cuando la supervisión lo indique (cada uno queda registrado). Si A2 pregunta algo, no contestes: avisa en la sesión de I-62. No cierres la sesión hasta que la supervisión lo diga |
+| Qué NO pegar | valores esperados, oráculos, resultados o transcripciones de otras sesiones, hechos reconstruidos, textos de RackCad o de I-62, salidas de Codex o de subagentes |
+| Evento de compleción | A2 termina según la orden, con `isRunning` = false en dos observaciones (evento E6 de la tarjeta de A2); la supervisión avisa |
+
+### Acción 5 — Abrir el Principal de FX-06 (C-39; HUMAN_LAUNCH_REQUIRED)
+
+| Campo | Valor |
+|---|---|
+| Requisitos (los comprueba la supervisión antes de avisar) | QH de FX-02 con la terminación de A2 acreditada; precondiciones de FX06-F04 comprobadas en el último punto de `fx/u1`; disposiciones de FX06-F05; OD-2d aceptada y celda del Architect re-medida; orden y RLA publicadas tras `prepublish_scan.py` (P5); clon de P6 preparado |
+| Escenario | FX-06: piloto de autonomía real D.8 |
+| Carpeta exacta | `D:\r62-fixture\A6` |
+| Runtime / app | app de escritorio de Claude, **sesión nueva** (`claude-desktop-session`) |
+| Modelo / effort | `claude-opus-5-5` / `xhigh` |
+| Texto inicial exacto | la plantilla neutra de [FX-06/staging/README.md](FX-06/staging/README.md) §5 con `<UNIDAD>` = `FX-U1` (opción A; `FX-U2` si el Coordinator elige la B) |
+| Después de abrir | un solo `continúa` cuando la supervisión diga que la designación está publicada (último mensaje humano antes del paso 1). Después, ningún mensaje hasta que la supervisión diga que el paso 7 está custodiado. Hecho medible: cualquier mensaje o aprobación humana entre los pasos 1 y 7 es un candidato a OWNER_CLICK_IN_LOOP / AUTONOMY_GAP, y con él FX-06 no puede ser PASS |
+| Qué NO pegar | el oráculo, el defecto sembrado, resultados esperados de los Architects, textos de RackCad o de I-62 |
+| Evento de compleción | QU de la ingestión de C (paso 7) custodiado y terminación acreditada; la supervisión avisa |
 
 ---
 
-Orden del Coordinator ([decisiones](../../../decisions/I-62.md) §47 y §49): A. GitHub Actions del fixture (R1 sin efecto; R2 con corridas,
-clasificación A provisional) → B-C. sondas y paquete OD-2c (hechos) → D. OD-2c (decidida: A, §48) → E. **apertura del Principal A autorizada sin esperar
-a Actions (§49) y pedida al Owner** para FX-01 y FX-04a.
-
-## 1. A — GitHub Actions del fixture (recuperado de forma provisional, decisiones §49)
-
-**R1** (flujo deshabilitado y habilitado, commit vacío `4a276c75` en `ci/smoke`): 0 corridas. **R2** (solo en `ci/smoke`, `workflow_dispatch:` añadido
-al flujo, commit `7d053246`): corrida `push` 37515854486 y corrida manual 37515901956, las dos con `fixture-build` y `fixture-tests` en `success`
-([actions-recovery-r1-r2.json](../CI/actions-recovery-r1-r2.json)). **Clasificación A provisional:** falta un push sin cambio del flujo en una rama con el
-archivo original; lo dará el primer push real a `fx/u1` (el BOOTSTRAP del Principal A). Si ese push no crea corrida: clasificación B (push defectuoso) y
-nueva decisión del Coordinator; R3 sigue sin autorizar. Historial: con el repositorio privado y después público, 0 corridas
-([actions-diagnostic.json](../CI/actions-diagnostic.json), [actions-diagnostic-public.json](../CI/actions-diagnostic-public.json)).
-
-## 2. D — OD-2d: nueva línea base tras la actualización de la app de Codex (pendiente)
-
-La app de Codex se actualizó a las 18:56Z y reescribió `config.toml` (`723A6898…`) y el binario (`3b8f6e33…`): P-01, `codex-cli` en STOP. Paquete en
-[owner-decision-packets.md](../../I-62-prep/owner-decision-packets.md) §OD-2d. Recomendación: revisa tú los valores que te importen y después responde
-`OD-2d = A (línea base 723A68985165BAE40689172F4E573C47FC45D1BA0D19F9192E3120DDD28B18C8; binario 3b8f6e33caa75f232558a3cf76ff9b87bb5ef6dbcf4996372f24e55c78b1b91)`.
-Solo afecta a FX-02 y FX-06; FX-01 y FX-04a siguen.
-
-### Historial: OD-2c, decidida (A, decisiones §48)
-
-Línea base aceptada: `9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E`. `codex-cli` sale del STOP P-01: la sesión revalida la huella y
-el binario antes de cada invocación, y un cambio vuelve a ser P-01 / STOP sin aceptar nada. Paquete en
-[owner-decision-packets.md](../../I-62-prep/owner-decision-packets.md) §OD-2c.
-
-## 3. E — Abrir el Principal A (FX-01; después el arranque, el QH de FX-04a, y FX-02 y FX-06 con la CI) — autorizado (§49), pedido al Owner
-
-El Coordinator autorizó FX-01 y FX-04a sin esperar a Actions (§49). Procedimiento:
-1. En la app de Claude, una **sesión nueva** con directorio `D:\r62-fixture\A`, modelo `claude-opus-5-5`, effort **`high`** (insuficiente a propósito: el
-   requerido de PRINCIPAL_COORDINATION es Long-horizon = `xhigh`).
-2. Primer mensaje (sin hechos de la unidad):
-   `Eres el Principal de la unidad FX-U1 de este repositorio. Sigue AGENTS.md y la orden FX-U1-O1 de docs/automation/decisions/FX-U1.md.`
-3. Cuando A registre su primer preflight (esperado: BELOW_REQUIRED → STOP P-09 de CUSTODY), sube el effort a **`xhigh`** y dile `continúa`.
-4. Tras el segundo preflight (esperado: MATCH), baja el effort a **`medium`** y dile `continúa`; tras el tercero (esperado: BELOW_REQUIRED) vuelve a
-   `xhigh` y dile `continúa` para que publique el BOOTSTRAP.
-5. La decisión G0 la escribe la sesión de supervisión como Coordinator del fixture en `docs/automation/decisions/FX-U1.md`; avísale cuando A haya
-   publicado el BOOTSTRAP.
-
-Los mensajes `continúa` son estímulos del ensayo FX-01, no relevos de un rol: FX-01 no evalúa la autonomía (eso es FX-06).
-
-## 4. FX-04a (después del QH de A)
-
-La sesión de supervisión acredita la terminación de A, calcula el oráculo (`FX-04a/fx04a_real.py oracle`) y publica solo su SHA-256 antes de que B
-empiece; prepara el clon limpio `D:\r62-fixture\B` en el QH. El Owner abre una sesión de la **app de Codex** en `D:\r62-fixture\B` y le pega el
-contenido de `FX-04a/B-prompt.md` con `FX-04a/response.schema.json`. Después, B2 para N11 igual, en `D:\r62-fixture\B2`.
-
-**Antes de abrir B (preparación de la sesión de supervisión; decisión del Coordinator donde se indica):**
-- **QH sin el Q7 de FX-02** (D.3, FX-04a paso 1): tras el QU de A, el Coordinator del fixture emite el contrato de T1 y una orden de QH; A publica QH con
-  `task_intent` = T1 (`Attempt` vigente, FIRST, contrato custodiado, Controller de planificación con binding pendiente), `principal.state` = RELEASED y
-  `window` CLOSED, y termina. Se registra como «hechos más pobres». FX-02 llegará después con A reabierto (tope de 2 sesiones de A, D.3).
-- **Entradas automáticas de B (D.6):** se enumeran con ruta y SHA-256 antes de que B empiece: `~/.codex/AGENTS.md` (hoy 0 bytes), `config.toml` (solo
-  hash), `rules/`, `skills/` y las memorias de Codex (`memories_1.sqlite`, `memories/`). La comprobación de que ninguna lleva hechos de FX-U1 o del
-  fixture es mecánica (búsqueda de identificadores, sin publicar contenido). Si una los lleva: aislamiento UNVERIFIED y decisión antes de abrir B.
-- **Huella (decisión del Coordinator):** abrir B y B2 en directorios nuevos con la app de Codex puede añadir entradas de proyecto a `config.toml` (D.7:
-  `codex-desktop-session` comparte el archivo, UNVERIFIED en F2) y dejaría `codex-cli` en P-01 hasta una nueva línea base exacta. Opciones: aceptar ese
-  riesgo y medir antes y después de B (paquete exacto si cambia), o decidir otra cosa antes de abrir B.
-
-## 5. Límites ya medidos (para decidir, no para ejecutar)
-
-- **FX-04b:** UNSUPPORTED medido (el Worker Codex no puede hacer commit en `workspace-write`; ningún otro adapter con escritura acreditada que B pueda
-  lanzar, porque OD-3 = RECHAZAR). Decisión del Owner sobre la limitación: OV-I62-05 (b).
-- **FX-03:** UNVERIFIED por OD-3 = RECHAZAR; con OD-3 seguiría limitado por el mismo commit del Worker Codex. Limitación: OV-I62-04.
-
-## 6. Acciones de la sesión de supervisión (no del Owner) cuando se abran las fronteras
-
-- **CI:** tras el aviso del Owner, un commit vacío en `ci/smoke` del fixture (`supervisor`), push a `github`, y registro de la corrida. Sin CI heredada
-  entre SHAs.
-- **`codex-cli` (OD-2c = A, §48):** antes de cada invocación, huella = `9002E854…` y binario `37762753…`; si cambian, P-01 y STOP sin aceptar nada. Solo la
-  receta 16.4 (`read-only`): Controller en `D:\r62-fixture\A` (`gpt-6-luna`/`high`, medida); Architects B y C de FX-06 en `D:\r62-fixture\arch`
-  (`gpt-6.1-sol`/`high`, invocación medida en la sonda 2), cada uno con su `thread_id`. Ningún `workspace-write` (crearía una entrada nueva: P-01).
-- **G0 del Coordinator del fixture**, después del BOOTSTRAP de A (16.28; se añade a `docs/automation/decisions/FX-U1.md` del fixture en `fx/u1`):
-
-```text
-I62-DELEGATED-EXECUTION: I62_DELEGATED
-I62-CLASSIFICATION: I62
-I62-PRINCIPAL-BINDING: <BindingId del binding propuesto por A> ACCEPTED
-Claim-Id: fc62f1c7-0000-4000-8000-000000000001
-BootstrapRecordVersion: 1
-```
-
-- **Contrato de T1** (`gate-contract/v2`), después del QU de A: `ProtocolSet` I62, `AuthorityRevision` = commit del BOOTSTRAP de FX-U1, `EXTERNAL` = F_eff
-  `fbe25347`; tarea mínima sobre `Fixture.Lib` (p. ej., una operación nueva con su prueba). El Controller y el Architect usan la línea base de OD-2c.
-- **FX-04a:** al QH de A, terminación de A acreditada por los metadatos de la app (`isRunning`) o atestada por el Owner; `fx04a_real.py oracle` →
-  SHA-256 en la evidencia real antes de crear `D:\r62-fixture\B` (`git clone --no-local` en el QH); `hash` de la respuesta de B antes de entregar el
-  oráculo; `compare`; `n11` para B2.
+El historial de esta tarjeta está en [HISTORY-owner-card-2026-10-06.md](HISTORY-owner-card-2026-10-06.md) (no ejecutar).

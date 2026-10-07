@@ -7,7 +7,8 @@ Uso:        la rellena el Coordinator del fixture (la supervisión) y la añade 
 Neutralidad: el bloque no nombra el escenario, no dice que el objeto tenga un defecto, no anuncia ningún veredicto ni ninguna secuencia de
             disposiciones o correcciones, no trae ningún valor de los archivos de esta línea y no nombra ninguna unidad ni repositorio real (V14 D.6, D.8-1;
             decisiones §54 «Sin atajos»; P-16). Antes del push: prepublish_scan.py sobre el bloque relleno, la RLA, el registro de la medición y el texto
-            del objeto, con los tokens solo de supervisión (README §2.1, P5).
+            del objeto, y el archivo de decisiones completo tal como quedará tras el push (se espera entre los CanonicalInputs del revisor), con los
+            tokens solo de supervisión (README §2.1, P5).
 Marcadores: solo <…>. Lo que no lleva <…> es redacción propuesta, no un valor esperado.
 ```
 
@@ -64,7 +65,8 @@ CodexTransport: <levantamiento de P-01: huella de config.toml <SHA-256> y binari
 | el bloque no contiene ningún token solo de supervisión ni indicio sin disposición (`prepublish_scan.py`, código 0, o 4 con disposición registrada en `R:` prepublish-scan.json) | D.6; §54 «Sin atajos» |
 | `<n>` es el número siguiente a la última orden del archivo; `Authorization` es el `AuthorizationId` del bloque RLA publicado antes o en el mismo commit | 16.28; README §2.1 P5 |
 | el blob del anexo es el que fija `ObjectFamily` de la RLA (X v1: `5d4ea067`, con la salvedad de OQ-23 sobre su cabecera) | §20.5.1; OQ-16; OQ-23 |
-| `-C` es el directorio que el Coordinator decidió en OQ-13 (variante A `D:\r62-fixture\arch` o variante L, el worktree de la unidad) | 16.4; OQ-13 |
+| `-C` es el directorio que el Coordinator decidió en OQ-13 (variante A `D:\r62-fixture\arch` o variante L, el worktree de la unidad `D:\r62-fixture\A6`) | 16.4; OQ-13 |
+| el archivo de decisiones completo, tal como quedará tras el push, también pasa `prepublish_scan.py` (se espera entre los `CanonicalInputs` del revisor) | architect-invocation-contract.md §5; README R-09 |
 | `CodexTransport` es exactamente lo aceptado en OD-2d tras la re-medición | 16.4; decisiones §50, §53 |
 | el paso 8 elige una sola variante; con «termina tu sesión», la supervisión acredita la terminación (`isRunning`) | §9.1; T17 |
 | la redacción del paso 5 no es una regla congelada: si el Coordinator la cambia, revisar el riesgo R-08 del README (fin de turno del Principal) | README §6 R-08; OQ-04 |

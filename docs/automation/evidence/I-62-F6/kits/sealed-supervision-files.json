@@ -4,15 +4,15 @@
       "Lane": "fx02",
       "File": "negatives.md",
       "Location": "D:/r62-fixture/evidence-out/supervision/fx02/negatives.md",
-      "Sha256": "c88f162788db3bcf72d269e7f3925be132c7b74f527b0d19bbd6bbccf9c4071c",
-      "Bytes": 11772
+      "Sha256": "63e84ba3d7f06371e4c44a7c2cf671757ac34d61caf35bf56fed94524507b0e7",
+      "Bytes": 12897
     },
     {
       "Lane": "fx02",
       "File": "supervision-checks.md",
       "Location": "D:/r62-fixture/evidence-out/supervision/fx02/supervision-checks.md",
-      "Sha256": "02a64b85b7672158a8774e2f4b9443f8ed56b4626b6e597258c2f3dc17944e18",
-      "Bytes": 15641
+      "Sha256": "444943584d3d792a8d152377fd62ee07aa8a54de110aeb61ea3fbbf933a28512",
+      "Bytes": 22058
     },
     {
       "Lane": "f7ready",
@@ -22,5 +22,23 @@
       "Bytes": 7108
     }
   ],
-  "Note": "archivos solo de supervisión (resultados esperados de los negativos de FX-02, comprobaciones de Q0/Q7 y valores esperados de OV): fuera del repositorio público hasta que sus corridas terminen; aquí solo su SHA-256"
+  "Note": "archivos solo de supervisión (resultados esperados de los negativos de FX-02, comprobaciones de Q0/Q7 y valores esperados de OV): fuera del repositorio público hasta que sus corridas terminen; aquí solo su SHA-256",
+  "Superseded": [
+    {
+      "Lane": "fx02",
+      "File": "negatives.md",
+      "Sha256": "c88f162788db3bcf72d269e7f3925be132c7b74f527b0d19bbd6bbccf9c4071c",
+      "Bytes": 11772,
+      "ArchivedAt": "D:/r62-fixture/evidence-out/supervision/fx02/history/negatives.c88f1627.md",
+      "SupersededBy": "ronda 2 de la noche (evidencia §77)"
+    },
+    {
+      "Lane": "fx02",
+      "File": "supervision-checks.md",
+      "Sha256": "02a64b85b7672158a8774e2f4b9443f8ed56b4626b6e597258c2f3dc17944e18",
+      "Bytes": 15641,
+      "ArchivedAt": "D:/r62-fixture/evidence-out/supervision/fx02/history/supervision-checks.02a64b85.md",
+      "SupersededBy": "ronda 2 de la noche (evidencia §77)"
+    }
+  ]
 }

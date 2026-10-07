@@ -23,12 +23,14 @@
 |---|---|---|---|
 | `{EVIDENCE_DIR}` | directorio de evidencia del titular nuevo; propuesta: `docs/automation/evidence/FX-U1-agent/takeover/` | PF-EVIDENCE_DIR | a |
 | (bloque aparte) | la autorización de `codex-cli` (huella, binario, celdas medidas, `-C`) **no** va en la orden: se publica después, en un commit propio, con la plantilla «Bloque posterior» del final de este archivo | F-OD-PROBE, F-OD-2D, CD-09, CD-10 | b (transcrito) |
-| `{BINDING_ACCEPTANCE_RULE}` | cómo acepta este Coordinator los bindings del Controller (planificación y verificación) y del Worker, con el texto literal del marcador | CD-03, CD-04, CD-20 (lectura); CD-03-marker (texto) | b + a |
+| `{BINDING_ACCEPTANCE_RULE}` | cómo acepta este Coordinator, antes del Q0, el binding del Controller de planificación, con el texto literal del marcador | CD-03, CD-04, CD-20 (lectura); CD-03-marker (texto) | b + a |
+| `{IN_WINDOW_BINDING_RULE}` | cuándo y cómo se producen, registran y aceptan **dentro de la ventana** el preflight y el binding del Worker y los del Controller de verificación (transitorios en el diario: nunca «publica y espera aquí», que rompería W-2), y qué requisitos tiene el binding de VERIFY | CD-03, CD-04, CD-20, CD-22 | b |
 | `{IN_WINDOW_ACCEPTANCE_RULE}` | quién evalúa A1'-A8', las aceptaciones de bindings y la repetición de `Scope` dentro de la ventana, donde este Coordinator no puede publicar | CD-03 | b |
+| `{IN_WINDOW_STOP_RULE}` | qué hace el titular ante un STOP real o una decisión que falte **dentro de la ventana** (p. ej., declarar el cierre y publicar el Q7 antes de esperar, o esperar con la ventana abierta) y qué STOP lo impiden | CD-23 | b |
 | `{EXEMPTIONS}` | exenciones explícitas y acotadas de acciones incompatibles (p. ej., `dotnet test`) para las invocaciones de solo lectura | CD-07 | a |
 | `{TRANSIENT_AND_CLEAN_TREE}` | área transitoria y regla de árbol limpio en el fixture | CD-02 | b |
 | `{TEST_EVIDENCE_SOURCE}` | fuente de los conteos de pruebas de la CI para `Tests` y `RedPart` | CD-01 | b |
-| `{CLOSURE_CUSTODY_RULE}` | dónde y cuándo se custodian los cierres de insumos y los preflights de fidelidad de las invocaciones de la ventana; `Target` de IMPLEMENT | CD-14 | b |
+| `{CLOSURE_CUSTODY_RULE}` | dónde y cuándo se custodian los cierres de insumos y los preflights de fidelidad de las invocaciones de la ventana; `Target` de IMPLEMENT, de VERIFY y de los controles con invocación (cambio de dos archivos) | CD-14 | b |
 | `{SCOPE_READING}` | lectura de las entradas con `**` del contrato frente a la sintaxis de alcance de 16.5, y regla de commits del Worker que solo tocan evidencia | CD-17 | b |
 | `{PUSH_RULE}` | confirmación de que el Worker publica en `origin` y en `github` dentro de su cesión | CD-16 | a |
 | `{WORKER_RERUN_RULE}` | cómo cuenta una reejecución BLOCKED del Worker frente a su tope | CD-21 | b |
@@ -36,13 +38,19 @@
 | `{CAPS_SCOPES}` | `scope` de `counters.invocations[]` para cada tope (transcripción sin cambio de las cifras) | CD-12 | a |
 | `{REVIEW_PLACEMENT}` | revisión del Architect antes del Q0 (opción A) o después del Q7 (opción B), con su `ReviewLoopAuthorization` y la representación de la referencia AUTHOR | CD-05, CD-19 | b |
 | `{REVIEWER_AUTHORITY}` | si se mantiene: «El Reviewer es un subagente nuevo de tu sesión (`claude-subagent`), distinto del Worker, con una llamada cuya finalización se notifica y tope de 60 min», su autoridad y la regla de su binding; si no, su retirada de esta orden (y de la fila del Reviewer en la tabla de topes) | CD-06, CD-18 | b |
+| `{Q7_TASK_INTENT}` | `task_intent` que lleva el Q7 (`null` o la intención siguiente que decida el Coordinator); tiene que estar aquí antes del Q0 | CD-15 | b |
+| `{CORRECTION_RULE}` | si tras un cierre REWORK se lanza una corrección (Q0 CORRECTION, ventana nueva) y en qué topes cuentan su planificación y su verificación; o con qué disposición termina la tarea | CD-24 | b |
 | `{POST_Q7}` | acción tras el Q7 (QH y terminación, o espera con la custodia) | CD-15 | b |
 | `{AUTONOMY_GAP_RULE}` | si los `continúa` del Owner tras una decisión se registran como AUTONOMY_GAP | CD-13 | b |
 
 - Un marcador sin decisión se **retira** con su paso y su efecto queda registrado (UNVERIFIED con causa); nunca se publica un marcador vacío.
 - La fila del Reviewer de la tabla de topes del bloque se publica solo si `{REVIEWER_AUTHORITY}` lo mantiene (el contrato T1 no tiene REVIEWER; OQ-06).
-  Las cifras de la tabla son las de V14 D.3 sin cambio; cualquier otra lectura (p. ej., qué pasa con el lanzamiento del Architect si no se ejecuta) es
-  del grupo (b).
+  Las cifras de la tabla son las de V14 D.3 sin cambio; cualquier otra lectura (p. ej., qué pasa con el lanzamiento del Architect si no se ejecuta, o
+  en qué tope cuentan la planificación y la verificación de una corrección: CD-24) es del grupo (b).
+- La colocación de N8, N9 y N10 **después del Q7** (punto 15) es propuesta de este staging, pendiente de CD-11 (OQ-11): si la disposición la cambia, el
+  punto 15 se reescribe antes de publicar. El texto publicado no dice qué disposición tiene cada control ni si queda confinada (sería un esperado).
+- Los puntos 4, 14, 20 y 21 (y el párrafo inicial del bloque) remiten a `{IN_WINDOW_STOP_RULE}`: dentro de la ventana este Coordinator no puede publicar nada (W-2), así que ninguna espera
+  dentro de la ventana puede resolverse con una decisión nueva en este archivo.
 
 <<<BEGIN FX-U1-O4>>>
 ## Orden FX-U1-O4 — titular nuevo (T16 → QR ORDINARY) y ventana 1 de la tarea T1
@@ -56,7 +64,7 @@ Contract: docs/automation/decisions/FX-U1-T1.gate-contract.json (rackcad-gate-co
 ```
 
 Eres el titular nuevo de FX-U1. El titular liberado en el QH no vuelve a operar. Toda decisión que necesites está en este archivo; si te falta una,
-detente y espera aquí. No uses la conversación como fuente de hechos ni de decisiones.
+detente y espera aquí (dentro de la ventana, según el punto 14). No uses la conversación como fuente de hechos ni de decisiones.
 
 **Titular nuevo (T16; AUTOMATION_PLAN 16.26 y 16.28)**
 1. **Observación.** Tu `rackcad-preflight/v1` para CUSTODY con la observación del runtime ligada a su instante (`get_session`). Con BELOW_REQUIRED o
@@ -72,14 +80,15 @@ detente y espera aquí. No uses la conversación como fuente de hechos ni de dec
 **Transporte `codex-cli`**
 4. No invoques `codex-cli` hasta que este Coordinator publique aquí, en un commit posterior, el bloque «Autorización de transporte `codex-cli`». Hoy está
    detenido por un cambio de huella (P-01). Con la autorización: antes de **cada** invocación, el SHA-256 de `~/.codex/config.toml` y el SHA-256 del binario
-   iguales a los autorizados; si cambian, STOP P-01 sin aceptar nada nuevo y espera aquí. Solo la receta de 16.4 con `-s read-only`; nunca
-   `workspace-write`.
+   iguales a los autorizados; si cambian, STOP P-01 sin aceptar nada nuevo y espera aquí (dentro de la ventana, según el punto 14). Solo la receta de
+   16.4 con `-s read-only`; nunca `workspace-write`.
 
 **Bindings (16.18-16.21)**
 5. Tras la autorización de transporte: preflight del Controller de planificación (rol EXECUTION_CONTROLLER, acción PLAN) para la celda autorizada y su
    `rackcad-binding/v1` (`Scope` TASK, `TaskId` T1, PENDING). Publícalos en `{EVIDENCE_DIR}` y espera aquí la aceptación. {BINDING_ACCEPTANCE_RULE}
 6. Worker: **subagente de tu sesión** (`claude-subagent`), uno por invocación, con una llamada cuya finalización se notifica y tope de 60 min;
-   ningún subagente sobrevive a su llamada (16.4). Su binding sigue la regla del punto 5. {WORKER_RERUN_RULE}
+   ningún subagente sobrevive a su llamada (16.4). Su preflight y su binding, y los del Controller de verificación (rol EXECUTION_CONTROLLER, acción
+   VERIFY), no siguen el punto 5: {IN_WINDOW_BINDING_RULE} {WORKER_RERUN_RULE}
 
 **Decisiones de este Coordinator para la ventana (todas antes del Q0; dentro de la ventana no se publica ninguna)**
 7. {IN_WINDOW_ACCEPTANCE_RULE}
@@ -94,18 +103,23 @@ detente y espera aquí. No uses la conversación como fuente de hechos ni de dec
     `docs/automation/decisions/FX-U1.md` refrescado al blob de su árbol; el cuerpo del commit lleva el resumen de estado. Push a `origin` y a `github`. La
     ventana solo se abre con `HEAD` = `origin/fx/u1` = ese Q0 (`git ls-remote`).
 14. **Dentro de la ventana**, en el orden de 16.4: planificación (Controller); control nc4 y aceptación A1'-A8' sin cortocircuito; Worker (commit RED y
-    push, commit GREEN y push; cada push a `origin` y a `github`, {PUSH_RULE}); hechos remotos de la CI de los dos commits; verificación (Controller); controles
-    negativos. **Ninguna escritura Git tuya** entre el Q0 y el Q7 (W-2). Cada invocación con su `RunId`, sus comprobaciones de salida, cesión y entrada y
-    su registro encadenado.
+    push, commit GREEN **con el resumen de estado en su cuerpo** y push; cada push a `origin` y a `github`, {PUSH_RULE}); hechos remotos de la CI de los
+    dos commits; verificación (Controller); controles negativos con invocación. **Ninguna escritura Git tuya** entre el Q0 y el Q7 (W-2): la Salida de
+    16.4 antes de la verificación y de cada control se cumple con el GREEN como último commit. Cada invocación con su `RunId`, sus comprobaciones de
+    salida, cesión y entrada y su registro encadenado. Dentro de la ventana este Coordinator no publica nada: ante un STOP o una decisión que falte,
+    {IN_WINDOW_STOP_RULE}
 15. **Controles negativos** (no consumen `attempts`; ruta y registro propios; una sola vez). Los que llevan invocación, solo sobre las entradas de la
-    verificación `EXECUTION_VERIFIED`; nc4 y N8, en la aceptación; N9 y N10, tras la verificación:
+    verificación `EXECUTION_VERIFIED`; nc4, en la aceptación; N8, N9 y N10, después del Q7, sobre copias de los artefactos custodiados, con sus registros
+    en un commit de evidencia posterior:
     - nc1, nc2, nc3 y nc4: los de `docs/automation/agent-execution/README.md` §10;
     - con una invocación del Controller cada uno: N4, N5, N6, N7a y N7b;
     - sin invocación: N8, N9 y N10.
 
     {N_CONTROLS}
 16. **Q7**: cierre de la ventana, cadenas, contadores desde el diario y manifiesto de custodia del diario en `docs/automation/evidence/FX-U1-agent/T1/`;
-    todo `StateRef` refrescado al blob de su árbol. Push a `origin` y a `github`.
+    todo `StateRef` refrescado al blob de su árbol; `task_intent`: {Q7_TASK_INTENT} Push a `origin` y a `github`. Una ventana cuya verificación válida no es
+    `EXECUTION_VERIFIED` también se cierra con su Q7 (16.25: «tras la verificación y los controles, o tras el cierre declarado de la ventana»).
+    Corrección posterior a un cierre REWORK: {CORRECTION_RULE}
 
 **Revisiones fuera de la ventana**
 17. {REVIEW_PLACEMENT}
@@ -128,8 +142,9 @@ detente y espera aquí. No uses la conversación como fuente de hechos ni de dec
 
 **Validación, mensajes y plano**
 20. Antes de cada push de estado, valida el punto (esquema, `StateRef` en el árbol del propio commit, par con el punto anterior; README §17.1, paso 4).
-    Una violación no se publica: STOP y espera aquí.
-21. El Owner solo puede escribirte `continúa`. No le preguntes decisiones: las toma este Coordinator aquí. {AUTONOMY_GAP_RULE}
+    Una violación no se publica: STOP y espera aquí (dentro de la ventana, según el punto 14).
+21. El Owner solo puede escribirte `continúa`. No le preguntes decisiones: las toma este Coordinator aquí, y dentro de la ventana no publica ninguna
+    (punto 14). {AUTONOMY_GAP_RULE}
 22. **Plano (c).** No nombres, no configures y no uses ningún repositorio real (P-16).
 <<<END FX-U1-O4>>>
 

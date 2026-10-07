@@ -37,6 +37,11 @@ porque V14 D.3 (topología A) lo fija así: «Reviewer (`claude-subagent` nuevo)
 - Descriptor: operaciones 1-8 DISPONIBLE; operación 9 (huella) UNVERIFIED (OQ-20). Introspección por la transcripción (RUNTIME_OBSERVED); que el
   subagente aplique un modelo y un effort **solicitados** distintos de los heredados no está medido en el descriptor (el catálogo registra la sonda U-04 con
   el alias `sonnet`).
+- Momento y registro: el preflight y el binding del Worker se producen **dentro de la ventana**, tras la planificación y antes de A1'-A8' (A7' exige el
+  binding del ejecutor aceptado), y son transitorios del diario: V14 F.1 paso 3 («binding W, preflight W, aceptación A1'-A8' de d, nc4», sin escritura);
+  V14 B.8.3 (fila bindings); AP 16.25 («Durable y transitorio»). No pueden seguir el «publica y espera aquí» del punto 5 de la orden (una publicación
+  dentro de la ventana rompe W-2): la orden los rige con `{IN_WINDOW_BINDING_RULE}` (CD-03, CD-04, CD-20, CD-22; README S18b). Un binding del Worker
+  hecho antes del Q0 usaría el effort de partida de la clase y no el de la delegación (routing §8), con riesgo de B3/A7'.
 - Aceptación: la regla de CD-03 (OQ-03).
 
 ### 2.2 Invocación (`rackcad-role-invocation/v1`, `RequestedRole` WORKER, `Action` IMPLEMENT)
@@ -56,6 +61,7 @@ delegación aceptada (AP 16.17), con `ExpectedHandoffPath` sustituido por el `Ru
 | Invariantes | `Calculator.Add` conserva firma y comportamiento; sin paquetes ni dependencias nuevas; P-16 | contrato `Invariants` |
 | Commit RED | el «esqueleto» de la primera delegación: la prueba de `Subtract` (seleccionable con `FullyQualifiedName~Subtract`, al menos 1) y lo mínimo para que **compile y la prueba falle al ejecutarse**. Motivo: `RedPart` de `Tests` exige que las pruebas con `ExpectRed` estén «entre las fallidas» del RED; un RED que no compila no ejecuta ninguna prueba | AP 16.8 («El commit RED es el esqueleto…»); AP 16.9 #10; contrato `RequiredTests` |
 | Commit GREEN | la implementación, sin tocar `RT` ∪ `ChainRedFiles` (en la primera delegación, `RT` = las pruebas cambiadas entre `ChainBaseSha` y `RedSha`): en T1, solo `src/Fixture.Lib/Calculator.cs` | AP 16.8; AP 16.9 #10 |
+| Cuerpo del commit GREEN | lleva el resumen de estado de la unidad (como el cuerpo del Q0). G es el último commit de la ventana: la Salida antes de la verificación y antes de cada control con invocación exige que el último commit lo lleve, y la sesión no puede añadir un commit dentro de la ventana; sin él no hay Salida válida (STOP, o un commit de la sesión que viola W-2 / I-P03) | AP 16.4, orden de commits, paso (4) («commit GREEN y push con el resumen de estado»); AP 16.4 paso 1 (Salida: «el último commit lleva en su cuerpo el resumen de estado (si ya se cumple, no hace falta commit nuevo)»); RAE §3.1 (`git log -1 --format=%B`); AP 16.25 W-2; WORKFLOW §3 («resumen del estado en el cuerpo del commit») |
 | Commits de solo evidencia | ninguno: un commit que solo toca `docs/automation/` se lee como commit de la sesión | AP 16.1; V14 B.8.6; validador I-P03 (OQ-14) |
 | Publicación | push de RED y de GREEN a `origin` **y** a `github` (la CI corre en `github`; `Identity` mira `origin`); `Pushed` = true | AP 16.4 paso (4); V14 D.2; OQ-13 |
 | Trailer | cada commit `BaseSha..CurrentSha` con el `Co-Authored-By` que declare la delegación, coherente con el proveedor y el modelo efectivos del binding | AP 16.9 #11; AP 16.22 |
@@ -79,7 +85,8 @@ autorizada (`CorrectionsAuthorized` true), en una ventana nueva cuyo Q0 es CORRE
 Worker es BLOCKED/WORK y, por AP 16.8, su reejecución (≤ 2 por fase) no toca `attempts` (AP 16.27; RAE §9). Si esa reejecución BLOCKED cabe en el tope de
 2 de D.3, consume el hueco de la corrección o no está permitida **no está escrito**: OQ-26 (CD-21). Sin disposición, el P-07 de esa reejecución no es
 comprobable y `{WORKER_RERUN_RULE}` se retira de la orden con su efecto registrado (README §4, punto 6); esto no es una regla nueva, sino la consecuencia
-de no tener tope determinable.
+de no tener tope determinable. El segundo lanzamiento por corrección arrastra además una planificación y una verificación nuevas del Controller (la
+corrección vuelve al paso (1) de 16.4; README S30), cuyo tope en D.3 tampoco está escrito: OQ-30 (CD-24, `{CORRECTION_RULE}`).
 
 ## 3. Reviewer (`claude-subagent` nuevo; una llamada notificada, tope de 60 min)
 

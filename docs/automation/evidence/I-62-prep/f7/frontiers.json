@@ -8,7 +8,7 @@
     "origin_main_local_no_fetch": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
     "mc_i62": "6f0187cb30852971b49153c2763c8ba6caeaa64d",
     "surfaces_changed_since_mc_i62": 0,
-    "c20b_dry_check": "EQUAL (31 archivos, 70 entradas); measured/c20b-dryrun-e9473425.json",
+    "c20b_dry_check": "EQUAL (MV-2..MV-6): python docs/automation/evidence/I-62-F4/compat/clause_map.py check bb0d5522 e9473425 <out.json> (solo lectura; repetido el 2026-10-07); 31 archivos; entradas 15 MODIFIED / 0 REMOVED / 53 ADDED / 2 ENTRY; MapBlob 4d49d3e1; salida measured/c20b-dryrun-e9473425.json (SHA-256 85c01bc8…)",
     "normative_trailer_commits_in_branch": 0,
     "adr_0048": "propuesto, blob e1bd8d91f10cb4c86eaf7753f9ef2531ae62498e"
   },
@@ -26,7 +26,7 @@
       "id": "F-02",
       "title": "FX-04a: lanzamiento de B2 y comparación con el contrato v2",
       "kind": "HUMAN_LAUNCH_REQUIRED",
-      "blocks": ["F-01", "F-03 (§53: ningún OD-2d-PROBE hasta clasificar FX-04a con B2)"],
+      "blocks": ["F-01", "F-03 (§53: ningún OD-2d-PROBE hasta clasificar FX-04a con B2)", "F-04 (kits/FX-02 F-UP-FX04A: FX-02 no escribe en fx/u1 ni abre A2 antes del cierre de FX-04a)"],
       "owner_action": "abrir B2 en D:\\r62-fixture\\B2 (cabed547, claude-desktop-session, claude-opus-5-5, xhigh) con el texto inicial neutro B2-kickoff.md",
       "coordinator_action": "clasificar FX-04a/C-25a tras la comparación mecánica (sin tercer oráculo; §53)",
       "evidence": "docs/automation/evidence/I-62-F6/FX-04a/R20261007T061300Z-fx04a-b2/ (oracle-v2-published.json: 5e7a78d3…; prelaunch-B2.json; B2-kickoff.md 233b0582…)"
@@ -35,7 +35,8 @@
       "id": "F-03",
       "title": "OD-2d y OD-2d-PROBE sobre la instalación vigente de Codex",
       "kind": "OWNER",
-      "blocks": ["F-05", "F-06", "OV-I62-03", "OV-I62-06"],
+      "blocks": ["F-04", "F-05", "F-06", "F-15", "OV-I62-03", "OV-I62-06"],
+      "requires": ["F-02 (clasificación de FX-04a con B2 antes de todo OD-2d-PROBE; decisiones §53)"],
       "state": "codex-cli en P-01/STOP; config.toml 9EA26634…; binario 97c57e4e…; app 26.1002.6548.0; celdas del Controller y del Architect obsoletas tras la actualización",
       "owner_action": "secuencia de §50-§53: (1) tras clasificar FX-04a con B2, autorizar un OD-2d-PROBE nuevo contra la instalación vigente (§52); (2) sonda con huella de config.toml, binario y versión de la app antes y después de cada operación (§51); (3) decidir el paquete OD-2d con huella e identidad de binario exactas (§51); el paquete actual de owner-decision-packets.md §OD-2d vigente es solo pasivo (NotMeasured: versión de la CLI, autenticación, modelo, effort, sandbox); opción operativa de pausar actualizaciones de la app",
       "coordinator_action": "tras OD-2d: celdas del Controller y del Architect re-medidas con ese binario antes de FX-02 y FX-06 (§50)",
@@ -43,27 +44,30 @@
     },
     {
       "id": "F-04",
-      "title": "Principal nuevo de FX-U1 para FX-02/FX-06",
+      "title": "A2: Principal nuevo de FX-U1 para FX-02",
       "kind": "HUMAN_LAUNCH_REQUIRED + COORDINATOR",
-      "blocks": ["F-05", "F-06"],
-      "owner_action": "abrir la sesión (carpeta limpia, sin worktree, claude-opus-5-5, xhigh)",
+      "blocks": ["F-05"],
+      "requires": ["F-02", "F-03"],
+      "owner_action": "abrir A2 en D:\\r62-fixture\\A2 (carpeta limpia, sin worktree, claude-opus-5-5, xhigh) con kits/FX-02/launch-card-A2.md; el modo de permisos lo elige el Owner y la supervisión lo registra",
       "coordinator_action": "designación T16 con «I62-PRINCIPAL-BINDING: <BindingId> ACCEPTED» y Claim-Id fc62f1c7-0000-4000-8000-000000000001 tras su preflight CUSTODY y su propuesta de binding; después QR ORDINARY del Principal",
-      "open_question": "Q10 (cómputo de R en el tope de sesiones de Principal de la ronda A)"
+      "cap": "ronda A de V14 D.3 (Principal A: 1 sesión, +1 reapertura, 2 sesiones); si R cuenta en ese tope: Q10",
+      "open_question": "Q10 (cómputo de R en el tope de sesiones de Principal de la ronda A; = CD-08 / OQ-07 del kit de FX-02)"
     },
     {
       "id": "F-05",
-      "title": "FX-02 (topología A) hasta VERIFIED y Q7 con CI del fixture",
+      "title": "FX-02 (topología A) hasta VERIFIED, Q7 con CI del fixture, y QH (T17) de A2 con su terminación acreditada (FX06-F04)",
       "kind": "EXECUTION",
-      "blocks": ["F-01"],
+      "blocks": ["F-01", "F-06", "F-15"],
       "requires": ["F-03", "F-04"],
-      "frozen_basis": "D.2 (Ci de los dos jobs del fixture), D.3 topología A, D.4 (FX-02 PASS obligatorio para cerrar F6)"
+      "frozen_basis": "D.2 (Ci de los dos jobs del fixture), D.3 topología A, D.4 (FX-02 PASS obligatorio para cerrar F6)",
+      "handoff_basis": "último paso de FX-02 que necesita FX-06: FX06-F04 de kits/FX-06/staging/frontiers.json («QH y terminación acreditada del titular») y P3 de kits/FX-06/staging/README.md §2.1 («después QH (T17) del titular de FX-02 y su terminación acreditada por la supervisión (`isRunning`)»)"
     },
     {
       "id": "F-06",
       "title": "FX-06 (autonomía real) o decisión del Owner sobre su limitación",
       "kind": "EXECUTION or OWNER",
       "blocks": ["F-01 si FAIL", "C-39, C-32 (F6), C-37 (F6), C-42 (7, 8): Q9"],
-      "requires": ["F-03", "F-04", "RLA del Coordinator del fixture", "celda del Architect re-medida con el binario vigente", "CI del fixture"]
+      "requires": ["F-03", "F-05", "F-15", "RLA del Coordinator del fixture", "celda del Architect re-medida con el binario vigente", "CI del fixture"]
     },
     {
       "id": "F-07",
@@ -83,14 +87,14 @@
     },
     {
       "id": "F-09",
-      "title": "Disposiciones Q1, Q2 y Q15 (cierre y mapa frente a MC_I62; momento del Estado de ADR-0048; commit único con el trailer)",
+      "title": "Disposiciones Q1, Q2, Q15 y Q20 (cierre y mapa frente a MC_I62; momento del Estado de ADR-0048; commit único con el trailer; ubicación previa al push de la clasificación de la C-20b del merge local, que solo bloquea la integración)",
       "kind": "COORDINATOR",
       "blocks": ["READY-01 (si exigen A-n)", "READY-02", "FINAL_CANDIDATE_SHA", "cierre documental", "integración"],
       "fact": "ningún commit de la rama ni de origin/main lleva Agent-Protocol-Normative: I-62 (MEASURED); closure-plan.md lo daba por existente"
     },
     {
       "id": "F-10",
-      "title": "Preparación de la OV sobre el Candidato: Q4 (con la sesión compartida de OV-I62-01/03), Q5, Q6, Q16 y Q17",
+      "title": "Preparación de la OV sobre el Candidato: Q4 (con la sesión compartida de OV-I62-01/03), Q5, Q6, Q16, Q17 y Q19; CD-05 y OQ-25 del kit de FX-02 (compacto de OV-I62-03); aplicabilidad del checklist de la guía e identidad del DLL NOT_APPLICABLE",
       "kind": "COORDINATOR + OWNER",
       "blocks": ["READY-08", "OV-I62-01..06"],
       "fact": "la resiembra de D.5 en el main actual del fixture duplicaría el trailer de prueba; OD-7 no autoriza otro repositorio"
@@ -117,11 +121,22 @@
     },
     {
       "id": "F-14",
-      "title": "Identidad del Freeze en READY-09 tras rebases (b64a3b64 → fb49fceb)",
+      "title": "Identidad del Freeze en READY-09 tras rebases (b64a3b64 → fb49fceb) y conjunto de trailers que compara",
       "kind": "COORDINATOR",
       "blocks": ["READY-09"],
-      "open_question": "Q12"
+      "fact": "git interpret-trailers --parse sobre fb49fceb y b64a3b64: solo Co-Authored-By; Initiative, Branch, Claim-Id, Base y Workflow son líneas del cuerpo (MEASURED 2026-10-07)",
+      "open_question": "Q12, Q18"
+    },
+    {
+      "id": "F-15",
+      "title": "Principal de FX-06: sesión aparte en D:\\r62-fixture\\A6",
+      "kind": "HUMAN_LAUNCH_REQUIRED + COORDINATOR",
+      "blocks": ["F-06"],
+      "requires": ["F-03", "F-05", "precondiciones de FX06-F04 comprobadas por la supervisión (kits/FX-06/staging/frontiers.json)", "P0-P6 de kits/FX-06/staging/README.md §2.1, incluido el clon limpio de P6 en D:\\r62-fixture\\A6"],
+      "owner_action": "abrir la sesión del Principal de FX-06 en D:\\r62-fixture\\A6 (claude-desktop-session, claude-opus-5-5, xhigh) con el mensaje inicial neutro del kit; el modo de permisos lo elige el Owner y la supervisión lo registra; toda aprobación humana entre los pasos 1 y 7 de D.8 se registra como candidato OWNER_CLICK_IN_LOOP / AUTONOMY_GAP",
+      "coordinator_action": "designación T16 propia del Principal de FX-06 y aceptación de su binding (P8 del kit de FX-06)",
+      "cap": "V14 D.8: Principal A 1 sesión, +1 reapertura, tope 2 (kits/FX-06/staging/budget-accounting.md §5); no comparte el tope de A2"
     }
   ],
-  "open_questions_ref": "closure-integration-checklist.md §10 (Q1..Q17)"
+  "open_questions_ref": "closure-integration-checklist.md §10 (Q1..Q20)"
 }

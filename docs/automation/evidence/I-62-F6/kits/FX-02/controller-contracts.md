@@ -3,7 +3,7 @@
 > **Preparación; solo supervisión.** Describe lo que A2 debe construir y lo que el Controller debe devolver, con los campos de los esquemas del
 > conjunto I62 (copias byte a byte en el fixture). No contiene valores esperados de ningún resultado. Bloqueado por **F-OD-PROBE** y **F-OD-2D** (no hay
 > invocación de `codex-cli` posible antes), por F-UP-FX04A (ninguna escritura de FX-02 en el origen con FX-04a abierta) y por CD-03, CD-04, CD-07,
-> CD-09, CD-10, CD-14, CD-19 y CD-20 (`frontiers.json`; salvo CD-07, todas son disposiciones del Coordinator de I-62, grupo b).
+> CD-09, CD-10, CD-14, CD-19, CD-20, CD-22 y CD-23 (`frontiers.json`; salvo CD-07, todas son disposiciones del Coordinator de I-62, grupo b).
 
 Autoridades: AP 16.4 (receta y relevo), 16.5/16.22 (A1'-A8'), 16.9/16.22 (14 comprobaciones), 16.18-16.21 (preflight, adapters, binding,
 independencia), 16.23-16.24 (invocación de rol, cierre, fidelidad); V14 B.7, B.9; RAE §3, §5, §8, §10, §13-§15; routing §1, §3, §5, §8, §9; descriptor
@@ -16,10 +16,15 @@ independencia), 16.23-16.24 (invocación de rol, cierre, fidelidad); V14 B.7, B.
 | Invocación | `Action` | `OutputContract` (AP 16.23) | `Target` | `Phase` del registro | Cuenta en D.3 |
 |---|---|---|---|---|---|
 | planificación | PLAN | `rackcad-delegation/v2` | `null` (solo PLAN admite `null`) | PLANNING | 1 de 11 |
-| verificación | VERIFY | `rackcad-controller-verification/v2` | `{commit: G, path, blob}` (V14 B.9; OQ-06 sobre la ruta única) | VERIFICATION | 1 de 11 |
-| nc1, nc2, nc3, N4, N5, N6, N7a, N7b | VERIFY (mismo prompt, salvo la ruta de entrada y el `RunId`; RAE §10) | `rackcad-controller-verification/v2` | el de la verificación real | CONTROL | 8 de 11 |
+| verificación | VERIFY | `rackcad-controller-verification/v2` | `{commit: G, path, blob}` (V14 B.9; qué ruta, con un cambio de dos archivos: OQ-31, en CD-14 / `{CLOSURE_CUSTODY_RULE}`) | VERIFICATION | 1 de 11 |
+| nc1, nc2, nc3, N4, N5, N6, N7a, N7b | VERIFY (mismo prompt, salvo la ruta de entrada y el `RunId`; RAE §10) | `rackcad-controller-verification/v2` | el de la verificación real (OQ-31) | CONTROL | 8 de 11 |
 
 PLAN y VERIFY no son intercambiables: PLAN con `controller-verification/v2` o VERIFY con `delegation/v2` es INVALID (P-19; RAE §16, casos g-h).
+
+**Binding de la verificación.** VERIFY usa el binding del Controller de verificación (perfil CONTROLLER_VERIFICATION), nuevo y transitorio dentro de
+la ventana (V14 B.8.3, fila bindings; README S21b), no el de planificación. El contrato T1 solo tiene la entrada PLAN del rol (G1): qué requisitos e
+independencia se le exigen es OQ-28 (CD-22); cuándo y cómo se produce y se acepta, `{IN_WINDOW_BINDING_RULE}` de la orden. Los controles con
+invocación los ejecuta «el Controller Codex real con `CONTROLLER_VERIFICATION`» (RAE §10).
 
 ## 2. Lo que recibe cada invocación
 
@@ -32,7 +37,7 @@ PLAN y VERIFY no son intercambiables: PLAN con `controller-verification/v2` o VE
 | `LogicalReviewRequestId`, `AttemptSeq` | `null` (no aplica fuera de un bucle de revisión) |
 | `UnitId`, `Gate`, `TaskId`, `ProtocolSet` | `FX-U1`, `FX-U1-T1`, `T1`, `rackcad-protocol/I62` |
 | `RequestedRole`, `Action` | EXECUTION_CONTROLLER; PLAN o VERIFY |
-| `Target` | PLAN: `null`; VERIFY: `{commit, path, blob}` exactos |
+| `Target` | PLAN: `null`; VERIFY: `{commit, path, blob}` exactos (ruta con un cambio de dos archivos: OQ-31) |
 | `AuthorityRevision` | la del contrato: `1746b404e57d69170ecfc084fd24fa3e699916d7` |
 | `CanonicalInputs[]` | `{Path, Blob}` en la `AuthorityRevision` (V14 B.9): contrato, archivo de decisiones, estado y lo que la acción necesita |
 | `AllowedTransitiveInputs[]` | `{Path, Blob, RequiredBy {Path, Section, Blob}}` del cierre (§2.2) |
@@ -151,7 +156,7 @@ CONTROLLER_*; `gpt-6-astra` no elegible (créditos/API). Sus mediciones con el b
 
 | Momento | Qué | Si falla |
 |---|---|---|
-| Salida | `HEAD` = `origin/fx/u1` por `git ls-remote`; el último commit lleva el resumen de estado; árbol limpio y ninguna operación Git en curso; `git fetch` y `origin/main` registrado; procesos (desde PowerShell, no desde Git Bash: RAE §3.2); una sola delegación abierta (`DS`); SHA-256 de `~/.codex/config.toml` y lista ordenada de nombres de secciones y claves (sin valores) | árbol sucio u operación en curso: no hay Salida (OQ-02); `DS` UNKNOWN: STOP |
+| Salida | `HEAD` = `origin/fx/u1` por `git ls-remote`; el último commit lleva el resumen de estado (antes de la planificación, el Q0; antes de la verificación y de cada control, el GREEN G, cuyo cuerpo debe llevarlo: `worker-reviewer-contracts.md` §2.3); árbol limpio y ninguna operación Git en curso; `git fetch` y `origin/main` registrado; procesos (desde PowerShell, no desde Git Bash: RAE §3.2); una sola delegación abierta (`DS`); SHA-256 de `~/.codex/config.toml` y lista ordenada de nombres de secciones y claves (sin valores) | árbol sucio u operación en curso: no hay Salida (OQ-02); `DS` UNKNOWN: STOP |
 | Salida | huella = la autorizada **y** SHA-256 del binario = el autorizado (y ruta = la autorizada) | P-01: STOP sin aceptar nada; ninguna invocación de Codex hasta la decisión del Owner |
 | Salida | P-07: `launched + uncertain + 1` ≤ tope | no se lanza |
 | Cesión | A2 no lee, no escribe ni ejecuta nada sobre el worktree; `StartUtc`/`EndUtc` | P-08: salida inválida |
@@ -174,6 +179,10 @@ CONTROLLER_*; `gpt-6-astra` no elegible (créditos/API). Sus mediciones con el b
 | P-19 | salida de rol inválida o incompleta (AP 16.23) | no avanza; reejecución de transporte dentro del tope |
 | P-22 / P-24 / P-25 | lectura fuera del cierre; fidelidad no acreditada antes; degradación observada después (AP 16.24) | según AP 16.24 |
 | S-12 | el Controller pierde el contexto o no puede verificar la revisión de autoridad (AP 16.11) | STOP, `analysis.md`, decisión del Coordinator |
+
+Todas estas invocaciones (salvo el Architect, §7) ocurren dentro de la ventana, donde el Coordinator del fixture no puede publicar la decisión que un
+STOP exige (W-2; para A2, una escritura ajena sería T10(c)). Qué hace A2 ante un STOP dentro de la ventana (p. ej., cierre declarado y Q7 antes de
+esperar) no está escrito: OQ-29 (CD-23, `{IN_WINDOW_STOP_RULE}`).
 
 ## 7. Architect (`codex-cli`, invocación propia): revisión del contrato de T1
 

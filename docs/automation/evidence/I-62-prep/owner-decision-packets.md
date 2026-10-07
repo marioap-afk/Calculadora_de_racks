@@ -203,7 +203,16 @@ Medición pasiva ([result.json](../I-62-F6/OD-2/R20261007T061915Z-od2d-night-pas
 - **Recomendación:** autorizar una medición controlada de esta instalación y aceptar la huella exacta solo si no cambia durante ella. La app se ha
   actualizado sola dos veces en unas 9 horas; si el Owner quiere evitar más P-01 durante los pilotos, puede pausar las actualizaciones de la app (decisión
   suya; la sesión no toca esa configuración).
-- **Aprobar (una línea):** `OD-2d = A (línea base 9EA26634078B314A72A815B37CDD17657D7D0406E4911FC4CC4FEC42845153C3; binario 97c57e4eb64257bcd7a470757950886f2c59eec4aa8537908979c6475d41cc08; efectiva solo tras OD-2d-PROBE —--version, login status y ≤ 2 sondas read-only en D:\r62-fixture\A y D:\r62-fixture\arch— con la misma huella y el mismo binario antes y después de cada operación)`
+- **Secuencia (corrección de la ronda 2, decisiones §53 y §54):** dos actos separados y en este orden; ninguno se pide antes de que el Coordinator
+  clasifique FX-04a con B2.
+  1. **OD-2d-PROBE** (en la ronda de disposiciones del Coordinator, tarjeta de la mañana, acción 2):
+     `OD-2d-PROBE = A (--version, login status y ≤ 2 sondas read-only en <directorios que fije la disposición; por defecto D:\r62-fixture\A y D:\r62-fixture\arch>; huella, binario, versión de la app y comparación por clave antes y después de cada operación; sin workspace-write ni cambios de config.toml, trust_level o sandbox)`.
+     El tope de sondas (FX-06 OQ-21, FX-02 OQ-08) y la medición `codex sandbox` (P1b, FX-06 OQ-22) se deciden en la misma ronda.
+  2. **OD-2d** (tarjeta, acción 3), sobre el paquete que la supervisión publique tras la medición:
+     `OD-2d = A (línea base <huella medida>; binario <SHA-256 medido>)`. Si la medición no cambia nada, los valores son los de esta tabla (`9EA26634…`,
+     `97c57e4e…`).
+- ~~Aprobar (una línea, condicionada): `OD-2d = A (línea base 9EA26634…; binario 97c57e4e…; efectiva solo tras OD-2d-PROBE …)`~~ **[retirada en la ronda
+  2: autorizaba la sonda y aceptaba el resultado de antemano]**
 - **Rechazar:** `OD-2d = RECHAZAR` — FX-02 y FX-06 siguen UNVERIFIED.
 
 ## OD-2d — Línea base exacta de `codex-cli` tras la actualización de la app de Codex (2026-10-07; OBSOLETA antes de decidirse: segunda actualización de la app)
@@ -219,7 +228,7 @@ Medición pasiva ([result.json](../I-62-F6/OD-2/R20261007T061915Z-od2d-night-pas
 > **`3b8f6e33caa75f232558a3cf76ff9b87bb5ef6dbcf4996372f24e55c78b1b91`**, `codex-cli 0.160.1`; `Logged in using ChatGPT`; app `26.930.7945.0`; sondas con
 > `gpt-6-luna`/`high` y `gpt-6.1-sol`/`high`, `read-only`, sin aviso de límite. Lo que sigue sin poder probarse sin valores: qué valores cambió la
 > actualización respecto de `9002E854…`. **Recomendación: ACEPTAR esa huella y ese binario exactos**; el Owner puede revisar antes los valores que quiera en
-> su archivo. Respuesta: `OD-2d = A (línea base 723A68985165BAE40689172F4E573C47FC45D1BA0D19F9192E3120DDD28B18C8; binario 3b8f6e33caa75f232558a3cf76ff9b87bb5ef6dbcf4996372f24e55c78b1b91)`.
+> su archivo. Respuesta: ~~`OD-2d = A (línea base 723A6898…; binario 3b8f6e33…)`~~ **[retirada: obsoleta]**.
 
 > **Disposición del Coordinator (§50):** no se pide OD-2d hasta medir de forma controlada el binario y el runtime nuevos. Medición pasiva hecha
 > ([result.json](../I-62-F6/OD-2/R20261006T200612Z-od2d-passive/result.json)): huella estable desde las 19:18Z, app `26.930.7945.0`, binario `3b8f6e33…`.
@@ -249,13 +258,13 @@ ya no existe. **STOP del transporte `codex-cli`**; FX-01 y FX-04a no lo usan y s
 
 - **Recomendación: B y después A.** La estructura no cambia y el cambio coincide con una actualización de la app, pero no se puede probar, sin valores, que
   solo cambiaran valores ligados a ella. FX-02 y FX-06 necesitan `codex-cli`; FX-01 y FX-04a no.
-- **Aprobar:** `OD-2d = A (línea base 723A68985165BAE40689172F4E573C47FC45D1BA0D19F9192E3120DDD28B18C8; binario 3b8f6e33caa75f232558a3cf76ff9b87bb5ef6dbcf4996372f24e55c78b1b91)`
+- **Aprobar:** ~~`OD-2d = A (línea base 723A6898…; binario 3b8f6e33…)`~~ **[retirada: obsoleta]**
 - **Rechazar:** `OD-2d = RECHAZAR`
 
 **OD-2d-PROBE (autorización pedida; necesaria para completar la medición del §50):** `codex --version` y `codex login status` del binario nuevo, y
 ≤ 2 sondas de solo lectura (en `D:\r62-fixture\A` con la celda del Controller y en `D:\r62-fixture\arch` con la del Architect, que así se vuelve a medir), con la huella y
 la comparación por clave antes y después de cada paso. No acepta ninguna huella ni permite editar `config.toml`, `trust_level`, `windows.sandbox` o
-credenciales, ni empezar FX-02 o FX-06. Línea: `OD-2d-PROBE = A (--version, login status y ≤ 2 sondas read-only en D:\r62-fixture\A y D:\r62-fixture\arch)`
+credenciales, ni empezar FX-02 o FX-06. Línea: ~~`OD-2d-PROBE = A (…)`~~ **[concedida y ejecutada sobre el binario `3b8f6e33…` (§51, evidencia §70); no reutilizable]**
 
 ## OD-3 — hecho nuevo de OD-4 (2026-10-06T07:24Z; OD-3 sigue RECHAZADA)
 

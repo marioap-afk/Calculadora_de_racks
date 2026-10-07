@@ -2,7 +2,8 @@
 
 ```text
 Autoridades: V14 §20.4-§20.6, §20.5.1, §20.5.2, §20.3.1-§20.3.3, B.8.8 (I-S18, I-P13), §9.1, §9.2; A-1 D1-1..D1-15, D2-12 (D2-1..D2-9 solo si hay
-             un rebase); AUTOMATION_PLAN 16.29; README §18; secuencia F.8 de F4 (tests/RackCad.Tests/I62Fixtures/OrchestrationSamples.cs) como forma.
+             un rebase; D2-6 (2) da el mismo destino que el caso B1 tras una reconciliación); AUTOMATION_PLAN 16.29; README §18; secuencia F.8 de F4
+             (tests/RackCad.Tests/I62Fixtures/OrchestrationSamples.cs) como forma.
 Uso:         la supervisión compara cada par de puntos de la corrida real con esta tabla y con el validador de producción (run_validator.ps1). Es una
              expectativa de forma; no fija el contenido de los resultados de B o C (eso es del oráculo, que esta línea no conoce).
 Notación:    r0 = último punto previo a la ventana (el QR del titular de FX-06); r1, r2… = puntos sucesivos (+1 exacto, I-P01); todos QU ORDINARY
@@ -58,7 +59,7 @@ COORDINATOR}; `NextAction` única (P-17).
 | Caso | Último estado durable del intento | Evidencia del invocador (op. 7 de `codex-cli`, ligada al `RunId`) | Destino | Cláusulas |
 |---|---|---|---|---|
 | A | INVOCATION_PLANNED o BUDGET_RESERVED | — | se reanuda sin consumir otro lanzamiento; antes de LAUNCHING puede replanificarse (`InvocationId` nuevo) dentro de la misma reserva | §20.6 caso A |
-| B1 | LAUNCHING | no hay ningún proceso del `RunId` (línea de órdenes con `-C <directorio de la receta, OQ-13>` y el directorio del `RunId`), ni salida `-o`, ni registro de sesión nuevo con ese `cwd` en el intervalo | con la vigencia abierta: → BUDGET_RESERVED con `not_started_evidence` custodiada; sin nuevo consumo | §20.6 caso B (1); B.8.8 `not_started_evidence` |
+| B1 | LAUNCHING | no hay ningún proceso del `RunId` (línea de órdenes con `-C <directorio de la receta, OQ-13>` y el directorio del `RunId`), ni salida `-o`, ni registro de sesión nuevo con ese `cwd` en el intervalo | con la vigencia abierta: → BUDGET_RESERVED con `not_started_evidence` custodiada y una **invocación nueva** (`InvocationId` nuevo) reconstruida según 16.29; la invocación anterior queda custodiada como intención histórica; mismos `reserved_at` y `BudgetSnapshot`; sin nuevo consumo; el LAUNCHING siguiente lleva un `RunId` nuevo | §20.6 caso B (1) y fila `RunId` («en cada lanzamiento»); B.8.8 `not_started_evidence` y `…attempts.invocation` («inmutable desde LAUNCHING»); 16.29 «Intentos» («no arrancó, con la vigencia abierta → BUDGET_RESERVED con una invocación nueva reconstruida sobre las imágenes, sin consumir otro lanzamiento»; «Un intento en LAUNCHING o posterior nunca cambia su invocación en sitio»); README §18.4 («la invocación anterior custodiada como histórica»); A-1 D2-6 (2) (el mismo destino tras una reconciliación) |
 | B2 | LAUNCHING o LAUNCHED | proceso terminado y salida accesible | → RESULT_RECEIVED | §20.6 caso B (2) |
 | B3 | LAUNCHING o LAUNCHED | terminado sin salida | → RESULT_RECEIVED con salida ABSENT | §20.6 caso B (3) |
 | B4 | LAUNCHING o LAUNCHED | sigue vivo | esperar, u op. 6 (cancelar) dentro del tope de 600 s | §20.6 caso B (4); 16.4 |
@@ -89,6 +90,7 @@ Toda acción nueva tras el fin exige una autorización nueva (COORDINATOR_DECISI
 | antes de cada LAUNCHING | ningún proceso de la lista cerrada con `-C <directorio de la receta, OQ-13>` vivo; huella = OD-2d; binario aceptado | 16.4 (Salida, Procesos) | STOP (P-02 o P-01) |
 | tras cada corrida, antes de RESULT_RECEIVED | proceso lanzado y su árbol muertos (PID + `CreationDate`); Entry de 16.4; el directorio de la receta con el mismo HEAD y limpio | adapter `codex-cli` op. 7; §9.1 | sin terminación acreditada: caso B5 (LAUNCH_UNCERTAIN) |
 | antes de actualizar `arch` para C (solo variante A) | B terminado y su salida custodiada (RESULT_RECEIVED durable) | §20.6; cesión de 16.4 | no se toca `arch` |
+| tras un caso B1 (LAUNCHING → BUDGET_RESERVED) | el intento lleva un `InvocationId` distinto del de la invocación custodiada en LAUNCHING, que sigue custodiada como histórica, y el LAUNCHING siguiente un `RunId` nuevo | 16.29 «Intentos»; README §18.4; §20.6 (`RunId`) | la misma invocación reutilizada o cambiada en sitio: violación de 16.29 («nunca cambia su invocación en sitio») |
 | tras el paso 8 (si la sesión termina) | `isRunning` = false observado por la supervisión, sin actividad posterior al último punto | §9.1 (TERMINATION_ACCREDITED de una sesión de Principal); adapter `claude-desktop-session` op. 7 | sin acreditación: NO_OBSERVATION (no autoriza tomar la custodia) |
 
 ## 6. Rebase durante el bucle (solo si `main` del fixture avanza)

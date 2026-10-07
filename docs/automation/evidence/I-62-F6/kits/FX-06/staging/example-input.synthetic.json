@@ -1,12 +1,18 @@
 {
- "Schema": "fx06-transport-audit-input/v2",
+ "Schema": "fx06-transport-audit-input/v3",
  "Unit": "SYN-U9",
  "SupervisionOnlyTokens": [
   "SYNTHETIC-ORACLE-TOKEN-0001"
  ],
  "Window": {
   "KickoffEventSeq": 3,
-  "Step7RecordVersion": 18
+  "Step7RecordVersion": 18,
+  "PrincipalSession": "SYN-PRINCIPAL",
+  "KickoffTemplateSha256": [],
+  "Step1Commit": {
+   "Commit": "9999999999999999999999999999999999999999",
+   "PushedUtc": "2030-01-01T10:00:00Z"
+  }
  },
  "Points": [
   {
@@ -100,6 +106,50 @@
    "Issuer": "COORDINATOR"
   }
  ],
+ "BranchCommits": [
+  {
+   "Commit": "8888888888888888888888888888888888888888",
+   "Ref": "refs/heads/fx/u1",
+   "PushedUtc": "2030-01-01T09:00:00Z",
+   "AuthorRole": "COORDINATOR"
+  },
+  {
+   "Commit": "0000000000000000000000000000000000000000",
+   "Ref": "refs/heads/fx/u1",
+   "PushedUtc": "2030-01-01T09:20:00Z",
+   "AuthorRole": "PRINCIPAL"
+  },
+  {
+   "Commit": "9999999999999999999999999999999999999999",
+   "Ref": "refs/heads/fx/u1",
+   "PushedUtc": "2030-01-01T10:00:00Z",
+   "AuthorRole": "PRINCIPAL"
+  },
+  {
+   "Commit": "1111111111111111111111111111111111111111",
+   "Ref": "refs/heads/fx/u1",
+   "PushedUtc": "2030-01-01T10:05:00Z",
+   "AuthorRole": "PRINCIPAL"
+  },
+  {
+   "Commit": "2222222222222222222222222222222222222222",
+   "Ref": "refs/heads/fx/u1",
+   "PushedUtc": "2030-01-01T10:30:00Z",
+   "AuthorRole": "PRINCIPAL"
+  },
+  {
+   "Commit": "abababababababababababababababababababab",
+   "Ref": "refs/heads/fx/u1",
+   "PushedUtc": "2030-01-01T10:45:00Z",
+   "AuthorRole": "PRINCIPAL"
+  },
+  {
+   "Commit": "5555555555555555555555555555555555555555",
+   "Ref": "refs/heads/fx/u1",
+   "PushedUtc": "2030-01-01T11:30:00Z",
+   "AuthorRole": "PRINCIPAL"
+  }
+ ],
  "RelayRecords": [
   {
    "Path": "syn/l1/1/launch.json",
@@ -144,7 +194,8 @@
    "Actor": "OWNER",
    "Kind": "SESSION_OPENED",
    "Text": null,
-   "TextSha256": null
+   "TextSha256": null,
+   "ObservedSenderLabel": null
   },
   {
    "Seq": 2,
@@ -153,7 +204,8 @@
    "Actor": "OWNER",
    "Kind": "MESSAGE",
    "Text": "Eres el Principal de la unidad de prueba SYN-U9 de este repositorio.",
-   "TextSha256": "f2231d2b6382999e1a43519d9c3dffb16dd5d54d29d3987836eb71a059b8e4a9"
+   "TextSha256": "f2231d2b6382999e1a43519d9c3dffb16dd5d54d29d3987836eb71a059b8e4a9",
+   "ObservedSenderLabel": null
   },
   {
    "Seq": 3,
@@ -162,7 +214,8 @@
    "Actor": "OWNER",
    "Kind": "MESSAGE",
    "Text": "continúa",
-   "TextSha256": "f7ab06ed0b431a38771d66c51a9116ece1eb1e169eb9bfaf8c9b4a109083b683"
+   "TextSha256": "f7ab06ed0b431a38771d66c51a9116ece1eb1e169eb9bfaf8c9b4a109083b683",
+   "ObservedSenderLabel": null
   }
  ],
  "Caps": {
