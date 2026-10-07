@@ -1,0 +1,54 @@
+{
+  "ObservedUtc": "2026-10-07T04:22:48Z",
+  "BAdapter": "claude-desktop-session (variante de mismo proveedor, D.3 paso 4; decisiones §52)",
+  "Model": "claude-opus-5-5",
+  "Effort": "xhigh",
+  "Action": "RESUME_DECISION",
+  "Cwd": "D:\\r62-fixture\\B",
+  "BClone": {
+    "Head": "cabed54738f56e846bd77be321cace10d053094d",
+    "Branch": "fx/u1",
+    "StatusIgnoredLines": 0,
+    "Remotes": [
+      "origin"
+    ],
+    "OracleRefsInClone": 0,
+    "EvidenceOutRefsInClone": 0
+  },
+  "PriorSessions": {
+    "ClaudeProjectDirForB": false,
+    "OtherFixtureProjectDirs": [
+      "D--r62-fixture-A",
+      "D--r62-fixture-R"
+    ]
+  },
+  "AutomaticInputs": {
+    "GlobalClaudeMd": "ausente (~/.claude/CLAUDE.md)",
+    "SettingsJson": {
+      "Sha256": "ac1408b2b7f3d5629f2f1ccedc0149eb43a29e678d361ca843736afb7d31729d",
+      "Keys": [
+        "agentPushNotifEnabled",
+        "autoUpdatesChannel",
+        "enabledPlugins",
+        "extraKnownMarketplaces",
+        "hooks",
+        "skipWorkflowUsageWarning",
+        "statusLine"
+      ]
+    },
+    "Hooks": "claude-hook.cmd (Orca) en SessionStart, UserPromptSubmit y demás eventos: imprime «{}» (sin contexto añadido) y envía telemetría local; SHA-256 160ecde0…",
+    "Plugins": "github@claude-plugins-official (sin hechos de la unidad)",
+    "ClaudeJson": "ab55bc2f9116ee3be9ae78eebfd6e9302db84bcae175e53f06677501db4448f5",
+    "ProjectMemoryForB": "inexistente (directorio nuevo)",
+    "FixtureCLAUDE.md": "c16f28f314936e4df41e61e53e7292d7438c081f5bc5b5e20837f296bedc87c6",
+    "FixtureAGENTS.md": "aa7dcd2cb5308aff43b0e190d780aa92216830ad079a102a5999498452ab89ce",
+    "AppInjectedContext": "contexto del sistema de la app (correo del usuario, estado de Git del directorio, lista de skills, instrucciones de servidores MCP): no enumerable desde aquí; cobertura declarada (D.6)"
+  },
+  "Kickoff": {
+    "Path": "D:\\r62-fixture\\evidence-out\\fx04a\\B-kickoff.md (fuera del clon)",
+    "Sha256": "c8dc86ad8df492bb1e2a82cb3036de0ff3df3c04dc291841ec69102bbc26ac93",
+    "Content": "instrucción del kit (B-prompt.md, 5e05ee01) + response.schema.json sin «$comment»; sin valores del oráculo ni mención a él"
+  },
+  "RuntimeMetadataSource": "get_session(\"self\") de la propia sesión B (RUNTIME_OBSERVED del adapter claude-desktop-session); contraste de la supervisión con get_session(B)",
+  "OracleSha256Published": "7fd1ef395643e985e0dbe98569aa19c6a3f6677168092aac11d854790c317dcb (commit 5121c8e3, antes de B)"
+}

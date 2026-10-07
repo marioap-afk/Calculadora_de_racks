@@ -1,0 +1,341 @@
+{
+ "facts": {
+  "branch": "fx/u1",
+  "claim_id": "fc62f1c7-0000-4000-8000-000000000001",
+  "last_point": "QH",
+  "record_version": 5,
+  "protocol": "rackcad-protocol/I62",
+  "principal_state": "RELEASED",
+  "attempts": 0,
+  "correction_launches": [],
+  "invocations": [],
+  "chains": [],
+  "last_window": [],
+  "task_intent": [
+   {
+    "task_id": "T1",
+    "attempt": 0,
+    "kind": "FIRST",
+    "contract": {
+     "path": "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+     "blob": "628d89af5f21e4e14cbe7c3c14f0dd8fb5a490e0"
+    },
+    "continues_task_id": null,
+    "planned_roles": [
+     {
+      "role": "EXECUTION_CONTROLLER",
+      "binding": null
+     }
+    ]
+   }
+  ],
+  "stops_in_force": [
+   "P-10",
+   "P-01",
+   "P-16"
+  ]
+ },
+ "decision": {
+  "next_points": [
+   "QR",
+   "Q0",
+   "CONTROLLER_PLANNING"
+  ],
+  "next_window_seq": 1,
+  "task_id": "T1",
+  "attempt": 0,
+  "role": "PRINCIPAL_COORDINATOR",
+  "protocol_set": "rackcad-protocol/I62",
+  "binding": "REBIND",
+  "worker": null,
+  "preconditions": [
+   "COORDINATOR_DESIGNATION",
+   "PREDECESSOR_TERMINATION_ACCREDITED",
+   "CUSTODY_PREFLIGHT_MATCH",
+   "MAIN_UNCHANGED_SINCE_EFFECTIVE",
+   "CONTROLLER_BINDING_ACCEPTED"
+  ]
+ },
+ "inputs": [
+  {
+   "path": "CLAUDE.md",
+   "kind": "AUTOMATIC",
+   "sha256": "c16f28f314936e4df41e61e53e7292d7438c081f5bc5b5e20837f296bedc87c6"
+  },
+  {
+   "path": "harness:gitStatus (instantánea al arrancar la sesión)",
+   "kind": "AUTOMATIC",
+   "sha256": null
+  },
+  {
+   "path": "AGENTS.md",
+   "kind": "CANONICAL",
+   "sha256": "aa7dcd2cb5308aff43b0e190d780aa92216830ad079a102a5999498452ab89ce"
+  },
+  {
+   "path": "README.md",
+   "kind": "CANONICAL",
+   "sha256": "f39fd5878d54758c09c231bc557c46200d8f6edf43235d05e35b5878bbf6ef42"
+  },
+  {
+   "path": "FIXTURE-MANIFEST.json",
+   "kind": "CANONICAL",
+   "sha256": "7e987970b00722e2cd6384cf9f5f87217be6cae57f2592228ba7f050bfeb7a06"
+  },
+  {
+   "path": ".gitattributes",
+   "kind": "CANONICAL",
+   "sha256": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da"
+  },
+  {
+   "path": "docs/WORKFLOW.md",
+   "kind": "CANONICAL",
+   "sha256": "0d49ee70eaef9d368a0b17e44bf6a0f24c64495f99fa40d2824c4a80e4b6684d"
+  },
+  {
+   "path": "docs/AUTOMATION_PLAN.md",
+   "kind": "CANONICAL",
+   "sha256": "6dc9f5d5cb90b2242a8d21140674c0b88dc6472a36dd8c65dc988e8cac6a19f5"
+  },
+  {
+   "path": "docs/automation/agent-execution/README.md",
+   "kind": "CANONICAL",
+   "sha256": "2070e629151846afc90bb76348c47fc0ccd28fcfe5fbc9ad4e78959df93d8dc1"
+  },
+  {
+   "path": "docs/automation/agent-execution/routing.md",
+   "kind": "CANONICAL",
+   "sha256": "5a5d02bd9e3ae1979b891c418c1680dd600c1f9857b14852ef3ce733a44cd4ac"
+  },
+  {
+   "path": "docs/automation/agent-execution/model-catalog.md",
+   "kind": "CANONICAL",
+   "sha256": "dc11c201d39b2e80017cb15e049c20f1a5008a8dd97a713c0d4ea3547b0770c3"
+  },
+  {
+   "path": "docs/automation/agent-execution/adapters/claude-desktop-session.md",
+   "kind": "CANONICAL",
+   "sha256": "759098ebde125d49fb587bb697565cff297af9a4932678f8c4431759eda979b5"
+  },
+  {
+   "path": "docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json",
+   "kind": "CANONICAL",
+   "sha256": "2c8fb7cc00d01e9917114ff11fd53e34ec1e2a33171d1631546176f95189c9f0"
+  },
+  {
+   "path": "docs/automation/agent-execution/schemas/preflight.v1.schema.json",
+   "kind": "CANONICAL",
+   "sha256": "30be5648d789e8ba8ac0cc05ddd1f47fbf61efcdbc2a559e6bad7d37c940f5b7"
+  },
+  {
+   "path": "docs/automation/agent-execution/schemas/automation-state.v2.schema.json",
+   "kind": "CANONICAL",
+   "sha256": "bebd33f51cd9eba76990be6500950448ee83ca554720d1d49a3a024ff125cf58"
+  },
+  {
+   "path": "docs/automation/agent-execution/schemas/relay-record.v2.schema.json",
+   "kind": "CANONICAL",
+   "sha256": "dcb629dc8cfda9bd1781a458e1bed54b63f0ce282fd34d685131531f731cbec7"
+  },
+  {
+   "path": "docs/automation/state/FX-U1.yml",
+   "kind": "CANONICAL",
+   "sha256": "517170cfaab9dc72690141fc6507dd6100ab7d7338d9cff4dd77a2abdb2c8585"
+  },
+  {
+   "path": "docs/automation/decisions/FX-U1.md",
+   "kind": "CANONICAL",
+   "sha256": "351345bfd6843ac3109f9cd884dc5162e85a7ebd221eb321fb93208e20e802aa"
+  },
+  {
+   "path": "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+   "kind": "CANONICAL",
+   "sha256": "8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc"
+  },
+  {
+   "path": "docs/automation/evidence/FX-U1-agent/repair/P20261007T023103Z-01b1.json",
+   "kind": "CANONICAL",
+   "sha256": "c4448aa99c3d3bfd727774e498e3ee17a9cf271e5ff47c58397fe0dd48aa0fec"
+  },
+  {
+   "path": "docs/automation/evidence/FX-U1-agent/repair/P20261007T023103Z-01b1.validation.json",
+   "kind": "CANONICAL",
+   "sha256": "80b5c970ab37dc8cc194f8c6636bf319e2d14df010acb8ff48d9b3afd62ad3a8"
+  },
+  {
+   "path": "docs/automation/evidence/FX-U1-agent/repair/qh/state-r5.validation.json",
+   "kind": "CANONICAL",
+   "sha256": "f6b497484ca521ae748d6c03e8c29b6bdd98a44aca079af7113e712cc67f2a3b"
+  },
+  {
+   "path": "git:origin/fx/u1 (historia 930288c..cabed54, mensajes, diffs del estado r3->r4->r5 y blobs de los StateRef en HEAD)",
+   "kind": "CANONICAL",
+   "sha256": null
+  },
+  {
+   "path": "git:ls-remote origin (2026-10-07T04:53:37.548Z y 2026-10-07T04:58:05.633Z: fx/u1=cabed54, main=fbe2534, tag test-activation/I-62^{}=fbe2534)",
+   "kind": "TECHNICAL",
+   "sha256": null
+  },
+  {
+   "path": "runtime:get_session(\"self\") (2026-10-07T04:53:22.132Z)",
+   "kind": "TECHNICAL",
+   "sha256": null
+  },
+  {
+   "path": "runtime:hostname (solo su SHA-256 en minúsculas)",
+   "kind": "TECHNICAL",
+   "sha256": null
+  },
+  {
+   "path": "runtime:pwsh $PSVersionTable y [Environment]::OSVersion",
+   "kind": "TECHNICAL",
+   "sha256": null
+  }
+ ],
+ "preflight": {
+  "Schema": "rackcad-preflight/v1",
+  "PreflightId": "P20261007T045322Z-2d5c",
+  "UnitId": "FX-U1",
+  "Role": "PRINCIPAL_COORDINATOR",
+  "Action": "RESUME_DECISION",
+  "ProtocolSet": "rackcad-protocol/I62",
+  "Profile": {
+   "ProfileId": "PRINCIPAL_COORDINATION",
+   "RoutingBlob": "bba08fc4686d7192deeb559752636a467103b4b1"
+  },
+  "Host": {
+   "HostLabelHash": "63077eb13294b21695ab1d1c013de751a805000013ae0eaf238f5dc90fc51174",
+   "HostInstanceHash": "UNKNOWN",
+   "HostInstanceState": "UNOBSERVED",
+   "Os": "Microsoft Windows NT 10.0.26300.0"
+  },
+  "ObservedUtc": "2026-10-07T04:53:22.132Z",
+  "Actor": {
+   "AdapterId": "claude-desktop-session",
+   "InstanceId": "local_1a28830f-3123-41a2-a75b-d1b9ea33eba3",
+   "InstanceIdSource": "get_session(\"self\").sessionId",
+   "Assurance": "RUNTIME_OBSERVED"
+  },
+  "Session": {
+   "AdapterId": "claude-desktop-session",
+   "SessionId": "local_1a28830f-3123-41a2-a75b-d1b9ea33eba3",
+   "Assurance": "RUNTIME_OBSERVED"
+  },
+  "Adapter": {
+   "AdapterId": "claude-desktop-session",
+   "AdapterVersion": "UNKNOWN",
+   "BinaryPathHash": null,
+   "DescriptorRef": {
+    "Path": "adapters/claude-desktop-session.md",
+    "Blob": "7f45923527a860713819d1ccf29dcb375b680369"
+   }
+  },
+  "AdapterFacts": {
+   "SchemaRef": {
+    "SchemaId": "rackcad-adapter-claude-desktop-session-facts/v1",
+    "Path": "schemas/adapters/claude-desktop-session.facts.v1.schema.json",
+    "Blob": "f246717f1cc2915bbac61ccd96fcd9676039b106"
+   },
+   "Facts": {
+    "SchemaId": "rackcad-adapter-claude-desktop-session-facts/v1",
+    "AuthState": "AUTHENTICATED",
+    "MetadataSource": "get_session",
+    "ReportedModel": {
+     "State": "OBSERVED",
+     "Value": "claude-opus-5-5"
+    },
+    "ReportedEffort": {
+     "State": "OBSERVED",
+     "Value": "xhigh"
+    },
+    "IsRunning": "TRUE",
+    "PermissionMode": {
+     "State": "OBSERVED",
+     "Value": "bypassPermissions"
+    }
+   }
+  },
+  "Fingerprint": {
+   "Kind": "UNVERIFIED",
+   "Sha256": null,
+   "KeyNames": [],
+   "AcceptanceDecisionRef": null
+  },
+  "Requirements": [
+   {
+    "RequirementId": "PRINCIPAL_COORDINATION.level",
+    "Mandatory": true,
+    "Required": "Frontera",
+    "Observation": {
+     "State": "OBSERVED",
+     "Value": "Frontera (modelo de cliente 'claude-opus-5-5')",
+     "Source": "get_session(\"self\").model; nivel por model-catalog.md blob 166d978d114e635bbef67e295c2ec1da73af6d1f; ventana UTC [2026-10-07T04:53:21.706Z, 2026-10-07T04:53:22.849Z]",
+     "Assurance": "RUNTIME_OBSERVED",
+     "ObservedUtc": "2026-10-07T04:53:22.132Z"
+    },
+    "Status": "MATCH",
+    "Contradiction": false,
+    "ContradictionEvidence": null
+   },
+   {
+    "RequirementId": "PRINCIPAL_COORDINATION.effort",
+    "Mandatory": true,
+    "Required": "Long-horizon",
+    "Observation": {
+     "State": "OBSERVED",
+     "Value": "Long-horizon (effort de cliente 'xhigh')",
+     "Source": "get_session(\"self\").effort; traducción por model-catalog.md blob 166d978d114e635bbef67e295c2ec1da73af6d1f (claude-opus-5-5: Long-horizon -> xhigh); ventana UTC [2026-10-07T04:53:21.706Z, 2026-10-07T04:53:22.849Z]",
+     "Assurance": "RUNTIME_OBSERVED",
+     "ObservedUtc": "2026-10-07T04:53:22.132Z"
+    },
+    "Status": "MATCH",
+    "Contradiction": false,
+    "ContradictionEvidence": null
+   },
+   {
+    "RequirementId": "PRINCIPAL_COORDINATION.remote-facts",
+    "Mandatory": true,
+    "Required": "lectura",
+    "Observation": {
+     "State": "OBSERVED",
+     "Value": "lectura",
+     "Source": "git ls-remote origin en invocación de esta sesión: rc=0; refs/heads/fx/u1=cabed54738f56e846bd77be321cace10d053094d y refs/heads/main=fbe25347799e5b801ef708454212335537448bd1 (= refs/remotes/origin/* locales; sin fetch); el remoto github no está configurado en este clon y no se observó; ventana UTC [2026-10-07T04:53:37.548Z, 2026-10-07T04:53:38.055Z]",
+     "Assurance": "RUNTIME_OBSERVED",
+     "ObservedUtc": "2026-10-07T04:53:38.055Z"
+    },
+    "Status": "MATCH",
+    "Contradiction": false,
+    "ContradictionEvidence": null
+   },
+   {
+    "RequirementId": "PRINCIPAL_COORDINATION.introspection",
+    "Mandatory": true,
+    "Required": "RUNTIME_OBSERVED",
+    "Observation": {
+     "State": "OBSERVED",
+     "Value": "RUNTIME_OBSERVED",
+     "Source": "get_session(\"self\") respondió con model, effort, sessionId, isRunning y permissionMode; nivel de la fuente según adapters/claude-desktop-session.md blob 7f45923527a860713819d1ccf29dcb375b680369; ventana UTC [2026-10-07T04:53:21.706Z, 2026-10-07T04:53:22.849Z]",
+     "Assurance": "RUNTIME_OBSERVED",
+     "ObservedUtc": "2026-10-07T04:53:22.132Z"
+    },
+    "Status": "MATCH",
+    "Contradiction": false,
+    "ContradictionEvidence": null
+   }
+  ],
+  "ConfigurationStatus": "MATCH",
+  "Causes": [],
+  "Disposition": "ELIGIBLE",
+  "StopConditions": [],
+  "Invalidators": {
+   "HostInstanceHash": "UNKNOWN",
+   "AdapterVersion": "UNKNOWN",
+   "BinaryPathHash": null,
+   "AuthState": "AUTHENTICATED",
+   "FingerprintSha256": "UNKNOWN",
+   "CatalogEntryBlob": "166d978d114e635bbef67e295c2ec1da73af6d1f",
+   "RoutingBlob": "bba08fc4686d7192deeb559752636a467103b4b1"
+  }
+ }
+}

@@ -1,0 +1,83 @@
+{
+  "B": {
+    "SessionId": "local_1a28830f-3123-41a2-a75b-d1b9ea33eba3",
+    "Adapter": "claude-desktop-session (variante de mismo proveedor, D.3 paso 4; decisiones §52)",
+    "Model": "claude-opus-5-5",
+    "Effort": "xhigh",
+    "Cwd": "D:\\r62-fixture\\B",
+    "CreatedUtc": "2026-10-07T04:52:28.771Z",
+    "LastActivityUtc": "2026-10-07T04:59:56.874Z",
+    "SupervisorGetSession": {
+      "model": "claude-opus-5-5",
+      "effort": "xhigh",
+      "isRunning": false
+    },
+    "OpenedBy": "Owner",
+    "ProviderIndependence": "NOT_REQUIRED para el PASS de FX-04a (§52); no se afirma portabilidad entre proveedores"
+  },
+  "Kickoff": {
+    "Delivered": "el texto compacto de la tarjeta, pegado por el Owner (4 762 bytes en el mensaje, dentro del envoltorio de texto pegado; SHA-256 del mensaje c9b21c7b…)",
+    "SameFieldsAsFile": "mismos campos y valores que B-kickoff.md (c8dc86ad…), esquema compactado; sin valores del oráculo ni mención a él"
+  },
+  "Transcript": {
+    "Path": "~/.claude/projects/D--r62-fixture-B/3e962012-8197-4e67-9bd0-911b04afd9cb.jsonl",
+    "Sha256": "8034a25de72e542319535b69862386cc8a4ebc047ac119a9a6609a0b714f3e5",
+    "UserMessages": 1,
+    "ToolCalls": {
+      "Bash": 33,
+      "PowerShell": 2,
+      "Write": 3,
+      "Read": 1,
+      "ToolSearch": 1,
+      "get_session(self)": 1
+    }
+  },
+  "IsolationAudit": {
+    "OtherSessionTools": "ninguna (solo get_session(\"self\"))",
+    "ReadsOutsideClone": "ninguna: rutas absolutas solo del propio scratchpad de B (sus borradores de preflight y respuesta); git ls-remote origin = lectura de hechos remotos permitida",
+    "ProhibitedInputs": "ninguna lectura registrada de transcripciones de A o R, ~/.claude, ~/.codex, evidence-out ni oráculo",
+    "Coverage": "cobertura declarada (D.6): el registro no captura lecturas internas del runtime ni el contexto que inyecta la app",
+    "Result": "aislamiento no UNVERIFIED"
+  },
+  "Preflight": {
+    "Schema": "rackcad-preflight/v1",
+    "PreflightId": "P20261007T045322Z-2d5c",
+    "Action": "RESUME_DECISION",
+    "ConfigurationStatus": "MATCH",
+    "Disposition": "ELIGIBLE",
+    "Requirements": [
+      {
+        "Id": "PRINCIPAL_COORDINATION.level",
+        "Required": "Frontera",
+        "Status": "MATCH",
+        "Assurance": "RUNTIME_OBSERVED"
+      },
+      {
+        "Id": "PRINCIPAL_COORDINATION.effort",
+        "Required": "Long-horizon",
+        "Status": "MATCH",
+        "Assurance": "RUNTIME_OBSERVED"
+      },
+      {
+        "Id": "PRINCIPAL_COORDINATION.remote-facts",
+        "Required": "lectura",
+        "Status": "MATCH",
+        "Assurance": "RUNTIME_OBSERVED"
+      },
+      {
+        "Id": "PRINCIPAL_COORDINATION.introspection",
+        "Required": "RUNTIME_OBSERVED",
+        "Status": "MATCH",
+        "Assurance": "RUNTIME_OBSERVED"
+      }
+    ]
+  },
+  "Response": {
+    "File": "B-response.json",
+    "CanonicalSha256": "e17265eab843aef230cac26b2bad8128bc350a246e67655c0b98f9b15ae280b0",
+    "FileSha256": "c3e2e6e2ba05b5621257d0e687d23b8d010ecc831c3da8e2a3b511c1abe58de0",
+    "InputsEnumerated": 27,
+    "RecordedBeforeComparison": true
+  },
+  "B2": "no necesaria: el procedimiento congelado la usa solo para N11, y N11 = NOT_APPLICABLE (sin correction_launches en QH2)"
+}

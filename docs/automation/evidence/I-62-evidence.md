@@ -2572,3 +2572,18 @@ solo desde artefactos custodiados.
   es Frontera pero de créditos; `gpt-6.1-sol`, Equilibrado; `gpt-6-luna`, Eficiente). Una B `codex-desktop-session` no puede cumplir
   `PRINCIPAL_COORDINATION.level` para RESUME_DECISION: su preflight daría BELOW_REQUIRED y FX-04a quedaría UNVERIFIED (D.3 paso 5). D.3 paso 4 admite
   como variante registrada aparte una sesión de Claude nueva. **B no se abre hasta la decisión del Coordinator.**
+
+## 72. FX-04a: lanzamiento de B (variante de Claude, §52), auditoría D.6 y SHA-256 de la respuesta registrado antes de la comparación
+
+- **B** `local_1a28830f…` (`claude-opus-5-5`/`xhigh`, abierta por el Owner en `D:\r62-fixture\B`, 04:52:28Z; `get_session` de la supervisión: mismo modelo
+  y effort). Un solo mensaje: el texto inicial compacto de la tarjeta (mismos campos que `B-kickoff.md`, sin valores del oráculo ni mención a él).
+- **Antes de B** ([prelaunch-claude-B.json](I-62-F6/FX-04a/R20261007T034100Z-fx04a/prelaunch-claude-B.json)): clon en `cabed547`, limpio; sin sesión previa de
+  B; sin `CLAUDE.md` global ni memoria de proyecto; el gancho de Orca devuelve `{}`; plugin `github`; contexto que inyecta la app con cobertura declarada.
+- **Preflight de B para RESUME_DECISION:** nivel Frontera, effort Long-horizon (`xhigh`), lectura de hechos remotos e introspección RUNTIME_OBSERVED, todos
+  MATCH; ConfigurationStatus MATCH, Disposition ELIGIBLE.
+- **Auditoría de la transcripción** ([b-run.json](I-62-F6/FX-04a/R20261007T034100Z-fx04a/b-run.json)): 41 llamadas; la única de sesiones fue
+  `get_session("self")`; rutas fuera del clon, solo el scratchpad propio de B; ninguna lectura de transcripciones de A o R, de `~/.claude`, de `~/.codex`,
+  de `evidence-out` ni del oráculo. Aislamiento no UNVERIFIED, con cobertura declarada.
+- **Respuesta de B** ([B-response.json](I-62-F6/FX-04a/R20261007T034100Z-fx04a/B-response.json)): **SHA-256 canónico
+  `e17265eab843aef230cac26b2bad8128bc350a246e67655c0b98f9b15ae280b0`**, registrado en este commit **antes** de la comparación con el oráculo
+  (`7fd1ef39…`, publicado en `5121c8e3`). 27 entradas enumeradas (CANONICAL, TECHNICAL, AUTOMATIC). B2 no necesaria (N11 = NOT_APPLICABLE).
