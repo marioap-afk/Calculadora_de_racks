@@ -15,10 +15,10 @@ Estado:     F6 EN CURSO; F6 GATE PASS no se autodeclara
 | FX-05 / C-27 | **PASS** (corrida 2; confirmado por el Coordinator, §47) | la corrida 1 se conserva como inválida | no se repite salvo que su evidencia se invalide |
 | OD-4 sondas | **medido**: sonda 1 de ≤ 2 | escritura de archivos y herramientas SUPPORTED; **commit UNSUPPORTED** (`.git/index.lock` denegado por el sandbox); fuera del espacio bloqueado | sin segunda sonda: transporte en STOP |
 | OD-2b-PROBE | **hecho** (2 sondas `read-only`, §47) | sonda 1 en `A` (`gpt-6-luna`/`high`) y sonda 2 en `arch` (`gpt-6.1-sol`/`high`): huella `9002E854…` antes y después de cada una; ninguna entrada nueva; `read-only` no crea entradas, `workspace-write` sí ([result.json](OD-2b-PROBE/R20261006T150704Z-od2b/result.json)) | — |
-| OD-2 | **P-01 / STOP de `codex-cli`** (2026-10-06T19:16Z) | OD-2c aceptó `9002E854…`; la actualización de la app de Codex (`26.930.7945.0`) reescribió `config.toml` (`723A6898…`, mismos nombres de clave, valores cambiados) y sustituyó el binario (`3b8f6e33…`) ([result.json](OD-2/R20261006T191621Z-p01/result.json)) | **OD-2d** del Owner (paquete listo); FX-01 y FX-04a no usan `codex-cli` |
-| FX-01 / C-23 | **PASS por la evidencia** (aceptación del Coordinator) | 4 preflights conformes al oráculo E1/E3 (`xhigh` MATCH, `high` y `medium` BELOW_REQUIRED/P-09, `xhigh` MATCH); desviación: la sesión se abrió en `xhigh` ([result.json](FX-01/R20261006T203145Z-fx01/result.json)) | disposición del Coordinator |
+| OD-2 | **P-01 / STOP de `codex-cli`** hasta OD-2d | OD-2d-PROBE hecho: huella `723A6898…` y binario `3b8f6e33…` (`0.160.1`) estables en seis mediciones ([result.json](OD-2/R20261007T013200Z-od2d-probe/result.json)) | **OD-2d** del Owner (paquete listo) |
+| FX-01 / C-23 | **PASS** (Coordinator, §51) | 4 preflights conformes al oráculo; la observación inicial de más en `xhigh` es una desviación no material; se conservan las cuatro ([result.json](FX-01/R20261006T203145Z-fx01/result.json)) | — |
 | FX-02 / C-24 | **UNVERIFIED** (bloqueado) | sin sesión A; `codex-cli` en STOP P-01 hasta OD-2d; CI recuperada de forma provisional | sesión A + OD-2d + confirmar CI en `fx/u1` |
-| FX-04a / C-25a | **UNVERIFIED — línea detenida antes de abrir B** | QH `ae25b596` publicado y A terminada, pero el QH viola I-S13 (F6-OBS-01) y el oráculo del kit tiene huecos para un QH sin FX-02 | disposición del Coordinator sobre F6-OBS-01 y el oráculo |
+| FX-04a / C-25a | **UNVERIFIED** — pendiente de QH2 y de B | QH `ae25b596` con I-S13/I-S16 (F6-OBS-01, no material, §51); reparación por un titular temporal R (orden O3); oráculo corregido para «hechos más pobres» | QR y QH2 de R válidos, R terminada, oráculo desde QH2, D.6 y B |
 | FX-04b / C-25b | **UNSUPPORTED** (medido) | el Worker Codex no puede hacer commit (OD-4, sonda 1); ningún otro adapter lanzable por B tiene escritura acreditada (`claude-cli` rechazado, OD-3) | decisión del Owner sobre la limitación (OV-I62-05 b) |
 | FX-06 / C-39 | **UNVERIFIED** (solo preparación) | sin sesión A; `codex-cli` en STOP P-01 hasta OD-2d; la celda del Architect medida es del binario anterior y queda **obsoleta** (§50): volver a medirla | sesión A + OD-2d-PROBE/OD-2d + CI |
 | FX-03 / C-26 | **UNVERIFIED** (OD-3 = RECHAZAR) | además, el Worker Codex no puede hacer commit: con OD-3 sería UNSUPPORTED | limitación para OV-I62-04; no se retira |
@@ -48,8 +48,8 @@ de I-62, árbol de estados de `main`). El rechazo lo aplica la sesión de superv
 
 | C | Escenario | Estado | Evidencia o causa |
 |---|---|---|---|
-| C-22 | fixture arrancable (D.1 hasta un contrato I62 válido) | **PASS por la evidencia** (aceptación del Coordinator) | BOOTSTRAP `1746b404`, G0 `5a3a7d69`, QU `1a4fc9c6` y contrato de T1 `d30fb6a9` válidos ([chain.json](FX-U1-chain/chain.json)) |
-| C-23 | FX-01 autoverificación | **PASS por la evidencia** (aceptación del Coordinator) | 4/4 conformes al oráculo; desviación de la secuencia registrada |
+| C-22 | fixture arrancable (D.1 hasta un contrato I62 válido) | **PASS** (Coordinator, §51) | BOOTSTRAP `1746b404`, G0 `5a3a7d69`, QU `1a4fc9c6`, contrato de T1 `d30fb6a9` ([chain.json](FX-U1-chain/chain.json)) |
+| C-23 | FX-01 autoverificación | **PASS** (Coordinator, §51) | 4/4 conformes; desviación no material |
 | C-24 | FX-02 topología A | UNVERIFIED | `Ci` = `not_run`, sin sesión A (`codex-cli` disponible tras OD-2c) |
 | C-25a | FX-04a portabilidad | UNVERIFIED (línea detenida) | QH con violación de I-S13 (F6-OBS-01); oráculo por ajustar; B sin abrir |
 | C-25b | FX-04b continuación | UNSUPPORTED (medido) | Worker Codex sin commit en `workspace-write`; ningún otro adapter con escritura acreditada lanzable por B; decide el Owner (OV-I62-05 b) |

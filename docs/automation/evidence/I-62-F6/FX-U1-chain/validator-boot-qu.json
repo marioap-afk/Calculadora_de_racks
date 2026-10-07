@@ -1,0 +1,13 @@
+{
+  "Validator": "RackCad.Tests.StateV2Validator (F4 production validator)",
+  "DllSha256": "F59849377C6B352C6C81CCDD23C258D2DECFC4BFFA12C67EE5B3C74E0CE095EE",
+  "Repo": "D:/r62-fixture/fixture-origin.git",
+  "Prev": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+  "Next": "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+  "FilePrev": null,
+  "FileNext": null,
+  "Pair": null,
+  "HistoryNext": null,
+  "PairHistory": null,
+  "B1History": null
+}

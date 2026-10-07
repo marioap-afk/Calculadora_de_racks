@@ -2527,3 +2527,25 @@ solo desde artefactos custodiados.
   FX-02: binding del Controller sin valor previo (el oráculo asumía uno reutilizable), «STOP vigentes» y precondiciones sin campo en el esquema, y N11 sin
   entrada de `correction_launches`. Antes de abrir B: disposición del Coordinator sobre F6-OBS-01 y sobre el oráculo.
 - **Huella:** `723A6898…`, estable (comparación por clave sin cambios a las 23:21Z); `codex-cli` sigue en STOP P-01 (OD-2d). D.6 de Codex, limpio (§68).
+
+## 70. Validador de producción sobre el QH real, orden de reparación FX-U1-O3, oráculo de FX-04a corregido y OD-2d-PROBE (decisiones §51)
+
+- **Validador de producción de F4** (`RackCad.Tests.StateV2Validator` de la DLL compilada, sin cambios de código;
+  [validator-qu-qh.json](I-62-F6/FX-U1-chain/validator-qu-qh.json)) sobre el QU `1a4fc9c6` → QH `ae25b596`, con los árboles reales del origen del
+  fixture: archivo del QU 0 violaciones; **archivo del QH 4**: I-S13 en `protocol.g0_acceptance.decision` y en `custody.principal.acceptance.decision`
+  (`FX-U1.md` con `bdc8e4dd`, que no está en el árbol: allí es `7001b419`) e I-S16 en las mismas dos rutas (los marcadores no se pueden leer en el
+  árbol); par 0, historia del QH 0, historia del par 0 y B1 0. La cadena acreditada BOOTSTRAP → QU da 0 en todas las categorías
+  ([validator-boot-qu.json](I-62-F6/FX-U1-chain/validator-boot-qu.json)).
+- **Inventario de `StateRef` del QH:** solo esos dos están obsoletos; `orchestration.next_action.required_inputs[1]` ya cita `FX-U1.md` con `7001b419`;
+  las tres referencias al contrato de T1 (`628d89af`) y `budgets.caps` (`AUTOMATION_PLAN.md`) resuelven en el árbol.
+- **Reparación:** orden FX-U1-O3 del Coordinator del fixture (`cc21e1d2`, en `origin` y `github`) con la lectura del §51 y los pasos de R (observación,
+  propuesta, designación acotada, QR ORDINARY con los `StateRef` refrescados, QH, terminación). Clon limpio `D:\r62-fixture\R` en `cc21e1d2` con
+  identidad sintética; sin memoria de proyecto previa. La sesión R la abre el Owner.
+- **Kit de FX-04a corregido** (capa del fixture; sin esquemas I62 nuevos): binding REBIND si el estado no lleva binding del Controller;
+  `facts.stops_in_force` (códigos de los STOP de la siguiente acción canónica) y `decision.preconditions` (vocabulario cerrado: designación, terminación
+  acreditada del anterior, preflight CUSTODY, `main` sin avance, binding aceptado del Controller), comparados como conjuntos; N11 NOT_APPLICABLE sin
+  entrada de `correction_launches`. Autoprueba con estados sintéticos, nunca con el QH `ae25b596`.
+- **OD-2d-PROBE** ([result.json](I-62-F6/OD-2/R20261007T013200Z-od2d-probe/result.json)): binario `5ea220ae823df3d7` (`3b8f6e33…`), `codex-cli 0.160.1`,
+  `Logged in using ChatGPT`, app `26.930.7945.0`. Sonda 1 en `A`: `gpt-6-luna`/`high`/`read-only` (66 841 / 1 254 tokens); sonda 2 en `arch`:
+  `gpt-6.1-sol`/`high`/`read-only` (128 885 / 1 091), sin aviso de límite; la celda del Architect vuelve a quedar medida con el binario nuevo. **Huella
+  `723A6898…` en las seis mediciones** y comparación por clave sin cambios: estable. Paquete OD-2d con esa huella y ese binario.

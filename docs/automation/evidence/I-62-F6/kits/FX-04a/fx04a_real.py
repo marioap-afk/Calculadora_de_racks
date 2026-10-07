@@ -6,10 +6,13 @@ The oracle and the field-by-field comparison are those of the measured prototype
   compare  <oracle.json> <B response.json>           → PASS only with total equality (isolation is judged separately, D.6)
   n11      <fixture origin> <QH commit> <B2 dir>     → B2's clean clone at QH with one correction_launches entry removed from the canonical state
 B's response follows `response.schema.json` (same fields as the oracle; no value is given to B). Usage: python fx04a_real.py <command> ...
+Revision 2026-10-07 (decisiones §51 punto 8, «hechos más pobres» sin FX-02): binding REBIND when the canonical state carries no Controller binding;
+facts.stops_in_force and decision.preconditions in a closed vocabulary (compared as sets); N11 NOT_APPLICABLE without a correction_launches entry.
 """
 import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 
@@ -39,12 +42,27 @@ def facts_and_decision(s):
              "invocations": [[e["scope"], e["launched"], e["uncertain"]] for e in (get(s, "counters.invocations") or [])],
              "chains": [[c["task_id"], c["state"], c["chain_red_sha"]] for c in (get(s, "custody.chains") or [])],
              "last_window": [get(s, "custody.last_window.closure"), get(s, "custody.last_window.verified_sha")],
-             "task_intent": [get(s, "custody.task_intent.task_id"), get(s, "custody.task_intent.kind"), get(s, "custody.task_intent.attempt")]}
+             "task_intent": [get(s, "custody.task_intent.task_id"), get(s, "custody.task_intent.kind"), get(s, "custody.task_intent.attempt")],
+             # STOP vigentes (D.3 punto 3): the closed, deterministic set of STOP codes of the canonical next action at the point.
+             "stops_in_force": sorted({m for c in (get(s, "orchestration.next_action.stop_conditions") or [])
+                                       for m in re.findall(r"\b[PS]-[0-9]{2}\b", str(c))})}
     ok_qh = facts["last_point"] == "QH" and facts["principal_state"] == "RELEASED"
-    decision = {"next_points": ["QR", "Q0", "CONTROLLER_PLANNING"] if ok_qh else ["STOP"],
+    next_points = ["QR", "Q0", "CONTROLLER_PLANNING"] if ok_qh else ["STOP"]
+    # Controller binding (D.3 punto 3): REUSE only exists if the canonical state carries a Controller binding; with none (no FX-02), REBIND.
+    planned = [r for r in (get(s, "custody.task_intent.planned_roles") or []) if isinstance(r, dict) and r.get("role") == "EXECUTION_CONTROLLER"]
+    has_binding = any(r.get("binding") for r in planned)
+    # Preconditions (D.3 puntos 3 y 7), closed vocabulary of response.schema.json, derived from the frozen T16 / P-10 rules for this point.
+    pre = []
+    if ok_qh:
+        pre += ["COORDINATOR_DESIGNATION", "PREDECESSOR_TERMINATION_ACCREDITED", "CUSTODY_PREFLIGHT_MATCH", "MAIN_UNCHANGED_SINCE_EFFECTIVE"]
+    if "CONTROLLER_PLANNING" in next_points:
+        pre.append("CONTROLLER_BINDING_ACCEPTED")
+    decision = {"next_points": next_points,
                 "next_window_seq": (get(s, "custody.window.seq") or 0) + 1 if ok_qh else None,
                 "task_id": facts["task_intent"][0], "attempt": facts["task_intent"][2], "role": "EXECUTION_CONTROLLER",
-                "protocol_set": "rackcad-protocol/I62", "binding": "REUSE_IF_INVALIDATORS_UNCHANGED_ELSE_REBIND", "worker": None}
+                "protocol_set": "rackcad-protocol/I62",
+                "binding": "REUSE_IF_INVALIDATORS_UNCHANGED_ELSE_REBIND" if has_binding else "REBIND", "worker": None,
+                "preconditions": sorted(pre)}
     return {"facts": facts, "decision": decision}
 
 
@@ -57,11 +75,17 @@ def state_at(origin, commit):
     return Y.loads(text)
 
 
+SETS = {("facts", "stops_in_force"), ("decision", "preconditions")}
+
+
 def compare(o, r):
     diffs = []
     for part in ("facts", "decision"):
         for k in o[part]:
-            if o[part][k] != (r.get(part) or {}).get(k):
+            got = (r.get(part) or {}).get(k)
+            if (part, k) in SETS and isinstance(got, list):
+                got = sorted(set(got))
+            if o[part][k] != got:
                 diffs.append({"Field": part + "." + k, "Oracle": o[part][k], "Response": (r.get(part) or {}).get(k)})
     return diffs
 
@@ -90,7 +114,8 @@ def main():
         s = Y.loads(open(path, encoding="utf-8").read())
         removed = (s.get("counters", {}).get("correction_launches") or [])[:1]
         if not removed:
-            raise SystemExit("N11 needs a correction_launches entry at QH: none (record the N11 as not applicable with this cause)")
+            print(json.dumps({"N11": "NOT_APPLICABLE", "Reason": "no correction launch exists in this poorer-facts starting state (counters.correction_launches empty at QH); no entry is fabricated to remove"}, ensure_ascii=False))
+            return
         s["counters"]["correction_launches"] = s["counters"]["correction_launches"][1:]
         open(path, "w", encoding="utf-8", newline="\n").write(Y.dumps(s))
         subprocess.run(["git", "-C", b2, "commit", "-q", "-am", "N11: hecho retirado del estado canónico (clon de B2, no se publica)"], check=True)

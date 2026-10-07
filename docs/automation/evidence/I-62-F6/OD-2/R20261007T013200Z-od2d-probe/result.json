@@ -1,0 +1,127 @@
+{
+  "RunId": "R20261007T013200Z-od2d-probe",
+  "Authority": "OD-2d-PROBE = A del Owner (decisiones §51 punto 10)",
+  "Binary": {
+    "Path": "%LOCALAPPDATA%\\OpenAI\\Codex\\bin\\5ea220ae823df3d7\\codex.exe",
+    "Sha256": "3b8f6e33caa75f232558a3cf76ff9b87bb5ef6dbcf4996372f24e55c78b1b91",
+    "OnlyCodexExeUnderBin": true,
+    "CliVersion": "codex-cli 0.160.1",
+    "AuthState": "Logged in using ChatGPT"
+  },
+  "App": "OpenAI.Codex 26.930.7945.0",
+  "Fingerprint": {
+    "Expected": "723A68985165BAE40689172F4E573C47FC45D1BA0D19F9192E3120DDD28B18C8",
+    "AllMeasurements": [
+      "pre-version fp=723A68985165BAE40689172F4E573C47FC45D1BA0D19F9192E3120DDD28B18C8 bin=3b8f6e33caa75f232558a3cf76ff9b87bb5ef6dbcf4996372f24e55c78b1b91 bins=1 app=26.930.7945.0 keyed=[added [] removed [] changed [] ]",
+      "post-version fp=723A68985165BAE40689172F4E573C47FC45D1BA0D19F9192E3120DDD28B18C8 bin=3b8f6e33caa75f232558a3cf76ff9b87bb5ef6dbcf4996372f24e55c78b1b91 bins=1 app=26.930.7945.0 keyed=[added [] removed [] changed [] ]",
+      "pre-probe1 fp=723A68985165BAE40689172F4E573C47FC45D1BA0D19F9192E3120DDD28B18C8 bin=3b8f6e33caa75f232558a3cf76ff9b87bb5ef6dbcf4996372f24e55c78b1b91 bins=1 app=26.930.7945.0 keyed=[added [] removed [] changed [] ]",
+      "post-probe1 fp=723A68985165BAE40689172F4E573C47FC45D1BA0D19F9192E3120DDD28B18C8 bin=3b8f6e33caa75f232558a3cf76ff9b87bb5ef6dbcf4996372f24e55c78b1b91 bins=1 app=26.930.7945.0 keyed=[added [] removed [] changed [] ]",
+      "pre-probe2 fp=723A68985165BAE40689172F4E573C47FC45D1BA0D19F9192E3120DDD28B18C8 bin=3b8f6e33caa75f232558a3cf76ff9b87bb5ef6dbcf4996372f24e55c78b1b91 bins=1 app=26.930.7945.0 keyed=[added [] removed [] changed [] ]",
+      "post-probe2 fp=723A68985165BAE40689172F4E573C47FC45D1BA0D19F9192E3120DDD28B18C8 bin=3b8f6e33caa75f232558a3cf76ff9b87bb5ef6dbcf4996372f24e55c78b1b91 bins=1 app=26.930.7945.0 keyed=[added [] removed [] changed [] ]"
+    ],
+    "Stable": true,
+    "PerKeyDigest": "sin cambios frente a la instantánea HMAC por clave de 723A6898 en las seis mediciones (antes y después de cada operación)"
+  },
+  "Operations": [
+    "codex --version",
+    "codex login status",
+    "sonda 1 read-only en D:/r62-fixture/A (gpt-6-luna/high)",
+    "sonda 2 read-only en D:/r62-fixture/arch (gpt-6.1-sol/high)"
+  ],
+  "Probes": {
+    "1": {
+      "SessionLog": "~/.codex/sessions/2026/10/06/rollout-2026-10-06T19-32-20-01a113fd-72c0-7aa2-b231-50b3377d5c09.jsonl",
+      "SessionLogSha256": "3f9122acf44c21e0bef530842e9eb4353e60eceb99a020b2b90732c343f271c6",
+      "SessionMeta": {
+        "id": "01a113fd-72c0-7aa2-b231-50b3377d5c09",
+        "cli_version": "0.160.1",
+        "originator": "codex_exec",
+        "source": "exec",
+        "model_provider": "openai",
+        "cwd": "D:\\r62-fixture\\A"
+      },
+      "TurnContext": [
+        {
+          "model": "gpt-6-luna",
+          "effort": "high",
+          "approval_policy": "never",
+          "sandbox_policy": {
+            "type": "read-only"
+          },
+          "cwd": "D:\\r62-fixture\\A"
+        }
+      ],
+      "Usage": {
+        "input_tokens": 66841,
+        "cached_input_tokens": 47360,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1254,
+        "reasoning_output_tokens": 543
+      },
+      "LimitSignals": {
+        "rate_limit_reached_type": null,
+        "spend_control_reached": null,
+        "primary_used_percent": 4.0
+      },
+      "Start": "2026-10-07T01:32:18Z",
+      "End": "2026-10-07T01:33:40Z",
+      "Exit": "exit=0",
+      "Head": [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce"
+      ],
+      "StatusIgnoredLines": [
+        0,
+        0
+      ]
+    },
+    "2": {
+      "SessionLog": "~/.codex/sessions/2026/10/06/rollout-2026-10-06T19-34-22-01a113ff-5151-77d3-8d19-dfc523ab3cda.jsonl",
+      "SessionLogSha256": "4dd654e1dae3eadba182ba8fcab0ad89bac900c98c7f2b90bc350f5e944788b3",
+      "SessionMeta": {
+        "id": "01a113ff-5151-77d3-8d19-dfc523ab3cda",
+        "cli_version": "0.160.1",
+        "originator": "codex_exec",
+        "source": "exec",
+        "model_provider": "openai",
+        "cwd": "D:\\r62-fixture\\arch"
+      },
+      "TurnContext": [
+        {
+          "model": "gpt-6.1-sol",
+          "effort": "high",
+          "approval_policy": "never",
+          "sandbox_policy": {
+            "type": "read-only"
+          },
+          "cwd": "D:\\r62-fixture\\arch"
+        }
+      ],
+      "Usage": {
+        "input_tokens": 128885,
+        "cached_input_tokens": 91008,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1091,
+        "reasoning_output_tokens": 33
+      },
+      "LimitSignals": {
+        "rate_limit_reached_type": null,
+        "spend_control_reached": null,
+        "primary_used_percent": 4.0
+      },
+      "Start": "2026-10-07T01:34:21Z",
+      "End": "2026-10-07T01:34:58Z",
+      "Exit": "exit=0",
+      "Head": [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "fbe25347799e5b801ef708454212335537448bd1"
+      ],
+      "StatusIgnoredLines": [
+        0,
+        0
+      ]
+    }
+  },
+  "ArchitectCell": "codex-cli:gpt-6.1-sol, effort high: vuelve a quedar medida con el binario nuevo (read, tool-use, effort-applied high; sin aviso de límite; routing §5)",
+  "Disposition": "huella y binario estables: paquete OD-2d con 723A6898… y 3b8f6e33…; codex-cli sigue sin usarse para FX-02/FX-06 hasta la aceptación de OD-2d"
+}

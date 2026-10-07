@@ -187,7 +187,15 @@ Paquete pedido por el Coordinator (decisiones §47) tras las dos sondas de OD-2b
 | Aprobar | `OD-2c = A (línea base 9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E)` |
 | Rechazar | `OD-2c = RECHAZAR` — `codex-cli` sigue en STOP: FX-02 y FX-06 UNVERIFIED |
 
-## OD-2d — Línea base de `codex-cli` tras la actualización de la app de Codex (2026-10-06T19:16Z; NO aprobada; el Coordinator pide antes una medición, §50)
+## OD-2d — Línea base exacta de `codex-cli` tras la actualización de la app de Codex (2026-10-07; LISTA para la decisión del Owner tras OD-2d-PROBE, §51)
+
+> **Medición completa (OD-2d-PROBE = A, §51;** [result.json](../I-62-F6/OD-2/R20261007T013200Z-od2d-probe/result.json)**):** huella
+> **`723A68985165BAE40689172F4E573C47FC45D1BA0D19F9192E3120DDD28B18C8`** estable en las seis mediciones (antes y después de `--version`, `login status` y
+> las dos sondas de solo lectura), con la comparación por clave sin cambios; binario **`%LOCALAPPDATA%\OpenAI\Codex\bin\5ea220ae823df3d7\codex.exe`**, SHA-256
+> **`3b8f6e33caa75f232558a3cf76ff9b87bb5ef6dbcf4996372f24e55c78b1b91`**, `codex-cli 0.160.1`; `Logged in using ChatGPT`; app `26.930.7945.0`; sondas con
+> `gpt-6-luna`/`high` y `gpt-6.1-sol`/`high`, `read-only`, sin aviso de límite. Lo que sigue sin poder probarse sin valores: qué valores cambió la
+> actualización respecto de `9002E854…`. **Recomendación: ACEPTAR esa huella y ese binario exactos**; el Owner puede revisar antes los valores que quiera en
+> su archivo. Respuesta: `OD-2d = A (línea base 723A68985165BAE40689172F4E573C47FC45D1BA0D19F9192E3120DDD28B18C8; binario 3b8f6e33caa75f232558a3cf76ff9b87bb5ef6dbcf4996372f24e55c78b1b91)`.
 
 > **Disposición del Coordinator (§50):** no se pide OD-2d hasta medir de forma controlada el binario y el runtime nuevos. Medición pasiva hecha
 > ([result.json](../I-62-F6/OD-2/R20261006T200612Z-od2d-passive/result.json)): huella estable desde las 19:18Z, app `26.930.7945.0`, binario `3b8f6e33…`.

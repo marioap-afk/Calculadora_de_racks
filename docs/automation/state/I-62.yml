@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: F6 (decisions §50; evidencia §69): disposición del Coordinator sobre F6-OBS-01 (QH de FX-U1 con violación de I-S13 por el conflicto README §17.1 paso 3 / 16.28) y sobre el oráculo de FX-04a antes de abrir B; C-22 y C-23 PASS por la evidencia, para su aceptación; CI del fixture clasificación A; codex-cli en STOP P-01 (OD-2d-PROBE y OD-2d); F6 GATE PASS no autodeclarado.
+  next_action: F6 (decisions §51): el Owner abre la sesión de reparación R en D:/r62-fixture/R (orden FX-U1-O3); R observa y propone su binding, la supervisión lo designa, R publica QR y QH2 válidos y termina; después oráculo de FX-04a desde QH2 (solo su SHA-256), auditoría D.6 y apertura de B; OD-2d listo para el Owner (723A6898…, binario 3b8f6e33…); F6 GATE PASS no autodeclarado.
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual
