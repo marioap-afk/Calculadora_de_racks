@@ -2704,3 +2704,18 @@ solo desde artefactos custodiados.
   corrida en [b2-run.json](I-62-F6/FX-04a/R20261007T061300Z-fx04a-b2/b2-run.json). El oráculo v2 **no** se ha cargado todavía.
 - **Estado:** `docs/automation/state/I-62.yml` no era YAML válido desde las ediciones de F6 (valores de `next_action` y `f6_status` con «: » sin comillas);
   corregido con comillas, sin cambiar ningún valor (comprobado por ida y vuelta con `yaml.safe_load`).
+
+## 79. FX-04a B2: comparación mecánica con el contrato v2 (FAIL bruto 2/23) y propuesta de la supervisión
+
+- **Orden respetado:** respuesta guardada fuera del clon → SHA canónico `74e69f35…` durable en `4ea66233` → solo entonces se cargó el oráculo v2.
+  El oráculo (`5e7a78d3…`, archivo `ae384682…`) coincide con el publicado en `707b4daa`.
+- **Resultado mecánico** ([comparison-v2.json](I-62-F6/FX-04a/R20261007T061300Z-fx04a-b2/comparison-v2.json)): **FAIL bruto, 2/23**. Solo coinciden
+  `facts.branch` y `facts.claim_id`; faltan 20 campos y `facts.protocol` tiene otra forma. No hay normalización posterior ni tercer oráculo.
+- **Causa:** KICKOFF_SCHEMA_NOT_DELIVERED (§78). Sin el esquema, B2 no conocía las claves del contrato, así que el resultado mide la entrega y no la
+  reconstrucción. No hay evidencia de que el contrato v2 sea inválido.
+- **Propuesta de la supervisión** ([análisis](I-62-F6/FX-04a/R20261007T061300Z-fx04a-b2/comparison-v2-analysis.json),
+  [informe para el Coordinator](I-62-F6/FX-04a/R20261007T061300Z-fx04a-b2/b2-report-for-coordinator.md)): B2 = INVALID_LAUNCH; FX-04a y C-25a =
+  UNVERIFIED. El FAIL bruto se conserva. Decisiones pedidas: U-01a (clasificación), U-01b (B3 por encima del tope de D.3, con control del SHA del
+  primer mensaje) y U-01c (cierre de FX-04a como UNVERIFIED con limitación, si no hay B3).
+- **Lección de la supervisión:** ninguna tarjeta del Owner lleva copias abreviadas de un texto inicial. Se pega solo desde el archivo, y la supervisión
+  comprueba el SHA-256 del primer mensaje en cuanto se abre la sesión.

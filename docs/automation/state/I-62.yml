@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (evidencia §78): B2 terminada y SHA de su respuesta durable (74e69f35…); la supervisión compara con el oráculo v2 y el Coordinator clasifica FX-04a en la ronda única (tarjeta de mañana, acción 2; kits/coordinator-disposition-request.md); codex-cli en STOP P-01; F6 GATE PASS no autodeclarado."
+  next_action: "F6 (evidencia §78-§79) — B2 comparada (FAIL bruto 2/23 por esquema no entregado; propuesta INVALID_LAUNCH); el Coordinator decide U-01a..U-01c en la ronda única (b2-report-for-coordinator.md y kits/coordinator-disposition-request.md); sin escrituras en el fixture ni OD-2d-PROBE hasta esa decisión; codex-cli en STOP P-01"
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual

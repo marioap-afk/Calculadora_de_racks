@@ -1,0 +1,70 @@
+{
+  "Order": [
+    "respuesta guardada fuera del clon",
+    "SHA-256 canónico 74e69f35… durable en 4ea66233 (push a origin)",
+    "solo entonces: oráculo v2 cargado y comparado"
+  ],
+  "OracleV2": {
+    "CanonicalSha256": "5e7a78d311735e4299925a9d97ac4760fe3595f1decb4d97440e17c947b64a03",
+    "FileSha256": "ae3846828d03b134985e8a9326d36b937232aadcdf62714b5221bfe7a6fd5cb1",
+    "MatchesPublishedIn707b4daa": true
+  },
+  "Response": {
+    "CanonicalSha256": "74e69f35b7c3fcfb0bcdac63da98339d25c58bf07f35c24402b798463d009587",
+    "DurableCommit": "4ea66233b194830945c7fd913dfa0989f6ef1b2b"
+  },
+  "RawResult": {
+    "Contract": "comparison-contract-v2",
+    "Fields": 23,
+    "Equal": 2,
+    "EqualFields": [
+      "facts.branch",
+      "facts.claim_id"
+    ],
+    "Comparison": "FAIL",
+    "MissingInResponse": [
+      "facts.last_point",
+      "facts.record_version",
+      "facts.principal_state",
+      "facts.attempts",
+      "facts.correction_launches",
+      "facts.invocations",
+      "facts.chains",
+      "facts.last_window",
+      "facts.task_intent",
+      "facts.stops_in_force",
+      "decision.next_points",
+      "decision.next_window_seq",
+      "decision.task_id",
+      "decision.attempt",
+      "decision.next_actor_role",
+      "decision.planned_delegated_role",
+      "decision.protocol_set",
+      "decision.binding",
+      "decision.worker",
+      "decision.preconditions"
+    ],
+    "PresentWithOtherShape": [
+      "facts.protocol"
+    ]
+  },
+  "Cause": "KICKOFF_SCHEMA_NOT_DELIVERED (evidencia §78): B2 no recibió response.v2.schema.json, que es lo único que le comunica las 23 claves y sus formatos; usó una estructura propia (facts: unit, plane, last_durable_point, custody, counters, orchestration…; decision: action, proposed_next_decision, conditional_branch…). El resultado mecánico mide la ausencia del esquema en la entrega, no la reconstrucción",
+  "NoPostHocNormalization": "ninguna: no se mapea ni normaliza la estructura de B2 sobre el contrato; no hay tercer oráculo (decisiones §53)",
+  "ContractV2Validity": "sin evidencia de que el contrato v2 sea inválido: el defecto está en la entrega del texto inicial, no en el contrato",
+  "SupervisionProposal": {
+    "B2": "INVALID_LAUNCH: precondición de §53 no cumplida («B2 recibe … la instrucción neutra y el esquema o contrato v2»), por un error de la supervisión",
+    "FX-04a": "UNVERIFIED (no PASS: igualdad mecánica 2/23; no FAIL: la diferencia no prueba una reconstrucción errónea, sino la falta del esquema)",
+    "C-25a": "UNVERIFIED",
+    "RawEvidence": "el FAIL bruto 2/23 se conserva sin reescribir"
+  },
+  "ObservationsFromB2": [
+    "B2 declaró UNKNOWN que conste acreditada la terminación de la sesión R en el estado canónico del fixture, y la trata como precondición previa a la transferencia (la acreditación existe en la evidencia de RackCad, no en el fixture)",
+    "B2 leyó los hechos remotos con git ls-remote en vez de git fetch (AUTOMATION_PLAN §5) para no escribir refs en .git",
+    "B2 encontró texto con doble codificación UTF-8 en Notes de state-r5.validation.json (sin efecto en el estado)"
+  ],
+  "DecisionsForCoordinator": [
+    "U-01a: clasificación de B2 (INVALID_LAUNCH propuesta, o FAIL según §53) y de FX-04a/C-25a",
+    "U-01b: ¿se autoriza una tercera sesión de Principal B (B3) por encima del tope de 2 de D.3, con el mismo clon en cabed547, el mismo texto inicial y el mismo oráculo v2 (ya publicado)? Con control de entrega: el Owner pega desde el archivo y la supervisión comprueba el SHA-256 del primer mensaje antes de aceptar la corrida",
+    "U-01c: si no hay B3, ¿queda FX-04a cerrada como UNVERIFIED con limitación (OV), liberando las escrituras de FX-02 en el origen del fixture y OD-2d-PROBE?"
+  ]
+}

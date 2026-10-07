@@ -1,0 +1,145 @@
+{
+ "Contract": "comparison-contract-v2",
+ "Fields": 23,
+ "Equal": 2,
+ "Diffs": [
+  {
+   "Field": "facts.last_point",
+   "Oracle": "QH",
+   "Response": "<<missing>>"
+  },
+  {
+   "Field": "facts.record_version",
+   "Oracle": 5,
+   "Response": "<<missing>>"
+  },
+  {
+   "Field": "facts.protocol",
+   "Oracle": "rackcad-protocol/I62",
+   "Response": {
+    "set": "rackcad-protocol/I62",
+    "classification": "I62_DELEGATED (decisión G0 del Coordinator; marcadores en docs/automation/decisions/FX-U1.md)",
+    "effective_sha": "fbe25347799e5b801ef708454212335537448bd1",
+    "effective_sha_derivation_checked": "único commit con el trailer Agent-Protocol-Normative: I-62 = a9f6c929e74ef92edfee557c3572b090f48bc318; fbe2534 es el primer merge en first-parent de main con segundo padre a9f6c92 y primer padre 930288c, que no lo alcanza; tag test-activation/I-62 → fbe2534",
+    "basis": {
+     "claim_commit": "eea0114ac78badf89d4bc497b5a69fb591ed923b",
+     "claim_parent_sha": "fbe25347799e5b801ef708454212335537448bd1",
+     "claim_parent_contains_effective": true,
+     "adoption_at": "G0"
+    },
+    "g0_acceptance": "ACCEPTED (decisión en docs/automation/decisions/FX-U1.md, blob b7cff537185c8347a5ea3dc3935a2333d03045cf)"
+   }
+  },
+  {
+   "Field": "facts.principal_state",
+   "Oracle": "RELEASED",
+   "Response": "<<missing>>"
+  },
+  {
+   "Field": "facts.attempts",
+   "Oracle": 0,
+   "Response": "<<missing>>"
+  },
+  {
+   "Field": "facts.correction_launches",
+   "Oracle": [],
+   "Response": "<<missing>>"
+  },
+  {
+   "Field": "facts.invocations",
+   "Oracle": [],
+   "Response": "<<missing>>"
+  },
+  {
+   "Field": "facts.chains",
+   "Oracle": [],
+   "Response": "<<missing>>"
+  },
+  {
+   "Field": "facts.last_window",
+   "Oracle": {
+    "present": false
+   },
+   "Response": "<<missing>>"
+  },
+  {
+   "Field": "facts.task_intent",
+   "Oracle": {
+    "task_id": "T1",
+    "kind": "FIRST",
+    "attempt": 0
+   },
+   "Response": "<<missing>>"
+  },
+  {
+   "Field": "facts.stops_in_force",
+   "Oracle": [
+    "P-01",
+    "P-10",
+    "P-16"
+   ],
+   "Response": "<<missing>>"
+  },
+  {
+   "Field": "decision.next_points",
+   "Oracle": [
+    "QR",
+    "Q0",
+    "CONTROLLER_PLANNING"
+   ],
+   "Response": "<<missing>>"
+  },
+  {
+   "Field": "decision.next_window_seq",
+   "Oracle": 1,
+   "Response": "<<missing>>"
+  },
+  {
+   "Field": "decision.task_id",
+   "Oracle": "T1",
+   "Response": "<<missing>>"
+  },
+  {
+   "Field": "decision.attempt",
+   "Oracle": 0,
+   "Response": "<<missing>>"
+  },
+  {
+   "Field": "decision.next_actor_role",
+   "Oracle": "PRINCIPAL_COORDINATOR",
+   "Response": "<<missing>>"
+  },
+  {
+   "Field": "decision.planned_delegated_role",
+   "Oracle": "EXECUTION_CONTROLLER",
+   "Response": "<<missing>>"
+  },
+  {
+   "Field": "decision.protocol_set",
+   "Oracle": "rackcad-protocol/I62",
+   "Response": "<<missing>>"
+  },
+  {
+   "Field": "decision.binding",
+   "Oracle": "REBIND",
+   "Response": "<<missing>>"
+  },
+  {
+   "Field": "decision.worker",
+   "Oracle": null,
+   "Response": "<<missing>>"
+  },
+  {
+   "Field": "decision.preconditions",
+   "Oracle": [
+    "CONTROLLER_BINDING_ACCEPTED",
+    "COORDINATOR_DESIGNATION",
+    "CUSTODY_PREFLIGHT_MATCH",
+    "MAIN_UNCHANGED_SINCE_EFFECTIVE",
+    "PREDECESSOR_TERMINATION_ACCREDITED"
+   ],
+   "Response": "<<missing>>"
+  }
+ ],
+ "Comparison": "FAIL"
+}

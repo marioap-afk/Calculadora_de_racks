@@ -1,0 +1,49 @@
+{
+ "facts": {
+  "branch": "fx/u1",
+  "claim_id": "fc62f1c7-0000-4000-8000-000000000001",
+  "last_point": "QH",
+  "record_version": 5,
+  "protocol": "rackcad-protocol/I62",
+  "principal_state": "RELEASED",
+  "attempts": 0,
+  "correction_launches": [],
+  "invocations": [],
+  "chains": [],
+  "last_window": {
+   "present": false
+  },
+  "task_intent": {
+   "task_id": "T1",
+   "kind": "FIRST",
+   "attempt": 0
+  },
+  "stops_in_force": [
+   "P-01",
+   "P-10",
+   "P-16"
+  ]
+ },
+ "decision": {
+  "next_points": [
+   "QR",
+   "Q0",
+   "CONTROLLER_PLANNING"
+  ],
+  "next_window_seq": 1,
+  "task_id": "T1",
+  "attempt": 0,
+  "next_actor_role": "PRINCIPAL_COORDINATOR",
+  "planned_delegated_role": "EXECUTION_CONTROLLER",
+  "protocol_set": "rackcad-protocol/I62",
+  "binding": "REBIND",
+  "worker": null,
+  "preconditions": [
+   "CONTROLLER_BINDING_ACCEPTED",
+   "COORDINATOR_DESIGNATION",
+   "CUSTODY_PREFLIGHT_MATCH",
+   "MAIN_UNCHANGED_SINCE_EFFECTIVE",
+   "PREDECESSOR_TERMINATION_ACCREDITED"
+  ]
+ }
+}
