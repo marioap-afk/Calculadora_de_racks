@@ -187,6 +187,25 @@ Paquete pedido por el Coordinator (decisiones §47) tras las dos sondas de OD-2b
 | Aprobar | `OD-2c = A (línea base 9002E854457F2DBE074B66FB804FC24AA9B489C58436753CE74BCBA2BF767B1E)` |
 | Rechazar | `OD-2c = RECHAZAR` — `codex-cli` sigue en STOP: FX-02 y FX-06 UNVERIFIED |
 
+## OD-2d (vigente) — Línea base exacta de `codex-cli` sobre la instalación actual de Codex (2026-10-07T06:19Z; pendiente del Owner)
+
+Medición pasiva ([result.json](../I-62-F6/OD-2/R20261007T061915Z-od2d-night-passive/result.json)); `codex-cli` sigue en **P-01 / STOP**.
+
+| Campo | Valor |
+|---|---|
+| `config.toml` (SHA-256) | **`9EA26634078B314A72A815B37CDD17657D7D0406E4911FC4CC4FEC42845153C3`** (4 777 bytes; escrito 03:29:05Z; estable a las 03:40Z y 06:19Z) |
+| Binario | `%LOCALAPPDATA%\OpenAI\Codex\bin\979a96ce184041d1\codex.exe`, SHA-256 **`97c57e4eb64257bcd7a470757950886f2c59eec4aa8537908979c6475d41cc08`** (único) |
+| App | `OpenAI.Codex 26.1002.6548.0` |
+| Claves cambiadas (frente a `723A6898…`, comparación por clave) | `mcp_servers.node_repl.command`, `mcp_servers.node_repl.env.BROWSER_USE_CODEX_APP_VERSION`, `.CODEX_CLI_PATH`, `.NODE_REPL_NODE_MODULE_DIRS`, `.NODE_REPL_NODE_PATH`, `.NODE_REPL_TRUSTED_CODE_PATHS`, `.NODE_REPL_TRUSTED_SERVICES`, `.SKY_CUA_NATIVE_PIPE_DIRECTORY`, `notify`; estructura (107 nombres, 39 secciones) sin cambios |
+| Impacto de seguridad | claves de integración de la app (servidor MCP `node_repl` y comando `notify`); ninguna de modelo, effort, sandbox, aprobación, `service_tier` ni entradas de proyecto o `trust_level`; la receta de solo lectura no depende de ellas |
+| Sin medir | versión de la CLI, autenticación, runtime observado y estabilidad en sondas (exigen ejecutar este binario) |
+
+- **Recomendación:** autorizar una medición controlada de esta instalación y aceptar la huella exacta solo si no cambia durante ella. La app se ha
+  actualizado sola dos veces en unas 9 horas; si el Owner quiere evitar más P-01 durante los pilotos, puede pausar las actualizaciones de la app (decisión
+  suya; la sesión no toca esa configuración).
+- **Aprobar (una línea):** `OD-2d = A (línea base 9EA26634078B314A72A815B37CDD17657D7D0406E4911FC4CC4FEC42845153C3; binario 97c57e4eb64257bcd7a470757950886f2c59eec4aa8537908979c6475d41cc08; efectiva solo tras OD-2d-PROBE —--version, login status y ≤ 2 sondas read-only en D:\r62-fixture\A y D:\r62-fixture\arch— con la misma huella y el mismo binario antes y después de cada operación)`
+- **Rechazar:** `OD-2d = RECHAZAR` — FX-02 y FX-06 siguen UNVERIFIED.
+
 ## OD-2d — Línea base exacta de `codex-cli` tras la actualización de la app de Codex (2026-10-07; OBSOLETA antes de decidirse: segunda actualización de la app)
 
 > **Obsoleta (2026-10-07T03:40Z, evidencia §71):** la app de Codex se actualizó otra vez (`26.1002.6548.0`; binario `979a96ce184041d1`,

@@ -2619,3 +2619,12 @@ solo desde artefactos custodiados.
   `origin`, sin referencias a B1 ni a los oráculos; sin sesión previa en esa carpeta; sin `CLAUDE.md` global; gancho de Orca `{}`; plugin `github`. Texto
   inicial neutro `B2-kickoff.md` (SHA-256 `233b0582…`): instrucción y esquema v2, sin valores esperados. Segunda sesión de Principal B (reapertura +1,
   tope 2).
+
+## 75. Noche (decisiones §54): SHA del oráculo v2 durable antes de B2, B2 en HUMAN_LAUNCH_REQUIRED y medición pasiva de la instalación actual de Codex
+
+- **FX-04a:** el SHA-256 canónico del oráculo v2 (`5e7a78d3…`) quedó durable en `707b4daa` (publicado a las 06:19:01Z) antes de cualquier B2; clon
+  `D:\r62-fixture\B2` en `cabed547`, D.6 repetida, texto inicial neutro v2. **FX-04a = HUMAN_LAUNCH_REQUIRED** (B2 en la tarjeta de mañana).
+- **Codex** ([result.json](I-62-F6/OD-2/R20261007T061915Z-od2d-night-passive/result.json)): huella `9EA26634…` estable desde las 03:29:05Z (igual a las
+  03:40Z y 06:19Z); app `26.1002.6548.0`; binario único `97c57e4e…`; 9 claves de integración de la app cambiadas frente a `723A6898…`, estructura igual;
+  instantánea por clave nueva. Sin ejecutar el binario. **Paquete OD-2d vigente** en
+  [owner-decision-packets.md](I-62-prep/owner-decision-packets.md) (aceptación exacta condicionada a una medición controlada sin cambios).

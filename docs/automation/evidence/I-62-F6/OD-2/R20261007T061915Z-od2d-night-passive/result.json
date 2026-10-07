@@ -1,0 +1,34 @@
+{
+  "RunId": "R20261007T061915Z-od2d-night-passive",
+  "Authority": "orden nocturna (decisiones §54, punto 2): medición pasiva; sin ejecutar el binario",
+  "ObservedUtc": "2026-10-07T06:19:15Z",
+  "Config": {
+    "Sha256": "9EA26634078B314A72A815B37CDD17657D7D0406E4911FC4CC4FEC42845153C3",
+    "Length": 4777,
+    "LastWriteTimeUtc": "2026-10-07T03:29:05.722Z",
+    "KeyNames": "107, iguales a los de 723A6898… y 9002E854… (estructura sin cambios); secciones de proyecto del fixture: solo probe-od4-1",
+    "StableSince": "2026-10-07T03:29:05Z (igual a las 03:40:25Z y a las 06:19:15Z)",
+    "ChangedKeyNamesVs723A6898": [
+      "mcp_servers.node_repl.command",
+      "mcp_servers.node_repl.env.BROWSER_USE_CODEX_APP_VERSION",
+      "mcp_servers.node_repl.env.CODEX_CLI_PATH",
+      "mcp_servers.node_repl.env.NODE_REPL_NODE_MODULE_DIRS",
+      "mcp_servers.node_repl.env.NODE_REPL_NODE_PATH",
+      "mcp_servers.node_repl.env.NODE_REPL_TRUSTED_CODE_PATHS",
+      "mcp_servers.node_repl.env.NODE_REPL_TRUSTED_SERVICES",
+      "mcp_servers.node_repl.env.SKY_CUA_NATIVE_PIPE_DIRECTORY",
+      "notify"
+    ],
+    "ChangedVsAcceptedOD2c_9002E854": "no localizable por clave (no había instantánea por clave de 9002E854…); cambios de valores de la cadena de actualizaciones",
+    "KeyedSnapshotTaken": "instantánea HMAC local de 9EA26634… (06:19Z) para localizar cambios futuros"
+  },
+  "App": "OpenAI.Codex 26.1002.6548.0",
+  "Binary": {
+    "Path": "%LOCALAPPDATA%\\OpenAI\\Codex\\bin\\979a96ce184041d1\\codex.exe",
+    "Sha256": "97c57e4eb64257bcd7a470757950886f2c59eec4aa8537908979c6475d41cc08",
+    "WrittenUtc": "2026-10-07T02:14:49Z",
+    "OnlyCodexExeUnderBin": true
+  },
+  "NotMeasured": "versión de la CLI, autenticación, modelo, effort y sandbox observados y estabilidad en sondas: exigen ejecutar el binario de esta instalación, sin autorización vigente (la de OD-2d-PROBE cubría la instalación anterior)",
+  "SecurityImpact": "las 9 claves son de la integración de la app de escritorio (comando y entorno del servidor MCP node_repl, versión de la app, rutas de node y del binario, servicios y rutas de código de confianza de node_repl, tubería de computer-use y el comando notify); ninguna es model, model_reasoning_effort, windows.sandbox, service_tier, ni una entrada [projects.*] / trust_level; ninguna sección nueva. Riesgo residual: node_repl y notify son programas que la app gestiona y que un codex exec puede arrancar como antes; la receta de solo lectura de 16.4 no depende de ellos"
+}
