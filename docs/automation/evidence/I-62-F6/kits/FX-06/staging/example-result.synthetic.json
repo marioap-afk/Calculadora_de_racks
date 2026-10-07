@@ -1,0 +1,96 @@
+{
+ "Schema": "fx06-transport-audit-result/v2",
+ "AuditorVersion": "2.0.0",
+ "Unit": "SYN-U9",
+ "Window": {
+  "KickoffEventSeq": 3,
+  "OpenUtc": "2030-01-01T09:50:00Z",
+  "Step7RecordVersion": 18,
+  "CloseUtc": "2030-01-01T11:30:00Z",
+  "PhaseBasis": "instantes (Utc de los eventos, PushedUtc de los puntos); el Seq solo identifica el arranque"
+ },
+ "OWNER_AS_MESSAGE_BUS": "FALSE",
+ "OwnerAsMessageBusF4Rule": false,
+ "OwnerAsMessageBusF4RuleAllSuppliedPoints": false,
+ "UndeterminedReasons": [],
+ "AutonomyGaps": [],
+ "PreexistingAutonomyGaps": [],
+ "PostWindowAutonomyGaps": [],
+ "MissingAutonomyGapRecords": [],
+ "IntermediateCoordinatorDecisions": [],
+ "PrincipalCommitsToDecisionsFileInWindow": [],
+ "TransportChecks": [
+  {
+   "LogicalReviewRequestId": "L20300101T100000Z-0001",
+   "AttemptSeq": 1,
+   "LastState": "RESULT_INGESTED",
+   "LastRecordVersion": 13,
+   "RunId": "R20300101T100600Z-0001",
+   "Launch": "AUTOMATIC",
+   "LaunchProofSources": [
+    "RELAY_RECORD_V2"
+   ],
+   "Result": "AUTOMATIC"
+  },
+  {
+   "LogicalReviewRequestId": "L20300101T110000Z-0002",
+   "AttemptSeq": 1,
+   "LastState": "RESULT_INGESTED",
+   "LastRecordVersion": 18,
+   "RunId": "R20300101T110500Z-0002",
+   "Launch": "AUTOMATIC",
+   "LaunchProofSources": [
+    "RELAY_RECORD_V2"
+   ],
+   "Result": "AUTOMATIC"
+  }
+ ],
+ "HumanEventClassification": [
+  {
+   "Seq": 1,
+   "Utc": "2030-01-01T09:30:00Z",
+   "Actor": "OWNER",
+   "Kind": "SESSION_OPENED",
+   "Phase": "PRE_WINDOW",
+   "TextSha256": null,
+   "Class": "OWNER_OPENED_SESSION",
+   "OwnerAsMessageBusEffect": "NONE",
+   "DispositionRequired": false,
+   "Markers": [],
+   "ArtifactMatches": []
+  },
+  {
+   "Seq": 2,
+   "Utc": "2030-01-01T09:40:00Z",
+   "Actor": "OWNER",
+   "Kind": "MESSAGE",
+   "Phase": "PRE_WINDOW",
+   "TextSha256": "f2231d2b6382999e1a43519d9c3dffb16dd5d54d29d3987836eb71a059b8e4a9",
+   "Class": "PRE_WINDOW_HUMAN_EVENT",
+   "OwnerAsMessageBusEffect": "NONE",
+   "DispositionRequired": false,
+   "Markers": [],
+   "ArtifactMatches": []
+  },
+  {
+   "Seq": 3,
+   "Utc": "2030-01-01T09:50:00Z",
+   "Actor": "OWNER",
+   "Kind": "MESSAGE",
+   "Phase": "KICKOFF",
+   "TextSha256": "f7ab06ed0b431a38771d66c51a9116ece1eb1e169eb9bfaf8c9b4a109083b683",
+   "Class": "KICKOFF",
+   "OwnerAsMessageBusEffect": "NONE",
+   "DispositionRequired": false,
+   "Markers": [],
+   "ArtifactMatches": []
+  }
+ ],
+ "DispositionRequired": [],
+ "Flags": [],
+ "PrincipalSessionsOpened": 1,
+ "PassEligibleOnTransport": true,
+ "ReasonsNotEligible": [],
+ "Note": "Elegibilidad por transporte, no un resultado de FX-06: el PASS exige ademas los pasos 1-8 completos (D.8) y lo decide el Coordinator.",
+ "InputSha256": "aad24d24510d9ff9dafec5af3b29757c8abb27c1ca3cb8c7228c9b3bed327fb4"
+}

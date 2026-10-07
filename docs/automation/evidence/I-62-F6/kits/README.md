@@ -1,5 +1,22 @@
 # I-62 F6 — Tarjeta del Owner (fronteras humanas; nada de esto lo hace la sesión)
 
+## Tarjeta de la mañana del 2026-10-07 (modo nocturno, decisiones §54) — sustituye a las secciones anteriores como orden de acción
+
+Orden por dependencia. Ninguna sesión del fixture recibe valores esperados, oráculos, resultados de otras sesiones ni texto de RackCad o de I-62.
+
+1. **B2 de FX-04a** (independiente; primero): sesión nueva de la app de Claude en `D:\r62-fixture\B2`, `claude-opus-5-5`, `xhigh`; texto inicial = el
+   contenido exacto de `D:\r62-fixture\evidence-out\fx04a-b2\B2-kickoff.md` (SHA-256 `233b0582…`); nada más; avisar «B2 terminó».
+2. **OD-2d** (una línea; paquete vigente en `../../I-62-prep/owner-decision-packets.md`): aceptación exacta de `9EA26634…` y del binario `97c57e4e…`
+   condicionada a OD-2d-PROBE sin cambios.
+3. **Disposiciones del Coordinator** que necesita la preparación (FX-02 grupo b: CD-01..CD-21 de `FX-02/frontiers.json`; FX-06: FX06-F05 y OQ-01..OQ-24 de
+   `FX-06/staging/README.md`; F7: Q1-Q17 de `../../I-62-prep/f7/`): las trae el Owner desde el Coordinator; la supervisión solo las registra.
+4. **A2 de FX-02** (después de 1, 2 y 3): sesión nueva en `D:\r62-fixture\A2` según [FX-02/launch-card-A2.md](FX-02/launch-card-A2.md); después, solo los
+   «continúa» que la supervisión indique.
+5. **Principal de FX-06** (después del Q7 de FX-02): sesión nueva en la carpeta limpia que prepare la supervisión, según
+   [FX-06/staging/README.md](FX-06/staging/README.md) P6-P8.
+
+---
+
 Orden del Coordinator ([decisiones](../../../decisions/I-62.md) §47 y §49): A. GitHub Actions del fixture (R1 sin efecto; R2 con corridas,
 clasificación A provisional) → B-C. sondas y paquete OD-2c (hechos) → D. OD-2c (decidida: A, §48) → E. **apertura del Principal A autorizada sin esperar
 a Actions (§49) y pedida al Owner** para FX-01 y FX-04a.

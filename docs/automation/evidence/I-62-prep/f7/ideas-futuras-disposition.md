@@ -1,0 +1,57 @@
+# I-62 — F7: disposición propuesta de `docs/ideas-futuras.md` (staging; no se edita el archivo)
+
+> **Preparación de staging.** Orden nocturna, decisiones §54 (fila «F7 y READY»: «ideas futuras»). V14 §17 fila F7 («ideas-futuras» en la preparación del
+> cierre); `closure-plan.md` §1 («solo lo diferido con autoridad»); WORKFLOW §11.4 (el commit de cierre concentra los hallazgos fuera de alcance).
+> **Base:** `docs/ideas-futuras.md` blob **`570507d1`** en `main` (`bb0d5522`) y en la punta de I-62 (`e9473425`); la preparación del 2026-10-06 citaba
+> `e5641f0e`, anterior a la integración de I-63 (que añadió su sección). Toda disposición es una **propuesta**: la decide el Coordinator (y el Master
+> Coordinator donde se indica); nada se escribe hasta el cierre documental.
+
+Clave de disposición: **CERRAR** (cubierto por I-62; no se añade entrada, o se marca resuelto al integrar), **IDEA** (nueva entrada en la sección
+«I-62 — hallazgos fuera de alcance y seguimientos»), **ANOTAR** (entrada existente que recibe una nota fechada), **SIN CAMBIO** (no es de I-62).
+
+## 1. Entradas ya presentes en `ideas-futuras.md` que I-62 toca
+
+| Candidato | Origen | Hecho tras F1-F6 | Disposición propuesta | Decide |
+|---|---|---|---|---|
+| Seguimiento formal «autoverificación de la sesión principal» | `ideas-futuras.md`, sección I-61 | routing §8 (PRINCIPAL_COORDINATION por acción), 16.15-16.16 (F1-F2); C-23 PASS en el fixture (§51). Rige solo para unidades I62_DELEGATED (16.14; V14 §14.0); las unidades I61 y DIRECT_ONLY no reciben la obligación (C-28) | **ANOTAR**: resuelto para I62_DELEGATED desde `I62_EFFECTIVE_SHA`; residuo para sesiones I61 y DIRECT_ONLY | Coordinator |
+| Seguimientos de la conformidad final de I-61: sufijo `-pilot` | idem | las unidades I62 custodian en `<unit>-agent/` (16.25); las I61 siguen en `<unit>-pilot/` | **ANOTAR** (resuelto solo para I62) | Coordinator |
+| Seguimientos de I-61: «Nivel B» | idem | I-62 mantiene Level A y no planifica F5 (V14 §17, §20.10) | **SIN CAMBIO** | — |
+| Seguimientos de I-61: patrón hexadecimal; PROMPT_TEMPLATES §2 puede citar ADR-0046 | idem | I-62 (F1) corrigió solo el bloque «WORKFLOW V2» de PROMPT_TEMPLATES §2; no tocó la cita de ADR-0046 ni el patrón | **SIN CAMBIO** | — |
+| Hallazgos del Discovery de I-61: prosa «Workflow V2 no efectivo» desactualizada | idem | corregida en PROMPT_TEMPLATES §2 (F1 de I-62); siguen el encabezado de WORKFLOW §11 («todavía no efectivo») y la frase de AGENTS «Workflow V1 sigue efectivo hasta que…» | **ANOTAR** (parcial) | Coordinator |
+| Propuestas del piloto de G3 de I-61 (1-5) | idem | no evaluadas en esta preparación | **SIN CAMBIO** salvo evidencia contraria | — |
+| DEBT-I63-PROTOCOL-01 (nc1/nc2 no discriminan) | `ideas-futuras.md`, sección I-63 | para unidades I62: `Scope` desde la delegación concreta (16.22, README §14.7) e `Identity` desde campos parseados (`tests/RackCad.Tests/I62/VerificationFacts.cs`); sin efecto retroactivo sobre I61 (V14 §14.1; evidencia §37.5) | **ANOTAR**: atendido para I62; las unidades I61 (I-63 integrada, I-64) siguen con la deuda | Master Coordinator |
+
+## 2. Candidatos de I-62 que no están en `ideas-futuras.md`
+
+| Candidato | Origen | Hecho tras F1-F6 | Disposición propuesta | Decide |
+|---|---|---|---|---|
+| GAP-01 (Architect por CLI sin contrato ni ruta limpia) | V14 §20.11 | contratos `role-invocation/v1` y `architect-review-result/v1` (F3); celda `codex-cli:gpt-6.1-sol`/`high` medida (OD-2b-PROBE) y obsoleta tras la actualización de la app (§50; re-medida en OD-2d-PROBE y de nuevo obsoleta, evidencia §71); `claude-cli` sin autenticar (OD-3 rechazada) | **IDEA** (backlog de adapters): adapter de Architect con las operaciones 2-7 lanzable sin clic (Track H, `transport-options.md`), con la dependencia medida de la huella | Coordinator |
+| GAP-02 (resultado de revisión sin artefacto estructurado) | V14 §20.11 | B.10 materializado (F3); uso real en FX-06 pendiente | **CERRAR** al integrar si FX-06 o FX-02 lo ejercen; si no, **ANOTAR** «no ejercido en el fixture» | Coordinator |
+| GAP-03 (Coordinator sin transporte invocable) | V14 §20.11 («límite declarado») | sin cambio; F6 añade que un mensaje de control de la supervisión a una sesión del fixture llevaría la etiqueta de una unidad real (P-16, D.6) y lo teclea el Owner | **IDEA** (límite declarado + hecho de F6) | Coordinator |
+| GAP-04 y GAP-06 (continuidad en memoria; órdenes repetidas) | V14 §20.11 | `orchestration` y `NextAction` (F4); FX-04a reconstruye desde QH2 (B1 INVALID_TEST_ORACLE; B2 pendiente) | **CERRAR** si FX-04a PASS; si no, **ANOTAR** | Coordinator |
+| GAP-05 (independencia del revisor por memoria de proyecto) | V14 §20.11 | F6: carpetas limpias sin memoria de proyecto y D.6 con SHA-256 de entradas automáticas (evidencia §66, §68, §71, §72) | **IDEA** (backlog de adapters: ruta limpia por diseño, no por comprobación manual) | Coordinator |
+| GAP-07, GAP-08 | V14 §20.11 | corregidos en el diseño (V10: §20.3.1, §20.3.2) y verificados en F4 (C-41) | **CERRAR** | Coordinator |
+| GAP-09 | V14 §20.11 | fidelidad (§20.3.3, V11) verificada en F4 (C-42); parte F6 (7, 8) pendiente | **CERRAR** (diseño); la parte F6 queda en la matriz de F6, no aquí | Coordinator |
+| GAP-10 | V14 §20.11 | invariante de la representación entregada (V13) con lecturas acotadas como mitigación operativa | **IDEA** (mitigación operativa de lecturas grandes) | Coordinator |
+| GAP-11 (compactación del contexto del revisor) | V14 §20.11 | evidencia de runtime sin invalidación automática (§20.3.2; C-42 p) | **IDEA** (observabilidad de la compactación) | Coordinator |
+| GAP-12 (diagnóstico de `profile.ps1` insertado en las salidas) | V14 §20.11 | evidencia de transporte; deja DEGRADED_BOUNDED | **IDEA** (higiene del host del revisor; fuera de I-62) | Coordinator |
+| SM-01 (arista BOOTSTRAP → Q0 inalcanzable) | `freeze-issues.md` | registrada; el validador aplica todas las invariantes | **CERRAR** | Coordinator |
+| SM-02 (`RebaseMap` solo en el host entre el force-push y el QU) | `freeze-issues.md` | **no adoptada**: 16.25 paso 6 custodia el mapa en el QU REBASE_RECONCILIATION, no en el push del rebase | **IDEA** | Coordinator |
+| SM-03 (`next_action` en prosa y estructurado) | `freeze-issues.md` | **no adoptada**: sin comprobación de coherencia prosa/estructurado en `tests/RackCad.Tests/I62/` (búsqueda de esta preparación) | **IDEA** | Coordinator |
+| SM-04, SM-05 | `freeze-issues.md` | aplicadas en F4 (derivación del mapa; aristas de recuperación del validador) | **CERRAR** | Coordinator |
+| FC-01, FC-02 | `freeze-issues.md` | absorbidas por A-1 AGREED (§43) | **CERRAR** | — |
+| DEP-F4-YAML | `owner-decision-packets.md` (recordatorios) | NOT NEEDED: lector mínimo `f4/yaml-subset/` (27/27; evidencia «DEP-F4-YAML = NOT NEEDED») | **CERRAR** (sin dependencia nueva) | — |
+| Deuda nc2 de I-64 | evidencia §32 («Recibido sin acción») y §37.5 (frase «Deuda de I-64»); estado de I-64 (`F1 BLOCKED_PROTOCOL_DEPENDENCY`, `next_action` que espera a I-62) | I-62 no la repara: I-64 es I61 (V14 §14.1); conflicto de coordinación abierto (`closure-integration-checklist.md` Q13) | **IDEA**, unida a DEBT-I63-PROTOCOL-01, dirigida al Master Coordinator; el cierre no afirma desbloquear I-64 | Master Coordinator |
+
+## 3. Hallazgos nuevos de F6 que merecen idea futura (hechos medidos; ninguno cambia el Freeze)
+
+| Id propuesto | Hecho medido (evidencia) | Idea (no regla) | Decide |
+|---|---|---|---|
+| F6-N01 Actualización automática de la app de Codex frente a P-01 | dos actualizaciones en ≈ 9 h (`26.930.3930.0` → `26.930.7945.0` → `26.1002.6548.0`); cada una reescribió valores de `config.toml` (claves de `mcp_servers.node_repl.*` y `notify`) y sustituyó el binario; cada una dejó `codex-cli` en P-01/STOP y una OD-2x nueva (`OD-2/R20261006T191621Z-p01`, evidencia §71, `OD-2/R20261007T061915Z-od2d-night-passive`) | (a) opción operativa del Owner: pausar las actualizaciones de la app durante los pilotos (recomendación del paquete OD-2d vigente; decisión suya); (b) evolución del protocolo, con sus autoridades (AUTOMATION_PLAN §16, versión nueva de descriptor o A-n): distinguir en la huella las claves que afectan a la ejecución de las de integración de la app, y la versión del binario como invalidador separado | Owner (a); Coordinator/Architect (b) |
+| F6-N02 Localización de cambios por digest con clave | comparación HMAC por clave (clave solo en el scratchpad) localizó las 9 claves cambiadas sin guardar valores (evidencia §67, §71, §75) | incorporarla como procedimiento o como hecho opcional del esquema de hechos de `codex-cli` (versión nueva); la clave nunca se custodia | Coordinator/Architect |
+| F6-N03 Worker Codex sin commit | `workspace-write` deniega `.git/index.lock` y crea una entrada de confianza en un directorio nuevo (`OD-4/R20261006T072306Z-od41`) | evaluar un Worker con escritura acreditada lanzable por un Principal Codex (adapter nuevo o sandbox distinto, este último decisión del Owner); FX-03/FX-04b siguen como limitaciones | Coordinator; Owner para el sandbox |
+| F6-N04 Sin celda Codex Frontera elegible | catálogo (`model-catalog.md` blob `166d978d`; entradas Codex verificadas el 2026-09-30): `gpt-6-astra` Frontera de créditos/API; `gpt-6.1-sol` Equilibrado; `gpt-6-luna` Eficiente; routing §8 exige Frontera al Principal (evidencia §71; §52) | revisar el catálogo cuando cambien las fuentes (mutable con fuente y fecha); sin cambio de regla | Coordinator |
+| F6-N05 Mensajes de control a sesiones del fixture | observación fechada del plano (c), 2026-10-06/07: la etiqueta de la sesión de supervisión es la de la unidad real (P-16, D.6), así que los «continúa» los tecleó el Owner (`FX-U1-chain/chain.json`, `OwnerInterventionsInA`); además, una respuesta del Owner a una pregunta de A dentro del sistema bajo prueba (§51: no es autoridad normativa). Sale del borrador de FOUNDATIONS (`foundations-draft.md` §4, punto 5) | canal de control neutral para sesiones del sistema bajo prueba, sin etiqueta real, y regla fija para preguntas de esas sesiones al Owner (`ov-packets.md` §0) | Coordinator |
+| F6-N06 Lectura de I-S13 con decisiones que crecen por añadido | F6-OBS-01 (no material, §51): A eligió mantener un blob obsoleto; reparación QR/QH2 | explicitar la lectura de §51 (y F4-OBS-02) en el procedimiento (README, 16.28) en un cambio normativo futuro | Coordinator |
+| F6-N07 Contrato de comparación antes del oráculo | F6-OBS-02 (no material, §53): representaciones sin definir en el esquema de respuesta de B1 | plantilla de arnés del fixture: fijar representaciones y significados antes de calcular el oráculo (capa del fixture) | Coordinator |
+| F6-N08 Disparo `push` de Actions en un repositorio nuevo | 0 corridas en el fixture hasta que un commit cambió el flujo (R2); hipótesis no demostrada (evidencia §65, §66) | nota operativa para futuros repositorios de CI: comprobar una corrida `push` real antes de depender de ella | Coordinator |

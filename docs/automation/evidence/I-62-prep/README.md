@@ -28,3 +28,4 @@ Estado de referencia: F2 en `1eddbf48dbefd9685e68d63c0560bacf484d2dcb` (CI 37075
 | `owner-decision-packets.md` | paquetes en formato de una línea; **revisión del 2026-10-06** (preflight de F6, decisiones §45) con la del 2026-10-04 como historial; medición en `f6/od-preflight/`; decisiones del Owner (§46), OD-2b dividido por el Coordinator y paquete **OD-2c** pendiente (§47) |
 | `ready-candidate.md`, `ov-scripts.md`, `closure-plan.md` | READY-01..09 ejecutable, plantillas de READY-06 y del Candidato, guiones de OV y plan de cierre |
 | `transport-options.md`, `repo-research.md` | transportes para una revisión limpia y hechos del repositorio para F4 |
+| `f7/` | staging nocturno del 2026-10-07 (decisiones §54): borrador factual de FOUNDATIONS, matriz de ensayo READY-01..09, cierre e integración, paquetes OV, ideas futuras y OD-1 (sin solicitar) |

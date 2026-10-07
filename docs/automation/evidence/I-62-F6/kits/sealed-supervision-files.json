@@ -1,0 +1,26 @@
+{
+  "Sealed": [
+    {
+      "Lane": "fx02",
+      "File": "negatives.md",
+      "Location": "D:/r62-fixture/evidence-out/supervision/fx02/negatives.md",
+      "Sha256": "c88f162788db3bcf72d269e7f3925be132c7b74f527b0d19bbd6bbccf9c4071c",
+      "Bytes": 11772
+    },
+    {
+      "Lane": "fx02",
+      "File": "supervision-checks.md",
+      "Location": "D:/r62-fixture/evidence-out/supervision/fx02/supervision-checks.md",
+      "Sha256": "02a64b85b7672158a8774e2f4b9443f8ed56b4626b6e597258c2f3dc17944e18",
+      "Bytes": 15641
+    },
+    {
+      "Lane": "f7ready",
+      "File": "ov-supervision-only.md",
+      "Location": "D:/r62-fixture/evidence-out/supervision/f7ready/ov-supervision-only.md",
+      "Sha256": "bd52d82840e86a185e60c9c94e3a4fcdcb3a027c7057ab3d97f60d85d7a57389",
+      "Bytes": 7108
+    }
+  ],
+  "Note": "archivos solo de supervisión (resultados esperados de los negativos de FX-02, comprobaciones de Q0/Q7 y valores esperados de OV): fuera del repositorio público hasta que sus corridas terminen; aquí solo su SHA-256"
+}

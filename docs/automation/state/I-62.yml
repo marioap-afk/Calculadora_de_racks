@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: F6 (decisions §53): el Owner abre B2 (claude-opus-5-5 xhigh) en D:/r62-fixture/B2 con el texto inicial neutro v2; la supervisión registra el SHA de la respuesta antes de comparar con el oráculo v2 (5e7a78d3…); después, OD-2d-PROBE nueva; codex-cli en STOP P-01; F6 GATE PASS no autodeclarado.
+  next_action: F6 (decisions §54; evidencia §75-§76): tarjeta de mañana en docs/automation/evidence/I-62-F6/kits/README.md — 1) B2 de FX-04a, 2) OD-2d, 3) disposiciones del Coordinator (CD-01..CD-21 de FX-02, FX06-F05, Q1-Q17 de F7), 4) A2 de FX-02, 5) Principal de FX-06; codex-cli en STOP P-01; F6 GATE PASS no autodeclarado.
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual

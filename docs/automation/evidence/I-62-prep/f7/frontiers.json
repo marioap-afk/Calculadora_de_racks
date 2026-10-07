@@ -1,0 +1,127 @@
+{
+  "schema": "i62-f7-ready-frontiers/staging-1",
+  "nature": "staging; no normativo; no declara ningún gate ni READY",
+  "authority": "decisiones §54 (orden nocturna, fila «F7 y READY»); Proposal V14 §17-§18 y Anexo D; LIFECYCLE §8; WORKFLOW §11.4-§11.6",
+  "measured_utc": "2026-10-07",
+  "base": {
+    "tip": "e9473425aa9e33dfc8f9cb5a1522a20405fda68f",
+    "origin_main_local_no_fetch": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+    "mc_i62": "6f0187cb30852971b49153c2763c8ba6caeaa64d",
+    "surfaces_changed_since_mc_i62": 0,
+    "c20b_dry_check": "EQUAL (31 archivos, 70 entradas); measured/c20b-dryrun-e9473425.json",
+    "normative_trailer_commits_in_branch": 0,
+    "adr_0048": "propuesto, blob e1bd8d91f10cb4c86eaf7753f9ef2531ae62498e"
+  },
+  "frontiers": [
+    {
+      "id": "F-01",
+      "title": "F6 GATE PASS",
+      "kind": "COORDINATOR",
+      "blocks": ["READY-02", "texto final de FOUNDATIONS (Protecting tests, Known limitations)"],
+      "requires": ["F-02", "F-05", "F-06", "Q9"],
+      "frozen_basis": "V14 §17 fila F6; D.4 matriz de cierre: FX-01, FX-02, FX-04a y FX-05 PASS; FX-03, FX-04b y FX-06 pueden quedar como limitación para el Owner; FAIL impide cerrar",
+      "state": "FX-01 PASS y FX-05 PASS (C-23 §51, C-27 §47); C-22 PASS (§51); FX-02 UNVERIFIED; FX-04a HUMAN_LAUNCH_REQUIRED (B2); FX-04b UNSUPPORTED por disposición del Coordinator (§50-§54; lectura con la B de §52 abierta: Q16); FX-03 UNVERIFIED; FX-06 UNVERIFIED"
+    },
+    {
+      "id": "F-02",
+      "title": "FX-04a: lanzamiento de B2 y comparación con el contrato v2",
+      "kind": "HUMAN_LAUNCH_REQUIRED",
+      "blocks": ["F-01", "F-03 (§53: ningún OD-2d-PROBE hasta clasificar FX-04a con B2)"],
+      "owner_action": "abrir B2 en D:\\r62-fixture\\B2 (cabed547, claude-desktop-session, claude-opus-5-5, xhigh) con el texto inicial neutro B2-kickoff.md",
+      "coordinator_action": "clasificar FX-04a/C-25a tras la comparación mecánica (sin tercer oráculo; §53)",
+      "evidence": "docs/automation/evidence/I-62-F6/FX-04a/R20261007T061300Z-fx04a-b2/ (oracle-v2-published.json: 5e7a78d3…; prelaunch-B2.json; B2-kickoff.md 233b0582…)"
+    },
+    {
+      "id": "F-03",
+      "title": "OD-2d y OD-2d-PROBE sobre la instalación vigente de Codex",
+      "kind": "OWNER",
+      "blocks": ["F-05", "F-06", "OV-I62-03", "OV-I62-06"],
+      "state": "codex-cli en P-01/STOP; config.toml 9EA26634…; binario 97c57e4e…; app 26.1002.6548.0; celdas del Controller y del Architect obsoletas tras la actualización",
+      "owner_action": "secuencia de §50-§53: (1) tras clasificar FX-04a con B2, autorizar un OD-2d-PROBE nuevo contra la instalación vigente (§52); (2) sonda con huella de config.toml, binario y versión de la app antes y después de cada operación (§51); (3) decidir el paquete OD-2d con huella e identidad de binario exactas (§51); el paquete actual de owner-decision-packets.md §OD-2d vigente es solo pasivo (NotMeasured: versión de la CLI, autenticación, modelo, effort, sandbox); opción operativa de pausar actualizaciones de la app",
+      "coordinator_action": "tras OD-2d: celdas del Controller y del Architect re-medidas con ese binario antes de FX-02 y FX-06 (§50)",
+      "risk": "cada actualización automática de la app vuelve a P-01 (F6-N01; dos en ≈ 9 h)"
+    },
+    {
+      "id": "F-04",
+      "title": "Principal nuevo de FX-U1 para FX-02/FX-06",
+      "kind": "HUMAN_LAUNCH_REQUIRED + COORDINATOR",
+      "blocks": ["F-05", "F-06"],
+      "owner_action": "abrir la sesión (carpeta limpia, sin worktree, claude-opus-5-5, xhigh)",
+      "coordinator_action": "designación T16 con «I62-PRINCIPAL-BINDING: <BindingId> ACCEPTED» y Claim-Id fc62f1c7-0000-4000-8000-000000000001 tras su preflight CUSTODY y su propuesta de binding; después QR ORDINARY del Principal",
+      "open_question": "Q10 (cómputo de R en el tope de sesiones de Principal de la ronda A)"
+    },
+    {
+      "id": "F-05",
+      "title": "FX-02 (topología A) hasta VERIFIED y Q7 con CI del fixture",
+      "kind": "EXECUTION",
+      "blocks": ["F-01"],
+      "requires": ["F-03", "F-04"],
+      "frozen_basis": "D.2 (Ci de los dos jobs del fixture), D.3 topología A, D.4 (FX-02 PASS obligatorio para cerrar F6)"
+    },
+    {
+      "id": "F-06",
+      "title": "FX-06 (autonomía real) o decisión del Owner sobre su limitación",
+      "kind": "EXECUTION or OWNER",
+      "blocks": ["F-01 si FAIL", "C-39, C-32 (F6), C-37 (F6), C-42 (7, 8): Q9"],
+      "requires": ["F-03", "F-04", "RLA del Coordinator del fixture", "celda del Architect re-medida con el binario vigente", "CI del fixture"]
+    },
+    {
+      "id": "F-07",
+      "title": "F7 GATE PASS",
+      "kind": "COORDINATOR",
+      "blocks": ["READY-02"],
+      "requires": ["publicación en la evidencia por la sesión principal de: borrador de FOUNDATIONS, disposición de ideas futuras y paquete OV (este carril los prepara)", "CI del SHA de cierre de F7", "Core Full sobre ese SHA si se trata como gate funcional (AGENTS, fila «Cierre de gate funcional V2»; LIFECYCLE §7)"],
+      "frozen_basis": "V14 §17 fila F7 («no depende de READY-06»)"
+    },
+    {
+      "id": "F-08",
+      "title": "OD-1 (aceptación de ADR-0048)",
+      "kind": "OWNER",
+      "blocks": ["READY-03", "vigencia"],
+      "frozen_basis": "V14 §18 (antes de READY-03)",
+      "state": "no solicitada; paquete en od1-packet.md"
+    },
+    {
+      "id": "F-09",
+      "title": "Disposiciones Q1, Q2 y Q15 (cierre y mapa frente a MC_I62; momento del Estado de ADR-0048; commit único con el trailer)",
+      "kind": "COORDINATOR",
+      "blocks": ["READY-01 (si exigen A-n)", "READY-02", "FINAL_CANDIDATE_SHA", "cierre documental", "integración"],
+      "fact": "ningún commit de la rama ni de origin/main lleva Agent-Protocol-Normative: I-62 (MEASURED); closure-plan.md lo daba por existente"
+    },
+    {
+      "id": "F-10",
+      "title": "Preparación de la OV sobre el Candidato: Q4 (con la sesión compartida de OV-I62-01/03), Q5, Q6, Q16 y Q17",
+      "kind": "COORDINATOR + OWNER",
+      "blocks": ["READY-08", "OV-I62-01..06"],
+      "fact": "la resiembra de D.5 en el main actual del fixture duplicaría el trailer de prueba; OD-7 no autoriza otro repositorio"
+    },
+    {
+      "id": "F-11",
+      "title": "Conformidad de READY-06: sesión y transporte del Architect (Q14)",
+      "kind": "COORDINATOR + OWNER",
+      "blocks": ["READY-06"]
+    },
+    {
+      "id": "F-12",
+      "title": "Serialización con las hermanas y rebase de READY-04",
+      "kind": "EXTERNAL",
+      "blocks": ["READY-04..09 (repetición si main avanza)"],
+      "state": "I-63 integrada (bb0d5522; fila 0049 ya en el índice); I-52 fb6b5648 (fila 0036, HANDOFF, ROADMAP); I-64 39b45f36 (0047; F1 BLOCKED_PROTOCOL_DEPENDENCY que espera a I-62: Q13)"
+    },
+    {
+      "id": "F-13",
+      "title": "Campos del contrato: amendment_refs (A-1) y ov_assignment_ref (V14 §18)",
+      "kind": "COORDINATOR",
+      "blocks": ["READY-01", "READY-08", "READY-09"],
+      "open_question": "Q11"
+    },
+    {
+      "id": "F-14",
+      "title": "Identidad del Freeze en READY-09 tras rebases (b64a3b64 → fb49fceb)",
+      "kind": "COORDINATOR",
+      "blocks": ["READY-09"],
+      "open_question": "Q12"
+    }
+  ],
+  "open_questions_ref": "closure-integration-checklist.md §10 (Q1..Q17)"
+}

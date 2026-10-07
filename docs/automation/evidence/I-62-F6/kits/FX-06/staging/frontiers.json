@@ -1,0 +1,315 @@
+{
+ "Schema": "i62-night-lane-frontiers/v1",
+ "Lane": "FX-06",
+ "Scenario": "FX-06 (piloto de autonomía real)",
+ "Obligations": [
+  "C-39",
+  "C-32 (parte F6)",
+  "C-37 (parte F6)"
+ ],
+ "OwnerValidation": "OV-I62-06",
+ "Status": "UNVERIFIED (solo preparación; nada ejecutado por esta línea)",
+ "PreparedUtcDate": "2026-10-07",
+ "FixturePoint": {
+  "Repository": "D:/r62-fixture/fixture-origin.git",
+  "Branch": "fx/u1",
+  "Head": "cabed54738f56e846bd77be321cace10d053094d",
+  "Point": "QH",
+  "RecordVersion": 5
+ },
+ "OracleSha256": "43b9a2388e619937548287ae44d2f80dde5679ffafe4a5cdf5aba69237f0fb72",
+ "OracleRead": false,
+ "XV1": {
+  "KitPath": "docs/automation/evidence/I-62-F6/kits/FX-06/X-proposal-v1.md",
+  "GitBlob": "5d4ea067abf3efb290a9e44db931a2438a0fb5e1",
+  "Sha256": "c323751c0352b88506e5456e714584de2f65ebb209c1535ada9b0a8ed9148708"
+ },
+ "Frontiers": [
+  {
+   "Id": "FX06-F01",
+   "Kind": "HUMAN_LAUNCH_REQUIRED",
+   "Actor": "Owner (abre B2); Coordinator (clasifica FX-04a)",
+   "What": "FX-04a B2 lanzada y clasificada antes de cualquier escritura de FX-06 en fx/u1",
+   "Blocks": [
+    "P0",
+    "todos los pasos 1-8 (opción A)"
+   ],
+   "Clause": "decisiones §53, §54; orden de la línea (no tocar FX-04a)",
+   "CurrentState": "FX-04a = HUMAN_LAUNCH_REQUIRED (evidencia §75)"
+  },
+  {
+   "Id": "FX06-F02",
+   "Kind": "MEASUREMENT_REQUIRED",
+   "Actor": "supervisión con autorización del Owner (OD-2d-PROBE)",
+   "What": "re-medir codex-cli:gpt-6.1-sol:Deep (effort high, read-only) en D:/r62-fixture/arch con el binario vigente 97c57e4e…; la medición del 2026-10-07 con 3b8f6e33… es obsoleta",
+   "Blocks": [
+    "P1",
+    "2a",
+    "6a"
+   ],
+   "Clause": "routing §5; README §14.2 B5; decisiones §50, §52, §53; V14 D.3 (sondas previas: tope 2; ya se usaron 4: OQ-21)",
+   "CurrentState": "codex-cli en P-01 / STOP; ningún OD-2d-PROBE hasta clasificar FX-04a con B2"
+  },
+  {
+   "Id": "FX06-F03",
+   "Kind": "OWNER_DECISION",
+   "Actor": "Owner",
+   "What": "OD-2d: aceptación exacta de la huella de config.toml y del binario medidos (paquete vigente: 9EA26634…, 97c57e4e…, efectiva solo tras OD-2d-PROBE)",
+   "Blocks": [
+    "P2",
+    "P5 (levantamiento de P-01 en el fixture)",
+    "2c",
+    "6b"
+   ],
+   "Clause": "OD-2 (§46); decisiones §50 (OD-2d no aprobada)",
+   "CurrentState": "OD-2d NO aprobada"
+  },
+  {
+   "Id": "FX06-F04",
+   "Kind": "DEPENDENCY",
+   "Actor": "Principal de FX-02",
+   "What": "FX-02 hasta su Q7 en FX-U1, con loop NONE, sin linajes ARCHITECT o COORDINATOR abiertos, task_intent null; QH y terminación acreditada del titular",
+   "Blocks": [
+    "P3",
+    "opción A"
+   ],
+   "Clause": "D.3; A-1 D1-15; I-S18; §20.4; decisiones §51 (A no vuelve a operar)",
+   "CurrentState": "FX-02 = UNVERIFIED (bloqueada por OD-2d y por la designación de un Principal nuevo (T16): A y R están terminados y no vuelven a operar)"
+  },
+  {
+   "Id": "FX06-F05",
+   "Kind": "COORDINATOR_DECISION",
+   "Actor": "Coordinator",
+   "What": "decidir antes de la ventana (la misma lista que README P4): OQ-01 (unidad), OQ-02 (independencia con NOT_STARTED), OQ-04 («continúa» en 1-7 y fin de turno), OQ-05 (exención de opción B y su clave), OQ-07 (GAP-12 y manifiesto B.11; precondición dura si P1b no logra lecturas sin el diagnóstico), OQ-08 (tope de 600 s), OQ-09 (CI de X2 ausente o fallida), OQ-11 (registro de prueba del lanzamiento), OQ-12 (AuthorityRevision de C), OQ-13 (directorio -C y cesión: variante A o L), OQ-14 (medición custodiada en el fixture), OQ-20 (alcance de §50), OQ-21 (tope de sondas, antes de P1), OQ-22 (autorización de P1b), OQ-23 (cabecera de X v1, antes de P5), OQ-24 (huecos heredados)",
+   "Blocks": [
+    "P4",
+    "P5"
+   ],
+   "Clause": "§20.1; D.8 (ninguna decisión intermedia en 1-7)",
+   "CurrentState": "pendiente"
+  },
+  {
+   "Id": "FX06-F06",
+   "Kind": "COORDINATOR_ACTION",
+   "Actor": "supervisión como Coordinator del fixture",
+   "What": "publicar en fx/u1 la orden de FX-06, el levantamiento de P-01 con la huella de OD-2d, la medición saneada (RunRef), X v1 byte a byte y la RLA rellena",
+   "Blocks": [
+    "P5",
+    "todos los pasos 1-8"
+   ],
+   "Clause": "§20.5; 16.28; §20.5.1; 16.20; P-16",
+   "CurrentState": "plantilla lista (rla.template.md)"
+  },
+  {
+   "Id": "FX06-F07",
+   "Kind": "HUMAN_LAUNCH_REQUIRED",
+   "Actor": "Owner",
+   "What": "abrir la sesión del Principal (claude-desktop-session, claude-opus-5-5, xhigh) en una carpeta limpia nueva, con permisos que no pidan aprobación humana para git, gh, pwsh y codex; mensaje inicial neutro; estímulo tras la designación (T16)",
+   "Blocks": [
+    "P7",
+    "P8",
+    "pasos 1-8"
+   ],
+   "Clause": "D.3; D.8; decisiones §49, §54; §8.6; T16",
+   "CurrentState": "no abierta"
+  },
+  {
+   "Id": "FX06-F08",
+   "Kind": "CI_REQUIRED",
+   "Actor": "GitHub Actions del fixture (lectura por el Principal y contraste de la supervisión)",
+   "What": "corrida push de refs/heads/fx/u1 con head_sha = commit de X2 y fixture-build + fixture-tests en success (CI-5)",
+   "Blocks": [
+    "5c",
+    "6a"
+   ],
+   "Clause": "D.2; D.8-5; §20.5",
+   "CurrentState": "clasificación A operativa; sin corrida de X2 (no existe X2)"
+  },
+  {
+   "Id": "FX06-F09",
+   "Kind": "TRANSPORT_RISK",
+   "Actor": "runtime de Codex",
+   "What": "diagnóstico del perfil de pwsh (GAP-12) en lo entregado al revisor → DEGRADED_BOUNDED; lo emite el envoltorio exterior del runtime (pwsh.exe -Command) y un -NoProfile interior no lo quita; sin manifiesto B.11 en el fixture ninguna premisa se acredita",
+   "Blocks": [
+    "2a (P-24)",
+    "3",
+    "7"
+   ],
+   "Clause": "§20.3.3; §20.11 GAP-12; I-S18",
+   "CurrentState": "medido en OD-2d-PROBE (2026-10-07, binario 3b8f6e33…): en 8 de 9 salidas con pwsh.exe -Command y en 0 de 5 con pwsh.exe -NoProfile -Command; sin medir con 97c57e4e… (P1b)"
+  },
+  {
+   "Id": "FX06-F10",
+   "Kind": "TRANSPORT_RISK",
+   "Actor": "receta de codex-cli",
+   "What": "tope de 600 s frente a la duración de una revisión (V14: 26 min con autorización propia)",
+   "Blocks": [
+    "2d",
+    "6b"
+   ],
+   "Clause": "16.4; adapter codex-cli op. 6",
+   "CurrentState": "sin medir para FX-06"
+  },
+  {
+   "Id": "FX06-F11",
+   "Kind": "ENVIRONMENT_RISK",
+   "Actor": "Owner (puede pausar actualizaciones de la app de Codex)",
+   "What": "una nueva actualización automática de la app de Codex cambiaría la huella (P-01) en mitad del bucle",
+   "Blocks": [
+    "2c",
+    "6b"
+   ],
+   "Clause": "16.4 (Entrada: P-01); evidencia §67, §71",
+   "CurrentState": "dos actualizaciones: binarios nuevos escritos el 2026-10-06T18:56:03Z y el 2026-10-07T02:14:49Z (unas 7 h 19 min entre ambos; evidencia §67 y §71)"
+  },
+  {
+   "Id": "FX06-F12",
+   "Kind": "MEASUREMENT_REQUIRED",
+   "Actor": "supervisión con una autorización del Owner que la nombre (OQ-22)",
+   "What": "medir con el binario vigente 97c57e4e… las formas de lectura del revisor por codex sandbox (A, B, C, control negativo y diagnóstico del perfil con el envoltorio del runtime con y sin perfil), con la huella de config.toml, el binario y la versión de la app antes y después de cada operación",
+   "Blocks": [
+    "P1b",
+    "2a",
+    "6a"
+   ],
+   "Clause": "16.4 (Entrada: P-01); adapter codex-cli «Límites»; V14 §20.3.3; §20.11 GAP-12; decisiones §51 (alcance de OD-2d-PROBE), §54",
+   "CurrentState": "sin medir; fuera del alcance literal de OD-2d-PROBE; codex-cli en P-01 / STOP"
+  },
+  {
+   "Id": "FX06-F13",
+   "Kind": "COORDINATOR_ACTION",
+   "Actor": "supervisión como Coordinator del fixture",
+   "What": "comprobación previa a la publicación (prepublish_scan.py) de la orden, la RLA, el registro de la medición y el texto del objeto con los tokens solo de supervisión; código 1 no se publica, código 4 solo con disposición registrada",
+   "Blocks": [
+    "P5"
+   ],
+   "Clause": "V14 D.6, D.8-1; decisiones §54 «Sin atajos»",
+   "CurrentState": "programa listo (autoprueba 9/9); X v1 da código 4 por su cabecera (OQ-23)"
+  }
+ ],
+ "OpenQuestions": [
+  "OQ-01",
+  "OQ-02",
+  "OQ-03",
+  "OQ-04",
+  "OQ-05",
+  "OQ-06",
+  "OQ-07",
+  "OQ-08",
+  "OQ-09",
+  "OQ-10",
+  "OQ-11",
+  "OQ-12",
+  "OQ-13",
+  "OQ-14",
+  "OQ-15",
+  "OQ-16",
+  "OQ-17",
+  "OQ-18",
+  "OQ-19",
+  "OQ-20",
+  "OQ-21",
+  "OQ-22",
+  "OQ-23",
+  "OQ-24"
+ ],
+ "OpenQuestionsSource": "README.md §7",
+ "SelfTest": [
+  {
+   "Program": "owner_as_message_bus_audit.py",
+   "Version": "2.0.0",
+   "Result": "40/40 PASS (30 casos sintéticos de auditoría + 10 rechazos de entrada)",
+   "Output": "selftest-result.json"
+  },
+  {
+   "Program": "prepublish_scan.py",
+   "Version": "1.0.0",
+   "Result": "9/9 PASS (7 casos sintéticos + 2 rechazos de entrada)",
+   "Output": "prepublish-scan-selftest.json"
+  }
+ ],
+ "Files": [
+  {
+   "Path": "README.md",
+   "Sha256": "a442d19e25bda5109e66c047b4762d8772c5c149de197f9065717174963009c4",
+   "Bytes": 40666
+  },
+  {
+   "Path": "rla.template.md",
+   "Sha256": "62c662d327035b45eb5946baab97a292614e43820f1f4dd8d74fefd99d29786d",
+   "Bytes": 9056
+  },
+  {
+   "Path": "order.template.md",
+   "Sha256": "65c7a45d8d51440f84c7468bc844e5917beb9998a6798873f9cfbdebacd65528",
+   "Bytes": 5863
+  },
+  {
+   "Path": "architect-invocation-contract.md",
+   "Sha256": "2f08b8748e2ae8eb3aab591f007caf438d5e02a3404485125204ee1a1285936b",
+   "Bytes": 26541
+  },
+  {
+   "Path": "transitions.md",
+   "Sha256": "dae9f81711c78fbd3e5a67bdfa955dfef2906ee508357c9296302f37b8e51707",
+   "Bytes": 14456
+  },
+  {
+   "Path": "message-bus-auditor.md",
+   "Sha256": "a30734c8cb7bf3ac776d30504ca373ea627352b31c3902b2ad32108848a9fb53",
+   "Bytes": 15321
+  },
+  {
+   "Path": "owner_as_message_bus_audit.py",
+   "Sha256": "8687676ca7e9996ba83e9852e2bc8fc06e5ddb1d021b4aa907f9b3584aba9c5d",
+   "Bytes": 53778
+  },
+  {
+   "Path": "selftest-result.json",
+   "Sha256": "a7ded847bedff1cee50d93535ee206f597bc62ec384a65378379c4c1244db80b",
+   "Bytes": 12250
+  },
+  {
+   "Path": "example-input.synthetic.json",
+   "Sha256": "aad24d24510d9ff9dafec5af3b29757c8abb27c1ca3cb8c7228c9b3bed327fb4",
+   "Bytes": 4539
+  },
+  {
+   "Path": "example-result.synthetic.json",
+   "Sha256": "7b493ed057fc51bb18070eb8c5db631ce3596e54a2abc956103af0c982a802af",
+   "Bytes": 2721
+  },
+  {
+   "Path": "prepublish_scan.py",
+   "Sha256": "8c111e84aae1abcf44122407c468f4728481d0b81497691035c071538e4970ca",
+   "Bytes": 9705
+  },
+  {
+   "Path": "prepublish-scan-selftest.json",
+   "Sha256": "546ab5a8dee61f72c6c3ba139680e5166769b27025e35819dc5b85f0ef4c99c0",
+   "Bytes": 1585
+  },
+  {
+   "Path": "ci-checkpoints.md",
+   "Sha256": "ce1acb5787d9dfc44f23f53d9e725b4f267205479131a9d87c6f8262687e4361",
+   "Bytes": 6524
+  },
+  {
+   "Path": "budget-accounting.md",
+   "Sha256": "38b61bab23b00bca9c7dd8b13e546605e3cc4eeeeb32c068f9e2f595e401ace8",
+   "Bytes": 8015
+  },
+  {
+   "Path": "evidence-schema.md",
+   "Sha256": "7b9e98a3b55e7476f64a8b99334df27a1c4dcae1f74c9a0890b40d1bc6e53012",
+   "Bytes": 10610
+  }
+ ],
+ "Revision": {
+  "Id": "R1",
+  "UtcDate": "2026-10-07",
+  "Log": "README.md §8",
+  "Rejected": []
+ },
+ "FilesNote": "frontiers.json no figura en su propia lista"
+}

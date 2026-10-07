@@ -1,0 +1,171 @@
+{
+ "Schema": "fx06-transport-audit-input/v2",
+ "Unit": "SYN-U9",
+ "SupervisionOnlyTokens": [
+  "SYNTHETIC-ORACLE-TOKEN-0001"
+ ],
+ "Window": {
+  "KickoffEventSeq": 3,
+  "Step7RecordVersion": 18
+ },
+ "Points": [
+  {
+   "RecordVersion": 9,
+   "Commit": "0000000000000000000000000000000000000000",
+   "Point": "QH",
+   "PushedUtc": "2030-01-01T09:20:00Z",
+   "LoopPhase": "NONE",
+   "AutonomyGaps": [],
+   "Attempts": []
+  },
+  {
+   "RecordVersion": 10,
+   "Commit": "1111111111111111111111111111111111111111",
+   "Point": "QU",
+   "PushedUtc": "2030-01-01T10:05:00Z",
+   "LoopPhase": "REVIEW_PENDING",
+   "AutonomyGaps": [],
+   "Attempts": [
+    {
+     "LogicalReviewRequestId": "L20300101T100000Z-0001",
+     "AttemptSeq": 1,
+     "State": "BUDGET_RESERVED",
+     "RunId": null,
+     "LaunchEvidence": null,
+     "RuntimeEvidence": null,
+     "Result": null
+    }
+   ]
+  },
+  {
+   "RecordVersion": 13,
+   "Commit": "2222222222222222222222222222222222222222",
+   "Point": "QU",
+   "PushedUtc": "2030-01-01T10:30:00Z",
+   "LoopPhase": "CORRECTING",
+   "AutonomyGaps": [],
+   "Attempts": [
+    {
+     "LogicalReviewRequestId": "L20300101T100000Z-0001",
+     "AttemptSeq": 1,
+     "State": "RESULT_INGESTED",
+     "RunId": "R20300101T100600Z-0001",
+     "LaunchEvidence": {
+      "Path": "syn/l1/1/launch.json",
+      "Blob": "3333333333333333333333333333333333333333"
+     },
+     "RuntimeEvidence": null,
+     "Result": {
+      "Path": "syn/l1/1/result.json",
+      "Blob": "4444444444444444444444444444444444444444",
+      "Sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     }
+    }
+   ]
+  },
+  {
+   "RecordVersion": 18,
+   "Commit": "5555555555555555555555555555555555555555",
+   "Point": "QU",
+   "PushedUtc": "2030-01-01T11:30:00Z",
+   "LoopPhase": "ARCHITECT_SATISFIED",
+   "AutonomyGaps": [],
+   "Attempts": [
+    {
+     "LogicalReviewRequestId": "L20300101T110000Z-0002",
+     "AttemptSeq": 1,
+     "State": "RESULT_INGESTED",
+     "RunId": "R20300101T110500Z-0002",
+     "LaunchEvidence": {
+      "Path": "syn/l2/1/launch.json",
+      "Blob": "6666666666666666666666666666666666666666"
+     },
+     "RuntimeEvidence": null,
+     "Result": {
+      "Path": "syn/l2/1/result.json",
+      "Blob": "7777777777777777777777777777777777777777",
+      "Sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+     }
+    }
+   ]
+  }
+ ],
+ "Decisions": [
+  {
+   "Commit": "8888888888888888888888888888888888888888",
+   "PushedUtc": "2030-01-01T09:00:00Z",
+   "Markers": [
+    "I62-REVIEW-LOOP-AUTHORIZATION: SYN-RLA-1"
+   ],
+   "Issuer": "COORDINATOR"
+  }
+ ],
+ "RelayRecords": [
+  {
+   "Path": "syn/l1/1/launch.json",
+   "Blob": "3333333333333333333333333333333333333333",
+   "Source": "RELAY_RECORD_V2",
+   "RunId": "R20300101T100600Z-0001",
+   "Role": "ARCHITECT",
+   "AdapterId": "codex-cli",
+   "Transport": "external-process",
+   "OutcomeKind": "COMPLETED",
+   "OutputSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  {
+   "Path": "syn/l2/1/launch.json",
+   "Blob": "6666666666666666666666666666666666666666",
+   "Source": "RELAY_RECORD_V2",
+   "RunId": "R20300101T110500Z-0002",
+   "Role": "ARCHITECT",
+   "AdapterId": "codex-cli",
+   "Transport": "external-process",
+   "OutcomeKind": "COMPLETED",
+   "OutputSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  }
+ ],
+ "ArtifactLineDigests": [
+  {
+   "Path": "syn/l1/1/result.json",
+   "Blob": "4444444444444444444444444444444444444444",
+   "Kind": "ROLE_RESULT",
+   "LineSha256": [
+    "751ed6de7dae391c8624972335f83652218326f208d4deb76ffbffe66c7ef348",
+    "266554c73f9149f680abe645361a5638f2bda3ecceb8fbe321f3f62ffe63e2cc",
+    "7b2f254eaa1310182e1602985789fa8ff6b6891c91399bd377e2c5e614092055"
+   ]
+  }
+ ],
+ "HumanEvents": [
+  {
+   "Seq": 1,
+   "Utc": "2030-01-01T09:30:00Z",
+   "Session": "SYN-PRINCIPAL",
+   "Actor": "OWNER",
+   "Kind": "SESSION_OPENED",
+   "Text": null,
+   "TextSha256": null
+  },
+  {
+   "Seq": 2,
+   "Utc": "2030-01-01T09:40:00Z",
+   "Session": "SYN-PRINCIPAL",
+   "Actor": "OWNER",
+   "Kind": "MESSAGE",
+   "Text": "Eres el Principal de la unidad de prueba SYN-U9 de este repositorio.",
+   "TextSha256": "f2231d2b6382999e1a43519d9c3dffb16dd5d54d29d3987836eb71a059b8e4a9"
+  },
+  {
+   "Seq": 3,
+   "Utc": "2030-01-01T09:50:00Z",
+   "Session": "SYN-PRINCIPAL",
+   "Actor": "OWNER",
+   "Kind": "MESSAGE",
+   "Text": "continúa",
+   "TextSha256": "f7ab06ed0b431a38771d66c51a9116ece1eb1e169eb9bfaf8c9b4a109083b683"
+  }
+ ],
+ "Caps": {
+  "PrincipalSessions": 2
+ }
+}

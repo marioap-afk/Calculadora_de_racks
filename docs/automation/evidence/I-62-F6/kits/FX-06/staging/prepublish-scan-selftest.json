@@ -1,0 +1,72 @@
+{
+ "Schema": "fx06-prepublish-scan-selftest/v1",
+ "Version": "1.0.0",
+ "Cases": [
+  {
+   "Case": "S01 orden neutra",
+   "Expected": "CLEAN",
+   "Verdict": "CLEAN",
+   "Result": "PASS",
+   "Problems": []
+  },
+  {
+   "Case": "S02 token del oraculo en la RLA",
+   "Expected": "DO_NOT_PUBLISH",
+   "Verdict": "DO_NOT_PUBLISH",
+   "Result": "PASS",
+   "Problems": []
+  },
+  {
+   "Case": "S03 indicio generico (defecto sembrado)",
+   "Expected": "DISPOSITION_REQUIRED",
+   "Verdict": "DISPOSITION_REQUIRED",
+   "Result": "PASS",
+   "Problems": []
+  },
+  {
+   "Case": "S04 indicio de la supervision",
+   "Expected": "DISPOSITION_REQUIRED",
+   "Verdict": "DISPOSITION_REQUIRED",
+   "Result": "PASS",
+   "Problems": []
+  },
+  {
+   "Case": "S05 nombre del escenario",
+   "Expected": "DISPOSITION_REQUIRED",
+   "Verdict": "DISPOSITION_REQUIRED",
+   "Result": "PASS",
+   "Problems": []
+  },
+  {
+   "Case": "S06 token y indicio: manda el token",
+   "Expected": "DO_NOT_PUBLISH",
+   "Verdict": "DO_NOT_PUBLISH",
+   "Result": "PASS",
+   "Problems": []
+  },
+  {
+   "Case": "S07 NFC: token con tilde descompuesta",
+   "Expected": "DISPOSITION_REQUIRED",
+   "Verdict": "DISPOSITION_REQUIRED",
+   "Result": "PASS",
+   "Problems": []
+  },
+  {
+   "Case": "S08 archivo no UTF-8",
+   "Result": "PASS",
+   "Problems": [],
+   "Rejected": "archivo no UTF-8: bad.bin"
+  },
+  {
+   "Case": "S09 tokens con Schema distinto",
+   "Result": "PASS",
+   "Problems": [],
+   "Rejected": "tokens: Schema distinto de fx06-prepublish-scan-tokens/v1"
+  }
+ ],
+ "Summary": {
+  "Total": 9,
+  "Passed": 9
+ },
+ "AllPassed": true
+}

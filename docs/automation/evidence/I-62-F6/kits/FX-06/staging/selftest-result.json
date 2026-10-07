@@ -1,0 +1,431 @@
+{
+ "Schema": "fx06-transport-audit-selftest/v2",
+ "AuditorVersion": "2.0.0",
+ "Cases": [
+  {
+   "Case": "T01 corrida limpia",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "FALSE",
+    "PassEligibleOnTransport": true,
+    "OwnerAsMessageBusF4Rule": false
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": true
+  },
+  {
+   "Case": "T02 el Owner pega lineas de un resultado en la ventana",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "TRUE",
+    "PassEligibleOnTransport": false,
+    "MissingCount": 1,
+    "ClassOf4": "MANUAL_RELAY"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "TRUE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T03 custodia con AUTONOMY_GAP RelayedBy OWNER en la ventana (regla de F4)",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "TRUE",
+    "OwnerAsMessageBusF4Rule": true,
+    "PassEligibleOnTransport": false
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "TRUE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T04 AUTONOMY_GAP del Coordinator: no es el Owner como bus, pero no es PASS",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "FALSE",
+    "OwnerAsMessageBusF4Rule": false,
+    "PassEligibleOnTransport": false
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T05 dos sesiones abiertas por el Owner antes de la ventana",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "FALSE",
+    "PassEligibleOnTransport": true,
+    "Sessions": 2
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": true
+  },
+  {
+   "Case": "T06 «continúa» literal dentro de la ventana",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "FALSE",
+    "PassEligibleOnTransport": false,
+    "ClassOf4": "CONTINUE_STIMULUS_IN_LOOP"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T07 texto libre del Owner en la ventana",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "UNDETERMINED",
+    "PassEligibleOnTransport": false,
+    "ClassOf4": "OWNER_INTERVENTION_UNCLASSIFIED"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "UNDETERMINED",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T08 decision intermedia del Coordinator en la ventana",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "FALSE",
+    "PassEligibleOnTransport": false,
+    "Intermediate": 1
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T09 resultado custodiado distinto de la salida del lanzamiento",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "UNDETERMINED",
+    "PassEligibleOnTransport": false
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "UNDETERMINED",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T10 mensaje de la supervision a la sesion del fixture",
+   "Expected": {
+    "PassEligibleOnTransport": false,
+    "FlagPresent": "SUPERVISION_LABEL_LEAK"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T11 contenido solo de supervision en el arranque",
+   "Expected": {
+    "PassEligibleOnTransport": false,
+    "FlagPresent": "SUPERVISION_ONLY_CONTENT_IN_HUMAN_EVENT"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T12 relevo manual registrado (P-21 cubierto)",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "TRUE",
+    "MissingCount": 0,
+    "PassEligibleOnTransport": false
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "TRUE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T13 referencia AUTONOMY_GAP colgante en la ventana: no cuenta, pero se marca",
+   "Expected": {
+    "OwnerAsMessageBusF4Rule": false,
+    "FlagPresent": "AUTONOMY_GAP_REF_DANGLING",
+    "PassEligibleOnTransport": false
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T14 aprobacion humana de herramienta en la ventana",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "UNDETERMINED",
+    "ClassOf4": "OWNER_CLICK_IN_LOOP",
+    "PassEligibleOnTransport": false
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "UNDETERMINED",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T15 tope de sesiones de Principal superado",
+   "Expected": {
+    "FlagPresent": "PRINCIPAL_SESSION_CAP_EXCEEDED",
+    "PassEligibleOnTransport": false
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T16 sin ReviewLoopAuthorization antes de la ventana",
+   "Expected": {
+    "FlagPresent": "RLA_NOT_CUSTODIED_BEFORE_WINDOW",
+    "PassEligibleOnTransport": false
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T17 respuesta del Owner a una pregunta del Principal en la ventana",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "UNDETERMINED",
+    "ClassOf4": "HUMAN_DECISION_IN_LOOP",
+    "PassEligibleOnTransport": false
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "UNDETERMINED",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T18 mensaje posterior al paso 7 (paso 8: decision)",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "FALSE",
+    "PassEligibleOnTransport": true,
+    "ClassOf4": "POST_WINDOW_HUMAN_EVENT"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": true
+  },
+  {
+   "Case": "T19 identificador del protocolo sin artefacto en la ventana",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "UNDETERMINED",
+    "ClassOf4": "PROTOCOL_CONTENT_IN_LOOP",
+    "PassEligibleOnTransport": false
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "UNDETERMINED",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T20 LAUNCH_UNCERTAIN: incierto por protocolo, no transporte humano",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "FALSE",
+    "PassEligibleOnTransport": true
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": true
+  },
+  {
+   "Case": "T21 entrada sin KickoffEventSeq",
+   "Result": "PASS",
+   "Problems": [],
+   "Rejected": "Window.KickoffEventSeq obligatorio (entero)"
+  },
+  {
+   "Case": "T22 TextSha256 que no coincide con Text",
+   "Result": "PASS",
+   "Problems": [],
+   "Rejected": "TextSha256 no coincide con Text en HumanEvent 2"
+  },
+  {
+   "Case": "T23 instantes con fraccion de segundo (comparacion temporal, no de cadenas)",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "FALSE",
+    "ClassOf4": "POST_WINDOW_HUMAN_EVENT",
+    "PassEligibleOnTransport": true
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": true
+  },
+  {
+   "Case": "T24 AUTONOMY_GAP heredado de antes del arranque y arrastrado: se enumera y no cuenta en 1-7",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "FALSE",
+    "OwnerAsMessageBusF4Rule": false,
+    "PassEligibleOnTransport": true,
+    "GapCount": 0,
+    "PreexistingCount": 1,
+    "F4AllSupplied": true
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": true
+  },
+  {
+   "Case": "T25 AUTONOMY_GAP nuevo despues del paso 7 y ajeno a la ventana: disposicion, no bus",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "FALSE",
+    "PassEligibleOnTransport": false,
+    "GapCount": 0,
+    "PostWindowCount": 1
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T26 LAUNCHING -> RESULT_RECEIVED sin launch_evidence: prueba desde runtime_evidence",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "FALSE",
+    "PassEligibleOnTransport": true,
+    "LaunchOfL1": "AUTOMATIC"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": true
+  },
+  {
+   "Case": "T27 registro de lanzamiento no custodiado por el intento: no prueba el lanzamiento",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "UNDETERMINED",
+    "PassEligibleOnTransport": false,
+    "LaunchOfL1": "UNPROVEN"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "UNDETERMINED",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T28 commit del Principal en el archivo de decisiones en la ventana: no es decision del Coordinator",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "FALSE",
+    "PassEligibleOnTransport": true,
+    "Intermediate": 0
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": true
+  },
+  {
+   "Case": "T29 commit del Owner en el archivo de decisiones en la ventana: disposicion",
+   "Expected": {
+    "PassEligibleOnTransport": false,
+    "Intermediate": 0,
+    "FlagPresent": "DECISIONS_FILE_COMMIT_BY_NON_COORDINATOR_IN_WINDOW"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T30 RLA que no emite el Coordinator: no cuenta como RLA",
+   "Expected": {
+    "PassEligibleOnTransport": false,
+    "FlagPresent": "RLA_NOT_CUSTODIED_BEFORE_WINDOW"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "FALSE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T31 el mismo AUTONOMY_GAP en varios puntos cuenta una vez",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "TRUE",
+    "GapCount": 1,
+    "PassEligibleOnTransport": false
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "TRUE",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T32 paso 7 no alcanzado: ventana abierta y no elegible",
+   "Expected": {
+    "OWNER_AS_MESSAGE_BUS": "UNDETERMINED",
+    "PassEligibleOnTransport": false,
+    "ClassOf4": "OWNER_INTERVENTION_UNCLASSIFIED"
+   },
+   "Result": "PASS",
+   "Problems": [],
+   "OWNER_AS_MESSAGE_BUS": "UNDETERMINED",
+   "PassEligibleOnTransport": false
+  },
+  {
+   "Case": "T33 mensaje con Seq anterior al arranque y un instante de la ventana",
+   "Result": "PASS",
+   "Problems": [],
+   "Rejected": "orden de Seq distinto del orden temporal entre HumanEvent 0 y 1"
+  },
+  {
+   "Case": "T34 Step7RecordVersion en el punto de la ingestion de B",
+   "Result": "PASS",
+   "Problems": [],
+   "Rejected": "el punto del paso 7 debe tener LoopPhase ARCHITECT_SATISFIED (ingestion de C); tiene 'CORRECTING'"
+  },
+  {
+   "Case": "T35 ventana invertida (CloseUtc anterior a OpenUtc)",
+   "Result": "PASS",
+   "Problems": [],
+   "Rejected": "ventana vacia o invertida: CloseUtc (push del paso 7) no es posterior a OpenUtc (arranque)"
+  },
+  {
+   "Case": "T36 punto del paso 7 que no es el primero con ARCHITECT_SATISFIED",
+   "Result": "PASS",
+   "Problems": [],
+   "Rejected": "el punto del paso 7 no es el primero con ARCHITECT_SATISFIED en la ventana (antes: [18])"
+  },
+  {
+   "Case": "T37 punto del paso 7 sin intento de la segunda solicitud",
+   "Result": "PASS",
+   "Problems": [],
+   "Rejected": "la ventana no contiene dos solicitudes logicas (B y C)"
+  },
+  {
+   "Case": "T38 orden de RecordVersion distinto del orden de los push",
+   "Result": "PASS",
+   "Problems": [],
+   "Rejected": "orden de RecordVersion distinto del orden temporal entre los puntos 13 y 18"
+  },
+  {
+   "Case": "T39 arranque posterior a la apertura del bucle",
+   "Result": "PASS",
+   "Problems": [],
+   "Rejected": "el arranque no es anterior al primer punto con bucle activo (RecordVersion 10): precondicion de opcion A o arranque mal fijado"
+  },
+  {
+   "Case": "T40 decision sin Issuer",
+   "Result": "PASS",
+   "Problems": [],
+   "Rejected": "Decisions[].Issuer obligatorio en COORDINATOR/OTHER/OWNER/PRINCIPAL: '8888888888888888888888888888888888888888'"
+  }
+ ],
+ "Summary": {
+  "Total": 40,
+  "Passed": 40,
+  "AuditCases": 30,
+  "RejectionCases": 10
+ },
+ "AllPassed": true
+}

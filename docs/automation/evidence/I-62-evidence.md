@@ -2628,3 +2628,24 @@ solo desde artefactos custodiados.
   03:40Z y 06:19Z); app `26.1002.6548.0`; binario único `97c57e4e…`; 9 claves de integración de la app cambiadas frente a `723A6898…`, estructura igual;
   instantánea por clave nueva. Sin ejecutar el binario. **Paquete OD-2d vigente** en
   [owner-decision-packets.md](I-62-prep/owner-decision-packets.md) (aceptación exacta condicionada a una medición controlada sin cambios).
+
+## 76. Noche (decisiones §54): staging de FX-02, FX-06 y F7/READY hasta sus fronteras, con revisión adversarial
+
+- **Método:** un workflow de 9 agentes (redacción, verificación adversarial contra V14, A-1, AUTOMATION_PLAN §16 y los esquemas, y revisión), solo con
+  lecturas del repositorio y del origen del fixture y escritura en el scratchpad; 0 errores; los tres revisores aplicaron 16, 16 y 15 hallazgos y no
+  rechazaron ninguno. La supervisión revisó el resultado antes de integrarlo y corrigió la tarjeta de A2 para que no recomiende un modo de permisos.
+- **FX-02** ([kits/FX-02](I-62-F6/kits/FX-02/README.md)): secuencia de extremo a extremo de QH2 a Q7 VERIFIED de T1 (27 pasos con actor, transporte,
+  punto durable, evidencia, cláusula y frontera), topes de D.3 y contabilidad, contratos del Controller y del Worker/Reviewer, plantillas de la orden
+  FX-U1-O4 y de la designación de A2, tarjeta de lanzamiento de A2 y `frontiers.json`. **Hallazgo de secuencia:** ninguna escritura en el origen del
+  fixture ni apertura de A2 mientras FX-04a esté abierto (B2 lee el último punto durable del origen). Decisiones pendientes: grupo (a) del Coordinator del
+  fixture y **grupo (b) del Coordinator de I-62 (CD-01..CD-21)**; mientras falten, FX-02 queda UNVERIFIED con esa causa. Negativos y comprobaciones de
+  supervisión sellados fuera del repositorio ([sealed-supervision-files.json](I-62-F6/kits/sealed-supervision-files.json)).
+- **FX-06** ([kits/FX-06/staging](I-62-F6/kits/FX-06/staging/README.md)): secuencia de D.8 con sus fronteras (FX06-F01..F13), plantilla neutra de orden,
+  RLA, contrato de invocación del Architect (cierre de entradas, fidelidad, dos invocaciones distintas), transiciones, presupuestos de A-1, puntos de CI,
+  esquema de evidencia, **auditor de `OWNER_AS_MESSAGE_BUS`** (`owner_as_message_bus_audit.py`, autoprueba 40/40 con entradas sintéticas) y escaneo
+  previo a la publicación (`prepublish_scan.py`, 9/9). Riesgo R-07: la cabecera de X v1 nombra el escenario (OQ-23 al Coordinator). Sin `OWNER_AS_MESSAGE_BUS`
+  calculado: no hay corrida real.
+- **F7 y READY** ([I-62-prep/f7](I-62-prep/f7/ready-dry-run.md)): borrador factual de FOUNDATIONS con los hechos de F6, matriz de ensayo READY-01..09
+  (evidencia disponible y faltante, acciones del Owner y del Coordinator, comandos), lista de cierre documental e integración, paquetes OV, disposición de
+  ideas futuras y OD-1 (sin solicitarla); ningún READY declarado; valores esperados de OV sellados.
+- **Sin ejecuciones:** ningún `codex-cli`, ningún `claude-cli`, ninguna sesión abierta ni mensaje a sesiones del fixture, ninguna escritura en el fixture.
