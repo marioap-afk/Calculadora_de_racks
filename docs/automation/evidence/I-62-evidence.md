@@ -2840,3 +2840,15 @@ solo desde artefactos custodiados.
   - compuerta de transporte MEASURED;
   - `launch.py --dry-run` con 9 de 10 comprobaciones en Ok (la autenticación solo se comprueba en el lanzamiento real).
 - **Sin pedir al Owner otra sesión de escritorio** (decisiones §56, punto 18): la re-revisión la lanza la sesión principal por `claude-cli`.
+
+## 85. Re-revisión formal de la A-2 corregida por claude-cli (R20261008T184326Z-f1e2): AGREED, ACCREDITED
+
+- **Lanzamiento automático** (decisiones §56, puntos 6-9; Owner CLAUDE-CLI-I62 = A). La sesión principal lanzó la re-revisión con `launch.py` (preflight de
+  10 comprobaciones en Ok, compuerta MEASURED) sobre el clon limpio `D:\r62-arch-a2r` en `fd411b13`. Sesión `26a89860…`, de 20:56:00Z a 21:10:32Z;
+  salida 0; ninguna denegación; modelo `claude-opus-5-5`. No hizo falta ninguna sesión de escritorio abierta por el Owner.
+- **Veredicto** ([registro](../../initiatives/I-62-architect-review-A-2-r2.md), [output.json](I-62-architect-A-2/R20261008T184326Z-f1e2/output.json)): **AGREED**.
+  - A62-A2-01 y A62-A2-O1..O3: CLOSED.
+  - Ningún REQUIRED; A62-A2-O4..O6 OPTIONAL.
+  - Q-A2-01..07 sin hallazgo; M-03 y M-04; ninguna decisión del Owner.
+- **Auditor** v5.1 custodiado ([audit.json](I-62-architect-A-2/R20261008T184326Z-f1e2/audit.json)): **ACCREDITED**, 0 motivos en 32 llamadas.
+- **Siguiente:** veredicto del Coordinator sobre la A-2 exacta (blob `f1e1d6f0…`). Hasta entonces, ni B3 ni bloque de medición.

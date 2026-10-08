@@ -265,3 +265,17 @@ El cierre, las herramientas y el auditor no se amplían ni se corrigen después 
   nueva, línea de órdenes, compuerta); la 5 (autenticación) solo se ejecuta en el lanzamiento real; [launch-dry-run.json](launch-dry-run.json).
 - **Lanzamiento:** lo hace la sesión principal con `launch.py`, una vez, después del commit que custodia este kit.
 
+## Resultado custodiado (después de la corrida)
+
+- `launch.py` lanzó la sesión `26a89860-a107-4135-9981-a46f95816d16` (PID 31200) de 2026-10-08T20:56:00.185611Z a 2026-10-08T21:10:32.828742Z. Salida 0, con mensaje `result`, sin
+  terminación; 33 turnos; modelo `claude-opus-5-5`; ninguna denegación de permisos.
+- `output.json`: el `structured_output` literal (SHA-256 `15694b657f9286882890dd596729d9ddb7469f00ba73b55d45c8dfaa8364d237`). **Veredicto: AGREED.**
+  - A62-A2-01 y A62-A2-O1..O3: **CLOSED**.
+  - Ningún REQUIRED; OPTIONAL A62-A2-O4..O6 (precisiones del modelo G5, de la declaración y de la trazabilidad de §6; ninguna exige corregir A-2 antes
+    del acuerdo).
+  - Q-A2-01..07 sin hallazgo; materialidad M-03 y M-04; ninguna decisión del Owner.
+- `audit.json`: auditor v5.1 literal. **ACCREDITED**, 0 motivos en 32 llamadas (identidad, transporte, prompt fiel, custodia del run, herramientas y
+  rutas, fidelidad, premisas, modelo y effort, clon limpio después).
+- `runtime-evidence.json` y `launch/` (`run.json`, `preflight.json`, `transport-characterization.json`). El `stdout.jsonl` y la transcripción no se
+  versionan; quedan su ruta y su SHA-256.
+

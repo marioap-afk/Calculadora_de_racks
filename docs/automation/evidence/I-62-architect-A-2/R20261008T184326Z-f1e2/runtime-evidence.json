@@ -1,0 +1,44 @@
+{
+ "RunId": "R20261008T184326Z-f1e2",
+ "Transport": "claude-cli 2.1.293 (%APPDATA%/Claude/claude-code/2.1.293/83cb0bd7fed4/claude.exe, SHA-256 8693c4a0…), lanzado por la sesión principal con launch.py",
+ "Authority": "decisiones §56, puntos 6-9; Owner CLAUDE-CLI-I62 = A; compuerta de transporte MEASURED (caracterización 20d0de2c…)",
+ "Session": {
+  "SessionId": "26a89860-a107-4135-9981-a46f95816d16",
+  "Pid": 31200,
+  "Start": "2026-10-08T20:56:00.185611Z",
+  "End": "2026-10-08T21:10:32.828742Z",
+  "ExitCode": 0,
+  "Killed": false,
+  "TimedOut": false,
+  "Cwd": "D:/r62-arch-a2r",
+  "AddDir": "D:/r62-arch-a2r-run"
+ },
+ "Stdout": {
+  "Path": "D:/r62-arch-a2r-run/launch/stdout.jsonl (no versionado: contiene rutas del perfil del usuario)",
+  "Sha256": "49dd86c15b880fa5e6885f86c2ecfb0a617abc1ceb3410b44abdd2e0ffd5bf6f"
+ },
+ "Transcript": {
+  "Versioned": false,
+  "Path": "%USERPROFILE%/.claude/projects/D--r62-arch-a2r/26a89860-a107-4135-9981-a46f95816d16.jsonl",
+  "Sha256": "519a14680d540da9e8ed475547c5fefeecbc7fc926f37846b4e6b2a168157891"
+ },
+ "Output": {
+  "File": "output.json",
+  "Sha256": "15694b657f9286882890dd596729d9ddb7469f00ba73b55d45c8dfaa8364d237",
+  "Source": "structured_output del mensaje result de stream-json"
+ },
+ "Audit": {
+  "File": "audit.json",
+  "Sha256": "063c2453e687cfae6d35b1528883d7ff7944ab917bf1b54507d693f3618ce3e7",
+  "Auditor": "v5.1 custodiado en d2d74c14",
+  "Accreditation": {
+   "Status": "ACCREDITED",
+   "Reasons": []
+  }
+ },
+ "CloneAfterRun": {
+  "Head": "fd411b136f888ecf301f9edaa7fcc068da8dbf22",
+  "StatusPorcelain": ""
+ },
+ "Independence": "proceso claude-cli nuevo, sesión con id fijado, sin la transcripción ni la memoria de la sesión autora ni del Coordinator ni de la revisión anterior; modo seguro sin CLAUDE.md ni memoria; mismo proveedor que el autor (Provider PREFERRED no se cumple, declarado)"
+}
