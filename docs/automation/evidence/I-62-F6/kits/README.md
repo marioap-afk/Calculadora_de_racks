@@ -19,7 +19,7 @@ A-2 (candidata material, sin aplicar) tiene su tarjeta justo debajo: **acción A
 | Carpeta exacta | `D:\r62-arch-a2` (clon limpio en `4a059afa`, sin remoto); la app crea el worktree de la tarea |
 | Runtime / app | app de escritorio de Claude: **un clic** en la tarjeta de tarea «Revisión del Architect de I-62 A-2» que la sesión de I-62 deja en la conversación (se crea una sola vez); no hay que pegar nada |
 | Modelo / effort | `claude-opus-5-5` / `xhigh` (si la app los muestra, no los cambies); la supervisión los verifica con `get_session` |
-| Texto inicial exacto | lo pone la tarjeta: `D:\r62-arch-a2-run\prompt.md` (23 737 bytes, SHA-256 `22d93ae5464ffbea29d52c1eae7f10e0e82f68eb180a272ba25cd8e3f2d0cfd5`). La supervisión comprueba el SHA-256 del primer mensaje en cuanto se abre la sesión |
+| Texto inicial exacto | lo pone la tarjeta: un mensaje fijo que remite a `D:\r62-arch-a2-run\prompt.md` (23 737 bytes, SHA-256 `22d93ae5464ffbea29d52c1eae7f10e0e82f68eb180a272ba25cd8e3f2d0cfd5`); su texto exacto y su SHA-256 (`4daa606c…`) están en el [README del kit](../../I-62-architect-A-2/R20261008T014941Z-68fe/README.md). La supervisión comprueba que el primer mensaje lo contiene y que la sesión verifica el SHA de `prompt.md` en su Paso 0 |
 | Después de abrir | nada. Si la sesión pregunta algo, no contestes: avisa en la sesión de I-62. Los permisos que pida la app los decides tú; la supervisión registra cada respuesta |
 | Qué NO pegar | nada: ni A-2, ni el paquete, ni textos o resúmenes de I-62, ni opiniones |
 | Evento de compleción | la sesión entrega su veredicto JSON y se detiene; escribe «Architect A-2 terminó» en la sesión de I-62 |

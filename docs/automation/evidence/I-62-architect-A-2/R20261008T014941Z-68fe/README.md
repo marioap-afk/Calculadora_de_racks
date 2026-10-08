@@ -124,3 +124,16 @@ El cierre y las acciones no se amplían después de ejecutar. Este kit no cambia
 - `audit.json`: el auditor v4-a2.1 literal.
 - `runtime-evidence.json`: la identidad observada de la sesión, la transcripción (no versionada; ruta y SHA-256), el clon y el worktree después de
   la corrida, la integridad del kit frente a `kit/kit-manifest.json` y la de los dos archivos del run.
+
+## Mensaje de la tarea (fijado antes de crear la tarjeta)
+
+La tarjeta de tarea de la app lleva este mensaje fijo, igual que en A-1 r5 (task_44fd8237). Remite a `prompt.md` del directorio del run, cuyo SHA-256 la
+sesión revisora comprueba en su Paso 0 y que el auditor exige leído entero de forma fiel. Tiene 659 bytes en UTF-8 y SHA-256 `4daa606c7fef632132257e867f6413a71b17aff5e475fb03071c8ebb6d33182e`. La app
+puede anteponerle un aviso de worktree: la supervisión comprueba que el primer mensaje contiene este texto exacto.
+
+```text
+Eres el ARCHITECT de una revisión formal en solo lectura (I-62, RunId R20261008T014941Z-68fe). Tu única instrucción es el archivo D:\r62-arch-a2-run\prompt.md.
+
+Primero, léelo ENTERO con la herramienta Read (ruta absoluta D:\r62-arch-a2-run\prompt.md) y síguelo exactamente: identidad (Paso 0) antes de cualquier lectura sustantiva, el cierre de insumos, el contrato de acciones cerrado, la forma de lectura y el formato del resultado. No leas ni busques nada fuera de lo que ese prompt permite, no edites el repositorio, no hagas commit ni push y no invoques a otros agentes. Tu último mensaje debe contener solo el bloque ```json que el prompt define.
+```
+
