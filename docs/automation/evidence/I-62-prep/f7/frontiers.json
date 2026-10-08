@@ -1,7 +1,8 @@
 {
   "schema": "i62-f7-ready-frontiers/staging-1",
   "nature": "staging; no normativo; no declara ningún gate ni READY",
-  "authority": "decisiones §54 (orden nocturna, fila «F7 y READY»); Proposal V14 §17-§18 y Anexo D; LIFECYCLE §8; WORKFLOW §11.4-§11.6",
+  "authority": "decisiones §54 (orden nocturna, fila «F7 y READY»); decisiones §55 (disposición del Coordinator tras B2: U-01a..U-05, puntos 13 y 14); Proposal V14 §17-§18 y Anexo D; LIFECYCLE §8; WORKFLOW §11.4-§11.6",
+  "revision": "r2: aplica decisiones §55 (FX-04a OPEN / UNVERIFIED; F6 GATE PASS imposible mientras C-25a no se satisfaga; ninguna limitación de FX-04a aceptada; A-2 candidata como frontera F-16, que bloquea F-01 y READY-01; tope congelado de sondas agotado; -C del Controller de FX-02 y del Architect de FX-06). r3: corrige la aplicación de decisiones §55 (A-2 en amendment_refs y en Decision source si se acuerda, F-13; dependencia de la sonda del Controller en A2 respecto de Q21 vía FX-02 S02/S03, F-03, condicionada a los directorios de las sondas, abiertos en FX-02 (U-71); -C del Architect de FX-02 abierto (U-68); Q22 también en F-10; citas «decisiones §55, punto 13/14»). Decisiones §55, punto 14: preparación de F7 permitida; ningún READY, Candidato, cierre ni integración se declara",
   "measured_utc": "2026-10-07",
   "base": {
     "tip": "e9473425aa9e33dfc8f9cb5a1522a20405fda68f",
@@ -18,28 +19,34 @@
       "title": "F6 GATE PASS",
       "kind": "COORDINATOR",
       "blocks": ["READY-02", "texto final de FOUNDATIONS (Protecting tests, Known limitations)"],
-      "requires": ["F-02", "F-05", "F-06", "Q9"],
-      "frozen_basis": "V14 §17 fila F6; D.4 matriz de cierre: FX-01, FX-02, FX-04a y FX-05 PASS; FX-03, FX-04b y FX-06 pueden quedar como limitación para el Owner; FAIL impide cerrar",
-      "state": "FX-01 PASS y FX-05 PASS (C-23 §51, C-27 §47); C-22 PASS (§51); FX-02 UNVERIFIED; FX-04a HUMAN_LAUNCH_REQUIRED (B2); FX-04b UNSUPPORTED por disposición del Coordinator (§50-§54; lectura con la B de §52 abierta: Q16); FX-03 UNVERIFIED; FX-06 UNVERIFIED"
+      "requires": ["F-02", "F-05", "F-06", "F-16", "Q9"],
+      "frozen_basis": "V14 §17 fila F6; D.4 matriz de cierre: FX-01, FX-02, FX-04a y FX-05 PASS; FX-03, FX-04b y FX-06 pueden quedar como limitación para el Owner; FAIL impide cerrar; FX-04a sin PASS: «UNVERIFIED; F6 pendiente» (columna «Si falta»), sin vía de limitación",
+      "state": "FX-01 PASS y FX-05 PASS (C-23 §51, C-27 §47); C-22 PASS (§51); FX-02 UNVERIFIED; FX-04a OPEN / UNVERIFIED y C-25a UNVERIFIED (decisiones §55 U-01a: resultado mecánico bruto de B2 FAIL 2/23 conservado; acreditación de B2 INVALID_LAUNCH, KICKOFF_SCHEMA_NOT_DELIVERED probado; sin PASS ni FAIL de protocolo desde B2; sin normalización); FX-04b UNSUPPORTED por disposición del Coordinator (§50-§54; lectura con la B de §52 abierta: Q16); FX-03 UNVERIFIED; FX-06 UNVERIFIED",
+      "gate_note": "F6 GATE PASS imposible mientras C-25a no se satisfaga: el cierre de F6 exige FX-04a PASS (decisiones §55 U-01c). La liberación del origen del fixture de U-01c es para trabajo independiente y NO acepta ninguna limitación de FX-04a"
     },
     {
       "id": "F-02",
-      "title": "FX-04a: lanzamiento de B2 y comparación con el contrato v2",
-      "kind": "HUMAN_LAUNCH_REQUIRED",
-      "blocks": ["F-01", "F-03 (§53: ningún OD-2d-PROBE hasta clasificar FX-04a con B2)", "F-04 (kits/FX-02 F-UP-FX04A: FX-02 no escribe en fx/u1 ni abre A2 antes del cierre de FX-04a)"],
-      "owner_action": "abrir B2 en D:\\r62-fixture\\B2 (cabed547, claude-desktop-session, claude-opus-5-5, xhigh) con el texto inicial neutro B2-kickoff.md",
-      "coordinator_action": "clasificar FX-04a/C-25a tras la comparación mecánica (sin tercer oráculo; §53)",
-      "evidence": "docs/automation/evidence/I-62-F6/FX-04a/R20261007T061300Z-fx04a-b2/ (oracle-v2-published.json: 5e7a78d3…; prelaunch-B2.json; B2-kickoff.md 233b0582…)"
+      "title": "FX-04a: B2 terminada y acreditada INVALID_LAUNCH; FX-04a OPEN / UNVERIFIED; B3 solo con A-2 AGREED",
+      "kind": "COORDINATOR + ARCHITECT (A-2, F-16); después HUMAN_LAUNCH_REQUIRED (B3, solo con A-2 AGREED)",
+      "blocks": ["F-01", "F-04 en lo que escriba en fx/u1 antes de una posible B3 (Q21)", "F-03 en la sonda de la celda del Controller si va en A2, directorio que sigue a la orden O4 (Q21; U-71)"],
+      "resolved_blocks": "F-03: la condición de decisiones §53 («ningún OD-2d-PROBE hasta clasificar FX-04a con B2») quedó cumplida con la clasificación de decisiones §55 U-01a; F-03 sigue bloqueada, ahora por F-16 (U-04). F-04: decisiones §55 U-01c libera el origen del fixture para la preparación de FX-02 (alternativa de F-UP-FX04A del kit de FX-02: «disposición explícita del Coordinator de I-62 que libere el origen para FX-02 sin ese cierre»), sin cerrar FX-04a",
+      "requires": ["F-16 (A-2 AGREED) para una B3", "Q21"],
+      "owner_action": "hecha: B2 abierta en D:\\r62-fixture\\B2 y terminada (evidencia §78). Siguiente: revisión del Architect independiente de A-2 con su tarjeta aparte (F-16); B3 solo si A-2 = AGREED, con su propia tarjeta y el texto inicial pegado desde el archivo, nunca desde una copia abreviada (lección de la supervisión, evidencia §79)",
+      "coordinator_action": "hecha: clasificación de B2 y de FX-04a/C-25a (decisiones §55 U-01a). B3 NO AUTORIZADA bajo el Freeze actual (U-01b: D.3, Principal B de FX-04a 1 base + 1 reapertura = 2, consumidas por B1 y B2; el hueco N11 de B2 está acotado a N11 y no es fungible; N11 NOT_APPLICABLE). Pendiente: acuerdo de A-2 (F-16) y Q21",
+      "evidence": "docs/automation/evidence/I-62-F6/FX-04a/R20261007T061300Z-fx04a-b2/ (oracle-v2-published.json: 5e7a78d3…; prelaunch-B2.json; B2-kickoff.md 233b0582…; B2-response.json con SHA-256 canónico 74e69f35… durable en 4ea66233 antes de cargar el oráculo v2; comparison-v2.json: FAIL bruto 2/23; b2-report-for-coordinator.md); evidencia §78-§79",
+      "snapshot_fact": "instantánea congelada del origen del fixture en QH2: D:\\r62-fixture\\fx04a-qh2-origin.git (git clone --mirror, remoto retirado; digest de refs 275d977b…; fx/u1 = cabed547). Hallazgo material: toda escritura en fx/u1 del origen vivo cambia los hechos remotos que una futura B3 leería con git ls-remote (D.3 FX-04a paso 5: «remote-facts de lectura»); una B3 (solo con A-2 AGREED) necesita un clon cuyo origen sea esa instantánea, o ninguna escritura en fx/u1 antes de B3. La elección es del Coordinator (Q21); este staging no la decide",
+      "open_question": "Q21"
     },
     {
       "id": "F-03",
-      "title": "OD-2d y OD-2d-PROBE sobre la instalación vigente de Codex",
+      "title": "OD-2d sobre la instalación vigente de Codex: bloque de medición nuevo tras A-2 (sin OD-2d-PROBE bajo el tope congelado)",
       "kind": "OWNER",
       "blocks": ["F-04", "F-05", "F-06", "F-15", "OV-I62-03", "OV-I62-06"],
-      "requires": ["F-02 (clasificación de FX-04a con B2 antes de todo OD-2d-PROBE; decisiones §53)"],
-      "state": "codex-cli en P-01/STOP; config.toml 9EA26634…; binario 97c57e4e…; app 26.1002.6548.0; celdas del Controller y del Architect obsoletas tras la actualización",
-      "owner_action": "secuencia de §50-§53: (1) tras clasificar FX-04a con B2, autorizar un OD-2d-PROBE nuevo contra la instalación vigente (§52); (2) sonda con huella de config.toml, binario y versión de la app antes y después de cada operación (§51); (3) decidir el paquete OD-2d con huella e identidad de binario exactas (§51); el paquete actual de owner-decision-packets.md §OD-2d vigente es solo pasivo (NotMeasured: versión de la CLI, autenticación, modelo, effort, sandbox); opción operativa de pausar actualizaciones de la app",
-      "coordinator_action": "tras OD-2d: celdas del Controller y del Architect re-medidas con ese binario antes de FX-02 y FX-06 (§50)",
+      "requires": ["F-02 (clasificación de FX-04a con B2: hecha, decisiones §55 U-01a)", "F-16 (A-2 AGREED, problema 2: bloque de medición nuevo; decisiones §55 U-04)", "Q21 (vía FX-02 S02/S03: el directorio D:\\r62-fixture\\A2 solo existe tras la orden FX-U1-O4 en fx/u1), mientras la sonda de la celda del Controller vaya en A2 (propuesta del kit de FX-02; directorios de las sondas abiertos: CD-28 / OQ-35 de FX-02 = U-71 del registro unificado)"],
+      "a2_dependency_note": "la sonda de la celda del Controller del bloque de medición nuevo es su invocación medida (decisiones §55 U-02 b) y, según la propuesta del kit de FX-02 (no decidida: U-03 fija solo los -C; directorios de las sondas = CD-28 / OQ-35 de FX-02, U-71), corre con -C D:\\r62-fixture\\A2, el -C del Controller de FX-02 (U-03). Ese directorio lo crea FX-02 S03 (clon limpio) tras S02, la publicación de la orden FX-U1-O4 en fx/u1, y esa escritura depende de Q21 (= CD-26 / OQ-33 de FX-02 = U-66; kit FX-02, S11: con la propuesta, S03 y, por S02, CD-26 y la orden O4). Con esa propuesta, la orden O4 y el clon A2 preceden al bloque de medición del Controller y a OD-2d. Este staging no decide Q21 ni los directorios",
+      "state": "codex-cli en P-01/STOP; config.toml 9EA26634…; binario 97c57e4e…; app 26.1002.6548.0; celdas del Controller y del Architect obsoletas tras la actualización; tope congelado de sondas AGOTADO (decisiones §55 U-04: ninguna sonda de modelo más hasta el acuerdo de A-2; las autorizaciones previas del Owner no aumentan el tope congelado)",
+      "owner_action": "secuencia vigente (decisiones §55 U-04 y U-05, sobre §50-§53): (1) A-2 acordada (F-16); (2) petición y autorización del Owner del bloque de medición nuevo: como máximo dos sondas de solo lectura para el BinaryHash/AppVersion exactos nuevos, con huella de config.toml, binario y versión de la app antes y después de cada operación (§51); (3) aceptación del Owner de la huella resultante bajo OD-2, con el paquete OD-2d de huella e identidad de binario exactas (§51); el paquete actual de owner-decision-packets.md §OD-2d vigente es solo pasivo (NotMeasured: versión de la CLI, autenticación, modelo, effort, sandbox). P1b (medición de codex sandbox) NO está cubierta por la autorización OD-2d-PROBE y no se ejecuta ahora: si sigue haciendo falta tras A-2, paquete exacto del Owner con operaciones, directorios, si hay trabajo de modelo, observaciones de huella, implicaciones de sandbox y consumo (U-05). Opción operativa de pausar actualizaciones de la app",
+      "coordinator_action": "decisiones §55 U-02 (b): las sondas de solo lectura autorizadas de OD-2d para el binario vigente SON las invocaciones medidas exigidas de las celdas del Controller y del Architect; sin segunda medición tras OD-2d si siguen iguales todos los invalidadores (BinaryHash, AppVersion, huella, estado de autenticación, modelo, effort, blobs de catálogo/routing, instancia del host); cualquier cambio deja la observación obsoleta. -C (U-03): Controller de FX-02 D:\\r62-fixture\\A2; Architect de FX-06 D:\\r62-fixture\\arch (variante A, clon aparte de solo lectura); A6 nunca como directorio de trabajo del Architect. Pendientes: -C del Architect de FX-02 (CD-27 / OQ-34 de FX-02 = U-68) y directorios de las ≤ 2 sondas del bloque nuevo (CD-28 / OQ-35 de FX-02 = U-71; FX-06 P1 lee la sonda del Architect en arch de U-03)",
       "risk": "cada actualización automática de la app vuelve a P-01 (F6-N01; dos en ≈ 9 h)"
     },
     {
@@ -47,7 +54,9 @@
       "title": "A2: Principal nuevo de FX-U1 para FX-02",
       "kind": "HUMAN_LAUNCH_REQUIRED + COORDINATOR",
       "blocks": ["F-05"],
-      "requires": ["F-02", "F-03"],
+      "requires": ["F-02 (origen liberado para la preparación de FX-02: decisiones §55 U-01c; no cierra FX-04a)", "F-03", "Q21 (escrituras en fx/u1 antes de una posible B3)"],
+      "controller_workdir": "-C D:\\r62-fixture\\A2 (decisiones §55 U-03)",
+      "fx_u1_writes_note": "la orden FX-U1-O4 publicada en fx/u1 (requisito de la acción 4 de la tarjeta de la mañana) y la preparación de A2 (S03 del kit de FX-02, tras O4) escriben en fx/u1 o dependen de esa escritura: Q21",
       "owner_action": "abrir A2 en D:\\r62-fixture\\A2 (carpeta limpia, sin worktree, claude-opus-5-5, xhigh) con kits/FX-02/launch-card-A2.md; el modo de permisos lo elige el Owner y la supervisión lo registra",
       "coordinator_action": "designación T16 con «I62-PRINCIPAL-BINDING: <BindingId> ACCEPTED» y Claim-Id fc62f1c7-0000-4000-8000-000000000001 tras su preflight CUSTODY y su propuesta de binding; después QR ORDINARY del Principal",
       "cap": "ronda A de V14 D.3 (Principal A: 1 sesión, +1 reapertura, 2 sesiones); si R cuenta en ese tope: Q10",
@@ -67,7 +76,8 @@
       "title": "FX-06 (autonomía real) o decisión del Owner sobre su limitación",
       "kind": "EXECUTION or OWNER",
       "blocks": ["F-01 si FAIL", "C-39, C-32 (F6), C-37 (F6), C-42 (7, 8): Q9"],
-      "requires": ["F-03", "F-05", "F-15", "RLA del Coordinator del fixture", "celda del Architect re-medida con el binario vigente", "CI del fixture"]
+      "requires": ["F-03", "F-05", "F-15", "RLA del Coordinator del fixture", "invocación medida de la celda del Architect = las sondas de solo lectura de OD-2d del binario vigente, sin segunda medición si no cambia ningún invalidador (decisiones §55 U-02 b)", "CI del fixture"],
+      "architect_workdir": "-C D:\\r62-fixture\\arch: variante A, clon aparte de solo lectura; nunca D:\\r62-fixture\\A6 (decisiones §55 U-03)"
     },
     {
       "id": "F-07",
@@ -94,9 +104,10 @@
     },
     {
       "id": "F-10",
-      "title": "Preparación de la OV sobre el Candidato: Q4 (con la sesión compartida de OV-I62-01/03), Q5, Q6, Q16, Q17 y Q19; CD-05 y OQ-25 del kit de FX-02 (compacto de OV-I62-03); aplicabilidad del checklist de la guía e identidad del DLL NOT_APPLICABLE",
+      "title": "Preparación de la OV sobre el Candidato: Q4 (con la sesión compartida de OV-I62-01/03), Q5, Q6, Q16, Q17, Q19 y Q22 (presupuestos de recuperación de la OV frente a A-2; también en F-16); CD-05 y OQ-25 del kit de FX-02 (compacto de OV-I62-03); aplicabilidad del checklist de la guía e identidad del DLL NOT_APPLICABLE",
       "kind": "COORDINATOR + OWNER",
       "blocks": ["READY-08", "OV-I62-01..06"],
+      "open_question": "Q4, Q5, Q6, Q16, Q17, Q19 y Q22 (Q22 también en F-16)",
       "fact": "la resiembra de D.5 en el main actual del fixture duplicaría el trailer de prueba; OD-7 no autoriza otro repositorio"
     },
     {
@@ -114,9 +125,10 @@
     },
     {
       "id": "F-13",
-      "title": "Campos del contrato: amendment_refs (A-1) y ov_assignment_ref (V14 §18)",
+      "title": "Campos del contrato: amendment_refs (A-1 y, si se acuerda, A-2: F-16) y ov_assignment_ref (V14 §18)",
       "kind": "COORDINATOR",
       "blocks": ["READY-01", "READY-08", "READY-09"],
+      "a2_note": "la entrada de FOUNDATIONS y el cierre solo existen con F6 GATE PASS, que exige FX-04a PASS (decisiones §55 U-01c); bajo el Freeze actual eso exige una B3 y, por tanto, A-2 AGREED (U-01b). En todo estado en que haya entrada o cierre, A-2 es una A-n acordada sujeta a READY-09 («alcance y visibilidad de todas las A-n»): Decision source la nombra con su blob ([PENDIENTE] de foundations-draft.md §2) y amendment_refs la listaría junto a A-1 según lo que disponga Q11 (sin decisión aquí)",
       "open_question": "Q11"
     },
     {
@@ -135,8 +147,21 @@
       "requires": ["F-03", "F-05", "precondiciones de FX06-F04 comprobadas por la supervisión (kits/FX-06/staging/frontiers.json)", "P0-P6 de kits/FX-06/staging/README.md §2.1, incluido el clon limpio de P6 en D:\\r62-fixture\\A6"],
       "owner_action": "abrir la sesión del Principal de FX-06 en D:\\r62-fixture\\A6 (claude-desktop-session, claude-opus-5-5, xhigh) con el mensaje inicial neutro del kit; el modo de permisos lo elige el Owner y la supervisión lo registra; toda aprobación humana entre los pasos 1 y 7 de D.8 se registra como candidato OWNER_CLICK_IN_LOOP / AUTONOMY_GAP",
       "coordinator_action": "designación T16 propia del Principal de FX-06 y aceptación de su binding (P8 del kit de FX-06)",
-      "cap": "V14 D.8: Principal A 1 sesión, +1 reapertura, tope 2 (kits/FX-06/staging/budget-accounting.md §5); no comparte el tope de A2"
+      "cap": "V14 D.8: Principal A 1 sesión, +1 reapertura, tope 2 (kits/FX-06/staging/budget-accounting.md §5); no comparte el tope de A2",
+      "workdir_note": "D:\\r62-fixture\\A6 es la carpeta de la sesión del Principal de FX-06; el Architect no la usa como directorio de trabajo (decisiones §55 U-03: -C D:\\r62-fixture\\arch)"
+    },
+    {
+      "id": "F-16",
+      "title": "A-2: «I-62 A-2 — F6 invalid-launch and runtime-invalidation recovery budgets» (candidata que prepara la supervisión; NO aplicada)",
+      "kind": "COORDINATOR + ARCHITECT (enmienda material)",
+      "blocks": ["F-01 (U-01b: B3 NO AUTORIZADA bajo el Freeze actual)", "F-02 (B3)", "F-03 (bloque de medición nuevo; U-04)", "READY-01"],
+      "frozen_basis": "LIFECYCLE §8 READY-01 («Alcance congelado completo; diferimientos decididos por autoridad competente y A-n versionada cuando cambie Freeze») y §6 (A-n); V14 D.3 (FX-04a: Principal B «1 sesión», «+1 reapertura», tope 2; «N11: B2», 1 sesión; Sondas previas (codex-cli, binario actual): «2 (fuera de la ronda; con OD-2)»)",
+      "content": "problema 1: como máximo UNA repetición limpia extraordinaria por escenario tras una acreditación INVALID_LAUNCH y una disposición del Coordinator; problema 2: un bloque de medición NUEVO de como máximo DOS sondas de solo lectura para el BinaryHash/AppVersion exactos nuevos cuando una actualización automática invalidó un runtime ya medido, con aceptación del Owner de la huella resultante bajo OD-2; sin reinicio de contadores (decisiones §55, A-2)",
+      "state": "candidata, no aplicada; material: requiere acuerdo del Coordinator y de un Architect independiente (decisiones §55). Si se acuerda, permitiría exactamente una B3 (U-01b). Mientras esté pendiente: ninguna sonda de modelo (U-04) ni trabajo de modelo del Controller, del Architect o de P1b (decisiones §55, punto 13); sigue la preparación sin invocación de modelo de codex-cli (decisiones §55, punto 13) y la de F7 (decisiones §55, punto 14)",
+      "owner_action": "abrir la revisión del Architect independiente de A-2 con su tarjeta aparte (no es una acción de la tarjeta de la mañana)",
+      "coordinator_action": "acordar o no A-2 con el Architect independiente; si AGREED, A-n versionada y visible (READY-01; READY-09: «alcance y visibilidad de todas las A-n»)",
+      "open_question": "Q22 (alcance de A-2 frente a la ejecución compacta de la OV, D.5)"
     }
   ],
-  "open_questions_ref": "closure-integration-checklist.md §10 (Q1..Q20)"
+  "open_questions_ref": "closure-integration-checklist.md §10 (Q1..Q22)"
 }

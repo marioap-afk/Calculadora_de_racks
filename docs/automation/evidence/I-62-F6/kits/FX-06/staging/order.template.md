@@ -43,8 +43,9 @@ CodexTransport: <levantamiento de P-01: huella de config.toml <SHA-256> y binari
    conversación. Si hace falta una decisión, publícala en el estado (`orchestration.escalation` con la decisión exacta requerida) y detente: ningún hecho
    de continuación vive solo en la conversación (16.29).
 6. **Transportes.** El rol ARCHITECT solo por la celda y el transporte que admite la autorización, con la receta de 16.4
-   (`-C <directorio fijado por este Coordinator>`) y la huella y el binario de `CodexTransport`; antes de cada lanzamiento y después de cada corrida,
-   compara la huella y el binario: si cambian, STOP P-01. No uses `claude-cli`. Ningún otro rol ni ninguna otra herramienta revisa el objeto por ti.
+   (`-C <clon aparte de solo lectura fijado por este Coordinator>`, nunca tu propia carpeta de trabajo; durante cada corrida no leas, no escribas ni
+   ejecutes nada en ese clon) y la huella y el binario de `CodexTransport`; antes de cada lanzamiento y después de cada corrida, compara la huella y el
+   binario: si cambian, STOP P-01. No uses `claude-cli`. Ningún otro rol ni ninguna otra herramienta revisa el objeto por ti.
 7. **Validación.** Antes de cada push, valida el punto (esquema, `StateRef` en el árbol del propio commit, par con el punto anterior). Una violación no se
    publica: STOP y espera aquí.
 8. **Fin.** Cuando el estado derive una acción que no te corresponde: <publica el QH (T17) y termina tu sesión | espera aquí>.
@@ -65,8 +66,9 @@ CodexTransport: <levantamiento de P-01: huella de config.toml <SHA-256> y binari
 | el bloque no contiene ningún token solo de supervisión ni indicio sin disposición (`prepublish_scan.py`, código 0, o 4 con disposición registrada en `R:` prepublish-scan.json) | D.6; §54 «Sin atajos» |
 | `<n>` es el número siguiente a la última orden del archivo; `Authorization` es el `AuthorizationId` del bloque RLA publicado antes o en el mismo commit | 16.28; README §2.1 P5 |
 | el blob del anexo es el que fija `ObjectFamily` de la RLA (X v1: `5d4ea067`, con la salvedad de OQ-23 sobre su cabecera) | §20.5.1; OQ-16; OQ-23 |
-| `-C` es el directorio que el Coordinator decidió en OQ-13 (variante A `D:\r62-fixture\arch` o variante L, el worktree de la unidad `D:\r62-fixture\A6`) | 16.4; OQ-13 |
+| el marcador de `-C` del paso 6 se rellena con `D:\r62-fixture\arch` (OQ-13 decidida, variante A: decisiones §55, U-03); nunca con la carpeta del Principal `D:\r62-fixture\A6` | 16.4 (receta, Cesión); decisiones §55, U-03 |
 | el archivo de decisiones completo, tal como quedará tras el push, también pasa `prepublish_scan.py` (se espera entre los `CanonicalInputs` del revisor) | architect-invocation-contract.md §5; README R-09 |
-| `CodexTransport` es exactamente lo aceptado en OD-2d tras la re-medición | 16.4; decisiones §50, §53 |
+| `CodexTransport` es exactamente lo aceptado en OD-2d tras la re-medición (bloque nuevo de medición, solo con A-2 AGREED: decisiones §55, U-04) y los invalidadores de la observación de la celda siguen iguales (decisiones §55, U-02(b)) | 16.4; decisiones §50, §53, §55 |
+| la decisión de OQ-26 (instantánea de QH2 o ninguna escritura en `fx/u1` antes de B3) permite el push de P5 | decisiones §55 (U-01b, U-01c); README OQ-26 |
 | el paso 8 elige una sola variante; con «termina tu sesión», la supervisión acredita la terminación (`isRunning`) | §9.1; T17 |
 | la redacción del paso 5 no es una regla congelada: si el Coordinator la cambia, revisar el riesgo R-08 del README (fin de turno del Principal) | README §6 R-08; OQ-04 |

@@ -1,0 +1,49 @@
+{
+ "Transcript": "%USERPROFILE%/.claude/projects/D--Documentos-Codex-Calculadora-de-racks/e5124bf0-ed19-48a1-97ba-574baf9d33a2/subagents/workflows/wf_b09a9e8e-7bc/agent-ad7a6adc349b7b333.jsonl",
+ "TranscriptSha256": "baa2f87bda6c879257cff79f9f5a55916e4a9c64c3d95532b309552bd7435795",
+ "Clone": "D:\\r62-arch-a2",
+ "Filter": null,
+ "Command": "python read_fidelity.py <transcript> D:\\r62-arch-a2 4a059afa85dce5a82f74120cad88c5ebadb61c7a <output json>",
+ "Rev": "4a059afa85dce5a82f74120cad88c5ebadb61c7a",
+ "Calls": [
+  {
+   "Path": "docs/initiatives/I-62-A-2.md",
+   "Offset": 130,
+   "Limit": 27,
+   "Lines": 27,
+   "Faithful": 27,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-2.md",
+   "Offset": 198,
+   "Limit": 27,
+   "Lines": 27,
+   "Faithful": 27,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  },
+  {
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Offset": 2519,
+   "Limit": 10,
+   "Lines": 10,
+   "Faithful": 10,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  }
+ ],
+ "Summary": {
+  "Calls": 3,
+  "Faithful": 3,
+  "Degraded": 0,
+  "DeliveredLinesByPath": {
+   "docs/initiatives/I-62-A-2.md": 54,
+   "docs/initiatives/I-62-proposal-v14.md": 10
+  }
+ }
+}

@@ -1,9 +1,12 @@
 # FX-02 — contratos de las invocaciones del Controller (`codex-cli`, solo lectura)
 
 > **Preparación; solo supervisión.** Describe lo que A2 debe construir y lo que el Controller debe devolver, con los campos de los esquemas del
-> conjunto I62 (copias byte a byte en el fixture). No contiene valores esperados de ningún resultado. Bloqueado por **F-OD-PROBE** y **F-OD-2D** (no hay
-> invocación de `codex-cli` posible antes), por F-UP-FX04A (ninguna escritura de FX-02 en el origen con FX-04a abierta) y por CD-03, CD-04, CD-07,
-> CD-09, CD-10, CD-14, CD-19, CD-20, CD-22 y CD-23 (`frontiers.json`; salvo CD-07, todas son disposiciones del Coordinator de I-62, grupo b).
+> conjunto I62 (copias byte a byte en el fixture). No contiene valores esperados de ningún resultado. Bloqueado por **F-A2** (A-2 AGREED: el tope
+> congelado de sondas está agotado, decisiones §55 U-04), **F-OD-PROBE** (bloque nuevo de medición) y **F-OD-2D** (no hay invocación de `codex-cli`
+> posible antes), por CD-26 (OQ-33: ninguna escritura de FX-02 en el origen antes de esa disposición; F-UP-FX04A quedó liberada por decisiones §55
+> U-01c) y por CD-03, CD-04, CD-07, CD-09, CD-14, CD-19, CD-20, CD-22, CD-23, CD-27 y CD-28 (`frontiers.json`; salvo CD-07, todas son disposiciones
+> del Coordinator de I-62, grupo b). CD-10 está **DECIDIDA EN PARTE** (decisiones §55: U-03, `-C` del Controller = `D:\r62-fixture\A2`; U-04, tope de
+> sondas); los directorios de las sondas del bloque nuevo siguen pendientes (CD-28 / OQ-35 del README).
 
 Autoridades: AP 16.4 (receta y relevo), 16.5/16.22 (A1'-A8'), 16.9/16.22 (14 comprobaciones), 16.18-16.21 (preflight, adapters, binding,
 independencia), 16.23-16.24 (invocación de rol, cierre, fidelidad); V14 B.7, B.9; RAE §3, §5, §8, §10, §13-§15; routing §1, §3, §5, §8, §9; descriptor
@@ -136,7 +139,7 @@ tocarlo. Plantilla del fixture (los `{…}` los fija la autorización de transpo
 
 ```bash
 codex_bin="$LOCALAPPDATA/OpenAI/Codex/bin/{etiqueta autorizada}/codex.exe"
-wt="D:/r62-fixture/A2"                                   # -C exacto según CD-10 (OQ-09)
+wt="D:/r62-fixture/A2"                                   # -C del Controller: decisiones §55, U-03 (CD-10, decidida en esto)
 run_dir="artifacts/orchestration/FX-U1/T1/0/{RunId}"     # T1-<control>/0/{RunId} para los negativos
 PATH="/c/Users/<usuario>/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell:$PATH" \
 timeout --kill-after=10 600 "$codex_bin" exec -C "$wt" -s read-only -m "{modelo de la celda}" -c model_reasoning_effort="{effort de la celda}" \
@@ -152,12 +155,23 @@ Celdas candidatas según el catálogo (hechos, no elección): `gpt-6-luna` (Efic
 CONTROLLER_*; `gpt-6-astra` no elegible (créditos/API). Sus mediciones con el binario `3b8f6e33` están **obsoletas** con el binario vigente
 (dec. §50; ev. §75): la elegibilidad exige una invocación medida con el binario autorizado (routing §5; AP 16.20).
 
+**Invocación medida de la celda del Controller (decisiones §55).** Por U-02(b) (punto 9), las sondas de solo lectura autorizadas para el binario
+vigente son las invocaciones medidas que exigen las celdas del Controller y del Architect. U-03 fija el `-C` del Controller (`D:\r62-fixture\A2`), no
+el directorio de su sonda: ese directorio sigue pendiente (CD-28 / OQ-35 del README) y la sonda con `-C D:\r62-fixture\A2` es la **propuesta** de este
+staging. El bloque nuevo solo existe con A-2 AGREED y con la autoridad que A-2 fije (en la candidata, §3.3 regla 3: una disposición del Coordinator
+nombra el par exacto y el Owner autoriza el consumo), porque el tope congelado de sondas está agotado (U-04; A-2, Problema 2: como máximo dos sondas
+`read-only` para el BinaryHash/AppVersion exactos, sin reinicio de contadores). Va antes de abrir A2 (README S11 y S04). Tras OD-2d **no** hay segunda medición mientras sigan
+iguales todos los invalidadores: BinaryHash, AppVersion, huella, estado de autenticación, modelo, effort, blobs de catálogo y routing, e instancia del
+host. Cualquier cambio deja obsoleta la observación. U-02(b) no dispone de dónde salen las filas RUNTIME_OBSERVED del preflight de A2 (OQ-25) ni cómo
+entra la medición en el fixture (OQ-10).
+
 ## 5. Revalidación antes de cada invocación (Salida) y después (Entrada)
 
 | Momento | Qué | Si falla |
 |---|---|---|
 | Salida | `HEAD` = `origin/fx/u1` por `git ls-remote`; el último commit lleva el resumen de estado (antes de la planificación, el Q0; antes de la verificación y de cada control, el GREEN G, cuyo cuerpo debe llevarlo: `worker-reviewer-contracts.md` §2.3); árbol limpio y ninguna operación Git en curso; `git fetch` y `origin/main` registrado; procesos (desde PowerShell, no desde Git Bash: RAE §3.2); una sola delegación abierta (`DS`); SHA-256 de `~/.codex/config.toml` y lista ordenada de nombres de secciones y claves (sin valores) | árbol sucio u operación en curso: no hay Salida (OQ-02); `DS` UNKNOWN: STOP |
 | Salida | huella = la autorizada **y** SHA-256 del binario = el autorizado (y ruta = la autorizada) | P-01: STOP sin aceptar nada; ninguna invocación de Codex hasta la decisión del Owner |
+| Salida | los demás invalidadores de decisiones §55 U-02(b) (versión de la app, estado de autenticación, modelo, effort, blobs de catálogo y routing, instancia del host) iguales a los de la medición de la celda | observación obsoleta: sin invocación medida vigente no hay elegibilidad (AP 16.20; P-10); con A-2, la recuperación es otro bloque de medición |
 | Salida | P-07: `launched + uncertain + 1` ≤ tope | no se lanza |
 | Cesión | A2 no lee, no escribe ni ejecuta nada sobre el worktree; `StartUtc`/`EndUtc` | P-08: salida inválida |
 | Entrada | el proceso lanzado y su árbol muertos; mismas comprobaciones de la Salida; huella y binario iguales | cambio de huella: P-01 (P-11), con el diff de nombres de claves |
@@ -186,7 +200,9 @@ esperar) no está escrito: OQ-29 (CD-23, `{IN_WINDOW_STOP_RULE}`).
 
 ## 7. Architect (`codex-cli`, invocación propia): revisión del contrato de T1
 
-Misma receta de §4 y misma revalidación de §5, con su propio `thread_id` y `-C` según CD-10. Diferencias:
+Misma receta de §4 y misma revalidación de §5, con su propio `thread_id`. Su `-C` **no** está decidido: decisiones §55, U-03, fija el del Controller
+de FX-02 (`D:\r62-fixture\A2`) y el del Architect de FX-06 (`D:\r62-fixture\arch`), pero no el de este Architect; con la receta literal sería `A2`, y su
+bucle publica QU LAUNCHED durante la corrida (Cesión): OQ-34 (CD-27). Diferencias:
 
 | Elemento | Contenido | Fuente |
 |---|---|---|

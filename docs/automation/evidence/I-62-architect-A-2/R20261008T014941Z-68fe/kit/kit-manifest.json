@@ -1,0 +1,64 @@
+{
+ "Kit": "I-62 A-2 formal Architect review kit (adapted from the A-1 r5 kit v4; ONE invocation prepared under decisions §55, point 8)",
+ "RunId": "R20261008T014941Z-68fe",
+ "Commit": "4a059afa85dce5a82f74120cad88c5ebadb61c7a",
+ "ObjectIntroducedBy": "b280f7079e128113666e85a2f437e629d0f0d99e",
+ "Auditor": "v4-a2.1 (declared and self-tested before the run: selftest-result.json AllPass, 23/23)",
+ "Clone": "D:/r62-arch-a2 (git clone --no-local -c core.autocrlf=false --single-branch; main = the commit; no remote; clone-verification.json AllChecks)",
+ "Run": "D:/r62-arch-a2-run (order.txt and prompt.md, byte-identical to the kit copies listed here; the auditor checks them against the kit copies and closure RunFileHashes)",
+ "Launch": "HUMAN_LAUNCH_REQUIRED (not launched)",
+ "Files": {
+  "clone-verification.json": {
+   "Bytes": 3035,
+   "Sha256": "f2741f51a7f0d6719e34b1a29fbf76ccf7ab6adc0a5fff06bdbc667446a19654"
+  },
+  "closure.json": {
+   "Bytes": 36041,
+   "Sha256": "7b39618ff2e1af5e4b38e005322c9c3860a66ddb152555ef809331dcb249512b"
+  },
+  "corpus.json": {
+   "Bytes": 402,
+   "Sha256": "81573c339ca9163ad5e1f546993b462add8225df2f662f7582bfdc94781c0995"
+  },
+  "make_closure.py": {
+   "Bytes": 26459,
+   "Sha256": "aed96543879240e5fed14dcce71d726cf65b9855f2ae37bb5cffa309296e269d"
+  },
+  "order.txt": {
+   "Bytes": 6234,
+   "Sha256": "bfa265cd5b3bee47059dd8178153b19916826ad94d936715fd22893a3d6d5259"
+  },
+  "post-review.py": {
+   "Bytes": 51803,
+   "Sha256": "ed30d413410ed0e6c1e196613a4d9561b505e4bce35c6d77e7860bb376ebbe48"
+  },
+  "preflight-read-fidelity.json": {
+   "Bytes": 1291,
+   "Sha256": "cda4eb5138b718b2fa8086ea0f80c78e8d7e1cb6a59af85a6f5e51e203f88d71"
+  },
+  "prompt.md": {
+   "Bytes": 23737,
+   "Sha256": "22d93ae5464ffbea29d52c1eae7f10e0e82f68eb180a272ba25cd8e3f2d0cfd5"
+  },
+  "read_fidelity.py": {
+   "Bytes": 4731,
+   "Sha256": "9695051fe820f3c284c1997cc90c269ae6509d008c72822464eab65d007ac5b5"
+  },
+  "result.schema.json": {
+   "Bytes": 12906,
+   "Sha256": "df72a1f541acf6fafc3ab11e8be609f4ab8d1abe647c72eca09af87359f572d0"
+  },
+  "selftest-post-review.py": {
+   "Bytes": 33572,
+   "Sha256": "6e8664ea52964826199ab875fe765997285d45692cf80ad49887ae6164204376"
+  },
+  "selftest-result.json": {
+   "Bytes": 13567,
+   "Sha256": "3f5e531041cb5196021e4cd28a6dd439fff4dc8b1d5c7a6e961e823c3d070153"
+  },
+  "verify_clone.py": {
+   "Bytes": 6838,
+   "Sha256": "1540d5f3e2fefd4f7db687884aa540cbea49c381da26197ad72624276dffe24d"
+  }
+ }
+}

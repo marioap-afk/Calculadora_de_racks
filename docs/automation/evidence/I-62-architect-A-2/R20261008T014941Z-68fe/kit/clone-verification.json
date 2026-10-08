@@ -1,0 +1,100 @@
+{
+ "Clone": "D:\\r62-arch-a2",
+ "Commands": [
+  "git clone --no-local -c core.autocrlf=false --single-branch --branch architecture/portabilidad-coordinador-principal \"D:\\Documentos\\Codex\\Calculadora de racks\" D:\\r62-arch-a2",
+  "git -C D:\\r62-arch-a2 checkout -q -B main 4a059afa85dce5a82f74120cad88c5ebadb61c7a",
+  "git -C D:\\r62-arch-a2 branch -D architecture/portabilidad-coordinador-principal",
+  "git -C D:\\r62-arch-a2 remote remove origin"
+ ],
+ "Head": "4a059afa85dce5a82f74120cad88c5ebadb61c7a",
+ "Branches": [
+  "main"
+ ],
+ "Remotes": [],
+ "StatusPorcelain": "",
+ "StatusIgnored": "",
+ "CoreAutocrlf": "false",
+ "WorktreeList": "D:/r62-arch-a2 4a059afa [main]",
+ "Tags": 12,
+ "Blobs": {
+  "docs/initiatives/I-62-A-2.md": {
+   "Expected": "d47f71b66ba86c31f857f0d8c2d2437636947af0",
+   "Got": "d47f71b66ba86c31f857f0d8c2d2437636947af0",
+   "Match": true
+  },
+  "docs/initiatives/I-62-architect-package-A-2.md": {
+   "Expected": "f45a2384eb1a3c9ec5654995c5b88f6c51b6742f",
+   "Got": "f45a2384eb1a3c9ec5654995c5b88f6c51b6742f",
+   "Match": true
+  },
+  "docs/automation/evidence/I-62-A2/a2-guards.py": {
+   "Expected": "91c9c2a46a4a9327ecfff44fa52a4d48e0e33935",
+   "Got": "91c9c2a46a4a9327ecfff44fa52a4d48e0e33935",
+   "Match": true
+  },
+  "docs/automation/evidence/I-62-A2/a2-guards-result.json": {
+   "Expected": "33ffbb9deb114972cfd11ade3ab448a2af1f50dd",
+   "Got": "33ffbb9deb114972cfd11ade3ab448a2af1f50dd",
+   "Match": true
+  },
+  "docs/initiatives/I-62-proposal-v14.md": {
+   "Expected": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa",
+   "Got": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa",
+   "Match": true
+  }
+ },
+ "CommitsPresent": {
+  "b280f7079e128113666e85a2f437e629d0f0d99e": {
+   "What": "commit de A-2",
+   "Present": true
+  },
+  "c9f9419dc4aed32242c59de489a8e78a8e369f9b": {
+   "What": "base de A-2",
+   "Present": true
+  }
+ },
+ "CommitsAbsent": {
+  "4c617e82b32b6c810b68d75fc19472efed22b393": {
+   "What": "commit de V14 (anterior al rebase)",
+   "Present": false
+  },
+  "b64a3b640c7ee3bd77636e7a3218ae0ebac2dd43": {
+   "What": "FREEZE_SHA (anterior al rebase)",
+   "Present": false
+  }
+ },
+ "IndexSymlinks": 0,
+ "ReparsePointsInWorkTree": [],
+ "WorkTreeFiles": 3167,
+ "Run": {
+  "Dir": "D:\\r62-arch-a2-run",
+  "Files": [
+   "order.txt",
+   "prompt.md"
+  ],
+  "order.txt": {
+   "Bytes": 6234,
+   "Sha256": "bfa265cd5b3bee47059dd8178153b19916826ad94d936715fd22893a3d6d5259",
+   "MatchesAuthority": true,
+   "IdenticalToKitCopy": true
+  },
+  "prompt.md": {
+   "Bytes": 23737,
+   "Sha256": "22d93ae5464ffbea29d52c1eae7f10e0e82f68eb180a272ba25cd8e3f2d0cfd5",
+   "IdenticalToKitCopy": true
+  }
+ },
+ "Ex1Preflight": {
+  "Command": "python docs/automation/evidence/I-62-A2/a2-guards.py self-test --out <temporal junto al kit> (cwd = el clon)",
+  "ExitCode": 0,
+  "Stdout": "PASS",
+  "Vectors": 43,
+  "VectorsPassed": 43,
+  "Mutants": 7,
+  "MutantsKilled": 7,
+  "RulesMissing": [],
+  "OutputSha256": "6d6c34048109e6df95277e6030dfb49a6899e13e266fff2ad168f743bf32dc64"
+ },
+ "StatusAfterEx1": "",
+ "AllChecks": true
+}

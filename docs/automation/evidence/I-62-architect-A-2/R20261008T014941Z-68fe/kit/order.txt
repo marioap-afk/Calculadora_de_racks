@@ -1,0 +1,282 @@
+I-62 — COORDINATOR DISPOSITION
+B2 / U-01 + F6 MATERIAL RECOVERY BOUNDARY
+
+1. U-01a — B2 CLASSIFICATION
+
+Preserve:
+
+B2 raw mechanical result = FAIL 2/23
+
+B2 accreditation:
+
+INVALID_LAUNCH
+
+Reason:
+
+KICKOFF_SCHEMA_NOT_DELIVERED is proven.
+B2 never received response.v2.schema.json / comparison-contract-v2.
+
+Therefore:
+
+FX-04a = UNVERIFIED
+C-25a = UNVERIFIED
+
+Do NOT classify B2 as PASS.
+Do NOT classify the protocol as FAIL from B2.
+Do NOT normalize or rewrite the 2/23 result.
+
+Preserve all hashes and evidence unchanged.
+
+
+2. U-01b — THIRD PRINCIPAL B SESSION
+
+B3 is NOT AUTHORIZED under the current Freeze.
+
+Frozen D.3 budget:
+
+FX-04a Principal B:
+1 base session + 1 reopening = 2 total.
+
+Those two general slots have been consumed by B1 and B2.
+
+The separate N11 B2 slot is scoped to N11 and is NOT fungible.
+N11 is currently NOT_APPLICABLE and its slot may not be repurposed.
+
+A third general Principal B session would increase a frozen F6 budget.
+
+Coordinator cannot authorize that by ordinary disposition.
+
+A post-Freeze amendment is required.
+
+
+3. U-01c — PROGRESS OF OTHER LINES
+
+Release the fixture origin for independent work.
+
+Authorized:
+
+- FX-02 preparation;
+- FX-06 preparation;
+- F7 preparation;
+- procedural fixture work that does not require blocked transports.
+
+FX-04a remains OPEN / UNVERIFIED.
+
+This is NOT acceptance of an FX-04a limitation for F6 closure.
+
+Frozen closure still requires:
+
+FX-04a PASS
+
+Therefore:
+
+F6 GATE PASS remains impossible until C-25a is satisfied.
+
+
+4. A-2 REQUIRED
+
+Prepare a narrow post-Freeze amendment candidate:
+
+I-62 A-2 — F6 invalid-launch and runtime-invalidation recovery budgets
+
+Do NOT apply it yet.
+
+Do NOT edit the Freeze.
+
+Do NOT edit A-1.
+
+Do NOT modify production semantics outside the exact F6 budget/recovery issue.
+
+
+5. A-2 PROBLEM 1 — INVALID TEST LAUNCH
+
+Candidate rule:
+
+A real F6 Principal test session whose run is independently classified
+INVALID_LAUNCH because the harness/input contract was not delivered or was
+provably defective:
+
+- remains historical evidence;
+- cannot become PASS or FAIL;
+- still records the physical launch;
+- may receive at most ONE extraordinary clean rerun for that scenario,
+  only after Coordinator disposition;
+- the extraordinary rerun does not reset or alter any other counter;
+- repeated harness failure does not grant another extraordinary rerun.
+
+Apply this candidate to FX-04a only after A-2 is AGREED.
+
+If agreed, it would permit exactly one B3.
+
+
+6. A-2 PROBLEM 2 — AUTOMATIC RUNTIME INVALIDATION
+
+Candidate rule:
+
+When an already-measured runtime is invalidated by an externally observed
+automatic app/binary update after the frozen probe allowance was consumed:
+
+- old probes remain historical and counted;
+- no ordinary model work is allowed under the stale observation;
+- a NEW measurement block of at most TWO read-only probes may be authorized
+  for the exact new BinaryHash/AppVersion;
+- the Owner must accept the resulting exact fingerprint under OD-2;
+- the new measurement block does not reset any scenario, invocation, retry,
+  correction or review budget;
+- a further binary update invalidates the new measurement and requires the
+  same authority again; no silent reuse.
+
+Do not make this unlimited in the amendment wording.
+The authority and exact cap must remain explicit.
+
+
+7. MATERIALITY
+
+Classify A-2 as:
+
+MATERIAL POST-FREEZE AMENDMENT
+
+Reason:
+
+it changes frozen F6 launch/probe budgets.
+
+Required authority:
+
+Coordinator + independent Architect agreement
+under the normal A-n lifecycle.
+
+Owner is required only for Owner-reserved consumption/OD decisions,
+not for the architectural agreement itself unless the review identifies an
+Owner-reserved consequence.
+
+
+8. A-2 WORKFLOW
+
+Prepare:
+
+- exact A-2 text;
+- affected Freeze clauses;
+- before/after semantics;
+- proof no production/F4 semantics change;
+- regression tests / mechanical guards;
+- Architect package;
+- materiality record.
+
+Do NOT merge/apply A-2 before AGREED.
+
+If no eligible independent Architect transport exists now:
+prepare the complete package and mark HUMAN_LAUNCH_REQUIRED;
+continue all independent work.
+
+
+9. U-02(b)
+
+Coordinator disposition:
+
+The authorized OD-2d read-only probes for the CURRENT binary ARE the required
+measured invocations of the Controller/Architect cells.
+
+No second measurement is required after OD-2d if all invalidators remain equal:
+
+- BinaryHash;
+- AppVersion;
+- fingerprint;
+- auth state;
+- model;
+- effort;
+- catalog/routing blobs;
+- host instance.
+
+If any invalidator changes, the observation is stale.
+
+
+10. U-03
+
+Use:
+
+FX-02 Controller -C:
+D:\r62-fixture\A2
+
+FX-06 Architect -C:
+D:\r62-fixture\arch
+
+FX-06 chooses the separate read-only arch clone variant.
+
+Do not use A6 as the Architect working directory.
+
+
+11. U-04
+
+Current frozen probe allowance is EXHAUSTED.
+
+No additional model probe may run yet.
+
+Previous Owner authorizations do not increase the frozen cap.
+
+Wait for A-2 agreement before requesting/executing the new measurement block.
+
+
+12. U-05
+
+The specialized P1b `codex sandbox` measurement is NOT covered by the existing
+narrow OD-2d-PROBE authorization.
+
+Do not execute P1b now.
+
+Prepare an exact Owner packet for it if it remains necessary after A-2.
+
+It must enumerate:
+- operations;
+- directories;
+- whether model work occurs;
+- fingerprint observations;
+- sandbox implications;
+- consumption.
+
+
+13. FX-02 / FX-06 WHILE A-2 IS PENDING
+
+Continue all preparation that does not require codex-cli model invocation.
+
+Do not launch:
+- Controller;
+- Architect;
+- sandbox P1b model work.
+
+Prepare:
+- contracts;
+- state transitions;
+- input closures;
+- fidelity checks;
+- CI fixtures;
+- negative cases;
+- evidence layout;
+- Owner launch cards.
+
+Do not wait idle.
+
+
+14. F7
+
+Continue allowed F7 preparation.
+
+Do not declare READY, Candidate, closure or integration.
+
+
+15. REPORT BACK
+
+Return:
+
+1. A-2 exact candidate text;
+2. clauses changed;
+3. why each change is minimal;
+4. tests/guards;
+5. Architect package identity;
+6. whether Architect can be invoked automatically;
+7. exact human action if not;
+8. FX-02 independent preparation progress;
+9. FX-06 independent preparation progress;
+10. any new material finding.
+
+Do not launch B3.
+Do not run another Codex model probe.

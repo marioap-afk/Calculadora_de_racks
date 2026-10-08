@@ -29,7 +29,8 @@ LIFECYCLE)». **Bloquea:** READY-03 y vigencia. **Momento:** antes de READY-03.
   las unidades I61 (ADR-0048, «Decisión»).
 - **No activa nada por sí solo:** aceptado, rige solo desde `I62_EFFECTIVE_SHA` (ADR-0048, «Vigencia»; 16.14), es decir, desde el merge efectivo de la
   integración. Antes, todo texto materializado de I-62 sigue inactivo.
-- No cambia el Freeze (V14 + A-1), ni las OD-2..OD-7, ni la matriz OV; no convierte ningún UNKNOWN en MATCH (ADR-0048 punto 4).
+- No cambia el Freeze (V14 + A-1; A-2 es una candidata sin aplicar, decisiones §55), ni las OD-2..OD-7, ni la matriz OV; no convierte ningún UNKNOWN en
+  MATCH (ADR-0048 punto 4). Si A-2 se acuerda antes de la solicitud, el paquete se rehace con el Freeze vigente.
 - Satisface la parte OD-1 de READY-03 (LIFECYCLE §8: «sin … decision material/Owner pendiente»).
 
 ## 4. Deltas OWNER-RESERVED que la aceptación abarca (ADR-0048, «Amplía #1 (OWN-L)»)

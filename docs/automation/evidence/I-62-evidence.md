@@ -2741,3 +2741,36 @@ solo desde artefactos custodiados.
   `275d977b3e16bfe2f81261a443fb814e109d6fc526c0fb0c6c7c9d3a1c22713e`, igual al del origen vivo en ese momento; `fx/u1` = `cabed547`). Si se usa para
   B3, o si se prohíben las escrituras en `fx/u1` antes de B3, lo decide el Coordinator (A-2 §8, Q-A2-04).
 - **Codex:** asignación congelada de sondas agotada (§55 punto 11); ninguna sonda; `codex-cli` sigue en P-01 / STOP.
+
+## 81. Preparación tras decisiones §55 (FX-02, FX-06, F7 y registro) y kit de la revisión del Architect de A-2 custodiado antes del lanzamiento
+
+- **Carriles §55** (workflow de 9 agentes: autor, verificador adversarial y reparación por carril; 0 errores; verificadores: FX-02 2 MAJOR y 4 MINOR,
+  FX-06 3 MINOR, F7 1 MAJOR y 6 MINOR; todos reparados):
+  - **FX-02:** CD-10 queda DECIDIDA EN PARTE. §55 U-03 fija solo los `-C` (Controller `A2`); los directorios de las ≤ 2 sondas del bloque nuevo
+    quedan abiertos como OQ-35 / CD-28, con `A2`/`arch` como propuesta de la preparación. S11 y S12 (bloque y OD-2d) van antes de abrir A2 (S04).
+    S13 espera al QR de A2 (S10). La autoridad de la sonda es la de A-2 (regla 3 de A2-P2).
+  - **FX-06:** variante A (`arch`), sin A6 para el Architect. OQ-11 sigue abierta, igual que la obligatoriedad de QU LAUNCHED. Nuevo
+    [p1b-owner-packet.md](I-62-F6/kits/FX-06/staging/p1b-owner-packet.md), solo si P1b sigue haciendo falta tras A-2. Nuevas OQ-26 (instantánea de
+    QH2 frente a escrituras en `fx/u1`), OQ-27 (cómputo de P1b) y OQ-28 (orden de P1b). Auditor sin cambios (64/64).
+  - **F7 y registro:** FX-04a OPEN/UNVERIFIED; F6 GATE PASS imposible hasta C-25a; A-2 [PENDIENTE] en la entrada de FOUNDATIONS y en READY-09. El
+    registro marca U-01..U-05 como DECIDIDAS (§55) y añade U-66..U-71 y la divergencia D-11 (atribución del directorio de la sonda del Architect).
+  - **Sello:** `supervision-checks.md` resellado (`729fc3ef…`; la versión anterior `44494358…` queda archivada fuera del repositorio);
+    `negatives.md` sin cambio.
+- **Kit de la revisión del Architect de A-2** ([README](I-62-architect-A-2/R20261008T014941Z-68fe/README.md)), adaptado del kit v4 acreditado de A-1 r5 y
+  custodiado **antes** del lanzamiento:
+  - clon `D:\r62-arch-a2` en `4a059afa` (solo `main`, sin remoto, limpio, sin enlaces), con los blobs de A-2 `d47f71b6…`, del paquete
+    `f45a2384…`, de las guardas `91c9c2a4…` y de su resultado `33ffbb9d…`;
+  - cierre con 12 insumos canónicos y 14 transitivos;
+  - orden `order.txt` = el cuerpo exacto de §55 (`bfa265cd…`);
+  - `prompt.md` de 23 737 bytes (`22d93ae5…`), idéntico al del directorio del run;
+  - auditor v4-a2.1 con autoprueba **23/23** sobre el clon real; fidelidad previa 3/3;
+  - las guardas G5 pasan en el clon (self-test 43/43, 7/7 mutantes).
+
+  El verificador adversarial del kit encontró 2 MAJOR (política de herramientas Bash/PowerShell; premisas sobre `order.txt`) y 6 MINOR, todos
+  reparados.
+- **Discordancias del paquete, señaladas de forma neutral en el prompt y no resueltas:**
+  - el paquete §1 y §4 nombran Q-A2-01..05, pero A-2 §8 tiene siete preguntas, y el resultado dispone las siete;
+  - «la fila de P-07 en §8» corresponde en V14 a la línea 657 (§9.3); P-07 se define en AUTOMATION_PLAN §16.11.
+- **Lanzamiento:** HUMAN_LAUNCH_REQUIRED. No hay transporte automático elegible: `codex-cli` está en P-01 con la asignación agotada, `claude-cli`
+  sin autenticar (OD-3) y la sesión principal no puede abrir sesiones limpias. Tras este commit, la sesión crea **una sola vez** la tarjeta de tarea
+  de la app, con `cwd` = el clon y el `prompt.md` custodiado; el Owner la lanza con un clic (precedente de A-1 r5, evidencia §57).

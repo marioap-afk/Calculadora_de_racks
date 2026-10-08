@@ -11,8 +11,8 @@
       "Lane": "fx02",
       "File": "supervision-checks.md",
       "Location": "D:/r62-fixture/evidence-out/supervision/fx02/supervision-checks.md",
-      "Sha256": "444943584d3d792a8d152377fd62ee07aa8a54de110aeb61ea3fbbf933a28512",
-      "Bytes": 22058
+      "Sha256": "729fc3ef34b0704d36fa0313b980554bbd5253c2cd64c96a95c3c4cd9522a0fd",
+      "Bytes": 22954
     },
     {
       "Lane": "f7ready",
@@ -39,6 +39,14 @@
       "Bytes": 15641,
       "ArchivedAt": "D:/r62-fixture/evidence-out/supervision/fx02/history/supervision-checks.02a64b85.md",
       "SupersededBy": "ronda 2 de la noche (evidencia §77)"
+    },
+    {
+      "Lane": "fx02",
+      "File": "supervision-checks.md",
+      "Sha256": "444943584d3d792a8d152377fd62ee07aa8a54de110aeb61ea3fbbf933a28512",
+      "Bytes": 22058,
+      "ArchivedAt": "D:/r62-fixture/evidence-out/supervision/fx02/history/supervision-checks.44494358.md",
+      "SupersededBy": "preparación tras decisiones §55 (evidencia §81)"
     }
   ]
 }

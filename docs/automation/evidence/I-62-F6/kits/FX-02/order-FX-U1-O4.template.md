@@ -6,8 +6,10 @@
 
 ## Notas de la supervisión (no se publican)
 
-- **Secuencia con FX-04a.** La orden **no** se publica mientras FX-04a siga abierta (frontera F-UP-FX04A de `frontiers.json`; README §1): B2 lee este
-  mismo origen y se compara exactamente con un oráculo fijado en el QH2.
+- **Secuencia con FX-04a (decisiones §55).** El origen está liberado para la preparación de FX-02 (U-01c), pero FX-04a sigue OPEN / UNVERIFIED y una
+  B3 (solo con A-2 AGREED: U-01b) leería los hechos remotos de `fx/u1` con `git ls-remote`. La orden **no** se publica hasta que el Coordinator decida
+  OQ-33 (CD-26 de `frontiers.json`; README §1): B3 desde un clon cuyo `origin` sea la instantánea `D:\r62-fixture\fx04a-qh2-origin.git`, o ninguna
+  escritura en `fx/u1` antes de B3. Lo mismo vale para la designación, el bloque de transporte y toda escritura posterior de FX-02.
 - **Sin esperados.** El bloque no contiene valores esperados, oráculos ni disposiciones esperadas de ningún control: describe solo procedimiento,
   autoridad, topes y mutaciones. Los esperados están en `supervision-checks.md` y `negatives.md` (solo supervisión).
 - **Sin identificadores reales (P-16; V14 D.7; repositorio público, dec. §48).** Antes de publicar, búsqueda literal en el bloque relleno (y en cada
@@ -22,7 +24,7 @@
 | Marcador | Contenido | Depende de | Grupo |
 |---|---|---|---|
 | `{EVIDENCE_DIR}` | directorio de evidencia del titular nuevo; propuesta: `docs/automation/evidence/FX-U1-agent/takeover/` | PF-EVIDENCE_DIR | a |
-| (bloque aparte) | la autorización de `codex-cli` (huella, binario, celdas medidas, `-C`) **no** va en la orden: se publica después, en un commit propio, con la plantilla «Bloque posterior» del final de este archivo | F-OD-PROBE, F-OD-2D, CD-09, CD-10 | b (transcrito) |
+| (bloque aparte) | la autorización de `codex-cli` (huella, binario, celdas medidas, `-C`) **no** va en la orden: se publica después, en un commit propio, con la plantilla «Bloque posterior» del final de este archivo. El `-C` del Controller ya está resuelto: `D:\r62-fixture\A2` (CD-10, decidida en esto: decisiones §55 U-03); los directorios de las sondas que miden las celdas, no (CD-28) | F-A2, F-OD-PROBE, F-OD-2D, CD-09, CD-28 | b (transcrito) |
 | `{BINDING_ACCEPTANCE_RULE}` | cómo acepta este Coordinator, antes del Q0, el binding del Controller de planificación, con el texto literal del marcador | CD-03, CD-04, CD-20 (lectura); CD-03-marker (texto) | b + a |
 | `{IN_WINDOW_BINDING_RULE}` | cuándo y cómo se producen, registran y aceptan **dentro de la ventana** el preflight y el binding del Worker y los del Controller de verificación (transitorios en el diario: nunca «publica y espera aquí», que rompería W-2), y qué requisitos tiene el binding de VERIFY | CD-03, CD-04, CD-20, CD-22 | b |
 | `{IN_WINDOW_ACCEPTANCE_RULE}` | quién evalúa A1'-A8', las aceptaciones de bindings y la repetición de `Scope` dentro de la ventana, donde este Coordinator no puede publicar | CD-03 | b |
@@ -150,6 +152,15 @@ detente y espera aquí (dentro de la ventana, según el punto 14). No uses la co
 
 ## Bloque posterior — «Autorización de transporte `codex-cli`» (plantilla; se publica en un commit aparte, tras OD-2d)
 
+Notas de la supervisión (no se publican): solo con A-2 AGREED (F-A2), el bloque nuevo de medición hecho (F-OD-PROBE) y OD-2d aceptada (F-OD-2D).
+`WorkingDirectory` transcribe decisiones §55 U-03 para el Controller. `Cells` son las celdas medidas por el bloque nuevo: por decisiones §55 U-02(b)
+(punto 9), las sondas de solo lectura autorizadas para el binario vigente son las invocaciones medidas de las celdas del Controller y del Architect.
+El directorio de cada sonda lo fija CD-28 (OQ-35 del README), pendiente; U-03 fija el `-C`, no ese directorio, y la sonda del Controller con
+`-C D:\r62-fixture\A2` es la propuesta de este staging. Antes de publicar se comparan los invalidadores de U-02(b)
+(BinaryHash, AppVersion, huella, estado de autenticación, modelo, effort, blobs de catálogo y routing, instancia del host) con los de la medición: si
+cambia alguno, la medición queda obsoleta y el bloque no se publica (la recuperación, con A-2, sería otro bloque de medición). El directorio del
+Architect de FX-02 no figura aquí hasta CD-27 (OQ-34).
+
 ```text
 FIXTURE-TRANSPORT-AUTHORIZATION: FX-U1-O4-T
 Unit: FX-U1
@@ -158,8 +169,8 @@ ConfigSha256: {SHA-256 exacto aceptado por el Owner}
 BinaryPath: %LOCALAPPDATA%\OpenAI\Codex\bin\{etiqueta}\codex.exe
 BinarySha256: {SHA-256 exacto aceptado por el Owner}
 Sandbox: read-only
-WorkingDirectory: {-C exacto, según CD-10}
-Cells: {CellId medidos con este binario, p. ej. codex-cli:<modelo>:<EffortSemantic>, con su registro de medición en el fixture}
+WorkingDirectory: D:\r62-fixture\A2
+Cells: {CellId medidos con este binario en el bloque de medición, p. ej. codex-cli:<modelo>:<EffortSemantic>, con su registro de medición en el fixture}
 MeasurementRecord: {ruta en el fixture del registro saneado de la medición, según CD-09}
 ```
 

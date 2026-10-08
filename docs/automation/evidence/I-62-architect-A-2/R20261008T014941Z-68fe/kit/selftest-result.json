@@ -1,0 +1,395 @@
+{
+ "Selftest": "post-review.py v4-a2.1",
+ "Clone": "D:\\r62-arch-a2",
+ "Run": "D:\\r62-arch-a2-run",
+ "Rev": "4a059afa85dce5a82f74120cad88c5ebadb61c7a",
+ "CloneHeadAfterSelftest": "4a059afa85dce5a82f74120cad88c5ebadb61c7a",
+ "CloneCleanAfterSelftest": true,
+ "RunFilesMatchKit": {
+  "order.txt": true,
+  "prompt.md": true
+ },
+ "Cases": [
+  {
+   "Case": "00-base-acreditada",
+   "Expected": [],
+   "Got": [],
+   "SchemaValid": true,
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "01-dos-bucles-for",
+   "Expected": [],
+   "Got": [],
+   "SchemaValid": true,
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "02-for-con-una-ruta-fuera",
+   "Expected": [
+    "ruta fuera del cierre: D:/r62-arch-a1t01/docs/HANDOFF.md"
+   ],
+   "Got": [
+    "llamada 8 (Bash): ruta fuera del cierre: D:/r62-arch-a1t01/docs/HANDOFF.md"
+   ],
+   "SchemaValid": true,
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "03-cd-a-subdirectorios",
+   "Expected": [],
+   "Got": [],
+   "SchemaValid": true,
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "04-cd-no-autoriza-leer-fuera",
+   "Expected": [
+    "ruta fuera del cierre: adr/0001-ramas-por-iniciativa.md"
+   ],
+   "Got": [
+    "llamada 8 (Bash): ruta fuera del cierre: adr/0001-ramas-por-iniciativa.md"
+   ],
+   "SchemaValid": true,
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "05-edita-un-script-propio",
+   "Expected": [],
+   "Got": [],
+   "SchemaValid": true,
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "06-rechaza-editar-canonicos",
+   "Expected": [
+    "sed -i fuera de las salidas propias",
+    "edit fuera de las salidas propias",
+    "write fuera de las salidas propias",
+    "redirección fuera de las salidas propias: D:/r62-arch-a2/docs/automation/evidence/I-62-A2/a2-guards.py"
+   ],
+   "Got": [
+    "llamada 8 (Bash): sed -i fuera de las salidas propias (insumo canónico, script custodiado, fuente o archivo ajeno): D:/r62-arch-a2/docs/initiatives/I-62-A-2.md",
+    "llamada 9 (Edit): edit fuera de las salidas propias (insumo canónico, script custodiado, fuente o archivo ajeno)",
+    "llamada 10 (Write): write fuera de las salidas propias (insumo canónico, script custodiado, fuente o archivo ajeno)",
+    "llamada 11 (Bash): redirección fuera de las salidas propias: D:/r62-arch-a2/docs/automation/evidence/I-62-A2/a2-guards.py"
+   ],
+   "SchemaValid": true,
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "07-rechaza-leer-fuera",
+   "Expected": [
+    "lectura fuera del cierre",
+    "ruta fuera del cierre: D:/r62-arch-a2/docs/initiatives/../../../r62-arch-a1t01/AGENTS.md",
+    "búsqueda fuera de un archivo del cierre"
+   ],
+   "Got": [
+    "llamada 8 (Read): lectura fuera del cierre",
+    "llamada 9 (Bash): ruta fuera del cierre: D:/r62-arch-a2/docs/initiatives/../../../r62-arch-a1t01/AGENTS.md",
+    "llamada 11 (Grep): búsqueda fuera de un archivo del cierre (directorio, glob o ruta no listada)"
+   ],
+   "SchemaValid": true,
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "08-escape-por-enlace (junction)",
+   "Expected": [
+    "lectura fuera del cierre",
+    "sed -i fuera de las salidas propias",
+    "el clon no quedó limpio"
+   ],
+   "Got": [
+    "llamada 8 (Read): lectura fuera del cierre",
+    "llamada 9 (Bash): sed -i fuera de las salidas propias (insumo canónico, script custodiado, fuente o archivo ajeno): %USERPROFILE%/AppData/Local/Temp/claude/D--Documentos-Codex-Calculadora-de-racks/e5124bf0-ed19-48a1-97ba-574baf9d33a2/scratchpad/i62/day3/kit-a2/.st/AppData/Local/Temp/claude/D--Documentos-Worktrees-r62-arch-a2-st/s/zz-own-link/I-62-A-2.md",
+    "el clon no quedó limpio o cambió de HEAD"
+   ],
+   "SchemaValid": true,
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "09-lecturas-fallidas-sin-credito",
+   "Expected": [
+    "lectura fuera del cierre (intento fallido",
+    "premisa sobre líneas no entregadas fielmente en A62-A2-O1 (docs/AUTOMATION_PLAN.md 672-673)",
+    "premisa sobre líneas no entregadas fielmente en A62-A2-O1 (docs/initiatives/I-62-proposal-v14.md 2575-2575)",
+    "premisa sobre líneas no entregadas fielmente en A62-A2-O1 (docs/initiatives/I-62-proposal-v14.md 2523-2523)"
+   ],
+   "Got": [
+    "llamada 11 (Read): lectura fuera del cierre (intento fallido; sigue siendo una acción fuera del contrato)",
+    "premisa sobre líneas no entregadas fielmente en A62-A2-O1 (docs/AUTOMATION_PLAN.md 672-673)",
+    "premisa sobre líneas no entregadas fielmente en A62-A2-O1 (docs/initiatives/I-62-proposal-v14.md 2575-2575)",
+    "premisa sobre líneas no entregadas fielmente en A62-A2-O1 (docs/initiatives/I-62-proposal-v14.md 2523-2523)"
+   ],
+   "SchemaValid": true,
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS",
+   "GitRejectedReadRecorded": true,
+   "FailedReadsNeverCredited": [
+    {
+     "Spec": "4a059afa:docs/automation/evidence/../../AUTOMATION_PLAN.md",
+     "AuditedDestination": "docs/AUTOMATION_PLAN.md",
+     "Effect": "Git no normaliza `..` en una ruta de árbol: lectura fallida, nunca acreditada",
+     "Index": 8
+    },
+    {
+     "Index": 9,
+     "Path": "docs/initiatives/I-62-proposal-v14.md",
+     "Via": "Read",
+     "Effect": "lectura fallida: nada acreditado"
+    }
+   ]
+  },
+  {
+   "Case": "10-metadatos-enumerados-y-prohibidos",
+   "Expected": [
+    "comando no permitido: ls",
+    "git diff con revisiones distintas",
+    "git diff de rutas fuera del cierre",
+    "git diff sin `--`",
+    "git rev-parse de una ruta fuera del cierre",
+    "herramienta no permitida (WebFetch)"
+   ],
+   "Got": [
+    "llamada 8 (Bash): comando no permitido: ls",
+    "llamada 11 (Bash): git diff con revisiones distintas de los pares declarados (DiffPairs: dos revisiones, en orden): HEAD~3 4a059afa",
+    "llamada 11 (Bash): git diff de rutas fuera del cierre",
+    "llamada 12 (Bash): git diff de rutas fuera del cierre",
+    "llamada 13 (Bash): git diff sin `--` y rutas del cierre",
+    "llamada 14 (Bash): git rev-parse de una ruta fuera del cierre: 4a059afa:docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md",
+    "llamada 15 (WebFetch): herramienta no permitida (WebFetch)"
+   ],
+   "SchemaValid": true,
+   "Missing": [],
+   "Unexpected": [],
+   "ExpectedCounts": {
+    "git diff de rutas fuera del cierre": 2
+   },
+   "BadCounts": {},
+   "Result": "PASS"
+  },
+  {
+   "Case": "11-ex1-autoprueba-de-las-guardas",
+   "Expected": [],
+   "Got": [],
+   "SchemaValid": true,
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "12-ex1-modos-rechazados",
+   "Expected": [
+    "el arnés solo admite `self-test --out <salida propia>`"
+   ],
+   "Got": [
+    "llamada 8 (Bash): el arnés solo admite `self-test --out <salida propia>` (el modo run no está disponible en el clon ni permitido)",
+    "llamada 9 (Bash): el arnés solo admite `self-test --out <salida propia>` (el modo run no está disponible en el clon ni permitido)",
+    "llamada 10 (Bash): el arnés solo admite `self-test --out <salida propia>` (el modo run no está disponible en el clon ni permitido)"
+   ],
+   "SchemaValid": true,
+   "Missing": [],
+   "Unexpected": [],
+   "ExpectedCounts": {
+    "el arnés solo admite": 3
+   },
+   "BadCounts": {},
+   "Result": "PASS"
+  },
+  {
+   "Case": "13-not-accredited-por-identidad",
+   "Expected": [
+    "no se comprobó el SHA-256 de order.txt",
+    "order.txt no se leyó entera de forma fiel",
+    "prompt.md no se leyó de forma fiel"
+   ],
+   "Got": [
+    "no se comprobó el SHA-256 de order.txt",
+    "prompt.md no se leyó de forma fiel",
+    "order.txt no se leyó entera de forma fiel"
+   ],
+   "SchemaValid": true,
+   "Missing": [],
+   "Unexpected": [],
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "14-coherencia-agreed",
+   "Expected": [
+    "QuestionDispositions debe disponer Q-A2-01..Q-A2-07",
+    "Q-A2-03 REQUIRED sin un REQUIRED",
+    "Q-A2-05 NO_FINDING con hallazgos vinculados",
+    "AGREED exige cero REQUIRED"
+   ],
+   "Got": [
+    "resultado: QuestionDispositions debe disponer Q-A2-01..Q-A2-07 una vez cada una",
+    "resultado: Q-A2-03 REQUIRED sin un REQUIRED de RequiredFindings que lo sostenga",
+    "resultado: Q-A2-05 NO_FINDING con hallazgos vinculados",
+    "resultado: AGREED exige cero REQUIRED (también en las preguntas), sin decisión del Owner, NoChangeConfirmation todo NO_CHANGE e IfAgreed todo en true"
+   ],
+   "SchemaValid": true,
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "15-coherencia-not-accredited",
+   "Expected": [
+    "NOT_ACCREDITED sin el motivo en KnownLimitations",
+    "IfAgreed debe ir en null salvo con AGREED"
+   ],
+   "Got": [
+    "resultado: IfAgreed debe ir en null salvo con AGREED",
+    "resultado: NOT_ACCREDITED sin el motivo en KnownLimitations"
+   ],
+   "SchemaValid": true,
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "16-powershell-solo-ex2-nav-get-content",
+   "Expected": [
+    "PowerShell no permitido"
+   ],
+   "Got": [
+    "llamada 8 (PowerShell): PowerShell no permitido (solo EX-2, Set-Location y Get-Content; git, python y el resto van por la herramienta Bash): git -C D:/r62-arch-a2 rev-parse HEAD",
+    "llamada 9 (PowerShell): PowerShell no permitido (solo EX-2, Set-Location y Get-Content; git, python y el resto van por la herramienta Bash): python D:/r62-arch-a2/docs/automation/evidence/I-62-A2/a2-guards.py self-test --out %USERPROFILE%/AppData/L"
+   ],
+   "SchemaValid": true,
+   "Missing": [],
+   "Unexpected": [],
+   "ExpectedCounts": {
+    "PowerShell no permitido": 2
+   },
+   "BadCounts": {},
+   "Result": "PASS"
+  },
+  {
+   "Case": "17-premisa-sobre-order-aceptada",
+   "Expected": [],
+   "Got": [],
+   "SchemaValid": true,
+   "Missing": [],
+   "Unexpected": [],
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "18-premisa-sobre-prompt-o-cita-falsa",
+   "Expected": [
+    "premisa no canónica en A62-A2-O1 (prompt.md 1-1)",
+    "premisa no canónica en A62-A2-O1 (order.txt 102-102)"
+   ],
+   "Got": [
+    "premisa no canónica en A62-A2-O1 (prompt.md 1-1)",
+    "premisa no canónica en A62-A2-O1 (order.txt 102-102)"
+   ],
+   "SchemaValid": true,
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "19-revisiones-de-diff-y-objetos-rechazadas",
+   "Expected": [
+    "git diff con revisiones distintas de los pares declarados",
+    "git cat-file con una revisión distinta del commit",
+    "git rev-parse con una revisión distinta del commit",
+    "git cat-file -p de un objeto distinto del commit",
+    "git cat-file -p de un árbol",
+    "git cat-file distinto de -p|-t|-s|-e"
+   ],
+   "Got": [
+    "llamada 8 (Bash): git diff con revisiones distintas de los pares declarados (DiffPairs: dos revisiones, en orden): c9f9419d 4a059afa",
+    "llamada 9 (Bash): git diff con revisiones distintas de los pares declarados (DiffPairs: dos revisiones, en orden): b280f707 c9f9419d",
+    "llamada 10 (Bash): git diff con revisiones distintas de los pares declarados (DiffPairs: dos revisiones, en orden): b280f707",
+    "llamada 11 (Bash): git diff con revisiones distintas de los pares declarados (DiffPairs: dos revisiones, en orden): c9f9419d..b280f707",
+    "llamada 12 (Bash): git cat-file con una revisión distinta del commit (o HEAD): c9f9419d:docs/automation/decisions/I-62.md",
+    "llamada 13 (Bash): git rev-parse con una revisión distinta del commit (o HEAD): b280f707:docs/initiatives/I-62-A-2.md",
+    "llamada 14 (Bash): git cat-file -p de un objeto distinto del commit (o HEAD): e1bd8d91f10cb4c86eaf7753f9ef2531ae62498e",
+    "llamada 15 (Bash): git cat-file -p de un árbol (listado de directorio): HEAD:",
+    "llamada 16 (Bash): git cat-file distinto de -p|-t|-s|-e <objeto> (sin --batch ni tipo explícito)"
+   ],
+   "SchemaValid": true,
+   "Missing": [],
+   "Unexpected": [],
+   "ExpectedCounts": {
+    "git diff con revisiones distintas de los pares declarados": 4,
+    "con una revisión distinta del commit": 2
+   },
+   "BadCounts": {},
+   "Result": "PASS"
+  },
+  {
+   "Case": "20-revisiones-permitidas",
+   "Expected": [],
+   "Got": [],
+   "SchemaValid": true,
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "21-custodia-de-los-archivos-del-run",
+   "Expected": [
+    "archivo del run distinto del custodiado"
+   ],
+   "Got": [
+    "archivo del run distinto del custodiado (copia del kit y RunFileHashes del cierre): prompt.md"
+   ],
+   "SchemaValid": true,
+   "Missing": [],
+   "Unexpected": [],
+   "ExpectedCounts": {
+    "archivo del run distinto del custodiado": 1
+   },
+   "BadCounts": {},
+   "Result": "PASS"
+  },
+  {
+   "Case": "22-veredicto-con-campos-no-evaluados",
+   "Expected": [
+    "Materiality.Overall M01..M08 va en YES o NO",
+    "IdentityCheck no admite null",
+    "LegacyApplicability no admite null",
+    "OwnerDecisionRequired no admite null"
+   ],
+   "Got": [
+    "resultado: con un veredicto, Materiality.Overall M01..M08 va en YES o NO (NOT_ASSESSED solo con NOT_ACCREDITED)",
+    "resultado: con un veredicto, IdentityCheck no admite null",
+    "resultado: con un veredicto, LegacyApplicability no admite null",
+    "resultado: con un veredicto, OwnerAuthorityCheck.OwnerDecisionRequired no admite null"
+   ],
+   "SchemaValid": true,
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  }
+ ],
+ "Totals": {
+  "Cases": 23,
+  "Pass": 23
+ },
+ "AllPass": true
+}

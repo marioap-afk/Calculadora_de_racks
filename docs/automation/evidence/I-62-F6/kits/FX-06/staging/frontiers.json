@@ -25,13 +25,24 @@
  ],
  "OwnerValidation": "OV-I62-06",
  "Status": "UNVERIFIED (solo preparación; nada ejecutado por esta línea)",
+ "FX04aState": "OPEN / UNVERIFIED: B2 acreditada INVALID_LAUNCH (FAIL bruto 2/23 conservado; KICKOFF_SCHEMA_NOT_DELIVERED probado); C-25a UNVERIFIED; no es PASS ni una limitación aceptada; F6 GATE PASS imposible hasta satisfacer C-25a (decisiones §55, U-01a y U-01c). B3 NO AUTORIZADA con el Freeze vigente; una sola B3 si A-2 queda AGREED (U-01b)",
  "PreparedUtcDate": "2026-10-07",
+ "UpdatedUtcDate": "2026-10-08 (R3: decisiones §55)",
  "FixturePoint": {
   "Repository": "D:/r62-fixture/fixture-origin.git",
   "Branch": "fx/u1",
   "Head": "cabed54738f56e846bd77be321cace10d053094d",
   "Point": "QH",
   "RecordVersion": 5
+ },
+ "FixtureOriginSnapshot": {
+  "Path": "D:/r62-fixture/fx04a-qh2-origin.git",
+  "Method": "git clone --mirror; remoto retirado",
+  "RefsDigestPrefix": "275d977b…",
+  "FxU1": "cabed547",
+  "Finding": "toda escritura en fx/u1 del origen vivo cambia los hechos remotos que leería una B3 futura con git ls-remote; una B3 (solo si A-2 queda AGREED) necesita un clon cuyo origen sea esta instantánea, o ninguna escritura en fx/u1 antes de B3",
+  "Decider": "Coordinator de I-62 (OQ-26); esta línea no lo decide",
+  "Source": "hecho de la supervisión (plano a)"
  },
  "OracleSha256": "43b9a2388e619937548287ae44d2f80dde5679ffafe4a5cdf5aba69237f0fb72",
  "OracleRead": false,
@@ -41,48 +52,61 @@
   "Sha256": "c323751c0352b88506e5456e714584de2f65ebb209c1535ada9b0a8ed9148708"
  },
  "PrincipalFolder": "D:/r62-fixture/A6 (clon limpio que prepara la supervisión en P6)",
+ "ArchitectRecipeDirectory": "D:/r62-fixture/arch (variante A; decisiones §55, U-03; nunca D:/r62-fixture/A6 como directorio de trabajo del Architect)",
  "Frontiers": [
   {
    "Id": "FX06-F01",
-   "Kind": "HUMAN_LAUNCH_REQUIRED",
-   "Actor": "Owner (abre B2); Coordinator (clasifica FX-04a)",
-   "What": "FX-04a B2 lanzada y clasificada antes de cualquier escritura de FX-06 en fx/u1",
+   "Kind": "COORDINATOR_DECISION",
+   "Actor": "Coordinator de I-62 (OQ-26); el Owner abrió B2 y el Coordinator la clasificó",
+   "What": "FX-04a B2 lanzada y clasificada INVALID_LAUNCH (FX-04a OPEN / UNVERIFIED). Antes de cualquier escritura en fx/u1 del origen vivo (FX-02 en P3, FX-06 en P5 y en los pasos 1-8): decisión de OQ-26 (clon de B3 con origen en la instantánea de QH2, o ninguna escritura en fx/u1 antes de B3)",
    "Blocks": [
-    "P0",
+    "P3 (primera escritura de FX-02 en fx/u1)",
+    "P5",
     "todos los pasos 1-8 (opción A)"
    ],
-   "Clause": "decisiones §53, §54; orden de la línea (no tocar FX-04a)",
-   "CurrentState": "FX-04a = HUMAN_LAUNCH_REQUIRED (evidencia §75)",
-   "MorningCardItem": "1 (B2; después la supervisión registra el hash de la respuesta y la compara con el oráculo v2) y 2 (clasificación de FX-04a por el Coordinator)"
+   "Clause": "decisiones §53, §54; decisiones §55 (U-01a, U-01b, U-01c); orden de la línea (no tocar FX-04a)",
+   "CurrentState": "B2 lanzada (evidencia §78) y clasificada INVALID_LAUNCH (decisiones §55, U-01a); FX-04a OPEN / UNVERIFIED; B3 NO AUTORIZADA sin A-2 (U-01b); OQ-26 pendiente",
+   "MorningCardItem": "puntos 1 y 2 hechos (evidencia §78-§79; decisiones §55); OQ-26 antes del punto 4 (A2 escribe en fx/u1)",
+   "KindHistory": "HUMAN_LAUNCH_REQUIRED hasta el lanzamiento de B2 (evidencia §78)",
+   "OpenQuestions": [
+    "OQ-26"
+   ]
   },
   {
    "Id": "FX06-F02",
    "Kind": "MEASUREMENT_REQUIRED",
-   "Actor": "supervisión con autorización del Owner (OD-2d-PROBE)",
-   "What": "re-medir codex-cli:gpt-6.1-sol:Deep (effort high, read-only) en D:/r62-fixture/arch con el binario vigente 97c57e4e…; la medición del 2026-10-07 con 3b8f6e33… es obsoleta; directorios de las sondas según CD-10 / OQ-09 de FX-02 y OQ-13 de esta línea",
+   "Actor": "supervisión con autorización del Owner, solo tras A-2 AGREED (bloque nuevo de medición)",
+   "What": "re-medir codex-cli:gpt-6.1-sol:Deep (effort high, read-only) en D:/r62-fixture/arch (decisiones §55, U-03) con el binario vigente 97c57e4e… (app 26.1002.6548.0) dentro del bloque nuevo de como máximo 2 sondas read-only que permitiría A-2; esa sonda ES la invocación medida de la celda (U-02(b)); sin segunda medición después de OD-2d mientras sigan iguales BinaryHash, AppVersion, huella, estado de autenticación, modelo, effort, blobs del catálogo y de routing.md e instancia del host; cualquier cambio deja la observación caducada. La medición del 2026-10-07 con 3b8f6e33… es obsoleta",
    "Blocks": [
     "P1",
     "2a",
     "6a"
    ],
-   "Clause": "routing §5; README §14.2 B5; decisiones §50, §52, §53; V14 D.3 (sondas previas: tope 2; ya se usaron 4: OQ-21)",
-   "CurrentState": "codex-cli en P-01 / STOP; ningún OD-2d-PROBE hasta clasificar FX-04a con B2",
-   "MorningCardItem": "después del punto 2 (FX-04a clasificada; alcance de OD-2d-PROBE con sus directorios CD-10 / OQ-09 de FX-02 y tope de sondas OQ-21)"
+   "Clause": "routing §5; README §14.2 B5; agent-execution README §13.3; decisiones §50, §52, §53; decisiones §55 (U-02(b), U-03, U-04; A-2 candidata, Problema 2); V14 D.3 (sondas previas: tope 2; ya se usaron 4)",
+   "CurrentState": "tope congelado de sondas AGOTADO (decisiones §55, U-04); ninguna sonda de modelo hasta A-2 AGREED (FX06-F14); codex-cli en P-01 / STOP",
+   "MorningCardItem": "después de A-2 AGREED (FX06-F14): solicitud y autorización del bloque nuevo; antes del punto 3 (OD-2d)",
+   "DependsOn": [
+    "FX06-F14"
+   ]
   },
   {
    "Id": "FX06-F03",
    "Kind": "OWNER_DECISION",
    "Actor": "Owner",
-   "What": "OD-2d: aceptación exacta de la huella de config.toml y del binario medidos en OD-2d-PROBE (hoy 9EA26634…, 97c57e4e…, si la medición no los cambia)",
+   "What": "OD-2d: aceptación exacta de la huella de config.toml y del binario medidos en el bloque nuevo de medición (A-2 Problema 2: aceptación del Owner de la huella resultante bajo OD-2; hoy 9EA26634…, 97c57e4e…, si la medición no los cambia)",
    "Blocks": [
     "P2",
     "P5 (levantamiento de P-01 en el fixture)",
     "2c",
     "6b"
    ],
-   "Clause": "OD-2 (§46); decisiones §50 (OD-2d no aprobada), §51 (paquete OD-2d exacto después de OD-2d-PROBE; FX-02 y FX-06 no se reanudan hasta que OD-2d se acepte aparte)",
+   "Clause": "OD-2 (§46); decisiones §50 (OD-2d no aprobada), §51 (paquete OD-2d exacto después de OD-2d-PROBE; FX-02 y FX-06 no se reanudan hasta que OD-2d se acepte aparte); decisiones §55 (U-02(b); A-2 candidata)",
    "CurrentState": "OD-2d NO aprobada",
-   "MorningCardItem": "3 (sobre el paquete exacto medido tras OD-2d-PROBE)"
+   "MorningCardItem": "3 (sobre el paquete exacto medido en el bloque nuevo, tras A-2 AGREED)",
+   "DependsOn": [
+    "FX06-F14",
+    "FX06-F02"
+   ]
   },
   {
    "Id": "FX06-F04",
@@ -95,11 +119,12 @@
     "opción A",
     "punto 5 de la tarjeta de mañana"
    ],
-   "Clause": "D.3; A-1 D1-15; I-S18; §20.4; §9.1; T17; decisiones §51 (A no vuelve a operar)",
+   "Clause": "D.3; A-1 D1-15; I-S18; §20.4; §9.1; T17; decisiones §51 (A no vuelve a operar); decisiones §55 (U-01c: el origen queda liberado para el trabajo independiente; U-03: -C del Controller de FX-02 = D:/r62-fixture/A2)",
    "CurrentState": "FX-02 = UNVERIFIED; A2 sin abrir (FX-02: F-UP-FX04A, F-OD-PROBE, F-OD-2D, F-COORD-I62, F-HL-A2); A y R terminados, no vuelven a operar (decisiones §51-§52)",
    "DependsOn": [
     "FX-02 CD-05 (Architect de FX-02 antes del Q0 o después del Q7: con B, un CHANGES REQUIRED deja el bucle y sus linajes abiertos)",
-    "FX-02 CD-15 / OQ-27 (acción posterior al Q7: repetir el paso 1 de FX-04a deja task_intent = T2; A2 puede conservar la custodia)"
+    "FX-02 CD-15 / OQ-27 (acción posterior al Q7: repetir el paso 1 de FX-04a deja task_intent = T2; A2 puede conservar la custodia)",
+    "OQ-26 (antes de la primera escritura de FX-02 en fx/u1; decisiones §55, U-01b y U-01c)"
    ],
    "Reference": "../../FX-02/README.md (S28); ../../FX-02/frontiers.json (CD-05, CD-15)",
    "MorningCardItem": "4 (A2 de FX-02) → 5"
@@ -108,28 +133,45 @@
    "Id": "FX06-F05",
    "Kind": "COORDINATOR_DECISION",
    "Actor": "Coordinator de I-62 (todo hueco del texto congelado de FX-U1; regla del grupo (b) de FX-02)",
-   "What": "decidir antes de la ventana (la misma lista que README P4): OQ-01 (unidad), OQ-02 (independencia con NOT_STARTED), OQ-03 (revisión mayor de LIFECYCLE de OD-6 alternativa 1 y ReviewSubject; con OQ-02 fija RequiredIndependence), OQ-04 («continúa» en 1-7 y fin de turno), OQ-05 (exención de opción B y su clave), OQ-07 (GAP-12 y manifiesto B.11; precondición dura si P1b no logra lecturas sin el diagnóstico), OQ-08 (tope de 600 s), OQ-09 (CI de X2 ausente o fallida), OQ-11 (registro de prueba del lanzamiento), OQ-12 (AuthorityRevision de C), OQ-13 (directorio -C y cesión: variante A o L), OQ-14 (medición custodiada en el fixture), OQ-20 (alcance de §50), OQ-21 (tope de sondas, antes de P1), OQ-22 (autorización de P1b), OQ-23 (cabecera de X v1, antes de P5), OQ-24 (huecos heredados), OQ-25 (modo de permisos de la sesión del Principal, antes de P7)",
+   "What": "decidir antes de la ventana (la misma lista que README P4): OQ-01 (unidad), OQ-02 (independencia con NOT_STARTED), OQ-03 (revisión mayor de LIFECYCLE de OD-6 alternativa 1 y ReviewSubject; con OQ-02 fija RequiredIndependence), OQ-04 («continúa» en 1-7 y fin de turno), OQ-05 (exención de opción B y su clave), OQ-07 (GAP-12 y manifiesto B.11; precondición dura si P1b no se ejecuta o no logra lecturas sin el diagnóstico), OQ-08 (tope de 600 s), OQ-09 (CI de X2 ausente o fallida), OQ-11 (registro de prueba del lanzamiento), OQ-12 (AuthorityRevision de C), OQ-14 (medición custodiada en el fixture), OQ-20 (alcance de §50), OQ-23 (cabecera de X v1, antes de P5), OQ-24 (huecos heredados), OQ-25 (modo de permisos de la sesión del Principal, antes de P7), OQ-26 (instantánea de QH2 o ninguna escritura en fx/u1 antes de B3; antes de la primera escritura en fx/u1), OQ-27 y OQ-28 (consumo y orden de P1b; solo si P1b sigue siendo necesaria tras A-2)",
    "Blocks": [
-    "P1 (OQ-21)",
-    "P1b (OQ-22)",
+    "P3/P5 (OQ-26)",
+    "P1b (OQ-27, OQ-28)",
     "P4",
     "P5",
     "P7 (OQ-25)"
    ],
-   "Clause": "§20.1; D.8 (ninguna decisión intermedia en 1-7)",
-   "CurrentState": "pendiente",
-   "MorningCardItem": "2"
+   "Clause": "§20.1; D.8 (ninguna decisión intermedia en 1-7); decisiones §55",
+   "CurrentState": "pendiente (OQ-13, OQ-21 y OQ-22 decididas en decisiones §55)",
+   "MorningCardItem": "2 (la compuerta de U-01..U-05 está hecha en decisiones §55; el resto sigue pendiente)",
+   "Decided": [
+    {
+     "Id": "OQ-13",
+     "Decision": "variante A; -C del Architect = D:/r62-fixture/arch; no A6; la variante L queda como nota histórica",
+     "Source": "decisiones §55, U-03"
+    },
+    {
+     "Id": "OQ-21",
+     "Decision": "tope congelado de sondas agotado; P1 exige A-2 AGREED y un bloque nuevo de ≤ 2 sondas read-only",
+     "Source": "decisiones §55, U-04"
+    },
+    {
+     "Id": "OQ-22",
+     "Decision": "P1b no cubierta por OD-2d-PROBE; no se ejecuta; paquete del Owner solo si sigue siendo necesaria tras A-2",
+     "Source": "decisiones §55, U-05"
+    }
+   ]
   },
   {
    "Id": "FX06-F06",
    "Kind": "COORDINATOR_ACTION",
    "Actor": "supervisión como Coordinator del fixture",
-   "What": "publicar en fx/u1 la orden de FX-06, el levantamiento de P-01 con la huella de OD-2d, la medición saneada (RunRef), X v1 byte a byte y la RLA rellena",
+   "What": "publicar en fx/u1 la orden de FX-06 (-C = D:/r62-fixture/arch, decisiones §55, U-03), el levantamiento de P-01 con la huella de OD-2d, la medición saneada (RunRef: la sonda del Architect en arch del bloque nuevo, U-02(b)), X v1 byte a byte y la RLA rellena",
    "Blocks": [
     "P5",
     "todos los pasos 1-8"
    ],
-   "Clause": "§20.5; 16.28; §20.5.1; 16.20; P-16",
+   "Clause": "§20.5; 16.28; §20.5.1; 16.20; P-16; decisiones §55 (U-02(b), U-03); OQ-26 antes del push",
    "CurrentState": "plantilla lista (rla.template.md)",
    "MorningCardItem": "antes del punto 5 (tras el QH de FX-02)"
   },
@@ -171,8 +213,8 @@
     "7"
    ],
    "Clause": "§20.3.3; §20.11 GAP-12; I-S18",
-   "CurrentState": "medido en OD-2d-PROBE (2026-10-07, binario 3b8f6e33…): en 8 de 9 salidas con pwsh.exe -Command y en 0 de 5 con pwsh.exe -NoProfile -Command; sin medir con 97c57e4e… (P1b)",
-   "MorningCardItem": "medición en P1b (autorización en el punto 2, OQ-22; medición después); el riesgo se materializa dentro de la ventana (pasos 2a, 3 y 7), tras el punto 5; OQ-07 en el punto 2"
+   "CurrentState": "medido en OD-2d-PROBE (2026-10-07, binario 3b8f6e33…): en 8 de 9 salidas con pwsh.exe -Command y en 0 de 5 con pwsh.exe -NoProfile -Command; sin medir con 97c57e4e… (P1b no cubierta ni ejecutada: decisiones §55, U-05)",
+   "MorningCardItem": "medición en P1b solo si sigue siendo necesaria tras A-2 y con el paquete del Owner (p1b-owner-packet.md); el riesgo se materializa dentro de la ventana (pasos 2a, 3 y 7), tras el punto 5; OQ-07 en el punto 2"
   },
   {
    "Id": "FX06-F10",
@@ -191,28 +233,36 @@
    "Id": "FX06-F11",
    "Kind": "ENVIRONMENT_RISK",
    "Actor": "Owner (puede pausar actualizaciones de la app de Codex)",
-   "What": "una nueva actualización automática de la app de Codex cambiaría la huella (P-01) en mitad del bucle",
+   "What": "una nueva actualización automática de la app de Codex cambiaría la huella (P-01) en mitad del bucle y dejaría caducada la observación de la celda del Architect (BinaryHash, AppVersion y huella son invalidadores: decisiones §55, U-02(b)); si A-2 admite otro bloque depende de su texto final (no se presupone)",
    "Blocks": [
     "2c",
     "6b"
    ],
-   "Clause": "16.4 (Entrada: P-01); evidencia §67, §71",
+   "Clause": "16.4 (Entrada: P-01); evidencia §67, §71; decisiones §55 (U-02(b))",
    "CurrentState": "dos actualizaciones: binarios nuevos escritos el 2026-10-06T18:56:03Z y el 2026-10-07T02:14:49Z (unas 7 h 19 min entre ambos; evidencia §67 y §71)",
    "MorningCardItem": "dentro de la ventana (pasos 2c y 6b), tras el punto 5; la huella se compara antes de cada lanzamiento"
   },
   {
    "Id": "FX06-F12",
    "Kind": "MEASUREMENT_REQUIRED",
-   "Actor": "supervisión con una autorización del Owner que la nombre (OQ-22)",
+   "Actor": "supervisión, solo con una autorización del Owner que la nombre (paquete p1b-owner-packet.md)",
    "What": "medir con el binario vigente 97c57e4e… las formas de lectura del revisor por codex sandbox (A, B, C, control negativo y diagnóstico del perfil con el envoltorio del runtime con y sin perfil), con la huella de config.toml, el binario y la versión de la app antes y después de cada operación",
    "Blocks": [
     "P1b",
     "2a",
     "6a"
    ],
-   "Clause": "16.4 (Entrada: P-01); adapter codex-cli «Límites»; V14 §20.3.3; §20.11 GAP-12; decisiones §51 (alcance de OD-2d-PROBE), §54",
-   "CurrentState": "sin medir; fuera del alcance literal de OD-2d-PROBE; codex-cli en P-01 / STOP",
-   "MorningCardItem": "autorización en el punto 2 (OQ-22); medición después"
+   "Clause": "16.4 (Entrada: P-01); adapter codex-cli «Límites»; V14 §20.3.3; §20.11 GAP-12; decisiones §51 (alcance de OD-2d-PROBE), §54; decisiones §55 (U-05, §13)",
+   "CurrentState": "NO cubierta por OD-2d-PROBE y no se ejecuta ahora (decisiones §55, U-05 y §13); paquete exacto del Owner en borrador, solo si sigue siendo necesaria tras A-2",
+   "MorningCardItem": "tras A-2, solo si sigue siendo necesaria: presentación del paquete al Owner",
+   "OwnerPacket": "p1b-owner-packet.md",
+   "OpenQuestions": [
+    "OQ-27",
+    "OQ-28"
+   ],
+   "DependsOn": [
+    "FX06-F14"
+   ]
   },
   {
    "Id": "FX06-F13",
@@ -225,6 +275,26 @@
    "Clause": "V14 D.6, D.8-1; decisiones §54 «Sin atajos»",
    "CurrentState": "programa listo (autoprueba 9/9); X v1 da código 4 por su cabecera (OQ-23)",
    "MorningCardItem": "antes del punto 5"
+  },
+  {
+   "Id": "FX06-F14",
+   "Kind": "AMENDMENT_REQUIRED",
+   "Actor": "Coordinator de I-62 y un Architect independiente (acuerdo); la supervisión prepara el texto",
+   "What": "A-2 «I-62 A-2 — F6 invalid-launch and runtime-invalidation recovery budgets» (candidata, NO aplicada): Problema 1, como máximo UNA reejecución limpia extraordinaria por escenario tras una acreditación INVALID_LAUNCH y una disposición del Coordinator; Problema 2, un bloque NUEVO de como máximo DOS sondas read-only para el BinaryHash/AppVersion exactos nuevos tras una actualización automática que invalidó un runtime ya medido, con aceptación del Owner de la huella resultante bajo OD-2; sin reiniciar contadores",
+   "Blocks": [
+    "P1 (bloque nuevo de medición)",
+    "P2",
+    "FX06-F02",
+    "FX06-F03",
+    "FX06-F12",
+    "2a",
+    "6a",
+    "B3 de FX-04a (fuera de esta línea)"
+   ],
+   "Clause": "decisiones §55 (U-01b, U-04, §13; A-2); V14 D.3 (fila «Sondas previas»; tabla de FX-04a: Principal B, 1 sesión, +1 reapertura, tope 2)",
+   "CurrentState": "candidata en preparación por la supervisión; no aplicada; enmienda material posterior al Freeze",
+   "Note": "si A-2 no queda AGREED, con el tope congelado agotado la celda del Architect no puede volver a medirse con el binario vigente y no hay candidata para B ni para C (rama NOCAND de transitions.md); el texto final de A-2 no se presupone",
+   "MorningCardItem": "antes de cualquier sonda de modelo nueva (decisiones §55, U-04)"
   }
  ],
  "OpenQuestions": [
@@ -240,7 +310,6 @@
   "OQ-10",
   "OQ-11",
   "OQ-12",
-  "OQ-13",
   "OQ-14",
   "OQ-15",
   "OQ-16",
@@ -248,11 +317,26 @@
   "OQ-18",
   "OQ-19",
   "OQ-20",
-  "OQ-21",
-  "OQ-22",
   "OQ-23",
   "OQ-24",
-  "OQ-25"
+  "OQ-25",
+  "OQ-26",
+  "OQ-27",
+  "OQ-28"
+ ],
+ "DecidedQuestions": [
+  {
+   "Id": "OQ-13",
+   "Source": "decisiones §55, U-03"
+  },
+  {
+   "Id": "OQ-21",
+   "Source": "decisiones §55, U-04"
+  },
+  {
+   "Id": "OQ-22",
+   "Source": "decisiones §55, U-05"
+  }
  ],
  "OpenQuestionsSource": "README.md §7",
  "SelfTest": [
@@ -272,8 +356,8 @@
  "Files": [
   {
    "Path": "README.md",
-   "Sha256": "1c66ff452cda7bf7ca92f1dc0f8d709fa79d01cba7086758d137f345c0e95c1b",
-   "Bytes": 61419
+   "Sha256": "3baabda8d68021fc01798e3c0f97eb49d683e15950d4f02460a3296694bf7c56",
+   "Bytes": 76831
   },
   {
    "Path": "rla.template.md",
@@ -282,23 +366,23 @@
   },
   {
    "Path": "order.template.md",
-   "Sha256": "022f56c46730f48935bbb94d6a66300112dca07d43fa694553277a0b1206a094",
-   "Bytes": 6223
+   "Sha256": "1599d54127684dccedcc736fd1757b67db9b3e9a848c21570f64055fa542859b",
+   "Bytes": 6739
   },
   {
    "Path": "architect-invocation-contract.md",
-   "Sha256": "b76077a52a8d28432165eaaa52d281fced561425e24db0c9fb43a21cdd0ad206",
-   "Bytes": 27373
+   "Sha256": "26474f79dfad81b5607381aa1e05287b04eae8949caef0ed74cf04493730f61e",
+   "Bytes": 28349
   },
   {
    "Path": "transitions.md",
-   "Sha256": "ddfdff4c8ed0e26d3e85c87b539cfba87be8d23ff06fd7eb5bbd1d59b17459b5",
-   "Bytes": 15652
+   "Sha256": "2041cc762101a5d43f29b9efa724ca20d67671e08408751eb87b8c0566aa87a3",
+   "Bytes": 16328
   },
   {
    "Path": "message-bus-auditor.md",
-   "Sha256": "35f027d08a3aa3adfdc61c6f7aa6acf2e86581241b527d6f58615544a7460796",
-   "Bytes": 24612
+   "Sha256": "161a327d83bc74edda205ab1128b0302430997416151d1208babf36c7692b889",
+   "Bytes": 24935
   },
   {
    "Path": "owner_as_message_bus_audit.py",
@@ -337,23 +421,33 @@
   },
   {
    "Path": "budget-accounting.md",
-   "Sha256": "8c04dda2719bef6ac8826d6d99bf3c26df5a834a36662b0e9967f800a1ac1136",
-   "Bytes": 8261
+   "Sha256": "338180905ff11c46b4df4bceefd55653ddabd39364d7a1d8526953bad7618204",
+   "Bytes": 9809
   },
   {
    "Path": "evidence-schema.md",
-   "Sha256": "2703c3d1ba387c57f83a75423138ed93f37b513cfaab4d3c0d49892b0e245e51",
-   "Bytes": 14124
+   "Sha256": "d825a81a3fedbb7e2db788f94d3f31ae3987b92ad5977a5e2d557e1e39aa2d6e",
+   "Bytes": 15420
+  },
+  {
+   "Path": "p1b-owner-packet.md",
+   "Sha256": "12ddd87edf254d1fee8fb7b343621553d993fa4027c0954dc842a335236d1018",
+   "Bytes": 11830
   }
  ],
  "Revision": {
-  "Id": "R2",
-  "UtcDate": "2026-10-07",
-  "Log": "README.md §9 y §9.1 (verificación de R2)",
+  "Id": "R3",
+  "UtcDate": "2026-10-08",
+  "Log": "README.md §10 (aplicación de decisiones §55)",
   "Rejected": [],
   "Previous": {
-   "Id": "R1",
-   "Log": "README.md §8"
+   "Id": "R2",
+   "UtcDate": "2026-10-07",
+   "Log": "README.md §9 y §9.1 (verificación de R2)",
+   "Previous": {
+    "Id": "R1",
+    "Log": "README.md §8"
+   }
   }
  },
  "FilesNote": "frontiers.json no figura en su propia lista"

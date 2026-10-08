@@ -18,7 +18,7 @@ Estado:      nada medido por esta línea. Los hechos citados son de la evidencia
 | `thread_id` (`ActorRef.InstanceId` de `codex-cli`) | el de su `turn_context` | **distinto** del de B | B.2 (`thread_id` para Codex CLI); D.8 («invocaciones distintas, cada una con su propio `thread_id`») |
 | `BindingId` | binding B materializado | binding C materializado, **otro** `BindingId` | §20.5.1; B.5 |
 | celda | `codex-cli:gpt-6.1-sol:Deep` | la misma (lista cerrada de la RLA) | D.8 (B y C con `codex-cli`); routing §9 |
-| directorio (`-C`) | **pendiente de OQ-13** (§8): variante A `D:\r62-fixture\arch` en la `AuthorityRevision` de L1, o variante L el worktree de la unidad (la carpeta del Principal, `D:\r62-fixture\A6`) | el mismo de B: en A, `arch` actualizado a la `AuthorityRevision` de L2; en L, el worktree de la unidad | 16.4 («`-C` con el worktree de la unidad únicamente»); kit FX-06 (directorios fijados); OQ-13 |
+| directorio (`-C`) | `D:\r62-fixture\arch` en la `AuthorityRevision` de L1 (**variante A, decidida**: decisiones §55, U-03; nunca la carpeta del Principal `D:\r62-fixture\A6`) | el mismo de B: `arch` actualizado a la `AuthorityRevision` de L2 (OQ-12) | 16.4 («`-C` con el worktree de la unidad únicamente»; Cesión); decisiones §55, U-03 (OQ-13 decidida) |
 | `Target` | X v1 `{commit, path, blob}` | X2 `{commit, path, blob}` | §20.3; B.9; I-P13 (`loop.object` cambia solo en CORRECTING → PUBLISHED) |
 | `OpenFindings` | linajes heredados de la unidad con `issuer` ARCHITECT o COORDINATOR (vacío si no hay) | esos más los linajes que abrió B | A-1 D1-15 |
 | decisión del Coordinator entre ambas | — | **ninguna** | D.8-6 («sin decisión intermedia del Coordinator») |
@@ -39,8 +39,13 @@ Estado:      nada medido por esta línea. Los hechos citados son de la evidencia
 **Elegibilidad (ADR-0046 #4, routing §5, README §14.2 B5)** en la fecha de la delegación:
 1. invocación **medida** con el binario vigente. La medición del 2026-10-07 (OD-2d-PROBE, sonda 2 en `arch`: `gpt-6.1-sol`/`high`/`read-only`, binario
    `3b8f6e33…`, `codex-cli 0.160.1`) quedó **obsoleta** con la segunda actualización de la app (binario `979a96ce184041d1`, `97c57e4e…`, app
-   `26.1002.6548.0`; evidencia §71). Hay que volver a medir con el binario vigente (OD-2d-PROBE nuevo, decisiones §52-§53) y con la huella aceptada en
-   OD-2d;
+   `26.1002.6548.0`; evidencia §71). Hay que volver a medir con el binario vigente y con la huella aceptada en OD-2d. El tope congelado de sondas está
+   **agotado** (decisiones §55, U-04): la re-medición solo cabe en el bloque nuevo de ≤ 2 sondas `read-only` para el BinaryHash/AppVersion exactos que
+   permitiría A-2 si queda AGREED (candidata, no aplicada; README P1, FX06-F14). La sonda del Architect en `arch` de ese bloque **es** la invocación
+   medida que exige la celda (decisiones §55, U-02(b)): no hay segunda medición después de OD-2d mientras sigan iguales los invalidadores
+   (BinaryHash, AppVersion, huella, estado de autenticación, modelo, effort, blobs del catálogo y de `routing.md`, instancia del host); cualquier
+   cambio deja la observación caducada (README de agent-execution §13.3) y, sin otra medición permitida, no hay candidata (rama NOCAND de
+   [transitions.md](transitions.md) §2);
 2. consumo cubierto: la sonda completada sin aviso de límite ni de créditos deja la celda MEASURED (routing §5, «Sondas»);
 3. no `STALE`: el catálogo verificó `gpt-6.1-sol` el 2026-09-30 → `STALE` desde el 2026-12-29 (verificación + 90 días), sin retiro anunciado;
 4. la medición debe estar **custodiada en el fixture** para que el aceptante recalcule `Eligibility` (README §14.2: «el aceptante los recalcula con las
@@ -49,7 +54,9 @@ Estado:      nada medido por esta línea. Los hechos citados son de la evidencia
 Hechos que la re-medición debe registrar (patrón de `OD-2/R20261007T013200Z-od2d-probe/result.json`): ruta y SHA-256 del binario, unicidad del binario,
 versión de la app, `codex --version`, `codex login status`, `turn_context` (`model`, `effort`, `approval_policy`, `sandbox_policy` = `read-only`, `cwd`),
 señales de límite (`rate_limit_reached_type`, `spend_control_reached`), huella de `config.toml` y comparación por clave antes y después de cada
-operación, y HEAD y estado de `arch` antes y después (`read-only` no crea entradas de proyecto: medido 2 de 2 en OD-2b-PROBE).
+operación, y HEAD y estado de `arch` antes y después (`read-only` no crea entradas de proyecto: medido 2 de 2 en OD-2b-PROBE). Además, los blobs del
+catálogo y de `routing.md` y la instancia del host, para que el Principal (preflight, 2a) y la supervisión (P6, 2c) comprueben que los invalidadores de
+decisiones §55, U-02(b) siguen iguales.
 
 ## 3. Preflight de la candidata (`rackcad-preflight/v1`, acción REVIEW_DESIGN)
 
@@ -101,7 +108,7 @@ Quien valida reproduce la comprobación con el preflight custodiado y la RLA en 
 | `AllowedTransitiveInputs[]`, `AllowedActions[]` | del cierre (§6) | del cierre (§6) | §20.3.1 |
 | `HealthSignals[]` | CI `push` del commit de X v1, si existe (opcional) | CI de X2 (la del paso 5) | §20.3.1 (señal separada, nunca evidencia equivalente) |
 | `DeclaredRuntimeContext[]` | instrucciones del sistema y del runtime de Codex que el adapter declara, con tamaño o hash si los expone | igual | §20.3.1; adapter op. 1 |
-| `ForbiddenInputs[]` | transcripción y memoria del Principal; sesiones ajenas (`~/.claude/projects/*`, `~/.codex/sessions/*` ajenas); worktree real de I-62; `D:\IDs`; `D:\r62-fixture\evidence-out\`; clones `A`, `A2`, `B`, `B2`, `R` y la carpeta del Principal `D:\r62-fixture\A6` (salvo en la variante L de OQ-13, donde es el directorio de la receta y el revisor solo lee del cierre); artefactos transitorios | ídem, más el registro de sesión de B | D.6; §20.3.1; README §15.1 R6 |
+| `ForbiddenInputs[]` | transcripción y memoria del Principal; sesiones ajenas (`~/.claude/projects/*`, `~/.codex/sessions/*` ajenas); worktree real de I-62; `D:\IDs`; `D:\r62-fixture\evidence-out\`; clones `A`, `A2`, `B`, `B2`, `R`, la instantánea `D:\r62-fixture\fx04a-qh2-origin.git` y la carpeta del Principal `D:\r62-fixture\A6` (sin excepción: OQ-13 decidida en la variante A, decisiones §55, U-03); artefactos transitorios | ídem, más el registro de sesión de B | D.6; §20.3.1; README §15.1 R6 |
 | `EffectiveInputClosure`, `InputFidelityPreflight` | `StateRef` custodiados en el QU de la reserva | ídem | §20.3.1, §20.3.3; R5 |
 | `OpenFindings[]` | A-1 D1-15 | A-1 D1-15 (incluye los de B) | — |
 | `RequiredCapabilities[]`, `IndependenceRequirements` | los de la RLA; `ReviewSubject` DESIGN si aplica OQ-03 | ídem | §11.4; R8 |
@@ -152,8 +159,9 @@ representaciones FAITHFUL o FAITHFUL_NORMALIZED (OQ-07).
    indicará. Es una ejecución del binario de Codex: huella de `config.toml` y binario comprobados antes y después, como en 16.4. **Con el binario vigente
    (`97c57e4e…`) ninguna ejecución de `codex sandbox` está medida ni autorizada**: el alcance de OD-2d-PROBE (decisiones §51) es `--version`,
    `login status` y ≤ 2 sondas de modelo; la medición de las formas de lectura por `codex sandbox`, con la huella antes y después, es el paso P1b del
-   README y necesita su propia autorización (OQ-22). Sin P1b, la primera ejecución con el binario nuevo ocurriría en el paso 2a, y un cambio de la huella
-   sería P-01 a mitad del bucle (sin PASS). Precedente medido en la revisión de V14 (no es texto congelado; R62-FIDELITY-05 congela el requisito, no el
+   README, **no está cubierta** por esa autorización y **no se ejecuta ahora** (decisiones §55, U-05 y §13; OQ-22 decidida). Si sigue siendo necesaria
+   tras A-2, solo con el paquete exacto del Owner [p1b-owner-packet.md](p1b-owner-packet.md) (OQ-27, OQ-28). Sin P1b, la primera ejecución con el
+   binario nuevo ocurriría en el paso 2a, y un cambio de la huella sería P-01 a mitad del bucle (sin PASS). Precedente medido en la revisión de V14 (no es texto congelado; R62-FIDELITY-05 congela el requisito, no el
    comando, y hay que volver a medirlo con el binario vigente):
    - A) archivo completo de hasta 24 000 bytes: `cmd /c type <ruta con barras invertidas>`;
    - B) rango de líneas, obligatorio por encima de 24 000 bytes, con M ≤ 150: `cmd /c 'chcp 65001 >nul & pwsh -NoProfile -Command "Get-Content -LiteralPath <ruta> -Encoding utf8 | Select-Object -Skip N -First M"'`;
@@ -165,7 +173,7 @@ representaciones FAITHFUL o FAITHFUL_NORMALIZED (OQ-07).
      `item_2`-`item_7`; sonda 2, `item_1`; falta en la sonda 1, `item_1`, lanzada en paralelo con `item_0`) y no aparece en ninguna de las 5 salidas cuyo
      envoltorio corre con `-NoProfile` (sonda 2, `item_2`-`item_6`: `pwsh.exe -NoProfile -Command`).
      La mitigación posible es que el envoltorio del runtime corra sin perfil, medido con el binario vigente en P1b (esta línea no sabe qué hace que el
-     runtime emita una u otra forma). Si no se consigue de forma reproducible, lo esperable es DEGRADED_BOUNDED en toda lectura de un insumo y ningún
+     runtime emita una u otra forma). Si P1b no se ejecuta o no lo consigue de forma reproducible, lo esperable es DEGRADED_BOUNDED en toda lectura de un insumo y ningún
      ARCHITECT_SATISFIED (I-S18): la decisión de OQ-07 es entonces precondición dura antes de la ventana;
 4. un registro `CanonicalInputFidelity` por insumo y uno para `PROMPT` (F1), con `CharacterClassesChecked` completo (F3) y exactamente uno de
    `TransportSha256` o `VerificationMethod` (F2); custodia a más tardar en el QU de la reserva.
@@ -186,27 +194,30 @@ representaciones FAITHFUL o FAITHFUL_NORMALIZED (OQ-07).
    se cita como evidencia;
 5. `FidelityStatus`, `DegradedSpans` y, con DEGRADED_BOUNDED, `premise_independence` en el QU de RESULT_RECEIVED (B.8.8).
 
-## 8. Receta de solo lectura de `codex-cli` (16.4; adapter `codex-cli` op. 3-7) — **condicionada a OQ-13**
+## 8. Receta de solo lectura de `codex-cli` (16.4; adapter `codex-cli` op. 3-7) — **variante A decidida (decisiones §55, U-03)**
 
 El texto literal de 16.4 dice «`-C` con el worktree de la unidad únicamente», y su Salida y su Cesión se refieren a ese worktree («`HEAD` =
-`origin/<rama>`»; «la sesión no lee, no escribe ni ejecuta nada sobre el worktree»). El kit previo fijó `D:\r62-fixture\arch` (un clon limpio aparte, el de
-las sondas de decisiones §47 y §51). Ninguna de las dos variantes está decidida: la elige el Coordinator antes de la ventana (OQ-13, README P4) y la
-orden ([order.template.md](order.template.md), paso 6) la fija.
+`origin/<rama>`»; «la sesión no lee, no escribe ni ejecuta nada sobre el worktree»). El Coordinator decidió OQ-13 (decisiones §55, U-03): el `-C` del
+Architect de FX-06 es `D:\r62-fixture\arch`, el clon aparte de solo lectura (el de las sondas de decisiones §47 y §51), y **no** la carpeta del Principal
+`D:\r62-fixture\A6`. La Cesión de 16.4 se aplica a `arch`. La orden ([order.template.md](order.template.md), paso 6) lo fija.
 
-| Elemento | Variante A (`arch`; lectura del kit previo, pendiente de OQ-13) | Variante L (lectura literal de 16.4) |
-|---|---|---|
-| binario | ruta verificada `%LOCALAPPDATA%\OpenAI\Codex\bin\<etiqueta>\codex.exe`, SHA-256 igual al aceptado en OD-2d; único binario (nunca «el más reciente») | igual |
-| argumentos | `exec -C D:\r62-fixture\arch -s read-only -m gpt-6.1-sol -c model_reasoning_effort="high" --output-schema <esquema> -o <directorio del RunId>\output.json --json "<prompt renderizado>"`; sin `--ephemeral`; stdin cerrado | igual, con `-C <worktree de la unidad>` (la carpeta del Principal, `D:\r62-fixture\A6`) |
-| entorno | el `pwsh` del runtime de Codex primero en el `PATH` del hijo (`%USERPROFILE%\.cache\codex-runtimes\codex-primary-runtime\dependencies\native\powershell`, como en las sondas de F6); `service_tier` heredado sin cambio | igual |
-| tope | 600 s, con el árbol del proceso terminado y la muerte confirmada (OQ-08) | igual |
-| Salida (antes) | huella de `config.toml` y nombres saneados; binario; procesos de la lista cerrada; `arch` limpio y desacoplado en la `AuthorityRevision`; QU LAUNCHING durable en el remoto; el `HEAD` = `origin/<rama>` de 16.4 se leería sobre el worktree del Principal (OQ-12) | huella, binario y procesos igual; el worktree de la unidad con `HEAD` = `origin/fx/u1` (= el QU LAUNCHING), limpio, sin operación Git en curso |
-| Cesión | el Principal no lee, no escribe ni ejecuta nada en `arch`; registra inicio y fin en UTC; sus QU en su propia carpeta no cambian lo que lee el revisor (§20.4), así que puede publicar QU LAUNCHED durante la corrida | el Principal no lee, no escribe ni ejecuta nada en su worktree hasta que el proceso termine: **ningún QU durante la corrida**; el intento pasa de LAUNCHING a RESULT_RECEIVED (I-P13 lo admite), sin QU LAUNCHED; `launch_evidence` queda `null` y la prueba del lanzamiento va por `runtime_evidence` (OQ-11) |
-| Entrada (después) | proceso y árbol muertos (op. 7: PID + `CreationDate`); huella sin cambio (si cambia: P-01, ninguna invocación más); `arch` con el mismo HEAD y limpio; `-o` presente | igual sobre el worktree de la unidad |
-| qué lee el revisor | el árbol de la `AuthorityRevision` | el árbol del QU LAUNCHING, descendiente de la `AuthorityRevision`: los blobs del cierre deben coincidir con los de la `AuthorityRevision` (§20.3.1 punto 4; OQ-12) |
-| esquema de salida | el canónico del fixture (`architect-review-result.v1.schema.json`, blob `e7f5747b` en `cabed547`) si `--output-schema` lo acepta; si no, un esquema de transporte del adapter y validación posterior contra el canónico (riesgo R-04 del README) | igual |
+| Elemento | Receta (variante A) |
+|---|---|
+| binario | ruta verificada `%LOCALAPPDATA%\OpenAI\Codex\bin\<etiqueta>\codex.exe`, SHA-256 igual al aceptado en OD-2d; único binario (nunca «el más reciente») |
+| argumentos | `exec -C D:\r62-fixture\arch -s read-only -m gpt-6.1-sol -c model_reasoning_effort="high" --output-schema <esquema> -o <directorio del RunId>\output.json --json "<prompt renderizado>"`; sin `--ephemeral`; stdin cerrado |
+| entorno | el `pwsh` del runtime de Codex primero en el `PATH` del hijo (`%USERPROFILE%\.cache\codex-runtimes\codex-primary-runtime\dependencies\native\powershell`, como en las sondas de F6); `service_tier` heredado sin cambio |
+| tope | 600 s, con el árbol del proceso terminado y la muerte confirmada (OQ-08) |
+| Salida (antes) | huella de `config.toml` y nombres saneados; binario; invalidadores de la observación de la celda iguales a los del bloque de medición (decisiones §55, U-02(b)); procesos de la lista cerrada; `arch` limpio y desacoplado en la `AuthorityRevision`; QU LAUNCHING durable en el remoto; el `HEAD` = `origin/<rama>` de 16.4 se leería sobre el worktree del Principal (OQ-12) |
+| Cesión | el Principal no lee, no escribe ni ejecuta nada en `arch`; registra inicio y fin en UTC; sus QU en su propia carpeta (`D:\r62-fixture\A6`) no cambian lo que lee el revisor (§20.4), así que puede publicar QU LAUNCHED con `launch_evidence` durante la corrida (obligatorio solo si OQ-11 elige su opción (a); forma del registro: OQ-11) |
+| Entrada (después) | proceso y árbol muertos (op. 7: PID + `CreationDate`); huella sin cambio (si cambia: P-01, ninguna invocación más); `arch` con el mismo HEAD y limpio; `-o` presente |
+| qué lee el revisor | el árbol de la `AuthorityRevision` |
+| esquema de salida | el canónico del fixture (`architect-review-result.v1.schema.json`, blob `e7f5747b` en `cabed547`) si `--output-schema` lo acepta; si no, un esquema de transporte del adapter y validación posterior contra el canónico (riesgo R-04 del README) |
 
-Con la variante A, un QU LAUNCHED escrito durante la corrida solo es compatible con 16.4 si el Coordinator acepta que el worktree de la cesión es `arch`
-(OQ-13); con la lectura literal, ese QU violaría la Cesión.
+**Nota histórica (variante L, descartada por decisiones §55, U-03; ya no es un camino abierto).** Antes de la decisión, el kit documentaba una lectura
+literal de 16.4 con `-C` = el worktree de la unidad (la carpeta del Principal): Cesión sobre ese worktree, ningún QU durante la corrida (LAUNCHING →
+RESULT_RECEIVED, sin QU LAUNCHED) y prueba del lanzamiento solo por `runtime_evidence`. No se usa en FX-06. Un intento que pase de LAUNCHING a
+RESULT_RECEIVED por otra causa (I-P13 lo admite; p. ej., si OQ-11 elige su opción (b), o una caída antes de escribir el QU LAUNCHED) prueba su
+lanzamiento por `runtime_evidence`.
 
 **Prompt renderizado** (lo escribe el Principal; el adapter lo custodia como `PROMPT`): rol y acción; identidades (L, I, intento, R); modo SEPARATE SESSION
 y permisos de solo lectura (sin builds, pruebas, red ni escrituras); objeto exacto `{commit, ruta, blob}`, con la instrucción de declarar en los campos

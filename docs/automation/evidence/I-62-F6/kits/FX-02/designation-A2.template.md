@@ -2,7 +2,7 @@
 
 > **Preparación; no publicada.** Se publica en S08 (README §2), en un commit del Coordinator del fixture que añade al final de
 > `docs/automation/decisions/FX-U1.md` el bloque entre `<<<BEGIN>>>` y `<<<END>>>` ya relleno (push a `origin` y a `github`). Antes: validación S07 en
-> pass. Sin esperados y sin identificadores reales (P-16): antes de publicar, la búsqueda literal de las notas de `order-FX-U1-O4.template.md` sobre el
+> pass y, como toda escritura de FX-02 en `fx/u1`, la disposición del Coordinator sobre OQ-33 (CD-26: B3 e instantánea del QH2; README §1) respetada. Sin esperados y sin identificadores reales (P-16): antes de publicar, la búsqueda literal de las notas de `order-FX-U1-O4.template.md` sobre el
 > bloque relleno (las fuentes de los valores de la tabla, como «ev. §71» o «dec. §52», no entran en el bloque).
 
 **Fuente literal de los marcadores** — AP 16.28, «Marcadores» (copia byte a byte en el fixture):
