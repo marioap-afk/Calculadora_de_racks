@@ -2797,3 +2797,22 @@ solo desde artefactos custodiados.
   2026-10-08)». OD-3 congelada solo cubre el fixture; la re-revisión de A-2 con `claude-cli` exigiría una autorización aparte del Owner y del
   Coordinator.
 
+## 83. Disposición §56: A-2 corregida (A62-A2-01 y A62-A2-O1..O3), OD-3 = A y CLAUDE-CLI-I62 = A registradas
+
+- **A-2 corregida** en el mismo archivo ([I-62-A-2.md](../../initiatives/I-62-A-2.md), blob `f1e1d6f08d3cf677500794c7d0019433a4dc7d4e`, antes `d47f71b6…`; §11 «Cambios frente
+  al blob `d47f71b6`»):
+  - A62-A2-01: la regla 2 conserva todo FAIL por violación observada (D.4, D.6, paso 7 de FX-04a, FX-04b, D.8), que no se acredita INVALID_LAUNCH ni
+    habilita la reejecución;
+  - O1: INVALID_TEST_ORACLE no es PASS ni FAIL ni habilita la reejecución;
+  - O2: el par sucesor solo cuenta como observado con la huella resultante estable;
+  - O3: solo los presupuestos restantes, confirmados antes por el Coordinator y el Owner.
+
+  Literales nuevos en §2.1: las filas FAIL de FX-04b y D.8. Q-A2-02 y Q-A2-05 quedan resueltas en el delta.
+- **Guardas** ([a2-guards.py](I-62-A2/a2-guards.py), blob `b72d26ea6b30b5cfceaa8140a536a08086562b24`): base fijada en el commit anterior a la corrección (`b553608c`), con A-2 y el
+  paquete modificados (M). G5 tiene **50 vectores**, incluidos los nuevos P1-23..P1-27 y P2-22..P2-23, y **11 mutantes** (4 nuevos), todos eliminados
+  por su vector; nuevas frases vinculadas al texto. El resultado de `run` sobre el commit exacto de la corrección se custodia en el commit siguiente.
+- **Paquete nuevo del Architect** ([I-62-architect-package-A-2.md](../../initiatives/I-62-architect-package-A-2.md)): re-revisión con cierre de A62-A2-01
+  y O1..O3. Transporte preferido: una celda `claude-cli` medida y elegible (§56, puntos 6-9); si no, HUMAN_LAUNCH_REQUIRED con una sesión nueva. Se
+  corrigen las dos imprecisiones del paquete anterior: Q-A2-01..07, y la fila de P-07 en §9.3 de V14 definida en AUTOMATION_PLAN §16.11.
+- **Decisiones del Owner registradas (§56):** OD-3 = A (solo el fixture) y CLAUDE-CLI-I62 = A (medición y uso read-only para ARCHITECT y REVIEWER de
+  I-62). La caracterización acotada de `claude-cli` (§56, punto 7) es el paso siguiente; hasta entonces `claude-cli` no es elegible.

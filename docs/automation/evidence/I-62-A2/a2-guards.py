@@ -8,8 +8,8 @@ Uso:
 `run`, sobre el commit exacto que introduce A-2:
   G1 alcance del delta: cada línea citada como literal de V14 (§2.1, §3.1) existe en la Proposal congelada; el ancla existe una sola vez dentro de D.3;
      al aplicar los dos párrafos tras el ancla solo cambian D.3 y sus secciones ancestro (función `sections` de clause_map.py, extraída por blob);
-  G2 rutas: diff --name-status --no-renames A2_BASE..head; base fijada y ancestro; A-2 y su paquete añadidos (A); lista exacta permitida; decisiones y
-     evidencia solo por añadido;
+  G2 rutas: diff --name-status --no-renames A2_BASE..head; base fijada y ancestro; A-2 y su paquete con el estado esperado (M en la corrección de
+     decisiones §56; A en la versión inicial, base c9f9419d); lista exacta permitida; decisiones y evidencia solo por añadido;
   G3 blobs congelados (V14, Freeze, A-1, ADR-0048, clause_map.py) sin cambio en head;
   G4 C-20b: ninguna ruta cambiada está en SURFACES (leídas de clause_map.py extraído de head) y `clause_map.py check <merge-base> head` = EQUAL;
   G5 modelo de presupuestos: vectores por regla (motivo de rechazo comprobado), mutantes que deben fallar, cobertura de reglas y vínculo con el texto
@@ -18,7 +18,7 @@ Sin escrituras salvo --out y un directorio temporal. Sin red.
 """
 import argparse, ast, collections, importlib.util, json, os, re, subprocess, sys, tempfile
 
-A2_BASE = "c9f9419dc4aed32242c59de489a8e78a8e369f9b"
+A2_BASE = "b553608ccdac188c45cef0982be0f7da8b5ab2ec"  # commit anterior a la corrección de decisiones §56 (la versión inicial usó c9f9419d)
 V14 = "docs/initiatives/I-62-proposal-v14.md"
 V14_COMMIT = "4c617e82b32b6c810b68d75fc19472efed22b393"
 A2 = "docs/initiatives/I-62-A-2.md"
@@ -36,14 +36,16 @@ ALLOWED_EXACT = {A2, PKG, "docs/automation/evidence/I-62-evidence.md", "docs/aut
                  "docs/automation/decisions/I-62.md", "docs/automation/state/I-62.yml"}
 ALLOWED_PREFIX = ("docs/automation/evidence/I-62-A2/",)
 APPEND_ONLY = ("docs/automation/evidence/I-62-evidence.md", "docs/automation/decisions/I-62.md")
-REQUIRED_ADDED = (A2, PKG)
+REQUIRED_STATUS = {A2: "M", PKG: "M"}
 D3_ANCESTORS = ("### D.3 Hoja de invocaciones y escenarios", "## Anexo D — Pilotos y portabilidad (plano c)")
 TEXT_BINDING = {
     "A2-P1": ["como máximo **una** reejecución limpia extraordinaria", "no se acredita INVALID_LAUNCH", "OD-5 (consumo dentro de los topes de D.3)",
               "suben como máximo en uno", "«N11: B2» conserva su alcance", "no concede otra reejecución extraordinaria", "no se aplica a D.5",
-              "sin reescribirse", "su lanzamiento físico queda registrado"],
+              "sin reescribirse", "su lanzamiento físico queda registrado", "otra violación observada del protocolo", "INVALID_TEST_ORACLE",
+              "presupuestos restantes", "el presupuesto restante del escenario basta"],
     "A2-P2": ["**un solo** bloque de medición nuevo", "como máximo **dos** sondas de solo lectura", "nunca se descuentan ni amplían", "caducan",
-              "P-07 comprueba el tope de dos del bloque", "acepta con OD-2", "no reinicia ningún presupuesto", "no se hace ningún trabajo ordinario de modelo"],
+              "P-07 comprueba el tope de dos del bloque", "acepta con OD-2", "no reinicia ningún presupuesto", "no se hace ningún trabajo ordinario de modelo",
+              "huella resultante estable"],
 }
 
 
@@ -125,9 +127,9 @@ def g2_paths(repo, base, head):
         f.append("la base no es ancestro de head")
     rows = [l.split("\t") for l in git(repo, "diff", "--name-status", "--no-renames", base, head).splitlines() if l]
     status = {r[1]: r[0] for r in rows}
-    for p in REQUIRED_ADDED:
-        if status.get(p) != "A":
-            f.append("%s no aparece como añadido (A)" % p)
+    for p, st in REQUIRED_STATUS.items():
+        if status.get(p) != st:
+            f.append("%s no aparece con el estado %s" % (p, st))
     bad = [p for p in status if not (p in ALLOWED_EXACT or p.startswith(ALLOWED_PREFIX))]
     if bad:
         f.append("rutas no permitidas: %s" % bad)
@@ -180,12 +182,15 @@ class F6Budgets:
         self.row_launched = collections.Counter()
         self.round_launched = collections.Counter()
         self.run_row, self.raw, self.forbidden, self.accredited = {}, {}, set(), {}
+        self.observed_violation, self.ordinary = set(), {}   # A62-A2-01; A62-A2-O1
+        self.remaining = {}                                    # A62-A2-O3: presupuesto restante del escenario por fila
         self.extra_rows, self.extra_owner, self.scen_used = set(), set(), set()
         self.counters = dict(SEED)
         # A2-P2
         self.frozen_cap, self.frozen_used, self.probes_counted = 2, 0, 0
         self.runtime, self.epoch, self.measured, self.accepted = None, 0, None, None
         self.ever_measured, self.blocks = False, {}
+        self.stable = True                                     # A62-A2-O2: huella resultante estable
 
     # ---- A2-P1 ----
     def cap(self, row):
@@ -215,26 +220,36 @@ class F6Budgets:
     def record_forbidden_read(self, run):
         self.forbidden.add(run)
 
+    def record_observed_violation(self, run):
+        self.observed_violation.add(run)
+
+    def accredit_ordinary(self, run, kind, by):
+        if by != "COORDINATOR":
+            raise Reject("acreditación solo del Coordinator")
+        self.ordinary[run] = kind
+
     def accredit_invalid_launch(self, run, by):
         if by != "COORDINATOR":
             raise Reject("acreditación solo del Coordinator")
         if run in self.forbidden:
             raise Reject("lectura prohibida: FAIL de aislamiento (D.6)")
+        if run in self.observed_violation:
+            raise Reject("violación observada: FAIL (D.4)")
         self.accredited[run] = "INVALID_LAUNCH"
 
     def set_result(self, run, result):
-        if run in self.accredited and result in ("PASS", "FAIL"):
-            raise Reject("INVALID_LAUNCH no es PASS ni FAIL")
+        if (run in self.accredited or run in self.ordinary) and result in ("PASS", "FAIL"):
+            raise Reject("una acreditación del Coordinator no es PASS ni FAIL")
         self.raw.setdefault(run, result)
 
     def scenario_result(self, sc):
         runs = [r for r, row in self.run_row.items() if sc in ROWS[row]["serves"]]
-        if any(r in self.forbidden for r in runs):
+        if any(r in self.forbidden or r in self.observed_violation for r in runs):
             return "FAIL"
-        valid = [self.raw[r] for r in runs if r not in self.accredited and r in self.raw]
+        valid = [self.raw[r] for r in runs if r not in self.accredited and r not in self.ordinary and r in self.raw]
         return valid[-1] if valid else "UNVERIFIED"
 
-    def dispose_extraordinary(self, row, by):
+    def dispose_extraordinary(self, row, by, needed=0):
         if not self.a2:
             raise Reject("sin A-2 no hay reejecución extraordinaria")
         if by != "COORDINATOR":
@@ -250,6 +265,8 @@ class F6Budgets:
             raise Reject("sin corrida acreditada INVALID_LAUNCH en la fila")
         if row in self.extra_rows or meta["serves"] & self.scen_used:
             raise Reject("como máximo una reejecución extraordinaria")
+        if self.remaining.get(row, float("inf")) < needed:
+            raise Reject("presupuesto restante insuficiente")
         self.extra_rows.add(row)
         self.scen_used |= meta["serves"]
 
@@ -259,7 +276,8 @@ class F6Budgets:
         self.extra_owner.add(row)
 
     # ---- A2-P2 ----
-    def observe_runtime(self, pair):
+    def observe_runtime(self, pair, stable=True):
+        self.stable = stable
         if pair != self.runtime:
             self.runtime = pair
             self.epoch += 1
@@ -286,6 +304,8 @@ class F6Budgets:
             raise Reject("la fila «Sondas previas» no está agotada")
         if pair != self.runtime:
             raise Reject("par no observado")
+        if not self.stable:
+            raise Reject("huella no estable")
         if self.epoch in self.blocks:
             raise Reject("segundo bloque para la misma actualización")
         if not self.ever_measured or self.measured == (self.runtime, self.epoch):
@@ -365,7 +385,7 @@ def vectors(cls=F6Budgets, out=None):
     m = fx04a(cls())
     case("P1-09", "A2-P1.1", "el FAIL bruto de B2 se conserva tras la acreditación", m.raw["B2"] == "FAIL")
     ok, d = rej(lambda: m.record_raw("B2", "PASS"), "no se reescribe"); case("P1-10", "A2-P1.1", "la evidencia histórica no se reescribe", ok, d)
-    case("P1-11", "A2-P1.2", "el escenario sigue UNVERIFIED (B1 y B2 acreditadas o sin corrida válida)", (m.accredit_invalid_launch("B1", "COORDINATOR") or True) and m.scenario_result("FX-04a") == "UNVERIFIED")
+    case("P1-11", "A2-P1.2", "historia real: B1 INVALID_TEST_ORACLE y B2 INVALID_LAUNCH; el escenario sigue UNVERIFIED", (m.accredit_ordinary("B1", "INVALID_TEST_ORACLE", "COORDINATOR") or True) and m.scenario_result("FX-04a") == "UNVERIFIED")
     ok, d = rej(lambda: m.set_result("B2", "PASS"), "no es PASS ni FAIL"); case("P1-12", "A2-P1.2", "una corrida INVALID_LAUNCH no puede ser PASS", ok, d)
     m2 = cls(); m2.launch("FX-04a/Principal B", "B1"); m2.record_raw("B1", "FAIL"); m2.record_forbidden_read("B1")
     ok, d = rej(lambda: m2.accredit_invalid_launch("B1", "COORDINATOR"), "FAIL de aislamiento"); case("P1-13", "A2-P1.2", "lectura prohibida: no se acredita INVALID_LAUNCH; FAIL de aislamiento", ok and m2.scenario_result("FX-04a") == "FAIL", d)
@@ -389,6 +409,17 @@ def vectors(cls=F6Budgets, out=None):
     m9 = cls(); m9.launch("D.8/Principal A", "F1"); m9.launch("D.8/Principal A", "F2"); m9.record_raw("F2", "FAIL"); m9.accredit_invalid_launch("F2", "COORDINATOR")
     m9.dispose_extraordinary("D.8/Principal A", "COORDINATOR"); m9.authorize_consumption("D.8/Principal A", "OWNER"); m9.launch("D.8/Principal A", "F3")
     case("P1-22", "A2-P1.3", "FX-06 (D.8, sin total de ronda): sube solo el tope de su fila", m9.cap("D.8/Principal A") == 3)
+
+    ma = cls(); ma.launch("D.8/Principal A", "F1"); ma.record_raw("F1", "FAIL"); ma.record_observed_violation("F1")
+    ok, d = rej(lambda: ma.accredit_invalid_launch("F1", "COORDINATOR"), "violación observada"); case("P1-23", "A2-P1.2", "violación observada en D.8 (p. ej., A cierra un hallazgo): no se acredita INVALID_LAUNCH; FX-06 en FAIL", ok and ma.scenario_result("FX-06") == "FAIL", d)
+    mb = cls(); mb.launch("FX-04a/Principal B", "B1"); mb.record_raw("B1", "FAIL"); mb.launch("FX-04a/Principal B", "B2"); mb.record_raw("B2", "FAIL"); mb.accredit_ordinary("B1", "INVALID_TEST_ORACLE", "COORDINATOR"); mb.accredit_ordinary("B2", "INVALID_TEST_ORACLE", "COORDINATOR")
+    ok, d = rej(lambda: mb.dispose_extraordinary("FX-04a/Principal B", "COORDINATOR"), "sin corrida acreditada INVALID_LAUNCH"); case("P1-24", "A2-P1.2", "INVALID_TEST_ORACLE no habilita por sí sola la reejecución", ok and mb.scenario_result("FX-04a") == "UNVERIFIED", d)
+    mc = fx04a(cls()); mc.remaining["FX-04a/Principal B"] = 0
+    ok, d = rej(lambda: mc.dispose_extraordinary("FX-04a/Principal B", "COORDINATOR", needed=1), "presupuesto restante insuficiente"); case("P1-25", "A2-P1.4", "sin presupuesto restante suficiente no se autoriza la reejecución", ok, d)
+    md = fx04a(cls()); md.remaining["FX-04a/Principal B"] = 3; md.dispose_extraordinary("FX-04a/Principal B", "COORDINATOR", needed=1); md.authorize_consumption("FX-04a/Principal B", "OWNER"); md.launch("FX-04a/Principal B", "B3")
+    case("P1-26", "A2-P1.5", "la reejecución no repone presupuestos (restante y contadores sin cambio)", md.remaining["FX-04a/Principal B"] == 3 and md.counters == SEED)
+    me = cls(); me.launch("FX-04a/Principal B", "B1")
+    ok, d = rej(lambda: me.accredit_ordinary("B1", "INVALID_TEST_ORACLE", "SUPERVISION"), "solo del Coordinator"); case("P1-27", "A2-P1.2", "la acreditación ordinaria es solo del Coordinator", ok, d)
 
     # ---- A2-P2 ----
     p = cls()
@@ -433,19 +464,24 @@ def vectors(cls=F6Budgets, out=None):
     ok, d = rej(lambda: u.request_block(("b", "2")), "sin A-2"); case("P2-20", "A2-P2.3", "sin A-2 no hay bloque", ok, d)
     v = cls(); v.observe_runtime(("a", "1")); v.frozen_probe(); v.observe_runtime(("b", "2"))
     ok, d = rej(lambda: v.request_block(("b", "2")), "no está agotada"); case("P2-21", "A2-P2.scope", "con la fila sin agotar no hay bloque", ok, d)
+    w = cls(); w.observe_runtime(("a", "1")); w.frozen_probe(); w.frozen_probe(); w.observe_runtime(("b", "2"), stable=False)
+    ok, d = rej(lambda: w.request_block(("b", "2")), "huella no estable")
+    case("P2-22", "A2-P2.3", "actualización a medio completar: el par no cuenta como observado mientras la huella no es estable", ok, d)
+    w2 = cls(); w2.observe_runtime(("a", "1")); w2.frozen_probe(); w2.frozen_probe(); w2.observe_runtime(("b", "2"), stable=False); w2.observe_runtime(("b", "2"), stable=True); w2.request_block(("b", "2"))
+    case("P2-23", "A2-P2.3", "con la huella resultante estable, el par cuenta como observado y admite su bloque", w2.epoch in w2.blocks)
     return out
 
 
 # Mutantes: cada uno debe hacer fallar al menos un vector.
 class M_ResetOnDispose(F6Budgets):
-    def dispose_extraordinary(self, row, by):
-        super().dispose_extraordinary(row, by)
+    def dispose_extraordinary(self, row, by, needed=0):
+        super().dispose_extraordinary(row, by, needed)
         self.counters["attempts"] = 0
 
 
 class M_NoCoordinatorCheck(F6Budgets):
-    def dispose_extraordinary(self, row, by):
-        super().dispose_extraordinary(row, "COORDINATOR")
+    def dispose_extraordinary(self, row, by, needed=0):
+        super().dispose_extraordinary(row, "COORDINATOR", needed)
 
 
 class M_ReuseOldBlock(F6Budgets):
@@ -462,8 +498,8 @@ class M_IgnoreForbiddenRead(F6Budgets):
 
 
 class M_NoOwnerConsumption(F6Budgets):
-    def dispose_extraordinary(self, row, by):
-        super().dispose_extraordinary(row, by)
+    def dispose_extraordinary(self, row, by, needed=0):
+        super().dispose_extraordinary(row, by, needed)
         self.extra_owner.add(row)
 
 
@@ -474,14 +510,39 @@ class M_SecondBlock(F6Budgets):
 
 
 class M_PerScenarioOnSharedRow(F6Budgets):
-    def dispose_extraordinary(self, row, by):
+    def dispose_extraordinary(self, row, by, needed=0):
         if row in self.extra_rows:  # concede otra reejecución en la misma fila compartida (+1 por escenario)
             self.extra_rows.discard(row)
             self.scen_used -= ROWS[row]["serves"]
-        super().dispose_extraordinary(row, by)
+        super().dispose_extraordinary(row, by, needed)
 
 
-MUTANTS = [M_ResetOnDispose, M_NoCoordinatorCheck, M_ReuseOldBlock, M_IgnoreForbiddenRead, M_NoOwnerConsumption, M_SecondBlock, M_PerScenarioOnSharedRow]
+class M_IgnoreObservedViolation(F6Budgets):
+    def accredit_invalid_launch(self, run, by):
+        self.observed_violation.discard(run)
+        super().accredit_invalid_launch(run, by)
+
+
+class M_OrdinaryGrantsRerun(F6Budgets):
+    def dispose_extraordinary(self, row, by, needed=0):
+        for r, k in self.ordinary.items():
+            if self.run_row.get(r) == row:
+                self.accredited[r] = k
+        super().dispose_extraordinary(row, by, needed)
+
+
+class M_NoBudgetCheck(F6Budgets):
+    def dispose_extraordinary(self, row, by, needed=0):
+        super().dispose_extraordinary(row, by, 0)
+
+
+class M_UnstableObservation(F6Budgets):
+    def request_block(self, pair):
+        self.stable = True
+        super().request_block(pair)
+
+
+MUTANTS = [M_IgnoreObservedViolation, M_OrdinaryGrantsRerun, M_NoBudgetCheck, M_UnstableObservation, M_ResetOnDispose, M_NoCoordinatorCheck, M_ReuseOldBlock, M_IgnoreForbiddenRead, M_NoOwnerConsumption, M_SecondBlock, M_PerScenarioOnSharedRow]
 RULES = ["A2-P1.%d" % i for i in range(1, 7)] + ["A2-P1.scope"] + ["A2-P2.%d" % i for i in range(1, 7)] + ["A2-P2.scope"]
 
 
