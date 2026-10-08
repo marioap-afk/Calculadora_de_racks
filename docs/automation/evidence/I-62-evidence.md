@@ -2852,3 +2852,13 @@ solo desde artefactos custodiados.
   - Q-A2-01..07 sin hallazgo; M-03 y M-04; ninguna decisión del Owner.
 - **Auditor** v5.1 custodiado ([audit.json](I-62-architect-A-2/R20261008T184326Z-f1e2/audit.json)): **ACCREDITED**, 0 motivos en 32 llamadas.
 - **Siguiente:** veredicto del Coordinator sobre la A-2 exacta (blob `f1e1d6f0…`). Hasta entonces, ni B3 ni bloque de medición.
+
+## 86. A-2 AGREED (decisiones §57): acuerdo append-only; Claude CLI aceptado como transporte; solicitudes de recuperación de F6 en preparación
+
+- **Acuerdo:** Architect AGREED (R20261008T184326Z-f1e2, ACCREDITED) y Coordinator AGREED sobre la A-2 exacta (blob `f1e1d6f0…`; publicación `fd411b13`).
+  Queda registrado append-only en las decisiones (§57), en esta evidencia y como anexo del [registro de la re-revisión](../../initiatives/I-62-architect-review-A-2-r2.md).
+  `docs/initiatives/I-62-A-2.md` no cambia. A62-A2-O4..O6: ACCEPTED NON-BLOCKING OPTIONAL, documentados sin modificar el objeto.
+- **Claude CLI:** la caracterización de `claude-cli` 2.1.293 (evidencia §84) queda aceptada como elegibilidad vigente para ARCHITECT y REVIEWER; transporte
+  preferido para las revisiones reales autorizadas de I-62 con celda elegible y cierre limpio; nunca PRINCIPAL_COORDINATOR, WORKER ni escritura.
+- **Siguiente:** solicitudes concretas de B3 (A2-P1) y del bloque de Codex (A2-P2), en una sola solicitud al Owner; A-3 con los ocho MAJOR y la
+  investigación de MATERIAL_ADAPTER_FINGERPRINT.

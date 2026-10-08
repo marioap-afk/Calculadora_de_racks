@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (evidencia §85) — re-revisión de A-2 por claude-cli = AGREED y ACCREDITED (A62-A2-O4..O6 OPTIONAL); espera el veredicto del Coordinator sobre la A-2 exacta (f1e1d6f0); después, B3 y bloque de medición según A-2; A-3 preparada (no presentada); FX-04a OPEN/UNVERIFIED; codex-cli en STOP P-01"
+  next_action: "F6 (decisiones §57; evidencia §86) — A-2 AGREED (Architect + Coordinator); preparar la solicitud única al Owner y al Coordinator para B3 (A2-P1, fuente QH2 preservada) y el bloque de Codex (A2-P2); A-3 con los ocho MAJOR y MATERIAL_ADAPTER_FINGERPRINT; FX-04a OPEN/UNVERIFIED; codex-cli en STOP P-01; sin F6 GATE PASS"
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual

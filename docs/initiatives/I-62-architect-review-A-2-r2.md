@@ -38,3 +38,15 @@ acordadas, REQUIRED anteriores cerrados, sin decisión del Owner, sin cambio en 
 Coordinator: decidir la acreditación de la corrida (el auditor da ACCREDITED) y emitir su veredicto sobre la A-2 exacta (blob `f1e1d6f0…`). Si
 quiere O4..O6 en el objeto, una A-2 corregida exigiría otra revisión; si no, caben como evidencia de apoyo o en la A-n siguiente. Hasta el veredicto del
 Coordinator: ni B3 ni bloque de medición.
+
+## Acuerdo (añadido, decisiones §57)
+
+- **Coordinator: AGREED** sobre la A-2 exacta (blob `f1e1d6f08d3cf677500794c7d0019433a4dc7d4e`), con la acreditación de esta revisión (ACCREDITED).
+  A-2 queda como enmienda acordada del Freeze; su blob no se edita después del acuerdo (LIFECYCLE §6). Toda corrección posterior iría en la A-n siguiente.
+- **A62-A2-O4..O6:** ACCEPTED NON-BLOCKING OPTIONAL. Quedan documentados en este registro y en `output.json`, sin modificar el objeto acordado:
+  - O4: precisiones del modelo G5 de `a2-guards.py`, como evidencia de apoyo;
+  - O5: precisiones de declaración de M-04, §1 y la regla 5;
+  - O6: la prueba de rutas se compone de los dos resultados de las guardas (base `c9f9419d` en evidencia §81 y base `b553608c` en evidencia §83-§84).
+- **Aplicación:** A-2 habilita solicitar una B3 extraordinaria de FX-04a y un bloque nuevo de sondas de solo lectura para el runtime exacto de Codex;
+  no concede ninguno (decisiones §57, punto 2).
+
