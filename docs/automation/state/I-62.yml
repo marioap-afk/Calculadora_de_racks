@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (evidencia §78-§79) — B2 comparada (FAIL bruto 2/23 por esquema no entregado; propuesta INVALID_LAUNCH); el Coordinator decide U-01a..U-01c en la ronda única (b2-report-for-coordinator.md y kits/coordinator-disposition-request.md); sin escrituras en el fixture ni OD-2d-PROBE hasta esa decisión; codex-cli en STOP P-01"
+  next_action: "F6 (decisiones §55; evidencia §80) — FX-04a OPEN/UNVERIFIED (B2 INVALID_LAUNCH; B3 solo con A-2 AGREED); A-2 candidata (I-62-A-2.md) a revisión del Architect independiente (HUMAN_LAUNCH_REQUIRED) y del Coordinator; preparación de FX-02, FX-06 y F7 sin modelos de codex-cli; asignación de sondas agotada; codex-cli en STOP P-01"
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual

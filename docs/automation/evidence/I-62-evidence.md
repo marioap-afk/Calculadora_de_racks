@@ -2719,3 +2719,25 @@ solo desde artefactos custodiados.
   primer mensaje) y U-01c (cierre de FX-04a como UNVERIFIED con limitación, si no hay B3).
 - **Lección de la supervisión:** ninguna tarjeta del Owner lleva copias abreviadas de un texto inicial. Se pega solo desde el archivo, y la supervisión
   comprueba el SHA-256 del primer mensaje en cuanto se abre la sesión.
+
+## 80. Disposición §55: B2 INVALID_LAUNCH, B3 no autorizada, origen del fixture liberado, candidata A-2 y origen congelado de QH2
+
+- **Clasificación registrada (§55):** B2 = INVALID_LAUNCH; el FAIL bruto 2/23 se conserva sin cambios (`74e69f35…`, `c9f9419d`); FX-04a y C-25a =
+  UNVERIFIED; FX-04a sigue OPEN. B3 no está autorizada con el Freeze vigente. F6 GATE PASS es imposible mientras C-25a no se satisfaga.
+- **Candidata A-2** ([I-62-A-2.md](../../initiatives/I-62-A-2.md)), PROPUESTA y no aplicada. Añade dos párrafos al final de V14 D.3 y no cambia el texto
+  de ninguna otra cláusula. A2-P1 da como máximo una reejecución limpia extraordinaria por escenario de F6 tras una acreditación INVALID_LAUNCH del Coordinator y
+  su disposición. A2-P2 da un bloque nuevo de como máximo dos sondas de solo lectura para un par exacto (`BinaryHash`, `AppVersion`) tras una
+  actualización automática, con autorización por bloque y OD-2 sobre la huella resultante. Ninguno de los dos reinicia contadores. Material por M-03 y
+  M-04. Antes de publicarla, tres críticos adversariales revisaron la fidelidad al texto del Coordinator, la exactitud de las cláusulas y las guardas;
+  sus hallazgos están aplicados: se conserva el FAIL de aislamiento de D.6, +1 como máximo por fila compartida, B3 necesita la autorización de consumo
+  del Owner porque OD-5 no la cubre, un solo bloque por actualización, las sondas no usadas caducan, P-07 aplica a cada bloque y se registran los
+  hechos de las sondas de OD-2d-PROBE. Guardas: [a2-guards.py](I-62-A2/a2-guards.py). Comprueban el alcance del delta, aplicándolo sobre V14; las
+  rutas, con decisiones y evidencia solo por añadido; los blobs congelados; y C-20b con la herramienta fijada por blob. Incluyen un modelo de
+  presupuestos con 43 vectores por regla y 7 mutantes que deben fallar. El resultado sobre el commit exacto de A-2 se custodia en el commit
+  siguiente. Paquete del Architect: [I-62-architect-package-A-2.md](../../initiatives/I-62-architect-package-A-2.md).
+- **Hallazgo material para la aplicación de A-2:** una B3 tiene que leer los hechos remotos de QH2. Liberar el origen (§55 punto 3) permite que FX-02
+  escriba en `fx/u1`, y eso cambiaría lo que B3 vería con `git ls-remote`. Para no perder esa posibilidad, la supervisión creó **antes de cualquier
+  escritura** una instantánea congelada del origen: `D:\r62-fixture\fx04a-qh2-origin.git` (`git clone --mirror`, remoto eliminado; digest de refs
+  `275d977b3e16bfe2f81261a443fb814e109d6fc526c0fb0c6c7c9d3a1c22713e`, igual al del origen vivo en ese momento; `fx/u1` = `cabed547`). Si se usa para
+  B3, o si se prohíben las escrituras en `fx/u1` antes de B3, lo decide el Coordinator (A-2 §8, Q-A2-04).
+- **Codex:** asignación congelada de sondas agotada (§55 punto 11); ninguna sonda; `codex-cli` sigue en P-01 / STOP.
