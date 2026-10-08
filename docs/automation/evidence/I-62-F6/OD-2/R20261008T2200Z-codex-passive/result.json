@@ -1,0 +1,35 @@
+{
+ "ObservedUtc": "2026-10-08T21:41:15Z",
+ "Mode": "pasiva (sin ejecutar codex): hash de archivos, versión del paquete de la app, nombres de clave saneados y comparación por clave con HMAC local; sin valores",
+ "Binary": {
+  "Path": "%LOCALAPPDATA%/OpenAI/Codex/bin/9691020b546a15b2/codex.exe",
+  "Sha256": "3553cd6e7df5a093d8cb8301cd8088a57e0971aba71ddbe0e67f7f44a15cdf68",
+  "WrittenUtc": "2026-10-07T11:57:39Z",
+  "OnlyCodexExe": true
+ },
+ "AppVersion": "26.1002.7124.0",
+ "ConfigToml": {
+  "Sha256": "6518EFAB0BC0C0C2C2C5DCCD3A3D3646DFDC9F15B222FD6B744CBC84B857DB32",
+  "Bytes": 4777,
+  "LastWriteTimeUtc": "2026-10-07T20:05:22.723Z",
+  "KeyNamesCount": 107
+ },
+ "ChangedKeysVs9EA26634": [
+  "mcp_servers.node_repl.command",
+  "mcp_servers.node_repl.env.BROWSER_USE_CODEX_APP_VERSION",
+  "mcp_servers.node_repl.env.CODEX_CLI_PATH",
+  "mcp_servers.node_repl.env.NODE_REPL_NODE_MODULE_DIRS",
+  "mcp_servers.node_repl.env.NODE_REPL_NODE_PATH",
+  "mcp_servers.node_repl.env.NODE_REPL_TRUSTED_CODE_PATHS",
+  "mcp_servers.node_repl.env.NODE_REPL_TRUSTED_SERVICES",
+  "mcp_servers.node_repl.env.SKY_CUA_NATIVE_PIPE_DIRECTORY",
+  "notify"
+ ],
+ "AddedRemoved": "ninguna clave añadida ni eliminada",
+ "History": [
+  "3b8f6e33… / 26.930.7945.0 (medido, OD-2d-PROBE)",
+  "97c57e4e… / 26.1002.6548.0 (sin medir; huella 9EA26634)",
+  "3553cd6e… / 26.1002.7124.0 (vigente; huella 6518EFAB)"
+ ],
+ "P01": "codex-cli sigue en STOP: la huella vigente no está aceptada por OD-2"
+}

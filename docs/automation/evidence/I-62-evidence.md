@@ -2862,3 +2862,21 @@ solo desde artefactos custodiados.
   preferido para las revisiones reales autorizadas de I-62 con celda elegible y cierre limpio; nunca PRINCIPAL_COORDINATOR, WORKER ni escritura.
 - **Siguiente:** solicitudes concretas de B3 (A2-P1) y del bloque de Codex (A2-P2), en una sola solicitud al Owner; A-3 con los ocho MAJOR y la
   investigación de MATERIAL_ADAPTER_FINGERPRINT.
+
+## 87. Solicitud única de recuperación de F6 (decisiones §57): B3 extraordinaria de FX-04a y bloque de Codex; fuente QH2 preservada
+
+- **Solicitud** ([F6-recovery-request-2026-10-08.md](I-62-F6/requests/F6-recovery-request-2026-10-08.md)). Cada aplicación de A-2 necesita una
+  disposición del Coordinator que la nombre y la autorización de consumo del Owner. Las dos van en una sola respuesta del Owner (`B3-CONSUMO = A` y/o
+  `BLOQUE-CODEX-CONSUMO = A`). La OD-2 sobre la huella resultante se decide después de medir.
+- **B3:**
+  - fila Principal B de FX-04a, tope 2 → 3 con la reejecución; total de la ronda ≤ 3 (+1 B2);
+  - presupuesto restante suficiente (0 invocaciones de modelo);
+  - una sesión `claude-desktop-session` abierta por el Owner, porque es un rol de Principal que `claude-cli` no cubre;
+  - texto inicial `B3-kickoff.md` con los mismos bytes que el de B2 (`233b0582…`), entregado desde el archivo.
+- **Fuente QH2 preservada:** el clon `D:\r62-fixture\B3` (`fx/u1` = `cabed547`, limpio) tiene como único `origin` la instantánea congelada
+  `fx04a-qh2-origin.git` (refs `275d977b…`, `fsck` limpio, sin remoto). Un gancho `pre-receive` de la instantánea rechaza toda escritura, comprobado
+  con un push rechazado ([prelaunch-B3.json](I-62-F6/FX-04a/R20261008T2200Z-fx04a-b3/prelaunch-B3.json)).
+- **Codex, otra actualización automática** ([result.json](I-62-F6/OD-2/R20261008T2200Z-codex-passive/result.json)): binario `3553cd6e…` (escrito el
+  2026-10-07T11:57Z), app `26.1002.7124.0`, `config.toml` `6518EFAB…` estable desde el 2026-10-07T20:05Z. Cambian las mismas 9 claves
+  (`mcp_servers.node_repl.*` y `notify`). El par `97c57e4e…` nunca llegó a medirse. El bloque se pide para el par vigente, con un tope de 2 sondas de
+  solo lectura (Controller y Architect). `codex-cli` sigue en STOP P-01.
