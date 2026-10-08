@@ -1,0 +1,1006 @@
+{
+ "Schema": "rackcad-input-closure/v1 (representación experimental; Proposal V14 §20.3.1; no autoridad normativa: rigen I-61 y LIFECYCLE)",
+ "Ids": {
+  "RunId": "R20261008T184326Z-f1e2",
+  "InvocationId": "I20261008T184326Z-f1e2",
+  "LogicalReviewRequestId": "L20261008T184326Z-f1e2",
+  "AttemptSeq": 1
+ },
+ "AuthorityRevision": "fd411b136f888ecf301f9edaa7fcc068da8dbf22",
+ "ObjectIntroducedBy": "3bbaabef0346d4146585dbf17ac49a1d3a495b0d",
+ "DeltaBase": "b553608ccdac188c45cef0982be0f7da8b5ab2ec",
+ "ObjectPath": "docs/initiatives/I-62-A-2.md",
+ "ObjectBlob": "f1e1d6f08d3cf677500794c7d0019433a4dc7d4e",
+ "PackagePath": "docs/initiatives/I-62-architect-package-A-2.md",
+ "PreviousObject": {
+  "Blob": "d47f71b66ba86c31f857f0d8c2d2437636947af0",
+  "Commit": "b280f7079e128113666e85a2f437e629d0f0d99e",
+  "RunFile": "A-2.d47f71b6.md",
+  "Review": "R20261008T014941Z-68fe (CHANGES REQUIRED; NOT_ACCREDITED, decisiones §56, punto 1)"
+ },
+ "Harness": "docs/automation/evidence/I-62-A2/a2-guards.py",
+ "HarnessExecution": "ninguna: el revisor no tiene herramientas de ejecución; lee el código y el resultado custodiado",
+ "FocusItems": 5,
+ "FocusSource": "paquete §4, preguntas 1, 2, 3, 4, 5 (la 6 son las Q-A2 de A-2 §8)",
+ "QuestionIds": [
+  "Q-A2-01",
+  "Q-A2-02",
+  "Q-A2-03",
+  "Q-A2-04",
+  "Q-A2-05",
+  "Q-A2-06",
+  "Q-A2-07"
+ ],
+ "QuestionSource": "A-2 §8 (el paquete §1 indica que Q-A2-02 y Q-A2-05 quedan resueltas en el delta; se disponen las 7)",
+ "PriorFindingIds": [
+  "A62-A2-01",
+  "A62-A2-O1",
+  "A62-A2-O2",
+  "A62-A2-O3"
+ ],
+ "PriorFindingSource": "A-2 §11 y paquete §1: A62-A2-01 (REQUIRED) y A62-A2-O1..O3 (OPTIONAL), aceptados en decisiones §56, punto 2",
+ "PriorFindingDispositions": [
+  "CLOSED",
+  "STILL_OPEN"
+ ],
+ "Transport": {
+  "Adapter": "claude-cli",
+  "Binary": {
+   "Path": "%APPDATA%\\Claude\\claude-code\\2.1.293\\83cb0bd7fed4\\claude.exe",
+   "Sha256": "8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa",
+   "Version": "2.1.293 (Claude Code)",
+   "Authenticode": "Valid; CN=\"Anthropic, PBC\""
+  },
+  "Model": "claude-opus-5-5",
+  "Effort": "xhigh",
+  "Flags": [
+   "-p",
+   "--model",
+   "claude-opus-5-5",
+   "--effort",
+   "xhigh",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--safe-mode",
+   "--strict-mcp-config",
+   "--no-chrome",
+   "--tools",
+   "Read,Grep,Glob",
+   "--permission-mode",
+   "dontAsk",
+   "--permission-prompts",
+   "none"
+  ],
+  "AddDir": [
+   "--add-dir",
+   "D:\\r62-arch-a2r-run"
+  ],
+  "SessionId": "26a89860-a107-4135-9981-a46f95816d16",
+  "Cwd": "D:\\r62-arch-a2r",
+  "ArgsTemplate": [
+   "-p",
+   "--model",
+   "claude-opus-5-5",
+   "--effort",
+   "xhigh",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--safe-mode",
+   "--strict-mcp-config",
+   "--no-chrome",
+   "--tools",
+   "Read,Grep,Glob",
+   "--permission-mode",
+   "dontAsk",
+   "--permission-prompts",
+   "none",
+   "--add-dir",
+   "<add-dir>",
+   "--session-id",
+   "<session-id>",
+   "--json-schema",
+   "<json-schema>"
+  ],
+  "AddDirStatus": "NO medido en C1 (desviación D-01): launch.py se niega a lanzar mientras kit/transport-gate.json esté en PENDING; lo habilitan MEASURED (sonda C3 de ArgsTemplate, probe-c3.py) o ACCEPTED (aceptación explícita registrada de la sesión principal o del Coordinator); el auditor re-evalúa la compuerta sobre las copias de launch/",
+  "Gate": "kit/transport-gate.json (transport_gate.py)",
+  "Stdin": "prompt.md del run (bytes literales)",
+  "JsonSchema": "kit/result.schema.json en forma compacta: json.dumps(separators=(',', ':'), ensure_ascii=True)",
+  "ExpectedInit": {
+   "tools": [
+    "Glob",
+    "Grep",
+    "Read",
+    "StructuredOutput"
+   ],
+   "permissionMode": "dontAsk",
+   "mcp_servers": [],
+   "claude_code_version": "2.1.293"
+  },
+  "TranscriptPath": "%USERPROFILE%\\.claude\\projects\\D--r62-arch-a2r\\26a89860-a107-4135-9981-a46f95816d16.jsonl",
+  "LaunchDir": "D:\\r62-arch-a2r-run\\launch (preflight.json, transport-characterization.json, transport-acceptance.json solo en ACCEPTED, stdout.jsonl, stderr.txt y run.json)",
+  "TimeoutSeconds": 3600,
+  "Characterization": "claude-cli-characterization.json (decisiones §56, punto 7): C1 completada, C2 cancelada por terminación; C3 (lista con --add-dir) pendiente de la sesión principal si elige la vía (a)"
+ },
+ "RunDir": "D:\\r62-arch-a2r-run",
+ "RunFiles": [
+  "order.txt",
+  "prompt.md",
+  "delta.diff",
+  "A-2.d47f71b6.md"
+ ],
+ "PremiseRunFiles": [
+  "order.txt",
+  "delta.diff",
+  "A-2.d47f71b6.md"
+ ],
+ "RunFileHashes": {
+  "order.txt": {
+   "Bytes": 8562,
+   "Lines": 364,
+   "Sha256": "e8b003284843374ba1e8497434f375f3206da2cd9a9829f2f451ff73af06b081",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": false
+   },
+   "Source": "cuerpo exacto pegado por el Owner de la disposición del Coordinator (decisiones §56; 8 562 bytes)",
+   "PremiseAllowed": true,
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 364
+    }
+   ]
+  },
+  "prompt.md": {
+   "Bytes": 18642,
+   "Lines": 220,
+   "Sha256": "0d1d5a4d4522af2d97336f299afd9bfc1833980fee87a7ae65a5d7bb33739a21",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": false
+   },
+   "Source": "copia de kit/prompt.md; stdin literal del proceso claude-cli; nunca es premisa",
+   "PremiseAllowed": false,
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 220
+    }
+   ]
+  },
+  "delta.diff": {
+   "Bytes": 17177,
+   "Lines": 143,
+   "Sha256": "abc6db950bdc9cae5f757ea3b336acd5f367d9bac1bae3a1385271c5eb5f92c4",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "Source": "salida literal de `git diff b553608ccdac188c45cef0982be0f7da8b5ab2ec fd411b136f888ecf301f9edaa7fcc068da8dbf22 -- docs/initiatives/I-62-A-2.md` en el clon",
+   "PremiseAllowed": true,
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 143
+    }
+   ]
+  },
+  "A-2.d47f71b6.md": {
+   "Bytes": 25567,
+   "Lines": 320,
+   "Sha256": "9dca403d2f0871ec6cb46bce6ca4f323d3511a98b8b2ca4da654e7d3674824d8",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "Source": "salida literal de `git show b280f707:docs/initiatives/I-62-A-2.md` en el clon (blob d47f71b66ba86c31f857f0d8c2d2437636947af0)",
+   "PremiseAllowed": true,
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 320
+    }
+   ]
+  }
+ },
+ "RunCustody": "el auditor compara el SHA-256 de cada archivo del run con RunFileHashes y con la copia del kit; el directorio del run solo admite esos cuatro archivos y, después del lanzamiento, el subdirectorio launch/, que solo admite los archivos que escribe launch.py",
+ "IdentityVerification": "el revisor no ejecuta git: el invocador verifica el clon antes del lanzamiento (verify_clone.py → clone-verification.json) y el auditor v5 lo vuelve a verificar después (HEAD, rama única, sin remotos, árbol limpio con ignorados, blobs designados); el revisor contrasta la línea `index` de delta.diff con los blobs declarados",
+ "CanonicalInputs": [
+  {
+   "Path": "docs/initiatives/I-62-A-2.md",
+   "Blob": "f1e1d6f08d3cf677500794c7d0019433a4dc7d4e",
+   "Bytes": 29957,
+   "Lines": 352,
+   "Sha256": "819bcc322cae6e70db0dacff553be9e4058a3c683e2d72d419bc41b52459903e",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "Why": "objeto de la re-revisión: A-2 corregida, entera, con §11 «Cambios frente al blob d47f71b6» (paquete §2)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 352
+    },
+    {
+     "Section": "cabecera (bloque de identidad)",
+     "Start": 1,
+     "End": 48
+    },
+    {
+     "Section": "## 1. Alcance",
+     "Start": 50,
+     "End": 72
+    },
+    {
+     "Section": "## 2. A2-P1 — Recuperación de un lanzamiento inválido",
+     "Start": 74,
+     "End": 177
+    },
+    {
+     "Section": "### 2.1 Cláusulas anteriores (literales, V14)",
+     "Start": 76,
+     "End": 126
+    },
+    {
+     "Section": "### 2.2 Motivo",
+     "Start": 128,
+     "End": 140
+    },
+    {
+     "Section": "### 2.3 Delta exacto",
+     "Start": 142,
+     "End": 170
+    },
+    {
+     "Section": "### 2.4 Aplicación prevista (no ejecutada; solo con A-2 AGREED)",
+     "Start": 172,
+     "End": 177
+    },
+    {
+     "Section": "## 3. A2-P2 — Nueva medición tras una actualización automática del runtime",
+     "Start": 179,
+     "End": 239
+    },
+    {
+     "Section": "### 3.1 Cláusulas anteriores (literales, V14)",
+     "Start": 181,
+     "End": 195
+    },
+    {
+     "Section": "### 3.2 Motivo",
+     "Start": 197,
+     "End": 210
+    },
+    {
+     "Section": "### 3.3 Delta exacto",
+     "Start": 212,
+     "End": 239
+    },
+    {
+     "Section": "## 4. Semántica antes y después",
+     "Start": 241,
+     "End": 263
+    },
+    {
+     "Section": "## 5. Materialidad (M-01..M-08)",
+     "Start": 265,
+     "End": 276
+    },
+    {
+     "Section": "## 6. No cambia producción ni la semántica de F4",
+     "Start": 278,
+     "End": 297
+    },
+    {
+     "Section": "## 7. Consecuencias reservadas al Owner",
+     "Start": 299,
+     "End": 307
+    },
+    {
+     "Section": "## 8. Preguntas para la revisión (no forman parte del delta)",
+     "Start": 309,
+     "End": 319
+    },
+    {
+     "Section": "## 9. Evidencia",
+     "Start": 321,
+     "End": 330
+    },
+    {
+     "Section": "## 10. Veredictos",
+     "Start": 332,
+     "End": 341
+    },
+    {
+     "Section": "## 11. Cambios frente al blob `d47f71b6` (revisión R20261008T014941Z-68fe; decisiones §56)",
+     "Start": 343,
+     "End": 352
+    },
+    {
+     "Section": "3.3, «Lectura vigente» (no forma parte del delta)",
+     "Start": 236,
+     "End": 239
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-architect-package-A-2.md",
+   "Blob": "5bd0fa609722d9c94aeab38b0d8b486b1d4f1606",
+   "Bytes": 10672,
+   "Lines": 117,
+   "Sha256": "40fd9c2b0bd839b24212403e42ae2e00118d975699ef6f9319bb5b603a09464d",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "Why": "paquete de la re-revisión (veredicto pedido §1, insumos §2, resumen §3, preguntas §4, condiciones §5)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 117
+    },
+    {
+     "Section": "## 1. Veredicto que se solicita (LIFECYCLE §5 y §6)",
+     "Start": 30,
+     "End": 44
+    },
+    {
+     "Section": "## 2. Lectura (insumos canónicos)",
+     "Start": 46,
+     "End": 64
+    },
+    {
+     "Section": "## 3. Resumen del delta corregido",
+     "Start": 66,
+     "End": 85
+    },
+    {
+     "Section": "## 4. Preguntas para la revisión",
+     "Start": 87,
+     "End": 95
+    },
+    {
+     "Section": "## 5. Condiciones de la invocación",
+     "Start": 97,
+     "End": 110
+    },
+    {
+     "Section": "## 6. Lo que este paquete no hace",
+     "Start": 112,
+     "End": 117
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-architect-review-A-2.md",
+   "Blob": "983d4664bd1aa8cbc0066a4220ea84b7c5443701",
+   "Bytes": 4512,
+   "Lines": 41,
+   "Sha256": "a5387bb608cb9b3d3a4b3a0b0dc9b0a6432f1727c060f49c47706cdcbb4c9320",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "Why": "registro de la revisión anterior (A62-A2-01, O1..O3; paquete §2)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 41
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-architect-A-2/R20261008T014941Z-68fe/output.json",
+   "Blob": "72f70912a941d882798a9a44fa137355f4ecaab5",
+   "Bytes": 43590,
+   "Lines": 154,
+   "Sha256": "aa0246a94a25de81bff75ae16cb4db2f16baa04f69b8351339f7e416bd5d865e",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": false
+   },
+   "Why": "resultado literal de la revisión anterior R20261008T014941Z-68fe (paquete §2)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 154
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/decisions/I-62.md",
+   "Blob": "015d6fa4488d08cbdc9f75901acb465d0011adbe",
+   "Bytes": 173040,
+   "Lines": 1103,
+   "Sha256": "8b930912d8653bb1f6c27183914ece8745c92631b1145534278d262dc0a0ed08",
+   "LinesOver2000Chars": [
+    657,
+    734,
+    750,
+    768,
+    787,
+    805,
+    819
+   ],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "Why": "§51-§56: OD-2d-PROBE, selección de B, B1, la disposición §55 y la disposición §56 (hallazgos aceptados, claude-cli)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "§51-§56",
+     "Start": 972,
+     "End": 1103
+    },
+    {
+     "Section": "## 51. Disposición del Coordinator: C-22 y C-23 PASS, F6-OBS-01, reparación para FX-04a y OD-2d-PROBE (2026-10-07 UTC)",
+     "Start": 972,
+     "End": 991
+    },
+    {
+     "Section": "## 52. Disposición del Coordinator: selección del Principal B de FX-04a (2026-10-07 UTC)",
+     "Start": 993,
+     "End": 1010
+    },
+    {
+     "Section": "## 53. Disposición del Coordinator: resultado de la comparación de B1 en FX-04a (2026-10-07 UTC)",
+     "Start": 1012,
+     "End": 1032
+    },
+    {
+     "Section": "## 54. Orden del Coordinator: modo nocturno sin interacción con el Owner hasta la mañana (2026-10-07 UTC)",
+     "Start": 1034,
+     "End": 1051
+    },
+    {
+     "Section": "## 55. Disposición del Coordinator: B2 / U-01 y frontera de recuperación material de F6 (2026-10-08 UTC)",
+     "Start": 1053,
+     "End": 1074
+    },
+    {
+     "Section": "## 56. Disposición del Coordinator: revisión de A-2, habilitación de Claude CLI y política de sucesores del runtime; dec",
+     "Start": 1076,
+     "End": 1103
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa",
+   "Bytes": 342761,
+   "Lines": 3323,
+   "Sha256": "ab55ad4f4addef8455543ed06a4c60aa0a1901affc0ba3686146dfeedd9279af",
+   "LinesOver2000Chars": [
+    2352,
+    2380,
+    2382
+   ],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "Why": "cláusulas que A-2 enmienda o lee (paquete §2): Anexo D (D.3 completo, D.4, D.5, D.6, D.8), §17 fila F6, §18 fila OD-2 y la fila que nombra P-07 en la tabla de §9.3",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "## Anexo D — Pilotos y portabilidad (plano c)",
+     "Start": 2384,
+     "End": 2646
+    },
+    {
+     "Section": "### D.3 Hoja de invocaciones y escenarios",
+     "Start": 2431,
+     "End": 2528
+    },
+    {
+     "Section": "### D.4 Resultados y cobertura",
+     "Start": 2530,
+     "End": 2554
+    },
+    {
+     "Section": "### D.5 Ejecución compacta para OV sobre FINAL_CANDIDATE_SHA",
+     "Start": 2556,
+     "End": 2565
+    },
+    {
+     "Section": "### D.6 Entradas y aislamiento (cobertura declarada)",
+     "Start": 2567,
+     "End": 2587
+    },
+    {
+     "Section": "### D.8 FX-06 — piloto de autonomía real (R62-AUTO-12; C-39)",
+     "Start": 2608,
+     "End": 2646
+    },
+    {
+     "Section": "D.3, «Totales por ronda de F6»",
+     "Start": 2519,
+     "End": 2519
+    },
+    {
+     "Section": "D.3, ancla de A-2 («Ningún tope autoriza gasto ni ejecución ahora.»)",
+     "Start": 2528,
+     "End": 2528
+    },
+    {
+     "Section": "## 17. Plan de gates (D-16)",
+     "Start": 931,
+     "End": 950
+    },
+    {
+     "Section": "§17, fila F6",
+     "Start": 943,
+     "End": 943
+    },
+    {
+     "Section": "## 18. Owner Validation y decisiones del Owner",
+     "Start": 952,
+     "End": 977
+    },
+    {
+     "Section": "§18, fila OD-2",
+     "Start": 971,
+     "End": 971
+    },
+    {
+     "Section": "### 9.3 Presupuestos y su autoridad",
+     "Start": 649,
+     "End": 663
+    },
+    {
+     "Section": "§9.3, fila que nombra P-07",
+     "Start": 657,
+     "End": 657
+    }
+   ]
+  },
+  {
+   "Path": "docs/AUTOMATION_PLAN.md",
+   "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "Bytes": 155229,
+   "Lines": 1732,
+   "Sha256": "6dc9f5d5cb90b2242a8d21140674c0b88dc6472a36dd8c65dc988e8cac6a19f5",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "Why": "§16.8 y §16.11: definición de P-07 (§16.11) y su contexto (§16.8) (paquete §2)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "### 16.8 Conteo, RED de la cadena y topes",
+     "Start": 600,
+     "End": 618
+    },
+    {
+     "Section": "§16.8, regla del tope de invocaciones (STOP, P-07)",
+     "Start": 612,
+     "End": 612
+    },
+    {
+     "Section": "### 16.11 Recuperación y condiciones STOP",
+     "Start": 674,
+     "End": 708
+    },
+    {
+     "Section": "§16.11, fila que define P-07",
+     "Start": 704,
+     "End": 704
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-1.md",
+   "Blob": "c01899a72b940503bb85a0fab42bc085c603fd0f",
+   "Bytes": 77984,
+   "Lines": 437,
+   "Sha256": "acd5db2665b436d830dd271375f0032d234b815d9b9b63cb7c3a2ed0b00e13f4",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "Why": "formato de una A-n acordada; presupuestos de bucle y principio sin reinicios que A-2 no debe alterar (paquete §2)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "cabecera (formato de una A-n)",
+     "Start": 1,
+     "End": 56
+    },
+    {
+     "Section": "## 2. FC-01 — Identidad del bucle del Architect, presupuestos por bucle y cierre",
+     "Start": 90,
+     "End": 167
+    },
+    {
+     "Section": "## 4. Materialidad (M-01..M-08)",
+     "Start": 229,
+     "End": 254
+    },
+    {
+     "Section": "## 11. Veredictos",
+     "Start": 429,
+     "End": 437
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-consensus-freeze.md",
+   "Blob": "0f6b860837e2478db8525e1fb30a485bc4646816",
+   "Bytes": 7134,
+   "Lines": 113,
+   "Sha256": "71809873a89aafcb58883c507a42cc825a0c14cd70c84bda6d26fd0af9e9a4a4",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "Why": "identidad del Freeze",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 113
+    }
+   ]
+  },
+  {
+   "Path": "docs/INITIATIVE_LIFECYCLE.md",
+   "Blob": "f19896a8f1a7c82f74bac7231636f68462a87271",
+   "Bytes": 24334,
+   "Lines": 360,
+   "Sha256": "93e9c6ca73460ae46ca896f4447d9f8b517624e0acbae82750d4ba613ff0b994",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "Why": "§3 (M-01..M-08), §5 (REQUIRED) y §6 (formato de A-n)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "## 3. Arquetipos y materialidad",
+     "Start": 66,
+     "End": 94
+    },
+    {
+     "Section": "## 5. Participacion del Architect",
+     "Start": 152,
+     "End": 191
+    },
+    {
+     "Section": "## 6. Consensus Freeze y enmiendas",
+     "Start": 193,
+     "End": 222
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-evidence.md",
+   "Blob": "71faef5343d2cd642734551924091db53f3e4d89",
+   "Bytes": 247423,
+   "Lines": 2818,
+   "Sha256": "259c04cb5c298d290157191508a25a4b265fb95799cdc8dce4f99bad070057dd",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "Why": "§64, §67, §70-§75 y §78-§83: sondas consumidas, actualizaciones automáticas de Codex, B1, B2, instantánea del origen y revisiones",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "## 64. Disposición del Coordinator tras la primera ejecución de F6 (decisiones §47): OD-2b-PROBE, OD-2c y diagnóstico de",
+     "Start": 2415,
+     "End": 2438
+    },
+    {
+     "Section": "## 67. P-01 por la actualización de la app de Codex: huella `723A6898…` y binario nuevo (`codex-cli` en STOP; OD-2d)",
+     "Start": 2480,
+     "End": 2490
+    },
+    {
+     "Section": "§70-§75",
+     "Start": 2531,
+     "End": 2630
+    },
+    {
+     "Section": "§78-§83",
+     "Start": 2688,
+     "End": 2818
+    },
+    {
+     "Section": "## 70. Validador de producción sobre el QH real, orden de reparación FX-U1-O3, oráculo de FX-04a corregido y OD-2d-PROBE",
+     "Start": 2531,
+     "End": 2551
+    },
+    {
+     "Section": "## 71. Reparación del QH de FX-U1 por R (QR r4, QH2 r5), oráculo de FX-04a publicado por su SHA y preparación de B (deci",
+     "Start": 2553,
+     "End": 2574
+    },
+    {
+     "Section": "## 72. FX-04a: lanzamiento de B (variante de Claude, §52), auditoría D.6 y SHA-256 de la respuesta registrado antes de l",
+     "Start": 2576,
+     "End": 2589
+    },
+    {
+     "Section": "## 73. FX-04a: comparación mecánica con el oráculo de QH2 = FAIL (3 diferencias de la capa de comparación); clasificació",
+     "Start": 2591,
+     "End": 2604
+    },
+    {
+     "Section": "## 74. FX-04a: B1 acreditada INVALID_TEST_ORACLE, contrato y oráculo v2 desde QH2, SHA del oráculo v2 publicado antes de",
+     "Start": 2606,
+     "End": 2621
+    },
+    {
+     "Section": "## 75. Noche (decisiones §54): SHA del oráculo v2 durable antes de B2, B2 en HUMAN_LAUNCH_REQUIRED y medición pasiva de ",
+     "Start": 2623,
+     "End": 2630
+    },
+    {
+     "Section": "## 78. FX-04a B2: corrida terminada y SHA de la respuesta durable antes de cargar el oráculo v2 (decisiones §53)",
+     "Start": 2688,
+     "End": 2706
+    },
+    {
+     "Section": "## 79. FX-04a B2: comparación mecánica con el contrato v2 (FAIL bruto 2/23) y propuesta de la supervisión",
+     "Start": 2708,
+     "End": 2721
+    },
+    {
+     "Section": "## 80. Disposición §55: B2 INVALID_LAUNCH, B3 no autorizada, origen del fixture liberado, candidata A-2 y origen congela",
+     "Start": 2723,
+     "End": 2743
+    },
+    {
+     "Section": "## 81. Preparación tras decisiones §55 (FX-02, FX-06, F7 y registro) y kit de la revisión del Architect de A-2 custodiad",
+     "Start": 2745,
+     "End": 2776
+    },
+    {
+     "Section": "## 82. Revisión formal del Architect de A-2 (R20261008T014941Z-68fe): CHANGES REQUIRED; auditor NOT_ACCREDITED; custodia",
+     "Start": 2778,
+     "End": 2798
+    },
+    {
+     "Section": "## 83. Disposición §56: A-2 corregida (A62-A2-01 y A62-A2-O1..O3), OD-3 = A y CLAUDE-CLI-I62 = A registradas",
+     "Start": 2800,
+     "End": 2818
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/FX-04a/R20261007T061300Z-fx04a-b2/b2-report-for-coordinator.md",
+   "Blob": "dbf7a52d7657ad23b5054f83a8570ac0fdd98fbd",
+   "Bytes": 2861,
+   "Lines": 24,
+   "Sha256": "2c6a01d396664af8a4476fb17cc4490cd462e148415fc6ee69b52c8858b52c09",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "Why": "hechos de B2 (KICKOFF_SCHEMA_NOT_DELIVERED, FAIL bruto 2/23)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 24
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/FX-04a/R20261007T061300Z-fx04a-b2/comparison-v2-analysis.json",
+   "Blob": "f3854fe18302876fb4fcdb48f471988277a81142",
+   "Bytes": 3786,
+   "Lines": 70,
+   "Sha256": "b08abdce1a516ac573d7464a34c6ab69231dacf0c14223fadc4db544796300f7",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "Why": "hechos de B2: análisis de la comparación con el contrato v2",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 70
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A2/a2-guards.py",
+   "Blob": "b72d26ea6b30b5cfceaa8140a536a08086562b24",
+   "Bytes": 37894,
+   "Lines": 596,
+   "Sha256": "e84adb546b8bd1600c4843f122cc4851e7fb6fbb888bb68e4a7e33b4ab037ae9",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "Why": "guardas mecánicas G1-G5 (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 596
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A2/a2-guards-result.json",
+   "Blob": "d8f4845f853fcba8fe79e468312d4845b1c2e76e",
+   "Bytes": 13427,
+   "Lines": 501,
+   "Sha256": "fb379cf23cb4adc152b466c1cc3b58c665d9822dcafc907f412f2457117b5afa",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "Why": "resultado de `a2-guards.py run` sobre el commit de la corrección (su campo Head nombra 3bbaabef)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 501
+    }
+   ]
+  }
+ ],
+ "AllowedTransitiveInputs": [],
+ "TransitivePolicy": "sin transitivos: con --safe-mode el runtime no inyecta CLAUDE.md, memoria ni ganchos (caracterización C1), así que las lecturas iniciales de CLAUDE.md y AGENTS.md (opción A de GAP-07 de A-1) no se activan; el prompt es la única instrucción",
+ "ReadPolicy": {
+  "Closure": "el cierre es por archivo; `LineRanges` señala las secciones que pide el paquete §2 (Scope SECTIONS) o el archivo entero (ENTIRE). Los rangos orientan, no limitan: un archivo del cierre puede leerse entero o por otros rangos",
+  "Read": "ruta absoluta de un archivo del cierre bajo el clon, o de un archivo del run; en archivos de más de 60 000 bytes, offset y limit de 300 líneas como máximo",
+  "Grep": "solo con `path` = un ARCHIVO del cierre o del run; sin `glob` ni `type`; nunca un directorio ni sin `path`",
+  "Glob": "su alcance (path + patrón) solo puede contener archivos del cierre o del run; un patrón que alcance cualquier otro archivo es una lectura fuera del cierre aunque no se lea ese archivo",
+  "LargeFileThresholdBytes": 60000,
+  "MaxRangeLines": 300,
+  "LargeFiles": [
+   "docs/automation/decisions/I-62.md",
+   "docs/initiatives/I-62-proposal-v14.md",
+   "docs/AUTOMATION_PLAN.md",
+   "docs/initiatives/I-62-A-1.md",
+   "docs/automation/evidence/I-62-evidence.md"
+  ],
+  "LongLines": {
+   "docs/automation/decisions/I-62.md": [
+    657,
+    734,
+    750,
+    768,
+    787,
+    805,
+    819
+   ],
+   "docs/initiatives/I-62-proposal-v14.md": [
+    2352,
+    2380,
+    2382
+   ]
+  },
+  "Premises": "toda premisa (PremiseRefs) se cita de líneas leídas enteras con Read: de archivos del cierre (Path relativo al clon) o de order.txt, delta.diff y A-2.d47f71b6.md (Path absoluto en D:\\r62-arch-a2r-run o el nombre suelto); nunca de prompt.md; una lectura fallida nunca cuenta; una línea larga truncada por Read no cuenta como entregada",
+  "FailedReads": "una llamada que falla o no devuelve contenido es una lectura fallida: no acredita contenido",
+  "AbsentCommits": "los commits del Freeze (b64a3b64) y de V14 (4c617e82) son anteriores a un rebase y no están en el clon: V14 se identifica por su blob en el commit (34ad80ea)"
+ },
+ "AllowedTools": [
+  "Read",
+  "Grep",
+  "Glob",
+  "StructuredOutput"
+ ],
+ "ToolPolicy": "solo Read, Grep y Glob, según ReadPolicy, y StructuredOutput para entregar el resultado; cualquier otra herramienta (también un intento rechazado por el runtime) y toda denegación de permiso (permission_denials) son violaciones",
+ "NotTriggered": [
+  {
+   "Source": "CLAUDE.md y AGENTS.md (lecturas iniciales, paso 4 «dotnet test»)",
+   "Reason": "--safe-mode: el runtime no los inyecta; el revisor no tiene herramientas de ejecución"
+  },
+  {
+   "Source": "documentation-governance y el Context Pack de I-62",
+   "Reason": "sin CLAUDE.md inyectado no hay obligación transitiva; el paquete §2 fija el cierre"
+  },
+  {
+   "Source": "enlaces de A-2, del paquete y de la evidencia a documentos fuera del cierre (clause_map.py, ADR-0048, tablero de F6, state/I-62.yml, el fixture, owner-decision-packets.md)",
+   "Reason": "citas descriptivas; el cierre lo fija la tabla de insumos del paquete §2"
+  },
+  {
+   "Source": "a2-guards.py self-test y run",
+   "Reason": "sin herramientas de ejecución; el resultado de run sobre 3bbaabef está en a2-guards-result.json"
+  }
+ ],
+ "DeclaredRuntimeContext": [
+  "prompt de sistema propio de claude-cli 2.1.293 en modo -p con --safe-mode: sin CLAUDE.md, memoria, skills de usuario, ganchos ni MCP (medido en C1)",
+  "adjunto session_context: correo del usuario (identidad) y estado de Git del cwd (rama main y asuntos de los commits recientes del clon)",
+  "adjunto environment: cwd D:\\r62-arch-a2r, plataforma, shell, directorio scratchpad del runtime y directorios adicionales (--add-dir del run)",
+  "adjuntos model, date, credential_org (uuid de la organización), prompt_snapshot, total_tokens_reminder y el esquema de structured_output",
+  "sin directorio previo en ~/.claude/projects para D:\\r62-arch-a2r (comprobado por el invocador): no hay memoria ni transcripciones del proyecto"
+ ],
+ "ForbiddenInputs": [
+  "~/.claude/projects/* (transcripciones y memoria de la sesión autora, del Coordinator y de cualquier otra sesión)",
+  "otras sesiones, incluidas la revisión anterior R20261008T014941Z-68fe (su resultado literal solo como archivo del cierre) y las de F6 (B1, B2)",
+  "el worktree real de I-62 (~/.codex/worktrees/*), el repositorio de trabajo y los clones D:\\r62-* distintos de D:\\r62-arch-a2r",
+  "el fixture de F6 (D:\\r62-fixture\\*), incluida la instantánea fx04a-qh2-origin.git",
+  "los archivos de D:\\r62-arch-a2r-run distintos de los cuatro del run, incluido el subdirectorio launch/",
+  "cualquier archivo del clon fuera de CanonicalInputs",
+  "Grep o Glob cuyo alcance sea un directorio con archivos fuera del cierre; listados de directorios",
+  "red (fetch, web)",
+  "invocar otros agentes o subagentes",
+  "escribir, hacer commit o push"
+ ],
+ "CorpusDistinctNonAscii": 42
+}

@@ -2816,3 +2816,27 @@ solo desde artefactos custodiados.
   corrigen las dos imprecisiones del paquete anterior: Q-A2-01..07, y la fila de P-07 en §9.3 de V14 definida en AUTOMATION_PLAN §16.11.
 - **Decisiones del Owner registradas (§56):** OD-3 = A (solo el fixture) y CLAUDE-CLI-I62 = A (medición y uso read-only para ARCHITECT y REVIEWER de
   I-62). La caracterización acotada de `claude-cli` (§56, punto 7) es el paso siguiente; hasta entonces `claude-cli` no es elegible.
+
+## 84. claude-cli caracterizado y elegible; kit de la re-revisión de A-2 por CLI custodiado antes del lanzamiento (decisiones §56)
+
+- **Publicación de la A-2 corregida:** corrección en `3bbaabef` (A-2 blob `f1e1d6f0…`; guardas `b72d26ea…`). Publicación en `fd411b13` con el resultado de
+  `a2-guards.py run --head 3bbaabef`: G1-G5 PASS (21 literales; C-20b EQUAL; G5 50/50 y 11 mutantes eliminados).
+- **Caracterización de `claude-cli`** ([README](I-62-claude-cli/R20261008T183600Z-char/README.md), registro `20d0de2c…`):
+  - el binario de usuario 2.1.270 no admite `claude-opus-5-5`;
+  - el binario 2.1.293 que gestiona la app de escritorio (Authenticode Anthropic) es utilizable;
+  - autenticación `claude.ai`, suscripción max, sin leer credenciales;
+  - modelo y effort observados por mensaje; prompt y lectura fieles; salida estructurada;
+  - cancelación y timeout por terminación del invocador;
+  - sin CLAUDE.md, memoria ni ganchos en modo seguro;
+  - `--add-dir` medido en C3 (PASS).
+
+  **ARCHITECT y REVIEWER ELIGIBLE** en esta observación: instalado, autenticado, invocación medida, capacidades MATCH o ABOVE_REQUIRED, consumo cubierto
+  (CLAUDE-CLI-I62 = A), STALE = false e independencia de Actor, Session y Context satisfecha. Provider PREFERRED no se cumple, y se declara.
+- **Kit `R20261008T184326Z-f1e2`** ([README](I-62-architect-A-2/R20261008T184326Z-f1e2/README.md)), custodiado **antes** del lanzamiento:
+  - clon limpio `D:\r62-arch-a2r` en `fd411b13`;
+  - run con `order.txt` = el cuerpo exacto de §56 (`e8b00328…`), `prompt.md` (`0d1d5a4d…`), `delta.diff` y el objeto anterior;
+  - el revisor solo puede usar Read, Grep y Glob;
+  - auditor v5.1 con autoprueba 107/107;
+  - compuerta de transporte MEASURED;
+  - `launch.py --dry-run` con 9 de 10 comprobaciones en Ok (la autenticación solo se comprueba en el lanzamiento real).
+- **Sin pedir al Owner otra sesión de escritorio** (decisiones §56, punto 18): la re-revisión la lanza la sesión principal por `claude-cli`.

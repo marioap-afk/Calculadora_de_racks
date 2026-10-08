@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §56; evidencia §83) — A-2 corregida (PROPUESTA) con guardas y paquete nuevos; caracterización acotada de claude-cli (§56 punto 7) y, si es elegible, re-revisión de A-2 por claude-cli; A-3 solo en preparación; FX-04a OPEN/UNVERIFIED; codex-cli en STOP P-01"
+  next_action: "F6 (decisiones §56; evidencia §84) — re-revisión de A-2 por claude-cli elegible: kit R20261008T184326Z-f1e2 custodiado; lanzamiento por launch.py y auditoría v5.1; después, veredicto del Coordinator; A-3 en preparación (no presentada); FX-04a OPEN/UNVERIFIED; codex-cli en STOP P-01"
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual

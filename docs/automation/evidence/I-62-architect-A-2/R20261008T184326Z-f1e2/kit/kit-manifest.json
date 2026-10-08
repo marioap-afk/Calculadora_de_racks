@@ -1,0 +1,131 @@
+{
+ "Kit": "I-62 A-2 corregida: kit de la UNA re-revisión formal del Architect por claude-cli (decisiones §56, puntos 3 y 6-9; Owner CLAUDE-CLI-I62 = A)",
+ "Ids": {
+  "RunId": "R20261008T184326Z-f1e2",
+  "InvocationId": "I20261008T184326Z-f1e2",
+  "LogicalReviewRequestId": "L20261008T184326Z-f1e2",
+  "AttemptSeq": 1
+ },
+ "Commit": "fd411b136f888ecf301f9edaa7fcc068da8dbf22",
+ "ObjectIntroducedBy": "3bbaabef0346d4146585dbf17ac49a1d3a495b0d",
+ "Object": "docs/initiatives/I-62-A-2.md blob f1e1d6f08d3cf677500794c7d0019433a4dc7d4e",
+ "SessionId": "26a89860-a107-4135-9981-a46f95816d16",
+ "Transport": "claude-cli 2.1.293 (%APPDATA%\\Claude\\claude-code\\2.1.293\\83cb0bd7fed4\\claude.exe, SHA-256 8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa)",
+ "Auditor": "v5.1 (declarado y autoprobado antes del lanzamiento: selftest-result.json AllPass True, 107/107; mutation-result.json AllKilled True, 132/132)",
+ "Clone": "D:/r62-arch-a2r (git clone --no-local -c core.autocrlf=false --single-branch; main = el commit; sin remoto; clone-verification.json AllChecks)",
+ "Run": "D:/r62-arch-a2r-run (order.txt, prompt.md, delta.diff y A-2.d47f71b6.md, idénticos byte a byte a las copias del kit)",
+ "TransportGate": "MEASURED (desviación D-01; launch.py solo lanza en MEASURED o ACCEPTED)",
+ "Launch": "kit/launch.py, por la sesión principal, una sola vez (NO lanzado)",
+ "Files": {
+  "A-2.d47f71b6.md": {
+   "Bytes": 25567,
+   "Sha256": "9dca403d2f0871ec6cb46bce6ca4f323d3511a98b8b2ca4da654e7d3674824d8"
+  },
+  "clone-verification.json": {
+   "Bytes": 5256,
+   "Sha256": "9ce7c3d94d7c9c39854aa5dda23cd96c8de5a6689fe72682ac3c4afd86931838"
+  },
+  "closure.json": {
+   "Bytes": 30570,
+   "Sha256": "fa2ef63ff15730285ba5558147d8160ad4493406ccf4dfe4cbce89508ff06b94"
+  },
+  "delta.diff": {
+   "Bytes": 17177,
+   "Sha256": "abc6db950bdc9cae5f757ea3b336acd5f367d9bac1bae3a1385271c5eb5f92c4"
+  },
+  "launch.py": {
+   "Bytes": 14088,
+   "Sha256": "b519cbe054d1f2625c36200b4140b2a5768c5515dc7ce6e4990c61f2faa587f4"
+  },
+  "make_closure.py": {
+   "Bytes": 26949,
+   "Sha256": "c9a3b91f466d216121ec98569a96b825a7f9f7800a55ad9f3ddf29cdaff04808"
+  },
+  "make_manifest.py": {
+   "Bytes": 4852,
+   "Sha256": "3c51a4a233003f47d96c3b850766bcdd0cac99906a463974caa6d1e6f016ebe9"
+  },
+  "mutation-post-review.py": {
+   "Bytes": 5848,
+   "Sha256": "26fd50e9c83a22b4c32bce40d147c6262b16a2812a7e191cd69eece5cd903f04"
+  },
+  "mutation-result.json": {
+   "Bytes": 34182,
+   "Sha256": "0e009c42ae79065e05748c989e5db45a5b0a07a87d59cc0869b024c46e3aa82c"
+  },
+  "order.txt": {
+   "Bytes": 8562,
+   "Sha256": "e8b003284843374ba1e8497434f375f3206da2cd9a9829f2f451ff73af06b081"
+  },
+  "post-review.py": {
+   "Bytes": 48238,
+   "Sha256": "2949175d8e4cb8e48ffcbb6c9778a5278aee7bea289cc3a78792553b0ec23af1"
+  },
+  "preflight-read-fidelity.json": {
+   "Bytes": 1764,
+   "Sha256": "e2adb8e027f572e652e822065805144a8d4d1a0230b6243e698e5ea27d2c0062"
+  },
+  "probe-c3.py": {
+   "Bytes": 15495,
+   "Sha256": "b0608cb47438e5d75f8585c46645dd3cfd8d81c54456feec09a99a57f4d8d51b"
+  },
+  "prompt.md": {
+   "Bytes": 18642,
+   "Sha256": "0d1d5a4d4522af2d97336f299afd9bfc1833980fee87a7ae65a5d7bb33739a21"
+  },
+  "read_fidelity.py": {
+   "Bytes": 4827,
+   "Sha256": "9e290dddec79b33cbcdd8f97c8505a1d3e7db84fefe418fff9a5f4af62f392b6"
+  },
+  "result.schema.json": {
+   "Bytes": 15263,
+   "Sha256": "7b29e0c33625dcd06c9319e17104612c94f52d039d67cd8cf454b0526b1c8d76"
+  },
+  "selftest-post-review.py": {
+   "Bytes": 61852,
+   "Sha256": "ae99922979479e5cd79630ff23550872ca4bb2d0042ed6d6ccb375ad563c1880"
+  },
+  "selftest-result.json": {
+   "Bytes": 40769,
+   "Sha256": "4176d20433236fd3cb32a0b6de54ad22ed5c13e5b699139cc3e1582004df0422"
+  },
+  "transport-gate.json": {
+   "Bytes": 1541,
+   "Sha256": "60a418237b4c2b5cbc0c4097d1355b571e070b8a89e19f1e0a8bae1bcc61db1c"
+  },
+  "transport_gate.py": {
+   "Bytes": 18232,
+   "Sha256": "6bf91a277c419fdec05c00436aa05eeb1f6f5f549eab537fc9f2872a1df2c2cd"
+  },
+  "verify_clone.py": {
+   "Bytes": 10079,
+   "Sha256": "41c7fbde9c3748af4ad119d4e9403fe9b8dbaf00d0debd059c8ddc1c1f9977fd"
+  }
+ },
+ "RunFiles": {
+  "order.txt": {
+   "Path": "D:\\r62-arch-a2r-run\\order.txt",
+   "Bytes": 8562,
+   "Sha256": "e8b003284843374ba1e8497434f375f3206da2cd9a9829f2f451ff73af06b081",
+   "IdenticalToKitCopy": true
+  },
+  "prompt.md": {
+   "Path": "D:\\r62-arch-a2r-run\\prompt.md",
+   "Bytes": 18642,
+   "Sha256": "0d1d5a4d4522af2d97336f299afd9bfc1833980fee87a7ae65a5d7bb33739a21",
+   "IdenticalToKitCopy": true
+  },
+  "delta.diff": {
+   "Path": "D:\\r62-arch-a2r-run\\delta.diff",
+   "Bytes": 17177,
+   "Sha256": "abc6db950bdc9cae5f757ea3b336acd5f367d9bac1bae3a1385271c5eb5f92c4",
+   "IdenticalToKitCopy": true
+  },
+  "A-2.d47f71b6.md": {
+   "Path": "D:\\r62-arch-a2r-run\\A-2.d47f71b6.md",
+   "Bytes": 25567,
+   "Sha256": "9dca403d2f0871ec6cb46bce6ca4f323d3511a98b8b2ca4da654e7d3674824d8",
+   "IdenticalToKitCopy": true
+  }
+ }
+}

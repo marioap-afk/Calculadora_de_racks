@@ -1,0 +1,159 @@
+{
+ "Clone": "D:\\r62-arch-a2r",
+ "Commands": [
+  "git clone --no-local -c core.autocrlf=false --single-branch --branch architecture/portabilidad-coordinador-principal \"D:\\Documentos\\Codex\\Calculadora de racks\" D:\\r62-arch-a2r",
+  "git -C D:\\r62-arch-a2r checkout -q -B main fd411b136f888ecf301f9edaa7fcc068da8dbf22",
+  "git -C D:\\r62-arch-a2r branch -D architecture/portabilidad-coordinador-principal",
+  "git -C D:\\r62-arch-a2r remote remove origin",
+  "git -C D:\\r62-arch-a2r diff b553608ccdac188c45cef0982be0f7da8b5ab2ec fd411b136f888ecf301f9edaa7fcc068da8dbf22 -- docs/initiatives/I-62-A-2.md  > D:\\r62-arch-a2r-run\\delta.diff (bytes literales)",
+  "git -C D:\\r62-arch-a2r show b280f707:docs/initiatives/I-62-A-2.md  > D:\\r62-arch-a2r-run\\A-2.d47f71b6.md (bytes literales)",
+  "copia byte a byte de kit/prompt.md → D:\\r62-arch-a2r-run\\prompt.md; order.txt la dejó la sesión principal (cuerpo de decisiones §56)"
+ ],
+ "Head": "fd411b136f888ecf301f9edaa7fcc068da8dbf22",
+ "Branches": [
+  "main"
+ ],
+ "Remotes": [],
+ "StatusPorcelain": "",
+ "StatusIgnored": "",
+ "CoreAutocrlf": "false",
+ "WorktreeList": "D:/r62-arch-a2r fd411b13 [main]",
+ "Tags": 12,
+ "Blobs": {
+  "docs/initiatives/I-62-A-2.md": {
+   "Expected": "f1e1d6f08d3cf677500794c7d0019433a4dc7d4e",
+   "Got": "f1e1d6f08d3cf677500794c7d0019433a4dc7d4e",
+   "Match": true
+  },
+  "docs/initiatives/I-62-architect-package-A-2.md": {
+   "Expected": "5bd0fa609722d9c94aeab38b0d8b486b1d4f1606",
+   "Got": "5bd0fa609722d9c94aeab38b0d8b486b1d4f1606",
+   "Match": true
+  },
+  "docs/automation/evidence/I-62-A2/a2-guards.py": {
+   "Expected": "b72d26ea6b30b5cfceaa8140a536a08086562b24",
+   "Got": "b72d26ea6b30b5cfceaa8140a536a08086562b24",
+   "Match": true
+  },
+  "docs/automation/evidence/I-62-A2/a2-guards-result.json": {
+   "Expected": "d8f4845f853fcba8fe79e468312d4845b1c2e76e",
+   "Got": "d8f4845f853fcba8fe79e468312d4845b1c2e76e",
+   "Match": true
+  },
+  "docs/initiatives/I-62-proposal-v14.md": {
+   "Expected": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa",
+   "Got": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa",
+   "Match": true
+  },
+  "docs/initiatives/I-62-A-1.md": {
+   "Expected": "c01899a72b940503bb85a0fab42bc085c603fd0f",
+   "Got": "c01899a72b940503bb85a0fab42bc085c603fd0f",
+   "Match": true
+  },
+  "docs/initiatives/I-62-consensus-freeze.md": {
+   "Expected": "0f6b860837e2478db8525e1fb30a485bc4646816",
+   "Got": "0f6b860837e2478db8525e1fb30a485bc4646816",
+   "Match": true
+  },
+  "docs/INITIATIVE_LIFECYCLE.md": {
+   "Expected": "f19896a8f1a7c82f74bac7231636f68462a87271",
+   "Got": "f19896a8f1a7c82f74bac7231636f68462a87271",
+   "Match": true
+  }
+ },
+ "CommitsPresent": {
+  "3bbaabef0346d4146585dbf17ac49a1d3a495b0d": {
+   "What": "commit de la corrección de A-2",
+   "Present": true
+  },
+  "b553608ccdac188c45cef0982be0f7da8b5ab2ec": {
+   "What": "base del delta corregido",
+   "Present": true
+  },
+  "b280f7079e128113666e85a2f437e629d0f0d99e": {
+   "What": "commit del objeto anterior",
+   "Present": true
+  },
+  "c9f9419dc4aed32242c59de489a8e78a8e369f9b": {
+   "What": "base de A-2",
+   "Present": true
+  }
+ },
+ "CommitsAbsent": {
+  "4c617e82b32b6c810b68d75fc19472efed22b393": {
+   "What": "commit de V14 (anterior al rebase)",
+   "Present": false
+  },
+  "b64a3b640c7ee3bd77636e7a3218ae0ebac2dd43": {
+   "What": "FREEZE_SHA (anterior al rebase)",
+   "Present": false
+  }
+ },
+ "IndexSymlinks": 0,
+ "ReparsePointsInWorkTree": [],
+ "WorkTreeFiles": 3187,
+ "Run": {
+  "Dir": "D:\\r62-arch-a2r-run",
+  "Files": [
+   "A-2.d47f71b6.md",
+   "delta.diff",
+   "order.txt",
+   "prompt.md"
+  ],
+  "Records": {
+   "order.txt": {
+    "Bytes": 8562,
+    "Sha256": "e8b003284843374ba1e8497434f375f3206da2cd9a9829f2f451ff73af06b081",
+    "IdenticalToKitCopy": true,
+    "MatchesClosure": true,
+    "MatchesAuthority": true
+   },
+   "prompt.md": {
+    "Bytes": 18642,
+    "Sha256": "0d1d5a4d4522af2d97336f299afd9bfc1833980fee87a7ae65a5d7bb33739a21",
+    "IdenticalToKitCopy": true,
+    "MatchesClosure": true,
+    "FinalNewline": false,
+    "CarriageReturns": 0,
+    "Utf8": true
+   },
+   "delta.diff": {
+    "Bytes": 17177,
+    "Sha256": "abc6db950bdc9cae5f757ea3b336acd5f367d9bac1bae3a1385271c5eb5f92c4",
+    "IdenticalToKitCopy": true,
+    "MatchesClosure": true,
+    "Rederived": true
+   },
+   "A-2.d47f71b6.md": {
+    "Bytes": 25567,
+    "Sha256": "9dca403d2f0871ec6cb46bce6ca4f323d3511a98b8b2ca4da654e7d3674824d8",
+    "IdenticalToKitCopy": true,
+    "MatchesClosure": true,
+    "Rederived": true,
+    "Blob": "d47f71b66ba86c31f857f0d8c2d2437636947af0"
+   }
+  }
+ },
+ "ClaudeProjectDirForClone": {
+  "Path": "%USERPROFILE%\\.claude\\projects\\D--r62-arch-a2r",
+  "Exists": false
+ },
+ "PriorTranscriptsForSessionId": {
+  "SessionId": "26a89860-a107-4135-9981-a46f95816d16",
+  "Found": 0
+ },
+ "GuardsSelfTestPreflight": {
+  "Command": "python -I -B docs/automation/evidence/I-62-A2/a2-guards.py self-test --out <temporal junto al kit> (cwd = el clon; evidencia del invocador)",
+  "ExitCode": 0,
+  "Stdout": "PASS",
+  "Result": "PASS",
+  "Vectors": 50,
+  "VectorsPassed": 50,
+  "Mutants": 11,
+  "MutantsKilled": 11,
+  "RulesMissing": [],
+  "OutputSha256": "750f071a35a52295f1eb921524a8a7f63eb3e123004a4f4cf134ff0cd33db9f7"
+ },
+ "StatusAfterPreflight": "",
+ "AllChecks": true
+}
