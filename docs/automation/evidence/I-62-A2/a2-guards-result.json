@@ -1,11 +1,11 @@
 {
  "Tool": "a2-guards.py run",
- "Base": "c9f9419dc4aed32242c59de489a8e78a8e369f9b",
- "Head": "b280f7079e128113666e85a2f437e629d0f0d99e",
+ "Base": "b553608ccdac188c45cef0982be0f7da8b5ab2ec",
+ "Head": "3bbaabef0346d4146585dbf17ac49a1d3a495b0d",
  "Checks": [
   {
    "Check": "G1 alcance del delta y aplicación sobre V14",
-   "LiteralLines": 19,
+   "LiteralLines": 21,
    "ChangedSections": [
     "# I-62 — Proposal V14: portabilidad del Principal, binding de roles independiente del proveedor y orquestación autónoma de roles",
     "## Anexo D — Pilotos y portabilidad (plano c)",
@@ -16,16 +16,15 @@
   },
   {
    "Check": "G2 rutas",
-   "Base": "c9f9419dc4aed32242c59de489a8e78a8e369f9b",
-   "Head": "b280f7079e128113666e85a2f437e629d0f0d99e",
+   "Base": "b553608ccdac188c45cef0982be0f7da8b5ab2ec",
+   "Head": "3bbaabef0346d4146585dbf17ac49a1d3a495b0d",
    "Changed": {
     "docs/automation/decisions/I-62.md": "M",
-    "docs/automation/evidence/I-62-A2/a2-guards.py": "A",
-    "docs/automation/evidence/I-62-F6/README.md": "M",
+    "docs/automation/evidence/I-62-A2/a2-guards.py": "M",
     "docs/automation/evidence/I-62-evidence.md": "M",
     "docs/automation/state/I-62.yml": "M",
-    "docs/initiatives/I-62-A-2.md": "A",
-    "docs/initiatives/I-62-architect-package-A-2.md": "A"
+    "docs/initiatives/I-62-A-2.md": "M",
+    "docs/initiatives/I-62-architect-package-A-2.md": "M"
    },
    "Findings": [],
    "Result": "PASS"
@@ -52,8 +51,8 @@
   },
   {
    "Check": "G5 modelo de presupuestos",
-   "Total": 43,
-   "Passed": 43,
+   "Total": 50,
+   "Passed": 50,
    "Vectors": [
     {
      "Id": "P1-01",
@@ -128,7 +127,7 @@
     {
      "Id": "P1-11",
      "Rule": "A2-P1.2",
-     "Case": "el escenario sigue UNVERIFIED (B1 y B2 acreditadas o sin corrida válida)",
+     "Case": "historia real: B1 INVALID_TEST_ORACLE y B2 INVALID_LAUNCH; el escenario sigue UNVERIFIED",
      "Result": "PASS",
      "Detail": ""
     },
@@ -137,7 +136,7 @@
      "Rule": "A2-P1.2",
      "Case": "una corrida INVALID_LAUNCH no puede ser PASS",
      "Result": "PASS",
-     "Detail": "INVALID_LAUNCH no es PASS ni FAIL"
+     "Detail": "una acreditación del Coordinator no es PASS ni FAIL"
     },
     {
      "Id": "P1-13",
@@ -208,6 +207,41 @@
      "Case": "FX-06 (D.8, sin total de ronda): sube solo el tope de su fila",
      "Result": "PASS",
      "Detail": ""
+    },
+    {
+     "Id": "P1-23",
+     "Rule": "A2-P1.2",
+     "Case": "violación observada en D.8 (p. ej., A cierra un hallazgo): no se acredita INVALID_LAUNCH; FX-06 en FAIL",
+     "Result": "PASS",
+     "Detail": "violación observada: FAIL (D.4)"
+    },
+    {
+     "Id": "P1-24",
+     "Rule": "A2-P1.2",
+     "Case": "INVALID_TEST_ORACLE no habilita por sí sola la reejecución",
+     "Result": "PASS",
+     "Detail": "sin corrida acreditada INVALID_LAUNCH en la fila"
+    },
+    {
+     "Id": "P1-25",
+     "Rule": "A2-P1.4",
+     "Case": "sin presupuesto restante suficiente no se autoriza la reejecución",
+     "Result": "PASS",
+     "Detail": "presupuesto restante insuficiente"
+    },
+    {
+     "Id": "P1-26",
+     "Rule": "A2-P1.5",
+     "Case": "la reejecución no repone presupuestos (restante y contadores sin cambio)",
+     "Result": "PASS",
+     "Detail": ""
+    },
+    {
+     "Id": "P1-27",
+     "Rule": "A2-P1.2",
+     "Case": "la acreditación ordinaria es solo del Coordinator",
+     "Result": "PASS",
+     "Detail": "acreditación solo del Coordinator"
     },
     {
      "Id": "P2-01",
@@ -355,13 +389,56 @@
      "Case": "con la fila sin agotar no hay bloque",
      "Result": "PASS",
      "Detail": "la fila «Sondas previas» no está agotada"
+    },
+    {
+     "Id": "P2-22",
+     "Rule": "A2-P2.3",
+     "Case": "actualización a medio completar: el par no cuenta como observado mientras la huella no es estable",
+     "Result": "PASS",
+     "Detail": "huella no estable"
+    },
+    {
+     "Id": "P2-23",
+     "Rule": "A2-P2.3",
+     "Case": "con la huella resultante estable, el par cuenta como observado y admite su bloque",
+     "Result": "PASS",
+     "Detail": ""
     }
    ],
    "Mutants": [
     {
+     "Mutant": "M_IgnoreObservedViolation",
+     "KilledBy": [
+      "P1-23"
+     ],
+     "Result": "PASS"
+    },
+    {
+     "Mutant": "M_OrdinaryGrantsRerun",
+     "KilledBy": [
+      "P1-24"
+     ],
+     "Result": "PASS"
+    },
+    {
+     "Mutant": "M_NoBudgetCheck",
+     "KilledBy": [
+      "P1-25"
+     ],
+     "Result": "PASS"
+    },
+    {
+     "Mutant": "M_UnstableObservation",
+     "KilledBy": [
+      "P2-22"
+     ],
+     "Result": "PASS"
+    },
+    {
      "Mutant": "M_ResetOnDispose",
      "KilledBy": [
-      "P1-18"
+      "P1-18",
+      "P1-26"
      ],
      "Result": "PASS"
     },
