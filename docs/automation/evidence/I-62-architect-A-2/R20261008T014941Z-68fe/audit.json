@@ -1,0 +1,1750 @@
+{
+ "Transcript": {
+  "Path": "C:\\Users\\alejandra-mendoza/.claude/projects/D--Documentos-Worktrees-r62-arch-a2-wonderful-merkle-d06777/5624246a-6378-4988-ac3a-3169a677568e.jsonl",
+  "Sha256": "5fb7da82fc6b2d80545310a08a6a8ca505df44a5fd1db796fe102bb3911b1c19",
+  "Entries": 295
+ },
+ "RuntimeIdentity": {
+  "SessionIds": [
+   "5624246a-6378-4988-ac3a-3169a677568e"
+  ],
+  "Cwds": [
+   "D:\\Documentos\\Worktrees\\r62-arch-a2\\wonderful-merkle-d06777",
+   "D:\\r62-arch-a2"
+  ],
+  "Versions": [
+   "2.1.293"
+  ],
+  "Models": {
+   "claude-opus-5-5": 61
+  },
+  "SidechainEntries": 0
+ },
+ "AuditorVersion": "v4-a2.1 (v4 of the A-1 r5 kit adapted to A-2, with the verifier's corrections; declared and self-tested before the run; decisions §55, point 8)",
+ "IdentityAndOrderChecks": {
+  "PromptHashSeen": true,
+  "OrderHashSeen": true,
+  "PromptReadFaithful": true,
+  "OrderReadComplete": true,
+  "CloneHeadVerifiedBeforeReading": true,
+  "WorktreeHeadVerifiedBeforeReading": true,
+  "FirstSubstantiveCall": 6,
+  "CloneCleanAfterRun": true,
+  "NoSidechain": true,
+  "FinalAssistantText": true
+ },
+ "RunCustody": {
+  "order.txt": {
+   "RunSha256": "bfa265cd5b3bee47059dd8178153b19916826ad94d936715fd22893a3d6d5259",
+   "KitCopySha256": "bfa265cd5b3bee47059dd8178153b19916826ad94d936715fd22893a3d6d5259",
+   "ClosureSha256": "bfa265cd5b3bee47059dd8178153b19916826ad94d936715fd22893a3d6d5259",
+   "Match": true
+  },
+  "prompt.md": {
+   "RunSha256": "22d93ae5464ffbea29d52c1eae7f10e0e82f68eb180a272ba25cd8e3f2d0cfd5",
+   "KitCopySha256": "22d93ae5464ffbea29d52c1eae7f10e0e82f68eb180a272ba25cd8e3f2d0cfd5",
+   "ClosureSha256": "22d93ae5464ffbea29d52c1eae7f10e0e82f68eb180a272ba25cd8e3f2d0cfd5",
+   "Match": true
+  }
+ },
+ "CloneAfterRun": {
+  "Head": "4a059afa85dce5a82f74120cad88c5ebadb61c7a",
+  "StatusPorcelain": ""
+ },
+ "ReadAudit": {
+  "Calls": 36,
+  "WithProblems": [
+   {
+    "Index": 32,
+    "Tool": "Bash",
+    "Input": {
+     "command": "S=\"C:/Users/ALEJAN~1/AppData/Local/Temp/claude/D--Documentos-Worktrees-r62-arch-a2-wonderful-merkle-d06777/5624246a-6378-4988-ac3a-3169a677568e/scratchpad\"; python - \"$S/selftest.json\" <<'EOF'\nimport json,sys\nd=json.load(open(sys.argv[1],encoding=\"utf-8\"))\ng=d[\"G5\"]\nprint(\"Result\",d[\"Result\"],\"Total\",g[\"Total\"],\"Passed\",g[\"Passed\"])\nprint(\"Mutants\",len(g[\"Mutants\"]),\"Killed\",sum(1 for m in g[\"Muta…",
+     "description": "Summarize self-test vectors and mutants"
+    },
+    "Class": "BASH",
+    "Failed": false,
+    "Problems": [
+     "script propio sin contenido auditable en la transcripción: C:/Users/ALEJAN~1/AppData/Local/Temp/claude/D--Documentos-Worktrees-r62-arch-a2-wonderful-merkle-d06777/5624246a-6378-4988-ac3a-3169a677568e/scratchpad/selftest.json"
+    ],
+    "ReplacementChars": 4
+   },
+   {
+    "Index": 33,
+    "Tool": "Bash",
+    "Input": {
+     "command": "python -X utf8 - <<'EOF'\nimport importlib.util, re\nA2P=\"D:/r62-arch-a2/docs/initiatives/I-62-A-2.md\"; V14P=\"D:/r62-arch-a2/docs/initiatives/I-62-proposal-v14.md\"; G=\"D:/r62-arch-a2/docs/automation/evidence/I-62-A2/a2-guards.py\"\na2=open(A2P,encoding=\"utf-8\").read(); v14=open(V14P,encoding=\"utf-8\").read()\nspec=importlib.util.spec_from_file_location(\"g\",G); m=importlib.util.module_from_spec(spec); sp…",
+     "description": "Contrast A-2 literals and text binding against V14"
+    },
+    "Class": "BASH",
+    "Failed": false,
+    "Problems": [
+     "python de un script distinto del arnés y de los scripts propios: utf8"
+    ]
+   },
+   {
+    "Index": 34,
+    "Tool": "Bash",
+    "Input": {
+     "command": "python -X utf8 - <<'EOF'\nimport re\na2=open(\"D:/r62-arch-a2/docs/initiatives/I-62-A-2.md\",encoding=\"utf-8\").read(); v14=open(\"D:/r62-arch-a2/docs/initiatives/I-62-proposal-v14.md\",encoding=\"utf-8\").read()\nfor q in [\"**FAIL** | violación observada; se conserva;\\nimpide cerrar F6 hasta la corrección (§16) y la repetición dentro de los topes; nunca se convierte en limitación\",\"**UNVERIFIED** | falta u…",
+     "description": "Check wrapped inline quotes against V14"
+    },
+    "Class": "BASH",
+    "Failed": false,
+    "Problems": [
+     "python de un script distinto del arnés y de los scripts propios: utf8"
+    ]
+   }
+  ],
+  "Rows": [
+   {
+    "Index": 0,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2-run\\prompt.md"
+    },
+    "Class": "RUN",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 1,
+    "Tool": "Bash",
+    "Input": {
+     "command": "git -C D:/r62-arch-a2 rev-parse HEAD; git -C D:/r62-arch-a2 rev-parse HEAD:docs/initiatives/I-62-A-2.md; git -C D:/r62-arch-a2 rev-parse HEAD:docs/initiatives/I-62-architect-package-A-2.md; git -C D:/r62-arch-a2 rev-parse HEAD:docs/automation/evidence/I-62-A2/a2-guards.py; git -C D:/r62-arch-a2 rev-parse HEAD:docs/automation/evidence/I-62-A2/a2-guards-result.json; git -C D:/r62-arch-a2 rev-parse H…",
+     "description": "Verify clone HEAD, blobs, and clean status"
+    },
+    "Class": "BASH",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 2,
+    "Tool": "Bash",
+    "Input": {
+     "command": "git rev-parse HEAD; pwd",
+     "description": "Check worktree HEAD commit"
+    },
+    "Class": "BASH",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 3,
+    "Tool": "Bash",
+    "Input": {
+     "command": "sha256sum D:/r62-arch-a2-run/order.txt D:/r62-arch-a2-run/prompt.md",
+     "description": "Hash run order and prompt files"
+    },
+    "Class": "BASH",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 4,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2-run\\order.txt"
+    },
+    "Class": "RUN",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 5,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2-run\\prompt.md"
+    },
+    "Class": "RUN",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 6,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2\\docs\\initiatives\\I-62-A-2.md"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 7,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2\\docs\\initiatives\\I-62-architect-package-A-2.md"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 8,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2\\docs\\initiatives\\I-62-proposal-v14.md",
+     "offset": 2384,
+     "limit": 263
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 9,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2\\docs\\initiatives\\I-62-proposal-v14.md",
+     "offset": 931,
+     "limit": 47
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 10,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2\\docs\\initiatives\\I-62-proposal-v14.md",
+     "offset": 649,
+     "limit": 15
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 11,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2\\docs\\AUTOMATION_PLAN.md",
+     "offset": 600,
+     "limit": 19
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 12,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2\\docs\\AUTOMATION_PLAN.md",
+     "offset": 674,
+     "limit": 35
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 13,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2\\docs\\initiatives\\I-62-A-1.md",
+     "offset": 1,
+     "limit": 167
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 14,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2\\docs\\initiatives\\I-62-A-1.md",
+     "offset": 229,
+     "limit": 26
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 15,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2\\docs\\initiatives\\I-62-A-1.md",
+     "offset": 429,
+     "limit": 9
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 16,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2\\docs\\initiatives\\I-62-consensus-freeze.md"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 17,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2\\docs\\INITIATIVE_LIFECYCLE.md",
+     "offset": 66,
+     "limit": 29
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 18,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2\\docs\\INITIATIVE_LIFECYCLE.md",
+     "offset": 152,
+     "limit": 71
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 19,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2\\docs\\automation\\decisions\\I-62.md",
+     "offset": 972,
+     "limit": 103
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 20,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2\\docs\\automation\\evidence\\I-62-evidence.md",
+     "offset": 2415,
+     "limit": 76
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 21,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2\\docs\\automation\\evidence\\I-62-evidence.md",
+     "offset": 2531,
+     "limit": 100
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 22,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2\\docs\\automation\\evidence\\I-62-evidence.md",
+     "offset": 2688,
+     "limit": 56
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 23,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2\\docs\\automation\\evidence\\I-62-F6\\FX-04a\\R20261007T061300Z-fx04a-b2\\b2-report-for-coordinator.md"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 24,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2\\docs\\automation\\evidence\\I-62-F6\\FX-04a\\R20261007T061300Z-fx04a-b2\\comparison-v2-analysis.json"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 25,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2\\docs\\automation\\evidence\\I-62-A2\\a2-guards.py",
+     "offset": 1,
+     "limit": 270
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 26,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2\\docs\\automation\\evidence\\I-62-A2\\a2-guards.py",
+     "offset": 270,
+     "limit": 266
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 27,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a2\\docs\\automation\\evidence\\I-62-A2\\a2-guards-result.json"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 28,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a2 && git diff --stat c9f9419d b280f707 -- docs/initiatives/I-62-A-2.md docs/initiatives/I-62-architect-package-A-2.md docs/automation/evidence/I-62-A2/a2-guards.py docs/automation/decisions/I-62.md docs/automation/evidence/I-62-evidence.md docs/initiatives/I-62-proposal-v14.md docs/initiatives/I-62-A-1.md docs/initiatives/I-62-consensus-freeze.md; echo ---; git diff --stat b280f707…",
+     "description": "Show diff stats of A-2 introduction and publication"
+    },
+    "Class": "BASH",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 29,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a2 && git diff --numstat c9f9419d b280f707 -- docs/automation/decisions/I-62.md docs/automation/evidence/I-62-evidence.md && git diff -U0 c9f9419d b280f707 -- docs/automation/decisions/I-62.md docs/automation/evidence/I-62-evidence.md | grep '^@@'",
+     "description": "Check additions-only hunks in decisions and evidence"
+    },
+    "Class": "BASH",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 30,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a2 && git rev-parse 4a059afa:docs/initiatives/I-62-A-1.md 4a059afa:docs/initiatives/I-62-consensus-freeze.md 4a059afa:docs/initiatives/I-62-proposal-v14.md; git cat-file -t b280f707:docs/initiatives/I-62-A-2.md; git cat-file -s b280f707:docs/initiatives/I-62-A-2.md; git cat-file -s 4a059afa:docs/initiatives/I-62-A-2.md; git log --oneline -5",
+     "description": "Verify frozen blobs and A-2 object sizes"
+    },
+    "Class": "BASH",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 31,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a2 && git diff --stat b280f707 4a059afa -- docs/initiatives/I-62-A-2.md docs/initiatives/I-62-architect-package-A-2.md docs/automation/evidence/I-62-A2/a2-guards.py; echo \"exit=$?\"; mkdir -p \"C:/Users/ALEJAN~1/AppData/Local/Temp/claude/D--Documentos-Worktrees-r62-arch-a2-wonderful-merkle-d06777/5624246a-6378-4988-ac3a-3169a677568e/scratchpad\" && python D:/r62-arch-a2/docs/automation…",
+     "description": "Confirm A-2 unchanged in publication and run guards self-test"
+    },
+    "Class": "BASH",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 32,
+    "Tool": "Bash",
+    "Input": {
+     "command": "S=\"C:/Users/ALEJAN~1/AppData/Local/Temp/claude/D--Documentos-Worktrees-r62-arch-a2-wonderful-merkle-d06777/5624246a-6378-4988-ac3a-3169a677568e/scratchpad\"; python - \"$S/selftest.json\" <<'EOF'\nimport json,sys\nd=json.load(open(sys.argv[1],encoding=\"utf-8\"))\ng=d[\"G5\"]\nprint(\"Result\",d[\"Result\"],\"Total\",g[\"Total\"],\"Passed\",g[\"Passed\"])\nprint(\"Mutants\",len(g[\"Mutants\"]),\"Killed\",sum(1 for m in g[\"Muta…",
+     "description": "Summarize self-test vectors and mutants"
+    },
+    "Class": "BASH",
+    "Failed": false,
+    "Problems": [
+     "script propio sin contenido auditable en la transcripción: C:/Users/ALEJAN~1/AppData/Local/Temp/claude/D--Documentos-Worktrees-r62-arch-a2-wonderful-merkle-d06777/5624246a-6378-4988-ac3a-3169a677568e/scratchpad/selftest.json"
+    ],
+    "ReplacementChars": 4
+   },
+   {
+    "Index": 33,
+    "Tool": "Bash",
+    "Input": {
+     "command": "python -X utf8 - <<'EOF'\nimport importlib.util, re\nA2P=\"D:/r62-arch-a2/docs/initiatives/I-62-A-2.md\"; V14P=\"D:/r62-arch-a2/docs/initiatives/I-62-proposal-v14.md\"; G=\"D:/r62-arch-a2/docs/automation/evidence/I-62-A2/a2-guards.py\"\na2=open(A2P,encoding=\"utf-8\").read(); v14=open(V14P,encoding=\"utf-8\").read()\nspec=importlib.util.spec_from_file_location(\"g\",G); m=importlib.util.module_from_spec(spec); sp…",
+     "description": "Contrast A-2 literals and text binding against V14"
+    },
+    "Class": "BASH",
+    "Failed": false,
+    "Problems": [
+     "python de un script distinto del arnés y de los scripts propios: utf8"
+    ]
+   },
+   {
+    "Index": 34,
+    "Tool": "Bash",
+    "Input": {
+     "command": "python -X utf8 - <<'EOF'\nimport re\na2=open(\"D:/r62-arch-a2/docs/initiatives/I-62-A-2.md\",encoding=\"utf-8\").read(); v14=open(\"D:/r62-arch-a2/docs/initiatives/I-62-proposal-v14.md\",encoding=\"utf-8\").read()\nfor q in [\"**FAIL** | violación observada; se conserva;\\nimpide cerrar F6 hasta la corrección (§16) y la repetición dentro de los topes; nunca se convierte en limitación\",\"**UNVERIFIED** | falta u…",
+     "description": "Check wrapped inline quotes against V14"
+    },
+    "Class": "BASH",
+    "Failed": false,
+    "Problems": [
+     "python de un script distinto del arnés y de los scripts propios: utf8"
+    ]
+   },
+   {
+    "Index": 35,
+    "Tool": "Bash",
+    "Input": {
+     "command": "cd D:/r62-arch-a2 && git diff --numstat c9f9419d b280f707 -- docs/AUTOMATION_PLAN.md docs/INITIATIVE_LIFECYCLE.md docs/initiatives/I-62-proposal-v14.md docs/initiatives/I-62-A-1.md docs/initiatives/I-62-consensus-freeze.md docs/initiatives/I-62-portabilidad-coordinador-principal.md docs/initiatives/PROMPT_TEMPLATES.md docs/initiatives/README.md; echo \"exit=$? (empty above = unchanged)\"; git status…",
+     "description": "Confirm protected closure files unchanged by A-2"
+    },
+    "Class": "BASH",
+    "Failed": false,
+    "Problems": []
+   }
+  ]
+ },
+ "Fidelity": {
+  "Records": [
+   {
+    "Path": "prompt.md",
+    "Via": "Read",
+    "Lines": 247,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "order.txt",
+    "Via": "Read",
+    "Lines": 282,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "prompt.md",
+    "Via": "Read",
+    "Lines": 0,
+    "Altered": [],
+    "Status": "EMPTY"
+   },
+   {
+    "Path": "docs/initiatives/I-62-A-2.md",
+    "Via": "Read",
+    "Lines": 321,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/initiatives/I-62-architect-package-A-2.md",
+    "Via": "Read",
+    "Lines": 111,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/initiatives/I-62-proposal-v14.md",
+    "Via": "Read",
+    "Lines": 263,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/initiatives/I-62-proposal-v14.md",
+    "Via": "Read",
+    "Lines": 47,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/initiatives/I-62-proposal-v14.md",
+    "Via": "Read",
+    "Lines": 15,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/AUTOMATION_PLAN.md",
+    "Via": "Read",
+    "Lines": 19,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/AUTOMATION_PLAN.md",
+    "Via": "Read",
+    "Lines": 35,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/initiatives/I-62-A-1.md",
+    "Via": "Read",
+    "Lines": 167,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/initiatives/I-62-A-1.md",
+    "Via": "Read",
+    "Lines": 26,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/initiatives/I-62-A-1.md",
+    "Via": "Read",
+    "Lines": 9,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/initiatives/I-62-consensus-freeze.md",
+    "Via": "Read",
+    "Lines": 114,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/INITIATIVE_LIFECYCLE.md",
+    "Via": "Read",
+    "Lines": 29,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/INITIATIVE_LIFECYCLE.md",
+    "Via": "Read",
+    "Lines": 71,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/automation/decisions/I-62.md",
+    "Via": "Read",
+    "Lines": 103,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-evidence.md",
+    "Via": "Read",
+    "Lines": 76,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-evidence.md",
+    "Via": "Read",
+    "Lines": 100,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-evidence.md",
+    "Via": "Read",
+    "Lines": 56,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-F6/FX-04a/R20261007T061300Z-fx04a-b2/b2-report-for-coordinator.md",
+    "Via": "Read",
+    "Lines": 25,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-F6/FX-04a/R20261007T061300Z-fx04a-b2/comparison-v2-analysis.json",
+    "Via": "Read",
+    "Lines": 71,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-A2/a2-guards.py",
+    "Via": "Read",
+    "Lines": 270,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-A2/a2-guards.py",
+    "Via": "Read",
+    "Lines": 266,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-A2/a2-guards-result.json",
+    "Via": "Read",
+    "Lines": 425,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   }
+  ],
+  "DeliveredLinesByPath": {
+   "docs/AUTOMATION_PLAN.md": 54,
+   "docs/INITIATIVE_LIFECYCLE.md": 100,
+   "docs/automation/decisions/I-62.md": 103,
+   "docs/automation/evidence/I-62-A2/a2-guards-result.json": 425,
+   "docs/automation/evidence/I-62-A2/a2-guards.py": 535,
+   "docs/automation/evidence/I-62-F6/FX-04a/R20261007T061300Z-fx04a-b2/b2-report-for-coordinator.md": 25,
+   "docs/automation/evidence/I-62-F6/FX-04a/R20261007T061300Z-fx04a-b2/comparison-v2-analysis.json": 71,
+   "docs/automation/evidence/I-62-evidence.md": 232,
+   "docs/initiatives/I-62-A-1.md": 202,
+   "docs/initiatives/I-62-A-2.md": 321,
+   "docs/initiatives/I-62-architect-package-A-2.md": 111,
+   "docs/initiatives/I-62-consensus-freeze.md": 114,
+   "docs/initiatives/I-62-proposal-v14.md": 325,
+   "order.txt": 282,
+   "prompt.md": 247
+  },
+  "FailedReadsNeverCredited": [],
+  "TruncatedKnownLongLines": [],
+  "UnicodeReplacementChars": [
+   {
+    "Index": 32,
+    "Tool": "Bash",
+    "Count": 4
+   }
+  ],
+  "GrepContentLines": {
+   "Total": 0,
+   "Exact": 0
+  }
+ },
+ "Result": {
+  "Check": {
+   "Found": true,
+   "SchemaValid": true,
+   "Coherence": [],
+   "SchemaDetail": "True"
+  },
+  "Literal": {
+   "Schema": "rackcad-architect-review-result/v1 (representación experimental; rigen I-61 y LIFECYCLE)",
+   "RunId": "R20261008T014941Z-68fe",
+   "InvocationId": "I20261008T014941Z-68fe",
+   "LogicalReviewRequestId": "L20261008T014941Z-68fe",
+   "AttemptSeq": 1,
+   "RequestedRole": "ARCHITECT",
+   "Action": "REVIEW_DESIGN",
+   "ReviewedUnit": "I-62",
+   "ReviewedCommit": "4a059afa85dce5a82f74120cad88c5ebadb61c7a",
+   "ReviewedPath": "docs/initiatives/I-62-A-2.md",
+   "ReviewedBlob": "d47f71b66ba86c31f857f0d8c2d2437636947af0",
+   "ReviewerMode": "SEPARATE SESSION",
+   "SamePersonAsAuthor": "No. El revisor es una sesión de IA nueva (Claude Code en la app de escritorio, pestaña Code; sesión 5624246a-6378-4988-ac3a-3169a677568e; worktree wonderful-merkle-d06777) y no es la sesión autora de A-2. No ha leído ni recibido su transcripción, su memoria ni su contexto: solo el cierre de insumos del prompt. Ninguno de los dos es una persona. El operador humano que lanzó esta sesión es, según el paquete §5, el Owner, el mismo que dirige la sesión principal autora; se declara que el operador humano es el mismo. Proveedor del revisor: Anthropic (claude-opus-5-5). Proveedor del autor: Anthropic (sesión principal claude-desktop-session; el paquete §5 declara el mismo proveedor). Por tanto, Provider (PREFERRED) no se cumple; Actor, Session y Context se declaran.",
+   "ReviewerDeclaredIdentity": {
+    "Runtime": "Claude Code (app Claude de escritorio, pestaña Code; Claude Agent SDK), Windows 11, herramientas Bash y PowerShell",
+    "Model": "claude-opus-5-5",
+    "Effort": "UNKNOWN",
+    "SessionOrThread": "sesión 5624246a-6378-4988-ac3a-3169a677568e; worktree D:\\Documentos\\Worktrees\\r62-arch-a2\\wonderful-merkle-d06777 (rama claude/wonderful-merkle-d06777, HEAD 4a059afa)"
+   },
+   "InjectedContextDeclaration": {
+    "State": "DECLARED",
+    "Items": [
+     "Prompt de sistema de Claude Code: reglas del arnés, herramientas (Bash, PowerShell, Read, Grep, Glob, Write, Edit, Agent, Artifact y otras), reglas de seguridad, privacidad y copyright, e instrucciones de memoria persistente con la ruta C:\\Users\\alejandra-mendoza\\.claude\\projects\\D--r62-arch-a2\\memory\\ (no se inyectó ni se leyó ningún contenido de memoria)",
+     "CLAUDE.md del worktree (índice: HANDOFF, AGENTS, WORKFLOW, ARCHITECTURE, ROADMAP, Context Pack; comandos git status, git log y dotnet test; regla de no trabajar sobre main)",
+     "Instantánea de gitStatus: rama claude/wonderful-merkle-d06777, árbol limpio, commits 4a059afa, b280f707, c9f9419d, 4ea66233 y f0981aed con sus títulos; usuario git marioap-afk",
+     "Correo de la cuenta del usuario (contexto de identidad; no se reproduce aquí)",
+     "Recordatorio de atribución de commits y PR (Co-Authored-By de Claude Opus 5.5) y aviso de que la sesión trabaja en un worktree",
+     "Entorno: directorio de trabajo del worktree, directorio adicional D:\\r62-arch-a2, win32, PowerShell y Bash, scratchpad de la sesión, fecha 2026-10-07, modelo Opus 5.5 (claude-opus-5-5)",
+     "Listas de herramientas diferidas, skills, tipos de agentes y servidores MCP (el MCP de GitHub no conectó), con instrucciones de los MCP de documentos, Chrome y computer-use; ninguna se usó",
+     "Mensaje de lanzamiento del usuario, que remite a D:\\r62-arch-a2-run\\prompt.md como única instrucción",
+     "Inyectado después de la primera acción: dos avisos del runtime pidiendo una actualización breve al usuario, una nota sobre el modo bypass de permisos y un aviso de cambio del directorio de trabajo principal a D:\\r62-arch-a2 tras un cd (NAV-1)"
+    ]
+   },
+   "IdentityCheck": {
+    "CloneHeadMatches": true,
+    "WorktreeHeadMatches": true,
+    "ObjectBlobMatches": true,
+    "PackageBlobMatches": true,
+    "GuardsBlobMatches": true,
+    "GuardsResultBlobMatches": true,
+    "V14BlobMatches": true,
+    "CleanTree": true,
+    "OrderSha256Matches": true
+   },
+   "InputsRead": [
+    "D:\\r62-arch-a2-run\\prompt.md: 1-247 (Read, entero; SHA-256 22d93ae5…)",
+    "D:\\r62-arch-a2-run\\order.txt: 1-282 (Read, entero; SHA-256 bfa265cd… verificado)",
+    "docs/initiatives/I-62-A-2.md: 1-320 (Read, entero; 25 567 bytes en 4a059afa e iguales en b280f707). Además lo leyó entero un script propio (EX-1) para contrastar literales y TextBinding",
+    "docs/initiatives/I-62-architect-package-A-2.md: 1-110 (Read, entero)",
+    "docs/initiatives/I-62-proposal-v14.md: 649-663, 931-977 y 2384-2646 (Read). Además lo leyó un script propio (EX-1), solo para comprobar literales, el ancla y los encabezados, sin mostrar el contenido",
+    "docs/AUTOMATION_PLAN.md: 600-618 y 674-708 (Read)",
+    "docs/initiatives/I-62-A-1.md: 1-167 (incluye 57-89, §1, fuera de los rangos del kit; no se usa como premisa), 229-254 y 429-437 (Read)",
+    "docs/initiatives/I-62-consensus-freeze.md: 1-113 (Read, entero)",
+    "docs/INITIATIVE_LIFECYCLE.md: 66-94 y 152-222 (Read)",
+    "docs/automation/decisions/I-62.md: 972-1074 (Read)",
+    "docs/automation/evidence/I-62-evidence.md: 2415-2490 (incluye 2439-2479, §65-§66, fuera de los rangos del kit; no se usa como premisa), 2531-2630 y 2688-2743 (Read)",
+    "docs/automation/evidence/I-62-F6/FX-04a/R20261007T061300Z-fx04a-b2/b2-report-for-coordinator.md: 1-24 (Read, entero)",
+    "docs/automation/evidence/I-62-F6/FX-04a/R20261007T061300Z-fx04a-b2/comparison-v2-analysis.json: 1-70 (Read, entero)",
+    "docs/automation/evidence/I-62-A2/a2-guards.py: 1-535 (Read en dos rangos; ejecutado con self-test (EX-1) y cargado como módulo por un script propio)",
+    "docs/automation/evidence/I-62-A2/a2-guards-result.json: 1-424 (Read, entero)",
+    "Git (ID-1 y MD-1): rev-parse de HEAD y de los blobs del cierre en 4a059afa; cat-file -t y -s del objeto en b280f707; diff --stat, --numstat y -U0 de c9f9419d b280f707 y de b280f707 4a059afa sobre rutas del cierre; status --porcelain; log --oneline -5",
+    "Salida propia: scratchpad/selftest.json (a2-guards.py self-test)"
+   ],
+   "Verdict": "CHANGES REQUIRED",
+   "RequiredFindings": [
+    {
+     "FindingId": "A62-A2-01",
+     "AffectedDelta": "A-2 §2.3, regla 2 de A2-P1 (líneas 139-142). Arrastra §1 (líneas 56-59), §2.1 (líneas 112-114), §4 (fila de la línea 232) y §5 (M-04, línea 253)",
+     "ViolatedInvariant": "V14 D.4 (línea 2535): un FAIL por «violación observada; se conserva; … nunca se convierte en limitación». Lo mismo vale para los FAIL de FX-04b (línea 2492) y de D.8 (línea 2626). A-2 declara D.4 «sin cambio» (§2.1, línea 112) y presenta la regla 2 como acotada al paso 7 de FX-04a (§1, líneas 56-57). LIFECYCLE §6 (líneas 214 y 218) exige cláusula anterior y delta exacto y prohíbe la enmienda semántica invisible. La regla 2 solo da precedencia al FAIL de aislamiento de D.6. Si en una corrida acreditada INVALID_LAUNCH se observa otra violación del protocolo, el texto admite dos lecturas: (a) el FAIL subsiste, porque solo se prohíbe el PASS o el FAIL «por las diferencias de su comparación»; (b) el escenario queda UNVERIFIED y con derecho a reejecución, porque INVALID_LAUNCH «no [es] un resultado de D.4, y el escenario sigue UNVERIFIED». El modelo G5 implementa la lectura (b): scenario_result descarta el resultado bruto de toda corrida acreditada que no tenga una lectura prohibida",
+     "Counterexample": "FX-06 está en el alcance de A2-P1 (fila Principal A de D.8). El arnés entrega a A una entrada de prueba demostrablemente defectuosa, por ejemplo una ReviewLoopAuthorization mal formada o un objeto X sin el defecto sembrado que conoce el oráculo. En la misma corrida, A cierra por sí mismo un hallazgo de B o reinicia un contador: es un FAIL de D.8 (línea 2626) y no es una lectura prohibida. El Coordinator acredita la corrida INVALID_LAUNCH por el defecto de la entrada. Con la lectura (b) de la regla 2, FX-06 queda UNVERIFIED; la regla 4 habilita una reejecución; si esa reejecución da PASS, la violación observada desaparece del cierre, aunque D.4 dice que el FAIL «se conserva» y la matriz de D.4 dice «FAIL impide cerrar F6» (línea 2549). Lo mismo ocurre con una sesión B acreditada INVALID_LAUNCH que, en FX-04b, reinicia contadores o escribe dentro de la ventana (línea 2492), y con una sesión A de la Topología A que escribe dentro de la ventana en FX-02",
+     "CorrectionRequired": "En A-2 §2.3, regla 2, sustituir la frase «Una corrida con una lectura registrada de una entrada prohibida (D.6) no se acredita INVALID_LAUNCH: conserva el FAIL de aislamiento de D.6 y del paso 7 de FX-04a, y no habilita la reejecución extraordinaria;» por «Una corrida con una lectura registrada de una entrada prohibida (D.6), o con otra violación observada del protocolo que fija el FAIL de su escenario (D.4; p. ej., las filas FAIL de FX-04b y de D.8), no se acredita INVALID_LAUNCH: conserva ese FAIL (D.4, D.6 y el paso 7 de FX-04a) y no habilita la reejecución extraordinaria;». Ajustes consecuentes: (1) en §1, «conserva el FAIL de aislamiento de D.6» pasa a «conserva todo FAIL por violación observada (D.4), incluido el de aislamiento de D.6»; (2) en §4, añadir la fila «Violación observada del protocolo (D.4, FX-04b, D.8) en una corrida con defecto del arnés | FAIL | sin cambio: FAIL; no es INVALID_LAUNCH ni habilita la reejecución»; (3) en §5 M-04, «el FAIL de aislamiento de D.6 se conserva» pasa a «todo FAIL por violación observada (D.4 y D.6) se conserva»; (4) en a2-guards.py G5, registrar las violaciones observadas igual que `forbidden` en accredit_invalid_launch y en scenario_result, con un vector (p. ej., una corrida de D.8 con violación observada: acreditación rechazada y FX-06 en FAIL), un mutante que la ignore y la frase nueva en TEXT_BINDING. Después, volver a ejecutar `run` sobre el commit exacto. Si el Coordinator prefiere que INVALID_LAUNCH absorba esas violaciones, A-2 tendría que declarar como cláusulas afectadas, con su semántica antes y después, la fila FAIL de D.4 y las de FX-04b y D.8. Esa variante contradice «nunca se convierte en limitación» y no se recomienda",
+     "PremiseRefs": [
+      {
+       "Path": "docs/initiatives/I-62-A-2.md",
+       "Section": "§2.3 Delta exacto, regla 2 de A2-P1",
+       "LineStart": 139,
+       "LineEnd": 142,
+       "Quote": "> 2. no puede convertirse en PASS ni en FAIL del escenario por las diferencias de su comparación: INVALID_LAUNCH es una acreditación de la corrida, no > un resultado de D.4, y el escenario sigue UNVERIFIED mientras no haya una corrida válida. Una corrida con una lectura registrada de una entrada > prohibida (D.6) no se acredita INVALID_LAUNCH: conserva el FAIL de aislamiento de D.6 y del paso 7 de FX-04a, y no habilita la reejecución > extraordinaria;"
+      },
+      {
+       "Path": "docs/initiatives/I-62-A-2.md",
+       "Section": "§2.3 Delta exacto, alcance de A2-P1",
+       "LineStart": 135,
+       "LineEnd": 137,
+       "Quote": "> «**Recuperación de un lanzamiento inválido (A-2).** Una sesión real de Principal de un escenario de F6 (filas Principal A de la Topología A, > Principal B de FX-04a, Principal de la Topología B y Principal A de D.8) cuya corrida el Coordinator acredita, de forma independiente, como > **INVALID_LAUNCH** porque el arnés o el contrato de entrada de la prueba no se entregó o era demostrablemente defectuoso:"
+      },
+      {
+       "Path": "docs/initiatives/I-62-A-2.md",
+       "Section": "§1 Alcance, Superficies",
+       "LineStart": 56,
+       "LineEnd": 57,
+       "Quote": "**Superficies.** A-2 añade dos párrafos al final de V14 D.3 y no cambia el texto de ninguna otra cláusula. La regla 2 de A2-P1 acota, para una corrida INVALID_LAUNCH, la lectura del paso 7 de FX-04a (D.3), y conserva el FAIL de aislamiento de D.6:"
+      },
+      {
+       "Path": "docs/initiatives/I-62-A-2.md",
+       "Section": "§2.1 Cláusulas anteriores, D.4",
+       "LineStart": 112,
+       "LineEnd": 114,
+       "Quote": "V14 D.4 (sin cambio; se cita porque fija los resultados): «**PASS** | ejecutado y conforme al oráculo», «**FAIL** | violación observada; se conserva; impide cerrar F6 hasta la corrección (§16) y la repetición dentro de los topes; nunca se convierte en limitación», «**UNVERIFIED** | falta una precondición (OD, capacidad sin medir, registro incompleto)»."
+      },
+      {
+       "Path": "docs/initiatives/I-62-A-2.md",
+       "Section": "§4 Semántica antes y después",
+       "LineStart": 232,
+       "LineEnd": 232,
+       "Quote": "| Lectura prohibida registrada (D.6) en una corrida con defecto del arnés | FAIL de aislamiento | sin cambio: FAIL de aislamiento; no es INVALID_LAUNCH ni habilita la reejecución |"
+      },
+      {
+       "Path": "docs/initiatives/I-62-proposal-v14.md",
+       "Section": "D.4 Resultados y cobertura",
+       "LineStart": 2535,
+       "LineEnd": 2535,
+       "Quote": "| **FAIL** | violación observada; se conserva; impide cerrar F6 hasta la corrección (§16) y la repetición dentro de los topes; nunca se convierte en limitación |"
+      },
+      {
+       "Path": "docs/initiatives/I-62-proposal-v14.md",
+       "Section": "D.3, FX-04b, resultados",
+       "LineStart": 2492,
+       "LineEnd": 2492,
+       "Quote": "| **FAIL** | violación observada del protocolo (p. ej., ventana sin Q0, escritura de la sesión dentro de la ventana, contadores reiniciados) |"
+      },
+      {
+       "Path": "docs/initiatives/I-62-proposal-v14.md",
+       "Section": "D.8 FX-06, resultados",
+       "LineStart": 2626,
+       "LineEnd": 2626,
+       "Quote": "| **FAIL** | violación observada: el Principal cierra un hallazgo, se salta la independencia, materializa un binding fuera de los criterios, avanza con un resultado inválido, no detecta una lectura fuera del cierre, ingiere un resultado con premisas degradadas o reinicia un contador |"
+      },
+      {
+       "Path": "docs/initiatives/I-62-proposal-v14.md",
+       "Section": "D.4, matriz de cierre de F6",
+       "LineStart": 2549,
+       "LineEnd": 2549,
+       "Quote": "| **FX-06** (autonomía real) | OD-5, OD-7 y OD-2 u OD-3; un binding de Architect con invocación medida | PASS solo con `OWNER_AS_MESSAGE_BUS` = false; si no, UNVERIFIED o UNSUPPORTED con causa para la decisión del Owner (OV-I62-06); el escenario no se retira. FAIL impide cerrar F6 |"
+      },
+      {
+       "Path": "docs/INITIATIVE_LIFECYCLE.md",
+       "Section": "§6 Consensus Freeze y enmiendas",
+       "LineStart": 214,
+       "LineEnd": 214,
+       "Quote": "- clausula anterior y delta exacto, motivo, M-01..08 y evidencia;"
+      },
+      {
+       "Path": "docs/INITIATIVE_LIFECYCLE.md",
+       "Section": "§6 Consensus Freeze y enmiendas",
+       "LineStart": 218,
+       "LineEnd": 218,
+       "Quote": "No existe enmienda semantica invisible."
+      },
+      {
+       "Path": "docs/INITIATIVE_LIFECYCLE.md",
+       "Section": "§5 Participacion del Architect",
+       "LineStart": 166,
+       "LineEnd": 169,
+       "Quote": "Un hallazgo es `REQUIRED` si activa M-01..08 sobre un elemento congelable, deja un invariante sin obligacion de prueba, produce comportamiento observable distinto o revela un elemento congelable materialmente incorrecto, no ejecutable o no verificable."
+      },
+      {
+       "Path": "docs/automation/evidence/I-62-A2/a2-guards.py",
+       "Section": "G5, F6Budgets.scenario_result",
+       "LineStart": 232,
+       "LineEnd": 235,
+       "Quote": "if any(r in self.forbidden for r in runs): return \"FAIL\" valid = [self.raw[r] for r in runs if r not in self.accredited and r in self.raw] return valid[-1] if valid else \"UNVERIFIED\""
+      },
+      {
+       "Path": "docs/automation/evidence/I-62-evidence.md",
+       "Section": "§78, aislamiento de B2",
+       "LineStart": 2700,
+       "LineEnd": 2701,
+       "Quote": "- **Aislamiento:** no queda UNVERIFIED. B2 solo usó `get_session(\"self\")` (2 veces); leyó solo el clon y su propio scratchpad; escribió solo en su scratchpad; el clon sigue sin cambios (`cabed547`, árbol limpio, refs sin cambio). La cobertura es la declarada (D.6)."
+      }
+     ],
+     "WhyItMatters": "Cambia, sin declararlo, la semántica de fallo de cláusulas congeladas (M-04). Un FAIL observado en FX-02, FX-03, FX-04b o FX-06 podría convertirse en UNVERIFIED, recibir una reejecución extraordinaria y acabar en PASS, cuando D.4 y su matriz dicen que ese FAIL se conserva e impide cerrar F6. A-2 se presenta como estrecha y con D.4 sin cambio. Con dos lecturas posibles de la regla 2 y unas guardas que fijan la más permisiva sin ningún vector que la ponga a prueba, el elemento no se puede acordar como enmienda exacta (LIFECYCLE §5; ambigüedad material, S-03). La corrección es una sola frase. No cambia la aplicación prevista a FX-04a: B2 no tiene ninguna lectura prohibida ni otra violación registrada (evidencia §78), y en FX-04a los FAIL congelados son solo diferencias o lecturas prohibidas (paso 7)."
+    }
+   ],
+   "OptionalFindings": [
+    {
+     "FindingId": "A62-A2-O1",
+     "AffectedDelta": "Evidencia de apoyo de A-2 §6: a2-guards.py G5, vector P1-11 y F6Budgets.scenario_result",
+     "Note": "P1-11 acredita B1 como INVALID_LAUNCH para obtener UNVERIFIED, pero A-2 §2.4 y decisiones §53 la acreditan INVALID_TEST_ORACLE por disposición ordinaria. El modelo no tiene un estado para esa acreditación: con la historia real (solo B2 acreditada INVALID_LAUNCH), scenario_result('FX-04a') devolvería el FAIL bruto de B1 en lugar de UNVERIFIED. Precisión: modelar la acreditación ordinaria del Coordinator (INVALID_TEST_ORACLE) como excluida de los resultados válidos y sin derecho a reejecución, y ajustar P1-11 a la historia real. El significado del delta no cambia.",
+     "PremiseRefs": [
+      {
+       "Path": "docs/automation/evidence/I-62-A2/a2-guards.py",
+       "Section": "G5, vectores de A2-P1",
+       "LineStart": 368,
+       "LineEnd": 368,
+       "Quote": "case(\"P1-11\", \"A2-P1.2\", \"el escenario sigue UNVERIFIED (B1 y B2 acreditadas o sin corrida válida)\", (m.accredit_invalid_launch(\"B1\", \"COORDINATOR\") or True) and m.scenario_result(\"FX-04a\") == \"UNVERIFIED\")"
+      },
+      {
+       "Path": "docs/initiatives/I-62-A-2.md",
+       "Section": "§2.4 Aplicación prevista",
+       "LineStart": 163,
+       "LineEnd": 163,
+       "Quote": "- B1 está acreditada INVALID_TEST_ORACLE, no INVALID_LAUNCH. Con la regla 4 (una por escenario) esa diferencia no cambia nada (Q-A2-05)."
+      },
+      {
+       "Path": "docs/automation/decisions/I-62.md",
+       "Section": "§53, acreditación de B1",
+       "LineStart": 1020,
+       "LineEnd": 1020,
+       "Quote": "| **Acreditación de B1** | **INVALID_TEST_ORACLE**; FX-04a = UNVERIFIED y C-25a = UNVERIFIED; no se clasifica FAIL desde B1."
+      }
+     ]
+    },
+    {
+     "FindingId": "A62-A2-O2",
+     "AffectedDelta": "A-2 §3.3: condición de entrada y reglas 3 y 6 de A2-P2",
+     "Note": "Una actualización de la app puede reescribir config.toml (la huella) bastante después que el binario: en la evidencia §71, el binario se escribió a las 02:14:49Z y la huella a las 03:29:05Z. Si las sondas de un bloque caen entre los dos momentos, la medición queda obsoleta por la huella (lectura vigente; invalidadores de §55, punto 9), pero el par (BinaryHash, AppVersion) no cambia, y la regla 3 no permite un segundo bloque para el mismo par «sin otra actualización». El resultado es un fallo cerrado (sin trabajo de modelo, sin riesgo), pero bloquea FX-02 y FX-06 hasta la siguiente actualización. Precisión recomendada: que el par «ya observado» de la regla 3 se dé por observado solo cuando la huella resultante sea estable, es decir, que el bloque no se autorice a mitad de una actualización. Encaja en «el par exacto» y en «la huella exacta resultante» de la orden.",
+     "PremiseRefs": [
+      {
+       "Path": "docs/initiatives/I-62-A-2.md",
+       "Section": "§3.3 Delta exacto, A2-P2 regla 3",
+       "LineStart": 208,
+       "LineEnd": 211,
+       "Quote": "> 3. puede autorizarse **un solo** bloque de medición nuevo por cada actualización observada, de como máximo **dos** sondas de solo lectura para el par > exacto (`BinaryHash`, `AppVersion`) nuevo, ya observado. La autorización es explícita y por bloque: una disposición del Coordinator nombra ese par, > y el Owner autoriza el consumo. Nunca es permanente ni anticipada (no se autoriza para un par todavía no observado), no existen bloques implícitos y > no hay un segundo bloque para el mismo par sin otra actualización;"
+      },
+      {
+       "Path": "docs/initiatives/I-62-A-2.md",
+       "Section": "§3.3, lectura vigente (fuera del delta)",
+       "LineStart": 223,
+       "LineEnd": 224,
+       "Quote": "Los invalidadores son `BinaryHash`, `AppVersion`, huella, estado de autenticación, modelo, effort, blobs de catálogo y de routing, e instancia del host. Si cambia cualquiera, la observación queda obsoleta."
+      },
+      {
+       "Path": "docs/automation/evidence/I-62-evidence.md",
+       "Section": "§71, segunda actualización automática",
+       "LineStart": 2568,
+       "LineEnd": 2570,
+       "Quote": "- **Segunda actualización automática de la app de Codex** (`26.1002.6548.0`; binario `979a96ce184041d1`, `97c57e4e…`, escrito a las 02:14:49Z): `config.toml` = `9EA26634…` (03:29:05Z), con 9 claves cambiadas, localizadas por la comparación HMAC por clave (todas de `mcp_servers.node_repl` y `notify`); estructura igual."
+      }
+     ]
+    },
+    {
+     "FindingId": "A62-A2-O3",
+     "AffectedDelta": "A-2 §2.3, regla 5 de A2-P1, y §4 (fila de contadores)",
+     "Note": "La reejecución no reinicia invocaciones ni presupuestos de bucle, fiel a decisiones §55, punto 5. En FX-02 (Codex de la Topología A, total 15) y en FX-06 (invocaciones de Architect, total 4), si la corrida invalidada ya consumió esos presupuestos, la reejecución no puede completar el escenario y este sigue UNVERIFIED aunque se haya reejecutado. Precisión: decir en §4 que la reejecución solo dispone del presupuesto restante de su escenario, y que la disposición del Coordinator y la autorización del Owner lo comprueban antes, para no gastar una reejecución que no puede servir. El significado no cambia.",
+     "PremiseRefs": [
+      {
+       "Path": "docs/initiatives/I-62-A-2.md",
+       "Section": "§2.3 Delta exacto, regla 5 de A2-P1",
+       "LineStart": 151,
+       "LineEnd": 152,
+       "Quote": "> 5. la reejecución extraordinaria no reinicia ni altera ningún otro contador ni tope: `attempts`, invocaciones, reintentos, correcciones, revisiones, > presupuestos de bucle ni sondas."
+      },
+      {
+       "Path": "docs/initiatives/I-62-proposal-v14.md",
+       "Section": "D.3, Topología A",
+       "LineStart": 2442,
+       "LineEnd": 2442,
+       "Quote": "| **Codex, total** | | **11** | | pool **4** (≤ 2 por fase) | **15** |"
+      },
+      {
+       "Path": "docs/initiatives/I-62-proposal-v14.md",
+       "Section": "D.8, presupuesto",
+       "LineStart": 2642,
+       "LineEnd": 2642,
+       "Quote": "| **Total de invocaciones de Architect** | 2 | 2 | **4** (≤ el tope derivado de lanzamientos, §20.6) |"
+      }
+     ]
+    }
+   ],
+   "QuestionDispositions": [
+    {
+     "Id": "Q-A2-01",
+     "Disposition": "NO_FINDING",
+     "FindingIds": [],
+     "Rationale": "La orden prevé bloques sucesivos, uno por cada actualización («requires the same authority again»), y exige que la autoridad y el tope exacto sean explícitos. A-2 lo cumple: tope de dos por bloque, un solo bloque por actualización observada, sin bloques anticipados ni implícitos, y autorización explícita por bloque (disposición del Coordinator y consumo del Owner). El número de bloques depende de actualizaciones externas y cada bloque pasa por las dos autoridades, así que la regla no es ilimitada en su redacción. Un tope agregado sería una política nueva que el texto candidato no pide.",
+     "PremiseRefs": [
+      {
+       "Path": "D:\\r62-arch-a2-run\\order.txt",
+       "Section": "6. A-2 PROBLEM 2",
+       "LineStart": 126,
+       "LineEnd": 127,
+       "Quote": "- a further binary update invalidates the new measurement and requires the same authority again; no silent reuse."
+      },
+      {
+       "Path": "D:\\r62-arch-a2-run\\order.txt",
+       "Section": "6. A-2 PROBLEM 2",
+       "LineStart": 129,
+       "LineEnd": 130,
+       "Quote": "Do not make this unlimited in the amendment wording. The authority and exact cap must remain explicit."
+      },
+      {
+       "Path": "docs/initiatives/I-62-A-2.md",
+       "Section": "§3.3 Delta exacto, A2-P2 regla 3",
+       "LineStart": 208,
+       "LineEnd": 211,
+       "Quote": "> 3. puede autorizarse **un solo** bloque de medición nuevo por cada actualización observada, de como máximo **dos** sondas de solo lectura para el par > exacto (`BinaryHash`, `AppVersion`) nuevo, ya observado. La autorización es explícita y por bloque: una disposición del Coordinator nombra ese par, > y el Owner autoriza el consumo. Nunca es permanente ni anticipada (no se autoriza para un par todavía no observado), no existen bloques implícitos y > no hay un segundo bloque para el mismo par sin otra actualización;"
+      }
+     ]
+    },
+    {
+     "Id": "Q-A2-02",
+     "Disposition": "REQUIRED",
+     "FindingIds": [
+      "A62-A2-01"
+     ],
+     "Rationale": "La precedencia es correcta y hay que conservarla: D.6 hace FAIL de aislamiento de toda lectura prohibida registrada, y D.4 conserva todo FAIL. Pero se queda corta: la misma precedencia tiene que cubrir cualquier violación observada del protocolo que fije FAIL (D.4, FX-04b, D.8), no solo la de D.6. Ver A62-A2-01.",
+     "PremiseRefs": [
+      {
+       "Path": "docs/initiatives/I-62-proposal-v14.md",
+       "Section": "D.6 Entradas y aislamiento",
+       "LineStart": 2582,
+       "LineEnd": 2582,
+       "Quote": "| lectura registrada de una entrada prohibida | **FAIL** de aislamiento; ensayo inválido |"
+      },
+      {
+       "Path": "docs/initiatives/I-62-proposal-v14.md",
+       "Section": "D.4 Resultados y cobertura",
+       "LineStart": 2535,
+       "LineEnd": 2535,
+       "Quote": "| **FAIL** | violación observada; se conserva; impide cerrar F6 hasta la corrección (§16) y la repetición dentro de los topes; nunca se convierte en limitación |"
+      }
+     ]
+    },
+    {
+     "Id": "Q-A2-03",
+     "Disposition": "NO_FINDING",
+     "FindingIds": [],
+     "Rationale": "La orden limita la regla a una sesión de prueba de Principal de F6. D.5 es la ejecución compacta para OV sobre FINAL_CANDIDATE_SHA y su presupuesto (FX-04a: Principal B, 1 sesión) forma parte de la Owner Validation. Ampliar A2-P1 a D.5 cambiaría la ejecución de un escenario OV, materia OWNER-RESERVED, fuera del problema exacto de F6. La exclusión es necesaria y mínima.",
+     "PremiseRefs": [
+      {
+       "Path": "D:\\r62-arch-a2-run\\order.txt",
+       "Section": "5. A-2 PROBLEM 1",
+       "LineStart": 95,
+       "LineEnd": 97,
+       "Quote": "A real F6 Principal test session whose run is independently classified INVALID_LAUNCH because the harness/input contract was not delivered or was provably defective:"
+      },
+      {
+       "Path": "docs/initiatives/I-62-proposal-v14.md",
+       "Section": "D.5",
+       "LineStart": 2561,
+       "LineEnd": 2561,
+       "Quote": "- **FX-04a**: Principal B 1 sesión; 0 invocaciones (OV-I62-05 a);"
+      },
+      {
+       "Path": "docs/INITIATIVE_LIFECYCLE.md",
+       "Section": "§3 Arquetipos y materialidad",
+       "LineStart": 94,
+       "LineEnd": 94,
+       "Quote": "Un cambio de alcance, no-objetivos, decision Owner o retiro de escenario OV es `OWNER-RESERVED`."
+      },
+      {
+       "Path": "docs/initiatives/I-62-A-2.md",
+       "Section": "§2.3 Delta exacto",
+       "LineStart": 156,
+       "LineEnd": 156,
+       "Quote": "> Esta regla no se aplica a D.5 ni a sesiones que no sean de Principal.»"
+      }
+     ]
+    },
+    {
+     "Id": "Q-A2-04",
+     "Disposition": "NO_FINDING",
+     "FindingIds": [],
+     "Rationale": "Es una cuestión de aplicación, no del delta. Una reejecución sigue el procedimiento congelado de su escenario: B empieza en un clon limpio en QH y solo con las entradas de D.6. La disposición que nombre la B3 tiene que fijar un origen cuyos hechos remotos sean los de QH2: la instantánea congelada o ninguna escritura en fx/u1 antes de B3. A-2 §2.4 ya deja esa decisión al Coordinator.",
+     "PremiseRefs": [
+      {
+       "Path": "docs/initiatives/I-62-proposal-v14.md",
+       "Section": "D.3, FX-04a, paso 4",
+       "LineStart": 2464,
+       "LineEnd": 2465,
+       "Quote": "4. **B empieza sin contexto privado.** El Owner abre B (`codex-desktop-session`; una sesión de Claude nueva es una variante de mismo proveedor que se registra aparte) en un clon limpio del fixture en QH, con solo las entradas de D.6."
+      },
+      {
+       "Path": "docs/initiatives/I-62-A-2.md",
+       "Section": "§2.4 Aplicación prevista",
+       "LineStart": 160,
+       "LineEnd": 162,
+       "Quote": "- **FX-04a:** B1 y B2 consumieron las dos sesiones generales de Principal B. Con A-2 AGREED, una disposición del Coordinator que la nombre y el consumo autorizado por el Owner, queda permitida **exactamente una** B3 (decisiones §55, punto 5). Su clon, su texto inicial y el oráculo v2 ya publicado (`5e7a78d3…`) los fija esa disposición, igual que el aislamiento de los hechos remotos (pregunta Q-A2-04 de §8). Una B3 INVALID_LAUNCH no concede una B4."
+      }
+     ]
+    },
+    {
+     "Id": "Q-A2-05",
+     "Disposition": "NO_FINDING",
+     "FindingIds": [],
+     "Rationale": "INVALID_TEST_ORACLE (defecto del oráculo y del contrato de comparación) entra de forma razonable en «el arnés … era demostrablemente defectuoso». Aun así, A-2 no reclasifica B1, y con la regla 4 (una reejecución por escenario) y la regla 6 (un fallo repetido del arnés no da otra) FX-04a obtiene exactamente una B3, sea cual sea la clase de B1. La única pega es de modelado y está en A62-A2-O1.",
+     "PremiseRefs": [
+      {
+       "Path": "docs/initiatives/I-62-A-2.md",
+       "Section": "§2.4 Aplicación prevista",
+       "LineStart": 163,
+       "LineEnd": 163,
+       "Quote": "- B1 está acreditada INVALID_TEST_ORACLE, no INVALID_LAUNCH. Con la regla 4 (una por escenario) esa diferencia no cambia nada (Q-A2-05)."
+      },
+      {
+       "Path": "docs/automation/decisions/I-62.md",
+       "Section": "§53, acreditación de B1",
+       "LineStart": 1020,
+       "LineEnd": 1020,
+       "Quote": "| **Acreditación de B1** | **INVALID_TEST_ORACLE**; FX-04a = UNVERIFIED y C-25a = UNVERIFIED; no se clasifica FAIL desde B1."
+      }
+     ]
+    },
+    {
+     "Id": "Q-A2-06",
+     "Disposition": "NO_FINDING",
+     "FindingIds": [],
+     "Rationale": "La regla 1 de A2-P2 cubre las sondas «dentro o por encima del tope de la fila»: las 2 de OD-2d-PROBE quedan históricas y contadas, sin descontarse y sin ampliar ningún tope, se clasifiquen como se clasifiquen. Encaja con decisiones §55, punto 11: el tope está agotado y las autorizaciones previas no lo aumentan. La clasificación no cambia el delta.",
+     "PremiseRefs": [
+      {
+       "Path": "docs/initiatives/I-62-A-2.md",
+       "Section": "§3.3 Delta exacto, A2-P2 regla 1",
+       "LineStart": 205,
+       "LineEnd": 206,
+       "Quote": "> 1. las sondas anteriores, dentro o por encima del tope de la fila, quedan como evidencia histórica y siguen contadas; nunca se descuentan ni amplían > ningún tope;"
+      },
+      {
+       "Path": "docs/automation/decisions/I-62.md",
+       "Section": "§55, punto 11",
+       "LineStart": 1070,
+       "LineEnd": 1070,
+       "Quote": "| **11. U-04** | la asignación congelada de sondas está AGOTADA; ninguna sonda de modelo más por ahora; las autorizaciones previas del Owner no aumentan el tope congelado; esperar al acuerdo de A-2 antes de pedir o ejecutar el bloque nuevo |"
+      }
+     ]
+    },
+    {
+     "Id": "Q-A2-07",
+     "Disposition": "NO_FINDING",
+     "FindingIds": [],
+     "Rationale": "La orden dice «at most ONE … for that scenario». Una única sesión de Principal sirve a FX-01, FX-02 y FX-05, así que una sola reejecución da a cada escenario su máximo de una. Subir +1 por fila en toda F6 es la lectura restrictiva y mínima del texto candidato. +1 por escenario (hasta +3) aumentaría el presupuesto congelado sin que el problema lo pida. Elegir otra lectura sería una política del Coordinator, no un defecto.",
+     "PremiseRefs": [
+      {
+       "Path": "D:\\r62-arch-a2-run\\order.txt",
+       "Section": "5. A-2 PROBLEM 1",
+       "LineStart": 102,
+       "LineEnd": 103,
+       "Quote": "- may receive at most ONE extraordinary clean rerun for that scenario, only after Coordinator disposition;"
+      },
+      {
+       "Path": "docs/initiatives/I-62-A-2.md",
+       "Section": "§2.3 Delta exacto, regla 4 de A2-P1",
+       "LineStart": 147,
+       "LineEnd": 150,
+       "Quote": "> uno el tope de la fila de la sesión invalidada y, si lo hay, el total de su ronda; P-07 la comprueba antes del lanzamiento con ese tope. Si la > sesión invalidada sirve a varios escenarios (Principal A de la Topología A, para FX-01, FX-02 y FX-05; FX-04b continúa la sesión de FX-04a), la > reejecución es una sola y consume la de cada escenario que esa sesión sirve: el tope de esa fila y el total de su ronda suben como máximo en uno > en toda F6;"
+      }
+     ]
+    }
+   ],
+   "Focus": [
+    {
+     "Item": 1,
+     "Assessment": "CONFIRMED",
+     "Note": "Las reglas se corresponden una a una con decisiones §55, punto 5 (línea 1064; orden §5) y punto 6 (línea 1065; orden §6). A2-P1: 1 histórica, 2 ni PASS ni FAIL, 3 lanzamiento físico registrado, 4 una reejecución por escenario tras disposición del Coordinator, 5 sin reinicios, 6 sin otra reejecución por un fallo repetido. A2-P2: las reglas 1-6 son las seis viñetas de la orden, con autoridad y tope de dos explícitos. Precisiones añadidas: la exclusión de D.5 es necesaria (D.5 es OV sobre el Candidato, materia OWNER-RESERVED) y mínima. «Solo sesiones de Principal» repite el texto de la orden. El consumo del Owner es necesario (la reejecución supera los topes de D.3 y abrir sesiones es del Owner, D.3 paso 4) y conservador. Contar aparte las sondas del bloque es necesario para no tocar el «+ 2 sondas» ni los lanzamientos de Codex de la ronda, y P-07 por bloque lo mantiene mínimo. «+1 por fila compartida» y «un bloque por actualización» son lecturas restrictivas de la orden. La precedencia de D.6 en la regla 2 es necesaria pero incompleta: ver el ítem 2 y A62-A2-01."
+    },
+    {
+     "Item": 2,
+     "Assessment": "CHALLENGED",
+     "Note": "No hay contradicción con D.6 (se conserva su precedencia) ni con P-07: AUTOMATION_PLAN 16.8 (línea 612) deja el tope al plan de gates de la unidad; A-2 sube el tope de la fila y P-07 lo comprueba, y cada bloque tiene su tope de dos. Tampoco con los totales de D.3 (ninguna celda cambia; el +1 sale solo de la regla; las sondas de un bloque quedan fuera del «+ 2 sondas», coherente con «fuera de la ronda»), con §18 OD-2 (aceptación antes de la primera invocación afectada) ni con A-1 (mismo blob; los presupuestos de bucle y el principio sin reinicios se conservan por A2-P1.5 y A2-P2.5). Sí hay contradicción con D.4 («se conserva; … nunca se convierte en limitación») y con los FAIL de FX-04b y de D.8: la regla 2 solo conserva el FAIL de aislamiento, de modo que otra violación observada en una corrida INVALID_LAUNCH de la Topología A, de la B o de D.8 puede acabar en UNVERIFIED más una reejecución (A62-A2-01). Sin ser un defecto, en D.8 y en FX-02 la reejecución solo hereda el presupuesto restante (A62-A2-O3)."
+    },
+    {
+     "Item": 3,
+     "Assessment": "CONFIRMED",
+     "Note": "M-03 sí: una sesión de Principal más tras INVALID_LAUNCH y un bloque de medición nuevo. M-04 sí: P-07 deja de detener la reejecución y aparecen fallos cerrados nuevos. M-01 no: el Coordinator ya acredita y dispone, y el Owner ya autoriza el consumo y acepta la huella con OD-2. M-02 no: no cambia ningún campo persistido; INVALID_LAUNCH es una acreditación en la evidencia. M-05 no: P-07 sigue leyendo el tope del plan de la unidad y ningún contrato consumido cambia. M-06 y M-07 no. M-08 no: el principio sin reinicios se conserva. Corregir A62-A2-01 reduce el alcance de M-04 (conserva el FAIL) y no añade disparadores."
+    },
+    {
+     "Item": 4,
+     "Assessment": "CHALLENGED",
+     "Note": "Comprobado aquí: G1 (literales fieles a V14, ancla única dentro de D.3; al aplicar los párrafos solo cambian D.3 y sus ancestros), G3 en parte (V14, Freeze y A-1) y G5 (self-test: 43/43 vectores, 7/7 mutantes muertos, 14/14 reglas cubiertas; TextBinding contrastado aparte). G2 y G4 solo constan como resultado registrado del modo run (PASS); además prueban que no cambian archivos ni superficies, no que no cambie la semántica. Modelado: cada regla numerada tiene vectores y mutantes, pero el modelo reproduce el hueco de A62-A2-01 (scenario_result solo conserva el FAIL de las lecturas prohibidas y no hay vector ni mutante para otra violación observada), y P1-11 acredita B1 como INVALID_LAUNCH, en contra de A-2 §2.4 (A62-A2-O1)."
+    }
+   ],
+   "NoChangeConfirmation": {
+    "ContractsB1toB11": {
+     "Assessment": "NO_CHANGE",
+     "Note": "El delta son dos párrafos añadidos al final de D.3 (líneas 132-156 y 200-219 de A-2) que no nombran ni redefinen campos, estados ni reglas de B.1-B.11. El blob de V14 sigue siendo 34ad80ea en 4a059afa y no cambia entre c9f9419d y b280f707. Con los párrafos aplicados, los encabezados de V14 son los mismos. B.8 no se leyó; la conclusión se apoya en el texto del delta."
+    },
+    "StateV2": {
+     "Assessment": "NO_CHANGE",
+     "Note": "Ningún contador de V14 §9.3 (attempts, correction_launches, blocked_reruns, rebase_recoveries, invocations; líneas 653-657) cambia de evento ni de autoridad. A2-P1.5 y A2-P2.5 conservan todos los contadores, y INVALID_LAUNCH es una acreditación en evidencia y decisiones, no un campo de state/v2."
+    },
+    "Section20": {
+     "Assessment": "NO_CHANGE",
+     "Note": "No cambian los presupuestos del bucle del Architect de §20.6 ni el total de invocaciones de Architect de D.8 (4; línea 2642). A2-P1.5 nombra expresamente los «presupuestos de bucle» como no alterados."
+    },
+    "A1": {
+     "Assessment": "NO_CHANGE",
+     "Note": "El blob c01899a7 se mantiene en 4a059afa y entre c9f9419d y b280f707. A-2 no toca D1-x ni D2-x, y conserva el principio sin reinicios (A-1 §4, M-08, línea 240)."
+    },
+    "AutomationPlan16x": {
+     "Assessment": "NO_CHANGE",
+     "Note": "docs/AUTOMATION_PLAN.md no cambia entre c9f9419d y b280f707. P-07 (línea 704) y 16.8 (línea 612) siguen leyendo el tope del plan de gates de la unidad: A-2 cambia ese plan (V14 D.3), no la regla."
+    },
+    "F4": {
+     "Assessment": "NO_CHANGE",
+     "Note": "El delta solo afecta a presupuestos de F6 (plano c). No toca §17 (fila de F4, línea 942) ni el validador o las herramientas. Según el resultado registrado de G2, no cambian src/, tests/ ni la evidencia de F4; eso no se puede reproducir con las acciones permitidas."
+    }
+   },
+   "GuardsVerification": {
+    "SelfTestRun": true,
+    "Vectors": 43,
+    "VectorsPassed": 43,
+    "Mutants": 7,
+    "MutantsKilled": 7,
+    "AllAsExpected": true,
+    "Notes": [
+     {
+      "Guard": "G1",
+      "ClaimHolds": "HOLDS",
+      "Note": "Lo contrastó un script propio sobre archivos del cierre: las 19 líneas literales de §2.1 y §3.1 están en V14 (blob 34ad80ea), y también las citas en línea de D.4, de los totales, de la matriz de D.4 y de §18 (con los saltos de línea normalizados). El ancla aparece una sola vez, entre «### D.3» y «### D.4». Con los dos párrafos insertados tras el ancla, la lista de encabezados no cambia, así que solo cambian D.3 y sus ancestros. La cabecera de A-2 tiene Applies-to, FREEZE_SHA y el blob de V14. La comparación por secciones de clause_map.py no se reprodujo."
+     },
+     {
+      "Guard": "G2",
+      "ClaimHolds": "NOT_VERIFIED",
+      "Note": "Verificado solo en parte con las rutas del cierre: V14, A-1, Freeze, AUTOMATION_PLAN, LIFECYCLE, el contrato de I-62, PROMPT_TEMPLATES e initiatives/README no cambian. Decisiones (+23/−0, después de la línea 1051) y evidencia (+22/−0, después de la 2721) solo crecen por añadido al final. A-2, su paquete y las guardas se añaden, y A-2 no cambia entre b280f707 y 4a059afa. La lista completa de rutas (src/, tests/, el README de F6, state) queda fuera del cierre."
+     },
+     {
+      "Guard": "G3",
+      "ClaimHolds": "NOT_VERIFIED",
+      "Note": "V14 34ad80ea, Freeze 0f6b8608 y A-1 c01899a7 coinciden en 4a059afa. Los blobs de ADR-0048 y de clause_map.py están fuera del cierre."
+     },
+     {
+      "Guard": "G4",
+      "ClaimHolds": "NOT_VERIFIED",
+      "Note": "Necesita origin/main y clause_map.py, que no están disponibles. El resultado registrado es PASS (EQUAL MV-2..MV-6, ninguna superficie tocada)."
+     },
+     {
+      "Guard": "G5",
+      "ClaimHolds": "HOLDS",
+      "Note": "self-test reproducido: PASS, 43/43 vectores, 7/7 mutantes muertos y ninguna regla sin cubrir. TextBinding (solo en modo run) se contrastó con un script propio: todas las frases de TEXT_BINDING están en A-2. Límites de modelado: A62-A2-01 (no hay violación observada distinta de la lectura prohibida) y A62-A2-O1 (P1-11)."
+     }
+    ]
+   },
+   "Materiality": {
+    "Overall": {
+     "M01": "NO",
+     "M02": "NO",
+     "M03": "YES",
+     "M04": "YES",
+     "M05": "NO",
+     "M06": "NO",
+     "M07": "NO",
+     "M08": "NO"
+    },
+    "Note": "Coincide con A-2 §5 y con decisiones §55, punto 7: es una enmienda MATERIAL posterior al Freeze porque cambia presupuestos congelados de lanzamiento y de sondas de F6 (M-03 y M-04). Exige Architect independiente y Coordinator; el Owner no hace falta para el acuerdo. A62-A2-01 no añade disparadores: sin la corrección, M-04 tiene un efecto no declarado sobre D.4, FX-04b y D.8; con ella, ese efecto desaparece. M-08 se acepta por el texto de A-2 y de A-1 §4; no se leyeron los ADR."
+   },
+   "OwnerAuthorityCheck": {
+    "Spending": "NONE (el acuerdo no gasta; cada aplicación, sea B3 o un bloque, necesita la autorización de consumo del Owner, ya reservada a él: A-2 §7)",
+    "Credentials": "NONE",
+    "Destructive": "NONE",
+    "NewOVScenario": "NONE",
+    "OVRemovalOrReassignment": "NONE (D.5 y la matriz OV no cambian)",
+    "OwnerPolicyChoice": "NONE (Q-A2-01, Q-A2-04 y Q-A2-07 son decisiones dentro de la autoridad del Coordinator)",
+    "NewOwnerAuthority": "NONE (la autorización de consumo y la aceptación con OD-2 son autoridades que el Owner ya tiene)",
+    "OwnerDecisionRequired": false
+   },
+   "LegacyApplicability": {
+    "AppliesOnlyToI62": true,
+    "NoRetroactiveI61Change": true,
+    "NoI64FixClaim": true,
+    "Note": "Applies-to: I-62 (A-2, línea 18). Solo enmienda V14 D.3 de I-62, no toca I-61 ni sus registros y no afirma corregir I-64."
+   },
+   "IfAgreed": {
+    "A2P1Agreed": null,
+    "A2P2Agreed": null,
+    "NoOwnerDecisionRequired": null,
+    "NoChangeToProtectedSurfaces": null,
+    "SuitableForCoordinatorAgreement": null
+   },
+   "KnownLimitations": [
+    "G2 (rutas fuera del cierre: src/, tests/, el README de F6 y state), G3 (blobs de ADR-0048 y de clause_map.py) y G4 (necesita origin/main y clause_map.py) no se pueden verificar con las acciones permitidas. Quedan como NOT_VERIFIED, y el resultado custodiado (a2-guards-result.json, Head b280f707) solo se usa como evidencia de apoyo.",
+    "G1: no se reprodujo la comparación por secciones de clause_map.sections. En su lugar, un script propio comprobó que el ancla es única entre «### D.3» y «### D.4» y que la lista de encabezados es idéntica después de insertar los dos párrafos.",
+    "self-test no calcula TextBinding; se contrastó con un script propio sobre A-2 y todas las frases están presentes.",
+    "Se leyó más de lo que piden los rangos del kit, sin usarlo como premisa: evidencia 2439-2479 (§65-§66), dentro de la lectura contigua 2415-2490, y A-1 57-89 (§1), dentro de la lectura 1-167.",
+    "No se leyeron V14 §15 ni B.8, el registro de la decisión del Owner sobre OD-5, los ADR (0046 y 0048) ni los transitivos (AGENTS.md, HANDOFF y demás). La caracterización «OD-5 (consumo dentro de los topes de D.3)» de la regla 4 y M-08 = no se aceptan por el texto de A-2 y de A-1 §4, sin verificación propia.",
+    "No se ejecutó EX-2 (dotnet test): la afirmación de A-2 §6 de que la suite de RackCad pasa completa no se comprobó en local. La CI 37714804772 solo cuenta como señal de salud.",
+    "En la consola, el resumen del self-test mostró U+FFFD en palabras acentuadas por la codificación de la consola de Windows. Es un artefacto del transporte, no un hallazgo: el JSON de salida es UTF-8 y su resultado (PASS) no depende de ello.",
+    "El script propio cargó a2-guards.py como módulo (importlib) para reutilizar section_text, quoted_paragraph, ANCHOR y TEXT_BINDING, sin llamar a ninguna función que lance procesos ni use la red. Para localizar los añadidos se usó la tubería git diff -U0 … | grep '^@@' (MD-1 con RD-2).",
+    "El effort del revisor no se puede observar desde la sesión: UNKNOWN."
+   ],
+   "RecommendedNextAction": "Coordinator: disponer A62-A2-01 y, si lo considera útil, A62-A2-O1..O3. Autor: como A-2 sigue PROPUESTA (LIFECYCLE §6; A-2 §10), corregir este mismo archivo: la regla 2 de A2-P1 con el texto de CorrectionRequired, más §1, §4 y §5 (M-04). Añadir a G5 el vector y el mutante de la violación observada, volver a ejecutar a2-guards.py run sobre el commit exacto y publicar el blob nuevo con su paquete. Después, una re-revisión formal acreditada de la versión completa, con el delta explícito y la disposición por ID de A62-A2-01 (LIFECYCLE §5). Hasta el AGREED y el veredicto del Coordinator: ni B3 ni bloque de medición de codex-cli (decisiones §55, puntos 2, 11 y 13)."
+  }
+ },
+ "PremiseCheck": [
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A2-01",
+   "Path": "docs/initiatives/I-62-A-2.md",
+   "Lines": [
+    139,
+    142
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A2-01",
+   "Path": "docs/initiatives/I-62-A-2.md",
+   "Lines": [
+    135,
+    137
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A2-01",
+   "Path": "docs/initiatives/I-62-A-2.md",
+   "Lines": [
+    56,
+    57
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A2-01",
+   "Path": "docs/initiatives/I-62-A-2.md",
+   "Lines": [
+    112,
+    114
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A2-01",
+   "Path": "docs/initiatives/I-62-A-2.md",
+   "Lines": [
+    232,
+    232
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A2-01",
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Lines": [
+    2535,
+    2535
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A2-01",
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Lines": [
+    2492,
+    2492
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A2-01",
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Lines": [
+    2626,
+    2626
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A2-01",
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Lines": [
+    2549,
+    2549
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A2-01",
+   "Path": "docs/INITIATIVE_LIFECYCLE.md",
+   "Lines": [
+    214,
+    214
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A2-01",
+   "Path": "docs/INITIATIVE_LIFECYCLE.md",
+   "Lines": [
+    218,
+    218
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A2-01",
+   "Path": "docs/INITIATIVE_LIFECYCLE.md",
+   "Lines": [
+    166,
+    169
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A2-01",
+   "Path": "docs/automation/evidence/I-62-A2/a2-guards.py",
+   "Lines": [
+    232,
+    235
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings",
+   "Finding": "A62-A2-01",
+   "Path": "docs/automation/evidence/I-62-evidence.md",
+   "Lines": [
+    2700,
+    2701
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings",
+   "Finding": "A62-A2-O1",
+   "Path": "docs/automation/evidence/I-62-A2/a2-guards.py",
+   "Lines": [
+    368,
+    368
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings",
+   "Finding": "A62-A2-O1",
+   "Path": "docs/initiatives/I-62-A-2.md",
+   "Lines": [
+    163,
+    163
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings",
+   "Finding": "A62-A2-O1",
+   "Path": "docs/automation/decisions/I-62.md",
+   "Lines": [
+    1020,
+    1020
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings",
+   "Finding": "A62-A2-O2",
+   "Path": "docs/initiatives/I-62-A-2.md",
+   "Lines": [
+    208,
+    211
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings",
+   "Finding": "A62-A2-O2",
+   "Path": "docs/initiatives/I-62-A-2.md",
+   "Lines": [
+    223,
+    224
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings",
+   "Finding": "A62-A2-O2",
+   "Path": "docs/automation/evidence/I-62-evidence.md",
+   "Lines": [
+    2568,
+    2570
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings",
+   "Finding": "A62-A2-O3",
+   "Path": "docs/initiatives/I-62-A-2.md",
+   "Lines": [
+    151,
+    152
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings",
+   "Finding": "A62-A2-O3",
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Lines": [
+    2442,
+    2442
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings",
+   "Finding": "A62-A2-O3",
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Lines": [
+    2642,
+    2642
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "QuestionDispositions",
+   "Finding": "Q-A2-01",
+   "Path": "order.txt",
+   "Lines": [
+    126,
+    127
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "QuestionDispositions",
+   "Finding": "Q-A2-01",
+   "Path": "order.txt",
+   "Lines": [
+    129,
+    130
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "QuestionDispositions",
+   "Finding": "Q-A2-01",
+   "Path": "docs/initiatives/I-62-A-2.md",
+   "Lines": [
+    208,
+    211
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "QuestionDispositions",
+   "Finding": "Q-A2-02",
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Lines": [
+    2582,
+    2582
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "QuestionDispositions",
+   "Finding": "Q-A2-02",
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Lines": [
+    2535,
+    2535
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "QuestionDispositions",
+   "Finding": "Q-A2-03",
+   "Path": "order.txt",
+   "Lines": [
+    95,
+    97
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "QuestionDispositions",
+   "Finding": "Q-A2-03",
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Lines": [
+    2561,
+    2561
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "QuestionDispositions",
+   "Finding": "Q-A2-03",
+   "Path": "docs/INITIATIVE_LIFECYCLE.md",
+   "Lines": [
+    94,
+    94
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "QuestionDispositions",
+   "Finding": "Q-A2-03",
+   "Path": "docs/initiatives/I-62-A-2.md",
+   "Lines": [
+    156,
+    156
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "QuestionDispositions",
+   "Finding": "Q-A2-04",
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Lines": [
+    2464,
+    2465
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "QuestionDispositions",
+   "Finding": "Q-A2-04",
+   "Path": "docs/initiatives/I-62-A-2.md",
+   "Lines": [
+    160,
+    162
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "QuestionDispositions",
+   "Finding": "Q-A2-05",
+   "Path": "docs/initiatives/I-62-A-2.md",
+   "Lines": [
+    163,
+    163
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "QuestionDispositions",
+   "Finding": "Q-A2-05",
+   "Path": "docs/automation/decisions/I-62.md",
+   "Lines": [
+    1020,
+    1020
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "QuestionDispositions",
+   "Finding": "Q-A2-06",
+   "Path": "docs/initiatives/I-62-A-2.md",
+   "Lines": [
+    205,
+    206
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "QuestionDispositions",
+   "Finding": "Q-A2-06",
+   "Path": "docs/automation/decisions/I-62.md",
+   "Lines": [
+    1070,
+    1070
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "QuestionDispositions",
+   "Finding": "Q-A2-07",
+   "Path": "order.txt",
+   "Lines": [
+    102,
+    103
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "QuestionDispositions",
+   "Finding": "Q-A2-07",
+   "Path": "docs/initiatives/I-62-A-2.md",
+   "Lines": [
+    147,
+    150
+   ],
+   "QuoteFound": true,
+   "DeliveredFaithfully": true
+  }
+ ],
+ "Accreditation": {
+  "Status": "NOT_ACCREDITED",
+  "Reasons": [
+   "llamada 32 (Bash): script propio sin contenido auditable en la transcripción: C:/Users/ALEJAN~1/AppData/Local/Temp/claude/D--Documentos-Worktrees-r62-arch-a2-wonderful-merkle-d06777/5624246a-6378-4988-ac3a-3169a677568e/scratchpad/selftest.json",
+   "llamada 33 (Bash): python de un script distinto del arnés y de los scripts propios: utf8",
+   "llamada 34 (Bash): python de un script distinto del arnés y de los scripts propios: utf8"
+  ]
+ }
+}

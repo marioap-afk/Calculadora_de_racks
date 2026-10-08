@@ -115,7 +115,7 @@ El cierre y las acciones no se amplían después de ejecutar. Este kit no cambia
   `../.st`, que se borra con una guarda contra enlaces. La unión de prueba del clon apunta a `D:\r62-arch-a1t01`. Hay doce casos nuevos, y el
   resultado escribe `%USERPROFILE%` en lugar del directorio del usuario.
 
-## Al terminar la corrida (pendiente)
+## Al terminar la corrida (procedimiento)
 
 - Integridad antes de auditar: `kit/` frente a `kit/kit-manifest.json`, y `D:\r62-arch-a2-run\order.txt` y `D:\r62-arch-a2-run\prompt.md` frente a
   las entradas `order.txt` y `prompt.md` del manifiesto (el auditor repite la comprobación contra la copia del kit y `RunFileHashes`, en
@@ -137,3 +137,21 @@ Eres el ARCHITECT de una revisión formal en solo lectura (I-62, RunId R20261008
 Primero, léelo ENTERO con la herramienta Read (ruta absoluta D:\r62-arch-a2-run\prompt.md) y síguelo exactamente: identidad (Paso 0) antes de cualquier lectura sustantiva, el cierre de insumos, el contrato de acciones cerrado, la forma de lectura y el formato del resultado. No leas ni busques nada fuera de lo que ese prompt permite, no edites el repositorio, no hagas commit ni push y no invoques a otros agentes. Tu último mensaje debe contener solo el bloque ```json que el prompt define.
 ```
 
+## Resultado custodiado (después de la corrida)
+
+- Lanzada por el Owner desde la tarea `task_241699b1`; sesión `local_b7dce5ad…`, de 03:07:27Z a 03:22:01Z, con `claude-opus-5-5` y `xhigh`. El primer
+  mensaje contiene el texto fijo de la tarea (`4daa606c…`) y es el único mensaje humano.
+- `output.json`: el bloque JSON literal del mensaje final (SHA-256 `aa0246a94a25de81bff75ae16cb4db2f16baa04f69b8351339f7e416bd5d865e`). **Veredicto: CHANGES REQUIRED.**
+  - REQUIRED: A62-A2-01. La regla 2 de A2-P1 solo conserva el FAIL de aislamiento de D.6; tiene que conservar todo FAIL por violación observada
+    (D.4, FX-04b, D.8).
+  - OPTIONAL: A62-A2-O1 (modelo G5: INVALID_TEST_ORACLE), A62-A2-O2 (bloque a mitad de una actualización) y A62-A2-O3 (presupuesto restante de la
+    reejecución).
+  - Materialidad M-03 y M-04 sí; ninguna decisión del Owner; sin cambio en las superficies protegidas.
+- `audit.json`: el auditor v4-a2.1 literal, sin cambios desde su custodia. **NOT_ACCREDITED**, con 3 motivos en 36 llamadas:
+  - llamada 32: `python - <salida propia>` con heredoc;
+  - llamadas 33 y 34: `python -X utf8 -` con heredoc, scripts en línea que leen A-2, V14 y las guardas del clon.
+
+  Pasan las comprobaciones de identidad y de orden, la custodia del run, el clon limpio y todas las premisas (encontradas y entregadas fielmente). La
+  acreditación la decide el Coordinator.
+- `runtime-evidence.json`: identidad observada, transcripción (no versionada; ruta y SHA-256), clon y worktree después de la corrida, integridad
+  del kit.

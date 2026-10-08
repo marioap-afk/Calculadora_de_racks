@@ -266,6 +266,21 @@ ya no existe. **STOP del transporte `codex-cli`**; FX-01 y FX-04a no lo usan y s
 la comparación por clave antes y después de cada paso. No acepta ninguna huella ni permite editar `config.toml`, `trust_level`, `windows.sandbox` o
 credenciales, ni empezar FX-02 o FX-06. Línea: ~~`OD-2d-PROBE = A (…)`~~ **[concedida y ejecutada sobre el binario `3b8f6e33…` (§51, evidencia §70); no reutilizable]**
 
+## OD-3 (reconsideración, 2026-10-08) — el Owner informa que autenticó `claude-cli`
+
+**Hecho declarado por el Owner** (en la conversación, 2026-10-08): «Ya autentifiqué Claude CLI». La sesión no lo ha medido: no ejecuta `claude-cli`
+mientras OD-3 conste RECHAZADA (decisiones §46; orden del Coordinator «no usar Claude CLI con OD-3 rechazada») y nunca lee credenciales.
+
+| Punto | Contenido |
+|---|---|
+| Estado formal | OD-3 = RECHAZAR (decisiones §46) hasta que el Owner decida otra cosa con una línea explícita. Autenticar la CLI no cambia por sí solo la decisión registrada |
+| Qué cubre OD-3 congelada (V14 §18 y D.3) | `claude-cli` **solo en el fixture**: ≤ 2 sondas de medición de la fila «Sondas previas» de la Topología B (`claude-cli` autenticado 1 (+1), sin usar); Reviewer y Architect de FX-03 (≤ 4); Architects de FX-06 como alternativa a `codex-cli` (D.8, ≤ 4) si el Coordinator lo dispone. La huella de `claude-cli` la acepta el Owner por OD-2 tras la medición (D.7: «según su huella») |
+| Qué desbloquearía hoy | la medición de `claude-cli` (versión, autenticación, modelo y effort observados, receta de solo lectura); la vía de FX-06 con Architects `claude-cli`, sin depender de `codex-cli` ni de A-2 para el Architect (FX-06 opción A sigue esperando al QH de FX-02, que necesita el Controller `codex-cli`) |
+| Qué no desbloquea | FX-03 sigue UNSUPPORTED (el Worker Codex no puede hacer commit); FX-02 sigue necesitando `codex-cli` (Controller); la re-revisión de A-2 es del plano real de I-62 y **no** la cubre OD-3: usar `claude-cli` como transporte del Architect de A-2 exige una autorización aparte del Owner y del Coordinator, y que el Coordinator confirme la independencia (OD-6 alternativa 1: Actor, Session y Context; Provider PREFERRED) |
+| Qué NO autoriza | que la sesión vea o lea credenciales; cambiar el `PATH`; usar `claude-cli` en un rol real de RackCad sin la autorización aparte; superar los topes |
+| Aprobar (una línea) | `OD-3 = A (el Owner autenticó claude-cli; alcance: solo el fixture — ≤ 2 sondas de la fila «Sondas previas» de la Topología B, Reviewer y Architect de FX-03 y Architects de FX-06 si el Coordinator lo dispone; la huella de claude-cli se acepta por OD-2 tras la medición)` |
+| Mantener | `OD-3 = RECHAZAR` — la sesión no usa `claude-cli`; el Owner puede cerrar la sesión de la CLI cuando quiera |
+
 ## OD-3 — hecho nuevo de OD-4 (2026-10-06T07:24Z; OD-3 sigue RECHAZADA)
 
 La sonda de OD-4 midió que el Worker `codex-cli` en `workspace-write` **no puede hacer commit** (el sandbox deniega `.git/index.lock`). FX-03 necesita ese

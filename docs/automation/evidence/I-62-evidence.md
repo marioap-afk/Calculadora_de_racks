@@ -2774,3 +2774,26 @@ solo desde artefactos custodiados.
 - **Lanzamiento:** HUMAN_LAUNCH_REQUIRED. No hay transporte automático elegible: `codex-cli` está en P-01 con la asignación agotada, `claude-cli`
   sin autenticar (OD-3) y la sesión principal no puede abrir sesiones limpias. Tras este commit, la sesión crea **una sola vez** la tarjeta de tarea
   de la app, con `cwd` = el clon y el `prompt.md` custodiado; el Owner la lanza con un clic (precedente de A-1 r5, evidencia §57).
+
+## 82. Revisión formal del Architect de A-2 (R20261008T014941Z-68fe): CHANGES REQUIRED; auditor NOT_ACCREDITED; custodia
+
+- **Lanzamiento:** el Owner pulsó la tarea `task_241699b1`. La sesión `local_b7dce5ad…` corrió de 03:07:27Z a 03:22:01Z, con `claude-opus-5-5` y
+  `xhigh`, en el clon `D:\r62-arch-a2` (worktree de la tarea). El primer y único mensaje humano contiene el texto fijo (`4daa606c…`). La
+  terminación está acreditada: `isRunning` = false en dos observaciones (18:09Z y 18:20Z).
+- **Veredicto** ([registro](../../initiatives/I-62-architect-review-A-2.md), [output.json](I-62-architect-A-2/R20261008T014941Z-68fe/output.json)):
+  **CHANGES REQUIRED**.
+  - REQUIRED: A62-A2-01. La regla 2 de A2-P1 debe conservar todo FAIL por violación observada (D.4, FX-04b, D.8), no solo el de aislamiento de D.6.
+  - OPTIONAL: A62-A2-O1..O3.
+  - Materialidad M-03 y M-04; ninguna decisión del Owner.
+- **Auditor** v4-a2.1, literal ([audit.json](I-62-architect-A-2/R20261008T014941Z-68fe/audit.json)): **NOT_ACCREDITED**, con 3 motivos en 36 llamadas.
+  - Son dos defectos de análisis del propio auditor: `python - <arg>` y `python -X utf8 -`.
+  - Hay además una desviación literal declarada por el revisor: scripts Python en línea que leen archivos del cierre en el clon.
+  - Pasan la identidad, el orden, la custodia del run, el clon limpio y todas las premisas.
+  - La acreditación la decide el Coordinator. El auditor no se corrige después de la corrida.
+- **Lectura de la supervisión:** A62-A2-01 es técnicamente correcta y de una sola frase. No cambia la aplicación a FX-04a, porque B2 no tiene
+  lecturas prohibidas ni otras violaciones.
+- **`claude-cli`:** el Owner informó el 2026-10-08 que autenticó la CLI. La sesión no la ha ejecutado ni medido, porque OD-3 consta RECHAZADA
+  (decisiones §46). Paquete de reconsideración en [owner-decision-packets.md](I-62-prep/owner-decision-packets.md), §«OD-3 (reconsideración,
+  2026-10-08)». OD-3 congelada solo cubre el fixture; la re-revisión de A-2 con `claude-cli` exigiría una autorización aparte del Owner y del
+  Coordinator.
+

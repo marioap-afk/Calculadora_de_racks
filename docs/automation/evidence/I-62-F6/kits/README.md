@@ -24,6 +24,7 @@ A-2 (candidata material, sin aplicar) tiene su tarjeta justo debajo: **acción A
 | Qué NO pegar | nada: ni A-2, ni el paquete, ni textos o resúmenes de I-62, ni opiniones |
 | Evento de compleción | la sesión entrega su veredicto JSON y se detiene; escribe «Architect A-2 terminó» en la sesión de I-62 |
 | Lo que sigue sin el Owner | la supervisión acredita la terminación, custodia el resultado y la transcripción por SHA-256, ejecuta el auditor v4-a2.1 custodiado y prepara el informe para el veredicto del Coordinator sobre A-2 |
+| Estado (2026-10-08) | **hecha**: CHANGES REQUIRED (A62-A2-01 REQUIRED; O1..O3 OPTIONAL); auditor NOT_ACCREDITED (3 motivos); custodia y registro en evidencia §82. Siguiente: disposición del Coordinator |
 
 
 ### Acción 1 — Abrir B2 (FX-04a / C-25a; HUMAN_LAUNCH_REQUIRED)

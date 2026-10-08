@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §55; evidencia §80-§81) — A-2 candidata publicada (b280f707; publicación 4a059afa) y kit del Architect custodiado; HUMAN_LAUNCH_REQUIRED: el Owner lanza la revisión desde la tarjeta de tarea (acción A2-R); después, veredicto del Coordinator; FX-04a OPEN/UNVERIFIED; preparación de FX-02, FX-06 y F7 sin modelos de codex-cli; codex-cli en STOP P-01"
+  next_action: "F6 (evidencia §82) — revisión del Architect de A-2 = CHANGES REQUIRED (A62-A2-01; O1..O3), auditor NOT_ACCREDITED; espera la disposición del Coordinator (hallazgos y acreditación); después, corrección de A-2 y re-revisión con autorización nueva; FX-04a OPEN/UNVERIFIED; codex-cli en STOP P-01"
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual
