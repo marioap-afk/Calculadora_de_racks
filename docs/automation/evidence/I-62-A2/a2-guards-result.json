@@ -1,0 +1,424 @@
+{
+ "Tool": "a2-guards.py run",
+ "Base": "c9f9419dc4aed32242c59de489a8e78a8e369f9b",
+ "Head": "b280f7079e128113666e85a2f437e629d0f0d99e",
+ "Checks": [
+  {
+   "Check": "G1 alcance del delta y aplicación sobre V14",
+   "LiteralLines": 19,
+   "ChangedSections": [
+    "# I-62 — Proposal V14: portabilidad del Principal, binding de roles independiente del proveedor y orquestación autónoma de roles",
+    "## Anexo D — Pilotos y portabilidad (plano c)",
+    "### D.3 Hoja de invocaciones y escenarios"
+   ],
+   "Findings": [],
+   "Result": "PASS"
+  },
+  {
+   "Check": "G2 rutas",
+   "Base": "c9f9419dc4aed32242c59de489a8e78a8e369f9b",
+   "Head": "b280f7079e128113666e85a2f437e629d0f0d99e",
+   "Changed": {
+    "docs/automation/decisions/I-62.md": "M",
+    "docs/automation/evidence/I-62-A2/a2-guards.py": "A",
+    "docs/automation/evidence/I-62-F6/README.md": "M",
+    "docs/automation/evidence/I-62-evidence.md": "M",
+    "docs/automation/state/I-62.yml": "M",
+    "docs/initiatives/I-62-A-2.md": "A",
+    "docs/initiatives/I-62-architect-package-A-2.md": "A"
+   },
+   "Findings": [],
+   "Result": "PASS"
+  },
+  {
+   "Check": "G3 blobs congelados",
+   "Blobs": {
+    "docs/initiatives/I-62-proposal-v14.md": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa",
+    "docs/initiatives/I-62-consensus-freeze.md": "0f6b860837e2478db8525e1fb30a485bc4646816",
+    "docs/initiatives/I-62-A-1.md": "c01899a72b940503bb85a0fab42bc085c603fd0f",
+    "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md": "e1bd8d91f10cb4c86eaf7753f9ef2531ae62498e",
+    "docs/automation/evidence/I-62-F4/compat/clause_map.py": "ffe6ea57257f30fa9eec3e9aaf5bf9982bf59d08"
+   },
+   "Mismatches": {},
+   "Result": "PASS"
+  },
+  {
+   "Check": "G4 C-20b",
+   "Base": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+   "SurfacesTouched": [],
+   "ExitCode": 0,
+   "Output": "{\"result\": \"EQUAL (MV-2..MV-6)\", \"files\": 31, \"entries\": {\"MODIFIED\": 15, \"REMOVED\": 0, \"ADDED\": 53, \"ENTRY\": 2}}",
+   "Result": "PASS"
+  },
+  {
+   "Check": "G5 modelo de presupuestos",
+   "Total": 43,
+   "Passed": 43,
+   "Vectors": [
+    {
+     "Id": "P1-01",
+     "Rule": "A2-P1.4",
+     "Case": "sin A-2: B3 rechazada por P-07",
+     "Result": "PASS",
+     "Detail": "P-07: tope de la fila"
+    },
+    {
+     "Id": "P1-02",
+     "Rule": "A2-P1.4",
+     "Case": "sin acreditación INVALID_LAUNCH no hay disposición",
+     "Result": "PASS",
+     "Detail": "sin corrida acreditada INVALID_LAUNCH en la fila"
+    },
+    {
+     "Id": "P1-03",
+     "Rule": "A2-P1.4",
+     "Case": "acreditada sin disposición: B3 rechazada",
+     "Result": "PASS",
+     "Detail": "P-07: tope de la fila"
+    },
+    {
+     "Id": "P1-04",
+     "Rule": "A2-P1.4",
+     "Case": "con disposición pero sin consumo del Owner: rechazada",
+     "Result": "PASS",
+     "Detail": "sin consumo autorizado por el Owner"
+    },
+    {
+     "Id": "P1-05",
+     "Rule": "A2-P1.4",
+     "Case": "exactamente una B3; B4 rechazada",
+     "Result": "PASS",
+     "Detail": "P-07: tope de la fila"
+    },
+    {
+     "Id": "P1-06",
+     "Rule": "A2-P1.6",
+     "Case": "otro fallo del arnés: sin otra reejecución",
+     "Result": "PASS",
+     "Detail": "como máximo una reejecución extraordinaria"
+    },
+    {
+     "Id": "P1-07",
+     "Rule": "A2-P1.scope",
+     "Case": "la supervisión no acredita INVALID_LAUNCH",
+     "Result": "PASS",
+     "Detail": "acreditación solo del Coordinator"
+    },
+    {
+     "Id": "P1-08",
+     "Rule": "A2-P1.4",
+     "Case": "disposición solo del Coordinator (con corrida acreditada)",
+     "Result": "PASS",
+     "Detail": "disposición solo del Coordinator"
+    },
+    {
+     "Id": "P1-09",
+     "Rule": "A2-P1.1",
+     "Case": "el FAIL bruto de B2 se conserva tras la acreditación",
+     "Result": "PASS",
+     "Detail": ""
+    },
+    {
+     "Id": "P1-10",
+     "Rule": "A2-P1.1",
+     "Case": "la evidencia histórica no se reescribe",
+     "Result": "PASS",
+     "Detail": "evidencia histórica: no se reescribe"
+    },
+    {
+     "Id": "P1-11",
+     "Rule": "A2-P1.2",
+     "Case": "el escenario sigue UNVERIFIED (B1 y B2 acreditadas o sin corrida válida)",
+     "Result": "PASS",
+     "Detail": ""
+    },
+    {
+     "Id": "P1-12",
+     "Rule": "A2-P1.2",
+     "Case": "una corrida INVALID_LAUNCH no puede ser PASS",
+     "Result": "PASS",
+     "Detail": "INVALID_LAUNCH no es PASS ni FAIL"
+    },
+    {
+     "Id": "P1-13",
+     "Rule": "A2-P1.2",
+     "Case": "lectura prohibida: no se acredita INVALID_LAUNCH; FAIL de aislamiento",
+     "Result": "PASS",
+     "Detail": "lectura prohibida: FAIL de aislamiento (D.6)"
+    },
+    {
+     "Id": "P1-14",
+     "Rule": "A2-P1.2",
+     "Case": "una B3 válida con PASS da PASS al escenario",
+     "Result": "PASS",
+     "Detail": ""
+    },
+    {
+     "Id": "P1-15",
+     "Rule": "A2-P1.3",
+     "Case": "el lanzamiento inválido cuenta en la fila y en la ronda",
+     "Result": "PASS",
+     "Detail": ""
+    },
+    {
+     "Id": "P1-16",
+     "Rule": "A2-P1.4",
+     "Case": "fila compartida (FX-01, FX-02, FX-05): +1 como máximo en toda F6",
+     "Result": "PASS",
+     "Detail": "como máximo una reejecución extraordinaria"
+    },
+    {
+     "Id": "P1-17",
+     "Rule": "A2-P1.5",
+     "Case": "la fila N11 no participa ni cambia",
+     "Result": "PASS",
+     "Detail": "la fila N11 no participa"
+    },
+    {
+     "Id": "P1-18",
+     "Rule": "A2-P1.5",
+     "Case": "la reejecución no reinicia ni altera otros contadores (sembrados)",
+     "Result": "PASS",
+     "Detail": ""
+    },
+    {
+     "Id": "P1-19",
+     "Rule": "A2-P1.5",
+     "Case": "FX-04b no tiene fila propia: sigue la sesión de FX-04a y consume su reejecución",
+     "Result": "PASS",
+     "Detail": ""
+    },
+    {
+     "Id": "P1-20",
+     "Rule": "A2-P1.scope",
+     "Case": "no se aplica a D.5",
+     "Result": "PASS",
+     "Detail": "no se aplica a D.5"
+    },
+    {
+     "Id": "P1-21",
+     "Rule": "A2-P1.scope",
+     "Case": "no se aplica a sesiones que no son de Principal",
+     "Result": "PASS",
+     "Detail": "no es fila de Principal"
+    },
+    {
+     "Id": "P1-22",
+     "Rule": "A2-P1.3",
+     "Case": "FX-06 (D.8, sin total de ronda): sube solo el tope de su fila",
+     "Result": "PASS",
+     "Detail": ""
+    },
+    {
+     "Id": "P2-01",
+     "Rule": "A2-P2.1",
+     "Case": "historia real: 4 sondas contadas (2 de la fila + 2 autorizadas aparte)",
+     "Result": "PASS",
+     "Detail": ""
+    },
+    {
+     "Id": "P2-02",
+     "Rule": "A2-P2.1",
+     "Case": "la fila «Sondas previas» está agotada",
+     "Result": "PASS",
+     "Detail": "fila «Sondas previas» agotada"
+    },
+    {
+     "Id": "P2-03",
+     "Rule": "A2-P2.2",
+     "Case": "actualización: sin trabajo de modelo con la observación obsoleta",
+     "Result": "PASS",
+     "Detail": "observación obsoleta"
+    },
+    {
+     "Id": "P2-04",
+     "Rule": "A2-P2.3",
+     "Case": "sin bloque pedido: sonda rechazada",
+     "Result": "PASS",
+     "Detail": "sin autorización para ese par"
+    },
+    {
+     "Id": "P2-05",
+     "Rule": "A2-P2.3",
+     "Case": "bloque anticipado (par no observado) rechazado",
+     "Result": "PASS",
+     "Detail": "par no observado"
+    },
+    {
+     "Id": "P2-06",
+     "Rule": "A2-P2.3",
+     "Case": "sin el consumo del Owner: rechazada",
+     "Result": "PASS",
+     "Detail": "sin autorización explícita"
+    },
+    {
+     "Id": "P2-07",
+     "Rule": "A2-P2.3",
+     "Case": "sin la disposición del Coordinator: rechazada",
+     "Result": "PASS",
+     "Detail": "sin autorización explícita"
+    },
+    {
+     "Id": "P2-08",
+     "Rule": "A2-P2.3",
+     "Case": "sonda con escritura rechazada",
+     "Result": "PASS",
+     "Detail": "solo sondas de solo lectura"
+    },
+    {
+     "Id": "P2-09",
+     "Rule": "A2-P2.3",
+     "Case": "tope de dos sondas por bloque (P-07 del bloque)",
+     "Result": "PASS",
+     "Detail": "tope de dos sondas por bloque"
+    },
+    {
+     "Id": "P2-10",
+     "Rule": "A2-P2.3",
+     "Case": "sin segundo bloque para la misma actualización",
+     "Result": "PASS",
+     "Detail": "segundo bloque para la misma actualización"
+    },
+    {
+     "Id": "P2-11",
+     "Rule": "A2-P2.3",
+     "Case": "volver a conceder no reinicia el bloque",
+     "Result": "PASS",
+     "Detail": "tope de dos sondas por bloque"
+    },
+    {
+     "Id": "P2-12",
+     "Rule": "A2-P2.4",
+     "Case": "sin OD-2 sobre la huella resultante: invocación rechazada",
+     "Result": "PASS",
+     "Detail": "huella no aceptada con OD-2"
+    },
+    {
+     "Id": "P2-13",
+     "Rule": "A2-P2.4",
+     "Case": "con OD-2 aceptada: invocación ordinaria permitida",
+     "Result": "PASS",
+     "Detail": ""
+    },
+    {
+     "Id": "P2-14",
+     "Rule": "A2-P2.1",
+     "Case": "las sondas anteriores siguen contadas (4 + 2 = 6; nunca bajan)",
+     "Result": "PASS",
+     "Detail": ""
+    },
+    {
+     "Id": "P2-15",
+     "Rule": "A2-P2.5",
+     "Case": "el bloque no reinicia presupuestos de escenario (sembrados)",
+     "Result": "PASS",
+     "Detail": ""
+    },
+    {
+     "Id": "P2-16",
+     "Rule": "A2-P2.6",
+     "Case": "actualización con una sonda sin usar: caduca; ni par nuevo ni par anterior; sin trabajo de modelo",
+     "Result": "PASS",
+     "Detail": "sin autorización para ese par / sin autorización para ese par"
+    },
+    {
+     "Id": "P2-17",
+     "Rule": "A2-P2.6",
+     "Case": "bloque del par nuevo solo con la misma autoridad y el mismo tope",
+     "Result": "PASS",
+     "Detail": "tope de dos sondas por bloque"
+    },
+    {
+     "Id": "P2-18",
+     "Rule": "A2-P2.6",
+     "Case": "actualización entre la autorización y la primera sonda: el bloque queda inválido",
+     "Result": "PASS",
+     "Detail": "sin autorización para ese par"
+    },
+    {
+     "Id": "P2-19",
+     "Rule": "A2-P2.3",
+     "Case": "sin actualización tras la medición no hay bloque (decisiones §55 p. 9)",
+     "Result": "PASS",
+     "Detail": "sin actualización que invalide una medición"
+    },
+    {
+     "Id": "P2-20",
+     "Rule": "A2-P2.3",
+     "Case": "sin A-2 no hay bloque",
+     "Result": "PASS",
+     "Detail": "sin A-2 no hay bloque nuevo"
+    },
+    {
+     "Id": "P2-21",
+     "Rule": "A2-P2.scope",
+     "Case": "con la fila sin agotar no hay bloque",
+     "Result": "PASS",
+     "Detail": "la fila «Sondas previas» no está agotada"
+    }
+   ],
+   "Mutants": [
+    {
+     "Mutant": "M_ResetOnDispose",
+     "KilledBy": [
+      "P1-18"
+     ],
+     "Result": "PASS"
+    },
+    {
+     "Mutant": "M_NoCoordinatorCheck",
+     "KilledBy": [
+      "P1-08"
+     ],
+     "Result": "PASS"
+    },
+    {
+     "Mutant": "M_ReuseOldBlock",
+     "KilledBy": [
+      "P2-16",
+      "excepción tras P2-16: segundo bloque para la misma actualización"
+     ],
+     "Result": "PASS"
+    },
+    {
+     "Mutant": "M_IgnoreForbiddenRead",
+     "KilledBy": [
+      "P1-13"
+     ],
+     "Result": "PASS"
+    },
+    {
+     "Mutant": "M_NoOwnerConsumption",
+     "KilledBy": [
+      "P1-04",
+      "excepción tras P1-04: P-07: tope de la fila"
+     ],
+     "Result": "PASS"
+    },
+    {
+     "Mutant": "M_SecondBlock",
+     "KilledBy": [
+      "P2-10",
+      "excepción tras P2-10: sin bloque pedido para el par vigente"
+     ],
+     "Result": "PASS"
+    },
+    {
+     "Mutant": "M_PerScenarioOnSharedRow",
+     "KilledBy": [
+      "P1-06",
+      "P1-16"
+     ],
+     "Result": "PASS"
+    }
+   ],
+   "RulesMissing": [],
+   "TextBinding": {
+    "Missing": {},
+    "Result": "PASS"
+   },
+   "Result": "PASS"
+  }
+ ],
+ "Result": "PASS"
+}
