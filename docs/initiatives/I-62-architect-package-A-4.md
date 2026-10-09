@@ -13,7 +13,7 @@ Aplicación     = ninguna antes de AGREED: ni la invocación adicional de A4-1, 
                  ni la evaluación de A4-4, ni el tope de A4-5 (separable)
 
 Objeto de la revisión (identidad por contenido; el commit lo da el recibo de publicación):
-  docs/initiatives/I-62-A-4.md        blob <el del commit de publicación> (borrador de esta pasada: 27ffa26b35ecacfae083bf9d360fe8460b8d5564)
+  docs/initiatives/I-62-A-4.md        blob <el del commit de publicación> (borrador de esta pasada: 7d863219a271b5ec427ef8669435826e19be8f11)
 Freeze que enmienda:
   FREEZE_SHA b64a3b640c7ee3bd77636e7a3218ae0ebac2dd43
   docs/initiatives/I-62-proposal-v14.md   commit 4c617e82b32b6c810b68d75fc19472efed22b393   blob 34ad80ea1bfff144bfc5169f62920a4c904c1bfa
@@ -121,8 +121,7 @@ canónico: A4-3..A4-5 citan directamente las cláusulas congeladas de esta tabla
 
 ## 5. Condiciones de la invocación (no se lanza con este paquete)
 
-- **Autoridad:** una disposición del Coordinator que autorice la revisión formal sobre el blob exacto publicado. La revisión no interrumpe la
-  revisión formal de A-3 en curso (decisiones §60, punto 0).
+- **Autoridad:** una disposición del Coordinator que autorice la revisión formal sobre el blob exacto publicado. A-3 AGREED (decisiones §61).
 - **Transporte preferido:** `claude-cli` 2.1.293 (SHA-256 `8693c4a0…`, evidencia §90), elegible para ARCHITECT (decisiones §57, punto 3). Su
   consumo para revisiones reales de I-62 lo cubre CLAUDE-CLI-I62 = A (DEC L1085). Antes del lanzamiento se vuelven a comprobar el binario, la
   versión, la autenticación (sin leer credenciales), el modelo y el effort. Con un invalidador cambiado, la celda queda STALE: nueva

@@ -1,0 +1,898 @@
+{
+ "Tool": "a4-guards.py self-test",
+ "ScenarioP": {
+  "Base": "e6fe2e0890c927e0f3e936ff8032279442404857",
+  "Head": "4710084b7589e27c511572d409b8742b75cfcbf4",
+  "BaselineResults": {
+   "G1": "FAIL",
+   "G2": "PASS",
+   "G3": "PASS",
+   "G4": "PASS",
+   "G5": "PASS"
+  },
+  "BaselineFindings": {
+   "G1": [
+    "L63 (AP L1122-L1123, §8 Q-A4-10): A-4 cita «sin aceptación fingida»; la fuente dice «Sin aceptación fingida» (solo difiere en mayúsculas/minúsculas)"
+   ]
+  }
+ },
+ "ScenarioC": {
+  "TextSource": "args",
+  "A4TextBlob": "7d863219a271b5ec427ef8669435826e19be8f11",
+  "PkgTextBlob": "085f30f602532a619734b47b6b8d60035d8fb278",
+  "ControlResults": {
+   "G1": "PASS",
+   "G2C": "PASS",
+   "G2D": "PASS",
+   "G5": "PASS",
+   "G5B": "PASS"
+  },
+  "ControlFindings": {},
+  "Control": "PASS"
+ },
+ "A4TextBlob": "7d863219a271b5ec427ef8669435826e19be8f11",
+ "PkgTextBlob": "085f30f602532a619734b47b6b8d60035d8fb278",
+ "PerGuard": {
+  "G1": {
+   "Mutants": 19,
+   "Killed": 19
+  },
+  "G2": {
+   "Mutants": 8,
+   "Killed": 8
+  },
+  "G3": {
+   "Mutants": 4,
+   "Killed": 4
+  },
+  "G4": {
+   "Mutants": 2,
+   "Killed": 2
+  },
+  "G5": {
+   "Mutants": 17,
+   "Killed": 17
+  },
+  "G2C": {
+   "Mutants": 11,
+   "Killed": 11
+  },
+  "G2D": {
+   "Mutants": 2,
+   "Killed": 2
+  },
+  "G5B": {
+   "Mutants": 3,
+   "Killed": 3
+  }
+ },
+ "Total": {
+  "Mutants": 66,
+  "Killed": 66
+ },
+ "Mutants": [
+  {
+   "Id": "M1-01",
+   "Scenario": "P",
+   "Guard": "G1",
+   "Mutation": "literal del bloque de §2 cambiado en un carácter (V14 L2439)",
+   "Expect": "literal distinto",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "bloque de §2, V14 L2439: literal distinto de la fuente"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M1-02",
+   "Scenario": "P",
+   "Guard": "G1",
+   "Mutation": "literal en línea cambiado en un carácter (L2515: +1 → +2)",
+   "Expect": "L01",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "L01: la cita no está en A-4 tal como la fija la guarda",
+    "citas sin comprobar: ['| Architect (`claude-cli`, invocación distinta) | 1 | +2 | 2 |']"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M1-03",
+   "Scenario": "P",
+   "Guard": "G1",
+   "Mutation": "referencia de línea cambiada (L2515 → L2516)",
+   "Expect": "L01: la referencia",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "L01: la referencia de línea junto a la cita no es L2515"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M1-04",
+   "Scenario": "P",
+   "Guard": "G1",
+   "Mutation": "fuente fijada con un carácter distinto (AP L1093)",
+   "Expect": "L16",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "L16 (AP L1093, §2): literal distinto de la fuente"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M1-05",
+   "Scenario": "P",
+   "Guard": "G1",
+   "Mutation": "cita nueva sin comprobar en §2",
+   "Expect": "citas sin comprobar",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "citas sin comprobar: ['texto inventado']"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M1-06",
+   "Scenario": "P",
+   "Guard": "G1",
+   "Mutation": "cabecera: FREEZE_SHA cambiado en un carácter",
+   "Expect": "FREEZE_SHA",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "cabecera sin FREEZE_SHA"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M1-07",
+   "Scenario": "P",
+   "Guard": "G1",
+   "Mutation": "cabecera: A-2 sin AGREED",
+   "Expect": "A-2 AGREED",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "cabecera sin A-2 AGREED"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M1-08",
+   "Scenario": "P",
+   "Guard": "G1",
+   "Mutation": "cabecera: prefijo del blob de A-3 distinto",
+   "Expect": "A-3",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "cabecera: prefijo del blob de A-3 distinto de ea6721f78cb63fbc4f9d99563f3262eb36a32c5d"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M1-09",
+   "Scenario": "P",
+   "Guard": "G1",
+   "Mutation": "privacidad: ruta de perfil con nombre de usuario",
+   "Expect": "ruta de usuario",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A-4 con una ruta de usuario o un correo (1 coincidencias)"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M1-10",
+   "Scenario": "P",
+   "Guard": "G1",
+   "Mutation": "privacidad: correo",
+   "Expect": "ruta de usuario o un correo",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "paquete de A-4 con una ruta de usuario o un correo (1 coincidencias)"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M1-11",
+   "Scenario": "P",
+   "Guard": "G1",
+   "Mutation": "privacidad: identidad del host (sintética)",
+   "Expect": "nombre de usuario o el correo del host",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A-4 con el nombre de usuario o el correo del host"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M1-12",
+   "Scenario": "P",
+   "Guard": "G1",
+   "Mutation": "prefijo de blob abreviado de §6 distinto del real",
+   "Expect": "592dcfd4",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A-4 no cita el prefijo 592dcfd4… (docs/automation/agent-execution/README.md)"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M1-13",
+   "Scenario": "P",
+   "Guard": "G1",
+   "Mutation": "fuente distinta en la base de preparación 524b293e",
+   "Expect": "en 524b293e",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "fuente V14: blob en 524b293e 6666666666666666666666666666666666666666 distinto del fijado 34ad80ea1bfff144bfc5169f62920a4c904c1bfa"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M1-14",
+   "Scenario": "P",
+   "Guard": "G1",
+   "Mutation": "literal que difiere de la fuente solo en mayúsculas (AP L1093)",
+   "Expect": "solo difiere en mayúsculas",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "L16 (AP L1093, §2): literal distinto de la fuente (solo difiere en mayúsculas/minúsculas: A-4 «**Sin celda elegible no se invoca** (P-10)», fuente «**sin celda elegible no se invoca** (P-10)»)"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M1-15",
+   "Scenario": "P",
+   "Guard": "G1",
+   "Mutation": "cita del texto cambiada sin cambiar la guarda (L2528)",
+   "Expect": "L03: la cita no está",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "L03: la cita no está en A-4 tal como la fija la guarda",
+    "citas sin comprobar: ['Ningún tope autoriza gasto ni ejecución.']"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M2-01",
+   "Scenario": "P",
+   "Guard": "G2",
+   "Mutation": "ruta fuera de alcance añadida",
+   "Expect": "rutas no permitidas",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "rutas no permitidas: ['src/RackCad.Plugin/Fuera.cs']"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M2-02",
+   "Scenario": "P",
+   "Guard": "G2",
+   "Mutation": "evidencia reescrita (no solo añadido)",
+   "Expect": "no cambia solo por añadido",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "docs/automation/evidence/I-62-evidence.md no cambia solo por añadido",
+    "docs/automation/evidence/I-62-evidence.md con una ruta de usuario o un correo (1 coincidencias)"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M2-03",
+   "Scenario": "P",
+   "Guard": "G2",
+   "Mutation": "A-4 modificada (M) en lugar de añadida",
+   "Expect": "no aparece como añadido",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "docs/initiatives/I-62-A-4.md no aparece como añadido (A)",
+    "docs/initiatives/I-62-A-4.md con estado M (permitido: ['A'])"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M2-04",
+   "Scenario": "P",
+   "Guard": "G2",
+   "Mutation": "base distinta del padre",
+   "Expect": "padre de head",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "base distinta del padre de head"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M2-05",
+   "Scenario": "P",
+   "Guard": "G2",
+   "Mutation": "A-2 tocada por el commit",
+   "Expect": "rutas no permitidas",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "rutas no permitidas: ['docs/initiatives/I-62-A-2.md']"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M2-06",
+   "Scenario": "P",
+   "Guard": "G2",
+   "Mutation": "blob de A-4 en head distinto",
+   "Expect": "A4_BLOB",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "blob de A-4 en head distinto de A4_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M2-07",
+   "Scenario": "P",
+   "Guard": "G2",
+   "Mutation": "privacidad en un archivo añadido",
+   "Expect": "ruta de usuario",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "docs/automation/evidence/I-62-F6/requests/FX-02-unblock-request-2026-10-09.md con una ruta de usuario o un correo (1 coincidencias)"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M2-08",
+   "Scenario": "P",
+   "Guard": "G2",
+   "Mutation": "ruta del diff desde 524b293e que no viene del padre ni de la publicación",
+   "Expect": "no vienen de",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "rutas del diff 524b293e..head que no vienen de 524b293e..base ni de la publicación: ['docs/otra/ruta.md']"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M3-01",
+   "Scenario": "P",
+   "Guard": "G3",
+   "Mutation": "blob de V14 cambiado en head",
+   "Expect": "Head:docs/initiatives/I-62-proposal-v14.md",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "blob distinto en Head:docs/initiatives/I-62-proposal-v14.md: esperado 34ad80ea1bfff144bfc5169f62920a4c904c1bfa, obtenido 2222222222222222222222222222222222222222"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M3-02",
+   "Scenario": "P",
+   "Guard": "G3",
+   "Mutation": "blob de A-3 cambiado entre base y head",
+   "Expect": "Head:docs/initiatives/I-62-A-3.md",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "blob distinto en Head:docs/initiatives/I-62-A-3.md: esperado ea6721f78cb63fbc4f9d99563f3262eb36a32c5d, obtenido 3333333333333333333333333333333333333333"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M3-03",
+   "Scenario": "P",
+   "Guard": "G3",
+   "Mutation": "clause_map.py cambiado en la base",
+   "Expect": "Base:docs/automation/evidence/I-62-F4/compat/clause_map.py",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "blob distinto en Base:docs/automation/evidence/I-62-F4/compat/clause_map.py: esperado ffe6ea57257f30fa9eec3e9aaf5bf9982bf59d08, obtenido 4444444444444444444444444444444444444444"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M3-04",
+   "Scenario": "P",
+   "Guard": "G3",
+   "Mutation": "blob declarado en §6 (AUTOMATION_PLAN) cambiado",
+   "Expect": "Head:docs/AUTOMATION_PLAN.md",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "blob distinto en Head:docs/AUTOMATION_PLAN.md: esperado f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5, obtenido 5555555555555555555555555555555555555555"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M4-01",
+   "Scenario": "P",
+   "Guard": "G4",
+   "Mutation": "ruta de una superficie del mapa cambiada",
+   "Expect": "superficies del mapa",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "rutas cambiadas en las superficies del mapa: ['docs/AUTOMATION_PLAN.md']"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M4-02",
+   "Scenario": "P",
+   "Guard": "G4",
+   "Mutation": "clause_map.py check distinto de EQUAL",
+   "Expect": "distinto de EQUAL",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "clause_map.py check distinto de EQUAL (código 0)"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M5-01",
+   "Scenario": "P",
+   "Guard": "G5",
+   "Mutation": "A4-3 sin su cláusula de alcance",
+   "Expect": "A4-3: la regla no abre",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-3: la regla no abre con su cláusula de alcance (abre con «Solo para»: False; faltan ['Solo para la tarea de FX-02 de la Topología A', 'en F6', 'solo para los dos bindings nuevos']; otros escenarios"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M5-02",
+   "Scenario": "P",
+   "Guard": "G5",
+   "Mutation": "A4-1 con alcance a la Topología B",
+   "Expect": "A4-1: la regla no abre",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-1: la regla no abre con su cláusula de alcance (abre con «Solo para»: True; faltan ['Solo para la celda de EXECUTION_CONTROLLER de la Topología A']; otros escenarios ['Topología B'])"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M5-03",
+   "Scenario": "P",
+   "Guard": "G5",
+   "Mutation": "A4-5 sin alcance (sin «Solo para»)",
+   "Expect": "A4-5: la regla no abre",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-5: la regla no abre con su cláusula de alcance (abre con «Solo para»: False; faltan ['Solo para la tarea de FX-02 de la Topología A']; otros escenarios [])"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M5-04",
+   "Scenario": "P",
+   "Guard": "G5",
+   "Mutation": "nombre de producto en A4-2",
+   "Expect": "nombres de producto",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-2: nombres de producto en la regla: ['claude']"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M5-05",
+   "Scenario": "P",
+   "Guard": "G5",
+   "Mutation": "producto citado entre comillas no exento",
+   "Expect": "nombres de producto",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-2: nombres de producto en la regla: ['codex']"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M5-06",
+   "Scenario": "P",
+   "Guard": "G5",
+   "Mutation": "mención de otro escenario sin negación",
+   "Expect": "ESCENARIO «FX-03»",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-2, ítem 6: mención de ESCENARIO «FX-03» fuera de una frase negativa, de conservación o de restricción"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M5-07",
+   "Scenario": "P",
+   "Guard": "G5",
+   "Mutation": "regla de A-2 alterada",
+   "Expect": "REGLA «A-2»",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-1, ítem 6: mención de REGLA «regla de nueva medición» fuera de una frase negativa, de conservación o de restricción",
+    "A4-1, ítem 6: mención de REGLA «A-2» fuera de una frase negativa, de conservación o de restricción"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M5-08",
+   "Scenario": "P",
+   "Guard": "G5",
+   "Mutation": "encabezado introducido en el delta",
+   "Expect": "aparecen o desaparecen secciones",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-1..A4-5: al aplicar aparecen o desaparecen secciones: [(3, '### D.3 bis')] []",
+    "A4-1..A4-5: el delta trae filas de tabla, encabezados o vallas: ['### D.3 bis']",
+    "A4-1..A4-4 (sin A4-5): al aplicar aparecen o desaparecen secciones: [(3, '### D.3 bis')] []"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M5-09",
+   "Scenario": "P",
+   "Guard": "G5",
+   "Mutation": "fila de tabla que reescribe los topes",
+   "Expect": "filas de tabla",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-1..A4-5: el delta trae filas de tabla, encabezados o vallas: ['| **Codex, total** | | **12** | | pool *']",
+    "A4-5: nombres de producto en la regla: ['Codex']"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M5-10",
+   "Scenario": "P",
+   "Guard": "G5",
+   "Mutation": "cifra de tope distinta (tope 15 → 16)",
+   "Expect": "cifra de tope",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-2: cifra de tope 16 distinta de V14 (15)"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M5-11",
+   "Scenario": "P",
+   "Guard": "G5",
+   "Mutation": "ubicación de A4-1 cambiada",
+   "Expect": "A4-1: ubicación",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-1: ubicación distinta de «Ubicación: al final de V14 D.3, a continuación del párrafo de A2-P2, que termina en «Ningún otro tope cambia.» (A-2 L234).»"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M5-12",
+   "Scenario": "P",
+   "Guard": "G5",
+   "Mutation": "ancla no única en V14 + A-2",
+   "Expect": "ancla no única",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "«Ningún otro tope cambia.» aparece 2 veces en V14 + A-2 (ancla no única)",
+    "tras «Ningún otro tope cambia.» hay texto antes de D.4: A-2 no termina D.3",
+    "A4-1..A4-5: la aplicación no es un añadido puro (['replace'])"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M5-13",
+   "Scenario": "P",
+   "Guard": "G5",
+   "Mutation": "invalidador de A4-1 distinto de A-2",
+   "Expect": "invalidadores",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-1: invalidadores distintos de los de A-2 L238-L239"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M5-14",
+   "Scenario": "P",
+   "Guard": "G5",
+   "Mutation": "A4-1..A4-4 dependen de A4-5",
+   "Expect": "no es separable",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-1..A4-4 mencionan A4-5: A4-5 no es separable"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M5-15",
+   "Scenario": "P",
+   "Guard": "G5",
+   "Mutation": "cita interna inventada",
+   "Expect": "cita interna",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-1: cita interna «+ 3 sondas» que no está en ninguna fuente fijada"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "M5-16",
+   "Scenario": "P",
+   "Guard": "G5",
+   "Mutation": "regla A4-5 retirada (cuatro reglas)",
+   "Expect": "exactamente A4-1..A4-5",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "§3.2-§3.6 no contienen exactamente A4-1..A4-5 en orden: ['A4-1', 'A4-2', 'A4-3', 'A4-4']"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC-01",
+   "Scenario": "C",
+   "Guard": "G2C",
+   "Mutation": "edición de más en A-4",
+   "Expect": "A-4: el diff frente al blob publicado",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A-4: el diff frente al blob publicado no es exactamente el declarado (1 diferencias de más o de menos, primera en L347-L347)",
+    "paquete: el diff frente al blob publicado no es exactamente el declarado (1 diferencias de más o de menos, primera en L16-L16)",
+    "blob de la A-4 corregida 3b944232405c361792fe53e2f262ff99a8c021b9 distinto de A4_CORR_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC-02",
+   "Scenario": "C",
+   "Guard": "G2C",
+   "Mutation": "ruta de más en el commit de corrección",
+   "Expect": "rutas no permitidas",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "rutas no permitidas: ['src/RackCad.Plugin/Fuera.cs']"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC-03",
+   "Scenario": "C",
+   "Guard": "G2C",
+   "Mutation": "edición de más en el paquete",
+   "Expect": "paquete: el diff frente al blob publicado",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "paquete: el diff frente al blob publicado no es exactamente el declarado (1 diferencias de más o de menos, primera en L134-L134)",
+    "blob del paquete corregido f23d0c76bee9ebac25acb2c99804b4ec0be5babe distinto de PKG_CORR_BLOB",
+    "blobs de A-4 y del paquete en head distintos de A4_CORR_BLOB / PKG_CORR_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC-04",
+   "Scenario": "C",
+   "Guard": "G2C",
+   "Mutation": "falta una de las dos ediciones (L341 sin corregir)",
+   "Expect": "A-4: el diff frente al blob publicado",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A-4: el diff frente al blob publicado no es exactamente el declarado (1 diferencias de más o de menos, primera en L341-L341)",
+    "paquete: el diff frente al blob publicado no es exactamente el declarado (1 diferencias de más o de menos, primera en L16-L16)",
+    "blob de la A-4 corregida 0be15212510c62a257189d128ecc188e91d90d59 distinto de A4_CORR_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC-05",
+   "Scenario": "C",
+   "Guard": "G2C",
+   "Mutation": "A-4 añadida (A) en lugar de modificada",
+   "Expect": "no aparece como modificado",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "docs/initiatives/I-62-A-4.md no aparece como modificado (M)",
+    "docs/initiatives/I-62-A-4.md con estado A (permitido: ['M'])"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC-06",
+   "Scenario": "C",
+   "Guard": "G2C",
+   "Mutation": "a4-guards.py no añadido",
+   "Expect": "docs/automation/evidence/I-62-A4/a4-guards.py no aparece como añadido",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "docs/automation/evidence/I-62-A4/a4-guards.py no aparece como añadido (A)"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC-07",
+   "Scenario": "C",
+   "Guard": "G2C",
+   "Mutation": "la base no tiene la A-4 publicada",
+   "Expect": "la base no contiene",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "la base no contiene la A-4 publicada (27ffa26b) y su paquete (d314afeb)"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC-08",
+   "Scenario": "C",
+   "Guard": "G2C",
+   "Mutation": "evidencia reescrita (no solo añadido)",
+   "Expect": "no cambia solo por añadido",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "docs/automation/evidence/I-62-evidence.md no cambia solo por añadido"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC-09",
+   "Scenario": "C",
+   "Guard": "G2C",
+   "Mutation": "paquete con otro blob de A-4 en L16",
+   "Expect": "paquete: el diff frente al blob publicado",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "paquete: el diff frente al blob publicado no es exactamente el declarado (1 diferencias de más o de menos, primera en L16-L16)",
+    "blob del paquete corregido a4cdfd293e114280d7bca1a30b82f15749d37b7b distinto de PKG_CORR_BLOB",
+    "blobs de A-4 y del paquete en head distintos de A4_CORR_BLOB / PKG_CORR_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC-10",
+   "Scenario": "C",
+   "Guard": "G2C",
+   "Mutation": "otra ruta añadida en evidence/I-62-A4",
+   "Expect": "rutas no permitidas",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "rutas no permitidas: ['docs/automation/evidence/I-62-A4/extra.json']"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC-11",
+   "Scenario": "C",
+   "Guard": "G2C",
+   "Mutation": "decisiones con estado A",
+   "Expect": "con estado A",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "docs/automation/decisions/I-62.md con estado A (permitido: ['M'])",
+    "docs/automation/decisions/I-62.md no cambia solo por añadido"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC-12",
+   "Scenario": "C",
+   "Guard": "G2D",
+   "Mutation": "edición de más en A-4 (preview)",
+   "Expect": "A-4: el diff frente al blob publicado",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A-4: el diff frente al blob publicado no es exactamente el declarado (1 diferencias de más o de menos, primera en L347-L347)",
+    "paquete: el diff frente al blob publicado no es exactamente el declarado (1 diferencias de más o de menos, primera en L16-L16)",
+    "blob de la A-4 corregida 3b944232405c361792fe53e2f262ff99a8c021b9 distinto de A4_CORR_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC-13",
+   "Scenario": "C",
+   "Guard": "G2D",
+   "Mutation": "la HEAD ya no tiene la A-4 publicada (preview)",
+   "Expect": "la HEAD del repositorio ya no tiene",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "la HEAD del repositorio ya no tiene A-4 = 27ffa26b y paquete = d314afeb: la corrección no se aplica sobre ella"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC-14",
+   "Scenario": "C",
+   "Guard": "G5B",
+   "Mutation": "self-test custodiado sin PASS",
+   "Expect": "sin Result PASS",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "a4-selftest.json sin Result PASS"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC-15",
+   "Scenario": "C",
+   "Guard": "G5B",
+   "Mutation": "self-test de otra A-4",
+   "Expect": "A4TextBlob distinto",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4TextBlob distinto del blob de A-4 en head"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC-16",
+   "Scenario": "C",
+   "Guard": "G5B",
+   "Mutation": "self-test de otras guardas",
+   "Expect": "ToolBlob distinto",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "ToolBlob distinto del blob de a4-guards.py en head"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC-17",
+   "Scenario": "C",
+   "Guard": "G1",
+   "Mutation": "cabecera A-3 AGREED con otro blob",
+   "Expect": "blob de A-3 distinto",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "cabecera: la línea de A-3 AGREED no es la fijada (decisiones §61, punto 1; ruta; blob completo)",
+    "cabecera: blob de A-3 distinto de ea6721f78cb63fbc4f9d99563f3262eb36a32c5d o abreviado"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC-18",
+   "Scenario": "C",
+   "Guard": "G1",
+   "Mutation": "cabecera A-3 AGREED con §60",
+   "Expect": "no casa con decisiones §61",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "cabecera: la línea de A-3 AGREED no es la fijada (decisiones §61, punto 1; ruta; blob completo)",
+    "cabecera: A-3 AGREED no casa con decisiones §61, punto 1, en la base (A-3 = AGREED con su blob)"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC-19",
+   "Scenario": "C",
+   "Guard": "G1",
+   "Mutation": "la base no registra A-3 = AGREED en §61",
+   "Expect": "no casa con decisiones §61",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "cabecera: A-3 AGREED no casa con decisiones §61, punto 1, en la base (A-3 = AGREED con su blob)"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC-20",
+   "Scenario": "C",
+   "Guard": "G1",
+   "Mutation": "L341 vuelve a minúscula",
+   "Expect": "solo difiere en mayúsculas",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "L63 (AP L1122-L1123, §8 Q-A4-10): A-4 cita «sin aceptación fingida»; la fuente dice «Sin aceptación fingida» (solo difiere en mayúsculas/minúsculas)"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC-21",
+   "Scenario": "C",
+   "Guard": "G5",
+   "Mutation": "párrafo normativo cambiado frente a 27ffa26b",
+   "Expect": "cambian frente a 27ffa26b",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "los párrafos normativos o sus ubicaciones cambian frente a 27ffa26b: ['A4-1']"
+   ],
+   "Result": "PASS"
+  }
+ ],
+ "Findings": [],
+ "Result": "PASS",
+ "ToolBlob": "2489e35f4a5f0bb43696966b669ae7dd09b5004b",
+ "ToolPrivacy": {
+  "Findings": [],
+  "Result": "PASS"
+ }
+}

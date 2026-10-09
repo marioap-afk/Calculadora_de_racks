@@ -3100,3 +3100,20 @@ solo desde artefactos custodiados.
   - Después, kit y revisión formal por `claude-cli` lanzada automáticamente.
   - En paralelo, la clasificación en cinco grupos de las decisiones de la solicitud de FX-02.
   - Ninguna sonda ni A2 antes del acuerdo de A-4 y de las autorizaciones del Owner.
+
+## 101. A-4: guardas mecánicas y corrección previa a la revisión (decisiones §61, punto 2)
+
+- **Guardas** [a4-guards.py](I-62-A4/a4-guards.py) (G1 literales, cabecera y privacidad; G2 rutas; G3 blobs congelados; G4 C-20b; G5 delta frente a
+  V14 y A-2), con un `self-test` de 66/66 mutaciones detectadas ([a4-selftest.json](I-62-A4/a4-selftest.json)).
+- **Primera ejecución, sobre la publicación `4710084b`** (base `e6fe2e08`):
+  - **FAIL solo en G1:** la pregunta Q-A4-10 citaba «sin aceptación fingida», y la fuente (AUTOMATION_PLAN L1122) dice «Sin aceptación fingida».
+    Es una diferencia de mayúscula fuera de §2 y de las cinco reglas.
+  - G2 a G5 en PASS: las cinco reglas son un añadido puro de 90 líneas tras el último párrafo de A-2 y solo cambian el título, el Anexo D y D.3;
+    cada regla abre con su cláusula de alcance a FX-02; las 23 menciones de otros escenarios o reglas son de conservación, negación o
+    restricción; la fila de topes no cambia; ninguna regla menciona A-3.
+- **Corrección antes de la revisión** (A-4 es una candidata sin revisar):
+  - en A-4, dos líneas: la cita de Q-A4-10 al literal de la fuente, y la cabecera, que ahora dice «A-3 AGREED (decisiones §61, punto 1; blob
+    `ea6721f7…`)»;
+  - en el paquete, la línea del blob del borrador y la del estado de A-3.
+  - Blobs nuevos: A-4 **`7d863219`** (antes `27ffa26b`) y paquete `085f30f6` (antes `d314afeb`). Las cinco reglas no cambian (G5).
+- La ejecución de las guardas sobre este commit se custodia en el siguiente. La revisión formal se lanza sobre `7d863219` cuando pasen.
