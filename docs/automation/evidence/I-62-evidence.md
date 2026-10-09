@@ -2923,3 +2923,20 @@ solo desde artefactos custodiados.
 - **Siguiente.**
   - Disposición del Coordinator sobre B3, el bloque de Codex y la revisión formal de A-3 (transporte `claude-cli`).
   - Respuestas del Owner.
+
+## 90. Decisiones §58: B3 y bloque de Codex en vigor; OD-2-MAT = A; revisión formal de A-3 por `claude-cli` autorizada
+
+- **B3 (A2-P1).** En vigor con `B3-CONSUMO = A`. Comprobación previa al lanzamiento repetida el 2026-10-09: sin cambios frente a
+  [prelaunch-B3.json](I-62-F6/FX-04a/R20261008T2200Z-fx04a-b3/prelaunch-B3.json).
+  - Clon `fx/u1` = `cabed547`, limpio, con `origin` = la instantánea congelada (refs `275d977b…`); `fx/u1` vivo = `cabed547`.
+  - Sin carpeta de proyecto de Claude para B3 y sin `CLAUDE.md` global.
+  - Entradas automáticas con los mismos SHA-256.
+  - Texto inicial `233b0582…` (8 065 bytes).
+  - Sin sesiones de escritorio activas.
+  - La abre el Owner. Mientras dure, no se ejecuta ninguna sonda de Codex, para que no haya procesos ajenos durante las comprobaciones de B3.
+- **Bloque de Codex (A2-P2).** En vigor con la línea del Owner, más estricta: «sin lectura de valores». Se ejecuta tras B3.
+  - Controles: huella exacta, nombres saneados y estructura, binario y versión, antes y después de cada operación, sin comparación por clave.
+  - Después de las sondas: paquete de OD-2 exacta para el Owner.
+- **OD-2-MAT = A.** OD-2 sigue siendo el SHA-256 exacto. El `CODEX_HOME` dedicado (D) queda como investigación posterior.
+- **A-3.** Revisión formal por `claude-cli` sobre el blob `ea6721f7`: kit, cierre, auditor y preflight se custodian antes del lanzamiento.
+  - Binario medido sin cambios: `2.1.293`, SHA-256 `8693c4a0…`.
