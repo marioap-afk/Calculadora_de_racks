@@ -3249,3 +3249,19 @@ solo desde artefactos custodiados.
   - tope de uno total para FX-02;
   - `REFERENCE_UNSTABLE` si el origen cambia durante la medición.
   No se lanza sin A-4 acordada, la disposición de aplicación y `A4-SONDA-CONSUMO = A`.
+
+## 108. A-4: kit de la re-revisión formal por `claude-cli` custodiado antes del lanzamiento (R20261009T150948Z-fdc2; decisiones §62, punto 2)
+
+- **Kit:** [R20261009T150948Z-fdc2](I-62-architect-A-4/R20261009T150948Z-fdc2/README.md). Contiene:
+  - objeto: A-4 `0d954376` (corrección 2, `a3332495`; guardas CORRECTION2 PASS), recibo `cca8c60e`; el objeto anterior `7d863219` y `delta.diff`
+    van como premisa;
+  - cierre de 30 archivos canónicos y 6 del run;
+  - prompt `e1eea6b2…`, que exige la disposición de A62-A4-01 y de O1..O8 y los ocho temas de §62: H-1 sin aceptación fabricada, H-2 con
+    independencia real, H-3 sin reinicios, ruta `cmd.exe`, Architect por `claude-cli`, materialidad M-02/M-05, U-09 (e) y separabilidad de A4-5;
+  - auditor v5.1-a4r, con `selftest` 122/122 y 140 mutantes eliminados;
+  - compuerta MEASURED sobre `20d0de2c…`;
+  - clon `D:62-arch-a4r` verificado (AllChecks);
+  - ensayo en seco sin bloqueos; manifiesto `bec6d9db…`.
+- **Transporte:** `claude-cli` 2.1.293 (`8693c4a0…`), espera de 120 s tras `auth status`, tope de 3 600 s, sin reintento. Consumo cubierto por
+  CLAUDE-CLI-I62 = A.
+- **Estado:** custodiado y NO lanzado. A-4 no se modifica mientras dure la re-revisión.

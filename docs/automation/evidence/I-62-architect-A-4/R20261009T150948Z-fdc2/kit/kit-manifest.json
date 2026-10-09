@@ -1,0 +1,153 @@
+{
+ "Kit": "I-62 A-4 (corrección 2): kit de la UNA re-revisión formal independiente del Architect por claude-cli (disposición §62, punto 2; decisiones §57, punto 3; Owner CLAUDE-CLI-I62 = A)",
+ "Ids": {
+  "RunId": "R20261009T150948Z-fdc2",
+  "InvocationId": "I20261009T150948Z-fdc2",
+  "LogicalReviewRequestId": "L20261009T150948Z-fdc2",
+  "AttemptSeq": 1
+ },
+ "PreviousAttempts": [],
+ "Commit": "cca8c60e4acfea498844c5d5f8ea14b807fbd4f3",
+ "ObjectIntroducedBy": "a33324957f8778dd286a5a871881d403fd5a2d14",
+ "Object": "docs/initiatives/I-62-A-4.md blob 0d9543761e3e3a45a94338776f7c1ba763224ab3",
+ "Package": "docs/initiatives/I-62-architect-package-A-4.md blob 59052b847ccc13e8be539189ae1b77dc7f9d3623",
+ "SessionId": "9eb98aef-1bc0-44b9-9dc8-7e963f22bdf2",
+ "Transport": "claude-cli 2.1.293 (%APPDATA%\\Claude\\claude-code\\2.1.293\\83cb0bd7fed4\\claude.exe, SHA-256 8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa)",
+ "Auditor": "v5.1-a4r (declarado y autoprobado antes del lanzamiento: selftest-result.json AllPass True, 122/122; mutation-result.json AllKilled True, 140/140)",
+ "Clone": "D:/r62-arch-a4r (git clone --no-local -c core.autocrlf=false --single-branch; main = el commit; sin remoto; clone-verification.json AllChecks)",
+ "Run": "D:/r62-arch-a4r-run (order.txt, prompt.md, order-s61.txt, order-s60.txt, delta.diff y A-4.7d863219.md, idénticos byte a byte a las copias del kit)",
+ "TransportGate": "MEASURED (D-01; launch.py solo lanza en MEASURED o ACCEPTED)",
+ "Launch": "kit/launch.py, por la sesión principal, una sola vez (NO lanzado)",
+ "Files": {
+  "A-4.7d863219.md": {
+   "Bytes": 40944,
+   "Sha256": "39dd78ab4ea44faaad3e0611996f4fecd2e084da520cfdfb37d0ef10399086ef"
+  },
+  "c3_analysis.py": {
+   "Bytes": 6070,
+   "Sha256": "4fc6115e2551b68efd46a20504764f2313f894eaddbb2e59b16dcdf72c1ecbb7"
+  },
+  "clone-verification.json": {
+   "Bytes": 13374,
+   "Sha256": "a03e351bb1c6ffec60f398175328149487c695534f35ee172279c31e10a8d5c8"
+  },
+  "closure.json": {
+   "Bytes": 57680,
+   "Sha256": "cdb35c12afb9a4cf894bf744f870142c1e81e28f2eea18456c7511c1d46f87ba"
+  },
+  "delta.diff": {
+   "Bytes": 25767,
+   "Sha256": "6105684fae7c398c1358a10a0eb5e6c5bb713df32666a781f3e59b192d248236"
+  },
+  "launch.py": {
+   "Bytes": 17566,
+   "Sha256": "cf2b29e55197b1663825146c138095f5efc6ce4ac5a1111a82a881d753bdb1b3"
+  },
+  "make_closure.py": {
+   "Bytes": 46331,
+   "Sha256": "2eaf8f4108d0938ca117bbfefe678b1507881eeb4e7f1b2f919c2d76ed916fda"
+  },
+  "make_manifest.py": {
+   "Bytes": 5339,
+   "Sha256": "87027b4107789f7f4691ae113aae395c92ef567715cbe4a789b2f693d2188973"
+  },
+  "mutation-post-review.py": {
+   "Bytes": 5892,
+   "Sha256": "28b1c6bb2f9a15d987963e9d1cd2c6ee87f1c754891464dd7fb13f033c6820b7"
+  },
+  "mutation-result.json": {
+   "Bytes": 36279,
+   "Sha256": "c5d6cf04d46a16cf28a8f970ad7947246b6074e4d99eedc09657a1bc12ab3f44"
+  },
+  "order-s60.txt": {
+   "Bytes": 2047,
+   "Sha256": "3a7257e16c955e586b2e6c300f42ba20079f0b29481dbb63f461c2a1c2217699"
+  },
+  "order-s61.txt": {
+   "Bytes": 3196,
+   "Sha256": "c82456877990c172110d577d21cc592ed87ebc94dea20387eecb4061c17634a7"
+  },
+  "order.txt": {
+   "Bytes": 3035,
+   "Sha256": "560e043ddec6c64d5ab0ce5ef9025603cb2723b26b017f94924b9dd06479f952"
+  },
+  "post-review.py": {
+   "Bytes": 51469,
+   "Sha256": "cf70aea470c562f0c131c123e1dfeb8f1779de37cf9613486ac9f371789f8255"
+  },
+  "preflight-read-fidelity.json": {
+   "Bytes": 1490,
+   "Sha256": "e61cb4b13e3109af33d80466d89fc0e1acdbb05ac875ecf539f0c8351181378c"
+  },
+  "prompt.md": {
+   "Bytes": 30382,
+   "Sha256": "e1eea6b2f8a5cc2c8cf7ac33273e2e154b6053b1ebf5c8e4d601aef7f485d7b0"
+  },
+  "read_fidelity.py": {
+   "Bytes": 4924,
+   "Sha256": "710542fddf3ef4e6b2e0e8896ae5fea2451b3948333f8064e402fa59ddaabd30"
+  },
+  "result.schema.json": {
+   "Bytes": 21808,
+   "Sha256": "3c273ec930cfd8886711ff8d4c43c71b6ea8b941a2e2ff821e9deb4145579da0"
+  },
+  "selftest-post-review.py": {
+   "Bytes": 71107,
+   "Sha256": "6b37d09825741e31515e8b4cdecfe378def4fcf9f586b30ddbcb239fd3d9c436"
+  },
+  "selftest-result.json": {
+   "Bytes": 47972,
+   "Sha256": "bded63aabc74b0722c10ef3e369a96a884fa986b9c2c5428c6025c48dccede60"
+  },
+  "transport-gate.json": {
+   "Bytes": 1601,
+   "Sha256": "d1032f90588970eec14c69d4ad4c5cdc367927a11679f37992e39b9764a25f70"
+  },
+  "transport_gate.py": {
+   "Bytes": 18828,
+   "Sha256": "b05fedd17b9b6856d618d2ffcde88efc1ceafaa3e6c2d5373667919a718129c6"
+  },
+  "verify_clone.py": {
+   "Bytes": 15509,
+   "Sha256": "8f3dd203192e60602c05b848ff42605c655d869f28cc11d26ac66ca717111209"
+  }
+ },
+ "RunFiles": {
+  "order.txt": {
+   "Path": "D:\\r62-arch-a4r-run\\order.txt",
+   "Bytes": 3035,
+   "Sha256": "560e043ddec6c64d5ab0ce5ef9025603cb2723b26b017f94924b9dd06479f952",
+   "IdenticalToKitCopy": true
+  },
+  "prompt.md": {
+   "Path": "D:\\r62-arch-a4r-run\\prompt.md",
+   "Bytes": 30382,
+   "Sha256": "e1eea6b2f8a5cc2c8cf7ac33273e2e154b6053b1ebf5c8e4d601aef7f485d7b0",
+   "IdenticalToKitCopy": true
+  },
+  "order-s61.txt": {
+   "Path": "D:\\r62-arch-a4r-run\\order-s61.txt",
+   "Bytes": 3196,
+   "Sha256": "c82456877990c172110d577d21cc592ed87ebc94dea20387eecb4061c17634a7",
+   "IdenticalToKitCopy": true
+  },
+  "order-s60.txt": {
+   "Path": "D:\\r62-arch-a4r-run\\order-s60.txt",
+   "Bytes": 2047,
+   "Sha256": "3a7257e16c955e586b2e6c300f42ba20079f0b29481dbb63f461c2a1c2217699",
+   "IdenticalToKitCopy": true
+  },
+  "delta.diff": {
+   "Path": "D:\\r62-arch-a4r-run\\delta.diff",
+   "Bytes": 25767,
+   "Sha256": "6105684fae7c398c1358a10a0eb5e6c5bb713df32666a781f3e59b192d248236",
+   "IdenticalToKitCopy": true
+  },
+  "A-4.7d863219.md": {
+   "Path": "D:\\r62-arch-a4r-run\\A-4.7d863219.md",
+   "Bytes": 40944,
+   "Sha256": "39dd78ab4ea44faaad3e0611996f4fecd2e084da520cfdfb37d0ef10399086ef",
+   "IdenticalToKitCopy": true
+  }
+ }
+}

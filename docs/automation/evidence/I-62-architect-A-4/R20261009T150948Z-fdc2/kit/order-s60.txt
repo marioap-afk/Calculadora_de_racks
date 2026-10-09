@@ -1,0 +1,53 @@
+I-62 — COORDINATOR DISPOSITION: F6 CRITICAL PATH
+
+No interrumpir la revisión formal de A-3 que esté en curso. Completarla, custodiar su resultado y comunicar el veredicto.
+
+Trabajar en paralelo
+
+1. FX-04a
+
+Acreditar FX-04a / C-25a = PASS sobre B3, siempre que la evidencia custodiada confirme los 23/23, la terminación, el aislamiento D.6 y el orden de publicación de respuesta y oráculo.
+
+No repetir B3 ni abrir B4.
+
+2. F6-OBS-03
+
+Clasificación: limitación material observada de codex-cli 0.162.0-alpha.2 en la ejecución de PowerShell.
+
+OD-2 fue aceptada en decisiones §59; no volver a solicitarla mientras sus invalidadores permanezcan iguales.
+
+La ruta cmd.exe completó 8/8 en la sonda Controller. Evaluar si satisface el contrato de ejecución de FX-02 con evidencia ya custodiada.
+
+No asumir equivalencia ni introducir un cambio silencioso en la receta 16.4.
+
+Si la ruta alternativa requiere una modificación material del contrato, preparar la disposición o enmienda correspondiente antes de ejecutarla.
+
+Para Architect, preferir claude-cli si el contrato permite ese adapter y cumple independencia, capacidad y consumo.
+
+3. Prioridad absoluta: FX-02
+
+Resolver los bloqueos efectivos y ejecutar FX-02 tan pronto como esté autorizado.
+
+No iniciar mejoras auxiliares que no desbloqueen C-24.
+
+4. Después: FX-06
+
+Ejecutar el escenario de autonomía real y evaluar C-39, C-32, C-37 y C-42.
+
+No aceptar transporte manual del Owner como prueba de autonomía.
+
+5. F7 y READY
+
+Continuar los controles independientes que ya puedan acreditarse.
+
+Mantener I-61 vigente e I-64 bloqueada hasta que se cumplan sus condiciones normativas.
+
+6. Productividad
+
+Trabajar sobre el camino crítico.
+
+Evitar nuevas rondas de perfeccionamiento de instrumentos que ya satisfacen sus controles.
+
+Si alguna acción requiere autorización Owner, solicitarla una sola vez con su alcance exacto y continuar el trabajo independiente.
+
+Entregar resultados verificables: controles cerrados, evidencia, SHA, impedimentos reales y siguiente acción ejecutable.

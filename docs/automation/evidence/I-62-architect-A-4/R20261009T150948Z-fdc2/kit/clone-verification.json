@@ -1,0 +1,358 @@
+{
+ "Clone": "D:\\r62-arch-a4r",
+ "Commands": [
+  "git clone -q --no-local -c core.autocrlf=false --single-branch --branch architecture/portabilidad-coordinador-principal \"%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal\" D:\\r62-arch-a4r",
+  "git -C D:\\r62-arch-a4r checkout -q -B main cca8c60e4acfea498844c5d5f8ea14b807fbd4f3",
+  "git -C D:\\r62-arch-a4r branch -D architecture/portabilidad-coordinador-principal",
+  "git -C D:\\r62-arch-a4r remote remove origin",
+  "git -C D:\\r62-arch-a4r reflog expire --expire=now --all; git -C D:\\r62-arch-a4r gc -q --prune=now   (poda los commits posteriores al recibo)",
+  "git -C D:\\r62-arch-a4r diff a5b50c68 a3332495 -- docs/initiatives/I-62-A-4.md > kit/delta.diff; git -C D:\\r62-arch-a4r show a5b50c68:docs/initiatives/I-62-A-4.md > kit/A-4.7d863219.md   (bytes literales)",
+  "copia byte a byte de kit/order.txt (= cuerpo §62), kit/order-s61.txt (= cuerpo §61), kit/order-s60.txt (= cuerpo §60), kit/delta.diff, kit/A-4.7d863219.md y kit/prompt.md → D:\\r62-arch-a4r-run\\"
+ ],
+ "Head": "cca8c60e4acfea498844c5d5f8ea14b807fbd4f3",
+ "Branches": [
+  "main"
+ ],
+ "Remotes": [],
+ "StatusPorcelain": "",
+ "StatusIgnored": "",
+ "CoreAutocrlf": "false",
+ "WorktreeList": "D:/r62-arch-a4r cca8c60e [main]",
+ "Tags": 12,
+ "TagsNotMergedIntoHead": [],
+ "CommitsReachableFromAllRefs": 1848,
+ "CommitsReachableFromHead": 1848,
+ "Blobs": {
+  "docs/initiatives/I-62-A-4.md": {
+   "Expected": "0d9543761e3e3a45a94338776f7c1ba763224ab3",
+   "Got": "0d9543761e3e3a45a94338776f7c1ba763224ab3",
+   "Match": true
+  },
+  "docs/initiatives/I-62-architect-package-A-4.md": {
+   "Expected": "59052b847ccc13e8be539189ae1b77dc7f9d3623",
+   "Got": "59052b847ccc13e8be539189ae1b77dc7f9d3623",
+   "Match": true
+  },
+  "docs/automation/evidence/I-62-architect-A-4/R20261009T122416Z-bce3/output.json": {
+   "Expected": "8477374495d809bed64283d8af2976e3ce2929e8",
+   "Got": "8477374495d809bed64283d8af2976e3ce2929e8",
+   "Match": true
+  },
+  "tests/RackCad.Tests/I62/StateV2Validator.Orchestration.cs": {
+   "Expected": "355e1b35f7d8c7e318f5dbd6801429d4ad19899e",
+   "Got": "355e1b35f7d8c7e318f5dbd6801429d4ad19899e",
+   "Match": true
+  },
+  "docs/initiatives/I-62-proposal-v14.md": {
+   "Expected": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa",
+   "Got": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa",
+   "Match": true
+  },
+  "docs/initiatives/I-62-A-2.md": {
+   "Expected": "f1e1d6f08d3cf677500794c7d0019433a4dc7d4e",
+   "Got": "f1e1d6f08d3cf677500794c7d0019433a4dc7d4e",
+   "Match": true
+  },
+  "docs/initiatives/I-62-A-1.md": {
+   "Expected": "c01899a72b940503bb85a0fab42bc085c603fd0f",
+   "Got": "c01899a72b940503bb85a0fab42bc085c603fd0f",
+   "Match": true
+  },
+  "docs/initiatives/I-62-A-3.md": {
+   "Expected": "ea6721f78cb63fbc4f9d99563f3262eb36a32c5d",
+   "Got": "ea6721f78cb63fbc4f9d99563f3262eb36a32c5d",
+   "Match": true
+  },
+  "docs/initiatives/I-62-consensus-freeze.md": {
+   "Expected": "0f6b860837e2478db8525e1fb30a485bc4646816",
+   "Got": "0f6b860837e2478db8525e1fb30a485bc4646816",
+   "Match": true
+  },
+  "docs/INITIATIVE_LIFECYCLE.md": {
+   "Expected": "f19896a8f1a7c82f74bac7231636f68462a87271",
+   "Got": "f19896a8f1a7c82f74bac7231636f68462a87271",
+   "Match": true
+  },
+  "docs/AUTOMATION_PLAN.md": {
+   "Expected": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "Got": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "Match": true
+  },
+  "docs/automation/agent-execution/README.md": {
+   "Expected": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "Got": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "Match": true
+  },
+  "docs/automation/decisions/I-62.md": {
+   "Expected": "83269536ba835550a51fafa8ff3d85ef45c8723a",
+   "Got": "83269536ba835550a51fafa8ff3d85ef45c8723a",
+   "Match": true
+  },
+  "docs/automation/evidence/I-62-evidence.md": {
+   "Expected": "a50b1dcb1e427b83a66cc72ab8b455cb5f2f1456",
+   "Got": "a50b1dcb1e427b83a66cc72ab8b455cb5f2f1456",
+   "Match": true
+  },
+  "docs/automation/evidence/I-62-F6/FX-02/F6-OBS-03-cmd-route-evaluation.md": {
+   "Expected": "83a960cacc951a3c643af5049d1fc1f8aae16866",
+   "Got": "83a960cacc951a3c643af5049d1fc1f8aae16866",
+   "Match": true
+  },
+  "docs/automation/evidence/I-62-F6/OD-2/R20261009T041427Z-a2p2-block/result.json": {
+   "Expected": "b4a5679b367f3dd4889269cfb4a9233461c15ec7",
+   "Got": "b4a5679b367f3dd4889269cfb4a9233461c15ec7",
+   "Match": true
+  },
+  "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md": {
+   "Expected": "90929ad1c49c028f41f58f654f8713bd0b35f27b",
+   "Got": "90929ad1c49c028f41f58f654f8713bd0b35f27b",
+   "Match": true
+  },
+  "docs/automation/evidence/I-62-F6/kits/FX-02/README.md": {
+   "Expected": "ceb38284f2749c257062187fbe235608cc8fc765",
+   "Got": "ceb38284f2749c257062187fbe235608cc8fc765",
+   "Match": true
+  },
+  "docs/automation/evidence/I-62-F6/kits/FX-02/order-FX-U1-O4.template.md": {
+   "Expected": "d92f7d3e13b122bf7669639cc0571a248650beda",
+   "Got": "d92f7d3e13b122bf7669639cc0571a248650beda",
+   "Match": true
+  },
+  "docs/automation/agent-execution/adapters/codex-cli.md": {
+   "Expected": "155f3469e345e2397fa26347a9cb52d6fdb91122",
+   "Got": "155f3469e345e2397fa26347a9cb52d6fdb91122",
+   "Match": true
+  },
+  "docs/automation/agent-execution/adapters/claude-cli.md": {
+   "Expected": "ae570380509cacabf11f757a27573bf6fe616a36",
+   "Got": "ae570380509cacabf11f757a27573bf6fe616a36",
+   "Match": true
+  },
+  "docs/automation/agent-execution/routing.md": {
+   "Expected": "bba08fc4686d7192deeb559752636a467103b4b1",
+   "Got": "bba08fc4686d7192deeb559752636a467103b4b1",
+   "Match": true
+  },
+  "docs/automation/agent-execution/model-catalog.md": {
+   "Expected": "166d978d114e635bbef67e295c2ec1da73af6d1f",
+   "Got": "166d978d114e635bbef67e295c2ec1da73af6d1f",
+   "Match": true
+  },
+  "docs/automation/evidence/I-62-claude-cli/R20261008T183600Z-char/README.md": {
+   "Expected": "0b6828992e34e7b06f9e7a162cf2c7d149aa0667",
+   "Got": "0b6828992e34e7b06f9e7a162cf2c7d149aa0667",
+   "Match": true
+  },
+  "docs/initiatives/I-62-architect-review-A-4.md": {
+   "Expected": "b464f2c53d40d91cfde46e4a662995bc86c9f08a",
+   "Got": "b464f2c53d40d91cfde46e4a662995bc86c9f08a",
+   "Match": true
+  },
+  "docs/automation/evidence/I-62-F6/requests/FX-02-unblock-request-2026-10-09.md": {
+   "Expected": "203d288750bedd3d4b8560ff01374376d9760d21",
+   "Got": "203d288750bedd3d4b8560ff01374376d9760d21",
+   "Match": true
+  },
+  "docs/automation/evidence/I-62-F6/requests/FX-02-decision-classification-2026-10-09.md": {
+   "Expected": "79ad2db4c957895cf98db94fd1b33a93e86e56c1",
+   "Got": "79ad2db4c957895cf98db94fd1b33a93e86e56c1",
+   "Match": true
+  },
+  "docs/automation/evidence/I-62-A4/a4-guards.py": {
+   "Expected": "6595d8730456d7a06fc3edbd833dfa1eef11a1bc",
+   "Got": "6595d8730456d7a06fc3edbd833dfa1eef11a1bc",
+   "Match": true
+  },
+  "docs/automation/evidence/I-62-A4/a4-selftest.json": {
+   "Expected": "ddaf18f6b6df3692836761685630c62417a2d171",
+   "Got": "ddaf18f6b6df3692836761685630c62417a2d171",
+   "Match": true
+  },
+  "docs/automation/evidence/I-62-A4/a4-guards-result-c2.json": {
+   "Expected": "2fce7b58f9da20a17fa19f4955a1bc984e8f0022",
+   "Got": "2fce7b58f9da20a17fa19f4955a1bc984e8f0022",
+   "Match": true
+  },
+  "docs/automation/evidence/I-62-claude-cli/R20261008T183600Z-char/claude-cli-characterization.json": {
+   "Expected": "541956eb8f5d154414b91338c655919ae0ade697",
+   "Got": "541956eb8f5d154414b91338c655919ae0ade697",
+   "Match": true
+  }
+ },
+ "BlobsAtCommits": {
+  "4710084b:docs/initiatives/I-62-A-4.md": {
+   "Expected": "27ffa26b35ecacfae083bf9d360fe8460b8d5564",
+   "Got": "27ffa26b35ecacfae083bf9d360fe8460b8d5564"
+  },
+  "7f065a3a:docs/initiatives/I-62-A-4.md": {
+   "Expected": "7d863219a271b5ec427ef8669435826e19be8f11",
+   "Got": "7d863219a271b5ec427ef8669435826e19be8f11"
+  },
+  "a5b50c68:docs/initiatives/I-62-A-4.md": {
+   "Expected": "7d863219a271b5ec427ef8669435826e19be8f11",
+   "Got": "7d863219a271b5ec427ef8669435826e19be8f11"
+  },
+  "a5b50c68:docs/initiatives/I-62-architect-package-A-4.md": {
+   "Expected": "085f30f602532a619734b47b6b8d60035d8fb278",
+   "Got": "085f30f602532a619734b47b6b8d60035d8fb278"
+  },
+  "a3332495:docs/initiatives/I-62-A-4.md": {
+   "Expected": "0d9543761e3e3a45a94338776f7c1ba763224ab3",
+   "Got": "0d9543761e3e3a45a94338776f7c1ba763224ab3"
+  },
+  "a3332495:docs/initiatives/I-62-architect-package-A-4.md": {
+   "Expected": "59052b847ccc13e8be539189ae1b77dc7f9d3623",
+   "Got": "59052b847ccc13e8be539189ae1b77dc7f9d3623"
+  },
+  "a5b50c68:docs/automation/evidence/I-62-architect-A-4/R20261009T122416Z-bce3/output.json": {
+   "Expected": "8477374495d809bed64283d8af2976e3ce2929e8",
+   "Got": "8477374495d809bed64283d8af2976e3ce2929e8"
+  }
+ },
+ "CommitsPresent": {
+  "a33324957f8778dd286a5a871881d403fd5a2d14": {
+   "What": "corrección 2 de A-4 (0d954376)",
+   "Present": true
+  },
+  "a5b50c689ef33aa7b6fa7f7949fd72f58202e369": {
+   "What": "custodia de la revisión 1 (7d863219)",
+   "Present": true
+  },
+  "02be0c34efc6125627ad4b31978fb349acc724c8": {
+   "What": "recibo de la revisión 1",
+   "Present": true
+  },
+  "7f065a3a56102b8034247c7c64514e3f256f7b74": {
+   "What": "corrección 1 de A-4 (7d863219)",
+   "Present": true
+  },
+  "4710084b7589e27c511572d409b8742b75cfcbf4": {
+   "What": "primera publicación (27ffa26b)",
+   "Present": true
+  },
+  "524b293e4667810f485c64d6cbb545d5b2dd8db5": {
+   "What": "base de preparación (blobs del paquete §2)",
+   "Present": true
+  },
+  "f504f6a9bf34847dd12e973c8d5545c1b6db9e52": {
+   "What": "acuerdo de A-3",
+   "Present": true
+  },
+  "c8d69fcb35e18ddc660152dca943684a351a7321": {
+   "What": "base de A4-1 y A4-2",
+   "Present": true
+  },
+  "d2d74c14f5e661c7ce77a81aae964dfcb4abdf40": {
+   "What": "caracterización de claude-cli",
+   "Present": true
+  }
+ },
+ "CommitsAbsent": {
+  "4c617e82b32b6c810b68d75fc19472efed22b393": {
+   "What": "commit de V14 (anterior al rebase)",
+   "Present": false
+  },
+  "b64a3b640c7ee3bd77636e7a3218ae0ebac2dd43": {
+   "What": "FREEZE_SHA (anterior al rebase)",
+   "Present": false
+  }
+ },
+ "IndexSymlinks": 0,
+ "ReparsePointsInWorkTree": [],
+ "WorkTreeFiles": 3364,
+ "Run": {
+  "Dir": "D:\\r62-arch-a4r-run",
+  "Files": [
+   "A-4.7d863219.md",
+   "delta.diff",
+   "order-s60.txt",
+   "order-s61.txt",
+   "order.txt",
+   "prompt.md"
+  ],
+  "Records": {
+   "order.txt": {
+    "Bytes": 3035,
+    "Sha256": "560e043ddec6c64d5ab0ce5ef9025603cb2723b26b017f94924b9dd06479f952",
+    "IdenticalToKitCopy": true,
+    "MatchesClosure": true,
+    "MatchesDecisions": true
+   },
+   "prompt.md": {
+    "Bytes": 30382,
+    "Sha256": "e1eea6b2f8a5cc2c8cf7ac33273e2e154b6053b1ebf5c8e4d601aef7f485d7b0",
+    "IdenticalToKitCopy": true,
+    "MatchesClosure": true,
+    "FinalNewline": false,
+    "CarriageReturns": 0,
+    "Utf8": true
+   },
+   "order-s61.txt": {
+    "Bytes": 3196,
+    "Sha256": "c82456877990c172110d577d21cc592ed87ebc94dea20387eecb4061c17634a7",
+    "IdenticalToKitCopy": true,
+    "MatchesClosure": true,
+    "MatchesDecisions": true
+   },
+   "order-s60.txt": {
+    "Bytes": 2047,
+    "Sha256": "3a7257e16c955e586b2e6c300f42ba20079f0b29481dbb63f461c2a1c2217699",
+    "IdenticalToKitCopy": true,
+    "MatchesClosure": true,
+    "MatchesDecisions": true
+   },
+   "delta.diff": {
+    "Bytes": 25767,
+    "Sha256": "6105684fae7c398c1358a10a0eb5e6c5bb713df32666a781f3e59b192d248236",
+    "IdenticalToKitCopy": true,
+    "MatchesClosure": true,
+    "EqualsGitOutput": {
+     "Command": "git diff a5b50c689ef33aa7b6fa7f7949fd72f58202e369 a33324957f8778dd286a5a871881d403fd5a2d14 -- docs/initiatives/I-62-A-4.md",
+     "Equal": true
+    }
+   },
+   "A-4.7d863219.md": {
+    "Bytes": 40944,
+    "Sha256": "39dd78ab4ea44faaad3e0611996f4fecd2e084da520cfdfb37d0ef10399086ef",
+    "IdenticalToKitCopy": true,
+    "MatchesClosure": true,
+    "EqualsGitOutput": {
+     "Command": "git show a5b50c689ef33aa7b6fa7f7949fd72f58202e369:docs/initiatives/I-62-A-4.md",
+     "Equal": true
+    }
+   }
+  }
+ },
+ "TransportCharacterization": {
+  "Path": "D:\\r62-arch-a4r\\docs\\automation\\evidence\\I-62-claude-cli\\R20261008T183600Z-char\\claude-cli-characterization.json",
+  "InClone": true,
+  "Sha256": "20d0de2ce625c38ddeaaf445ce2261b080520bdcf57eec8f4bf9a8bd0cedbf4c",
+  "MatchesGate": true,
+  "GateStatus": "MEASURED"
+ },
+ "ClaudeProjectDirsForCloneOrRun": {
+  "Pattern": "%USERPROFILE%\\.claude\\projects\\D--r62-arch-a4r*",
+  "Found": []
+ },
+ "PriorTranscriptsForSessionId": {
+  "SessionId": "9eb98aef-1bc0-44b9-9dc8-7e963f22bdf2",
+  "Found": 0
+ },
+ "GuardsSelfTestPreflight": {
+  "Command": "python -I -B -X utf8 docs/automation/evidence/I-62-A4/a4-guards.py self-test --repo <worktree> --a4 <clon> --pkg <clon> --out <temporal> --tmp <temporal> (script del clon; --repo = %USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal, solo lectura; --a4 y --pkg = los archivos del clon; evidencia del invocador)",
+  "WorktreeHeadAtPreflight": "a39a1adaa2b3c73c54364428faae33d9667ec16c",
+  "ExitCode": 0,
+  "Stdout": "PASS",
+  "StderrTail": "",
+  "Result": "PASS",
+  "A4TextBlob": "0d9543761e3e3a45a94338776f7c1ba763224ab3",
+  "PkgTextBlob": "59052b847ccc13e8be539189ae1b77dc7f9d3623",
+  "Mutants": 86,
+  "MutantsKilled": 86,
+  "WholeEqualsCustodied": true,
+  "DifferingTopLevelKeys": [],
+  "OutputSha256": "a747e8170516d0aa5d39cfd4b7981055f06b382f3ce278f8fa09919b5cf755a4"
+ },
+ "StatusAfterPreflight": "",
+ "AllChecks": true
+}
