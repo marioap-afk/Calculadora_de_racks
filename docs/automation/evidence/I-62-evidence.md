@@ -2971,3 +2971,26 @@ solo desde artefactos custodiados.
   - C-25a = **PASS**;
   - B1 (INVALID_TEST_ORACLE) y B2 (INVALID_LAUNCH, con su FAIL bruto 2/23) se conservan como evidencia.
   La clasificación la decide el Coordinator. No hay B4.
+
+## 93. Bloque A2-P2 de Codex (decisiones §58, punto 2): identidad estable, 2 sondas; regresión de shell de la CLI 0.162.0-alpha.2 (F6-OBS-03)
+
+- **Identidad.** Seis mediciones, antes y después de cada operación, todas iguales:
+  - binario `3553cd6e…`, el único `codex.exe`;
+  - app `26.1002.7124.0`;
+  - huella `6518EFAB…` con los 107 nombres saneados.
+  No se leyeron valores ni se calcularon digests por clave. La versión de la CLI es nueva: **`codex-cli 0.162.0-alpha.2`**; la medida antes era
+  0.160.1. Autenticación: «Logged in using ChatGPT». No hubo actualización durante el bloque, que sigue válido
+  ([result.json](I-62-F6/OD-2/R20261009T041427Z-a2p2-block/result.json)).
+- **Sonda 1, Controller** (`gpt-6-luna/high`, read-only, `D:\r62-fixture\A`). Completó 8/8 pasos con resultados correctos. Cada intento con el alias
+  `WindowsApps\pwsh.exe` falló («CreateProcessAsUserW … Acceso denegado»), y la sonda recurrió a `cmd.exe`.
+- **Sonda 2, Architect** (`gpt-6.1-sol/high`, read-only, `D:\r62-fixture\arch`). Completó 0/6 pasos: todos los comandos fallaron por la misma causa y
+  no recurrió a otra shell.
+- **En los dos clones,** HEAD y árbol limpio no cambiaron. Las sesiones de Codex registran `approval_policy` never y `sandbox_policy` read-only.
+- **F6-OBS-03 (propuesto).** La CLI nueva no usa el `pwsh` del runtime que la receta 16.4 pone primero en el `PATH`. Es un cambio de comportamiento
+  del runtime sucesor en una propiedad material: la ejecución de comandos bajo el sandbox de solo lectura. Con el criterio de A-3 (candidata), el
+  sucesor no sería compatible. Lo decide el Coordinator.
+- **Consecuencias.**
+  - Paquete **OD-2e** para el Owner: OD-2 exacta sobre `6518EFAB…`, como exige el punto 2 de §58
+    ([owner-decision-packets.md](I-62-prep/owner-decision-packets.md)). Aceptarla solo levanta P-01 por la huella.
+  - El trabajo ordinario de `codex-cli` necesita además la disposición del Coordinator sobre F6-OBS-03.
+  - El bloque consumió sus 2 sondas y no queda ninguna.

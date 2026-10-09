@@ -344,3 +344,22 @@ Paquete completo, con las cuatro respuestas literales y la sección «Lectura de
 [I-62-A3/od2-material-baseline-owner-packet.md](../I-62-A3/od2-material-baseline-owner-packet.md) (blob `b2c8ec8a`, publicado con la candidata
 A-3 en `91e29886`). Se pide dentro de la solicitud única de recuperación (§5). Es materia reservada al Owner: no se resuelve por disposición del
 Coordinator. Mientras no se decida, OD-2 sigue siendo el SHA-256 exacto y P-01 no cambia.
+
+## OD-2e (vigente) — Línea base exacta de `codex-cli` tras el bloque A2-P2 (2026-10-09; pendiente del Owner)
+
+Lo pide la disposición del Coordinator, decisiones §58, punto 2: «Tras las sondas, solicitar OD-2 exacta al Owner antes de trabajo ordinario de
+codex-cli». Sustituye a las solicitudes OD-2d, que quedaron obsoletas por las actualizaciones automáticas de la app. Medición:
+[result.json](../I-62-F6/OD-2/R20261009T041427Z-a2p2-block/result.json).
+
+| Punto | Contenido |
+|---|---|
+| Hechos medidos | **Binario** `3553cd6e…`, el único `codex.exe`, CLI `codex-cli 0.162.0-alpha.2`. **App** `26.1002.7124.0`. **Autenticación:** «Logged in using ChatGPT». **`config.toml`:** SHA-256 **`6518EFAB0BC0C0C2C2C5DCCD3A3D3646DFDC9F15B222FD6B744CBC84B857DB32`** con los mismos 107 nombres saneados. Es estable desde el 2026-10-07T20:05:22Z y no cambió en ninguna de las seis mediciones del bloque (antes y después de cada operación). No se leyeron valores ni se calcularon digests por clave |
+| Sondas (A2-P2; 2 de 2) | **Sonda 1:** Controller `gpt-6-luna/high`, read-only, en `D:\r62-fixture\A`. Completó 8/8 pasos con resultados correctos, pero solo recurriendo a `cmd.exe`. **Sonda 2:** Architect `gpt-6.1-sol/high`, read-only, en `D:\r62-fixture\arch`. Completó 0/6 pasos: ningún comando llegó a ejecutarse. En las dos sondas, los clones quedaron sin cambios |
+| Hallazgo (F6-OBS-03, propuesto) | La CLI 0.162.0-alpha.2 lanza los comandos con el alias de aplicación `WindowsApps\pwsh.exe`, aunque la receta 16.4 pone primero en el `PATH` el `pwsh` del runtime. Con `-s read-only`, `CreateProcessAsUserW` falla con «Acceso denegado». Con la CLI 0.160.1, la misma receta ejecutaba los comandos (OD-2d-PROBE). Es un cambio de comportamiento del runtime en una propiedad material. **La huella no cambió** |
+| Qué se autoriza | Fijar como línea base de la huella de `codex-cli` el SHA-256 exacto `6518EFAB…`, con sus nombres saneados, para el binario `3553cd6e…` |
+| Qué desbloquea | Solo levanta el STOP P-01 por la huella. **No hace operativo `codex-cli`:** con la regresión de shell, la celda del Architect no ejecuta comandos, y la del Controller depende de un rodeo que no está medido. El trabajo ordinario de `codex-cli` necesita además la disposición del Coordinator sobre F6-OBS-03 |
+| Qué NO autoriza | Aceptar otra huella o un binario distinto. Leer valores o cambiar `config.toml`, `trust_level` o el sandbox. Invocar `codex-cli` fuera de lo que disponga el Coordinator. Si la huella cambia, vuelve P-01 con una OD-2 nueva (OD-2-MAT = A) |
+| Consumo | La respuesta en sí no consume nada. El bloque ya consumió sus 2 sondas |
+| Recomendación de preparación (etiquetada; no es decisión) | **A.** La huella es exacta, lleva unas 32 h estable y no cambió durante el bloque. Aceptarla no amplía permisos. Su efecto operativo depende de la disposición sobre F6-OBS-03 |
+| Aprobar | `OD-2 = A (línea base 6518EFAB0BC0C0C2C2C5DCCD3A3D3646DFDC9F15B222FD6B744CBC84B857DB32; binario 3553cd6e7df5a093d8cb8301cd8088a57e0971aba71ddbe0e67f7f44a15cdf68)` |
+| Rechazar | `OD-2 = RECHAZAR`. `codex-cli` sigue en STOP P-01. FX-02 y FX-06 tendrían que resolverse con otros transportes o quedar UNVERIFIED con causa |

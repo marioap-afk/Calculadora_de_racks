@@ -1,0 +1,47 @@
+{
+ "steps": [
+  {
+   "id": 1,
+   "action": "git rev-parse HEAD",
+   "ok": false,
+   "output": "",
+   "error": "exec_command failed: CreateProcess { message: \"Rejected(\\\"Failed to create unified exec process: CreateProcessAsUserW failed: 5 (Acceso denegado.) | cwd=D:\\\\r62-fixture\\\\arch | cmd=C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\pwsh.exe -Command \\\"try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\\ngit rev-parse HEAD\\\" | env_u16_len=8803 | si_flags=256 | creation_flags=134743040\\\")\" }"
+  },
+  {
+   "id": 2,
+   "action": "git log --format=%h -n 3",
+   "ok": false,
+   "output": "",
+   "error": "exec_command failed: CreateProcess { message: \"Rejected(\\\"Failed to create unified exec process: CreateProcessAsUserW failed: 5 (Acceso denegado.) | cwd=D:\\\\\\\\r62-fixture\\\\\\\\arch | cmd=C:\\\\\\\\Users\\\\\\\\<usuario>\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Microsoft\\\\\\\\WindowsApps\\\\\\\\pwsh.exe -Command \\\\\\\"try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\\\\ngit log --format=%h -n 3\\\\\\\" | env_u16_len=8803 | si_flags=256 | creation_flags=134743040\\\")\" }"
+  },
+  {
+   "id": 3,
+   "action": "git diff --stat 930288c5 a9f6c929",
+   "ok": false,
+   "output": "",
+   "error": "exec_command failed: CreateProcess { message: \"Rejected(\\\"Failed to create unified exec process: CreateProcessAsUserW failed: 5 (Acceso denegado.) | cwd=D:\\\\\\\\r62-fixture\\\\\\\\arch | cmd=C:\\\\\\\\Users\\\\\\\\<usuario>\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Microsoft\\\\\\\\WindowsApps\\\\\\\\pwsh.exe -Command \\\\\\\"try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\\\\ngit diff --stat 930288c5 a9f6c929\\\\\\\" | env_u16_len=8803 | si_flags=256 | creation_flags=134743040\\\")\" }"
+  },
+  {
+   "id": 4,
+   "action": "git --no-optional-locks status --porcelain",
+   "ok": false,
+   "output": "",
+   "error": "exec_command failed: CreateProcess { message: \"Rejected(\\\"Failed to create unified exec process: CreateProcessAsUserW failed: 5 (Acceso denegado.) | cwd=D:\\\\\\\\r62-fixture\\\\\\\\arch | cmd=C:\\\\\\\\Users\\\\\\\\<usuario>\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Microsoft\\\\\\\\WindowsApps\\\\\\\\pwsh.exe -Command \\\\\\\"try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\\\\ngit --no-optional-locks status --porcelain\\\\\\\" | env_u16_len=8803 | si_flags=256 | creation_flags=134743040\\\")\" }"
+  },
+  {
+   "id": 5,
+   "action": "git hash-object README.md",
+   "ok": false,
+   "output": "",
+   "error": "exec_command failed: CreateProcess { message: \"Rejected(\\\"Failed to create unified exec process: CreateProcessAsUserW failed: 5 (Acceso denegado.) | cwd=D:\\\\\\\\r62-fixture\\\\\\\\arch | cmd=C:\\\\\\\\Users\\\\\\\\<usuario>\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Microsoft\\\\\\\\WindowsApps\\\\\\\\pwsh.exe -Command \\\\\\\"try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\\\\ngit hash-object README.md\\\\\\\" | env_u16_len=8803 | si_flags=256 | creation_flags=134743040\\\")\" }"
+  },
+  {
+   "id": 6,
+   "action": "Leer src/Fixture.Lib/Calculator.cs y registrar los nombres de sus métodos públicos",
+   "ok": false,
+   "output": "",
+   "error": "exec_command failed: CreateProcess { message: \"Rejected(\\\"Failed to create unified exec process: CreateProcessAsUserW failed: 5 (Acceso denegado.) | cwd=D:\\\\\\\\r62-fixture\\\\\\\\arch | cmd=C:\\\\\\\\Users\\\\\\\\<usuario>\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Microsoft\\\\\\\\WindowsApps\\\\\\\\pwsh.exe -Command \\\\\\\"try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\\\\nGet-Content -LiteralPath 'src/Fixture.Lib/Calculator.cs' -Raw\\\\\\\" | env_u16_len=8803 | si_flags=256 | creation_flags=134743040\\\")\" }"
+  }
+ ],
+ "head_sha": null
+}

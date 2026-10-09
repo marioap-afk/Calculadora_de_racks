@@ -1,0 +1,294 @@
+{
+ "RunId": "R20261009T041427Z-a2p2-block",
+ "Authority": "BLOQUE-CODEX = AUTORIZADO (A2-P2), decisiones §58, punto 2; BLOQUE-CODEX-CONSUMO = A del Owner (sin lectura de valores)",
+ "Identity": {
+  "BinaryHash": "3553cd6e7df5a093d8cb8301cd8088a57e0971aba71ddbe0e67f7f44a15cdf68",
+  "BinaryPath": "%LOCALAPPDATA%/OpenAI/Codex/bin/9691020b546a15b2/codex.exe",
+  "OnlyCodexExeUnderBin": true,
+  "AppVersion": "26.1002.7124.0",
+  "CliVersion": "codex-cli 0.162.0-alpha.2",
+  "AuthState": "Logged in using ChatGPT",
+  "PreviouslyMeasuredCli": "codex-cli 0.160.1 (binario 3b8f6e33…, OD-2d-PROBE, evidencia §70-§71)"
+ },
+ "Fingerprint": {
+  "Expected": "6518EFAB0BC0C0C2C2C5DCCD3A3D3646DFDC9F15B222FD6B744CBC84B857DB32",
+  "AllMeasurements": [
+   "pre-version utc=2026-10-09T04:14:27Z fp=6518EFAB0BC0C0C2C2C5DCCD3A3D3646DFDC9F15B222FD6B744CBC84B857DB32 structure=EQUAL bin=3553cd6e7df5a093d8cb8301cd8088a57e0971aba71ddbe0e67f7f44a15cdf68 bins=1 app=26.1002.7124.0",
+   "post-version utc=2026-10-09T04:14:37Z fp=6518EFAB0BC0C0C2C2C5DCCD3A3D3646DFDC9F15B222FD6B744CBC84B857DB32 structure=EQUAL bin=3553cd6e7df5a093d8cb8301cd8088a57e0971aba71ddbe0e67f7f44a15cdf68 bins=1 app=26.1002.7124.0",
+   "pre-probe1 utc=2026-10-09T04:14:49Z fp=6518EFAB0BC0C0C2C2C5DCCD3A3D3646DFDC9F15B222FD6B744CBC84B857DB32 structure=EQUAL bin=3553cd6e7df5a093d8cb8301cd8088a57e0971aba71ddbe0e67f7f44a15cdf68 bins=1 app=26.1002.7124.0",
+   "post-probe1 utc=2026-10-09T04:16:15Z fp=6518EFAB0BC0C0C2C2C5DCCD3A3D3646DFDC9F15B222FD6B744CBC84B857DB32 structure=EQUAL bin=3553cd6e7df5a093d8cb8301cd8088a57e0971aba71ddbe0e67f7f44a15cdf68 bins=1 app=26.1002.7124.0",
+   "pre-probe2 utc=2026-10-09T04:16:27Z fp=6518EFAB0BC0C0C2C2C5DCCD3A3D3646DFDC9F15B222FD6B744CBC84B857DB32 structure=EQUAL bin=3553cd6e7df5a093d8cb8301cd8088a57e0971aba71ddbe0e67f7f44a15cdf68 bins=1 app=26.1002.7124.0",
+   "post-probe2 utc=2026-10-09T04:17:24Z fp=6518EFAB0BC0C0C2C2C5DCCD3A3D3646DFDC9F15B222FD6B744CBC84B857DB32 structure=EQUAL bin=3553cd6e7df5a093d8cb8301cd8088a57e0971aba71ddbe0e67f7f44a15cdf68 bins=1 app=26.1002.7124.0"
+  ],
+  "Stable": true,
+  "Structure": "nombres saneados iguales a la línea base de 107 nombres en las seis mediciones",
+  "Values": "no leídos; sin digests por clave"
+ },
+ "Operations": [
+  "codex --version",
+  "codex login status",
+  "sonda 1 read-only en D:/r62-fixture/A (gpt-6-luna/high)",
+  "sonda 2 read-only en D:/r62-fixture/arch (gpt-6.1-sol/high)"
+ ],
+ "BlockCount": {
+  "Cap": 2,
+  "ModelProbesUsed": 2,
+  "Remaining": 0
+ },
+ "Probes": {
+  "1": {
+   "SessionLog": "~/.codex/sessions/2026/10/08/rollout-2026-10-08T22-14-52-01a11ede-fa47-7de0-9ff1-9c73ce3ee7ee.jsonl",
+   "SessionLogSha256": "0403b04e29c6731faabad8d3b35a46a4f382aac529c870864302ef930e154941",
+   "SessionMeta": {
+    "id": "01a11ede-fa47-7de0-9ff1-9c73ce3ee7ee",
+    "cli_version": "0.162.0-alpha.2",
+    "originator": "codex_exec",
+    "source": "exec",
+    "model_provider": "openai",
+    "cwd": "D:\\r62-fixture\\A"
+   },
+   "TurnContext": [
+    {
+     "model": "gpt-6-luna",
+     "effort": "high",
+     "approval_policy": "never",
+     "sandbox_policy": {
+      "type": "read-only"
+     },
+     "cwd": "D:\\r62-fixture\\A"
+    }
+   ],
+   "Usage": {
+    "input_tokens": 300581,
+    "cached_input_tokens": 261632,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 5049,
+    "reasoning_output_tokens": 3537,
+    "total_tokens": 305630
+   },
+   "LimitSignals": {
+    "rate_limit_reached_type": null,
+    "primary_used_percent": 3.0
+   },
+   "Exit": "exit=0",
+   "Start": "2026-10-09T04:14:50Z",
+   "End": "2026-10-09T04:15:59Z",
+   "Head": [
+    "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+    "ae25b596a11fe3508ac60a3ef7de5dc23df971ce"
+   ],
+   "StepsOk": "8/8",
+   "HeadSha": "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+   "Commands": {
+    "Total": 19,
+    "WindowsAppsPwshAliasRejected": 3,
+    "CmdExeFallback": 16
+   }
+  },
+  "2": {
+   "SessionLog": "~/.codex/sessions/2026/10/08/rollout-2026-10-08T22-16-30-01a11ee0-79a0-72a1-83c6-132d55fd4841.jsonl",
+   "SessionLogSha256": "9b930a01ddfaeb82eb1837193a27b8c7eb42525fadd258bb6e7f1c67d6556a46",
+   "SessionMeta": {
+    "id": "01a11ee0-79a0-72a1-83c6-132d55fd4841",
+    "cli_version": "0.162.0-alpha.2",
+    "originator": "codex_exec",
+    "source": "exec",
+    "model_provider": "openai",
+    "cwd": "D:\\r62-fixture\\arch"
+   },
+   "TurnContext": [
+    {
+     "model": "gpt-6.1-sol",
+     "effort": "high",
+     "approval_policy": "never",
+     "sandbox_policy": {
+      "type": "read-only"
+     },
+     "cwd": "D:\\r62-fixture\\arch"
+    }
+   ],
+   "Usage": {
+    "input_tokens": 54738,
+    "cached_input_tokens": 35328,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 1539,
+    "reasoning_output_tokens": 186,
+    "total_tokens": 56277
+   },
+   "LimitSignals": {
+    "rate_limit_reached_type": null,
+    "primary_used_percent": 3.0
+   },
+   "Exit": "exit=0",
+   "Start": "2026-10-09T04:16:29Z",
+   "End": "2026-10-09T04:17:04Z",
+   "Head": [
+    "fbe25347799e5b801ef708454212335537448bd1",
+    "fbe25347799e5b801ef708454212335537448bd1"
+   ],
+   "StepsOk": "0/6",
+   "HeadSha": null,
+   "Commands": {
+    "Total": 6,
+    "WindowsAppsPwshAliasRejected": 6,
+    "CmdExeFallback": 0
+   }
+  }
+ },
+ "Finding": {
+  "Id": "F6-OBS-03 (propuesto)",
+  "Fact": "la CLI 0.162.0-alpha.2 lanza los comandos con el alias de aplicación %USERPROFILE%/AppData/Local/Microsoft/WindowsApps/pwsh.exe, aunque el pwsh del runtime va primero en el PATH (receta 16.4); con -s read-only, CreateProcessAsUserW falla con «Acceso denegado» (5). Con 0.160.1 la misma receta ejecutaba los comandos (OD-2d-PROBE, 14/14 pasos)",
+  "Probe1": "gpt-6-luna recurrió a cmd.exe y completó 8/8 pasos con resultados correctos",
+  "Probe2": "gpt-6.1-sol no recurrió a otra shell: 0/6 pasos, head_sha null",
+  "Classification": "cambio de comportamiento del runtime sucesor en una propiedad material (ejecución de comandos bajo el sandbox de solo lectura); con el criterio de A-3 (candidata, no aplicada), el sucesor no sería compatible: la celda del Architect quedaría BELOW_REQUIRED y la del Controller depende de un rodeo no medido",
+  "NotChanged": "huella, estructura, binario y versión de la app sin cambio en todo el bloque; ningún cambio en los clones (HEAD y árbol limpio antes y después); ninguna escritura en config.toml"
+ },
+ "Next": "OD-2 exacta del Owner sobre 6518EFAB… (decisiones §58, punto 2) y disposición del Coordinator sobre la regresión de shell antes de cualquier trabajo ordinario de codex-cli",
+ "Files": {
+  "login-status.txt": {
+   "RawSha256": "16118df3eb3595e44a4721878cef0f79910e6564e10ff0e78e451e7c4e478947",
+   "SanitizedSha256": "16118df3eb3595e44a4721878cef0f79910e6564e10ff0e78e451e7c4e478947"
+  },
+  "measurements.log": {
+   "RawSha256": "1cd0ec7c956fd567090e3a779d7a920c49467571c2e0f0cd3b2b244d0447c075",
+   "SanitizedSha256": "1cd0ec7c956fd567090e3a779d7a920c49467571c2e0f0cd3b2b244d0447c075"
+  },
+  "post-probe1-cfg.json": {
+   "RawSha256": "f9a3acb2045fb0d4c1c0e56469ecd4074b36a282067c5491ca1964ee4c3fe8cd",
+   "SanitizedSha256": "f9d0f363cf97bccad85330ddc834e0831432675a45eb5964fd94c6332dc7a0a4"
+  },
+  "post-probe2-cfg.json": {
+   "RawSha256": "1c2b5efdf90e69d662caf0d4ecbe78aabe9e171c003eb056267129626b1e0428",
+   "SanitizedSha256": "2bd43cac319ea8166893aff702b2f4aa7e76c54fabffacbc700fb6646c5d97cc"
+  },
+  "post-version-cfg.json": {
+   "RawSha256": "fdc9365741e6564f937bc5aaa14cd62d0cefbcef5a7e9a3beeb4c91b97fc45ce",
+   "SanitizedSha256": "1497111d9b4cdd90560920c59ebfd1ae660fd04c986ee4b4748f1c7290574fd5"
+  },
+  "pre-probe1-cfg.json": {
+   "RawSha256": "5de266c2ab76080e511e968eed40cc9938f2514929015520ad800fb5e7ed3f8d",
+   "SanitizedSha256": "7125f3d36e30d508e3b3fd11c85496a34d6483e6852d6beb06b88f0bfc83f355"
+  },
+  "pre-probe2-cfg.json": {
+   "RawSha256": "1841dccc69467783bd8238dd94ccc8a15e096f409c3371d0229a13677ef1266b",
+   "SanitizedSha256": "c3f36bca1059a83f58d9e70bcea37a7e7c34a35090b93baf4c96d7006dfa2041"
+  },
+  "pre-version-cfg.json": {
+   "RawSha256": "9d8033b8d861165238495fcb696bb8a45661edd8fe7d0b79bba64371d40f87a6",
+   "SanitizedSha256": "7a76a4738bcb94f9b4f5cf63f75ae0b5256b4d777e03c2a64db5261a79807dd6"
+  },
+  "probe1-end.txt": {
+   "RawSha256": "1132d94a3251eaa9327fabc249739b8388ad439d21d7ed475268d842f0608716",
+   "SanitizedSha256": "1132d94a3251eaa9327fabc249739b8388ad439d21d7ed475268d842f0608716"
+  },
+  "probe1-events.jsonl": {
+   "RawSha256": "c549dbe9d5bd22ce19f8da24f26b6ccd678045570d169ca75627cbbbfb4d72c8",
+   "SanitizedSha256": "cec2221c6eae600678a4143cee42dd0f242be8bcea6702c10c5787919f912c52"
+  },
+  "probe1-exit.txt": {
+   "RawSha256": "19eaf43821a7660ec323a87c8457bf74823beb296c39f5e01aa8a683aa50f061",
+   "SanitizedSha256": "19eaf43821a7660ec323a87c8457bf74823beb296c39f5e01aa8a683aa50f061"
+  },
+  "probe1-head-after.txt": {
+   "RawSha256": "9d3a8478722bca6a9cfddfe4b0469fb6e8dde4aa115bda3682537506f019c5a9",
+   "SanitizedSha256": "9d3a8478722bca6a9cfddfe4b0469fb6e8dde4aa115bda3682537506f019c5a9"
+  },
+  "probe1-head-before.txt": {
+   "RawSha256": "9d3a8478722bca6a9cfddfe4b0469fb6e8dde4aa115bda3682537506f019c5a9",
+   "SanitizedSha256": "9d3a8478722bca6a9cfddfe4b0469fb6e8dde4aa115bda3682537506f019c5a9"
+  },
+  "probe1-last.json": {
+   "RawSha256": "85e02d519e1500dc41c188bbe0d9dc436e834d19eed36bffcc0f2ffbf8cedae2",
+   "SanitizedSha256": "861f02a27570dfd4c7e1b674cb71adc5be9ded3d15d80250b15ddff06e14f196"
+  },
+  "probe1-new-sessions.txt": {
+   "RawSha256": "8bc4523a0b11d564eaa5bc1025c2f21a174ed73b75ff386ea764cd9cbb78a003",
+   "SanitizedSha256": "8bc4523a0b11d564eaa5bc1025c2f21a174ed73b75ff386ea764cd9cbb78a003"
+  },
+  "probe1-sessions-after.txt": {
+   "RawSha256": "8bc4523a0b11d564eaa5bc1025c2f21a174ed73b75ff386ea764cd9cbb78a003",
+   "SanitizedSha256": "8bc4523a0b11d564eaa5bc1025c2f21a174ed73b75ff386ea764cd9cbb78a003"
+  },
+  "probe1-sessions-before.txt": {
+   "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "SanitizedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "probe1-start.txt": {
+   "RawSha256": "283fda8ec3ba7b9d493dded6ef7c8821ab70ab3c586c83853eecab041a20eda2",
+   "SanitizedSha256": "283fda8ec3ba7b9d493dded6ef7c8821ab70ab3c586c83853eecab041a20eda2"
+  },
+  "probe1-status-after.txt": {
+   "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "SanitizedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "probe1-status-before.txt": {
+   "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "SanitizedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "probe1-stderr.txt": {
+   "RawSha256": "eacbb48b0ea601bb54e8250fe9335bb52cd5edd76d52219a54910a77cdf734f0",
+   "SanitizedSha256": "cab7c421757c79f5ede2f138384636d4537072152b6060b6e80c48c0da4a0728"
+  },
+  "probe2-end.txt": {
+   "RawSha256": "30fdf1d573b756443130d99964bf23808106050718484a8b9ee31d96b7970c37",
+   "SanitizedSha256": "30fdf1d573b756443130d99964bf23808106050718484a8b9ee31d96b7970c37"
+  },
+  "probe2-events.jsonl": {
+   "RawSha256": "91bff145732a6bfb64dd4fbcc196ed1de309620eb7421ad4f6d287a3f4583b5a",
+   "SanitizedSha256": "027c9eb1c75fb3adef65c24ed0042ec44eeec190e4f7890b1355e534154651e9"
+  },
+  "probe2-exit.txt": {
+   "RawSha256": "19eaf43821a7660ec323a87c8457bf74823beb296c39f5e01aa8a683aa50f061",
+   "SanitizedSha256": "19eaf43821a7660ec323a87c8457bf74823beb296c39f5e01aa8a683aa50f061"
+  },
+  "probe2-head-after.txt": {
+   "RawSha256": "3337370708373edafb235f8d2ac88b9bcb63da92c747414105cc64e61b24bbf3",
+   "SanitizedSha256": "3337370708373edafb235f8d2ac88b9bcb63da92c747414105cc64e61b24bbf3"
+  },
+  "probe2-head-before.txt": {
+   "RawSha256": "3337370708373edafb235f8d2ac88b9bcb63da92c747414105cc64e61b24bbf3",
+   "SanitizedSha256": "3337370708373edafb235f8d2ac88b9bcb63da92c747414105cc64e61b24bbf3"
+  },
+  "probe2-last.json": {
+   "RawSha256": "8d74f2fac538cb4e093c71cfaa27f8d9f01cc3a157d53b8712392f2a980f847d",
+   "SanitizedSha256": "5f4c4c5bf6d7f785c988e4a1b8a0f9aeb39bab0228d93456e9506e48893f0675"
+  },
+  "probe2-new-sessions.txt": {
+   "RawSha256": "dd166b6290bc6ae21f941c8dade51100001b0e57cbd91f7e1771403b15bd424b",
+   "SanitizedSha256": "dd166b6290bc6ae21f941c8dade51100001b0e57cbd91f7e1771403b15bd424b"
+  },
+  "probe2-sessions-after.txt": {
+   "RawSha256": "9301ff93bd8d8a322b20ec36e93bac17975a8c5eae052393c5c019ef4138a395",
+   "SanitizedSha256": "9301ff93bd8d8a322b20ec36e93bac17975a8c5eae052393c5c019ef4138a395"
+  },
+  "probe2-sessions-before.txt": {
+   "RawSha256": "8bc4523a0b11d564eaa5bc1025c2f21a174ed73b75ff386ea764cd9cbb78a003",
+   "SanitizedSha256": "8bc4523a0b11d564eaa5bc1025c2f21a174ed73b75ff386ea764cd9cbb78a003"
+  },
+  "probe2-start.txt": {
+   "RawSha256": "f75d6a73a187c35b25765af1ba9b1b53c23801b41456686293f2f3319284cbe5",
+   "SanitizedSha256": "f75d6a73a187c35b25765af1ba9b1b53c23801b41456686293f2f3319284cbe5"
+  },
+  "probe2-status-after.txt": {
+   "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "SanitizedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "probe2-status-before.txt": {
+   "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "SanitizedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "probe2-stderr.txt": {
+   "RawSha256": "0617c331d0fddbc7e1b72d8a8216574fb5137ea105efbe52e06554136684dac1",
+   "SanitizedSha256": "84bd54f35612260f5f58cd6d905f4b6de80485cee4ff0dc771ad31e3066b425e"
+  },
+  "version-utc.txt": {
+   "RawSha256": "fccf75f3d8da9c616863198f3acfda941e90f61091799343fd1806b7a4c088cf",
+   "SanitizedSha256": "fccf75f3d8da9c616863198f3acfda941e90f61091799343fd1806b7a4c088cf"
+  },
+  "version.txt": {
+   "RawSha256": "58b398aea3eb8f00e9aebdff1ca63c9d55eb686486f126c03816f5553ac790f1",
+   "SanitizedSha256": "58b398aea3eb8f00e9aebdff1ca63c9d55eb686486f126c03816f5553ac790f1"
+  }
+ },
+ "Sanitization": "rutas del perfil de usuario sustituidas por %USERPROFILE% en todas las copias (valor a valor en JSON); los archivos crudos quedan solo en el scratchpad de la sesión"
+}

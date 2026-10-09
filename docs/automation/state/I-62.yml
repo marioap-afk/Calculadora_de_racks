@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §58; evidencia §90) — B3 de FX-04a autorizada (la abre el Owner en D:/r62-fixture/B3 con B3-kickoff.md); después, bloque de Codex (≤ 2 sondas read-only, par 3553cd6e…/26.1002.7124.0, sin lectura de valores) y OD-2 exacta; en paralelo, revisión formal de A-3 (blob ea6721f7) por claude-cli; OD-2-MAT = A; FX-04a OPEN/UNVERIFIED; codex-cli en STOP P-01; sin F6 GATE PASS"
+  next_action: "F6 (decisiones §58; evidencia §91-§93) — FX-04a B3 PASS 23/23 (clasificación del Coordinator pendiente); bloque Codex hecho: identidad estable, regresión de shell de la CLI 0.162.0-alpha.2 (F6-OBS-03); OD-2e (huella exacta 6518EFAB…) pendiente del Owner; revisión formal de A-3 por claude-cli en preparación; codex-cli en STOP P-01; sin F6 GATE PASS"
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual
