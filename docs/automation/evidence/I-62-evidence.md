@@ -2958,3 +2958,16 @@ solo desde artefactos custodiados.
 - **Respuesta registrada antes de comparar:** [B3-response.json](I-62-F6/FX-04a/R20261008T2200Z-fx04a-b3/B3-response.json), **SHA-256 canónico
   `4a99bbc3d8444b7d6b6478397968cca8e3efd3afed110fdd53e6d29b9ac33368`** (el único bloque JSON del mensaje final), con el registro de la corrida en
   [b3-run.json](I-62-F6/FX-04a/R20261008T2200Z-fx04a-b3/b3-run.json). El oráculo v2 **no** se ha cargado todavía.
+
+## 92. FX-04a B3: comparación mecánica con el contrato v2 = PASS 23/23; propuesta de la supervisión
+
+- **Orden respetado:** respuesta guardada fuera del clon → SHA canónico `4a99bbc3…` durable en `68ce619a` → solo entonces se cargó el oráculo v2
+  (`5e7a78d3…`, archivo `ae384682…`), que es el mismo publicado en `707b4daa` antes de B2.
+- **Resultado mecánico** ([comparison-v2.json](I-62-F6/FX-04a/R20261008T2200Z-fx04a-b3/comparison-v2.json)): **PASS, 23/23**, sin diferencias.
+  Se usó la misma función `compare2` de `kits/FX-04a/fx04a_real.py` que con B2, sin normalización posterior.
+- **Propuesta de la supervisión** ([análisis](I-62-F6/FX-04a/R20261008T2200Z-fx04a-b3/comparison-v2-analysis.json)):
+  - B3 = corrida válida;
+  - FX-04a = **PASS**;
+  - C-25a = **PASS**;
+  - B1 (INVALID_TEST_ORACLE) y B2 (INVALID_LAUNCH, con su FAIL bruto 2/23) se conservan como evidencia.
+  La clasificación la decide el Coordinator. No hay B4.

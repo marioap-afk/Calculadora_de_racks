@@ -1,0 +1,41 @@
+{
+  "Order": [
+    "respuesta guardada fuera del clon",
+    "SHA-256 canónico 4a99bbc3… durable en 68ce619a (push a origin)",
+    "solo entonces: oráculo v2 cargado y comparado"
+  ],
+  "OracleV2": {
+    "CanonicalSha256": "5e7a78d311735e4299925a9d97ac4760fe3595f1decb4d97440e17c947b64a03",
+    "FileSha256": "ae3846828d03b134985e8a9326d36b937232aadcdf62714b5221bfe7a6fd5cb1",
+    "MatchesPublishedIn707b4daa": true,
+    "ComputedFrom": "QH2 cabed547 (antes de B2)"
+  },
+  "Response": {
+    "CanonicalSha256": "4a99bbc3d8444b7d6b6478397968cca8e3efd3afed110fdd53e6d29b9ac33368",
+    "DurableCommit": "68ce619a"
+  },
+  "RawResult": {
+    "Contract": "comparison-contract-v2",
+    "Fields": 23,
+    "Equal": 23,
+    "Diffs": [],
+    "Comparison": "PASS",
+    "Tool": "kits/FX-04a/fx04a_real.py compare2 (la misma función que B2)"
+  },
+  "NoPostHocNormalization": "ninguna: comparación mecánica directa; sin mapeo, sin tercer oráculo",
+  "Preconditions": {
+    "Kickoff": "B3-kickoff.md completo (233b0582…), comprobado en el primer mensaje",
+    "Isolation": "D.6 no UNVERIFIED (b3-run.json)",
+    "Termination": "acreditada (dos observaciones)",
+    "Preflight": "P20261009T035955Z-5d9d MATCH / ELIGIBLE",
+    "Source": "origin = instantánea congelada de QH2 (refs 275d977b…), sin cambios antes y después",
+    "Budget": "tercera y última sesión de la fila Principal B (A2-P1); sin B4"
+  },
+  "SupervisionProposal": {
+    "B3": "corrida válida (VALID_LAUNCH)",
+    "FX-04a": "PASS (23/23 bajo comparison-contract-v2)",
+    "C-25a": "PASS",
+    "History": "B1 INVALID_TEST_ORACLE (§53) y B2 INVALID_LAUNCH (§55) se conservan como evidencia; el FAIL bruto 2/23 de B2 no se reescribe",
+    "Classification": "la decide el Coordinator"
+  }
+}
