@@ -3335,3 +3335,19 @@ solo desde artefactos custodiados.
   ([a4-guards-result-c3.json](I-62-A4/a4-guards-result-c3.json)). El `self-test` detecta 112/112 mutaciones. G5 confirma que el delta es un añadido
   puro, también sin A4-5, sin A4-6 o sin las dos; seis cláusulas de alcance; «de 2 a 3» = el tope congelado + 1.
 - **Siguiente:** kit de la re-revisión formal por `claude-cli` sobre `5e2ba68e` y lanzamiento automático.
+
+## 113. A-4: kit de la segunda re-revisión por `claude-cli` custodiado antes del lanzamiento (R20261009T195811Z-2df6; decisiones §63, punto 6)
+
+- **Kit:** [R20261009T195811Z-2df6](I-62-architect-A-4/R20261009T195811Z-2df6/README.md). Contiene:
+  - objeto: A-4 `5e2ba68e` (corrección 3, `c2dbc225`; guardas CORRECTION3 PASS), recibo `24284a4a`; los objetos anteriores `0d954376` y
+    `7d863219` y `delta.diff` van como premisa;
+  - cierre de 32 archivos canónicos y 7 del run;
+  - prompt `e7a807c0…`, que exige la disposición de A62-A4-02 (y la confirmación de A62-A4-01), O9 y O10 y ocho temas: opción B y la frase de la
+    regla 5; I-S18, B.5, §14.3 y F4 literales; A4-6 (+1 Principal solo para A2, R contada, F6-OBS-01, ningún otro tope, P-07, consumo del Owner,
+    materialidad); H-1..H-3; A4-1 y A4-2 sin cambio; materialidad; separabilidad de A4-5 y de A4-6 (con veredictos propios); las disposiciones de
+    FX-02 solo como contexto;
+  - auditor v5.1-a4r2, con `selftest` 127/127 y 140 mutantes eliminados;
+  - compuerta MEASURED;
+  - ensayo en seco sin bloqueos; manifiesto `d684e168…`.
+- **Transporte:** `claude-cli` 2.1.293, espera de 120 s tras `auth status`, tope de 3 600 s, sin reintento. Consumo cubierto por CLAUDE-CLI-I62 = A.
+- **Estado:** custodiado y NO lanzado. A-4 no se modifica mientras dure la re-revisión.

@@ -1,0 +1,59 @@
+{
+ "Transcript": "%USERPROFILE%/.claude/projects/D--Documentos-Codex-Calculadora-de-racks/e5124bf0-ed19-48a1-97ba-574baf9d33a2/subagents/agent-accda92614b26d553.jsonl",
+ "TranscriptSha256": "cda4fb7ba92a88e290b8c0924f394499ed8bdd71b4de4316fd9cef7f5b91eaf5",
+ "Clone": "D:\\r62-arch-a4r2",
+ "Filter": null,
+ "Command": "python read_fidelity.py <transcript> D:\\r62-arch-a4r2 24284a4a86f3f4b9552f8de3905f08fa0c81e84a <output json>",
+ "Rev": "24284a4a86f3f4b9552f8de3905f08fa0c81e84a",
+ "Calls": [
+  {
+   "Path": "docs/initiatives/I-62-architect-package-A-4.md",
+   "Offset": null,
+   "Limit": null,
+   "Lines": 212,
+   "Faithful": 212,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-4.md",
+   "Offset": 1,
+   "Limit": 180,
+   "Lines": 180,
+   "Faithful": 180,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-4.md",
+   "Offset": 181,
+   "Limit": 170,
+   "Lines": 170,
+   "Faithful": 170,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-4.md",
+   "Offset": 351,
+   "Limit": 166,
+   "Lines": 166,
+   "Faithful": 166,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  }
+ ],
+ "Summary": {
+  "Calls": 4,
+  "Faithful": 4,
+  "Degraded": 0,
+  "DeliveredLinesByPath": {
+   "docs/initiatives/I-62-A-4.md": 516,
+   "docs/initiatives/I-62-architect-package-A-4.md": 212
+  }
+ }
+}

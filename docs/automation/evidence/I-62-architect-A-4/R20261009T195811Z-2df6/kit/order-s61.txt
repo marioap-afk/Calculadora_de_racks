@@ -1,0 +1,57 @@
+I-62 — COORDINATOR DISPOSITION
+A-3 AGREED / A-4 REVIEW / FX-02 PRIORITY
+1. A-3
+Review R20261009T040327Z-58a1 = ACCREDITED.
+Architect = AGREED.
+Coordinator = AGREED.
+Objeto exacto: I-62-A-3.md, blob ea6721f78cb63fbc4f9d99563f3262eb36a32c5d.
+A62-A3-O1..O4 = ACCEPTED NON-BLOCKING OPTIONAL.
+Registrar el acuerdo append-only, conservar el blob y no aplicar A-3 a producción.
+O4 queda como deuda concreta de cobertura de C-43: no declarar PASS de ese caso hasta que el oráculo y el texto coincidan. No retrasar FX-02 por esta deuda si no afecta su ejecución.
+2. A-4
+Autorizada su preparación para revisión formal independiente.
+Objeto candidato: I-62-A-4.md, blob 27ffa26b35ecacfae083bf9d360fe8460b8d5564.
+Completar guardas mecánicas, comparación del delta exacto con V14 y A-2, y comprobar que las cinco reglas propuestas no alteran superficies fuera de alcance.
+Preparar el kit, el cierre de insumos, el auditor y la independencia de Actor/Session/Context.
+Lanzar automáticamente por claude-cli una revisión formal independiente cuando las guardas estén conformes.
+La revisión debe examinar expresamente H-1, H-2 y H-3, la ruta alternativa cmd.exe, y la sustitución del Architect de FX-02 por claude-cli.
+No declarar A-4 AGREED sin revisión acreditada y veredicto del Coordinator.
+3. FX-02
+Mientras se revisa A-4, finalizar toda preparación independiente que realmente reduzca el camino crítico.
+Usar la solicitud FX-02-unblock-request-2026-10-09.md como registro de propuestas, no como autorizaciones ya concedidas.
+Separar sus decisiones en:
+
+* decisiones ordinarias de procedimiento que ya tienen autoridad suficiente;
+* cuestiones cubiertas por decisiones anteriores;
+* cambios materiales que dependen de A-4;
+* autorizaciones exclusivamente Owner;
+* cuestiones que no bloquean el camino crítico.
+
+No aceptar en bloque una propuesta que cambie autoridad, independencia o presupuestos sin su comprobación.
+No lanzar A2 antes de cumplir sus precondiciones.
+4. F6-OBS-03
+Mantener la regresión de shell como limitación material medida.
+No considerar que el 8/8 anterior acredita las operaciones de VERIFY.
+No gastar la sonda adicional de Controller antes del acuerdo de A-4 y de A4-SONDA-CONSUMO = A.
+No reemplazar silenciosamente el Architect de la Topología A.
+5. Owner
+Concentrar las dos autorizaciones de consumo propuestas en una única solicitud:
+A4-SONDA-CONSUMO
+A4-CLAUDE-FX02-CONSUMO
+No inferir su aprobación por silencio.
+No pedir nuevas aperturas de sesiones ni mensajes manuales salvo cuando lo exija el contrato vigente.
+6. Orden de ejecución
+A-3 acuerdo documental → A-4 revisión acreditada → decisión A-4 → sonda Controller autorizada → lanzamiento A2 → FX-02/C-24 → FX-06/C-39.
+Preparar F7 en paralelo sin declarar gates anticipados.
+Mantener I-61 vigente e I-64 bloqueada hasta la autoridad de integración correspondiente.
+7. Informe
+Reportar solo:
+
+* A-3 acuerdo registrado y CI;
+* resultado de las guardas de A-4;
+* resultado de la revisión de A-4;
+* decisiones pendientes que realmente bloquean FX-02;
+* autorizaciones exactas requeridas al Owner;
+* próxima acción ejecutable.
+
+No abrir otra iniciativa ni otro rediseño de arquitectura.

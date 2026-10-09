@@ -1,0 +1,55 @@
+I-62 — COORDINATOR DISPOSITION
+A-4 CORRECTION / FX-02 CRITICAL PATH
+1. Primera revisión de A-4
+Formal accreditation = NOT_ACCREDITED.
+Conservar literalmente el veredicto CHANGES REQUIRED y los hallazgos históricos. No corregir retroactivamente el output ni el auditor.
+A62-A4-01 = ACCEPTED REQUIRED.
+Aplicar las cuatro correcciones propuestas al candidato:
+
+* M-02 y M-05 = YES;
+* §3.7 declara una enmienda semántica limitada a FX-02;
+* A4-4 identifica los aceptantes y el predicado mecánico;
+* la relación con los validadores F4 queda expresamente delimitada.
+
+O1..O8 = ACCEPTED NON-BLOCKING, incorporar solo las precisiones ya caracterizadas sin ampliar la enmienda.
+2. Re-revisión
+Publicar la corrección preparada, conservando trazabilidad con el blob anterior.
+Ejecutar todas las guardas sobre el commit exacto.
+Si PASS, custodiar el nuevo paquete y lanzar automáticamente una re-revisión independiente por claude-cli.
+La re-revisión debe examinar especialmente:
+
+* H-1 y ausencia de aceptación fabricada;
+* H-2 y verificación de independencia real;
+* H-3 y presupuestos sin reinicios;
+* F6-OBS-03 y la ruta cmd.exe;
+* Architect alternativo por claude-cli;
+* materialidad M-02/M-05;
+* U-09(e);
+* separabilidad de A4-5.
+
+No declarar AGREED hasta revisión formal acreditada y decisión posterior del Coordinator.
+3. FX-02: decisiones independientes
+Registrar las disposiciones ordinarias indicadas por el Coordinator sobre U-06(a)(b), U-08, U-09(a), U-10(b), U-15, U-16(2)(4), U-17, U-18(b), U-19, U-20, U-23(a) y U-24.
+U-07: autorizar la adición al fixture de TRX y su artefacto CI, con evidencia de que no sustituye la autoridad del workflow.
+U-16(1): proceder únicamente tras comprobar las mutaciones exactas selladas.
+U-14: PENDING. Presentar conciliación de sesiones físicas, su clasificación y el presupuesto de la ronda A. No excluir R del tope simplemente por haber sido una reparación.
+U-09(e): exigir resolución acreditada de A1'-A8', sin decisión ficticia ni adelanto de resultados desconocidos. Revisar la solución con A4-3.
+No considerar resueltas por estas decisiones las dependencias materiales de A-4.
+4. Trabajo en paralelo
+Mientras el Architect revisa A-4:
+
+* completar la preparación legítima de FX-02;
+* publicar la evidencia TRX del fixture si están satisfechas sus condiciones;
+* verificar los directorios y contratos;
+* terminar la conciliación U-14;
+* preparar la medición A4-1 sin ejecutarla;
+* preparar F7 sin declarar gates.
+
+No modificar el objeto que esté examinando el Architect.
+5. Owner
+No solicitar autorizaciones adicionales hasta tener un objeto A-4 revisado y acreditar sus precondiciones.
+Después presentar juntas A4-SONDA-CONSUMO y A4-CLAUDE-FX02-CONSUMO, sin inferir aceptación por silencio.
+6. Prioridad
+A-4 revisión → acuerdo → sonda Controller → apertura de A2 → FX-02/C-24 → FX-06/C-39.
+I-61 sigue vigente e I-64 permanece bloqueada hasta que corresponda.
+Informar solamente avances verificables, nuevas dependencias y decisiones imprescindibles.

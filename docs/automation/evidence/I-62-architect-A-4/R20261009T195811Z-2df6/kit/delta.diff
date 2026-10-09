@@ -1,0 +1,370 @@
+diff --git a/docs/initiatives/I-62-A-4.md b/docs/initiatives/I-62-A-4.md
+index 0d954376..5e2ba68e 100644
+--- a/docs/initiatives/I-62-A-4.md
++++ b/docs/initiatives/I-62-A-4.md
+@@ -22,8 +22,9 @@ Applies-to: I-62
+ Classification: MATERIAL POST-FREEZE AMENDMENT, candidata. A4-1 y A4-2 (decisiones §60, punto 2) cambian en la hoja congelada D.3 la ruta del
+ Controller y el adapter del Architect; A4-3 y A4-4 cambian cuándo y con qué base se aceptan los bindings de FX-02 (aceptación preautorizada antes
+ del Q0; independencia decidida en la Entrada); A4-5, separable, da tope a una corrección. A4-4 es además una enmienda de semántica, acotada a FX-02
+-en F6, de B6, del criterio INDEPENDENCE de la materialización y de la condición de B.5 «con **todos** en SATISFIED» (A62-A4-01). M-02, M-03,
+-M-04 y M-05 sí; M-01 y M-06..M-08 no (§5)
++en F6, de B6 y del criterio INDEPENDENCE de la aceptación individual (AP 16.20-16.21), sin tocar B.5, RAE §14.3, I-S18 ni los validadores de F4
++(A62-A4-01; A62-A4-02, opción B). A4-6, separable, sube en una sesión, solo para el titular A2, el presupuesto de Principal de la ronda A (U-14,
++decisiones §63, punto 2). M-02, M-03, M-04 y M-05 sí; M-01 y M-06..M-08 no (§5)
+ 
+ Authority:
+ Architect independiente + Coordinator (LIFECYCLE §6; decisiones §60, punto 2)
+@@ -32,19 +33,23 @@ Origin:
+ decisiones §60, punto 2 (DEC L1173); F6-OBS-03 medido en el bloque A2-P2 (evidencia §93); vía V1 de
+ docs/automation/evidence/I-62-F6/FX-02/F6-OBS-03-cmd-route-evaluation.md (blob 83a960ca…; evidencia §95); huecos H-1..H-3 de la solicitud única
+ de desbloqueo de FX-02 (§2.1; filas U-09 b, U-10 a, U-23 b y U-25 a; preparación de la supervisión, no publicada en 524b293e). A4-1 y A4-2
+-preparadas sobre c8d69fcb; A4-3..A4-5 y todos los literales, verificados en 524b293e
++preparadas sobre c8d69fcb; A4-3..A4-5 y todos los literales, verificados en 524b293e. A4-6 (decisiones §63, punto 2; U-14) y los literales
++que se añaden en la corrección 3, verificados en d5b454fd
+ 
+ Architect review:
+ revisión 1 (R20261009T122416Z-bce3, sobre 7d863219…): CHANGES REQUIRED, con A62-A4-01 REQUIRED y A62-A4-O1..O8 OPTIONAL; A4-5 AGREED por
+-separado; auditor NOT_ACCREDITED (evidencia §104). Esta versión los corrige (§10) y necesita una re-revisión formal acreditada: REQUIRED — PENDING
+-(paquete docs/initiatives/I-62-architect-package-A-4.md; transporte preferido `claude-cli`, decisiones §57, punto 3)
++separado; auditor NOT_ACCREDITED (evidencia §104). Revisión 2 (R20261009T150948Z-fdc2, sobre 0d954376…): CHANGES REQUIRED, con A62-A4-01
++CLOSED, A62-A4-02 REQUIRED y A62-A4-O9..O10 OPTIONAL; A4-5 AGREED; auditor ACCREDITED. Esta versión corrige A62-A4-02 (opción B), aplica O9 y
++O10 y añade A4-6 (§10); necesita una re-revisión formal acreditada: REQUIRED — PENDING (paquete docs/initiatives/I-62-architect-package-A-4.md;
++transporte preferido `claude-cli`, decisiones §57, punto 3)
+ 
+ Coordinator verdict:
+-PENDING
++PENDING (decisiones §62 y §63: A62-A4-01 ACCEPTED REQUIRED y después CLOSED; revisión 2 ACCREDITED; A62-A4-02 ACCEPTED REQUIRED con la
++opción B; A62-A4-O9 y O10 no bloqueantes; A4-6 por U-14)
+ 
+ Owner decision:
+-NOT REQUIRED para el acuerdo, salvo que la revisión lo identifique (Q-A4-09). La aplicación exige dos autorizaciones de consumo del Owner (§7);
+-A4-3..A4-5 no añaden ninguna
++NOT REQUIRED para el acuerdo, salvo que la revisión lo identifique (Q-A4-09, Q-A4-21). La aplicación exige tres autorizaciones de consumo del
++Owner (§7): una para A4-1, una para A4-2 y una para A4-6; A4-3..A4-5 no añaden ninguna
+ 
+ State:
+ PROPUESTA. No aplicada: ningún texto congelado, materializado ni de producción cambia por este registro.
+@@ -58,11 +63,20 @@ medida sin poder ejecutar sus operaciones (0/6), aunque la Topología B ya usa o
+ a VERIFIED aunque F6-OBS-03 se resuelva (solicitud de desbloqueo, §2.1): **A4-3** (H-1), la aceptación dentro de la ventana de los bindings del
+ Worker y del Controller de verificación, que el Coordinator del fixture no puede publicar ahí; **A4-4** (H-2), la independencia REQUIRED de una
+ candidata que aún no ha arrancado; y **A4-5** (H-3, **separable**: el acuerdo puede excluirla sin tocar las demás), el tope de la planificación y la
+-verificación de una corrección tras un REWORK. **Superficies:** cinco párrafos al final de V14 D.3, después de los dos de A-2; ninguna otra cláusula
+-cambia de texto. **Bloquea** el lanzamiento del Controller y del Architect de FX-02 bajo F6-OBS-03 (A4-1, A4-2), la aceptación de los bindings de
+-FX-02 con independencia REQUIRED y la de los bindings de la ventana (A4-3, A4-4) y la corrección de T1 (A4-5). Sin A4-5, un REWORK de T1 cierra FX-02
++verificación de una corrección tras un REWORK. A ellos se suma **A4-6** (U-14, **separable**), una regla de presupuesto de la ronda A. **Superficies:**
++seis párrafos al final de V14 D.3, después de los dos de A-2 (A4-6, el último); ninguna otra cláusula cambia de texto. **Bloquea** el lanzamiento del
++Controller y del Architect de FX-02 bajo F6-OBS-03 (A4-1, A4-2), la aceptación de los bindings de FX-02 con independencia REQUIRED y la de los
++bindings de la ventana (A4-3, A4-4), la corrección de T1 (A4-5) y la apertura de A2 en la ronda A (A4-6). Sin A4-5, un REWORK de T1 cierra FX-02
+ como UNVERIFIED con esa causa, no como FAIL (§3.7). La redacción de cada delta es la propuesta, entre comillas angulares.
+ 
++**Corrección 3 (decisiones §63).** Distingue tres partes. **(A) Corrección de A62-A4-02, opción B:** A4-4 retira la rama de la materialización del
++Architect (supresiones en sus reglas 1 y 5, y en la regla 5 una frase que nombra la aceptación individual real del Architect por el
++Coordinator); el binding del Architect de FX-02 con una candidata no arrancada solo se acepta por una decisión
++individual real del Coordinator fuera de la ventana, y B.5, RAE §14.3, I-S18 y los validadores de F4 conservan su significado literal (§3.7, §4,
++§5). **(B) A4-6, regla de presupuesto nueva y separada (U-14):** R cuenta en la ronda A y el presupuesto de Principal de la ronda A sube en una sola
++sesión, solo para el titular A2 (§3.8). **(C) Disposiciones ordinarias de FX-02** (U-09 (e), U-16 (1), CD-19/OQ-24): las decide el Coordinator en la
++orden O4, fuera de A-4; se citan solo como contexto no normativo (§3.7, anexo).
++
+ ## 2. Cláusulas anteriores y fuentes (literales en `524b293e`, iguales en `c8d69fcb`; «V14 L…» = Proposal congelada, «DEC L…» = decisiones)
+ 
+ V14 D.3, Topología A, L2438, L2439, L2440, L2442 y L2443, en ese orden (sin cambio de texto; A-4 añade reglas que las completan):
+@@ -131,6 +145,19 @@ correspondiente antes de ejecutarla. Para el Architect, preferir `claude-cli` si
+ y consumo»; DEC L1114 (§57, punto 3): `claude-cli` 2.1.293 elegible para ARCHITECT y REVIEWER; DEC L1083 (OD-3 = A, «fixture — […] Reviewer y
+ Architect de FX-03 y Architects de FX-06») y DEC L1085 (CLAUDE-CLI-I62 = A, «roles ARCHITECT y REVIEWER de I-62»): no cubren el Architect de FX-02.
+ 
++Para A62-A4-02 (corrección 3, parte A; sin cambio de texto). V14 B.8.8, I-S18, L2184-L2185: «todo binding con `Acceptance.Basis` =
++AUTHORIZED_MATERIALIZATION tiene un `AuthorizationRef` […] y un `MaterializationCheck` con todos los criterios en SATISFIED contra esa autorización».
++
++Para A4-6 (corrección 3, parte B; sin cambio de texto). V14 D.3, Topología A, L2437: «| Principal A (`claude-desktop-session`, sesión del sistema
++bajo prueba abierta por el Owner) | toda la ronda | 1 sesión | FX-01 (3 preflights **dentro** de esta sesión, por procedimiento; el Owner cambia el
++effort; cada observación por `get_session` ligada al instante; **se cuentan como turnos de la sesión, no como invocaciones nuevas**) | +1
++reapertura | 2 sesiones |»; totales, L2523 (citada arriba; su última columna es la de sesiones de Principal); L2501: «| FX-04a | N11: B2 | 1
++sesión | 0 | 1 |». A-2, A2-P1 (acordada; sin cambio): L156-L157 «su lanzamiento físico queda registrado y cuenta en el tope de su fila y, si esta
++hoja fija un total de sesiones de Principal para su ronda, en ese total»; L159 «la aprobación de OD-5 (consumo dentro de los topes de D.3) no lo
++cubre». Decisiones §51 (F6-OBS-01): DEC L982 «DEFECTO NO MATERIAL de implementación o custodia»; L983 «A queda RELEASED y terminada»; L985
++«Principal R temporal». Decisiones §63, punto 2 (U-14): DEC L1265 «A + R = 2 sesiones usadas; A2 sería la tercera y no cabe en el tope vigente».
++Conciliación de las sesiones: `docs/automation/evidence/I-62-F6/FX-02/s62/u14-reconciliation.md` (blob `05f62382…`).
++
+ ## 3. Delta
+ 
+ ### 3.1 Motivo
+@@ -146,11 +173,15 @@ Architect de FX-03 y Architects de FX-06») y DEC L1085 (CLAUDE-CLI-I62 = A, «r
+   dentro de la ventana no se publica nada (W-2). Una candidata sin arrancar deja Actor y Sesión en UNKNOWN (B.4; 16.21), y entonces ningún
+   Controller ni Architect externo se acepta antes de invocarlo. Y la corrección vuelve al paso (1) de 16.4 sin tope para su planificación ni su
+   verificación (11 = 1 + 1; el pool es de reintentos).
+-- **Por qué es mínimo.** Dos roles de un escenario y ningún tope nuevo. Una sola invocación medida, con autoridad expresa y sin reintento. La
++- **Por qué es mínimo.** Dos roles de un escenario y, salvo A4-6, ningún tope nuevo. Una sola invocación medida, con autoridad expresa y sin reintento. La
+   receta y el descriptor no cambian. El Architect pasa a un adapter ya congelado para ese rol en la Topología B (V14 L2515), con los requisitos
+   de independencia del contrato tal como están. A4-3 conserva la base INDIVIDUAL_DECISION y solo adelanta su publicación; A4-4 no da por
+   satisfecho ningún UNKNOWN, solo traslada la decisión a la Entrada observada; A4-5 reparte el pool que ya existe.
+ 
++- **Presupuesto de la ronda A (U-14; A4-6).** R, el titular temporal de la reparación de F6-OBS-01, cuenta como sesión física de Principal de la
++  ronda A (decisiones §63, punto 2): con A y R la ronda A tiene usadas sus dos sesiones y A2, el titular nuevo de FX-02 por T16, no cabe. A4-6 sube
++  en una sola sesión, no fungible, ese presupuesto, solo para A2, sin reclasificar R ni reiniciar nada; ningún otro tope cambia.
++
+ ### 3.2 A4-1 — Ruta de ejecución del Controller ante una limitación medida del shell
+ 
+ Ubicación: al final de V14 D.3, a continuación del párrafo de A2-P2, que termina en «Ningún otro tope cambia.» (A-2 L234).
+@@ -231,13 +262,13 @@ Ubicación: a continuación del párrafo de A4-3.
+ > «**Independencia de una candidata no arrancada (A-4).** Solo para FX-02 de la Topología A, en F6, y solo para los bindings con Actor, Sesión o
+ > Contexto REQUIRED: el Controller, en planificación y en verificación, frente a WORKER, y el Architect frente a AUTHOR. Cuando la candidata todavía
+ > no tiene sesión (`Assurance` NONE e `InstanceId` NOT_STARTED, B.4):
+-> 1. en la aceptación, y para el Architect en el criterio de independencia de su materialización, cada dimensión REQUIRED se evalúa contra el
++> 1. en la aceptación, cada dimensión REQUIRED se evalúa contra el
+ >    conjunto de referencia de ese momento. Con referencias, Actor y Sesión se registran UNKNOWN por NOT_STARTED, y Contexto UNKNOWN en lo que solo
+->    la corrida puede acreditar; nunca SATISFIED. Ese UNKNOWN, y solo ese, no impide la aceptación ni la materialización si se cumplen todas: (a) cada
++>    la corrida puede acreditar; nunca SATISFIED. Ese UNKNOWN, y solo ese, no impide la aceptación si se cumplen todas: (a) cada
+ >    actor de referencia tiene `ActorRef` y `SessionRef` RUNTIME_OBSERVED o superior; (b) la receta de la invocación crea una instancia nueva de
+ >    runtime en una sesión nueva de nivel superior, sin reanudar ni compartir ninguna sesión de una referencia ni ser subagente de ella; (c) el
+ >    cierre efectivo de insumos excluye la transcripción, la memoria y el razonamiento de cada referencia y enumera las entradas automáticas; y
+->    (d) ninguna dimensión REQUIRED está en NOT_SATISFIED. Si falta una, el binding no se acepta ni se materializa (16.21);
++>    (d) ninguna dimensión REQUIRED está en NOT_SATISFIED. Si falta una, el binding no se acepta (16.21);
+ > 2. con el conjunto de referencia vacío (la planificación, cuyo rango evaluado no tiene commits) no hay actor con el que comparar: cada dimensión
+ >    se registra SATISFIED con el rango vacío como evidencia, en la aceptación y en la Entrada;
+ > 3. la comprobación decisiva es la de la Entrada de cada invocación con ese binding: Actor y Sesión con la identidad que el invocador observa en
+@@ -247,14 +278,13 @@ Ubicación: a continuación del párrafo de A4-3.
+ >    lanzamiento cuenta en todos sus topes, sin devolución, y rige la columna «Si falta un REQUIRED» de 16.21. Una reejecución solo cabe dentro de
+ >    los topes vigentes;
+ > 5. no cambian los disparadores, la combinación, el nivel de cada dimensión ni el registro de los PREFERRED. La excepción de la regla 1 solo
+->    admite el UNKNOWN de una fila de `Independence.Satisfaction`, o de un criterio `INDEPENDENCE:<ReferenceRole>:<Dimension>` de la
+->    materialización, de un binding cuyo `PreflightRef` custodiado tiene `Assurance` NONE e `InstanceId` NOT_STARTED, cuando la `Evidence` de esa
++>    admite el UNKNOWN de una fila de `Independence.Satisfaction` de un binding cuyo `PreflightRef` custodiado tiene `Assurance` NONE e
++>    `InstanceId` NOT_STARTED, cuando la `Evidence` de esa
+ >    fila registra (a)-(d); cualquier otro UNKNOWN sigue B6 y el criterio INDEPENDENCE (RAE §14.2 y §14.3) al pie de la letra, y fuera de este caso
+->    «UNKNOWN cuenta como NOT_SATISFIED» rige sin cambio. Aplican la excepción, con ese discriminador, el aceptante de A7', el validador que
+->    reproduce en el Q7 la aceptación y la materialización, y las comprobaciones de la supervisión tras el Q7 (S29 del kit de FX-02): quien valida
+->    reproduce la evaluación de la aceptación con el preflight custodiado y la de la Entrada con el registro custodiado de la invocación. El
+->    validador de producción que materializó F4 no la aplica ni cambia; lo que informe sobre esa fila lo resuelve la supervisión en S29 con el
+->    discriminador: si se cumple, no es una violación; si no, rige sin cambio la consecuencia de B6 o del criterio INDEPENDENCE.»
++>    «UNKNOWN cuenta como NOT_SATISFIED» rige sin cambio. Aplican la excepción, con ese discriminador, el aceptante de A7',
++>    la aceptación individual real del binding del Architect por el Coordinator fuera de la ventana (decisiones §63, punto 1), el validador que
++>    reproduce en el Q7 la aceptación, y las comprobaciones de la supervisión tras el Q7 (S29 del kit de FX-02): quien valida
++>    reproduce la evaluación de la aceptación con el preflight custodiado y la de la Entrada con el registro custodiado de la invocación.»
+ 
+ ### 3.6 A4-5 — Tope de una corrección tras un REWORK (H-3; separable)
+ 
+@@ -274,30 +304,67 @@ Ubicación: a continuación del párrafo de A4-4. **Separable:** si el acuerdo l
+ 
+ - No cambia A-1, A-2 ni A-3: el bloque de A2-P2 sigue siendo de ≤ 2 sondas por actualización observada, y la invocación de A4-1 no es un bloque.
+   Tampoco es una sonda de compatibilidad de A-3 ni consume su presupuesto, y la elegibilidad que da no es un suelo heredable por A-3 (A4-1,
+-  regla 5: sin reutilización) (A62-A4-O3).
+-- No cambia el texto de AUTOMATION_PLAN 16.20 y 16.21, de B1-B10 (RAE §14.2), de RAE §14.3 ni de B.5. A4-3 es una excepción acotada a FX-02 en F6
+-  sobre cuándo se publica la decisión de aceptación. A4-4 es una enmienda de semántica, acotada a FX-02 en F6, de B6, del criterio INDEPENDENCE de
+-  la materialización y de la condición de B.5 «con **todos** en SATISFIED» (y, con ellos, del resultado de 16.20 y de RAE §14.3, «UNKNOWN cuenta
+-  como NOT_SATISFIED», y de 16.21, donde el binding del verificador no se acepta), al estilo de A-1 D1-21 con los textos F3 consumidos: sin
+-  vigencia hasta que A-4 se acuerde y solo para el UNKNOWN que discrimina su regla 5 (M-02 y M-05, §5; A62-A4-01). El enumerado `Basis` no
+-  cambia y B8 tampoco: la materialización sigue siendo solo de ARCHITECT y de REVIEWER.
+-- La aceptación A1'-A8' de `d` (T3) y su rechazo (T3') quedan fuera de A4-3: los fija el Coordinator antes del Q0, en la orden (punto 7 de O4),
+-  y dentro de la ventana el titular solo los aplica y registra; con esa decisión es ejecutable la remisión a T3' de la regla 3 de A4-3
+-  (A62-A4-O7).
++  regla 5: sin reutilización) (A62-A4-O3). La sesión de A4-6 no es la reejecución extraordinaria de A2-P1 ni la consume.
++- **(A) Corrección de A62-A4-02, opción B.** No cambia el texto de AUTOMATION_PLAN 16.20 y 16.21, de B1-B10 (RAE §14.2), de RAE §14.3 ni de B.5.
++  A4-3 es una excepción acotada a FX-02 en F6 sobre cuándo se publica la decisión de aceptación. A4-4 es una enmienda de semántica, acotada a FX-02
++  en F6, solo de la aceptación individual: de B6 y del criterio INDEPENDENCE de 16.20-16.21 en esa aceptación («UNKNOWN cuenta como NOT_SATISFIED»
++  y, para el verificador, el binding no se acepta) y del resultado de esa aceptación, solo para el UNKNOWN que discrimina su regla 5, al estilo de
++  A-1 D1-21 con los textos F3 consumidos: sin vigencia hasta que A-4 se acuerde (M-02 y M-05, §5; A62-A4-01 y A62-A4-02). Conservan su
++  significado literal y A-4 no los toca: la condición de B.5 «con **todos** en SATISFIED» de una materialización autorizada, el criterio
++  INDEPENDENCE de la materialización de RAE §14.3, I-S18 y los validadores de F4. I-S18 (V14 B.8.8, L2184-L2185) conserva su significado literal
++  y A-4 no lo toca: todo binding con `Acceptance.Basis` = AUTHORIZED_MATERIALIZATION, también en FX-02, tiene que tener todos los criterios de su
++  `MaterializationCheck` en SATISFIED, así que A4-4 no admite ningún UNKNOWN en una materialización y la validación de cada punto durable antes de
++  publicarlo nunca encuentra una fila discriminada. Por eso el binding del Architect de FX-02 con una candidata no arrancada solo se acepta por
++  una decisión individual real del Coordinator (INDIVIDUAL_DECISION), fuera de la ventana, y nunca se materializa bajo la RLA con un UNKNOWN. El
++  enumerado `Basis` no cambia y B8 tampoco: la materialización sigue siendo solo de ARCHITECT y de REVIEWER.
++- **(B) A4-6 (U-14).** Es la única regla de A-4 que sube un tope: el de la fila Principal A y el total de sesiones de Principal de la ronda A, en
++  una sesión, de 2 a 3, solo para A2. Se justifica por F6-OBS-01 (decisiones §51): R, el titular temporal que exigió la reparación de un defecto
++  no material de implementación o custodia, cuenta en la ronda A (decisiones §63, punto 2). Es separable: si el acuerdo la excluye, A2 no cabe en
++  la ronda A y FX-02 queda UNVERIFIED por esa causa (D.4); ninguna otra regla de A-4 depende de ella.
++- **(C) Disposiciones ordinarias de FX-02 (contexto, fuera de A-4).** El Coordinator las decidió para la orden O4, no como parte de esta enmienda.
++  U-09 (e) (decisiones §63, punto 3): la aceptación A1'-A8' de `d` (T3) y su rechazo (T3') quedan fuera de A4-3; el punto 7 de O4
++  (`{IN_WINDOW_ACCEPTANCE_RULE}`) fija una regla condicional: `d` se acepta si y solo si pasan todas A1'-A8', sin cortocircuito y con evidencia
++  real, y si no, rige T3' con cierre NOT_ACCEPTED declarado por la sesión. El titular evalúa el predicado y lo custodia; el registro de T3/T3' en
++  el diario cita esa decisión (ruta y marcador del punto 7) y nunca se presenta como una decisión del Coordinator tomada dentro de la ventana; el
++  Q7 y S29 reproducen A1'-A8' con lo custodiado (A62-A4-O7 y A62-A4-O9). U-16 (1) (§63, punto 4): mutaciones selladas de N4, N5, N7a y N7b, y
++  una mutación válida y sellada de nuevo para N8. CD-19/OQ-24 (§63, punto 5): la referencia AUTHOR se deriva de `ActorRef` y `SessionRef`
++  observados de los autores reales del objeto, con evidencia custodiada, y UNKNOWN en una dimensión REQUIRED no satisface. Ninguna amplía A4-3
++  ni A4-4.
+ - Sin A4-5, la letra no da tope a la planificación ni a la verificación de una corrección (P-07 la impide): un REWORK de T1 cierra FX-02 como
+   UNVERIFIED con esa causa, no como FAIL (D.4).
+-- No sube topes ni totales de D.3, no repone presupuestos ni reinicia contadores (N10, V14 L2446), y no se aplica a FX-01, FX-03, FX-04a,
+-  FX-04b, FX-05, FX-06 ni D.5. No cambia P-01, OD-2 (hash exacto; OD-2-MAT = A), OD-3, OD-5 ni CLAUDE-CLI-I62.
++- No sube topes ni totales de D.3 salvo A4-6, no repone presupuestos ni reinicia contadores (N10, V14 L2446), y no se aplica a FX-01, FX-03,
++  FX-04a, FX-04b, FX-05, FX-06 ni D.5. No cambia P-01, OD-2 (hash exacto; OD-2-MAT = A), OD-3, OD-5 ni CLAUDE-CLI-I62.
+ - No cambia el texto de la receta de AUTOMATION_PLAN 16.4, de los descriptores, de `routing.md` ni del catálogo, cuyos blobs son invalidadores;
+   tampoco el de producción, esquemas, B.1-B.11, `state/v2`, §20, AUTOMATION_PLAN 16.x ni ningún ADR, ni el código de F4. Salvo la enmienda de
+-  semántica de A4-4 de arriba, ninguno cambia de significado. El validador de producción de F4 comprueba que un binding materializado tiene
+-  todos sus criterios en SATISFIED (`tests/RackCad.Tests/I62/StateV2Validator.Orchestration.cs`, blob `355e1b35…`, L119-L124) y no recalcula B6
+-  en una aceptación individual: no aplica la excepción y no se cambia; en F6, la evaluación de A4-4 la reproduce la supervisión en S29 (A4-4,
+-  regla 5). No toca superficies del mapa de cláusulas (C-20b): `MC_I62` sigue válido mientras las reglas de materialización no digan otra cosa.
+-  No autoriza ninguna invocación ni ningún consumo.
++  semántica de A4-4 de arriba, ninguno cambia de significado. El validador de producción de F4 comprueba I-S18 sobre un binding materializado
++  (`tests/RackCad.Tests/I62/StateV2Validator.Orchestration.cs`, blob `355e1b35…`, L119-L124) y no recalcula B6 en una aceptación individual: con
++  la opción B no hay ninguna materialización con un UNKNOWN discriminado, así que conserva su significado literal y no se cambia. No toca
++  superficies del mapa de cláusulas (C-20b): `MC_I62` sigue válido mientras las reglas de materialización no digan otra cosa. No autoriza ninguna
++  invocación ni ningún consumo.
++
++### 3.8 A4-6 — Una sesión de Principal más en la ronda A, solo para el titular A2 (U-14; separable)
++
++Ubicación: a continuación del párrafo de A4-5 (al final de V14 D.3). **Separable:** si el acuerdo la excluye, este párrafo se retira sin tocar los
++demás; entonces A2 no cabe en la ronda A y FX-02 queda UNVERIFIED por esa causa (§3.7).
++
++> «**Una sesión de Principal más en la ronda A, solo para el titular A2 (A-4).** Solo para la ronda A de F6 (Topología A) y solo para la sesión
++> de Principal del titular A2 de FX-02, designado por T16. R, el titular temporal que exigió la reparación de F6-OBS-01 (un defecto no material de
++> implementación o custodia), es una sesión física de Principal de la ronda A; con A y R, la ronda A tiene usadas sus dos sesiones:
++> 1. R cuenta en el tope de la fila Principal A y en el total de sesiones de Principal de la ronda A: no se reclasifica a posteriori, no se
++>    descuenta y ningún presupuesto se reinicia;
++> 2. ese tope y ese total suben en **una** sesión, de 2 a 3, solo para abrir la sesión de A2. Esa sesión no es fungible: no sirve a otro titular,
++>    escenario, fila ni ronda, ni como reapertura de otra sesión;
++> 3. ningún otro tope ni total cambia: ni las demás columnas de los totales de la ronda A, ni las filas de lanzamientos y de sondas, ni la fila
++>    «N11: B2», ni las rondas FX-04a, FX-04b y B, ni D.8;
++> 4. P-07 comprueba antes de abrir A2 que la sesión cabe en ese tope. La apertura exige además la autorización de consumo del Owner, porque la
++>    aprobación de OD-5 (consumo dentro de los topes de D.3) no la cubre, y solo tiene efecto con esta regla acordada;
++> 5. no es la reejecución extraordinaria de A-2 ni la consume: la regla de A-2 sobre un lanzamiento inválido rige sin cambio, también para A2.»
+ 
+ ## 4. Semántica antes y después
+ 
++Las filas marcadas **(A)** recogen la corrección de A62-A4-02 (opción B) y las marcadas **(B)**, A4-6 (U-14). Las disposiciones ordinarias de FX-02
++**(C)** viven en la orden O4 y no tienen fila (§3.7).
++
+ | Caso | Antes (V14 + A-1 + A-2) | Después (con A-4) |
+ |---|---|---|
+ | El runtime del Controller rechaza su shell bajo solo lectura | no previsto; la ruta improvisada no es un parámetro de la receta; sin medición de VERIFY (evaluación §3) | shell alternativo declarado en la orden; elegibilidad solo tras una invocación medida de las operaciones de VERIFY, incluidas las lecturas de Git de `Identity`, `Remote`, `CleanTree` y `Trailer` (A62-A4-O1) |
+@@ -308,51 +375,63 @@ Ubicación: a continuación del párrafo de A4-4. **Separable:** si el acuerdo l
+ | Independencia y topes de ese Architect | REQUIRED ×3, Proveedor PREFERRED (T1); 1 + pool; total 15; ronda A ≤ 15 + 2 sondas | sin cambio; Proveedor sin cumplir se registra; cuentan aunque los ejecute otro adapter: en la fila A de los totales por ronda de F6, en la columna Codex (≤ 15), y la de Claude CLI sigue en 0 (A62-A4-O4) |
+ | Limitación del adapter sustituto | afecta al Reviewer y al Architect de B (V14 L2552) | afecta también al Architect sustituido de A |
+ | Bindings del Worker y del Controller de verificación (ventana) | transitorios (B.8.3), pero sin quien publique la decisión (B9, W-2) ni materialización para esos roles (B8) | aceptación individual preautorizada en la orden antes del Q0; el titular aplica B1-B10 en el diario; fallo → REJECTED y cierre; el Q7 la reproduce |
+-| Independencia REQUIRED de una candidata no arrancada | `Assurance` NONE → UNKNOWN → binding no aceptado (16.21); ningún Controller ni Architect externo se acepta antes de invocarlo | UNKNOWN por NOT_STARTED no impide aceptar con referencias observadas, sesión nueva por receta y cierre limpio; decide la Entrada; conjunto vacío → SATISFIED; solo el UNKNOWN que discrimina A4-4, regla 5 (cualquier otro, B6 y RAE §14.3 al pie de la letra) |
+-| Consumidores de B6 y del criterio INDEPENDENCE sobre FX-02 | aplican B6 y RAE §14.3 al pie de la letra | el aceptante de A7', el validador del Q7 y S29 aplican la excepción solo con el discriminador de A4-4, regla 5; el validador de producción de F4 no cambia y lo que informe sobre esa fila lo resuelve S29 (A62-A4-01) |
++| Independencia REQUIRED de una candidata no arrancada | `Assurance` NONE → UNKNOWN → binding no aceptado (16.21); ningún Controller ni Architect externo se acepta antes de invocarlo | UNKNOWN por NOT_STARTED no impide aceptar con referencias observadas, sesión nueva por receta y cierre limpio; decide la Entrada; conjunto vacío → SATISFIED; solo el UNKNOWN que discrimina A4-4, regla 5 (cualquier otro, B6 y RAE §14.3 al pie de la letra); **(A)** solo en la aceptación individual: el Architect, por una decisión individual real del Coordinator fuera de la ventana, nunca materializado con UNKNOWN |
++| Consumidores de B6 y del criterio INDEPENDENCE sobre FX-02 | aplican B6 y RAE §14.3 al pie de la letra | **(A)** el aceptante de A7', la aceptación individual real del binding del Architect por el Coordinator fuera de la ventana, el validador que reproduce la aceptación en el Q7 y S29 aplican la excepción solo a la aceptación individual, con el discriminador de A4-4, regla 5; B.5, RAE §14.3, I-S18 y los validadores de F4 conservan su significado literal (A62-A4-01 y A62-A4-02) |
++| **(A)** Materialización del Architect de FX-02 con una candidata no arrancada | B.5, RAE §14.3 e I-S18: un criterio INDEPENDENCE en UNKNOWN impide materializar | sin cambio: no se materializa con UNKNOWN; solo cabe la aceptación individual real del Coordinator fuera de la ventana (A62-A4-02, opción B) |
+ | Dimensión REQUIRED sin SATISFIED en la Entrada | — (el binding no llegaba a aceptarse) | salida INVALID; el lanzamiento cuenta sin devolución; columna «Si falta un REQUIRED» de 16.21 |
+ | Planificación y verificación de una corrección | sin tope (11 = 1 + 1; pool de reintentos): P-07 impide la corrección | una corrección; cada invocación toma 1 del pool de su fase (≤ 2 por fase); tope 15 igual; P-07 antes del Q0 de la corrección |
+ | REWORK de T1 sin corrección | sin regla | FX-02 UNVERIFIED con causa, no FAIL (también sin A4-5, §3.7) |
++| **(B)** Sesiones de Principal de la ronda A (A, R y A2) | tope 2 en la fila Principal A y en el total; A y R lo agotan (decisiones §63, punto 2); A2 no cabe (P-07) | R cuenta (2 de 2, sin reclasificar ni reiniciar); el tope y el total suben a 3 solo para A2; P-07 antes de abrir A2; consumo del Owner (`A4-PRINCIPAL-A2-CONSUMO`) |
++| **(B)** Cualquier otro tope o total de D.3 | — | sin cambio (A4-6, regla 3) |
+ 
+ ## 5. Materialidad (M-01..M-08)
+ 
+ | M | Activado | Motivo |
+ |---|---|---|
+-| M-01 | no | ningún dueño nuevo: el Coordinator dispone las aplicaciones y decide la aceptación preautorizada (A4-3), que el titular solo aplica; el Owner autoriza el consumo y el binding sigue sus reglas |
+-| M-02 | **sí** | en FX-02 (F6), un binding ACCEPTED o materializado puede persistir con una dimensión REQUIRED en UNKNOWN por NOT_STARTED (A4-4, reglas 1 y 5), algo que B.5 («con **todos** en SATISFIED») y B6 no admiten (A62-A4-01). Ningún esquema, DTO ni campo cambia: el shell va en el texto de la invocación; A4-3 y A4-4 usan `INDIVIDUAL_DECISION`, `DecisionRef` `{Path, Marker}`, `Result` UNKNOWN y `Participant.Observation` tal como están |
+-| M-03 | **sí** | cambia el comportamiento observable del piloto: el Controller ejecuta con un shell declarado; el Architect de FX-02 puede ir por otro adapter; los bindings de la ventana se aceptan por preautorización; la independencia se decide en la Entrada; cabe una corrección |
+-| M-04 | **sí** | cambia lo que falla: P-10 del Architect deja de bloquear FX-02 si existe otra celda elegible; la elegibilidad del Controller exige una medición adicional, con fallo cerrado y sin reintento; un invalidador cambiado anula esa medición; un binding preautorizado que no pasa sus comprobaciones cierra la ventana; un UNKNOWN por NOT_STARTED ya no impide aceptar, pero en la Entrada invalida la salida; P-07 de la corrección antes de su Q0 |
+-| M-05 | **sí** | cambia, solo para FX-02 en F6, el resultado de RAE §14.2 B6, del criterio INDEPENDENCE de RAE §14.3 y AP 16.20 («UNKNOWN cuenta como NOT_SATISFIED») y de AP 16.21 (el binding del verificador no se acepta), reglas que consumen el aceptante de A7', el validador que reproduce la aceptación y la materialización en el Q7 y las comprobaciones de S29 (A4-4, regla 5; A62-A4-01). El texto de ningún contrato consumido cambia (receta 16.4, descriptores, esquemas, B.1-B.11, AUTOMATION_PLAN 16.x, RAE §14), ni el código de F4 (§3.7) |
++| M-01 | no | ningún dueño nuevo: el Coordinator dispone las aplicaciones y decide la aceptación preautorizada (A4-3), que el titular solo aplica; el Owner autoriza el consumo y el binding sigue sus reglas; **(B)** A4-6 tampoco: el Coordinator designa a A2 (T16) y el Owner autoriza el consumo |
++| M-02 | **sí** | **(A)** en FX-02 (F6), un binding ACCEPTED por decisión individual puede persistir con una dimensión REQUIRED en UNKNOWN por NOT_STARTED (A4-4, reglas 1 y 5), algo que B6 no admite (A62-A4-01). Con la opción B (A62-A4-02) ningún binding materializado lo admite: B.5 («con **todos** en SATISFIED»), RAE §14.3 e I-S18 no cambian de significado. **(B)** A4-6 no activa M-02: `state/v2` no registra sesiones de Principal de F6 (como en A-2). Ningún esquema, DTO ni campo cambia: el shell va en el texto de la invocación; A4-3 y A4-4 usan `INDIVIDUAL_DECISION`, `DecisionRef` `{Path, Marker}`, `Result` UNKNOWN y `Participant.Observation` tal como están |
++| M-03 | **sí** | cambia el comportamiento observable del piloto: el Controller ejecuta con un shell declarado; el Architect de FX-02 puede ir por otro adapter; los bindings de la ventana se aceptan por preautorización; la independencia se decide en la Entrada; cabe una corrección; **(B)** cabe una sesión de Principal más en la ronda A, solo para A2 |
++| M-04 | **sí** | cambia lo que falla: P-10 del Architect deja de bloquear FX-02 si existe otra celda elegible; la elegibilidad del Controller exige una medición adicional, con fallo cerrado y sin reintento; un invalidador cambiado anula esa medición; un binding preautorizado que no pasa sus comprobaciones cierra la ventana; un UNKNOWN por NOT_STARTED ya no impide aceptar, pero en la Entrada invalida la salida; P-07 de la corrección antes de su Q0; **(B)** P-07 deja de detener la apertura de A2 en la ronda A, y cualquier otro uso de esa sesión falla cerrado (no es fungible) |
++| M-05 | **sí** | **(A)** cambia, solo para FX-02 en F6, el resultado de RAE §14.2 B6 y del criterio INDEPENDENCE de AP 16.20-16.21 en la aceptación individual («UNKNOWN cuenta como NOT_SATISFIED»; el binding del verificador no se acepta), reglas que consumen el aceptante de A7', el Coordinator en la aceptación individual real del binding del Architect fuera de la ventana, el validador que reproduce la aceptación en el Q7 y las comprobaciones de S29 (A4-4, regla 5; A62-A4-01). Con la opción B (A62-A4-02) no cambian el criterio INDEPENDENCE de la materialización (RAE §14.3), B.5, I-S18 ni los validadores de F4. **(B)** A4-6 no cambia ningún contrato consumido. El texto de ningún contrato consumido cambia (receta 16.4, descriptores, esquemas, B.1-B.11, AUTOMATION_PLAN 16.x, RAE §14), ni el código de F4 (§3.7) |
+ | M-06 | no | ningún punto de extensión |
+ | M-07 | no | ningún mecanismo transversal |
+ | M-08 | no | conserva ADR-0046 #4 (elegibilidad) y #6 (fallo cerrado: UNKNOWN no satisface en la Entrada); no toca ADR-0048 (propuesto) |
+ 
+ ## 6. No cambia producción
+ 
+-- Diff permitido sobre `524b293e`: `docs/initiatives/I-62-A-4.md` y `docs/initiatives/I-62-architect-package-A-4.md` (nuevos); decisiones y evidencia
+-  de I-62, solo por añadido; `docs/automation/evidence/I-62-F6/README.md` y `docs/automation/state/I-62.yml`. Ningún otro archivo.
++- Commit de publicación `4710084b` (base `e6fe2e08`): A-4 y su paquete (nuevos); decisiones y evidencia de I-62, solo por añadido;
++  `docs/automation/evidence/I-62-F6/README.md` y `docs/automation/state/I-62.yml`. Ningún otro archivo. Después solo cambian archivos propios de
++  A-4: A-4 y su paquete (correcciones `7f065a3a`, `a3332495` y la que publique esta versión), sus guardas y sus resultados
++  (`docs/automation/evidence/I-62-A4/`), los registros de revisión (`docs/initiatives/I-62-architect-review-A-4.md` y `-r2.md`) y los
++  directorios de las revisiones (`docs/automation/evidence/I-62-architect-A-4/`) (A62-A4-O10).
+ - Blobs sin cambio: V14 `34ad80ea…`, Freeze `0f6b8608…`, A-1 `c01899a7…`, A-2 `f1e1d6f0…`, A-3 `ea6721f7…`, ADR-0048 `e1bd8d91…`, AUTOMATION_PLAN
+   `f525cb1e…`, RAE `592dcfd4…`, `codex-cli.md` `155f3469…`, `claude-cli.md` `ae570380…`, `routing.md` `bba08fc4…`, catálogo `166d978d…`; kit de FX-02:
+   `README.md` `fd7ef02d…`, `controller-contracts.md` `90929ad1…`, plantilla de la orden O4 `d92f7d3e…`; validador de producción de F4
+-  (`StateV2Validator.Orchestration.cs`) `355e1b35…`. El `README.md` del kit creció después por añadido (57877a7d: una línea en L356, blob
+-  `ceb38284…`), sin cambio en las líneas que cita A-4.
+-- Aplicada sobre V14, solo cambia D.3 (cinco párrafos); C-20b debe seguir EQUAL. **Guardas mecánicas:** `docs/automation/evidence/I-62-A4/a4-guards.py`,
+-  PASS sobre la corrección previa a la revisión (7d863219…; evidencia §101-§102; A62-A4-O8). Esta versión se comprueba con su modo de segunda
+-  corrección (diff frente a 7d863219… limitado a las regiones declaradas; A4-2, A4-3, A4-5 y A4-4, reglas 1-4, idénticos) en el commit que la publique.
++  (`StateV2Validator.Orchestration.cs`) `355e1b35…`. El `README.md` del kit cambió después fuera de A-4 (57877a7d añadió una línea en L356 y
++  d358d31e cambió L8; blob en d5b454fd `2439837a…`), sin cambio en las líneas que cita A-4.
++- Aplicada sobre V14, solo cambia D.3 (seis párrafos, A4-6 incluida); C-20b debe seguir EQUAL. **Guardas mecánicas:** `docs/automation/evidence/I-62-A4/a4-guards.py`,
++  PASS sobre la corrección previa a la revisión (7d863219…; evidencia §101-§102; A62-A4-O8) y sobre la corrección 2 (0d954376…;
++  `a4-guards-result-c2.json`). Esta versión se comprueba con su modo de tercera corrección (diff frente a 0d954376… limitado a las regiones
++  declaradas; A4-1, A4-2, A4-3 y A4-5 idénticos; A4-4 cambia solo por supresiones en sus reglas 1 y 5, más una frase declarada en la regla 5;
++  A4-6 se añade al final) en el commit que la
++  publique.
+ 
+ ## 7. Consecuencias reservadas al Owner
+ 
+-A-4 no cambia el alcance, los no-objetivos, OD-1..OD-7, la matriz OV ni ningún escenario OV-I62. Su aplicación necesita dos autorizaciones de
++A-4 no cambia el alcance, los no-objetivos, OD-1..OD-7, la matriz OV ni ningún escenario OV-I62. Su aplicación necesita tres autorizaciones de
+ consumo del Owner, que solo tienen efecto con A-4 AGREED y la disposición del Coordinator que nombre cada aplicación: (1) para A4-1, una invocación
+ de solo lectura de `codex-cli` fuera de A2-P2; (2) para A4-2, `claude-cli` como Architect de FX-02, que OD-3 = A y CLAUDE-CLI-I62 = A no cubren
+-(DEC L1083, L1085; evidencia §95). OD-5 no cambia. **A4-3, A4-4 y A4-5 no necesitan ninguna autorización nueva del Owner:** A4-3 y A4-4 no
+-lanzan ni consumen nada, y A4-5 reparte lanzamientos dentro del tope 15 de la ronda A, ya cubierto por OD-5 (V14 L974), sin subir ningún total. Si
+-el Architect o el Coordinator identifican una consecuencia OWNER-RESERVED **en el acuerdo**, la enmienda se detiene (BLOCKED — OWNER DECISION).
+-Líneas exactas propuestas; cada una autoriza solo consumo y no acepta ningún resultado por adelantado:
++(DEC L1083, L1085; evidencia §95); (3) **(B)** para A4-6, una sesión de Principal más en la ronda A, solo para A2, por encima del tope de D.3 que
++cubre OD-5. OD-5 no cambia. **A4-3, A4-4 y A4-5 no necesitan ninguna autorización nueva del Owner:** A4-3 y A4-4 no lanzan ni consumen nada, y
++A4-5 reparte lanzamientos dentro del tope 15 de la ronda A, ya cubierto por OD-5 (V14 L974), sin subir ningún total. Las tres van en una sola
++solicitud (decisiones §63, punto 8) y el silencio no es aprobación. Si el Architect o el Coordinator identifican una consecuencia OWNER-RESERVED
++**en el acuerdo**, la enmienda se detiene (BLOCKED — OWNER DECISION). Líneas exactas propuestas; cada una autoriza solo consumo, no acepta ningún
++resultado por adelantado y solo tiene efecto tras el acuerdo de A-4:
+ 
+ ```text
+ A4-SONDA-CONSUMO = A (1 invocación read-only de codex-cli fuera de A2-P2, celda gpt-6-luna/high del Controller de FX-02 con la shell declarada cmd.exe, para el trío exacto 3553cd6e7df5a093d8cb8301cd8088a57e0971aba71ddbe0e67f7f44a15cdf68/26.1002.7124.0/6518EFAB0BC0C0C2C2C5DCCD3A3D3646DFDC9F15B222FD6B744CBC84B857DB32, con huella, binario y versión antes y después; sin reintento; sin workspace-write ni cambios de config.toml, trust_level o sandbox; sin lectura de valores; no acepta su resultado)
+ A4-CLAUDE-FX02-CONSUMO = A (uso read-only de claude-cli como Architect de la topología A de FX-02, revisión del contrato de T1, con una celda medida elegible para ARCHITECT; 1 lanzamiento y las reejecuciones del pool de D.3, dentro de los mismos topes; Actor/Session/Context REQUIRED, Provider PREFERRED; sin PRINCIPAL_COORDINATOR, EXECUTION_CONTROLLER ni WORKER; sin escritura; sin lectura de credenciales; no acepta su resultado ni amplía OD-3, OD-5 ni CLAUDE-CLI-I62)
++A4-PRINCIPAL-A2-CONSUMO = A (una sesión adicional de Principal, claude-desktop-session, abierta por el Owner para el titular A2 de FX-02 designado por T16, por encima del límite de la ronda A de D.3 que cubre OD-5; solo con A-4 AGREED, A4-6 incluida, y la disposición del Coordinator que nombre la apertura; ninguna otra sesión ni reapertura; no acepta su resultado ni amplía OD-5)
+ ```
+ 
+ ## 8. Preguntas para la revisión (no forman parte del delta)
+@@ -376,11 +455,20 @@ A4-CLAUDE-FX02-CONSUMO = A (uso read-only de claude-cli como Architect de la top
+ | Q-A4-15 | A62-A4-01: ¿cierran el hallazgo sus cuatro partes corregidas (§5, M-02 y M-05 = sí; §3.7, negaciones calificadas como enmienda de semántica al estilo de A-1 D1-21; A4-4, regla 5, con consumidores y discriminador mecánico; validador de producción de F4 sin cambio, con la reproducción en S29)? |
+ | Q-A4-16 | A4-4, regla 5: ¿basta que el validador de producción de F4 no aplique la excepción y que lo que informe sobre la fila discriminada lo resuelva la supervisión en S29, o hace falta un cambio de F4, fuera del alcance de A-4? |
+ | Q-A4-17 | A4-1, reglas 2 y 3 (A62-A4-O1 y A62-A4-O2): ¿son precisiones que no cambian el significado del resto de la regla (lecturas de Git de VERIFY; tope total de uno en FX-02 salvo la regla 4; directorio `-C` en la disposición)? |
++| Q-A4-18 | **(A)** A62-A4-02, opción B: ¿cierran el hallazgo las supresiones en A4-4, reglas 1 y 5, junto con §3.7, §4 y §5, con B.5, RAE §14.3, I-S18 y los validadores de F4 en su significado literal? La lista de consumidores de la regla 5 no nombraba la aceptación individual real del binding del Architect fuera de la ventana: queda **cerrado en la corrección 3** con una sola frase añadida a la regla 5, con el mismo discriminador y sin reintroducir la materialización. ¿Es suficiente? |
++| Q-A4-19 | **(B)** A4-6: ¿es correcta la lectura de U-14 (R cuenta; A + R = 2) y basta una sola sesión no fungible, solo para A2, justificada por F6-OBS-01, sin reclasificar R ni reiniciar presupuestos? |
++| Q-A4-20 | **(B)** ¿Cambia A4-6 algún otro tope o total de D.3, o la regla de A-2 sobre un lanzamiento inválido (A2-P1)? ¿Es correcta su materialidad (M-03 y M-04 sí; M-01, M-02 y M-05 no)? |
++| Q-A4-21 | **(B)** ¿Es A4-6 separable, con FX-02 UNVERIFIED si se excluye? ¿Es OWNER-RESERVED su acuerdo, o basta la autorización de consumo `A4-PRINCIPAL-A2-CONSUMO`? |
++| Q-A4-22 | **(C)** ¿Quedan bien fuera de A-4, como contexto no normativo, las disposiciones ordinarias de FX-02 (U-09 (e), U-16 (1), CD-19/OQ-24) que viven en la orden O4? |
+ 
+ **Disposición de la revisión 1** (R20261009T122416Z-bce3): Q-A4-01 → A62-A4-O2 (A4-1, regla 3); Q-A4-03 → A62-A4-O1 (A4-1, regla 2); Q-A4-04 →
+ A62-A4-O6 y Q-A4-05 → A62-A4-O5 (anexo, punto 2); Q-A4-07 → A62-A4-O3 y Q-A4-11 → A62-A4-O7 (§3.7); Q-A4-12 y Q-A4-13 → A62-A4-01 (§3.5,
+ regla 5; §3.7; §5); Q-A4-02, Q-A4-06, Q-A4-08, Q-A4-09, Q-A4-10 y Q-A4-14, sin hallazgo. Q-A4-15..Q-A4-17 son nuevas, para la re-revisión.
+ 
++**Disposición de la revisión 2** (R20261009T150948Z-fdc2): Q-A4-12, Q-A4-13, Q-A4-15 y Q-A4-16 → A62-A4-02 (opción B: §3.5, reglas 1 y 5; §3.7;
++§4; §5); Q-A4-11 → A62-A4-O9 (§3.7, parte C); Q-A4-01..Q-A4-10, Q-A4-14 y Q-A4-17, sin hallazgo. Q-A4-18..Q-A4-22 son nuevas, para la
++re-revisión de la corrección 3.
++
+ ## 9. Evidencia
+ 
+ - Decisiones §60, punto 2 (DEC L1173); OD-2e, §59 (DEC L1152); `claude-cli`, §56, puntos 6-8, y §57, punto 3; OD-3 y CLAUDE-CLI-I62 (DEC L1083, L1085).
+@@ -394,16 +482,16 @@ regla 5; §3.7; §5); Q-A4-02, Q-A4-06, Q-A4-08, Q-A4-09, Q-A4-10 y Q-A4-14, sin
+ 
+ | Autoridad | Veredicto | Registro |
+ |---|---|---|
+-| Architect independiente | revisión 1 (R20261009T122416Z-bce3, sobre 7d863219…): CHANGES REQUIRED, con A62-A4-01 REQUIRED y A62-A4-O1..O8 OPTIONAL; A4-5 AGREED por separado; auditor NOT_ACCREDITED (una cita desplazada una línea, sin efecto sobre A62-A4-01). Re-revisión de esta versión: PENDING | [registro](I-62-architect-review-A-4.md); `docs/automation/evidence/I-62-architect-A-4/R20261009T122416Z-bce3/output.json`; evidencia §104 |
+-| Coordinator | PENDING: acreditación de la revisión 1 y disposición de A62-A4-01 (un REQUIRED abierto solo lo cierra quien lo emitió) | — |
+-| Owner | NOT REQUIRED para el acuerdo salvo Q-A4-09; dos autorizaciones de consumo para la aplicación (§7) | — |
++| Architect independiente | revisión 1 (R20261009T122416Z-bce3, sobre 7d863219…): CHANGES REQUIRED, con A62-A4-01 REQUIRED y A62-A4-O1..O8 OPTIONAL; A4-5 AGREED por separado; auditor NOT_ACCREDITED (una cita desplazada una línea, sin efecto sobre A62-A4-01). Revisión 2 (R20261009T150948Z-fdc2, sobre 0d954376…): CHANGES REQUIRED, con A62-A4-01 CLOSED, A62-A4-02 REQUIRED y A62-A4-O9..O10 OPTIONAL; A4-5 AGREED; auditor ACCREDITED. Re-revisión de esta versión (corrección 3): PENDING | [registro 1](I-62-architect-review-A-4.md), [registro 2](I-62-architect-review-A-4-r2.md); `docs/automation/evidence/I-62-architect-A-4/R20261009T150948Z-fdc2/output.json` |
++| Coordinator | PENDING: decisiones §62 (A62-A4-01 ACCEPTED REQUIRED) y §63 (revisión 2 ACCREDITED; A62-A4-01 CLOSED; A62-A4-02 ACCEPTED REQUIRED, opción B; A62-A4-O9 y O10 no bloqueantes; A4-6 por U-14); ningún AGREED | decisiones §62-§63 |
++| Owner | NOT REQUIRED para el acuerdo salvo Q-A4-09 y Q-A4-21; tres autorizaciones de consumo para la aplicación (§7), en una sola solicitud | — |
+ 
+ Mientras A-4 sea PROPUESTA, se corrige en este mismo archivo, con blob nuevo, y la historia queda en Git. Una vez acordada, solo la corrige,
+ revoca o sustituye la A-n siguiente (LIFECYCLE §6).
+ 
+ ## Anexo (no normativo) — aplicación prevista a FX-02
+ 
+-Solo con A-4 AGREED, las disposiciones del Coordinator y las dos líneas del Owner:
++Solo con A-4 AGREED, las disposiciones del Coordinator y las líneas del Owner de §7:
+ 
+ 1. **A4-1.** `codex-cli` 0.162.0-alpha.2, celda `gpt-6-luna/high`, `cmd.exe` declarada en el texto y receta 16.4 literal; en un clon de solo
+    lectura con historia (el directorio `-C` que fija la disposición): `git diff --name-only <base>..<head>`, las lecturas de Git de `Identity`,
+@@ -418,6 +506,11 @@ Solo con A-4 AGREED, las disposiciones del Coordinator y las dos líneas del Own
+    registra). CD-19 / OQ-24 (`controller-contracts.md` L212) sigue igual con cualquier adapter.
+ 3. **Vía V3 en paralelo.** Si antes llega una actualización de la CLI que corrige la regresión, se pide su bloque A2-P2 y A4-1 deja de hacer falta.
+ 4. **A4-3..A4-5 en la orden O4** (transcripción del Coordinator del fixture antes del Q0): la preautorización de A4-3 va en `{IN_WINDOW_BINDING_RULE}`
+-   (punto 6) con sus dos marcadores; la evaluación de A4-4, en `{BINDING_ACCEPTANCE_RULE}` y en `{REVIEW_PLACEMENT}`; A4-5, en `{CORRECTION_RULE}`
+-   (punto 16). La regla de STOP dentro de la ventana que A4-3 presupone es `{IN_WINDOW_STOP_RULE}` (U-24), que A-4 no fija. La decisión T3/T3'
+-   sobre `d` va en el punto 7 de O4 (A62-A4-O7).
++   (punto 6) con sus dos marcadores, junto con la evaluación de A4-4 para el Controller de verificación (A4-3, regla 1: «con B6 según la regla
++   siguiente»); la de A4-4 para el Controller de planificación, en `{BINDING_ACCEPTANCE_RULE}`; para el Architect, **(A)** la decisión individual
++   real del Coordinator, fuera de la ventana, en `{REVIEW_PLACEMENT}`, sin RLA con UNKNOWN (A62-A4-02, opción B); A4-5, en `{CORRECTION_RULE}`
++   (punto 16). La regla de STOP dentro de la ventana que A4-3 presupone es `{IN_WINDOW_STOP_RULE}` (U-24), que A-4 no fija. **(C)** La regla
++   condicional T3/T3' sobre `d` va en el punto 7 de O4 (`{IN_WINDOW_ACCEPTANCE_RULE}`), con su registro y su reproducción (§3.7; A62-A4-O7 y
++   A62-A4-O9); las mutaciones selladas de U-16 (1) y la referencia AUTHOR de CD-19/OQ-24 también van en la orden (A62-A4-O10).
++5. **(B) A4-6.** Con A-4 AGREED (A4-6 incluida), la designación de A2 por T16 y `A4-PRINCIPAL-A2-CONSUMO = A`: P-07 comprueba antes de abrir A2
++   que 2 + 1 caben en la fila Principal A y en el total de la ronda A. Si A2 se acredita INVALID_LAUNCH, rige A2-P1 sin cambio (A4-6, regla 5).

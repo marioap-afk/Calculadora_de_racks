@@ -1,0 +1,75 @@
+{
+ "DryRun": "solo preflight: no se ejecuta el binario, no se escribe ni se lanza",
+ "BlockingChecks": [],
+ "NotRunInDryRun": [
+  "4-Version",
+  "5-Auth"
+ ],
+ "Checks": {
+  "1-KitIntegrity": {
+   "Ok": true,
+   "Mismatches": [],
+   "Unlisted": []
+  },
+  "2-ClosureTransport": {
+   "Ok": true
+  },
+  "3-Binary": {
+   "Ok": true,
+   "Exists": true,
+   "Path": "%APPDATA%\\Claude\\claude-code\\2.1.293\\83cb0bd7fed4\\claude.exe",
+   "Sha256": "8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa",
+   "Authenticode": "Valid",
+   "SignerIsAnthropic": true
+  },
+  "4-Version": {
+   "Ok": null,
+   "NotRun": "--dry-run: el binario no se ejecuta (`--version` solo en el lanzamiento real)"
+  },
+  "5-Auth": {
+   "Ok": null,
+   "NotRun": "--dry-run: el binario no se ejecuta (`auth status` solo en el lanzamiento real)"
+  },
+  "6-Clone": {
+   "Ok": true,
+   "Head": "24284a4a86f3f4b9552f8de3905f08fa0c81e84a",
+   "Clean": true,
+   "Branches": [
+    "main"
+   ],
+   "Remotes": [],
+   "BlobMismatches": [],
+   "ReparsePoints": 0
+  },
+  "7-RunFiles": {
+   "Ok": true,
+   "Listing": [
+    "A-4.0d954376.md",
+    "A-4.7d863219.md",
+    "delta.diff",
+    "order-s61.txt",
+    "order-s62.txt",
+    "order.txt",
+    "prompt.md"
+   ],
+   "Mismatches": []
+  },
+  "8-NewSession": {
+   "Ok": true,
+   "PriorTranscripts": 0,
+   "ProjectDirsForCloneOrRun": []
+  },
+  "9-CommandLine": {
+   "Ok": true,
+   "Chars": 16968
+  },
+  "10-TransportGate": {
+   "Ok": true,
+   "Status": "MEASURED",
+   "LaunchArgsMatchTemplate": true,
+   "CharacterizationSha256": "20d0de2ce625c38ddeaaf445ce2261b080520bdcf57eec8f4bf9a8bd0cedbf4c",
+   "AcceptanceSha256": null,
+   "Problems": []
+  }
+ }
+}

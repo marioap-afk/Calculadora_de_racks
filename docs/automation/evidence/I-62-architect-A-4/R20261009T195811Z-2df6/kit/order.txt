@@ -1,0 +1,74 @@
+I-62 — COORDINATOR DISPOSITION
+A-4 REVIEW R2 / U-14 / FX-02
+1. Segunda revisión de A-4
+Accreditation = ACCREDITED.
+Conservar verdict CHANGES REQUIRED.
+A62-A4-01 = CLOSED.
+A62-A4-02 = ACCEPTED REQUIRED.
+Seleccionada opción B: eliminar la rama de materialización del Architect en A4-4.
+Mantener aceptación individual real del binding del Architect fuera de la ventana. No alterar B.5, §14.3, I-S18 ni los validadores F4.
+O9 y O10: aceptar como precisiones no bloqueantes, siempre que no amplíen el cambio normativo.
+2. U-14
+R CUENTA como sesión física de Principal de la ronda A.
+A + R = 2 sesiones utilizadas.
+A2 requiere una tercera sesión y no cabe en el tope actual.
+No reclasificar retrospectivamente R ni reiniciar presupuestos.
+Preparar en A-4, que sigue PROPUESTA, un delta separado y estrecho que incremente en una sola sesión el presupuesto de Principal de la ronda A para cubrir A2, con justificación por F6-OBS-01.
+Ese delta requiere revisión Architect independiente y autorización de consumo Owner adicional.
+No lanzar A2 antes de ambas autoridades.
+3. U-09(e)
+T3 solo si A1'–A8' cumplen íntegramente sus condiciones con evidencia real.
+En caso contrario, aplicar T3' conforme al contrato.
+El titular evalúa el predicado y lo custodia; Q7 y S29 reproducen la evaluación.
+No fabricar aceptaciones individuales ni evidencias anteriores a la ejecución.
+4. U-16(1)
+Aceptar N4, N5, N7a y N7b sobre las mutaciones exactas selladas.
+Para N8, preparar una mutación válida, comprobar su semántica y volver a sellarla antes de ejecutar.
+No clasificar N8 como NOT_APPLICABLE sin demostrar ausencia real de su precondición.
+5. CD-19 / OQ-24
+La referencia AUTHOR para independencia se deriva de ActorRef y SessionRef observados de los autores reales del objeto.
+Exigir evidencia custodiada, identidad del runtime y comparación con el Architect ejecutado.
+UNKNOWN en cualquier dimensión REQUIRED no satisface independencia.
+No permitir identidades sintéticas ni basadas solo en BindingId.
+6. A-4 corrección 3
+Integrar las decisiones anteriores distinguiendo:
+
+* corrección de A62-A4-02;
+* autorización presupuestaria propuesta por U-14;
+* disposiciones ordinarias de FX-02.
+
+Actualizar materialidad, delta, guardas, pruebas y paquete Architect.
+Publicar la versión exacta corregida con trazabilidad.
+Lanzar una re-revisión formal por Claude CLI si las guardas están conformes.
+No declarar AGREED anticipadamente.
+7. Ejecución paralela
+Mientras se revisa A-4:
+
+* avanzar preparación independiente de FX-02;
+* terminar N8;
+* preparar referencias AUTHOR;
+* preparar la solicitud de consumo Owner;
+* continuar F7 sin adelantar gates.
+
+No abrir nuevas iniciativas ni rediseñar contratos que no estén afectados.
+8. Owner
+Concentrar en una sola solicitud:
+
+* A4-SONDA-CONSUMO;
+* A4-CLAUDE-FX02-CONSUMO;
+* A4-PRINCIPAL-A2-CONSUMO (una sesión adicional, por encima del límite de la ronda A).
+
+Estas autorizaciones solo entrarán en efecto después del acuerdo de la enmienda correspondiente.
+No inferir aprobación por silencio.
+9. Entrega
+Reportar:
+
+* nuevo blob de A-4;
+* guardas y revisión formal;
+* tratamiento exacto de I-S18;
+* tratamiento del presupuesto A/R/A2;
+* estado de N8;
+* autorizaciones Owner pendientes;
+* próxima acción que realmente permita lanzar FX-02.
+
+Mantener I-61 vigente e I-64 bloqueada.
