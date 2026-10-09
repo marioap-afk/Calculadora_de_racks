@@ -1,0 +1,1 @@
+Shell declarada: ejecuta cada comando con cmd.exe (la forma `cmd.exe /d /s /c "<comando>"` o la invocación equivalente de cmd.exe). No uses PowerShell, pwsh ni powershell.exe.
