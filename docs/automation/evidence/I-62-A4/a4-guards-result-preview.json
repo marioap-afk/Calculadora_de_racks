@@ -1,17 +1,17 @@
 {
  "Tool": "a4-guards.py preview",
- "Version": "C2",
- "RepoHead": "a5b50c689ef33aa7b6fa7f7949fd72f58202e369",
- "A4Blob": "0d9543761e3e3a45a94338776f7c1ba763224ab3",
- "PkgBlob": "59052b847ccc13e8be539189ae1b77dc7f9d3623",
+ "Version": "C3",
+ "RepoHead": "b25dde6b2adda5ed80695373451a2f12721bd2b9",
+ "A4Blob": "5e2ba68efdc1b902aa1c28aff4453b4b6973be7f",
+ "PkgBlob": "57c060e15f14ade6aefeda246adf26b2adaf2594",
  "Checks": [
   {
    "Check": "G1 literales, cabecera y privacidad",
    "BlockLines": 5,
-   "Version": "C2",
-   "InlineLiterals": 73,
+   "Version": "C3",
+   "InlineLiterals": 83,
    "InlineLiteralsSection2": 58,
-   "Paragraphs": 5,
+   "Paragraphs": 6,
    "Literals": [
     {
      "Id": "L01",
@@ -523,11 +523,81 @@
      "Lines": "L1884",
      "Where": "cabecera, §3.7 y §5 (corrección 2)",
      "Result": "PASS"
+    },
+    {
+     "Id": "L74",
+     "Source": "V14",
+     "Lines": "L2437",
+     "Where": "§2 (A4-6)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L75",
+     "Source": "V14",
+     "Lines": "L2501",
+     "Where": "§2 (A4-6)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L76",
+     "Source": "A2",
+     "Lines": "L156-L157",
+     "Where": "§2 (A4-6)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L77",
+     "Source": "A2",
+     "Lines": "L159",
+     "Where": "§2 (A4-6)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L78",
+     "Source": "DEC",
+     "Lines": "L982",
+     "Where": "§2 (A4-6)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L79",
+     "Source": "DEC",
+     "Lines": "L983",
+     "Where": "§2 (A4-6)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L80",
+     "Source": "DEC",
+     "Lines": "L985",
+     "Where": "§2 (A4-6)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L81",
+     "Source": "DEC63",
+     "Lines": "L1265",
+     "Where": "§2 (A4-6)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L82",
+     "Source": "V14",
+     "Lines": "L2184-L2185",
+     "Where": "§2 (A62-A4-02)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L83",
+     "Source": "V14",
+     "Lines": "L2501",
+     "Where": "A4-6",
+     "Result": "PASS"
     }
    ],
    "A3HeaderState": "AGREED",
    "Info": [
-    "fuente KIT: blob en la base ceb38284 distinto del fijado fd7ef02d (cambio fuera de A-4); las 12 líneas citadas son idénticas",
+    "fuente KIT: blob en la base 2439837a distinto del fijado fd7ef02d (cambio fuera de A-4); las 12 líneas citadas son idénticas",
     "L21 (V14 L386-L387): la cita no toca todas las líneas del rango (rango más amplio que la cita)",
     "L60 (DEC L1161-L1162): la cita no toca todas las líneas del rango (rango más amplio que la cita)",
     "L63 (AP L1122-L1123): la cita no toca todas las líneas del rango (rango más amplio que la cita)"
@@ -537,158 +607,282 @@
    "Result": "PASS"
   },
   {
-   "Check": "G2D2 límite del diff de la corrección 2 (copias frente a 7d863219 / 085f30f6)",
+   "Check": "G2D3 límite del diff de la corrección 3 (copias frente a 0d954376 / 59052b84)",
    "Diff": {
     "A4": {
-     "Blob": "0d9543761e3e3a45a94338776f7c1ba763224ab3",
+     "Blob": "5e2ba68efdc1b902aa1c28aff4453b4b6973be7f",
      "ChangedRegions": [
       "Anexo",
       "header:Architect review",
       "header:Classification",
+      "header:Coordinator verdict",
+      "header:Origin",
+      "header:Owner decision",
+      "§1",
       "§10",
-      "§3.2",
+      "§2",
+      "§3.1",
       "§3.5",
       "§3.7",
       "§4",
       "§5",
       "§6",
+      "§7",
       "§8"
+     ],
+     "AddedRegions": [
+      "§3.8"
      ],
      "Hunks": [
       {
        "Op": "replace",
-       "Old": "L24-L24",
-       "New": "L24-L26"
+       "Old": "L25-L26",
+       "New": "L25-L27"
       },
       {
        "Op": "replace",
-       "Old": "L36-L36",
-       "New": "L38-L40"
+       "Old": "L35-L35",
+       "New": "L36-L37"
       },
       {
        "Op": "replace",
-       "Old": "L162-L166",
-       "New": "L166-L173"
+       "Old": "L39-L40",
+       "New": "L41-L44"
       },
       {
        "Op": "replace",
-       "Old": "L242-L244",
-       "New": "L249-L257"
+       "Old": "L43-L43",
+       "New": "L47-L48"
       },
       {
        "Op": "replace",
-       "Old": "L263-L264",
-       "New": "L276-L286"
+       "Old": "L46-L47",
+       "New": "L51-L52"
       },
       {
        "Op": "replace",
-       "Old": "L269-L271",
-       "New": "L291-L297"
-      },
-      {
-       "Op": "replace",
-       "Old": "L277-L278",
-       "New": "L303-L304"
-      },
-      {
-       "Op": "replace",
-       "Old": "L282-L282",
-       "New": "L308-L308"
-      },
-      {
-       "Op": "replace",
-       "Old": "L285-L285",
-       "New": "L311-L312"
-      },
-      {
-       "Op": "replace",
-       "Old": "L295-L295",
-       "New": "L322-L322"
-      },
-      {
-       "Op": "replace",
-       "Old": "L298-L298",
-       "New": "L325-L325"
-      },
-      {
-       "Op": "replace",
-       "Old": "L309-L311",
-       "New": "L336-L341"
+       "Old": "L61-L63",
+       "New": "L66-L69"
       },
       {
        "Op": "insert",
-       "Old": "L345+",
-       "New": "L376-L382"
+       "Old": "L64+",
+       "New": "L71-L78"
+      },
+      {
+       "Op": "insert",
+       "Old": "L133+",
+       "New": "L148-L160"
       },
       {
        "Op": "replace",
-       "Old": "L360-L361",
-       "New": "L397-L398"
+       "Old": "L149-L149",
+       "New": "L176-L176"
+      },
+      {
+       "Op": "insert",
+       "Old": "L152+",
+       "New": "L180-L183"
       },
       {
        "Op": "replace",
-       "Old": "L372-L375",
-       "New": "L409-L418"
+       "Old": "L234-L234",
+       "New": "L265-L265"
       },
       {
        "Op": "replace",
-       "Old": "L379-L379",
-       "New": "L422-L423"
+       "Old": "L236-L236",
+       "New": "L267-L267"
+      },
+      {
+       "Op": "replace",
+       "Old": "L240-L240",
+       "New": "L271-L271"
+      },
+      {
+       "Op": "replace",
+       "Old": "L250-L251",
+       "New": "L281-L282"
+      },
+      {
+       "Op": "replace",
+       "Old": "L253-L257",
+       "New": "L284-L287"
+      },
+      {
+       "Op": "replace",
+       "Old": "L277-L286",
+       "New": "L307-L332"
+      },
+      {
+       "Op": "replace",
+       "Old": "L289-L290",
+       "New": "L335-L336"
+      },
+      {
+       "Op": "replace",
+       "Old": "L293-L297",
+       "New": "L339-L361"
+      },
+      {
+       "Op": "insert",
+       "Old": "L299+",
+       "New": "L364-L366"
+      },
+      {
+       "Op": "replace",
+       "Old": "L311-L312",
+       "New": "L378-L380"
+      },
+      {
+       "Op": "insert",
+       "Old": "L315+",
+       "New": "L384-L385"
+      },
+      {
+       "Op": "replace",
+       "Old": "L321-L325",
+       "New": "L391-L395"
+      },
+      {
+       "Op": "replace",
+       "Old": "L332-L333",
+       "New": "L402-L406"
+      },
+      {
+       "Op": "replace",
+       "Old": "L337-L341",
+       "New": "L410-L417"
+      },
+      {
+       "Op": "replace",
+       "Old": "L345-L345",
+       "New": "L421-L421"
+      },
+      {
+       "Op": "replace",
+       "Old": "L348-L351",
+       "New": "L424-L429"
+      },
+      {
+       "Op": "insert",
+       "Old": "L355+",
+       "New": "L434-L434"
+      },
+      {
+       "Op": "insert",
+       "Old": "L378+",
+       "New": "L458-L462"
+      },
+      {
+       "Op": "insert",
+       "Old": "L382+",
+       "New": "L467-L470"
+      },
+      {
+       "Op": "replace",
+       "Old": "L397-L399",
+       "New": "L485-L487"
+      },
+      {
+       "Op": "replace",
+       "Old": "L406-L406",
+       "New": "L494-L494"
+      },
+      {
+       "Op": "replace",
+       "Old": "L421-L423",
+       "New": "L509-L516"
       }
      ]
     },
     "Package": {
-     "Blob": "59052b847ccc13e8be539189ae1b77dc7f9d3623",
+     "Blob": "57c060e15f14ade6aefeda246adf26b2adaf2594",
      "Hunks": [
       {
        "Op": "replace",
-       "Old": "L4-L6",
-       "New": "L4-L7"
+       "Old": "L4-L9",
+       "New": "L4-L12"
       },
       {
        "Op": "replace",
-       "Old": "L16-L16",
+       "Old": "L14-L14",
        "New": "L17-L17"
       },
       {
-       "Op": "insert",
-       "Old": "L22+",
-       "New": "L24-L24"
-      },
-      {
-       "Op": "insert",
-       "Old": "L26+",
-       "New": "L29-L52"
+       "Op": "replace",
+       "Old": "L17-L17",
+       "New": "L20-L20"
       },
       {
        "Op": "replace",
-       "Old": "L33-L33",
-       "New": "L59-L60"
+       "Old": "L24-L24",
+       "New": "L27-L28"
+      },
+      {
+       "Op": "replace",
+       "Old": "L30-L30",
+       "New": "L34-L34"
+      },
+      {
+       "Op": "replace",
+       "Old": "L32-L33",
+       "New": "L36-L36"
+      },
+      {
+       "Op": "replace",
+       "Old": "L35-L44",
+       "New": "L38-L39"
+      },
+      {
+       "Op": "replace",
+       "Old": "L46-L47",
+       "New": "L41-L51"
+      },
+      {
+       "Op": "replace",
+       "Old": "L49-L52",
+       "New": "L53-L71"
+      },
+      {
+       "Op": "replace",
+       "Old": "L59-L60",
+       "New": "L78-L79"
+      },
+      {
+       "Op": "replace",
+       "Old": "L76-L76",
+       "New": "L95-L100"
+      },
+      {
+       "Op": "replace",
+       "Old": "L98-L99",
+       "New": "L122-L123"
+      },
+      {
+       "Op": "replace",
+       "Old": "L122-L124",
+       "New": "L146-L154"
+      },
+      {
+       "Op": "replace",
+       "Old": "L144-L145",
+       "New": "L174-L176"
+      },
+      {
+       "Op": "replace",
+       "Old": "L154-L156",
+       "New": "L185-L190"
       },
       {
        "Op": "insert",
-       "Old": "L48+",
-       "New": "L76-L78"
+       "Old": "L160+",
+       "New": "L195-L195"
       },
       {
        "Op": "replace",
-       "Old": "L76-L78",
-       "New": "L106-L109"
-      },
-      {
-       "Op": "replace",
-       "Old": "L91-L91",
-       "New": "L122-L124"
-      },
-      {
-       "Op": "insert",
-       "Old": "L120+",
-       "New": "L154-L156"
-      },
-      {
-       "Op": "replace",
-       "Old": "L124-L124",
-       "New": "L160-L160"
+       "Old": "L173-L173",
+       "New": "L208-L208"
       }
      ]
     }
@@ -701,7 +895,7 @@
    "Paths": 18,
    "Mismatches": {},
    "Info": [
-    "Head:docs/automation/evidence/I-62-F6/kits/FX-02/README.md con blob ceb38284 distinto del fijado fd7ef02d (cambio fuera de A-4; líneas citadas en G1)"
+    "Head:docs/automation/evidence/I-62-F6/kits/FX-02/README.md con blob 2439837a distinto del fijado fd7ef02d (cambio fuera de A-4; líneas citadas en G1)"
    ],
    "Findings": [],
    "Result": "PASS"
@@ -713,14 +907,16 @@
     "A4-2",
     "A4-3",
     "A4-4",
-    "A4-5"
+    "A4-5",
+    "A4-6"
    ],
    "ParagraphSha256": {
     "A4-1": "a985b198a3a7a3411c9ed72b4431eecbd3ad260f1ddf7587fe4a022a64249be2",
     "A4-2": "b487605319cf0d2e62ba4c1b42302bb659bcbc099114e7ddd34fc14bbad9b1fd",
     "A4-3": "6599d5e08a52e9f5a7cbc02e15ab9b0a37210f3aa24f69a53ef5c43b26f85116",
-    "A4-4": "a71c18c7bb451f45bb7d2bdc5635c3d705d09fa2db1e7a78d7261f1347d4f5fb",
-    "A4-5": "4622ae1c19b76ccd1798f725564f86e0f9e7502bf9f50b795259cd0a387088b5"
+    "A4-4": "7d037b318a1f54cf9c99c91f5db04d25c002f42da502b6e740a6cda4fccea1fb",
+    "A4-5": "4622ae1c19b76ccd1798f725564f86e0f9e7502bf9f50b795259cd0a387088b5",
+    "A4-6": "e526f48c2ef6eea3a4616199855743faf397bcf153dd037aaad05426c9983252"
    },
    "A2Pattern": {
     "Added": [],
@@ -732,9 +928,9 @@
     ]
    },
    "Application": {
-    "A4-1..A4-5": {
+    "A4-1..A4-6": {
      "PureAppend": true,
-     "InsertedLines": 99,
+     "InsertedLines": 111,
      "InsertedAfterLine": 2574,
      "ChangedSections": [
       "# I-62 — Proposal V14: portabilidad del Principal, binding de roles independient",
@@ -742,9 +938,29 @@
       "### D.3 Hoja de invocaciones y escenarios"
      ]
     },
-    "A4-1..A4-4 (sin A4-5)": {
+    "sin A4-5": {
      "PureAppend": true,
-     "InsertedLines": 89,
+     "InsertedLines": 101,
+     "InsertedAfterLine": 2574,
+     "ChangedSections": [
+      "# I-62 — Proposal V14: portabilidad del Principal, binding de roles independient",
+      "## Anexo D — Pilotos y portabilidad (plano c)",
+      "### D.3 Hoja de invocaciones y escenarios"
+     ]
+    },
+    "sin A4-6": {
+     "PureAppend": true,
+     "InsertedLines": 98,
+     "InsertedAfterLine": 2574,
+     "ChangedSections": [
+      "# I-62 — Proposal V14: portabilidad del Principal, binding de roles independient",
+      "## Anexo D — Pilotos y portabilidad (plano c)",
+      "### D.3 Hoja de invocaciones y escenarios"
+     ]
+    },
+    "sin A4-5 ni A4-6": {
+     "PureAppend": true,
+     "InsertedLines": 88,
      "InsertedAfterLine": 2574,
      "ChangedSections": [
       "# I-62 — Proposal V14: portabilidad del Principal, binding de roles independient",
@@ -790,6 +1006,14 @@
      "Rule": "A4-5",
      "Title": "Tope de una corrección de FX-02",
      "ScopeClause": "Solo para la tarea de FX-02 de la Topología A, en F6.",
+     "Missing": [],
+     "OtherScenarios": [],
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-6",
+     "Title": "Una sesión de Principal más en la ronda A, solo para el titular A2",
+     "ScopeClause": "Solo para la ronda A de F6 (Topología A) y solo para la sesión de Principal del titular A2 de FX-02, designado por T16.",
      "Missing": [],
      "OtherScenarios": [],
      "Result": "PASS"
@@ -852,6 +1076,16 @@
       "V14 L2442",
       "KIT L214",
       "KIT L338"
+     ],
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-6",
+     "Quote": "N11: B2",
+     "FoundIn": [
+      "V14 L2501",
+      "A2 L85",
+      "A2 L166"
      ],
      "Result": "PASS"
     }
@@ -1115,13 +1349,63 @@
      "Result": "PASS"
     },
     {
-     "Rule": "A4-4",
-     "Item": "5",
-     "Category": "SUPERFICIE",
-     "Token": "producción",
+     "Rule": "A4-6",
+     "Item": "3",
+     "Category": "ESCENARIO",
+     "Token": "FX-04a",
+     "Statement": "NEGATIVA",
+     "Marker": "ningún",
+     "Sentence": "ningún otro tope ni total cambia: ni las demás columnas de los totales de la ronda A, ni las filas de lanzamientos y de sondas, ni la fila «N11: B2», ni las rondas FX-04a, FX-04b y B, ni D.8;",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-6",
+     "Item": "3",
+     "Category": "ESCENARIO",
+     "Token": "FX-04b",
+     "Statement": "NEGATIVA",
+     "Marker": "ningún",
+     "Sentence": "ningún otro tope ni total cambia: ni las demás columnas de los totales de la ronda A, ni las filas de lanzamientos y de sondas, ni la fila «N11: B2», ni las rondas FX-04a, FX-04b y B, ni D.8;",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-6",
+     "Item": "3",
+     "Category": "ESCENARIO",
+     "Token": "D.8",
+     "Statement": "NEGATIVA",
+     "Marker": "ningún",
+     "Sentence": "ningún otro tope ni total cambia: ni las demás columnas de los totales de la ronda A, ni las filas de lanzamientos y de sondas, ni la fila «N11: B2», ni las rondas FX-04a, FX-04b y B, ni D.8;",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-6",
+     "Item": "4",
+     "Category": "REGLA",
+     "Token": "OD-5",
      "Statement": "NEGATIVA",
      "Marker": "no",
-     "Sentence": "El validador de producción que materializó F4 no la aplica ni cambia;",
+     "Sentence": "La apertura exige además la autorización de consumo del Owner, porque la aprobación de OD-5 (consumo dentro de los topes de D.3) no la cubre, y solo tiene efecto con esta regla acordada;",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-6",
+     "Item": "5",
+     "Category": "REGLA",
+     "Token": "A-2",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "rige sin cambio",
+     "Sentence": "no es la reejecución extraordinaria de A-2 ni la consume: la regla de A-2 sobre un lanzamiento inválido rige sin cambio, también para A2.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-6",
+     "Item": "5",
+     "Category": "REGLA",
+     "Token": "A-2",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "rige sin cambio",
+     "Sentence": "no es la reejecución extraordinaria de A-2 ni la consume: la regla de A-2 sobre un lanzamiento inválido rige sin cambio, también para A2.",
      "Result": "PASS"
     }
    ],
@@ -1293,7 +1577,7 @@
      "Tokens": [
       "16.21"
      ],
-     "Sentence": "Si falta una, el binding no se acepta ni se materializa (16.21);"
+     "Sentence": "Si falta una, el binding no se acepta (16.21);"
     },
     {
      "Rule": "A4-4",
@@ -1335,17 +1619,11 @@
      "Item": "5",
      "Tokens": [
       "A7'",
-      "Q7"
+      "Coordinator",
+      "Q7",
+      "§63"
      ],
-     "Sentence": "Aplican la excepción, con ese discriminador, el aceptante de A7', el validador que reproduce en el Q7 la aceptación y la materialización, y las comprobaciones de la supervisión tras el Q7 (S29 del kit de FX-02): quien valida reproduce la evaluación de la aceptación con el preflight custodiado y la de la Entrada con el registro custodiado de la invocación."
-    },
-    {
-     "Rule": "A4-4",
-     "Item": "5",
-     "Tokens": [
-      "B6"
-     ],
-     "Sentence": "si no, rige sin cambio la consecuencia de B6 o del criterio INDEPENDENCE."
+     "Sentence": "Aplican la excepción, con ese discriminador, el aceptante de A7', la aceptación individual real del binding del Architect por el Coordinator fuera de la ventana (decisiones §63, punto 1), el validador que reproduce en el Q7 la aceptación, y las comprobaciones de la supervisión tras el Q7 (S29 del kit de FX-02): quien valida reproduce la evaluación de la aceptación con el preflight custodiado y la de la Entrada con el registro custodiado de la invocación."
     },
     {
      "Rule": "A4-5",
@@ -1387,10 +1665,35 @@
       "D.4"
      ],
      "Sentence": "si la corrección no se lanza, el cierre REWORK cierra FX-02 como UNVERIFIED con esa causa, no como FAIL: no hay violación observada (D.4)."
+    },
+    {
+     "Rule": "A4-6",
+     "Item": "3",
+     "Tokens": [
+      "B2"
+     ],
+     "Sentence": "ningún otro tope ni total cambia: ni las demás columnas de los totales de la ronda A, ni las filas de lanzamientos y de sondas, ni la fila «N11: B2», ni las rondas FX-04a, FX-04b y B, ni D.8;"
+    },
+    {
+     "Rule": "A4-6",
+     "Item": "4",
+     "Tokens": [
+      "P-07"
+     ],
+     "Sentence": "P-07 comprueba antes de abrir A2 que la sesión cabe en ese tope."
+    },
+    {
+     "Rule": "A4-6",
+     "Item": "4",
+     "Tokens": [
+      "Owner"
+     ],
+     "Sentence": "La apertura exige además la autorización de consumo del Owner, porque la aprobación de OD-5 (consumo dentro de los topes de D.3) no la cubre, y solo tiene efecto con esta regla acordada;"
     }
    ],
    "Info": [
-    "frente a 7d863219: A4-2, A4-3 y A4-5 idénticos; A4-4 cambia solo en la regla 5 y A4-1 solo en las reglas 2 y 3",
+    "frente a 0d954376: A4-1, A4-2, A4-3 y A4-5 idénticos; A4-4 cambia solo en las reglas 1 y 5; A4-6 es nueva",
+    "A4-6: de 2 a 3 = tope congelado (V14 L2437, fila Principal A; L2523, total de la ronda A) + 1",
     "A4-1, regla 5: invalidadores iguales a los de A-2 L238-L239 (8)",
     "ninguna de las cinco reglas menciona A-3"
    ],
@@ -1401,13 +1704,13 @@
  "SelfTest": {
   "Result": "PASS",
   "Total": {
-   "Mutants": 86,
-   "Killed": 86
+   "Mutants": 112,
+   "Killed": 112
   },
   "PerGuard": {
    "G1": {
-    "Mutants": 21,
-    "Killed": 21
+    "Mutants": 24,
+    "Killed": 24
    },
    "G2": {
     "Mutants": 8,
@@ -1422,8 +1725,8 @@
     "Killed": 2
    },
    "G5": {
-    "Mutants": 19,
-    "Killed": 19
+    "Mutants": 25,
+    "Killed": 25
    },
    "G2C": {
     "Mutants": 11,
@@ -1434,8 +1737,8 @@
     "Killed": 2
    },
    "G5B": {
-    "Mutants": 4,
-    "Killed": 4
+    "Mutants": 5,
+    "Killed": 5
    },
    "G2C2": {
     "Mutants": 13,
@@ -1444,6 +1747,14 @@
    "G2D2": {
     "Mutants": 2,
     "Killed": 2
+   },
+   "G2C3": {
+    "Mutants": 15,
+    "Killed": 15
+   },
+   "G2D3": {
+    "Mutants": 1,
+    "Killed": 1
    }
   },
   "BaselineP": {
@@ -1467,12 +1778,19 @@
    "G5": "PASS",
    "G5B": "PASS"
   },
-  "A4TextBlob": "0d9543761e3e3a45a94338776f7c1ba763224ab3",
-  "PkgTextBlob": "59052b847ccc13e8be539189ae1b77dc7f9d3623",
+  "ControlC3": {
+   "G1": "PASS",
+   "G2C3": "PASS",
+   "G2D3": "PASS",
+   "G5": "PASS",
+   "G5B": "PASS"
+  },
+  "A4TextBlob": "5e2ba68efdc1b902aa1c28aff4453b4b6973be7f",
+  "PkgTextBlob": "57c060e15f14ade6aefeda246adf26b2adaf2594",
   "Findings": []
  },
  "Result": "PASS",
- "ToolBlob": "6595d8730456d7a06fc3edbd833dfa1eef11a1bc",
+ "ToolBlob": "27748730b64dc9df3c30db71cb521ec0806e5d29",
  "ToolPrivacy": {
   "Findings": [],
   "Result": "PASS"

@@ -34,6 +34,16 @@ Uso (siempre con `python -I -B`; solo lectura del repositorio; sin red; nunca ej
       a4-selftest.json MODIFICADOS, los resultados de las guardas opcionales, evidencia y decisiones solo por añadido, estado modificado, nada más.
       G5 exige además A4-2, A4-3 y A4-5 idénticos a 7d863219, A4-4 idéntica salvo la regla 5 y A4-1 salvo las reglas 2 y 3. El self-test añade el
       escenario C2 (control y mutantes) sobre la base real que contiene 7d863219.
+  Corrección 3 (decisiones §63; A62-A4-02 opción B, A4-6 por U-14 y contexto de FX-02): cuando la base (o, en preview, la HEAD) tiene A-4 =
+      0d954376 y paquete = 59052b84. `run` aplica G1, G2C3, G3, G4, G5 y G5b; `preview`, G1, G2D3, G3 y G5. G2C3/G2D3: el diff frente a
+      0d954376 solo toca las regiones declaradas (cabecera: Classification, Origin, Architect review, Coordinator verdict y Owner decision; §1,
+      §3.7, §4, §5, §6, §7, §8, §10 y anexo; §2 y §3.1 solo por inserción; §3.8 nueva con A4-6); en §3.5, A4-4 cambia solo en las reglas 1 y 5, por
+      supresión y, en la regla 5, con una sola frase declarada (C3_A44_INSERT: la aceptación individual real del Architect por el Coordinator fuera
+      de la ventana), sin ningún texto de la materialización; frases exigidas (opción B, frase de I-S18, partes (A)/(B)/(C), M-02/M-05, tres
+      líneas del Owner) y retiradas; el paquete nombra el blob nuevo, A62-A4-02, 0d954376, A4-6, la opción B e I-S18; blobs fijados
+      (A4_CORR3_BLOB, PKG_CORR3_BLOB). G5 pasa a seis reglas: añadido puro (también sin A4-5, sin A4-6 y sin las dos), cláusulas de alcance,
+      A4-1, A4-2, A4-3 y A4-5 idénticos a 0d954376, A4-4 idéntica salvo las reglas 1 y 5, y las cifras de A4-6 («de 2 a 3») iguales al tope
+      congelado de la fila Principal A (V14 L2437) y del total de la ronda A (L2523) más uno. El self-test añade el escenario C3.
   Archivos del kit de FX-02 que otros commits cambian (README, contratos, plantilla O4): su blob distinto del fijado es INFO si las líneas que A-4
       cita no cambian (G1 lo comprueba línea a línea); G3 los informa sin fallar, salvo que el commit comprobado los toque.
 
@@ -90,6 +100,14 @@ RESULT_PREVIEW = "docs/automation/evidence/I-62-A4/a4-guards-result-preview.json
 A4_CORR2_BLOB = "0d9543761e3e3a45a94338776f7c1ba763224ab3"
 PKG_CORR2_BLOB = "59052b847ccc13e8be539189ae1b77dc7f9d3623"
 F4V = "tests/RackCad.Tests/I62/StateV2Validator.Orchestration.cs"  # validador de producción de F4 que cita A4-4, regla 5 (corrección 2)
+# Corrección 3 (decisiones §63): (A) A62-A4-02, opción B; (B) A4-6 (U-14); (C) contexto de FX-02; sobre 0d954376 / 59052b84
+A4_CORR3_BLOB = "5e2ba68efdc1b902aa1c28aff4453b4b6973be7f"
+PKG_CORR3_BLOB = "57c060e15f14ade6aefeda246adf26b2adaf2594"
+U14 = "docs/automation/evidence/I-62-F6/FX-02/s62/u14-reconciliation.md"
+RESULT_C2 = "docs/automation/evidence/I-62-A4/a4-guards-result-c2.json"
+RESULT_C3 = "docs/automation/evidence/I-62-A4/a4-guards-result-c3.json"
+DEC63_BLOB = "01905d16f03131692423fc4eb8bb3dfcbdf02688"  # decisiones en d5b454fd (hasta §63), extensión por añadido de 625a7075
+PRINCIPAL_A_LINE, TOTALS_A_LINE = 2437, 2523      # V14 D.3: fila Principal A y fila A de los totales (A4-6)
 A3_OLD_LINE = "A-3 candidata en revisión formal (decisiones §58, punto 3; blob ea6721f7…). A-4 no la modifica, no depende de ella ni la interpreta (Q-A4-07)."
 A3_NEW_LINE = ("A-3 AGREED (decisiones §61, punto 1; docs/initiatives/I-62-A-3.md, blob ea6721f78cb63fbc4f9d99563f3262eb36a32c5d). A-4 no la modifica, "
                "no depende de ella ni la interpreta (Q-A4-07).")
@@ -154,10 +172,13 @@ SOURCES["DEC"] = "625a7075e06f10edf25c0574067202f6f214c7e0"   # decisiones en 52
 SOURCES["EVAL"] = "83a960cacc951a3c643af5049d1fc1f8aae16866"  # evaluación de la ruta cmd.exe (cabecera de A-4: «blob 83a960ca…»)
 BQ_SOURCES = {"A2"}  # fuentes cuyas líneas citadas son de un bloque citado de Markdown («> »): se comparan sin el marcador
 APPEND_SOURCES = {"DEC": DEC}
-EVOLVING_SOURCES = {t for t, p in SOURCE_PATHS.items() if p in EVOLVING or t == "EVAL"}  # fuentes que crecen solo por añadido: en una base posterior, su texto empieza por el del blob fijado
+EVOLVING_SOURCES = {t for t, p in SOURCE_PATHS.items() if p in EVOLVING or t == "EVAL"}
+SOURCES_C3, SOURCE_PATHS_C3 = {"DEC63": DEC63_BLOB}, {"DEC63": DEC}  # fuentes que solo cita la corrección 3
+APPEND_SOURCES["DEC63"] = DEC  # fuentes que crecen solo por añadido: en una base posterior, su texto empieza por el del blob fijado
 
 # Prefijos de blob abreviados que A-4 escribe («`abcdef12…`» o «blob abcdef12…») -> ruta cuyo blob real en la base debe empezar así
 SHORT_BLOBS_C2 = [("355e1b35", F4V), ("ceb38284", KIT), ("7d863219", A4)]  # prefijos que solo escribe la corrección 2
+SHORT_BLOBS_C3 = [("355e1b35", F4V), ("2439837a", KIT), ("0d954376", A4), ("05f62382", U14)]  # prefijos de la corrección 3
 SHORT_BLOBS = [("34ad80ea", V14), ("0f6b8608", FREEZE), ("c01899a7", A1), ("f1e1d6f0", A2), ("ea6721f7", A3), ("e1bd8d91", ADR48),
                ("f525cb1e", AP), ("592dcfd4", RAE), ("155f3469", CODEX), ("ae570380", CLAUDE), ("bba08fc4", ROUTING), ("166d978d", CATALOG),
                ("fd7ef02d", KIT), ("90929ad1", CC), ("d92f7d3e", O4), ("83a960ca", EVAL), ("b4a5679b", A2P2_RESULT), ("0b682899", CLAUDE_CHAR)]
@@ -265,10 +286,27 @@ LIT = [
     ("L72", "V14", 2442, 2442, "pool **4** (≤ 2 por fase)", "A4-5"),
 ]
 LIT_C2 = [("L73", "V14", 1884, 1884, "con **todos** en SATISFIED", "cabecera, §3.7 y §5 (corrección 2)")]  # citas nuevas de la corrección 2
-NO_REF = {"L65", "L66", "L67", "L68", "L69", "L70", "L71", "L72", "L73"}
+LIT_C3 = [  # citas nuevas de la corrección 3 (además de LIT_C2)
+    ("L74", "V14", 2437, 2437, "| Principal A (`claude-desktop-session`, sesión del sistema bajo prueba abierta por el Owner) | toda la ronda | 1 sesión | "
+                               "FX-01 (3 preflights **dentro** de esta sesión, por procedimiento; el Owner cambia el effort; cada observación por "
+                               "`get_session` ligada al instante; **se cuentan como turnos de la sesión, no como invocaciones nuevas**) | +1 reapertura | "
+                               "2 sesiones |", "§2 (A4-6)"),
+    ("L75", "V14", 2501, 2501, "| FX-04a | N11: B2 | 1 sesión | 0 | 1 |", "§2 (A4-6)"),
+    ("L76", "A2", 156, 157, "su lanzamiento físico queda registrado y cuenta en el tope de su fila y, si esta hoja fija un total de sesiones de Principal "
+                            "para su ronda, en ese total", "§2 (A4-6)"),
+    ("L77", "A2", 159, 159, "la aprobación de OD-5 (consumo dentro de los topes de D.3) no lo cubre", "§2 (A4-6)"),
+    ("L78", "DEC", 982, 982, "DEFECTO NO MATERIAL de implementación o custodia", "§2 (A4-6)"),
+    ("L79", "DEC", 983, 983, "A queda RELEASED y terminada", "§2 (A4-6)"),
+    ("L80", "DEC", 985, 985, "Principal R temporal", "§2 (A4-6)"),
+    ("L81", "DEC63", 1265, 1265, "A + R = 2 sesiones usadas; A2 sería la tercera y no cabe en el tope vigente", "§2 (A4-6)"),
+    ("L82", "V14", 2184, 2185, "todo binding con `Acceptance.Basis` = AUTHORIZED_MATERIALIZATION tiene un `AuthorizationRef` […] y un "
+                               "`MaterializationCheck` con todos los criterios en SATISFIED contra esa autorización", "§2 (A62-A4-02)"),
+    ("L83", "V14", 2501, 2501, "N11: B2", "A4-6"),
+]
+NO_REF = {"L65", "L66", "L67", "L68", "L69", "L70", "L71", "L72", "L73", "L83"}
 REF_AFTER = {"L59", "L64"}
 NOTATION = {"V14 L…", "DEC L…"}                              # notación de §2, no son citas
-SELF_QUOTES = {"la comprobación de esa declaración": "A4-1"}  # citas del propio texto normativo de A-4
+SELF_QUOTES = {"la comprobación de esa declaración": "A4-1", "con B6 según la regla siguiente": "A4-3"}  # citas del propio texto normativo
 BLOCK_HEADER = re.compile(r"^V14 D\.3, Topología A, ((?:L\d+(?:, | y ))*L\d+), en ese orden")
 # Referencias sin cita que A-4 hace a líneas concretas: se comprueba un testigo en la línea (aviso, no fallo: el encargo exige las citas).
 REF_TOKENS = [
@@ -295,6 +333,10 @@ D4 = "### D.4 "
 CAPS = "| **Codex, total** | | **11** | | pool **4** (≤ 2 por fase) | **15** |"
 CAPS_LINE = 2442
 RULE_IDS = ["A4-1", "A4-2", "A4-3", "A4-4", "A4-5"]
+RULE_IDS_C3 = RULE_IDS + ["A4-6"]
+REF_TOKENS_C3 = [("V14", 2184, 2185, ["AUTHORIZED_MATERIALIZATION", "todos los criterios en SATISFIED"], "L2184-L2185"),
+                 ("F4V", 119, 124, ["AUTHORIZED_MATERIALIZATION", "criterion not SATISFIED"], "L119-L124"),
+                 ("DEC", 982, 982, ["F6-OBS-01"], "DEC L982")]
 LOCATIONS = {
     "A4-1": "Ubicación: al final de V14 D.3, a continuación del párrafo de A2-P2, que termina en «Ningún otro tope cambia.» (A-2 L234).",
     "A4-2": "Ubicación: a continuación del párrafo de A4-1.",
@@ -313,6 +355,9 @@ SCOPE = {  # la primera frase tras el título de la regla: abre con «Solo para�
 }
 IN_SCOPE_ROLES = {"A4-1": {"Controller", "EXECUTION_CONTROLLER"}, "A4-2": {"Architect", "ARCHITECT"}, "A4-3": {"Worker", "Controller"},
                   "A4-4": {"Controller", "EXECUTION_CONTROLLER", "Architect", "ARCHITECT", "WORKER", "AUTHOR"}, "A4-5": {"Worker"}}
+LOCATIONS["A4-6"] = "Ubicación: a continuación del párrafo de A4-5"
+SCOPE["A4-6"] = ["Solo para la ronda A de F6", "titular A2", "FX-02"]
+IN_SCOPE_ROLES["A4-6"] = {"Principal"}
 PRODUCT_TOKENS = re.compile(r"(?i)\b(codex|claude|openai|anthropic|gpt-|opus|sonnet|haiku|chatgpt|gemini|google|copilot|mistral|llama|deepseek|grok"
                             r"|xai|cursor|pwsh|powershell|cmd\.exe)|\b[a-z0-9]+-cli\b")
 PRODUCT_EXEMPT = {"A4-5": ["**Codex, total**"]}  # etiqueta congelada de V14 L2442 que A-4 declara citar (paquete, §3, último punto)
@@ -350,6 +395,31 @@ C2_REQUIRED_PHRASES = ["M-02, M-03, M-04 y M-05 sí; M-01 y M-06..M-08 no (§5)"
                        "A4-4 es una enmienda de semántica, acotada a FX-02 en F6, de B6, del criterio INDEPENDENCE de la materialización y de la "
                        "condición de B.5 «con **todos** en SATISFIED»", "al estilo de A-1 D1-21", "no aplica la excepción y no se cambia",
                        "Re-revisión de esta versión: PENDING", "A62-A4-O8"]
+CORR3_STATUS = {A4: {"M"}, PKG: {"M"}, GUARDS: {"M"}, SELFTEST: {"M"}, EV: {"M"}, DEC: {"M"}, STATE: {"M"}, RESULT_RUN: {"M"},
+                RESULT_PREVIEW: {"M"}, RESULT_C2: {"M"}, RESULT_C3: {"A", "M"}}
+CORR3_REQUIRED = {A4: "M", PKG: "M", GUARDS: "M", SELFTEST: "M"}
+C3_REGIONS_FREE = {"header:Classification", "header:Origin", "header:Architect review", "header:Coordinator verdict", "header:Owner decision", "§1",
+                   "§3.7", "§4", "§5", "§6", "§7", "§8", "§10", "Anexo"}
+C3_REGIONS_INSERT = {"§2", "§3.1"}  # solo inserciones (por palabras y signos)
+C3_NEW_REGIONS = {"§3.8"}           # A4-6
+C3_A44_DELETION = {"1", "5"}        # A4-4: reglas que la opción B cambia, solo por supresión; introducción y reglas 2-4 idénticas
+# única adición admitida en A4-4 (decisión de la sesión principal sobre Q-A4-18): la aceptación individual real del Architect entre quienes aplican
+# la excepción de la regla 5, con el mismo discriminador
+C3_A44_INSERT = {"5": "la aceptación individual real del binding del Architect por el Coordinator fuera de la ventana (decisiones §63, punto 1),"}
+C3_REQUIRED_PHRASES = ["**(A) Corrección de A62-A4-02, opción B:**", "**(B) A4-6, regla de presupuesto nueva y separada (U-14):**",
+                       "**(C) Disposiciones ordinarias de FX-02**", "I-S18 (V14 B.8.8, L2184-L2185) conserva su significado literal y A-4 no lo toca",
+                       "solo se acepta por una decisión individual real del Coordinator (INDIVIDUAL_DECISION), fuera de la ventana, y nunca se materializa "
+                       "bajo la RLA con un UNKNOWN",
+                       "Conservan su significado literal y A-4 no los toca: la condición de B.5 «con **todos** en SATISFIED» de una materialización "
+                       "autorizada, el criterio INDEPENDENCE de la materialización de RAE §14.3, I-S18 y los validadores de F4",
+                       "| M-02 | **sí** | **(A)**", "| M-05 | **sí** | **(A)**", "**(B)** A4-6 no activa M-02", "**(B)** A4-6 no cambia ningún contrato consumido",
+                       "A4-SONDA-CONSUMO = A (", "A4-CLAUDE-FX02-CONSUMO = A (", "A4-PRINCIPAL-A2-CONSUMO = A (",
+                       "Re-revisión de esta versión (corrección 3): PENDING", "(A62-A4-O10)", C3_A44_INSERT["5"],
+                       "**cerrado en la corrección 3**"]
+C3_FORBIDDEN_PHRASES = ["y para el Architect en el criterio de independencia de su materialización", "no impide la aceptación ni la materialización",
+                        "no se acepta ni se materializa", "o de un criterio `INDEPENDENCE:<ReferenceRole>:<Dimension>` de la materialización",
+                        "lo resuelve la supervisión en S29", "del criterio INDEPENDENCE de la materialización y de la condición de B.5",
+                        "No sube topes ni totales de D.3, no repone", "dos autorizaciones de consumo", "Diff permitido sobre `524b293e`"]
 C2_FORBIDDEN_PHRASES = ["M-03 y M-04 sí; M-01, M-02 y M-05..M-08 no", "| M-02 | no |", "| M-05 | no |", "Guardas mecánicas: PENDIENTES",
                         "tampoco producción, F4, esquemas", "A4-3 y A4-4 son excepciones acotadas a FX-02 en F6 sobre cuándo"]
 
@@ -450,17 +520,17 @@ def load_clause_map(git, td):
 
 # ---------------------------------------------------------------- recogida de entradas (única parte que lee el repositorio)
 def collect_common(git, base):
-    inp = {"Sources": {t: git.cat(b) for t, b in SOURCES.items()}}
-    inp["SourceBlobsAtBase"] = {t: git.blob(base, p) for t, p in SOURCE_PATHS.items()}
+    inp = {"Sources": {t: git.cat(b) for t, b in list(SOURCES.items()) + list(SOURCES_C3.items())}}
+    inp["SourceBlobsAtBase"] = {t: git.blob(base, p) for t, p in list(SOURCE_PATHS.items()) + list(SOURCE_PATHS_C3.items())}
     inp["SourceBlobsAtPrep"] = {rev[:8]: {t: git.blob(rev, p) for t, p in SOURCE_PATHS.items()} for rev in (PREP_BASE, PREP_A41)}
-    inp["ShortBlobsAtBase"] = {p: git.blob(base, p) for _, p in SHORT_BLOBS + SHORT_BLOBS_C2}
+    inp["ShortBlobsAtBase"] = {p: git.blob(base, p) for _, p in SHORT_BLOBS + SHORT_BLOBS_C2 + SHORT_BLOBS_C3}
     inp["SourceTextsAtBase"] = {t: git.show(base, SOURCE_PATHS[t]) for t in EVOLVING_SOURCES if inp["SourceBlobsAtBase"].get(t) != SOURCES[t]}
     inp["FreezeCommit"] = {"V14": git.blob(FREEZE_SHA, V14), "Record": git.blob(FREEZE_SHA, FREEZE), "V14AtV14Commit": git.blob(V14_COMMIT, V14)}
     inp["DecBase"] = git.show(base, DEC)
     return inp
 
 
-PREV = {"C1": (A4_BLOB, PKG_BLOB), "C2": (A4_CORR_BLOB, PKG_CORR_BLOB)}  # versión de la corrección -> blobs de A-4 y del paquete sobre los que se aplica
+PREV = {"C1": (A4_BLOB, PKG_BLOB), "C2": (A4_CORR_BLOB, PKG_CORR_BLOB), "C3": (A4_CORR2_BLOB, PKG_CORR2_BLOB)}  # versión de la corrección -> blobs de A-4 y del paquete sobre los que se aplica
 
 
 def collect_preview(git, a4_text, pkg_text):
@@ -468,7 +538,7 @@ def collect_preview(git, a4_text, pkg_text):
     inp = collect_common(git, head)
     paths = sorted(set(FROZEN) | set(DECLARED))
     repo = {A4: git.blob(head, A4), PKG: git.blob(head, PKG)}
-    version = "C2" if repo[A4] == A4_CORR_BLOB else "C1"  # la HEAD decide sobre qué versión publicada se aplicarían las copias
+    version = {A4_CORR_BLOB: "C2", A4_CORR2_BLOB: "C3"}.get(repo[A4], "C1")  # la HEAD decide sobre qué versión se aplicarían las copias
     inp.update({"Mode": "PREVIEW", "Version": version, "Base": head, "Head": head, "A4": a4_text, "PKG": pkg_text,
                 "A4Prev": git.cat(PREV[version][0]), "PkgPrev": git.cat(PREV[version][1]), "RepoBlobs": repo,
                 "Blobs": {"Head": {p: git.blob(head, p) for p in paths}}})
@@ -488,6 +558,8 @@ def collect(git, base, head, also, cm, tool, td):
         inp["Mode"], inp["Version"] = "PUBLICATION", "P"
     elif base_a4 == A4_CORR_BLOB:
         inp["Mode"], inp["Version"] = "CORRECTION2", "C2"
+    elif base_a4 == A4_CORR2_BLOB:
+        inp["Mode"], inp["Version"] = "CORRECTION3", "C3"
     else:
         inp["Mode"], inp["Version"] = "CORRECTION", "C1"
     if inp["Version"] in PREV:
@@ -548,16 +620,16 @@ REF = re.compile(r"\bL(\d+)(?:-L(\d+))?\b")
 def g1_literals(inp, ids):
     f, info, warn = [], [], []
     a4 = inp["A4"] or ""
-    c2 = inp.get("Version") == "C2"
-    lit = LIT + (LIT_C2 if c2 else [])
-    ref_tokens = REF_TOKENS + (REF_TOKENS_C2 if c2 else [])
+    c2, c3 = inp.get("Version") == "C2", inp.get("Version") == "C3"
+    lit = LIT + (LIT_C2 if (c2 or c3) else []) + (LIT_C3 if c3 else [])
+    ref_tokens = REF_TOKENS + (REF_TOKENS_C2 if c2 else []) + (REF_TOKENS_C3 if c3 else [])
     src = {t: txt.split("\n") for t, txt in inp["Sources"].items()}
     cited = {}  # fuente -> líneas citadas (literales y testigos), para las fuentes del kit que otros commits pueden cambiar
     for x in lit:
         cited.setdefault(x[1], set()).update(range(x[2], x[3] + 1))
     for x in ref_tokens:
         cited.setdefault(x[0], set()).update(range(x[1], x[2] + 1))
-    for t, b in SOURCES.items():  # cada fuente fijada es la de la base, la de 524b293e y la de c8d69fcb (A-4 §2: «literales en 524b293e,
+    for t, b in list(SOURCES.items()) + (list(SOURCES_C3.items()) if c3 else []):  # cada fuente fijada es la de la base, la de 524b293e y la de c8d69fcb (A-4 §2: «literales en 524b293e,
         if t in APPEND_SOURCES:   # iguales en c8d69fcb»); las de solo añadido, en una base posterior, empiezan por el texto fijado
             if not (inp.get("DecBase") or "").startswith(inp["Sources"][t]):
                 f.append("fuente %s: en la base no empieza por el texto del blob fijado %s (no creció solo por añadido)" % (t, b))
@@ -572,7 +644,7 @@ def g1_literals(inp, ids):
         elif inp["SourceBlobsAtBase"].get(t) != b:
             f.append("fuente %s: blob en la base %s distinto del fijado %s" % (t, inp["SourceBlobsAtBase"].get(t), b))
         for rev, blobs in inp["SourceBlobsAtPrep"].items():
-            if blobs.get(t) != b:
+            if t in SOURCES and blobs.get(t) != b:
                 f.append("fuente %s: blob en %s %s distinto del fijado %s" % (t, rev, blobs.get(t), b))
     sec2 = section(a4, r"## 2\. ", r"## 3\. ")
     # bloque de §2: igualdad exacta línea a línea
@@ -727,7 +799,7 @@ def g1_literals(inp, ids):
                 "; desde decisiones §61, punto 1, A-3 = AGREED con el mismo blob ea6721f7 (registro en --also-at); la cabecera queda desfasada, "
                 "no errónea para su fecha" if agreed_later else ""))
     # prefijos de blob abreviados
-    for pre, p in SHORT_BLOBS + (SHORT_BLOBS_C2 if c2 else []):
+    for pre, p in SHORT_BLOBS + (SHORT_BLOBS_C2 if c2 else []) + (SHORT_BLOBS_C3 if c3 else []):
         if not re.search(re.escape(pre) + "…", a4):
             f.append("A-4 no cita el prefijo %s… (%s)" % (pre, p))
         got = inp["ShortBlobsAtBase"].get(p)
@@ -1122,6 +1194,127 @@ def g2_correction2(inp, ids):
             "AppendOnlyGrowth": grown, "PrivacyChecked": priv, "Info": info, "Findings": f, "Result": "PASS" if not f else "FAIL"}
 
 
+# ---------------------------------------------------------------- G2C3 / G2D3: corrección 3 (A62-A4-02 opción B; A4-6; contexto de FX-02)
+def diff_limit3(inp):
+    """La A-4 de la corrección 3 frente a 0d954376: solo las regiones declaradas; §2 y §3.1 solo por inserción; §3.5 solo A4-4, reglas 1 y 5, por
+    supresión y sin ningún texto de la materialización; §3.8 (A4-6) nueva; frases exigidas y retiradas; el paquete nombra el blob nuevo."""
+    f = []
+    old, new, po, pn = inp.get("A4Prev") or "", inp.get("A4") or "", inp.get("PkgPrev") or "", inp.get("PKG") or ""
+    if blob_id(old.encode("utf-8")) != A4_CORR2_BLOB or blob_id(po.encode("utf-8")) != PKG_CORR2_BLOB:
+        f.append("los textos anteriores no son los blobs 0d954376 / 59052b84")
+    ro, rn = md_regions(old), md_regions(new)
+    removed, added = sorted(set(ro) - set(rn)), sorted(set(rn) - set(ro))
+    if removed:
+        f.append("desaparecen regiones: %s" % removed)
+    if set(added) != C3_NEW_REGIONS:
+        f.append("regiones nuevas distintas de §3.8 (A4-6): %s" % added)
+    changed = sorted(k for k in ro if k in rn and ro[k] != rn[k])
+    outside = [k for k in changed if k not in C3_REGIONS_FREE | C3_REGIONS_INSERT | {"§3.5"}]
+    if outside:
+        f.append("cambios fuera de las regiones declaradas: %s" % outside)
+    for k in sorted(C3_REGIONS_INSERT):
+        if k in changed and not is_insertion(ro[k], rn[k]):
+            f.append("%s: no es solo inserción (borra texto anterior)" % k)
+    strip = lambda t_: "\n".join(l for l in t_.split("\n") if not l.startswith(">"))
+    if strip(ro.get("§3.5", "")) != strip(rn.get("§3.5", "")):
+        f.append("§3.5: cambia texto fuera del párrafo normativo")
+    p44o, p44n = (a4_rules(old).get("A4-4") or {}).get("Paragraph", ""), (a4_rules(new).get("A4-4") or {}).get("Paragraph", "")
+    io, inn = para_items(p44o), para_items(p44n)
+    if set(io) != set(inn):
+        f.append("A4-4: cambian las reglas numeradas")
+    else:
+        bad = sorted(k for k in io if io[k] != inn[k] and k not in C3_A44_DELETION)
+        if bad:
+            f.append("A4-4: ítems no declarados cambian: %s" % bad)
+        for k in sorted(C3_A44_DELETION):
+            nk = norm(inn.get(k, ""))
+            if k in C3_A44_INSERT:  # la frase declarada aparece una vez; quitada, el resto solo suprime texto anterior
+                ph = norm(C3_A44_INSERT[k])
+                if nk.count(ph) != 1:
+                    f.append("A4-4, regla %s: falta la frase añadida declarada (o se repite)" % k)
+                nk = nk.replace(ph, "", 1)
+            if io.get(k) == inn.get(k):
+                f.append("A4-4, regla %s: no cambia (supresión declarada ausente)" % k)
+            elif not is_insertion(nk, io.get(k, "")):
+                f.append("A4-4, regla %s: no es solo supresión (añade texto no declarado)" % k)
+    if re.search(r"(?i)materializ", p44n):
+        f.append("A4-4 conserva texto de la materialización (opción B)")
+    nt = norm(new)
+    f += ["frase exigida ausente: «%s»" % x[:70] for x in C3_REQUIRED_PHRASES if norm(x) not in nt]
+    f += ["frase prohibida presente: «%s»" % x[:70] for x in C3_FORBIDDEN_PHRASES if norm(x) in nt]
+    a4b, pb = blob_id(new.encode("utf-8")), blob_id(pn.encode("utf-8"))
+    if "(borrador de esta pasada: %s)" % a4b not in pn:
+        f.append("paquete: no nombra el blob de la A-4 corregida (%s)" % a4b)
+    miss = [x for x in ("A62-A4-02", "0d954376", "A4-6", "opción B", "I-S18") if x not in pn]
+    if miss:
+        f.append("paquete: falta %s" % miss)
+    if a4b != A4_CORR3_BLOB:
+        f.append("blob de la A-4 de la corrección 3 %s distinto de A4_CORR3_BLOB" % a4b)
+    if pb != PKG_CORR3_BLOB:
+        f.append("blob del paquete de la corrección 3 %s distinto de PKG_CORR3_BLOB" % pb)
+    hk = hunks(old, new)
+    return f, {"A4": {"Blob": a4b, "ChangedRegions": changed, "AddedRegions": added,
+                      "Hunks": [{"Op": h["Op"], "Old": h["Old"], "New": h["New"]} for h in hk]},
+               "Package": {"Blob": pb, "Hunks": [{"Op": h["Op"], "Old": h["Old"], "New": h["New"]} for h in hunks(po, pn)]}}
+
+
+def g2_diff_only3(inp, ids):
+    f, dl = diff_limit3(inp)
+    rb = inp.get("RepoBlobs") or {}
+    if rb.get(A4) != A4_CORR2_BLOB or rb.get(PKG) != PKG_CORR2_BLOB:
+        f.append("la HEAD del repositorio no tiene A-4 = 0d954376 y paquete = 59052b84: la corrección 3 no se aplica sobre ella")
+    for name, text in (("A-4 (copia)", inp.get("A4") or ""), ("paquete (copia)", inp.get("PKG") or "")):
+        f += privacy_findings(name, text, ids)
+    return {"Check": "G2D3 límite del diff de la corrección 3 (copias frente a 0d954376 / 59052b84)", "Diff": dl, "Findings": f,
+            "Result": "PASS" if not f else "FAIL"}
+
+
+def g2_correction3(inp, ids):
+    f, info = [], []
+    base, head, st = inp["Base"], inp["Head"], inp["Status"]
+    if inp["HeadParent"] != base:
+        f.append("base distinta del padre de head")
+    if inp["BaseBlobs4"].get(A4) != A4_CORR2_BLOB or inp["BaseBlobs4"].get(PKG) != PKG_CORR2_BLOB:
+        f.append("la base no contiene la A-4 de la corrección 2 (0d954376) y su paquete (59052b84)")
+    for p_, s_ in CORR3_REQUIRED.items():
+        if st.get(p_) != s_:
+            f.append("%s no aparece como modificado (M)" % p_)
+    bad = sorted(p_ for p_ in st if p_ not in CORR3_STATUS)
+    if bad:
+        f.append("rutas no permitidas: %s" % bad)
+    for p_, s_ in sorted(st.items()):
+        if p_ in CORR3_STATUS and s_ not in CORR3_STATUS[p_]:
+            f.append("%s con estado %s (permitido: %s)" % (p_, s_, sorted(CORR3_STATUS[p_])))
+    for p_ in (A4, PKG):
+        if (inp["HeadTexts"].get(p_) or "") != (inp["A4"] if p_ == A4 else inp["PKG"]):
+            f.append("%s: texto de head incoherente" % p_)
+    df, dl = diff_limit3(inp)
+    f += df
+    if inp["HeadBlobs"].get(A4) != A4_CORR3_BLOB or inp["HeadBlobs"].get(PKG) != PKG_CORR3_BLOB:
+        f.append("blobs de A-4 y del paquete en head distintos de A4_CORR3_BLOB / PKG_CORR3_BLOB")
+    grown = {}
+    for p_ in APPEND_ONLY:
+        if p_ in st:
+            new, old = inp["HeadTexts"].get(p_) or "", inp["BaseTexts"].get(p_) or ""
+            if st[p_] != "M" or not new.startswith(old):
+                f.append("%s no cambia solo por añadido" % p_)
+            else:
+                grown[p_] = {"BaseBytes": len(old.encode("utf-8")), "HeadBytes": len(new.encode("utf-8"))}
+    priv = []
+    for p_, s_ in sorted(st.items()):
+        if s_ == "A" or (s_ == "M" and p_ not in APPEND_ONLY):
+            text = inp["HeadTexts"].get(p_) or ""
+        elif s_ == "M":
+            new, old = inp["HeadTexts"].get(p_) or "", inp["BaseTexts"].get(p_) or ""
+            text = new[len(old):] if new.startswith(old) else new
+        else:
+            continue
+        priv.append(p_)
+        f += privacy_findings(p_, text, ids)
+    return {"Check": "G2C3 rutas y regiones del commit de la corrección 3", "Base": base, "Head": head, "Changed": st, "Diff": dl,
+            "AppendOnlyGrowth": grown, "PrivacyChecked": priv, "Info": info, "Findings": f, "Result": "PASS" if not f else "FAIL"}
+
+
 # ---------------------------------------------------------------- G5
 def a2_section(md, title):
     m = re.search(r"^### %s\n(.*?)(?=^### |^## )" % re.escape(title), md, re.S | re.M)
@@ -1188,11 +1381,31 @@ def g5_delta(inp, cm, a4_text=None):
     a4 = inp["A4"] if a4_text is None else a4_text
     v14, a2 = inp["Sources"]["V14"], inp["Sources"]["A2"]
     rules = a4_rules(a4 or "")
-    if list(rules) != RULE_IDS:
-        f.append("§3.2-§3.6 no contienen exactamente A4-1..A4-5 en orden: %s" % list(rules))
-    paras = [rules[r]["Paragraph"] for r in RULE_IDS if r in rules]
+    c3 = inp.get("Version") == "C3"
+    rule_ids = RULE_IDS_C3 if c3 else RULE_IDS
+    if list(rules) != rule_ids:
+        f.append("§3.2-§3.8 no contienen exactamente %s en orden: %s" % (rule_ids, list(rules)))
+    paras = [rules[r]["Paragraph"] for r in rule_ids if r in rules]
     pick = lambda d, r, k: (d.get(r) or {}).get(k)
-    if inp.get("A4Prev") is not None and inp.get("Version") == "C2":  # corrección 2: frente a 7d863219, solo A4-1 (2, 3) y A4-4 (5)
+    if inp.get("A4Prev") is not None and c3:  # corrección 3: frente a 0d954376, A4-1, A4-2, A4-3 y A4-5 idénticos; A4-4 solo en 1 y 5; A4-6 nueva
+        prev, moved = a4_rules(inp["A4Prev"]), []
+        for r in RULE_IDS:
+            if pick(prev, r, "Location") != pick(rules, r, "Location"):
+                moved.append(r + " (ubicación)")
+            if r == "A4-4":
+                io, inn = para_items(pick(prev, r, "Paragraph") or ""), para_items(pick(rules, r, "Paragraph") or "")
+                bad = sorted(k for k in set(io) | set(inn) if io.get(k) != inn.get(k) and k not in C3_A44_DELETION)
+                if bad:
+                    moved.append("A4-4 (ítems %s)" % bad)
+            elif pick(prev, r, "Paragraph") != pick(rules, r, "Paragraph"):
+                moved.append(r)
+        if "A4-6" in prev:
+            moved.append("A4-6 ya estaba en 0d954376")
+        if moved:
+            f.append("cambian frente a 0d954376 partes de las reglas que la corrección 3 no declara: %s" % moved)
+        else:
+            info.append("frente a 0d954376: A4-1, A4-2, A4-3 y A4-5 idénticos; A4-4 cambia solo en las reglas 1 y 5; A4-6 es nueva")
+    elif inp.get("A4Prev") is not None and inp.get("Version") == "C2":  # corrección 2: frente a 7d863219, solo A4-1 (2, 3) y A4-4 (5)
         prev, moved = a4_rules(inp["A4Prev"]), []
         for r in RULE_IDS:
             if pick(prev, r, "Location") != pick(rules, r, "Location"):
@@ -1215,7 +1428,7 @@ def g5_delta(inp, cm, a4_text=None):
             f.append("los párrafos normativos o sus ubicaciones cambian frente a 27ffa26b: %s" % moved)
         else:
             info.append("los cinco párrafos normativos y sus ubicaciones son idénticos a los de 27ffa26b")
-    for r in RULE_IDS:
+    for r in rule_ids:
         if r in rules and not rules[r]["Location"].startswith(LOCATIONS[r]):
             f.append("%s: ubicación distinta de «%s»" % (r, LOCATIONS[r]))
     a2_lines = a2.split("\n")
@@ -1235,7 +1448,10 @@ def g5_delta(inp, cm, a4_text=None):
     a2_add, a2_rem, a2_chg = changed_sections(cm, v14, base)
     pattern = {k for k in a2_chg}
     # aplicación de A-4 (y variante sin A4-5, separable)
-    variants = {"A4-1..A4-5": paras, "A4-1..A4-4 (sin A4-5)": paras[:4]}
+    if c3:  # A4-5 y A4-6 son separables: todas las combinaciones dan un añadido puro
+        variants = {"A4-1..A4-6": paras, "sin A4-5": paras[:4] + paras[5:6], "sin A4-6": paras[:5], "sin A4-5 ni A4-6": paras[:4]}
+    else:
+        variants = {"A4-1..A4-5": paras, "A4-1..A4-4 (sin A4-5)": paras[:4]}
     applied_info = {}
     for name, ps in variants.items():
         if not ps:
@@ -1266,12 +1482,24 @@ def g5_delta(inp, cm, a4_text=None):
                               "InsertedAfterLine": ops[0][1] if ops else None, "ChangedSections": [k[1][:80] for k in chg]}
     if v14.split("\n")[CAPS_LINE - 1] != CAPS or v14.count(CAPS) != 1:
         f.append("V14 L%d no es el literal de topes fijado" % CAPS_LINE)
-    if len(paras) == 5 and any("A4-5" in p for p in paras[:4]):
-        f.append("A4-1..A4-4 mencionan A4-5: A4-5 no es separable")
+    for sep in ["A4-5"] + (["A4-6"] if c3 else []):  # separabilidad: ninguna otra regla menciona la separable
+        if len(paras) == len(rule_ids) and any(sep in p_ for rid_, p_ in zip(rule_ids, paras) if rid_ != sep):
+            f.append("otra regla menciona %s: %s no es separable" % (sep, sep))
+    if c3 and "A4-6" in rules:  # cifras de A4-6 = tope congelado de la fila Principal A y del total de la ronda A, más uno
+        vl = v14.split("\n")
+        m_row = re.search(r"\| (\d+) sesiones \|\s*$", vl[PRINCIPAL_A_LINE - 1])
+        m_tot = re.search(r"≤ (\d+) \|\s*$", vl[TOTALS_A_LINE - 1])
+        frozen = {int(m_row.group(1)), int(m_tot.group(1))} if m_row and m_tot else set()
+        figs = re.findall(r"\bde (\d+) a (\d+)\b", norm(rules["A4-6"]["Paragraph"]))
+        if len(frozen) != 1 or len(figs) != 1 or int(figs[0][0]) not in frozen or int(figs[0][1]) != int(figs[0][0]) + 1:
+            f.append("cifras de A4-6 %s distintas del tope congelado de V14 L%d / L%d (%s) más uno" % (figs, PRINCIPAL_A_LINE, TOTALS_A_LINE, sorted(frozen)))
+        else:
+            info.append("A4-6: de %s a %s = tope congelado (V14 L%d, fila Principal A; L%d, total de la ronda A) + 1" % (
+                figs[0][0], figs[0][1], PRINCIPAL_A_LINE, TOTALS_A_LINE))
     # cláusulas de alcance, nombres de producto, citas internas, cifras de topes y menciones fuera de alcance
     scope_rows, mentions, invoked, inner, exempt_used = [], [], [], [], []
     allsrc = {t: txt.split("\n") for t, txt in inp["Sources"].items()}
-    for rid, p in zip(RULE_IDS, paras):
+    for rid, p in zip(rule_ids, paras):
         np_ = norm(p)
         m = re.match(r"^\*\*([^*]+) \(A-4\)\.\*\* (.*)$", np_)
         if not m:
@@ -1347,8 +1575,8 @@ def g5_delta(inp, cm, a4_text=None):
     a3_mentions = [m_ for m_ in mentions if m_["Token"] == "A-3"]
     if not a3_mentions:
         info.append("ninguna de las cinco reglas menciona A-3")
-    return {"Check": "G5 delta frente a V14 y A-2", "Rules": [r for r in RULE_IDS if r in rules],
-            "ParagraphSha256": {r: hashlib.sha256(rules[r]["Paragraph"].encode("utf-8")).hexdigest() for r in RULE_IDS if r in rules},
+    return {"Check": "G5 delta frente a V14 y A-2", "Rules": [r for r in rule_ids if r in rules],
+            "ParagraphSha256": {r: hashlib.sha256(rules[r]["Paragraph"].encode("utf-8")).hexdigest() for r in rule_ids if r in rules},
             "A2Pattern": {"Added": a2_add, "Removed": a2_rem, "Changed": [k[1][:80] for k in a2_chg]}, "Application": applied_info,
             "Scope": scope_rows, "InnerQuotes": inner, "ProductExemptions": exempt_used, "CrossScopeMentions": mentions,
             "InvokedReferences": invoked, "Info": info, "Findings": f, "Result": "PASS" if not f else "FAIL"}
@@ -1473,7 +1701,7 @@ MUTANTS = [
     ("M5-15", "G5", "cita interna inventada", mut_text("A4", "del sumando «+ 2 sondas» de los totales y de los\n>    bloques",
                                                        "del sumando «+ 3 sondas» de los totales y de los\n>    bloques"), "cita interna"),
     ("M5-16", "G5", "regla A4-5 retirada (cuatro reglas)", lambda inp: inp.__setitem__("A4", re.sub(r"### 3\.6 A4-5.*?(?=### 3\.7)", "", inp["A4"], flags=re.S)),
-     "exactamente A4-1..A4-5"),
+     "no contienen exactamente"),
 ]
 
 
@@ -1571,7 +1799,62 @@ MUTANTS_C2 = [  # escenario C2: corrección 2 (copias corregidas sobre 7d863219,
     ("MC2-19", "G5B", "self-test de otra A-4 (corrección 2)", mut_selftest("A4TextBlob", "b" * 40), "A4TextBlob distinto"),
     ("MC2-20", "G1", "prefijo del blob nuevo del kit distinto", mut_corr("A4", "`ceb38284…`", "`ceb38285…`"), "ceb38284"),
 ]
-GUARD_IDS = ("G1", "G2", "G3", "G4", "G5", "G2C", "G2D", "G5B", "G2C2", "G2D2")
+def mut_corr_re(key, pattern, repl):
+    path = A4 if key == "A4" else PKG
+
+    def fn(inp):
+        new = re.sub(pattern, repl, inp[key] or "", count=1, flags=re.S)
+        if new == inp[key]:
+            raise LookupError("patrón de la mutación ausente")
+        inp[key] = new
+        inp["HeadTexts"][path] = new
+        inp["HeadBlobs"][path] = blob_id(new.encode("utf-8"))
+    return fn
+
+
+MUTANTS_C3 = [  # escenario C3: corrección 3 (copias sobre 0d954376, en la base real que la contiene)
+    ("MC3-01", "G2C3", "A4-1 cambiada", mut_corr("A4", "sin reutilización;\n> 6.", "sin reutilizarla;\n> 6."), "fuera de las regiones declaradas"),
+    ("MC3-02", "G2C3", "A4-4, regla 2, cambiada", mut_corr("A4", "con el conjunto de referencia vacío", "con el conjunto vacío"), "A4-4: ítems no declarados"),
+    ("MC3-03", "G2C3", "A4-4, regla 1, con un añadido", mut_corr("A4", "> 1. en la aceptación, cada dimensión REQUIRED", "> 1. en la aceptación y en la Entrada, cada dimensión REQUIRED"),
+     "no es solo supresión"),
+    ("MC3-04", "G2C3", "A4-4, regla 5, conserva el criterio de la materialización",
+     mut_corr("A4", "de una fila de `Independence.Satisfaction` de un binding", "de una fila de `Independence.Satisfaction`, o de un criterio "
+              "`INDEPENDENCE:<ReferenceRole>:<Dimension>` de la materialización, de un binding"), "conserva texto de la materialización"),
+    ("MC3-05", "G2C3", "§2 borra texto", mut_corr("A4", "V14 D.4 (sin cambio): L2544", "V14 D.4: L2544"), "§2: no es solo inserción"),
+    ("MC3-06", "G2C3", "campo Authority de la cabecera cambiado", mut_corr("A4", "(LIFECYCLE §6; decisiones §60, punto 2)\n", "(LIFECYCLE §6; decisiones §60, punto 2; §63)\n"),
+     "header:Authority"),
+    ("MC3-07", "G2C3", "ruta de más", mut_add_path("src/RackCad.Plugin/Fuera.cs", "A", "// x\n"), "rutas no permitidas"),
+    ("MC3-08", "G2C3", "sin la frase de I-S18", mut_corr("A4", "I-S18 (V14 B.8.8, L2184-L2185) conserva su significado literal\n  y A-4 no lo toca:",
+                                                         "I-S18 (V14 B.8.8, L2184-L2185) se aplica:"), "frase exigida ausente"),
+    ("MC3-09", "G2C3", "paquete sin el blob nuevo de A-4", lambda inp: mut_corr("PKG", "(borrador de esta pasada: " + blob_id(inp["A4"].encode("utf-8")) + ")",
+                                                                            "(borrador de esta pasada: " + A4_CORR2_BLOB + ")")(inp), "paquete"),
+    ("MC3-10", "G2C3", "la base no tiene la A-4 de la corrección 2", mut_set(("BaseBlobs4", A4), A4_CORR_BLOB), "la base no contiene"),
+    ("MC3-11", "G5", "cifras de A4-6 distintas del tope congelado + 1", mut_corr("A4", "de 2 a 3, solo para abrir", "de 2 a 4, solo para abrir"), "cifras de A4-6"),
+    ("MC3-12", "G5", "A4-6 sin su cláusula de alcance", mut_corr("A4", "Solo para la ronda A de F6 (Topología A)", "Para la ronda A de F6 (Topología A)"),
+     "A4-6: la regla no abre"),
+    ("MC3-13", "G5", "A4-6 menciona otro escenario sin negación", mut_corr("A4", "también para A2.»", "también para A2. Esta sesión sirve también a FX-03.»"),
+     "ESCENARIO «FX-03»"),
+    ("MC3-14", "G5", "párrafo de A4-5 cambiado", mut_corr("A4", "se admite **una** corrección", "se admite **una sola** corrección"), "cambian frente a 0d954376"),
+    ("MC3-15", "G5", "A4-6 depende de A4-5", mut_corr("A4", "> 5. no es la reejecución extraordinaria de A-2", "> 5. como A4-5, no es la reejecución extraordinaria de A-2"),
+     "no es separable"),
+    ("MC3-16", "G5", "nombre de producto en A4-6", mut_corr("A4", "del titular A2 de FX-02, designado por T16.", "del titular A2 de FX-02 (claude-desktop-session), designado por T16."),
+     "nombres de producto"),
+    ("MC3-17", "G2D3", "la HEAD ya tiene otra A-4 (preview)", mut_set(("RepoBlobs", A4), A4_CORR3_BLOB), "la HEAD del repositorio"),
+    ("MC3-18", "G1", "fila Principal A citada con otra cifra", mut_corr("A4", "+1\nreapertura | 2 sesiones |»", "+1\nreapertura | 3 sesiones |»"), "L74"),
+    ("MC3-19", "G1", "literal de §63 cambiado", mut_corr("A4", "A2 sería la tercera y no cabe", "A2 sería la cuarta y no cabe"), "L81"),
+    ("MC3-20", "G5B", "self-test de otra A-4 (corrección 3)", mut_selftest("A4TextBlob", "e" * 40), "A4TextBlob distinto"),
+    ("MC3-21", "G2C3", "A4-6 retirada (§3.8 ausente)", mut_corr_re("A4", r"### 3\.8 A4-6.*?(?=## 4\.)", ""), "regiones nuevas distintas de §3.8"),
+    ("MC3-22", "G1", "prefijo de la conciliación de U-14 distinto", mut_corr("A4", "`05f62382…`", "`05f62383…`"), "05f62382"),
+    ("MC3-23", "G2C3", "§3.7 recupera «No sube topes» sin A4-6", mut_corr("A4", "No sube topes ni totales de D.3 salvo A4-6, no repone", "No sube topes ni totales de D.3, no repone"),
+     "frase prohibida presente"),
+    ("MC3-24", "G2C3", "otra adición en A4-4, regla 5", mut_corr("A4", "reproduce en el Q7 la aceptación, y las comprobaciones", "reproduce en el Q7 la aceptación y la Entrada, y las comprobaciones"),
+     "no es solo supresión"),
+    ("MC3-25", "G2C3", "A4-4, regla 5, sin la frase declarada", mut_corr("A4", C3_A44_INSERT["5"] + " ", ""), "falta la frase añadida declarada"),
+    ("MC3-26", "G2C3", "la frase declarada reintroduce la materialización", mut_corr("A4", "la aceptación individual real del binding del Architect por el Coordinator",
+                                                                                      "la materialización del binding del Architect por el Coordinator"),
+     "conserva texto de la materialización"),
+]
+GUARD_IDS = ("G1", "G2", "G3", "G4", "G5", "G2C", "G2D", "G5B", "G2C2", "G2D2", "G2C3", "G2D3")
 
 
 def run_guard(gid, inp, cm, ids):
@@ -1585,6 +1868,10 @@ def run_guard(gid, inp, cm, ids):
         return g2_diff_only(inp, ids)
     if gid == "G2C2":
         return g2_correction2(inp, ids)
+    if gid == "G2C3":
+        return g2_correction3(inp, ids)
+    if gid == "G2D3":
+        return g2_diff_only3(inp, ids)
     if gid == "G2D2":
         return g2_diff_only2(inp, ids)
     if gid == "G3":
@@ -1627,6 +1914,14 @@ def synth_correction2(pub, base2, c1_a4, c1_pkg, a4_new, pkg_new, tool_text):
     return c
 
 
+def synth_correction3(pub, base3, c2_a4, c2_pkg, a4_new, pkg_new, tool_text):
+    """Escenario C3: el commit de la corrección 3 simulado sobre la base real que contiene 0d954376 (sin escribir nada)."""
+    c = synth_correction2(pub, base3, c2_a4, c2_pkg, a4_new, pkg_new, tool_text)
+    c.update({"Mode": "CORRECTION3", "Version": "C3", "Head": "f" * 40, "BaseBlobs4": {A4: A4_CORR2_BLOB, PKG: PKG_CORR2_BLOB},
+              "RepoBlobs": {A4: A4_CORR2_BLOB, PKG: PKG_CORR2_BLOB}})
+    return c
+
+
 def kill_rows(inp, mutants, baseline, cm, ids, scenario):
     rows = []
     for mid, gid, desc, fn, expect in mutants:
@@ -1645,11 +1940,24 @@ def kill_rows(inp, mutants, baseline, cm, ids, scenario):
     return rows
 
 
-def self_test(pub, corr, dec, cm, tool_text, corr2=None):
+def self_test(pub, corr, dec, cm, tool_text, corr2=None, corr3=None):
     ids = [SYNTH_ID]  # en el self-test, solo la identidad sintética (las reales no entran en los mutantes)
     base_p = {g: run_guard(g, copy.deepcopy(pub), cm, ids) for g in ("G1", "G2", "G3", "G4", "G5")}
     rows = kill_rows(pub, MUTANTS, base_p, cm, ids, "P")
-    findings, scen_c, scen_c2 = [], None, None
+    findings, scen_c, scen_c2, scen_c3 = [], None, None, None
+    if corr3 is None:
+        findings.append("sin la corrección 3 (copias --a4/--pkg o A-4 de la corrección 3 en head o en la HEAD) o sin una base con 0d954376: "
+                        "el escenario C3 no se comprueba")
+    else:
+        c3 = synth_correction3(pub, corr3["Base"], corr3["C2A4"], corr3["C2Pkg"], corr3["A4"], corr3["PKG"], tool_text)
+        base_c3 = {g: run_guard(g, copy.deepcopy(c3), cm, ids) for g in ("G1", "G2C3", "G2D3", "G5", "G5B")}
+        rows += kill_rows(c3, MUTANTS_C3, base_c3, cm, ids, "C3")
+        ok3 = all(v["Result"] == "PASS" for v in base_c3.values())
+        if not ok3:
+            findings.append("control C3: la corrección 3 sin mutar no pasa %s" % [g for g, v in base_c3.items() if v["Result"] != "PASS"])
+        scen_c3 = {"TextSource": corr3["Source"], "Base": corr3["Base"]["Sha"], "A4TextBlob": blob_id(corr3["A4"].encode("utf-8")),
+                   "PkgTextBlob": blob_id(corr3["PKG"].encode("utf-8")), "ControlResults": {g: v["Result"] for g, v in base_c3.items()},
+                   "ControlFindings": {g: v["Findings"] for g, v in base_c3.items() if v["Findings"]}, "Control": "PASS" if ok3 else "FAIL"}
     if corr2 is None:
         findings.append("sin la corrección 2 (copias --a4/--pkg o A-4 de la corrección 2 en head o en la HEAD) o sin una base con 7d863219: "
                         "el escenario C2 no se comprueba")
@@ -1681,11 +1989,11 @@ def self_test(pub, corr, dec, cm, tool_text, corr2=None):
         rs = [x for x in rows if x["Guard"] == g]
         per[g] = {"Mutants": len(rs), "Killed": sum(1 for x in rs if x["Result"] == "PASS")}
     ok = not findings and all(x["Result"] == "PASS" for x in rows) and all(v["Mutants"] > 0 for v in per.values())
-    last = scen_c2 or scen_c  # el self-test custodiado se liga a la última corrección comprobada (G5b)
+    last = scen_c3 or scen_c2 or scen_c  # el self-test custodiado se liga a la última corrección comprobada (G5b)
     return {"Tool": "a4-guards.py self-test",
             "ScenarioP": {"Base": pub["Base"], "Head": pub["Head"], "BaselineResults": {g: v["Result"] for g, v in base_p.items()},
                           "BaselineFindings": {g: v["Findings"] for g, v in base_p.items() if v["Findings"]}},
-            "ScenarioC": scen_c, "ScenarioC2": scen_c2, "A4TextBlob": last["A4TextBlob"] if last else None,
+            "ScenarioC": scen_c, "ScenarioC2": scen_c2, "ScenarioC3": scen_c3, "A4TextBlob": last["A4TextBlob"] if last else None,
             "PkgTextBlob": last["PkgTextBlob"] if last else None,
             "PerGuard": per, "Total": {"Mutants": len(rows), "Killed": sum(1 for x in rows if x["Result"] == "PASS")}, "Mutants": rows,
             "Findings": findings, "Result": "PASS" if ok else "FAIL"}
@@ -1694,6 +2002,7 @@ def self_test(pub, corr, dec, cm, tool_text, corr2=None):
 def summary(st):
     return {"Result": st["Result"], "Total": st["Total"], "PerGuard": st["PerGuard"], "BaselineP": st["ScenarioP"]["BaselineResults"],
             "ControlC": (st["ScenarioC"] or {}).get("ControlResults"), "ControlC2": (st.get("ScenarioC2") or {}).get("ControlResults"),
+            "ControlC3": (st.get("ScenarioC3") or {}).get("ControlResults"),
             "A4TextBlob": st["A4TextBlob"], "PkgTextBlob": st["PkgTextBlob"],
             "Findings": st["Findings"]}
 
@@ -1719,26 +2028,39 @@ def corrected_texts(git, a, head=None):
     return git.cat(A4_CORR_BLOB), git.cat(PKG_CORR_BLOB), "blobs 7d863219/085f30f6"
 
 
+def first_with_a4(git, blob, head=None):
+    """Primer commit (padre de head, HEAD o sus antecesores de primer padre) cuya A-4 tiene ese blob."""
+    cands = ([head + "^1"] if head else []) + git("rev-list", "--first-parent", "-n", "400", "HEAD").split()
+    base = next((c for c in cands if git.blob(c, A4) == blob), None)
+    return git("rev-parse", base).strip() if base else None
+
+
 def correction2_context(git, a, head=None):
-    """Corrección 2 (escenario C2): textos de --a4/--pkg o de head / HEAD cuando su A-4 no es 27ffa26b ni 7d863219; base = el primer commit
-    (padre de head, HEAD o sus antecesores de primer padre) cuya A-4 es 7d863219."""
+    """Corrección 2 (escenario C2): los blobs fijados 0d954376 / 59052b84, sobre la base real con A-4 = 7d863219."""
+    sha = first_with_a4(git, A4_CORR_BLOB, head)
+    if sha is None:
+        return None
+    return {"A4": git.cat(A4_CORR2_BLOB), "PKG": git.cat(PKG_CORR2_BLOB), "Source": "blobs 0d954376/59052b84", "C1A4": git.cat(A4_CORR_BLOB),
+            "C1Pkg": git.cat(PKG_CORR_BLOB), "Base": {"Sha": sha, "Common": collect_common(git, sha)}}
+
+
+def correction3_context(git, a, head=None):
+    """Corrección 3 (escenario C3): textos de --a4/--pkg o de head / HEAD cuando su A-4 no es ninguna versión anterior; base = el primer commit
+    cuya A-4 es 0d954376."""
+    prev_blobs = (A4_BLOB, A4_CORR_BLOB, A4_CORR2_BLOB)
     texts = None
     if getattr(a, "a4", None) and getattr(a, "pkg", None):
         t4, tp = read_text(a.a4), read_text(a.pkg)
-        if blob_id(t4.encode("utf-8")) not in (A4_BLOB, A4_CORR_BLOB):
+        if blob_id(t4.encode("utf-8")) not in prev_blobs:
             texts = (t4, tp, "args")
     for rev in [x for x in (head, "HEAD") if x and texts is None]:
         t = git.show(rev, A4)
-        if t is not None and blob_id(t.encode("utf-8")) not in (A4_BLOB, A4_CORR_BLOB):
+        if t is not None and blob_id(t.encode("utf-8")) not in prev_blobs:
             texts = (t, git.show(rev, PKG), "head" if rev == head else "HEAD")
-    if texts is None:
+    sha = first_with_a4(git, A4_CORR2_BLOB, head) if texts else None
+    if sha is None:
         return None
-    cands = ([head + "^1"] if head else []) + git("rev-list", "--first-parent", "-n", "400", "HEAD").split()
-    base = next((c for c in cands if git.blob(c, A4) == A4_CORR_BLOB), None)
-    if base is None:
-        return None
-    sha = git("rev-parse", base).strip()
-    return {"A4": texts[0], "PKG": texts[1], "Source": texts[2], "C1A4": git.cat(A4_CORR_BLOB), "C1Pkg": git.cat(PKG_CORR_BLOB),
+    return {"A4": texts[0], "PKG": texts[1], "Source": texts[2], "C2A4": git.cat(A4_CORR2_BLOB), "C2Pkg": git.cat(PKG_CORR2_BLOB),
             "Base": {"Sha": sha, "Common": collect_common(git, sha)}}
 
 
@@ -1766,16 +2088,14 @@ def main():
         cm, tool = load_clause_map(git, td)
         pub = collect(git, A4_BASE, A4_PUB, None, cm, tool, td)
         if a.cmd == "self-test":
-            res = self_test(pub, corrected_texts(git, a), git.show("HEAD", DEC), cm, tool_text, correction2_context(git, a))
+            res = self_test(pub, corrected_texts(git, a), git.show("HEAD", DEC), cm, tool_text, correction2_context(git, a), correction3_context(git, a))
         elif a.cmd == "preview":
             a4_text, pkg_text = read_text(a.a4), read_text(a.pkg)
             inp = collect_preview(git, a4_text, pkg_text)
-            g2d = g2_diff_only2(inp, ids) if inp["Version"] == "C2" else g2_diff_only(inp, ids)
+            g2d = {"C2": g2_diff_only2, "C3": g2_diff_only3}.get(inp["Version"], g2_diff_only)(inp, ids)
             checks = [g1_literals(inp, ids), g2d, g3_frozen(inp, ("Head",)), g5_delta(inp, cm)]
-            if inp["Version"] == "C2":
-                st = self_test(pub, corrected_texts(git, a), inp["DecBase"], cm, tool_text, correction2_context(git, a))
-            else:
-                st = self_test(pub, (a4_text, pkg_text, "args"), inp["DecBase"], cm, tool_text, correction2_context(git, a))
+            corr1 = (a4_text, pkg_text, "args") if inp["Version"] == "C1" else corrected_texts(git, a)
+            st = self_test(pub, corr1, inp["DecBase"], cm, tool_text, correction2_context(git, a), correction3_context(git, a))
             ok = all(c["Result"] == "PASS" for c in checks) and st["Result"] == "PASS"
             res = {"Tool": "a4-guards.py preview", "Version": inp["Version"], "RepoHead": inp["Head"], "A4Blob": blob_id(a4_text.encode("utf-8")),
                    "PkgBlob": blob_id(pkg_text.encode("utf-8")), "Checks": checks, "SelfTest": summary(st), "Result": "PASS" if ok else "FAIL"}
@@ -1787,6 +2107,8 @@ def main():
                 checks = [g1_literals(inp, ids), g2_paths(inp, ids), g3_frozen(inp), g4_c20b(inp, cm), g5_delta(inp, cm)]
             elif inp["Mode"] == "CORRECTION2":
                 checks = [g1_literals(inp, ids), g2_correction2(inp, ids), g3_frozen(inp), g4_c20b(inp, cm), g5_delta(inp, cm), g5b_selftest(inp)]
+            elif inp["Mode"] == "CORRECTION3":
+                checks = [g1_literals(inp, ids), g2_correction3(inp, ids), g3_frozen(inp), g4_c20b(inp, cm), g5_delta(inp, cm), g5b_selftest(inp)]
             else:
                 checks = [g1_literals(inp, ids), g2_correction(inp, ids), g3_frozen(inp), g4_c20b(inp, cm), g5_delta(inp, cm), g5b_selftest(inp)]
             also = None
@@ -1796,7 +2118,7 @@ def main():
                         "Checks": [g3_frozen(inp, ("AlsoAt",)), {k: g5x[k] for k in ("Check", "Rules", "ParagraphSha256", "Application", "Findings", "Result")}]}
                 also["SameAsHead"] = g5x["ParagraphSha256"] == checks[4]["ParagraphSha256"]
             dec_c = git.show(head if inp["Mode"] != "PUBLICATION" else "HEAD", DEC)  # el escenario C necesita decisiones con §61 (A-3 AGREED)
-            st = self_test(pub, corrected_texts(git, a, head), dec_c, cm, tool_text, correction2_context(git, a, head))
+            st = self_test(pub, corrected_texts(git, a, head), dec_c, cm, tool_text, correction2_context(git, a, head), correction3_context(git, a, head))
             ok = all(c["Result"] == "PASS" for c in checks) and (also is None or all(c["Result"] == "PASS" for c in also["Checks"]))
             res = {"Tool": "a4-guards.py run", "Mode": inp["Mode"], "A4Base": A4_BASE, "Base": inp["Base"], "Head": inp["Head"],
                    "A4Blob": inp["HeadBlobs"].get(A4), "Checks": checks, "AlsoAt": also, "SelfTest": summary(st),

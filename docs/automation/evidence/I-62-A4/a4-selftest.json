@@ -31,7 +31,7 @@
   "Control": "PASS"
  },
  "ScenarioC2": {
-  "TextSource": "args",
+  "TextSource": "blobs 0d954376/59052b84",
   "Base": "a5b50c689ef33aa7b6fa7f7949fd72f58202e369",
   "A4TextBlob": "0d9543761e3e3a45a94338776f7c1ba763224ab3",
   "PkgTextBlob": "59052b847ccc13e8be539189ae1b77dc7f9d3623",
@@ -45,12 +45,27 @@
   "ControlFindings": {},
   "Control": "PASS"
  },
- "A4TextBlob": "0d9543761e3e3a45a94338776f7c1ba763224ab3",
- "PkgTextBlob": "59052b847ccc13e8be539189ae1b77dc7f9d3623",
+ "ScenarioC3": {
+  "TextSource": "args",
+  "Base": "b25dde6b2adda5ed80695373451a2f12721bd2b9",
+  "A4TextBlob": "5e2ba68efdc1b902aa1c28aff4453b4b6973be7f",
+  "PkgTextBlob": "57c060e15f14ade6aefeda246adf26b2adaf2594",
+  "ControlResults": {
+   "G1": "PASS",
+   "G2C3": "PASS",
+   "G2D3": "PASS",
+   "G5": "PASS",
+   "G5B": "PASS"
+  },
+  "ControlFindings": {},
+  "Control": "PASS"
+ },
+ "A4TextBlob": "5e2ba68efdc1b902aa1c28aff4453b4b6973be7f",
+ "PkgTextBlob": "57c060e15f14ade6aefeda246adf26b2adaf2594",
  "PerGuard": {
   "G1": {
-   "Mutants": 21,
-   "Killed": 21
+   "Mutants": 24,
+   "Killed": 24
   },
   "G2": {
    "Mutants": 8,
@@ -65,8 +80,8 @@
    "Killed": 2
   },
   "G5": {
-   "Mutants": 19,
-   "Killed": 19
+   "Mutants": 25,
+   "Killed": 25
   },
   "G2C": {
    "Mutants": 11,
@@ -77,8 +92,8 @@
    "Killed": 2
   },
   "G5B": {
-   "Mutants": 4,
-   "Killed": 4
+   "Mutants": 5,
+   "Killed": 5
   },
   "G2C2": {
    "Mutants": 13,
@@ -87,11 +102,19 @@
   "G2D2": {
    "Mutants": 2,
    "Killed": 2
+  },
+  "G2C3": {
+   "Mutants": 15,
+   "Killed": 15
+  },
+  "G2D3": {
+   "Mutants": 1,
+   "Killed": 1
   }
  },
  "Total": {
-  "Mutants": 86,
-  "Killed": 86
+  "Mutants": 112,
+  "Killed": 112
  },
  "Mutants": [
   {
@@ -616,7 +639,7 @@
    "Expect": "no es separable",
    "GuardResult": "FAIL",
    "NewFindings": [
-    "A4-1..A4-4 mencionan A4-5: A4-5 no es separable"
+    "otra regla menciona A4-5: A4-5 no es separable"
    ],
    "Result": "PASS"
   },
@@ -637,10 +660,350 @@
    "Scenario": "P",
    "Guard": "G5",
    "Mutation": "regla A4-5 retirada (cuatro reglas)",
-   "Expect": "exactamente A4-1..A4-5",
+   "Expect": "no contienen exactamente",
    "GuardResult": "FAIL",
    "NewFindings": [
-    "§3.2-§3.6 no contienen exactamente A4-1..A4-5 en orden: ['A4-1', 'A4-2', 'A4-3', 'A4-4']"
+    "§3.2-§3.8 no contienen exactamente ['A4-1', 'A4-2', 'A4-3', 'A4-4', 'A4-5'] en orden: ['A4-1', 'A4-2', 'A4-3', 'A4-4']"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-01",
+   "Scenario": "C3",
+   "Guard": "G2C3",
+   "Mutation": "A4-1 cambiada",
+   "Expect": "fuera de las regiones declaradas",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "cambios fuera de las regiones declaradas: ['§3.2']",
+    "paquete: no nombra el blob de la A-4 corregida (850d684edf09006cec7ae80bfb27507d287e40db)",
+    "blob de la A-4 de la corrección 3 850d684edf09006cec7ae80bfb27507d287e40db distinto de A4_CORR3_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-02",
+   "Scenario": "C3",
+   "Guard": "G2C3",
+   "Mutation": "A4-4, regla 2, cambiada",
+   "Expect": "A4-4: ítems no declarados",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-4: ítems no declarados cambian: ['2']",
+    "paquete: no nombra el blob de la A-4 corregida (b434a96c9f899fd637c7d1f4c3463a55f476896b)",
+    "blob de la A-4 de la corrección 3 b434a96c9f899fd637c7d1f4c3463a55f476896b distinto de A4_CORR3_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-03",
+   "Scenario": "C3",
+   "Guard": "G2C3",
+   "Mutation": "A4-4, regla 1, con un añadido",
+   "Expect": "no es solo supresión",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-4, regla 1: no es solo supresión (añade texto no declarado)",
+    "paquete: no nombra el blob de la A-4 corregida (d5fb6152c9812775937d7f23438e5841a7a4d876)",
+    "blob de la A-4 de la corrección 3 d5fb6152c9812775937d7f23438e5841a7a4d876 distinto de A4_CORR3_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-04",
+   "Scenario": "C3",
+   "Guard": "G2C3",
+   "Mutation": "A4-4, regla 5, conserva el criterio de la materialización",
+   "Expect": "conserva texto de la materialización",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-4 conserva texto de la materialización (opción B)",
+    "frase prohibida presente: «o de un criterio `INDEPENDENCE:<ReferenceRole>:<Dimension>` de la mate»",
+    "paquete: no nombra el blob de la A-4 corregida (278807f5b8cf2dfcee80077ee2c66c123ca16ab5)"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-05",
+   "Scenario": "C3",
+   "Guard": "G2C3",
+   "Mutation": "§2 borra texto",
+   "Expect": "§2: no es solo inserción",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "§2: no es solo inserción (borra texto anterior)",
+    "paquete: no nombra el blob de la A-4 corregida (cfbc41c8d474a341d30f00be94f0bde089ac9856)",
+    "blob de la A-4 de la corrección 3 cfbc41c8d474a341d30f00be94f0bde089ac9856 distinto de A4_CORR3_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-06",
+   "Scenario": "C3",
+   "Guard": "G2C3",
+   "Mutation": "campo Authority de la cabecera cambiado",
+   "Expect": "header:Authority",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "cambios fuera de las regiones declaradas: ['header:Authority']",
+    "paquete: no nombra el blob de la A-4 corregida (54e8967df1ab0a394258692a0276b1051f572476)",
+    "blob de la A-4 de la corrección 3 54e8967df1ab0a394258692a0276b1051f572476 distinto de A4_CORR3_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-07",
+   "Scenario": "C3",
+   "Guard": "G2C3",
+   "Mutation": "ruta de más",
+   "Expect": "rutas no permitidas",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "rutas no permitidas: ['src/RackCad.Plugin/Fuera.cs']"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-08",
+   "Scenario": "C3",
+   "Guard": "G2C3",
+   "Mutation": "sin la frase de I-S18",
+   "Expect": "frase exigida ausente",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "frase exigida ausente: «I-S18 (V14 B.8.8, L2184-L2185) conserva su significado literal y A-4 n»",
+    "paquete: no nombra el blob de la A-4 corregida (034e455595c79dc29187a80d30011e08c9b8e31d)",
+    "blob de la A-4 de la corrección 3 034e455595c79dc29187a80d30011e08c9b8e31d distinto de A4_CORR3_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-09",
+   "Scenario": "C3",
+   "Guard": "G2C3",
+   "Mutation": "paquete sin el blob nuevo de A-4",
+   "Expect": "paquete",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "paquete: no nombra el blob de la A-4 corregida (5e2ba68efdc1b902aa1c28aff4453b4b6973be7f)",
+    "blob del paquete de la corrección 3 33a4e5b6f361cbcb885fc9beab7c4dfc584a5563 distinto de PKG_CORR3_BLOB",
+    "blobs de A-4 y del paquete en head distintos de A4_CORR3_BLOB / PKG_CORR3_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-10",
+   "Scenario": "C3",
+   "Guard": "G2C3",
+   "Mutation": "la base no tiene la A-4 de la corrección 2",
+   "Expect": "la base no contiene",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "la base no contiene la A-4 de la corrección 2 (0d954376) y su paquete (59052b84)"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-11",
+   "Scenario": "C3",
+   "Guard": "G5",
+   "Mutation": "cifras de A4-6 distintas del tope congelado + 1",
+   "Expect": "cifras de A4-6",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "cifras de A4-6 [('2', '4')] distintas del tope congelado de V14 L2437 / L2523 ([2]) más uno"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-12",
+   "Scenario": "C3",
+   "Guard": "G5",
+   "Mutation": "A4-6 sin su cláusula de alcance",
+   "Expect": "A4-6: la regla no abre",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-6: la regla no abre con su cláusula de alcance (abre con «Solo para»: False; faltan ['Solo para la ronda A de F6']; otros escenarios [])"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-13",
+   "Scenario": "C3",
+   "Guard": "G5",
+   "Mutation": "A4-6 menciona otro escenario sin negación",
+   "Expect": "ESCENARIO «FX-03»",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-6, ítem 5: mención de ESCENARIO «FX-03» fuera de una frase negativa, de conservación o de restricción"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-14",
+   "Scenario": "C3",
+   "Guard": "G5",
+   "Mutation": "párrafo de A4-5 cambiado",
+   "Expect": "cambian frente a 0d954376",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "cambian frente a 0d954376 partes de las reglas que la corrección 3 no declara: ['A4-5']"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-15",
+   "Scenario": "C3",
+   "Guard": "G5",
+   "Mutation": "A4-6 depende de A4-5",
+   "Expect": "no es separable",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "otra regla menciona A4-5: A4-5 no es separable"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-16",
+   "Scenario": "C3",
+   "Guard": "G5",
+   "Mutation": "nombre de producto en A4-6",
+   "Expect": "nombres de producto",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-6: nombres de producto en la regla: ['claude']"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-17",
+   "Scenario": "C3",
+   "Guard": "G2D3",
+   "Mutation": "la HEAD ya tiene otra A-4 (preview)",
+   "Expect": "la HEAD del repositorio",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "la HEAD del repositorio no tiene A-4 = 0d954376 y paquete = 59052b84: la corrección 3 no se aplica sobre ella"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-18",
+   "Scenario": "C3",
+   "Guard": "G1",
+   "Mutation": "fila Principal A citada con otra cifra",
+   "Expect": "L74",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "L74: la cita no está en A-4 tal como la fija la guarda",
+    "citas sin comprobar: ['| Principal A (`claude-desktop-session`, sesión del sistema bajo prueba abierta ']"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-19",
+   "Scenario": "C3",
+   "Guard": "G1",
+   "Mutation": "literal de §63 cambiado",
+   "Expect": "L81",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "L81: la cita no está en A-4 tal como la fija la guarda",
+    "citas sin comprobar: ['A + R = 2 sesiones usadas; A2 sería la cuarta y no cabe en el tope vigente']"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-20",
+   "Scenario": "C3",
+   "Guard": "G5B",
+   "Mutation": "self-test de otra A-4 (corrección 3)",
+   "Expect": "A4TextBlob distinto",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4TextBlob distinto del blob de A-4 en head"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-21",
+   "Scenario": "C3",
+   "Guard": "G2C3",
+   "Mutation": "A4-6 retirada (§3.8 ausente)",
+   "Expect": "regiones nuevas distintas de §3.8",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "regiones nuevas distintas de §3.8 (A4-6): []",
+    "paquete: no nombra el blob de la A-4 corregida (2bc6a1207c91174ac8958149207732331647f370)",
+    "blob de la A-4 de la corrección 3 2bc6a1207c91174ac8958149207732331647f370 distinto de A4_CORR3_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-22",
+   "Scenario": "C3",
+   "Guard": "G1",
+   "Mutation": "prefijo de la conciliación de U-14 distinto",
+   "Expect": "05f62382",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A-4 no cita el prefijo 05f62382… (docs/automation/evidence/I-62-F6/FX-02/s62/u14-reconciliation.md)"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-23",
+   "Scenario": "C3",
+   "Guard": "G2C3",
+   "Mutation": "§3.7 recupera «No sube topes» sin A4-6",
+   "Expect": "frase prohibida presente",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "frase prohibida presente: «No sube topes ni totales de D.3, no repone»",
+    "paquete: no nombra el blob de la A-4 corregida (fa4e453292c4d2e22fc1a0d07e28a729b27265f2)",
+    "blob de la A-4 de la corrección 3 fa4e453292c4d2e22fc1a0d07e28a729b27265f2 distinto de A4_CORR3_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-24",
+   "Scenario": "C3",
+   "Guard": "G2C3",
+   "Mutation": "otra adición en A4-4, regla 5",
+   "Expect": "no es solo supresión",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-4, regla 5: no es solo supresión (añade texto no declarado)",
+    "paquete: no nombra el blob de la A-4 corregida (f31338a3690f05886e00482df6b135c3d3d2ded7)",
+    "blob de la A-4 de la corrección 3 f31338a3690f05886e00482df6b135c3d3d2ded7 distinto de A4_CORR3_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-25",
+   "Scenario": "C3",
+   "Guard": "G2C3",
+   "Mutation": "A4-4, regla 5, sin la frase declarada",
+   "Expect": "falta la frase añadida declarada",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-4, regla 5: falta la frase añadida declarada (o se repite)",
+    "frase exigida ausente: «la aceptación individual real del binding del Architect por el Coordin»",
+    "paquete: no nombra el blob de la A-4 corregida (2e7bd7c034fe922dd99f0411acb65c4d21504a1a)"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC3-26",
+   "Scenario": "C3",
+   "Guard": "G2C3",
+   "Mutation": "la frase declarada reintroduce la materialización",
+   "Expect": "conserva texto de la materialización",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-4, regla 5: falta la frase añadida declarada (o se repite)",
+    "A4-4, regla 5: no es solo supresión (añade texto no declarado)",
+    "A4-4 conserva texto de la materialización (opción B)"
    ],
    "Result": "PASS"
   },
@@ -1175,7 +1538,7 @@
  ],
  "Findings": [],
  "Result": "PASS",
- "ToolBlob": "6595d8730456d7a06fc3edbd833dfa1eef11a1bc",
+ "ToolBlob": "27748730b64dc9df3c30db71cb521ec0806e5d29",
  "ToolPrivacy": {
   "Findings": [],
   "Result": "PASS"
