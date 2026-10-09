@@ -17,7 +17,7 @@
   }
  },
  "ScenarioC": {
-  "TextSource": "args",
+  "TextSource": "blobs 7d863219/085f30f6",
   "A4TextBlob": "7d863219a271b5ec427ef8669435826e19be8f11",
   "PkgTextBlob": "085f30f602532a619734b47b6b8d60035d8fb278",
   "ControlResults": {
@@ -30,12 +30,27 @@
   "ControlFindings": {},
   "Control": "PASS"
  },
- "A4TextBlob": "7d863219a271b5ec427ef8669435826e19be8f11",
- "PkgTextBlob": "085f30f602532a619734b47b6b8d60035d8fb278",
+ "ScenarioC2": {
+  "TextSource": "args",
+  "Base": "a5b50c689ef33aa7b6fa7f7949fd72f58202e369",
+  "A4TextBlob": "0d9543761e3e3a45a94338776f7c1ba763224ab3",
+  "PkgTextBlob": "59052b847ccc13e8be539189ae1b77dc7f9d3623",
+  "ControlResults": {
+   "G1": "PASS",
+   "G2C2": "PASS",
+   "G2D2": "PASS",
+   "G5": "PASS",
+   "G5B": "PASS"
+  },
+  "ControlFindings": {},
+  "Control": "PASS"
+ },
+ "A4TextBlob": "0d9543761e3e3a45a94338776f7c1ba763224ab3",
+ "PkgTextBlob": "59052b847ccc13e8be539189ae1b77dc7f9d3623",
  "PerGuard": {
   "G1": {
-   "Mutants": 19,
-   "Killed": 19
+   "Mutants": 21,
+   "Killed": 21
   },
   "G2": {
    "Mutants": 8,
@@ -50,8 +65,8 @@
    "Killed": 2
   },
   "G5": {
-   "Mutants": 17,
-   "Killed": 17
+   "Mutants": 19,
+   "Killed": 19
   },
   "G2C": {
    "Mutants": 11,
@@ -62,13 +77,21 @@
    "Killed": 2
   },
   "G5B": {
-   "Mutants": 3,
-   "Killed": 3
+   "Mutants": 4,
+   "Killed": 4
+  },
+  "G2C2": {
+   "Mutants": 13,
+   "Killed": 13
+  },
+  "G2D2": {
+   "Mutants": 2,
+   "Killed": 2
   }
  },
  "Total": {
-  "Mutants": 66,
-  "Killed": 66
+  "Mutants": 86,
+  "Killed": 86
  },
  "Mutants": [
   {
@@ -622,6 +645,268 @@
    "Result": "PASS"
   },
   {
+   "Id": "MC2-01",
+   "Scenario": "C2",
+   "Guard": "G2C2",
+   "Mutation": "cambio fuera de las regiones declaradas (§2)",
+   "Expect": "fuera de las regiones declaradas",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "cambios fuera de las regiones declaradas: ['§2']",
+    "paquete: no nombra el blob de la A-4 corregida (cf969da519e5ff4dbc423c240a6305376a0025e8)",
+    "blob de la A-4 de la corrección 2 cf969da519e5ff4dbc423c240a6305376a0025e8 distinto de A4_CORR2_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC2-02",
+   "Scenario": "C2",
+   "Guard": "G2C2",
+   "Mutation": "párrafo de A4-2 cambiado",
+   "Expect": "§3.3",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "cambios fuera de las regiones declaradas: ['§3.3']",
+    "paquete: no nombra el blob de la A-4 corregida (df460a8d5eacb87898692a7e9abde957a1959a35)",
+    "blob de la A-4 de la corrección 2 df460a8d5eacb87898692a7e9abde957a1959a35 distinto de A4_CORR2_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC2-03",
+   "Scenario": "C2",
+   "Guard": "G2C2",
+   "Mutation": "A4-4, regla 2, cambiada",
+   "Expect": "A4-4: ítems no declarados",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-4: ítems no declarados cambian: ['2']",
+    "paquete: no nombra el blob de la A-4 corregida (7b90720808506fea3cb03adf32e372f88670f363)",
+    "blob de la A-4 de la corrección 2 7b90720808506fea3cb03adf32e372f88670f363 distinto de A4_CORR2_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC2-04",
+   "Scenario": "C2",
+   "Guard": "G2C2",
+   "Mutation": "A4-1, regla 2: la precisión borra texto",
+   "Expect": "no es solo inserción",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-1, regla 2: la precisión no es solo inserción (borra texto anterior)",
+    "paquete: no nombra el blob de la A-4 corregida (0160649c7fe0a4f275877bcf39d54d2c1f104e79)",
+    "blob de la A-4 de la corrección 2 0160649c7fe0a4f275877bcf39d54d2c1f104e79 distinto de A4_CORR2_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC2-05",
+   "Scenario": "C2",
+   "Guard": "G2C2",
+   "Mutation": "A4-1, regla 5, cambiada",
+   "Expect": "A4-1: ítems no declarados",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-1: ítems no declarados cambian: ['5']",
+    "paquete: no nombra el blob de la A-4 corregida (596fdaea972a5b21735bd3aae3e4803a5d3b9027)",
+    "blob de la A-4 de la corrección 2 596fdaea972a5b21735bd3aae3e4803a5d3b9027 distinto de A4_CORR2_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC2-06",
+   "Scenario": "C2",
+   "Guard": "G2C2",
+   "Mutation": "M-02 vuelve a «no»",
+   "Expect": "frase exigida ausente",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "frase exigida ausente: «| M-02 | **sí** |»",
+    "frase prohibida presente: «| M-02 | no |»",
+    "paquete: no nombra el blob de la A-4 corregida (30426d36cae39a7bb4373adb27087455d49b0224)"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC2-07",
+   "Scenario": "C2",
+   "Guard": "G2C2",
+   "Mutation": "discriminador sin `InstanceId` NOT_STARTED",
+   "Expect": "faltan términos",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-4, regla 5: faltan términos de la precisión: ['`InstanceId` NOT_STARTED']",
+    "paquete: no nombra el blob de la A-4 corregida (41900d8d60dc55736633406b555144f6c2c11775)",
+    "blob de la A-4 de la corrección 2 41900d8d60dc55736633406b555144f6c2c11775 distinto de A4_CORR2_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC2-08",
+   "Scenario": "C2",
+   "Guard": "G2C2",
+   "Mutation": "ruta de más",
+   "Expect": "rutas no permitidas",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "rutas no permitidas: ['src/RackCad.Plugin/Fuera.cs']"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC2-09",
+   "Scenario": "C2",
+   "Guard": "G2C2",
+   "Mutation": "paquete sin el blob nuevo de A-4",
+   "Expect": "paquete",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "paquete: no nombra el blob de la A-4 corregida (0d9543761e3e3a45a94338776f7c1ba763224ab3)",
+    "blob del paquete de la corrección 2 53724c2e0a87c3d9e3a0258bf4dacdd1085cada1 distinto de PKG_CORR2_BLOB",
+    "blobs de A-4 y del paquete en head distintos de A4_CORR2_BLOB / PKG_CORR2_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC2-10",
+   "Scenario": "C2",
+   "Guard": "G2C2",
+   "Mutation": "campo Origin de la cabecera cambiado",
+   "Expect": "header:Origin",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "cambios fuera de las regiones declaradas: ['header:Origin']",
+    "paquete: no nombra el blob de la A-4 corregida (e668a7a155e7387b70113b644eec066fffe84b63)",
+    "blob de la A-4 de la corrección 2 e668a7a155e7387b70113b644eec066fffe84b63 distinto de A4_CORR2_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC2-11",
+   "Scenario": "C2",
+   "Guard": "G2C2",
+   "Mutation": "a4-guards.py sin modificar",
+   "Expect": "docs/automation/evidence/I-62-A4/a4-guards.py no aparece como modificado",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "docs/automation/evidence/I-62-A4/a4-guards.py no aparece como modificado (M)"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC2-12",
+   "Scenario": "C2",
+   "Guard": "G2C2",
+   "Mutation": "la base no tiene la A-4 corregida 7d863219",
+   "Expect": "la base no contiene",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "la base no contiene la A-4 corregida (7d863219) y su paquete (085f30f6)"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC2-13",
+   "Scenario": "C2",
+   "Guard": "G5",
+   "Mutation": "párrafo de A4-5 cambiado",
+   "Expect": "cambian frente a 7d863219",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "cambian frente a 7d863219 partes de las reglas que la corrección 2 no declara: [\"A4-5 (ítems ['1'])\"]"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC2-14",
+   "Scenario": "C2",
+   "Guard": "G2D2",
+   "Mutation": "cambio fuera de las regiones (§9, preview)",
+   "Expect": "fuera de las regiones declaradas",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "cambios fuera de las regiones declaradas: ['§9']",
+    "paquete: no nombra el blob de la A-4 corregida (08dcef21caa4217ed702c45d7b24aebf0f4f8868)",
+    "blob de la A-4 de la corrección 2 08dcef21caa4217ed702c45d7b24aebf0f4f8868 distinto de A4_CORR2_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC2-15",
+   "Scenario": "C2",
+   "Guard": "G2D2",
+   "Mutation": "la HEAD ya tiene otra A-4 (preview)",
+   "Expect": "la HEAD del repositorio",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "la HEAD del repositorio no tiene A-4 = 7d863219 y paquete = 085f30f6: la corrección 2 no se aplica sobre ella"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC2-16",
+   "Scenario": "C2",
+   "Guard": "G1",
+   "Mutation": "cita nueva sin negrita de la fuente",
+   "Expect": "citas sin comprobar",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "citas sin comprobar: ['con todos en SATISFIED']"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC2-17",
+   "Scenario": "C2",
+   "Guard": "G5",
+   "Mutation": "nombre de producto en A4-4, regla 5",
+   "Expect": "nombres de producto",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4-4: nombres de producto en la regla: ['codex']"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC2-18",
+   "Scenario": "C2",
+   "Guard": "G2C2",
+   "Mutation": "§3.7 recupera la negación sin calificar",
+   "Expect": "frase prohibida presente",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "frase prohibida presente: «tampoco producción, F4, esquemas»",
+    "paquete: no nombra el blob de la A-4 corregida (1b022a7c6323cf85e67566bf2b356911cc7db2c8)",
+    "blob de la A-4 de la corrección 2 1b022a7c6323cf85e67566bf2b356911cc7db2c8 distinto de A4_CORR2_BLOB"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC2-19",
+   "Scenario": "C2",
+   "Guard": "G5B",
+   "Mutation": "self-test de otra A-4 (corrección 2)",
+   "Expect": "A4TextBlob distinto",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A4TextBlob distinto del blob de A-4 en head"
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Id": "MC2-20",
+   "Scenario": "C2",
+   "Guard": "G1",
+   "Mutation": "prefijo del blob nuevo del kit distinto",
+   "Expect": "ceb38284",
+   "GuardResult": "FAIL",
+   "NewFindings": [
+    "A-4 no cita el prefijo ceb38284… (docs/automation/evidence/I-62-F6/kits/FX-02/README.md)"
+   ],
+   "Result": "PASS"
+  },
+  {
    "Id": "MC-01",
    "Scenario": "C",
    "Guard": "G2C",
@@ -890,7 +1175,7 @@
  ],
  "Findings": [],
  "Result": "PASS",
- "ToolBlob": "2489e35f4a5f0bb43696966b669ae7dd09b5004b",
+ "ToolBlob": "6595d8730456d7a06fc3edbd833dfa1eef11a1bc",
  "ToolPrivacy": {
   "Findings": [],
   "Result": "PASS"

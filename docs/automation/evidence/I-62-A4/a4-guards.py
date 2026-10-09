@@ -25,6 +25,17 @@ Uso (siempre con `python -I -B`; solo lectura del repositorio; sin red; nunca ej
       añadido, estado modificado; nada más), G3, G4, G5 y G5b (a4-selftest.json de head con Result PASS, ToolBlob = blob de a4-guards.py en
       head y A4TextBlob/PkgTextBlob = blobs de A-4 y del paquete en head). Con --also-at, G3 y G5 en otra revisión. Incluye el resumen del
       self-test.
+  Corrección 2 (A62-A4-01 y A62-A4-O1..O8 de la revisión R20261009T122416Z-bce3): cuando la base (o, en preview, la HEAD) tiene A-4 =
+      7d863219 y paquete = 085f30f6. `run` aplica G1, G2C2, G3, G4, G5 y G5b; `preview`, G1, G2D2, G3 y G5. G2C2/G2D2: el diff de A-4 frente a
+      7d863219 solo toca las regiones declaradas (cabecera: Classification y Architect review; §3.2, §3.5, §3.7, §4, §5, §6, §8, §10 y anexo); en
+      §3.2 solo cambian las reglas 2 y 3 de A4-1, por inserción, con los términos de A62-A4-O1/O2, y en §3.5 solo la regla 5 de A4-4, con los
+      consumidores y el discriminador de A62-A4-01; frases exigidas y retiradas (§5 M-02/M-05 = sí; §3.7 calificada); el paquete nombra el blob
+      nuevo, A62-A4-01 y el delta frente a 7d863219; blobs fijados (A4_CORR2_BLOB, PKG_CORR2_BLOB); en el commit, a4-guards.py y
+      a4-selftest.json MODIFICADOS, los resultados de las guardas opcionales, evidencia y decisiones solo por añadido, estado modificado, nada más.
+      G5 exige además A4-2, A4-3 y A4-5 idénticos a 7d863219, A4-4 idéntica salvo la regla 5 y A4-1 salvo las reglas 2 y 3. El self-test añade el
+      escenario C2 (control y mutantes) sobre la base real que contiene 7d863219.
+  Archivos del kit de FX-02 que otros commits cambian (README, contratos, plantilla O4): su blob distinto del fijado es INFO si las líneas que A-4
+      cita no cambian (G1 lo comprueba línea a línea); G3 los informa sin fallar, salvo que el commit comprobado los toque.
 
 Guardas:
   G1 literales y cabecera: cada literal que A-4 cita en §2, y toda cita «…» de texto congelado en el resto de A-4 (con referencia de línea o
@@ -73,6 +84,12 @@ A4_CORR_BLOB = "7d863219a271b5ec427ef8669435826e19be8f11"   # A-4 corregida ante
 PKG_CORR_BLOB = "085f30f602532a619734b47b6b8d60035d8fb278"
 GUARDS = "docs/automation/evidence/I-62-A4/a4-guards.py"
 SELFTEST = "docs/automation/evidence/I-62-A4/a4-selftest.json"
+RESULT_RUN = "docs/automation/evidence/I-62-A4/a4-guards-result.json"
+RESULT_PREVIEW = "docs/automation/evidence/I-62-A4/a4-guards-result-preview.json"
+# Corrección 2: A62-A4-01 y A62-A4-O1..O8 de la revisión R20261009T122416Z-bce3 (custodiada en a5b50c68), sobre 7d863219 / 085f30f6
+A4_CORR2_BLOB = "0d9543761e3e3a45a94338776f7c1ba763224ab3"
+PKG_CORR2_BLOB = "59052b847ccc13e8be539189ae1b77dc7f9d3623"
+F4V = "tests/RackCad.Tests/I62/StateV2Validator.Orchestration.cs"  # validador de producción de F4 que cita A4-4, regla 5 (corrección 2)
 A3_OLD_LINE = "A-3 candidata en revisión formal (decisiones §58, punto 3; blob ea6721f7…). A-4 no la modifica, no depende de ella ni la interpreta (Q-A4-07)."
 A3_NEW_LINE = ("A-3 AGREED (decisiones §61, punto 1; docs/initiatives/I-62-A-3.md, blob ea6721f78cb63fbc4f9d99563f3262eb36a32c5d). A-4 no la modifica, "
                "no depende de ella ni la interpreta (Q-A4-07).")
@@ -127,16 +144,20 @@ DECLARED = {  # A-4 §6, «Blobs sin cambio» (además de los de FROZEN)
     KIT: "fd7ef02dcccd782fca44f00dc00676285c3b87d1",
     CC: "90929ad1c49c028f41f58f654f8713bd0b35f27b",
     O4: "d92f7d3e13b122bf7669639cc0571a248650beda",
+    F4V: "355e1b35f7d8c7e318f5dbd6801429d4ad19899e",  # citado desde la corrección 2 (§3.7 y §6); sin cambio desde F4-G
 }
-SOURCE_PATHS = {"V14": V14, "A2": A2, "AP": AP, "RAE": RAE, "CODEX": CODEX, "CLAUDE": CLAUDE, "ROUTING": ROUTING, "KIT": KIT, "CC": CC,
+EVOLVING = {KIT, CC, O4}  # archivos del kit que otros commits pueden cambiar: sus líneas citadas no deben cambiar (G1); su blob, INFO (G3)
+SOURCE_PATHS = {"V14": V14, "A2": A2, "AP": AP, "RAE": RAE, "CODEX": CODEX, "CLAUDE": CLAUDE, "ROUTING": ROUTING, "KIT": KIT, "CC": CC, "F4V": F4V,
                 "O4": O4, "DEC": DEC, "EVAL": EVAL}
 SOURCES = {t: (FROZEN.get(p) or DECLARED.get(p)) for t, p in SOURCE_PATHS.items()}
 SOURCES["DEC"] = "625a7075e06f10edf25c0574067202f6f214c7e0"   # decisiones en 524b293e = en la base (hasta §60); creció por añadido después
 SOURCES["EVAL"] = "83a960cacc951a3c643af5049d1fc1f8aae16866"  # evaluación de la ruta cmd.exe (cabecera de A-4: «blob 83a960ca…»)
 BQ_SOURCES = {"A2"}  # fuentes cuyas líneas citadas son de un bloque citado de Markdown («> »): se comparan sin el marcador
-APPEND_SOURCES = {"DEC": DEC}  # fuentes que crecen solo por añadido: en una base posterior, su texto empieza por el del blob fijado
+APPEND_SOURCES = {"DEC": DEC}
+EVOLVING_SOURCES = {t for t, p in SOURCE_PATHS.items() if p in EVOLVING or t == "EVAL"}  # fuentes que crecen solo por añadido: en una base posterior, su texto empieza por el del blob fijado
 
 # Prefijos de blob abreviados que A-4 escribe («`abcdef12…`» o «blob abcdef12…») -> ruta cuyo blob real en la base debe empezar así
+SHORT_BLOBS_C2 = [("355e1b35", F4V), ("ceb38284", KIT), ("7d863219", A4)]  # prefijos que solo escribe la corrección 2
 SHORT_BLOBS = [("34ad80ea", V14), ("0f6b8608", FREEZE), ("c01899a7", A1), ("f1e1d6f0", A2), ("ea6721f7", A3), ("e1bd8d91", ADR48),
                ("f525cb1e", AP), ("592dcfd4", RAE), ("155f3469", CODEX), ("ae570380", CLAUDE), ("bba08fc4", ROUTING), ("166d978d", CATALOG),
                ("fd7ef02d", KIT), ("90929ad1", CC), ("d92f7d3e", O4), ("83a960ca", EVAL), ("b4a5679b", A2P2_RESULT), ("0b682899", CLAUDE_CHAR)]
@@ -243,7 +264,8 @@ LIT = [
     ("L71", "V14", 2442, 2442, "**Codex, total**", "A4-5"),
     ("L72", "V14", 2442, 2442, "pool **4** (≤ 2 por fase)", "A4-5"),
 ]
-NO_REF = {"L65", "L66", "L67", "L68", "L69", "L70", "L71", "L72"}
+LIT_C2 = [("L73", "V14", 1884, 1884, "con **todos** en SATISFIED", "cabecera, §3.7 y §5 (corrección 2)")]  # citas nuevas de la corrección 2
+NO_REF = {"L65", "L66", "L67", "L68", "L69", "L70", "L71", "L72", "L73"}
 REF_AFTER = {"L59", "L64"}
 NOTATION = {"V14 L…", "DEC L…"}                              # notación de §2, no son citas
 SELF_QUOTES = {"la comprobación de esa declaración": "A4-1"}  # citas del propio texto normativo de A-4
@@ -260,6 +282,9 @@ REF_TOKENS = [
     ("KIT", 140, 140, ["S18b"], "L140"), ("KIT", 144, 144, ["S21b"], "L144"), ("KIT", 180, 180, ["S30"], "L180"),
     ("KIT", 243, 249, ["6. Worker"], "L243-L249"), ("O4", 28, 31, ["{BINDING_ACCEPTANCE_RULE}", "{IN_WINDOW_STOP_RULE}"], "L28-L31"),
     ("O4", 44, 44, ["{CORRECTION_RULE}"], "L44"), ("EVAL", 51, 51, ["V1."], "L51"), ("EVAL", 13, 13, ["`py`"], "L13"),
+]
+REF_TOKENS_C2 = [
+    ("F4V", 119, 124, ["AUTHORIZED_MATERIALIZATION", "criterion not SATISFIED"], "L119-L124"),
 ]
 
 # ---------------------------------------------------------------- G5: delta
@@ -312,6 +337,21 @@ REQUIRED_ADDED = (A4, PKG)
 ALLOWED_A4_S6 = {A4, PKG, EV, DEC, F6README, STATE}  # A-4 §6: «Diff permitido sobre 524b293e» (más evidencia de I-62 por añadido)
 CORR_STATUS = {A4: {"M"}, PKG: {"M"}, GUARDS: {"A"}, SELFTEST: {"A"}, EV: {"M"}, DEC: {"M"}, STATE: {"M"}}  # commit de corrección
 CORR_REQUIRED = {A4: "M", PKG: "M", GUARDS: "A", SELFTEST: "A"}
+CORR2_STATUS = {A4: {"M"}, PKG: {"M"}, GUARDS: {"M"}, SELFTEST: {"M"}, EV: {"M"}, DEC: {"M"}, STATE: {"M"}, RESULT_RUN: {"M"}, RESULT_PREVIEW: {"M"}}
+CORR2_REQUIRED = {A4: "M", PKG: "M", GUARDS: "M", SELFTEST: "M"}
+# Regiones de A-4 que la corrección 2 puede cambiar (frente a 7d863219); §3.2 y §3.5 solo en las reglas declaradas
+C2_REGIONS = {"header:Classification", "header:Architect review", "§3.2", "§3.5", "§3.7", "§4", "§5", "§6", "§8", "§10", "Anexo"}
+C2_ITEMS = {"A4-1": {"2": ["`Identity`", "`Remote`", "`CleanTree`", "`Trailer`", "estado e ignorados", "(historia)"],
+                     "3": ["(`-C`)", "en total para FX-02 en F6", "solo la regla 4 abre otra"]},
+            "A4-4": {"5": ["`PreflightRef`", "`Assurance` NONE", "`InstanceId` NOT_STARTED", "(a)-(d)", "aceptante de A7'", "Q7", "S29", "F4",
+                           "cualquier otro UNKNOWN", "al pie de la letra", "«UNKNOWN cuenta como NOT_SATISFIED» rige sin cambio"]}}
+C2_INSERT_ONLY = {("A4-1", "2"), ("A4-1", "3")}  # precisiones de A62-A4-O1 y O2: solo inserciones (nada del texto anterior se borra)
+C2_REQUIRED_PHRASES = ["M-02, M-03, M-04 y M-05 sí; M-01 y M-06..M-08 no (§5)", "| M-02 | **sí** |", "| M-05 | **sí** |",
+                       "A4-4 es una enmienda de semántica, acotada a FX-02 en F6, de B6, del criterio INDEPENDENCE de la materialización y de la "
+                       "condición de B.5 «con **todos** en SATISFIED»", "al estilo de A-1 D1-21", "no aplica la excepción y no se cambia",
+                       "Re-revisión de esta versión: PENDING", "A62-A4-O8"]
+C2_FORBIDDEN_PHRASES = ["M-03 y M-04 sí; M-01, M-02 y M-05..M-08 no", "| M-02 | no |", "| M-05 | no |", "Guardas mecánicas: PENDIENTES",
+                        "tampoco producción, F4, esquemas", "A4-3 y A4-4 son excepciones acotadas a FX-02 en F6 sobre cuándo"]
 
 # ---------------------------------------------------------------- privacidad (patrón de a3-guards.py)
 PRIVACY = re.compile(r"(?i)(?:\b[a-z]:|(?<![\w.])/(?:mnt/)?[a-z])[\\/]+users[\\/]+[^\\/\s%<*]|\b[\w.+-]+@[\w-]+\.[a-z]{2,}\b")
@@ -413,18 +453,25 @@ def collect_common(git, base):
     inp = {"Sources": {t: git.cat(b) for t, b in SOURCES.items()}}
     inp["SourceBlobsAtBase"] = {t: git.blob(base, p) for t, p in SOURCE_PATHS.items()}
     inp["SourceBlobsAtPrep"] = {rev[:8]: {t: git.blob(rev, p) for t, p in SOURCE_PATHS.items()} for rev in (PREP_BASE, PREP_A41)}
-    inp["ShortBlobsAtBase"] = {p: git.blob(base, p) for _, p in SHORT_BLOBS}
+    inp["ShortBlobsAtBase"] = {p: git.blob(base, p) for _, p in SHORT_BLOBS + SHORT_BLOBS_C2}
+    inp["SourceTextsAtBase"] = {t: git.show(base, SOURCE_PATHS[t]) for t in EVOLVING_SOURCES if inp["SourceBlobsAtBase"].get(t) != SOURCES[t]}
     inp["FreezeCommit"] = {"V14": git.blob(FREEZE_SHA, V14), "Record": git.blob(FREEZE_SHA, FREEZE), "V14AtV14Commit": git.blob(V14_COMMIT, V14)}
     inp["DecBase"] = git.show(base, DEC)
     return inp
+
+
+PREV = {"C1": (A4_BLOB, PKG_BLOB), "C2": (A4_CORR_BLOB, PKG_CORR_BLOB)}  # versión de la corrección -> blobs de A-4 y del paquete sobre los que se aplica
 
 
 def collect_preview(git, a4_text, pkg_text):
     head = git("rev-parse", "HEAD").strip()
     inp = collect_common(git, head)
     paths = sorted(set(FROZEN) | set(DECLARED))
-    inp.update({"Mode": "PREVIEW", "Base": head, "Head": head, "A4": a4_text, "PKG": pkg_text, "A4Prev": git.cat(A4_BLOB), "PkgPrev": git.cat(PKG_BLOB),
-                "RepoBlobs": {A4: git.blob(head, A4), PKG: git.blob(head, PKG)}, "Blobs": {"Head": {p: git.blob(head, p) for p in paths}}})
+    repo = {A4: git.blob(head, A4), PKG: git.blob(head, PKG)}
+    version = "C2" if repo[A4] == A4_CORR_BLOB else "C1"  # la HEAD decide sobre qué versión publicada se aplicarían las copias
+    inp.update({"Mode": "PREVIEW", "Version": version, "Base": head, "Head": head, "A4": a4_text, "PKG": pkg_text,
+                "A4Prev": git.cat(PREV[version][0]), "PkgPrev": git.cat(PREV[version][1]), "RepoBlobs": repo,
+                "Blobs": {"Head": {p: git.blob(head, p) for p in paths}}})
     return inp
 
 
@@ -433,12 +480,18 @@ def collect(git, base, head, also, cm, tool, td):
     inp = collect_common(git, b0)
     inp.update({"Base": b0, "Head": h0})
     base, head = b0, h0
-    inp["Mode"] = "PUBLICATION" if head == A4_PUB else "CORRECTION"
     inp["HeadParent"] = git("rev-parse", head + "^1").strip()
     inp["A4"] = git.show(head, A4)
     inp["PKG"] = git.show(head, PKG)
-    if inp["Mode"] == "CORRECTION":
-        inp["A4Prev"], inp["PkgPrev"] = git.cat(A4_BLOB), git.cat(PKG_BLOB)
+    base_a4 = git.blob(base, A4)
+    if head == A4_PUB:
+        inp["Mode"], inp["Version"] = "PUBLICATION", "P"
+    elif base_a4 == A4_CORR_BLOB:
+        inp["Mode"], inp["Version"] = "CORRECTION2", "C2"
+    else:
+        inp["Mode"], inp["Version"] = "CORRECTION", "C1"
+    if inp["Version"] in PREV:
+        inp["A4Prev"], inp["PkgPrev"] = git.cat(PREV[inp["Version"]][0]), git.cat(PREV[inp["Version"]][1])
     rows = [l.split("\t") for l in git("diff", "--name-status", "--no-renames", base, head).splitlines() if l]
     inp["Status"] = {r[-1]: r[0] for r in rows}
     inp["HeadTexts"] = {p: git.show(head, p) for p, st in inp["Status"].items() if st in ("A", "M")}
@@ -495,11 +548,27 @@ REF = re.compile(r"\bL(\d+)(?:-L(\d+))?\b")
 def g1_literals(inp, ids):
     f, info, warn = [], [], []
     a4 = inp["A4"] or ""
+    c2 = inp.get("Version") == "C2"
+    lit = LIT + (LIT_C2 if c2 else [])
+    ref_tokens = REF_TOKENS + (REF_TOKENS_C2 if c2 else [])
     src = {t: txt.split("\n") for t, txt in inp["Sources"].items()}
+    cited = {}  # fuente -> líneas citadas (literales y testigos), para las fuentes del kit que otros commits pueden cambiar
+    for x in lit:
+        cited.setdefault(x[1], set()).update(range(x[2], x[3] + 1))
+    for x in ref_tokens:
+        cited.setdefault(x[0], set()).update(range(x[1], x[2] + 1))
     for t, b in SOURCES.items():  # cada fuente fijada es la de la base, la de 524b293e y la de c8d69fcb (A-4 §2: «literales en 524b293e,
         if t in APPEND_SOURCES:   # iguales en c8d69fcb»); las de solo añadido, en una base posterior, empiezan por el texto fijado
             if not (inp.get("DecBase") or "").startswith(inp["Sources"][t]):
                 f.append("fuente %s: en la base no empieza por el texto del blob fijado %s (no creció solo por añadido)" % (t, b))
+        elif inp["SourceBlobsAtBase"].get(t) != b and t in EVOLVING_SOURCES:
+            now = (inp.get("SourceTextsAtBase", {}).get(t) or "").split("\n")
+            moved = sorted(n for n in cited.get(t, ()) if n > len(now) or now[n - 1] != src[t][n - 1])
+            if moved:
+                f.append("fuente %s: en la base (blob %s) cambian líneas citadas: %s" % (t, inp["SourceBlobsAtBase"].get(t), moved[:10]))
+            else:
+                info.append("fuente %s: blob en la base %s distinto del fijado %s (cambio fuera de A-4); las %d líneas citadas son idénticas" % (
+                    t, (inp["SourceBlobsAtBase"].get(t) or "")[:8], b[:8], len(cited.get(t, ()))))
         elif inp["SourceBlobsAtBase"].get(t) != b:
             f.append("fuente %s: blob en la base %s distinto del fijado %s" % (t, inp["SourceBlobsAtBase"].get(t), b))
         for rev, blobs in inp["SourceBlobsAtPrep"].items():
@@ -532,7 +601,7 @@ def g1_literals(inp, ids):
     na = norm(re.sub(r"(?m)^>[ \t]?", "", a4))
     refs = [(m.start(), m.end(), int(m.group(1)), int(m.group(2) or m.group(1))) for m in REF.finditer(na)]
     checked, case_variants = [], set()
-    for lid, tag, a, b, q, where in LIT:
+    for lid, tag, a, b, q, where in lit:
         occ = [m.start() for m in re.finditer(re.escape("«" + norm(q) + "»"), na)]
         row = {"Id": lid, "Source": tag, "Lines": "L%d" % a if a == b else "L%d-L%d" % (a, b), "Where": where, "Result": "PASS"}
         if not occ:
@@ -582,7 +651,7 @@ def g1_literals(inp, ids):
         checked.append(row)
     # cobertura: toda cita de A-4 (salvo los cinco párrafos del delta, sus citas internas aparte) está comprobada
     qs = quotes(a4)
-    known = {norm(x[4]) for x in LIT} | NOTATION | set(SELF_QUOTES) | case_variants
+    known = {norm(x[4]) for x in lit} | NOTATION | set(SELF_QUOTES) | case_variants
     uncovered, paragraphs = [], 0
     if qs is None:
         f.append("A-4 con comillas angulares desequilibradas")
@@ -606,7 +675,7 @@ def g1_literals(inp, ids):
     if uncovered:
         f.append("citas sin comprobar: %s" % uncovered)
     # testigos de referencias de línea sin cita (aviso)
-    for tag, a, b, toks, ref in REF_TOKENS:
+    for tag, a, b, toks, ref in ref_tokens:
         hay = "\n".join(src[tag][a - 1:b])
         miss = [t for t in toks if t not in hay]
         if ref not in a4:
@@ -658,11 +727,12 @@ def g1_literals(inp, ids):
                 "; desde decisiones §61, punto 1, A-3 = AGREED con el mismo blob ea6721f7 (registro en --also-at); la cabecera queda desfasada, "
                 "no errónea para su fecha" if agreed_later else ""))
     # prefijos de blob abreviados
-    for pre, p in SHORT_BLOBS:
+    for pre, p in SHORT_BLOBS + (SHORT_BLOBS_C2 if c2 else []):
         if not re.search(re.escape(pre) + "…", a4):
             f.append("A-4 no cita el prefijo %s… (%s)" % (pre, p))
         got = inp["ShortBlobsAtBase"].get(p)
-        if not got or not got.startswith(pre):
+        pinned = FROZEN.get(p) or DECLARED.get(p) or ""
+        if (not got or not got.startswith(pre)) and not (p in EVOLVING and pinned.startswith(pre)):
             f.append("prefijo %s… distinto del blob de %s en la base (%s)" % (pre, p, got))
     # privacidad
     for name, text in (("A-4", inp["A4"]), ("paquete de A-4", inp["PKG"])):
@@ -670,8 +740,8 @@ def g1_literals(inp, ids):
             f.append("%s ausente en head" % name)
         else:
             f += privacy_findings(name, text, ids)
-    n2 = sum(1 for x in LIT if x[5] == "§2")
-    return {"Check": "G1 literales, cabecera y privacidad", "BlockLines": block_n, "InlineLiterals": len(LIT), "InlineLiteralsSection2": n2,
+    n2 = sum(1 for x in lit if x[5] == "§2")
+    return {"Check": "G1 literales, cabecera y privacidad", "BlockLines": block_n, "Version": inp.get("Version"), "InlineLiterals": len(lit), "InlineLiteralsSection2": n2,
             "Paragraphs": paragraphs, "Literals": checked, "A3HeaderState": a3_state, "Info": info, "Warnings": warn, "Findings": f,
             "Result": "PASS" if not f else "FAIL"}
 
@@ -738,17 +808,23 @@ def g2_paths(inp, ids):
 def g3_frozen(inp, labels=("Base", "Head")):
     want = dict(FROZEN)
     want.update(DECLARED)
-    mism = {}
+    mism, info = {}, []
     for lab in labels:
         got = inp["Blobs"].get(lab, {})
         for p, w in sorted(want.items()):
-            if got.get(p) != w:
+            if got.get(p) != w and p in EVOLVING:  # kit de FX-02: lo pueden cambiar otros commits; G1 comprueba sus líneas citadas
+                info.append("%s:%s con blob %s distinto del fijado %s (cambio fuera de A-4; líneas citadas en G1)" % (lab, p, (got.get(p) or "")[:8], w[:8]))
+            elif got.get(p) != w:
                 mism["%s:%s" % (lab, p)] = {"Expected": w, "Got": got.get(p)}
+    if "Base" in labels and "Head" in labels:
+        for p in sorted(EVOLVING):
+            if inp["Blobs"]["Base"].get(p) != inp["Blobs"]["Head"].get(p):
+                mism["Base->Head:" + p] = {"Expected": inp["Blobs"]["Base"].get(p), "Got": inp["Blobs"]["Head"].get(p)}
         if lab == "AlsoAt" and got.get(A4) != A4_BLOB:
             mism["AlsoAt:" + A4] = {"Expected": A4_BLOB, "Got": got.get(A4)}
     f = ["blob distinto en %s: esperado %s, obtenido %s" % (k, v["Expected"], v["Got"]) for k, v in sorted(mism.items())]
     return {"Check": "G3 blobs congelados y declarados sin cambio (%s)" % ", ".join(labels), "Paths": len(want), "Mismatches": mism,
-            "Findings": f, "Result": "PASS" if not f else "FAIL"}
+            "Info": info, "Findings": f, "Result": "PASS" if not f else "FAIL"}
 
 
 # ---------------------------------------------------------------- G4
@@ -892,6 +968,160 @@ def g5b_selftest(inp):  # el self-test custodiado corresponde a estas guardas y 
             "Findings": f, "Result": "PASS" if not f else "FAIL"}
 
 
+# ---------------------------------------------------------------- G2C2 / G2D2: corrección 2 (A62-A4-01 y A62-A4-O1..O8)
+def md_regions(md):
+    """Regiones de A-4: título, campos de la cabecera («header:<campo>») y secciones por número (§1..§10, §3.1..§3.7, Anexo)."""
+    out, key, state = {}, "title", "pre"
+    for l in md.split("\n"):
+        if state == "pre" and l == "```text":
+            state, key = "hdr", "header:(inicio)"
+        elif state == "hdr" and l == "```":
+            state, key = "body", "header:(fin)"
+        elif state == "hdr":
+            m = re.match(r"^([A-Z][A-Za-z /-]*):", l)
+            if m and (not out.get(key) or out[key][-1] == "" or key == "header:(inicio)"):
+                key = "header:" + m.group(1)
+        else:
+            m = re.match(r"^#{2,3} (\d+(?:\.\d+)?|Anexo)\b", l)
+            if m:
+                key = "Anexo" if m.group(1) == "Anexo" else "§" + m.group(1)
+        out.setdefault(key, []).append(l)
+    return {k: "\n".join(v) for k, v in out.items()}
+
+
+def para_items(para):
+    """{«intro», «1», «2», …}: el texto de cada regla numerada de un párrafo normativo (líneas tal cual)."""
+    items, label, cur = {}, "intro", []
+    for l in para.split("\n"):
+        m = re.match(r"^(\d+)\. ", l)
+        if m:
+            items[label] = "\n".join(cur)
+            label, cur = m.group(1), [l]
+        else:
+            cur.append(l)
+    items[label] = "\n".join(cur)
+    return items
+
+
+def tokens(text):
+    return re.findall(r"\w+|[^\w\s]", text)
+
+
+def is_insertion(old, new):
+    """El texto anterior es subsecuencia del nuevo, por palabras y signos: la edición solo inserta."""
+    it = iter(tokens(new))
+    return all(any(t == u for u in it) for t in tokens(old))
+
+
+def diff_limit2(inp):
+    """La A-4 de la corrección 2 frente a 7d863219 cambia solo en las regiones declaradas (C2_REGIONS) y, dentro de §3.2 y §3.5, solo en
+    A4-1 (reglas 2 y 3, por inserción) y A4-4 (regla 5); contiene lo que exige A62-A4-01 y ya no lo que retira; el paquete nombra el blob nuevo."""
+    f = []
+    old, new, po, pn = inp.get("A4Prev") or "", inp.get("A4") or "", inp.get("PkgPrev") or "", inp.get("PKG") or ""
+    if blob_id(old.encode("utf-8")) != A4_CORR_BLOB or blob_id(po.encode("utf-8")) != PKG_CORR_BLOB:
+        f.append("los textos anteriores no son los blobs 7d863219 / 085f30f6")
+    ro, rn = md_regions(old), md_regions(new)
+    if set(ro) != set(rn):
+        f.append("aparecen o desaparecen regiones: %s" % sorted(set(ro) ^ set(rn)))
+    changed = sorted(k for k in ro if k in rn and ro[k] != rn[k])
+    outside = [k for k in changed if k not in C2_REGIONS]
+    if outside:
+        f.append("cambios fuera de las regiones declaradas: %s" % outside)
+    po_r, pn_r = a4_rules(old), a4_rules(new)
+    for rid, sec in (("A4-1", "§3.2"), ("A4-4", "§3.5")):
+        strip = lambda t: "\n".join(l for l in t.split("\n") if not l.startswith(">"))
+        if strip(ro.get(sec, "")) != strip(rn.get(sec, "")):
+            f.append("%s: cambia texto fuera del párrafo normativo" % sec)
+        io, inn = para_items((po_r.get(rid) or {}).get("Paragraph", "")), para_items((pn_r.get(rid) or {}).get("Paragraph", ""))
+        if set(io) != set(inn):
+            f.append("%s: cambian las reglas numeradas" % rid)
+            continue
+        bad = sorted(k for k in io if io[k] != inn[k] and k not in C2_ITEMS[rid])
+        if bad:
+            f.append("%s: ítems no declarados cambian: %s" % (rid, bad))
+        for k, terms in C2_ITEMS[rid].items():
+            nn = norm(inn.get(k, ""))
+            miss = [t for t in terms if norm(t) not in nn]
+            if io.get(k) == inn.get(k):
+                f.append("%s, regla %s: no cambia (precisión declarada ausente)" % (rid, k))
+            if miss:
+                f.append("%s, regla %s: faltan términos de la precisión: %s" % (rid, k, miss))
+            if (rid, k) in C2_INSERT_ONLY and not is_insertion(io.get(k, ""), inn.get(k, "")):
+                f.append("%s, regla %s: la precisión no es solo inserción (borra texto anterior)" % (rid, k))
+    nt = norm(new)
+    f += ["frase exigida ausente: «%s»" % x[:70] for x in C2_REQUIRED_PHRASES if norm(x) not in nt]
+    f += ["frase prohibida presente: «%s»" % x[:70] for x in C2_FORBIDDEN_PHRASES if norm(x) in nt]
+    a4b, pb = blob_id(new.encode("utf-8")), blob_id(pn.encode("utf-8"))
+    if "(borrador de esta pasada: %s)" % a4b not in pn:
+        f.append("paquete: no nombra el blob de la A-4 corregida (%s)" % a4b)
+    if "A62-A4-01" not in pn or "7d863219" not in pn:
+        f.append("paquete: sin el hallazgo a re-revisar (A62-A4-01) o sin el delta frente a 7d863219")
+    if a4b != A4_CORR2_BLOB:
+        f.append("blob de la A-4 de la corrección 2 %s distinto de A4_CORR2_BLOB" % a4b)
+    if pb != PKG_CORR2_BLOB:
+        f.append("blob del paquete de la corrección 2 %s distinto de PKG_CORR2_BLOB" % pb)
+    hk = hunks(old, new)
+    return f, {"A4": {"Blob": a4b, "ChangedRegions": changed, "Hunks": [{"Op": h["Op"], "Old": h["Old"], "New": h["New"]} for h in hk]},
+               "Package": {"Blob": pb, "Hunks": [{"Op": h["Op"], "Old": h["Old"], "New": h["New"]} for h in hunks(po, pn)]}}
+
+
+def g2_diff_only2(inp, ids):
+    f, dl = diff_limit2(inp)
+    rb = inp.get("RepoBlobs") or {}
+    if rb.get(A4) != A4_CORR_BLOB or rb.get(PKG) != PKG_CORR_BLOB:
+        f.append("la HEAD del repositorio no tiene A-4 = 7d863219 y paquete = 085f30f6: la corrección 2 no se aplica sobre ella")
+    for name, text in (("A-4 (copia)", inp.get("A4") or ""), ("paquete (copia)", inp.get("PKG") or "")):
+        f += privacy_findings(name, text, ids)
+    return {"Check": "G2D2 límite del diff de la corrección 2 (copias frente a 7d863219 / 085f30f6)", "Diff": dl, "Findings": f,
+            "Result": "PASS" if not f else "FAIL"}
+
+
+def g2_correction2(inp, ids):
+    f, info = [], []
+    base, head, st = inp["Base"], inp["Head"], inp["Status"]
+    if inp["HeadParent"] != base:
+        f.append("base distinta del padre de head")
+    if inp["BaseBlobs4"].get(A4) != A4_CORR_BLOB or inp["BaseBlobs4"].get(PKG) != PKG_CORR_BLOB:
+        f.append("la base no contiene la A-4 corregida (7d863219) y su paquete (085f30f6)")
+    for p_, s_ in CORR2_REQUIRED.items():
+        if st.get(p_) != s_:
+            f.append("%s no aparece como modificado (M)" % p_)
+    bad = sorted(p_ for p_ in st if p_ not in CORR2_STATUS)
+    if bad:
+        f.append("rutas no permitidas: %s" % bad)
+    for p_, s_ in sorted(st.items()):
+        if p_ in CORR2_STATUS and s_ not in CORR2_STATUS[p_]:
+            f.append("%s con estado %s (permitido: %s)" % (p_, s_, sorted(CORR2_STATUS[p_])))
+    for p_ in (A4, PKG):
+        if (inp["HeadTexts"].get(p_) or "") != (inp["A4"] if p_ == A4 else inp["PKG"]):
+            f.append("%s: texto de head incoherente" % p_)
+    df, dl = diff_limit2(inp)
+    f += df
+    if inp["HeadBlobs"].get(A4) != A4_CORR2_BLOB or inp["HeadBlobs"].get(PKG) != PKG_CORR2_BLOB:
+        f.append("blobs de A-4 y del paquete en head distintos de A4_CORR2_BLOB / PKG_CORR2_BLOB")
+    grown = {}
+    for p_ in APPEND_ONLY:
+        if p_ in st:
+            new, old = inp["HeadTexts"].get(p_) or "", inp["BaseTexts"].get(p_) or ""
+            if st[p_] != "M" or not new.startswith(old):
+                f.append("%s no cambia solo por añadido" % p_)
+            else:
+                grown[p_] = {"BaseBytes": len(old.encode("utf-8")), "HeadBytes": len(new.encode("utf-8"))}
+    priv = []
+    for p_, s_ in sorted(st.items()):
+        if s_ == "A" or (s_ == "M" and p_ not in APPEND_ONLY):
+            text = inp["HeadTexts"].get(p_) or ""
+        elif s_ == "M":
+            new, old = inp["HeadTexts"].get(p_) or "", inp["BaseTexts"].get(p_) or ""
+            text = new[len(old):] if new.startswith(old) else new
+        else:
+            continue
+        priv.append(p_)
+        f += privacy_findings(p_, text, ids)
+    return {"Check": "G2C2 rutas y regiones del commit de la corrección 2", "Base": base, "Head": head, "Changed": st, "Diff": dl,
+            "AppendOnlyGrowth": grown, "PrivacyChecked": priv, "Info": info, "Findings": f, "Result": "PASS" if not f else "FAIL"}
+
+
 # ---------------------------------------------------------------- G5
 def a2_section(md, title):
     m = re.search(r"^### %s\n(.*?)(?=^### |^## )" % re.escape(title), md, re.S | re.M)
@@ -961,9 +1191,25 @@ def g5_delta(inp, cm, a4_text=None):
     if list(rules) != RULE_IDS:
         f.append("§3.2-§3.6 no contienen exactamente A4-1..A4-5 en orden: %s" % list(rules))
     paras = [rules[r]["Paragraph"] for r in RULE_IDS if r in rules]
-    if inp.get("A4Prev") is not None:  # corrección previa a la revisión: el delta no cambia frente a la A-4 publicada (27ffa26b)
+    pick = lambda d, r, k: (d.get(r) or {}).get(k)
+    if inp.get("A4Prev") is not None and inp.get("Version") == "C2":  # corrección 2: frente a 7d863219, solo A4-1 (2, 3) y A4-4 (5)
+        prev, moved = a4_rules(inp["A4Prev"]), []
+        for r in RULE_IDS:
+            if pick(prev, r, "Location") != pick(rules, r, "Location"):
+                moved.append(r + " (ubicación)")
+            io, inn = para_items(pick(prev, r, "Paragraph") or ""), para_items(pick(rules, r, "Paragraph") or "")
+            if set(io) != set(inn):
+                moved.append(r + " (ítems)")
+                continue
+            bad = sorted(k for k in io if io[k] != inn[k] and k not in C2_ITEMS.get(r, {}))
+            if bad:
+                moved.append("%s (ítems %s)" % (r, bad))
+        if moved:
+            f.append("cambian frente a 7d863219 partes de las reglas que la corrección 2 no declara: %s" % moved)
+        else:
+            info.append("frente a 7d863219: A4-2, A4-3 y A4-5 idénticos; A4-4 cambia solo en la regla 5 y A4-1 solo en las reglas 2 y 3")
+    elif inp.get("A4Prev") is not None:  # corrección previa a la revisión: el delta no cambia frente a la A-4 publicada (27ffa26b)
         prev = a4_rules(inp["A4Prev"])
-        pick = lambda d, r, k: (d.get(r) or {}).get(k)
         moved = [r for r in RULE_IDS if pick(prev, r, "Paragraph") != pick(rules, r, "Paragraph") or pick(prev, r, "Location") != pick(rules, r, "Location")]
         if moved:
             f.append("los párrafos normativos o sus ubicaciones cambian frente a 27ffa26b: %s" % moved)
@@ -1294,7 +1540,38 @@ MUTANTS_C = [  # escenario C: corrección previa a la revisión (copias corregid
     ("MC-21", "G5", "párrafo normativo cambiado frente a 27ffa26b", mut_corr("A4", "Su tope es uno, y P-07", "Su tope es uno y P-07"),
      "cambian frente a 27ffa26b"),
 ]
-GUARD_IDS = ("G1", "G2", "G3", "G4", "G5", "G2C", "G2D", "G5B")
+MUTANTS_C2 = [  # escenario C2: corrección 2 (copias corregidas sobre 7d863219, en la base que la contiene)
+    ("MC2-01", "G2C2", "cambio fuera de las regiones declaradas (§2)", mut_corr("A4", "Topología B, precedente del mismo rol", "Topología B, precedentes del mismo rol"),
+     "fuera de las regiones declaradas"),
+    ("MC2-02", "G2C2", "párrafo de A4-2 cambiado", mut_corr("A4", "a otro adapter cuya celda esté medida", "a otro adapter, cuya celda esté medida"), "§3.3"),
+    ("MC2-03", "G2C2", "A4-4, regla 2, cambiada", mut_corr("A4", "con el conjunto de referencia vacío", "con el conjunto vacío"), "A4-4: ítems no declarados"),
+    ("MC2-04", "G2C2", "A4-1, regla 2: la precisión borra texto", mut_corr("A4", "(historia), el cálculo de blobs y hashes, la lectura", "(historia), la lectura"),
+     "no es solo inserción"),
+    ("MC2-05", "G2C2", "A4-1, regla 5, cambiada", mut_corr("A4", "sin reutilización;\n> 6.", "sin reutilizarla;\n> 6."), "A4-1: ítems no declarados"),
+    ("MC2-06", "G2C2", "M-02 vuelve a «no»", mut_corr("A4", "| M-02 | **sí** |", "| M-02 | no |"), "frase exigida ausente"),
+    ("MC2-07", "G2C2", "discriminador sin `InstanceId` NOT_STARTED", mut_corr("A4", "tiene `Assurance` NONE e `InstanceId` NOT_STARTED, cuando", "tiene `Assurance` NONE, cuando"),
+     "faltan términos"),
+    ("MC2-08", "G2C2", "ruta de más", mut_add_path("src/RackCad.Plugin/Fuera.cs", "A", "// x\n"), "rutas no permitidas"),
+    ("MC2-09", "G2C2", "paquete sin el blob nuevo de A-4", lambda inp: mut_corr("PKG", "(borrador de esta pasada: " + blob_id(inp["A4"].encode("utf-8")) + ")",
+                                                                            "(borrador de esta pasada: " + A4_CORR_BLOB + ")")(inp), "paquete"),
+    ("MC2-10", "G2C2", "campo Origin de la cabecera cambiado", mut_corr("A4", "decisiones §60, punto 2 (DEC L1173); F6-OBS-03", "decisiones §60, punto 2 (DEC L1173), F6-OBS-03"),
+     "header:Origin"),
+    ("MC2-11", "G2C2", "a4-guards.py sin modificar", mut_del_status(GUARDS), GUARDS + " no aparece como modificado"),
+    ("MC2-12", "G2C2", "la base no tiene la A-4 corregida 7d863219", mut_set(("BaseBlobs4", A4), A4_BLOB), "la base no contiene"),
+    ("MC2-13", "G5", "párrafo de A4-5 cambiado", mut_corr("A4", "se admite **una** corrección", "se admite **una sola** corrección"), "cambian frente a 7d863219"),
+    ("MC2-14", "G2D2", "cambio fuera de las regiones (§9, preview)", mut_corr("A4", "## 9. Evidencia", "## 9. Evidencias"), "fuera de las regiones declaradas"),
+    ("MC2-15", "G2D2", "la HEAD ya tiene otra A-4 (preview)", mut_set(("RepoBlobs", A4), A4_CORR2_BLOB), "la HEAD del repositorio"),
+    ("MC2-16", "G1", "cita nueva sin negrita de la fuente", mut_corr("A4", "B.5 «con **todos** en SATISFIED» (A62-A4-01)", "B.5 «con todos en SATISFIED» (A62-A4-01)"),
+     "citas sin comprobar"),
+    ("MC2-17", "G5", "nombre de producto en A4-4, regla 5", mut_corr("A4", "validador de producción que materializó F4 no la aplica",
+                                                                    "validador de producción que materializó F4 en codex no la aplica"), "nombres de producto"),
+    ("MC2-18", "G2C2", "§3.7 recupera la negación sin calificar", mut_corr("A4", "  No autoriza ninguna invocación ni ningún consumo.\n",
+                                                                          "  No autoriza ninguna invocación ni ningún consumo; tampoco producción, F4, esquemas.\n"),
+     "frase prohibida presente"),
+    ("MC2-19", "G5B", "self-test de otra A-4 (corrección 2)", mut_selftest("A4TextBlob", "b" * 40), "A4TextBlob distinto"),
+    ("MC2-20", "G1", "prefijo del blob nuevo del kit distinto", mut_corr("A4", "`ceb38284…`", "`ceb38285…`"), "ceb38284"),
+]
+GUARD_IDS = ("G1", "G2", "G3", "G4", "G5", "G2C", "G2D", "G5B", "G2C2", "G2D2")
 
 
 def run_guard(gid, inp, cm, ids):
@@ -1306,6 +1583,10 @@ def run_guard(gid, inp, cm, ids):
         return g2_correction(inp, ids)
     if gid == "G2D":
         return g2_diff_only(inp, ids)
+    if gid == "G2C2":
+        return g2_correction2(inp, ids)
+    if gid == "G2D2":
+        return g2_diff_only2(inp, ids)
     if gid == "G3":
         return g3_frozen(inp)
     if gid == "G4":
@@ -1320,13 +1601,29 @@ def synth_correction(pub, a4_new, pkg_new, dec, tool_text):
     c = copy.deepcopy(pub)
     sel = json.dumps({"Result": "PASS", "ToolBlob": blob_id(tool_text.encode("utf-8")), "A4TextBlob": blob_id(a4_new.encode("utf-8")),
                       "PkgTextBlob": blob_id(pkg_new.encode("utf-8"))})
-    c.update({"Mode": "CORRECTION", "Base": A4_PUB, "HeadParent": A4_PUB, "Head": "c" * 40, "A4": a4_new, "PKG": pkg_new,
+    c.update({"Mode": "CORRECTION", "Version": "C1", "Base": A4_PUB, "HeadParent": A4_PUB, "Head": "c" * 40, "A4": a4_new, "PKG": pkg_new,
               "A4Prev": pub["A4"], "PkgPrev": pub["PKG"], "DecBase": dec,
               "Status": {A4: "M", PKG: "M", GUARDS: "A", SELFTEST: "A"},
               "HeadTexts": {A4: a4_new, PKG: pkg_new, GUARDS: tool_text, SELFTEST: sel}, "BaseTexts": {A4: pub["A4"], PKG: pub["PKG"]},
               "HeadBlobs": {A4: blob_id(a4_new.encode("utf-8")), PKG: blob_id(pkg_new.encode("utf-8")), GUARDS: blob_id(tool_text.encode("utf-8")),
                             SELFTEST: blob_id(sel.encode("utf-8"))},
               "BaseBlobs4": {A4: A4_BLOB, PKG: PKG_BLOB}, "RepoBlobs": {A4: A4_BLOB, PKG: PKG_BLOB}})
+    return c
+
+
+def synth_correction2(pub, base2, c1_a4, c1_pkg, a4_new, pkg_new, tool_text):
+    """Escenario C2: el commit de la corrección 2 simulado sobre la base real que contiene 7d863219 (sin escribir nada)."""
+    c = copy.deepcopy(pub)
+    c.update(copy.deepcopy(base2["Common"]))
+    sel = json.dumps({"Result": "PASS", "ToolBlob": blob_id(tool_text.encode("utf-8")), "A4TextBlob": blob_id(a4_new.encode("utf-8")),
+                      "PkgTextBlob": blob_id(pkg_new.encode("utf-8"))})
+    c.update({"Mode": "CORRECTION2", "Version": "C2", "Base": base2["Sha"], "HeadParent": base2["Sha"], "Head": "d" * 40, "A4": a4_new, "PKG": pkg_new,
+              "A4Prev": c1_a4, "PkgPrev": c1_pkg, "Status": {A4: "M", PKG: "M", GUARDS: "M", SELFTEST: "M"},
+              "HeadTexts": {A4: a4_new, PKG: pkg_new, GUARDS: tool_text, SELFTEST: sel},
+              "BaseTexts": {A4: c1_a4, PKG: c1_pkg, GUARDS: "# guardas anteriores\n", SELFTEST: "{}\n"},
+              "HeadBlobs": {A4: blob_id(a4_new.encode("utf-8")), PKG: blob_id(pkg_new.encode("utf-8")), GUARDS: blob_id(tool_text.encode("utf-8")),
+                            SELFTEST: blob_id(sel.encode("utf-8"))},
+              "BaseBlobs4": {A4: A4_CORR_BLOB, PKG: PKG_CORR_BLOB}, "RepoBlobs": {A4: A4_CORR_BLOB, PKG: PKG_CORR_BLOB}})
     return c
 
 
@@ -1348,11 +1645,24 @@ def kill_rows(inp, mutants, baseline, cm, ids, scenario):
     return rows
 
 
-def self_test(pub, corr, dec, cm, tool_text):
+def self_test(pub, corr, dec, cm, tool_text, corr2=None):
     ids = [SYNTH_ID]  # en el self-test, solo la identidad sintética (las reales no entran en los mutantes)
     base_p = {g: run_guard(g, copy.deepcopy(pub), cm, ids) for g in ("G1", "G2", "G3", "G4", "G5")}
     rows = kill_rows(pub, MUTANTS, base_p, cm, ids, "P")
-    findings, scen_c = [], None
+    findings, scen_c, scen_c2 = [], None, None
+    if corr2 is None:
+        findings.append("sin la corrección 2 (copias --a4/--pkg o A-4 de la corrección 2 en head o en la HEAD) o sin una base con 7d863219: "
+                        "el escenario C2 no se comprueba")
+    else:
+        c2 = synth_correction2(pub, corr2["Base"], corr2["C1A4"], corr2["C1Pkg"], corr2["A4"], corr2["PKG"], tool_text)
+        base_c2 = {g: run_guard(g, copy.deepcopy(c2), cm, ids) for g in ("G1", "G2C2", "G2D2", "G5", "G5B")}
+        rows += kill_rows(c2, MUTANTS_C2, base_c2, cm, ids, "C2")
+        ok2 = all(v["Result"] == "PASS" for v in base_c2.values())
+        if not ok2:
+            findings.append("control C2: la corrección 2 sin mutar no pasa %s" % [g for g, v in base_c2.items() if v["Result"] != "PASS"])
+        scen_c2 = {"TextSource": corr2["Source"], "Base": corr2["Base"]["Sha"], "A4TextBlob": blob_id(corr2["A4"].encode("utf-8")),
+                   "PkgTextBlob": blob_id(corr2["PKG"].encode("utf-8")), "ControlResults": {g: v["Result"] for g, v in base_c2.items()},
+                   "ControlFindings": {g: v["Findings"] for g, v in base_c2.items() if v["Findings"]}, "Control": "PASS" if ok2 else "FAIL"}
     if corr is None:
         findings.append("sin textos corregidos (--a4/--pkg, o A-4 corregida en head o en la HEAD): el escenario C no se comprueba")
     else:
@@ -1371,17 +1681,20 @@ def self_test(pub, corr, dec, cm, tool_text):
         rs = [x for x in rows if x["Guard"] == g]
         per[g] = {"Mutants": len(rs), "Killed": sum(1 for x in rs if x["Result"] == "PASS")}
     ok = not findings and all(x["Result"] == "PASS" for x in rows) and all(v["Mutants"] > 0 for v in per.values())
+    last = scen_c2 or scen_c  # el self-test custodiado se liga a la última corrección comprobada (G5b)
     return {"Tool": "a4-guards.py self-test",
             "ScenarioP": {"Base": pub["Base"], "Head": pub["Head"], "BaselineResults": {g: v["Result"] for g, v in base_p.items()},
                           "BaselineFindings": {g: v["Findings"] for g, v in base_p.items() if v["Findings"]}},
-            "ScenarioC": scen_c, "A4TextBlob": scen_c["A4TextBlob"] if scen_c else None, "PkgTextBlob": scen_c["PkgTextBlob"] if scen_c else None,
+            "ScenarioC": scen_c, "ScenarioC2": scen_c2, "A4TextBlob": last["A4TextBlob"] if last else None,
+            "PkgTextBlob": last["PkgTextBlob"] if last else None,
             "PerGuard": per, "Total": {"Mutants": len(rows), "Killed": sum(1 for x in rows if x["Result"] == "PASS")}, "Mutants": rows,
             "Findings": findings, "Result": "PASS" if ok else "FAIL"}
 
 
 def summary(st):
     return {"Result": st["Result"], "Total": st["Total"], "PerGuard": st["PerGuard"], "BaselineP": st["ScenarioP"]["BaselineResults"],
-            "ControlC": (st["ScenarioC"] or {}).get("ControlResults"), "A4TextBlob": st["A4TextBlob"], "PkgTextBlob": st["PkgTextBlob"],
+            "ControlC": (st["ScenarioC"] or {}).get("ControlResults"), "ControlC2": (st.get("ScenarioC2") or {}).get("ControlResults"),
+            "A4TextBlob": st["A4TextBlob"], "PkgTextBlob": st["PkgTextBlob"],
             "Findings": st["Findings"]}
 
 
@@ -1402,13 +1715,31 @@ def read_text(path):
 
 
 def corrected_texts(git, a, head=None):
+    """Corrección 1 (escenario C): siempre los blobs fijados 7d863219 / 085f30f6 del repositorio."""
+    return git.cat(A4_CORR_BLOB), git.cat(PKG_CORR_BLOB), "blobs 7d863219/085f30f6"
+
+
+def correction2_context(git, a, head=None):
+    """Corrección 2 (escenario C2): textos de --a4/--pkg o de head / HEAD cuando su A-4 no es 27ffa26b ni 7d863219; base = el primer commit
+    (padre de head, HEAD o sus antecesores de primer padre) cuya A-4 es 7d863219."""
+    texts = None
     if getattr(a, "a4", None) and getattr(a, "pkg", None):
-        return read_text(a.a4), read_text(a.pkg), "args"
-    for rev in [x for x in (head, "HEAD") if x]:
+        t4, tp = read_text(a.a4), read_text(a.pkg)
+        if blob_id(t4.encode("utf-8")) not in (A4_BLOB, A4_CORR_BLOB):
+            texts = (t4, tp, "args")
+    for rev in [x for x in (head, "HEAD") if x and texts is None]:
         t = git.show(rev, A4)
-        if t is not None and blob_id(t.encode("utf-8")) != A4_BLOB:
-            return t, git.show(rev, PKG), "head" if rev == head else "HEAD"
-    return None
+        if t is not None and blob_id(t.encode("utf-8")) not in (A4_BLOB, A4_CORR_BLOB):
+            texts = (t, git.show(rev, PKG), "head" if rev == head else "HEAD")
+    if texts is None:
+        return None
+    cands = ([head + "^1"] if head else []) + git("rev-list", "--first-parent", "-n", "400", "HEAD").split()
+    base = next((c for c in cands if git.blob(c, A4) == A4_CORR_BLOB), None)
+    if base is None:
+        return None
+    sha = git("rev-parse", base).strip()
+    return {"A4": texts[0], "PKG": texts[1], "Source": texts[2], "C1A4": git.cat(A4_CORR_BLOB), "C1Pkg": git.cat(PKG_CORR_BLOB),
+            "Base": {"Sha": sha, "Common": collect_common(git, sha)}}
 
 
 def main():
@@ -1435,14 +1766,18 @@ def main():
         cm, tool = load_clause_map(git, td)
         pub = collect(git, A4_BASE, A4_PUB, None, cm, tool, td)
         if a.cmd == "self-test":
-            res = self_test(pub, corrected_texts(git, a), git.show("HEAD", DEC), cm, tool_text)
+            res = self_test(pub, corrected_texts(git, a), git.show("HEAD", DEC), cm, tool_text, correction2_context(git, a))
         elif a.cmd == "preview":
             a4_text, pkg_text = read_text(a.a4), read_text(a.pkg)
             inp = collect_preview(git, a4_text, pkg_text)
-            checks = [g1_literals(inp, ids), g2_diff_only(inp, ids), g3_frozen(inp, ("Head",)), g5_delta(inp, cm)]
-            st = self_test(pub, (a4_text, pkg_text, "args"), inp["DecBase"], cm, tool_text)
+            g2d = g2_diff_only2(inp, ids) if inp["Version"] == "C2" else g2_diff_only(inp, ids)
+            checks = [g1_literals(inp, ids), g2d, g3_frozen(inp, ("Head",)), g5_delta(inp, cm)]
+            if inp["Version"] == "C2":
+                st = self_test(pub, corrected_texts(git, a), inp["DecBase"], cm, tool_text, correction2_context(git, a))
+            else:
+                st = self_test(pub, (a4_text, pkg_text, "args"), inp["DecBase"], cm, tool_text, correction2_context(git, a))
             ok = all(c["Result"] == "PASS" for c in checks) and st["Result"] == "PASS"
-            res = {"Tool": "a4-guards.py preview", "RepoHead": inp["Head"], "A4Blob": blob_id(a4_text.encode("utf-8")),
+            res = {"Tool": "a4-guards.py preview", "Version": inp["Version"], "RepoHead": inp["Head"], "A4Blob": blob_id(a4_text.encode("utf-8")),
                    "PkgBlob": blob_id(pkg_text.encode("utf-8")), "Checks": checks, "SelfTest": summary(st), "Result": "PASS" if ok else "FAIL"}
         else:
             head = git("rev-parse", a.head).strip()
@@ -1450,6 +1785,8 @@ def main():
                 collect(git, a.base, a.head, a.also_at, cm, tool, td)
             if inp["Mode"] == "PUBLICATION":
                 checks = [g1_literals(inp, ids), g2_paths(inp, ids), g3_frozen(inp), g4_c20b(inp, cm), g5_delta(inp, cm)]
+            elif inp["Mode"] == "CORRECTION2":
+                checks = [g1_literals(inp, ids), g2_correction2(inp, ids), g3_frozen(inp), g4_c20b(inp, cm), g5_delta(inp, cm), g5b_selftest(inp)]
             else:
                 checks = [g1_literals(inp, ids), g2_correction(inp, ids), g3_frozen(inp), g4_c20b(inp, cm), g5_delta(inp, cm), g5b_selftest(inp)]
             also = None
@@ -1458,8 +1795,8 @@ def main():
                 also = {"Rev": inp["AlsoAt"], "A4BlobAtRev": inp["Blobs"]["AlsoAt"].get(A4),
                         "Checks": [g3_frozen(inp, ("AlsoAt",)), {k: g5x[k] for k in ("Check", "Rules", "ParagraphSha256", "Application", "Findings", "Result")}]}
                 also["SameAsHead"] = g5x["ParagraphSha256"] == checks[4]["ParagraphSha256"]
-            dec_c = git.show(head if inp["Mode"] == "CORRECTION" else "HEAD", DEC)  # el escenario C necesita decisiones con §61 (A-3 AGREED)
-            st = self_test(pub, corrected_texts(git, a, head), dec_c, cm, tool_text)
+            dec_c = git.show(head if inp["Mode"] != "PUBLICATION" else "HEAD", DEC)  # el escenario C necesita decisiones con §61 (A-3 AGREED)
+            st = self_test(pub, corrected_texts(git, a, head), dec_c, cm, tool_text, correction2_context(git, a, head))
             ok = all(c["Result"] == "PASS" for c in checks) and (also is None or all(c["Result"] == "PASS" for c in also["Checks"]))
             res = {"Tool": "a4-guards.py run", "Mode": inp["Mode"], "A4Base": A4_BASE, "Base": inp["Base"], "Head": inp["Head"],
                    "A4Blob": inp["HeadBlobs"].get(A4), "Checks": checks, "AlsoAt": also, "SelfTest": summary(st),
