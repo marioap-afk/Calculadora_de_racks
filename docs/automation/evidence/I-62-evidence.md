@@ -3369,3 +3369,16 @@ solo desde artefactos custodiados.
   del blob `5e2ba68e`; bloque `08ac7dfb…`. Solo tienen efecto con A-4 AGREED por el Coordinator y la disposición que nombre
   cada aplicación; el silencio no es aprobación.
 - **Siguiente:** veredicto del Coordinator sobre A-4 (y disposición de O11..O13). A-4 no cambia hasta entonces; nada se aplica antes.
+
+## 115. Decisiones §64: A-4 AGREED; las tres autorizaciones del Owner recibidas; ejecución de FX-02 en marcha
+
+- **A-4 AGREED** (Architect y Coordinator) sobre el blob `5e2ba68e`, con la revisión R20261009T195811Z-2df6 ACCREDITED; A4-1..A4-6 AGREED; O11..O13
+  ACCEPTED NON-BLOCKING. Anexo de acuerdo en el [registro](../../initiatives/I-62-architect-review-A-4-r3.md); el blob no cambia.
+- **Owner:** `A4-SONDA-CONSUMO`, `A4-CLAUDE-FX02-CONSUMO` y `A4-PRINCIPAL-A2-CONSUMO` = A, byte a byte las de la solicitud (`08ac7dfb…`).
+- **Disposiciones de aplicación:**
+  - A4-1: celda `gpt-6-luna/high`, `cmd.exe`, trío de OD-2e, `-C` = `D:\r62-fixture\A2` con el clon preparado, limpio y sin sesión A2
+    activa; todas las operaciones de PLAN y VERIFY;
+  - A4-2: solo con la elegibilidad demostrada para las operaciones exactas del rol;
+  - A4-6: P-07 antes de pedir la apertura.
+- **Siguiente (punto 6):** verificar la identidad vigente del runtime; ajustar la sonda a PLAN y VERIFY; preparar el clon A2; sonda A4-1;
+  elegibilidad del Architect; orden O4 y preflight; P-07 y apertura de A2. Sin FX-02 PASS anticipado.

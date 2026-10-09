@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §63; evidencia §114) — A-4 5e2ba68e: segunda re-revisión por claude-cli AGREED (A4-5 y A4-6 AGREED), auditor ACCREDITED; veredicto del Coordinator PENDING; solicitud única al Owner (tres líneas) preparada, con efecto solo tras el acuerdo y las disposiciones de aplicación; luego sonda A4-1, O4, clon y apertura de A2, FX-02; sin F6 GATE PASS"
+  next_action: "F6 (decisiones §64; evidencia §115) — A-4 AGREED (5e2ba68e); A4-SONDA/A4-CLAUDE-FX02/A4-PRINCIPAL-A2-CONSUMO = A; FX-02 en ejecución: identidad vigente, sonda A4-1 (PLAN y VERIFY, -C A2 con el clon preparado), elegibilidad del Architect claude-cli, orden O4 y preflight, P-07 y apertura de A2; sin FX-02 PASS anticipado"
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual

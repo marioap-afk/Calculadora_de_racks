@@ -27,3 +27,14 @@ Coordinator:     veredicto PENDING; A-4 sigue PROPUESTA hasta el acuerdo del Coo
 [audit.json](../automation/evidence/I-62-architect-A-4/R20261009T195811Z-2df6/audit.json),
 [runtime-evidence.json](../automation/evidence/I-62-architect-A-4/R20261009T195811Z-2df6/runtime-evidence.json) y `launch/` (saneado).
 La transcripción y el `stdout.jsonl` no se versionan; sus SHA-256 están en `runtime-evidence.json`.
+
+## Acuerdo (añadido, decisiones §64)
+
+- **Coordinator: AGREED** sobre la A-4 exacta (blob `5e2ba68efdc1b902aa1c28aff4453b4b6973be7f`), con la acreditación de esta revisión
+  (ACCREDITED). A4-1..A4-6 quedan AGREED, incluidas A4-5 y A4-6. A-4 queda como enmienda acordada del Freeze y su blob no se edita después del
+  acuerdo (LIFECYCLE §6): toda corrección posterior iría en la A-n siguiente. Se aplica solo en F6, a FX-02, con las disposiciones de aplicación
+  de las decisiones §64 (puntos 2-4).
+- **A62-A4-01 y A62-A4-02:** CLOSED.
+- **A62-A4-O11..O13:** ACCEPTED NON-BLOCKING, custodiados en este registro y en `output.json`, sin modificar el objeto. O13 se refiere al paquete
+  del Architect (L144), que tampoco se edita.
+- No se solicita otra revisión formal de A-4.
