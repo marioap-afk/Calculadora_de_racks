@@ -33,3 +33,13 @@ sin decisión del Owner, sin cambio de superficies protegidas, alcance confirmad
 [audit.json](../automation/evidence/I-62-architect-A-3/R20261009T040327Z-58a1/audit.json),
 [runtime-evidence.json](../automation/evidence/I-62-architect-A-3/R20261009T040327Z-58a1/runtime-evidence.json) y `launch/` (saneado).
 La transcripción y el `stdout.jsonl` no se versionan (contienen contexto de la cuenta); sus SHA-256 están en `runtime-evidence.json`.
+
+## Acuerdo (añadido, decisiones §61)
+
+- **Coordinator: AGREED** sobre la A-3 exacta (blob `ea6721f78cb63fbc4f9d99563f3262eb36a32c5d`), con la acreditación de esta revisión (ACCREDITED).
+  A-3 queda como enmienda acordada del Freeze. Su blob no se edita después del acuerdo (LIFECYCLE §6): toda corrección posterior iría en la A-n
+  siguiente. A-3 no se aplica a producción.
+- **A62-A3-O1..O4:** ACCEPTED NON-BLOCKING OPTIONAL, documentados en este registro y en `output.json`, sin modificar el objeto.
+- **O4, deuda de cobertura de C-43.** En una sucesión encadenada que vuelve a la identidad del suelo, el modelo de guardas consume la sonda; el
+  texto no lo hace. No se declara PASS de ese caso hasta que el oráculo y el texto coincidan. La deuda no retrasa FX-02 si no afecta su ejecución.
+

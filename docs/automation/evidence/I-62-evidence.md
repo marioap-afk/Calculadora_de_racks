@@ -3088,3 +3088,15 @@ solo desde artefactos custodiados.
   [runtime-evidence.json](I-62-architect-A-3/R20261009T040327Z-58a1/runtime-evidence.json)).
 - **Clon** sin cambios tras la corrida. La transcripción y el `stdout.jsonl` no se versionan; sus SHA-256 están en `runtime-evidence.json`.
 - **Siguiente:** veredicto del Coordinator sobre la A-3 exacta (blob `ea6721f7`). A-3 no se modifica antes.
+
+## 100. A-3 AGREED (decisiones §61): acuerdo append-only; A-4 a revisión formal; FX-02 por grupos
+
+- **Acuerdo.** Architect AGREED (R20261009T040327Z-58a1, ACCREDITED) y Coordinator AGREED sobre la A-3 exacta (blob `ea6721f7…`; publicación
+  `91e29886`; revisión custodiada en `a23a093e`). Queda registrado en las decisiones (§61), en esta evidencia y como anexo del
+  [registro de la revisión](../../initiatives/I-62-architect-review-A-3.md). `docs/initiatives/I-62-A-3.md` no cambia y no se aplica a producción.
+  O1..O4 se aceptan como opcionales no bloqueantes; O4 queda como deuda de cobertura de C-43.
+- **Siguiente.**
+  - Guardas mecánicas de A-4 (blob `27ffa26b…`): comparación del delta con V14 y A-2, y superficies fuera de alcance.
+  - Después, kit y revisión formal por `claude-cli` lanzada automáticamente.
+  - En paralelo, la clasificación en cinco grupos de las decisiones de la solicitud de FX-02.
+  - Ninguna sonda ni A2 antes del acuerdo de A-4 y de las autorizaciones del Owner.
