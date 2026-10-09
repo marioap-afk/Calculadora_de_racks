@@ -345,7 +345,7 @@ Paquete completo, con las cuatro respuestas literales y la sección «Lectura de
 A-3 en `91e29886`). Se pide dentro de la solicitud única de recuperación (§5). Es materia reservada al Owner: no se resuelve por disposición del
 Coordinator. Mientras no se decida, OD-2 sigue siendo el SHA-256 exacto y P-01 no cambia.
 
-## OD-2e (vigente) — Línea base exacta de `codex-cli` tras el bloque A2-P2 (2026-10-09; pendiente del Owner)
+## OD-2e — Línea base exacta de `codex-cli` tras el bloque A2-P2 (2026-10-09; DECIDIDA: A, decisiones §59)
 
 Lo pide la disposición del Coordinator, decisiones §58, punto 2: «Tras las sondas, solicitar OD-2 exacta al Owner antes de trabajo ordinario de
 codex-cli». Sustituye a las solicitudes OD-2d, que quedaron obsoletas por las actualizaciones automáticas de la app. Medición:

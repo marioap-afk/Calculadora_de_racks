@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §58; evidencia §91-§93) — FX-04a B3 PASS 23/23 (clasificación del Coordinator pendiente); bloque Codex hecho: identidad estable, regresión de shell de la CLI 0.162.0-alpha.2 (F6-OBS-03); OD-2e (huella exacta 6518EFAB…) pendiente del Owner; revisión formal de A-3 por claude-cli en preparación; codex-cli en STOP P-01; sin F6 GATE PASS"
+  next_action: "F6 (decisiones §59; evidencia §94) — FX-04a B3 PASS 23/23 (clasificación del Coordinator pendiente); OD-2e = A (huella exacta 6518EFAB…); codex-cli sin trabajo ordinario hasta la disposición del Coordinator sobre F6-OBS-03 (regresión de shell de la CLI 0.162.0-alpha.2); revisión formal de A-3 por claude-cli en preparación; sin F6 GATE PASS"
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual

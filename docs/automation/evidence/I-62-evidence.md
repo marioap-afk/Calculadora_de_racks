@@ -2994,3 +2994,11 @@ solo desde artefactos custodiados.
     ([owner-decision-packets.md](I-62-prep/owner-decision-packets.md)). Aceptarla solo levanta P-01 por la huella.
   - El trabajo ordinario de `codex-cli` necesita además la disposición del Coordinator sobre F6-OBS-03.
   - El bloque consumió sus 2 sondas y no queda ninguna.
+
+## 94. OD-2e = A (decisiones §59): huella exacta `6518EFAB…` aceptada; `codex-cli` sigue sin trabajo ordinario hasta resolver F6-OBS-03
+
+- **Decisión.** El Owner aceptó la línea literal del paquete OD-2e. La medición pasiva en el momento de la aceptación coincide con lo aceptado:
+  huella `6518EFAB…` (107 nombres), binario `3553cd6e…`, app `26.1002.7124.0`.
+- **Efecto.** Deja de haber STOP P-01 por la huella. Un cambio futuro vuelve a ser P-01 con una OD-2 nueva.
+- **Pendiente.** El trabajo ordinario de `codex-cli` espera la disposición del Coordinator sobre F6-OBS-03, la regresión de shell de la CLI
+  0.162.0-alpha.2 (§93).
