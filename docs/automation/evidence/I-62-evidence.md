@@ -3287,3 +3287,18 @@ solo desde artefactos custodiados.
 - **Auditor v5.1-a4r: ACCREDITED,** con 0 motivos y 65 llamadas ([audit.json](I-62-architect-A-4/R20261009T150948Z-fdc2/audit.json)).
 - **Siguiente:** el Coordinator acredita la re-revisión, dispone A62-A4-02 y elige la vía; después, corrección 3, guardas y una re-revisión
   acotada. A-4 no cambia hasta entonces.
+
+## 110. Decisiones §63: re-revisión de A-4 acreditada; opción B para A62-A4-02; R cuenta (U-14); corrección 3 en preparación
+
+- **A-4:** la re-revisión R20261009T150948Z-fdc2 queda **ACCREDITED**, con el veredicto CHANGES REQUIRED. A62-A4-01: CLOSED. A62-A4-02: ACCEPTED
+  REQUIRED con la opción B. Se retira de A4-4 la rama de la materialización del Architect, que pasa a aceptación individual real fuera de la
+  ventana. B.5, RAE §14.3, I-S18 y los validadores de F4 conservan su significado literal.
+- **U-14:** R cuenta en la ronda A (A + R = 2), y A2 no cabe en el tope vigente. A-4 incorpora un delta separado y estrecho de **+1** sesión de
+  Principal en la ronda A, justificado por F6-OBS-01. Necesita la revisión del Architect y la autorización de consumo `A4-PRINCIPAL-A2-CONSUMO`.
+- **FX-02:**
+  - U-09 (e) queda dispuesta en la forma condicional (T3 solo con A1'-A8' íntegras y evidencia real; si no, T3'). El titular la custodia y la
+    reproducen el Q7 y S29.
+  - U-16 (1): aceptadas N4, N5, N7a y N7b. N8 necesita una mutación nueva, comprobada y resellada.
+  - CD-19: la referencia AUTHOR sale de `ActorRef` y `SessionRef` observados de los autores reales, sin identidades sintéticas.
+- **Siguiente:** corrección 3 de A-4, guardas sobre el commit exacto y re-revisión por `claude-cli`. En paralelo, N8, referencias AUTHOR y la
+  solicitud única al Owner (tres líneas, con efecto solo tras el acuerdo).

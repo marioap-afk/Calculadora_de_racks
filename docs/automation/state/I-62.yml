@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §62; evidencia §109) — A-4 re-revisión CHANGES REQUIRED (A62-A4-02: rama de materialización del Architect frente a I-S18; vías a/b), ACCREDITED; A62-A4-01 cerrado; espera disposición del Coordinator; FX-02: U-14 (con R contada, A2 no cabe), U-09 (e), U-16 (1)/N8 y CD-19 pendientes; TRX publicado; sin F6 GATE PASS"
+  next_action: "F6 (decisiones §63; evidencia §110) — A-4 corrección 3 en preparación (A62-A4-02 opción B; delta +1 Principal de la ronda A por U-14; O9/O10), guardas y re-revisión por claude-cli; FX-02: U-09 (e), U-16 (1) y CD-19 dispuestas; N8 y referencias AUTHOR en preparación; solicitud única al Owner con tres líneas tras el acuerdo; sin F6 GATE PASS"
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual
