@@ -5,7 +5,7 @@
 > negativos) y `supervision-checks.md` (comprobaciones de Q0/Q7 y criterios) son **solo de supervisión**: se guardan sellados fuera del repositorio público
 > (`D:/r62-fixture/evidence-out/supervision/fx02/`) hasta que FX-02 termine; SHA-256 de la versión de la noche 2
 > `63e84ba3d7f06371e4c44a7c2cf671757ac34d61caf35bf56fed94524507b0e7` (12 897 bytes) y
-> `444943584d3d792a8d152377fd62ee07aa8a54de110aeb61ea3fbbf933a28512` (22 058 bytes, tras la verificación de la pasada); resellados por la
+> `729fc3ef34b0704d36fa0313b980554bbd5253c2cd64c96a95c3c4cd9522a0fd` (22 954 bytes, resellado tras decisiones §55; `44494358…` archivado); resellados por la
 > supervisión ([sealed-supervision-files.json](../sealed-supervision-files.json); la versión anterior, `c88f1627…` y `02a64b85…`, queda archivada).
 
 > **Aplicación de decisiones §55 (2026-10-08).** FX-04a sigue OPEN / UNVERIFIED y el origen queda liberado para la preparación (U-01c), con una

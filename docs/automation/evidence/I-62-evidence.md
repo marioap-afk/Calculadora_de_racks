@@ -3220,3 +3220,32 @@ solo desde artefactos custodiados.
 - **No sustituye la autoridad del flujo:** la señal de Ci sigue siendo la corrida de push del SHA exacto con los jobs requeridos en success
   (AP 16.9; D.2). El TRX solo aporta los conteos y los nombres de las pruebas (AP 16.9 #10).
 - La orden O4 se publicará después, sobre esta punta.
+
+## 107. FX-02: conciliación de U-14, opciones de U-09 (e), comprobación sellada de U-16 (1) y sonda de A4-1 actualizada (decisiones §62, puntos 3 y 4)
+
+- **U-14** ([u14-reconciliation.md](I-62-F6/FX-02/s62/u14-reconciliation.md)).
+  - Sesiones de Principal en el fixture: cinco, todas abiertas por el Owner (A, R, B1, B2 y B3).
+  - Invocaciones de modelo de Codex: siete (sonda OD-4, OD-2b-PROBE ×2, OD-2d-PROBE ×2 y bloque A2-P2 ×2).
+  - Tope de Principal de la ronda A: 2, y A usó 1. Según cómo se cuente R:
+    - (i) R cuenta en la ronda A, con el apoyo de los totales de D.3, A2-P1 regla 3, el precedente de §55.2 y que R hizo el paso 1 de FX-04a:
+      2 de 2 usadas, y **A2 no cabe**;
+    - (ii) R cuenta en otro presupuesto: ninguna cláusula lo asigna;
+    - (iii) R no cuenta en ninguno: ninguna cláusula lo apoya, y va contra §62.3.
+  - Con la lectura (i), A2 necesitaría una A-n material (Coordinator y Architect independiente) y una línea de consumo del Owner por encima de OD-5.
+    A-4 no sube topes. La conciliación redacta las opciones de forma neutral.
+- **U-09 (e)** ([u09e-resolution.md](I-62-F6/FX-02/s62/u09e-resolution.md)). `d` no existe antes del Q0, así que lo previo solo puede ser una
+  regla, nunca un resultado. Opciones:
+  1. una regla condicional del Coordinator en el punto 7 de O4 («T3 si las ocho pasan; si no, T3'»), que aplica el titular y reproducen el Q7 y
+     S29, en espejo de A4-3. No necesita enmienda solo si el Coordinator lee así T3; si no, es material;
+  2. una decisión en vivo del Coordinator del fixture dentro de la ventana, en conflicto con U-06 (a);
+  3. A2 decide en un papel de Coordinator declarado, probablemente material.
+- **U-16 (1)** ([u16-1-sealed-check.md](I-62-F6/FX-02/s62/u16-1-sealed-check.md)): archivos sellados intactos (`negatives.md` `63e84ba3…`,
+  `supervision-checks.md` `729fc3ef…`). Las mutaciones exactas de N4, N5, N7a y N7b están definidas. La premisa de N8 caducó con OD-3 = A: hace
+  falta una mutación nueva con resellado, o NOT_APPLICABLE con causa. La cabecera del README del kit citaba el `44494358…` archivado; queda
+  corregida.
+- **Sonda de A4-1** (borrador en `kits/FX-02/drafts/a4-probe-draft/`, sin ejecutar), actualizada a la corrección 2 de A-4:
+  - pasos 9-12: lecturas de Git de Identity, Remote, CleanTree y Trailer;
+  - el marcador del directorio `-C` lo fija la disposición;
+  - tope de uno total para FX-02;
+  - `REFERENCE_UNSTABLE` si el origen cambia durante la medición.
+  No se lanza sin A-4 acordada, la disposición de aplicación y `A4-SONDA-CONSUMO = A`.

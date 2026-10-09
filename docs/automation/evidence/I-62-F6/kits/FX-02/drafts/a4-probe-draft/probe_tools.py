@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 # Herramientas de la sonda medida de A4-1 (BORRADOR; NO EJECUTADO). Sin red, sin modelo y sin leer ~/.codex/config.toml.
+# Actualizado a la corrección 2 de A-4 (blob 0d954376): la regla 2 exige además las lecturas de Git de Identity, Remote, CleanTree (estado e
+# ignorados) y Trailer (historia) (A62-A4-O1), que son los pasos 9-12 del texto.
 #   build-prompt <kitdir> <outfile>  arma el texto de la sonda desde la plantilla, la declaración de shell y gates.env (variables de entorno)
 #   reference <outdir>               DESPUÉS de la sonda: valores de referencia calculados con git y hashlib en PROBE_DIR (solo lectura)
 #   compare <outdir>                 compara probe-last.json con reference.json, audita los comandos de los eventos y emite comparison.json
-# La referencia se calcula después de la sonda para que ningún valor esperado exista en disco mientras corre.
+# La referencia se calcula después de la sonda para que ningún valor esperado exista en disco mientras corre. Para Remote, la referencia solo vale
+# si el `git ls-remote origin` que registra run_probe.sh antes y después de la sonda es igual al de la comparación (si no: REFERENCE_UNSTABLE).
 # compare no decide nada: propone a la supervisión si cada operación de A4-1, regla 2, quedó demostrada; la elegibilidad la decide el Coordinator.
 import hashlib, json, os, re, subprocess, sys
 
@@ -47,12 +50,14 @@ def build_prompt(kit, out):
         '{{JSON_FIELDS}}': ', '.join(f'"{x}"' for x in env('JSON_FIELDS').split()),
         '{{JSON_ARRAYS}}': ', '.join(f'"{x}"' for x in env('JSON_ARRAYS').split()),
         '{{CLAUSE_MAP_STEP}}': step8,
+        '{{BRANCH}}': env('BRANCH'),
+        '{{IGNORE_PATH}}': env('IGNORE_PATH'),
     }
     text = read(os.path.join(kit, 'probe-prompt.template.txt'))
     for k, v in subs.items():
         text = text.replace(k, v)
     if '{{' in text or '<' in text.replace('<archivo>', '').replace('<campo>', '').replace('<array>', '').replace('<comando>', '') \
-            .replace('<Path>', '').replace('<Section>', '').replace('<Kind>', '').replace('<Level>', ''):
+            .replace('<Path>', '').replace('<Section>', '').replace('<Kind>', '').replace('<Level>', '').replace('<commit>', ''):
         sys.exit('el texto de la sonda conserva un marcador sin rellenar')
     with open(out, 'w', encoding='utf-8', newline='\n') as f:
         f.write(text)
@@ -62,6 +67,15 @@ def build_prompt(kit, out):
 # ------------------------------------------------------------------ reference
 def git(d, *a):
     return subprocess.run(['git', '-C', d, *a], capture_output=True, text=True, encoding='utf-8', check=True).stdout
+
+
+def git_rc(d, *a):
+    r = subprocess.run(['git', '-C', d, *a], capture_output=True, text=True, encoding='utf-8')
+    return r.returncode, r.stdout
+
+
+def yes_no(rc):
+    return 'yes' if rc == 0 else ('no' if rc == 1 else f'error:{rc}')
 
 
 def reference(outdir):
@@ -98,6 +112,34 @@ def reference(outdir):
         r8 = {'contains': 'yes' if env('DECLARATION_TEXT') in text else 'no', 'line': str(lines[0]) if lines else '',
               'ls-tree': git(d, 'ls-tree', 'HEAD', '--', cm).strip()}
     ref['8'] = r8
+    # A4-1, regla 2 (A-4 0d954376; A62-A4-O1): lecturas de Git de Identity, Remote, CleanTree y Trailer
+    br, base, head = env('BRANCH'), env('BASE_SHA'), env('HEAD_SHA')
+    ref['9'] = {'branch': git(d, 'rev-parse', '--abbrev-ref', 'HEAD').strip(),
+                'toplevel': git(d, 'rev-parse', '--show-toplevel').strip(),
+                'origin-branch': git(d, 'rev-parse', f'refs/remotes/origin/{br}').strip(),
+                'is-ancestor': yes_no(git_rc(d, 'merge-base', '--is-ancestor', base, head)[0])}
+
+    def lsr(r):
+        out = git(d, 'ls-remote', 'origin', r).split()
+        return out[0] if out else ''
+    ref['10'] = {'ls-remote:branch': lsr(f'refs/heads/{br}'), 'ls-remote:main': lsr('refs/heads/main'),
+                 'origin-main': git(d, 'rev-parse', 'refs/remotes/origin/main').strip()}
+    rc_ci, out_ci = git_rc(d, 'check-ignore', '-v', '--no-index', env('IGNORE_PATH'))
+    ref['11'] = {'status': git(d, 'status', '--porcelain'), 'status-ignored': git(d, 'status', '--porcelain', '--ignored'),
+                 'check-ignore': out_ci, 'check-ignore-matched': yes_no(rc_ci)}
+    commits = [x for x in git(d, 'rev-list', '--reverse', f'{base}..{head}').splitlines() if x]
+    r12 = {'commit': commits}
+    for c in commits:
+        lines = [ln.strip() for ln in git(d, 'log', '-1', '--format=%(trailers:key=Co-Authored-By,valueonly)', c).splitlines() if ln.strip()]
+        r12[f'trailer:{c}'] = ' | '.join(lines)
+    ref['12'] = r12
+    # estabilidad de la referencia de Remote: ls-remote antes y después de la sonda (run_probe.sh) = ls-remote de ahora
+    snaps = {}
+    for tag in ('before', 'after'):
+        p = os.path.join(outdir, f'probe-lsremote-{tag}.txt')
+        snaps[tag] = read(p) if os.path.exists(p) else None
+    live = git(d, 'ls-remote', 'origin')
+    ref['meta'] = {'lsremote_stable': snaps['before'] is not None and snaps['before'] == snaps['after'] == live}
     write_json(os.path.join(outdir, 'reference.json'), ref)
     print('reference ok')
 
@@ -159,6 +201,19 @@ def compare(outdir):
         v = values(i, key)
         return v[0] if v else None
 
+    def has(i, key):
+        return bool(values(i, key))
+
+    def norm_block(v):
+        lines = (v or '').replace('\r\n', '\n').replace('\r', '\n').strip('\n').split('\n')
+        return '\n'.join(ln.rstrip().replace('\t', ' ') for ln in lines).strip()
+
+    def norm_path(v):
+        return (v or '').strip().replace('\\', '/').rstrip('/').lower()
+
+    def norm_trailers(v):
+        return ' | '.join(x.strip() for x in (v or '').split('|') if x.strip())
+
     res = {}
     p3 = [v.strip() for v in values(3, 'path')]
     p4 = [v.strip() for v in values(4, 'path')]
@@ -169,10 +224,26 @@ def compare(outdir):
                                   for k, v in ref['7'].items())
     def eq8(k, v):
         got = first(8, k)
+        if not has(8, k):  # una clave ausente nunca casa con una referencia vacía
+            return False
         return norm_hex(got) == norm_hex(v) if k in ('rev-parse', 'hash-object') else (got or '').strip() == v.strip()
     res['OP4_mapa_de_clausulas'] = all(eq8(k, v) for k, v in ref['8'].items())
+    # A4-1, regla 2 (A-4 0d954376): lecturas de Git de Identity, Remote, CleanTree y Trailer; toda clave pedida tiene que estar presente
+    r9, r10, r11, r12 = ref['9'], ref['10'], ref['11'], ref['12']
+    res['OP5_identity'] = (all(has(9, k) for k in r9) and (first(9, 'branch') or '').strip() == r9['branch']
+                           and norm_path(first(9, 'toplevel')) == norm_path(r9['toplevel'])
+                           and norm_hex(first(9, 'origin-branch')) == norm_hex(r9['origin-branch'])
+                           and (first(9, 'is-ancestor') or '').strip() == r9['is-ancestor'])
+    res['OP6_remote'] = all(has(10, k) and norm_hex(first(10, k)) == norm_hex(v) for k, v in r10.items())
+    res['OP7_cleantree_estado_e_ignorados'] = (all(has(11, k) for k in r11)
+                                               and all(norm_block(first(11, k)) == norm_block(r11[k]) for k in ('status', 'status-ignored', 'check-ignore'))
+                                               and (first(11, 'check-ignore-matched') or '').strip() == r11['check-ignore-matched'])
+    res['OP8_trailer_historia'] = ([v.strip() for v in values(12, 'commit')] == r12['commit']
+                                   and all(has(12, k) and norm_trailers(first(12, k)) == norm_trailers(v)
+                                           for k, v in r12.items() if k.startswith('trailer:')))
     comspec = (first(1, 'ComSpec') or '').lower()
     res['shell_cmd_observada'] = 'cmd.exe' in comspec
+    ref_stable = bool(ref.get('meta', {}).get('lsremote_stable'))
 
     exitinfo = read(os.path.join(outdir, 'probe-exit.txt')).strip() if os.path.exists(os.path.join(outdir, 'probe-exit.txt')) else 'missing'
     log = read(os.path.join(outdir, 'measurements.log')) if os.path.exists(os.path.join(outdir, 'measurements.log')) else ''
@@ -195,11 +266,19 @@ def compare(outdir):
     for k, ok in res.items():
         if not ok:
             reasons.append(f'{k}: no demostrado')
-    verdict = 'ALL_OPERATIONS_DEMONSTRATED' if not reasons else 'NOT_DEMONSTRATED'
+    if not ref_stable:
+        reasons.append('referencia de Remote no establecida: el ls-remote del origen cambió entre antes de la sonda, después y la comparación')
+    if not reasons:
+        verdict = 'ALL_OPERATIONS_DEMONSTRATED'
+    elif not ref_stable and all(r.startswith(('OP6_remote', 'referencia de Remote')) for r in reasons):
+        verdict = 'REFERENCE_UNSTABLE'  # defecto de la referencia, no de la celda: lo dispone el Coordinator; sin reintento automático
+    else:
+        verdict = 'NOT_DEMONSTRATED'
     out = {
-        'Schema': 'a4-1-probe-comparison (borrador; propuesta de la supervisión, no decisión)',
+        'Schema': 'a4-1-probe-comparison (borrador; propuesta de la supervisión, no decisión; A-4 0d954376)',
         'Verdict': verdict,
         'Operations': res,
+        'RemoteReferenceStable': ref_stable,
         'Process': exitinfo,
         'IdentityStable': identity_stable,
         'TreeUnchanged': tree_unchanged,
@@ -208,6 +287,8 @@ def compare(outdir):
         'Reasons': reasons,
         'Note': ('Con NOT_DEMONSTRATED la celda no es elegible y la invocación no se repite bajo A4-1 (regla 4). Con ALL_OPERATIONS_DEMONSTRATED, '
                  'la elegibilidad para la planificación y la verificación la declara el Coordinator; la línea del Owner no acepta el resultado. '
+                 'REFERENCE_UNSTABLE: la referencia de Remote no se pudo fijar porque el origen cambió durante la medición; lo dispone el Coordinator, '
+                 'sin reintento automático (el tope es uno en total para FX-02 en F6). '
                  'Los intentos con PowerShell o con intérpretes quedan registrados en EventsCommandAudit para la disposición.'),
     }
     write_json(os.path.join(outdir, 'comparison.json'), out)

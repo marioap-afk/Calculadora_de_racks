@@ -1,5 +1,6 @@
 {
   "type": "object",
+  "description": "Salida de la sonda medida de A4-1 (A-4, blob 0d954376): un elemento de steps por paso del texto, id 1 a 12; los pasos 9 a 12 son las lecturas de Git de Identity, Remote, CleanTree y Trailer (regla 2).",
   "additionalProperties": false,
   "required": ["steps", "head_sha"],
   "properties": {
@@ -10,7 +11,7 @@
         "additionalProperties": false,
         "required": ["id", "action", "commands", "ok", "values", "error"],
         "properties": {
-          "id": { "type": "integer" },
+          "id": { "type": "integer", "description": "número del paso del texto, de 1 a 12" },
           "action": { "type": "string" },
           "commands": { "type": "array", "items": { "type": "string" } },
           "ok": { "type": "boolean" },

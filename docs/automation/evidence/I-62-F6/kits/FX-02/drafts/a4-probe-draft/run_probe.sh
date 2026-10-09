@@ -3,8 +3,12 @@
 # Decisiones §61.4: «La sonda adicional del Controller no se gasta antes del acuerdo de A-4 y de A4-SONDA-CONSUMO = A».
 # Adaptado del ejecutor del bloque A2-P2 (f6/block-a2p2/run_block.sh, decisiones §58.2): las mismas comprobaciones de identidad antes y después
 # (huella exacta, estructura saneada, binario, número de codex.exe y versión de la app), nunca valores ni digests por clave.
-# UNA sonda: celda del Controller gpt-6-luna/high, shell declarada cmd.exe, -C = el directorio que fije la disposición de aplicación.
-# Puertas (README): A-4 AGREED con A4-1; disposición de aplicación (celda, shell, trío y directorio); A4-SONDA-CONSUMO = A; P-07 tope 1; sin reintento.
+# UNA sonda: celda del Controller gpt-6-luna/high, shell declarada cmd.exe, -C = el directorio que FIJA la disposición de aplicación.
+# Actualizado a la corrección 2 de A-4 (blob 0d954376): regla 2 con las lecturas de Git de Identity, Remote, CleanTree y Trailer (pasos 9-12 del
+# texto; A62-A4-O1); regla 3 con el directorio -C fijado por la disposición (un clon con la historia de BASE_SHA..HEAD_SHA) y el tope de uno EN
+# TOTAL para FX-02 en F6, que se comprueba también contra la evidencia real (EVIDENCE_ROOT) (A62-A4-O2).
+# Puertas (README): A-4 AGREED con A4-1; disposición de aplicación (celda, shell, trío y directorio); A4-SONDA-CONSUMO = A; P-07 tope 1 en total;
+# sin reintento.
 # Uso:
 #   run_probe.sh measure <tag>   -> solo identidad (sin modelo)
 #   run_probe.sh probe           -> la única sonda, con las puertas de gates.env
@@ -47,8 +51,9 @@ load_gates() {
   [ -f "$B/gates.env" ] || refuse "falta gates.env (copia de gates.env.template rellenada tras las tres autorizaciones)"
   set -a; . "$B/gates.env"; set +a
   local v val
-  for v in DECISIONS_FILE A4_AGREED_MARKER DISPOSITION_MARKER CELL SHELL_NAME TRIO PROBE_DIR BASE_SHA HEAD_SHA HASH_FILES JSON_INPUT \
-           JSON_FIELDS JSON_ARRAYS CLAUSE_MAP_MODE CLAUSE_MAP_PATH CLAUSE_PAIRS DECLARATION_FILE DECLARATION_TEXT; do
+  for v in DECISIONS_FILE A4_AGREED_MARKER DISPOSITION_MARKER DISPOSITION_DIR_MARKER CELL SHELL_NAME TRIO PROBE_DIR EVIDENCE_ROOT BASE_SHA \
+           HEAD_SHA BRANCH IGNORE_PATH HASH_FILES JSON_INPUT JSON_FIELDS JSON_ARRAYS CLAUSE_MAP_MODE CLAUSE_MAP_PATH CLAUSE_PAIRS DECLARATION_FILE \
+           DECLARATION_TEXT; do
     val="${!v-}"
     [ -n "$val" ] || refuse "$v vacío"
     case "$val" in *'<'*|*'>'*) refuse "$v conserva un marcador de la plantilla";; esac
@@ -59,9 +64,21 @@ check_gates() {
   load_gates
   # 1) A-4 AGREED con A4-1, 2) disposición de aplicación y 3) A4-SONDA-CONSUMO = A, registrados en el archivo de decisiones
   [ -f "$DECISIONS_FILE" ] || refuse "no existe DECISIONS_FILE"
-  [ "${#A4_AGREED_MARKER}" -ge 20 ] && [ "${#DISPOSITION_MARKER}" -ge 20 ] || refuse "marcadores de registro demasiado cortos para identificar un registro"
+  [ "${#A4_AGREED_MARKER}" -ge 20 ] && [ "${#DISPOSITION_MARKER}" -ge 20 ] && [ "${#DISPOSITION_DIR_MARKER}" -ge 20 ] \
+    || refuse "marcadores de registro demasiado cortos para identificar un registro"
   tr -d '\r' < "$DECISIONS_FILE" | grep -Fq -- "$A4_AGREED_MARKER" || refuse "el acuerdo de A-4 (A4-1) no consta en el archivo de decisiones"
   tr -d '\r' < "$DECISIONS_FILE" | grep -Fq -- "$DISPOSITION_MARKER" || refuse "la disposición de aplicación de A4-1 no consta"
+  # A4-1, regla 3 (A-4 0d954376): la disposición FIJA el directorio -C de la medición
+  tr -d '\r' < "$DECISIONS_FILE" | grep -Fq -- "$DISPOSITION_DIR_MARKER" || refuse "el texto de la disposición que fija el directorio -C no consta"
+  local NDIR NMARK
+  NDIR="$(printf '%s' "$PROBE_DIR" | tr '\\' '/' | tr 'A-Z' 'a-z')"; NMARK="$(printf '%s' "$DISPOSITION_DIR_MARKER" | tr '\\' '/' | tr 'A-Z' 'a-z')"
+  case "$NMARK" in *"$NDIR"*) ;; *) refuse "la disposición no fija este PROBE_DIR (A4-1, regla 3)";; esac
+  # A4-1, regla 3: tope de uno EN TOTAL para FX-02 en F6, también frente a la evidencia real (no solo frente a este directorio del kit)
+  local EROOT
+  EROOT="$(cygpath -u "$EVIDENCE_ROOT")"
+  [ -d "$EROOT" ] || refuse "no existe EVIDENCE_ROOT"
+  ls -d "$EROOT"/*a4-1-probe* >/dev/null 2>&1 && refuse "ya hay una medición de A4-1 custodiada: tope uno en total para FX-02 en F6 (solo la regla 4, con un bloque A2-P2 nuevo, abre otra, y con otro kit)"
+  case "$IGNORE_PATH" in /*|*..*|?:*|*\\*) refuse "IGNORE_PATH debe ser una ruta relativa del clon, con /, sin '..'";; esac
   [ "$(grep -c '' "$B/consumo-line.txt")" = "1" ] || refuse "consumo-line.txt debe tener una sola línea"
   tr -d '\r' < "$DECISIONS_FILE" | grep -Fxq -- "$(tr -d '\r\n' < "$B/consumo-line.txt")" || refuse "A4-SONDA-CONSUMO = A no consta literal en el archivo de decisiones"
   # lo que nombra la disposición = lo que mide este kit
@@ -83,6 +100,8 @@ check_gates() {
   [ "$(git -C "$UDIR" config --get core.autocrlf)" = "false" ] || refuse "core.autocrlf != false: el SHA-256 del archivo no sería el del blob"
   git -C "$UDIR" cat-file -e "$BASE_SHA^{commit}" 2>/dev/null || refuse "BASE_SHA no está en la historia del clon"
   git -C "$UDIR" cat-file -e "$HEAD_SHA^{commit}" 2>/dev/null || refuse "HEAD_SHA no está en la historia del clon"
+  git -C "$UDIR" rev-parse --verify -q "refs/remotes/origin/$BRANCH" >/dev/null || refuse "el clon no tiene refs/remotes/origin/$BRANCH (Identity)"
+  git -C "$UDIR" rev-parse --verify -q refs/remotes/origin/main >/dev/null || refuse "el clon no tiene refs/remotes/origin/main (Remote)"
   [ -z "$(git -C "$UDIR" status --porcelain)" ] || refuse "árbol sucio en PROBE_DIR"
   for f in $HASH_FILES "$JSON_INPUT"; do git -C "$UDIR" cat-file -e "HEAD:$f" 2>/dev/null || refuse "$f no está en HEAD del clon"; done
   if [ "$CLAUSE_MAP_MODE" = "RESOLVE" ]; then git -C "$UDIR" cat-file -e "HEAD:$CLAUSE_MAP_PATH" 2>/dev/null || refuse "el mapa de cláusulas no está en HEAD"; fi
@@ -108,6 +127,7 @@ case "${1:-}" in
     ( set -o noclobber; date -u +%Y-%m-%dT%H:%M:%SZ > "$LAUNCH_MARKER" ) 2>/dev/null || refuse "no se pudo crear el marcador de lanzamiento (¿ya lanzada?)"
     git -C "$UDIR" rev-parse HEAD > "$OUT/probe-head-before.txt"
     git -C "$UDIR" status --porcelain --ignored > "$OUT/probe-status-before.txt"
+    git -C "$UDIR" ls-remote origin > "$OUT/probe-lsremote-before.txt" 2>/dev/null   # referencia de Remote (lectura del origen; sin escritura)
     ls -1 "$SESS" > "$OUT/probe-sessions-before.txt" 2>/dev/null
     date -u +%Y-%m-%dT%H:%M:%SZ > "$OUT/probe-start.txt"
     PROMPT="$(cat "$OUT/probe-prompt.txt")"
@@ -130,6 +150,7 @@ case "${1:-}" in
     date -u +%Y-%m-%dT%H:%M:%SZ > "$OUT/probe-end.txt"
     git -C "$UDIR" rev-parse HEAD > "$OUT/probe-head-after.txt"
     git -C "$UDIR" status --porcelain --ignored > "$OUT/probe-status-after.txt"
+    git -C "$UDIR" ls-remote origin > "$OUT/probe-lsremote-after.txt" 2>/dev/null
     SESS2="$USERPROFILE/.codex/sessions/$(date +%Y/%m/%d)"
     { ls -1 "$SESS" 2>/dev/null; [ "$SESS2" != "$SESS" ] && ls -1 "$SESS2" 2>/dev/null; } > "$OUT/probe-sessions-after.txt"
     diff "$OUT/probe-sessions-before.txt" "$OUT/probe-sessions-after.txt" | grep '^>' | sed 's/^> //' > "$OUT/probe-new-sessions.txt"

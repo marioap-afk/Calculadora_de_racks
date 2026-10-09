@@ -2,7 +2,7 @@ Eres una sonda de solo lectura (invocación medida adicional) en un repositorio 
 
 {{SHELL_DECLARATION}}
 
-Ejecuta estos pasos en orden, sin saltarte ninguno. Para cada paso registra en "commands" las líneas de comando exactas que ejecutaste, en orden; en "ok", si el paso se completó; en "values", los pares clave/valor que pide el paso, con las claves exactas indicadas; en "error", el error exacto si falló (null si no).
+Ejecuta estos pasos en orden, sin saltarte ninguno. Para cada paso registra en "commands" las líneas de comando exactas que ejecutaste, en orden; en "ok", si el paso se completó; en "values", los pares clave/valor que pide el paso, con las claves exactas indicadas; en "error", el error exacto si falló (null si no). Ningún paso admite `git fetch`, `git pull` ni otro comando que escriba en el repositorio.
 
 1. Ejecutar `ver` y `echo %ComSpec%`. Claves: "ver" (la salida de ver) y "ComSpec" (la salida de echo).
 2. Ejecutar `git rev-parse HEAD`. Clave: "HEAD".
@@ -12,5 +12,9 @@ Ejecuta estos pasos en orden, sin saltarte ninguno. Para cada paso registra en "
 6. Para cada archivo de la misma lista, ejecutar `certutil -hashfile <archivo> SHA256`. Clave: "sha256:<archivo>", con el SHA-256 en hexadecimal.
 7. Leer el archivo JSON `{{JSON_INPUT}}`. Para cada campo de esta lista, de su objeto raíz: {{JSON_FIELDS}}, la clave "field:<campo>" con su valor escrito en JSON (las cadenas, entre comillas dobles). Para cada array de esta lista, de su objeto raíz: {{JSON_ARRAYS}}, la clave "length:<array>" con su número de elementos.
 8. {{CLAUSE_MAP_STEP}}
+9. Lecturas de Git de la comprobación Identity. Ejecutar `git rev-parse --abbrev-ref HEAD` (clave "branch"), `git rev-parse --show-toplevel` (clave "toplevel"), `git rev-parse refs/remotes/origin/{{BRANCH}}` (clave "origin-branch") y `git merge-base --is-ancestor {{BASE_SHA}} {{HEAD_SHA}}` (clave "is-ancestor": "yes" si su código de salida es 0, "no" si es 1).
+10. Lecturas de Git de la comprobación Remote. Ejecutar `git ls-remote origin refs/heads/{{BRANCH}}` (clave "ls-remote:branch", con el SHA de la salida), `git ls-remote origin refs/heads/main` (clave "ls-remote:main", con el SHA de la salida) y `git rev-parse refs/remotes/origin/main` (clave "origin-main").
+11. Lecturas de Git de la comprobación CleanTree. Ejecutar `git status --porcelain` (clave "status", con la salida completa, o cadena vacía si no hay salida), `git status --porcelain --ignored` (clave "status-ignored", igual) y `git check-ignore -v --no-index {{IGNORE_PATH}}` (clave "check-ignore", con la salida completa o cadena vacía, y clave "check-ignore-matched": "yes" si su código de salida es 0, "no" si es 1).
+12. Lecturas de Git de la comprobación Trailer. Ejecutar `git rev-list --reverse {{BASE_SHA}}..{{HEAD_SHA}}`: un par por línea de la salida, en orden, con la clave "commit". Para cada uno de esos commits, ejecutar `git log -1 --format=%(trailers:key=Co-Authored-By,valueonly) <commit>` y registrar la clave "trailer:<commit>" con las líneas no vacías de la salida unidas por " | " (cadena vacía si no hay ninguna).
 
-Responde solo con el objeto JSON del esquema: un elemento de "steps" por paso (id 1 a 8) y "head_sha" con el SHA del paso 2.
+Responde solo con el objeto JSON del esquema: un elemento de "steps" por paso (id 1 a 12) y "head_sha" con el SHA del paso 2.
