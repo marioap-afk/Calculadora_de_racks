@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §59; evidencia §94) — FX-04a B3 PASS 23/23 (clasificación del Coordinator pendiente); OD-2e = A (huella exacta 6518EFAB…); codex-cli sin trabajo ordinario hasta la disposición del Coordinator sobre F6-OBS-03 (regresión de shell de la CLI 0.162.0-alpha.2); revisión formal de A-3 por claude-cli en preparación; sin F6 GATE PASS"
+  next_action: "F6 (decisiones §60; evidencia §95) — FX-04a/C-25a PASS acreditado; FX-02 (prioridad): F6-OBS-03 evaluado (ruta cmd.exe no demostrada para VERIFY; vías V1-V4) y disposiciones del grupo (b) U-06..U-28 y U-68 pendientes, en una solicitud con propuestas; revisión formal de A-3 por claude-cli en curso; codex-cli sin trabajo ordinario; sin F6 GATE PASS"
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual

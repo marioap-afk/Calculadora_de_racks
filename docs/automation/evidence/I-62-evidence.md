@@ -3002,3 +3002,18 @@ solo desde artefactos custodiados.
 - **Efecto.** Deja de haber STOP P-01 por la huella. Un cambio futuro vuelve a ser P-01 con una OD-2 nueva.
 - **Pendiente.** El trabajo ordinario de `codex-cli` espera la disposición del Coordinator sobre F6-OBS-03, la regresión de shell de la CLI
   0.162.0-alpha.2 (§93).
+
+## 95. Decisiones §60: FX-04a / C-25a = PASS acreditado; evaluación de la ruta `cmd.exe` (F6-OBS-03) para FX-02
+
+- **FX-04a / C-25a = PASS.** Acreditado sobre B3 tras comprobar en la evidencia custodiada sus cuatro condiciones: 23/23, terminación, aislamiento
+  D.6 y orden de publicación (`707b4daa` → `68ce619a` → `013c1283`). Sin B4.
+- **F6-OBS-03** ([evaluación](I-62-F6/FX-02/F6-OBS-03-cmd-route-evaluation.md)):
+  - la ruta `cmd.exe` no cambia la receta 16.4;
+  - la evidencia custodiada **no basta** para el contrato de ejecución de FX-02: la sonda 1 solo ejerció Git de lectura y lecturas de archivos, por
+    una ruta que el modelo improvisó, y no las operaciones de VERIFY (`git diff --name-only` reproducible, hashes, mapa de cláusulas). La sonda 2
+    no ejecutó nada;
+  - hacer explícita la ruta es material y necesita una invocación medida nueva;
+  - el Architect de FX-02 por `claude-cli` cambia V14 D.3, que fija `codex-cli`, y queda fuera de OD-3 y de CLAUDE-CLI-I62.
+  Vías: V1 (A-n con la ruta explícita y medida del Controller, y el Architect por `claude-cli`), V2 (los dos roles por `claude-cli`), V3 (esperar una
+  actualización de la CLI) y V4 (FX-02 UNVERIFIED). Propuesta de la preparación: V1 y, en paralelo, V3.
+- **FX-02** sigue pendiente además de las disposiciones del grupo (b) (U-06..U-28 y U-68), que van en una sola solicitud con propuestas.
