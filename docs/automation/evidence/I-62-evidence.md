@@ -3302,3 +3302,20 @@ solo desde artefactos custodiados.
   - CD-19: la referencia AUTHOR sale de `ActorRef` y `SessionRef` observados de los autores reales, sin identidades sintéticas.
 - **Siguiente:** corrección 3 de A-4, guardas sobre el commit exacto y re-revisión por `claude-cli`. En paralelo, N8, referencias AUTHOR y la
   solicitud única al Owner (tres líneas, con efecto solo tras el acuerdo).
+
+## 111. FX-02: N8 resellado (U-16 (1)), referencias AUTHOR (CD-19) y borrador de la solicitud única al Owner (decisiones §63, puntos 4, 5 y 8)
+
+- **N8** ([registro sin contenido](I-62-F6/FX-02/s63/n8-reseal-record.md)). Mutación nueva que recrea, sobre una copia, la precondición de
+  credencial ausente, con la disposición esperada conforme a P-10. La semántica se comprobó contra V14 D.3, AP 16.16-16.20, RAE §12-§14 y los
+  esquemas, más una simulación sobre un preflight sintético que da P-10.
+  - Solo cambió la entrada N8. `negatives.md` pasa a `25a33a48…` (16 424 bytes); el sello anterior `63e84ba3…` queda archivado.
+  - Registro de sellos actualizado ([sealed-supervision-files.json](I-62-F6/kits/sealed-supervision-files.json)).
+  - N8 sigue siendo aplicable (no NOT_APPLICABLE). El contenido solo existe en el archivo sellado.
+- **Referencias AUTHOR** ([author-references.md](I-62-F6/FX-02/s63/author-references.md)): se observan `ActorRef` y `SessionRef` de la sesión
+  real que creó el contrato `d30fb6a9` (nivel RUNTIME_OBSERVED). El valor en claro se custodia en RackCad; el fixture solo lleva `sha256:` del
+  identificador. A2 compara en la Entrada y S29 reproduce la comparación. **Preguntas para el Coordinator:**
+  - F-1: `d30fb6a9` tiene una identidad Git sintética y no lleva trailer de IA;
+  - F-2: si el digest de un identificador real observado cuenta como «no sintético»;
+  - F-3..F-6: alias de sesión, verificación por A2, sesión autora anterior y el campo `ReferenceActor`.
+- **Solicitud única al Owner** ([borrador](I-62-F6/FX-02/s63/owner-request-draft.md)): `A4-SONDA-CONSUMO`, `A4-CLAUDE-FX02-CONSUMO` y
+  `A4-PRINCIPAL-A2-CONSUMO` (esta última sujeta al texto acordado de A4-6). No se pide nada hasta que A-4 esté revisada y acordada.

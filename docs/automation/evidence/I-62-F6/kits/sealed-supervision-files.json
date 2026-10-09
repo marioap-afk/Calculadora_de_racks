@@ -4,8 +4,8 @@
       "Lane": "fx02",
       "File": "negatives.md",
       "Location": "D:/r62-fixture/evidence-out/supervision/fx02/negatives.md",
-      "Sha256": "63e84ba3d7f06371e4c44a7c2cf671757ac34d61caf35bf56fed94524507b0e7",
-      "Bytes": 12897
+      "Sha256": "25a33a4891ecc1e6c3f7aa008920241ed2aac6bd3fdd0c1cfeec2ca5c4780f6a",
+      "Bytes": 16424
     },
     {
       "Lane": "fx02",
@@ -47,6 +47,14 @@
       "Bytes": 22058,
       "ArchivedAt": "D:/r62-fixture/evidence-out/supervision/fx02/history/supervision-checks.44494358.md",
       "SupersededBy": "preparación tras decisiones §55 (evidencia §81)"
+    },
+    {
+      "Lane": "fx02",
+      "File": "negatives.md",
+      "Sha256": "63e84ba3d7f06371e4c44a7c2cf671757ac34d61caf35bf56fed94524507b0e7",
+      "Bytes": 12897,
+      "ArchivedAt": "D:/r62-fixture/evidence-out/supervision/fx02/history/negatives.63e84ba3.md",
+      "SupersededBy": "re-sellado de N8 por decisiones §63.4 (solo la entrada N8; el resto byte a byte igual)"
     }
   ]
 }
