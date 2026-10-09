@@ -3049,3 +3049,29 @@ solo desde artefactos custodiados.
   `auth status` hay una espera de 120 s, y si se repite el conflicto se clasifica sin reintento.
   - `selftest` 107/107; ensayo en seco sin bloqueos; `kit-manifest.json` `defda283…`.
   - Es el único intento que queda.
+
+## 98. FX-02: solicitud única de desbloqueo con propuestas y candidata A-4 (decisiones §60, puntos 2 y 3)
+
+- **Solicitud** ([FX-02-unblock-request-2026-10-09.md](I-62-F6/requests/FX-02-unblock-request-2026-10-09.md), blob `203d2887`). Contiene:
+  - el estado de cada frontera de FX-02 en `c8d69fcb`;
+  - una propuesta de la preparación (no es decisión) para cada disposición pendiente del grupo (b): U-06..U-28, U-68 y U-71 (b);
+  - un bloque de respuesta prerrellenado para pegar;
+  - la secuencia mínima ejecutable.
+  U-66 queda resuelta por hecho (B3 sobre la instantánea congelada; FX-04a cerrada) y U-71 (a), decidida por §58.
+- **Hallazgo.** Aunque se resuelva F6-OBS-03, el texto congelado no deja llegar a VERIFIED en FX-02, por tres huecos:
+  - H-1: aceptación de los bindings del Worker y del Controller de verificación dentro de la ventana;
+  - H-2: independencia REQUIRED de una candidata no arrancada;
+  - H-3: presupuesto de una corrección.
+- **Candidata A-4** ([I-62-A-4.md](../../initiatives/I-62-A-4.md), blob `27ffa26b`; [paquete](../../initiatives/I-62-architect-package-A-4.md), blob
+  `d314afeb`). MATERIAL, solo para FX-02 / topología A:
+  - A4-1: ruta de shell del Controller, explícita y medida con una invocación;
+  - A4-2: Architect de FX-02 por otro adapter elegible;
+  - A4-3: aceptación preautorizada de bindings dentro de la ventana;
+  - A4-4: independencia de una candidata no arrancada;
+  - A4-5: tope de una corrección; separable.
+  Las guardas mecánicas de A-4 están pendientes. Sin revisión formal y sin aplicar.
+- **Autorizaciones del Owner que A-4 necesitaría para aplicarse.** Dos líneas de consumo, con efecto solo tras el acuerdo de A-4 y la disposición
+  del Coordinator:
+  - `A4-SONDA-CONSUMO`: una sonda read-only de `codex-cli` fuera de A2-P2;
+  - `A4-CLAUDE-FX02-CONSUMO`: `claude-cli` como Architect de FX-02.
+  A4-3 a A4-5 no piden consumo nuevo.
