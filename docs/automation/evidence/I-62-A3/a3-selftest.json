@@ -1,0 +1,3566 @@
+{
+ "Tool": "a3-guards.py self-test",
+ "A3Text": "docs/initiatives/I-62-A-3.md",
+ "A3TextBlob": "ea6721f78cb63fbc4f9d99563f3262eb36a32c5d",
+ "NoText": false,
+ "Findings": [],
+ "G5": {
+  "Check": "G5 modelo de compatibilidad del sucesor",
+  "Total": 116,
+  "Base": 1,
+  "Positive": 19,
+  "Negative": 96,
+  "Passed": 116,
+  "PassedReasonBlind": 116,
+  "Vectors": [
+   {
+    "Id": "BASE-01",
+    "Kind": "BASE",
+    "Rule": "A3.2",
+    "Case": "V14 sin A-3: tras el cambio, ni sonda de compatibilidad ni trabajo; solo una medición nueva (§5, paso 3) restaura la elegibilidad",
+    "Result": "PASS",
+    "Detail": "sin A-3: medición completa / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "POS-01",
+    "Kind": "POS",
+    "Rule": "A3.6",
+    "Case": "sucesor con propiedades iguales: compatible, hereda (RunRef = sonda, InheritsFrom = medición), declara el suelo y trabaja",
+    "Result": "PASS",
+    "Detail": ""
+   },
+   {
+    "Id": "POS-02",
+    "Kind": "POS",
+    "Rule": "A3.5",
+    "Case": "nivel de introspección superior al suelo (única propiedad «igual o superior»): compatible; se registra y se declara el suelo",
+    "Result": "PASS",
+    "Detail": ""
+   },
+   {
+    "Id": "POS-03",
+    "Kind": "POS",
+    "Rule": "A3.5",
+    "Case": "requisito obligatorio en ABOVE_REQUIRED (suelo por encima del requisito): compatible",
+    "Result": "PASS",
+    "Detail": ""
+   },
+   {
+    "Id": "POS-04",
+    "Kind": "POS",
+    "Rule": "A3.9",
+    "Case": "suelo medido con la huella sin aceptar (bajo autorización del Owner): la sonda del sucesor, con autorización expresa del Owner, es compatible; el trabajo espera a OD-2 sobre la huella exacta y después sigue",
+    "Result": "PASS",
+    "Detail": "huella vigente sin aceptar por OD-2"
+   },
+   {
+    "Id": "POS-05",
+    "Kind": "POS",
+    "Rule": "A3.3",
+    "Case": "dentro de un bloque de dos sondas (composición con A2-P2): dos celdas heredan; una tercera sonda se rechaza (P-07)",
+    "Result": "PASS",
+    "Detail": "sin autoridad o presupuesto vigentes (P-07)"
+   },
+   {
+    "Id": "POS-06",
+    "Kind": "POS",
+    "Rule": "A3.10",
+    "Case": "sucesión encadenada: el tercero se compara con el suelo medido (oráculo independiente), no con el intermedio",
+    "Result": "PASS",
+    "Detail": ""
+   },
+   {
+    "Id": "POS-07",
+    "Kind": "POS",
+    "Rule": "A3.6",
+    "Case": "la herencia copia ConsumptionCovered y CatalogVerifiedOn del suelo, sin refrescarlos; Stale no se copia, se recalcula",
+    "Result": "PASS",
+    "Detail": ""
+   },
+   {
+    "Id": "POS-08",
+    "Kind": "POS",
+    "Rule": "A3.4",
+    "Case": "BinaryHash y AppVersion se registran como hechos; la identidad anterior queda como historia",
+    "Result": "PASS",
+    "Detail": ""
+   },
+   {
+    "Id": "POS-09",
+    "Kind": "POS",
+    "Rule": "A3.1",
+    "Case": "un sucesor intermedio sin sondar no impide la sonda del sucesor vigente",
+    "Result": "PASS",
+    "Detail": ""
+   },
+   {
+    "Id": "POS-10",
+    "Kind": "POS",
+    "Rule": "A3.1",
+    "Case": "solo cambia el hash del binario (misma versión): sucesor; la sonda compatible hereda",
+    "Result": "PASS",
+    "Detail": ""
+   },
+   {
+    "Id": "POS-11",
+    "Kind": "POS",
+    "Rule": "A3.7",
+    "Case": "A-2 y A-3 acordadas: sonda false por una propiedad que no es requisito (effort aplicado), preflight en MATCH; la misma invocación cuenta como medición (§5, paso 3) dentro del bloque y fija un suelo nuevo, sin consumir otra sonda",
+    "Result": "PASS",
+    "Detail": "cambiado: effort_semantics"
+   },
+   {
+    "Id": "POS-12",
+    "Kind": "POS",
+    "Rule": "A3.4",
+    "Case": "la identidad del adapter, del transporte y del proveedor sigue igual mientras cambian los cuatro hechos de identidad del runtime",
+    "Result": "PASS",
+    "Detail": ""
+   },
+   {
+    "Id": "POS-13",
+    "Kind": "POS",
+    "Rule": "A3.7",
+    "Case": "suelo incompleto y A-2 acordada: A-3 false, pero la sonda que registró toda la clase es medición completa; la celda queda medida y el sucesor siguiente hereda",
+    "Result": "PASS",
+    "Detail": "UNKNOWN (sin valor en el suelo): context_isolation"
+   },
+   {
+    "Id": "POS-14",
+    "Kind": "POS",
+    "Rule": "A3.1",
+    "Case": "AppVersion sin fuente declarada (UNKNOWN en las dos observaciones) no cuenta en Δ ni impide la sucesión; cambia BinaryHash: sucesor, la sonda compatible hereda",
+    "Result": "PASS",
+    "Detail": ""
+   },
+   {
+    "Id": "POS-15",
+    "Kind": "POS",
+    "Rule": "A3.1",
+    "Case": "solo cambia AppVersion (B.4 no la tiene): sucesor; la sonda compatible hereda",
+    "Result": "PASS",
+    "Detail": ""
+   },
+   {
+    "Id": "POS-16",
+    "Kind": "POS",
+    "Rule": "A3.5",
+    "Case": "la sonda de solo lectura termina antes del tope y no ejerce la cancelación (operación 6): vale la declaración DISPONIBLE del descriptor con el mismo blob, no contradicha; hereda",
+    "Result": "PASS",
+    "Detail": ""
+   },
+   {
+    "Id": "NEG-01",
+    "Kind": "NEG",
+    "Rule": "A3.4",
+    "Case": "requisito obligatorio con fuente por debajo de RUNTIME_OBSERVED: UNKNOWN → false",
+    "Result": "PASS",
+    "Detail": "requisitos obligatorios: UNKNOWN ['introspection'] / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-02",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "requisito obligatorio en BELOW_REQUIRED (effort) → false",
+    "Result": "PASS",
+    "Detail": "requisitos obligatorios: BELOW_REQUIRED ['effort'] / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-60",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "método de autenticación cambiado con el mismo AuthState → false",
+    "Result": "PASS",
+    "Detail": "invariante cambiado: authentication / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-04",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "permisos cambiados (más amplios) → false",
+    "Result": "PASS",
+    "Detail": "invariante cambiado: required_permissions / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-05",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "comportamiento del sandbox cambiado → false",
+    "Result": "PASS",
+    "Detail": "invariante cambiado: sandbox_behavior / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-06",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "aislamiento del contexto automático cambiado (entrada automática nueva) → false",
+    "Result": "PASS",
+    "Detail": "invariante cambiado: context_isolation / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-07",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "captura de la salida cambiada → false",
+    "Result": "PASS",
+    "Detail": "invariante cambiado: output_capture / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-08",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "observabilidad de la terminación perdida → false",
+    "Result": "PASS",
+    "Detail": "invariante cambiado: termination_observability / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-09",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "modo de consumo cambiado (créditos) → false",
+    "Result": "PASS",
+    "Detail": "cambiado: consumption_mode / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-10",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "clase de capacidad inferior → false",
+    "Result": "PASS",
+    "Detail": "requisitos obligatorios: BELOW_REQUIRED ['level']; cambiado: model_capability_class / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-11",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "otro modelo en la misma celda → false",
+    "Result": "PASS",
+    "Detail": "cambiado: model_capability_class / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-79",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "mismo modelo con una clase declarada superior: la clase es «igual», no «superior» → false",
+    "Result": "PASS",
+    "Detail": "cambiado: model_capability_class / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-12",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "semántica del effort cambiada (el valor pedido aplica otro) → false",
+    "Result": "PASS",
+    "Detail": "cambiado: effort_semantics / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-62",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "la sonda observa otro transporte con el mismo descriptor (propiedad 2) → false",
+    "Result": "PASS",
+    "Detail": "cambiado: adapter_transport_provider / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-35",
+    "Kind": "NEG",
+    "Rule": "A3.4",
+    "Case": "propiedad contradictoria → UNKNOWN → false, y además S-04",
+    "Result": "PASS",
+    "Detail": "UNKNOWN: output_capture / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-88",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "fila de requisito contradictoria (effort) → UNKNOWN → false, y además S-04",
+    "Result": "PASS",
+    "Detail": "requisitos obligatorios: UNKNOWN ['effort'] / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-46",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "nivel de introspección por debajo del suelo → false",
+    "Result": "PASS",
+    "Detail": "por debajo del suelo: introspection_level / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-47",
+    "Kind": "NEG",
+    "Rule": "A3.4",
+    "Case": "propiedad de la clase observada solo a nivel CONFIGURED: UNKNOWN → false",
+    "Result": "PASS",
+    "Detail": "UNKNOWN: termination_observability / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-63",
+    "Kind": "NEG",
+    "Rule": "A3.4",
+    "Case": "propiedad de la clase solo pedida (REQUESTED): UNKNOWN → false",
+    "Result": "PASS",
+    "Detail": "UNKNOWN: context_isolation / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-64",
+    "Kind": "NEG",
+    "Rule": "A3.4",
+    "Case": "propiedad de la clase sin la fuente de la regla 4: UNKNOWN → false",
+    "Result": "PASS",
+    "Detail": "UNKNOWN (sin fuente declarada): sandbox_behavior / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-48",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "preflight del sucesor sin la fila tool-use: UNKNOWN → false",
+    "Result": "PASS",
+    "Detail": "requisitos obligatorios: UNKNOWN ['tool-use'] / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-72",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "la clasificación de procesos (operación 8) deja de estar DISPONIBLE → false",
+    "Result": "PASS",
+    "Detail": "operación no DISPONIBLE: 8 / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-73",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "una operación que la invocación de la sonda ejerce (7, terminación) queda sin observar: UNKNOWN → false",
+    "Result": "PASS",
+    "Detail": "UNKNOWN: operación 7 / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-91",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "la sonda observa la cancelación (operación 6) y contradice la declaración DISPONIBLE del descriptor → false",
+    "Result": "PASS",
+    "Detail": "operación no DISPONIBLE: 6 / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-92",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "cancelación no ejercida por la sonda y sin declaración DISPONIBLE del descriptor: UNKNOWN → false",
+    "Result": "PASS",
+    "Detail": "UNKNOWN: operación 6"
+   },
+   {
+    "Id": "NEG-44",
+    "Kind": "NEG",
+    "Rule": "A3.4",
+    "Case": "propiedad sin valor registrado en el suelo: UNKNOWN → false, aunque el sucesor la observe",
+    "Result": "PASS",
+    "Detail": "UNKNOWN (sin valor en el suelo): context_isolation"
+   },
+   {
+    "Id": "NEG-51",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "suelo por encima del requisito y sucesor que baja al requisito: requisitos en MATCH, pero la clase cambia → false",
+    "Result": "PASS",
+    "Detail": "cambiado: model_capability_class"
+   },
+   {
+    "Id": "NEG-41",
+    "Kind": "NEG",
+    "Rule": "A3.8",
+    "Case": "la sonda intenta subir permissions: rechazada sin consumir",
+    "Result": "PASS",
+    "Detail": "aumento silencioso: permissions"
+   },
+   {
+    "Id": "NEG-15",
+    "Kind": "NEG",
+    "Rule": "A3.8",
+    "Case": "la sonda intenta subir write_scope: rechazada sin consumir",
+    "Result": "PASS",
+    "Detail": "aumento silencioso: write_scope"
+   },
+   {
+    "Id": "NEG-16",
+    "Kind": "NEG",
+    "Rule": "A3.8",
+    "Case": "la sonda intenta subir role_actions: rechazada sin consumir",
+    "Result": "PASS",
+    "Detail": "aumento silencioso: role_actions"
+   },
+   {
+    "Id": "NEG-17",
+    "Kind": "NEG",
+    "Rule": "A3.8",
+    "Case": "la sonda intenta subir capability_claim: rechazada sin consumir",
+    "Result": "PASS",
+    "Detail": "aumento silencioso: capability_claim"
+   },
+   {
+    "Id": "NEG-18",
+    "Kind": "NEG",
+    "Rule": "A3.8",
+    "Case": "la sonda intenta subir consumption_authority: rechazada sin consumir",
+    "Result": "PASS",
+    "Detail": "aumento silencioso: consumption_authority"
+   },
+   {
+    "Id": "NEG-74",
+    "Kind": "NEG",
+    "Rule": "A3.8",
+    "Case": "tras heredar, un trabajo que pide permissions por encima del suelo: rechazado",
+    "Result": "PASS",
+    "Detail": "aumento silencioso: permissions"
+   },
+   {
+    "Id": "NEG-75",
+    "Kind": "NEG",
+    "Rule": "A3.8",
+    "Case": "tras heredar, un trabajo que pide write_scope por encima del suelo: rechazado",
+    "Result": "PASS",
+    "Detail": "aumento silencioso: write_scope"
+   },
+   {
+    "Id": "NEG-76",
+    "Kind": "NEG",
+    "Rule": "A3.8",
+    "Case": "tras heredar, un trabajo que pide role_actions por encima del suelo: rechazado",
+    "Result": "PASS",
+    "Detail": "aumento silencioso: role_actions"
+   },
+   {
+    "Id": "NEG-77",
+    "Kind": "NEG",
+    "Rule": "A3.8",
+    "Case": "tras heredar, un trabajo que pide consumption_authority por encima del suelo: rechazado",
+    "Result": "PASS",
+    "Detail": "aumento silencioso: consumption_authority"
+   },
+   {
+    "Id": "NEG-87",
+    "Kind": "NEG",
+    "Rule": "A3.8",
+    "Case": "tras heredar, un trabajo que pide capability_claim por encima del suelo: rechazado",
+    "Result": "PASS",
+    "Detail": "aumento silencioso: capability_claim"
+   },
+   {
+    "Id": "NEG-89",
+    "Kind": "NEG",
+    "Rule": "A3.9",
+    "Case": "tras heredar, un trabajo sin el preflight de fidelidad de los insumos (P-24) renovado: rechazado; con los controles renovados, sigue",
+    "Result": "PASS",
+    "Detail": "controles por invocación sin renovar: ['P-24']"
+   },
+   {
+    "Id": "NEG-14",
+    "Kind": "NEG",
+    "Rule": "A3.8",
+    "Case": "sonda con escritura: rechazada",
+    "Result": "PASS",
+    "Detail": "la sonda es de solo lectura"
+   },
+   {
+    "Id": "NEG-32",
+    "Kind": "NEG",
+    "Rule": "A3.8",
+    "Case": "acción de escritura con sonda de solo lectura: requisito de escritura UNKNOWN → false",
+    "Result": "PASS",
+    "Detail": "requisitos obligatorios: UNKNOWN ['write-commit-push']"
+   },
+   {
+    "Id": "NEG-36",
+    "Kind": "NEG",
+    "Rule": "A3.8",
+    "Case": "heredar ConsumptionCovered no autoriza consumo",
+    "Result": "PASS",
+    "Detail": "sin autorización de consumo"
+   },
+   {
+    "Id": "NEG-19",
+    "Kind": "NEG",
+    "Rule": "A3.2",
+    "Case": "sucesor más nuevo sin sonda: ningún trabajo (más nuevo no es mejor)",
+    "Result": "PASS",
+    "Detail": "observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-20",
+    "Kind": "NEG",
+    "Rule": "A3.3",
+    "Case": "segunda sonda para el mismo sucesor, rol, acción y celda (tras un fallo): rechazada",
+    "Result": "PASS",
+    "Detail": "como máximo una sonda por sucesor, unidad, rol, acción y celda"
+   },
+   {
+    "Id": "NEG-21",
+    "Kind": "NEG",
+    "Rule": "A3.3",
+    "Case": "sonda con dos invocaciones de modelo: rechazada",
+    "Result": "PASS",
+    "Detail": "como máximo una invocación de modelo"
+   },
+   {
+    "Id": "NEG-22",
+    "Kind": "NEG",
+    "Rule": "A3.3",
+    "Case": "sonda sin autoridad o con el presupuesto agotado: rechazada (P-07)",
+    "Result": "PASS",
+    "Detail": "sin autoridad o presupuesto vigentes (P-07) / sin autoridad o presupuesto vigentes (P-07)"
+   },
+   {
+    "Id": "NEG-29",
+    "Kind": "NEG",
+    "Rule": "A3.3",
+    "Case": "sonda anticipada para una identidad todavía no observada (con autoridad del sucesor vigente): rechazada",
+    "Result": "PASS",
+    "Detail": "sucesor no observado o no estable"
+   },
+   {
+    "Id": "NEG-37",
+    "Kind": "NEG",
+    "Rule": "A3.3",
+    "Case": "sonda incompleta o interrumpida → false",
+    "Result": "PASS",
+    "Detail": "sonda incompleta"
+   },
+   {
+    "Id": "NEG-39",
+    "Kind": "NEG",
+    "Rule": "A3.3",
+    "Case": "otra actualización tras la autorización: la autorización del par anterior no cubre el nuevo",
+    "Result": "PASS",
+    "Detail": "sin autoridad o presupuesto vigentes (P-07)"
+   },
+   {
+    "Id": "NEG-78",
+    "Kind": "NEG",
+    "Rule": "A3.3",
+    "Case": "la huella cambia durante la sonda: incompleta y fuera de A-3 (P-01/P-11)",
+    "Result": "PASS",
+    "Detail": "huella cambiada durante la sonda: sonda incompleta, fuera de A-3 (P-01/P-11)"
+   },
+   {
+    "Id": "NEG-90",
+    "Kind": "NEG",
+    "Rule": "A3.3",
+    "Case": "la observación del sucesor coincide con el suelo y el estado de autenticación cambia dentro de la sonda: la sonda cuenta como hecha (false, sin herencia, bloqueada) y el caso queda fuera de A-3",
+    "Result": "PASS",
+    "Detail": "no es sucesor (entorno); invariante cambiado: authentication / no es sucesor: medición completa (§6)"
+   },
+   {
+    "Id": "NEG-03",
+    "Kind": "NEG",
+    "Rule": "A3.1",
+    "Case": "estado de autenticación perdido (invalidador de B.4): no es sucesor; sin sonda",
+    "Result": "PASS",
+    "Detail": "no es sucesor: medición completa (§6)"
+   },
+   {
+    "Id": "NEG-13",
+    "Kind": "NEG",
+    "Rule": "A3.1",
+    "Case": "otro proveedor: no es sucesor; sin sonda",
+    "Result": "PASS",
+    "Detail": "no es sucesor: medición completa (§6)"
+   },
+   {
+    "Id": "NEG-61",
+    "Kind": "NEG",
+    "Rule": "A3.1",
+    "Case": "otro AdapterId con el mismo proveedor: no es sucesor; sin sonda",
+    "Result": "PASS",
+    "Detail": "no es sucesor: medición completa (§6)"
+   },
+   {
+    "Id": "NEG-25",
+    "Kind": "NEG",
+    "Rule": "A3.1",
+    "Case": "otra instancia de host: no es sucesor; sin sonda (medición completa)",
+    "Result": "PASS",
+    "Detail": "no es sucesor: medición completa (§6)"
+   },
+   {
+    "Id": "NEG-26",
+    "Kind": "NEG",
+    "Rule": "A3.1",
+    "Case": "otro blob de catálogo: no es sucesor; sin sonda (medición completa)",
+    "Result": "PASS",
+    "Detail": "no es sucesor: medición completa (§6)"
+   },
+   {
+    "Id": "NEG-55",
+    "Kind": "NEG",
+    "Rule": "A3.1",
+    "Case": "otra versión de routing.md: no es sucesor; sin sonda (medición completa)",
+    "Result": "PASS",
+    "Detail": "no es sucesor: medición completa (§6)"
+   },
+   {
+    "Id": "NEG-56",
+    "Kind": "NEG",
+    "Rule": "A3.1",
+    "Case": "otro blob de descriptor: no es sucesor; sin sonda (medición completa)",
+    "Result": "PASS",
+    "Detail": "no es sucesor: medición completa (§6)"
+   },
+   {
+    "Id": "NEG-66",
+    "Kind": "NEG",
+    "Rule": "A3.1",
+    "Case": "solo cambia la huella, con la identidad igual: fuera de A-3 (§6, P-01/P-11); observación invalidada; sin sonda",
+    "Result": "PASS",
+    "Detail": "no es sucesor: medición completa (§6)"
+   },
+   {
+    "Id": "NEG-67",
+    "Kind": "NEG",
+    "Rule": "A3.1",
+    "Case": "cambian a la vez la identidad y la huella: fuera de A-3",
+    "Result": "PASS",
+    "Detail": "no es sucesor: medición completa (§6)"
+   },
+   {
+    "Id": "NEG-68",
+    "Kind": "NEG",
+    "Rule": "A3.1",
+    "Case": "cambio observado durante un intento en curso: fuera de A-3",
+    "Result": "PASS",
+    "Detail": "no es sucesor: medición completa (§6)"
+   },
+   {
+    "Id": "NEG-70",
+    "Kind": "NEG",
+    "Rule": "A3.1",
+    "Case": "el binario medido sigue presente y se elige otro más nuevo junto a él: no es sucesor",
+    "Result": "PASS",
+    "Detail": "no es sucesor: medición completa (§6)"
+   },
+   {
+    "Id": "NEG-71",
+    "Kind": "NEG",
+    "Rule": "A3.1",
+    "Case": "invalidador sin valor (huella UNKNOWN, sin declarar) en las dos observaciones: no es sucesor",
+    "Result": "PASS",
+    "Detail": "no es sucesor: medición completa (§6)"
+   },
+   {
+    "Id": "NEG-84",
+    "Kind": "NEG",
+    "Rule": "A3.1",
+    "Case": "CatalogEntryBlob sin valor (UNKNOWN) en el suelo y en el sucesor: no es sucesor; sin sonda",
+    "Result": "PASS",
+    "Detail": "no es sucesor: medición completa (§6)"
+   },
+   {
+    "Id": "NEG-85",
+    "Kind": "NEG",
+    "Rule": "A3.1",
+    "Case": "RoutingBlob sin valor (UNKNOWN) en el suelo y en el sucesor: no es sucesor; sin sonda",
+    "Result": "PASS",
+    "Detail": "no es sucesor: medición completa (§6)"
+   },
+   {
+    "Id": "NEG-86",
+    "Kind": "NEG",
+    "Rule": "A3.1",
+    "Case": "DescriptorBlob sin valor (UNKNOWN) en el suelo y en el sucesor: no es sucesor; sin sonda",
+    "Result": "PASS",
+    "Detail": "no es sucesor: medición completa (§6)"
+   },
+   {
+    "Id": "NEG-80",
+    "Kind": "NEG",
+    "Rule": "A3.1",
+    "Case": "BinaryHash, con fuente declarada, sin valor observado en el sucesor mientras cambia AppVersion: no es sucesor; sin sonda ni herencia",
+    "Result": "PASS",
+    "Detail": "no es sucesor: medición completa (§6)"
+   },
+   {
+    "Id": "NEG-81",
+    "Kind": "NEG",
+    "Rule": "A3.1",
+    "Case": "el único cambio es que AppVersion, con fuente declarada, pasa a UNKNOWN: fuera de A-3, observación invalidada; sin sonda ni trabajo",
+    "Result": "PASS",
+    "Detail": "no es sucesor: medición completa (§6)"
+   },
+   {
+    "Id": "NEG-45",
+    "Kind": "NEG",
+    "Rule": "A3.1",
+    "Case": "suelo y sucesor con HostInstanceState UNOBSERVED: no es sucesor; sin consumir la sonda",
+    "Result": "PASS",
+    "Detail": "no es sucesor: instancia de host UNOBSERVED"
+   },
+   {
+    "Id": "NEG-27",
+    "Kind": "NEG",
+    "Rule": "A3.1",
+    "Case": "cambio observado durante una cesión: fuera de A-3 (S-04/P-11)",
+    "Result": "PASS",
+    "Detail": "cambio durante una cesión: S-04/P-11, fuera de A-3"
+   },
+   {
+    "Id": "NEG-28",
+    "Kind": "NEG",
+    "Rule": "A3.1",
+    "Case": "observación durante una actualización a medio completar: no fija el sucesor",
+    "Result": "PASS",
+    "Detail": "sucesor no observado o no estable"
+   },
+   {
+    "Id": "NEG-30",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "sin suelo medido de esa unidad, rol, acción y celda: nada que heredar",
+    "Result": "PASS",
+    "Detail": "sin suelo medido de esa unidad, rol, acción y celda"
+   },
+   {
+    "Id": "NEG-49",
+    "Kind": "NEG",
+    "Rule": "A3.2",
+    "Case": "solo cambia el hash del binario: la observación queda invalidada y no hay trabajo",
+    "Result": "PASS",
+    "Detail": "observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-50",
+    "Kind": "NEG",
+    "Rule": "A3.2",
+    "Case": "solo cambia la ruta del binario: la observación queda invalidada y no hay trabajo",
+    "Result": "PASS",
+    "Detail": "observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-82",
+    "Kind": "NEG",
+    "Rule": "A3.2",
+    "Case": "solo cambia AppVersion (que B.4 no nombra): la observación queda invalidada y no hay trabajo",
+    "Result": "PASS",
+    "Detail": "observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-83",
+    "Kind": "NEG",
+    "Rule": "A3.2",
+    "Case": "solo cambia AdapterVersion: la observación queda invalidada y no hay trabajo",
+    "Result": "PASS",
+    "Detail": "observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-31",
+    "Kind": "NEG",
+    "Rule": "A3.7",
+    "Case": "sonda fallida por BELOW_REQUIRED: no cuenta como medición elegible (P-10); solo una medición autorizada restaura la elegibilidad",
+    "Result": "PASS",
+    "Detail": "requisitos no acreditados (P-10): no hay elegibilidad / medición completa sin autoridad"
+   },
+   {
+    "Id": "NEG-42",
+    "Kind": "NEG",
+    "Rule": "A3.7",
+    "Case": "tras una sonda fallida, un sucesor posterior no hereda sin medición completa",
+    "Result": "PASS",
+    "Detail": "tras una sonda fallida: medición completa"
+   },
+   {
+    "Id": "NEG-43",
+    "Kind": "NEG",
+    "Rule": "A3.7",
+    "Case": "una sonda fallida no acredita nada: MeasuredInvocation NOT_MEASURED y RunRef nulo",
+    "Result": "PASS",
+    "Detail": ""
+   },
+   {
+    "Id": "NEG-54",
+    "Kind": "NEG",
+    "Rule": "A3.7",
+    "Case": "la sonda fallida de (ARCHITECT, REVIEW, c) no bloquea la de (ARCHITECT, RE_REVIEW, c); repetir la primera sí se rechaza",
+    "Result": "PASS",
+    "Detail": "como máximo una sonda por sucesor, unidad, rol, acción y celda"
+   },
+   {
+    "Id": "NEG-57",
+    "Kind": "NEG",
+    "Rule": "A3.6",
+    "Case": "dos roles con la misma acción y celda: la herencia del ARCHITECT no vale para el REVIEWER, que necesita su propia sonda",
+    "Result": "PASS",
+    "Detail": "observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-23",
+    "Kind": "NEG",
+    "Rule": "A3.9",
+    "Case": "compatible con la huella vigente sin aceptar y sin OD-2: sin trabajo",
+    "Result": "PASS",
+    "Detail": "huella vigente sin aceptar por OD-2"
+   },
+   {
+    "Id": "NEG-24",
+    "Kind": "NEG",
+    "Rule": "A3.9",
+    "Case": "la aceptación de la huella sigue siendo del Owner (OD-2)",
+    "Result": "PASS",
+    "Detail": "OD-2: solo el Owner acepta una huella"
+   },
+   {
+    "Id": "NEG-38",
+    "Kind": "NEG",
+    "Rule": "A3.9",
+    "Case": "con la huella vigente sin aceptar, la sonda exige una autorización expresa del Owner",
+    "Result": "PASS",
+    "Detail": "huella vigente sin aceptar por OD-2: la sonda solo con una autorización expresa del Owner"
+   },
+   {
+    "Id": "NEG-52",
+    "Kind": "NEG",
+    "Rule": "A3.9",
+    "Case": "tras una aceptación OD-2, otra huella (medida bajo autorización del Owner) sigue sin aceptar: sin trabajo",
+    "Result": "PASS",
+    "Detail": "huella vigente sin aceptar por OD-2"
+   },
+   {
+    "Id": "NEG-53",
+    "Kind": "NEG",
+    "Rule": "A3.9",
+    "Case": "el Owner acepta otra huella (FP9): la vigente (FP2) sigue sin aceptar; sin trabajo",
+    "Result": "PASS",
+    "Detail": "huella vigente sin aceptar por OD-2"
+   },
+   {
+    "Id": "NEG-69",
+    "Kind": "NEG",
+    "Rule": "A3.9",
+    "Case": "cambio de huella en otro adapter (huella distinta de la de P-01): fuera de A-3, y sin trabajo hasta OD-2 de la huella exacta",
+    "Result": "PASS",
+    "Detail": "huella vigente sin aceptar por OD-2"
+   },
+   {
+    "Id": "NEG-34",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "suelo ya Stale (frescura del catálogo) en la fecha de la sonda: no hay herencia ni se refresca",
+    "Result": "PASS",
+    "Detail": "suelo no vigente: Stale (B.5) en la fecha de la sonda"
+   },
+   {
+    "Id": "NEG-58",
+    "Kind": "NEG",
+    "Rule": "A3.5",
+    "Case": "el suelo pasa a Stale entre la medición y la sonda: false en la fecha de la sonda",
+    "Result": "PASS",
+    "Detail": "suelo no vigente: Stale (B.5) en la fecha de la sonda"
+   },
+   {
+    "Id": "NEG-59",
+    "Kind": "NEG",
+    "Rule": "A3.6",
+    "Case": "la celda pasa a Stale entre la sonda y el binding: la herencia no la mantiene vigente; sin trabajo",
+    "Result": "PASS",
+    "Detail": "celda Stale (B.5) en la fecha del binding"
+   },
+   {
+    "Id": "NEG-65",
+    "Kind": "NEG",
+    "Rule": "A3.6",
+    "Case": "retiro anunciado tras la herencia: Stale en la fecha del binding; sin trabajo",
+    "Result": "PASS",
+    "Detail": "celda Stale (B.5) en la fecha del binding"
+   },
+   {
+    "Id": "NEG-33",
+    "Kind": "NEG",
+    "Rule": "A3.2",
+    "Case": "otra actualización tras heredar: la herencia deja de valer para la identidad nueva hasta otra sonda",
+    "Result": "PASS",
+    "Detail": "observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-40",
+    "Kind": "NEG",
+    "Rule": "A3.6",
+    "Case": "la herencia vale solo para esa acción: otra acción de la misma celda sigue invalidada",
+    "Result": "PASS",
+    "Detail": "observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "POS-20",
+    "Kind": "POS",
+    "Rule": "A3.11",
+    "Case": "un evento de sucesor coincide con un cambio de huella: la evidencia registra solo la lista cerrada por nombre (hash exacto antes y después con su estabilidad, hechos de identidad del runtime antes y después, nombres saneados añadidos o eliminados y estructura), sin valores, sin digests por clave y sin localizar por clave los cambios de valor; la huella sigue sin aceptar (P-01), sin sonda ni trabajo, hasta la OD-2 exacta del Owner y una medición nueva",
+    "Result": "PASS",
+    "Detail": "0 valores en la evidencia; campos ['FingerprintAfter', 'FingerprintBefore', 'FingerprintStable', 'IdentityAfter', 'IdentityBefore', 'KeysAdded', 'KeysRemoved', 'StructureEqual'] / no es sucesor: medición completa (§6)"
+   },
+   {
+    "Id": "POS-21",
+    "Kind": "POS",
+    "Rule": "A3.11",
+    "Case": "un evento de sucesor coincide con un cambio de huella solo de valores, con la estructura igual (el caso de las actualizaciones medidas): la evidencia es la misma lista cerrada por nombre (ningún nombre añadido ni eliminado, estructura igual), sin localizar por clave los cambios de valor y sin digests por clave; registrarla no lee valores en el host ni acepta la huella (P-01); no hay sonda (no se consume) ni herencia; sin el Owner no hay medición, y con la medición del Owner y la huella sin aceptar sigue sin haber trabajo hasta la OD-2 exacta",
+    "Result": "PASS",
+    "Detail": "0 valores en la evidencia; campos ['FingerprintAfter', 'FingerprintBefore', 'FingerprintStable', 'IdentityAfter', 'IdentityBefore', 'KeysAdded', 'KeysRemoved', 'StructureEqual'] / no es sucesor: medición completa (§6) / con la huella sin aceptar, la medición exige una autorización del Owner / huella vigente sin aceptar por OD-2"
+   },
+   {
+    "Id": "POS-22",
+    "Kind": "POS",
+    "Rule": "A3.11",
+    "Case": "un evento de sucesor coincide con un cambio de huella observado inestable que elimina un nombre y añade otro (mismo número de nombres): la evidencia registra la estabilidad observada (false), el nombre añadido, el eliminado y la estructura distinta; sin valores ni lectura de valores en el host, sin aceptar la huella y sin sonda; sin trabajo con la medición del Owner hasta la OD-2 exacta",
+    "Result": "PASS",
+    "Detail": "0 valores en la evidencia; campos ['FingerprintAfter', 'FingerprintBefore', 'FingerprintStable', 'IdentityAfter', 'IdentityBefore', 'KeysAdded', 'KeysRemoved', 'StructureEqual'] / no es sucesor: medición completa (§6) / con la huella sin aceptar, la medición exige una autorización del Owner / huella vigente sin aceptar por OD-2"
+   },
+   {
+    "Id": "NEG-118",
+    "Kind": "NEG",
+    "Rule": "A3.11",
+    "Case": "un evento de sucesor coincide con un cambio de huella: no hay herencia ni sonda (no se consume) ni trabajo; P-01 se conserva (la actualización no deja aceptada la huella nueva), y la OD-2 exacta del Owner sola no devuelve ni la sonda ni el trabajo: el caso sigue fuera de A-3 (sin sonda ni consumo, también con la huella ya aceptada) y hace falta una medición nueva (§5, paso 3)",
+    "Result": "PASS",
+    "Detail": "no es sucesor: medición completa (§6) / no es sucesor: medición completa (§6) / observación invalidada (OBSERVATION_STALE) o sin elegibilidad: sin trabajo de modelo"
+   },
+   {
+    "Id": "NEG-119",
+    "Kind": "NEG",
+    "Rule": "A3.11",
+    "Case": "petición de aceptar huellas por clase o de otro modo de OD-2 (del Coordinator, del Owner sin A-n o del Owner con una A-n): A-3 no lo define y la rechaza; la huella se sigue comparando por su valor exacto y el cambio de huella con el de identidad sigue siendo P-01, sin sonda",
+    "Result": "PASS",
+    "Detail": "aceptación de huellas por clase u otro modo de OD-2: A-3 no lo define; solo podría introducirlo la A-n que ordene OD-2-MAT (regla 11, c) / aceptación de huellas por clase u otro modo de OD-2: A-3 no lo define; solo podría introducirlo la A-n que ordene OD-2-MAT (regla 11, c) / aceptación de huellas por clase u otro modo de OD-2: A-3 no lo define; solo podría introducirlo la A-n que ordene OD-2-MAT (regla 11, c) / no es sucesor: medición completa (§6)"
+   },
+   {
+    "Id": "NEG-120",
+    "Kind": "NEG",
+    "Rule": "A3.11",
+    "Case": "petición, bajo A-3, de localizar por clave los cambios de valor, de compararlos por clave en una medición pasiva o de clasificar claves por sus valores (también del Owner, con el programa, su blob, las superficies y la caducidad nombrados): A-3 no define ninguna y la rechaza; no se lee ningún valor",
+    "Result": "PASS",
+    "Detail": "lectura de valores: A-3 no la define ni la pide (regla 11, b) / lectura de valores: A-3 no la define ni la pide (regla 11, b) / lectura de valores: A-3 no la define ni la pide (regla 11, b)"
+   },
+   {
+    "Id": "NEG-121",
+    "Kind": "NEG",
+    "Rule": "A3.11",
+    "Case": "cambian a la vez la identidad del runtime y la huella, y la huella nueva ya estaba aceptada por OD-2: la huella se compara solo por su valor exacto con la del suelo, así que no es sucesor; sin sonda (no se consume), sin herencia y sin trabajo",
+    "Result": "PASS",
+    "Detail": "no es sucesor: medición completa (§6)"
+   }
+  ],
+  "RedV14": {
+   "PassingWithReason": [
+    "BASE-01",
+    "NEG-19",
+    "NEG-24",
+    "NEG-33",
+    "NEG-40",
+    "NEG-43",
+    "NEG-49",
+    "NEG-50",
+    "NEG-53",
+    "NEG-82",
+    "NEG-83"
+   ],
+   "ExpectedPassingWithReason": [
+    "BASE-01",
+    "NEG-19",
+    "NEG-24",
+    "NEG-33",
+    "NEG-40",
+    "NEG-43",
+    "NEG-49",
+    "NEG-50",
+    "NEG-53",
+    "NEG-82",
+    "NEG-83"
+   ],
+   "FailingReasonBlind": [
+    "NEG-01",
+    "NEG-02",
+    "NEG-04",
+    "NEG-05",
+    "NEG-06",
+    "NEG-07",
+    "NEG-08",
+    "NEG-09",
+    "NEG-10",
+    "NEG-11",
+    "NEG-12",
+    "NEG-23",
+    "NEG-35",
+    "NEG-46",
+    "NEG-47",
+    "NEG-48",
+    "NEG-52",
+    "NEG-54",
+    "NEG-57",
+    "NEG-59",
+    "NEG-60",
+    "NEG-62",
+    "NEG-63",
+    "NEG-64",
+    "NEG-65",
+    "NEG-72",
+    "NEG-73",
+    "NEG-74",
+    "NEG-75",
+    "NEG-76",
+    "NEG-77",
+    "NEG-78",
+    "NEG-79",
+    "NEG-87",
+    "NEG-88",
+    "NEG-89",
+    "NEG-90",
+    "NEG-91",
+    "POS-01",
+    "POS-02",
+    "POS-03",
+    "POS-04",
+    "POS-05",
+    "POS-06",
+    "POS-07",
+    "POS-08",
+    "POS-09",
+    "POS-10",
+    "POS-11",
+    "POS-12",
+    "POS-13",
+    "POS-14",
+    "POS-15",
+    "POS-16",
+    "POS-20",
+    "POS-21",
+    "POS-22"
+   ],
+   "FailingReasonBlindPositive": 19,
+   "FailingReasonBlindNegative": 38,
+   "Result": "PASS"
+  },
+  "MutantsTotal": 105,
+  "MutantsKilled": 105,
+  "Mutants": [
+   {
+    "Mutant": "M_NewerIsBetter",
+    "KilledBy": [
+     "POS-01",
+     "POS-02",
+     "POS-03",
+     "POS-04",
+     "POS-05",
+     "POS-06",
+     "POS-07",
+     "POS-08",
+     "POS-09",
+     "POS-11",
+     "POS-12",
+     "POS-13",
+     "POS-15",
+     "POS-16",
+     "NEG-01",
+     "NEG-02",
+     "NEG-60",
+     "NEG-04",
+     "NEG-05",
+     "NEG-06",
+     "NEG-07",
+     "NEG-08",
+     "NEG-09",
+     "NEG-10",
+     "NEG-11",
+     "NEG-79",
+     "NEG-12",
+     "NEG-62",
+     "NEG-35",
+     "NEG-88",
+     "NEG-46",
+     "NEG-47",
+     "NEG-63",
+     "NEG-64",
+     "NEG-48",
+     "NEG-72",
+     "NEG-73",
+     "NEG-91",
+     "NEG-92",
+     "NEG-44",
+     "NEG-51",
+     "NEG-41",
+     "NEG-15",
+     "NEG-16",
+     "NEG-17",
+     "NEG-18",
+     "NEG-74",
+     "NEG-75",
+     "NEG-76",
+     "NEG-77",
+     "NEG-87",
+     "NEG-89",
+     "NEG-14",
+     "NEG-32",
+     "NEG-19",
+     "NEG-20",
+     "NEG-21",
+     "NEG-22",
+     "NEG-29",
+     "NEG-37",
+     "NEG-39",
+     "NEG-78",
+     "NEG-90",
+     "NEG-67",
+     "NEG-68",
+     "NEG-70",
+     "NEG-71",
+     "NEG-84",
+     "NEG-85",
+     "NEG-86",
+     "NEG-80",
+     "NEG-45",
+     "NEG-28",
+     "NEG-82",
+     "NEG-31",
+     "NEG-42",
+     "NEG-43",
+     "NEG-54",
+     "NEG-57",
+     "NEG-23",
+     "NEG-38",
+     "NEG-34",
+     "NEG-58",
+     "NEG-59",
+     "NEG-65",
+     "NEG-33",
+     "NEG-40",
+     "POS-20",
+     "POS-21",
+     "POS-22",
+     "NEG-118",
+     "NEG-119",
+     "NEG-121"
+    ],
+    "KilledByOutcome": [
+     "POS-01",
+     "POS-02",
+     "POS-03",
+     "POS-04",
+     "POS-05",
+     "POS-06",
+     "POS-07",
+     "POS-08",
+     "POS-09",
+     "POS-11",
+     "POS-12",
+     "POS-13",
+     "POS-15",
+     "POS-16",
+     "NEG-01",
+     "NEG-02",
+     "NEG-60",
+     "NEG-04",
+     "NEG-05",
+     "NEG-06",
+     "NEG-07",
+     "NEG-08",
+     "NEG-09",
+     "NEG-10",
+     "NEG-11",
+     "NEG-79",
+     "NEG-12",
+     "NEG-62",
+     "NEG-35",
+     "NEG-88",
+     "NEG-46",
+     "NEG-47",
+     "NEG-63",
+     "NEG-64",
+     "NEG-48",
+     "NEG-72",
+     "NEG-73",
+     "NEG-91",
+     "NEG-92",
+     "NEG-44",
+     "NEG-51",
+     "NEG-41",
+     "NEG-15",
+     "NEG-16",
+     "NEG-17",
+     "NEG-18",
+     "NEG-74",
+     "NEG-75",
+     "NEG-76",
+     "NEG-77",
+     "NEG-87",
+     "NEG-89",
+     "NEG-32",
+     "NEG-19",
+     "NEG-20",
+     "NEG-22",
+     "NEG-29",
+     "NEG-37",
+     "NEG-78",
+     "NEG-90",
+     "NEG-67",
+     "NEG-68",
+     "NEG-70",
+     "NEG-71",
+     "NEG-84",
+     "NEG-85",
+     "NEG-86",
+     "NEG-80",
+     "NEG-45",
+     "NEG-82",
+     "NEG-43",
+     "NEG-54",
+     "NEG-57",
+     "NEG-23",
+     "NEG-38",
+     "NEG-59",
+     "NEG-65",
+     "NEG-33",
+     "NEG-40",
+     "POS-21",
+     "POS-22",
+     "NEG-118",
+     "NEG-121"
+    ],
+    "ExpectedKillers": [
+     "NEG-19",
+     "NEG-33"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-19",
+     "NEG-33"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_IgnoreUnknown",
+    "KilledBy": [
+     "NEG-01",
+     "NEG-35",
+     "NEG-88",
+     "NEG-47",
+     "NEG-63",
+     "NEG-32"
+    ],
+    "KilledByOutcome": [
+     "NEG-01",
+     "NEG-35",
+     "NEG-88",
+     "NEG-47",
+     "NEG-63",
+     "NEG-32"
+    ],
+    "ExpectedKillers": [
+     "NEG-01",
+     "NEG-32",
+     "NEG-35",
+     "NEG-47"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-01",
+     "NEG-32",
+     "NEG-35",
+     "NEG-47"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_LaxPropAssurance",
+    "KilledBy": [
+     "NEG-47",
+     "NEG-63"
+    ],
+    "KilledByOutcome": [
+     "NEG-47",
+     "NEG-63"
+    ],
+    "ExpectedKillers": [
+     "NEG-47",
+     "NEG-63"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-47",
+     "NEG-63"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_NoSourceAccepted",
+    "KilledBy": [
+     "NEG-64"
+    ],
+    "KilledByOutcome": [
+     "NEG-64"
+    ],
+    "ExpectedKillers": [
+     "NEG-64"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-64"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_MissingRequirementRowIsMatch",
+    "KilledBy": [
+     "NEG-48"
+    ],
+    "KilledByOutcome": [
+     "NEG-48"
+    ],
+    "ExpectedKillers": [
+     "NEG-48"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-48"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_Ignore_required_permissions",
+    "KilledBy": [
+     "NEG-04"
+    ],
+    "KilledByOutcome": [
+     "NEG-04"
+    ],
+    "ExpectedKillers": [
+     "NEG-04"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-04"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_Ignore_sandbox_behavior",
+    "KilledBy": [
+     "NEG-05",
+     "NEG-64"
+    ],
+    "KilledByOutcome": [
+     "NEG-05",
+     "NEG-64"
+    ],
+    "ExpectedKillers": [
+     "NEG-05"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-05"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_Ignore_context_isolation",
+    "KilledBy": [
+     "POS-13",
+     "NEG-06",
+     "NEG-63",
+     "NEG-44"
+    ],
+    "KilledByOutcome": [
+     "POS-13",
+     "NEG-06",
+     "NEG-63",
+     "NEG-44"
+    ],
+    "ExpectedKillers": [
+     "NEG-06"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-06"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_Ignore_output_capture",
+    "KilledBy": [
+     "NEG-07",
+     "NEG-35"
+    ],
+    "KilledByOutcome": [
+     "NEG-07",
+     "NEG-35"
+    ],
+    "ExpectedKillers": [
+     "NEG-07"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-07"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_Ignore_termination_observability",
+    "KilledBy": [
+     "NEG-08",
+     "NEG-47"
+    ],
+    "KilledByOutcome": [
+     "NEG-08",
+     "NEG-47"
+    ],
+    "ExpectedKillers": [
+     "NEG-08"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-08"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_Ignore_consumption_mode",
+    "KilledBy": [
+     "NEG-09"
+    ],
+    "KilledByOutcome": [
+     "NEG-09"
+    ],
+    "ExpectedKillers": [
+     "NEG-09"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-09"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_Ignore_authentication",
+    "KilledBy": [
+     "NEG-60"
+    ],
+    "KilledByOutcome": [
+     "NEG-60"
+    ],
+    "ExpectedKillers": [
+     "NEG-60"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-60"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_Ignore_model_capability_class",
+    "KilledBy": [
+     "NEG-10",
+     "NEG-11",
+     "NEG-79",
+     "NEG-51"
+    ],
+    "KilledByOutcome": [
+     "NEG-11",
+     "NEG-79",
+     "NEG-51"
+    ],
+    "ExpectedKillers": [
+     "NEG-11",
+     "NEG-51",
+     "NEG-79"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-11",
+     "NEG-51",
+     "NEG-79"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_Ignore_adapter_transport_provider",
+    "KilledBy": [
+     "NEG-62"
+    ],
+    "KilledByOutcome": [
+     "NEG-62"
+    ],
+    "ExpectedKillers": [
+     "NEG-62"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-62"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_Ignore_introspection_level",
+    "KilledBy": [
+     "NEG-46"
+    ],
+    "KilledByOutcome": [
+     "NEG-46"
+    ],
+    "ExpectedKillers": [
+     "NEG-46"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-46"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_Ignore_effort_semantics",
+    "KilledBy": [
+     "POS-11",
+     "NEG-12"
+    ],
+    "KilledByOutcome": [
+     "POS-11",
+     "NEG-12"
+    ],
+    "ExpectedKillers": [
+     "NEG-12"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-12"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_SkipProbe",
+    "KilledBy": [
+     "NEG-01",
+     "NEG-02",
+     "NEG-60",
+     "NEG-04",
+     "NEG-05",
+     "NEG-06",
+     "NEG-07",
+     "NEG-08",
+     "NEG-09",
+     "NEG-10",
+     "NEG-11",
+     "NEG-79",
+     "NEG-12",
+     "NEG-62",
+     "NEG-35",
+     "NEG-88",
+     "NEG-46",
+     "NEG-47",
+     "NEG-63",
+     "NEG-64",
+     "NEG-48",
+     "NEG-72",
+     "NEG-73",
+     "NEG-91",
+     "NEG-19",
+     "NEG-49",
+     "NEG-50",
+     "NEG-82",
+     "NEG-83",
+     "NEG-57",
+     "NEG-34",
+     "NEG-33",
+     "NEG-40"
+    ],
+    "KilledByOutcome": [
+     "NEG-01",
+     "NEG-02",
+     "NEG-60",
+     "NEG-04",
+     "NEG-05",
+     "NEG-06",
+     "NEG-07",
+     "NEG-08",
+     "NEG-09",
+     "NEG-10",
+     "NEG-11",
+     "NEG-79",
+     "NEG-12",
+     "NEG-62",
+     "NEG-35",
+     "NEG-88",
+     "NEG-46",
+     "NEG-47",
+     "NEG-63",
+     "NEG-64",
+     "NEG-48",
+     "NEG-72",
+     "NEG-73",
+     "NEG-91",
+     "NEG-19",
+     "NEG-49",
+     "NEG-50",
+     "NEG-82",
+     "NEG-83",
+     "NEG-57",
+     "NEG-33",
+     "NEG-40"
+    ],
+    "ExpectedKillers": [
+     "NEG-19"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-19"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_UnboundedRetry",
+    "KilledBy": [
+     "NEG-20",
+     "NEG-42",
+     "NEG-54"
+    ],
+    "KilledByOutcome": [
+     "NEG-20",
+     "NEG-42",
+     "NEG-54"
+    ],
+    "ExpectedKillers": [
+     "NEG-20"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-20"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_RetryAfterFail",
+    "KilledBy": [
+     "NEG-42"
+    ],
+    "KilledByOutcome": [
+     "NEG-42"
+    ],
+    "ExpectedKillers": [
+     "NEG-42"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-42"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_PerCellLockout",
+    "KilledBy": [
+     "NEG-54"
+    ],
+    "KilledByOutcome": [
+     "NEG-54"
+    ],
+    "ExpectedKillers": [
+     "NEG-54"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-54"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_MultiInvocation",
+    "KilledBy": [
+     "NEG-21"
+    ],
+    "KilledByOutcome": [
+     "NEG-21"
+    ],
+    "ExpectedKillers": [
+     "NEG-21"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-21"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_WritableProbe",
+    "KilledBy": [
+     "NEG-14"
+    ],
+    "KilledByOutcome": [
+     "NEG-14"
+    ],
+    "ExpectedKillers": [
+     "NEG-14"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-14"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_ClaimIncrease",
+    "KilledBy": [
+     "NEG-41",
+     "NEG-15",
+     "NEG-16",
+     "NEG-17",
+     "NEG-18"
+    ],
+    "KilledByOutcome": [
+     "NEG-41",
+     "NEG-15",
+     "NEG-16",
+     "NEG-17",
+     "NEG-18"
+    ],
+    "ExpectedKillers": [
+     "NEG-15",
+     "NEG-16",
+     "NEG-17",
+     "NEG-18",
+     "NEG-41"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-15",
+     "NEG-16",
+     "NEG-17",
+     "NEG-18",
+     "NEG-41"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_WorkIgnoresRequested",
+    "KilledBy": [
+     "NEG-74",
+     "NEG-75",
+     "NEG-76",
+     "NEG-77",
+     "NEG-87"
+    ],
+    "KilledByOutcome": [
+     "NEG-74",
+     "NEG-75",
+     "NEG-76",
+     "NEG-77",
+     "NEG-87"
+    ],
+    "ExpectedKillers": [
+     "NEG-74",
+     "NEG-75",
+     "NEG-76",
+     "NEG-77",
+     "NEG-87"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-74",
+     "NEG-75",
+     "NEG-76",
+     "NEG-77",
+     "NEG-87"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_InheritRaises_permissions",
+    "KilledBy": [
+     "POS-01",
+     "POS-02",
+     "POS-04",
+     "POS-05",
+     "POS-06",
+     "POS-07",
+     "POS-14",
+     "NEG-75",
+     "NEG-76",
+     "NEG-77",
+     "NEG-87",
+     "NEG-89",
+     "NEG-36",
+     "NEG-57",
+     "NEG-52"
+    ],
+    "KilledByOutcome": [
+     "POS-01",
+     "POS-02",
+     "POS-04",
+     "POS-05",
+     "POS-06",
+     "POS-07",
+     "POS-14",
+     "NEG-89",
+     "NEG-57",
+     "NEG-52"
+    ],
+    "ExpectedKillers": [
+     "POS-01",
+     "POS-07"
+    ],
+    "KilledByExpectedOutcome": [
+     "POS-01",
+     "POS-07"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_InheritRaises_write_scope",
+    "KilledBy": [
+     "POS-01",
+     "POS-02",
+     "POS-04",
+     "POS-05",
+     "POS-06",
+     "POS-07",
+     "POS-14",
+     "NEG-76",
+     "NEG-77",
+     "NEG-87",
+     "NEG-89",
+     "NEG-36",
+     "NEG-57",
+     "NEG-52"
+    ],
+    "KilledByOutcome": [
+     "POS-01",
+     "POS-02",
+     "POS-04",
+     "POS-05",
+     "POS-06",
+     "POS-07",
+     "POS-14",
+     "NEG-89",
+     "NEG-57",
+     "NEG-52"
+    ],
+    "ExpectedKillers": [
+     "POS-01",
+     "POS-07"
+    ],
+    "KilledByExpectedOutcome": [
+     "POS-01",
+     "POS-07"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_InheritRaises_role_actions",
+    "KilledBy": [
+     "POS-01",
+     "POS-02",
+     "POS-04",
+     "POS-05",
+     "POS-06",
+     "POS-07",
+     "POS-14",
+     "NEG-77",
+     "NEG-87",
+     "NEG-89",
+     "NEG-36",
+     "NEG-57",
+     "NEG-52"
+    ],
+    "KilledByOutcome": [
+     "POS-01",
+     "POS-02",
+     "POS-04",
+     "POS-05",
+     "POS-06",
+     "POS-07",
+     "POS-14",
+     "NEG-89",
+     "NEG-57",
+     "NEG-52"
+    ],
+    "ExpectedKillers": [
+     "POS-01",
+     "POS-07"
+    ],
+    "KilledByExpectedOutcome": [
+     "POS-01",
+     "POS-07"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_InheritRaises_capability_claim",
+    "KilledBy": [
+     "POS-01",
+     "POS-02",
+     "POS-04",
+     "POS-05",
+     "POS-06",
+     "POS-07",
+     "POS-14",
+     "NEG-77",
+     "NEG-89",
+     "NEG-36",
+     "NEG-57",
+     "NEG-52"
+    ],
+    "KilledByOutcome": [
+     "POS-01",
+     "POS-02",
+     "POS-04",
+     "POS-05",
+     "POS-06",
+     "POS-07",
+     "POS-14",
+     "NEG-89",
+     "NEG-57",
+     "NEG-52"
+    ],
+    "ExpectedKillers": [
+     "POS-01",
+     "POS-07"
+    ],
+    "KilledByExpectedOutcome": [
+     "POS-01",
+     "POS-07"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_InheritRaises_consumption_authority",
+    "KilledBy": [
+     "POS-01",
+     "POS-02",
+     "POS-04",
+     "POS-05",
+     "POS-06",
+     "POS-07",
+     "POS-14",
+     "NEG-89",
+     "NEG-36",
+     "NEG-57",
+     "NEG-52"
+    ],
+    "KilledByOutcome": [
+     "POS-01",
+     "POS-02",
+     "POS-04",
+     "POS-05",
+     "POS-06",
+     "POS-07",
+     "POS-14",
+     "NEG-89",
+     "NEG-57",
+     "NEG-52"
+    ],
+    "ExpectedKillers": [
+     "POS-01",
+     "POS-07"
+    ],
+    "KilledByExpectedOutcome": [
+     "POS-01",
+     "POS-07"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_InheritAcrossActions",
+    "KilledBy": [
+     "POS-05",
+     "NEG-54",
+     "NEG-57",
+     "NEG-40"
+    ],
+    "KilledByOutcome": [
+     "NEG-57",
+     "NEG-40"
+    ],
+    "ExpectedKillers": [
+     "NEG-40",
+     "NEG-57"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-40",
+     "NEG-57"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_CompatImpliesOD2",
+    "KilledBy": [
+     "POS-04",
+     "NEG-23"
+    ],
+    "KilledByOutcome": [
+     "POS-04",
+     "NEG-23"
+    ],
+    "ExpectedKillers": [
+     "NEG-23",
+     "POS-04"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-23",
+     "POS-04"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_CoordinatorAcceptsOD2",
+    "KilledBy": [
+     "NEG-24"
+    ],
+    "KilledByOutcome": [
+     "NEG-24"
+    ],
+    "ExpectedKillers": [
+     "NEG-24"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-24"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_OD2Sticky",
+    "KilledBy": [
+     "NEG-52",
+     "NEG-53"
+    ],
+    "KilledByOutcome": [
+     "NEG-52",
+     "NEG-53"
+    ],
+    "ExpectedKillers": [
+     "NEG-52"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-52"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_OD2NotExact",
+    "KilledBy": [
+     "NEG-53"
+    ],
+    "KilledByOutcome": [
+     "NEG-53"
+    ],
+    "ExpectedKillers": [
+     "NEG-53"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-53"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_FpGateOnlyForOneAdapter",
+    "KilledBy": [
+     "NEG-69"
+    ],
+    "KilledByOutcome": [
+     "NEG-69"
+    ],
+    "ExpectedKillers": [
+     "NEG-69"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-69"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_EffortAsFloor",
+    "KilledBy": [
+     "POS-11",
+     "NEG-12"
+    ],
+    "KilledByOutcome": [
+     "POS-11",
+     "NEG-12"
+    ],
+    "ExpectedKillers": [
+     "NEG-12"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-12"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_CapabilityAsFloor",
+    "KilledBy": [
+     "NEG-79"
+    ],
+    "KilledByOutcome": [
+     "NEG-79"
+    ],
+    "ExpectedKillers": [
+     "NEG-79"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-79"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_ClassVsRequirement",
+    "KilledBy": [
+     "NEG-79",
+     "NEG-51"
+    ],
+    "KilledByOutcome": [
+     "NEG-79",
+     "NEG-51"
+    ],
+    "ExpectedKillers": [
+     "NEG-51"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-51"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_IdentityFactsCompared",
+    "KilledBy": [
+     "POS-01",
+     "POS-02",
+     "POS-03",
+     "POS-04",
+     "POS-05",
+     "POS-06",
+     "POS-07",
+     "POS-09",
+     "POS-10",
+     "POS-12",
+     "POS-13",
+     "POS-14",
+     "POS-15",
+     "POS-16",
+     "NEG-74",
+     "NEG-75",
+     "NEG-76",
+     "NEG-77",
+     "NEG-87",
+     "NEG-89",
+     "NEG-36",
+     "NEG-54",
+     "NEG-57",
+     "NEG-23",
+     "NEG-52",
+     "NEG-59",
+     "NEG-65"
+    ],
+    "KilledByOutcome": [
+     "POS-01",
+     "POS-02",
+     "POS-03",
+     "POS-04",
+     "POS-05",
+     "POS-06",
+     "POS-07",
+     "POS-09",
+     "POS-10",
+     "POS-12",
+     "POS-13",
+     "POS-14",
+     "POS-15",
+     "POS-16",
+     "NEG-74",
+     "NEG-75",
+     "NEG-76",
+     "NEG-77",
+     "NEG-87",
+     "NEG-89",
+     "NEG-54",
+     "NEG-57",
+     "NEG-23",
+     "NEG-52",
+     "NEG-59",
+     "NEG-65"
+    ],
+    "ExpectedKillers": [
+     "POS-01",
+     "POS-12"
+    ],
+    "KilledByExpectedOutcome": [
+     "POS-01",
+     "POS-12"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_RefreshFreshness",
+    "KilledBy": [
+     "POS-07",
+     "NEG-59"
+    ],
+    "KilledByOutcome": [
+     "POS-07",
+     "NEG-59"
+    ],
+    "ExpectedKillers": [
+     "NEG-59",
+     "POS-07"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-59",
+     "POS-07"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_StaleCopied",
+    "KilledBy": [
+     "POS-07",
+     "NEG-59",
+     "NEG-65"
+    ],
+    "KilledByOutcome": [
+     "POS-07",
+     "NEG-59",
+     "NEG-65"
+    ],
+    "ExpectedKillers": [
+     "NEG-59",
+     "NEG-65"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-59",
+     "NEG-65"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_StaleNotAtProbe",
+    "KilledBy": [
+     "NEG-58"
+    ],
+    "KilledByOutcome": [
+     "NEG-58"
+    ],
+    "ExpectedKillers": [
+     "NEG-58"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-58"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_StaleFloorInherits",
+    "KilledBy": [
+     "NEG-34",
+     "NEG-58"
+    ],
+    "KilledByOutcome": [
+     "NEG-34",
+     "NEG-58"
+    ],
+    "ExpectedKillers": [
+     "NEG-34",
+     "NEG-58"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-34",
+     "NEG-58"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_HostChangeIsSuccessor",
+    "KilledBy": [
+     "NEG-25"
+    ],
+    "KilledByOutcome": [
+     "NEG-25"
+    ],
+    "ExpectedKillers": [
+     "NEG-25"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-25"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_CatalogChangeIsSuccessor",
+    "KilledBy": [
+     "NEG-26"
+    ],
+    "KilledByOutcome": [
+     "NEG-26"
+    ],
+    "ExpectedKillers": [
+     "NEG-26"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-26"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_RoutingChangeIsSuccessor",
+    "KilledBy": [
+     "NEG-55"
+    ],
+    "KilledByOutcome": [
+     "NEG-55"
+    ],
+    "ExpectedKillers": [
+     "NEG-55"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-55"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_DescriptorChangeIsSuccessor",
+    "KilledBy": [
+     "NEG-56"
+    ],
+    "KilledByOutcome": [
+     "NEG-56"
+    ],
+    "ExpectedKillers": [
+     "NEG-56"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-56"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_ProviderChangeIsSuccessor",
+    "KilledBy": [
+     "NEG-13",
+     "NEG-61"
+    ],
+    "KilledByOutcome": [
+     "NEG-13",
+     "NEG-61"
+    ],
+    "ExpectedKillers": [
+     "NEG-13",
+     "NEG-61"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-13",
+     "NEG-61"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_AuthStateChangeIsSuccessor",
+    "KilledBy": [
+     "NEG-90",
+     "NEG-03"
+    ],
+    "KilledByOutcome": [
+     "NEG-90",
+     "NEG-03"
+    ],
+    "ExpectedKillers": [
+     "NEG-03"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-03"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_FingerprintOnlyIsSuccessor",
+    "KilledBy": [
+     "NEG-78",
+     "NEG-66",
+     "NEG-67",
+     "NEG-80",
+     "NEG-81",
+     "NEG-69",
+     "POS-20",
+     "POS-21",
+     "POS-22",
+     "NEG-118",
+     "NEG-119",
+     "NEG-121"
+    ],
+    "KilledByOutcome": [
+     "NEG-78",
+     "NEG-66",
+     "NEG-67",
+     "NEG-80",
+     "NEG-81",
+     "NEG-69",
+     "POS-20",
+     "POS-21",
+     "POS-22",
+     "NEG-118",
+     "NEG-119",
+     "NEG-121"
+    ],
+    "ExpectedKillers": [
+     "NEG-66"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-66"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_FingerprintCoChangeIsSuccessor",
+    "KilledBy": [
+     "NEG-67",
+     "NEG-80",
+     "NEG-81",
+     "POS-20",
+     "POS-21",
+     "POS-22",
+     "NEG-118",
+     "NEG-119",
+     "NEG-121"
+    ],
+    "KilledByOutcome": [
+     "NEG-67",
+     "NEG-80",
+     "NEG-81",
+     "POS-20",
+     "POS-21",
+     "POS-22",
+     "NEG-118",
+     "NEG-119",
+     "NEG-121"
+    ],
+    "ExpectedKillers": [
+     "NEG-67"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-67"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_UnknownInvalidatorIsEqual",
+    "KilledBy": [
+     "NEG-71",
+     "NEG-84",
+     "NEG-85",
+     "NEG-86"
+    ],
+    "KilledByOutcome": [
+     "NEG-71",
+     "NEG-84",
+     "NEG-85",
+     "NEG-86"
+    ],
+    "ExpectedKillers": [
+     "NEG-71",
+     "NEG-84",
+     "NEG-85",
+     "NEG-86"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-71",
+     "NEG-84",
+     "NEG-85",
+     "NEG-86"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_UnobservedHostIsSuccessor",
+    "KilledBy": [
+     "NEG-45"
+    ],
+    "KilledByOutcome": [
+     "NEG-45"
+    ],
+    "ExpectedKillers": [
+     "NEG-45"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-45"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_IgnoreAttemptInProgress",
+    "KilledBy": [
+     "NEG-68"
+    ],
+    "KilledByOutcome": [
+     "NEG-68"
+    ],
+    "ExpectedKillers": [
+     "NEG-68"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-68"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_NewerSelectionIsSuccessor",
+    "KilledBy": [
+     "NEG-70"
+    ],
+    "KilledByOutcome": [
+     "NEG-70"
+    ],
+    "ExpectedKillers": [
+     "NEG-70"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-70"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_IdentityIsAppVersionOnly",
+    "KilledBy": [
+     "POS-10",
+     "POS-14",
+     "NEG-49",
+     "NEG-50",
+     "NEG-83"
+    ],
+    "KilledByOutcome": [
+     "POS-10",
+     "POS-14",
+     "NEG-49",
+     "NEG-50",
+     "NEG-83"
+    ],
+    "ExpectedKillers": [
+     "NEG-49",
+     "NEG-50"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-49",
+     "NEG-50"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_FpChangeDuringProbeIgnored",
+    "KilledBy": [
+     "NEG-78"
+    ],
+    "KilledByOutcome": [
+     "NEG-78"
+    ],
+    "ExpectedKillers": [
+     "NEG-78"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-78"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_NoAuthorityCheck",
+    "KilledBy": [
+     "POS-05",
+     "NEG-22",
+     "NEG-39"
+    ],
+    "KilledByOutcome": [
+     "POS-05",
+     "NEG-22",
+     "NEG-39"
+    ],
+    "ExpectedKillers": [
+     "NEG-22"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-22"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_AuthorityIdentityIgnored",
+    "KilledBy": [
+     "NEG-39"
+    ],
+    "KilledByOutcome": [
+     "NEG-39"
+    ],
+    "ExpectedKillers": [
+     "NEG-39"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-39"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_CessionIgnored",
+    "KilledBy": [
+     "NEG-27"
+    ],
+    "KilledByOutcome": [
+     "NEG-27"
+    ],
+    "ExpectedKillers": [
+     "NEG-27"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-27"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_UnstableAccepted",
+    "KilledBy": [
+     "NEG-28"
+    ],
+    "KilledByOutcome": [
+     "NEG-28"
+    ],
+    "ExpectedKillers": [
+     "NEG-28"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-28"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_AnticipatedProbe",
+    "KilledBy": [
+     "NEG-29"
+    ],
+    "KilledByOutcome": [
+     "NEG-29"
+    ],
+    "ExpectedKillers": [
+     "NEG-29"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-29"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_NoFloorInherits",
+    "KilledBy": [
+     "NEG-30"
+    ],
+    "KilledByOutcome": [
+     "NEG-30"
+    ],
+    "ExpectedKillers": [
+     "NEG-30"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-30"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_ChainRaisesFloor",
+    "KilledBy": [
+     "POS-06"
+    ],
+    "KilledByOutcome": [
+     "POS-06"
+    ],
+    "ExpectedKillers": [
+     "POS-06"
+    ],
+    "KilledByExpectedOutcome": [
+     "POS-06"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_ConsumptionCoveredIsAuthorization",
+    "KilledBy": [
+     "NEG-36"
+    ],
+    "KilledByOutcome": [
+     "NEG-36"
+    ],
+    "ExpectedKillers": [
+     "NEG-36"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-36"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_WriteInheritsFromReadProbe",
+    "KilledBy": [
+     "NEG-32"
+    ],
+    "KilledByOutcome": [
+     "NEG-32"
+    ],
+    "ExpectedKillers": [
+     "NEG-32"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-32"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_IncompleteAccepted",
+    "KilledBy": [
+     "NEG-37",
+     "NEG-54"
+    ],
+    "KilledByOutcome": [
+     "NEG-37",
+     "NEG-54"
+    ],
+    "ExpectedKillers": [
+     "NEG-37"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-37"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_ProbeWithoutOwnerOnUnacceptedFp",
+    "KilledBy": [
+     "NEG-38"
+    ],
+    "KilledByOutcome": [
+     "NEG-38"
+    ],
+    "ExpectedKillers": [
+     "NEG-38"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-38"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_MissingFloorAccepted",
+    "KilledBy": [
+     "POS-13",
+     "NEG-44"
+    ],
+    "KilledByOutcome": [
+     "POS-13",
+     "NEG-44"
+    ],
+    "ExpectedKillers": [
+     "NEG-44"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-44"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_FailedProbeAccredits",
+    "KilledBy": [
+     "NEG-01",
+     "NEG-02",
+     "NEG-60",
+     "NEG-04",
+     "NEG-05",
+     "NEG-06",
+     "NEG-07",
+     "NEG-08",
+     "NEG-09",
+     "NEG-10",
+     "NEG-11",
+     "NEG-79",
+     "NEG-12",
+     "NEG-62",
+     "NEG-35",
+     "NEG-88",
+     "NEG-46",
+     "NEG-47",
+     "NEG-63",
+     "NEG-64",
+     "NEG-48",
+     "NEG-72",
+     "NEG-73",
+     "NEG-91",
+     "NEG-43"
+    ],
+    "KilledByOutcome": [
+     "NEG-01",
+     "NEG-02",
+     "NEG-60",
+     "NEG-04",
+     "NEG-05",
+     "NEG-06",
+     "NEG-07",
+     "NEG-08",
+     "NEG-09",
+     "NEG-10",
+     "NEG-11",
+     "NEG-79",
+     "NEG-12",
+     "NEG-62",
+     "NEG-35",
+     "NEG-88",
+     "NEG-46",
+     "NEG-47",
+     "NEG-63",
+     "NEG-64",
+     "NEG-48",
+     "NEG-72",
+     "NEG-73",
+     "NEG-91",
+     "NEG-43"
+    ],
+    "ExpectedKillers": [
+     "NEG-43"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-43"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_ProbeNeverMeasures",
+    "KilledBy": [
+     "POS-11",
+     "POS-13",
+     "NEG-31"
+    ],
+    "KilledByOutcome": [
+     "POS-11",
+     "POS-13"
+    ],
+    "ExpectedKillers": [
+     "POS-11",
+     "POS-13"
+    ],
+    "KilledByExpectedOutcome": [
+     "POS-11",
+     "POS-13"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_IgnoreOperations",
+    "KilledBy": [
+     "NEG-72",
+     "NEG-73",
+     "NEG-91",
+     "NEG-92"
+    ],
+    "KilledByOutcome": [
+     "NEG-72",
+     "NEG-73",
+     "NEG-91",
+     "NEG-92"
+    ],
+    "ExpectedKillers": [
+     "NEG-72",
+     "NEG-73"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-72",
+     "NEG-73"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_UnexercisedOpUnknown",
+    "KilledBy": [
+     "POS-01",
+     "POS-02",
+     "POS-03",
+     "POS-04",
+     "POS-05",
+     "POS-06",
+     "POS-07",
+     "POS-09",
+     "POS-10",
+     "POS-12",
+     "POS-13",
+     "POS-14",
+     "POS-15",
+     "POS-16",
+     "NEG-74",
+     "NEG-75",
+     "NEG-76",
+     "NEG-77",
+     "NEG-87",
+     "NEG-89",
+     "NEG-36",
+     "NEG-54",
+     "NEG-57",
+     "NEG-23",
+     "NEG-52",
+     "NEG-59",
+     "NEG-65"
+    ],
+    "KilledByOutcome": [
+     "POS-01",
+     "POS-02",
+     "POS-03",
+     "POS-04",
+     "POS-05",
+     "POS-06",
+     "POS-07",
+     "POS-09",
+     "POS-10",
+     "POS-12",
+     "POS-13",
+     "POS-14",
+     "POS-15",
+     "POS-16",
+     "NEG-74",
+     "NEG-75",
+     "NEG-76",
+     "NEG-77",
+     "NEG-87",
+     "NEG-89",
+     "NEG-54",
+     "NEG-57",
+     "NEG-23",
+     "NEG-52",
+     "NEG-59",
+     "NEG-65"
+    ],
+    "ExpectedKillers": [
+     "POS-01",
+     "POS-16"
+    ],
+    "KilledByExpectedOutcome": [
+     "POS-01",
+     "POS-16"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_UnexercisedOpAlwaysValid",
+    "KilledBy": [
+     "NEG-92"
+    ],
+    "KilledByOutcome": [
+     "NEG-92"
+    ],
+    "ExpectedKillers": [
+     "NEG-92"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-92"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_DeclarationOverridesObservation",
+    "KilledBy": [
+     "NEG-72",
+     "NEG-73",
+     "NEG-91"
+    ],
+    "KilledByOutcome": [
+     "NEG-72",
+     "NEG-73",
+     "NEG-91"
+    ],
+    "ExpectedKillers": [
+     "NEG-72",
+     "NEG-91"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-72",
+     "NEG-91"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_UnknownIdentityIsChange",
+    "KilledBy": [
+     "NEG-80",
+     "NEG-81"
+    ],
+    "KilledByOutcome": [
+     "NEG-80",
+     "NEG-81"
+    ],
+    "ExpectedKillers": [
+     "NEG-80",
+     "NEG-81"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-80",
+     "NEG-81"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_UnknownDeclaredIdentityIgnored",
+    "KilledBy": [
+     "NEG-80"
+    ],
+    "KilledByOutcome": [
+     "NEG-80"
+    ],
+    "ExpectedKillers": [
+     "NEG-80"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-80"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_UndeclaredIdentityCounts",
+    "KilledBy": [
+     "POS-14"
+    ],
+    "KilledByOutcome": [
+     "POS-14"
+    ],
+    "ExpectedKillers": [
+     "POS-14"
+    ],
+    "KilledByExpectedOutcome": [
+     "POS-14"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_AppVersionChangeIgnored",
+    "KilledBy": [
+     "POS-15",
+     "NEG-81",
+     "NEG-82"
+    ],
+    "KilledByOutcome": [
+     "POS-15",
+     "NEG-81",
+     "NEG-82"
+    ],
+    "ExpectedKillers": [
+     "NEG-82"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-82"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_AdapterVersionChangeIgnored",
+    "KilledBy": [
+     "NEG-83"
+    ],
+    "KilledByOutcome": [
+     "NEG-83"
+    ],
+    "ExpectedKillers": [
+     "NEG-83"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-83"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_UnknownBlobIsEqual",
+    "KilledBy": [
+     "NEG-84",
+     "NEG-85",
+     "NEG-86"
+    ],
+    "KilledByOutcome": [
+     "NEG-84",
+     "NEG-85",
+     "NEG-86"
+    ],
+    "ExpectedKillers": [
+     "NEG-84",
+     "NEG-85",
+     "NEG-86"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-84",
+     "NEG-85",
+     "NEG-86"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_WorkIgnoresCapability",
+    "KilledBy": [
+     "NEG-87"
+    ],
+    "KilledByOutcome": [
+     "NEG-87"
+    ],
+    "ExpectedKillers": [
+     "NEG-87"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-87"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_ContradictionWithoutS04",
+    "KilledBy": [
+     "NEG-35",
+     "NEG-88"
+    ],
+    "KilledByOutcome": [
+     "NEG-35",
+     "NEG-88"
+    ],
+    "ExpectedKillers": [
+     "NEG-35",
+     "NEG-88"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-35",
+     "NEG-88"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_PerInvocationInherited",
+    "KilledBy": [
+     "NEG-89"
+    ],
+    "KilledByOutcome": [
+     "NEG-89"
+    ],
+    "ExpectedKillers": [
+     "NEG-89"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-89"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_InProbeEnvChangeRefunded",
+    "KilledBy": [
+     "NEG-90",
+     "NEG-45"
+    ],
+    "KilledByOutcome": [
+     "NEG-90"
+    ],
+    "ExpectedKillers": [
+     "NEG-90"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-90"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_FpChangeAutoAccepted",
+    "KilledBy": [
+     "POS-20",
+     "POS-21",
+     "POS-22",
+     "NEG-118",
+     "NEG-119"
+    ],
+    "KilledByOutcome": [
+     "POS-20",
+     "POS-21",
+     "POS-22",
+     "NEG-118",
+     "NEG-119"
+    ],
+    "ExpectedKillers": [
+     "NEG-118"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-118"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_OD2RestoresAfterFpChange",
+    "KilledBy": [
+     "NEG-118"
+    ],
+    "KilledByOutcome": [
+     "NEG-118"
+    ],
+    "ExpectedKillers": [
+     "NEG-118"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-118"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_MaterialAdoptedByA3",
+    "KilledBy": [
+     "NEG-119"
+    ],
+    "KilledByOutcome": [
+     "NEG-119"
+    ],
+    "ExpectedKillers": [
+     "NEG-119"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-119"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_MaterialWithoutOwner",
+    "KilledBy": [
+     "NEG-119"
+    ],
+    "KilledByOutcome": [
+     "NEG-119"
+    ],
+    "ExpectedKillers": [
+     "NEG-119"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-119"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_OwnerPinnedValueReading",
+    "KilledBy": [
+     "NEG-120"
+    ],
+    "KilledByOutcome": [
+     "NEG-120"
+    ],
+    "ExpectedKillers": [
+     "NEG-120"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-120"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_PassiveKeyComparison",
+    "KilledBy": [
+     "NEG-120"
+    ],
+    "KilledByOutcome": [
+     "NEG-120"
+    ],
+    "ExpectedKillers": [
+     "NEG-120"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-120"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_EvidenceWithValues",
+    "KilledBy": [
+     "POS-20",
+     "POS-21",
+     "POS-22"
+    ],
+    "KilledByOutcome": [
+     "POS-20",
+     "POS-21",
+     "POS-22"
+    ],
+    "ExpectedKillers": [
+     "POS-20"
+    ],
+    "KilledByExpectedOutcome": [
+     "POS-20"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_EvidenceWithValueDigests",
+    "KilledBy": [
+     "POS-20",
+     "POS-21",
+     "POS-22"
+    ],
+    "KilledByOutcome": [
+     "POS-20",
+     "POS-21",
+     "POS-22"
+    ],
+    "ExpectedKillers": [
+     "POS-20"
+    ],
+    "KilledByExpectedOutcome": [
+     "POS-20"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_EvidenceLocalizesValueChanges",
+    "KilledBy": [
+     "POS-20",
+     "POS-21",
+     "POS-22"
+    ],
+    "KilledByOutcome": [
+     "POS-20",
+     "POS-21",
+     "POS-22"
+    ],
+    "ExpectedKillers": [
+     "POS-20"
+    ],
+    "KilledByExpectedOutcome": [
+     "POS-20"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_EvidenceWithoutStability",
+    "KilledBy": [
+     "POS-20",
+     "POS-21",
+     "POS-22"
+    ],
+    "KilledByOutcome": [
+     "POS-20",
+     "POS-21",
+     "POS-22"
+    ],
+    "ExpectedKillers": [
+     "POS-20"
+    ],
+    "KilledByExpectedOutcome": [
+     "POS-20"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_AcceptedFpIsHuellaEq",
+    "KilledBy": [
+     "NEG-121"
+    ],
+    "KilledByOutcome": [
+     "NEG-121"
+    ],
+    "ExpectedKillers": [
+     "NEG-121"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-121"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_OD2ReentersA3",
+    "KilledBy": [
+     "NEG-118",
+     "NEG-121"
+    ],
+    "KilledByOutcome": [
+     "NEG-118",
+     "NEG-121"
+    ],
+    "ExpectedKillers": [
+     "NEG-118"
+    ],
+    "KilledByExpectedOutcome": [
+     "NEG-118"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_EvidenceLocalizesWhenStructureEqual",
+    "KilledBy": [
+     "POS-21"
+    ],
+    "KilledByOutcome": [
+     "POS-21"
+    ],
+    "ExpectedKillers": [
+     "POS-21"
+    ],
+    "KilledByExpectedOutcome": [
+     "POS-21"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_EvidenceDigestsWhenStructureEqual",
+    "KilledBy": [
+     "POS-21"
+    ],
+    "KilledByOutcome": [
+     "POS-21"
+    ],
+    "ExpectedKillers": [
+     "POS-21"
+    ],
+    "KilledByExpectedOutcome": [
+     "POS-21"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_FpAutoAcceptedWhenStructureEqual",
+    "KilledBy": [
+     "POS-21"
+    ],
+    "KilledByOutcome": [
+     "POS-21"
+    ],
+    "ExpectedKillers": [
+     "POS-21"
+    ],
+    "KilledByExpectedOutcome": [
+     "POS-21"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_EvidenceStabilityHardcoded",
+    "KilledBy": [
+     "POS-22"
+    ],
+    "KilledByOutcome": [
+     "POS-22"
+    ],
+    "ExpectedKillers": [
+     "POS-22"
+    ],
+    "KilledByExpectedOutcome": [
+     "POS-22"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_EvidenceRemovedKeysDropped",
+    "KilledBy": [
+     "POS-22"
+    ],
+    "KilledByOutcome": [
+     "POS-22"
+    ],
+    "ExpectedKillers": [
+     "POS-22"
+    ],
+    "KilledByExpectedOutcome": [
+     "POS-22"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_P01WaivedWhenStructureEqual",
+    "KilledBy": [
+     "POS-21"
+    ],
+    "KilledByOutcome": [
+     "POS-21"
+    ],
+    "ExpectedKillers": [
+     "POS-21"
+    ],
+    "KilledByExpectedOutcome": [
+     "POS-21"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_OwnerlessMeasurementAfterEvidence",
+    "KilledBy": [
+     "POS-21",
+     "POS-22"
+    ],
+    "KilledByOutcome": [
+     "POS-21",
+     "POS-22"
+    ],
+    "ExpectedKillers": [
+     "POS-21",
+     "POS-22"
+    ],
+    "KilledByExpectedOutcome": [
+     "POS-21",
+     "POS-22"
+    ],
+    "Result": "PASS"
+   },
+   {
+    "Mutant": "M_EvidenceComparesValuesInHost",
+    "KilledBy": [
+     "POS-20",
+     "POS-21",
+     "POS-22"
+    ],
+    "KilledByOutcome": [
+     "POS-20",
+     "POS-21",
+     "POS-22"
+    ],
+    "ExpectedKillers": [
+     "POS-20",
+     "POS-21",
+     "POS-22"
+    ],
+    "KilledByExpectedOutcome": [
+     "POS-20",
+     "POS-21",
+     "POS-22"
+    ],
+    "Result": "PASS"
+   }
+  ],
+  "EquivalentMutantsRetired": {
+   "M_UnboundedProbe": "equivalente: tras un fallo rechaza la regla 7 y tras un éxito el estado INHERITED; sustituido por M_UnboundedRetry",
+   "M_InheritObservedCapability": "equivalente con la clase de capacidad «igual» (regla 4); sustituido por M_CapabilityAsFloor",
+   "M_MaterialModeInert": "equivalente tras M1-01: A-3 no define ningún modo MATERIAL, así que dejarlo inerte es el propio modelo; sustituido por M_MaterialAdoptedByA3"
+  },
+  "MutantsRetiredByS01": [
+   "M_ExactModeHonorsClassification",
+   "M_UnknownKeyIgnored",
+   "M_StructureIgnored",
+   "M_KeyNameOnlyProjection",
+   "M_AnyMaterialKeyVersionCoupled",
+   "M_VersionCoupledAcceptsAndRestores",
+   "M_NoVersionChangeRequired",
+   "M_WideningMapAdmitted",
+   "M_CapabilityKeysIgnored",
+   "M_RulesDigestIgnored",
+   "M_VerifierNotPinned",
+   "M_TokenFromConfigAccepted",
+   "M_ResidualIgnored",
+   "M_UnstablePairVersionCoupled",
+   "M_VerdictIgnoresCession",
+   "M_BaselineFromUnacceptedFp",
+   "M_RecordPublishesValues",
+   "M_ShortValuesPublished",
+   "M_UnkeyedDigest",
+   "M_RecordNoClassNoDigest",
+   "M_NonMaterialReasonUnversioned",
+   "M_NonMaterialAlwaysUnexplained",
+   "M_VerdictNewerOnly",
+   "M_RulesUnpinned_class_map",
+   "M_RulesUnpinned_projection",
+   "M_RulesUnpinned_token_kinds",
+   "M_RulesUnpinned_nm_verified",
+   "M_VerifierWithoutOwner",
+   "M_FamilyFromMap",
+   "M_UnverifiedFamilyOutside",
+   "M_RawKeyNames",
+   "M_RawCauseNames",
+   "M_RecordNoProvenance",
+   "M_SurfacesIgnored",
+   "M_FamilyVerifiedOnce",
+   "M_RulesUnpinned_key_family",
+   "M_LaunchKeyVersionCoupled",
+   "M_AbsentAuthorizationAllowed",
+   "M_AuthorizationForOtherVerifier",
+   "M_DoubleQuoteOnlySanitizer",
+   "M_PathCharsOnlySanitizer",
+   "M_RecordExtraField",
+   "M_HostNameInRules"
+  ],
+  "MutantsWithoutExpectedKillers": [],
+  "ExpectedKillerIdsUnknown": [],
+  "RulesCovered": [
+   "A3.1",
+   "A3.10",
+   "A3.11",
+   "A3.2",
+   "A3.3",
+   "A3.4",
+   "A3.5",
+   "A3.6",
+   "A3.7",
+   "A3.8",
+   "A3.9"
+  ],
+  "RulesMissing": [],
+  "DuplicateIds": [],
+  "ForbiddenSamplesMissed": [],
+  "TextBinding": {
+   "DeltaChars": 15980,
+   "Missing": {},
+   "ProductNamesInDelta": [],
+   "ForbiddenInDelta": [],
+   "Result": "PASS"
+  },
+  "Result": "PASS"
+ },
+ "Result": "PASS"
+}

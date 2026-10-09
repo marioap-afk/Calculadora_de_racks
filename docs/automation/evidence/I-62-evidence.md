@@ -2880,3 +2880,31 @@ solo desde artefactos custodiados.
   2026-10-07T11:57Z), app `26.1002.7124.0`, `config.toml` `6518EFAB…` estable desde el 2026-10-07T20:05Z. Cambian las mismas 9 claves
   (`mcp_servers.node_repl.*` y `notify`). El par `97c57e4e…` nunca llegó a medirse. El bloque se pide para el par vigente, con un tope de 2 sondas de
   solo lectura (Controller y Architect). `codex-cli` sigue en STOP P-01.
+
+## 88. A-3 candidata publicada (decisiones §57, punto 4): MATERIAL_ADAPTER_FINGERPRINT como requisitos; OD-2-MAT preparada como decisión del Owner
+
+- **Objeto:** [I-62-A-3.md](../../initiatives/I-62-A-3.md), PROPUESTA (candidata), sin revisión formal (blob `ea6721f7`). Lo acompañan:
+  - el [anexo no normativo](../../initiatives/I-62-A-3-annex-maf-codex.md) de `codex-cli` (`f410f7fc`);
+  - el [paquete del Architect](../../initiatives/I-62-architect-package-A-3.md) (`d289329d`);
+  - las guardas y su `self-test`, en [I-62-A3/](I-62-A3/);
+  - la investigación: `maf-codex.md` (`a297efb2`), `od2-evolution.md` (`3b8dc620`) y el paquete de decisión
+    [OD-2-MAT](I-62-A3/od2-material-baseline-owner-packet.md) (`b2c8ec8a`).
+- **Los ocho MAJOR** de la segunda verificación (K-01..K-03 y X-01..X-05) están aplicados y cubiertos por las guardas.
+- **Revisión adversarial repetida, rondas 3 a 8.** Hallazgos M1..M6, todos con disposición en el §12 de A-3.
+  - Tras cuatro rondas con defectos MAJOR solo en el verificador de valores de la regla 11, la decisión **S-01** retira ese verificador.
+  - La regla 11 queda así: la huella se compara solo por su valor exacto; todo cambio deja al sucesor fuera de SUCCESSOR_COMPATIBLE y conserva
+    P-01; A-3 no define ninguna clase de cambios aceptables ni lee valores; la evidencia es solo por nombre; los requisitos para una A-n futura
+    van como lista.
+  - La última ronda encontró 1 MAJOR y 2 MINOR, todos aplicados. No queda ningún hallazgo abierto.
+- **Guardas:**
+  - `self-test` PASS: 116 vectores (1 + 19 + 96) y 105 mutantes eliminados por su vector esperado; perfil RED de V14 con 11 que pasan con el
+    motivo, y 19 + 38 que fallan a ciegas.
+  - `preview` PASS sobre `76b48e78`.
+  - `run` (G1-G5b) va en el commit siguiente.
+- **MATERIAL_ADAPTER_FINGERPRINT (Codex).** De las 9 claves que cambia cada actualización, 8 designan código que el runtime lanza o la frontera
+  de confianza de ese código. No hay ninguna clase inocua demostrada. P-01 sigue sin cambio en producción.
+- **OD-2.** Pasar a una línea base material cambia autoridad reservada al Owner. Por eso se prepara el paquete OD-2-MAT, con opciones A, B, C y D,
+  que no se resuelve por disposición. Se añadirá a la solicitud única de recuperación. Ninguna opción acepta una huella ni autoriza leer valores.
+- **Lectura de valores.** La comparación por clave está suspendida (§4 de la solicitud, `76b48e78`). El paquete trae el historial neutral de las
+  lecturas anteriores.
+- **Revisión formal:** pendiente de la orden del Coordinator. Su transporte previsto es `claude-cli` (decisiones §57, punto 3).
