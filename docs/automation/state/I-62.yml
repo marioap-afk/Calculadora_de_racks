@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §63; evidencia §112) — A-4 corrección 3 (5e2ba68e) con guardas CORRECTION3 PASS: kit y re-revisión por claude-cli (lanzamiento automático); FX-02: N8 resellado, referencias AUTHOR con preguntas F-1..F-6, solicitud única al Owner (tres líneas) preparada para después del acuerdo; sin F6 GATE PASS"
+  next_action: "F6 (decisiones §63; evidencia §114) — A-4 5e2ba68e: segunda re-revisión por claude-cli AGREED (A4-5 y A4-6 AGREED), auditor ACCREDITED; veredicto del Coordinator PENDING; solicitud única al Owner (tres líneas) preparada, con efecto solo tras el acuerdo y las disposiciones de aplicación; luego sonda A4-1, O4, clon y apertura de A2, FX-02; sin F6 GATE PASS"
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual

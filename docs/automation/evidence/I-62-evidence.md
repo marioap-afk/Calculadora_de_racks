@@ -3351,3 +3351,21 @@ solo desde artefactos custodiados.
   - ensayo en seco sin bloqueos; manifiesto `d684e168…`.
 - **Transporte:** `claude-cli` 2.1.293, espera de 120 s tras `auth status`, tope de 3 600 s, sin reintento. Consumo cubierto por CLAUDE-CLI-I62 = A.
 - **Estado:** custodiado y NO lanzado. A-4 no se modifica mientras dure la re-revisión.
+
+## 114. A-4: segunda re-revisión por `claude-cli` = AGREED, auditor ACCREDITED; solicitud única al Owner preparada (decisiones §63, puntos 6 y 8)
+
+- **Re-revisión** R20261009T195811Z-2df6, sesión `2efd6f27…`, de 21:11:31Z a 21:22:51Z, salida 0, sin fallo de transporte, 40 turnos
+  (30 Read, 8 Grep), sobre A-4 `5e2ba68e` (recibo `24284a4a`).
+  ([registro](../../initiatives/I-62-architect-review-A-4-r3.md); [output.json](I-62-architect-A-4/R20261009T195811Z-2df6/output.json))
+- **Veredicto del Architect independiente: AGREED.** A4-5: AGREED; A4-6: AGREED (las dos siguen separables).
+  - A62-A4-01 y A62-A4-02: **CLOSED**; A62-A4-O9 y O10: **APPLIED**; 0 hallazgos REQUIRED.
+  - Sin hallazgos: la opción B en A4-4, H-1..H-3, A4-1 y A4-2 sin cambio, la materialidad (M-02..M-05 = YES) y las líneas del Owner (solo
+    consumo, con efecto tras el acuerdo). `IfAgreed`: todos los campos `true`.
+  - **Opcionales (no bloqueantes):** A62-A4-O11 (precisión de cita: «UNKNOWN cuenta como NOT_SATISFIED» es el texto de la materialización,
+    AP 16.20 L1121); A62-A4-O12 (aritmética de A4-6 con A2-P1: «como máximo en uno» limita la subida propia de A2-P1); A62-A4-O13 (el paquete,
+    L144, conserva «o materializar»; no afecta al objeto).
+- **Auditor v5.1-a4r2: ACCREDITED,** con 0 motivos y 39 llamadas ([audit.json](I-62-architect-A-4/R20261009T195811Z-2df6/audit.json)).
+- **Solicitud única al Owner** ([solicitud](I-62-F6/requests/FX-02-owner-consumption-request-2026-10-09.md)): las tres líneas de A-4 §7, literales
+  del blob `5e2ba68e`; bloque `08ac7dfb…`. Solo tienen efecto con A-4 AGREED por el Coordinator y la disposición que nombre
+  cada aplicación; el silencio no es aprobación.
+- **Siguiente:** veredicto del Coordinator sobre A-4 (y disposición de O11..O13). A-4 no cambia hasta entonces; nada se aplica antes.
