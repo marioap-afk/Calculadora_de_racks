@@ -3075,3 +3075,16 @@ solo desde artefactos custodiados.
   - `A4-SONDA-CONSUMO`: una sonda read-only de `codex-cli` fuera de A2-P2;
   - `A4-CLAUDE-FX02-CONSUMO`: `claude-cli` como Architect de FX-02.
   A4-3 a A4-5 no piden consumo nuevo.
+
+## 99. A-3: revisión formal por `claude-cli` (intento 2) = AGREED, auditor ACCREDITED
+
+- **Revisión** R20261009T040327Z-58a1, intento 2. Sesión `2e266dfe…`, de 05:40:38Z a 05:53:43Z, salida 0, sin fallo de transporte, 48 turnos
+  (42 Read, 4 Grep).
+- **Veredicto del Architect independiente: AGREED.** 0 REQUIRED; 4 OPTIONAL (A62-A3-O1..O4); `IfAgreed` todo en true, incluida «sin
+  decisión del Owner».
+- **Auditor v5.1-a3: ACCREDITED,** con 0 motivos y 47 llamadas
+  ([registro](../../initiatives/I-62-architect-review-A-3.md); [output.json](I-62-architect-A-3/R20261009T040327Z-58a1/output.json),
+  [audit.json](I-62-architect-A-3/R20261009T040327Z-58a1/audit.json),
+  [runtime-evidence.json](I-62-architect-A-3/R20261009T040327Z-58a1/runtime-evidence.json)).
+- **Clon** sin cambios tras la corrida. La transcripción y el `stdout.jsonl` no se versionan; sus SHA-256 están en `runtime-evidence.json`.
+- **Siguiente:** veredicto del Coordinator sobre la A-3 exacta (blob `ea6721f7`). A-3 no se modifica antes.

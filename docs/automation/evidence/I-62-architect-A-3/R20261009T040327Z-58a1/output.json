@@ -1,0 +1,767 @@
+{
+ "Schema": "rackcad-architect-review-result/v1 (representación experimental; rigen I-61 y LIFECYCLE)",
+ "RunId": "R20261009T040327Z-58a1",
+ "InvocationId": "I20261009T052403Z-58a1",
+ "LogicalReviewRequestId": "L20261009T040327Z-58a1",
+ "AttemptSeq": 2,
+ "RequestedRole": "ARCHITECT",
+ "Action": "REVIEW_DESIGN",
+ "ReviewedUnit": "I-62",
+ "ReviewedCommit": "492885254b58203f0bc0099345db2998b25d2a2b",
+ "ReviewedPath": "docs/initiatives/I-62-A-3.md",
+ "ReviewedBlob": "ea6721f78cb63fbc4f9d99563f3262eb36a32c5d",
+ "ReviewedAnnexBlob": "f410f7fced25440be3866473974f417d2f6a9b50",
+ "ReviewerMode": "SEPARATE SESSION",
+ "SamePersonAsAuthor": "No como sesión ni como actor IA. El revisor es un proceso claude-cli nuevo: un agente Claude sobre Claude Agent SDK, sin el contexto ni la transcripción de la sesión autora de A-3, del Coordinator ni de las revisiones anteriores, y con solo el cierre de insumos de esta orden. No puedo verificar con mis herramientas los ActorRef y SessionRef de la sesión autora; los verificó el invocador. Persona humana: el revisor es IA y no es una persona. La cuenta de usuario y la identidad de Git que inyectó el runtime (declaradas solo por su tipo) son las del operador del repositorio. Según el paquete §5, ese operador dirige también la sesión principal autora: el operador humano es el mismo, y el revisor no. Proveedor del revisor: Anthropic (modelo Claude Opus 5.5). Proveedor del autor: Anthropic (Claude), según el paquete §5 («Es del mismo proveedor que el autor, y eso se declara»), sin verificación propia. Provider PREFERRED no se satisface; Actor, Session y Context REQUIRED se declaran separados.",
+ "ReviewerDeclaredIdentity": {
+  "Runtime": "claude-cli (agente Claude sobre Claude Agent SDK / Claude Code), Windows win32, PowerShell",
+  "Model": "claude-opus-5-5 (Opus 5.5)",
+  "Effort": "UNKNOWN",
+  "SessionOrThread": "UNKNOWN como identificador directo; el directorio de scratchpad inyectado, descrito como específico de la sesión, termina en el segmento 2e266dfe-a1ca-4372-acd9-924c980bf50a (posible id de sesión, no verificado)"
+ },
+ "InjectedContextDeclaration": {
+  "State": "DECLARED",
+  "Items": [
+   "Instrucciones de sistema del runtime: agente Claude sobre Claude Agent SDK; normas del harness y de uso de herramientas (Read, Grep, Glob, StructuredOutput); directrices de seguridad, de estilo y de pronombres; nota sobre /code-review ultra; entorno: modelo Opus 5.5 (id claude-opus-5-5), corte de conocimiento y fecha 2026-10-08",
+   "Contexto de usuario: correo electrónico de la cuenta del usuario (identificador de cuenta; valor no reproducido)",
+   "Instantánea gitStatus: rama main, árbol limpio, nombre de usuario de Git (identificador de cuenta; valor no reproducido) y los cinco commits recientes con sus mensajes (49288525, 91e29886, 76b48e78, b0884216, 322cf8a8)",
+   "Entorno: directorio de trabajo D:\\r62-arch-a3, directorio adicional D:\\r62-arch-a3-run, plataforma win32, shell PowerShell, versión del SO; ruta del scratchpad con un segmento de perfil de usuario de Windows (identificador de cuenta; valor no reproducido) y un segmento de sesión",
+   "Durante la corrida (no antes de la primera acción): recordatorios del sistema que pedían una breve actualización de estado al usuario; no aportan contenido del objeto",
+   "No observé en el contexto CLAUDE.md, memoria de proyecto o global, ganchos ni transcripciones de la sesión autora o del Coordinator"
+  ]
+ },
+ "IdentityCheck": {
+  "Basis": "INVOKER_VERIFIED_CLONE",
+  "OrderNamesObjectBlob": true,
+  "PackageHeaderDesignatesObject": true,
+  "GuardsResultHeadIsPublicationCommit": true,
+  "GuardsResultA3BlobMatchesObject": true,
+  "GuardsResultA2Unchanged": true,
+  "SelftestA3TextBlobMatchesObject": true,
+  "Note": "Paso 0 con Read. order.txt L25-26 nombra docs/initiatives/I-62-A-3.md y el blob ea6721f78cb63fbc4f9d99563f3262eb36a32c5d. La cabecera del paquete (L21-23) designa por ruta el objeto y el anexo, con los marcadores <A3_BLOB> y <ANNEX_BLOB> que resuelve el recibo. En a3-guards-result.json: L5 Head = 91e29886a4870dd673372c66453d76ea503a22b9 (commit de publicación); G3 L67-71 con A-2 f1e1d6f0… igual en Base y Head; G5b L3648-3650 con A3Blob = A3TextBlob = ea6721f7… y A3Text = la ruta del objeto. En a3-selftest.json, L3-4: A3Text = ruta del objeto y A3TextBlob = ea6721f7…. Sin git no puedo calcular el HEAD del clon ni los blobs del objeto y del anexo: el commit y el blob del anexo (f410f7fc…) son los que verificó el invocador. El blob del objeto coincide en la orden, en G5b y en el self-test."
+ },
+ "InputsRead": [
+  "D:\\r62-arch-a3-run\\order.txt: 1-45",
+  "D:\\r62-arch-a3-run\\order-s56.txt: 215-364",
+  "D:\\r62-arch-a3-run\\order-s57.txt: 1-53",
+  "docs/initiatives/I-62-A-3.md: 1-1485, 1488-1536 (1486-1487 sin leer; 1487 truncada según la orden)",
+  "docs/initiatives/I-62-architect-package-A-3.md: 1-208",
+  "docs/automation/evidence/I-62-A3/a3-guards-result.json: 1-109, 1018-1117, 3560-3656; Grep de \"Check\"|\"Result\"",
+  "docs/automation/evidence/I-62-A3/a3-selftest.json: 1-5",
+  "docs/automation/evidence/I-62-A3/a3-guards.py: 399-737, 2165-2214; Grep de definiciones (def/class/CONSTANTES)",
+  "docs/initiatives/I-62-proposal-v14.md: 262-334, 1815-1884, 2431-2470, 2505-2554",
+  "docs/INITIATIVE_LIFECYCLE.md: 66-222",
+  "docs/initiatives/I-62-A-2.md: 179-239",
+  "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md: 26-97",
+  "docs/automation/decisions/I-62.md: 1053-1117",
+  "docs/automation/evidence/I-62-A3/od2-material-baseline-owner-packet.md: 1-69, 71-133 (70 truncada; sin leer)",
+  "docs/automation/evidence/I-62-prep/owner-decision-packets.md: 80-96",
+  "docs/automation/agent-execution/README.md: 355-368",
+  "docs/initiatives/I-62-A-3-annex-maf-codex.md: solo Grep («no normativ|NO NORMATIV|normativo»)",
+  "docs/automation/evidence/I-62-A3/od2-evolution.md: solo Grep («OWNER-RESERVED», primeras 6 coincidencias)"
+ ],
+ "Verdict": "AGREED",
+ "RequiredFindings": [],
+ "OptionalFindings": [
+  {
+   "FindingId": "A62-A3-O1",
+   "AffectedDelta": "§3.2, regla 11, c) (y §3.9, «Fuera de A-3»; regla 11, b) en cuanto a la forma de una autorización de lectura)",
+   "Note": "La regla 11, c) dice que la A-n que ordene OD-2-MAT «tiene que cumplir, como mínimo» sus requisitos. El paquete de OD-2-MAT dice que B o C solo tendrían efecto si esa A-n «se apartara de ese requisito de forma declarada y con la autoridad del Owner». Por LIFECYCLE §6 las dos lecturas son compatibles: una A-n posterior puede corregir o sustituir a otra, y la de OD-2-MAT exige Owner, Architect y Coordinator. Por eso no hay una consecuencia OWNER-RESERVED en A-3. El texto de 11, c) no lo dice, y podría leerse como que una enmienda de autoridad ordinaria fija de antemano el contenido de una materia reservada al Owner. Lo mismo vale para la forma que 11, b) exige a una autorización de lectura de valores (programa y su blob, superficies y caducidad): es una condición necesaria que fija A-3, no un límite a lo que el Owner pueda decidir en esa A-n. Precisión sin cambio de significado, para la materialización o una A-n siguiente (A-3 no se edita tras el lanzamiento): «Esa A-n solo puede apartarse de estos requisitos de forma declarada, con la autoridad de LIFECYCLE §6 para una materia OWNER-RESERVED».",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§3.2, regla 11, c)",
+     "LineStart": 813,
+     "LineEnd": 813,
+     "Quote": "Esa A-n tiene que cumplir, como mínimo:"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§3.2, regla 11, c)",
+     "LineStart": 836,
+     "LineEnd": 836,
+     "Quote": "Son requisitos de esa A-n, no una regla operativa de esta enmienda; sin esa A-n rige el punto a)."
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-A3/od2-material-baseline-owner-packet.md",
+     "Section": "Recomendación de preparación, motivo 1",
+     "LineStart": 86,
+     "LineEnd": 86,
+     "Quote": "apartara de ese requisito de forma declarada y con la autoridad del Owner, y las dos leerían valores;"
+    },
+    {
+     "Path": "docs/INITIATIVE_LIFECYCLE.md",
+     "Section": "§6",
+     "LineStart": 216,
+     "LineEnd": 216,
+     "Quote": "correccion, revocacion o sustitucion mediante la siguiente A-n, nunca edicion o borrado."
+    },
+    {
+     "Path": "docs/INITIATIVE_LIFECYCLE.md",
+     "Section": "§6",
+     "LineStart": 221,
+     "LineEnd": 221,
+     "Quote": "Una M material exige Architect + Coordinator; una materia OWNER-RESERVED exige Owner."
+    }
+   ]
+  },
+  {
+   "FindingId": "A62-A3-O2",
+   "AffectedDelta": "§1 (Superficies, B.5) y §6, M-02",
+   "Note": "§1 y M-02 declaran el cambio de significado persistido de B.5 solo para Eligibility.MeasuredInvocation y su RunRef. La regla 6 hereda además del suelo ConsumptionCovered y CatalogVerifiedOn «sin refrescarse». En la práctica el significado no cambia: CatalogVerifiedOn no puede cambiar sin cambiar el blob del catálogo, lo que termina la sucesión, y la cobertura de consumo es un atributo de la celda que la propiedad 11 vuelve a observar. Aun así, para que la declaración del alcance de lectura de B.5 sea exacta (paquete §1; Q-A3-07), conviene nombrar los dos campos en M-02 y en el registro de la materialización.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§1, Superficies",
+     "LineStart": 101,
+     "LineEnd": 101,
+     "Quote": "`MeasuredInvocation`, M-02) y de §20.5.1."
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§6, M-02",
+     "LineStart": 1153,
+     "LineEnd": 1153,
+     "Quote": "cambia el significado persistido de `Eligibility.MeasuredInvocation` y de su `RunRef`"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§3.2, regla 6",
+     "LineStart": 775,
+     "LineEnd": 775,
+     "Quote": "`CatalogVerifiedOn`, los del suelo, sin refrescarse."
+    }
+   ]
+  },
+  {
+   "FindingId": "A62-A3-O3",
+   "AffectedDelta": "§3.2, regla 1 (hecho de identidad sin fuente declarada) y §4 (fila correspondiente)",
+   "Note": "Según la regla 1, un hecho de identidad sin fuente declarada es «UNKNOWN en las dos observaciones y no cuenta» como cambio. Con la regla 1, c) y su párrafo final, un cambio observado solo de ese hecho no es sucesor y queda fuera de A-3, donde sigue rigiendo DEC L1068: cualquier invalidador cambiado deja la observación obsoleta. Por ejemplo, AppVersion de codex-cli observada fuera del descriptor, con el binario igual. El modelo lo trata así: observe() cuenta todo cambio de identidad, y _id_delta solo los declarados, así que el caso queda NON_SUCCESSOR. Pero la fila de §4 («Antes: —»; «no cuenta como cambio ni impide la sucesión») puede leerse como que ese cambio deja de invalidar la observación, en contra de la regla 2. Precisión para la materialización: «no cuenta en Δ de la relación de sucesor; si se observa por otra vía, su cambio sigue invalidando la observación (regla 2; decisiones §55, punto 9) y, sin otro cambio en ID_D, deja el caso fuera de A-3».",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§3.2, regla 1",
+     "LineStart": 713,
+     "LineEnd": 713,
+     "Quote": "Un hecho de identidad sin fuente declarada en el descriptor es UNKNOWN en las dos observaciones y no cuenta"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§3.2, regla 2",
+     "LineStart": 727,
+     "LineEnd": 727,
+     "Quote": "El cambio de cualquier hecho de identidad del runtime invalida la observación (§6); esta regla cuenta `BinaryHash` y"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§4",
+     "LineStart": 1099,
+     "LineEnd": 1099,
+     "Quote": "| Hecho de identidad sin fuente declarada en el descriptor | — | UNKNOWN en las dos observaciones; no cuenta como cambio ni impide la sucesión |"
+    },
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": "§55, punto 9",
+     "LineStart": 1068,
+     "LineEnd": 1068,
+     "Quote": "si cambia cualquiera, la observación queda obsoleta"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-A3/a3-guards.py",
+     "Section": "RuntimeModel.observe",
+     "LineStart": 466,
+     "LineEnd": 466,
+     "Quote": "changed = identity != self.identity or env != self.env or fp != self.fp"
+    }
+   ]
+  },
+  {
+   "FindingId": "A62-A3-O4",
+   "AffectedDelta": "§3.8 (guardas) y §5, C-43 (oráculo), frente a las reglas 1, 3 y 10",
+   "Note": "En el modelo, observe() evalúa la relación de sucesor frente a la observación vigente (L459), no frente al suelo; evaluate() la vuelve a comprobar frente al suelo (L654). Contraejemplo: una sucesión encadenada que vuelve a la identidad del suelo (F → S1 heredado → S2 con la identidad de F). El modelo admite la sonda, la consume y la registra como fallida. El texto, en cambio, dice que no hay sucesor frente al suelo (regla 1, c, leída con la regla 10) y que no se hace ni se consume ninguna sonda (regla 3). El resultado es de fallo cerrado (sin herencia), pero el oráculo de C-43 diverge del texto en el consumo de la sonda y en el bloqueo de la regla 7. En el gate que materialice A-3: añadir un vector (con su mutante) de sucesión encadenada con reversión, o comparar en observe() con la identidad del suelo.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/automation/evidence/I-62-A3/a3-guards.py",
+     "Section": "RuntimeModel._successor_change",
+     "LineStart": 459,
+     "LineEnd": 459,
+     "Quote": "id_changed = bool(self._id_delta(self.identity, identity)) and self._id_known(self.identity) and self._id_known(identity)"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-A3/a3-guards.py",
+     "Section": "RuntimeModel.evaluate",
+     "LineStart": 654,
+     "LineEnd": 654,
+     "Quote": "if not self._id_delta(f[\"identity\"], o[\"identity\"]):"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§3.2, regla 10",
+     "LineStart": 799,
+     "LineEnd": 799,
+     "Quote": "Un sucesor posterior se compara con el mismo suelo medido, no con el sucesor intermedio"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§3.2, regla 3",
+     "LineStart": 736,
+     "LineEnd": 736,
+     "Quote": "Si la observación del sucesor ya muestra que no hay sucesor, no se hace la sonda y no se consume"
+    }
+   ]
+  }
+ ],
+ "QuestionDispositions": [
+  {
+   "Id": "Q-A3-01",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "El valor práctico está declarado con honestidad: en F6 A-3 no ahorra sondas frente a A2-P2 y hoy no se aplica a codex-cli (huella co-cambiada) ni a claude-cli (descriptor sin fuentes, M-06). Su efecto es la lista cerrada de re-observación, los invariantes y la herencia del suelo. Puede acordarse ya, sin depender del cierre de F6: no bloquea nada (§1) y su efecto en unidades I62 exige la materialización (Q-A3-02). El momento lo decide el Coordinator.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§3.7, Efecto en F6",
+     "LineStart": 958,
+     "LineEnd": 958,
+     "Quote": "Con A-3 acordada, A-3 no ahorra sondas frente a A2-P2"
+    }
+   ]
+  },
+  {
+   "Id": "Q-A3-02",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "La materialización queda fuera del registro y la decide el Coordinator. Hasta un MC_I62 nuevo, un conflicto con los textos F3 es STOP (§2.2), así que no hay efecto silencioso. Recomendación: leerla en F6 solo para la supervisión del Anexo D y materializarla antes de cualquier piloto que use la herencia.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§1",
+     "LineStart": 105,
+     "LineEnd": 105,
+     "Quote": "Este registro no la hace ni la autoriza (§7; Q-A3-02)."
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§2.2",
+     "LineStart": 288,
+     "LineEnd": 288,
+     "Quote": "hasta entonces, un conflicto entre estos textos y A-3 es STOP"
+    }
+   ]
+  },
+  {
+   "Id": "Q-A3-03",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "OBSERVATION_STALE, con la regla 2, basta y evita la colisión con el STALE de la celda y con el campo Stale de B.5. La lectura del punto 13 por el punto 15 (se hereda la elegibilidad medida y no la observación) es la correcta: el punto 15 es el resultado normativo («inherit the prior measured eligibility») y la observación ya invalidada no puede revivir sin re-observar.",
+   "PremiseRefs": [
+    {
+     "Path": "D:\\r62-arch-a3-run\\order-s56.txt",
+     "Section": "punto 15",
+     "LineStart": 281,
+     "LineEnd": 281,
+     "Quote": "inherit the prior measured eligibility for that action/cell"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§3.2, regla 2",
+     "LineStart": 730,
+     "LineEnd": 730,
+     "Quote": "`OBSERVATION_STALE` califica la observación;"
+    }
+   ]
+  },
+  {
+   "Id": "Q-A3-04",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "No hace falta un tope propio. La cadena queda acotada por el mismo suelo (regla 10), por la frescura recalculada con el CatalogVerifiedOn del suelo, que no se refresca, y por el fin de toda sucesión ante cualquier edición del catálogo (reglas 1 y 6). Cada eslabón exige su sonda y el predicado completo.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§3.2, regla 6",
+     "LineStart": 779,
+     "LineEnd": 779,
+     "Quote": "cambio del blob del catálogo, también por una reverificación de la frescura, termina la sucesión (punto 1)."
+    }
+   ]
+  },
+  {
+   "Id": "Q-A3-05",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "Se confirma la opción (i). Conserva la lectura vigente de decisiones §55, punto 9, y A2-P2. Estrechar V14 sería una regresión no pedida. Está acotada: sin herencia, con la observación anterior OBSERVATION_STALE, y la invocación solo vale como medición si cumple por sí misma §5, paso 3, y su autoridad.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": "§55, punto 9",
+     "LineStart": 1068,
+     "LineEnd": 1068,
+     "Quote": "las sondas de solo lectura autorizadas de OD-2d para el binario VIGENTE **son** las invocaciones medidas que exigen las celdas del Controller y del Architect"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§3.2, regla 7",
+     "LineStart": 787,
+     "LineEnd": 787,
+     "Quote": "Con false rigen §5 y §6 como sin esta regla: esta regla no impide que la invocación de la sonda sea esa"
+    }
+   ]
+  },
+  {
+   "Id": "Q-A3-06",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "Se mantiene. El mismo blob de descriptor es necesario para que (h) pueda apoyarse en la declaración DISPONIBLE de la cancelación y para las fuentes de la regla 4. Es más estricto que B.4 (fallo cerrado) y no cambia B.4.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§3.2, regla 1, b)",
+     "LineStart": 719,
+     "LineEnd": 719,
+     "Quote": "con los mismos blobs de descriptor, de catálogo y de `routing.md`;"
+    }
+   ]
+  },
+  {
+   "Id": "Q-A3-07",
+   "Disposition": "OPTIONAL",
+   "FindingIds": [
+    "A62-A3-O2"
+   ],
+   "Rationale": "Hasta la materialización, la evidencia custodiada de la sonda es suficiente: el aceptante reproduce el predicado sobre ella. La forma posterior (campos de preflight/v1 y B.4 o un esquema propio) es decisión de la materialización, bajo M-02. Al fijarla, conviene declarar también ConsumptionCovered y CatalogVerifiedOn heredados (O2).",
+   "PremiseRefs": []
+  },
+  {
+   "Id": "Q-A3-08",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "M-07 se mantiene activado por duda: la clase y el predicado son un mecanismo neutral aplicable a todo adapter, y LIFECYCLE §3 manda contar como activado un disparador dudoso. Rebajarlo no cambiaría la autoridad del acuerdo (Architect + Coordinator).",
+   "PremiseRefs": [
+    {
+     "Path": "docs/INITIATIVE_LIFECYCLE.md",
+     "Section": "§3",
+     "LineStart": 78,
+     "LineEnd": 78,
+     "Quote": "Ante duda se usa el arquetipo superior. UNKNOWN en un disparador cuenta como activado hasta que EXP-09"
+    }
+   ]
+  },
+  {
+   "Id": "Q-A3-09",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "Es correcto excluir las acciones de escritura. Es coherente con la prohibición de subir el alcance de escritura (punto 16), con la fila «Sondas previas» de solo lectura y con el alcance de CLAUDE-CLI-I62. Una sonda de escritura exigiría autoridad tipo OD-4 y queda para otra A-n.",
+   "PremiseRefs": [
+    {
+     "Path": "D:\\r62-arch-a3-run\\order-s56.txt",
+     "Section": "punto 16",
+     "LineStart": 305,
+     "LineEnd": 305,
+     "Quote": "- write scope;"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§3.2, regla 8",
+     "LineStart": 791,
+     "LineEnd": 791,
+     "Quote": "Una acción que exige escritura no se hereda con una sonda de solo lectura: su requisito queda UNKNOWN."
+    }
+   ]
+  },
+  {
+   "Id": "Q-A3-10",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "Se confirma la exclusión, que es la opción de fallo cerrado y la que exige la orden vigente (OD-2 exacta, sin línea base B/C). Las tres actualizaciones reales de codex-cli quedan cubiertas por A2-P2.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§3.6",
+     "LineStart": 935,
+     "LineEnd": 935,
+     "Quote": "Esos casos quedan fuera de A-3 (Q-A3-10) y los cubre A2-P2"
+    },
+    {
+     "Path": "D:\\r62-arch-a3-run\\order.txt",
+     "Section": "punto 4",
+     "LineStart": 34,
+     "LineEnd": 34,
+     "Quote": "Hasta decisión nueva, OD-2 sigue utilizando hash exacto."
+    }
+   ]
+  },
+  {
+   "Id": "Q-A3-11",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "La definición en el párrafo de §6 basta para el acuerdo, porque fija la obligación de prueba, su clase y su oráculo. Al materializar (C-21), conviene añadir C-43 como fila del Anexo C, para que la matriz de obligaciones sea autocontenida.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§3.2, párrafo final",
+     "LineStart": 840,
+     "LineEnd": 840,
+     "Quote": "Las invariantes de esta regla tienen una obligación de prueba propia, C-43, de clase (ii) MC, en el gate que la materialice"
+    }
+   ]
+  },
+  {
+   "Id": "Q-A3-12",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "La lectura es correcta. La herencia exige una invocación probada de la celda (la sonda), con el MeasuredInvocation MEASURED reproducible por el aceptante, y no cambia el texto de D.4. FX-02 y FX-06 siguen exigiendo además OD-2 y las demás precondiciones.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-proposal-v14.md",
+     "Section": "D.4, matriz de cierre",
+     "LineStart": 2544,
+     "LineEnd": 2544,
+     "Quote": "| FX-02 PASS | OD-5 + **OD-7** + OD-2 + medición del binario | UNVERIFIED; F6 pendiente |"
+    }
+   ]
+  },
+  {
+   "Id": "Q-A3-13",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "Es el efecto querido (fallo cerrado): un suelo sin valor registrado no puede probar igualdad. Completar el suelo con otra evidencia de la misma medición exigiría fijar su nivel de garantía y su vínculo con la invocación, y sería semántica nueva. La regla 7 ya da la vía (una sonda que registre toda la clase fija un suelo).",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§3.2, regla 4",
+     "LineStart": 754,
+     "LineEnd": 754,
+     "Quote": "no observada, contradictoria o por debajo de RUNTIME_OBSERVED es UNKNOWN."
+    }
+   ]
+  },
+  {
+   "Id": "Q-A3-14",
+   "Disposition": "OPTIONAL",
+   "FindingIds": [
+    "A62-A3-O3"
+   ],
+   "Rationale": "Se mantiene. Un invalidador UNKNOWN y un hecho declarado sin valor impiden la sucesión (fallo cerrado), y un hecho sin fuente no cuenta en Δ. Conviene precisar que ese «no cuenta» se limita a Δ y que un cambio observado por otra vía sigue invalidando la observación (O3).",
+   "PremiseRefs": []
+  },
+  {
+   "Id": "Q-A3-15",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "Se mantiene la igualdad en 3, 4 y 11. Una capacidad «superior» solo puede contradecir el catálogo, y subirla la prohíbe el punto 16. En el effort no hay un orden que no redefina el requisito. Cambiar el modo de consumo cambia la autoridad de consumo (punto 16).",
+   "PremiseRefs": [
+    {
+     "Path": "D:\\r62-arch-a3-run\\order-s56.txt",
+     "Section": "punto 16",
+     "LineStart": 303,
+     "LineEnd": 303,
+     "Quote": "No compatibility probe may silently increase:"
+    }
+   ]
+  },
+  {
+   "Id": "Q-A3-16",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "Se admite la salvedad. V14 admite la cancelación del suelo por la misma fuente (la declaración del descriptor), y lo observado por la sonda prevalece si la contradice. Exigir ejercer la cancelación obligaría a una invocación hasta el tope, con más consumo y sin ganancia de seguridad.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-proposal-v14.md",
+     "Section": "§7",
+     "LineStart": 319,
+     "LineEnd": 319,
+     "Quote": "Una operación UNVERIFIED que el rol necesita hace que la celda no sea elegible para"
+    }
+   ]
+  },
+  {
+   "Id": "Q-A3-17",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "Es el efecto querido (fallo cerrado) con el contrato vigente. Un blob por entrada cambiaría B.4 y el catálogo, y queda fuera de A-3.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§3.7, Catálogo",
+     "LineStart": 973,
+     "LineEnd": 973,
+     "Quote": "`CatalogEntryBlob` es el blob del catálogo entero (PREFLIGHT L492-496)."
+    }
+   ]
+  },
+  {
+   "Id": "Q-A3-18",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "No es una consecuencia OWNER-RESERVED. La salvedad solo opera con una autorización expresa del Owner que cubra la sonda, no acepta la huella y no admite trabajo ordinario antes de OD-2. Codifica el ejercicio que el Owner ya hizo de su propia autoridad (OD-2b-PROBE, OD-2d-PROBE). No cambia el objeto de ninguna decisión del Owner ni crea autoridad.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§3.2, regla 3",
+     "LineStart": 740,
+     "LineEnd": 740,
+     "Quote": "solo bajo una autorización expresa del Owner que la cubra; para esa sonda, y solo para ella, esa autorización hace las veces de la"
+    },
+    {
+     "Path": "docs/INITIATIVE_LIFECYCLE.md",
+     "Section": "§3",
+     "LineStart": 94,
+     "LineEnd": 94,
+     "Quote": "Un cambio de alcance, no-objetivos, decision Owner o retiro de escenario OV es `OWNER-RESERVED`."
+    }
+   ]
+  },
+  {
+   "Id": "Q-A3-19",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "La retirada es correcta: sacar de A-3 la parte condicional de la regla 11 elimina la anticipación de una materia OWNER-RESERVED. No queda en el delta ningún modo MATERIAL (TextBinding sin patrones prohibidos).",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§9",
+     "LineStart": 1235,
+     "LineEnd": 1235,
+     "Quote": "Retirada (§12, M1-01): A-3 ya no contiene la parte condicional de la regla 11"
+    }
+   ]
+  },
+  {
+   "Id": "Q-A3-20",
+   "Disposition": "OPTIONAL",
+   "FindingIds": [
+    "A62-A3-O1"
+   ],
+   "Rationale": "Se confirma: A-3 solo referencia el paquete de OD-2-MAT, sin resolverlo ni presumir una opción, y no define verificador ni clase de cambios aceptables (regla 11, a y c). Es coherente con la orden vigente §58, punto 4. Como mínimos, los requisitos de 11, c) son necesarios: recogen los seis elementos y las tres prohibiciones de §57, punto 4, más lecciones de fallo cerrado. Su suficiencia solo puede juzgarse sobre la A-n concreta. Conviene precisar que esa A-n, con la autoridad del Owner, puede apartarse de ellos de forma declarada (O1).",
+   "PremiseRefs": [
+    {
+     "Path": "D:\\r62-arch-a3-run\\order.txt",
+     "Section": "punto 4",
+     "LineStart": 33,
+     "LineEnd": 33,
+     "Quote": "Materia reservada al Owner. No decidir ni inferir su preferencia."
+    }
+   ]
+  },
+  {
+   "Id": "Q-A3-21",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "Una confirmación del Coordinator no basta para leer valores: el Owner aprobó OD-2 en términos de «nunca valores», y README L366 lo fija. El acotamiento de los controles del bloque (SHA-256, nombres y estructura saneados, binario y versión, sin comparación por clave) es correcto y coincide con la orden vigente §58, punto 2.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/automation/evidence/I-62-prep/owner-decision-packets.md",
+     "Section": "OD-2, Seguridad",
+     "LineStart": 93,
+     "LineEnd": 93,
+     "Quote": "solo el hash del archivo y nombres saneados; nunca valores"
+    },
+    {
+     "Path": "docs/automation/agent-execution/README.md",
+     "Section": "§13",
+     "LineStart": 366,
+     "LineEnd": 366,
+     "Quote": "Nunca se leen ni se registran valores de configuración ni credenciales"
+    },
+    {
+     "Path": "D:\\r62-arch-a3-run\\order.txt",
+     "Section": "punto 2",
+     "LineStart": 19,
+     "LineEnd": 19,
+     "Quote": "No leer valores de configuración ni calcular digests por clave."
+    }
+   ]
+  },
+  {
+   "Id": "Q-A3-22",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "La retirada es correcta: sin verificador no hay veredicto. La reproducción por el aceptante pasa como requisito a la A-n de la regla 11, c).",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "§3.2, regla 11, c)",
+     "LineStart": 832,
+     "LineEnd": 832,
+     "Quote": "una línea base derivada solo de una huella aceptada con OD-2 exacta, y un resultado que el aceptante reproduce;"
+    }
+   ]
+  }
+ ],
+ "Focus": [
+  {
+   "Item": 1,
+   "Assessment": "CONFIRMED",
+   "Note": "El delta implementa la fila 11-17 de decisiones §56 (orden §56, puntos 11-17) y el punto 4 de §57. Contiene: la clase neutral de las 11 propiedades del punto 14; la sonda acotada; el predicado, con requisitos en MATCH o ABOVE_REQUIRED e invariantes de seguridad, contexto y salida; la herencia de la elegibilidad medida, con la identidad nueva registrada (punto 15); el fallo cerrado, con OBSERVATION_STALE y medición de §5, paso 3; y la prohibición de «más nuevo = mejor» y de toda subida (punto 16). Todas las precisiones añadidas son restrictivas y tienen motivo trazable: sustitución del medido (regla 1, a); descriptor y blobs; huella y autenticación fuera de la relación (invalidadores de B.4; 11, a); invalidador UNKNOWN o hecho declarado sin valor; Stale recalculado; sin sonda fallida desde la última elegibilidad; suelo sin valor = UNKNOWN; igualdad en 3, 4 y 11 (punto 16; AP L972-973); (h) con la cancelación no ejercida por la declaración del descriptor (V14 L319-320); no-sucesor detectado por la propia sonda, que cuenta; escritura excluida; ámbito (u, r, a, c), más estrecho que «action/cell»; sonda con la huella sin aceptar solo con autorización expresa del Owner (práctica previa, sin autoridad nueva). La lectura del punto 13 por el punto 15 está declarada (§1; Q-A3-03). En la regla 11: comparación solo por el valor exacto, evidencia por nombre y requisitos para la A-n de OD-2-MAT. La evaluación de OD-2 se hizo y la decisión del Owner se preparó aparte, sin resolverla, como pide §57, punto 4, y como confirma §58, punto 4."
+  },
+  {
+   "Item": 2,
+   "Assessment": "CONFIRMED",
+   "Note": "No encuentro ningún camino de herencia con: un requisito UNKNOWN, BELOW_REQUIRED u omitido ((d); §3.5); un invariante cambiado ((f)); la frescura caducada ((a); la regla 6 recalcula en la sonda y en cada binding); sin sonda, con sonda fuera de cota o incompleta ((c); regla 7); o tras una sonda fallida ((a); regla 7). Los cambios de huella, autenticación, host, catálogo, routing, descriptor o proveedor, el host UNOBSERVED, la cesión y el intento en curso quedan fuera de A-3 (regla 1). La regla 11 no deja aceptar por clase (11, a; NEG-118..NEG-121), no lee valores (11, a y b; POS-20..POS-22, con cero lecturas exigidas por M6-02) y su evidencia es la lista cerrada de 11, b). Los requisitos de 11, c) incluyen al menos los seis elementos y las tres prohibiciones de §57, punto 4, más lecciones de fallo cerrado. Como mínimos son adecuados; su suficiencia solo puede juzgarse sobre la A-n concreta (O1)."
+  },
+  {
+   "Item": 3,
+   "Assessment": "CONFIRMED",
+   "Note": "La opción (i) conserva la lectura vigente de decisiones §55, punto 9 (las sondas autorizadas son las invocaciones medidas) y A2-P2; la opción (ii) sería una regresión no pedida. Está bien acotada: con false no hay herencia y la observación anterior sigue OBSERVATION_STALE. La invocación solo vale como medición si cumple por sí misma §5, paso 3, y su autoridad, y solo fija un suelo si registró toda la clase. La «full measurement» de la orden se define en §1 como medición de §5, paso 3, sin herencia. La contrapartida (el camino de V14 no evalúa la clase) está declarada en Q-A3-05, y el mutante M_ProbeNeverMeasures se elimina."
+  },
+  {
+   "Item": 4,
+   "Assessment": "CONFIRMED",
+   "Note": "Lo impiden: la regla 8 y la 11, d); la condición (g), que compara lo pedido y lo registrado con el suelo; la herencia solo hasta el suelo (un valor superior se registra pero no se declara); ConsumptionCovered heredado como hecho y no como autorización; la escritura no heredable; y «superior» solo en la introspección. El preámbulo del delta dice que un runtime más reciente no acredita ni eleva nada, y la regla 11 compara solo por el valor exacto (sin aceptación implícita de versiones nuevas). G5: TextBinding sin patrones prohibidos en el delta; M_NewerIsBetter, M_ClaimIncrease y M_InheritRaises_* eliminados."
+  },
+  {
+   "Item": 5,
+   "Assessment": "CONFIRMED",
+   "Note": "P-01, P-11, OD-2 exacta y la línea base de §18 no cambian (reglas 1, c, 9 y 11, a; §3.6). Compatibilidad y aceptación son independientes, y la herencia no se usa sin la huella vigente aceptada. La puerta es neutral respecto del adapter: «huella vigente del adapter sin aceptar por OD-2 (P-01, P-11 o la línea base de §18)»; M_FpGateOnlyForOneAdapter eliminado. P-01 se conserva en producción bajo la autoridad actual (11, a). Todo mecanismo por clase o de lectura de valores queda fuera de A-3 (11, a-c; §3.9), como exige §58, punto 4 (OD-2 exacta, sin línea base B/C ni lectura de valores). Las autorizaciones de consumo y los topes no cambian (reglas 3 y 8; §8)."
+  },
+  {
+   "Item": 6,
+   "Assessment": "CONFIRMED",
+   "Note": "A-2 no cambia: G3 da f1e1d6f0 en base y head, y A-3 no la incluye. §3.7 separa el presupuesto (A2-P2) de la semántica (A-3). La sonda de A-3 se hace dentro del bloque (tope de dos; P-07 del bloque), con la autorización del bloque como autoridad, y no reduce lo que el bloque mide (regla 7; POS-11). No interpreta A2 L227: deja el orden entre las sondas del bloque y la OD-2 a A-2 y a la disposición del Coordinator, y deja a A-2 la cuestión de la Topología B. Sin A-3 acordada rige A2-P2 sola. Las actualizaciones reales de codex-cli quedan fuera de A-3 por el cambio de huella."
+  },
+  {
+   "Item": 7,
+   "Assessment": "CONFIRMED",
+   "Note": "Estoy de acuerdo: M-02..M-06 sí, M-07 sí por duda (LC L78), M-01 y M-08 no. M-01: la elegibilidad la sigue aplicando quien la aplica, el predicado se reproduce mecánicamente y el Owner sigue aceptando la huella exacta. M-08: ADR-0046 #4 se cumple literalmente (la sonda es una invocación probada del sucesor) y el «Vigilar» de L95 se conserva. La regla 11 no tiene entradas propias ni punto de extensión. El efecto en obligaciones es suficiente: C-07, C-08, C-09, C-11, C-40 y C-43 nueva, (ii) MC, con un RED mecánico que coincide con RedV14 (11 vectores con el motivo; 19 + 38 a ciegas); invariantes A3.1-A3.11 con vectores; B.8.4 sin cambio. Precisión de M-02 en O2."
+  },
+  {
+   "Item": 8,
+   "Assessment": "CONFIRMED",
+   "Note": "Según la lectura de RuntimeModel (_successor_change, evaluate (a)-(h), _inherit, _fail, measure_from_probe, ordinary_invocation y regla 11) y de los resultados custodiados: 116 vectores (1 + 19 + 96) PASS, también a ciegas del motivo; 105 mutantes eliminados por su vector esperado; 3 equivalentes declarados con su sustituto; 43 mutantes retirados por S-01 y listados; cobertura A3.1-A3.11; sin ids duplicados; TextBinding PASS, sin nombres de producto ni patrones prohibidos en el delta. preview/run: G1 (al aplicar solo cambian el título y §6; 103 literales), G2 (diff igual al que permite §7 y blobs de la investigación iguales a §10), G3 (blobs congelados y A-2 sin cambio), G4 (C-20b EQUAL, sin superficies tocadas) y G5b (blob y ruta del texto, y G5 igual al recalculado). No pude ejecutarlas. Hay una divergencia menor del modelo en sucesiones encadenadas, de fallo cerrado (O4)."
+  }
+ ],
+ "NoChangeConfirmation": {
+  "P01P11OD2": {
+   "Assessment": "NO_CHANGE",
+   "Note": "Texto: A-3 solo añade un párrafo al final de V14 §6 (G1: al aplicar solo cambian el título y §6), así que §13 (P-11) y §18 (OD-2) no cambian, y AP L698 (P-01) tampoco (G2: AUTOMATION_PLAN no se toca). Lectura, con la regla 11: la huella se compara solo por su valor exacto, todo cambio conserva P-01 y P-11, y A-3 no acepta huellas ni define otro modo de OD-2 (11, a). La salvedad de la regla 3 opera sobre la condición «con OD-2» de D.3 y solo con una autorización expresa del Owner, sin aceptar la huella. Es el ejercicio de la propia autoridad del Owner, no una lectura nueva de OD-2."
+  },
+  "D3Caps": {
+   "Assessment": "NO_CHANGE",
+   "Note": "La sonda cuenta dentro del presupuesto y de los topes vigentes, P-07 la comprueba y A-3 no crea autoridad ni presupuesto (regla 3; §3.3). Las filas «Sondas previas» (V14 L2443 y L2516) y los totales no cambian. La lectura de «con OD-2» para la sonda autorizada por el Owner está declarada (§2.1, V14 L2443)."
+  },
+  "ContractsB1toB11": {
+   "Assessment": "NO_CHANGE",
+   "Note": "No cambia el texto ni la forma de ningún contrato B.1-B.11: no se añaden campos y B.4 y preflight/v1 siguen estrictos. La lectura de B.2 (PreflightRef), B.4 (BinaryHash y AppVersion como invalidadores) y B.5 (MeasuredInvocation heredado) está declarada (§1; M-02). Su registro mecánico es consecuencia de la materialización (Q-A3-07)."
+  },
+  "StateV2": {
+   "Assessment": "NO_CHANGE",
+   "Note": "A-3 actúa sobre la observación y la elegibilidad. No cambia ninguna invariante de B.8.4 (I-S, I-P, I-H) ni state/v2 (§5). El archivo de estado docs/automation/state/I-62.yml que modifica el commit es un registro operativo, no el contrato."
+  },
+  "Section20Text": {
+   "Assessment": "NO_CHANGE",
+   "Note": "No cambia el texto de §20. Solo cambia la lectura de §20.5.1 (EligibleCells en modo CRITERION, satisfecho por una elegibilidad heredada con el predicado reproducido), y está declarada. Los controles por invocación de §20.3 (P-22..P-24 y el cierre) no se heredan (regla 9)."
+  },
+  "A1": {
+   "Assessment": "NO_CHANGE",
+   "Note": "G3: el blob c01899a7 de A-1 no cambia. A-3 no la modifica ni la interpreta (cabecera)."
+  },
+  "A2": {
+   "Assessment": "NO_CHANGE",
+   "Note": "G3: f1e1d6f0 igual en base y head, y también el paquete de A-2. A-3 no la incluye ni interpreta A2 L227 (§3.7). Es la A-2 acordada en decisiones §57, punto 1."
+  },
+  "F4": {
+   "Assessment": "NO_CHANGE",
+   "Note": "G2: ninguna ruta de F4, de src/ o de tests/ cambia. G3: clause_map.py ffe6ea57 sin cambio. G4: C-20b EQUAL, sin superficies tocadas. Las corridas de F2 y F3 no se repiten y C-07 y C-11 conservan su esperado (§7). La suite completa de RackCad no la pude verificar (sin ejecución)."
+  }
+ },
+ "ScopeConfirmation": {
+  "ReadingChangesExactlyAsDeclared": {
+   "Assessment": "CONFIRMED",
+   "Note": "B.2: PreflightRef es inválido también con un cambio de BinaryHash o AppVersion (regla 2). B.4: cuenta esos dos hechos como invalidadores, aunque no tenga campos para ellos. B.5: MeasuredInvocation MEASURED puede ser heredado, con RunRef = la sonda, y Stale se recalcula. §20.5.1: el criterio CELL se satisface con una elegibilidad heredada y el predicado reproducido. Es lo que declaran §1 y M-02. §1 declara además, como lectura regida, §4.2, §5, §6, §7, §10 y D.3/D.4. Precisión sobre ConsumptionCovered y CatalogVerifiedOn heredados en O2."
+  },
+  "NoVerifier": {
+   "Assessment": "CONFIRMED",
+   "Note": "Regla 11, a): «no define … ningún verificador». §3.9 y M-06: sin manifiesto, mapa, proyección ni tipos de token. El modelo rechaza toda petición de modo de aceptación (request_fp_acceptance_mode). El verificador del anexo es una propuesta no normativa para la A-n de OD-2-MAT."
+  },
+  "NoAcceptableChangeClass": {
+   "Assessment": "CONFIRMED",
+   "Note": "Regla 11, a): no define ninguna clase de cambios aceptables. HuellaEq es la igualdad exacta (§3.4). Toda aceptación por clase es de la A-n que ordene OD-2-MAT (11, c), y ninguna opción del paquete OD-2-MAT tiene efecto antes de esa A-n."
+  },
+  "NoValueReading": {
+   "Assessment": "CONFIRMED",
+   "Note": "Las reglas 11, a) y b) no leen valores ni autorizan leerlos: la evidencia es solo por nombre, sin digests por clave ni localización por clave, y A-3 no pide ninguna autorización. El modelo exige cero lecturas al registrar la evidencia (M6-02), y el paquete de OD-2-MAT tampoco autoriza leer valores («Lectura de valores (no se pide ahora)»). Es coherente con PKT L93, README L366 y §58, puntos 2 y 4."
+  },
+  "MaterializationOutsideRecord": {
+   "Assessment": "CONFIRMED",
+   "Note": "§1, §2.2 y §7: este registro no materializa ni autoriza la materialización. Hasta un MC_I62 nuevo, un conflicto con los textos F3 es STOP. El diff publicado (G2) no toca AUTOMATION_PLAN, el README, routing.md, los descriptores, los esquemas ni model-catalog.md. El momento lo decide el Coordinator (Q-A3-02)."
+  }
+ },
+ "GuardsVerification": {
+  "Notes": [
+   {
+    "Guard": "G1",
+    "ClaimHolds": "HOLDS",
+    "Note": "Resultado custodiado: 103 literales, ChangedSections solo el título y §6, sin hallazgos, PASS. Comprobé unos 30 literales de §2 contra las líneas que leí (V14 L268, 275, 281, 286, 300, 319-320, 327, 330-331, 1821, 1824, 1869, 1879, 2443, 2462-2463, 2516, 2544, 2549; DEC L1068, 1070, 1100, 1115; A2 L216-239; LC L94 y L221; ADR46 L95) y coinciden. No pude verificar la privacidad frente a las identidades del host (se leen en tiempo de ejecución)."
+   },
+   {
+    "Guard": "G2",
+    "ClaimHolds": "HOLDS",
+    "Note": "Changed coincide con el diff permitido por A-3 §7: A-3, anexo, paquete, guardas, self-test y los tres archivos de investigación añadidos; evidencia y state/I-62.yml modificados. ResearchBlobs = a297efb2, 3b8dc620 y b2c8ec8a, iguales a A-3 §10 y al paquete §2. Privacidad comprobada en los diez archivos, sin hallazgos."
+   },
+   {
+    "Guard": "G3",
+    "ClaimHolds": "HOLDS",
+    "Note": "Blobs congelados iguales a A-3 §7: V14 34ad80ea, Freeze 0f6b8608, A-1 c01899a7, ADR-0046 da275e1a, ADR-0048 e1bd8d91 y clause_map ffe6ea57. A-2 f1e1d6f0 y su paquete 5bd0fa60, iguales en base y head. Mismatches vacío. El código de g3_frozen compara además con A2_BLOB."
+   },
+   {
+    "Guard": "G4",
+    "ClaimHolds": "HOLDS",
+    "Note": "Resultado custodiado: SurfacesTouched vacío, ExitCode 0 y salida «EQUAL (MV-2..MV-6)» con merge-base bb0d5522. El código exige EQUAL y ninguna superficie tocada. No lo ejecuté."
+   },
+   {
+    "Guard": "G5",
+    "ClaimHolds": "HOLDS",
+    "Note": "116 vectores (1 + 19 + 96), todos PASS, también a ciegas del motivo; 105 mutantes eliminados; MutantsWithoutExpectedKillers vacío; RulesCovered A3.1-A3.11; sin duplicados; ForbiddenSamplesMissed vacío; TextBinding PASS. RedV14 coincide con C-43 (11 vectores con el motivo; 19 positivos + 38 negativos a ciegas). El modelo implementa (a)-(h), la herencia, el fallo cerrado, la medición de la regla 7 y la regla 11 (HuellaEq exacta, sin lectura de valores). Hay una divergencia menor y de fallo cerrado en sucesiones encadenadas (O4). No ejecuté las guardas."
+   },
+   {
+    "Guard": "G5b",
+    "ClaimHolds": "HOLDS",
+    "Note": "A3Blob = A3TextBlob = ea6721f7… y A3Text = docs/initiatives/I-62-A-3.md (resultado L3648-3650 y self-test L3-4). Sin hallazgos, PASS. El código compara además el G5 custodiado con el recalculado en head; no pude recalcularlo."
+   }
+  ],
+  "Note": "Sin ejecución de código: todo sale de leer a3-guards.py (RuntimeModel, L399-737; g3_frozen, g5b_selftest y g4_clause_map, L2165-2213; lista de definiciones), a3-guards-result.json (cabecera, G1-G4, perfil RedV14, retirados, cobertura, TextBinding y G5b) y a3-selftest.json (L1-5). Las afirmaciones son coherentes con A-3 §3.8, §5 y §7."
+ },
+ "Materiality": {
+  "Overall": {
+   "M01": "NO",
+   "M02": "YES",
+   "M03": "YES",
+   "M04": "YES",
+   "M05": "YES",
+   "M06": "YES",
+   "M07": "YES",
+   "M08": "NO"
+  },
+  "Note": "Mi evaluación coincide con la de A-3 §6. M-01 no: no hay dueño nuevo ni segunda autoridad, el predicado se reproduce mecánicamente y la huella la sigue aceptando el Owner por su valor exacto. M-02 sí: significado persistido de MeasuredInvocation y RunRef (y, por precisión, ConsumptionCovered y CatalogVerifiedOn heredados; O2), e invalidadores BinaryHash y AppVersion sin campo. M-03 sí: tras una actualización, la herencia sustituye a la medición nueva. M-04 sí: fallo cerrado explícito nuevo. M-05 sí: lectura de contratos consumidos (AUTOMATION_PLAN 16.x, README §12-§14, routing.md, esquemas). M-06 sí: los descriptores y sus esquemas de hechos deben declarar las fuentes. M-07 sí por duda (LC §3): mecanismo neutral transversal. M-08 no: ADR-0046 #4 se cumple literalmente y L95 se conserva. Con M-07 activado por duda, el arquetipo de referencia es el superior. La autoridad de la A-n es Architect + Coordinator (LC L221): A-3 no tiene consecuencia OWNER-RESERVED, y la evolución de OD-2 queda fuera, en OD-2-MAT."
+ },
+ "OwnerAuthorityCheck": {
+  "Spending": "NONE: la sonda solo con la autoridad y el presupuesto vigentes, contada en ellos y comprobada por P-07; A-3 no crea autoridad ni presupuesto (regla 3; §8, Consumo)",
+  "Credentials": "NONE: sin lectura ni cambio de credenciales (regla 3: no cambia sandbox, confianza, permisos ni credenciales)",
+  "Destructive": "NONE: la sonda es de solo lectura y no escribe en repositorios ni en la configuración",
+  "NewOVScenario": "NONE: la matriz OV y los escenarios OV-I62 no cambian (§8)",
+  "OVRemovalOrReassignment": "NONE: no se retira ningún escenario y D.4/D.5 conservan su texto (§8)",
+  "OwnerPolicyChoice": "NONE para el acuerdo: OD-2-MAT es una decisión del Owner aparte y PENDIENTE, que A-3 referencia sin resolver. Los requisitos de la regla 11, c) son mínimos que la A-n ordenada por el Owner puede sustituir según LIFECYCLE §6 (precisión O1)",
+  "NewOwnerAuthority": "NONE: la autorización expresa del Owner para una sonda con la huella sin aceptar (regla 3) usa la autoridad que el Owner ya ejerció en OD-2b-PROBE y OD-2d-PROBE; no crea ninguna",
+  "FingerprintAcceptance": "NONE: A-3 no acepta huellas; OD-2 exacta sigue siendo del Owner (reglas 9 y 11, a)",
+  "ConfigurationValueReading": "NONE: A-3 no lee valores ni autoriza leerlos y no pide ninguna autorización (regla 11, a y b)",
+  "OwnerDecisionRequired": false
+ },
+ "IfAgreed": {
+  "A3DeltaAgreed": true,
+  "Rule11Agreed": true,
+  "NoOwnerDecisionRequired": true,
+  "NoChangeToProtectedSurfaces": true,
+  "ScopeConfirmed": true,
+  "SuitableForCoordinatorAgreement": true
+ },
+ "KnownLimitations": [
+  "Sin Bash ni git: no calculé el HEAD del clon ni los blobs del objeto (ea6721f7…) y del anexo (f410f7fc…); son los que verificó el invocador. El del objeto coincide con la orden, con G5b y con el self-test.",
+  "No ejecuté las guardas: G1-G5 y G5b se evalúan por lectura del código y de los resultados custodiados. La privacidad frente a las identidades del host, la salida de G4 y la suite de RackCad no las verifiqué de forma independiente.",
+  "Líneas no leídas: objeto L1486-1487 (la 1487 llega truncada, según la orden) y paquete OD-2-MAT L70 (truncada). No las cito como premisa.",
+  "Insumos del cierre no leídos o leídos solo en parte, para limitar el contexto y evitar una compactación: maf-codex.md (no leído); od2-evolution.md y el anexo (solo Grep); A-1; Freeze; AUTOMATION_PLAN; routing.md; descriptores; esquemas; model-catalog.md; evidencia §64-§87; y V14 §1, §4.2, §10, §13, §18, §20.x y Anexo C. Para esas cláusulas me apoyé en los literales de A-3 §2, que G1 custodiado da como fieles (103 literales), y en unos 30 contrastes sobre las líneas que sí leí.",
+  "El anexo y la investigación son no normativos y no los revisé a fondo. Mi conclusión sobre OD-2-MAT se apoya en el paquete del Owner (leído salvo L70) y en A-3 §3.9 y §8.",
+  "No conozco mi effort ni el identificador de sesión del runtime (ver ReviewerDeclaredIdentity)."
+ ],
+ "RecommendedNextAction": "Que el Coordinator emita su veredicto sobre la A-3 exacta (blob ea6721f78cb63fbc4f9d99563f3262eb36a32c5d, anexo f410f7fc…) y registre el acuerdo de forma append-only, sin editar A-3. Los opcionales A62-A3-O1..O4 se documentan sin modificar el objeto, como se hizo con A-2 (O4..O6), y se aplican en la materialización o en la A-n siguiente: O1 (salvedad de autoridad del Owner en la regla 11, c), O2 (M-02 con ConsumptionCovered y CatalogVerifiedOn), O3 (alcance de «no cuenta como cambio») y O4 (vector de sucesión encadenada con reversión en C-43). Decidir Q-A3-02 (momento de la materialización con un MC_I62 nuevo) y Q-A3-11 (C-43 como fila del Anexo C). Hasta la materialización, A-3 no tiene efecto en las unidades I62. OD-2-MAT sigue como decisión del Owner aparte y PENDIENTE, OD-2 sigue siendo exacta y codex-cli sigue en STOP P-01 hasta la OD-2 exacta, según §58."
+}

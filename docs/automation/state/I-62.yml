@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §60; evidencia §98) — FX-04a/C-25a PASS; FX-02: solicitud única de desbloqueo (U-06..U-28, U-68, U-71 b) y candidata A-4 (F6-OBS-03 V1 + huecos H-1..H-3) esperan al Coordinator (A-4 con revisión formal por claude-cli) y dos líneas de consumo del Owner tras el acuerdo; revisión formal de A-3 por claude-cli, intento 2 en curso; codex-cli sin trabajo ordinario; sin F6 GATE PASS"
+  next_action: "F6 (decisiones §60; evidencia §99) — A-3: revisión formal por claude-cli AGREED (0 REQUIRED, 4 OPTIONAL), auditor ACCREDITED; veredicto del Coordinator pendiente; FX-04a/C-25a PASS; FX-02: solicitud única y candidata A-4 esperan al Coordinator; codex-cli sin trabajo ordinario; sin F6 GATE PASS"
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual
