@@ -1,0 +1,130 @@
+{
+ "Transcript": "%USERPROFILE%/.claude/projects/D--Documentos-Codex-Calculadora-de-racks/e5124bf0-ed19-48a1-97ba-574baf9d33a2/subagents/agent-accda92614b26d553.jsonl",
+ "TranscriptSha256": "5ff109b40ef05b9d1f0db2672ea2769addb4ad740c4b27b7e5b6df95e853eb2a",
+ "Clone": "D:\\r62-arch-a3",
+ "Filter": null,
+ "Command": "python read_fidelity.py <transcript> D:\\r62-arch-a3 492885254b58203f0bc0099345db2998b25d2a2b <output json>",
+ "Rev": "492885254b58203f0bc0099345db2998b25d2a2b",
+ "Calls": [
+  {
+   "Path": "docs/initiatives/I-62-architect-package-A-3.md",
+   "Offset": null,
+   "Limit": null,
+   "Lines": 209,
+   "Faithful": 209,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-3.md",
+   "Offset": 1,
+   "Limit": 300,
+   "Lines": 300,
+   "Faithful": 300,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-3.md",
+   "Offset": 301,
+   "Limit": 300,
+   "Lines": 300,
+   "Faithful": 300,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-3.md",
+   "Offset": 601,
+   "Limit": 300,
+   "Lines": 300,
+   "Faithful": 300,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-3.md",
+   "Offset": 901,
+   "Limit": 300,
+   "Lines": 300,
+   "Faithful": 300,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-3.md",
+   "Offset": 1201,
+   "Limit": 286,
+   "Lines": 0,
+   "Faithful": 0,
+   "Altered": [],
+   "Unparsed": 1,
+   "Status": "EMPTY"
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-3.md",
+   "Offset": 1488,
+   "Limit": 49,
+   "Lines": 49,
+   "Faithful": 49,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-3.md",
+   "Offset": 1201,
+   "Limit": 130,
+   "Lines": 130,
+   "Faithful": 130,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-3.md",
+   "Offset": 1331,
+   "Limit": 156,
+   "Lines": 156,
+   "Faithful": 156,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A3/a3-guards-result.json",
+   "Offset": 1,
+   "Limit": 80,
+   "Lines": 80,
+   "Faithful": 80,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A3/a3-guards-result.json",
+   "Offset": 3636,
+   "Limit": 21,
+   "Lines": 21,
+   "Faithful": 21,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  }
+ ],
+ "Summary": {
+  "Calls": 11,
+  "Faithful": 10,
+  "Degraded": 0,
+  "DeliveredLinesByPath": {
+   "docs/automation/evidence/I-62-A3/a3-guards-result.json": 101,
+   "docs/initiatives/I-62-A-3.md": 1535,
+   "docs/initiatives/I-62-architect-package-A-3.md": 209
+  }
+ }
+}

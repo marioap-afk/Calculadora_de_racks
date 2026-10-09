@@ -1,0 +1,45 @@
+I-62 — COORDINATOR DISPOSITION §58
+F6 RECOVERY + A-3 FORMAL REVIEW
+1. B3 / FX-04a
+B3 = AUTORIZADA bajo A2-P1, condicionada a B3-CONSUMO = A del Owner.
+Una sola repetición extraordinaria. Usar exclusivamente el clon B3 preparado, con origen congelado en QH2, oráculo v2 inalterado y kickoff completo leído desde archivo.
+Verificar SHA del mensaje inicial, aislamiento D.6, presupuesto e identidad de la sesión antes de admitir la corrida.
+No autorizar B4.
+2. Bloque Codex
+BLOQUE-CODEX = AUTORIZADO bajo A2-P2, condicionado a BLOQUE-CODEX-CONSUMO = A del Owner.
+Identidad exacta:
+BinaryHash = 3553cd6e7df5a093d8cb8301cd8088a57e0971aba71ddbe0e67f7f44a15cdf68
+AppVersion = 26.1002.7124.0
+Fingerprint inicial = 6518EFAB0BC0C0C2C2C5DCCD3A3D3646DFDC9F15B222FD6B744CBC84B857DB32
+Máximo dos sondas read-only:
+
+* Controller: gpt-6-luna/high, caracterización en D:\r62-fixture\A.
+* Architect: gpt-6.1-sol/high, D:\r62-fixture\arch.
+
+No leer valores de configuración ni calcular digests por clave.
+Comprobar huella exacta, estructura saneada, binario y versión antes y después de cada operación.
+Una actualización o cambio de huella invalida el bloque. STOP, sin reutilizar la autorización para otra identidad.
+Tras las sondas, solicitar OD-2 exacta al Owner antes de trabajo ordinario de codex-cli.
+3. A-3
+Autorizar una revisión formal independiente por claude-cli sobre el objeto exacto:
+docs/initiatives/I-62-A-3.md
+blob ea6721f78cb63fbc4f9d99563f3262eb36a32c5d
+Preparar/custodiar el paquete, clausura de insumos, auditor y preflight sobre la versión exacta.
+Invocar automáticamente un Architect elegible, read-only, con Actor/Session/Context independientes.
+No modificar A-3 tras lanzar la revisión.
+No declarar A-3 AGREED anticipadamente.
+No aplicar cambios de producción ni invalidar MC_I62.
+4. OD-2-MAT
+Materia reservada al Owner. No decidir ni inferir su preferencia.
+Hasta decisión nueva, OD-2 sigue utilizando hash exacto.
+No introducir la línea base material B/C ni leer valores de configuración.
+La alternativa de CODEX_HOME dedicado puede permanecer como investigación posterior; no debe bloquear F6.
+5. Priorización
+Primero recoger las autorizaciones Owner de B3 y Codex en una sola respuesta.
+Con B3 autorizada, ejecutar su ensayo sin esperar la revisión de A-3.
+Con Codex autorizado, ejecutar las sondas y solicitar OD-2 exacta.
+En paralelo, lanzar la revisión de A-3 por Claude CLI y continuar la preparación independiente de F7.
+No usar al Owner como bus de mensajes entre roles.
+6. Entrega
+Informar los resultados de B3, el bloque Codex, la revisión A-3, los cambios de identidad del runtime y las siguientes acciones humanas estrictamente necesarias.
+F6 GATE PASS, FINAL_CANDIDATE e I-64 siguen sujetos a sus condiciones vigentes.

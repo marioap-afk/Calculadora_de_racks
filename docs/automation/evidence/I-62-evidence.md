@@ -3017,3 +3017,18 @@ solo desde artefactos custodiados.
   Vías: V1 (A-n con la ruta explícita y medida del Controller, y el Architect por `claude-cli`), V2 (los dos roles por `claude-cli`), V3 (esperar una
   actualización de la CLI) y V4 (FX-02 UNVERIFIED). Propuesta de la preparación: V1 y, en paralelo, V3.
 - **FX-02** sigue pendiente además de las disposiciones del grupo (b) (U-06..U-28 y U-68), que van en una sola solicitud con propuestas.
+
+## 96. A-3: kit de la revisión formal por `claude-cli` custodiado antes del lanzamiento (R20261009T040327Z-58a1; decisiones §58, punto 3, y §60, punto 0)
+
+- **Kit:** [R20261009T040327Z-58a1](I-62-architect-A-3/R20261009T040327Z-58a1/README.md). Contiene:
+  - objeto exacto: A-3 `ea6721f7` y anexo `f410f7fc`, en el recibo `49288525`;
+  - cierre de 27 archivos canónicos y 4 del run;
+  - prompt de 23 252 bytes (`21230612…`) y esquema adaptado a A-3;
+  - auditor v5.1-a3, con `selftest` 107/107 y 127 mutantes eliminados;
+  - compuerta de transporte MEASURED sobre la caracterización `20d0de2c…`;
+  - clon `D:62-arch-a3` verificado (AllChecks) y run `D:62-arch-a3-run` con cuatro archivos;
+  - ensayo en seco de `launch.py`: 8 de 10 comprobaciones en Ok, ninguna bloqueante (la 4 y la 5 ejecutarían el binario).
+- **Transporte:** `claude-cli` 2.1.293, el mismo binario medido (`8693c4a0…`), `claude-opus-5-5` xhigh, solo Read, Grep y Glob, tope de 7 200 s,
+  una invocación sin reintento.
+- **Consumo:** cubierto por la línea del Owner CLAUDE-CLI-I62 = A, la misma base que la re-revisión de A-2.
+- **Estado:** custodiado y NO lanzado. A-3 no se modifica a partir de ahora.

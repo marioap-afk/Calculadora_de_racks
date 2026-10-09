@@ -1,0 +1,1945 @@
+{
+ "Schema": "rackcad-input-closure/v1 (representación experimental; Proposal V14 §20.3.1; no autoridad normativa: rigen I-61 y LIFECYCLE)",
+ "Ids": {
+  "RunId": "R20261009T040327Z-58a1",
+  "InvocationId": "I20261009T040327Z-58a1",
+  "LogicalReviewRequestId": "L20261009T040327Z-58a1",
+  "AttemptSeq": 1
+ },
+ "AuthorityRevision": "492885254b58203f0bc0099345db2998b25d2a2b",
+ "ObjectIntroducedBy": "91e29886a4870dd673372c66453d76ea503a22b9",
+ "PublicationBase": "76b48e785d87af5591f4363246751b7eb1182506",
+ "PreparationBase": "b088421649204742ff682e1eb1ebdafc762823d0",
+ "ObjectPath": "docs/initiatives/I-62-A-3.md",
+ "ObjectBlob": "ea6721f78cb63fbc4f9d99563f3262eb36a32c5d",
+ "AnnexPath": "docs/initiatives/I-62-A-3-annex-maf-codex.md",
+ "AnnexBlob": "f410f7fced25440be3866473974f417d2f6a9b50",
+ "PackagePath": "docs/initiatives/I-62-architect-package-A-3.md",
+ "PublicationReceipt": {
+  "Commit": "492885254b58203f0bc0099345db2998b25d2a2b",
+  "PublicationCommit": "91e29886a4870dd673372c66453d76ea503a22b9",
+  "Placeholders": {
+   "<A3_BLOB>": {
+    "Path": "docs/initiatives/I-62-A-3.md",
+    "Blob": "ea6721f78cb63fbc4f9d99563f3262eb36a32c5d"
+   },
+   "<ANNEX_BLOB>": {
+    "Path": "docs/initiatives/I-62-A-3-annex-maf-codex.md",
+    "Blob": "f410f7fced25440be3866473974f417d2f6a9b50"
+   },
+   "<DEC_BLOB>": {
+    "Path": "docs/automation/decisions/I-62.md",
+    "Blob": "27591f161aabb2de30610b0d17341597fd2a4079"
+   },
+   "<EV_BLOB>": {
+    "Path": "docs/automation/evidence/I-62-evidence.md",
+    "Blob": "6855110a61b70a5ceb7e3928b5de4671cb6af7d6"
+   },
+   "<GUARDS_BLOB>": {
+    "Path": "docs/automation/evidence/I-62-A3/a3-guards.py",
+    "Blob": "215b2e43e40c67bc8d47cbfc5ccc3814b80451ea"
+   },
+   "<SELFTEST_BLOB>": {
+    "Path": "docs/automation/evidence/I-62-A3/a3-selftest.json",
+    "Blob": "38a79ca082617781e1332daa3a4d127cb433dacc"
+   }
+  },
+  "Note": "el paquete fija los blobs del objeto, del anexo, de decisiones, de la evidencia, de las guardas y del self-test con marcadores que resuelve el recibo de publicación; el kit los resuelve con los blobs del commit del recibo"
+ },
+ "PreviousObject": null,
+ "PriorFormalFindings": "ninguno: no hay revisión formal anterior de A-3; las rondas adversariales de A-3 §12 son internas y no son hallazgos formales",
+ "Harness": "docs/automation/evidence/I-62-A3/a3-guards.py",
+ "HarnessExecution": "ninguna por el revisor: no tiene herramientas de ejecución; lee el código y los resultados custodiados (a3-selftest.json y a3-guards-result.json)",
+ "FocusItems": 8,
+ "FocusSource": "paquete §4, preguntas 1, 2, 3, 4, 5, 6, 7, 8 (la 9 son las Q-A3 de A-3 §9)",
+ "QuestionIds": [
+  "Q-A3-01",
+  "Q-A3-02",
+  "Q-A3-03",
+  "Q-A3-04",
+  "Q-A3-05",
+  "Q-A3-06",
+  "Q-A3-07",
+  "Q-A3-08",
+  "Q-A3-09",
+  "Q-A3-10",
+  "Q-A3-11",
+  "Q-A3-12",
+  "Q-A3-13",
+  "Q-A3-14",
+  "Q-A3-15",
+  "Q-A3-16",
+  "Q-A3-17",
+  "Q-A3-18",
+  "Q-A3-19",
+  "Q-A3-20",
+  "Q-A3-21",
+  "Q-A3-22"
+ ],
+ "QuestionRows": {
+  "Q-A3-01": 1225,
+  "Q-A3-02": 1226,
+  "Q-A3-03": 1227,
+  "Q-A3-04": 1228,
+  "Q-A3-05": 1229,
+  "Q-A3-06": 1230,
+  "Q-A3-07": 1231,
+  "Q-A3-08": 1232,
+  "Q-A3-09": 1233,
+  "Q-A3-10": 1234,
+  "Q-A3-19": 1235,
+  "Q-A3-20": 1236,
+  "Q-A3-21": 1237,
+  "Q-A3-22": 1238,
+  "Q-A3-11": 1239,
+  "Q-A3-12": 1240,
+  "Q-A3-13": 1241,
+  "Q-A3-14": 1242,
+  "Q-A3-15": 1243,
+  "Q-A3-16": 1244,
+  "Q-A3-17": 1245,
+  "Q-A3-18": 1246
+ },
+ "WithdrawnQuestions": [
+  "Q-A3-19",
+  "Q-A3-22"
+ ],
+ "QuestionSource": "A-3 §9 (paquete §1: disposición de Q-A3-01..Q-A3-22; A-3 marca Q-A3-19 y Q-A3-22 como retiradas y el paquete pide disponer las 22)",
+ "Transport": {
+  "Adapter": "claude-cli",
+  "Binary": {
+   "Path": "%APPDATA%\\Claude\\claude-code\\2.1.293\\83cb0bd7fed4\\claude.exe",
+   "Sha256": "8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa",
+   "Version": "2.1.293 (Claude Code)",
+   "Authenticode": "Valid; CN=\"Anthropic, PBC\""
+  },
+  "Model": "claude-opus-5-5",
+  "Effort": "xhigh",
+  "Flags": [
+   "-p",
+   "--model",
+   "claude-opus-5-5",
+   "--effort",
+   "xhigh",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--safe-mode",
+   "--strict-mcp-config",
+   "--no-chrome",
+   "--tools",
+   "Read,Grep,Glob",
+   "--permission-mode",
+   "dontAsk",
+   "--permission-prompts",
+   "none"
+  ],
+  "AddDir": [
+   "--add-dir",
+   "D:\\r62-arch-a3-run"
+  ],
+  "SessionId": "ae3590eb-b508-4949-84da-8aa7340df993",
+  "Cwd": "D:\\r62-arch-a3",
+  "ArgsTemplate": [
+   "-p",
+   "--model",
+   "claude-opus-5-5",
+   "--effort",
+   "xhigh",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--safe-mode",
+   "--strict-mcp-config",
+   "--no-chrome",
+   "--tools",
+   "Read,Grep,Glob",
+   "--permission-mode",
+   "dontAsk",
+   "--permission-prompts",
+   "none",
+   "--add-dir",
+   "<add-dir>",
+   "--session-id",
+   "<session-id>",
+   "--json-schema",
+   "<json-schema>"
+  ],
+  "AddDirStatus": "no medido en C1; medido en C3 de la caracterización R20261008T183600Z-char sobre la plantilla exacta con marcadores (decisiones §56, punto 7; §57, punto 3): kit/transport-gate.json se entrega en MEASURED con el SHA-256 del registro fijado; launch.py vuelve a evaluar la compuerta y el auditor la re-evalúa sobre las copias de launch/",
+  "Gate": "kit/transport-gate.json (transport_gate.py)",
+  "Stdin": "prompt.md del run (bytes literales)",
+  "JsonSchema": "kit/result.schema.json en forma compacta: json.dumps(separators=(',', ':'), ensure_ascii=True)",
+  "ExpectedInit": {
+   "tools": [
+    "Glob",
+    "Grep",
+    "Read",
+    "StructuredOutput"
+   ],
+   "permissionMode": "dontAsk",
+   "mcp_servers": [],
+   "claude_code_version": "2.1.293"
+  },
+  "TranscriptPath": "%USERPROFILE%\\.claude\\projects\\D--r62-arch-a3\\ae3590eb-b508-4949-84da-8aa7340df993.jsonl",
+  "LaunchDir": "D:\\r62-arch-a3-run\\launch (preflight.json, transport-characterization.json, transport-acceptance.json solo en ACCEPTED, stdout.jsonl, stderr.txt y run.json)",
+  "TimeoutSeconds": 7200,
+  "Characterization": "claude-cli-characterization.json de R20261008T183600Z-char (decisiones §56, punto 7; aceptada como evidencia de elegibilidad vigente en decisiones §57, punto 3): C1 completada, C2 cancelada por terminación, C3 PASS sobre la plantilla con --add-dir"
+ },
+ "RunDir": "D:\\r62-arch-a3-run",
+ "RunFiles": [
+  "order.txt",
+  "prompt.md",
+  "order-s56.txt",
+  "order-s57.txt"
+ ],
+ "PremiseRunFiles": [
+  "order.txt",
+  "order-s56.txt",
+  "order-s57.txt"
+ ],
+ "RunFileHashes": {
+  "order.txt": {
+   "Bytes": 2767,
+   "Lines": 45,
+   "Sha256": "3ed7e135eb914a7307bdc83bd9da6cf4dd4cf68aadc3e04d71a619e82b709a1c",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": false
+   },
+   "Source": "cuerpo exacto pegado por el Owner de la disposición §58 del Coordinator (2 767 bytes; SHA-256 3ed7e135…); es la autoridad de esta revisión (punto 3); no está en el clon: decisiones §58 se registró después del recibo",
+   "PremiseAllowed": true,
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 45
+    }
+   ]
+  },
+  "prompt.md": {
+   "Bytes": 23252,
+   "Lines": 256,
+   "Sha256": "21230612113c17a2fc3bb68a18d7020c51eb88f525437ef0faaf36d2faea8917",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": false
+   },
+   "Source": "copia de kit/prompt.md; stdin literal del proceso claude-cli; nunca es premisa",
+   "PremiseAllowed": false,
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 256
+    }
+   ]
+  },
+  "order-s56.txt": {
+   "Bytes": 8562,
+   "Lines": 364,
+   "Sha256": "e8b003284843374ba1e8497434f375f3206da2cd9a9829f2f451ff73af06b081",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": false
+   },
+   "Source": "texto fijo de la orden §56 del Coordinator (8 562 bytes; SHA-256 e8b00328…, declarado en decisiones §56 del commit); su numeración es la que citan A-3 y el paquete («orden, punto n»; puntos 11-17 = A-3)",
+   "PremiseAllowed": true,
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 364
+    }
+   ],
+   "IdentityCheck": {
+    "DecisionsSection": "§56",
+    "Sha256DeclaredInDecisions": true,
+    "BytesDeclaredInDecisions": 8562
+   }
+  },
+  "order-s57.txt": {
+   "Bytes": 3654,
+   "Lines": 53,
+   "Sha256": "00a13ae527863117472bc7356458c849a8ef6f6e6255b417ee736dc3428023a3",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": false
+   },
+   "Source": "texto fijo de la orden §57 del Coordinator (3 654 bytes; SHA-256 00a13ae5…, declarado en decisiones §57 del commit); el punto 4 amplía A-3 (MATERIAL_ADAPTER_FINGERPRINT)",
+   "PremiseAllowed": true,
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 53
+    }
+   ],
+   "IdentityCheck": {
+    "DecisionsSection": "§57",
+    "Sha256DeclaredInDecisions": true,
+    "BytesDeclaredInDecisions": 3654
+   }
+  }
+ },
+ "RunCustody": "el auditor compara el SHA-256 de cada archivo del run con RunFileHashes y con la copia del kit; el directorio del run solo admite esos cuatro archivos y, después del lanzamiento, el subdirectorio launch/, que solo admite los archivos que escribe launch.py",
+ "IdentityVerification": "el revisor no ejecuta git: el invocador verifica el clon antes del lanzamiento (verify_clone.py → clone-verification.json) y el auditor v5.1 lo vuelve a verificar después (HEAD, rama única, sin remotos, árbol limpio con ignorados, blobs designados); el revisor contrasta lo que puede leer: order.txt, la cabecera del paquete, a3-guards-result.json (Head, G3 y G5b) y a3-selftest.json (A3Text y A3TextBlob)",
+ "CanonicalInputs": [
+  {
+   "Path": "docs/initiatives/I-62-A-3.md",
+   "Blob": "ea6721f78cb63fbc4f9d99563f3262eb36a32c5d",
+   "Bytes": 200993,
+   "Lines": 1536,
+   "Sha256": "60da873139c21bd7aada074d4921c1798d6b528a82ed397e2bdf5855213fa36e",
+   "LinesOver2000Chars": [
+    1487
+   ],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "<A3_BLOB>",
+   "Why": "objeto de la revisión: A-3 entera (paquete §2: alcance, literales con líneas, clase, delta (reglas 1-11), cota, predicado, resultados, OD-2, composición con A-2, guardas, huella material, antes y después, obligaciones y pruebas, materialidad, no impacto, consecuencias del Owner, preguntas, veredictos y registro de la revisión previa)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 1536
+    },
+    {
+     "Section": "cabecera (bloque de identidad)",
+     "Start": 1,
+     "End": 62
+    },
+    {
+     "Section": "## 1. Alcance",
+     "Start": 64,
+     "End": 120
+    },
+    {
+     "Section": "## 2. Cláusulas afectadas (literales)",
+     "Start": 122,
+     "End": 658
+    },
+    {
+     "Section": "### 2.1 V14: cláusulas cuya lectura rige A-3 (sin cambio de texto)",
+     "Start": 148,
+     "End": 283
+    },
+    {
+     "Section": "### 2.2 Textos F3 materializados e inactivos que A-3 gobierna (este registro no los cambia)",
+     "Start": 285,
+     "End": 479
+    },
+    {
+     "Section": "### 2.3 Esquemas y catálogo (este registro no los cambia)",
+     "Start": 481,
+     "End": 526
+    },
+    {
+     "Section": "### 2.4 Lecturas del Coordinator y decisiones del Owner que A-3 conserva o acota",
+     "Start": 528,
+     "End": 564
+    },
+    {
+     "Section": "### 2.5 A-2 (A2-P2): texto que A-3 no modifica",
+     "Start": 566,
+     "End": 606
+    },
+    {
+     "Section": "### 2.6 Huella, actualizaciones medidas y autoridad del Owner (regla 11; se conservan)",
+     "Start": 608,
+     "End": 658
+    },
+    {
+     "Section": "## 3. Delta",
+     "Start": 660,
+     "End": 1090
+    },
+    {
+     "Section": "### 3.1 `RUNTIME_COMPATIBILITY_CLASS`",
+     "Start": 662,
+     "End": 701
+    },
+    {
+     "Section": "### 3.2 Delta exacto",
+     "Start": 703,
+     "End": 841
+    },
+    {
+     "Section": "### 3.3 La sonda, acotada",
+     "Start": 843,
+     "End": 855
+    },
+    {
+     "Section": "### 3.4 Predicado de compatibilidad",
+     "Start": 857,
+     "End": 902
+    },
+    {
+     "Section": "### 3.5 Resultados y fallo cerrado",
+     "Start": 904,
+     "End": 918
+    },
+    {
+     "Section": "### 3.6 Interacción con OD-2",
+     "Start": 920,
+     "End": 940
+    },
+    {
+     "Section": "### 3.7 Composición con A-2 (A2-P2), acordada, que A-3 no modifica",
+     "Start": 942,
+     "End": 977
+    },
+    {
+     "Section": "### 3.8 Guardas mecánicas",
+     "Start": 979,
+     "End": 1030
+    },
+    {
+     "Section": "### 3.9 Huella material del adapter (`MATERIAL_ADAPTER_FINGERPRINT`, regla 11)",
+     "Start": 1032,
+     "End": 1090
+    },
+    {
+     "Section": "## 4. Semántica antes y después",
+     "Start": 1092,
+     "End": 1123
+    },
+    {
+     "Section": "## 5. Efecto en obligaciones y pruebas (todas del gate que materialice A-3; ninguna se ejecuta ahora)",
+     "Start": 1125,
+     "End": 1146
+    },
+    {
+     "Section": "## 6. Materialidad (M-01..M-08)",
+     "Start": 1148,
+     "End": 1159
+    },
+    {
+     "Section": "## 7. No cambia producción ni la semántica de F4",
+     "Start": 1161,
+     "End": 1195
+    },
+    {
+     "Section": "## 8. Consecuencias reservadas al Owner",
+     "Start": 1197,
+     "End": 1219
+    },
+    {
+     "Section": "## 9. Preguntas para la revisión (no forman parte del delta)",
+     "Start": 1221,
+     "End": 1246
+    },
+    {
+     "Section": "## 10. Evidencia",
+     "Start": 1248,
+     "End": 1279
+    },
+    {
+     "Section": "## 11. Veredictos",
+     "Start": 1281,
+     "End": 1290
+    },
+    {
+     "Section": "## 12. Registro de la revisión previa",
+     "Start": 1292,
+     "End": 1536
+    },
+    {
+     "Section": "§3.2, regla 1",
+     "Start": 711,
+     "End": 726
+    },
+    {
+     "Section": "§3.2, regla 2",
+     "Start": 727,
+     "End": 731
+    },
+    {
+     "Section": "§3.2, regla 3",
+     "Start": 732,
+     "End": 742
+    },
+    {
+     "Section": "§3.2, regla 4",
+     "Start": 743,
+     "End": 754
+    },
+    {
+     "Section": "§3.2, regla 5",
+     "Start": 755,
+     "End": 772
+    },
+    {
+     "Section": "§3.2, regla 6",
+     "Start": 773,
+     "End": 779
+    },
+    {
+     "Section": "§3.2, regla 7",
+     "Start": 780,
+     "End": 788
+    },
+    {
+     "Section": "§3.2, regla 8",
+     "Start": 789,
+     "End": 791
+    },
+    {
+     "Section": "§3.2, regla 9",
+     "Start": 792,
+     "End": 798
+    },
+    {
+     "Section": "§3.2, regla 10",
+     "Start": 799,
+     "End": 800
+    },
+    {
+     "Section": "§3.2, regla 11",
+     "Start": 801,
+     "End": 838
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-3-annex-maf-codex.md",
+   "Blob": "f410f7fced25440be3866473974f417d2f6a9b50",
+   "Bytes": 31336,
+   "Lines": 286,
+   "Sha256": "69b556b763565266488d265173671ff3c691d04f8a140649a3ce3eb9d447e15d",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "<ANNEX_BLOB>",
+   "Why": "anexo no normativo de la regla 11 para codex-cli (paquete §2)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 286
+    },
+    {
+     "Section": "## 1. Hechos medidos: tres actualizaciones automáticas",
+     "Start": 26,
+     "End": 42
+    },
+    {
+     "Section": "## 2. Qué neutraliza la receta 16.4 y qué no",
+     "Start": 44,
+     "End": 64
+    },
+    {
+     "Section": "## 3. Clasificación de los 107 nombres",
+     "Start": 66,
+     "End": 104
+    },
+    {
+     "Section": "## 4. Familias de seguridad, lanzamiento y confianza (clasificación de la investigación; requisito de A-3, regla 11, c, ",
+     "Start": 106,
+     "End": 126
+    },
+    {
+     "Section": "## 5. Las 9 claves cambiadas",
+     "Start": 128,
+     "End": 159
+    },
+    {
+     "Section": "## 6. Superficies materiales fuera de la huella actual",
+     "Start": 161,
+     "End": 178
+    },
+    {
+     "Section": "## 7. Propuesta no normativa para la A-n de OD-2-MAT: verificador local ciego al valor y EXP-MAF-01",
+     "Start": 180,
+     "End": 213
+    },
+    {
+     "Section": "## 8. Correspondencia entre las opciones del Owner y la regla 11",
+     "Start": 215,
+     "End": 237
+    },
+    {
+     "Section": "## 9. Preguntas abiertas (de la investigación)",
+     "Start": 239,
+     "End": 257
+    },
+    {
+     "Section": "## 10. Fuentes",
+     "Start": 259,
+     "End": 286
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-architect-package-A-3.md",
+   "Blob": "d289329d31f163739ea8e55f5a3ad3227a5cc62e",
+   "Bytes": 25935,
+   "Lines": 208,
+   "Sha256": "eef0d7a7c4d80a85197bc61905e2a82510df282595dcf5c9cc3f60a633e22b34",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "(el paquete no lleva su propio blob)",
+   "Why": "paquete de la revisión (cabecera e identidad exacta, veredicto pedido §1, insumos §2, resumen §3, preguntas §4, condiciones §5, §6)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 208
+    },
+    {
+     "Section": "cabecera (bloque de identidad)",
+     "Start": 1,
+     "End": 40
+    },
+    {
+     "Section": "nota «Identidad exacta»",
+     "Start": 37,
+     "End": 37
+    },
+    {
+     "Section": "## 1. Veredicto que se solicita (LIFECYCLE §5 y §6)",
+     "Start": 42,
+     "End": 61
+    },
+    {
+     "Section": "## 2. Lectura (insumos canónicos)",
+     "Start": 63,
+     "End": 90
+    },
+    {
+     "Section": "## 3. Resumen del delta",
+     "Start": 92,
+     "End": 147
+    },
+    {
+     "Section": "## 4. Preguntas para la revisión",
+     "Start": 149,
+     "End": 177
+    },
+    {
+     "Section": "## 5. Condiciones de la invocación",
+     "Start": 179,
+     "End": 200
+    },
+    {
+     "Section": "## 6. Lo que este paquete no hace",
+     "Start": 202,
+     "End": 208
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A3/od2-material-baseline-owner-packet.md",
+   "Blob": "b2c8ec8a295188d05c0e07d153442f9268aaa20e",
+   "Bytes": 22924,
+   "Lines": 133,
+   "Sha256": "e1e325bbac63ecc7a8378f045960f466df089a8d872de801c07c6240059f6602",
+   "LinesOver2000Chars": [
+    70
+   ],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "b2c8ec8a295188d05c0e07d153442f9268aaa20e",
+   "Why": "paquete de la decisión del Owner OD-2-MAT, PENDIENTE (paquete §2)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 133
+    },
+    {
+     "Section": "## Respuesta en una línea",
+     "Start": 42,
+     "End": 54
+    },
+    {
+     "Section": "## OD-2-MAT — Línea base material frente a huella exacta",
+     "Start": 56,
+     "End": 92
+    },
+    {
+     "Section": "## Lectura de valores (no se pide ahora)",
+     "Start": 94,
+     "End": 133
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A3/od2-evolution.md",
+   "Blob": "3b8dc62039210a48c26674c3c964466192b8b31e",
+   "Bytes": 39607,
+   "Lines": 431,
+   "Sha256": "a966ad46dfb75b05cec483ace28cf454751d35b5203ab558b7d89882399304da",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "3b8dc62039210a48c26674c3c964466192b8b31e",
+   "Why": "investigación de la evolución de OD-2 (paquete §2)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 431
+    },
+    {
+     "Section": "## 0. Conclusiones",
+     "Start": 36,
+     "End": 62
+    },
+    {
+     "Section": "## 1. Qué es OD-2 hoy",
+     "Start": 64,
+     "End": 158
+    },
+    {
+     "Section": "## 2. Qué cambia en cada actualización de Codex",
+     "Start": 160,
+     "End": 210
+    },
+    {
+     "Section": "## 3. ¿Puede OD-2 pasar a una línea base material verificable?",
+     "Start": 212,
+     "End": 283
+    },
+    {
+     "Section": "## 4. ¿Modifica autoridad reservada al Owner? — **SÍ**",
+     "Start": 285,
+     "End": 331
+    },
+    {
+     "Section": "## 5. Freeze, vehículo y materialidad",
+     "Start": 333,
+     "End": 396
+    },
+    {
+     "Section": "## 6. Efecto en A-3 (candidata) y en A-2 (AGREED)",
+     "Start": 398,
+     "End": 404
+    },
+    {
+     "Section": "## 7. Lo que no cambia mientras el Owner no decida",
+     "Start": 406,
+     "End": 411
+    },
+    {
+     "Section": "## 8. Límites de esta investigación",
+     "Start": 413,
+     "End": 421
+    },
+    {
+     "Section": "## 9. Fuentes externas (documentación pública del proveedor; consultadas sin enviar datos locales)",
+     "Start": 423,
+     "End": 431
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A3/maf-codex.md",
+   "Blob": "a297efb2078931965ea15e14e05162cfb14dcbd8",
+   "Bytes": 63738,
+   "Lines": 579,
+   "Sha256": "3bb9e8ee6d02a9b98c396c8481486d6e576e8597d82b893c7e54cf28e674be56",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "a297efb2078931965ea15e14e05162cfb14dcbd8",
+   "Why": "investigación de la huella material (paquete §2)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 579
+    },
+    {
+     "Section": "## 0. Conclusiones",
+     "Start": 31,
+     "End": 69
+    },
+    {
+     "Section": "## 1. Orden y frontera de esta investigación",
+     "Start": 71,
+     "End": 84
+    },
+    {
+     "Section": "## 2. Autoridades que fijan la frontera actual (literales)",
+     "Start": 86,
+     "End": 114
+    },
+    {
+     "Section": "## 3. Conducta de la receta 16.4 (hechos del proveedor)",
+     "Start": 116,
+     "End": 157
+    },
+    {
+     "Section": "## 4. Clasificación de los 107 nombres del archivo saneado",
+     "Start": 159,
+     "End": 205
+    },
+    {
+     "Section": "## 5. Las 9 claves cambiadas",
+     "Start": 207,
+     "End": 340
+    },
+    {
+     "Section": "## 6. Superficies materiales fuera de la huella actual",
+     "Start": 342,
+     "End": 363
+    },
+    {
+     "Section": "## 7. Mecanismo propuesto: MATERIAL_ADAPTER_FINGERPRINT",
+     "Start": 365,
+     "End": 456
+    },
+    {
+     "Section": "## 8. ¿Puede OD-2 evolucionar a una línea base material?",
+     "Start": 458,
+     "End": 516
+    },
+    {
+     "Section": "## 9. Reservado al Owner",
+     "Start": 518,
+     "End": 530
+    },
+    {
+     "Section": "## 10. Preguntas abiertas",
+     "Start": 532,
+     "End": 547
+    },
+    {
+     "Section": "## 11. Fuentes",
+     "Start": 549,
+     "End": 579
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa",
+   "Bytes": 342761,
+   "Lines": 3323,
+   "Sha256": "ab55ad4f4addef8455543ed06a4c60aa0a1901affc0ba3686146dfeedd9279af",
+   "LinesOver2000Chars": [
+    2352,
+    2380,
+    2382
+   ],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "34ad80ea",
+   "Why": "cláusulas cuya lectura rige A-3 (paquete §2): §1, §4.2, §5, §6 (ancla y fila), §7, §10, §13 (P-11, P-22..P-24), §18 (OD-2 y L977), §20.3, §20.5.1, B.2, B.3, B.4, B.5, Anexo C (C-06..C-11, C-21, C-40, C-41), D.3 y D.4",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "## 1. Objetivo, no-objetivos y criterios de éxito",
+     "Start": 97,
+     "End": 130
+    },
+    {
+     "Section": "### 4.2 `CONFIGURATION_STATUS` y disposición (D-04)",
+     "Start": 225,
+     "End": 260
+    },
+    {
+     "Section": "## 5. Binding (D-05)",
+     "Start": 262,
+     "End": 292
+    },
+    {
+     "Section": "## 6. Observación de capacidad y comprobaciones de relevo (D-06)",
+     "Start": 294,
+     "End": 304
+    },
+    {
+     "Section": "§6, fila de la observación de capacidad",
+     "Start": 300,
+     "End": 300
+    },
+    {
+     "Section": "§6, ancla («no una foto anterior.»)",
+     "Start": 304,
+     "End": 304
+    },
+    {
+     "Section": "## 7. Frontera de adapters (D-07)",
+     "Start": 306,
+     "End": 334
+    },
+    {
+     "Section": "## 10. Fuentes de introspección (D-11)",
+     "Start": 665,
+     "End": 682
+    },
+    {
+     "Section": "## 13. Semántica de fallo (D-13)",
+     "Start": 769,
+     "End": 793
+    },
+    {
+     "Section": "§13, fila P-11",
+     "Start": 777,
+     "End": 777
+    },
+    {
+     "Section": "§13, filas P-22..P-24",
+     "Start": 788,
+     "End": 790
+    },
+    {
+     "Section": "## 18. Owner Validation y decisiones del Owner",
+     "Start": 952,
+     "End": 977
+    },
+    {
+     "Section": "§18, fila OD-2",
+     "Start": 971,
+     "End": 971
+    },
+    {
+     "Section": "§18, L977 («El silencio no es decisión»)",
+     "Start": 977,
+     "End": 977
+    },
+    {
+     "Section": "### 20.3 Contrato neutral de invocación de rol (R62-AUTO-03, R62-AUTO-13)",
+     "Start": 1049,
+     "End": 1376
+    },
+    {
+     "Section": "#### 20.5.1 Materialización autorizada de bindings del Architect (A62-V9-01)",
+     "Start": 1461,
+     "End": 1519
+    },
+    {
+     "Section": "### B.2 Identidades y referencias",
+     "Start": 1815,
+     "End": 1835
+    },
+    {
+     "Section": "### B.3 Validación de `AdapterFacts`",
+     "Start": 1837,
+     "End": 1850
+    },
+    {
+     "Section": "### B.4 `rackcad-preflight/v1`",
+     "Start": 1852,
+     "End": 1869
+    },
+    {
+     "Section": "### B.5 `rackcad-binding/v1`",
+     "Start": 1871,
+     "End": 1884
+    },
+    {
+     "Section": "Anexo C, filas C-06..C-11",
+     "Start": 2343,
+     "End": 2348
+    },
+    {
+     "Section": "Anexo C, fila C-21",
+     "Start": 2360,
+     "End": 2360
+    },
+    {
+     "Section": "Anexo C, fila C-40",
+     "Start": 2380,
+     "End": 2380
+    },
+    {
+     "Section": "Anexo C, fila C-41",
+     "Start": 2381,
+     "End": 2381
+    },
+    {
+     "Section": "### D.3 Hoja de invocaciones y escenarios",
+     "Start": 2431,
+     "End": 2528
+    },
+    {
+     "Section": "### D.4 Resultados y cobertura",
+     "Start": 2530,
+     "End": 2554
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-1.md",
+   "Blob": "c01899a72b940503bb85a0fab42bc085c603fd0f",
+   "Bytes": 77984,
+   "Lines": 437,
+   "Sha256": "acd5db2665b436d830dd271375f0032d234b815d9b9b63cb7c3a2ed0b00e13f4",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "c01899a7",
+   "Why": "formato de una A-n acordada, con «Efecto en obligaciones y pruebas» (paquete §2)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "cabecera (formato de una A-n)",
+     "Start": 1,
+     "End": 56
+    },
+    {
+     "Section": "## 4. Materialidad (M-01..M-08)",
+     "Start": 229,
+     "End": 254
+    },
+    {
+     "Section": "## 5. Efecto en obligaciones y pruebas (todas de F4; ninguna se ejecuta ahora)",
+     "Start": 256,
+     "End": 279
+    },
+    {
+     "Section": "## 11. Veredictos",
+     "Start": 429,
+     "End": 437
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-2.md",
+   "Blob": "f1e1d6f08d3cf677500794c7d0019433a4dc7d4e",
+   "Bytes": 29957,
+   "Lines": 352,
+   "Sha256": "819bcc322cae6e70db0dacff553be9e4058a3c683e2d72d419bc41b52459903e",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "f1e1d6f0",
+   "Why": "A2-P2 acordada y L222-227 (paquete §2)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "cabecera (bloque de identidad)",
+     "Start": 1,
+     "End": 48
+    },
+    {
+     "Section": "## 3. A2-P2 — Nueva medición tras una actualización automática del runtime",
+     "Start": 179,
+     "End": 239
+    },
+    {
+     "Section": "### 3.3 Delta exacto",
+     "Start": 212,
+     "End": 239
+    },
+    {
+     "Section": "A2 L222-227 (A2-P2, reglas 3 y 4)",
+     "Start": 222,
+     "End": 227
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-consensus-freeze.md",
+   "Blob": "0f6b860837e2478db8525e1fb30a485bc4646816",
+   "Bytes": 7134,
+   "Lines": 113,
+   "Sha256": "71809873a89aafcb58883c507a42cc825a0c14cd70c84bda6d26fd0af9e9a4a4",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "0f6b8608",
+   "Why": "identidad del Freeze",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 113
+    }
+   ]
+  },
+  {
+   "Path": "docs/INITIATIVE_LIFECYCLE.md",
+   "Blob": "f19896a8f1a7c82f74bac7231636f68462a87271",
+   "Bytes": 24334,
+   "Lines": 360,
+   "Sha256": "93e9c6ca73460ae46ca896f4447d9f8b517624e0acbae82750d4ba613ff0b994",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "f19896a8",
+   "Why": "§3 (M-01..M-08, regla de duda, OWNER-RESERVED L94), §5 (REQUIRED) y §6 (formato y autoridades de una A-n, L221)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "## 3. Arquetipos y materialidad",
+     "Start": 66,
+     "End": 94
+    },
+    {
+     "Section": "L94 (OWNER-RESERVED)",
+     "Start": 94,
+     "End": 94
+    },
+    {
+     "Section": "## 5. Participacion del Architect",
+     "Start": 152,
+     "End": 191
+    },
+    {
+     "Section": "## 6. Consensus Freeze y enmiendas",
+     "Start": 193,
+     "End": 222
+    },
+    {
+     "Section": "L221 (autoridades de una A-n)",
+     "Start": 221,
+     "End": 221
+    }
+   ]
+  },
+  {
+   "Path": "docs/AUTOMATION_PLAN.md",
+   "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "Bytes": 155229,
+   "Lines": 1732,
+   "Sha256": "6dc9f5d5cb90b2242a8d21140674c0b88dc6472a36dd8c65dc988e8cac6a19f5",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "f525cb1e",
+   "Why": "16.4 (entrada L522-523 y receta L541-543), 16.9, 16.11, 16.14-16.16, 16.18-16.20 y 16.22 (paquete §2)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "### 16.4 Transporte, relevo, cesión y orden de commits",
+     "Start": 507,
+     "End": 543
+    },
+    {
+     "Section": "16.4, entrada (L522-523)",
+     "Start": 522,
+     "End": 523
+    },
+    {
+     "Section": "16.4, receta de Codex (L541-543)",
+     "Start": 541,
+     "End": 543
+    },
+    {
+     "Section": "### 16.9 Verificación: comprobaciones obligatorias y modos de fallo",
+     "Start": 620,
+     "End": 665
+    },
+    {
+     "Section": "### 16.11 Recuperación y condiciones STOP",
+     "Start": 674,
+     "End": 708
+    },
+    {
+     "Section": "16.14-16.16",
+     "Start": 930,
+     "End": 1006
+    },
+    {
+     "Section": "### 16.14 Vigencia de las partes I62",
+     "Start": 930,
+     "End": 948
+    },
+    {
+     "Section": "### 16.15 Perfil del Principal y autoverificación (I62)",
+     "Start": 950,
+     "End": 979
+    },
+    {
+     "Section": "### 16.16 `CONFIGURATION_STATUS` y disposición (I62)",
+     "Start": 981,
+     "End": 1006
+    },
+    {
+     "Section": "16.18-16.20",
+     "Start": 1015,
+     "End": 1142
+    },
+    {
+     "Section": "### 16.18 Observación de capacidad y comprobaciones de relevo (I62)",
+     "Start": 1015,
+     "End": 1041
+    },
+    {
+     "Section": "### 16.19 Frontera de adapters (I62)",
+     "Start": 1043,
+     "End": 1061
+    },
+    {
+     "Section": "### 16.20 Binding y aceptación (I62)",
+     "Start": 1063,
+     "End": 1142
+    },
+    {
+     "Section": "### 16.22 Aceptación del paquete y comprobaciones de la verificación (I62)",
+     "Start": 1182,
+     "End": 1209
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/agent-execution/README.md",
+   "Blob": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "Bytes": 60779,
+   "Lines": 756,
+   "Sha256": "2070e629151846afc90bb76348c47fc0ccd28fcfe5fbc9ad4e78959df93d8dc1",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "592dcfd4",
+   "Why": "§12-§14 (paquete §2)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "§12-§14",
+     "Start": 243,
+     "End": 531
+    },
+    {
+     "Section": "## 12. Autoverificación del Principal y `CONFIGURATION_STATUS` (unidades I62)",
+     "Start": 243,
+     "End": 285
+    },
+    {
+     "Section": "## 13. Observación de capacidad, preflight y saneamiento (unidades I62)",
+     "Start": 287,
+     "End": 367
+    },
+    {
+     "Section": "## 14. Binding, aceptación, independencia y comprobaciones (unidades I62)",
+     "Start": 369,
+     "End": 531
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/agent-execution/routing.md",
+   "Blob": "bba08fc4686d7192deeb559752636a467103b4b1",
+   "Bytes": 10294,
+   "Lines": 142,
+   "Sha256": "5a5d02bd9e3ae1979b891c418c1680dd600c1f9857b14852ef3ce733a44cd4ac",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "bba08fc4",
+   "Why": "§5, §8 y §9 (paquete §2)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "## 5. Elegibilidad de una celda",
+     "Start": 61,
+     "End": 81
+    },
+    {
+     "Section": "## 8. Requisitos por perfil y acción (unidades I62)",
+     "Start": 95,
+     "End": 119
+    },
+    {
+     "Section": "## 9. Binding por capacidad (unidades I62)",
+     "Start": 121,
+     "End": 142
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/agent-execution/adapters/codex-cli.md",
+   "Blob": "155f3469e345e2397fa26347a9cb52d6fdb91122",
+   "Bytes": 4333,
+   "Lines": 59,
+   "Sha256": "cf8a2d01e0e828c9fe56593228d5303ce1124ca30dd57ce3e091f81444ee4ec0",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "155f3469",
+   "Why": "descriptor de codex-cli (paquete §2; huella declarada en L30)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 59
+    },
+    {
+     "Section": "L30 (huella declarada)",
+     "Start": 30,
+     "End": 30
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/agent-execution/adapters/claude-cli.md",
+   "Blob": "ae570380509cacabf11f757a27573bf6fe616a36",
+   "Bytes": 2393,
+   "Lines": 52,
+   "Sha256": "0f184e1a4f2e5cc2cae7564eed4ba26452878dcb97ab5af87396a1327efe1bc0",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "ae570380",
+   "Why": "descriptor de claude-cli (paquete §2)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 52
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/preflight.v1.schema.json",
+   "Blob": "6a0540796a473e887677e5043d2105b932b5865f",
+   "Bytes": 14292,
+   "Lines": 535,
+   "Sha256": "30be5648d789e8ba8ac0cc05ddd1f47fbf61efcdbc2a559e6bad7d37c940f5b7",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "6a054079",
+   "Why": "esquema preflight/v1 (paquete §2)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 535
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/binding.v1.schema.json",
+   "Blob": "13501476b775ca18c4c61ba3e1793796b51067d9",
+   "Bytes": 18871,
+   "Lines": 759,
+   "Sha256": "6042b2ebed0de0c12e4a61cd731fc4a0bf214d87da85c04b8d440e18b13e5773",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "13501476",
+   "Why": "esquema binding/v1 (paquete §2)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 759
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/adapters/codex-cli.facts.v1.schema.json",
+   "Blob": "3d1b7478b433ebff2f882fb3edae82aff970d151",
+   "Bytes": 2344,
+   "Lines": 92,
+   "Sha256": "904ca2309189d3ad4539039d77849bcf93f48c96f936adf2d6c0256f46a14631",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "3d1b7478",
+   "Why": "esquema de hechos de codex-cli (paquete §2)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 92
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/agent-execution/model-catalog.md",
+   "Blob": "166d978d114e635bbef67e295c2ec1da73af6d1f",
+   "Bytes": 10624,
+   "Lines": 137,
+   "Sha256": "dc11c201d39b2e80017cb15e049c20f1a5008a8dd97a713c0d4ea3547b0770c3",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "166d978d",
+   "Why": "catálogo de modelos (paquete §2)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 137
+    }
+   ]
+  },
+  {
+   "Path": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md",
+   "Blob": "da275e1a141a750fee2a8f501b36aa280d7aa534",
+   "Bytes": 9871,
+   "Lines": 105,
+   "Sha256": "3cdd80588e1565a64421831ae69919542ac984e948ced4784917fad63c806911",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "da275e1a",
+   "Why": "ADR-0046 #4 y «Vigilar» (L95) (paquete §2)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "## Decisión",
+     "Start": 26,
+     "End": 69
+    },
+    {
+     "Section": "## Consecuencias",
+     "Start": 80,
+     "End": 97
+    },
+    {
+     "Section": "L95 («Vigilar»)",
+     "Start": 95,
+     "End": 95
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/decisions/I-62.md",
+   "Blob": "27591f161aabb2de30610b0d17341597fd2a4079",
+   "Bytes": 176880,
+   "Lines": 1117,
+   "Sha256": "13233fb50fe7a9634fe32d8d1e1d36e36eb50123cca2410a29b6b58f554958f8",
+   "LinesOver2000Chars": [
+    657,
+    734,
+    750,
+    768,
+    787,
+    805,
+    819
+   ],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "<DEC_BLOB> (al preparar, 27591f16)",
+   "Why": "§46-§57 (paquete §2): OD-2 y su cadena, §54 (L1043), §55 (puntos 9 y 11), §56 (puntos 1-10 y 18, y la fila 11-17) y §57 (puntos 1-4)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "§46-§57",
+     "Start": 880,
+     "End": 1117
+    },
+    {
+     "Section": "## 46. Decisiones del Owner OD-2, OD-3, OD-4, OD-5 y OD-7 y orden nocturna de F6 (2026-10-06 UTC)",
+     "Start": 880,
+     "End": 902
+    },
+    {
+     "Section": "## 47. Disposición del Coordinator tras la primera ejecución de F6: FX-05, OD-2b-PROBE, OD-2c y ADR-0048 (2026-10-06 UTC",
+     "Start": 904,
+     "End": 919
+    },
+    {
+     "Section": "## 48. Corrección del Owner a OD-7 (repositorio público), regla general de repositorios de CI y OD-2c (2026-10-06 UTC)",
+     "Start": 921,
+     "End": 931
+    },
+    {
+     "Section": "## 49. Orden de continuación del Coordinator: recuperación de Actions (R1/R2) y avance de FX-01 y FX-04a (2026-10-06 UTC",
+     "Start": 933,
+     "End": 954
+    },
+    {
+     "Section": "## 50. Disposición del Coordinator tras R2 y el P-01 nuevo (2026-10-06 UTC)",
+     "Start": 956,
+     "End": 970
+    },
+    {
+     "Section": "## 51. Disposición del Coordinator: C-22 y C-23 PASS, F6-OBS-01, reparación para FX-04a y OD-2d-PROBE (2026-10-07 UTC)",
+     "Start": 972,
+     "End": 991
+    },
+    {
+     "Section": "## 52. Disposición del Coordinator: selección del Principal B de FX-04a (2026-10-07 UTC)",
+     "Start": 993,
+     "End": 1010
+    },
+    {
+     "Section": "## 53. Disposición del Coordinator: resultado de la comparación de B1 en FX-04a (2026-10-07 UTC)",
+     "Start": 1012,
+     "End": 1032
+    },
+    {
+     "Section": "## 54. Orden del Coordinator: modo nocturno sin interacción con el Owner hasta la mañana (2026-10-07 UTC)",
+     "Start": 1034,
+     "End": 1051
+    },
+    {
+     "Section": "## 55. Disposición del Coordinator: B2 / U-01 y frontera de recuperación material de F6 (2026-10-08 UTC)",
+     "Start": 1053,
+     "End": 1074
+    },
+    {
+     "Section": "## 56. Disposición del Coordinator: revisión de A-2, habilitación de Claude CLI y política de sucesores del runtime; dec",
+     "Start": 1076,
+     "End": 1103
+    },
+    {
+     "Section": "## 57. Disposición del Coordinator: A-2 AGREED, Claude CLI aceptado como transporte, A-3 continúa (2026-10-08 UTC)",
+     "Start": 1105,
+     "End": 1117
+    },
+    {
+     "Section": "§54, L1043",
+     "Start": 1043,
+     "End": 1043
+    },
+    {
+     "Section": "§56, fila 11-17 (L1100)",
+     "Start": 1100,
+     "End": 1100
+    },
+    {
+     "Section": "§57, punto 4 (L1115)",
+     "Start": 1115,
+     "End": 1115
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-evidence.md",
+   "Blob": "6855110a61b70a5ceb7e3928b5de4671cb6af7d6",
+   "Bytes": 257441,
+   "Lines": 2925,
+   "Sha256": "55cf34a8726df23234ccc5314de35c8c7b90203c7f1132cb669c2a28657a01e8",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "<EV_BLOB> (al preparar, 6a2b1569)",
+   "AppendOnly": {
+    "NamedBlob": "6a2b1569caefff15a5b3eeab9529e731d68a03af",
+    "NamedIn": "b088421649204742ff682e1eb1ebdafc762823d0",
+    "NamedLines": 2882,
+    "NamedBytes": 253532,
+    "Note": "marcador resuelto en el recibo; el blob de preparación es prefijo exacto (solo añadido)"
+   },
+   "Why": "§64, §67-§68, §70-§71, §75 y §82-§87 (paquete §2)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "## 64. Disposición del Coordinator tras la primera ejecución de F6 (decisiones §47): OD-2b-PROBE, OD-2c y diagnóstico de",
+     "Start": 2415,
+     "End": 2438
+    },
+    {
+     "Section": "§67-§68",
+     "Start": 2480,
+     "End": 2503
+    },
+    {
+     "Section": "§70-§71",
+     "Start": 2531,
+     "End": 2574
+    },
+    {
+     "Section": "## 75. Noche (decisiones §54): SHA del oráculo v2 durable antes de B2, B2 en HUMAN_LAUNCH_REQUIRED y medición pasiva de ",
+     "Start": 2623,
+     "End": 2630
+    },
+    {
+     "Section": "§82-§87",
+     "Start": 2778,
+     "End": 2882
+    },
+    {
+     "Section": "## 64. Disposición del Coordinator tras la primera ejecución de F6 (decisiones §47): OD-2b-PROBE, OD-2c y diagnóstico de",
+     "Start": 2415,
+     "End": 2438
+    },
+    {
+     "Section": "## 67. P-01 por la actualización de la app de Codex: huella `723A6898…` y binario nuevo (`codex-cli` en STOP; OD-2d)",
+     "Start": 2480,
+     "End": 2490
+    },
+    {
+     "Section": "## 68. Disposición tras R2 (decisiones §50): medición pasiva para OD-2d y comprobación D.6 de las entradas de Codex",
+     "Start": 2492,
+     "End": 2503
+    },
+    {
+     "Section": "## 70. Validador de producción sobre el QH real, orden de reparación FX-U1-O3, oráculo de FX-04a corregido y OD-2d-PROBE",
+     "Start": 2531,
+     "End": 2551
+    },
+    {
+     "Section": "## 71. Reparación del QH de FX-U1 por R (QR r4, QH2 r5), oráculo de FX-04a publicado por su SHA y preparación de B (deci",
+     "Start": 2553,
+     "End": 2574
+    },
+    {
+     "Section": "## 75. Noche (decisiones §54): SHA del oráculo v2 durable antes de B2, B2 en HUMAN_LAUNCH_REQUIRED y medición pasiva de ",
+     "Start": 2623,
+     "End": 2630
+    },
+    {
+     "Section": "## 82. Revisión formal del Architect de A-2 (R20261008T014941Z-68fe): CHANGES REQUIRED; auditor NOT_ACCREDITED; custodia",
+     "Start": 2778,
+     "End": 2798
+    },
+    {
+     "Section": "## 83. Disposición §56: A-2 corregida (A62-A2-01 y A62-A2-O1..O3), OD-3 = A y CLAUDE-CLI-I62 = A registradas",
+     "Start": 2800,
+     "End": 2818
+    },
+    {
+     "Section": "## 84. claude-cli caracterizado y elegible; kit de la re-revisión de A-2 por CLI custodiado antes del lanzamiento (decis",
+     "Start": 2820,
+     "End": 2842
+    },
+    {
+     "Section": "## 85. Re-revisión formal de la A-2 corregida por claude-cli (R20261008T184326Z-f1e2): AGREED, ACCREDITED",
+     "Start": 2844,
+     "End": 2854
+    },
+    {
+     "Section": "## 86. A-2 AGREED (decisiones §57): acuerdo append-only; Claude CLI aceptado como transporte; solicitudes de recuperació",
+     "Start": 2856,
+     "End": 2864
+    },
+    {
+     "Section": "## 87. Solicitud única de recuperación de F6 (decisiones §57): B3 extraordinaria de FX-04a y bloque de Codex; fuente QH2",
+     "Start": 2866,
+     "End": 2882
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-prep/owner-decision-packets.md",
+   "Blob": "f39c0eff7c8225055512cda7d238592c3f3afd9b",
+   "Bytes": 41992,
+   "Lines": 346,
+   "Sha256": "4b8677a985304ac3bef2e3454d76973085a7a4ddcd6b7ea11f1d8fc64efd2858",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "cdb86114",
+   "AppendOnly": {
+    "NamedBlob": "cdb86114766b4d5c57adc25192a75fe56512c7e0",
+    "NamedIn": "91e29886a4870dd673372c66453d76ea503a22b9",
+    "NamedLines": 339,
+    "NamedBytes": 41405,
+    "Note": "el texto del blob nombrado es prefijo exacto del texto del commit (solo añadido)"
+   },
+   "Why": "paquetes OD-2c y OD-2d (L182, L199 y L200) (paquete §2), y OD-2 (L93, citada por A-3)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "## OD-2 — Línea base de la huella de `codex-cli`",
+     "Start": 80,
+     "End": 96
+    },
+    {
+     "Section": "L93 (términos de OD-2; citada por A-3)",
+     "Start": 93,
+     "End": 93
+    },
+    {
+     "Section": "## OD-2c — Aceptación de la huella exacta de `codex-cli` (2026-10-06T15:10Z; DECIDIDA: A, decisiones §48)",
+     "Start": 168,
+     "End": 188
+    },
+    {
+     "Section": "L182",
+     "Start": 182,
+     "End": 182
+    },
+    {
+     "Section": "## OD-2d (vigente) — Línea base exacta de `codex-cli` sobre la instalación actual de Codex (2026-10-07T06:19Z; pendiente",
+     "Start": 190,
+     "End": 216
+    },
+    {
+     "Section": "L199-200",
+     "Start": 199,
+     "End": 200
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A3/a3-guards.py",
+   "Blob": "215b2e43e40c67bc8d47cbfc5ccc3814b80451ea",
+   "Bytes": 148865,
+   "Lines": 2272,
+   "Sha256": "5c00181a41ce0ae91f26fd2481e4abfb838d5205824dc3a453488fdd061255b2",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "<GUARDS_BLOB>",
+   "Why": "guardas: modelo G5, preview y run (G1-G5) (paquete §2; evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 2272
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A3/a3-selftest.json",
+   "Blob": "38a79ca082617781e1332daa3a4d127cb433dacc",
+   "Bytes": 77689,
+   "Lines": 3566,
+   "Sha256": "e6f8497d68c70a62985d656d3e008f01a97538a8070bd3b8fa5b7683f2708233",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "<SELFTEST_BLOB>",
+   "Why": "resultado de self-test --a3 docs/initiatives/I-62-A-3.md (paquete §2)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 3566
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A3/a3-guards-result.json",
+   "Blob": "70b23c0dbcae830cd86394a204d94ee39d764a0b",
+   "Bytes": 85001,
+   "Lines": 3656,
+   "Sha256": "5d31d25e5c852d90208a83572ef79ba3e0c1b978d03e11e2db04b08a06577e3d",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "(en el commit siguiente al de publicación)",
+   "Why": "resultado de run --base 76b48e78 --head 91e29886 (paquete §2; su campo Head nombra el commit de publicación)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 3656
+    }
+   ]
+  }
+ ],
+ "AllowedTransitiveInputs": [],
+ "TransitivePolicy": "sin transitivos: con --safe-mode el runtime no inyecta CLAUDE.md, memoria ni ganchos (caracterización C1), así que las lecturas iniciales de CLAUDE.md y AGENTS.md (opción A de GAP-07 de A-1) no se activan; el prompt es la única instrucción",
+ "ReadPolicy": {
+  "Closure": "el cierre es por archivo; `LineRanges` señala las secciones que pide el paquete §2 (Scope SECTIONS) o el archivo entero (ENTIRE). Los rangos orientan, no limitan: un archivo del cierre puede leerse entero o por otros rangos",
+  "Read": "ruta absoluta de un archivo del cierre bajo el clon, o de un archivo del run; en archivos de más de 60 000 bytes, offset y limit de 300 líneas como máximo",
+  "Grep": "solo con `path` = un ARCHIVO del cierre o del run; sin `glob` ni `type`; nunca un directorio ni sin `path`",
+  "Glob": "su alcance (path + patrón) solo puede contener archivos del cierre o del run; un patrón que alcance cualquier otro archivo es una lectura fuera del cierre aunque no se lea ese archivo",
+  "LargeFileThresholdBytes": 60000,
+  "MaxRangeLines": 300,
+  "LargeFiles": [
+   "docs/initiatives/I-62-A-3.md",
+   "docs/automation/evidence/I-62-A3/maf-codex.md",
+   "docs/initiatives/I-62-proposal-v14.md",
+   "docs/initiatives/I-62-A-1.md",
+   "docs/AUTOMATION_PLAN.md",
+   "docs/automation/agent-execution/README.md",
+   "docs/automation/decisions/I-62.md",
+   "docs/automation/evidence/I-62-evidence.md",
+   "docs/automation/evidence/I-62-A3/a3-guards.py",
+   "docs/automation/evidence/I-62-A3/a3-selftest.json",
+   "docs/automation/evidence/I-62-A3/a3-guards-result.json"
+  ],
+  "LongLines": {
+   "docs/initiatives/I-62-A-3.md": [
+    1487
+   ],
+   "docs/automation/evidence/I-62-A3/od2-material-baseline-owner-packet.md": [
+    70
+   ],
+   "docs/initiatives/I-62-proposal-v14.md": [
+    2352,
+    2380,
+    2382
+   ],
+   "docs/automation/decisions/I-62.md": [
+    657,
+    734,
+    750,
+    768,
+    787,
+    805,
+    819
+   ]
+  },
+  "Premises": "toda premisa (PremiseRefs) se cita de líneas leídas enteras con Read: de archivos del cierre (Path relativo al clon) o de order.txt, order-s56.txt y order-s57.txt (Path absoluto en D:\\r62-arch-a3-run o el nombre suelto); nunca de prompt.md; una lectura fallida nunca cuenta; una línea larga truncada por Read no cuenta como entregada",
+  "FailedReads": "una llamada que falla o no devuelve contenido es una lectura fallida: no acredita contenido",
+  "AbsentCommits": "los commits del Freeze (b64a3b64) y de V14 (4c617e82) son anteriores a un rebase y no están en el clon: V14 se identifica por su blob en el commit (34ad80ea)"
+ },
+ "AllowedTools": [
+  "Read",
+  "Grep",
+  "Glob",
+  "StructuredOutput"
+ ],
+ "ToolPolicy": "solo Read, Grep y Glob, según ReadPolicy, y StructuredOutput para entregar el resultado; cualquier otra herramienta (también un intento rechazado por el runtime) y toda denegación de permiso (permission_denials) son violaciones",
+ "NotTriggered": [
+  {
+   "Source": "CLAUDE.md y AGENTS.md (lecturas iniciales, paso 4 «dotnet test»)",
+   "Reason": "--safe-mode: el runtime no los inyecta; el revisor no tiene herramientas de ejecución"
+  },
+  {
+   "Source": "documentation-governance y el Context Pack de I-62",
+   "Reason": "sin CLAUDE.md inyectado no hay obligación transitiva; el paquete §2 fija el cierre"
+  },
+  {
+   "Source": "enlaces de A-3, del anexo, del paquete y de la evidencia a documentos fuera del cierre (la solicitud de recuperación de F6, clause_map.py, ADR-0048, V14 §11.1, los resultados de las sondas pasivas, el tablero de F6, state/I-62.yml, el fixture)",
+   "Reason": "citas descriptivas; el cierre lo fija la tabla de insumos del paquete §2 («no hace falta expandir los documentos que cita su prosa»)"
+  },
+  {
+   "Source": "a3-guards.py self-test, preview y run",
+   "Reason": "sin herramientas de ejecución; los resultados custodiados son a3-selftest.json y a3-guards-result.json"
+  },
+  {
+   "Source": "decisiones §58 (la disposición que autoriza esta revisión)",
+   "Reason": "se registró después del recibo y no está en el clon; su cuerpo literal es order.txt"
+  }
+ ],
+ "DeclaredRuntimeContext": [
+  "prompt de sistema propio de claude-cli 2.1.293 en modo -p con --safe-mode: sin CLAUDE.md, memoria, skills de usuario, ganchos ni MCP (medido en C1)",
+  "adjunto session_context: correo del usuario (identidad) y estado de Git del cwd (rama main y asuntos de los commits recientes del clon)",
+  "adjunto environment: cwd D:\\r62-arch-a3, plataforma, shell, directorio scratchpad del runtime y directorios adicionales (--add-dir del run)",
+  "adjuntos model, date, credential_org (uuid de la organización), prompt_snapshot, total_tokens_reminder y el esquema de structured_output",
+  "sin directorio previo en ~/.claude/projects para D:\\r62-arch-a3 (comprobado por el invocador): no hay memoria ni transcripciones del proyecto"
+ ],
+ "ForbiddenInputs": [
+  "~/.claude/projects/* (transcripciones y memoria de la sesión autora, del Coordinator y de cualquier otra sesión)",
+  "otras sesiones, incluidas las revisiones de A-2 y las rondas adversariales de A-3 (su registro solo como A-3 §12)",
+  "el worktree real de I-62 (~/.codex/worktrees/*), el repositorio de trabajo y los clones D:\\r62-* distintos de D:\\r62-arch-a3",
+  "el fixture de F6 (D:\\r62-fixture\\*)",
+  "los archivos de D:\\r62-arch-a3-run distintos de los cuatro del run, incluido el subdirectorio launch/",
+  "cualquier archivo del clon fuera de CanonicalInputs (también el registro de caracterización de claude-cli que fija la compuerta)",
+  "Grep o Glob cuyo alcance sea un directorio con archivos fuera del cierre; listados de directorios",
+  "red (fetch, web)",
+  "invocar otros agentes o subagentes",
+  "escribir, hacer commit o push"
+ ],
+ "CorpusDistinctNonAscii": 52
+}

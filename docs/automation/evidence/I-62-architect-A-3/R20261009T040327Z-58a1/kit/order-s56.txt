@@ -1,0 +1,364 @@
+I-62 — COORDINATOR DISPOSITION
+A-2 REVIEW + CLAUDE CLI ENABLEMENT + RUNTIME SUCCESSOR POLICY
+
+1. ARCHITECT A-2 RUN
+
+Run R20261008T014941Z-68fe:
+
+FORMAL ACCREDITATION = NOT_ACCREDITED
+
+Two auditor reports are parser false positives, but there is one real
+AllowedActions deviation:
+
+the inline Python scripts read closure files outside the exact own-script
+execution path defined by the kit.
+
+The run remains historical and its analysis may be used as evidence, but it does
+not satisfy the formal independent Architect review required for A-2.
+
+
+2. FINDING DISPOSITIONS
+
+A62-A2-01 = ACCEPTED REQUIRED
+
+Apply exactly the required correction:
+INVALID_LAUNCH must never suppress any independently observed protocol FAIL.
+
+Any observed D.4/D.6/FX-04a/FX-04b/D.8 violation that is itself a FAIL:
+
+- remains FAIL;
+- cannot be reclassified INVALID_LAUNCH;
+- cannot enable the extraordinary rerun.
+
+Update §1, §4, §5/M-04 and G5 as requested.
+
+
+A62-A2-O1 = ACCEPTED OPTIONAL
+
+Model INVALID_TEST_ORACLE explicitly as a Coordinator accreditation distinct
+from D.4 PASS/FAIL and without independent extraordinary-rerun entitlement.
+
+
+A62-A2-O2 = ACCEPTED OPTIONAL
+
+For A2-P2, a successor runtime pair is considered fully observed only when the
+associated resulting fingerprint/config state is stable.
+
+A BinaryHash/AppVersion observation during a partially completed automatic update
+does not establish a reusable successor measurement.
+
+
+A62-A2-O3 = ACCEPTED OPTIONAL
+
+An extraordinary rerun receives only the remaining budgets.
+
+It does not replenish:
+- attempts;
+- invocation budgets;
+- retries;
+- corrections;
+- review budgets;
+- probe budgets.
+
+Before authorizing the rerun, Coordinator + Owner consumption authorization must
+confirm sufficient remaining budget to perform the intended scenario.
+
+
+3. A-2 STATUS
+
+A-2 remains PROPUESTA.
+
+Correct the current A-2 object in place as permitted before agreement.
+
+Run all guards again on the exact corrected commit.
+
+Publish a new exact blob and a new Architect package.
+
+No B3.
+No new Codex measurement block.
+No A-2 AGREED until a formally accredited re-review returns AGREED.
+
+
+4. CLAUDE CLI — FACTUAL CHANGE
+
+Owner reports that claude-cli has now been authenticated.
+
+The old factual premise:
+
+claude-cli = NOT_AUTHENTICATED
+
+is stale.
+
+Do not infer eligibility from authentication alone.
+
+
+5. FIXTURE OD-3
+
+Prepare to record the Owner line if supplied:
+
+OD-3 = A
+(
+  el Owner autenticó claude-cli;
+  alcance: fixture — ≤ 2 sondas de la fila «Sondas previas» de la Topología B,
+  Reviewer y Architect de FX-03 y Architects de FX-06 si el Coordinator lo
+  dispone;
+  la huella de claude-cli se acepta por OD-2 tras la medición
+)
+
+Do not infer this Owner decision merely from the authentication statement.
+It requires the explicit line.
+
+
+6. REAL I-62 CLAUDE CLI AUTHORIZATION
+
+Coordinator authorizes the use of a measured and eligible claude-cli cell as
+transport for real I-62 ARCHITECT and REVIEWER roles, including A-2 re-review,
+subject to:
+
+- explicit Owner consumption authorization;
+- measured eligibility;
+- read-only operation;
+- OD-6 Actor REQUIRED;
+- OD-6 Session REQUIRED;
+- OD-6 Context REQUIRED;
+- Provider PREFERRED;
+- clean EffectiveInputClosure;
+- no transcript or private-memory inheritance.
+
+Do NOT generalize this authorization to:
+- PRINCIPAL_COORDINATOR;
+- WORKER;
+- write-commit-push.
+
+
+7. CLAUDE CLI CHARACTERIZATION
+
+Before using claude-cli for A-2, run a bounded read-only characterization.
+
+Measure:
+
+- executable path;
+- CLI version;
+- runtime/binary identity;
+- authentication state without reading credentials;
+- account/consumption mode;
+- requested model;
+- observed model;
+- requested effort;
+- observed effort;
+- process identity;
+- session/run identity;
+- working directory;
+- permission/sandbox mode;
+- automatic context inputs;
+- global/project memory inputs;
+- prompt fidelity;
+- canonical file-read fidelity;
+- structured output capture;
+- exit status;
+- cancellation capability;
+- termination observability;
+- timeout behavior.
+
+No product writes.
+No fixture mutation.
+No git writes.
+
+
+8. ELIGIBILITY
+
+ARCHITECT / REVIEWER claude-cli is eligible only if:
+
+installed = true
+authenticated = true
+measured invocation = true
+required capabilities = MATCH or ABOVE_REQUIRED
+consumption covered != UNKNOWN
+STALE = false
+Actor independence = satisfied
+Session independence = satisfied
+Context independence = satisfied
+
+Provider is PREFERRED, not REQUIRED.
+
+
+9. A-2 RE-REVIEW VIA CLI
+
+If claude-cli is eligible and Owner authorization covers real I-62:
+
+prefer claude-cli for the A-2 re-review.
+
+Use:
+
+- a clean clone;
+- no author transcript;
+- no Coordinator transcript;
+- no other-session memory;
+- exact corrected A-2 object;
+- exact new review package;
+- closed inputs;
+- read-only permissions.
+
+Do not reuse the previous desktop review session.
+
+If successful, this should remove the need for another Owner-opened desktop
+Architect session.
+
+
+10. FUTURE USE
+
+If measured successfully, retain claude-cli as the preferred eligible transport
+for future read-only:
+
+ARCHITECT
+REVIEWER
+A-n reviews
+FX-06 Architect
+READY-06
+
+Each use still needs its own applicable authority, independence and input closure.
+
+
+11. NEW AMENDMENT TRACK — A-3
+
+In parallel, PREPARE ONLY:
+
+I-62 A-3 — Runtime Successor Compatibility
+
+Do not apply it.
+Do not modify A-2 to include it.
+
+
+12. A-3 PROBLEM
+
+Current invalidation semantics are too sensitive to automatic AI-provider runtime
+updates.
+
+Claude, Codex and future providers may update frequently.
+
+BinaryHash or AppVersion changes alone must not permanently force complete
+remeasurement if the successor runtime preserves every capability relevant to the
+binding/action.
+
+
+13. A-3 TARGET SEMANTICS
+
+Define a provider-neutral:
+
+RUNTIME_COMPATIBILITY_CLASS
+
+A successor runtime may inherit an existing measured observation only after a
+bounded compatibility probe confirms all mandatory properties used by that
+binding/action remain equal or stronger.
+
+
+14. SUCCESSOR PROBE MUST RE-OBSERVE
+
+At minimum:
+
+- authentication;
+- runtime/provider identity;
+- model/capability class;
+- effort semantics;
+- required permissions;
+- relevant sandbox behavior;
+- introspection level;
+- automatic-context/input isolation;
+- result/output capture;
+- termination observability;
+- consumption mode.
+
+BinaryHash and AppVersion remain recorded facts, but change alone is not enough
+to invalidate eligibility after a successor compatibility probe passes.
+
+
+15. SUCCESSOR RESULT
+
+If every mandatory requirement remains MATCH or ABOVE_REQUIRED and no relevant
+security/input/output invariant changes:
+
+SUCCESSOR_COMPATIBLE = true
+inherit the prior measured eligibility for that action/cell
+record the new runtime identity
+
+If any mandatory requirement becomes UNKNOWN or BELOW_REQUIRED, or a relevant
+security/context/output invariant changes:
+
+SUCCESSOR_COMPATIBLE = false
+observation = STALE
+full measurement required
+
+
+16. SAFETY
+
+A-3 must NOT say:
+
+newer = automatically better.
+
+It says only:
+
+newer + bounded successful compatibility measurement
+= compatible successor for the previously measured capability floor.
+
+No compatibility probe may silently increase:
+- permissions;
+- write scope;
+- role authority;
+- model capability claims;
+- consumption authority.
+
+
+17. MATERIALITY
+
+Treat A-3 as a candidate MATERIAL POST-FREEZE AMENDMENT because it changes
+runtime invalidation / eligibility semantics.
+
+Prepare:
+
+- exact affected clauses;
+- before/after semantics;
+- compatibility predicate;
+- failure-closed behavior;
+- mechanical guard model;
+- positive vectors;
+- negative vectors;
+- mutation cases;
+- Architect package.
+
+Do not submit/apply A-3 until the corrected A-2 re-review is already launched or
+otherwise no longer blocked by preparation work.
+
+
+18. REPORT BACK
+
+Return:
+
+A. A-2 corrected
+1. corrected A-2 blob;
+2. disposition of A62-A2-01/O1/O2/O3;
+3. guard results;
+4. new Architect package.
+
+B. Claude CLI
+5. measured CLI identity;
+6. authentication;
+7. model/effort;
+8. runtime/session identity;
+9. automatic-context audit;
+10. fidelity;
+11. result/termination capability;
+12. consumption coverage;
+13. ARCHITECT eligibility;
+14. REVIEWER eligibility;
+15. exact Owner authorization still needed, if any;
+16. whether A-2 re-review can now launch automatically.
+
+C. A-3
+17. exact candidate scope;
+18. affected clauses;
+19. compatibility predicate;
+20. guard/test matrix;
+21. whether any Owner-reserved consequence exists.
+
+Do not ask the Owner to open another Architect desktop session while the
+claude-cli eligibility path remains viable.

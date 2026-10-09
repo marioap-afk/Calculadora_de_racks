@@ -1,0 +1,53 @@
+I-62 — COORDINATOR DISPOSITION
+A-2 AGREED / CLAUDE CLI / A-3
+1. A-2
+Revisión R20261008T184326Z-f1e2: ACCREDITED.
+Objeto exacto: `docs/initiatives/I-62-A-2.md`, blob `f1e1d6f08d3cf677500794c7d0019433a4dc7d4e`.
+Architect: AGREED. Coordinator: AGREED.
+A62-A2-01 y O1..O3: CLOSED.
+A62-A2-O4..O6: ACCEPTED NON-BLOCKING OPTIONAL. Documentar sin modificar el objeto acordado.
+Registrar el acuerdo de forma append-only. No editar el blob de A-2 después del acuerdo.
+2. Aplicación de A-2
+A-2 habilita solicitar, pero no concede por sí misma:
+
+* una B3 extraordinaria de FX-04a;
+* un nuevo bloque de sondas read-only para el runtime exacto de Codex.
+
+Preparar separadamente las dos solicitudes con identidad, presupuesto disponible y consumo requerido.
+Antes de B3, resolver la preservación de la fuente QH2. No permitir que cambios posteriores de `fx/u1` alteren el conjunto de hechos remotos que B3 debe reconstruir.
+No lanzar B3 sin autorización Owner de consumo adicional.
+No ejecutar las sondas de Codex sin autorización explícita para el bloque exacto.
+3. Claude CLI
+Aceptar la caracterización de `claude-cli` 2.1.293 como evidencia de elegibilidad actual para ARCHITECT y REVIEWER.
+Conservar la identificación exacta del ejecutable, el modelo y effort observados, los controles de aislamiento, el resultado y la acreditación de terminación.
+Utilizar el transporte en próximas revisiones reales autorizadas de I-62, sin pedir al Owner una sesión desktop cuando exista una celda CLI elegible y el cierre de insumos sea limpio.
+No extender esta autorización a PRINCIPAL_COORDINATOR, WORKER ni escritura.
+4. A-3 — Runtime Successor Compatibility
+Continuar la preparación. Corregir los ocho MAJOR y repetir guardas y revisión adversarial antes de publicar la candidata.
+Añadir a la investigación:
+MATERIAL_ADAPTER_FINGERPRINT
+Objetivo: distinguir variaciones automáticas irrelevantes de cambios materiales de seguridad, configuración y capacidades.
+Examinar especialmente Codex, donde cada actualización ha modificado `config.toml`.
+No introducir aceptación implícita de versiones nuevas.
+No suponer que un runtime sucesor es mejor.
+No desactivar P-01 en producción bajo la autoridad actual.
+Una propuesta de compatibilidad debe conservar:
+
+* evidencia del cambio de binario y versión;
+* clasificación de claves cambiadas;
+* comparación contra propiedades materiales previamente acreditadas;
+* sonda rápida de compatibilidad con presupuesto autorizado;
+* fallo cerrado para cambios desconocidos;
+* ausencia de ampliaciones implícitas de permisos o consumo.
+
+Evaluar explícitamente si OD-2 puede evolucionar desde un hash exacto de todo `config.toml` hacia una línea base material verificable sin requerir una nueva decisión Owner por cada cambio inocuo.
+Si ese cambio modifica autoridad reservada al Owner, preparar la decisión Owner correspondiente; no resolverla por disposición ordinaria del Coordinator.
+5. Prioridad
+Primero: publicar el acuerdo A-2.
+Segundo: preparar las autorizaciones concretas de B3 y del bloque Codex para recuperar F6.
+Tercero: completar A-3, sin impedir el avance independiente de FX-02, FX-04a, FX-06 ni F7.
+Mantener I-61 vigente hasta la integración efectiva de I-62.
+No declarar F6 GATE PASS ni desbloquear I-64 anticipadamente.
+6. Informe
+Devolver el commit del acuerdo A-2 y su CI, la autorización exacta requerida para B3, la identidad y el tope del bloque Codex, el estado de FX-02/FX-04a/FX-06 y el resultado de los ocho MAJOR de A-3.
+Concentrar las decisiones del Owner en una sola solicitud, sin pedir aperturas de sesiones adicionales para roles que Claude CLI ya puede desempeñar.
