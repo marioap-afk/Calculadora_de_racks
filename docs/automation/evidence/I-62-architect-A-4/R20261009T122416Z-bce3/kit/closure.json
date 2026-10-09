@@ -1,0 +1,1509 @@
+{
+ "Schema": "rackcad-input-closure/v1 (representación experimental; Proposal V14 §20.3.1; no autoridad normativa: rigen I-61 y LIFECYCLE)",
+ "Ids": {
+  "RunId": "R20261009T122416Z-bce3",
+  "InvocationId": "I20261009T122416Z-bce3",
+  "LogicalReviewRequestId": "L20261009T122416Z-bce3",
+  "AttemptSeq": 1
+ },
+ "AuthorityRevision": "02be0c34efc6125627ad4b31978fb349acc724c8",
+ "ObjectIntroducedBy": "7f065a3a56102b8034247c7c64514e3f256f7b74",
+ "FirstPublication": "4710084b7589e27c511572d409b8742b75cfcbf4",
+ "PreparationBase": "524b293e4667810f485c64d6cbb545d5b2dd8db5",
+ "ObjectPath": "docs/initiatives/I-62-A-4.md",
+ "ObjectBlob": "7d863219a271b5ec427ef8669435826e19be8f11",
+ "CandidateBlob": "27ffa26b35ecacfae083bf9d360fe8460b8d5564",
+ "PackagePath": "docs/initiatives/I-62-architect-package-A-4.md",
+ "PackageBlob": "085f30f602532a619734b47b6b8d60035d8fb278",
+ "PublicationReceipt": {
+  "Commit": "02be0c34efc6125627ad4b31978fb349acc724c8",
+  "CorrectionCommit": "7f065a3a56102b8034247c7c64514e3f256f7b74",
+  "FirstPublication": "4710084b7589e27c511572d409b8742b75cfcbf4",
+  "CandidateBlobNamedByOrder": "27ffa26b35ecacfae083bf9d360fe8460b8d5564",
+  "Object": {
+   "Path": "docs/initiatives/I-62-A-4.md",
+   "Blob": "7d863219a271b5ec427ef8669435826e19be8f11"
+  },
+  "Package": {
+   "Path": "docs/initiatives/I-62-architect-package-A-4.md",
+   "Blob": "085f30f602532a619734b47b6b8d60035d8fb278"
+  },
+  "Guards": {
+   "docs/automation/evidence/I-62-A4/a4-guards.py": "2489e35f4a5f0bb43696966b669ae7dd09b5004b",
+   "docs/automation/evidence/I-62-A4/a4-selftest.json": "166157f6032698e3cbde467a1cbf462f32177958",
+   "docs/automation/evidence/I-62-A4/a4-guards-result.json": "d011d8efe2fb7a757de6e3b3444673733ec1df14"
+  },
+  "Note": "el paquete designa el objeto como «blob <el del commit de publicación> (borrador de esta pasada: 7d863219…)» y nombra sus insumos en 524b293e; el kit los resuelve con los blobs del commit del recibo"
+ },
+ "PreviousObject": null,
+ "PriorFormalFindings": "ninguno: no hay revisión formal anterior de A-4",
+ "Harness": "docs/automation/evidence/I-62-A4/a4-guards.py",
+ "HarnessExecution": "ninguna por el revisor: no tiene herramientas de ejecución; lee el código y los resultados custodiados",
+ "FocusTopics": [
+  "A4-1_CMD_ROUTE",
+  "A4-2_ARCHITECT_SUBSTITUTION",
+  "A4-3_H1",
+  "A4-4_H2",
+  "A4-5_H3",
+  "U-09e_Q-A4-11"
+ ],
+ "FocusSource": "disposición §61, punto 2 (H-1, H-2, H-3, la ruta cmd.exe y la sustitución del Architect de FX-02 por claude-cli) y orden del Coordinator del kit (U-09 (e) / Q-A4-11); cada tema contesta además las preguntas del paquete §4 que le corresponden",
+ "PackageQuestions": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10
+ ],
+ "QuestionIds": [
+  "Q-A4-01",
+  "Q-A4-02",
+  "Q-A4-03",
+  "Q-A4-04",
+  "Q-A4-05",
+  "Q-A4-06",
+  "Q-A4-07",
+  "Q-A4-08",
+  "Q-A4-09",
+  "Q-A4-10",
+  "Q-A4-11",
+  "Q-A4-12",
+  "Q-A4-13",
+  "Q-A4-14"
+ ],
+ "QuestionRows": {
+  "Q-A4-01": 332,
+  "Q-A4-02": 333,
+  "Q-A4-03": 334,
+  "Q-A4-04": 335,
+  "Q-A4-05": 336,
+  "Q-A4-06": 337,
+  "Q-A4-07": 338,
+  "Q-A4-08": 339,
+  "Q-A4-09": 340,
+  "Q-A4-10": 341,
+  "Q-A4-11": 342,
+  "Q-A4-12": 343,
+  "Q-A4-13": 344,
+  "Q-A4-14": 345
+ },
+ "QuestionSource": "A-4 §8 (paquete §1: disposición de Q-A4-01..Q-A4-14)",
+ "A45Verdict": "veredicto separado de A4-5 (paquete §1: «el acuerdo puede excluirla»): AGREED | CHANGES REQUIRED | EXCLUDE | BLOCKED — OWNER DECISION; NOT_ASSESSED solo con NOT_ACCREDITED",
+ "Transport": {
+  "Adapter": "claude-cli",
+  "Binary": {
+   "Path": "%APPDATA%\\Claude\\claude-code\\2.1.293\\83cb0bd7fed4\\claude.exe",
+   "Sha256": "8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa",
+   "Version": "2.1.293 (Claude Code)",
+   "Authenticode": "Valid; CN=\"Anthropic, PBC\""
+  },
+  "Model": "claude-opus-5-5",
+  "Effort": "xhigh",
+  "Flags": [
+   "-p",
+   "--model",
+   "claude-opus-5-5",
+   "--effort",
+   "xhigh",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--safe-mode",
+   "--strict-mcp-config",
+   "--no-chrome",
+   "--tools",
+   "Read,Grep,Glob",
+   "--permission-mode",
+   "dontAsk",
+   "--permission-prompts",
+   "none"
+  ],
+  "AddDir": [
+   "--add-dir",
+   "D:\\r62-arch-a4-run"
+  ],
+  "SessionId": "91b59aa4-cdcb-492b-94e9-715045bc7367",
+  "Cwd": "D:\\r62-arch-a4",
+  "ArgsTemplate": [
+   "-p",
+   "--model",
+   "claude-opus-5-5",
+   "--effort",
+   "xhigh",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--safe-mode",
+   "--strict-mcp-config",
+   "--no-chrome",
+   "--tools",
+   "Read,Grep,Glob",
+   "--permission-mode",
+   "dontAsk",
+   "--permission-prompts",
+   "none",
+   "--add-dir",
+   "<add-dir>",
+   "--session-id",
+   "<session-id>",
+   "--json-schema",
+   "<json-schema>"
+  ],
+  "AddDirStatus": "no medido en C1; medido en C3 de la caracterización R20261008T183600Z-char sobre la plantilla exacta con marcadores (decisiones §56, punto 7; §57, punto 3): kit/transport-gate.json se entrega en MEASURED con el SHA-256 del registro fijado; launch.py vuelve a evaluar la compuerta y el auditor la re-evalúa sobre las copias de launch/",
+  "Gate": "kit/transport-gate.json (transport_gate.py)",
+  "Stdin": "prompt.md del run (bytes literales)",
+  "JsonSchema": "kit/result.schema.json en forma compacta: json.dumps(separators=(',', ':'), ensure_ascii=True)",
+  "ExpectedInit": {
+   "tools": [
+    "Glob",
+    "Grep",
+    "Read",
+    "StructuredOutput"
+   ],
+   "permissionMode": "dontAsk",
+   "mcp_servers": [],
+   "claude_code_version": "2.1.293"
+  },
+  "TranscriptPath": "%USERPROFILE%\\.claude\\projects\\D--r62-arch-a4\\91b59aa4-cdcb-492b-94e9-715045bc7367.jsonl",
+  "LaunchDir": "D:\\r62-arch-a4-run\\launch (preflight.json, transport-characterization.json, transport-acceptance.json solo en ACCEPTED, stdout.jsonl, stderr.txt y run.json)",
+  "TimeoutSeconds": 3600,
+  "AuthSettleSeconds": 120,
+  "AuthSettle": "launch.py espera AUTH_SETTLE_S segundos entre el final de `auth status` (preflight 5) y el lanzamiento, y registra en run.json como TRANSPORT_AUTH_REFRESH_CONFLICT un result con «Failed to refresh OAuth token» y 0 tokens (sin reintento); heredado del intento 2 de A-3",
+  "Characterization": "claude-cli-characterization.json de R20261008T183600Z-char (decisiones §56, punto 7; aceptada como evidencia de elegibilidad vigente en decisiones §57, punto 3): C1 completada, C2 cancelada por terminación, C3 PASS sobre la plantilla con --add-dir"
+ },
+ "RunDir": "D:\\r62-arch-a4-run",
+ "RunFiles": [
+  "order.txt",
+  "prompt.md",
+  "order-s60.txt"
+ ],
+ "PremiseRunFiles": [
+  "order.txt",
+  "order-s60.txt"
+ ],
+ "RunFileHashes": {
+  "order.txt": {
+   "Bytes": 3196,
+   "Lines": 57,
+   "Sha256": "c82456877990c172110d577d21cc592ed87ebc94dea20387eecb4061c17634a7",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": false
+   },
+   "Source": "cuerpo exacto pegado de la disposición §61 del Coordinator (3 196 bytes; SHA-256 c8245687…, el que declara decisiones §61 en el commit); su punto 2 ordena esta revisión y nombra la candidata 27ffa26b",
+   "PremiseAllowed": true,
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 57
+    }
+   ],
+   "IdentityCheck": {
+    "DecisionsSection": "§61",
+    "Sha256DeclaredInDecisions": true,
+    "BytesDeclaredInDecisions": 3196
+   }
+  },
+  "prompt.md": {
+   "Bytes": 23471,
+   "Lines": 253,
+   "Sha256": "fc649df50d093d701c44153259a4a8e937d76dbf7d5b62ec0062bdeda22a02a9",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": false
+   },
+   "Source": "copia de kit/prompt.md; stdin literal del proceso claude-cli; nunca es premisa",
+   "PremiseAllowed": false,
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 253
+    }
+   ]
+  },
+  "order-s60.txt": {
+   "Bytes": 2047,
+   "Lines": 53,
+   "Sha256": "3a7257e16c955e586b2e6c300f42ba20079f0b29481dbb63f461c2a1c2217699",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": false
+   },
+   "Source": "cuerpo exacto pegado de la disposición §60 del Coordinator (2 047 bytes; SHA-256 3a7257e1…, el que declara decisiones §60 en el commit); su punto 2 es el origen de A-4",
+   "PremiseAllowed": true,
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 53
+    }
+   ],
+   "IdentityCheck": {
+    "DecisionsSection": "§60",
+    "Sha256DeclaredInDecisions": true,
+    "BytesDeclaredInDecisions": 2047
+   }
+  }
+ },
+ "RunCustody": "el auditor compara el SHA-256 de cada archivo del run con RunFileHashes y con la copia del kit; el directorio del run solo admite esos tres archivos y, después del lanzamiento, el subdirectorio launch/, que solo admite los archivos que escribe launch.py",
+ "IdentityVerification": "el revisor no ejecuta git: el invocador verifica el clon antes del lanzamiento (verify_clone.py → clone-verification.json) y el auditor v5.1-a4 lo vuelve a verificar después; el revisor contrasta lo que puede leer: order.txt (candidata 27ffa26b), la cabecera del paquete, a4-guards-result.json (Mode, Head, A4Blob, G2C y G5b) y a4-selftest.json (A4TextBlob)",
+ "CanonicalInputs": [
+  {
+   "Path": "docs/initiatives/I-62-A-4.md",
+   "Blob": "7d863219a271b5ec427ef8669435826e19be8f11",
+   "Bytes": 40944,
+   "Lines": 379,
+   "Sha256": "39dd78ab4ea44faaad3e0611996f4fecd2e084da520cfdfb37d0ef10399086ef",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "el del recibo (borrador de esta pasada: 7d863219a271b5ec427ef8669435826e19be8f11)",
+   "Why": "objeto de la revisión: A-4 entera (paquete §2)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 379
+    },
+    {
+     "Section": "cabecera (bloque de identidad)",
+     "Start": 1,
+     "End": 47
+    },
+    {
+     "Section": "## 1. Alcance",
+     "Start": 49,
+     "End": 60
+    },
+    {
+     "Section": "## 2. Cláusulas anteriores y fuentes (literales en `524b293e`, iguales en `c8d69fcb`; «V14 L…» = Proposal congelada, «DE",
+     "Start": 62,
+     "End": 128
+    },
+    {
+     "Section": "## 3. Delta",
+     "Start": 130,
+     "End": 271
+    },
+    {
+     "Section": "### 3.1 Motivo",
+     "Start": 132,
+     "End": 148
+    },
+    {
+     "Section": "### 3.2 A4-1 — Ruta de ejecución del Controller ante una limitación medida del shell",
+     "Start": 150,
+     "End": 173
+    },
+    {
+     "Section": "### 3.3 A4-2 — Sustitución del adapter del Architect ante una limitación medida",
+     "Start": 175,
+     "End": 195
+    },
+    {
+     "Section": "### 3.4 A4-3 — Aceptación dentro de la ventana de los bindings del Worker y del Controller de verificación (H-1)",
+     "Start": 197,
+     "End": 218
+    },
+    {
+     "Section": "### 3.5 A4-4 — Independencia REQUIRED de una candidata no arrancada (H-2)",
+     "Start": 220,
+     "End": 244
+    },
+    {
+     "Section": "### 3.6 A4-5 — Tope de una corrección tras un REWORK (H-3; separable)",
+     "Start": 246,
+     "End": 258
+    },
+    {
+     "Section": "### 3.7 Lo que A-4 no hace",
+     "Start": 260,
+     "End": 271
+    },
+    {
+     "Section": "## 4. Semántica antes y después",
+     "Start": 273,
+     "End": 288
+    },
+    {
+     "Section": "## 5. Materialidad (M-01..M-08)",
+     "Start": 290,
+     "End": 301
+    },
+    {
+     "Section": "## 6. No cambia producción",
+     "Start": 303,
+     "End": 311
+    },
+    {
+     "Section": "## 7. Consecuencias reservadas al Owner",
+     "Start": 313,
+     "End": 326
+    },
+    {
+     "Section": "## 8. Preguntas para la revisión (no forman parte del delta)",
+     "Start": 328,
+     "End": 345
+    },
+    {
+     "Section": "## 9. Evidencia",
+     "Start": 347,
+     "End": 354
+    },
+    {
+     "Section": "## 10. Veredictos",
+     "Start": 356,
+     "End": 365
+    },
+    {
+     "Section": "## Anexo (no normativo) — aplicación prevista a FX-02",
+     "Start": 367,
+     "End": 379
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-architect-package-A-4.md",
+   "Blob": "085f30f602532a619734b47b6b8d60035d8fb278",
+   "Bytes": 14288,
+   "Lines": 140,
+   "Sha256": "54a858737a0f9d8388f5a1198109af9cdadc7484d4d4ec11a2620fcefe4ff170",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "(el paquete no lleva su propio blob)",
+   "Why": "paquete de la revisión (cabecera, veredicto §1, insumos §2, resumen §3, preguntas §4, condiciones §5, §6)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 140
+    },
+    {
+     "Section": "cabecera (bloque de identidad)",
+     "Start": 1,
+     "End": 26
+    },
+    {
+     "Section": "nota «Identidad exacta»",
+     "Start": 25,
+     "End": 25
+    },
+    {
+     "Section": "## 1. Veredicto que se solicita (LIFECYCLE §5 y §6)",
+     "Start": 28,
+     "End": 42
+    },
+    {
+     "Section": "## 2. Lectura (insumos canónicos; blobs en `524b293e`)",
+     "Start": 44,
+     "End": 69
+    },
+    {
+     "Section": "## 3. Resumen del delta",
+     "Start": 71,
+     "End": 95
+    },
+    {
+     "Section": "## 4. Preguntas para la revisión",
+     "Start": 97,
+     "End": 120
+    },
+    {
+     "Section": "## 5. Condiciones de la invocación (no se lanza con este paquete)",
+     "Start": 122,
+     "End": 132
+    },
+    {
+     "Section": "## 6. Lo que este paquete no hace",
+     "Start": 134,
+     "End": 140
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa",
+   "Bytes": 342761,
+   "Lines": 3323,
+   "Sha256": "ab55ad4f4addef8455543ed06a4c60aa0a1901affc0ba3686146dfeedd9279af",
+   "LinesOver2000Chars": [
+    2352,
+    2380,
+    2382
+   ],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "34ad80ea",
+   "Why": "paquete §2: D.3, D.4, D.5, §18 filas OD; para A4-3..A4-5: §8.4, §9.2 (T3, T3', T10), §9.3, §13 P-22, §20.3.2, B.4, B.5, B.8.1 `closure`, B.8.3, I-S18 y F.1",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "### D.3 Hoja de invocaciones y escenarios",
+     "Start": 2431,
+     "End": 2528
+    },
+    {
+     "Section": "D.3, fila «Codex, total» (topes)",
+     "Start": 2442,
+     "End": 2442
+    },
+    {
+     "Section": "### D.4 Resultados y cobertura",
+     "Start": 2530,
+     "End": 2554
+    },
+    {
+     "Section": "### D.5 Ejecución compacta para OV sobre FINAL_CANDIDATE_SHA",
+     "Start": 2556,
+     "End": 2565
+    },
+    {
+     "Section": "§18, filas OD (L970-L975)",
+     "Start": 970,
+     "End": 975
+    },
+    {
+     "Section": "### 8.4 Qué es durable y qué es transitorio",
+     "Start": 380,
+     "End": 397
+    },
+    {
+     "Section": "§9.2, T3, T3' y T10 (L613-L621)",
+     "Start": 613,
+     "End": 621
+    },
+    {
+     "Section": "### 9.3 Presupuestos y su autoridad",
+     "Start": 649,
+     "End": 663
+    },
+    {
+     "Section": "§13, P-22",
+     "Start": 788,
+     "End": 788
+    },
+    {
+     "Section": "§20.3.2 (L1132-L1139)",
+     "Start": 1132,
+     "End": 1139
+    },
+    {
+     "Section": "### B.4 `rackcad-preflight/v1`",
+     "Start": 1852,
+     "End": 1869
+    },
+    {
+     "Section": "### B.5 `rackcad-binding/v1`",
+     "Start": 1871,
+     "End": 1884
+    },
+    {
+     "Section": "B.8.1, `closure` (L1953-L1955)",
+     "Start": 1953,
+     "End": 1955
+    },
+    {
+     "Section": "#### B.8.3 Durable en Q0, transitorio entre Q0 y Q7, durable en Q7",
+     "Start": 1992,
+     "End": 2004
+    },
+    {
+     "Section": "I-S18 (L2171-L2176)",
+     "Start": 2171,
+     "End": 2176
+    },
+    {
+     "Section": "### F.1 Cadena normal (llega a verificar G)",
+     "Start": 3074,
+     "End": 3086
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-2.md",
+   "Blob": "f1e1d6f08d3cf677500794c7d0019433a4dc7d4e",
+   "Bytes": 29957,
+   "Lines": 352,
+   "Sha256": "819bcc322cae6e70db0dacff553be9e4058a3c683e2d72d419bc41b52459903e",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "f1e1d6f0",
+   "Why": "A2-P2 (paquete §2): régimen de sondas que A4-1 no debe alterar; formato de una A-n acordada",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "cabecera (bloque de identidad)",
+     "Start": 1,
+     "End": 48
+    },
+    {
+     "Section": "## 3. A2-P2 — Nueva medición tras una actualización automática del runtime",
+     "Start": 179,
+     "End": 239
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-1.md",
+   "Blob": "c01899a72b940503bb85a0fab42bc085c603fd0f",
+   "Bytes": 77984,
+   "Lines": 437,
+   "Sha256": "acd5db2665b436d830dd271375f0032d234b815d9b9b63cb7c3a2ed0b00e13f4",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "c01899a7",
+   "Why": "presupuestos de bucle del Architect que A4-2 conserva (paquete §2)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "cabecera (formato de una A-n)",
+     "Start": 1,
+     "End": 56
+    },
+    {
+     "Section": "## 2. FC-01 — Identidad del bucle del Architect, presupuestos por bucle y cierre",
+     "Start": 90,
+     "End": 167
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-3.md",
+   "Blob": "ea6721f78cb63fbc4f9d99563f3262eb36a32c5d",
+   "Bytes": 200993,
+   "Lines": 1536,
+   "Sha256": "60da873139c21bd7aada074d4921c1798d6b528a82ed397e2bdf5855213fa36e",
+   "LinesOver2000Chars": [
+    1487
+   ],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "ea6721f7",
+   "Why": "solo contexto (paquete §2: A-4 no depende de ella; no hace falta leerla entera)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "cabecera (solo contexto: paquete §2)",
+     "Start": 1,
+     "End": 62
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-consensus-freeze.md",
+   "Blob": "0f6b860837e2478db8525e1fb30a485bc4646816",
+   "Bytes": 7134,
+   "Lines": 113,
+   "Sha256": "71809873a89aafcb58883c507a42cc825a0c14cd70c84bda6d26fd0af9e9a4a4",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "0f6b8608",
+   "Why": "identidad del Freeze",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 113
+    }
+   ]
+  },
+  {
+   "Path": "docs/INITIATIVE_LIFECYCLE.md",
+   "Blob": "f19896a8f1a7c82f74bac7231636f68462a87271",
+   "Bytes": 24334,
+   "Lines": 360,
+   "Sha256": "93e9c6ca73460ae46ca896f4447d9f8b517624e0acbae82750d4ba613ff0b994",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "f19896a8",
+   "Why": "§3 (M-01..M-08), §5 y §6 (paquete §2)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "## 3. Arquetipos y materialidad",
+     "Start": 66,
+     "End": 94
+    },
+    {
+     "Section": "## 5. Participacion del Architect",
+     "Start": 152,
+     "End": 191
+    },
+    {
+     "Section": "## 6. Consensus Freeze y enmiendas",
+     "Start": 193,
+     "End": 222
+    }
+   ]
+  },
+  {
+   "Path": "docs/AUTOMATION_PLAN.md",
+   "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "Bytes": 155229,
+   "Lines": 1732,
+   "Sha256": "6dc9f5d5cb90b2242a8d21140674c0b88dc6472a36dd8c65dc988e8cac6a19f5",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "f525cb1e",
+   "Why": "16.4, 16.8, 16.19-16.21 y 16.25 (paquete §2)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "16.4 (L507-L543)",
+     "Start": 507,
+     "End": 543
+    },
+    {
+     "Section": "16.8 (L600-L618)",
+     "Start": 600,
+     "End": 618
+    },
+    {
+     "Section": "16.19-16.21 (L1043-L1180)",
+     "Start": 1043,
+     "End": 1180
+    },
+    {
+     "Section": "16.25 (L1325-L1373)",
+     "Start": 1325,
+     "End": 1373
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/agent-execution/README.md",
+   "Blob": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "Bytes": 60779,
+   "Lines": 756,
+   "Sha256": "2070e629151846afc90bb76348c47fc0ccd28fcfe5fbc9ad4e78959df93d8dc1",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "592dcfd4",
+   "Why": "§14: B1-B10, referencias, independencia y A1'-A8' (paquete §2)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "## 14. Binding, aceptación, independencia y comprobaciones (unidades I62)",
+     "Start": 369,
+     "End": 531
+    },
+    {
+     "Section": "§14.2, B1-B10 (L387-L403)",
+     "Start": 387,
+     "End": 403
+    },
+    {
+     "Section": "§14.4 (L429-L437)",
+     "Start": 429,
+     "End": 437
+    },
+    {
+     "Section": "§14.5 (L439-L486)",
+     "Start": 439,
+     "End": 486
+    },
+    {
+     "Section": "§14.7, A1'-A8' (L500-L509)",
+     "Start": 500,
+     "End": 509
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/decisions/I-62.md",
+   "Blob": "133614dd3db6115e116dec907a8df9e60faf0d08",
+   "Bytes": 190159,
+   "Lines": 1204,
+   "Sha256": "919d795ced0aedbf1368759af1353edc747dd1dfc5dfd68c993cc11300651d9f",
+   "LinesOver2000Chars": [
+    657,
+    734,
+    750,
+    768,
+    787,
+    805,
+    819
+   ],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "625a7075",
+   "AppendOnly": {
+    "NamedBlob": "625a7075e06f10edf25c0574067202f6f214c7e0",
+    "NamedIn": "524b293e4667810f485c64d6cbb545d5b2dd8db5",
+    "NamedLines": 1189,
+    "NamedBytes": 186510,
+    "Note": "el texto del blob nombrado por el paquete es prefijo exacto del texto del commit (solo añadido)"
+   },
+   "Why": "§55-§60 (paquete §2) y §61 (la disposición que ordena esta revisión, añadida después de 524b293e)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "§55-§60",
+     "Start": 1053,
+     "End": 1189
+    },
+    {
+     "Section": "## 61. Disposición del Coordinator: A-3 AGREED, revisión formal de A-4, prioridad de FX-02 (2026-10-09 UTC)",
+     "Start": 1191,
+     "End": 1204
+    },
+    {
+     "Section": "## 55. Disposición del Coordinator: B2 / U-01 y frontera de recuperación material de F6 (2026-10-08 UTC)",
+     "Start": 1053,
+     "End": 1074
+    },
+    {
+     "Section": "## 56. Disposición del Coordinator: revisión de A-2, habilitación de Claude CLI y política de sucesores del runtime; dec",
+     "Start": 1076,
+     "End": 1103
+    },
+    {
+     "Section": "## 57. Disposición del Coordinator: A-2 AGREED, Claude CLI aceptado como transporte, A-3 continúa (2026-10-08 UTC)",
+     "Start": 1105,
+     "End": 1117
+    },
+    {
+     "Section": "## 58. Disposición del Coordinator: recuperación de F6 y revisión formal de A-3; respuestas del Owner (2026-10-09 UTC)",
+     "Start": 1119,
+     "End": 1145
+    },
+    {
+     "Section": "## 59. Decisión del Owner OD-2e: OD-2 = A sobre la huella exacta `6518EFAB…` (2026-10-09 UTC)",
+     "Start": 1147,
+     "End": 1162
+    },
+    {
+     "Section": "## 60. Disposición del Coordinator: camino crítico de F6 (2026-10-09 UTC)",
+     "Start": 1164,
+     "End": 1189
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-evidence.md",
+   "Blob": "bcdbcecce2e9d4a8cdaf107cd5e264fcede19fbc",
+   "Bytes": 275347,
+   "Lines": 3142,
+   "Sha256": "f9aee89484edb3bf1dcf3b9216201622cc65e2ffc1b23791c3d1fa67644a2917",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "d132626e",
+   "AppendOnly": {
+    "NamedBlob": "d132626ea0e854a53f4ec06a7596dfe6c53cdeb8",
+    "NamedIn": "524b293e4667810f485c64d6cbb545d5b2dd8db5",
+    "NamedLines": 3034,
+    "NamedBytes": 266707,
+    "NonAppendChanges": [
+     {
+      "Op": "replace",
+      "OldLines": "L3029-L3029",
+      "NewLines": "L3029-L3031",
+      "OldText": [
+       "  - clon `D:\r62-arch-a3` verificado (AllChecks) y run `D:\r62-arch-a3-run` con cuatro archivos;"
+      ],
+      "NewText": [
+       "  - clon `D:",
+       "62-arch-a3` verificado (AllChecks) y run `D:",
+       "62-arch-a3-run` con cuatro archivos;"
+      ]
+     }
+    ],
+    "Note": "crecimiento por añadido salvo los cambios de NonAppendChanges, fuera de las secciones que cita el paquete (§84, §93, §94, §95), que son idénticas"
+   },
+   "Why": "§84 y §93-§95 (paquete §2), y §101-§102 (corrección y guardas del recibo, añadidas después de 524b293e)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "## 84. claude-cli caracterizado y elegible; kit de la re-revisión de A-2 por CLI custodiado antes del lanzamiento (decis",
+     "Start": 2820,
+     "End": 2842
+    },
+    {
+     "Section": "§93-§95",
+     "Start": 2975,
+     "End": 3019
+    },
+    {
+     "Section": "## 93. Bloque A2-P2 de Codex (decisiones §58, punto 2): identidad estable, 2 sondas; regresión de shell de la CLI 0.162.",
+     "Start": 2975,
+     "End": 2996
+    },
+    {
+     "Section": "## 94. OD-2e = A (decisiones §59): huella exacta `6518EFAB…` aceptada; `codex-cli` sigue sin trabajo ordinario hasta res",
+     "Start": 2998,
+     "End": 3004
+    },
+    {
+     "Section": "## 95. Decisiones §60: FX-04a / C-25a = PASS acreditado; evaluación de la ruta `cmd.exe` (F6-OBS-03) para FX-02",
+     "Start": 3006,
+     "End": 3019
+    },
+    {
+     "Section": "§101-§102 (corrección y guardas del recibo)",
+     "Start": 3104,
+     "End": 3142
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/FX-02/F6-OBS-03-cmd-route-evaluation.md",
+   "Blob": "83a960cacc951a3c643af5049d1fc1f8aae16866",
+   "Bytes": 7982,
+   "Lines": 61,
+   "Sha256": "6d8a6d4e3c3e8ce7dd377fc14db4a257339df18d69f7322cc962bccfcc851aa3",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "83a960ca",
+   "Why": "evaluación de la ruta cmd.exe: hechos, operaciones de VERIFY no demostradas y vías V1-V4 (paquete §2)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 61
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/OD-2/R20261009T041427Z-a2p2-block/result.json",
+   "Blob": "b4a5679b367f3dd4889269cfb4a9233461c15ec7",
+   "Bytes": 14115,
+   "Lines": 294,
+   "Sha256": "e5050079d4ad1da21b15de3f41a6f889617697ea584626d364c56850e4be1673",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "b4a5679b",
+   "Why": "resultado literal de las dos sondas del bloque A2-P2 (paquete §2)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 294
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md",
+   "Blob": "90929ad1c49c028f41f58f654f8713bd0b35f27b",
+   "Bytes": 24984,
+   "Lines": 217,
+   "Sha256": "355576a34d8971eea19a149b52fd610c6065f37f7efe6b551ebe6f117cdda161",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "90929ad1",
+   "Why": "contratos del Controller de FX-02: §3.2, §4 y §7 (paquete §2)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "### 3.2 VERIFY → `rackcad-controller-verification/v2`",
+     "Start": 117,
+     "End": 131
+    },
+    {
+     "Section": "## 4. Receta `codex-cli` (AP 16.4 «Receta de Codex»; RAE §5; descriptor `codex-cli` operaciones 3-7)",
+     "Start": 133,
+     "End": 166
+    },
+    {
+     "Section": "## 7. Architect (`codex-cli`, invocación propia): revisión del contrato de T1",
+     "Start": 201,
+     "End": 217
+    },
+    {
+     "Section": "§7, L210-L212",
+     "Start": 210,
+     "End": 212
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/README.md",
+   "Blob": "fd7ef02dcccd782fca44f00dc00676285c3b87d1",
+   "Bytes": 92010,
+   "Lines": 355,
+   "Sha256": "a6e79a6bd61a8bca416c818f84a36507b27606e92cc40d24b237ffed1a880ca7",
+   "LinesOver2000Chars": [
+    340,
+    355
+   ],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "fd7ef02d",
+   "Why": "kit de FX-02: L44, L140, L144, L167, L180 y §4, punto 6 (paquete §2)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "§0, L44 (contrato T1)",
+     "Start": 44,
+     "End": 44
+    },
+    {
+     "Section": "S18b (L140)",
+     "Start": 140,
+     "End": 140
+    },
+    {
+     "Section": "S21b (L144)",
+     "Start": 144,
+     "End": 144
+    },
+    {
+     "Section": "N8 (L167)",
+     "Start": 167,
+     "End": 167
+    },
+    {
+     "Section": "S30 (L180)",
+     "Start": 180,
+     "End": 180
+    },
+    {
+     "Section": "§4, punto 6 (L243-L249)",
+     "Start": 243,
+     "End": 249
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/order-FX-U1-O4.template.md",
+   "Blob": "d92f7d3e13b122bf7669639cc0571a248650beda",
+   "Bytes": 16703,
+   "Lines": 178,
+   "Sha256": "b902742d57c8ad7d6f918aa4dd48dfe8ab4938c674f0ad3eff2569d227912854",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "d92f7d3e",
+   "Why": "plantilla de la orden O4: marcadores de la ventana, `{CORRECTION_RULE}` y puntos 5-7 y 13-16 (paquete §2)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "marcadores de la ventana (L28-L31)",
+     "Start": 28,
+     "End": 31
+    },
+    {
+     "Section": "`{CORRECTION_RULE}` (L44)",
+     "Start": 44,
+     "End": 44
+    },
+    {
+     "Section": "puntos 5-7 y 13-16 (L88-L124)",
+     "Start": 88,
+     "End": 124
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/agent-execution/adapters/codex-cli.md",
+   "Blob": "155f3469e345e2397fa26347a9cb52d6fdb91122",
+   "Bytes": 4333,
+   "Lines": 59,
+   "Sha256": "cf8a2d01e0e828c9fe56593228d5303ce1124ca30dd57ce3e091f81444ee4ec0",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "155f3469",
+   "Why": "descriptor de codex-cli (paquete §2)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 59
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/agent-execution/adapters/claude-cli.md",
+   "Blob": "ae570380509cacabf11f757a27573bf6fe616a36",
+   "Bytes": 2393,
+   "Lines": 52,
+   "Sha256": "0f184e1a4f2e5cc2cae7564eed4ba26452878dcb97ab5af87396a1327efe1bc0",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "ae570380",
+   "Why": "descriptor de claude-cli (paquete §2; Q-A4-05)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 52
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/agent-execution/routing.md",
+   "Blob": "bba08fc4686d7192deeb559752636a467103b4b1",
+   "Bytes": 10294,
+   "Lines": 142,
+   "Sha256": "5a5d02bd9e3ae1979b891c418c1680dd600c1f9857b14852ef3ce733a44cd4ac",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "bba08fc4",
+   "Why": "§5 y §8 (paquete §2)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "## 5. Elegibilidad de una celda",
+     "Start": 61,
+     "End": 81
+    },
+    {
+     "Section": "## 8. Requisitos por perfil y acción (unidades I62)",
+     "Start": 95,
+     "End": 119
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/agent-execution/model-catalog.md",
+   "Blob": "166d978d114e635bbef67e295c2ec1da73af6d1f",
+   "Bytes": 10624,
+   "Lines": 137,
+   "Sha256": "dc11c201d39b2e80017cb15e049c20f1a5008a8dd97a713c0d4ea3547b0770c3",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "166d978d",
+   "Why": "catálogo de modelos (paquete §2)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 137
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-claude-cli/R20261008T183600Z-char/README.md",
+   "Blob": "0b6828992e34e7b06f9e7a162cf2c7d149aa0667",
+   "Bytes": 1902,
+   "Lines": 15,
+   "Sha256": "35891208747d267092cde7f47216c0ee30a9c3f49789d8a7e2450997c63a7e73",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": "0b682899",
+   "Why": "caracterización de claude-cli 2.1.293 (paquete §2)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 15
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/requests/FX-02-unblock-request-2026-10-09.md",
+   "Blob": "203d288750bedd3d4b8560ff01374376d9760d21",
+   "Bytes": 37967,
+   "Lines": 173,
+   "Sha256": "cad97c4e8664fcb12cd9abafa37213b162bc8af59c6a5b302e1a1bd091a1ff5d",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": null,
+   "AddedBeyondPackage": true,
+   "Why": "solicitud de desbloqueo de FX-02 (H-1..H-3, filas U-09, U-10, U-23 y U-25): añadida por orden del Coordinator; registro de propuestas, no de autorizaciones (§61, punto 3); el paquete §2 dice que no es insumo canónico",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 173
+    },
+    {
+     "Section": "## 0. Resumen",
+     "Start": 24,
+     "End": 35
+    },
+    {
+     "Section": "## 1. Fronteras de FX-02: estado en `c8d69fcb`",
+     "Start": 37,
+     "End": 55
+    },
+    {
+     "Section": "## 2. Disposiciones pendientes",
+     "Start": 57,
+     "End": 99
+    },
+    {
+     "Section": "### 2.1 Huecos que no se contestan sin enmienda (no se propone respuesta)",
+     "Start": 59,
+     "End": 69
+    },
+    {
+     "Section": "### 2.2 Tabla de propuestas (todas son «propuesta de la preparación (no es decisión)»)",
+     "Start": 71,
+     "End": 99
+    },
+    {
+     "Section": "## 3. Bloque de respuesta (prerrellenado con las propuestas; el Coordinator acepta o edita línea a línea)",
+     "Start": 101,
+     "End": 139
+    },
+    {
+     "Section": "## 4. Secuencia mínima ejecutable tras las disposiciones",
+     "Start": 141,
+     "End": 173
+    },
+    {
+     "Section": "§2.2, fila U-09",
+     "Start": 79,
+     "End": 79
+    },
+    {
+     "Section": "§2.1, fila H-1",
+     "Start": 63,
+     "End": 63
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/requests/FX-02-decision-classification-2026-10-09.md",
+   "Blob": "79ad2db4c957895cf98db94fd1b33a93e86e56c1",
+   "Bytes": 27596,
+   "Lines": 201,
+   "Sha256": "c7602667412d3944cc80d17a0e379fb6a1f4dea0ade9bc70f53213495c0e6efb",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": null,
+   "AddedBeyondPackage": true,
+   "Why": "clasificación de las decisiones de FX-02 en cinco grupos (U-09 (e)): añadida por orden del Coordinator",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 201
+    },
+    {
+     "Section": "## §1. Tabla de los cinco grupos",
+     "Start": 29,
+     "End": 106
+    },
+    {
+     "Section": "## §2. Lo que de verdad bloquea FX-02 hoy (lista corta para el informe)",
+     "Start": 108,
+     "End": 139
+    },
+    {
+     "Section": "## §3. Preparación independiente",
+     "Start": 141,
+     "End": 170
+    },
+    {
+     "Section": "## §4. Solo el Owner (exacto)",
+     "Start": 172,
+     "End": 201
+    },
+    {
+     "Section": "§1, fila 9: U-09 (e)",
+     "Start": 41,
+     "End": 41
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A4/a4-guards.py",
+   "Blob": "2489e35f4a5f0bb43696966b669ae7dd09b5004b",
+   "Bytes": 95740,
+   "Lines": 1478,
+   "Sha256": "627386d397f322ddaa64ab5c984b7050454a0775219741c7854dc390c298074a",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": null,
+   "AddedBeyondPackage": true,
+   "Why": "guardas de A-4 (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 1478
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A4/a4-selftest.json",
+   "Blob": "166157f6032698e3cbde467a1cbf462f32177958",
+   "Bytes": 25347,
+   "Lines": 898,
+   "Sha256": "0777d38ce030bd3d3d11bb09a4b26d427064db79b7e274a72a6312a48bd5777c",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": null,
+   "AddedBeyondPackage": true,
+   "Why": "resultado de self-test de las guardas (A4TextBlob)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 898
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A4/a4-guards-result.json",
+   "Blob": "d011d8efe2fb7a757de6e3b3444673733ec1df14",
+   "Bytes": 35030,
+   "Lines": 1340,
+   "Sha256": "bee35f27ab22da1f93334a8a5290e1f84ee25ea8b6cca6a0871dd08e2613a9b0",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "PackageDeclaredBlob": null,
+   "AddedBeyondPackage": true,
+   "Why": "resultado de `a4-guards.py run` en modo CORRECTION sobre 7f065a3a (Head, A4Blob, G2C y G5b)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 1340
+    }
+   ]
+  }
+ ],
+ "AllowedTransitiveInputs": [],
+ "TransitivePolicy": "sin transitivos: con --safe-mode el runtime no inyecta CLAUDE.md, memoria ni ganchos (caracterización C1); el prompt es la única instrucción",
+ "ReadPolicy": {
+  "Closure": "el cierre es por archivo; `LineRanges` señala las secciones que pide el paquete §2 (Scope SECTIONS) o el archivo entero (ENTIRE). Los rangos orientan, no limitan: un archivo del cierre puede leerse entero o por otros rangos",
+  "Read": "ruta absoluta de un archivo del cierre bajo el clon, o de un archivo del run; en archivos de más de 60 000 bytes, offset y limit de 300 líneas como máximo",
+  "Grep": "solo con `path` = un ARCHIVO del cierre o del run; sin `glob` ni `type`; nunca un directorio ni sin `path`",
+  "Glob": "su alcance (path + patrón) solo puede contener archivos del cierre o del run; un patrón que alcance cualquier otro archivo es una lectura fuera del cierre aunque no se lea ese archivo",
+  "LargeFileThresholdBytes": 60000,
+  "MaxRangeLines": 300,
+  "LargeFiles": [
+   "docs/initiatives/I-62-proposal-v14.md",
+   "docs/initiatives/I-62-A-1.md",
+   "docs/initiatives/I-62-A-3.md",
+   "docs/AUTOMATION_PLAN.md",
+   "docs/automation/agent-execution/README.md",
+   "docs/automation/decisions/I-62.md",
+   "docs/automation/evidence/I-62-evidence.md",
+   "docs/automation/evidence/I-62-F6/kits/FX-02/README.md",
+   "docs/automation/evidence/I-62-A4/a4-guards.py"
+  ],
+  "LongLines": {
+   "docs/initiatives/I-62-proposal-v14.md": [
+    2352,
+    2380,
+    2382
+   ],
+   "docs/initiatives/I-62-A-3.md": [
+    1487
+   ],
+   "docs/automation/decisions/I-62.md": [
+    657,
+    734,
+    750,
+    768,
+    787,
+    805,
+    819
+   ],
+   "docs/automation/evidence/I-62-F6/kits/FX-02/README.md": [
+    340,
+    355
+   ]
+  },
+  "Premises": "toda premisa (PremiseRefs) se cita de líneas leídas enteras con Read: de archivos del cierre (Path relativo al clon) o de order.txt y order-s60.txt (Path absoluto en D:\\r62-arch-a4-run o el nombre suelto); nunca de prompt.md; una lectura fallida nunca cuenta; una línea larga truncada por Read no cuenta como entregada",
+  "FailedReads": "una llamada que falla o no devuelve contenido es una lectura fallida: no acredita contenido",
+  "AbsentCommits": "los commits del Freeze (b64a3b64) y de V14 (4c617e82) son anteriores a un rebase y no están en el clon: V14 se identifica por su blob en el commit (34ad80ea)"
+ },
+ "AllowedTools": [
+  "Read",
+  "Grep",
+  "Glob",
+  "StructuredOutput"
+ ],
+ "ToolPolicy": "solo Read, Grep y Glob, según ReadPolicy, y StructuredOutput para entregar el resultado; cualquier otra herramienta (también un intento rechazado por el runtime) y toda denegación de permiso (permission_denials) son violaciones",
+ "NotTriggered": [
+  {
+   "Source": "CLAUDE.md y AGENTS.md (lecturas iniciales, paso 4 «dotnet test»)",
+   "Reason": "--safe-mode: el runtime no los inyecta; el revisor no tiene herramientas de ejecución"
+  },
+  {
+   "Source": "documentation-governance y el Context Pack de I-62",
+   "Reason": "sin CLAUDE.md inyectado no hay obligación transitiva; el cierre lo fijan el paquete §2 y la orden del Coordinator"
+  },
+  {
+   "Source": "enlaces de A-4, del paquete, de la solicitud y de la evidencia a documentos fuera del cierre (otros archivos del kit de FX-02, `frontiers.json`, el resto del bloque A2-P2, ADR-0046 y ADR-0048, el tablero de F6, state/I-62.yml, el fixture)",
+   "Reason": "citas descriptivas; el cierre lo fijan la tabla de insumos del paquete §2 y la orden del Coordinator"
+  },
+  {
+   "Source": "a4-guards.py self-test, preview y run",
+   "Reason": "sin herramientas de ejecución; los resultados custodiados son a4-selftest.json y a4-guards-result.json"
+  }
+ ],
+ "DeclaredRuntimeContext": [
+  "prompt de sistema propio de claude-cli 2.1.293 en modo -p con --safe-mode: sin CLAUDE.md, memoria, skills de usuario, ganchos ni MCP (medido en C1)",
+  "adjunto session_context: correo del usuario (identidad) y estado de Git del cwd (rama main y asuntos de los commits recientes del clon)",
+  "adjunto environment: cwd D:\\r62-arch-a4, plataforma, shell, directorio scratchpad del runtime y directorios adicionales (--add-dir del run)",
+  "adjuntos model, date, credential_org (uuid de la organización), prompt_snapshot, total_tokens_reminder y el esquema de structured_output",
+  "sin directorio previo en ~/.claude/projects para D:\\r62-arch-a4 (comprobado por el invocador): no hay memoria ni transcripciones del proyecto"
+ ],
+ "ForbiddenInputs": [
+  "~/.claude/projects/* (transcripciones y memoria de la sesión autora, del Coordinator y de cualquier otra sesión)",
+  "otras sesiones, incluidas las revisiones de A-2 y A-3",
+  "el worktree real de I-62 (~/.codex/worktrees/*), el repositorio de trabajo y los clones D:\\r62-* distintos de D:\\r62-arch-a4",
+  "el fixture de F6 (D:\\r62-fixture\\*)",
+  "los archivos de D:\\r62-arch-a4-run distintos de los tres del run, incluido el subdirectorio launch/",
+  "cualquier archivo del clon fuera de CanonicalInputs (también el registro de caracterización de claude-cli que fija la compuerta)",
+  "Grep o Glob cuyo alcance sea un directorio con archivos fuera del cierre; listados de directorios",
+  "red (fetch, web)",
+  "invocar otros agentes o subagentes",
+  "escribir, hacer commit o push"
+ ],
+ "CorpusDistinctNonAscii": 53
+}

@@ -3140,3 +3140,22 @@ solo desde artefactos custodiados.
   - U-09 (e), un hueco nuevo: quién decide A1'-A8' dentro de la ventana; lo trata la revisión de A-4 (Q-A4-11);
   - la sonda de A4-1;
   - las acciones del Owner (`A4-SONDA-CONSUMO`, la apertura de A2 y los «continúa»).
+
+## 103. A-4: kit de la revisión formal por `claude-cli` custodiado antes del lanzamiento (R20261009T122416Z-bce3; decisiones §61, punto 2)
+
+- **Kit:** [R20261009T122416Z-bce3](I-62-architect-A-4/R20261009T122416Z-bce3/README.md). Contiene:
+  - objeto: A-4 `7d863219`, la corrección de `27ffa26b` hecha en `7f065a3a` (las cinco reglas son idénticas; el revisor lo comprueba en el Paso 0
+    con G2C);
+  - recibo `02be0c34`;
+  - cierre de 27 archivos canónicos (los del paquete §2, el paquete, las guardas, la solicitud de desbloqueo y la clasificación de FX-02) y 3 del
+    run;
+  - prompt `fc649df5…`, que exige disposición expresa sobre la ruta `cmd.exe` (A4-1), la sustitución del Architect (A4-2), H-1 (A4-3), H-2
+    (A4-4), H-3 (A4-5, con veredicto propio) y U-09 (e) / Q-A4-11;
+  - auditor v5.1-a4, con `selftest` 112/112 y 131 mutantes eliminados;
+  - compuerta MEASURED sobre la caracterización `20d0de2c…`;
+  - clon `D:62-arch-a4` verificado (AllChecks) y run `D:62-arch-a4-run` con tres archivos;
+  - ensayo en seco sin bloqueos; manifiesto `2aa5e927…`.
+- **Transporte:** `claude-cli` 2.1.293 (`8693c4a0…`), `claude-opus-5-5` xhigh, solo Read, Grep y Glob, espera de 120 s tras `auth status`, tope de
+  3 600 s, sin reintento.
+- **Consumo:** cubierto por CLAUDE-CLI-I62 = A.
+- **Estado:** custodiado y NO lanzado. A-4 no se modifica a partir de ahora.
