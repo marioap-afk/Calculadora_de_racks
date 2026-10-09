@@ -67,3 +67,27 @@ BLOQUE-CODEX-CONSUMO = A (≤ 2 invocaciones read-only de codex-cli para el par 
 Las dos autorizaciones pueden darse juntas o por separado: `B3-CONSUMO = A` y/o `BLOQUE-CODEX-CONSUMO = A`. Cada una solo tiene efecto con la
 disposición del Coordinator que la nombra. No se pide ninguna otra apertura de sesión: las revisiones de Architect y Reviewer siguen por
 `claude-cli` (decisiones §57, punto 3).
+
+## 4. Añadido (append-only): comparación por clave suspendida; controles del bloque de Codex sin lectura de valores
+
+Esta sección se añade sin cambiar las secciones 1 a 3. Se publica antes de cualquier disposición o autorización del bloque de Codex para que
+ninguna operación del bloque se ejecute con controles distintos de los publicados.
+
+- **Por qué.** La comparación por clave de `config.toml` lee valores en el host, aunque no los registra ni los publica. Puede hacerse con digests
+  HMAC por clave, con la clave solo en el scratchpad local, o revirtiendo un valor y volviendo a calcular el hash.
+  - Los términos con que el Owner aprobó OD-2 dicen «nunca valores» (`owner-decision-packets.md`, OD-2, fila «Seguridad»).
+  - El texto materializado lo repite: «Nunca se leen ni se registran valores de configuración» (`agent-execution/README.md`).
+  - El historial de esas lecturas se publica con la candidata A-3, en el paquete de decisión OD-2-MAT, sección «Lectura de valores». No afirma ni
+    niega si las aprobaciones anteriores las cubrían.
+- **Suspensión.** La sesión no hace comparaciones por clave desde la decisión S-01 de la preparación de A-3, posterior al commit `b0884216`. Ese
+  commit custodia la última localización por clave (evidencia §87; §2 de esta solicitud, fila «Huella resultante»). Solo una autorización expresa
+  del Owner podría reanudarlas, y tendría que nombrar el programa y su blob, las superficies que lee y su caducidad. No se pide ahora.
+- **Controles del bloque de Codex (§2).** La fila «Controles» queda así: SHA-256 de todo `config.toml`, nombres de clave saneados y estructura,
+  identidad del binario y versión de la app, antes y después de cada operación, sin comparación por clave. Un cambio de huella se sigue
+  detectando; ya no se localiza qué claves cambiaron.
+  - `BLOQUE-CODEX-CONSUMO = A` no cubre leer valores.
+  - La disposición `BLOQUE-CODEX` del Coordinator que nombre el bloque se entiende con estos controles.
+  - El resto del bloque no cambia: par, tope, celdas, sin `workspace-write` y sin cambios de `config.toml`, `trust_level` ni sandbox.
+- **Lo que sigue.** La decisión del Owner OD-2-MAT (línea base material frente a huella exacta, materia reservada al Owner por decisiones §57,
+  punto 4) se añadirá a esta misma solicitud en una sección posterior, después del commit que publique la candidata A-3. Así la respuesta del Owner
+  sigue siendo una sola.
