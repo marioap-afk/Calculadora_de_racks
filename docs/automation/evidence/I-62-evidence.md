@@ -3399,3 +3399,12 @@ solo desde artefactos custodiados.
   (trío), D-4 (alcance de la sonda y Q-A4-03 = RESOLVE en la forma I62), D-5 (S02 → S03 → sonda), D-0 (oráculo), D-2 (disparador de A4-2), D-3
   (elegibilidad de `claude-cli`: operaciones 8 y 9 sin observar, descriptor y catálogo desfasados) y D-6.
 - **Estado de FX-02:** sin invocaciones; ninguna obligación de la ventana verificada todavía; A2 sin solicitar.
+
+## 117. Decisiones §65: OD-2f = A y consumo de la sonda A4-1 para el trío nuevo; D-0..D-6 dispuestas
+
+- **Owner:** `OD-2 = A` sobre `73890CA3…` (OD-2f) y `A4-SONDA-CONSUMO = A` para el trío `3553cd6e…/26.1002.7124.0/73890CA3…`, byte a byte las de
+  la solicitud (`0f12cece…`). P-01 levantado; medición pasiva previa al registro (2026-10-09T22:51:24Z): huella, binario y app iguales al trío.
+- **Coordinator:** A-4 sigue AGREED. D-0: el oráculo congelado (PASS = «VERIFIED + negativos con su disposición»), con S26 como obligación posterior.
+  D-1: trío nuevo. D-4: una sola sonda que cubra PLAN y VERIFY. D-5: O4 → clon A2 → sonda → preflight/P-07 → apertura A2. D-2: la medición 0/6 del
+  Architect de Codex está STALE. D-3: solo la medición imprescindible de `claude-cli`. D-6: AUTHOR custodiada, con la discrepancia con B.2 explícita.
+- **Siguiente:** completar y publicar O4; clon A2; sonda única (diseño de D-4); preflight y P-07; sin abrir A2.

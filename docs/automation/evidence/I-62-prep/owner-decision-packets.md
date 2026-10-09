@@ -364,7 +364,7 @@ codex-cli». Sustituye a las solicitudes OD-2d, que quedaron obsoletas por las a
 | Aprobar | `OD-2 = A (línea base 6518EFAB0BC0C0C2C2C5DCCD3A3D3646DFDC9F15B222FD6B744CBC84B857DB32; binario 3553cd6e7df5a093d8cb8301cd8088a57e0971aba71ddbe0e67f7f44a15cdf68)` |
 | Rechazar | `OD-2 = RECHAZAR`. `codex-cli` sigue en STOP P-01. FX-02 y FX-06 tendrían que resolverse con otros transportes o quedar UNVERIFIED con causa |
 
-## OD-2f — Línea base exacta de `codex-cli` tras el cambio de huella del 2026-10-09T16:56Z (2026-10-09; PENDIENTE)
+## OD-2f — Línea base exacta de `codex-cli` tras el cambio de huella del 2026-10-09T16:56Z (2026-10-09; DECIDIDA: A, decisiones §65)
 
 Lo exige la disposición del Coordinator, decisiones §64, punto 2: «Si algún invalidador cambia, STOP y solicitar autoridad para la nueva identidad.
 No reutilizar la autorización». Medición: [result.json](../I-62-F6/OD-2/R20261009T215229Z-s64-idcheck/result.json).
