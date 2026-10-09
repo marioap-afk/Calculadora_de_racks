@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §65; evidencia §117) — OD-2f = A (73890CA3) y consumo de la sonda A4-1 para el trío nuevo; FX-02: O4 → clon A2 → sonda única PLAN+VERIFY → preflight/P-07 → apertura A2 (sin abrir aún); claude-cli: medición imprescindible por pedir; AUTHOR con discrepancia B.2 explícita; sin FX-02 PASS anticipado"
+  next_action: "F6 (decisiones §65; evidencia §118) — FX-02: O4 publicada (95bdc29d, CI success), clon A2 hecho (S03 PASS); siguiente: sonda única A4-1 (kit v3) → preflight/P-07 → pedir apertura de A2; N9/N10 sin aprobar; claude-cli: medición imprescindible por autorizar (ops 5, 7, 8, 9); sin FX-02 PASS anticipado"
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual

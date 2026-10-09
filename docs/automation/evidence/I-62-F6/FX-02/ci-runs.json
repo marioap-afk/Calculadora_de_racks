@@ -1,0 +1,14 @@
+{
+ "Schema": "fx02-ci-runs (supervisión; RackCad)",
+ "Repository": "github.com/marioap-afk/rackcad-i62-fixture",
+ "Runs": [
+  {
+   "Step": "S02 — orden FX-U1-O4",
+   "RunId": 38002393525,
+   "Event": "push",
+   "Branch": "fx/u1",
+   "HeadSha": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+   "Conclusion": "success"
+  }
+ ]
+}

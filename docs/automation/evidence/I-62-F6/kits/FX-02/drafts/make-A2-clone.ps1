@@ -5,8 +5,10 @@
   de la parte 1 de launch-card-A2.md (#1 en parte, #2, #4, #5, #6 en parte, #8 y #13).
 
 .DESCRIPTION
-  PREPARADO, NO EJECUTADO (preparación de la supervisión, plano a; clasificación de FX-02, §3 fila P5). Solo se ejecuta tras S02: la orden FX-U1-O4
-  publicada en fx/u1 de origin y de github. W3 de la clasificación: el clon espera a S02.
+  Preparación de la supervisión (plano a; clasificación de FX-02, §3 fila P5). Solo se ejecuta tras S02: la orden FX-U1-O4 publicada en fx/u1 de
+  origin y de github (decisiones §65, punto 7: O4 → clon A2 → sonda A4-1 → preflight/P-07 → apertura de A2). Por decisiones §65, punto 11, el clon no
+  depende de la huella de codex-cli: #8 solo registra el binario y la versión de la app; la huella de config.toml la comprueba la medición de la
+  sonda A4-1 antes y después de su única invocación.
 
   Receta (README S03 y tarjeta #4): git clone --no-local desde D:\r62-fixture\fixture-origin.git, rama fx/u1, en la punta vigente tras S02;
   core.autocrlf=false; autor y committer `fixture <fixture@example.invalid>` locales al clon; remotos origin (el origen del fixture) y github
@@ -22,8 +24,8 @@
   Tras clonar, una comprobación fallida deja el clon intacto (no borra nada) y termina con el código 20.
 
   Lecturas: el origen del fixture (git de lectura), github (git ls-remote de lectura, salvo -SkipGithubLsRemote), la existencia de rutas de
-  %USERPROFILE%\.claude, el SHA-256 y los NOMBRES saneados de claves de %USERPROFILE%\.codex\config.toml (nunca valores ni digests por clave, con
-  cfg-fp.ps1 del kit de la sonda), el SHA-256 del binario de Codex y la versión de la app. Escrituras: solo el clon nuevo y el informe. Nunca
+  %USERPROFILE%\.claude, el SHA-256 del binario de Codex y la versión de la app (config.toml no se lee: decisiones §65, punto 11). Escrituras: solo
+  el clon nuevo y el informe. Nunca
   escribe en el origen ni en github. El informe no contiene el nombre del usuario de Windows: las rutas se registran como %USERPROFILE% y
   %LOCALAPPDATA%.
 
@@ -37,17 +39,14 @@ param(
     [string]$ClonePath = 'D:\r62-fixture\A2',
     [string]$GithubUrl = 'https://github.com/marioap-afk/rackcad-i62-fixture.git',
     [ValidatePattern('^[0-9a-f]{40}$')][string]$ExpectedMain = 'fbe25347799e5b801ef708454212335537448bd1',
-    [string]$CfgFpScript = (Join-Path $PSScriptRoot '..\a4-probe-draft\cfg-fp.ps1'),
-    [string]$BaselineKeyNamesPath = (Join-Path $PSScriptRoot '..\a4-probe-draft\baseline-keynames-6518EFAB.json'),
     [string]$ReportPath = (Join-Path $PSScriptRoot 'out\clone-A2-report.json'),
     [switch]$SkipGithubLsRemote
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-# Identidad aceptada por OD-2e = A (decisiones §59) y medida en el bloque A2-P2 (evidencia §93). La CLI 0.162.0-alpha.2 corresponde a este binario;
-# no se invoca codex para comprobarla (ninguna invocación de codex-cli fuera de una autorización).
-$ExpectFp = '6518EFAB0BC0C0C2C2C5DCCD3A3D3646DFDC9F15B222FD6B744CBC84B857DB32'
+# Binario y app del trío aceptado (OD-2e = A, decisiones §59; huella sustituida por OD-2f = A, decisiones §65). Solo se registran (#8 informativo);
+# no se invoca codex para comprobarlos (ninguna invocación de codex-cli fuera de una autorización).
 $ExpectBin = '3553cd6e7df5a093d8cb8301cd8088a57e0971aba71ddbe0e67f7f44a15cdf68'
 $ExpectBinLabel = '9691020b546a15b2'
 $ExpectApp = '26.1002.7124.0'
@@ -65,7 +64,7 @@ $report = [ordered]@{
     Checks        = [ordered]@{}
     ManualChecks  = @('#0 registro de CD-26 resuelta por hecho', '#1 corrida de CI de la orden', '#3 P-07 con la disposición de CD-08 (U-14)',
                       '#6 salida del gancho, plugins habilitados y contexto que inyecta la app', '#7 área transitoria según CD-02 (U-08)',
-                      '#8 sonda medida de A4-1 (F-A4-PROBE) e invalidadores no observables aquí (autenticación, modelo, effort, blobs de catálogo y routing, instancia del host)',
+                      '#8 huella de config.toml y sonda medida de A4-1 (F-A4-PROBE), con los invalidadores que no se observan aquí (autenticación, modelo, effort, blobs de catálogo y routing, instancia del host)',
                       '#9-#12 listas A y B, archivos sellados y oráculos', '#10 modo de permisos (después de S04)')
     Result        = 'NOT_RUN'
     ExitCode      = $null
@@ -224,24 +223,17 @@ try {
         Note                 = 'el contenido no se lee aquí; la comprobación de que ninguna entrada trae hechos de FX-U1, del oráculo o de RackCad es MANUAL'
     })
 
-    # #8 huella de codex-cli (nombres saneados, nunca valores) y binario
-    $fpOut = Join-Path (Split-Path -Parent $ReportPath) 'clone-A2-cfg.json'
-    $fp = (& pwsh -NoProfile -File $CfgFpScript -Out $fpOut | Select-Object -Last 1).Trim()
-    $names = (Get-Content -LiteralPath $fpOut -Raw -Encoding utf8 | ConvertFrom-Json).KeyNames
-    $base = Get-Content -LiteralPath $BaselineKeyNamesPath -Raw -Encoding utf8 | ConvertFrom-Json
-    $structEqual = ((@($names) -join "`n") -ceq (@($base) -join "`n"))
+    # #8 binario y app de codex-cli: informativo (decisiones §65, punto 11: el clon no depende de la huella; config.toml no se lee aquí)
     $bins = @(Get-ChildItem -Path (Join-Path $env:LOCALAPPDATA 'OpenAI\Codex\bin\*\codex.exe') -ErrorAction SilentlyContinue)
     $binPath = Join-Path $env:LOCALAPPDATA "OpenAI\Codex\bin\$ExpectBinLabel\codex.exe"
     $binHash = if (Test-Path -LiteralPath $binPath) { (Get-FileHash -LiteralPath $binPath -Algorithm SHA256).Hash.ToLowerInvariant() } else { $null }
     $app = (& powershell.exe -NoProfile -Command '(Get-AppxPackage *OpenAI.Codex*).Version' 2>$null | Select-Object -First 1)
     $app = if ($app) { $app.Trim() } else { $null }
-    $ok8 = ($fp -eq $ExpectFp) -and $structEqual -and ($bins.Count -eq 1) -and ($binHash -eq $ExpectBin) -and ($app -eq $ExpectApp)
-    Set-Check '#8 huella y binario de codex-cli' ([ordered]@{
-        ConfigSha256 = $fp; KeyNamesCount = @($names).Count; StructureEqualToBaseline = $structEqual; CodexExeCount = $bins.Count
-        BinaryPath = (Hide-UserPath $binPath); BinarySha256 = $binHash; AppVersion = $app; ExpectedCli = $ExpectCli
-        Expected = [ordered]@{ ConfigSha256 = $ExpectFp; BinarySha256 = $ExpectBin; AppVersion = $ExpectApp; Basis = 'OD-2e = A (decisiones §59)' }
-        Result = $(if ($ok8) { 'pass' } else { 'fail' })
-        Note = 'sin valores ni digests por clave; un fallo es P-01 y exige una OD-2 nueva (OD-2-MAT = A); la medición de A4-1 se comprueba aparte'
+    Set-Check '#8 binario y app de codex-cli (informativo)' ([ordered]@{
+        CodexExeCount = $bins.Count; BinaryPath = (Hide-UserPath $binPath); BinarySha256 = $binHash; AppVersion = $app; ExpectedCli = $ExpectCli
+        MatchesAcceptedTrio = (($bins.Count -eq 1) -and ($binHash -eq $ExpectBin) -and ($app -eq $ExpectApp))
+        Result = 'recorded'
+        Note = 'la huella de config.toml y el trío completo los comprueba la medición de la sonda A4-1 antes y después de su invocación; una diferencia es P-01'
     })
 
     # #13 directorio -C del Controller

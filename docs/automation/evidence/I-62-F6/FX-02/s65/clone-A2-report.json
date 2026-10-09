@@ -1,0 +1,123 @@
+{
+ "Schema": "fx02-prelaunch-A2-clone (staging; supervisión, plano a)",
+ "StartedUtc": "2026-10-09T23:03:56Z",
+ "Parameters": {
+  "ExpectedTip": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+  "ExpectedMain": "fbe25347799e5b801ef708454212335537448bd1",
+  "ClonePath": "D:\\r62-fixture\\A2",
+  "OriginPath": "D:\\r62-fixture\\fixture-origin.git",
+  "GithubUrl": "https://github.com/marioap-afk/rackcad-i62-fixture.git"
+ },
+ "PreChecks": {
+  "OriginTip": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+  "ClaudeProjectDirAbsent": true
+ },
+ "Clone": {
+  "Created": true,
+  "CreatedUtc": "2026-10-09T23:04:05Z"
+ },
+ "Checks": {
+  "#2 main": {
+   "Observed": "fbe25347799e5b801ef708454212335537448bd1",
+   "Expected": "fbe25347799e5b801ef708454212335537448bd1",
+   "Result": "pass"
+  },
+  "#1 orden en la punta": {
+   "FixtureOrderPresent": true,
+   "UnresolvedMarkers": [],
+   "PathsChangedByTip": [
+    "docs/automation/decisions/FX-U1.md"
+   ],
+   "Result": "pass",
+   "Note": "la corrida de CI de la orden se comprueba aparte (MANUAL)"
+  },
+  "#1 github": {
+   "Observed": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+   "Expected": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+   "Result": "pass"
+  },
+  "#4 clon": {
+   "Head": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+   "Branch": "fx/u1",
+   "StatusPorcelainEmpty": true,
+   "StatusIgnoredLines": 0,
+   "CoreAutocrlf": "false",
+   "UserName": "fixture",
+   "UserEmail": "fixture@example.invalid",
+   "Remotes": [
+    "github",
+    "origin"
+   ],
+   "Origin": "D:/r62-fixture/fixture-origin.git",
+   "Github": "https://github.com/marioap-afk/rackcad-i62-fixture.git",
+   "Result": "pass"
+  },
+  "#5 sin rastros": {
+   "ClaudeProjectDir": "%USERPROFILE%\\.claude\\projects\\D--r62-fixture-A2",
+   "Absent": true,
+   "Result": "pass",
+   "Note": "si la sonda de A4-1 corre después con -C en este clon, #4 y #5 se repiten tras ella; su registro de sesión de Codex va a LB-1"
+  },
+  "#6 entradas automáticas (hashes)": {
+   "GlobalClaudeMd": {
+    "Path": "%USERPROFILE%\\.claude\\CLAUDE.md",
+    "Exists": false
+   },
+   "GlobalSettings": {
+    "Path": "%USERPROFILE%\\.claude\\settings.json",
+    "Exists": true,
+    "Sha256": "836ae4795a94f3189c6490dadee32d5633fe1d23d1962b06ff976afaaae74a02"
+   },
+   "GlobalSettingsLocal": {
+    "Path": "%USERPROFILE%\\.claude\\settings.local.json",
+    "Exists": false
+   },
+   "CloneAgentsMd": {
+    "Path": "D:\\r62-fixture\\A2\\AGENTS.md",
+    "Exists": true,
+    "Sha256": "aa7dcd2cb5308aff43b0e190d780aa92216830ad079a102a5999498452ab89ce",
+    "GitBlobAtHead": "69b1f03282a128993ba348ba1e44a1b6b9c95040"
+   },
+   "CloneClaudeMd": {
+    "Path": "D:\\r62-fixture\\A2\\CLAUDE.md",
+    "Exists": true,
+    "Sha256": "c16f28f314936e4df41e61e53e7292d7438c081f5bc5b5e20837f296bedc87c6",
+    "GitBlobAtHead": "d0f12c8ea396d7916abd44290daa3a0b958f3ebc"
+   },
+   "CloneClaudeSettings": {
+    "Path": "D:\\r62-fixture\\A2\\.claude\\settings.json",
+    "Exists": false
+   },
+   "Result": "recorded",
+   "Note": "el contenido no se lee aquí; la comprobación de que ninguna entrada trae hechos de FX-U1, del oráculo o de RackCad es MANUAL"
+  },
+  "#8 binario y app de codex-cli (informativo)": {
+   "CodexExeCount": 1,
+   "BinaryPath": "%LOCALAPPDATA%\\OpenAI\\Codex\\bin\\9691020b546a15b2\\codex.exe",
+   "BinarySha256": "3553cd6e7df5a093d8cb8301cd8088a57e0971aba71ddbe0e67f7f44a15cdf68",
+   "AppVersion": "26.1002.7124.0",
+   "ExpectedCli": "codex-cli 0.162.0-alpha.2",
+   "MatchesAcceptedTrio": true,
+   "Result": "recorded",
+   "Note": "la huella de config.toml y el trío completo los comprueba la medición de la sonda A4-1 antes y después de su invocación; una diferencia es P-01"
+  },
+  "#13 -C del Controller": {
+   "WorkingDirectory": "D:\\r62-fixture\\A2",
+   "Basis": "decisiones §55, U-03",
+   "Result": "pass"
+  }
+ },
+ "ManualChecks": [
+  "#0 registro de CD-26 resuelta por hecho",
+  "#1 corrida de CI de la orden",
+  "#3 P-07 con la disposición de CD-08 (U-14)",
+  "#6 salida del gancho, plugins habilitados y contexto que inyecta la app",
+  "#7 área transitoria según CD-02 (U-08)",
+  "#8 huella de config.toml y sonda medida de A4-1 (F-A4-PROBE), con los invalidadores que no se observan aquí (autenticación, modelo, effort, blobs de catálogo y routing, instancia del host)",
+  "#9-#12 listas A y B, archivos sellados y oráculos",
+  "#10 modo de permisos (después de S04)"
+ ],
+ "Result": "PASS (comprobaciones automáticas); las MANUAL siguen pendientes",
+ "ExitCode": 0,
+ "FinishedUtc": "2026-10-09T23:04:14Z"
+}

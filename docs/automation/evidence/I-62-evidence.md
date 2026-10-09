@@ -3408,3 +3408,21 @@ solo desde artefactos custodiados.
   D-1: trío nuevo. D-4: una sola sonda que cubra PLAN y VERIFY. D-5: O4 → clon A2 → sonda → preflight/P-07 → apertura A2. D-2: la medición 0/6 del
   Architect de Codex está STALE. D-3: solo la medición imprescindible de `claude-cli`. D-6: AUTHOR custodiada, con la discrepancia con B.2 explícita.
 - **Siguiente:** completar y publicar O4; clon A2; sonda única (diseño de D-4); preflight y P-07; sin abrir A2.
+
+## 118. FX-02: orden O4 publicada (S02), clon A2 (S03) y operaciones de `claude-cli` para el Architect (decisiones §65, puntos 7, 9 y 11)
+
+- **S02.** Orden FX-U1-O4 publicada en `fx/u1` del fixture, commit `95bdc29d` (padre `c785def9`), en `origin` y `github`; búsqueda P-16 con 0
+  aciertos; CI del fixture 38002393525 **success** ([ci-runs.json](I-62-F6/FX-02/ci-runs.json)). Trazabilidad por punto en
+  [order-O4-published.md](I-62-F6/FX-02/s65/order-O4-published.md).
+  - N9 y N10 quedan fuera: ninguna disposición aprueba sus mutaciones. Si se aprueban, van en un commit antes del Q0.
+  - La revisión del Architect queda tras el Q7 (D-0), con su bloque de autorización después.
+- **S03.** Clon `D:\r62-fixture\A2` en `95bdc29d`, limpio, con la identidad sintética del fixture y los remotos `origin` y `github`; sin
+  rastros de sesiones previas ([informe](I-62-F6/FX-02/s65/clone-A2-report.json)). El script del clon ya no depende de la huella (§65, punto 11):
+  #8 solo registra el binario y la app, y la huella la mide la sonda.
+- **D-3** ([análisis](I-62-F6/FX-02/s65/claude-cli-architect-ops.md)): el Architect necesita las operaciones 2-9. Medidas: 2, 3, 4, 6, la
+  introspección y los requisitos del perfil. Parciales: 5 (sin el esquema canónico) y 7 (solo el proceso raíz). Sin medir: 8 y 9. Además falta la
+  entrada de la celda en el catálogo. Medición imprescindible propuesta: una sola invocación read-only (línea `CLAUDE-CLI-MEDICION-FX02`). La entrada de
+  catálogo del fixture va después de la última invocación del Controller, porque su blob invalida A4-1. Riesgo: `claude-code` 2.1.295 instalado junto
+  a 2.1.293.
+- **Siguiente:** congelar y lanzar la sonda única A4-1 en `D:\r62-fixture\A2` (kit v3 en revisión); después, el preflight y P-07, y pedir la
+  apertura de A2.
