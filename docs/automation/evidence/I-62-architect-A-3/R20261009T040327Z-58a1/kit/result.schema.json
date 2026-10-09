@@ -54,7 +54,7 @@
   "AttemptSeq": {
    "type": "integer",
    "enum": [
-    1
+    2
    ]
   },
   "RequestedRole": {

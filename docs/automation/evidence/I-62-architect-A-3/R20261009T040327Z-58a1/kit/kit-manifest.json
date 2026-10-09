@@ -2,15 +2,31 @@
  "Kit": "I-62 A-3: kit de la UNA revisión formal independiente del Architect por claude-cli (disposición §58, punto 3; decisiones §57, punto 3; Owner CLAUDE-CLI-I62 = A)",
  "Ids": {
   "RunId": "R20261009T040327Z-58a1",
-  "InvocationId": "I20261009T040327Z-58a1",
+  "InvocationId": "I20261009T052403Z-58a1",
   "LogicalReviewRequestId": "L20261009T040327Z-58a1",
-  "AttemptSeq": 1
+  "AttemptSeq": 2
  },
+ "PreviousAttempts": [
+  {
+   "AttemptSeq": 1,
+   "InvocationId": "I20261009T040327Z-58a1",
+   "SessionId": "ae3590eb-b508-4949-84da-8aa7340df993",
+   "CustodyCommit": "524b293e",
+   "Launched": "2026-10-09T05:18:56Z",
+   "Accreditation": "INVALID_LAUNCH",
+   "Cause": "TRANSPORT_AUTH_REFRESH_CONFLICT",
+   "ModelTurns": 0,
+   "Tokens": 0,
+   "CostUsd": 0,
+   "ReviewProduced": false,
+   "Record": "attempt-1/accreditation.json (junto al README del kit)"
+  }
+ ],
  "Commit": "492885254b58203f0bc0099345db2998b25d2a2b",
  "ObjectIntroducedBy": "91e29886a4870dd673372c66453d76ea503a22b9",
  "Object": "docs/initiatives/I-62-A-3.md blob ea6721f78cb63fbc4f9d99563f3262eb36a32c5d",
  "Annex": "docs/initiatives/I-62-A-3-annex-maf-codex.md blob f410f7fced25440be3866473974f417d2f6a9b50",
- "SessionId": "ae3590eb-b508-4949-84da-8aa7340df993",
+ "SessionId": "2e266dfe-a1ca-4372-acd9-924c980bf50a",
  "Transport": "claude-cli 2.1.293 (%APPDATA%\\Claude\\claude-code\\2.1.293\\83cb0bd7fed4\\claude.exe, SHA-256 8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa)",
  "Auditor": "v5.1-a3 (declarado y autoprobado antes del lanzamiento: selftest-result.json AllPass True, 107/107; mutation-result.json AllKilled True, 127/127)",
  "Clone": "D:/r62-arch-a3 (git clone --no-local -c core.autocrlf=false --single-branch; main = el commit; sin remoto; clone-verification.json AllChecks)",
@@ -24,23 +40,23 @@
   },
   "clone-verification.json": {
    "Bytes": 10272,
-   "Sha256": "6f46c4f02a2733d7d7eddf7f908d8cfaf2fedfcc99bec6ed3644548a385c235d"
+   "Sha256": "564b6513e7182d644569b2a028a9dda751f55653de857934391daf6c0d61c176"
   },
   "closure.json": {
-   "Bytes": 54802,
-   "Sha256": "53323df7ccb484f4c364c9baed2f54ddeeb6e1075df87c5050e5d2e08d3a163a"
+   "Bytes": 55562,
+   "Sha256": "50f906ee7a7f5b5fec5b13788913b274d6358095fda5086a23922b2eba5e26b1"
   },
   "launch.py": {
-   "Bytes": 14735,
-   "Sha256": "91a4d72e56ae8cafb9289f410589a1b4e8d767d9cdff281116e684aec3cbbda8"
+   "Bytes": 17470,
+   "Sha256": "4cbfc61cc299b7964e0b5d038bc067237e47676c8e973f7e7159b8faae6e8ffc"
   },
   "make_closure.py": {
-   "Bytes": 38737,
-   "Sha256": "7b61c5dd10f81435efdbfdb2c09c1e3e6a36b2aa7a4f8791eb96c8817654facd"
+   "Bytes": 39757,
+   "Sha256": "da4f05ab656f58d9f6adc97d02b22ef92f2768dfaf36f2e509cdc5bd788d7dcf"
   },
   "make_manifest.py": {
-   "Bytes": 5172,
-   "Sha256": "f2d7ba559cd6e1953e92599a1490840323dc237a906b33216e32fb9b0de2a34e"
+   "Bytes": 5229,
+   "Sha256": "a5db6b00c9f1d308211ad6d51d8096646a94d32d81e2002f6fb02bb89e88550f"
   },
   "mutation-post-review.py": {
    "Bytes": 5887,
@@ -71,8 +87,8 @@
    "Sha256": "3b47379c65f3006aba1170c0e41d7c43d13f2b1ac426198f0adf55eaa1e13461"
   },
   "prompt.md": {
-   "Bytes": 23252,
-   "Sha256": "21230612113c17a2fc3bb68a18d7020c51eb88f525437ef0faaf36d2faea8917"
+   "Bytes": 23417,
+   "Sha256": "42fe64cad219506625e6cf8c39adce6fc6cf9690cc2bf9c730c68b42eea6756f"
   },
   "read_fidelity.py": {
    "Bytes": 4919,
@@ -80,19 +96,19 @@
   },
   "result.schema.json": {
    "Bytes": 17662,
-   "Sha256": "bd95d76449c00514eb4aa2ab4a0f41bf237435f200526213249d2443b6f03b78"
+   "Sha256": "7faaa45b289d659b7104dea6431f0d7374f10c4ea85e6d7a65a4b14f95cb0a39"
   },
   "selftest-post-review.py": {
-   "Bytes": 61125,
-   "Sha256": "aae8ccf689ad671d4fea17508d0723f534c8ee8fff8a63e6349729c993130e29"
+   "Bytes": 61141,
+   "Sha256": "4bc1a7a46b49497492ecf8b6aeaa41fb57fd7d313acff000784b0319e2bd6037"
   },
   "selftest-result.json": {
    "Bytes": 40230,
-   "Sha256": "4dbf55e844da0a8ae077ad849de0095d36a3fcce3aa91c2c769872714975fcd6"
+   "Sha256": "5cf9a6a3ec582a053322217c052c1e487d4dad534d0a99fa17dfc85133e46fc1"
   },
   "transport-gate.json": {
    "Bytes": 1600,
-   "Sha256": "3de8f20dcb176e57110315040f8a496ece2d23395359224764117a05dacae78e"
+   "Sha256": "61beb2a9ddeb01e22b8b6e2b9b20f945222196190ec0fcb75d63ec513454b450"
   },
   "transport_gate.py": {
    "Bytes": 18786,
@@ -100,7 +116,7 @@
   },
   "verify_clone.py": {
    "Bytes": 12376,
-   "Sha256": "f9a91de616af74a255768c1dd7f50f2526bfcea78c44f5fe7462af99f65f79e6"
+   "Sha256": "b3ceb65426971d4549aa21a3f597e6d01120145ee6db1a63ee98ee41e12c35b7"
   }
  },
  "RunFiles": {
@@ -112,8 +128,8 @@
   },
   "prompt.md": {
    "Path": "D:\\r62-arch-a3-run\\prompt.md",
-   "Bytes": 23252,
-   "Sha256": "21230612113c17a2fc3bb68a18d7020c51eb88f525437ef0faaf36d2faea8917",
+   "Bytes": 23417,
+   "Sha256": "42fe64cad219506625e6cf8c39adce6fc6cf9690cc2bf9c730c68b42eea6756f",
    "IdenticalToKitCopy": true
   },
   "order-s56.txt": {

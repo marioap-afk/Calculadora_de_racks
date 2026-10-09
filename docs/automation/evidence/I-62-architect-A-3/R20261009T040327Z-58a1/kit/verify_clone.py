@@ -27,7 +27,7 @@ KIT = os.path.dirname(os.path.abspath(__file__))
 CLONE, RUN = r"D:\r62-arch-a3", r"D:\r62-arch-a3-run"
 REV = "492885254b58203f0bc0099345db2998b25d2a2b"
 OBJECT = "docs/initiatives/I-62-A-3.md"
-SESSION_ID = "ae3590eb-b508-4949-84da-8aa7340df993"
+SESSION_ID = "2e266dfe-a1ca-4372-acd9-924c980bf50a"
 KIT_BLOBS = {   # además de los de CanonicalInputs: los que el kit fija por su cuenta
     "docs/initiatives/I-62-architect-package-A-2.md": "5bd0fa609722d9c94aeab38b0d8b486b1d4f1606",
     "docs/automation/evidence/I-62-claude-cli/R20261008T183600Z-char/claude-cli-characterization.json": "541956eb8f5d154414b91338c655919ae0ade697",

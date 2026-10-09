@@ -1,7 +1,9 @@
-# I-62 — Kit de la revisión formal de la enmienda A-3 por `claude-cli` (R20261009T040327Z-58a1)
+# I-62 — Kit de la revisión formal de la enmienda A-3 por `claude-cli` (R20261009T040327Z-58a1, intento 2)
 
 ```text
-LogicalReviewRequestId: L20261009T040327Z-58a1   InvocationId: I20261009T040327Z-58a1   AttemptSeq: 1   RunId: R20261009T040327Z-58a1
+LogicalReviewRequestId: L20261009T040327Z-58a1   InvocationId: I20261009T052403Z-58a1   AttemptSeq: 2   RunId: R20261009T040327Z-58a1
+Intentos:       1 = INVALID_LAUNCH (TRANSPORT_AUTH_REFRESH_CONFLICT, antes de cualquier turno del modelo; attempt-1/accreditation.json);
+                2 = este kit, el único intento que queda; sin reintento automático
 Autorización:   disposición del Coordinator §58, punto 3 (cuerpo pegado, 2 767 bytes, SHA-256 3ed7e135…): revisión formal independiente por
                 claude-cli del objeto exacto; preparar y custodiar el paquete, el cierre de insumos, el auditor y la preflight sobre la versión
                 exacta; invocar automáticamente un Architect elegible, de solo lectura, con Actor, Session y Context independientes; no modificar A-3
@@ -27,22 +29,50 @@ Freeze:         b64a3b640c7ee3bd77636e7a3218ae0ebac2dd43; V14 4c617e82b32b6c810b
 Clon:           D:\r62-arch-a3 (git clone --no-local -c core.autocrlf=false --single-branch desde el worktree; main = el recibo; sin remoto; sin
                 enlaces; 3ef58efa, decisiones §58, posterior al recibo, eliminado del clon; kit/clone-verification.json, AllChecks)
 Run:            D:\r62-arch-a3-run, con cuatro archivos y nada más antes del lanzamiento:
-                order.txt (cuerpo de la disposición §58, 2 767 bytes, 3ed7e135…), prompt.md (= kit/prompt.md, 23 252 bytes, 21230612…),
+                order.txt (cuerpo de la disposición §58, 2 767 bytes, 3ed7e135…), prompt.md (= kit/prompt.md, 23 417 bytes, 42fe64ca…),
                 order-s56.txt (texto fijo de la orden §56, 8 562 bytes, e8b00328…) y order-s57.txt (texto fijo de la orden §57, 3 654 bytes, 00a13ae5…)
 Transporte:     claude-cli 2.1.293: %APPDATA%\Claude\claude-code\2.1.293\83cb0bd7fed4\claude.exe, SHA-256 8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa,
                 Authenticode válido de «Anthropic, PBC» (re-medidos sin ejecutar el binario); claude-opus-5-5 con effort xhigh; herramientas Read,
-                Grep y Glob (+ StructuredOutput); --safe-mode, sin MCP; --add-dir del run; session id ae3590eb-b508-4949-84da-8aa7340df993 (uuid4);
-                cwd = el clon; prompt por stdin; resultado por --json-schema; tope de 7 200 s
+                Grep y Glob (+ StructuredOutput); --safe-mode, sin MCP; --add-dir del run; session id 2e266dfe-a1ca-4372-acd9-924c980bf50a (uuid4 nuevo del intento 2);
+                cwd = el clon; prompt por stdin; resultado por --json-schema; tope de 7 200 s; espera de 120 s entre `auth status` y el
+                lanzamiento (mitigación del intento 1)
 Compuerta D-01: kit/transport-gate.json en MEASURED (vía a) sobre el registro de caracterización existente R20261008T183600Z-char
                 (claude-cli-characterization.json, SHA-256 20d0de2ce625c38ddeaaf445ce2261b080520bdcf57eec8f4bf9a8bd0cedbf4c, fijado; la copia del
                 clon, idéntica a la del worktree): Probes.C3 PASS sobre la plantilla exacta, STALE = false, transport_gate.evaluate sin problemas
-Estado:         kit custodiado ANTES del lanzamiento (commit de custodia: pendiente); NO lanzado. Lo lanza la sesión principal con kit/launch.py, una vez
+Estado:         kit del intento 2 custodiado ANTES del lanzamiento (commit de custodia: pendiente; el intento 1 se custodió en 524b293e); NO
+                lanzado. Lo lanza la sesión principal con kit/launch.py, una vez
 Acreditación:   la decide el Coordinator después de la corrida (auditor v5.1-a3 sobre la transcripción, la salida stream-json y launch/)
 ```
 
 **Recibo de publicación.** El paquete fija varios blobs con marcadores (`<A3_BLOB>`, `<ANNEX_BLOB>`, `<DEC_BLOB>`, `<EV_BLOB>`, `<GUARDS_BLOB>`,
 `<SELFTEST_BLOB>`) que se fijan «al publicar». Este README es el recibo: el commit es `49288525` y los blobs son los de la tabla de arriba, calculados
 con git en ese commit (`make_closure.py` los comprueba y falla si cambian). El paquete y A-3 no se editan.
+
+## Historial de intentos
+
+- **Intento 1** (InvocationId `I20261009T040327Z-58a1`, session id `ae3590eb-b508-4949-84da-8aa7340df993`; kit custodiado en `524b293e`,
+  `docs/automation/evidence/I-62-architect-A-3/R20261009T040327Z-58a1/`, idéntico byte a byte): la sesión principal lo lanzó una vez con
+  `python -B launch.py` a las 05:18:49Z. La preflight pasó (las diez comprobaciones en Ok). El proceso corrió de 05:18:56Z a 05:19:06Z: salida 1, sin
+  terminación ni tope. `stdout.jsonl` trae un `init` correcto (session id, cwd `D:\r62-arch-a3`, `claude-opus-5-5`, `dontAsk`, herramientas Glob,
+  Grep, Read y StructuredOutput, 2.1.293), un único mensaje sintético del asistente (modelo `<synthetic>`, 0 tokens) y un `result` con
+  `is_error` = true, `terminal_reason` = `api_error`, coste 0 y el texto «Failed to refresh OAuth token: another Claude Code process is
+  refreshing it or exited mid-refresh…». Ningún turno del modelo, ninguna lectura, ningún resultado, ningún consumo. Causa probable (hecho de la
+  sesión principal, no medido por el invocador): la comprobación 5 (`claude.exe auth status --json`) inició una renovación del token OAuth y terminó
+  a mitad, justo antes del lanzamiento; en la corrida de A-2 el token no necesitó renovarse. Después, `auth status` informa `loggedIn` = true.
+  Registro del invocador (`attempt-1/accreditation.json`): **INVALID_LAUNCH**, causa **TRANSPORT_AUTH_REFRESH_CONFLICT**; los cuatro archivos del run
+  y el clon, sin cambio (comprobados antes y después). Custodia:
+  - `attempt-1/launch-raw/`: `D:\r62-arch-a3-run\launch\` movido intacto (sus SHA-256 son los que registra `run.json`); contiene rutas del perfil
+    del usuario: **no versionar**;
+  - `attempt-1/launch/`: copia saneada (rutas del perfil → `%USERPROFILE%`; solo cambia `stdout.jsonl`);
+  - `attempt-1/project-dir/`: `%USERPROFILE%\.claude\projects\D--r62-arch-a3\` movido intacto (solo la transcripción `ae3590eb….jsonl`,
+    SHA-256 `9d1da64f…` = el de `run.json`); contiene el correo, el uuid de la organización y rutas del perfil: **no versionar**;
+  - `attempt-1/project-dir.sanitized/`: copia saneada de esa transcripción (rutas → `%USERPROFILE%`, correo → `<user-email>`, uuid de la
+    organización → `<organization-uuid>`, nombre de usuario → `%USERNAME%`).
+  Con eso el run vuelve a tener solo sus cuatro archivos y no queda directorio de proyecto `D--r62-arch-a3*` (preflight 7 y 8).
+- **Intento 2** (este kit; InvocationId `I20261009T052403Z-58a1`, AttemptSeq 2, session id nuevo `2e266dfe-a1ca-4372-acd9-924c980bf50a`): el
+  único intento que queda. Mismo objeto, mismo cierre canónico, mismo clon y mismos archivos del run salvo `prompt.md` (identidades del intento 2 y
+  una frase neutral sobre el intento 1). Sin reintento automático: si el intento 2 vuelve a fallar, `launch.py` lo registra y la decisión es de la
+  sesión principal y del Coordinator.
 
 ## Contrato y auditor (fijados antes de invocar)
 
@@ -64,8 +94,8 @@ con git en ese commit (`make_closure.py` los comprueba y falla si cambian). El p
   - un Glob cuyo alcance (base y patrón, evaluados sobre el disco) o cuyas rutas devueltas contengan un archivo fuera del cierre;
   - cualquier otra herramienta, aunque el runtime la rechace;
   - toda denegación de permiso.
-- **Prompt** (`kit/prompt.md` = `D:\r62-arch-a3-run\prompt.md`, byte a byte; 23 252 bytes, 256 líneas, SHA-256
-  `21230612113c17a2fc3bb68a18d7020c51eb88f525437ef0faaf36d2faea8917`). Es neutral: no trae veredicto esperado ni contexto privado de la sesión autora,
+- **Prompt** (`kit/prompt.md` = `D:\r62-arch-a3-run\prompt.md`, byte a byte; 23 417 bytes, 256 líneas, SHA-256
+  `42fe64cad219506625e6cf8c39adce6fc6cf9690cc2bf9c730c68b42eea6756f`). Es neutral: no trae veredicto esperado ni contexto privado de la sesión autora,
   y no tiene salto de línea final. Pide:
   - el Paso 0 con lo que el revisor puede comprobar con sus herramientas: `order.txt` entera (líneas 25-26: objeto y blob), la cabecera del paquete
     (1-40), `a3-guards-result.json` (`Head`, G3 y G5b) y `a3-selftest.json` (`A3Text` y `A3TextBlob`);
@@ -126,7 +156,7 @@ con git en ese commit (`make_closure.py` los comprueba y falla si cambian). El p
 - **Lanzador** (`kit/launch.py`; no lo ejecuta quien prepara el kit, salvo `--dry-run`). Si falla cualquiera de estas comprobaciones, se niega a
   lanzar (código 2) y no escribe nada:
   1. integridad del kit frente a `kit-manifest.json`, sin archivos distintos ni sin listar;
-  2. transporte del cierre, incluidas `ArgsTemplate` y `TimeoutSeconds`;
+  2. transporte del cierre, incluidas `ArgsTemplate`, `TimeoutSeconds` y `AuthSettleSeconds`;
   3. binario: ruta resuelta, SHA-256 y Authenticode;
   4. `--version` = 2.1.293;
   5. `auth status` con `loggedIn` (solo se conservan `loggedIn`, `authMethod` y `apiProvider`);
@@ -135,16 +165,19 @@ con git en ese commit (`make_closure.py` los comprueba y falla si cambian). El p
   8. sin transcripción previa con el session id ni directorio de proyecto para el clon o el run (`D--r62-arch-a3*`);
   9. línea de órdenes de menos de 32 000 caracteres (mide 13 013);
   10. compuerta D-01 en MEASURED o ACCEPTED, con sus registros y sus SHA-256, y la plantilla de los argumentos = la de la compuerta.
-  Después escribe `preflight.json` y la copia del registro en `D:\r62-arch-a3-run\launch\`, vuelve a medir el binario justo antes de lanzarlo (si
+  Después escribe `preflight.json` y la copia del registro en `D:\r62-arch-a3-run\launch\`, **espera 120 s contados desde el final de `auth
+  status`** (intento 2), vuelve a medir el binario justo antes de lanzarlo (si
   cambió, aborta sin lanzar) y lanza la ruta resuelta con la lista exacta de argumentos, stdin = `prompt.md`, cwd = el clon y un tope de 7 200 s con
-  terminación (`terminate` y, 60 s después, `kill`). Escribe `stdout.jsonl`, `stderr.txt` y `run.json`. Hereda el entorno de la sesión principal,
+  terminación (`terminate` y, 60 s después, `kill`). Escribe `stdout.jsonl`, `stderr.txt` y `run.json` (con `AuthSettle`: inicio, fin y segundos de la
+  espera; y `TransportFailure`: `TRANSPORT_AUTH_REFRESH_CONFLICT` si el `result` contiene «Failed to refresh OAuth token» con 0 tokens, o null).
+  No reintenta en ningún caso. Hereda el entorno de la sesión principal,
   como en la caracterización (C1). `--dry-run` hace solo la preflight, **sin ejecutar el binario** (4 y 5 quedan sin ejecutar), sin escribir y sin
   lanzar.
   La lista que lanza es, literalmente: `<%APPDATA%\Claude\claude-code\2.1.293\83cb0bd7fed4\claude.exe resuelto> -p --model claude-opus-5-5 --effort
   xhigh --output-format stream-json --verbose --safe-mode --strict-mcp-config --no-chrome --tools Read,Grep,Glob --permission-mode dontAsk
-  --permission-prompts none --add-dir D:\r62-arch-a3-run --session-id ae3590eb-b508-4949-84da-8aa7340df993 --json-schema <kit/result.schema.json
+  --permission-prompts none --add-dir D:\r62-arch-a3-run --session-id 2e266dfe-a1ca-4372-acd9-924c980bf50a --json-schema <kit/result.schema.json
   compacto, ASCII>`, con stdin = `D:\r62-arch-a3-run\prompt.md` y cwd = `D:\r62-arch-a3`.
-- **Selftest previo** (`kit/selftest-result.json`): **107/107 PASS** sobre el clon y el run reales, que quedan limpios e idénticos (66 casos de
+- **Selftest previo** (`kit/selftest-result.json`, repetido para el intento 2): **107/107 PASS** sobre el clon y el run reales, que quedan limpios e idénticos (66 casos de
   auditoría y 41 de la compuerta, los mismos del kit de A-2, con las particularidades de A-2 sustituidas por las de A-3: Paso 0 de A-3, ids Q-A3 y
   A62-A3, archivos del run de A-3, el anexo y `ScopeConfirmation`). Cada caso audita contra una compuerta sintética (MEASURED construida con
   `c3_analysis.analyze` sobre una sonda PASS sintética; ACCEPTED en el caso 41). Los casos 57 y 58, que en A-2 probaban reglas de hallazgos
@@ -152,7 +185,8 @@ con git en ese commit (`make_closure.py` los comprueba y falla si cambian). El p
 - **Mutación** (`kit/mutation-post-review.py` → `kit/mutation-result.json`): cada sitio de regla de `post-review.py` (91: los cinco sitios de
   hallazgos anteriores del kit de A-2 ya no existen) y de `transport_gate.py` (36) se desactiva por turno en una copia y se ejecutan los 107 casos:
   **127/127 mutantes muertos** (cada regla desactivada hace fallar al menos un caso), con la base sin mutar en 107/107. Corrida acotada (tope de
-  3 600 s; duró unos 25 minutos) sobre los archivos finales del kit (SHA-256 de `post-review.py` y `transport_gate.py` registrados en el resultado).
+  3 600 s; duró unos 25 minutos) sobre los archivos finales del kit (SHA-256 de `post-review.py` y `transport_gate.py` registrados en el resultado). No se repite para el intento 2:
+  ninguno de los dos módulos mutados cambió (mismos SHA-256 `46c1aec4…` y `83e2a917…`).
 - **Fidelidad previa** (`kit/preflight-read-fidelity.json`): 11 lecturas en el clon, sin filtro: 10 fieles y 1 fallida por el tamaño de su salida
   (A-3 1201-1486; sin contenido, no acredita nada), 0 degradadas. Son el paquete entero, A-3 entera salvo la línea 1487 (de más de 2 000
   caracteres; la evita a propósito) y `a3-guards-result.json` 1-80 y 3636-3656. Salen de la transcripción del subagente que preparó el kit; su
@@ -169,13 +203,37 @@ con git en ese commit (`make_closure.py` los comprueba y falla si cambian). El p
   - sin directorio de proyecto de `claude-cli` para el clon o el run ni transcripción con el session id;
   - preflight de las guardas, evidencia del invocador que el revisor no ejecuta: `a3-guards.py self-test --a3 docs/initiatives/I-62-A-3.md` PASS,
     116/116 vectores y 105/105 mutantes, con una salida idéntica entera a `a3-selftest.json` custodiado; el clon queda limpio después.
-- **Preflight en seco** (`launch-dry-run.json`, junto a este README, fuera de `kit/`): `launch.py --dry-run` sobre el kit entregado: ninguna comprobación
+- **Preflight en seco** (`launch-dry-run.json`, junto a este README, fuera de `kit/`): `launch.py --dry-run` sobre el kit del intento 2: ninguna comprobación
   bloqueante; 1-3 y 6-10 en Ok; la 4 (`--version`) y la 5 (`auth status`) no se ejecutan en seco, porque quien prepara el kit no ejecuta el binario.
   La línea de órdenes mide 13 013 caracteres.
 - **Manifiesto:** `kit/kit-manifest.json` (generado por `kit/make_manifest.py`), con el SHA-256 de cada archivo del kit (21) y de los cuatro
-  archivos del run (SHA-256 del manifiesto `7d5dd52e7d0ac0e2dd9146dad47ed67a47d9092d11684bd36f4c84c877aa0e88`, con la compuerta en MEASURED).
+  archivos del run (SHA-256 del manifiesto `defda283ba13003cefb76d144f12bf8fecdd190082304350aa5779b5ac77d7c6`, intento 2, con la compuerta en
+  MEASURED). El manifiesto del intento 1 era `7d5dd52e…`.
 
 El cierre, las herramientas y el auditor no se amplían ni se corrigen después de ejecutar. Este kit no cambia el contrato de ninguna revisión anterior.
+
+## Desviaciones del intento 2 frente al kit del intento 1, con su motivo
+
+- **Espera de 120 s entre `auth status` y el lanzamiento** (`AUTH_SETTLE_S`, también en `Transport.AuthSettleSeconds` del cierre y en la
+  comprobación 2). Motivo: el intento 1 falló con «Failed to refresh OAuth token» justo después de la comprobación 5; la espera deja terminar una
+  renovación que esa llamada haya iniciado. La medición del binario sigue haciéndose justo antes de lanzarlo, después de la espera.
+- **Registro de `TRANSPORT_AUTH_REFRESH_CONFLICT` en `run.json`** (`TransportFailure`): solo clasifica, no reintenta. Comprobado con la salida real
+  del intento 1 (da `TRANSPORT_AUTH_REFRESH_CONFLICT`, 0 tokens) y con tres casos sintéticos (un result correcto, el mismo texto con tokens y sin
+  result: los tres dan null). El auditor no cambia: una corrida así sigue sin acreditar.
+- **Identidades:** `InvocationId` nuevo con el mismo esquema y el mismo sufijo (`I20261009T052403Z-58a1`, así el patrón del esquema no cambia),
+  `AttemptSeq` = 2 (el esquema del resultado pasa a `enum [2]` y el selftest toma el valor del cierre) y un session id nuevo; `RunId` y
+  `LogicalReviewRequestId` se conservan. El cierre registra el intento 1 en `PreviousAttempts`, y el manifiesto lo copia en su cabecera.
+- **Prompt:** cambian el `InvocationId`, el `AttemptSeq` y la primera línea, que dice de forma neutral que el intento 1 terminó antes de cualquier
+  turno del modelo, sin lecturas ni resultado. Nada más.
+- **`launch/` del intento 1 movido, no borrado:** la orden era quitarlo del run tras copiarlo; se mueve intacto a `attempt-1/launch-raw/` (además de
+  la copia saneada en `attempt-1/launch/`), para no perder los bytes cuyos SHA-256 registra `run.json`. El run queda igual: solo sus cuatro
+  archivos.
+- **Regenerados:** `closure.json`, `transport-gate.json` (embebe el session id), `clone-verification.json` (AllChecks), `selftest-result.json`
+  (107/107), `kit-manifest.json` y `launch-dry-run.json`. Sin cambio: `post-review.py`, `transport_gate.py`, `mutation-result.json`,
+  `preflight-read-fidelity.json`, `c3_analysis.py`, `read_fidelity.py`, `mutation-post-review.py` y los tres textos de las órdenes.
+- **Posible factor no medido:** el proceso hereda el entorno de la sesión principal (como en C1 y en la corrida de A-2), incluidas variables de la
+  integración con el host como `CLAUDE_CODE_SDK_HAS_HOST_AUTH_REFRESH` (solo se registran los nombres). El kit no lo cambia: cambiar el entorno
+  sería otra desviación del transporte medido.
 
 ## Desviaciones frente al kit de A-2 (R20261008T184326Z-f1e2), con su motivo
 
@@ -225,7 +283,7 @@ El cierre, las herramientas y el auditor no se amplían ni se corrigen después 
   como un segundo mensaje de usuario y la corrida queda NOT_ACCREDITED; el prompt lo avisa.
 - El límite de salida de Read en `claude-cli` 2.1.293: en la preparación, una lectura de 286 líneas de A-3 §12 superó el límite de la herramienta
   de la sesión que preparó el kit; no está medido para `claude-cli`, y el prompt recomienda tramos de 150 líneas en el objeto.
-- El esquema compacto mide 10 891 caracteres y el prompt 23 252 bytes; la corrida de A-2 validó un esquema del mismo tipo y un prompt de 18 642
+- El esquema compacto mide 10 891 caracteres y el prompt 23 417 bytes; la corrida de A-2 validó un esquema del mismo tipo y un prompt de 18 642
   bytes con fidelidad exacta.
 - `modelUsage` con un solo modelo en una corrida larga: se observó en la corrida de A-2 (unos 15 minutos); el auditor lo sigue tratando como motivo
   duro.
@@ -238,7 +296,8 @@ El cierre, las herramientas y el auditor no se amplían ni se corrigen después 
    de A-2. La decisión es de la sesión principal; el kit no la presume.
 2. Opcional: `python -B kit/transport_gate.py check` (código 0) y `python -B kit/launch.py --dry-run` (todas las comprobaciones en Ok salvo la 4 y la
    5, que solo se ejecutan en el lanzamiento real).
-3. Custodiar el kit (commit de custodia) y lanzar una vez: `python -B kit/launch.py`. Si cambia cualquier archivo del kit, regenerar el manifiesto
+3. Custodiar el kit del intento 2 (commit de custodia, sin versionar `attempt-1/launch-raw/` ni `attempt-1/project-dir/`) y lanzar una vez:
+   `python -B kit/launch.py`. La espera de 120 s forma parte del lanzamiento. Si cambia cualquier archivo del kit, regenerar el manifiesto
    con `python -B kit/make_manifest.py` (o, solo para la compuerta, `--gate`) y volver a custodiar.
 
 ## Al terminar la corrida (procedimiento)
@@ -247,7 +306,7 @@ El cierre, las herramientas y el auditor no se amplían ni se corrigen después 
 - Integridad antes de auditar: `kit/` frente a `kit/kit-manifest.json`, y los cuatro archivos del run frente a `RunFiles` del manifiesto (el auditor
   repite la custodia en `RunCustody`).
 - Auditor:
-  `python -B kit/post-review.py "%USERPROFILE%\.claude\projects\D--r62-arch-a3\ae3590eb-b508-4949-84da-8aa7340df993.jsonl" D:\r62-arch-a3-run\launch\stdout.jsonl D:\r62-arch-a3 D:\r62-arch-a3-run kit kit/result.schema.json audit.json output.json`.
+  `python -B kit/post-review.py "%USERPROFILE%\.claude\projects\D--r62-arch-a3\2e266dfe-a1ca-4372-acd9-924c980bf50a.jsonl" D:\r62-arch-a3-run\launch\stdout.jsonl D:\r62-arch-a3 D:\r62-arch-a3-run kit kit/result.schema.json audit.json output.json`.
 - `output.json`: el `structured_output` del mensaje `result`, en UTF-8 con sangría 1. `audit.json`: la salida literal del auditor v5.1-a3.
 - `runtime-evidence.json` recoge: de `launch/`, `run.json`, `preflight.json`, la copia de la compuerta y los SHA-256 de `stdout.jsonl` y
   `stderr.txt`; la transcripción, no versionada (ruta y SHA-256); el clon después de la corrida; y la integridad del kit y de los archivos del run.

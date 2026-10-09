@@ -2,10 +2,26 @@
  "Schema": "rackcad-input-closure/v1 (representación experimental; Proposal V14 §20.3.1; no autoridad normativa: rigen I-61 y LIFECYCLE)",
  "Ids": {
   "RunId": "R20261009T040327Z-58a1",
-  "InvocationId": "I20261009T040327Z-58a1",
+  "InvocationId": "I20261009T052403Z-58a1",
   "LogicalReviewRequestId": "L20261009T040327Z-58a1",
-  "AttemptSeq": 1
+  "AttemptSeq": 2
  },
+ "PreviousAttempts": [
+  {
+   "AttemptSeq": 1,
+   "InvocationId": "I20261009T040327Z-58a1",
+   "SessionId": "ae3590eb-b508-4949-84da-8aa7340df993",
+   "CustodyCommit": "524b293e",
+   "Launched": "2026-10-09T05:18:56Z",
+   "Accreditation": "INVALID_LAUNCH",
+   "Cause": "TRANSPORT_AUTH_REFRESH_CONFLICT",
+   "ModelTurns": 0,
+   "Tokens": 0,
+   "CostUsd": 0,
+   "ReviewProduced": false,
+   "Record": "attempt-1/accreditation.json (junto al README del kit)"
+  }
+ ],
  "AuthorityRevision": "492885254b58203f0bc0099345db2998b25d2a2b",
  "ObjectIntroducedBy": "91e29886a4870dd673372c66453d76ea503a22b9",
  "PublicationBase": "76b48e785d87af5591f4363246751b7eb1182506",
@@ -138,7 +154,7 @@
    "--add-dir",
    "D:\\r62-arch-a3-run"
   ],
-  "SessionId": "ae3590eb-b508-4949-84da-8aa7340df993",
+  "SessionId": "2e266dfe-a1ca-4372-acd9-924c980bf50a",
   "Cwd": "D:\\r62-arch-a3",
   "ArgsTemplate": [
    "-p",
@@ -180,9 +196,11 @@
    "mcp_servers": [],
    "claude_code_version": "2.1.293"
   },
-  "TranscriptPath": "%USERPROFILE%\\.claude\\projects\\D--r62-arch-a3\\ae3590eb-b508-4949-84da-8aa7340df993.jsonl",
+  "TranscriptPath": "%USERPROFILE%\\.claude\\projects\\D--r62-arch-a3\\2e266dfe-a1ca-4372-acd9-924c980bf50a.jsonl",
   "LaunchDir": "D:\\r62-arch-a3-run\\launch (preflight.json, transport-characterization.json, transport-acceptance.json solo en ACCEPTED, stdout.jsonl, stderr.txt y run.json)",
   "TimeoutSeconds": 7200,
+  "AuthSettleSeconds": 120,
+  "AuthSettle": "intento 2: launch.py espera AUTH_SETTLE_S segundos entre el final de `auth status` (preflight 5) y el lanzamiento, y registra en run.json como TRANSPORT_AUTH_REFRESH_CONFLICT un result con «Failed to refresh OAuth token» y 0 tokens (sin reintento)",
   "Characterization": "claude-cli-characterization.json de R20261008T183600Z-char (decisiones §56, punto 7; aceptada como evidencia de elegibilidad vigente en decisiones §57, punto 3): C1 completada, C2 cancelada por terminación, C3 PASS sobre la plantilla con --add-dir"
  },
  "RunDir": "D:\\r62-arch-a3-run",
@@ -220,9 +238,9 @@
    ]
   },
   "prompt.md": {
-   "Bytes": 23252,
+   "Bytes": 23417,
    "Lines": 256,
-   "Sha256": "21230612113c17a2fc3bb68a18d7020c51eb88f525437ef0faaf36d2faea8917",
+   "Sha256": "42fe64cad219506625e6cf8c39adce6fc6cf9690cc2bf9c730c68b42eea6756f",
    "LinesOver2000Chars": [],
    "Encoding": {
     "Charset": "UTF-8",

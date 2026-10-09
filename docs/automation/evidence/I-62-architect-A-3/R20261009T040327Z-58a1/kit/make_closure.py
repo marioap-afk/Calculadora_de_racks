@@ -39,9 +39,13 @@ A3_BASE = "76b48e785d87af5591f4363246751b7eb1182506"      # padre del commit de 
 PREP_BASE = "b088421649204742ff682e1eb1ebdafc762823d0"    # base de preparación de A-3 (sus literales de §2 se leen en este commit)
 CLONE = r"D:\r62-arch-a3"
 RUN = r"D:\r62-arch-a3-run"
-IDS = {"RunId": "R20261009T040327Z-58a1", "InvocationId": "I20261009T040327Z-58a1", "LogicalReviewRequestId": "L20261009T040327Z-58a1",
-       "AttemptSeq": 1}
-SESSION_ID = "ae3590eb-b508-4949-84da-8aa7340df993"       # --session-id fijado en el kit para el único lanzamiento (uuid4)
+IDS = {"RunId": "R20261009T040327Z-58a1", "InvocationId": "I20261009T052403Z-58a1", "LogicalReviewRequestId": "L20261009T040327Z-58a1",
+       "AttemptSeq": 2}
+PREVIOUS_ATTEMPTS = [{"AttemptSeq": 1, "InvocationId": "I20261009T040327Z-58a1", "SessionId": "ae3590eb-b508-4949-84da-8aa7340df993",
+                      "CustodyCommit": "524b293e", "Launched": "2026-10-09T05:18:56Z", "Accreditation": "INVALID_LAUNCH",
+                      "Cause": "TRANSPORT_AUTH_REFRESH_CONFLICT", "ModelTurns": 0, "Tokens": 0, "CostUsd": 0, "ReviewProduced": False,
+                      "Record": "attempt-1/accreditation.json (junto al README del kit)"}]
+SESSION_ID = "2e266dfe-a1ca-4372-acd9-924c980bf50a"       # --session-id del intento 2 (uuid4 nuevo; el del intento 1 no se reutiliza)
 OBJECT = "docs/initiatives/I-62-A-3.md"
 ANNEX = "docs/initiatives/I-62-A-3-annex-maf-codex.md"
 PKG = "docs/initiatives/I-62-architect-package-A-3.md"
@@ -113,6 +117,7 @@ MEASURED_FLAGS = ["-p", "--model", "claude-opus-5-5", "--effort", "xhigh", "--ou
                   "--strict-mcp-config", "--no-chrome", "--tools", "Read,Grep,Glob", "--permission-mode", "dontAsk", "--permission-prompts", "none"]
 ADD_DIR = ["--add-dir", RUN]   # no medido en C1; medido en C3 de la caracterización (plantilla con marcador); lo ata kit/transport-gate.json (D-01)
 TIMEOUT_S = 7200
+AUTH_SETTLE_S = 120   # intento 2: espera entre `auth status` (preflight 5) y el lanzamiento (mitigación de TRANSPORT_AUTH_REFRESH_CONFLICT)
 
 
 def git(*a):
@@ -444,7 +449,7 @@ def main(print_only):
         run_hashes[n]["IdentityCheck"] = c
     closure = {
         "Schema": "rackcad-input-closure/v1 (representación experimental; Proposal V14 §20.3.1; no autoridad normativa: rigen I-61 y LIFECYCLE)",
-        "Ids": IDS, "AuthorityRevision": REV, "ObjectIntroducedBy": PUB_COMMIT, "PublicationBase": A3_BASE, "PreparationBase": PREP_BASE,
+        "Ids": IDS, "PreviousAttempts": PREVIOUS_ATTEMPTS, "AuthorityRevision": REV, "ObjectIntroducedBy": PUB_COMMIT, "PublicationBase": A3_BASE, "PreparationBase": PREP_BASE,
         "ObjectPath": OBJECT, "ObjectBlob": EXPECTED_BLOBS[OBJECT], "AnnexPath": ANNEX, "AnnexBlob": EXPECTED_BLOBS[ANNEX], "PackagePath": PKG,
         "PublicationReceipt": {"Commit": REV, "PublicationCommit": PUB_COMMIT, "Placeholders": receipt,
                                "Note": "el paquete fija los blobs del objeto, del anexo, de decisiones, de la evidencia, de las guardas y del self-test con "
@@ -470,6 +475,8 @@ def main(print_only):
                       "TranscriptPath": "%USERPROFILE%\\.claude\\projects\\D--r62-arch-a3\\" + SESSION_ID + ".jsonl",
                       "LaunchDir": RUN + "\\launch (preflight.json, transport-characterization.json, transport-acceptance.json solo en ACCEPTED, "
                                    "stdout.jsonl, stderr.txt y run.json)", "TimeoutSeconds": TIMEOUT_S,
+                      "AuthSettleSeconds": AUTH_SETTLE_S,
+                      "AuthSettle": "intento 2: launch.py espera AUTH_SETTLE_S segundos entre el final de `auth status` (preflight 5) y el lanzamiento, y registra en run.json como TRANSPORT_AUTH_REFRESH_CONFLICT un result con «Failed to refresh OAuth token» y 0 tokens (sin reintento)",
                       "Characterization": "claude-cli-characterization.json de R20261008T183600Z-char (decisiones §56, punto 7; aceptada como evidencia "
                                           "de elegibilidad vigente en decisiones §57, punto 3): C1 completada, C2 cancelada por terminación, C3 PASS "
                                           "sobre la plantilla con --add-dir"},

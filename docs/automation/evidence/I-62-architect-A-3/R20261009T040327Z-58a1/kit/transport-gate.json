@@ -2,7 +2,7 @@
  "Schema": "rackcad-transport-gate/v1",
  "Purpose": "desviación D-01: C1 midió la lista sin --add-dir; launch.py se niega a lanzar mientras Status = PENDING",
  "RunId": "R20261009T040327Z-58a1",
- "SessionId": "ae3590eb-b508-4949-84da-8aa7340df993",
+ "SessionId": "2e266dfe-a1ca-4372-acd9-924c980bf50a",
  "Binary": {
   "Path": "%APPDATA%\\Claude\\claude-code\\2.1.293\\83cb0bd7fed4\\claude.exe",
   "Sha256": "8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa",

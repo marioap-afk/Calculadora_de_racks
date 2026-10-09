@@ -303,7 +303,7 @@ def base_result():
     ids = PR.IDS
     return {
         "Schema": "rackcad-architect-review-result/v1 (selftest)", "RunId": ids["RunId"], "InvocationId": ids["InvocationId"],
-        "LogicalReviewRequestId": ids["LogicalReviewRequestId"], "AttemptSeq": 1, "RequestedRole": "ARCHITECT", "Action": "REVIEW_DESIGN",
+        "LogicalReviewRequestId": ids["LogicalReviewRequestId"], "AttemptSeq": ids["AttemptSeq"], "RequestedRole": "ARCHITECT", "Action": "REVIEW_DESIGN",
         "ReviewedUnit": "I-62", "ReviewedCommit": REV, "ReviewedPath": OBJ, "ReviewedBlob": PR.OBJECT_BLOB, "ReviewedAnnexBlob": PR.ANNEX_BLOB,
         "ReviewerMode": "SEPARATE SESSION", "SamePersonAsAuthor": "selftest",
         "ReviewerDeclaredIdentity": {"Runtime": "x", "Model": "x", "Effort": "x", "SessionOrThread": "x"},

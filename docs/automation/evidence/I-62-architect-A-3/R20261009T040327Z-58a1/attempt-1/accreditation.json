@@ -1,0 +1,193 @@
+{
+ "Schema": "rackcad-attempt-accreditation/v1 (registro del invocador; la acreditación formal es del Coordinator)",
+ "RunId": "R20261009T040327Z-58a1",
+ "LogicalReviewRequestId": "L20261009T040327Z-58a1",
+ "InvocationId": "I20261009T040327Z-58a1",
+ "AttemptSeq": 1,
+ "SessionId": "ae3590eb-b508-4949-84da-8aa7340df993",
+ "Accreditation": "INVALID_LAUNCH",
+ "Cause": "TRANSPORT_AUTH_REFRESH_CONFLICT",
+ "Summary": "el proceso claude-cli arrancó (init correcto) y terminó antes de cualquier turno del modelo: un único mensaje sintético de error de autenticación del transporte y un result con is_error = true y terminal_reason = api_error; sin lecturas, sin resultado estructurado y sin consumo",
+ "Launch": {
+  "CustodyCommit": "524b293e (docs/automation/evidence/I-62-architect-A-3/R20261009T040327Z-58a1/, kit idéntico byte a byte)",
+  "Command": "python -B launch.py (desde kit-a3/kit), una vez",
+  "PreflightAt": "2026-10-09T05:18:56.580963Z",
+  "PreflightAllOk": true,
+  "Start": "2026-10-09T05:18:56.891129Z",
+  "End": "2026-10-09T05:19:06.307687Z",
+  "Pid": 23756,
+  "ExitCode": 1,
+  "Killed": false,
+  "TimedOut": false,
+  "ProcessGoneAfter": true
+ },
+ "Stream": {
+  "InitOk": {
+   "SessionId": true,
+   "Cwd": true,
+   "Model": "claude-opus-5-5",
+   "PermissionMode": "dontAsk",
+   "Tools": [
+    "Glob",
+    "Grep",
+    "Read",
+    "StructuredOutput"
+   ],
+   "McpServers": [],
+   "Version": "2.1.293"
+  },
+  "AssistantMessages": [
+   {
+    "Model": "<synthetic>",
+    "IsApiErrorMessage": true,
+    "Error": "server_error"
+   }
+  ],
+  "Result": {
+   "subtype": "success",
+   "is_error": true,
+   "terminal_reason": "api_error",
+   "num_turns": 1,
+   "duration_api_ms": 0,
+   "total_cost_usd": 0,
+   "tokens": 0,
+   "modelUsage": {},
+   "permission_denials": [],
+   "structured_output_present": false,
+   "result": "Failed to refresh OAuth token: another Claude Code process is refreshing it or exited mid-refresh. This is usually transient; retry in a minute, and if it persists close other Claude Code processes or sign in again"
+  }
+ },
+ "ModelTurns": 0,
+ "Tokens": 0,
+ "CostUsd": 0,
+ "ReviewProduced": false,
+ "ToolCalls": 0,
+ "ProbableCause": "la comprobación 5 de la preflight (`claude.exe auth status --json`) inició una renovación del token OAuth y terminó a mitad, justo antes del lanzamiento; en la corrida de A-2 el token no necesitó renovarse. Después, `auth status` informa loggedIn = true (claude.ai). Hechos de la sesión principal; no medido por el invocador",
+ "RunFilesUnchanged": {
+  "Before": {
+   "order.txt": {
+    "Sha256": "3ed7e135eb914a7307bdc83bd9da6cf4dd4cf68aadc3e04d71a619e82b709a1c",
+    "MatchesClosure": true,
+    "MatchesKitCopy": true
+   },
+   "prompt.md": {
+    "Sha256": "21230612113c17a2fc3bb68a18d7020c51eb88f525437ef0faaf36d2faea8917",
+    "MatchesClosure": true,
+    "MatchesKitCopy": true
+   },
+   "order-s56.txt": {
+    "Sha256": "e8b003284843374ba1e8497434f375f3206da2cd9a9829f2f451ff73af06b081",
+    "MatchesClosure": true,
+    "MatchesKitCopy": true
+   },
+   "order-s57.txt": {
+    "Sha256": "00a13ae527863117472bc7356458c849a8ef6f6e6255b417ee736dc3428023a3",
+    "MatchesClosure": true,
+    "MatchesKitCopy": true
+   }
+  },
+  "AfterMoveOfLaunch": {
+   "order.txt": true,
+   "prompt.md": true,
+   "order-s56.txt": true,
+   "order-s57.txt": true
+  },
+  "AllUnchanged": true,
+  "RunDirListingAfter": [
+   "order-s56.txt",
+   "order-s57.txt",
+   "order.txt",
+   "prompt.md"
+  ]
+ },
+ "CloneUnchanged": {
+  "Head": "492885254b58203f0bc0099345db2998b25d2a2b",
+  "StatusPorcelainIgnored": "",
+  "Branches": [
+   "main"
+  ],
+  "Remotes": [],
+  "BlobMismatches": [],
+  "ReparsePoints": 0,
+  "Unchanged": true
+ },
+ "Preserved": {
+  "launch-raw/": {
+   "What": "D:\\r62-arch-a3-run\\launch\\ movido intacto (bytes originales; contiene rutas del perfil del usuario: no versionar)",
+   "Files": {
+    "preflight.json": {
+     "Bytes": 1467,
+     "Sha256": "a1ac16a9f4f11cc65a803dff5c309f75665b19322fa0fde218830510d99de46c"
+    },
+    "run.json": {
+     "Bytes": 15252,
+     "Sha256": "cecae9dfb52dee8feadf5f8471a566e19e7f57ba75b10f9d1589b68db7f13bf9"
+    },
+    "stderr.txt": {
+     "Bytes": 0,
+     "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout.jsonl": {
+     "Bytes": 5290,
+     "Sha256": "17a56174080c515d9310a55efe515d4f8a2d5789769cfa5a58c8f5c779a58218"
+    },
+    "transport-characterization.json": {
+     "Bytes": 11769,
+     "Sha256": "20d0de2ce625c38ddeaaf445ce2261b080520bdcf57eec8f4bf9a8bd0cedbf4c"
+    }
+   }
+  },
+  "launch/": {
+   "What": "copia saneada de launch-raw/ (rutas del perfil → %USERPROFILE%)",
+   "Files": {
+    "preflight.json": {
+     "Bytes": 1467,
+     "Sha256": "a1ac16a9f4f11cc65a803dff5c309f75665b19322fa0fde218830510d99de46c",
+     "ChangedBySanitization": false,
+     "ResidueAfter": false
+    },
+    "run.json": {
+     "Bytes": 15252,
+     "Sha256": "cecae9dfb52dee8feadf5f8471a566e19e7f57ba75b10f9d1589b68db7f13bf9",
+     "ChangedBySanitization": false,
+     "ResidueAfter": false
+    },
+    "stderr.txt": {
+     "Bytes": 0,
+     "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+     "ChangedBySanitization": false,
+     "ResidueAfter": false
+    },
+    "stdout.jsonl": {
+     "Bytes": 5254,
+     "Sha256": "e8793faf54677c810fd20499c534c411fe2edab091976f4a4652f3601492106a",
+     "ChangedBySanitization": true,
+     "ResidueAfter": false
+    },
+    "transport-characterization.json": {
+     "Bytes": 11769,
+     "Sha256": "20d0de2ce625c38ddeaaf445ce2261b080520bdcf57eec8f4bf9a8bd0cedbf4c",
+     "ChangedBySanitization": false,
+     "ResidueAfter": false
+    }
+   }
+  },
+  "project-dir/": {
+   "What": "%USERPROFILE%\\.claude\\projects\\D--r62-arch-a3\\ movido intacto (transcripción original; contiene el correo, el uuid de la organización y rutas del perfil: no versionar)",
+   "Files": [
+    "ae3590eb-b508-4949-84da-8aa7340df993.jsonl"
+   ],
+   "TranscriptSha256": "9d1da64fe8bae46763ac5d85a36a9c03785532129d6876dfeed2571c2473f649",
+   "TranscriptBytes": 63772,
+   "MatchesRunJson": true
+  },
+  "project-dir.sanitized/": {
+   "What": "copia saneada de la transcripción (rutas → %USERPROFILE%, correo → <user-email>, uuid de la organización → <organization-uuid>, nombre de usuario → %USERNAME%)",
+   "Sha256": "63b81e4bd3cc9df5419d50602fb376ab4a16b2b276332c14e2f557c9b2fb1d50",
+   "Bytes": 63725,
+   "ResidueAfter": false
+  }
+ },
+ "ProjectDirRemovedFromProfile": true,
+ "Retry": "no hay reintento automático; el intento 2 es una invocación nueva (InvocationId y session id nuevos) que la sesión principal lanza con el kit de intento 2, una vez"
+}

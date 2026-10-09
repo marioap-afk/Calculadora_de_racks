@@ -1,4 +1,4 @@
-I-62 — REVISIÓN FORMAL DEL ARCHITECT DE LA ENMIENDA A-3 (compatibilidad de un runtime sucesor y huella material del adapter), preparada según la disposición del Coordinator §58, punto 3, las decisiones §57, punto 3, y la autorización del Owner CLAUDE-CLI-I62 = A. ÚNICA invocación, sin reintento automático.
+I-62 — REVISIÓN FORMAL DEL ARCHITECT DE LA ENMIENDA A-3 (compatibilidad de un runtime sucesor y huella material del adapter), preparada según la disposición del Coordinator §58, punto 3, las decisiones §57, punto 3, y la autorización del Owner CLAUDE-CLI-I62 = A. Intento 2 de esta revisión: el intento 1 terminó antes de cualquier turno del modelo, sin lecturas ni resultado (lanzamiento inválido por un fallo de autenticación del transporte). Sin reintento automático.
 
 Eres el ARCHITECT de esta revisión: un proceso `claude-cli` nuevo, separado de la sesión autora de A-3, del Coordinator y de las revisiones anteriores. Revisas en solo lectura la versión exacta y devuelves un único veredicto formal de LIFECYCLE §6. No implementas nada, no escribes, no haces commit ni push y no invocas a otros agentes.
 
@@ -6,8 +6,8 @@ Eres el ARCHITECT de esta revisión: un proceso `claude-cli` nuevo, separado de 
 
 ```text
 RunId                  = R20261009T040327Z-58a1
-InvocationId           = I20261009T040327Z-58a1
-LogicalReviewRequestId = L20261009T040327Z-58a1   AttemptSeq = 1
+InvocationId           = I20261009T052403Z-58a1
+LogicalReviewRequestId = L20261009T040327Z-58a1   AttemptSeq = 2
 Clon de lectura        = D:\r62-arch-a3   (tu directorio de trabajo; su única rama, main, está en el commit; sin remoto)
 Commit                 = 492885254b58203f0bc0099345db2998b25d2a2b   (recibo de publicación: añade a3-guards-result.json; sus demás cambios son registros)
 Publicación            = 91e29886a4870dd673372c66453d76ea503a22b9   (commit que publica A-3; su padre es 76b48e78)
@@ -194,7 +194,7 @@ Entrega el resultado con **una** llamada a StructuredOutput, con este objeto. Lo
 ```json
 {
   "Schema": "rackcad-architect-review-result/v1 (representación experimental; rigen I-61 y LIFECYCLE)",
-  "RunId": "R20261009T040327Z-58a1", "InvocationId": "I20261009T040327Z-58a1", "LogicalReviewRequestId": "L20261009T040327Z-58a1", "AttemptSeq": 1,
+  "RunId": "R20261009T040327Z-58a1", "InvocationId": "I20261009T052403Z-58a1", "LogicalReviewRequestId": "L20261009T040327Z-58a1", "AttemptSeq": 2,
   "RequestedRole": "ARCHITECT", "Action": "REVIEW_DESIGN",
   "ReviewedUnit": "I-62", "ReviewedCommit": "...", "ReviewedPath": "docs/initiatives/I-62-A-3.md", "ReviewedBlob": "...", "ReviewedAnnexBlob": "...",
   "ReviewerMode": "SAME-SESSION ROLE | SEPARATE SESSION | EXTERNAL HUMAN",

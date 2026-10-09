@@ -18,11 +18,14 @@ Antes de lanzar comprueba, y se NIEGA a lanzar (código 2, sin escribir nada) si
      fijado por su SHA-256) o ACCEPTED (aceptación explícita registrada), con sus predicados satisfechos (transport_gate.evaluate); la plantilla de
      los argumentos que se van a lanzar = la de la compuerta.
 Después escribe <run>/launch/preflight.json y las copias de los registros de la compuerta (transport-characterization.json y, en ACCEPTED,
-transport-acceptance.json); vuelve a medir el binario JUSTO antes de lanzarlo (si su SHA-256 cambió, aborta sin lanzar) y lanza la ruta resuelta
+transport-acceptance.json); espera AUTH_SETTLE_S = 120 s contados desde el final de `auth status` (comprobación 5), para que una renovación del
+token OAuth que esa llamada haya iniciado termine antes del lanzamiento (intento 2: mitigación de TRANSPORT_AUTH_REFRESH_CONFLICT, que dejó el
+intento 1 en INVALID_LAUNCH); vuelve a medir el binario JUSTO antes de lanzarlo (si su SHA-256 cambió, aborta sin lanzar) y lanza la ruta resuelta
 con la lista exacta de argumentos (flags medidos + --add-dir del run + --session-id + --json-schema compacto), el prompt (bytes de prompt.md del
 run) por stdin y cwd = el clon. Aplica el tope de 7 200 s con terminación (terminate y, 60 s después, kill) y escribe en <run>/launch/:
 stdout.jsonl, stderr.txt y run.json (ruta resuelta y SHA-256 medidos del ejecutable, PID, inicio y fin, código de salida, terminado o no,
-SHA-256 de stdout y de la transcripción, clon después).
+SHA-256 de stdout y de la transcripción, clon después, espera tras `auth status`). Si el mensaje result contiene «Failed to refresh OAuth token»
+con 0 tokens, run.json lo registra en TransportFailure como TRANSPORT_AUTH_REFRESH_CONFLICT. No hay reintento en ningún caso.
 Uso: python -B launch.py             → preflight y, si todo pasa, el único lanzamiento
      python -B launch.py --dry-run   → solo la preflight, sin ejecutar el binario (ni --version ni auth status: 4 y 5 quedan sin ejecutar), sin
                                        escribir y sin lanzar (código 2 siempre)
@@ -37,6 +40,7 @@ import stat
 import subprocess
 import sys
 import threading
+import time
 
 KIT = os.path.dirname(os.path.abspath(__file__))
 _spec = importlib.util.spec_from_file_location("transport_gate", os.path.join(KIT, "transport_gate.py"))
@@ -44,7 +48,7 @@ TG = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(TG)
 CLONE, RUN = r"D:\r62-arch-a3", r"D:\r62-arch-a3-run"
 REV = "492885254b58203f0bc0099345db2998b25d2a2b"
-SESSION_ID = "ae3590eb-b508-4949-84da-8aa7340df993"
+SESSION_ID = "2e266dfe-a1ca-4372-acd9-924c980bf50a"   # intento 2 (uuid4 nuevo)
 BIN_DISPLAY = r"%APPDATA%\Claude\claude-code\2.1.293\83cb0bd7fed4\claude.exe"
 BIN = os.path.join(os.environ.get("APPDATA", ""), "Claude", "claude-code", "2.1.293", "83cb0bd7fed4", "claude.exe")
 BIN_SHA = "8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa"
@@ -54,6 +58,9 @@ FLAGS = ["-p", "--model", "claude-opus-5-5", "--effort", "xhigh", "--output-form
 ADD_DIR = ["--add-dir", RUN]   # D-01: solo se lanza si transport-gate.json ata la medición C3 o la aceptación registrada
 RUN_FILES = ["order.txt", "prompt.md", "order-s56.txt", "order-s57.txt"]
 TIMEOUT_S, KILL_GRACE_S = 7200, 60
+AUTH_SETTLE_S = 120                                    # intento 2: espera entre `auth status` y el lanzamiento
+AUTH_REFRESH_MARK = "Failed to refresh OAuth token"    # texto del result del intento 1 (TRANSPORT_AUTH_REFRESH_CONFLICT)
+AUTH_DONE = []                                         # instante monotónico del final de `auth status` (preflight 5)
 PROJECTS = os.path.join(os.path.expanduser("~"), ".claude", "projects")
 PROJECT_DIR = os.path.join(PROJECTS, "D--r62-arch-a3")
 TRANSCRIPT = os.path.join(PROJECT_DIR, SESSION_ID + ".jsonl")
@@ -77,6 +84,28 @@ def same_path(a, b):
     return TG.norm(TG.expand(a)) == TG.norm(TG.expand(b))
 
 
+def transport_failure(stdout_bytes):
+    """Clasifica un fallo del transporte por el último mensaje result de stream-json (intento 2). Solo registra; nunca reintenta.
+    → {"Class": "TRANSPORT_AUTH_REFRESH_CONFLICT", …} si el result contiene AUTH_REFRESH_MARK con 0 tokens; si no, None."""
+    res = None
+    for line in stdout_bytes.splitlines():
+        try:
+            o = json.loads(line)
+        except ValueError:
+            continue
+        if isinstance(o, dict) and o.get("type") == "result":
+            res = o
+    if res is None:
+        return None
+    usage = res.get("usage") if isinstance(res.get("usage"), dict) else {}
+    tokens = sum(int(usage.get(k) or 0) for k in ("input_tokens", "output_tokens", "cache_creation_input_tokens", "cache_read_input_tokens"))
+    if AUTH_REFRESH_MARK in str(res.get("result") or "") and tokens == 0:
+        return {"Class": "TRANSPORT_AUTH_REFRESH_CONFLICT", "Tokens": tokens, "TotalCostUsd": res.get("total_cost_usd"),
+                "IsError": res.get("is_error"), "TerminalReason": res.get("terminal_reason"), "NumTurns": res.get("num_turns"),
+                "Retry": "ninguno: el kit no reintenta; la sesión principal registra el intento y decide"}
+    return None
+
+
 def preflight(dry_run=False):
     c = {}
     closure = json.load(open(os.path.join(KIT, "closure.json"), encoding="utf-8"))
@@ -89,7 +118,8 @@ def preflight(dry_run=False):
     args = build_args(os.path.join(KIT, "result.schema.json"))
     c["2-ClosureTransport"] = {"Ok": t["Flags"] == FLAGS and t["AddDir"] == ADD_DIR and t["SessionId"] == SESSION_ID and t["Cwd"] == CLONE and
                                t["Binary"]["Path"] == BIN_DISPLAY and t["Binary"]["Sha256"] == BIN_SHA and t["Binary"]["Version"] == VERSION and
-                               t.get("TimeoutSeconds") == TIMEOUT_S and closure["AuthorityRevision"] == REV and
+                               t.get("TimeoutSeconds") == TIMEOUT_S and t.get("AuthSettleSeconds") == AUTH_SETTLE_S and
+                               closure["AuthorityRevision"] == REV and
                                t.get("ArgsTemplate") == TG.templatize(args[1:])}
     m = TG.measure_binary(BIN)
     c["3-Binary"] = dict({"Ok": m["Exists"] and m["Sha256"] == BIN_SHA and same_path(m["Path"], BIN_DISPLAY) and m["Authenticode"] == "Valid" and
@@ -101,7 +131,8 @@ def preflight(dry_run=False):
         ver = TG.cli_version(BIN, KIT) if c["3-Binary"]["Ok"] else None
         c["4-Version"] = {"Ok": ver == VERSION, "Got": ver}
         auth = TG.auth_status(BIN, KIT) if c["4-Version"]["Ok"] else {}
-        c["5-Auth"] = dict({"Ok": auth.get("loggedIn") is True}, **auth)
+        AUTH_DONE.append(time.monotonic())
+        c["5-Auth"] = dict({"Ok": auth.get("loggedIn") is True}, **auth, CompletedAt=now())
     reparse = []
     for root, dirs, fs in os.walk(CLONE, followlinks=False):
         for n in dirs + fs:
@@ -162,11 +193,15 @@ def main(argv):
     if acc_b is not None:
         open(os.path.join(out_dir, TG.COPY_ACCEPTANCE), "wb").write(acc_b)
     prompt = open(os.path.join(RUN, "prompt.md"), "rb").read()
+    settle = {"Seconds": AUTH_SETTLE_S, "AuthStatusCompletedAt": checks["5-Auth"].get("CompletedAt"), "WaitStartedAt": now()}
+    waited = max(0.0, AUTH_SETTLE_S - (time.monotonic() - AUTH_DONE[-1])) if AUTH_DONE else float(AUTH_SETTLE_S)
+    time.sleep(waited)
+    settle.update({"WaitedSeconds": round(waited, 3), "WaitEndedAt": now()})
     resolved = os.path.realpath(BIN)
     rec = {"SessionId": SESSION_ID, "Executable": TG.portable(resolved), "ExecutableSha256": sha_file(resolved), "Args": args[1:], "Cwd": CLONE,
            "PromptSha256": hashlib.sha256(prompt).hexdigest(), "PromptBytes": len(prompt), "TimeoutSeconds": TIMEOUT_S,
            "TransportGate": {k: checks["10-TransportGate"][k] for k in ("Status", "CharacterizationSha256", "AcceptanceSha256")},
-           "EnvironmentVariableNames": sorted(k for k in os.environ if k.upper().startswith(("CLAUDE", "ANTHROPIC")))}
+           "EnvironmentVariableNames": sorted(k for k in os.environ if k.upper().startswith(("CLAUDE", "ANTHROPIC"))), "AuthSettle": settle}
     if rec["ExecutableSha256"] != BIN_SHA or not same_path(rec["Executable"], BIN_DISPLAY):
         rec["Aborted"] = "el binario cambió entre la preflight y el lanzamiento: no se lanza (borrar launch/ y volver a custodiar)"
         write_json(os.path.join(out_dir, "run.json"), rec)
@@ -213,11 +248,13 @@ def main(argv):
         except ValueError:
             return None
     rec["ResultMessage"] = any(kind(l) == "result" for l in so.splitlines() if l.strip())
+    rec["TransportFailure"] = transport_failure(so)
     rec["Transcript"] = {"Path": "%USERPROFILE%\\.claude\\projects\\D--r62-arch-a3\\" + SESSION_ID + ".jsonl", "Exists": os.path.isfile(TRANSCRIPT),
                          "Sha256": sha_file(TRANSCRIPT) if os.path.isfile(TRANSCRIPT) else None}
     rec["CloneAfter"] = {"Head": git("rev-parse", "HEAD").strip(), "StatusPorcelainIgnored": git("status", "--porcelain", "--ignored")}
     write_json(os.path.join(out_dir, "run.json"), rec)
-    print(json.dumps({k: rec[k] for k in ("SessionId", "Pid", "Start", "End", "ExitCode", "Killed", "TimedOut", "ResultMessage")}, ensure_ascii=False))
+    print(json.dumps({k: rec[k] for k in ("SessionId", "Pid", "Start", "End", "ExitCode", "Killed", "TimedOut", "ResultMessage", "TransportFailure")},
+                     ensure_ascii=False))
     return 0 if rec["ExitCode"] == 0 and rec["ResultMessage"] else 1
 
 

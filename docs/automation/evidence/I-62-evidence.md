@@ -3026,9 +3026,26 @@ solo desde artefactos custodiados.
   - prompt de 23 252 bytes (`21230612…`) y esquema adaptado a A-3;
   - auditor v5.1-a3, con `selftest` 107/107 y 127 mutantes eliminados;
   - compuerta de transporte MEASURED sobre la caracterización `20d0de2c…`;
-  - clon `D:62-arch-a3` verificado (AllChecks) y run `D:62-arch-a3-run` con cuatro archivos;
+  - clon `D:
+62-arch-a3` verificado (AllChecks) y run `D:
+62-arch-a3-run` con cuatro archivos;
   - ensayo en seco de `launch.py`: 8 de 10 comprobaciones en Ok, ninguna bloqueante (la 4 y la 5 ejecutarían el binario).
 - **Transporte:** `claude-cli` 2.1.293, el mismo binario medido (`8693c4a0…`), `claude-opus-5-5` xhigh, solo Read, Grep y Glob, tope de 7 200 s,
   una invocación sin reintento.
 - **Consumo:** cubierto por la línea del Owner CLAUDE-CLI-I62 = A, la misma base que la re-revisión de A-2.
 - **Estado:** custodiado y NO lanzado. A-3 no se modifica a partir de ahora.
+
+## 97. A-3: intento 1 de la revisión = INVALID_LAUNCH sin consumo; kit del intento 2 custodiado antes de lanzarlo
+
+- **Intento 1** (sesión `ae3590eb…`, 2026-10-09T05:18:56Z-05:19:06Z). La preflight pasó. El runtime terminó a los 10 s con un mensaje sintético
+  (0 tokens, coste 0, `terminal_reason` api_error): «Failed to refresh OAuth token: another Claude Code process is refreshing it or exited
+  mid-refresh». No hubo turno del modelo, ni lecturas, ni revisión. El run y el clon no cambiaron.
+  - Acreditación: **INVALID_LAUNCH**, causa TRANSPORT_AUTH_REFRESH_CONFLICT
+    ([accreditation.json](I-62-architect-A-3/R20261009T040327Z-58a1/attempt-1/accreditation.json)).
+  - Las copias saneadas de `launch/` y de la transcripción están en el repositorio. Los originales, con identificadores de cuenta, quedan fuera
+    del repositorio.
+  - Causa probable: la comprobación `auth status` de la preflight dejó a medias el refresco del token justo antes de lanzar.
+- **Intento 2:** el mismo kit, con `AttemptSeq` 2, `InvocationId` `I20261009T052403Z-58a1` y una sesión nueva `2e266dfe…`. Después de
+  `auth status` hay una espera de 120 s, y si se repite el conflicto se clasifica sin reintento.
+  - `selftest` 107/107; ensayo en seco sin bloqueos; `kit-manifest.json` `defda283…`.
+  - Es el único intento que queda.

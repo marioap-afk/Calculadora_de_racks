@@ -47,7 +47,7 @@ def header():
     return {
         "Kit": "I-62 A-3: kit de la UNA revisión formal independiente del Architect por claude-cli (disposición §58, punto 3; decisiones §57, punto 3; "
                "Owner CLAUDE-CLI-I62 = A)",
-        "Ids": closure["Ids"], "Commit": closure["AuthorityRevision"], "ObjectIntroducedBy": closure["ObjectIntroducedBy"],
+        "Ids": closure["Ids"], "PreviousAttempts": closure.get("PreviousAttempts", []), "Commit": closure["AuthorityRevision"], "ObjectIntroducedBy": closure["ObjectIntroducedBy"],
         "Object": "%s blob %s" % (closure["ObjectPath"], closure["ObjectBlob"]), "Annex": "%s blob %s" % (closure["AnnexPath"], closure["AnnexBlob"]),
         "SessionId": t["SessionId"],
         "Transport": "claude-cli %s (%s, SHA-256 %s)" % (t["Binary"]["Version"].split()[0], t["Binary"]["Path"], t["Binary"]["Sha256"]),
