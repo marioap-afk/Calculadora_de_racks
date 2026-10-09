@@ -1,0 +1,1836 @@
+{
+ "Tool": "a4-guards.py run",
+ "Mode": "CORRECTION3",
+ "A4Base": "e6fe2e0890c927e0f3e936ff8032279442404857",
+ "Base": "b25dde6b2adda5ed80695373451a2f12721bd2b9",
+ "Head": "c2dbc22566cff9319f12e521d841b5bfcbb40e0c",
+ "A4Blob": "5e2ba68efdc1b902aa1c28aff4453b4b6973be7f",
+ "Checks": [
+  {
+   "Check": "G1 literales, cabecera y privacidad",
+   "BlockLines": 5,
+   "Version": "C3",
+   "InlineLiterals": 83,
+   "InlineLiteralsSection2": 58,
+   "Paragraphs": 6,
+   "Literals": [
+    {
+     "Id": "L01",
+     "Source": "V14",
+     "Lines": "L2515",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L02",
+     "Source": "V14",
+     "Lines": "L2523",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L03",
+     "Source": "V14",
+     "Lines": "L2528",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L04",
+     "Source": "V14",
+     "Lines": "L2544",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L05",
+     "Source": "V14",
+     "Lines": "L2552",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L06",
+     "Source": "V14",
+     "Lines": "L2560",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L07",
+     "Source": "V14",
+     "Lines": "L972",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L08",
+     "Source": "V14",
+     "Lines": "L974",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L09",
+     "Source": "A2",
+     "Lines": "L222-L223",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L10",
+     "Source": "A2",
+     "Lines": "L233",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L11",
+     "Source": "A2",
+     "Lines": "L238-L239",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L12",
+     "Source": "AP",
+     "Lines": "L542-L543",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L13",
+     "Source": "CODEX",
+     "Lines": "L24",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L14",
+     "Source": "CODEX",
+     "Lines": "L53",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L15",
+     "Source": "AP",
+     "Lines": "L1069-L1070",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L16",
+     "Source": "AP",
+     "Lines": "L1093",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L17",
+     "Source": "AP",
+     "Lines": "L1159-L1161",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L18",
+     "Source": "CC",
+     "Lines": "L127-L128",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L19",
+     "Source": "CC",
+     "Lines": "L217",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L20",
+     "Source": "KIT",
+     "Lines": "L44",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L21",
+     "Source": "V14",
+     "Lines": "L386-L387",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L22",
+     "Source": "V14",
+     "Lines": "L1999",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L23",
+     "Source": "V14",
+     "Lines": "L3081",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L24",
+     "Source": "V14",
+     "Lines": "L614",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L25",
+     "Source": "V14",
+     "Lines": "L1884",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L26",
+     "Source": "AP",
+     "Lines": "L1101",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L27",
+     "Source": "AP",
+     "Lines": "L1108-L1109",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L28",
+     "Source": "AP",
+     "Lines": "L1122-L1123",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L29",
+     "Source": "AP",
+     "Lines": "L1339",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L30",
+     "Source": "AP",
+     "Lines": "L1349",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L31",
+     "Source": "RAE",
+     "Lines": "L387",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L32",
+     "Source": "RAE",
+     "Lines": "L399",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L33",
+     "Source": "RAE",
+     "Lines": "L437",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L34",
+     "Source": "O4",
+     "Lines": "L95",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L35",
+     "Source": "ROUTING",
+     "Lines": "L114",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L36",
+     "Source": "V14",
+     "Lines": "L1860",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L37",
+     "Source": "V14",
+     "Lines": "L1139",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L38",
+     "Source": "V14",
+     "Lines": "L2176",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L39",
+     "Source": "V14",
+     "Lines": "L657",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L40",
+     "Source": "V14",
+     "Lines": "L788",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L41",
+     "Source": "AP",
+     "Lines": "L1146-L1147",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L42",
+     "Source": "AP",
+     "Lines": "L1156",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L43",
+     "Source": "AP",
+     "Lines": "L1163",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L44",
+     "Source": "AP",
+     "Lines": "L1168",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L45",
+     "Source": "AP",
+     "Lines": "L1121",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L46",
+     "Source": "RAE",
+     "Lines": "L396",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L47",
+     "Source": "RAE",
+     "Lines": "L446",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L48",
+     "Source": "CC",
+     "Lines": "L212",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L49",
+     "Source": "V14",
+     "Lines": "L2444",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L50",
+     "Source": "V14",
+     "Lines": "L2535",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L51",
+     "Source": "V14",
+     "Lines": "L2536",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L52",
+     "Source": "AP",
+     "Lines": "L538",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L53",
+     "Source": "AP",
+     "Lines": "L610",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L54",
+     "Source": "AP",
+     "Lines": "L612",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L55",
+     "Source": "KIT",
+     "Lines": "L44",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L56",
+     "Source": "DEC",
+     "Lines": "L1173",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L57",
+     "Source": "DEC",
+     "Lines": "L1083",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L58",
+     "Source": "DEC",
+     "Lines": "L1085",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L59",
+     "Source": "A2",
+     "Lines": "L234",
+     "Where": "§3.2 (ubicación)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L60",
+     "Source": "DEC",
+     "Lines": "L1161-L1162",
+     "Where": "§8 Q-A4-04",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L61",
+     "Source": "KIT",
+     "Lines": "L167",
+     "Where": "§8 Q-A4-08",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L62",
+     "Source": "V14",
+     "Lines": "L972",
+     "Where": "§8 Q-A4-09",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L63",
+     "Source": "AP",
+     "Lines": "L1122-L1123",
+     "Where": "§8 Q-A4-10",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L64",
+     "Source": "AP",
+     "Lines": "L1121",
+     "Where": "§8 Q-A4-13",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L65",
+     "Source": "V14",
+     "Lines": "L2537",
+     "Where": "§8 Q-A4-02 (D.4)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L66",
+     "Source": "RAE",
+     "Lines": "L399",
+     "Where": "§8 Q-A4-10 (B9)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L67",
+     "Source": "KIT",
+     "Lines": "L248",
+     "Where": "§8 Q-A4-14",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L68",
+     "Source": "V14",
+     "Lines": "L2523",
+     "Where": "A4-1, §4 y §8",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L69",
+     "Source": "AP",
+     "Lines": "L1166",
+     "Where": "A4-4 y §4",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L70",
+     "Source": "V14",
+     "Lines": "L2444",
+     "Where": "A4-5",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L71",
+     "Source": "V14",
+     "Lines": "L2442",
+     "Where": "A4-5",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L72",
+     "Source": "V14",
+     "Lines": "L2442",
+     "Where": "A4-5",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L73",
+     "Source": "V14",
+     "Lines": "L1884",
+     "Where": "cabecera, §3.7 y §5 (corrección 2)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L74",
+     "Source": "V14",
+     "Lines": "L2437",
+     "Where": "§2 (A4-6)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L75",
+     "Source": "V14",
+     "Lines": "L2501",
+     "Where": "§2 (A4-6)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L76",
+     "Source": "A2",
+     "Lines": "L156-L157",
+     "Where": "§2 (A4-6)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L77",
+     "Source": "A2",
+     "Lines": "L159",
+     "Where": "§2 (A4-6)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L78",
+     "Source": "DEC",
+     "Lines": "L982",
+     "Where": "§2 (A4-6)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L79",
+     "Source": "DEC",
+     "Lines": "L983",
+     "Where": "§2 (A4-6)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L80",
+     "Source": "DEC",
+     "Lines": "L985",
+     "Where": "§2 (A4-6)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L81",
+     "Source": "DEC63",
+     "Lines": "L1265",
+     "Where": "§2 (A4-6)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L82",
+     "Source": "V14",
+     "Lines": "L2184-L2185",
+     "Where": "§2 (A62-A4-02)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L83",
+     "Source": "V14",
+     "Lines": "L2501",
+     "Where": "A4-6",
+     "Result": "PASS"
+    }
+   ],
+   "A3HeaderState": "AGREED",
+   "Info": [
+    "fuente KIT: blob en la base 2439837a distinto del fijado fd7ef02d (cambio fuera de A-4); las 12 líneas citadas son idénticas",
+    "L21 (V14 L386-L387): la cita no toca todas las líneas del rango (rango más amplio que la cita)",
+    "L60 (DEC L1161-L1162): la cita no toca todas las líneas del rango (rango más amplio que la cita)",
+    "L63 (AP L1122-L1123): la cita no toca todas las líneas del rango (rango más amplio que la cita)"
+   ],
+   "Warnings": [],
+   "Findings": [],
+   "Result": "PASS"
+  },
+  {
+   "Check": "G2C3 rutas y regiones del commit de la corrección 3",
+   "Base": "b25dde6b2adda5ed80695373451a2f12721bd2b9",
+   "Head": "c2dbc22566cff9319f12e521d841b5bfcbb40e0c",
+   "Changed": {
+    "docs/automation/evidence/I-62-A4/a4-guards-result-preview.json": "M",
+    "docs/automation/evidence/I-62-A4/a4-guards.py": "M",
+    "docs/automation/evidence/I-62-A4/a4-selftest.json": "M",
+    "docs/initiatives/I-62-A-4.md": "M",
+    "docs/initiatives/I-62-architect-package-A-4.md": "M"
+   },
+   "Diff": {
+    "A4": {
+     "Blob": "5e2ba68efdc1b902aa1c28aff4453b4b6973be7f",
+     "ChangedRegions": [
+      "Anexo",
+      "header:Architect review",
+      "header:Classification",
+      "header:Coordinator verdict",
+      "header:Origin",
+      "header:Owner decision",
+      "§1",
+      "§10",
+      "§2",
+      "§3.1",
+      "§3.5",
+      "§3.7",
+      "§4",
+      "§5",
+      "§6",
+      "§7",
+      "§8"
+     ],
+     "AddedRegions": [
+      "§3.8"
+     ],
+     "Hunks": [
+      {
+       "Op": "replace",
+       "Old": "L25-L26",
+       "New": "L25-L27"
+      },
+      {
+       "Op": "replace",
+       "Old": "L35-L35",
+       "New": "L36-L37"
+      },
+      {
+       "Op": "replace",
+       "Old": "L39-L40",
+       "New": "L41-L44"
+      },
+      {
+       "Op": "replace",
+       "Old": "L43-L43",
+       "New": "L47-L48"
+      },
+      {
+       "Op": "replace",
+       "Old": "L46-L47",
+       "New": "L51-L52"
+      },
+      {
+       "Op": "replace",
+       "Old": "L61-L63",
+       "New": "L66-L69"
+      },
+      {
+       "Op": "insert",
+       "Old": "L64+",
+       "New": "L71-L78"
+      },
+      {
+       "Op": "insert",
+       "Old": "L133+",
+       "New": "L148-L160"
+      },
+      {
+       "Op": "replace",
+       "Old": "L149-L149",
+       "New": "L176-L176"
+      },
+      {
+       "Op": "insert",
+       "Old": "L152+",
+       "New": "L180-L183"
+      },
+      {
+       "Op": "replace",
+       "Old": "L234-L234",
+       "New": "L265-L265"
+      },
+      {
+       "Op": "replace",
+       "Old": "L236-L236",
+       "New": "L267-L267"
+      },
+      {
+       "Op": "replace",
+       "Old": "L240-L240",
+       "New": "L271-L271"
+      },
+      {
+       "Op": "replace",
+       "Old": "L250-L251",
+       "New": "L281-L282"
+      },
+      {
+       "Op": "replace",
+       "Old": "L253-L257",
+       "New": "L284-L287"
+      },
+      {
+       "Op": "replace",
+       "Old": "L277-L286",
+       "New": "L307-L332"
+      },
+      {
+       "Op": "replace",
+       "Old": "L289-L290",
+       "New": "L335-L336"
+      },
+      {
+       "Op": "replace",
+       "Old": "L293-L297",
+       "New": "L339-L361"
+      },
+      {
+       "Op": "insert",
+       "Old": "L299+",
+       "New": "L364-L366"
+      },
+      {
+       "Op": "replace",
+       "Old": "L311-L312",
+       "New": "L378-L380"
+      },
+      {
+       "Op": "insert",
+       "Old": "L315+",
+       "New": "L384-L385"
+      },
+      {
+       "Op": "replace",
+       "Old": "L321-L325",
+       "New": "L391-L395"
+      },
+      {
+       "Op": "replace",
+       "Old": "L332-L333",
+       "New": "L402-L406"
+      },
+      {
+       "Op": "replace",
+       "Old": "L337-L341",
+       "New": "L410-L417"
+      },
+      {
+       "Op": "replace",
+       "Old": "L345-L345",
+       "New": "L421-L421"
+      },
+      {
+       "Op": "replace",
+       "Old": "L348-L351",
+       "New": "L424-L429"
+      },
+      {
+       "Op": "insert",
+       "Old": "L355+",
+       "New": "L434-L434"
+      },
+      {
+       "Op": "insert",
+       "Old": "L378+",
+       "New": "L458-L462"
+      },
+      {
+       "Op": "insert",
+       "Old": "L382+",
+       "New": "L467-L470"
+      },
+      {
+       "Op": "replace",
+       "Old": "L397-L399",
+       "New": "L485-L487"
+      },
+      {
+       "Op": "replace",
+       "Old": "L406-L406",
+       "New": "L494-L494"
+      },
+      {
+       "Op": "replace",
+       "Old": "L421-L423",
+       "New": "L509-L516"
+      }
+     ]
+    },
+    "Package": {
+     "Blob": "57c060e15f14ade6aefeda246adf26b2adaf2594",
+     "Hunks": [
+      {
+       "Op": "replace",
+       "Old": "L4-L9",
+       "New": "L4-L12"
+      },
+      {
+       "Op": "replace",
+       "Old": "L14-L14",
+       "New": "L17-L17"
+      },
+      {
+       "Op": "replace",
+       "Old": "L17-L17",
+       "New": "L20-L20"
+      },
+      {
+       "Op": "replace",
+       "Old": "L24-L24",
+       "New": "L27-L28"
+      },
+      {
+       "Op": "replace",
+       "Old": "L30-L30",
+       "New": "L34-L34"
+      },
+      {
+       "Op": "replace",
+       "Old": "L32-L33",
+       "New": "L36-L36"
+      },
+      {
+       "Op": "replace",
+       "Old": "L35-L44",
+       "New": "L38-L39"
+      },
+      {
+       "Op": "replace",
+       "Old": "L46-L47",
+       "New": "L41-L51"
+      },
+      {
+       "Op": "replace",
+       "Old": "L49-L52",
+       "New": "L53-L71"
+      },
+      {
+       "Op": "replace",
+       "Old": "L59-L60",
+       "New": "L78-L79"
+      },
+      {
+       "Op": "replace",
+       "Old": "L76-L76",
+       "New": "L95-L100"
+      },
+      {
+       "Op": "replace",
+       "Old": "L98-L99",
+       "New": "L122-L123"
+      },
+      {
+       "Op": "replace",
+       "Old": "L122-L124",
+       "New": "L146-L154"
+      },
+      {
+       "Op": "replace",
+       "Old": "L144-L145",
+       "New": "L174-L176"
+      },
+      {
+       "Op": "replace",
+       "Old": "L154-L156",
+       "New": "L185-L190"
+      },
+      {
+       "Op": "insert",
+       "Old": "L160+",
+       "New": "L195-L195"
+      },
+      {
+       "Op": "replace",
+       "Old": "L173-L173",
+       "New": "L208-L208"
+      }
+     ]
+    }
+   },
+   "AppendOnlyGrowth": {},
+   "PrivacyChecked": [
+    "docs/automation/evidence/I-62-A4/a4-guards-result-preview.json",
+    "docs/automation/evidence/I-62-A4/a4-guards.py",
+    "docs/automation/evidence/I-62-A4/a4-selftest.json",
+    "docs/initiatives/I-62-A-4.md",
+    "docs/initiatives/I-62-architect-package-A-4.md"
+   ],
+   "Info": [],
+   "Findings": [],
+   "Result": "PASS"
+  },
+  {
+   "Check": "G3 blobs congelados y declarados sin cambio (Base, Head)",
+   "Paths": 18,
+   "Mismatches": {},
+   "Info": [
+    "Base:docs/automation/evidence/I-62-F6/kits/FX-02/README.md con blob 2439837a distinto del fijado fd7ef02d (cambio fuera de A-4; líneas citadas en G1)",
+    "Head:docs/automation/evidence/I-62-F6/kits/FX-02/README.md con blob 2439837a distinto del fijado fd7ef02d (cambio fuera de A-4; líneas citadas en G1)"
+   ],
+   "Findings": [],
+   "Result": "PASS"
+  },
+  {
+   "Check": "G4 C-20b",
+   "Base": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+   "SurfacesTouched": [],
+   "ExitCode": 0,
+   "Output": "{\"result\": \"EQUAL (MV-2..MV-6)\", \"files\": 31, \"entries\": {\"MODIFIED\": 15, \"REMOVED\": 0, \"ADDED\": 53, \"ENTRY\": 2}}",
+   "Findings": [],
+   "Result": "PASS"
+  },
+  {
+   "Check": "G5 delta frente a V14 y A-2",
+   "Rules": [
+    "A4-1",
+    "A4-2",
+    "A4-3",
+    "A4-4",
+    "A4-5",
+    "A4-6"
+   ],
+   "ParagraphSha256": {
+    "A4-1": "a985b198a3a7a3411c9ed72b4431eecbd3ad260f1ddf7587fe4a022a64249be2",
+    "A4-2": "b487605319cf0d2e62ba4c1b42302bb659bcbc099114e7ddd34fc14bbad9b1fd",
+    "A4-3": "6599d5e08a52e9f5a7cbc02e15ab9b0a37210f3aa24f69a53ef5c43b26f85116",
+    "A4-4": "7d037b318a1f54cf9c99c91f5db04d25c002f42da502b6e740a6cda4fccea1fb",
+    "A4-5": "4622ae1c19b76ccd1798f725564f86e0f9e7502bf9f50b795259cd0a387088b5",
+    "A4-6": "e526f48c2ef6eea3a4616199855743faf397bcf153dd037aaad05426c9983252"
+   },
+   "A2Pattern": {
+    "Added": [],
+    "Removed": [],
+    "Changed": [
+     "# I-62 — Proposal V14: portabilidad del Principal, binding de roles independient",
+     "## Anexo D — Pilotos y portabilidad (plano c)",
+     "### D.3 Hoja de invocaciones y escenarios"
+    ]
+   },
+   "Application": {
+    "A4-1..A4-6": {
+     "PureAppend": true,
+     "InsertedLines": 111,
+     "InsertedAfterLine": 2574,
+     "ChangedSections": [
+      "# I-62 — Proposal V14: portabilidad del Principal, binding de roles independient",
+      "## Anexo D — Pilotos y portabilidad (plano c)",
+      "### D.3 Hoja de invocaciones y escenarios"
+     ]
+    },
+    "sin A4-5": {
+     "PureAppend": true,
+     "InsertedLines": 101,
+     "InsertedAfterLine": 2574,
+     "ChangedSections": [
+      "# I-62 — Proposal V14: portabilidad del Principal, binding de roles independient",
+      "## Anexo D — Pilotos y portabilidad (plano c)",
+      "### D.3 Hoja de invocaciones y escenarios"
+     ]
+    },
+    "sin A4-6": {
+     "PureAppend": true,
+     "InsertedLines": 98,
+     "InsertedAfterLine": 2574,
+     "ChangedSections": [
+      "# I-62 — Proposal V14: portabilidad del Principal, binding de roles independient",
+      "## Anexo D — Pilotos y portabilidad (plano c)",
+      "### D.3 Hoja de invocaciones y escenarios"
+     ]
+    },
+    "sin A4-5 ni A4-6": {
+     "PureAppend": true,
+     "InsertedLines": 88,
+     "InsertedAfterLine": 2574,
+     "ChangedSections": [
+      "# I-62 — Proposal V14: portabilidad del Principal, binding de roles independient",
+      "## Anexo D — Pilotos y portabilidad (plano c)",
+      "### D.3 Hoja de invocaciones y escenarios"
+     ]
+    }
+   },
+   "Scope": [
+    {
+     "Rule": "A4-1",
+     "Title": "Ruta de ejecución del Controller ante una limitación medida del shell",
+     "ScopeClause": "Solo para la celda de EXECUTION_CONTROLLER de la Topología A (FX-02), en F6.",
+     "Missing": [],
+     "OtherScenarios": [],
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-2",
+     "Title": "Sustitución del adapter del Architect de la Topología A ante una limitación medida",
+     "ScopeClause": "Solo para el Architect de la Topología A (revisión del contrato, FX-02), en F6.",
+     "Missing": [],
+     "OtherScenarios": [],
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-3",
+     "Title": "Aceptación preautorizada de bindings dentro de la ventana",
+     "ScopeClause": "Solo para la tarea de FX-02 de la Topología A, en F6, y solo para los dos bindings nuevos que esta Proposal hace transitorios entre Q0 y Q7 (§8.4; B.8.3): el del Worker y el del Controller de verificación.",
+     "Missing": [],
+     "OtherScenarios": [],
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-4",
+     "Title": "Independencia de una candidata no arrancada",
+     "ScopeClause": "Solo para FX-02 de la Topología A, en F6, y solo para los bindings con Actor, Sesión o Contexto REQUIRED: el Controller, en planificación y en verificación, frente a WORKER, y el Architect frente a AUTHOR.",
+     "Missing": [],
+     "OtherScenarios": [],
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-5",
+     "Title": "Tope de una corrección de FX-02",
+     "ScopeClause": "Solo para la tarea de FX-02 de la Topología A, en F6.",
+     "Missing": [],
+     "OtherScenarios": [],
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-6",
+     "Title": "Una sesión de Principal más en la ronda A, solo para el titular A2",
+     "ScopeClause": "Solo para la ronda A de F6 (Topología A) y solo para la sesión de Principal del titular A2 de FX-02, designado por T16.",
+     "Missing": [],
+     "OtherScenarios": [],
+     "Result": "PASS"
+    }
+   ],
+   "InnerQuotes": [
+    {
+     "Rule": "A4-1",
+     "Quote": "+ 2 sondas",
+     "FoundIn": [
+      "V14 L2523",
+      "A2 L113",
+      "A2 L187"
+     ],
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-4",
+     "Quote": "Si falta un REQUIRED",
+     "FoundIn": [
+      "V14 L710",
+      "AP L1166"
+     ],
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-4",
+     "Quote": "UNKNOWN cuenta como NOT_SATISFIED",
+     "FoundIn": [
+      "V14 L1487",
+      "AP L1121",
+      "RAE L421"
+     ],
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-5",
+     "Quote": "+1 solo si hay REWORK",
+     "FoundIn": [
+      "V14 L2444",
+      "KIT L180",
+      "KIT L216"
+     ],
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-5",
+     "Quote": "**Codex, total**",
+     "FoundIn": [
+      "V14 L2442",
+      "KIT L214",
+      "KIT L338"
+     ],
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-5",
+     "Quote": "pool **4** (≤ 2 por fase)",
+     "FoundIn": [
+      "V14 L2442",
+      "KIT L214",
+      "KIT L338"
+     ],
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-6",
+     "Quote": "N11: B2",
+     "FoundIn": [
+      "V14 L2501",
+      "A2 L85",
+      "A2 L166"
+     ],
+     "Result": "PASS"
+    }
+   ],
+   "ProductExemptions": [
+    {
+     "Rule": "A4-5",
+     "Quote": "**Codex, total**",
+     "Source": "V14 L2442"
+    }
+   ],
+   "CrossScopeMentions": [
+    {
+     "Rule": "A4-1",
+     "Item": "intro",
+     "Category": "SUPERFICIE",
+     "Token": "receta",
+     "Statement": "NEGATIVA",
+     "Marker": "no",
+     "Sentence": "Cuando una invocación medida de esa celda muestra que el runtime no usa el shell que la receta de su adapter pone primero en el `PATH` del proceso hijo, y que bajo el sandbox de solo lectura rechaza el shell que él mismo selecciona:",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "1",
+     "Category": "SUPERFICIE",
+     "Token": "receta",
+     "Statement": "NEGATIVA",
+     "Marker": "Ningún",
+     "Sentence": "Ningún otro elemento de la receta cambia: binario, directorio, sandbox, modelo, effort, esquema y destino de la salida, registro de sesión, stdin, `PATH`, tope de tiempo, huella y consumo;",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "1",
+     "Category": "SUPERFICIE",
+     "Token": "esquema",
+     "Statement": "NEGATIVA",
+     "Marker": "Ningún",
+     "Sentence": "Ningún otro elemento de la receta cambia: binario, directorio, sandbox, modelo, effort, esquema y destino de la salida, registro de sesión, stdin, `PATH`, tope de tiempo, huella y consumo;",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "3",
+     "Category": "REGLA",
+     "Token": "regla de nueva medición",
+     "Statement": "RESTRICCIÓN",
+     "Marker": "aparte",
+     "Sentence": "Se cuenta aparte: fuera de los lanzamientos de la ronda, del sumando «+ 2 sondas» de los totales y de los bloques de la regla de nueva medición de A-2.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "3",
+     "Category": "REGLA",
+     "Token": "A-2",
+     "Statement": "RESTRICCIÓN",
+     "Marker": "aparte",
+     "Sentence": "Se cuenta aparte: fuera de los lanzamientos de la ronda, del sumando «+ 2 sondas» de los totales y de los bloques de la regla de nueva medición de A-2.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "3",
+     "Category": "REGLA",
+     "Token": "regla de nueva medición",
+     "Statement": "RESTRICCIÓN",
+     "Marker": "solo",
+     "Sentence": "Su tope es uno en total para FX-02 en F6 (solo la regla 4 abre otra, con un bloque nuevo de la regla de nueva medición de A-2 por una actualización nueva), y P-07 lo comprueba antes de lanzarla;",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "3",
+     "Category": "REGLA",
+     "Token": "A-2",
+     "Statement": "RESTRICCIÓN",
+     "Marker": "solo",
+     "Sentence": "Su tope es uno en total para FX-02 en F6 (solo la regla 4 abre otra, con un bloque nuevo de la regla de nueva medición de A-2 por una actualización nueva), y P-07 lo comprueba antes de lanzarla;",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "4",
+     "Category": "REGLA",
+     "Token": "regla de nueva medición",
+     "Statement": "RESTRICCIÓN",
+     "Marker": "Solo",
+     "Sentence": "Solo una actualización observada del runtime, por la regla de nueva medición de A-2, u otra A-n abren otra medición;",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "4",
+     "Category": "REGLA",
+     "Token": "A-2",
+     "Statement": "RESTRICCIÓN",
+     "Marker": "Solo",
+     "Sentence": "Solo una actualización observada del runtime, por la regla de nueva medición de A-2, u otra A-n abren otra medición;",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "5",
+     "Category": "SUPERFICIE",
+     "Token": "catálogo",
+     "Statement": "NEGATIVA",
+     "Marker": "sin",
+     "Sentence": "cualquier cambio de un invalidador (`BinaryHash`, `AppVersion`, huella, estado de autenticación, modelo, effort, blobs de catálogo y de routing, instancia del host) anula esa medición y la elegibilidad que da, sin reutilización;",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "5",
+     "Category": "SUPERFICIE",
+     "Token": "routing",
+     "Statement": "NEGATIVA",
+     "Marker": "sin",
+     "Sentence": "cualquier cambio de un invalidador (`BinaryHash`, `AppVersion`, huella, estado de autenticación, modelo, effort, blobs de catálogo y de routing, instancia del host) anula esa medición y la elegibilidad que da, sin reutilización;",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "6",
+     "Category": "SUPERFICIE",
+     "Token": "receta",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "no amplía",
+     "Sentence": "no amplía permisos, alcance de escritura, autoridad del rol, capacidades declaradas ni consumo, y no cambia la receta ni el descriptor del adapter.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "6",
+     "Category": "SUPERFICIE",
+     "Token": "descriptor",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "no amplía",
+     "Sentence": "no amplía permisos, alcance de escritura, autoridad del rol, capacidades declaradas ni consumo, y no cambia la receta ni el descriptor del adapter.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "6",
+     "Category": "REGLA",
+     "Token": "P-01",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "rigen sin cambio",
+     "Sentence": "P-01 y OD-2 rigen sin cambio: ninguna invocación con una huella sin aceptar.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "6",
+     "Category": "REGLA",
+     "Token": "OD-2",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "rigen sin cambio",
+     "Sentence": "P-01 y OD-2 rigen sin cambio: ninguna invocación con una huella sin aceptar.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "6",
+     "Category": "ESCENARIO",
+     "Token": "FX-04a",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "Conservan",
+     "Sentence": "Conservan el suyo el Principal, el Controller, el Worker y el Reviewer de la Topología A, y todas las filas de FX-04a, FX-04b, la Topología B, D.5 y D.8.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "6",
+     "Category": "ESCENARIO",
+     "Token": "FX-04b",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "Conservan",
+     "Sentence": "Conservan el suyo el Principal, el Controller, el Worker y el Reviewer de la Topología A, y todas las filas de FX-04a, FX-04b, la Topología B, D.5 y D.8.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "6",
+     "Category": "ESCENARIO",
+     "Token": "Topología B",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "Conservan",
+     "Sentence": "Conservan el suyo el Principal, el Controller, el Worker y el Reviewer de la Topología A, y todas las filas de FX-04a, FX-04b, la Topología B, D.5 y D.8.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "6",
+     "Category": "ESCENARIO",
+     "Token": "D.5",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "Conservan",
+     "Sentence": "Conservan el suyo el Principal, el Controller, el Worker y el Reviewer de la Topología A, y todas las filas de FX-04a, FX-04b, la Topología B, D.5 y D.8.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "6",
+     "Category": "ESCENARIO",
+     "Token": "D.8",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "Conservan",
+     "Sentence": "Conservan el suyo el Principal, el Controller, el Worker y el Reviewer de la Topología A, y todas las filas de FX-04a, FX-04b, la Topología B, D.5 y D.8.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "6",
+     "Category": "ROL",
+     "Token": "Principal",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "Conservan",
+     "Sentence": "Conservan el suyo el Principal, el Controller, el Worker y el Reviewer de la Topología A, y todas las filas de FX-04a, FX-04b, la Topología B, D.5 y D.8.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "6",
+     "Category": "ROL",
+     "Token": "Controller",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "Conservan",
+     "Sentence": "Conservan el suyo el Principal, el Controller, el Worker y el Reviewer de la Topología A, y todas las filas de FX-04a, FX-04b, la Topología B, D.5 y D.8.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "6",
+     "Category": "ROL",
+     "Token": "Worker",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "Conservan",
+     "Sentence": "Conservan el suyo el Principal, el Controller, el Worker y el Reviewer de la Topología A, y todas las filas de FX-04a, FX-04b, la Topología B, D.5 y D.8.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "6",
+     "Category": "ROL",
+     "Token": "Reviewer",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "Conservan",
+     "Sentence": "Conservan el suyo el Principal, el Controller, el Worker y el Reviewer de la Topología A, y todas las filas de FX-04a, FX-04b, la Topología B, D.5 y D.8.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-4",
+     "Item": "1",
+     "Category": "SUPERFICIE",
+     "Token": "receta",
+     "Statement": "NEGATIVA",
+     "Marker": "sin",
+     "Sentence": "(b) la receta de la invocación crea una instancia nueva de runtime en una sesión nueva de nivel superior, sin reanudar ni compartir ninguna sesión de una referencia ni ser subagente de ella;",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-6",
+     "Item": "3",
+     "Category": "ESCENARIO",
+     "Token": "FX-04a",
+     "Statement": "NEGATIVA",
+     "Marker": "ningún",
+     "Sentence": "ningún otro tope ni total cambia: ni las demás columnas de los totales de la ronda A, ni las filas de lanzamientos y de sondas, ni la fila «N11: B2», ni las rondas FX-04a, FX-04b y B, ni D.8;",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-6",
+     "Item": "3",
+     "Category": "ESCENARIO",
+     "Token": "FX-04b",
+     "Statement": "NEGATIVA",
+     "Marker": "ningún",
+     "Sentence": "ningún otro tope ni total cambia: ni las demás columnas de los totales de la ronda A, ni las filas de lanzamientos y de sondas, ni la fila «N11: B2», ni las rondas FX-04a, FX-04b y B, ni D.8;",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-6",
+     "Item": "3",
+     "Category": "ESCENARIO",
+     "Token": "D.8",
+     "Statement": "NEGATIVA",
+     "Marker": "ningún",
+     "Sentence": "ningún otro tope ni total cambia: ni las demás columnas de los totales de la ronda A, ni las filas de lanzamientos y de sondas, ni la fila «N11: B2», ni las rondas FX-04a, FX-04b y B, ni D.8;",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-6",
+     "Item": "4",
+     "Category": "REGLA",
+     "Token": "OD-5",
+     "Statement": "NEGATIVA",
+     "Marker": "no",
+     "Sentence": "La apertura exige además la autorización de consumo del Owner, porque la aprobación de OD-5 (consumo dentro de los topes de D.3) no la cubre, y solo tiene efecto con esta regla acordada;",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-6",
+     "Item": "5",
+     "Category": "REGLA",
+     "Token": "A-2",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "rige sin cambio",
+     "Sentence": "no es la reejecución extraordinaria de A-2 ni la consume: la regla de A-2 sobre un lanzamiento inválido rige sin cambio, también para A2.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-6",
+     "Item": "5",
+     "Category": "REGLA",
+     "Token": "A-2",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "rige sin cambio",
+     "Sentence": "no es la reejecución extraordinaria de A-2 ni la consume: la regla de A-2 sobre un lanzamiento inválido rige sin cambio, también para A2.",
+     "Result": "PASS"
+    }
+   ],
+   "InvokedReferences": [
+    {
+     "Rule": "A4-1",
+     "Item": "3",
+     "Tokens": [
+      "Coordinator",
+      "Owner"
+     ],
+     "Sentence": "esa invocación exige una disposición del Coordinator que nombre la celda, el shell y el trío exacto (`BinaryHash`, `AppVersion`, huella) y fije el directorio de trabajo (`-C`) de la medición, un clon con la historia que necesita `git diff <base>..<head>`, y la autorización de consumo del Owner."
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "3",
+     "Tokens": [
+      "P-07"
+     ],
+     "Sentence": "Su tope es uno en total para FX-02 en F6 (solo la regla 4 abre otra, con un bloque nuevo de la regla de nueva medición de A-2 por una actualización nueva), y P-07 lo comprueba antes de lanzarla;"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "4",
+     "Tokens": [
+      "D.4"
+     ],
+     "Sentence": "si falla o no demuestra alguna de esas operaciones, la celda no es elegible ni para la planificación ni para la verificación, la invocación no se repite bajo esta regla y el escenario sigue UNVERIFIED con esa causa (D.4)."
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "1",
+     "Tokens": [
+      "Coordinator"
+     ],
+     "Sentence": "con una disposición del Coordinator que lo nombre, ese Architect puede vincularse a otro adapter cuya celda esté medida elegible para ARCHITECT en solo lectura."
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "4",
+     "Tokens": [
+      "Owner"
+     ],
+     "Sentence": "el consumo con ese adapter en ese rol exige la autorización del Owner."
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "5",
+     "Tokens": [
+      "D.4"
+     ],
+     "Sentence": "mientras dure la sustitución, una limitación del adapter sustituto afecta también a este Architect (D.4, límites separados);"
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "intro",
+     "Tokens": [
+      "Q0",
+      "Q7",
+      "§8.4"
+     ],
+     "Sentence": "**Aceptación preautorizada de bindings dentro de la ventana (A-4).** Solo para la tarea de FX-02 de la Topología A, en F6, y solo para los dos bindings nuevos que esta Proposal hace transitorios entre Q0 y Q7 (§8.4;"
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "intro",
+     "Tokens": [
+      "B.8.3"
+     ],
+     "Sentence": "B.8.3): el del Worker y el del Controller de verificación."
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "intro",
+     "Tokens": [
+      "W-2"
+     ],
+     "Sentence": "Como dentro de la ventana no se publica ninguna decisión (W-2;"
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "intro",
+     "Tokens": [
+      "T10"
+     ],
+     "Sentence": "T10, caso c):"
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "1",
+     "Tokens": [
+      "A7'",
+      "B1-B10",
+      "B6",
+      "Coordinator",
+      "Q0"
+     ],
+     "Sentence": "su aceptación individual (A7') puede decidirse **antes** del Q0, en la orden que el Coordinator del fixture publica en el archivo de decisiones de la unidad, con un marcador por binding que nombre la unidad, la tarea, la ventana (`seq`), el rol, la acción, el adapter, la celda (o la lista cerrada de celdas, si la celda depende de la delegación) y las comprobaciones que tienen que pasar: B1-B10 de la coherencia del binding, con B6 según la regla siguiente, y la vigencia del preflight."
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "3",
+     "Tokens": [
+      "P-10"
+     ],
+     "Sentence": "si una comprobación falla o no se puede establecer, el titular registra REJECTED y el rol no se invoca (P-10)."
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "3",
+     "Tokens": [
+      "A7'",
+      "T3'"
+     ],
+     "Sentence": "Sin Worker aceptado, A7' falla y rige T3' (cierre NOT_ACCEPTED);"
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "3",
+     "Tokens": [
+      "Q0"
+     ],
+     "Sentence": "sin Controller de verificación aceptado, la ventana se cierra por el cierre declarado de la sesión, según la regla de STOP dentro de la ventana que la orden fija antes del Q0."
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "4",
+     "Tokens": [
+      "Q7"
+     ],
+     "Sentence": "el binding, su preflight y el registro de las comprobaciones son transitorios hasta el Q7, que los custodia por el manifiesto."
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "4",
+     "Tokens": [
+      "B9",
+      "Q0"
+     ],
+     "Sentence": "B9 se cumple si el marcador figura en el archivo de decisiones del Q0 de la ventana y cada uno de sus términos casa con el binding;"
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "4",
+     "Tokens": [
+      "P-20"
+     ],
+     "Sentence": "un marcador ausente, un término distinto o una comprobación que no se reproduce invalidan la aceptación (P-20);"
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "5",
+     "Tokens": [
+      "B8"
+     ],
+     "Sentence": "no es una materialización autorizada (B8 no cambia) ni sirve para otro rol, tarea, escenario o unidad."
+    },
+    {
+     "Rule": "A4-4",
+     "Item": "intro",
+     "Tokens": [
+      "B.4"
+     ],
+     "Sentence": "Cuando la candidata todavía no tiene sesión (`Assurance` NONE e `InstanceId` NOT_STARTED, B.4):"
+    },
+    {
+     "Rule": "A4-4",
+     "Item": "1",
+     "Tokens": [
+      "16.21"
+     ],
+     "Sentence": "Si falta una, el binding no se acepta (16.21);"
+    },
+    {
+     "Rule": "A4-4",
+     "Item": "3",
+     "Tokens": [
+      "16.21"
+     ],
+     "Sentence": "la comprobación decisiva es la de la Entrada de cada invocación con ese binding: Actor y Sesión con la identidad que el invocador observa en la corrida (RUNTIME_OBSERVED como mínimo) y Contexto según 16.21, contra cada actor de referencia."
+    },
+    {
+     "Rule": "A4-4",
+     "Item": "3",
+     "Tokens": [
+      "Participant.Observation",
+      "relay-record/v2"
+     ],
+     "Sentence": "Se registra en el `relay-record/v2` de la invocación (`Participant.Observation`);"
+    },
+    {
+     "Rule": "A4-4",
+     "Item": "4",
+     "Tokens": [
+      "16.21"
+     ],
+     "Sentence": "El lanzamiento cuenta en todos sus topes, sin devolución, y rige la columna «Si falta un REQUIRED» de 16.21."
+    },
+    {
+     "Rule": "A4-4",
+     "Item": "5",
+     "Tokens": [
+      "B6",
+      "§14.2",
+      "§14.3"
+     ],
+     "Sentence": "cualquier otro UNKNOWN sigue B6 y el criterio INDEPENDENCE (RAE §14.2 y §14.3) al pie de la letra, y fuera de este caso «UNKNOWN cuenta como NOT_SATISFIED» rige sin cambio."
+    },
+    {
+     "Rule": "A4-4",
+     "Item": "5",
+     "Tokens": [
+      "A7'",
+      "Coordinator",
+      "Q7",
+      "§63"
+     ],
+     "Sentence": "Aplican la excepción, con ese discriminador, el aceptante de A7', la aceptación individual real del binding del Architect por el Coordinator fuera de la ventana (decisiones §63, punto 1), el validador que reproduce en el Q7 la aceptación, y las comprobaciones de la supervisión tras el Q7 (S29 del kit de FX-02): quien valida reproduce la evaluación de la aceptación con el preflight custodiado y la de la Entrada con el registro custodiado de la invocación."
+    },
+    {
+     "Rule": "A4-5",
+     "Item": "intro",
+     "Tokens": [
+      "16.8"
+     ],
+     "Sentence": "Tras un cierre REWORK de su ventana, con la corrección autorizada por el contrato y permitida por 16.8 (`attempts` y contador por clase):"
+    },
+    {
+     "Rule": "A4-5",
+     "Item": "1",
+     "Tokens": [
+      "16.8"
+     ],
+     "Sentence": "No son reejecuciones BLOCKED ni de transporte de 16.8, pero reducen en uno lo que queda del pool en su fase;"
+    },
+    {
+     "Rule": "A4-5",
+     "Item": "2",
+     "Tokens": [
+      "P-07",
+      "Q0"
+     ],
+     "Sentence": "P-07 comprueba antes del Q0 de la corrección que caben las dos y el segundo lanzamiento del Worker;"
+    },
+    {
+     "Rule": "A4-5",
+     "Item": "2",
+     "Tokens": [
+      "Q0"
+     ],
+     "Sentence": "si alguna no cabe, ese Q0 no se emite;"
+    },
+    {
+     "Rule": "A4-5",
+     "Item": "4",
+     "Tokens": [
+      "D.4"
+     ],
+     "Sentence": "si la corrección no se lanza, el cierre REWORK cierra FX-02 como UNVERIFIED con esa causa, no como FAIL: no hay violación observada (D.4)."
+    },
+    {
+     "Rule": "A4-6",
+     "Item": "3",
+     "Tokens": [
+      "B2"
+     ],
+     "Sentence": "ningún otro tope ni total cambia: ni las demás columnas de los totales de la ronda A, ni las filas de lanzamientos y de sondas, ni la fila «N11: B2», ni las rondas FX-04a, FX-04b y B, ni D.8;"
+    },
+    {
+     "Rule": "A4-6",
+     "Item": "4",
+     "Tokens": [
+      "P-07"
+     ],
+     "Sentence": "P-07 comprueba antes de abrir A2 que la sesión cabe en ese tope."
+    },
+    {
+     "Rule": "A4-6",
+     "Item": "4",
+     "Tokens": [
+      "Owner"
+     ],
+     "Sentence": "La apertura exige además la autorización de consumo del Owner, porque la aprobación de OD-5 (consumo dentro de los topes de D.3) no la cubre, y solo tiene efecto con esta regla acordada;"
+    }
+   ],
+   "Info": [
+    "frente a 0d954376: A4-1, A4-2, A4-3 y A4-5 idénticos; A4-4 cambia solo en las reglas 1 y 5; A4-6 es nueva",
+    "A4-6: de 2 a 3 = tope congelado (V14 L2437, fila Principal A; L2523, total de la ronda A) + 1",
+    "A4-1, regla 5: invalidadores iguales a los de A-2 L238-L239 (8)",
+    "ninguna de las cinco reglas menciona A-3"
+   ],
+   "Findings": [],
+   "Result": "PASS"
+  },
+  {
+   "Check": "G5b self-test custodiado",
+   "ToolBlob": "27748730b64dc9df3c30db71cb521ec0806e5d29",
+   "A4TextBlob": "5e2ba68efdc1b902aa1c28aff4453b4b6973be7f",
+   "PkgTextBlob": "57c060e15f14ade6aefeda246adf26b2adaf2594",
+   "Findings": [],
+   "Result": "PASS"
+  }
+ ],
+ "AlsoAt": null,
+ "SelfTest": {
+  "Result": "PASS",
+  "Total": {
+   "Mutants": 112,
+   "Killed": 112
+  },
+  "PerGuard": {
+   "G1": {
+    "Mutants": 24,
+    "Killed": 24
+   },
+   "G2": {
+    "Mutants": 8,
+    "Killed": 8
+   },
+   "G3": {
+    "Mutants": 4,
+    "Killed": 4
+   },
+   "G4": {
+    "Mutants": 2,
+    "Killed": 2
+   },
+   "G5": {
+    "Mutants": 25,
+    "Killed": 25
+   },
+   "G2C": {
+    "Mutants": 11,
+    "Killed": 11
+   },
+   "G2D": {
+    "Mutants": 2,
+    "Killed": 2
+   },
+   "G5B": {
+    "Mutants": 5,
+    "Killed": 5
+   },
+   "G2C2": {
+    "Mutants": 13,
+    "Killed": 13
+   },
+   "G2D2": {
+    "Mutants": 2,
+    "Killed": 2
+   },
+   "G2C3": {
+    "Mutants": 15,
+    "Killed": 15
+   },
+   "G2D3": {
+    "Mutants": 1,
+    "Killed": 1
+   }
+  },
+  "BaselineP": {
+   "G1": "FAIL",
+   "G2": "PASS",
+   "G3": "PASS",
+   "G4": "PASS",
+   "G5": "PASS"
+  },
+  "ControlC": {
+   "G1": "PASS",
+   "G2C": "PASS",
+   "G2D": "PASS",
+   "G5": "PASS",
+   "G5B": "PASS"
+  },
+  "ControlC2": {
+   "G1": "PASS",
+   "G2C2": "PASS",
+   "G2D2": "PASS",
+   "G5": "PASS",
+   "G5B": "PASS"
+  },
+  "ControlC3": {
+   "G1": "PASS",
+   "G2C3": "PASS",
+   "G2D3": "PASS",
+   "G5": "PASS",
+   "G5B": "PASS"
+  },
+  "A4TextBlob": "5e2ba68efdc1b902aa1c28aff4453b4b6973be7f",
+  "PkgTextBlob": "57c060e15f14ade6aefeda246adf26b2adaf2594",
+  "Findings": []
+ },
+ "Result": "PASS",
+ "ToolBlob": "27748730b64dc9df3c30db71cb521ec0806e5d29",
+ "ToolPrivacy": {
+  "Findings": [],
+  "Result": "PASS"
+ }
+}

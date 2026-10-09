@@ -3319,3 +3319,19 @@ solo desde artefactos custodiados.
   - F-3..F-6: alias de sesión, verificación por A2, sesión autora anterior y el campo `ReferenceActor`.
 - **Solicitud única al Owner** ([borrador](I-62-F6/FX-02/s63/owner-request-draft.md)): `A4-SONDA-CONSUMO`, `A4-CLAUDE-FX02-CONSUMO` y
   `A4-PRINCIPAL-A2-CONSUMO` (esta última sujeta al texto acordado de A4-6). No se pide nada hasta que A-4 esté revisada y acordada.
+
+## 112. A-4 corrección 3 publicada (decisiones §63) con guardas PASS sobre el commit exacto
+
+- **Corrección 3** (commit `c2dbc225`, base `b25dde6b`): A-4 **`5e2ba68e`** (cadena `27ffa26b` → `7d863219` → `0d954376` → `5e2ba68e`), paquete
+  `57c060e1`.
+  - **(A) A62-A4-02, opción B:** A4-4 pierde la rama de la materialización del Architect. Las reglas 1 y 5 solo pierden texto, salvo una frase
+    declarada en la regla 5 que nombra la aceptación individual real del binding del Architect por el Coordinator fuera de la ventana. B.5, RAE
+    §14.3, I-S18 (V14 B.8.8, L2184-L2185) y los validadores de F4 conservan su significado literal; §3.7 lo dice expresamente.
+  - **(B) A4-6, separable:** el tope y el total de Principal de la ronda A pasan de 2 a 3 solo para la sesión de A2. R cuenta y no se reclasifica
+    (F6-OBS-01). Ningún otro tope cambia, P-07 lo comprueba y hace falta `A4-PRINCIPAL-A2-CONSUMO`.
+  - **(C)** Las disposiciones de FX-02 (U-09 (e), U-16 (1), CD-19) solo figuran como contexto.
+  - O9 y O10 aplicados. A4-1, A4-2, A4-3 y A4-5 son idénticas byte a byte a `0d954376`.
+- **Guardas sobre el commit exacto, modo CORRECTION3:** G1, G2C3, G3, G4, G5 y G5b PASS
+  ([a4-guards-result-c3.json](I-62-A4/a4-guards-result-c3.json)). El `self-test` detecta 112/112 mutaciones. G5 confirma que el delta es un añadido
+  puro, también sin A4-5, sin A4-6 o sin las dos; seis cláusulas de alcance; «de 2 a 3» = el tope congelado + 1.
+- **Siguiente:** kit de la re-revisión formal por `claude-cli` sobre `5e2ba68e` y lanzamiento automático.

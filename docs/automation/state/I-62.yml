@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §63; evidencia §110) — A-4 corrección 3 en preparación (A62-A4-02 opción B; delta +1 Principal de la ronda A por U-14; O9/O10), guardas y re-revisión por claude-cli; FX-02: U-09 (e), U-16 (1) y CD-19 dispuestas; N8 y referencias AUTHOR en preparación; solicitud única al Owner con tres líneas tras el acuerdo; sin F6 GATE PASS"
+  next_action: "F6 (decisiones §63; evidencia §112) — A-4 corrección 3 (5e2ba68e) con guardas CORRECTION3 PASS: kit y re-revisión por claude-cli (lanzamiento automático); FX-02: N8 resellado, referencias AUTHOR con preguntas F-1..F-6, solicitud única al Owner (tres líneas) preparada para después del acuerdo; sin F6 GATE PASS"
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual
