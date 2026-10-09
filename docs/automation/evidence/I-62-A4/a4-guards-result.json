@@ -1,0 +1,1340 @@
+{
+ "Tool": "a4-guards.py run",
+ "Mode": "CORRECTION",
+ "A4Base": "e6fe2e0890c927e0f3e936ff8032279442404857",
+ "Base": "f504f6a9bf34847dd12e973c8d5545c1b6db9e52",
+ "Head": "7f065a3a56102b8034247c7c64514e3f256f7b74",
+ "A4Blob": "7d863219a271b5ec427ef8669435826e19be8f11",
+ "Checks": [
+  {
+   "Check": "G1 literales, cabecera y privacidad",
+   "BlockLines": 5,
+   "InlineLiterals": 72,
+   "InlineLiteralsSection2": 58,
+   "Paragraphs": 5,
+   "Literals": [
+    {
+     "Id": "L01",
+     "Source": "V14",
+     "Lines": "L2515",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L02",
+     "Source": "V14",
+     "Lines": "L2523",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L03",
+     "Source": "V14",
+     "Lines": "L2528",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L04",
+     "Source": "V14",
+     "Lines": "L2544",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L05",
+     "Source": "V14",
+     "Lines": "L2552",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L06",
+     "Source": "V14",
+     "Lines": "L2560",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L07",
+     "Source": "V14",
+     "Lines": "L972",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L08",
+     "Source": "V14",
+     "Lines": "L974",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L09",
+     "Source": "A2",
+     "Lines": "L222-L223",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L10",
+     "Source": "A2",
+     "Lines": "L233",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L11",
+     "Source": "A2",
+     "Lines": "L238-L239",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L12",
+     "Source": "AP",
+     "Lines": "L542-L543",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L13",
+     "Source": "CODEX",
+     "Lines": "L24",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L14",
+     "Source": "CODEX",
+     "Lines": "L53",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L15",
+     "Source": "AP",
+     "Lines": "L1069-L1070",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L16",
+     "Source": "AP",
+     "Lines": "L1093",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L17",
+     "Source": "AP",
+     "Lines": "L1159-L1161",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L18",
+     "Source": "CC",
+     "Lines": "L127-L128",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L19",
+     "Source": "CC",
+     "Lines": "L217",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L20",
+     "Source": "KIT",
+     "Lines": "L44",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L21",
+     "Source": "V14",
+     "Lines": "L386-L387",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L22",
+     "Source": "V14",
+     "Lines": "L1999",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L23",
+     "Source": "V14",
+     "Lines": "L3081",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L24",
+     "Source": "V14",
+     "Lines": "L614",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L25",
+     "Source": "V14",
+     "Lines": "L1884",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L26",
+     "Source": "AP",
+     "Lines": "L1101",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L27",
+     "Source": "AP",
+     "Lines": "L1108-L1109",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L28",
+     "Source": "AP",
+     "Lines": "L1122-L1123",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L29",
+     "Source": "AP",
+     "Lines": "L1339",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L30",
+     "Source": "AP",
+     "Lines": "L1349",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L31",
+     "Source": "RAE",
+     "Lines": "L387",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L32",
+     "Source": "RAE",
+     "Lines": "L399",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L33",
+     "Source": "RAE",
+     "Lines": "L437",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L34",
+     "Source": "O4",
+     "Lines": "L95",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L35",
+     "Source": "ROUTING",
+     "Lines": "L114",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L36",
+     "Source": "V14",
+     "Lines": "L1860",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L37",
+     "Source": "V14",
+     "Lines": "L1139",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L38",
+     "Source": "V14",
+     "Lines": "L2176",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L39",
+     "Source": "V14",
+     "Lines": "L657",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L40",
+     "Source": "V14",
+     "Lines": "L788",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L41",
+     "Source": "AP",
+     "Lines": "L1146-L1147",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L42",
+     "Source": "AP",
+     "Lines": "L1156",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L43",
+     "Source": "AP",
+     "Lines": "L1163",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L44",
+     "Source": "AP",
+     "Lines": "L1168",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L45",
+     "Source": "AP",
+     "Lines": "L1121",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L46",
+     "Source": "RAE",
+     "Lines": "L396",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L47",
+     "Source": "RAE",
+     "Lines": "L446",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L48",
+     "Source": "CC",
+     "Lines": "L212",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L49",
+     "Source": "V14",
+     "Lines": "L2444",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L50",
+     "Source": "V14",
+     "Lines": "L2535",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L51",
+     "Source": "V14",
+     "Lines": "L2536",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L52",
+     "Source": "AP",
+     "Lines": "L538",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L53",
+     "Source": "AP",
+     "Lines": "L610",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L54",
+     "Source": "AP",
+     "Lines": "L612",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L55",
+     "Source": "KIT",
+     "Lines": "L44",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L56",
+     "Source": "DEC",
+     "Lines": "L1173",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L57",
+     "Source": "DEC",
+     "Lines": "L1083",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L58",
+     "Source": "DEC",
+     "Lines": "L1085",
+     "Where": "§2",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L59",
+     "Source": "A2",
+     "Lines": "L234",
+     "Where": "§3.2 (ubicación)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L60",
+     "Source": "DEC",
+     "Lines": "L1161-L1162",
+     "Where": "§8 Q-A4-04",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L61",
+     "Source": "KIT",
+     "Lines": "L167",
+     "Where": "§8 Q-A4-08",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L62",
+     "Source": "V14",
+     "Lines": "L972",
+     "Where": "§8 Q-A4-09",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L63",
+     "Source": "AP",
+     "Lines": "L1122-L1123",
+     "Where": "§8 Q-A4-10",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L64",
+     "Source": "AP",
+     "Lines": "L1121",
+     "Where": "§8 Q-A4-13",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L65",
+     "Source": "V14",
+     "Lines": "L2537",
+     "Where": "§8 Q-A4-02 (D.4)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L66",
+     "Source": "RAE",
+     "Lines": "L399",
+     "Where": "§8 Q-A4-10 (B9)",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L67",
+     "Source": "KIT",
+     "Lines": "L248",
+     "Where": "§8 Q-A4-14",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L68",
+     "Source": "V14",
+     "Lines": "L2523",
+     "Where": "A4-1, §4 y §8",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L69",
+     "Source": "AP",
+     "Lines": "L1166",
+     "Where": "A4-4 y §4",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L70",
+     "Source": "V14",
+     "Lines": "L2444",
+     "Where": "A4-5",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L71",
+     "Source": "V14",
+     "Lines": "L2442",
+     "Where": "A4-5",
+     "Result": "PASS"
+    },
+    {
+     "Id": "L72",
+     "Source": "V14",
+     "Lines": "L2442",
+     "Where": "A4-5",
+     "Result": "PASS"
+    }
+   ],
+   "A3HeaderState": "AGREED",
+   "Info": [
+    "L21 (V14 L386-L387): la cita no toca todas las líneas del rango (rango más amplio que la cita)",
+    "L60 (DEC L1161-L1162): la cita no toca todas las líneas del rango (rango más amplio que la cita)",
+    "L63 (AP L1122-L1123): la cita no toca todas las líneas del rango (rango más amplio que la cita)"
+   ],
+   "Warnings": [],
+   "Findings": [],
+   "Result": "PASS"
+  },
+  {
+   "Check": "G2C rutas y límite del diff del commit de corrección",
+   "Base": "f504f6a9bf34847dd12e973c8d5545c1b6db9e52",
+   "Head": "7f065a3a56102b8034247c7c64514e3f256f7b74",
+   "Changed": {
+    "docs/automation/evidence/I-62-A4/a4-guards.py": "A",
+    "docs/automation/evidence/I-62-A4/a4-selftest.json": "A",
+    "docs/automation/evidence/I-62-evidence.md": "M",
+    "docs/initiatives/I-62-A-4.md": "M",
+    "docs/initiatives/I-62-architect-package-A-4.md": "M"
+   },
+   "Diff": {
+    "A4": {
+     "Blob": "7d863219a271b5ec427ef8669435826e19be8f11",
+     "Hunks": [
+      {
+       "Op": "replace",
+       "Old": "L18-L18",
+       "New": "L18-L18",
+       "Removed": [
+        "A-3 candidata en revisión formal (decisiones §58, punto 3; blob ea6721f7…). A-4 no la modifica, no depende de ella ni la interpreta (Q-A4-07)."
+       ],
+       "Added": [
+        "A-3 AGREED (decisiones §61, punto 1; docs/initiatives/I-62-A-3.md, blob ea6721f78cb63fbc4f9d99563f3262eb36a32c5d). A-4 no la modifica, no depende de ella ni la interpreta (Q-A4-07)."
+       ]
+      },
+      {
+       "Op": "replace",
+       "Old": "L341-L341",
+       "New": "L341-L341",
+       "Removed": [
+        "| Q-A4-10 | A4-3: ¿es la preautorización una decisión individual del Coordinator que B9 admite (el marcador existe y «la nombra», con rol, tarea, ventana y celda en lugar de un `BindingId` que aún no existe), o una materialización encubierta que AUTOMATION_PLAN L1122-L1123 («sin aceptación fingida») y B8 prohíben para WORKER y EXECUTION_CONTROLLER? |"
+       ],
+       "Added": [
+        "| Q-A4-10 | A4-3: ¿es la preautorización una decisión individual del Coordinator que B9 admite (el marcador existe y «la nombra», con rol, tarea, ventana y celda en lugar de un `BindingId` que aún no existe), o una materialización encubierta que AUTOMATION_PLAN L1122-L1123 («Sin aceptación fingida») y B8 prohíben para WORKER y EXECUTION_CONTROLLER? |"
+       ]
+      }
+     ]
+    },
+    "Package": {
+     "Blob": "085f30f602532a619734b47b6b8d60035d8fb278",
+     "Hunks": [
+      {
+       "Op": "replace",
+       "Old": "L16-L16",
+       "New": "L16-L16",
+       "Removed": [
+        "  docs/initiatives/I-62-A-4.md        blob <el del commit de publicación> (borrador de esta pasada: 27ffa26b35ecacfae083bf9d360fe8460b8d5564)"
+       ],
+       "Added": [
+        "  docs/initiatives/I-62-A-4.md        blob <el del commit de publicación> (borrador de esta pasada: 7d863219a271b5ec427ef8669435826e19be8f11)"
+       ]
+      },
+      {
+       "Op": "replace",
+       "Old": "L124-L125",
+       "New": "L124-L124",
+       "Removed": [
+        "- **Autoridad:** una disposición del Coordinator que autorice la revisión formal sobre el blob exacto publicado. La revisión no interrumpe la",
+        "  revisión formal de A-3 en curso (decisiones §60, punto 0)."
+       ],
+       "Added": [
+        "- **Autoridad:** una disposición del Coordinator que autorice la revisión formal sobre el blob exacto publicado. A-3 AGREED (decisiones §61)."
+       ]
+      }
+     ]
+    }
+   },
+   "AppendOnlyGrowth": {
+    "docs/automation/evidence/I-62-evidence.md": {
+     "BaseBytes": 272000,
+     "HeadBytes": 273605
+    }
+   },
+   "PrivacyChecked": [
+    "docs/automation/evidence/I-62-A4/a4-guards.py",
+    "docs/automation/evidence/I-62-A4/a4-selftest.json",
+    "docs/automation/evidence/I-62-evidence.md",
+    "docs/initiatives/I-62-A-4.md",
+    "docs/initiatives/I-62-architect-package-A-4.md"
+   ],
+   "Info": [],
+   "Findings": [],
+   "Result": "PASS"
+  },
+  {
+   "Check": "G3 blobs congelados y declarados sin cambio (Base, Head)",
+   "Paths": 17,
+   "Mismatches": {},
+   "Findings": [],
+   "Result": "PASS"
+  },
+  {
+   "Check": "G4 C-20b",
+   "Base": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+   "SurfacesTouched": [],
+   "ExitCode": 0,
+   "Output": "{\"result\": \"EQUAL (MV-2..MV-6)\", \"files\": 31, \"entries\": {\"MODIFIED\": 15, \"REMOVED\": 0, \"ADDED\": 53, \"ENTRY\": 2}}",
+   "Findings": [],
+   "Result": "PASS"
+  },
+  {
+   "Check": "G5 delta frente a V14 y A-2",
+   "Rules": [
+    "A4-1",
+    "A4-2",
+    "A4-3",
+    "A4-4",
+    "A4-5"
+   ],
+   "ParagraphSha256": {
+    "A4-1": "a5619c9f7511a3aa5a3a8ec9fae8296bc00dcc27d89123583593ddd7d1f889e8",
+    "A4-2": "b487605319cf0d2e62ba4c1b42302bb659bcbc099114e7ddd34fc14bbad9b1fd",
+    "A4-3": "6599d5e08a52e9f5a7cbc02e15ab9b0a37210f3aa24f69a53ef5c43b26f85116",
+    "A4-4": "2fdc2f72815f6b0df518754ed07dc6547b307b4825ed506c58840f540c0b883a",
+    "A4-5": "4622ae1c19b76ccd1798f725564f86e0f9e7502bf9f50b795259cd0a387088b5"
+   },
+   "A2Pattern": {
+    "Added": [],
+    "Removed": [],
+    "Changed": [
+     "# I-62 — Proposal V14: portabilidad del Principal, binding de roles independient",
+     "## Anexo D — Pilotos y portabilidad (plano c)",
+     "### D.3 Hoja de invocaciones y escenarios"
+    ]
+   },
+   "Application": {
+    "A4-1..A4-5": {
+     "PureAppend": true,
+     "InsertedLines": 90,
+     "InsertedAfterLine": 2574,
+     "ChangedSections": [
+      "# I-62 — Proposal V14: portabilidad del Principal, binding de roles independient",
+      "## Anexo D — Pilotos y portabilidad (plano c)",
+      "### D.3 Hoja de invocaciones y escenarios"
+     ]
+    },
+    "A4-1..A4-4 (sin A4-5)": {
+     "PureAppend": true,
+     "InsertedLines": 80,
+     "InsertedAfterLine": 2574,
+     "ChangedSections": [
+      "# I-62 — Proposal V14: portabilidad del Principal, binding de roles independient",
+      "## Anexo D — Pilotos y portabilidad (plano c)",
+      "### D.3 Hoja de invocaciones y escenarios"
+     ]
+    }
+   },
+   "Scope": [
+    {
+     "Rule": "A4-1",
+     "Title": "Ruta de ejecución del Controller ante una limitación medida del shell",
+     "ScopeClause": "Solo para la celda de EXECUTION_CONTROLLER de la Topología A (FX-02), en F6.",
+     "Missing": [],
+     "OtherScenarios": [],
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-2",
+     "Title": "Sustitución del adapter del Architect de la Topología A ante una limitación medida",
+     "ScopeClause": "Solo para el Architect de la Topología A (revisión del contrato, FX-02), en F6.",
+     "Missing": [],
+     "OtherScenarios": [],
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-3",
+     "Title": "Aceptación preautorizada de bindings dentro de la ventana",
+     "ScopeClause": "Solo para la tarea de FX-02 de la Topología A, en F6, y solo para los dos bindings nuevos que esta Proposal hace transitorios entre Q0 y Q7 (§8.4; B.8.3): el del Worker y el del Controller de verificación.",
+     "Missing": [],
+     "OtherScenarios": [],
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-4",
+     "Title": "Independencia de una candidata no arrancada",
+     "ScopeClause": "Solo para FX-02 de la Topología A, en F6, y solo para los bindings con Actor, Sesión o Contexto REQUIRED: el Controller, en planificación y en verificación, frente a WORKER, y el Architect frente a AUTHOR.",
+     "Missing": [],
+     "OtherScenarios": [],
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-5",
+     "Title": "Tope de una corrección de FX-02",
+     "ScopeClause": "Solo para la tarea de FX-02 de la Topología A, en F6.",
+     "Missing": [],
+     "OtherScenarios": [],
+     "Result": "PASS"
+    }
+   ],
+   "InnerQuotes": [
+    {
+     "Rule": "A4-1",
+     "Quote": "+ 2 sondas",
+     "FoundIn": [
+      "V14 L2523",
+      "A2 L113",
+      "A2 L187"
+     ],
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-4",
+     "Quote": "Si falta un REQUIRED",
+     "FoundIn": [
+      "V14 L710",
+      "AP L1166"
+     ],
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-4",
+     "Quote": "UNKNOWN cuenta como NOT_SATISFIED",
+     "FoundIn": [
+      "V14 L1487",
+      "AP L1121",
+      "RAE L421"
+     ],
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-5",
+     "Quote": "+1 solo si hay REWORK",
+     "FoundIn": [
+      "V14 L2444",
+      "KIT L180",
+      "KIT L216"
+     ],
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-5",
+     "Quote": "**Codex, total**",
+     "FoundIn": [
+      "V14 L2442",
+      "KIT L214",
+      "KIT L338"
+     ],
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-5",
+     "Quote": "pool **4** (≤ 2 por fase)",
+     "FoundIn": [
+      "V14 L2442",
+      "KIT L214",
+      "KIT L338"
+     ],
+     "Result": "PASS"
+    }
+   ],
+   "ProductExemptions": [
+    {
+     "Rule": "A4-5",
+     "Quote": "**Codex, total**",
+     "Source": "V14 L2442"
+    }
+   ],
+   "CrossScopeMentions": [
+    {
+     "Rule": "A4-1",
+     "Item": "intro",
+     "Category": "SUPERFICIE",
+     "Token": "receta",
+     "Statement": "NEGATIVA",
+     "Marker": "no",
+     "Sentence": "Cuando una invocación medida de esa celda muestra que el runtime no usa el shell que la receta de su adapter pone primero en el `PATH` del proceso hijo, y que bajo el sandbox de solo lectura rechaza el shell que él mismo selecciona:",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "1",
+     "Category": "SUPERFICIE",
+     "Token": "receta",
+     "Statement": "NEGATIVA",
+     "Marker": "Ningún",
+     "Sentence": "Ningún otro elemento de la receta cambia: binario, directorio, sandbox, modelo, effort, esquema y destino de la salida, registro de sesión, stdin, `PATH`, tope de tiempo, huella y consumo;",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "1",
+     "Category": "SUPERFICIE",
+     "Token": "esquema",
+     "Statement": "NEGATIVA",
+     "Marker": "Ningún",
+     "Sentence": "Ningún otro elemento de la receta cambia: binario, directorio, sandbox, modelo, effort, esquema y destino de la salida, registro de sesión, stdin, `PATH`, tope de tiempo, huella y consumo;",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "3",
+     "Category": "REGLA",
+     "Token": "regla de nueva medición",
+     "Statement": "RESTRICCIÓN",
+     "Marker": "aparte",
+     "Sentence": "Se cuenta aparte: fuera de los lanzamientos de la ronda, del sumando «+ 2 sondas» de los totales y de los bloques de la regla de nueva medición de A-2.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "3",
+     "Category": "REGLA",
+     "Token": "A-2",
+     "Statement": "RESTRICCIÓN",
+     "Marker": "aparte",
+     "Sentence": "Se cuenta aparte: fuera de los lanzamientos de la ronda, del sumando «+ 2 sondas» de los totales y de los bloques de la regla de nueva medición de A-2.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "4",
+     "Category": "REGLA",
+     "Token": "regla de nueva medición",
+     "Statement": "RESTRICCIÓN",
+     "Marker": "Solo",
+     "Sentence": "Solo una actualización observada del runtime, por la regla de nueva medición de A-2, u otra A-n abren otra medición;",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "4",
+     "Category": "REGLA",
+     "Token": "A-2",
+     "Statement": "RESTRICCIÓN",
+     "Marker": "Solo",
+     "Sentence": "Solo una actualización observada del runtime, por la regla de nueva medición de A-2, u otra A-n abren otra medición;",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "5",
+     "Category": "SUPERFICIE",
+     "Token": "catálogo",
+     "Statement": "NEGATIVA",
+     "Marker": "sin",
+     "Sentence": "cualquier cambio de un invalidador (`BinaryHash`, `AppVersion`, huella, estado de autenticación, modelo, effort, blobs de catálogo y de routing, instancia del host) anula esa medición y la elegibilidad que da, sin reutilización;",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "5",
+     "Category": "SUPERFICIE",
+     "Token": "routing",
+     "Statement": "NEGATIVA",
+     "Marker": "sin",
+     "Sentence": "cualquier cambio de un invalidador (`BinaryHash`, `AppVersion`, huella, estado de autenticación, modelo, effort, blobs de catálogo y de routing, instancia del host) anula esa medición y la elegibilidad que da, sin reutilización;",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "6",
+     "Category": "SUPERFICIE",
+     "Token": "receta",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "no amplía",
+     "Sentence": "no amplía permisos, alcance de escritura, autoridad del rol, capacidades declaradas ni consumo, y no cambia la receta ni el descriptor del adapter.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "6",
+     "Category": "SUPERFICIE",
+     "Token": "descriptor",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "no amplía",
+     "Sentence": "no amplía permisos, alcance de escritura, autoridad del rol, capacidades declaradas ni consumo, y no cambia la receta ni el descriptor del adapter.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "6",
+     "Category": "REGLA",
+     "Token": "P-01",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "rigen sin cambio",
+     "Sentence": "P-01 y OD-2 rigen sin cambio: ninguna invocación con una huella sin aceptar.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "6",
+     "Category": "REGLA",
+     "Token": "OD-2",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "rigen sin cambio",
+     "Sentence": "P-01 y OD-2 rigen sin cambio: ninguna invocación con una huella sin aceptar.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "6",
+     "Category": "ESCENARIO",
+     "Token": "FX-04a",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "Conservan",
+     "Sentence": "Conservan el suyo el Principal, el Controller, el Worker y el Reviewer de la Topología A, y todas las filas de FX-04a, FX-04b, la Topología B, D.5 y D.8.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "6",
+     "Category": "ESCENARIO",
+     "Token": "FX-04b",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "Conservan",
+     "Sentence": "Conservan el suyo el Principal, el Controller, el Worker y el Reviewer de la Topología A, y todas las filas de FX-04a, FX-04b, la Topología B, D.5 y D.8.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "6",
+     "Category": "ESCENARIO",
+     "Token": "Topología B",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "Conservan",
+     "Sentence": "Conservan el suyo el Principal, el Controller, el Worker y el Reviewer de la Topología A, y todas las filas de FX-04a, FX-04b, la Topología B, D.5 y D.8.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "6",
+     "Category": "ESCENARIO",
+     "Token": "D.5",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "Conservan",
+     "Sentence": "Conservan el suyo el Principal, el Controller, el Worker y el Reviewer de la Topología A, y todas las filas de FX-04a, FX-04b, la Topología B, D.5 y D.8.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "6",
+     "Category": "ESCENARIO",
+     "Token": "D.8",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "Conservan",
+     "Sentence": "Conservan el suyo el Principal, el Controller, el Worker y el Reviewer de la Topología A, y todas las filas de FX-04a, FX-04b, la Topología B, D.5 y D.8.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "6",
+     "Category": "ROL",
+     "Token": "Principal",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "Conservan",
+     "Sentence": "Conservan el suyo el Principal, el Controller, el Worker y el Reviewer de la Topología A, y todas las filas de FX-04a, FX-04b, la Topología B, D.5 y D.8.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "6",
+     "Category": "ROL",
+     "Token": "Controller",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "Conservan",
+     "Sentence": "Conservan el suyo el Principal, el Controller, el Worker y el Reviewer de la Topología A, y todas las filas de FX-04a, FX-04b, la Topología B, D.5 y D.8.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "6",
+     "Category": "ROL",
+     "Token": "Worker",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "Conservan",
+     "Sentence": "Conservan el suyo el Principal, el Controller, el Worker y el Reviewer de la Topología A, y todas las filas de FX-04a, FX-04b, la Topología B, D.5 y D.8.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "6",
+     "Category": "ROL",
+     "Token": "Reviewer",
+     "Statement": "CONSERVACIÓN",
+     "Marker": "Conservan",
+     "Sentence": "Conservan el suyo el Principal, el Controller, el Worker y el Reviewer de la Topología A, y todas las filas de FX-04a, FX-04b, la Topología B, D.5 y D.8.",
+     "Result": "PASS"
+    },
+    {
+     "Rule": "A4-4",
+     "Item": "1",
+     "Category": "SUPERFICIE",
+     "Token": "receta",
+     "Statement": "NEGATIVA",
+     "Marker": "sin",
+     "Sentence": "(b) la receta de la invocación crea una instancia nueva de runtime en una sesión nueva de nivel superior, sin reanudar ni compartir ninguna sesión de una referencia ni ser subagente de ella;",
+     "Result": "PASS"
+    }
+   ],
+   "InvokedReferences": [
+    {
+     "Rule": "A4-1",
+     "Item": "3",
+     "Tokens": [
+      "Coordinator",
+      "Owner"
+     ],
+     "Sentence": "esa invocación exige una disposición del Coordinator que nombre la celda, el shell y el trío exacto (`BinaryHash`, `AppVersion`, huella), y la autorización de consumo del Owner."
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "3",
+     "Tokens": [
+      "P-07"
+     ],
+     "Sentence": "Su tope es uno, y P-07 lo comprueba antes de lanzarla;"
+    },
+    {
+     "Rule": "A4-1",
+     "Item": "4",
+     "Tokens": [
+      "D.4"
+     ],
+     "Sentence": "si falla o no demuestra alguna de esas operaciones, la celda no es elegible ni para la planificación ni para la verificación, la invocación no se repite bajo esta regla y el escenario sigue UNVERIFIED con esa causa (D.4)."
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "1",
+     "Tokens": [
+      "Coordinator"
+     ],
+     "Sentence": "con una disposición del Coordinator que lo nombre, ese Architect puede vincularse a otro adapter cuya celda esté medida elegible para ARCHITECT en solo lectura."
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "4",
+     "Tokens": [
+      "Owner"
+     ],
+     "Sentence": "el consumo con ese adapter en ese rol exige la autorización del Owner."
+    },
+    {
+     "Rule": "A4-2",
+     "Item": "5",
+     "Tokens": [
+      "D.4"
+     ],
+     "Sentence": "mientras dure la sustitución, una limitación del adapter sustituto afecta también a este Architect (D.4, límites separados);"
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "intro",
+     "Tokens": [
+      "Q0",
+      "Q7",
+      "§8.4"
+     ],
+     "Sentence": "**Aceptación preautorizada de bindings dentro de la ventana (A-4).** Solo para la tarea de FX-02 de la Topología A, en F6, y solo para los dos bindings nuevos que esta Proposal hace transitorios entre Q0 y Q7 (§8.4;"
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "intro",
+     "Tokens": [
+      "B.8.3"
+     ],
+     "Sentence": "B.8.3): el del Worker y el del Controller de verificación."
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "intro",
+     "Tokens": [
+      "W-2"
+     ],
+     "Sentence": "Como dentro de la ventana no se publica ninguna decisión (W-2;"
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "intro",
+     "Tokens": [
+      "T10"
+     ],
+     "Sentence": "T10, caso c):"
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "1",
+     "Tokens": [
+      "A7'",
+      "B1-B10",
+      "B6",
+      "Coordinator",
+      "Q0"
+     ],
+     "Sentence": "su aceptación individual (A7') puede decidirse **antes** del Q0, en la orden que el Coordinator del fixture publica en el archivo de decisiones de la unidad, con un marcador por binding que nombre la unidad, la tarea, la ventana (`seq`), el rol, la acción, el adapter, la celda (o la lista cerrada de celdas, si la celda depende de la delegación) y las comprobaciones que tienen que pasar: B1-B10 de la coherencia del binding, con B6 según la regla siguiente, y la vigencia del preflight."
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "3",
+     "Tokens": [
+      "P-10"
+     ],
+     "Sentence": "si una comprobación falla o no se puede establecer, el titular registra REJECTED y el rol no se invoca (P-10)."
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "3",
+     "Tokens": [
+      "A7'",
+      "T3'"
+     ],
+     "Sentence": "Sin Worker aceptado, A7' falla y rige T3' (cierre NOT_ACCEPTED);"
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "3",
+     "Tokens": [
+      "Q0"
+     ],
+     "Sentence": "sin Controller de verificación aceptado, la ventana se cierra por el cierre declarado de la sesión, según la regla de STOP dentro de la ventana que la orden fija antes del Q0."
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "4",
+     "Tokens": [
+      "Q7"
+     ],
+     "Sentence": "el binding, su preflight y el registro de las comprobaciones son transitorios hasta el Q7, que los custodia por el manifiesto."
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "4",
+     "Tokens": [
+      "B9",
+      "Q0"
+     ],
+     "Sentence": "B9 se cumple si el marcador figura en el archivo de decisiones del Q0 de la ventana y cada uno de sus términos casa con el binding;"
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "4",
+     "Tokens": [
+      "P-20"
+     ],
+     "Sentence": "un marcador ausente, un término distinto o una comprobación que no se reproduce invalidan la aceptación (P-20);"
+    },
+    {
+     "Rule": "A4-3",
+     "Item": "5",
+     "Tokens": [
+      "B8"
+     ],
+     "Sentence": "no es una materialización autorizada (B8 no cambia) ni sirve para otro rol, tarea, escenario o unidad."
+    },
+    {
+     "Rule": "A4-4",
+     "Item": "intro",
+     "Tokens": [
+      "B.4"
+     ],
+     "Sentence": "Cuando la candidata todavía no tiene sesión (`Assurance` NONE e `InstanceId` NOT_STARTED, B.4):"
+    },
+    {
+     "Rule": "A4-4",
+     "Item": "1",
+     "Tokens": [
+      "16.21"
+     ],
+     "Sentence": "Si falta una, el binding no se acepta ni se materializa (16.21);"
+    },
+    {
+     "Rule": "A4-4",
+     "Item": "3",
+     "Tokens": [
+      "16.21"
+     ],
+     "Sentence": "la comprobación decisiva es la de la Entrada de cada invocación con ese binding: Actor y Sesión con la identidad que el invocador observa en la corrida (RUNTIME_OBSERVED como mínimo) y Contexto según 16.21, contra cada actor de referencia."
+    },
+    {
+     "Rule": "A4-4",
+     "Item": "3",
+     "Tokens": [
+      "Participant.Observation",
+      "relay-record/v2"
+     ],
+     "Sentence": "Se registra en el `relay-record/v2` de la invocación (`Participant.Observation`);"
+    },
+    {
+     "Rule": "A4-4",
+     "Item": "4",
+     "Tokens": [
+      "16.21"
+     ],
+     "Sentence": "El lanzamiento cuenta en todos sus topes, sin devolución, y rige la columna «Si falta un REQUIRED» de 16.21."
+    },
+    {
+     "Rule": "A4-5",
+     "Item": "intro",
+     "Tokens": [
+      "16.8"
+     ],
+     "Sentence": "Tras un cierre REWORK de su ventana, con la corrección autorizada por el contrato y permitida por 16.8 (`attempts` y contador por clase):"
+    },
+    {
+     "Rule": "A4-5",
+     "Item": "1",
+     "Tokens": [
+      "16.8"
+     ],
+     "Sentence": "No son reejecuciones BLOCKED ni de transporte de 16.8, pero reducen en uno lo que queda del pool en su fase;"
+    },
+    {
+     "Rule": "A4-5",
+     "Item": "2",
+     "Tokens": [
+      "P-07",
+      "Q0"
+     ],
+     "Sentence": "P-07 comprueba antes del Q0 de la corrección que caben las dos y el segundo lanzamiento del Worker;"
+    },
+    {
+     "Rule": "A4-5",
+     "Item": "2",
+     "Tokens": [
+      "Q0"
+     ],
+     "Sentence": "si alguna no cabe, ese Q0 no se emite;"
+    },
+    {
+     "Rule": "A4-5",
+     "Item": "4",
+     "Tokens": [
+      "D.4"
+     ],
+     "Sentence": "si la corrección no se lanza, el cierre REWORK cierra FX-02 como UNVERIFIED con esa causa, no como FAIL: no hay violación observada (D.4)."
+    }
+   ],
+   "Info": [
+    "los cinco párrafos normativos y sus ubicaciones son idénticos a los de 27ffa26b",
+    "A4-1, regla 5: invalidadores iguales a los de A-2 L238-L239 (8)",
+    "ninguna de las cinco reglas menciona A-3"
+   ],
+   "Findings": [],
+   "Result": "PASS"
+  },
+  {
+   "Check": "G5b self-test custodiado",
+   "ToolBlob": "2489e35f4a5f0bb43696966b669ae7dd09b5004b",
+   "A4TextBlob": "7d863219a271b5ec427ef8669435826e19be8f11",
+   "PkgTextBlob": "085f30f602532a619734b47b6b8d60035d8fb278",
+   "Findings": [],
+   "Result": "PASS"
+  }
+ ],
+ "AlsoAt": null,
+ "SelfTest": {
+  "Result": "PASS",
+  "Total": {
+   "Mutants": 66,
+   "Killed": 66
+  },
+  "PerGuard": {
+   "G1": {
+    "Mutants": 19,
+    "Killed": 19
+   },
+   "G2": {
+    "Mutants": 8,
+    "Killed": 8
+   },
+   "G3": {
+    "Mutants": 4,
+    "Killed": 4
+   },
+   "G4": {
+    "Mutants": 2,
+    "Killed": 2
+   },
+   "G5": {
+    "Mutants": 17,
+    "Killed": 17
+   },
+   "G2C": {
+    "Mutants": 11,
+    "Killed": 11
+   },
+   "G2D": {
+    "Mutants": 2,
+    "Killed": 2
+   },
+   "G5B": {
+    "Mutants": 3,
+    "Killed": 3
+   }
+  },
+  "BaselineP": {
+   "G1": "FAIL",
+   "G2": "PASS",
+   "G3": "PASS",
+   "G4": "PASS",
+   "G5": "PASS"
+  },
+  "ControlC": {
+   "G1": "PASS",
+   "G2C": "PASS",
+   "G2D": "PASS",
+   "G5": "PASS",
+   "G5B": "PASS"
+  },
+  "A4TextBlob": "7d863219a271b5ec427ef8669435826e19be8f11",
+  "PkgTextBlob": "085f30f602532a619734b47b6b8d60035d8fb278",
+  "Findings": []
+ },
+ "Result": "PASS",
+ "ToolBlob": "2489e35f4a5f0bb43696966b669ae7dd09b5004b",
+ "ToolPrivacy": {
+  "Findings": [],
+  "Result": "PASS"
+ }
+}

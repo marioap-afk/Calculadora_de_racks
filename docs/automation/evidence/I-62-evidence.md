@@ -3117,3 +3117,26 @@ solo desde artefactos custodiados.
   - en el paquete, la línea del blob del borrador y la del estado de A-3.
   - Blobs nuevos: A-4 **`7d863219`** (antes `27ffa26b`) y paquete `085f30f6` (antes `d314afeb`). Las cinco reglas no cambian (G5).
 - La ejecución de las guardas sobre este commit se custodia en el siguiente. La revisión formal se lanza sobre `7d863219` cuando pasen.
+
+## 102. A-4: guardas PASS sobre el commit de corrección; clasificación de las decisiones de FX-02 en cinco grupos
+
+- **Guardas de A-4 sobre `7f065a3a`** (modo CORRECTION, base `f504f6a9`): G1, G2C, G3, G4, G5 y G5b PASS, con A-4 en el blob `7d863219`
+  ([a4-guards-result.json](I-62-A4/a4-guards-result.json); vista previa en
+  [a4-guards-result-preview.json](I-62-A4/a4-guards-result-preview.json)). Las guardas están conformes y la revisión formal por `claude-cli` se
+  prepara sobre `7d863219` (decisiones §61, punto 2).
+- **Clasificación de FX-02** ([FX-02-decision-classification-2026-10-09.md](I-62-F6/requests/FX-02-decision-classification-2026-10-09.md);
+  decisiones §61, punto 3). La solicitud de desbloqueo es un registro de propuestas, no de autorizaciones. Sus 61 filas quedan así:
+  - G1, procedimiento ordinario con autoridad suficiente: 5 filas;
+  - G1⚑, procedimiento que necesita una disposición del Coordinator de I-62 sobre un hueco del texto congelado: 16 filas, independientes de A-4;
+  - G2, cubiertas por decisiones anteriores: 8;
+  - G3, dependen de A-4: 7;
+  - G4, solo del Owner: 10;
+  - G5, no bloquean: 15.
+  Doce filas cambian autoridad, independencia o presupuestos: ninguna se acepta en bloque sin su comprobación.
+- **Bloqueos reales de FX-02:**
+  - A-4 acordada (A4-1, A4-3 y A4-4);
+  - las 16 disposiciones G1⚑ (U-07 y U-08 exigen además commits en `fx/u1` y una corrida de CI antes de la orden);
+  - U-14 (si R cuenta, A2 excede el tope de Principal de la ronda A);
+  - U-09 (e), un hueco nuevo: quién decide A1'-A8' dentro de la ventana; lo trata la revisión de A-4 (Q-A4-11);
+  - la sonda de A4-1;
+  - las acciones del Owner (`A4-SONDA-CONSUMO`, la apertura de A2 y los «continúa»).

@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §61; evidencia §100) — A-3 AGREED (no aplicada; O4 deuda de C-43); A-4: guardas mecánicas → kit → revisión formal por claude-cli (automática si las guardas están conformes); FX-02: clasificación de la solicitud en cinco grupos; sin sonda del Controller ni A2 antes del acuerdo de A-4 y de A4-SONDA-CONSUMO / A4-CLAUDE-FX02-CONSUMO; FX-04a/C-25a PASS; sin F6 GATE PASS"
+  next_action: "F6 (decisiones §61; evidencia §102) — A-4 (blob 7d863219) con guardas PASS: kit y revisión formal por claude-cli en preparación (lanzamiento automático); FX-02: 16 disposiciones G1⚑ independientes de A-4, U-14 y U-09 (e) pendientes del Coordinator; sonda del Controller y A2 tras el acuerdo de A-4 y A4-SONDA-CONSUMO / A4-CLAUDE-FX02-CONSUMO; sin F6 GATE PASS"
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual
