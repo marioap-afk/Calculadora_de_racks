@@ -1,0 +1,47 @@
+{
+ "RunId": "R20261009T150948Z-fdc2",
+ "InvocationId": "I20261009T150948Z-fdc2",
+ "AttemptSeq": 1,
+ "Transport": "claude-cli 2.1.293 (%APPDATA%/Claude/claude-code/2.1.293/83cb0bd7fed4/claude.exe, SHA-256 8693c4a0…), lanzado por la sesión principal con launch.py",
+ "Authority": "decisiones §62, punto 2; Owner CLAUDE-CLI-I62 = A; compuerta de transporte MEASURED (caracterización 20d0de2c…)",
+ "Session": {
+  "SessionId": "9eb98aef-1bc0-44b9-9dc8-7e963f22bdf2",
+  "Start": "2026-10-09T17:45:09.094275Z",
+  "End": "2026-10-09T18:08:17.012270Z",
+  "ExitCode": 0,
+  "Killed": false,
+  "TimedOut": false,
+  "TransportFailure": null,
+  "Cwd": "D:/r62-arch-a4r",
+  "AddDir": "D:/r62-arch-a4r-run"
+ },
+ "Usage": "num_turns 66; 59 Read, 5 Grep, 1 StructuredOutput; total_cost_usd 7.18 (equivalente informado por el runtime; cuota de la suscripción)",
+ "Stdout": {
+  "Path": "D:/r62-arch-a4r-run/launch/stdout.jsonl (no versionado: contiene rutas del perfil del usuario)",
+  "Sha256": "96512393dddb16da2187c851eed2b4a568d4d3ed4994d346e489219b5c9298df"
+ },
+ "Transcript": {
+  "Versioned": false,
+  "Path": "%USERPROFILE%/.claude/projects/D--r62-arch-a4r/9eb98aef-1bc0-44b9-9dc8-7e963f22bdf2.jsonl",
+  "Sha256": "c34abeb15604875a3867e6327c7fb23d792f8dbec678964f3a27da1a02efaee4"
+ },
+ "Output": {
+  "File": "output.json",
+  "Sha256": "12a8d6766489ae9d7cc66cce6f1b0ff260e7c59ded7342c6e95a8cea593ef2f2",
+  "Source": "structured_output del mensaje result de stream-json"
+ },
+ "Audit": {
+  "File": "audit.json",
+  "Sha256": "feaf98aebf6b0bca7a53cc63ff61db2ee9a651eddfe9397026f06f2e847ee4e9",
+  "Auditor": "v5.1-a4r custodiado en 6068f337",
+  "Accreditation": {
+   "Status": "ACCREDITED",
+   "Reasons": []
+  }
+ },
+ "CloneAfterRun": {
+  "Head": "cca8c60e4acfea498844c5d5f8ea14b807fbd4f3",
+  "StatusPorcelainIgnored": ""
+ },
+ "Independence": "proceso claude-cli nuevo con session id fijado; sin la transcripción ni la memoria de la sesión autora ni del Coordinator; modo seguro sin CLAUDE.md ni memoria; mismo proveedor que el autor (Provider PREFERRED no se cumple, declarado)"
+}

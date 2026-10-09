@@ -3260,8 +3260,30 @@ solo desde artefactos custodiados.
     independencia real, H-3 sin reinicios, ruta `cmd.exe`, Architect por `claude-cli`, materialidad M-02/M-05, U-09 (e) y separabilidad de A4-5;
   - auditor v5.1-a4r, con `selftest` 122/122 y 140 mutantes eliminados;
   - compuerta MEASURED sobre `20d0de2c…`;
-  - clon `D:62-arch-a4r` verificado (AllChecks);
+  - clon `D:
+62-arch-a4r` verificado (AllChecks);
   - ensayo en seco sin bloqueos; manifiesto `bec6d9db…`.
 - **Transporte:** `claude-cli` 2.1.293 (`8693c4a0…`), espera de 120 s tras `auth status`, tope de 3 600 s, sin reintento. Consumo cubierto por
   CLAUDE-CLI-I62 = A.
 - **Estado:** custodiado y NO lanzado. A-4 no se modifica mientras dure la re-revisión.
+
+## 109. A-4: re-revisión por `claude-cli` = CHANGES REQUIRED (A62-A4-02), auditor ACCREDITED; A62-A4-01 cerrado
+
+- **Re-revisión** R20261009T150948Z-fdc2, sesión `9eb98aef…`, de 17:45:09Z a 18:08:17Z, salida 0, sin fallo de transporte, 66 turnos
+  (59 Read, 5 Grep), sobre A-4 `0d954376`.
+  ([registro](../../initiatives/I-62-architect-review-A-4-r2.md); [output.json](I-62-architect-A-4/R20261009T150948Z-fdc2/output.json))
+- **Veredicto del Architect independiente: CHANGES REQUIRED.**
+  - A62-A4-01: **CLOSED**; A62-A4-O1..O8: **APPLIED**.
+  - Sin hallazgos: H-1 (A4-3, sin aceptación fabricada), H-3 (A4-5, sin reinicios), la ruta `cmd.exe` (A4-1), el Architect por `claude-cli`
+    (A4-2) y la separabilidad de A4-5.
+  - A4-5: AGREED.
+  - **A62-A4-02 (REQUIRED).** La rama de A4-4, regla 1, que cubre la materialización del Architect choca con el invariante I-S18 (V14 B.8.8,
+    L2184-L2185), que el validador de producción de F4 aplica antes de publicar cada punto durable. A-4 no declara I-S18 en la enmienda de
+    semántica. Vías de corrección:
+    - (a) declarar I-S18 y nombrar como consumidores al Principal que materializa y la validación previa a la publicación;
+    - (b) retirar la rama de la materialización, con lo que el Architect se acepta solo por decisión individual fuera de la ventana y la
+      enmienda se estrecha.
+  - **Opcionales:** A62-A4-O9 (cómo se acredita U-09 (e) con la forma condicional) y A62-A4-O10 (registro y paquete).
+- **Auditor v5.1-a4r: ACCREDITED,** con 0 motivos y 65 llamadas ([audit.json](I-62-architect-A-4/R20261009T150948Z-fdc2/audit.json)).
+- **Siguiente:** el Coordinator acredita la re-revisión, dispone A62-A4-02 y elige la vía; después, corrección 3, guardas y una re-revisión
+  acotada. A-4 no cambia hasta entonces.

@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §62; evidencia §105) — A-4 corrección 2 (0d954376) con guardas PASS: re-revisión por claude-cli en preparación (lanzamiento automático); FX-02: disposiciones ordinarias registradas, U-07 autorizada (TRX), U-16 (1), U-14 y U-09 (e) pendientes; sonda del Controller y A2 tras el acuerdo de A-4; sin F6 GATE PASS"
+  next_action: "F6 (decisiones §62; evidencia §109) — A-4 re-revisión CHANGES REQUIRED (A62-A4-02: rama de materialización del Architect frente a I-S18; vías a/b), ACCREDITED; A62-A4-01 cerrado; espera disposición del Coordinator; FX-02: U-14 (con R contada, A2 no cabe), U-09 (e), U-16 (1)/N8 y CD-19 pendientes; TRX publicado; sin F6 GATE PASS"
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual
