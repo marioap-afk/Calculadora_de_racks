@@ -1,0 +1,43 @@
+{
+ "RunId": "R20261009T215229Z-s64-idcheck",
+ "Authority": "decisiones §64, punto 6, paso 3 («Verificar identidad vigente del runtime»); medición pasiva sin modelo ni invocación de codex-cli",
+ "Method": "run_probe.sh measure (copia del kit a4-probe-draft): SHA-256 de config.toml y nombres saneados (cfg-fp.ps1), SHA-256 del único codex.exe, versión del paquete de la app. Sin lectura de valores ni digests por clave",
+ "Authorized": {
+  "BinaryHash": "3553cd6e7df5a093d8cb8301cd8088a57e0971aba71ddbe0e67f7f44a15cdf68",
+  "AppVersion": "26.1002.7124.0",
+  "Fingerprint": "6518EFAB0BC0C0C2C2C5DCCD3A3D3646DFDC9F15B222FD6B744CBC84B857DB32",
+  "FingerprintLastWriteTimeUtc": "2026-10-07T20:05:22.723Z",
+  "FingerprintLength": 4777,
+  "LastObservedUtc": "2026-10-09T04:17:12.157Z",
+  "Source": "OD-2e = A (decisiones §59); R20261009T041427Z-a2p2-block"
+ },
+ "Observed": {
+  "BinaryHash": "3553cd6e7df5a093d8cb8301cd8088a57e0971aba71ddbe0e67f7f44a15cdf68",
+  "OnlyCodexExeUnderBin": true,
+  "AppVersion": "26.1002.7124.0",
+  "Fingerprint": "73890CA3319206B85B68A42E23E8D323C45361CFC29E06B3E116EFFF5DAD0FBF",
+  "FingerprintLastWriteTimeUtc": "2026-10-09T16:56:13.566Z",
+  "FingerprintLength": 4777,
+  "KeyNamesCount": 107,
+  "KeyNamesEqualBaseline": true,
+  "Measurements": [
+   "idcheck-s64 utc=2026-10-09T21:52:29Z fp=73890CA3319206B85B68A42E23E8D323C45361CFC29E06B3E116EFFF5DAD0FBF structure=EQUAL bin=3553cd6e7df5a093d8cb8301cd8088a57e0971aba71ddbe0e67f7f44a15cdf68 bins=1 app=26.1002.7124.0",
+   "idcheck-s64-2 utc=2026-10-09T21:54:19Z fp=73890CA3319206B85B68A42E23E8D323C45361CFC29E06B3E116EFFF5DAD0FBF structure=EQUAL bin=3553cd6e7df5a093d8cb8301cd8088a57e0971aba71ddbe0e67f7f44a15cdf68 bins=1 app=26.1002.7124.0"
+  ]
+ },
+ "Repeatable": true,
+ "Changed": [
+  "Fingerprint"
+ ],
+ "Unchanged": [
+  "BinaryHash",
+  "AppVersion",
+  "KeyNames (107, estructura saneada)",
+  "FingerprintLength"
+ ],
+ "NotObserved": [
+  "AuthState (codex login status es una invocación que ninguna autorización vigente cubre)"
+ ],
+ "Classification": "P-01: la huella de config.toml difiere de la aceptada (OD-2e). Invalidador de A4-1 (regla 5) y de toda invocación de codex-cli (P-01; OD-2-MAT = A). STOP de la sonda A4-1 por decisiones §64, punto 2",
+ "Consequence": "Ninguna invocación de codex-cli (Controller, Worker, Reviewer de FX-02, ni la sonda A4-1) hasta una OD-2 nueva sobre la huella exacta, la disposición del Coordinator que nombre el trío nuevo y una autorización de consumo de la sonda para ese trío (decisiones §64, punto 2: la autorización no se reutiliza)"
+}

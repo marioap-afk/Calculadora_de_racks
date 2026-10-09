@@ -1,0 +1,25 @@
+# FX-02 — Matriz F-1..F-6 de la referencia AUTHOR (decisiones §64, punto 5)
+
+> Supervisión, plano a. Sustituye las banderas de `s63/author-references.md` §4 (que se conserva). Observación en claro:
+> [author-observation.json](../author-ref/author-observation.json) (RackCad; en el fixture solo irán los digests). §64.5: «No identificar un
+> autor por el nombre o correo Git»; «Usar la identidad observada del proceso/sesión que produjo el objeto, con evidencia custodiada»; «Un
+> identificador derivado por hash puede servir como representación seudonimizada solo si conserva la correspondencia verificable con el ActorRef y
+> SessionRef reales»; «No declarar SATISFIED ninguna dimensión REQUIRED desconocida».
+
+**Observación (hecha, RUNTIME_OBSERVED).** El objeto (`d30fb6a9`, `FX-U1-T1.gate-contract.json`, blob `628d89af`) lo produjo una llamada del hilo
+principal de esta misma sesión de supervisión: `claude-desktop-session`, `sessionId` `local_f00c654e-0079-486a-99fc-575ebe82ca43` (`get_session`), alias
+`e5124bf0-ed19-48a1-97ba-574baf9d33a2` (sesión subyacente de Claude Code), versión 2.1.289 y modelo `claude-opus-5-5` en el commit. Ningún subagente escribió el
+contrato. Enlace commit → sesión: registros L30691 y L30693 de la transcripción, con su SHA-256 en la observación.
+
+| Id | Pregunta | Fuentes | Resolución | Estado |
+|---|---|---|---|---|
+| F-1 | `AuthorRef.Kind` de `d30fb6a9`, sin trailer de IA y con identidad Git sintética | V14 B.2 `AuthorRef` (L1832: «con trailer de IA → la sesión que lo escribió … según la evidencia de la unidad»; «sin trailer de IA → el autor humano»); §64.5 | La identidad Git sintética (P-16) no acredita ni invalida nada y no es fuente (§64.5). Hay evidencia custodiada del proceso que produjo el objeto, así que `Kind` = AI_SESSION, con `Actor` y `Session` observados y `Operator` = etiqueta del Owner. La rama «sin trailer → humano» de B.2 supone que la falta de trailer refleja un autor humano; aquí la falta de trailer viene de P-16 y la evidencia lo contradice | **Resuelta por §64.5** (lectura de B.2 a confirmar por el Coordinator) |
+| F-2 | ¿El digest de un identificador real observado es «no sintético» y «evidencia custodiada»? | V14 B.2 `ActorRef` (L1819: `InstanceId` «observado del runtime»); precedentes `HostRef` y `HumanReviewerRef` con SHA-256 (L1821, L1834); RAE §13.1; D.6, D.7; §64.5 | Sí, con las condiciones de §64.5: `D(x)` (SHA-256 en minúsculas) del `InstanceId`, el `SessionId` y el alias observados; el valor en claro custodiado en RackCad; S29 reproduce `D(valor custodiado)` = digest publicado en el fixture. La correspondencia es verificable y nada se fabrica | **Resuelta por §64.5** |
+| F-3 | Alias de una misma sesión (`sessionId` de la app frente al id de Claude Code) | V14 B.2 (L1819: «dos bindings con el mismo `ActorRef` = mismo actor»); observación (dos identificadores reales distintos para la misma sesión) | Fail-closed: el conjunto de referencia lleva los dos digests y el Architect se compara con cada uno (Actor y Sesión SATISFIED solo si no coincide con ninguno). `claude-cli` arranca con un `--session-id` nuevo, sin `--resume` ni `--continue`; S29 compara en claro | **Resuelta por el contrato** (lectura fail-closed de B.2) |
+| F-4 | A2 no puede verificar que el digest corresponde a una observación real | D.6 (A2 no lee otras sesiones); §64.5 («correspondencia verificable») | La verifica la supervisión: valor en claro y enlace commit → sesión custodiados en RackCad; S29 reproduce. A2 solo compara digests en la Entrada (A4-4, regla 3). Si S29 no reproduce, la independencia no queda acreditada (D.4) | **Resuelta** (reparto de verificación conforme a D.6) |
+| F-5 | ¿Y si la sesión autora es anterior y su autoría no es establecible? | V14 B.2 (un commit sin autor establecible → UNKNOWN, fail-closed); §64.5 | No se materializa: la sesión autora está establecida (creada el 2026-10-01T14:54:34.800Z, antes del commit; sigue en ejecución). Si una comprobación posterior no la estableciera: UNKNOWN y el paso del Architect UNVERIFIED | **Resuelta por la observación** |
+| F-6 | `ReferenceActor` (B.5) solo lleva `ActorRef`: ¿cubre la `SessionRef` de AUTHOR? | V14 B.5 `Independence.Requirements[].ReferenceActor` (L1880); B.2 `SessionRef` (L1820: «sesión de nivel superior … la propia para una invocación CLI») | Para una sesión de escritorio de nivel superior, `SessionId` = el mismo `sessionId` que el `ActorRef` usa como `InstanceId` (`InstanceIdSource` `get_session.sessionId`): el mismo digest cubre las dos dimensiones. No hay caso de subagente (observado) | **Resuelta por el contrato** (B.2) |
+
+**Efecto en FX-02.** La referencia AUTHOR deja de ser una dependencia abierta de la preparación: con el Architect por `claude-cli` (otro adapter, una
+sesión nueva, un cierre de insumos propio), Actor, Sesión y Contexto pueden quedar SATISFIED en la Entrada y Proveedor (PREFERRED) queda sin cumplir y
+se declara. Eso no hace elegible la celda del Architect: lo decide la elegibilidad de A4-2 (solicitud `FX-02-P01-request-2026-10-09.md`, D-3).

@@ -3382,3 +3382,20 @@ solo desde artefactos custodiados.
   - A4-6: P-07 antes de pedir la apertura.
 - **Siguiente (punto 6):** verificar la identidad vigente del runtime; ajustar la sonda a PLAN y VERIFY; preparar el clon A2; sonda A4-1;
   elegibilidad del Architect; orden O4 y preflight; P-07 y apertura de A2. Sin FX-02 PASS anticipado.
+
+## 116. FX-02: P-01 en la huella de `codex-cli` (STOP de la sonda A4-1); referencia AUTHOR observada; matriz F-1..F-6; solicitud única (decisiones §64)
+
+- **Identidad vigente (§64.6, paso 3)** ([result.json](I-62-F6/OD-2/R20261009T215229Z-s64-idcheck/result.json)): `config.toml` = `73890CA3…`
+  (aceptada: `6518EFAB…`), escrita el 2026-10-09T16:56:13.566Z, con los mismos 4 777 bytes y los mismos 107 nombres saneados; binario y app sin
+  cambio; dos mediciones pasivas iguales, sin modelo. **P-01 → STOP** de la sonda A4-1 (§64.2: la autorización no se reutiliza) y de toda invocación
+  de `codex-cli`. A-3 y A-2 no lo cubren. La medición 0/6 del Architect de Codex queda obsoleta, y con ella el disparador de A4-2.
+- **Referencia AUTHOR (CD-19)** ([observación](I-62-F6/FX-02/author-ref/author-observation.json)): el contrato `d30fb6a9` lo produjo el hilo
+  principal de esta sesión de supervisión (`claude-desktop-session`; alias de Claude Code), sin subagente; enlace commit → sesión por dos registros de
+  la transcripción con su SHA-256; digests `D(x)` para el fixture.
+- **Matriz F-1..F-6** ([author-F-matrix.md](I-62-F6/FX-02/s64/author-F-matrix.md)): F-2..F-6 resueltas por §64.5, por el contrato o por la
+  observación; F-1, por §64.5 con la lectura de B.2 a confirmar.
+- **Solicitud única** ([FX-02-P01-request-2026-10-09.md](I-62-F6/requests/FX-02-P01-request-2026-10-09.md)): al Owner, la opción R (revertir el
+  ajuste y volver a `6518EFAB…`) o `OD-2 = A` sobre `73890CA3…` más `A4-SONDA-CONSUMO` para el trío nuevo (paquete OD-2f); al Coordinator, D-1
+  (trío), D-4 (alcance de la sonda y Q-A4-03 = RESOLVE en la forma I62), D-5 (S02 → S03 → sonda), D-0 (oráculo), D-2 (disparador de A4-2), D-3
+  (elegibilidad de `claude-cli`: operaciones 8 y 9 sin observar, descriptor y catálogo desfasados) y D-6.
+- **Estado de FX-02:** sin invocaciones; ninguna obligación de la ventana verificada todavía; A2 sin solicitar.

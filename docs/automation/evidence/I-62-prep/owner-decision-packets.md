@@ -363,3 +363,20 @@ codex-cli». Sustituye a las solicitudes OD-2d, que quedaron obsoletas por las a
 | Recomendación de preparación (etiquetada; no es decisión) | **A.** La huella es exacta, lleva unas 32 h estable y no cambió durante el bloque. Aceptarla no amplía permisos. Su efecto operativo depende de la disposición sobre F6-OBS-03 |
 | Aprobar | `OD-2 = A (línea base 6518EFAB0BC0C0C2C2C5DCCD3A3D3646DFDC9F15B222FD6B744CBC84B857DB32; binario 3553cd6e7df5a093d8cb8301cd8088a57e0971aba71ddbe0e67f7f44a15cdf68)` |
 | Rechazar | `OD-2 = RECHAZAR`. `codex-cli` sigue en STOP P-01. FX-02 y FX-06 tendrían que resolverse con otros transportes o quedar UNVERIFIED con causa |
+
+## OD-2f — Línea base exacta de `codex-cli` tras el cambio de huella del 2026-10-09T16:56Z (2026-10-09; PENDIENTE)
+
+Lo exige la disposición del Coordinator, decisiones §64, punto 2: «Si algún invalidador cambia, STOP y solicitar autoridad para la nueva identidad.
+No reutilizar la autorización». Medición: [result.json](../I-62-F6/OD-2/R20261009T215229Z-s64-idcheck/result.json).
+
+| Punto | Contenido |
+|---|---|
+| Hechos medidos | **`config.toml`:** SHA-256 **`73890CA3319206B85B68A42E23E8D323C45361CFC29E06B3E116EFFF5DAD0FBF`**, 4 777 bytes, los mismos 107 nombres saneados que la línea base; escrito el 2026-10-09T16:56:13.566Z. La huella aceptada `6518EFAB…` (OD-2e) estaba estable desde el 2026-10-07T20:05:22Z y se observó por última vez el 2026-10-09T04:17:12Z. **Binario** `3553cd6e…` (el único `codex.exe`) y **app** `26.1002.7124.0`, sin cambio. Dos mediciones pasivas, sin modelo, a las 21:52:29Z y 21:54:19Z, iguales. Autenticación no observada. No se leyeron valores ni se calcularon digests por clave: no se sabe qué valor cambió |
+| Qué se autoriza | Fijar como línea base de la huella de `codex-cli` el SHA-256 exacto `73890CA3…`, con sus nombres saneados, para el binario `3553cd6e…` |
+| Qué desbloquea | Solo levanta el STOP P-01 por la huella. La sonda A4-1 necesita además la disposición del Coordinator que nombre el trío nuevo y una autorización de consumo para ese trío (§64.2: la anterior no se reutiliza) |
+| Qué NO autoriza | Aceptar otra huella o un binario distinto. Leer valores o cambiar `config.toml`, `trust_level` o el sandbox. Invocar `codex-cli` fuera de lo que disponga el Coordinator. No recupera la medición 0/6 de la celda del Architect de Codex, hecha con `6518EFAB…`: queda obsoleta (decisiones §50, punto 9) |
+| Alternativa sin OD-2 nueva | Si el cambio de las 16:56Z (10:56, hora local) fue un ajuste de Codex que el Owner identifica y revierte, y la huella vuelve exactamente a `6518EFAB…`, siguen valiendo OD-2e, `A4-SONDA-CONSUMO` y la medición del Architect. La supervisión lo comprobaría con una medición pasiva |
+| Riesgo | Si `config.toml` vuelve a cambiar antes de la sonda o durante FX-02 (por ejemplo, con un ajuste en la app de Codex), vuelve P-01 y la sonda o la ventana quedan inválidas |
+| Consumo | La respuesta en sí no consume nada |
+| Aprobar | `OD-2 = A (línea base 73890CA3319206B85B68A42E23E8D323C45361CFC29E06B3E116EFFF5DAD0FBF; binario 3553cd6e7df5a093d8cb8301cd8088a57e0971aba71ddbe0e67f7f44a15cdf68)` |
+| Rechazar | `OD-2 = RECHAZAR`. `codex-cli` sigue en STOP P-01 y FX-02 queda UNVERIFIED con esa causa |

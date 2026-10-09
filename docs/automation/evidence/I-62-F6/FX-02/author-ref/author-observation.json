@@ -1,0 +1,84 @@
+{
+ "Schema": "i62-fx02-author-observation (supervisión, plano a; RackCad, no se publica en el fixture)",
+ "Authority": "decisiones §64, punto 5 (CD-19 / OQ-24); preparación s63/author-references.md §1",
+ "Object": {
+  "Commit": "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+  "Path": "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+  "Blob": "628d89af5f21e4e14cbe7c3c14f0dd8fb5a490e0",
+  "CommitUtc": "2026-10-06T22:53:17Z",
+  "CommitsThatProducedIt": [
+   "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+  ],
+  "GitIdentity": "sintética (P-16), sin trailer de IA: no se usa como fuente (§64.5)"
+ },
+ "AuthorRef": {
+  "Kind": "AI_SESSION (propuesta F-1; §64.5: identidad observada del proceso o sesión que produjo el objeto)",
+  "Actor": {
+   "AdapterId": "claude-desktop-session",
+   "InstanceId": "local_f00c654e-0079-486a-99fc-575ebe82ca43",
+   "InstanceIdSource": "get_session.sessionId",
+   "Assurance": "RUNTIME_OBSERVED"
+  },
+  "Session": {
+   "AdapterId": "claude-desktop-session",
+   "SessionId": "local_f00c654e-0079-486a-99fc-575ebe82ca43",
+   "Assurance": "RUNTIME_OBSERVED"
+  },
+  "Aliases": [
+   {
+    "Kind": "id de la sesión subyacente de Claude Code (campo sessionId de los registros de la transcripción)",
+    "Value": "e5124bf0-ed19-48a1-97ba-574baf9d33a2",
+    "Assurance": "RUNTIME_OBSERVED"
+   }
+  ],
+  "Operator": "Owner (etiqueta registrada; sin datos personales); no entra en la comparación de un revisor IA (RAE §14.5)",
+  "Subagents": "ninguno: el commit lo creó una llamada Bash del hilo principal (isSidechain false); los 10 transcritos de subagentes de la sesión que mencionan el contrato empiezan después del commit (el primero, 2026-10-09T03:56:27.890Z)"
+ },
+ "RuntimeIdentity": {
+  "AtCommit": {
+   "ClaudeCodeVersion": "2.1.289",
+   "Entrypoint": "claude-desktop",
+   "ReportedModel": "claude-opus-5-5",
+   "ReportedEffort": "no registrado en la transcripción"
+  },
+  "AtObservation": {
+   "ReportedModel": "claude-opus-5-5",
+   "ReportedEffort": "xhigh",
+   "Source": "get_session(self)"
+  },
+  "SessionCreatedUtc": "2026-10-01T14:54:34.800Z"
+ },
+ "CommitLink": {
+  "Transcript": "%USERPROFILE%/.claude/projects/D--Documentos-Codex-Calculadora-de-racks/e5124bf0-ed19-48a1-97ba-574baf9d33a2.jsonl",
+  "Records": [
+   {
+    "Line": 30691,
+    "Utc": "2026-10-06T22:53:12.227Z",
+    "Sha256": "4cafe1bfdd89f64fd7325ec3ac40ffcc0174fb7c2e060504e5933e9f3bf6e7c8",
+    "Bytes": 3707,
+    "Version": "2.1.289",
+    "Entrypoint": "claude-desktop",
+    "Model": "claude-opus-5-5",
+    "Kind": "tool_use Bash del hilo principal: commit de FX-U1-T1.gate-contract.json y FX-U1.md en fx/u1 (script issue_t1.py)"
+   },
+   {
+    "Line": 30693,
+    "Utc": "2026-10-06T22:53:24.022Z",
+    "Sha256": "2401078eb27aa40a81e6f107c218a1d745b71ab319595216d443b8187cc285db",
+    "Bytes": 4476,
+    "Version": "2.1.289",
+    "Entrypoint": "claude-desktop",
+    "Model": null,
+    "Kind": "tool_result de esa llamada: «contract blob 628d89af…», «2 files changed, 108 insertions(+)»"
+   }
+  ],
+  "Note": "los SHA-256 son de cada registro JSON (sin el salto de línea); la transcripción no se versiona"
+ },
+ "Digests": {
+  "Rule": "D(x) = SHA-256 de los bytes UTF-8 de x en minúsculas, en hex minúsculas, escrito sha256:<hex> (preparación §2.1; §64.5: correspondencia verificable)",
+  "InstanceId": "sha256:10764c9f6003980e9eddfac7c9391280d156f5ae12abb57cbf72789f51dfa58e",
+  "SessionId": "sha256:10764c9f6003980e9eddfac7c9391280d156f5ae12abb57cbf72789f51dfa58e",
+  "Alias": "sha256:ce448042a1efc4f5f780f954d5486cef0a85b3390d6c44fc60981bb543287e5d"
+ },
+ "ObservedUtc": "2026-10-09T22:16:16Z"
+}
