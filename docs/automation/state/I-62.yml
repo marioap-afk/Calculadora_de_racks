@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §61; evidencia §102) — A-4 (blob 7d863219) con guardas PASS: kit y revisión formal por claude-cli en preparación (lanzamiento automático); FX-02: 16 disposiciones G1⚑ independientes de A-4, U-14 y U-09 (e) pendientes del Coordinator; sonda del Controller y A2 tras el acuerdo de A-4 y A4-SONDA-CONSUMO / A4-CLAUDE-FX02-CONSUMO; sin F6 GATE PASS"
+  next_action: "F6 (decisiones §61; evidencia §104) — A-4: revisión CHANGES REQUIRED (A62-A4-01: materialidad M-02/M-05 y alcance de A4-4), auditor NOT_ACCREDITED por una cita desplazada; esperan la disposición del Coordinator, la corrección de A-4 y la re-revisión; FX-02: 16 disposiciones G1⚑, U-14 y U-09 (e) pendientes; sonda del Controller y A2 tras el acuerdo de A-4 y las dos líneas del Owner; sin F6 GATE PASS"
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual

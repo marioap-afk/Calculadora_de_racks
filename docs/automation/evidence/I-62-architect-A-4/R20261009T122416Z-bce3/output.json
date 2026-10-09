@@ -1,0 +1,1139 @@
+{
+ "Schema": "rackcad-architect-review-result/v1 (representación experimental; rigen I-61 y LIFECYCLE)",
+ "RunId": "R20261009T122416Z-bce3",
+ "InvocationId": "I20261009T122416Z-bce3",
+ "LogicalReviewRequestId": "L20261009T122416Z-bce3",
+ "AttemptSeq": 1,
+ "RequestedRole": "ARCHITECT",
+ "Action": "REVIEW_DESIGN",
+ "ReviewedUnit": "I-62",
+ "ReviewedCommit": "02be0c34efc6125627ad4b31978fb349acc724c8",
+ "ReviewedPath": "docs/initiatives/I-62-A-4.md",
+ "ReviewedBlob": "7d863219a271b5ec427ef8669435826e19be8f11",
+ "ReviewerMode": "SEPARATE SESSION",
+ "SamePersonAsAuthor": "No, como sesión. El revisor es un proceso claude-cli nuevo, separado de la sesión autora de A-4 (la sesión principal), del Coordinator y de las revisiones anteriores. No recibió su transcripción, su memoria ni su razonamiento: solo este prompt y el cierre de insumos. Proveedor del revisor: Anthropic (Claude; el entorno inyectado declara el modelo claude-opus-5-5). Proveedor del autor: Anthropic (sesión principal Claude, paquete §5). Es el mismo proveedor, así que Provider (PREFERRED) no se cumple, y queda declarado. Operador humano: el mismo usuario del host opera la sesión autora y lanza este proceso. Su identidad de cuenta solo se conoce por el contexto inyectado y se declara por tipo, sin reproducir su valor.",
+ "ReviewerDeclaredIdentity": {
+  "Runtime": "claude-cli / Claude Agent SDK (según el contexto inyectado; el revisor no lo acredita)",
+  "Model": "claude-opus-5-5 (declarado por el entorno inyectado; el revisor no lo acredita)",
+  "Effort": "UNKNOWN",
+  "SessionOrThread": "UNKNOWN"
+ },
+ "InjectedContextDeclaration": {
+  "State": "DECLARED",
+  "Items": [
+   "Prompt de sistema del harness Claude Agent SDK: reglas generales, descripción de las herramientas Read, Grep, Glob y StructuredOutput y nota sobre herramientas diferidas y gestión de contexto",
+   "system-reminder con el correo electrónico de la cuenta del usuario (identificador de cuenta; se declara solo por tipo)",
+   "Instantánea gitStatus: rama actual main, rama principal main, nombre de usuario Git (identificador; solo por tipo), estado limpio y cinco commits recientes (02be0c34, 7f065a3a, f504f6a9, a23a093e y 4710084b, con sus asuntos)",
+   "Bloque de entorno: directorio de trabajo D:\\r62-arch-a4, directorio adicional D:\\r62-arch-a4-run, plataforma win32, shell PowerShell, versión del SO y ruta de scratchpad (contiene un fragmento del nombre del perfil de usuario y un identificador de sesión; solo por tipo)",
+   "Identidad del modelo declarada por el entorno (Opus 5.5, claude-opus-5-5), fecha de corte de conocimiento y fecha actual 2026-10-09",
+   "Durante la corrida, recordatorios del sistema que pedían informar del avance («The user hasn't heard from you in a while…»), respondidos con una línea de estado sin contenido sustantivo",
+   "No se observó CLAUDE.md, memoria de proyecto o global, ganchos ni transcripciones de otras sesiones"
+  ]
+ },
+ "IdentityCheck": {
+  "Basis": "INVOKER_VERIFIED_CLONE",
+  "OrderNamesCandidateBlob": true,
+  "PackageNamesObjectBlob": true,
+  "GuardsResultA4BlobMatchesObject": true,
+  "GuardsResultLinksCandidateToObject": true,
+  "SelftestA4TextBlobMatchesObject": true,
+  "Note": "Paso 0 hecho con Read. order.txt L13 nombra la candidata 27ffa26b35ecacfae083bf9d360fe8460b8d5564. La línea L16 del paquete designa docs/initiatives/I-62-A-4.md con el borrador 7d863219a271b5ec427ef8669435826e19be8f11. En a4-guards-result.json, L3-L7 dan Mode CORRECTION, Head 7f065a3a… y A4Blob 7d863219…. G2C (L531-L615) registra el diff de la corrección desde una base que contiene 27ffa26b: en A-4 solo cambian L18 y L341, y en el paquete solo L16 y L124-L125. La Info de G5 (L1259) dice que los cinco párrafos normativos son idénticos a los de 27ffa26b. G5b (L1267-L1273) y a4-selftest.json (L21 y L33) dan A4TextBlob = 7d863219…. Lo que leí en A-4 L18 y L341 coincide con el diff de G2C. Sin git no puedo recalcular HEAD = 02be0c34 ni los blobs: los verificó el invocador. El gitStatus inyectado muestra 02be0c34 como último commit, pero no lo uso como acreditación."
+ },
+ "InputsRead": [
+  "D:\\r62-arch-a4-run\\order.txt: 1-57 (entero)",
+  "D:\\r62-arch-a4-run\\order-s60.txt: 1-53 (entero)",
+  "docs/initiatives/I-62-A-4.md: 1-379 (entero)",
+  "docs/initiatives/I-62-architect-package-A-4.md: 1-140 (entero)",
+  "docs/automation/evidence/I-62-A4/a4-guards-result.json: 1-1340 (entero)",
+  "docs/automation/evidence/I-62-A4/a4-selftest.json: 1-35",
+  "docs/automation/evidence/I-62-A4/a4-guards.py: 1-100, 420-499, 680-959; un Grep sobre el archivo (G2D|G2C|def g…|CORRECTION|PUBLICATION|mode)",
+  "docs/initiatives/I-62-proposal-v14.md: 378-398, 605-664, 784-790, 968-976, 1130-1140, 1852-1884, 1950-1955, 1990-2004, 2168-2176, 2431-2565, 3074-3086",
+  "docs/initiatives/I-62-A-2.md: 1-48, 179-239",
+  "docs/initiatives/I-62-A-1.md: 1-56, 90-167",
+  "docs/initiatives/I-62-A-3.md: 1-62, 725-799; un Grep sobre el archivo (medición completa / sonda)",
+  "docs/initiatives/I-62-consensus-freeze.md: 1-113 (entero)",
+  "docs/INITIATIVE_LIFECYCLE.md: 66-94, 152-222",
+  "docs/AUTOMATION_PLAN.md: 507-543, 600-618, 1043-1180, 1325-1373",
+  "docs/automation/agent-execution/README.md: 369-531",
+  "docs/automation/decisions/I-62.md: 1053-1204",
+  "docs/automation/evidence/I-62-evidence.md: 2820-2842, 2975-3019, 3104-3142",
+  "docs/automation/evidence/I-62-F6/FX-02/F6-OBS-03-cmd-route-evaluation.md: 1-61 (entero)",
+  "docs/automation/evidence/I-62-F6/OD-2/R20261009T041427Z-a2p2-block/result.json: 1-294 (entero)",
+  "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md: 115-217",
+  "docs/automation/evidence/I-62-F6/kits/FX-02/README.md: 40-47, 138-182, 241-250",
+  "docs/automation/evidence/I-62-F6/kits/FX-02/order-FX-U1-O4.template.md: 26-45, 86-125",
+  "docs/automation/agent-execution/adapters/codex-cli.md: entero",
+  "docs/automation/agent-execution/adapters/claude-cli.md: entero",
+  "docs/automation/agent-execution/routing.md: 61-119",
+  "docs/automation/agent-execution/model-catalog.md: 1-137 (entero)",
+  "docs/automation/evidence/I-62-claude-cli/R20261008T183600Z-char/README.md: 1-15 (entero)",
+  "docs/automation/evidence/I-62-F6/requests/FX-02-unblock-request-2026-10-09.md: 1-173 (entero)",
+  "docs/automation/evidence/I-62-F6/requests/FX-02-decision-classification-2026-10-09.md: 1-201 (entero)"
+ ],
+ "Verdict": "CHANGES REQUIRED",
+ "RequiredFindings": [
+  {
+   "FindingId": "A62-A4-01",
+   "AffectedDelta": "§3.5 A4-4, reglas 1 y 5, incluido su efecto en la materialización del Architect; §5, filas M-02 y M-05; §3.7, guiones 2 y 5 («No cambia el texto de AUTOMATION_PLAN 16.20 y 16.21 ni el de B1-B10 (RAE §14.2)» y «… F4, esquemas, B.1-B.11, `state/v2`, §20, AUTOMATION_PLAN 16.x ni ningún ADR.»)",
+   "ViolatedInvariant": "LIFECYCLE §3: M-02 (significado persistido) y M-05 (contrato consumido); «UNKNOWN en un disparador cuenta como activado». LIFECYCLE §6: la A-n declara M-01..08, y «No existe enmienda semantica invisible». Freeze §4: los contratos B.1-B.11 y la independencia son elementos congelados. Reglas consumidas afectadas: V14 B.5 exige que una AUTHORIZED_MATERIALIZATION lleve `MaterializationCheck` «con **todos** en SATISFIED»; RAE §14.2 B6 deja sin aceptar un binding con una dimensión REQUIRED fuera de SATISFIED, y el aceptante lo recalcula (L402); RAE §14.3 y AP 16.20 dicen «UNKNOWN cuenta como NOT_SATISFIED», y el validador reproduce la comprobación (P-20); AP 16.21 dice que el binding del verificador «no se acepta». Para FX-02, A4-4 cambia el resultado de esas reglas consumidas y el significado persistido de un binding ACCEPTED o materializado. Sin embargo, A-4 declara M-02 = no y M-05 = no, y afirma sin calificación que no cambian B1-B10, B.1-B.11 ni F4.",
+   "Counterexample": "Caso 1, Controller de verificación. Su binding se acepta en S21b, después de que el Worker publicó R y G. Con A4-4, regla 1: `Independence.Satisfaction` (WORKER, Actor) = UNKNOWN por NOT_STARTED y `Acceptance` = ACCEPTED (INDIVIDUAL_DECISION). El aceptante de A7' y cualquier validador que recalcule B6 con el texto materializado (RAE L396 y L402) lo rechazan: el binding no se acepta, y la diferencia con lo registrado es S-04. A4-4, regla 5 manda en cambio a «quien valida» reproducir la evaluación modificada. Caso 2, Architect de FX-02. Materializado bajo la RLA con el criterio INDEPENDENCE:AUTHOR:Actor en UNKNOWN, como permite A4-4, regla 1 («para el Architect en el criterio de independencia de su materialización»), contradice B.5 («con **todos** en SATISFIED») y RAE §14.3, y el validador que lo reproduce da P-20 (RAE L427). En ningún caso A-4 dice qué consumidores aplican la excepción ni con qué discriminador mecánico, y niega que cambie un contrato consumido.",
+   "CorrectionRequired": "(1) §5: M-02 = sí, porque en FX-02 un binding ACCEPTED o materializado puede persistir con una dimensión REQUIRED en UNKNOWN por NOT_STARTED, algo que B.5 y B6 no admiten. M-05 = sí, porque cambia, solo para FX-02 en F6, el resultado de RAE §14.2 B6, del criterio INDEPENDENCE de RAE §14.3 y AP 16.20 («UNKNOWN cuenta como NOT_SATISFIED») y de AP 16.21 («no se acepta»), reglas que consumen el aceptante de A7' y los validadores. Alternativa: un «no» razonado con evidencia para cada uno. (2) §3.7: cambiar las negaciones sin calificar por una forma como «no cambia su texto; A4-4 es una enmienda de semántica, acotada a FX-02 en F6, de B6, del criterio INDEPENDENCE de la materialización y de la condición de B.5 «con todos en SATISFIED»», al estilo de A-1 D1-21 con los textos F3 consumidos. (3) A4-4, regla 5: nombrar los consumidores que aplican la excepción (aceptante de A7', validador que reproduce la aceptación y la materialización en el Q7, y comprobaciones de S29). Fijar el discriminador mecánico: se admite solo el UNKNOWN de una fila cuyo `PreflightRef` custodiado tiene `Assurance` NONE e `InstanceId` NOT_STARTED y cuya `Evidence` registra (a)-(d); cualquier otro UNKNOWN sigue B6 y §14.3 al pie de la letra. (4) Declarar si algún validador materializado de F4 tiene que aplicar la excepción. Si tiene que hacerlo, retirar «No cambia … F4» o decir quién reproduce la evaluación en F6. Salvo esa precisión de la regla 5, el texto normativo de las cinco reglas puede quedar igual.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.5 A4-4, regla 1",
+     "LineStart": 227,
+     "LineEnd": 227,
+     "Quote": "en la aceptación, y para el Architect en el criterio de independencia de su materialización, cada dimensión REQUIRED se evalúa contra el"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.5 A4-4, regla 1",
+     "LineStart": 228,
+     "LineEnd": 228,
+     "Quote": "Con referencias, Actor y Sesión se registran UNKNOWN por NOT_STARTED"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.5 A4-4, regla 1",
+     "LineStart": 229,
+     "LineEnd": 229,
+     "Quote": "Ese UNKNOWN, y solo ese, no impide la aceptación ni la materialización si se cumplen todas"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.5 A4-4, regla 5",
+     "LineStart": 243,
+     "LineEnd": 243,
+     "Quote": "Quien valida reproduce la evaluación de la aceptación con el preflight custodiado"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§5 Materialidad, M-02",
+     "LineStart": 295,
+     "LineEnd": 295,
+     "Quote": "| M-02 | no | ningún esquema, DTO ni campo cambia"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§5 Materialidad, M-05",
+     "LineStart": 298,
+     "LineEnd": 298,
+     "Quote": "| M-05 | no | ningún contrato consumido cambia de texto (receta 16.4, descriptores, esquemas, B.1-B.11, AUTOMATION_PLAN 16.x, RAE §14)"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.7 Lo que A-4 no hace",
+     "LineStart": 263,
+     "LineEnd": 263,
+     "Quote": "No cambia el texto de AUTOMATION_PLAN 16.20 y 16.21 ni el de B1-B10 (RAE §14.2)"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.7 Lo que A-4 no hace",
+     "LineStart": 270,
+     "LineEnd": 270,
+     "Quote": "F4, esquemas, B.1-B.11, `state/v2`, §20, AUTOMATION_PLAN 16.x ni ningún ADR."
+    },
+    {
+     "Path": "docs/initiatives/I-62-proposal-v14.md",
+     "Section": "B.5 rackcad-binding/v1, Acceptance",
+     "LineStart": 1884,
+     "LineEnd": 1884,
+     "Quote": "con **todos** en SATISFIED; nace ACCEPTED, sin estado PENDING previo"
+    },
+    {
+     "Path": "docs/automation/agent-execution/README.md",
+     "Section": "§14.2 B6",
+     "LineStart": 396,
+     "LineEnd": 396,
+     "Quote": "toda dimensión REQUIRED está en SATISFIED (§14.5) | binding no aceptado; la operación dependiente se bloquea |"
+    },
+    {
+     "Path": "docs/automation/agent-execution/README.md",
+     "Section": "§14.2 campos con autoridad",
+     "LineStart": 402,
+     "LineEnd": 402,
+     "Quote": "`Eligibility`, `Independence.Satisfaction` y `Acceptance` son campos con autoridad: el aceptante los **recalcula** con las fuentes custodiadas, y una"
+    },
+    {
+     "Path": "docs/automation/agent-execution/README.md",
+     "Section": "§14.3 Materialización autorizada",
+     "LineStart": 421,
+     "LineEnd": 421,
+     "Quote": "**UNKNOWN cuenta como NOT_SATISFIED.** Solo con todos en SATISFIED se"
+    },
+    {
+     "Path": "docs/automation/agent-execution/README.md",
+     "Section": "§14.3 Reproducción (A7' y validador)",
+     "LineStart": 427,
+     "LineEnd": 427,
+     "Quote": "el mismo resultado con el preflight custodiado. Una diferencia, un `DecisionRef` no nulo o un `AuthorizationRef` ausente → binding inválido (P-20)."
+    },
+    {
+     "Path": "docs/AUTOMATION_PLAN.md",
+     "Section": "16.21 Combinación",
+     "LineStart": 1160,
+     "LineEnd": 1160,
+     "Quote": "el binding del revisor o del verificador **no se acepta**, la revisión sigue pendiente y la operación dependiente se bloquea."
+    },
+    {
+     "Path": "docs/INITIATIVE_LIFECYCLE.md",
+     "Section": "§3 materialidad",
+     "LineStart": 78,
+     "LineEnd": 78,
+     "Quote": "Ante duda se usa el arquetipo superior. UNKNOWN en un disparador cuenta como activado hasta que EXP-09"
+    },
+    {
+     "Path": "docs/INITIATIVE_LIFECYCLE.md",
+     "Section": "§3 M-02",
+     "LineStart": 84,
+     "LineEnd": 84,
+     "Quote": "| **M-02** | Cambia esquema, DTO o wire, significado persistido, fallback legacy o preservacion de campos desconocidos |"
+    },
+    {
+     "Path": "docs/INITIATIVE_LIFECYCLE.md",
+     "Section": "§3 M-05",
+     "LineStart": 87,
+     "LineEnd": 87,
+     "Quote": "| **M-05** | Cambia un contrato consumido por otros sistemas o kinds |"
+    },
+    {
+     "Path": "docs/INITIATIVE_LIFECYCLE.md",
+     "Section": "§6 enmiendas",
+     "LineStart": 218,
+     "LineEnd": 218,
+     "Quote": "No existe enmienda semantica invisible."
+    },
+    {
+     "Path": "docs/initiatives/I-62-consensus-freeze.md",
+     "Section": "§4 Regla de invalidación",
+     "LineStart": 90,
+     "LineEnd": 90,
+     "Quote": "contratos B.1-B.11, invariantes, semántica de fallo, independencia y OD-6, presupuestos"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-1.md",
+     "Section": "§2.3 D1-21 (precedente)",
+     "LineStart": 164,
+     "LineEnd": 164,
+     "Quote": "Es una **enmienda de semántica propuesta** de textos F3 consumidos, sin vigencia hasta que A-1 se acuerde y F4 la materialice"
+    }
+   ],
+   "WhyItMatters": "El acuerdo se basaría en un registro que dice que ningún contrato consumido ni ningún campo de B.1-B.11 cambia de significado. Pero la ejecución de FX-02 depende de que esos consumidores apliquen otro resultado de B6 y del criterio de independencia: A7' en la ventana, la validación del Q7, S29 y la materialización del Architect en S26. Un consumidor literal rechaza los bindings de FX-02 (S-04 o P-20), lo que deja FX-02 sin VERIFIED o sin la revisión del contrato. Un implementador que no vea la declaración podría ampliar sin control la excepción al UNKNOWN. LIFECYCLE §6 exige que esta enmienda semántica sea visible, como hizo A-1 D1-21."
+  }
+ ],
+ "OptionalFindings": [
+  {
+   "FindingId": "A62-A4-O1",
+   "AffectedDelta": "§3.2 A4-1, regla 2 (y Q-A4-03)",
+   "Note": "La lista de operaciones cubre Scope y AuthorityResolution, pero no nombra las demás órdenes de shell que ejecutan las 14 comprobaciones y los negativos con invocación: las lecturas de Git de Identity y Remote, de CleanTree (estado e ignorados) y de Trailer (historia). La sonda 1 las hizo por una ruta improvisada, y §61.4 dice que el 8/8 no acredita VERIFY. Conviene precisar que la invocación medida ejerce con el shell declarado cada orden que van a ejecutar la verificación y los negativos (o escribir «entre ellas»). Sin la precisión no hay riesgo de un VERIFIED indebido, porque una comprobación no ejecutada es not_run y cuenta como fail. Sí puede darse elegibilidad con una operación sin demostrar, con el gasto de lanzamientos que eso supone. La alternativa del mapa de cláusulas (Q-A4-03) es aceptable: no relaja AuthorityResolution, solo mide lo que el contrato exige.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.2 A4-1, regla 2",
+     "LineStart": 161,
+     "LineEnd": 161,
+     "Quote": "que demuestre con ese shell declarado las operaciones que necesita la verificación"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md",
+     "Section": "§3.2 VERIFY",
+     "LineStart": 124,
+     "LineEnd": 124,
+     "Quote": "Orden fijo de las 14 (AP 16.9): `Termination`, `Handoff`, `Authority`, `Contract`, `Identity`, `Remote`, `Scope`, `CleanTree`, `Ci`, `Tests`, `Trailer`,"
+    },
+    {
+     "Path": "docs/automation/agent-execution/README.md",
+     "Section": "§14.7 Comprobaciones de la verificación",
+     "LineStart": 511,
+     "LineEnd": 511,
+     "Quote": "Una comparación que no se ejecutó o no terminó es `not_run`, y"
+    },
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": "§61, punto 4",
+     "LineStart": 1201,
+     "LineEnd": 1201,
+     "Quote": "El 8/8 anterior no acredita las operaciones de VERIFY."
+    }
+   ]
+  },
+  {
+   "FindingId": "A62-A4-O2",
+   "AffectedDelta": "§3.2 A4-1, reglas 3 y 4 (y Q-A4-01)",
+   "Note": "Hay que precisar si el tope de uno es total para FX-02 en F6 o vale por trío exacto. La regla 4 impide repetir tras un fallo, pero no dice si cabe otra invocación de A4-1 cuando llega una actualización con la misma regresión y su bloque A2-P2. Conviene además exigir que la disposición del Coordinator nombre el directorio (`-C`) de la medición: un clon con la historia que necesita `git diff <base>..<head>`. La clasificación de FX-02 ya observa que A-4 no lo fija. Sin estas precisiones la regla falla cerrada (P-07 y la disposición nominal), así que no hay vía de mediciones ilimitadas.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.2 A4-1, regla 3",
+     "LineStart": 164,
+     "LineEnd": 164,
+     "Quote": "esa invocación exige una disposición del Coordinator que nombre la celda, el shell y el trío exacto"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.2 A4-1, regla 3",
+     "LineStart": 166,
+     "LineEnd": 166,
+     "Quote": "Su tope es uno, y P-07 lo comprueba antes de lanzarla;"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-F6/requests/FX-02-decision-classification-2026-10-09.md",
+     "Section": "§1, fila 46",
+     "LineStart": 78,
+     "LineEnd": 78,
+     "Quote": "A-4 no fija el directorio"
+    }
+   ]
+  },
+  {
+   "FindingId": "A62-A4-O3",
+   "AffectedDelta": "Cabecera (A-3), §3.7 y A4-1, regla 5 (y Q-A4-07)",
+   "Note": "A-3 ya está AGREED (decisiones §61, punto 1). Su regla 6 hereda la elegibilidad medida de un suelo mediante una sonda de compatibilidad, y su regla 4 define la medición completa. Para que A-3 y A4-1, regla 5 («sin reutilización») compongan sin interpretación, conviene declarar dos cosas. Primero, que la invocación de A4-1 no es una sonda de compatibilidad de A-3 ni consume su presupuesto. Segundo, que la elegibilidad que da A4-1 no es un suelo heredable por A-3. Es una precisión sin cambio de significado, porque la regla 5 ya prohíbe la reutilización. La secuencia A-n sigue continua (A-1..A-4).",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "Cabecera, Previous amendments",
+     "LineStart": 18,
+     "LineEnd": 18,
+     "Quote": "A-4 no la modifica, no depende de ella ni la interpreta (Q-A4-07)."
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.2 A4-1, regla 5",
+     "LineStart": 171,
+     "LineEnd": 171,
+     "Quote": "anula esa medición y la elegibilidad que da, sin reutilización;"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "Delta, regla 4",
+     "LineStart": 743,
+     "LineEnd": 743,
+     "Quote": "Una **medición completa** es una medición autorizada (§5, paso 3) que registra, para esa acción, todas las"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Section": "Delta, regla 6",
+     "LineStart": 773,
+     "LineEnd": 773,
+     "Quote": "Esa unidad, ese rol, esa acción y esa celda heredan la elegibilidad medida del suelo"
+    },
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": "§61, punto 1",
+     "LineStart": 1198,
+     "LineEnd": 1198,
+     "Quote": "**1. A-3 = AGREED**"
+    }
+   ]
+  },
+  {
+   "FindingId": "A62-A4-O4",
+   "AffectedDelta": "§3.3 A4-2, regla 3; §4, fila «Independencia y topes de ese Architect»",
+   "Note": "Conviene decir expresamente que, en la fila A de los «Totales por ronda de F6», los lanzamientos del Architect sustituido cuentan en la columna Codex (≤ 15) y no en la de Claude CLI, que sigue en 0. Así P-07, que se comprueba antes de cada lanzamiento, es mecánico. La letra ya lo implica («aunque los ejecute otro adapter»; «no gana un presupuesto propio»). Sin la precisión, un P-07 que leyera por columna de adapter bloquearía el lanzamiento (fallo cerrado), pero nunca permitiría exceder un tope.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.3 A4-2, regla 3",
+     "LineStart": 189,
+     "LineEnd": 189,
+     "Quote": "la columna de ese adapter en los totales no gana un presupuesto propio"
+    },
+    {
+     "Path": "docs/initiatives/I-62-proposal-v14.md",
+     "Section": "D.3 Totales por ronda de F6",
+     "LineStart": 2519,
+     "LineEnd": 2519,
+     "Quote": "**Totales por ronda de F6** (P-07 se comprueba **antes** de cada lanzamiento):"
+    },
+    {
+     "Path": "docs/initiatives/I-62-proposal-v14.md",
+     "Section": "D.3 Totales, fila A",
+     "LineStart": 2523,
+     "LineEnd": 2523,
+     "Quote": "| A | ≤ 15 + 2 sondas | ≤ 4 | 0 | ≤ 2 |"
+    }
+   ]
+  },
+  {
+   "FindingId": "A62-A4-O5",
+   "AffectedDelta": "§3.3 A4-2, regla 1; Anexo, punto 2 (y Q-A4-05)",
+   "Note": "El descriptor materializado `claude-cli.md` declara UNVERIFIED las operaciones 2-9, y 16.19 deja no elegible una celda con una operación UNVERIFIED que el rol necesita. A4-2 ya lo exige («elegibilidad completa» y aceptación «por las reglas vigentes»), así que falla cerrada. Pero el anexo («elegible (evidencia §84)») puede leerse como suficiente. Conviene precisar que la elegibilidad de A4-2 incluye la condición de 16.19 sobre el descriptor. Esa condición se cumple por el camino que V14 ya prevé para el Architect `claude-cli` de FX-03 (el descriptor se actualiza con la medición tras OD-3), no por A-4; hasta entonces A4-2 no se aplica. Es la misma situación que en FX-03 (V14 L2515), no una nueva, y es aceptable.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/automation/agent-execution/adapters/claude-cli.md",
+     "Section": "Operaciones",
+     "LineStart": 25,
+     "LineEnd": 25,
+     "Quote": "| 4 | invocar | UNVERIFIED | sin invocación medida |"
+    },
+    {
+     "Path": "docs/AUTOMATION_PLAN.md",
+     "Section": "16.19 Descriptor",
+     "LineStart": 1050,
+     "LineEnd": 1050,
+     "Quote": "Una operación UNVERIFIED que el rol necesita hace que la celda no sea"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.3 A4-2, regla 1",
+     "LineStart": 183,
+     "LineEnd": 183,
+     "Quote": "La elegibilidad tiene que ser completa: invocación medida, requisitos obligatorios en MATCH o ABOVE_REQUIRED, consumo"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "Anexo, punto 2",
+     "LineStart": 374,
+     "LineEnd": 374,
+     "Quote": "`claude-cli` 2.1.293 elegible (evidencia §84), solo Read, Grep y Glob."
+    },
+    {
+     "Path": "docs/initiatives/I-62-proposal-v14.md",
+     "Section": "D.3 Topología B",
+     "LineStart": 2515,
+     "LineEnd": 2515,
+     "Quote": "| Architect (`claude-cli`, invocación distinta) | 1 | +1 | 2 |"
+    }
+   ]
+  },
+  {
+   "FindingId": "A62-A4-O6",
+   "AffectedDelta": "§3.3 A4-2, disparador y regla 1 (y Q-A4-04)",
+   "Note": "El disparador es un estado de preflight: un requisito obligatorio en BELOW_REQUIRED (B.4). La sonda 2 del bloque A2-P2 no produjo un preflight con filas de requisitos; registró 0/6, y decisiones §59 dice que la celda del Architect no ejecuta comandos. Conviene precisar que la disposición del Coordinator que nombra la sustitución cita la medición custodiada (RunRef, trío exacto y requisito afectado) y registra la clasificación BELOW_REQUIRED con la identidad vigente. Así el disparador es reproducible y no depende de una lectura implícita.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.3 A4-2, disparador",
+     "LineStart": 181,
+     "LineEnd": 181,
+     "Quote": "sin poder ejecutar sus operaciones (un requisito obligatorio del rol en BELOW_REQUIRED)"
+    },
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": "§59",
+     "LineStart": 1162,
+     "LineEnd": 1162,
+     "Quote": "Con esa regresión, la celda del Architect no ejecuta comandos"
+    }
+   ]
+  },
+  {
+   "FindingId": "A62-A4-O7",
+   "AffectedDelta": "§3.4 A4-3, regla 3; §3.7 (y Q-A4-11 / U-09 e)",
+   "Note": "A4-3 cubre solo los bindings. La aceptación A1'-A8' de `d` (T3: decide el Coordinator y se registra en el diario) y su rechazo (T3') siguen sin un decisor ejecutable dentro de la ventana de FX-02, y la regla 3 remite a T3'. No es un defecto de A-4, por tres razones: T3 no exige `DecisionRef` ni escritura Git; A1'-A8' son mecánicas y sin cortocircuito; y el Coordinator puede decidir antes del Q0, en el punto 7 de O4, que `d` se acepta si y solo si pasan todas, y que en otro caso rige T3' con cierre NOT_ACCEPTED declarado por la sesión. El titular solo registra. Se recomienda añadir una frase en §3.7 (o en la regla 3) que diga que la decisión T3/T3' sobre `d` queda fuera de A4-3 y la fija la orden antes del Q0.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.4 A4-3, regla 3",
+     "LineStart": 212,
+     "LineEnd": 212,
+     "Quote": "y rige T3' (cierre NOT_ACCEPTED)"
+    },
+    {
+     "Path": "docs/initiatives/I-62-proposal-v14.md",
+     "Section": "§9.2 T3",
+     "LineStart": 613,
+     "LineEnd": 613,
+     "Quote": "| T3 | tras planificar | aceptación A1'-A8' | registros válidos | Coordinator | diario: aceptación de `d` (**delegación abierta**) | sin escritura Git |"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-F6/requests/FX-02-decision-classification-2026-10-09.md",
+     "Section": "§1, fila 9",
+     "LineStart": 41,
+     "LineEnd": 41,
+     "Quote": "U-09 (e), **sin propuesta en la solicitud**: quién decide A1'-A8' dentro de la ventana"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/order-FX-U1-O4.template.md",
+     "Section": "Decisiones para la ventana",
+     "LineStart": 95,
+     "LineEnd": 95,
+     "Quote": "**Decisiones de este Coordinator para la ventana (todas antes del Q0; dentro de la ventana no se publica ninguna)**"
+    },
+    {
+     "Path": "docs/automation/agent-execution/README.md",
+     "Section": "§14.7 A1'-A8'",
+     "LineStart": 502,
+     "LineEnd": 502,
+     "Quote": "**A1'-A8'** (AUTOMATION_PLAN 16.22), sin cortocircuito, sobre §4:"
+    }
+   ]
+  },
+  {
+   "FindingId": "A62-A4-O8",
+   "AffectedDelta": "§6, último guion (L310-L311)",
+   "Note": "«Guardas mecánicas: PENDIENTES» está desfasado: las guardas existen y pasaron sobre la corrección (evidencia §101-§102). Conviene actualizarlo en la próxima corrección. Es una edición del registro, no del delta.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§6 No cambia producción",
+     "LineStart": 310,
+     "LineEnd": 310,
+     "Quote": "**Guardas mecánicas: PENDIENTES**"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": "§102",
+     "LineStart": 3123,
+     "LineEnd": 3123,
+     "Quote": "G1, G2C, G3, G4, G5 y G5b PASS, con A-4 en el blob `7d863219`"
+    }
+   ]
+  }
+ ],
+ "Focus": [
+  {
+   "Topic": "A4-1_CMD_ROUTE",
+   "Disposition": "OPTIONAL",
+   "FindingIds": [
+    "A62-A4-O1",
+    "A62-A4-O2",
+    "A62-A4-O3"
+   ],
+   "Rationale": "Paquete §4, preguntas 1-3. A4-1 cumple §60.2. La ruta es explícita: el shell se declara en el texto de la invocación y se nombra en la orden. Es medida: ninguna elegibilidad sin una invocación adicional que demuestre las operaciones de VERIFY. No cambia en silencio la receta 16.4 ni el descriptor (reglas 1 y 6), y no supone equivalencia con la medición de 0.160.1 ni con el 8/8 (regla 2; §61.4). El cómputo es coherente con A-2: va aparte de la ronda, de «+ 2 sondas» y de los bloques A2-P2 (A-2 L233 hace lo mismo con sus bloques); tiene tope 1, comprobado por P-07 antes de lanzar; no hay reintento; y solo una actualización observada (A2-P2) u otra A-n abren otra medición. Por eso no hay vía de mediciones ilimitadas. Los invalidadores son los de A-2 L238-L239, y P-01 y OD-2 no cambian. La lista de operaciones basta para Scope y AuthorityResolution; O1 cubre el resto. La cláusula de indisponibilidad del mapa es aceptable porque no relaja AuthorityResolution. O2 y O3 son precisiones.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": "§60, punto 2",
+     "LineStart": 1173,
+     "LineEnd": 1173,
+     "Quote": "sin asumir equivalencia ni cambiar en silencio la receta 16.4"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.2 A4-1, regla 1",
+     "LineStart": 157,
+     "LineEnd": 157,
+     "Quote": "la invocación del rol puede declarar en su texto un shell alternativo explícito, disponible en el host y nombrado en la orden."
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.2 A4-1, regla 3",
+     "LineStart": 166,
+     "LineEnd": 166,
+     "Quote": "Su tope es uno, y P-07 lo comprueba antes de lanzarla;"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-2.md",
+     "Section": "§3.3 A2-P2",
+     "LineStart": 233,
+     "LineEnd": 233,
+     "Quote": "Las sondas de un bloque no consumen los lanzamientos de Codex de ninguna ronda ni el sumando «+ 2 sondas» de los totales"
+    }
+   ]
+  },
+  {
+   "Topic": "A4-2_ARCHITECT_SUBSTITUTION",
+   "Disposition": "OPTIONAL",
+   "FindingIds": [
+    "A62-A4-O4",
+    "A62-A4-O5",
+    "A62-A4-O6"
+   ],
+   "Rationale": "Paquete §4, preguntas 1, 4 y 5. §60.2 prefiere `claude-cli` si el contrato lo permite y se cumplen independencia, capacidad y consumo. A4-2 crea ese permiso de contrato de forma genérica, sin nombre de producto en la regla. Exige elegibilidad completa. Evalúa la independencia del contrato tal como está: REQUIRED ×3 frente a AUTHOR, y el Proveedor PREFERRED sin cumplir se registra. Conserva fase, base, pool, contrato de salida y presupuestos de bucle de A-1. Pide el consumo del Owner y no cambia ningún otro rol. No es una sustitución silenciosa (§61.4): requiere esta A-n y una disposición nominal. AP 16.21 se conserva, con la salvedad de la excepción de A4-4 (A62-A4-01). El disparador basta si el Coordinator registra la medición (O6). Los totales y P-07 están bien definidos en sustancia (O4). Q-A4-05: A4-2 hereda la situación del Architect `claude-cli` de FX-03 y falla cerrada (O5).",
+   "PremiseRefs": [
+    {
+     "Path": "D:\\r62-arch-a4-run\\order-s60.txt",
+     "Section": "2. F6-OBS-03",
+     "LineStart": 25,
+     "LineEnd": 25,
+     "Quote": "Para Architect, preferir claude-cli si el contrato permite ese adapter y cumple independencia, capacidad y consumo."
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.3 A4-2, regla 1",
+     "LineStart": 182,
+     "LineEnd": 182,
+     "Quote": "con una disposición del Coordinator que lo nombre, ese Architect puede vincularse a otro adapter cuya celda esté medida elegible para"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/README.md",
+     "Section": "§0, contrato T1",
+     "LineStart": 44,
+     "LineEnd": 44,
+     "Quote": "ARCHITECT (REVIEW_DESIGN; frente a AUTHOR: REQUIRED ×3, Proveedor PREFERRED)"
+    },
+    {
+     "Path": "D:\\r62-arch-a4-run\\order.txt",
+     "Section": "4. F6-OBS-03",
+     "LineStart": 36,
+     "LineEnd": 36,
+     "Quote": "No reemplazar silenciosamente el Architect de la Topología A."
+    }
+   ]
+  },
+  {
+   "Topic": "A4-3_H1",
+   "Disposition": "OPTIONAL",
+   "FindingIds": [
+    "A62-A4-O7"
+   ],
+   "Rationale": "Paquete §4, pregunta 8. La preautorización es una decisión individual del Coordinator que B9 admite. El marcador existe en el archivo de decisiones de la unidad, en la versión del Q0 de la ventana (regla 4), y nombra la decisión: en B9, el referente de «la nombra» es la decisión, y B9 no exige `BindingId`. La decisión ocurrió antes del binding y no se simula, así que no hay «aceptación fingida» (AP L1123). Se conservan la base INDIVIDUAL_DECISION y la transición única PENDING → ACCEPTED/REJECTED (B.5). No hay `AuthorizationRef` ni `MaterializationCheck`, y B8 no cambia: no es una materialización encubierta. El titular aplica la decisión y no decide nada. El validador del Q7 la reproduce con lo custodiado y con el archivo de decisiones del Q0, sin escrituras en la ventana (W-2). La aceptación A1'-A8' de `d` (T3) queda fuera con razón, porque no exige DecisionRef; se resuelve como en O7.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.4 A4-3, regla 1",
+     "LineStart": 204,
+     "LineEnd": 204,
+     "Quote": "su aceptación individual (A7') puede decidirse **antes** del Q0, en la orden que el Coordinator del fixture publica en el archivo de decisiones"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.4 A4-3, regla 2",
+     "LineStart": 210,
+     "LineEnd": 210,
+     "Quote": "El titular aplica la decisión publicada; no decide ni dispensa nada;"
+    },
+    {
+     "Path": "docs/automation/agent-execution/README.md",
+     "Section": "§14.2 B9",
+     "LineStart": 399,
+     "LineEnd": 399,
+     "Quote": "`DecisionRef` = una decisión registrada del Coordinator: el marcador existe en el archivo de decisiones de la unidad y la nombra; nunca un marcador fabricado"
+    },
+    {
+     "Path": "docs/AUTOMATION_PLAN.md",
+     "Section": "16.20 Sin aceptación fingida",
+     "LineStart": 1123,
+     "LineEnd": 1123,
+     "Quote": "materializado nunca lleva un `DecisionRef` que simule una decisión individual que no ocurrió."
+    },
+    {
+     "Path": "docs/initiatives/I-62-proposal-v14.md",
+     "Section": "B.5 Acceptance",
+     "LineStart": 1884,
+     "LineEnd": 1884,
+     "Quote": "Para INDIVIDUAL_DECISION, transición única PENDING → ACCEPTED o REJECTED; ninguna otra"
+    }
+   ]
+  },
+  {
+   "Topic": "A4-4_H2",
+   "Disposition": "REQUIRED",
+   "FindingIds": [
+    "A62-A4-01"
+   ],
+   "Rationale": "Paquete §4, pregunta 9. El diseño es coherente con 16.21 y con I-S18. Nunca registra SATISFIED antes de la corrida, salvo con el conjunto vacío. Decide en la Entrada con la identidad observada, como I-S18 para el Architect. Falla cerrado: la salida es INVALID y el lanzamiento cuenta sin devolución. Las condiciones (a)-(d) son comprobables con lo custodiado: referencias observadas, receta de sesión nueva, cierre de insumos y ningún NOT_SATISFIED. La lectura del conjunto vacío se sigue de la definición de referencia (AP L1163) y es la única que permite planificar con la independencia frente a WORKER que el contrato T1 pide en PLAN. La inclusión del Architect cae dentro de H-2. Pero la regla cambia, sin declararlo, el resultado de B6 y de §14.3 y el significado persistido de B.5: eso es A62-A4-01.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.5 A4-4, regla 1",
+     "LineStart": 229,
+     "LineEnd": 229,
+     "Quote": "Ese UNKNOWN, y solo ese, no impide la aceptación ni la materialización si se cumplen todas"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.5 A4-4, regla 3",
+     "LineStart": 236,
+     "LineEnd": 236,
+     "Quote": "la comprobación decisiva es la de la Entrada de cada invocación con ese binding"
+    },
+    {
+     "Path": "docs/initiatives/I-62-proposal-v14.md",
+     "Section": "I-S18",
+     "LineStart": 2176,
+     "LineEnd": 2176,
+     "Quote": "todo resultado ingerido de ARCHITECT tiene un `runtime_evidence` cuyo actor observado difiere del de cada autor IA del objeto (§11);"
+    },
+    {
+     "Path": "docs/AUTOMATION_PLAN.md",
+     "Section": "16.21 Referencia",
+     "LineStart": 1163,
+     "LineEnd": 1163,
+     "Quote": "Es el conjunto de actores que escribieron el rango evaluado"
+    }
+   ]
+  },
+  {
+   "Topic": "A4-5_H3",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "Paquete §4, pregunta 10. A4-5 reparte el pool sin subir el 15 ni el ≤ 2 por fase. Admite una sola corrección, la del +1 del Worker. P-07 se comprueba antes del Q0 de la corrección e incluye el segundo lanzamiento del Worker. Los negativos se lanzan una vez, dentro de sus bases. Las invocaciones de la corrección no son reejecuciones de 16.8, pero agotan pool, así que rige el menor de los dos límites. OD-5 lo cubre sin consumo nuevo. La clasificación UNVERIFIED (no FAIL) de un REWORK sin corrección es la lectura correcta de D.4: un REWORK es el protocolo funcionando, no una violación observada, y FX-02 queda pendiente como manda la matriz. Es separable: G5 confirma un añadido puro sin A4-5.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.6 A4-5, regla 1",
+     "LineStart": 252,
+     "LineEnd": 252,
+     "Quote": "se admite **una** corrección, la del «+1 solo si hay REWORK» del Worker."
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.6 A4-5, regla 4",
+     "LineStart": 257,
+     "LineEnd": 257,
+     "Quote": "si la corrección no se lanza, el cierre REWORK cierra FX-02 como UNVERIFIED con esa causa, no como FAIL: no hay violación observada (D.4)."
+    },
+    {
+     "Path": "docs/initiatives/I-62-proposal-v14.md",
+     "Section": "D.3 Codex, total",
+     "LineStart": 2442,
+     "LineEnd": 2442,
+     "Quote": "| **Codex, total** | | **11** | | pool **4** (≤ 2 por fase) | **15** |"
+    },
+    {
+     "Path": "docs/initiatives/I-62-proposal-v14.md",
+     "Section": "D.4 FAIL",
+     "LineStart": 2535,
+     "LineEnd": 2535,
+     "Quote": "| **FAIL** | violación observada; se conserva; impide cerrar F6 hasta la corrección (§16) y la repetición dentro de los topes; nunca se convierte en limitación |"
+    }
+   ]
+  },
+  {
+   "Topic": "U-09e_Q-A4-11",
+   "Disposition": "OPTIONAL",
+   "FindingIds": [
+    "A62-A4-O7"
+   ],
+   "Rationale": "Decide el Coordinator: T3 se lo asigna, y el titular no tiene esa autoridad. A4-3 no cubre la aceptación de `d`, y no hace falta que la cubra. T3 se registra en el diario; no exige `DecisionRef` ni B9, y no requiere escribir en Git dentro de la ventana. A1'-A8' son comprobaciones mecánicas, sin cortocircuito. El Coordinator puede fijar antes del Q0, en el punto 7 de O4 («todas antes del Q0»), que `d` se acepta si y solo si A1'-A8' pasan todas, y que en otro caso rige T3' con cierre NOT_ACCEPTED declarado por la sesión. Dentro de la ventana el titular solo aplica y registra, y el Q7 lo reproduce con lo custodiado. Es una disposición del Coordinator dentro de su dominio, no una A-n. Recomiendo emitirla en la disposición G1⚑ y dejar constancia en A-4 (O7).",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-proposal-v14.md",
+     "Section": "§9.2 T3",
+     "LineStart": 613,
+     "LineEnd": 613,
+     "Quote": "| T3 | tras planificar | aceptación A1'-A8' | registros válidos | Coordinator | diario: aceptación de `d` (**delegación abierta**) | sin escritura Git |"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-F6/requests/FX-02-decision-classification-2026-10-09.md",
+     "Section": "§1, fila 9",
+     "LineStart": 41,
+     "LineEnd": 41,
+     "Quote": "U-09 (e), **sin propuesta en la solicitud**: quién decide A1'-A8' dentro de la ventana"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/order-FX-U1-O4.template.md",
+     "Section": "Decisiones para la ventana",
+     "LineStart": 95,
+     "LineEnd": 95,
+     "Quote": "**Decisiones de este Coordinator para la ventana (todas antes del Q0; dentro de la ventana no se publica ninguna)**"
+    },
+    {
+     "Path": "docs/automation/agent-execution/README.md",
+     "Section": "§14.7 A1'-A8'",
+     "LineStart": 502,
+     "LineEnd": 502,
+     "Quote": "**A1'-A8'** (AUTOMATION_PLAN 16.22), sin cortocircuito, sobre §4:"
+    }
+   ]
+  }
+ ],
+ "A45Verdict": {
+  "Verdict": "AGREED",
+  "FindingIds": [],
+  "Rationale": "A4-5 es correcta y separable. Tomar del pool de la fase la planificación y la verificación de una sola corrección no sube el tope 15, ni el ≤ 2 por fase, ni ningún total, y no reinicia contadores. P-07 se adelanta al Q0 de la corrección, con lo que no se abre una corrección que no se pueda verificar. Los negativos no se repiten. El consumo queda cubierto por OD-5. Clasificar como UNVERIFIED, y no como FAIL, el REWORK sin corrección se ajusta a D.4. G5 muestra que A-4 sin A4-5 sigue siendo un añadido puro (80 líneas). No tiene hallazgos propios, así que no hace falta excluirla. Su acuerdo efectivo depende del acuerdo de A-4, hoy bloqueado por A62-A4-01, que no la afecta."
+ },
+ "QuestionDispositions": [
+  {
+   "Id": "Q-A4-01",
+   "Disposition": "OPTIONAL",
+   "FindingIds": [
+    "A62-A4-O2"
+   ],
+   "Rationale": "Contarla aparte es correcto. No es un bloque A2-P2, porque no hubo actualización, y el sumando «+ 2 sondas» es de la fila de sondas previas. Tiene tope propio, P-07 y una autoridad nominal, igual que A-2 cuenta aparte sus bloques. Solo falta precisar el alcance del tope (total o por trío) y el directorio (O2).",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-2.md",
+     "Section": "§3.3 A2-P2",
+     "LineStart": 233,
+     "LineEnd": 233,
+     "Quote": "Las sondas de un bloque no consumen los lanzamientos de Codex de ninguna ronda ni el sumando «+ 2 sondas» de los totales"
+    }
+   ]
+  },
+  {
+   "Id": "Q-A4-02",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "UNVERIFIED es la lectura correcta para FX-02. La matriz de cierre solo prevé UNVERIFIED si falta algo para FX-02 PASS. UNSUPPORTED con una decisión del Owner es una salida de FX-03 y FX-04b, no de FX-02. Además, la limitación es de una versión del runtime y la vía V3 puede corregirla.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-proposal-v14.md",
+     "Section": "D.4 matriz de cierre",
+     "LineStart": 2544,
+     "LineEnd": 2544,
+     "Quote": "| FX-02 PASS | OD-5 + **OD-7** + OD-2 + medición del binario | UNVERIFIED; F6 pendiente |"
+    },
+    {
+     "Path": "docs/initiatives/I-62-proposal-v14.md",
+     "Section": "D.4 resultados",
+     "LineStart": 2537,
+     "LineEnd": 2537,
+     "Quote": "| **UNSUPPORTED** | capacidad medida ausente |"
+    }
+   ]
+  },
+  {
+   "Id": "Q-A4-03",
+   "Disposition": "OPTIONAL",
+   "FindingIds": [
+    "A62-A4-O1"
+   ],
+   "Rationale": "La alternativa basta: A4-1 condiciona la elegibilidad, pero no cambia lo que exige AuthorityResolution. Si el contrato exige la resolución efectiva, la medición tiene que demostrarla; si la declara no disponible, se mide esa declaración. La precisión pendiente es la completitud del resto de la lista (O1).",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§3.2 A4-1, regla 2",
+     "LineStart": 161,
+     "LineEnd": 161,
+     "Quote": "que demuestre con ese shell declarado las operaciones que necesita la verificación"
+    }
+   ]
+  },
+  {
+   "Id": "Q-A4-04",
+   "Disposition": "OPTIONAL",
+   "FindingIds": [
+    "A62-A4-O6"
+   ],
+   "Rationale": "El 0/6 custodiado es evidencia suficiente de la limitación. Pero BELOW_REQUIRED es un estado de preflight, y la sonda no produjo filas de requisitos, así que el Coordinator debería registrar la clasificación en la disposición que nombra la sustitución (O6).",
+   "PremiseRefs": [
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": "§59",
+     "LineStart": 1162,
+     "LineEnd": 1162,
+     "Quote": "Con esa regresión, la celda del Architect no ejecuta comandos"
+    }
+   ]
+  },
+  {
+   "Id": "Q-A4-05",
+   "Disposition": "OPTIONAL",
+   "FindingIds": [
+    "A62-A4-O5"
+   ],
+   "Rationale": "Es aceptable, porque es la misma situación que V14 ya congela para FX-03 y A4-2 falla cerrada mientras el descriptor declare UNVERIFIED una operación que ARCHITECT necesita. Conviene hacerlo explícito y no presentar la evidencia §84 como suficiente para el binding del fixture (O5).",
+   "PremiseRefs": [
+    {
+     "Path": "docs/AUTOMATION_PLAN.md",
+     "Section": "16.19 Descriptor",
+     "LineStart": 1050,
+     "LineEnd": 1050,
+     "Quote": "Una operación UNVERIFIED que el rol necesita hace que la celda no sea"
+    }
+   ]
+  },
+  {
+   "Id": "Q-A4-06",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "Es correcto excluir D.5. Corre sobre FINAL_CANDIDATE_SHA, con el runtime de ese momento, y la regresión puede estar corregida para entonces (vía V3). Si sigue, se necesitará otra A-n al preparar la OV. A-4 lo deja escrito en §3.7.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§8 Q-A4-06",
+     "LineStart": 337,
+     "LineEnd": 337,
+     "Quote": "A-4 excluye D.5 (OV), donde FX-02 tiene la misma dependencia."
+    },
+    {
+     "Path": "docs/initiatives/I-62-proposal-v14.md",
+     "Section": "D.5",
+     "LineStart": 2556,
+     "LineEnd": 2556,
+     "Quote": "### D.5 Ejecución compacta para OV sobre FINAL_CANDIDATE_SHA"
+    }
+   ]
+  },
+  {
+   "Id": "Q-A4-07",
+   "Disposition": "OPTIONAL",
+   "FindingIds": [
+    "A62-A4-O3"
+   ],
+   "Rationale": "A-3 ya está AGREED, así que conviene precisarlo: la invocación de A4-1 no es una sonda de compatibilidad de A-3 y su elegibilidad no es un suelo heredable (O3). La secuencia A-n es continua (A-1..A-4).",
+   "PremiseRefs": [
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": "§61, punto 1",
+     "LineStart": 1198,
+     "LineEnd": 1198,
+     "Quote": "**1. A-3 = AGREED**"
+    }
+   ]
+  },
+  {
+   "Id": "Q-A4-08",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "Es una cuestión de aplicación, no del delta. La premisa de N8 caducó con OD-3 = A, con A-4 o sin ella. La resuelve el Coordinator (clasificación, fila 21: una mutación nueva o NOT_APPLICABLE con causa) sin tocar A-4.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§8 Q-A4-08",
+     "LineStart": 339,
+     "LineEnd": 339,
+     "Quote": "Aplicación, no delta: N8 (kit FX-02, `README.md` L167) usa `claude-cli` como «candidata sin credencial»."
+    }
+   ]
+  },
+  {
+   "Id": "Q-A4-09",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "El acuerdo no es OWNER-RESERVED. No cambia el alcance, los no-objetivos ni ninguna decisión del Owner: OD-3 queda intacta, y su fila y su alcance no se reescriben. No retira ningún escenario OV. El nuevo uso de `claude-cli` en la topología A queda condicionado a una autorización de consumo nueva del Owner (A4-CLAUDE-FX02-CONSUMO), como prevé §55.7: el Owner interviene solo para el consumo y las decisiones OD reservadas.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/INITIATIVE_LIFECYCLE.md",
+     "Section": "§3",
+     "LineStart": 94,
+     "LineEnd": 94,
+     "Quote": "Un cambio de alcance, no-objetivos, decision Owner o retiro de escenario OV es `OWNER-RESERVED`."
+    },
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": "§55, punto 7",
+     "LineStart": 1066,
+     "LineEnd": 1066,
+     "Quote": "el Owner solo para consumo y decisiones OD reservadas, no para el acuerdo, salvo que la revisión identifique una consecuencia reservada"
+    }
+   ]
+  },
+  {
+   "Id": "Q-A4-10",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "Es una decisión individual que B9 admite, no una materialización encubierta. La decisión es real y anterior al binding, y el marcador figura en el archivo de decisiones del Q0. Se conservan la base INDIVIDUAL_DECISION y la transición PENDING → ACCEPTED/REJECTED. No hay AuthorizationRef ni MaterializationCheck, y B8 no cambia. No simula ninguna decisión que no ocurrió.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/automation/agent-execution/README.md",
+     "Section": "§14.2 B9",
+     "LineStart": 399,
+     "LineEnd": 399,
+     "Quote": "`DecisionRef` = una decisión registrada del Coordinator: el marcador existe en el archivo de decisiones de la unidad y la nombra; nunca un marcador fabricado"
+    },
+    {
+     "Path": "docs/AUTOMATION_PLAN.md",
+     "Section": "16.20 Sin aceptación fingida",
+     "LineStart": 1123,
+     "LineEnd": 1123,
+     "Quote": "materializado nunca lleva un `DecisionRef` que simule una decisión individual que no ocurrió."
+    }
+   ]
+  },
+  {
+   "Id": "Q-A4-11",
+   "Disposition": "OPTIONAL",
+   "FindingIds": [
+    "A62-A4-O7"
+   ],
+   "Rationale": "La orden previa la cubre como decisión ex ante del Coordinator: T3 se registra en el diario y no exige DecisionRef ni escritura Git. No hace falta incluirla en A4-3. Conviene dejar constancia en A-4 para que la remisión a T3' de la regla 3 sea ejecutable (O7).",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-proposal-v14.md",
+     "Section": "§9.2 T3",
+     "LineStart": 613,
+     "LineEnd": 613,
+     "Quote": "| T3 | tras planificar | aceptación A1'-A8' | registros válidos | Coordinator | diario: aceptación de `d` (**delegación abierta**) | sin escritura Git |"
+    }
+   ]
+  },
+  {
+   "Id": "Q-A4-12",
+   "Disposition": "REQUIRED",
+   "FindingIds": [
+    "A62-A4-01"
+   ],
+   "Rationale": "Sí cambia. En FX-02, un binding ACCEPTED o materializado puede persistir con una dimensión REQUIRED en UNKNOWN (M-02), y cambia lo que el validador y el aceptante aceptan en B6 y en §14.3 (M-05). A-4 lo declara «no». La lectura del conjunto vacío como SATISFIED en la planificación es válida: se sigue de la definición de referencia y es la única que permite planificar.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Section": "§5 M-05",
+     "LineStart": 298,
+     "LineEnd": 298,
+     "Quote": "| M-05 | no | ningún contrato consumido cambia de texto (receta 16.4, descriptores, esquemas, B.1-B.11, AUTOMATION_PLAN 16.x, RAE §14)"
+    },
+    {
+     "Path": "docs/automation/agent-execution/README.md",
+     "Section": "§14.2 B6",
+     "LineStart": 396,
+     "LineEnd": 396,
+     "Quote": "toda dimensión REQUIRED está en SATISFIED (§14.5) | binding no aceptado; la operación dependiente se bloquea |"
+    }
+   ]
+  },
+  {
+   "Id": "Q-A4-13",
+   "Disposition": "REQUIRED",
+   "FindingIds": [
+    "A62-A4-01"
+   ],
+   "Rationale": "La inclusión del Architect está dentro de H-2: la solicitud nombra al «Architect externo» y el precedente congelado es I-S18. Pero la excepción a «UNKNOWN cuenta como NOT_SATISFIED» en el criterio de su materialización contradice B.5 («con todos en SATISFIED») y §14.3, y hay que declararla como cambio de M-02/M-05 con su discriminador (A62-A4-01). El Architect no debe quedar fuera de A-4.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/automation/evidence/I-62-F6/requests/FX-02-unblock-request-2026-10-09.md",
+     "Section": "§2.1 H-2",
+     "LineStart": 64,
+     "LineEnd": 64,
+     "Quote": "Con la letra, ningún Controller ni Architect externo se acepta antes de invocarlo"
+    },
+    {
+     "Path": "docs/AUTOMATION_PLAN.md",
+     "Section": "16.20 Materialización",
+     "LineStart": 1121,
+     "LineEnd": 1121,
+     "Quote": "No relaja ningún criterio: **UNKNOWN cuenta como NOT_SATISFIED**."
+    }
+   ]
+  },
+  {
+   "Id": "Q-A4-14",
+   "Disposition": "NO_FINDING",
+   "FindingIds": [],
+   "Rationale": "Es aceptable y no recomiendo excluir A4-5. Usa el pool sin subir el 15 ni el ≤ 2 por fase, adelanta P-07 al Q0 de la corrección y admite una sola corrección. La alternativa (REWORK → UNVERIFIED) sigue disponible cuando la corrección no cabe.",
+   "PremiseRefs": [
+    {
+     "Path": "docs/initiatives/I-62-proposal-v14.md",
+     "Section": "D.3 Codex, total",
+     "LineStart": 2442,
+     "LineEnd": 2442,
+     "Quote": "| **Codex, total** | | **11** | | pool **4** (≤ 2 por fase) | **15** |"
+    },
+    {
+     "Path": "docs/AUTOMATION_PLAN.md",
+     "Section": "16.8",
+     "LineStart": 610,
+     "LineEnd": 610,
+     "Quote": "como máximo dos reejecuciones por (`TaskId`, fase), y por control negativo; la tercera → STOP (P-04)."
+    }
+   ]
+  }
+ ],
+ "NoChangeConfirmation": {
+  "A1": {
+   "Assessment": "NO_CHANGE",
+   "Note": "A-4 no edita A-1. A4-2, regla 3 conserva los presupuestos de bucle del Architect, y las guardas G3 muestran el blob c01899a7 sin cambio."
+  },
+  "A2": {
+   "Assessment": "NO_CHANGE",
+   "Note": "A2-P2 sigue con ≤ 2 sondas por actualización observada. La invocación de A4-1 se cuenta fuera de sus bloques y usa los mismos invalidadores de A-2 L238-L239 (G5). Blob f1e1d6f0 sin cambio."
+  },
+  "A3": {
+   "Assessment": "NO_CHANGE",
+   "Note": "Ninguna regla menciona A-3 (G5) y su blob ea6721f7 no cambia. Falta precisar cómo compone con A4-1 ahora que A-3 está AGREED (A62-A4-O3)."
+  },
+  "D3CapsRow": {
+   "Assessment": "NO_CHANGE",
+   "Note": "La fila «Codex, total» (11 / pool 4, ≤ 2 por fase / 15) y la fila A de totales no cambian de texto ni de cifras. A4-2 y A4-5 cuentan dentro de ellas. A4-1 añade un tope separado de 1, fuera de la ronda y de «+ 2 sondas»."
+  },
+  "P01": {
+   "Assessment": "NO_CHANGE",
+   "Note": "A4-1, regla 6: P-01 y OD-2 rigen sin cambio. Ninguna invocación con una huella sin aceptar."
+  },
+  "OD2": {
+   "Assessment": "NO_CHANGE",
+   "Note": "OD-2 sigue aceptando el hash exacto (OD-2-MAT = A). Las líneas del Owner no aceptan huellas."
+  },
+  "Recipe164": {
+   "Assessment": "NO_CHANGE",
+   "Note": "El shell va en el texto de la invocación. Binario, directorio, sandbox, modelo, effort, esquema, salida, registro de sesión, stdin, PATH, tope de tiempo, huella y consumo no cambian (A4-1, regla 1)."
+  },
+  "Descriptors": {
+   "Assessment": "NO_CHANGE",
+   "Note": "`codex-cli.md` y `claude-cli.md` no cambian (G3). A4-2 depende de que el descriptor de claude-cli se actualice por su propio camino (A62-A4-O5)."
+  },
+  "AutomationPlan1620to1621Text": {
+   "Assessment": "NO_CHANGE",
+   "Note": "El texto no cambia (G3 sobre el blob f525cb1e). Pero A4-4 cambia, para FX-02, el resultado de 16.20 («UNKNOWN cuenta como NOT_SATISFIED») y de 16.21 («no se acepta»), y hay que declararlo (A62-A4-01)."
+  },
+  "B1toB10Text": {
+   "Assessment": "NO_CHANGE",
+   "Note": "El texto de RAE §14.2 no cambia (G3 sobre el blob 592dcfd4). A4-3 es compatible con B9 tal como está. A4-4 cambia, solo en FX-02, el resultado de B6, sin declararlo como M-05 (A62-A4-01)."
+  },
+  "Production": {
+   "Assessment": "NO_CHANGE",
+   "Note": "A-4 no modifica ningún archivo de producción: G3 sin discrepancias y G4 C-20b EQUAL (MV-2..MV-6) sin superficies tocadas. Queda pendiente aclarar si algún validador materializado tiene que aplicar la excepción de A4-4 (A62-A4-01, punto 4)."
+  }
+ },
+ "OwnerConsumptionLines": {
+  "Assessment": "ONLY_CONSUMPTION",
+  "Note": "A4-SONDA-CONSUMO autoriza una invocación de solo lectura para el trío exacto. Mide huella, binario y versión antes y después, no permite reintento, escritura, cambios de configuración, trust_level ni sandbox, ni lectura de valores, y dice «no acepta su resultado». No nombra el directorio: lo fija la disposición del Coordinator (A62-A4-O2). A4-CLAUDE-FX02-CONSUMO autoriza el uso de solo lectura de claude-cli como Architect de la topología A de FX-02: un lanzamiento más el pool, dentro de los mismos topes. Excluye PRINCIPAL_COORDINATOR, EXECUTION_CONTROLLER, WORKER, escritura y lectura de credenciales, y declara que «no acepta su resultado ni amplía OD-3, OD-5 ni CLAUDE-CLI-I62». Repetir Actor/Session/Context REQUIRED y Provider PREFERRED restringe la autorización; no acepta nada por adelantado. Es una autorización de consumo nueva y acotada para un uso que el alcance literal de OD-3 no cubre, y concederla corresponde al Owner. Ninguna de las dos líneas acepta huellas ni crea autoridad del Owner nueva."
+ },
+ "GuardsVerification": {
+  "Notes": [
+   {
+    "Guard": "G1",
+    "ClaimHolds": "HOLDS",
+    "Note": "El resultado custodiado (L9-L530) da PASS: 72 literales en línea, 5 líneas de bloque y la cabecera con A-3 AGREED. Comprobé a mano, contra lo que leí, los literales de §2: V14 L2438-L2443, L2515, L2523, L2528, L2544, L2552, L2560, L972, L974, L387, L614, L1139, L1860, L1884, L1999, L2176, L2444, L2535, L2536 y L3081; A-2 L222-L223, L233 y L238-L239; AP L542-L543, L610, L612, L1069-L1070, L1093, L1101, L1108-L1109, L1121-L1123, L1146-L1147, L1156, L1159-L1161, L1163, L1168, L1339 y L1349; RAE L387, L396, L399, L437 y L446; CC L127-L128, L212 y L217; KIT L44; routing L114; DEC L1083, L1085, L1161-L1162 y L1173; O4 L95. Todos coinciden. No recalculé la privacidad."
+   },
+   {
+    "Guard": "G2C",
+    "ClaimHolds": "HOLDS",
+    "Note": "El resultado custodiado (L531-L615) da PASS: base f504f6a9 y head 7f065a3a. Rutas cambiadas: las guardas y el self-test añadidos, y A-4, el paquete y la evidencia modificados; la evidencia solo crece por añadido (272 000 → 273 605 bytes). Hunks: A-4 L18 y L341; paquete L16 y L124-L125. La lógica de g2_correction y diff_limit (a4-guards.py L768-L873) exige exactamente las ediciones declaradas en A4_EDITS y PKG_EDITS. Lo que leí en A-4 L18 y L341 y en el paquete L16 y L124 coincide con los hunks."
+   },
+   {
+    "Guard": "G2D",
+    "ClaimHolds": "NOT_VERIFIED",
+    "Note": "G2D pertenece al modo preview (a4-guards.py L819-L825) y no figura en el resultado custodiado del run. Solo el self-test, en su escenario C sobre una entrada simulada, informa G2D PASS (a4-guards-result.json L1323-L1328). La salida custodiada del preview está fuera del cierre."
+   },
+   {
+    "Guard": "G3",
+    "ClaimHolds": "HOLDS",
+    "Note": "El resultado custodiado da PASS: 17 rutas sin discrepancias en la base y en el head (L616-L622). La lógica está en g3_frozen (L738-L751). No puedo recalcular los blobs sin git."
+   },
+   {
+    "Guard": "G4",
+    "ClaimHolds": "HOLDS",
+    "Note": "El resultado custodiado da PASS: C-20b EQUAL (MV-2..MV-6) con código de salida 0 y ninguna superficie tocada (L623-L631). Lógica en g4_c20b (L755-L765). No ejecuté clause_map.py."
+   },
+   {
+    "Guard": "G5",
+    "ClaimHolds": "HOLDS",
+    "Note": "El resultado custodiado da PASS. Es un añadido puro de 90 líneas tras «Ningún otro tope cambia.» de A-2 (80 sin A4-5) que solo cambia título, Anexo D y D.3. Las cinco cláusulas de alcance están presentes. Todas las menciones cruzadas son negativas, de conservación o de restricción. Las citas internas son literales. Los invalidadores son iguales a los de A-2. Los cinco párrafos son idénticos a los de 27ffa26b. Comprobé a mano los párrafos de §3.2-§3.6. G5 es sintáctica: no detecta el cambio semántico de B6 y §14.3 de A62-A4-01."
+   },
+   {
+    "Guard": "G5b",
+    "ClaimHolds": "HOLDS",
+    "Note": "a4-selftest.json (L19-L34) y el resultado (L1266-L1273) dan A4TextBlob 7d863219, PkgTextBlob 085f30f6 y ToolBlob 2489e35f (el blob declarado de a4-guards.py), con el self-test 66/66 PASS (L1276-L1333). No puedo recalcular el blob del script."
+   }
+  ],
+  "Note": "No ejecuté las guardas: lo afirmado sale de leer a4-guards.py (L1-L100, L420-L499, L680-L959) y los resultados custodiados. Las guardas son mecánicas y sintácticas: confirman literales, rutas, blobs, C-20b y la forma del delta. No pueden establecer la materialidad semántica de A4-4 (A62-A4-01)."
+ },
+ "Materiality": {
+  "Overall": {
+   "M01": "NO",
+   "M02": "YES",
+   "M03": "YES",
+   "M04": "YES",
+   "M05": "YES",
+   "M06": "NO",
+   "M07": "NO",
+   "M08": "NO"
+  },
+  "Note": "M-01 no: el Coordinator sigue decidiendo, también la preautorización y el T3 ex ante, el titular solo aplica, y el Owner conserva el consumo. M-02 sí: en FX-02, un binding ACCEPTED o materializado puede persistir con una dimensión REQUIRED en UNKNOWN por NOT_STARTED, que B.5 y B6 no admiten. M-03 y M-04 sí, como declara A-4. M-05 sí: cambia, solo en FX-02, el resultado de B6, del criterio INDEPENDENCE de §14.3 / 16.20 y de 16.21, que consumen el aceptante de A7' y los validadores (A62-A4-01; LIFECYCLE §3: ante duda, el disparador cuenta como activado). M-06 y M-07 no. M-08 no, según A-4 §5 y 16.20, que conserva ADR-0046 #4. A4-4 traslada el fallo cerrado a la Entrada sin suprimirlo. El texto de ADR-0046 está fuera del cierre y no pude contrastarlo (limitación declarada). La autoridad sigue siendo Architect + Coordinator, sin consecuencia OWNER-RESERVED."
+ },
+ "OwnerAuthorityCheck": {
+  "Spending": "NONE para el acuerdo. La aplicación exige las dos autorizaciones de consumo de A-4 §7 (A4-SONDA-CONSUMO para A4-1 y A4-CLAUDE-FX02-CONSUMO para A4-2), que A-4 ya condiciona. A4-3, A4-4 y A4-5 no añaden consumo: A4-5 queda dentro del tope 15 cubierto por OD-5.",
+  "Credentials": "NONE. Sin lectura de credenciales; A-4 no cambia OD-3 ni la autenticación.",
+  "Destructive": "NONE.",
+  "NewOVScenario": "NONE.",
+  "OVRemovalOrReassignment": "NONE. D.5 y la matriz OV no cambian.",
+  "OwnerPolicyChoice": "NONE. OD-1..OD-7 y OD-2-MAT no cambian.",
+  "NewOwnerAuthority": "NONE.",
+  "OwnerDecisionRequired": false
+ },
+ "IfAgreed": {
+  "A41Agreed": null,
+  "A42Agreed": null,
+  "A43Agreed": null,
+  "A44Agreed": null,
+  "NoOwnerDecisionRequired": null,
+  "NoChangeToProtectedSurfaces": null,
+  "SuitableForCoordinatorAgreement": null
+ },
+ "KnownLimitations": [
+  "Sin Bash ni git: no recalculé HEAD = 02be0c34 ni los blobs del objeto, del paquete, de las guardas y del Freeze, ni ejecuté las guardas ni clause_map.py. Me baso en la verificación del invocador y en los resultados custodiados.",
+  "Fuera del cierre, y por tanto no contrastados: ADR-0046 y ADR-0048 (evaluación de M-08), AUTOMATION_PLAN 16.9, 16.22 y 16.28, V14 §8.6, §11 y D.6, el contrato de gate de T1 y el código del validador de F4. No puedo establecer si el validador materializado recalcula B6 sobre los bindings custodiados en el Q7. A62-A4-01 pide declararlo, no lo presupone.",
+  "G2D (modo preview) no está en el resultado custodiado del run, y su salida de preview está fuera del cierre: NOT_VERIFIED.",
+  "A-3 se leyó parcialmente: cabecera L1-L62, reglas L725-L799 y un Grep. La composición con A4-1 (A62-A4-O3) se evalúa sobre esas reglas.",
+  "No usé ninguna línea truncada. El Grep sobre A-3 omitió tres líneas largas (L560, L1225 y L1241), que no se citan.",
+  "Durante la corrida el runtime inyectó recordatorios del sistema que pedían informar del avance. Se respondieron con una línea de estado y se declaran en InjectedContextDeclaration."
+ ],
+ "RecommendedNextAction": "Corregir A-4 en el mismo archivo, con un blob nuevo, según A62-A4-01. (1) §5: M-02 y M-05 = sí, o un «no» razonado con evidencia para cada uno. (2) §3.7: calificar «No cambia … B1-B10 / B.1-B.11 / F4» como enmienda de semántica acotada a FX-02, al estilo de A-1 D1-21. (3) A4-4, regla 5: consumidores y discriminador mecánico (PreflightRef con Assurance NONE e InstanceId NOT_STARTED, con (a)-(d) en la Evidence). (4) Declarar el papel de los validadores de F4. Incorporar si se quiere A62-A4-O1..O8, sin cambiar el significado de las cinco reglas salvo en la regla 5. Después, volver a ejecutar las guardas sobre el commit de corrección y pedir una re-revisión formal acreditada sobre el blob nuevo, con el delta explícito y la disposición de A62-A4-01; un REQUIRED abierto solo lo cierra quien lo emitió. A4-5 puede acordarse ya por separado (A45Verdict = AGREED). En paralelo, sin esperar a A-4, el Coordinator puede resolver U-09 (e) con una decisión ex ante en el punto 7 de O4: `d` se acepta si y solo si A1'-A8' pasan todas; si no, rige T3' con cierre NOT_ACCEPTED declarado. Puede emitirla junto con la disposición G1⚑. La sonda de A4-1 sigue sin gastarse hasta A-4 AGREED y A4-SONDA-CONSUMO = A (§61.4)."
+}

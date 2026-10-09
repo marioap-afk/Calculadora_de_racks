@@ -3153,9 +3153,42 @@ solo desde artefactos custodiados.
     (A4-4), H-3 (A4-5, con veredicto propio) y U-09 (e) / Q-A4-11;
   - auditor v5.1-a4, con `selftest` 112/112 y 131 mutantes eliminados;
   - compuerta MEASURED sobre la caracterización `20d0de2c…`;
-  - clon `D:62-arch-a4` verificado (AllChecks) y run `D:62-arch-a4-run` con tres archivos;
+  - clon `D:
+62-arch-a4` verificado (AllChecks) y run `D:
+62-arch-a4-run` con tres archivos;
   - ensayo en seco sin bloqueos; manifiesto `2aa5e927…`.
 - **Transporte:** `claude-cli` 2.1.293 (`8693c4a0…`), `claude-opus-5-5` xhigh, solo Read, Grep y Glob, espera de 120 s tras `auth status`, tope de
   3 600 s, sin reintento.
 - **Consumo:** cubierto por CLAUDE-CLI-I62 = A.
 - **Estado:** custodiado y NO lanzado. A-4 no se modifica a partir de ahora.
+
+## 104. A-4: revisión formal por `claude-cli` = CHANGES REQUIRED (A62-A4-01); auditor NOT_ACCREDITED por una cita desplazada
+
+- **Revisión** R20261009T122416Z-bce3, sesión `91b59aa4…`, de 13:24:44Z a 13:45:40Z, salida 0, sin fallo de transporte, 67 turnos (63 Read, 2 Grep),
+  sobre A-4 `7d863219`.
+- **Veredicto del Architect independiente: CHANGES REQUIRED.** A4-5: AGREED (separable, sin hallazgos).
+  ([registro](../../initiatives/I-62-architect-review-A-4.md); [output.json](I-62-architect-A-4/R20261009T122416Z-bce3/output.json))
+  - **A62-A4-01 (REQUIRED):** A4-4 cambia, solo para FX-02, el resultado de reglas consumidas (RAE §14.2 B6, el criterio INDEPENDENCE de §14.3 y AP
+    16.20, AP 16.21, y la condición de B.5 «con todos en SATISFIED»), pero A-4 declara M-02 y M-05 = no y niega sin calificar que cambien
+    B1-B10, B.1-B.11 y F4. Corrección pedida:
+    1. M-02 y M-05 = sí, o un «no» razonado;
+    2. §3.7 calificado como enmienda de semántica acotada;
+    3. A4-4, regla 5: consumidores y discriminador mecánico (`PreflightRef` con `Assurance` NONE e `InstanceId` NOT_STARTED, con (a)-(d) en la
+       `Evidence`);
+    4. el papel de los validadores de F4.
+    El texto de las cinco reglas puede quedar igual, salvo la precisión de la regla 5.
+  - **A62-A4-O1..O8 (OPTIONAL):**
+    - O1: operaciones de VERIFY no nombradas;
+    - O2: alcance del tope de uno y directorio de la medición;
+    - O3: composición con A-3, ya acordada;
+    - O4: columna de P-07 del Architect sustituido;
+    - O5: elegibilidad completa frente al descriptor de `claude-cli`;
+    - O6: la disposición cita la medición;
+    - O7: A1'-A8' dentro de la ventana (U-09 (e)), que no es un defecto de A-4;
+    - O8: «guardas PENDIENTES» desfasado.
+  - Las dos líneas de consumo del Owner solo autorizan consumo.
+- **Auditor v5.1-a4: NOT_ACCREDITED,** 2 motivos ([audit.json](I-62-architect-A-4/R20261009T122416Z-bce3/audit.json)). Los dos son la misma
+  premisa citada con la línea desplazada en uno: A62-A4-O6 y Q-A4-04 citan decisiones L1162, y la cita está en L1161. No afectan a A62-A4-01, cuyas
+  premisas se encuentran. La acreditación final es del Coordinator.
+- **Siguiente:** disposición del Coordinator sobre A62-A4-01 y la acreditación, corrección de A-4 y re-revisión formal. A-4 no cambia hasta
+  entonces.

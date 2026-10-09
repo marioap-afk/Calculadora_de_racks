@@ -1,0 +1,361 @@
+{
+ "Schema": "rackcad-claude-cli-characterization (registro de evidencia; decisiones §56, punto 7)",
+ "Authority": "decisiones §56, puntos 6-8; Owner CLAUDE-CLI-I62 = A (medición y uso read-only para ARCHITECT y REVIEWER de I-62)",
+ "Bounds": "tres procesos claude-cli en un clon limpio de solo lectura (D:/r62-cli-char en 4a059afa, sin remoto); sin escrituras de producto, sin tocar el fixture, sin escrituras Git; credenciales nunca leídas",
+ "Executables": [
+  {
+   "Path": "%USERPROFILE%/.local/bin/claude.exe",
+   "Version": "2.1.270 (Claude Code)",
+   "Sha256": "fd7f35ec7761195ab5ba4eff423e48a78a7849e78f60d93ec31256cdb1a9ec7e",
+   "Usable": false,
+   "Reason": "la API rechaza claude-opus-5-5 con esta versión: «Claude Code 2.1.270 does not support this model; version 2.1.280 or newer is required» (corrida C0, sesión 8319c0c5-975b-42a9-ae67-ea2fae74079c, sin consumo); actualizarla es una descarga y la decide el Owner"
+  },
+  {
+   "Path": "%APPDATA%/Claude/claude-code/2.1.293/83cb0bd7fed4/claude.exe",
+   "Version": "2.1.293 (Claude Code)",
+   "Sha256": "8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa",
+   "Authenticode": "Valid; CN=\"Anthropic, PBC\"",
+   "Usable": true,
+   "Note": "binario de Claude Code que gestiona la app de escritorio (instalado; sin descarga); la app lo actualiza sola (2.1.289 el 2026-10-06, 2.1.293 el 2026-10-07): cada cambio de binario o versión deja STALE esta observación"
+  }
+ ],
+ "Authentication": {
+  "Command": "claude auth status --json (no lee credenciales)",
+  "loggedIn": true,
+  "authMethod": "claude.ai",
+  "apiProvider": "firstParty",
+  "Fields omitted": "correo, organización y sus identificadores"
+ },
+ "ConsumptionMode": {
+  "Subscription": "max (claude.ai)",
+  "apiKeySource": "none",
+  "CostReported": 0.0578454,
+  "CostBasis": "list (nocional con suscripción)",
+  "Coverage": "cubierto por la autorización del Owner CLAUDE-CLI-I62 = A (medición y uso read-only); cada invocación con su autoridad"
+ },
+ "Probes": {
+  "C1": {
+   "SessionId": "052a696f-6951-48a4-9692-ee8b0ebcae7c",
+   "Pid": 10136,
+   "Start": "2026-10-08T18:37:10.658487Z",
+   "End": "2026-10-08T18:37:17.745279Z",
+   "ExitCode": 0,
+   "Args": [
+    "-p",
+    "--model",
+    "claude-opus-5-5",
+    "--effort",
+    "xhigh",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--safe-mode",
+    "--strict-mcp-config",
+    "--no-chrome",
+    "--tools",
+    "Read,Grep,Glob",
+    "--permission-mode",
+    "dontAsk",
+    "--permission-prompts",
+    "none",
+    "--session-id",
+    "052a696f-6951-48a4-9692-ee8b0ebcae7c",
+    "--json-schema",
+    "<json-schema>"
+   ],
+   "PromptSha256": "a5ac6ba9c05823b8c08c2ad841bfbfd5aa6c6bfe0ef01f991114944282c25c12",
+   "Init": {
+    "cwd": "D:\\r62-cli-char",
+    "model": "claude-opus-5-5",
+    "permissionMode": "dontAsk",
+    "tools": [
+     "Glob",
+     "Grep",
+     "Read",
+     "StructuredOutput"
+    ],
+    "mcp_servers": [],
+    "claude_code_version": "2.1.293",
+    "output_style": "default",
+    "plugins_listed": [
+     "github@claude-plugins-official",
+     "cc-plugin-telemetry@builtin"
+    ],
+    "agents_listed": [
+     "claude",
+     "claude-code-guide",
+     "Explore",
+     "general-purpose",
+     "Plan"
+    ]
+   },
+   "Result": {
+    "is_error": false,
+    "terminal_reason": "completed",
+    "num_turns": 3,
+    "modelUsage": [
+     "claude-opus-5-5"
+    ],
+    "structured_output_present": true,
+    "permission_denials": []
+   },
+   "ObservedModel": [
+    "claude-opus-5-5"
+   ],
+   "ObservedEffortPerMessage": [
+    "xhigh"
+   ],
+   "PromptFidelity": "el primer mensaje de usuario de la transcripción es idéntico al prompt (SHA-256 a5ac6ba9…)",
+   "ReadFidelity": "12/12 líneas de docs/initiatives/I-62-A-1.md entregadas por Read idénticas al archivo del clon",
+   "Transcript": {
+    "Path": "%USERPROFILE%/.claude/projects/D--r62-cli-char/052a696f-6951-48a4-9692-ee8b0ebcae7c.jsonl",
+    "Sha256": "0481ff0866f89b93e8cdd2866f3d7732933e4daeee60ad3a7c9da66a787dc029",
+    "Entries": 24
+   },
+   "AutomaticContext": {
+    "AttachmentTypes": [
+     "credential_org",
+     "date",
+     "environment",
+     "model",
+     "prompt_snapshot",
+     "session_context",
+     "structured_output",
+     "total_tokens_reminder"
+    ],
+    "SystemPromptChars": 4328,
+    "SystemPromptMentions": {
+     "CLAUDE.md": 0,
+     "MEMORY.md": 0,
+     "memory": 0,
+     "AGENTS.md": 0,
+     "I-62": 0,
+     "RackCad": 0
+    },
+    "ProjectMemoryDirCreated": false,
+    "GlobalClaudeMd": false,
+    "Notes": "con --safe-mode no se inyecta CLAUDE.md, memoria ni ganchos; --strict-mcp-config deja mcp_servers vacío; la app inyecta un contexto de sesión con el correo del usuario (identidad, sin hechos de I-62), la fecha, el modelo y el entorno"
+   }
+  },
+  "C2": {
+   "SessionId": "fab0b0b8-73c8-4729-b9ad-9c01d9921e56",
+   "Pid": 35540,
+   "Start": "2026-10-08T18:38:04.111044Z",
+   "TerminateAt": "2026-10-08T18:38:12.146663Z",
+   "End": "2026-10-08T18:38:12.176452Z",
+   "ExitCode": 1,
+   "Killed": true,
+   "ProcessGoneAfter": true,
+   "ResultMessage": false,
+   "TranscriptEntries": 28,
+   "ToolCallsBeforeTermination": 3
+  },
+  "C3": {
+   "SessionId": "a06ba379-75bb-45d5-9c1c-35a5e3a4a6ac",
+   "Binary": {
+    "Path": "%APPDATA%\\Claude\\claude-code\\2.1.293\\83cb0bd7fed4\\claude.exe",
+    "Sha256": "8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa",
+    "Version": "2.1.293 (Claude Code)"
+   },
+   "ArgsTemplate": [
+    "-p",
+    "--model",
+    "claude-opus-5-5",
+    "--effort",
+    "xhigh",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--safe-mode",
+    "--strict-mcp-config",
+    "--no-chrome",
+    "--tools",
+    "Read,Grep,Glob",
+    "--permission-mode",
+    "dontAsk",
+    "--permission-prompts",
+    "none",
+    "--add-dir",
+    "<add-dir>",
+    "--session-id",
+    "<session-id>",
+    "--json-schema",
+    "<json-schema>"
+   ],
+   "Args": [
+    "-p",
+    "--model",
+    "claude-opus-5-5",
+    "--effort",
+    "xhigh",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--safe-mode",
+    "--strict-mcp-config",
+    "--no-chrome",
+    "--tools",
+    "Read,Grep,Glob",
+    "--permission-mode",
+    "dontAsk",
+    "--permission-prompts",
+    "none",
+    "--add-dir",
+    "D:\\r62-c3-probe\\add",
+    "--session-id",
+    "a06ba379-75bb-45d5-9c1c-35a5e3a4a6ac",
+    "--json-schema",
+    "<json-schema>"
+   ],
+   "Cwd": "D:\\r62-cli-char",
+   "AddDir": "D:\\r62-c3-probe\\add",
+   "Outside": "D:\\r62-c3-probe\\out\\canary-out.txt",
+   "PromptSha256": "1c745c6ebc039d8d5f75fa74d5595c6e1cd574e5fb1ae41f388ac81d44330ac7",
+   "PromptBytes": 639,
+   "CanarySha256": {
+    "add": "4954405bc96eb4ed84b2dc0dd70b52a63ac6ea428eb5aed95a6fee8ff37abfd3",
+    "out": "64b9ee9b30a0ba9d318b1cb0a1accc69265735ef90901faeb9dbb59a0ba08732"
+   },
+   "Start": "2026-10-08T20:39:21.336990Z",
+   "Pid": 36760,
+   "End": "2026-10-08T20:39:29.987592Z",
+   "ExitCode": 0,
+   "Killed": false,
+   "TimedOut": false,
+   "StdoutSha256": "46ff1708b63c2374610575b944f607493d016036b56b0ff2e2f5afc5a44b5ce9",
+   "StderrBytes": 0,
+   "Transcript": {
+    "Path": "%USERPROFILE%\\.claude\\projects\\D--r62-cli-char\\a06ba379-75bb-45d5-9c1c-35a5e3a4a6ac.jsonl",
+    "Sha256": "88ba740199e4e1ab9aa14fa9c860fe3796c5bb0210924e6d7b1add67b11e587a",
+    "Entries": 27
+   },
+   "Init": {
+    "cwd": "D:\\r62-cli-char",
+    "model": "claude-opus-5-5",
+    "permissionMode": "dontAsk",
+    "tools": [
+     "Glob",
+     "Grep",
+     "Read",
+     "StructuredOutput"
+    ],
+    "mcp_servers": [],
+    "claude_code_version": "2.1.293",
+    "apiKeySource": "none"
+   },
+   "Result": {
+    "subtype": "success",
+    "is_error": false,
+    "terminal_reason": "completed",
+    "num_turns": 4,
+    "modelUsage": [
+     "claude-opus-5-5"
+    ],
+    "structured_output_present": true,
+    "permission_denials": [
+     {
+      "Tool": "Read",
+      "Path": "D:\\r62-c3-probe\\out\\canary-out.txt"
+     }
+    ]
+   },
+   "StructuredOutput": {
+    "add_first_line": "C3-ADD-cbd3d64cb63bbd70",
+    "out_first_line": "DENEGADO",
+    "tools_available": [
+     "Glob",
+     "Grep",
+     "Read",
+     "StructuredOutput"
+    ]
+   },
+   "ObservedModel": [
+    "claude-opus-5-5"
+   ],
+   "ObservedEffortPerMessage": [
+    "xhigh"
+   ],
+   "AddDirRead": {
+    "Path": "D:\\r62-c3-probe\\add\\canary-add.txt",
+    "Attempted": true,
+    "Delivered": true,
+    "Faithful": true,
+    "Denied": false
+   },
+   "OutsideRead": {
+    "Path": "D:\\r62-c3-probe\\out\\canary-out.txt",
+    "Attempted": true,
+    "Delivered": false,
+    "Denied": true,
+    "DeniedInPermissionDenials": true,
+    "DeniedInToolResult": true
+   },
+   "OtherToolCalls": [],
+   "Problems": [],
+   "Verdict": "PASS"
+  }
+ },
+ "Capabilities": {
+  "ExecutablePath": "medido",
+  "CliVersion": "2.1.293",
+  "RuntimeBinaryIdentity": "SHA-256 + Authenticode",
+  "Authentication": "loggedIn (auth status)",
+  "RequestedModel": "claude-opus-5-5",
+  "ObservedModel": "claude-opus-5-5 (modelUsage y mensajes; RUNTIME_OBSERVED)",
+  "RequestedEffort": "xhigh",
+  "ObservedEffort": "xhigh por mensaje (campo effort de la transcripción; RUNTIME_OBSERVED)",
+  "ProcessIdentity": "PID de Windows del proceso lanzado",
+  "SessionIdentity": "--session-id fijado por el invocador, igual en init, result y transcripción",
+  "WorkingDirectory": "cwd del init = el clon",
+  "PermissionSandbox": "--permission-mode dontAsk, --permission-prompts none, --tools Read,Grep,Glob: solo lectura; lo demás se deniega sin preguntar (sin sandbox del SO)",
+  "StructuredOutput": "--json-schema → structured_output en result y adjunto en la transcripción",
+  "ExitStatus": "0 completada; 1 error de API o terminación",
+  "Cancellation": "terminación del proceso por el invocador (C2): proceso terminado, sin mensaje result, transcripción conservada",
+  "TerminationObservability": "fin del proceso + presencia o ausencia del mensaje result (terminal_reason) en stream-json",
+  "Timeout": "sin tope propio en la CLI: lo aplica el invocador con el mismo camino que la cancelación"
+ },
+ "Eligibility": {
+  "Requirement": "ARCHITECTURE_REVIEW (routing): nivel Frontera, effort Deep (high), capacidad read; introspección RUNTIME_OBSERVED",
+  "installed": true,
+  "authenticated": true,
+  "measured_invocation": true,
+  "level": "Frontera (claude-opus-5-5, model-catalog) = MATCH",
+  "effort": "xhigh observado ≥ Deep (high) = ABOVE_REQUIRED",
+  "read": "MATCH",
+  "introspection": "RUNTIME_OBSERVED = MATCH",
+  "consumption_covered": "cubierto (CLAUDE-CLI-I62 = A; suscripción max)",
+  "STALE": false,
+  "Actor": "satisfecho: proceso nuevo, distinto de la sesión autora (mismo modelo y proveedor; Provider PREFERRED no se cumple, se declara)",
+  "Session": "satisfecho: sesión nueva con id fijado, sin reanudación",
+  "Context": "satisfecho: modo seguro, sin CLAUDE.md, memoria ni transcripciones; cierre de insumos del kit",
+  "ARCHITECT": "ELIGIBLE (binario 2.1.293 de %APPDATA%, sha 8693c4a0…, en esta observación)",
+  "REVIEWER": "ELIGIBLE (mismas condiciones; read-only)",
+  "Invalidators": "BinaryHash, versión, autenticación, modelo, effort, blobs de catálogo y routing, instancia del host, flags del adapter; cualquier cambio → STALE",
+  "MeasuredArgsTemplate": [
+   "-p",
+   "--model",
+   "claude-opus-5-5",
+   "--effort",
+   "xhigh",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--safe-mode",
+   "--strict-mcp-config",
+   "--no-chrome",
+   "--tools",
+   "Read,Grep,Glob",
+   "--permission-mode",
+   "dontAsk",
+   "--permission-prompts",
+   "none",
+   "--add-dir",
+   "<add-dir>",
+   "--session-id",
+   "<session-id>",
+   "--json-schema",
+   "<json-schema>"
+  ],
+  "AddDir": "medido en C3 (PASS): lectura dentro de --add-dir entregada fiel y sin denegación; lectura exterior denegada"
+ }
+}
