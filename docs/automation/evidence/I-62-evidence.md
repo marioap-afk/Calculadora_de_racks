@@ -3207,3 +3207,16 @@ solo desde artefactos custodiados.
   - Las dependencias de A-4 siguen abiertas.
 - **Siguiente:** kit de la re-revisión de A-4 sobre `0d954376`, con lanzamiento automático por `claude-cli`. En paralelo: TRX del fixture,
   conciliación de U-14, U-09 (e) y preparación de la medición de A4-1 sin ejecutarla.
+
+## 106. FX-02 U-07 y U-08: TRX de la CI del fixture y `.gitignore` publicados (decisiones §62, punto 3)
+
+- **Commits del Coordinator del fixture en `fx/u1`**, sobre el QH2 `cabed54` y empujados a `origin` y a `github`:
+  - `b6d294e`: `fixture-tests` escribe el TRX y lo sube como artefacto `fixture-tests-trx`, también si el job falla. Los nombres de los jobs no
+    cambian;
+  - `c785def`: `.gitignore` con `artifacts/orchestration/`, `bin/`, `obj/` y `TestResults/`.
+- **CI:** corrida 37949808974, `push`, `refs/heads/fx/u1` @ `c785def`, con `fixture-build` y `fixture-tests` en success. El artefacto
+  `fixture-tests.trx` (2 772 bytes, `4ccdf2ce…`) da 1/1 pasadas y 0 fallidas, igual que la conclusión
+  ([result.json](I-62-F6/FX-02/U07-trx-R37949808974/result.json)).
+- **No sustituye la autoridad del flujo:** la señal de Ci sigue siendo la corrida de push del SHA exacto con los jobs requeridos en success
+  (AP 16.9; D.2). El TRX solo aporta los conteos y los nombres de las pruebas (AP 16.9 #10).
+- La orden O4 se publicará después, sobre esta punta.

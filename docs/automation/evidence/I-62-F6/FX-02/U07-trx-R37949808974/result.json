@@ -1,0 +1,40 @@
+{
+ "Authority": "decisiones §62, punto 3 (U-07: TRX y artefacto de CI autorizados en el fixture, con evidencia de que no sustituye la autoridad del flujo); U-08 (.gitignore), disposición ordinaria registrada en §62",
+ "FixtureCommits": {
+  "b6d294e": "FX-U1: TRX de fixture-tests como artefacto de diagnóstico de la CI (orden del Coordinator): --logger trx, --results-directory TestResults, actions/upload-artifact@v4 (if: always(), if-no-files-found: error); nombres de jobs sin cambio",
+  "c785def": "FX-U1: .gitignore del fixture (orden del Coordinator): artifacts/orchestration/, bin/, obj/, TestResults/"
+ },
+ "Parent": "cabed54 (QH2)",
+ "PushedTo": [
+  "origin (fixture-origin.git)",
+  "github (marioap-afk/rackcad-i62-fixture, público)"
+ ],
+ "CiRun": {
+  "Id": 37949808974,
+  "Event": "push",
+  "Ref": "refs/heads/fx/u1",
+  "HeadSha": "c785def9bcfa5b50f08e25ecc394649ae690a19a",
+  "Conclusion": "success",
+  "Jobs": {
+   "fixture-build": "success",
+   "fixture-tests": "success"
+  }
+ },
+ "Artifact": {
+  "Name": "fixture-tests-trx",
+  "File": "fixture-tests.trx",
+  "Bytes": 2772,
+  "Sha256": "4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513"
+ },
+ "TrxCounters": {
+  "total": 1,
+  "executed": 1,
+  "passed": 1,
+  "failed": 0,
+  "notExecuted": 0
+ },
+ "Tests": [
+  "Fixture.Tests.CalculatorTests.AddSumsTwoIntegers: Passed"
+ ],
+ "WorkflowAuthority": "el TRX no sustituye la autoridad del flujo: la señal de Ci sigue siendo la corrida de push del SHA exacto con fixture-build y fixture-tests en success (AP 16.9; D.2); el TRX solo aporta conteos y nombres de pruebas para Tests y RedPart (AP 16.9 #10), descargado por A2 con su SHA-256 en RemoteFacts.TestArtifacts (U-07). Los conteos del TRX coinciden con la conclusión (1/1, 0 fallidas)"
+}
