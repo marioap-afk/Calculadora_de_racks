@@ -91,3 +91,43 @@ ninguna operación del bloque se ejecute con controles distintos de los publicad
 - **Lo que sigue.** La decisión del Owner OD-2-MAT (línea base material frente a huella exacta, materia reservada al Owner por decisiones §57,
   punto 4) se añadirá a esta misma solicitud en una sección posterior, después del commit que publique la candidata A-3. Así la respuesta del Owner
   sigue siendo una sola.
+
+## 5. Añadido (append-only, tras el commit de A-3): decisión del Owner OD-2-MAT y respuesta única
+
+Esta sección se añade después del commit que publica la candidata A-3 (`91e29886`), como anunciaba el §4. Las secciones 1 a 4 no cambian.
+
+**OD-2-MAT** ([paquete](../../I-62-A3/od2-material-baseline-owner-packet.md); decisiones §57, punto 4).
+- **Qué se decide.** Si OD-2 deja de ser el SHA-256 exacto de todo `config.toml` y pasa a una línea base material. Ese cambio afecta a autoridad
+  reservada al Owner y no puede resolverse por disposición del Coordinator.
+- **Mientras no se decida.** OD-2 sigue siendo la huella exacta, P-01 no cambia y `codex-cli` sigue en STOP con `6518EFAB…` sin aceptar.
+- **Qué no hace ninguna opción.** Ninguna acepta una huella ni autoriza leer valores.
+- **Recomendación de la preparación (etiquetada; no es una decisión).** A ahora. D queda para estudiarla después de F6, si el Coordinator lo
+  ordena. Los motivos y los riesgos de cada opción están en el paquete.
+- **Líneas literales.** Son las cuatro del paquete, copiadas de ese archivo. El Owner responde con una sola:
+
+```text
+OD-2-MAT = A (mantener OD-2 como aceptación del SHA-256 exacto de todo config.toml; cada cambio sigue siendo P-01 y una OD-2 nueva)
+```
+
+```text
+OD-2-MAT = B (preparar la A-n siguiente (número según LIFECYCLE §6 al publicarse): línea base material de codex-cli por clase cerrada de claves volátiles, neutralizadas en la receta y comparadas por nombre y con digests con clave por clave, que leen valores en el host sin registrarlos; efectiva solo tras medir la neutralización, esa A-n AGREED y una OD-2 exacta de anclaje; P-01 de I-61 y P-01/P-11 en la cesión sin cambio; esa A-n necesita su propia autorización del Owner para leer valores, que esta línea no da)
+```
+
+```text
+OD-2-MAT = C (preparar la A-n siguiente (número según LIFECYCLE §6 al publicarse): como B, pero con predicados de valor sobre las claves volátiles evaluados mecánicamente sin registrar valores, en lugar de neutralizarlas en la receta; esa A-n necesita su propia autorización del Owner para leer valores, que esta línea no da)
+```
+
+```text
+OD-2-MAT = D (preparar la A-n siguiente (número según LIFECYCLE §6 al publicarse): CODEX_HOME dedicado para codex-cli con OD-2 exacta sobre su config.toml; antes, una medición read-only autorizada aparte; el Owner autentica la CLI en ese directorio; sin línea base material)
+```
+
+**Respuesta única del Owner (todas las decisiones pendientes de esta solicitud).** Cada línea es independiente. El silencio no es decisión.
+
+| Decisión | Línea válida | Efecto |
+|---|---|---|
+| B3 de FX-04a | `B3-CONSUMO = A (…)`, texto literal del §1 | una sesión de Principal B abierta por el Owner. Tiene efecto con la disposición `B3 = AUTORIZADA` del Coordinator |
+| Bloque de Codex | `BLOQUE-CODEX-CONSUMO = A (…)`, texto literal del §2 | como máximo 2 sondas de solo lectura para el par exacto, con los controles del §4. Tiene efecto con la disposición `BLOQUE-CODEX = AUTORIZADO` del Coordinator. La OD-2 sobre la huella resultante se pide después de medir |
+| OD-2-MAT | una de las cuatro líneas de arriba | A: sin cambio. B, C o D: encargo de la A-n siguiente, sin efecto operativo hasta que esa A-n esté AGREED y materializada |
+
+No se pide abrir ninguna sesión para roles que `claude-cli` ya cubre. Si el Coordinator ordena la revisión formal de A-3 por el Architect, se hace
+por `claude-cli` (decisiones §57, punto 3).

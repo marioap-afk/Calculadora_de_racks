@@ -2908,3 +2908,18 @@ solo desde artefactos custodiados.
 - **Lectura de valores.** La comparación por clave está suspendida (§4 de la solicitud, `76b48e78`). El paquete trae el historial neutral de las
   lecturas anteriores.
 - **Revisión formal:** pendiente de la orden del Coordinator. Su transporte previsto es `claude-cli` (decisiones §57, punto 3).
+
+## 89. Guardas de A-3 sobre el commit de publicación: PASS; OD-2-MAT añadida a la solicitud única
+
+- **Guardas.** `run` de [a3-guards.py](I-62-A3/a3-guards.py) con base `76b48e78` (= `A3_BASE`) y head `91e29886`, el commit que publica A-3: G1, G2, G3,
+  G4, G5 y G5b PASS ([a3-guards-result.json](I-62-A3/a3-guards-result.json)).
+- **Corrección antes del push.** La primera ejecución dio G2 FAIL («A3_BASE sin fijar»): había publicado las guardas con `A3_BASE` vacío, aunque
+  la base ya se conocía. Fijé `A3_BASE` en el mismo commit de publicación antes de empujarlo, que pasó de `21f9ec39` a `91e29886`, y repetí la
+  ejecución. Nada se empujó con `A3_BASE` vacío.
+- **Solicitud única de recuperación, §5** ([solicitud](I-62-F6/requests/F6-recovery-request-2026-10-08.md)).
+  - Contenido: la decisión del Owner OD-2-MAT, con sus cuatro líneas literales copiadas del paquete, y la tabla de respuesta única con
+    `B3-CONSUMO`, `BLOQUE-CODEX-CONSUMO` y OD-2-MAT.
+  - Índice de paquetes: [owner-decision-packets.md](I-62-prep/owner-decision-packets.md) apunta al paquete.
+- **Siguiente.**
+  - Disposición del Coordinator sobre B3, el bloque de Codex y la revisión formal de A-3 (transporte `claude-cli`).
+  - Respuestas del Owner.

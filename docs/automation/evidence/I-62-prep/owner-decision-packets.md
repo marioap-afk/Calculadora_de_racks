@@ -337,3 +337,10 @@ No se autentica `claude-cli` ni se decide nada.
 instala `claude` en el `PATH` y lo autentica» (sustituida: no hace falta tocar el `PATH`). **OD-4 en 2026-10-04:** A, `workspace-write` solo en el
 fixture. **OD-5 en 2026-10-04:** A. **OD-7 en 2026-10-04:** A, repositorio privado del Owner, sin secretos, solo FX-U1. **DEP-F4-YAML:** no hacía falta
 (prototipo `f4/yaml-subset/`, 27/27 casos).
+
+## OD-2-MAT (2026-10-09; PENDIENTE) — ¿línea base material de la huella de `codex-cli`?
+
+Paquete completo, con las cuatro respuestas literales y la sección «Lectura de valores (no se pide ahora)»:
+[I-62-A3/od2-material-baseline-owner-packet.md](../I-62-A3/od2-material-baseline-owner-packet.md) (blob `b2c8ec8a`, publicado con la candidata
+A-3 en `91e29886`). Se pide dentro de la solicitud única de recuperación (§5). Es materia reservada al Owner: no se resuelve por disposición del
+Coordinator. Mientras no se decida, OD-2 sigue siendo el SHA-256 exacto y P-01 no cambia.

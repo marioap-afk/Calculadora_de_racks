@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §57; evidencia §88) — A-3 candidata publicada (docs/initiatives/I-62-A-3.md; revisión formal pendiente de orden del Coordinator, transporte claude-cli); solicitud única de recuperación: B3 (A2-P1), bloque de Codex (A2-P2, controles sin comparación por clave) y OD-2-MAT (decisión del Owner); FX-04a OPEN/UNVERIFIED; codex-cli en STOP P-01; sin F6 GATE PASS"
+  next_action: "F6 (decisiones §57; evidencia §89) — A-3 candidata publicada (91e29886; guardas G1-G5b PASS); solicitud única de recuperación completa (§1 B3, §2 bloque de Codex, §4 controles sin comparación por clave, §5 OD-2-MAT y respuesta única); esperan la disposición del Coordinator (B3, BLOQUE-CODEX, revisión formal de A-3 por claude-cli) y las líneas del Owner; FX-04a OPEN/UNVERIFIED; codex-cli en STOP P-01; sin F6 GATE PASS"
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual
