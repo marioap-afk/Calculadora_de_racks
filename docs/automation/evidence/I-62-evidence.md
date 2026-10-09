@@ -3192,3 +3192,18 @@ solo desde artefactos custodiados.
   premisas se encuentran. La acreditación final es del Coordinator.
 - **Siguiente:** disposición del Coordinator sobre A62-A4-01 y la acreditación, corrección de A-4 y re-revisión formal. A-4 no cambia hasta
   entonces.
+
+## 105. Decisiones §62: corrección 2 de A-4 publicada con guardas PASS; disposiciones ordinarias de FX-02 registradas
+
+- **Corrección 2 de A-4** (commit `a3332495`, base `a5b50c68`): A-4 `0d954376` (antes `7d863219`; antes `27ffa26b`), paquete `59052b84`.
+  - Las cuatro correcciones de A62-A4-01 están aplicadas. O1 y O2 entran como inserciones en A4-1; O3..O8 van a partes no normativas.
+  - A4-2, A4-3 y A4-5 no cambian.
+  - Guardas sobre el commit exacto, modo CORRECTION2: G1, G2C2, G3, G4, G5 y G5b PASS
+    ([a4-guards-result-c2.json](I-62-A4/a4-guards-result-c2.json)). El `self-test` detecta 86/86 mutaciones.
+  - La revisión 1 (`a5b50c68`) se conserva literalmente: CHANGES REQUIRED, NOT_ACCREDITED.
+- **FX-02.** Quedan registradas las disposiciones ordinarias de §62, punto 3, con su texto literal en las decisiones.
+  - U-07 está autorizada (TRX y artefacto de CI en el fixture).
+  - Siguen pendientes U-16 (1) (comprobar las mutaciones selladas), U-14 (conciliación) y U-09 (e) (resolución acreditada).
+  - Las dependencias de A-4 siguen abiertas.
+- **Siguiente:** kit de la re-revisión de A-4 sobre `0d954376`, con lanzamiento automático por `claude-cli`. En paralelo: TRX del fixture,
+  conciliación de U-14, U-09 (e) y preparación de la medición de A4-1 sin ejecutarla.
