@@ -1,0 +1,88 @@
+{
+  "B3": {
+    "SessionId": "local_51e9c8c0-a61f-4cfb-a4db-e7dac71862aa",
+    "TranscriptSessionId": "8768153e-6d4a-4898-ae69-b56798d15bd8",
+    "Adapter": "claude-desktop-session",
+    "Model": "claude-opus-5-5",
+    "Effort": "xhigh",
+    "Cwd": "D:/r62-fixture/B3",
+    "RuntimeVersion": "2.1.293 (entrypoint claude-desktop)",
+    "CreatedUtc": "2026-10-09T03:58:12.989Z",
+    "LastActivityUtc": "2026-10-09T04:04:16.658Z",
+    "OpenedBy": "Owner (B3-CONSUMO = A, decisiones §58)",
+    "Authority": "B3 = AUTORIZADA (A2-P1), decisiones §58, punto 1; reejecución extraordinaria única; sin B4",
+    "PermissionMode": "bypassPermissions (elegido por el Owner; registrado del transcript, campo permissionMode del primer mensaje)",
+    "Termination": {
+      "IsRunningFalseObservations": [
+        "2026-10-09T04:07:12Z",
+        "2026-10-09T04:08:03Z"
+      ],
+      "ActivityAfterLast": "ninguna",
+      "Accredited": true
+    }
+  },
+  "Budget": {
+    "Row": "Principal B (V14 D.3) con A2-P1",
+    "Cap": 3,
+    "Consumed": [
+      "B1 local_1a28830f",
+      "B2 local_97ac0196",
+      "B3 local_51e9c8c0"
+    ],
+    "ModelInvocations": 0,
+    "RoundTotal": "≤ 3 (+1 B2)",
+    "Remaining": 0
+  },
+  "Kickoff": {
+    "Delivered": "B3-kickoff.md completo, dentro del envoltorio <pasted_content> que añade la app (ver launch-check-B3.json)",
+    "InnerSha256": "233b058261d2bdb1e7c2f6f16290a32ea6b100df0e430987f8ea7131c4e7d59e",
+    "InnerEqualsKickoff": true,
+    "Deviation": "ninguna"
+  },
+  "Transcript": {
+    "Path": "~/.claude/projects/D--r62-fixture-B3/8768153e-6d4a-4898-ae69-b56798d15bd8.jsonl",
+    "Sha256": "4f20c11ffe265c5887b1ecad92b181ed5f680309368decf74bfede3461b15159",
+    "UserMessages": 1,
+    "ToolCalls": {
+      "Bash": 23,
+      "PowerShell": 3,
+      "Write": 1,
+      "ToolSearch": 1,
+      "get_session(self)": 1
+    }
+  },
+  "IsolationAudit": {
+    "OtherSessionTools": "ninguna (solo get_session(\"self\"), una vez)",
+    "ReadsOutsideClone": "ninguna lectura de archivos fuera del clon: rutas relativas del clon, su propio scratchpad y `git ls-remote origin` (la instantánea congelada de QH2); para HostInstanceHash leyó el nombre del host y MachineGuid del registro (derivación del descriptor del adapter)",
+    "Writes": "solo su scratchpad (preflight P20261009T035955Z-5d9d.json); clon sin cambios: HEAD cabed547, git status --porcelain --ignored vacío, refs sin cambio (sin fetch); instantánea con refs 275d977b…",
+    "ProhibitedInputs": "ninguna lectura registrada de transcripciones de A, R, B1 o B2, ~/.claude, ~/.codex, evidence-out ni oráculos",
+    "AutomaticInputsAtLaunch": "iguales a prelaunch-B3.json (settings.json 836ae479…, sin CLAUDE.md global, CLAUDE.md c16f28f3… y AGENTS.md aa7dcd2c… del clon; directorio de proyecto creado por la sesión a las 03:58:26Z, local 21:58:26)",
+    "InjectedContext": "envoltorio <pasted_content> de la app alrededor del texto inicial (contexto del runtime, D.6)",
+    "Coverage": "cobertura declarada (D.6): el registro no captura lecturas internas del runtime ni el contexto que inyecta la app",
+    "Result": "aislamiento no UNVERIFIED"
+  },
+  "Preflight": {
+    "PreflightId": "P20261009T035955Z-5d9d",
+    "Action": "RESUME_DECISION",
+    "ConfigurationStatus": "MATCH",
+    "Disposition": "ELIGIBLE",
+    "Files": [
+      "B3-preflight.json"
+    ],
+    "Sha256": "f53adff091ce1ffb7c1ee3f5ac0796116ba5a4b56341c5c51b5d942c1dda7eb5"
+  },
+  "Response": {
+    "File": "B3-response.json",
+    "CanonicalSha256": "4a99bbc3d8444b7d6b6478397968cca8e3efd3afed110fdd53e6d29b9ac33368",
+    "FileSha256": "7593aeef71a7d94c48e634a493cd78676bc7fa5b7c89470d2f992b85c3ee4c39",
+    "Source": "único bloque ```json del mensaje final (12 688 caracteres, SHA-256 d3795542…)",
+    "TopLevelKeys": [
+      "facts",
+      "decision",
+      "inputs",
+      "preflight"
+    ],
+    "RecordedBeforeComparison": true,
+    "OracleV2Loaded": false
+  }
+}

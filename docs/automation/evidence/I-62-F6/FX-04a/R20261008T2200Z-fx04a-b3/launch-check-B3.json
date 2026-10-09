@@ -1,0 +1,20 @@
+{
+ "CheckedUtc": "2026-10-09T04:00:21Z",
+ "DesktopSessionId": "local_51e9c8c0-a61f-4cfb-a4db-e7dac71862aa",
+ "TranscriptSessionId": "8768153e-6d4a-4898-ae69-b56798d15bd8",
+ "Cwd": "D:/r62-fixture/B3",
+ "Model": "claude-opus-5-5",
+ "Effort": "xhigh",
+ "CreatedUtc": "2026-10-09T03:58:12.989Z",
+ "FirstMessageUtc": "2026-10-09T03:58:26.439Z",
+ "FirstMessage": {
+  "TotalBytes": 8122,
+  "Envelope": "la app envuelve el texto pegado: \"\n\n<pasted_content id=…>\n\" + texto + \"</pasted_content id=…>\n\"",
+  "InnerBytes": 8065,
+  "InnerSha256": "233b058261d2bdb1e7c2f6f16290a32ea6b100df0e430987f8ea7131c4e7d59e",
+  "KickoffSha256": "233b058261d2bdb1e7c2f6f16290a32ea6b100df0e430987f8ea7131c4e7d59e",
+  "InnerEqualsKickoff": true,
+  "OutsideEnvelopeText": "ninguno"
+ },
+ "Observation": "El envoltorio <pasted_content> lo añade la app de escritorio (contexto inyectado por el runtime, D.6). B1 y B2 no lo registraron: B2 recibió 1 394 caracteres de una copia del chat. B3 sigue la instrucción del texto inicial: sus primeras acciones son la reconstrucción del estado del fixture."
+}

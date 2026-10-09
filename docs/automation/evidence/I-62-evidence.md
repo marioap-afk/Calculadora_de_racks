@@ -2940,3 +2940,21 @@ solo desde artefactos custodiados.
 - **OD-2-MAT = A.** OD-2 sigue siendo el SHA-256 exacto. El `CODEX_HOME` dedicado (D) queda como investigación posterior.
 - **A-3.** Revisión formal por `claude-cli` sobre el blob `ea6721f7`: kit, cierre, auditor y preflight se custodian antes del lanzamiento.
   - Binario medido sin cambios: `2.1.293`, SHA-256 `8693c4a0…`.
+
+## 91. FX-04a B3: corrida terminada y SHA de la respuesta durable antes de cargar el oráculo v2 (decisiones §58, punto 1)
+
+- **Admisión:**
+  - el Owner abrió B3 (`local_51e9c8c0…`) a las 03:58:12Z en `D:\r62-fixture\B3`, con `claude-opus-5-5`, `xhigh` y runtime 2.1.293;
+  - el primer mensaje contiene `B3-kickoff.md` completo, byte a byte (`233b0582…`), dentro del envoltorio `<pasted_content>` que añade la app
+    ([launch-check-B3.json](I-62-F6/FX-04a/R20261008T2200Z-fx04a-b3/launch-check-B3.json));
+  - presupuesto: tercera y última sesión de la fila Principal B, con 0 invocaciones de modelo.
+- **Terminación acreditada:** `isRunning` = false en dos observaciones (04:07:12Z y 04:08:03Z), sin actividad desde las 04:04:16Z.
+- **Preflight de B3:** `P20261009T035955Z-5d9d`, RESUME_DECISION, **MATCH / ELIGIBLE**.
+- **Aislamiento:** no queda UNVERIFIED.
+  - Herramientas: solo `get_session("self")`.
+  - Lecturas: solo el clon y su scratchpad; hechos remotos de la instantánea congelada.
+  - Escrituras: solo su scratchpad. El clon no cambió (`cabed547`, limpio, refs sin cambio).
+  - Cobertura: la declarada (D.6).
+- **Respuesta registrada antes de comparar:** [B3-response.json](I-62-F6/FX-04a/R20261008T2200Z-fx04a-b3/B3-response.json), **SHA-256 canónico
+  `4a99bbc3d8444b7d6b6478397968cca8e3efd3afed110fdd53e6d29b9ac33368`** (el único bloque JSON del mensaje final), con el registro de la corrida en
+  [b3-run.json](I-62-F6/FX-04a/R20261008T2200Z-fx04a-b3/b3-run.json). El oráculo v2 **no** se ha cargado todavía.
