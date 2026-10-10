@@ -3426,3 +3426,28 @@ solo desde artefactos custodiados.
   a 2.1.293.
 - **Siguiente:** congelar y lanzar la sonda única A4-1 en `D:\r62-fixture\A2` (kit v3 en revisión); después, el preflight y P-07, y pedir la
   apertura de A2.
+
+## 119. FX-02: kit de la sonda única A4-1 (v3) congelado antes del lanzamiento (decisiones §65, puntos 5-7)
+
+- **Kit:** [a4-probe-v3](I-62-F6/kits/FX-02/a4-probe-v3/README.md) con [FREEZE.json](I-62-F6/kits/FX-02/a4-probe-v3/FREEZE.json) (SHA-256 de los 13
+  archivos, `gates.env` incluido; texto armado `0c992c15…`, 20 750 caracteres). Una sola invocación read-only, celda `gpt-6-luna/high`, `cmd.exe`
+  declarada (con prohibición de PowerShell, intérpretes y herramientas de Unix), `-C` `D:\r62-fixture\A2` (clon de S03 en `95bdc29d`), trío
+  `3553cd6e…/26.1002.7124.0/73890CA3…`, 600 s, sin reintento, tope uno en total.
+- **Qué mide (D-4):** 32 pasos y 176 claves:
+  - Git y hashes, incluidos el camino de error, la ascendencia de RED y `rev-parse <rev>:<ruta>`;
+  - fidelidad de Markdown, YAML y JSON con no ASCII;
+  - TRX de la CI custodiado y `RemoteFacts`;
+  - mapa de cláusulas en la forma I62 de AP 16.13 (Derive, Classify, E1-E3, MV-1..MV-7, Resolve y `AuthorityResolution`);
+  - los esquemas canónicos `delegation.v2` y `controller-verification.v2` incrustados tal cual en `--output-schema` (VERBATIM);
+  - controles nc1-nc4, N4, N5, N7a y N7b sobre copias.
+
+  El escenario S (sintético) se prepara en el área ignorada del clon y se retira después. `selftest`: el resultado perfecto da
+  ALL_OPERATIONS_DEMONSTRATED; los 19 negativos fallan como deben.
+- **Hallazgo del diseño (pendiente del Coordinator):** en el fixture, `Validate(M)` da **MAP_INVALID** (MV-3: ningún archivo cambia entre
+  EFF^1 `930288c` y EFF `fbe25347` salvo `FIXTURE-MANIFEST.json`, frente a 31 `Files`; MV-4: 7 blobs distintos; MV-6 y MV-7). El seed del fixture ya
+  contiene las autoridades I62, así que la activación de prueba no deja derivación. Con el literal de AP 16.13, toda verificación de una unidad I62
+  del fixture acaba en `Authority` fail → STOP. La sonda mide las operaciones (el veredicto esperado de su escenario es `EXECUTION_BLOCKED/STOP`); no
+  depende de la reparación, porque los blobs de catálogo, `routing.md`, el descriptor de `codex-cli` y el mapa del fixture son iguales a los de RackCad.
+- **Riesgos aceptados por el diseño:** `minLength` en modo estricto (si se rechaza, la sonda falla al instante y la receta real tampoco
+  funcionaría); tiempo estimado de 250 a 450 s frente al tope de 600 s.
+

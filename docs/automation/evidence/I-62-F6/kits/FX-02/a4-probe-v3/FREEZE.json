@@ -1,0 +1,79 @@
+{
+ "Schema": "i62-a41-probe-freeze (supervisión, plano a)",
+ "Authority": "A-4 AGREED (decisiones §64, punto 1); disposición de aplicación de A4-1 (§64, punto 2: celda, shell, -C); trío (§65, punto 5); OD-2f = A y A4-SONDA-CONSUMO del trío nuevo (§65, respuestas del Owner); D-4 (§65, punto 6); orden D-5 (§65, punto 7): O4 publicada (95bdc29d) y clon A2 (S03) hechos",
+ "FrozenUtc": "2026-10-09T23:59:29Z",
+ "RunCopy": "scratchpad de la sesión de supervisión (a41-run), byte a byte igual a este directorio; out/ no existe antes del lanzamiento",
+ "Files": {
+  "README.md": {
+   "Bytes": 31455,
+   "Sha256": "6ff9f979347a03104217eb5ad83f1e1353fe3bf0211dd8630f450c9920af0ba8"
+  },
+  "baseline-keynames-73890CA3.json": {
+   "Bytes": 4291,
+   "Sha256": "076637c550ff0b3109447ef00263ff087749f0aaa71f299d524e43b8cf82b70b"
+  },
+  "cfg-fp.ps1": {
+   "Bytes": 1479,
+   "Sha256": "b1d833c0abc06fec6e27367b6df2715e7cdca321f0d6c6fbadb9f634e6a31bab"
+  },
+  "consumo-line.txt": {
+   "Bytes": 501,
+   "Sha256": "496b8d74dd7020646aafd2f603e12477eafd8a169d97c72148c7819f3e706fe1"
+  },
+  "gates.env": {
+   "Bytes": 5675,
+   "Sha256": "203e49c301c9bf0206e6f84827ed41747f1fcfab8689508a621986317eac0f93"
+  },
+  "gates.env.template": {
+   "Bytes": 5374,
+   "Sha256": "0b8af4cfac0cf8dec9e5ed44248d80c35b32bffec0a6631c0d4379b469b8f1bd"
+  },
+  "probe-prompt.template.txt": {
+   "Bytes": 18023,
+   "Sha256": "b16c3f49539bf35341ef44810501ac4f97835a0dbbf5b85bcddbecfaa8c50b96"
+  },
+  "probe-schema.json": {
+   "Bytes": 36747,
+   "Sha256": "2e975f97011346ad1595d4f0ccf78c1b5f649995244ffabeb4a275b8ff066309"
+  },
+  "probe-schema.strict-projection.json": {
+   "Bytes": 36297,
+   "Sha256": "2883862d0e74ce6f028cad3158776df694a25cdb5e8aff83e320a95c6175ae0e"
+  },
+  "probe_tools.py": {
+   "Bytes": 110582,
+   "Sha256": "cef55f604328dcaab11659d710034f2472b80948ce6f06e10692d5bcf1962bd6"
+  },
+  "run_probe.sh": {
+   "Bytes": 14938,
+   "Sha256": "f33aa9cb82cf9573fdb62b3c3056c8f42c6587bb755b8ada3b217158561e5e12"
+  },
+  "selftest-report.json": {
+   "Bytes": 14695,
+   "Sha256": "ca0fc51e7099bfa7300920375ca2c95fbf1be89b74513d4e715c1737d0d1f7e7"
+  },
+  "shell-declaration.txt": {
+   "Bytes": 433,
+   "Sha256": "062c234e06ab718cfd154434967460249d67fe8a8a7a8c0573bf4653ac19faf0"
+  }
+ },
+ "ArmedPrompt": {
+  "Sha256": "0c992c15ee0a04fd3c2e188ae6b7a9b7f8b9d8d037b033571c3565acfa0bff61",
+  "Chars": 20750,
+  "Note": "armado en seco con build-prompt y gates.env; run_probe.sh lo vuelve a armar al lanzar y su SHA-256 tiene que coincidir"
+ },
+ "CanonicalSchemaMode": "VERBATIM (D-4: «esquemas canónicos»; decisión de diseño de la supervisión)",
+ "EmbeddedCanonicalSchemaBlobs": {
+  "delegation_v2": "dfdbe461270e8fd92200c36bab78b9fdc3385014",
+  "controller_verification_v2": "e1faa9eca5c50b2b3a9f91575575614366962720"
+ },
+ "Probe": {
+  "Cell": "codex-cli gpt-6-luna/high",
+  "Shell": "cmd.exe (shell-declaration.txt; la misma línea Shell irá en el bloque de transporte de O4)",
+  "WorkingDirectory": "D:\\r62-fixture\\A2",
+  "Trio": "3553cd6e…/26.1002.7124.0/73890CA3…",
+  "TimeoutS": 600,
+  "Retry": "ninguno",
+  "Cap": "uno en total para FX-02 en F6"
+ }
+}

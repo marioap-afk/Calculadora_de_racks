@@ -1,0 +1,577 @@
+{
+ "Kit": "a41-v3",
+ "UtcStart": "2026-10-09T23:50:36Z",
+ "NoModelInvoked": true,
+ "CodexHomeRead": false,
+ "ProbeDirBasename": "tmp-a41v3-selftest",
+ "Steps": {
+  "stage": 0,
+  "unstage": 0
+ },
+ "Cases": [
+  {
+   "Case": "P0_perfecta",
+   "Expected": "ALL_OPERATIONS_DEMONSTRATED",
+   "Verdict": "ALL_OPERATIONS_DEMONSTRATED",
+   "Pass": true,
+   "FailedOperations": [],
+   "Reasons": [],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N1_falta_clave_status",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "Pass": true,
+   "FailedOperations": [
+    "OP_B_git_y_hashes"
+   ],
+   "Reasons": [
+    "OP_B_git_y_hashes: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N2_hash_erroneo",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "Pass": true,
+   "FailedOperations": [
+    "OP_B_git_y_hashes"
+   ],
+   "Reasons": [
+    "OP_B_git_y_hashes: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N3_conteo_trx_erroneo",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "Pass": true,
+   "FailedOperations": [
+    "OP_D_trx_y_ci"
+   ],
+   "Reasons": [
+    "OP_D_trx_y_ci: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N4_mapa_veredicto_erroneo",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "Pass": true,
+   "FailedOperations": [
+    "OP_E_mapa_I62"
+   ],
+   "Reasons": [
+    "OP_E_mapa_I62: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N4b_ClauseMapBlob_erroneo",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "Pass": true,
+   "FailedOperations": [
+    "OP_E_mapa_I62"
+   ],
+   "Reasons": [
+    "OP_E_mapa_I62: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N5_copia_no_ascii_no_textual",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "Pass": true,
+   "FailedOperations": [
+    "OP_C_fidelidad_de_entradas"
+   ],
+   "Reasons": [
+    "OP_C_fidelidad_de_entradas: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N5b_Objective_sin_tilde",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "Pass": true,
+   "FailedOperations": [
+    "OP_F_esquemas_canonicos"
+   ],
+   "Reasons": [
+    "OP_F_esquemas_canonicos: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N6_ls_remote_alterado_en_salida",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "Pass": true,
+   "FailedOperations": [
+    "OP_B_git_y_hashes"
+   ],
+   "Reasons": [
+    "OP_B_git_y_hashes: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N6b_ls_remote_del_origen_cambio",
+   "Expected": "REFERENCE_UNSTABLE",
+   "Verdict": "REFERENCE_UNSTABLE",
+   "Pass": true,
+   "FailedOperations": [],
+   "Reasons": [
+    "referencia de Remote no establecida: ls-remote del origen distinto antes, después o en la comparación"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N7_delegacion_invalida_esquema",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "Pass": true,
+   "FailedOperations": [
+    "OP_F_esquemas_canonicos"
+   ],
+   "Reasons": [
+    "salida no válida contra el esquema de salida usado: /delegation_v2/MaxReworkLoops: 4 fuera del enum",
+    "OP_F_esquemas_canonicos: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": false,
+    "delegation_v2": false,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [
+    "/delegation_v2/MaxReworkLoops: 4 fuera del enum",
+    "/MaxReworkLoops: 4 fuera del enum"
+   ],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N8_verificacion_incoherente",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "Pass": true,
+   "FailedOperations": [
+    "OP_F_esquemas_canonicos"
+   ],
+   "Reasons": [
+    "OP_F_esquemas_canonicos: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N9_interprete_completado",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "Pass": true,
+   "FailedOperations": [
+    "OP_A_shell"
+   ],
+   "Reasons": [
+    "OP_A_shell: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N10_tope_vencido",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "Pass": true,
+   "FailedOperations": [],
+   "Reasons": [
+    "salida del proceso: exit=143 timed_out=yes"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N11_escritura_en_area_ignorada",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "Pass": true,
+   "FailedOperations": [],
+   "Reasons": [
+    "status --ignored cambió durante la sonda (escritura en el área ignorada)"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N12_routing_incoherente",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "Pass": true,
+   "FailedOperations": [
+    "OP_F_esquemas_canonicos"
+   ],
+   "Reasons": [
+    "OP_F_esquemas_canonicos: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N13_falta_clave_vacia_rt",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "Pass": true,
+   "FailedOperations": [
+    "OP_B_git_y_hashes"
+   ],
+   "Reasons": [
+    "OP_B_git_y_hashes: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N14_negativo_nc2_erroneo",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "Pass": true,
+   "FailedOperations": [
+    "OP_G_controles_negativos"
+   ],
+   "Reasons": [
+    "OP_G_controles_negativos: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N15_N7b_campos_erroneos",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "Pass": true,
+   "FailedOperations": [
+    "OP_G_controles_negativos"
+   ],
+   "Reasons": [
+    "OP_G_controles_negativos: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N16_verificacion_check_erroneo",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "Pass": true,
+   "FailedOperations": [
+    "OP_F_esquemas_canonicos"
+   ],
+   "Reasons": [
+    "OP_F_esquemas_canonicos: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  }
+ ],
+ "StatusIgnored": {
+  "0-before-stage": [],
+  "1-after-stage": [
+   "!! artifacts/"
+  ],
+  "2-after-run": [
+   "!! artifacts/"
+  ],
+  "3-after-unstage": []
+ },
+ "StatusIgnoredRestored": true,
+ "JsonschemaAvailable": false,
+ "AllCasesPass": true,
+ "StrictAudit": {
+  "probe-schema.json": {
+   "RootIsObjectWithoutAnyOf": true,
+   "StructuralIssues": [],
+   "Keywords": {
+    "additionalProperties": 48,
+    "description": 24,
+    "enum": 64,
+    "items": 27,
+    "minLength": 17,
+    "minimum": 6,
+    "pattern": 30,
+    "required": 48,
+    "title": 2,
+    "type": 263
+   },
+   "NotDocumentedAsSupported": [
+    "minLength"
+   ],
+   "DocumentedUnsupported": [],
+   "NotEmpiricallyAccepted": [
+    "minLength",
+    "minimum"
+   ],
+   "ObjectNestingDepth": 5,
+   "ObjectProperties": 235,
+   "EnumValues": 232,
+   "NamesAndEnumChars": 4128,
+   "WithinDocumentedLimits": true
+  },
+  "probe-schema.strict-projection.json": {
+   "RootIsObjectWithoutAnyOf": true,
+   "StructuralIssues": [],
+   "Keywords": {
+    "additionalProperties": 48,
+    "description": 24,
+    "enum": 64,
+    "items": 27,
+    "minimum": 6,
+    "pattern": 30,
+    "required": 48,
+    "title": 2,
+    "type": 263
+   },
+   "NotDocumentedAsSupported": [],
+   "DocumentedUnsupported": [],
+   "NotEmpiricallyAccepted": [
+    "minimum"
+   ],
+   "ObjectNestingDepth": 5,
+   "ObjectProperties": 235,
+   "EnumValues": 232,
+   "NamesAndEnumChars": 4128,
+   "WithinDocumentedLimits": true
+  }
+ },
+ "ReferenceHighlights": {
+  "Checks": {
+   "Termination": "pass",
+   "Handoff": "pass",
+   "Authority": "fail",
+   "Contract": "pass",
+   "Identity": "pass",
+   "Remote": "pass",
+   "Scope": "fail",
+   "CleanTree": "pass",
+   "Ci": "fail",
+   "Ci.RedPart": "pass",
+   "Tests": "fail",
+   "Tests.RedPart": "pass",
+   "Trailer": "fail",
+   "Routing": "pass",
+   "FreeText": "pass",
+   "Denials": "pass"
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Authority",
+  "MapVerdict": "MAP_INVALID",
+  "MvFailed": "MV-3,MV-4,MV-6,MV-7",
+  "Mv4Mismatches": 7,
+  "EFF": "fbe25347799e5b801ef708454212335537448bd1",
+  "ClassifyP": "I62",
+  "StageHead": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+  "ScopeDiffCount": 15,
+  "KeysRequested": 176
+ },
+ "UtcEnd": "2026-10-09T23:50:59Z",
+ "GatesHarness": {
+  "Method": "copia de run_probe.sh con \"measure pre-probe\" sustituido por una parada (sin medir la identidad, sin leer ~/.codex y sin lanzar codex); registro de decisiones sintético; PROBE_DIR = clon temporal",
+  "Results": [
+   {
+    "Case": "OK_literales",
+    "Outcome": "GATES_PASSED_HARNESS_STOP"
+   },
+   {
+    "Case": "sin_linea_de_consumo",
+    "Outcome": "REFUSED: A4-SONDA-CONSUMO = A (trío nuevo) no consta literal, como línea completa"
+   },
+   {
+    "Case": "medicion_previa_en_EVIDENCE_ROOT",
+    "Outcome": "REFUSED: ya hay una medición de A4-1 custodiada: tope uno en total para FX-02 en F6"
+   },
+   {
+    "Case": "trio_anterior",
+    "Outcome": "REFUSED: la disposición nombra otro trío: rehacer el kit (y OD-2 nueva si cambió la huella)"
+   },
+   {
+    "Case": "marcador_de_plantilla",
+    "Outcome": "REFUSED: A4_AGREED_MARKER conserva un marcador de la plantilla"
+   },
+   {
+    "Case": "directorio_no_fijado",
+    "Outcome": "REFUSED: la disposición no fija este PROBE_DIR (A4-1, regla 3)"
+   },
+   {
+    "Case": "marcador_de_trio_sin_huella",
+    "Outcome": "REFUSED: la disposición del trío no nombra BinaryHash, AppVersion y la huella aceptada, en ese orden"
+   },
+   {
+    "Case": "clon_con_ignorados",
+    "Outcome": "REFUSED: PROBE_DIR no está limpio (incluidos los ignorados): clon fresco requerido"
+   },
+   {
+    "Case": "marcador_de_lanzamiento",
+    "Outcome": "REFUSED: la sonda ya se lanzó: tope 1 y sin reintento (A4-1, reglas 3 y 4)"
+   },
+   {
+    "Case": "salidas_previas",
+    "Outcome": "REFUSED: hay salidas de una sonda anterior en out/"
+   },
+   {
+    "Case": "escenario_previo",
+    "Outcome": "REFUSED: hay un escenario S preparado en out/ (stage-manifest.json): ejecutar unstage y revisar"
+   },
+   {
+    "Case": "trx_alterado",
+    "Outcome": "REFUSED: el TRX custodiado falta o no tiene el SHA-256 esperado"
+   },
+   {
+    "Case": "bad_sha_existente",
+    "Outcome": "REFUSED: BAD_SHA existe en el clon: el camino de error no se ejercería"
+   },
+   {
+    "Case": "OK_modo_strict_projection",
+    "Outcome": "GATES_PASSED_HARNESS_STOP"
+   },
+   {
+    "Case": "compare_sin_lanzamiento",
+    "Outcome": "REFUSED: no hay ninguna sonda lanzada"
+   }
+  ],
+  "AllAsExpected": true
+ },
+ "CandidateLiterals": {
+  "DecisionsFileBlob": "a68029c5406e78b3b8824af6853e22d55be0794c",
+  "WorktreeHead": "1dd9a398",
+  "A4_AGREED_MARKER": "FOUND",
+  "DISPOSITION_MARKER": "FOUND",
+  "DISPOSITION_DIR_MARKER": "FOUND (contiene PROBE_DIR)",
+  "DISPOSITION_TRIO_MARKER": "FOUND",
+  "ConsumoLineFullLine": "FOUND"
+ },
+ "SyntaxChecks": {
+  "bash -n run_probe.sh": "OK",
+  "py_compile probe_tools.py": "OK"
+ },
+ "TempCloneDeletedAfter": true,
+ "KitFilesUnderTest": {
+  "probe_tools.py": "cef55f604328dcaab11659d710034f2472b80948ce6f06e10692d5bcf1962bd6",
+  "probe-prompt.template.txt": "b16c3f49539bf35341ef44810501ac4f97835a0dbbf5b85bcddbecfaa8c50b96",
+  "shell-declaration.txt": "062c234e06ab718cfd154434967460249d67fe8a8a7a8c0573bf4653ac19faf0",
+  "probe-schema.json": "2e975f97011346ad1595d4f0ccf78c1b5f649995244ffabeb4a275b8ff066309",
+  "probe-schema.strict-projection.json": "2883862d0e74ce6f028cad3158776df694a25cdb5e8aff83e320a95c6175ae0e",
+  "run_probe.sh": "f33aa9cb82cf9573fdb62b3c3056c8f42c6587bb755b8ada3b217158561e5e12",
+  "consumo-line.txt": "496b8d74dd7020646aafd2f603e12477eafd8a169d97c72148c7819f3e706fe1"
+ }
+}
