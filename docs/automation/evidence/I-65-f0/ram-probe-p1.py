@@ -1,4 +1,4 @@
-# I-65 F0 — Sonda P1 v3 del entorno instalado de RAM Elements (instrumento de medicion, no producto).
+# I-65 F0 — Sonda P1 v3.1 del entorno instalado de RAM Elements (instrumento de medicion, no producto).
 #
 # Ejecutar SOLO con autorizacion del Owner (Q-O4), dentro de RAM Elements 2026, sobre un MODELO NUEVO Y VACIO:
 #   File > New  ->  Python Console  ->  Run File...  (este archivo)
@@ -14,7 +14,7 @@ import json
 import sys
 
 OUT_DIR = r"__OUT_DIR__"
-REPORT = {"probe": "I-65-F0-P1-v3", "out_dir": OUT_DIR, "gate": None, "steps": {}}
+REPORT = {"probe": "I-65-F0-P1-v3.1", "out_dir": OUT_DIR, "gate": None, "steps": {}}
 
 
 STEPS = []
@@ -195,11 +195,12 @@ def _():
 @step("A1_orientation_coverage")
 def _():
     # Members the Cantilever slice produces under the hypothesis X_RAM=X, Y_RAM=Z, Z_RAM=-Y: vertical (+Y), horizontal along
-    # RAM -Z and +Z, inclined in the RAM Y-Z plane, and reversed; each at rotation 0 and 90.
+    # RAM -Z and +Z, inclined in the RAM Y-Z plane, and reversed; each at rotation 0, 90 and 12.3456. "arm_Zup" is the PositiveY arm
+    # if RAM turns out to be Z-up (identity mapping): (0, +run, +rise) (A65-V21-01).
     m.units.set(re.Units.LB_IN)
     o = (3000.0, 0.0, 0.0)
     ends = {"vert_+Y": (0.0, 100.0, 0.0), "horiz_-Z": (0.0, 0.0, -100.0), "horiz_+Z": (0.0, 0.0, 100.0),
-            "incl_YZ": (0.0, 4.375, -100.0), "horiz_+X": (100.0, 0.0, 0.0)}
+            "incl_YZ": (0.0, 4.375, -100.0), "arm_Zup": (0.0, 100.0, 4.375), "horiz_+X": (100.0, 0.0, 0.0)}
     origin = m.nodes.add(o[0], o[1], o[2], restraints=re.FIXED, description="A1-o")
     out = {}
     for k, (dx, dy, dz) in ends.items():
@@ -274,7 +275,9 @@ def _():
 def _():
     mem = [x for x in m.members if x.description == "R1"][0]
     mem.add_point_load("P1L", LoadDirection.GLOBAL_Y, -1234.5, distance=37.5, is_percentage=True)
-    return {"count": mem.point_load_count("P1L"), "load": repr(mem.get_point_load("P1L", 0))}
+    mem.add_point_load("P1L", LoadDirection.GLOBAL_Z, -987.25, distance=62.5, is_percentage=True)
+    return {"count": mem.point_load_count("P1L"), "load_y": repr(mem.get_point_load("P1L", 0)),
+            "load_z": repr(mem.get_point_load("P1L", 1))}
 
 
 @step("P2_precision_non_round_values")

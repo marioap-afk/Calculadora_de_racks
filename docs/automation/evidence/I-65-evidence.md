@@ -123,3 +123,12 @@ Owner Validation: por determinar; no aplica a G0. Tag de integración: no existe
   íntegro en [architect-r2-verdict.md](I-65-f0/architect-r2-verdict.md) con su SHA-256.
 - Respuesta: Proposal V2.1 completa (disposición en su §14), sonda P1 v3, ADR-0050 ajustado y paquete de la ronda 3.
 
+
+## 13. F0 — Architect, ronda 3, y sonda P1 v3.1
+
+- Ronda 3 sobre `9bfd8df5`: **CHANGES REQUIRED** con un solo `REQUIRED` nuevo, A65-V21-01 (la sonda no medía el brazo `PositiveY` si
+  RAM resultara Z arriba). Cerrados A65-V1-02..19 y A65-V2-01..09; A65-V1-01 `OPEN — BLOCKED BY P1`. A65-V21-02 (OPTIONAL: redacción
+  de OV-I65-03 con doble cara / `NegativeY`) se incorpora en la V3, no en la V2.1 ya revisada. Texto íntegro en
+  [architect-r3-verdict.md](I-65-f0/architect-r3-verdict.md).
+- Corrección: sonda **P1 v3.1** (A1 añade el miembro `(0, 100, 4.375)` adelante y atrás con giros 0°, 90° y 12.3456°; L1 lee además
+  una carga `GLOBAL_Z`). El Architect anunció que cierra A65-V21-01 a la vista de este diff, sin ronda completa.
