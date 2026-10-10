@@ -1848,3 +1848,71 @@ Sección nueva; las anteriores no se reescriben. Hechos de la sesión responsabl
 
 **Relevos:** sin invocaciones. HEAD = remoto = `22736034` antes de este commit. `main` = `bb0d5522` (I-63 integrada), sin rebase: el rebase
 se hace antes de T2.
+
+## 34. F1 — Puente de emergencia, fase A: decisión del Owner sobre P-01, sonda PASS y revisión independiente CHANGES_REQUIRED (STOP)
+
+Sección nueva; las anteriores no se reescriben. Hechos de la sesión responsable. A-1 no se activa ni se modifica (append-only). El puente no
+se ejecuta contra T1. No hay trabajo de T2, F1 PASS ni COMPLETE.
+
+**Decisión del Owner sobre P-01** (chat, 2026-10-10; literal en `docs/automation/evidence/I-64-protocol-bridge/owner-decision-p01.md`):
+- Acepta como línea base nueva de `config.toml` el SHA-256 `73890CA3…` con 105 nombres de clave (sección `[projects.<redactado>]` nueva con
+  `trust_level`). Cualquier cambio posterior de hash vuelve a activar P-01.
+- No declara `codex-cli 0.162.0-alpha.2` equivalente a la medición anterior. Autoriza una sonda mínima de solo lectura para volver a medir
+  `gpt-6-luna` / `high`.
+- La sesión registró la línea base en el área transitoria, con solo nombres y hash; no se leen ni versionan valores. Antes de cada
+  invocación comprobó que el hash coincidía.
+
+**Sonda** `R20261010T014704Z-97f8` (`docs/automation/evidence/I-64-protocol-bridge/probe/R20261010T014704Z-97f8/`): **PASS**.
+- Tres lecturas de Git con oráculo exacto (HEAD `e52c9fec`, `origin/main` `bb0d5522`, blob de A-1 `fb6a49c2`): coinciden.
+- Salida válida contra su esquema; código 0 y `turn.completed`; efectivo `gpt-6-luna` / `high` en el registro de sesión.
+- Una orden, con código 0 (el CLI nuevo lanza PowerShell con `-NoProfile`).
+- Sin avisos de límite (P-06), sin procesos ajenos (P-02) y con `config.toml` igual a la línea base aceptada (P-01).
+- La celda CLI × read/tool-use × `high` queda medida con el runtime 0.162.0-alpha.2.
+- Registro de relevo válido (Phase PROBE).
+
+**Revisión independiente de conformidad** `R20261010T012851Z-de0d`
+(`docs/automation/evidence/I-64-protocol-bridge/review/R20261010T012851Z-de0d/`):
+- **Cómo se hizo:**
+  - Solo lectura, en modo SEPARATE SESSION, con Codex CLI 0.162.0-alpha.2 `gpt-6-luna` / `high` (enrutada hacia abajo desde Deep, §33).
+  - Objeto: el commit `22736034` (A-1 `fb6a49c2`, verificador `093a570f`, autoprueba `937e3279`, resultado `05ec8836`).
+  - Duró de 01:49:09Z a 01:55:06Z. Ejecutó 23 órdenes, todas con código 0, y no ejecutó el verificador ni la autoprueba.
+  - Salida válida contra su esquema, coherente, en ASCII y con los blobs del objeto revisado correctos.
+- **Resultado:** **Verdict CHANGES_REQUIRED, Conformance NON_CONFORMING, RequiredCount 2.**
+
+| Tema | Resultado |
+|---|---|
+| AuthorityAndMateriality | NON_CONFORMING |
+| ScopeInvariantPreserved | CONFORMING |
+| FailOpenRoutes | CONFORMING |
+| HistoricalNc2RemainsFail | CONFORMING |
+| NoI61OrI62NormativeChange | NON_CONFORMING |
+| FutureUseStrictlyScoped | CONFORMING |
+
+- **I64-A1-M04** (REQUIRED, `docs/initiatives/I-64-A-1.md:64,205`). Literal:
+  - Defecto: «A-1 marks M-04 NO and classifies the amendment as Coordinator-only even though it changes how the required protocol control
+    is satisfied by substituting a mechanical bridge for the controller-executed nc2. M-04 is defined by the change to what fails or how it
+    fails, not only by product behavior.»
+  - Corrección propuesta: «Mark M-04 YES and obtain Architect and Coordinator review before activation, or revise the amendment so it does
+    not change the frozen control or its satisfaction conditions.»
+- **I64-A1-I61-SUBSTITUTION** (REQUIRED, `docs/initiatives/I-64-A-1.md:64`). Literal:
+  - Defecto: «A-1 permits the bridge to satisfy nc2 instead of the model-executed control. This substitutes the actor and execution method
+    required by I-61 README Sec.10 for I-64, despite the claim that A-1 only adds an I-64 evidence requirement.»
+  - Corrección propuesta: «Obtain and version the protocol-owner authority for this I-64 replacement control before activation, or revise
+    A-1 so the bridge is additional evidence and does not substitute for an I-61 requirement.»
+- **Control manual de 16.10 de la sesión:** hay una mención de «GATE PASS» en `Limitations`, en forma negativa («No claim is made about
+  GATE PASS…»). No es una declaración. La revisión formal de ese texto es del Coordinator.
+
+**Disposición (orden del Coordinator):** con REQUIRED, STOP y vuelta al Coordinator.
+- No se cumple el resultado exigido (AGREED / CONFORMING con 0 REQUIRED), así que no se llega a COORDINATOR_A1_AGREEMENT_REQUIRED.
+- Según la orden de fase A, la decisión del dueño del protocolo pasa a ser necesaria: la revisión concluye que el puente cambia la semántica
+  de I-61, no solo los requisitos de evidencia de I-64.
+- A-1 queda PROPUESTA y no activa. Cualquier corrección va en la siguiente A-n.
+
+**Registro y custodia:**
+- El de la revisión tiene formato local (`rackcad-i64-review-record/v1`, Phase REVIEW), como se declaró en §33.
+- El de la sonda usa `rackcad-relay-record/v1`.
+- Los `processes-*.json` transitorios tienen CRLF y se versionan normalizados a LF; los demás archivos tienen el mismo SHA-256.
+- Los `events.jsonl` no se versionan: sus SHA-256 están en los registros.
+
+**Relevos:** dos invocaciones de Codex, la sonda y la revisión. Ninguna escribió en Git. Sin procesos ajenos y con `config.toml` en la línea
+base aceptada. HEAD = remoto = `e52c9fec` antes de este commit; `main` `bb0d5522`, sin rebase.
