@@ -2100,3 +2100,80 @@ Coordinator.
 - Una invocación de Codex (la re-revisión), sin escritura de Git.
 - `config.toml` en la línea base aceptada.
 - HEAD = remoto = `d71364cf` antes de este commit; `main` `bb0d5522`.
+
+## 38. F1-T1-MODEL — A-4 AGREED, ScopeBridge ejecutado y conciliación bajo I64-SCOPE-BRIDGE-01
+
+Sección nueva; las anteriores no se reescriben. Hechos de la sesión responsable. El nc2 histórico no se reetiqueta ni se repite.
+
+**Revisión formal final del Architect de A-4** `R20261010T031016Z-cca9`
+(`docs/automation/evidence/I-64-protocol-bridge/architect-review/R20261010T031016Z-cca9/`):
+- **Cómo se hizo:** ARCHITECTURE_REVIEW, Deep, SEPARATE SESSION, `gpt-6.1-sol` / `high`, solo lectura. Objeto: el commit `0a61ee3a`
+  (A-4 `d587403e`, verificador `cf381ab9`).
+  - Duró de 03:10:32Z a 03:15:00Z, con 35 órdenes, todas con código 0.
+  - No ejecutó las herramientas del puente.
+- **Resultado:** **AGREED, 0 REQUIRED, 0 OPTIONAL.**
+  - Q01-Q09 YES y conformes.
+  - Q10 NO (sin ruta abierta), Q11 NO y Q12 NO, conformes.
+  - I64-A2-RUNID-FAIL-OPEN e I64-A3-JSON-CONSTANT-FAIL-OPEN = CLOSED.
+
+**Acuerdo del Coordinator** (`docs/automation/evidence/I-64-protocol-bridge/coordinator-agreement-a4.md`, commit `fd864f9c`, versionado
+antes del puente):
+- Los diez predicados de la disposición condicional de la orden NIGHT RUN se comprobaron de forma mecánica: todos true (CI 38019583881
+  4/4 del commit de A-4).
+- **COORDINATOR = AGREED** para el objeto exacto de A-4.
+- **Enmienda activa de I64-SCOPE-BRIDGE-01 = A-4.** A-1, A-2 y A-3 quedan históricas.
+
+**ScopeBridge contra F1-T1-MODEL** `R20261010T031627Z-124b` (`docs/automation/evidence/I-64-pilot/F1-T1-MODEL-scope-bridge/R20261010T031627Z-124b/`):
+- **Antes de ejecutar:** verificador con blob en HEAD = blob ejecutado = `cf381ab9…` y SHA-256 `a3d4ed8a…`, el autorizado por A-4. Las tres
+  entradas, sin cambios en el árbol:
+  - delegación `754a` (blob `c3b75fb5`);
+  - delegación mutada de nc2 `8415` (blob `241acfbe`);
+  - entrega `faf1` (blob `13b26200`).
+- **REAL:** **PASS**, código 0, todas las comprobaciones en pass. `ChangedPaths` =
+  [`src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs`].
+- **ADVERSARIAL:** **FAIL**, código 1.
+  - La única razón es `OUTSIDE_ALLOWED_WRITE_SCOPE`, con `OutsideAllowed` = [`src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs`]
+    y `ForbiddenHits` vacío.
+  - Todas las comprobaciones de identidad, Git y evidencia en pass.
+  - No se usó como oráculo la salida antigua del Controller en nc2.
+
+**Condiciones de A-2 (adoptadas por A-4) para F1-T1-MODEL:**
+
+| Condición | Resultado |
+|---|---|
+| 1. Verificación de Scope del Controller sobre la entrega real en pass | `R20261002T182925Z-5c9b` |
+| 2. Evidencia del nc2 conservada | `8415` y `abb1` sin cambios |
+| 3. REAL = PASS | sí |
+| 4. ADVERSARIAL = FAIL | sí |
+| 5. Fallo adversarial exclusivamente la violación de Scope esperada | sí |
+| 6. Ruta excluida identificada | sí |
+| 7. Identidad del verificador | exacta |
+| 8. Ambigüedades cerradas ante fallos | el verificador y sus 31 autopruebas |
+| 9. nc1, nc3 y nc4 sin cambios | sí |
+| 10. Ningún presupuesto reiniciado | sí |
+
+**Registro de controles de F1-T1-MODEL:**
+
+| Control | Resultado |
+|---|---|
+| nc1 `R20261002T183529Z-b10b` (histórico) | PASS |
+| nc2 `R20261002T184050Z-8415` (histórico) | **FAIL**, permanente y no reetiquetado |
+| nc3 `R20261002T185053Z-8b6f` (histórico) | PASS |
+| nc4 `R20261002T004303Z-8d3c` (histórico) | PASS |
+| ScopeBridge REAL `R20261010T031627Z-124b` | PASS |
+| ScopeBridge ADVERSARIAL `R20261010T031627Z-124b` | **PASS COMO PRUEBA NEGATIVA** (el verificador devolvió FAIL para la mutación fuera de alcance) |
+
+**Conciliación de F1-T1-MODEL:**
+- ProductStatus = EXECUTION_VERIFIED.
+- ProductVerifiedSha histórico = `39f7caa411a5ebb372614c233a32255de7398cca` (CI 37046833476 4/4; verificación `R20261002T182925Z-5c9b`).
+- Cierre de protocolo bajo I-64 A-4 = **SATISFIED**.
+- **F1-T1-MODEL = COMPLETE_UNDER_I64_SCOPE_BRIDGE.**
+  - El esquema de estado de AUTOMATION_PLAN no tiene un enum de tarea, así que se registra como texto.
+  - Significa: verificación histórica del producto más cierre de protocolo posterior limitado a la unidad.
+- Los presupuestos de T1 siguen agotados y no se reinician: planificación 7/7, trabajo 4/4, verificación 4/4, `attempts` 3/3.
+
+**Efecto en F1:** el bloqueo de protocolo de F1-T1-MODEL queda resuelto bajo A-4, porque el sustituto está acordado y verificado. F1 sigue
+en curso, sin F1 PASS. La reanudación hacia F1-T2-BRIDGE exige todavía el rebase sobre `main`, la revalidación del producto de T1 y la
+conciliación de propiedad y archivos calientes.
+
+**Relevos:** sin invocaciones de modelos en el puente (Python y Git, en la sesión). HEAD = remoto = `fd864f9c` antes de este commit.

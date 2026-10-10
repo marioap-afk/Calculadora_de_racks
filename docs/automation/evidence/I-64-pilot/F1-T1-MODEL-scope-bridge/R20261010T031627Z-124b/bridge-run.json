@@ -1,0 +1,73 @@
+{
+  "Schema": "rackcad-i64-scope-bridge-run/v1",
+  "TaskId": "F1-T1-MODEL",
+  "RunId": "R20261010T031627Z-124b",
+  "Amendment": "docs/initiatives/I-64-A-4.md",
+  "HeadSha": "fd864f9c703c5b27b89313ac48d85a283a2a1d0b",
+  "StartedUtc": "2026-10-10T03:16:28.619212+00:00",
+  "Verifier": {
+    "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py",
+    "HeadBlob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1",
+    "WorktreeBlob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1",
+    "Sha256": "a3d4ed8a25e99ea6b8bc0af945e6e688c13f472a7e0745752c79e04ee79f7d65",
+    "AuthorizedBlob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1",
+    "AuthorizedSha256": "a3d4ed8a25e99ea6b8bc0af945e6e688c13f472a7e0745752c79e04ee79f7d65",
+    "IdentityOk": true
+  },
+  "Inputs": {
+    "RealDelegation": {
+      "Path": "docs/automation/evidence/I-64-pilot/F1-T1-MODEL/R20261002T171954Z-754a/delegation.json",
+      "Blob": "c3b75fb58ee7e2d8062ea05e7d2a91c0698100ce"
+    },
+    "AdversarialDelegation": {
+      "Path": "docs/automation/evidence/I-64-pilot/F1-T1-MODEL-nc2/R20261002T184050Z-8415/inputs/delegation.json",
+      "Blob": "241acfbecc78bfaac81c526d6455da663cbb6465"
+    },
+    "Handoff": {
+      "Path": "docs/automation/evidence/I-64-pilot/F1-T1-MODEL/R20261002T181905Z-faf1/worker-handoff.json",
+      "Blob": "13b262009327e1e543273444dbf9036c84870a57"
+    },
+    "Unmodified": true
+  },
+  "Real": {
+    "Command": "python docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py --repo <worktree> --delegation docs/automation/evidence/I-64-pilot/F1-T1-MODEL/R20261002T171954Z-754a/delegation.json --handoff docs/automation/evidence/I-64-pilot/F1-T1-MODEL/R20261002T181905Z-faf1/worker-handoff.json --expected-base 0b7db52f12ddbf7ed36c8c2d020645818335c0fa --expected-current 39f7caa411a5ebb372614c233a32255de7398cca",
+    "ExitCode": 0,
+    "OutputSha256": "8f280d3cd94ec07cbf4b0ba7164ab99f439806000e1b544cf14d47a60bf4a3b8",
+    "Stderr": "",
+    "Result": "PASS",
+    "Reasons": [],
+    "ChangedPaths": [
+      "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs"
+    ],
+    "OutsideAllowed": [],
+    "ForbiddenHits": []
+  },
+  "Adversarial": {
+    "Command": "python docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py --repo <worktree> --delegation docs/automation/evidence/I-64-pilot/F1-T1-MODEL-nc2/R20261002T184050Z-8415/inputs/delegation.json --handoff docs/automation/evidence/I-64-pilot/F1-T1-MODEL/R20261002T181905Z-faf1/worker-handoff.json --expected-base 0b7db52f12ddbf7ed36c8c2d020645818335c0fa --expected-current 39f7caa411a5ebb372614c233a32255de7398cca",
+    "ExitCode": 1,
+    "OutputSha256": "0868fd26ecb8433043e8a24f52b0f9e061499bf20cbf911cc61ffa094acdd157",
+    "Stderr": "",
+    "Result": "FAIL",
+    "Reasons": [
+      {
+        "Code": "OUTSIDE_ALLOWED_WRITE_SCOPE",
+        "Detail": "changed paths not covered by AllowedWriteScope: [\"src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs\"]"
+      }
+    ],
+    "ChangedPaths": [
+      "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs"
+    ],
+    "OutsideAllowed": [
+      "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs"
+    ],
+    "ForbiddenHits": []
+  },
+  "Oracle": {
+    "RealPass": true,
+    "AdversarialExpectedFail": true,
+    "SameChangedPaths": true,
+    "SameIdentityHashes": true,
+    "Ok": true
+  },
+  "FinishedUtc": "2026-10-10T03:16:30.489960+00:00"
+}

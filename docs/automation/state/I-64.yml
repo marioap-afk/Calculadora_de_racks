@@ -5,10 +5,10 @@ automation_state:
   claim_id: 614371d5-441f-4f14-bac9-f97017105610
   current_phase: F1
   state: waiting
-  gate: dependency
+  gate: none
   attempts: 3
-  next_action: "Sesion (NIGHT RUN): revision formal del Architect del objeto exacto de A-4 (ronda 2 de 2, la ultima); evidencia §37."
-  last_evidence_commit: d71364cf4d1409dc56490a31a7a94dfd230f613a
+  next_action: "Sesion (NIGHT RUN): rebase de I-64 sobre origin/main con RebaseMap y revalidacion del producto de T1; despues, conciliacion de propiedad y archivos calientes con I-52 e I-63 y preparacion de F1-T2-BRIDGE (evidencia §38)."
+  last_evidence_commit: fd864f9c703c5b27b89313ac48d85a283a2a1d0b
 execution_context:
   mode: manual
   automation_enabled: false
@@ -17,29 +17,29 @@ execution_context:
   design_agreed: docs/initiatives/I-64-proposal-v5.md en 9e3d289a9b61339c162b2f791f6995a584207800, blob bd4e96264e538ffc679bfd9f088400b22b553931 (I64-CONSENSUS-V5-01; Architect AGREED; Coordinator AGREED)
   freeze: 9b43dafbe3b8874aa0ba5a85d62cbf953dbdd311 (Frozen YES; blob dc1924ff5a73a4e529fbc5f995621d29351a091b; CI 36941847270 push 4/4 success; evidencia §18)
   f0: COMPLETE
-  f1: "BLOCKED_PROTOCOL_DEPENDENCY: F1-T1-MODEL = STOPPED_AT_PROTOCOL_CLOSE (ProductStatus EXECUTION_VERIFIED sobre 39f7caa4; ProtocolClose FAILED_NEGATIVE_CONTROL_NC2); BlockedNextTask F1-T2-BRIDGE (no autorizada); BlockingDependency: execution-protocol Scope enforcement / Controller negative-control defect; evidencia §§31-32"
+  f1: "IN PROGRESS: F1-T1-MODEL = COMPLETE_UNDER_I64_SCOPE_BRIDGE (producto EXECUTION_VERIFIED sobre 39f7caa4; cierre de protocolo SATISFIED bajo I-64 A-4: ScopeBridge REAL PASS y ADVERSARIAL FAIL esperado; nc2 historico FAIL); siguiente: rebase, revalidacion y F1-T2-BRIDGE; evidencia §§31-38"
   relay_baseline: "config.toml SHA-256 73890CA3319206B85B68A42E23E8D323C45361CFC29E06B3E116EFFF5DAD0FBF (aceptada por el Owner el 2026-10-10; 105 nombres, sin valores; anterior 40C27B57...); celda gpt-6-luna/high re-medida con codex-cli 0.162.0-alpha.2 por la sonda R20261010T014704Z-97f8 (PASS)"
   f1_t1_model_budget: "planificacion 7 de 7; trabajo 4 de 4; verificacion productiva 4 de 4; attempts 3 de 3; CONTROL de la recuperacion: nc1, nc2 y nc3 con una salida valida cada uno, sin reintentos"
   f1_t1_model_chain: "ChainBaseSha e0587355b0e84d98807057a56dfc50591da87489; ChainRedSha a9778068af566bc2b84ba6a0005711b6452a2666 (acreditado en R20261002T143410Z-ae0b); ChainRedFiles tests/RackCad.Tests/Workspace/{SelectionContextTests,WorkspaceHintDrainTests,WorkspaceModelBoundaryTests,WorkspaceSelectionContextTests,WorkspaceSessionTests}.cs; VerifiedSha 39f7caa411a5ebb372614c233a32255de7398cca (EXECUTION_VERIFIED, R20261002T182925Z-5c9b); delegacion R20261002T171954Z-754a cerrada; sin delegacion abierta"
-  f1_t1_model_status: "STOPPED_AT_PROTOCOL_CLOSE; ProductStatus EXECUTION_VERIFIED; ProductVerifiedSha 39f7caa411a5ebb372614c233a32255de7398cca; ProtocolClose FAILED_NEGATIVE_CONTROL_NC2; nc1 PASS (R20261002T183529Z-b10b), nc2 FAIL final (R20261002T184050Z-8415), nc3 PASS (R20261002T185053Z-8b6f), nc4 PASS (R20261002T004303Z-8d3c); no COMPLETE"
-  f1_blocked_next_task: F1-T2-BRIDGE
-  f1_blocking_dependency: "execution-protocol Scope enforcement / Controller negative-control defect"
+  f1_t1_model_status: "COMPLETE_UNDER_I64_SCOPE_BRIDGE; ProductStatus EXECUTION_VERIFIED; ProductVerifiedSha 39f7caa411a5ebb372614c233a32255de7398cca; ProtocolClose SATISFIED bajo I-64 A-4 (ScopeBridge R20261010T031627Z-124b: REAL PASS, ADVERSARIAL PASS como prueba negativa); historicos: nc1 PASS (b10b), nc2 FAIL permanente (8415), nc3 PASS (8b6f), nc4 PASS (8d3c); presupuestos agotados, sin reinicio"
+  f1_blocked_next_task: "ninguna por protocolo: F1-T2-BRIDGE pendiente de rebase, revalidacion, conciliacion de propiedad y contrato de gate"
+  f1_blocking_dependency: "resuelta para I-64 por I64-SCOPE-BRIDGE-01 (A-4 AGREED y puente verificado); la deuda del Controller sigue registrada en protocol_debt para I-62"
   f1_resume_condition: "solo con una condicion autoritativa nueva: (A) evolucion integrada del protocolo que arregle o sustituya el control de Scope que fallo, o (B) enmienda autoritativa explicita con un control sustituto conforme y aplicable a I-64; al reanudar: rebase segun haga falta, conservar 39f7caa4 como evidencia historica de producto verificado, evaluar si basta repetir los controles o hace falta una verificacion nueva de la tarea, y no suponer que el nc2 anterior puede repetirse"
   f1_a1_status: "A-1 PROPUESTA (docs/initiatives/I-64-A-1.md, blob fb6a49c2, commit 22736034); revision independiente R20261010T012851Z-de0d = CHANGES_REQUIRED / NON_CONFORMING con 2 REQUIRED (I64-A1-M04: M-04 deberia ser YES y exigir Architect + Coordinator; I64-A1-I61-SUBSTITUTION: sustituye el actor y el metodo de README §10 y exige autoridad del dueno del protocolo o evidencia solo adicional); STOP al Coordinator; no activa; no ejecutada contra T1"
   f1_a2_status: "A-2 PROPUESTA (blob de6f6088); revision formal del Architect R20261010T024843Z-f965 = CHANGES REQUIRED, 1 REQUIRED (I64-A2-RUNID-FAIL-OPEN); corregida por A-3; no activa"
   f1_a3_status: "A-3 PROPUESTA (blob e14935bc, commit d71364cf); re-revision del Architect R20261010T025754Z-77a6 = CHANGES REQUIRED, 1 REQUIRED (I64-A3-JSON-CONSTANT-FAIL-OPEN); I64-A2-RUNID-FAIL-OPEN CLOSED; corregida por A-4; no activa"
-  f1_a4_status: "A-4 PROPUESTA (docs/initiatives/I-64-A-4.md): corrige A-3 para la activacion; verificador blob cf381ab9 (constantes JSON, surrogates, gitlinks ocultos por configuracion, grafts); autoprueba 31/31 PASS con regresiones demostradas contra 8972e374; M-04 = YES; Owner SATISFIED, Architect PENDING, Coordinator PENDING"
+  f1_a4_status: "A-4 AGREED (blob d587403e, commit 0a61ee3a): Architect AGREED (R20261010T031016Z-cca9, 0 REQUIRED), Coordinator AGREED (coordinator-agreement-a4.md, fd864f9c), Owner SATISFIED; enmienda activa de I64-SCOPE-BRIDGE-01; verificador cf381ab9"
   max_attempts: 3
   persistent_next_action:
     NEXT_ROLE: "Sesion responsable (NIGHT RUN; ejecucion autonoma hasta la primera frontera de autoridad no cubierta)"
-    NEXT_ACTION: "revision formal del Architect del objeto exacto de A-4; si AGREED con 0 REQUIRED y se cumplen los predicados de la orden NIGHT RUN, versionar Coordinator AGREED y ejecutar el puente contra T1; si hay REQUIRED, STOP al Coordinator (sin mas rondas)"
-    TARGET_SHA: "la punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo (git log -1 -- docs/automation/state/I-64.yml); su padre es d71364cf4d1409dc56490a31a7a94dfd230f613a"
+    NEXT_ACTION: "rebase sobre origin/main con RebaseMap (patch-id del producto de T1), revalidacion (focal, Core, builds Release, CI exacta), conciliacion con I-52 e I-63 y preparacion del contrato de F1-T2-BRIDGE"
+    TARGET_SHA: "la punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo (git log -1 -- docs/automation/state/I-64.yml); su padre es fd864f9c703c5b27b89313ac48d85a283a2a1d0b"
     GATE: F1 — Workspace Foundation
-    TASK: "I-64 A-4 / I64-SCOPE-BRIDGE-01 (NIGHT RUN; revision del Architect de A-4, ronda 2 de 2)"
-    INPUTS_REQUIRED: "evidencia §§33-37; docs/initiatives/I-64-A-1.md a I-64-A-4.md; docs/automation/evidence/I-64-protocol-bridge/"
-    EXPECTED_RESULT: "Architect AGREED con 0 REQUIRED sobre A-3 y Coordinator AGREED versionado; despues, puente REAL PASS y ADVERSARIAL FAIL esperado"
-    REMAINING_BUDGET: "F1-T1-MODEL sin presupuesto (planificacion 7/7, trabajo 4/4, verificacion 4/4, attempts 3/3); rondas de correccion del Architect tras A-2: 2 de 2 (la de A-4 es la ultima)"
-    STOP_CONDITION: "REQUIRED no corregible dentro del mandato; discrepancia de oraculo del puente; conflicto semantico de rebase; regresion de pruebas; CI no verde; sin presupuesto valido de T2; config.toml distinto de 73890CA3... (P-01); cambios de I-61 o I-62; reescribir el nc2 historico"
+    TASK: "F1 (NIGHT RUN: rebase, revalidacion de T1 y preparacion de F1-T2-BRIDGE)"
+    INPUTS_REQUIRED: "evidencia §§31-38; docs/initiatives/I-64-A-1.md a I-64-A-4.md; docs/automation/evidence/I-64-protocol-bridge/ y F1-T1-MODEL-scope-bridge/"
+    EXPECTED_RESULT: "rama rebasada sobre origin/main con el producto de T1 revalidado y CI 4/4; paquete del contrato de F1-T2-BRIDGE o la frontera de autoridad que lo impida"
+    REMAINING_BUDGET: "F1-T1-MODEL sin presupuesto (agotado, sin reinicio); F1-T2-BRIDGE: sin presupuesto fijado"
+    STOP_CONDITION: "conflicto semantico de rebase o cambio del patch de T1; regresion de pruebas; CI no verde; colision de propiedad o archivos calientes; sin presupuesto valido de T2; config.toml distinto de 73890CA3... (P-01); cambios de I-61 o I-62; reescribir el nc2 historico; declarar F1 PASS"
     OWNER_REQUIRED_IF: "OWNER-RESERVED (alcance, diferir sistemas, retirar OV); aceptacion del ADR 0047; Owner Validation y smokes (Smoke-1 tras F1 PASS y RELEASE de I-52); cambio de config.toml (P-01); credenciales, compras o sondas con consumo no cubierto; AutoCAD manual o cambios de seguridad"
   protocol_debt:
     - FINDING: "El Controller gpt-6-luna/high, pese a leer correctamente una delegacion con AllowedWriteScope que excluye el unico archivo modificado, puede emitir Scope=pass despues de que falle su operacion auxiliar de comparacion (nc2 R20261002T184050Z-8415; mismo patron en nc2 R20261002T151201Z-abb1)."
