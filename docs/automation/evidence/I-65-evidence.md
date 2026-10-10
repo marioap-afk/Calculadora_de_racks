@@ -132,3 +132,7 @@ Owner Validation: por determinar; no aplica a G0. Tag de integración: no existe
   [architect-r3-verdict.md](I-65-f0/architect-r3-verdict.md).
 - Corrección: sonda **P1 v3.1** (A1 añade el miembro `(0, 100, 4.375)` adelante y atrás con giros 0°, 90° y 12.3456°; L1 lee además
   una carga `GLOBAL_Z`). El Architect anunció que cierra A65-V21-01 a la vista de este diff, sin ronda completa.
+- **Cierre:** el Architect cerró **A65-V21-01** sobre `acaefc1d` y declaró que **P1 v3.1 puede autorizarse como la corrida definitiva con
+  licencia**, sujeta solo a Q-O4 ([architect-r3b-closure.md](I-65-f0/architect-r3b-closure.md)). Único `REQUIRED` abierto: A65-V1-01
+  (`OPEN — BLOCKED BY P1`). La revisión de la V3 será de confirmación de valores medidos y respuestas del Owner, salvo STOP o resultado
+  Z arriba.
