@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §65; evidencia §120) — FX-02: sonda única A4-1 = NOT_DEMONSTRATED (R20261010T000542Z-a4-1-probe); propuesta: Controller no elegible (A4-1 regla 4), FX-02 UNVERIFIED con causa salvo actualización del runtime (A2-P2) u otra A-n; MAP_INVALID del fixture, N9/N10 y claude-cli pendientes del Coordinator; A2 no solicitada; sin FX-02 PASS"
+  next_action: "F6 (decisiones §66; evidencia §121) — A4-1 NOT_DEMONSTRATED; FX-02 UNVERIFIED (C-24 no PASS); en preparación: caracterización de MAP_INVALID y reconstrucción de la activación con análisis de efectos, opciones permitidas de Codex, paquete de medición de claude-cli (sin ejecutar), disposición de N9/N10, F7; informe de opciones de recuperación; sin A2"
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual

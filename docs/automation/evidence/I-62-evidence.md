@@ -3470,3 +3470,17 @@ solo desde artefactos custodiados.
   - Defecto de la herramienta registrado: el contador `git_write` toma `merge-base` como `merge` y pone OP_A en false. Sin efecto en el veredicto.
 - **Consecuencia propuesta (A4-1, regla 4):** la celda del Controller no es elegible para la planificación ni para la verificación. Sin repetición.
   FX-02 UNVERIFIED con esa causa salvo una actualización del runtime (A2-P2) u otra A-n. A2 no se solicita.
+
+## 121. Decisiones §66: A4-1 NOT_DEMONSTRATED registrada; FX-02 UNVERIFIED; MAP_INVALID como defecto del fixture
+
+- **A4-1 = NOT_DEMONSTRATED** sobre `3553cd6e…/26.1002.7124.0/73890CA3…` (evidencia §120). La invocación está consumida y no se repite bajo la misma
+  autoridad. **FX-02 UNVERIFIED**; C-24 no es PASS.
+- **Trabajo ordenado:**
+  - caracterizar EFF^1 frente a EFF y preparar la reconstrucción de la activación, con el análisis de efectos sobre lo ya acreditado antes de tocar
+    ninguna ref;
+  - opciones permitidas para Codex (sin crear una A-n);
+  - el paquete de medición de `claude-cli` (operaciones 5, 7, 8 y 9) sin ejecutarlo;
+  - la disposición de N9 y N10;
+  - F7 y los controles independientes;
+  - el informe de opciones de recuperación.
+- Sin apertura de A2.
