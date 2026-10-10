@@ -1,0 +1,589 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rackcad-i64-architect-review/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "Schema": {
+      "type": "string",
+      "enum": [
+        "rackcad-i64-architect-review/v1"
+      ]
+    },
+    "RunId": {
+      "type": "string",
+      "enum": [
+        "R20261010T031016Z-cca9"
+      ]
+    },
+    "Mode": {
+      "type": "string",
+      "enum": [
+        "SEPARATE SESSION"
+      ]
+    },
+    "ReviewSubject": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "AmendmentId": {
+          "type": "string",
+          "enum": [
+            "A-4"
+          ]
+        },
+        "Freeze": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Path": {
+              "type": "string"
+            },
+            "Blob": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          },
+          "required": [
+            "Path",
+            "Blob"
+          ]
+        },
+        "A1": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Path": {
+              "type": "string"
+            },
+            "Blob": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          },
+          "required": [
+            "Path",
+            "Blob"
+          ]
+        },
+        "Amendment": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Path": {
+              "type": "string"
+            },
+            "Blob": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          },
+          "required": [
+            "Path",
+            "Blob"
+          ]
+        },
+        "Verifier": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Path": {
+              "type": "string"
+            },
+            "Blob": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          },
+          "required": [
+            "Path",
+            "Blob"
+          ]
+        },
+        "SelfTestResult": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Path": {
+              "type": "string"
+            },
+            "Blob": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          },
+          "required": [
+            "Path",
+            "Blob"
+          ]
+        },
+        "OwnerMandate": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Path": {
+              "type": "string"
+            },
+            "Blob": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          },
+          "required": [
+            "Path",
+            "Blob"
+          ]
+        }
+      },
+      "required": [
+        "Commit",
+        "AmendmentId",
+        "Freeze",
+        "A1",
+        "Amendment",
+        "Verifier",
+        "SelfTestResult",
+        "OwnerMandate"
+      ]
+    },
+    "PriorRequiredDisposition": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Id": {
+            "type": "string"
+          },
+          "Status": {
+            "type": "string",
+            "enum": [
+              "CLOSED",
+              "STILL OPEN"
+            ]
+          },
+          "Evidence": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "Id",
+          "Status",
+          "Evidence"
+        ]
+      }
+    },
+    "Answers": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Q01": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Answer": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "Conforming": {
+              "type": "boolean"
+            },
+            "Evidence": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Answer",
+            "Conforming",
+            "Evidence"
+          ]
+        },
+        "Q02": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Answer": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "Conforming": {
+              "type": "boolean"
+            },
+            "Evidence": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Answer",
+            "Conforming",
+            "Evidence"
+          ]
+        },
+        "Q03": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Answer": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "Conforming": {
+              "type": "boolean"
+            },
+            "Evidence": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Answer",
+            "Conforming",
+            "Evidence"
+          ]
+        },
+        "Q04": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Answer": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "Conforming": {
+              "type": "boolean"
+            },
+            "Evidence": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Answer",
+            "Conforming",
+            "Evidence"
+          ]
+        },
+        "Q05": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Answer": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "Conforming": {
+              "type": "boolean"
+            },
+            "Evidence": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Answer",
+            "Conforming",
+            "Evidence"
+          ]
+        },
+        "Q06": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Answer": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "Conforming": {
+              "type": "boolean"
+            },
+            "Evidence": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Answer",
+            "Conforming",
+            "Evidence"
+          ]
+        },
+        "Q07": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Answer": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "Conforming": {
+              "type": "boolean"
+            },
+            "Evidence": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Answer",
+            "Conforming",
+            "Evidence"
+          ]
+        },
+        "Q08": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Answer": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "Conforming": {
+              "type": "boolean"
+            },
+            "Evidence": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Answer",
+            "Conforming",
+            "Evidence"
+          ]
+        },
+        "Q09": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Answer": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "Conforming": {
+              "type": "boolean"
+            },
+            "Evidence": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Answer",
+            "Conforming",
+            "Evidence"
+          ]
+        },
+        "Q10": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Answer": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "Conforming": {
+              "type": "boolean"
+            },
+            "Evidence": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Answer",
+            "Conforming",
+            "Evidence"
+          ]
+        },
+        "Q11": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Answer": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "Conforming": {
+              "type": "boolean"
+            },
+            "Evidence": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Answer",
+            "Conforming",
+            "Evidence"
+          ]
+        },
+        "Q12": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Answer": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "Conforming": {
+              "type": "boolean"
+            },
+            "Evidence": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Answer",
+            "Conforming",
+            "Evidence"
+          ]
+        }
+      },
+      "required": [
+        "Q01",
+        "Q02",
+        "Q03",
+        "Q04",
+        "Q05",
+        "Q06",
+        "Q07",
+        "Q08",
+        "Q09",
+        "Q10",
+        "Q11",
+        "Q12"
+      ]
+    },
+    "Findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Id": {
+            "type": "string"
+          },
+          "Severity": {
+            "type": "string",
+            "enum": [
+              "REQUIRED",
+              "OPTIONAL"
+            ]
+          },
+          "Question": {
+            "type": "string",
+            "enum": [
+              "Q01",
+              "Q02",
+              "Q03",
+              "Q04",
+              "Q05",
+              "Q06",
+              "Q07",
+              "Q08",
+              "Q09",
+              "Q10",
+              "Q11",
+              "Q12"
+            ]
+          },
+          "Location": {
+            "type": "string"
+          },
+          "Defect": {
+            "type": "string"
+          },
+          "Authority": {
+            "type": "string"
+          },
+          "Correction": {
+            "type": "string"
+          },
+          "RequiresGlobalI61Change": {
+            "type": "boolean"
+          },
+          "RequiresOwnerDecision": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "Id",
+          "Severity",
+          "Question",
+          "Location",
+          "Defect",
+          "Authority",
+          "Correction",
+          "RequiresGlobalI61Change",
+          "RequiresOwnerDecision"
+        ]
+      }
+    },
+    "RequiredCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "OptionalCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "Verdict": {
+      "type": "string",
+      "enum": [
+        "AGREED",
+        "CHANGES REQUIRED",
+        "BLOCKED - OWNER DECISION"
+      ]
+    },
+    "Limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "Schema",
+    "RunId",
+    "Mode",
+    "ReviewSubject",
+    "PriorRequiredDisposition",
+    "Answers",
+    "Findings",
+    "RequiredCount",
+    "OptionalCount",
+    "Verdict",
+    "Limitations"
+  ]
+}
