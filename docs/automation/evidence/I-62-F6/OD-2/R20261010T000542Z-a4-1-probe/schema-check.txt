@@ -1,0 +1,1 @@
+schema probe-schema.json OK {'delegation_v2': 'dfdbe461270e8fd92200c36bab78b9fdc3385014', 'controller_verification_v2': 'e1faa9eca5c50b2b3a9f91575575614366962720'}

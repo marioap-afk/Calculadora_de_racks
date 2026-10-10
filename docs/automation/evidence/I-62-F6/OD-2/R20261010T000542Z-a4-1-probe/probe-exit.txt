@@ -1,0 +1,1 @@
+exit=0 timed_out=no elapsed_s<=100

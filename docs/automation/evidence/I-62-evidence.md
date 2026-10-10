@@ -3451,3 +3451,22 @@ solo desde artefactos custodiados.
 - **Riesgos aceptados por el diseño:** `minLength` en modo estricto (si se rechaza, la sonda falla al instante y la receta real tampoco
   funcionaría); tiempo estimado de 250 a 450 s frente al tope de 600 s.
 
+## 120. FX-02: sonda única A4-1 = NOT_DEMONSTRATED (R20261010T000542Z-a4-1-probe; decisiones §65)
+
+- **Lanzamiento:** kit `6f3b4de0`, texto `0c992c15…`; celda observada `gpt-6-luna` / `high`; `cmd.exe`; `-C D:\r62-fixture\A2`; salida 0 en ~100 s
+  de 600. Identidad, `HEAD`, árbol y origen sin cambios; escenario retirado
+  ([resultado](I-62-F6/OD-2/R20261010T000542Z-a4-1-probe/README.md); [comparison.json](I-62-F6/OD-2/R20261010T000542Z-a4-1-probe/comparison.json)).
+- **Veredicto: NOT_DEMONSTRATED.**
+  - **Demostrado:** la shell; `git diff` reproducible; los `rev-parse`; blobs y hashes; el camino de error; el árbol limpio; el TRX actual, la entrega
+    y `RemoteFacts`. **Los esquemas canónicos v2 se aceptan en modo estricto.**
+  - **No demostrado:**
+    - `Trailer` y la ascendencia de RED;
+    - `ls-remote` bajo el sandbox;
+    - la fidelidad del no ASCII con `cmd.exe`;
+    - la parte RED de `Tests`;
+    - **la cadena completa del mapa I62 de AP 16.13 (no ejecutada)**;
+    - nc2 y N5.
+  - La celda paró con el 83 % del tiempo sin usar.
+  - Defecto de la herramienta registrado: el contador `git_write` toma `merge-base` como `merge` y pone OP_A en false. Sin efecto en el veredicto.
+- **Consecuencia propuesta (A4-1, regla 4):** la celda del Controller no es elegible para la planificación ni para la verificación. Sin repetición.
+  FX-02 UNVERIFIED con esa causa salvo una actualización del runtime (A2-P2) u otra A-n. A2 no se solicita.

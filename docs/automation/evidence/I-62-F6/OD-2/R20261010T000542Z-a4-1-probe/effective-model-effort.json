@@ -1,0 +1,11 @@
+{
+ "SessionFiles": [
+  "rollout-2026-10-09T18-05-45-01a12321-44d6-7e80-8658-c1da39ddb9d8.jsonl"
+ ],
+ "Model": "gpt-6-luna",
+ "Effort": "high",
+ "Note": "leídos solo de turn_context/session_meta del registro de esta invocación; el registro no se versiona",
+ "SessionSha256": {
+  "rollout-2026-10-09T18-05-45-01a12321-44d6-7e80-8658-c1da39ddb9d8.jsonl": "9a7b634bbc656ed957e8e95e645d5338db07a576b489e169188961f6adb26b9c"
+ }
+}

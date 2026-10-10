@@ -1,0 +1,1 @@
+stage ok 13 archivos; 34 directorios creados

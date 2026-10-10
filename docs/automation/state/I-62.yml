@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §65; evidencia §119) — FX-02: kit de la sonda única A4-1 v3 congelado (0c992c15); lanzamiento en D:\\r62-fixture\\A2; después compare, custodia, preflight/P-07 y solicitud de apertura de A2; MAP_INVALID del fixture pendiente del Coordinator; sin FX-02 PASS anticipado"
+  next_action: "F6 (decisiones §65; evidencia §120) — FX-02: sonda única A4-1 = NOT_DEMONSTRATED (R20261010T000542Z-a4-1-probe); propuesta: Controller no elegible (A4-1 regla 4), FX-02 UNVERIFIED con causa salvo actualización del runtime (A2-P2) u otra A-n; MAP_INVALID del fixture, N9/N10 y claude-cli pendientes del Coordinator; A2 no solicitada; sin FX-02 PASS"
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual

@@ -1,0 +1,155 @@
+{
+ "RunId": "R20261010T000542Z-a4-1-probe",
+ "Verdict": "NOT_DEMONSTRATED",
+ "VerdictSource": "probe_tools.py compare (kit a4-probe-v3, congelado en 6f3b4de0)",
+ "Process": "exit=0 timed_out=no elapsed_s<=100",
+ "StartUtc": "2026-10-10T00:05:43Z",
+ "EndUtc": "2026-10-10T00:07:26Z",
+ "EffectiveModelEffort": {
+  "SessionFiles": [
+   "rollout-2026-10-09T18-05-45-01a12321-44d6-7e80-8658-c1da39ddb9d8.jsonl"
+  ],
+  "Model": "gpt-6-luna",
+  "Effort": "high",
+  "Note": "leídos solo de turn_context/session_meta del registro de esta invocación; el registro no se versiona",
+  "SessionSha256": {
+   "rollout-2026-10-09T18-05-45-01a12321-44d6-7e80-8658-c1da39ddb9d8.jsonl": "9a7b634bbc656ed957e8e95e645d5338db07a576b489e169188961f6adb26b9c"
+  }
+ },
+ "IdentityStable": true,
+ "HeadUnchanged": true,
+ "TrackedTreeUnchangedAndClean": true,
+ "IgnoredStatusUnchangedDuringRun": true,
+ "UnstageOk": true,
+ "RemoteReferenceStable": true,
+ "CommandAudit": {
+  "commands": 11,
+  "cmd": 11,
+  "failed": 4,
+  "powershell": 0,
+  "interpreter": 0,
+  "unix_tool": 0,
+  "forbidden_completed": 0,
+  "git_write": 2
+ },
+ "ToolDefect": {
+  "Id": "OP_A-git-write-false-positive",
+  "Detail": "la expresión de git_write de probe_tools.py (L1501) cuenta «git merge-base» como «merge» (\\b entre «merge» y «-»): los 2 git_write son falsos positivos y ponen OP_A_shell en false",
+  "CorrectedReading": "OP_A_shell demostrado: 11 comandos, los 11 con cmd.exe, 0 PowerShell, 0 intérpretes, 0 herramientas de Unix, 0 prohibidos completados, 0 escrituras Git; pasos 1-3 sin claves fallidas",
+  "EffectOnVerdict": "ninguno: B, C, D, E, F y G fallan por omisiones y errores reales de la celda"
+ },
+ "Operations": {
+  "OP_A_shell": false,
+  "OP_B_git_y_hashes": false,
+  "OP_C_fidelidad_de_entradas": false,
+  "OP_D_trx_y_ci": false,
+  "OP_E_mapa_I62": false,
+  "OP_F_esquemas_canonicos": false,
+  "OP_G_controles_negativos": false
+ },
+ "FailedKeysPerStep": {
+  "4": [
+   "4:commits",
+   "4:trailer:d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+   "4:trailer:ae25b596a11fe3508ac60a3ef7de5dc23df971ce"
+  ],
+  "6": [
+   "6:mb",
+   "6:anc:base-red",
+   "6:anc:red-head",
+   "6:anc:head-base",
+   "6:anc:ar-base"
+  ],
+  "9": [
+   "9:ls-remote:branch",
+   "9:ls-remote:main"
+  ],
+  "11": [
+   "11:md-line",
+   "11:md-nonascii-count",
+   "11:md-nonascii-chars",
+   "11:read-first",
+   "11:action-incompatible"
+  ],
+  "12": [
+   "12:yaml:automation_state.next_action"
+  ],
+  "13": [
+   "13:json:Objective",
+   "13:json:Invariants",
+   "13:json:Objective.nonascii-count",
+   "13:len:ForbiddenWriteScope"
+  ],
+  "15": [
+   "15:trxred:filter-selected",
+   "15:trxred:sha256-match"
+  ],
+  "18": [
+   "18:redpart:touches"
+  ],
+  "19": [
+   "19:trailer-commits",
+   "19:fp-merges",
+   "19:EFF",
+   "19:EFF^1",
+   "19:EFF^2",
+   "19:pre-rows",
+   "19:cid-in-pre"
+  ],
+  "20": [
+   "20:classify:decision-blob-type",
+   "20:classify:markers",
+   "20:classify:P"
+  ],
+  "21": [
+   "21:workflow-blob",
+   "21:ap-blob",
+   "21:entry-count",
+   "21:entry-line",
+   "21:r-count",
+   "21:r-line",
+   "21:entry-names-r"
+  ],
+  "22": [
+   "22:map-blob",
+   "22:schema-blob",
+   "22:mv1",
+   "22:mv2",
+   "22:mv3",
+   "22:mv4",
+   "22:mv5",
+   "22:mv6",
+   "22:mv7",
+   "22:mv4-mismatches",
+   "22:mv6-identical:docs/AUTOMATION_PLAN.md",
+   "22:mv6-identical:docs/INITIATIVE_LIFECYCLE.md",
+   "22:mv6-identical:docs/WORKFLOW.md",
+   "22:mv6-identical:docs/automation/agent-execution/README.md",
+   "22:mv6-identical:docs/automation/agent-execution/routing.md",
+   "22:mv6-identical:docs/initiatives/PROMPT_TEMPLATES.md",
+   "22:mv7-pointer-16",
+   "22:mv7-pointer-163",
+   "22:mv7-163-equal",
+   "22:map-verdict",
+   "22:mv-failed"
+  ],
+  "23": [
+   "23:res:mb",
+   "23:res:ext-diff:AGENTS.md",
+   "23:res:ext-diff:docs/AUTOMATION_PLAN.md",
+   "23:res:ar-base-diff",
+   "23:res:ar-base-clean"
+  ],
+  "26": [
+   "26:nc2-excluded"
+  ],
+  "30": [
+   "30:n5-field"
+  ]
+ },
+ "CanonicalSchemas": {
+  "PlanSchemaValid": true,
+  "VerifySchemaValid": true,
+  "Note": "codex-cli aceptó en --output-schema (modo estricto) los esquemas canónicos delegation.v2 y controller-verification.v2 tal cual, con minLength; el contenido falla donde depende de los pasos no demostrados"
+ }
+}

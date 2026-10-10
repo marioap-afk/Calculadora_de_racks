@@ -1,0 +1,1183 @@
+{
+ "Kit": "a41-v3",
+ "steps": {
+  "1": {
+   "ver": {
+    "v": null,
+    "cmp": "present"
+   },
+   "ComSpec": {
+    "v": "cmd.exe",
+    "cmp": "contains"
+   },
+   "cwd": {
+    "v": "D:/r62-fixture/A2",
+    "cmp": "path"
+   }
+  },
+  "2": {
+   "HEAD": {
+    "v": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "cmp": "hex"
+   },
+   "branch": {
+    "v": "fx/u1",
+    "cmp": "exact"
+   },
+   "toplevel": {
+    "v": "D:/r62-fixture/A2",
+    "cmp": "path"
+   },
+   "origin-branch": {
+    "v": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "cmp": "hex"
+   },
+   "origin-main": {
+    "v": "fbe25347799e5b801ef708454212335537448bd1",
+    "cmp": "hex"
+   }
+  },
+  "3": {
+   "paths": {
+    "v": [
+     "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+     "docs/automation/decisions/FX-U1.md",
+     "docs/automation/evidence/FX-U1-agent/qh/FX-U1-T1.contract.validation.json",
+     "docs/automation/evidence/FX-U1-agent/qh/state-r3.validation.json",
+     "docs/automation/state/FX-U1.yml"
+    ],
+    "cmp": "list"
+   },
+   "paths-2": {
+    "v": [
+     "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+     "docs/automation/decisions/FX-U1.md",
+     "docs/automation/evidence/FX-U1-agent/qh/FX-U1-T1.contract.validation.json",
+     "docs/automation/evidence/FX-U1-agent/qh/state-r3.validation.json",
+     "docs/automation/state/FX-U1.yml"
+    ],
+    "cmp": "list"
+   },
+   "identical": {
+    "v": "yes",
+    "cmp": "yesno"
+   }
+  },
+  "4": {
+   "commits": {
+    "v": [
+     "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+     "ae25b596a11fe3508ac60a3ef7de5dc23df971ce"
+    ],
+    "cmp": "hexlist"
+   },
+   "trailer:d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99": {
+    "v": "",
+    "cmp": "trailers"
+   },
+   "trailer:ae25b596a11fe3508ac60a3ef7de5dc23df971ce": {
+    "v": "Claude Opus 5.5 <noreply@anthropic.com>",
+    "cmp": "trailers"
+   }
+  },
+  "5": {
+   "diff-red-head": {
+    "v": [
+     ".github/workflows/fixture.yml",
+     ".gitignore",
+     "docs/automation/decisions/FX-U1.md",
+     "docs/automation/evidence/FX-U1-agent/qh/FX-U1-T1.contract.validation.json",
+     "docs/automation/evidence/FX-U1-agent/qh/state-r3.validation.json",
+     "docs/automation/evidence/FX-U1-agent/repair/B20261007T023706Z-5fdd.json",
+     "docs/automation/evidence/FX-U1-agent/repair/B20261007T023706Z-5fdd.validation.json",
+     "docs/automation/evidence/FX-U1-agent/repair/P20261007T023103Z-01b1.json",
+     "docs/automation/evidence/FX-U1-agent/repair/P20261007T023103Z-01b1.validation.json",
+     "docs/automation/evidence/FX-U1-agent/repair/qh/state-r5.validation.json",
+     "docs/automation/evidence/FX-U1-agent/repair/qr/B20261007T023706Z-5fdd.json",
+     "docs/automation/evidence/FX-U1-agent/repair/qr/B20261007T023706Z-5fdd.validation.json",
+     "docs/automation/evidence/FX-U1-agent/repair/qr/state-r4.validation.json",
+     "docs/automation/state/FX-U1.yml"
+    ],
+    "cmp": "list"
+   },
+   "rt": {
+    "v": [],
+    "cmp": "list"
+   }
+  },
+  "6": {
+   "mb": {
+    "v": "fbe25347799e5b801ef708454212335537448bd1",
+    "cmp": "hex"
+   },
+   "anc:base-red": {
+    "v": "yes",
+    "cmp": "yesno"
+   },
+   "anc:red-head": {
+    "v": "yes",
+    "cmp": "yesno"
+   },
+   "anc:head-base": {
+    "v": "no",
+    "cmp": "yesno"
+   },
+   "anc:ar-base": {
+    "v": "yes",
+    "cmp": "yesno"
+   }
+  },
+  "7": {
+   "hash-object:docs/automation/decisions/FX-U1-T1.gate-contract.json": {
+    "v": "628d89af5f21e4e14cbe7c3c14f0dd8fb5a490e0",
+    "cmp": "hex"
+   },
+   "rev-parse:docs/automation/decisions/FX-U1-T1.gate-contract.json": {
+    "v": "628d89af5f21e4e14cbe7c3c14f0dd8fb5a490e0",
+    "cmp": "hex"
+   },
+   "sha256:docs/automation/decisions/FX-U1-T1.gate-contract.json": {
+    "v": "8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc",
+    "cmp": "hex"
+   },
+   "hash-object:src/Fixture.Lib/Calculator.cs": {
+    "v": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+    "cmp": "hex"
+   },
+   "rev-parse:src/Fixture.Lib/Calculator.cs": {
+    "v": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+    "cmp": "hex"
+   },
+   "sha256:src/Fixture.Lib/Calculator.cs": {
+    "v": "a3996b93eafe1082b80565292fc4c867ca4f6673b93b34abe7daf1db157c301a",
+    "cmp": "hex"
+   },
+   "blob-at-ar:docs/automation/state/FX-U1.yml": {
+    "v": "52a3f7d77a4df1a2e70e5d443eece3384cebd670",
+    "cmp": "exact_ci"
+   },
+   "blob-at-ar:docs/automation/decisions/FX-U1-T1.gate-contract.json": {
+    "v": "rc=128",
+    "cmp": "exact_ci"
+   }
+  },
+  "8": {
+   "bad-rc": {
+    "v": 128,
+    "cmp": "int"
+   }
+  },
+  "9": {
+   "ls-remote:branch": {
+    "v": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "cmp": "hex"
+   },
+   "ls-remote:main": {
+    "v": "fbe25347799e5b801ef708454212335537448bd1",
+    "cmp": "hex"
+   }
+  },
+  "10": {
+   "status": {
+    "v": "",
+    "cmp": "block"
+   },
+   "status-ignored": {
+    "v": "!! artifacts/\n",
+    "cmp": "block"
+   },
+   "check-ignore": {
+    "v": ".gitignore:1:artifacts/orchestration/\tartifacts/orchestration/FX-U1/T1/0/R20261009T212000Z-a41c/output.json\n",
+    "cmp": "block"
+   },
+   "check-ignore-rc": {
+    "v": 0,
+    "cmp": "int"
+   }
+  },
+  "11": {
+   "md-line": {
+    "v": "**Lectura de este Coordinator.** «`protocol.g0_acceptance` cambia una sola vez» se refiere a la transición semántica de la aceptación (PENDING → ACCEPTED o",
+    "cmp": "verbatim"
+   },
+   "md-nonascii-count": {
+    "v": 6,
+    "cmp": "int"
+   },
+   "md-nonascii-chars": {
+    "v": "«=1;»=1;á=1;ó=2;→=1",
+    "cmp": "verbatim"
+   },
+   "read-first": {
+    "v": [
+     "docs/WORKFLOW.md",
+     "docs/AUTOMATION_PLAN.md",
+     "docs/automation/agent-execution/README.md"
+    ],
+    "cmp": "list"
+   },
+   "action-incompatible": {
+    "v": "dotnet test tests/Fixture.Tests/Fixture.Tests.csproj",
+    "cmp": "cmdline"
+   }
+  },
+  "12": {
+   "yaml:automation_state.initiative": {
+    "v": "FX-U1",
+    "cmp": "exact"
+   },
+   "yaml:automation_state.attempts": {
+    "v": "0",
+    "cmp": "exact"
+   },
+   "yaml:automation_state.branch": {
+    "v": "fx/u1",
+    "cmp": "exact"
+   },
+   "yaml:protocol.set": {
+    "v": "rackcad-protocol/I62",
+    "cmp": "exact"
+   },
+   "yaml:protocol.effective_sha": {
+    "v": "fbe25347799e5b801ef708454212335537448bd1",
+    "cmp": "exact"
+   },
+   "yaml:custody.task_intent.kind": {
+    "v": "FIRST",
+    "cmp": "exact"
+   },
+   "yaml:custody.task_intent.attempt": {
+    "v": "0",
+    "cmp": "exact"
+   },
+   "yaml:custody.chains.count": {
+    "v": 0,
+    "cmp": "int"
+   },
+   "yaml:max_attempts": {
+    "v": "ABSENT",
+    "cmp": "exact"
+   },
+   "yaml:automation_state.next_action": {
+    "v": "Designación por el Coordinator de un titular nuevo de FX-U1 (QR, T16; T22 con avance de main) para planificar T1; el titular liberado no opera",
+    "cmp": "verbatim"
+   }
+  },
+  "13": {
+   "json:Schema": {
+    "v": "\"rackcad-gate-contract/v2\"",
+    "cmp": "json"
+   },
+   "json:MainSha": {
+    "v": "\"fbe25347799e5b801ef708454212335537448bd1\"",
+    "cmp": "json"
+   },
+   "json:AuthorityRevision": {
+    "v": "\"1746b404e57d69170ecfc084fd24fa3e699916d7\"",
+    "cmp": "json"
+   },
+   "json:RoutingEnforcement": {
+    "v": "\"required\"",
+    "cmp": "json"
+   },
+   "json:CorrectionsAuthorized": {
+    "v": "true",
+    "cmp": "json"
+   },
+   "json:Objective": {
+    "v": "\"Añadir a Fixture.Lib la operación Calculator.Subtract(int a, int b) con su prueba en Fixture.Tests: primero la prueba en RED y después la implementación en GREEN.\"",
+    "cmp": "json"
+   },
+   "json:RoleRequirements[1].Independence[0].ReferenceRole": {
+    "v": "\"WORKER\"",
+    "cmp": "json"
+   },
+   "json:RequiredTests[0].Filter": {
+    "v": "\"FullyQualifiedName~Subtract\"",
+    "cmp": "json"
+   },
+   "json:Invariants": {
+    "v": "[\"Calculator.Add conserva su firma y su comportamiento.\", \"Sin paquetes ni dependencias nuevas.\", \"P-16: ningún artefacto nombra, configura ni usa un repositorio o una unidad reales.\"]",
+    "cmp": "json"
+   },
+   "json:Objective.nonascii-count": {
+    "v": 4,
+    "cmp": "int"
+   },
+   "len:AllowedWriteScope": {
+    "v": 3,
+    "cmp": "int"
+   },
+   "len:ForbiddenWriteScope": {
+    "v": 12,
+    "cmp": "int"
+   },
+   "len:RoleRequirements": {
+    "v": 4,
+    "cmp": "int"
+   },
+   "closure:AGENTS.md": {
+    "v": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+    "cmp": "hex"
+   },
+   "closure:docs/WORKFLOW.md": {
+    "v": "446c32ba6a91f9a712a0758038ae0a46ab1c970f",
+    "cmp": "hex"
+   },
+   "closure:docs/AUTOMATION_PLAN.md": {
+    "v": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+    "cmp": "hex"
+   },
+   "closure:docs/automation/agent-execution/README.md": {
+    "v": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+    "cmp": "hex"
+   },
+   "closure:docs/automation/agent-execution/routing.md": {
+    "v": "bba08fc4686d7192deeb559752636a467103b4b1",
+    "cmp": "hex"
+   },
+   "closure:docs/automation/decisions/FX-U1-T1.gate-contract.json": {
+    "v": "628d89af5f21e4e14cbe7c3c14f0dd8fb5a490e0",
+    "cmp": "hex"
+   },
+   "closure:docs/automation/state/FX-U1.yml": {
+    "v": "a9fea86d076d3a21a6217fa82641e33013fb1340",
+    "cmp": "hex"
+   },
+   "closure:docs/automation/decisions/FX-U1.md": {
+    "v": "3fcfffc1aa7ad442422d4da2e5edaf89c48239ea",
+    "cmp": "hex"
+   }
+  },
+  "14": {
+   "trx:sha256": {
+    "v": "4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513",
+    "cmp": "hex"
+   },
+   "trx:total": {
+    "v": 1,
+    "cmp": "int"
+   },
+   "trx:executed": {
+    "v": 1,
+    "cmp": "int"
+   },
+   "trx:passed": {
+    "v": 1,
+    "cmp": "int"
+   },
+   "trx:failed": {
+    "v": 0,
+    "cmp": "int"
+   },
+   "trx:notExecuted": {
+    "v": 0,
+    "cmp": "int"
+   },
+   "trx:tests": {
+    "v": [
+     "Fixture.Tests.CalculatorTests.AddSumsTwoIntegers"
+    ],
+    "cmp": "list"
+   },
+   "trx:failed-tests": {
+    "v": [],
+    "cmp": "list"
+   },
+   "trx:filter-selected": {
+    "v": 0,
+    "cmp": "int"
+   },
+   "trx:sha256-match": {
+    "v": "yes",
+    "cmp": "yesno"
+   }
+  },
+  "15": {
+   "trxred:sha256": {
+    "v": "86e62dceeecacc3a68a43972868c584ed58c32ac05b1d9c77acce7a3432a296e",
+    "cmp": "hex"
+   },
+   "trxred:total": {
+    "v": 2,
+    "cmp": "int"
+   },
+   "trxred:executed": {
+    "v": 2,
+    "cmp": "int"
+   },
+   "trxred:passed": {
+    "v": 1,
+    "cmp": "int"
+   },
+   "trxred:failed": {
+    "v": 1,
+    "cmp": "int"
+   },
+   "trxred:notExecuted": {
+    "v": 0,
+    "cmp": "int"
+   },
+   "trxred:tests": {
+    "v": [
+     "Fixture.Tests.CalculatorTests.AddSumsTwoIntegers",
+     "Fixture.Tests.CalculatorTests.SubtractReturnsDifference"
+    ],
+    "cmp": "list"
+   },
+   "trxred:failed-tests": {
+    "v": [
+     "Fixture.Tests.CalculatorTests.SubtractReturnsDifference"
+    ],
+    "cmp": "list"
+   },
+   "trxred:filter-selected": {
+    "v": 1,
+    "cmp": "int"
+   },
+   "trxred:sha256-match": {
+    "v": "yes",
+    "cmp": "yesno"
+   },
+   "trxred:filter-failed": {
+    "v": 1,
+    "cmp": "int"
+   }
+  },
+  "16": {
+   "handoff:present": {
+    "v": "yes",
+    "cmp": "yesno"
+   },
+   "handoff:valid-json": {
+    "v": "yes",
+    "cmp": "yesno"
+   },
+   "handoff:fields-match": {
+    "v": "yes",
+    "cmp": "yesno"
+   },
+   "handoff:CurrentSha": {
+    "v": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "cmp": "hex"
+   },
+   "handoff:sha256": {
+    "v": "49d459eaae3dda3c00c7fa8fc74388f75b299dcc73ca053bfd9bd1daa3743bd1",
+    "cmp": "hex"
+   },
+   "handoff:sha256-match": {
+    "v": "yes",
+    "cmp": "yesno"
+   },
+   "handoff:after-start": {
+    "v": "yes",
+    "cmp": "yesno"
+   }
+  },
+  "17": {
+   "rf:current-head": {
+    "v": "c785def9bcfa5b50f08e25ecc394649ae690a19a",
+    "cmp": "hex"
+   },
+   "rf:red-head": {
+    "v": "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+    "cmp": "hex"
+   },
+   "rf:current-jobs": {
+    "v": "fixture-build=success;fixture-tests=success",
+    "cmp": "exact"
+   },
+   "rf:red-jobs": {
+    "v": "fixture-build=success;fixture-tests=failure",
+    "cmp": "exact"
+   },
+   "rf:current-is-currentsha": {
+    "v": "no",
+    "cmp": "yesno"
+   },
+   "rf:lsremote-is-currentsha": {
+    "v": "yes",
+    "cmp": "yesno"
+   },
+   "rf:originmain-is-mainsha": {
+    "v": "yes",
+    "cmp": "yesno"
+   }
+  },
+  "18": {
+   "redpart:touches": {
+    "v": "no",
+    "cmp": "yesno"
+   }
+  },
+  "19": {
+   "trailer-commits": {
+    "v": [
+     "a9f6c929e74ef92edfee557c3572b090f48bc318"
+    ],
+    "cmp": "hexset"
+   },
+   "fp-merges": {
+    "v": [
+     "fbe25347799e5b801ef708454212335537448bd1"
+    ],
+    "cmp": "hexset"
+   },
+   "EFF": {
+    "v": "fbe25347799e5b801ef708454212335537448bd1",
+    "cmp": "hex"
+   },
+   "EFF^1": {
+    "v": "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+    "cmp": "hex"
+   },
+   "EFF^2": {
+    "v": "a9f6c929e74ef92edfee557c3572b090f48bc318",
+    "cmp": "hex"
+   },
+   "pre-rows": {
+    "v": 0,
+    "cmp": "int"
+   },
+   "cid-in-pre": {
+    "v": "no",
+    "cmp": "yesno"
+   }
+  },
+  "20": {
+   "classify:decision-blob-type": {
+    "v": "blob",
+    "cmp": "exact_ci"
+   },
+   "classify:markers": {
+    "v": "yes",
+    "cmp": "yesno"
+   },
+   "classify:P": {
+    "v": "I62",
+    "cmp": "exact_ci"
+   }
+  },
+  "21": {
+   "workflow-blob": {
+    "v": "446c32ba6a91f9a712a0758038ae0a46ab1c970f",
+    "cmp": "hex"
+   },
+   "ap-blob": {
+    "v": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+    "cmp": "hex"
+   },
+   "entry-count": {
+    "v": 1,
+    "cmp": "int"
+   },
+   "entry-line": {
+    "v": 614,
+    "cmp": "int"
+   },
+   "r-count": {
+    "v": 1,
+    "cmp": "int"
+   },
+   "r-line": {
+    "v": 717,
+    "cmp": "int"
+   },
+   "entry-names-r": {
+    "v": "yes",
+    "cmp": "yesno"
+   }
+  },
+  "22": {
+   "map-blob": {
+    "v": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+    "cmp": "hex"
+   },
+   "schema-blob": {
+    "v": "6b54dda9579d694200d8fc9ec26a4a846eef529b",
+    "cmp": "hex"
+   },
+   "mv1": {
+    "v": "pass",
+    "cmp": "passfail"
+   },
+   "mv2": {
+    "v": "pass",
+    "cmp": "passfail"
+   },
+   "mv3": {
+    "v": "fail",
+    "cmp": "passfail"
+   },
+   "mv4": {
+    "v": "fail",
+    "cmp": "passfail"
+   },
+   "mv5": {
+    "v": "pass",
+    "cmp": "passfail"
+   },
+   "mv6": {
+    "v": "fail",
+    "cmp": "passfail"
+   },
+   "mv7": {
+    "v": "fail",
+    "cmp": "passfail"
+   },
+   "mv3-changed": {
+    "v": [],
+    "cmp": "list"
+   },
+   "mv4-mismatches": {
+    "v": 7,
+    "cmp": "int"
+   },
+   "mv6-identical:docs/AUTOMATION_PLAN.md": {
+    "v": "yes",
+    "cmp": "exact_ci"
+   },
+   "mv6-identical:docs/INITIATIVE_LIFECYCLE.md": {
+    "v": "yes",
+    "cmp": "exact_ci"
+   },
+   "mv6-identical:docs/WORKFLOW.md": {
+    "v": "yes",
+    "cmp": "exact_ci"
+   },
+   "mv6-identical:docs/automation/agent-execution/README.md": {
+    "v": "yes",
+    "cmp": "exact_ci"
+   },
+   "mv6-identical:docs/automation/agent-execution/routing.md": {
+    "v": "yes",
+    "cmp": "exact_ci"
+   },
+   "mv6-identical:docs/initiatives/PROMPT_TEMPLATES.md": {
+    "v": "missing",
+    "cmp": "exact_ci"
+   },
+   "mv7-pointer-16": {
+    "v": "yes",
+    "cmp": "yesno"
+   },
+   "mv7-pointer-163": {
+    "v": "yes",
+    "cmp": "yesno"
+   },
+   "mv7-163-equal": {
+    "v": "no",
+    "cmp": "yesno"
+   },
+   "map-verdict": {
+    "v": "MAP_INVALID",
+    "cmp": "exact_ci"
+   },
+   "mv-failed": {
+    "v": "MV-3,MV-4,MV-6,MV-7",
+    "cmp": "idlist"
+   }
+  },
+  "23": {
+   "res:mb": {
+    "v": "fbe25347799e5b801ef708454212335537448bd1",
+    "cmp": "hex"
+   },
+   "res:ext-diff:AGENTS.md": {
+    "v": [],
+    "cmp": "list"
+   },
+   "res:ext-diff:docs/AUTOMATION_PLAN.md": {
+    "v": [],
+    "cmp": "list"
+   },
+   "res:ar-base-diff": {
+    "v": [
+     "docs/automation/decisions/FX-U1.md",
+     "docs/automation/evidence/FX-U1-agent/g0/B20261006T220601Z-cfe1.json",
+     "docs/automation/evidence/FX-U1-agent/g0/B20261006T220601Z-cfe1.validation.json",
+     "docs/automation/evidence/FX-U1-agent/g0/state-r2.validation.json",
+     "docs/automation/state/FX-U1.yml"
+    ],
+    "cmp": "list"
+   },
+   "res:ar-base-clean": {
+    "v": "yes",
+    "cmp": "yesno"
+   }
+  },
+  "24": {
+   "schema:delegation.v2": {
+    "v": "dfdbe461270e8fd92200c36bab78b9fdc3385014",
+    "cmp": "hex"
+   },
+   "schema:controller-verification.v2": {
+    "v": "e1faa9eca5c50b2b3a9f91575575614366962720",
+    "cmp": "hex"
+   }
+  },
+  "25": {
+   "nc1-field": {
+    "v": "CurrentSha",
+    "cmp": "exact_ci"
+   },
+   "nc1-rc": {
+    "v": 128,
+    "cmp": "int"
+   },
+   "nc1-Identity": {
+    "v": "fail",
+    "cmp": "passfail"
+   }
+  },
+  "26": {
+   "nc2-field": {
+    "v": "AllowedWriteScope",
+    "cmp": "exact_ci"
+   },
+   "nc2-excluded": {
+    "v": "docs/automation/evidence/FX-U1-agent/qh/FX-U1-T1.contract.validation.json",
+    "cmp": "list"
+   },
+   "nc2-Scope": {
+    "v": "fail",
+    "cmp": "passfail"
+   }
+  },
+  "27": {
+   "nc3-field": {
+    "v": "WorkCompleted",
+    "cmp": "exact_ci"
+   },
+   "nc3-term": {
+    "v": "GATE PASS",
+    "cmp": "exact_ci"
+   },
+   "nc3-FreeText": {
+    "v": "fail",
+    "cmp": "passfail"
+   }
+  },
+  "28": {
+   "nc4-field": {
+    "v": "AllowedWriteScope",
+    "cmp": "exact_ci"
+   },
+   "nc4-extra": {
+    "v": "docs/automation/state/",
+    "cmp": "list"
+   },
+   "nc4-A3": {
+    "v": "fail",
+    "cmp": "passfail"
+   }
+  },
+  "29": {
+   "n4-handoff-present": {
+    "v": "no",
+    "cmp": "yesno"
+   },
+   "n4-Handoff": {
+    "v": "fail",
+    "cmp": "passfail"
+   }
+  },
+  "30": {
+   "n5-field": {
+    "v": "RemoteFacts",
+    "cmp": "exact_ci"
+   },
+   "n5-selected": {
+    "v": 0,
+    "cmp": "int"
+   },
+   "n5-Tests": {
+    "v": "fail",
+    "cmp": "passfail"
+   }
+  },
+  "31": {
+   "n7a-field": {
+    "v": "RunId",
+    "cmp": "exact_ci"
+   },
+   "n7a-Handoff": {
+    "v": "fail",
+    "cmp": "passfail"
+   }
+  },
+  "32": {
+   "n7b-fields": {
+    "v": "CurrentSha,RunId",
+    "cmp": "idlist"
+   },
+   "n7b-Identity": {
+    "v": "fail",
+    "cmp": "passfail"
+   },
+   "n7b-Handoff": {
+    "v": "fail",
+    "cmp": "passfail"
+   }
+  }
+ },
+ "delegation": {
+  "exact": {
+   "Schema": "rackcad-delegation/v2",
+   "TaskId": "T1",
+   "RunId": "R20261009T210000Z-a41a",
+   "Initiative": "FX-U1",
+   "Unit": "FX-U1",
+   "Gate": "FX-U1-T1",
+   "Attempt": 0,
+   "AuthorityRevision": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+   "MainSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "BaseSha": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+   "ExpectedBranch": "fx/u1",
+   "Owner": {
+    "Kind": "session-internal",
+    "Id": "session-internal:R20261009T210000Z-a41a"
+   },
+   "Model": "claude-sonnet-5-5",
+   "RoutingEnforcement": "required",
+   "Authorities": [
+    {
+     "Path": "docs/automation/decisions/FX-U1.md",
+     "Section": "documento completo",
+     "Class": "UNIT_DOC"
+    },
+    {
+     "Path": "docs/automation/state/FX-U1.yml",
+     "Section": "documento completo",
+     "Class": "UNIT_DOC"
+    },
+    {
+     "Path": "src/Fixture.Lib/Calculator.cs",
+     "Section": "documento completo",
+     "Class": "UNIT_CHANGE"
+    },
+    {
+     "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+     "Section": "documento completo",
+     "Class": "UNIT_CHANGE"
+    },
+    {
+     "Path": "AGENTS.md",
+     "Section": "## Jobs requeridos",
+     "Class": "EXTERNAL"
+    },
+    {
+     "Path": "docs/AUTOMATION_PLAN.md",
+     "Section": "## 16. Ejecución delegada bajo orden del Coordinator",
+     "Class": "EXTERNAL"
+    }
+   ],
+   "Objective": "Añadir a Fixture.Lib la operación Calculator.Subtract(int a, int b) con su prueba en Fixture.Tests: primero la prueba en RED y después la implementación en GREEN.",
+   "AllowedWriteScope": [
+    "src/Fixture.Lib/Calculator.cs",
+    "tests/Fixture.Tests/CalculatorTests.cs",
+    "docs/automation/evidence/FX-U1-agent/**"
+   ],
+   "ForbiddenWriteScope": [
+    ".github/**",
+    ".gitattributes",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "FIXTURE-MANIFEST.json",
+    "docs/AUTOMATION_PLAN.md",
+    "docs/WORKFLOW.md",
+    "docs/INITIATIVE_LIFECYCLE.md",
+    "docs/automation/agent-execution/**",
+    "docs/automation/decisions/**",
+    "src/Fixture.Lib/Fixture.Lib.csproj",
+    "tests/Fixture.Tests/Fixture.Tests.csproj"
+   ],
+   "Invariants": [
+    "Calculator.Add conserva su firma y su comportamiento.",
+    "Sin paquetes ni dependencias nuevas.",
+    "P-16: ningún artefacto nombra, configura ni usa un repositorio o una unidad reales."
+   ],
+   "RequiredTests": [
+    {
+     "Project": "tests/Fixture.Tests/Fixture.Tests.csproj",
+     "Filter": "FullyQualifiedName~Subtract",
+     "MinSelected": 1,
+     "ExpectRed": true
+    }
+   ],
+   "ExpectedEvidence": [
+    "Commit RED con la prueba de Subtract y la corrida del fixture con fixture-tests en failure (RedPart).",
+    "Commit GREEN G con la implementación y la corrida push de G en refs/heads/fx/u1 con fixture-build y fixture-tests en success (Ci pass).",
+    "Diario de la ventana y Q7 en docs/automation/evidence/FX-U1-agent/."
+   ],
+   "MaxReworkLoops": 3,
+   "AttemptsRemaining": 3,
+   "ChainBaseSha": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+   "ChainRedSha": null,
+   "ChainRedFiles": [],
+   "CorrectionOf": null,
+   "ExpectedHandoffPath": "artifacts/orchestration/FX-U1/T1/0/{WorkRunId}/worker-handoff.json",
+   "IssuedBy": "EXECUTION_CONTROLLER (sonda A4-1, kit a41-v3)",
+   "RoleRequirements": [
+    {
+     "Role": "PRINCIPAL_COORDINATOR",
+     "Profile": "PRINCIPAL_COORDINATION",
+     "Action": "CUSTODY",
+     "Mandatory": [
+      "PRINCIPAL_COORDINATION.level",
+      "PRINCIPAL_COORDINATION.effort",
+      "PRINCIPAL_COORDINATION.remote-facts",
+      "PRINCIPAL_COORDINATION.introspection",
+      "PRINCIPAL_COORDINATION.repo-write"
+     ],
+     "Independence": [],
+     "EligibleCells": [],
+     "Materialization": null
+    },
+    {
+     "Role": "EXECUTION_CONTROLLER",
+     "Profile": "CONTROLLER_PLANNING",
+     "Action": "PLAN",
+     "Mandatory": [
+      "CONTROLLER_PLANNING.effort",
+      "CONTROLLER_PLANNING.level",
+      "CONTROLLER_PLANNING.read",
+      "CONTROLLER_PLANNING.tool-use",
+      "CONTROLLER_PLANNING.structured-output"
+     ],
+     "Independence": [
+      {
+       "ReferenceRole": "WORKER",
+       "Actor": "REQUIRED",
+       "Session": "REQUIRED",
+       "Context": "REQUIRED",
+       "Provider": "PREFERRED"
+      }
+     ],
+     "EligibleCells": [],
+     "Materialization": null
+    },
+    {
+     "Role": "WORKER",
+     "Profile": "ROUTINE_IMPLEMENTATION",
+     "Action": "IMPLEMENT",
+     "Mandatory": [
+      "ROUTINE_IMPLEMENTATION.effort",
+      "ROUTINE_IMPLEMENTATION.level",
+      "ROUTINE_IMPLEMENTATION.tool-use",
+      "ROUTINE_IMPLEMENTATION.write-commit-push"
+     ],
+     "Independence": [],
+     "EligibleCells": [],
+     "Materialization": null
+    },
+    {
+     "Role": "ARCHITECT",
+     "Profile": "ARCHITECTURE_REVIEW",
+     "Action": "REVIEW_DESIGN",
+     "Mandatory": [
+      "ARCHITECTURE_REVIEW.effort",
+      "ARCHITECTURE_REVIEW.level",
+      "ARCHITECTURE_REVIEW.read"
+     ],
+     "Independence": [
+      {
+       "ReferenceRole": "AUTHOR",
+       "Actor": "REQUIRED",
+       "Session": "REQUIRED",
+       "Context": "REQUIRED",
+       "Provider": "PREFERRED"
+      }
+     ],
+     "EligibleCells": [],
+     "Materialization": null
+    }
+   ],
+   "SupersededCommits": []
+  },
+  "ExpectedWorktree": "D:/r62-fixture/A2",
+  "StopConditions": [
+   {
+    "Id": "S-T1-01",
+    "Text": "Un cambio fuera de AllowedWriteScope o dentro de ForbiddenWriteScope: STOP sin corregir por cuenta propia."
+   },
+   {
+    "Id": "S-T1-02",
+    "Text": "Huella de codex-cli distinta de la línea base aceptada (P-01): STOP del transporte afectado."
+   },
+   {
+    "Id": "S-T1-03",
+    "Text": "Cualquier referencia a un repositorio o unidad reales (P-16): STOP."
+   }
+  ],
+  "ExecutorBase": {
+   "Provider": "anthropic",
+   "Transport": "claude-subagent",
+   "Role": "WORKER",
+   "BindingRef": {
+    "UnitId": "FX-U1",
+    "Scope": "TASK",
+    "TaskId": "T1",
+    "Role": "WORKER",
+    "BindingId": "B20261009T205000Z-a41d",
+    "Sha256": "2338a06c19e3f835ae9e49f2e709c4476ebee56c69dcd315041b8906d12db4ee",
+    "Location": {
+     "Kind": "TRANSIENT",
+     "Path": "artifacts/orchestration/FX-U1/T1/0/R20261009T210000Z-a41a/binding-worker.json",
+     "Commit": null,
+     "Blob": null
+    }
+   }
+  }
+ },
+ "cv": {
+  "exact": {
+   "Schema": "rackcad-controller-verification/v2",
+   "TaskId": "T1",
+   "RunId": "R20261009T212000Z-a41c",
+   "DelegationRunId": "R20261009T210000Z-a41a",
+   "WorkRunId": "R20261009T211000Z-a41b",
+   "Attempt": 0,
+   "VerifiedSha": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+   "Verifier": {
+    "Role": "EXECUTION_CONTROLLER",
+    "BindingRef": {
+     "UnitId": "FX-U1",
+     "Scope": "TASK",
+     "TaskId": "T1",
+     "Role": "EXECUTION_CONTROLLER",
+     "BindingId": "B20261009T205500Z-a41e",
+     "Sha256": "cb7b4eb1bad47dd09e70e63d8d7f758dabd33ff896a643ddeb423a76898d778f",
+     "Location": {
+      "Kind": "TRANSIENT",
+      "Path": "artifacts/orchestration/FX-U1/T1/0/R20261009T212000Z-a41c/binding-controller.json",
+      "Commit": null,
+      "Blob": null
+     }
+    },
+    "Actor": {
+     "AdapterId": "codex-cli",
+     "InstanceId": "NOT_OBSERVED",
+     "InstanceIdSource": "declaración de la sonda A4-1 (sin observación)",
+     "Assurance": "NONE"
+    }
+   },
+   "AuthorityResolution": [
+    {
+     "Path": "docs/automation/decisions/FX-U1.md",
+     "Section": "documento completo",
+     "Class": "UNIT_DOC",
+     "Mode": "NORMAL",
+     "RevisionSha": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+     "Parts": [],
+     "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+     "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+     "UnitProtocol": "rackcad-protocol/I62"
+    },
+    {
+     "Path": "docs/automation/state/FX-U1.yml",
+     "Section": "documento completo",
+     "Class": "UNIT_DOC",
+     "Mode": "NORMAL",
+     "RevisionSha": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+     "Parts": [],
+     "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+     "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+     "UnitProtocol": "rackcad-protocol/I62"
+    },
+    {
+     "Path": "src/Fixture.Lib/Calculator.cs",
+     "Section": "documento completo",
+     "Class": "UNIT_CHANGE",
+     "Mode": "NORMAL",
+     "RevisionSha": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+     "Parts": [],
+     "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+     "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+     "UnitProtocol": "rackcad-protocol/I62"
+    },
+    {
+     "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+     "Section": "documento completo",
+     "Class": "UNIT_CHANGE",
+     "Mode": "NORMAL",
+     "RevisionSha": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+     "Parts": [],
+     "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+     "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+     "UnitProtocol": "rackcad-protocol/I62"
+    },
+    {
+     "Path": "AGENTS.md",
+     "Section": "## Jobs requeridos",
+     "Class": "EXTERNAL",
+     "Mode": "NORMAL",
+     "RevisionSha": "fbe25347799e5b801ef708454212335537448bd1",
+     "Parts": [],
+     "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+     "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+     "UnitProtocol": "rackcad-protocol/I62"
+    },
+    {
+     "Path": "docs/AUTOMATION_PLAN.md",
+     "Section": "## 16. Ejecución delegada bajo orden del Coordinator",
+     "Class": "EXTERNAL",
+     "Mode": "NORMAL",
+     "RevisionSha": "fbe25347799e5b801ef708454212335537448bd1",
+     "Parts": [],
+     "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+     "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+     "UnitProtocol": "rackcad-protocol/I62"
+    }
+   ],
+   "Classification": "EXECUTION_BLOCKED",
+   "Disposition": "STOP",
+   "FailureClass": "Authority"
+  },
+  "checks": {
+   "Termination": "pass",
+   "Handoff": "pass",
+   "Authority": "fail",
+   "Contract": "pass",
+   "Identity": "pass",
+   "Remote": "pass",
+   "Scope": "fail",
+   "CleanTree": "pass",
+   "Ci": "fail",
+   "Ci.RedPart": "pass",
+   "Tests": "fail",
+   "Tests.RedPart": "pass",
+   "Trailer": "fail",
+   "Routing": "pass",
+   "FreeText": "pass",
+   "Denials": "pass"
+  },
+  "scope_diff": [
+   ".github/workflows/fixture.yml",
+   ".gitignore",
+   "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+   "docs/automation/decisions/FX-U1.md",
+   "docs/automation/evidence/FX-U1-agent/qh/FX-U1-T1.contract.validation.json",
+   "docs/automation/evidence/FX-U1-agent/qh/state-r3.validation.json",
+   "docs/automation/evidence/FX-U1-agent/repair/B20261007T023706Z-5fdd.json",
+   "docs/automation/evidence/FX-U1-agent/repair/B20261007T023706Z-5fdd.validation.json",
+   "docs/automation/evidence/FX-U1-agent/repair/P20261007T023103Z-01b1.json",
+   "docs/automation/evidence/FX-U1-agent/repair/P20261007T023103Z-01b1.validation.json",
+   "docs/automation/evidence/FX-U1-agent/repair/qh/state-r5.validation.json",
+   "docs/automation/evidence/FX-U1-agent/repair/qr/B20261007T023706Z-5fdd.json",
+   "docs/automation/evidence/FX-U1-agent/repair/qr/B20261007T023706Z-5fdd.validation.json",
+   "docs/automation/evidence/FX-U1-agent/repair/qr/state-r4.validation.json",
+   "docs/automation/state/FX-U1.yml"
+  ]
+ },
+ "meta": {
+  "lsremote_live": "fbe25347799e5b801ef708454212335537448bd1\tHEAD\n7cf79ffcd02c3d55e6740225a6138d0c66e099e0\trefs/heads/ci/smoke\na9f6c929e74ef92edfee557c3572b090f48bc318\trefs/heads/fixture/i62-norm\n95bdc29d428b35d2188a10e1c5462d6caf2be4df\trefs/heads/fx/u1\n13654f96be6dd1effc167d883a8e18fa718dd8fe\trefs/heads/fx/u1-fx05\n6b51b3787819b6be2cc410b2641415c5034c874f\trefs/heads/fx/u1-fx05-r2\nfbe25347799e5b801ef708454212335537448bd1\trefs/heads/main\nf38762375293d34d5cfefddadda8f770279db1cb\trefs/tags/test-activation/I-62\nfbe25347799e5b801ef708454212335537448bd1\trefs/tags/test-activation/I-62^{}\n",
+  "stage_head": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+  "remote_keys": [
+   "9:ls-remote:branch",
+   "9:ls-remote:main",
+   "17:rf:lsremote-is-currentsha",
+   "delegation:MainSha"
+  ]
+ }
+}
