@@ -5,10 +5,10 @@ automation_state:
   claim_id: 614371d5-441f-4f14-bac9-f97017105610
   current_phase: F1
   state: waiting
-  gate: owner-decision
+  gate: dependency
   attempts: 3
-  next_action: "Coordinator/Owner: ARCHITECT_CELL_REQUIRED para la revision formal de A-2 (ARCHITECTURE_REVIEW / Deep, independiente, solo lectura); falta ademas el texto literal de la orden de emergencia del Owner (evidencia §35)."
-  last_evidence_commit: 51bb9b94d8b98a35cae2f87a5c31f41daa2f159e
+  next_action: "Sesion (NIGHT RUN): revision formal del Architect del objeto exacto de A-3 (gpt-6.1-sol/high, medida por la sonda R20261010T024641Z-ed2c); evidencia §36."
+  last_evidence_commit: 153b48118156eadc7b210eafdcfdbf10169be119
 execution_context:
   mode: manual
   automation_enabled: false
@@ -26,18 +26,19 @@ execution_context:
   f1_blocking_dependency: "execution-protocol Scope enforcement / Controller negative-control defect"
   f1_resume_condition: "solo con una condicion autoritativa nueva: (A) evolucion integrada del protocolo que arregle o sustituya el control de Scope que fallo, o (B) enmienda autoritativa explicita con un control sustituto conforme y aplicable a I-64; al reanudar: rebase segun haga falta, conservar 39f7caa4 como evidencia historica de producto verificado, evaluar si basta repetir los controles o hace falta una verificacion nueva de la tarea, y no suponer que el nc2 anterior puede repetirse"
   f1_a1_status: "A-1 PROPUESTA (docs/initiatives/I-64-A-1.md, blob fb6a49c2, commit 22736034); revision independiente R20261010T012851Z-de0d = CHANGES_REQUIRED / NON_CONFORMING con 2 REQUIRED (I64-A1-M04: M-04 deberia ser YES y exigir Architect + Coordinator; I64-A1-I61-SUBSTITUTION: sustituye el actor y el metodo de README §10 y exige autoridad del dueno del protocolo o evidencia solo adicional); STOP al Coordinator; no activa; no ejecutada contra T1"
-  f1_a2_status: "A-2 PROPUESTA (docs/initiatives/I-64-A-2.md, blob de6f6088): excepcion de protocolo limitada a I-64; corrige A-1 para la activacion; M-04 = YES; Owner SATISFIED (orden de emergencia), Architect REQUIRED, Coordinator PENDING; verificador sin cambios (093a570f); revision del Architect NO lanzada: ARCHITECT_CELL_REQUIRED"
+  f1_a2_status: "A-2 PROPUESTA (blob de6f6088); revision formal del Architect R20261010T024843Z-f965 = CHANGES REQUIRED, 1 REQUIRED (I64-A2-RUNID-FAIL-OPEN); corregida por A-3; no activa"
+  f1_a3_status: "A-3 PROPUESTA (docs/initiatives/I-64-A-3.md): corrige A-2 para la activacion; verificador blob 8972e374 (fullmatch); autoprueba 25/25 PASS con regresion demostrada contra 093a570f; M-04 = YES; Owner SATISFIED (mandato de emergencia), Architect PENDING, Coordinator PENDING"
   max_attempts: 3
   persistent_next_action:
-    NEXT_ROLE: "Coordinator y Owner (celda del Architect y texto de la orden de emergencia); AUTONOMY_GAP-COORDINATOR: las ordenes llegan por el chat"
-    NEXT_ACTION: "decidir la celda de la revision formal de A-2 (ARCHITECTURE_REVIEW / Deep, independiente, solo lectura): p. ej. autorizar una sonda unica de gpt-6.1-sol (Codex CLI, solo lectura) u otra via con autoridad; y aportar el texto literal de la orden de emergencia del Owner para el objeto de revision"
-    TARGET_SHA: "la punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo (git log -1 -- docs/automation/state/I-64.yml); su padre es 51bb9b94d8b98a35cae2f87a5c31f41daa2f159e"
+    NEXT_ROLE: "Sesion responsable (NIGHT RUN; ejecucion autonoma hasta la primera frontera de autoridad no cubierta)"
+    NEXT_ACTION: "revision formal del Architect del objeto exacto de A-3; si AGREED con 0 REQUIRED y se cumplen los predicados de la orden NIGHT RUN, versionar Coordinator AGREED y ejecutar el puente contra T1"
+    TARGET_SHA: "la punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo (git log -1 -- docs/automation/state/I-64.yml); su padre es 153b48118156eadc7b210eafdcfdbf10169be119"
     GATE: F1 — Workspace Foundation
-    TASK: "I-64 A-2 / I64-SCOPE-BRIDGE-01 (fase B; STOP en ARCHITECT_CELL_REQUIRED)"
-    INPUTS_REQUIRED: "evidencia §§33-35; docs/initiatives/I-64-A-1.md y I-64-A-2.md; docs/automation/evidence/I-64-protocol-bridge/"
-    EXPECTED_RESULT: "celda elegible del Architect (o autorizacion de una medicion) y texto de la orden de emergencia; despues, la revision formal de A-2 (AGREED con 0 REQUIRED) y parada en COORDINATOR_A2_AGREEMENT_REQUIRED"
-    REMAINING_BUDGET: "F1-T1-MODEL sin presupuesto (planificacion 7/7, trabajo 4/4, verificacion 4/4, attempts 3/3); revision formal del Architect de A-2: 1 (sin consumir)"
-    STOP_CONDITION: "enrutar hacia abajo la revision del Architect o lanzar una medicion sin autorizacion; activar A-1 o A-2 o ejecutar el puente contra T1 sin acuerdo; cualquier invocacion de Codex con config.toml distinto de 73890CA3... (P-01); rebase; trabajo de F1-T2-BRIDGE; cambios de I-61 o I-62; reescribir el nc2 historico; declarar COMPLETE o F1 PASS"
+    TASK: "I-64 A-3 / I64-SCOPE-BRIDGE-01 (NIGHT RUN; revision del Architect de A-3)"
+    INPUTS_REQUIRED: "evidencia §§33-36; docs/initiatives/I-64-A-1.md, A-2 y A-3; docs/automation/evidence/I-64-protocol-bridge/"
+    EXPECTED_RESULT: "Architect AGREED con 0 REQUIRED sobre A-3 y Coordinator AGREED versionado; despues, puente REAL PASS y ADVERSARIAL FAIL esperado"
+    REMAINING_BUDGET: "F1-T1-MODEL sin presupuesto (planificacion 7/7, trabajo 4/4, verificacion 4/4, attempts 3/3); rondas de correccion del Architect tras A-2: 1 de 2 en curso"
+    STOP_CONDITION: "REQUIRED no corregible dentro del mandato; discrepancia de oraculo del puente; conflicto semantico de rebase; regresion de pruebas; CI no verde; sin presupuesto valido de T2; config.toml distinto de 73890CA3... (P-01); cambios de I-61 o I-62; reescribir el nc2 historico"
     OWNER_REQUIRED_IF: "OWNER-RESERVED (alcance, diferir sistemas, retirar OV); aceptacion del ADR 0047; Owner Validation y smokes (Smoke-1 tras F1 PASS y RELEASE de I-52); cambio de config.toml (P-01); credenciales, compras o sondas con consumo no cubierto; AutoCAD manual o cambios de seguridad"
   protocol_debt:
     - FINDING: "El Controller gpt-6-luna/high, pese a leer correctamente una delegacion con AllowedWriteScope que excluye el unico archivo modificado, puede emitir Scope=pass despues de que falle su operacion auxiliar de comparacion (nc2 R20261002T184050Z-8415; mismo patron en nc2 R20261002T151201Z-abb1)."
