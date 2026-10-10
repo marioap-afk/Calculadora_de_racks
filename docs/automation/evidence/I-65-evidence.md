@@ -159,3 +159,9 @@ Owner Validation: por determinar; no aplica a G0. Tag de integración: no existe
   las carpetas de RAM, ProgramData, AppData ni Documentos: UNKNOWN; puede contener secciones de usuario relevantes para Q-O2. Par de
   unidades de visualización por defecto del usuario: `CurrentUnit=4` (`KIP_FT`).
 
+- **Architect sobre P1 v3.2** (`54f17ef6`, blob `2fafe9c9…`, SHA-256 `96ae6ea9…db80`): sin defectos; no retira nada que la V3 deba
+  congelar; **puede autorizarse como la corrida definitiva**, sujeta a que el Owner autorice el cambio desde v3.1
+  ([architect-p1v32-diff.md](I-65-f0/architect-p1v32-diff.md)). RC-05 (extensión y efecto de `save_as`) queda UNKNOWN. Las unidades de
+  **carga distribuida** no se miden desde la v2 (fuera de V1): se informarán como DOCUMENTED ONLY / UNKNOWN; las de **momento** se
+  comprueban por las reacciones en `LB_IN` (N2: 1.0e5 lb·in; N1: 6.0e4 lb·in). Procedimiento de ejecución:
+  [p1-procedure.md](I-65-f0/p1-procedure.md).
