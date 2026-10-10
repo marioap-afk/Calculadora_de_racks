@@ -1,0 +1,351 @@
+
+$ git -C D:/r62-fixture/fixture-origin.git for-each-ref
+7cf79ffcd02c3d55e6740225a6138d0c66e099e0 commit	refs/heads/ci/smoke
+a9f6c929e74ef92edfee557c3572b090f48bc318 commit	refs/heads/fixture/i62-norm
+95bdc29d428b35d2188a10e1c5462d6caf2be4df commit	refs/heads/fx/u1
+13654f96be6dd1effc167d883a8e18fa718dd8fe commit	refs/heads/fx/u1-fx05
+6b51b3787819b6be2cc410b2641415c5034c874f commit	refs/heads/fx/u1-fx05-r2
+fbe25347799e5b801ef708454212335537448bd1 commit	refs/heads/main
+f38762375293d34d5cfefddadda8f770279db1cb tag	refs/tags/test-activation/I-62
+
+$ git -C D:/r62-fixture/fixture-origin.git log --graph --oneline --all
+* 95bdc29 FX-U1: orden FX-U1-O4 del Coordinator (titular nuevo por T16 y ventana 1 de T1)
+* c785def FX-U1: .gitignore del fixture (orden del Coordinator)
+* b6d294e FX-U1: TRX de fixture-tests como artefacto de diagnóstico de la CI (orden del Coordinator)
+* cabed54 FX-U1: QH del titular de reparación R (record_version 5)
+* ead6119 FX-U1: QR ORDINARY del titular de reparación R (record_version 4)
+* f4f5929 FX-U1: fe de erratas de la designación de R (commit de la propuesta)
+* 1d2f14b FX-U1: designación acotada del titular de reparación R (B20261007T023706Z-5fdd ACCEPTED; orden FX-U1-O3)
+* 9ce50a5 FX-U1: propuesta de binding del titular de reparación R (B20261007T023706Z-5fdd, PENDING)
+* badbf93 FX-U1: observación CUSTODY del titular de reparación R (preflight P20261007T023103Z-01b1)
+* cc21e1d FX-U1: orden FX-U1-O3 del Coordinator del fixture (reparación del QH r3 por un titular temporal R; lectura de StateRef a decisiones por añadido)
+* ae25b59 FX-U1: QH, intención T1 y liberación del Principal (record_version 3)
+* d30fb6a FX-U1: contrato de la tarea T1 (gate-contract/v2) y orden FX-U1-O2 del Coordinator del fixture (QH)
+* 1a4fc9c FX-U1: QU de aceptación G0 (record_version 2, I62_DELEGATED)
+* 5a3a7d6 FX-U1: decisión G0 del Coordinator del fixture (I62_DELEGATED, binding B20261006T220601Z-cfe1 ACCEPTED)
+* 1746b40 FX-U1: BOOTSTRAP de la unidad (record_version 1, G0 pendiente)
+* b9c554c FX-U1: autoverificación del Principal (preflights CUSTODY 1-4)
+* 54f2a4a FX-U1: orden FX-U1-O1 del Coordinator del fixture (apertura por su Principal)
+| * 6b51b37 FX-U1: gate de prueba G-FX05 declarado por el Coordinator del fixture (sistema bajo prueba)
+|/  
+| * 13654f9 FX-U1: gate de prueba G-FX05 declarado por el Coordinator del fixture (sistema bajo prueba)
+|/  
+* eea0114 claim: FX-U1 (unidad de prueba del fixture)
+| * 7cf79ff ci: humo del CI del fixture (la primera publicación de un repositorio vacío no dispara push)
+|/  
+*   fbe2534 Merge fixture/i62-norm: TEST-ACTIVATION de I-62 en el fixture
+|\  
+| * a9f6c92 F_norm: activación de prueba de las reglas I62 en el fixture (TEST-ACTIVATION)
+|/  
+* 930288c F_seed: autoridades de MC_I62 (byte a byte) y archivos FIXTURE_LOCAL
+
+$ git -C D:/r62-fixture/fixture-origin.git show -s --format=%H%nparents: %P%nsubject: %s%n--- body ---%n%b fbe25347799e5b801ef708454212335537448bd1
+fbe25347799e5b801ef708454212335537448bd1
+parents: 930288c51ab1b5dbd370c8ebf9206d78670b89a0 a9f6c929e74ef92edfee557c3572b090f48bc318
+subject: Merge fixture/i62-norm: TEST-ACTIVATION de I-62 en el fixture
+--- body ---
+TEST-ACTIVATION (plano c; no activa RackCad).
+
+Derived formal claim table:
+Initiative | ref | tip | original claim commit | Claim-Id | temporal evidence | transition
+
+
+$ git -C D:/r62-fixture/fixture-origin.git show -s --format=%H%nparents: %P%nsubject: %s%n--- body ---%n%b a9f6c929e74ef92edfee557c3572b090f48bc318
+a9f6c929e74ef92edfee557c3572b090f48bc318
+parents: 930288c51ab1b5dbd370c8ebf9206d78670b89a0
+subject: F_norm: activación de prueba de las reglas I62 en el fixture (TEST-ACTIVATION)
+--- body ---
+Agent-Protocol-Normative: I-62
+
+
+$ git -C D:/r62-fixture/fixture-origin.git show -s --format=%H%nparents: %P%nsubject: %s 930288c51ab1b5dbd370c8ebf9206d78670b89a0
+930288c51ab1b5dbd370c8ebf9206d78670b89a0
+parents: 
+subject: F_seed: autoridades de MC_I62 (byte a byte) y archivos FIXTURE_LOCAL
+
+$ git -C D:/r62-fixture/fixture-origin.git diff --name-status 930288c fbe2534
+M	FIXTURE-MANIFEST.json
+
+$ git -C D:/r62-fixture/fixture-origin.git diff --name-status 930288c a9f6c92
+M	FIXTURE-MANIFEST.json
+
+$ git -C D:/r62-fixture/fixture-origin.git diff --name-status a9f6c92 fbe2534
+
+$ git -C D:/r62-fixture/fixture-origin.git diff --stat 930288c fbe2534
+ FIXTURE-MANIFEST.json | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+$ git -C D:/r62-fixture/fixture-origin.git rev-parse fbe2534:docs/automation/agent-execution/compatibility/I62-clause-map.json fbe2534:docs/automation/agent-execution/compatibility/clause-map.schema.json
+4d49d3e1a63d2b6128c9d9eeac473156a421571a
+6b54dda9579d694200d8fc9ec26a4a846eef529b
+
+$ git -C D:/r62-fixture/fixture-origin.git log --all --format=%h %s --grep=^Agent-Protocol-Normative: I-62$
+a9f6c92 F_norm: activación de prueba de las reglas I62 en el fixture (TEST-ACTIVATION)
+
+$ git -C D:/r62-fixture/fixture-origin.git show 930288c:FIXTURE-MANIFEST.json --format= --
+{
+  "Schema": "rackcad-fixture-manifest/v1",
+  "Purpose": "I-62 F6, plano (c): sistema bajo prueba",
+  "SourceCommit": "6f0187cb30852971b49153c2763c8ba6caeaa64d",
+  "SourceRule": "MC_I62 = cierre de F4 (Proposal V14 §15); copias byte a byte de las autoridades",
+  "Entries": [
+    {
+      "Path": ".gitattributes",
+      "Kind": "FIXTURE_LOCAL",
+      "Reason": "bytes idénticos en todo clon: las copias conservan su blob de MC_I62"
+    },
+    {
+      "Path": ".github/workflows/fixture.yml",
+      "Kind": "FIXTURE_LOCAL",
+      "Reason": "CI del fixture: fixture-build y fixture-tests (D.2), contents: read, sin secretos"
+    },
+    {
+      "Path": "AGENTS.md",
+      "Kind": "FIXTURE_LOCAL",
+      "Reason": "AGENTS del fixture: autoridades leídas primero y jobs requeridos del fixture (D.1)"
+    },
+    {
+      "Path": "CLAUDE.md",
+      "Kind": "FIXTURE_LOCAL",
+      "Reason": "entrada automática de las sesiones Claude del fixture; sin hechos de ninguna unidad (D.6)"
+    },
+    {
+      "Path": "FIXTURE-MANIFEST.json",
+      "Kind": "FIXTURE_LOCAL",
+      "Reason": "este manifiesto (D.1)"
+    },
+    {
+      "Path": "README.md",
+      "Kind": "FIXTURE_LOCAL",
+      "Reason": "descripción del fixture"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Kind": "COPIED",
+      "SourceBlob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
+    },
+    {
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "Kind": "COPIED",
+      "SourceBlob": "f19896a8f1a7c82f74bac7231636f68462a87271"
+    },
+    {
+      "Path": "docs/WORKFLOW.md",
+      "Kind": "COPIED",
+      "SourceBlob": "446c32ba6a91f9a712a0758038ae0a46ab1c970f"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Kind": "COPIED",
+      "SourceBlob": "592dcfd45e8743fd83b3423249fbd3c73e3d3055"
+    },
+    {
+      "Path": "docs/automation/agent-execution/adapters/claude-cli.md",
+      "Kind": "COPIED",
+      "SourceBlob": "ae570380509cacabf11f757a27573bf6fe616a36"
+    },
+    {
+      "Path": "docs/automation/agent-execution/adapters/claude-desktop-session.md",
+      "Kind": "COPIED",
+      "SourceBlob": "7f45923527a860713819d1ccf29dcb375b680369"
+    },
+    {
+      "Path": "docs/automation/agent-execution/adapters/claude-subagent.md",
+      "Kind": "COPIED",
+      "SourceBlob": "e10926c048321227fa53fe839e01f113fb9adece"
+    },
+    {
+      "Path": "docs/automation/agent-execution/adapters/codex-cli.md",
+      "Kind": "COPIED",
+      "SourceBlob": "155f3469e345e2397fa26347a9cb52d6fdb91122"
+    },
+    {
+      "Path": "docs/automation/agent-execution/adapters/codex-desktop-session.md",
+      "Kind": "COPIED",
+      "SourceBlob": "02d6c33db60344943fbcd6fcdf347eefef06986f"
+    },
+    {
+      "Path": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+      "Kind": "COPIED",
+      "SourceBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a"
+    },
+    {
+      "Path": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "6b54dda9579d694200d8fc9ec26a4a846eef529b"
+    },
+    {
+      "Path": "docs/automation/agent-execution/model-catalog.md",
+      "Kind": "COPIED",
+      "SourceBlob": "166d978d114e635bbef67e295c2ec1da73af6d1f"
+    },
+    {
+      "Path": "docs/automation/agent-execution/prompting-guide.md",
+      "Kind": "COPIED",
+      "SourceBlob": "79754c724c6b1f534fd2e97c04918d21db53d54d"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Kind": "COPIED",
+      "SourceBlob": "bba08fc4686d7192deeb559752636a467103b4b1"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/adapters/claude-cli.facts.v1.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "2298c37641efff835d8e49861b1dd2d0bf1239dc"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "f246717f1cc2915bbac61ccd96fcd9676039b106"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/adapters/claude-subagent.facts.v1.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "3706be159871592e0c7e586fbaed3dcd3151b7a4"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/adapters/codex-cli.facts.v1.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "3d1b7478b433ebff2f882fb3edae82aff970d151"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/adapters/codex-desktop-session.facts.v1.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "bdf5c491829948f113c8736e476ecb90edcc9760"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/architect-review-result.v1.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "e7f5747ba3812c181237828fe72243523038e64f"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/automation-state.v2.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "b1105dc1c5ea29d1a717eefea03e5242423762d8"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/binding.v1.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "13501476b775ca18c4c61ba3e1793796b51067d9"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/controller-verification.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "72747225daa2a83ba139ec1ffacb57d8943cf0af"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "e1faa9eca5c50b2b3a9f91575575614366962720"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/delegation.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "62c026764a3b917c9b4ffeb6df049247ea613869"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/delegation.v2.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "dfdbe461270e8fd92200c36bab78b9fdc3385014"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/gate-contract.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "56ced893586abc4a571d842f631e435342906f6a"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/gate-contract.v2.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "f644bb1941656b65c62ee474bf37752d328fd091"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/input-closure.v1.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "6bdf71843e2c70362a5e2d0ea19c8891e22bcff6"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/input-fidelity.v1.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "e54990fc541b6420c3cddb45e1a7cc2fefd6c76b"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/normative-dependency-manifest.v1.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "7ff2127d28de2f126b98da7d4fb2ebb9520374ef"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/preflight.v1.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "6a0540796a473e887677e5043d2105b932b5865f"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/relay-record.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "2deba19606d058fd82b389687934b0c3dfef8c06"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/relay-record.v2.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "dca5b29c1a260b679efc0fb249c73850925302f0"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "a74288eb0e9da43f8a73701098cbff5086fee512"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "d54a7ae783ec83d055babdae090899908b616082"
+    },
+    {
+      "Path": "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+      "Kind": "COPIED",
+      "SourceBlob": "cc3c9cf76b2247f3312e99bd447554326cc3700a"
+    },
+    {
+      "Path": "src/Fixture.Lib/Calculator.cs",
+      "Kind": "FIXTURE_LOCAL",
+      "Reason": "biblioteca .NET mínima (D.1)"
+    },
+    {
+      "Path": "src/Fixture.Lib/Fixture.Lib.csproj",
+      "Kind": "FIXTURE_LOCAL",
+      "Reason": "biblioteca .NET mínima (D.1)"
+    },
+    {
+      "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+      "Kind": "FIXTURE_LOCAL",
+      "Reason": "pruebas xUnit del fixture (D.1)"
+    },
+    {
+      "Path": "tests/Fixture.Tests/Fixture.Tests.csproj",
+      "Kind": "FIXTURE_LOCAL",
+      "Reason": "pruebas xUnit del fixture (D.1)"
+    }
+  ],
+  "Activation": null
+}
+
+$ (fixture) ls-tree -r 930288c | wc -l ; existe docs/adr/ ? ; existe docs/initiatives/PROMPT_TEMPLATES.md ?
+47
+0
+
+$ git -C %USERPROFILE%/.codex/worktrees/architecture-portabilidad-coordinador-principal show -s --format=%H %s bb0d5522 6f0187cb
+bb0d5522e8411f66a51fdfb3f1f0d0514b737453 Merge I-63: parametros calculados y resumen de proyecto (ID20)
+6f0187cb30852971b49153c2763c8ba6caeaa64d I-62 F4-H: regresión de A-1, controles C-15/C-16/C-29/C-32/C-40/C-42 y paquete del gate
+
+$ git -C %USERPROFILE%/.codex/worktrees/architecture-portabilidad-coordinador-principal merge-base bb0d5522 6f0187cb
+bb0d5522e8411f66a51fdfb3f1f0d0514b737453
+
+$ git -C %USERPROFILE%/.codex/worktrees/architecture-portabilidad-coordinador-principal ls-tree -r --name-only bb0d5522 -- docs/automation/agent-execution
+docs/automation/agent-execution/README.md
+docs/automation/agent-execution/model-catalog.md
+docs/automation/agent-execution/prompting-guide.md
+docs/automation/agent-execution/routing.md
+docs/automation/agent-execution/schemas/controller-verification.schema.json
+docs/automation/agent-execution/schemas/delegation.schema.json
+docs/automation/agent-execution/schemas/gate-contract.schema.json
+docs/automation/agent-execution/schemas/relay-record.schema.json
+docs/automation/agent-execution/schemas/worker-handoff.schema.json

@@ -1,0 +1,35 @@
+[opción (a): main-r2 en el clon del fixture; FX-U1 actual clasificada contra EFF'] MainSha_eval=28d8bcb85554d8bffa0842afba62efbc2049a3bb
+  Derive: EFF {'EFF': '28d8bcb85554', 'EFF^1': '55d190043458', 'EFF^2': 'a274a22ca60e'}
+  TrailerCommits alcanzables: ['a274a22ca60e']
+  E2 |X|=1  E3 |R|=1  descubrimiento=literal:True
+  PRE: OK (filas 0)
+  MV-1 pass
+  MV-2 pass
+  MV-3 pass
+  MV-4 pass
+  MV-5 pass
+  MV-6 pass
+  MV-7 pass
+  Classify(FX-U1 @ 95bdc29d428b) = UNKNOWN (paso 5: protocol.effective_sha / set / claim_id no coinciden con EFF; effective_sha es inmutable desde el BOOTSTRAP)
+  Blobs invalidadores EFF vs 95bdc29d428b: todos iguales
+  VEREDICTO: MAP_VALID (Evaluate E1-E3 sin STOP; Resolve paso 2 superado)
+exit=0
+[opción (a): main (linaje r1) en el mismo clon] MainSha_eval=fbe25347799e5b801ef708454212335537448bd1
+  Derive: EFF {'EFF': 'fbe25347799e', 'EFF^1': '930288c51ab1', 'EFF^2': 'a9f6c929e74e'}
+  TrailerCommits alcanzables: ['a9f6c929e74e']
+  E2 |X|=1  E3 |R|=1  descubrimiento=literal:True
+  PRE: OK (filas 0)
+  MV-1 pass
+  MV-2 pass
+  MV-3 FAIL (31)
+  MV-4 FAIL (7)
+      [informativo] FileKind contra la derivación: 24 archivos ADDED/ENTRY ya presentes en EFF^1
+  MV-5 pass
+  MV-6 FAIL (69)
+      ... (29 más; ver el JSON)
+  MV-7 FAIL (2)
+  VEREDICTO: MAP_INVALID
+exit=0
+== commits con el trailer en TODO el repositorio (git log --all)
+a274a22 F_norm (r2): activación de prueba de las reglas I62 en el fixture (TEST-ACTIVATION)
+a9f6c92 F_norm: activación de prueba de las reglas I62 en el fixture (TEST-ACTIVATION)

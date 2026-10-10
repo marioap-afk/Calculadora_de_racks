@@ -1,0 +1,7 @@
+N-1 PROMPT_TEMPLATES ausente en EFF^1              esperado=['MV-4', 'MV-6']             obtenido=MAP_INVALID ['MV-4', 'MV-6'] -> OK
+N-2 AGENTS.md cambiado en la rama de activación    esperado=['MV-3']                     obtenido=MAP_INVALID ['MV-3'] -> OK
+N-3 ADR-0048 ausente en EFF                        esperado=['MV-3', 'MV-4']             obtenido=MAP_INVALID ['MV-3', 'MV-4'] -> OK
+N-4 trailer duplicado en main                      esperado=ACTIVATION_INVALID           obtenido=ACTIVATION_INVALID (trailer duplicado) [] -> OK
+N-5 merge sin tabla PRE                            esperado=ACTIVATION_INVALID           obtenido=ACTIVATION_INVALID (PRE ausente) [] -> OK
+N-6 puntero de §16 retirado del AP en EFF          esperado=['MV-4', 'MV-7']             obtenido=MAP_INVALID ['MV-4', 'MV-7'] -> OK
+N-7 punteros de §16 y 16.3 retirados en EFF        esperado=['MV-4', 'MV-6', 'MV-7']     obtenido=MAP_INVALID ['MV-4', 'MV-6', 'MV-7'] -> OK

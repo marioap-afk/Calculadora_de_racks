@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §66; evidencia §121) — A4-1 NOT_DEMONSTRATED; FX-02 UNVERIFIED (C-24 no PASS); en preparación: caracterización de MAP_INVALID y reconstrucción de la activación con análisis de efectos, opciones permitidas de Codex, paquete de medición de claude-cli (sin ejecutar), disposición de N9/N10, F7; informe de opciones de recuperación; sin A2"
+  next_action: "F6 (decisiones §66; evidencia §123) — FX-02 UNVERIFIED: bloqueo A (Controller, A4-1 NOT_DEMONSTRATED; opciones A1 actualización real / A3 A-n futura no creada) y bloqueo B (MAP_INVALID: candidato de repositorio nuevo MAP_VALID listo, sin tocar refs); paquete de medición de claude-cli preparado (riesgo R1 de $schema pendiente del Coordinator); N9/N10 en borrador; F7 r5; informe de opciones entregado; sin A2"
   last_evidence_commit: a8c6af16450e4cdae214614b38d997d1438c37a9
 execution_context:
   mode: manual

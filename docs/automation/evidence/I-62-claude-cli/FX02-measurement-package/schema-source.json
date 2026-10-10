@@ -1,0 +1,26 @@
+{
+ "Schema": "rackcad-ccli-meas-schema-source/v1",
+ "File": "architect-review-result.v1.schema.json",
+ "Title": "rackcad-architect-review-result/v1",
+ "Sha256": "9f4639da1d7611083269ca750b632badc5afba2693818c80aaf22723791c7608",
+ "GitBlob": "e7f5747ba3812c181237828fe72243523038e64f",
+ "Copy": "byte a byte (VERBATIM): el SHA-256 y el blob del archivo del paquete son los del canónico",
+ "Sources": [
+  {
+   "Repo": "worktree de I-62 (%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal)",
+   "Path": "docs/automation/agent-execution/schemas/architect-review-result.v1.schema.json",
+   "AtCommit": "6d62679409c4cb83d0f4a4cee8fbc1bc945a547b",
+   "IntroducedBy": "421155030d997700a9e81cf31da28c27f9bf1e62",
+   "Blob": "e7f5747ba3812c181237828fe72243523038e64f"
+  },
+  {
+   "Repo": "D:\\r62-fixture\\fixture-origin.git (fixture)",
+   "Path": "docs/automation/agent-execution/schemas/architect-review-result.v1.schema.json",
+   "AtCommit": "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+   "IntroducedBy": "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+   "Blob": "e7f5747ba3812c181237828fe72243523038e64f"
+  }
+ ],
+ "TransportRendering": "VERBATIM: --json-schema recibe json.dumps(json.load(archivo), separators=(',', ':'), ensure_ascii=True), el mismo documento JSON (incluido \"$schema\": \"https://json-schema.org/draft/2020-12/schema\")",
+ "AcceptanceRisk": "INFERENCIA por análisis estático del binario 2.1.293 (leído como datos, sin ejecutarlo): la ruta de --json-schema valida el esquema con la clase Ajv por defecto (meta-esquema draft-07) y llama a validateSchema; con un $schema de draft 2020-12 esa llamada lanza «no schema with key or ref» y la CLI termina con «Error: --json-schema is not a valid JSON Schema: …» antes de cualquier llamada al modelo. Ver README §7 y dry-run-report (DR-11)."
+}

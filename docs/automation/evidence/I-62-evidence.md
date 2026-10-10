@@ -3510,3 +3510,33 @@ solo desde artefactos custodiados.
   - las precondiciones de N8, N9 y N10 no son acreditables con A4-1 NOT_DEMONSTRATED.
 - **F6 README:** filas de FX-02, C-24 y C-25a al día (§60, §66). La causa de C-26 «OD-3 = RECHAZAR» queda marcada como desfasada; su reclasificación
   es del Coordinator.
+
+## 123. MAP_INVALID caracterizado con candidato MAP_VALID; paquete de medición de `claude-cli` preparado; informe de opciones de FX-02 (decisiones §66)
+
+- **MAP_INVALID** ([caracterización](I-62-F6/MAP-INVALID/characterization.md); [plan](I-62-F6/MAP-INVALID/reconstruction-plan.md);
+  [efectos](I-62-F6/MAP-INVALID/effects.md)):
+  - **Causa exacta:** el constructor del fixture llenó el seed (EFF^1 `930288c5`) con MC_I62 `6f0187cb` en lugar de la base I-61 `bb0d5522`, que es
+    de donde salen los `BaseBlob` del mapa. Comprobado en RackCad: 6/6 `BaseBlob` = `bb0d5522`; 31/31 `EffBlob` = `6f0187cb`. Además faltaban
+    ADR-0048 y `PROMPT_TEMPLATES.md`, y el commit del trailer solo tocaba el manifiesto.
+  - El mapa es correcto. En el fixture actual: MV-1, MV-2 y MV-5 pasan; MV-3, MV-4 (7), MV-6 (69) y MV-7 (2) fallan.
+  - El linaje actual no se puede reparar hacia delante: un segundo trailer daría ACTIVATION_INVALID.
+- **Candidato** (opción b, repositorio de fixture nuevo), construido y probado solo en clones temporales ya borrados, sin tocar ninguna ref:
+  - **MAP_VALID:** MV-1..MV-7, EFF único, F4 `clause_map.py` EQUAL y 7 negativos que fallan como deben;
+  - reproducible ([paquete git](I-62-F6/MAP-INVALID/candidate-b.bundle) `59b24493…`);
+  - autoridades y blobs invalidadores idénticos a los del fixture actual.
+  - **Efectos:** ningún resultado acreditado se invalida. FX-U1 no se puede trasladar (`effective_sha` inmutable), así que hace falta una unidad nueva.
+    C-22 y el oráculo de C-25a piden disposición, y el presupuesto de la sesión de Principal no está cubierto.
+- **`claude-cli`** ([paquete preparado, NO ejecutado](I-62-claude-cli/FX02-measurement-package/README.md); `MANIFEST.json` `e67bd195…`):
+  - mide las operaciones 5 (esquema canónico), 7 y 8 (árbol de procesos con dos muestreadores) y 9 (huella: hashes y nombres de las claves de
+    configuración, nunca valores);
+  - ensayo en seco 23/23 sin invocar `claude`.
+  - **Riesgo R1:** `--json-schema` valida con el Ajv por defecto (draft-07) y el esquema canónico declara `$schema` draft 2020-12, así que es probable
+    un rechazo inmediato que consumiría la única invocación. Las revisiones que funcionaron pasaron esquemas sin `$schema`. La sonda A4-1 incrustó
+    los canónicos también sin `$schema`.
+  - **No se pide** `CLAUDE-CLI-MEDICION-FX02` al Owner hasta que el Coordinator decida R1 (§66, punto 6: paquete exacto y vigente).
+- **Opciones de recuperación** ([informe](I-62-F6/FX-02/s66/recovery-options.md)):
+  - el bloqueo A (Controller) admite A1, una actualización real de Codex sin A-n; A2, la alternativa autorizada, no existe; A3 sería una A-n futura,
+    no creada; A4, aceptar UNVERIFIED, deja F6 sin cierre;
+  - el bloqueo B (mapa) se resuelve con B1, un repositorio nuevo; B2 no se recomienda y B3 queda excluida;
+  - VERIFIED solo es posible con B1 + A1 o B1 + A3-i;
+  - Codex sin actualización a las 01:16Z.

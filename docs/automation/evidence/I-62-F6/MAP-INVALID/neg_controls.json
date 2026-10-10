@@ -1,0 +1,88 @@
+[
+ {
+  "Case": "N-1 PROMPT_TEMPLATES ausente en EFF^1",
+  "Tip": "a32b0af7976f0933e2dc1a13783f9c29cc640623",
+  "Expected": [
+   "MV-4",
+   "MV-6"
+  ],
+  "Verdict": "MAP_INVALID",
+  "MVFailed": [
+   "MV-4",
+   "MV-6"
+  ],
+  "AsExpected": true
+ },
+ {
+  "Case": "N-2 AGENTS.md cambiado en la rama de activación",
+  "Tip": "b30f17cd9834f281301b055129a381e4b3e11c58",
+  "Expected": [
+   "MV-3"
+  ],
+  "Verdict": "MAP_INVALID",
+  "MVFailed": [
+   "MV-3"
+  ],
+  "AsExpected": true
+ },
+ {
+  "Case": "N-3 ADR-0048 ausente en EFF",
+  "Tip": "220a60ab2c187a5ea7d2f62df7b5d618f565e1e4",
+  "Expected": [
+   "MV-3",
+   "MV-4"
+  ],
+  "Verdict": "MAP_INVALID",
+  "MVFailed": [
+   "MV-3",
+   "MV-4"
+  ],
+  "AsExpected": true
+ },
+ {
+  "Case": "N-4 trailer duplicado en main",
+  "Tip": "8fc44499470a6ddfd08c81402e503150def8f7dd",
+  "Expected": "ACTIVATION_INVALID",
+  "Verdict": "ACTIVATION_INVALID (trailer duplicado)",
+  "MVFailed": [],
+  "AsExpected": true
+ },
+ {
+  "Case": "N-5 merge sin tabla PRE",
+  "Tip": "a974b5bc2cc48e88d672b24d022ea8c1978be0ba",
+  "Expected": "ACTIVATION_INVALID",
+  "Verdict": "ACTIVATION_INVALID (PRE ausente)",
+  "MVFailed": [],
+  "AsExpected": true
+ },
+ {
+  "Case": "N-6 puntero de §16 retirado del AP en EFF",
+  "Tip": "170c137ae7723bb1aacbeb7f2d578134f29926bc",
+  "Expected": [
+   "MV-4",
+   "MV-7"
+  ],
+  "Verdict": "MAP_INVALID",
+  "MVFailed": [
+   "MV-4",
+   "MV-7"
+  ],
+  "AsExpected": true
+ },
+ {
+  "Case": "N-7 punteros de §16 y 16.3 retirados en EFF",
+  "Tip": "bb299f1cf27d72a7f5a7dbdc9e43a47a6c7ef2d3",
+  "Expected": [
+   "MV-4",
+   "MV-6",
+   "MV-7"
+  ],
+  "Verdict": "MAP_INVALID",
+  "MVFailed": [
+   "MV-4",
+   "MV-6",
+   "MV-7"
+  ],
+  "AsExpected": true
+ }
+]

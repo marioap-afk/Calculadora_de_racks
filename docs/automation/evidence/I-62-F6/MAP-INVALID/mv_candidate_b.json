@@ -1,0 +1,142 @@
+{
+ "Label": "candidato (b) main",
+ "MainRef": "refs/heads/main",
+ "MainSha_eval": "88ab34c398f03070c94a584f95196a394d869f7c",
+ "Stops": [],
+ "Derive": {
+  "TrailerCommits": [
+   "df3d51a27d83f5f47604f2057ee18dd4f48f02db"
+  ],
+  "Result": "EFF",
+  "EFF": "88ab34c398f03070c94a584f95196a394d869f7c",
+  "EFF^1": "55d190043458f461f187588ea79d8e9839440e28",
+  "EFF^2": "df3d51a27d83f5f47604f2057ee18dd4f48f02db"
+ },
+ "E1": {
+  "WorkflowBlob": "446c32ba6a91f9a712a0758038ae0a46ab1c970f"
+ },
+ "E2": {
+  "EntryCount": 1,
+  "EFF": "88ab34c398f03070c94a584f95196a394d869f7c"
+ },
+ "E3": {
+  "NamedHeading": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
+  "RCount": 1,
+  "AutomationPlanBlob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+  "NamedEqualsLiteral": true
+ },
+ "Discovery": {
+  "MapPath": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+  "SchemaPath": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
+  "Surfaces": [
+   "AGENTS.md",
+   "CLAUDE.md",
+   "docs/AUTOMATION_PLAN.md",
+   "docs/FOUNDATIONS.md",
+   "docs/INITIATIVE_LIFECYCLE.md",
+   "docs/WORKFLOW.md",
+   "docs/adr/",
+   "docs/automation/agent-execution/",
+   "docs/initiatives/PROMPT_TEMPLATES.md"
+  ],
+  "MatchesLiterals": true
+ },
+ "PRE": {
+  "Result": "OK",
+  "Header": [
+   "Initiative",
+   "ref",
+   "tip",
+   "original claim commit",
+   "Claim-Id",
+   "temporal evidence",
+   "transition"
+  ],
+  "ClaimIds": [],
+  "Rows": 0
+ },
+ "EFFSubjects": {
+  "EFF": "Merge fixture/i62-norm: TEST-ACTIVATION de I-62 en el fixture (linaje r2)",
+  "EFF^1": "F_seed (r2): autoridades I-61 de la base del mapa (RackCad bb0d5522, byte a byte) y archivos FIXTURE_LOCAL",
+  "EFF^2": "F_norm (r2): activación de prueba de las reglas I62 en el fixture (TEST-ACTIVATION)"
+ },
+ "Validate": {
+  "MV-1": {
+   "pass": true,
+   "fail": [],
+   "MapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "SchemaBlob": "6b54dda9579d694200d8fc9ec26a4a846eef529b"
+  },
+  "MV-2": {
+   "pass": true,
+   "fail": []
+  },
+  "MV-3": {
+   "pass": true,
+   "fail": [],
+   "ChangedUnderSurfaces": [
+    "docs/AUTOMATION_PLAN.md",
+    "docs/INITIATIVE_LIFECYCLE.md",
+    "docs/WORKFLOW.md",
+    "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md",
+    "docs/automation/agent-execution/README.md",
+    "docs/automation/agent-execution/adapters/claude-cli.md",
+    "docs/automation/agent-execution/adapters/claude-desktop-session.md",
+    "docs/automation/agent-execution/adapters/claude-subagent.md",
+    "docs/automation/agent-execution/adapters/codex-cli.md",
+    "docs/automation/agent-execution/adapters/codex-desktop-session.md",
+    "docs/automation/agent-execution/compatibility/clause-map.schema.json",
+    "docs/automation/agent-execution/routing.md",
+    "docs/automation/agent-execution/schemas/adapters/claude-cli.facts.v1.schema.json",
+    "docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json",
+    "docs/automation/agent-execution/schemas/adapters/claude-subagent.facts.v1.schema.json",
+    "docs/automation/agent-execution/schemas/adapters/codex-cli.facts.v1.schema.json",
+    "docs/automation/agent-execution/schemas/adapters/codex-desktop-session.facts.v1.schema.json",
+    "docs/automation/agent-execution/schemas/architect-review-result.v1.schema.json",
+    "docs/automation/agent-execution/schemas/automation-state.v2.schema.json",
+    "docs/automation/agent-execution/schemas/binding.v1.schema.json",
+    "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json",
+    "docs/automation/agent-execution/schemas/delegation.v2.schema.json",
+    "docs/automation/agent-execution/schemas/gate-contract.v2.schema.json",
+    "docs/automation/agent-execution/schemas/input-closure.v1.schema.json",
+    "docs/automation/agent-execution/schemas/input-fidelity.v1.schema.json",
+    "docs/automation/agent-execution/schemas/normative-dependency-manifest.v1.schema.json",
+    "docs/automation/agent-execution/schemas/preflight.v1.schema.json",
+    "docs/automation/agent-execution/schemas/relay-record.v2.schema.json",
+    "docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json",
+    "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json",
+    "docs/initiatives/PROMPT_TEMPLATES.md"
+   ],
+   "FilesCount": 31
+  },
+  "MV-4": {
+   "pass": true,
+   "fail": [],
+   "FileKindDerivation": [],
+   "Note": "MV-4 literal; FileKindDerivation (ADDED/ENTRY presentes en EFF^1, R61 b) se informa aparte y no altera el recuento literal"
+  },
+  "MV-5": {
+   "pass": true,
+   "fail": []
+  },
+  "MV-6": {
+   "pass": true,
+   "fail": [],
+   "DerivedEntries": 70,
+   "DerivedByKind": {
+    "MODIFIED": 15,
+    "REMOVED": 0,
+    "ADDED": 53,
+    "ENTRY": 2
+   },
+   "MapEntries": 70
+  },
+  "MV-7": {
+   "pass": true,
+   "fail": []
+  }
+ },
+ "MapVerdict": "MAP_VALID",
+ "MVFailed": [],
+ "Verdict": "MAP_VALID (Evaluate E1-E3 sin STOP; Resolve paso 2 superado)"
+}

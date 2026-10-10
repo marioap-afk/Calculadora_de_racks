@@ -1,0 +1,905 @@
+{
+ "Schema": "rackcad-ccli-meas-dry-run/v1",
+ "RunId": "R20261010T012414Z-d6d8",
+ "At": "2026-10-10T02:04:45.481633Z",
+ "DurationS": 76.3,
+ "ManifestSha256": "e67bd195f4ebfab61cdf9bda6c104ae7ab303cd9e13b2655e8be97cadd586814",
+ "ClaudeInvoked": false,
+ "Passed": 23,
+ "Total": 23,
+ "Steps": [
+  {
+   "Id": "DR-00",
+   "Title": "measure() rechaza el binario claude con CCLI_DRYRUN=1 (sin ejecutarlo)",
+   "Expected": "RuntimeError antes de cualquier Popen",
+   "Observed": {
+    "Refused": true
+   },
+   "Pass": true
+  },
+  {
+   "Id": "DR-01",
+   "Title": "clon de ensayo creado y verificado (G3)",
+   "Expected": "G3 Ok",
+   "Observed": {
+    "Ok": true,
+    "Head": "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+    "Branches": [
+     "main"
+    ],
+    "Remotes": [],
+    "Clean": true,
+    "ObjectBlob": "628d89af5f21e4e14cbe7c3c14f0dd8fb5a490e0",
+    "OnlyHeadHistory": true,
+    "AutoCrlf": "false"
+   },
+   "Pass": true
+  },
+  {
+   "Id": "DR-02",
+   "Title": "preflight real (--dry-run): sin ejecutar el binario y sin escribir; bloquea solo G1 (falta la autoridad)",
+   "Expected": "código 2; BlockingChecks = [G1-Decisions]; G2..G11 Ok; run/ sigue sin existir",
+   "Observed": {
+    "ExitCode": 2,
+    "BlockingChecks": [
+     "G1-Decisions"
+    ],
+    "G1": {
+     "OwnerLinePresent": false,
+     "CoordinatorMarkerPresent": false,
+     "Commit": "8ccc159f8d470ce50158d4190a4224a45b85e47b",
+     "Blob": "57f4f7aae75448e40bb08c588bf7be7d85b276e2",
+     "ExpectedMarker": "CCLI-MEDICION-FX02-DISPOSICION = AUTORIZADA (paquete ccli-meas, MANIFEST.json SHA-256 e67bd195f4ebfab61cdf9bda6c104ae7ab303cd9e13b2655e8be97cadd586814, esquema VERBATIM, sin reintento)"
+    },
+    "RunDirExists": false
+   },
+   "Pass": true
+  },
+  {
+   "Id": "DR-03",
+   "Title": "G4: un señuelo con el session id y otro con la ruta del clon hacen rechazar; sin señuelos pasa",
+   "Expected": "limpio Ok; con session id rechazo; con ruta del clon rechazo; tras matar los señuelos Ok",
+   "Observed": {
+    "Clean": {
+     "Ok": true,
+     "SidProcs": 0,
+     "CloneRefs": 0,
+     "Names": []
+    },
+    "WithSid": {
+     "Ok": false,
+     "SidProcs": 1,
+     "CloneRefs": 0,
+     "Names": [
+      "cmd.exe"
+     ]
+    },
+    "WithClonePath": {
+     "Ok": false,
+     "SidProcs": 0,
+     "CloneRefs": 1,
+     "Names": [
+      "cmd.exe"
+     ]
+    },
+    "After": {
+     "Ok": true,
+     "SidProcs": 0,
+     "CloneRefs": 0,
+     "Names": []
+    }
+   },
+   "Pass": true
+  },
+  {
+   "Id": "DR-04",
+   "Title": "G1: líneas completas exactas (matriz de 9 casos)",
+   "Expected": "solo los dos casos exactos pasan",
+   "Observed": [
+    {
+     "Case": "ninguna línea",
+     "Expected": false,
+     "Got": false
+    },
+    {
+     "Case": "solo Owner",
+     "Expected": false,
+     "Got": false
+    },
+    {
+     "Case": "solo marcador",
+     "Expected": false,
+     "Got": false
+    },
+    {
+     "Case": "ambas exactas (LF)",
+     "Expected": true,
+     "Got": true
+    },
+    {
+     "Case": "ambas exactas (CRLF)",
+     "Expected": true,
+     "Got": true
+    },
+    {
+     "Case": "Owner con prefijo '- '",
+     "Expected": false,
+     "Got": false
+    },
+    {
+     "Case": "Owner con espacio final",
+     "Expected": false,
+     "Got": false
+    },
+    {
+     "Case": "marcador con otro SHA-256",
+     "Expected": false,
+     "Got": false
+    },
+    {
+     "Case": "Owner abreviado",
+     "Expected": false,
+     "Got": false
+    }
+   ],
+   "Pass": true
+  },
+  {
+   "Id": "DR-05",
+   "Title": "G2: binario fijado Ok; archivo con otro SHA-256 y archivo ausente rechazados",
+   "Expected": "real Ok (SHA-256 y Authenticode de Anthropic); falso rechazo; ausente rechazo",
+   "Observed": {
+    "Real": {
+     "Ok": true,
+     "Sha256": "8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa",
+     "Authenticode": "Valid",
+     "SignerIsAnthropic": true
+    },
+    "WrongHash": false,
+    "Missing": false
+   },
+   "Pass": true
+  },
+  {
+   "Id": "DR-06",
+   "Title": "G3 negativos: archivo sin seguimiento, remoto, rama extra y .claude/ rechazados; restaurado Ok",
+   "Expected": "los cuatro False y restaurado True",
+   "Observed": {
+    "untracked": false,
+    "remote": false,
+    "extra-branch": false,
+    "dot-claude": false,
+    "restored": true
+   },
+   "Pass": true
+  },
+  {
+   "Id": "DR-07",
+   "Title": "G5 un solo uso y G6 manifiesto: run/ existente, archivo alterado, archivo extra y __pycache__ rechazados",
+   "Expected": "copia íntegra Ok; con run/ rechazo; alterado → Mismatches; extra y __pycache__ → Unlisted",
+   "Observed": {
+    "CopyOk": true,
+    "OneShotWithRun": false,
+    "Mismatches": [
+     "prompt.md"
+    ],
+    "Unlisted": [
+     "__pycache__",
+     "extra.txt"
+    ]
+   },
+   "Pass": true
+  },
+  {
+   "Id": "DR-08",
+   "Title": "G7: CLAUDE_CONFIG_DIR presente rechazada; ausente Ok (solo nombres)",
+   "Expected": "False / True",
+   "Observed": {
+    "WithConfigDir": false,
+    "Without": true
+   },
+   "Pass": true
+  },
+  {
+   "Id": "DR-09",
+   "Title": "G8: transcripción con el session id o carpeta de proyecto del clon rechazadas",
+   "Expected": "True / False / False",
+   "Observed": {
+    "Empty": true,
+    "PriorTranscript": false,
+    "ProjectDir": false,
+    "ProjectDirName": "D--r62-fixture-tmp-ccli-meas"
+   },
+   "Pass": true
+  },
+  {
+   "Id": "DR-10",
+   "Title": "árbol natural (cmd → ping, ping): identidades, clases, cobertura y terminación confirmada",
+   "Expected": "op 7 y op 8 DEMONSTRATED con el criterio de representatividad desactivado (no hay stream)",
+   "Observed": {
+    "Mode": "NATURAL_BY_S1",
+    "Op7": [
+     "DEMONSTRATED",
+     []
+    ],
+    "Op8": [
+     "DEMONSTRATED",
+     []
+    ],
+    "ClassCounts": {
+     "launched-root": 1,
+     "other": 2
+    },
+    "Coverage": {
+     "Fast": {
+      "Samples": 74,
+      "MaxGapS": 0.122
+     },
+     "Cim": {
+      "Samples": 7,
+      "MaxGapS": 1.059
+     },
+     "CimErrors": 0
+    },
+    "Members": [
+     [
+      "cmd.exe",
+      "launched-root",
+      [
+       "fast",
+       "cim"
+      ]
+     ],
+     [
+      "PING.EXE",
+      "other",
+      [
+       "fast",
+       "cim"
+      ]
+     ],
+     [
+      "PING.EXE",
+      "other",
+      [
+       "fast",
+       "cim"
+      ]
+     ]
+    ]
+   },
+   "Pass": true
+  },
+  {
+   "Id": "DR-11",
+   "Title": "árbol con un resto vivo (start /b ping): S1 y S2 lo ven, se mata y S3 lo confirma muerto",
+   "Expected": "Mode KILLED_RESIDUAL; op 7 NOT_DEMONSTRATED (R7.3); S3 sin identidades vivas",
+   "Observed": {
+    "Mode": "KILLED_RESIDUAL",
+    "Labels": [
+     "S1",
+     "S2",
+     "S3"
+    ],
+    "Op7": [
+     "NOT_DEMONSTRATED",
+     [
+      "R7.3 quedan identidades del árbol vivas o la terminación no fue natural (Mode=KILLED_RESIDUAL)"
+     ]
+    ],
+    "S3FastAlive": [],
+    "S3CimAlive": [],
+    "Killed": [
+     {
+      "Key": "37856@134360714485867887",
+      "TerminateProcess": true
+     }
+    ]
+   },
+   "Pass": true
+  },
+  {
+   "Id": "DR-11b",
+   "Title": "tope vencido (3 s): taskkill /T del árbol, S1 sin identidades vivas; terminación no natural",
+   "Expected": "TimedOut; Mode TIMEOUT_TREE_KILLED; S1 sin vivos; op 7 NOT_DEMONSTRATED (R7.3)",
+   "Observed": {
+    "TimedOut": true,
+    "Taskkill": {
+     "Pid": 17604,
+     "ExitCode": 0
+    },
+    "Mode": "TIMEOUT_TREE_KILLED",
+    "S1FastAlive": [],
+    "S1CimAlive": [],
+    "Op7": [
+     "NOT_DEMONSTRATED",
+     [
+      "R7.3 quedan identidades del árbol vivas o la terminación no fue natural (Mode=TIMEOUT_TREE_KILLED)"
+     ]
+    ]
+   },
+   "Pass": true
+  },
+  {
+   "Id": "DR-12",
+   "Title": "regla de huérfanos (sintética): padre inexistente o con CreationDate posterior; fuera de ventana y fuera de la lista no cuentan",
+   "Expected": "huérfanos = PID 12 (padre inexistente) y 14 (padre posterior)",
+   "Observed": [
+    [
+     12,
+     "padre inexistente"
+    ],
+    [
+     14,
+     "padre con CreationDate posterior (PID reutilizado)"
+    ]
+   ],
+   "Pass": true
+  },
+  {
+   "Id": "DR-13",
+   "Title": "validación contra el esquema canónico: stdlib y Test-Json (pwsh 7)",
+   "Expected": "Combined = Expected en los 11 casos",
+   "Observed": [
+    {
+     "Case": "válido",
+     "Expected": true,
+     "Stdlib": true,
+     "TestJson": true,
+     "Agree": true,
+     "Combined": true
+    },
+    {
+     "Case": "LogicalReviewRequestId null (permitido)",
+     "Expected": true,
+     "Stdlib": true,
+     "TestJson": true,
+     "Agree": true,
+     "Combined": true
+    },
+    {
+     "Case": "falta Verdict",
+     "Expected": false,
+     "Stdlib": false,
+     "TestJson": false,
+     "Agree": true,
+     "Combined": false
+    },
+    {
+     "Case": "propiedad extra",
+     "Expected": false,
+     "Stdlib": false,
+     "TestJson": false,
+     "Agree": true,
+     "Combined": false
+    },
+    {
+     "Case": "ReviewedCommit corto",
+     "Expected": false,
+     "Stdlib": false,
+     "TestJson": false,
+     "Agree": true,
+     "Combined": false
+    },
+    {
+     "Case": "Verdict fuera del enum",
+     "Expected": false,
+     "Stdlib": false,
+     "TestJson": false,
+     "Agree": true,
+     "Combined": false
+    },
+    {
+     "Case": "AttemptSeq 0",
+     "Expected": false,
+     "Stdlib": false,
+     "TestJson": false,
+     "Agree": true,
+     "Combined": false
+    },
+    {
+     "Case": "Location.Kind fuera del enum",
+     "Expected": false,
+     "Stdlib": false,
+     "TestJson": false,
+     "Agree": true,
+     "Combined": false
+    },
+    {
+     "Case": "SizeOrSha256 inválido",
+     "Expected": false,
+     "Stdlib": false,
+     "TestJson": false,
+     "Agree": true,
+     "Combined": false
+    },
+    {
+     "Case": "InvocationId con salto final ($ ECMA)",
+     "Expected": false,
+     "Stdlib": false,
+     "TestJson": true,
+     "Agree": false,
+     "Combined": false
+    },
+    {
+     "Case": "PremiseRefs.LineStart 0",
+     "Expected": false,
+     "Stdlib": false,
+     "TestJson": false,
+     "Agree": true,
+     "Combined": false
+    }
+   ],
+   "Pass": true
+  },
+  {
+   "Id": "DR-14",
+   "Title": "clasificación del stream: éxito, rechazo del esquema, conflicto OAuth y sin result",
+   "Expected": "éxito → op 5 DEMONSTRATED; rechazo → SchemaRejected y NOT_DEMONSTRATED; OAuth → AuthRefreshConflict; sin result → NOT_DEMONSTRATED",
+   "Observed": {
+    "success": {
+     "Op5": "DEMONSTRATED",
+     "Reasons": [],
+     "SchemaRejected": false,
+     "AuthRefreshConflict": false
+    },
+    "schema-rejected": {
+     "Op5": "NOT_DEMONSTRATED",
+     "Reasons": [
+      "R5.1 la CLI no aceptó el esquema canónico (rechazo explícito o sin init con StructuredOutput)",
+      "R5.2 result ausente, múltiple, con error o de otra sesión",
+      "R5.3 structured_output ausente o no objeto"
+     ],
+     "SchemaRejected": true,
+     "AuthRefreshConflict": false
+    },
+    "auth": {
+     "Op5": "NOT_DEMONSTRATED",
+     "Reasons": [
+      "R5.2 result ausente, múltiple, con error o de otra sesión",
+      "R5.3 structured_output ausente o no objeto"
+     ],
+     "SchemaRejected": false,
+     "AuthRefreshConflict": true
+    },
+    "no-result": {
+     "Op5": "NOT_DEMONSTRATED",
+     "Reasons": [
+      "R5.2 result ausente, múltiple, con error o de otra sesión",
+      "R5.3 structured_output ausente o no objeto"
+     ],
+     "SchemaRejected": false,
+     "AuthRefreshConflict": false
+    }
+   },
+   "Pass": true
+  },
+  {
+   "Id": "DR-15",
+   "Title": "saneado (perfil largo y 8.3, / y \\\\, usuario, equipo, correo, %APPDATA%) y barrido de fugas",
+   "Expected": "todas las muestras con fuga antes y ninguna después; el barrido detecta solo bad.json",
+   "Observed": {
+    "LeakBefore": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "LeakAfter": [
+     [],
+     [],
+     [],
+     [],
+     [],
+     [],
+     []
+    ],
+    "Cleaned": [
+     "%USERPROFILE%/a",
+     "correo <EMAIL>",
+     "%APPDATA%\\Claude\\x"
+    ],
+    "ScanFiles": [
+     "bad.json"
+    ]
+   },
+   "Pass": true
+  },
+  {
+   "Id": "DR-16",
+   "Title": "huella en modo ensayo: existencia, SHA-256 y nombres de claves SOLO de U1; .claude.json solo metadatos; nombres de variables",
+   "Expected": "U1 con KeyNames lista; el resto sin claves listadas; dos mediciones seguidas estables",
+   "Observed": {
+    "Candidates": [
+     {
+      "Id": "U1",
+      "Path": "%USERPROFILE%\\.claude\\settings.json",
+      "Exists": true,
+      "Sha256": "836ae4795a94f3189c6490dadee32d5633fe1d23d1962b06ff976afaaae74a02",
+      "KeyNames": [
+       "agentPushNotifEnabled",
+       "autoUpdatesChannel",
+       "enabledPlugins",
+       "enabledPlugins.github@claude-plugins-official",
+       "extraKnownMarketplaces",
+       "extraKnownMarketplaces.claude-plugins-official",
+       "extraKnownMarketplaces.claude-plugins-official.source",
+       "extraKnownMarketplaces.claude-plugins-official.source.source",
+       "extraKnownMarketplaces.claude-plugins-official.source.url",
+       "hooks",
+       "hooks.PermissionRequest",
+       "hooks.PermissionRequest[].hooks",
+       "hooks.PermissionRequest[].hooks[].command",
+       "hooks.PermissionRequest[].hooks[].timeout",
+       "hooks.PermissionRequest[].hooks[].type",
+       "hooks.PermissionRequest[].matcher",
+       "hooks.PostCompact",
+       "hooks.PostCompact[].hooks",
+       "hooks.PostCompact[].hooks[].command",
+       "hooks.PostCompact[].hooks[].timeout",
+       "hooks.PostCompact[].hooks[].type",
+       "hooks.PostToolUse",
+       "hooks.PostToolUseFailure",
+       "hooks.PostToolUseFailure[].hooks",
+       "hooks.PostToolUseFailure[].hooks[].command",
+       "hooks.PostToolUseFailure[].hooks[].timeout",
+       "hooks.PostToolUseFailure[].hooks[].type",
+       "hooks.PostToolUseFailure[].matcher",
+       "hooks.PostToolUse[].hooks",
+       "hooks.PostToolUse[].hooks[].command",
+       "hooks.PostToolUse[].hooks[].timeout",
+       "hooks.PostToolUse[].hooks[].type",
+       "hooks.PostToolUse[].matcher",
+       "hooks.PreToolUse",
+       "hooks.PreToolUse[].hooks",
+       "hooks.PreToolUse[].hooks[].command",
+       "hooks.PreToolUse[].hooks[].timeout",
+       "hooks.PreToolUse[].hooks[].type",
+       "hooks.PreToolUse[].matcher",
+       "hooks.SessionStart",
+       "hooks.SessionStart[].hooks",
+       "hooks.SessionStart[].hooks[].command",
+       "hooks.SessionStart[].hooks[].timeout",
+       "hooks.SessionStart[].hooks[].type",
+       "hooks.Stop",
+       "hooks.StopFailure",
+       "hooks.StopFailure[].hooks",
+       "hooks.StopFailure[].hooks[].command",
+       "hooks.StopFailure[].hooks[].timeout",
+       "hooks.StopFailure[].hooks[].type",
+       "hooks.Stop[].hooks",
+       "hooks.Stop[].hooks[].command",
+       "hooks.Stop[].hooks[].timeout",
+       "hooks.Stop[].hooks[].type",
+       "hooks.SubagentStart",
+       "hooks.SubagentStart[].hooks",
+       "hooks.SubagentStart[].hooks[].command",
+       "hooks.SubagentStart[].hooks[].timeout",
+       "hooks.SubagentStart[].hooks[].type",
+       "hooks.SubagentStop",
+       "hooks.SubagentStop[].hooks",
+       "hooks.SubagentStop[].hooks[].command",
+       "hooks.SubagentStop[].hooks[].timeout",
+       "hooks.SubagentStop[].hooks[].type",
+       "hooks.TeammateIdle",
+       "hooks.TeammateIdle[].hooks",
+       "hooks.TeammateIdle[].hooks[].command",
+       "hooks.TeammateIdle[].hooks[].timeout",
+       "hooks.TeammateIdle[].hooks[].type",
+       "hooks.UserPromptSubmit",
+       "hooks.UserPromptSubmit[].hooks",
+       "hooks.UserPromptSubmit[].hooks[].command",
+       "hooks.UserPromptSubmit[].hooks[].timeout",
+       "hooks.UserPromptSubmit[].hooks[].type",
+       "skipWorkflowUsageWarning",
+       "statusLine",
+       "statusLine.command",
+       "statusLine.type",
+       "theme"
+      ]
+     },
+     {
+      "Id": "U2",
+      "Path": "%USERPROFILE%\\.claude\\settings.local.json",
+      "Exists": false,
+      "Sha256": null,
+      "KeyNames": null
+     },
+     {
+      "Id": "P1",
+      "Path": "<clon>\\.claude\\settings.json",
+      "Exists": false,
+      "Sha256": null,
+      "KeyNames": null
+     },
+     {
+      "Id": "P2",
+      "Path": "<clon>\\.claude\\settings.local.json",
+      "Exists": false,
+      "Sha256": null,
+      "KeyNames": null
+     },
+     {
+      "Id": "M1",
+      "Path": "%ProgramFiles%\\ClaudeCode\\managed-settings.json",
+      "Exists": false,
+      "Sha256": null,
+      "KeyNames": null
+     },
+     {
+      "Id": "M2",
+      "Path": "%ProgramData%\\ClaudeCode\\managed-settings.json",
+      "Exists": false,
+      "Sha256": null,
+      "KeyNames": null
+     },
+     {
+      "Id": "M3",
+      "Path": "%ProgramFiles%\\ClaudeCode\\managed-mcp.json",
+      "Exists": false,
+      "Sha256": null,
+      "KeyNames": null
+     },
+     {
+      "Id": "M4",
+      "Path": "%ProgramData%\\ClaudeCode\\managed-mcp.json",
+      "Exists": false,
+      "Sha256": null,
+      "KeyNames": null
+     },
+     {
+      "Id": "M5",
+      "Path": "%ProgramFiles%\\ClaudeCode\\managed-settings.d\\*.json",
+      "Exists": false,
+      "Sha256": null,
+      "KeyNames": null
+     },
+     {
+      "Id": "R1",
+      "Path": "HKLM\\SOFTWARE\\Policies\\ClaudeCode",
+      "Exists": false,
+      "Sha256": null,
+      "KeyNames": null
+     },
+     {
+      "Id": "R2",
+      "Path": "HKCU\\SOFTWARE\\Policies\\ClaudeCode",
+      "Exists": false,
+      "Sha256": null,
+      "KeyNames": null
+     },
+     {
+      "Id": "S1",
+      "Path": "%USERPROFILE%\\.claude.json",
+      "Exists": true,
+      "Sha256": "NO_CALCULADO (archivo de estado; valores nunca leídos)",
+      "KeyNames": null
+     }
+    ],
+    "EnvNamesCount": 30,
+    "EnvVsA4": {
+     "Added": [],
+     "Missing": []
+    },
+    "Stable": true
+   },
+   "Pass": true
+  },
+  {
+   "Id": "DR-17",
+   "Title": "aceptación del esquema canónico VERBATIM por 2.1.293: análisis estático del binario (leído como datos, sin ejecutarlo)",
+   "Expected": "informativo: se documenta la predicción; Pass = el análisis se pudo hacer sobre el binario fijado",
+   "Observed": {
+    "SchemaDollarSchema": "https://json-schema.org/draft/2020-12/schema",
+    "Keywords": [
+     "$schema",
+     "additionalProperties",
+     "description",
+     "enum",
+     "items",
+     "minLength",
+     "minimum",
+     "pattern",
+     "required",
+     "title",
+     "type",
+     "properties"
+    ],
+    "NonDraft07Keywords": [],
+    "BinarySha256Pinned": true,
+    "NeedleOffsets": {
+     "error_template": 100117516,
+     "so_validator_default_ajv": 215013429,
+     "so_uses_class_Ajv": 215013410,
+     "ajv_default_meta_draft07": 214980605,
+     "validateSchema_resolves_dollar_schema": 214941528,
+     "no_schema_with_key_or_ref": 101594776
+    },
+    "Prediction": "RECHAZO PROBABLE (INFERENCIA): la ruta de --json-schema compila con la clase Ajv por defecto (meta-esquema draft-07) y llama a validateSchema; con $schema = draft 2020-12, validate($schema) no encuentra el meta-esquema y lanza «no schema with key or ref», que la CLI convierte en «Error: --json-schema is not a valid JSON Schema: …» y termina antes de llamar al modelo",
+    "AlternativeNotApplied": "sin \"$schema\" el resto de palabras clave pertenece al vocabulario de draft-07 (se compilaría); no se aplica: el paquete conserva el esquema VERBATIM por orden"
+   },
+   "Pass": true
+  },
+  {
+   "Id": "DR-18",
+   "Title": "audit.py de extremo a extremo sobre tres corridas sintéticas (éxito, rechazo del esquema, conflicto OAuth) con el árbol de DR-10",
+   "Expected": "éxito: las cuatro DEMONSTRATED; rechazo y OAuth: las cuatro NOT_DEMONSTRATED (OAuth = INVALID_LAUNCH); custodia saneada sin fugas",
+   "Observed": {
+    "success": {
+     "ExitCode": 0,
+     "LaunchClass": "LAUNCHED",
+     "Verdicts": {
+      "5": "DEMONSTRATED",
+      "7": "DEMONSTRATED",
+      "8": "DEMONSTRATED",
+      "9": "DEMONSTRATED"
+     },
+     "Expected": {
+      "5": "DEMONSTRATED",
+      "7": "DEMONSTRATED",
+      "8": "DEMONSTRATED",
+      "9": "DEMONSTRATED"
+     },
+     "Reasons": {
+      "5": [],
+      "7": [],
+      "8": [],
+      "9": []
+     },
+     "CustodyReady": true,
+     "CustodyFiles": [
+      "SHA256SUMS.txt",
+      "audit.json",
+      "fingerprint.json",
+      "init.json",
+      "preflight.json",
+      "proctree.json",
+      "result.json",
+      "run.json",
+      "stream-summary.json",
+      "termination.json"
+     ],
+     "Op9Kind": "CONFIG_FILES",
+     "Stderr": ""
+    },
+    "schema-rejected": {
+     "ExitCode": 0,
+     "LaunchClass": "LAUNCHED",
+     "Verdicts": {
+      "5": "NOT_DEMONSTRATED",
+      "7": "NOT_DEMONSTRATED",
+      "8": "NOT_DEMONSTRATED",
+      "9": "NOT_DEMONSTRATED"
+     },
+     "Expected": {
+      "5": "NOT_DEMONSTRATED",
+      "7": "NOT_DEMONSTRATED",
+      "8": "NOT_DEMONSTRATED",
+      "9": "NOT_DEMONSTRATED"
+     },
+     "Reasons": {
+      "5": [
+       "R5.1 la CLI no aceptó el esquema canónico (rechazo explícito o sin init con StructuredOutput)",
+       "R5.2 result ausente, múltiple, con error o de otra sesión",
+       "R5.3 structured_output ausente o no objeto"
+      ],
+      "7": [
+       "R7.1 corrida no representativa (sin init o sin ninguna llamada Read/Grep/Glob)"
+      ],
+      "8": [
+       "R8.1 corrida no representativa (sin init o sin ninguna llamada Read/Grep/Glob)"
+      ],
+      "9": [
+       "R9.1 init ausente o con versión/sesión distintas"
+      ]
+     },
+     "CustodyReady": true,
+     "CustodyFiles": [
+      "SHA256SUMS.txt",
+      "audit.json",
+      "fingerprint.json",
+      "init.json",
+      "preflight.json",
+      "proctree.json",
+      "result.json",
+      "run.json",
+      "stream-summary.json",
+      "termination.json"
+     ],
+     "Op9Kind": "CONFIG_FILES",
+     "Stderr": ""
+    },
+    "auth": {
+     "ExitCode": 0,
+     "LaunchClass": "INVALID_LAUNCH",
+     "Verdicts": {
+      "5": "NOT_DEMONSTRATED",
+      "7": "NOT_DEMONSTRATED",
+      "8": "NOT_DEMONSTRATED",
+      "9": "NOT_DEMONSTRATED"
+     },
+     "Expected": {
+      "5": "NOT_DEMONSTRATED",
+      "7": "NOT_DEMONSTRATED",
+      "8": "NOT_DEMONSTRATED",
+      "9": "NOT_DEMONSTRATED"
+     },
+     "Reasons": {
+      "5": [
+       "TRANSPORT_AUTH_REFRESH_CONFLICT (sin reintento; decide el Coordinator)",
+       "R5.2 result ausente, múltiple, con error o de otra sesión",
+       "R5.3 structured_output ausente o no objeto"
+      ],
+      "7": [
+       "TRANSPORT_AUTH_REFRESH_CONFLICT (sin reintento; decide el Coordinator)",
+       "R7.1 corrida no representativa (sin init o sin ninguna llamada Read/Grep/Glob)"
+      ],
+      "8": [
+       "TRANSPORT_AUTH_REFRESH_CONFLICT (sin reintento; decide el Coordinator)",
+       "R8.1 corrida no representativa (sin init o sin ninguna llamada Read/Grep/Glob)"
+      ],
+      "9": [
+       "TRANSPORT_AUTH_REFRESH_CONFLICT (sin reintento; decide el Coordinator)"
+      ]
+     },
+     "CustodyReady": true,
+     "CustodyFiles": [
+      "SHA256SUMS.txt",
+      "audit.json",
+      "fingerprint.json",
+      "init.json",
+      "preflight.json",
+      "proctree.json",
+      "result.json",
+      "run.json",
+      "stream-summary.json",
+      "termination.json"
+     ],
+     "Op9Kind": "CONFIG_FILES",
+     "Stderr": ""
+    }
+   },
+   "Pass": true
+  },
+  {
+   "Id": "DR-19",
+   "Title": "barrido de fugas del paquete (usuario, equipo, rutas del perfil, correos)",
+   "Expected": "ninguna fuga",
+   "Observed": [],
+   "Pass": true
+  },
+  {
+   "Id": "DR-00b",
+   "Title": "ningún descendiente de este ensayo fue claude (rastreador rápido enraizado en el propio proceso)",
+   "Expected": "sin claude.exe entre los descendientes",
+   "Observed": {
+    "DescendantImageNames": [
+     "cmd.exe",
+     "git-upload-pack.exe",
+     "git.exe",
+     "ping.exe",
+     "pwsh.exe",
+     "python3.13.exe",
+     "sh.exe",
+     "taskkill.exe"
+    ],
+    "Count": 98
+   },
+   "Pass": true
+  },
+  {
+   "Id": "DR-20",
+   "Title": "limpieza: clon de ensayo borrado, sin D:\\r62-fixture\\tmp-ccli-*, sin carpetas de proyecto del clon, sin run/ en el paquete",
+   "Expected": "todo vacío",
+   "Observed": {
+    "TmpClones": [],
+    "ProjectDirs": [],
+    "RunDir": false
+   },
+   "Pass": true
+  }
+ ]
+}

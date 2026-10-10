@@ -1,0 +1,26 @@
+{
+ "Variant": "b",
+ "Dest": "D:/r62-fixture/tmp-map-b",
+ "Date": "2026-10-10T02:00:00+00:00",
+ "Names": {
+  "main": "main",
+  "norm": "fixture/i62-norm",
+  "tag": "test-activation/I-62",
+  "unit": "FX-U2",
+  "branch": "fx/u2",
+  "rule": "AUTOMATION_PLAN 16.14 aplicado a ESTE repositorio: I62_EFFECTIVE_SHA del fixture = primer merge en first-parent de main cuyo segundo padre alcanza el único commit con el trailer; RackCad no se activa (derivación por repositorio)"
+ },
+ "BaseCommit": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+ "SourceCommit": "6f0187cb30852971b49153c2763c8ba6caeaa64d",
+ "S_seed": "55d190043458f461f187588ea79d8e9839440e28",
+ "N1_i62": "15a20a2f1b120a12784960abb0b30819e7e7cb53",
+ "N2_norm": "df3d51a27d83f5f47604f2057ee18dd4f48f02db",
+ "E_eff": "88ab34c398f03070c94a584f95196a394d869f7c",
+ "TagObject": "fff998cbb15ab3e542faab7d95b7f5fa4bcd0348",
+ "C_claim": "6040097c5f05277d4d786a99bfc80970665c1e5f",
+ "ClaimId": "fc62f1c7-0000-4000-8000-000000000002",
+ "SeedCopied": 13,
+ "EffCopied": 39,
+ "Local": 10,
+ "Remotes": []
+}

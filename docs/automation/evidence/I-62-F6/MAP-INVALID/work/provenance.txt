@@ -1,0 +1,173 @@
+## docs/AUTOMATION_PLAN.md MODIFIED
+  BaseBlob=07b97bd3eef3a36bae3180bd7eb24b176b8049f0
+    find-object: 02a81831 2026-10-05 I-62 F1: ADR-0048 propuesto, plano (b) inactivo y corrección de PROMPT_TEMPLATES §2, con C
+    find-object: 6513777f 2026-09-30 I-61: correccion de READY-06 (fidelidad al Freeze §3.3) y reinicio de READY-02
+    =bb0d5522: True  =6f0187cb: False  =WT HEAD: False
+  EffBlob=f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5
+    find-object: 1566341a 2026-10-05 I-62 F4-H: textos de custodia, recuperación, conteo, arranque y orquestación
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/INITIATIVE_LIFECYCLE.md MODIFIED
+  BaseBlob=6415c33bd2f86fa05444e00b630d7fed5e5d7a22
+    find-object: 42115503 2026-10-05 I-62 F3: binding, independencia, comprobaciones y contratos de rol (plano b, inactivo)
+    find-object: 7e9073e7 2026-09-15 Docs: materializa lifecycle y plantillas de Workflow V2
+    =bb0d5522: True  =6f0187cb: False  =WT HEAD: False
+  EffBlob=f19896a8f1a7c82f74bac7231636f68462a87271
+    find-object: 42115503 2026-10-05 I-62 F3: binding, independencia, comprobaciones y contratos de rol (plano b, inactivo)
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/WORKFLOW.md MODIFIED
+  BaseBlob=884ed305ce242bda575cef74a9eff8c28ce7b67c
+    find-object: 3078538b 2026-10-05 I-62 F4-F: adopción de compatibilidad (punto de entrada, 16.13, mapa) y guarda C-20a
+    find-object: 4da82667 2026-09-30 I-61 G2: materializa el protocolo de ejecución delegada
+    =bb0d5522: True  =6f0187cb: False  =WT HEAD: False
+  EffBlob=446c32ba6a91f9a712a0758038ae0a46ab1c970f
+    find-object: 3078538b 2026-10-05 I-62 F4-F: adopción de compatibilidad (punto de entrada, 16.13, mapa) y guarda C-20a
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md ADDED
+  BaseBlob=null; bb0d5522:docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md -> AUSENTE
+  EffBlob=e1bd8d91f10cb4c86eaf7753f9ef2531ae62498e
+    find-object: 02a81831 2026-10-05 I-62 F1: ADR-0048 propuesto, plano (b) inactivo y corrección de PROMPT_TEMPLATES §2, con C
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/README.md MODIFIED
+  BaseBlob=64ae952b6fb01ce206200c64d2a1d8683b5a297d
+    find-object: 02a81831 2026-10-05 I-62 F1: ADR-0048 propuesto, plano (b) inactivo y corrección de PROMPT_TEMPLATES §2, con C
+    find-object: 6513777f 2026-09-30 I-61: correccion de READY-06 (fidelidad al Freeze §3.3) y reinicio de READY-02
+    =bb0d5522: True  =6f0187cb: False  =WT HEAD: False
+  EffBlob=592dcfd45e8743fd83b3423249fbd3c73e3d3055
+    find-object: 6f0187cb 2026-10-05 I-62 F4-H: regresión de A-1, controles C-15/C-16/C-29/C-32/C-40/C-42 y paquete del gate
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/adapters/claude-cli.md ADDED
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/adapters/claude-cli.md -> AUSENTE
+  EffBlob=ae570380509cacabf11f757a27573bf6fe616a36
+    find-object: ffb509e8 2026-10-05 I-62 F2: observación de capacidad, cinco adapters, preflight/v1, relay-record/v2 y control
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/adapters/claude-desktop-session.md ADDED
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/adapters/claude-desktop-session.md -> AUSENTE
+  EffBlob=7f45923527a860713819d1ccf29dcb375b680369
+    find-object: ffb509e8 2026-10-05 I-62 F2: observación de capacidad, cinco adapters, preflight/v1, relay-record/v2 y control
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/adapters/claude-subagent.md ADDED
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/adapters/claude-subagent.md -> AUSENTE
+  EffBlob=e10926c048321227fa53fe839e01f113fb9adece
+    find-object: ffb509e8 2026-10-05 I-62 F2: observación de capacidad, cinco adapters, preflight/v1, relay-record/v2 y control
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/adapters/codex-cli.md ADDED
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/adapters/codex-cli.md -> AUSENTE
+  EffBlob=155f3469e345e2397fa26347a9cb52d6fdb91122
+    find-object: ffb509e8 2026-10-05 I-62 F2: observación de capacidad, cinco adapters, preflight/v1, relay-record/v2 y control
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/adapters/codex-desktop-session.md ADDED
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/adapters/codex-desktop-session.md -> AUSENTE
+  EffBlob=02d6c33db60344943fbcd6fcdf347eefef06986f
+    find-object: ffb509e8 2026-10-05 I-62 F2: observación de capacidad, cinco adapters, preflight/v1, relay-record/v2 y control
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/compatibility/clause-map.schema.json ENTRY
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/compatibility/clause-map.schema.json -> AUSENTE
+  EffBlob=6b54dda9579d694200d8fc9ec26a4a846eef529b
+    find-object: 3078538b 2026-10-05 I-62 F4-F: adopción de compatibilidad (punto de entrada, 16.13, mapa) y guarda C-20a
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/routing.md MODIFIED
+  BaseBlob=82ca9b38865bd93e8de6134a368b905cba9fc627
+    find-object: ffb509e8 2026-10-05 I-62 F2: observación de capacidad, cinco adapters, preflight/v1, relay-record/v2 y control
+    find-object: 7b8662c5 2026-09-30 I-61 G2: cierre — fidelidad al Freeze, sonda PR-1, controles manuales y custodia
+    =bb0d5522: True  =6f0187cb: False  =WT HEAD: False
+  EffBlob=bba08fc4686d7192deeb559752636a467103b4b1
+    find-object: 42115503 2026-10-05 I-62 F3: binding, independencia, comprobaciones y contratos de rol (plano b, inactivo)
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/schemas/adapters/claude-cli.facts.v1.schema.json ADDED
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/schemas/adapters/claude-cli.facts.v1.schema.json -> AUSENTE
+  EffBlob=2298c37641efff835d8e49861b1dd2d0bf1239dc
+    find-object: ffb509e8 2026-10-05 I-62 F2: observación de capacidad, cinco adapters, preflight/v1, relay-record/v2 y control
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json ADDED
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json -> AUSENTE
+  EffBlob=f246717f1cc2915bbac61ccd96fcd9676039b106
+    find-object: ffb509e8 2026-10-05 I-62 F2: observación de capacidad, cinco adapters, preflight/v1, relay-record/v2 y control
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/schemas/adapters/claude-subagent.facts.v1.schema.json ADDED
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/schemas/adapters/claude-subagent.facts.v1.schema.json -> AUSENTE
+  EffBlob=3706be159871592e0c7e586fbaed3dcd3151b7a4
+    find-object: ffb509e8 2026-10-05 I-62 F2: observación de capacidad, cinco adapters, preflight/v1, relay-record/v2 y control
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/schemas/adapters/codex-cli.facts.v1.schema.json ADDED
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/schemas/adapters/codex-cli.facts.v1.schema.json -> AUSENTE
+  EffBlob=3d1b7478b433ebff2f882fb3edae82aff970d151
+    find-object: ffb509e8 2026-10-05 I-62 F2: observación de capacidad, cinco adapters, preflight/v1, relay-record/v2 y control
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/schemas/adapters/codex-desktop-session.facts.v1.schema.json ADDED
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/schemas/adapters/codex-desktop-session.facts.v1.schema.json -> AUSENTE
+  EffBlob=bdf5c491829948f113c8736e476ecb90edcc9760
+    find-object: ffb509e8 2026-10-05 I-62 F2: observación de capacidad, cinco adapters, preflight/v1, relay-record/v2 y control
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/schemas/architect-review-result.v1.schema.json ADDED
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/schemas/architect-review-result.v1.schema.json -> AUSENTE
+  EffBlob=e7f5747ba3812c181237828fe72243523038e64f
+    find-object: 42115503 2026-10-05 I-62 F3: binding, independencia, comprobaciones y contratos de rol (plano b, inactivo)
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/schemas/automation-state.v2.schema.json ADDED
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/schemas/automation-state.v2.schema.json -> AUSENTE
+  EffBlob=b1105dc1c5ea29d1a717eefea03e5242423762d8
+    find-object: 1566341a 2026-10-05 I-62 F4-H: textos de custodia, recuperación, conteo, arranque y orquestación
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/schemas/binding.v1.schema.json ADDED
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/schemas/binding.v1.schema.json -> AUSENTE
+  EffBlob=13501476b775ca18c4c61ba3e1793796b51067d9
+    find-object: 42115503 2026-10-05 I-62 F3: binding, independencia, comprobaciones y contratos de rol (plano b, inactivo)
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/schemas/controller-verification.v2.schema.json ADDED
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/schemas/controller-verification.v2.schema.json -> AUSENTE
+  EffBlob=e1faa9eca5c50b2b3a9f91575575614366962720
+    find-object: 42115503 2026-10-05 I-62 F3: binding, independencia, comprobaciones y contratos de rol (plano b, inactivo)
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/schemas/delegation.v2.schema.json ADDED
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/schemas/delegation.v2.schema.json -> AUSENTE
+  EffBlob=dfdbe461270e8fd92200c36bab78b9fdc3385014
+    find-object: 42115503 2026-10-05 I-62 F3: binding, independencia, comprobaciones y contratos de rol (plano b, inactivo)
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/schemas/gate-contract.v2.schema.json ADDED
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/schemas/gate-contract.v2.schema.json -> AUSENTE
+  EffBlob=f644bb1941656b65c62ee474bf37752d328fd091
+    find-object: 42115503 2026-10-05 I-62 F3: binding, independencia, comprobaciones y contratos de rol (plano b, inactivo)
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/schemas/input-closure.v1.schema.json ADDED
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/schemas/input-closure.v1.schema.json -> AUSENTE
+  EffBlob=6bdf71843e2c70362a5e2d0ea19c8891e22bcff6
+    find-object: 42115503 2026-10-05 I-62 F3: binding, independencia, comprobaciones y contratos de rol (plano b, inactivo)
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/schemas/input-fidelity.v1.schema.json ADDED
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/schemas/input-fidelity.v1.schema.json -> AUSENTE
+  EffBlob=e54990fc541b6420c3cddb45e1a7cc2fefd6c76b
+    find-object: 42115503 2026-10-05 I-62 F3: binding, independencia, comprobaciones y contratos de rol (plano b, inactivo)
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/schemas/normative-dependency-manifest.v1.schema.json ADDED
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/schemas/normative-dependency-manifest.v1.schema.json -> AUSENTE
+  EffBlob=7ff2127d28de2f126b98da7d4fb2ebb9520374ef
+    find-object: 42115503 2026-10-05 I-62 F3: binding, independencia, comprobaciones y contratos de rol (plano b, inactivo)
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/schemas/preflight.v1.schema.json ADDED
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/schemas/preflight.v1.schema.json -> AUSENTE
+  EffBlob=6a0540796a473e887677e5043d2105b932b5865f
+    find-object: ffb509e8 2026-10-05 I-62 F2: observación de capacidad, cinco adapters, preflight/v1, relay-record/v2 y control
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/schemas/relay-record.v2.schema.json ADDED
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/schemas/relay-record.v2.schema.json -> AUSENTE
+  EffBlob=dca5b29c1a260b679efc0fb249c73850925302f0
+    find-object: 42115503 2026-10-05 I-62 F3: binding, independencia, comprobaciones y contratos de rol (plano b, inactivo)
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json ADDED
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json -> AUSENTE
+  EffBlob=a74288eb0e9da43f8a73701098cbff5086fee512
+    find-object: 42115503 2026-10-05 I-62 F3: binding, independencia, comprobaciones y contratos de rol (plano b, inactivo)
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/automation/agent-execution/schemas/role-invocation.v1.schema.json ADDED
+  BaseBlob=null; bb0d5522:docs/automation/agent-execution/schemas/role-invocation.v1.schema.json -> AUSENTE
+  EffBlob=d54a7ae783ec83d055babdae090899908b616082
+    find-object: 42115503 2026-10-05 I-62 F3: binding, independencia, comprobaciones y contratos de rol (plano b, inactivo)
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True
+## docs/initiatives/PROMPT_TEMPLATES.md MODIFIED
+  BaseBlob=0e3ed262add5154b975dab1931f729bcae2e31ea
+    find-object: 02a81831 2026-10-05 I-62 F1: ADR-0048 propuesto, plano (b) inactivo y corrección de PROMPT_TEMPLATES §2, con C
+    find-object: 7b8662c5 2026-09-30 I-61 G2: cierre — fidelidad al Freeze, sonda PR-1, controles manuales y custodia
+    =bb0d5522: True  =6f0187cb: False  =WT HEAD: False
+  EffBlob=384d0b0c3734ab7df881ad17fa740fdb8a6422d5
+    find-object: 02a81831 2026-10-05 I-62 F1: ADR-0048 propuesto, plano (b) inactivo y corrección de PROMPT_TEMPLATES §2, con C
+    =bb0d5522: False  =6f0187cb: True  =WT HEAD: True

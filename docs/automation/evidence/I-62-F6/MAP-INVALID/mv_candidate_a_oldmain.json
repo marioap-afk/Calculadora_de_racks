@@ -1,0 +1,253 @@
+{
+ "Label": "opción (a): main (linaje r1) en el mismo clon",
+ "MainRef": "refs/heads/main",
+ "MainSha_eval": "fbe25347799e5b801ef708454212335537448bd1",
+ "Stops": [],
+ "Derive": {
+  "TrailerCommits": [
+   "a9f6c929e74ef92edfee557c3572b090f48bc318"
+  ],
+  "Result": "EFF",
+  "EFF": "fbe25347799e5b801ef708454212335537448bd1",
+  "EFF^1": "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+  "EFF^2": "a9f6c929e74ef92edfee557c3572b090f48bc318"
+ },
+ "E1": {
+  "WorkflowBlob": "446c32ba6a91f9a712a0758038ae0a46ab1c970f"
+ },
+ "E2": {
+  "EntryCount": 1,
+  "EFF": "fbe25347799e5b801ef708454212335537448bd1"
+ },
+ "E3": {
+  "NamedHeading": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
+  "RCount": 1,
+  "AutomationPlanBlob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+  "NamedEqualsLiteral": true
+ },
+ "Discovery": {
+  "MapPath": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+  "SchemaPath": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
+  "Surfaces": [
+   "AGENTS.md",
+   "CLAUDE.md",
+   "docs/AUTOMATION_PLAN.md",
+   "docs/FOUNDATIONS.md",
+   "docs/INITIATIVE_LIFECYCLE.md",
+   "docs/WORKFLOW.md",
+   "docs/adr/",
+   "docs/automation/agent-execution/",
+   "docs/initiatives/PROMPT_TEMPLATES.md"
+  ],
+  "MatchesLiterals": true
+ },
+ "PRE": {
+  "Result": "OK",
+  "Header": [
+   "Initiative",
+   "ref",
+   "tip",
+   "original claim commit",
+   "Claim-Id",
+   "temporal evidence",
+   "transition"
+  ],
+  "ClaimIds": [],
+  "Rows": 0
+ },
+ "EFFSubjects": {
+  "EFF": "Merge fixture/i62-norm: TEST-ACTIVATION de I-62 en el fixture",
+  "EFF^1": "F_seed: autoridades de MC_I62 (byte a byte) y archivos FIXTURE_LOCAL",
+  "EFF^2": "F_norm: activación de prueba de las reglas I62 en el fixture (TEST-ACTIVATION)"
+ },
+ "Validate": {
+  "MV-1": {
+   "pass": true,
+   "fail": [],
+   "MapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "SchemaBlob": "6b54dda9579d694200d8fc9ec26a4a846eef529b"
+  },
+  "MV-2": {
+   "pass": true,
+   "fail": []
+  },
+  "MV-3": {
+   "pass": false,
+   "fail": [
+    "listado sin cambiar entre EFF^1 y EFF: docs/AUTOMATION_PLAN.md",
+    "listado sin cambiar entre EFF^1 y EFF: docs/INITIATIVE_LIFECYCLE.md",
+    "listado sin cambiar entre EFF^1 y EFF: docs/WORKFLOW.md",
+    "listado sin cambiar entre EFF^1 y EFF: docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/README.md",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/adapters/claude-cli.md",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/adapters/claude-desktop-session.md",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/adapters/claude-subagent.md",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/adapters/codex-cli.md",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/adapters/codex-desktop-session.md",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/compatibility/clause-map.schema.json",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/routing.md",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/schemas/adapters/claude-cli.facts.v1.schema.json",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/schemas/adapters/claude-subagent.facts.v1.schema.json",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/schemas/adapters/codex-cli.facts.v1.schema.json",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/schemas/adapters/codex-desktop-session.facts.v1.schema.json",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/schemas/architect-review-result.v1.schema.json",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/schemas/automation-state.v2.schema.json",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/schemas/binding.v1.schema.json",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/schemas/controller-verification.v2.schema.json",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/schemas/delegation.v2.schema.json",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/schemas/gate-contract.v2.schema.json",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/schemas/input-closure.v1.schema.json",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/schemas/input-fidelity.v1.schema.json",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/schemas/normative-dependency-manifest.v1.schema.json",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/schemas/preflight.v1.schema.json",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/schemas/relay-record.v2.schema.json",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json",
+    "listado sin cambiar entre EFF^1 y EFF: docs/automation/agent-execution/schemas/role-invocation.v1.schema.json",
+    "listado sin cambiar entre EFF^1 y EFF: docs/initiatives/PROMPT_TEMPLATES.md"
+   ],
+   "ChangedUnderSurfaces": [],
+   "FilesCount": 31
+  },
+  "MV-4": {
+   "pass": false,
+   "fail": [
+    "docs/AUTOMATION_PLAN.md MODIFIED: BaseBlob 07b97bd3eef3a36bae3180bd7eb24b176b8049f0 vs EFF^1 f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5; EffBlob f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5 vs EFF f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+    "docs/INITIATIVE_LIFECYCLE.md MODIFIED: BaseBlob 6415c33bd2f86fa05444e00b630d7fed5e5d7a22 vs EFF^1 f19896a8f1a7c82f74bac7231636f68462a87271; EffBlob f19896a8f1a7c82f74bac7231636f68462a87271 vs EFF f19896a8f1a7c82f74bac7231636f68462a87271",
+    "docs/WORKFLOW.md MODIFIED: BaseBlob 884ed305ce242bda575cef74a9eff8c28ce7b67c vs EFF^1 446c32ba6a91f9a712a0758038ae0a46ab1c970f; EffBlob 446c32ba6a91f9a712a0758038ae0a46ab1c970f vs EFF 446c32ba6a91f9a712a0758038ae0a46ab1c970f",
+    "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md ADDED: BaseBlob None (debe ser null); EffBlob e1bd8d91f10cb4c86eaf7753f9ef2531ae62498e vs EFF None",
+    "docs/automation/agent-execution/README.md MODIFIED: BaseBlob 64ae952b6fb01ce206200c64d2a1d8683b5a297d vs EFF^1 592dcfd45e8743fd83b3423249fbd3c73e3d3055; EffBlob 592dcfd45e8743fd83b3423249fbd3c73e3d3055 vs EFF 592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+    "docs/automation/agent-execution/routing.md MODIFIED: BaseBlob 82ca9b38865bd93e8de6134a368b905cba9fc627 vs EFF^1 bba08fc4686d7192deeb559752636a467103b4b1; EffBlob bba08fc4686d7192deeb559752636a467103b4b1 vs EFF bba08fc4686d7192deeb559752636a467103b4b1",
+    "docs/initiatives/PROMPT_TEMPLATES.md MODIFIED: BaseBlob 0e3ed262add5154b975dab1931f729bcae2e31ea vs EFF^1 None; EffBlob 384d0b0c3734ab7df881ad17fa740fdb8a6422d5 vs EFF None"
+   ],
+   "FileKindDerivation": [
+    "docs/automation/agent-execution/adapters/claude-cli.md ADDED: ya existe en EFF^1 (ae570380509cacabf11f757a27573bf6fe616a36); la derivación lo clasificaría sin cambio",
+    "docs/automation/agent-execution/adapters/claude-desktop-session.md ADDED: ya existe en EFF^1 (7f45923527a860713819d1ccf29dcb375b680369); la derivación lo clasificaría sin cambio",
+    "docs/automation/agent-execution/adapters/claude-subagent.md ADDED: ya existe en EFF^1 (e10926c048321227fa53fe839e01f113fb9adece); la derivación lo clasificaría sin cambio",
+    "docs/automation/agent-execution/adapters/codex-cli.md ADDED: ya existe en EFF^1 (155f3469e345e2397fa26347a9cb52d6fdb91122); la derivación lo clasificaría sin cambio",
+    "docs/automation/agent-execution/adapters/codex-desktop-session.md ADDED: ya existe en EFF^1 (02d6c33db60344943fbcd6fcdf347eefef06986f); la derivación lo clasificaría sin cambio",
+    "docs/automation/agent-execution/compatibility/clause-map.schema.json ENTRY: ya existe en EFF^1 (6b54dda9579d694200d8fc9ec26a4a846eef529b); la derivación lo clasificaría sin cambio",
+    "docs/automation/agent-execution/schemas/adapters/claude-cli.facts.v1.schema.json ADDED: ya existe en EFF^1 (2298c37641efff835d8e49861b1dd2d0bf1239dc); la derivación lo clasificaría sin cambio",
+    "docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json ADDED: ya existe en EFF^1 (f246717f1cc2915bbac61ccd96fcd9676039b106); la derivación lo clasificaría sin cambio",
+    "docs/automation/agent-execution/schemas/adapters/claude-subagent.facts.v1.schema.json ADDED: ya existe en EFF^1 (3706be159871592e0c7e586fbaed3dcd3151b7a4); la derivación lo clasificaría sin cambio",
+    "docs/automation/agent-execution/schemas/adapters/codex-cli.facts.v1.schema.json ADDED: ya existe en EFF^1 (3d1b7478b433ebff2f882fb3edae82aff970d151); la derivación lo clasificaría sin cambio",
+    "docs/automation/agent-execution/schemas/adapters/codex-desktop-session.facts.v1.schema.json ADDED: ya existe en EFF^1 (bdf5c491829948f113c8736e476ecb90edcc9760); la derivación lo clasificaría sin cambio",
+    "docs/automation/agent-execution/schemas/architect-review-result.v1.schema.json ADDED: ya existe en EFF^1 (e7f5747ba3812c181237828fe72243523038e64f); la derivación lo clasificaría sin cambio",
+    "docs/automation/agent-execution/schemas/automation-state.v2.schema.json ADDED: ya existe en EFF^1 (b1105dc1c5ea29d1a717eefea03e5242423762d8); la derivación lo clasificaría sin cambio",
+    "docs/automation/agent-execution/schemas/binding.v1.schema.json ADDED: ya existe en EFF^1 (13501476b775ca18c4c61ba3e1793796b51067d9); la derivación lo clasificaría sin cambio",
+    "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json ADDED: ya existe en EFF^1 (e1faa9eca5c50b2b3a9f91575575614366962720); la derivación lo clasificaría sin cambio",
+    "docs/automation/agent-execution/schemas/delegation.v2.schema.json ADDED: ya existe en EFF^1 (dfdbe461270e8fd92200c36bab78b9fdc3385014); la derivación lo clasificaría sin cambio",
+    "docs/automation/agent-execution/schemas/gate-contract.v2.schema.json ADDED: ya existe en EFF^1 (f644bb1941656b65c62ee474bf37752d328fd091); la derivación lo clasificaría sin cambio",
+    "docs/automation/agent-execution/schemas/input-closure.v1.schema.json ADDED: ya existe en EFF^1 (6bdf71843e2c70362a5e2d0ea19c8891e22bcff6); la derivación lo clasificaría sin cambio",
+    "docs/automation/agent-execution/schemas/input-fidelity.v1.schema.json ADDED: ya existe en EFF^1 (e54990fc541b6420c3cddb45e1a7cc2fefd6c76b); la derivación lo clasificaría sin cambio",
+    "docs/automation/agent-execution/schemas/normative-dependency-manifest.v1.schema.json ADDED: ya existe en EFF^1 (7ff2127d28de2f126b98da7d4fb2ebb9520374ef); la derivación lo clasificaría sin cambio",
+    "docs/automation/agent-execution/schemas/preflight.v1.schema.json ADDED: ya existe en EFF^1 (6a0540796a473e887677e5043d2105b932b5865f); la derivación lo clasificaría sin cambio",
+    "docs/automation/agent-execution/schemas/relay-record.v2.schema.json ADDED: ya existe en EFF^1 (dca5b29c1a260b679efc0fb249c73850925302f0); la derivación lo clasificaría sin cambio",
+    "docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json ADDED: ya existe en EFF^1 (a74288eb0e9da43f8a73701098cbff5086fee512); la derivación lo clasificaría sin cambio",
+    "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json ADDED: ya existe en EFF^1 (d54a7ae783ec83d055babdae090899908b616082); la derivación lo clasificaría sin cambio"
+   ],
+   "Note": "MV-4 literal; FileKindDerivation (ADDED/ENTRY presentes en EFF^1, R61 b) se informa aparte y no altera el recuento literal"
+  },
+  "MV-5": {
+   "pass": true,
+   "fail": []
+  },
+  "MV-6": {
+   "pass": false,
+   "fail": [
+    "docs/AUTOMATION_PLAN.md: listada y no derivada: # Plan del ejecutor nocturno (nivel 1) MODIFIED",
+    "docs/AUTOMATION_PLAN.md: listada y no derivada: ## 16. Ejecución delegada bajo orden del Coordinator (nivel 2) MODIFIED",
+    "docs/AUTOMATION_PLAN.md: listada y no derivada: ## 8. Implementacion, estado versionado y Pull Requests (nivel 2) MODIFIED",
+    "docs/AUTOMATION_PLAN.md: listada y no derivada: ### 16.1 Participantes y declaraciones (nivel 3) MODIFIED",
+    "docs/AUTOMATION_PLAN.md: listada y no derivada: ### 16.13 Compatibilidad de protocolos de ejecución delegada (nivel 3) ENTRY",
+    "docs/AUTOMATION_PLAN.md: listada y no derivada: ### 16.14 Vigencia de las partes I62 (nivel 3) ADDED",
+    "docs/AUTOMATION_PLAN.md: listada y no derivada: ### 16.15 Perfil del Principal y autoverificación (I62) (nivel 3) ADDED",
+    "docs/AUTOMATION_PLAN.md: listada y no derivada: ### 16.16 `CONFIGURATION_STATUS` y disposición (I62) (nivel 3) ADDED",
+    "docs/AUTOMATION_PLAN.md: listada y no derivada: ### 16.17 Frontera de renderizado (I62) (nivel 3) ADDED",
+    "docs/AUTOMATION_PLAN.md: listada y no derivada: ### 16.18 Observación de capacidad y comprobaciones de relevo (I62) (nivel 3) ADDED",
+    "docs/AUTOMATION_PLAN.md: listada y no derivada: ### 16.19 Frontera de adapters (I62) (nivel 3) ADDED",
+    "docs/AUTOMATION_PLAN.md: listada y no derivada: ### 16.20 Binding y aceptación (I62) (nivel 3) ADDED",
+    "docs/AUTOMATION_PLAN.md: listada y no derivada: ### 16.21 Independencia por riesgo (I62) (nivel 3) ADDED",
+    "docs/AUTOMATION_PLAN.md: listada y no derivada: ### 16.22 Aceptación del paquete y comprobaciones de la verificación (I62) (nivel 3) ADDED",
+    "docs/AUTOMATION_PLAN.md: listada y no derivada: ### 16.23 Orquestación de roles (I62): invocación de rol y contratos de salida (nivel 3) ADDED",
+    "docs/AUTOMATION_PLAN.md: listada y no derivada: ### 16.24 Orquestación de roles (I62): cierre de insumos, identidad del revisor y fidelidad (nivel 3) ADDED",
+    "docs/AUTOMATION_PLAN.md: listada y no derivada: ### 16.25 Custodia por unidad (I62): puntos durables, ventana, CAS y rebase (nivel 3) ADDED",
+    "docs/AUTOMATION_PLAN.md: listada y no derivada: ### 16.26 Recuperación y transiciones (I62) (nivel 3) ADDED",
+    "docs/AUTOMATION_PLAN.md: listada y no derivada: ### 16.27 Conteo y presupuestos de la ejecución delegada (I62) (nivel 3) ADDED",
+    "docs/AUTOMATION_PLAN.md: listada y no derivada: ### 16.28 Arranque, adopción y marcadores (I62) (nivel 3) ADDED",
+    "docs/AUTOMATION_PLAN.md: listada y no derivada: ### 16.29 Orquestación de roles (I62): bucles de revisión, intentos y presupuestos (nivel 3) ADDED",
+    "docs/AUTOMATION_PLAN.md: listada y no derivada: ### 16.3 Lectura de autoridades (nivel 3) MODIFIED",
+    "docs/AUTOMATION_PLAN.md: listada y no derivada: ### 16.30 Planos y MaterializationClose (I62) (nivel 3) ADDED",
+    "docs/INITIATIVE_LIFECYCLE.md: listada y no derivada: # Initiative Lifecycle (nivel 1) MODIFIED",
+    "docs/INITIATIVE_LIFECYCLE.md: listada y no derivada: ## 5. Participacion del Architect (nivel 2) MODIFIED",
+    "docs/INITIATIVE_LIFECYCLE.md: listada y no derivada: ## 9. Conformidad final (nivel 2) MODIFIED",
+    "docs/WORKFLOW.md: listada y no derivada: # WORKFLOW — flujo Git, worktrees y trabajo multi-agente (nivel 1) MODIFIED",
+    "docs/WORKFLOW.md: listada y no derivada: ## 10. Autoridad por dominio (nivel 2) MODIFIED",
+    "docs/WORKFLOW.md: listada y no derivada: ## 12. Coexistencia de protocolos de ejecución delegada (I61/I62) (nivel 2) ENTRY",
+    "docs/WORKFLOW.md: listada y no derivada: ## 4. Ciclo de vida de una iniciativa (el proceso repetible) (nivel 2) MODIFIED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 14.4 Referencias (A2') (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 14.7 A1'-A8' y las comprobaciones de la verificación (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: # Ejecución delegada de agentes — procedimiento (nivel 1) MODIFIED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ## 12. Autoverificación del Principal y `CONFIGURATION_STATUS` (unidades I62) (nivel 2) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ## 13. Observación de capacidad, preflight y saneamiento (unidades I62) (nivel 2) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ## 14. Binding, aceptación, independencia y comprobaciones (unidades I62) (nivel 2) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ## 15. Invocación de rol, cierre de insumos y fidelidad (unidades I62) (nivel 2) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ## 16. Validación de los resultados por rol (unidades I62) (nivel 2) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ## 17. Custodia, diario, rebase y reconstrucción (unidades I62) (nivel 2) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ## 18. Bucles de revisión, intentos y AUTONOMY_GAP (unidades I62) (nivel 2) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 13.1 Producción (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 13.2 Validación y coherencia (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 13.3 Invalidación y contraste (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 13.4 Saneamiento previo a la custodia (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 14.1 Producción de un binding (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 14.2 Coherencia del binding (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 14.3 Materialización autorizada (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 14.5 Evaluación de la independencia (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 14.6 Coherencia de `gate-contract/v2` y `delegation/v2` (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 15.1 Construcción de la `RoleInvocation` (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 15.2 Cierre efectivo de insumos (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 15.3 Preflight y comprobación de fidelidad (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 15.4 Validador del manifiesto de dependencias normativas (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 17.1 Escribir un punto durable (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 17.2 Diario de una ventana (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 17.3 Rebase y reconciliación (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 17.4 Reconstrucción sin diario (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 17.5 Validación mecánica (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 18.1 Apertura de un bucle del Architect (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 18.2 Lanzamiento, resultado e ingestión (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 18.3 Corrección y re-revisión (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 18.4 Caídas durante un intento (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 18.5 Cierre y bucle nuevo (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 18.6 Bucle REVIEWER (nivel 3) ADDED",
+    "docs/automation/agent-execution/README.md: listada y no derivada: ### 18.7 AUTONOMY_GAP (nivel 3) ADDED",
+    "docs/automation/agent-execution/routing.md: listada y no derivada: # Enrutamiento estable de la ejecución delegada (nivel 1) MODIFIED",
+    "docs/automation/agent-execution/routing.md: listada y no derivada: ## 8. Requisitos por perfil y acción (unidades I62) (nivel 2) ADDED",
+    "docs/automation/agent-execution/routing.md: listada y no derivada: ## 9. Binding por capacidad (unidades I62) (nivel 2) ADDED",
+    "docs/initiatives/PROMPT_TEMPLATES.md: ausente en EFF^1"
+   ],
+   "DerivedEntries": 0,
+   "DerivedByKind": {
+    "MODIFIED": 0,
+    "REMOVED": 0,
+    "ADDED": 0,
+    "ENTRY": 0
+   },
+   "MapEntries": 70
+  },
+  "MV-7": {
+   "pass": false,
+   "fail": [
+    "16.3 en EFF sin el puntero != 16.3 en EFF^1 (normalizado)",
+    "16.3 en EFF^1 ya lleva el puntero"
+   ]
+  }
+ },
+ "MapVerdict": "MAP_INVALID",
+ "MVFailed": [
+  "MV-3",
+  "MV-4",
+  "MV-6",
+  "MV-7"
+ ],
+ "Verdict": "MAP_INVALID"
+}

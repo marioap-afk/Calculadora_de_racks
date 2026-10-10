@@ -1,0 +1,24 @@
+{
+ "Kind": "rackcad-ccli-meas-binding-stub/v1",
+ "Note": "NO es un binding del protocolo (binding.v1): identifica la celda y la corrida de la medición para que ReviewerBinding.Sha256 del resultado apunte a un objeto exacto. TRANSIENT. No acepta resultados ni crea autoridad.",
+ "RunId": "R20261010T012414Z-d6d8",
+ "BindingId": "B20261010T012414Z-d6d8",
+ "UnitId": "FX-U1",
+ "Scope": "TASK",
+ "TaskId": "T1",
+ "Role": "ARCHITECT",
+ "Action": "REVIEW_DESIGN",
+ "AdapterId": "claude-cli",
+ "Binary": {
+  "Path": "%APPDATA%\\Claude\\claude-code\\2.1.293\\83cb0bd7fed4\\claude.exe",
+  "Version": "2.1.293",
+  "Sha256": "8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa"
+ },
+ "Model": "claude-opus-5-5",
+ "Effort": "xhigh",
+ "Tools": ["Read", "Grep", "Glob"],
+ "SessionId": "ee381259-e0ca-4806-b264-09aa32783f39",
+ "OutputContract": "rackcad-architect-review-result/v1 (blob e7f5747ba3812c181237828fe72243523038e64f)",
+ "Authority": "CLAUDE-CLI-MEDICION-FX02 = A (pendiente) y la disposición del Coordinator que nombra MANIFEST.json",
+ "AcceptsResult": false
+}

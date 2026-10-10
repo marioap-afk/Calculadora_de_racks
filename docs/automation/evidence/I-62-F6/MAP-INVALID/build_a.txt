@@ -1,0 +1,26 @@
+{
+ "Variant": "a",
+ "Dest": "D:/r62-fixture/tmp-map-a",
+ "Date": "2026-10-10T02:00:00+00:00",
+ "Names": {
+  "main": "main-r2",
+  "norm": "fixture/i62-norm-r2",
+  "tag": "test-activation/I-62-r2",
+  "unit": "FX-U2",
+  "branch": "fx/u2",
+  "rule": "AUTOMATION_PLAN 16.14 aplicado a ESTE repositorio con la rama main-r2 en el papel de origin/main (linaje r2): I62_EFFECTIVE_SHA del fixture = primer merge en first-parent de main-r2 cuyo segundo padre alcanza el único commit con el trailer; la rama main (linaje r1, MAP_INVALID) queda congelada como evidencia; RackCad no se activa"
+ },
+ "BaseCommit": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+ "SourceCommit": "6f0187cb30852971b49153c2763c8ba6caeaa64d",
+ "S_seed": "55d190043458f461f187588ea79d8e9839440e28",
+ "N1_i62": "15a20a2f1b120a12784960abb0b30819e7e7cb53",
+ "N2_norm": "a274a22ca60ec5228a9649f6d1a08fd357dba3ac",
+ "E_eff": "28d8bcb85554d8bffa0842afba62efbc2049a3bb",
+ "TagObject": "9f4f2443cc95272ff56a183bdb14ecad7fe5984d",
+ "C_claim": "bd486c82fdd9ac2d2ee86ba1586b9debbc89e321",
+ "ClaimId": "fc62f1c7-0000-4000-8000-000000000002",
+ "SeedCopied": 13,
+ "EffCopied": 39,
+ "Local": 10,
+ "Remotes": []
+}

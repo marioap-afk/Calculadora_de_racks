@@ -1,0 +1,26 @@
+{
+ "Schema": "rackcad-ccli-meas-gates/v1",
+ "DecisionsSource": "run-constants.json → Decisions: el archivo de decisiones de I-62 en el commit HEAD del worktree de la iniciativa (contenido custodiado, no la copia de trabajo)",
+ "OwnerLine": "CLAUDE-CLI-MEDICION-FX02 = A (1 invocación read-only de claude-cli 2.1.293, binario 8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa, celda claude-opus-5-5 xhigh, solo Read, Grep y Glob, en un clon temporal de lectura del fixture, para medir las operaciones 5 (esquema canónico de la revisión del Architect), 7, 8 y 9 de su descriptor; sin reintento; sin escritura; sin lectura de credenciales ni de valores de configuración; no acepta su resultado ni amplía OD-3, CLAUDE-CLI-I62 ni A4-CLAUDE-FX02-CONSUMO)",
+ "OwnerLineSource": {
+  "Path": "docs/automation/evidence/I-62-F6/FX-02/s65/claude-cli-architect-ops.md",
+  "Commit": "6d62679409c4cb83d0f4a4cee8fbc1bc945a547b",
+  "Blob": "09808dc857a466c3ff42fe4b151eb225917445d6",
+  "Section": "§3, bloque text (línea propuesta para el Owner)"
+ },
+ "OwnerLineSha256": "608ba443c173d00fcd83e7073524fe74269bf523822df07402df3f95348bccd9",
+ "CoordinatorMarkerTemplate": "CCLI-MEDICION-FX02-DISPOSICION = AUTORIZADA (paquete ccli-meas, MANIFEST.json SHA-256 <MANIFEST_SHA256>, esquema VERBATIM, sin reintento)",
+ "Placeholder": "<MANIFEST_SHA256>",
+ "Match": "cada línea debe aparecer como LÍNEA COMPLETA exacta del archivo (solo se retira el fin de línea); el marcador, con <MANIFEST_SHA256> sustituido por el SHA-256 de MANIFEST.json calculado por launch.py en la preflight",
+ "OtherGates": [
+  "G2 binario 2.1.293 presente con SHA-256 y firma Authenticode exactos (y vuelto a medir justo antes de lanzar)",
+  "G3 clon limpio en D:\\r62-fixture\\tmp-ccli-meas (HEAD d30fb6a9, solo main, sin remoto, limpio con ignorados, blob del objeto, sin .claude/, sin enlaces, solo la historia de HEAD, core.autocrlf=false)",
+  "G4 ningún proceso con el session id del paquete en su línea de órdenes ni ningún proceso ajeno con la ruta del clon",
+  "G5 un solo uso: run/ no existe (se crea en el lanzamiento con ONE-SHOT.marker y no se borra nunca)",
+  "G6 integridad del paquete: MANIFEST.json, sin archivos no listados ni __pycache__",
+  "G7 entorno: CLAUDE_CONFIG_DIR ausente",
+  "G8 sesión nueva: sin transcripción con el session id y sin carpeta de proyecto del clon en %USERPROFILE%\\.claude\\projects",
+  "G9 línea de órdenes < 32 000 caracteres",
+  "G10 muestreador CIM operativo (una instantánea de prueba)"
+ ]
+}

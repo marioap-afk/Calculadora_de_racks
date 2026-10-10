@@ -1,0 +1,64 @@
+{
+ "Schema": "rackcad-ccli-meas-manifest/v1",
+ "Package": "ccli-meas (I-62 / FX-02, medición única de claude-cli: operaciones 5, 7, 8 y 9)",
+ "RunId": "R20261010T012414Z-d6d8",
+ "Files": {
+  "architect-review-result.v1.schema.json": {
+   "Sha256": "9f4639da1d7611083269ca750b632badc5afba2693818c80aaf22723791c7608",
+   "Bytes": 23666
+  },
+  "audit.py": {
+   "Sha256": "eaf310c5848c552247ba48495f9a2231d70c4c905bdafa468914855799fd4dec",
+   "Bytes": 29368
+  },
+  "binding-stub.json": {
+   "Sha256": "025a971a4b2b590baf0d85fb305706d7424af20e12f1382282c2e6a16fa69053",
+   "Bytes": 1073
+  },
+  "ccli_common.py": {
+   "Sha256": "eaeb6d957f1870b290e06778951957cd2b41490d3cbb7cffe1239095a4d552d3",
+   "Bytes": 23160
+  },
+  "dryrun.py": {
+   "Sha256": "fe2921e3ddf4068f20e4b69932117d94ee658e7635fc8ba56333e3f04fb70ffe",
+   "Bytes": 35751
+  },
+  "gates.template.json": {
+   "Sha256": "dd6889f1fe224e70537954fe401d352a90dcf49360e845bdc1ec7468cb8d3781",
+   "Bytes": 2529
+  },
+  "launch.py": {
+   "Sha256": "f85fcb76e2afe8ec67b6d227a64b043cd34a44dc587cf73c2ee014ca68015b79",
+   "Bytes": 20471
+  },
+  "make_clone.py": {
+   "Sha256": "4dc830354177489d530d07da008fce518d3a09a3cd1f29ef468afa59cffc9454",
+   "Bytes": 3105
+  },
+  "proctree.py": {
+   "Sha256": "8ff5e16f5af1bfaeb8aaff9d32318e22490012cc78f98a588fd1ebad802ddad9",
+   "Bytes": 13137
+  },
+  "prompt.md": {
+   "Sha256": "928e950cdae3a8b589bcfcbd1a406c5ace86de20ce4043e6c68bb8a853017971",
+   "Bytes": 5708
+  },
+  "run-constants.json": {
+   "Sha256": "4881f0084f53fafd61ec0a20e5dc55308ae57df5e3a358ea005d86d1694898f3",
+   "Bytes": 4749
+  },
+  "sampler.ps1": {
+   "Sha256": "5ddba8f3eda855189bd4c108a53cb682e5c8ae5886606d1f8fd83689a8c00015",
+   "Bytes": 8485
+  },
+  "schema-source.json": {
+   "Sha256": "60c1cbc0f64d882f30d51307dd80f7bdaa99552d9cdc9437e9317f5700c1a152",
+   "Bytes": 1838
+  },
+  "schemacheck.py": {
+   "Sha256": "517f6d6830e997eec43b4d8502d775dbfaa7237c5037afcf061edee0b91c1b61",
+   "Bytes": 8334
+  }
+ },
+ "Excluded": "README.md, SHA256SUMS.txt y dry-run-report.* (documentación y resultados del ensayo; no determinan la corrida)"
+}

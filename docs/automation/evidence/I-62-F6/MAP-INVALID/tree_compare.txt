@@ -1,0 +1,54 @@
+== Árbol de EFF' candidato (88ab34c3) frente al EFF actual del fixture (fbe25347): diferencias
+  FIXTURE-MANIFEST.json: fbe2534=b8ac6f513407 EFF'=db3ac4537a4e
+  docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md: fbe2534=AUSENTE EFF'=e1bd8d91f10c
+  docs/initiatives/PROMPT_TEMPLATES.md: fbe2534=AUSENTE EFF'=384d0b0c3734
+
+== Árbol de EFF'^1 candidato (55d19004) frente al EFF^1 actual (930288c5): diferencias (32)
+  FIXTURE-MANIFEST.json: 930288c=0822eda326b2 EFF'^1=9c41148b52e0
+  docs/AUTOMATION_PLAN.md: 930288c=f525cb1e9d24 EFF'^1=07b97bd3eef3
+  docs/INITIATIVE_LIFECYCLE.md: 930288c=f19896a8f1a7 EFF'^1=6415c33bd2f8
+  docs/WORKFLOW.md: 930288c=446c32ba6a91 EFF'^1=884ed305ce24
+  docs/automation/agent-execution/README.md: 930288c=592dcfd45e87 EFF'^1=64ae952b6fb0
+  docs/automation/agent-execution/adapters/claude-cli.md: 930288c=ae570380509c EFF'^1=AUSENTE
+  docs/automation/agent-execution/adapters/claude-desktop-session.md: 930288c=7f45923527a8 EFF'^1=AUSENTE
+  docs/automation/agent-execution/adapters/claude-subagent.md: 930288c=e10926c04832 EFF'^1=AUSENTE
+  docs/automation/agent-execution/adapters/codex-cli.md: 930288c=155f3469e345 EFF'^1=AUSENTE
+  docs/automation/agent-execution/adapters/codex-desktop-session.md: 930288c=02d6c33db603 EFF'^1=AUSENTE
+  docs/automation/agent-execution/compatibility/I62-clause-map.json: 930288c=4d49d3e1a63d EFF'^1=AUSENTE
+  docs/automation/agent-execution/compatibility/clause-map.schema.json: 930288c=6b54dda9579d EFF'^1=AUSENTE
+  docs/automation/agent-execution/routing.md: 930288c=bba08fc4686d EFF'^1=82ca9b38865b
+  docs/automation/agent-execution/schemas/adapters/claude-cli.facts.v1.schema.json: 930288c=2298c37641ef EFF'^1=AUSENTE
+  docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json: 930288c=f246717f1cc2 EFF'^1=AUSENTE
+  docs/automation/agent-execution/schemas/adapters/claude-subagent.facts.v1.schema.json: 930288c=3706be159871 EFF'^1=AUSENTE
+  docs/automation/agent-execution/schemas/adapters/codex-cli.facts.v1.schema.json: 930288c=3d1b7478b433 EFF'^1=AUSENTE
+  docs/automation/agent-execution/schemas/adapters/codex-desktop-session.facts.v1.schema.json: 930288c=bdf5c4918299 EFF'^1=AUSENTE
+  docs/automation/agent-execution/schemas/architect-review-result.v1.schema.json: 930288c=e7f5747ba381 EFF'^1=AUSENTE
+  docs/automation/agent-execution/schemas/automation-state.v2.schema.json: 930288c=b1105dc1c5ea EFF'^1=AUSENTE
+  docs/automation/agent-execution/schemas/binding.v1.schema.json: 930288c=13501476b775 EFF'^1=AUSENTE
+  docs/automation/agent-execution/schemas/controller-verification.v2.schema.json: 930288c=e1faa9eca5c5 EFF'^1=AUSENTE
+  docs/automation/agent-execution/schemas/delegation.v2.schema.json: 930288c=dfdbe461270e EFF'^1=AUSENTE
+  docs/automation/agent-execution/schemas/gate-contract.v2.schema.json: 930288c=f644bb194165 EFF'^1=AUSENTE
+  docs/automation/agent-execution/schemas/input-closure.v1.schema.json: 930288c=6bdf71843e2c EFF'^1=AUSENTE
+  docs/automation/agent-execution/schemas/input-fidelity.v1.schema.json: 930288c=e54990fc541b EFF'^1=AUSENTE
+  docs/automation/agent-execution/schemas/normative-dependency-manifest.v1.schema.json: 930288c=7ff2127d28de EFF'^1=AUSENTE
+  docs/automation/agent-execution/schemas/preflight.v1.schema.json: 930288c=6a0540796a47 EFF'^1=AUSENTE
+  docs/automation/agent-execution/schemas/relay-record.v2.schema.json: 930288c=dca5b29c1a26 EFF'^1=AUSENTE
+  docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json: 930288c=a74288eb0e9d EFF'^1=AUSENTE
+  docs/automation/agent-execution/schemas/role-invocation.v1.schema.json: 930288c=d54a7ae783ec EFF'^1=AUSENTE
+  docs/initiatives/PROMPT_TEMPLATES.md: 930288c=AUSENTE EFF'^1=0e3ed262add5
+
+== docs/* de EFF'^1 frente a RackCad bb0d5522 (mismas rutas): IGUALES (13 archivos)
+== docs/* de EFF' frente a RackCad 6f0187cb (mismas rutas): IGUALES (39 archivos)
+== FIXTURE_LOCAL de EFF'^1 frente al F_seed original 930288c5: IGUALES (9 archivos: .gitattributes, .github/workflows/fixture.yml, AGENTS.md, CLAUDE.md, README.md, src/Fixture.Lib/Calculator.cs, src/Fixture.Lib/Fixture.Lib.csproj, tests/Fixture.Tests/CalculatorTests.cs, tests/Fixture.Tests/Fixture.Tests.csproj)
+
+== Blobs invalidadores: EFF' candidato | EFF actual (fbe25347) | punta fx/u1 actual (95bdc29d)
+  docs/automation/agent-execution/routing.md: bba08fc4686d | bba08fc4686d | bba08fc4686d | iguales=True
+  docs/automation/agent-execution/model-catalog.md: 166d978d114e | 166d978d114e | 166d978d114e | iguales=True
+  docs/automation/agent-execution/adapters/codex-cli.md: 155f3469e345 | 155f3469e345 | 155f3469e345 | iguales=True
+  docs/automation/agent-execution/adapters/claude-cli.md: ae570380509c | ae570380509c | ae570380509c | iguales=True
+  docs/automation/agent-execution/compatibility/I62-clause-map.json: 4d49d3e1a63d | 4d49d3e1a63d | 4d49d3e1a63d | iguales=True
+  docs/automation/agent-execution/compatibility/clause-map.schema.json: 6b54dda9579d | 6b54dda9579d | 6b54dda9579d | iguales=True
+  docs/AUTOMATION_PLAN.md: f525cb1e9d24 | f525cb1e9d24 | f525cb1e9d24 | iguales=True
+  docs/WORKFLOW.md: 446c32ba6a91 | 446c32ba6a91 | 446c32ba6a91 | iguales=True
+
+== Reclamo C (6040097c): padre = 88ab34c398f0 (= EFF': True); árbol de C = árbol de EFF': True
