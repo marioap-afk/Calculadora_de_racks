@@ -1776,3 +1776,75 @@ ADR 0047 sigue `propuesto`.
 - `persistent_next_action` hacia el Master Coordinator / iniciativa de protocolo.
 
 **Relevos:** sin invocaciones. HEAD = remoto = `db151227` antes de este commit; `main` `819955d6`; `config.toml` sin cambio.
+
+## 33. F1 — Puente de protocolo de emergencia, fase A: A-1 propuesta, verificador y STOP P-01 antes de la revisión independiente
+
+Sección nueva; las anteriores no se reescriben. Hechos de la sesión responsable. No hay trabajo de T2, F1 PASS, COMPLETE ni activación de A-1.
+
+**Orden del Coordinator** (chat, 2026-10-09, «EMERGENCY PROTOCOL BRIDGE / PHASE A»):
+- El Owner autorizó una reanudación de emergencia en paralelo por la alternativa (B) de `f1_resume_condition`.
+- Se prepara y revisa un puente de protocolo solo para I-64 (A-1, I64-SCOPE-BRIDGE-01), sin cambiar I-61 ni I-62.
+- Fase A:
+  - redactar A-1;
+  - implementar el verificador mecánico;
+  - ejecutar las autopruebas;
+  - una revisión independiente de conformidad, de solo lectura y por una celda CLI elegible, con resultado exigido AGREED / CONFORMING
+    y 0 REQUIRED;
+  - después, parar en COORDINATOR_A1_AGREEMENT_REQUIRED.
+- El puente no se ejecuta contra T1 antes del acuerdo del Coordinator.
+
+**Commit `22736034dc177ddc181a0b513317cdb754f5bd18`** (padre `39b45f36`; push fast-forward; CI 38013242975, los cuatro jobs en success):
+
+| Archivo | Blob |
+|---|---|
+| `docs/initiatives/I-64-A-1.md` | `fb6a49c2e8e96689f82a2ad01fda7994fc2397b0` |
+| `docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py` | `093a570f71a359e8e004b8983ea9625e74ebbc87` |
+| `docs/automation/evidence/I-64-protocol-bridge/tools/selftest_scope_bridge.py` | `937e3279e6d8fb5f7b612b940a01860d3ae84b84` |
+| `docs/automation/evidence/I-64-protocol-bridge/selftest-result.json` | `05ec88362f6e2d5935d4b82bc93bdc307238aae1` |
+
+- **A-1** (formato de `I-59-A-1.md`):
+  - Coordinator-only sobre el Freeze `9b43dafb` (blob `dc1924ff`), Applies-to I-64, M-01..M-08 = NO.
+  - Coordinator = PENDING y revisión independiente = PENDING.
+  - Fija el verificador por su blob y deja el nc2 histórico `R20261002T184050Z-8415` = FAIL.
+- **Verificador:**
+  - Solo stdlib y cerrado ante fallos; Git es la única fuente de las rutas cambiadas (`--no-renames`, `--no-replace-objects`, sin variables
+    `GIT_*` heredadas).
+  - `--repo` tiene que ser la raíz exacta del árbol de trabajo.
+  - JSON determinista con LF; código 0 solo para PASS. `-h` y los errores de uso salen con código 2.
+- **Autoprueba** sobre un repositorio Git sintético con commits deterministas, sin entradas de T1:
+  - 23 casos, todos conformes y reproducibles byte a byte en dos ejecuciones completas.
+  - El resultado queda ligado al SHA-256 del verificador probado.
+  - Incluye los cinco fallos exigidos y otros 16 casos de cierre ante fallos.
+  - Dos correcciones previas al commit, nacidas de la propia autoprueba:
+    - `-h` habría salido con código 0;
+    - un directorio anidado dentro de otro repositorio (el home tiene un `.git`) se aceptaba como repositorio.
+
+**Desviaciones declaradas:**
+- La ruta adversarial que nombra la orden (`…/R20261002T184050Z-8415/input-mutated-delegation.json`) no existe. La delegación mutada
+  custodiada del nc2 final está en `…/R20261002T184050Z-8415/inputs/delegation.json`. A-1 cita esa ruta y no se crea ningún archivo en la
+  evidencia de nc2.
+- **Celda de la revisión:**
+  - Según el catálogo y `routing.md` de I-61 (en `MainSha`), la única celda CLI elegible es Codex `gpt-6-luna` / `high` (lectura, medida).
+  - La clase «Revisión de arquitectura / conformidad adversarial» pide Deep. No hay celda Equilibrado/Frontera de CLI medida: `gpt-6.1-sol`
+    no está medida, y el catálogo de I-61 dice que `claude` CLI no se usa como transporte.
+  - Por tanto, la revisión se enruta hacia abajo (routing.md §4.5), con la razón registrada. No se usan las mediciones de `claude-cli` de
+    I-62, que no están integradas.
+- El esquema del registro de relevo de I-61 no tiene fase REVIEW: el registro de la revisión usará un formato local de I-64.
+
+**Revisión independiente preparada y no lanzada** (`artifacts/orchestration/I-64/A-1-review/R20261010T012851Z-de0d/`):
+- prompt ASCII con los seis temas de la orden y sin ejecutar Scope (SHA-256 `E7E24EE6…`);
+- esquema `rackcad-i64-conformance-review/v1`.
+
+**STOP P-01 en el preflight:**
+- `%USERPROFILE%\.codex\config.toml`:
+  - SHA-256 `73890CA3319206B85B68A42E23E8D323C45361CFC29E06B3E116EFFF5DAD0FBF`, frente a la línea base `40C27B57…`;
+  - 105 nombres de clave frente a 103; última escritura 2026-10-09T16:56:13Z;
+  - la diferencia de nombres es una sección `[projects.<redactado>]` nueva con `trust_level`.
+  - Como la línea base guarda solo nombres y hash, no se puede comprobar si cambió algún otro valor.
+- Además, la app actualizó el CLI de Codex: el binario medido (`bin/a51e250fa15c740a`, 0.159.2) ya no existe, y el actual es
+  `bin/9691020b546a15b2/codex.exe` = `codex-cli 0.162.0-alpha.2` (2026-10-07).
+- Con P-01 no se invoca a Codex. Decide el Owner, porque `OWNER_REQUIRED_IF` incluye el cambio de `config.toml`: aceptar una línea base
+  nueva y si la versión nueva del CLI sigue siendo la misma celda medida o exige una sonda.
+
+**Relevos:** sin invocaciones. HEAD = remoto = `22736034` antes de este commit. `main` = `bb0d5522` (I-63 integrada), sin rebase: el rebase
+se hace antes de T2.
