@@ -3484,3 +3484,29 @@ solo desde artefactos custodiados.
   - F7 y los controles independientes;
   - el informe de opciones de recuperación.
 - Sin apertura de A2.
+
+## 122. F7 r5 y controles independientes; N9/N10 verificadas con borrador de disposición; estado de F6 al día (decisiones §66, puntos 8 y 9)
+
+- **F7** ([estado](I-62-prep/f7/f7-status.md); [controles](I-62-prep/f7/independent-controls.md); [cambios](I-62-prep/f7/CHANGES-r5.md)):
+  - los siete borradores de `I-62-prep/f7/` pasan a r5 con los hechos de §56-§66. Ningún gate, READY, Candidato ni cierre se declara;
+  - 12 controles de solo lectura en `6d626794`, todos conformes ([salida](I-62-prep/f7/measured/r5/readonly-checks-6d626794.txt)). Entre ellos:
+    - C-20b en seco EQUAL (31 archivos, mapa `4d49d3e1`);
+    - la superficie de 16.13 sin cambios desde `6f0187cb`;
+    - punto de entrada y punteros únicos;
+    - trailer normativo 0/0;
+    - A-1..A-4 sin cambio desde su acuerdo.
+  - **Hallazgo:** F6 no puede cerrarse mientras C-24 siga UNVERIFIED (D.4, L2544: FX-02 no tiene vía de limitación), así que FOUNDATIONS final,
+    READY-02..09, el Candidato, la OV y el cierre esperan a C-24.
+  - **Preguntas nuevas para el Coordinator:**
+    - Q22': A-2 y A-4 excluyen D.5, así que la OV de FX-02 no tiene su cobertura;
+    - Q23: materializar A-3 o diferirla;
+    - Q24: el defecto del mapa está en el método de D.1 (el seed copia byte a byte las autoridades de MC_I62);
+    - Q25 y Q26;
+    - Q11: el contrato y el estado no registran A-2..A-4.
+- **N9/N10** ([borrador](I-62-F6/FX-02/s66/n9-n10-disposition-draft.md)):
+  - las mutaciones selladas no son exactas: N9 ofrece dos variantes, y N10 no nombra la celda del otro proveedor y usa «p. ej.» para los contadores;
+  - propuesta: N9 con la variante de T16 (P-12, regla exacta de D.3) y N10 con `codex-cli:gpt-6-luna` y todos los contadores no nulos a cero;
+    resellado tras la disposición;
+  - las precondiciones de N8, N9 y N10 no son acreditables con A4-1 NOT_DEMONSTRATED.
+- **F6 README:** filas de FX-02, C-24 y C-25a al día (§60, §66). La causa de C-26 «OD-3 = RECHAZAR» queda marcada como desfasada; su reclasificación
+  es del Coordinator.

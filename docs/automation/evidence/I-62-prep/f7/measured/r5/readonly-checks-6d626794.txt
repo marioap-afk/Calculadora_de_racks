@@ -1,0 +1,73 @@
+# readonly-checks  TIP=6d62679409c4cb83d0f4a4cee8fbc1bc945a547b  BASE=bb0d5522e8411f66a51fdfb3f1f0d0514b737453  MC_I62=6f0187cb30852971b49153c2763c8ba6caeaa64d  UTC=2026-10-10T01:23:34Z
+## K-01 merge-base(TIP, origin/main local)
+bb0d5522e8411f66a51fdfb3f1f0d0514b737453
+## K-02 ls-remote --heads origin (DC-07 sin fetch)
+6d62679409c4cb83d0f4a4cee8fbc1bc945a547b	refs/heads/architecture/portabilidad-coordinador-principal
+39b45f36383e6017da38e5bf91e08e485298a4fc	refs/heads/architecture/workspace-persistente-rackcad
+fb6b56483a421e84c4bc44dd0aa1761813b7e457	refs/heads/feature/rackmirror-espejo-semantico
+bb0d5522e8411f66a51fdfb3f1f0d0514b737453	refs/heads/main
+## K-03 superficies cerradas de 16.13 cambiadas MC_I62..TIP (C-21)
+0
+## K-04 archivos fuera de docs/ y tests/ (merge-base...TIP; READY-08)
+0
+   total: 977  tests/: 58  commits: 145
+## K-05 trailer Agent-Protocol-Normative (Q15)
+   rama: 0   origin/main: 0
+## K-06 blobs en TIP
+   34ad80ea1bfff144bfc5169f62920a4c904c1bfa docs/initiatives/I-62-proposal-v14.md
+   0f6b860837e2478db8525e1fb30a485bc4646816 docs/initiatives/I-62-consensus-freeze.md
+   c01899a72b940503bb85a0fab42bc085c603fd0f docs/initiatives/I-62-A-1.md
+   f1e1d6f08d3cf677500794c7d0019433a4dc7d4e docs/initiatives/I-62-A-2.md
+   ea6721f78cb63fbc4f9d99563f3262eb36a32c5d docs/initiatives/I-62-A-3.md
+   f410f7fced25440be3866473974f417d2f6a9b50 docs/initiatives/I-62-A-3-annex-maf-codex.md
+   5e2ba68efdc1b902aa1c28aff4453b4b6973be7f docs/initiatives/I-62-A-4.md
+   e1bd8d91f10cb4c86eaf7753f9ef2531ae62498e docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md
+   77469524ba9cb8bc1d6c4904f9bfab31606555f4 docs/adr/README.md
+   748c74baff01bba9d71ab27ff23109554211ece1 docs/FOUNDATIONS.md
+   166d978d114e635bbef67e295c2ec1da73af6d1f docs/automation/agent-execution/model-catalog.md
+   bba08fc4686d7192deeb559752636a467103b4b1 docs/automation/agent-execution/routing.md
+   570507d1d85ec883fcc44a46c858bde411d3715e docs/ideas-futuras.md
+   4d49d3e1a63d2b6128c9d9eeac473156a421571a docs/automation/agent-execution/compatibility/I62-clause-map.json
+## K-07 A-n versionadas (READY-01/09)
+docs/initiatives/I-62-A-1.md
+docs/initiatives/I-62-A-2.md
+docs/initiatives/I-62-A-3.md
+docs/initiatives/I-62-A-4.md
+   (anexos no A-n): docs/initiatives/I-62-A-3-annex-maf-codex.md 
+## K-08 inmutabilidad de cada A-n desde su commit de acuerdo (blob en el commit = blob en TIP; ancestro; ningún commit posterior)
+   docs/initiatives/I-62-A-1.md: commit ca09ade8 blob c01899a7 TIP c01899a7 ancestro=si posteriores=0
+   docs/initiatives/I-62-A-2.md: commit 3bbaabef blob f1e1d6f0 TIP f1e1d6f0 ancestro=si posteriores=0
+   docs/initiatives/I-62-A-3.md: commit 91e29886 blob ea6721f7 TIP ea6721f7 ancestro=si posteriores=0
+   docs/initiatives/I-62-A-4.md: commit c2dbc225 blob 5e2ba68e TIP 5e2ba68e ancestro=si posteriores=0
+## K-09 Freeze (ensayo de READY-09 con F0=1d5cdbec, FZ=fb49fceb)
+   diff F0..FZ V14 (líneas): 0
+   registro en FZ: 0f6b860837e2478db8525e1fb30a485bc4646816
+   trailers Git de FZ: Co-Authored-By 
+## K-10 punto de entrada, 16.13 y punteros en TIP (parte sin historia de MV-7; ensayo, no sobre el merge)
+   WORKFLOW '## 12. Coexistencia…': 1
+   AP '### 16.13 …': 1
+   WORKFLOW §12 nombra la línea de 16.13: 1
+   puntero en AP (§16 + 16.3): 2
+   mapa y esquema presentes: si
+## K-11 DC-08 en seco: clases y rutas citadas por el borrador de FOUNDATIONS
+   class AgentExecutionProtocolTests: 1
+   class I61EditedRackNameTests: 1
+   class I61CamaEditWiringGuardTests: 1
+   class PrincipalPortabilityProtocolTests: 1
+   class I62F4CompatibilityGuardTests: 1
+   I61_P3 en FlowBedEditorWindowTests.cs: 1
+   tests/RackCad.Tests/I62F4*Tests.cs: 25
+   esquemas I62 citados presentes: 1111111111111 (13 = todos)
+   adapters: 5  esquemas de hechos: 5  .gitignore 'artifacts/': 1
+## K-12 contrato: campos de frontmatter (Q11, READY-08)
+status: implementing
+consumes: []
+extends: [Agent Execution Protocol]
+introduces: []
+amendment_refs: []
+ov_assignment_ref:
+requires_autocad:
+requires_owner_validation:
+   menciones de A-2/A-3/A-4 en el contrato: 0
+   claves a2/a3/a4_status en el estado: 0
+# fin

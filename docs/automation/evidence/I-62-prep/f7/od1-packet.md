@@ -1,4 +1,8 @@
-# I-62 — OD-1: paquete refrescado (2026-10-07; staging, **no es una solicitud**)
+# I-62 — OD-1: paquete refrescado (2026-10-10 r5; staging, **no es una solicitud**)
+
+> **r5 (borrador fuera del worktree, base `6d626794`):** el Freeze vigente es V14 + A-1, A-2, A-3 y A-4, todas AGREED (decisiones §43, §57.1, §61.1,
+> §64.1). ADR-0048 sin cambio (blob `e1bd8d91` en `6d626794`, K-06). Ninguna de A-2..A-4 toca ADR-0048 ni OD-1 (A-2 L67, L276 y L301; A-3 L99, L1159
+> y L1201; A-4 L398 y L421). Pregunta nueva Q26 (¿se pide OD-1 sin mencionar A-2..A-4, como se dispuso para A-1 en §47?). OD-1 sigue sin pedirse.
 
 > **Preparación de staging.** Orden nocturna, decisiones §54 (fila «F7 y READY»: «OD-1 si es útil … sin aceptar OD-1 … sin tocar ADR-0048»). OD-1 no se
 > pide todavía: bloquea READY-03 y la vigencia, no F6 (V14 §18; decisiones §45: «no pedir OD-1»). Refresca la nota de
@@ -15,6 +19,7 @@
 | En el mapa de cláusulas | fila ADDED con `EffBlob` `e1bd8d91`; la guarda Core C-20a comprueba que `EffBlob` = blob del árbol | `I62-clause-map.json`; `I62F4CompatibilityGuardTests` |
 | Índice ADR | sin fila (V14 §17 fila F1: «sin fila de índice: el índice se actualiza en el cierre documental») | `docs/adr/README.md` |
 | Relación con A-1 | el ADR no cita A-1; A-1 §6 declara que no cambia ninguna decisión del Owner (OD-1..OD-7) ni la matriz OV; §47: «expresar A-1 no exige corregir ADR-0048»; la relación factual puede documentarse en el material de cierre o de historial | A-1 blob `c01899a7` §6; decisiones §47 |
+| Relación con A-2..A-4 (r5) | el ADR no las cita; las tres declaran que no cambian OD-1..OD-7 y que no tocan ADR-0048; A-3 (compatibilidad de un runtime sucesor) no está aplicada a producción y su materialización es Q23; ninguna disposición equivalente a la de §47 para A-2..A-4 (Q26) | A-2 `f1e1d6f0` L67/L301; A-3 `ea6721f7` L99/L1201; A-4 `5e2ba68e` L398/L421 |
 
 ## 2. Qué decide OD-1 (definición congelada, V14 §18)
 
@@ -29,8 +34,8 @@ LIFECYCLE)». **Bloquea:** READY-03 y vigencia. **Momento:** antes de READY-03.
   las unidades I61 (ADR-0048, «Decisión»).
 - **No activa nada por sí solo:** aceptado, rige solo desde `I62_EFFECTIVE_SHA` (ADR-0048, «Vigencia»; 16.14), es decir, desde el merge efectivo de la
   integración. Antes, todo texto materializado de I-62 sigue inactivo.
-- No cambia el Freeze (V14 + A-1; A-2 es una candidata sin aplicar, decisiones §55), ni las OD-2..OD-7, ni la matriz OV; no convierte ningún UNKNOWN en
-  MATCH (ADR-0048 punto 4). Si A-2 se acuerda antes de la solicitud, el paquete se rehace con el Freeze vigente.
+- No cambia el Freeze (r5: V14 + A-1..A-4, todas AGREED), ni las OD-2..OD-7, ni la matriz OV; no convierte ningún UNKNOWN en
+  MATCH (ADR-0048 punto 4). El paquete ya se rehízo con el Freeze vigente (r5); si se acuerda otra A-n antes de la solicitud, se rehace otra vez.
 - Satisface la parte OD-1 de READY-03 (LIFECYCLE §8: «sin … decision material/Owner pendiente»).
 
 ## 4. Deltas OWNER-RESERVED que la aceptación abarca (ADR-0048, «Amplía #1 (OWN-L)»)
