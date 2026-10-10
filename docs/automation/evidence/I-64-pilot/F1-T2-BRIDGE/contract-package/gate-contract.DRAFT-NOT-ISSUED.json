@@ -1,0 +1,406 @@
+{
+  "Schema": "rackcad-gate-contract/v1",
+  "Unit": "I-64",
+  "Gate": "F1",
+  "TaskId": "F1-T2-BRIDGE",
+  "Objective": "Construir el puente central de eventos de F1 (Freeze V5 D-04) con fuente de eventos simulable, sin host ni panel:\n\n* un unico suscriptor de eventos de AutoCAD, en src/RackCad.Plugin/Workspace/, con exactamente una suscripcion por fuente:\n  coleccion de documentos (activacion, creacion, destruccion); por documento con sesion: ImpliedSelectionChanged, CommandWillStart,\n  CommandEnded, CommandCancelled, CommandFailed, BeginDocumentClose y EnteringQuiescentState de su Editor; por base de datos de documento\n  con sesion: ObjectAppended, ObjectErased, ObjectModified, ObjectUnappended y ObjectReappended; Application.Idle solo mientras haya pistas\n  pendientes;\n* ciclo de vida de suscripciones como funcion exacta de las sesiones del modelo de T1 (WorkspaceSessionRegistry), cero para un documento\n  destruido;\n* manejadores ordinarios que solo encolan pistas con la identidad de su sesion (EnqueueHint del modelo de T1), con coste constante,\n  capturando y registrando toda excepcion sin propagarla;\n* drenaje diferido y coalescido solo con el documento activo en reposo y sin modal RackCad activo (TryDrain del modelo de T1);\n* BeginDocumentClose de vida de sesion: permanece mientras viva la sesion, tambien en modo degradado; su manejador solo lee estado en\n  memoria y no lee la base de datos, no resuelve, no escribe ni abre dialogos;\n* modo degradado por sesion ante una excepcion del puente: retira las suscripciones de sincronizacion de esa sesion y nunca\n  BeginDocumentClose;\n* guardas de fuente de INV-02, INV-14 e INV-21.\n\nLa cadena debe demostrar RED->GREEN real (tests compilables, seleccion >= 1, fallo por asercion de comportamiento congelado aun no\nimplementado; ni fallo artificial de compilacion ni test inventado).\nNo implementar todavia: PaletteSet, raiz WPF, comando RACKPANEL, seleccion fina hacia el contexto, politica de foco, contencion de la UI,\ninstrumentacion de host (F1-T3-HOST); veto de cierre por borradores (F4, INV-20); navegacion (F2); inventario (F6); escritura authored;\nAutoCAD en ejecucion.",
+  "AuthorityRevision": "COORDINATOR_SELECTS_X_PER_AUTOMATION_PLAN_16_3",
+  "MainSha": "COORDINATOR_FETCHES_ORIGIN_MAIN_AT_ISSUANCE",
+  "Authorities": [
+    {
+      "Path": "docs/initiatives/I-64-proposal-v5.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-discovery.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-workspace-persistente-rackcad.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-A-2.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-A-4.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-evidence.md",
+      "Section": "## 18. Consensus Freeze (I64-CONSENSUS-V5-01) y cierre de F0",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-evidence.md",
+      "Section": "## 39. F1 - NIGHT RUN: rebase sobre main, revalidacion del producto de T1, conciliacion con I-52 e I-63 y paquete de F1-T2-BRIDGE",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/state/I-64.yml",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-f1-gate-contract-proposal.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-f1-t2-gate-contract-package.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "AGENTS.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/WORKFLOW.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "## 16. Ejecucion delegada bajo orden del Coordinator",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0006-autocad-solo-en-plugin.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0019-shell-visual-de-editores-por-composicion.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0029-contrato-funcional-comun-de-ventanas-wpf.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0044-hechos-neutrales-de-vistas-compartidas.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/I-55-proposal-v5.md",
+      "Section": "### 4.4 La transaccion la posee `Mutate(units)` (AR4-19)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/I-55-proposal-v5.md",
+      "Section": "### 4.5 Capas bloqueadas (AR4-20)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/I-55-proposal-v5.md",
+      "Section": "### 4.6 R-25: la primera colocacion sin supervivientes (AR4-21)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/I-55-proposal-v5.md",
+      "Section": "### 4.7 Un solo barrido (AR4-42)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/I-55-proposal-v5.md",
+      "Section": "### 4.8 Estados e informe (AR4-40)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/I-55-proposal-v5.md",
+      "Section": "### 4.9 Guardas caller-owned (AR4-43)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/I-55-proposal-v5.md",
+      "Section": "### 4.10 Cuenta completa de transacciones (AR4-44)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/model-catalog.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    }
+  ],
+  "AllowedWriteScope": [
+    "src/RackCad.Application/Workspace/",
+    "src/RackCad.Plugin/Workspace/",
+    "tests/RackCad.Tests/Workspace/"
+  ],
+  "ForbiddenWriteScope": [
+    "docs/",
+    ".github/",
+    "assets/",
+    "eng/",
+    "deploy/",
+    "global.json",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "RackCad.sln",
+    "src/RackCad.UI/",
+    "src/RackCad.Domain/",
+    "tests/RackCad.UI.Tests/",
+    "src/RackCad.Plugin/Systems/",
+    "src/RackCad.Plugin/Views/",
+    "src/RackCad.Plugin/Drawing/",
+    "src/RackCad.Plugin/PluginInitializer.cs",
+    "src/RackCad.Plugin/RackCad.Plugin.csproj",
+    "src/RackCad.Application/RackCad.Application.csproj",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "tools/RackCad.StructuralSections.Import/RackCad.StructuralSections.Import.csproj",
+    "src/RackCad.Plugin/RackAyudaCommands.cs",
+    "src/RackCad.Plugin/RackCabeceraCommands.cs",
+    "src/RackCad.Plugin/RackCamaCommands.cs",
+    "src/RackCad.Plugin/RackCantileverCommands.cs",
+    "src/RackCad.Plugin/RackDinamicoCommands.cs",
+    "src/RackCad.Plugin/RackDuplicarCommands.cs",
+    "src/RackCad.Plugin/RackInventarioCommands.BomTotal.cs",
+    "src/RackCad.Plugin/RackInventarioCommands.cs",
+    "src/RackCad.Plugin/RackLayoutCommands.Fill.cs",
+    "src/RackCad.Plugin/RackLayoutCommands.cs",
+    "src/RackCad.Plugin/RackMenuCommands.cs",
+    "src/RackCad.Plugin/RackPropiedadesCommands.cs",
+    "src/RackCad.Plugin/RackProyectarCommands.cs",
+    "src/RackCad.Plugin/RackPushBackCommands.cs",
+    "src/RackCad.Plugin/RackSeccionCommands.cs",
+    "src/RackCad.Plugin/RackSelectivoCommands.cs",
+    "src/RackCad.Plugin/RackVariablesCommands.cs",
+    "src/RackCad.Application/Workspace/Hints.cs",
+    "src/RackCad.Application/Workspace/SelectionContext.cs",
+    "src/RackCad.Application/Workspace/SessionId.cs",
+    "src/RackCad.Application/Workspace/WorkspaceSession.cs",
+    "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs"
+  ],
+  "Invariants": [
+    "INV-F1-T2-01 (INV-02): el numero de suscripciones es funcion exacta de los documentos con sesion y cero para un documento destruido, en los ciclos: inicializacion repetida del controlador (RACKPANEL repetido), activar A->B->A, ocultar y mostrar, alta y baja dinamica de Idle y destruccion; ninguna suscripcion por pestana, editor, view-model ni adaptador.",
+    "INV-F1-T2-02 (INV-02, guarda): el operador += sobre eventos de AutoCAD solo aparece en src/RackCad.Plugin/Workspace/.",
+    "INV-F1-T2-03 (INV-03, lado de eventos): ningun evento ni cambio de contexto escribe seleccion o vista; los manejadores ordinarios solo encolan pistas y no leen ni escriben la base de datos, no piden datos, no abren dialogos ni llaman resolvers.",
+    "INV-F1-T2-04 (D-04): toda excepcion de un manejador se captura y registra y nunca se propaga a AutoCAD; una excepcion del puente pasa la sesion afectada a modo degradado y retira solo sus suscripciones de sincronizacion.",
+    "INV-F1-T2-05 (D-04, A64-PV3-04): la suscripcion a BeginDocumentClose de una sesion vive toda la sesion, tambien degradada; su manejador solo lee estado en memoria y no lee la base de datos, no resuelve, no escribe ni abre dialogos.",
+    "INV-F1-T2-06 (D-04, INV-23 y P-04): las pistas pueden llegar en cualquier momento; el drenaje es diferido, coalescido y ocurre solo con el documento activo en reposo y sin modal RackCad activo; Idle solo esta suscrito mientras haya pistas pendientes.",
+    "INV-F1-T2-07 (INV-14): StartTransaction, StartOpenCloseTransaction y LockDocument solo dentro de using en src/RackCad.Plugin/Workspace/; ningun campo de tipo Transaction, DBObject ni Document; ninguna API publica del puente expone tipos de AutoCAD.",
+    "INV-F1-T2-08 (INV-21 y D-22): el puente no persiste nada ni escribe authored, NOD, XData, registro de Windows ni perfil.",
+    "INV-F1-T2-09 (D-02 y P-01): antes del primer RACKPANEL hay cero suscripciones; nada se suscribe al cargar el plugin.",
+    "INV-F1-T2-10 (D-03 e INV-22): toda pista lleva la identidad de su sesion; la sesion se retira en DocumentToBeDestroyed y el puente quita sus suscripciones; un identificador nativo reciclado no se empareja con la sesion retirada.",
+    "INV-F1-T2-11 (ADR-0006): AutoCAD solo en el Plugin; el modelo de Application sigue sin referencias a AutoCAD y las guardas de T1 siguen en verde.",
+    "INV-F1-T2-12 (MASTER-I63-I64-02): ninguna referencia a ComputedParameters, metricas, providers, ProjectSummary ni agregacion de I-63.",
+    "INV-F1-T2-13 (D-16 y M-03): RACKEDITAR, los comandos clasicos y los editores existentes no cambian.",
+    "INV-F1-T2-14 (D-01 y O-10): ningun uso de Autodesk.AutoCAD.Internal."
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.Workspace",
+      "MinSelected": 1,
+      "ExpectRed": true
+    }
+  ],
+  "ExpectedEvidence": [
+    "gate/delegation package valido",
+    "nc4 segun I-61 en la primera delegacion aplicable",
+    "aceptacion A1-A8 antes de Worker",
+    "commit RED real",
+    "ChainRedSha / ChainRedFiles correctamente acreditados",
+    "commit GREEN",
+    "pruebas RED y GREEN con seleccion",
+    "worker-handoff valido",
+    "push fast-forward",
+    "CI exacta del CurrentSha verde (incluye Build Plugin without AutoCAD)",
+    "Controller verification valida",
+    "diff dentro de AllowedWriteScope",
+    "guardas de fuente de INV-02, INV-14 e INV-21 en verde y seleccionadas por el filtro",
+    "nc1..nc4 segun README Sec.10; nc2 con evidencia propia conservada y, si el Controller falla, sustituto I64-SCOPE-BRIDGE-01 bajo A-4"
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-01",
+      "Text": "Owner Validation required"
+    },
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive/irreversible action not authorized"
+    },
+    {
+      "Id": "S-06",
+      "Text": "missing credentials/permissions"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch/worktree ownership conflict"
+    },
+    {
+      "Id": "S-09",
+      "Text": "dependency not integrated"
+    },
+    {
+      "Id": "S-10",
+      "Text": "required AutoCAD/user interaction"
+    },
+    {
+      "Id": "S-11",
+      "Text": "repeated rework limit reached"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify authority revision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "main movement invalidates exact-SHA assumptions"
+    },
+    {
+      "Id": "S-14",
+      "Text": "initiative contract explicitly says STOP"
+    },
+    {
+      "Id": "P-01",
+      "Text": "Cambio del hash de `config.toml`"
+    },
+    {
+      "Id": "P-02",
+      "Text": "Participante vivo ajeno, proceso no atribuible o mas de una delegacion abierta"
+    },
+    {
+      "Id": "P-03",
+      "Text": "Delegacion fuera del contrato"
+    },
+    {
+      "Id": "P-04",
+      "Text": "Tope de BLOCKED alcanzado"
+    },
+    {
+      "Id": "P-05",
+      "Text": "Invocacion distinta del paquete aceptado"
+    },
+    {
+      "Id": "P-06",
+      "Text": "Aviso de limite de uso o de creditos en los eventos o la transcripcion de una invocacion"
+    },
+    {
+      "Id": "P-07",
+      "Text": "Una invocacion excederia el tope de invocaciones"
+    },
+    {
+      "Id": "P-08",
+      "Text": "La sesion opero durante una cesion: la salida de esa invocacion es invalida"
+    },
+    {
+      "Id": "C-01",
+      "Text": "origin/main cambia antes de escribir"
+    },
+    {
+      "Id": "C-02",
+      "Text": "se necesita tocar src/RackCad.UI, src/RackCad.Domain, comandos existentes, PluginInitializer.cs, csproj o sln"
+    },
+    {
+      "Id": "C-03",
+      "Text": "se necesita AutoCAD, cargar el DLL, perfil, TRUSTEDPATHS, SECURELOAD, ACL o registro"
+    },
+    {
+      "Id": "C-04",
+      "Text": "se necesita ampliar scope"
+    },
+    {
+      "Id": "C-05",
+      "Text": "aparece ambiguedad material del Freeze"
+    },
+    {
+      "Id": "C-06",
+      "Text": "cambia config.toml"
+    },
+    {
+      "Id": "C-07",
+      "Text": "hay conflicto de ownership o se necesita un archivo caliente (docs/HANDOFF.md, docs/ROADMAP.md, docs/adr/README.md)"
+    },
+    {
+      "Id": "C-08",
+      "Text": "la tarea deriva hacia Host/PaletteSet/RACKPANEL/WPF (F1-T3-HOST)"
+    },
+    {
+      "Id": "C-09",
+      "Text": "se intenta introducir tipos o metricas de I-63"
+    },
+    {
+      "Id": "C-10",
+      "Text": "se intenta modificar comandos existentes o RACKEDITAR"
+    },
+    {
+      "Id": "C-11",
+      "Text": "escritura authored, NOD o XData desde el puente"
+    },
+    {
+      "Id": "C-12",
+      "Text": "uso de Autodesk.AutoCAD.Internal"
+    },
+    {
+      "Id": "C-13",
+      "Text": "presupuesto agotado"
+    }
+  ],
+  "EligibleCells": [
+    {
+      "Cell": "claude-sonnet-5-5|subagent",
+      "Provider": "Anthropic",
+      "Model": "claude-sonnet-5-5",
+      "Transport": "subagent",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "write-commit-push",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "medium",
+        "high"
+      ],
+      "Source": "docs/automation/agent-execution/model-catalog.md (sonda U-04 de I-61, evidencia de I-61 Sec.15.1; Worker real con effort high en G3, Sec.15.4)",
+      "VerifiedOn": "2026-09-30"
+    }
+  ],
+  "RoutingEnforcement": "required",
+  "CorrectionsAuthorized": true,
+  "IssuedBy": "NOT ISSUED - borrador de la sesion responsable (NIGHT RUN); requiere emision del Coordinator (AUTOMATION_PLAN 16.5) y las decisiones C-T2-01..C-T2-05 del paquete",
+  "IssuedUtc": "NOT ISSUED"
+}

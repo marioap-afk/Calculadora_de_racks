@@ -1,0 +1,451 @@
+{
+  "Schema": "rackcad-relay-record/v1",
+  "TaskId": "SESSION",
+  "RunId": "R20261010T032957Z-68a9",
+  "Attempt": 3,
+  "Phase": "REBASE",
+  "Participant": null,
+  "Exit": {
+    "HeadSha": "8e6a1b4eb2114ad793b41816c55fe8a0fa9c5094",
+    "LsRemoteSha": "8e6a1b4eb2114ad793b41816c55fe8a0fa9c5094",
+    "OriginMainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+    "CleanTree": false,
+    "GitOperationInProgress": false,
+    "SummaryCommitSha": "8e6a1b4eb2114ad793b41816c55fe8a0fa9c5094",
+    "ConfigTomlSha256": "73890CA3319206B85B68A42E23E8D323C45361CFC29E06B3E116EFFF5DAD0FBF",
+    "ConfigTomlKeys": [
+      "model",
+      "model_reasoning_effort",
+      "service_tier",
+      "notify",
+      "[windows]",
+      "sandbox",
+      "[desktop]",
+      "keepRemoteControlAwakeWhilePluggedIn",
+      "reviewDelivery",
+      "followUpQueueMode",
+      "conversationDetailMode",
+      "ambient-suggestions-enabled",
+      "[desktop.open-in-target-preferences]",
+      "global",
+      "[desktop.open-in-target-preferences.perPath]",
+      "[marketplaces.openai-bundled]",
+      "source_type",
+      "source",
+      "[marketplaces.openai-primary-runtime]",
+      "source_type",
+      "source",
+      "[plugins.\"documents@openai-primary-runtime\"]",
+      "enabled",
+      "[plugins.\"spreadsheets@openai-primary-runtime\"]",
+      "enabled",
+      "[plugins.\"presentations@openai-primary-runtime\"]",
+      "enabled",
+      "[plugins.\"outlook-email@openai-curated\"]",
+      "enabled",
+      "[plugins.\"github@openai-curated\"]",
+      "enabled",
+      "[plugins.\"pdf@openai-primary-runtime\"]",
+      "enabled",
+      "[plugins.\"template-creator@openai-primary-runtime\"]",
+      "enabled",
+      "[plugins.\"visualize@openai-bundled\"]",
+      "enabled",
+      "[plugins.\"chrome@openai-bundled\"]",
+      "enabled",
+      "[plugins.\"browser@openai-bundled\"]",
+      "enabled",
+      "[plugins.\"outlook-calendar@openai-curated\"]",
+      "enabled",
+      "[plugins.\"teams@openai-curated\"]",
+      "enabled",
+      "[plugins.\"codex-app-tools@openai-bundled\"]",
+      "enabled",
+      "[plugins.\"unified-computer-use@openai-bundled\"]",
+      "enabled",
+      "[plugins.\"computer-use@openai-bundled\"]",
+      "enabled",
+      "[plugins.\"code-review@openai-bundled\"]",
+      "enabled",
+      "[features]",
+      "js_repl",
+      "[projects.'\\\\?\\unc\\imsasrv01\\ingenieria\\bases de datos\\largueros y parrillas']",
+      "trust_level",
+      "[projects.'c:\\users\\alejandra-mendoza\\documents\\codex\\2026-05-26\\quiero-crear-un-componente-pcf-para']",
+      "trust_level",
+      "[projects.'c:\\users\\alejandra-mendoza\\documents\\codex\\2026-06-01\\files-mentioned-by-the-user-t']",
+      "trust_level",
+      "[projects.'c:\\users\\alejandra-mendoza\\documents\\codex\\2026-06-01\\eres-capaz-de-entrar-a-una']",
+      "trust_level",
+      "[projects.'c:\\users\\alejandra-mendoza\\documents\\calculadora de racks']",
+      "trust_level",
+      "[projects.'c:\\users\\alejandra-mendoza\\documents\\fdi powerapp']",
+      "trust_level",
+      "[projects.'d:\\documentos\\codex\\fdi powerapp']",
+      "trust_level",
+      "[projects.'d:\\documentos\\codex\\calculadora de racks']",
+      "trust_level",
+      "[projects.'c:\\users\\alejandra-mendoza']",
+      "trust_level",
+      "[projects.'d:\\documentos\\codex\\cotizador']",
+      "trust_level",
+      "[projects.'c:\\users\\alejandra-mendoza\\documents\\codex']",
+      "trust_level",
+      "[projects.'d:\\r62-fixture\\probe-od4-1']",
+      "trust_level",
+      "[mcp_servers.node_repl]",
+      "args",
+      "command",
+      "env_vars",
+      "startup_timeout_sec",
+      "[mcp_servers.node_repl.env]",
+      "NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS",
+      "NODE_REPL_NODE_MODULE_DIRS",
+      "NODE_REPL_NODE_PATH",
+      "NODE_REPL_TRUSTED_CODE_PATHS",
+      "CODEX_HOME",
+      "BROWSER_USE_AVAILABLE_BACKENDS",
+      "BROWSER_USE_TINYSKY_ENABLED",
+      "NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER",
+      "NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME",
+      "BROWSER_USE_CODEX_APP_BUILD_FLAVOR",
+      "BROWSER_USE_CODEX_APP_VERSION",
+      "NODE_REPL_TRUSTED_SERVICES",
+      "SKY_CUA_NATIVE_PIPE",
+      "SKY_CUA_NATIVE_PIPE_DIRECTORY",
+      "CODEX_CLI_PATH",
+      "NODE_REPL_UNTRUSTED_ENV_ALLOWLIST",
+      "[shell_environment_policy.set]",
+      "NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S",
+      "[tui]",
+      "screen_reader_detection_done"
+    ],
+    "Processes": [
+      {
+        "Pid": 7424,
+        "ParentPid": 1256,
+        "Name": "codex-windows-sandbox-service.exe",
+        "CreationDateUtc": "2026-10-07T15:28:59.5377070Z",
+        "Classification": "nominal-exclusion"
+      },
+      {
+        "Pid": 10244,
+        "ParentPid": 30660,
+        "Name": "claude.exe",
+        "CreationDateUtc": "2026-10-09T22:37:41.6499600Z",
+        "Classification": "own-tree"
+      },
+      {
+        "Pid": 18312,
+        "ParentPid": 10244,
+        "Name": "claude.exe",
+        "CreationDateUtc": "2026-10-10T01:10:46.3458670Z",
+        "Classification": "own-tree"
+      },
+      {
+        "Pid": 7000,
+        "ParentPid": 10292,
+        "Name": "pwsh.exe",
+        "CreationDateUtc": "2026-10-10T03:30:03.8716290Z",
+        "Classification": "own-tree"
+      }
+    ],
+    "OpenDelegations": 0
+  },
+  "Cession": {
+    "StartUtc": "2026-10-10T03:19:04Z",
+    "EndUtc": "2026-10-10T03:21:10Z",
+    "SessionOperated": true
+  },
+  "Outcome": {
+    "Kind": "COMPLETED",
+    "LaunchedPid": null,
+    "ExitCode": 0,
+    "TerminalEvent": null,
+    "TreeKilled": false,
+    "DeathConfirmed": null,
+    "OutputPath": null,
+    "OutputSha256": null,
+    "OutputWrittenUtc": null,
+    "Acceptance": null
+  },
+  "Entry": null,
+  "RemoteFacts": {
+    "CurrentRun": {
+      "GhRunId": 38020256918,
+      "Event": "push",
+      "Ref": "architecture/workspace-persistente-rackcad",
+      "HeadSha": "8e6a1b4eb2114ad793b41816c55fe8a0fa9c5094",
+      "Status": "completed",
+      "Conclusion": "success",
+      "Jobs": [
+        {
+          "Name": "UI Tests (WPF controls, net8.0-windows)",
+          "Conclusion": "success"
+        },
+        {
+          "Name": "Build UI (WPF, valida API de Application)",
+          "Conclusion": "success"
+        },
+        {
+          "Name": "Tests (Domain + Application)",
+          "Conclusion": "success"
+        },
+        {
+          "Name": "Build Plugin without AutoCAD",
+          "Conclusion": "success"
+        }
+      ]
+    },
+    "RedRun": null,
+    "TestArtifacts": [],
+    "OriginMainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+    "LsRemoteSha": "8e6a1b4eb2114ad793b41816c55fe8a0fa9c5094",
+    "Commands": [
+      "gh run view 38020256918 --json databaseId,event,headBranch,headSha,status,conclusion,jobs",
+      "git ls-remote origin refs/heads/architecture/workspace-persistente-rackcad"
+    ],
+    "ObtainedUtc": "2026-10-10T03:50:03Z",
+    "Diagnosis": null
+  },
+  "RebaseMap": {
+    "MainBeforeSha": "819955d61a6da4c811a11fbd11b5dca13f634b7c",
+    "MainAfterSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+    "G2CloseSha": "e0587355b0e84d98807057a56dfc50591da87489",
+    "G2CloseImageSha": "05a5ae9d11012572c4a33d381d46546871de534a",
+    "AuthorityRevision": "e0587355b0e84d98807057a56dfc50591da87489",
+    "AuthorityRevisionImageSha": "05a5ae9d11012572c4a33d381d46546871de534a",
+    "UnitDocBlobsEqual": true,
+    "UnitChangeSectionsEqual": null,
+    "BaseSha": null,
+    "BaseImageSha": null,
+    "ChainBaseSha": null,
+    "ChainBaseImageSha": null,
+    "Commits": [
+      {
+        "OriginalSha": "6ea9b7e8002eaa69e17fbcf677e7855f40315ec4",
+        "ImageSha": "6a96d9d0324ebccb420bc2a415753ee9ba950180",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "d8a0216306f40e4d502b77310c1632cdbb84d70d",
+        "ImageSha": "f3c846e93d57fff8124f864404a4e0cfaa30cceb",
+        "PatchIdEqual": false
+      },
+      {
+        "OriginalSha": "cf034e594daf6b222013808c9795fd92a66940cb",
+        "ImageSha": "d43d0d77c591855b7a4aa50ae3b3a2acd35b7f26",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "c6c44828de103c293fac7b4edd6385e285243b9f",
+        "ImageSha": "c61098b98e723116caa1e6a39c05c93ae1e3bf58",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "dcc16bed371207c8c68dd6bc6a7dd7e5a7acee6d",
+        "ImageSha": "1544d34d8f3aa5d77a3db218eb1a36601e4e4b17",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "ab4efe865638cbe121c0ecd232a689563ba7ee6a",
+        "ImageSha": "25b9c0fde3c652a47659e82374471d3a5b98f93c",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "1f1530be15a3bc95e260c03df07d51b9625345ae",
+        "ImageSha": "33eb79b8f0dddbf6d0bf40a71695332a11424d32",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "e87ba32cf4132cd29677c49cf208d4ca6fb9ea49",
+        "ImageSha": "fadf5ec6d7de8df50edf0e0e46033730f5e3efca",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "9e3d289a9b61339c162b2f791f6995a584207800",
+        "ImageSha": "d2c01b65f93d75583bf1fafc7375b4f0277d7225",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "9b43dafbe3b8874aa0ba5a85d62cbf953dbdd311",
+        "ImageSha": "6f8450875115c859894e5f36371d7eaa97691d5d",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "5570b9249e6398efdea826bb03fba43c6ad484d2",
+        "ImageSha": "533450fc1ee920f1b22e116e443ac8a881e4e868",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "8a3fb8e26a260317b28d5573654b0221f1341029",
+        "ImageSha": "5c68d0f1e615a9a25d99d0fcb853e453cda57195",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "0a3fec301a18ef38646729e20b8a276f80feb36e",
+        "ImageSha": "23bcdf06e60ec2921a99721bebbfc46038d2d2e0",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "e0587355b0e84d98807057a56dfc50591da87489",
+        "ImageSha": "05a5ae9d11012572c4a33d381d46546871de534a",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "36c344dc283d4a9855110a31ca6b20a2da7fd972",
+        "ImageSha": "b29a1f4639e7a67dace54f5a0cf168f99eeb67e4",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "66d34af31524c49214e38479d5892cd9ec985eb9",
+        "ImageSha": "a89d4c7fe28692d76b69460642ef8a9368afc0b4",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "24074abb2aa3e2ae0cfe0e73e165bb7e93ae8a8b",
+        "ImageSha": "74696c340211157876d818783250093845426ca8",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "b2db5326924cd66def7a83628bc6102db50b80f2",
+        "ImageSha": "95d57d7584b214a0358cf602ab38c85d5371f202",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "189353f8df954b05cbbcdc0f15dca0cb3bf21002",
+        "ImageSha": "10a684a9087dcae0d6b53b40a60784ace48bf6e4",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "b38e54f9f434fee7aa41ce6dcfd1804978afd619",
+        "ImageSha": "1b257684abbcfa5315da73a65e2f4043a3f6565c",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "38b65f944cd389bff4e53e2e2c24c14c766ec352",
+        "ImageSha": "b60b9990be683c59f29f0f7f2779529b046b7fea",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "1504c938dc8ac050a8e0d61c5db6c9977b638600",
+        "ImageSha": "a10459049c8907c2038a8ee32f049b62a61e5f79",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "a9778068af566bc2b84ba6a0005711b6452a2666",
+        "ImageSha": "012ae28835e588e7b21fce8b6dbdba96b51c69ef",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "8d9a0c6e6ea148caf3e8f20d26a95a864a2943ce",
+        "ImageSha": "14136328621a12c968670b0da89611d3c6766f06",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "747ead04ee5e44f87de14250c4900680d72c4c93",
+        "ImageSha": "aba69f14da414060d5434e7ed89c8404c567a82c",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "bc24ebef63f60c935e380559ff5c3cdf692c33c6",
+        "ImageSha": "d1199da4ed6abded6f0f7130410a2ac3380d77c4",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "58d1140c895335ac78d3e61f77c461ad60e1f2b0",
+        "ImageSha": "f245f1fbaa6cae2dcd2ac08bf326d1e2b5bb2f15",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "519ca1ff278ae051628c87b4d71c1c0a74ebe8e1",
+        "ImageSha": "04267256545e4eb6b3a73d3a36f63c886fc1b5aa",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "0b7db52f12ddbf7ed36c8c2d020645818335c0fa",
+        "ImageSha": "39ed16418cadf195d5d7adbd84608233faa9b698",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "39f7caa411a5ebb372614c233a32255de7398cca",
+        "ImageSha": "f593cb8b2a8600e9d7baec0646ecfa1a626d254c",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "14685b453c4a2b323e4abc327fec735b050e5965",
+        "ImageSha": "7d775bba215793fcfb29d9028f43271f235dd5e3",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "db15122715e021db0ee6be33d789e22600690b0d",
+        "ImageSha": "f5e8c1b7cd3d6c774611b1000fe04a3420e69f31",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "39b45f36383e6017da38e5bf91e08e485298a4fc",
+        "ImageSha": "505b7512949e2bc5666c5306c4fc3c54e7a87d18",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "22736034dc177ddc181a0b513317cdb754f5bd18",
+        "ImageSha": "ce6a107bd8fefbbbe968e8130b5539248e897e4d",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "e52c9fecb8b1d19efcd2aea0d12b1948cc19e0a0",
+        "ImageSha": "e294eb832fa44206d6ca5d1f00268219739ab16f",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "51bb9b94d8b98a35cae2f87a5c31f41daa2f159e",
+        "ImageSha": "c8ac5bbdaa05350641704ef94da007d83d3dae19",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "5533b9fe324fbffc8dbcb4765d13f50c295bb117",
+        "ImageSha": "7c62dc4a332805d01a7eb9c43b31bc60c583ced0",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "153b48118156eadc7b210eafdcfdbf10169be119",
+        "ImageSha": "a7ff27e741973a363c422f514f507d0a486b41ca",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "d71364cf4d1409dc56490a31a7a94dfd230f613a",
+        "ImageSha": "8adbc01f222d31dd5e56446b7ae52b89df3457b9",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "0a61ee3a50ea4bb01a5dce0d791a77fa4b0b3446",
+        "ImageSha": "e63e3fe9b14d29039762b968e4c9002be19fe1bb",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "fd864f9c703c5b27b89313ac48d85a283a2a1d0b",
+        "ImageSha": "e9f7bd8e1e9d28a35bdb3c5b62d9fc9448c77e33",
+        "PatchIdEqual": true
+      },
+      {
+        "OriginalSha": "5ee345b5007e38ec68f67323bf45e4af988711b7",
+        "ImageSha": "8e6a1b4eb2114ad793b41816c55fe8a0fa9c5094",
+        "PatchIdEqual": true
+      }
+    ],
+    "ConflictPaths": [
+      "docs/ROADMAP.md"
+    ],
+    "CoordinatorDecision": "Orden NIGHT RUN del Coordinator, custodiada en docs/automation/evidence/I-64-protocol-bridge/coordinator-order-night-run.md (blob e4ace3242fa57b8e94396782557c1b0f1e8abf17): \"rebase onto current origin/main as required by WORKFLOW\"; \"Document-only merge conflicts may be resolved only when meaning is provably preserved\"; \"You may autonomously correct: [...] rebase documentary conflicts with provable semantic equality\". El unico conflicto (docs/ROADMAP.md, commit de bootstrap d8a02163) es documental; la igualdad se demuestra en rebase-proof.json (Roadmap.ProvablyPreserved)."
+  },
+  "Disposition": "NONE",
+  "Notes": [
+    "Rebase de sesion sin cadena en curso (16.7): F1-T1-MODEL esta COMPLETE_UNDER_I64_SCOPE_BRIDGE y F1-T2-BRIDGE no tiene contrato; TaskId = SESSION, Attempt = el vigente del estado (3). BaseSha y ChainBaseSha = null por estar fuera de una tarea; la cadena historica de T1 y sus imagenes estan en rebase-proof.json (T1Chain) y en Commits.",
+    "I-64 no tiene un gate G2 de I-61: G2CloseSha registra como ancla la AuthorityRevision del ultimo contrato (e0587355, delegacion 754a), que 16.7 usa en ausencia de contrato vigente; el Freeze 9b43dafb y su imagen estan en rebase-proof.json (Freeze).",
+    "UnitChangeSectionsEqual = null: el contrato no declara secciones UNIT_CHANGE (0). UnitDocBlobsEqual compara los blobs de las 7 entradas UNIT_DOC del contrato 754a (6 rutas distintas: la evidencia figura con dos secciones) entre AuthorityRevision y su imagen.",
+    "PatchIdEqual = false solo en d8a02163 (bootstrap de sesion, no del Worker): el conflicto de filas adyacentes de ROADMAP con I-63 cambia el contexto del parche; lineas anadidas y eliminadas identicas. Los 7 commits del Worker de T1 tienen patch-id igual.",
+    "Archivo previo: etiqueta anotada refs/tags/archive/I-64-pre-rebase-5ee345b5 publicada antes del rebase (WORKFLOW 9). Push con --force-with-lease=<rama>:5ee345b5 (WORKFLOW 4; AUTOMATION_PLAN 16.7).",
+    "Cession: inicio = etiqueta de archivo (03:19:04Z); rebase 03:19:09Z-03:19:51Z; fin = push (03:21:10Z). Sin participantes ni invocaciones de modelos.",
+    "Revalidacion sobre el SHA exacto: revalidation.json (R20261010T032134Z-0e9a). CI exacta de push: CurrentRun."
+  ]
+}

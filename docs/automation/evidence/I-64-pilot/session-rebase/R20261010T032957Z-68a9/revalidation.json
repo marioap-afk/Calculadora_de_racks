@@ -1,0 +1,68 @@
+{
+  "Schema": "rackcad-i64-rebase-revalidation/v1",
+  "RunId": "R20261010T032134Z-0e9a",
+  "Kind": "REVALIDATION_AFTER_REBASE (no es la verificacion historica del Controller)",
+  "EvaluatedSha": "8e6a1b4eb2114ad793b41816c55fe8a0fa9c5094",
+  "TreeBefore": "sha=8e6a1b4eb2114ad793b41816c55fe8a0fa9c5094 status=[]",
+  "TreeAfter": "sha-after=8e6a1b4eb2114ad793b41816c55fe8a0fa9c5094 status=[]",
+  "TreeUnchanged": true,
+  "Commands": [
+    "C:/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger \"trx;LogFileName=focal.trx\"",
+    "C:/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=core.trx\"",
+    "C:/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe build -c Release --no-incremental tests/RackCad.Tests/RackCad.Tests.csproj",
+    "C:/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe build -c Release --no-incremental tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj"
+  ],
+  "Focal": {
+    "ExitCode": 0,
+    "Counters": {
+      "total": 51,
+      "executed": 51,
+      "passed": 51,
+      "failed": 0,
+      "error": 0
+    },
+    "TrxSha256": "00475935F6935495147907A24DF879A749A5DC4867D33386BEF49B3509D034F0",
+    "LogSha256": "D97E206D175B91A883ADEC75AC123860776E6D593B057CC98A0C78CC5306F61D"
+  },
+  "Core": {
+    "ExitCode": 0,
+    "Counters": {
+      "total": 12646,
+      "executed": 12646,
+      "passed": 12646,
+      "failed": 0,
+      "error": 0
+    },
+    "TrxSha256": "5152AC2DE0ECFED0629EE562E5AE5EA6D2539A6E223C0AFC2D6CDBA55EDF8232",
+    "LogSha256": "6D45FA71B2501678B6FC5F6020C0BB682BAB1F80D9AB330950B7DE3F2BB7E88A"
+  },
+  "ReleaseBuildTests": {
+    "ExitCode": 0,
+    "LogSha256": "30B1C9FECBB66E7DCB35CA3A238DE30CD8DF1BA78F508AD86B14C97461D8286E",
+    "WarningCodes": {
+      "xUnit1026": 20,
+      "xUnit2000": 4,
+      "xUnit2013": 14,
+      "xUnit2029": 18,
+      "xUnit2031": 28
+    },
+    "CompilerToolWarnings": 0,
+    "WarningsInWorkspaceFiles": 0,
+    "CompilerToolErrors": 0
+  },
+  "ReleaseBuildUiTests": {
+    "ExitCode": 0,
+    "LogSha256": "2C280066230936647546937E4569E05831E0E1271E54C42190164722DB7AB23D",
+    "WarningCodes": {
+      "xUnit1026": 2,
+      "xUnit2013": 4,
+      "xUnit2029": 2,
+      "xUnit2031": 6
+    },
+    "CompilerToolWarnings": 0,
+    "WarningsInWorkspaceFiles": 0,
+    "CompilerToolErrors": 0
+  },
+  "Note": "Los TRX y logs no se versionan (README 11): SHA-256 y campos extraidos. Los avisos xUnit son de analizadores en archivos de pruebas ajenos a I-64; 0 en archivos de Workspace.",
+  "Pass": true
+}
