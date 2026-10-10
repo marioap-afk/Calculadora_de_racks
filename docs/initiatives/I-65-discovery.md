@@ -337,3 +337,38 @@ Base A = `https://docs.bentley.com/LiveContent/web/RAM%20Elements-v2026/User%20M
   AUTOMATION_PLAN §16, sin Controller. Registrado como uso consultivo, no como delegación.
 - Los portales de la base de conocimiento oficial de Bentley no son legibles por las herramientas de lectura web: las fuentes `OFF-KB*`
   quedan como fragmentos; el protocolo no tiene una clase de fuente «oficial no legible».
+
+## 13. Adenda F0-R1 (tras la revisión 1 del Architect; las secciones 1-12 no se reescriben)
+
+**DC-09 ampliado — M-08 y M-01 sobre las autoridades de unidades (A65-V1-05, A65-V1-07).**
+
+| Autoridad | Qué decide | Evaluación con la Proposal V2 |
+|---|---|---|
+| ADR-0005 D1 | La pulgada es la unidad interna canónica; no hay unidad interna configurable | **Consumida.** V2 almacena longitudes en pulgadas; el modelo es derivado y no persistido. M-08 no activado |
+| ADR-0040 D3 | `LengthUnits` es la única autoridad neutral de conversión de longitud | **Consumida.** Sin literal nuevo de longitud; G4 y `LengthUnitsAuthorityGuardTests` conviven |
+| ADR-0021 §10 | `StructuralSectionUnits` es el único lugar de conversión de datos del catálogo | **Extendida** sin cambio de API ni de valores: consume el propietario único de la masa de libra (igualdad de bits probada). M-08 no activado; M-01 no activado (un solo propietario de 0.45359237) |
+| ADR-0017 | Validación de cargas diferida a RAM Elements | **Consumida.** Sin ratios ni veredictos en RackCad (INV-11) |
+| ADR-0009 | Identidad GUID del rack | **Consumida.** `RackId` = Id del sobre |
+
+Conclusión: con la cláusula de compatibilidad de ADR-0050 (borrador), **M-08 no se activa**. Sin ella, M-08 sería UNKNOWN (cuenta como
+activado). Arquetipo sin cambio: NEW ARCHITECTURE (M-07).
+
+**Hechos verificados por el Architect que se incorporan** (`MEASURED` por el revisor):
+
+- `CantileverColumnBaseDatum`: la columna arranca en `ColumnStartZ` (cara superior de su placa inferior) y la base apoya en el piso; cada
+  estación está en coordenadas locales y la línea aplica un `Offset`; una estación bloqueada no produce geometría.
+- Un brazo simple se centra por su caja (`−Bounds.Center.X`), no por su centroide: C y L quedan fuera del plano de la estación.
+- Política de secciones de Cantilever: columna y base solo W; brazos de cualquier familia; brazos pareados solo canales.
+- Base de datos de RAM (EE. UU.): `W 10X49` coincide con el catálogo de RackCad (A 14.4, Ix 272, Iy 93.4, J 1.39, Cw 2070); `Steel.mat`
+  guarda E, ν, peso unitario, Fy y Fu (p. ej. A36 con ν = 0.26).
+- Doble precisión: 241 de 2000 idas y vueltas in→m→in no son exactas; in→m→mm ≠ in→mm (p. ej. 0.1625 in).
+- La rama de I-64 acota sus guardas de eventos y selección a `src/RackCad.Plugin/Workspace/`; el Plugin no usa `CommandClass`: un archivo
+  de comando nuevo y aislado es compatible con ID30.
+- 2 485 líneas de Application y Domain contienen «ram» en cualquier mayúscula; ninguna la palabra «RAM»: la guarda G1 necesita tokens
+  sensibles a mayúsculas (Proposal V2 D-01).
+
+**Sonda P1 v2** (A65-V1-02/03): puerta de modelo vacío y de `OUT_DIR` antes de la primera escritura (sin `SystemExit`, que en un
+intérprete embebido podría cerrar la aplicación anfitriona); análisis primero, con apoyos completos; par provisional `LB_IN`; cobertura de
+orientaciones de la rebanada (vertical, ±Z de RAM, inclinado en Y-Z, invertido, giro 0°/90°); `__file__`, directorio actual,
+decodificadores, literal JSON ASCII, nombres de base de datos de otro país; valores por defecto de punto cardinal, offsets, factores de
+rigidez, comportamiento axial y resortes. La línea base de casos de carga de File > New la **registra** la propia sonda.

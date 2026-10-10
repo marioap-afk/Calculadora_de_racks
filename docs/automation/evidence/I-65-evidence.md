@@ -104,3 +104,13 @@ Owner Validation: por determinar; no aplica a G0. Tag de integración: no existe
   web de Bentley; fuente estructural de RackCad sobre `bb0d5522`; «RAM Elements Python API User Manual.pdf» instalado; «OpenRE
   Manual.pdf» instalado. Ninguno escribió en el repositorio ni ejecutó RAM Elements.
 - RAM Elements **no se ejecutó** (CD-I65-G0-06). Todas las afirmaciones sobre el entorno son de inspección de archivos y registro.
+
+## 11. F0 — Architect, ronda 1, y Proposal V2
+
+- CI `push` del commit de F0 `0f4bc8849ddc0e491231d841cf43b56badba1e98`: corrida `38087065661`, **success 4/4**, `head_sha` exacto.
+- Ronda 1 del Architect sobre `0f4bc884`: **CHANGES REQUIRED** (13 REQUIRED, 6 OPTIONAL). Modo `SAME-SESSION ROLE` (subagente,
+  contexto independiente, `claude-opus-5-5`). Texto íntegro en [architect-r1-verdict.md](I-65-f0/architect-r1-verdict.md) con su
+  SHA-256.
+- Respuesta: Proposal V2 completa, borrador de ADR-0050, sonda P1 v2, adenda §13 de Discovery y paquete de la ronda 2.
+- Hallazgo propio al corregir P1: un `SystemExit` dentro del intérprete embebido de RAM podría terminar la aplicación anfitriona
+  (`PyErr_Print` trata `SystemExit` saliendo del proceso); la puerta de P1 v2 no lo usa.
