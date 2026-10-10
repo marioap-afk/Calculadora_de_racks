@@ -52,8 +52,8 @@ def commit(repo, msg):
     return git(repo, 'rev-parse', 'HEAD')
 
 
-def build_repo(root):
-    repo = os.path.join(root, 'repo')
+def build_repo(root, name='repo'):
+    repo = os.path.join(root, name)
     os.makedirs(repo)
     git(repo, 'init', '-q')
     git(repo, 'checkout', '-q', '-b', 'selftest')
@@ -71,6 +71,25 @@ def build_repo(root):
     return repo, shas
 
 
+def build_repo2(root):
+    # Same deterministic history as build_repo plus two hazards that only repository configuration can create:
+    # G changes an allowed file and a gitlink outside AllowedWriteScope while diff.ignoreSubmodules=all hides gitlinks;
+    # Z is a parentless commit with the tree of A, and info/grafts rewrites the parents of B to Z (fake ancestry).
+    repo, shas = build_repo(root, 'repo2')
+    git(repo, 'checkout', '-q', shas['A'])
+    write(repo, 'allowed/a.txt', 'a2' + chr(10))
+    git(repo, 'add', 'allowed/a.txt')
+    git(repo, 'update-index', '--add', '--cacheinfo', '160000,' + FAKE_SHA + ',other/sub')
+    git(repo, 'commit', '-q', '--no-verify', '-m', 'G allowed change plus gitlink outside allowed')
+    shas['G'] = git(repo, 'rev-parse', 'HEAD')
+    git(repo, 'checkout', '-q', '-f', 'selftest')
+    shas['Z'] = git(repo, 'commit-tree', shas['A'] + '^{tree}', '-m', 'Z parentless commit with the tree of A')
+    git(repo, 'config', 'diff.ignoreSubmodules', 'all')
+    with open(os.path.join(repo, '.git', 'info', 'grafts'), 'wb') as fh:
+        fh.write((shas['B'] + ' ' + shas['Z'] + chr(10)).encode('ascii'))
+    return repo, shas
+
+
 def delegation(base, **over):
     d = {'Schema': 'rackcad-delegation/v1', 'TaskId': 'SELFTEST', 'RunId': RUN_DELEGATION, 'BaseSha': base,
          'AllowedWriteScope': ['allowed/'], 'ForbiddenWriteScope': ['forbidden/']}
@@ -85,8 +104,9 @@ def handoff(base, current, **over):
     return h
 
 
-def cases(s):
+def cases(s, s2):
     A, B, C, D, E = s['A'], s['B'], s['C'], s['D'], s['E']
+    G, Z = s2['G'], s2['Z']
     drop = object()
     return [
         ('T01', 'real-like delivery inside AllowedWriteScope', delegation(A), handoff(A, B), A, B, 'PASS', 0, None),
@@ -120,13 +140,31 @@ def cases(s):
         ('T24', 'trailing LF in delegation.RunId and handoff.DelegationRunId (I64-A2-RUNID-FAIL-OPEN)',
          delegation(A, RunId=RUN_DELEGATION + chr(10)), handoff(A, B, DelegationRunId=RUN_DELEGATION + chr(10)), A, B, 'FAIL', 1, 'DELEGATION_RUNID_INVALID'),
         ('T25', 'trailing LF in --expected-base', delegation(A), handoff(A, B), A + chr(10), B, 'FAIL', 1, 'EXPECTEDBASE_INVALID_SHA'),
+        ('T26', 'NaN in an uninspected delegation field (I64-A3-JSON-CONSTANT-FAIL-OPEN)',
+         ('raw', delegation(A, Attempt='@@NAN@@'), {'"@@NAN@@"': 'NaN'}), handoff(A, B), A, B, 'FAIL', 1, 'DELEGATION_UNREADABLE'),
+        ('T27', 'Infinity in an uninspected handoff field', delegation(A),
+         ('raw', handoff(A, B, Attempt='@@INF@@'), {'"@@INF@@"': 'Infinity'}), A, B, 'FAIL', 1, 'HANDOFF_UNREADABLE'),
+        ('T28', '-Infinity in an uninspected delegation field',
+         ('raw', delegation(A, Attempt='@@NINF@@'), {'"@@NINF@@"': '-Infinity'}), handoff(A, B), A, B, 'FAIL', 1, 'DELEGATION_UNREADABLE'),
+        ('T29', 'lone UTF-16 surrogate in an uninspected delegation string', delegation(A, Note='x' + chr(0xD800)), handoff(A, B), A, B,
+         'FAIL', 1, 'DELEGATION_UNREADABLE'),
+        ('T30', 'gitlink outside AllowedWriteScope hidden by repository config diff.ignoreSubmodules=all', delegation(A), handoff(A, G), A, G,
+         'FAIL', 1, 'OUTSIDE_ALLOWED_WRITE_SCOPE'),
+        ('T31', 'ancestry faked by info/grafts (BaseSha is not a real ancestor of CurrentSha)', delegation(Z), handoff(Z, B), Z, B,
+         'FAIL', 1, 'BASE_NOT_ANCESTOR'),
     ], drop
 
 
 def materialize(path, value, drop):
     if value is None:
         return
-    if isinstance(value, str):
+    if isinstance(value, tuple) and value[0] == 'raw':
+        text = json.dumps({k: v for k, v in value[1].items() if v is not drop}, ensure_ascii=True, indent=2)
+        for old, new in value[2].items():
+            assert text.count(old) == 1
+            text = text.replace(old, new)
+        data = text.encode('ascii')
+    elif isinstance(value, str):
         data = value.encode('ascii')
     else:
         data = json.dumps({k: v for k, v in value.items() if v is not drop}, ensure_ascii=True, indent=2).encode('ascii')
@@ -134,14 +172,14 @@ def materialize(path, value, drop):
         fh.write(data)
 
 
-def run_case(case, repo, other_git_dir, root, drop):
+def run_case(case, repo, other_git_dir, root, drop, repo2=None):
     cid, desc, deleg, hand, base, cur, exp_result, exp_exit, exp_code = case
     cdir = os.path.join(root, cid)
     os.makedirs(cdir)
     dpath, hpath = os.path.join(cdir, 'delegation.json'), os.path.join(cdir, 'handoff.json')
     materialize(dpath, deleg, drop)
     materialize(hpath, hand, drop)
-    target = os.path.join(root, 'not-a-repo') if cid == 'T18' else repo
+    target = os.path.join(root, 'not-a-repo') if cid == 'T18' else (repo2 if cid in ('T30', 'T31') else repo)
     os.makedirs(os.path.join(root, 'not-a-repo'), exist_ok=True)
     argv = ['--repo', target, '--delegation', dpath, '--handoff', hpath, '--expected-base', base, '--expected-current', cur]
     if cid == 'T21':
@@ -170,20 +208,23 @@ def main():
     root = tempfile.mkdtemp(prefix='i64sb-')
     try:
         repo, shas = build_repo(root)
+        repo2, shas2 = build_repo2(root)
         other = os.path.join(root, 'other')
         os.makedirs(other)
         git(other, 'init', '-q')
-        all_cases, drop = cases(shas)
-        results = [run_case(c, repo, os.path.join(other, '.git'), root, drop) for c in all_cases]
+        all_cases, drop = cases(shas, shas2)
+        results = [run_case(c, repo, os.path.join(other, '.git'), root, drop, repo2) for c in all_cases]
         extra_ok = True
         for r in results:
             if r['Id'] == 'T02':
                 extra_ok &= r['OutsideAllowed'] == ['allowed/a.txt']
+            if r['Id'] == 'T30':
+                extra_ok &= r['OutsideAllowed'] == ['other/sub']
             if r['Id'] == 'T09':
                 extra_ok &= r['ChangedPaths'] == ['allowed/x.txt', 'forbidden/x.txt'] and r['OutsideAllowed'] == ['forbidden/x.txt']
         with open(VERIFIER, 'rb') as fh:
             verifier_sha = hashlib.sha256(fh.read()).hexdigest()
-        summary = {'Schema': 'rackcad-i64-scope-bridge-selftest/v1', 'VerifierSha256': verifier_sha, 'Commits': shas,
+        summary = {'Schema': 'rackcad-i64-scope-bridge-selftest/v1', 'VerifierSha256': verifier_sha, 'Commits': dict(shas, G=shas2['G'], Z=shas2['Z']),
                    'Result': 'PASS' if extra_ok and all(r['Ok'] for r in results) else 'FAIL',
                    'Cases': results}
     finally:
