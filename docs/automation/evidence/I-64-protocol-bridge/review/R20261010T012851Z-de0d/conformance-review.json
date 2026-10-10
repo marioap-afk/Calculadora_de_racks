@@ -1,0 +1,76 @@
+{
+  "Schema": "rackcad-i64-conformance-review/v1",
+  "RunId": "R20261010T012851Z-de0d",
+  "ReviewSubject": {
+    "Commit": "22736034dc177ddc181a0b513317cdb754f5bd18",
+    "Amendment": {
+      "Path": "docs/initiatives/I-64-A-1.md",
+      "Blob": "fb6a49c2e8e96689f82a2ad01fda7994fc2397b0"
+    },
+    "Verifier": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py",
+      "Blob": "093a570f71a359e8e004b8983ea9625e74ebbc87"
+    },
+    "SelfTest": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/selftest_scope_bridge.py",
+      "Blob": "937e3279e6d8fb5f7b612b940a01860d3ae84b84"
+    },
+    "SelfTestResult": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/selftest-result.json",
+      "Blob": "05ec88362f6e2d5935d4b82bc93bdc307238aae1"
+    }
+  },
+  "Topics": {
+    "AuthorityAndMateriality": {
+      "Result": "NON_CONFORMING",
+      "Evidence": "A-1 identifies the Freeze by commit, path, and blob; states Applies-to I-64; gives the prior clause, delta, reason, M-01..M-08, evidence, and append-only rule. M-01, M-02, M-03, M-05, M-06, M-07, and M-08 are reasonably marked NO against their definitions. M-04 is marked NO on the ground that product failure semantics do not change, but A-1 changes how the required protocol control is satisfied: the controller-executed nc2 can be replaced by a mechanical bridge. LIFECYCLE Sec.3 defines M-04 as a change to what fails or how it fails, without limiting it to product behavior. Thus the Coordinator-only authority and Architect NOT REQUIRED status do not meet LIFECYCLE Sec.6 for this material change."
+    },
+    "ScopeInvariantPreserved": {
+      "Result": "CONFORMING",
+      "Evidence": "Verifier lines 204-229 obtains changed paths from git diff --name-only -z --no-renames Base Current, rejects empty or ambiguous path sets, then requires every path to match an exact AllowedWriteScope entry or a slash-terminated prefix and rejects every matching ForbiddenWriteScope entry. This preserves AUTOMATION_PLAN 16.9 check 7; the additional input, syntax, Git, and non-empty-diff checks are stricter."
+    },
+    "FailOpenRoutes": {
+      "Result": "CONFORMING",
+      "Evidence": "Static review of verifier lines 132-258 shows explicit checks for argument and SHA formats, strict UTF-8 JSON with duplicate-key rejection, identity, scope syntax, repository root, commit identity, ancestry, diff errors, path decoding, non-empty diff, and both scope predicates. Unexpected exceptions produce a FAIL report and nonzero exit; exit 0 is returned only when Report.document() is PASS. The committed selftest-result.json reports 23 reproducible passing cases and records the verifier SHA-256 matching the pinned verifier. Neither script was executed in this review."
+    },
+    "HistoricalNc2RemainsFail": {
+      "Result": "CONFORMING",
+      "Evidence": "The pinned A-1 explicitly preserves nc2 R20261002T184050Z-8415 as FAIL and says it will not be repeated. The inspected oracle-result.json records CONTROL NOT PASSED and OracleRelative=false; controller-verification.json records Scope=pass. The commit diff changes only A-1 and the three new bridge artifacts, leaving the historical nc2 evidence untouched."
+    },
+    "NoI61OrI62NormativeChange": {
+      "Result": "NON_CONFORMING",
+      "Evidence": "The name-only diff from 39b45f36383e6017da38e5bf91e08e485298a4fc shows no edits to I-61 or I-62 normative files. However, A-1 lines 64-71 says the I-64 nc2 obligation may be met by the bridge instead of the nc2 executed by the model. README Sec.10 requires the negative controls to be run by the real Controller using the same prompt. Allowing a different actor and mechanism as a substitute reinterprets that I-61 requirement for I-64; it is not solely an added evidence requirement."
+    },
+    "FutureUseStrictlyScoped": {
+      "Result": "CONFORMING",
+      "Evidence": "A-1 applies only to I-64, pins the verifier blob, specifies conditions 1-5 for use, requires the historical nc2 evidence to remain, and limits use to future delegated I-64 tasks until an integrated protocol authority replaces it. It does not authorize applying the bridge to other units or weakening other I-61 controls."
+    }
+  },
+  "Findings": [
+    {
+      "Id": "I64-A1-M04",
+      "Severity": "REQUIRED",
+      "Topic": "AuthorityAndMateriality",
+      "Location": "docs/initiatives/I-64-A-1.md:64,205",
+      "Defect": "A-1 marks M-04 NO and classifies the amendment as Coordinator-only even though it changes how the required protocol control is satisfied by substituting a mechanical bridge for the controller-executed nc2. M-04 is defined by the change to what fails or how it fails, not only by product behavior.",
+      "Authority": "INITIATIVE_LIFECYCLE Sec.3 M-04 and Sec.6: a material M requires Architect and Coordinator authority.",
+      "Correction": "Mark M-04 YES and obtain Architect and Coordinator review before activation, or revise the amendment so it does not change the frozen control or its satisfaction conditions."
+    },
+    {
+      "Id": "I64-A1-I61-SUBSTITUTION",
+      "Severity": "REQUIRED",
+      "Topic": "NoI61OrI62NormativeChange",
+      "Location": "docs/initiatives/I-64-A-1.md:64",
+      "Defect": "A-1 permits the bridge to satisfy nc2 instead of the model-executed control. This substitutes the actor and execution method required by I-61 README Sec.10 for I-64, despite the claim that A-1 only adds an I-64 evidence requirement.",
+      "Authority": "docs/automation/agent-execution/README.md Sec.10 requires the real Controller to execute negative controls with the same prompt. The historical I-64 Coordinator decision prohibits changing I-61 from I-64 and identifies a protocol-owner decision or integrated protocol evolution as the route to a conforming replacement.",
+      "Correction": "Obtain and version the protocol-owner authority for this I-64 replacement control before activation, or revise A-1 so the bridge is additional evidence and does not substitute for an I-61 requirement."
+    }
+  ],
+  "RequiredCount": 2,
+  "Verdict": "CHANGES_REQUIRED",
+  "Conformance": "NON_CONFORMING",
+  "Limitations": [
+    "The verifier and self-test were not executed, as instructed. The committed self-test result was inspected, but this review does not independently reproduce it.",
+    "No claim is made about GATE PASS, candidacy, closure, integration, or Owner approval."
+  ]
+}
