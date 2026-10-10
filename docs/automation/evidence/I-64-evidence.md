@@ -1916,3 +1916,75 @@ se ejecuta contra T1. No hay trabajo de T2, F1 PASS ni COMPLETE.
 
 **Relevos:** dos invocaciones de Codex, la sonda y la revisión. Ninguna escribió en Git. Sin procesos ajenos y con `config.toml` en la línea
 base aceptada. HEAD = remoto = `e52c9fec` antes de este commit; `main` `bb0d5522`, sin rebase.
+
+## 35. F1 — Puente de emergencia, fase B: A-2 redactada y STOP en ARCHITECT_CELL_REQUIRED
+
+Sección nueva; las anteriores no se reescriben. Hechos de la sesión responsable. A-1 y A-2 no se activan. El puente no se ejecuta contra T1.
+No hay rebase, trabajo de T2, F1 PASS ni COMPLETE.
+
+**Orden del Coordinator** (chat, 2026-10-10; literal en `docs/automation/evidence/I-64-protocol-bridge/coordinator-order-phase-b.md`; la
+de la fase A, en `coordinator-order-phase-a.md`):
+- Acepta los dos REQUIRED de la revisión `de0d` y ordena una A-2 sin tocar A-1.
+- Registra la orden de emergencia del Owner como autoridad explícita de una excepción de protocolo limitada a I-64.
+- Fija M-04 = YES, con Architect + Coordinator obligatorios.
+- Ordena UNA revisión formal e independiente del Architect con perfil ARCHITECTURE_REVIEW y effort semántico Deep, sobre un transporte de
+  solo lectura elegible y medido, sin enrutar hacia abajo.
+- Si no hay celda elegible, se para en ARCHITECT_CELL_REQUIRED.
+
+**A-2** (`docs/initiatives/I-64-A-2.md`, blob `de6f6088356b0dec0e7a33431c7d00d0ba0d396b`, en este commit):
+- Enmienda append-only sobre el Freeze `9b43dafb` (blob `dc1924ff`), Applies-to I-64.
+- Corrige y sustituye a A-1 para la activación; A-1 queda histórica e inmutable.
+- Autoridad Owner + Architect + Coordinator, con este estado:
+
+  | Parte | Estado |
+  |---|---|
+  | Owner | SATISFIED por la orden de emergencia |
+  | Architect | REQUIRED |
+  | Coordinator | PENDING |
+  | Decisión del dueño del protocolo | SATISFIED solo para la excepción de I-64 |
+
+- Mantiene la autoridad externa (README §10 nc2 y el invariante de Scope de AUTOMATION_PLAN §16.9) y las condiciones 1-10 de la orden.
+- Adopta sin cambios el verificador de A-1 (blob `093a570f`, SHA-256 `327982a9…`) y su autoprueba (23/23 PASS). **El verificador no cambió.**
+- M-01..M-08: solo M-04 = YES.
+
+**Celda del Architect (ARCHITECTURE_REVIEW / Deep).** Hechos del catálogo y de `routing.md` de I-61 en `MainSha` (sin cambios entre
+`819955d6` y `bb0d5522`):
+- `routing.md` §3: Deep exige nivel Equilibrado o Frontera.
+- LIFECYCLE §5: toda revisión declara su modo.
+- La orden exige una revisión independiente sobre un transporte de solo lectura.
+
+| Celda medida | Nivel | Medición | Qué le falta para esta revisión |
+|---|---|---|---|
+| `gpt-6-luna` × Codex CLI (sandbox de solo lectura) × read/tool-use × `high` | Eficiente | sonda PR-1 de I-61 (2026-10-01); vuelta a medir por la sonda `R20261010T014704Z-97f8` con `codex-cli 0.162.0-alpha.2` | nivel: no admite Deep (solo Balanced como «Eficiente con más effort»); usarla sería enrutar hacia abajo, prohibido por la orden |
+| `claude-opus-5-5` × subagente (modelo heredado) × read/tool-use × `high` / `xhigh` | Frontera | rondas de revisión de I-61 (evidencia de I-61 §13, 2026-09-30) | independencia y solo lectura: I-61 §13 clasifica esas revisiones como «SAME-SESSION ROLE; no independientes»; un subagente nace de la sesión autora y sus herramientas no están restringidas a lectura |
+| `claude-sonnet-5-5` × subagente × read/tool-use/write × `medium` / `high` | Equilibrado | sonda U-04 de I-61 (2026-10-01) | igual que la anterior |
+
+**Celdas que faltan o no son elegibles para I-64:**
+- **`gpt-6.1-sol` × Codex CLI × read × `high`** (Equilibrado; Deep → `high`):
+  - publicada; instalada y autenticada (ChatGPT);
+  - no medida y con consumo UNKNOWN;
+  - ninguna fuente oficial la marca como de créditos o API, y la autenticación es por suscripción, así que es **sondeable** según
+    `routing.md` §5.
+- **`claude` CLI** (p. ej. `claude-opus-5-5`, solo lectura):
+  - el catálogo de I-61 dice que no está autenticado y no se usa como transporte;
+  - I-62 lo midió (2026-10-08, binario 2.1.293), pero esas mediciones no están integradas y no son autoridad de I-64.
+- **Sesión separada de Claude Desktop** (la sesión «I-64 Architect Review Proposal V1», que revisó V1-V5 en modo SEPARATE SESSION):
+  - accesible por mensajería entre sesiones;
+  - no es una celda del catálogo: modelo y effort no medidos según `routing.md` §5, y no está restringida a lectura.
+
+**¿Es posible una medición única de solo lectura?**
+- Sí para `gpt-6.1-sol`: con el mismo arnés de la sonda `97f8` (`-m gpt-6.1-sol -c model_reasoning_effort="high" -s read-only`), oráculo
+  exacto contra Git, modelo y effort efectivos en el registro de sesión y sin avisos de límite.
+- **Necesita autorización del Owner:** `routing.md` §5 solo permite sondear con consumo desconocido bajo esas condiciones, y el
+  `OWNER_REQUIRED_IF` de I-64 incluye las «sondas con consumo no cubierto».
+- No se ha lanzado.
+
+**Laguna del objeto de revisión:**
+- La orden incluye en el objeto la «Owner emergency order» («I-64 — EMERGENCY PARALLEL RESUMPTION / AUTHORITATIVE PROTOCOL BRIDGE»).
+- Su texto literal no llegó a esta sesión: solo la citan las órdenes del Coordinator de las fases A y B, ahora custodiadas.
+- La revisión del Architect necesita ese texto versionado.
+
+**STOP en ARCHITECT_CELL_REQUIRED.** No hay revisión del Architect. No se enruta hacia abajo ni se lanza ninguna medición sin autorización.
+
+**Relevos:** sin invocaciones. `config.toml` en la línea base aceptada (`73890CA3…`). HEAD = remoto = `51bb9b94` antes de este commit; `main`
+`bb0d5522`, sin rebase.
