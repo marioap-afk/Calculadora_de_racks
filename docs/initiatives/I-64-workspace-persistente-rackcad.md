@@ -24,7 +24,7 @@ introduces: [UNKNOWN]
 discovery_ref: docs/initiatives/I-64-discovery.md
 freeze_ref: docs/initiatives/I-64-proposal-v5.md
 freeze_delta_ref:
-amendment_refs: []
+amendment_refs: [docs/initiatives/I-64-A-1.md, docs/initiatives/I-64-A-2.md, docs/initiatives/I-64-A-3.md, docs/initiatives/I-64-A-4.md]
 ov_assignment_ref: docs/initiatives/I-64-proposal-v5.md
 decision_refs: [docs/initiatives/I-64-owner-brief.txt, docs/initiatives/I-64-coordinator-confirmation-d0-r3.txt]
 evidence_ref: docs/automation/evidence/I-64-evidence.md

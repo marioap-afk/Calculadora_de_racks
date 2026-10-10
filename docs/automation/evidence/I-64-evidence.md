@@ -2177,3 +2177,123 @@ en curso, sin F1 PASS. La reanudación hacia F1-T2-BRIDGE exige todavía el reba
 conciliación de propiedad y archivos calientes.
 
 **Relevos:** sin invocaciones de modelos en el puente (Python y Git, en la sesión). HEAD = remoto = `fd864f9c` antes de este commit.
+
+## 39. F1 — NIGHT RUN: rebase sobre main, revalidación del producto de T1, conciliación con I-52 e I-63 y paquete de F1-T2-BRIDGE
+
+Sección nueva; las anteriores no se reescriben. Hechos de la sesión responsable, sin invocaciones de modelos. El nc2 histórico no se
+reetiqueta ni se repite. Los presupuestos de T1 no se reinician.
+
+**Rebase** (registro `Phase: REBASE`, AUTOMATION_PLAN 16.7, `TaskId` = SESSION porque no hay cadena en curso, `Attempt` 3; custodia en
+`docs/automation/evidence/I-64-pilot/session-rebase/R20261010T032957Z-68a9/`):
+- **Antes:** `main` había avanzado de `819955d6` a `bb0d5522` (I-63 integrada).
+  - La punta previa `5ee345b5` quedó archivada en la etiqueta anotada `archive/I-64-pre-rebase-5ee345b5` (objeto `5e5e399b`), publicada
+    antes del rebase (WORKFLOW §9).
+- **Rebase:** `git rebase origin/main` entre las 03:19:09Z y las 03:19:51Z.
+  - Hubo un solo conflicto, documental: `docs/ROADMAP.md` en el commit de bootstrap `d8a02163` → `f3c846e9`. Eran filas adyacentes tras
+    I-60, conflicto anticipado en la §4 («Nota de integración (de I-63)»).
+  - Resolución: la fila de I-63 tal como está en `main` más la fila original de I-64.
+  - Se aplicó la regla de la orden NIGHT RUN: «Document-only merge conflicts may be resolved only when meaning is provably preserved».
+- **Push:** `--force-with-lease=<rama>:5ee345b5` a las 03:21:10Z; nueva punta `8e6a1b4eb2114ad793b41816c55fe8a0fa9c5094`.
+- **`RebaseMap`** (`relay-record.json`, válido contra `rackcad-relay-record/v1`):
+  - Commits: 42, con autor, fecha y mensaje idénticos. `git patch-id --stable` es igual en 41.
+  - El único distinto es `d8a02163`, un commit de sesión: cambia solo el contexto de ROADMAP; las líneas añadidas y eliminadas son
+    idénticas y los otros 4 archivos tienen el mismo blob.
+  - Los 7 commits del Worker de T1 tienen patch-id igual.
+  - `AuthorityRevision` = `e0587355` → `05a5ae9d`. I-64 no tiene un G2 de I-61, así que `G2CloseSha` registra esa misma ancla y la nota
+    lo declara.
+  - `UnitDocBlobsEqual` = true: 7 entradas UNIT_DOC sobre 6 rutas.
+  - `UnitChangeSectionsEqual` = null: hay 0 secciones UNIT_CHANGE.
+  - `BaseSha` y `ChainBaseSha` = null, porque el rebase está fuera de una tarea. La cadena de T1 con sus imágenes figura en
+    `rebase-proof.json`: `0b7db52f` → `39ed1641`, `a9778068` → `012ae288` y `39f7caa4` → `f593cb8b`.
+  - `ConflictPaths` = [`docs/ROADMAP.md`]; `CoordinatorDecision` cita la orden custodiada.
+- **Prueba** (`rebase-proof.json`, `Ok` = true):
+  - Entre puntas, fuera de ROADMAP, solo entra lo de `main`: cada ruta tiene el blob de `bb0d5522` en la punta nueva y el de `819955d6` en
+    la vieja.
+  - Ninguna ruta de I-64 cambia.
+  - El delta de `src/` y `tests/` es idéntico byte a byte respecto de cada base (SHA-256 `4EEE6D96…`; 5 archivos de Workspace y 4 de
+    pruebas).
+  - El commit de producto de T1 `39f7caa4` → `f593cb8b` tiene patch-id igual, un solo hunk (`@@ -6 +6 @@`) y solo
+    `WorkspaceSessionRegistry.cs`. Su blob `b6e771e1` es igual en el SHA verificado, en la punta vieja y en la nueva.
+  - El Freeze `9b43dafb` → `6f845087` conserva el blob `dc1924ff`.
+  - Los blobs de A-1..A-4, del nc2 histórico (`oracle-result.json` y `controller-verification.json`) y de la verificación `5c9b` no
+    cambian.
+  - Las autoridades `EXTERNAL` del contrato no cambiaron entre `819955d6` y `bb0d5522`.
+
+**Revalidación tras el rebase** (`R20261010T032134Z-0e9a`; `revalidation.json`). Es una revalidación sobre el SHA exacto, no la
+verificación histórica del Controller:
+- **Árbol:** antes y después, `8e6a1b4e` y limpio.
+- **Workspace focal** (`FullyQualifiedName~RackCad.Tests.Workspace`): 51/51 en verde.
+- **Core completa:** 12 646/12 646 en verde, 0 fallos.
+- **Builds Release** (`--no-incremental`) de `tests/RackCad.Tests` y `tests/RackCad.UI.Tests`:
+  - código 0 y 0 errores;
+  - 0 avisos MSB/CS/NU/NETSDK;
+  - 42 y 7 avisos de analizadores xUnit (cada uno aparece dos veces en el log), todos en archivos de prueba ajenos a I-64 y 0 en archivos
+    de Workspace.
+- **CI exacta de push** 38020256918 sobre `8e6a1b4e`: los cuatro jobs en success.
+- Los TRX y los logs no se versionan (README §11): se registran su SHA-256 y los contadores.
+
+**Comprobaciones mecánicas** pedidas por la orden, sobre `8e6a1b4e` (`MechanicalChecks.Ok` = true):
+- `Application/Workspace` no referencia tipos de I-63, ni los 17 archivos de `ComputedParameters` referencian Workspace
+  (MASTER-I63-I64-02 intacto).
+- 0 referencias a AutoCAD en `src/RackCad.Application/Workspace/` ni en el `csproj` de Application. Las 3 apariciones de «Autodesk» en
+  `tests/RackCad.Tests/Workspace/` son literales de la guarda de frontera que las prohíbe.
+- ADR 0047 en estado `propuesto`.
+- Sin diff frente a `main` en Plugin, UI ni Domain; los archivos de RACKEDITAR no cambian.
+
+**Desviación declarada del generador:** la primera ejecución del script que produce el registro y la prueba dio `false` en tres
+comprobaciones. Las tres eran filtros del propio script:
+- la fila de I-64 menciona «I-63»;
+- los literales de la guarda;
+- la comparación del árbol de la unidad incluía la evidencia de I-63 llegada de `main`.
+
+Se corrigieron los filtros, y ningún dato ni evidencia cambió. Las salidas custodiadas son las de la ejecución final.
+
+**Conciliación de propiedad y archivos calientes** (solo lectura; sin AutoCAD; sin tocar ramas ajenas):
+
+| Rama | Punta | Rutas de T2 | Archivos calientes |
+|---|---|---|---|
+| I-52 `feature/rackmirror-espejo-semantico` | `fb6b5648` | ninguna; no toca `src/` ni `tests/` | `docs/HANDOFF.md`, `docs/ROADMAP.md`, `docs/adr/README.md`, 4 `*Commands.cs` de `eng/` |
+| I-62 `architecture/portabilidad-coordinador-principal` | `362bec12` | ninguna | `docs/ROADMAP.md`, `tests/RackCad.Tests/I62*` |
+| I-63 | integrada (`bb0d5522`) | — | sin referencias cruzadas con Workspace |
+
+- No hay conflicto de propiedad con las rutas propuestas para T2.
+- Smoke-1 sigue bloqueado hasta el RELEASE de host de I-52.
+- La fila de I-64 en ROADMAP queda como estaba; no se declara integrada.
+
+**F1-T2-BRIDGE: paquete del contrato** (`docs/initiatives/I-64-f1-t2-gate-contract-package.md` y el borrador ASCII
+`docs/automation/evidence/I-64-pilot/F1-T2-BRIDGE/contract-package/gate-contract.DRAFT-NOT-ISSUED.json`):
+- Derivado del Freeze V5 (D-02, D-03, D-04; INV-02, 03, 14 y 21), de la propuesta F1, de A-2/A-4, del estado y del código tras el
+  rebase.
+- El borrador ASCII tiene 28 autoridades, 14 invariantes y 35 STOP.
+  - Todos sus bytes son ASCII, sin escapes `\u`, y está transliterado con la regla de REISSUE_GATE_CONTRACT_ASCII.
+  - No es válido tal cual, solo por los marcadores `AuthorityRevision` y `MainSha`; con SHA de muestra cumple
+    `rackcad-gate-contract/v1`.
+- Hechos nuevos que el contrato tiene que resolver:
+  - **`attempts` por unidad = 3 = `max_attempts`:** T2 tendría 0 correcciones, y el primer REWORK daría S-11.
+  - **`RackCad.Tests` no referencia el Plugin:** las pruebas Core con fuente simulada de INV-02 e INV-03 exigen un núcleo sin AutoCAD en
+    `src/RackCad.Application/Workspace/` (archivos nuevos).
+  - **La guarda de INV-21 se formula sobre el puerto de T3.**
+  - El Plugin no tiene hoy suscripciones a eventos de AutoCAD.
+- **Presupuesto:** ni el Freeze ni ninguna orden emitida fijan el tope de invocaciones de T2. Los de T0 y T1 los fijó el Coordinator
+  tarea a tarea (§§19-20 y decisiones P-07 posteriores); la propuesta F1 §5 solo lo propone.
+- **STOP: COORDINATOR_T2_GATE_CONTRACT_REQUIRED** (decisiones C-T2-01..C-T2-05 del paquete).
+- No se lanzó ninguna planificación de T2 ni ninguna invocación de modelos.
+
+**Corrección documental:** `amendment_refs` del contrato de la iniciativa estaba vacío pese a existir A-1..A-4. Ahora las lista; A-4 es
+la activa y A-1..A-3 son históricas.
+
+**Custodia** (SHA-256 transitorio en `artifacts/orchestration/I-64/session-rebase/R20261010T032957Z-68a9/` → blob versionado):
+
+| Archivo | SHA-256 transitorio | Blob |
+|---|---|---|
+| `relay-record.json` | `bfec41831b5904fb…` | `b74fa035` |
+| `rebase-proof.json` | `640715cd91416e82…` | `8fb125d6` |
+| `revalidation.json` | `be462b3659cff0bf…` | `807685c5` |
+| `config-exit.json` | `ca88586e46a1441e…` | `7308a058` |
+| `processes-exit.json` | `ae07298c9a666081…` (CRLF de PowerShell; el blob se normaliza a LF) | `8e4ded7e` |
+
+**Relevos:**
+- Sin invocaciones de modelos en esta sección.
+- `config.toml` en la línea base 73890CA3 (105 nombres, sin valores).
+- Procesos: sin participantes ni procesos no atribuibles.
+- HEAD = remoto = `8e6a1b4e` antes de este commit; `main` `bb0d5522`.
