@@ -5,10 +5,10 @@ automation_state:
   claim_id: 614371d5-441f-4f14-bac9-f97017105610
   current_phase: F1
   state: waiting
-  gate: dependency
+  gate: owner-decision
   attempts: 3
-  next_action: "Master Coordinator / iniciativa de protocolo: llevar el hallazgo de nc2 a la evolucion del protocolo de ejecucion (I-62); I-64 queda bloqueada (F1 BLOCKED_PROTOCOL_DEPENDENCY; evidencia §32)."
-  last_evidence_commit: db15122715e021db0ee6be33d789e22600690b0d
+  next_action: "Owner: decidir P-01 (config.toml de Codex cambiado: nueva seccion [projects.*] con trust_level; CLI 0.162.0-alpha.2) y la nueva linea base; despues, la revision independiente de A-1 ya preparada (evidencia §33)."
+  last_evidence_commit: 22736034dc177ddc181a0b513317cdb754f5bd18
 execution_context:
   mode: manual
   automation_enabled: false
@@ -25,17 +25,18 @@ execution_context:
   f1_blocked_next_task: F1-T2-BRIDGE
   f1_blocking_dependency: "execution-protocol Scope enforcement / Controller negative-control defect"
   f1_resume_condition: "solo con una condicion autoritativa nueva: (A) evolucion integrada del protocolo que arregle o sustituya el control de Scope que fallo, o (B) enmienda autoritativa explicita con un control sustituto conforme y aplicable a I-64; al reanudar: rebase segun haga falta, conservar 39f7caa4 como evidencia historica de producto verificado, evaluar si basta repetir los controles o hace falta una verificacion nueva de la tarea, y no suponer que el nc2 anterior puede repetirse"
+  f1_a1_status: "A-1 PROPUESTA (docs/initiatives/I-64-A-1.md, blob fb6a49c2, commit 22736034): I64-SCOPE-BRIDGE-01; verificador blob 093a570f; autoprueba 23/23 PASS; revision independiente preparada (A-1-review/R20261010T012851Z-de0d) y NO lanzada por STOP P-01; Coordinator PENDING; no activa; no ejecutada contra T1"
   max_attempts: 3
   persistent_next_action:
-    NEXT_ROLE: "Master Coordinator / iniciativa de protocolo (I-62); AUTONOMY_GAP-COORDINATOR: las ordenes llegan por el chat"
-    NEXT_ACTION: "llevar el hallazgo de nc2 a la evolucion del protocolo de ejecucion y dejar I-64 bloqueada; I-64 no reanuda F1-T2-BRIDGE sin una condicion autoritativa nueva (f1_resume_condition)"
-    TARGET_SHA: "la punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo (git log -1 -- docs/automation/state/I-64.yml); su padre es db15122715e021db0ee6be33d789e22600690b0d"
+    NEXT_ROLE: "Owner (P-01: cambio de config.toml; OWNER_REQUIRED_IF) y despues Coordinator; AUTONOMY_GAP-COORDINATOR: las ordenes llegan por el chat"
+    NEXT_ACTION: "decidir P-01: aceptar o no una linea base nueva de config.toml (73890CA3...; nueva seccion [projects.*] con trust_level) y si codex-cli 0.162.0-alpha.2 sigue siendo la celda medida gpt-6-luna/high o exige sonda; con eso, lanzar la revision independiente de A-1 ya preparada y parar en COORDINATOR_A1_AGREEMENT_REQUIRED"
+    TARGET_SHA: "la punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo (git log -1 -- docs/automation/state/I-64.yml); su padre es 22736034dc177ddc181a0b513317cdb754f5bd18"
     GATE: F1 — Workspace Foundation
-    TASK: "F1-T2-BRIDGE (BLOCKED_PROTOCOL_DEPENDENCY; no autorizada)"
-    INPUTS_REQUIRED: "evidencia §§31-32; docs/automation/evidence/I-64-pilot/F1-T1-MODEL-nc2/R20261002T184050Z-8415/ (coordinator-protocol-stop-review.md, protocol-debt-handoff.md)"
-    EXPECTED_RESULT: "condicion autoritativa nueva (A: protocolo integrado que arregle o sustituya el control de Scope; B: enmienda autoritativa aplicable a I-64)"
-    REMAINING_BUDGET: "F1-T1-MODEL sin presupuesto (planificacion 7/7, trabajo 4/4, verificacion 4/4, attempts 3/3); F1-T2-BRIDGE sin contrato"
-    STOP_CONDITION: "cualquier implementacion o planificacion delegada de T2, Worker nuevo, cambio del producto de T1, debilitar nc2, cambiar I-61 o I-62 desde I-64, declarar COMPLETE o F1 PASS; origin/main distinto de 819955d61a6da4c811a11fbd11b5dca13f634b7c; config.toml distinto (P-01)"
+    TASK: "I-64 A-1 / I64-SCOPE-BRIDGE-01 (fase A; STOP P-01 antes de la revision independiente)"
+    INPUTS_REQUIRED: "evidencia §33; docs/initiatives/I-64-A-1.md; docs/automation/evidence/I-64-protocol-bridge/"
+    EXPECTED_RESULT: "decision del Owner sobre P-01 y, despues, revision independiente AGREED / CONFORMING con 0 REQUIRED"
+    REMAINING_BUDGET: "F1-T1-MODEL sin presupuesto (planificacion 7/7, trabajo 4/4, verificacion 4/4, attempts 3/3); revision independiente de A-1: 1 (sin consumir)"
+    STOP_CONDITION: "cualquier invocacion de Codex con config.toml distinto de la linea base (P-01); ejecutar el puente contra T1 antes del acuerdo del Coordinator; trabajo de F1-T2-BRIDGE; cambios de I-61 o I-62; reescribir el nc2 historico; declarar COMPLETE o F1 PASS"
     OWNER_REQUIRED_IF: "OWNER-RESERVED (alcance, diferir sistemas, retirar OV); aceptacion del ADR 0047; Owner Validation y smokes (Smoke-1 tras F1 PASS y RELEASE de I-52); cambio de config.toml (P-01); credenciales, compras o sondas con consumo no cubierto; AutoCAD manual o cambios de seguridad"
   protocol_debt:
     - FINDING: "El Controller gpt-6-luna/high, pese a leer correctamente una delegacion con AllowedWriteScope que excluye el unico archivo modificado, puede emitir Scope=pass despues de que falle su operacion auxiliar de comparacion (nc2 R20261002T184050Z-8415; mismo patron en nc2 R20261002T151201Z-abb1)."
