@@ -15,6 +15,8 @@ import tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 VERIFIER = os.path.join(HERE, 'verify_scope_bridge.py')
+if '--verifier' in sys.argv:  # regression demonstration against another verifier blob
+    VERIFIER = os.path.abspath(sys.argv[sys.argv.index('--verifier') + 1])
 RUN_DELEGATION = 'R20000101T000000Z-0001'
 RUN_WORK = 'R20000101T000100Z-0002'
 FAKE_SHA = '1111111111111111111111111111111111111111'
@@ -115,6 +117,9 @@ def cases(s):
         ('T21', 'usage error: --handoff omitted', delegation(A), handoff(A, B), A, B, 'FAIL', 2, 'USAGE_ERROR'),
         ('T22', 'usage: -h does not end with exit 0', delegation(A), handoff(A, B), A, B, 'FAIL', 2, 'USAGE_ERROR'),
         ('T23', 'inherited GIT_DIR pointing at another repository is ignored', delegation(A), handoff(A, B), A, B, 'PASS', 0, None),
+        ('T24', 'trailing LF in delegation.RunId and handoff.DelegationRunId (I64-A2-RUNID-FAIL-OPEN)',
+         delegation(A, RunId=RUN_DELEGATION + chr(10)), handoff(A, B, DelegationRunId=RUN_DELEGATION + chr(10)), A, B, 'FAIL', 1, 'DELEGATION_RUNID_INVALID'),
+        ('T25', 'trailing LF in --expected-base', delegation(A), handoff(A, B), A + chr(10), B, 'FAIL', 1, 'EXPECTEDBASE_INVALID_SHA'),
     ], drop
 
 

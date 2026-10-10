@@ -1988,3 +1988,69 @@ de la fase A, en `coordinator-order-phase-a.md`):
 
 **Relevos:** sin invocaciones. `config.toml` en la línea base aceptada (`73890CA3…`). HEAD = remoto = `51bb9b94` antes de este commit; `main`
 `bb0d5522`, sin rebase.
+
+## 36. F1 — NIGHT RUN: mandato del Owner custodiado, sonda de `gpt-6.1-sol` PASS, revisión formal del Architect de A-2 CHANGES REQUIRED y A-3
+
+Sección nueva; las anteriores no se reescriben. Hechos de la sesión responsable. No hay activación ni ejecución del puente contra T1 todavía.
+
+**Orden NIGHT RUN del Coordinator** (chat, 2026-10-10; literal en `docs/automation/evidence/I-64-protocol-bridge/coordinator-order-night-run.md`):
+- Ejecución autónoma hasta la primera frontera de autoridad no cubierta.
+- Entrega el mandato de emergencia del Owner, custodiado literalmente en `owner-mandate-emergency.md` (commit `153b4811`, blob `4271dd7e`).
+- Autoriza una sonda única de `gpt-6.1-sol` / `high` en solo lectura.
+- Incluye la disposición condicional del Coordinator: AGREED para la A-n exacta que obtenga Architect AGREED con 0 REQUIRED y cumpla
+  los predicados de la orden.
+
+**Sonda** `R20261010T024641Z-ed2c` (`docs/automation/evidence/I-64-protocol-bridge/probe/R20261010T024641Z-ed2c/`): **PASS en los 8 criterios
+del Owner.**
+
+| Criterio | Resultado |
+|---|---|
+| Modelo pedido = efectivo | `gpt-6.1-sol` |
+| Effort pedido = efectivo | `high` |
+| Solo lectura impuesta | `sandbox_policy` read-only; sistema de archivos con acceso `read`; red `restricted` |
+| Salida estructurada | válida contra su esquema |
+| Tool-use y lectura | 3 órdenes con código 0; oráculo exacto (`153b4811`, `bb0d5522`, `de6f6088`) |
+| P-06 | sin avisos |
+| Autenticación | la existente, sin credenciales nuevas |
+| `config.toml` | sin cambio |
+
+La celda queda medida para la revisión del Architect: nivel Equilibrado, Deep → `high`. No se enrutó hacia abajo.
+
+**Revisión formal del Architect de A-2** `R20261010T024843Z-f965`
+(`docs/automation/evidence/I-64-protocol-bridge/architect-review/R20261010T024843Z-f965/`):
+- **Cómo se hizo:** ARCHITECTURE_REVIEW, Deep, SEPARATE SESSION, `gpt-6.1-sol` / `high`, solo lectura. Objeto: el commit `153b4811`.
+  - Duró de 02:49:07Z a 02:53:03Z, con 26 órdenes, todas con código 0.
+  - No ejecutó las herramientas del puente.
+  - Salida válida, coherente, ASCII y con los blobs correctos.
+- **Resultado: CHANGES REQUIRED, con 1 REQUIRED y 0 OPTIONAL.**
+
+  | Pregunta | Resultado |
+  |---|---|
+  | Q01-Q09 | YES y conformes |
+  | Q10 | YES (existe una ruta abierta), no conforme |
+  | Q11 | NO, conforme |
+  | Q12 | NO, conforme |
+
+- **I64-A2-RUNID-FAIL-OPEN:** `RUNID_RE` con `$` y `match` aceptaba un salto de línea final, así que con el mismo valor en
+  `handoff.DelegationRunId` el verificador podía dar PASS. `RequiresGlobalI61Change` = false y `RequiresOwnerDecision` = false.
+
+**Corrección dentro del mandato** (defecto determinista del verificador antes de la activación; ronda 1 de 2):
+- **Verificador** (blob `8972e374acf18c8b5c1c77dd7d8992432197be99`, SHA-256 `ab893054…`): `fullmatch` para los SHA y el RunId (4 líneas
+  eliminadas y 5 añadidas).
+- **Autoprueba** (blob `3e32dc68…`): nuevos casos T24 (salto de línea final en los RunId) y T25 (en `--expected-base`).
+  - Contra el blob anterior `093a570f` da Result FAIL, y T24 devuelve **PASS con código 0** (ruta demostrada):
+    `regression-demo-a3-old-verifier.json`.
+  - Contra el corregido da **25/25 PASS**, con dos ejecuciones idénticas byte a byte: `selftest-result-a3.json`.
+- **A-3** (`docs/initiatives/I-64-A-3.md`):
+  - corrección append-only de A-2 para la activación, con la misma autoridad (Owner + Architect + Coordinator);
+  - fija el blob nuevo del verificador y la evidencia nueva de autoprueba, y adopta A-2 sin cambios en todo lo demás;
+  - M-04 = YES y el resto NO.
+- A-1 y A-2 no se editan, y la autoprueba anterior (`selftest-result.json`) se conserva.
+
+**Siguiente:** revisión formal del Architect del objeto exacto de A-3, con la misma celda medida.
+
+**Relevos:**
+- Dos invocaciones de Codex, la sonda y la revisión, ninguna con escritura de Git.
+- `config.toml` en la línea base aceptada.
+- Procesos ajenos efímeros (`git.exe`) que desaparecieron al releer quedan CLEARED_BY_REREAD.
+- HEAD = remoto = `153b4811` antes de este commit; `main` `bb0d5522`.

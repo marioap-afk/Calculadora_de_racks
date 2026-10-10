@@ -1,0 +1,145 @@
+{
+  "RunId": "R20261010T024843Z-f965",
+  "ExitCode": 0,
+  "TerminalEvent": "turn.completed",
+  "ThreadId": "01a123b6-d7fa-7602-81c8-6eed976fffed",
+  "Usage": {
+    "input_tokens": 1884140,
+    "cached_input_tokens": 1727616,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 8529,
+    "reasoning_output_tokens": 2433
+  },
+  "CommandCount": 26,
+  "NonZeroCommands": [],
+  "ExecutedBridgeTools": [],
+  "OutputPresent": true,
+  "SchemaValid": true,
+  "OutputSha256": "179665E609A613EF655EDC77F8C7C81E0EF9478825EEEDB228F5ABA1B755C240",
+  "NonAsciiBytes": 0,
+  "Verdict": "CHANGES REQUIRED",
+  "RequiredCount": 1,
+  "OptionalCount": 0,
+  "RequiredFindings": [
+    {
+      "Id": "I64-A2-RUNID-FAIL-OPEN",
+      "Severity": "REQUIRED",
+      "Question": "Q10",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py:25,162-165",
+      "Defect": "RunId validation accepts a trailing LF because RUNID_RE ends with a dollar anchor and is evaluated with match. For example, R20000101T000000Z-0001 followed by LF passes the format check. Putting that same malformed string in handoff.DelegationRunId also passes the equality check. No later check rejects it, so otherwise valid in-scope evidence can produce PASS and exit 0. This is acceptance of malformed identity evidence, even though the Scope membership arithmetic itself remains correct.",
+      "Authority": "A-2:87 requires evidence ambiguity to fail closed; A-2:120 adopts A-1 Sec.3, whose line 107 requires delegation.RunId to have the RunId format. AUTOMATION_PLAN at bb0d5522 Sec.16.6:552 defines that format. Owner mandate:23-24 requires unambiguous evidence and fail-closed mismatch handling. LIFECYCLE Sec.5 treats an unverified frozen guarantee as REQUIRED.",
+      "Correction": "Use a whole-string RunId match, such as RUNID_RE.fullmatch, and add a synthetic behavioral regression with a trailing LF in both identity fields that requires DELEGATION_RUNID_INVALID and nonzero exit. Demonstrate the regression failing against the current verifier and passing after correction. Preserve A-1/A-2; authorize the corrected verifier blob and updated self-test evidence in the next A-n, then review that exact object before use, as A-2:115-116 requires.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    }
+  ],
+  "OptionalFindings": [],
+  "Answers": {
+    "Q01": [
+      "YES",
+      true
+    ],
+    "Q02": [
+      "YES",
+      true
+    ],
+    "Q03": [
+      "YES",
+      true
+    ],
+    "Q04": [
+      "YES",
+      true
+    ],
+    "Q05": [
+      "YES",
+      true
+    ],
+    "Q06": [
+      "YES",
+      true
+    ],
+    "Q07": [
+      "YES",
+      true
+    ],
+    "Q08": [
+      "YES",
+      true
+    ],
+    "Q09": [
+      "YES",
+      true
+    ],
+    "Q10": [
+      "YES",
+      false
+    ],
+    "Q11": [
+      "NO",
+      true
+    ],
+    "Q12": [
+      "NO",
+      true
+    ]
+  },
+  "PolarityAsExpected": {
+    "Q01": true,
+    "Q02": true,
+    "Q03": true,
+    "Q04": true,
+    "Q05": true,
+    "Q06": true,
+    "Q07": true,
+    "Q08": true,
+    "Q09": true,
+    "Q10": false,
+    "Q11": true,
+    "Q12": true
+  },
+  "Coherent": true,
+  "SubjectBlobs": {
+    "A1": {
+      "Path": "docs/initiatives/I-64-A-1.md",
+      "Blob": "fb6a49c2e8e96689f82a2ad01fda7994fc2397b0"
+    },
+    "Amendment": {
+      "Path": "docs/initiatives/I-64-A-2.md",
+      "Blob": "de6f6088356b0dec0e7a33431c7d00d0ba0d396b"
+    },
+    "Verifier": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py",
+      "Blob": "093a570f71a359e8e004b8983ea9625e74ebbc87"
+    },
+    "SelfTestResult": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/selftest-result.json",
+      "Blob": "05ec88362f6e2d5935d4b82bc93bdc307238aae1"
+    },
+    "OwnerMandate": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/owner-mandate-emergency.md",
+      "Blob": "4271dd7e128b001e5aaf8d1bbedcafbfc40faadd"
+    }
+  },
+  "SubjectMatches": true,
+  "GateTerms1610": [],
+  "Limitations": [
+    "Static review only. Neither verifier nor self-test was executed; the committed 23/23 result was inspected but not independently reproduced.",
+    "No concrete T1 path was evaluated for AllowedWriteScope membership. Historical outcomes are reported from the versioned verification and oracle records.",
+    "No live CI, runtime eligibility, remote state, build, test suite or Owner validation was independently measured. This review establishes neither activation nor task/gate closure.",
+    "The initial shell invocation emitted a profile-loading error. Subsequent reads and repeated Git checks used login=false successfully; no conclusion depends on that error."
+  ],
+  "Effective": [
+    "gpt-6.1-sol",
+    "high"
+  ],
+  "EffectiveSource": "rollout-2026-10-09T20-49-08-01a123b6-d7fa-7602-81c8-6eed976fffed.jsonl",
+  "EffectiveSourceSha256": "147BA38CEB69F94398A6EB841AB300A5E35559882F0D5946CC4123DE8D57779B",
+  "LimitPatternContexts": {
+    "ion | frontera |\\r 675: | S-11 | repeated rework limit reached | STOP |\\": 2,
+    "on\\\"},{\\\"Id\\\":\\\"S-11\\\",\\\"Text\\\":\\\"repeated rework limit reached\\\"},{\\\"Id\\": 1,
+    " at the end. If the invocation would require API credits, a key, p": 1,
+    " end.\\r 198: If the invocation would require API credits, a key, p": 1
+  },
+  "EventsSha256": "F96DF3A06CCA5773F775D77C51FB8755F84DF13268B0E2FC7FA3C8C2F5E77599"
+}
