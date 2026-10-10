@@ -2054,3 +2054,49 @@ La celda queda medida para la revisión del Architect: nivel Equilibrado, Deep �
 - `config.toml` en la línea base aceptada.
 - Procesos ajenos efímeros (`git.exe`) que desaparecieron al releer quedan CLEARED_BY_REREAD.
 - HEAD = remoto = `153b4811` antes de este commit; `main` `bb0d5522`.
+
+## 37. F1 — NIGHT RUN: re-revisión del Architect de A-3 CHANGES REQUIRED y A-4 (ronda 2 de 2)
+
+Sección nueva; las anteriores no se reescriben. Hechos de la sesión responsable. No hay activación ni ejecución del puente contra T1 todavía.
+
+**Commit `d71364cf`** (A-3; CI 38018837157, los cuatro jobs en success).
+
+**Re-revisión formal del Architect de A-3** `R20261010T025754Z-77a6`
+(`docs/automation/evidence/I-64-protocol-bridge/architect-review/R20261010T025754Z-77a6/`):
+- **Cómo se hizo:** ARCHITECTURE_REVIEW, Deep, SEPARATE SESSION, `gpt-6.1-sol` / `high`, solo lectura. Objeto: el commit `d71364cf`.
+  - Duró de 02:58:22Z a 03:02:52Z, con 56 órdenes, todas con código 0.
+  - No ejecutó las herramientas del puente.
+  - Salida válida, coherente y con los blobs correctos.
+- **Resultado: CHANGES REQUIRED, con 1 REQUIRED y 0 OPTIONAL.**
+  - Q01-Q09, Q11 y Q12 conformes; Q10 no conforme.
+  - **I64-A2-RUNID-FAIL-OPEN = CLOSED.**
+- **I64-A3-JSON-CONSTANT-FAIL-OPEN** (Q10): `json.loads` aceptaba `NaN`, `Infinity` y `-Infinity` en campos no inspeccionados.
+  `RequiresGlobalI61Change` = false y `RequiresOwnerDecision` = false.
+
+**Corrección** (ronda 2 de 2, la última de la noche):
+- **Pasada adversarial propia.** Antes de corregir, la sesión buscó rutas de la misma familia y las comprobó de forma experimental en un
+  repositorio temporal:
+  - `diff.ignoreSubmodules=all` oculta un gitlink cambiado;
+  - Git 2.54 aún aplica `info/grafts`, y `--no-replace-objects` no lo desactiva;
+  - `color.ui=always` no altera la salida `--name-only`.
+- **Verificador** (blob `cf381ab96a3d945a9569d56bb3aaf546e3f2fce1`, SHA-256 `a3d4ed8a…`; 39 líneas añadidas y 3 eliminadas frente a
+  `8972e374`):
+  - rechazo de las constantes que no son JSON y de los surrogates sueltos;
+  - `git diff` con `--ignore-submodules=none`, `--no-relative` y `--no-color`;
+  - órdenes de Git con `-c core.fsmonitor=false` y `GIT_GRAFT_FILE` apuntando a una ruta inexistente.
+- **Autoprueba** (blob `b6858875…`): casos T26-T31, con un segundo repositorio sintético para T30 y T31.
+  - **Contra el verificador de A-3, los seis casos devuelven PASS con código 0**: las rutas abiertas quedan demostradas
+    (`regression-demo-a4-a3-verifier.json`).
+  - Contra el corregido, **31/31 PASS**, reproducible byte a byte (`selftest-result-a4.json`).
+- **A-4** (`docs/initiatives/I-64-A-4.md`):
+  - corrección append-only de A-3 para la activación, con la misma autoridad;
+  - fija el blob `cf381ab9` y adopta lo demás sin cambios;
+  - M-04 = YES y el resto NO.
+
+**Siguiente:** revisión formal del Architect del objeto exacto de A-4. Es la última ronda permitida esta noche. Si da REQUIRED, STOP al
+Coordinator.
+
+**Relevos:**
+- Una invocación de Codex (la re-revisión), sin escritura de Git.
+- `config.toml` en la línea base aceptada.
+- HEAD = remoto = `d71364cf` antes de este commit; `main` `bb0d5522`.

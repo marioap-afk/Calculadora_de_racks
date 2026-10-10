@@ -15,8 +15,10 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
+import tempfile
 
 SCHEMA = 'rackcad-i64-scope-bridge/v1'
 DELEGATION_SCHEMA = 'rackcad-delegation/v1'
@@ -61,16 +63,21 @@ class Report:
         return doc
 
 
+NO_GRAFTS_DIR = None
+
+
 def git_env():
     # Fail closed against redirection: no inherited GIT_* variable may point Git at another repository, index,
-    # object store or configuration.
+    # object store or configuration. GIT_GRAFT_FILE points at a path that does not exist (inside an empty directory
+    # created for this run), so a deprecated <GIT_DIR>/info/grafts file cannot rewrite parents and fake ancestry.
     env = {k: v for k, v in os.environ.items() if not k.upper().startswith('GIT_')}
     env['GIT_TERMINAL_PROMPT'] = '0'
+    env['GIT_GRAFT_FILE'] = os.path.join(NO_GRAFTS_DIR, 'no-grafts')
     return env
 
 
 def git(repo, *args):
-    cmd = ['git', '--no-replace-objects', '-C', repo] + list(args)
+    cmd = ['git', '--no-replace-objects', '-c', 'core.fsmonitor=false', '-C', repo] + list(args)
     proc = subprocess.run(cmd, capture_output=True, env=git_env(), timeout=GIT_TIMEOUT_SECONDS, shell=False)
     return proc.returncode, proc.stdout, proc.stderr
 
@@ -82,12 +89,34 @@ def reject_duplicates(pairs):
     return dict(pairs)
 
 
+def reject_constant(name):
+    # NaN, Infinity and -Infinity are not JSON values (I64-A3-JSON-CONSTANT-FAIL-OPEN).
+    raise ValueError('non-JSON constant ' + name)
+
+
+def reject_lone_surrogates(value):
+    # A string holding a lone UTF-16 surrogate (e.g. an escaped \ud800) is not valid Unicode: ambiguous evidence.
+    stack = [value]
+    while stack:
+        item = stack.pop()
+        if isinstance(item, str):
+            if any(0xD800 <= ord(ch) <= 0xDFFF for ch in item):
+                raise ValueError('lone surrogate in JSON string')
+        elif isinstance(item, dict):
+            stack.extend(item.keys())
+            stack.extend(item.values())
+        elif isinstance(item, list):
+            stack.extend(item)
+
+
 def load_json(path):
     with open(path, 'rb') as fh:
         raw = fh.read()
     sha = hashlib.sha256(raw).hexdigest()
     text = raw.decode('utf-8', errors='strict')
-    return json.loads(text, object_pairs_hook=reject_duplicates), sha
+    data = json.loads(text, object_pairs_hook=reject_duplicates, parse_constant=reject_constant)
+    reject_lone_surrogates(data)
+    return data, sha
 
 
 def valid_scope_entry(entry):
@@ -202,7 +231,10 @@ def verify(args, report):
                         'BaseSha is not an ancestor of CurrentSha' if rc == 1 else f'git merge-base exited {rc}'):
         return
 
+    # Explicit options override repository configuration that could hide or reshape changed paths:
+    # --ignore-submodules=none (diff.ignoreSubmodules / submodule.*.ignore), --no-relative (diff.relative), --no-color.
     rc, out, _ = git(args.repo, 'diff', '--name-only', '-z', '--no-renames', '--no-ext-diff', '--no-textconv',
+                     '--ignore-submodules=none', '--no-relative', '--no-color',
                      args.expected_base, args.expected_current, '--')
     if not report.check('Git.Diff', rc == 0, 'GIT_DIFF_ERROR', f'git diff exited {rc}'):
         return
@@ -232,8 +264,10 @@ def verify(args, report):
 
 
 def main(argv=None):
+    global NO_GRAFTS_DIR
     report = Report()
     exit_code = EXIT_FAIL
+    NO_GRAFTS_DIR = tempfile.mkdtemp(prefix='i64sb-nografts-')
     try:
         # add_help=False: -h/--help must not end the process with exit 0 (exit 0 is reserved for PASS).
         parser = Parser(description='I-64 mechanical Scope bridge (fail-closed)', add_help=False, allow_abbrev=False)
@@ -250,6 +284,8 @@ def main(argv=None):
         report.check('Git.Available', False, 'GIT_NOT_AVAILABLE', 'git executable not found')
     except Exception as exc:  # fail closed on anything unexpected
         report.check('Unexpected', False, 'UNEXPECTED_ERROR', type(exc).__name__)
+    finally:
+        shutil.rmtree(NO_GRAFTS_DIR, ignore_errors=True)
     doc = report.document()
     # Bytes with LF only, so the JSON is identical on every platform (text-mode stdout turns LF into CRLF on Windows).
     sys.stdout.buffer.write((json.dumps(doc, ensure_ascii=True, indent=2) + '\n').encode('ascii'))

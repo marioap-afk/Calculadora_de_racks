@@ -1,0 +1,565 @@
+{
+  "Schema": "rackcad-i64-scope-bridge-selftest/v1",
+  "VerifierSha256": "ab8930540c31b1f0107709cd8710a41ae1b0912b18a94327d026171b411e62ba",
+  "Commits": {
+    "A": "22848272ef63ea5b001b2ffb4649cae0a90abc9a",
+    "B": "b378af4dc717e8bae2b642b78c310d4159206b35",
+    "C": "4f54c6977c9e9717b2317277d46d9595f3e1e2a5",
+    "D": "c17e2d0ff6322bef358bf688b8703a72f8e43d58",
+    "E": "21139247e8a5191e0860bd56d401738c13d97fc1",
+    "G": "67547a764eb36c4b2266c79cc772c3c20812b763",
+    "Z": "5483ef5416ff5a7b95840c8d1bf9b999345e0f72"
+  },
+  "Result": "FAIL",
+  "Cases": [
+    {
+      "Id": "T01",
+      "Description": "real-like delivery inside AllowedWriteScope",
+      "ExpectedResult": "PASS",
+      "ExpectedExit": 0,
+      "ExpectedCode": null,
+      "ActualResult": "PASS",
+      "ActualExit": 0,
+      "ActualCodes": [],
+      "OutsideAllowed": [],
+      "ForbiddenHits": [],
+      "ChangedPaths": [
+        "allowed/a.txt"
+      ],
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T02",
+      "Description": "adversarial-like: prefix replaced by the other files under it, so the changed file is excluded",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "OUTSIDE_ALLOWED_WRITE_SCOPE",
+      "ActualResult": "FAIL",
+      "ActualExit": 1,
+      "ActualCodes": [
+        "OUTSIDE_ALLOWED_WRITE_SCOPE"
+      ],
+      "OutsideAllowed": [
+        "allowed/a.txt"
+      ],
+      "ForbiddenHits": [],
+      "ChangedPaths": [
+        "allowed/a.txt"
+      ],
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T03",
+      "Description": "nonexistent BaseSha",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "GIT_BASESHA_NOT_A_COMMIT",
+      "ActualResult": "FAIL",
+      "ActualExit": 1,
+      "ActualCodes": [
+        "GIT_BASESHA_NOT_A_COMMIT"
+      ],
+      "OutsideAllowed": null,
+      "ForbiddenHits": null,
+      "ChangedPaths": null,
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T04",
+      "Description": "nonexistent CurrentSha",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "GIT_CURRENTSHA_NOT_A_COMMIT",
+      "ActualResult": "FAIL",
+      "ActualExit": 1,
+      "ActualCodes": [
+        "GIT_CURRENTSHA_NOT_A_COMMIT"
+      ],
+      "OutsideAllowed": null,
+      "ForbiddenHits": null,
+      "ChangedPaths": null,
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T05",
+      "Description": "malformed delegation JSON",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "DELEGATION_UNREADABLE",
+      "ActualResult": "FAIL",
+      "ActualExit": 1,
+      "ActualCodes": [
+        "DELEGATION_UNREADABLE"
+      ],
+      "OutsideAllowed": null,
+      "ForbiddenHits": null,
+      "ChangedPaths": null,
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T06",
+      "Description": "missing AllowedWriteScope",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "AllowedWriteScope_MISSING_OR_NOT_LIST",
+      "ActualResult": "FAIL",
+      "ActualExit": 1,
+      "ActualCodes": [
+        "AllowedWriteScope_MISSING_OR_NOT_LIST"
+      ],
+      "OutsideAllowed": null,
+      "ForbiddenHits": null,
+      "ChangedPaths": null,
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T07",
+      "Description": "BaseSha not an ancestor of CurrentSha",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "BASE_NOT_ANCESTOR",
+      "ActualResult": "FAIL",
+      "ActualExit": 1,
+      "ActualCodes": [
+        "BASE_NOT_ANCESTOR"
+      ],
+      "OutsideAllowed": null,
+      "ForbiddenHits": null,
+      "ChangedPaths": null,
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T08",
+      "Description": "changed path covered by AllowedWriteScope but inside ForbiddenWriteScope",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "FORBIDDEN_WRITE_SCOPE_INTERSECTION",
+      "ActualResult": "FAIL",
+      "ActualExit": 1,
+      "ActualCodes": [
+        "FORBIDDEN_WRITE_SCOPE_INTERSECTION"
+      ],
+      "OutsideAllowed": [],
+      "ForbiddenHits": [
+        {
+          "Path": "forbidden/x.txt",
+          "Entry": "forbidden/"
+        }
+      ],
+      "ChangedPaths": [
+        "forbidden/x.txt"
+      ],
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T09",
+      "Description": "rename from a forbidden path into the allowed scope (rename source is a changed path)",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "OUTSIDE_ALLOWED_WRITE_SCOPE",
+      "ActualResult": "FAIL",
+      "ActualExit": 1,
+      "ActualCodes": [
+        "OUTSIDE_ALLOWED_WRITE_SCOPE",
+        "FORBIDDEN_WRITE_SCOPE_INTERSECTION"
+      ],
+      "OutsideAllowed": [
+        "forbidden/x.txt"
+      ],
+      "ForbiddenHits": [
+        {
+          "Path": "forbidden/x.txt",
+          "Entry": "forbidden/"
+        }
+      ],
+      "ChangedPaths": [
+        "allowed/x.txt",
+        "forbidden/x.txt"
+      ],
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T10",
+      "Description": "handoff.DelegationRunId differs",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "DELEGATION_RUNID_MISMATCH",
+      "ActualResult": "FAIL",
+      "ActualExit": 1,
+      "ActualCodes": [
+        "DELEGATION_RUNID_MISMATCH"
+      ],
+      "OutsideAllowed": null,
+      "ForbiddenHits": null,
+      "ChangedPaths": null,
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T11",
+      "Description": "handoff.CurrentSha differs from --expected-current",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "HANDOFF_CURRENT_MISMATCH",
+      "ActualResult": "FAIL",
+      "ActualExit": 1,
+      "ActualCodes": [
+        "HANDOFF_CURRENT_MISMATCH"
+      ],
+      "OutsideAllowed": null,
+      "ForbiddenHits": null,
+      "ChangedPaths": null,
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T12",
+      "Description": "invalid scope syntax (glob, parent segment, absolute path)",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "AllowedWriteScope_INVALID_ENTRY",
+      "ActualResult": "FAIL",
+      "ActualExit": 1,
+      "ActualCodes": [
+        "AllowedWriteScope_INVALID_ENTRY"
+      ],
+      "OutsideAllowed": null,
+      "ForbiddenHits": null,
+      "ChangedPaths": null,
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T13",
+      "Description": "malformed --expected-base",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "EXPECTEDBASE_INVALID_SHA",
+      "ActualResult": "FAIL",
+      "ActualExit": 1,
+      "ActualCodes": [
+        "EXPECTEDBASE_INVALID_SHA"
+      ],
+      "OutsideAllowed": null,
+      "ForbiddenHits": null,
+      "ChangedPaths": null,
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T14",
+      "Description": "empty diff (BaseSha = CurrentSha)",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "EMPTY_DIFF",
+      "ActualResult": "FAIL",
+      "ActualExit": 1,
+      "ActualCodes": [
+        "EMPTY_DIFF"
+      ],
+      "OutsideAllowed": null,
+      "ForbiddenHits": null,
+      "ChangedPaths": [],
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T15",
+      "Description": "missing handoff file",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "HANDOFF_UNREADABLE",
+      "ActualResult": "FAIL",
+      "ActualExit": 1,
+      "ActualCodes": [
+        "HANDOFF_UNREADABLE"
+      ],
+      "OutsideAllowed": null,
+      "ForbiddenHits": null,
+      "ChangedPaths": null,
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T16",
+      "Description": "delegation.BaseSha differs from --expected-base",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "DELEGATION_BASE_MISMATCH",
+      "ActualResult": "FAIL",
+      "ActualExit": 1,
+      "ActualCodes": [
+        "DELEGATION_BASE_MISMATCH"
+      ],
+      "OutsideAllowed": null,
+      "ForbiddenHits": null,
+      "ChangedPaths": null,
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T17",
+      "Description": "unexpected delegation Schema",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "DELEGATION_SCHEMA_UNEXPECTED",
+      "ActualResult": "FAIL",
+      "ActualExit": 1,
+      "ActualCodes": [
+        "DELEGATION_SCHEMA_UNEXPECTED"
+      ],
+      "OutsideAllowed": null,
+      "ForbiddenHits": null,
+      "ChangedPaths": null,
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T18",
+      "Description": "repository path is not a Git repository",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "GIT_REPOSITORY_INVALID",
+      "ActualResult": "FAIL",
+      "ActualExit": 1,
+      "ActualCodes": [
+        "GIT_REPOSITORY_INVALID"
+      ],
+      "OutsideAllowed": null,
+      "ForbiddenHits": null,
+      "ChangedPaths": null,
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T19",
+      "Description": "duplicate key in delegation JSON",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "DELEGATION_UNREADABLE",
+      "ActualResult": "FAIL",
+      "ActualExit": 1,
+      "ActualCodes": [
+        "DELEGATION_UNREADABLE"
+      ],
+      "OutsideAllowed": null,
+      "ForbiddenHits": null,
+      "ChangedPaths": null,
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T20",
+      "Description": "missing ForbiddenWriteScope",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "ForbiddenWriteScope_MISSING_OR_NOT_LIST",
+      "ActualResult": "FAIL",
+      "ActualExit": 1,
+      "ActualCodes": [
+        "ForbiddenWriteScope_MISSING_OR_NOT_LIST"
+      ],
+      "OutsideAllowed": null,
+      "ForbiddenHits": null,
+      "ChangedPaths": null,
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T21",
+      "Description": "usage error: --handoff omitted",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 2,
+      "ExpectedCode": "USAGE_ERROR",
+      "ActualResult": "FAIL",
+      "ActualExit": 2,
+      "ActualCodes": [
+        "USAGE_ERROR"
+      ],
+      "OutsideAllowed": null,
+      "ForbiddenHits": null,
+      "ChangedPaths": null,
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T22",
+      "Description": "usage: -h does not end with exit 0",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 2,
+      "ExpectedCode": "USAGE_ERROR",
+      "ActualResult": "FAIL",
+      "ActualExit": 2,
+      "ActualCodes": [
+        "USAGE_ERROR"
+      ],
+      "OutsideAllowed": null,
+      "ForbiddenHits": null,
+      "ChangedPaths": null,
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T23",
+      "Description": "inherited GIT_DIR pointing at another repository is ignored",
+      "ExpectedResult": "PASS",
+      "ExpectedExit": 0,
+      "ExpectedCode": null,
+      "ActualResult": "PASS",
+      "ActualExit": 0,
+      "ActualCodes": [],
+      "OutsideAllowed": [],
+      "ForbiddenHits": [],
+      "ChangedPaths": [
+        "allowed/a.txt"
+      ],
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T24",
+      "Description": "trailing LF in delegation.RunId and handoff.DelegationRunId (I64-A2-RUNID-FAIL-OPEN)",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "DELEGATION_RUNID_INVALID",
+      "ActualResult": "FAIL",
+      "ActualExit": 1,
+      "ActualCodes": [
+        "DELEGATION_RUNID_INVALID"
+      ],
+      "OutsideAllowed": null,
+      "ForbiddenHits": null,
+      "ChangedPaths": null,
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T25",
+      "Description": "trailing LF in --expected-base",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "EXPECTEDBASE_INVALID_SHA",
+      "ActualResult": "FAIL",
+      "ActualExit": 1,
+      "ActualCodes": [
+        "EXPECTEDBASE_INVALID_SHA"
+      ],
+      "OutsideAllowed": null,
+      "ForbiddenHits": null,
+      "ChangedPaths": null,
+      "Reproducible": true,
+      "Ok": true
+    },
+    {
+      "Id": "T26",
+      "Description": "NaN in an uninspected delegation field (I64-A3-JSON-CONSTANT-FAIL-OPEN)",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "DELEGATION_UNREADABLE",
+      "ActualResult": "PASS",
+      "ActualExit": 0,
+      "ActualCodes": [],
+      "OutsideAllowed": [],
+      "ForbiddenHits": [],
+      "ChangedPaths": [
+        "allowed/a.txt"
+      ],
+      "Reproducible": true,
+      "Ok": false
+    },
+    {
+      "Id": "T27",
+      "Description": "Infinity in an uninspected handoff field",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "HANDOFF_UNREADABLE",
+      "ActualResult": "PASS",
+      "ActualExit": 0,
+      "ActualCodes": [],
+      "OutsideAllowed": [],
+      "ForbiddenHits": [],
+      "ChangedPaths": [
+        "allowed/a.txt"
+      ],
+      "Reproducible": true,
+      "Ok": false
+    },
+    {
+      "Id": "T28",
+      "Description": "-Infinity in an uninspected delegation field",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "DELEGATION_UNREADABLE",
+      "ActualResult": "PASS",
+      "ActualExit": 0,
+      "ActualCodes": [],
+      "OutsideAllowed": [],
+      "ForbiddenHits": [],
+      "ChangedPaths": [
+        "allowed/a.txt"
+      ],
+      "Reproducible": true,
+      "Ok": false
+    },
+    {
+      "Id": "T29",
+      "Description": "lone UTF-16 surrogate in an uninspected delegation string",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "DELEGATION_UNREADABLE",
+      "ActualResult": "PASS",
+      "ActualExit": 0,
+      "ActualCodes": [],
+      "OutsideAllowed": [],
+      "ForbiddenHits": [],
+      "ChangedPaths": [
+        "allowed/a.txt"
+      ],
+      "Reproducible": true,
+      "Ok": false
+    },
+    {
+      "Id": "T30",
+      "Description": "gitlink outside AllowedWriteScope hidden by repository config diff.ignoreSubmodules=all",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "OUTSIDE_ALLOWED_WRITE_SCOPE",
+      "ActualResult": "PASS",
+      "ActualExit": 0,
+      "ActualCodes": [],
+      "OutsideAllowed": [],
+      "ForbiddenHits": [],
+      "ChangedPaths": [
+        "allowed/a.txt"
+      ],
+      "Reproducible": true,
+      "Ok": false
+    },
+    {
+      "Id": "T31",
+      "Description": "ancestry faked by info/grafts (BaseSha is not a real ancestor of CurrentSha)",
+      "ExpectedResult": "FAIL",
+      "ExpectedExit": 1,
+      "ExpectedCode": "BASE_NOT_ANCESTOR",
+      "ActualResult": "PASS",
+      "ActualExit": 0,
+      "ActualCodes": [],
+      "OutsideAllowed": [],
+      "ForbiddenHits": [],
+      "ChangedPaths": [
+        "allowed/a.txt"
+      ],
+      "Reproducible": true,
+      "Ok": false
+    }
+  ]
+}
