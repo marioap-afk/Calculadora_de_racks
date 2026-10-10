@@ -6,7 +6,7 @@
   congelable). Coordinator de I-65 (redacción).
 - **Iniciativa relacionada:** I-65 — `architecture/interop-analisis-estructural`
   ([contrato](../initiatives/I-65-interop-analisis-estructural.md), [Discovery](../initiatives/I-65-discovery.md),
-  [Proposal V2](../initiatives/I-65-proposal-v2.md)).
+  [Proposal V2.1](../initiatives/I-65-proposal-v2.1.md)).
 - **Consume sin reabrir:** [ADR-0017](0017-validacion-cargas-diferida-ram-elements.md). **Compatible con:**
   [ADR-0005](0005-estrategia-de-unidades.md), [ADR-0021](0021-identidad-unidades-y-presentacion-de-secciones.md) §10,
   [ADR-0040](0040-motor-expresiones-parametricas-y-guarda-de-complejidad-sintactica.md) D3,
@@ -32,7 +32,8 @@ RAM Elements 2026 es una API Python que corre solo dentro del programa, con docu
 3. **Unidades — cláusula de compatibilidad.** La pulgada sigue siendo la unidad interna canónica de producto, DWG, catálogos y
    persistencia (ADR-0005). El modelo de análisis almacena longitudes en pulgadas y fuerzas en libras-fuerza como cantidades tipadas por
    dimensión; las conversiones de longitud usan `LengthUnits` (ADR-0040 D3); las de datos del catálogo, `StructuralSectionUnits`
-   (ADR-0021 §10); la masa de libra y la gravedad estándar tienen un propietario único nuevo en `Application/Units/`. Cada proveedor
+   (ADR-0021 §10); la masa de libra y la gravedad estándar tienen un propietario único nuevo en `Application/Units/`, que
+   `StructuralSectionUnits` consume con resultado idéntico bit a bit (sin cambio de API ni del texto de ADR-0021). Cada proveedor
    convierte en un solo punto; una unidad desconocida falla cerrado.
 4. **Frontera de proveedor.** Los adaptadores viven en una carpeta de proveedor de Application, solo con la biblioteca base; ningún tipo,
    identificador ni convención de un proveedor aparece fuera de esa carpeta (guardas de fuente). Un ensamblado propio solo si un
@@ -69,6 +70,8 @@ RAM Elements 2026 es una API Python que corre solo dentro del programa, con docu
 ## Referencias
 
 - [Mandato de I-65](../automation/decisions/I-65-owner-mandate.original.txt)
-- [Discovery de I-65](../initiatives/I-65-discovery.md), [Proposal V2](../initiatives/I-65-proposal-v2.md)
+- [Discovery de I-65](../initiatives/I-65-discovery.md), [Proposal V2.1](../initiatives/I-65-proposal-v2.1.md)
 - [ADR-0005](0005-estrategia-de-unidades.md), [ADR-0009](0009-identidad-guid-embebida-en-dwg.md),
-  [ADR-0017](0017-validacion-cargas-diferida-ram-elements.md)
+  [ADR-0017](0017-validacion-cargas-diferida-ram-elements.md),
+  [ADR-0021](0021-identidad-unidades-y-presentacion-de-secciones.md),
+  [ADR-0040](0040-motor-expresiones-parametricas-y-guarda-de-complejidad-sintactica.md)

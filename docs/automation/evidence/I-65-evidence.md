@@ -114,3 +114,12 @@ Owner Validation: por determinar; no aplica a G0. Tag de integración: no existe
 - Respuesta: Proposal V2 completa, borrador de ADR-0050, sonda P1 v2, adenda §13 de Discovery y paquete de la ronda 2.
 - Hallazgo propio al corregir P1: un `SystemExit` dentro del intérprete embebido de RAM podría terminar la aplicación anfitriona
   (`PyErr_Print` trata `SystemExit` saliendo del proceso); la puerta de P1 v2 no lo usa.
+
+## 12. F0 — Architect, ronda 2, y Proposal V2.1
+
+- CI `push` de `8f9ac48ce135ef7cff08feb25f0ec19cc4c6aa7a` (Proposal V2): corrida `38088757141`, **success**, `head_sha` exacto.
+- Ronda 2 del Architect sobre `8f9ac48c` (mismo revisor): **CHANGES REQUIRED**. Cerrados A65-V1-02..11, 13 y 14..19; A65-V1-01 `OPEN —
+  BLOCKED BY P1` (correcto por diseño); A65-V1-12 abierto por un residual; nuevos A65-V2-01..04 REQUIRED y 05..09 OPTIONAL. Texto
+  íntegro en [architect-r2-verdict.md](I-65-f0/architect-r2-verdict.md) con su SHA-256.
+- Respuesta: Proposal V2.1 completa (disposición en su §14), sonda P1 v3, ADR-0050 ajustado y paquete de la ronda 3.
+

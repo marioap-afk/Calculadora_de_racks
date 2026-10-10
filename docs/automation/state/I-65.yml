@@ -7,15 +7,15 @@ automation_state:
   state: in-progress
   gate: F0
   attempts: 0
-  next_action: Re-revisión del Architect (ronda 2) sobre la Proposal V2; P1 v2 solo con autorización del Owner (Q-O4); V3 con valores medidos; Freeze tras AGREED de Coordinator y Architect sobre la misma versión.
-  last_evidence_commit: 0f4bc8849ddc0e491231d841cf43b56badba1e98
+  next_action: Re-revisión del Architect (ronda 3) sobre la Proposal V2.1; P1 v3 solo con autorización del Owner (Q-O4); V3 con valores medidos; Freeze tras AGREED de Coordinator y Architect sobre la misma versión.
+  last_evidence_commit: 8f9ac48ce135ef7cff08feb25f0ec19cc4c6aa7a
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-interop-analisis-estructural
 execution_chain:
   gate: F0
-  next_role: Architect (ronda 2 sobre la Proposal V2; ronda 1 = CHANGES REQUIRED)
+  next_role: Architect (ronda 3 sobre la Proposal V2.1; rondas 1 y 2 = CHANGES REQUIRED)
   implementation_authorization: NO
-  owner_decisions_open: [Q-O1 rebanada V1, Q-O2 perfil de material, Q-O3 supuestos de análisis, Q-O4 autorizar sonda P1, Q-O5 F6 análisis y resultados, Q-O6 ADR-0050, Q-O7 modelo manual de referencia]
+  owner_decisions_open: [Q-O1 rebanada V1, Q-O2 perfil de material, Q-O3 supuestos de análisis, Q-O4 autorizar sonda P1, Q-O5 confirmar F6 fuera de V1, Q-O6 ADR-0050, Q-O7 modelo manual de referencia]
   not_authorized: [implementación, ejecutar RAM Elements, escribir en archivos de RAM del usuario, Freeze sin AGREED de Coordinator y Architect]
