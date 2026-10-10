@@ -1,0 +1,15 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-65
+  branch: architecture/interop-analisis-estructural
+  claim_id: 0b4aad79-068e-4a57-a2c2-dc8f23406778
+  current_phase: bootstrap-g0
+  state: in-progress
+  gate: F0
+  attempts: 0
+  next_action: Discovery F0 (superficies reales de RAM Elements, fuente estructural de RackCad, referencia manual) y Proposal V1 con paquete para el Architect.
+  last_evidence_commit: null
+execution_context:
+  mode: manual
+  automation_enabled: false
+  worktree: architecture-interop-analisis-estructural
