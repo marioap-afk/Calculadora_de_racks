@@ -7,8 +7,8 @@ automation_state:
   state: waiting
   gate: none
   attempts: 3
-  next_action: "Coordinator: emitir o corregir el gate-contract de F1-T2-BRIDGE resolviendo C-T2-01..C-T2-05 (docs/initiatives/I-64-f1-t2-gate-contract-package.md); la sesion se detuvo en COORDINATOR_T2_GATE_CONTRACT_REQUIRED (evidencia §39)."
-  last_evidence_commit: 8e6a1b4eb2114ad793b41816c55fe8a0fa9c5094
+  next_action: "Sesion: emitir gate-contract.json de F1-T2-BRIDGE con AuthorityRevision = el commit que contiene este archivo, una planificacion valida del Controller, nc4 y A1-A8 sin commit; STOP en COORDINATOR_T2_ACCEPTANCE_REQUIRED (decision del Coordinator, evidencia §40)."
+  last_evidence_commit: 9ff0a287861e1740691e45253360538a7fc8c05a
 execution_context:
   mode: manual
   automation_enabled: false
@@ -17,13 +17,15 @@ execution_context:
   design_agreed: docs/initiatives/I-64-proposal-v5.md en 9e3d289a9b61339c162b2f791f6995a584207800, blob bd4e96264e538ffc679bfd9f088400b22b553931 (I64-CONSENSUS-V5-01; Architect AGREED; Coordinator AGREED)
   freeze: 9b43dafbe3b8874aa0ba5a85d62cbf953dbdd311 (Frozen YES; blob dc1924ff5a73a4e529fbc5f995621d29351a091b; CI 36941847270 push 4/4 success; evidencia §18)
   f0: COMPLETE
-  f1: "IN PROGRESS: F1-T1-MODEL = COMPLETE_UNDER_I64_SCOPE_BRIDGE (producto EXECUTION_VERIFIED sobre 39f7caa4, imagen tras el rebase f593cb8b con patch-id igual; cierre de protocolo SATISFIED bajo A-4; nc2 historico FAIL); rama rebasada sobre bb0d5522 y producto revalidado (focal 51/51, Core 12646/12646, CI 38020256918 4/4); F1-T2-BRIDGE sin contrato: STOP COORDINATOR_T2_GATE_CONTRACT_REQUIRED; evidencia §§31-39"
+  f1: "IN PROGRESS: F1-T1-MODEL = COMPLETE_UNDER_I64_SCOPE_BRIDGE (aceptada por el Coordinator; producto EXECUTION_VERIFIED sobre 39f7caa4, imagen f593cb8b; nc2 historico FAIL; enmienda activa A-4); rama rebasada sobre bb0d5522 y revalidada; F1-T2-BRIDGE AUTORIZADA PARA PLANIFICACION, NO para el Worker; evidencia §§31-40"
   relay_baseline: "config.toml SHA-256 73890CA3319206B85B68A42E23E8D323C45361CFC29E06B3E116EFFF5DAD0FBF (aceptada por el Owner el 2026-10-10; 105 nombres, sin valores; anterior 40C27B57...); celda gpt-6-luna/high re-medida con codex-cli 0.162.0-alpha.2 por la sonda R20261010T014704Z-97f8 (PASS)"
   f1_t1_model_budget: "planificacion 7 de 7; trabajo 4 de 4; verificacion productiva 4 de 4; attempts 3 de 3; CONTROL de la recuperacion: nc1, nc2 y nc3 con una salida valida cada uno, sin reintentos"
   f1_t1_model_chain: "ChainBaseSha e0587355b0e84d98807057a56dfc50591da87489; ChainRedSha a9778068af566bc2b84ba6a0005711b6452a2666 (acreditado en R20261002T143410Z-ae0b); ChainRedFiles tests/RackCad.Tests/Workspace/{SelectionContextTests,WorkspaceHintDrainTests,WorkspaceModelBoundaryTests,WorkspaceSelectionContextTests,WorkspaceSessionTests}.cs; VerifiedSha 39f7caa411a5ebb372614c233a32255de7398cca (EXECUTION_VERIFIED, R20261002T182925Z-5c9b); delegacion R20261002T171954Z-754a cerrada; sin delegacion abierta"
   f1_rebase: "punta 8e6a1b4eb2114ad793b41816c55fe8a0fa9c5094 sobre main bb0d5522 (antes 5ee345b5 sobre 819955d6; etiqueta archive/I-64-pre-rebase-5ee345b5); RebaseMap R20261010T032957Z-68a9 (42 commits, patch-id igual en 41; d8a02163 solo contexto de ROADMAP); revalidacion R20261010T032134Z-0e9a; CI 38020256918 push 4/4"
+  f1_t2_bridge_budget: "decision del Coordinator (evidencia §40): planificacion, trabajo y verificacion 1 salida valida cada una + hasta 2 invocaciones adicionales solo por fallo de transporte o INVALID_OUTPUT; CONTROL nc1..nc4 e I64-SCOPE-BRIDGE-01 (README §10, A-4); Attempt 3, AttemptsRemaining 0, MaxReworkLoops 3; CorrectionsAuthorized false (toda correccion o REWORK = STOP S-11); consumido: nada"
+  f1_t2_bridge_scope: "AllowedWriteScope src/RackCad.Application/Workspace/ (solo archivos nuevos), src/RackCad.Plugin/Workspace/, tests/RackCad.Tests/Workspace/; los 5 archivos de producto de T1 prohibidos; INV-21 limitado a cero autoridad de persistencia y escritura del puente (puerto IWorkspaceHostPort en T3)"
   f1_t1_model_status: "COMPLETE_UNDER_I64_SCOPE_BRIDGE; ProductStatus EXECUTION_VERIFIED; ProductVerifiedSha 39f7caa411a5ebb372614c233a32255de7398cca; ProtocolClose SATISFIED bajo I-64 A-4 (ScopeBridge R20261010T031627Z-124b: REAL PASS, ADVERSARIAL PASS como prueba negativa); historicos: nc1 PASS (b10b), nc2 FAIL permanente (8415), nc3 PASS (8b6f), nc4 PASS (8d3c); presupuestos agotados, sin reinicio"
-  f1_blocked_next_task: "F1-T2-BRIDGE: paquete del contrato preparado (docs/initiatives/I-64-f1-t2-gate-contract-package.md y borrador ASCII NOT ISSUED); falta la emision del Coordinator con tope de invocaciones (C-T2-01), decision sobre attempts por unidad 3/3 (C-T2-02), alcance comprobable (C-T2-03), reparto de INV-21 (C-T2-04) y AuthorityRevision/MainSha (C-T2-05)"
+  f1_blocked_next_task: "F1-T2-BRIDGE: Worker no autorizado hasta la aceptacion A1-A8 del Coordinator (COORDINATOR_T2_ACCEPTANCE_REQUIRED)"
   f1_blocking_dependency: "resuelta para I-64 por I64-SCOPE-BRIDGE-01 (A-4 AGREED y puente verificado); la deuda del Controller sigue registrada en protocol_debt para I-62"
   f1_resume_condition: "solo con una condicion autoritativa nueva: (A) evolucion integrada del protocolo que arregle o sustituya el control de Scope que fallo, o (B) enmienda autoritativa explicita con un control sustituto conforme y aplicable a I-64; al reanudar: rebase segun haga falta, conservar 39f7caa4 como evidencia historica de producto verificado, evaluar si basta repetir los controles o hace falta una verificacion nueva de la tarea, y no suponer que el nc2 anterior puede repetirse"
   f1_a1_status: "A-1 PROPUESTA (docs/initiatives/I-64-A-1.md, blob fb6a49c2, commit 22736034); revision independiente R20261010T012851Z-de0d = CHANGES_REQUIRED / NON_CONFORMING con 2 REQUIRED (I64-A1-M04: M-04 deberia ser YES y exigir Architect + Coordinator; I64-A1-I61-SUBSTITUTION: sustituye el actor y el metodo de README §10 y exige autoridad del dueno del protocolo o evidencia solo adicional); STOP al Coordinator; no activa; no ejecutada contra T1"
@@ -32,16 +34,16 @@ execution_context:
   f1_a4_status: "A-4 AGREED (blob d587403e, commit 0a61ee3a): Architect AGREED (R20261010T031016Z-cca9, 0 REQUIRED), Coordinator AGREED (coordinator-agreement-a4.md, fd864f9c), Owner SATISFIED; enmienda activa de I64-SCOPE-BRIDGE-01; verificador cf381ab9"
   max_attempts: 3
   persistent_next_action:
-    NEXT_ROLE: "Coordinator I-64 (emision del gate-contract de F1-T2-BRIDGE; AUTOMATION_PLAN 16.5)"
-    NEXT_ACTION: "resolver C-T2-01..C-T2-05 del paquete y emitir, corregir o rechazar el gate-contract de F1-T2-BRIDGE; con contrato y tope fijados, la sesion lanza la planificacion de solo lectura del Controller y se detiene en la aceptacion A1-A8 que el protocolo reserva al Coordinator"
-    TARGET_SHA: "la punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo (git log -1 -- docs/automation/state/I-64.yml); su padre es 8e6a1b4eb2114ad793b41816c55fe8a0fa9c5094"
+    NEXT_ROLE: "Sesion responsable (emision del contrato y planificacion de F1-T2-BRIDGE por orden del Coordinator)"
+    NEXT_ACTION: "emitir y validar gate-contract.json (rackcad-gate-contract/v1, ASCII) con AuthorityRevision = el commit que contiene este archivo y MainSha bb0d5522; una planificacion CONTROLLER_PLANNING valida (gpt-6-luna/high, solo lectura); nc4 y A1-A8 sin cortocircuito y sin commit; STOP en COORDINATOR_T2_ACCEPTANCE_REQUIRED o el fallo al Coordinator"
+    TARGET_SHA: "la punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo (git log -1 -- docs/automation/state/I-64.yml); su padre es 9ff0a287861e1740691e45253360538a7fc8c05a"
     GATE: F1 — Workspace Foundation
-    TASK: F1-T2-BRIDGE (sin emitir)
-    INPUTS_REQUIRED: "docs/initiatives/I-64-f1-t2-gate-contract-package.md; docs/automation/evidence/I-64-pilot/F1-T2-BRIDGE/contract-package/gate-contract.DRAFT-NOT-ISSUED.json; evidencia §39; Freeze V5 D-02..D-04 y §10; I-64-A-2.md e I-64-A-4.md"
-    EXPECTED_RESULT: "gate-contract de F1-T2-BRIDGE emitido (ASCII, rackcad-gate-contract/v1) con tope de invocaciones explicito, o una decision registrada que lo impida"
-    REMAINING_BUDGET: "F1-T1-MODEL sin presupuesto (agotado, sin reinicio); F1-T2-BRIDGE: tope de invocaciones no fijado; attempts de la unidad 3 de 3 (AttemptsRemaining 0)"
-    STOP_CONDITION: "sin tope de T2 (P-07 no evaluable); attempts >= max_attempts ante un REWORK (S-11); avance de origin/main antes de escribir (S-13); config.toml distinto de 73890CA3... (P-01); cambios de I-61 o I-62; reescribir el nc2 historico; declarar F1 PASS"
-    OWNER_REQUIRED_IF: "OWNER-RESERVED (alcance, diferir sistemas, retirar OV); aceptacion del ADR 0047; Owner Validation y smokes (Smoke-1 tras F1 PASS y RELEASE de I-52); cambio de config.toml (P-01); credenciales, compras o sondas con consumo no cubierto; AutoCAD manual o cambios de seguridad; cambio de max_attempts si su autoridad es del Owner"
+    TASK: F1-T2-BRIDGE (autorizada para planificacion; Worker no autorizado)
+    INPUTS_REQUIRED: "docs/automation/evidence/I-64-pilot/F1-T2-BRIDGE/coordinator-decision-gate-contract.md; docs/initiatives/I-64-f1-t2-gate-contract-package.md; borrador ASCII F1-T2-BRIDGE/contract-package/; evidencia §§39-40; I-64-A-2.md e I-64-A-4.md"
+    EXPECTED_RESULT: "delegation.json de F1-T2-BRIDGE con A1-A8 en pass y nc4 conforme, detenida en COORDINATOR_T2_ACCEPTANCE_REQUIRED; o el fallo registrado"
+    REMAINING_BUDGET: "F1-T2-BRIDGE: planificacion 1 valida (+2 por transporte), trabajo 1 (+2), verificacion 1 (+2); attempts 3 de 3 (AttemptsRemaining 0, sin correcciones); F1-T1-MODEL agotado sin reinicio"
+    STOP_CONDITION: "avance de origin/main antes de emitir (16.7); A1-A8 con fallo; P-01 (config.toml distinto de 73890CA3...); P-02, P-06, P-07; toda salida que exija correccion (S-11); invocar al Worker sin aceptacion del Coordinator"
+    OWNER_REQUIRED_IF: "OWNER-RESERVED (alcance, diferir sistemas, retirar OV); aceptacion del ADR 0047; Owner Validation y smokes (Smoke-1 tras F1 PASS y RELEASE de I-52); cambio de config.toml (P-01); credenciales, compras o sondas con consumo no cubierto; AutoCAD manual o cambios de seguridad"
   protocol_debt:
     - FINDING: "El Controller gpt-6-luna/high, pese a leer correctamente una delegacion con AllowedWriteScope que excluye el unico archivo modificado, puede emitir Scope=pass despues de que falle su operacion auxiliar de comparacion (nc2 R20261002T184050Z-8415; mismo patron en nc2 R20261002T151201Z-abb1)."
       OWNER: "protocolo/Controller del sistema de ejecucion (I-62 / deuda del protocolo); fuera del producto de I-64; no se corrige en el Workspace ni se modifica I-61 desde I-64"

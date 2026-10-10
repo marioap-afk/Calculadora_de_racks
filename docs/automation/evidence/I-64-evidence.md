@@ -2297,3 +2297,84 @@ la activa y A-1..A-3 son históricas.
 - `config.toml` en la línea base 73890CA3 (105 nombres, sin valores).
 - Procesos: sin participantes ni procesos no atribuibles.
 - HEAD = remoto = `8e6a1b4e` antes de este commit; `main` `bb0d5522`.
+
+## 40. F1-T2-BRIDGE — Decisión del Coordinator sobre el contrato de gate
+
+Sección nueva; las anteriores no se reescriben. Hechos de la sesión responsable, sin invocaciones de modelos.
+
+**Decisión** (transcripción literal en `docs/automation/evidence/I-64-pilot/F1-T2-BRIDGE/coordinator-decision-gate-contract.md`),
+recibida sobre `TARGET_SHA` `9ff0a287` con `origin/main` `bb0d5522`, ambos comprobados:
+- **F1-T1-MODEL:** aceptada como COMPLETE_UNDER_I64_SCOPE_BRIDGE. El nc2 histórico sigue en FAIL, la enmienda activa es A-4 y T1 no se
+  reabre.
+- **C-T2-01 — Presupuesto de T2:**
+  - planificación, trabajo y verificación: 1 salida válida cada una, más hasta 2 invocaciones adicionales solo por fallo de transporte o
+    INVALID_OUTPUT;
+  - CONTROL: nc1..nc4 e I64-SCOPE-BRIDGE-01 según README §10 y A-4;
+  - una segunda salida válida para mejorar o corregir la primera no está autorizada;
+  - P-07 se evalúa contra estos topes.
+- **C-T2-02 — `attempts`:** siguen `attempts` = 3 y `max_attempts` = 3.
+  - La primera delegación lleva `Attempt` 3, `AttemptsRemaining` 0 y `MaxReworkLoops` 3.
+  - **`CorrectionsAuthorized` = false.**
+  - Todo resultado válido que exija una corrección da STOP S-11. Ni reinicio, ni aumento de `max_attempts`, ni reutilización del
+    presupuesto de T1.
+- **C-T2-03 — Alcance:** `AllowedWriteScope` = `src/RackCad.Application/Workspace/`, `src/RackCad.Plugin/Workspace/` y
+  `tests/RackCad.Tests/Workspace/`.
+  - Los 5 archivos de producto de T1 quedan prohibidos y se enumeran en `ForbiddenWriteScope`; solo se crean archivos nuevos en
+    Application.
+  - Tocar uno de ellos es STOP C-04.
+  - El Coordinator declara la decisión NO material frente a D-02.
+- **C-T2-04 — INV-21 en T2:** se limita a que el puente no tenga ninguna autoridad de persistencia ni de escritura (authored, NOD,
+  XData, perfil o registro, estado persistente de Workspace, ninguna ruta de escritura expuesta).
+  - La regla del puerto `IWorkspaceHostPort` se verifica en T3.
+  - Crear un puerto prematuro está prohibido; si hiciera falta, STOP por alcance de T3.
+- **C-T2-05 — Revisiones de referencia:** `AuthorityRevision` = `BaseSha` inicial = el commit X que versiona esta decisión, con CI
+  exacta 4/4. `MainSha` = `bb0d5522`.
+- **Enrutamiento:**
+  - Controller `gpt-6-luna` × Codex CLI × `high`, solo lectura;
+  - Worker `claude-sonnet-5-5` × subagente × `high`;
+  - clase «Implementacion transversal a capas (corta)», Deep;
+  - `RoutingEnforcement` `required`.
+- **Cadena nueva:** `ChainBaseSha` = el primer `BaseSha`, `ChainRedSha` = null, `ChainRedFiles` = []. El RED es obligatorio,
+  conductual y compilable.
+- **STOP adicionales:**
+  - archivo fuente de T1;
+  - resultado que exija corrección o REWORK;
+  - ampliación de alcance;
+  - UI o host;
+  - `PluginInitializer` o comandos;
+  - `csproj` o `sln`;
+  - AutoCAD;
+  - avance de `main` con reconciliación semántica abierta.
+- **Autorización:** F1-T2-BRIDGE queda autorizada para PLANIFICACIÓN y no para el Worker. F1 no PASS. Smoke-1 no autorizado. Sin merge,
+  Candidato ni Owner Validation.
+
+**Hechos del repositorio medidos para la planificación** (solo lectura sobre `9ff0a287`). El Worker no tiene presupuesto de corrección,
+así que cualquiera de estos fallos llevaría a S-11:
+- **Guardas de T1** (`tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs`):
+  - recorren todo `src/RackCad.Application/Workspace/` (AllDirectories);
+  - el texto de código, sin comentarios, no puede contener `System.IO`, `File.`, `Directory.`, `StreamWriter`, `Microsoft.Win32`,
+    `Registry.`, `UserSettings`, `AtomicFile`, `Transaction`, `LockDocument`, `Database` como palabra, `Commit(` ni `Autodesk.`, ni
+    tampoco `System.Windows`, `RackCad.Plugin` ni `RackCad.UI`;
+  - ningún tipo del namespace exacto `RackCad.Application.Workspace` puede llamarse con `Tab`, `Subscription`, `Editor` o `Draft`, ni
+    tener nombre o miembro público con `ProjectSummary`, `Metric`, `Provider`, `TotalRacks`, `Aggregat` o `Bom` (sin distinguir
+    mayúsculas).
+- **`NamespaceFolderGuardTests`:**
+  - en producción, el namespace es la ruta de la carpeta y hay un solo namespace con bloque;
+  - en `tests/RackCad.Tests`, un único namespace raíz `RackCad.Tests`. Ya causó el REWORK de T1.
+- **Avisos y CI:** las pruebas llevan `#nullable enable` por archivo, porque CS8632 rompió T1. El job «Build Plugin without AutoCAD»
+  falla ante cualquier aviso nuevo.
+- **Referencias del proyecto de pruebas:** `tests/RackCad.Tests` no referencia el Plugin. El comportamiento con fuente simulada se
+  prueba sobre tipos nuevos de Application; el Plugin se comprueba con guardas de texto.
+- **Eventos en el Plugin:** el Plugin actual no tiene ninguna suscripción a eventos de AutoCAD.
+
+**Siguiente** (orden de la decisión; AUTOMATION_PLAN 16.4, pasos 1 a 3):
+1. Commit de esta sección, la decisión y el estado; push y CI exacta 4/4.
+2. Emitir y validar `gate-contract.json` con `AuthorityRevision` = ese commit.
+3. Una planificación válida del Controller, sin commit.
+4. nc4 y A1-A8 sin cortocircuito, sin commit.
+5. STOP en COORDINATOR_T2_ACCEPTANCE_REQUIRED, o el fallo, al Coordinator.
+
+**Relevos:**
+- Sin invocaciones.
+- `config.toml` en la línea base 73890CA3.
+- HEAD = remoto = `9ff0a287` antes de este commit (CI 38022131380 4/4); `main` `bb0d5522`.
