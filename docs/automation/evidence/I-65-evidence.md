@@ -83,3 +83,24 @@ FOUNDATIONS, `src/`, `tests/`, `assets/`, `eng/`, CI ni configuración. `automat
 
 Métricas: UNKNOWN (sin gates funcionales). Arquetipo inicial: NEW ARCHITECTURE (mandato; M-07 previsto). Conformidad: no aplica todavía.
 Owner Validation: por determinar; no aplica a G0. Tag de integración: no existe.
+
+## 9. Hechos posteriores al bootstrap (registrados en F0)
+
+- CI `push` del reclamo `32a8475689c9ef8a44837576f3c6f61abd34b07a`: corrida `38085815893`, **success 4/4** (Tests Domain+Application,
+  Build UI, UI Tests, Build Plugin without AutoCAD), `head_sha` exacto.
+- CI `push` del bootstrap `214c171dfa886acf1dd7aa461283b7e9a1d5158c`: corrida `38086020592`, **success 4/4**, `head_sha` exacto.
+- RELEASE de la ventana de `docs/ROADMAP.md` enviado tras el push del bootstrap a «I - 64» (2026-10-10T21:01:28Z), «I - 62» (21:01:30Z)
+  e «I - 52» (21:01:31Z). Ventana cerrada; I-65 no vuelve a escribir ROADMAP hasta el cierre.
+- `git merge-tree --write-tree` del árbol del bootstrap contra `origin/architecture/workspace-persistente-rackcad` (`d5bdcb7a`),
+  `origin/architecture/portabilidad-coordinador-principal` (`362bec12`) y `origin/feature/rackmirror-espejo-semantico` (`fb6b5648`):
+  sin conflicto en los tres (no acredita exclusividad).
+
+## 10. F0 — Discovery y Proposal V1
+
+- Discovery: [I-65-discovery.md](../../initiatives/I-65-discovery.md); Proposal: [I-65-proposal-v1.md](../../initiatives/I-65-proposal-v1.md);
+  paquete del Architect: [I-65-architect-package-v1.md](../../initiatives/I-65-architect-package-v1.md); sonda P1 (diseño, **no ejecutada**):
+  [ram-probe-p1.py](I-65-f0/ram-probe-p1.py).
+- Participantes de F0 (CD-I65-G0-08): cuatro subagentes de solo lectura con el modelo heredado (`claude-opus-5-5`): fuentes oficiales
+  web de Bentley; fuente estructural de RackCad sobre `bb0d5522`; «RAM Elements Python API User Manual.pdf» instalado; «OpenRE
+  Manual.pdf» instalado. Ninguno escribió en el repositorio ni ejecutó RAM Elements.
+- RAM Elements **no se ejecutó** (CD-I65-G0-06). Todas las afirmaciones sobre el entorno son de inspección de archivos y registro.

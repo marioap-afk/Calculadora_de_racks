@@ -3,13 +3,19 @@ automation_state:
   initiative: I-65
   branch: architecture/interop-analisis-estructural
   claim_id: 0b4aad79-068e-4a57-a2c2-dc8f23406778
-  current_phase: bootstrap-g0
+  current_phase: discovery-f0
   state: in-progress
   gate: F0
   attempts: 0
-  next_action: Discovery F0 (superficies reales de RAM Elements, fuente estructural de RackCad, referencia manual) y Proposal V1 con paquete para el Architect.
-  last_evidence_commit: null
+  next_action: Revisión del Architect de la Proposal V1 (ronda 1) y decisiones del Owner Q-O1..Q-O7; la sonda P1 solo con autorización del Owner; Freeze tras AGREED de Coordinator y Architect sobre la misma versión.
+  last_evidence_commit: 214c171dfa886acf1dd7aa461283b7e9a1d5158c
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-interop-analisis-estructural
+execution_chain:
+  gate: F0
+  next_role: Architect (ronda 1 sobre la Proposal V1)
+  implementation_authorization: NO
+  owner_decisions_open: [Q-O1 rebanada V1, Q-O2 perfil de material, Q-O3 supuestos de análisis, Q-O4 autorizar sonda P1, Q-O5 F6 análisis y resultados, Q-O6 ADR-0050, Q-O7 modelo manual de referencia]
+  not_authorized: [implementación, ejecutar RAM Elements, escribir en archivos de RAM del usuario, Freeze sin AGREED de Coordinator y Architect]
