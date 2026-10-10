@@ -3540,3 +3540,17 @@ solo desde artefactos custodiados.
   - el bloqueo B (mapa) se resuelve con B1, un repositorio nuevo; B2 no se recomienda y B3 queda excluida;
   - VERIFIED solo es posible con B1 + A1 o B1 + A3-i;
   - Codex sin actualización a las 01:16Z.
+
+## 124. Suspensión controlada de I-62 (decisiones §67)
+
+- **I-62 SUSPENDIDA** con su estado conservado: A4-1 NOT_DEMONSTRATED; Controller NOT_ELIGIBLE; MAP_INVALID del fixture actual; FX-02 / C-24
+  UNVERIFIED; F6 GATE PASS pendiente. Freeze y A-1..A-4 intactos.
+- **B1** custodiada como opción viable (`I-62-F6/MAP-INVALID/`), sin crear repositorio, unidad ni sesión.
+- **N9 = variante T16 y N10 = parámetros cerrados**, registrados (§67, punto 5) y condicionados a su resellado y a su precondición.
+- El paquete de `claude-cli` se conserva sin ejecutar. Los 12 controles de F7 quedan como preparación.
+- **Handoff:** [I-62-handoff-suspension.md](../../initiatives/I-62-handoff-suspension.md). Incluye:
+  - rama y SHA, gates completados y pilotos;
+  - los dos bloqueos de FX-02;
+  - obligaciones pendientes, presupuestos y decisiones vigentes del Owner;
+  - las próximas autoridades, las rutas, la acción de recuperación y la prohibición de reanudar implícitamente.
+- La sesión de trabajo sobre I-62 termina tras la CI del commit del handoff. I-64 se reanuda en su propia rama y sesión.
