@@ -21,8 +21,9 @@ import sys
 SCHEMA = 'rackcad-i64-scope-bridge/v1'
 DELEGATION_SCHEMA = 'rackcad-delegation/v1'
 HANDOFF_SCHEMA = 'rackcad-worker-handoff/v1'
-SHA_RE = re.compile(r'^[0-9a-f]{40}$')
-RUNID_RE = re.compile(r'^R[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$')
+# Whole-string matches only (fullmatch): with match(), a '$' anchor would also accept a trailing newline (I64-A2-RUNID-FAIL-OPEN).
+SHA_RE = re.compile(r'[0-9a-f]{40}')
+RUNID_RE = re.compile(r'R[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}')
 GIT_TIMEOUT_SECONDS = 120
 EXIT_PASS, EXIT_FAIL, EXIT_USAGE = 0, 1, 2
 
@@ -131,7 +132,7 @@ def validate_scope_list(report, name, value, allow_empty):
 
 def verify(args, report):
     for name, value in (('ExpectedBase', args.expected_base), ('ExpectedCurrent', args.expected_current)):
-        if not report.check(f'{name}.Format', bool(SHA_RE.match(value or '')), f'{name.upper()}_INVALID_SHA',
+        if not report.check(f'{name}.Format', bool(SHA_RE.fullmatch(value or '')), f'{name.upper()}_INVALID_SHA',
                             f'{name} must be 40 lowercase hex characters'):
             return
     report.fields['BaseSha'] = args.expected_base
@@ -159,7 +160,7 @@ def verify(args, report):
     run_id = delegation.get('RunId')
     report.fields['DelegationRunId'] = run_id if isinstance(run_id, str) else None
     ok = True
-    ok &= report.check('Delegation.RunId', isinstance(run_id, str) and bool(RUNID_RE.match(run_id)),
+    ok &= report.check('Delegation.RunId', isinstance(run_id, str) and bool(RUNID_RE.fullmatch(run_id)),
                        'DELEGATION_RUNID_INVALID', 'delegation RunId missing or malformed')
     ok &= report.check('Identity.DelegationRunId', isinstance(run_id, str) and handoff.get('DelegationRunId') == run_id,
                        'DELEGATION_RUNID_MISMATCH', 'handoff.DelegationRunId differs from delegation.RunId')

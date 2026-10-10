@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rackcad-i64-cell-probe/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "Schema": {
+      "type": "string",
+      "enum": [
+        "rackcad-i64-cell-probe/v1"
+      ]
+    },
+    "RunId": {
+      "type": "string",
+      "enum": [
+        "R20261010T024641Z-ed2c"
+      ]
+    },
+    "HeadSha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "OriginMainSha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "AmendmentBlob": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "CommandsRun": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "Schema",
+    "RunId",
+    "HeadSha",
+    "OriginMainSha",
+    "AmendmentBlob",
+    "CommandsRun"
+  ]
+}
