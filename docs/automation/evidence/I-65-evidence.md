@@ -136,3 +136,26 @@ Owner Validation: por determinar; no aplica a G0. Tag de integración: no existe
   licencia**, sujeta solo a Q-O4 ([architect-r3b-closure.md](I-65-f0/architect-r3b-closure.md)). Único `REQUIRED` abierto: A65-V1-01
   (`OPEN — BLOCKED BY P1`). La revisión de la V3 será de confirmación de valores medidos y respuestas del Owner, salvo STOP o resultado
   Z arriba.
+
+## 14. P1 — preflight y STOP por condición del Owner (2026-10-10)
+
+- Decisión del Owner recibida a las 22:48:00Z: [`I-65-owner-decision-p1.original.txt`](../decisions/I-65-owner-decision-p1.original.txt).
+- Preflight (CD-I65-P1-01), medido:
+
+| Comprobación | Resultado |
+|---|---|
+| Rama | `origin/architecture/interop-analisis-estructural` = local = `048a4b07b34e5ad5a4d51df2b5e6b8c60d07b47c`; árbol limpio; `origin/main` sin cambio (`bb0d5522`); CI de `048a4b07`, `acaefc1d` y `9bfd8df5` success |
+| Sonda aprobada | blob `671612f6790bb87e1453a07c4c48e201ee8ba763` en `acaefc1d` y en `048a4b07` (idénticos); 16 198 bytes; SHA-256 `743fcf96f756e4deb40349e2d5d6ad7674e30734ce916d6a929fc5fd15e6a6b6`; `acaefc1d..048a4b07` no toca la sonda |
+| Seguridad (Architect) | puerta antes de la primera escritura, sin `SystemExit`, escrituras exclusivas en `OUT_DIR`: vigentes. **Conflicto:** el paso S9 (`m.save_as`) guarda el modelo |
+| RAM Elements | «RAM Elements 2026» `26.00.01.015` (registro y `HKLM\SOFTWARE\Bentley\RAMElements`); `RAMElements.exe` `26.00.01.15`, SHA-256 `7DCB4855…7970`; `ramelements` `0.1.0`, `__init__.py` SHA-256 `FC5946D5…AACE`; sin cambios respecto de Discovery |
+| Modelos del usuario | RAM Elements **no** está en ejecución: una corrida abriría una instancia nueva sin modelos del usuario |
+| Autoguardado | sin configuración de autoguardado visible en la configuración de usuario de RAM; `DataRecovery.log` solo registra el rescate de datos de versión previa al primer arranque |
+| Computer Use | herramientas disponibles; «RAM Elements 2026» instalada como aplicación; acceso todavía no solicitado |
+
+- **STOP (CD-I65-P1-02):** no se ejecutó P1. Se prepara P1 v3.2 (v3.1 sin S9) para revisión por diff del Architect y autorización del
+  Owner. **P1 NO se ha ejecutado**: todo lo anterior es inspección de archivos, registro y Git.
+- Hallazgo lateral: la configuración de usuario de RAM (`%APPDATA%\Bentley\Engineering\RAM Elements\26.0.1\RE\Config.ini`,
+  `[DlgSectionsDB] frameSeccionesDataBaseName=Montilla`) apunta a una base de secciones personalizada «Montilla» que no se encontró en
+  las carpetas de RAM, ProgramData, AppData ni Documentos: UNKNOWN; puede contener secciones de usuario relevantes para Q-O2. Par de
+  unidades de visualización por defecto del usuario: `CurrentUnit=4` (`KIP_FT`).
+

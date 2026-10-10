@@ -1,4 +1,4 @@
-# I-65 F0 — Sonda P1 v3.1 del entorno instalado de RAM Elements (instrumento de medicion, no producto).
+# I-65 F0 — Sonda P1 v3.2 del entorno instalado de RAM Elements (instrumento de medicion, no producto).
 #
 # Ejecutar SOLO con autorizacion del Owner (Q-O4), dentro de RAM Elements 2026, sobre un MODELO NUEVO Y VACIO:
 #   File > New  ->  Python Console  ->  Run File...  (este archivo)
@@ -7,14 +7,15 @@
 # PUERTA (A65-V1-02, A65-V2-01d): antes de la PRIMERA escritura la sonda aborta sin tocar nada si el modelo tiene nudos o miembros, si
 # OUT_DIR no es absoluta, no existe o sigue siendo el marcador, o si OUT_DIR ya contiene artefactos de una corrida anterior. El numero de
 # casos de carga de File > New se REGISTRA (es lo que esta sonda mide).
-# Al terminar, el modelo se descarta sin guardar (salvo la copia desechable del paso S9, dentro de OUT_DIR).
+# Al terminar, el modelo se descarta sin guardar. v3.2 retira el paso S9 (save_as): la sonda NO guarda el modelo (condicion del Owner,
+# "No guardar automaticamente el modelo"); la extension y el efecto de save_as quedan UNKNOWN (no los usa V1).
 # Orden (A65-V1-03a): los analisis N1/N2 corren primero, con apoyos completos y sin nudos coincidentes; cada paso usa su propia region.
 
 import json
 import sys
 
 OUT_DIR = r"__OUT_DIR__"
-REPORT = {"probe": "I-65-F0-P1-v3.1", "out_dir": OUT_DIR, "gate": None, "steps": {}}
+REPORT = {"probe": "I-65-F0-P1-v3.2", "out_dir": OUT_DIR, "gate": None, "steps": {}}
 
 
 STEPS = []
@@ -298,15 +299,6 @@ def _():
     return {"written": {"node_a": [6123.456789012, 12.345678901, -7.654321098], "rotation": 12.3456,
                         "load": [-1234.56789, 37.123456]},
             "read_LB_IN": snap_lb_in, "read_N_MM": snap_n_mm, "read_back_LB_IN": snap_back}
-
-
-@step("S9_disposable_save_as")
-def _():
-    target = OUT_DIR + "\\probe-model.retx"
-    before = set(os.listdir(OUT_DIR))
-    m.save_as(target)
-    return {"requested_path": target, "new_files": sorted(set(os.listdir(OUT_DIR)) - before), "title_after": m.title}
-
 
 
 if _reasons:
