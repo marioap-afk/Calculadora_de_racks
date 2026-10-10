@@ -1,0 +1,125 @@
+{
+  "Schema": "rackcad-i64-architect-review/v1",
+  "RunId": "R20261010T025754Z-77a6",
+  "Mode": "SEPARATE SESSION",
+  "ReviewSubject": {
+    "Commit": "d71364cf4d1409dc56490a31a7a94dfd230f613a",
+    "AmendmentId": "A-3",
+    "Freeze": {
+      "Path": "docs/initiatives/I-64-proposal-v5.md",
+      "Blob": "dc1924ff5a73a4e529fbc5f995621d29351a091b"
+    },
+    "A1": {
+      "Path": "docs/initiatives/I-64-A-1.md",
+      "Blob": "fb6a49c2e8e96689f82a2ad01fda7994fc2397b0"
+    },
+    "Amendment": {
+      "Path": "docs/initiatives/I-64-A-3.md",
+      "Blob": "e14935bc7cafc78887eea977251ca21c492e1fe0"
+    },
+    "Verifier": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py",
+      "Blob": "8972e374acf18c8b5c1c77dd7d8992432197be99"
+    },
+    "SelfTestResult": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/selftest-result-a3.json",
+      "Blob": "62b843e7ebd1894eab33bc77dcc04f1746a0a8cf"
+    },
+    "OwnerMandate": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/owner-mandate-emergency.md",
+      "Blob": "4271dd7e128b001e5aaf8d1bbedcafbfc40faadd"
+    }
+  },
+  "PriorRequiredDisposition": [
+    {
+      "Id": "I64-A2-RUNID-FAIL-OPEN",
+      "Status": "CLOSED",
+      "Evidence": "Verifier:24-26,135,163 uses unanchored patterns with fullmatch for both expected SHAs and delegation.RunId. A-3:75-90 specifies the correction and regression. The committed regression-demo-a3-old-verifier.json records T24 PASS/exit 0 against blob 093a570f; selftest-result-a3.json records T24 FAIL/exit 1 with DELEGATION_RUNID_INVALID against the authorized verifier SHA-256 ab8930540c31b1f0107709cd8710a41ae1b0912b18a94327d026171b411e62ba. T25 additionally protects expected-SHA formatting."
+    }
+  ],
+  "Answers": {
+    "Q01": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-3:114,124 retains M-04 YES and explicitly tightens verifier failure behavior. A-2 changes satisfaction of the mandatory nc2 obligation. INITIATIVE_LIFECYCLE Sec.3 M-04 includes changes to failure semantics without restricting them to product behavior; Sec.6 requires Architect + Coordinator."
+    },
+    "Q02": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "The literal owner-mandate-emergency.md clauses 3-6 authorize an independently verifiable substitute applicable ONLY to I-64, require competent authorities before use, and prohibit changes to I-61 normative text, I-62 and frozen product scope. NIGHT RUN expressly permits append-only corrections of deterministic verifier defects followed by a new independent Architect review."
+    },
+    "Q03": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-3:95-98 adopts A-2:70-71 and A-1 Sec.3. Verifier:114-115,205-231 obtains Git paths and applies exact-file or slash-terminated-prefix coverage, rejecting uncovered paths and forbidden intersections. These preserve both predicates of AUTOMATION_PLAN Sec.16.9 check 7 and the coverage definition in Sec.16.5. The separate parsing defect is reported under Q10."
+    },
+    "Q04": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "For Scope itself, verifier:224-231 computes OutsideAllowed and ForbiddenHits directly and rejects either violation. A-2:127 requires the adversarial failure to be exclusively OUTSIDE_ALLOWED_WRITE_SCOPE with exactly the excluded file identified. This preserves the substance of README Sec.10 nc2; the non-Scope parsing guarantee remains defective as described under Q10."
+    },
+    "Q05": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-3:97 preserves historical nc2 FAIL; A-2:77-91 distinguishes substitute evidence from the old execution result. The historical oracle-result.json records OracleRelative=false and CONTROL NOT PASSED. coordinator-protocol-stop-review.md expressly allows alternative B, a new authoritative replacement applicable to I-64. The reviewed delta does not modify historical nc2 evidence."
+    },
+    "Q06": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-3 declares Applies-to I-64 and adopts A-2's unit-only conditions and escalation rule. The tool is pinned by blob, evidence is unit-local, other protocol obligations remain unchanged, and no other initiative receives substitution authority."
+    },
+    "Q07": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Freeze Sec.13 retains I-61 until I-62 integration. A-2:97-98 and the Owner mandate explicitly authorize the I-64 exception independently of I-62 while prohibiting I-62 changes and consumption of unmerged implementation. The verifier uses Python standard library and Git."
+    },
+    "Q08": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-3:111-118 correctly classifies its delta against INITIATIVE_LIFECYCLE Sec.3: no transfer of rule ownership, product persistence change, new product behavior, cross-system contract change, reusable extension, transversal framework or accepted-ADR modification. The JSON remains unit evidence. This classification does not negate the product materiality already recorded in the Freeze."
+    },
+    "Q09": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "As specified obligations, A-2:80-89,126-129 requires accepted real inputs, unchanged handoff and SHAs, exact verifier identity, REAL PASS/exit 0, and ADVERSARIAL nonzero FAIL exclusively for OUTSIDE_ALLOWED_WRITE_SCOPE with exactly the excluded file. Other outcomes cannot satisfy the substitute control. These criteria are sufficient conditional on the implementation satisfying the adopted fail-closed parsing obligation; Q10 identifies a remaining defect."
+    },
+    "Q10": {
+      "Answer": "YES",
+      "Conforming": false,
+      "Evidence": "Verifier:90 calls json.loads with duplicate-key rejection but without rejecting non-JSON constants. Python's default decoder accepts NaN, Infinity and -Infinity. Such a token in an uninspected field, for example Attempt, survives parsing; verifier:153-178 checks only selected fields and never rejects that value. With otherwise valid checked fields and an in-scope synthetic diff, the code can reach PASS/exit 0 despite malformed JSON evidence. None of the 25 self-test cases covers this path. This is a static counterexample, not an executed measurement."
+    },
+    "Q11": {
+      "Answer": "NO",
+      "Conforming": true,
+      "Evidence": "A-3 adopts the explicit I-64-only exception and does not grant a global actor or method substitution. The diff from bb0d5522 to the reviewed commit is empty for AUTOMATION_PLAN, agent-execution, INITIATIVE_LIFECYCLE, WORKFLOW and AGENTS. The Q10 correction can remain entirely unit-local."
+    },
+    "Q12": {
+      "Answer": "NO",
+      "Conforming": true,
+      "Evidence": "The requested 819955d6..bb0d5522 diff --stat is empty for every listed authority path. The requested log records I-63 integration rather than an execution-protocol replacement. Phase B explicitly corrects Phase A's authority classification; NIGHT RUN supplies the literal mandate and authorizes correcting A-n reviews. Historical nc2 and exhausted budgets remain preserved, and no historical evidence is transferred to a rebased SHA."
+    }
+  },
+  "Findings": [
+    {
+      "Id": "I64-A3-JSON-CONSTANT-FAIL-OPEN",
+      "Severity": "REQUIRED",
+      "Question": "Q10",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py:90",
+      "Defect": "load_json accepts NaN, Infinity and -Infinity through json.loads' default parse_constant behavior, although these tokens are not JSON values. A token in a field not subsequently inspected, such as Attempt, does not cause any failed check. Preserving all inspected identity and scope fields therefore leaves a malformed evidence document able to reach PASS and exit 0 for an otherwise valid synthetic delivery. Duplicate-key rejection and strict UTF-8 decoding do not reject these constants. The committed 25-case self-test has no regression for this path.",
+      "Authority": "A-3:95,98 adopts A-2 condition 8 at line 87 and A-1 Sec.3 at lines 97-105: parsing/evidence ambiguity must fail closed and inputs must be JSON. Owner mandate clause 4 requires unambiguous evidence and fail-closed handling. INITIATIVE_LIFECYCLE Sec.5 makes a defective frozen guarantee REQUIRED.",
+      "Correction": "Pass a parse_constant callback that raises ValueError for NaN, Infinity and -Infinity. Add synthetic behavioral regressions for both delegation and handoff, placing the tokens in otherwise uninspected fields and requiring DELEGATION_UNREADABLE or HANDOFF_UNREADABLE with nonzero exit. Demonstrate those regressions failing against the authorized A-3 verifier and passing after correction. Preserve prior A-n and evidence; authorize the corrected blob and updated self-test through the next append-only A-n and review that exact object before use, as A-2:115-116 requires.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    }
+  ],
+  "RequiredCount": 1,
+  "OptionalCount": 0,
+  "Verdict": "CHANGES REQUIRED",
+  "Limitations": [
+    "Static review of pinned Git artifacts only. Neither verifier nor self-test was executed; committed results were inspected without independently reproducing them.",
+    "The new JSON-constant finding follows from decoder defaults and subsequent code paths; no runtime demonstration was performed.",
+    "No concrete T1 path was evaluated for AllowedWriteScope membership. Historical outcomes were read from versioned records.",
+    "No live remote state, CI, runtime eligibility, build, test suite or Owner validation was independently measured.",
+    "Initial shell calls emitted a profile-loading error. The affected Git reads and log were repeated successfully with login=false."
+  ]
+}
