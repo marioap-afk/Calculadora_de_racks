@@ -1,0 +1,579 @@
+{
+  "Schema": "rackcad-gate-contract/v1",
+  "Unit": "I-64",
+  "Gate": "F1",
+  "TaskId": "F1-T3B-HOST-UI",
+  "Objective": "Implement F1-T3B-HOST-UI: the visual host of the F1 Workspace panel over the\nclosed T3A host foundation, without running AutoCAD. Required behavior includes:\n\n* exactly one PaletteSet per process, owned by the new exact file\nsrc/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs, created lazily from the\nRACKPANEL path, without toolID and without Load/Save handlers, close = hide,\npalette title \"RackCad\";\n* AddVisual of exactly one RackCad.UI root UserControl (new files in\nsrc/RackCad.UI/Workspace/) labelled \"Workspace\", whose view-model is fed only\nby the injected IWorkspaceHostPort and host-neutral delegates;\n* RACKPANEL (minimum delta of WorkspacePanelCommand.cs): obtain the existing\nWorkspaceController, call OpenPanel(), create/obtain the single\nWorkspacePaletteHost and show the palette;\n* event-driven refresh, no timer and no polling: AutoCadEventBridge raises an\ninternal in-memory ActiveSessionChanged from its existing DocumentActivated\nhandler (and DocumentToBeDestroyed when the active session changes);\nWorkspaceController relays it (RefreshPanel only while the panel is visible)\nand exposes StateChanged after drains and panel transitions; the palette host\npulls GetSnapshot / GetMeasurementReport only on StateChanged or explicit UI\ninteraction;\n* presentation of NotStarted, NoDocument (empty state), Ready and Degraded,\naction availability and block reason, PICKFIRST notice, the five selection\ncontexts and the in-memory instrumentation, with the instrumentation toggle\ninjected as a host-neutral delegate;\n* focus through public host APIs only (PaletteSet.KeepFocus or equivalent);\ncontainment of every panel-originated exception with a panel Error state;\n* local merge of Themes/AppStyles.xaml in the root control;\n* exact guard refinements G1/G2/G3 in WorkspaceHostSourceGuardTests.cs.\n\nNo navigation, tabs, drafts, authored writes, inventory, persistence,\nAutodesk.AutoCAD.Internal, timers or AutoCAD execution. Smoke-1 is separate.\n\nT3B is a new chain.\nTherefore:\nChainBaseSha = first T3B BaseSha\nChainRedSha = null\nChainRedFiles = []\nA real RED is mandatory in both required test projects.\nRED must be behavioral and compilable and fail by assertion.\nNo artificial failure.\nGREEN must not modify the RED test files after the RED commit contrary to\n16.8.",
+  "AuthorityRevision": "c7f389cbb2eff4be42f861d8114adc2af753a1c9",
+  "MainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "Authorities": [
+    {
+      "Path": "docs/initiatives/I-64-proposal-v5.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-discovery.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-workspace-persistente-rackcad.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-A-2.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-A-4.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-A-5.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-A-6.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-evidence.md",
+      "Section": "## 18. Consensus Freeze (I64-CONSENSUS-V5-01) y cierre de F0",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-evidence.md",
+      "Section": "## 49. F1-T3-HOST - Decision del Coordinator: descomposicion en F1-T3A-HOST-CORE y F1-T3B-HOST-UI",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-evidence.md",
+      "Section": "## 50. F1-T3A-HOST-CORE - Contrato y planificacion, aceptacion, STOP previo al Worker y correccion de alcance",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-evidence.md",
+      "Section": "## 51. F1-T3A-HOST-CORE - Worker, verificacion, controles, puentes y cierre documental",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-evidence.md",
+      "Section": "## 52. F1-T3A-HOST-CORE - Revision del cierre por el Coordinator: PASS; correccion documental del estado",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-evidence.md",
+      "Section": "## 53. F1-T3B-HOST-UI - Inspeccion de T3A, enrutamiento y paquete del contrato de gate (NOT EMITTED)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-evidence.md",
+      "Section": "## 54. F1-T3B-HOST-UI - Decision del Coordinator sobre el contrato (AUTHORIZED)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/state/I-64.yml",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-f1-gate-contract-proposal.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F1-T3A-HOST-CORE/coordinator-decision-t3-decomposition.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F1-T3A-HOST-CORE/coordinator-scope-correction.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F1-T3A-HOST-CORE/coordinator-close-review.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F1-T3A-HOST-CORE/task-close-package.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/coordinator-decision-t3b-contract.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/adr/0047-workspace-persistente-modeless-rackcad.md",
+      "Section": "documento completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "AGENTS.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/WORKFLOW.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "## 16. Ejecucion delegada bajo orden del Coordinator",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/model-catalog.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0006-autocad-solo-en-plugin.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0019-shell-visual-de-editores-por-composicion.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0029-contrato-funcional-comun-de-ventanas-wpf.md",
+      "Section": "documento completo",
+      "Class": "EXTERNAL"
+    }
+  ],
+  "AllowedWriteScope": [
+    "src/RackCad.UI/Workspace/",
+    "tests/RackCad.UI.Tests/Workspace/",
+    "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs",
+    "src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+    "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs"
+  ],
+  "ForbiddenWriteScope": [
+    "docs/",
+    ".github/",
+    "assets/",
+    "eng/",
+    "deploy/",
+    "tools/",
+    "global.json",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "RackCad.sln",
+    "src/RackCad.Domain/",
+    "src/RackCad.UI/CatalogOption.cs",
+    "src/RackCad.UI/Controls/",
+    "src/RackCad.UI/Editor/",
+    "src/RackCad.UI/EnumDisplayConverter.cs",
+    "src/RackCad.UI/MainMenuAction.cs",
+    "src/RackCad.UI/ObservableObject.cs",
+    "src/RackCad.UI/Preview/",
+    "src/RackCad.UI/PreviewCanvasPainter.cs",
+    "src/RackCad.UI/ProjectVariableRepairText.cs",
+    "src/RackCad.UI/RackBomWindow.xaml",
+    "src/RackCad.UI/RackBomWindow.xaml.cs",
+    "src/RackCad.UI/RackCad.UI.csproj",
+    "src/RackCad.UI/RackCommandHelpWindow.cs",
+    "src/RackCad.UI/RackCommandReference.cs",
+    "src/RackCad.UI/RackConsolidatedBomWindow.xaml",
+    "src/RackCad.UI/RackConsolidatedBomWindow.xaml.cs",
+    "src/RackCad.UI/RackCustomPropertiesWindow.xaml",
+    "src/RackCad.UI/RackCustomPropertiesWindow.xaml.cs",
+    "src/RackCad.UI/RackDesignLibraryWindow.xaml",
+    "src/RackCad.UI/RackDesignLibraryWindow.xaml.cs",
+    "src/RackCad.UI/RackFrames/",
+    "src/RackCad.UI/RackListRow.cs",
+    "src/RackCad.UI/RackListWindow.xaml",
+    "src/RackCad.UI/RackListWindow.xaml.cs",
+    "src/RackCad.UI/RackMainMenuWindow.xaml",
+    "src/RackCad.UI/RackMainMenuWindow.xaml.cs",
+    "src/RackCad.UI/RackProjectVariablesWindow.xaml",
+    "src/RackCad.UI/RackProjectVariablesWindow.xaml.cs",
+    "src/RackCad.UI/RackWarehouseFillWindow.cs",
+    "src/RackCad.UI/RackWarehouseLayoutWindow.cs",
+    "src/RackCad.UI/SafetyDefensaGridWindow.cs",
+    "src/RackCad.UI/SafetyDefenseFace.cs",
+    "src/RackCad.UI/SafetyDesviadorGridWindow.cs",
+    "src/RackCad.UI/SafetyGuiaEntradaGridWindow.cs",
+    "src/RackCad.UI/SafetyParrillaGridWindow.cs",
+    "src/RackCad.UI/SafetyTopeGridWindow.cs",
+    "src/RackCad.UI/SelectiveSafetyWindow.cs",
+    "src/RackCad.UI/Shell/",
+    "src/RackCad.UI/StructuralSections/",
+    "src/RackCad.UI/Systems/",
+    "src/RackCad.UI/Themes/",
+    "src/RackCad.UI/UiSupport.cs",
+    "src/RackCad.UI/Views/",
+    "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+    "tests/RackCad.UI.Tests/StaTestRunner.cs",
+    "tests/RackCad.UI.Tests/WindowCensusGuardTests.cs",
+    "tests/RackCad.UI.Tests/UiSystemBoundaryGuardTests.cs",
+    "tests/RackCad.UI.Tests/CustomPropertiesHelpCensusTests.cs",
+    "src/RackCad.Application/RackCad.Application.csproj",
+    "src/RackCad.Application/BlockNaming.cs",
+    "src/RackCad.Application/Bom/",
+    "src/RackCad.Application/Catalogs/",
+    "src/RackCad.Application/ComputedParameters/",
+    "src/RackCad.Application/CustomProperties/",
+    "src/RackCad.Application/Diagnostics/",
+    "src/RackCad.Application/Drawing/",
+    "src/RackCad.Application/Expressions/",
+    "src/RackCad.Application/Formatting/",
+    "src/RackCad.Application/Geometry/",
+    "src/RackCad.Application/Layout/",
+    "src/RackCad.Application/Persistence/",
+    "src/RackCad.Application/ProjectVariables/",
+    "src/RackCad.Application/RackFrames/",
+    "src/RackCad.Application/Settings/",
+    "src/RackCad.Application/StructuralSections/",
+    "src/RackCad.Application/Systems/",
+    "src/RackCad.Application/Units/",
+    "src/RackCad.Application/Views/",
+    "src/RackCad.Application/Workspace/",
+    "src/RackCad.Plugin/CustomPropertiesData.cs",
+    "src/RackCad.Plugin/CustomPropertiesExecutor.cs",
+    "src/RackCad.Plugin/InDocumentTransaction.cs",
+    "src/RackCad.Plugin/LayerHelper.cs",
+    "src/RackCad.Plugin/PluginInitializer.cs",
+    "src/RackCad.Plugin/ProjectVariableMutationExecutor.cs",
+    "src/RackCad.Plugin/ProjectVariablesData.cs",
+    "src/RackCad.Plugin/ProjectVariablesRegistry.cs",
+    "src/RackCad.Plugin/RackAyudaCommands.cs",
+    "src/RackCad.Plugin/RackBlockFinder.cs",
+    "src/RackCad.Plugin/RackCabeceraCommands.cs",
+    "src/RackCad.Plugin/RackCad.Plugin.csproj",
+    "src/RackCad.Plugin/RackCamaCommands.cs",
+    "src/RackCad.Plugin/RackCantileverCommands.cs",
+    "src/RackCad.Plugin/RackCatalogLoader.cs",
+    "src/RackCad.Plugin/RackCloner.cs",
+    "src/RackCad.Plugin/RackCommandSupport.cs",
+    "src/RackCad.Plugin/RackDinamicoCommands.cs",
+    "src/RackCad.Plugin/RackDuplicarCommands.cs",
+    "src/RackCad.Plugin/RackEnvelopeRestamp.cs",
+    "src/RackCad.Plugin/RackInventarioCommands.BomTotal.cs",
+    "src/RackCad.Plugin/RackInventarioCommands.cs",
+    "src/RackCad.Plugin/RackLayoutCommands.Fill.cs",
+    "src/RackCad.Plugin/RackLayoutCommands.cs",
+    "src/RackCad.Plugin/RackMenuCommands.cs",
+    "src/RackCad.Plugin/RackPropiedadesCommands.cs",
+    "src/RackCad.Plugin/RackProyectarCommands.cs",
+    "src/RackCad.Plugin/RackPushBackCommands.cs",
+    "src/RackCad.Plugin/RackSeccionCommands.cs",
+    "src/RackCad.Plugin/RackSelectivoCommands.cs",
+    "src/RackCad.Plugin/RackSelectivoInsertIntegration.cs",
+    "src/RackCad.Plugin/RackUnitsGuard.cs",
+    "src/RackCad.Plugin/RackVariablesCommands.cs",
+    "src/RackCad.Plugin/StructuralSectionCatalogAccess.cs",
+    "src/RackCad.Plugin/StructuralSectionCommandFlow.cs",
+    "src/RackCad.Plugin/Drawing/",
+    "src/RackCad.Plugin/KindHandlers/",
+    "src/RackCad.Plugin/Systems/",
+    "src/RackCad.Plugin/Views/",
+    "src/RackCad.Plugin/Workspace/WorkspaceHostPort.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceSelectionReader.cs",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "tests/RackCad.Tests/NamespaceFolderGuardTests.cs",
+    "tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs",
+    "tests/RackCad.Tests/SelectiveEditorOpenTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeDegradedModeTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeFacadeSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeHintAndDrainTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeReconciliationTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeSubscriptionLifecycleTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeTestSupport.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHintDrainTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostAuthorizationTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostDrainTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostLifecycleTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostPolicyTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostPortGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostSourceSupport.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostTestSupport.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceInstrumentationTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceSelectionContextTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceSelectionMappingTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceSessionTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs"
+  ],
+  "Invariants": [
+    "INV-F1-T3B-01 (D-01, P-01, D-02): un unico PaletteSet por proceso, construido solo en src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs (archivo nuevo exacto) y de forma perezosa con WorkspaceLazyInstance en la ruta de RACKPANEL; nada se crea al cargar el plugin (PluginInitializer.cs intacto, sin constructor estatico ni ModuleInitializer); construido sin toolID (ningun Guid) y sin manejadores Load ni Save; titulo \"RackCad\"; acoplable y flotante; cerrar = ocultar; RACKPANEL repetido no crea una segunda paleta ni un segundo control raiz; la paleta vive hasta que AutoCAD termina (sin liberacion en Terminate()).",
+    "INV-F1-T3B-02 (D-01, D-02): AddVisual exactamente una vez con exactamente un control raiz UserControl de RackCad.UI (archivo nuevo en src/RackCad.UI/Workspace/, namespace RackCad.UI.Workspace) rotulado \"Workspace\"; el Plugin crea la raiz e inyecta IWorkspaceHostPort (WorkspaceController.Port) y delegados neutrales (sin tipos de AutoCAD ni del Plugin) para el interruptor de instrumentacion y, solo si hace falta, callbacks puramente visuales; la raiz y su view-model no obtienen servicios de host de forma estatica.",
+    "INV-F1-T3B-03 (D-01, decision del Coordinator; delta minimo de WorkspacePanelCommand.cs): RACKPANEL sigue siendo el unico comando, exactamente en ese archivo, con un unico [CommandMethod(\"RACKPANEL\")] y sin alias; obtiene el WorkspaceController existente, llama a OpenPanel(), crea u obtiene el unico WorkspacePaletteHost y muestra la paleta; ninguna logica de PaletteSet en el comando (sin PaletteSet, AddVisual, System.Windows, RackCad.UI ni Autodesk.AutoCAD.Windows en ese archivo); el mensaje de la linea de comandos ya no dice que la interfaz no se muestra; catch (System.Exception) con RackCommandSupport.Report; los demas comandos no cambian; los censos de comandos (38) y de ayuda no cambian.",
+    "INV-F1-T3B-04 (D-03, P-02, INV-33, decision del Coordinator; delta exacto de AutoCadEventBridge.cs): una unica notificacion en memoria ActiveSessionChanged (Action sin argumentos, sin tipos de AutoCAD), declarada internal para que la superficie publica del puente que fija WorkspaceBridgeFacadeSourceGuardTests no cambie; solo la disparan, dentro del mismo Contain(...) y despues de actualizar el nucleo, el manejador existente de DocumentActivated (tras _core.OnDocumentActivated) y el de DocumentToBeDestroyed (tras _core.OnDocumentToBeDestroyed y solo si _core.ActiveSession cambio); Start() no la dispara; ningun += ni -= nuevo (16 y 16), ninguna linea handler = ( nueva (16), ningun cambio en Hook, OnIdle, Dispose, BeginDocumentClose ni en las fachadas; EventBridgeCore.cs no cambia y OnDocumentActivated no encola reconciliacion. Si la notificacion tuviera que ser publica: STOP al Coordinator.",
+    "INV-F1-T3B-05 (decision del Coordinator; delta exacto de WorkspaceController.cs): el controlador se suscribe exactamente a _bridge.Drained y _bridge.ActiveSessionChanged (dos +=, ningun -=) y a ningun evento de AutoCAD; expone una unica notificacion publica en memoria StateChanged (Action sin argumentos, sin tipos de AutoCAD); con ActiveSessionChanged: si PanelVisible llama al _host.RefreshPanel() existente y despues avisa con StateChanged; con el panel oculto no pide reconciliacion; con Drained: conserva _host.OnDrained(outcome) y su contencion y despues avisa con StateChanged; OpenPanel, ShowPanel y HidePanel avisan con StateChanged tras su transicion; cada manejador y cada aviso quedan contenidos con LogFault; sin persistencia, hilos ni temporizadores; ningun otro miembro cambia.",
+    "INV-F1-T3B-06 (D-04, D-18 P-01b y P-02, INV-01, INV-33): refresco solo por eventos: el host de la paleta se suscribe a WorkspaceController.StateChanged y solo entonces, o ante una interaccion explicita del usuario, el view-model consulta IWorkspaceHostPort.GetSnapshot() y, cuando haga falta, GetMeasurementReport(); ningun DispatcherTimer, System.Threading.Timer, System.Timers, sondeo periodico, Task, async ni hilo en ningun archivo de T3B; ninguna consulta repetida por el paso del tiempo; panel oculto: una notificacion de documento activo no pide reconciliacion ni lee el DWG; panel visible: la activacion pide como maximo una reconciliacion y, terminada, el reposo vuelve a cero trabajo hasta una nueva pista o evento de estado.",
+    "INV-F1-T3B-07 (D-02, ADR-0006, INV-13): src/RackCad.UI/Workspace/ solo usa contratos y valores neutrales de RackCad.Application.Workspace (IWorkspaceHostPort, WorkspaceHostSnapshot, SelectionContext, WorkspaceMeasurementReport y similares) y delegados inyectados; no nombra RackCad.Plugin, Autodesk (ni en literales), WorkspaceController, WorkspacePaletteHost, el WorkspaceHostPort concreto, WorkspaceSelectionReader ni WorkspaceHostCore; RackCad.UI.csproj sin cambios; namespace RackCad.UI.Workspace de bloque; x:Class y URIs segun UiSystemBoundaryGuardTests; ninguna ventana nueva (censo de ventanas 31).",
+    "INV-F1-T3B-08 (D-02, D-03, D-06, INV-16, INV-17, INV-36 rotulos): el view-model presenta de forma determinista, para la misma instantanea: NotStarted, NoDocument (estado vacio con acciones deshabilitadas), Ready (sesion activa) y Degraded; la disponibilidad de acciones y su motivo (WorkspaceActionBlock); PICKFIRST desactivado; los cinco contextos (Ninguno; Uno(R) con el RackId exacto de la instantanea; Seleccion con N racks y M otros, rotulada como seleccion actual y nunca como total del proyecto; Sin identidad; Diagnostico); nunca inventa ni estampa un RackId; para presentar no llama a Authorize ni a GetSelectionContext.",
+    "INV-F1-T3B-09 (D-17, INV-25 panel): toda entrada originada en el panel queda contenida en su frontera: eventos de la UI, llamadas del view-model, manejador de StateChanged del controlador, manejador de visibilidad de la paleta, refresco del host y delegado del interruptor; ninguna excepcion llega al bucle de mensajes de AutoCAD; sin manejadores globales (Dispatcher.UnhandledException, Application.DispatcherUnhandledException, AppDomain.UnhandledException); ante un fallo contenido la UI pasa al estado Error y los comandos clasicos siguen disponibles; en el Plugin los fallos solo se registran con LogFault (RackLog.Exception).",
+    "INV-F1-T3B-10 (D-17, PV2-13): el estado Error es un estado de presentacion del panel con mensaje y accion de reintento; reintentar vuelve a consultar la instantanea; Error nunca escribe, no cambia sesiones ni pide reconciliacion por si mismo, y se recupera a la presentacion normal.",
+    "INV-F1-T3B-11 (ADR-0019, convencion de recursos): el control raiz fusiona /RackCad.UI;component/Themes/AppStyles.xaml en sus propios recursos y resuelve sin App.xaml ni recursos de aplicacion; Themes/ y Shell/ sin cambios; URIs con ;component/.",
+    "INV-F1-T3B-12 (D-01, INV-24, O-10): foco solo con mecanismos publicos: PaletteSet.KeepFocus u otra API publica equivalente; sin Autodesk.AutoCAD.Internal, SetFocusToDwgView, reflexion sobre AutoCAD, IKeyboardInputSink propio ni ganchos Win32; el panel no devuelve el foco al dibujo en F1; en T3B basta la verificacion estatica; el comportamiento real de teclado y foco es de Smoke-1 (S1-06a..h).",
+    "INV-F1-T3B-13 (D-18, decision del Coordinator): la UI presenta GetMeasurementReport() del puerto inyectado (activado, puntos por secuencia con tiempo, memoria y recuento, y memoria actual del proceso) en solo lectura; las medidas se refrescan solo con StateChanged o con una interaccion explicita; el interruptor llega como delegado neutral inyectado por el host visual hacia WorkspaceController.SetInstrumentationEnabled; IWorkspaceHostPort no cambia; nada se escribe en el registro, en archivos ni en la configuracion; RackLog.cs sin cambios; ningun nombre con Metric, Provider, Bom, ProjectSummary, TotalRacks ni Aggregat en los archivos nuevos.",
+    "INV-F1-T3B-14 (G1/G2/G3, decision del Coordinator): tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs solo cambia en: G1 - NoHostFileUsesTheInternalAutoCadNamespaceOrAnyUiType admite PaletteSet, AddVisual, Autodesk.AutoCAD.Windows, RackCad.UI y los tipos publicos de host WPF necesarios solo en src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs, donde sigue prohibiendo Autodesk.AutoCAD.Internal, cualquier Dispatcher y Timer (las demas guardas, sin cambios, siguen prohibiendo alli el trabajo asincrono o en segundo plano y la lectura o escritura del DWG); G2 - NothingOutsideThePluginWorkspaceReachesTheController compara identificadores completos (WorkspaceController, WorkspaceHostPort, WorkspaceSelectionReader, WorkspaceHostCore) para que RackCad.UI pueda nombrar IWorkspaceHostPort sin poder nombrar el controlador ni tipos del Plugin; G3 - la guarda de suscripciones del controlador admite exactamente _bridge.Drained += y _bridge.ActiveSessionChanged += y ningun -=; ninguna prueba se borra, se salta ni se debilita; sin exclusiones por carpeta.",
+    "INV-F1-T3B-15 (alcance, decision del Coordinator): solo cambian las 8 rutas de AllowedWriteScope; no se reabren EventBridgeCore.cs, WorkspaceHostCore.cs, IWorkspaceHostPort.cs, WorkspaceHostPort.cs ni otro producto de src/RackCad.Application/Workspace/; todas las pruebas existentes de T1, T2 y T3A siguen en verde, y fuera de G1/G2/G3 ninguna cambia (WorkspaceBridgeFacadeSourceGuardTests, WorkspaceBridgeSourceGuardTests y WorkspaceSourceGuardExceptionTests incluidas); sin navegacion, pestanas, borradores, escrituras authored, inventario, persistencia ni conceptos de I-63; fuera de T3B: ayuda de RACKPANEL, indicador de modal en comandos clasicos, liberacion en Terminate(), diff de perfil y Smoke-1.",
+    "INV-F1-T3B-16 (cobertura RED/GREEN obligatoria): RED de comportamiento real en los dos filtros, que compila y falla por asercion sin pruebas artificiales. UI (clases Workspace* en tests/RackCad.UI.Tests/Workspace/, namespace RackCad.UI.Tests, puerto simulado): estados vacio, documento y sesion; los cinco contextos; estado Error por excepcion contenida (puerto que lanza, delegado que lanza) y reintento; el estado visible no crea trabajo (sin aviso de estado no hay consultas; con un aviso, una consulta de GetSnapshot y, si procede, de GetMeasurementReport; nunca Authorize ni GetSelectionContext); recursos sin App.xaml; presentacion e interruptor de la instrumentacion. Core (tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs, texto de las fuentes): estructura de WorkspacePaletteHost.cs (perezoso, un solo PaletteSet sin toolID ni Load/Save, AddVisual una vez, cerrar = ocultar, suscripcion a StateChanged, contencion, sin Internal, Dispatcher, temporizadores ni DWG); delta del comando; ActiveSessionChanged interno del puente solo desde DocumentActivated y DocumentToBeDestroyed tras el nucleo, sin += ni -= nuevos; relevo del controlador (dos suscripciones, RefreshPanel solo si visible, StateChanged tras drenaje y transiciones); limite de la UI. El GREEN conserva la cadena RED sin debilitar pruebas."
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.UI.Tests.Workspace",
+      "MinSelected": 1,
+      "ExpectRed": true
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.Workspace",
+      "MinSelected": 487,
+      "ExpectRed": true
+    }
+  ],
+  "ExpectedEvidence": [
+    "gate/delegation package valido",
+    "nc4 segun I-61 en la primera delegacion aplicable",
+    "aceptacion A1-A8 antes de Worker",
+    "commit RED real en los dos proyectos requeridos (UI y Core)",
+    "ChainRedSha / ChainRedFiles correctamente acreditados",
+    "commit GREEN",
+    "pruebas RED y GREEN con seleccion en los dos filtros (UI y Core)",
+    "worker-handoff valido",
+    "push fast-forward",
+    "CI exacta del CurrentSha verde (los cuatro jobs, incluidos Build Plugin without AutoCAD y UI Tests)",
+    "Controller verification valida",
+    "diff dentro de AllowedWriteScope (8 entradas)",
+    "guardas G1/G2/G3 en verde y seleccionadas por el filtro de Core; las demas pruebas de T1/T2/T3A en verde y sin modificar; censos de comandos (38), de ventanas (31) y de ayuda sin cambios",
+    "cobertura de INV-F1-T3B-16 en los dos filtros",
+    "builds Release de RackCad.Tests, RackCad.UI.Tests y del Plugin con 0 errores; el Plugin solo con los avisos MSB3277 de la linea base y ningun aviso nuevo CS/NU/NETSDK",
+    "nc1..nc4 segun README Sec.10; nc2 y nc3 ejecutados con el Controller y conservados; si nc2 no discrimina Scope, sustituto I64-SCOPE-BRIDGE-01 bajo A-4; si nc3 se agota (P-04), sustituto I64-FREETEXT-BRIDGE-01 bajo A-6 solo con todas sus precondiciones; verificadores sin cambios y sin reescribir los controles historicos",
+    "REGLA DE nc3 PARA F1-T3B-HOST-UI (decision del Coordinator, explicita en este contrato): oraculo esperado del nc3 sintetico FreeText = fail, FailureClass = FreeText, Classification = EXECUTION_REWORK_REQUIRED, Disposition = REWORK; si el Controller detecta correctamente la violacion FreeText inyectada, informa FailureClass FreeText y conserva las demas relaciones esperadas de la verificacion, pero convierte el REWORK sintetico en STOP solo por aplicar las reglas AttemptsRemaining / CorrectionsAuthorized / S-11 de la tarea real, esa salida de control es INVALID_OUTPUT y no un nc3 PASS; se permiten los dos reintentos normales por INVALID_OUTPUT o transporte; si todas las salidas permitidas se agotan en el mismo modo de fallo, Controller nc3 = NOT PASSED / P-04 y A-6 solo si se cumplen todas sus precondiciones existentes; esta regla no se infiere ni se extiende por analogia a otras tareas",
+    "ninguna correccion: un resultado valido que la exija es STOP S-11"
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-01",
+      "Text": "Owner Validation required"
+    },
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive/irreversible action not authorized"
+    },
+    {
+      "Id": "S-06",
+      "Text": "missing credentials/permissions"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch/worktree ownership conflict"
+    },
+    {
+      "Id": "S-09",
+      "Text": "dependency not integrated"
+    },
+    {
+      "Id": "S-10",
+      "Text": "required AutoCAD/user interaction"
+    },
+    {
+      "Id": "S-11",
+      "Text": "repeated rework limit reached"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify authority revision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "main movement invalidates exact-SHA assumptions"
+    },
+    {
+      "Id": "S-14",
+      "Text": "initiative contract explicitly says STOP"
+    },
+    {
+      "Id": "P-01",
+      "Text": "Cambio del hash de `config.toml`"
+    },
+    {
+      "Id": "P-02",
+      "Text": "Participante vivo ajeno, proceso no atribuible o mas de una delegacion abierta"
+    },
+    {
+      "Id": "P-03",
+      "Text": "Delegacion fuera del contrato"
+    },
+    {
+      "Id": "P-04",
+      "Text": "Tope de BLOCKED alcanzado"
+    },
+    {
+      "Id": "P-05",
+      "Text": "Invocacion distinta del paquete aceptado"
+    },
+    {
+      "Id": "P-06",
+      "Text": "Aviso de limite de uso o de creditos en los eventos o la transcripcion de una invocacion"
+    },
+    {
+      "Id": "P-07",
+      "Text": "Una invocacion excederia el tope de invocaciones"
+    },
+    {
+      "Id": "P-08",
+      "Text": "La sesion opero durante una cesion: la salida de esa invocacion es invalida"
+    },
+    {
+      "Id": "C-01",
+      "Text": "origin/main cambia antes de escribir (S-13, 16.7)"
+    },
+    {
+      "Id": "C-02",
+      "Text": "se necesita tocar un archivo fuera de las 8 entradas de AllowedWriteScope, o estas fuera de sus deltas exactos: entre otros EventBridgeCore.cs, WorkspaceHostCore.cs, IWorkspaceHostPort.cs, WorkspaceHostPort.cs u otro producto de src/RackCad.Application/Workspace/, WorkspaceBridgeFacadeSourceGuardTests.cs u otra prueba de T1/T2/T3A, PluginInitializer.cs, un csproj, el sln, Directory.Build.*, un comando existente, RackCommandSupport.cs, RackLog.cs, Themes/, Shell/ o cualquier archivo de src/RackCad.UI fuera de Workspace/ (STOP al Coordinator)"
+    },
+    {
+      "Id": "C-03",
+      "Text": "se necesita AutoCAD, cargar el DLL, perfil, TRUSTEDPATHS, SECURELOAD, ACL o registro"
+    },
+    {
+      "Id": "C-04",
+      "Text": "se necesita ampliar scope"
+    },
+    {
+      "Id": "C-05",
+      "Text": "aparece ambiguedad material del Freeze"
+    },
+    {
+      "Id": "C-06",
+      "Text": "config.toml fuera del conjunto aceptado A/B/C o con otro inventario de nombres (P-01)"
+    },
+    {
+      "Id": "C-07",
+      "Text": "hay conflicto de ownership o se necesita un archivo caliente (docs/HANDOFF.md, docs/ROADMAP.md, docs/adr/README.md) o codigo de I-52, I-62 o I-65"
+    },
+    {
+      "Id": "C-08",
+      "Text": "la tarea deriva hacia navegacion, seleccion o vista (F2), pestanas (F3), borradores o Actualizar (F4), editores (F5), inventario (F6), F1-T3C o Smoke-1"
+    },
+    {
+      "Id": "C-09",
+      "Text": "se intenta introducir tipos o metricas de I-63"
+    },
+    {
+      "Id": "C-10",
+      "Text": "cambio observable en comandos existentes, RACKEDITAR, editores o ventanas existentes, o un cambio de los censos de comandos, ventanas o ayuda"
+    },
+    {
+      "Id": "C-11",
+      "Text": "escritura authored, NOD, XData, archivos, registro, perfil o estado persistido de la paleta"
+    },
+    {
+      "Id": "C-12",
+      "Text": "uso de Autodesk.AutoCAD.Internal, SetFocusToDwgView, reflexion sobre AutoCAD, IKeyboardInputSink propio o ganchos Win32"
+    },
+    {
+      "Id": "C-13",
+      "Text": "presupuesto agotado"
+    },
+    {
+      "Id": "C-14",
+      "Text": "una guarda de T1/T2/T3A necesita un cambio distinto de G1/G2/G3, o una exclusion por carpeta, o se borra, se salta o se debilita una prueba"
+    },
+    {
+      "Id": "C-15",
+      "Text": "cualquier resultado valido del Worker o del verificador exige correccion, o una verificacion valida devuelve REWORK (CorrectionsAuthorized false; AttemptsRemaining 0; S-11)"
+    },
+    {
+      "Id": "C-16",
+      "Text": "main se mueve de forma que exige una reconciliacion semantica no resuelta"
+    },
+    {
+      "Id": "C-17",
+      "Text": "el refresco exigiria un temporizador, sondeo, hilo, Task o async, una suscripcion nueva de AutoCAD, un cambio de EventBridgeCore, encolar en OnDocumentActivated o una notificacion publica nueva en AutoCadEventBridge"
+    },
+    {
+      "Id": "C-18",
+      "Text": "el control raiz o el view-model necesitan un tipo de AutoCAD o del Plugin, obtener servicios de host de forma estatica o un cambio de IWorkspaceHostPort"
+    },
+    {
+      "Id": "C-19",
+      "Text": "la contencion exigiria un manejador global de excepciones (Dispatcher.UnhandledException, Application.DispatcherUnhandledException o AppDomain.UnhandledException)"
+    },
+    {
+      "Id": "C-20",
+      "Text": "el alcance derivado resulta Long-horizon"
+    },
+    {
+      "Id": "C-T3-INSTRUMENTATION",
+      "Text": "presentar o activar la instrumentacion exigiria escribir en el registro, en archivos o en la configuracion, abusar de la semantica de error o de aviso de RackLog, modificar RackLog.cs o crear una API global de registro"
+    }
+  ],
+  "EligibleCells": [
+    {
+      "Cell": "claude-sonnet-5-5|subagent",
+      "Provider": "Anthropic",
+      "Model": "claude-sonnet-5-5",
+      "Transport": "subagent",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "write-commit-push",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "medium",
+        "high"
+      ],
+      "Source": "docs/automation/agent-execution/model-catalog.md (sonda U-04 de I-61, evidencia de I-61 Sec.15.1: medium y high medidos; Worker real con effort high en G3, Sec.15.4); Worker real de I-64 con effort high en F1-T2-BRIDGE y F1-T3A-HOST-CORE (evidencia de I-64 Sec.51), sin aviso de limite",
+      "VerifiedOn": "2026-10-01"
+    }
+  ],
+  "RoutingEnforcement": "required",
+  "CorrectionsAuthorized": false,
+  "IssuedBy": "Coordinator I-64 (decision F1-T3B-HOST-UI custodiada en docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/coordinator-decision-t3b-contract.md; contrato emitido mecanicamente por la sesion responsable con AuthorityRevision = commit de la decision)",
+  "IssuedUtc": "2026-10-11T08:12:23Z"
+}

@@ -1,0 +1,47 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261011T155301Z-d68b",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "MutatedCheck": {
+    "Scope": "pass"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": "e0205b5a9f000bbd44aa1f7556d30f06411c3db7",
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha CurrentSha lists 18 paths, all within the 8 contract AllowedWriteScope entries and none in delegation ForbiddenWriteScope. Exact WorkspaceHostSourceGuardTests.cs diff contains G1/G2/G3 plus the HostCorePath whitespace-only line delta specified by T3B-SCOPE-NONSEMANTIC-WHITESPACE-01; no other line is excepted."
+  },
+  "OutputSha256": "AEEFAB74710C5B6507FA06F3DAD717A68D5CB2242E6091827F7EE6FA5479E513",
+  "ManualFreeText1610": []
+}

@@ -1,0 +1,271 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F1-T3B-HOST-UI",
+  "RunId": "R20261011T090257Z-3038",
+  "DelegationRunId": "R20261011T081209Z-deae",
+  "Initiative": "I-64",
+  "Gate": "F1",
+  "Attempt": 3,
+  "BaseSha": "f3a9f40e0d0057e14a6eb7a6681590b78cecf37f",
+  "RedSha": "9ac76ee2ccd549aaf05cd16b0257ee52d76c6e56",
+  "CurrentSha": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "<worktree-local-redactado>",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+    "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs",
+    "src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs",
+    "src/RackCad.UI/Workspace/WorkspaceMeasurementRow.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelState.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePanelContextTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePanelErrorTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePanelInstrumentationTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePanelNoWorkTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePanelStateTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePanelViewTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePortDouble.cs"
+  ],
+  "WorkCompleted": "Commit RED (9ac76ee2) con esqueleto compilable y pruebas de comportamiento en los dos proyectos (UI: 64 seleccionadas, 50 fallan por asercion; Core: 527 seleccionadas, 23 fallan por asercion, las 486 existentes en verde) mas G1/G2/G3 en WorkspaceHostSourceGuardTests.cs. Commit GREEN (e0205b5a) sin tocar archivos bajo tests/: WorkspacePaletteHost.cs (PaletteSet unico y perezoso, sin toolID ni Load/Save, KeepFocus, AddVisual una vez, suscripcion a StateChanged del controlador y a la visibilidad de la paleta, todo contenido con LogFault); control raiz WorkspacePanelView (UserControl 'Workspace', fusiona Themes/AppStyles.xaml en sus recursos) y WorkspacePanelViewModel (estados NotStarted/NoDocument/Ready/Degraded/Error, acciones y motivo, PICKFIRST, cinco contextos, instrumentacion con interruptor delegado; consulta el puerto solo en Refresh/Retry/SetInstrumentation); RACKPANEL con el delta minimo; AutoCadEventBridge.ActiveSessionChanged internal disparado solo desde DocumentActivated y DocumentToBeDestroyed (si cambia la sesion activa) dentro del mismo Contain y tras el nucleo, sin += ni -= nuevos (16/16/16); WorkspaceController con dos += (Drained, ActiveSessionChanged), StateChanged contenido y avisos tras drenaje y transiciones. Sin AutoCAD, sin cargar DLL, sin temporizador ni sondeo.",
+  "TestsExecuted": [
+    {
+      "RunRef": "red-ui",
+      "Command": "<dotnet-de-usuario-redactado> test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.Workspace\" --logger \"trx;LogFileName=red-ui.trx\" --results-directory artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-ui",
+      "Phase": "RED",
+      "TreeSha": "9ac76ee2ccd549aaf05cd16b0257ee52d76c6e56",
+      "ResultsFile": "artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-ui/red-ui.trx"
+    },
+    {
+      "RunRef": "red-core",
+      "Command": "<dotnet-de-usuario-redactado> test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger \"trx;LogFileName=red-core.trx\" --results-directory artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-core",
+      "Phase": "RED",
+      "TreeSha": "9ac76ee2ccd549aaf05cd16b0257ee52d76c6e56",
+      "ResultsFile": "artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-core/red-core.trx"
+    },
+    {
+      "RunRef": "green-ui",
+      "Command": "<dotnet-de-usuario-redactado> test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --filter \"FullyQualifiedName~RackCad.UI.Tests.Workspace\" --logger \"trx;LogFileName=green-ui.trx\" --results-directory artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-ui",
+      "Phase": "GREEN",
+      "TreeSha": "e0205b5a9f000bbd44aa1f7556d30f06411c3db7",
+      "ResultsFile": "artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-ui/green-ui.trx"
+    },
+    {
+      "RunRef": "green-core",
+      "Command": "<dotnet-de-usuario-redactado> test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger \"trx;LogFileName=green-core.trx\" --results-directory artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-core",
+      "Phase": "GREEN",
+      "TreeSha": "e0205b5a9f000bbd44aa1f7556d30f06411c3db7",
+      "ResultsFile": "artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-core/green-core.trx"
+    },
+    {
+      "RunRef": "full-core-debug",
+      "Command": "<dotnet-de-usuario-redactado> test tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=pre-core.trx\" --results-directory artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/pre-core",
+      "Phase": "RELEVANT",
+      "TreeSha": "e0205b5a9f000bbd44aa1f7556d30f06411c3db7",
+      "ResultsFile": "artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/pre-core/pre-core.trx"
+    },
+    {
+      "RunRef": "full-ui-debug",
+      "Command": "<dotnet-de-usuario-redactado> test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --logger \"trx;LogFileName=pre-ui.trx\" --results-directory artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/pre-ui",
+      "Phase": "RELEVANT",
+      "TreeSha": "e0205b5a9f000bbd44aa1f7556d30f06411c3db7",
+      "ResultsFile": "artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/pre-ui/pre-ui.trx"
+    },
+    {
+      "RunRef": "full-core-release",
+      "Command": "<dotnet-de-usuario-redactado> test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --logger \"trx;LogFileName=full-core.trx\" --results-directory artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/full-core",
+      "Phase": "RELEVANT",
+      "TreeSha": "e0205b5a9f000bbd44aa1f7556d30f06411c3db7",
+      "ResultsFile": "artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/full-core/full-core.trx"
+    },
+    {
+      "RunRef": "full-ui-release",
+      "Command": "<dotnet-de-usuario-redactado> test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --no-build --logger \"trx;LogFileName=full-ui-2.trx\" --results-directory artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/full-ui-2",
+      "Phase": "RELEVANT",
+      "TreeSha": "e0205b5a9f000bbd44aa1f7556d30f06411c3db7",
+      "ResultsFile": "artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/full-ui-2/full-ui-2.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "red-ui",
+      "Selected": 64,
+      "Passed": 14,
+      "Failed": 50,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.WorkspacePanelContextTests.APanelWithoutADocumentPresentsNoContext",
+        "RackCad.UI.Tests.WorkspacePanelContextTests.ASelectionPresentsDifferentCountsDifferently",
+        "RackCad.UI.Tests.WorkspacePanelContextTests.ASelectionShowsTheCountsAndIsLabelledAsTheCurrentSelectionNeverAsAProjectTotal",
+        "RackCad.UI.Tests.WorkspacePanelContextTests.EachContextIsPresentedWithItsKindAndATitleAndATextOfItsOwn(context: SelectionContext { Kind = Diagnostic, RackId = , RackCount = 0, OtherCount = 0 }, kind: Diagnostic)",
+        "RackCad.UI.Tests.WorkspacePanelContextTests.EachContextIsPresentedWithItsKindAndATitleAndATextOfItsOwn(context: SelectionContext { Kind = NoIdentity, RackId = , RackCount = 0, OtherCount = 0 }, kind: NoIdentity)",
+        "RackCad.UI.Tests.WorkspacePanelContextTests.EachContextIsPresentedWithItsKindAndATitleAndATextOfItsOwn(context: SelectionContext { Kind = None, RackId = , RackCount = 0, OtherCount = 0 }, kind: None)",
+        "RackCad.UI.Tests.WorkspacePanelContextTests.EachContextIsPresentedWithItsKindAndATitleAndATextOfItsOwn(context: SelectionContext { Kind = One, RackId = RACK-0042, RackCount = 1, OtherCount = 0 }, kind: One)",
+        "RackCad.UI.Tests.WorkspacePanelContextTests.EachContextIsPresentedWithItsKindAndATitleAndATextOfItsOwn(context: SelectionContext { Kind = Selection, RackId = , RackCount = 3, OtherCount = 2 }, kind: Selection)",
+        "RackCad.UI.Tests.WorkspacePanelContextTests.NoIdentityAndDiagnosticCarryNoRackIdAndAreNotConfusedWithOne",
+        "RackCad.UI.Tests.WorkspacePanelContextTests.OneShowsTheExactRackIdOfTheSnapshot",
+        "RackCad.UI.Tests.WorkspacePanelContextTests.OneShowsWhateverIdTheSnapshotCarriesWithoutNormalizingIt",
+        "RackCad.UI.Tests.WorkspacePanelContextTests.TheContextFollowsTheLatestSnapshot",
+        "RackCad.UI.Tests.WorkspacePanelContextTests.TheFiveContextsHaveFiveDifferentTitles",
+        "RackCad.UI.Tests.WorkspacePanelErrorTests.ADelegateThatThrowsOnTheToggleIsContainedAndShownAsError",
+        "RackCad.UI.Tests.WorkspacePanelErrorTests.AFaultWithoutAMessageStillGivesAReadableError",
+        "RackCad.UI.Tests.WorkspacePanelErrorTests.APortThatThrowsOnTheMeasurementReportIsContainedAndShownAsError",
+        "RackCad.UI.Tests.WorkspacePanelErrorTests.APortThatThrowsOnTheSnapshotIsContainedAndShownAsError",
+        "RackCad.UI.Tests.WorkspacePanelErrorTests.ErrorIsRecoveredByTheNextHostRefreshWithoutAnExplicitRetry",
+        "RackCad.UI.Tests.WorkspacePanelErrorTests.RetryingAfterThePortRecoversReturnsToTheNormalPresentation",
+        "RackCad.UI.Tests.WorkspacePanelErrorTests.RetryingAsksForTheSnapshotExactlyOnceAndForNothingElse",
+        "RackCad.UI.Tests.WorkspacePanelErrorTests.RetryingWhileThePortStillFailsStaysInErrorAndNeverThrows",
+        "RackCad.UI.Tests.WorkspacePanelInstrumentationTests.ADisabledInstrumentationPresentsNoPointsNoMemoryAndAnOffSummary",
+        "RackCad.UI.Tests.WorkspacePanelInstrumentationTests.AnEnabledReportIsPresentedPointBySequenceWithTimeMemoryAndCount",
+        "RackCad.UI.Tests.WorkspacePanelInstrumentationTests.AnEnabledSnapshotWithNoPointsPresentsAnEmptyTable",
+        "RackCad.UI.Tests.WorkspacePanelInstrumentationTests.DisablingCallsTheInjectedDelegateOnceWithFalse",
+        "RackCad.UI.Tests.WorkspacePanelInstrumentationTests.EnablingCallsTheInjectedDelegateOnceWithTrueAndThenRefreshesTheSnapshot",
+        "RackCad.UI.Tests.WorkspacePanelInstrumentationTests.TheCurrentProcessMemoryIsPresentedWhenTheInstrumentationIsOn",
+        "RackCad.UI.Tests.WorkspacePanelInstrumentationTests.TheOnAndOffSummariesDiffer",
+        "RackCad.UI.Tests.WorkspacePanelNoWorkTests.ARestingPanelWithAStateAlreadyPresentedAsksForNothingMore",
+        "RackCad.UI.Tests.WorkspacePanelNoWorkTests.EachNoticeCostsExactlyOneQueryOfTheSnapshot",
+        "RackCad.UI.Tests.WorkspacePanelNoWorkTests.OneNoticeIsOneSnapshotQueryAndNoReportQueryWhileTheInstrumentationIsOff",
+        "RackCad.UI.Tests.WorkspacePanelNoWorkTests.OneNoticeWithTheInstrumentationOnIsOneSnapshotQueryAndOneReportQuery",
+        "RackCad.UI.Tests.WorkspacePanelNoWorkTests.TheExplicitToggleCostsOneSnapshotQueryAfterTheDelegate",
+        "RackCad.UI.Tests.WorkspacePanelStateTests.ADegradedSnapshotIsPresentedAsDegradedWithTheReasonAndNoReading",
+        "RackCad.UI.Tests.WorkspacePanelStateTests.ANoDocumentSnapshotIsTheEmptyStateWithItsActionsDisabled",
+        "RackCad.UI.Tests.WorkspacePanelStateTests.ANotStartedSnapshotIsPresentedAsNotStartedWithItsActionsDisabled",
+        "RackCad.UI.Tests.WorkspacePanelStateTests.APickFirstDisabledSnapshotShowsTheNoticeAndAnEnabledOneHidesIt",
+        "RackCad.UI.Tests.WorkspacePanelStateTests.AReadySnapshotShowsTheActiveSessionAndAvailableActionsWithoutAReason",
+        "RackCad.UI.Tests.WorkspacePanelStateTests.TheActionBlockReasonIsEmptyOnlyWhenNothingBlocksAndDifferentForEachBlock",
+        "RackCad.UI.Tests.WorkspacePanelStateTests.TheFourStatesAreTitledDifferently",
+        "RackCad.UI.Tests.WorkspacePanelStateTests.ThePanelIsLabelledWorkspace",
+        "RackCad.UI.Tests.WorkspacePanelStateTests.TheSameSnapshotIsAlwaysPresentedTheSameWay",
+        "RackCad.UI.Tests.WorkspacePanelStateTests.TheStateFollowsTheLatestSnapshotWhenTheHostAsksAgain",
+        "RackCad.UI.Tests.WorkspacePanelViewTests.AFailingToggleDelegateDoesNotEscapeTheControlAndShowsTheError",
+        "RackCad.UI.Tests.WorkspacePanelViewTests.TheInstrumentationToggleSendsTheSwitchToTheInjectedDelegate",
+        "RackCad.UI.Tests.WorkspacePanelViewTests.TheRetryButtonAsksForTheSnapshotAgainAndRecoversFromError",
+        "RackCad.UI.Tests.WorkspacePanelViewTests.TheRetryButtonIsOnlyVisibleInTheErrorState",
+        "RackCad.UI.Tests.WorkspacePanelViewTests.TheRootIsAUserControlLabelledWorkspaceWhoseDataContextIsTheViewModel",
+        "RackCad.UI.Tests.WorkspacePanelViewTests.TheRootMergesAppStylesInItsOwnResourcesAndResolvesThemWithoutApplicationResources",
+        "RackCad.UI.Tests.WorkspacePanelViewTests.TheViewShowsTheLabelAndTheStateOfTheViewModel"
+      ]
+    },
+    {
+      "RunRef": "red-core",
+      "Selected": 527,
+      "Passed": 504,
+      "Failed": 23,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.ADrainKeepsTheHostCallAndItsContainmentAndThenAnnouncesTheState",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.ANoticeOfTheActiveSessionRefreshesThePanelOnlyWhileVisibleAndThenAnnouncesTheState",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.ClosingThePaletteHidesItAndTheHostMirrorsShowAndHideToTheController",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.EveryEntryOfThePaletteHostIsContainedAndLoggedOnlyThroughTheFaultMethod",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.ExactlyOnePaletteSetIsConstructedInTheWholeProductAndOnlyByTheHost",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.FocusUsesOnlyThePublicKeepFocusOfThePaletteSet",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.OnlyTheCommandAndTheHostNameThePaletteHost",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.TheCommandKeepsNoPaletteLogicAndNoUiTypeAndTheMessageNoLongerSaysTheInterfaceIsNotShown",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.TheCommandObtainsTheControllerOpensThePanelThenShowsThePaletteThroughTheHost",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.TheControllerExposesOneInMemoryStateChangedNoticeWithoutArguments",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.TheControllerNoticeOnlyAsksTheViewModelToPullTheSnapshotAndOnlyWhileThePanelIsVisible",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.TheHostAddsExactlyOneRootControlLabelledWorkspace",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.TheHostIsCreatedLazilyThroughTheHolderAndNeverByAStaticInitializer",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.TheHostSubscribesToTheControllerNoticeAndToThePaletteVisibilityAndNothingElse",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.TheNoticeIsRaisedOnlyTwiceFromTheExistingDocumentHandlersAfterTheCoreHasBeenUpdated",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.TheNoticeItselfIsContainedAndEveryPanelTransitionAnnouncesTheStateAfterTheHostCall",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.ThePaletteHostPublicSurfaceIsTheLazyAccessorAndShowAndNamesNoAutoCadType",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.ThePaletteIsAcoplableAndFloatingWithTheCloseButton",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.ThePaletteIsBuiltWithOnlyTheTitleRackCadAndNoToolIdentifier",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.TheRootControlMergesTheSharedStylesInItsOwnResourcesWithComponentUris",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.TheRootControlReachesTheViewModelOnlyThroughExplicitInteractionsAndContainsThem",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.TheUiFolderUsesOnlyTheNeutralContractsOfTheApplicationWorkspace",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.TheViewModelIsFedOnlyByTheInjectedPortAndTheNeutralToggleDelegate"
+      ]
+    },
+    {
+      "RunRef": "green-ui",
+      "Selected": 64,
+      "Passed": 64,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-core",
+      "Selected": 527,
+      "Passed": 527,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "full-core-debug",
+      "Selected": 13122,
+      "Passed": 13122,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "full-ui-debug",
+      "Selected": 1701,
+      "Passed": 1701,
+      "Failed": 0,
+      "Skipped": 17,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "full-core-release",
+      "Selected": 13122,
+      "Passed": 13122,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "full-ui-release",
+      "Selected": 1701,
+      "Passed": 1699,
+      "Failed": 2,
+      "Skipped": 17,
+      "FailedTests": [
+        "RackCad.UI.Tests.PendingTextFieldTests.ShowOnADirtyField_ThrowsEvenWhenTheTypedTextEqualsTheCommittedOne",
+        "RackCad.UI.Tests.PendingTextFieldTests.ShowOnADirtyField_ThrowsWhenTheTypedTextDiffers"
+      ]
+    }
+  ],
+  "Evidence": [
+    "Filtro UI FullyQualifiedName~RackCad.UI.Tests.Workspace: RED 64 seleccionadas / 50 fallan por asercion (sin errores de compilacion ni excepciones que no sean de asercion); GREEN 64 / 64 pasan.",
+    "Filtro Core FullyQualifiedName~RackCad.Tests.Workspace: RED 527 seleccionadas / 23 fallan por asercion y 504 pasan (incluidas las 486 existentes y G1/G2/G3); GREEN 527 / 527 pasan.",
+    "git diff --name-only 9ac76ee2..e0205b5a -- tests no devuelve ningun archivo: el GREEN no modifica las pruebas del RED.",
+    "Suites completas Debug (configuracion de la CI) sobre el arbol del GREEN: Core 13122/13122; UI 1701 pasan, 17 omitidas (previas), 0 fallan. Ejecutadas antes del commit sobre el arbol identico (git status limpio tras el commit, sin ediciones intermedias).",
+    "Suites completas Release sobre el commit GREEN: Core 13122/13122; UI 1699 pasan y 2 fallan (PendingTextFieldTests.ShowOnADirtyField_*), previas y ajenas: PendingTextField lanza solo bajo #if DEBUG y la CI ejecuta las pruebas en -c Debug.",
+    "Build Release --no-incremental de RackCad.Tests y RackCad.UI.Tests: 0 errores y 0 lineas que casen warning (MSB|CS|NU|NETSDK); solo avisos xUnit previos (43 y 8).",
+    "Build Release --no-incremental del Plugin con -o bajo artifacts: 0 errores, 2 avisos MSB3277 (linea base: Microsoft.VisualBasic y System.Drawing), ningun aviso CS/NU/NETSDK. Log en artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/build.log.",
+    "Censos de comandos (38), de ventanas (31) y de ayuda sin cambios: sus pruebas pasan en las suites completas.",
+    "Conteos del puente: 16 '+=', 16 '-=' y 16 lineas 'handler = (' en AutoCadEventBridge.cs; la superficie publica del puente no cambia (WorkspaceBridgeFacadeSourceGuardTests en verde, sin modificar).",
+    "Trailer de los dos commits: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>."
+  ],
+  "UnexpectedFindings": [
+    "Los bindings XAML de un control no conectado a una ventana no se aplican de forma sincrona; por eso la visibilidad del banner de error y del boton Reintentar sigue al view-model desde el code-behind (PropertyChanged) y no por binding. No requiere ningun cambio fuera del alcance.",
+    "En el commit RED, los eventos de esqueleto del puente y del controlador producen CS0067 (evento nunca usado); desaparece en el GREEN, donde se disparan."
+  ],
+  "KnownLimitations": [
+    "S-01 y S-10 son frontera y no se cruzaron: no se ejecuto AutoCAD, no se cargo el DLL y no se hizo Smoke-1; el comportamiento real de la paleta, del foco y del teclado queda para el Owner.",
+    "La paleta solo se comprueba con guardas de fuente y la compilacion del Plugin; ninguna prueba instancia PaletteSet.",
+    "Las suites completas Debug se ejecutaron antes del commit GREEN sobre un arbol identico al commit; la CI del SHA exacto y la verificacion del Controller quedan pendientes."
+  ],
+  "Deviations": [],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "Ejecutar la verificacion del Controller sobre el SHA actual, confirmar los cuatro jobs de CI para ese SHA exacto y los controles nc1..nc3 segun el contrato.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

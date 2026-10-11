@@ -1,0 +1,82 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T3B-HOST-UI",
+  "RunId": "R20261011T161926Z-49f1",
+  "DelegationRunId": "R20261011T081209Z-deae",
+  "WorkRunId": "R20261011T090257Z-3038",
+  "Attempt": 3,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Outcome.Kind=COMPLETED; DeathConfirmed=true; terminal event is final subagent notification."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json schema and TaskId match; RunId=R20261011T090257Z-3038, DelegationRunId=R20261011T081209Z-deae, Attempt=3, BaseSha=f3a9f40e; OutputWrittenUtc 10:01:21Z is after Cession.StartUtc 09:04:36Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor c7f389cbb2eff4be42f861d8114adc2af753a1c9 f3a9f40e0d0057e14a6eb7a6681590b78cecf37f exited 0. git diff --name-only between those SHAs listed I-64 package, evidence and state paths; no EXTERNAL authority path or UNIT_CHANGE section was changed. Authorities were read from their declared Git revisions."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Coordinator acceptance records A1-A8 PASS and nc4 PASS. Contract and delegation agree on the 8 AllowedWriteScope entries, 146 ForbiddenWriteScope entries, 16 invariants, 43 stop conditions, 2 RequiredTests, authorities and revision identifiers."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both returned e0205b5a9f000bbd44aa1f7556d30f06411c3db7; origin/main returned bb0d5522e8411f66a51fdfb3f1f0d0514b737453. BaseSha and RedSha ancestry checks exited 0. Handoff branch and worktree match the current checkout."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Entry records HeadSha and LsRemoteSha as e0205b5a9f000bbd44aa1f7556d30f06411c3db7 and OriginMainSha at Exit as bb0d5522e8411f66a51fdfb3f1f0d0514b737453. CurrentRun 38129212761 is push on refs/heads/architecture/workspace-persistente-rackcad for the exact CurrentSha. A live ls-remote attempt was unavailable due network access."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha lists 18 paths, all covered by the 8 allowed entries; none intersects ForbiddenWriteScope. Exact diffs for WorkspacePanelCommand.cs, AutoCadEventBridge.cs, WorkspaceController.cs and WorkspaceHostSourceGuardTests.cs were inspected. The HostCorePath line differs only by the accepted exact whitespace delta T3B-SCOPE-NONSEMANTIC-WHITESPACE-01; the remaining guard changes are G1/G2/G3."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain is empty. git check-ignore -v on the handoff input reports .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "CurrentRun 38129212761 is completed success for the exact push ref and SHA; all 4 required jobs are success. RedRun 38128156191 is a push for RedSha on the same branch; Core and UI test jobs failed as expected, Build UI succeeded and Plugin build was skipped."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX counts: Current Core 13122/13122 passed, Workspace filter 527/527; Current UI 1718 total, 1701 passed and 17 NotExecuted, Workspace filter 64/64. Red Core Workspace filter 504 passed/23 failed; Red UI filter 14 passed/50 failed. Failures are assertion failures in the required workspace behavior/source checks, not compile failures. git diff BaseSha..RedSha -- tests/ gives RT/ChainRedFiles: WorkspaceHostSourceGuardTests.cs, WorkspacePaletteHostSourceGuardTests.cs, WorkspacePanelContextTests.cs, WorkspacePanelErrorTests.cs, WorkspacePanelInstrumentationTests.cs, WorkspacePanelNoWorkTests.cs, WorkspacePanelStateTests.cs, WorkspacePanelViewTests.cs and WorkspacePortDouble.cs. git diff RedSha..CurrentSha -- tests/ is empty."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows both RED and GREEN commits carry Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching the effective Worker model recorded in relay-record-work.json."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json records effective model claude-sonnet-5-5 and effort high, matching the requested model and effort; RoutingEnforcement is required."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "The 16.10 term scan of WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction found a restricted term in WorkCompleted."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report no permission denials and no usage or credit warnings. One shell heredoc call error was recovered in later calls; no pending failed order is recorded."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [
+    "C-15"
+  ],
+  "Findings": [
+    "WorkCompleted contains a restricted 16.10 term, so FreeText fails. With CorrectionsAuthorized=false and AttemptsRemaining=0, this triggers C-15.",
+    "The 73 RED CI failures are assertion failures: 23 Core source-guard assertions and 50 UI presentation/behavior assertions. The CurrentSha CI TRX has zero failures.",
+    "The UI TRX records 17 NotExecuted results as skips. The Worker record also reports two local Release UI failures in PendingTextFieldTests.ShowOnADirtyField_*; these are distinct from the CurrentSha CI TRX.",
+    "No AutoCAD session was used. Worker records state the palette host was checked by source guards and compilation, not instantiated in AutoCAD."
+  ],
+  "RecommendedNextAction": "Return this STOP result to the Coordinator for disposition; do not change the product."
+}

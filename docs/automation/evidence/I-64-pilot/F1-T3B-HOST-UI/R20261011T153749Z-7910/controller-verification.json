@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T3B-HOST-UI",
+  "RunId": "R20261011T153749Z-7910",
+  "DelegationRunId": "R20261011T081209Z-deae",
+  "WorkRunId": "R20261011T090257Z-3038",
+  "Attempt": 3,
+  "VerifiedSha": "e0205b5a9f000bbd44aa1f7556d30f06411c3db7",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; cession 2026-10-11T09:04:36Z-10:01:43Z; OutputWrittenUtc=10:01:21Z, after cession start. Notes confirm the subagent completion notification and that the timer sleep process stopped before reread."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json is present at the expected WorkRunId path. TaskId, Attempt=3, DelegationRunId, RunId, BaseSha and CurrentSha match the delegation and Git. Pushed=true; OutputWrittenUtc follows cession start."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha exited 0. git diff --name-only AuthorityRevision BaseSha contains only unit custody paths. External authority paths were unchanged from MainSha through AuthorityRevision; the authority sections were read at their specified revisions."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json and delegation.json match for Unit, Gate, TaskId, AuthorityRevision, MainSha, Authorities, AllowedWriteScope, ForbiddenWriteScope, Invariants, RequiredTests, ExpectedEvidence, StopConditions and RoutingEnforcement. Coordinator acceptance records A1-A8 and nc4 PASS."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git status shows branch architecture/workspace-persistente-rackcad, clean and tracking origin; git rev-parse HEAD and origin branch both return e0205b5a9f000bbd44aa1f7556d30f06411c3db7. BaseSha and RedSha are ancestors of CurrentSha; RedSha is after BaseSha. Relay records match the branch, worktree and SHAs."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json records ls-remote=CurrentSha and origin/main=MainSha at entry. CurrentSha is e0205b5a9f000bbd44aa1f7556d30f06411c3db7; MainSha is bb0d5522e8411f66a51fdfb3f1f0d0514b737453."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha lists 18 paths, all within the 8 AllowedWriteScope entries and none in ForbiddenWriteScope. Exact diffs for WorkspacePanelCommand.cs, AutoCadEventBridge.cs and WorkspaceController.cs conform to INV-03/04/05; new UI and UI-test files are under the permitted directories. WorkspaceHostSourceGuardTests.cs contains G1/G2/G3 plus exactly the HostCorePath space delta authorized as T3B-SCOPE-NONSEMANTIC-WHITESPACE-01 in coordinator-disposition.md; no other whitespace exception was applied."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain is empty. git check-ignore -v on the RunId artifact directory and its input files reports the artifacts/ ignore rule."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "relay-record-work.json records run 38129212761 as push, exact branch ref and CurrentSha, completed/success. All four required jobs succeeded. Current TRX: Core 13122 passed, UI 1701 passed and 17 NotExecuted. RED run 38128156191 is a push for exact RedSha; Core and UI jobs failed as expected. RedPart passes under 16.9 because the Core job failed."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Parsed supplied TRX files. CurrentSha filter counts: Core 527/527 passed; UI 64/64 passed. Full CI counts: Core 13122 passed; UI 1701 passed plus 17 NotExecuted. RedSha filter counts: Core 527 selected, 504 passed and 23 failed; UI 64 selected, 14 passed and 50 failed. The 73 RED failures are assertion failures against the incomplete skeleton: Core source/host integration assertions and UI context, error/retry, state, instrumentation and no-work behavior assertions. RED test paths are RT/ChainRedFiles (9 paths from git diff --name-only BaseSha RedSha -- tests/); git diff RedSha CurrentSha -- tests/ is empty. Handoff test counts agree with the filtered TRX results."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..CurrentSha shows both RED and GREEN commits have Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json Worker.Trailer and the effective Worker model."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json records effective model claude-sonnet-5-5 and effort high; the handoff requests claude-sonnet-5-5/high and delegation requires that model/effort. The relay's requested model alias sonnet resolves to the recorded effective model."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction in worker-handoff.json against every AUTOMATION_PLAN 16.10 term; no matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report no permission denials and no usage/credit warnings. The single failed tool call was a malformed shell heredoc and was recovered by later calls; no failed permission or credential operation remains pending. The entry bash process was created after cession ended and its command line is attributed in Notes to another session, not this worktree."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "Worker reports two local Release UI failures: PendingTextFieldTests.ShowOnADirtyField_ThrowsEvenWhenTheTypedTextEqualsTheCommittedOne and PendingTextFieldTests.ShowOnADirtyField_ThrowsWhenTheTypedTextDiffers. The relay attributes them to the existing #if DEBUG behavior; supplied current CI runs Debug and its UI TRX has no failures.",
+    "Worker reports no AutoCAD execution and no PaletteSet instantiation test; the palette was checked by source guards and Plugin CI build. This remains a stated validation boundary."
+  ],
+  "RecommendedNextAction": "Entregar esta verificacion al Coordinator para continuar el registro de la cadena."
+}

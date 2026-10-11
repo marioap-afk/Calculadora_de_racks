@@ -1,0 +1,2879 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "TaskId": "F1-T3B-HOST-UI",
+  "SourceRoot": "artifacts/orchestration/I-64",
+  "LineEndings": "los archivos con CRLF (escritos por PowerShell) se custodian en LF; Sha256 es el del original y CustodiedSha256 el del custodiado",
+  "Redaction": {
+    "Tokens": {
+      "WT": "<worktree-local-redactado>",
+      "MAIN": "<checkout-principal-redactado>",
+      "DOTNET": "<dotnet-de-usuario-redactado>"
+    },
+    "Rule": "sustitucion exacta de la ruta local del worktree, del checkout principal y del dotnet de usuario (formas literal, escapada en JSON y POSIX); los JSON redactados siguen siendo JSON validos; el SHA-256 del original se conserva en Sha256"
+  },
+  "Counts": {
+    "CUSTODIED": 96,
+    "CUSTODIED_REDACTED": 9,
+    "IDENTICAL_TO_CUSTODIED": 46,
+    "EXCLUDED": 244
+  },
+  "Decisions": {
+    "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/coordinator-acceptance.md": "6c008702a7b749481e1ce11a2ae01eafc6ccf7eb80b0828092dfc0d012fa7803",
+    "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T100844Z-37e1/coordinator-disposition.md": "91a87b226837a4a7527b333ecaa850bde7a4de48db33258f9ed3bd42c8d1fdb9"
+  },
+  "Files": [
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T081209Z-deae/acceptance-precheck-reasons.json",
+      "Bytes": 98,
+      "Sha256": "b2dcfc71301916ecc25e280246ba6518341f6a06d16b770be5a1453773f5ed06",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/acceptance-precheck-reasons.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T081209Z-deae/acceptance-precheck.json",
+      "Bytes": 112,
+      "Sha256": "f480469b0ef19d2edfe2b1217b4506cda97a55a7af1d1b393fc95ce7ee666d5f",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/acceptance-precheck.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T081209Z-deae/cession-end.txt",
+      "Bytes": 21,
+      "Sha256": "58b4863a6dad06f72db07f0b047f44c86813bb42ce678f665bdf30b1fab0e45e",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T081209Z-deae/cession-start.txt",
+      "Bytes": 21,
+      "Sha256": "cae51045f1c48b3163d777d86c17cda59c5549cb448ecd1bb7824d372d9181d1",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T081209Z-deae/config-entry.json",
+      "Bytes": 302,
+      "Sha256": "d9ad91e35419967184f1b9e71210db28a695f9cb1a53c6ec710f8f19220caa0c",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/config-entry.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T081209Z-deae/config-exit.json",
+      "Bytes": 302,
+      "Sha256": "b43691004b53dd2c954627e6273779da500507e3f82cd715cfb987d0629ac1a7",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/config-exit.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T081209Z-deae/delegation.json",
+      "Bytes": 39088,
+      "Sha256": "683cbe6f53ddf34ea4d2b6a1097d3949c6de6b00cf5872edbd6cc6555b068009",
+      "Disposition": "CUSTODIED_REDACTED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/delegation.json",
+      "CustodiedSha256": "fddef38304dc1db21fb2eef4a1f9c46b7f079a2e355e6849a3713480c41364c9",
+      "Redactions": {
+        "<worktree-local-redactado>": 1
+      }
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T081209Z-deae/events.jsonl",
+      "Bytes": 156678,
+      "Sha256": "729c5583872c8699554df58658816d8dd300a089c42a0526e23b4d44d9ec7018",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro crudo de eventos del CLI (contiene rutas locales); se conserva su SHA-256"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T081209Z-deae/exit-code.txt",
+      "Bytes": 2,
+      "Sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T081209Z-deae/gate-contract.json",
+      "Bytes": 35799,
+      "Sha256": "7807a9e5136dc6d7c84526fb3b175f935c20f85bd48df1dec04e4275372d2873",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/gate-contract.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T081209Z-deae/launcher-pid.txt",
+      "Bytes": 5,
+      "Sha256": "021947aff7b3b539575e8e077f8f40abe1bf0f645b55fb548a73c4c65e0c3073",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T081209Z-deae/launcher-winpid.txt",
+      "Bytes": 6,
+      "Sha256": "caed6d4e6c56660b19b62ddc9d76a20c71fd6d4c013e78113b3ade370d9e323b",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T081209Z-deae/output.json",
+      "Bytes": 39088,
+      "Sha256": "683cbe6f53ddf34ea4d2b6a1097d3949c6de6b00cf5872edbd6cc6555b068009",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/delegation.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T081209Z-deae/processes-entry.json",
+      "Bytes": 1700,
+      "Sha256": "924e24c1fc5d7440a569c79660a05f6c634c4daf38c11336ed9ec9ed9d60ddc5",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/processes-entry.json",
+      "CustodiedSha256": "2a46d4fcf4a52156f3a6f7e72fa39ac100bb8d4201a57327213afe41d0c55b6c",
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T081209Z-deae/processes-exit.json",
+      "Bytes": 2130,
+      "Sha256": "b5703c962449d752e0e034965c22e5c2af457ee04f86e71cfea527d3d21c9572",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/processes-exit.json",
+      "CustodiedSha256": "034db57f5d72218ddf57e0d8ba797194bdbd3ce3cbb253fa1721f596c7896e42",
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T081209Z-deae/prompt.md",
+      "Bytes": 21340,
+      "Sha256": "df08072f96a212b8f55dadabaddec0e30ac34f53e6519d91dcb4988cf129bd91",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/prompt.md"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T081209Z-deae/relay-record.json",
+      "Bytes": 15118,
+      "Sha256": "5e66223eb4d6aeeaac9eefef385a55218df7173748cd89ddafd1688d52c89dff",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/relay-record.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T081209Z-deae/session-extra-checks.json",
+      "Bytes": 1821,
+      "Sha256": "4a0dc65c76526e56edce594c9e28310f2354e130ee25e8c1e7a82ba0bbf3507b",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/session-extra-checks.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T081209Z-deae/stderr.txt",
+      "Bytes": 39,
+      "Sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "Disposition": "EXCLUDED",
+      "Reason": "stderr del CLI (aviso de lectura de stdin de 39 bytes) o vacio"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/cession-end.txt",
+      "Bytes": 21,
+      "Sha256": "49a5b2e5b8ee0d874509f40989b00aa2f504e04a7dfdcba6aa7219828bf47957",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/cession-start.txt",
+      "Bytes": 21,
+      "Sha256": "472813f06ca1c48e8c28ae6b1b113f3a99aa6ee752b52e1fbba3be78003bb6a1",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/config-entry.json",
+      "Bytes": 302,
+      "Sha256": "138efab9ca2d4a888557d6ab8c91e418d9cc0826ef9f713001017636edc8370b",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T090257Z-3038/config-entry.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/config-exit.json",
+      "Bytes": 302,
+      "Sha256": "31bca535a983f9efff0a9205ba784a388f0d785cbf04c7776867598457e2849c",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T090257Z-3038/config-exit.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/process-snapshot-exit.json",
+      "Bytes": 55503,
+      "Sha256": "89dab860ffd8e3aa340ca9bc94d9c483601e1a7032f68800d1be581aa2f4422b",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T090257Z-3038/process-snapshot-exit.json",
+      "CustodiedSha256": "51fccfe7dbdaa0dd5c867adb3be661436bbd40946ed8367c3df7e6c850f38d0b",
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/processes-entry-reread.json",
+      "Bytes": 2855,
+      "Sha256": "c8b6c0f560fa34b5b5a69816612ab3d0fc73934769455655b6b8f8a330f74908",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T090257Z-3038/processes-entry-reread.json",
+      "CustodiedSha256": "127043d25a8912cca113c3bffe463b171324ff2b58cc38bb7b2bd79579849de7",
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/processes-entry.json",
+      "Bytes": 2638,
+      "Sha256": "f99c7580d0128655f4ab4afbd7d28f6f7687dc443919cfc9a2c7ffb714c2bc15",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T090257Z-3038/processes-entry.json",
+      "CustodiedSha256": "063523411202cb950e1094752108a4a6676094ddeff6fcb5b69869d08561d49e",
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/processes-exit.json",
+      "Bytes": 2210,
+      "Sha256": "f0698fbe99e7fa63282dae59f9d026475a8a53b55780eea1575857e959f6a12c",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T090257Z-3038/processes-exit.json",
+      "CustodiedSha256": "d20bc08343e4e921ee7844744afaa0d5ce94e41007b1b56b90cc9866fc693265",
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/prompt.md",
+      "Bytes": 54762,
+      "Sha256": "cc2d93adb149c785021d929a4bc0ccf37d08cf7af68e84b954af6cda97a91d7f",
+      "Disposition": "CUSTODIED_REDACTED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T090257Z-3038/prompt.md",
+      "CustodiedSha256": "c54fa3fb09b98f078b749368128c0d567d5d7f303a94776473e994f1105362d5",
+      "Redactions": {
+        "<worktree-local-redactado>": 1,
+        "<dotnet-de-usuario-redactado>": 3,
+        "<checkout-principal-redactado>": 1
+      }
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/relay-record.json",
+      "Bytes": 29089,
+      "Sha256": "4d9a29375697d0d397225e88f9d35f996c18ded27e354f920901693d20b74be0",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T090257Z-3038/relay-record.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/worker-handoff.json",
+      "Bytes": 21999,
+      "Sha256": "b41f5499c0f2ee99a5cba705918ada24d77e3b92b0b3c01104e337799ecd7776",
+      "Disposition": "CUSTODIED_REDACTED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T090257Z-3038/worker-handoff.json",
+      "CustodiedSha256": "4f63e8ce4e907d34913ca8b62b419d83db1063e86735fe9579d0d7c89421456d",
+      "Redactions": {
+        "<worktree-local-redactado>": 1,
+        "<dotnet-de-usuario-redactado>": 8
+      },
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/plugin-build.log",
+      "Bytes": 39410,
+      "Sha256": "3f6c4a5b9df693b71c929b4de086033d3ac5427dc61110a9c44668f135623cac",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/RackCad.Application.deps.json",
+      "Bytes": 842,
+      "Sha256": "5f85684e60ed85ae12ca4a3e4293beec4a203369dedbc98ad7dd851a1b6866e3",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/RackCad.Application.dll",
+      "Bytes": 1985536,
+      "Sha256": "57bd1fb64ceba4f994b4f4f64f516bb8bc9a547fe16b35d24dbe6b202e8fc6cc",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/RackCad.Application.pdb",
+      "Bytes": 623256,
+      "Sha256": "98f066c18ea10b83c195ddd73e90ef619fa4ad769a3fcb318545dabf45afb77f",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/RackCad.Domain.deps.json",
+      "Bytes": 434,
+      "Sha256": "95c7e257c0fb8924d4acb0720918682bbc6a663a298b0f6a84f13b44d18acd78",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/RackCad.Domain.dll",
+      "Bytes": 120320,
+      "Sha256": "7095496730d2135200e946156b56c9801a52980ea90541985025d9e376f9b35d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/RackCad.Domain.pdb",
+      "Bytes": 56492,
+      "Sha256": "92dbd490d760838ef6a0f6e1d4f2c468502e516b46e7749b2606ddc2fb0d34af",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/RackCad.Plugin.deps.json",
+      "Bytes": 1736,
+      "Sha256": "7d9a01a0ef81a064fb5a24fb40b5c6fdcf9a83ae99fc177d0cace0e452c4e953",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/RackCad.Plugin.dll",
+      "Bytes": 263168,
+      "Sha256": "e753ae4fc559f43f15bde7b408b971e024a0279bd02d8f816a58c0a2fc6ab50d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/RackCad.Plugin.pdb",
+      "Bytes": 99248,
+      "Sha256": "0f6e8da6be3edbb102b2b3d3b508c052047c80d1f6549896ded6758cfa27522e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/RackCad.UI.deps.json",
+      "Bytes": 1266,
+      "Sha256": "589ab4a6abd9ffd778f93d92f1927cbdcc410c4d913fe20c5104fb23497941cd",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/RackCad.UI.dll",
+      "Bytes": 901120,
+      "Sha256": "60538396c934e3b631f6cd537f2985d3ce5f81a4ec295496d84698e4d802bb45",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/RackCad.UI.pdb",
+      "Bytes": 332712,
+      "Sha256": "5da3a420267f9767ab89fbf077769ccf156abc2ea4c8724236303e0accf3f97a",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/catalogs/base-plates.csv",
+      "Bytes": 353,
+      "Sha256": "23536e17ecfe2304b0ce5f07cb328afd0c1a8373d4ca59c40fcda9d80b37ab62",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/catalogs/blocks.csv",
+      "Bytes": 6979,
+      "Sha256": "7b4b7677a8f307499892c97d74619590877c865617ebcca313204b2fda762874",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/catalogs/connection-layout.csv",
+      "Bytes": 2850,
+      "Sha256": "c9a27a10f87ca6bb5a615a39fed070bb75949150f43b9dcfbc44c19e6d847929",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/catalogs/connection-points.csv",
+      "Bytes": 1352,
+      "Sha256": "cd4df19aff84fb5f71be7ba83f71764e5ab2418e072a504a4681bd4a48bfe473",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/catalogs/defaults.json",
+      "Bytes": 495,
+      "Sha256": "eeb44e182b13808bff376649211a9408e3fee7ed91eef102ef4ede2a9d40d189",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/catalogs/flow-bed-profiles.csv",
+      "Bytes": 599,
+      "Sha256": "57ca9be5816960a5d9f4a180e89a5889e9be7a1b4aa56a5ca4d42cab8e92ed8e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/catalogs/header-templates.json",
+      "Bytes": 2813,
+      "Sha256": "945931d2cab5a7df322e3b329ce4cf7f55586535d8a3a4824a4efa6bed44715e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/catalogs/mensulas.csv",
+      "Bytes": 365,
+      "Sha256": "903e12147ccdda4ae45e1cca27db6f93597d78fa101bba0a8bd33626919c2081",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/catalogs/secciones.csv",
+      "Bytes": 1282,
+      "Sha256": "8e5f2e9c22eeb54210ce49c8ba145ec5a102de430a533244e37d5d0da65f5ee1",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/catalogs/seguridad.csv",
+      "Bytes": 1505,
+      "Sha256": "474c67e1623786809cb28d10a1242a96b00463bb3a186656daed019d05a08eac",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/catalogs/structural-section-sources.csv",
+      "Bytes": 301,
+      "Sha256": "ad2ac2302fc92d5c956ff1fd2f94c2ac91338609166a3fa74abfaee03298b385",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/catalogs/structural-section-status.csv",
+      "Bytes": 26,
+      "Sha256": "7b4cb158af88769bd90ab9ce2ce3d21010edb7f7fb334e591917b6f5342e6d7d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/catalogs/structural-sections-c.csv",
+      "Bytes": 9052,
+      "Sha256": "e42871a455ad2f78e9c9550e6b9d65431b678bb6cc867c841ec4e6bbef66f63e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/catalogs/structural-sections-hss-rect.csv",
+      "Bytes": 93588,
+      "Sha256": "fdc8e3e436dfa33421d0ed8a06f8cac7b82c232f997802b6a95cc25498443f0d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/catalogs/structural-sections-l.csv",
+      "Bytes": 38455,
+      "Sha256": "6b5077003388735502febac99281266b37c3688faeea2d2ab1bdb399e44bf2fc",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/catalogs/structural-sections-manifest.json",
+      "Bytes": 1541,
+      "Sha256": "1d632563abe50d3f85856078e1524b294ae91cd03ba1df1824e992af346dd86b",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/catalogs/structural-sections-s.csv",
+      "Bytes": 6732,
+      "Sha256": "c081cd93f95a1bbd5f701c6975d18803aa6cc2e798d94b5038544383e8cf3707",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/catalogs/structural-sections-w.csv",
+      "Bytes": 71118,
+      "Sha256": "9259f672cddc6855e321e0483f819f5875967145c6f218571f3d8e1fdce78f1e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/baseline/out/catalogs/views.csv",
+      "Bytes": 244,
+      "Sha256": "bad65d2ffc652dbb23f003406de7125814dff85fcd1a85bc3787b15d51041075",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/ci-core/core.trx",
+      "Bytes": 17257374,
+      "Sha256": "d32dfbc6b4f78e52e6e2bbcdce1f47a94e43a3ff6ae7cf8bbb73a424c765e6ff",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/ci-ui/ui.trx",
+      "Bytes": 2475621,
+      "Sha256": "11f6549391814d3122f6c110c70acafaf4e745cd6365fbda4acaf69d1ee00bee",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/red-ci-core/core.trx",
+      "Bytes": 17301093,
+      "Sha256": "6f874dbe728c879714f86b7c2b8e18194dbdfd574b59c9036f1006faaa6f6c53",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/red-ci-ui/ui.trx",
+      "Bytes": 2595412,
+      "Sha256": "b38f8e30c558bb577052b0290741628b0d54738f8cd737240f489ec3a5c4ee11",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/full-core/full-core.trx",
+      "Bytes": 17840817,
+      "Sha256": "54fca036e57e823440c2989bba6d6724c909b3513e3bef52e8078b559dcf4af3",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/full-core/run.log",
+      "Bytes": 690,
+      "Sha256": "e703c40515f2ae4f55508262acc6258bb6b606e9493b1244d34821d7dcf62b21",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/full-ui/full-ui.trx",
+      "Bytes": 2612472,
+      "Sha256": "d47d89f64ba9d67aee5b1a23699857c27ba9563a29f7df424c638c3522baec9d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/full-ui/run.log",
+      "Bytes": 6739,
+      "Sha256": "34250fc2e309f3938d27c9236dcdae941938386666ad2cf00a45ae4eefbc4a01",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/full-ui-2/full-ui-2.trx",
+      "Bytes": 2612472,
+      "Sha256": "d8dc27f8cf6c508f1e72263bcc3abf89ffdd238a81b2e7dfd4629f5887b1bd7f",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/full-ui-2/run.log",
+      "Bytes": 6746,
+      "Sha256": "e2e9577746a455fc28a09a82e56523b7bf1e9958ba3a21c21df4b3785339b83a",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-core/g-core.trx",
+      "Bytes": 783128,
+      "Sha256": "58f33dcb8f55cabae9abaabd7fba6fbe8708e7916dec8900b3a6e1909d32354e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-core/run.log",
+      "Bytes": 22763,
+      "Sha256": "895e4808a6b49ab28a6af1e127c4fd29f30c177c52cab7a6e4823165eea8a61c",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/build.log",
+      "Bytes": 39434,
+      "Sha256": "bf4b7eb2d1489065ce8681787621d8516efd9cf599e211cf8a9383df6c30b321",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/RackCad.Application.deps.json",
+      "Bytes": 842,
+      "Sha256": "5f85684e60ed85ae12ca4a3e4293beec4a203369dedbc98ad7dd851a1b6866e3",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/RackCad.Application.dll",
+      "Bytes": 1985536,
+      "Sha256": "f81728cd33d7672ab1106094dac3b27ab7f8ec5291e91a60f99b4e1102e23524",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/RackCad.Application.pdb",
+      "Bytes": 623256,
+      "Sha256": "aaf979998cf9a3d46d48a0b7c59fdea2399dbc7c6a73e9136077c662aad1d362",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/RackCad.Domain.deps.json",
+      "Bytes": 434,
+      "Sha256": "95c7e257c0fb8924d4acb0720918682bbc6a663a298b0f6a84f13b44d18acd78",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/RackCad.Domain.dll",
+      "Bytes": 120320,
+      "Sha256": "0aa9aeee5fc0a7721116d5414dbf4faf3212a72fac7ef9bc5aa53620748399dc",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/RackCad.Domain.pdb",
+      "Bytes": 56488,
+      "Sha256": "c572dccb396241c4c369a22775650a3768f93e425d8a1659e1e8563c26841af6",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/RackCad.Plugin.deps.json",
+      "Bytes": 1736,
+      "Sha256": "7d9a01a0ef81a064fb5a24fb40b5c6fdcf9a83ae99fc177d0cace0e452c4e953",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/RackCad.Plugin.dll",
+      "Bytes": 266240,
+      "Sha256": "a6cb3a728a5dc363767057c8a608e0f5f399b804526235ba4102fa447cbac589",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/RackCad.Plugin.pdb",
+      "Bytes": 100112,
+      "Sha256": "aea836841a5be1492b97e89038da87399bb38ca73c82352cff04ca69bf42a1d7",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/RackCad.UI.deps.json",
+      "Bytes": 1266,
+      "Sha256": "589ab4a6abd9ffd778f93d92f1927cbdcc410c4d913fe20c5104fb23497941cd",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/RackCad.UI.dll",
+      "Bytes": 915968,
+      "Sha256": "0bcdde9553afb11c870ff75059f3d1b6eeae7ce0c97a563ea55c0e010c28aacc",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/RackCad.UI.pdb",
+      "Bytes": 339380,
+      "Sha256": "d948ab61fd6250cae8436b3356f19b672b059c9c764b463d4b179a52879edc47",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/catalogs/base-plates.csv",
+      "Bytes": 353,
+      "Sha256": "23536e17ecfe2304b0ce5f07cb328afd0c1a8373d4ca59c40fcda9d80b37ab62",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/catalogs/blocks.csv",
+      "Bytes": 6979,
+      "Sha256": "7b4b7677a8f307499892c97d74619590877c865617ebcca313204b2fda762874",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/catalogs/connection-layout.csv",
+      "Bytes": 2850,
+      "Sha256": "c9a27a10f87ca6bb5a615a39fed070bb75949150f43b9dcfbc44c19e6d847929",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/catalogs/connection-points.csv",
+      "Bytes": 1352,
+      "Sha256": "cd4df19aff84fb5f71be7ba83f71764e5ab2418e072a504a4681bd4a48bfe473",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/catalogs/defaults.json",
+      "Bytes": 495,
+      "Sha256": "eeb44e182b13808bff376649211a9408e3fee7ed91eef102ef4ede2a9d40d189",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/catalogs/flow-bed-profiles.csv",
+      "Bytes": 599,
+      "Sha256": "57ca9be5816960a5d9f4a180e89a5889e9be7a1b4aa56a5ca4d42cab8e92ed8e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/catalogs/header-templates.json",
+      "Bytes": 2813,
+      "Sha256": "945931d2cab5a7df322e3b329ce4cf7f55586535d8a3a4824a4efa6bed44715e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/catalogs/mensulas.csv",
+      "Bytes": 365,
+      "Sha256": "903e12147ccdda4ae45e1cca27db6f93597d78fa101bba0a8bd33626919c2081",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/catalogs/secciones.csv",
+      "Bytes": 1282,
+      "Sha256": "8e5f2e9c22eeb54210ce49c8ba145ec5a102de430a533244e37d5d0da65f5ee1",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/catalogs/seguridad.csv",
+      "Bytes": 1505,
+      "Sha256": "474c67e1623786809cb28d10a1242a96b00463bb3a186656daed019d05a08eac",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/catalogs/structural-section-sources.csv",
+      "Bytes": 301,
+      "Sha256": "ad2ac2302fc92d5c956ff1fd2f94c2ac91338609166a3fa74abfaee03298b385",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/catalogs/structural-section-status.csv",
+      "Bytes": 26,
+      "Sha256": "7b4cb158af88769bd90ab9ce2ce3d21010edb7f7fb334e591917b6f5342e6d7d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/catalogs/structural-sections-c.csv",
+      "Bytes": 9052,
+      "Sha256": "e42871a455ad2f78e9c9550e6b9d65431b678bb6cc867c841ec4e6bbef66f63e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/catalogs/structural-sections-hss-rect.csv",
+      "Bytes": 93588,
+      "Sha256": "fdc8e3e436dfa33421d0ed8a06f8cac7b82c232f997802b6a95cc25498443f0d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/catalogs/structural-sections-l.csv",
+      "Bytes": 38455,
+      "Sha256": "6b5077003388735502febac99281266b37c3688faeea2d2ab1bdb399e44bf2fc",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/catalogs/structural-sections-manifest.json",
+      "Bytes": 1541,
+      "Sha256": "1d632563abe50d3f85856078e1524b294ae91cd03ba1df1824e992af346dd86b",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/catalogs/structural-sections-s.csv",
+      "Bytes": 6732,
+      "Sha256": "c081cd93f95a1bbd5f701c6975d18803aa6cc2e798d94b5038544383e8cf3707",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/catalogs/structural-sections-w.csv",
+      "Bytes": 71118,
+      "Sha256": "9259f672cddc6855e321e0483f819f5875967145c6f218571f3d8e1fdce78f1e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-plugin/out/catalogs/views.csv",
+      "Bytes": 244,
+      "Sha256": "bad65d2ffc652dbb23f003406de7125814dff85fcd1a85bc3787b15d51041075",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-ui/g-ui.trx",
+      "Bytes": 94548,
+      "Sha256": "1d2b9b22f68cafcdbde8247912e7a762687022096ce01fb256608c9853b5d8a7",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/g-ui/run.log",
+      "Bytes": 5608,
+      "Sha256": "e2324780b3022ad30e283797c09086ace32cd62e5bd48510ca069a59ae726fa0",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-core/green-core.trx",
+      "Bytes": 785180,
+      "Sha256": "481990335ce259690ac4af1fe5688215f89e0fc069925ce0a47e409b7c02bf48",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-core/run.log",
+      "Bytes": 22781,
+      "Sha256": "ec4e957f76c7cdd9385ba5148542bd78fe14151a9d16cf18911ebcf74f6b4601",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/build.log",
+      "Bytes": 39450,
+      "Sha256": "96b0aa65109d26d118b728e51fc2ce88717ad02a3944c32ae8a976682e127fbc",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/RackCad.Application.deps.json",
+      "Bytes": 842,
+      "Sha256": "5f85684e60ed85ae12ca4a3e4293beec4a203369dedbc98ad7dd851a1b6866e3",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/RackCad.Application.dll",
+      "Bytes": 1985536,
+      "Sha256": "e0ac2ec11583b8dba512eb60b1e1b1aca77313d306e3f20bbef0d7b1ff1a00ac",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/RackCad.Application.pdb",
+      "Bytes": 623264,
+      "Sha256": "d608226652a36ac8ea87ba166802fd2fcc4f8c2a28b5ae127be283a421f23f02",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/RackCad.Domain.deps.json",
+      "Bytes": 434,
+      "Sha256": "95c7e257c0fb8924d4acb0720918682bbc6a663a298b0f6a84f13b44d18acd78",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/RackCad.Domain.dll",
+      "Bytes": 120320,
+      "Sha256": "977cf4a4e2b371cc9c8f9345799bd09729674e2e4f3c084b7f58d6f586231fd0",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/RackCad.Domain.pdb",
+      "Bytes": 56492,
+      "Sha256": "b35a3e3f6d95c3f608170b0ff319f0c55d0f713f4f7201081be5881e1351cce4",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/RackCad.Plugin.deps.json",
+      "Bytes": 1736,
+      "Sha256": "7d9a01a0ef81a064fb5a24fb40b5c6fdcf9a83ae99fc177d0cace0e452c4e953",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/RackCad.Plugin.dll",
+      "Bytes": 266240,
+      "Sha256": "9bd7530da0f19164e76d07ceceed0441996e1912e5a9c99a76192b0a2a01e4d6",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/RackCad.Plugin.pdb",
+      "Bytes": 100116,
+      "Sha256": "6d0cae600bcc1249c3d93ff7502f3628cf0e7e316e27133d71ee0aba79e286d2",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/RackCad.UI.deps.json",
+      "Bytes": 1266,
+      "Sha256": "589ab4a6abd9ffd778f93d92f1927cbdcc410c4d913fe20c5104fb23497941cd",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/RackCad.UI.dll",
+      "Bytes": 915968,
+      "Sha256": "cfbbdc96d378d4a80d2290db8dee0d631d838794ec0c0967902c3e86fadf45be",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/RackCad.UI.pdb",
+      "Bytes": 339384,
+      "Sha256": "edd6e6e801c3ba4ed5adf1ed2e2299c24a1953d7297628b7ea4cc7a38a29e7da",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/catalogs/base-plates.csv",
+      "Bytes": 353,
+      "Sha256": "23536e17ecfe2304b0ce5f07cb328afd0c1a8373d4ca59c40fcda9d80b37ab62",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/catalogs/blocks.csv",
+      "Bytes": 6979,
+      "Sha256": "7b4b7677a8f307499892c97d74619590877c865617ebcca313204b2fda762874",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/catalogs/connection-layout.csv",
+      "Bytes": 2850,
+      "Sha256": "c9a27a10f87ca6bb5a615a39fed070bb75949150f43b9dcfbc44c19e6d847929",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/catalogs/connection-points.csv",
+      "Bytes": 1352,
+      "Sha256": "cd4df19aff84fb5f71be7ba83f71764e5ab2418e072a504a4681bd4a48bfe473",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/catalogs/defaults.json",
+      "Bytes": 495,
+      "Sha256": "eeb44e182b13808bff376649211a9408e3fee7ed91eef102ef4ede2a9d40d189",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/catalogs/flow-bed-profiles.csv",
+      "Bytes": 599,
+      "Sha256": "57ca9be5816960a5d9f4a180e89a5889e9be7a1b4aa56a5ca4d42cab8e92ed8e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/catalogs/header-templates.json",
+      "Bytes": 2813,
+      "Sha256": "945931d2cab5a7df322e3b329ce4cf7f55586535d8a3a4824a4efa6bed44715e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/catalogs/mensulas.csv",
+      "Bytes": 365,
+      "Sha256": "903e12147ccdda4ae45e1cca27db6f93597d78fa101bba0a8bd33626919c2081",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/catalogs/secciones.csv",
+      "Bytes": 1282,
+      "Sha256": "8e5f2e9c22eeb54210ce49c8ba145ec5a102de430a533244e37d5d0da65f5ee1",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/catalogs/seguridad.csv",
+      "Bytes": 1505,
+      "Sha256": "474c67e1623786809cb28d10a1242a96b00463bb3a186656daed019d05a08eac",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/catalogs/structural-section-sources.csv",
+      "Bytes": 301,
+      "Sha256": "ad2ac2302fc92d5c956ff1fd2f94c2ac91338609166a3fa74abfaee03298b385",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/catalogs/structural-section-status.csv",
+      "Bytes": 26,
+      "Sha256": "7b4cb158af88769bd90ab9ce2ce3d21010edb7f7fb334e591917b6f5342e6d7d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/catalogs/structural-sections-c.csv",
+      "Bytes": 9052,
+      "Sha256": "e42871a455ad2f78e9c9550e6b9d65431b678bb6cc867c841ec4e6bbef66f63e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/catalogs/structural-sections-hss-rect.csv",
+      "Bytes": 93588,
+      "Sha256": "fdc8e3e436dfa33421d0ed8a06f8cac7b82c232f997802b6a95cc25498443f0d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/catalogs/structural-sections-l.csv",
+      "Bytes": 38455,
+      "Sha256": "6b5077003388735502febac99281266b37c3688faeea2d2ab1bdb399e44bf2fc",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/catalogs/structural-sections-manifest.json",
+      "Bytes": 1541,
+      "Sha256": "1d632563abe50d3f85856078e1524b294ae91cd03ba1df1824e992af346dd86b",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/catalogs/structural-sections-s.csv",
+      "Bytes": 6732,
+      "Sha256": "c081cd93f95a1bbd5f701c6975d18803aa6cc2e798d94b5038544383e8cf3707",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/catalogs/structural-sections-w.csv",
+      "Bytes": 71118,
+      "Sha256": "9259f672cddc6855e321e0483f819f5875967145c6f218571f3d8e1fdce78f1e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-plugin/out/catalogs/views.csv",
+      "Bytes": 244,
+      "Sha256": "bad65d2ffc652dbb23f003406de7125814dff85fcd1a85bc3787b15d51041075",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-ui/green-ui.trx",
+      "Bytes": 94788,
+      "Sha256": "a0253d268b319e8b8d50d9f9c22a9cc8dda758157a5ca9fc0741ac372d67e112",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/green-ui/run.log",
+      "Bytes": 5395,
+      "Sha256": "18d2c16cfb3990299429e3023e4b13e114132fc9ac99abfe7f9e978bce7ed4e8",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/pre-core/pre-core.trx",
+      "Bytes": 17800224,
+      "Sha256": "dd4136222693d4794f8a54c6e701639a7aefbc9aa7cd81f0568e6bd653fd108f",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/pre-core/run.log",
+      "Bytes": 1533,
+      "Sha256": "4a711a4530d49ae3220185267c2dbaa8f76cf6db3880d57a353714e44cd94a02",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/pre-ui/pre-ui.trx",
+      "Bytes": 2602339,
+      "Sha256": "4403c3cf5a7517a71c02eda5907268d05690c973bcf6e727f629c0cc74812b77",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/pre-ui/run.log",
+      "Bytes": 5921,
+      "Sha256": "0bc5dc5f4ca65cc2dfe32b224b4961308d085ef51de9399602614cc672cf89c9",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-core/red-core.trx",
+      "Bytes": 830720,
+      "Sha256": "e3c20961cb869df8b9347ea34c1e4fb9a0e45a4f20843814a54f0fec82a30a17",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/build.log",
+      "Bytes": 40862,
+      "Sha256": "3c7f9613d4a3e1128aa9eda3c62779a24b6eb0f1a7443c491095b35fde454c21",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/RackCad.Application.deps.json",
+      "Bytes": 842,
+      "Sha256": "5f85684e60ed85ae12ca4a3e4293beec4a203369dedbc98ad7dd851a1b6866e3",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/RackCad.Application.dll",
+      "Bytes": 1985536,
+      "Sha256": "57bd1fb64ceba4f994b4f4f64f516bb8bc9a547fe16b35d24dbe6b202e8fc6cc",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/RackCad.Application.pdb",
+      "Bytes": 623256,
+      "Sha256": "98f066c18ea10b83c195ddd73e90ef619fa4ad769a3fcb318545dabf45afb77f",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/RackCad.Domain.deps.json",
+      "Bytes": 434,
+      "Sha256": "95c7e257c0fb8924d4acb0720918682bbc6a663a298b0f6a84f13b44d18acd78",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/RackCad.Domain.dll",
+      "Bytes": 120320,
+      "Sha256": "7095496730d2135200e946156b56c9801a52980ea90541985025d9e376f9b35d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/RackCad.Domain.pdb",
+      "Bytes": 56492,
+      "Sha256": "92dbd490d760838ef6a0f6e1d4f2c468502e516b46e7749b2606ddc2fb0d34af",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/RackCad.Plugin.deps.json",
+      "Bytes": 1736,
+      "Sha256": "7d9a01a0ef81a064fb5a24fb40b5c6fdcf9a83ae99fc177d0cace0e452c4e953",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/RackCad.Plugin.dll",
+      "Bytes": 264192,
+      "Sha256": "3de63ab501a7e86f368f81406bb7644954209149b4cad6cebfe6df32a182cf43",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/RackCad.Plugin.pdb",
+      "Bytes": 99452,
+      "Sha256": "f292b68d7da26308547dce373572cd292165be45bab9aece5f75caf1f9a1c728",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/RackCad.UI.deps.json",
+      "Bytes": 1266,
+      "Sha256": "589ab4a6abd9ffd778f93d92f1927cbdcc410c4d913fe20c5104fb23497941cd",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/RackCad.UI.dll",
+      "Bytes": 905728,
+      "Sha256": "18c3a54bde9c7b3d3703d82076f0d65837a91c4a587c42c4cc8c83e20d2c85ce",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/RackCad.UI.pdb",
+      "Bytes": 335776,
+      "Sha256": "ce8eb515e90c2cab9eec62255933fc34723171223a4ba7f6d82f3c5a139a96c5",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/catalogs/base-plates.csv",
+      "Bytes": 353,
+      "Sha256": "23536e17ecfe2304b0ce5f07cb328afd0c1a8373d4ca59c40fcda9d80b37ab62",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/catalogs/blocks.csv",
+      "Bytes": 6979,
+      "Sha256": "7b4b7677a8f307499892c97d74619590877c865617ebcca313204b2fda762874",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/catalogs/connection-layout.csv",
+      "Bytes": 2850,
+      "Sha256": "c9a27a10f87ca6bb5a615a39fed070bb75949150f43b9dcfbc44c19e6d847929",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/catalogs/connection-points.csv",
+      "Bytes": 1352,
+      "Sha256": "cd4df19aff84fb5f71be7ba83f71764e5ab2418e072a504a4681bd4a48bfe473",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/catalogs/defaults.json",
+      "Bytes": 495,
+      "Sha256": "eeb44e182b13808bff376649211a9408e3fee7ed91eef102ef4ede2a9d40d189",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/catalogs/flow-bed-profiles.csv",
+      "Bytes": 599,
+      "Sha256": "57ca9be5816960a5d9f4a180e89a5889e9be7a1b4aa56a5ca4d42cab8e92ed8e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/catalogs/header-templates.json",
+      "Bytes": 2813,
+      "Sha256": "945931d2cab5a7df322e3b329ce4cf7f55586535d8a3a4824a4efa6bed44715e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/catalogs/mensulas.csv",
+      "Bytes": 365,
+      "Sha256": "903e12147ccdda4ae45e1cca27db6f93597d78fa101bba0a8bd33626919c2081",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/catalogs/secciones.csv",
+      "Bytes": 1282,
+      "Sha256": "8e5f2e9c22eeb54210ce49c8ba145ec5a102de430a533244e37d5d0da65f5ee1",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/catalogs/seguridad.csv",
+      "Bytes": 1505,
+      "Sha256": "474c67e1623786809cb28d10a1242a96b00463bb3a186656daed019d05a08eac",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/catalogs/structural-section-sources.csv",
+      "Bytes": 301,
+      "Sha256": "ad2ac2302fc92d5c956ff1fd2f94c2ac91338609166a3fa74abfaee03298b385",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/catalogs/structural-section-status.csv",
+      "Bytes": 26,
+      "Sha256": "7b4cb158af88769bd90ab9ce2ce3d21010edb7f7fb334e591917b6f5342e6d7d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/catalogs/structural-sections-c.csv",
+      "Bytes": 9052,
+      "Sha256": "e42871a455ad2f78e9c9550e6b9d65431b678bb6cc867c841ec4e6bbef66f63e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/catalogs/structural-sections-hss-rect.csv",
+      "Bytes": 93588,
+      "Sha256": "fdc8e3e436dfa33421d0ed8a06f8cac7b82c232f997802b6a95cc25498443f0d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/catalogs/structural-sections-l.csv",
+      "Bytes": 38455,
+      "Sha256": "6b5077003388735502febac99281266b37c3688faeea2d2ab1bdb399e44bf2fc",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/catalogs/structural-sections-manifest.json",
+      "Bytes": 1541,
+      "Sha256": "1d632563abe50d3f85856078e1524b294ae91cd03ba1df1824e992af346dd86b",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/catalogs/structural-sections-s.csv",
+      "Bytes": 6732,
+      "Sha256": "c081cd93f95a1bbd5f701c6975d18803aa6cc2e798d94b5038544383e8cf3707",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/catalogs/structural-sections-w.csv",
+      "Bytes": 71118,
+      "Sha256": "9259f672cddc6855e321e0483f819f5875967145c6f218571f3d8e1fdce78f1e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-plugin/out/catalogs/views.csv",
+      "Bytes": 244,
+      "Sha256": "bad65d2ffc652dbb23f003406de7125814dff85fcd1a85bc3787b15d51041075",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/red-ui/red-ui.trx",
+      "Bytes": 201032,
+      "Sha256": "3ecf6319dd31f06dff9f9100ea421ab28dec8d2f74119bf04a817d75fe4f3feb",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/rel/build-RackCad.Tests.log",
+      "Bytes": 43434,
+      "Sha256": "fc25702eefd03fc42ac6ace7635a3122d30f72d4c1a9fe63bbb6e1602d6a3d65",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T090257Z-3038/tests/rel/build-RackCad.UI.Tests.log",
+      "Bytes": 8675,
+      "Sha256": "58f558f081c0b1d6c92874484f15e074e7567d3ebcbab24c4f41eac0a7d6fcc1",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/cession-end.txt",
+      "Bytes": 21,
+      "Sha256": "80f0b31ab7b3cd3c7d52914e8a49a929a7a6b5719e13ce14074b4b8e8872c19c",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/cession-start.txt",
+      "Bytes": 21,
+      "Sha256": "bd90c632c37f65b9ac31c78e1061f957c8b205f0164521f685e0c10f13b46977",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/config-entry.json",
+      "Bytes": 302,
+      "Sha256": "42b8f62fe0dc963b740dcf2dfcc24e683eff1c942dff90939bbd8f89bbbd1702",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T100844Z-37e1/config-entry.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/config-exit.json",
+      "Bytes": 302,
+      "Sha256": "d570c90e7b720292bb5fc686df015e1be5bdc30779439ba26265aa555030b0de",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T100844Z-37e1/config-exit.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/controller-verification.json",
+      "Bytes": 6887,
+      "Sha256": "6fbce461ddc3a4e40ebd1b74a046e92fea46c2ecf83569c77c736bee4c7327b3",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T100844Z-37e1/controller-verification.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/events.jsonl",
+      "Bytes": 676362,
+      "Sha256": "becd7443cbc3a5a0b495688bdb1c0a0009e5e77f1bfe976d801c570964680813",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro crudo de eventos del CLI (contiene rutas locales); se conserva su SHA-256"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/exit-code.txt",
+      "Bytes": 2,
+      "Sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/launcher-pid.txt",
+      "Bytes": 4,
+      "Sha256": "529f19ecbc377dfea8adff8d5225a7fbf5229eb7f91891cbaa54a506fdaa2020",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/launcher-winpid.txt",
+      "Bytes": 6,
+      "Sha256": "f155bcbd3e2466c4b061990f9f49ee5a7103f67b856bf722fbb236c456163be7",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/output.json",
+      "Bytes": 6887,
+      "Sha256": "6fbce461ddc3a4e40ebd1b74a046e92fea46c2ecf83569c77c736bee4c7327b3",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T100844Z-37e1/controller-verification.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/processes-entry.json",
+      "Bytes": 1917,
+      "Sha256": "7c28331ec4e0364bf3826dda2d9ba47472403b71ccf227aa6fd61c06e1e24665",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T100844Z-37e1/processes-entry.json",
+      "CustodiedSha256": "d78ec400182082a1ac0577dd7fec2b9bba6289d7ae34980e4baded0a3f4fd3c9",
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/processes-exit.json",
+      "Bytes": 1702,
+      "Sha256": "26b539147e33fe45b53fddcc82d0b97917f1064fd3fc8deb841c9b63c822ffa7",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T100844Z-37e1/processes-exit.json",
+      "CustodiedSha256": "5ee06b6a8ac13d5bc9a435227ee83a0b77bfe852e5f8048de523b5e7e8b7d80f",
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/prompt.md",
+      "Bytes": 9509,
+      "Sha256": "0a4b7dc31b33405730d41cc720f1d4c0e750ce4b8b2aa7c387042952cea44230",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T100844Z-37e1/prompt.md"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/relay-record.json",
+      "Bytes": 13942,
+      "Sha256": "239bed140b74b7febf495befd4c8183a86ce50402aadc2a7899f6a92e4852910",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T100844Z-37e1/relay-record.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/stderr.txt",
+      "Bytes": 39,
+      "Sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "Disposition": "EXCLUDED",
+      "Reason": "stderr del CLI (aviso de lectura de stdin de 39 bytes) o vacio"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/inputs/coordinator-acceptance.md",
+      "Bytes": 8820,
+      "Sha256": "6c008702a7b749481e1ce11a2ae01eafc6ccf7eb80b0828092dfc0d012fa7803",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/coordinator-acceptance.md"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/inputs/delegation.json",
+      "Bytes": 39088,
+      "Sha256": "683cbe6f53ddf34ea4d2b6a1097d3949c6de6b00cf5872edbd6cc6555b068009",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/delegation.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/inputs/gate-contract.json",
+      "Bytes": 35799,
+      "Sha256": "7807a9e5136dc6d7c84526fb3b175f935c20f85bd48df1dec04e4275372d2873",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/gate-contract.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/inputs/relay-record-planning.json",
+      "Bytes": 15118,
+      "Sha256": "5e66223eb4d6aeeaac9eefef385a55218df7173748cd89ddafd1688d52c89dff",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/relay-record.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/inputs/relay-record-work.json",
+      "Bytes": 29089,
+      "Sha256": "4d9a29375697d0d397225e88f9d35f996c18ded27e354f920901693d20b74be0",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T090257Z-3038/relay-record.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/inputs/worker-handoff.json",
+      "Bytes": 21999,
+      "Sha256": "b41f5499c0f2ee99a5cba705918ada24d77e3b92b0b3c01104e337799ecd7776",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T090257Z-3038/worker-handoff.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/inputs/ci-core/38129212761/core.trx",
+      "Bytes": 17257374,
+      "Sha256": "d32dfbc6b4f78e52e6e2bbcdce1f47a94e43a3ff6ae7cf8bbb73a424c765e6ff",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/inputs/ci-core-red/38128156191/core.trx",
+      "Bytes": 17301093,
+      "Sha256": "6f874dbe728c879714f86b7c2b8e18194dbdfd574b59c9036f1006faaa6f6c53",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/inputs/ci-ui/38129212761/ui.trx",
+      "Bytes": 2475621,
+      "Sha256": "11f6549391814d3122f6c110c70acafaf4e745cd6365fbda4acaf69d1ee00bee",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T100844Z-37e1/inputs/ci-ui-red/38128156191/ui.trx",
+      "Bytes": 2595412,
+      "Sha256": "b38f8e30c558bb577052b0290741628b0d54738f8cd737240f489ec3a5c4ee11",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/cession-end.txt",
+      "Bytes": 21,
+      "Sha256": "f73909ac9af7d6495530ae0829211df4aca5d08a873eee47bbf955eacbfadecf",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/cession-start.txt",
+      "Bytes": 21,
+      "Sha256": "31b0a3656f4fe8a1a76d588bf93f9909a0ee9acc762e07c1a100ed18222c66b9",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/config-entry.json",
+      "Bytes": 302,
+      "Sha256": "4503e40b822317481ca99f189d4ddb4077569e87ac524411f761193539a6141c",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T153749Z-7910/config-entry.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/config-exit.json",
+      "Bytes": 302,
+      "Sha256": "dfe8e5943aa9e8eab3b800dd8bc9e58741b1f92f1032bcec25d4a837778ad644",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T153749Z-7910/config-exit.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/controller-verification.json",
+      "Bytes": 6387,
+      "Sha256": "ccdead546c48c001bf8ed17a05c46bc1ffe0b303eea699923cdad14f9f993d59",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T153749Z-7910/controller-verification.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/events.jsonl",
+      "Bytes": 1582972,
+      "Sha256": "c26d217bebfa04797f964521788133d632a01e0da5f2c4a0725c2cfe34371414",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro crudo de eventos del CLI (contiene rutas locales); se conserva su SHA-256"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/exit-code.txt",
+      "Bytes": 2,
+      "Sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/launcher-pid.txt",
+      "Bytes": 5,
+      "Sha256": "991bd09d2bc169ae52a69f9ec3d29cfa8b8aa2ca9cff242b07e0b246b8f8b16b",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/launcher-winpid.txt",
+      "Bytes": 6,
+      "Sha256": "6ee5b7ae386b803f8594466116193d04bc406cd9812bd6dc34f4d8f65c1f7298",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/output.json",
+      "Bytes": 6387,
+      "Sha256": "ccdead546c48c001bf8ed17a05c46bc1ffe0b303eea699923cdad14f9f993d59",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T153749Z-7910/controller-verification.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/processes-entry.json",
+      "Bytes": 1702,
+      "Sha256": "b2770a40f302a5c893e51a2996fd740faf6eab6862a7a46b57d9ccd9261bcc40",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T153749Z-7910/processes-entry.json",
+      "CustodiedSha256": "250563e700b3cf9e0e8ca3441a13efe1149723479757397940f2ece1b70a9a48",
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/processes-exit.json",
+      "Bytes": 2347,
+      "Sha256": "e14c838b7825fec04abf32ba385b708ed25afc9acf3f7c2ba534228846780003",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T153749Z-7910/processes-exit.json",
+      "CustodiedSha256": "e36d06b0999a5e069f650f774751d6be68ef9a7adfbb55433bd84506ecc4453f",
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/prompt.md",
+      "Bytes": 11157,
+      "Sha256": "a61a282095201437aef0802460983580e9b61be941846d7c63be959bb3bff394",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T153749Z-7910/prompt.md"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/relay-record.json",
+      "Bytes": 15083,
+      "Sha256": "a19062952284e497c971aab5afb9a0570194e68d69df33675d3bcfcfce76fb27",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T153749Z-7910/relay-record.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/stderr.txt",
+      "Bytes": 39,
+      "Sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "Disposition": "EXCLUDED",
+      "Reason": "stderr del CLI (aviso de lectura de stdin de 39 bytes) o vacio"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/inputs/coordinator-acceptance.md",
+      "Bytes": 8820,
+      "Sha256": "6c008702a7b749481e1ce11a2ae01eafc6ccf7eb80b0828092dfc0d012fa7803",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/coordinator-acceptance.md"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/inputs/coordinator-disposition.md",
+      "Bytes": 4573,
+      "Sha256": "91a87b226837a4a7527b333ecaa850bde7a4de48db33258f9ed3bd42c8d1fdb9",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T100844Z-37e1/coordinator-disposition.md"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/inputs/delegation.json",
+      "Bytes": 39088,
+      "Sha256": "683cbe6f53ddf34ea4d2b6a1097d3949c6de6b00cf5872edbd6cc6555b068009",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/delegation.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/inputs/gate-contract.json",
+      "Bytes": 35799,
+      "Sha256": "7807a9e5136dc6d7c84526fb3b175f935c20f85bd48df1dec04e4275372d2873",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/gate-contract.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/inputs/relay-record-planning.json",
+      "Bytes": 15118,
+      "Sha256": "5e66223eb4d6aeeaac9eefef385a55218df7173748cd89ddafd1688d52c89dff",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/relay-record.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/inputs/relay-record-work.json",
+      "Bytes": 29089,
+      "Sha256": "4d9a29375697d0d397225e88f9d35f996c18ded27e354f920901693d20b74be0",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T090257Z-3038/relay-record.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/inputs/worker-handoff.json",
+      "Bytes": 21999,
+      "Sha256": "b41f5499c0f2ee99a5cba705918ada24d77e3b92b0b3c01104e337799ecd7776",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T090257Z-3038/worker-handoff.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/inputs/ci-core/38129212761/core.trx",
+      "Bytes": 17257374,
+      "Sha256": "d32dfbc6b4f78e52e6e2bbcdce1f47a94e43a3ff6ae7cf8bbb73a424c765e6ff",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/inputs/ci-core-red/38128156191/core.trx",
+      "Bytes": 17301093,
+      "Sha256": "6f874dbe728c879714f86b7c2b8e18194dbdfd574b59c9036f1006faaa6f6c53",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/inputs/ci-ui/38129212761/ui.trx",
+      "Bytes": 2475621,
+      "Sha256": "11f6549391814d3122f6c110c70acafaf4e745cd6365fbda4acaf69d1ee00bee",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI/3/R20261011T153749Z-7910/inputs/ci-ui-red/38128156191/ui.trx",
+      "Bytes": 2595412,
+      "Sha256": "b38f8e30c558bb577052b0290741628b0d54738f8cd737240f489ec3a5c4ee11",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-freetext-bridge/R20261011T162452Z-b06a/bridge-run.json",
+      "Bytes": 10949,
+      "Sha256": "1a42ccbc4a6c62e7223bcff2ca488857c2f8118db69ac7fc95ab4d97919dd7a3",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-freetext-bridge/R20261011T162452Z-b06a/bridge-run.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-freetext-bridge/R20261011T162452Z-b06a/config-post.json",
+      "Bytes": 302,
+      "Sha256": "4b39c18cb4db32d7a7ad32c032625596c672ced37a1d7f7ed68f3c6e6ad00135",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-freetext-bridge/R20261011T162452Z-b06a/config-post.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-freetext-bridge/R20261011T162452Z-b06a/config-pre.json",
+      "Bytes": 302,
+      "Sha256": "bc7d41a99c28448fe112899888404e52607bae8db53a964361093ee653c9cca9",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-freetext-bridge/R20261011T162452Z-b06a/config-pre.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-freetext-bridge/R20261011T162452Z-b06a/freetext-bridge-output.json",
+      "Bytes": 5226,
+      "Sha256": "0fa3ef3a14444938ed8919d45c42ad588041321ca8278fb8422c830105c0dc34",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-freetext-bridge/R20261011T162452Z-b06a/freetext-bridge-output.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-freetext-bridge/R20261011T162452Z-b06a/stderr.txt",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Disposition": "EXCLUDED",
+      "Reason": "stderr del CLI (aviso de lectura de stdin de 39 bytes) o vacio"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-freetext-bridge/R20261011T162452Z-b06a/term-set/AUTOMATION_PLAN.md",
+      "Bytes": 56231,
+      "Sha256": "b5ca72945f64462f33b5efd6cf024e35b4c86630289d9b363e7f3eab8fde198d",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia de bytes identica al blob versionado 07b97bd3eef3a36bae3180bd7eb24b176b8049f0 (bb0d5522:docs/AUTOMATION_PLAN.md)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-freetext-bridge/R20261011T162452Z-b06a/verifier/verify_freetext_bridge.py",
+      "Bytes": 21839,
+      "Sha256": "e760858883926744a606d9438099ed8abf040eea07814275e94b1843307474d4",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia de bytes identica al blob versionado 3bc7869e9f4c9c5eed0d64d7b8fee6f7002b9169"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/cession-end.txt",
+      "Bytes": 21,
+      "Sha256": "cee149d67f5b4f87db0cf436420a6355980588fb12316bbfd7e7599d2397ae66",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/cession-start.txt",
+      "Bytes": 21,
+      "Sha256": "6c0e0e0ca182ccc7c1f43c4e0dc7819c7651b28d56a65e7e95e45207e4cd6681",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/config-entry.json",
+      "Bytes": 302,
+      "Sha256": "ca07fbf57e45629796510807d73b1bb1b3149b0398444fbbec8eb95faf96b3cf",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc1/R20261011T154759Z-c857/config-entry.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/config-exit.json",
+      "Bytes": 302,
+      "Sha256": "b8bae2e93c289c03e0780e4aa5e5fb5a102bf8ec65ae762ea869361a29ac5d9d",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc1/R20261011T154759Z-c857/config-exit.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/controller-verification.json",
+      "Bytes": 7125,
+      "Sha256": "1421fed93c6ad67bfd6a67ad84945002118a4313f4bc5cd12c1de8008b0f38b3",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc1/R20261011T154759Z-c857/controller-verification.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/events.jsonl",
+      "Bytes": 450187,
+      "Sha256": "966ff8274ede5d8b0c1325cda561f570d15cec41db18d1d8788b8a67a66d8e4c",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro crudo de eventos del CLI (contiene rutas locales); se conserva su SHA-256"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/evidence-check.json",
+      "Bytes": 220,
+      "Sha256": "560192523b0acd7da813adc025b0004ac04bf81aaaedb63a9eaa4fd853cde96f",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc1/R20261011T154759Z-c857/evidence-check.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/exit-code.txt",
+      "Bytes": 2,
+      "Sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/launcher-pid.txt",
+      "Bytes": 4,
+      "Sha256": "f964eafdc685eb25641b61a7e613b893063b577ca9b851350519bc6b04842d74",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/launcher-winpid.txt",
+      "Bytes": 6,
+      "Sha256": "8f1db3acdad8b2ffdec9b26ca004d6361c0a11d16e2594f31008c608bc29d31b",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/mutation.json",
+      "Bytes": 2354,
+      "Sha256": "9caceb10fe6502b7091a6e3176d357c10751fff39efa58ff4b66b55492bbc7f5",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc1/R20261011T154759Z-c857/mutation.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/oracle-result.json",
+      "Bytes": 1708,
+      "Sha256": "db53808d9c3abafd2ffb32d32ad6ae3d3694d1c5133db6f9eb937723e059c106",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc1/R20261011T154759Z-c857/oracle-result.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/output.json",
+      "Bytes": 7125,
+      "Sha256": "1421fed93c6ad67bfd6a67ad84945002118a4313f4bc5cd12c1de8008b0f38b3",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc1/R20261011T154759Z-c857/controller-verification.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/processes-entry.json",
+      "Bytes": 1077,
+      "Sha256": "bc5edc17a31601ab418337f8cc2474435e8a511ada379602407733712823b3ca",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc1/R20261011T154759Z-c857/processes-entry.json",
+      "CustodiedSha256": "f2bab10cda348e7826ea1a9cbc5c1c458def699764bd9ed7a0ad84bd404dfc96",
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/processes-exit.json",
+      "Bytes": 1077,
+      "Sha256": "89f684501f73fb0a37fd56b5084575fb019a66122bc225776a611e26c04504ea",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc1/R20261011T154759Z-c857/processes-exit.json",
+      "CustodiedSha256": "c4e3ae0034a0ab942efeece3ff8152a884adfab7793c512d923879bcdf19090b",
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/prompt.md",
+      "Bytes": 11165,
+      "Sha256": "5a52c39a5ff6e61e5ab1f193757517c190213f37ebbfc7ebadc9b65b533dc19e",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc1/R20261011T154759Z-c857/prompt.md"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/relay-record.json",
+      "Bytes": 13465,
+      "Sha256": "a1a4ced799144eb32d3fdbfd6eaf083bc96a1cc2939b3eb1b9154b0934d18282",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc1/R20261011T154759Z-c857/relay-record.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/stderr.txt",
+      "Bytes": 39,
+      "Sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "Disposition": "EXCLUDED",
+      "Reason": "stderr del CLI (aviso de lectura de stdin de 39 bytes) o vacio"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/inputs/coordinator-acceptance.md",
+      "Bytes": 8820,
+      "Sha256": "6c008702a7b749481e1ce11a2ae01eafc6ccf7eb80b0828092dfc0d012fa7803",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/coordinator-acceptance.md"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/inputs/coordinator-disposition.md",
+      "Bytes": 4573,
+      "Sha256": "91a87b226837a4a7527b333ecaa850bde7a4de48db33258f9ed3bd42c8d1fdb9",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T100844Z-37e1/coordinator-disposition.md"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/inputs/delegation.json",
+      "Bytes": 39088,
+      "Sha256": "683cbe6f53ddf34ea4d2b6a1097d3949c6de6b00cf5872edbd6cc6555b068009",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/delegation.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/inputs/gate-contract.json",
+      "Bytes": 35799,
+      "Sha256": "7807a9e5136dc6d7c84526fb3b175f935c20f85bd48df1dec04e4275372d2873",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/gate-contract.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/inputs/relay-record-planning.json",
+      "Bytes": 15118,
+      "Sha256": "5e66223eb4d6aeeaac9eefef385a55218df7173748cd89ddafd1688d52c89dff",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/relay-record.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/inputs/relay-record-work.json",
+      "Bytes": 29089,
+      "Sha256": "7b558df431f6c677f9ced4c7aa31ce5665f861fe65d78a26bcfbc8214bbdaa9b",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc1/R20261011T154759Z-c857/inputs/relay-record-work.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/inputs/worker-handoff.json",
+      "Bytes": 21999,
+      "Sha256": "378066b30bf1d154b051d771c854ab95f8470ea0362ec0e391ff76c4a234e238",
+      "Disposition": "CUSTODIED_REDACTED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc1/R20261011T154759Z-c857/inputs/worker-handoff.json",
+      "CustodiedSha256": "9c468a31563ad620b2e50d6b71fb7b7fc3e0c78de7dd5a6c48765c45c485b508",
+      "Redactions": {
+        "<worktree-local-redactado>": 1,
+        "<dotnet-de-usuario-redactado>": 8
+      },
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/inputs/ci-core/38129212761/core.trx",
+      "Bytes": 17257374,
+      "Sha256": "d32dfbc6b4f78e52e6e2bbcdce1f47a94e43a3ff6ae7cf8bbb73a424c765e6ff",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/inputs/ci-core-red/38128156191/core.trx",
+      "Bytes": 17301093,
+      "Sha256": "6f874dbe728c879714f86b7c2b8e18194dbdfd574b59c9036f1006faaa6f6c53",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/inputs/ci-ui/38129212761/ui.trx",
+      "Bytes": 2475621,
+      "Sha256": "11f6549391814d3122f6c110c70acafaf4e745cd6365fbda4acaf69d1ee00bee",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc1/3/R20261011T154759Z-c857/inputs/ci-ui-red/38128156191/ui.trx",
+      "Bytes": 2595412,
+      "Sha256": "b38f8e30c558bb577052b0290741628b0d54738f8cd737240f489ec3a5c4ee11",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/cession-end.txt",
+      "Bytes": 21,
+      "Sha256": "d9e685c658f17bbc45b2ec397fec58a5788036d548e55c37854c6459fc27eedb",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/cession-start.txt",
+      "Bytes": 21,
+      "Sha256": "a2f04f182d80a24817de304cabb2e9d0f13c08e1681d71fbdd3b994516f7dabc",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/config-entry.json",
+      "Bytes": 302,
+      "Sha256": "55de1a82a3eaa45b00614dee3fededadce4cd9b12d6e121a663a7c2066ec9cb7",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc2/R20261011T155301Z-d68b/config-entry.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/config-exit.json",
+      "Bytes": 302,
+      "Sha256": "00b5bbbf4d9068e7ec59be23f41641d7ffd5e14cb6344c43f777debc03cf857c",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc2/R20261011T155301Z-d68b/config-exit.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/controller-verification.json",
+      "Bytes": 5162,
+      "Sha256": "aeefab74710c5b6507fa06f3dad717a68d5cb2242e6091827f7ee6fa5479e513",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc2/R20261011T155301Z-d68b/controller-verification.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/events.jsonl",
+      "Bytes": 1713034,
+      "Sha256": "2a5086d04fd8bd558e4fe3aec27320a5a6645fc3adb6fabd126d79deb9614411",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro crudo de eventos del CLI (contiene rutas locales); se conserva su SHA-256"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/exit-code.txt",
+      "Bytes": 2,
+      "Sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/launcher-pid.txt",
+      "Bytes": 4,
+      "Sha256": "ff723e85fab483a28f9c5ff042a5a6a7512ac866e2496d6d939abdc0e558b812",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/launcher-winpid.txt",
+      "Bytes": 6,
+      "Sha256": "e5d8d941601a8d792d5f6e18c2baa5a97310528ec0082d5e225b0037d175cf44",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/mutation.json",
+      "Bytes": 4846,
+      "Sha256": "8c7a8f18f6224cc4558fdbb23fd0fb7e5c140f9c57767ac70cf78079f41ee9e4",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc2/R20261011T155301Z-d68b/mutation.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/oracle-result.json",
+      "Bytes": 1499,
+      "Sha256": "b48e4661caaca1617575073a9dcc94f6fcf5557e82305b9230d38fa9fc346f48",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc2/R20261011T155301Z-d68b/oracle-result.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/output.json",
+      "Bytes": 5162,
+      "Sha256": "aeefab74710c5b6507fa06f3dad717a68d5cb2242e6091827f7ee6fa5479e513",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc2/R20261011T155301Z-d68b/controller-verification.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/processes-entry.json",
+      "Bytes": 1077,
+      "Sha256": "4d384ddedb5bbc15ae32ad14ed7850eb73758ba7a98403ae9eaa99915611dc95",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc2/R20261011T155301Z-d68b/processes-entry.json",
+      "CustodiedSha256": "b455fefe9ba2a0cc10ea1d40ea71362cfdbad56d8efd44d35bd628ceb2aa5600",
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/processes-exit.json",
+      "Bytes": 1077,
+      "Sha256": "8cfb9785e114c1e4ffc6f4dd15a33ab604af3014fede852bd1eb3d4fc8a162c2",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc2/R20261011T155301Z-d68b/processes-exit.json",
+      "CustodiedSha256": "dbaa944da3ffd87943faacfbea6c49f84fcbdff65a56162023184c4224aa391f",
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/prompt.md",
+      "Bytes": 11165,
+      "Sha256": "1a6a6da2f11491a7a67fc0268865f783f00ee1a1a2e0eccdc80da37cef6065b7",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc2/R20261011T155301Z-d68b/prompt.md"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/relay-record.json",
+      "Bytes": 16112,
+      "Sha256": "a2f29189ede220e5169c0416eb76689800975ffd388f65f37604716eeffb08e4",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc2/R20261011T155301Z-d68b/relay-record.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/stderr.txt",
+      "Bytes": 39,
+      "Sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "Disposition": "EXCLUDED",
+      "Reason": "stderr del CLI (aviso de lectura de stdin de 39 bytes) o vacio"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/inputs/coordinator-acceptance.md",
+      "Bytes": 8820,
+      "Sha256": "6c008702a7b749481e1ce11a2ae01eafc6ccf7eb80b0828092dfc0d012fa7803",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/coordinator-acceptance.md"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/inputs/coordinator-disposition.md",
+      "Bytes": 4573,
+      "Sha256": "91a87b226837a4a7527b333ecaa850bde7a4de48db33258f9ed3bd42c8d1fdb9",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T100844Z-37e1/coordinator-disposition.md"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/inputs/delegation.json",
+      "Bytes": 38992,
+      "Sha256": "fb84211df5cac2c82773d968ffec18c6758449ed90dcbe678c1dab5f8966cb66",
+      "Disposition": "CUSTODIED_REDACTED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc2/R20261011T155301Z-d68b/inputs/delegation.json",
+      "CustodiedSha256": "1eb90b72057df86cecfac3bc521cda3f9ce0060ab3f5d148d0cb83cfd4f41048",
+      "Redactions": {
+        "<worktree-local-redactado>": 1
+      }
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/inputs/gate-contract.json",
+      "Bytes": 35799,
+      "Sha256": "7807a9e5136dc6d7c84526fb3b175f935c20f85bd48df1dec04e4275372d2873",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/gate-contract.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/inputs/relay-record-planning.json",
+      "Bytes": 15118,
+      "Sha256": "287160c2d10e929c2740a86fe38bc264a90a528ad74961ccfd2df90269a7e9c0",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc2/R20261011T155301Z-d68b/inputs/relay-record-planning.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/inputs/relay-record-work.json",
+      "Bytes": 29089,
+      "Sha256": "4d9a29375697d0d397225e88f9d35f996c18ded27e354f920901693d20b74be0",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T090257Z-3038/relay-record.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/inputs/worker-handoff.json",
+      "Bytes": 21999,
+      "Sha256": "b41f5499c0f2ee99a5cba705918ada24d77e3b92b0b3c01104e337799ecd7776",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T090257Z-3038/worker-handoff.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/inputs/ci-core/38129212761/core.trx",
+      "Bytes": 17257374,
+      "Sha256": "d32dfbc6b4f78e52e6e2bbcdce1f47a94e43a3ff6ae7cf8bbb73a424c765e6ff",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/inputs/ci-core-red/38128156191/core.trx",
+      "Bytes": 17301093,
+      "Sha256": "6f874dbe728c879714f86b7c2b8e18194dbdfd574b59c9036f1006faaa6f6c53",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/inputs/ci-ui/38129212761/ui.trx",
+      "Bytes": 2475621,
+      "Sha256": "11f6549391814d3122f6c110c70acafaf4e745cd6365fbda4acaf69d1ee00bee",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/inputs/ci-ui-red/38128156191/ui.trx",
+      "Bytes": 2595412,
+      "Sha256": "b38f8e30c558bb577052b0290741628b0d54738f8cd737240f489ec3a5c4ee11",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/cession-end.txt",
+      "Bytes": 21,
+      "Sha256": "b8557c3f321fffc9fb79be2f52f186468d85039b203ac5ede394d9051742be6f",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/cession-start.txt",
+      "Bytes": 21,
+      "Sha256": "d7b5978de601510131c6aafb1a2297a12ac3f35bdfc4c52195f4f10bcf2e65b9",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/config-entry.json",
+      "Bytes": 302,
+      "Sha256": "db0b5a825637b643c5fd8ae840cde46a55c4df22a6b52c7d23a6c341ee53b800",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T155834Z-41b5/config-entry.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/config-exit.json",
+      "Bytes": 302,
+      "Sha256": "5476869643690dec369cf68bc5ed88179f94cb58f58779881f1cbea80daeb0fc",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T155834Z-41b5/config-exit.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/controller-verification.json",
+      "Bytes": 5507,
+      "Sha256": "a7c12ce9b6249b6958334602e81e1364959ce2144c377f0e39ede27e87607c74",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T155834Z-41b5/controller-verification.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/events.jsonl",
+      "Bytes": 1445413,
+      "Sha256": "b91d48580dac7f5392e85fc7ab4c291d8718b38d97436114807732fcd8f85466",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro crudo de eventos del CLI (contiene rutas locales); se conserva su SHA-256"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/exit-code.txt",
+      "Bytes": 2,
+      "Sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/launcher-pid.txt",
+      "Bytes": 4,
+      "Sha256": "5f8064636753265c7f1b1ee075df77e1ae9bce7e94831de583784a0c13eb902f",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/launcher-winpid.txt",
+      "Bytes": 6,
+      "Sha256": "da852b7da0d098f69337d6bcbf1596eb175f5afac101c2d5e091c55e0bbae565",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/mutation.json",
+      "Bytes": 2297,
+      "Sha256": "b713c80903dc1adfa7c3deebe18fbdb09faecfcb0e70007e221665808d00d718",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T155834Z-41b5/mutation.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/nc3-mechanical-check.json",
+      "Bytes": 551,
+      "Sha256": "9290460b844fc371c6c573de39e18455ffd06ee65f49e9e9f9eb4a05893ed852",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T155834Z-41b5/nc3-mechanical-check.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/oracle-result.json",
+      "Bytes": 1291,
+      "Sha256": "b84c851fad1b77e3aa6d01d9dadf8b9aaaf6fd5a318ab71c5fd33024278dfe76",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T155834Z-41b5/oracle-result.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/output.json",
+      "Bytes": 5507,
+      "Sha256": "a7c12ce9b6249b6958334602e81e1364959ce2144c377f0e39ede27e87607c74",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T155834Z-41b5/controller-verification.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/p02-coordinator-disposition.md",
+      "Bytes": 4472,
+      "Sha256": "185db103893a5def70de252d0decdcd9b62b887160be1e1f37aa63e126b1df0a",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T155834Z-41b5/p02-coordinator-disposition.md"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/p02-signal.json",
+      "Bytes": 2267,
+      "Sha256": "49718cee06278f02d0bba2f06af3e790e7a509b0b87149e34f1761959ce04968",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T155834Z-41b5/p02-signal.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/processes-entry.json",
+      "Bytes": 1506,
+      "Sha256": "f657e597b98d0305bba212e8a7cb41c07466a61abe7342a28032754f3242e9eb",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T155834Z-41b5/processes-entry.json",
+      "CustodiedSha256": "e1ce00ca0786e504ca8ad70cedefe61fb8a05d8bcb32c24522012b3a0c95b6ec",
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/processes-exit.json",
+      "Bytes": 1077,
+      "Sha256": "dea20e48cba63390eacd8cec6808e72f0590deddba762775786a6abebaf7c7d5",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T155834Z-41b5/processes-exit.json",
+      "CustodiedSha256": "75aa59708d8c8b2c96ad5b73e274e99857b389358b03dc691f16ac617c51c899",
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/prompt.md",
+      "Bytes": 11165,
+      "Sha256": "ad993e9860c2fd889be0e54fc147cd940c31de2d4e71bf54fd98a4c59036ad1f",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T155834Z-41b5/prompt.md"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/relay-record.json",
+      "Bytes": 14366,
+      "Sha256": "e1ac8c6955940c1f67c6115fa316b03eca4949691156a80d87cb0580efd08887",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T155834Z-41b5/relay-record.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/stderr.txt",
+      "Bytes": 39,
+      "Sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "Disposition": "EXCLUDED",
+      "Reason": "stderr del CLI (aviso de lectura de stdin de 39 bytes) o vacio"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/inputs/coordinator-acceptance.md",
+      "Bytes": 8820,
+      "Sha256": "6c008702a7b749481e1ce11a2ae01eafc6ccf7eb80b0828092dfc0d012fa7803",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/coordinator-acceptance.md"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/inputs/coordinator-disposition.md",
+      "Bytes": 4573,
+      "Sha256": "91a87b226837a4a7527b333ecaa850bde7a4de48db33258f9ed3bd42c8d1fdb9",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T100844Z-37e1/coordinator-disposition.md"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/inputs/delegation.json",
+      "Bytes": 39088,
+      "Sha256": "683cbe6f53ddf34ea4d2b6a1097d3949c6de6b00cf5872edbd6cc6555b068009",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/delegation.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/inputs/gate-contract.json",
+      "Bytes": 35799,
+      "Sha256": "7807a9e5136dc6d7c84526fb3b175f935c20f85bd48df1dec04e4275372d2873",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/gate-contract.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/inputs/relay-record-planning.json",
+      "Bytes": 15118,
+      "Sha256": "5e66223eb4d6aeeaac9eefef385a55218df7173748cd89ddafd1688d52c89dff",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/relay-record.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/inputs/relay-record-work.json",
+      "Bytes": 29089,
+      "Sha256": "376a62678edcce58225ad234a0e16a55b7310c4777e551037897ad63e5087956",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T155834Z-41b5/inputs/relay-record-work.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/inputs/worker-handoff.json",
+      "Bytes": 22010,
+      "Sha256": "b9a49084d683e9a2620c41f3bfde47087098aeb532f15221b5e5c476c1dc9196",
+      "Disposition": "CUSTODIED_REDACTED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T155834Z-41b5/inputs/worker-handoff.json",
+      "CustodiedSha256": "b246c271f3c1d2c8757c85a76964670f433a21fb38b7f80d2439867cf012645f",
+      "Redactions": {
+        "<worktree-local-redactado>": 1,
+        "<dotnet-de-usuario-redactado>": 8
+      },
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/inputs/ci-core/38129212761/core.trx",
+      "Bytes": 17257374,
+      "Sha256": "d32dfbc6b4f78e52e6e2bbcdce1f47a94e43a3ff6ae7cf8bbb73a424c765e6ff",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/inputs/ci-core-red/38128156191/core.trx",
+      "Bytes": 17301093,
+      "Sha256": "6f874dbe728c879714f86b7c2b8e18194dbdfd574b59c9036f1006faaa6f6c53",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/inputs/ci-ui/38129212761/ui.trx",
+      "Bytes": 2475621,
+      "Sha256": "11f6549391814d3122f6c110c70acafaf4e745cd6365fbda4acaf69d1ee00bee",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T155834Z-41b5/inputs/ci-ui-red/38128156191/ui.trx",
+      "Bytes": 2595412,
+      "Sha256": "b38f8e30c558bb577052b0290741628b0d54738f8cd737240f489ec3a5c4ee11",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/cession-end.txt",
+      "Bytes": 21,
+      "Sha256": "900a686e71248b3541b2913c435b79260df2c63fcdb84c06af7f395a410a8a24",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/cession-start.txt",
+      "Bytes": 21,
+      "Sha256": "fb2d77193a7797a5a4a679924e1e5b4e77e2127b828dba1fd940d3fd9871c7bc",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/config-entry.json",
+      "Bytes": 302,
+      "Sha256": "45799b41ff7322cadbb2c91dcf66526d6b204e2963bcebf25482217f361bdb24",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161527Z-21c8/config-entry.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/config-exit.json",
+      "Bytes": 302,
+      "Sha256": "79303766f8f654e90f2099c22ded0452e29cfd4c085e234c7e7d06156cb2cf41",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161527Z-21c8/config-exit.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/controller-verification.json",
+      "Bytes": 6345,
+      "Sha256": "d2c96422a13143492251623a031644f17534a22dbd6b1987eb01ad55a71428d4",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161527Z-21c8/controller-verification.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/events.jsonl",
+      "Bytes": 403953,
+      "Sha256": "f91b488afb5ab72aad32f9667721eddc5451f7acd7ad1e93b0fa9e4fca9bdb45",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro crudo de eventos del CLI (contiene rutas locales); se conserva su SHA-256"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/exit-code.txt",
+      "Bytes": 2,
+      "Sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/launcher-pid.txt",
+      "Bytes": 5,
+      "Sha256": "55bd6d0199032872a8005f3e1bb32becff446810bd667e9bae394cd6c3eee316",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/launcher-winpid.txt",
+      "Bytes": 6,
+      "Sha256": "5221595f0867ddf9bcbe13ea2c3bf5d0c0065ce375296522b4899984379aba47",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/mutation.json",
+      "Bytes": 2297,
+      "Sha256": "b0a895093b3c4642eed0572c31dbefe514d988210d9bcc2d4df2feda7e549258",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161527Z-21c8/mutation.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/nc3-mechanical-check.json",
+      "Bytes": 551,
+      "Sha256": "9c1f7b8a947ecee50e25f3e4ea8bb8f53e4a60ce2349cb0f39459cbbc2645867",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161527Z-21c8/nc3-mechanical-check.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/oracle-result.json",
+      "Bytes": 1300,
+      "Sha256": "48e75eea2cdd81e891669706da139ee824e478c1952abdb2b4b6ea2ceacaa95b",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161527Z-21c8/oracle-result.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/output.json",
+      "Bytes": 6345,
+      "Sha256": "d2c96422a13143492251623a031644f17534a22dbd6b1987eb01ad55a71428d4",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161527Z-21c8/controller-verification.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/processes-entry.json",
+      "Bytes": 1281,
+      "Sha256": "dbbf2258d7c7347b89e26db1ca129b9ebc3f49ece84948b3434107659cbf817a",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161527Z-21c8/processes-entry.json",
+      "CustodiedSha256": "c67881fdd0abae7b5f2b6824f4301e2c8d1ab306c0f54a69b07ecb02c7d9b54f",
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/processes-exit.json",
+      "Bytes": 1284,
+      "Sha256": "50febc2c16537bac718e3e8f0017ca96e3723f6162148d4e3eb0d70bdbf4c734",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161527Z-21c8/processes-exit.json",
+      "CustodiedSha256": "6e355f226358a53d81057e97603e858d4cd63a811d301cac66b836e963110486",
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/prompt.md",
+      "Bytes": 11165,
+      "Sha256": "946a96fd21c371863d270fef250481a7aac6c7008c9fd9b17ca419566de7e660",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161527Z-21c8/prompt.md"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/relay-record.json",
+      "Bytes": 14603,
+      "Sha256": "4b2b2aea73040ee452d04229bf0e47b108ec06e81395f861f06e74e4fc73df9f",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161527Z-21c8/relay-record.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/stderr.txt",
+      "Bytes": 39,
+      "Sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "Disposition": "EXCLUDED",
+      "Reason": "stderr del CLI (aviso de lectura de stdin de 39 bytes) o vacio"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/inputs/coordinator-acceptance.md",
+      "Bytes": 8820,
+      "Sha256": "6c008702a7b749481e1ce11a2ae01eafc6ccf7eb80b0828092dfc0d012fa7803",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/coordinator-acceptance.md"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/inputs/coordinator-disposition.md",
+      "Bytes": 4573,
+      "Sha256": "91a87b226837a4a7527b333ecaa850bde7a4de48db33258f9ed3bd42c8d1fdb9",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T100844Z-37e1/coordinator-disposition.md"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/inputs/delegation.json",
+      "Bytes": 39088,
+      "Sha256": "683cbe6f53ddf34ea4d2b6a1097d3949c6de6b00cf5872edbd6cc6555b068009",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/delegation.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/inputs/gate-contract.json",
+      "Bytes": 35799,
+      "Sha256": "7807a9e5136dc6d7c84526fb3b175f935c20f85bd48df1dec04e4275372d2873",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/gate-contract.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/inputs/relay-record-planning.json",
+      "Bytes": 15118,
+      "Sha256": "5e66223eb4d6aeeaac9eefef385a55218df7173748cd89ddafd1688d52c89dff",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/relay-record.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/inputs/relay-record-work.json",
+      "Bytes": 29089,
+      "Sha256": "376a62678edcce58225ad234a0e16a55b7310c4777e551037897ad63e5087956",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161527Z-21c8/inputs/relay-record-work.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/inputs/worker-handoff.json",
+      "Bytes": 22010,
+      "Sha256": "b9a49084d683e9a2620c41f3bfde47087098aeb532f15221b5e5c476c1dc9196",
+      "Disposition": "CUSTODIED_REDACTED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161527Z-21c8/inputs/worker-handoff.json",
+      "CustodiedSha256": "b246c271f3c1d2c8757c85a76964670f433a21fb38b7f80d2439867cf012645f",
+      "Redactions": {
+        "<worktree-local-redactado>": 1,
+        "<dotnet-de-usuario-redactado>": 8
+      },
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/inputs/ci-core/38129212761/core.trx",
+      "Bytes": 17257374,
+      "Sha256": "d32dfbc6b4f78e52e6e2bbcdce1f47a94e43a3ff6ae7cf8bbb73a424c765e6ff",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/inputs/ci-core-red/38128156191/core.trx",
+      "Bytes": 17301093,
+      "Sha256": "6f874dbe728c879714f86b7c2b8e18194dbdfd574b59c9036f1006faaa6f6c53",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/inputs/ci-ui/38129212761/ui.trx",
+      "Bytes": 2475621,
+      "Sha256": "11f6549391814d3122f6c110c70acafaf4e745cd6365fbda4acaf69d1ee00bee",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161527Z-21c8/inputs/ci-ui-red/38128156191/ui.trx",
+      "Bytes": 2595412,
+      "Sha256": "b38f8e30c558bb577052b0290741628b0d54738f8cd737240f489ec3a5c4ee11",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/cession-end.txt",
+      "Bytes": 21,
+      "Sha256": "76fc561d489282083253df96e48e7377cd3b0b87b48093eccfafab41ffa349a9",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/cession-start.txt",
+      "Bytes": 21,
+      "Sha256": "f5b6e8065b4c6e016c51067699eb9be5e0f9c9b613571e976b75260e80affe12",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/config-entry.json",
+      "Bytes": 302,
+      "Sha256": "6a16b20d4b7b6971fc84489426202fb050bb87a5cca9fc79a43bf03301463739",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161926Z-49f1/config-entry.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/config-exit.json",
+      "Bytes": 302,
+      "Sha256": "5c5d97316557c145821607cf7e43d8dcad302259225de3ee529fed470ec87b38",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161926Z-49f1/config-exit.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/controller-verification.json",
+      "Bytes": 6042,
+      "Sha256": "6105ce20d07a7d23360c63d9f507d0c1651a0edbc6efac3572b182cfbc39ad93",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161926Z-49f1/controller-verification.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/events.jsonl",
+      "Bytes": 531066,
+      "Sha256": "970ce2e6419fb31f587a86172b88cb5ae1ac32ddaa2ef780882318000ef9c016",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro crudo de eventos del CLI (contiene rutas locales); se conserva su SHA-256"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/exit-code.txt",
+      "Bytes": 2,
+      "Sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/launcher-pid.txt",
+      "Bytes": 5,
+      "Sha256": "e22fbab8aa79551324a68a0ae53342a41f175c0fb27bf287bdd7558bfc9ee5a6",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/launcher-winpid.txt",
+      "Bytes": 6,
+      "Sha256": "2546421999757bd2adbb7fb1bfe3396183b2ec5ce95c7caf8a84b3da0ede82d1",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en el relay-record o en el registro del puente"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/mutation.json",
+      "Bytes": 2297,
+      "Sha256": "8b7c97b25efae48e1e1f8be012b131d481435e016420c24764ade8b546dd464c",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161926Z-49f1/mutation.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/nc3-mechanical-check.json",
+      "Bytes": 551,
+      "Sha256": "9c1f7b8a947ecee50e25f3e4ea8bb8f53e4a60ce2349cb0f39459cbbc2645867",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161926Z-49f1/nc3-mechanical-check.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/oracle-result.json",
+      "Bytes": 1339,
+      "Sha256": "e5617e015dbe1b2813f0aa3edafd8eec15100ba49e4cceb0f45fcf232ba23ab9",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161926Z-49f1/oracle-result.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/output.json",
+      "Bytes": 6042,
+      "Sha256": "6105ce20d07a7d23360c63d9f507d0c1651a0edbc6efac3572b182cfbc39ad93",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161926Z-49f1/controller-verification.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/processes-entry.json",
+      "Bytes": 1284,
+      "Sha256": "50c3a03eccead38dc2eb3598993749f2bbbf01686f226961683c95d01fd3285c",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161926Z-49f1/processes-entry.json",
+      "CustodiedSha256": "5e7779e9904cf2e5bf579c7d631e0a31fb957fe0441ac3e06d59c0dd761b69d7",
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/processes-exit.json",
+      "Bytes": 1283,
+      "Sha256": "758394e9deb0d9506303fc3d9f429471bf0592a22519d10f90f1f25b3b808003",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161926Z-49f1/processes-exit.json",
+      "CustodiedSha256": "faf28ba1504d9b52f10d1da71e89ab921255c23a80fc2785b60a82de2479141c",
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/prompt.md",
+      "Bytes": 11165,
+      "Sha256": "bd99d556d27385dd24e376e2d432e9b82856c0f60bb88b2125de575b379b8125",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161926Z-49f1/prompt.md"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/relay-record.json",
+      "Bytes": 14292,
+      "Sha256": "4f8690c303aabd6d1f6e2009addc4b3a13335d418469c1e787a34e20c1c6e01d",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161926Z-49f1/relay-record.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/stderr.txt",
+      "Bytes": 39,
+      "Sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "Disposition": "EXCLUDED",
+      "Reason": "stderr del CLI (aviso de lectura de stdin de 39 bytes) o vacio"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/inputs/coordinator-acceptance.md",
+      "Bytes": 8820,
+      "Sha256": "6c008702a7b749481e1ce11a2ae01eafc6ccf7eb80b0828092dfc0d012fa7803",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/coordinator-acceptance.md"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/inputs/coordinator-disposition.md",
+      "Bytes": 4573,
+      "Sha256": "91a87b226837a4a7527b333ecaa850bde7a4de48db33258f9ed3bd42c8d1fdb9",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T100844Z-37e1/coordinator-disposition.md"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/inputs/delegation.json",
+      "Bytes": 39088,
+      "Sha256": "683cbe6f53ddf34ea4d2b6a1097d3949c6de6b00cf5872edbd6cc6555b068009",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/delegation.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/inputs/gate-contract.json",
+      "Bytes": 35799,
+      "Sha256": "7807a9e5136dc6d7c84526fb3b175f935c20f85bd48df1dec04e4275372d2873",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/gate-contract.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/inputs/relay-record-planning.json",
+      "Bytes": 15118,
+      "Sha256": "5e66223eb4d6aeeaac9eefef385a55218df7173748cd89ddafd1688d52c89dff",
+      "Disposition": "IDENTICAL_TO_CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/R20261011T081209Z-deae/relay-record.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/inputs/relay-record-work.json",
+      "Bytes": 29089,
+      "Sha256": "376a62678edcce58225ad234a0e16a55b7310c4777e551037897ad63e5087956",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161926Z-49f1/inputs/relay-record-work.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/inputs/worker-handoff.json",
+      "Bytes": 22010,
+      "Sha256": "b9a49084d683e9a2620c41f3bfde47087098aeb532f15221b5e5c476c1dc9196",
+      "Disposition": "CUSTODIED_REDACTED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc3/R20261011T161926Z-49f1/inputs/worker-handoff.json",
+      "CustodiedSha256": "b246c271f3c1d2c8757c85a76964670f433a21fb38b7f80d2439867cf012645f",
+      "Redactions": {
+        "<worktree-local-redactado>": 1,
+        "<dotnet-de-usuario-redactado>": 8
+      },
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell; Git lo normaliza igual en el blob)"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/inputs/ci-core/38129212761/core.trx",
+      "Bytes": 17257374,
+      "Sha256": "d32dfbc6b4f78e52e6e2bbcdce1f47a94e43a3ff6ae7cf8bbb73a424c765e6ff",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/inputs/ci-core-red/38128156191/core.trx",
+      "Bytes": 17301093,
+      "Sha256": "6f874dbe728c879714f86b7c2b8e18194dbdfd574b59c9036f1006faaa6f6c53",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/inputs/ci-ui/38129212761/ui.trx",
+      "Bytes": 2475621,
+      "Sha256": "11f6549391814d3122f6c110c70acafaf4e745cd6365fbda4acaf69d1ee00bee",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/inputs/ci-ui-red/38128156191/ui.trx",
+      "Bytes": 2595412,
+      "Sha256": "b38f8e30c558bb577052b0290741628b0d54738f8cd737240f489ec3a5c4ee11",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas (binarios, logs, catalogos copiados o TRX con rutas locales); resultados en worker-handoff, relay-record y CI exacta"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc4/3/R20261011T081707Z-151d/delegation.json",
+      "Bytes": 36209,
+      "Sha256": "396bdcdfd33f4c0aec6096bab82e094d498bf38f185c4eb60c15b2b5c8bcb189",
+      "Disposition": "CUSTODIED_REDACTED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc4/R20261011T081707Z-151d/delegation.json",
+      "CustodiedSha256": "594b30db3d61c37c8938708b274ff5017bfc15038a9495e02516173e515dd3d3",
+      "Redactions": {
+        "<worktree-local-redactado>": 1
+      }
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc4/3/R20261011T081707Z-151d/nc4-result.json",
+      "Bytes": 790,
+      "Sha256": "54b7fe72f3a672c9d80d7b9ce4cf0fe9a76366ee44bc7688cd1bf777189e6319",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc4/R20261011T081707Z-151d/nc4-result.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-nc4/3/R20261011T081707Z-151d/relay-record.json",
+      "Bytes": 6775,
+      "Sha256": "401be3300510f5c59eaea0869b2df838e2863aba8e8e79871e08a9857aeebea8",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-nc4/R20261011T081707Z-151d/relay-record.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-scope-bridge/R20261011T155756Z-b8c9/adversarial.json",
+      "Bytes": 11231,
+      "Sha256": "2b47d8286ea39a6c5e16bd3494e10747435a5f5edaaf6d6717a2c163dd0775b7",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-scope-bridge/R20261011T155756Z-b8c9/adversarial.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-scope-bridge/R20261011T155756Z-b8c9/bridge-run.json",
+      "Bytes": 10250,
+      "Sha256": "5e0d9348a44f2adc7bde5eb84e6c3e2fff777bfaac94cf421abd42194e4b84b9",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-scope-bridge/R20261011T155756Z-b8c9/bridge-run.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-scope-bridge/R20261011T155756Z-b8c9/real.json",
+      "Bytes": 11046,
+      "Sha256": "7da05efb01f666fb65ef080a36ff070f59fed234e298f6f1e547498c77de4238",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-scope-bridge/R20261011T155756Z-b8c9/real.json"
+    },
+    {
+      "Path": "F1-T3B-HOST-UI-scope-bridge/R20261011T155756Z-b8c9/verifier/verify_scope_bridge.py",
+      "Bytes": 14636,
+      "Sha256": "a3d4ed8a25e99ea6b8bc0af945e6e688c13f472a7e0745752c79e04ee79f7d65",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia de bytes identica al blob versionado cf381ab96a3d945a9569d56bb3aaf546e3f2fce1"
+    }
+  ]
+}
