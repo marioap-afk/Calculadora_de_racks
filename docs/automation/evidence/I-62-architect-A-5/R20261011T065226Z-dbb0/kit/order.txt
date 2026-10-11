@@ -1,0 +1,48 @@
+I-62 — COORDINATOR DISPOSITION §72
+A-5 FORMAL REVIEW / CONTROLLER CRITICAL PATH
+1. A-5
+Aceptar A5-1 y A5-2 como candidatas para revisión formal.
+Objeto: docs/initiatives/I-62-A-5.md, blob ad94ceed (verificar identidad completa en el commit publicado).
+Mantener el añadido acotado a D.1 y D.3, sin reemplazar textos congelados ni tocar producción.
+El preflight existente (MV-1..MV-7, 11 negativos, presupuesto y guardas) es evidencia de preparación, no acuerdo.
+2. Revisión independiente
+Autorizar una revisión formal por claude-cli si la celda y la autorización siguen vigentes.
+La revisión debe examinar expresamente:
+
+* conformidad de A5-1 con AP 16.13;
+* integridad del historial del fixture original;
+* impacto sobre C-22 y C-25a;
+* separación de los presupuestos A4-6 y A5-2;
+* prohibición de reinicios y transferencias de cupos;
+* aplicabilidad de D.5 y Owner Validation;
+* decisiones reservadas al Owner;
+* suficiencia de las guardas y sus negativos.
+
+No declarar A-5 AGREED antes del dictamen acreditado y del veredicto del Coordinator.
+3. Controller — camino crítico
+En paralelo con la revisión, realizar exclusivamente análisis y comprobaciones sin nuevas invocaciones.
+Preparar una comparación de opciones reales para obtener un Controller elegible:
+A. Reutilizar evidencia medida de una celda alternativa ya autorizada, si satisface realmente EXECUTION_CONTROLLER.
+B. Usar la sonda 2 retenida del bloque A2-P2 para una medición diferente y acotada, con la autoridad correspondiente.
+C. Proponer un cambio limitado de transporte, modelo o medición, solo cuando exista evidencia concreta de que puede resolver los fallos.
+Analizar expresamente cómo resolver la fidelidad UTF-8 y las operaciones omitidas, sin rebajar la verificación normativa.
+No ejecutar la sonda 2 ni crear A-6 automáticamente.
+4. Fixture
+No crear B1 ni abrir FX-U2.
+Conservar la evidencia histórica y los presupuestos consumidos.
+Una vez A-5 sea AGREED, preparar la disposición de construcción y las autorizaciones del Owner; no solicitarlas anticipadamente.
+5. Recursos
+I-64 conserva prioridad.
+La revisión de A-5 puede avanzar por Claude CLI, pero no debe consumir recursos que impidan tareas críticas de I-64.
+Continuar F7 solo en sus controles independientes.
+6. Entrega
+Informar únicamente:
+
+* veredicto y acreditación de A-5;
+* hallazgos REQUIRED;
+* decisión sobre D.5;
+* opciones verificables para el Controller;
+* necesidad real de una nueva enmienda;
+* próximo paso ejecutable hacia C-24.
+
+No declarar F6 GATE PASS ni I-62 integrada.

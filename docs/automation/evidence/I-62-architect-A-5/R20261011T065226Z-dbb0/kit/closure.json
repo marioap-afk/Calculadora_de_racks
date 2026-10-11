@@ -1,0 +1,3839 @@
+{
+ "Schema": "rackcad-input-closure/v1 (representación experimental; Proposal V14 §20.3.1; no autoridad normativa: rigen I-61 y LIFECYCLE)",
+ "Ids": {
+  "RunId": "R20261011T065226Z-dbb0",
+  "InvocationId": "I20261011T065226Z-dbb0",
+  "LogicalReviewRequestId": "L20261011T065226Z-dbb0",
+  "AttemptSeq": 1
+ },
+ "AuthorityRevision": "b631c46f08fa403628250035bdb9c2f5c600cc81",
+ "ObjectIntroducedBy": "bf2cf857b69ada371590cde2c8ddfbc8b3581fab",
+ "PreparationBase": "efcfcbc5a9f89de0dc4f4f21a426b4723ef18245",
+ "GuardsRunCommit": "1a0db7b03b1804145571a6733ca4eb079cbd1f08",
+ "MapBase": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+ "ObjectPath": "docs/initiatives/I-62-A-5.md",
+ "ObjectBlob": "ad94ceedacbf3dbf70f0217a583978d0e32592fc",
+ "PackagePath": null,
+ "PackageNote": "A-5 no tiene paquete del Architect: A-5 §6 lo prevé solo «cuando una disposición autorice la revisión», y la disposición §72 fija directamente el objeto y los ocho temas; el prompt hace de paquete",
+ "PublicationReceipt": {
+  "Commit": "b631c46f08fa403628250035bdb9c2f5c600cc81",
+  "PublicationCommit": "bf2cf857b69ada371590cde2c8ddfbc8b3581fab",
+  "PreparationBase": "efcfcbc5a9f89de0dc4f4f21a426b4723ef18245",
+  "GuardsRunCommit": "1a0db7b03b1804145571a6733ca4eb079cbd1f08",
+  "Object": {
+   "Path": "docs/initiatives/I-62-A-5.md",
+   "Blob": "ad94ceedacbf3dbf70f0217a583978d0e32592fc"
+  },
+  "Guards": {
+   "docs/automation/evidence/I-62-A5/a5-guards.py": "98d264056fe800477cf37fbfd5bde34877857c68",
+   "docs/automation/evidence/I-62-A5/a5-selftest.json": "8d115759c2a5ef86a417da06a84cec81076ca25e",
+   "docs/automation/evidence/I-62-A5/a5-guards-result-run.json": "2a383d79aefb773363ba84bdca2d336d34f14159"
+  },
+  "Identity": {
+   "PublicationCommit": "bf2cf857b69ada371590cde2c8ddfbc8b3581fab",
+   "PublicationParent": "efcfcbc5a9f89de0dc4f4f21a426b4723ef18245",
+   "GuardsRunCommit": "1a0db7b03b1804145571a6733ca4eb079cbd1f08",
+   "Decisions72Commit": "b631c46f08fa403628250035bdb9c2f5c600cc81",
+   "ObjectBlobAt": {
+    "bf2cf857": "ad94ceedacbf3dbf70f0217a583978d0e32592fc",
+    "1a0db7b0": "ad94ceedacbf3dbf70f0217a583978d0e32592fc",
+    "b631c46f": "ad94ceedacbf3dbf70f0217a583978d0e32592fc"
+   },
+   "ObjectAbsentAtPublicationParent": true,
+   "GuardsSelftestPreflightUnchangedSincePublication": true,
+   "SelftestToolBlob": "98d264056fe800477cf37fbfd5bde34877857c68",
+   "SelftestA5TextBlob": "ad94ceedacbf3dbf70f0217a583978d0e32592fc",
+   "SelftestRepoRecorded": "HEAD efcfcbc5a9f89de0dc4f4f21a426b4723ef18245",
+   "GuardsRunResult": {
+    "Mode": "RUN",
+    "Base": "efcfcbc5a9f89de0dc4f4f21a426b4723ef18245",
+    "Head": "bf2cf857b69ada371590cde2c8ddfbc8b3581fab",
+    "Result": "PASS"
+   },
+   "Trees": {
+    "docs/automation/evidence/I-62-F6/MAP-INVALID": "b0b3b2586a98883353dfda1c73b400355cbc51b0",
+    "docs/automation/agent-execution": "809fd58f450d3379a4fcc958cf8907fcdc5acff3"
+   },
+   "EvidenceFilesAddedAfterPublication": [
+    "A\tdocs/automation/evidence/I-62-A5/a5-guards-result-preview.json",
+    "A\tdocs/automation/evidence/I-62-A5/a5-guards-result-run.json",
+    "A\tdocs/automation/evidence/I-62-A5/out/candidate-commit.json"
+   ],
+   "Note": "A-5 se publicó en bf2cf857 (padre efcfcbc5, donde no existía); 1a0db7b0 custodia el resultado `run` de las guardas sobre bf2cf857 y añade a5-guards-result-preview.json, a5-guards-result-run.json y out/candidate-commit.json; b631c46f añade decisiones §72. El blob de A-5, a5-guards.py, a5-selftest.json y preflight.md no cambian después de bf2cf857"
+  }
+ },
+ "PreviousObject": null,
+ "PriorFindingIds": [],
+ "PriorFindingSource": "ninguno: es la primera revisión formal de A-5 (A-5 cabecera y §10: NOT LAUNCHED)",
+ "Harness": "docs/automation/evidence/I-62-A5/a5-guards.py",
+ "HarnessExecution": "ninguna por el revisor: no tiene herramientas de ejecución; lee el código y los resultados custodiados",
+ "FocusTopics": [
+  "A5-1_CONFORMS_AP_16_13_16_14",
+  "ORIGINAL_FIXTURE_HISTORY_INTEGRITY",
+  "IMPACT_C-22_C-25a",
+  "BUDGET_SEPARATION_A4-6_A5-2",
+  "NO_RESETS_NO_QUOTA_TRANSFERS",
+  "D5_AND_OWNER_VALIDATION",
+  "OWNER_RESERVED_DECISIONS",
+  "GUARDS_AND_NEGATIVES_SUFFICIENCY"
+ ],
+ "FocusSource": "disposición §72, punto 2 (order.txt, líneas 10-19): conformidad de A5-1 con AP 16.13 (y 16.14, que fija el punto efectivo); integridad del historial del fixture original; impacto sobre C-22 y C-25a; separación de los presupuestos de A4-6 y A5-2; prohibición de reinicios y transferencias de cupos; aplicabilidad de D.5 y Owner Validation; decisiones reservadas al Owner; suficiencia de las guardas y sus negativos",
+ "ScopeConfirmationKeys": [
+  "A51AppendAtEndOfD1",
+  "A52AppendAtEndOfD3AfterA46",
+  "NoFrozenTextReplaced",
+  "A51InnerQuoteEqualsV14L2391",
+  "A52FiguresEqualV14L2442"
+ ],
+ "OwnerAuthorizationLines": [
+  "A5-FIXTURE-B1-REPO",
+  "A5-PRINCIPAL-FXU2-CONSUMO"
+ ],
+ "QuestionIds": [
+  "Q-A5-01",
+  "Q-A5-02",
+  "Q-A5-03",
+  "Q-A5-04",
+  "Q-A5-05",
+  "Q-A5-06",
+  "Q-A5-07",
+  "Q-A5-08",
+  "Q-A5-09",
+  "Q-A5-10",
+  "Q-A5-11",
+  "Q-A5-12"
+ ],
+ "QuestionRows": {
+  "Q-A5-01": 323,
+  "Q-A5-02": 324,
+  "Q-A5-03": 325,
+  "Q-A5-04": 326,
+  "Q-A5-05": 327,
+  "Q-A5-06": 328,
+  "Q-A5-07": 329,
+  "Q-A5-08": 330,
+  "Q-A5-09": 331,
+  "Q-A5-10": 332,
+  "Q-A5-11": 333,
+  "Q-A5-12": 334
+ },
+ "QuestionSource": "A-5 §8 (Q-A5-01..Q-A5-12)",
+ "SeparateVerdicts": {
+  "A51Verdict": "A5-1 (separable)",
+  "A52Verdict": "A5-2 (separable)",
+  "Values": "AGREED | CHANGES REQUIRED | EXCLUDE | BLOCKED — OWNER DECISION; NOT_ASSESSED solo con NOT_ACCREDITED"
+ },
+ "D5Disposition": {
+  "Disposition": "DEFER_UNTIL_OV_PREPARATION | NO_D5_IMPACT | COVER_IN_A5 | OWNER_DECISION_REQUIRED; NOT_DETERMINED solo con NOT_ACCREDITED",
+  "OwnerValidationAffected": "YES | NO; NOT_DETERMINED solo con NOT_ACCREDITED",
+  "Source": "A-5 §3.4 («No cubre D.5») y Q-A5-01; disposición §72, puntos 2 y 6 («decisión sobre D.5»)"
+ },
+ "Transport": {
+  "Adapter": "claude-cli",
+  "Binary": {
+   "Path": "%APPDATA%\\Claude\\claude-code\\2.1.293\\83cb0bd7fed4\\claude.exe",
+   "Sha256": "8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa",
+   "Version": "2.1.293 (Claude Code)",
+   "Authenticode": "Valid; CN=\"Anthropic, PBC\""
+  },
+  "Model": "claude-opus-5-5",
+  "Effort": "xhigh",
+  "Flags": [
+   "-p",
+   "--model",
+   "claude-opus-5-5",
+   "--effort",
+   "xhigh",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--safe-mode",
+   "--strict-mcp-config",
+   "--no-chrome",
+   "--tools",
+   "Read,Grep,Glob",
+   "--permission-mode",
+   "dontAsk",
+   "--permission-prompts",
+   "none"
+  ],
+  "AddDir": [
+   "--add-dir",
+   "D:\\r62-arch-a5-run"
+  ],
+  "SessionId": "dcb1b798-b53a-4a31-9693-61cd4a2dfe51",
+  "Cwd": "D:\\r62-arch-a5",
+  "ArgsTemplate": [
+   "-p",
+   "--model",
+   "claude-opus-5-5",
+   "--effort",
+   "xhigh",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--safe-mode",
+   "--strict-mcp-config",
+   "--no-chrome",
+   "--tools",
+   "Read,Grep,Glob",
+   "--permission-mode",
+   "dontAsk",
+   "--permission-prompts",
+   "none",
+   "--add-dir",
+   "<add-dir>",
+   "--session-id",
+   "<session-id>",
+   "--json-schema",
+   "<json-schema>"
+  ],
+  "AddDirStatus": "no medido en C1; medido en C3 de la caracterización R20261008T183600Z-char sobre la plantilla exacta con marcadores (decisiones §56, punto 7; §57, punto 3): kit/transport-gate.json se entrega en MEASURED con el SHA-256 del registro fijado; launch.py vuelve a evaluar la compuerta y el auditor la re-evalúa sobre las copias de launch/",
+  "Gate": "kit/transport-gate.json (transport_gate.py)",
+  "Stdin": "prompt.md del run (bytes literales)",
+  "JsonSchema": "kit/result.schema.json en forma compacta: json.dumps(separators=(',', ':'), ensure_ascii=True)",
+  "ExpectedInit": {
+   "tools": [
+    "Glob",
+    "Grep",
+    "Read",
+    "StructuredOutput"
+   ],
+   "permissionMode": "dontAsk",
+   "mcp_servers": [],
+   "claude_code_version": "2.1.293"
+  },
+  "TranscriptPath": "%USERPROFILE%\\.claude\\projects\\D--r62-arch-a5\\dcb1b798-b53a-4a31-9693-61cd4a2dfe51.jsonl",
+  "LaunchDir": "D:\\r62-arch-a5-run\\launch (preflight.json, transport-characterization.json, transport-acceptance.json solo en ACCEPTED, stdout.jsonl, stderr.txt y run.json)",
+  "TimeoutSeconds": 3600,
+  "AuthSettleSeconds": 120,
+  "AuthSettle": "launch.py espera AUTH_SETTLE_S segundos entre el final de `auth status` (preflight 5) y el lanzamiento, y registra en run.json como TRANSPORT_AUTH_REFRESH_CONFLICT un result con «Failed to refresh OAuth token» y 0 tokens (sin reintento); heredado del intento 2 de A-3 y de los kits de A-4",
+  "Characterization": "claude-cli-characterization.json de R20261008T183600Z-char (decisiones §56, punto 7; aceptada como evidencia de elegibilidad vigente en decisiones §57, punto 3; vigencia del binario comprobada en decisiones §72): C1 completada, C2 cancelada por terminación, C3 PASS sobre la plantilla con --add-dir"
+ },
+ "RunDir": "D:\\r62-arch-a5-run",
+ "RunFiles": [
+  "order.txt",
+  "prompt.md",
+  "delta.diff"
+ ],
+ "PremiseRunFiles": [
+  "order.txt",
+  "delta.diff"
+ ],
+ "RunFileHashes": {
+  "order.txt": {
+   "Bytes": 2556,
+   "Lines": 48,
+   "Sha256": "0baac461aec463162df278220174ed5527af46c0bc242b8eac23bbcc623333fc",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "Source": "cuerpo exacto pegado de la disposición §72 del Coordinator (2 556 bytes; SHA-256 0baac461…, el que declara decisiones §72 en el commit); su punto 2 ordena esta revisión y fija sus ocho temas",
+   "PremiseAllowed": true,
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 48
+    }
+   ],
+   "IdentityCheck": {
+    "DecisionsSection": "§72",
+    "Sha256DeclaredInDecisions": true,
+    "BytesDeclaredInDecisions": 2556
+   }
+  },
+  "prompt.md": {
+   "Bytes": 31545,
+   "Lines": 308,
+   "Sha256": "1454c9176db58e71fd17267bc391333fa2f52abd55feb6a0541d4ebba3495f0b",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": false
+   },
+   "Source": "copia de kit/prompt.md; stdin literal del proceso claude-cli; nunca es premisa",
+   "PremiseAllowed": false,
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 308
+    }
+   ]
+  },
+  "delta.diff": {
+   "Bytes": 37900,
+   "Lines": 378,
+   "Sha256": "3e5d39d51dc6a70944654f0b739b14afbf0114d226fb042c86af55da4fe70800",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "Source": "salida literal de `git diff efcfcbc5 bf2cf857 -- docs/initiatives/I-62-A-5.md` en el clon (archivo nuevo; línea index 00000000..ad94ceed); sus líneas «+» son el objeto, línea a línea",
+   "PremiseAllowed": true,
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 378
+    }
+   ],
+   "IdentityCheck": {
+    "GitCommand": "git diff efcfcbc5a9f89de0dc4f4f21a426b4723ef18245 bf2cf857b69ada371590cde2c8ddfbc8b3581fab -- docs/initiatives/I-62-A-5.md",
+    "IndexLine": "index 00000000..ad94ceed",
+    "AddedLinesEqualObject": true
+   }
+  }
+ },
+ "RunCustody": "el auditor compara el SHA-256 de cada archivo del run con RunFileHashes y con la copia del kit; el directorio del run solo admite esos tres archivos y, después del lanzamiento, el subdirectorio launch/, que solo admite los archivos que escribe launch.py",
+ "IdentityVerification": "el revisor no ejecuta git: el invocador verifica el clon antes del lanzamiento (verify_clone.py → clone-verification.json) y el auditor v5.1-a5 lo vuelve a verificar después; el revisor contrasta lo que puede leer: delta.diff (línea index y rutas), order.txt (punto 1), decisiones §72 (punto 1), a5-guards-result-run.json (Mode, Base, Head y Result) y a5-selftest.json (ToolBlob y A5TextBlob)",
+ "CanonicalInputs": [
+  {
+   "Path": "docs/initiatives/I-62-A-5.md",
+   "Blob": "ad94ceedacbf3dbf70f0217a583978d0e32592fc",
+   "Bytes": 37342,
+   "Lines": 372,
+   "Sha256": "3b1c60d2049ef20d5543a09964577143314d76d57bb36dd55d74cf8ea8d5733d",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": "ad94ceed (decisiones §72, punto 1)",
+   "Why": "objeto de la revisión: A-5 entera (A5-1, A5-2, Q-A5-01..Q-A5-12)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 372
+    },
+    {
+     "Section": "cabecera (bloque de identidad)",
+     "Start": 1,
+     "End": 49
+    },
+    {
+     "Section": "## 1. Alcance",
+     "Start": 51,
+     "End": 72
+    },
+    {
+     "Section": "## 2. Cláusulas anteriores y fuentes (literales en `efcfcbc5`; «V14 L…» = Proposal congelada, «AP L…» = AUTOMATION_PLAN,",
+     "Start": 74,
+     "End": 147
+    },
+    {
+     "Section": "## 3. Delta",
+     "Start": 149,
+     "End": 242
+    },
+    {
+     "Section": "### 3.1 Motivo",
+     "Start": 151,
+     "End": 167
+    },
+    {
+     "Section": "### 3.2 A5-1 — Construcción del fixture conforme al mapa de cláusulas (B1)",
+     "Start": 169,
+     "End": 199
+    },
+    {
+     "Section": "### 3.3 A5-2 — Una sesión de Principal para la unidad FX-U2 (separable)",
+     "Start": 201,
+     "End": 221
+    },
+    {
+     "Section": "### 3.4 Lo que A-5 no hace",
+     "Start": 223,
+     "End": 242
+    },
+    {
+     "Section": "## 4. Semántica antes y después",
+     "Start": 244,
+     "End": 259
+    },
+    {
+     "Section": "## 5. Materialidad (M-01..M-08)",
+     "Start": 261,
+     "End": 272
+    },
+    {
+     "Section": "## 6. No cambia producción",
+     "Start": 274,
+     "End": 296
+    },
+    {
+     "Section": "## 7. Consecuencias reservadas al Owner",
+     "Start": 298,
+     "End": 317
+    },
+    {
+     "Section": "## 8. Preguntas para la revisión (no forman parte del delta)",
+     "Start": 319,
+     "End": 334
+    },
+    {
+     "Section": "## 9. Evidencia",
+     "Start": 336,
+     "End": 344
+    },
+    {
+     "Section": "## 10. Estado de revisión",
+     "Start": 346,
+     "End": 354
+    },
+    {
+     "Section": "## Anexo (no normativo) — aplicación prevista",
+     "Start": 356,
+     "End": 372
+    },
+    {
+     "Section": "§3.2, párrafo A5-1",
+     "Start": 175,
+     "End": 199
+    },
+    {
+     "Section": "§3.3, párrafo A5-2",
+     "Start": 207,
+     "End": 221
+    },
+    {
+     "Section": "§3.2 A5-1, regla 1",
+     "Start": 178,
+     "End": 182
+    },
+    {
+     "Section": "§3.2 A5-1, regla 2",
+     "Start": 183,
+     "End": 186
+    },
+    {
+     "Section": "§3.2 A5-1, regla 3",
+     "Start": 187,
+     "End": 188
+    },
+    {
+     "Section": "§3.2 A5-1, regla 4",
+     "Start": 189,
+     "End": 192
+    },
+    {
+     "Section": "§3.2 A5-1, regla 5",
+     "Start": 193,
+     "End": 194
+    },
+    {
+     "Section": "§3.2 A5-1, regla 6",
+     "Start": 195,
+     "End": 197
+    },
+    {
+     "Section": "§3.2 A5-1, regla 7",
+     "Start": 198,
+     "End": 199
+    },
+    {
+     "Section": "§3.3 A5-2, regla 1",
+     "Start": 209,
+     "End": 210
+    },
+    {
+     "Section": "§3.3 A5-2, regla 2",
+     "Start": 211,
+     "End": 212
+    },
+    {
+     "Section": "§3.3 A5-2, regla 3",
+     "Start": 213,
+     "End": 214
+    },
+    {
+     "Section": "§3.3 A5-2, regla 4",
+     "Start": 215,
+     "End": 216
+    },
+    {
+     "Section": "§3.3 A5-2, regla 5",
+     "Start": 217,
+     "End": 219
+    },
+    {
+     "Section": "§3.3 A5-2, regla 6",
+     "Start": 220,
+     "End": 221
+    },
+    {
+     "Section": "§5, fila M-01",
+     "Start": 265,
+     "End": 265
+    },
+    {
+     "Section": "§5, fila M-02",
+     "Start": 266,
+     "End": 266
+    },
+    {
+     "Section": "§5, fila M-03",
+     "Start": 267,
+     "End": 267
+    },
+    {
+     "Section": "§5, fila M-04",
+     "Start": 268,
+     "End": 268
+    },
+    {
+     "Section": "§5, fila M-05",
+     "Start": 269,
+     "End": 269
+    },
+    {
+     "Section": "§5, fila M-06",
+     "Start": 270,
+     "End": 270
+    },
+    {
+     "Section": "§5, fila M-07",
+     "Start": 271,
+     "End": 271
+    },
+    {
+     "Section": "§5, fila M-08",
+     "Start": 272,
+     "End": 272
+    },
+    {
+     "Section": "§7, líneas exactas del Owner (bloque text)",
+     "Start": 314,
+     "End": 317
+    },
+    {
+     "Section": "§8, Q-A5-01",
+     "Start": 323,
+     "End": 323
+    },
+    {
+     "Section": "§8, Q-A5-02",
+     "Start": 324,
+     "End": 324
+    },
+    {
+     "Section": "§8, Q-A5-03",
+     "Start": 325,
+     "End": 325
+    },
+    {
+     "Section": "§8, Q-A5-04",
+     "Start": 326,
+     "End": 326
+    },
+    {
+     "Section": "§8, Q-A5-05",
+     "Start": 327,
+     "End": 327
+    },
+    {
+     "Section": "§8, Q-A5-06",
+     "Start": 328,
+     "End": 328
+    },
+    {
+     "Section": "§8, Q-A5-07",
+     "Start": 329,
+     "End": 329
+    },
+    {
+     "Section": "§8, Q-A5-08",
+     "Start": 330,
+     "End": 330
+    },
+    {
+     "Section": "§8, Q-A5-09",
+     "Start": 331,
+     "End": 331
+    },
+    {
+     "Section": "§8, Q-A5-10",
+     "Start": 332,
+     "End": 332
+    },
+    {
+     "Section": "§8, Q-A5-11",
+     "Start": 333,
+     "End": 333
+    },
+    {
+     "Section": "§8, Q-A5-12",
+     "Start": 334,
+     "End": 334
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa",
+   "Bytes": 342761,
+   "Lines": 3323,
+   "Sha256": "ab55ad4f4addef8455543ed06a4c60aa0a1901affc0ba3686146dfeedd9279af",
+   "LinesOver2000Chars": [
+    2352,
+    2380,
+    2382
+   ],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa",
+   "Why": "Proposal V14 congelada: D.1 (pasos 1-6; L2388-L2406), D.2, D.3 (L2437, L2442-L2445, L2523, L2528), D.4 (L2544), D.5 (L2558), D.6, D.8, Anexo C (C-22, C-25a, C-39), §17 y §18 (OV-I62-03/06; OD-1..OD-7, L970-L975)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "## Anexo C — Matriz única: invariante → obligación → gate → entrada disponible → resultado → clase y autoridad",
+     "Start": 2330,
+     "End": 2382
+    },
+    {
+     "Section": "Anexo C, C-22 (L2361; A-5 §2)",
+     "Start": 2361,
+     "End": 2361
+    },
+    {
+     "Section": "Anexo C, C-25a",
+     "Start": 2364,
+     "End": 2364
+    },
+    {
+     "Section": "Anexo C, C-39",
+     "Start": 2379,
+     "End": 2379
+    },
+    {
+     "Section": "### D.1 Arranque del fixture (análisis; nada se crea ahora)",
+     "Start": 2386,
+     "End": 2406
+    },
+    {
+     "Section": "D.1, introducción y pasos 1-3 (L2388-L2397; A-5 §2)",
+     "Start": 2388,
+     "End": 2397
+    },
+    {
+     "Section": "D.1, paso 2, primera viñeta (L2391; A5-1)",
+     "Start": 2391,
+     "End": 2391
+    },
+    {
+     "Section": "D.1, paso 2, manifiesto (L2394; Q-A5-04)",
+     "Start": 2394,
+     "End": 2394
+    },
+    {
+     "Section": "D.1, paso 3 (L2395; Q-A5-02)",
+     "Start": 2395,
+     "End": 2395
+    },
+    {
+     "Section": "D.1, pasos 4-6 (L2398-L2406; A-5 §2)",
+     "Start": 2398,
+     "End": 2406
+    },
+    {
+     "Section": "### D.2 Semántica de `Ci` (se resuelve antes del Freeze)",
+     "Start": 2408,
+     "End": 2429
+    },
+    {
+     "Section": "### D.3 Hoja de invocaciones y escenarios",
+     "Start": 2431,
+     "End": 2528
+    },
+    {
+     "Section": "D.3, fila Principal A (L2437)",
+     "Start": 2437,
+     "End": 2437
+    },
+    {
+     "Section": "D.3, «Codex, total», sondas previas, Worker y Reviewer (L2442-L2445)",
+     "Start": 2442,
+     "End": 2445
+    },
+    {
+     "Section": "D.3, totales de la ronda A (L2523)",
+     "Start": 2523,
+     "End": 2523
+    },
+    {
+     "Section": "D.3, cierre (L2528)",
+     "Start": 2528,
+     "End": 2528
+    },
+    {
+     "Section": "### D.4 Resultados y cobertura",
+     "Start": 2530,
+     "End": 2554
+    },
+    {
+     "Section": "D.4, FX-02 PASS (L2544)",
+     "Start": 2544,
+     "End": 2544
+    },
+    {
+     "Section": "### D.5 Ejecución compacta para OV sobre FINAL_CANDIDATE_SHA",
+     "Start": 2556,
+     "End": 2565
+    },
+    {
+     "Section": "D.5, resiembra para OV (L2558; Q-A5-01)",
+     "Start": 2558,
+     "End": 2558
+    },
+    {
+     "Section": "### D.6 Entradas y aislamiento (cobertura declarada)",
+     "Start": 2567,
+     "End": 2587
+    },
+    {
+     "Section": "### D.8 FX-06 — piloto de autonomía real (R62-AUTO-12; C-39)",
+     "Start": 2608,
+     "End": 2646
+    },
+    {
+     "Section": "## 17. Plan de gates (D-16)",
+     "Start": 931,
+     "End": 950
+    },
+    {
+     "Section": "## 18. Owner Validation y decisiones del Owner",
+     "Start": 952,
+     "End": 977
+    },
+    {
+     "Section": "§18, OV-I62-03",
+     "Start": 960,
+     "End": 960
+    },
+    {
+     "Section": "§18, OV-I62-06",
+     "Start": 963,
+     "End": 963
+    },
+    {
+     "Section": "§18, filas OD-1..OD-7 (L970-L975)",
+     "Start": 970,
+     "End": 975
+    },
+    {
+     "Section": "§18, OD-5 (L974)",
+     "Start": 974,
+     "End": 974
+    },
+    {
+     "Section": "§18, OD-7 (L975)",
+     "Start": 975,
+     "End": 975
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-2.md",
+   "Blob": "f1e1d6f08d3cf677500794c7d0019433a4dc7d4e",
+   "Bytes": 29957,
+   "Lines": 352,
+   "Sha256": "819bcc322cae6e70db0dacff553be9e4058a3c683e2d72d419bc41b52459903e",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": "f1e1d6f08d3cf677500794c7d0019433a4dc7d4e",
+   "Why": "A-2 acordada (A2-P1 L148, L156, L159, L170; A2-P2 L233): presupuestos de recuperación que A-5 no amplía",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 352
+    },
+    {
+     "Section": "cabecera (bloque de identidad)",
+     "Start": 1,
+     "End": 48
+    },
+    {
+     "Section": "## 1. Alcance",
+     "Start": 50,
+     "End": 72
+    },
+    {
+     "Section": "## 2. A2-P1 — Recuperación de un lanzamiento inválido",
+     "Start": 74,
+     "End": 177
+    },
+    {
+     "Section": "### 2.1 Cláusulas anteriores (literales, V14)",
+     "Start": 76,
+     "End": 126
+    },
+    {
+     "Section": "### 2.2 Motivo",
+     "Start": 128,
+     "End": 140
+    },
+    {
+     "Section": "### 2.3 Delta exacto",
+     "Start": 142,
+     "End": 170
+    },
+    {
+     "Section": "### 2.4 Aplicación prevista (no ejecutada; solo con A-2 AGREED)",
+     "Start": 172,
+     "End": 177
+    },
+    {
+     "Section": "## 3. A2-P2 — Nueva medición tras una actualización automática del runtime",
+     "Start": 179,
+     "End": 239
+    },
+    {
+     "Section": "### 3.1 Cláusulas anteriores (literales, V14)",
+     "Start": 181,
+     "End": 195
+    },
+    {
+     "Section": "### 3.2 Motivo",
+     "Start": 197,
+     "End": 210
+    },
+    {
+     "Section": "### 3.3 Delta exacto",
+     "Start": 212,
+     "End": 239
+    },
+    {
+     "Section": "## 4. Semántica antes y después",
+     "Start": 241,
+     "End": 263
+    },
+    {
+     "Section": "## 5. Materialidad (M-01..M-08)",
+     "Start": 265,
+     "End": 276
+    },
+    {
+     "Section": "## 6. No cambia producción ni la semántica de F4",
+     "Start": 278,
+     "End": 297
+    },
+    {
+     "Section": "## 7. Consecuencias reservadas al Owner",
+     "Start": 299,
+     "End": 307
+    },
+    {
+     "Section": "## 8. Preguntas para la revisión (no forman parte del delta)",
+     "Start": 309,
+     "End": 319
+    },
+    {
+     "Section": "## 9. Evidencia",
+     "Start": 321,
+     "End": 330
+    },
+    {
+     "Section": "## 10. Veredictos",
+     "Start": 332,
+     "End": 341
+    },
+    {
+     "Section": "## 11. Cambios frente al blob `d47f71b6` (revisión R20261008T014941Z-68fe; decisiones §56)",
+     "Start": 343,
+     "End": 352
+    },
+    {
+     "Section": "A2-P1, filas (L148)",
+     "Start": 148,
+     "End": 148
+    },
+    {
+     "Section": "A2-P1, regla 3 (L156)",
+     "Start": 156,
+     "End": 156
+    },
+    {
+     "Section": "A2-P1, regla 4 (L159)",
+     "Start": 159,
+     "End": 159
+    },
+    {
+     "Section": "A2-P1, cierre (L170)",
+     "Start": 170,
+     "End": 170
+    },
+    {
+     "Section": "A2-P2 (L233)",
+     "Start": 233,
+     "End": 233
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-4.md",
+   "Blob": "5e2ba68efdc1b902aa1c28aff4453b4b6973be7f",
+   "Bytes": 62415,
+   "Lines": 516,
+   "Sha256": "d0c5c426cd75b80dc4b6d283be69d9bd083f7165d4bc291aa5d9ba7a88238420",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": "5e2ba68efdc1b902aa1c28aff4453b4b6973be7f",
+   "Why": "A-4 acordada (A4-1 L203; A4-6 L351, L355, L361; §7): el cupo de A4-6 que A5-2 no debe tocar",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 516
+    },
+    {
+     "Section": "cabecera (bloque de identidad)",
+     "Start": 1,
+     "End": 56
+    },
+    {
+     "Section": "## 1. Alcance",
+     "Start": 58,
+     "End": 78
+    },
+    {
+     "Section": "## 2. Cláusulas anteriores y fuentes (literales en `524b293e`, iguales en `c8d69fcb`; «V14 L…» = Proposal congelada, «DE",
+     "Start": 80,
+     "End": 159
+    },
+    {
+     "Section": "## 3. Delta",
+     "Start": 161,
+     "End": 361
+    },
+    {
+     "Section": "### 3.1 Motivo",
+     "Start": 163,
+     "End": 183
+    },
+    {
+     "Section": "### 3.2 A4-1 — Ruta de ejecución del Controller ante una limitación medida del shell",
+     "Start": 185,
+     "End": 211
+    },
+    {
+     "Section": "### 3.3 A4-2 — Sustitución del adapter del Architect ante una limitación medida",
+     "Start": 213,
+     "End": 233
+    },
+    {
+     "Section": "### 3.4 A4-3 — Aceptación dentro de la ventana de los bindings del Worker y del Controller de verificación (H-1)",
+     "Start": 235,
+     "End": 256
+    },
+    {
+     "Section": "### 3.5 A4-4 — Independencia REQUIRED de una candidata no arrancada (H-2)",
+     "Start": 258,
+     "End": 287
+    },
+    {
+     "Section": "### 3.6 A4-5 — Tope de una corrección tras un REWORK (H-3; separable)",
+     "Start": 289,
+     "End": 301
+    },
+    {
+     "Section": "### 3.7 Lo que A-4 no hace",
+     "Start": 303,
+     "End": 343
+    },
+    {
+     "Section": "### 3.8 A4-6 — Una sesión de Principal más en la ronda A, solo para el titular A2 (U-14; separable)",
+     "Start": 345,
+     "End": 361
+    },
+    {
+     "Section": "## 4. Semántica antes y después",
+     "Start": 363,
+     "End": 385
+    },
+    {
+     "Section": "## 5. Materialidad (M-01..M-08)",
+     "Start": 387,
+     "End": 398
+    },
+    {
+     "Section": "## 6. No cambia producción",
+     "Start": 400,
+     "End": 417
+    },
+    {
+     "Section": "## 7. Consecuencias reservadas al Owner",
+     "Start": 419,
+     "End": 435
+    },
+    {
+     "Section": "## 8. Preguntas para la revisión (no forman parte del delta)",
+     "Start": 437,
+     "End": 470
+    },
+    {
+     "Section": "## 9. Evidencia",
+     "Start": 472,
+     "End": 479
+    },
+    {
+     "Section": "## 10. Veredictos",
+     "Start": 481,
+     "End": 490
+    },
+    {
+     "Section": "## Anexo (no normativo) — aplicación prevista a FX-02",
+     "Start": 492,
+     "End": 516
+    },
+    {
+     "Section": "A4-1, regla 3 (L203)",
+     "Start": 203,
+     "End": 203
+    },
+    {
+     "Section": "A4-6 (L351)",
+     "Start": 351,
+     "End": 351
+    },
+    {
+     "Section": "A4-6, regla 2 (L355)",
+     "Start": 355,
+     "End": 355
+    },
+    {
+     "Section": "A4-6, regla 5 (L361)",
+     "Start": 361,
+     "End": 361
+    },
+    {
+     "Section": "§7, líneas del Owner (bloque text)",
+     "Start": 431,
+     "End": 435
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-1.md",
+   "Blob": "c01899a72b940503bb85a0fab42bc085c603fd0f",
+   "Bytes": 77984,
+   "Lines": 437,
+   "Sha256": "acd5db2665b436d830dd271375f0032d234b815d9b9b63cb7c3a2ed0b00e13f4",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": "c01899a72b940503bb85a0fab42bc085c603fd0f",
+   "Why": "A-1 acordada: solo la cabecera (A-5 no la modifica)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "cabecera (A-5 no la modifica)",
+     "Start": 1,
+     "End": 56
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-3.md",
+   "Blob": "ea6721f78cb63fbc4f9d99563f3262eb36a32c5d",
+   "Bytes": 200993,
+   "Lines": 1536,
+   "Sha256": "60da873139c21bd7aada074d4921c1798d6b528a82ed397e2bdf5855213fa36e",
+   "LinesOver2000Chars": [
+    1487
+   ],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": "ea6721f78cb63fbc4f9d99563f3262eb36a32c5d",
+   "Why": "A-3 acordada: solo la cabecera (A-5 no la modifica)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "cabecera (A-5 no la modifica)",
+     "Start": 1,
+     "End": 62
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-consensus-freeze.md",
+   "Blob": "0f6b860837e2478db8525e1fb30a485bc4646816",
+   "Bytes": 7134,
+   "Lines": 113,
+   "Sha256": "71809873a89aafcb58883c507a42cc825a0c14cd70c84bda6d26fd0af9e9a4a4",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": "0f6b860837e2478db8525e1fb30a485bc4646816",
+   "Why": "identidad del Freeze",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 113
+    }
+   ]
+  },
+  {
+   "Path": "docs/INITIATIVE_LIFECYCLE.md",
+   "Blob": "f19896a8f1a7c82f74bac7231636f68462a87271",
+   "Bytes": 24334,
+   "Lines": 360,
+   "Sha256": "93e9c6ca73460ae46ca896f4447d9f8b517624e0acbae82750d4ba613ff0b994",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": "f19896a8",
+   "Why": "§3 (M-01..M-08 y OWNER-RESERVED), §5, §6 (veredicto formal y enmiendas) y §8",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "## 3. Arquetipos y materialidad",
+     "Start": 66,
+     "End": 94
+    },
+    {
+     "Section": "## 5. Participacion del Architect",
+     "Start": 152,
+     "End": 191
+    },
+    {
+     "Section": "## 6. Consensus Freeze y enmiendas",
+     "Start": 193,
+     "End": 222
+    },
+    {
+     "Section": "## 8. READY y frontera del Candidato",
+     "Start": 247,
+     "End": 274
+    }
+   ]
+  },
+  {
+   "Path": "docs/AUTOMATION_PLAN.md",
+   "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "Bytes": 155229,
+   "Lines": 1732,
+   "Sha256": "6dc9f5d5cb90b2242a8d21140674c0b88dc6472a36dd8c65dc988e8cac6a19f5",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": "f525cb1e",
+   "Why": "AUTOMATION_PLAN 16.13 (Evaluate/Resolve/Validate, MV-1..MV-7; L731, L822, L902-L908, L920-L921) y 16.14 (punto efectivo, L945-L946)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
+     "Start": 717,
+     "End": 928
+    },
+    {
+     "Section": "### 16.14 Vigencia de las partes I62",
+     "Start": 930,
+     "End": 948
+    },
+    {
+     "Section": "16.13, mapa en I62_EFFECTIVE_SHA (L731)",
+     "Start": 731,
+     "End": 731
+    },
+    {
+     "Section": "16.13, Resolve paso 2 (L822)",
+     "Start": 822,
+     "End": 822
+    },
+    {
+     "Section": "16.13, Validate(M): MV-1..MV-7 (L902-L908)",
+     "Start": 902,
+     "End": 908
+    },
+    {
+     "Section": "16.13, MAP_INVALID (L920-L921)",
+     "Start": 920,
+     "End": 921
+    },
+    {
+     "Section": "16.14, punto efectivo (L945-L946)",
+     "Start": 945,
+     "End": 946
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+   "Blob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "Bytes": 19104,
+   "Lines": 626,
+   "Sha256": "a046a0a3f3f7e1b0b1905e1dcac87de1e3146a48871fbbcf9d351abffcf3833a",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": "4d49d3e1",
+   "Why": "mapa de cláusulas de MC_I62 (Files, FileKind, BaseBlob, EffBlob, Entries): sin cambio por A-5",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 626
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
+   "Blob": "6b54dda9579d694200d8fc9ec26a4a846eef529b",
+   "Bytes": 2722,
+   "Lines": 119,
+   "Sha256": "4a3ec2111f55671cf1f4362784bd6d30c656dc37f58e1b64ec679b685e4e778b",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": "6b54dda9",
+   "Why": "esquema del mapa de cláusulas: sin cambio por A-5",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 119
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F4/compat/clause_map.py",
+   "Blob": "ffe6ea57257f30fa9eec3e9aaf5bf9982bf59d08",
+   "Bytes": 8447,
+   "Lines": 173,
+   "Sha256": "8e32b08e96005ac259fb5f4c9851bda73eed207e1e8f7b7cc7789793fffd8383",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": "ffe6ea57",
+   "Why": "comprobador C-20b de F4 que usan G4 y el contraste del preflight (sin cambio)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 173
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/MAP-INVALID/characterization.md",
+   "Blob": "1d74c2da2abf53f51158f2ed40a34fe9ca47e383",
+   "Bytes": 14830,
+   "Lines": 149,
+   "Sha256": "00156bab78be4b32838e4993d36a8ac0c6c44b87b5b689b58d5ce938a2ae50c6",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": "1d74c2da",
+   "Why": "caracterización de MAP_INVALID del fixture actual (A-5 §3.1)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 149
+    },
+    {
+     "Section": "cabecera",
+     "Start": 1,
+     "End": 6
+    },
+    {
+     "Section": "## 1. Causa exacta",
+     "Start": 8,
+     "End": 20
+    },
+    {
+     "Section": "## 2. Objetos de la activación (salidas de git, resumidas)",
+     "Start": 22,
+     "End": 40
+    },
+    {
+     "Section": "## 3. El mapa (en EFF, blob `4d49d3e1a63d2b6128c9d9eeac473156a421571a`; esquema `6b54dda9…`)",
+     "Start": 42,
+     "End": 94
+    },
+    {
+     "Section": "## 4. Procedencia de `BaseBlob` y `EffBlob` en RackCad ([work/provenance.txt](work/provenance.txt))",
+     "Start": 96,
+     "End": 107
+    },
+    {
+     "Section": "## 5. MV-1..MV-7 sobre el fixture actual (MainSha_eval = `main` = `fbe25347`)",
+     "Start": 109,
+     "End": 131
+    },
+    {
+     "Section": "## 6. Consecuencias y alcance",
+     "Start": 133,
+     "End": 149
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/MAP-INVALID/effects.md",
+   "Blob": "c817adc0d2c98bf46c664524e89559b35d080608",
+   "Bytes": 11161,
+   "Lines": 77,
+   "Sha256": "3b8e3037179c18d9f4d568f65088884f2679b301664b28f5d272d25f92622aef",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": "c817adc0",
+   "Why": "efectos de la reconstrucción sobre pruebas y evidencia anteriores (C-22, C-25a, historia del fixture)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 77
+    },
+    {
+     "Section": "cabecera",
+     "Start": 1,
+     "End": 1
+    },
+    {
+     "Section": "## Fuentes y claves",
+     "Start": 3,
+     "End": 22
+    },
+    {
+     "Section": "## Tabla de efectos",
+     "Start": 24,
+     "End": 54
+    },
+    {
+     "Section": "## Ensayos anteriores que la reconstrucción invalidaría",
+     "Start": 56,
+     "End": 68
+    },
+    {
+     "Section": "## Señalados para disposición del Coordinator (con independencia de la opción)",
+     "Start": 70,
+     "End": 77
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/MAP-INVALID/reconstruction-plan.md",
+   "Blob": "d0b2fd25b2731b2a789cdc06cd3dd53f1c298ef6",
+   "Bytes": 19852,
+   "Lines": 234,
+   "Sha256": "e0ea2ed3b6c9e1657a22cf390670cc16aface1b47f8a8d4ab4741deec4befc9f",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": "d0b2fd25",
+   "Why": "plan de reconstrucción de la activación (opciones (a)-(d); orden recomendado)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 234
+    },
+    {
+     "Section": "cabecera",
+     "Start": 1,
+     "End": 11
+    },
+    {
+     "Section": "## 1. Restricciones (§66)",
+     "Start": 13,
+     "End": 19
+    },
+    {
+     "Section": "## 2. Qué deben contener EFF'^1 y EFF' (diseño conforme al mapa sin cambios)",
+     "Start": 21,
+     "End": 63
+    },
+    {
+     "Section": "## 3. Candidato construido y pruebas (hechas en `D:\\r62-fixture\\tmp-map-*`, ya borrados)",
+     "Start": 65,
+     "End": 95
+    },
+    {
+     "Section": "## 4. Por qué la unidad no se puede trasladar (y hay que volver a arrancarla)",
+     "Start": 97,
+     "End": 120
+    },
+    {
+     "Section": "## 5. Opciones",
+     "Start": 122,
+     "End": 200
+    },
+    {
+     "Section": "### (b) Repositorio de fixture nuevo: origen local nuevo y repositorio público nuevo en GitHub — **recomendada**",
+     "Start": 124,
+     "End": 150
+    },
+    {
+     "Section": "### (a) Linaje nuevo en el mismo repositorio, con refs nuevas (`main-r2`, `fixture/i62-norm-r2`, `fx/u2`, tag `test-acti",
+     "Start": 152,
+     "End": 163
+    },
+    {
+     "Section": "### (c) Mismo repositorio, sustitución de refs (r1 archivado y `main` movida a r2)",
+     "Start": 165,
+     "End": 178
+    },
+    {
+     "Section": "### (d) No reconstruir",
+     "Start": 180,
+     "End": 183
+    },
+    {
+     "Section": "### Recomendación",
+     "Start": 185,
+     "End": 200
+    },
+    {
+     "Section": "## 6. Plan de pruebas posterior a la publicación (para la ejecución)",
+     "Start": 202,
+     "End": 211
+    },
+    {
+     "Section": "## 7. Riesgos",
+     "Start": 213,
+     "End": 222
+    },
+    {
+     "Section": "## 8. Decisiones y autoridades necesarias",
+     "Start": 224,
+     "End": 234
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/MAP-INVALID/mv_check.py",
+   "Blob": "9536d051372cb03643ac1392d85b3e8a563d35bc",
+   "Bytes": 27143,
+   "Lines": 565,
+   "Sha256": "06f022e9e890b1d5097d0807f38a691d505bdca9b4692efd80943ce37101da16",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": "9536d051",
+   "Why": "comprobador de MV-1..MV-7 usado por el preflight (sin cambio)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 565
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/FX-02/s62/u14-reconciliation.md",
+   "Blob": "05f623824e33b060dfc385c9a283736f7e9d2b20",
+   "Bytes": 16322,
+   "Lines": 161,
+   "Sha256": "84486436952783f1ad7cd6388e854be43e2c10c72c4ae17128e91950249e3e3e",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": "05f62382",
+   "Why": "conciliación de las sesiones de Principal de la ronda A (A y R) y presupuesto (A5-2)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 161
+    },
+    {
+     "Section": "cabecera",
+     "Start": 1,
+     "End": 15
+    },
+    {
+     "Section": "## 1. Texto aplicable (literal)",
+     "Start": 17,
+     "End": 52
+    },
+    {
+     "Section": "## 2. Inventario de las sesiones e invocaciones físicas del fixture (plano c)",
+     "Start": 54,
+     "End": 93
+    },
+    {
+     "Section": "### 2.1 Sesiones de Principal (`claude-desktop-session`, `claude-opus-5-5`; todas abiertas por el Owner)",
+     "Start": 56,
+     "End": 64
+    },
+    {
+     "Section": "### 2.2 Invocaciones de modelo de `codex-cli` en el fixture (todas lanzadas por la supervisión)",
+     "Start": 66,
+     "End": 73
+    },
+    {
+     "Section": "### 2.3 Ejecuciones sin invocación de modelo (ninguna fila de D.3: las filas cuentan sesiones y lanzamientos de modelo)",
+     "Start": 75,
+     "End": 93
+    },
+    {
+     "Section": "## 3. Presupuesto de Principal de la ronda A: tres lecturas",
+     "Start": 95,
+     "End": 111
+    },
+    {
+     "Section": "## 4. Si rige (i): autoridad necesaria y opciones (redacción neutral)",
+     "Start": 113,
+     "End": 140
+    },
+    {
+     "Section": "## 5. Resto del presupuesto de la ronda A (estado en `cca8c60e`)",
+     "Start": 142,
+     "End": 153
+    },
+    {
+     "Section": "## 6. Para la disposición",
+     "Start": 155,
+     "End": 161
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/requests/B1-fixture-request-draft-2026-10-11.md",
+   "Blob": "541d19e5cc60d057c9dd5babffe33fa2ce89babf",
+   "Bytes": 4078,
+   "Lines": 45,
+   "Sha256": "6db7ba2ffe717617393c59c73c9397de8d85ef8d14667b960450e48d1b4684d0",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": "541d19e5",
+   "Why": "borrador de la solicitud de B1 (origen de A-5)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 45
+    },
+    {
+     "Section": "cabecera",
+     "Start": 1,
+     "End": 5
+    },
+    {
+     "Section": "## 1. Estado técnico (listo)",
+     "Start": 7,
+     "End": 14
+    },
+    {
+     "Section": "## 2. Obstáculos normativos (decide el Coordinator; no se crea ninguna A-n sin disposición)",
+     "Start": 16,
+     "End": 31
+    },
+    {
+     "Section": "## 3. Líneas del Owner (borrador; se pedirán solo tras el §2)",
+     "Start": 33,
+     "End": 38
+    },
+    {
+     "Section": "## 4. Secuencia propuesta",
+     "Start": 40,
+     "End": 45
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/decisions/I-62.md",
+   "Blob": "09f6016467e09e7f98c8d9b072cce1730e9494ae",
+   "Bytes": 234433,
+   "Lines": 1477,
+   "Sha256": "a190bfdf1b568b39f2f3ebb22e72a76524f3a0c672d9e145acfb1339ab6f17e1",
+   "LinesOver2000Chars": [
+    657,
+    734,
+    750,
+    768,
+    787,
+    805,
+    819
+   ],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "AppendOnlySincePublication": {
+    "PublicationBlob": "8c96375c6437b9b943422eb2f2dd79f4d34ff594",
+    "PublicationLines": 1460,
+    "Note": "el texto de bf2cf857 es prefijo exacto del texto del commit (solo añadido)"
+   },
+   "Why": "§46 y §48 (OD-5, OD-7 y repositorio público), §51 (C-22 PASS), §63 (U-14) y §64-§72 (§71 prepara A-5; §72 ordena esta revisión)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "## 46. Decisiones del Owner OD-2, OD-3, OD-4, OD-5 y OD-7 y orden nocturna de F6 (2026-10-06 UTC)",
+     "Start": 880,
+     "End": 902
+    },
+    {
+     "Section": "## 48. Corrección del Owner a OD-7 (repositorio público), regla general de repositorios de CI y OD-2c (2026-10-06 UTC)",
+     "Start": 921,
+     "End": 931
+    },
+    {
+     "Section": "## 51. Disposición del Coordinator: C-22 y C-23 PASS, F6-OBS-01, reparación para FX-04a y OD-2d-PROBE (2026-10-07 UTC)",
+     "Start": 972,
+     "End": 991
+    },
+    {
+     "Section": "§63-§72",
+     "Start": 1257,
+     "End": 1477
+    },
+    {
+     "Section": "§63, punto 2 (DEC L1265)",
+     "Start": 1265,
+     "End": 1265
+    },
+    {
+     "Section": "§71, punto 1 (DEC L1454)",
+     "Start": 1454,
+     "End": 1454
+    },
+    {
+     "Section": "§71, punto 3 (DEC L1456)",
+     "Start": 1456,
+     "End": 1456
+    },
+    {
+     "Section": "§71, punto 5 (DEC L1458)",
+     "Start": 1458,
+     "End": 1458
+    },
+    {
+     "Section": "§72, puntos 1 y 2 (objeto y revisión)",
+     "Start": 1469,
+     "End": 1470
+    },
+    {
+     "Section": "## 63. Disposición del Coordinator: segunda revisión de A-4, U-14 y FX-02 (2026-10-09 UTC)",
+     "Start": 1257,
+     "End": 1272
+    },
+    {
+     "Section": "## 64. Disposición del Coordinator: A-4 AGREED y ejecución de FX-02; respuestas del Owner (2026-10-09 UTC)",
+     "Start": 1274,
+     "End": 1304
+    },
+    {
+     "Section": "## 65. Disposición del Coordinator: FX-02, P-01 y D-0..D-6; respuestas del Owner OD-2f y consumo de la sonda para el trí",
+     "Start": 1306,
+     "End": 1338
+    },
+    {
+     "Section": "## 66. Disposición del Coordinator: A4-1 NOT_DEMONSTRATED, MAP_INVALID y recuperación de FX-02 (2026-10-10 UTC)",
+     "Start": 1340,
+     "End": 1358
+    },
+    {
+     "Section": "## 67. Disposición del Coordinator: suspensión controlada de I-62 y prioridad de I-64 (2026-10-10 UTC)",
+     "Start": 1360,
+     "End": 1384
+    },
+    {
+     "Section": "## 68. Disposición del Coordinator: reanudación de I-62 en paralelo con I-64 (2026-10-11 UTC)",
+     "Start": 1386,
+     "End": 1402
+    },
+    {
+     "Section": "## 69. Disposición del Coordinator: runtime nuevo de Codex y recuperación por A2-P2; respuestas del Owner (2026-10-11 UT",
+     "Start": 1404,
+     "End": 1430
+    },
+    {
+     "Section": "## 70. Disposición del Coordinator: sonda 1 del bloque A2-P2 y sonda 2 retenida (2026-10-11 UTC)",
+     "Start": 1432,
+     "End": 1445
+    },
+    {
+     "Section": "## 71. Disposición del Coordinator: preparación de A-5 (fixture B1 y presupuesto de FX-U2) (2026-10-11 UTC)",
+     "Start": 1447,
+     "End": 1460
+    },
+    {
+     "Section": "## 72. Disposición del Coordinator: revisión formal de A-5 y camino crítico del Controller (2026-10-11 UTC)",
+     "Start": 1462,
+     "End": 1477
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-evidence.md",
+   "Blob": "e8c66fdfe8fc5e26eda19d3d091fd13bc4b56eda",
+   "Bytes": 322027,
+   "Lines": 3677,
+   "Sha256": "6885cc8f9ce0e16335fae85b6daf218b3aef679f932be8b4cbbb9159a53ee90c",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "AppendOnlySincePublication": {
+    "PublicationBlob": "b41c2e9860d253e4802d8603d48150794fd62ae7",
+    "PublicationLines": 3664,
+    "Note": "el texto de bf2cf857 es prefijo exacto del texto del commit (solo añadido)"
+   },
+   "Why": "§115-§133 (FX-02, MAP_INVALID, bloque A2-P2, preparación, publicación y guardas de A-5)",
+   "Scope": "SECTIONS",
+   "LineRanges": [
+    {
+     "Section": "§115-§133",
+     "Start": 3373,
+     "End": 3677
+    },
+    {
+     "Section": "## 115. Decisiones §64: A-4 AGREED; las tres autorizaciones del Owner recibidas; ejecución de FX-02 en marcha",
+     "Start": 3373,
+     "End": 3384
+    },
+    {
+     "Section": "## 116. FX-02: P-01 en la huella de `codex-cli` (STOP de la sonda A4-1); referencia AUTHOR observada; matriz F-1..F-6; s",
+     "Start": 3386,
+     "End": 3401
+    },
+    {
+     "Section": "## 117. Decisiones §65: OD-2f = A y consumo de la sonda A4-1 para el trío nuevo; D-0..D-6 dispuestas",
+     "Start": 3403,
+     "End": 3410
+    },
+    {
+     "Section": "## 118. FX-02: orden O4 publicada (S02), clon A2 (S03) y operaciones de `claude-cli` para el Architect (decisiones §65, ",
+     "Start": 3412,
+     "End": 3428
+    },
+    {
+     "Section": "## 119. FX-02: kit de la sonda única A4-1 (v3) congelado antes del lanzamiento (decisiones §65, puntos 5-7)",
+     "Start": 3430,
+     "End": 3452
+    },
+    {
+     "Section": "## 120. FX-02: sonda única A4-1 = NOT_DEMONSTRATED (R20261010T000542Z-a4-1-probe; decisiones §65)",
+     "Start": 3454,
+     "End": 3472
+    },
+    {
+     "Section": "## 121. Decisiones §66: A4-1 NOT_DEMONSTRATED registrada; FX-02 UNVERIFIED; MAP_INVALID como defecto del fixture",
+     "Start": 3474,
+     "End": 3486
+    },
+    {
+     "Section": "## 122. F7 r5 y controles independientes; N9/N10 verificadas con borrador de disposición; estado de F6 al día (decisione",
+     "Start": 3488,
+     "End": 3512
+    },
+    {
+     "Section": "## 123. MAP_INVALID caracterizado con candidato MAP_VALID; paquete de medición de `claude-cli` preparado; informe de opc",
+     "Start": 3514,
+     "End": 3542
+    },
+    {
+     "Section": "## 124. Suspensión controlada de I-62 (decisiones §67)",
+     "Start": 3544,
+     "End": 3556
+    },
+    {
+     "Section": "## 125. Decisiones §68: I-62 reanudada; Codex actualizado (observación 1 de la identidad nueva)",
+     "Start": 3558,
+     "End": 3570
+    },
+    {
+     "Section": "## 126. FX-02: par nuevo de Codex estable; kit del bloque A2-P2 (v4) preparado sin ejecutar; solicitud única (decisiones",
+     "Start": 3572,
+     "End": 3586
+    },
+    {
+     "Section": "## 127. Decisiones §69: OD-2 = A sobre F909F480 y bloque A2-P2 autorizado; verificación previa al bloque",
+     "Start": 3588,
+     "End": 3594
+    },
+    {
+     "Section": "## 128. Bloque A2-P2, sonda 1 NATIVE_CONTROLLER = NOT_DEMONSTRATED; la regresión de la shell ya no aparece; sonda 2 rete",
+     "Start": 3596,
+     "End": 3615
+    },
+    {
+     "Section": "## 129. Decisiones §70: F6-OBS-03 resuelto; NATIVE_CONTROLLER NOT_DEMONSTRATED; análisis de causas; reutilización de la ",
+     "Start": 3617,
+     "End": 3631
+    },
+    {
+     "Section": "## 130. Decisiones §71: preparación de A-5 autorizada (A5-1 método de F_seed; A5-2 presupuesto de Principal de FX-U2)",
+     "Start": 3633,
+     "End": 3640
+    },
+    {
+     "Section": "## 131. A-5 candidata publicada como PROPUESTA, con preflight PASS (decisiones §71); sin revisión formal",
+     "Start": 3642,
+     "End": 3664
+    },
+    {
+     "Section": "## 132. A-5: guardas en modo `run` sobre el commit de publicación = PASS",
+     "Start": 3666,
+     "End": 3671
+    },
+    {
+     "Section": "## 133. Decisiones §72: revisión formal de A-5 por `claude-cli` autorizada; análisis del Controller sin invocaciones",
+     "Start": 3673,
+     "End": 3677
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/README.md",
+   "Blob": "ec38c72a75036a329e507294bda9f35ba10a5d12",
+   "Bytes": 9168,
+   "Lines": 73,
+   "Sha256": "158f78db5434fb52d73a9766556d18bef7299f58348dd3d5ddd9d6a0b4134e6c",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "README de la evidencia de F6 (escenarios, identidad del fixture, obligaciones)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 73
+    },
+    {
+     "Section": "cabecera",
+     "Start": 1,
+     "End": 7
+    },
+    {
+     "Section": "## Escenarios (estado de esta ejecución)",
+     "Start": 9,
+     "End": 24
+    },
+    {
+     "Section": "## Identidad del fixture",
+     "Start": 26,
+     "End": 31
+    },
+    {
+     "Section": "## Medición de la sonda de OD-4",
+     "Start": 33,
+     "End": 37
+    },
+    {
+     "Section": "## FX-05",
+     "Start": 39,
+     "End": 45
+    },
+    {
+     "Section": "## Obligaciones de F6 (Anexo C; estado de esta ejecución)",
+     "Start": 47,
+     "End": 61
+    },
+    {
+     "Section": "## FX-03 — preparación (OD-3 = RECHAZAR)",
+     "Start": 63,
+     "End": 73
+    }
+   ]
+  },
+  {
+   "Path": "docs/initiatives/I-62-architect-review-A-4-r3.md",
+   "Blob": "17905d19b64cfb02837c019261208894b5aec579",
+   "Bytes": 4822,
+   "Lines": 40,
+   "Sha256": "143869dce3e3e423487890794c4f157780694e57e57d131bd43b83096a075c6d",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "registro de la segunda re-revisión de A-4 (solo referencia de formato; no es insumo del juicio sobre A-5)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 40
+    },
+    {
+     "Section": "cabecera",
+     "Start": 1,
+     "End": 14
+    },
+    {
+     "Section": "## Hallazgos opcionales (no bloqueantes)",
+     "Start": 16,
+     "End": 22
+    },
+    {
+     "Section": "## Evidencia",
+     "Start": 24,
+     "End": 29
+    },
+    {
+     "Section": "## Acuerdo (añadido, decisiones §64)",
+     "Start": 31,
+     "End": 40
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-architect-A-4/R20261009T195811Z-2df6/output.json",
+   "Blob": "1bea3a10afc9f02a2ae322dc38b512c506344204",
+   "Bytes": 56333,
+   "Lines": 1041,
+   "Sha256": "42d0e5f00f93b613820c1ca6df7e551a9a645a7f98ab648fc7469a7e4c2e526c",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "salida de la segunda re-revisión de A-4 (solo referencia de formato; no es insumo del juicio sobre A-5)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 1041
+    },
+    {
+     "Section": "Schema",
+     "Start": 2,
+     "End": 2
+    },
+    {
+     "Section": "RunId",
+     "Start": 3,
+     "End": 3
+    },
+    {
+     "Section": "InvocationId",
+     "Start": 4,
+     "End": 4
+    },
+    {
+     "Section": "LogicalReviewRequestId",
+     "Start": 5,
+     "End": 5
+    },
+    {
+     "Section": "AttemptSeq",
+     "Start": 6,
+     "End": 6
+    },
+    {
+     "Section": "RequestedRole",
+     "Start": 7,
+     "End": 7
+    },
+    {
+     "Section": "Action",
+     "Start": 8,
+     "End": 8
+    },
+    {
+     "Section": "ReviewedUnit",
+     "Start": 9,
+     "End": 9
+    },
+    {
+     "Section": "ReviewedCommit",
+     "Start": 10,
+     "End": 10
+    },
+    {
+     "Section": "ReviewedPath",
+     "Start": 11,
+     "End": 11
+    },
+    {
+     "Section": "ReviewedBlob",
+     "Start": 12,
+     "End": 12
+    },
+    {
+     "Section": "ReviewerMode",
+     "Start": 13,
+     "End": 13
+    },
+    {
+     "Section": "SamePersonAsAuthor",
+     "Start": 14,
+     "End": 14
+    },
+    {
+     "Section": "ReviewerDeclaredIdentity",
+     "Start": 15,
+     "End": 20
+    },
+    {
+     "Section": "InjectedContextDeclaration",
+     "Start": 21,
+     "End": 32
+    },
+    {
+     "Section": "IdentityCheck",
+     "Start": 33,
+     "End": 42
+    },
+    {
+     "Section": "InputsRead",
+     "Start": 43,
+     "End": 59
+    },
+    {
+     "Section": "Verdict",
+     "Start": 60,
+     "End": 60
+    },
+    {
+     "Section": "PriorFindingDispositions",
+     "Start": 61,
+     "End": 209
+    },
+    {
+     "Section": "RequiredFindings",
+     "Start": 210,
+     "End": 210
+    },
+    {
+     "Section": "OptionalFindings",
+     "Start": 211,
+     "End": 317
+    },
+    {
+     "Section": "Focus",
+     "Start": 318,
+     "End": 597
+    },
+    {
+     "Section": "A45Verdict",
+     "Start": 598,
+     "End": 602
+    },
+    {
+     "Section": "A46Verdict",
+     "Start": 603,
+     "End": 609
+    },
+    {
+     "Section": "QuestionDispositions",
+     "Start": 610,
+     "End": 881
+    },
+    {
+     "Section": "DeltaConfirmation",
+     "Start": 882,
+     "End": 903
+    },
+    {
+     "Section": "NoChangeConfirmation",
+     "Start": 904,
+     "End": 953
+    },
+    {
+     "Section": "OwnerConsumptionLines",
+     "Start": 954,
+     "End": 958
+    },
+    {
+     "Section": "GuardsVerification",
+     "Start": 959,
+     "End": 998
+    },
+    {
+     "Section": "Materiality",
+     "Start": 999,
+     "End": 1011
+    },
+    {
+     "Section": "OwnerAuthorityCheck",
+     "Start": 1012,
+     "End": 1021
+    },
+    {
+     "Section": "IfAgreed",
+     "Start": 1022,
+     "End": 1031
+    },
+    {
+     "Section": "KnownLimitations",
+     "Start": 1032,
+     "End": 1039
+    },
+    {
+     "Section": "RecommendedNextAction",
+     "Start": 1040,
+     "End": 1040
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/a5-guards-result-preview.json",
+   "Blob": "1e763c933f4bee222ab7825fb8eb4731e91b07ff",
+   "Bytes": 4069,
+   "Lines": 118,
+   "Sha256": "df0423d5f9cdb9f5f21a2df927c358a049ffb9568c58612d2e13a345df101638",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: a5-guards-result-preview.json (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 118
+    },
+    {
+     "Section": "Mode",
+     "Start": 2,
+     "End": 2
+    },
+    {
+     "Section": "RepoHead",
+     "Start": 3,
+     "End": 3
+    },
+    {
+     "Section": "ToolBlob",
+     "Start": 4,
+     "End": 4
+    },
+    {
+     "Section": "A5TextBlob",
+     "Start": 5,
+     "End": 5
+    },
+    {
+     "Section": "Guards",
+     "Start": 6,
+     "End": 111
+    },
+    {
+     "Section": "Candidate",
+     "Start": 112,
+     "End": 116
+    },
+    {
+     "Section": "Result",
+     "Start": 117,
+     "End": 117
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/a5-guards-result-run.json",
+   "Blob": "2a383d79aefb773363ba84bdca2d336d34f14159",
+   "Bytes": 3946,
+   "Lines": 116,
+   "Sha256": "59789889aa1650f12e9f674371835f71566fefc691d8e151dcbb8832b14c9480",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: a5-guards-result-run.json (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 116
+    },
+    {
+     "Section": "Mode",
+     "Start": 2,
+     "End": 2
+    },
+    {
+     "Section": "Base",
+     "Start": 3,
+     "End": 3
+    },
+    {
+     "Section": "Head",
+     "Start": 4,
+     "End": 4
+    },
+    {
+     "Section": "Guards",
+     "Start": 5,
+     "End": 114
+    },
+    {
+     "Section": "Result",
+     "Start": 115,
+     "End": 115
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/a5-guards.py",
+   "Blob": "98d264056fe800477cf37fbfd5bde34877857c68",
+   "Bytes": 55850,
+   "Lines": 935,
+   "Sha256": "360ec06d75163fe5d485271d9dcd7040fd4a1dea643932afb99e540b8e985bee",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: a5-guards.py (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 935
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/a5-selftest.json",
+   "Blob": "8d115759c2a5ef86a417da06a84cec81076ca25e",
+   "Bytes": 12463,
+   "Lines": 528,
+   "Sha256": "9ba152f1c7a3fb9a9fd99c567a8c4b39cc58c0b1d2415e83496673ea0f2a66a0",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: a5-selftest.json (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 528
+    },
+    {
+     "Section": "Control",
+     "Start": 2,
+     "End": 27
+    },
+    {
+     "Section": "Mutants",
+     "Start": 28,
+     "End": 509
+    },
+    {
+     "Section": "Summary",
+     "Start": 510,
+     "End": 522
+    },
+    {
+     "Section": "Result",
+     "Start": 523,
+     "End": 523
+    },
+    {
+     "Section": "Mode",
+     "Start": 524,
+     "End": 524
+    },
+    {
+     "Section": "Repo",
+     "Start": 525,
+     "End": 525
+    },
+    {
+     "Section": "ToolBlob",
+     "Start": 526,
+     "End": 526
+    },
+    {
+     "Section": "A5TextBlob",
+     "Start": 527,
+     "End": 527
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/a5_conformance.py",
+   "Blob": "0d5599159139a6ff9ebcd042f948ac4901b39556",
+   "Bytes": 8302,
+   "Lines": 154,
+   "Sha256": "200ad71cfe8533c641e459d94e883a0794ec29d96ee58d1bc6ea1824ac23cec6",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: a5_conformance.py (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 154
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/build_candidate_a5.py",
+   "Blob": "38b228a4e883ac02b3652e4c67fb2b7cd6e2ed12",
+   "Bytes": 13868,
+   "Lines": 213,
+   "Sha256": "f6d824b8468eb186d2f9bc04a3295f6dd282594ddf5cfee558ed3247d9006260",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: build_candidate_a5.py (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 213
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/make_candidate_commit.py",
+   "Blob": "4755f6e0ac063fd8a8acc0cbf92029a0ee51c0be",
+   "Bytes": 5520,
+   "Lines": 89,
+   "Sha256": "b9e9ab0fae9a250d254e15416e39aabbe2ebd075f33a23b94cb0b014b4c7b161",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: make_candidate_commit.py (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 89
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/neg_controls_a5.py",
+   "Blob": "98b5cd4ab5717b44641ce00454f33b5a8b56b509",
+   "Bytes": 8073,
+   "Lines": 135,
+   "Sha256": "d0546436c1894de5832fae7326b76457cacc7df467e00dc45ac899d94edb2d0e",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: neg_controls_a5.py (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 135
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/out/a5-guards-result-preview-head.json",
+   "Blob": "3fea8fd3ca462facc96cae561dcdae07a1a2d13d",
+   "Bytes": 1822,
+   "Lines": 82,
+   "Sha256": "37f42f313c31601769597b3298930502b72fba69d253b93d78e6a6b33f37ed33",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: out/a5-guards-result-preview-head.json (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 82
+    },
+    {
+     "Section": "Mode",
+     "Start": 2,
+     "End": 2
+    },
+    {
+     "Section": "RepoHead",
+     "Start": 3,
+     "End": 3
+    },
+    {
+     "Section": "ToolBlob",
+     "Start": 4,
+     "End": 4
+    },
+    {
+     "Section": "A5TextBlob",
+     "Start": 5,
+     "End": 5
+    },
+    {
+     "Section": "Guards",
+     "Start": 6,
+     "End": 79
+    },
+    {
+     "Section": "Candidate",
+     "Start": 80,
+     "End": 80
+    },
+    {
+     "Section": "Result",
+     "Start": 81,
+     "End": 81
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/out/authorities_a5.json",
+   "Blob": "202eea7538db3b03debd2a789af0b93587cd9339",
+   "Bytes": 11671,
+   "Lines": 401,
+   "Sha256": "93e799d7a37b3e9d0995d2fdc67a85623f743dd08932a41bd8f45aa014869b35",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: out/authorities_a5.json (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 401
+    },
+    {
+     "Section": "Rows",
+     "Start": 3,
+     "End": 330
+    },
+    {
+     "Section": "NotEqual",
+     "Start": 331,
+     "End": 332
+    },
+    {
+     "Section": "Invalidators",
+     "Start": 333,
+     "End": 398
+    },
+    {
+     "Section": "InvalidatorsEqual",
+     "Start": 399,
+     "End": 399
+    },
+    {
+     "Section": "ClauseMapSchemaToolBlob",
+     "Start": 400,
+     "End": 400
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/out/budget-matrix.json",
+   "Blob": "c78b50fa810fd679ce6f182ffadfe7f31455ebf5",
+   "Bytes": 7137,
+   "Lines": 35,
+   "Sha256": "0dc197bf86dbe8cb9e3236b2e25b44fa5f93d60070635aa513bc69f9e01afd48",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: out/budget-matrix.json (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 35
+    },
+    {
+     "Section": "Schema",
+     "Start": 2,
+     "End": 2
+    },
+    {
+     "Section": "AsOf",
+     "Start": 3,
+     "End": 3
+    },
+    {
+     "Section": "Note",
+     "Start": 4,
+     "End": 4
+    },
+    {
+     "Section": "Rows",
+     "Start": 5,
+     "End": 28
+    },
+    {
+     "Section": "Summary",
+     "Start": 29,
+     "End": 34
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/out/build_a5.json",
+   "Blob": "bac0ba65f09f20ac7231a26514cda0c5c6610d77",
+   "Bytes": 908,
+   "Lines": 31,
+   "Sha256": "f4bb7c6e79609a86d74cfb4a41f57417b70b299e9793bd4413d7908d13258ead",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: out/build_a5.json (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 31
+    },
+    {
+     "Section": "Builder",
+     "Start": 2,
+     "End": 2
+    },
+    {
+     "Section": "Date",
+     "Start": 3,
+     "End": 3
+    },
+    {
+     "Section": "BaseCommit",
+     "Start": 4,
+     "End": 4
+    },
+    {
+     "Section": "SourceCommit",
+     "Start": 5,
+     "End": 5
+    },
+    {
+     "Section": "MapBlob",
+     "Start": 6,
+     "End": 6
+    },
+    {
+     "Section": "F_seed",
+     "Start": 7,
+     "End": 7
+    },
+    {
+     "Section": "F_norm",
+     "Start": 8,
+     "End": 8
+    },
+    {
+     "Section": "F_eff",
+     "Start": 9,
+     "End": 9
+    },
+    {
+     "Section": "TagObject",
+     "Start": 10,
+     "End": 10
+    },
+    {
+     "Section": "SeedCopied",
+     "Start": 11,
+     "End": 11
+    },
+    {
+     "Section": "NormCopied",
+     "Start": 12,
+     "End": 12
+    },
+    {
+     "Section": "Local",
+     "Start": 13,
+     "End": 13
+    },
+    {
+     "Section": "ProvenanceChecks",
+     "Start": 14,
+     "End": 18
+    },
+    {
+     "Section": "Remotes",
+     "Start": 19,
+     "End": 19
+    },
+    {
+     "Section": "Precondition",
+     "Start": 20,
+     "End": 24
+    },
+    {
+     "Section": "Claim",
+     "Start": 25,
+     "End": 30
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/out/build_a5_repro.json",
+   "Blob": "bac0ba65f09f20ac7231a26514cda0c5c6610d77",
+   "Bytes": 908,
+   "Lines": 31,
+   "Sha256": "f4bb7c6e79609a86d74cfb4a41f57417b70b299e9793bd4413d7908d13258ead",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: out/build_a5_repro.json (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 31
+    },
+    {
+     "Section": "Builder",
+     "Start": 2,
+     "End": 2
+    },
+    {
+     "Section": "Date",
+     "Start": 3,
+     "End": 3
+    },
+    {
+     "Section": "BaseCommit",
+     "Start": 4,
+     "End": 4
+    },
+    {
+     "Section": "SourceCommit",
+     "Start": 5,
+     "End": 5
+    },
+    {
+     "Section": "MapBlob",
+     "Start": 6,
+     "End": 6
+    },
+    {
+     "Section": "F_seed",
+     "Start": 7,
+     "End": 7
+    },
+    {
+     "Section": "F_norm",
+     "Start": 8,
+     "End": 8
+    },
+    {
+     "Section": "F_eff",
+     "Start": 9,
+     "End": 9
+    },
+    {
+     "Section": "TagObject",
+     "Start": 10,
+     "End": 10
+    },
+    {
+     "Section": "SeedCopied",
+     "Start": 11,
+     "End": 11
+    },
+    {
+     "Section": "NormCopied",
+     "Start": 12,
+     "End": 12
+    },
+    {
+     "Section": "Local",
+     "Start": 13,
+     "End": 13
+    },
+    {
+     "Section": "ProvenanceChecks",
+     "Start": 14,
+     "End": 18
+    },
+    {
+     "Section": "Remotes",
+     "Start": 19,
+     "End": 19
+    },
+    {
+     "Section": "Precondition",
+     "Start": 20,
+     "End": 24
+    },
+    {
+     "Section": "Claim",
+     "Start": 25,
+     "End": 30
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/out/candidate-commit.json",
+   "Blob": "551ae0d3fb105135860d884550e74ac0456498a7",
+   "Bytes": 3877,
+   "Lines": 159,
+   "Sha256": "242631e4bca789d2ee4028d479a1c8324b7e600bbb2525cb5e599668cffab658",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: out/candidate-commit.json (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 159
+    },
+    {
+     "Section": "Base",
+     "Start": 2,
+     "End": 2
+    },
+    {
+     "Section": "Candidate",
+     "Start": 3,
+     "End": 3
+    },
+    {
+     "Section": "Tree",
+     "Start": 4,
+     "End": 4
+    },
+    {
+     "Section": "Files",
+     "Start": 5,
+     "End": 5
+    },
+    {
+     "Section": "Status",
+     "Start": 6,
+     "End": 123
+    },
+    {
+     "Section": "AllAdded",
+     "Start": 124,
+     "End": 124
+    },
+    {
+     "Section": "OnlyA5AndEvidence",
+     "Start": 125,
+     "End": 125
+    },
+    {
+     "Section": "ProductionDiff",
+     "Start": 126,
+     "End": 126
+    },
+    {
+     "Section": "ProductionDiffEmpty",
+     "Start": 127,
+     "End": 127
+    },
+    {
+     "Section": "ProductionPaths",
+     "Start": 128,
+     "End": 157
+    },
+    {
+     "Section": "Note",
+     "Start": 158,
+     "End": 158
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/out/conformance_a5.json",
+   "Blob": "1efdc084ad55412bf7439d000de8a94db50e862e",
+   "Bytes": 726,
+   "Lines": 46,
+   "Sha256": "5ec7ffd9ca9cf44068a4af20fec0272c41f880617e095bc3cb8e619e31198ab3",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: out/conformance_a5.json (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 46
+    },
+    {
+     "Section": "A5_candidate",
+     "Start": 2,
+     "End": 7
+    },
+    {
+     "Section": "CurrentFixture",
+     "Start": 8,
+     "End": 16
+    },
+    {
+     "Section": "CandidateB_bundle",
+     "Start": 17,
+     "End": 24
+    },
+    {
+     "Section": "Neg_N8",
+     "Start": 25,
+     "End": 34
+    },
+    {
+     "Section": "Neg_N9",
+     "Start": 35,
+     "End": 45
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/out/f4_clause_map_a5.json",
+   "Blob": "0fc366b66c8ec31ebbcf4ea45bed19bbc8c68a1e",
+   "Bytes": 11135,
+   "Lines": 490,
+   "Sha256": "850684b89f276c247e1596c98d6c5987fbeeaec45bf0621b6e9cd9cd2f101709",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: out/f4_clause_map_a5.json (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 490
+    },
+    {
+     "Section": "Base",
+     "Start": 2,
+     "End": 2
+    },
+    {
+     "Section": "Tip",
+     "Start": 3,
+     "End": 3
+    },
+    {
+     "Section": "MapBlob",
+     "Start": 4,
+     "End": 4
+    },
+    {
+     "Section": "Result",
+     "Start": 5,
+     "End": 5
+    },
+    {
+     "Section": "Files",
+     "Start": 6,
+     "End": 131
+    },
+    {
+     "Section": "EntriesByKind",
+     "Start": 132,
+     "End": 137
+    },
+    {
+     "Section": "Entries",
+     "Start": 138,
+     "End": 489
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/out/mv_A5_claim.json",
+   "Blob": "3979f81f95288721022527935c0f0703a5b994a7",
+   "Bytes": 5114,
+   "Lines": 142,
+   "Sha256": "c8a3d17cd24aed17b02047fa5f2b5ab8b79ba0c72817a438c55c047dcc6bf191",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: out/mv_A5_claim.json (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 142
+    },
+    {
+     "Section": "Label",
+     "Start": 2,
+     "End": 2
+    },
+    {
+     "Section": "MainRef",
+     "Start": 3,
+     "End": 3
+    },
+    {
+     "Section": "MainSha_eval",
+     "Start": 4,
+     "End": 4
+    },
+    {
+     "Section": "Stops",
+     "Start": 5,
+     "End": 5
+    },
+    {
+     "Section": "Derive",
+     "Start": 6,
+     "End": 14
+    },
+    {
+     "Section": "E1",
+     "Start": 15,
+     "End": 17
+    },
+    {
+     "Section": "E2",
+     "Start": 18,
+     "End": 21
+    },
+    {
+     "Section": "E3",
+     "Start": 22,
+     "End": 27
+    },
+    {
+     "Section": "Discovery",
+     "Start": 28,
+     "End": 43
+    },
+    {
+     "Section": "PRE",
+     "Start": 44,
+     "End": 57
+    },
+    {
+     "Section": "EFFSubjects",
+     "Start": 58,
+     "End": 62
+    },
+    {
+     "Section": "Validate",
+     "Start": 63,
+     "End": 138
+    },
+    {
+     "Section": "MapVerdict",
+     "Start": 139,
+     "End": 139
+    },
+    {
+     "Section": "MVFailed",
+     "Start": 140,
+     "End": 140
+    },
+    {
+     "Section": "Verdict",
+     "Start": 141,
+     "End": 141
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/out/mv_A5_claim.txt",
+   "Blob": "73eca110ac845843706bd3964e50fac2f35f9d90",
+   "Bytes": 479,
+   "Lines": 13,
+   "Sha256": "0854d4104ca7c6bd32aafc595095549314e9cffd0b793469cecde2d292452043",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: out/mv_A5_claim.txt (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 13
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/out/mv_A5_main.json",
+   "Blob": "62468dd604cab76c588aa58fab09e41bb4b31355",
+   "Bytes": 5082,
+   "Lines": 142,
+   "Sha256": "56d4e9543d7a075e4c25acf03269ea9aad6fecaaf69576be1c389bfd3eb5b328",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: out/mv_A5_main.json (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 142
+    },
+    {
+     "Section": "Label",
+     "Start": 2,
+     "End": 2
+    },
+    {
+     "Section": "MainRef",
+     "Start": 3,
+     "End": 3
+    },
+    {
+     "Section": "MainSha_eval",
+     "Start": 4,
+     "End": 4
+    },
+    {
+     "Section": "Stops",
+     "Start": 5,
+     "End": 5
+    },
+    {
+     "Section": "Derive",
+     "Start": 6,
+     "End": 14
+    },
+    {
+     "Section": "E1",
+     "Start": 15,
+     "End": 17
+    },
+    {
+     "Section": "E2",
+     "Start": 18,
+     "End": 21
+    },
+    {
+     "Section": "E3",
+     "Start": 22,
+     "End": 27
+    },
+    {
+     "Section": "Discovery",
+     "Start": 28,
+     "End": 43
+    },
+    {
+     "Section": "PRE",
+     "Start": 44,
+     "End": 57
+    },
+    {
+     "Section": "EFFSubjects",
+     "Start": 58,
+     "End": 62
+    },
+    {
+     "Section": "Validate",
+     "Start": 63,
+     "End": 138
+    },
+    {
+     "Section": "MapVerdict",
+     "Start": 139,
+     "End": 139
+    },
+    {
+     "Section": "MVFailed",
+     "Start": 140,
+     "End": 140
+    },
+    {
+     "Section": "Verdict",
+     "Start": 141,
+     "End": 141
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/out/mv_A5_main.txt",
+   "Blob": "506c3c02efe0696e34675e38791878d61e624bd3",
+   "Bytes": 448,
+   "Lines": 13,
+   "Sha256": "0ccb132958a49e7a41e074f7e0c9fdb30561af9b8f855a0a2e294e638630b59f",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: out/mv_A5_main.txt (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 13
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/out/mv_CurrentFixture_main.json",
+   "Blob": "9bd794b4d766b01c80eeb6d9b984f8251bbca58c",
+   "Bytes": 21324,
+   "Lines": 253,
+   "Sha256": "f0ad404dd36a1d513fe4298741c0762c441900cf112b74178632ef35bbe6bbf4",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: out/mv_CurrentFixture_main.json (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 253
+    },
+    {
+     "Section": "Label",
+     "Start": 2,
+     "End": 2
+    },
+    {
+     "Section": "MainRef",
+     "Start": 3,
+     "End": 3
+    },
+    {
+     "Section": "MainSha_eval",
+     "Start": 4,
+     "End": 4
+    },
+    {
+     "Section": "Stops",
+     "Start": 5,
+     "End": 5
+    },
+    {
+     "Section": "Derive",
+     "Start": 6,
+     "End": 14
+    },
+    {
+     "Section": "E1",
+     "Start": 15,
+     "End": 17
+    },
+    {
+     "Section": "E2",
+     "Start": 18,
+     "End": 21
+    },
+    {
+     "Section": "E3",
+     "Start": 22,
+     "End": 27
+    },
+    {
+     "Section": "Discovery",
+     "Start": 28,
+     "End": 43
+    },
+    {
+     "Section": "PRE",
+     "Start": 44,
+     "End": 57
+    },
+    {
+     "Section": "EFFSubjects",
+     "Start": 58,
+     "End": 62
+    },
+    {
+     "Section": "Validate",
+     "Start": 63,
+     "End": 244
+    },
+    {
+     "Section": "MapVerdict",
+     "Start": 245,
+     "End": 245
+    },
+    {
+     "Section": "MVFailed",
+     "Start": 246,
+     "End": 251
+    },
+    {
+     "Section": "Verdict",
+     "Start": 252,
+     "End": 252
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/out/mv_CurrentFixture_main.txt",
+   "Blob": "aad33de1a71cb4614fd488b0168577445b333edc",
+   "Bytes": 10998,
+   "Lines": 95,
+   "Sha256": "4ba55b9104b32aebe134b11306a3463020c8ea1b493481afd96f8da2d647bda3",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: out/mv_CurrentFixture_main.txt (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 95
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/out/neg_controls_a5.json",
+   "Blob": "8d9b1980f502da17912f24f7d82bd36f77966219",
+   "Bytes": 3036,
+   "Lines": 156,
+   "Sha256": "fb4f4409a241623b610712607dab89bb2a9340de97235d323add00d56ffce6c7",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: out/neg_controls_a5.json (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 156
+    },
+    {
+     "Section": "AuthorityPathsInF_norm",
+     "Start": 2,
+     "End": 2
+    },
+    {
+     "Section": "Cases",
+     "Start": 3,
+     "End": 154
+    },
+    {
+     "Section": "AllAsExpected",
+     "Start": 155,
+     "End": 155
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/out/neg_controls_a5.txt",
+   "Blob": "dc447d64fbb9d806925c57c35101af803d0456a6",
+   "Bytes": 1649,
+   "Lines": 11,
+   "Sha256": "ad7b38fbcec4534d6b29a401aa96f94e0064d0ba84f9ecf7296e1a633bf9238f",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: out/neg_controls_a5.txt (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 11
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/out/neg_tips_a5.json",
+   "Blob": "f0579462ed165cd5ad3a437b17310848e1428c5a",
+   "Bytes": 577,
+   "Lines": 13,
+   "Sha256": "0c23d93b06a25ea779930c0f9d0c24a064fa651a0133b940756f89ffbf743c58",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: out/neg_tips_a5.json (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 13
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/out/preflight_ab.json",
+   "Blob": "073c6c645bce63a943f53995d5f88d28e045fbbb",
+   "Bytes": 3385,
+   "Lines": 153,
+   "Sha256": "9e51e9cdcbe2d6748d41688200d7a8f575e42cf32b02c8cd87ccc2ca16177400",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: out/preflight_ab.json (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 153
+    },
+    {
+     "Section": "Build",
+     "Start": 2,
+     "End": 17
+    },
+    {
+     "Section": "MV",
+     "Start": 18,
+     "End": 72
+    },
+    {
+     "Section": "F4_clause_map",
+     "Start": 73,
+     "End": 84
+    },
+    {
+     "Section": "NegativeMV",
+     "Start": 85,
+     "End": 90
+    },
+    {
+     "Section": "Conformance",
+     "Start": 91,
+     "End": 136
+    },
+    {
+     "Section": "TreesVsCandidateB",
+     "Start": 137,
+     "End": 144
+    },
+    {
+     "Section": "Authorities",
+     "Start": 145,
+     "End": 151
+    },
+    {
+     "Section": "CurrentFixtureRefs",
+     "Start": 152,
+     "End": 152
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/out/preflight_ab.stdout.txt",
+   "Blob": "c6bd27649ea924abef1da40ccf9411b60d13308d",
+   "Bytes": 2905,
+   "Lines": 152,
+   "Sha256": "4e1961e377c2e9282924f1f42ace00e5c6761d9808659198f784040f98726c39",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: out/preflight_ab.stdout.txt (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 152
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/out/ref-digest-after.txt",
+   "Blob": "798b784dfceea76cfaa352c1f031e8485ff73d92",
+   "Bytes": 446,
+   "Lines": 7,
+   "Sha256": "adfbe5e4da550cf5e4dac5f7902a5cc68084c592ec706aec0a9f60ed242ee4fc",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: out/ref-digest-after.txt (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 7
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/out/ref-digest-before.txt",
+   "Blob": "798b784dfceea76cfaa352c1f031e8485ff73d92",
+   "Bytes": 446,
+   "Lines": 7,
+   "Sha256": "adfbe5e4da550cf5e4dac5f7902a5cc68084c592ec706aec0a9f60ed242ee4fc",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: out/ref-digest-before.txt (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 7
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/preflight.md",
+   "Blob": "2a2ee7997a0c6ec49c1786f33b7b58f1c5263e1d",
+   "Bytes": 21598,
+   "Lines": 209,
+   "Sha256": "905942963d23bf66ddc6d74cbc2f723202c29b8e7b2f9fa7fd3b039cf35b0f75",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: preflight.md (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 209
+    },
+    {
+     "Section": "cabecera",
+     "Start": 1,
+     "End": 19
+    },
+    {
+     "Section": "## 1. (a) MV-1..MV-7 con el método de A5-1",
+     "Start": 21,
+     "End": 80
+    },
+    {
+     "Section": "## 2. (b) Autoridades normativas intactas",
+     "Start": 82,
+     "End": 94
+    },
+    {
+     "Section": "## 3. (c) Consecuencias sobre C-22, C-25a, los oráculos y la evidencia sellada",
+     "Start": 96,
+     "End": 112
+    },
+    {
+     "Section": "## 4. (d) Presupuesto físico completo",
+     "Start": 114,
+     "End": 135
+    },
+    {
+     "Section": "## 5. (e) Decisiones OWNER-RESERVED",
+     "Start": 137,
+     "End": 148
+    },
+    {
+     "Section": "## 6. (f) Guardas y contratos de producción",
+     "Start": 150,
+     "End": 165
+    },
+    {
+     "Section": "## 7. (g) Líneas exactas del Owner (de A-5 §7; solo tienen efecto tras A-5 AGREED y la disposición que nombre cada aplic",
+     "Start": 167,
+     "End": 172
+    },
+    {
+     "Section": "## 8. (h) ¿Hay una ruta viable para C-24 tras corregir el fixture?",
+     "Start": 174,
+     "End": 197
+    },
+    {
+     "Section": "## 9. Archivos del preflight",
+     "Start": 199,
+     "End": 209
+    }
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/preflight_run.py",
+   "Blob": "d0ff4b21183723db537906bb317bb10a35c01bf2",
+   "Bytes": 10818,
+   "Lines": 180,
+   "Sha256": "5b8b5457f9d04456161cd8433d4303d12e1e53c55862214ce78722e1381d5e2c",
+   "LinesOver2000Chars": [],
+   "Encoding": {
+    "Charset": "UTF-8",
+    "Bom": false,
+    "LineEnding": "LF",
+    "FinalNewline": true
+   },
+   "DeclaredBlob": null,
+   "AddedBeyondObjectCitations": true,
+   "Why": "preparación de A-5: preflight_run.py (evidencia de apoyo, no autoridad)",
+   "Scope": "ENTIRE",
+   "LineRanges": [
+    {
+     "Section": "entero",
+     "Start": 1,
+     "End": 180
+    }
+   ]
+  }
+ ],
+ "AllowedTransitiveInputs": [],
+ "TransitivePolicy": "sin transitivos: con --safe-mode el runtime no inyecta CLAUDE.md, memoria ni ganchos (caracterización C1); el prompt es la única instrucción",
+ "ReadPolicy": {
+  "Closure": "el cierre es por archivo; `LineRanges` señala las secciones que cita A-5 o pide la orden (Scope SECTIONS) o el archivo entero (ENTIRE). Los rangos orientan, no limitan: un archivo del cierre puede leerse entero o por otros rangos",
+  "Read": "ruta absoluta de un archivo del cierre bajo el clon, o de un archivo del run; en archivos de más de 60 000 bytes, offset y limit de 300 líneas como máximo",
+  "Grep": "solo con `path` = un ARCHIVO del cierre o del run; sin `glob` ni `type`; nunca un directorio ni sin `path`",
+  "Glob": "su alcance (path + patrón) solo puede contener archivos del cierre o del run; un patrón que alcance cualquier otro archivo es una lectura fuera del cierre aunque no se lea ese archivo",
+  "LargeFileThresholdBytes": 60000,
+  "MaxRangeLines": 300,
+  "LargeFiles": [
+   "docs/initiatives/I-62-proposal-v14.md",
+   "docs/initiatives/I-62-A-4.md",
+   "docs/initiatives/I-62-A-1.md",
+   "docs/initiatives/I-62-A-3.md",
+   "docs/AUTOMATION_PLAN.md",
+   "docs/automation/decisions/I-62.md",
+   "docs/automation/evidence/I-62-evidence.md"
+  ],
+  "LongLines": {
+   "docs/initiatives/I-62-proposal-v14.md": [
+    2352,
+    2380,
+    2382
+   ],
+   "docs/initiatives/I-62-A-3.md": [
+    1487
+   ],
+   "docs/automation/decisions/I-62.md": [
+    657,
+    734,
+    750,
+    768,
+    787,
+    805,
+    819
+   ]
+  },
+  "Premises": "toda premisa (PremiseRefs) se cita de líneas leídas enteras con Read: de archivos del cierre (Path relativo al clon) o de order.txt y delta.diff (Path absoluto en D:\\r62-arch-a5-run o el nombre suelto); nunca de prompt.md; una lectura fallida nunca cuenta; una línea larga truncada por Read no cuenta como entregada; los números de línea se citan exactos (LineStart..LineEnd deben contener la cita)",
+  "FailedReads": "una llamada que falla o no devuelve contenido es una lectura fallida: no acredita contenido",
+  "AbsentCommits": "los commits del Freeze (b64a3b64) y de V14 (4c617e82) son anteriores a un rebase y no están en el clon: V14 se identifica por su blob en el commit (34ad80ea)"
+ },
+ "AllowedTools": [
+  "Read",
+  "Grep",
+  "Glob",
+  "StructuredOutput"
+ ],
+ "ToolPolicy": "solo Read, Grep y Glob, según ReadPolicy, y StructuredOutput para entregar el resultado; cualquier otra herramienta (también un intento rechazado por el runtime) y toda denegación de permiso (permission_denials) son violaciones",
+ "NotTriggered": [
+  {
+   "Source": "CLAUDE.md y AGENTS.md (lecturas iniciales, paso 4 «dotnet test»)",
+   "Reason": "--safe-mode: el runtime no los inyecta; el revisor no tiene herramientas de ejecución"
+  },
+  {
+   "Source": "documentation-governance y el Context Pack de I-62",
+   "Reason": "sin CLAUDE.md inyectado no hay obligación transitiva; el cierre lo fijan el objeto y la orden del Coordinator"
+  },
+  {
+   "Source": "enlaces de A-5, del preflight y de la evidencia a documentos fuera del cierre (el resto de MAP-INVALID/ y de su constructor, el análisis del Controller de s70, el paquete del candidato (b), los kits y sondas de FX-02, ADR-0046 y ADR-0048, WORKFLOW, PROMPT_TEMPLATES, state/I-62.yml, el fixture y sus clones)",
+   "Reason": "citas descriptivas; el cierre lo fijan el objeto, lo que cita con blob o línea y la orden del Coordinator"
+  },
+  {
+   "Source": "a5-guards.py self-test, preview y run; build_candidate_a5.py, neg_controls_a5.py, a5_conformance.py y preflight_run.py",
+   "Reason": "sin herramientas de ejecución; los resultados custodiados son a5-selftest.json, a5-guards-result-run.json y out/"
+  }
+ ],
+ "DeclaredRuntimeContext": [
+  "prompt de sistema propio de claude-cli 2.1.293 en modo -p con --safe-mode: sin CLAUDE.md, memoria, skills de usuario, ganchos ni MCP (medido en C1)",
+  "adjunto session_context: correo del usuario (identidad) y estado de Git del cwd (HEAD separado del clon, sin rama, y asuntos de los commits recientes)",
+  "adjunto environment: cwd D:\\r62-arch-a5, plataforma, shell, directorio scratchpad del runtime y directorios adicionales (--add-dir del run)",
+  "adjuntos model, date, credential_org (uuid de la organización), prompt_snapshot, total_tokens_reminder y el esquema de structured_output",
+  "sin directorio previo en ~/.claude/projects para D:\\r62-arch-a5 (comprobado por el invocador): no hay memoria ni transcripciones del proyecto"
+ ],
+ "ForbiddenInputs": [
+  "~/.claude/projects/* (transcripciones y memoria de la sesión autora, del Coordinator y de cualquier otra sesión, incluidas las revisiones de A-4)",
+  "otras sesiones, incluidas las revisiones de A-1..A-4 (solo el registro y la salida de la segunda re-revisión de A-4 están en el cierre, como formato)",
+  "el worktree real de I-62 (~/.codex/worktrees/*), el repositorio de trabajo y los clones D:\\r62-* distintos de D:\\r62-arch-a5",
+  "el fixture de F6 (D:\\r62-fixture\\*)",
+  "los archivos de D:\\r62-arch-a5-run distintos de los tres del run, incluido el subdirectorio launch/",
+  "cualquier archivo del clon fuera de CanonicalInputs (también el registro de caracterización de claude-cli que fija la compuerta)",
+  "Grep o Glob cuyo alcance sea un directorio con archivos fuera del cierre; listados de directorios",
+  "red (fetch, web)",
+  "invocar otros agentes o subagentes",
+  "escribir, hacer commit o push"
+ ],
+ "CorpusDistinctNonAscii": 54
+}

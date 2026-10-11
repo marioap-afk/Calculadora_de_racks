@@ -1,0 +1,50 @@
+{
+ "Transcript": "%USERPROFILE%/.claude/projects/D--Documentos-Codex-Calculadora-de-racks/e5124bf0-ed19-48a1-97ba-574baf9d33a2/subagents/agent-aec4e77fda3f514b8.jsonl",
+ "TranscriptSha256": "52391d6b595a0e26fec13ab008d9277d7d92d0a0ee6f43c03cd8ba1c602e00b6",
+ "Clone": "D:\\r62-arch-a5",
+ "Filter": null,
+ "Command": "python read_fidelity.py <transcript> D:\\r62-arch-a5 b631c46f08fa403628250035bdb9c2f5c600cc81 <output json>",
+ "Rev": "b631c46f08fa403628250035bdb9c2f5c600cc81",
+ "Calls": [
+  {
+   "Path": "docs/initiatives/I-62-A-5.md",
+   "Offset": null,
+   "Limit": null,
+   "Lines": 373,
+   "Faithful": 373,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  },
+  {
+   "Path": "docs/automation/decisions/I-62.md",
+   "Offset": 1257,
+   "Limit": 221,
+   "Lines": 221,
+   "Faithful": 221,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A5/preflight.md",
+   "Offset": null,
+   "Limit": null,
+   "Lines": 210,
+   "Faithful": 210,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED"
+  }
+ ],
+ "Summary": {
+  "Calls": 3,
+  "Faithful": 3,
+  "Degraded": 0,
+  "DeliveredLinesByPath": {
+   "docs/automation/decisions/I-62.md": 221,
+   "docs/automation/evidence/I-62-A5/preflight.md": 210,
+   "docs/initiatives/I-62-A-5.md": 373
+  }
+ }
+}

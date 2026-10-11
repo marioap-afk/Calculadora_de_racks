@@ -3690,3 +3690,15 @@ solo desde artefactos custodiados.
   - C, un cambio de la receta (UTF-8 o `cmd.exe` en la vía normal): A-n material, solo si B demuestra que la celda no puede fijar UTF-8.
 - **Enmienda nueva:** hoy no hay evidencia suficiente para proponer una A-6.
 
+## 135. A-5: kit de la revisión formal por `claude-cli` custodiado antes del lanzamiento (R20261011T065226Z-dbb0; decisiones §72, punto 2)
+
+- **Kit:** [R20261011T065226Z-dbb0](I-62-architect-A-5/R20261011T065226Z-dbb0/README.md):
+  - objeto A-5 blob `ad94ceed`; clon de solo lectura en `b631c46f`, desacoplado; cierre de 54 archivos;
+  - texto `1454c917…`, que exige los ocho temas de §72.2 con veredictos separados para A5-1 y A5-2, la disposición sobre D.5 y las preguntas Q-A5-01..12;
+  - esquema con `Focus`, `A51Verdict`, `A52Verdict`, `D5Disposition`, `IfAgreed`;
+  - auditor con autoprueba 129/129 y 137/137 mutantes eliminados; compuerta MEASURED;
+  - ensayo en seco sin bloqueos; manifiesto `60a9c2a4…`.
+- **Transporte:** `claude-cli` 2.1.293 (`8693c4a0…`), `claude-opus-5-5` `xhigh`, solo Read, Grep y Glob, `--session-id` nuevo, espera de 120 s tras
+  `auth status`, tope de 3 600 s, sin reintento. Consumo cubierto por CLAUDE-CLI-I62 = A.
+- **Estado:** custodiado y NO lanzado. A-5 no cambia mientras dure la revisión.
+
