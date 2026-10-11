@@ -36,8 +36,9 @@ RAM Elements 2026 es una API Python que corre solo dentro del programa, con docu
    `StructuralSectionUnits` consume con resultado idéntico bit a bit (sin cambio de API ni del texto de ADR-0021). Cada proveedor
    convierte en un solo punto; una unidad desconocida falla cerrado.
 4. **Frontera de proveedor.** Los adaptadores viven en una carpeta de proveedor de Application, solo con la biblioteca base; ningún tipo,
-   identificador ni convención de un proveedor aparece fuera de esa carpeta (guardas de fuente). Un ensamblado propio solo si un
-   proveedor trae una dependencia binaria.
+   identificador ni convención de un proveedor aparece fuera de esa carpeta en el código de producto, salvo el único archivo de comando
+   del Plugin que lo invoca (lista de permiso de la guarda); pruebas y herramientas quedan fuera de la guarda. Un ensamblado propio solo si
+   un proveedor trae una dependencia binaria.
 5. **Supuestos explícitos.** Idealización, apoyos, conexiones, fuente de propiedades y cargas son supuestos con identificador, listados
    en el paquete exportado. Ninguno se elige en silencio. Sirven para una **equivalencia de transferencia**; no constituyen ni sustituyen
    una validación estructural de ingeniería, que queda fuera de RackCad.
