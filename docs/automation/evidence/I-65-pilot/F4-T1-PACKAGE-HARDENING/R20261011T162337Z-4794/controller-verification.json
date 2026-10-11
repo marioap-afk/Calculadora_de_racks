@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T1-PACKAGE-HARDENING",
+  "RunId": "R20261011T162337Z-4794",
+  "DelegationRunId": "R20261011T154535Z-39b9",
+  "WorkRunId": "R20261011T155212Z-11d5",
+  "Attempt": 0,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, TerminalEvent=subagent-completed, DeathConfirmed=true; Cession.SessionOperated=false. La entrega se escribió a las 16:17:42Z, antes del fin de cesión a las 16:20:06Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "inputs/worker-handoff.json está presente; TaskId, WorkRunId, DelegationRunId, Attempt y BaseSha coinciden con las entradas; OutputWrittenUtc=2026-10-11T16:17:42Z es posterior a Cession.StartUtc=2026-10-11T15:52:34Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "AuthorityRevision f64014f312f3b4f849e26dcee6dd713cbace146e es BaseSha. git diff --name-only AuthorityRevision BaseSha no devuelve rutas. git merge-base MainSha AuthorityRevision = bb0d5522e8411f66a51fdfb3f1f0d0514b737453; los siete archivos EXTERNAL de la delegación no tienen diferencias entre ese merge-base y AuthorityRevision. Las autoridades UNIT_DOC se leyeron en AuthorityRevision."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparé delegation.json y gate-contract.json: coinciden AllowedWriteScope, ForbiddenWriteScope, RequiredTests, invariantes, condiciones de parada y objetivo de F4-T1. RequiredTests exige FullyQualifiedName~RackCad.Tests.StructuralAnalysisRamElementsHardening, MinSelected=20 y ExpectRed=true."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD = a6fa5a35d0297f87afea36417bf98a4f2d2971f1; rama architecture/interop-analisis-estructural; refs/remotes/origin/architecture/interop-analisis-estructural resuelve al mismo SHA. git merge-base --is-ancestor BaseSha RedSha y RedSha CurrentSha devuelve 0 en ambos casos."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453 (MainSha) y LsRemoteSha=a6fa5a35d0297f87afea36417bf98a4f2d2971f1 (CurrentSha). git ls-remote no pudo conectar con GitHub desde este entorno; se usan los RemoteFacts como permite la instrucción."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha enumera 11 rutas: RamBuildPackageFactory.cs y RamBuildScriptTemplate.cs bajo el prefijo permitido src/RackCad.Application/StructuralAnalysis/Providers/RamElements/; nueve archivos de pruebas bajo tests/RackCad.Tests/StructuralAnalysis/, cubiertos por ese prefijo permitido. Intersección con ForbiddenWriteScope vacía. Las cinco pruebas existentes editadas son ModelBuilderTests, RamElementsAssumptionsTests, RamElementsGuardTests, PackageTemplateTests y SourceGuardTests; las demás cuatro son archivos nuevos Hardening. git diff --name-only RedSha CurrentSha -- tests/ no devuelve rutas."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain está vacío; relay Entry.CleanTree=true. git check-ignore -v sobre artifacts/orchestration/I-65/F4-T1-PACKAGE-HARDENING/0/R20261011T162337Z-4794 devuelve .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts registra el push 38154505343 para refs/heads/architecture/interop-analisis-estructural y el CurrentSha exacto, pero Core=failure y Build Plugin without AutoCAD=skipped; por tanto el job set requerido no está completo en success. TRX Core: 13636 ejecutadas, 13635 pasadas, 1 fallida; falla LosDosLiteralesQueEstabanPartidosSeEscribenEnteros. TRX UI: 1654 total, 1637 ejecutadas/pasadas, 0 fallidas; las 17 omitidas figuran como NotExecuted según la convención indicada. RedPart pasa: el push 38154104233 corresponde al RedSha exacto y su job Core falló como se esperaba."
+    },
+    "Tests": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "TRX de RedSha: filtro con 153 seleccionadas, 50 pasadas y 103 fallidas; hay resultados ejecutados con fallos de aserción, sin fallo de compilación. RT = git diff --name-only ChainBaseSha RedSha -- tests/: StructuralAnalysisModelBuilderTests.cs, StructuralAnalysisRamElementsAssumptionsTests.cs, StructuralAnalysisRamElementsGuardTests.cs, StructuralAnalysisRamElementsHardeningGuardTests.cs, StructuralAnalysisRamElementsHardeningPackageTests.cs, StructuralAnalysisRamElementsHardeningRaceTests.cs, StructuralAnalysisRamElementsHardeningTemplateTests.cs, StructuralAnalysisRamElementsPackageTemplateTests.cs y StructuralAnalysisSourceGuardTests.cs. git diff --name-only RedSha CurrentSha -- tests/ está vacío; ChainRedFiles acreditables son esas nueve rutas. En CurrentSha, el filtro selecciona 153: 152 pasan y una falla, la aserción LosDosLiteralesQueEstabanPartidosSeEscribenEnteros; el Worker la declara y el TRX confirma que no pasa."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git show -s --format=%B RedSha y CurrentSha muestran en ambos commits el trailer declarado literalmente: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. Coincide con Worker.Trailer y el modelo efectivo claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Participant registra ModelRequested=sonnet, EffortRequested=high, ModelEffective=claude-sonnet-5-5, EffortEffective=high. Coincide con la celda solicitada por la delegación; enforcement=required."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisé WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations y OpenQuestions de worker-handoff.json contra la lista de AUTOMATION_PLAN §16.10; no encontré ninguno de los términos restringidos."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 86 llamadas de herramienta, 0 errores, 0 denegaciones y 0 avisos de límite. Outcome confirma la finalización. La disposición DEV-I65-F4-01 y el registro describen dos invocaciones Python de impresión; el Coordinator las clasifica como desviación no bloqueante y declara que C-08 no se activa en su sustancia."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "Ci",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La verificación de CI del CurrentSha está roja: el job Core falla por una aserción del test LosDosLiteralesQueEstabanPartidosSeEscribenEnteros y el job Build Plugin without AutoCAD queda skipped.",
+    "El TRX Core del CurrentSha confirma 13635/13636 pruebas pasadas. El TRX focal confirma 152/153 pasadas; la aserción fallida busca el literal sin contemplar las comillas escapadas en el código C#.",
+    "La desviación de proceso Python está registrada en worker-handoff.json y relay-record-work.json; coordinator-dispositions-f4t1.md la dispone como no bloqueante. Los cambios de Git permanecen dentro del alcance declarado."
+  ],
+  "RecommendedNextAction": "Corregir la aserción fallida mediante una nueva delegación autorizada y repetir las verificaciones requeridas sobre el nuevo SHA."
+}

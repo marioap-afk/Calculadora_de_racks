@@ -1,0 +1,1082 @@
+{
+ "Schema": "rackcad-relay-record/v1",
+ "TaskId": "F4-T1-PACKAGE-HARDENING",
+ "RunId": "R20261011T155212Z-11d5",
+ "Attempt": 0,
+ "Phase": "WORK",
+ "Participant": {
+  "Kind": "subagent",
+  "Profile": "ROUTINE_IMPLEMENTATION",
+  "ModelRequested": "sonnet",
+  "EffortRequested": "high",
+  "ModelEffective": "claude-sonnet-5-5",
+  "EffortEffective": "high",
+  "EffectiveSource": "transcripcion del subagente agent-a05c43459f512f4f0.jsonl: 137 mensajes con model claude-sonnet-5-5 (effort high solicitado en la invocacion)",
+  "EffectiveSourceSha256": "E3C5B99FCA920DD266A0BAAC43D529FBF8F71282497A40F997987BC63E1870DE"
+ },
+ "Exit": {
+  "HeadSha": "f64014f312f3b4f849e26dcee6dd713cbace146e",
+  "LsRemoteSha": "f64014f312f3b4f849e26dcee6dd713cbace146e",
+  "OriginMainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "CleanTree": true,
+  "GitOperationInProgress": false,
+  "SummaryCommitSha": "f64014f312f3b4f849e26dcee6dd713cbace146e",
+  "ConfigTomlSha256": "F909F480E535E0D3D64817972361077B13AEFEEDF5EB191B5E6B941E7E1C8113",
+  "ConfigTomlKeys": [
+   "model",
+   "model_reasoning_effort",
+   "service_tier",
+   "notify",
+   "[windows]",
+   "sandbox",
+   "[desktop]",
+   "keepRemoteControlAwakeWhilePluggedIn",
+   "reviewDelivery",
+   "followUpQueueMode",
+   "conversationDetailMode",
+   "ambient-suggestions-enabled",
+   "[desktop.open-in-target-preferences]",
+   "global",
+   "[desktop.open-in-target-preferences.perPath]",
+   "[marketplaces.openai-bundled]",
+   "source_type",
+   "source",
+   "[marketplaces.openai-primary-runtime]",
+   "source_type",
+   "source",
+   "[plugins.\"documents@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"spreadsheets@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"presentations@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"outlook-email@openai-curated\"]",
+   "enabled",
+   "[plugins.\"github@openai-curated\"]",
+   "enabled",
+   "[plugins.\"pdf@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"template-creator@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"visualize@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"chrome@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"browser@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"outlook-calendar@openai-curated\"]",
+   "enabled",
+   "[plugins.\"teams@openai-curated\"]",
+   "enabled",
+   "[plugins.\"codex-app-tools@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"unified-computer-use@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"computer-use@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"code-review@openai-bundled\"]",
+   "enabled",
+   "[features]",
+   "js_repl",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[mcp_servers.node_repl]",
+   "args",
+   "command",
+   "env_vars",
+   "startup_timeout_sec",
+   "[mcp_servers.node_repl.env]",
+   "NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS",
+   "NODE_REPL_NODE_MODULE_DIRS",
+   "NODE_REPL_NODE_PATH",
+   "NODE_REPL_TRUSTED_CODE_PATHS",
+   "CODEX_HOME",
+   "BROWSER_USE_AVAILABLE_BACKENDS",
+   "BROWSER_USE_TINYSKY_ENABLED",
+   "NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER",
+   "NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME",
+   "BROWSER_USE_CODEX_APP_BUILD_FLAVOR",
+   "BROWSER_USE_CODEX_APP_VERSION",
+   "NODE_REPL_TRUSTED_SERVICES",
+   "SKY_CUA_NATIVE_PIPE",
+   "SKY_CUA_NATIVE_PIPE_DIRECTORY",
+   "CODEX_CLI_PATH",
+   "NODE_REPL_UNTRUSTED_ENV_ALLOWLIST",
+   "[shell_environment_policy.set]",
+   "NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S",
+   "[tui]",
+   "screen_reader_detection_done"
+  ],
+  "Processes": [
+   {
+    "Pid": 10244,
+    "ParentPid": 30660,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:41.6499600Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 24108,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-10T20:39:07.3570720Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 27556,
+    "ParentPid": 1256,
+    "Name": "codex-windows-sandbox-service.exe",
+    "CreationDateUtc": "2026-10-11T02:51:26.2747490Z",
+    "Classification": "nominal-exclusion"
+   },
+   {
+    "Pid": 17280,
+    "ParentPid": 14540,
+    "Name": "codex.exe",
+    "CreationDateUtc": "2026-10-11T02:52:02.5500870Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 23836,
+    "ParentPid": 14540,
+    "Name": "codex-computer-use-swift.exe",
+    "CreationDateUtc": "2026-10-11T02:52:13.0624400Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 16456,
+    "ParentPid": 17280,
+    "Name": "codex-code-mode-host.exe",
+    "CreationDateUtc": "2026-10-11T02:55:13.3452380Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 19528,
+    "ParentPid": 14540,
+    "Name": "codex.exe",
+    "CreationDateUtc": "2026-10-11T09:25:05.2038690Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 21328,
+    "ParentPid": 23692,
+    "Name": "codex.exe",
+    "CreationDateUtc": "2026-10-11T15:48:19.2392670Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 10804,
+    "ParentPid": 21328,
+    "Name": "codex-code-mode-host.exe",
+    "CreationDateUtc": "2026-10-11T15:48:26.9955800Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 12328,
+    "ParentPid": 24108,
+    "Name": "bash.exe",
+    "CreationDateUtc": "2026-10-11T15:52:21.4713170Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 7544,
+    "ParentPid": 12328,
+    "Name": "bash.exe",
+    "CreationDateUtc": "2026-10-11T15:52:21.5093290Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 25264,
+    "ParentPid": 7544,
+    "Name": "bash.exe",
+    "CreationDateUtc": "2026-10-11T15:52:21.9296410Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 40332,
+    "ParentPid": 25264,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-11T15:52:22.0372580Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 27764,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:42.1392120Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 22580,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:42.7142330Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 31240,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:42.7986280Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 34120,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:43.1950500Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 20316,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:44.1693540Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 33384,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:49.6345950Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 16188,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:50.4027340Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 37512,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:59.6783410Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 38340,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:38:04.1293070Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 37052,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:38:04.8490300Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 37552,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:38:04.9339230Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 18312,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-10T01:10:46.3458670Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 9088,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-10T01:10:54.3870480Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 16004,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-11T02:28:46.5616840Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 20716,
+    "ParentPid": 37512,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-09T22:38:00.6105150Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 26968,
+    "ParentPid": 37512,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-09T22:38:01.0871840Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 24884,
+    "ParentPid": 37512,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T01:10:46.7820400Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 28920,
+    "ParentPid": 37512,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-10T01:10:47.7980970Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 34156,
+    "ParentPid": 37512,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T01:10:55.2969980Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 21588,
+    "ParentPid": 37512,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-10T01:10:56.1817450Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 37348,
+    "ParentPid": 37512,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T20:39:09.0132100Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 34208,
+    "ParentPid": 37512,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-10T20:39:09.5067130Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 26484,
+    "ParentPid": 38340,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-09T22:38:04.1614020Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 22536,
+    "ParentPid": 18312,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T01:10:46.8518280Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 9168,
+    "ParentPid": 18312,
+    "Name": "bash.exe",
+    "CreationDateUtc": "2026-10-11T15:48:17.4491970Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 26444,
+    "ParentPid": 9088,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T01:10:54.5447390Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 24872,
+    "ParentPid": 24108,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T20:39:07.4565200Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 10416,
+    "ParentPid": 9168,
+    "Name": "bash.exe",
+    "CreationDateUtc": "2026-10-11T15:48:17.4965330Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 22376,
+    "ParentPid": 10416,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-11T15:48:17.5132140Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 39120,
+    "ParentPid": 7544,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-11T15:52:21.5215980Z",
+    "Classification": "session-descendant"
+   }
+  ],
+  "OpenDelegations": 0
+ },
+ "Cession": {
+  "StartUtc": "2026-10-11T15:52:34Z",
+  "EndUtc": "2026-10-11T16:20:06Z",
+  "SessionOperated": false
+ },
+ "Outcome": {
+  "Kind": "COMPLETED",
+  "LaunchedPid": null,
+  "ExitCode": null,
+  "TerminalEvent": "subagent-completed",
+  "TreeKilled": false,
+  "DeathConfirmed": true,
+  "OutputPath": "artifacts/orchestration/I-65/F4-T1-PACKAGE-HARDENING/0/R20261011T155212Z-11d5/worker-handoff.json",
+  "OutputSha256": "C5B9C526D9168482DDE521707F4A44CC508BA4AFBD609A1BECC03178991C8944",
+  "OutputWrittenUtc": "2026-10-11T16:17:42Z",
+  "Acceptance": null
+ },
+ "Entry": {
+  "HeadSha": "a6fa5a35d0297f87afea36417bf98a4f2d2971f1",
+  "LsRemoteSha": "a6fa5a35d0297f87afea36417bf98a4f2d2971f1",
+  "CleanTree": true,
+  "ConfigTomlSha256": "F909F480E535E0D3D64817972361077B13AEFEEDF5EB191B5E6B941E7E1C8113",
+  "ConfigTomlKeys": [
+   "model",
+   "model_reasoning_effort",
+   "service_tier",
+   "notify",
+   "[windows]",
+   "sandbox",
+   "[desktop]",
+   "keepRemoteControlAwakeWhilePluggedIn",
+   "reviewDelivery",
+   "followUpQueueMode",
+   "conversationDetailMode",
+   "ambient-suggestions-enabled",
+   "[desktop.open-in-target-preferences]",
+   "global",
+   "[desktop.open-in-target-preferences.perPath]",
+   "[marketplaces.openai-bundled]",
+   "source_type",
+   "source",
+   "[marketplaces.openai-primary-runtime]",
+   "source_type",
+   "source",
+   "[plugins.\"documents@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"spreadsheets@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"presentations@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"outlook-email@openai-curated\"]",
+   "enabled",
+   "[plugins.\"github@openai-curated\"]",
+   "enabled",
+   "[plugins.\"pdf@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"template-creator@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"visualize@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"chrome@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"browser@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"outlook-calendar@openai-curated\"]",
+   "enabled",
+   "[plugins.\"teams@openai-curated\"]",
+   "enabled",
+   "[plugins.\"codex-app-tools@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"unified-computer-use@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"computer-use@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"code-review@openai-bundled\"]",
+   "enabled",
+   "[features]",
+   "js_repl",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[mcp_servers.node_repl]",
+   "args",
+   "command",
+   "env_vars",
+   "startup_timeout_sec",
+   "[mcp_servers.node_repl.env]",
+   "NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS",
+   "NODE_REPL_NODE_MODULE_DIRS",
+   "NODE_REPL_NODE_PATH",
+   "NODE_REPL_TRUSTED_CODE_PATHS",
+   "CODEX_HOME",
+   "BROWSER_USE_AVAILABLE_BACKENDS",
+   "BROWSER_USE_TINYSKY_ENABLED",
+   "NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER",
+   "NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME",
+   "BROWSER_USE_CODEX_APP_BUILD_FLAVOR",
+   "BROWSER_USE_CODEX_APP_VERSION",
+   "NODE_REPL_TRUSTED_SERVICES",
+   "SKY_CUA_NATIVE_PIPE",
+   "SKY_CUA_NATIVE_PIPE_DIRECTORY",
+   "CODEX_CLI_PATH",
+   "NODE_REPL_UNTRUSTED_ENV_ALLOWLIST",
+   "[shell_environment_policy.set]",
+   "NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S",
+   "[tui]",
+   "screen_reader_detection_done"
+  ],
+  "ConfigChanged": false,
+  "Processes": [
+   {
+    "Pid": 10244,
+    "ParentPid": 30660,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:41.6499600Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 24108,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-10T20:39:07.3570720Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 27556,
+    "ParentPid": 1256,
+    "Name": "codex-windows-sandbox-service.exe",
+    "CreationDateUtc": "2026-10-11T02:51:26.2747490Z",
+    "Classification": "nominal-exclusion"
+   },
+   {
+    "Pid": 17280,
+    "ParentPid": 14540,
+    "Name": "codex.exe",
+    "CreationDateUtc": "2026-10-11T02:52:02.5500870Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 23836,
+    "ParentPid": 14540,
+    "Name": "codex-computer-use-swift.exe",
+    "CreationDateUtc": "2026-10-11T02:52:13.0624400Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 16456,
+    "ParentPid": 17280,
+    "Name": "codex-code-mode-host.exe",
+    "CreationDateUtc": "2026-10-11T02:55:13.3452380Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 19528,
+    "ParentPid": 14540,
+    "Name": "codex.exe",
+    "CreationDateUtc": "2026-10-11T09:25:05.2038690Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 29260,
+    "ParentPid": 33604,
+    "Name": "codex.exe",
+    "CreationDateUtc": "2026-10-11T16:19:45.2062590Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 38760,
+    "ParentPid": 29260,
+    "Name": "codex-code-mode-host.exe",
+    "CreationDateUtc": "2026-10-11T16:19:52.9081390Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 40260,
+    "ParentPid": 24108,
+    "Name": "bash.exe",
+    "CreationDateUtc": "2026-10-11T16:20:05.9827560Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 37184,
+    "ParentPid": 40260,
+    "Name": "bash.exe",
+    "CreationDateUtc": "2026-10-11T16:20:06.0383810Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 25536,
+    "ParentPid": 37184,
+    "Name": "bash.exe",
+    "CreationDateUtc": "2026-10-11T16:20:06.7311140Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 20096,
+    "ParentPid": 25536,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-11T16:20:06.8640050Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 27764,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:42.1392120Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 22580,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:42.7142330Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 31240,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:42.7986280Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 34120,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:43.1950500Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 20316,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:44.1693540Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 33384,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:49.6345950Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 16188,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:50.4027340Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 37512,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:59.6783410Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 38340,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:38:04.1293070Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 37052,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:38:04.8490300Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 37552,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:38:04.9339230Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 18312,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-10T01:10:46.3458670Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 9088,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-10T01:10:54.3870480Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 16004,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-11T02:28:46.5616840Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 20716,
+    "ParentPid": 37512,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-09T22:38:00.6105150Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 26968,
+    "ParentPid": 37512,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-09T22:38:01.0871840Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 24884,
+    "ParentPid": 37512,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T01:10:46.7820400Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 28920,
+    "ParentPid": 37512,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-10T01:10:47.7980970Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 34156,
+    "ParentPid": 37512,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T01:10:55.2969980Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 21588,
+    "ParentPid": 37512,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-10T01:10:56.1817450Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 37348,
+    "ParentPid": 37512,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T20:39:09.0132100Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 34208,
+    "ParentPid": 37512,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-10T20:39:09.5067130Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 26484,
+    "ParentPid": 38340,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-09T22:38:04.1614020Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 22536,
+    "ParentPid": 18312,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T01:10:46.8518280Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 19564,
+    "ParentPid": 18312,
+    "Name": "bash.exe",
+    "CreationDateUtc": "2026-10-11T16:19:43.4164440Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 26444,
+    "ParentPid": 9088,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T01:10:54.5447390Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 24872,
+    "ParentPid": 24108,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T20:39:07.4565200Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 35960,
+    "ParentPid": 19564,
+    "Name": "bash.exe",
+    "CreationDateUtc": "2026-10-11T16:19:43.4937840Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 8344,
+    "ParentPid": 35960,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-11T16:19:43.5182830Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 40396,
+    "ParentPid": 37184,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-11T16:20:06.0602240Z",
+    "Classification": "session-descendant"
+   }
+  ]
+ },
+ "RemoteFacts": {
+  "CurrentRun": {
+   "GhRunId": 38154505343,
+   "Event": "push",
+   "Ref": "refs/heads/architecture/interop-analisis-estructural",
+   "HeadSha": "a6fa5a35d0297f87afea36417bf98a4f2d2971f1",
+   "Status": "completed",
+   "Conclusion": "failure",
+   "Jobs": [
+    {
+     "Name": "Tests (Domain + Application)",
+     "Conclusion": "failure"
+    },
+    {
+     "Name": "UI Tests (WPF controls, net8.0-windows)",
+     "Conclusion": "success"
+    },
+    {
+     "Name": "Build UI (WPF, valida API de Application)",
+     "Conclusion": "success"
+    },
+    {
+     "Name": "Build Plugin without AutoCAD",
+     "Conclusion": "skipped"
+    }
+   ]
+  },
+  "RedRun": {
+   "GhRunId": 38154104233,
+   "Event": "push",
+   "Ref": "refs/heads/architecture/interop-analisis-estructural",
+   "HeadSha": "53bfcd94a99f4d6aa201596349d90427ca9f4229",
+   "Status": "completed",
+   "Conclusion": "failure",
+   "Jobs": [
+    {
+     "Name": "Build UI (WPF, valida API de Application)",
+     "Conclusion": "success"
+    },
+    {
+     "Name": "UI Tests (WPF controls, net8.0-windows)",
+     "Conclusion": "success"
+    },
+    {
+     "Name": "Tests (Domain + Application)",
+     "Conclusion": "failure"
+    },
+    {
+     "Name": "Build Plugin without AutoCAD",
+     "Conclusion": "skipped"
+    }
+   ]
+  },
+  "TestArtifacts": [
+   {
+    "RunRef": "ci-38154505343-core",
+    "Name": "artifacts/orchestration/I-65/F4-T1-PACKAGE-HARDENING/0/R20261011T162337Z-4794/ci-core/core.trx",
+    "Sha256": "1BD19025146729BAA2C54DE3260C9369798DB8F6BEA489735E676AE2846CFFA3",
+    "Selected": 13636,
+    "Passed": 13635,
+    "Failed": 1,
+    "FailedTests": [
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGuardTests.LosDosLiteralesQueEstabanPartidosSeEscribenEnteros"
+    ]
+   },
+   {
+    "RunRef": "ci-38154505343-ui",
+    "Name": "artifacts/orchestration/I-65/F4-T1-PACKAGE-HARDENING/0/R20261011T162337Z-4794/ci-ui/ui.trx",
+    "Sha256": "77FE3B2BCEDCA6C205F6AC4CF264AEA3CDBF855B48F1883D566043502125012A",
+    "Selected": 1654,
+    "Passed": 1637,
+    "Failed": 0,
+    "FailedTests": []
+   },
+   {
+    "RunRef": "ci-38154104233-core",
+    "Name": "artifacts/orchestration/I-65/F4-T1-PACKAGE-HARDENING/0/R20261011T162337Z-4794/ci-core-red/core.trx",
+    "Sha256": "5BC9838594FB36FB8D3960D90932C4682B2B6C8FA9F2B5852945D77E4545A6EB",
+    "Selected": 13636,
+    "Passed": 13527,
+    "Failed": 109,
+    "FailedTests": [
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.CadaLlamadaDeEscrituraApareceUnaSolaVezYDentroDeWriteModel(call: \".add_load_case(\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.CadaLlamadaDeEscrituraApareceUnaSolaVezYDentroDeWriteModel(call: \".add_point_load(\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.CadaLlamadaDeEscrituraApareceUnaSolaVezYDentroDeWriteModel(call: \".members.add(\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.CadaLlamadaDeEscrituraApareceUnaSolaVezYDentroDeWriteModel(call: \".nodes.add(\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.CadaLlamadaDeEscrituraApareceUnaSolaVezYDentroDeWriteModel(call: \".units.set(\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaGuardaRechazaCadaVarianteSinteticaDeLaTerceraPuertaYAceptaElScriptReal(name: \"con una comprobacion de la carga util dentro de wr\"···)",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaGuardaRechazaCadaVarianteSinteticaDeLaTerceraPuertaYAceptaElScriptReal(name: \"la tercera puerta despues de abrir el archivo\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaGuardaRechazaCadaVarianteSinteticaDeLaTerceraPuertaYAceptaElScriptReal(name: \"la tercera puerta solo si pasan las otras\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaGuardaRechazaCadaVarianteSinteticaDeLaTerceraPuertaYAceptaElScriptReal(name: \"sin detectar ids repetidos\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaGuardaRechazaCadaVarianteSinteticaDeLaTerceraPuertaYAceptaElScriptReal(name: \"sin el prefijo gate\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaGuardaRechazaCadaVarianteSinteticaDeLaTerceraPuertaYAceptaElScriptReal(name: \"sin la comprobacion data[\\\"units\\\"] != \\\"LB_IN\\\"\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaGuardaRechazaCadaVarianteSinteticaDeLaTerceraPuertaYAceptaElScriptReal(name: \"sin la comprobacion field(spec, \\\"direction\\\") != \"···)",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaGuardaRechazaCadaVarianteSinteticaDeLaTerceraPuertaYAceptaElScriptReal(name: \"sin la comprobacion field(spec, \\\"member\\\") not in\"···)",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaGuardaRechazaCadaVarianteSinteticaDeLaTerceraPuertaYAceptaElScriptReal(name: \"sin la comprobacion field(spec, \\\"nodeI\\\") not in \"···)",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaGuardaRechazaCadaVarianteSinteticaDeLaTerceraPuertaYAceptaElScriptReal(name: \"sin la comprobacion field(spec, \\\"nodeJ\\\") not in \"···)",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaGuardaRechazaCadaVarianteSinteticaDeLaTerceraPuertaYAceptaElScriptReal(name: \"sin la comprobacion isinstance(flag, bool)\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaGuardaRechazaCadaVarianteSinteticaDeLaTerceraPuertaYAceptaElScriptReal(name: \"sin la comprobacion len(flags) != 6\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaGuardaRechazaCadaVarianteSinteticaDeLaTerceraPuertaYAceptaElScriptReal(name: \"sin la comprobacion not field(spec, \\\"material\\\")\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaGuardaRechazaCadaVarianteSinteticaDeLaTerceraPuertaYAceptaElScriptReal(name: \"sin la comprobacion not field(spec, \\\"section\\\")\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaGuardaRechazaCadaVarianteSinteticaDeLaTerceraPuertaYAceptaElScriptReal(name: \"sin la comprobacion repeated_ids(\\\"load\\\", load_id\"···)",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaGuardaRechazaCadaVarianteSinteticaDeLaTerceraPuertaYAceptaElScriptReal(name: \"sin la comprobacion repeated_ids(\\\"member\\\", membe\"···)",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaGuardaRechazaCadaVarianteSinteticaDeLaTerceraPuertaYAceptaElScriptReal(name: \"sin la comprobacion repeated_ids(\\\"node\\\", node_id\"···)",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaGuardaRechazaCadaVarianteSinteticaDeLaTerceraPuertaYAceptaElScriptReal(name: \"sin llamar a la tercera puerta\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaPlantillaDefineLaFuncionDeLaTerceraPuertaYSusAuxiliares",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaPuertaDeLaCargaUtilSeEvaluaSiempreQueLaCargaUtilSeHayaDecodificadoNoSoloSiPasanLasOtras",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaPuertaDetectaLosIdsRepetidosConUnConjuntoDeLosYaVistos",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaTerceraPuertaHaceCadaComprobacionDeLaCargaUtil(index: 0)",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaTerceraPuertaHaceCadaComprobacionDeLaCargaUtil(index: 1)",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaTerceraPuertaHaceCadaComprobacionDeLaCargaUtil(index: 10)",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaTerceraPuertaHaceCadaComprobacionDeLaCargaUtil(index: 11)",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaTerceraPuertaHaceCadaComprobacionDeLaCargaUtil(index: 2)",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaTerceraPuertaHaceCadaComprobacionDeLaCargaUtil(index: 3)",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaTerceraPuertaHaceCadaComprobacionDeLaCargaUtil(index: 4)",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaTerceraPuertaHaceCadaComprobacionDeLaCargaUtil(index: 5)",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaTerceraPuertaHaceCadaComprobacionDeLaCargaUtil(index: 6)",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaTerceraPuertaHaceCadaComprobacionDeLaCargaUtil(index: 7)",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaTerceraPuertaHaceCadaComprobacionDeLaCargaUtil(index: 8)",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.LaTerceraPuertaHaceCadaComprobacionDeLaCargaUtil(index: 9)",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.MainEvaluaLasTresPuertasAntesDeAbrirElArchivoYDeCualquierEscritura",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.TodoRechazoDeCualquierPuertaVaADifferencesConElPrefijoGateYElEstadoSigueSiendoElDeFallo",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.WriteModelYaNoComprobaNadaDeLaCargaUtil(fragment: \"!= \\\"GLOBAL_Y\\\"\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.WriteModelYaNoComprobaNadaDeLaCargaUtil(fragment: \"data[\\\"units\\\"]\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.WriteModelYaNoComprobaNadaDeLaCargaUtil(fragment: \"not spec[\\\"material\\\"]\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.WriteModelYaNoComprobaNadaDeLaCargaUtil(fragment: \"not spec[\\\"section\\\"]\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGateTests.WriteModelYaNoComprobaNadaDeLaCargaUtil(fragment: \"raise \")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningGuardTests.LosDosLiteralesQueEstabanPartidosSeEscribenEnteros",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.ElPaqueteExponeLaCarpetaEmbebidaIgualALaDeLasOpciones(folder: \"C:\\\\RackCadPackages\\\\REF-CANT-01-S0\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.ElPaqueteExponeLaCarpetaEmbebidaIgualALaDeLasOpciones(folder: \"D:\\\\Other Folder\\\\REF-CANT-01-S0\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.ElPaqueteExponeLaCarpetaEmbebidaIgualALaDeLasOpciones(folder: \"\\\\\\\\server\\\\share\\\\pkg\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.LaCarpetaDeLasOpcionesLaDelPaqueteYLaDeLaCargaUtilSonLaMismaEnLaReferencia",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"C:\\\\AUX\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"C:\\\\CON\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"C:\\\\NUL\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"C:\\\\Prn\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"C:\\\\a \\\\b\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"C:\\\\a.\\\\b\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"C:\\\\a\\\\COM1\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"C:\\\\a\\\\COM1.x\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"C:\\\\a\\\\CON.txt\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"C:\\\\a\\\\Com5\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"C:\\\\a\\\\LPT1\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"C:\\\\a\\\\Lpt3\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"C:\\\\a\\\\aux.x\\\\b\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"C:\\\\a\\\\b \")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"C:\\\\a\\\\b.\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"C:\\\\a\\\\com9\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"C:\\\\a\\\\lpt2.log\\\\pkg\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"C:\\\\a\\\\lpt9\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"C:\\\\a\\\\nul.tar.gz\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"C:\\\\con\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"C:\\\\pkg \")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"C:\\\\pkg.\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"C:\\\\pkg..\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"\\\\\\\\CON\\\\share\\\\pkg\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"\\\\\\\\server\\\\prn\\\\pkg\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningPackageTests.UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido(folder: \"\\\\\\\\server\\\\share\\\\AUX\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.ElArchivoSeCierraSiempreEnFinallyYElEstadoSeImprimeSiempre",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.ElGiroSeCompararModulo360ConLaDiferenciaEnvueltaAlIntervaloDeMenos180A180(fragment: \"abs(wrapped) <= tolerance * max(1.0, abs(expected)\"···)",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.ElGiroSeCompararModulo360ConLaDiferenciaEnvueltaAlIntervaloDeMenos180A180(fragment: \"difference = actual - expected\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.ElGiroSeCompararModulo360ConLaDiferenciaEnvueltaAlIntervaloDeMenos180A180(fragment: \"math.fmod(difference, 360.0)\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.ElGiroSeCompararModulo360ConLaDiferenciaEnvueltaAlIntervaloDeMenos180A180(fragment: \"math.isfinite(difference)\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.ElGiroSeCompararModulo360ConLaDiferenciaEnvueltaAlIntervaloDeMenos180A180(fragment: \"wrapped += 360.0\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.ElGiroSeCompararModulo360ConLaDiferenciaEnvueltaAlIntervaloDeMenos180A180(fragment: \"wrapped -= 360.0\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.ElGiroSeCompararModulo360ConLaDiferenciaEnvueltaAlIntervaloDeMenos180A180(fragment: \"wrapped <= -180.0\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.ElGiroSeCompararModulo360ConLaDiferenciaEnvueltaAlIntervaloDeMenos180A180(fragment: \"wrapped > 180.0\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.ElRespaldoMinimoLlevaElEstadoDeFalloLaHuellaDeEntradaYElError(fragment: \"\\\"analysisInputFingerprint\\\": result[\\\"analysisInp\"···)",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.ElRespaldoMinimoLlevaElEstadoDeFalloLaHuellaDeEntradaYElError(fragment: \"\\\"error\\\": error,\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.ElRespaldoMinimoLlevaElEstadoDeFalloLaHuellaDeEntradaYElError(fragment: \"\\\"schema\\\": result[\\\"schema\\\"],\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.ElRespaldoMinimoLlevaElEstadoDeFalloLaHuellaDeEntradaYElError(fragment: \"\\\"status\\\": FAILED,\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.ElRespaldoNoLlevaLosValoresLeidos",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.LaGuardaRechazaCadaVarianteSinteticaDeLaLecturaDeVueltaYAceptaElScriptReal(name: \"con la comparacion de la descripcion\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.LaGuardaRechazaCadaVarianteSinteticaDeLaLecturaDeVueltaYAceptaElScriptReal(name: \"dumps fuera del manejo de errores\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.LaGuardaRechazaCadaVarianteSinteticaDeLaLecturaDeVueltaYAceptaElScriptReal(name: \"el giro con la comparacion sin modulo\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.LaGuardaRechazaCadaVarianteSinteticaDeLaLecturaDeVueltaYAceptaElScriptReal(name: \"el giro sin comprobar que es finito\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.LaGuardaRechazaCadaVarianteSinteticaDeLaLecturaDeVueltaYAceptaElScriptReal(name: \"el giro sin fmod\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.LaGuardaRechazaCadaVarianteSinteticaDeLaLecturaDeVueltaYAceptaElScriptReal(name: \"escribiendo el archivo desde main\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.LaGuardaRechazaCadaVarianteSinteticaDeLaLecturaDeVueltaYAceptaElScriptReal(name: \"respaldo con los valores\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.LaGuardaRechazaCadaVarianteSinteticaDeLaLecturaDeVueltaYAceptaElScriptReal(name: \"sin cerrar en finally\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.LaGuardaRechazaCadaVarianteSinteticaDeLaLecturaDeVueltaYAceptaElScriptReal(name: \"sin imprimir el estado\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.LaGuardaRechazaCadaVarianteSinteticaDeLaLecturaDeVueltaYAceptaElScriptReal(name: \"sin respaldo minimo\")",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.LaLecturaDeVueltaComparaElGiroConLaFuncionModulo360YLaToleranciaRelativa",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.LaLecturaDeVueltaNoComparaLaDescripcion",
+     "RackCad.Tests.StructuralAnalysisRamElementsHardeningReadBackTests.LaSerializacionYLaEscrituraDeLaLecturaDeVueltaEstanDentroDelManejoDeErrores"
+    ]
+   }
+  ],
+  "OriginMainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "LsRemoteSha": "a6fa5a35d0297f87afea36417bf98a4f2d2971f1",
+  "Commands": [
+   "gh run view 38154505343|38154104233 --json databaseId,event,headBranch,headSha,status,conclusion,jobs",
+   "gh run download 38154505343 --name rackcad-core-test-diagnostics|rackcad-ui-test-diagnostics; gh run download 38154104233 --name rackcad-core-test-diagnostics",
+   "git fetch origin; git rev-parse origin/main; git ls-remote origin refs/heads/architecture/interop-analisis-estructural"
+  ],
+  "ObtainedUtc": "2026-10-11T16:24:19Z",
+  "Diagnosis": "Corrida push 38154505343 de CurrentSha roja en el job Core (Tests Domain + Application): TRX core 13636 total, 13635 superadas, 1 fallida (RackCad.Tests.StructuralAnalysisRamElementsHardeningGuardTests.LosDosLiteralesQueEstabanPartidosSeEscribenEnteros, Assert.Matches: el patron de la prueba exige el token entre comillas y en StructuralAnalysisRamElementsGuardTests.cs aparece dentro de una cadena C# con la comilla escapada); Build Plugin without AutoCAD skipped por depender del job Core; UI en verde. Defecto declarado por el Worker en UnexpectedFindings."
+ },
+ "RebaseMap": null,
+ "Disposition": "NONE",
+ "Notes": [
+  "Worker subagente segun el paquete aceptado de R20261011T154535Z-39b9 (F4-T1-PACKAGE-HARDENING, Attempt 0, primera delegacion aceptada de la cadena): modelo sonnet (claude-sonnet-5-5) y effort high. Prompt enviado = prompt.md (SHA-256 normalizado 3C64918A63034F4DA51A3C1F4E816836B076027CACC2C7A79DF1166A47034E7B; del archivo AEB403B616698AF332F8E4ADD2E31B1AF7CD014DFE626E9F9D9D7B1827570255); igualdad exacta del primer mensaje de la transcripcion con prompt.md.",
+  "Duracion del subagente: 1464600 ms (dentro del tope de 60 min); 86 llamadas de herramienta; 0 errores de herramienta; 0 denegaciones; 0 avisos de limite. Resultado declarado: WorkerStatus BLOCKED, Disposition BLOCKED, sin TriggeredStopConditions; RedSha 53bfcd94a99f4d6aa201596349d90427ca9f4229, CurrentSha a6fa5a35d0297f87afea36417bf98a4f2d2971f1.",
+  "LaunchedPid null; terminacion confirmada por la notificacion. config.toml en salida y entrada = F909F480...C811, mismos nombres de claves. Salida y entrada sin procesos marcados (participant o unattributable).",
+  "Senal Denials (transcripcion del Worker): 86 llamadas, 0 errores, 0 denegaciones. Uso de Python declarado por el Worker en Deviations y comprobado en la transcripcion: dos invocaciones triviales (python3 -c print(1) y un heredoc con print de una constante) para comprobar si existia el interprete; ninguna lectura ni escritura de archivos, ninguna ejecucion de la plantilla ni del programa de analisis. Las demas coincidencias de 'python' son busquedas grep del token.",
+  "Comprobaciones mecanicas de la sesion: git diff --name-only f64014f3..a6fa5a35 = 11 archivos (RamBuildScriptTemplate.cs, RamBuildPackageFactory.cs, 4 pruebas nuevas StructuralAnalysisRamElementsHardening*Tests.cs y los 5 archivos de prueba existentes nombrados en el contrato); git diff --name-only 53bfcd94 a6fa5a35 -- tests/ vacio (el GREEN no toca pruebas); StructuralPackageWriter.cs sin cambios.",
+  "CI push: RED 38154104233 con el job Core en failure (esperado); GREEN 38154505343 con el job Core en failure por 1 prueba de la seleccion (LosDosLiteralesQueEstabanPartidosSeEscribenEnteros, defecto de la asercion del propio RED declarado por el Worker en UnexpectedFindings) y Build Plugin without AutoCAD = skipped (depende del job Core).",
+  "Simulacro del Coordinator (fuera de la suite y del repositorio, sin RAM Elements): el script generado de REF-CANT-01 con filas de fixture compila con py_compile, es solo ASCII y sin CR (18331 bytes); contra un modulo ramelements FALSO: S1 READBACK OK (8 nudos, 7 miembros, 20 escrituras, la primera units.set); SIM-01 giro leido como 270 -> READBACK OK; SIM-02 giro 0 -> FAILED por giro y ejes; SIM-03 descripcion truncada -> READBACK OK; SIM-04 bandera perdida -> FAILED; SIM-05 json.dumps falla -> ram-readback.json con el respaldo FAILED; SIM-06 material vacio en la carga util -> gate: y 0 escrituras; SIM-07 caso REF1 previo -> gate: y 0 escrituras; S2 segunda corrida -> FileExistsError, no sobrescribe; S3, S4 y S6 -> gate: sin escrituras del script.",
+  "TRX (resumen de la sesion): Core GREEN 13635/13636, filtro RackCad.Tests.StructuralAnalysisRamElementsHardening* {\"selected\": 153, \"Passed\": 152, \"Failed\": 1}; Core RED 13636 ejecutadas, 109 fallidas (fuera del filtro: 6), filtro {\"selected\": 153, \"Passed\": 50, \"Failed\": 103}; tipos de fallo {\"Falta la funcion persist_readback en el script.\": 7, \"Falta la funcion payload_failures en el script.\": 18, \"Assert.Empty() Failure\": 28, \"Assert.False() Failure\\nExpected\": 26, \"Falta la funcion angle_near en el script.\": 8, \"Assert.DoesNotContain() Failure\": 7, \"Assert.Matches() Failure\": 3, \"Assert.Equal() Failure\": 4, \"Assert.Contains() Failure\": 1, \"Falta la funcion repeated_ids en el script.\": 1}; sin errores de compilacion.",
+  "TRX de UI: tests/RackCad.UI.Tests tiene 17 atributos Skip; el logger TRX los registra como UnitTestResult NotExecuted, los cuenta en total (1654) y no en executed (1637) y deja Counters notExecuted=0. Es la convencion del logger, no una contradiccion (precedentes I-61 R20261001T035734Z-74c2 e I-63 evidencia §37.4)."
+ ]
+}

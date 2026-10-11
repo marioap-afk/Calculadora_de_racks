@@ -722,3 +722,47 @@ CONDITIONAL; F4 ONLY; 28 invocaciones de Codex; sin corridas en RAM.
 | Contratos de I-61 | `docs/automation/agent-execution/` (README, routing, esquemas) y AUTOMATION_PLAN §16 sin cambio (misma base `bb0d5522`) |
 | Rutas | decisiones §26, CD-I65-F4-03; [I-65-f4-implementation.md](../../initiatives/I-65-f4-implementation.md) |
 | Codex | 0 de 28 al empezar; `config.toml` `f909f480…c811` |
+
+## 36. F4-T1-PACKAGE-HARDENING — intento 0 (2026-10-11T16:29:40Z)
+
+Contrato sobre `AuthorityRevision` = `BaseSha` = `f64014f3`; `MainSha` `bb0d5522` sin cambio.
+
+| RunId | Fase | Participante | Resultado |
+|---|---|---|---|
+| `R20261011T154535Z-39b9` | PLANNING | Codex `gpt-6-luna`/`high` | paquete válido; seis colecciones idénticas al contrato; A1-A8 en `pass`; `claude-sonnet-5-5`/`high` (Deep) |
+| `R20261011T154936Z-71eb` | CONTROL nc4 | sin invocar | `REJECTED_BEFORE_INVOCATION`: A3 `fail`, el resto igual: **oráculo cumplido** |
+| `R20261011T155212Z-11d5` | WORK | subagente `claude-sonnet-5-5`/`high` (137 mensajes) | `BLOCKED`; RED `53bfcd94` (CI `38154104233` Core `failure`: 103 de 153 de la selección por aserción), GREEN `a6fa5a35` (CI `38154505343` Core `failure`: 13 635/13 636, una aserción defectuosa del RED); 24 min 25 s; 86 llamadas, 0 errores |
+| `R20261011T162337Z-4794` | VERIFICATION | Codex `gpt-6-luna`/`high` | `EXECUTION_REWORK_REQUIRED/REWORK`, `FailureClass` `Ci`; RED acreditado; DEV-I65-F4-01 aceptada |
+
+- **Cambios (intento 0):** `RamBuildScriptTemplate.cs` (tercera puerta `payload_failures`, prefijo `gate: `, `angle_near` módulo 360, sin
+  comparación de descripción, `persist_readback` con respaldo) y `RamBuildPackageFactory.cs` (carpeta embebida expuesta, regla de carpeta con
+  segmentos terminados en punto o espacio y nombres reservados); cuatro pruebas nuevas `StructuralAnalysisRamElementsHardening*`; ediciones de
+  los cinco archivos de prueba nombrados; `StructuralPackageWriter.cs` sin cambios (la carrera del destino ya fallaba sin tocarlo).
+- **Simulacro del Coordinator** (fuera de la suite, módulo `ramelements` **falso**, no RAM): S1 `READBACK OK`; SIM-01 giro leído 270 → OK;
+  SIM-02 giro 0 → `FAILED` por ejes; SIM-03 descripción truncada → OK; SIM-04 bandera perdida → `FAILED`; SIM-05 fallo de `json.dumps` → lectura
+  de vuelta de respaldo con `FAILED`; SIM-06 material vacío y SIM-07 caso `REF1` previo → `gate:` con 0 escrituras; S2-S6 como en F3.
+- **Corrección:** decisiones §27 (CD-I65-F4-07, DEV-I65-F4-01 y 02); `attempts` = 1.
+- **Invocaciones de Codex en F4:** 2 de 28.
+
+Custodia:
+
+| Archivo (bajo `I-65-pilot/`) | SHA-256 transitorio | Blob |
+|---|---|---|
+| `F4-T1-PACKAGE-HARDENING/R20261011T154535Z-39b9/gate-contract.json` | `CBA1679B8A682326…` | `735b485834b7` |
+| `F4-T1-PACKAGE-HARDENING/R20261011T154535Z-39b9/prompt.md` | `D1F42A05B12B7C86…` | `0abe9d596ead` |
+| `F4-T1-PACKAGE-HARDENING/R20261011T154535Z-39b9/delegation.json` | `6684FEF24394CC8F…` | `102f2f03a472` |
+| `F4-T1-PACKAGE-HARDENING/R20261011T154535Z-39b9/acceptance.json` | `F63ED8E87F2A0609…` | `73d1783fc942` |
+| `F4-T1-PACKAGE-HARDENING/R20261011T154535Z-39b9/exactness.json` | `D0CBC2F19D9B1FBA…` | `de0f1687cb6b` (fin de línea normalizado por Git) |
+| `F4-T1-PACKAGE-HARDENING/R20261011T154535Z-39b9/relay-record.json` | `1A9E600C8CCBA8EC…` | `7d26978a4e65` |
+| `F4-T1-PACKAGE-HARDENING-nc4/R20261011T154936Z-71eb/delegation.json` | `0969D5441B61D611…` | `546692ce75e6` |
+| `F4-T1-PACKAGE-HARDENING-nc4/R20261011T154936Z-71eb/acceptance.json` | `3E2CF552A67987E0…` | `2df92c858dd3` |
+| `F4-T1-PACKAGE-HARDENING-nc4/R20261011T154936Z-71eb/relay-record.json` | `9CDEEF97D8117210…` | `56ef3ac5c109` |
+| `F4-T1-PACKAGE-HARDENING/R20261011T155212Z-11d5/prompt.md` | `AEB403B616698AF3…` | `bae4c0284acd` |
+| `F4-T1-PACKAGE-HARDENING/R20261011T155212Z-11d5/worker-handoff.json` | `C5B9C526D9168482…` | `3181dd2b6da8` (fin de línea normalizado por Git) |
+| `F4-T1-PACKAGE-HARDENING/R20261011T155212Z-11d5/relay-record.json` | `60E78285CED3206C…` | `2bf1567ec115` |
+| `F4-T1-PACKAGE-HARDENING/R20261011T162337Z-4794/prompt.md` | `3E3812EE80B46D3A…` | `2c5e5dc4f6fc` |
+| `F4-T1-PACKAGE-HARDENING/R20261011T162337Z-4794/controller-verification.json` | `C0A0C53325DCE7A7…` | `16eac1728049` |
+| `F4-T1-PACKAGE-HARDENING/R20261011T162337Z-4794/relay-record.json` | `D34EC75062B86A60…` | `de411801df2b` |
+| `F4-T1-PACKAGE-HARDENING/R20261011T162337Z-4794/trx-summary.json` | `CF66FDE6F27AA22D…` | `8b57b5d52c23` (fin de línea normalizado por Git) |
+| `F4-T1-PACKAGE-HARDENING/R20261011T162337Z-4794/coordinator-dispositions-f4t1.md` | `3C00996C380E17E0…` | `8c4189d04183` |
+| `F4-T1-PACKAGE-HARDENING/R20261011T162337Z-4794/analysis.md` | `2AEDD7D047A1B786…` | (este commit) |

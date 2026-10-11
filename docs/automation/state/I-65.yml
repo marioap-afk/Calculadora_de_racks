@@ -6,8 +6,8 @@ automation_state:
   current_phase: f4-implementation
   state: in-progress
   gate: F4
-  attempts: 0
-  next_action: F4-T1-PACKAGE-HARDENING (contrato, planificación del Controller, Worker RED/GREEN, verificación y controles negativos); después T2-T5 en serie. Sin corridas en RAM.
+  attempts: 1
+  next_action: Corrección de F4-T1 (intento 1, CD-I65-F4-07): planificación del Controller con CorrectionOf, Worker, verificación y controles negativos; después T2-T5. Sin corridas en RAM.
   last_evidence_commit: d2539be2f571deada81fc17fb44934ea075ab096
 execution_context:
   mode: manual
