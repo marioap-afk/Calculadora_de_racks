@@ -19,7 +19,8 @@ public class WorkspaceHostSourceGuardTests
     private const string ReaderPath = WorkspaceBridgeSourceGuardTests.ReaderAdapterPath;
     private const string ControllerPath = "src/RackCad.Plugin/Workspace/WorkspaceController.cs";
     private const string BridgePath = "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs";
-    private const string HostCorePath = "src/RackCad.Application/Workspace/WorkspaceHostCore.cs";
+    private const string PaletteHostPath = "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs";
+    private const string HostCorePath ="src/RackCad.Application/Workspace/WorkspaceHostCore.cs";
     private const string InstrumentationPath = "src/RackCad.Application/Workspace/WorkspaceInstrumentation.cs";
 
     private static IEnumerable<(string Path, string Code)> PluginOutside(string path) =>
@@ -145,7 +146,7 @@ public class WorkspaceHostSourceGuardTests
     {
         var offenders = Src.AllProduct()
             .Where(f => !f.Path.StartsWith(Src.PluginWorkspace, StringComparison.Ordinal))
-            .Where(f => Regex.IsMatch(f.Code, @"WorkspaceController|WorkspaceHostPort|WorkspaceSelectionReader|WorkspaceHostCore"))
+            .Where(f => Regex.IsMatch(f.Code, @"\bWorkspaceController\b|\bWorkspaceHostPort\b|\bWorkspaceSelectionReader\b|\bWorkspaceHostCore\b"))
             .Where(f => !f.Path.StartsWith(Src.ApplicationWorkspace, StringComparison.Ordinal))
             .Select(f => f.Path)
             .ToList();
@@ -180,8 +181,10 @@ public class WorkspaceHostSourceGuardTests
     {
         var code = Src.Code(ControllerPath);
 
-        Assert.Equal(1, Src.Count(code, @"\+="));
+        // I-64 F1-T3B (G3): exactly the two bridge-internal notifications, and no unsubscription.
+        Assert.Equal(2, Src.Count(code, @"\+="));
         Assert.Matches(@"_bridge\.Drained\s*\+=", code);
+        Assert.Matches(@"_bridge\.ActiveSessionChanged\s*\+=", code);
         Assert.DoesNotMatch(new Regex(@"-="), code);
     }
 
@@ -347,8 +350,16 @@ public class WorkspaceHostSourceGuardTests
     {
         var forbidden = new Regex(@"Autodesk\.AutoCAD\.Internal|PaletteSet|AddVisual|System\.Windows|RackCad\.UI|Autodesk\.AutoCAD\.Windows|\bUserControl\b|\bDispatcher\b");
 
+        // I-64 F1-T3B (G1): the visual host of the palette, by EXACT FILE and never by folder, may name the palette, the
+        // root control and the public WPF host types; it keeps the internal AutoCAD namespace, any Dispatcher and any
+        // Timer forbidden (the guards of background work and of DWG access keep applying to it as to every other file).
+        var paletteHostForbidden = new Regex(@"Autodesk\.AutoCAD\.Internal|\bDispatcher\b|\bTimer\b");
+
         foreach (var (path, code) in Src.PluginFiles().Concat(Src.ApplicationFiles()))
-            Assert.True(!forbidden.IsMatch(code), path + " uses " + forbidden.Match(code).Value);
+        {
+            var rule = string.Equals(path, PaletteHostPath, StringComparison.Ordinal) ? paletteHostForbidden : forbidden;
+            Assert.True(!rule.IsMatch(code), path + " uses " + rule.Match(code).Value);
+        }
     }
 
     [Fact]
