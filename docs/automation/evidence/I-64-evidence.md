@@ -2951,3 +2951,93 @@ Sección nueva; las anteriores no se reescriben. Los registros transitorios de T
 - Desde §49, una invocación de modelo: la planificación `ed7b`.
 - Sin escrituras Git desde `42d45776` hasta este commit; HEAD = remoto = `42d45776` antes de él; `main` `bb0d5522`.
 - Sin cambios en `src/` ni `tests/`.
+
+## 51. F1-T3A-HOST-CORE — Worker, verificación, controles, puentes y cierre documental
+
+Sección nueva; las anteriores no se reescriben. El paquete de cierre está en
+`docs/automation/evidence/I-64-pilot/F1-T3A-HOST-CORE/task-close-package.md`.
+
+**Planificación de reemplazo y aceptación:**
+- **Planificación `R20261011T045535Z-0140`** (`AuthorityRevision` `ee676668`, `MainSha` `bb0d5522`; `gpt-6-luna`/`high`, Codex CLI
+  `0.162.0-alpha.17.2`):
+  - contrato de reemplazo SHA-256 `2616AC79…`, válido contra `rackcad-gate-contract/v1`;
+  - delegación SHA-256 `1D61B5FF…`; A1-A8 8 de 8 en pass; nc4 `R20261011T045742Z-5e57` PASS;
+  - sin fallos de transporte.
+- **Aceptación del Coordinator:** ACCEPTED (literal en `R20261011T045535Z-0140/coordinator-acceptance.md`).
+  - `0140` pasa a ser la autoridad operativa de planificación.
+  - `ed7b` queda VALID / HISTORICAL / SUPERSEDED_BY_SCOPE_CORRECTION.
+  - Ordena un Worker `claude-sonnet-5-5`/`high`, una verificación y los controles con A-4/A-6.
+  - La aceptación original de `ed7b` también se custodia (`R20261011T043044Z-ed7b/coordinator-acceptance.md`).
+
+**Worker único `R20261011T050726Z-0829`** (subagente `claude-sonnet-5-5`/`high`):
+- **Precondiciones, todas cumplidas:** HEAD = remoto = `ee676668`, `main` `bb0d5522`, `config.toml` en C con 105 nombres e I-65 sin
+  solape.
+- **RED `de8e767372c55a5bfb5aecc6541259af778bba24`:** filtro `FullyQualifiedName~RackCad.Tests.Workspace` con 486 seleccionadas, 314
+  pasan y 172 fallan, todas por aserción. CI 38116482614 con Tests en failure y Plugin en skipped.
+- **GREEN `ba52b3b983fb7d2a02393df643e8323b125b3d03`:** filtro 486/486, Core 13081/13081. CI 38116594290 push 4/4.
+- **Build Release del Plugin:** 0 errores; solo los 2 MSB3277 de la línea base.
+- **Archivos:** 30, de ellos 23 nuevos y 7 modificados, todos dentro de `AllowedWriteScope`.
+  - `EventBridgeCore.cs` (+32/-0) y `AutoCadEventBridge.cs` (+18/-0) cambian solo por sus deltas exactos.
+  - El censo pasa de 37 a 38 con `RACKPANEL`, sin alias.
+  - RT = 16 archivos de `tests/`, todos en el RED; el GREEN solo toca `src/`.
+- **Entrega:** IMPLEMENTATION_COMPLETE / NONE, SHA-256 `7E111791…`. Límites declarados en el paquete, sección 3.
+
+**Verificación `R20261011T061322Z-5734`** (`gpt-6-luna`/`high`/read-only): **EXECUTION_VERIFIED / NONE** sobre `ba52b3b9`.
+- Las 14 comprobaciones en pass.
+- El Controller afirma un `…8354` que no aparece en ninguna entrada; es un hallazgo inexacto sin efecto.
+
+**Controles y puentes:**
+
+| Control | Resultado |
+|---|---|
+| nc1 | PASS (`a33e`) |
+| Controller nc2 | CONTROL NOT PASSED (`162f`) |
+| I64-SCOPE-BRIDGE-01 | PASS (`324b`): REAL PASS; ADVERSARIAL FAIL solo por `EventBridgeCore.cs` fuera del alcance |
+| Controller nc3 | NOT PASSED / P-04 (`587f`, `af95` y `302e`, INVALID_OUTPUT, sin reetiquetar) |
+| I64-FREETEXT-BRIDGE-01 | PASS (`7dd5`): 29 de 29 en pass; salida `5d282952…`; sin modelos |
+| nc4 | PASS (`5e57`; histórico `2bac` PASS) |
+| Producto | EXECUTION_VERIFIED / NONE (`5734`, `ba52b3b9`) |
+
+**Cierre de protocolo de F1-T3A-HOST-CORE: SATISFIED UNDER A-4 + A-6.**
+- Estado de la tarea: **COMPLETE_UNDER_I64_SUBSTITUTE_PROTOCOL_EVIDENCE**, a falta de la revisión del Coordinator.
+- No reescribe nc2 ni nc3.
+- No declara F1 PASS.
+
+**Desviaciones que se declaran:**
+- **Regla de nc3 aplicada por analogía:** los tres nc3 se clasificaron INVALID_OUTPUT con la regla de la decisión del Coordinator sobre
+  nc3 en T2, sin una decisión propia de T3A. Esa clasificación llevó a los reintentos, al P-04 y a A-6.
+- **stderr de la verificación:** tiene dos líneas del CLI `failed to record rollout items`, con salida 0 y salida válida. El relevo no
+  las menciona y se custodian tal cual.
+- **Recuento del relevo del Worker:** +29/+13 son líneas añadidas no vacías; `numstat` da +32/+18, sin líneas eliminadas.
+
+**Custodia:**
+- **Manifiesto `custody-manifest.json`:** los 373 transitorios de `F1-T3A-HOST-CORE*` con su SHA-256: 101 custodiados, 11 custodiados
+  con redacción, 34 idénticos a un custodiado y 227 excluidos con motivo.
+- **Redacción:** las rutas locales se sustituyen por marcadores, conservando el SHA-256 de cada original.
+- **Fin de línea:** 19 archivos con CRLF se custodian en LF, con los dos SHA-256.
+
+**Presupuesto:**
+- Planificación de reemplazo 1/1; trabajo 1/1; verificación 1/1.
+- nc1 1; nc2 1; nc3 0 válidas + 3 INVALID_OUTPUT.
+- Puentes: 1 ejecución cada uno.
+- `attempts` 3 de 3, sin reinicio ni Worker de corrección.
+
+**Estado:**
+- F1 sigue IN PROGRESS: F1-T1-MODEL completa bajo A-4, F1-T2-BRIDGE completa bajo A-4 + A-6 y F1-T3A-HOST-CORE completa bajo A-4 + A-6
+  (pendiente de revisión).
+- **F1-T3B-HOST-UI:** NOT YET AUTHORIZED, no se inicia. **F1-T3C-PROFILE-DOC:** RESERVED.
+- `last_evidence_commit` sigue en `32d38688`, a falta de que la revisión lo disponga, como en §47.
+- Siguiente: STOP en **COORDINATOR_T3A_CLOSE_REVIEW_REQUIRED**.
+
+**Relevos:**
+- **Invocaciones de modelos desde §50:**
+  - la planificación de reemplazo;
+  - el Worker;
+  - la verificación;
+  - nc1, nc2 y tres nc3.
+
+  Los puentes no invocan modelos.
+- **`config.toml`:** en la instantánea C (`F909F480…`, 105 nombres) en cada cesión y antes de este commit.
+- **I-65:** releído antes de este commit; su punta está en `16fa9e76` (F3-T1 de RAM Elements), sin solape con T3A.
+- **Git:** sin escrituras de la sesión desde `ee676668` hasta este commit; HEAD = remoto = `ba52b3b9` antes de él; `main` `bb0d5522`.
+- **Sin cambios en `src/` ni `tests/` en este commit.**

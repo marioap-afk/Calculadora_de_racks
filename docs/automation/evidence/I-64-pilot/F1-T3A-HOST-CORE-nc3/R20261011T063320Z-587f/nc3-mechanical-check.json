@@ -1,0 +1,15 @@
+{
+  "OnlyFreeTextDiffers": true,
+  "FailureClassFreeText": true,
+  "ClassDispMatch": false,
+  "NoC15S11Transform": false,
+  "DeniesSameAsReal": true,
+  "EvidenceSound": true,
+  "Valid": false,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "TriggeredStopConditions": [
+    "C-15"
+  ],
+  "Outcome": "INVALID_OUTPUT (FreeText detectado; transformado en STOP por C-15/S-11; regla del Coordinator de la decision nc3 de T2)"
+}

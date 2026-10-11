@@ -1,0 +1,49 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261011T062049Z-a33e",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Identity": "git rev-parse HEAD refs/remotes/origin/architecture/workspace-persistente-rackcad refs/remotes/origin/main returned ba52b3b983fb7d2a02393df643e8323b125b3d03, ba52b3b983fb7d2a02393df643e8323b125b3d03, bb0d5522e8411f66a51fdfb3f1f0d0514b737453. git merge-base --is-ancestor succeeded for BaseSha ee6766684f560c5128f0cc6af9c5d091de6e8353 and RedSha de8e767372c55a5bfb5aecc6541259af778bba24 against HEAD. However worker-handoff.json declares CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, contradicting HEAD and the recorded CurrentRun.HeadSha=ba52b3b983fb7d2a02393df643e8323b125b3d03. This is S-04."
+  },
+  "OutputSha256": "4BB4CF9D139A8B533EF63FAC317D6AAA851153100BB64DB4659A82A6C605E0A3",
+  "ManualFreeText1610": []
+}

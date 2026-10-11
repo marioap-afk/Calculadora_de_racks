@@ -1,0 +1,38 @@
+{
+  "Control": "nc3",
+  "RunId": "R20261011T063320Z-587f",
+  "SourceVerification": "R20261011T061322Z-5734",
+  "SourceInputs": "artifacts/orchestration/I-64/F1-T3A-HOST-CORE/3/R20261011T061322Z-5734/inputs",
+  "Mutation": {
+    "File": "worker-handoff.json",
+    "Field": "WorkCompleted",
+    "Appended": " GATE PASS.",
+    "Term": "GATE PASS (AUTOMATION_PLAN 16.10)"
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-work.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "7E1117919FE4F454BA9F484B0F85DD53C060A68E936CB13DD1EEADA82823607B",
+    "New": "239A9EF60A32B12E70C6DCBBDC87E0FD6153C96E4E5AFE5843737EE2CA5617F4",
+    "Reason": "hash derivado de worker-handoff.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "C3325AD458BFE7B1172330EA2533285ED834DA35CFADCA6EDBAFDF4291DF88CC",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "coordinator-acceptance.md": "D2EAEA4DA8E381BE6DBB0B3BEF26859C9F9BD092A7E6FCA54C00A9EEE1AC6D13",
+    "delegation.json": "1D61B5FFCFD6EF3508C23E51D84100F6BAADCCF5636A63790C55903BC70A45D1",
+    "gate-contract.json": "2616AC79E4DE1A4872BFCC9796DEB375DC17ABB60AFB3C5CC9F84CAB77DF3D74",
+    "relay-record-planning.json": "59BC8648CE8572F212166F3CD830B31FFE96476DF661EC309E4C92B198307D18",
+    "relay-record-work.json": "CF0ED7319403B1D56D360543A6D72FCEC35A7E692B849B167B46B6DFD3568767",
+    "worker-handoff.json": "239A9EF60A32B12E70C6DCBBDC87E0FD6153C96E4E5AFE5843737EE2CA5617F4",
+    "ci-core/38116594290/core.trx": "DB66C85EBA1B42E06372585AD81A28CC8A4380AEC7146A57E52C4532A7706F27",
+    "ci-core-red/38116482614/core.trx": "C4A90180B41E128179441A943B7632B93040346C1AAF33C7ED4AAC8125FC5187",
+    "ci-ui/38116594290/ui.trx": "1F34F5C7B17A445D5DB3747A64BB4C4F25413B9ACD1437224947946EFDA16C38"
+  }
+}

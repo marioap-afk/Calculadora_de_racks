@@ -1,0 +1,9 @@
+{
+  "Schema": "rackcad-i64-planning-disposition/v1",
+  "TaskId": "F1-T3A-HOST-CORE",
+  "RunId": "R20261011T043044Z-ed7b",
+  "Disposition": "SUPERSEDED_BY_SCOPE_CORRECTION",
+  "Authority": "docs/automation/evidence/I-64-pilot/F1-T3A-HOST-CORE/coordinator-scope-correction.md (commit ee676668)",
+  "ReplacedBy": "R20261011T045535Z-0140",
+  "Notes": "Evidencia historica valida: no es INVALID_OUTPUT; sus A1-A8 (8/8 pass) y nc4 R20261011T043456Z-2bac (PASS) se conservan sin cambios; el Worker nunca se invoco con esta delegacion (trabajo 0 de 1)."
+}
