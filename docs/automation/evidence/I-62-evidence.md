@@ -3629,3 +3629,12 @@ solo desde artefactos custodiados.
   - Obstáculo normativo: D.1, paso 2, fija el seed con MC_I62, que es la causa de MAP_INVALID. Hace falta una A-n o una lectura del Coordinator.
   - Presupuesto de Principal para FX-U2: el cupo de A4-6 es solo para A2.
   - Líneas del Owner en borrador: `FIXTURE-B1-REPO` y `B1-PRINCIPAL-CONSUMO`.
+
+## 130. Decisiones §71: preparación de A-5 autorizada (A5-1 método de F_seed; A5-2 presupuesto de Principal de FX-U2)
+
+- Sonda 2 HELD; NATIVE_CONTROLLER NOT_DEMONSTRATED; F6-OBS-03 RESUELTO.
+- A-5 en preparación, en un carril acotado, sin aplicación ni revisión formal:
+  - A5-1: F_seed conforme al mapa de AP 16.13;
+  - A5-2: una sesión de Principal explícita para FX-U2, sin transferir A4-6 ni reiniciar contadores.
+- Preflight obligatorio antes de cualquier revisión: MV-1..MV-7, autoridades intactas, consecuencias, presupuesto, OWNER-RESERVED, guardas y pruebas
+  negativas, contratos de producción.
