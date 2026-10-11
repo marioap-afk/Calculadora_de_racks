@@ -3934,3 +3934,12 @@ solo desde artefactos custodiados.
      quiere esperar, por una A-6 estrecha con una medición sobre la identidad vigente (tope 1) y una línea de consumo del Owner.
 
   Siguiente paso: la disposición del punto 1.
+
+## 145. Decisiones §75: B-min aceptada para preparar su implementación; B-ext rechazada
+
+- Paquete experimental B-min autorizado en el worktree, fuera del fixture operativo y de los contratos de producción. Herramientas de hechos
+  read-only fijadas por blob, con salida JSON ASCII canónica y sin veredictos; pruebas unitarias, negativas y de mutación; reproducción R1-R10 por el
+  aceptante con implementación independiente para los controles críticos. Ningún modelo durante la preparación.
+- Revisión independiente de materialidad por un Architect con `claude-cli` (CLAUDE-CLI-I62), acotada a la pregunta de §75.4. A-6 solo si la
+  revisión declara MATERIAL y una disposición nueva lo pide.
+- Sin sondas Codex, sin sesiones de Principal y sin ampliar presupuestos. B1 lista; FX-U2 cerrada.
