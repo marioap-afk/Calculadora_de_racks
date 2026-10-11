@@ -1,0 +1,269 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F4-T2-SOURCE-ENTRY",
+  "RunId": "R20261011T173811Z-0167",
+  "DelegationRunId": "R20261011T173529Z-98df",
+  "Initiative": "I-65",
+  "Gate": "F4",
+  "Attempt": 2,
+  "BaseSha": "dc609362ee89446555316c724b514eacf4b4e41a",
+  "RedSha": "2e92a0dfb49df6f0b637da0455d5bd84dce367f7",
+  "CurrentSha": "0070ae40c8cccf8ec9d384881f344c3fd5dd865f",
+  "Branch": "architecture/interop-analisis-estructural",
+  "Worktree": "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-interop-analisis-estructural",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.Application/StructuralAnalysis/StructuralDiagnostic.cs",
+    "src/RackCad.Application/StructuralAnalysis/StructuralModelBuilder.cs",
+    "src/RackCad.Application/Systems/Cantilever/CantileverStructuralExport.cs",
+    "src/RackCad.Application/Systems/Cantilever/CantileverStructuralModelSource.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverBoundaryTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceEntryHardeningTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceEntryTests.cs"
+  ],
+  "WorkCompleted": "Entrada neutral de una sola lectura (CantileverStructuralExport) con funcion de decodificacion inyectada y endurecimiento del constructor del modelo y de la fuente Cantilever (A65-F1-03, 08, 09, 10, 11 y 12) segun CD-I65-F4-11. RED en 2e92a0df (66 pruebas seleccionadas, 47 fallan) y GREEN en 0070ae40 (66 en verde; suite completa de RackCad.Tests 13703 en verde). Ambos commits empujados a la rama sin force.",
+  "TestsExecuted": [
+    {
+      "RunRef": "red-focal",
+      "Command": "/c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.StructuralAnalysisSourceEntry\" --logger \"trx;LogFileName=red-focal.trx\" --results-directory artifacts/orchestration/I-65/F4-T2-SOURCE-ENTRY/2/R20261011T173811Z-0167/tests/red-focal",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T2-SOURCE-ENTRY/2/R20261011T173811Z-0167/tests/red-focal/red-focal.trx"
+    },
+    {
+      "RunRef": "red-focal-committed",
+      "Command": "/c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.StructuralAnalysisSourceEntry\" --logger \"trx;LogFileName=red-focal-committed.trx\" --results-directory artifacts/orchestration/I-65/F4-T2-SOURCE-ENTRY/2/R20261011T173811Z-0167/tests/red-focal-committed",
+      "Phase": "RED",
+      "TreeSha": "2e92a0dfb49df6f0b637da0455d5bd84dce367f7",
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T2-SOURCE-ENTRY/2/R20261011T173811Z-0167/tests/red-focal-committed/red-focal-committed.trx"
+    },
+    {
+      "RunRef": "red-guards",
+      "Command": "/c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~CantileverSourceGuardTests|FullyQualifiedName~CantileverRoundTwoSourceGuardTests|FullyQualifiedName~CantileverPluginSourceGuardTests|FullyQualifiedName~StructuralAnalysisSourceGuardTests|FullyQualifiedName~NamespaceFolderGuardTests|FullyQualifiedName~LengthUnitsAuthorityGuardTests|FullyQualifiedName~StructuralAnalysisRamElements|FullyQualifiedName~StructuralAnalysisCantilever|FullyQualifiedName~StructuralAnalysisModelBuilder\" --logger \"trx;LogFileName=red-guards.trx\" --results-directory artifacts/orchestration/I-65/F4-T2-SOURCE-ENTRY/2/R20261011T173811Z-0167/tests/red-guards",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T2-SOURCE-ENTRY/2/R20261011T173811Z-0167/tests/red-guards/red-guards.trx"
+    },
+    {
+      "RunRef": "green-wip",
+      "Command": "/c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.StructuralAnalysis|FullyQualifiedName~Cantilever\" --logger \"trx;LogFileName=green-wip.trx\" --results-directory artifacts/orchestration/I-65/F4-T2-SOURCE-ENTRY/2/R20261011T173811Z-0167/tests/green-wip",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T2-SOURCE-ENTRY/2/R20261011T173811Z-0167/tests/green-wip/green-wip.trx"
+    },
+    {
+      "RunRef": "green-full-pre",
+      "Command": "/c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=green-full-pre.trx\" --results-directory artifacts/orchestration/I-65/F4-T2-SOURCE-ENTRY/2/R20261011T173811Z-0167/tests/green-full-pre",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T2-SOURCE-ENTRY/2/R20261011T173811Z-0167/tests/green-full-pre/green-full-pre.trx"
+    },
+    {
+      "RunRef": "green-focal",
+      "Command": "/c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.StructuralAnalysisSourceEntry\" --logger \"trx;LogFileName=green-focal.trx\" --results-directory artifacts/orchestration/I-65/F4-T2-SOURCE-ENTRY/2/R20261011T173811Z-0167/tests/green-focal",
+      "Phase": "GREEN",
+      "TreeSha": "0070ae40c8cccf8ec9d384881f344c3fd5dd865f",
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T2-SOURCE-ENTRY/2/R20261011T173811Z-0167/tests/green-focal/green-focal.trx"
+    },
+    {
+      "RunRef": "green-full",
+      "Command": "/c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=green-full.trx\" --results-directory artifacts/orchestration/I-65/F4-T2-SOURCE-ENTRY/2/R20261011T173811Z-0167/tests/green-full",
+      "Phase": "GREEN",
+      "TreeSha": "0070ae40c8cccf8ec9d384881f344c3fd5dd865f",
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T2-SOURCE-ENTRY/2/R20261011T173811Z-0167/tests/green-full/green-full.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "red-focal",
+      "Selected": 66,
+      "Passed": 19,
+      "Failed": 47,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.CualquierOtraFamiliaIncluidoUnValorNoDefinidoDelEnumEsUnsupported(family: -1)",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.CualquierOtraFamiliaIncluidoUnValorNoDefinidoDelEnumEsUnsupported(family: 99)",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.DosApoyosEnElMismoNudoSonInvalidos",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.ElBloqueoDeLaLineaCompletaTieneSuPropioCodigoYSuSujetoNombraLaLinea",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.LaColumnaYElCuerpoDeBrazoSonPiezasModeladas(role: Arm)",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.LaColumnaYElCuerpoDeBrazoSonPiezasModeladas(role: Column)",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.LasPiezasDeRefCant01SeClasificanTodasYLaLineaSigueValida",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnaComponenteEliminadaMayorQueElSenoDeUnaCentesimaDeGradoSeRechaza",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnaEstacionQueNoSeResuelveBloqueaLaLineaYSeInformaComoLinea",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnaExcepcionDeLaFuenteEsUnavailableSinModelo(exceptionType: typeof(System.ArgumentException))",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnaExcepcionDeLaFuenteEsUnavailableSinModelo(exceptionType: typeof(System.IndexOutOfRangeException))",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnaExcepcionDeLaFuenteEsUnavailableSinModelo(exceptionType: typeof(System.InvalidOperationException))",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnaExcepcionDeLaFuenteEsUnavailableSinModelo(exceptionType: typeof(System.NullReferenceException))",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnaPiezaSinteticaSinClasificarHaceLaEstacionUnsupportedConCodigoNuevo",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnModeloSinMiembrosEsInvalidConSuPropioCodigo",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnModeloSinNudosEsInvalidConSuPropioCodigo",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnRolSinClasificarEsUnclassified",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnSupuestoReferenciadoPorUnaLiberacionQueNoEstaDeclaradoEsInvalido",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnSupuestoReferenciadoPorUnApoyoQueNoEstaDeclaradoEsInvalido",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.BytesQueElAlmacenNoPuedeLeerSonUnavailableSinModelo(text: \"\")",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.BytesQueElAlmacenNoPuedeLeerSonUnavailableSinModelo(text: \"this is not json\")",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.ElKindDelSobreCantileverSeCompararSinDistinguirMayusculasYSeTraduceAlKindCanonico(kind: \"cantilever\")",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.ElKindDelSobreCantileverSeCompararSinDistinguirMayusculasYSeTraduceAlKindCanonico(kind: \"CANTILEVER\")",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.ElKindDelSobreCantileverSeCompararSinDistinguirMayusculasYSeTraduceAlKindCanonico(kind: \"Cantilever\")",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.LaEntradaYLaFuenteDanElMismoModeloGeometrico",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.LaFuncionDeDecodificacionRecibeExactamenteLosBytesDelDisenoUnaSolaVez",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.LaSourceFingerprintSeCalculaSobreLosBytesPersistidosIntactos",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.LosArgumentosNulosConservanArgumentNullException(which: 0)",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.LosArgumentosNulosConservanArgumentNullException(which: 1)",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.LosArgumentosNulosConservanArgumentNullException(which: 2)",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.LosArgumentosNulosConservanArgumentNullException(which: 3)",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.LosArgumentosNulosConservanArgumentNullException(which: 4)",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.MismosBytesDanLaMismaHuellaYElMismoModelo",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.OtroKindDelSobreDaElDiagnosticoExistenteSinLlamarALaFuncion(kind: \" \")",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.OtroKindDelSobreDaElDiagnosticoExistenteSinLlamarALaFuncion(kind: \"Dynamic\")",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.OtroKindDelSobreDaElDiagnosticoExistenteSinLlamarALaFuncion(kind: \"pushback\")",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.OtroKindDelSobreDaElDiagnosticoExistenteSinLlamarALaFuncion(kind: \"selective\")",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.RefCant01PorLaEntradaEsValidaYReproduceLosLiteralesDelGoldenDeInv06",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnaExcepcionDeLaFuncionDeDecodificacionEsUnavailableSinModelo(exceptionType: typeof(System.FormatException))",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnaExcepcionDeLaFuncionDeDecodificacionEsUnavailableSinModelo(exceptionType: typeof(System.InvalidOperationException))",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnaExcepcionDeLaFuncionDeDecodificacionEsUnavailableSinModelo(exceptionType: typeof(System.NullReferenceException))",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnaFuncionQueAlteraSuCopiaDeLosBytesNoCambiaLaHuella",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnaFuncionQueDevuelveNullEsInvalidSinModeloNiExcepcion",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnArchivoDeCargasInvalidoPorLaEntradaEsInvalidSinModelo",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnCambioSoloDeEspaciosEnLosBytesCambiaLaHuellaYConservaLaGeometria",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnDisenoQueHaceFallarAlResolverEsUnavailableSinModelo",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnIndiceDeEstacionFueraDeRangoPorLaEntradaEsInvalidSinModelo"
+      ]
+    },
+    {
+      "RunRef": "red-focal-committed",
+      "Selected": 66,
+      "Passed": 19,
+      "Failed": 47,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.CualquierOtraFamiliaIncluidoUnValorNoDefinidoDelEnumEsUnsupported(family: -1)",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.CualquierOtraFamiliaIncluidoUnValorNoDefinidoDelEnumEsUnsupported(family: 99)",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.DosApoyosEnElMismoNudoSonInvalidos",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.ElBloqueoDeLaLineaCompletaTieneSuPropioCodigoYSuSujetoNombraLaLinea",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.LaColumnaYElCuerpoDeBrazoSonPiezasModeladas(role: Arm)",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.LaColumnaYElCuerpoDeBrazoSonPiezasModeladas(role: Column)",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.LasPiezasDeRefCant01SeClasificanTodasYLaLineaSigueValida",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnaComponenteEliminadaMayorQueElSenoDeUnaCentesimaDeGradoSeRechaza",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnaEstacionQueNoSeResuelveBloqueaLaLineaYSeInformaComoLinea",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnaExcepcionDeLaFuenteEsUnavailableSinModelo(exceptionType: typeof(System.ArgumentException))",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnaExcepcionDeLaFuenteEsUnavailableSinModelo(exceptionType: typeof(System.IndexOutOfRangeException))",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnaExcepcionDeLaFuenteEsUnavailableSinModelo(exceptionType: typeof(System.InvalidOperationException))",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnaExcepcionDeLaFuenteEsUnavailableSinModelo(exceptionType: typeof(System.NullReferenceException))",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnaPiezaSinteticaSinClasificarHaceLaEstacionUnsupportedConCodigoNuevo",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnModeloSinMiembrosEsInvalidConSuPropioCodigo",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnModeloSinNudosEsInvalidConSuPropioCodigo",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnRolSinClasificarEsUnclassified",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnSupuestoReferenciadoPorUnaLiberacionQueNoEstaDeclaradoEsInvalido",
+        "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnSupuestoReferenciadoPorUnApoyoQueNoEstaDeclaradoEsInvalido",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.BytesQueElAlmacenNoPuedeLeerSonUnavailableSinModelo(text: \"\")",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.BytesQueElAlmacenNoPuedeLeerSonUnavailableSinModelo(text: \"this is not json\")",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.ElKindDelSobreCantileverSeCompararSinDistinguirMayusculasYSeTraduceAlKindCanonico(kind: \"cantilever\")",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.ElKindDelSobreCantileverSeCompararSinDistinguirMayusculasYSeTraduceAlKindCanonico(kind: \"Cantilever\")",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.ElKindDelSobreCantileverSeCompararSinDistinguirMayusculasYSeTraduceAlKindCanonico(kind: \"CANTILEVER\")",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.LaEntradaYLaFuenteDanElMismoModeloGeometrico",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.LaFuncionDeDecodificacionRecibeExactamenteLosBytesDelDisenoUnaSolaVez",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.LaSourceFingerprintSeCalculaSobreLosBytesPersistidosIntactos",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.LosArgumentosNulosConservanArgumentNullException(which: 0)",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.LosArgumentosNulosConservanArgumentNullException(which: 1)",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.LosArgumentosNulosConservanArgumentNullException(which: 2)",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.LosArgumentosNulosConservanArgumentNullException(which: 3)",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.LosArgumentosNulosConservanArgumentNullException(which: 4)",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.MismosBytesDanLaMismaHuellaYElMismoModelo",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.OtroKindDelSobreDaElDiagnosticoExistenteSinLlamarALaFuncion(kind: \" \")",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.OtroKindDelSobreDaElDiagnosticoExistenteSinLlamarALaFuncion(kind: \"Dynamic\")",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.OtroKindDelSobreDaElDiagnosticoExistenteSinLlamarALaFuncion(kind: \"pushback\")",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.OtroKindDelSobreDaElDiagnosticoExistenteSinLlamarALaFuncion(kind: \"selective\")",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.RefCant01PorLaEntradaEsValidaYReproduceLosLiteralesDelGoldenDeInv06",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnaExcepcionDeLaFuncionDeDecodificacionEsUnavailableSinModelo(exceptionType: typeof(System.FormatException))",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnaExcepcionDeLaFuncionDeDecodificacionEsUnavailableSinModelo(exceptionType: typeof(System.InvalidOperationException))",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnaExcepcionDeLaFuncionDeDecodificacionEsUnavailableSinModelo(exceptionType: typeof(System.NullReferenceException))",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnaFuncionQueAlteraSuCopiaDeLosBytesNoCambiaLaHuella",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnaFuncionQueDevuelveNullEsInvalidSinModeloNiExcepcion",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnArchivoDeCargasInvalidoPorLaEntradaEsInvalidSinModelo",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnCambioSoloDeEspaciosEnLosBytesCambiaLaHuellaYConservaLaGeometria",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnDisenoQueHaceFallarAlResolverEsUnavailableSinModelo",
+        "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnIndiceDeEstacionFueraDeRangoPorLaEntradaEsInvalidSinModelo"
+      ]
+    },
+    {
+      "RunRef": "red-guards",
+      "Selected": 1057,
+      "Passed": 1055,
+      "Failed": 2,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.StructuralAnalysisCantileverBoundaryTests.UnaEstacionBloqueadaPorElResolverEsUnsupportedSinModelo",
+        "RackCad.Tests.StructuralAnalysisCantileverBoundaryTests.UnaLineaBloqueadaPorElResolverEsUnsupportedSinModelo"
+      ]
+    },
+    {
+      "RunRef": "green-wip",
+      "Selected": 1987,
+      "Passed": 1987,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-full-pre",
+      "Selected": 13703,
+      "Passed": 13703,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-focal",
+      "Selected": 66,
+      "Passed": 66,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-full",
+      "Selected": 13703,
+      "Passed": 13703,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    }
+  ],
+  "Evidence": [
+    "Correccion -> prueba que la observa (clases StructuralAnalysisSourceEntryTests y StructuralAnalysisSourceEntryHardeningTests, namespace RackCad.Tests). A65-F1-08 (CD-I65-F4-11): LaFuncionDeDecodificacionRecibeExactamenteLosBytesDelDisenoUnaSolaVez, LaSourceFingerprintSeCalculaSobreLosBytesPersistidosIntactos, UnaFuncionQueAlteraSuCopiaDeLosBytesNoCambiaLaHuella, MismosBytesDanLaMismaHuellaYElMismoModelo, UnCambioSoloDeEspaciosEnLosBytesCambiaLaHuellaYConservaLaGeometria, ElKindDelSobreCantileverSeCompararSinDistinguirMayusculasYSeTraduceAlKindCanonico (3 filas), OtroKindDelSobreDaElDiagnosticoExistenteSinLlamarALaFuncion (4 filas), LaEntradaRecibeUnaFuncionDeDecodificacionYNoNombraElAlmacenNiElSobre, LosArgumentosNulosConservanArgumentNullException (5 filas), RefCant01PorLaEntradaEsValidaYReproduceLosLiteralesDelGoldenDeInv06, LaEntradaYLaFuenteDanElMismoModeloGeometrico.",
+    "A65-F1-09: UnaExcepcionDeLaFuncionDeDecodificacionEsUnavailableSinModelo (3 filas), UnDisenoQueHaceFallarAlResolverEsUnavailableSinModelo (Bracing nulo: el resolver lanza ArgumentNullException), UnaFuncionQueDevuelveNullEsInvalidSinModeloNiExcepcion, BytesQueElAlmacenNoPuedeLeerSonUnavailableSinModelo (2 filas), UnaExcepcionDeLaFuenteEsUnavailableSinModelo (4 filas), UnaExcepcionDeMemoriaInsuficienteNoSeConvierteEnResultado, LosArgumentosNulosDelConstructorSiguenLanzandoArgumentNullException, UnModeloSinNudosEsInvalidConSuPropioCodigo, UnModeloSinMiembrosEsInvalidConSuPropioCodigo, DosApoyosEnElMismoNudoSonInvalidos, UnSupuestoReferenciadoPorUnApoyoQueNoEstaDeclaradoEsInvalido, UnSupuestoReferenciadoPorUnaLiberacionQueNoEstaDeclaradoEsInvalido, UnaFuenteQueRechazaNoAnadeLosCodigosDeModeloVacio, UnaDescripcionConTodosLosSupuestosDeclaradosYSinApoyosDuplicadosEsValida.",
+    "A65-F1-11: ElBloqueoDeLaLineaCompletaTieneSuPropioCodigoYSuSujetoNombraLaLinea, UnaEstacionQueNoSeResuelveBloqueaLaLineaYSeInformaComoLinea, ElCodigoDeLaEstacionBloqueadaSeConservaYEsDistintoDelDeLaLinea, mas las dos pruebas editadas de StructuralAnalysisCantileverBoundaryTests. A65-F1-03: LasFamiliasWHssRectangularYSDeLaListaDePermisoSonValidas (3 filas) y CualquierOtraFamiliaIncluidoUnValorNoDefinidoDelEnumEsUnsupported (Channel, Angle, 99 y -1). A65-F1-10: UnaComponenteEliminadaMayorQueElSenoDeUnaCentesimaDeGradoSeRechaza, UnaComponenteEliminadaDentroDeLaToleranciaDaElResultadoDeSiempre, UnPeralteYaPerpendicularNoSeToca. A65-F1-12: LaColumnaYElCuerpoDeBrazoSonPiezasModeladas (2), LaBaseLosSeparadoresLosArriostramientosYSusAngulosNoSeModelanPorCdI65F114 (4), UnRolSinClasificarEsUnclassified, TodoRolDefinidoHoyEstaClasificado, UnaPiezaSinteticaSinClasificarHaceLaEstacionUnsupportedConCodigoNuevo, LasPiezasClasificadasNoDanDiagnosticos, LasPiezasDeRefCant01SeClasificanTodasYLaLineaSigueValida.",
+    "Aserciones editadas de pruebas existentes (RED): solo tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverBoundaryTests.cs, dos pruebas. UnaLineaBloqueadaPorElResolverEsUnsupportedSinModelo y UnaEstacionBloqueadaPorElResolverEsUnsupportedSinModelo esperaban SourceStationBlocked para una linea bloqueada (comportamiento viejo de A65-F1-11); ahora esperan SourceLineBlocked con sujeto line. Motivo de la segunda: el resolver bloquea la linea completa cuando una estacion no se resuelve (la linea bloqueada no trae estaciones), asi que line.IsBlocked es verdadero y la prueba ya lo afirmaba. StructuralAnalysisModelBuilderTests.cs no necesito ediciones: ninguna de sus aserciones encodaba el comportamiento viejo de A65-F1-03, 09 u 11.",
+    "Codigos nuevos en StructuralDiagnosticCodes: SOURCE-LINE-BLOCKED (sujeto line, Unsupported); SOURCE-DESIGN-ABSENT (la funcion de decodificacion devolvio null, Invalid); MODEL-NO-NODES y MODEL-NO-MEMBERS (sujeto model, Invalid, solo si la fuente no rechazo ya); SUPPORT-DUPLICATE-NODE (sujeto el nudo, Invalid); ASSUMPTION-UNDECLARED (sujeto el id, Invalid, para apoyos y liberaciones); PERALTE-REORTHOGONALISATION (sujeto el miembro, Unsupported); STATION-PIECE-UNCLASSIFIED (sujeto la pieza, Unsupported). Reutilizados: SOURCE-UNAVAILABLE, SOURCE-KIND-MISMATCH, SECTION-FAMILY-UNSUPPORTED.",
+    "Clasificacion de las piezas de REF-CANT-01 (estacion 0 resuelta, ids sin prefijo de linea): miembros CANT-STN-COL (Column, modelada), CANT-STN-L1-PY-BODY-1, CANT-STN-L2-PY-BODY-1 y CANT-STN-L3-PY-BODY-1 (Arm, modeladas), CANT-STN-PY-BAS (Base, no modelada por CD-I65-F1-14). No son miembros y siempre quedan fuera por tipo: placas CANT-STN-PBOT, CANT-STN-PY-PFRONT, CANT-STN-PY-PREAR, CANT-STN-L1-PY-PMOUNT, CANT-STN-L2-PY-PMOUNT y CANT-STN-L3-PY-PMOUNT, y la cartela CANT-STN-PY-GUS. Los roles Separator, Brace y ColdRolledAdapter pertenecen a los intervalos de la linea (no a la estacion) y se clasifican como no modelados; cualquier otro valor del rol es Unclassified. Ninguna pieza real quedo fuera de CD-I65-F1-14 (sin parada C-07).",
+    "Golden de INV-06: las pruebas de StructuralAnalysisCantileverGoldenTests (sin modificar) siguen en verde por la fuente, y RefCant01PorLaEntradaEsValidaYReproduceLosLiteralesDelGoldenDeInv06 y LaEntradaYLaFuenteDanElMismoModeloGeometrico lo reproducen por la entrada (8 nudos, 7 miembros, literales de nudos y del vector de peralte con tolerancias 1e-9 y 1e-12). Sin ajustar el golden ni la fuente (C-03 no se activa).",
+    "Pruebas que ya pasan en el RED (19 de 66) y por que: CualquierOtraFamilia...(Channel, Angle) y LasFamiliasW...(W, HssRectangular, S): el comportamiento actual ya lo cumple, protegen la lista de permiso contra regresion; LaBaseLosSeparadores...(4 filas) y TodoRolDefinidoHoyEstaClasificado: el esqueleto de Classify devuelve NotModelled; ElCodigoDeLaEstacionBloqueadaSeConservaYEsDistintoDelDeLaLinea: ambas constantes existen; LasPiezasClasificadasNoDanDiagnosticos: el esqueleto no emite; UnaComponenteEliminadaDentroDeLaToleranciaDaElResultadoDeSiempre y UnPeralteYaPerpendicularNoSeToca: el esqueleto de TryPerpendicular conserva el resultado actual; UnaExcepcionDeMemoriaInsuficienteNoSeConvierteEnResultado, LosArgumentosNulosDelConstructorSiguenLanzandoArgumentNullException y UnaFuenteQueRechazaNoAnadeLosCodigosDeModeloVacio: son conservaciones del comportamiento actual; UnaDescripcionConTodosLosSupuestosDeclaradosYSinApoyosDuplicadosEsValida: control positivo; LaEntradaRecibeUnaFuncionDeDecodificacionYNoNombraElAlmacenNiElSobre: el esqueleto ya tiene la firma y ninguna subcadena prohibida por la guarda. Las otras 47 fallan por aserciones (comportamiento nuevo ausente) o por NotImplementedException de la entrada.",
+    "Guardas de Cantilever: CantileverSourceGuardTests, CantileverRoundTwoSourceGuardTests, CantileverPluginSourceGuardTests, StructuralAnalysisSourceGuardTests, NamespaceFolderGuardTests y LengthUnitsAuthorityGuardTests sin cambios y en verde antes del RED (con el esqueleto), en el RED y en el GREEN. CantileverStructuralExport.cs no contiene RackProject, Document, Xrecord, ViewBuilder, Preview ni RackSystemKind; no referencia Persistence. GREEN no modifico ningun archivo de pruebas del RED (git diff --name-only RedSha..CurrentSha solo lista tres archivos de src).",
+    "Diseno de la entrada: comprueba nulos (ArgumentNullException), construye StructuralScope con los bytes (copia interna) y el kind canonico, lee las cargas, compara el kind persistido con una constante local sin distinguir mayusculas, aplica la funcion a una copia de los bytes (una modificacion de su arreglo no cambia la huella), convierte cualquier excepcion salvo OutOfMemoryException en Unavailable y un null en Invalid, y llama al constructor con la fuente Cantilever. Tras GREEN la suite completa de RackCad.Tests: 13703 pruebas en verde (green-full, TreeSha igual a CurrentSha); el filtro focal: 66 seleccionadas, 66 en verde."
+  ],
+  "UnexpectedFindings": [
+    "Un diseno con StationTopology nulo no hace fallar al resolver (la propiedad no admite null); el caso de excepcion del resolver se prueba con Bracing nulo, que lanza ArgumentNullException dentro de CantileverLineResolver.Resolve.",
+    "Con el resolver real, la estacion bloqueada nunca llega a la fuente como estacion: el resolver devuelve la linea bloqueada sin estaciones. La rama de SOURCE-STATION-BLOCKED queda como defensa y su codigo y sujeto se conservan."
+  ],
+  "KnownLimitations": [
+    "La cota de re-ortogonalizacion (A65-F1-10) no es alcanzable a traves de Idealise con el resolver real, porque CheckAxis ya rechaza una inclinacion fuera del plano mayor que 0.01 grados; se prueba directamente sobre TryPerpendicular (interna) y queda cableada en Idealise para miembros de columna y de brazo.",
+    "Una prueba de la rama SOURCE-STATION-BLOCKED por el resolver real no es posible por lo anterior; solo se prueba la constante.",
+    "La entrada no lee ni escribe el sobre ni el almacen de proyecto: el comando del Plugin (tarea posterior) debe aportar la funcion de decodificacion y los bytes exactos del texto Design del sobre."
+  ],
+  "Deviations": [
+    "Autodeclaracion: en una orden de shell (una busqueda con grep, antes de escribir el parche de Builder y fuente) se incluyo por error al inicio la invocacion python3 --version, con la salida descartada. Es una invocacion de interprete Python que la delegacion prohibe incluso para comprobar su existencia. No se uso su salida ni se invoco ningun interprete en ningun otro momento. Nota en artifacts/orchestration/I-65/F4-T2-SOURCE-ENTRY/2/R20261011T173811Z-0167/work/violation-note.txt.",
+    "Se uso un archivo de prueba temporal TempProbeScratch.cs en tests/RackCad.Tests/StructuralAnalysis/ para sondear el comportamiento del resolver y del almacen antes del RED; se borro antes del commit RED y no esta en ningun commit."
+  ],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "Verificacion del Controller sobre el SHA exacto de CurrentSha, con la corrida push del RED (job Core en failure) y la del GREEN (jobs requeridos en success), y revision de la autodeclaracion de Deviations.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

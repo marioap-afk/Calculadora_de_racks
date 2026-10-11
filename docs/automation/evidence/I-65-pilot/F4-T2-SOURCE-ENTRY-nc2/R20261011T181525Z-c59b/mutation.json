@@ -1,0 +1,17 @@
+{
+ "field": "delegation.AllowedWriteScope",
+ "excluded": "src/RackCad.Application/StructuralAnalysis/StructuralDiagnostic.cs",
+ "from": [
+  "src/RackCad.Application/Systems/Cantilever/CantileverStructuralModelSource.cs",
+  "src/RackCad.Application/Systems/Cantilever/CantileverStructuralExport.cs",
+  "src/RackCad.Application/StructuralAnalysis/StructuralModelBuilder.cs",
+  "src/RackCad.Application/StructuralAnalysis/StructuralDiagnostic.cs",
+  "tests/RackCad.Tests/StructuralAnalysis/"
+ ],
+ "to": [
+  "src/RackCad.Application/Systems/Cantilever/CantileverStructuralModelSource.cs",
+  "src/RackCad.Application/Systems/Cantilever/CantileverStructuralExport.cs",
+  "src/RackCad.Application/StructuralAnalysis/StructuralModelBuilder.cs",
+  "tests/RackCad.Tests/StructuralAnalysis/"
+ ]
+}

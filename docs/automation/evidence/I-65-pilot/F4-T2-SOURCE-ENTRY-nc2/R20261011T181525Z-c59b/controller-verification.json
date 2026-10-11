@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T2-SOURCE-ENTRY",
+  "RunId": "R20261011T181525Z-c59b",
+  "DelegationRunId": "R20261011T173529Z-98df",
+  "WorkRunId": "R20261011T173811Z-0167",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, TerminalEvent=subagent-completed, DeathConfirmed=true; Cession.StartUtc=2026-10-11T17:38:23Z. No separate Worker process awaited termination."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId F4-T2-SOURCE-ENTRY, Attempt 2, DelegationRunId R20261011T173529Z-98df and WorkRunId R20261011T173811Z-0167. Its SHA-256 56DAAD8064953573DA533881497FCCC0CA3C090AB02483118B154835DADC0E06 matches relay-record-work.json Outcome.OutputSha256. OutputWrittenUtc=2026-10-11T18:03:11Z, after Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Read UNIT_DOC and UNIT_CHANGE authorities from git at AuthorityRevision dc609362ee89446555316c724b514eacf4b4e41a, including I-65 proposal (Frozen: yes), F4 implementation §3, decisions §26 and ADR-0050. Read EXTERNAL authorities from MainSha bb0d5522e8411f66a51fdfb3f1f0d0514b737453, including AUTOMATION_PLAN §16, agent-execution README §8 and AGENTS.md. The recorded revision values match the delegation."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Compared delegation.json with gate-contract.json per AUTOMATION_PLAN §16.5: A3 allowed scope is a subset, A4 forbidden scope is a superset, and A5 invariants, stop IDs, authorities and RequiredTests are covered with the same ExpectRed and MinSelected. Planning relay records A1-A8 as pass. Required filter is FullyQualifiedName~RackCad.Tests.StructuralAnalysisSourceEntry, MinSelected=15, ExpectRed=true."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "Git rev-parse HEAD and origin/architecture/interop-analisis-estructural both returned 0070ae40c8cccf8ec9d384881f344c3fd5dd865f. Branch and worktree match the delegation. git merge-base --is-ancestor passed for BaseSha dc609362ee89446555316c724b514eacf4b4e41a and RedSha 2e92a0dfb49df6f0b637da0455d5bd84dce367f7 against CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "Used relay-record-work.json RemoteFacts as the sandbox did not rerun git ls-remote: LsRemoteSha=0070ae40c8cccf8ec9d384881f344c3fd5dd865f equals CurrentSha; OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453 equals MainSha. Entry records the same branch HEAD and remote SHA."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only BaseSha CurrentSha lists seven files. Six are covered by delegation AllowedWriteScope: CantileverStructuralModelSource.cs and CantileverStructuralExport.cs (exact entries), StructuralModelBuilder.cs (exact entry), and StructuralAnalysisCantileverBoundaryTests.cs, StructuralAnalysisSourceEntryHardeningTests.cs, StructuralAnalysisSourceEntryTests.cs (tests/RackCad.Tests/StructuralAnalysis/ prefix). src/RackCad.Application/StructuralAnalysis/StructuralDiagnostic.cs is not covered by any delegation entry. It is allowed by the broader contract, but scope is checked against the accepted delegation. This violates C-05."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --short --branch showed a clean worktree at the expected branch, both before and after inspection. git check-ignore -v on the input package matched .gitignore:3, artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts records CurrentRun 38161863583 as completed push on refs/heads/architecture/interop-analisis-estructural at CurrentSha, with all four required jobs successful. RedRun 38161386081 is a completed push for RedSha with the Core job failed. TRX copies: Current Core 13,703 passed, 0 failed; Red Core 13,654 passed, 49 failed."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Parsed the supplied TRX files. Required filter selected 66 tests (minimum 15): Red 19 passed/47 failed; Current 66 passed/0 failed. Red Core had 49 failures overall; filtered failures include assertion failures and exceptions, including NotImplementedException, with tests selected and no compile failure. Current Core: 13,703/13,703 passed. UI TRX: total 1,654, executed/passed 1,637, failed 0; the 17 Skip cases are recorded NotExecuted per the specified logger convention. RT from ChainBaseSha cd3fb69b92390ba737d0034dc19cace83398efd5 to RedSha contains StructuralAnalysisCantileverBoundaryTests.cs and the two new StructuralAnalysisSourceEntry*Tests.cs files; ChainRedFiles is that set because the delegation starts empty. RedSha..CurrentSha changes no tests. Coverage in the new tests, all passing in Current TRX: single decode, intact bytes and SourceFingerprint, repeat/whitespace behavior, case-insensitive envelope kind and rejection without decode; decoder/source/resolver exceptions as Unavailable, nulls as ArgumentNullException, null decode and constructor rejections; line versus station blocking; W/HSS-rectangular/S allowlist and undefined enum; 0.01-degree re-orthogonalization bound; synthetic unclassified piece, station inventory and REF-CANT-01 golden. The two permitted existing boundary assertions are the only existing test edits; Cantilever guards and other tests remain unchanged and pass in Core Full."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha showed both RED and GREEN commits carry Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json Worker.Trailer and the effective model."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requested claude-sonnet-5-5 with Provider effort high and required enforcement. relay-record-work.json records ModelEffective=claude-sonnet-5-5 and EffortEffective=high; no routing discrepancy."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction in worker-handoff.json against AUTOMATION_PLAN §16.10; no listed term matched."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes record 78 tool calls, 2 errors overcome, 0 denials, and no pending failed order. The single python3 --version invocation is corroborated as a process deviation; coordinator-dispositions-f4t2c2.md DEV-I65-F4-05 classifies it as nonblocking because no Python dependency was needed to compile or test. The diff adds no Python dependency or test invocation."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "TriggeredStopConditions": [
+    "C-05"
+  ],
+  "Findings": [
+    "src/RackCad.Application/StructuralAnalysis/StructuralDiagnostic.cs is in the diff but absent from the accepted delegation AllowedWriteScope; the delivery record incorrectly says all seven changed files are within that scope.",
+    "DEV-I65-F4-05 records one python3 --version invocation with discarded output; the supplied coordinator disposition classifies this as a nonblocking process deviation."
+  ],
+  "RecommendedNextAction": "Coordinator debe registrar la causa C-05 y aplicar la ruta de custodia correspondiente."
+}

@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T2-SOURCE-ENTRY",
+  "RunId": "R20261011T180928Z-cb1e",
+  "DelegationRunId": "R20261011T173529Z-98df",
+  "WorkRunId": "R20261011T173811Z-0167",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra Outcome.Kind=COMPLETED, TerminalEvent=subagent-completed, DeathConfirmed=true y Cession.SessionOperated=false; OutputWrittenUtc=2026-10-11T18:03:11Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json está presente en las entradas indicadas; TaskId, Attempt=2, DelegationRunId y RunId coinciden con la delegación y WorkRunId. OutputWrittenUtc es posterior a Cession.StartUtc. La discrepancia de CurrentSha se evalúa en Identity."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "AuthorityRevision dc609362ee89446555316c724b514eacf4b4e41a coincide con BaseSha y es descendiente de MainSha bb0d5522e8411f66a51fdfb3f1f0d0514b737453. merge-base(MainSha, AuthorityRevision)=MainSha; las siete rutas EXTERNAL enumeradas no difieren entre ese merge-base y AuthorityRevision; diff AuthorityRevision..BaseSha vacío. Proposal v3.1 en AuthorityRevision indica Frozen: yes; ADR-0050 y decisiones I-65 leídas allí."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparación de contrato y delegación: Authorities, AllowedWriteScope, ForbiddenWriteScope, Invariants, RequiredTests, ExpectedEvidence, StopConditions y RoutingEnforcement coinciden. relay-record-planning.json registra A1-A8=pass y aceptación de las colecciones de la delegación."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "Git confirma branch architecture/interop-analisis-estructural, HEAD=0070ae40c8cccf8ec9d384881f344c3fd5dd865f, refs/remotes/origin/architecture/interop-analisis-estructural=ese mismo SHA, BaseSha dc609362 ancestro de Current y RedSha 2e92a0df ancestro de Current. La entrega declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, que no coincide con HEAD ni con la punta remota registrada; contradicción de identidad."
+    },
+    "Remote": {
+      "Result": "fail",
+      "Evidence": "relay-record-work.json registra LsRemoteSha=0070ae40c8cccf8ec9d384881f344c3fd5dd865f y OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453; este último coincide con MainSha y git rev-parse origin/main. LsRemoteSha contradice el CurrentSha declarado en la entrega. No se ejecutó git ls-remote; se usaron RemoteFacts del registro y la referencia remota local."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha muestra siete archivos: StructuralDiagnostic.cs, StructuralModelBuilder.cs, CantileverStructuralExport.cs, CantileverStructuralModelSource.cs, StructuralAnalysisCantileverBoundaryTests.cs y las dos pruebas nuevas StructuralAnalysisSourceEntry*.cs. Cada ruta está cubierta por AllowedWriteScope de delegation.json; ninguna coincide con ForbiddenWriteScope. El alcance se cotejó archivo por archivo."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain no produjo salida. git check-ignore -v sobre el paquete de entradas devolvió .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun 38161863583 es push de refs/heads/architecture/interop-analisis-estructural, HeadSha=0070ae40c8cccf8ec9d384881f344c3fd5dd865f, completado; los cuatro jobs requeridos están success. No coincide con CurrentSha=deadbeef... declarado en la entrega, por lo que no acredita esa identidad. RedPart: RedRun 38161386081 es push del RedSha 2e92a0df..., Core job failure; core.trx registra 66 seleccionadas, 47 fallidas y 19 superadas."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX actual 38161863583/core.trx: 13703/13703 pasaron; filtro exacto RackCad.Tests.StructuralAnalysisSourceEntry seleccionó 66/66, todas pasaron. RED 38161386081/core.trx seleccionó 66, con 47 fallidas y 19 pasadas; fallos observados incluyen NotImplementedException, no error de compilación. RT (ChainBaseSha cd3fb69b..RedSha) contiene StructuralAnalysisCantileverBoundaryTests.cs y ambas StructuralAnalysisSourceEntry*Tests.cs; diff RedSha..CurrentSha -- tests/ está vacío, así que no toca RT. ChainRedFiles resultantes: esas tres rutas. Cobertura en las pruebas del diff y TRX actual: lectura única/bytes/fingerprint/kind/golden: LaFuncionDeDecodificacionRecibeExactamenteLosBytesDelDisenoUnaSolaVez, LaSourceFingerprintSeCalculaSobreLosBytesPersistidosIntactos, MismosBytesDanLaMismaHuellaYElMismoModelo, UnCambioSoloDeEspaciosEnLosBytesCambiaLaHuellaYConservaLaGeometria, OtroKindDelSobreDaElDiagnosticoExistenteSinLlamarALaFuncion y RefCant01PorLaEntradaEsValidaYReproduceLosLiteralesDelGoldenDeInv06; excepciones, null y rechazos: UnaExcepcionDeLaFuncionDeDecodificacionEsUnavailableSinModelo, UnaExcepcionDeLaFuenteEsUnavailableSinModelo, UnDisenoQueHaceFallarAlResolverEsUnavailableSinModelo, LosArgumentosNulosConservanArgumentNullException, UnModeloSinNudosEsInvalidConSuPropioCodigo, UnModeloSinMiembrosEsInvalidConSuPropioCodigo, DosApoyosEnElMismoNudoSonInvalidos y los casos de supuesto ausente; bloqueo de línea: ElBloqueoDeLaLineaCompletaTieneSuPropioCodigoYSuSujetoNombraLaLinea; permiso y geometría: LasFamiliasWHssRectangularYSDeLaListaDePermisoSonValidas, CualquierOtraFamiliaIncluidoUnValorNoDefinidoDelEnumEsUnsupported y UnaComponenteEliminadaMayorQueElSenoDeUnaCentesimaDeGradoSeRechaza; inventario: UnaPiezaSinteticaSinClasificarHaceLaEstacionUnsupportedConCodigoNuevo y LasPiezasDeRefCant01SeClasificanTodasYLaLineaSigueValida. TRX actual también muestra las guardas de Cantilever sin fallos. El diff modifica pruebas existentes solo en StructuralAnalysisCantileverBoundaryTests.cs, para el bloqueo de línea; StructuralAnalysisModelBuilderTests.cs y las guardas no cambian. El SHA declarado erróneo se registra en Identity."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "Worker.Trailer literal: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. git log --format=%B BaseSha..CurrentSha muestra ese trailer en ambos commits; coincide con el modelo efectivo claude-sonnet-5-5 del relay-record-work.json."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "La delegación solicita claude-sonnet-5-5 con effort high; Notes del registro de trabajo confirma modelo efectivo sonnet (claude-sonnet-5-5) y effort high. No hay discrepancia de modelo o esfuerzo."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Comprobados WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de la entrega contra todos los términos de AUTOMATION_PLAN §16.10; no se encontraron coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "Notes del registro de trabajo informa 78 llamadas, 2 errores de herramienta superados, 0 denegaciones y 0 avisos de límite. La invocación python3 --version está declarada y corroborada en Notes/transcripción; coordinator-dispositions-f4t2c2.md la clasifica DEV-I65-F4-05 como desviación de proceso no bloqueante, sin dependencia para compilar o probar."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "La entrega declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, mientras que Git, la referencia remota local y RemoteFacts.LsRemoteSha indican 0070ae40c8cccf8ec9d384881f344c3fd5dd865f. La corrida CI actual también corresponde a 0070ae40..., no al SHA declarado.",
+    "Los TRX y sus hashes coinciden con los valores de RemoteFacts.TestArtifacts: RED 44E4F0C5807DE32C38A78FF55AB7E2C5C3D68FD58DE30B0410787F5710226585; Core actual E3B203710C62208BB66EE60E57BA4B74D11B9C2B61AFA1096C9F02136FCEDC2F; UI C0E2C7AEA6FDB0D4869DD6309B794FFF98F461F4E7FA53EB2964F90FB4113FA6.",
+    "La disposición DEV-I65-F4-05 se contrastó con el registro y la entrega; la diferencia que impide verificar es el SHA declarado, no la desviación de Python."
+  ],
+  "RecommendedNextAction": "Corrige la identidad CurrentSha en la entrega y solicita una nueva verificación contra el SHA de Git confirmado."
+}

@@ -848,3 +848,53 @@ Custodia:
 | `F4-T2-SOURCE-ENTRY/R20261011T171727Z-2e11/worker-handoff.json` | `75924E79819E0121…` | `8387c6b1c3ed` |
 | `F4-T2-SOURCE-ENTRY/R20261011T171727Z-2e11/relay-record.json` | `A610515A9BEEA3B4…` | `423c49db9899` |
 | `F4-T2-SOURCE-ENTRY/R20261011T171727Z-2e11/analysis.md` | `98D8394B5DCA0F5C…` | (este commit) |
+
+## 39. F4-T2-SOURCE-ENTRY — corrección, verificación y controles (2026-10-11T18:22:59Z)
+
+Contrato reemitido sobre `AuthorityRevision` = `BaseSha` = `dc609362` (CD-I65-F4-11).
+
+| RunId | Fase | Participante | Resultado |
+|---|---|---|---|
+| `R20261011T173529Z-98df` | PLANNING (intento 2) | Codex `gpt-6-luna`/`high` | delegación de corrección válida; seis colecciones idénticas; A1-A8 en `pass`; `CorrectionOf` `R20261011T171727Z-2e11` (`StopCondition`); `claude-sonnet-5-5`/`high` |
+| `R20261011T173811Z-0167` | WORK (intento 2) | subagente `claude-sonnet-5-5`/`high` (128 mensajes) | `IMPLEMENTATION_COMPLETE`; RED `2e92a0df` (CI `38161386081` Core `failure`: 47 de 66 por aserción o excepción), GREEN `0070ae40` (CI `38161863583` 4/4 `success`); 24 min 2 s; 78 llamadas; una invocación `python3 --version` (DEV-I65-F4-05) |
+| `R20261011T180413Z-2afc` | VERIFICATION | Codex `gpt-6-luna`/`high` | **`EXECUTION_VERIFIED`/`NONE`**, 14/14 `pass`, `VerifiedSha` `0070ae40` |
+| `R20261011T180928Z-cb1e` | CONTROL nc1 | Codex `gpt-6-luna`/`high` | `EXECUTION_BLOCKED/STOP`, `FailureClass` = `Identity`: **oráculo cumplido** |
+| `R20261011T181525Z-c59b` | CONTROL nc2 | Codex `gpt-6-luna`/`high` | `EXECUTION_BLOCKED/STOP`, `FailureClass` = `Scope`: **oráculo cumplido** |
+| `R20261011T181926Z-2487` | CONTROL nc3 | Codex `gpt-6-luna`/`high` | `EXECUTION_REWORK_REQUIRED/REWORK`, `FailureClass` = `FreeText`: **oráculo cumplido** |
+
+- **Cambios:** `CantileverStructuralExport.cs` (entrada nueva con decodificador inyectado), `CantileverStructuralModelSource.cs`,
+  `StructuralModelBuilder.cs`, `StructuralDiagnostic.cs`; dos pruebas nuevas `StructuralAnalysisSourceEntry*`; `StructuralAnalysisCantileverBoundaryTests.cs`
+  editada solo para el código de línea bloqueada (A65-F1-11).
+- **Procesos:** `git.exe` efímeros de la aplicación de escritorio en salidas y entradas; releídos por PID: terminados (falsos P-02).
+- **Invocaciones de Codex en F4:** 13 de 28. `attempts` = 2.
+
+Custodia:
+
+| Archivo (bajo `I-65-pilot/`) | SHA-256 transitorio | Blob |
+|---|---|---|
+| `F4-T2-SOURCE-ENTRY/R20261011T173529Z-98df/gate-contract.json` | `DF44A35FFE4DC40F…` | `a199efcf8686` |
+| `F4-T2-SOURCE-ENTRY/R20261011T173529Z-98df/prompt.md` | `BD4B1CC6CDE24786…` | `6c8d2704a8d3` |
+| `F4-T2-SOURCE-ENTRY/R20261011T173529Z-98df/delegation.json` | `67B12D876D38B33E…` | `0ad7ea4f9301` |
+| `F4-T2-SOURCE-ENTRY/R20261011T173529Z-98df/acceptance.json` | `F63ED8E87F2A0609…` | `73d1783fc942` |
+| `F4-T2-SOURCE-ENTRY/R20261011T173529Z-98df/exactness.json` | `D0CBC2F19D9B1FBA…` | `de0f1687cb6b` (fin de línea normalizado por Git) |
+| `F4-T2-SOURCE-ENTRY/R20261011T173529Z-98df/relay-record.json` | `7787C6984BBAFBB7…` | `5fa857068ca6` |
+| `F4-T2-SOURCE-ENTRY/R20261011T173811Z-0167/prompt.md` | `917831B19ACCAB02…` | `fbcfbff094a9` |
+| `F4-T2-SOURCE-ENTRY/R20261011T173811Z-0167/worker-handoff.json` | `56DAAD8064953573…` | `5eb91439f088` (fin de línea normalizado por Git) |
+| `F4-T2-SOURCE-ENTRY/R20261011T173811Z-0167/relay-record.json` | `3B0D970E17108713…` | `9724b4dbf273` |
+| `F4-T2-SOURCE-ENTRY/R20261011T180413Z-2afc/prompt.md` | `642DFC7D37F247A4…` | `838a41cc8452` |
+| `F4-T2-SOURCE-ENTRY/R20261011T180413Z-2afc/controller-verification.json` | `D78400C6681BDA98…` | `e13c120f1c68` |
+| `F4-T2-SOURCE-ENTRY/R20261011T180413Z-2afc/relay-record.json` | `0A30FC9CA9F5872E…` | `efe3e8dcd843` |
+| `F4-T2-SOURCE-ENTRY/R20261011T180413Z-2afc/trx-summary.json` | `E07A6347386BFD05…` | `a4a63f7e9bae` (fin de línea normalizado por Git) |
+| `F4-T2-SOURCE-ENTRY/R20261011T180413Z-2afc/coordinator-dispositions-f4t2c2.md` | `F83739CF1584A271…` | `c7f5615f93db` |
+| `F4-T2-SOURCE-ENTRY-nc1/R20261011T180928Z-cb1e/prompt.md` | `745DA4186985F3E6…` | `c6aefc34ec92` |
+| `F4-T2-SOURCE-ENTRY-nc1/R20261011T180928Z-cb1e/mutation.json` | `8EB83DDDA73107D8…` | `043e1b3029a8` (fin de línea normalizado por Git) |
+| `F4-T2-SOURCE-ENTRY-nc1/R20261011T180928Z-cb1e/controller-verification.json` | `4CA00668728A649A…` | `27d40da20dbd` |
+| `F4-T2-SOURCE-ENTRY-nc1/R20261011T180928Z-cb1e/relay-record.json` | `3105CEB6D1A03C27…` | `8955184f9975` |
+| `F4-T2-SOURCE-ENTRY-nc2/R20261011T181525Z-c59b/prompt.md` | `25887BA9E3B5DF26…` | `fa420fa69f90` |
+| `F4-T2-SOURCE-ENTRY-nc2/R20261011T181525Z-c59b/mutation.json` | `FFA3861B3A47471E…` | `139f63f133b2` (fin de línea normalizado por Git) |
+| `F4-T2-SOURCE-ENTRY-nc2/R20261011T181525Z-c59b/controller-verification.json` | `58254696F543C77E…` | `0d2956cb9e0a` |
+| `F4-T2-SOURCE-ENTRY-nc2/R20261011T181525Z-c59b/relay-record.json` | `1FFD3E1594C13584…` | `ba718a290bd1` |
+| `F4-T2-SOURCE-ENTRY-nc3/R20261011T181926Z-2487/prompt.md` | `6CA0811064FAFF58…` | `739058debeac` |
+| `F4-T2-SOURCE-ENTRY-nc3/R20261011T181926Z-2487/mutation.json` | `DA1F3B8B5E00512B…` | `511067defe3d` (fin de línea normalizado por Git) |
+| `F4-T2-SOURCE-ENTRY-nc3/R20261011T181926Z-2487/controller-verification.json` | `AF3685CE4DDCC6CB…` | `a9ccbadd6d07` |
+| `F4-T2-SOURCE-ENTRY-nc3/R20261011T181926Z-2487/relay-record.json` | `72F660BB16953834…` | `e81b87748c1c` |
