@@ -1,9 +1,9 @@
 # ADR-0050: Interoperabilidad de análisis estructural — modelo neutral derivado y adaptadores de proveedor
 
-- **Estado:** propuesto (borrador de F0; no aceptado)
-- **Fecha:** 2026-10-10 (borrador); 2026-10-11 (borrador final tras la sonda P1)
-- **Decisores:** Owner del proyecto (acepta o rechaza; **pendiente**). Architect de I-65 (revisión pendiente sobre la versión
-  congelable). Coordinator de I-65 (redacción).
+- **Estado:** aceptado
+- **Fecha:** 2026-10-10 (borrador); 2026-10-11 (borrador final tras la sonda P1); 2026-10-11 (aceptado)
+- **Decisores:** Owner del proyecto (**acepta**, 2026-10-11). Architect de I-65 (**AGREED** sobre la Proposal V3.1 y conformidad de
+  este texto, blob `4258c286dd48c7e02b07ed7d434d9368d8596bc6`). Coordinator de I-65 (redacción y AGREED).
 - **Iniciativa relacionada:** I-65 — `architecture/interop-analisis-estructural`
   ([contrato](../initiatives/I-65-interop-analisis-estructural.md), [Discovery](../initiatives/I-65-discovery.md),
   [Proposal V3.1](../initiatives/I-65-proposal-v3.1.md)).
@@ -78,3 +78,10 @@ RAM Elements 2026 es una API Python que corre solo dentro del programa, con docu
   [ADR-0017](0017-validacion-cargas-diferida-ram-elements.md),
   [ADR-0021](0021-identidad-unidades-y-presentacion-de-secciones.md),
   [ADR-0040](0040-motor-expresiones-parametricas-y-guarda-de-complejidad-sintactica.md)
+
+## Notas posteriores
+
+- **2026-10-11 — Aceptado por el Owner** («Conditional GO for Freeze and F1», confirmación expresa del texto con la Decisión 4 corregida).
+  La aceptación recae sobre este registro tal como estaba en el blob `4258c286dd48c7e02b07ed7d434d9368d8596bc6` (commit `5253b031`); este
+  commit solo cambia estado, fecha, decisores y esta nota. Decisión versionada en
+  [`docs/automation/decisions/I-65.md`](../automation/decisions/I-65.md) §9. El índice de ADR se actualiza en el cierre de I-65.
