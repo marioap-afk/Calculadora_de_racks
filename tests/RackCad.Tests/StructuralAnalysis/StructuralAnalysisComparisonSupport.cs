@@ -40,7 +40,7 @@ namespace RackCad.Tests
             public double[] OffsetJ = { 0, 0, 0 };
             public double[] Factors = { 1, 1, 1, 1 };
             public StructuralReadbackAxialBehavior Axial = StructuralReadbackAxialBehavior.Normal;
-            public double SpringI;
+            public double SpringI = 0;
             public double SpringJ;
             public bool[] Releases = new bool[10];
         }

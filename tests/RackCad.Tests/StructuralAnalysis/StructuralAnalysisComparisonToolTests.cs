@@ -342,7 +342,7 @@ namespace RackCad.Tests
             Assert.Equal(RamToolExitCodes.Pass, Run("inject", "--package", source, "--fault", "wrong-version", "--out", target, "--embed-folder", EmbeddedInjectFolder).Code);
 
             Assert.Equal(
-                new[] { RamBuildPackage.LoadFileName, RamBuildPackage.ManifestFileName, RamBuildPackage.ScriptFileName },
+                new[] { RamBuildPackage.ManifestFileName, RamBuildPackage.ScriptFileName, RamBuildPackage.LoadFileName },
                 Directory.GetFiles(target).Select(Path.GetFileName).OrderBy(n => n, StringComparer.Ordinal).ToArray());
             Assert.Equal(
                 File.ReadAllBytes(Path.Combine(source, RamBuildPackage.LoadFileName)),
@@ -379,7 +379,7 @@ namespace RackCad.Tests
 
                 var changed = S.Differences(original.RootElement, injected.RootElement).OrderBy(p => p, StringComparer.Ordinal).ToList();
                 Assert.Equal(
-                    new[] { "$.faultInjection", "$.files[0].sha256", "$.packageFolder" },
+                    new[] { "$." + RamToolInjection.Marker, "$.files[0].sha256", "$.packageFolder" }.OrderBy(p => p, StringComparer.Ordinal).ToArray(),
                     changed.ToArray());
             }
         }
@@ -444,7 +444,7 @@ namespace RackCad.Tests
             Assert.Contains("<OutputType>Exe</OutputType>", project, StringComparison.Ordinal);
             Assert.Contains("<TargetFramework>net8.0</TargetFramework>", project, StringComparison.Ordinal);
             Assert.DoesNotContain("<PackageReference", project, StringComparison.Ordinal);
-            Assert.Equal(1, Regex.Matches(project, "<ProjectReference ").Count);
+            Assert.Single(Regex.Matches(project, "<ProjectReference "));
             Assert.Contains("RackCad.Application.csproj", project, StringComparison.Ordinal);
         }
 
