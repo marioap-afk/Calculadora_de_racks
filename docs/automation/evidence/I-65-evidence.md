@@ -262,3 +262,74 @@ condiciones:
   reconfirmado por el Architect en `dc3afdda` y `5253b031`.
 - F1 IMPLEMENTATION AUTHORIZATION = **YES**, solo para el alcance de F1 de la Proposal V3.1 (§6 fila F1), con el protocolo I-61; sin F3-F6
   ni interfaz gráfica; termina al concluir F1 (orden del Owner, decisiones §9).
+
+## 22. F1-T1-NEUTRAL-MODEL — ejecución delegada (2026-10-11T04:21:27Z)
+
+Primera tarea de F1 (CD-I65-F1-01), protocolo de AUTOMATION_PLAN §16. Contrato de gate emitido por el Coordinator sobre
+`AuthorityRevision` = `BaseSha` = `9d0c6619` (decisiones §10-§11); `MainSha` `bb0d5522` sin cambio durante toda la tarea.
+
+| RunId | Fase | Participante | Resultado |
+|---|---|---|---|
+| `R20261011T032206Z-7516` | PLANNING | Codex `gpt-6-luna`/`high` (efectivo) | paquete válido; seis colecciones idénticas al contrato; A1-A8 en `pass`; celda `claude-sonnet-5-5`/`high` (Deep), ROUTINE_IMPLEMENTATION |
+| `R20261011T032626Z-7e5a` | CONTROL nc4 | sin invocar | `REJECTED_BEFORE_INVOCATION`: A3 `fail`, el resto igual que la real: **oráculo cumplido** |
+| `R20261011T032758Z-3556` | WORK | subagente `claude-sonnet-5-5`/`high` (efectivo, 143 mensajes) | `IMPLEMENTATION_COMPLETE`; RED `172d53fc`, GREEN `1692804a`; 29 min 36 s; 87 llamadas |
+| `R20261011T040119Z-5751` | VERIFICATION | Codex `gpt-6-luna`/`high` | **`EXECUTION_VERIFIED`/`NONE`**, 14/14 `pass`, `VerifiedSha` `1692804a3e81a607d81d924c9345f02fe7f9a41f`; coherencia README §8 = True |
+| `R20261011T040859Z-a7a4` | CONTROL nc1 | Codex `gpt-6-luna`/`high` | `Identity` `fail`, `EXECUTION_BLOCKED/STOP`, anteriores iguales: **oráculo cumplido** |
+| `R20261011T041233Z-ccd3` | CONTROL nc2 | Codex `gpt-6-luna`/`high` | `EXECUTION_VERIFIED`, `Scope` `pass`: **oráculo NO cumplido** (DEV-I65-F1-01) |
+| `R20261011T041658Z-4f9c` | CONTROL nc3 | Codex `gpt-6-luna`/`high` | `FreeText` `fail`, `EXECUTION_REWORK_REQUIRED/REWORK`, anteriores y posteriores iguales: **oráculo cumplido** |
+
+- **Commits del Worker:** RED `172d53fcde34e6b7468923b974d017bed73729a2` (esqueleto que compila + 9 archivos de prueba) y GREEN
+  `1692804a3e81a607d81d924c9345f02fe7f9a41f`; ambos con `Co-Authored-By: Claude Sonnet 5.5`, push sin force. 24 archivos: 12 nuevos en
+  `src/RackCad.Application/StructuralAnalysis/`, `Units/MassUnits.cs`, `Units/ForceUnits.cs`, `StructuralSectionUnits.cs` (una línea: el
+  literal pasa a `MassUnits.KilogramsPerPound`) y 9 pruebas nuevas en `tests/RackCad.Tests/StructuralAnalysis/`.
+- **CI push:** RED `38109425352` = `failure` (job Core en `failure`, Plugin `skipped`); GREEN `38109857453` = `success` con los cuatro jobs.
+  TRX Core GREEN 12866/12866 y filtro `FullyQualifiedName~RackCad.Tests.StructuralAnalysis` 271/271; TRX Core RED: 167 fallidas, todas del
+  filtro (271 seleccionadas, 104 superadas: autopruebas de guardas y comprobaciones estructurales), sin errores de compilación; TRX UI 1654
+  total / 1637 ejecutadas (17 `Skip`, convención del logger).
+- **ChainRedFiles** (acreditado por el Controller): los 9 archivos de `tests/RackCad.Tests/StructuralAnalysis/`; `git diff --name-only
+  RedSha CurrentSha -- tests/` vacío.
+- **Comprobaciones mecánicas de la sesión:** alcance del diff `9d0c6619..1692804a` PASS (24/24 permitidos, 0 prohibidos); pruebas solo
+  altas; prompt del Worker = `prompt.md`; trailers; términos de gate ausentes en la entrega y en la verificación (control manual 16.10).
+- **Relevos:** `config.toml` `F909F480…8113` sin cambio en las seis invocaciones; ningún participante ajeno. Falsos P-02 releídos por PID
+  (lección de I-61): dos `bash.exe` (entrada del Worker, creados tras el fin de la cesión) y dos `git.exe` lanzados por el servicio node del
+  escritorio (salida de nc1, antes de invocar); todos desaparecidos a los 2 s.
+- **Errores del Worker superados (señal Denials):** dos heredoc de Bash mal cerrados y un bloqueo del arnés a una orden de PowerShell cuya
+  cadena XPath se leyó como ruta protegida; sin denegaciones de permisos ni avisos de límite.
+- **DEV-I65-F1-01 (nc2 no superado):** el Controller comparó el diff con el `AllowedWriteScope` del **contrato** y no con el de la
+  delegación mutada, que excluía `StructuralArea.cs`. Mismo modo de fallo que DEV-G2-01 de I-63. La comprobación mecánica de la sesión da
+  `Scope` = `pass` para la delegación real y `fail` para la de nc2 (`session-scope-check.json`). Salida válida: no se repite. No bloquea.
+- **Invocaciones de Codex en F1:** 5 de 14 (CD-I65-F1-02). `attempts` = 0.
+
+Custodia (blob = identidad duradera; SHA-256 = procedencia del transitorio):
+
+| Archivo (bajo `I-65-pilot/`) | SHA-256 transitorio | Blob |
+|---|---|---|
+| `F1-T1-NEUTRAL-MODEL/R20261011T032206Z-7516/gate-contract.json` | `842D550BBE12276D…` | `9801b35bfcbc` |
+| `F1-T1-NEUTRAL-MODEL/R20261011T032206Z-7516/prompt.md` | `53C2255D77E95743…` | `8088a618e00d` |
+| `F1-T1-NEUTRAL-MODEL/R20261011T032206Z-7516/delegation.json` | `8771F69F333ACA41…` | `68ab3d4ce6c7` |
+| `F1-T1-NEUTRAL-MODEL/R20261011T032206Z-7516/acceptance.json` | `F63ED8E87F2A0609…` | `73d1783fc942` |
+| `F1-T1-NEUTRAL-MODEL/R20261011T032206Z-7516/exactness.json` | `D0CBC2F19D9B1FBA…` | `de0f1687cb6b` (fin de línea normalizado por Git) |
+| `F1-T1-NEUTRAL-MODEL/R20261011T032206Z-7516/relay-record.json` | `BC3D7B09349CE7EF…` | `0105e3117f30` |
+| `F1-T1-NEUTRAL-MODEL/R20261011T032758Z-3556/prompt.md` | `BBA8F55FB09C94A1…` | `a1d17dd03c49` |
+| `F1-T1-NEUTRAL-MODEL/R20261011T032758Z-3556/worker-handoff.json` | `DF5268CA0CFB5629…` | `08f7f8bbcfc4` (fin de línea normalizado por Git) |
+| `F1-T1-NEUTRAL-MODEL/R20261011T032758Z-3556/relay-record.json` | `184317239898FD0B…` | `1532d80c925a` |
+| `F1-T1-NEUTRAL-MODEL/R20261011T040119Z-5751/prompt.md` | `DD28B2B51F15342C…` | `94dd86227770` |
+| `F1-T1-NEUTRAL-MODEL/R20261011T040119Z-5751/controller-verification.json` | `3BD55D929D7949CE…` | `f95821606cab` |
+| `F1-T1-NEUTRAL-MODEL/R20261011T040119Z-5751/relay-record.json` | `355FE6246CD0C9FD…` | `7ee108bd85ae` |
+| `F1-T1-NEUTRAL-MODEL/R20261011T040119Z-5751/trx-summary.json` | `9D1538663423E2ED…` | `be58c3906db2` (fin de línea normalizado por Git) |
+| `F1-T1-NEUTRAL-MODEL-nc1/R20261011T040859Z-a7a4/prompt.md` | `B9D5FEE2FF600BEA…` | `32a7aef16a17` |
+| `F1-T1-NEUTRAL-MODEL-nc1/R20261011T040859Z-a7a4/mutation.json` | `84E7354BBC662E1D…` | `8ceda9b8e61f` (fin de línea normalizado por Git) |
+| `F1-T1-NEUTRAL-MODEL-nc1/R20261011T040859Z-a7a4/controller-verification.json` | `58DB1A4BF9F14AED…` | `20e4b967e3fd` |
+| `F1-T1-NEUTRAL-MODEL-nc1/R20261011T040859Z-a7a4/relay-record.json` | `F72E7AC6155654CA…` | `3c44323edf7d` |
+| `F1-T1-NEUTRAL-MODEL-nc2/R20261011T041233Z-ccd3/prompt.md` | `9D57E48C8CB61E40…` | `be624d3c9039` |
+| `F1-T1-NEUTRAL-MODEL-nc2/R20261011T041233Z-ccd3/mutation.json` | `68D9C1D0E7359368…` | `2b29ce69159e` (fin de línea normalizado por Git) |
+| `F1-T1-NEUTRAL-MODEL-nc2/R20261011T041233Z-ccd3/controller-verification.json` | `CC32BCFAA00982C5…` | `a597c98f8f76` |
+| `F1-T1-NEUTRAL-MODEL-nc2/R20261011T041233Z-ccd3/relay-record.json` | `FFA157AF646A569A…` | `55e49f6259ac` |
+| `F1-T1-NEUTRAL-MODEL-nc2/R20261011T041233Z-ccd3/session-scope-check.json` | `161935292CE2DEE5…` | `1c1db3aeea81` (fin de línea normalizado por Git) |
+| `F1-T1-NEUTRAL-MODEL-nc3/R20261011T041658Z-4f9c/prompt.md` | `4789658A8E18530E…` | `7b22654dc7b8` |
+| `F1-T1-NEUTRAL-MODEL-nc3/R20261011T041658Z-4f9c/mutation.json` | `DA1F3B8B5E00512B…` | `511067defe3d` (fin de línea normalizado por Git) |
+| `F1-T1-NEUTRAL-MODEL-nc3/R20261011T041658Z-4f9c/controller-verification.json` | `C727711DD24D408F…` | `b52fce073731` |
+| `F1-T1-NEUTRAL-MODEL-nc3/R20261011T041658Z-4f9c/relay-record.json` | `D8E4C36613BC46FB…` | `9da93976c24b` |
+| `F1-T1-NEUTRAL-MODEL-nc4/R20261011T032626Z-7e5a/delegation.json` | `0F4B785DAF2BB1B6…` | `e99f338d12d7` |
+| `F1-T1-NEUTRAL-MODEL-nc4/R20261011T032626Z-7e5a/acceptance.json` | `3E2CF552A67987E0…` | `2df92c858dd3` |
+| `F1-T1-NEUTRAL-MODEL-nc4/R20261011T032626Z-7e5a/relay-record.json` | `BC51513B25CD54B3…` | `338e397c3007` |

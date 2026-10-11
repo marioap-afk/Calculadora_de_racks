@@ -7,15 +7,15 @@ automation_state:
   state: in-progress
   gate: F1
   attempts: 0
-  next_action: F1-T1-NEUTRAL-MODEL — contrato de gate emitido sobre este commit; planificación del Controller, nc4 y aceptación A1-A8, Worker RED->GREEN, verificación y controles nc1-nc3; luego F1-T2-CANTILEVER-SOURCE.
-  last_evidence_commit: a9d7080be3046e53b41d83af1bfece0be29871f3
+  next_action: F1-T2-CANTILEVER-SOURCE — golden de REF-CANT-01 derivado a mano por el Coordinator, contrato de gate, planificación, nc4 y aceptación, Worker RED->GREEN, verificación y controles; después, revisión de conformidad de F1 e informe al Owner.
+  last_evidence_commit: 1692804a3e81a607d81d924c9345f02fe7f9a41f
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-interop-analisis-estructural
 execution_chain:
   gate: F1
-  next_role: Controller (planificación de F1-T1-NEUTRAL-MODEL)
+  next_role: Coordinator (contrato de F1-T2-CANTILEVER-SOURCE)
   implementation_authorization: YES (solo F1 de la Proposal V3.1; termina al concluir F1)
   owner_decisions_open: [confirmación definitiva de Q-O1 y Q-O7 (tras OV-I65-01), autorización de cada gate posterior a F1, verificación de filas de mapeo por un ingeniero]
   not_authorized: [F3, F4, F5, F6, interfaz gráfica, Plugin, cambios fuera del alcance de F1, nuevas corridas en RAM Elements]

@@ -1,0 +1,329 @@
+{
+  "Schema": "rackcad-gate-contract/v1",
+  "Unit": "I-65",
+  "Gate": "F1",
+  "TaskId": "F1-T1-NEUTRAL-MODEL",
+  "Objective": "F1 de I-65, primera de dos tareas (decisiones I-65 §10, CD-I65-F1-01): la fundacion NEUTRAL del Structural Analysis Model segun la Proposal V3.1 congelada y las concreciones CD-I65-F1-04..10 (decisiones I-65 §11). Incluye: propietarios unicos nuevos de la masa de libra (src/RackCad.Application/Units/MassUnits.cs) y de la gravedad estandar con la tabla cerrada de unidades de fuerza (src/RackCad.Application/Units/ForceUnits.cs); StructuralSectionUnits consumiendo MassUnits con resultado identico bit a bit y API sin cambio; en src/RackCad.Application/StructuralAnalysis/ (fuera de Providers/): cantidades tipadas, el modelo neutral de D-02, el resultado y los diagnosticos de D-08, el lector estricto del archivo de cargas rackcad-structural-loads/v1 (D-10b), el perfil explicito de asignacion de material (D-07), la resolucion de secciones contra el catalogo neutral, la capacidad neutral BuildStructuralModel de D-13 con la fuente como abstraccion neutral (implementada en F1-T1 solo por un doble de prueba), la forma canonica y las huellas de D-12; y las guardas G1, G2, G3, G4, INV-11, INV-14 e INV-16. Pruebas nuevas en archivos NUEVOS de tests/RackCad.Tests/StructuralAnalysis/ con namespace RackCad.Tests y clases cuyo nombre empieza por StructuralAnalysis (y no por StructuralAnalysisCantilever). NO incluye: la fuente Cantilever ni nada en Systems/ (F1-T2-CANTILEVER-SOURCE), el adaptador o paquete de RAM Elements y la carpeta Providers/ (F3), el comando del Plugin, el volcado y el comparador (F4), cargas de OV (F5), analisis (F6), UI ni escritura de archivos.",
+  "AuthorityRevision": "9d0c661968542350929af267ada689b943898206",
+  "MainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "Authorities": [
+    {
+      "Path": "docs/initiatives/I-65-proposal-v3.1.md",
+      "Section": "archivo completo (Frozen: yes); en especial D-01, D-02, D-03, D-06, D-07, D-08, D-10, D-10b, D-12, D-13 y §3 (INV-01, 02, 03, 04, 05, 11, 14, 15 y 16)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/decisions/I-65.md",
+      "Section": "archivo completo (en especial §5, §9, §10 y §11)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-65-interop-analisis-estructural.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-65-discovery.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/decisions/I-65-owner-decision-freeze-f1.original.txt",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/adr/0050-interoperabilidad-analisis-estructural.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "AGENTS.md",
+      "Section": "## Convenciones arquitectonicas (obligatorias)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "Section": "## 7. Gates funcionales",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "## 16. Ejecución delegada bajo orden del Coordinator",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "## 1. Clases de tarea y ## 4. Algoritmo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+      "Section": "## G. Delegación de ejecución",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0005-estrategia-de-unidades.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0017-validacion-cargas-diferida-ram-elements.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0021-identidad-unidades-y-presentacion-de-secciones.md",
+      "Section": "archivo completo (en especial el punto 10 de la decision)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0040-motor-expresiones-parametricas-y-guarda-de-complejidad-sintactica.md",
+      "Section": "archivo completo (en especial D3)",
+      "Class": "EXTERNAL"
+    }
+  ],
+  "AllowedWriteScope": [
+    "src/RackCad.Application/StructuralAnalysis/",
+    "src/RackCad.Application/Units/MassUnits.cs",
+    "src/RackCad.Application/Units/ForceUnits.cs",
+    "src/RackCad.Application/StructuralSections/StructuralSectionUnits.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/"
+  ],
+  "ForbiddenWriteScope": [
+    "src/RackCad.Application/StructuralAnalysis/Providers/",
+    "src/RackCad.Application/Systems/",
+    "src/RackCad.Application/Units/LengthUnits.cs",
+    "src/RackCad.Application/RackCad.Application.csproj",
+    "src/RackCad.Application/Persistence/",
+    "src/RackCad.Application/Expressions/",
+    "src/RackCad.Application/ComputedParameters/",
+    "src/RackCad.Application/Catalogs/",
+    "src/RackCad.Application/Bom/",
+    "src/RackCad.Application/Geometry/",
+    "src/RackCad.Application/Workspace/",
+    "src/RackCad.Domain/",
+    "src/RackCad.Plugin/",
+    "src/RackCad.UI/",
+    "tests/RackCad.UI.Tests/",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "tests/RackCad.Tests/LengthUnitsAuthorityGuardTests.cs",
+    "tests/RackCad.Tests/NamespaceFolderGuardTests.cs",
+    "tests/RackCad.Tests/CantileverSourceGuardTests.cs",
+    "tests/RackCad.Tests/StructuralSectionModelTests.cs",
+    "tests/RackCad.Tests/ComputedParameters/",
+    "tests/RackCad.Tests/Fixtures/",
+    "tests/RackCad.Tests/Golden/",
+    "assets/",
+    "deploy/",
+    "eng/",
+    "tools/",
+    ".github/",
+    "RackCad.sln",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json",
+    "NuGet.Config",
+    ".gitattributes",
+    ".gitignore",
+    ".editorconfig",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "README.md",
+    "docs/"
+  ],
+  "Invariants": [
+    "INV-01 (G1, G2 y G3): guardas de fuente sobre el arbol real, con autoprueba sobre codigo sintetico. G1: en src/RackCad.Domain/, src/RackCad.Application/, src/RackCad.UI/ y src/RackCad.Plugin/ salvo src/RackCad.Application/StructuralAnalysis/Providers/RamElements/, ningun token RamElements, ramelements ni RAM Elements ni la expresion \\bRam[A-Z] (sensibles a mayusculas); lista de permiso de ruta exacta VACIA en F1 (el archivo de comando de D-13 la fija en F4); tests/ y tools/ fuera de alcance. G2: StructuralAnalysis fuera de Providers no referencia RackCad.Application.Systems ni Providers; Systems no referencia Providers. G3: src/RackCad.Domain/ no referencia StructuralAnalysis. Un archivo neutral sintetico con RamElements o con RamX hace fallar G1",
+    "INV-02 y D-03 (G4): cantidades tipadas por dimension (longitud en pulgadas, fuerza en libras-fuerza, area en in2 y momento de inercia en in4) sin constructor publico desde double sin unidad y sin conversiones implicitas ni explicitas desde double; en src/RackCad.Application/StructuralAnalysis/ (codigo sin comentarios) ningun literal 25.4, 645.16, 0.45359237, 9.80665, 4.4482216152605 ni 0.3048 ni nombres de rol de conversion de longitud; LengthUnitsAuthorityGuardTests sigue vigente y sin cambios; un 25.4 sintetico en StructuralAnalysis hace fallar G4",
+    "INV-03 y D-03 (exactitud): la frontera de entrada convierte a lbf en un solo punto con la tabla cerrada N, kN, lbf, kip y kgf de ForceUnits (lbf = 1 lb por gn; kgf = 1 kg por gn; kip = 1000 lbf; kN = 1000 N) y las longitudes por LengthUnits; igualdad exacta donde la aritmetica es exacta (una multiplicacion por un factor propietario; escalas x25.4, x1000 y lbf<->N comprobadas con el mismo operador); idas y vueltas con tolerancia relativa <= 1e-12; pruebas para in<->mm, lbf<->N, kgf<->N y kip<->lbf",
+    "INV-15 y D-10b (archivo de cargas rackcad-structural-loads/v1 con la forma exacta de CD-I65-F1-05): unidad ausente, desconocida o ambigua (lb, LBF, kips) -> Invalid; fraccion fuera de [0, 1], direccion distinta de -Z, positionBasis distinto de physicalArmFraction, magnitud no finita o <= 0, propiedad desconocida o duplicada, tipo erroneo (numero como texto), lista vacia, id vacio o repetido, o schema distinto -> Invalid; nunca se acepta un numero sin unidad; el archivo entra en la huella por el SHA-256 de sus bytes",
+    "INV-16: propietario unico de la masa de libra (src/RackCad.Application/Units/MassUnits.cs, 0.45359237 kg) y de la gravedad estandar (src/RackCad.Application/Units/ForceUnits.cs, 9.80665 m/s2); StructuralSectionUnits consume MassUnits y PoundsPerFootToKilogramsPerMeter y todas sus conversiones quedan identicas bit a bit (prueba con BitConverter.DoubleToInt64Bits frente al valor anterior) con su API publica sin cambios; guarda sobre todo src/ (codigo sin comentarios) que prohibe 0.45359237 fuera de MassUnits.cs y 9.80665 fuera de ForceUnits.cs, con autoprueba; un segundo literal en cualquier archivo de src/ hace fallar la guarda",
+    "D-02 y D-08 (modelo neutral y resultado): StructuralModel inmutable, derivado y no persistido con Metadata (SourceRef con RackId, Kind, indice de estacion y SourceFingerprint; version del generador; SHA-256 del archivo de cargas, de las filas de mapeo usadas y del conjunto de supuestos), nodos (id neutral determinista y posicion), miembros (nudo I, nudo J, SectionRef, MaterialRef, vector unitario del eje de peralte en global perpendicular al eje del miembro, liberaciones por extremo, rol Column o Arm y pieza de origen), secciones (StructuralSectionId con A, Ix, Iy y J informativas), materiales (StructuralMaterialId), apoyos (6 banderas globales e id de supuesto), liberaciones (10 banderas locales e id de supuesto; cualquier liberacion verdadera -> Unsupported en V1), un unico caso REF1 de categoria neutral Other sin peso propio, cargas puntuales en miembro en direccion global -Z con magnitud de fuerza tipada y posicion como distancia absoluta desde el nudo I dentro de [0, longitud del miembro], supuestos AnalysisAssumption(id, enunciado) y diagnosticos; StructuralExportOutcome = Valid | Unsupported | Invalid | Unavailable con la precedencia de CD-I65-F1-04 (Unavailable > Invalid > Unsupported > Valid); cualquier diagnostico bloqueante -> sin modelo; cada diagnostico con codigo estable, severidad, resultado implicado y sujeto",
+    "D-06, D-07 y orden del Owner (secciones y materiales, CD-I65-F1-06 y CD-I65-F1-07): el material llega SOLO por el perfil explicito de filas verificadas (StructuralSectionId -> StructuralMaterialId, verificador y fecha); fila ausente o sin verificar -> Unsupported; nunca se infiere de MaterialGrade, de la familia, de la designacion ni del nombre del perfil (StructuralAnalysis no referencia MaterialGrade; prueba: seccion con MaterialGrade en el catalogo y sin fila -> Unsupported; con fila, el material es el de la fila aunque MaterialGrade diga otra cosa); el producto no contiene filas en F1 y las filas de prueba se declaran fixtures, no verificacion de ingenieria; StructuralSectionId ausente del catalogo -> Invalid; familia C o L -> Unsupported (IDL-09); fila de catalogo con sistema nativo distinto de US_CUSTOMARY -> Unsupported (D-03); A, Ix, Iy y J ausentes se representan como ausencia explicita, nunca 0, con diagnostico no bloqueante",
+    "INV-05 (partes neutrales de F1): mapeo ausente, familia C o L y mas de 24 cargas puntuales en un miembro (25 -> Unsupported); carga sin unidad -> Invalid; ningun resultado distinto de Valid expone un modelo ni parcial ni completo",
+    "INV-04 y D-12 (huellas, CD-I65-F1-10): SourceFingerprint = SHA-256 determinista de los bytes del JSON Design tal como estan persistidos + RackId + Kind + indice de estacion, calculada desde valores primitivos; forma canonica del modelo con orden ordinal por id, cultura invariante, dobles de ida y vuelta, sin marcas de tiempo, UTF-8 sin BOM y LF; AnalysisInputFingerprint = SHA-256 del modelo canonico + hash del archivo de cargas + hash de las filas de mapeo verificadas + hash de los supuestos + version del adaptador recibida como entrada; mismo diseno y mismas entradas -> mismo JSON y misma huella; cambiar geometria, seccion, material, supuesto, fila de mapeo, archivo de cargas o version del adaptador -> huella distinta (una huella constante pasa la estabilidad y falla la sensibilidad)",
+    "D-13 (capacidad neutral): BuildStructuralModel(fuente, alcance, cargas, perfiles) -> resultado en Application pura, con la fuente como abstraccion neutral implementada en F1-T1 solo por un doble de prueba (la fuente Cantilever es F1-T2-CANTILEVER-SOURCE); sin Plugin, UI, eventos de AutoCAD ni escritura de archivos; Analyze y ReadResults no existen",
+    "INV-11 (ADR-0017): guarda sobre todo src/ (codigo sin comentarios, sensible a mayusculas) que prohibe member_design, MemberDesign, Utilization, InteractionRatio, DesignRatio, DemandCapacity, CodeCheck y UnityCheck, con autoprueba; RackCad no calcula utilizacion, ratios ni veredictos de diseno",
+    "INV-14: guarda sobre tests/RackCad.Tests/ salvo el archivo de la propia guarda (codigo sin comentarios): sin el token ramelements (sensible a mayusculas) ni python ni Bentley (sin distinguir mayusculas), con autoprueba; ninguna prueba Core invoca un interprete ni lee la instalacion de RAM Elements",
+    "Supuestos e idealizaciones (Owner Q-O3 y ADR-0050 decision 5): ningun texto, identificador, diagnostico ni nombre del modelo afirma validacion estructural; los supuestos son hipotesis explicitas para la equivalencia de transferencia",
+    "Forma del cambio: pruebas nuevas en archivos NUEVOS de tests/RackCad.Tests/StructuralAnalysis/, namespace RackCad.Tests (guarda de I-23) y clases cuyo nombre empieza por StructuralAnalysis y no por StructuralAnalysisCantilever; producto nuevo con namespace igual a la carpeta y declaracion de namespace por bloque; ninguna prueba existente se modifica, borra ni renombra; Domain, Systems, Plugin, UI, LengthUnits.cs y los .csproj no cambian; ADR-0005: la pulgada sigue siendo la unidad interna y nada convierte el dibujo; solo BCL, sin paquetes nuevos"
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.StructuralAnalysis",
+      "MinSelected": 40,
+      "ExpectRed": true
+    }
+  ],
+  "ExpectedEvidence": [
+    "Commit RED: esqueleto de producto que compila (tipos y firmas con cuerpos que lanzan NotImplementedException o devuelven valores neutros) y pruebas focales de INV-01, 02, 03, 04, 05 (partes neutrales), 11, 14, 15 y 16 y de D-02, D-06, D-07, D-08, D-10b, D-12 y D-13 que fallan por asercion o excepcion (sin errores de compilacion), con seleccion >= 40; push propio antes del GREEN",
+    "Commit GREEN: implementacion en el alcance permitido sin modificar ningun archivo de pruebas del RED ni pruebas existentes; suite Core completa en verde, incluidas StructuralSectionModelTests, LengthUnitsAuthorityGuardTests, NamespaceFolderGuardTests y CantileverSourceGuardTests",
+    "Comprobacion mecanica antes de aceptar EXECUTION_VERIFIED: git diff --name-only BaseSha..CurrentSha contenido en AllowedWriteScope y sin interseccion con ForbiddenWriteScope; git diff --name-status BaseSha..CurrentSha -- tests/ solo con altas bajo tests/RackCad.Tests/StructuralAnalysis/",
+    "worker-handoff.json conforme al esquema, con los SHA de RED y GREEN, el trailer real del Worker y los conteos de la seleccion del filtro en RED y GREEN",
+    "Push de la rama sin force; corrida push del SHA exacto de GREEN con los cuatro jobs requeridos en success y corrida push del RED con el job Core en failure"
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive/irreversible action not authorized"
+    },
+    {
+      "Id": "S-06",
+      "Text": "missing credentials/permissions"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch/worktree ownership conflict"
+    },
+    {
+      "Id": "S-09",
+      "Text": "dependency not integrated"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify authority revision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "main movement invalidates exact-SHA assumptions"
+    },
+    {
+      "Id": "S-14",
+      "Text": "initiative contract explicitly says STOP"
+    },
+    {
+      "Id": "P-01",
+      "Text": "Cambio del hash de config.toml"
+    },
+    {
+      "Id": "P-02",
+      "Text": "Participante vivo ajeno, proceso no atribuible o mas de una delegacion abierta"
+    },
+    {
+      "Id": "P-03",
+      "Text": "Delegacion fuera del contrato"
+    },
+    {
+      "Id": "P-04",
+      "Text": "Tope de BLOCKED alcanzado"
+    },
+    {
+      "Id": "P-05",
+      "Text": "Invocacion distinta del paquete aceptado"
+    },
+    {
+      "Id": "P-06",
+      "Text": "Aviso de limite de uso o de creditos"
+    },
+    {
+      "Id": "P-07",
+      "Text": "Una invocacion excederia el tope de invocaciones"
+    },
+    {
+      "Id": "P-08",
+      "Text": "La sesion opero durante una cesion"
+    },
+    {
+      "Id": "C-01",
+      "Text": "Hace falta tocar Domain, Systems, Plugin, UI, Providers, LengthUnits.cs, cualquier .csproj u otro archivo de StructuralSections distinto de StructuralSectionUnits.cs, o modificar, borrar o renombrar una prueba existente"
+    },
+    {
+      "Id": "C-02",
+      "Text": "D-01, D-02, D-03, D-06, D-07, D-08, D-10b, D-12, D-13 o una concrecion CD-I65-F1-04..10 no puede implementarse tal como esta congelada o decidida (requiere A-n o Architect)"
+    },
+    {
+      "Id": "C-03",
+      "Text": "StructuralSectionUnits no puede consumir el propietario nuevo con resultado identico bit a bit o sin cambiar su API publica"
+    },
+    {
+      "Id": "C-04",
+      "Text": "Necesidad de leer o consumir codigo no integrado de I-64, I-62 o I-52, o de tocar superficies de ID30"
+    },
+    {
+      "Id": "C-05",
+      "Text": "Cualquier escritura fuera de AllowedWriteScope"
+    },
+    {
+      "Id": "C-06",
+      "Text": "Un INV del contrato no puede mostrar un RED observable antes del cambio correcto"
+    },
+    {
+      "Id": "C-07",
+      "Text": "Hace falta inferir un material, un grado de acero o una propiedad mecanica desde MaterialGrade, la familia, la designacion o el nombre del perfil, o exponer un modelo parcial"
+    },
+    {
+      "Id": "C-08",
+      "Text": "Hace falta una dependencia binaria, un paquete NuGet nuevo, Python o RAM Elements para compilar o probar"
+    },
+    {
+      "Id": "C-09",
+      "Text": "Una guarda existente del repositorio falla por el cambio y la unica salida seria debilitarla"
+    },
+    {
+      "Id": "C-10",
+      "Text": "Aparece una cuestion material de arquitectura, autoridad o semantica congelada (se reconsidera la revision del Architect)"
+    }
+  ],
+  "EligibleCells": [
+    {
+      "Cell": "anthropic/subagent/claude-sonnet-5-5",
+      "Provider": "Anthropic",
+      "Model": "claude-sonnet-5-5",
+      "Transport": "subagente de la sesion de escritorio",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "write-commit-push",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "medium",
+        "high"
+      ],
+      "Source": "docs/automation/agent-execution/model-catalog.md (medido en la sonda U-04 y en el piloto de G3 de I-61; evidencia de I-61 §15)",
+      "VerifiedOn": "2026-09-30"
+    },
+    {
+      "Cell": "openai/codex-cli/gpt-6-luna",
+      "Provider": "OpenAI",
+      "Model": "gpt-6-luna",
+      "Transport": "Codex CLI, solo lectura",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "high"
+      ],
+      "Source": "docs/automation/agent-execution/model-catalog.md (medido en la sonda PR-1 y en G3 de I-61; evidencia de I-61 §§14-15)",
+      "VerifiedOn": "2026-09-30"
+    }
+  ],
+  "RoutingEnforcement": "required",
+  "CorrectionsAuthorized": true,
+  "IssuedBy": "Coordinator I-65",
+  "IssuedUtc": "2026-10-11T03:22:06Z"
+}

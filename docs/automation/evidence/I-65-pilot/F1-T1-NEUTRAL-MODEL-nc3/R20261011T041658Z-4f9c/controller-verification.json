@@ -1,0 +1,77 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T1-NEUTRAL-MODEL",
+  "RunId": "R20261011T041658Z-4f9c",
+  "DelegationRunId": "R20261011T032206Z-7516",
+  "WorkRunId": "R20261011T032758Z-3556",
+  "Attempt": 0,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.SessionOperated=false. Outcome.OutputWrittenUtc=2026-10-11T03:59:17Z, posterior a Cession.StartUtc=2026-10-11T03:29:04Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json está presente y cumple rackcad-worker-handoff/v1: campos requeridos presentes, sin propiedades adicionales. TaskId, Attempt y DelegationRunId coinciden con delegation.json; RunId=R20261011T032758Z-3556 coincide con relay-record-work.json. Branch y Worktree coinciden con la delegación."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Verificado con git show: documentos UNIT_DOC y UNIT_CHANGE desde AuthorityRevision=9d0c661968542350929af267ada689b943898206; AUTOMATION_PLAN §16, README §8 y AGENTS.md desde MainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453. La Proposal en AuthorityRevision declara Frozen: yes."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json y delegation.json coinciden en tarea, revisión, SHA base, pruebas requeridas y alcance. relay-record-planning.json registra A1-A8 en pass y las seis colecciones de alcance alineadas con el contrato."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD=1692804a3e81a607d81d924c9345f02fe7f9a41f; rama architecture/interop-analisis-estructural; refs/remotes/origin/architecture/interop-analisis-estructural coincide con HEAD. git merge-base --is-ancestor confirma BaseSha 9d0c661968542350929af267ada689b943898206 y RedSha 172d53fcde34e6b7468923b974d017bed73729a2 como ancestros de CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: CurrentRun es push de refs/heads/architecture/interop-analisis-estructural con head_sha=1692804a3e81a607d81d924c9345f02fe7f9a41f; LsRemoteSha coincide y OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453. git rev-parse origin/main coincide. git ls-remote no pudo conectar con GitHub desde este sandbox; se usaron los RemoteFacts conforme a la instrucción."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha contiene 24 archivos; comprobación mecánica contra AllowedWriteScope y ForbiddenWriteScope: 0 violaciones. git diff --name-status BaseSha CurrentSha -- tests/ contiene solo 9 altas bajo tests/RackCad.Tests/StructuralAnalysis/; no hay cambios en pruebas existentes."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain está vacío. git check-ignore -v sobre inputs/gate-contract.json confirma la regla .gitignore:3 para artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts y TRX: corrida 38109857453, push de la rama exacta y CurrentSha, terminada success; los cuatro jobs requeridos success. core.trx: 12866/12866 pasaron; ui.trx: 1637 pasaron, 0 fallidas; 17 NotExecuted de 1654, conforme a la convención del logger. Corrida RED 38109425352 del RedSha terminó failure con Tests (Domain + Application) en failure."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Filtro aplicado a los TRX por testName FullyQualifiedName~RackCad.Tests.StructuralAnalysis: RED 271 seleccionadas, 104 pasaron y 167 fallaron; GREEN 271 seleccionadas, 271 pasaron y 0 fallaron. La primera falla RED es NotImplementedException, no compilación. Coincide con TestResults de la entrega. El TRX RED contiene 167 fallas del filtro. RT, git diff --name-only ChainBaseSha RedSha -- tests/, consta de 9 altas: StructuralAnalysisCanonicalizerTests.cs, StructuralAnalysisFingerprintTests.cs, StructuralAnalysisLoadFileReaderTests.cs, StructuralAnalysisMaterialProfileTests.cs, StructuralAnalysisModelBuilderTests.cs, StructuralAnalysisModelTests.cs, StructuralAnalysisOutcomeTests.cs, StructuralAnalysisSourceGuardTests.cs y StructuralAnalysisUnitTests.cs. git diff --name-only RedSha CurrentSha -- tests/ está vacío; ChainRedFiles son esas 9 rutas. Cobertura observada en el código del SHA actual y su TRX: INV-01, G1-G3 y G4, INV-11/14/16 en StructuralAnalysisSourceGuardTests; INV-02/03 e igualdad bit a bit de StructuralSectionUnits en StructuralAnalysisUnitTests; INV-15 en StructuralAnalysisLoadFileReaderTests; INV-16 en StructuralAnalysisUnitTests; INV-05 y D-06/D-07 en StructuralAnalysisModelBuilderTests; D-02/D-08 y precedencia en StructuralAnalysisModelTests y StructuralAnalysisOutcomeTests; INV-04/D-12 en StructuralAnalysisFingerprintTests y StructuralAnalysisCanonicalizerTests; D-13 en StructuralAnalysisModelBuilderTests. Los tests del modelo y canonicalizador también observan Q-O3. Diff y namespaces confirman la forma exigida."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha: ambos commits, RED y GREEN, incluyen literalmente `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`, igual al valor de Worker.Trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra modelo efectivo claude-sonnet-5-5 y effort high; concuerdan con la delegación aceptada. Las Notes documentan que el alias solicitado sonnet corresponde al modelo efectivo claude-sonnet-5-5."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "La revisión de WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction encontró una coincidencia con la lista de AUTOMATION_PLAN §16.10 en worker-handoff.json.WorkCompleted."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 denegaciones de permisos o credenciales y 0 avisos de límite; los 3 errores de comandos se superaron y no dejaron órdenes fallidas pendientes. SessionOperated=false. Los dos bash.exe efímeros ya no existían al releerse sus PID."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La única comprobación fallida es FreeText: la coincidencia está en WorkCompleted de la entrega."
+  ],
+  "RecommendedNextAction": "Registrar REWORK según §16.8, corregir el texto de la entrega y volver a ejecutar la verificación."
+}

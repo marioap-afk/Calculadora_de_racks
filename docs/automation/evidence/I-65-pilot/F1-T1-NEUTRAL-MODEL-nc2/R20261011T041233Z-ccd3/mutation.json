@@ -1,0 +1,28 @@
+{
+ "field": "delegation.AllowedWriteScope",
+ "excluded": "src/RackCad.Application/StructuralAnalysis/StructuralArea.cs",
+ "from": [
+  "src/RackCad.Application/StructuralAnalysis/",
+  "src/RackCad.Application/Units/MassUnits.cs",
+  "src/RackCad.Application/Units/ForceUnits.cs",
+  "src/RackCad.Application/StructuralSections/StructuralSectionUnits.cs",
+  "tests/RackCad.Tests/StructuralAnalysis/"
+ ],
+ "to": [
+  "src/RackCad.Application/StructuralAnalysis/StructuralDiagnostic.cs",
+  "src/RackCad.Application/StructuralAnalysis/StructuralExportOutcome.cs",
+  "src/RackCad.Application/StructuralAnalysis/StructuralFingerprints.cs",
+  "src/RackCad.Application/StructuralAnalysis/StructuralForce.cs",
+  "src/RackCad.Application/StructuralAnalysis/StructuralLength.cs",
+  "src/RackCad.Application/StructuralAnalysis/StructuralLoadFileReader.cs",
+  "src/RackCad.Application/StructuralAnalysis/StructuralMaterialProfile.cs",
+  "src/RackCad.Application/StructuralAnalysis/StructuralModel.cs",
+  "src/RackCad.Application/StructuralAnalysis/StructuralModelBuilder.cs",
+  "src/RackCad.Application/StructuralAnalysis/StructuralModelCanonicalizer.cs",
+  "src/RackCad.Application/StructuralAnalysis/StructuralMomentOfInertia.cs",
+  "src/RackCad.Application/Units/MassUnits.cs",
+  "src/RackCad.Application/Units/ForceUnits.cs",
+  "src/RackCad.Application/StructuralSections/StructuralSectionUnits.cs",
+  "tests/RackCad.Tests/StructuralAnalysis/"
+ ]
+}

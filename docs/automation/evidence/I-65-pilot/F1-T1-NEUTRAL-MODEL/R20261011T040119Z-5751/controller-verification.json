@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T1-NEUTRAL-MODEL",
+  "RunId": "R20261011T040119Z-5751",
+  "DelegationRunId": "R20261011T032206Z-7516",
+  "WorkRunId": "R20261011T032758Z-3556",
+  "Attempt": 0,
+  "VerifiedSha": "1692804a3e81a607d81d924c9345f02fe7f9a41f",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Phase=WORK, Outcome.Kind=COMPLETED, TerminalEvent=subagent-completed, DeathConfirmed=true. Cession.EndUtc=2026-10-11T03:59:41Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json presente y conforme: TaskId=F1-T1-NEUTRAL-MODEL, Attempt=0, DelegationRunId=R20261011T032206Z-7516, RunId=R20261011T032758Z-3556; OutputWrittenUtc=03:59:17Z posterior a Cession.StartUtc=03:29:04Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leí AUTOMATION_PLAN.md y agent-execution/README.md con git show bb0d5522… (MainSha); Proposal V3.1 y decisions/I-65.md con git show 9d0c6619… (AuthorityRevision). Proposal reporta Frozen: yes; decisions contiene §§9–11 y CD-I65-F1-04..10. MainSha es ancestro de AuthorityRevision; los documentos EXTERNAL indicados no cambiaron entre MainSha y AuthorityRevision."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json coincide con la delegación para la unidad, tarea, gate, intento, AuthorityRevision y MainSha. relay-record-planning.json registra A1–A8 en pass; no aparecen discrepancias de contrato."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "Git confirma rama architecture/interop-analisis-estructural, HEAD=1692804a… y refs/remotes/origin/architecture/interop-analisis-estructural=1692804a…; `git merge-base --is-ancestor 9d0c6619… 1692804a…` devuelve 0. `git rev-parse` confirma los SHA completos de Base, RED y Current; la entrega declara la misma rama y worktree."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: OriginMainSha=bb0d5522… (MainSha), LsRemoteSha=1692804a… (CurrentSha). `git rev-parse origin/main` devuelve bb0d5522…. `git ls-remote origin refs/heads/architecture/interop-analisis-estructural` no pudo conectar a GitHub desde el sandbox; se usaron los RemoteFacts permitidos."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "`git diff --name-only 9d0c6619… 1692804a…` da 24 archivos. Comprobación mecánica contra AllowedWriteScope/ForbiddenWriteScope: cero rutas fuera de alcance y cero intersecciones prohibidas. `git diff --name-status … -- tests/` muestra solo nueve altas en tests/RackCad.Tests/StructuralAnalysis/."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "`git status --porcelain=v1` vacío. `git check-ignore -v artifacts/orchestration/I-65/F1-T1-NEUTRAL-MODEL/0/R20261011T040119Z-5751/inputs/worker-handoff.json` confirma la regla `.gitignore:3:artifacts/`."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun 38109857453: event=push, ref=refs/heads/architecture/interop-analisis-estructural, head_sha=1692804a…; los cuatro jobs requeridos están en success. RedRun 38109425352 es push del RedSha 172d53fc… y el job Tests (Domain + Application) terminó failure. TRX SHA-256 coinciden con las copias: Core GREEN 7800C693…E84B9B, Core RED 04027DCA…063506, UI DF8E160A…F2BFE."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "El filtro FullyQualifiedName~RackCad.Tests.StructuralAnalysis selecciona 271 (mínimo 40): RED 104 pass/167 fail y GREEN 271 pass; Core completa en GREEN 12866/12866. TRX RED registra error=0, 167 fallos de pruebas y ejecución de 12866 casos, sin señal de fallo de compilación. Las pruebas fallidas incluyen aserciones/excepciones del cambio. Cobertura GREEN comprobada en el TRX y el código con `git show 1692804a…:<ruta>`: INV-01 G1/G2/G3 y autopruebas en StructuralAnalysisSourceGuardTests; INV-02 G4 y cantidades sin conversión desde double; INV-03 conversiones exactas y tolerancia 1e-12; INV-15 lector estricto en StructuralAnalysisLoadFileReaderTests; INV-16 propietarios únicos y conversiones bit a bit en StructuralAnalysisUnitTests y guardas; D-02/D-08 precedencia y solo Valid expone modelo en StructuralAnalysisOutcomeTests; D-06/D-07 material solo por perfil, MaterialGrade sin efecto, secciones ausentes/C/L/sistema no US_CUSTOMARY y propiedades ausentes en StructuralAnalysisModelBuilderTests; INV-05 partes neutrales y cargas 24/25; INV-04/D-12 estabilidad y sensibilidad por componente en StructuralAnalysisFingerprintTests y StructuralAnalysisCanonicalizerTests; D-13 BuildStructuralModel con fuente de prueba; INV-11/14 guardas con autopruebas. StructuralAnalysisModelTests cubre modelo inmutable/derivado y ausencia de afirmaciones de validación. Q-O3 y forma del cambio contrastados con diff y código. RT/ChainRedFiles desde ChainBaseSha 9d0c6619… hasta RedSha: las nueve altas StructuralAnalysisCanonicalizerTests, FingerprintTests, LoadFileReaderTests, MaterialProfileTests, ModelBuilderTests, ModelTests, OutcomeTests, SourceGuardTests y UnitTests. `git diff --name-only 172d53fc… 1692804a… -- tests/` vacío."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "`git log --format=%B 9d0c6619… 1692804a…` y `git show -s --format=%B` para ambos commits muestran `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`, igual al valor literal de Worker.Trailer; modelo efectivo claude-sonnet-5-5, effort high."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json declara ModelEffective=claude-sonnet-5-5 y EffortEffective=high; coinciden con el modelo y effort solicitados por la delegación. RoutingEnforcement=required."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisé WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction contra los términos de AUTOMATION_PLAN §16.10; cero coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 denegaciones de permisos/credenciales, 0 avisos de límite y ninguna orden fallida pendiente. Documenta tres errores superados por llamadas posteriores."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La consulta directa `git ls-remote` no conectó desde el sandbox; identidad remota contrastada con RemoteFacts y la referencia local origin/architecture/interop-analisis-estructural.",
+    "TRX UI: 1654 resultados, 1637 Passed y 17 NotExecuted; Counters.notExecuted=0, conforme a la convención documentada del logger."
+  ],
+  "RecommendedNextAction": "Entregar esta verificación de ejecución al Coordinator y continuar con la siguiente tarea delegada."
+}
