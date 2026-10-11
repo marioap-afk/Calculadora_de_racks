@@ -2378,3 +2378,70 @@ así que cualquiera de estos fallos llevaría a S-11:
 - Sin invocaciones.
 - `config.toml` en la línea base 73890CA3.
 - HEAD = remoto = `9ff0a287` antes de este commit (CI 38022131380 4/4); `main` `bb0d5522`.
+
+## 41. F1-T2-BRIDGE — Trabajo, verificación, controles negativos, P-04 de nc3 y A-5 propuesta (I64-FREETEXT-BRIDGE-01)
+
+Sección nueva; las anteriores no se reescriben. Los registros transitorios de T2 (planificación, Worker, verificación y controles) siguen en
+`artifacts/orchestration/I-64/F1-T2-BRIDGE*/`. Por orden del Coordinator se custodian en el cierre de T2, no en este commit.
+
+**Trabajo y verificación:**
+- **Worker único autorizado** `R20261010T202008Z-3df4`: subagente `claude-sonnet-5-5`/`high`, con el prompt idéntico al paquete aceptado.
+  - RED `31e3c57a66025ba339acb2c796298e71153126cc`: filtro 159, 62 fallos por aserción; CI 38084788650 con Tests en failure.
+  - GREEN `e2f642b86197441eea0838c8055c1db666606f11`: filtro 159/159 y Core 12754/12754; CI 38085381131 4/4.
+  - 10 archivos nuevos; ningún archivo de T1 cambia.
+- **En la entrada del Worker, STOP P-01:** `config.toml` cambió de hash con los mismos 105 nombres, por una escritura de la aplicación
+  Codex del Owner a las 20:48:48Z. El Owner/Coordinator resolvió el P-01.
+- **Verificación única** `R20261010T225551Z-41fd` (`gpt-6-luna`/`high`): **EXECUTION_VERIFIED / NONE**.
+  - Las 14 comprobaciones en pass; RedPart pass en Ci y Tests.
+  - ChainRedFiles = las 5 pruebas RT.
+
+**Controles negativos** (todos con el Controller `gpt-6-luna`/`high`, salvo el puente):
+
+| Control | RunId | Resultado |
+|---|---|---|
+| nc1 | `R20261010T233352Z-3ddb` | INVALID_OUTPUT (decisión del Coordinator): Handoff evaluó `CurrentSha` y leyó «FilesChanged = 4» de una vista truncada de PowerShell |
+| nc1 | `R20261011T010532Z-78b0` | INVALID_OUTPUT: Handoff volvió a usar `CurrentSha` |
+| nc1 | `R20261011T011039Z-0935` | **PASS** (FailureClass Identity; evidencia comprobada a máquina) |
+| nc2 (Controller) | `R20261011T011513Z-e415` | **CONTROL NOT PASSED**, conservado: dio EXECUTION_VERIFIED con Scope pass |
+| I64-SCOPE-BRIDGE-01 (A-4) | `R20261011T012011Z-647e` | REAL **PASS**; ADVERSARIAL FAIL solo por `OUTSIDE_ALLOWED_WRITE_SCOPE` (`src/RackCad.Application/Workspace/BridgeOutcomes.cs`) = prueba negativa **PASS** |
+| nc3 | `R20261011T012027Z-9c23` | INVALID_OUTPUT (decisión del Coordinator): FreeText detectado, pero STOP vía C-15/S-11 en lugar de REWORK |
+| nc3 | `R20261011T014150Z-3200` | INVALID_OUTPUT (C-15) |
+| nc3 | `R20261011T014542Z-0c58` | INVALID_OUTPUT (C-13/S-11) → **STOP P-04**; el Controller nc3 queda NOT PASSED |
+| nc4 | `R20261010T082206Z-21c1` (planificación) | **PASS** |
+
+Detalles del puente de Scope:
+- **Primer intento `R20261011T011925Z-fcdd`:** paró por identidad antes de ejecutar. La copia del verificador en el árbol tiene CRLF por
+  `core.autocrlf` tras el rebase, aunque el blob es el mismo.
+- **Intento `647e`:** ejecutó los bytes del blob autorizado `cf381ab9` (SHA-256 `a3d4ed8a…`), extraídos con `git cat-file`. El
+  verificador no se modificó.
+
+**A-5** (`docs/initiatives/I-64-A-5.md`, propuesta, NO activa):
+- La orden del Coordinator «AUTHORITATIVE FREETEXT CONTROL RECOVERY» y la decisión explícita del Owner están custodiadas en
+  `docs/automation/evidence/I-64-protocol-bridge/`: `coordinator-order-a5-freetext.md` y `owner-decision-a5-freetext.md`.
+- **Verificador** `tools/verify_freetext_bridge.py` (blob `48739ba6`, SHA-256 `91eac1e0…`):
+  - solo biblioteca estándar y cerrado ante fallos;
+  - deriva términos, campos y semántica de AUTOMATION_PLAN 16.10 a partir del archivo de autoridad.
+- **Autoprueba** `tools/selftest_freetext_bridge.py`: **36/36 PASS**, reproducible byte a byte (`selftest-freetext-result-a5.json`).
+  - La sección 16.10 incrustada es la de `bb0d5522` (SHA-256 `76766227…`).
+  - Contra 4 mutantes debilitados del verificador, la autoprueba FALLA (`regression-demo-a5-freetext-mutants.json`).
+  - Mientras se escribía, la propia autoprueba detectó dos endurecimientos necesarios:
+    - igualdad estricta de valor y tipo (`1 == True` en Python);
+    - tipos de los campos gobernados según el esquema.
+
+**Desviación declarada de la sesión:** al escribir el verificador, la sesión lo ejecutó una vez sobre las entradas reales de T2 para
+comprobar el análisis de 16.10. Es decir, la entrega del Worker y la mutada de nc3 contra AUTOMATION_PLAN de `bb0d5522`.
+- La orden y la decisión del Owner prohíben ejecutar el puente contra T2 antes de los acuerdos.
+- La salida se descartó sin leerla ni registrarla, y no cuenta como ejecución del puente.
+- Las comprobaciones posteriores usaron solo datos sintéticos.
+
+**Siguiente:** commit y CI exacta; una revisión formal del Architect (ARCHITECTURE_REVIEW, Deep) del objeto exacto de A-5 y del blob del
+verificador; parada en COORDINATOR_A5_AGREEMENT_REQUIRED. T2 sigue con el protocolo incompleto; F1-T3-HOST sigue bloqueada.
+
+**Relevos:**
+- Invocaciones de modelos desde §40:
+  - el Worker;
+  - una verificación;
+  - siete controles (tres de nc1, uno de nc2 y tres de nc3);
+  - la planificación de §40.
+- Sin escrituras Git de la sesión desde `d5bdcb7a` hasta este commit.
+- HEAD = remoto = `e2f642b8` antes de este commit; `main` `bb0d5522`.
