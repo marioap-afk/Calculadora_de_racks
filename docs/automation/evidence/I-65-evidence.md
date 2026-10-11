@@ -227,3 +227,26 @@ Sin cambios de configuración, sin nuevas solicitudes de acceso, sin abrir RAM E
 - Métricas de F0: arquetipo NEW ARCHITECTURE (M-07) sin cambio; 5 revisiones del Architect (rondas 1-4 y cierres por diff), modo
   `SAME-SESSION ROLE` (subagente de contexto independiente); 1 corrida licenciada de RAM Elements (P1 v3.2); 0 cambios de código de
   producción.
+
+## 20. Verificación previa al Freeze (2026-10-11T03:04:39Z)
+
+Orden del Owner «Conditional GO for Freeze and F1» (pegada en el chat; custodia en el commit siguiente). Resultado de las cinco
+condiciones:
+
+| Condición | Resultado |
+|---|---|
+| CI pendientes en PASS | **sí**: las 16 corridas `push` de la rama, de `32a84756` a `dc3afdda`, `completed/success` |
+| Blob exacto de la Proposal V3.1 | **sí**: `11062a915c4c174ede180830c8ab3173ee7b6666` en `dc3afdda` (y en `5253b031`) |
+| Architect mantiene AGREED sobre esos bytes | **sí** («AGREED MAINTAINED on blob 11062a91 at dc3afdda»); confirma que el commit de Freeze solo puede cambiar `Estado`, `Frozen` y la línea `Coordinator/Architect` |
+| Conflictos con iniciativas paralelas | **no**: `origin/main` sin cambio (`bb0d5522`); I-64 avanzó a `db0f9d2b` (solo `Application/Workspace`, `Plugin/Workspace`, `tests/.../Workspace` y documentos); ninguna rama toca unidades, catálogo de secciones ni Cantilever; `git merge-tree` limpio contra I-64, I-62 e I-52; ADR-0050 solo existe en esta rama |
+| ADR-0050 corresponde a la arquitectura acordada | **NO en `dc3afdda`**: la Decisión 4 no recogía la lista de permiso de un archivo de comando del Plugin ni la exclusión de pruebas y herramientas de la guarda G1 (Proposal V3.1 D-01/D-13). **STOP de la orden del Owner**: no se acepta el ADR ni se congela |
+
+- Corrección preparada (ADR sigue `propuesto`): Decisión 4 alineada con G1 en `5253b031` (blob del ADR `4258c286…`); la Proposal no cambia.
+  Pendiente: confirmación por diff del Architect y confirmación del Owner para aceptar el texto corregido.
+- Entorno del Controller para F1 (hechos, sin delegación abierta): Codex CLI en `%LOCALAPPDATA%\OpenAI\Codex\bin\2e5e00daee91c61d\codex.exe`
+  (2026-10-09T17:25Z); `pwsh` del runtime presente; `~/.codex/config.toml` SHA-256 `F909F480…8113`, **modificado 2026-10-11T02:54:45Z**
+  (distinto de las líneas base de I-63). No es P-01 retroactivo; la línea base se toma en la primera salida de relevo de F1. Riesgo: si el
+  archivo cambia durante una cesión, P-01 (le ocurrió a I-64 el 2026-10-10).
+- Architect sobre `5253b031`: Decisión 4 **coincide** con V3.1; ADR-0050 blob `4258c286dd48c7e02b07ed7d434d9368d8596bc6` corresponde
+  por completo a la arquitectura acordada; AGREED sobre la Proposal V3.1 blob `11062a91` mantenido. Con la aceptación solo deben cambiar
+  estado, fecha, decisores y notas posteriores del ADR. Pendiente: confirmación del Owner sobre el texto corregido.
