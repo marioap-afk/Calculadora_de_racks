@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §68; evidencia §125) — reanudada; Codex actualizado (d13914ce/26.1007.2314.0/F909F480): confirmar estabilidad, preparar el bloque A2-P2 y la sonda del par nuevo (sin ejecutar) y pedir OD-2 nueva y consumo del bloque; B1 preparado a la espera de autoridad; sin F6 GATE PASS"
+  next_action: "F6 (decisiones §68; evidencia §126) — par nuevo de Codex estable (d13914ce/26.1007.2314.0/F909F480); esperar OD-2 y BLOQUE-CODEX-CONSUMO del Owner y la disposición del bloque A2-P2 del Coordinator; luego sonda 1 NATIVE_CONTROLLER (kit a2p2-v4); B1 a la espera de autoridad; sin F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

@@ -27,9 +27,20 @@
   "KeyNamesEqualPreviousBaseline": true
  },
  "Classification": "actualización automática observada desde fuera (cambian BinaryHash y AppVersion) con huella resultante nueva: P-01 para toda invocación de codex-cli hasta una OD-2 nueva (OD-2-MAT = A); por A-2 (A2-P2) cabe un bloque de medición nuevo para el par exacto, con autorización por bloque; por A4-1, reglas 3 y 4, la actualización abre otra medición de A4-1. Nada de esto autoriza consumo por sí mismo (§67, punto 3)",
- "Stability": "observación 1; la regla 3 de A2-P2 exige el par observado con su huella resultante estable: hace falta una segunda observación sin cambios",
+ "Stability": "par estable: huella F909F480… igual en las dos observaciones (escrita a las 02:54:45Z, reescrita idéntica a las 04:30:15Z, observada a las 03:47:57Z y 04:46:50Z); binario y app iguales (A2-P2, regla 3)",
  "NotObserved": [
   "CliVersion (codex --version es una ejecución que ninguna autorización vigente cubre)",
   "AuthState (codex login status, ídem)"
- ]
+ ],
+ "Observed2": {
+  "ObservedUtc": "2026-10-11T04:46:50.983Z",
+  "BinaryHash": "d13914ced6c7af174d8d638db938284231227312104b06a25e9608c632a7daec",
+  "OnlyCodexExeUnderBin": true,
+  "AppVersion": "26.1007.2314.0",
+  "Fingerprint": "F909F480E535E0D3D64817972361077B13AEFEEDF5EB191B5E6B941E7E1C8113",
+  "FingerprintLastWriteTimeUtc": "2026-10-11T04:30:15.419Z",
+  "FingerprintLength": 4777,
+  "KeyNamesEqualObservation1": true,
+  "Note": "config.toml se reescribió a las 04:30:15Z con contenido idéntico (mismo SHA-256): la huella no cambia, pero la app reescribe el archivo por su cuenta"
+ }
 }

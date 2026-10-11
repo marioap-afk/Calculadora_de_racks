@@ -3568,3 +3568,19 @@ solo desde artefactos custodiados.
 - **Efecto:** P-01 para toda invocación de `codex-cli` hasta una OD-2 nueva. Abre la vía A1 de las opciones de recuperación: un bloque de A-2 (A2-P2)
   para el par nuevo y, si la ruta `cmd.exe` sigue haciendo falta, otra medición de A4-1 (reglas 3 y 4). Nada de esto autoriza consumo por sí mismo
   (§67, punto 3). Falta una segunda observación para fijar la huella como estable (A2-P2, regla 3).
+
+## 126. FX-02: par nuevo de Codex estable; kit del bloque A2-P2 (v4) preparado sin ejecutar; solicitud única (decisiones §68)
+
+- **Estabilidad (A2-P2, regla 3):** segunda observación pasiva (04:46:50Z): binario `d13914ce…`, app `26.1007.2314.0` y huella `F909F480…`
+  iguales a los de la primera. `config.toml` se reescribió a las 04:30:15Z con contenido idéntico.
+- **Kit** [a2p2-v4](I-62-F6/kits/FX-02/a2p2-v4/README.md), sin ejecutar. Tres modos:
+  - NATIVE_CONTROLLER (sonda 1): `gpt-6-luna/high` con la receta literal, las 32 operaciones de PLAN y VERIFY y detección de la firma de F6-OBS-03;
+  - NATIVE_ARCHITECT (sonda 2): `gpt-6.1-sol/high`, lectura fiel del contrato y sus autoridades, salida canónica `architect-review-result.v1`;
+    clasifica la celda del Architect de Codex con la identidad vigente;
+  - CMD_A41: solo si persiste la limitación de la shell.
+
+  Corrige el falso positivo `git_write` de v3: sobre la evidencia de A4-1 da OP_A true y el mismo NOT_DEMONSTRATED. Autoprueba sin `codex`: 22/22,
+  27/27, 19/19 y puertas 34/34.
+- **Solicitud** ([request](I-62-F6/requests/FX-02-A2P2-block-request-2026-10-11.md)): al Owner, `OD-2` sobre `F909F480…` y `BLOQUE-CODEX-CONSUMO`
+  para el par nuevo; al Coordinator, la disposición del bloque (sondas, celdas, directorios, política de comandos, veredictos).
+- **Validación:** commits solo de documentación, validados por la CI (§68.5).

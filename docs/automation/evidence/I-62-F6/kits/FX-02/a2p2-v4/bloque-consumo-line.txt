@@ -1,0 +1,1 @@
+BLOQUE-CODEX-CONSUMO = A (≤ 2 invocaciones read-only de codex-cli para el par exacto d13914ced6c7af174d8d638db938284231227312104b06a25e9608c632a7daec/26.1007.2314.0, con huella, binario y versión antes y después de cada una; sin workspace-write ni cambios de config.toml, trust_level o sandbox; sin lectura de valores)
