@@ -705,3 +705,20 @@ Trabajo de la preparación (sin código de producción, sin RAM):
 - **Métricas de la preparación:** 0 invocaciones de Codex (`config.toml` sin cambio); 2 revisiones del Architect (revisión y cierre por
   diff); 1 pre-lectura pasiva de la base de RAM; 0 aperturas de RAM; 0 cambios en `src/`, `tests/` o `assets/`; `origin/main` sin avance.
 - **Estado:** preparación completa (CD-I65-F4P-08); IMPLEMENTATION AUTHORIZATION = NO; espera de las decisiones OD-F4-01..11 del Owner.
+
+## 35. F4 — orden del Owner y preflight (2026-10-11T15:43:46Z)
+
+Orden del Owner «I-65 — Owner Authorization: Conditional F4 Implementation» (pegada en el chat; copia byte a byte en
+[I-65-owner-authorization-f4.original.txt](../decisions/I-65-owner-authorization-f4.original.txt)): F4 IMPLEMENTATION AUTHORIZATION = YES,
+CONDITIONAL; F4 ONLY; 28 invocaciones de Codex; sin corridas en RAM.
+
+| Comprobación del preflight | Resultado |
+|---|---|
+| Rama | `HEAD` = `origin/architecture/interop-analisis-estructural` = `5bb1b9ba`; árbol limpio |
+| `origin/main` | `bb0d5522`, sin cambio |
+| Freeze y ADR-0050 | blobs `4e6e1feb` y `c18def42` |
+| CI del cierre documental | `5bb1b9ba`: corrida `push` 38130345780 `success` (4/4) |
+| Iniciativas paralelas | I-62 `92510286`, I-64 `e0205b5a`, I-52 `fb6b5648`: 0 archivos en `StructuralAnalysis`, `Units`, `Systems/Cantilever`, catálogos, `assets/structural-analysis`, pruebas de I-65, documentos de I-65, `RackCad.Plugin.csproj` y comandos; `merge-tree` limpio; I-64 toca solo `src/RackCad.Plugin/Workspace` (6 archivos) |
+| Contratos de I-61 | `docs/automation/agent-execution/` (README, routing, esquemas) y AUTOMATION_PLAN §16 sin cambio (misma base `bb0d5522`) |
+| Rutas | decisiones §26, CD-I65-F4-03; [I-65-f4-implementation.md](../../initiatives/I-65-f4-implementation.md) |
+| Codex | 0 de 28 al empezar; `config.toml` `f909f480…c811` |

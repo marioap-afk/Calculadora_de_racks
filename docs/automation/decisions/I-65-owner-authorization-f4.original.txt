@@ -1,0 +1,72 @@
+I-65 — Owner Authorization: Conditional F4 Implementation
+Continúa I-65 desde el estado de preparación publicado en `5bb1b9ba`.
+Decisión
+F4 IMPLEMENTATION AUTHORIZATION = YES, CONDITIONAL.
+Autorizo implementar F4 conforme a Proposal V3.1, ADR-0050 y el paquete de preparación revisado por el Architect.
+Esta autorización permite implementar y probar los componentes de integración necesarios, pero no permite todavía ejecutar el modelo generado en RAM Elements ni declarar el Candidato de hito.
+1. Preflight
+Verifica nuevamente:
+
+* Freeze y ADR-0050.
+* Estado de origin/main.
+* Estado de iniciativas paralelas y sus fronteras.
+* CI del cierre documental.
+* Contratos de I-61 vigentes.
+* Alcance exacto de las rutas autorizadas.
+
+Si aparece un conflicto de autoridad, detente.
+2. Implementación autorizada
+Implementa el alcance F4 definido en el paquete preparado, incluyendo las correcciones A65-F3-01, 02, 04 y 11.
+Incluye las rutas adicionales requeridas por F4, como `RackCad.Plugin.csproj` y los archivos de F1 identificados en el paquete.
+La autorización de modificar esas rutas es exclusivamente para los cambios descritos y justificados en el contrato F4.
+Establece un presupuesto máximo de 28 invocaciones Codex para F4.
+No cambies el Freeze ni agregues capacidades fuera de V1.
+3. Decisiones de ingeniería
+OD-F4-03: acepto provisionalmente la base de RAM como fuente de las propiedades utilizadas por el proveedor, siempre que las filas se verifiquen contra una referencia técnica independiente.
+OD-F4-04: la diferencia de peso unitario de −0.62 % queda reconocida y registrada, no aprobada como equivalencia dentro de ±0.5 %.
+Dado que V1 excluye el peso propio, esta diferencia no bloquea las pruebas geométricas y de transferencia que no dependan de ese valor.
+No alteres tolerancias ni presentes la diferencia como validada. Cualquier análisis futuro que dependa del peso propio requiere resolverla.
+El ingeniero deberá verificar las propiedades y citar sus fuentes.
+4. Referencia de prueba
+OD-F4-05: utiliza θ = −90° para las columnas de REF-CANT-01, como convención de transferencia.
+OD-F4-06: utiliza el archivo de cargas P1–P3 definido en el piloto F1.
+Estos valores son referencias de equivalencia y no constituyen validación del diseño estructural real.
+5. Validación real
+No autorices ninguna corrida del adaptador en RAM Elements todavía.
+Antes de la primera prueba real deben cumplirse:
+
+1. Correcciones obligatorias de F4 implementadas y verificadas.
+2. Dos filas de sección y material verificadas por ingeniería, con responsable, fecha y fuentes.
+3. Referencia manual REF-CANT-01 preparada.
+4. Paquete generado correctamente y validado mediante pruebas automatizadas.
+5. Plan de ejecución y condiciones de parada confirmadas.
+
+Una vez satisfechos esos requisitos, solicita autorización específica para ejecutar el modelo en RAM Elements.
+No declares GATE PASS de F4 antes de la comparación real contra la referencia manual.
+6. Protocolo
+Aplica Workflow V2 e I-61:
+
+* Contratos de gate.
+* Controller y Worker.
+* RED/GREEN.
+* Controles negativos.
+* Revisión independiente del Architect.
+* CI del SHA exacto.
+
+No modifiques infraestructura de I-62 ni interfaces de ID30.
+7. Entregable
+Al completar la parte implementable de F4, presenta:
+
+1. SHA y CI.
+2. Código implementado.
+3. Pruebas realizadas.
+4. Correcciones de hallazgos.
+5. Estado de las filas de ingeniería.
+6. Riesgos residuales.
+7. Preparación del modelo manual.
+8. Condiciones pendientes para la prueba real.
+9. Recomendación GO / NO-GO para ejecutarla.
+
+IMPLEMENTATION AUTHORIZATION = F4 ONLY.
+No avances hacia F5 ni otras capacidades.
+Detente antes de la primera corrida real en RAM para obtener autorización del Owner.

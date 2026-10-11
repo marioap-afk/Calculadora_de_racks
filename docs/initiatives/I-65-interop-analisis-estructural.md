@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-65
 title: Structural Analysis Interop Foundation + RAM Elements Adapter
 type: architecture
-status: f4-prepared
+status: f4-implementation
 workflow: V2
 conceptual_initiative: I-65
 delivery_unit: I-65
@@ -26,7 +26,7 @@ freeze_ref: docs/initiatives/I-65-proposal-v3.1.md
 freeze_delta_ref: null
 amendment_refs: []
 ov_assignment_ref: docs/initiatives/I-65-proposal-v3.1.md#5
-decision_refs: [docs/automation/decisions/I-65.md, docs/automation/decisions/I-65-owner-authorization-f3.original.txt, docs/automation/decisions/I-65-owner-authorization-f4-preparation.original.txt, docs/automation/decisions/I-65-owner-mandate.original.txt, docs/automation/decisions/I-65-owner-decision-p1.original.txt, docs/automation/decisions/I-65-owner-decision-freeze-f1.original.txt, docs/adr/0050-interoperabilidad-analisis-estructural.md]
+decision_refs: [docs/automation/decisions/I-65.md, docs/automation/decisions/I-65-owner-authorization-f3.original.txt, docs/automation/decisions/I-65-owner-authorization-f4-preparation.original.txt, docs/automation/decisions/I-65-owner-authorization-f4.original.txt, docs/automation/decisions/I-65-owner-mandate.original.txt, docs/automation/decisions/I-65-owner-decision-p1.original.txt, docs/automation/decisions/I-65-owner-decision-freeze-f1.original.txt, docs/adr/0050-interoperabilidad-analisis-estructural.md]
 evidence_ref: docs/automation/evidence/I-65-evidence.md
 automation_state_path: docs/automation/state/I-65.yml
 requires_ci: true
@@ -122,7 +122,8 @@ G0 (reclamo y bootstrap) y F0 (Discovery, sonda P1, Freeze) cumplidos. El plan d
 autorizada por el Owner (decisiones §9), se ejecutó en dos tareas (decisiones §10) y está **cerrada** (decisiones §16); F3 se autorizó
 (decisiones §17), se ejecutó en dos tareas y está **cerrada** (decisiones §22). De F4 el Owner autorizó **solo la preparación**, que está completa
 (decisiones §23-§25; [preparación](I-65-f4-preparation.md) y [paquete de validación de ingeniería](I-65-f4-engineering-validation-package.md));
-su implementación y los gates posteriores esperan la decisión del Owner.
+su implementación está autorizada de forma condicional, solo F4 y sin corridas en RAM (decisiones §26;
+[implementación](I-65-f4-implementation.md)); los gates posteriores esperan la decisión del Owner.
 
 ## 9. Owner Validation
 
