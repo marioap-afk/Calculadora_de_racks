@@ -3818,3 +3818,13 @@ solo desde artefactos custodiados.
   La receta actual admite lectura fiel sin cambio de receta, si la celda elige ese método.
 - **Presupuesto:** bloque A2-P2 del par `d13914ce…/26.1007.2314.0` agotado (2/2). El Controller sigue sin ser elegible; FX-02/C-24 sigue
   UNVERIFIED. Ninguna otra invocación sin una disposición nueva.
+
+## 141. Decisiones §74: CONTROLLER_V5 consumida (NOT_DEMONSTRATED); capacidad de lectura fiel observada; evaluación de una estrategia nueva de Controller
+
+- **Resultado acreditado** por el Coordinator: CONTROLLER_V5 NOT_DEMONSTRATED, válida y consumida; bloque A2-P2 de `d13914ce…` agotado (2/2); C-24
+  UNVERIFIED; F6-OBS-03 resuelto para esta identidad.
+- **Capacidad observada** (no fidelidad completa): en la sonda 2, la lectura posterior con `python -c` y JSON de escapes ASCII dio todas las claves de
+  fidelidad y todos los campos canónicos no ASCII exactos ([resultado](I-62-F6/OD-2/R20261011T102825Z-a2p2-v5-controller/README.md)). OP_U0 falló;
+  la receta 16.4 no cambia.
+- **Encargos en solo lectura:** análisis estático de MV-4 y MV-7 sin tocar el resultado bruto; evaluación de evidencia determinista más Controller,
+  con recomendación; B1 lista; F7 y controles independientes; comparación A/B/C.
