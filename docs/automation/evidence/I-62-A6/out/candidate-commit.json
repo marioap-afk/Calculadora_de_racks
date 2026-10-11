@@ -1,0 +1,54 @@
+{
+ "Base": "108d4ca1a395c64c43cfae4f17f5854fe2d01536",
+ "Candidate": "3d1c6b6e556fd9bd81876070eb2af3db56058398",
+ "Tree": "644bca2cdff3cbe67dfa2a0e882b6fb316fff931",
+ "Files": 10,
+ "Extra": [],
+ "Status": [
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A6/a6-guards.py"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A6/a6-selftest.json"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A6/make_candidate_commit_a6.py"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A6/neg_controls_a6.py"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A6/out/a6-guards-result-preview-head.json"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A6/out/neg_controls_a6.json"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A6/out/worktree-digest.json"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A6/preflight.md"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A6/run_preflight_a6.py"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/initiatives/I-62-A-6.md"
+  }
+ ],
+ "AllAdded": true,
+ "OnlyA6AndEvidence": true,
+ "ForbiddenDiff": [],
+ "ForbiddenDiffEmpty": true,
+ "Note": "clon --bare --shared temporal bajo D:/r62-a6-tmp; sin push; el worktree de I-62 no se escribe"
+}

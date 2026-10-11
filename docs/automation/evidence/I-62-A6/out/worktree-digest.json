@@ -1,0 +1,17 @@
+{
+ "Before": {
+  "Head": "108d4ca1a395c64c43cfae4f17f5854fe2d01536",
+  "ForEachRef": "96e32e105c6dde8b34fa6fcdeceeeda0fdeac23ae6a1efe81432018f397ad4ed",
+  "StatusPorcelainIgnored": "b897472d7ab55079534c786a2981087cc67b7ccac6f8d541be278d4305b66ba8",
+  "IndexSha256": "924e27d58586d19bccbe19fd434b771b8d12705253dc9ef001f426bd7d8b8cd2"
+ },
+ "After": {
+  "Head": "108d4ca1a395c64c43cfae4f17f5854fe2d01536",
+  "ForEachRef": "96e32e105c6dde8b34fa6fcdeceeeda0fdeac23ae6a1efe81432018f397ad4ed",
+  "StatusPorcelainIgnored": "b897472d7ab55079534c786a2981087cc67b7ccac6f8d541be278d4305b66ba8",
+  "IndexSha256": "924e27d58586d19bccbe19fd434b771b8d12705253dc9ef001f426bd7d8b8cd2"
+ },
+ "Equal": true,
+ "TmpRemoved": true,
+ "Note": "digest del worktree de I-62 (HEAD, refs, estado con ignorados e índice) antes y después del preflight"
+}

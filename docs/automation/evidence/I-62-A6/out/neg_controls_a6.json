@@ -1,0 +1,230 @@
+{
+ "Tool": "neg_controls_a6.py",
+ "Summary": {
+  "Cases": 14,
+  "AsExpected": 14,
+  "Note": "en los casos de archivo, G5b también falla porque la autoprueba custodiada fija el blob de la A-6 sin alterar"
+ },
+ "Rows": [
+  {
+   "Id": "P-0",
+   "Case": "control positivo: A-6 sin alterar, sin commit candidato",
+   "Expected": "PASS",
+   "Result": "PASS",
+   "FailingGuards": [],
+   "AsExpected": true
+  },
+  {
+   "Id": "N-01",
+   "Case": "punto 4 del dictamen retirado de §3.2",
+   "Expected": [
+    "G4"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G4",
+    "G5B"
+   ],
+   "FirstFinding": {
+    "G4": "la tabla de §3.2 no tiene los puntos 1..8, una vez cada uno y en orden: ['1', '2', '3', '5', '6', '7', '8']"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-02",
+   "Case": "M-05 = no",
+   "Expected": [
+    "G4"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G4",
+    "G5B"
+   ],
+   "FirstFinding": {
+    "G4": "M-05 = no en A-6; el dictamen acreditado dice sí"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-03",
+   "Case": "las dos líneas del Owner fundidas",
+   "Expected": [
+    "G6"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G5B",
+    "G6"
+   ],
+   "FirstFinding": {
+    "G6": "§7 no tiene exactamente dos líneas del Owner (1)"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-04",
+   "Case": "blob del instrumento cambiado en §3.3",
+   "Expected": [
+    "G7"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G1",
+    "G5B",
+    "G7"
+   ],
+   "FirstFinding": {
+    "G7": "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py: blob en A-6 9a829b0eeb12 distinto del fijado 9a829b0eeb12"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-05",
+   "Case": "frase de decisiones §76, punto 5, retirada de la cabecera",
+   "Expected": [
+    "G8"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G5B",
+    "G8"
+   ],
+   "FirstFinding": {
+    "G8": "cabecera sin la frase de decisiones §76, punto 5"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-06",
+   "Case": "«A-6 = AGREED» añadido",
+   "Expected": [
+    "G8"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G5B",
+    "G8"
+   ],
+   "FirstFinding": {
+    "G8": "declaración prohibida en esta preparación: A-6 declarada AGREED"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-07",
+   "Case": "ancla de A-5 L221 alterada",
+   "Expected": [
+    "G1"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G1",
+    "G5B"
+   ],
+   "FirstFinding": {
+    "G1": "citas sin clasificar (ni literal fijado, ni del propio delta, ni término propio, ni notación): ['«extiende a esa fila.»']"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-08",
+   "Case": "A6-3 ubicada en D.1",
+   "Expected": [
+    "G5"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G5",
+    "G5B"
+   ],
+   "FirstFinding": {
+    "G5": "A6-3: ubicación distinta de «Ubicación: al final de V14 D.6, a continuación de su último párrafo»"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-09",
+   "Case": "A6-1 sin la prohibición de cambiar la receta",
+   "Expected": [
+    "G5"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G5",
+    "G5B"
+   ],
+   "FirstFinding": {
+    "G5": "A6-1: falta la frase exigida «ningún elemento de la receta del adapter cambia»"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-10",
+   "Case": "superficie prohibida retirada de §6.1",
+   "Expected": [
+    "G3"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G3",
+    "G5B"
+   ],
+   "FirstFinding": {
+    "G3": "lista de superficies prohibidas distinta de la de las guardas: faltan ['docs/automation/evidence/I-62-F6/FX-02/bmin/']; sobran []"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-11",
+   "Case": "commit candidato que además modifica AUTOMATION_PLAN (receta 16.4)",
+   "Expected": [
+    "G2",
+    "G3"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G2",
+    "G3"
+   ],
+   "FirstFinding": {
+    "G2": "ruta fuera de alcance: docs/AUTOMATION_PLAN.md (M)",
+    "G3": "objeto distinto en Base->Head:docs/AUTOMATION_PLAN.md: esperado f525cb1e9d24, obtenido 391ff65b5fc4"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-12",
+   "Case": "commit candidato que además modifica el registro de evidencia",
+   "Expected": [
+    "G2"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G2"
+   ],
+   "FirstFinding": {
+    "G2": "ruta fuera de alcance: docs/automation/evidence/I-62-evidence.md (M)"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-13",
+   "Case": "commit candidato que además modifica el instrumento fijado",
+   "Expected": [
+    "G2",
+    "G3"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G2",
+    "G3"
+   ],
+   "FirstFinding": {
+    "G2": "ruta fuera de alcance: docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py (M)",
+    "G3": "objeto distinto en Base->Head:docs/automation/evidence/I-62-F6/FX-02/bmin/: esperado 3caa0dfa73d3, obtenido 0f36245d1b6d"
+   },
+   "AsExpected": true
+  }
+ ]
+}

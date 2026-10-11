@@ -1,0 +1,895 @@
+{
+ "Control": {
+  "G1": {
+   "Result": "PASS",
+   "Findings": []
+  },
+  "G2": {
+   "Result": "PASS",
+   "Findings": []
+  },
+  "G3": {
+   "Result": "PASS",
+   "Findings": []
+  },
+  "G4": {
+   "Result": "PASS",
+   "Findings": []
+  },
+  "G5": {
+   "Result": "PASS",
+   "Findings": []
+  },
+  "G6": {
+   "Result": "PASS",
+   "Findings": []
+  },
+  "G7": {
+   "Result": "PASS",
+   "Findings": []
+  },
+  "G8": {
+   "Result": "PASS",
+   "Findings": []
+  },
+  "G5B": {
+   "Result": "PASS",
+   "Findings": []
+  }
+ },
+ "Mutants": [
+  {
+   "Guard": "G1",
+   "Mutant": "literal cambiado en un carácter (V14 L2523)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "citas sin clasificar (ni literal fijado, ni del propio delta, ni término propio, ni notación): ['«| A | ≤ 16 + 2 sondas | ≤ 4 | 0 | ≤ 2 |»']"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "referencia de línea cambiada (A-4 L203)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "cita literal sin casar con su fuente o sin su referencia de línea: «Su tope es uno en total para FX-02 en F6»"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "FREEZE_SHA cambiado",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "cabecera sin «FREEZE_SHA     = b64a3b640c7ee3bd77636e7a3218ae0ebac2dd43»"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "blob de A-5 de la cabecera cambiado",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "cabecera sin «A-5 AGREED (decisiones §73, punto 1; docs/initiatives/I-62-A»"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "veredicto del Coordinator añadido",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "cabecera con «Coordinator verdict» (prohibido en esta preparación)"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "cita sin clasificar",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "citas sin clasificar (ni literal fijado, ni del propio delta, ni término propio, ni notación): ['«texto que no existe en ninguna fuente»']"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "línea de un bloque literal de §2 cambiada (receta 16.4)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "bloque AP L541-L543 distinto de la fuente (líneas [541])"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "prefijo de blob abreviado falso",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "prefijo de blob sin fijar en las guardas: f525cb1f…"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "ancla citada alterada (V14 L2587)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "citas sin clasificar (ni literal fijado, ni del propio delta, ni término propio, ni notación): ['«automáticas y la auditoría, sin su límite.»']"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "cita de decisiones alterada (DEC L1541)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "citas sin clasificar (ni literal fijado, ni del propio delta, ni término propio, ni notación): ['«El Coordinator sustituye esa decisión»']"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "cita interna del delta alterada («**Codex, total**»)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "citas sin clasificar (ni literal fijado, ni del propio delta, ni término propio, ni notación): ['dentro del delta: «**Codex total**»']"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "identificador de 40 hexadecimales inexistente",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "identificador de 40 hexadecimales que no es un objeto del repositorio: 0123456789ab"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "SHA-256 sin fijar",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "SHA-256 sin fijar en las guardas: abababababababab"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "ruta de perfil de usuario",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A-6 con una ruta de perfil o un correo (1 coincidencias)"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "correo",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A-6 con una ruta de perfil o un correo (1 coincidencias)"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "identidad del host",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A-6 con una identidad del host (usuario, correo o nombre Git)"
+   ]
+  },
+  {
+   "Guard": "G2",
+   "Mutant": "ruta de producción en el commit",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "ruta fuera de alcance: src/RackCad.Core/Nuevo.cs (A)"
+   ]
+  },
+  {
+   "Guard": "G2",
+   "Mutant": "V14 modificada en el commit",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "ruta fuera de alcance: docs/initiatives/I-62-proposal-v14.md (M)"
+   ]
+  },
+  {
+   "Guard": "G2",
+   "Mutant": "A-6 como modificada (M)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "docs/initiatives/I-62-A-6.md no aparece como añadido (A)"
+   ]
+  },
+  {
+   "Guard": "G2",
+   "Mutant": "evidencia de I-62 modificada en el mismo commit",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "ruta fuera de alcance: docs/automation/evidence/I-62-evidence.md (M)"
+   ]
+  },
+  {
+   "Guard": "G2",
+   "Mutant": "ruta fuera de I-62-A6 (kit de FX-02)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "ruta fuera de alcance: docs/automation/evidence/I-62-F6/kits/FX-02/x.md (A)"
+   ]
+  },
+  {
+   "Guard": "G2",
+   "Mutant": "archivo de I-62-A6 modificado en lugar de añadido",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "docs/automation/evidence/I-62-A6/preflight.md con estado M (en docs/automation/evidence/I-62-A6/ solo se añade)"
+   ]
+  },
+  {
+   "Guard": "G2",
+   "Mutant": "privacidad en un archivo añadido",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "docs/automation/evidence/I-62-A6/nota.md con una ruta de perfil o un correo (1 coincidencias)"
+   ]
+  },
+  {
+   "Guard": "G2",
+   "Mutant": "blob de A-6 en head distinto",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "blob de A-6 en head distinto del texto comprobado"
+   ]
+  },
+  {
+   "Guard": "G3",
+   "Mutant": "V14 cambiada en head",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "objeto distinto en Base->Head:docs/initiatives/I-62-proposal-v14.md: esperado 34ad80ea1bff, obtenido 111111111111"
+   ]
+  },
+  {
+   "Guard": "G3",
+   "Mutant": "blob del instrumento cambiado en head",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "objeto distinto en Head:docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py: esperado 9a829b0eeb12, obtenido 222222222222"
+   ]
+  },
+  {
+   "Guard": "G3",
+   "Mutant": "árbol agent-execution cambiado (descriptor o esquemas)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "objeto distinto en Head:docs/automation/agent-execution: esperado 809fd58f450d, obtenido 333333333333"
+   ]
+  },
+  {
+   "Guard": "G3",
+   "Mutant": "AUTOMATION_PLAN cambiado (receta 16.4)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "objeto distinto en Base->Head:docs/AUTOMATION_PLAN.md: esperado f525cb1e9d24, obtenido 444444444444"
+   ]
+  },
+  {
+   "Guard": "G3",
+   "Mutant": "dictamen cambiado en la base",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "objeto distinto en Base:docs/automation/evidence/I-62-architect-bmin/R20261011T162328Z-5c5e/output.json: esperado 96c3efbc81e9, obtenido 555555555555"
+   ]
+  },
+  {
+   "Guard": "G3",
+   "Mutant": "árbol src distinto entre base y head",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "objeto distinto en Base->Head:src/: esperado b0eb085737a7, obtenido 666666666666"
+   ]
+  },
+  {
+   "Guard": "G3",
+   "Mutant": "superficie prohibida retirada de la lista de A-6",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "lista de superficies prohibidas distinta de la de las guardas: faltan ['docs/adr/']; sobran []"
+   ]
+  },
+  {
+   "Guard": "G3",
+   "Mutant": "ruta de superficie en el commit (WORKFLOW)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "rutas del commit bajo las superficies prohibidas o del mapa: ['docs/WORKFLOW.md']"
+   ]
+  },
+  {
+   "Guard": "G3",
+   "Mutant": "C-20b distinto de EQUAL",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "clause_map.py check distinto de EQUAL (código 0)"
+   ]
+  },
+  {
+   "Guard": "G4",
+   "Mutant": "un punto del dictamen retirado (punto 3)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "la tabla de §3.2 no tiene los puntos 1..8, una vez cada uno y en orden: ['1', '2', '4', '5', '6', '7', '8']"
+   ]
+  },
+  {
+   "Guard": "G4",
+   "Mutant": "texto de un punto alterado (punto 5)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "punto 5 de §3.2 distinto del literal del dictamen"
+   ]
+  },
+  {
+   "Guard": "G4",
+   "Mutant": "punto 7 asignado a otro delta",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-1: «Cubre» ([1]) distinto de la tabla de §3.2 ([1, 7])"
+   ]
+  },
+  {
+   "Guard": "G4",
+   "Mutant": "línea «Cubre» incoherente (A6-6)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-6: «Cubre» ([2]) distinto de la tabla de §3.2 ([6])"
+   ]
+  },
+  {
+   "Guard": "G4",
+   "Mutant": "M-02 cambiado a no",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "M-02 = no en A-6; el dictamen acreditado dice sí"
+   ]
+  },
+  {
+   "Guard": "G4",
+   "Mutant": "M-06 cambiado a sí",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "M-06 = sí en A-6; el dictamen acreditado dice no"
+   ]
+  },
+  {
+   "Guard": "G4",
+   "Mutant": "fila M-07 retirada",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "la tabla M no tiene M-01..M-08 exactamente: ['M-01', 'M-02', 'M-03', 'M-04', 'M-05', 'M-06', 'M-08']"
+   ]
+  },
+  {
+   "Guard": "G4",
+   "Mutant": "fila M-08 duplicada",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "M-08 aparece más de una vez en la tabla M"
+   ]
+  },
+  {
+   "Guard": "G4",
+   "Mutant": "compatibilidad sin A-3",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "la tabla de compatibilidad no cubre A-1..A-5 una vez cada una y en orden: ['A-1', 'A-2', 'A-4', 'A-5']"
+   ]
+  },
+  {
+   "Guard": "G4",
+   "Mutant": "dictamen con una sola consecuencia OWNER-RESERVED",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "el dictamen no tiene dos consecuencias OWNER-RESERVED"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "ubicación de A6-3 en D.5",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-3: ubicación distinta de «Ubicación: al final de V14 D.6, a continuación de su último párrafo»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "orden de D.3 alterado (A6-7 tras A6-2)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-7: ubicación distinta de «Ubicación: a continuación del párrafo de A6-4 (al final de V14 D.3)»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "tope de Codex distinto en A6-1",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-1: falta la frase exigida «(**11** base, pool **4** con ≤ 2 por fase, tope **15**)»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "fila de tabla en el delta",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-7: el delta trae filas de tabla, encabezados o vallas"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "nombre de producto en A6-7",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-7: nombres de producto en el delta: ['codex']"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "A6-2 sin cláusula de alcance",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-2: no abre con su cláusula de alcance «Solo para cada invocación del Controller de FX-02 en F6»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "A6-1 permite cambiar la receta",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-1: falta la frase exigida «ningún elemento de la receta del adapter cambia»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "A6-1 amplía presupuestos congelados",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-1: falta la frase exigida «Los presupuestos congelados no cambian»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "A6-7 con tope dos",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-7: falta la frase exigida «Su tope es uno en total para FX-02 en F6»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "A6-7 reutiliza el bloque agotado",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-7: falta la frase exigida «No usa ni repone un bloque agotado ni una medición consumida»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "A6-3 lleva el instrumento a F_seed",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-3: falta la frase exigida «el instrumento no entra en F_seed, en F_norm»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "A6-6 calcula el oráculo con el instrumento",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-6: falta la frase exigida «se calcula sin el instrumento, sin el aceptante y sin la esp»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "A6-9 aceptante en la sesión de Principal",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-9: falta la frase exigida «fuera de la sesión de Principal del fixture»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "A6-8 concede la excepción",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-8: falta la frase exigida «A-6 no concede esa determinación»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "A6-8 sin la exclusión de D.5",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-8: falta la frase exigida «Quedan excluidos de forma expresa la producción, cualquier o»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "A6-5 sin el rechazo del VERIFIED",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-5: falta la frase exigida «Coordinator rechaza el VERIFIED»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "A6-4 sin auditoría contra el cierre",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-4: falta la frase exigida «se auditan contra el cierre efectivo de insumos de la invoca»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "§3.13 sin la prohibición de la receta",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "§3.13 sin la prohibición «no cambia la receta 16.4»"
+   ]
+  },
+  {
+   "Guard": "G6",
+   "Mutant": "las dos líneas del Owner fundidas en una",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "§7 no tiene exactamente dos líneas del Owner (1)"
+   ]
+  },
+  {
+   "Guard": "G6",
+   "Mutant": "línea (b) retirada",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "§7 no tiene exactamente dos líneas del Owner (1)"
+   ]
+  },
+  {
+   "Guard": "G6",
+   "Mutant": "línea (a) sin la exclusión de D.5",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-ADR0046-9-FX02 sin «excluye la producción, cualquier otra unidad, escenario, rol»"
+   ]
+  },
+  {
+   "Guard": "G6",
+   "Mutant": "línea (b) reutiliza A2-P2",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-CONTROLLER-MEDICION-CONSUMO sin «fuera de A2-P2»"
+   ]
+  },
+  {
+   "Guard": "G6",
+   "Mutant": "blob del instrumento cambiado en la línea (b)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-CONTROLLER-MEDICION-CONSUMO sin «con el instrumento de blob 9a829b0eeb1210238052b1feac06cfa8f»"
+   ]
+  },
+  {
+   "Guard": "G6",
+   "Mutant": "línea (a) autoriza una medición",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-ADR0046-9-FX02 sin «no autoriza ninguna invocación ni consumo»"
+   ]
+  },
+  {
+   "Guard": "G6",
+   "Mutant": "línea (b) con el nombre de la (a)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-ADR0046-9-FX02 sin «determinación OWNER-RESERVED»"
+   ]
+  },
+  {
+   "Guard": "G6",
+   "Mutant": "trío cambiado en la línea (b) (AppVersion)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A6-CONTROLLER-MEDICION-CONSUMO sin «para el trío exacto d13914ced6c7af174d8d638db938284231227312»"
+   ]
+  },
+  {
+   "Guard": "G7",
+   "Mutant": "blob del instrumento cambiado en §3.3",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py: blob en A-6 9a829b0eeb12 distinto del fijado 9a829b0eeb12"
+   ]
+  },
+  {
+   "Guard": "G7",
+   "Mutant": "SHA-256 del aceptante cambiado en §3.3",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py: SHA-256 en A-6 distinto del contenido del blob en la base"
+   ]
+  },
+  {
+   "Guard": "G7",
+   "Mutant": "fila de la especificación retirada de §3.3",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "la tabla de §3.3 no fija exactamente el instrumento, el aceptante y la especificación: ['docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py', 'docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py']"
+   ]
+  },
+  {
+   "Guard": "G7",
+   "Mutant": "e2e-summary con otro blob de herramienta",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "e2e-summary.json con blobs de herramienta o aceptante distintos de los fijados"
+   ]
+  },
+  {
+   "Guard": "G8",
+   "Mutant": "A-6 declarada AGREED en §11",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "declaración prohibida en esta preparación: A-6 declarada AGREED"
+   ]
+  },
+  {
+   "Guard": "G8",
+   "Mutant": "frase de §76.5 retirada de la cabecera",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "cabecera sin la frase de decisiones §76, punto 5"
+   ]
+  },
+  {
+   "Guard": "G8",
+   "Mutant": "frase de §76.5 retirada de §11",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "§11 sin la frase de decisiones §76, punto 5"
+   ]
+  },
+  {
+   "Guard": "G8",
+   "Mutant": "Coordinator = AGREED en §11",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "declaración prohibida en esta preparación: Coordinator = AGREED"
+   ]
+  },
+  {
+   "Guard": "G8",
+   "Mutant": "C-24 PASS declarado",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "declaración prohibida en esta preparación: C-24 PASS declarado"
+   ]
+  },
+  {
+   "Guard": "G8",
+   "Mutant": "estado AGREED",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "cabecera sin «State: PROPUESTA. No aplicada»"
+   ]
+  },
+  {
+   "Guard": "G8",
+   "Mutant": "excepción declarada vigente",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "declaración prohibida en esta preparación: excepción declarada vigente"
+   ]
+  },
+  {
+   "Guard": "G8",
+   "Mutant": "A-6 declarada aplicada",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "declaración prohibida en esta preparación: A-6 declarada aplicada"
+   ]
+  },
+  {
+   "Guard": "G5B",
+   "Mutant": "ToolBlob de la autoprueba distinto",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "ToolBlob de la autoprueba distinto del blob de a6-guards.py"
+   ]
+  },
+  {
+   "Guard": "G5B",
+   "Mutant": "autoprueba con Result FAIL",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "a6-selftest.json con Result FAIL"
+   ]
+  }
+ ],
+ "Summary": {
+  "Mutants": 83,
+  "Killed": 83,
+  "NotApplied": 0,
+  "Survivors": [],
+  "ControlFailures": [],
+  "ByGuard": {
+   "G1": "16/16",
+   "G2": "8/8",
+   "G3": "9/9",
+   "G4": "10/10",
+   "G5": "18/18",
+   "G6": "8/8",
+   "G7": "4/4",
+   "G8": "8/8",
+   "G5B": "2/2"
+  }
+ },
+ "Result": "PASS",
+ "Mode": "SELF_TEST",
+ "Repo": "base 108d4ca1a395c64c43cfae4f17f5854fe2d01536",
+ "ToolBlob": "c5cc6168d4a29f94623a8fab90a2d4f5f8df9ffa",
+ "A6TextBlob": "eac473c0d2e58cf1c4594f48a8816b3833af6509"
+}
