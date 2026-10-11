@@ -3675,3 +3675,18 @@ solo desde artefactos custodiados.
 - **Objeto:** A-5 blob `ad94ceed` (commit de publicación `bf2cf857`, guardas `run` PASS); celda de revisión vigente (`claude-cli` 2.1.293 `8693c4a0…`,
   CLAUDE-CLI-I62 = A). Se preparan el kit y la revisión, con los ocho temas de §72.2.
 - **Controller:** comparación de las opciones A, B y C con la evidencia ya custodiada; ninguna invocación; la sonda 2 sigue HELD.
+
+## 134. Controller: opciones reales con evidencia de los eventos custodiados, sin invocaciones (decisiones §72, punto 3)
+
+- **Mecanismos** ([análisis](I-62-F6/FX-02/s72/controller-options.md)):
+  - **Omisiones:** las dos corridas pararon a los ~100 s de 600, con ~12-13 k tokens de salida (solo ~2,5 k de razonamiento), una respuesta de ~24,7 k
+    caracteres y un texto de sonda que empezaba con «Tiempo limitado». Apunta al diseño de la medición, no al runtime.
+  - **UTF-8:** con `cmd.exe` el transporte es correcto (`type` entrega `0xf1`) y falla la salida del modelo (escapes ` f3`). Con el `pwsh` nativo
+    el transporte falla (U+FFFD ya en la salida cruda del comando).
+- **Opciones:**
+  - A, una celda alternativa ya autorizada: no existe;
+  - B, la sonda 2 por disposición ordinaria: la única ejecutable sin enmienda. Medición conjunta y aligerada, sin presión de tiempo, sin agregar los
+    negativos y con la comprobación de UTF-8 como paso explícito;
+  - C, un cambio de la receta (UTF-8 o `cmd.exe` en la vía normal): A-n material, solo si B demuestra que la celda no puede fijar UTF-8.
+- **Enmienda nueva:** hoy no hay evidencia suficiente para proponer una A-6.
+
