@@ -1,0 +1,59 @@
+I-65 — Owner Disposition: F4-T3 C-08 and Codex Budget
+Continúa I-65 desde el estado reportado en `76db7642`.
+1. Decisión del Owner
+OPTION A — APPROVED WITH CONDITIONS.
+Reconozco que el Worker incumplió la condición C-08 al ejecutar `python --version` después de completar los commits RED/GREEN.
+Esta desviación queda aceptada exclusivamente para la ejecución histórica de F4-T3, bajo los hechos comprobados:
+
+* La invocación fue posterior al commit GREEN.
+* No modificó archivos del repositorio.
+* No cambió las pruebas ni el producto.
+* El árbol permaneció limpio.
+* El SHA verificado sigue siendo `76db7642`.
+* El CI del GREEN está en verde.
+
+La aceptación de la desviación no implica que C-08 quede eliminada o debilitada para ejecuciones futuras.
+2. Autoridad y verificación
+Autorizo una nueva verificación del Controller sobre el mismo SHA, incorporando esta disposición explícita del Owner.
+No modifiques retroactivamente la salida anterior.
+Registra que el resultado histórico fue EXECUTION_BLOCKED/STOP y que su combinación con 14 comprobaciones en PASS incumplió la regla mecánica de coherencia de README §8.
+La nueva ejecución debe producir una clasificación coherente con el protocolo vigente.
+Si el Controller vuelve a devolver una salida inválida o determina que la disposición del Owner no puede resolver C-08 sin una modificación formal de autoridad, detente.
+No fuerces manualmente EXECUTION_VERIFIED ni modifiques el protocolo I-61 desde I-65.
+3. Presupuesto
+Codex invocation cap = 30 para F4.
+Este límite sustituye el presupuesto anterior de 28.
+No se reinicia el contador: permanecen registradas las 15 invocaciones consumidas.
+El incremento se autoriza exclusivamente para terminar F4.
+Si el presupuesto vuelve a ser insuficiente, solicita autorización antes de excederlo.
+4. Continuación
+Si T3 recibe una verificación válida:
+
+1. Registra la disposición del Owner y la evidencia de verificación.
+2. Cierra la cadena T3 conforme a I-61.
+3. Continúa con T4 y T5 dentro del alcance previamente aprobado.
+4. Conserva las condiciones de parada y los controles negativos.
+5. Completa las pruebas y la revisión independiente del Architect.
+6. Detente antes de cualquier ejecución del adaptador en RAM Elements.
+
+No ejecutes todavía la validación real de F4 ni declares un Candidato de hito sin cumplir los requisitos de ingeniería pendientes.
+5. Seguimiento de la desviación
+Registra las invocaciones de Python no autorizadas como un problema recurrente del mecanismo de ejecución.
+Prepara una propuesta separada para I-62 sobre controles preventivos del entorno del Worker, sin modificar la infraestructura desde I-65.
+Distingue entre una infracción de procedimiento sin efectos observados y una violación con consecuencias reales.
+6. Entregable
+Al completar la implementación permitida de F4, informa:
+
+1. Resultado de la nueva verificación de T3.
+2. Estado de T4 y T5.
+3. Consumo final de invocaciones Codex.
+4. Resultado de CI y pruebas.
+5. Hallazgos del Architect.
+6. Desviaciones del protocolo.
+7. Riesgos pendientes.
+8. Estado de validación de ingeniería.
+9. Requisitos para ejecutar RAM Elements.
+10. Recomendación de continuación.
+
+IMPLEMENTATION AUTHORIZATION = F4 ONLY.
+No avances a F5 ni amplíes el alcance del Freeze.

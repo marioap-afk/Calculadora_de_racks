@@ -1,0 +1,19 @@
+{
+ "field": "delegation.AllowedWriteScope",
+ "excluded": "src/RackCad.Application/StructuralAnalysis/Providers/RamElements/RamDumpDiagnosticCodes.cs",
+ "from": [
+  "src/RackCad.Application/StructuralAnalysis/Providers/RamElements/",
+  "src/RackCad.Application/StructuralAnalysis/StructuralReadback.cs",
+  "tests/RackCad.Tests/StructuralAnalysis/"
+ ],
+ "to": [
+  "src/RackCad.Application/StructuralAnalysis/Providers/RamElements/RamDumpPayload.cs",
+  "src/RackCad.Application/StructuralAnalysis/Providers/RamElements/RamDumpReader.cs",
+  "src/RackCad.Application/StructuralAnalysis/Providers/RamElements/RamDumpScriptFactory.cs",
+  "src/RackCad.Application/StructuralAnalysis/Providers/RamElements/RamDumpScriptTemplate.cs",
+  "src/RackCad.Application/StructuralAnalysis/Providers/RamElements/RamStrictJson.cs",
+  "src/RackCad.Application/StructuralAnalysis/Providers/RamElements/RamTransferReaders.cs",
+  "src/RackCad.Application/StructuralAnalysis/StructuralReadback.cs",
+  "tests/RackCad.Tests/StructuralAnalysis/"
+ ]
+}

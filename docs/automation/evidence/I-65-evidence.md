@@ -898,3 +898,75 @@ Custodia:
 | `F4-T2-SOURCE-ENTRY-nc3/R20261011T181926Z-2487/mutation.json` | `DA1F3B8B5E00512B…` | `511067defe3d` (fin de línea normalizado por Git) |
 | `F4-T2-SOURCE-ENTRY-nc3/R20261011T181926Z-2487/controller-verification.json` | `AF3685CE4DDCC6CB…` | `a9ccbadd6d07` |
 | `F4-T2-SOURCE-ENTRY-nc3/R20261011T181926Z-2487/relay-record.json` | `72F660BB16953834…` | `e81b87748c1c` |
+
+## 40. F4-T3-DUMP-AND-READERS — trabajo, parada, disposición del Owner y verificación (2026-10-11T20:20:51Z)
+
+Contrato sobre `AuthorityRevision` = `BaseSha` = `c73058f8` (CD-I65-F4-13).
+
+| RunId | Fase | Participante | Resultado |
+|---|---|---|---|
+| `R20261011T183102Z-7511` | PLANNING | Codex `gpt-6-luna`/`high` (14) | delegación válida; seis colecciones idénticas; A1-A8 en `pass`; `claude-sonnet-5-5`/`high`, `ROUTINE_IMPLEMENTATION` |
+| `R20261011T183516Z-4d94` | CONTROL nc4 | sin invocación | A3 `fail` y las demás `pass`: oráculo cumplido |
+| `R20261011T183618Z-05a9` | WORK | subagente `claude-sonnet-5-5`/`high` (211 mensajes) | RED `a283e0cc` (CI `38166596013` Core `failure`), GREEN `76db7642` (CI `38166926118` 4/4 `success`); 40 min 50 s; 124 llamadas; `BLOCKED/STOP` C-08 por `python --version` tras los commits (DEV-I65-F4-06) |
+| `R20261011T192137Z-51fd` | VERIFICATION | Codex (15) | `EXECUTION_BLOCKED/STOP` C-08 con 14 `pass`: incoherente con README §8 (INVALID_OUTPUT); histórico sin modificar; STOP al Owner |
+| `R20261011T194727Z-d7ea` | VERIFICATION | Codex (16) | inválida por **P-08** (la sesión leyó el worktree durante la cesión; DEV-I65-F4-07); no se usa |
+| `R20261011T195706Z-dc0b` | VERIFICATION | Codex (17) | **`EXECUTION_VERIFIED`/`NONE`**, 14/14 `pass`, coherente, `VerifiedSha` `76db7642` |
+| `R20261011T200306Z-807c` | CONTROL nc1 | Codex `gpt-6-luna`/`high` (18) | `EXECUTION_BLOCKED/STOP`, `FailureClass` = `Identity`: **oráculo cumplido** |
+| `R20261011T201200Z-f320` | CONTROL nc2 | Codex `gpt-6-luna`/`high` (19) | `EXECUTION_VERIFIED/NONE`, `FailureClass` = `NONE`: **oráculo NO cumplido** (esperado `EXECUTION_BLOCKED/STOP`, `Scope`): DEV-I65-F4-08 |
+| `R20261011T201450Z-b8ab` | CONTROL nc3 | Codex `gpt-6-luna`/`high` (20) | `EXECUTION_REWORK_REQUIRED/REWORK`, `FailureClass` = `FreeText`: **oráculo cumplido** |
+
+- **Cambios:** siete archivos nuevos del proveedor (`RamDumpScriptTemplate.cs`, `RamDumpScriptFactory.cs`, `RamDumpPayload.cs`, `RamDumpReader.cs`,
+  `RamTransferReaders.cs`, `RamStrictJson.cs`, `RamDumpDiagnosticCodes.cs`), `StructuralReadback.cs` (tipos neutrales) y siete archivos de
+  pruebas `StructuralAnalysisRamElementsDump*`; ninguna prueba existente cambió; la exención de INV-14 sigue en cuatro rutas.
+- **Ida y vuelta de REF-CANT-01:** 8 nudos, 7 miembros y 3 cargas; diferencia máxima 3.55e-15 (tolerancia 1e-9).
+- **Procesos:** `git.exe` efímeros de la aplicación de escritorio en salidas y entradas; releídos por PID: terminados (falsos P-02).
+- **Invocaciones de Codex en F4:** 20 de 30 (tope del Owner desde su disposición de F4-T3). `attempts` = 2.
+
+Custodia:
+
+| Archivo (bajo `I-65-pilot/`) | SHA-256 transitorio | Blob |
+|---|---|---|
+| `F4-T3-DUMP-AND-READERS/R20261011T183102Z-7511/gate-contract.json` | `DDE1B854DC2018F6…` | `2d99d452ed60` |
+| `F4-T3-DUMP-AND-READERS/R20261011T183102Z-7511/prompt.md` | `72991BAAB1424B2E…` | `29c9579ef50e` |
+| `F4-T3-DUMP-AND-READERS/R20261011T183102Z-7511/delegation.json` | `7C9BE4C27967DF3D…` | `f4845a2971fd` |
+| `F4-T3-DUMP-AND-READERS/R20261011T183102Z-7511/acceptance.json` | `F63ED8E87F2A0609…` | `73d1783fc942` |
+| `F4-T3-DUMP-AND-READERS/R20261011T183102Z-7511/exactness.json` | `D0CBC2F19D9B1FBA…` | `de0f1687cb6b` (fin de línea normalizado por Git) |
+| `F4-T3-DUMP-AND-READERS/R20261011T183102Z-7511/relay-record.json` | `4080C958463FC1C7…` | `2db72d9e7114` |
+| `F4-T3-DUMP-AND-READERS-nc4/R20261011T183516Z-4d94/delegation.json` | `4508D1E104D8A69B…` | `c15e335eb734` |
+| `F4-T3-DUMP-AND-READERS-nc4/R20261011T183516Z-4d94/acceptance.json` | `3E2CF552A67987E0…` | `2df92c858dd3` |
+| `F4-T3-DUMP-AND-READERS-nc4/R20261011T183516Z-4d94/relay-record.json` | `EF8C91330560FC5A…` | `732e504bbaff` |
+| `F4-T3-DUMP-AND-READERS/R20261011T183618Z-05a9/prompt.md` | `F86240C6A33098D5…` | `5bfa6053328d` |
+| `F4-T3-DUMP-AND-READERS/R20261011T183618Z-05a9/worker-handoff.json` | `0FDD39EFFF185162…` | `0066972508d7` (fin de línea normalizado por Git) |
+| `F4-T3-DUMP-AND-READERS/R20261011T183618Z-05a9/relay-record.json` | `5701FC44E0BFA30F…` | `920396b3ec0a` |
+| `F4-T3-DUMP-AND-READERS/R20261011T192137Z-51fd/prompt.md` | `5595557372B499B0…` | `ca742126ab99` |
+| `F4-T3-DUMP-AND-READERS/R20261011T192137Z-51fd/controller-verification.json` | `6D05ABFE1A28D5C6…` | `b24c782bf9fb` |
+| `F4-T3-DUMP-AND-READERS/R20261011T192137Z-51fd/relay-record.json` | `3399A3929450224D…` | `0092f4a6849f` |
+| `F4-T3-DUMP-AND-READERS/R20261011T192137Z-51fd/coherence.txt` | `05C529D22BED87E1…` | `7bdc38331def` (fin de línea normalizado por Git) |
+| `F4-T3-DUMP-AND-READERS/R20261011T192137Z-51fd/trx-summary.json` | `F2D3D570FDFF6770…` | `609e4372c418` (fin de línea normalizado por Git) |
+| `F4-T3-DUMP-AND-READERS/R20261011T192137Z-51fd/analysis-f4t3.md` | `7FBF6A9786FD3237…` | `ac70657ef52d` |
+| `F4-T3-DUMP-AND-READERS/R20261011T192137Z-51fd/coordinator-dispositions-f4t3.md` | `B1E6EB54B843A03D…` | `30b80113be4a` |
+| `F4-T3-DUMP-AND-READERS/R20261011T194727Z-d7ea/prompt.md` | `6D33C4DD5FD11EC1…` | `47fd92166d14` |
+| `F4-T3-DUMP-AND-READERS/R20261011T194727Z-d7ea/controller-verification.json` | `923B26501FE5D229…` | `6d438e769875` |
+| `F4-T3-DUMP-AND-READERS/R20261011T194727Z-d7ea/relay-record.json` | `59AFE0BAE196561A…` | `975e43683518` |
+| `F4-T3-DUMP-AND-READERS/R20261011T194727Z-d7ea/coherence.txt` | `B6BEA444F6DA957C…` | `2969a6fa566f` (fin de línea normalizado por Git) |
+| `F4-T3-DUMP-AND-READERS/R20261011T194727Z-d7ea/analysis-f4t3-p08.md` | `CB203D3B58200293…` | `6f939d897839` |
+| `F4-T3-DUMP-AND-READERS/R20261011T195706Z-dc0b/prompt.md` | `33A2CE32EA26F50B…` | `5fa0db752e6b` |
+| `F4-T3-DUMP-AND-READERS/R20261011T195706Z-dc0b/controller-verification.json` | `72EAA5CD9BFB8294…` | `2f637bb3ec23` |
+| `F4-T3-DUMP-AND-READERS/R20261011T195706Z-dc0b/relay-record.json` | `520D13B6A0223C3C…` | `6f156f551b33` |
+| `F4-T3-DUMP-AND-READERS/R20261011T195706Z-dc0b/coherence.txt` | `B6BEA444F6DA957C…` | `2969a6fa566f` (fin de línea normalizado por Git) |
+| `F4-T3-DUMP-AND-READERS/R20261011T195706Z-dc0b/trx-summary.json` | `F2D3D570FDFF6770…` | `609e4372c418` (fin de línea normalizado por Git) |
+| `F4-T3-DUMP-AND-READERS/R20261011T195706Z-dc0b/owner-disposition-f4t3.original.txt` | `66124E3CCC090F9D…` | `77d4fd1a61e0` |
+| `F4-T3-DUMP-AND-READERS/R20261011T195706Z-dc0b/scope-mechanical.json` | `0861836B5EB5CB00…` | `84eed024693b` (fin de línea normalizado por Git) |
+| `F4-T3-DUMP-AND-READERS-nc1/R20261011T200306Z-807c/prompt.md` | `D17848F5B2DCA878…` | `e78a409ec2cd` |
+| `F4-T3-DUMP-AND-READERS-nc1/R20261011T200306Z-807c/mutation.json` | `0F175497DAE0FBBA…` | `44aaa395b87f` (fin de línea normalizado por Git) |
+| `F4-T3-DUMP-AND-READERS-nc1/R20261011T200306Z-807c/controller-verification.json` | `429BDB095A743EF3…` | `65c414885bd1` |
+| `F4-T3-DUMP-AND-READERS-nc1/R20261011T200306Z-807c/relay-record.json` | `16E6311C0D75A154…` | `fc96a31ec4dd` |
+| `F4-T3-DUMP-AND-READERS-nc2/R20261011T201200Z-f320/prompt.md` | `41F2A2465876D5A0…` | `6b242aa554aa` |
+| `F4-T3-DUMP-AND-READERS-nc2/R20261011T201200Z-f320/mutation.json` | `ED72D40D35641F28…` | `1fdee909f870` (fin de línea normalizado por Git) |
+| `F4-T3-DUMP-AND-READERS-nc2/R20261011T201200Z-f320/controller-verification.json` | `ECA183E07E0FC5F5…` | `730fcb097877` |
+| `F4-T3-DUMP-AND-READERS-nc2/R20261011T201200Z-f320/relay-record.json` | `5E9618BD1578FAF7…` | `0aaf4ddf9f10` |
+| `F4-T3-DUMP-AND-READERS-nc2/R20261011T201200Z-f320/scope-mechanical.json` | `0F90202B3039DA33…` | `07e0e99ce39b` (fin de línea normalizado por Git) |
+| `F4-T3-DUMP-AND-READERS-nc3/R20261011T201450Z-b8ab/prompt.md` | `5FF23A2ACDCE527E…` | `89ee1c108a4c` |
+| `F4-T3-DUMP-AND-READERS-nc3/R20261011T201450Z-b8ab/mutation.json` | `DA1F3B8B5E00512B…` | `511067defe3d` (fin de línea normalizado por Git) |
+| `F4-T3-DUMP-AND-READERS-nc3/R20261011T201450Z-b8ab/controller-verification.json` | `4E3C3143921E9733…` | `f7abf7b67691` |
+| `F4-T3-DUMP-AND-READERS-nc3/R20261011T201450Z-b8ab/relay-record.json` | `55E4F156F772D7AF…` | `331d4b08bda0` |
