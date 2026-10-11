@@ -42,7 +42,7 @@ namespace RackCad.Application.Systems.Cantilever
         /// <summary>The steepest arm the first version admits (IDL-10), in degrees from the horizontal.</summary>
         private const double MaximumArmInclinationDegrees = 10.0;
 
-        private const string KindName = "Cantilever";
+        internal const string KindName = "Cantilever";
         private const string SideToken = "PositiveY";
         private const string FootId = "COL.FOOT";
         private const string TopId = "COL.TOP";
@@ -384,6 +384,28 @@ namespace RackCad.Application.Systems.Cantilever
             var world = (placement.Frame.AxisX * local.X) + (placement.Frame.AxisY * local.Y);
 
             return new StructuralDirection(world.X + 0.0, world.Y + 0.0, world.Z + 0.0);
+        }
+
+        /// <summary>What the idealisation does with one piece the resolver produces for a station (A65-F1-12, CD-I65-F1-14).</summary>
+        internal enum StationPieceDisposition
+        {
+            Modelled = 1,
+            NotModelled = 2,
+            Unclassified = 3,
+        }
+
+        /// <summary>Skeleton of the pure classification of a station piece by its role; it is completed in the next commit.</summary>
+        internal static StationPieceDisposition Classify(CantileverMemberRole role) => StationPieceDisposition.NotModelled;
+
+        /// <summary>Skeleton of the inventory check of a station; it is completed in the next commit.</summary>
+        internal static IReadOnlyList<StructuralDiagnostic> InventoryDiagnostics(IEnumerable<KeyValuePair<string, CantileverMemberRole>> pieces) =>
+            new StructuralDiagnostic[0];
+
+        /// <summary>Skeleton of the bounded re-orthogonalisation of the depth axis; it is completed in the next commit.</summary>
+        internal static bool TryPerpendicular(StructuralDirection depth, double memberY, double memberZ, out StructuralDirection result)
+        {
+            result = Perpendicular(depth, memberY, memberZ);
+            return true;
         }
 
         private static string ArmId(int level) => "ARM." + level + "." + SideToken;

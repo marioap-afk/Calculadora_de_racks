@@ -107,8 +107,9 @@ namespace RackCad.Tests
 
             var result = Build(design);
 
+            // F4-T2 (A65-F1-11): a block of the whole line has its own code and a subject that names the line.
             AssertNoModel(result, StructuralExportOutcome.Unsupported);
-            Assert.Contains(result.Diagnostics, d => d.Code == StructuralDiagnosticCodes.SourceStationBlocked);
+            Assert.Contains(result.Diagnostics, d => d.Code == StructuralDiagnosticCodes.SourceLineBlocked && d.Subject == "line");
         }
 
         [Fact]
@@ -121,8 +122,10 @@ namespace RackCad.Tests
 
             var result = Build(design);
 
+            // F4-T2 (A65-F1-11): the resolver blocks the whole line when one station cannot be resolved, so the source reports
+            // the line, not "station-N".
             AssertNoModel(result, StructuralExportOutcome.Unsupported);
-            Assert.Contains(result.Diagnostics, d => d.Code == StructuralDiagnosticCodes.SourceStationBlocked);
+            Assert.Contains(result.Diagnostics, d => d.Code == StructuralDiagnosticCodes.SourceLineBlocked && d.Subject == "line");
         }
 
         [Theory]

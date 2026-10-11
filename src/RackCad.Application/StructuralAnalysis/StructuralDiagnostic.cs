@@ -114,5 +114,13 @@ namespace RackCad.Application.StructuralAnalysis
         public const string NodeOutsideColumn = "NODE-OUTSIDE-COLUMN";
         public const string NodeSeparation = "NODE-SEPARATION";
         public const string LoadTargetUnknown = "LOAD-TARGET-UNKNOWN";
+        public const string SourceLineBlocked = "SOURCE-LINE-BLOCKED";
+        public const string SourceDesignAbsent = "SOURCE-DESIGN-ABSENT";
+        public const string ModelNoNodes = "MODEL-NO-NODES";
+        public const string ModelNoMembers = "MODEL-NO-MEMBERS";
+        public const string SupportDuplicateNode = "SUPPORT-DUPLICATE-NODE";
+        public const string AssumptionUndeclared = "ASSUMPTION-UNDECLARED";
+        public const string PeralteReorthogonalisation = "PERALTE-REORTHOGONALISATION";
+        public const string StationPieceUnclassified = "STATION-PIECE-UNCLASSIFIED";
     }
 }
