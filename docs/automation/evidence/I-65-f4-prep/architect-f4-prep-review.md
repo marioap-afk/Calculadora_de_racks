@@ -5,7 +5,7 @@
   preparación de F4, la Proposal V3.1 (Frozen), ADR-0050, CD-I65-F1-19/20, CD-I65-F3-01..17, los golden de F1 y F3, P1 y LIFECYCLE §7-§8.
   Recalculó los números con `python -I` y releyó en pasivo los archivos de la base de RAM (RAM sin ejecutar; `RAMElements.exe`
   `7dcb4855…7970`). Sin cambios en el repositorio.
-- Texto: transcripción fiel del informe del subagente.
+- Texto: resumen fiel del informe del subagente.
 
 ## Veredicto
 
@@ -50,3 +50,15 @@ OBSERVATIONS.
 | A65-F4P-11 | OPTIONAL | AC-F4 omite LIFECYCLE §7 puntos 5 y 7 | añadirlos |
 | A65-F4P-12 | OPTIONAL | Inconsistencias menores (DIF-01..03/04; R-10 → T4-07; fila de catálogo en §1.3; literal de la advertencia en inglés; `owner_decisions_open`) | corregir por diff |
 | A65-F4P-13 | OPTIONAL | CD-I65-F3-16 incluye A65-F1-03, 06, 10, 12 como entradas obligatorias de F4; §5.2 aplicaba la ruta condicional de CD-I65-F1-20 | disposición expresa en el contrato de F4 |
+
+## Cierre por diff (sobre `d2539be2`)
+
+**CONFORMANT WITH OBSERVATIONS.** Sin REQUIRED abierto: A65-F4P-01..13 **CLOSED** con evidencia por línea. Alcance comprobado: el diff
+`8992fe6c..d2539be2` solo toca `docs/`; Freeze `4e6e1feb`, ADR-0050 `c18def42` y la tabla de mapeo sin cambios; re-comprobación de las
+ramas paralelas reproducida. Tres observaciones nuevas, OPTIONAL, que no cambian el Freeze ni bloquean el informe:
+
+| ID | Sev. | Enunciado (resumen) | Disposición del Coordinator |
+|---|---|---|---|
+| A65-F4P-N01 | OPTIONAL | El caso positivo de T4-24 no protegía CD-I65-F1-14 (la línea completa trae base, placas, separadores, arriostramientos y cartelas que no se modelan) | corregido: positiva = línea completa de `REF-CANT-01` → `Valid` con el golden sin cambio; negativa = solo un miembro desconocido en el plano |
+| A65-F4P-N02 | OPTIONAL | A65-F1-03, 10 y 12 tocan archivos de F1 no nombrados en OD-F4-01; T4-23 sin resultado del caso negativo | corregido: OD-F4-01 nombra `CantileverStructuralModelSource.cs` y `StructuralModelBuilder.cs`; T4-23 → `Unsupported` (IDL-08, 0.01°) |
+| A65-F4P-N03 | OPTIONAL | (a) subpaso «F3» choca con el gate F3; (b) la condición de hashes para reutilizar no se extendía a la hoja §1.6; (c) leer combinaciones por la API no está medido; (d) «transcripción» frente a «resumen» en esta custodia | corregido: subpasos Fa-Fc; OD-F4-11 incluye la hoja; combinaciones en M-05 y T4-12 con comprobación visual de respaldo; «resumen fiel» |

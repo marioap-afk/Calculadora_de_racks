@@ -696,3 +696,12 @@ Trabajo de la preparación (sin código de producción, sin RAM):
   I-52 `fb6b5648`: 0 archivos en las áreas de I-65 (incluido `src/RackCad.Plugin/RackCad.Plugin.csproj`), común solo `docs/ROADMAP.md`,
   `merge-tree` limpio contra la punta de I-65.
 - Siguiente: cierre por diff del Architect sobre el commit de estas correcciones.
+
+## 34. Preparación de F4 completa (2026-10-11T09:59:16Z)
+
+- **Cierre por diff del Architect** sobre `d2539be2`: CONFORMANT WITH OBSERVATIONS; A65-F4P-01..13 CLOSED; A65-F4P-N01..N03 (OPTIONAL)
+  corregidos por diff en este commit (CD-I65-F4P-07).
+- **CI de `d2539be2`:** se lee tras el push de este commit junto con el propio.
+- **Métricas de la preparación:** 0 invocaciones de Codex (`config.toml` sin cambio); 2 revisiones del Architect (revisión y cierre por
+  diff); 1 pre-lectura pasiva de la base de RAM; 0 aperturas de RAM; 0 cambios en `src/`, `tests/` o `assets/`; `origin/main` sin avance.
+- **Estado:** preparación completa (CD-I65-F4P-08); IMPLEMENTATION AUTHORIZATION = NO; espera de las decisiones OD-F4-01..11 del Owner.

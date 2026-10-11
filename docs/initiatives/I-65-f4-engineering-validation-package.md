@@ -312,10 +312,11 @@ exclusivo, D-11), nunca se reutiliza; D7 cerrar sin guardar (salvo decisión del
 
 **E. Modelo manual** (OV-I65-01, parte 2): E1 RAM, File > New; unidades de la interfaz lb-in; E2 construir §2.1-§2.5; E3 volcado antes de
 analizar, con su propio script de volcado en carpeta nueva; si aparece «los resultados se perderán», responder **No** y STOP; E4 medición
-M-05: registrar cómo lee la API lo creado a mano (categoría del caso, modo de posición de la carga, giro de las columnas, banderas).
+M-05: registrar cómo lee la API lo creado a mano (categoría del caso, modo de posición de la carga, giro de las columnas, banderas y
+combinaciones).
 
-**F. Comparación y evaluación de la matriz §4**: F1 comparador de consola sobre los dos volcados, el manifiesto y la lectura de vuelta;
-F2 cada fila de §4 la evalúa la fuente que la puede leer (la API no expone propiedades de sección ni de material, P1):
+**F. Comparación y evaluación de la matriz §4**: Fa comparador de consola sobre los dos volcados, el manifiesto y la lectura de vuelta;
+Fb cada fila de §4 la evalúa la fuente que la puede leer (la API no expone propiedades de sección ni de material, P1):
 
 | Fila de la matriz §4 | Evaluador | Evidencia | Cuándo |
 |---|---|---|---|
@@ -328,11 +329,11 @@ F2 cada fila de §4 la evalúa la fuente que la puede leer (la API no expone pro
 | Punto cardinal, offsets, factores de rigidez, axial, resorte | comparador (y lectura de vuelta del generado) | volcados; `ram-readback.json` | OV-I65-01 |
 | Liberaciones y apoyos (banderas tras D-04) | comparador | volcados | OV-I65-01 |
 | Cargas: valor (0.1 %), posición (0.02 in, comparada en pulgadas tras normalizar el %), dirección (exacta) | comparador | volcados | OV-I65-01 |
-| Combinaciones: ninguna en ambos | comparador | volcados | OV-I65-01 |
+| Combinaciones: ninguna en ambos | comparador, si el volcado puede leerlas (la lectura de combinaciones por la API no está medida: M-05 y T4-12); si no, comprobación visual del ingeniero en la interfaz | volcados o captura | OV-I65-01 |
 | Casos sin cargas (p. ej. `CM`) | comparador: se ignoran | volcados | OV-I65-01 |
 
 La categoría del caso se comprueba como `"OTHER"` en el volcado del generado; en el manual es informativa (la API nunca leyó una categoría
-creada en la interfaz). F3 la matriz es PASS cuando el informe del comparador y la hoja firmada lo son, salvo las filas informativas; todo
+creada en la interfaz). Fc la matriz es PASS cuando el informe del comparador y la hoja firmada lo son, salvo las filas informativas; todo
 delta fuera de tolerancia se registra y exige el reconocimiento del Owner.
 
 **G. Inyecciones de fallo** (paquetes de la herramienta de pruebas, no del producto):

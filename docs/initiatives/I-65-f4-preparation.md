@@ -111,7 +111,7 @@ falso, como el de F3 (evidencia, no RAM; INV-14 prohíbe Python en la suite); (c
 | T4-09 | Lectura única del sobre (A65-F1-08) | mismos bytes → misma `SourceFingerprint` | cambio solo de espacios → huella distinta; diseño re-serializado no admitido como entrada |
 | T4-10 | Excepciones (A65-F1-09) | — | excepción de la fuente o del resolver → `Unavailable`, sin paquete |
 | T4-11 | Diagnóstico de bloqueo (A65-F1-11) | bloqueo de línea con su propio código | informado como `station-N` → falla |
-| T4-12 | Plantilla del volcado (D-11) | imports `ramelements`, `json`, `math`; ruta embebida; archivo exclusivo; `units.set` solo si el par no es `LB_IN`, con restauración en `try/finally` | `analyze`, `save`, `new`, `os.*` o `units.set` incondicional → falla |
+| T4-12 | Plantilla del volcado (D-11) | imports `ramelements`, `json`, `math`; ruta embebida; archivo exclusivo; `units.set` solo si el par no es `LB_IN`, con restauración en `try/finally`; combinaciones leídas si la API las expone (no medido: si no, comprobación visual en el procedimiento) | `analyze`, `save`, `new`, `os.*` o `units.set` incondicional → falla |
 | T4-13 | Lector del volcado | volcado en `LB_IN` → aceptado | otro par → `Invalid("unit pair")`; volcado `FAILED` → rechazo; esquema roto → `Invalid` |
 | T4-14 | Comparador, INV-13, A65-F3-10 y R-14 | volcados iguales → PASS; casos sin cargas ignorados; categoría del manual distinta → solo informativa; misma posición dada en % y en distancia → PASS | +1 mm; sección cambiada; eje local invertido (columna con +90°); carga ×1000; emparejamiento ambiguo; volcado `FAILED`; huella distinta (`STALE`); par distinto de `LB_IN`; categoría del **generado** distinta de `"OTHER"`; miembro con nudos invertidos → FAIL o rechazo |
 | T4-15 | Bordes de tolerancia de §4 | 0.019 in; 0.09°; 0.09 % de carga → PASS | 0.021 in; 0.11°; 0.11 % → FAIL |
@@ -122,8 +122,8 @@ falso, como el de F3 (evidencia, no RAM; INV-14 prohíbe Python en la suite); (c
 | T4-20 | Herramienta de inyección de fallos (OV-05, 06, 07) | cada paquete difiere del válido solo en el campo inyectado | el producto no puede emitir esos paquetes (guarda) |
 | T4-21 | Estado de los rechazos de puerta (A65-F3-03) | el detalle de todo rechazo previo a escribir empieza por `gate:` (el estado sigue siendo `FAILED — DISCARD MODEL`) | un rechazo de puerta sin `gate:` → falla |
 | T4-22 | Familias admitidas (A65-F1-03) | W, HSS-RECT y S → admitidas | una familia fuera de la lista → `Unsupported` |
-| T4-23 | Re-ortogonalización acotada (A65-F1-10) | componente eliminada ≤ el límite → igual que hoy | componente mayor → diagnóstico, sin modelo |
-| T4-24 | Miembros desconocidos (A65-F1-12) | estación con columna y brazos `PositiveY` → `Valid` | un miembro estructural en el plano que la fuente no conoce → fallo cerrado |
+| T4-23 | Re-ortogonalización acotada (A65-F1-10) | componente eliminada ≤ el límite (tolerancia angular de IDL-08, 0.01°) → igual que hoy | componente mayor → `Unsupported` (IDL-08), sin modelo |
+| T4-24 | Miembros desconocidos (A65-F1-12) | la línea completa de `REF-CANT-01` (con base, placas, separadores, arriostramientos y cartelas, que no se modelan: CD-I65-F1-14) → `Valid` con el golden de INV-06 sin cambio | **solo** un miembro estructural en el plano que la fuente no conoce → fallo cerrado |
 
 ### 6.2 Simulacro fuera de la suite (módulo `ramelements` falso; no es RAM)
 
@@ -148,7 +148,7 @@ Reejecutar S1-S6 del simulacro de F3 sobre la plantilla corregida y añadir:
 | M-02 | descripción leída | registrada | — |
 | M-03 | banderas parciales leídas | iguales a las escritas | — |
 | M-04 | par de unidades | `units.current` inicial y final registrados; interfaz sin cambio | — |
-| M-05 | lectura por la API del modelo manual (R-14) | categoría del caso, modo de posición de la carga, giro de las columnas y banderas registrados | — |
+| M-05 | lectura por la API del modelo manual (R-14) | categoría del caso, modo de posición de la carga, giro de las columnas, banderas y combinaciones registrados | — |
 | OV-I65-01 | §3 C-F del paquete de ingeniería | `READBACK OK`; matriz §4 PASS según la tabla de evaluadores (paquete §3 F), salvo informativas | — |
 | OV-I65-03 | estación no soportada o sección sin fila en la tabla | — | sin paquete, diagnóstico visible |
 | OV-I65-04 | modelo no vacío (desechable, o el manual ya volcado), paquete nuevo | — | rechazo sin modificar el modelo |
@@ -179,7 +179,7 @@ quedan cubiertos de forma segura dentro de OV-I65-01.
 
 | ID | Decisión | Recomendación del Coordinator |
 |---|---|---|
-| OD-F4-01 | Autorizar la implementación de F4, su alcance de rutas y su presupuesto | autorizar con **28** invocaciones de Codex (4 tareas × 6 + 4 de reserva para un ciclo de corrección; en F3 el tope de 14 impidió corregir A65-F3-01 y 02); el alcance nombra `src/RackCad.Plugin/RackCad.Plugin.csproj`, limitado a distribuir la tabla (R-15) |
+| OD-F4-01 | Autorizar la implementación de F4, su alcance de rutas y su presupuesto | autorizar con **28** invocaciones de Codex (4 tareas × 6 + 4 de reserva para un ciclo de corrección; en F3 el tope de 14 impidió corregir A65-F3-01 y 02); el alcance nombra `src/RackCad.Plugin/RackCad.Plugin.csproj`, limitado a distribuir la tabla (R-15), y los archivos de F1 que endurecen A65-F1-03, 10 y 12: `src/RackCad.Application/Systems/Cantilever/CantileverStructuralModelSource.cs` y `src/RackCad.Application/StructuralAnalysis/StructuralModelBuilder.cs` |
 | OD-F4-02 | Designar al ingeniero verificador de las filas (`verifiedBy`), cuándo firma, y **autorizar expresamente abrir RAM** para verificarlas (licencia y perfil de RAM) | antes del Candidato de hito; puede trabajar en paralelo a la implementación |
 | OD-F4-03 | Confirmar Q-O2 = (b): la base de RAM como fuente, con comparación ±0.5 % informativa | confirmar (b) **antes del Candidato**: la pre-lectura no muestra deltas |
 | OD-F4-04 | Oráculo de material: ν o G; y el peso unitario (−0.62 % frente a 490 pcf) | ν o G según la fuente que cite el ingeniero (si solo hay G, reconocer DIF-02); **reconocer** el delta de peso unitario por escrito (V1 no usa peso propio) en lugar de cambiar el valor esperado |
@@ -189,7 +189,7 @@ quedan cubiertos de forma segura dentro de OV-I65-01.
 | OD-F4-08 | Quién opera RAM en las OV (Owner o ingeniero a mano, o Coordinator con Computer Use como en P1) y quién atiende la licencia | Owner o ingeniero a mano para el modelo manual; el Coordinator puede ejecutar los scripts con autorización expresa por corrida |
 | OD-F4-09 | Cómo se obtiene `REF-CANT-01` en un DWG (paso C1) | F4 entrega los pasos para dibujarlo con RackCad con los parámetros de F1 §1; un DWG de referencia, opcional |
 | OD-F4-10 | Base de usuario «Montilla» | el ingeniero la revisa; si contiene los mismos nombres, se excluye de la corrida |
-| OD-F4-11 | Costo del Candidato de hito en F4 más la repetición de OV-I65-01..07 sobre el Candidato final (Freeze §5), y cómo se repite el modelo manual | aceptar el costo (lo fija el Freeze; reducirlo exige al Owner). Para la repetición: reutilizar el volcado manual custodiado si el hash de `RAMElements.exe` y de los archivos de la base no cambiaron y el ingeniero conservó el modelo manual (guardarlo es decisión suya, D-11); si no, reconstruirlo con §2 |
+| OD-F4-11 | Costo del Candidato de hito en F4 más la repetición de OV-I65-01..07 sobre el Candidato final (Freeze §5), y cómo se repite el modelo manual | aceptar el costo (lo fija el Freeze; reducirlo exige al Owner). Para la repetición: reutilizar el volcado manual custodiado **y la hoja firmada §1.6** si el hash de `RAMElements.exe` y de los archivos de la base no cambiaron y el ingeniero conservó el modelo manual (guardarlo es decisión suya, D-11); si no, reconstruirlo con §2 |
 
 ## 9. Recomendación GO / NO-GO
 
