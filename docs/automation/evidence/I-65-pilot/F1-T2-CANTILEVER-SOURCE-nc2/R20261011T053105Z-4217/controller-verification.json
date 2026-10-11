@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T2-CANTILEVER-SOURCE",
+  "RunId": "R20261011T053105Z-4217",
+  "DelegationRunId": "R20261011T044358Z-f76f",
+  "WorkRunId": "R20261011T044815Z-7eae",
+  "Attempt": 0,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-10-11T04:49:17Z y Outcome.OutputWrittenUtc=2026-10-11T05:18:38Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json está presente; TaskId=F1-T2-CANTILEVER-SOURCE, Attempt=0, DelegationRunId=R20261011T044358Z-f76f, RunId=R20261011T044815Z-7eae. OutputWrittenUtc es posterior a Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leídas desde Git las autoridades con AuthorityRevision ff0c57c7125ae268bcb42b2d56c0d5255e9a69ed y MainSha bb0d5522e8411f66a51fdfb3f1f0d0514b737453. La propuesta indica Frozen: yes; AUTOMATION_PLAN §16.9 y README §8 confirman orden y coherencia de las 14 comprobaciones. Las listas de Authorities de delegación y contrato coinciden exactamente."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparación A3-A5: AllowedWriteScope de delegación es subconjunto del contrato; ForbiddenWriteScope de delegación contiene el del contrato; Invariants (10), StopConditions (29), Authorities (18) y RequiredTests coinciden exactamente. RequiredTests exige filtro FullyQualifiedName~RackCad.Tests.StructuralAnalysisCantilever, MinSelected=20 y ExpectRed=true."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "Rama y worktree de la entrega coinciden con la delegación. git rev-parse HEAD y refs/remotes/origin/architecture/interop-analisis-estructural dan 667a3991a106afe4e18c88500f65382e69301c69. merge-base --is-ancestor BaseSha CurrentSha y RedSha CurrentSha devolvieron 0; BaseSha=ff0c57c7125ae268bcb42b2d56c0d5255e9a69ed y RedSha=3134c2fe295c01c8746ab2c577580bc25e57414f."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts registra ls-remote=667a3991a106afe4e18c88500f65382e69301c69 y OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453, igual a MainSha. La corrida actual es push de refs/heads/architecture/interop-analisis-estructural sobre CurrentSha; el registro RED identifica push del mismo ref sobre RedSha. git ls-remote local no produjo salida utilizable en este entorno."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only BaseSha CurrentSha devuelve 8 rutas. Siete están cubiertas por AllowedWriteScope de la delegación (CantileverStructuralModelSource.cs y tests/RackCad.Tests/StructuralAnalysis/); src/RackCad.Application/StructuralAnalysis/StructuralDiagnostic.cs no está cubierta. El contrato permite la carpeta StructuralAnalysis, pero la delegación no. El commit RED modifica StructuralDiagnostic.cs y el GREEN no la modifica. Se activa C-05 (escritura fuera de AllowedWriteScope). El registro de trabajo afirma que los 8 archivos estaban permitidos, lo que contradice la lista de la delegación."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain está vacío; git check-ignore -v confirma que la ruta de entradas del paquete está ignorada por .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun: 38114105131, event=push, ref=refs/heads/architecture/interop-analisis-estructural, head_sha=667a3991a106afe4e18c88500f65382e69301c69, completed/success; los cuatro jobs requeridos terminan success. RemoteFacts.RedRun: 38114028511, push del mismo ref y RedSha, completed/failure; Tests (Domain + Application)=failure. Los TRX corresponden a esas corridas."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX RED: 12,946 resultados, 78 fallidos; 80 coinciden con el filtro y dan 2 pass/78 fail, todos los fallos dentro del filtro y sin fallo de compilación según el registro y resultados de prueba. TRX Core de CurrentSha: 80 seleccionadas/80 pass para el filtro y 12,946/12,946 pass en total. TRX UI: total 1,654, executed/pass 1,637, failed=0; los 17 Skip constan como NotExecuted. git diff RedSha CurrentSha -- tests/ está vacío. ChainRedFiles resultantes: tests/RackCad.Tests/StructuralAnalysis/Fixtures/ref-cant-01.design.json; ref-cant-01.loads.json; StructuralAnalysisCantileverBoundaryTests.cs; StructuralAnalysisCantileverFixtures.cs; StructuralAnalysisCantileverGoldenTests.cs; StructuralAnalysisCantileverIdealisationTests.cs. Revisados en Git los tests y literales frente al golden: colocaciones/nudos y D-04/IDL-01..08 en GoldenTests; INV-07 con SectionTransform y giros/espejo, tolerancias IDL-08 y nudo J fuera del tramo en IdealisationTests; límites IDL-09/10, cargas y huellas INV-09/D-10b/INV-04 en BoundaryTests; apoyos, supuestos y liberaciones D-10 en GoldenTests."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha muestra en ambos commits el trailer literal declarado: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. Modelo efectivo registrado: claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Participant registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high, iguales al modelo y effort solicitados en la delegación; RoutingEnforcement=required."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Escaneo de WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction contra los términos de AUTOMATION_PLAN §16.10: sin coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes informa 64 llamadas, 0 errores de herramienta, 0 denegaciones de permisos o credenciales, 0 avisos de límite y ninguna orden fallida pendiente."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "TriggeredStopConditions": [
+    "C-05"
+  ],
+  "Findings": [
+    "La comprobación Scope falla: StructuralDiagnostic.cs fue modificado en el commit RED, pero no está incluido en AllowedWriteScope de la delegación. El alcance más amplio del contrato no amplía el paquete aceptado.",
+    "El registro de trabajo declara los ocho archivos dentro de alcance; esa afirmación no concuerda con la lista efectiva de AllowedWriteScope.",
+    "La verificación remota de ls-remote se apoya en RemoteFacts del registro; el comando local no produjo salida utilizable. El resto de comprobaciones evaluadas pasa."
+  ],
+  "RecommendedNextAction": "Resolver la autorización de StructuralDiagnostic.cs y emitir una nueva entrega verificable sobre el SHA que corresponda al alcance autorizado."
+}

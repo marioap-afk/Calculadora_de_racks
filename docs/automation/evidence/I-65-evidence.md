@@ -333,3 +333,79 @@ Custodia (blob = identidad duradera; SHA-256 = procedencia del transitorio):
 | `F1-T1-NEUTRAL-MODEL-nc4/R20261011T032626Z-7e5a/delegation.json` | `0F4B785DAF2BB1B6…` | `e99f338d12d7` |
 | `F1-T1-NEUTRAL-MODEL-nc4/R20261011T032626Z-7e5a/acceptance.json` | `3E2CF552A67987E0…` | `2df92c858dd3` |
 | `F1-T1-NEUTRAL-MODEL-nc4/R20261011T032626Z-7e5a/relay-record.json` | `BC51513B25CD54B3…` | `338e397c3007` |
+
+## 23. F1-T2-CANTILEVER-SOURCE — ejecución delegada (2026-10-11T05:40:16Z)
+
+Segunda tarea de F1. Golden de `REF-CANT-01` derivado a mano por el Coordinator antes de la delegación
+([I-65-f1-ref-cant-01.md](../../initiatives/I-65-f1-ref-cant-01.md); corrida de solo lectura del resolver en
+[I-65-f1/](I-65-f1/ref-cant-01-resolver-run.txt)); contrato sobre `AuthorityRevision` = `BaseSha` = `ff0c57c7`; `MainSha` `bb0d5522` sin cambio.
+
+| RunId | Fase | Participante | Resultado |
+|---|---|---|---|
+| `R20261011T044358Z-f76f` | PLANNING | Codex `gpt-6-luna`/`high` | paquete válido; seis colecciones idénticas al contrato; A1-A8 en `pass`; celda `claude-sonnet-5-5`/`high` (Deep) |
+| `R20261011T044756Z-8645` | CONTROL nc4 | sin invocar | `REJECTED_BEFORE_INVOCATION`: A3 `fail`, el resto igual: **oráculo cumplido** |
+| `R20261011T044815Z-7eae` | WORK | subagente `claude-sonnet-5-5`/`high` (efectivo, 108 mensajes) | `IMPLEMENTATION_COMPLETE`; RED `3134c2fe`, GREEN `667a3991`; 28 min 46 s; 64 llamadas, 0 errores |
+| `R20261011T052025Z-a470` | VERIFICATION | Codex `gpt-6-luna`/`high` | **`EXECUTION_VERIFIED`/`NONE`**, 14/14 `pass`, `VerifiedSha` `667a3991a106afe4e18c88500f65382e69301c69`; `Scope` contra la delegación, archivo por archivo |
+| `R20261011T052706Z-20ca` | CONTROL nc1 | Codex `gpt-6-luna`/`high` | `EXECUTION_BLOCKED/STOP` [S-04] con `Identity` `fail`, pero `FailureClass` = `Handoff`: **oráculo NO cumplido en sentido estricto** (DEV-I65-F1-02) |
+| `R20261011T053105Z-4217` | CONTROL nc2 | Codex `gpt-6-luna`/`high` | `Scope` `fail`, `EXECUTION_BLOCKED/STOP`, anteriores iguales: **oráculo cumplido** (la instrucción de CD-I65-F1-12 corrigió el modo de fallo de DEV-I65-F1-01) |
+| `R20261011T053522Z-4b8c` | CONTROL nc3 | Codex `gpt-6-luna`/`high` | `FreeText` `fail`, `EXECUTION_REWORK_REQUIRED/REWORK`, anteriores y posteriores iguales: **oráculo cumplido** |
+
+- **Commits del Worker:** RED `3134c2fe295c01c8746ab2c577580bc25e57414f` y GREEN `667a3991a106afe4e18c88500f65382e69301c69`, con
+  `Co-Authored-By: Claude Sonnet 5.5`. 8 archivos: `Systems/Cantilever/CantileverStructuralModelSource.cs` (nuevo; el GREEN solo cambia
+  este archivo), `StructuralAnalysis/StructuralDiagnostic.cs` (13 códigos de diagnóstico nuevos, aditivos, en el RED), los dos fixtures
+  JSON y cuatro archivos de prueba `StructuralAnalysisCantilever*`.
+- **CI push:** RED `38114028511` = `failure` (Core); GREEN `38114105131` = `success` con los cuatro jobs. TRX Core GREEN 12946/12946 y filtro
+  `FullyQualifiedName~RackCad.Tests.StructuralAnalysisCantilever` 80/80; TRX Core RED: 78 fallidas, todas del filtro (2 superadas:
+  comprobación literal de las colocaciones del resolver), sin errores de compilación.
+- **Golden:** los 8 nudos y los 7 miembros coinciden con la tabla derivada a mano; diferencia máxima 0 en coordenadas y 1.39e-16 en los
+  vectores de peralte; posiciones de carga 24.35421884050472, 15.354218840504721 y 33.35421884050472 in; magnitudes 1000, 2000 y
+  1102.311310924388 lbf. Sin C-03.
+- **ChainRedFiles:** los 6 archivos nuevos de `tests/RackCad.Tests/StructuralAnalysis/` (2 fixtures y 4 de prueba).
+- **Comprobaciones mecánicas de la sesión:** alcance PASS (8/8 permitidos por la delegación, 0 prohibidos); pruebas solo altas; prompt
+  del Worker = `prompt.md`; para nc2, la misma comprobación da `fail` (`StructuralDiagnostic.cs` fuera); términos de gate ausentes.
+- **Relevos:** `config.toml` `F909F480…8113` sin cambio; ningún participante ajeno. Falso P-02 releído: dos `bash.exe` en la salida de
+  nc2, desaparecidos a los 2 s. En la entrada del Worker, solo servidores de compilación, el `conhost` del propio comprobador y los
+  servidores MCP de la app Codex del Owner (sin la ruta del worktree).
+- **DEV-I65-F1-02 (nc1 de T2):** la mutación (`CurrentSha` inexistente en la copia de la entrega) cambió el SHA-256 de la entrega, que ya
+  no coincide con `Outcome.OutputSha256` del registro del trabajo copiado; el Controller lo detectó en `Handoff` (comprobación 2), antes
+  que en `Identity` (5, también `fail`), con la disposición esperada `BLOCKED/STOP`. La mutación fue detectada; el oráculo relativo
+  (anteriores iguales a la real) no se cumple en sentido estricto. Salida válida: no se repite.
+- **Hallazgos abiertos del Worker:** orden de las seis banderas de apoyo Tx, Ty, Tz, Rx, Ry, Rz; prioridad de fusión de nudos de la
+  columna (pie, cabeza, J inferior) dentro de 0.001 in; con brazos C o L reales, la colocación centrada por caja sale del plano y da
+  `Unsupported` por desviación del plano antes que por familia (mismo resultado).
+- **Invocaciones de Codex en F1:** 10 de 14. `attempts` = 0.
+
+Custodia (blob = identidad duradera; SHA-256 = procedencia del transitorio):
+
+| Archivo (bajo `I-65-pilot/`) | SHA-256 transitorio | Blob |
+|---|---|---|
+| `F1-T2-CANTILEVER-SOURCE/R20261011T044358Z-f76f/gate-contract.json` | `6F32D1C5A97AD159…` | `a6602f98d5fa` |
+| `F1-T2-CANTILEVER-SOURCE/R20261011T044358Z-f76f/prompt.md` | `169F5D207B08BBF6…` | `980f362fcde5` |
+| `F1-T2-CANTILEVER-SOURCE/R20261011T044358Z-f76f/delegation.json` | `89A9DA809C2860D7…` | `252dbde8d85b` |
+| `F1-T2-CANTILEVER-SOURCE/R20261011T044358Z-f76f/acceptance.json` | `F63ED8E87F2A0609…` | `73d1783fc942` |
+| `F1-T2-CANTILEVER-SOURCE/R20261011T044358Z-f76f/exactness.json` | `D0CBC2F19D9B1FBA…` | `de0f1687cb6b` (fin de línea normalizado por Git) |
+| `F1-T2-CANTILEVER-SOURCE/R20261011T044358Z-f76f/relay-record.json` | `62DAE87CF80A6ACD…` | `052d449828c0` |
+| `F1-T2-CANTILEVER-SOURCE/R20261011T044815Z-7eae/prompt.md` | `DACA7B0441BABD00…` | `b29593cecfaf` |
+| `F1-T2-CANTILEVER-SOURCE/R20261011T044815Z-7eae/worker-handoff.json` | `DFA982A7624C6852…` | `f788b3dbc5fd` |
+| `F1-T2-CANTILEVER-SOURCE/R20261011T044815Z-7eae/relay-record.json` | `09CBB6FDED1DB6D7…` | `eb953f09afd0` |
+| `F1-T2-CANTILEVER-SOURCE/R20261011T052025Z-a470/prompt.md` | `4A4EFC146D016A31…` | `a0e529b01d05` |
+| `F1-T2-CANTILEVER-SOURCE/R20261011T052025Z-a470/controller-verification.json` | `28A6F41045956332…` | `69af9eb7ed67` |
+| `F1-T2-CANTILEVER-SOURCE/R20261011T052025Z-a470/relay-record.json` | `C264EBC544E9CB33…` | `04209eed3afc` |
+| `F1-T2-CANTILEVER-SOURCE/R20261011T052025Z-a470/trx-summary.json` | `C774A3EF84009A9A…` | `a2e03dec1e61` (fin de línea normalizado por Git) |
+| `F1-T2-CANTILEVER-SOURCE-nc1/R20261011T052706Z-20ca/prompt.md` | `A76BDAF33CEE87D6…` | `10d9a3495ab6` |
+| `F1-T2-CANTILEVER-SOURCE-nc1/R20261011T052706Z-20ca/mutation.json` | `46FE0ED0C9F2DB05…` | `d285d9839084` (fin de línea normalizado por Git) |
+| `F1-T2-CANTILEVER-SOURCE-nc1/R20261011T052706Z-20ca/controller-verification.json` | `C706677259F068CD…` | `011e129085ea` |
+| `F1-T2-CANTILEVER-SOURCE-nc1/R20261011T052706Z-20ca/relay-record.json` | `DB988005BDDE457D…` | `2abc252c2841` |
+| `F1-T2-CANTILEVER-SOURCE-nc2/R20261011T053105Z-4217/prompt.md` | `EDF78289A1ADEBC2…` | `802798184618` |
+| `F1-T2-CANTILEVER-SOURCE-nc2/R20261011T053105Z-4217/mutation.json` | `D8699C4DC6619435…` | `37c2d85fe2a5` (fin de línea normalizado por Git) |
+| `F1-T2-CANTILEVER-SOURCE-nc2/R20261011T053105Z-4217/controller-verification.json` | `B9CD1F79FCF1BCFA…` | `46d3a6a97e6d` |
+| `F1-T2-CANTILEVER-SOURCE-nc2/R20261011T053105Z-4217/relay-record.json` | `DAD5876DC6C0729E…` | `2d2e9e76c023` |
+| `F1-T2-CANTILEVER-SOURCE-nc2/R20261011T053105Z-4217/session-scope-check.json` | `A476550976C63C1E…` | `c392d182b2fc` (fin de línea normalizado por Git) |
+| `F1-T2-CANTILEVER-SOURCE-nc2/R20261011T053105Z-4217/exit-reread.txt` | `5C761396B835DBD3…` | `6c0b6b0b729a` |
+| `F1-T2-CANTILEVER-SOURCE-nc3/R20261011T053522Z-4b8c/prompt.md` | `C79C3EE2981F3762…` | `e0c903969084` |
+| `F1-T2-CANTILEVER-SOURCE-nc3/R20261011T053522Z-4b8c/mutation.json` | `DA1F3B8B5E00512B…` | `511067defe3d` (fin de línea normalizado por Git) |
+| `F1-T2-CANTILEVER-SOURCE-nc3/R20261011T053522Z-4b8c/controller-verification.json` | `C01674CB6C5902EC…` | `3740d075f608` |
+| `F1-T2-CANTILEVER-SOURCE-nc3/R20261011T053522Z-4b8c/relay-record.json` | `C831E3501055E96C…` | `bfc6ce75fbb4` |
+| `F1-T2-CANTILEVER-SOURCE-nc4/R20261011T044756Z-8645/delegation.json` | `33B37C79882F3314…` | `fd351532862b` |
+| `F1-T2-CANTILEVER-SOURCE-nc4/R20261011T044756Z-8645/acceptance.json` | `3E2CF552A67987E0…` | `2df92c858dd3` |
+| `F1-T2-CANTILEVER-SOURCE-nc4/R20261011T044756Z-8645/relay-record.json` | `9B718EB954E5AB89…` | `0e8c09dc479b` |

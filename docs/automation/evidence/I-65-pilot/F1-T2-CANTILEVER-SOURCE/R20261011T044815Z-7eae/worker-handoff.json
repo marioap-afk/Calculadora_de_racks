@@ -1,0 +1,111 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F1-T2-CANTILEVER-SOURCE",
+  "RunId": "R20261011T044815Z-7eae",
+  "DelegationRunId": "R20261011T044358Z-f76f",
+  "Initiative": "I-65",
+  "Gate": "F1",
+  "Attempt": 0,
+  "BaseSha": "ff0c57c7125ae268bcb42b2d56c0d5255e9a69ed",
+  "RedSha": "3134c2fe295c01c8746ab2c577580bc25e57414f",
+  "CurrentSha": "667a3991a106afe4e18c88500f65382e69301c69",
+  "Branch": "architecture/interop-analisis-estructural",
+  "Worktree": "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-interop-analisis-estructural",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.Application/StructuralAnalysis/StructuralDiagnostic.cs",
+    "src/RackCad.Application/Systems/Cantilever/CantileverStructuralModelSource.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/Fixtures/ref-cant-01.design.json",
+    "tests/RackCad.Tests/StructuralAnalysis/Fixtures/ref-cant-01.loads.json",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverBoundaryTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverFixtures.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverGoldenTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverIdealisationTests.cs"
+  ],
+  "WorkCompleted": "Fuente Cantilever del modelo neutral (CantileverStructuralModelSource, un archivo nuevo en Systems/Cantilever) que implementa IStructuralModelSource con el CantileverLineDesign ya deserializado y el catalogo; resuelve con CantileverLineResolver y CantileverCataloguePolicies, toma la estacion del alcance en coordenadas locales (ScopedId para las piezas de origen) e idealiza los ejes centroidales de las colocaciones (IDL-01..08): COL.FOOT, COL.TOP, nudos J por interseccion en el plano Y-Z, TIP, columna partida, apoyos SUP-01/SUP-03, supuestos y cargas del archivo (distancia rigida mas fraccion de la longitud fisica). Rechaza como Unsupported doble cara, NegativeY, canales pareados, inclinacion mayor que 10 grados y estacion o linea bloqueada; como Invalid el Kind, el indice de estacion y los destinos de carga inexistentes. 80 pruebas StructuralAnalysisCantilever* en archivos nuevos, fixtures del diseno y de las cargas de REF-CANT-01. Un commit RED (esqueleto compilable) y un commit GREEN; el GREEN solo toca el archivo de produccion de la fuente.",
+  "TestsExecuted": [
+    {
+      "RunRef": "red-filter-final",
+      "Command": "/c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.StructuralAnalysisCantilever\" --logger \"trx;LogFileName=red-filter-final.trx\" --results-directory artifacts/orchestration/I-65/F1-T2-CANTILEVER-SOURCE/0/R20261011T044815Z-7eae/tests/red-filter-final",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F1-T2-CANTILEVER-SOURCE/0/R20261011T044815Z-7eae/tests/red-filter-final/red-filter-final.trx"
+    },
+    {
+      "RunRef": "green-filter",
+      "Command": "/c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.StructuralAnalysisCantilever\" --logger \"trx;LogFileName=green-filter.trx\" --results-directory artifacts/orchestration/I-65/F1-T2-CANTILEVER-SOURCE/0/R20261011T044815Z-7eae/tests/green-filter",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F1-T2-CANTILEVER-SOURCE/0/R20261011T044815Z-7eae/tests/green-filter/green-filter.trx"
+    },
+    {
+      "RunRef": "green-full",
+      "Command": "/c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --logger \"trx;LogFileName=green-full.trx\" --results-directory artifacts/orchestration/I-65/F1-T2-CANTILEVER-SOURCE/0/R20261011T044815Z-7eae/tests/green-full",
+      "Phase": "RELEVANT",
+      "TreeSha": "667a3991a106afe4e18c88500f65382e69301c69",
+      "ResultsFile": "artifacts/orchestration/I-65/F1-T2-CANTILEVER-SOURCE/0/R20261011T044815Z-7eae/tests/green-full/green-full.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "red-filter-final",
+      "Selected": 80,
+      "Passed": 2,
+      "Failed": 78,
+      "Skipped": 0,
+      "FailedTests": [
+        "78 pruebas de RackCad.Tests.StructuralAnalysisCantilever* fallan con NotImplementedException o con una asercion del esqueleto; detalle en el TRX"
+      ]
+    },
+    {
+      "RunRef": "green-filter",
+      "Selected": 80,
+      "Passed": 80,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-full",
+      "Selected": 12946,
+      "Passed": 12946,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    }
+  ],
+  "Evidence": [
+    "(1) Invariantes: INV-06/IDL-01..08 y D-04 -> StructuralAnalysisCantileverGoldenTests (LasColocacionesResueltasDeEntradaSonLasLiteralesDeLaSeccion2, LaEstacion0DeRefCant01EsValidaYExponeElModelo, LosNudosSonExactamenteLosDelGoldenConTolerancia1e9, LosMiembrosSonExactamenteLosDelGoldenConSeccionRolPiezaYNudos, LosNudosNoEstanEnPuntosDeInsercionDeBloqueNiEnCarasDeLasPiezas, LaEstacion1ConservaLasCoordenadasLocalesDeLaEstacion0, LasCoordenadasSonDextrogirasConZArribaYLosBrazosPositiveYCrecenHaciaMasY, LasLongitudesSeExpresanComoCantidadesTipadasEnPulgadas). IDL-08 -> StructuralAnalysisCantileverIdealisationTests (fusion 0.001 in: UnaJuntaAMenosDe0001InDelPie/DeLaCabeza/DosJuntas; separacion 0.05 in: UnaSeparacionDeColumnaMenorQue005EsInvalidaSinFusionSilenciosa, UnaSeparacionDeColumnaDe005OMasEsValida, UnaJuntaAMenosDe005PeroMasDe0001DelPieEsInvalida; plano 0.01 in: UnBrazoDesviadoDelPlanoMasDe001InEsUnsupported, UnaColumnaDesviadaDelPlano..., UnaDesviacionDelPlanoDentroDeLaToleranciaEsValida; angular 0.01 grados: UnEjeInclinadoFueraDelPlano... y UnBrazoParaleloALaColumna...; nudo J fuera de la columna Invalid: UnNudoBrazoColumnaFueraDelTramoDeLaColumnaEsInvalido).",
+    "(1) INV-07 (parte neutral) -> StructuralAnalysisCantileverIdealisationTests.ElVectorDePeralteSeDerivaDelMarcoConGiroYEspejo (giros 0, 90 y 12.3456 con y sin espejo, oraculo PrismaticSectionInstance.SectionTransform), UnaRotacionNoNulaCambiaElVectorDePeralteYNoSeIgnora, ElGiroDe90GradosLlevaElPeralteFueraDelPlano.... IDL-10 inclinacion -> UnBrazoConMasDe10GradosDeInclinacionEsUnsupportedSinModelo / ...MenosDe10Grados...Valido y UnaInclinacionDeBrazoMayorQue10GradosEsUnsupportedSinModelo (por diseno).",
+    "(1) D-10 -> GoldenTests.ElPieDeColumnaEstaEmpotradoYLosDemasNudosSoloRestringenTxRyRz, NingunMiembroTieneLiberacionesYTodosCitanCon01, LosSupuestosSonExactamenteLosSieteYEstanEscritosEnTerminosNeutrales. CD-I65-F1-14 -> GoldenTests.PlacasBaseSeparadoresYArriostramientosNoSeModelanNiHacenUnsupportedLaEstacion y SoloLaColumnaYLosBrazosSonMiembrosYLaBaseNoSeModela. IDL-09/IDL-10/INV-05 -> BoundaryTests: UnaEstacionDeDobleCara..., UnaEstacionDeUnaCaraNegativeY..., UnBrazoDeCanalesPareadosPorPlantilla... (2 arreglos), ...PorExcepcionDeCelda..., UnaLineaBloqueadaPorElResolver..., UnaEstacionBloqueadaPorElResolver..., UnaSeccionDeFamiliaCOLEnUnBrazoSencillo... y ...EnElPlanoDeLaEstacion... (canal y angulo), MasDe24CargasPorMiembro... (24 Valid, 25 Unsupported).",
+    "(1) INV-09/D-10b -> BoundaryTests.LasPosicionesDeCargaSumanLaDistanciaRigidaDeIdl06ALaFraccion... (24.35421884050472, 15.354218840504721, 33.35421884050472 in, tolerancia 1e-9), LasMagnitudesSonLasDelLectorEnLibrasFuerzaYLaDireccionEsMenosZ (1000, 2000 y ForceUnits.ToPoundsForce(500, kgf) exactos), LasCargasSalenSoloDelArchivoLeidoPorElLector, UnNivelDeCargaFueraDeRangoEsInvalidoSinModelo, UnLadoDeCargaDistintoDelDeLaEstacionEsInvalidoSinModelo. D-12/INV-04 -> UnKindDistintoDeCantileverEsInvalidoSinModelo, UnIndiceDeEstacionFueraDeRangoEsInvalidoSinModelo, ElRackIdDelModeloEsElDelAlcanceYNoElIdDeLaLinea, ElSourceFingerprintSalaDeLosBytesDelDisenoYDelAlcance, MismoDisenoYMismasEntradasDanElMismoJsonCanonicoYLaMismaHuella, CambiarLaLongitudDeCorte..., CambiarLaSeccionDeLaColumna..., CambiarElArchivoDeCargas... (modelo y AnalysisInputFingerprint distintos). CD-I65-F1-03/16 -> LaFuenteRecibeElDisenoYElCatalogoYImplementaLaAbstraccionNeutral y LaFuenteNoLeeElSobreNiDeserializaBytesYResuelveConElResolverDelProducto.",
+    "(2) Golden de REF-CANT-01 (estacion 0): los 8 nudos y los 7 miembros (ids, nudos I/J, seccion, rol, pieza de origen CANT-S0-..., vector de peralte) coinciden con la seccion 3 del documento; diferencia maxima observada en coordenadas de nudos = 0 (tolerancia 1e-9 in) y en componentes del vector de peralte de los brazos = 1.39e-16 (tolerancia 1e-12). Posiciones de carga observadas: 24.35421884050472, 15.354218840504721 y 33.35421884050472 in; magnitudes 1000, 2000 y 1102.311310924388 lbf. Las colocaciones resueltas de entrada (seccion 2) se comprueban como literales y coinciden. No hubo C-03.",
+    "(3) Cambios en src/RackCad.Application/StructuralAnalysis/: unicamente aditivos, 13 constantes nuevas en StructuralDiagnosticCodes (SourceKindMismatch, SourceStationRange, SourceStationBlocked, StationFaceUnsupported, StationSideUnsupported, ArmArrangementUnsupported, ArmSlopeUnsupported, NodePlaneDeviation, AxisAngleDeviation, AxesParallel, NodeOutsideColumn, NodeSeparation, LoadTargetUnknown); entraron en el commit RED porque las pruebas las referencian. Ningun comportamiento ni prueba de F1-T1 cambia; el GREEN no toca StructuralAnalysis.",
+    "(4) Pasan ya en el RED (2 de 80): LasColocacionesResueltasDeEntradaSonLasLiteralesDeLaSeccion2 (solo comprueba el resolver existente) y LaFuenteRecibeElDisenoYElCatalogoYImplementaLaAbstraccionNeutral (la forma del constructor y de la interfaz ya esta en el esqueleto). Las otras 78 fallan por NotImplementedException o aserciones del esqueleto; ninguna por compilacion.",
+    "Comprobaciones mecanicas: git diff --name-only ff0c57c7125ae268bcb42b2d56c0d5255e9a69ed..667a3991a106afe4e18c88500f65382e69301c69 son los 8 archivos listados, todos dentro del AllowedWriteScope y sin interseccion con el ForbiddenWriteScope; git diff --name-status sobre tests/ solo muestra altas (A) bajo tests/RackCad.Tests/StructuralAnalysis/; el diff RED..GREEN toca solo CantileverStructuralModelSource.cs. HEAD local = remoto = 667a3991. El perfil de material de las pruebas tiene dos filas de fixture (W12X26 y HSS4X4X_250), declaradas como fixtures y no como verificacion de ingenieria; las pruebas de sensibilidad de seccion de columna y las de canal/angulo anaden una fila de fixture adicional solo en ese perfil de la prueba.",
+    "La suite Core completa (12946 pruebas) esta en verde en el arbol 667a3991, incluidas las pruebas de F1-T1, CantileverSourceGuardTests, CantileverRoundTwoSourceGuardTests, CantileverPluginSourceGuardTests, LengthUnitsAuthorityGuardTests, NamespaceFolderGuardTests y StructuralAnalysisSourceGuardTests, sin cambios en ellas."
+  ],
+  "UnexpectedFindings": [
+    "Con brazos de seccion C o L en el diseno real, la colocacion centrada por caja deja el eje fuera del plano de la estacion; la idealizacion lo rechaza como Unsupported (NODE-PLANE-DEVIATION) antes de que el constructor del modelo nombre la familia. El resultado es el mismo (Unsupported sin modelo); la regla de familia se observa con colocaciones sinteticas en el plano.",
+    "El resolver bloquea un brazo de canal con las dos perforaciones verticales por defecto de la placa (CANT_ARM_PLATE_TOO_SHORT_FOR_BODY); las pruebas de canales usan cuatro perforaciones para que el resolver los admita y la regla de la fuente sea la que decide."
+  ],
+  "KnownLimitations": [
+    "El orden de las seis banderas de apoyo se tomo como Tx, Ty, Tz, Rx, Ry, Rz (el orden en que D-04 y D-10 las enumeran); el Freeze no lo declara de forma explicita y su mapeo a proveedor es de F3.",
+    "Las pruebas de IDL-08 usan la funcion interna Idealise con colocaciones sinteticas (InternalsVisibleTo ya existente); la ruta publica Describe las compone con el resolver real.",
+    "Los nudos de la columna dentro de 0.001 in se fusionan con prioridad pie, cabeza y luego el nudo J inferior; el Freeze fija la tolerancia pero no esa prioridad."
+  ],
+  "Deviations": [],
+  "OpenQuestions": [
+    "Confirmar que el orden de banderas de apoyo Tx, Ty, Tz, Rx, Ry, Rz es el que F3 espera, y la prioridad de fusion de nudos de la columna."
+  ],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "Verificacion del Controller de la entrega F1-T2-CANTILEVER-SOURCE sobre el SHA 667a3991a106afe4e18c88500f65382e69301c69, recogiendo las corridas push del RED y del SHA exacto.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}
