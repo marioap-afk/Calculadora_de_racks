@@ -165,3 +165,15 @@ Owner Validation: por determinar; no aplica a G0. Tag de integración: no existe
   **carga distribuida** no se miden desde la v2 (fuera de V1): se informarán como DOCUMENTED ONLY / UNKNOWN; las de **momento** se
   comprueban por las reacciones en `LB_IN` (N2: 1.0e5 lb·in; N1: 6.0e4 lb·in). Procedimiento de ejecución:
   [p1-procedure.md](I-65-f0/p1-procedure.md).
+
+## 15. P1 — preparación de la corrida y acceso denegado a Computer Use (2026-10-11T01:51:11Z)
+
+- Re-preflight: rama `c22e0148` = origin, árbol limpio; blob de la sonda en `54f17ef6` y en la punta = `2fafe9c9…`; RAM Elements no
+  estaba en ejecución. Autorización del Owner registrada en `b0098f21` antes de ejecutar.
+- Carpeta de evidencias **nueva** fuera del repositorio: `D:\I65-P1\run-20261011T014503Z\`. Copia ejecutable `ram-probe-p1.py`:
+  SHA-256 `95378d877a37f297f7e1667b4e763ec891c5df3c07d33e833e34bb1009d85fe0` (16 089 bytes); única diferencia con el blob aprobado
+  (SHA-256 `96ae6ea9…db80`, 16 070 bytes): la línea `OUT_DIR = r"D:\I65-P1\run-20261011T014503Z"`. Sintaxis verificada sin ejecutar.
+- `request_access` de Computer Use para «RAM Elements 2026»: **denegado por el usuario** (`user_denied`). No se reintentó; RAM Elements
+  no se abrió.
+- **P1 NO se ha ejecutado.** F0 queda bloqueado por la ejecución de P1; se entrega el procedimiento manual
+  ([p1-procedure.md](I-65-f0/p1-procedure.md), secciones B y C) con la carpeta ya preparada.

@@ -7,7 +7,7 @@ automation_state:
   state: in-progress
   gate: F0
   attempts: 0
-  next_action: STOP de P1 por conflicto S9 (save_as) con la condición del Owner «No guardar automáticamente el modelo»; P1 v3.2 (sin S9) en revisión por diff del Architect; esperar autorización del Owner para ejecutar v3.2 (o S9 como excepción).
+  next_action: F0 BLOQUEADO por la ejecución de P1 v3.2. Acceso de Computer Use a RAM Elements denegado; carpeta D:/I65-P1/run-20261011T014503Z preparada (copia SHA-256 95378d87…); el Owner ejecuta a mano según p1-procedure.md o vuelve a conceder el acceso.
   last_evidence_commit: acaefc1da279c3573db37a9279a169f3ecaa43ce
 execution_context:
   mode: manual
@@ -15,7 +15,7 @@ execution_context:
   worktree: architecture-interop-analisis-estructural
 execution_chain:
   gate: F0
-  next_role: Architect (diff v3.1→v3.2) y Owner (autorizar el cambio concreto). Owner: Q-O4 APPROVED WITH CONDITIONS; Q-O1/Q-O7 provisionales; Q-O2 sin regla por familia; Q-O3 hipótesis explícitas; Q-O5 F6 fuera; Q-O6 PENDING
+  next_role: Owner (ejecutar P1 v3.2 a mano o conceder acceso de Computer Use a RAM Elements 2026)
   implementation_authorization: NO
-  owner_decisions_open: [Q-O6 ADR-0050 (tras P1 y Architect), autorización de P1 v3.2 (cambio concreto), confirmación definitiva de Q-O1 y Q-O7]
+  owner_decisions_open: [ejecución de P1 v3.2 (manual o Computer Use), Q-O6 ADR-0050 (tras P1 y Architect), confirmación definitiva de Q-O1 y Q-O7]
   not_authorized: [implementación, ejecutar RAM Elements, escribir en archivos de RAM del usuario, Freeze sin AGREED de Coordinator y Architect]
