@@ -1,0 +1,57 @@
+using System;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using RackCad.Application.Persistence;
+using RackCad.Application.StructuralSections;
+using RackCad.Application.StructuralSections.Geometry;
+using RackCad.Application.Systems.Cantilever;
+using RackCad.Domain.Systems.Cantilever;
+
+internal static class Program
+{
+    private static string F(double v) => v.ToString("R", CultureInfo.InvariantCulture);
+
+    private static int Main(string[] args)
+    {
+        var json = File.ReadAllText(args[0]);
+        var catalogDir = args[1];
+        var project = new RackProjectStore().Deserialize(json);
+        var design = project.CantileverLineDesign;
+        var catalog = new CsvStructuralSectionCatalogProvider(catalogDir).Load();
+        var factory = new StructuralSectionGeometryFactory(catalog);
+        var line = CantileverLineResolver.Resolve(design, catalog, factory,
+            CantileverCataloguePolicies.ColumnBase(catalog), CantileverCataloguePolicies.Arm(catalog));
+        Console.WriteLine("blocked=" + line.IsBlocked + " stations=" + line.Stations.Count + " colHeight=" + F(line.ColumnHeight));
+        foreach (var d in line.Diagnostics) Console.WriteLine("  diag " + d);
+        var st = line.Stations[0].Station;
+        Console.WriteLine("station0 OriginX=" + F(line.Stations[0].OriginX) + " face=" + st.FaceMode + " side=" + st.SingleSide + " blocked=" + st.IsBlocked);
+        foreach (var d in st.Diagnostics) Console.WriteLine("  sdiag " + d);
+        void P(string name, PrismaticSectionInstance p)
+        {
+            var o = p.Frame.Origin; var z = p.Frame.AxisZ; var y = p.Frame.AxisY; var x = p.Frame.AxisX;
+            var e = p.Frame.ToWorld(new RackCad.Application.Geometry.Point3D(0, 0, p.Length));
+            Console.WriteLine($"{name}: sec={p.SectionId} L={F(p.Length)} rot={F(p.RotationRadians)} mir={p.Mirrored}");
+            Console.WriteLine($"   O=({F(o.X)},{F(o.Y)},{F(o.Z)}) E=({F(e.X)},{F(e.Y)},{F(e.Z)})");
+            Console.WriteLine($"   Z=({F(z.X)},{F(z.Y)},{F(z.Z)}) Y=({F(y.X)},{F(y.Y)},{F(y.Z)}) X=({F(x.X)},{F(x.Y)},{F(x.Z)})");
+        }
+        P("COL", st.ColumnBase.Column.Placement);
+        Console.WriteLine("   colBottomPlate t=" + F(st.ColumnBase.ColumnBottomPlate.Thickness) + " ResolvedColumnHeight=" + F(st.ResolvedColumnHeight) + " ColumnHeight=" + F(st.ColumnBase.ColumnHeight));
+        foreach (var s in st.ColumnBase.Sides) P("BASE-" + s.Side, s.Member.Placement);
+        foreach (var lvl in st.Levels)
+        {
+            foreach (var arm in lvl.Arms)
+            {
+                var b = arm.Body;
+                Console.WriteLine($"L{lvl.LevelIndex} punch={lvl.LowerPunchIndex} side={arm.Side} arr={b.Arrangement} cut={F(b.CutLength)} slope={F(b.SlopeRisePer12)} ang={F(b.AngleRadians)} members={b.Members.Count}");
+                foreach (var m in b.Members) P("  ARM " + m.Id, m.Placement);
+            }
+            foreach (var c in lvl.Plan.Cells)
+                Console.WriteLine($"   cell PlateBottomZ={F(c.PlateBottomZ)} PlateTopZ={F(c.PlateTopZ)} BodyBottomZ={F(c.BodyBottomZ)} BodyTopZ={F(c.BodyTopZ)}");
+        }
+        foreach (var pl in st.Plates) Console.WriteLine("plate " + pl.Kind + " t=" + F(pl.Thickness));
+        // the bytes of the Design (as the envelope would persist them)
+        Console.WriteLine("arm-mount-plate-thickness check: " + string.Join(",", st.Plates.Where(p => p.Kind.ToString() == "ArmMounting").Select(p => F(p.Thickness))));
+        return 0;
+    }
+}

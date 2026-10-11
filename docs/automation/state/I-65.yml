@@ -7,7 +7,7 @@ automation_state:
   state: in-progress
   gate: F1
   attempts: 0
-  next_action: F1-T2-CANTILEVER-SOURCE — golden de REF-CANT-01 derivado a mano por el Coordinator, contrato de gate, planificación, nc4 y aceptación, Worker RED->GREEN, verificación y controles; después, revisión de conformidad de F1 e informe al Owner.
+  next_action: F1-T2-CANTILEVER-SOURCE — contrato de gate sobre este commit (golden I-65-f1-ref-cant-01.md, decisiones §13), planificación, nc4 y aceptación, Worker RED->GREEN, verificación y controles; después, revisión de conformidad de F1 e informe al Owner.
   last_evidence_commit: 1692804a3e81a607d81d924c9345f02fe7f9a41f
 execution_context:
   mode: manual
