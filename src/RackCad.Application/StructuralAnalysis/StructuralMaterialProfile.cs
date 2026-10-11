@@ -81,6 +81,17 @@ namespace RackCad.Application.StructuralAnalysis
             VerifiedOn = verifiedOn;
         }
 
+        /// <summary>
+        /// A row that carries, as part of its canonical text, the COMPLETE row of the table it was projected from (I-65 A65-F1-01):
+        /// whatever else that table records about the row then reaches the mapping-rows hash and the analysis input fingerprint.
+        /// </summary>
+        public StructuralMaterialRow(
+            StructuralSectionId sectionId, StructuralMaterialId materialId, string verifier, DateTime? verifiedOn, string sourceCanonicalText)
+            : this(sectionId, materialId, verifier, verifiedOn)
+        {
+            SourceCanonicalText = sourceCanonicalText;
+        }
+
         public StructuralSectionId SectionId { get; }
 
         public StructuralMaterialId MaterialId { get; }
@@ -91,14 +102,35 @@ namespace RackCad.Application.StructuralAnalysis
 
         public bool IsVerified => !string.IsNullOrWhiteSpace(Verifier) && VerifiedOn.HasValue;
 
-        /// <summary>The canonical text of the row; it is what the mapping-rows hash is computed from.</summary>
-        public string CanonicalText =>
-            string.Join(
-                "|",
-                SectionId.Value,
-                MaterialId.Value,
-                Verifier ?? string.Empty,
-                VerifiedOn.HasValue ? VerifiedOn.Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : string.Empty);
+        /// <summary>The canonical text of the table row this row was projected from, or <c>null</c> when it has none.</summary>
+        public string SourceCanonicalText { get; }
+
+        /// <summary>
+        /// The canonical text of the row; it is what the mapping-rows hash is computed from. Every field is written as
+        /// <c>&lt;length&gt;:&lt;value&gt;</c>, so that moving a character from one field to the next cannot give the same text.
+        /// </summary>
+        public string CanonicalText
+        {
+            get
+            {
+                var fields = new List<string>
+                {
+                    Prefixed(SectionId.Value),
+                    Prefixed(MaterialId.Value),
+                    Prefixed(Verifier ?? string.Empty),
+                    Prefixed(VerifiedOn.HasValue ? VerifiedOn.Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : string.Empty),
+                };
+
+                if (SourceCanonicalText != null)
+                {
+                    fields.Add(Prefixed(SourceCanonicalText));
+                }
+
+                return string.Join("|", fields);
+            }
+        }
+
+        private static string Prefixed(string value) => value.Length.ToString(CultureInfo.InvariantCulture) + ":" + value;
     }
 
     /// <summary>The neutral abstraction through which a material reaches the model: explicit verified rows only.</summary>

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using RackCad.Application.StructuralSections;
 
 namespace RackCad.Application.StructuralAnalysis.Providers.RamElements
@@ -100,10 +102,65 @@ namespace RackCad.Application.StructuralAnalysis.Providers.RamElements
 
         public bool IsVerified => Status == RamSectionMapStatus.Verified;
 
-        /// <summary>The COMPLETE row as length-prefixed text: it is what travels in the neutral row and in the fingerprint.</summary>
-        public string CanonicalText => throw new NotImplementedException();
+        /// <summary>
+        /// The COMPLETE row as length-prefixed text (<c>&lt;length&gt;:&lt;value&gt;</c> per field, <c>-</c> for an absent one):
+        /// it is what travels in the neutral row and, through it, in the fingerprint. Numbers are written with the round-trip
+        /// format of the invariant culture.
+        /// </summary>
+        public string CanonicalText
+        {
+            get
+            {
+                var fields = new List<string>
+                {
+                    Field(CanonicalHeader),
+                    Field(SectionId.Value),
+                    Field(RamSectionName),
+                    Field(RamSectionTable),
+                    Field(RamSectionCountry),
+                    Field(MaterialId.Value),
+                    Field(RamMaterial),
+                };
 
-        /// <summary>The neutral row this provider row projects to.</summary>
-        public StructuralMaterialRow ToNeutralRow() => throw new NotImplementedException();
+                fields.AddRange(Quantity(ExpectedMaterial?.ElasticModulus));
+                fields.Add(ExpectedMaterial?.PoissonRatio.HasValue == true
+                    ? Field(ExpectedMaterial.PoissonRatio.Value.ToString("R", CultureInfo.InvariantCulture))
+                    : Absent);
+                fields.AddRange(Quantity(ExpectedMaterial?.ShearModulus));
+                fields.AddRange(Quantity(ExpectedMaterial?.UnitWeight));
+                fields.Add(Field(ExpectedMaterial?.Source));
+                fields.Add(Field(Status == RamSectionMapStatus.Verified ? "verified" : "proposed"));
+                fields.Add(Field(VerifiedBy));
+                fields.Add(Field(VerifiedOn));
+
+                return string.Join("|", fields);
+            }
+        }
+
+        /// <summary>The neutral row this provider row projects to: verifier and date only when the row is verified.</summary>
+        public StructuralMaterialRow ToNeutralRow()
+        {
+            var date = IsVerified && VerifiedOn != null
+                ? DateTime.ParseExact(VerifiedOn, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None)
+                : (DateTime?)null;
+
+            return new StructuralMaterialRow(SectionId, MaterialId, IsVerified ? VerifiedBy : null, date, CanonicalText);
+        }
+
+        private const string CanonicalHeader = "rackcad-section-map-row/v1";
+        private const string Absent = "-";
+
+        private static string Field(string value) =>
+            value == null ? Absent : value.Length.ToString(CultureInfo.InvariantCulture) + ":" + value;
+
+        private static IEnumerable<string> Quantity(RamQuantity quantity)
+        {
+            if (quantity == null)
+            {
+                return new[] { Absent, Absent };
+            }
+
+            return new[] { Field(quantity.Value.ToString("R", CultureInfo.InvariantCulture)), Field(quantity.Unit) };
+        }
     }
 }

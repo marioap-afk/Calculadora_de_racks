@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using RackCad.Application.StructuralSections;
 
 namespace RackCad.Application.StructuralAnalysis.Providers.RamElements
@@ -10,17 +12,30 @@ namespace RackCad.Application.StructuralAnalysis.Providers.RamElements
     /// </summary>
     public sealed class RamSectionMaterialTable : IStructuralMaterialProfile
     {
-        internal RamSectionMaterialTable(IReadOnlyList<RamSectionMapRow> rows)
+        private readonly Dictionary<StructuralSectionId, RamSectionMapRow> _bySection;
+        private readonly Dictionary<StructuralSectionId, StructuralMaterialRow> _neutral;
+
+        internal RamSectionMaterialTable(IEnumerable<RamSectionMapRow> rows)
         {
-            Rows = rows;
+            var ordered = rows.OrderBy(row => row.SectionId.Value, StringComparer.Ordinal).ToList();
+
+            _bySection = ordered.ToDictionary(row => row.SectionId);
+            _neutral = ordered.ToDictionary(row => row.SectionId, row => row.ToNeutralRow());
+            Rows = new ReadOnlyCollection<RamSectionMapRow>(ordered);
         }
 
         /// <summary>The rows in ordinal order of section id.</summary>
         public IReadOnlyList<RamSectionMapRow> Rows { get; }
 
-        public bool TryGetRamRow(StructuralSectionId sectionId, out RamSectionMapRow row) => throw new NotImplementedException();
+        public bool TryGetRamRow(StructuralSectionId sectionId, out RamSectionMapRow row) =>
+            _bySection.TryGetValue(sectionId, out row);
 
-        public bool TryGetRow(StructuralSectionId sectionId, out StructuralMaterialRow row) => throw new NotImplementedException();
+        /// <summary>
+        /// The neutral projection of the row of <paramref name="sectionId"/>. A proposed row is projected WITHOUT verifier or date,
+        /// so the model builder refuses it as unverified: a proposed row assigns nothing.
+        /// </summary>
+        public bool TryGetRow(StructuralSectionId sectionId, out StructuralMaterialRow row) =>
+            _neutral.TryGetValue(sectionId, out row);
     }
 
     /// <summary>The result of reading the table: the table when, and only when, the outcome is Valid.</summary>
@@ -39,13 +54,5 @@ namespace RackCad.Application.StructuralAnalysis.Providers.RamElements
         public IReadOnlyList<StructuralDiagnostic> Diagnostics { get; }
 
         public RamSectionMaterialTable Table { get; }
-    }
-
-    /// <summary>The strict reader of <c>rackcad-ram-elements-section-map/v1</c>. It receives TEXT: it does no I/O.</summary>
-    public static class RamSectionMapReader
-    {
-        public const string SchemaId = "rackcad-ram-elements-section-map/v1";
-
-        public static RamSectionMapReadResult Read(string json) => throw new NotImplementedException();
     }
 }

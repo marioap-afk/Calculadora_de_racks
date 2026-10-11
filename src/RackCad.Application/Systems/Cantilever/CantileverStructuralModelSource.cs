@@ -463,13 +463,13 @@ namespace RackCad.Application.Systems.Cantilever
 
         private static IReadOnlyList<AnalysisAssumption> Assumptions() => new[]
         {
-            new AnalysisAssumption(FootSupport, "The column foot node is fully fixed in its six degrees of freedom; no anchor, plate or slab stiffness is modelled."),
-            new AnalysisAssumption("SUP-02", "The base is not modelled; the idealisation starts at the column foot."),
-            new AnalysisAssumption(PlanarSupport, "Planar behaviour: every node other than the foot restrains translation along X and rotation about Y and Z, so out-of-plane buckling and bracing are not represented."),
-            new AnalysisAssumption(ContinuousConnection, "The arm-to-column connection is continuous: no member end is released."),
-            new AnalysisAssumption("IDL-NO-OFFSETS", "No rigid offsets are used: each arm runs from the column axis to its tip and includes half the column and the plate, which overstates the flexibility of the arm."),
-            new AnalysisAssumption("ASM-PROP-01", "Section properties and material properties are those of the analysis program database, assigned through the explicit material mapping."),
-            new AnalysisAssumption("LOD-01", "A single load case REF1 carries the loads of the load file; there is no self weight and there are no combinations."),
+            new AnalysisAssumption(FootSupport, "COL.FOOT is fixed in its six degrees of freedom. Declared limitation: no anchor, base plate or slab stiffness is represented."),
+            new AnalysisAssumption("SUP-02", "The base is not modelled; the idealisation starts at the column foot. Declared limitation: the real base bears on the floor."),
+            new AnalysisAssumption(PlanarSupport, "Plane analysis: every node other than the foot restrains translation along X and rotation about Y and Z. Declared limitation: no out-of-plane buckling and no bracing effect are represented."),
+            new AnalysisAssumption(ContinuousConnection, "The arm-to-column connection is continuous: no member end is released. Declared limitation: the real connection is semi-rigid."),
+            new AnalysisAssumption("IDL-NO-OFFSETS", "No rigid offsets: each analytical arm runs from the column axis to its tip and includes half the column and the plate. Declared limitation: the arm flexibility is overestimated, and no conclusion about real behaviour is drawn from V1."),
+            new AnalysisAssumption("ASM-PROP-01", "Section and material properties used by the analysis are those of the analysis program database, selected by the section and material names of the verified mapping rows. Declared limitation: database editions and material values may differ from the usual ones; they are compared against the catalogue and against the expected values with their cited source."),
+            new AnalysisAssumption("LOD-01", "A single load case REF1 carries the loads of the load file; there is no self weight and there are no combinations. Declared limitation: the loads are not derived from pallets, impact, seismic action or tributary areas."),
         };
 
         private readonly struct Joint
