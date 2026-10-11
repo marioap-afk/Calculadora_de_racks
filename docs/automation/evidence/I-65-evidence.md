@@ -527,3 +527,22 @@ Custodia (blob = identidad duradera; SHA-256 = procedencia del transitorio):
 | `F3-T1-MAP-AND-TRANSLATION-nc4/R20261011T062450Z-f0af/delegation.json` | `A303DC0817834423…` | `eff1d1acb914` |
 | `F3-T1-MAP-AND-TRANSLATION-nc4/R20261011T062450Z-f0af/acceptance.json` | `3E2CF552A67987E0…` | `2df92c858dd3` |
 | `F3-T1-MAP-AND-TRANSLATION-nc4/R20261011T062450Z-f0af/relay-record.json` | `B5B754234C53F439…` | `44568674e1d6` |
+
+## 28. F3-T2 — planificación rechazada y reemisión (2026-10-11T07:25:21Z)
+
+- **DEV-I65-F3-01 (nc1 de F3-T1):** mismo modo que DEV-I65-F1-02: la mutación de `CurrentSha` cambia el SHA-256 de la entrega frente al
+  registro del trabajo copiado; el Controller falla `Handoff` (y también `Identity`) y declara `StopCondition` con `BLOCKED/STOP`. Mutación
+  detectada; oráculo estricto no cumplido; salida válida, no se repite.
+- **Planificación `R20261011T072116Z-aea0` rechazada antes de invocar al Worker:** A5 `fail` (el invariante INV-10 volvió con la secuencia
+  `—` con la barra invertida duplicada) y A8 `fail` (`Executor.Transport` con tilde). Disposición **STOP (P-03)**; causa raíz en
+  `analysis.md`; decisión CD-I65-F3-11: reemisión del contrato con el mismo trabajo y sin la trampa de transcripción. Invocación de Codex 6
+  de 14 en F3; `attempts` sin cambio (0).
+
+| Archivo (bajo `I-65-pilot/`) | SHA-256 transitorio | Blob |
+|---|---|---|
+| `F3-T2-PACKAGE-AND-WRITER/R20261011T072116Z-aea0/gate-contract.json` | `E2FBD82A87804EB6…` | `13418cf38fd4` |
+| `F3-T2-PACKAGE-AND-WRITER/R20261011T072116Z-aea0/prompt.md` | `2EE5037F02546106…` | `89fb7a45ed8a` |
+| `F3-T2-PACKAGE-AND-WRITER/R20261011T072116Z-aea0/delegation-rejected.json` | `EFF33178B8D32667…` | `fad347b99991` |
+| `F3-T2-PACKAGE-AND-WRITER/R20261011T072116Z-aea0/acceptance.json` | `E2D88B56EFE95875…` | `a358e3afca4d` |
+| `F3-T2-PACKAGE-AND-WRITER/R20261011T072116Z-aea0/relay-record.json` | `DADB6C64777261FF…` | `83d3efefd16f` |
+| `F3-T2-PACKAGE-AND-WRITER/R20261011T072116Z-aea0/analysis.md` | `8E1AD8524B3DC7E5…` | `9f63150c9451` |

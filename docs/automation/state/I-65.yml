@@ -7,7 +7,7 @@ automation_state:
   state: in-progress
   gate: F3
   attempts: 0
-  next_action: F3-T2-PACKAGE-AND-WRITER por ejecución delegada (contrato sobre este commit, planificación, nc4 y aceptación, Worker RED->GREEN, verificación y controles); después, revisión del Architect y cierre de F3. Sin F4.
+  next_action: F3-T2-PACKAGE-AND-WRITER: reemisión del contrato (CD-I65-F3-11), planificación, nc4 y aceptación, Worker RED->GREEN, verificación y controles; después, revisión del Architect y cierre de F3. Sin F4.
   last_evidence_commit: 16fa9e7649e139798d41188db5bbe8b3be94e086
 execution_context:
   mode: manual
