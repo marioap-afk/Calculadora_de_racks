@@ -33,6 +33,9 @@ namespace RackCad.Plugin.Workspace
         /// <summary>Raised from the idle pass with the pure result of one drain. The drain performs no read in this bridge.</summary>
         public event Action<DrainOutcome> Drained;
 
+        /// <summary>RED skeleton: declared, not raised yet.</summary>
+        internal event Action ActiveSessionChanged;
+
         /// <summary>First panel open: hooks the document-collection sources and the active document. Repeating it adds nothing.</summary>
         public void Start()
         {

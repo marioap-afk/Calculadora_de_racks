@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using RackCad.Application.Diagnostics;
 using RackCad.Application.Workspace;
@@ -35,7 +36,11 @@ namespace RackCad.Plugin.Workspace
                 LogFault);
             _port = new WorkspaceHostPort(_host);
             _bridge.Drained += OnDrained;
+            _bridge.ActiveSessionChanged += OnActiveSessionChanged;
         }
+
+        /// <summary>RED skeleton: declared, not raised yet.</summary>
+        public event Action StateChanged;
 
         /// <summary>The controller of the process. The first call creates it; later calls return the same one.</summary>
         public static WorkspaceController GetOrCreate() => Holder.GetOrCreate();
@@ -61,6 +66,10 @@ namespace RackCad.Plugin.Workspace
 
         /// <summary>The in-memory switch of the instrumentation. It changes no setting of the host.</summary>
         public void SetInstrumentationEnabled(bool enabled) => _host.SetInstrumentationEnabled(enabled);
+
+        private void OnActiveSessionChanged()
+        {
+        }
 
         private void OnDrained(DrainOutcome outcome)
         {
