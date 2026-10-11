@@ -1,0 +1,152 @@
+{
+ "Build": {
+  "F_seed": "a607662138862df11056977ba99b711a97b32a55",
+  "F_norm": "10d0a2e373f501ea2617c7efc635926aac1378b9",
+  "F_eff": "b58c6135f49559fd62cc8c138c66fa2b1b841323",
+  "TagObject": "81a44750ae1a25fe01dc5dd70798e6a20f2d4cd5",
+  "SeedCopied": 13,
+  "NormCopied": 39,
+  "Local": 10,
+  "ProvenanceChecks": {
+   "ModifiedBaseAtBaseCommit": 6,
+   "OthersEqualAtBaseCommit": 7,
+   "AddedAbsentAtBase": 26
+  },
+  "Reproducible": true,
+  "Remotes": []
+ },
+ "MV": {
+  "A5_main": {
+   "ExitCode": 0,
+   "Verdict": "MAP_VALID (Evaluate E1-E3 sin STOP; Resolve paso 2 superado)",
+   "MVFailed": [],
+   "EFF": "b58c6135f49559fd62cc8c138c66fa2b1b841323",
+   "Trailers": 1,
+   "MV": {
+    "MV-1": null,
+    "MV-2": null,
+    "MV-3": null,
+    "MV-4": null,
+    "MV-5": null,
+    "MV-6": null,
+    "MV-7": null
+   }
+  },
+  "A5_claim": {
+   "ExitCode": 0,
+   "Verdict": "MAP_VALID (Evaluate E1-E3 sin STOP; Resolve paso 2 superado)",
+   "MVFailed": [],
+   "EFF": "b58c6135f49559fd62cc8c138c66fa2b1b841323",
+   "Trailers": 1,
+   "MV": {
+    "MV-1": null,
+    "MV-2": null,
+    "MV-3": null,
+    "MV-4": null,
+    "MV-5": null,
+    "MV-6": null,
+    "MV-7": null
+   }
+  },
+  "CurrentFixture_main": {
+   "ExitCode": 1,
+   "Verdict": "MAP_INVALID",
+   "MVFailed": [
+    "MV-3",
+    "MV-4",
+    "MV-6",
+    "MV-7"
+   ],
+   "EFF": "fbe25347799e5b801ef708454212335537448bd1",
+   "Trailers": 1,
+   "MV": {
+    "MV-1": null,
+    "MV-2": null,
+    "MV-3": null,
+    "MV-4": null,
+    "MV-5": null,
+    "MV-6": null,
+    "MV-7": null
+   }
+  }
+ },
+ "F4_clause_map": {
+  "ExitCode": 0,
+  "Result": "EQUAL (MV-2..MV-6)",
+  "Files": 31,
+  "EntriesByKind": {
+   "MODIFIED": 15,
+   "REMOVED": 0,
+   "ADDED": 53,
+   "ENTRY": 2
+  },
+  "MapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a"
+ },
+ "NegativeMV": {
+  "ExitCode": 0,
+  "Cases": 11,
+  "AsExpected": 11,
+  "AllAsExpected": true
+ },
+ "Conformance": {
+  "A5_candidate": {
+   "Expected": "CONFORMANT",
+   "Verdict": "CONFORMANT",
+   "AsExpected": true,
+   "Failures": []
+  },
+  "CurrentFixture": {
+   "Expected": "NON_CONFORMANT",
+   "Verdict": "NON_CONFORMANT",
+   "AsExpected": true,
+   "Failures": [
+    "K-7",
+    "K-8"
+   ]
+  },
+  "CandidateB_bundle": {
+   "Expected": "NON_CONFORMANT",
+   "Verdict": "NON_CONFORMANT",
+   "AsExpected": true,
+   "Failures": [
+    "K-3"
+   ]
+  },
+  "Neg_N8": {
+   "Expected": "NON_CONFORMANT",
+   "Verdict": "NON_CONFORMANT",
+   "AsExpected": true,
+   "Failures": [
+    "K-7",
+    "K-10",
+    "K-11"
+   ]
+  },
+  "Neg_N9": {
+   "Expected": "NON_CONFORMANT",
+   "Verdict": "NON_CONFORMANT",
+   "AsExpected": true,
+   "Failures": [
+    "K-2",
+    "K-3",
+    "K-7",
+    "K-10"
+   ]
+  }
+ },
+ "TreesVsCandidateB": {
+  "F_seed_vs_S": [
+   "FIXTURE-MANIFEST.json"
+  ],
+  "F_eff_vs_E": [
+   "FIXTURE-MANIFEST.json"
+  ]
+ },
+ "Authorities": {
+  "SurfaceFiles": 41,
+  "Equal": 41,
+  "NotEqual": [],
+  "MissingD1": [],
+  "Invalidators": "8/8"
+ }
+}

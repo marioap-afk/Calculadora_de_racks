@@ -1,0 +1,156 @@
+{
+ "AuthorityPathsInF_norm": 39,
+ "Cases": [
+  {
+   "Case": "N-1 PROMPT_TEMPLATES ausente en F_seed (EFF^1)",
+   "Tip": "6552197e8c374c17c9f08a360fe6a8aebf92264e",
+   "Expected": [
+    "MV-4",
+    "MV-6"
+   ],
+   "Verdict": "MAP_INVALID",
+   "MVFailed": [
+    "MV-4",
+    "MV-6"
+   ],
+   "AsExpected": true
+  },
+  {
+   "Case": "N-2 AGENTS.md cambiado en F_norm",
+   "Tip": "6f46e1218aec8ef10cc0ece36ce6b7f8ae075a25",
+   "Expected": [
+    "MV-3"
+   ],
+   "Verdict": "MAP_INVALID",
+   "MVFailed": [
+    "MV-3"
+   ],
+   "AsExpected": true
+  },
+  {
+   "Case": "N-3 ADR-0048 ausente en F_norm (EFF)",
+   "Tip": "6bf29379e4f2b7a511410ae66dee8e4e882ff26e",
+   "Expected": [
+    "MV-3",
+    "MV-4"
+   ],
+   "Verdict": "MAP_INVALID",
+   "MVFailed": [
+    "MV-3",
+    "MV-4"
+   ],
+   "AsExpected": true
+  },
+  {
+   "Case": "N-4 trailer duplicado en main",
+   "Tip": "9a8ce2a093dd5a736289bd6ea00067e77998b16a",
+   "Expected": "ACTIVATION_INVALID",
+   "Verdict": "ACTIVATION_INVALID (trailer duplicado)",
+   "MVFailed": [],
+   "AsExpected": true
+  },
+  {
+   "Case": "N-5 F_eff sin tabla PRE",
+   "Tip": "10f4a279349839a9752caa5f947c43fb469d589b",
+   "Expected": "ACTIVATION_INVALID",
+   "Verdict": "ACTIVATION_INVALID (PRE ausente)",
+   "MVFailed": [],
+   "AsExpected": true
+  },
+  {
+   "Case": "N-6 puntero de §16 retirado del AP en F_norm",
+   "Tip": "7da9c306846770be1584e078a30d2fe63a8c18ad",
+   "Expected": [
+    "MV-4",
+    "MV-7"
+   ],
+   "Verdict": "MAP_INVALID",
+   "MVFailed": [
+    "MV-4",
+    "MV-7"
+   ],
+   "AsExpected": true
+  },
+  {
+   "Case": "N-7 punteros de §16 y 16.3 retirados en F_norm",
+   "Tip": "ed37d5bd6ae195f7693315d3d922f4140fbf3fb8",
+   "Expected": [
+    "MV-4",
+    "MV-6",
+    "MV-7"
+   ],
+   "Verdict": "MAP_INVALID",
+   "MVFailed": [
+    "MV-4",
+    "MV-6",
+    "MV-7"
+   ],
+   "AsExpected": true
+  },
+  {
+   "Case": "N-8 F_seed con las autoridades de MC_I62 (V14 D.1 literal)",
+   "Tip": "0e3d0097a47a38a63fd30d8ac798ef4e0aac00f0",
+   "Expected": [
+    "MV-3",
+    "MV-4",
+    "MV-6",
+    "MV-7"
+   ],
+   "Verdict": "MAP_INVALID",
+   "MVFailed": [
+    "MV-3",
+    "MV-4",
+    "MV-6",
+    "MV-7"
+   ],
+   "AsExpected": true
+  },
+  {
+   "Case": "N-9 autoridades de MC_I62 por el primer padre",
+   "Tip": "3036ef934cae387ed4131a1a2489ffd60b1615c8",
+   "Expected": [
+    "MV-3",
+    "MV-4",
+    "MV-6",
+    "MV-7"
+   ],
+   "Verdict": "MAP_INVALID",
+   "MVFailed": [
+    "MV-3",
+    "MV-4",
+    "MV-6",
+    "MV-7"
+   ],
+   "AsExpected": true
+  },
+  {
+   "Case": "N-10 esquema del mapa (ENTRY) presente en F_seed",
+   "Tip": "c6fdcc21f89545d8d71f2367d6be59e0a53029ab",
+   "Expected": [
+    "MV-3"
+   ],
+   "Verdict": "MAP_INVALID",
+   "MVFailed": [
+    "MV-3"
+   ],
+   "AsExpected": true
+  },
+  {
+   "Case": "N-11 routing.md (MODIFIED) con su EffBlob en F_seed",
+   "Tip": "f2fda252ad8b7a73df43c40a8624f5307b4e3fda",
+   "Expected": [
+    "MV-3",
+    "MV-4",
+    "MV-6"
+   ],
+   "Verdict": "MAP_INVALID",
+   "MVFailed": [
+    "MV-3",
+    "MV-4",
+    "MV-6"
+   ],
+   "AsExpected": true
+  }
+ ],
+ "AllAsExpected": true
+}

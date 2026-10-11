@@ -1,0 +1,35 @@
+{
+ "Schema": "i62-a5-budget-matrix/v1",
+ "AsOf": "efcfcbc5 (decisiones hasta §71; evidencia hasta §130)",
+ "Note": "Presupuestos físicos de F6 según V14 D.3 + A-2 + A-4 (acordadas) y, marcada PROPUESTA, la fila de A5-2. Consumido = lanzamientos o sesiones físicas registradas; ninguna cifra se reinicia ni se descuenta. Fuentes: V14 por línea; A-2 y A-4 por línea; decisiones (DEC) por sección; u14-reconciliation.md (U14) por sección.",
+ "Rows": [
+  {"Id": "B-01", "Round": "A (FX-01, FX-02, FX-05)", "Row": "Principal A (claude-desktop-session)", "Cap": "1 sesión + 1 reapertura = 2", "Consumed": 2, "Available": 0, "ConsumedBy": ["A (P1, FX-01, D.1 pasos 5-6, QH ae25b596)", "R (P2, reparación F6-OBS-01: QR ead6119f, QH2 cabed547)"], "Source": "V14 L2437; DEC §63 punto 2 (L1265: R cuenta); U14 §2.1"},
+  {"Id": "B-02", "Round": "A", "Row": "A4-6: +1 sesión solo para el titular A2 de FX-U1 designado por T16", "Cap": "+1 (fila y total de 2 a 3, solo A2)", "Consumed": 0, "Available": "1, solo para A2 de FX-U1 (no fungible; no sirve a FX-U2)", "ConsumedBy": [], "Source": "A-4 L350-L361; DEC §64 punto 4; Owner A4-PRINCIPAL-A2-CONSUMO = A (§64), sin uso"},
+  {"Id": "B-03", "Round": "A", "Row": "A5-2 (PROPUESTA): Principal FX-U2, fila propia", "Cap": "1 sesión, sin reapertura; total de la ronda A +1 solo para esta fila", "Consumed": 0, "Available": "1, solo con A-5 AGREED (A5-2), A5-PRINCIPAL-FXU2-CONSUMO = A, disposición de apertura y P-07", "ConsumedBy": [], "Source": "A-5 §3.3"},
+  {"Id": "B-04", "Round": "A", "Row": "Total de sesiones de Principal de la ronda A", "Cap": "≤ 2 (V14) → 3 solo para A2 (A4-6) → 4 solo para FX-U2 (A5-2, propuesta)", "Consumed": 2, "Available": "plazas 3 (A2) y 4 (FX-U2), no fungibles", "ConsumedBy": ["A", "R"], "Source": "V14 L2523; A-4 L355; A-5 §3.3"},
+  {"Id": "B-05", "Round": "A", "Row": "Codex, lanzamientos base (Controller planificación 1, verificación 1, Architect 1, negativos 8)", "Cap": 11, "Consumed": 0, "Available": 11, "ConsumedBy": [], "Source": "V14 L2438-L2442; U14 §5 (counters.invocations vacío en QH2)"},
+  {"Id": "B-06", "Round": "A", "Row": "Codex, pool de reintentos (≤ 2 por fase)", "Cap": 4, "Consumed": 0, "Available": 4, "ConsumedBy": [], "Source": "V14 L2442; A-4 A4-5 (reparto del pool en una corrección)"},
+  {"Id": "B-07", "Round": "A", "Row": "Codex, tope de la ronda (con A4-2, el Architect sustituto cuenta aquí)", "Cap": 15, "Consumed": 0, "Available": 15, "ConsumedBy": [], "Source": "V14 L2442; A-4 §3.3 regla 3"},
+  {"Id": "B-08", "Round": "fuera de la ronda A", "Row": "Sondas previas (codex-cli, binario actual)", "Cap": "1 + 1 = 2 (con OD-2)", "Consumed": "2 + 2 por encima del tope (históricas y contadas)", "Available": 0, "ConsumedBy": ["OD-2b-PROBE ×2 (37762753…)", "OD-2d-PROBE ×2 (3b8f6e33…), por encima del tope"], "Source": "V14 L2443; A-2 A2-P2 regla 1; U14 §2.2 (C2-C5)"},
+  {"Id": "B-09", "Round": "fuera de toda ronda", "Row": "Bloque A2-P2, par 3553cd6e…/26.1002.7124.0", "Cap": 2, "Consumed": 2, "Available": 0, "ConsumedBy": ["Controller 8/8 por cmd.exe", "Architect 0/6"], "Source": "A-2 L222-L223, L233; U14 §2.2 (C6, C7); evidencia §93"},
+  {"Id": "B-10", "Round": "fuera de toda ronda", "Row": "Invocación de A4-1 (Controller con shell declarada)", "Cap": "1 en total para FX-02 en F6 (otra solo por A4-1 regla 4 con un bloque A2-P2 nuevo)", "Consumed": 1, "Available": 0, "ConsumedBy": ["R20261010T000542Z-a4-1-probe: NOT_DEMONSTRATED (3553cd6e…/73890CA3…)"], "Source": "A-4 L203; DEC §66 punto 1"},
+  {"Id": "B-11", "Round": "fuera de toda ronda", "Row": "Bloque A2-P2, par d13914ce…/26.1007.2314.0", "Cap": 2, "Consumed": 1, "Available": "1 (sonda 2 HELD; su destino exige disposición expresa del Coordinator; caduca con cualquier actualización nueva)", "ConsumedBy": ["Sonda 1 NATIVE_CONTROLLER: NOT_DEMONSTRATED (R20261011T050156Z)"], "Source": "DEC §69 puntos 1-3; DEC §70 punto 3; DEC §71 punto 1 (L1454); A-2 A2-P2 regla 6"},
+  {"Id": "B-12", "Round": "A", "Row": "Worker (claude-subagent)", "Cap": "1 + 1 solo con REWORK = 2", "Consumed": 0, "Available": 2, "ConsumedBy": [], "Source": "V14 L2444"},
+  {"Id": "B-13", "Round": "A", "Row": "Reviewer (claude-subagent nuevo)", "Cap": "1 + 1 = 2", "Consumed": 0, "Available": 2, "ConsumedBy": [], "Source": "V14 L2445"},
+  {"Id": "B-14", "Round": "A", "Row": "Subagentes de Claude (total de la ronda)", "Cap": "≤ 4", "Consumed": 0, "Available": 4, "ConsumedBy": [], "Source": "V14 L2523; U14 §2.2 (ninguno lanzado)"},
+  {"Id": "B-15", "Round": "A", "Row": "Claude CLI (columna de la ronda A)", "Cap": 0, "Consumed": 0, "Available": 0, "ConsumedBy": [], "Source": "V14 L2523; A-4 §3.3 regla 3 (A4-2 cuenta en Codex)"},
+  {"Id": "B-16", "Round": "F6", "Row": "A2-P1, reejecución extraordinaria por escenario", "Cap": "1 por escenario en toda F6", "Consumed": "1 (FX-04a: B3)", "Available": "FX-02 (fila Principal A): 1, solo ante una sesión de la ronda A acreditada INVALID_LAUNCH; no se extiende a la fila de A5-2 (A5-2 regla 6)", "ConsumedBy": ["B3 (FX-04a)"], "Source": "A-2 L148, L156-L159; DEC §58 punto 1"},
+  {"Id": "B-17", "Round": "FX-04a", "Row": "Principal B", "Cap": "1 + 1 reapertura = 2; +1 por A2-P1 = 3", "Consumed": 3, "Available": 0, "ConsumedBy": ["B1 (INVALID_TEST_ORACLE)", "B2 (INVALID_LAUNCH)", "B3 (PASS 23/23)"], "Source": "V14 L2500; DEC §55 punto 2; DEC §58 punto 1; U14 §2.1"},
+  {"Id": "B-18", "Round": "FX-04a", "Row": "N11: B2", "Cap": 1, "Consumed": 0, "Available": "0 de hecho (N11 = NOT_APPLICABLE; plaza acotada a N11, no fungible)", "ConsumedBy": [], "Source": "V14 L2501; DEC §53 (L1007), §55 punto 2"},
+  {"Id": "B-19", "Round": "FX-04a", "Row": "Invocaciones de modelo", "Cap": 0, "Consumed": 0, "Available": 0, "ConsumedBy": [], "Source": "V14 L2502"},
+  {"Id": "B-20", "Round": "FX-04b", "Row": "Controller 4 + Worker 2 (Principal: sesión de FX-04a)", "Cap": "6", "Consumed": 0, "Available": "6 (FX-04b UNSUPPORTED por la sonda de OD-4)", "ConsumedBy": [], "Source": "V14 L2503-L2505, L2525"},
+  {"Id": "B-21", "Round": "B (FX-03)", "Row": "Principal 2; Controller 8; Worker 2; Reviewer 2; Architect 2; sondas previas 4 (claude-cli 1+1; escritura de codex-cli 1+1)", "Cap": "Codex ≤ 12; Claude CLI ≤ 4 + sonda 2; Principal ≤ 2", "Consumed": "1 sonda de escritura de codex-cli (OD-4, C1)", "Available": "resto; FX-03 UNVERIFIED", "ConsumedBy": ["R20261006T072306Z-od41"], "Source": "V14 L2511-L2517, L2526; U14 §2.2 (C1)"},
+  {"Id": "B-22", "Round": "D.8 (FX-06)", "Row": "Principal A 1 + 1; Architect B 1 + 1; Architect C 1 + 1 (total Architect 4)", "Cap": "Principal 2; Architect 4", "Consumed": 0, "Available": "Principal 2; Architect 4", "ConsumedBy": [], "Source": "V14 D.8 (tabla de presupuesto); A-5 no la cambia"}
+ ],
+ "Summary": {
+  "FX02LaunchBudgetsConsumed": 0,
+  "PrincipalRoundA": "2 usadas (A, R); plaza A4-6 reservada a A2 de FX-U1, sin usar; plaza A5-2 (propuesta) reservada a FX-U2",
+  "ProbesOutsideRounds": "sondas previas agotadas (2 + 2); A2-P2 par 1: 2/2; A4-1: 1/1; A2-P2 par 2: 1/2 (sonda 2 HELD)",
+  "NoCounterReset": true
+ }
+}

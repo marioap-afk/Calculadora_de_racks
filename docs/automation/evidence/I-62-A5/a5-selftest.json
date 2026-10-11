@@ -1,0 +1,528 @@
+{
+ "Control": {
+  "G1": {
+   "Result": "PASS",
+   "Findings": []
+  },
+  "G2": {
+   "Result": "PASS",
+   "Findings": []
+  },
+  "G3": {
+   "Result": "PASS",
+   "Findings": []
+  },
+  "G4": {
+   "Result": "PASS",
+   "Findings": []
+  },
+  "G5": {
+   "Result": "PASS",
+   "Findings": []
+  },
+  "G5B": {
+   "Result": "PASS",
+   "Findings": []
+  }
+ },
+ "Mutants": [
+  {
+   "Guard": "G1",
+   "Mutant": "literal cambiado en un carácter (V14 L2523)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "citas sin clasificar (ni literal fijado, ni del propio delta, ni notación): ['«| A | ≤ 16 + 2 sondas | ≤ 4 | 0 | ≤ 2 |»']"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "referencia de línea cambiada (A-2 L159)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "cita literal sin casar con su fuente o sin su referencia de línea: «la aprobación de OD-5 (consumo\ndentro de los topes de D.3) n»"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "FREEZE_SHA cambiado",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "cabecera sin «FREEZE_SHA     = b64a3b640c7ee3bd77636e7a3218ae0ebac2dd43»"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "blob de A-4 de la cabecera cambiado",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "cabecera sin «A-4 AGREED (decisiones §64, punto 1; docs/initiatives/I-62-A»"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "veredicto del Coordinator añadido",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "cabecera con «Coordinator verdict» (prohibido en esta preparación)"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "estado distinto de PROPUESTA",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "cabecera sin «State:»"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "cita sin clasificar",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "citas sin clasificar (ni literal fijado, ni del propio delta, ni notación): ['«texto que no existe en ninguna fuente»']"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "línea de un bloque literal de §2 cambiada",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "bloque V14 L2388-L2397 distinto de la fuente (líneas [2393])"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "prefijo de blob abreviado falso",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "prefijo de blob sin fijar en las guardas: f525cb1f…"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "ruta de perfil de usuario",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A-5 con una ruta de perfil o un correo (1 coincidencias)"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "correo",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A-5 con una ruta de perfil o un correo (1 coincidencias)"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "identidad del host",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A-5 con una identidad del host (usuario, correo o nombre Git)"
+   ]
+  },
+  {
+   "Guard": "G1",
+   "Mutant": "cita interna del delta alterada",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "citas sin clasificar (ni literal fijado, ni del propio delta, ni notación): ['dentro del delta: «copias **byte a byte** de las autoridades de RackC»']"
+   ]
+  },
+  {
+   "Guard": "G2",
+   "Mutant": "ruta de producción en el commit",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "ruta fuera de alcance: src/RackCad.Core/Nuevo.cs (A)"
+   ]
+  },
+  {
+   "Guard": "G2",
+   "Mutant": "V14 modificada en el commit",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "ruta fuera de alcance: docs/initiatives/I-62-proposal-v14.md (M)"
+   ]
+  },
+  {
+   "Guard": "G2",
+   "Mutant": "A-5 como modificada (M)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "docs/initiatives/I-62-A-5.md no aparece como añadido (A)"
+   ]
+  },
+  {
+   "Guard": "G2",
+   "Mutant": "evidencia reescrita (no solo añadido)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "docs/automation/evidence/I-62-evidence.md no cambia solo por añadido"
+   ]
+  },
+  {
+   "Guard": "G2",
+   "Mutant": "ruta fuera de I-62-A5 (kit de FX-02)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "ruta fuera de alcance: docs/automation/evidence/I-62-F6/kits/FX-02/x.md (A)"
+   ]
+  },
+  {
+   "Guard": "G2",
+   "Mutant": "archivo de I-62-A5 modificado en lugar de añadido",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "docs/automation/evidence/I-62-A5/preflight.md con estado M (en docs/automation/evidence/I-62-A5/ solo se añade)"
+   ]
+  },
+  {
+   "Guard": "G2",
+   "Mutant": "privacidad en un archivo añadido",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "docs/automation/evidence/I-62-A5/nota.md con una ruta de perfil o un correo (1 coincidencias)"
+   ]
+  },
+  {
+   "Guard": "G2",
+   "Mutant": "blob de A-5 en head distinto",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "blob de A-5 en head distinto del texto comprobado"
+   ]
+  },
+  {
+   "Guard": "G3",
+   "Mutant": "V14 cambiada en head",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "objeto distinto en Head:docs/initiatives/I-62-proposal-v14.md: esperado 34ad80ea1bff, obtenido 111111111111"
+   ]
+  },
+  {
+   "Guard": "G3",
+   "Mutant": "A-4 cambiada en head",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "objeto distinto en Head:docs/initiatives/I-62-A-4.md: esperado 5e2ba68efdc1, obtenido 222222222222"
+   ]
+  },
+  {
+   "Guard": "G3",
+   "Mutant": "árbol agent-execution cambiado",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "objeto distinto en Base->Head:docs/automation/agent-execution: esperado 809fd58f450d, obtenido 333333333333"
+   ]
+  },
+  {
+   "Guard": "G3",
+   "Mutant": "mapa cambiado en base",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "objeto distinto en Base:docs/automation/agent-execution/compatibility/I62-clause-map.json: esperado 4d49d3e1a63d, obtenido 444444444444"
+   ]
+  },
+  {
+   "Guard": "G3",
+   "Mutant": "mv_check.py cambiado",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "objeto distinto en Head:docs/automation/evidence/I-62-F6/MAP-INVALID/mv_check.py: esperado 9536d051372c, obtenido 555555555555"
+   ]
+  },
+  {
+   "Guard": "G3",
+   "Mutant": "árbol src distinto entre base y head",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "objeto distinto en Base->Head:src: esperado b0eb085737a7, obtenido 666666666666"
+   ]
+  },
+  {
+   "Guard": "G3",
+   "Mutant": "ADR-0048 cambiado",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "objeto distinto en Head:docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md: esperado e1bd8d91f10c, obtenido 777777777777"
+   ]
+  },
+  {
+   "Guard": "G4",
+   "Mutant": "ruta de superficie en el commit",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "rutas cambiadas bajo las superficies del mapa: ['docs/WORKFLOW.md']"
+   ]
+  },
+  {
+   "Guard": "G4",
+   "Mutant": "C-20b distinto de EQUAL",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "clause_map.py check distinto de EQUAL (código 0)"
+   ]
+  },
+  {
+   "Guard": "G4",
+   "Mutant": "C-20b con código 1",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "clause_map.py check distinto de EQUAL (código 1)"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "ubicación de A5-1 en D.2",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A5-1: ubicación distinta de «Ubicación: al final de V14 D.1, a continuación del paso 6» (V14 L2406)"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "ubicación de A5-2 en D.4",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A5-2: ubicación distinta de «Ubicación: al final de V14 D.3, a continuación del párrafo de A4-6»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "A5-2 nombra A5-1 (separabilidad)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A5-2: contiene «A5-1» (prohibido: alcance o separabilidad)"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "A5-1 nombra A5-2 (separabilidad)",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A5-1: contiene «A5-2» (prohibido: alcance o separabilidad)"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "tope de Codex distinto en A5-2",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A5-2: falta la frase exigida «(**11** base, pool **4** con ≤ 2 por fase, tope **15**)»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "fila de tabla en el delta",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A5-1: el delta trae filas de tabla, encabezados o vallas"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "nombre de producto en A5-1",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A5-1: nombres de producto en el delta: ['codex']"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "A5-2 sin cláusula de alcance",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A5-2: no abre con su cláusula de alcance «Solo para la ronda A de F6 (Topología A)»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "A5-2 transfiere el cupo de A4-6",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A5-2: falta la frase exigida «no transfiere, no usa y no reasigna el cupo de la regla de A»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "A5-2 con reapertura",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A5-2: falta la frase exigida «**1** sesión, sin reapertura»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "A5-2 sin «ningún contador se reinicia»",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A5-2: falta la frase exigida «ningún contador se reinicia ni se descuenta»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "A5-1 sin la precondición antes del reclamo",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A5-1: falta la frase exigida «antes de cualquier reclamo»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "A5-1 permite dos commits en la rama",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A5-1: falta la frase exigida «es el único commit de la rama `fixture/i62-norm`, con F_seed»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "A5-1 con F_seed en el primer padre cambiado",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A5-1: falta la frase exigida «con F_seed como primer padre»"
+   ]
+  },
+  {
+   "Guard": "G5",
+   "Mutant": "A5-2 con «de 2 a 3»",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "A5-2: contiene «de 2 a 3» (prohibido: alcance o separabilidad)"
+   ]
+  },
+  {
+   "Guard": "G5B",
+   "Mutant": "ToolBlob de la autoprueba distinto",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "ToolBlob de la autoprueba distinto del blob de a5-guards.py"
+   ]
+  },
+  {
+   "Guard": "G5B",
+   "Mutant": "autoprueba con Result FAIL",
+   "Applied": true,
+   "Result": "FAIL",
+   "Killed": true,
+   "NewFinding": [
+    "a5-selftest.json con Result FAIL"
+   ]
+  }
+ ],
+ "Summary": {
+  "Mutants": 48,
+  "Killed": 48,
+  "ControlFailures": [],
+  "ByGuard": {
+   "G1": "13/13",
+   "G2": "8/8",
+   "G3": "7/7",
+   "G4": "3/3",
+   "G5": "15/15",
+   "G5B": "2/2"
+  }
+ },
+ "Result": "PASS",
+ "Mode": "SELF_TEST",
+ "Repo": "HEAD efcfcbc5a9f89de0dc4f4f21a426b4723ef18245",
+ "ToolBlob": "98d264056fe800477cf37fbfd5bde34877857c68",
+ "A5TextBlob": "ad94ceedacbf3dbf70f0217a583978d0e32592fc"
+}

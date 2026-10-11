@@ -1,0 +1,31 @@
+{
+ "Builder": "build_candidate_a5.py",
+ "Date": "2026-10-11T02:00:00+00:00",
+ "BaseCommit": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+ "SourceCommit": "6f0187cb30852971b49153c2763c8ba6caeaa64d",
+ "MapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+ "F_seed": "a607662138862df11056977ba99b711a97b32a55",
+ "F_norm": "10d0a2e373f501ea2617c7efc635926aac1378b9",
+ "F_eff": "b58c6135f49559fd62cc8c138c66fa2b1b841323",
+ "TagObject": "81a44750ae1a25fe01dc5dd70798e6a20f2d4cd5",
+ "SeedCopied": 13,
+ "NormCopied": 39,
+ "Local": 10,
+ "ProvenanceChecks": {
+  "ModifiedBaseAtBaseCommit": 6,
+  "OthersEqualAtBaseCommit": 7,
+  "AddedAbsentAtBase": 26
+ },
+ "Remotes": [],
+ "Precondition": {
+  "Checker": "mv_check.py",
+  "ExitCode": 0,
+  "MapValid": true
+ },
+ "Claim": {
+  "Unit": "FX-U2",
+  "Branch": "fx/u2",
+  "ClaimId": "fc62f1c7-0000-4000-8000-000000000002",
+  "C": "282c8523adb022c8fd573598f207b0e781f38274"
+ }
+}

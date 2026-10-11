@@ -1,0 +1,13 @@
+[candidato A5-1, main = F_eff] MainSha_eval=b58c6135f49559fd62cc8c138c66fa2b1b841323
+  Derive: EFF {'EFF': 'b58c6135f495', 'EFF^1': 'a60766213886', 'EFF^2': '10d0a2e373f5'}
+  TrailerCommits alcanzables: ['10d0a2e373f5']
+  E2 |X|=1  E3 |R|=1  descubrimiento=literal:True
+  PRE: OK (filas 0)
+  MV-1 pass
+  MV-2 pass
+  MV-3 pass
+  MV-4 pass
+  MV-5 pass
+  MV-6 pass
+  MV-7 pass
+  VEREDICTO: MAP_VALID (Evaluate E1-E3 sin STOP; Resolve paso 2 superado)

@@ -1,0 +1,46 @@
+{
+ "A5_candidate": {
+  "Expected": "CONFORMANT",
+  "Verdict": "CONFORMANT",
+  "AsExpected": true,
+  "Failures": []
+ },
+ "CurrentFixture": {
+  "Expected": "NON_CONFORMANT",
+  "Verdict": "NON_CONFORMANT",
+  "AsExpected": true,
+  "Failures": [
+   "K-7",
+   "K-8"
+  ]
+ },
+ "CandidateB_bundle": {
+  "Expected": "NON_CONFORMANT",
+  "Verdict": "NON_CONFORMANT",
+  "AsExpected": true,
+  "Failures": [
+   "K-3"
+  ]
+ },
+ "Neg_N8": {
+  "Expected": "NON_CONFORMANT",
+  "Verdict": "NON_CONFORMANT",
+  "AsExpected": true,
+  "Failures": [
+   "K-7",
+   "K-10",
+   "K-11"
+  ]
+ },
+ "Neg_N9": {
+  "Expected": "NON_CONFORMANT",
+  "Verdict": "NON_CONFORMANT",
+  "AsExpected": true,
+  "Failures": [
+   "K-2",
+   "K-3",
+   "K-7",
+   "K-10"
+  ]
+ }
+}

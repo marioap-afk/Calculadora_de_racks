@@ -3638,3 +3638,27 @@ solo desde artefactos custodiados.
   - A5-2: una sesión de Principal explícita para FX-U2, sin transferir A4-6 ni reiniciar contadores.
 - Preflight obligatorio antes de cualquier revisión: MV-1..MV-7, autoridades intactas, consecuencias, presupuesto, OWNER-RESERVED, guardas y pruebas
   negativas, contratos de producción.
+
+## 131. A-5 candidata publicada como PROPUESTA, con preflight PASS (decisiones §71); sin revisión formal
+
+- **A-5** ([I-62-A-5.md](../../initiatives/I-62-A-5.md), blob `ad94ceed`), dos deltas separables:
+  - **A5-1**, al final de V14 D.1: solo para un repositorio de fixture nuevo (B1). F_seed lleva el estado previo a la activación según el mapa (los
+    MODIFIED con su `BaseBlob`; ni ADDED/ENTRY ni el mapa); las autoridades de MC_I62 entran solo por F_norm, un único commit con el trailer; F_eff es
+    el merge con F_seed como primer padre. Precondición: MV-1..MV-7 = MAP_VALID antes de cualquier reclamo. Unidad nueva FX-U2. Ni el mapa ni las
+    autoridades cambian, y el fixture actual y FX-U1 quedan como evidencia histórica.
+  - **A5-2**, al final de D.3: una fila propia «Principal FX-U2» de 1 sesión, tope 1, sin reapertura. El total de la ronda A sube en una solo para ella.
+    No usa ni transfiere el cupo de A4-6, no reinicia contadores, y los presupuestos de FX-02 siguen igual.
+- **Preflight** ([preflight.md](I-62-A5/preflight.md)): PASS en los ocho puntos.
+  - **(a)** MV-1..MV-7 7/7 con el método de A5-1 (candidato reproducible; F4 `clause_map.py` EQUAL; 11 negativos que se comportan como deben; el
+    fixture actual sigue MAP_INVALID como referencia).
+  - **(b)** Autoridades intactas: 41/41 archivos de las superficies y 8/8 invalidadores iguales.
+  - **(c)** Consecuencias: nada acreditado se invalida. C-22 queda como registro histórico, re-acreditable en B1; C-25a intacta; el oráculo de FX-02
+    se reutiliza; hay que resellar `supervision-checks.md`.
+  - **(d)** Matriz de presupuestos, 22 filas.
+  - **(e)** OWNER-RESERVED: el repositorio B1 y la sesión de FX-U2.
+  - **(f)** Contratos de producción sin cambios.
+  - **(g)** Líneas del Owner.
+  - **(h)** C-24: ninguna ruta demostrada todavía (el Controller sigue NOT_DEMONSTRATED).
+- **Guardas** (`a5-guards.py`): autoprueba con 48/48 mutantes muertos; vista previa sobre el commit hipotético PASS. La ejecución `run` sobre este
+  commit va en el siguiente.
+- **Estado:** PROPUESTA. Revisión del Architect NOT LAUNCHED; ninguna revisión formal hasta una disposición nueva (§71, punto 7).

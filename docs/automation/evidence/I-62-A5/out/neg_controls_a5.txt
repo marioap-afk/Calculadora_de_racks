@@ -1,0 +1,11 @@
+N-1 PROMPT_TEMPLATES ausente en F_seed (EFF^1)             esperado=['MV-4', 'MV-6']                 obtenido=MAP_INVALID ['MV-4', 'MV-6'] -> OK
+N-2 AGENTS.md cambiado en F_norm                           esperado=['MV-3']                         obtenido=MAP_INVALID ['MV-3'] -> OK
+N-3 ADR-0048 ausente en F_norm (EFF)                       esperado=['MV-3', 'MV-4']                 obtenido=MAP_INVALID ['MV-3', 'MV-4'] -> OK
+N-4 trailer duplicado en main                              esperado=ACTIVATION_INVALID               obtenido=ACTIVATION_INVALID (trailer duplicado) [] -> OK
+N-5 F_eff sin tabla PRE                                    esperado=ACTIVATION_INVALID               obtenido=ACTIVATION_INVALID (PRE ausente) [] -> OK
+N-6 puntero de §16 retirado del AP en F_norm               esperado=['MV-4', 'MV-7']                 obtenido=MAP_INVALID ['MV-4', 'MV-7'] -> OK
+N-7 punteros de §16 y 16.3 retirados en F_norm             esperado=['MV-4', 'MV-6', 'MV-7']         obtenido=MAP_INVALID ['MV-4', 'MV-6', 'MV-7'] -> OK
+N-8 F_seed con las autoridades de MC_I62 (V14 D.1 literal) esperado=['MV-3', 'MV-4', 'MV-6', 'MV-7'] obtenido=MAP_INVALID ['MV-3', 'MV-4', 'MV-6', 'MV-7'] -> OK
+N-9 autoridades de MC_I62 por el primer padre              esperado=['MV-3', 'MV-4', 'MV-6', 'MV-7'] obtenido=MAP_INVALID ['MV-3', 'MV-4', 'MV-6', 'MV-7'] -> OK
+N-10 esquema del mapa (ENTRY) presente en F_seed           esperado=['MV-3']                         obtenido=MAP_INVALID ['MV-3'] -> OK
+N-11 routing.md (MODIFIED) con su EffBlob en F_seed        esperado=['MV-3', 'MV-4', 'MV-6']         obtenido=MAP_INVALID ['MV-3', 'MV-4', 'MV-6'] -> OK

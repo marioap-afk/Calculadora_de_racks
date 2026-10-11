@@ -1,0 +1,401 @@
+{
+ "SurfaceFilesAtEFF'": 41,
+ "Rows": [
+  {
+   "Path": "AGENTS.md",
+   "Kind": "FIXTURE_LOCAL",
+   "EFF'": "69b1f03282a1",
+   "CurrentFixtureEFF": "69b1f03282a1",
+   "Equal": true
+  },
+  {
+   "Path": "CLAUDE.md",
+   "Kind": "FIXTURE_LOCAL",
+   "EFF'": "d0f12c8ea396",
+   "CurrentFixtureEFF": "d0f12c8ea396",
+   "Equal": true
+  },
+  {
+   "Path": "docs/AUTOMATION_PLAN.md",
+   "Kind": "AUTHORITY",
+   "EFF'": "f525cb1e9d24",
+   "MC_I62": "f525cb1e9d24",
+   "RackCadHEAD": "f525cb1e9d24",
+   "Equal": true
+  },
+  {
+   "Path": "docs/INITIATIVE_LIFECYCLE.md",
+   "Kind": "AUTHORITY",
+   "EFF'": "f19896a8f1a7",
+   "MC_I62": "f19896a8f1a7",
+   "RackCadHEAD": "f19896a8f1a7",
+   "Equal": true
+  },
+  {
+   "Path": "docs/WORKFLOW.md",
+   "Kind": "AUTHORITY",
+   "EFF'": "446c32ba6a91",
+   "MC_I62": "446c32ba6a91",
+   "RackCadHEAD": "446c32ba6a91",
+   "Equal": true
+  },
+  {
+   "Path": "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md",
+   "Kind": "AUTHORITY",
+   "EFF'": "e1bd8d91f10c",
+   "MC_I62": "e1bd8d91f10c",
+   "RackCadHEAD": "e1bd8d91f10c",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/README.md",
+   "Kind": "AUTHORITY",
+   "EFF'": "592dcfd45e87",
+   "MC_I62": "592dcfd45e87",
+   "RackCadHEAD": "592dcfd45e87",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/adapters/claude-cli.md",
+   "Kind": "AUTHORITY",
+   "EFF'": "ae570380509c",
+   "MC_I62": "ae570380509c",
+   "RackCadHEAD": "ae570380509c",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/adapters/claude-desktop-session.md",
+   "Kind": "AUTHORITY",
+   "EFF'": "7f45923527a8",
+   "MC_I62": "7f45923527a8",
+   "RackCadHEAD": "7f45923527a8",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/adapters/claude-subagent.md",
+   "Kind": "AUTHORITY",
+   "EFF'": "e10926c04832",
+   "MC_I62": "e10926c04832",
+   "RackCadHEAD": "e10926c04832",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/adapters/codex-cli.md",
+   "Kind": "AUTHORITY",
+   "EFF'": "155f3469e345",
+   "MC_I62": "155f3469e345",
+   "RackCadHEAD": "155f3469e345",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/adapters/codex-desktop-session.md",
+   "Kind": "AUTHORITY",
+   "EFF'": "02d6c33db603",
+   "MC_I62": "02d6c33db603",
+   "RackCadHEAD": "02d6c33db603",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "4d49d3e1a63d",
+   "MC_I62": "4d49d3e1a63d",
+   "RackCadHEAD": "4d49d3e1a63d",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "6b54dda9579d",
+   "MC_I62": "6b54dda9579d",
+   "RackCadHEAD": "6b54dda9579d",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/model-catalog.md",
+   "Kind": "AUTHORITY",
+   "EFF'": "166d978d114e",
+   "MC_I62": "166d978d114e",
+   "RackCadHEAD": "166d978d114e",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/prompting-guide.md",
+   "Kind": "AUTHORITY",
+   "EFF'": "79754c724c6b",
+   "MC_I62": "79754c724c6b",
+   "RackCadHEAD": "79754c724c6b",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/routing.md",
+   "Kind": "AUTHORITY",
+   "EFF'": "bba08fc4686d",
+   "MC_I62": "bba08fc4686d",
+   "RackCadHEAD": "bba08fc4686d",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/adapters/claude-cli.facts.v1.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "2298c37641ef",
+   "MC_I62": "2298c37641ef",
+   "RackCadHEAD": "2298c37641ef",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "f246717f1cc2",
+   "MC_I62": "f246717f1cc2",
+   "RackCadHEAD": "f246717f1cc2",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/adapters/claude-subagent.facts.v1.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "3706be159871",
+   "MC_I62": "3706be159871",
+   "RackCadHEAD": "3706be159871",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/adapters/codex-cli.facts.v1.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "3d1b7478b433",
+   "MC_I62": "3d1b7478b433",
+   "RackCadHEAD": "3d1b7478b433",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/adapters/codex-desktop-session.facts.v1.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "bdf5c4918299",
+   "MC_I62": "bdf5c4918299",
+   "RackCadHEAD": "bdf5c4918299",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/architect-review-result.v1.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "e7f5747ba381",
+   "MC_I62": "e7f5747ba381",
+   "RackCadHEAD": "e7f5747ba381",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/automation-state.v2.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "b1105dc1c5ea",
+   "MC_I62": "b1105dc1c5ea",
+   "RackCadHEAD": "b1105dc1c5ea",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/binding.v1.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "13501476b775",
+   "MC_I62": "13501476b775",
+   "RackCadHEAD": "13501476b775",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/controller-verification.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "72747225daa2",
+   "MC_I62": "72747225daa2",
+   "RackCadHEAD": "72747225daa2",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "e1faa9eca5c5",
+   "MC_I62": "e1faa9eca5c5",
+   "RackCadHEAD": "e1faa9eca5c5",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/delegation.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "62c026764a3b",
+   "MC_I62": "62c026764a3b",
+   "RackCadHEAD": "62c026764a3b",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/delegation.v2.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "dfdbe461270e",
+   "MC_I62": "dfdbe461270e",
+   "RackCadHEAD": "dfdbe461270e",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/gate-contract.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "56ced893586a",
+   "MC_I62": "56ced893586a",
+   "RackCadHEAD": "56ced893586a",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/gate-contract.v2.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "f644bb194165",
+   "MC_I62": "f644bb194165",
+   "RackCadHEAD": "f644bb194165",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/input-closure.v1.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "6bdf71843e2c",
+   "MC_I62": "6bdf71843e2c",
+   "RackCadHEAD": "6bdf71843e2c",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/input-fidelity.v1.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "e54990fc541b",
+   "MC_I62": "e54990fc541b",
+   "RackCadHEAD": "e54990fc541b",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/normative-dependency-manifest.v1.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "7ff2127d28de",
+   "MC_I62": "7ff2127d28de",
+   "RackCadHEAD": "7ff2127d28de",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/preflight.v1.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "6a0540796a47",
+   "MC_I62": "6a0540796a47",
+   "RackCadHEAD": "6a0540796a47",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/relay-record.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "2deba19606d0",
+   "MC_I62": "2deba19606d0",
+   "RackCadHEAD": "2deba19606d0",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/relay-record.v2.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "dca5b29c1a26",
+   "MC_I62": "dca5b29c1a26",
+   "RackCadHEAD": "dca5b29c1a26",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "a74288eb0e9d",
+   "MC_I62": "a74288eb0e9d",
+   "RackCadHEAD": "a74288eb0e9d",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "d54a7ae783ec",
+   "MC_I62": "d54a7ae783ec",
+   "RackCadHEAD": "d54a7ae783ec",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+   "Kind": "AUTHORITY",
+   "EFF'": "cc3c9cf76b22",
+   "MC_I62": "cc3c9cf76b22",
+   "RackCadHEAD": "cc3c9cf76b22",
+   "Equal": true
+  },
+  {
+   "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+   "Kind": "AUTHORITY",
+   "EFF'": "384d0b0c3734",
+   "MC_I62": "384d0b0c3734",
+   "RackCadHEAD": "384d0b0c3734",
+   "Equal": true
+  }
+ ],
+ "NotEqual": [],
+ "D1AuthoritiesMissingAtEFF'": [],
+ "Invalidators": [
+  {
+   "Path": "docs/automation/agent-execution/routing.md",
+   "EFF'": "bba08fc4686d7192deeb559752636a467103b4b1",
+   "CurrentFixtureEFF": "bba08fc4686d7192deeb559752636a467103b4b1",
+   "FX-U1_95bdc29d": "bba08fc4686d7192deeb559752636a467103b4b1",
+   "MC_I62": "bba08fc4686d7192deeb559752636a467103b4b1",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/model-catalog.md",
+   "EFF'": "166d978d114e635bbef67e295c2ec1da73af6d1f",
+   "CurrentFixtureEFF": "166d978d114e635bbef67e295c2ec1da73af6d1f",
+   "FX-U1_95bdc29d": "166d978d114e635bbef67e295c2ec1da73af6d1f",
+   "MC_I62": "166d978d114e635bbef67e295c2ec1da73af6d1f",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/adapters/codex-cli.md",
+   "EFF'": "155f3469e345e2397fa26347a9cb52d6fdb91122",
+   "CurrentFixtureEFF": "155f3469e345e2397fa26347a9cb52d6fdb91122",
+   "FX-U1_95bdc29d": "155f3469e345e2397fa26347a9cb52d6fdb91122",
+   "MC_I62": "155f3469e345e2397fa26347a9cb52d6fdb91122",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/adapters/claude-cli.md",
+   "EFF'": "ae570380509cacabf11f757a27573bf6fe616a36",
+   "CurrentFixtureEFF": "ae570380509cacabf11f757a27573bf6fe616a36",
+   "FX-U1_95bdc29d": "ae570380509cacabf11f757a27573bf6fe616a36",
+   "MC_I62": "ae570380509cacabf11f757a27573bf6fe616a36",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+   "EFF'": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "CurrentFixtureEFF": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "FX-U1_95bdc29d": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "MC_I62": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "Equal": true
+  },
+  {
+   "Path": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
+   "EFF'": "6b54dda9579d694200d8fc9ec26a4a846eef529b",
+   "CurrentFixtureEFF": "6b54dda9579d694200d8fc9ec26a4a846eef529b",
+   "FX-U1_95bdc29d": "6b54dda9579d694200d8fc9ec26a4a846eef529b",
+   "MC_I62": "6b54dda9579d694200d8fc9ec26a4a846eef529b",
+   "Equal": true
+  },
+  {
+   "Path": "docs/AUTOMATION_PLAN.md",
+   "EFF'": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "CurrentFixtureEFF": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "FX-U1_95bdc29d": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "MC_I62": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "Equal": true
+  },
+  {
+   "Path": "docs/WORKFLOW.md",
+   "EFF'": "446c32ba6a91f9a712a0758038ae0a46ab1c970f",
+   "CurrentFixtureEFF": "446c32ba6a91f9a712a0758038ae0a46ab1c970f",
+   "FX-U1_95bdc29d": "446c32ba6a91f9a712a0758038ae0a46ab1c970f",
+   "MC_I62": "446c32ba6a91f9a712a0758038ae0a46ab1c970f",
+   "Equal": true
+  }
+ ],
+ "InvalidatorsEqual": 8,
+ "ClauseMapSchemaToolBlob": "ffe6ea57257f30fa9eec3e9aaf5bf9982bf59d08"
+}

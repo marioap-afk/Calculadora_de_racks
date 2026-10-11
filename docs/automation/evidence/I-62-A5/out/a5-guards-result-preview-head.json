@@ -1,0 +1,82 @@
+{
+ "Mode": "PREVIEW",
+ "RepoHead": "efcfcbc5a9f89de0dc4f4f21a426b4723ef18245",
+ "ToolBlob": "98d264056fe800477cf37fbfd5bde34877857c68",
+ "A5TextBlob": "ad94ceedacbf3dbf70f0217a583978d0e32592fc",
+ "Guards": {
+  "G1": {
+   "Check": "G1 literales, cabecera y privacidad",
+   "Checked": {
+    "Header": 13,
+    "Blocks": 5,
+    "BlockLines": 31,
+    "Lit": 32,
+    "Self": 1,
+    "Notation": 3,
+    "DeltaInner": 3,
+    "ShortBlobs": 31
+   },
+   "PrivacyChecked": 30,
+   "Info": [],
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G2": {
+   "Check": "G2 rutas del commit",
+   "Result": "NOT_RUN",
+   "Info": [
+    "sin commit candidato"
+   ],
+   "Findings": []
+  },
+  "G3": {
+   "Check": "G3 objetos congelados y producción sin cambio",
+   "Frozen": 18,
+   "Production": 20,
+   "Mismatches": {},
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G4": {
+   "Check": "G4 C-20b",
+   "Base": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+   "SurfacesTouched": [],
+   "ExitCode": 0,
+   "Output": "{\"result\": \"EQUAL (MV-2..MV-6)\", \"files\": 31, \"entries\": {\"MODIFIED\": 15, \"REMOVED\": 0, \"ADDED\": 53, \"ENTRY\": 2}}",
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G5": {
+   "Check": "G5 pureza del delta y separabilidad",
+   "Paragraphs": {
+    "A5-1": 2964,
+    "A5-2": 1742
+   },
+   "Info": [
+    "A5-1 tras V14 L2406 (fin de D.1) y A5-2 tras el fin de A4-6 (fin de D.3): añadidos puros, por separado y juntas"
+   ],
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G5B": {
+   "Check": "G5b autoprueba custodiada",
+   "Summary": {
+    "Mutants": 48,
+    "Killed": 48,
+    "ControlFailures": [],
+    "ByGuard": {
+     "G1": "13/13",
+     "G2": "8/8",
+     "G3": "7/7",
+     "G4": "3/3",
+     "G5": "15/15",
+     "G5B": "2/2"
+    }
+   },
+   "Findings": [],
+   "Result": "PASS"
+  }
+ },
+ "Candidate": null,
+ "Result": "PASS"
+}
