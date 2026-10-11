@@ -447,3 +447,19 @@ Hechos posteriores al commit de cierre `4514a99a7ac853a707fd14c89823f327e338de4e
   2 no (DEV-I65-F1-01 y DEV-I65-F1-02, no bloqueantes); 0 cambios de `config.toml`; 0 avances de `main`.
 - **Autorización:** la F1 IMPLEMENTATION AUTHORIZATION del Owner **termina** con este cierre. Ningún gate posterior (F3 en adelante) está
   autorizado.
+
+## 26. F3 — orden del Owner y preflight (2026-10-11T06:17:42Z)
+
+Orden del Owner «I-65 — Owner Authorization: F3 RAM Elements Adapter» (pegada en el chat; copia byte a byte en
+[I-65-owner-authorization-f3.original.txt](../decisions/I-65-owner-authorization-f3.original.txt)): F1 = ACCEPTED; autoriza **solo F3**.
+
+| Comprobación del preflight | Resultado |
+|---|---|
+| Rama | `HEAD` = `origin/architecture/interop-analisis-estructural` = `237d03eb`; árbol limpio |
+| `origin/main` | `bb0d5522`, sin cambio desde el reclamo |
+| Cierre de F1 | GATE PASS sobre `4514a99a` (§25); CI `38116394272` y `38116666332` en verde |
+| Autoridades congeladas | Proposal V3.1: blob `4e6e1feb` sin cambios desde el Freeze `a9d7080b`; ADR-0050: blob `c18def42`, el mismo que en su aceptación `ed8154c3` |
+| Iniciativas paralelas | I-64 `ba52b3b9`, I-62 `efcfcbc5`, I-52 `fb6b5648`: ninguna toca `StructuralAnalysis`, `Units`, `StructuralSections`, `Systems/Cantilever`, `assets/` ni `.csproj`; `git merge-tree` limpio contra I-65; I-64 usa ADR-0047 |
+| Rutas de F3 | decisiones §17, CD-I65-F3-03 |
+| Presupuesto de Codex | 14 invocaciones para F3 (CD-I65-F3-02); `config.toml` sin tocar (línea base `F909F480…8113`) |
+| API verificada | P1 (`p1-results.md`, `ram-probe-p1.executed.py`) y fuente del paquete instalado leída sin ejecutar RAM: `Restraints(dx, dy, dz, rx, ry, rz)`, `members.add(node_i, node_j, section, material="", rotation, description)` (material vacío = material por defecto de la sección: la plantilla siempre lo pasa explícito), `add_point_load(load_case, direction, value, distance, is_percentage, category)` |

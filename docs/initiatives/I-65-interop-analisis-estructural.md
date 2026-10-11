@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-65
 title: Structural Analysis Interop Foundation + RAM Elements Adapter
 type: architecture
-status: f1-closed
+status: f3-authorized
 workflow: V2
 conceptual_initiative: I-65
 delivery_unit: I-65
@@ -26,7 +26,7 @@ freeze_ref: docs/initiatives/I-65-proposal-v3.1.md
 freeze_delta_ref: null
 amendment_refs: []
 ov_assignment_ref: docs/initiatives/I-65-proposal-v3.1.md#5
-decision_refs: [docs/automation/decisions/I-65.md, docs/automation/decisions/I-65-owner-mandate.original.txt, docs/automation/decisions/I-65-owner-decision-p1.original.txt, docs/automation/decisions/I-65-owner-decision-freeze-f1.original.txt, docs/adr/0050-interoperabilidad-analisis-estructural.md]
+decision_refs: [docs/automation/decisions/I-65.md, docs/automation/decisions/I-65-owner-authorization-f3.original.txt, docs/automation/decisions/I-65-owner-mandate.original.txt, docs/automation/decisions/I-65-owner-decision-p1.original.txt, docs/automation/decisions/I-65-owner-decision-freeze-f1.original.txt, docs/adr/0050-interoperabilidad-analisis-estructural.md]
 evidence_ref: docs/automation/evidence/I-65-evidence.md
 automation_state_path: docs/automation/state/I-65.yml
 requires_ci: true
@@ -119,8 +119,8 @@ materiales, idealización, conexiones, apoyos, cargas, errores, provenance, prue
 ## 8. Gates funcionales
 
 G0 (reclamo y bootstrap) y F0 (Discovery, sonda P1, Freeze) cumplidos. El plan de gates vigente es el de la Proposal V3.1 §6; F1 está
-autorizada por el Owner (decisiones §9), se ejecutó en dos tareas (decisiones §10) y está **cerrada** (decisiones §16); los gates
-siguientes esperan la decisión del Owner.
+autorizada por el Owner (decisiones §9), se ejecutó en dos tareas (decisiones §10) y está **cerrada** (decisiones §16); F3 está autorizada
+por el Owner (decisiones §17) y se ejecuta en dos tareas; los gates posteriores esperan su decisión.
 
 ## 9. Owner Validation
 

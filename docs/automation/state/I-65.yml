@@ -3,19 +3,19 @@ automation_state:
   initiative: I-65
   branch: architecture/interop-analisis-estructural
   claim_id: 0b4aad79-068e-4a57-a2c2-dc8f23406778
-  current_phase: f1-closed
-  state: waiting-owner
-  gate: F1
+  current_phase: f3
+  state: in-progress
+  gate: F3
   attempts: 0
-  next_action: Owner decide el gate siguiente (F3: paquete RAM determinista y atómico) con el informe de F1; si lo autoriza, el contrato de F3 incorpora las entradas de CD-I65-F1-20. Sin implementación hasta su orden.
-  last_evidence_commit: 4514a99a7ac853a707fd14c89823f327e338de4e
+  next_action: F3-T1-MAP-AND-TRANSLATION por ejecución delegada (contrato, planificación, nc4 y aceptación, Worker RED->GREEN, verificación y controles); luego F3-T2-PACKAGE-AND-WRITER; revisión del Architect y cierre de F3. Sin F4.
+  last_evidence_commit: 237d03ebdf6d8c2efea0ae917f85f3bf18f00a5e
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-interop-analisis-estructural
 execution_chain:
-  gate: F1
-  next_role: Owner (autorización del gate siguiente)
-  implementation_authorization: NO (la autorización de F1 terminó al cerrar F1, CD-I65-F1-21)
-  owner_decisions_open: [confirmación definitiva de Q-O1 y Q-O7 (tras OV-I65-01), autorización de cada gate posterior a F1, verificación de filas de mapeo por un ingeniero]
-  not_authorized: [F3, F4, F5, F6, F7, interfaz gráfica, Plugin, nuevas corridas en RAM Elements, cambios de código]
+  gate: F3
+  next_role: Coordinator (contrato de F3-T1-MAP-AND-TRANSLATION)
+  implementation_authorization: F3 ONLY (orden del Owner del 2026-10-11; termina al concluir F3)
+  owner_decisions_open: [verificación por un ingeniero de las filas de mapeo, confirmación definitiva de Q-O1 y Q-O7 (tras OV-I65-01), autorización de cada gate posterior a F3]
+  not_authorized: [F4, F5, F6, integración con Workspace, interfaz gráfica, Plugin, corridas en RAM Elements, análisis, importación de resultados]
