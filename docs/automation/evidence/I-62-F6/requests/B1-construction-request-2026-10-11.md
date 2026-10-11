@@ -50,3 +50,13 @@ SHA-256 de la línea: `5ebf399eb3727bc19cdd0b24a8a4bd3848e5d3b8050e534a8c4276185
 2. El Owner da la línea A.
 3. La supervisión construye en local, comprueba (§1, punto 5), audita, publica en el origen nuevo y en GitHub y registra la CI.
 4. Cuando el Controller sea elegible: disposición de apertura, línea B del Owner, P-07 y apertura de FX-U2.
+
+## 4. Estado tras las decisiones §74 (punto 5)
+
+- La solicitud y el procedimiento de activación de §1-§3 se conservan listos, sin pedir.
+- **La construcción se puede solicitar por separado** (§74.5) porque cumple las dos condiciones:
+  - no consume la sesión de Principal: la construcción publica solo el linaje de activación (§1, punto 9) y la línea B no se usa;
+  - conserva los resultados históricos: el fixture actual, FX-U1 y sus refs no se tocan (A5-1, regla 6; línea A: «el repositorio del fixture actual
+    y sus refs no se tocan»).
+- **FX-U2 no se abre** mientras no haya una ruta elegible para el Controller (§74.5).
+- Si el Coordinator dispone la construcción, el siguiente paso es su disposición (§1) y después la línea A del Owner.

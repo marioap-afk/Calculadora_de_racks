@@ -1,4 +1,4 @@
-# I-62 — Estado de F7 y de sus controles frente a C-24 (borrador r5, 2026-10-10; no declara ningún gate)
+# I-62 — Estado de F7 y de sus controles frente a C-24 (borrador r6, 2026-10-11; no declara ningún gate)
 
 > **Naturaleza.** Análisis de solo lectura y borradores, fuera del worktree (`f7-prep/`). Orden: decisiones §66, punto 9 («Avanzar F7 y los controles
 > independientes que no dependan de C-24»), y §60, punto 5. Base medida: punta `6d62679409c4cb83d0f4a4cee8fbc1bc945a547b` (= remota), `origin/main`
@@ -8,6 +8,35 @@
 > **Corrección de los hechos de partida de la orden** (comprobados en el registro): A-2 AGREED está en decisiones **§57.1** (no en §61); §61.1 es A-3
 > AGREED; A-4 AGREED está en **§64.1**; FX-04a / C-25a PASS en §60.1; OD-2f en §65; A4-1 NOT_DEMONSTRATED, FX-02 UNVERIFIED y MAP_INVALID en §66
 > (commit `6d626794`, evidencia §121). FX-04a ya **no** está «OPEN / UNVERIFIED»: los borradores F7 del worktree (2026-10-07/08) lo decían.
+
+## 0. Estado r6 (2026-10-11; base `92510286`; prevalece sobre la tabla de §2 donde la contradice)
+
+Orden: decisiones §74.6 («Avanzar F7 y los controles independientes. I-64 conserva prioridad de recursos»). Medición de solo lectura a las
+2026-10-11T15:38Z sobre la punta `92510286` (= remota; `origin/main` `bb0d5522` = merge-base): `measured/r6/readonly-checks.sh` (r5 más A-5),
+`readonly-checks-92510286.txt`, `c20b-dryrun-92510286.json`, `ci-92510286.json` (corrida 38151938325, 4/4 `success`). Nada declara gate, READY,
+Candidato, cierre ni integración.
+
+| # | Item | Cambio r6 | Fuente |
+|---|---|---|---|
+| 1 | Borrador de FOUNDATIONS | **r6 hecho**: A-5 en `Decision source`; C-22 histórico y C-25a con su evidencia; cuarta actualización de Codex, F6-OBS-03 resuelto para `d13914ce` y las dos sondas A2-P2 del Controller (`foundations-draft.md` §4.6) | §70.1, §73.1-§73.3, §74.1 |
+| 3 | `ideas-futuras` | sin editar en r6: F6-N01 (cuarta actualización) y la capacidad de lectura fiel de §74.2 quedan para r7 | §74.2 |
+| 6 | OV-I62-03 | sin ruta: Controller no elegible; D.5 con obligación de A-n antes de READY-01/08 | §73.3, §74.1 |
+| 8, 10 | OV-I62-05 (a), OV-I62-06 | dentro de la obligación de D.5 (§73.3) | `ov-packets.md` §9 |
+| 11 | OD-1 | **r6 hecho**: A-5 no toca ADR-0048 ni OD-1..OD-7; Q26 ampliada | `od1-packet.md` r6 |
+| 16 | C-20b en seco | **EQUAL (MV-2..MV-6)** en `92510286`; 31 archivos; `MapBlob` `4d49d3e1` | `c20b-dryrun-92510286.json` |
+| 17 | C-21 | vigente: 0 archivos de la lista cerrada cambiados en `6f0187cb..92510286` (A-5 está en `docs/initiatives/`) | K-03 r6 |
+| 18 | MV-7 sin historia | conforme en la punta | K-10 r6 |
+| 19 | READY-08 (fuera de `docs/` y `tests/`) | 0 (1 262 archivos; 58 en `tests/`; 166 commits) | K-04 r6 |
+| 20 | Trailer normativo (Q15) | 0 en la rama, 0 en `origin/main` | K-05 r6 |
+| 21 | Freeze y A-n (READY-09 en seco) | conforme; **A-5** `ad94ceed` igual en `bf2cf857` y en la punta, sin commits posteriores | K-07, K-08, K-09 r6 |
+| 22 | Visibilidad de las A-n (Q11) | ausente, ahora también A-5 | K-12 r6 |
+| 23 | DC-07 | `main` sin cambio; I-64 `39b45f36` → `e0205b5a`; rama nueva de I-65 | K-02 r6 |
+| 24 | CI de la punta | corrida 38151938325, `push`, `92510286`, 4/4 `success` | `ci-92510286.json` |
+| 26 | D.5 (Q22') | decidida en parte (§73.3) | `closure-integration-checklist.md` §10.2 |
+| 27 | Resiembra frente a MAP_INVALID (Q24) | F6: resuelta por A-5 (B1); D.5: obligación de §73.3 | §73.1, §73.3 |
+| 28 (nuevo) | Ruta del Controller de FX-02 (Q27) | en evaluación (§74.4); bloquea C-24 y, con él, F6 GATE PASS | §74.4, §74.7 |
+
+**Consecuencia firme (sin cambio):** con FX-02/C-24 UNVERIFIED, F6 GATE PASS es imposible (V14 D.4 L2544). Q25 sigue abierta.
 
 ## 1. Qué exige F7 (texto congelado)
 

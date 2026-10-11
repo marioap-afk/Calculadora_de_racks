@@ -210,3 +210,13 @@ Mensaje de continuación para el QR tras la designación, antes del paso 1 de D.
 | Q22' (r5) A-2 y A-4 excluyen D.5: sin relanzamiento tras un INVALID_LAUNCH, sin medición nueva si cambia un invalidador, y OV-I62-03 sin las rutas de A4-1..A4-6 | 03, 05 (a), 06 | Coordinator (A-n con un Architect independiente si cambia el Freeze; Owner si resulta OWNER-RESERVED, Q-A2-03) |
 | Q24 (r5) la resiembra de D.1/D.5 repetiría MAP_INVALID si F_seed' copia las superficies I62 | 01, 03, 05 (a), 06 | Coordinator |
 | Limitaciones (FX-03, FX-04b; FX-06 si no hay PASS); FX-04a no admite limitación (en F6: D.4 y decisiones §55 U-01c; en la OV: V14 §18, «(a) FX-04a compacto (D.5): obligatorio») | 04, 05 (b), 06 | Owner |
+
+## 9. Estado r6 (2026-10-11; base `92510286`; prevalece sobre §8 donde la contradice)
+
+| Bloqueo | Cambio r6 | Fuente |
+|---|---|---|
+| Q22' (D.5 sin A-2/A-4) | **decidida en parte:** D.5 = DEFER_UNTIL_OV_PREPARATION, con la obligación expresa de una A-n material acordada antes de READY-01 y READY-08 que resuelva la construcción del fixture de OV-I62-03, -05 (a), -05 (b) y -06 | decisiones §73.3; A62-A5-O2 |
+| Q24 (resiembra y MAP_INVALID) | **para F6, resuelta por A-5** (fixture B1 con F_seed anterior a la activación y MV-1..MV-7 antes de cualquier reclamo); A-5 rige solo para B1 (A5-1: «Solo para un repositorio de fixture nuevo de F6 (B1)»), así que **para D.5 queda dentro de la obligación de §73.3** | decisiones §73.1, §73.3; A-5 §3.2 |
+| OD-2 vigente | OD-2 = A sobre `F909F480…` para el binario `d13914ce…` (app `26.1007.2314.0`); bloque A2-P2 de ese par agotado (2/2) | decisiones §69, §74.1 |
+| OV-I62-03 (FX-02 compacto) | sigue sin ruta: Controller no elegible (A4-1 y las dos sondas A2-P2 NOT_DEMONSTRATED); estrategia nueva en evaluación | decisiones §74.1, §74.4 |
+| C-22 | su PASS anterior es histórico; se vuelve a acreditar en B1 (afecta al supuesto de resiembra de los paquetes 01, 03, 05 y 06) | decisiones §73.2 |

@@ -1,8 +1,11 @@
-# I-62 — OD-1: paquete refrescado (2026-10-10 r5; staging, **no es una solicitud**)
+# I-62 — OD-1: paquete refrescado (2026-10-11 r6; staging, **no es una solicitud**)
 
 > **r5 (borrador fuera del worktree, base `6d626794`):** el Freeze vigente es V14 + A-1, A-2, A-3 y A-4, todas AGREED (decisiones §43, §57.1, §61.1,
 > §64.1). ADR-0048 sin cambio (blob `e1bd8d91` en `6d626794`, K-06). Ninguna de A-2..A-4 toca ADR-0048 ni OD-1 (A-2 L67, L276 y L301; A-3 L99, L1159
 > y L1201; A-4 L398 y L421). Pregunta nueva Q26 (¿se pide OD-1 sin mencionar A-2..A-4, como se dispuso para A-1 en §47?). OD-1 sigue sin pedirse.
+
+> **r6 (2026-10-11, base `92510286`):** A-5 AGREED (decisiones §73.1, blob `ad94ceed`). A-5 no toca ADR-0048 (A-5 L230 y L272) y no cambia OD-1..OD-7
+> (A-5 L300). ADR-0048 sigue sin cambio (`e1bd8d91`, K-06 r6). Q26 se amplía a A-5. OD-1 sigue sin pedirse.
 
 > **Preparación de staging.** Orden nocturna, decisiones §54 (fila «F7 y READY»: «OD-1 si es útil … sin aceptar OD-1 … sin tocar ADR-0048»). OD-1 no se
 > pide todavía: bloquea READY-03 y la vigencia, no F6 (V14 §18; decisiones §45: «no pedir OD-1»). Refresca la nota de

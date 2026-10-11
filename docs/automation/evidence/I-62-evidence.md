@@ -3828,3 +3828,25 @@ solo desde artefactos custodiados.
   la receta 16.4 no cambia.
 - **Encargos en solo lectura:** análisis estático de MV-4 y MV-7 sin tocar el resultado bruto; evaluación de evidencia determinista más Controller,
   con recomendación; B1 lista; F7 y controles independientes; comparación A/B/C.
+
+## 142. F7 r6 y controles independientes re-medidos; B1 lista (decisiones §74, puntos 5 y 6)
+
+- **Re-medición de solo lectura** en la punta `92510286` (2026-10-11T15:38Z; [`measured/r6/`](I-62-prep/f7/measured/r6/)): K-01..K-12 conformes,
+  con A-5 añadida. Resultados:
+  - A-5 `ad94ceed` es inmutable desde `bf2cf857`;
+  - C-20b en seco EQUAL (`MapBlob` `4d49d3e1`) y C-21 sin cambios;
+  - READY-08: 0 archivos fuera de `docs/` y `tests/`;
+  - trailer 0/0;
+  - `amendment_refs: []` (Q11, ampliada a A-5);
+  - DC-07: `main` sin cambio, I-64 en `e0205b5a` y rama nueva de I-65;
+  - CI 38151938325 4/4 `success`.
+- **Borradores F7 r6** ([CHANGES-r6.md](I-62-prep/f7/CHANGES-r6.md), SHA-256 `f716cee0408ae0b2…`):
+  - FOUNDATIONS: A-5, C-22 histórico, cuarta actualización de Codex, F6-OBS-03 resuelto para `d13914ce` y las sondas A2-P2 del Controller;
+  - OD-1: A-5 no toca ADR-0048 ni OD-1..OD-7;
+  - OV §9: Q22' decidida en parte por §73.3; Q24 resuelta para F6 por A-5;
+  - lista de cierre §10.2: Q27 nueva, la ruta del Controller;
+  - estado de F7 y controles independientes en §0 r6.
+
+  `ideas-futuras` y `frontiers.json` quedan para r7.
+- **B1:** la solicitud y el procedimiento siguen listos; la construcción se puede pedir por separado porque no consume la sesión de Principal y no
+  toca los resultados históricos ([solicitud, §4](I-62-F6/requests/B1-construction-request-2026-10-11.md)). FX-U2 sigue cerrada.

@@ -1,10 +1,35 @@
-# I-62 — Controles independientes de C-24 (borrador r5, 2026-10-10; no declara ningún gate)
+# I-62 — Controles independientes de C-24 (borrador r6, 2026-10-11; no declara ningún gate)
 
 > Orden: decisiones §66, punto 9. Base: `6d626794` (= remota; `origin/main` `bb0d5522`). Todo lo ejecutado aquí es solo lectura: `git ls-remote`,
 > `show`, `rev-parse`, `diff`, `log`, `ls-tree`, `clause_map.py check` (con `python -B`, salida fuera del worktree) y `gh run view`. Ninguna invocación de
 > modelo, ningún fetch, build, prueba, commit, push ni escritura en el worktree o en `D:\r62-fixture`. Script y salidas: `measured/readonly-checks.sh`,
 > `measured/readonly-checks-6d626794.txt` (SHA-256 `ad6e697b…`), `measured/c20b-dryrun-6d626794.json` (`bbad9c9e…`), `measured/ci-6d626794.json`
 > (`cd35d486…`).
+
+## 0. Re-medición r6 (2026-10-11T15:38Z; punta `92510286`; prevalece sobre §1-§3 donde la contradice)
+
+Mismas lecturas que r5, con A-5 añadida (`measured/r6/readonly-checks.sh`; salida `readonly-checks-92510286.txt`, SHA-256 `1864d9d4…`;
+`c20b-dryrun-92510286.json`, `0548f264…`; `ci-92510286.json`, `23b51046…`). Ninguna invocación de modelo, ningún fetch, build ni
+prueba; ninguna escritura en `D:\r62-fixture`.
+
+| Id | Resultado r6 |
+|---|---|
+| IC-01 C-20b en seco | **EQUAL (MV-2..MV-6)**; 31 archivos; `MapBlob` `4d49d3e1` |
+| IC-02 C-21 | **0 archivos** |
+| IC-03 MV-7 sin historia | **conforme** |
+| IC-04 DC-08 en seco | **conforme** (sin cambio) |
+| IC-05 READY-08 | **0** (1 262 archivos; 58 en `tests/`; 166 commits) |
+| IC-06 trailer (Q15) | **0 / 0** |
+| IC-07 Freeze | **conforme** (V14 sin diff; registro `0f6b8608`; solo `Co-Authored-By`) |
+| IC-08 A-n | **conforme, con A-5**: A-1..A-4 como en r5; A-5 `ad94ceed` (`bf2cf857`), ancestro, 0 commits posteriores |
+| IC-09 visibilidad (Q11) | **ausente** (también A-5) |
+| IC-10 blobs de F7 | sin cambio (ADR-0048 `e1bd8d91`, FOUNDATIONS `748c74ba`, catálogo `166d978d`, `routing.md` `bba08fc4`, `ideas-futuras.md` `570507d1`, mapa `4d49d3e1`, índice ADR `77469524`) |
+| IC-11 DC-07 | `main` `bb0d5522` y I-52 `fb6b5648` sin cambio; I-64 `e0205b5a` (antes `39b45f36`); rama nueva de I-65 `5bb1b9ba` |
+| IC-12 CI | corrida 38151938325, 4/4 `success` |
+
+**§3 en r6:** C-22 conserva su PASS solo como resultado histórico y se vuelve a acreditar en B1 (decisiones §73.2); C-25a conserva su evidencia
+(§73.2). MAP_INVALID tiene ruta en F6 por A-5 (B1, §73.1); FX-U2 no se abre sin Controller elegible (§74.5). FX-02/C-24: bloque A2-P2 agotado y
+estrategia del Controller en evaluación (§74.1, §74.4). FX-06 opción A sigue atada al QH de FX-02.
 
 ## 1. Controles de F7/READY ejecutables ahora en solo lectura (ejecutados)
 
