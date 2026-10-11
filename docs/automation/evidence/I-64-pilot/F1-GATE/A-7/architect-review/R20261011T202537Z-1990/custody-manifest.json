@@ -1,0 +1,136 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Subject": "revision formal del Architect de I-64-A-7",
+  "RunId": "R20261011T202537Z-1990",
+  "SourceRoot": "artifacts/orchestration/I-64/A-7-review/R20261011T202537Z-1990",
+  "LineEndings": "los archivos con CRLF (escritos por PowerShell) se custodian en LF; Sha256 es el del original y CustodiedSha256 el del custodiado",
+  "Counts": {
+    "CUSTODIED": 10,
+    "EXCLUDED": 7
+  },
+  "Files": [
+    {
+      "Path": "architect-review-eval.json",
+      "Bytes": 3188,
+      "Sha256": "8fb01e36ff0eaa4fbcb1208c1edd9ac126352cb2c5acac3266d2ebdf8c7ff3d5",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-GATE/A-7/architect-review/R20261011T202537Z-1990/architect-review-eval.json"
+    },
+    {
+      "Path": "architect-review.schema.json",
+      "Bytes": 10940,
+      "Sha256": "2c4990bacaec9f2e2c7b9e04de965e6e2f27c09b10eec46f2c7b6a930f6957ba",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-GATE/A-7/architect-review/R20261011T202537Z-1990/architect-review.schema.json"
+    },
+    {
+      "Path": "cession-end.txt",
+      "Bytes": 21,
+      "Sha256": "5eb7843ee9d6e2855ef8db7359a1c1348cd6fcac89db2bc0178a46f0fe58347b",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en review-record.json"
+    },
+    {
+      "Path": "cession-start.txt",
+      "Bytes": 21,
+      "Sha256": "80947875c39ebbb066156a89a2687cd98aa5e7b5dcc99e436b27fb6c86e8bd80",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en review-record.json"
+    },
+    {
+      "Path": "config-entry.json",
+      "Bytes": 302,
+      "Sha256": "2104e9bfd8e309dd9bf997fcd50ea863a308cc1a823c7ad8162dad87c77472d2",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-GATE/A-7/architect-review/R20261011T202537Z-1990/config-entry.json"
+    },
+    {
+      "Path": "config-exit.json",
+      "Bytes": 302,
+      "Sha256": "eaee3b6dc87952f6cdb69d3fea9ddaa3ee6ddf6450dd56907dfed91cddaea720",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-GATE/A-7/architect-review/R20261011T202537Z-1990/config-exit.json"
+    },
+    {
+      "Path": "events.jsonl",
+      "Bytes": 351129,
+      "Sha256": "8e5f64db84fd671dd98a5037ce448758269e60ec6d7f745e7e3e3788cb4ea180",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro crudo de eventos del CLI (contiene rutas locales); se conserva su SHA-256"
+    },
+    {
+      "Path": "exit-code.txt",
+      "Bytes": 2,
+      "Sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en review-record.json"
+    },
+    {
+      "Path": "launcher-pid.txt",
+      "Bytes": 6,
+      "Sha256": "586985b56bf0a9d89e93e840bf682bb94eb912a01227fb2686fa53a2f7d8bcb7",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en review-record.json"
+    },
+    {
+      "Path": "launcher-winpid.txt",
+      "Bytes": 6,
+      "Sha256": "36720f594cee123f5b8acc50ef8e370b1987b437075f03dcf664b28de3cd8a19",
+      "Disposition": "EXCLUDED",
+      "Reason": "dato operativo del lanzamiento; su valor consta en review-record.json"
+    },
+    {
+      "Path": "output.json",
+      "Bytes": 7310,
+      "Sha256": "ef217105a37f265bf4785cf29f310d3ec2b86920ce3c30870ce727c3e3df2cd2",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-GATE/A-7/architect-review/R20261011T202537Z-1990/architect-review.json"
+    },
+    {
+      "Path": "processes-entry.json",
+      "Bytes": 1284,
+      "Sha256": "d498a433481d5855c7a846e307361a202c8f6c58de03f6fb0a491173e57d18c9",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-GATE/A-7/architect-review/R20261011T202537Z-1990/processes-entry.json",
+      "CustodiedSha256": "0276d7df23bebdc56bdba7be9887f48ebda42cf2f88421b84f455439de1ce313",
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell)"
+    },
+    {
+      "Path": "processes-exit.json",
+      "Bytes": 1282,
+      "Sha256": "a2cca658f6783ba688a37e545cf4c3e1e1a9e5ea43822f2d177513560ee48cd9",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-GATE/A-7/architect-review/R20261011T202537Z-1990/processes-exit.json",
+      "CustodiedSha256": "1dbd3859a0855e829d99b5096b193516cd5105ffb1102bccf9adf8ff3922747e",
+      "Normalization": "CRLF->LF (archivo escrito por PowerShell)"
+    },
+    {
+      "Path": "prompt.md",
+      "Bytes": 7285,
+      "Sha256": "1401d9384ba111414b73d78e440ec879e960aa89720f161eec1f4e564c1180bd",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-GATE/A-7/architect-review/R20261011T202537Z-1990/prompt.md"
+    },
+    {
+      "Path": "review-record.json",
+      "Bytes": 4181,
+      "Sha256": "d479f105c637ab3041b5107f3d10f3d2068f9051482084c723647280cf0e9790",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-GATE/A-7/architect-review/R20261011T202537Z-1990/review-record.json"
+    },
+    {
+      "Path": "stderr.txt",
+      "Bytes": 39,
+      "Sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "Disposition": "EXCLUDED",
+      "Reason": "stderr del CLI: aviso de lectura de stdin de 39 bytes"
+    },
+    {
+      "Path": "inputs/coordinator-a7-review-order.md",
+      "Bytes": 5717,
+      "Sha256": "d6d9aa64e424d591652dc48e3b8602fea1b0f2ffcc0909089c0afbf863b1fc77",
+      "Disposition": "CUSTODIED",
+      "CustodiedAs": "docs/automation/evidence/I-64-pilot/F1-GATE/A-7/coordinator-a7-review-order.md"
+    }
+  ]
+}

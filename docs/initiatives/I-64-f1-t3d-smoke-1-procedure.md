@@ -5,8 +5,12 @@ autorizada por la revisión de T3C (`docs/automation/evidence/I-64-pilot/F1-T3C-
 - **Revisión:** cierre del gate F1, CHANGES REQUIRED
   (`docs/automation/evidence/I-64-pilot/F1-GATE/coordinator-gate-close-review-1.md`, evidencia §62).
 - **Correcciones aplicadas en esta versión:** los dictámenes D-T3D-02..06 (sección 12) y la corrección de SM-10 hallada por la sesión.
-- **Pendiente:** D-T3D-01 sigue **sin resolver hasta que se acepte la enmienda I-64-A-7** (`docs/initiatives/I-64-A-7.md`, PROPOSED).
-  Mientras tanto, Smoke-1 no puede ejecutarse.
+- **D-T3D-01 resuelto por I-64-A-7, AGREED / ACTIVE** (`docs/initiatives/I-64-A-7.md`; Architect `R20261011T202537Z-1990` AGREED;
+  activación del Coordinator en `docs/automation/evidence/I-64-pilot/F1-GATE/A-7/coordinator-a7-activation.md`; evidencia §63):
+  - **parte de INV-24 en F1 = SATISFIED UNDER I-64-A-7**: S1-06f/g/h siguen en Smoke-1, SM-14a..e son complementarias y los casos con
+    campo editable quedan diferidos y vinculantes a S2-16..S2-22 (Smoke-2, F4);
+  - INV-24 en todo el ciclo de vida sigue **OPEN** hasta que esos escenarios de host y su asignación OV final se ejecuten;
+  - no se afirma que INV-24 quede verificada del todo en F1.
 
 Este documento:
 - **no** autoriza Smoke-1; Smoke-1 se ejecuta solo **después de F1 PASS** y con una autorización expresa del Coordinator;
@@ -14,7 +18,7 @@ Este documento:
 - no cambia `src/`, `tests/` ni archivos de proyecto;
 - **ningún paso se ejecutó** al redactarlo.
 
-Los dictámenes del Coordinator sobre D-T3D-01..06 están en la sección 12. D-T3D-01 depende de I-64-A-7.
+Los dictámenes del Coordinator sobre D-T3D-01..06 están en la sección 12; D-T3D-01 queda resuelto por I-64-A-7 (AGREED / ACTIVE).
 
 ## 0. Autoridad y límites
 
@@ -62,7 +66,7 @@ salvo una diferencia autorizada de forma expresa.
 | Id | Prerrequisito | Prueba |
 |---|---|---|
 | PR-01 | F1 PASS registrado por el Coordinator | revisión del cierre del gate F1 |
-| PR-02 | autorización de Smoke-1 del Coordinator, con: `RunId`, SHA del Candidato e **I-64-A-7 aceptada** (D-T3D-01); D-T3D-02..06 ya dispuestos (sección 12) | transcripción literal |
+| PR-02 | autorización de Smoke-1 del Coordinator, con: `RunId` y SHA del Candidato. I-64-A-7 ya está AGREED / ACTIVE y D-T3D-02..06 dispuestos (sección 12) | transcripción literal |
 | PR-03 | Candidato completo (sección 3) | `candidate.md` |
 | PR-04 | RELEASE explícito de I-52 y acuse con: los cuatro valores de referencia de T3C (cadena `TRUSTEDPATHS`, `SECURELOAD`, perfil, SHA-256 de `acad.exe`); la aceptabilidad de la clave de estado de la paleta (`ACCEPTED` o `NOT_ACCEPTED`); y, si hace falta, la autorización expresa de una carga única no persistente del DLL | transcripción literal |
 | PR-05 | aviso previo a I-52; ninguna sesión de I-52 abierta ni prevista en la ventana | canal entre sesiones |
@@ -72,8 +76,8 @@ salvo una diferencia autorizada de forma expresa.
 | PR-09 | directorio de ejecución creado y vacío: `artifacts/orchestration/I-64/F1-SMOKE-1/<RunId>/` | sección 10 |
 | PR-10 | ninguna variable de entorno persistente con `RackCad` en el nombre. Smoke-1 no usa inyecciones de fallos: el producto de F1 no tiene ninguna para el panel (D-T3D-02) | captura BASELINE |
 | PR-11 | biblioteca de bloques: ruta resuelta y SHA-256 (guía §7.1); no se toca | `candidate.md` |
-| PR-12 | **dibujo con el caso Diagnóstico** (D-T3D-03): un bloque en el espacio modelo cuya definición lleva datos de RackCad que el lector integrado no puede interpretar, o que escribió una versión más nueva. Se registran su SHA-256, el diagnóstico exacto esperado («Diagnóstico» / «No se pudo interpretar la definición del objeto seleccionado.») y que nunca se guarda. **Sin este dibujo, S1-04 queda incompleto y Smoke-1 no puede ser PASS**; la evidencia Core no sustituye esta observación de host. No se autoriza AutoCAD para crearlo antes de la autorización de Smoke-1 | `fixtures.md` |
-| PR-13 | **dibujo con el caso Sin identidad** (corrección de SM-10): un bloque cuya definición lleva un sobre de RackCad legible con Id vacío o en blanco. Se registran su SHA-256 y el texto esperado («Sin identidad» / «El objeto seleccionado no tiene identidad de rack.»). Un bloque cualquiera sin datos de RackCad **no** da «Sin identidad» (sección 6.2, SM-10a) | `fixtures.md` |
+| PR-12 | **dibujo DIAGNÓSTICO** (obligatorio para Smoke-1 PASS): un bloque en el espacio modelo cuya definición lleva datos de RackCad que el clasificador actual no puede interpretar (sobre ilegible, inválido o escrito por una versión más nueva). Se registran antes de Smoke-1: **archivo de origen**; **SHA-256**; **procedencia y propósito** (quién y cómo lo preparó, y por qué representa esa condición); **título y texto exactos esperados** («Diagnóstico» / «No se pudo interpretar la definición del objeto seleccionado.»); **regla de no guardar**: nunca se guarda durante Smoke-1 y su SHA-256 se comprueba igual después (SM-41). Sin este dibujo: **S1-04 = INCOMPLETE** y Smoke-1 no puede ser PASS; la evidencia Core no sustituye la observación de host. No se lanza AutoCAD para crearlo antes de la autorización de Smoke-1 | `fixtures.md` |
+| PR-13 | **dibujo SIN IDENTIDAD** (obligatorio para Smoke-1 PASS): un objeto que RackCad reconoce y puede leer, con un sobre lo bastante válido para clasificarse como RackCad pero con el RackId en blanco. Un bloque genérico sin datos de RackCad **no** vale: es el caso «otros objetos» (SM-10a). Se registran antes de Smoke-1: **archivo de origen**; **SHA-256**; **procedencia y propósito**; **título y texto exactos esperados** («Sin identidad» / «El objeto seleccionado no tiene identidad de rack.»); **regla de no guardar**: nunca se guarda durante Smoke-1 y su SHA-256 se comprueba igual después (SM-41). Sin este dibujo: **S1-04 = INCOMPLETE** y Smoke-1 no puede ser PASS | `fixtures.md` |
 
 ### 2.1 Dibujos de prueba
 
@@ -239,13 +243,15 @@ El panel de F1 no tiene **ningún campo editable**: solo textos de estado, dos c
 «Medir en memoria» y el botón «Reintentar» (visible solo en error). S1-06a..e del Freeze exigen un campo y **no pueden ejecutarse
 literalmente** con el producto de F1. Una casilla no es un campo: «campo» no se redefine.
 
-**Disposición, pendiente de I-64-A-7** (`docs/initiatives/I-64-A-7.md`, PROPOSED):
+**Disposición de I-64-A-7, AGREED / ACTIVE** (`docs/initiatives/I-64-A-7.md`; evidencia §63):
 - **S1-06a..e en Smoke-1 = NOT_APPLICABLE_BY_DESIGN**: F1 no expone ningún control de texto editable. Su requisito literal pasa entero
   a Smoke-2, como S2-16..S2-20, más S2-21 (`DBMOD`) y S2-22 (foco al terminar una edición).
 - **SM-14a..e = SUPPLEMENTARY_EVIDENCE**, solo de aislamiento de teclado y foco. Nunca cuentan como S1-06a..e.
 - **S1-06f, S1-06g y S1-06h siguen en Smoke-1.** S1-06h se aplica a S1-06f, S1-06g y SM-14a..e.
 
-Hasta que A-7 se acepte, D-T3D-01 sigue sin resolver y Smoke-1 no se ejecuta. S1-06a..e nunca se marcan PASS.
+S1-06a..e nunca se marcan PASS en F1. La parte de INV-24 en F1 queda **SATISFIED UNDER I-64-A-7**. La obligación con campo editable
+sigue vigente y vinculante en S2-16..S2-22 (Smoke-2, F4), que F4 no puede omitir sin otra A-n aceptada. INV-24 en todo el ciclo de
+vida sigue OPEN hasta que se ejecuten esos escenarios y su asignación OV final.
 
 Comprobaciones complementarias. Con el foco de teclado en la casilla «Medir en memoria» (llevarlo con `Tab` desde la paleta):
 
@@ -309,8 +315,7 @@ de UI y de fuente: las excepciones que cruzan la frontera del panel quedan conte
 - **S1-04 incluye, observados en el host, el caso Diagnóstico (SM-11, PR-12) y el caso Sin identidad (SM-10b, PR-13)**. Si falta
   cualquiera de los dos dibujos, S1-04 queda incompleto y Smoke-1 no es PASS: la evidencia Core es de apoyo y no sustituye la
   observación de host;
-- S1-06a..e tienen la disposición de I-64-A-7 ya aceptada (NOT_APPLICABLE_BY_DESIGN en Smoke-1; nunca PASS). Sin A-7 aceptada no hay
-  Smoke-1;
+- S1-06a..e tienen la disposición de I-64-A-7 (AGREED / ACTIVE): NOT_APPLICABLE_BY_DESIGN en Smoke-1, nunca PASS;
 - S1-12 es PASS o NOT_APPLICABLE;
 - la disposición del perfil es `CLEAN` o `REPORTED_ACCEPTED`;
 - SM-36..SM-39 no tienen hallazgos sin explicar; una aserción Debug visible o un diagnóstico de fuga de transacción es FAIL;
@@ -318,7 +323,7 @@ de UI y de fuente: las excepciones que cruzan la frontera del panel quedan conte
 
 Cualquier FAIL deja Smoke-1 en NOT PASS; un STOP lo deja sin resultado. Con Smoke-1 PASS y Smoke-NAV PASS se entra en F4 (Freeze §11).
 - La parte de host de INV-21 la da la disposición del perfil.
-- La de INV-24, en Smoke-1, la dan S1-06f..h, con SM-14a..e como evidencia complementaria. S2-16..S2-22 quedan para Smoke-2, según A-7.
+- La de INV-24, en Smoke-1, la dan S1-06f..h, con SM-14a..e como evidencia complementaria (parte de F1 = SATISFIED UNDER I-64-A-7). S2-16..S2-22 son obligatorios y vinculantes en Smoke-2 (F4); INV-24 en todo el ciclo de vida sigue OPEN hasta entonces.
 - Las mediciones de los escenarios 1, 2, 3, 9 y 10 son registro (OV-22), sin umbrales.
 
 ## 10. Evidencia y custodia (dictamen O-2 de T3C)
@@ -398,9 +403,9 @@ T3D queda aceptado con estas correcciones documentales.
 
 | Decisión | Dictamen | Efecto en este procedimiento |
 |---|---|---|
-| **D-T3D-01**, foco en un campo (S1-06a..e, OV-19, INV-24) | **BLOQUEANTE; sin resolver hasta que se acepte I-64-A-7.** Disposición recomendada: en F1 / Smoke-1, S1-06a..e = NOT_APPLICABLE_BY_DESIGN; SM-14a..e = SUPPLEMENTARY_EVIDENCE de aislamiento de teclado y foco; se mantienen S1-06f, g y h; los casos literales con campo editable pasan al primer hito con texto editable en el Workspace (previsto F4 / Smoke-2), sin debilitar el requisito. No se redefine «campo» | sección 6.6. A-7 (PROPOSED) define S2-16..S2-22. Sin A-7 aceptada, Smoke-1 no se ejecuta y S1-06a..e nunca son PASS |
+| **D-T3D-01**, foco en un campo (S1-06a..e, OV-19, INV-24) | **RESUELTO por I-64-A-7, AGREED / ACTIVE** (Architect `R20261011T202537Z-1990` AGREED, 0 REQUIRED, 0 OPTIONAL; Coordinator AGREED; M-04 = YES; Owner no requerido, informado). En F1 / Smoke-1, S1-06a..e = NOT_APPLICABLE_BY_DESIGN, nunca PASS; SM-14a..e = SUPPLEMENTARY_EVIDENCE; S1-06f, g y h siguen obligatorias. La obligación literal pasa a S2-16..S2-22, obligatorias y vinculantes en F4 / Smoke-2. Parte de INV-24 en F1 = SATISFIED UNDER I-64-A-7; INV-24 en todo el ciclo de vida OPEN. No se redefine «campo» | sección 6.6 |
 | **D-T3D-02**, contención sin inyección | **ACEPTADA.** No hace falta ningún gancho nuevo de inyección en F1: INV-25 ya tiene evidencia automatizada de UI y de fuente. Smoke-1 la complementa observando: ningún cuadro de excepción no controlada de .NET o AutoCAD; ningún estado Error o Degraded sin explicar; las órdenes clásicas siguen usables si aparece un error contenido del panel. El producto no se modifica para forzar un fallo | sección 6.7, SM-36 y SM-37 |
-| **D-T3D-03**, caso Diagnóstico de S1-04 | **Smoke-1 PASS exige el caso Diagnóstico.** Antes de Smoke-1 se prepara o identifica un dibujo con un bloque cuya definición de RackCad sea ilegible a propósito, o que represente la condición «futura o inválida» admitida, con su SHA-256, el diagnóstico exacto esperado y la confirmación de que nunca se guarda. Si no existe, S1-04 queda incompleto; la evidencia Core no lo convierte en PASS. No se autoriza AutoCAD ahora para crearlo | PR-12 y SM-11. **Corrección hallada por la sesión:** el caso Sin identidad tampoco se observa con un bloque cualquiera (SM-10a da «Selección actual: 0 racks y 1 otros objetos.»); necesita un sobre legible con Id vacío (PR-13, SM-10b). Se trata con el mismo criterio que el Diagnóstico, a confirmar por el Coordinator |
+| **D-T3D-03**, casos Diagnóstico y Sin identidad de S1-04 | **Smoke-1 PASS exige el caso Diagnóstico.** Antes de Smoke-1 se prepara o identifica un dibujo con un bloque cuya definición de RackCad sea ilegible a propósito, o que represente la condición «futura o inválida» admitida, con su SHA-256, el diagnóstico exacto esperado y la confirmación de que nunca se guarda. Si no existe, S1-04 queda incompleto; la evidencia Core no lo convierte en PASS. No se autoriza AutoCAD ahora para crearlo | PR-12, PR-13, SM-10b y SM-11. **El Coordinator confirmó en la activación de A-7 que los DOS dibujos son obligatorios** para Smoke-1 PASS (la corrección de la sesión R-14: un bloque genérico es «otros objetos», SM-10a) |
 | **D-T3D-04**, INV-14 en el host | **ACEPTADA CON CORRECCIÓN DE REDACCIÓN.** No se afirma que `Debug.Assert` termine AutoCAD. Se registra: ninguna interfaz ni diagnóstico de `Debug.Assert` observado; ninguna excepción no controlada; ningún cierre inesperado de AutoCAD; RackLog sin indicios de fuga de transacción; todos los drenajes y lecturas de la selección esperados completados. Una aserción Debug visible o un diagnóstico equivalente de fuga: FAIL / STOP para revisión | SM-38 y SM-39 |
 | **D-T3D-05**, registro de S1-09 | **CONFIRMADA.** En F1, el registro de medición normal es la tabla de instrumentación en memoria del panel. S1-09 usa esa tabla y la observación de la línea de órdenes (Regen o mensajes no deseados). RackLog no es el sumidero de métricas, solo evidencia de fallos. No cambia la decisión de instrumentación de T3 | SM-05, SM-12 y SM-39 |
 | **D-T3D-06**, modales de RackCad y RACKEDITAR | **ACEPTADA para S1-07.** RACKEDITAR mantiene una orden de AutoCAD activa con el editor abierto, así que la política de drenaje de F1 ya queda inhibida. Texto esperado: «Hay un comando en curso.»; no se exige «Hay un cuadro de diálogo de RackCad abierto.». Se registra que S1-07 valida la convivencia y la sincronización alrededor del flujo real de RACKEDITAR, que la conexión de host de `SetModalRackCadActive` desde los comandos clásicos no se ejercita y que la rama modal de INV-23 la cubre la evidencia Core con fuente simulada. En F1 no se reabren los comandos clásicos | SM-34, SM-35 y SM-35n |
