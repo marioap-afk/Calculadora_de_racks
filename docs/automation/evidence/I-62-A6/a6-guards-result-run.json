@@ -1,0 +1,129 @@
+{
+ "Mode": "RUN",
+ "Base": "108d4ca1a395c64c43cfae4f17f5854fe2d01536",
+ "Head": "7b7aba4645ff2430d583c641d817630282a56fdf",
+ "Guards": {
+  "G1": {
+   "Check": "G1 cabecera, literales, citas, identificadores y privacidad",
+   "Checked": {
+    "Header": 16,
+    "Blocks": 30,
+    "BlockLines": 72,
+    "Lit": 33,
+    "Self": 1,
+    "Own": 1,
+    "Notation": 4,
+    "DeltaInner": 2,
+    "ShortBlobs": 39,
+    "Hex40": 13,
+    "Hex64": 5
+   },
+   "PrivacyChecked": 1,
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G2": {
+   "Check": "G2 rutas del commit",
+   "Base": "108d4ca1a395c64c43cfae4f17f5854fe2d01536",
+   "Head": "7b7aba4645ff2430d583c641d817630282a56fdf",
+   "Changed": {
+    "docs/automation/evidence/I-62-A6/a6-guards-result-preview.json": "A",
+    "docs/automation/evidence/I-62-A6/a6-guards.py": "A",
+    "docs/automation/evidence/I-62-A6/a6-selftest.json": "A",
+    "docs/automation/evidence/I-62-A6/make_candidate_commit_a6.py": "A",
+    "docs/automation/evidence/I-62-A6/neg_controls_a6.py": "A",
+    "docs/automation/evidence/I-62-A6/out/a6-guards-result-preview-head.json": "A",
+    "docs/automation/evidence/I-62-A6/out/candidate-commit.json": "A",
+    "docs/automation/evidence/I-62-A6/out/neg_controls_a6.json": "A",
+    "docs/automation/evidence/I-62-A6/out/worktree-digest.json": "A",
+    "docs/automation/evidence/I-62-A6/preflight.md": "A",
+    "docs/automation/evidence/I-62-A6/run_preflight_a6.py": "A",
+    "docs/initiatives/I-62-A-6.md": "A"
+   },
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G3": {
+   "Check": "G3 superficies prohibidas, objetos congelados y C-20b",
+   "Listed": 33,
+   "Frozen": 28,
+   "Mismatches": {},
+   "C20b": {
+    "ExitCode": 0,
+    "Output": "{\"result\": \"EQUAL (MV-2..MV-6)\", \"files\": 31, \"entries\": {\"MODIFIED\": 15, \"REMOVED\": 0, \"ADDED\": 53, \"ENTRY\": 2}}"
+   },
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G4": {
+   "Check": "G4 dictamen: ocho puntos, M-01..M-08, OWNER-RESERVED y compatibilidad",
+   "Points": 8,
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G5": {
+   "Check": "G5 pureza del delta",
+   "Paragraphs": {
+    "A6-1": 2880,
+    "A6-2": 1875,
+    "A6-3": 1444,
+    "A6-4": 1477,
+    "A6-5": 2056,
+    "A6-6": 917,
+    "A6-7": 2700,
+    "A6-8": 1360,
+    "A6-9": 1555
+   },
+   "Info": [
+    "A6-1, A6-2, A6-4, A6-7, A6-9 y A6-8 tras A5-2 (fin de D.3); A6-5 y A6-6 tras V14 L2554 (fin de D.4); A6-3 tras V14 L2587 (fin de D.6)"
+   ],
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G6": {
+   "Check": "G6 líneas del Owner",
+   "Lines": 2,
+   "Names": [
+    "A6-ADR0046-9-FX02",
+    "A6-CONTROLLER-MEDICION-CONSUMO"
+   ],
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G7": {
+   "Check": "G7 identidad por blob de los instrumentos",
+   "Rows": 3,
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G8": {
+   "Check": "G8 estado y declaraciones",
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G5B": {
+   "Check": "G5b autoprueba custodiada",
+   "Summary": {
+    "Mutants": 83,
+    "Killed": 83,
+    "NotApplied": 0,
+    "Survivors": [],
+    "ControlFailures": [],
+    "ByGuard": {
+     "G1": "16/16",
+     "G2": "8/8",
+     "G3": "9/9",
+     "G4": "10/10",
+     "G5": "18/18",
+     "G6": "8/8",
+     "G7": "4/4",
+     "G8": "8/8",
+     "G5B": "2/2"
+    }
+   },
+   "Findings": [],
+   "Result": "PASS"
+  }
+ },
+ "Result": "PASS"
+}

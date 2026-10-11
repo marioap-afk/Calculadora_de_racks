@@ -4023,3 +4023,26 @@ solo desde artefactos custodiados.
   - el paquete OWNER-RESERVED sobre ADR-0046 #9;
   - la solicitud futura de medición, separada de la decisión del Owner sobre el ADR.
 - A-6 no se presenta a acuerdo mientras haya una consecuencia OWNER-RESERVED sin disponer. B1 sigue lista y FX-U2 cerrada.
+
+## 149. A-6 preparada (PROPUESTA), guardas `run` PASS; paquete OWNER-RESERVED de ADR-0046 #9 y solicitud futura de medición (decisiones §76)
+
+- **A-6 candidata** [`docs/initiatives/I-62-A-6.md`](../../initiatives/I-62-A-6.md), blob `eac473c0d2e58cf1c4594f48a8816b3833af6509`, publicada en `7b7aba46` (padre `108d4ca1`): ese
+  commit añade solo A-6 y `I-62-A6/`.
+  - PROPUESTA, no aplicada, sin AGREED, sin revisión ni invocación.
+  - Nueve reglas por añadido al final de V14 D.3, D.4 y D.6 (ninguna línea de V14 se reescribe), que cubren los ocho puntos del dictamen
+    R20261011T162328Z-5c5e; tabla de correspondencia en A-6 §3.2.
+  - Matriz M-01..M-08 igual que el dictamen (M-02, M-03, M-04, M-05 y M-08 sí).
+  - Compatibilidad con A-1..A-5; delimitación de insumos canónicos; identidad por blob de la herramienta (`9a829b0e`) y del aceptante (`434ef1fc`).
+  - D.5 excluida de forma expresa; prohibiciones de §76.2 enunciadas y guardadas.
+- **Guardas mecánicas** (`I-62-A6/a6-guards.py`): la autoprueba mata 83/83 mutantes; los negativos de extremo a extremo dan 14/14; la vista previa
+  pasa; **`run` sobre `7b7aba46` = PASS** (G1-G8 y G5B; [a6-guards-result-run.json](I-62-A6/a6-guards-result-run.json)).
+- **Líneas del Owner** (A-6 §7, separadas):
+  - (a) `A6-ADR0046-9-FX02`, la determinación OWNER-RESERVED;
+  - (b) `A6-CONTROLLER-MEDICION-CONSUMO`, una medición de consumo, distinta de (a) y nunca implícita en ella.
+- **Paquete OWNER-RESERVED** [A6-owner-reserved-ADR0046-9-2026-10-11.md](I-62-F6/requests/A6-owner-reserved-ADR0046-9-2026-10-11.md): qué se decide,
+  por qué es del Owner, la evidencia, las opciones A, B y C y la línea (a) con su SHA-256 `83152eae4f451961…`. No se pide nada.
+- **Solicitud futura de medición** [A6-controller-measurement-request-draft-2026-10-11.md](I-62-F6/requests/A6-controller-measurement-request-draft-2026-10-11.md):
+  condiciones previas, invalidadores y la línea (b) con su SHA-256 `b52a46e34aea2926…`. No se pide nada.
+- **Preguntas abiertas para el Coordinator y el revisor** (A-6 §8, Q-A6-01..Q-A6-14). Destacada, Q-A6-01: §76.2 dice «hechos como insumos
+  canónicos». A-6 hace insumo canónico al archivo del instrumento y trata los hechos como evidencia producida en la invocación, porque el cierre se
+  fija antes del lanzamiento y los hechos precalculados serían B-ext, rechazada en §75.1.
