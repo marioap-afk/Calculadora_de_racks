@@ -1,0 +1,72 @@
+{
+  "RunId": "R20261011T030925Z-a198",
+  "ExitCode": 0,
+  "TerminalEvent": "turn.completed",
+  "ThreadId": "01a128f0-03dc-7f20-b371-ade9584cd4e1",
+  "Usage": {
+    "input_tokens": 47695,
+    "cached_input_tokens": 23424,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 362,
+    "reasoning_output_tokens": 62
+  },
+  "Commands": [
+    {
+      "Command": "<ruta-local-redactada> -Command 'git rev-parse origin/main'",
+      "Exit": 0
+    },
+    {
+      "Command": "<ruta-local-redactada> -Command 'git rev-parse HEAD'",
+      "Exit": 0
+    },
+    {
+      "Command": "<ruta-local-redactada> -Command 'git rev-parse HEAD:docs/initiatives/I-64-A-6.md'",
+      "Exit": 0
+    }
+  ],
+  "OutputPresent": true,
+  "SchemaValid": true,
+  "OracleMatch": {
+    "HeadSha": true,
+    "OriginMainSha": true,
+    "AmendmentBlob": true
+  },
+  "OutputSha256": "EAB451A2825A1CA926377120BEA9060BB52DE4738CE4C43352D8AF89338B57DB",
+  "CliVersion": "0.162.0-alpha.17.2",
+  "Sandbox": {
+    "type": "read-only"
+  },
+  "PermissionProfile": {
+    "type": "managed",
+    "file_system": {
+      "type": "restricted",
+      "entries": [
+        {
+          "path": {
+            "type": "special",
+            "value": {
+              "kind": "root"
+            }
+          },
+          "access": "read"
+        }
+      ]
+    },
+    "network": "restricted"
+  },
+  "CollaborationSettings": {
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "developer_instructions": null
+  },
+  "Effective": [
+    "gpt-6.1-sol",
+    "high"
+  ],
+  "EffectiveSource": "rollout-2026-10-10T21-09-40-01a128f0-03dc-7f20-b371-ade9584cd4e1.jsonl",
+  "EffectiveSourceSha256": "2E71D69FADCFCC952C2A3F1B56FF25319F50ED6BDE24AED107DD6BF48317DEEB",
+  "LimitPatternContexts": {},
+  "EventsSha256": "81F6D0031129E8CFEA35467BC9F443196910DC8C5D0FB491BE1F4CF8E3E89EA5",
+  "StderrBytes": 39,
+  "Pass": true
+}

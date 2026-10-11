@@ -1,0 +1,133 @@
+{
+  "Schema": "rackcad-i64-architect-review/v1",
+  "RunId": "R20261011T031438Z-38ad",
+  "Mode": "SEPARATE SESSION",
+  "ReviewSubject": {
+    "Commit": "db0f9d2bc890d74f40a337bda61f18cbc56979ed",
+    "AmendmentId": "A-6",
+    "Freeze": {
+      "Path": "docs/initiatives/I-64-proposal-v5.md",
+      "Blob": "dc1924ff5a73a4e529fbc5f995621d29351a091b"
+    },
+    "PriorAmendment": {
+      "Path": "docs/initiatives/I-64-A-5.md",
+      "Blob": "a61dc9d7a77e0eae624c1aa622180276d6d56501"
+    },
+    "Amendment": {
+      "Path": "docs/initiatives/I-64-A-6.md",
+      "Blob": "725e96664ca7a8f3dec506690573a6c4326e19a3"
+    },
+    "PriorVerifier": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_freetext_bridge.py",
+      "Blob": "48739ba6328cbee4c425d26ea94a7f471c021bdf"
+    },
+    "Verifier": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_freetext_bridge.py",
+      "Blob": "3bc7869e9f4c9c5eed0d64d7b8fee6f7002b9169"
+    },
+    "SelfTest": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/selftest_freetext_bridge.py",
+      "Blob": "1f28456cba2203bd637c3d186df7af9ba05460ad"
+    },
+    "SelfTestResult": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/selftest-freetext-result-a6.json",
+      "Blob": "d5daf611c194117b45dd056e7b2dd831c572fa38"
+    },
+    "RegressionDemo": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/regression-demo-a6-a5-verifier.json",
+      "Blob": "0b3840816a0b9c6ee9471b597bcac8acbb7aac3a"
+    },
+    "OwnerDecision": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/owner-decision-a5-freetext.md",
+      "Blob": "518fbfd935dc77d1079c1161e22bab31d2c61d6e"
+    },
+    "CoordinatorDecision": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/coordinator-decision-a6.md",
+      "Blob": "b0c7d9b5642db1d609829fa509c58e7cdcc991ec"
+    }
+  },
+  "PriorRequiredDisposition": [
+    {
+      "Id": "I64-A5-NUMERIC-OVERFLOW-FAIL-OPEN",
+      "Status": "CLOSED",
+      "Evidence": "Verifier:80-88 constructs exact Decimal values and rejects non-finite or invalid results; :190-194 installs exact numeric parsers. 1e999 and -1e999 remain finite decimals and fail integer-required schema validation. Synthetic T37/T38 require FAIL/nonzero and passed under A-6; the A-5 blob returned PASS/0. Extreme unrepresentable exponents and literal NaN/Infinity were also rejected."
+    },
+    {
+      "Id": "I64-A5-LOSSY-NUMERIC-COMPARISON",
+      "Status": "CLOSED",
+      "Evidence": "Verifier:55-101 preserves numeric lexemes and compares exact types and lexemes recursively. T39, T40, T43b and T45-T47 expose precision, underflow, large-integer and normalization differences; T44 verifies exact decimal parsing and comparison. Reproduced A-6 49/49 PASS and A-5 regression FAIL 38/49, with outputs byte-identical to the versioned evidence."
+    }
+  ],
+  "Answers": {
+    "Q01": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Both previous REQUIRED are CLOSED as detailed in PriorRequiredDisposition. Their regression oracles distinguish the corrected verifier from blob 48739ba6."
+    },
+    "Q02": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Verifier:55-88 and :190-194 use JsonInt and JsonDecimal through parse_int/parse_float, preserving source lexemes without binary floating point. T44 and independent synthetic probes preserved 1.00000000000000001, 1e999 and 1e-999 exactly."
+    },
+    "Q03": {
+      "Answer": "NO",
+      "Conforming": true,
+      "Evidence": "Decimal construction preserves finite exponent values; unrepresentable exponents fail parsing. exact_equal compares source lexemes, so 1e999 differs from 2e999 and 1e-999 differs from zero. Decimal/exponent forms also fail every numeric field in the embedded integer-only handoff schema."
+    },
+    "Q04": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Verifier:90-101 compares numeric type and lexeme, including recursively nested values. This is stricter than mathematical equality: -0 versus 0 and 1.0 versus 1.00 remain detectable differences. Large identical integers pass; integers differing in their last digit fail."
+    },
+    "Q05": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Verifier:103-153 requires JsonInt for integer fields and bool for boolean fields. T33, T41, T42 and T42b passed their negative expectations. Additional synthetic checks rejected boolean, decimal, null and string values in all five integer field definitions; permitted RedSha=null remained accepted."
+    },
+    "Q06": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Verifier:73-88, :159-202 and :326-364 reject malformed numbers, duplicate keys, non-JSON constants, invalid numeric construction and schema-invalid numeric forms. Synthetic malformed tokens, extreme exponents and an unrepresentable integer were rejected; T08-T12 and T37/T38 passed their negative expectations."
+    },
+    "Q07": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "The delta preserves unchanged ASTs for term parsing, matching, governed-field traversal, duplicate rejection and Unicode checks. T01-T36 remain exercised. The complete 49-case output matched the recorded bytes, and 112 additional synthetic combinations rejected every authoritative term in every governed field. Nested key-order mutation was detected."
+    },
+    "Q08": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Verifier:375-413 requires only WorkCompleted to change, the exact authorized append, unchanged identities and other fields, a clean real handoff and forbidden terms introduced only in WorkCompleted. A-5 conditions 1-10 remain applicable through A-6; the tool neither verifies product execution nor reclassifies Controller outputs. Its authorized use remains I-64-only."
+    },
+    "Q09": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Unchanged parse_term_set at verifier:217 derives fields, terms and matching semantics from the supplied authority. Parsing AUTOMATION_PLAN at bb0d5522 yielded all seven fields and sixteen terms, including Gate exclusion. Section SHA-256 was 767662276555c2fafffad3450fe9e264ad691e58e0ddb870e8b739c5dbf76864, identical to the synthetic embedded section. A-5 condition 5 retains exact-MainSha source selection."
+    },
+    "Q10": {
+      "Answer": "NO",
+      "Conforming": true,
+      "Evidence": "No new fail-open path was identified. Schema failures append reasons before subsequent comparisons; finish permits PASS/0 only with nonempty checks, no reasons and every check passing. Unsupported encountered schema keywords fail closed. The verifier SHA-256 matches e760858883926744a606d9438099ed8abf040eea07814275e94b1843307474d4."
+    },
+    "Q11": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-6:149-156 retains only M-04 YES, matching the Coordinator decision and LIFECYCLE Sec.3. The correction changes local evidence failure semantics without changing rule ownership, global wire contracts, product behavior or reusable extension points. Diffs confirm unchanged A-5, global AUTOMATION_PLAN/README and product src/tests."
+    },
+    "Q12": {
+      "Answer": "NO",
+      "Conforming": true,
+      "Evidence": "The explicit Owner decision already covers the I-64-only fail-closed substitute; the Coordinator decision orders this numerical correction within that authority. Freeze:964-966 retains I-61 until I-62 integration. History 819955d6..bb0d5522 contains I-63 integration, and local I-62 tip 362bec126c688e3a12e8ceb97cdf1124960ad47f is absent from pinned main ancestry. No unintegrated I-62 authority is consumed."
+    }
+  },
+  "Findings": [],
+  "RequiredCount": 0,
+  "OptionalCount": 0,
+  "Verdict": "AGREED",
+  "Limitations": [
+    "The filesystem-writing self-test runner was adapted in memory: file operations and verifier subprocesses used synthetic byte inputs and captured output. Two A-6 runs reproduced the versioned 49/49 result byte for byte; the A-5 regression reproduced FAIL 38/49. No files were written and no verifier execution used real T2 inputs.",
+    "git ls-remote failed through the configured proxy; retry without proxy failed with schannel SEC_E_NO_CREDENTIALS. Q12 uses pinned main and local branch history, without asserting a freshly verified remote tip.",
+    "coordinator-classification.json is absent from nc3 attempts R20261011T014150Z-3200 and R20261011T014542Z-0c58, confirmed by directory inventories. Their oracle-result.json records apply the Coordinator rule. All three outputs retain FreeText failure, EXECUTION_BLOCKED/STOP and the other thirteen check results; historical nc3 remains NOT PASSED/P-04.",
+    "The injected prompt supplies the disposition of the prior P-01/config/CLI STOP; the reviewed commit retains its historical pending record. This agreement concerns A-6 only. Coordinator agreement remains required before any FreeText bridge execution against T2."
+  ]
+}

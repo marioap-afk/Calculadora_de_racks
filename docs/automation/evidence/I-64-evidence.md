@@ -2562,3 +2562,85 @@ other than A or B: STOP P-01»).
 - puente FreeText no ejecutado;
 - ninguna entrada real de T2 usada en A-6;
 - T2 con el protocolo incompleto; F1-T3-HOST bloqueada.
+
+## 45. A-6 — Sonda del CLI nuevo y revisión formal del Architect: AGREED (0 REQUIRED); STOP en COORDINATOR_A6_AGREEMENT_REQUIRED
+
+Sección nueva; las anteriores no se reescriben.
+
+**Disposición del Owner/Coordinator** (literal en
+`docs/automation/evidence/I-64-protocol-bridge/owner-coordinator-disposition-a6-review-recovery.md`):
+- **`config.toml`:** conjunto cerrado A/B/C para el resto de la cadena de revisión de A-6. Cada instantánea tiene exactamente los 105 nombres
+  del inventario ordenado conocido. Cualquier otro hash o un cambio del inventario es STOP P-01. No se leen ni se persisten valores.
+- **CLI `codex-cli 0.162.0-alpha.17.2`:** no se declara equivalente al medido. Se autorizan una sonda mínima de solo lectura de
+  `gpt-6.1-sol`/`high` y, si da PASS, la revisión única del Architect de A-6.
+- **Aunque llegue AGREED:** sin ejecutar I64-FREETEXT-BRIDGE-01 contra entradas reales de T2; parada en COORDINATOR_A6_AGREEMENT_REQUIRED.
+
+**Sonda `R20261011T030925Z-a198`** (`docs/automation/evidence/I-64-protocol-bridge/probe/R20261011T030925Z-a198/`): **PASS en los 10
+criterios de la disposición.**
+- **Celda efectiva:** `gpt-6.1-sol`/`high`; `cli_version` `0.162.0-alpha.17.2`.
+- **Sandbox:** `read-only`; `permission_profile` con sistema de archivos de solo lectura y red `restricted`.
+- **Salida estructurada** válida contra su esquema.
+- **Oráculo de Git exacto:** HEAD `db0f9d2b`, `origin/main` `bb0d5522`, blob de A-6 `725e9666`; 3 órdenes, todas con código 0.
+- **Sin efectos colaterales:** sin avisos de límite (P-06), sin credenciales nuevas, sin escritura Git, sin mutación de producto ni de
+  evidencia.
+- **`config.toml`:** instantánea C antes y después.
+
+Con esto, la celda `gpt-6.1-sol` / `high` / Codex CLI 0.162.0-alpha.17.2 / read-only queda aceptada como medida para esta revisión.
+
+**Revisión formal del Architect `R20261011T031438Z-38ad`**
+(`docs/automation/evidence/I-64-protocol-bridge/architect-review/R20261011T031438Z-38ad/`):
+- **Perfil:** ARCHITECTURE_REVIEW, Deep, SEPARATE SESSION; misma celda; tope de 1800 s, usó unos 5 minutos.
+- **Objeto:** commit `db0f9d2b`, con A-6 `725e9666`, el verificador `3bc7869e`, la autoprueba `1f28456c`, el resultado `d5daf611`, la
+  regresión `0b384081`, A-5 `a61dc9d7`, el verificador anterior `48739ba6` y el Freeze `dc1924ff`.
+- **Resultado:** **AGREED, REQUIRED 0, OPTIONAL 0.**
+  - Q01, Q02, Q04-Q09 y Q11: YES, conformes.
+  - Q03, Q10 y Q12: NO, conformes.
+- **REQUIRED anteriores:**
+  - **I64-A5-NUMERIC-OVERFLOW-FAIL-OPEN: CLOSED.** `1e999` y `-1e999` quedan como decimales finitos exactos y no pasan la validación de
+    un campo entero. Se rechazan los exponentes no representables y `NaN`/`Infinity`. T37 y T38 dan FAIL con A-6 y daban PASS con A-5.
+  - **I64-A5-LOSSY-NUMERIC-COMPARISON: CLOSED.** Se conservan los lexemas y se comparan tipo y lexema de forma recursiva. T39, T40, T43b
+    y T45-T47 exponen las diferencias, y T44 prueba la primitiva exacta.
+- **Reproducción por el Architect:**
+  - autoprueba de A-6: 49/49, dos veces, idéntica byte a byte a la versionada;
+  - regresión contra A-5: FAIL 38/49, idéntica a la versionada;
+  - `SCHEMA_V1` igual objeto a objeto al esquema de `bb0d5522`;
+  - el análisis de 16.10 deriva los 7 campos y los 16 términos de `bb0d5522`, y su texto incrustado es idéntico;
+  - las 112 combinaciones de término y campo dan FAIL (`REAL_HAS_FORBIDDEN_TERM`) cuando el término está en el lado REAL de una pareja
+    sintética;
+  - los 20 tipos inválidos en campos enteros dan FAIL;
+  - A-5 sin cambios; sin cambios en `src/` ni `tests/` desde `6a215c9c`.
+- **Primer intento del arnés:** la primera adaptación en memoria del Architect dio 48/49, porque su sonda T44 se ejecutaba sin `json` ni
+  `sys`. Es un artefacto del arnés. La adaptación fiel, que sustituye `subprocess`, `open` y `tempfile`, reprodujo 49/49 idéntico a la
+  versionada.
+- **Salida:** válida contra el esquema, coherente, ASCII, con todos los blobs del objeto correctos y sin términos de 16.10.
+
+**Ejecución del verificador durante la revisión**, comprobada por la sesión sobre los 28 comandos:
+- todas las ejecuciones fueron en memoria con entradas sintéticas: los casos de la autoprueba, la entrada base sintética y sondas
+  numéricas;
+- de T2, el Architect solo leyó como texto la salida de la verificación `41fd` y los registros de nc3;
+- **no ejecutó el verificador contra entradas reales de T2;**
+- 2 comandos auxiliares con código distinto de 0: un `UnicodeEncodeError` de la consola y `git ls-remote` sin red en el sandbox.
+  Ambos están declarados en sus Limitations.
+
+**Limitaciones declaradas por el Architect:**
+- En los nc3 `3200` y `0c58` no existe `coordinator-classification.json`: su clasificación está en `nc3-mechanical-check.json`. El prompt de
+  la sesión lo listaba por error para los tres intentos. Sin efecto en el resultado; nc3 histórico sigue NOT PASSED / P-04.
+- La disposición de P-01 llegó por el prompt; el commit revisado conserva el registro pendiente de §44.
+
+**Relevos:**
+- **Antes de la sonda y antes de la revisión:**
+  - `config.toml` en la instantánea C (`F909F480…`), con el inventario de 105 nombres igual;
+  - HEAD = remoto = `db0f9d2b`; `main` `bb0d5522`;
+  - sin participantes ni procesos no atribuibles.
+- **Después:** lo mismo, y los lanzadores muertos.
+- **Corrección de nombres:** en el directorio transitorio de `38ad`, la sesión había escrito las comprobaciones de config y procesos con
+  entry/exit invertidos. Se intercambiaron antes de custodiar; Exit = antes de la cesión.
+- **Custodia:** nombres `[projects.*]` redactados; rutas locales redactadas en `probe-result.json` y en `architect-review-eval.json`.
+- **Transitorios de T2:** siguen sin custodiar hasta el cierre de T2.
+
+**Estado:**
+- **A-6:** Architect AGREED; Coordinator PENDIENTE; **NO activa**.
+- **Puente FreeText:** I64-FREETEXT-BRIDGE-01 no ejecutado; **ninguna entrada real de T2 usada** en la sonda, en la revisión ni en esta
+  sección.
+- **T2:** protocolo incompleto; F1-T3-HOST bloqueada.
+- **Siguiente:** STOP en **COORDINATOR_A6_AGREEMENT_REQUIRED**.
