@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T4-COMPARATOR-AND-TOOL",
+  "RunId": "R20261011T211738Z-74b4",
+  "DelegationRunId": "R20261011T210328Z-2ee6",
+  "WorkRunId": "R20261011T210642Z-ca39",
+  "Attempt": 3,
+  "VerifiedSha": "7efacd78a8ad411a639953fb21d587e66e8d5475",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "inputs/relay-record-work.json: Outcome.Kind=COMPLETED, TerminalEvent=subagent-completed, DeathConfirmed=true; Cession.SessionOperated=false. Handoff OutputWrittenUtc=2026-10-11T21:13:17Z, posterior a Cession.StartUtc=2026-10-11T21:06:46Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "inputs/worker-handoff.json usa Schema rackcad-worker-handoff/v1, TaskId F4-T4-COMPARATOR-AND-TOOL, Attempt 3, DelegationRunId R20261011T210328Z-2ee6 y RunId R20261011T210642Z-ca39; coinciden con la delegación y el registro WORK. OutputWrittenUtc consta en el registro como 2026-10-11T21:13:17Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leí las autoridades desde Git: en AuthorityRevision 34831380a2f2fd7a2cf5bdd8de05c3281f9efc50, proposal v3.1 (Frozen: yes), concreción F4, decisiones I-65 §26 y ADR-0050; en MainSha bb0d5522e8411f66a51fdfb3f1f0d0514b737453, AUTOMATION_PLAN §16, agent-execution README §8 y AGENTS.md. La revisión de autoridad coincide con la indicada por la delegación."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparé delegation.json con gate-contract.json para A3-A5: alcance permitido/prohibido, invariantes, pruebas requeridas y condiciones de parada coinciden por elementos e IDs. Diferencia declarada según DEV-I65-F4-11: la delegación abrevia el texto de C-07 y omite «o al revés»; conserva el mismo ID y orden, que es lo que verificó A5. El prompt al Worker recibió el texto completo del contrato."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD = 7efacd78a8ad411a639953fb21d587e66e8d5475; git rev-parse refs/remotes/origin/architecture/interop-analisis-estructural = el mismo SHA; git rev-parse origin/main = bb0d5522e8411f66a51fdfb3f1f0d0514b737453. Rama y worktree coinciden con delegation.json. git merge-base --is-ancestor BaseSha CurrentSha y RedSha CurrentSha finalizaron con código 0. Handoff identifica RedSha c4660703dd6cb38406dc296698138499076fddcf y CurrentSha verificado."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "inputs/relay-record-work.json RemoteFacts: OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453 y LsRemoteSha=7efacd78a8ad411a639953fb21d587e66e8d5475, coinciden con MainSha y CurrentSha. Mi git ls-remote origin refs/heads/architecture/interop-analisis-estructural no pudo conectarse a github.com por el bloqueo de red; se usan los RemoteFacts registrados, como permite la instrucción."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha devuelve exactamente tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonSupport.cs y tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonToolTests.cs. Ambos quedan cubiertos archivo por archivo por AllowedWriteScope: tests/RackCad.Tests/StructuralAnalysis/. Ninguno coincide con ForbiddenWriteScope; scope-mechanical.json también registra files=2, pass=true, uncovered=[] y forbidden_hits=[]."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 no produjo entradas. git check-ignore -v sobre inputs/delegation.json confirmó .gitignore:3:artifacts/; el paquete de verificación está ignorado."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun 38175418046: event=push, ref=refs/heads/architecture/interop-analisis-estructural, head_sha=CurrentSha, status=completed; los cuatro jobs requeridos terminaron success. RedRun 38175189302: push de la misma rama y RedSha, completado con Tests (Domain + Application)=failure. El TRX Core RED existe y contiene pruebas seleccionadas; no fue una falla de compilación. Ambos registros concuerdan con los artefactos de entrada."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Leí los tres TRX. Core GREEN: total/ejecutadas/aprobadas=14078, fallidas=0; filtro StructuralAnalysisComparison: 81 seleccionadas, 81 aprobadas. UI: total=1654, ejecutadas/aprobadas=1637, fallidas=0; 17 Skip constan como NotExecuted, mientras el contador del logger notExecuted=0. Core RED: total/ejecutadas=14078, 14003 aprobadas, 75 fallidas; filtro=81, 6 aprobadas y 75 fallidas. Las 75 fallas fueron 74 NotImplementedException y una falla de Assert.Throws; no hubo fallo de compilación. RED cumple MinSelected=25 y ExpectRed. RT, calculado con git diff --name-only ChainBaseSha RedSha -- tests/, y ChainRedFiles resultante contienen RackCad.Tests.csproj más StructuralAnalysisComparisonRowTests.cs, StructuralAnalysisComparisonSupport.cs, StructuralAnalysisComparisonToolTests.cs y StructuralAnalysisComparisonVerdictTests.cs. git diff --name-only RedSha CurrentSha -- tests/ está vacío: no altera RT ni ChainRedFiles. En git show CurrentSha:tests/... comprobé las pruebas conductuales y sus resultados GREEN: comparador puro/determinista (The_comparator_does_no_input_output_and_keeps_no_clock_or_state; The_report_is_deterministic_in_value_and_in_bytes); rechazo y STALE (A_read_back_in_a_failed_state_rejects_and_approves_no_row; A_rejection_by_a_gate_is_a_rejection_too; Another_fingerprint_is_stale_and_approves_no_row); emparejamiento (An_ambiguous_node_pairing_fails_and_is_never_resolved_in_silence; A_candidate_paired_twice_fails; Members_are_paired_by_their_nodes_whatever_the_order_and_the_names; A_member_with_its_nodes_inverted_fails_the_connectivity). La matriz y bordes se observan en A_node_moved_one_millimeter_fails_the_coordinates, Node_tolerance_edge..., Axis_tolerance_edge..., Load_value_tolerance_edge... y Load_position_tolerance_edge..., además de las pruebas de sección, material, defaults, releases, supports y cargas. Categorías, peso propio y filas NOT_EVALUATED se observan en A_generated_category_other_than_OTHER_fails, A_manual_category_other_than_OTHER_is_only_informative, The_self_weight_of_the_loaded_cases_is_informative y The_section_and_material_properties_are_not_evaluated_and_say_who_evaluates_them. El informe verifica filas estables, cultura, bytes deterministas, LF, ausencia de timestamp y forma del esquema. INV-13 positivo y negativos incluyen igualdad, nodo desplazado, sección, eje invertido, carga ×1000, ambigüedad, lectura fallida, huella distinta, categoría OTHER, nudos invertidos, categoría manual y carga en porcentaje/distancia. La herramienta cubre subcomandos, códigos de salida, no sobrescritura, inyección de una mutación y manifiesto, marcador ausente del producto, proyecto en solución y referencia única. Los cuatro archivos de prueba de la cadena son nuevos frente a ChainBaseSha; el diff de la cadena solo modifica RackCad.Tests.csproj y los añade."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha muestra los commits RED y GREEN, ambos con Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, coincidente literalmente con worker-handoff.json Worker.Trailer. El registro WORK consigna modelo efectivo claude-sonnet-5-5 y effort medium."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita claude-sonnet-5-5 con effort medium y RoutingEnforcement=required. relay-record-work.json Notes consigna el mismo modelo y effort efectivos; coincide con lo solicitado."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Busqué los términos de AUTOMATION_PLAN §16.10, sin distinguir mayúsculas, en WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json; no hubo coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 denegaciones y 0 avisos de límite; no informa órdenes fallidas pendientes. También registra que el git.exe de entrada terminó y que no quedó ningún participante o proceso no atribuible. No hay señal de denegación en el registro."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La delegación abrevia el texto de C-07 y omite «o al revés»; conserva el mismo ID y orden. La aceptación registrada A1-A8 pasó y el Worker recibió la redacción completa del contrato.",
+    "La conexión de git ls-remote no estuvo disponible en este sandbox; Remote se verificó con los RemoteFacts del registro, incluidos OriginMainSha y LsRemoteSha."
+  ],
+  "RecommendedNextAction": "Entregar esta verificación al Coordinator para el siguiente paso de la cadena."
+}

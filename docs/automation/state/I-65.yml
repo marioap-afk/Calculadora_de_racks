@@ -7,7 +7,7 @@ automation_state:
   state: in-progress
   gate: F4
   attempts: 3
-  next_action: reemision de la planificacion de la correccion de F4-T4 (Attempt 3; CD-I65-F4-19), Worker RED/GREEN, verificacion y controles; antes de T5 pedir al Owner las invocaciones 31 y 32. Sin corridas en RAM.
+  next_action: pedir al Owner autorizacion para las invocaciones de Codex 31 y 32 (T5 necesita 5; quedan 3 del tope de 30); despues F4-T5-PLUGIN-COMMAND (Attempt 3, sin correcciones restantes). Sin corridas en RAM.
   last_evidence_commit: d2539be2f571deada81fc17fb44934ea075ab096
 execution_context:
   mode: manual
@@ -15,7 +15,7 @@ execution_context:
   worktree: architecture-interop-analisis-estructural
 execution_chain:
   gate: F4
-  next_role: Coordinator (correccion de F4-T4)
+  next_role: Owner (presupuesto de Codex para T5)
   implementation_authorization: YES, CONDITIONAL — F4 ONLY (decisiones §26); sin corridas en RAM, sin Candidato y sin GATE PASS de F4 antes de la comparación real; tope de Codex de F4 = 30 (disposición del Owner de F4-T3, decisiones §32)
   owner_decisions_open: [OD-F4-02 ingeniero verificador y apertura de RAM para verificar, OD-F4-07 sonda P2, OD-F4-08 operador de RAM, OD-F4-09 REF-CANT-01 en un DWG, OD-F4-10 base Montilla, OD-F4-11 Candidato de hito y repetición del modelo manual, autorización específica de la primera corrida en RAM, confirmación definitiva de Q-O1 y Q-O7 (tras OV-I65-01)]
   not_authorized: [corridas en RAM Elements, Candidato de hito, GATE PASS de F4 antes de la comparación real, F5, F6, F7, capacidades fuera de V1, cambios del Freeze, infraestructura de I-62, interfaces de ID30, integración con Workspace, interfaz gráfica]

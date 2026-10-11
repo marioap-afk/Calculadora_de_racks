@@ -1022,3 +1022,54 @@ Custodia:
 | `F4-T4-COMPARATOR-AND-TOOL/R20261011T205717Z-064f/exactness.json` | `5F9D38644FF5683D…` | `976cf8edf012` (fin de línea normalizado por Git) |
 | `F4-T4-COMPARATOR-AND-TOOL/R20261011T205717Z-064f/relay-record.json` | `AA526480173C5D75…` | `e546cc25fe15` |
 | `F4-T4-COMPARATOR-AND-TOOL/R20261011T205717Z-064f/analysis-p03.md` | `EF3F21EA61344A8A…` | `f435beb28b18` |
+
+## 43. F4-T4-COMPARATOR-AND-TOOL — corrección, verificación y controles (2026-10-11T21:32:42Z)
+
+| RunId | Fase | Participante | Resultado |
+|---|---|---|---|
+| `R20261011T210328Z-2ee6` | PLANNING (intento 3, reemitida) | Codex `gpt-6-luna`/`high` (23) | A1-A8 `pass`; C-07 abreviada por el Controller (DEV-I65-F4-11); `CorrectionOf` con el SHA-256 correcto; `claude-sonnet-5-5`/`medium` |
+| `R20261011T210642Z-ca39` | WORK (intento 3) | subagente `claude-sonnet-5-5`/`medium` (38 mensajes) | RED `c4660703`, GREEN `7efacd78`; 5 min 58 s; 20 llamadas; ninguna invocación de un intérprete; `IMPLEMENTATION_COMPLETE` |
+| `R20261011T211738Z-74b4` | VERIFICATION | Codex (24) | **`EXECUTION_VERIFIED`/`NONE`**, 14/14 `pass`, `VerifiedSha` `7efacd78` |
+| `R20261011T212230Z-4f4f` | CONTROL nc1 | Codex `gpt-6-luna`/`high` (25) | `EXECUTION_BLOCKED/STOP`, `FailureClass` = `Handoff`: **oráculo NO cumplido** (esperado `EXECUTION_BLOCKED/STOP`, `Identity`) |
+| `R20261011T212448Z-fcb8` | CONTROL nc2 | Codex `gpt-6-luna`/`high` (26) | `EXECUTION_BLOCKED/STOP`, `FailureClass` = `Scope`: **oráculo cumplido** |
+| `R20261011T212904Z-78f0` | CONTROL nc3 | Codex `gpt-6-luna`/`high` (27) | `EXECUTION_REWORK_REQUIRED/REWORK`, `FailureClass` = `FreeText`: **oráculo cumplido** |
+
+- **Diff de la corrección:** cuatro líneas en `StructuralAnalysisComparisonToolTests.cs` y `StructuralAnalysisComparisonSupport.cs` (dos aserciones
+  corregidas, `CS0649` y `xUnit2013`); `git diff 0e9bbc29 7efacd78 -- src tools RackCad.sln` vacío.
+- **Entregable de T4:** `StructuralReadbackComparison.cs` (comparador neutral puro) y la herramienta `tools/RackCad.StructuralAnalysis.RamTool/`
+  (`dump-script`, `compare`, `inject`), con la entrada en `RackCad.sln` y la referencia del proyecto de pruebas.
+- **Invocaciones de Codex en F4:** 27 de 30. `attempts` = 3 (= máximo).
+
+Custodia:
+
+| Archivo (bajo `I-65-pilot/`) | SHA-256 transitorio | Blob |
+|---|---|---|
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T210328Z-2ee6/gate-contract.json` | `25B05C775AA5D076…` | `c5613e7c4253` |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T210328Z-2ee6/prompt.md` | `E4C6121123FCC4BD…` | `08f8be9c3281` |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T210328Z-2ee6/delegation.json` | `CA5642BB4142239C…` | `6f3dc55fceba` |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T210328Z-2ee6/acceptance.json` | `E12AFB35CBDE44C0…` | `c968ab8fdf67` |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T210328Z-2ee6/exactness.json` | `CE1243A241341441…` | `0fece11d091a` (fin de línea normalizado por Git) |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T210328Z-2ee6/relay-record.json` | `FBFD6420B0D03638…` | `8d768954e2b8` |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T210642Z-ca39/prompt.md` | `61914EB1BAB6BF46…` | `81b460543cc1` |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T210642Z-ca39/worker-handoff.json` | `677B0B78281608F5…` | `6cbc037ac1be` |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T210642Z-ca39/relay-record.json` | `57E069229F1F0E90…` | `35fc31eb248b` |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T211738Z-74b4/prompt.md` | `D487181F9DF48DB2…` | `22fe8434fcd8` |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T211738Z-74b4/controller-verification.json` | `34D52727B3EDBB2B…` | `edc58eed6f87` |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T211738Z-74b4/relay-record.json` | `849F0165243D1FAC…` | `9865027aa3e0` |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T211738Z-74b4/coherence.txt` | `B6BEA444F6DA957C…` | `2969a6fa566f` (fin de línea normalizado por Git) |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T211738Z-74b4/trx-summary.json` | `1CE3B9E9FED44CF4…` | `a25f5c853f52` (fin de línea normalizado por Git) |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T211738Z-74b4/scope-mechanical.json` | `44AD85097CE259A7…` | `f2b787f4e0ef` (fin de línea normalizado por Git) |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T211738Z-74b4/coordinator-dispositions-f4t4c.md` | `42A52DB8676CDF79…` | `ee6018f2cb72` |
+| `F4-T4-COMPARATOR-AND-TOOL-nc1/R20261011T212230Z-4f4f/prompt.md` | `92183727E6C32D54…` | `8d4eb7a91dcc` |
+| `F4-T4-COMPARATOR-AND-TOOL-nc1/R20261011T212230Z-4f4f/mutation.json` | `454115A35845BC30…` | `0f6eaff4ddde` (fin de línea normalizado por Git) |
+| `F4-T4-COMPARATOR-AND-TOOL-nc1/R20261011T212230Z-4f4f/controller-verification.json` | `D38424706C2F60DE…` | `0c2d3028f0bc` |
+| `F4-T4-COMPARATOR-AND-TOOL-nc1/R20261011T212230Z-4f4f/relay-record.json` | `3D1BB4914200D7A9…` | `3361ace50b3c` |
+| `F4-T4-COMPARATOR-AND-TOOL-nc2/R20261011T212448Z-fcb8/prompt.md` | `0FE4507F1B984FF0…` | `76d462113ca4` |
+| `F4-T4-COMPARATOR-AND-TOOL-nc2/R20261011T212448Z-fcb8/mutation.json` | `826720F5C39932E8…` | `5d6819bae8ab` (fin de línea normalizado por Git) |
+| `F4-T4-COMPARATOR-AND-TOOL-nc2/R20261011T212448Z-fcb8/controller-verification.json` | `E3389C75DD4C2673…` | `c6ffdb7131d5` |
+| `F4-T4-COMPARATOR-AND-TOOL-nc2/R20261011T212448Z-fcb8/relay-record.json` | `4D779D39B2BC9351…` | `ca933799dbf6` |
+| `F4-T4-COMPARATOR-AND-TOOL-nc2/R20261011T212448Z-fcb8/scope-mechanical.json` | `3C708C9B874F0642…` | `61352aa73253` (fin de línea normalizado por Git) |
+| `F4-T4-COMPARATOR-AND-TOOL-nc3/R20261011T212904Z-78f0/prompt.md` | `E27A4EB98DBC61F1…` | `578511ebb564` |
+| `F4-T4-COMPARATOR-AND-TOOL-nc3/R20261011T212904Z-78f0/mutation.json` | `DA1F3B8B5E00512B…` | `511067defe3d` (fin de línea normalizado por Git) |
+| `F4-T4-COMPARATOR-AND-TOOL-nc3/R20261011T212904Z-78f0/controller-verification.json` | `632257C411BF78A3…` | `d22ead39b94c` |
+| `F4-T4-COMPARATOR-AND-TOOL-nc3/R20261011T212904Z-78f0/relay-record.json` | `227FB83391CDDE5E…` | `37ab5a001ffc` |
