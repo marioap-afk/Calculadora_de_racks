@@ -48,20 +48,23 @@ namespace RackCad.Plugin.Workspace
             }
         }
 
+        // Thin facades over the single core (I-64 F1-T3A). They add no state, no subscription and no read of the drawing.
+
         /// <summary>The session of the active document, or none when no document is open.</summary>
-        public SessionId? ActiveSession => null;
+        public SessionId? ActiveSession => _core.ActiveSession;
 
         public bool TryGetSession(SessionId id, out WorkspaceSession session)
         {
-            session = null;
-            return false;
+            var found = _core.TryGetSession(id, out var live);
+            session = live;
+            return found;
         }
 
-        public RequestDecision Authorize(WorkspaceRequest request, long executingNativeInstanceId) => RequestDecision.Accepted;
+        public RequestDecision Authorize(WorkspaceRequest request, long executingNativeInstanceId) =>
+            _core.Authorize(request, executingNativeInstanceId);
 
-        public void RequestReconciliation()
-        {
-        }
+        /// <summary>Queues the reconciliation hint of the active session; the drain happens later, at rest.</summary>
+        public void RequestReconciliation() => _core.RequestReconciliation();
 
         public void SetPanelVisible(bool visible) => _core.SetPanelVisible(visible);
 

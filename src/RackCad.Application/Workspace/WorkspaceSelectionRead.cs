@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RackCad.Application.Workspace
 {
@@ -34,7 +35,14 @@ namespace RackCad.Application.Workspace
     /// <summary>Maps one fine read to the selection context through <see cref="SelectionContext.Classify"/> (D-06, INV-16, INV-17).</summary>
     public static class WorkspaceSelectionMapper
     {
-        public static SelectionContext ToContext(WorkspaceSelectionRead read) => SelectionContext.None;
+        public static SelectionContext ToContext(WorkspaceSelectionRead read)
+        {
+            if (read == null) throw new ArgumentNullException(nameof(read));
+
+            // Without an implied selection (PICKFIRST off) there is nothing to map; the state says so, the context is None.
+            if (!read.PickFirstEnabled) return SelectionContext.None;
+            return SelectionContext.Classify(read.References, read.NonRackEntities);
+        }
     }
 
     /// <summary>What the cache remembers about one block definition: whether it is a rack, and the fact read from its envelope.</summary>
@@ -45,26 +53,32 @@ namespace RackCad.Application.Workspace
     /// </summary>
     public sealed class WorkspaceDefinitionCache
     {
-        public int Count => 0;
+        private readonly Dictionary<SessionId, Dictionary<long, CachedDefinition>> _bySession = new();
 
-        public int CountFor(SessionId session) => 0;
+        public int Count => _bySession.Values.Sum(entries => entries.Count);
+
+        public int CountFor(SessionId session) => _bySession.TryGetValue(session, out var entries) ? entries.Count : 0;
 
         public bool TryGet(SessionId session, long definitionKey, out CachedDefinition entry)
         {
+            if (_bySession.TryGetValue(session, out var entries) && entries.TryGetValue(definitionKey, out entry)) return true;
             entry = default;
             return false;
         }
 
         public void Store(SessionId session, long definitionKey, CachedDefinition entry)
         {
+            if (!_bySession.TryGetValue(session, out var entries))
+            {
+                entries = new Dictionary<long, CachedDefinition>();
+                _bySession.Add(session, entries);
+            }
+
+            entries[definitionKey] = entry;
         }
 
-        public void Invalidate(SessionId session)
-        {
-        }
+        public void Invalidate(SessionId session) => _bySession.Remove(session);
 
-        public void InvalidateAll()
-        {
-        }
+        public void InvalidateAll() => _bySession.Clear();
     }
 }
