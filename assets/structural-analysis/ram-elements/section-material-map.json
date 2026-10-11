@@ -1,0 +1,25 @@
+{
+  "schema": "rackcad-ram-elements-section-map/v1",
+  "rows": [
+    {
+      "sectionId": "AISC-W-W12X26",
+      "ramSection": { "name": "W 12X26", "table": null, "country": null },
+      "materialId": "ASTM-A992-GR50",
+      "ramMaterial": "A992 Gr50",
+      "expectedMaterial": { "elasticModulus": null, "poissonRatio": null, "shearModulus": null, "unitWeight": null, "source": null },
+      "status": "proposed",
+      "verifiedBy": null,
+      "verifiedOn": null
+    },
+    {
+      "sectionId": "AISC-HSS-RECT-HSS4X4X_250",
+      "ramSection": { "name": "HSS_SQR 4X4X1_4", "table": null, "country": null },
+      "materialId": "ASTM-A500-GRC",
+      "ramMaterial": "A500 GrC rectangular",
+      "expectedMaterial": { "elasticModulus": null, "poissonRatio": null, "shearModulus": null, "unitWeight": null, "source": null },
+      "status": "proposed",
+      "verifiedBy": null,
+      "verifiedOn": null
+    }
+  ]
+}

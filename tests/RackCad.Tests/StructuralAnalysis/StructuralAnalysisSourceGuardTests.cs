@@ -80,7 +80,14 @@ namespace RackCad.Tests
                 .ToList();
 
             Assert.True(offenders.Count == 0, "Violaciones de G1:\n" + string.Join("\n", offenders));
-            Assert.False(Directory.Exists(Path.Combine(RepoRoot().FullName, ProvidersRoot.TrimEnd('/'))), "F1 no crea la carpeta Providers.");
+            var providers = Path.Combine(RepoRoot().FullName, ProvidersRoot.TrimEnd('/'));
+            var inProviders = Directory.Exists(providers)
+                ? Directory.GetFileSystemEntries(providers).Select(entry => Path.GetFileName(entry)).OrderBy(name => name, StringComparer.Ordinal).ToArray()
+                : new string[0];
+
+            Assert.True(
+                inProviders.SequenceEqual(new[] { "RamElements" }) && Directory.Exists(Path.Combine(providers, "RamElements")),
+                "Bajo Providers/ solo existe RamElements/. Encontrado: " + string.Join(", ", inProviders));
         }
 
         [Theory]
@@ -368,6 +375,7 @@ namespace RackCad.Tests
         private const string MassFile = "src/RackCad.Application/Units/MassUnits.cs";
         private const string ForceFile = "src/RackCad.Application/Units/ForceUnits.cs";
         private const string GuardFile = "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs";
+        private const string PackageTemplateTestsFile = "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageTemplateTests.cs";
 
         private static readonly string[] G1Roots =
         {
@@ -492,7 +500,8 @@ namespace RackCad.Tests
             var normalized = Normalize(path);
 
             if (!normalized.StartsWith("tests/RackCad.Tests/", StringComparison.Ordinal)
-                || string.Equals(normalized, GuardFile, StringComparison.Ordinal))
+                || string.Equals(normalized, GuardFile, StringComparison.Ordinal)
+                || string.Equals(normalized, PackageTemplateTestsFile, StringComparison.Ordinal))
             {
                 return new string[0];
             }
