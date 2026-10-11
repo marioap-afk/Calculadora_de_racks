@@ -3,19 +3,19 @@ automation_state:
   initiative: I-65
   branch: architecture/interop-analisis-estructural
   claim_id: 0b4aad79-068e-4a57-a2c2-dc8f23406778
-  current_phase: f3
-  state: in-progress
+  current_phase: f3-closed
+  state: waiting-owner
   gate: F3
   attempts: 0
-  next_action: Cierre de F3 — Core Full local sobre este commit con árbol limpio, push y lectura de su CI; después, registro del cierre e informe de F3 al Owner. Sin F4.
-  last_evidence_commit: e3ae36d0d6cb1f13de685ed0f9825d2b5a71ecf5
+  next_action: Owner decide el gate siguiente (F4: comando mínimo, volcado, comparador y Candidato de hito con OV-I65-01, 03-07) con el informe de F3; antes, un ingeniero verifica las filas de mapeo. Sin implementación hasta su orden.
+  last_evidence_commit: 1d8c713ee494a8cf5f2577e38dfca1aab9e2c236
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-interop-analisis-estructural
 execution_chain:
   gate: F3
-  next_role: Coordinator (cierre de F3)
-  implementation_authorization: F3 ONLY (orden del Owner del 2026-10-11; termina al concluir F3)
+  next_role: Owner (autorización de F4; verificación de las filas de mapeo por un ingeniero)
+  implementation_authorization: NO (la autorización de F3 terminó al cerrar F3, CD-I65-F3-17)
   owner_decisions_open: [verificación por un ingeniero de las filas de mapeo, confirmación definitiva de Q-O1 y Q-O7 (tras OV-I65-01), autorización de cada gate posterior a F3]
-  not_authorized: [F4, F5, F6, integración con Workspace, interfaz gráfica, Plugin, corridas en RAM Elements, análisis, importación de resultados]
+  not_authorized: [F4, F5, F6, F7, integración con Workspace, interfaz gráfica, Plugin, corridas en RAM Elements, análisis, importación de resultados, cambios de código]

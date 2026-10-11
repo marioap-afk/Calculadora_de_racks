@@ -634,3 +634,22 @@ Custodia (blob = identidad duradera; SHA-256 = procedencia del transitorio):
 
 - **Controles negativos de F3:** 8 de 9 con oráculo cumplido (nc4 ×2, nc2 ×2, nc3 ×2, nc1 de F3-T2); nc1 de F3-T1 no en sentido estricto
   (DEV-I65-F3-01). Planificación rechazada y reemitida una vez (CD-I65-F3-11).
+
+## 31. F3 cerrada (2026-10-11T09:00:06Z)
+
+Hechos posteriores al commit de cierre `1d8c713ee494a8cf5f2577e38dfca1aab9e2c236`:
+
+- **Árbol limpio y evidencia local:** Core Full local sobre `1d8c713e`: **13483/13483** superadas, 0 fallidas, 0 omitidas (2 min 54 s; TRX
+  `core-full-1d8c713e.trx`, SHA-256 `04adf819e7618a9893dca1563899408e3695877d419343a4e827d30d825e3c6e`, transitorio).
+- **Push y CI del SHA de cierre:** corrida `push` 38126497464, `head_sha` `1d8c713e`, `completed/success`: UI Tests (WPF controls, net8.0-windows) = `success`; Tests (Domain + Application) = `success`; Build UI (WPF, valida API de Application) = `success`; Build Plugin without AutoCAD = `success`.
+- **Criterios de LIFECYCLE §7:** 1-7 cumplidos (§30 y este apartado). **GATE PASS de F3** declarado por el Coordinator (CD-I65-F3-17) sobre
+  `1d8c713e` (código de producto = `e3ae36d0`).
+- **Resultado verificable de F3 (Proposal V3.1 §6):** paquete de construcción para RAM Elements determinista y atómico (manifiesto,
+  script de plantilla fija y copia del archivo de cargas), con validación estricta previa y diagnósticos tipados; tabla de mapeo de
+  proveedor única y verificable (entregada con filas `proposed`: toda exportación real es `Unsupported` hasta la verificación de un
+  ingeniero); traducción determinista al sistema de RAM; guardas G1-G4, de plantilla y del proveedor; contrato de la carga útil.
+- **Métricas de F3:** 2 tareas delegadas; 0 correcciones (`attempts` = 0); **11 de 14** invocaciones de Codex (con una planificación
+  rechazada y reemitida); 2 invocaciones del Worker (31 min 42 s y 42 min 25 s); 1 revisión independiente del Architect; controles
+  negativos 9 (8 con oráculo cumplido; DEV-I65-F3-01 no bloqueante); 1 simulacro del Coordinator fuera de la suite; 0 cambios de
+  `config.toml`; 0 avances de `main`.
+- **Autorización:** la IMPLEMENTATION AUTHORIZATION = F3 ONLY del Owner **termina** con este cierre. F4, F5 y F6 no están autorizadas.
