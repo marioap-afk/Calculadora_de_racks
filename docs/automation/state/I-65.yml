@@ -7,7 +7,7 @@ automation_state:
   state: in-progress
   gate: F4
   attempts: 0
-  next_action: Revisión documental independiente del Architect sobre el paquete de preparación de F4; después, disposición e informe al Owner. Sin implementación ni corridas en RAM.
+  next_action: Cierre por diff del Architect sobre las correcciones de la preparación de F4 (CD-I65-F4P-05); después, registro e informe al Owner. Sin implementación ni corridas en RAM.
   last_evidence_commit: 1d8c713ee494a8cf5f2577e38dfca1aab9e2c236
 execution_context:
   mode: manual
@@ -15,7 +15,7 @@ execution_context:
   worktree: architecture-interop-analisis-estructural
 execution_chain:
   gate: F4
-  next_role: Architect (revisión documental de la preparación de F4)
+  next_role: Architect (cierre por diff de la preparación de F4)
   implementation_authorization: NO (orden del Owner: solo preparación de F4, decisiones §23)
-  owner_decisions_open: [verificación por un ingeniero de las filas de mapeo, confirmación definitiva de Q-O1 y Q-O7 (tras OV-I65-01), autorización de cada gate posterior a F3]
+  owner_decisions_open: [OD-F4-01 autorizar la implementación de F4 (alcance con RackCad.Plugin.csproj y presupuesto), OD-F4-02 ingeniero verificador y autorización para abrir RAM, OD-F4-03 Q-O2 (b), OD-F4-04 oráculo de material y delta de peso unitario, OD-F4-05 giro de las columnas, OD-F4-06 archivo de cargas de OV-I65-01, OD-F4-07 sonda P2, OD-F4-08 operador de RAM, OD-F4-09 REF-CANT-01 en un DWG, OD-F4-10 base Montilla, OD-F4-11 Candidato de hito y repetición del modelo manual, confirmación definitiva de Q-O1 y Q-O7 (tras OV-I65-01)]
   not_authorized: [implementación de F4, F5, F6, F7, cambios de código de producción, ejecutar el adaptador en RAM Elements, corridas en RAM Elements, declarar completada la validación de ingeniería, integración con Workspace, interfaz gráfica, Plugin, análisis, importación de resultados]

@@ -62,6 +62,7 @@ Ejes: en RAM el peralte va a lo largo de `l2` y la flexión fuerte es `M33` `[P1
 | Identidad en RackCad | `AISC-HSS-RECT-HSS4X4X_250` (familia `HSS-RECT`, designación EDI `HSS4X4X.250`, etiqueta `HSS4X4X1/4`) | `[CATÁLOGO]` | — | — | fijo |
 | Nombre exacto en RAM | `HSS_SQR 4X4X1_4` (RAM guarda los tubos cuadrados en otra tabla que los rectangulares; D-06) | `[P1]` S1 | existe una sola vez: `Sections/United States/HSS_SQR.sec` | — | confirmar `[INGENIERÍA]` |
 | Base, tabla y país de RAM | tabla `HSS_SQR` (archivo `HSS_SQR.sec`, etiqueta `[HSS_Rect.leo]`), país `United States` | `[PRE-LECTURA]` | ídem; `IsmName` `HSS4X4X1/4`, `AISC` | — | confirmar en la interfaz `[INGENIERÍA]` |
+| Catálogo seleccionado en RackCad | AISC Shapes Database v16.0 | `[CATÁLOGO]` | edición de AISC no declarada en el archivo de RAM | — | edición de la base de RAM: registrar `[INGENIERÍA]` |
 | Ht, B (in) | 4; 4 | `[CATÁLOGO]` | `a` 4; `b` 4 | 0 | informativo |
 | Espesor nominal y de diseño (in) | tnom 0.25; tdes 0.233 | `[CATÁLOGO]` | `t` 0.233 | 0 frente a tdes | RAM usa el espesor de diseño, como el catálogo `[INGENIERÍA]` |
 | A (in²) | 3.37 | `[CATÁLOGO]` | `area` 3.37 | 0 % | fila §4 ±0.5 % |
@@ -79,7 +80,7 @@ de RAM está en unidades `Lb-In` (psi y lb/in³).
 | Propiedad | Esperado `[CANDIDATO]` | Fuente candidata (cita exacta `[INGENIERÍA]`) | `A992 Gr50` en RAM | `A500 GrC rectangular` en RAM | Δ | Criterio §4 | Resultado previsto |
 |---|---|---|---|---|---|---|---|
 | E | 29 000 ksi | AISC 360, nomenclatura (módulo de elasticidad del acero) | 29 000 000 psi | 29 000 000 psi | 0 | exacta | coincide |
-| ν | 0.3 | valor habitual del acero estructural; **fuente a fijar por el ingeniero** (la nomenclatura de AISC 360 no lo define) | 0.3 | 0.3 | 0 | exacta | coincide si el oráculo es ν |
+| ν | 0.3 | **sin fuente todavía: la cita la aporta el ingeniero** | 0.3 | 0.3 | 0 | exacta | coincide si el oráculo es ν y su fuente da 0.3 |
 | G (alternativa a ν) | 11 200 ksi | AISC 360, nomenclatura (módulo de corte del acero) | 11 153.85 ksi derivado de E/(2(1+ν)); RAM no lo guarda | ídem | −0.41 % | el Freeze fija «E y ν exactas» | **no** coincide exacto → `[OWNER]` |
 | Peso unitario | 490 pcf (0.2835648 lb/in³) | AISC Steel Construction Manual, peso del acero 490 lb/ft³ (tabla a fijar) | 0.28179435 lb/in³ = 486.94 pcf | ídem | **−0.62 %** | ±0.5 % | **fuera de tolerancia** → `[OWNER]` |
 | Grado y resistencias (informativo; no es oráculo de §4) | A992: Fy 50, Fu 65 ksi; A500 Gr C conformado: Fy 50, Fu 62 ksi | ASTM A992; ASTM A500 Grado C, perfiles conformados (edición a fijar) | Fy 50 000; Fu 65 000 psi | Fy 50 000; Fu 62 000 psi | 0 | — | coincide |
@@ -89,8 +90,9 @@ Notas:
 - El peso unitario de RAM para ambos materiales equivale a ≈ 7800 kg/m³. V1 no usa peso propio (LOD-01), así que el delta no afecta la
   transferencia; aun así la fila §4 lo evalúa y su resultado previsto es FAIL salvo reconocimiento del Owner o cambio de la fila
   (decisión OD-F4-04).
-- Si el oráculo usara G = 11 200 ksi, la fila no coincidiría exactamente con la de RAM (que guarda ν). Recomendación: oráculo por **ν**
-  con fuente citada (decisión OD-F4-04).
+- El oráculo (ν o G) lo fija **la fuente que cite el ingeniero**, no la coincidencia con RAM. Si la fuente solo da G = 11 200 ksi, la
+  fila no coincidiría exactamente con la de RAM (que guarda ν; el Freeze §4 dice «E y ν exactas» y no fija tolerancia para G) y DIF-02 se
+  resuelve por reconocimiento del Owner (decisión OD-F4-04).
 - El `A36` de RAM (ν = 0.26, 0.284 lb/in³) es el ejemplo conocido del Freeze: los materiales de la base no comparten valores; cada fila se
   verifica por separado.
 
@@ -99,7 +101,7 @@ Notas:
 | # | Diferencia | Magnitud | Consecuencia | Quién |
 |---|---|---|---|---|
 | DIF-01 | Peso unitario esperado (490 pcf) frente a RAM (486.94 pcf), en ambos materiales | −0.62 % | fila §4 de material fuera de tolerancia | `[OWNER]` reconocer o cambiar la fila |
-| DIF-02 | G esperado (11 200 ksi) frente a G implícito de RAM (11 153.85 ksi), solo si se elige G como oráculo | −0.41 % | fila no exacta | `[OWNER]` + `[INGENIERÍA]`: elegir ν |
+| DIF-02 | G esperado (11 200 ksi) frente a G implícito de RAM (11 153.85 ksi), solo si la fuente del ingeniero da G | −0.41 % | fila no exacta | `[INGENIERÍA]` elige ν o G según su fuente; con G, `[OWNER]` reconoce |
 | DIF-03 | Base de usuario «Montilla» registrada en la configuración de RAM, no localizada | UNKNOWN | un nombre duplicado podría cambiar qué fila usa RAM | `[INGENIERÍA]` revisar (§3 paso B4) |
 | DIF-04 | Edición de AISC de la base de RAM no declarada en sus archivos | sin delta en A, Ix, Iy, J | ninguna en la pre-lectura | `[INGENIERÍA]` registrar |
 
@@ -222,10 +224,11 @@ neutrales (`dx = Tx`, `dy = Tz`, `dz = Ty`, `rx = Rx`, `ry = Rz`, `rz = Ry`); en
 ### 2.5 Cargas (alcance congelado: D-02, D-09, D-10b)
 
 Un caso con cargas: id `REF1`, categoría «Other» (`"OTHER"` en el generado) `[CÓDIGO]`. Sin peso propio, sin combinaciones, sin cargas
-nodales ni distribuidas. Cada carga es una **carga puntual en miembro**, dirección **global −Y de RAM** (hacia abajo), posición en % del
-miembro analítico medida desde el nudo I (`ARM.k.PositiveY.J`).
+nodales ni distribuidas. Cada carga es una **carga puntual en miembro**, en la dirección **`GLOBAL_Y` de RAM con valor negativo**
+(negativo = hacia abajo; no hay doble signo), con la posición en % del miembro analítico medida desde el nudo I (`ARM.k.PositiveY.J`).
+Introducir el % con **al menos 3 decimales**: la tolerancia de 0.02 in equivale a 0.047 % del brazo (con un decimal, `P2` y `P3` fallan).
 
-| Carga | Miembro | Valor (lbf) | Posición (%) | Distancia desde J (in) | Entrada en el archivo de cargas |
+| Carga | Miembro | Valor en `GLOBAL_Y` (lbf; negativo = abajo) | Posición (%) | Distancia desde J (in) | Entrada en el archivo de cargas |
 |---|---|---|---|---|---|
 | `P1` | `ARM.1.PositiveY` | −1000 | 57.50128206169155 | 24.35421884050472 | 1000 `lbf`, fracción 0.5 |
 | `P2` | `ARM.2.PositiveY` | −2000 | 36.25192309253731 | 15.354218840504721 | 2 `kip`, fracción 0.25 |
@@ -256,7 +259,8 @@ referencia es la de la carga `P3` (kgf → lbf) y la hace la fuente de F1 con `F
 | ASM-PROP-01 | propiedades de sección y material = base de RAM | ediciones distintas de AISC y valores de material de RAM distintos de los habituales; se comparan en la OV (§1) |
 | LOD-01 | un caso `REF1` con las cargas del archivo; sin peso propio ni combinaciones | no deriva de tarimas, impacto, sismo ni tributarias |
 
-Advertencia del manifiesto, literal: «hipótesis solo para la equivalencia de transferencia; no constituyen validación estructural».
+Advertencia del manifiesto, literal (en inglés): «These assumptions are hypotheses for transfer equivalence only; they are not a
+structural validation.» (en español: son hipótesis solo para la equivalencia de transferencia; no constituyen validación estructural).
 
 ### 2.8 Exclusiones explícitas (V1)
 
@@ -286,12 +290,13 @@ Nada de esta sección se ejecuta en la preparación. Cada corrida deja su custod
 lecturas de vuelta, volcados, informe del comparador, capturas, hash de `RAMElements.exe` y estado de la licencia).
 
 **A. Precondiciones** (todas): F4 autorizada por el Owner; Candidato de hito completo con el DLL según
-[la guía manual](../guias/validacion-manual-autocad.md); las dos filas `verified` en el Candidato; DIF-01..03 resueltas; A65-F3-01, 02,
+[la guía manual](../guias/validacion-manual-autocad.md); las dos filas `verified` en el Candidato; DIF-01..04 resueltas; A65-F3-01, 02,
 04 y 11 corregidos en el Candidato; RAM 26.00.01.015 con licencia activa (el Owner puede tener que atenderla, P1).
 
-**B. Verificación de las filas** (ingeniero; no ejecuta el adaptador): B1 abrir RAM y File > New; B2 secciones (§1.6 paso 1);
-B3 materiales (paso 3); B4 bases de usuario, en particular «Montilla» (paso 2); B5 valores esperados con fuente y deltas (pasos 4-5);
-B6 cerrar RAM **sin guardar**; firmar la hoja (paso 6). Puede hacerse antes del Candidato.
+**B. Verificación de las filas** (ingeniero; no ejecuta el adaptador; abrir RAM para esto requiere la autorización expresa del Owner,
+OD-F4-02): B1 abrir RAM y File > New; B2 secciones (§1.6 paso 1); B3 materiales (paso 3); B4 bases de usuario, en particular «Montilla»
+(paso 2); B5 valores esperados con fuente y deltas (pasos 4-5); B6 cerrar RAM **sin guardar**; firmar la hoja (paso 6). Puede hacerse
+antes del Candidato.
 
 **C. Paquete** (Candidato): C1 abrir un DWG con un rack Cantilever con los parámetros de `REF-CANT-01` (F1 §1); C2 ejecutar el comando de
 F4: estación 0, archivo de cargas de OD-F4-06, carpeta **nueva** con ruta corta; C3 comprobar diagnósticos vacíos y los tres archivos;
@@ -299,23 +304,43 @@ anotar el SHA-256 de cada uno y `AnalysisInputFingerprint`.
 
 **D. Script generado** (OV-I65-01, parte 1): D1 RAM, File > New; comprobar «Elementos: 0» y un solo caso sin cargas; D2 Python Console →
 «Ejecutar archivo…» → `rackcad-ram-build.py` de la carpeta del paquete; D3 esperado: `READBACK OK` en consola y `ram-readback.json` con la
-misma huella de entrada; D4 ante `FAILED — DISCARD MODEL`: si el detalle empieza por `gate:`, el modelo no se tocó; si no, descartar sin
-guardar; en ambos casos STOP y registro, y un intento nuevo exige un **paquete nuevo**; D5 inspección visual: 8 nudos, 7 miembros, columna
-vertical, brazos hacia −Z de RAM, cargas hacia abajo, eje 2 de las columnas hacia −Z; D6 ejecutar el **volcado** de F4 antes de analizar;
-D7 cerrar sin guardar (salvo decisión del ingeniero, D-11).
+misma huella de entrada; D4 ante **cualquier** `FAILED — DISCARD MODEL`: descartar el modelo **sin guardar** (D-08), STOP y registro; si
+el detalle empieza por `gate:`, solo informa que el script no llegó a escribir; un intento nuevo exige un **paquete nuevo**; D5 inspección
+visual: 8 nudos, 7 miembros, columna vertical, brazos hacia −Z de RAM, cargas hacia abajo, eje 2 de las columnas hacia −Z; D6 ejecutar el
+**script de volcado** antes de analizar: lo genera la herramienta de F4 en una **carpeta nueva por volcado** (ruta embebida y archivo
+exclusivo, D-11), nunca se reutiliza; D7 cerrar sin guardar (salvo decisión del ingeniero, D-11).
 
 **E. Modelo manual** (OV-I65-01, parte 2): E1 RAM, File > New; unidades de la interfaz lb-in; E2 construir §2.1-§2.5; E3 volcado antes de
-analizar; si aparece «los resultados se perderán», responder **No** y STOP.
+analizar, con su propio script de volcado en carpeta nueva; si aparece «los resultados se perderán», responder **No** y STOP; E4 medición
+M-05: registrar cómo lee la API lo creado a mano (categoría del caso, modo de posición de la carga, giro de las columnas, banderas).
 
-**F. Comparación**: F1 comparador de consola sobre los dos volcados, el manifiesto y la lectura de vuelta; F2 matriz §4 PASS salvo filas
-informativas; deltas de §1 registrados; todo delta fuera de tolerancia → reconocimiento del Owner.
+**F. Comparación y evaluación de la matriz §4**: F1 comparador de consola sobre los dos volcados, el manifiesto y la lectura de vuelta;
+F2 cada fila de §4 la evalúa la fuente que la puede leer (la API no expone propiedades de sección ni de material, P1):
+
+| Fila de la matriz §4 | Evaluador | Evidencia | Cuándo |
+|---|---|---|---|
+| Coordenadas de nudos (0.02 in; emparejamiento ambiguo → FAIL) | comparador | volcados generado y manual; informe del comparador | OV-I65-01 |
+| Conectividad (exacta) | comparador | ídem | OV-I65-01 |
+| Ejes locales 1/2/3 (0.1°) | comparador | ídem | OV-I65-01 |
+| Sección y material: mismo nombre de RAM | comparador | ídem | OV-I65-01 |
+| Propiedades de sección A, Ix, Iy, J frente al catálogo (±0.5 %; informativa con Q-O2 = b) | **hoja firmada §1.6** (capturas de la interfaz de RAM) | hoja y capturas | paso B, antes del Candidato |
+| Propiedades de material E, ν o G, peso unitario frente a los esperados con fuente | **hoja firmada §1.6** | hoja, capturas y citas | paso B |
+| Punto cardinal, offsets, factores de rigidez, axial, resorte | comparador (y lectura de vuelta del generado) | volcados; `ram-readback.json` | OV-I65-01 |
+| Liberaciones y apoyos (banderas tras D-04) | comparador | volcados | OV-I65-01 |
+| Cargas: valor (0.1 %), posición (0.02 in, comparada en pulgadas tras normalizar el %), dirección (exacta) | comparador | volcados | OV-I65-01 |
+| Combinaciones: ninguna en ambos | comparador | volcados | OV-I65-01 |
+| Casos sin cargas (p. ej. `CM`) | comparador: se ignoran | volcados | OV-I65-01 |
+
+La categoría del caso se comprueba como `"OTHER"` en el volcado del generado; en el manual es informativa (la API nunca leyó una categoría
+creada en la interfaz). F3 la matriz es PASS cuando el informe del comparador y la hoja firmada lo son, salvo las filas informativas; todo
+delta fuera de tolerancia se registra y exige el reconocimiento del Owner.
 
 **G. Inyecciones de fallo** (paquetes de la herramienta de pruebas, no del producto):
 
 | OV | Acción | Resultado esperado |
 |---|---|---|
-| OV-I65-03 | En RackCad: estación de doble cara, brazo `NegativeY`, brazo con más de 10°, canales pareados o familia C/L; y una tabla con una fila `proposed` | sin paquete; diagnóstico visible (`Unsupported`/`Invalid`) |
-| OV-I65-04 | Ejecutar un paquete válido sobre un modelo **no vacío** (p. ej. el manual) | rechazo `gate:` antes de escribir; conteos de nudos, miembros y casos sin cambio |
+| OV-I65-03 | En RackCad: estación de doble cara, brazo `NegativeY`, brazo con más de 10°, canales pareados o familia C/L; y una estación con una sección **sin fila** en la tabla (mapeo ausente). El caso «fila sin verificar» se evidencia con la herramienta de pruebas sobre una copia de prueba de la tabla y con T4-18, **nunca** alterando la tabla del Candidato | sin paquete; diagnóstico visible (`Unsupported`/`Invalid`) |
+| OV-I65-04 | Ejecutar un paquete **nuevo** y válido sobre un modelo **no vacío**: un modelo desechable creado a mano, o el manual solo después de custodiar su volcado | rechazo `gate:` antes de escribir; conteos de nudos, miembros y casos sin cambio; descartar sin guardar |
 | OV-I65-05 | Paquete con un nombre de sección inexistente | `FAILED — DISCARD MODEL` en consola y lectura de vuelta; el comparador lo rechaza |
 | OV-I65-06 | Paquete con ejes esperados alterados | `FAILED` |
 | OV-I65-07 | Paquete con `__version__` esperada alterada, o que exige una función del puente inexistente | rechazo antes de cualquier escritura; nudos = miembros = 0 |

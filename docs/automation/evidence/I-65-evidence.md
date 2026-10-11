@@ -683,3 +683,16 @@ Trabajo de la preparación (sin código de producción, sin RAM):
 - Paquete de preparación: [I-65-f4-preparation.md](../../initiatives/I-65-f4-preparation.md) (preflight, riesgos, plan de pruebas,
   condiciones de aceptación, decisiones del Owner, GO/NO-GO).
 - Siguiente: revisión documental independiente del Architect sobre este commit.
+
+## 33. Preparación de F4 — revisión del Architect y correcciones (2026-10-11T09:54:52Z)
+
+- **Revisión documental independiente del Architect** sobre `8992fe6c`: **NOT CONFORMANT** por A65-F4P-01 (REQUIRED, documental) con 12
+  OPTIONAL; números recalculados y correctos; ninguna concreción cambia el Freeze
+  ([architect-f4-prep-review.md](I-65-f4-prep/architect-f4-prep-review.md)).
+- **CI de `8992fe6c`:** corrida `push` 38128785665 `success`.
+- **Correcciones por diff** (CD-I65-F4P-05, 06) en [I-65-f4-engineering-validation-package.md](../../initiatives/I-65-f4-engineering-validation-package.md)
+  y [I-65-f4-preparation.md](../../initiatives/I-65-f4-preparation.md).
+- **Re-comprobación de iniciativas paralelas** (avanzaron durante la preparación): `origin/main` `bb0d5522`; I-62 `9f3e3d2a`, I-64 `e0205b5a`,
+  I-52 `fb6b5648`: 0 archivos en las áreas de I-65 (incluido `src/RackCad.Plugin/RackCad.Plugin.csproj`), común solo `docs/ROADMAP.md`,
+  `merge-tree` limpio contra la punta de I-65.
+- Siguiente: cierre por diff del Architect sobre el commit de estas correcciones.
