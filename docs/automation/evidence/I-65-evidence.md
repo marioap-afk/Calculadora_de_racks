@@ -463,3 +463,67 @@ Orden del Owner «I-65 — Owner Authorization: F3 RAM Elements Adapter» (pegad
 | Rutas de F3 | decisiones §17, CD-I65-F3-03 |
 | Presupuesto de Codex | 14 invocaciones para F3 (CD-I65-F3-02); `config.toml` sin tocar (línea base `F909F480…8113`) |
 | API verificada | P1 (`p1-results.md`, `ram-probe-p1.executed.py`) y fuente del paquete instalado leída sin ejecutar RAM: `Restraints(dx, dy, dz, rx, ry, rz)`, `members.add(node_i, node_j, section, material="", rotation, description)` (material vacío = material por defecto de la sección: la plantilla siempre lo pasa explícito), `add_point_load(load_case, direction, value, distance, is_percentage, category)` |
+
+## 27. F3-T1-MAP-AND-TRANSLATION — ejecución delegada (2026-10-11T07:20:52Z)
+
+Contrato sobre `AuthorityRevision` = `BaseSha` = `bf2d3478`; `MainSha` `bb0d5522` sin cambio.
+
+| RunId | Fase | Participante | Resultado |
+|---|---|---|---|
+| `R20261011T061951Z-7db1` | PLANNING | Codex `gpt-6-luna`/`high` | paquete válido; seis colecciones idénticas al contrato; A1-A8 en `pass`; celda `claude-sonnet-5-5`/`high` (Deep) |
+| `R20261011T062450Z-f0af` | CONTROL nc4 | sin invocar | `REJECTED_BEFORE_INVOCATION`: A3 `fail`, el resto igual: **oráculo cumplido** |
+| `R20261011T062529Z-8e09` | WORK | subagente `claude-sonnet-5-5`/`high` (143 mensajes) | `IMPLEMENTATION_COMPLETE`; RED `1c1e8650`, GREEN `16fa9e76`; 31 min 42 s; 84 llamadas, 0 errores |
+| `R20261011T070131Z-8903` | VERIFICATION | Codex `gpt-6-luna`/`high` | **`EXECUTION_VERIFIED`/`NONE`**, 14/14 `pass`, `VerifiedSha` `16fa9e7649e139798d41188db5bbe8b3be94e086` |
+| `R20261011T070847Z-f93c` | CONTROL nc1 | Codex `gpt-6-luna`/`high` | `EXECUTION_BLOCKED/STOP`, `FailureClass` = `StopCondition`: **oráculo NO cumplido** |
+| `R20261011T071344Z-c40c` | CONTROL nc2 | Codex `gpt-6-luna`/`high` | `EXECUTION_BLOCKED/STOP`, `FailureClass` = `Scope`: **oráculo cumplido** |
+| `R20261011T071657Z-9428` | CONTROL nc3 | Codex `gpt-6-luna`/`high` | `EXECUTION_REWORK_REQUIRED/REWORK`, `FailureClass` = `FreeText`: **oráculo cumplido** |
+
+- **Cambios:** 18 archivos. Siete nuevos en `Providers/RamElements/` (lector y validador de la tabla, fila y tabla con proyección, ejes
+  locales, traducción, plan de RAM, códigos de diagnóstico); `StructuralMaterialProfile.cs` aditivo (fila de proveedor y prefijos de
+  longitud); los siete enunciados de supuestos de `CantileverStructuralModelSource.cs` (CD-I65-F3-06); el archivo de datos con dos filas
+  `proposed`; siete archivos de prueba nuevos; `StructuralAnalysisSourceGuardTests.cs` con exactamente las ediciones (a)-(c) en el RED.
+- **CI push:** RED `38119009179` = `failure` (Core); GREEN `38119516204` = `success`, 4/4. TRX Core GREEN 13242/13242; filtro
+  `FullyQualifiedName~RackCad.Tests.StructuralAnalysisRamElements` 296/296; TRX Core RED: 269 fallidas, todas del filtro (27 superadas:
+  autopruebas de guardas y literales), sin errores de compilación.
+- **Golden y P1:** el golden de RAM y la tabla de P1 (36 casos) concuerdan con las reglas; diferencias máximas 1.42e-14 y 3.31e-15.
+- **Comprobaciones mecánicas de la sesión:** alcance PASS contra la delegación; guarda limitada a (a)-(c); pruebas solo altas más la guarda
+  en el RED; prompt del Worker = `prompt.md`; términos de gate ausentes. Falsos P-02 releídos: procesos efímeros de **otra sesión** de
+  Claude del escritorio (`claude.exe` 18312 y 38340) creados tras el fin de las cesiones.
+- **Limitaciones declaradas por el Worker** (decididas en CD-I65-F3-10): lector más estricto que el Freeze en tres puntos que este no decide;
+  porcentaje recortado a [0, 100] dentro de 1e-6.
+- **Invocaciones de Codex en F3:** 5 de 14. `attempts` = 0.
+
+Custodia (blob = identidad duradera; SHA-256 = procedencia del transitorio):
+
+| Archivo (bajo `I-65-pilot/`) | SHA-256 transitorio | Blob |
+|---|---|---|
+| `F3-T1-MAP-AND-TRANSLATION/R20261011T061951Z-7db1/gate-contract.json` | `0F94F268AEB69A86…` | `0856035964bf` |
+| `F3-T1-MAP-AND-TRANSLATION/R20261011T061951Z-7db1/prompt.md` | `70BF4DF8DDF2C0EC…` | `3399565ee6bf` |
+| `F3-T1-MAP-AND-TRANSLATION/R20261011T061951Z-7db1/delegation.json` | `80E8353DCD39980F…` | `084d38f12a5d` |
+| `F3-T1-MAP-AND-TRANSLATION/R20261011T061951Z-7db1/acceptance.json` | `F63ED8E87F2A0609…` | `73d1783fc942` |
+| `F3-T1-MAP-AND-TRANSLATION/R20261011T061951Z-7db1/exactness.json` | `D0CBC2F19D9B1FBA…` | `de0f1687cb6b` (fin de línea normalizado por Git) |
+| `F3-T1-MAP-AND-TRANSLATION/R20261011T061951Z-7db1/relay-record.json` | `ECC0CE8B6D17FE81…` | `5dc199bce763` |
+| `F3-T1-MAP-AND-TRANSLATION/R20261011T062529Z-8e09/prompt.md` | `A40A30B3386D7820…` | `0feff0055c08` |
+| `F3-T1-MAP-AND-TRANSLATION/R20261011T062529Z-8e09/worker-handoff.json` | `ABE242EEC485AA25…` | `68d22eec752e` (fin de línea normalizado por Git) |
+| `F3-T1-MAP-AND-TRANSLATION/R20261011T062529Z-8e09/relay-record.json` | `AD7EF24BBD4D0E2B…` | `02dda5576718` |
+| `F3-T1-MAP-AND-TRANSLATION/R20261011T070131Z-8903/prompt.md` | `93EA99700E3D440D…` | `a5e4c52d74fd` |
+| `F3-T1-MAP-AND-TRANSLATION/R20261011T070131Z-8903/controller-verification.json` | `6462F2843B9C88D9…` | `acbfc084a789` |
+| `F3-T1-MAP-AND-TRANSLATION/R20261011T070131Z-8903/relay-record.json` | `71A2717F27D2A5A5…` | `484cedbf3455` |
+| `F3-T1-MAP-AND-TRANSLATION/R20261011T070131Z-8903/trx-summary.json` | `DC9B784DE3125601…` | `0e09401a989b` (fin de línea normalizado por Git) |
+| `F3-T1-MAP-AND-TRANSLATION-nc1/R20261011T070847Z-f93c/prompt.md` | `846D28096754304B…` | `dde94f9dee73` |
+| `F3-T1-MAP-AND-TRANSLATION-nc1/R20261011T070847Z-f93c/mutation.json` | `92347CC4797758F6…` | `647e81b03cee` (fin de línea normalizado por Git) |
+| `F3-T1-MAP-AND-TRANSLATION-nc1/R20261011T070847Z-f93c/controller-verification.json` | `1FE8C2D2C17C0394…` | `a65916808cb7` |
+| `F3-T1-MAP-AND-TRANSLATION-nc1/R20261011T070847Z-f93c/relay-record.json` | `318385F3CEB65B34…` | `a0d682fa4fe8` |
+| `F3-T1-MAP-AND-TRANSLATION-nc1/R20261011T070847Z-f93c/exit-reread.txt` | `5C761396B835DBD3…` | `6c0b6b0b729a` |
+| `F3-T1-MAP-AND-TRANSLATION-nc2/R20261011T071344Z-c40c/prompt.md` | `39538B05BBE9BA12…` | `90c006730ab4` |
+| `F3-T1-MAP-AND-TRANSLATION-nc2/R20261011T071344Z-c40c/mutation.json` | `F88D3B0AFDDCB6FD…` | `b229adac8ae4` (fin de línea normalizado por Git) |
+| `F3-T1-MAP-AND-TRANSLATION-nc2/R20261011T071344Z-c40c/controller-verification.json` | `B9B43537F5BF6F1D…` | `739e61d15b59` |
+| `F3-T1-MAP-AND-TRANSLATION-nc2/R20261011T071344Z-c40c/relay-record.json` | `AC91BD6640D043F2…` | `f63ed8460d29` |
+| `F3-T1-MAP-AND-TRANSLATION-nc2/R20261011T071344Z-c40c/session-scope-check.json` | `1209DD5E23D806E5…` | `381f1c269044` (fin de línea normalizado por Git) |
+| `F3-T1-MAP-AND-TRANSLATION-nc3/R20261011T071657Z-9428/prompt.md` | `D7F4D4F1BDAD0DF5…` | `f5e810753203` |
+| `F3-T1-MAP-AND-TRANSLATION-nc3/R20261011T071657Z-9428/mutation.json` | `DA1F3B8B5E00512B…` | `511067defe3d` (fin de línea normalizado por Git) |
+| `F3-T1-MAP-AND-TRANSLATION-nc3/R20261011T071657Z-9428/controller-verification.json` | `A2BE79E75DF61E67…` | `a1343075264b` |
+| `F3-T1-MAP-AND-TRANSLATION-nc3/R20261011T071657Z-9428/relay-record.json` | `B66C5D5B5EDA4EA0…` | `57b3b83323ef` |
+| `F3-T1-MAP-AND-TRANSLATION-nc4/R20261011T062450Z-f0af/delegation.json` | `A303DC0817834423…` | `eff1d1acb914` |
+| `F3-T1-MAP-AND-TRANSLATION-nc4/R20261011T062450Z-f0af/acceptance.json` | `3E2CF552A67987E0…` | `2df92c858dd3` |
+| `F3-T1-MAP-AND-TRANSLATION-nc4/R20261011T062450Z-f0af/relay-record.json` | `B5B754234C53F439…` | `44568674e1d6` |

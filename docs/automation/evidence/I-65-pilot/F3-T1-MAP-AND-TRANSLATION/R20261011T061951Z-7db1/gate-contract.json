@@ -1,0 +1,357 @@
+{
+  "Schema": "rackcad-gate-contract/v1",
+  "Unit": "I-65",
+  "Gate": "F3",
+  "TaskId": "F3-T1-MAP-AND-TRANSLATION",
+  "Objective": "F3 de I-65, primera de dos tareas (decisiones I-65 §17, CD-I65-F3-02), con IMPLEMENTATION AUTHORIZATION = F3 ONLY del Owner: la TABLA DE MAPEO del proveedor y la TRADUCCION del StructuralModel neutral a la representacion de RAM Elements, segun la Proposal V3.1 congelada (D-01, D-03, D-04, D-06, D-07, D-10, D-12), ADR-0050 y la concrecion docs/initiatives/I-65-f3-ram-elements-adapter.md secciones 2 a 6 y 8 (CD-I65-F3-04). Incluye: en src/RackCad.Application/StructuralAnalysis/Providers/RamElements/ el lector y validador estricto de la tabla rackcad-ram-elements-section-map/v1, su proyeccion como IStructuralMaterialProfile y la traduccion determinista (coordenadas X, Z, -Y; banderas de apoyo por la permutacion de D-04; regla de ejes locales medida en P1 y giro theta; cargas en GLOBAL_Y y porcentaje) con diagnosticos tipados y fallo cerrado; el archivo de datos assets/structural-analysis/ram-elements/section-material-map.json con las dos filas proposed de REF-CANT-01; los cambios aditivos de StructuralMaterialProfile.cs (A65-F1-01 y A65-F1-02) y de los enunciados de supuestos de CantileverStructuralModelSource.cs (A65-F1-07, CD-I65-F3-06); las ediciones de guarda autorizadas por CD-I65-F3-05 en StructuralAnalysisSourceGuardTests.cs y las guardas nuevas del proveedor. Pruebas nuevas en archivos NUEVOS de tests/RackCad.Tests/StructuralAnalysis/ con namespace RackCad.Tests y clases cuyo nombre empieza por StructuralAnalysisRamElements y NO por StructuralAnalysisRamElementsPackage (reservado a F3-T2). NO incluye: la carga util, la plantilla Python, el manifiesto, CreateRamBuildPackage ni el escritor atomico (F3-T2), nada de F4-F6, del Plugin, de la interfaz ni de Workspace, ninguna corrida de RAM Elements.",
+  "AuthorityRevision": "bf2d347836904275955e1a8059051271a76c51e2",
+  "MainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "Authorities": [
+    {
+      "Path": "docs/initiatives/I-65-proposal-v3.1.md",
+      "Section": "archivo completo (Frozen: yes); en especial D-01, D-03, D-04, D-06, D-07, D-10, D-12, D-13 y §3 (INV-01, 04, 07, 08 y 14)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-65-f3-ram-elements-adapter.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-65-f1-ref-cant-01.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/decisions/I-65.md",
+      "Section": "archivo completo (en especial §14, §15 y §17)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/decisions/I-65-owner-authorization-f3.original.txt",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-65-f0/p1-results.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-65-f0/p1-run/p1-report.json",
+      "Section": "archivo completo (paso A1_orientation_coverage)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-65-f1/architect-f1-conformance.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-65-interop-analisis-estructural.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/adr/0050-interoperabilidad-analisis-estructural.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "AGENTS.md",
+      "Section": "## Convenciones arquitectonicas (obligatorias)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "Section": "## 7. Gates funcionales",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "## 16. Ejecución delegada bajo orden del Coordinator",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "## 1. Clases de tarea y ## 4. Algoritmo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+      "Section": "## G. Delegación de ejecución",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0005-estrategia-de-unidades.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0017-validacion-cargas-diferida-ram-elements.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    }
+  ],
+  "AllowedWriteScope": [
+    "src/RackCad.Application/StructuralAnalysis/Providers/RamElements/",
+    "src/RackCad.Application/StructuralAnalysis/StructuralMaterialProfile.cs",
+    "src/RackCad.Application/Systems/Cantilever/CantileverStructuralModelSource.cs",
+    "assets/structural-analysis/ram-elements/section-material-map.json",
+    "tests/RackCad.Tests/StructuralAnalysis/"
+  ],
+  "ForbiddenWriteScope": [
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCanonicalizerTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisFingerprintTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisLoadFileReaderTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisMaterialProfileTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisModelBuilderTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisModelTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisOutcomeTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisUnitTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverBoundaryTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverFixtures.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverGoldenTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverIdealisationTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/Fixtures/ref-cant-01.design.json",
+    "tests/RackCad.Tests/StructuralAnalysis/Fixtures/ref-cant-01.loads.json",
+    "src/RackCad.Domain/",
+    "src/RackCad.Plugin/",
+    "src/RackCad.UI/",
+    "src/RackCad.Application/Units/",
+    "src/RackCad.Application/StructuralSections/",
+    "src/RackCad.Application/RackCad.Application.csproj",
+    "src/RackCad.Application/Persistence/",
+    "src/RackCad.Application/Expressions/",
+    "src/RackCad.Application/ComputedParameters/",
+    "src/RackCad.Application/Catalogs/",
+    "src/RackCad.Application/Bom/",
+    "src/RackCad.Application/Geometry/",
+    "src/RackCad.Application/Workspace/",
+    "src/RackCad.Application/Systems/Dynamic/",
+    "src/RackCad.Application/Systems/FlowBed/",
+    "src/RackCad.Application/Systems/Larguero/",
+    "src/RackCad.Application/Systems/PushBack/",
+    "src/RackCad.Application/Systems/Selective/",
+    "src/RackCad.Application/Systems/Shared/",
+    "tests/RackCad.UI.Tests/",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "tests/RackCad.Tests/CantileverSourceGuardTests.cs",
+    "tests/RackCad.Tests/CantileverRoundTwoSourceGuardTests.cs",
+    "tests/RackCad.Tests/CantileverPluginSourceGuardTests.cs",
+    "tests/RackCad.Tests/LengthUnitsAuthorityGuardTests.cs",
+    "tests/RackCad.Tests/NamespaceFolderGuardTests.cs",
+    "tests/RackCad.Tests/Fixtures/",
+    "tests/RackCad.Tests/Golden/",
+    "tests/RackCad.Tests/ComputedParameters/",
+    "assets/catalogs/",
+    "assets/blocks/",
+    "assets/templates/",
+    "deploy/",
+    "eng/",
+    "tools/",
+    ".github/",
+    "RackCad.sln",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json",
+    "NuGet.Config",
+    ".gitattributes",
+    ".gitignore",
+    ".editorconfig",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "README.md",
+    "docs/"
+  ],
+  "Invariants": [
+    "D-06 y D-07 (tabla unica del proveedor, decisiones CD-I65-F3-04 y documento I-65-f3-ram-elements-adapter.md seccion 2): lector y validador estricto de rackcad-ram-elements-section-map/v1 con filas sectionId, ramSection {name, table, country}, materialId, ramMaterial, expectedMaterial {elasticModulus, poissonRatio o shearModulus, unitWeight, source}, status proposed|verified, verifiedBy y verifiedOn; propiedades desconocidas o duplicadas, tipos erroneos, sectionId repetido o vacio, nombres vacios, unidad fuera de las tablas cerradas (psi, ksi; pcf, lbf/in3) o fila verified incompleta -> tabla Invalid sin proyeccion; una fila proposed no asigna nada (modelo Unsupported); el archivo assets/structural-analysis/ram-elements/section-material-map.json contiene exactamente las dos filas proposed de REF-CANT-01 del documento con tabla, pais y valores de ingenieria vacios: nadie rellena ni marca verified un valor de ingenieria",
+    "A65-F1-01 y A65-F1-02 (proyeccion y huella): la tabla del proveedor se proyecta como IStructuralMaterialProfile y es la unica implementacion de producto que asigna materiales; cada fila neutral proyectada lleva como texto canonico la fila COMPLETA del proveedor con prefijos de longitud; el texto canonico neutral por defecto de StructuralMaterialRow pasa a prefijos de longitud (cambio aditivo, sin romper las pruebas de F1); cambiar cualquier campo de una fila verified usada (nombre, tabla o pais de RAM, material de RAM, valores esperados, fuente, verificador, fecha) cambia AnalysisInputFingerprint; nunca se infiere material, grado ni propiedad mecanica de MaterialGrade, familia, designacion o nombre comercial",
+    "INV-08 y D-04 (apoyos): orden neutral fijo [Tx, Ty, Tz, Rx, Ry, Rz] (CD-I65-F1-19); banderas de RAM dx = Tx, dy = Tz, dz = Ty, rx = Rx, ry = Rz, rz = Ry; prueba con la tabla de la seccion 4 del documento; un mapeo indice a indice (Ry -> ry) hace fallar la prueba; liberaciones locales sin transformar y todas falsas en V1",
+    "INV-07 y D-04 (ejes locales y giro): con l1 unitario de I a J en RAM y Y = (0, 1, 0): miembro vertical (componente horizontal de l1 <= 1e-12) l3_0 = +Z y l2_0 = l3_0 x l1; no vertical con inclinacion respecto de la horizontal <= 10 grados l3_0 = unit(l1 x Y) y l2_0 = l3_0 x l1; otra orientacion -> Unsupported; theta = atan2(d . l3_0, d . l2_0) en grados con d el vector de peralte neutral llevado a RAM (dx, dz, -dy); prueba contra las 12 direcciones x 3 giros medidos en P1 (docs/automation/evidence/I-65-f0/p1-run/p1-report.json, paso A1_orientation_coverage, leido desde la raiz del repositorio) con tolerancia 1e-12, y prueba de que girar theta reproduce d en l2; aplicar l3 = +Z a un miembro no vertical o ignorar el giro hace fallar la prueba",
+    "D-04, D-03 y golden de RAM (documento seccion 8): coordenadas X_RAM = X, Y_RAM = Z, Z_RAM = -Y sin conversion de unidades (par LB_IN); de REF-CANT-01 (estacion 0, archivo de cargas del fixture de F1-T2 y una tabla de fixture con filas verified declaradas como fixture) la traduccion produce exactamente los 8 nudos con sus coordenadas de RAM y Restraints, los 7 miembros con seccion y material de RAM, theta (-90 grados en las columnas, 0 en los brazos) y l1, l2, l3 esperados, y las 3 cargas GLOBAL_Y con valores -1000, -2000 y -ForceUnits.ToPoundsForce(500, kgf) lbf y porcentajes 57.50128206169155, 36.25192309253731 y 78.75064103084577; tolerancias 1e-9 in, 1e-12 en vectores, 1e-9 en grados y porcentajes; los literales se copian del documento y no se recalculan con el codigo bajo prueba",
+    "D-08 (validacion y diagnosticos): la traduccion solo acepta un StructuralModel Valid; seccion sin fila, fila proposed, tabla Invalid, orientacion no admitida o mas de 24 cargas por miembro -> diagnostico tipado bloqueante (Unsupported o Invalid con la precedencia de CD-I65-F1-04) y sin plan de RAM parcial",
+    "A65-F1-07 y CD-I65-F3-06 (supuestos): los siete enunciados de CantileverStructuralModelSource incluyen su limitacion declarada de D-10 en terminos neutrales (sin nombres de proveedor, sin la cadena RAM y sin afirmar validacion); ASM-PROP-01 dice que las propiedades de seccion y material del analisis son las de la base del programa de analisis por los NOMBRES de seccion y material de las filas de mapeo verificadas; el resto de la fuente Cantilever no cambia y sus pruebas siguen en verde",
+    "A65-F1-04, A65-F1-05 y CD-I65-F3-05 (guardas), solo en tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs y en el commit RED: (a) la asercion de que la carpeta Providers no existe pasa a afirmar que bajo Providers/ solo existe RamElements/; (b) INV-14 exime, ademas de su propio archivo, exactamente tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageTemplateTests.cs; (c) la lista de permiso de G1 sigue vacia; ninguna otra edicion de esa guarda; guardas NUEVAS en archivos nuevos: src/RackCad.Application/StructuralAnalysis/Providers/RamElements/ no usa File, Directory, FileStream, StreamReader ni StreamWriter (D-01: el adaptador devuelve contenido) ni referencia RackCad.Application.Systems (D-13: su entrada es el modelo neutral), con autoprueba; G1, G2, G3, G4, INV-11 e INV-16 siguen en verde con la carpeta del proveedor presente",
+    "Frontera del modelo neutral (orden del Owner): ningun tipo, identificador ni convencion de RAM entra en StructuralModel ni en src/RackCad.Application/StructuralAnalysis/ fuera de Providers/RamElements/; el modelo neutral no cambia salvo el texto canonico aditivo de StructuralMaterialRow",
+    "Forma del cambio: pruebas nuevas en archivos NUEVOS de tests/RackCad.Tests/StructuralAnalysis/ (fixtures nuevos bajo tests/RackCad.Tests/StructuralAnalysis/Fixtures/ con nombre nuevo), namespace RackCad.Tests, clases cuyo nombre empieza por StructuralAnalysisRamElements y no por StructuralAnalysisRamElementsPackage; codigo nuevo con namespace igual a la carpeta (RackCad.Application.StructuralAnalysis.Providers.RamElements) y declaracion por bloque; solo BCL (System.Text.Json para la tabla); ninguna prueba existente cambia salvo las ediciones (a)-(c) de la guarda; ADR-0017: sin member_design, ratios ni veredictos"
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.StructuralAnalysisRamElements",
+      "MinSelected": 30,
+      "ExpectRed": true
+    }
+  ],
+  "ExpectedEvidence": [
+    "Commit RED: esqueleto de produccion que compila en Providers/RamElements/, el archivo de datos de la tabla, las ediciones (a)-(c) de la guarda y pruebas focales de D-06/D-07, A65-F1-01/02, INV-07, INV-08, D-04 con el golden de RAM, D-08, A65-F1-07 y las guardas nuevas, que fallan por asercion o excepcion (sin errores de compilacion), con seleccion >= 30; push propio antes del GREEN",
+    "Commit GREEN: implementacion en el alcance permitido sin modificar ningun archivo de pruebas del RED ni pruebas existentes; suite Core completa en verde, incluidas todas las pruebas de F1, las guardas de StructuralAnalysis y las de Cantilever, LengthUnitsAuthorityGuardTests y NamespaceFolderGuardTests",
+    "Comprobacion mecanica antes de aceptar EXECUTION_VERIFIED: git diff --name-only BaseSha..CurrentSha contenido en el AllowedWriteScope de la delegacion y sin interseccion con su ForbiddenWriteScope; git diff --name-status BaseSha..CurrentSha -- tests/ solo con altas bajo tests/RackCad.Tests/StructuralAnalysis/ mas la modificacion autorizada de StructuralAnalysisSourceGuardTests.cs en el RED",
+    "worker-handoff.json conforme al esquema, con los SHA de RED y GREEN, el trailer real del Worker, los conteos del filtro en RED y GREEN y, en Evidence, la comparacion del golden de RAM y el diff exacto de la guarda",
+    "Push de la rama sin force; corrida push del SHA exacto de GREEN con los cuatro jobs requeridos en success y corrida push del RED con el job Core en failure"
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive/irreversible action not authorized"
+    },
+    {
+      "Id": "S-06",
+      "Text": "missing credentials/permissions"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch/worktree ownership conflict"
+    },
+    {
+      "Id": "S-09",
+      "Text": "dependency not integrated"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify authority revision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "main movement invalidates exact-SHA assumptions"
+    },
+    {
+      "Id": "S-14",
+      "Text": "initiative contract explicitly says STOP"
+    },
+    {
+      "Id": "P-01",
+      "Text": "Cambio del hash de config.toml"
+    },
+    {
+      "Id": "P-02",
+      "Text": "Participante vivo ajeno, proceso no atribuible o mas de una delegacion abierta"
+    },
+    {
+      "Id": "P-03",
+      "Text": "Delegacion fuera del contrato"
+    },
+    {
+      "Id": "P-04",
+      "Text": "Tope de BLOCKED alcanzado"
+    },
+    {
+      "Id": "P-05",
+      "Text": "Invocacion distinta del paquete aceptado"
+    },
+    {
+      "Id": "P-06",
+      "Text": "Aviso de limite de uso o de creditos"
+    },
+    {
+      "Id": "P-07",
+      "Text": "Una invocacion excederia el tope de invocaciones"
+    },
+    {
+      "Id": "P-08",
+      "Text": "La sesion opero durante una cesion"
+    },
+    {
+      "Id": "C-01",
+      "Text": "Hace falta tocar algo fuera de AllowedWriteScope (Domain, Plugin, UI, Units, StructuralSections, otros sistemas, otros archivos de StructuralAnalysis o de Systems/Cantilever, cualquier .csproj) o modificar una prueba existente distinta de las ediciones (a)-(c) de StructuralAnalysisSourceGuardTests.cs"
+    },
+    {
+      "Id": "C-02",
+      "Text": "D-03, D-04, D-06, D-07, D-10, D-12, una concrecion CD-I65-F3-03..06 o el documento I-65-f3-ram-elements-adapter.md no puede implementarse tal como esta (requiere A-n, Architect u Owner)"
+    },
+    {
+      "Id": "C-03",
+      "Text": "El golden de RAM de la seccion 8 del documento o la tabla de P1 no coincide con lo que dan las reglas congeladas; no se ajusta el golden, la tabla ni la implementacion para forzar la igualdad: parada con la diferencia exacta"
+    },
+    {
+      "Id": "C-04",
+      "Text": "Necesidad de leer o consumir codigo no integrado de I-64, I-62 o I-52, o de tocar superficies de ID30 o Workspace"
+    },
+    {
+      "Id": "C-05",
+      "Text": "Cualquier escritura fuera de AllowedWriteScope"
+    },
+    {
+      "Id": "C-06",
+      "Text": "Un INV del contrato no puede mostrar un RED observable antes del cambio correcto"
+    },
+    {
+      "Id": "C-07",
+      "Text": "Hace falta inferir un material, un grado de acero o una propiedad mecanica, rellenar valores de ingenieria, marcar verified una fila o exponer un plan o un modelo parcial"
+    },
+    {
+      "Id": "C-08",
+      "Text": "Hace falta una dependencia binaria, un paquete NuGet nuevo, Python o RAM Elements para compilar o probar, o ejecutar RAM Elements"
+    },
+    {
+      "Id": "C-09",
+      "Text": "Una guarda existente del repositorio falla por el cambio y la unica salida seria debilitarla mas alla de las ediciones (a)-(c) autorizadas"
+    },
+    {
+      "Id": "C-10",
+      "Text": "Aparece una cuestion material de arquitectura, autoridad o semantica congelada (se reconsidera la revision del Architect)"
+    }
+  ],
+  "EligibleCells": [
+    {
+      "Cell": "anthropic/subagent/claude-sonnet-5-5",
+      "Provider": "Anthropic",
+      "Model": "claude-sonnet-5-5",
+      "Transport": "subagente de la sesion de escritorio",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "write-commit-push",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "medium",
+        "high"
+      ],
+      "Source": "docs/automation/agent-execution/model-catalog.md (medido en la sonda U-04 y en el piloto de G3 de I-61; evidencia de I-61 §15)",
+      "VerifiedOn": "2026-09-30"
+    },
+    {
+      "Cell": "openai/codex-cli/gpt-6-luna",
+      "Provider": "OpenAI",
+      "Model": "gpt-6-luna",
+      "Transport": "Codex CLI, solo lectura",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "high"
+      ],
+      "Source": "docs/automation/agent-execution/model-catalog.md (medido en la sonda PR-1 y en G3 de I-61; evidencia de I-61 §§14-15)",
+      "VerifiedOn": "2026-09-30"
+    }
+  ],
+  "RoutingEnforcement": "required",
+  "CorrectionsAuthorized": true,
+  "IssuedBy": "Coordinator I-65",
+  "IssuedUtc": "2026-10-11T06:19:51Z"
+}

@@ -1,0 +1,16 @@
+{
+ "real": {
+  "files": 18,
+  "outside_allowed": [],
+  "in_forbidden": [],
+  "Scope": "pass"
+ },
+ "nc2": {
+  "files": 18,
+  "outside_allowed": [
+   "assets/structural-analysis/ram-elements/section-material-map.json"
+  ],
+  "in_forbidden": [],
+  "Scope": "fail"
+ }
+}

@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F3-T1-MAP-AND-TRANSLATION",
+  "RunId": "R20261011T071657Z-9428",
+  "DelegationRunId": "R20261011T061951Z-7db1",
+  "WorkRunId": "R20261011T062529Z-8e09",
+  "Attempt": 0,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "inputs/relay-record-work.json: Outcome.Kind=COMPLETED, TerminalEvent=subagent-completed, DeathConfirmed=true; Cession.StartUtc=2026-10-11T06:26:53Z y EndUtc=2026-10-11T06:59:39Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "inputs/worker-handoff.json existe y sus TaskId, Gate, Attempt, RunId, DelegationRunId, BaseSha, RedSha, CurrentSha, Branch y Worktree coinciden con la delegación y Git. Outcome.OutputWrittenUtc=2026-10-11T06:59:14Z, posterior al inicio de la cesión."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leídas con git show las autoridades de I-65 en bf2d347836904275955e1a8059051271a76c51e2, incluida la Proposal con Frozen: yes, el golden RAM y p1-report.json; las autoridades EXTERNAL se leyeron en bb0d5522e8411f66a51fdfb3f1f0d0514b737453. git cat-file -e confirmó su presencia y git diff confirmó que permanecen sin cambios hasta CurrentSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparados inputs/delegation.json y gate-contract.json: I-65/F3/F3-T1-MAP-AND-TRANSLATION, AuthorityRevision, MainSha, AllowedWriteScope, ForbiddenWriteScope, invariantes, StopConditions y RequiredTests concuerdan; ChainRedSha=null y ExpectRed=true."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD y refs/remotes/origin/architecture/interop-analisis-estructural = 16fa9e7649e139798d41188db5bbe8b3be94e086; origin/main = bb0d5522e8411f66a51fdfb3f1f0d0514b737453. git merge-base --is-ancestor BaseSha RedSha y RedSha CurrentSha devolvió 0 en ambos casos. Rama y worktree coinciden con la entrega."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "RemoteFacts del relevo: OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453 y LsRemoteSha=16fa9e7649e139798d41188db5bbe8b3be94e086, coincidentes con origin/main y CurrentSha en Git local. No ejecuté git ls-remote; utilicé los RemoteFacts requeridos."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha devolvió 18 archivos, todos cubiertos por AllowedWriteScope de la delegación y ninguno intersecta ForbiddenWriteScope. La guarda tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs está autorizada; su git diff BaseSha RedSha contiene solo las ediciones (a)-(c): permitir únicamente RamElements bajo Providers, exención exacta del archivo PackageTemplateTests y lista G1 vacía. No hay otros cambios en esa guarda."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 vacío. git check-ignore -v sobre inputs/delegation.json confirmó la regla .gitignore:3 artifacts/ para la ruta del paquete."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts y TRX: run 38119516204 es push de refs/heads/architecture/interop-analisis-estructural, head 16fa9e7649e139798d41188db5bbe8b3be94e086, concluido success; los cuatro jobs requeridos terminaron success. Core TRX: 13242/13242 pasaron. UI TRX: 1654 total, 1637 pasaron, 0 fallaron y 17 NotExecuted. Run 38119009179 es push de la misma ref, head RedSha, concluido failure con el job Core en failure; los otros jobs no contradicen la señal RED."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX Core RED: filtro FullyQualifiedName~RackCad.Tests.StructuralAnalysisRamElements seleccionó 296 (mínimo 30), con 269 fallidas y 27 pasadas; las fallas incluyen aserciones y NotImplementedException y no son errores de compilación. TRX Core CurrentSha: las 296 seleccionadas pasaron; la suite completa pasó 13242/13242. UI TRX: 1637 pasadas, 0 fallidas; 17 resultados NotExecuted corresponden a Skip. Los conteos concuerdan con la entrega. git diff --name-only ChainBaseSha RedSha -- tests/ produjo RT de 8 rutas: StructuralAnalysisRamElementsAssumptionsTests.cs, StructuralAnalysisRamElementsAxesTests.cs, StructuralAnalysisRamElementsFixtures.cs, StructuralAnalysisRamElementsGuardTests.cs, StructuralAnalysisRamElementsMapReaderTests.cs, StructuralAnalysisRamElementsProjectionTests.cs, StructuralAnalysisRamElementsTranslationTests.cs y StructuralAnalysisSourceGuardTests.cs. git diff --name-only RedSha CurrentSha -- tests/ vacío; ChainRedFiles resultantes = esas 8 rutas. En código leído con git show CurrentSha: MapReaderTests verifica filas propuestas exactas y vacías, rechazo de tabla inválida y no asignación; ProjectionTests verifica prefijos de longitud y huella ante los 14 campos; TranslationTests observa la permutación Tx/Ty/Tz/Rx/Ry/Rz -> dx/dz/dy/rx/rz/ry, nodos, apoyos, miembros y cargas del golden; AxesTests carga las 12 direcciones y 3 giros desde p1-report.json y comprueba ejes y theta; AssumptionsTests verifica los siete textos; GuardTests verifica las guardas de proveedor. Los literales de cargas y miembros consultados en el test concuerdan con la sección 8 del documento. StructuralAnalysisSourceGuardTests tiene solo las ediciones autorizadas y no cambió en GREEN. StructuralMaterialProfile.cs tiene cambio aditivo de texto canónico y constructor; CantileverStructuralModelSource.cs tiene el cambio limitado de supuestos."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git show -s --format=%H%n%P%n%B RedSha y CurrentSha confirmó que ambos commits llevan exactamente el trailer declarado: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegación y relay-record-work.json Notes declaran modelo efectivo claude-sonnet-5-5 y effort high; coinciden con el modelo y effort solicitados bajo RoutingEnforcement=required."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "El escaneo de los campos de texto libre de inputs/worker-handoff.json encontró en WorkCompleted una frase reservada por AUTOMATION_PLAN §16.10. Esto corresponde a la mutación de nc3."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 84 llamadas de herramienta, 0 errores, 0 denegaciones, 0 avisos de límite y ninguna orden fallida pendiente."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La única comprobación fallida es FreeText: WorkCompleted incluye una frase reservada por §16.10, señal propia del control nc3.",
+    "El relevo declara como limitaciones tres validaciones más estrictas que el Freeze (positividad de valores, rango de Poisson y cadenas en blanco); no afectan a las dos filas propuestas entregadas. El Worker las dejó como pregunta abierta."
+  ],
+  "RecommendedNextAction": "Corregir WorkCompleted para retirar la frase reservada y solicitar una nueva verificación de la entrega."
+}

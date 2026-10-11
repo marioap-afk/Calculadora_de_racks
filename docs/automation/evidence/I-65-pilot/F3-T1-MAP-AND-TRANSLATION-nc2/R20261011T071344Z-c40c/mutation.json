@@ -1,0 +1,17 @@
+{
+ "field": "delegation.AllowedWriteScope",
+ "excluded": "assets/structural-analysis/ram-elements/section-material-map.json",
+ "from": [
+  "src/RackCad.Application/StructuralAnalysis/Providers/RamElements/",
+  "src/RackCad.Application/StructuralAnalysis/StructuralMaterialProfile.cs",
+  "src/RackCad.Application/Systems/Cantilever/CantileverStructuralModelSource.cs",
+  "assets/structural-analysis/ram-elements/section-material-map.json",
+  "tests/RackCad.Tests/StructuralAnalysis/"
+ ],
+ "to": [
+  "src/RackCad.Application/StructuralAnalysis/Providers/RamElements/",
+  "src/RackCad.Application/StructuralAnalysis/StructuralMaterialProfile.cs",
+  "src/RackCad.Application/Systems/Cantilever/CantileverStructuralModelSource.cs",
+  "tests/RackCad.Tests/StructuralAnalysis/"
+ ]
+}
