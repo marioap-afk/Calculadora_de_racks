@@ -3163,3 +3163,114 @@ Sección nueva; las anteriores no se reescriben. Paquete en `docs/initiatives/I-
 - HEAD = remoto = `ee8018e0` antes de este commit; `main` `bb0d5522`.
 - Sin cambios en `src/` ni `tests/`. F1-T3C-PROFILE-DOC no se crea.
 - Siguiente: STOP en **COORDINATOR_T3B_GATE_CONTRACT_REQUIRED**.
+
+## 54. F1-T3B-HOST-UI — Decisión del Coordinator sobre el contrato (AUTHORIZED)
+
+Sección nueva; las anteriores no se reescriben.
+
+**Decisión** (literal en `docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/coordinator-decision-t3b-contract.md`), sobre el paquete
+NOT EMITTED de `32231d90` (CI 38122448571 4/4): **AUTHORIZED**, con estos términos.
+
+**Reaperturas exactas de T3A:**
+- **`WorkspacePanelCommand.cs`:** delta mínimo. `RACKPANEL` obtiene el controlador, llama a `OpenPanel()`, crea u obtiene el único
+  `WorkspacePaletteHost` y muestra la paleta. Sin lógica de `PaletteSet` en el comando, sin alias y sin cambios en otros comandos.
+- **`AutoCadEventBridge.cs`:** una notificación en memoria `ActiveSessionChanged`, sin tipos de AutoCAD. Solo la disparan los manejadores
+  existentes tras actualizar el núcleo: `DocumentActivated`, y `DocumentToBeDestroyed` cuando cambia la sesión activa. Sin `+=`/`-=`
+  nuevos de AutoCAD; `EventBridgeCore` no cambia y no encola nada en `OnDocumentActivated`.
+- **`WorkspaceController.cs`:** se suscribe solo a `Drained` y `ActiveSessionChanged` del puente.
+  - Con `ActiveSessionChanged`: si el panel está visible, `_host.RefreshPanel()`; después, aviso de cambio de presentación.
+  - Con `Drained`: el `_host.OnDrained(outcome)` existente y, tras la contención, el aviso.
+  - `OpenPanel`, `ShowPanel` y `HidePanel` también pueden avisar.
+  - Expone una notificación en memoria `StateChanged`, sin tipos de AutoCAD.
+- **No se reabren:** `EventBridgeCore.cs`, `WorkspaceHostCore.cs`, `IWorkspaceHostPort.cs`, `WorkspaceHostPort.cs` ni el resto del
+  producto de Application.
+
+**Refresco:**
+- **Rechazado el sondeo de 500 ms:** ni `DispatcherTimer`, ni `System.Threading.Timer`, ni sondeo periódico, ni `GetSnapshot` repetido
+  por paso del tiempo. Visible y ocioso = cero trabajo sin un evento de host o de estado.
+- **Relevo por eventos:**
+  - el host visual se suscribe a `StateChanged` y entonces consulta `Port.GetSnapshot()` y, cuando haga falta, `GetMeasurementReport()`;
+  - **oculto:** una notificación de documento activo no pide reconciliación, no hay lectura del DWG ni temporizador;
+  - **visible:** la activación pide una reconciliación y, cuando termina, el panel vuelve a cero trabajo.
+- Según el Coordinator, cumple D-03 sin infringir P-02 ni INV-33.
+
+**Guardas:** `WorkspaceHostSourceGuardTests.cs` solo con refinamientos exactos.
+- **G1:** `PaletteSet`, `AddVisual` y los tipos públicos de host WPF necesarios, solo en `WorkspacePaletteHost.cs`. Ahí siguen prohibidos
+  `Autodesk.AutoCAD.Internal`, el sondeo con `Dispatcher`, los temporizadores, el trabajo asíncrono o en segundo plano y la lectura o
+  escritura directa del DWG.
+- **G2:** `NothingOutsideThePluginWorkspaceReachesTheController` por identificador completo, de modo que `RackCad.UI` pueda nombrar
+  `IWorkspaceHostPort` sin abrir el acceso al controlador ni a tipos del Plugin.
+- **G3:** en `WorkspaceController.cs` solo `_bridge.Drained +=` y `_bridge.ActiveSessionChanged +=`.
+- Sin suscripciones directas a AutoCAD ni exclusiones por carpeta.
+
+**UI e instrumentación:**
+- **Instrumentación:** `IWorkspaceHostPort` sin cambios. La UI consume `GetMeasurementReport()` del puerto inyectado, y el interruptor
+  llega como delegado neutral inyectado por el host visual del Plugin. Las medidas se refrescan solo por notificación de estado o
+  interacción explícita. Sin registro duradero y sin cambios en `RackLog`.
+- **Foco:** solo mecanismos públicos (`PaletteSet.KeepFocus` o un equivalente público). Ni `Autodesk.AutoCAD.Internal`, ni
+  `SetFocusToDwgView`, ni reflexión. En T3B basta la verificación estática; el teclado y el foco reales siguen siendo de Smoke-1.
+- **Textos:** título de la paleta «RackCad», rótulo del control raíz «Workspace». No es una decisión de marca y no congela textos
+  futuros.
+- **Límite de la UI:** `RackCad.UI` no referencia `RackCad.Plugin`, `Autodesk.AutoCAD.*`, `WorkspaceController` ni
+  `WorkspacePaletteHost`. El Plugin crea la raíz e inyecta `IWorkspaceHostPort` y los delegados neutrales; la raíz y su view-model no
+  obtienen servicios de host de forma estática.
+- **`WorkspacePaletteHost.cs` posee:**
+  - la paleta perezosa única;
+  - `AddVisual` de un único control raíz;
+  - la sincronización de mostrar, ocultar y visibilidad;
+  - la suscripción a `StateChanged`;
+  - la consulta del puerto;
+  - la contención.
+
+  Sin `toolID`, sin `Load`/`Save`; cerrar = ocultar; sin transacciones ni lectura o escritura del DWG; sin temporizador.
+- **Contención:** ninguna excepción de un evento de UI, una llamada del view-model, el manejador de `StateChanged`, el refresco del host o
+  el delegado del interruptor llega al bucle de AutoCAD. Ante un fallo contenido la UI pasa a Error y los comandos clásicos siguen
+  disponibles.
+
+**Regla de nc3, explícita en el contrato de T3B:**
+- **Oráculo:** FreeText = fail, FailureClass FreeText, EXECUTION_REWORK_REQUIRED / REWORK.
+- **Salida inválida:** si el Controller detecta la violación y conserva las demás relaciones, pero convierte el REWORK sintético en STOP
+  solo por aplicar las reglas de `AttemptsRemaining`, `CorrectionsAuthorized` y S-11 de la tarea real → INVALID_OUTPUT, no PASS.
+- **Agotamiento:** los dos reintentos normales; si se agotan en el mismo modo de fallo, Controller nc3 = NOT PASSED / P-04, y A-6 solo
+  con todas sus precondiciones.
+- **Alcance:** no se extiende por analogía a tareas posteriores: va en cada contrato aplicable o vuelve al Coordinator.
+
+**Pruebas y alcance:**
+- **Mínimos aceptados:**
+  - UI `FullyQualifiedName~RackCad.UI.Tests.Workspace`, hoy 0, mínimo 1, `ExpectRed` true;
+  - Core `FullyQualifiedName~RackCad.Tests.Workspace`, hoy 486, mínimo 487, `ExpectRed` true.
+
+  Los dos RED compilan, fallan por aserción, ejercitan comportamiento real de T3B y no son artificiales; el GREEN conserva la cadena.
+- **Fuera de T3B:** `RACKPANEL` en la ayuda, conectar el indicador de modal con los comandos clásicos, liberar la paleta o el controlador
+  en `Terminate()`, navegación, pestañas, borradores, escrituras authored, inventario, diff de perfil y Smoke-1.
+- **`AllowedWriteScope` (8 entradas):**
+  - `src/RackCad.UI/Workspace/` y `tests/RackCad.UI.Tests/Workspace/`, solo archivos nuevos;
+  - `WorkspacePaletteHost.cs` y `WorkspacePaletteHostSourceGuardTests.cs`, nuevos exactos;
+  - `WorkspacePanelCommand.cs`, `WorkspaceController.cs` y `AutoCadEventBridge.cs`, con sus deltas;
+  - `WorkspaceHostSourceGuardTests.cs`, con G1/G2/G3.
+
+  Todo lo demás prohibido; si la planificación demuestra que otro archivo exacto es indispensable: STOP al Coordinator.
+
+**Enrutamiento y presupuesto:**
+- **Enrutamiento:** «Implementación transversal a capas (corta)», Deep, `RoutingEnforcement` required.
+  - Worker `claude-sonnet-5-5`/subagente/`high`.
+  - Controller `gpt-6-luna`/`high`/read-only con Codex CLI `0.162.0-alpha.17.2`.
+  - Elegibilidad y entorno instalado se comprueban de nuevo antes de delegar; si el alcance resulta Long-horizon: STOP.
+- **Presupuesto por `TaskId`:** planificación, trabajo y verificación con 1 salida válida + hasta 2 por transporte o INVALID_OUTPUT;
+  controles nc1..nc4 con A-4/A-6 solo con sus precondiciones.
+  - `Attempt` 3, `AttemptsRemaining` 0, `CorrectionsAuthorized` false.
+  - Un resultado válido que exija corrección: STOP S-11. Sin reinicios ni aumento de `max_attempts`.
+
+**Orden:**
+1. Este commit es la `AuthorityRevision` propuesta de T3B.
+2. Tras su CI 4/4, `fetch` (S-13/16.7 si `main` ≠ `bb0d5522`) y lectura fresca de I-52, I-65 (observada por el Coordinator:
+   `e0c1120b`) e I-62.
+3. Revisar el paquete NOT EMITTED.
+4. Emitir y validar el contrato.
+5. Una planificación válida, con A1-A8 y nc4 sin cortocircuito.
+6. Sin Worker. STOP en COORDINATOR_T3B_ACCEPTANCE_REQUIRED.
+
+**Relevos:**
+- Sin invocaciones de modelos en esta sección.
+- HEAD = remoto = `32231d90` antes de este commit; `main` `bb0d5522`.
+- Sin cambios en `src/` ni `tests/`.
