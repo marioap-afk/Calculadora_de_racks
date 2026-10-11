@@ -1,0 +1,12 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261011T010532Z-78b0",
+  "InputFilesChanged": 10,
+  "InputFilesChangedIs10": true,
+  "TruncatedDisplaysSeen": 0,
+  "HandoffResult": "fail",
+  "Problems": [
+    "Handoff en fail citando CurrentSha (criterio de Identity, no de Handoff)"
+  ],
+  "FactuallySound": false
+}

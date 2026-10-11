@@ -1,0 +1,49 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261010T233352Z-3ddb",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "fail",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "Outcome": "INVALID_OUTPUT",
+  "ControlResult": "INVALID_OUTPUT (Coordinator)",
+  "Evidence": {
+    "Identity": "git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both return e2f642b86197441eea0838c8055c1db666606f11. git merge-base --is-ancestor succeeds for BaseSha d5bdcb7a and RedSha 31e3c57a against that commit. The handoff CurrentSha is deadbeef..., not the Git identity; branch and worktree otherwise match."
+  },
+  "OutputSha256": "11E1047C482BF0DC57F6EF8609B6F637AB805E65106819D5623EAD438E2727EB",
+  "ManualFreeText1610": []
+}

@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T2-BRIDGE",
+  "RunId": "R20261011T011513Z-e415",
+  "DelegationRunId": "R20261010T082206Z-21c1",
+  "WorkRunId": "R20261010T202008Z-3df4",
+  "Attempt": 3,
+  "VerifiedSha": "e2f642b86197441eea0838c8055c1db666606f11",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true y notificacion de resultado final. Cession.StartUtc=2026-10-10T20:23:57Z; Outcome.OutputWrittenUtc=2026-10-10T14:52:30.34814-06:00, posterior al inicio."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json existe en las entradas indicadas; TaskId, Attempt=3, DelegationRunId y RunId=WorkRunId coinciden. CurrentSha, RedSha, BaseSha, rama y worktree coinciden con la delegacion y Git. OutputWrittenUtc del registro es posterior a Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leidos desde Git en MainSha bb0d5522: AUTOMATION_PLAN sec.16.3, 16.8-16.10, README de agent-execution sec.8 y AGENTS.md. 16.9 fija el orden de 14 comprobaciones y VERIFIED solo con todas en pass. El registro de planificacion reporta las 30 autoridades resueltas."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json y delegation.json coinciden en TaskId, Unit, Gate, AuthorityRevision, MainSha, ForbiddenWriteScope, Invariants, RequiredTests, StopConditions, Authorities y RoutingEnforcement. Los A1-A8 figuran pass en relay-record-planning.json y ACCEPTED en coordinator-acceptance.md."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD=e2f642b86197441eea0838c8055c1db666606f11; rama architecture/workspace-persistente-rackcad; ref local origin de la rama coincide. merge-base --is-ancestor BaseSha RedSha y RedSha CurrentSha devuelve 0. Worktree y BaseSha coinciden con la delegacion."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha=CurrentSha, OriginMainSha=MainSha; CurrentRun es push de refs/heads/architecture/workspace-persistente-rackcad sobre CurrentSha. Las refs locales origin de rama y main coinciden. La consulta independiente ls-remote no pudo conectar y fetch no pudo abrir FETCH_HEAD."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha devuelve 10 rutas. git diff --name-status confirma que las 10 son A bajo Application/Workspace, Plugin/Workspace y tests/RackCad.Tests/Workspace; ninguna queda fuera de AllowedWriteScope ni coincide con ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain vacio antes y despues de las comprobaciones. git check-ignore -v sobre artifacts/orchestration/I-64/F1-T2-BRIDGE/3/R20261010T202008Z-3df4/worker-handoff.json devuelve .gitignore:3, artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun 38085381131: push, ref y head SHA exactos; cuatro jobs requeridos en success. RedRun 38084788650: Core en failure y Plugin skipped. Los dos estados concuerdan con sus TRX."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX Core CurrentSha: 12754/12754; filtro FullyQualifiedName~RackCad.Tests.Workspace selecciona 159 y pasan 159. TRX RedSha: selecciona 159, pasan 97 y fallan 62; los fallos son aserciones de comportamiento, con mensajes como 'no live session for native id 100', sin errores de compilacion. git diff BaseSha..RedSha -- tests/ da RT de 5 archivos; git diff RedSha..CurrentSha -- tests/ esta vacio. ChainRedFiles=RT. TRX UI: 1654 resultados, 1637 Passed y 17 NotExecuted; Counters.notExecuted=0 segun la convencion del logger."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha muestra los commits RED y GREEN; ambos incluyen Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, igual al trailer declarado por Worker."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json y sus Notes registran model efectivo claude-sonnet-5-5 y effort high, iguales a los solicitados. RoutingEnforcement=required; no se registran desviaciones."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Escaneo sin distincion de mayusculas de WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json: sin coincidencias con los terminos de 16.10."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra cero denegaciones y cero avisos de limite; no hay orden fallida pendiente ni proceso participante persistente. El error intermedio del script se resolvio en llamadas posteriores y no fue una denegacion."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La disposicion owner-disposition-p01.md resuelve P-01 para esta verificacion; owner-disposition-p01-allowlist.md limita esta cadena a los dos hashes indicados y al inventario de 105 nombres. El registro reporta ambos hashes y 105 nombres en salida y entrada.",
+    "El diff de Git confirma 10 archivos nuevos autorizados y ningun cambio a los cinco archivos de producto T1. El commit GREEN solo modifica EventBridgeCore.cs y AutoCadEventBridge.cs; no modifica pruebas RED.",
+    "Los 62 fallos RED son aserciones de comportamiento; el TRX muestra, por ejemplo, 'no live session for native id 100'. No son fallos de compilacion.",
+    "La consulta independiente a GitHub no se pudo completar por falta de conexion; los RemoteFacts registrados y las refs locales coinciden con los SHA evaluados. La comprobacion remota se basa en esos hechos registrados.",
+    "No se ejecutaron dotnet ni builds. La evidencia de pruebas consultada proviene de los TRX de CI; se usa solo como senal de esta verificacion."
+  ],
+  "RecommendedNextAction": "Continuar con los controles negativos autorizados en el orden de README sec.10, sin escrituras Git."
+}

@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T2-BRIDGE",
+  "RunId": "R20261010T225551Z-41fd",
+  "DelegationRunId": "R20261010T082206Z-21c1",
+  "WorkRunId": "R20261010T202008Z-3df4",
+  "Attempt": 3,
+  "VerifiedSha": "e2f642b86197441eea0838c8055c1db666606f11",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Outcome.Kind=COMPLETED, DeathConfirmed=true, TerminalEvent=final subagent result notification; LaunchedPid=null."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json identity matches TaskId, Attempt 3, DelegationRunId and WorkRunId; CurrentSha=e2f642b86197441eea0838c8055c1db666606f11. OutputWrittenUtc=2026-10-10T14:52:30.34814-06:00 is after Cession.StartUtc=2026-10-10T20:23:57Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Read AUTOMATION_PLAN Sec.16 at AuthorityRevision d5bdcb7aff31ba54901a3a0acdbfd81be92ab516, README Sec.8 and AGENTS.md at MainSha bb0d5522e8411f66a51fdfb3f1f0d0514b737453. Git authority audit: 30 entries, no missing paths; merge-base(MainSha, AuthorityRevision)=MainSha and no EXTERNAL authority blob differs from merge-base."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json and delegation.json match for AllowedWriteScope, ForbiddenWriteScope, all 14 Invariants, and RequiredTests. Required filter is FullyQualifiedName~RackCad.Tests.Workspace, MinSelected=1, ExpectRed=true."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse confirms BaseSha, RedSha and CurrentSha exist. git merge-base --is-ancestor confirms BaseSha and RedSha are ancestors of CurrentSha. Branch is architecture/workspace-persistente-rackcad; HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both equal CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json records LsRemoteSha=CurrentSha and OriginMainSha=MainSha. Local remote refs also resolve to CurrentSha and bb0d5522e8411f66a51fdfb3f1f0d0514b737453 respectively."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha lists 10 files, all under the three AllowedWriteScope prefixes and none in ForbiddenWriteScope. The five T1 product files are unchanged. RT from BaseSha to RedSha contains the five new Workspace test files; RedSha..CurrentSha changes only EventBridgeCore.cs and AutoCadEventBridge.cs."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain --branch shows no working-tree changes. git check-ignore -v confirms the invocation input package is ignored by .gitignore:3 (artifacts/)."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Run 38085381131 is completed success, event=push, exact branch ref and CurrentSha; all four required jobs are success. Run 38084788650 is a push of RedSha; Core Tests failed as expected and Plugin build was skipped. Red Core TRX has 62 failures among 159 matching tests."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Current Core TRX 38085381131: FQN filter selects 159, 159 passed, 0 failed; full suite 12754/12754. Red Core TRX 38084788650: filter selects 159, 97 passed, 62 failed. Failures are behavioral assertions against the unimplemented skeleton. git diff BaseSha..RedSha -- tests/ gives five RT files; git diff RedSha..CurrentSha changes no tests, so ChainRedFiles is those five RT paths."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows both commits carry Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json Worker.Trailer and the effective Anthropic model."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json effective model=claude-sonnet-5-5 and effort=high match the delegation's required model and Deep/high effort."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction in worker-handoff.json against the complete Sec.16.10 term list; no matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json notes no permission denials, no usage-limit notices and no pending failed command. One intermediate script error was corrected. The transient unattributable git process was CLEARED_BY_REREAD; no evidence indicates it touched Git, config or the worktree."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "The recorded config.toml hash changed from snapshot A to snapshot B during handoff. The supplied Owner/Coordinator disposition accepts exactly those two hashes with the same 105-name inventory; the handoff record reports no inventory difference.",
+    "The RED TRX records 62 behavioral failures: 47 missing-live-session failures from the skeleton and 15 other assertion failures. The GREEN CI TRX confirms all 159 matching tests pass.",
+    "The UI TRX has 1654 total results, 1637 executed and passed, 0 failed, and 17 NotExecuted result rows; notExecuted=0 in Counters matches the documented logger convention. The UI CI job succeeded.",
+    "The handoff declares the bridge is not yet instantiated by a host and does not perform DWG reads or provide a host/UI port in this task's scope."
+  ],
+  "RecommendedNextAction": "Proceed with the authorized nc1, nc2 and nc3 controls using these exact verification inputs."
+}

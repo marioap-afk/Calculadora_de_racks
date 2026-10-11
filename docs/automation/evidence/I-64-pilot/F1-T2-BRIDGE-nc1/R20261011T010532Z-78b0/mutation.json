@@ -1,0 +1,41 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261011T010532Z-78b0",
+  "SourceVerification": "R20261010T225551Z-41fd",
+  "SourceInputs": "artifacts/orchestration/I-64/F1-T2-BRIDGE/3/R20261010T225551Z-41fd/inputs",
+  "Mutation": {
+    "File": "worker-handoff.json",
+    "Field": "CurrentSha",
+    "Old": "e2f642b86197441eea0838c8055c1db666606f11",
+    "New": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+    "NewExistsInRepo": false
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-work.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "B47F905A81A4E2C4C249F3B9AA987C9971F219C174C126AF2A9950742809C0F4",
+    "New": "13CB94EC6B3CB18AB50C6C8ED0346EA97A98D87DFCDCCD722A00B284CF678C41",
+    "Reason": "hash derivado de worker-handoff.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "84829DC2A107ED2AEF3B80D52D22C1030AF8B73ED47B52D22982B8C416235851",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "coordinator-acceptance.md": "8321D1F0BFDB9094381D5522B4604A93745A96B415F0C453729355010B49DAB0",
+    "delegation.json": "C5F3D482597C54C28065EA01AD8A228CF2EA15FB301F8A31ED2C292C2FAE5737",
+    "gate-contract.json": "53E37B9456AEE9BBEC2431B0A19A532CB99508889661861C7083B8A68469DA33",
+    "owner-disposition-p01-allowlist.md": "9A83055D972FD53DF51660BE0A41AD0F2F0C094979AF936B5FDF9B9BF20720B0",
+    "owner-disposition-p01.md": "1D2ECF8C7CFF39A63AA1EA2DCEEE06BE9FD12CAB68E9BE9B753445771012C4FB",
+    "relay-record-planning.json": "5C60DC729B601166494DC0C84ABD12BED64D7DF02F338564A897B363B36896C3",
+    "relay-record-work.json": "471520AB04BA0E81663FB5795111D3EC5E619BBBFEC5E7FF3CA525EAF1BA6304",
+    "worker-handoff.json": "13CB94EC6B3CB18AB50C6C8ED0346EA97A98D87DFCDCCD722A00B284CF678C41",
+    "ci-core/38085381131/core.trx": "7DF5A1D07E4B086558DECBAFFA3A35725A6088B072A0A6B36936F6988A9AFD57",
+    "ci-core-red/38084788650/core.trx": "21641C225F125A5F6103D6D3D8A29281BE302E354451A7E3CF8AE16819C741A4",
+    "ci-ui/38085381131/ui.trx": "D6BC123B32BBB926A57A86F5FC29D9BB1DFEF8C3E4D8E9676763E63019C4B3D6"
+  }
+}

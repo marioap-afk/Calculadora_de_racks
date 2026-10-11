@@ -1,0 +1,13 @@
+{
+  "RunId": "R20261010T233352Z-3ddb",
+  "Control": "nc1",
+  "CoordinatorClassification": {
+    "Outcome": "INVALID_OUTPUT",
+    "TransportDisposition": "BLOCKED",
+    "ValidNc1OutputsConsumed": 0,
+    "Record": "nc1 attempt R20261010T233352Z-3ddb = INVALID_OUTPUT / NOT A VALID CONTROL OUTPUT",
+    "Reason": "schema-conforming but factually false Controller output: Handoff evaluated the mutated CurrentSha (16.9 Handoff does not evaluate CurrentSha; it belongs to Identity) and claimed FilesChanged had 4 paths (the copied handoff has 10; PowerShell display truncation)."
+  },
+  "NotRecordedAs": "nc1 = FAIL final",
+  "Source": "decision del Coordinator recibida por el chat de la sesion responsable (I-64 COORDINATOR DECISION F1-T2-BRIDGE / nc1); se versiona en la custodia"
+}

@@ -1,0 +1,50 @@
+{
+  "Control": "nc3",
+  "RunId": "R20261011T012027Z-9c23",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "FreeText",
+  "MutatedCheck": {
+    "FreeText": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "fail",
+    "Denials": "pass"
+  },
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "C-15",
+    "S-11"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "FreeText",
+    "FailureClass": "FreeText",
+    "Classification": "EXECUTION_REWORK_REQUIRED",
+    "Disposition": "REWORK",
+    "LaterChecksMustMatch": true
+  },
+  "Outcome": "INVALID_OUTPUT",
+  "ControlResult": "INVALID_OUTPUT (Coordinator)",
+  "Evidence": {
+    "FreeText": "worker-handoff.json WorkCompleted contains an exact Sec. 16.10 prohibited phrase at the end of the field. The match is confirmed by scanning all listed free-text fields. Sec. 16.9 maps this check failure to REWORK; coordinator-acceptance.md states CorrectionsAuthorized=false and AttemptsRemaining=0, triggering C-15 and S-11."
+  },
+  "OutputSha256": "B6E6C8ED7F8F1D61ADC6AEA2F4F32BE24E8411F68C04778DD9D854D973B754B8",
+  "ManualFreeText1610": []
+}

@@ -1,0 +1,14 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261010T233352Z-3ddb",
+  "InputFilesChanged": 10,
+  "InputFilesChangedIs10": true,
+  "TruncatedDisplaysSeen": 1,
+  "HandoffResult": "fail",
+  "Problems": [
+    "Handoff en fail citando CurrentSha (criterio de Identity, no de Handoff)",
+    "('Check', 'Handoff'): afirma FilesChanged = 4, la entrada tiene 10",
+    "Handoff en fail tras una vista truncada de FilesChanged en la salida de una orden"
+  ],
+  "FactuallySound": false
+}

@@ -1,0 +1,49 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261011T011039Z-0935",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Identity": "Git branch is architecture/workspace-persistente-rackcad; HEAD and origin branch both equal e2f642b86197441eea0838c8055c1db666606f11; BaseSha and RedSha are ancestors (merge-base checks exit 0); origin/main is bb0d5522e8411f66a51fdfb3f1f0d0514b737453. worker-handoff.json instead declares CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. The declared SHA disagrees with HEAD, origin branch, and the accepted disposition target."
+  },
+  "OutputSha256": "B150E7E8DA0CC5AD494ABECB590263DC2AFABF50BD5D713731008993E786484C",
+  "ManualFreeText1610": []
+}

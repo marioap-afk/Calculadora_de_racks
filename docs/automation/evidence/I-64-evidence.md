@@ -2644,3 +2644,89 @@ Con esto, la celda `gpt-6.1-sol` / `high` / Codex CLI 0.162.0-alpha.17.2 / read-
   sección.
 - **T2:** protocolo incompleto; F1-T3-HOST bloqueada.
 - **Siguiente:** STOP en **COORDINATOR_A6_AGREEMENT_REQUIRED**.
+
+## 46. F1-T2-BRIDGE — A-6 activa, I64-FREETEXT-BRIDGE-01 PASS y cierre documental de T2
+
+Sección nueva; las anteriores no se reescriben.
+
+**Acuerdo del Coordinator** (literal en `docs/automation/evidence/I-64-protocol-bridge/coordinator-agreement-a6.md`):
+- A-6 queda AGREED con Owner SATISFIED, Architect AGREED (0 REQUIRED, 0 OPTIONAL) y Coordinator AGREED.
+- **A-6 queda ACTIVA** para I64-FREETEXT-BRIDGE-01, solo para I-64.
+- Ordena una única ejecución autoritativa del puente sobre las entradas reales de T2, sin modelos, y luego el cierre documental.
+
+**Ejecución única `R20261011T033245Z-cb29`** (`docs/automation/evidence/I-64-pilot/F1-T2-BRIDGE-freetext-bridge/R20261011T033245Z-cb29/`):
+- **Comprobaciones previas, todas cumplidas:**
+  - **Verificador:** bytes de `git cat-file blob 3bc7869e9f4c9c5eed0d64d7b8fee6f7002b9169`, con SHA-256
+    `e760858883926744a606d9438099ed8abf040eea07814275e94b1843307474d4`. `HEAD:<ruta>` es el mismo blob.
+  - **REAL** (`R20261010T202008Z-3df4/worker-handoff.json`): `b47f905a81a4e2c4c249f3b9aa987c9971f219c174c126af2a9950742809c0f4`.
+  - **MUTATED** (`R20261011T014542Z-0c58/inputs/worker-handoff.json`; idéntica en los tres intentos de nc3):
+    `a2dd02760679a918a22dc686c6bad7b2ef857c7da1a935534d9a78bb0fcfedd7`.
+  - **Autoridad:** `MainSha` del contrato y de la delegación = `bb0d5522`. Conjunto de términos = bytes de
+    `git cat-file blob bb0d5522:docs/AUTOMATION_PLAN.md` (blob `07b97bd3`, SHA-256 `b5ca7294…`), no la copia del árbol.
+  - **Producto:** verificación `41fd`, EXECUTION_VERIFIED / NONE sobre `e2f642b8`.
+- **Resultado:** **PASS**, código de salida 0, `Reasons` [], stderr vacío, salida SHA-256 `5aa65405…`.
+  - Las 29 comprobaciones en pass: lectura, esquema y tipos de las dos entregas; 13 de identidad; estructura; REAL limpia; append exacto;
+    sin compensación; término introducido solo en `WorkCompleted`.
+  - `ChangedFields` = [`WorkCompleted`].
+  - `IntroducedForbiddenTerms` = [`GATE PASS`].
+  - `RealForbiddenHits` = [].
+  - `MutatedForbiddenHits` = `WorkCompleted`/`GATE PASS`/1.
+  - El conjunto de términos se resuelve mecánicamente: 16 términos, 7 campos gobernados, palabra o frase completa sin distinguir
+    mayúsculas y la propiedad `Gate` excluida (sección 16.10 SHA-256 `76766227…`).
+- **Comprobación independiente de la sesión:** `WorkCompleted` mutado = real + « GATE PASS.», y el resto de campos y el orden de claves son
+  iguales.
+- **Sin modelos ni reintentos:** no se invocó ningún modelo y no hubo segunda ejecución.
+
+**Tabla final de controles de T2:**
+
+| Control | Resultado |
+|---|---|
+| nc1 | PASS (`0935`; `3ddb` y `78b0` INVALID_OUTPUT) |
+| Controller nc2 | CONTROL NOT PASSED (`e415`) |
+| I64-SCOPE-BRIDGE-01 | PASS (`647e`) |
+| Controller nc3 | NOT PASSED / P-04 (`9c23`, `3200` y `0c58`, INVALID_OUTPUT, sin reetiquetar) |
+| I64-FREETEXT-BRIDGE-01 | PASS (`cb29`) |
+| nc4 | PASS (`c445`) |
+| Producto | EXECUTION_VERIFIED / NONE (`41fd`, `e2f642b8`) |
+
+**Cierre de protocolo de F1-T2-BRIDGE: SATISFIED UNDER A-4 + A-6.**
+- Estado de la tarea: **COMPLETE_UNDER_I64_SUBSTITUTE_PROTOCOL_EVIDENCE**.
+- No reescribe la historia de nc2 ni de nc3.
+- No declara F1 PASS.
+
+**Custodia** (paquete de cierre en `docs/automation/evidence/I-64-pilot/F1-T2-BRIDGE/task-close-package.md`):
+- **Ubicación:** `docs/automation/evidence/I-64-pilot/F1-T2-BRIDGE*/` contiene la planificación, nc4, el Worker, la verificación (con la
+  parada previa y el prompt sustituido), los tres nc1, nc2, los dos intentos del puente de Scope, los tres nc3, el puente FreeText y la
+  línea base de `config.toml`.
+- **Manifiesto `custody-manifest.json`:** los 402 transitorios con su SHA-256: 118 custodiados, 12 custodiados con redacción, 59 idénticos
+  a un custodiado y 213 excluidos con motivo (`events.jsonl`, TRX/logs/binarios, copias de blobs versionados y datos operativos).
+- **Redacción:** las rutas locales (worktree, checkout principal, dotnet de usuario) se sustituyen por marcadores y `[projects.*]` queda
+  como `[projects.<redactado>]`. Se conserva el SHA-256 de cada original.
+- **Fin de línea:** los archivos que escribió PowerShell con CRLF se custodian en LF, con los dos SHA-256.
+- **Decisiones literales:**
+  - aceptación del Coordinator;
+  - P-01 en la entrada del Worker (`64BEEBC7`);
+  - lista cerrada A/B;
+  - decisiones sobre nc1 y nc3;
+  - acuerdo sobre A-6.
+
+  La lista A/B/C ya se custodió en §45.
+
+**Se conservan:**
+- todos los INVALID_OUTPUT y el P-04 de nc3;
+- la ejecución temprana no autorizada del verificador de A-5 sobre entradas reales (§41);
+- las desviaciones de CRLF e identidad del blob del puente de Scope (`fcdd`);
+- el registro REBASE de `9ff0a287`, sin purgar.
+
+**Estado:**
+- F1 en curso: F1-T1-MODEL completa bajo A-4; F1-T2-BRIDGE completa bajo A-4 + A-6.
+- **F1-T3-HOST** es la siguiente tarea propuesta. Sigue bloqueada hasta la revisión del cierre.
+- Antes de delegarla hacen falta el contrato de gate del Coordinator y una nueva medición de la celda del Controller `gpt-6-luna`/`high`
+  con el CLI `0.162.0-alpha.17.2`.
+- Siguiente: STOP en **COORDINATOR_T2_CLOSE_REVIEW_REQUIRED**.
+
+**Relevos:**
+- Sin invocaciones de modelos en esta sección.
+- `config.toml` en la instantánea C antes y después del puente (`F909F480…`, 105 nombres).
+- HEAD = remoto = `a3751359` antes de este commit; `main` `bb0d5522`.
+- Sin cambios en `src/` ni `tests/`.

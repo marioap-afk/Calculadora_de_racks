@@ -1,0 +1,190 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F1-T2-BRIDGE",
+  "RunId": "R20261010T202008Z-3df4",
+  "DelegationRunId": "R20261010T082206Z-21c1",
+  "Initiative": "I-64",
+  "Gate": "F1",
+  "Attempt": 3,
+  "BaseSha": "d5bdcb7aff31ba54901a3a0acdbfd81be92ab516",
+  "RedSha": "31e3c57a66025ba339acb2c796298e71153126cc",
+  "CurrentSha": "e2f642b86197441eea0838c8055c1db666606f11",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "<worktree-local-redactado>",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.Application/Workspace/BridgeOutcomes.cs",
+    "src/RackCad.Application/Workspace/BridgeSource.cs",
+    "src/RackCad.Application/Workspace/EventBridgeCore.cs",
+    "src/RackCad.Application/Workspace/IHostEventSource.cs",
+    "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeDegradedModeTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeHintAndDrainTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeSubscriptionLifecycleTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeTestSupport.cs"
+  ],
+  "WorkCompleted": "Commit RED 31e3c57a (esqueleto compilable de EventBridgeCore + 5 archivos de pruebas Workspace*: 62 de 159 fallan por asercion). Commit GREEN e2f642b8: EventBridgeCore puro en Application (suscripciones = funcion exacta de las sesiones vivas, manejadores que solo encolan pistas con identidad de sesion, drenaje diferido y coalescido solo en reposo y sin modal RackCad, Idle solo con pistas pendientes, BeginDocumentClose vivo toda la sesion tambien degradada, degradacion local por sesion, seleccion y vista nunca escritas) y el unico suscriptor real AutoCadEventBridge (+=/-= sobre eventos de AutoCAD) en src/RackCad.Plugin/Workspace/, sin construirse al cargar el plugin. Sin cambios en los cinco archivos de T1, sus pruebas, PluginInitializer, comandos, csproj ni sln; sin puerto de host/UI. Los archivos de prueba no cambian entre RED y GREEN.",
+  "TestsExecuted": [
+    {
+      "RunRef": "T2-RED-filter",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger trx --results-directory artifacts/orchestration/I-64/F1-T2-BRIDGE/3/R20261010T202008Z-3df4/tests/red",
+      "Phase": "RED",
+      "TreeSha": "31e3c57a66025ba339acb2c796298e71153126cc",
+      "ResultsFile": "artifacts/orchestration/I-64/F1-T2-BRIDGE/3/R20261010T202008Z-3df4/tests/red/red.trx"
+    },
+    {
+      "RunRef": "T2-GREEN-filter",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger trx --results-directory artifacts/orchestration/I-64/F1-T2-BRIDGE/3/R20261010T202008Z-3df4/tests/green",
+      "Phase": "GREEN",
+      "TreeSha": "e2f642b86197441eea0838c8055c1db666606f11",
+      "ResultsFile": "artifacts/orchestration/I-64/F1-T2-BRIDGE/3/R20261010T202008Z-3df4/tests/green/green-filter.trx"
+    },
+    {
+      "RunRef": "T2-CORE-full",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --logger trx --results-directory artifacts/orchestration/I-64/F1-T2-BRIDGE/3/R20261010T202008Z-3df4/tests/green",
+      "Phase": "RELEVANT",
+      "TreeSha": "e2f642b86197441eea0838c8055c1db666606f11",
+      "ResultsFile": "artifacts/orchestration/I-64/F1-T2-BRIDGE/3/R20261010T202008Z-3df4/tests/green/core-full.trx"
+    },
+    {
+      "RunRef": "T2-BUILD-Tests-Release",
+      "Command": "dotnet build tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-incremental -v:minimal",
+      "Phase": "RELEVANT",
+      "TreeSha": "e2f642b86197441eea0838c8055c1db666606f11",
+      "ResultsFile": "artifacts/orchestration/I-64/F1-T2-BRIDGE/3/R20261010T202008Z-3df4/tests/green/build-RackCad.Tests.log"
+    },
+    {
+      "RunRef": "T2-BUILD-UITests-Release",
+      "Command": "dotnet build tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --no-incremental -v:minimal",
+      "Phase": "RELEVANT",
+      "TreeSha": "e2f642b86197441eea0838c8055c1db666606f11",
+      "ResultsFile": "artifacts/orchestration/I-64/F1-T2-BRIDGE/3/R20261010T202008Z-3df4/tests/green/build-RackCad.UI.Tests.log"
+    },
+    {
+      "RunRef": "T2-BUILD-Plugin-Release",
+      "Command": "dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Release --no-incremental -v:minimal -o artifacts/orchestration/I-64/F1-T2-BRIDGE/3/R20261010T202008Z-3df4/tests/plugin-green",
+      "Phase": "RELEVANT",
+      "TreeSha": "e2f642b86197441eea0838c8055c1db666606f11",
+      "ResultsFile": "artifacts/orchestration/I-64/F1-T2-BRIDGE/3/R20261010T202008Z-3df4/tests/green/build-plugin.log"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "T2-RED-filter",
+      "Selected": 159,
+      "Passed": 97,
+      "Failed": 62,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.WorkspaceBridgeDegradedModeTests.ADegradedSessionIsLocalTheOtherSessionKeepsSynchronizingNormally",
+        "RackCad.Tests.WorkspaceBridgeDegradedModeTests.ADegradedSessionIsNeverDrainedAutomatically",
+        "RackCad.Tests.WorkspaceBridgeDegradedModeTests.ADegradedSessionNoLongerEnqueuesAndNoLongerKeepsIdleAlive",
+        "RackCad.Tests.WorkspaceBridgeDegradedModeTests.AFailingDetachDuringDestructionStillRetiresTheSessionAndTheOthersAreUntouched",
+        "RackCad.Tests.WorkspaceBridgeDegradedModeTests.AFailureWhileAttachingASessionDegradesOnlyThatSessionAndKeepsItsCloseHandler",
+        "RackCad.Tests.WorkspaceBridgeDegradedModeTests.AFaultInTheLoggerNeverBecomesASecondFault",
+        "RackCad.Tests.WorkspaceBridgeDegradedModeTests.AFaultOfTheBridgeDegradesOnlyTheAffectedSessionAndRemovesOnlyItsSynchronizationHookups",
+        "RackCad.Tests.WorkspaceBridgeDegradedModeTests.BeginDocumentCloseStaysAttachedForTheWholeLifeOfADegradedSession",
+        "RackCad.Tests.WorkspaceBridgeDegradedModeTests.NoHandlerEverPropagatesAnExceptionToTheHost",
+        "RackCad.Tests.WorkspaceBridgeDegradedModeTests.TheCloseHandlerNeverThrowsEvenForARetiredOrUnknownSession",
+        "RackCad.Tests.WorkspaceBridgeDegradedModeTests.TheCloseHandlerUsesOnlyInMemoryStateAndTouchesNoHookupNorHost",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.AFaultWhileQueueingAHintIsContainedAndDegradesOnlyThatSession",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.ANotificationForARetiredSessionIsDroppedWithoutEffect",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.ANotificationNeverDrainsByItself",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.ASessionActivatedWhileNotAtRestWaitsForQuiescence",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.AnOrdinaryHandlerOnlyEnqueuesAHintOnTheSessionNamedByTheNotification(source: CommandCancelled)",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.AnOrdinaryHandlerOnlyEnqueuesAHintOnTheSessionNamedByTheNotification(source: CommandEnded)",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.AnOrdinaryHandlerOnlyEnqueuesAHintOnTheSessionNamedByTheNotification(source: CommandFailed)",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.AnOrdinaryHandlerOnlyEnqueuesAHintOnTheSessionNamedByTheNotification(source: ImpliedSelectionChanged)",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.AnOrdinaryHandlerOnlyEnqueuesAHintOnTheSessionNamedByTheNotification(source: ObjectAppended)",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.AnOrdinaryHandlerOnlyEnqueuesAHintOnTheSessionNamedByTheNotification(source: ObjectErased)",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.AnOrdinaryHandlerOnlyEnqueuesAHintOnTheSessionNamedByTheNotification(source: ObjectModified)",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.AnOrdinaryHandlerOnlyEnqueuesAHintOnTheSessionNamedByTheNotification(source: ObjectReappended)",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.AnOrdinaryHandlerOnlyEnqueuesAHintOnTheSessionNamedByTheNotification(source: ObjectUnappended)",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.NHintsCoalesceIntoASingleDrainOfTheActiveSession",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.NoEventAndNoDrainWritesTheSelectionContextOfAnySession",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.NothingDrainsWhileACommandIsRunningAndTheHintsWaitForQuiescence",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.NothingDrainsWhileARackCadModalIsActiveButHintsKeepQueueing",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.ObjectChangesDrainOnlyTheCacheInvalidationAndTheStaleMarking",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.OnlyTheActiveDocumentDrainsAndTheOthersKeepTheirHintsUntilActivated",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.SourcesThatAreNotHintsQueueNothingAndNeverAttachIdle(source: BeginDocumentClose)",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.SourcesThatAreNotHintsQueueNothingAndNeverAttachIdle(source: CommandWillStart)",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.SourcesThatAreNotHintsQueueNothingAndNeverAttachIdle(source: DocumentActivated)",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.SourcesThatAreNotHintsQueueNothingAndNeverAttachIdle(source: EnteringQuiescentState)",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.SourcesThatAreNotHintsQueueNothingAndNeverAttachIdle(source: Idle)",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.WithTheDocumentHiddenOrThePanelHiddenNothingDrains",
+        "RackCad.Tests.WorkspaceBridgeHintAndDrainTests.WithoutPendingHintsAnIdlePassDoesNothing",
+        "RackCad.Tests.WorkspaceBridgeSourceGuardTests.EveryNativeHandlerIsContainedSoNoExceptionReachesAutoCad",
+        "RackCad.Tests.WorkspaceBridgeSourceGuardTests.NoBridgeFileUsesTheInternalAutoCadNamespace",
+        "RackCad.Tests.WorkspaceBridgeSourceGuardTests.NothingIsHookedWhenThePluginLoadsAndNoCommandOrInitializerIsAdded",
+        "RackCad.Tests.WorkspaceBridgeSourceGuardTests.TheBridgeFilesCarryNoMetricsProviderProjectSummaryOrAggregationConcept",
+        "RackCad.Tests.WorkspaceBridgeSourceGuardTests.TheBridgeHasNoPersistenceNorAuthoredNorNodNorXdataWriteAuthority",
+        "RackCad.Tests.WorkspaceBridgeSourceGuardTests.TheBridgeNeverWritesSelectionOrViewNorReadsStoredDataNorAsksNorOpensDialogs",
+        "RackCad.Tests.WorkspaceBridgeSourceGuardTests.ThePluginWorkspaceDeclaresNoFieldOfATransactionDocumentOrDatabaseObjectType",
+        "RackCad.Tests.WorkspaceBridgeSourceGuardTests.ThePluginWorkspaceHoldsExactlyOneSubscriberFileHookingEachGovernedSourceExactlyOnce",
+        "RackCad.Tests.WorkspaceBridgeSourceGuardTests.ThePublicApiOfTheBridgeExposesNoAutoCadType",
+        "RackCad.Tests.WorkspaceBridgeSourceGuardTests.TransactionsAndDocumentLocksAppearOnlyInsideUsingInThePluginWorkspace",
+        "RackCad.Tests.WorkspaceBridgeSubscriptionLifecycleTests.ADocumentCreatedButNotActivatedGetsNoSessionAndNoHookups",
+        "RackCad.Tests.WorkspaceBridgeSubscriptionLifecycleTests.ARecycledNativeIdentifierGetsAFreshSessionAndNeverPairsWithTheRetiredOne",
+        "RackCad.Tests.WorkspaceBridgeSubscriptionLifecycleTests.ActivatingADocumentAttachesExactlyOneHookupPerPerSessionSource",
+        "RackCad.Tests.WorkspaceBridgeSubscriptionLifecycleTests.ActivatingAThenBThenAKeepsExactlyOneSetOfHookupsPerDocument",
+        "RackCad.Tests.WorkspaceBridgeSubscriptionLifecycleTests.DestroyingADocumentRetiresItsSessionAndEveryHookupOfIt",
+        "RackCad.Tests.WorkspaceBridgeSubscriptionLifecycleTests.DestroyingAnUnknownDocumentChangesNothing",
+        "RackCad.Tests.WorkspaceBridgeSubscriptionLifecycleTests.DestroyingTheLastDocumentLeavesOnlyTheCollectionSources",
+        "RackCad.Tests.WorkspaceBridgeSubscriptionLifecycleTests.DestroyingTheOnlyDocumentWithPendingHintsAlsoReleasesIdle",
+        "RackCad.Tests.WorkspaceBridgeSubscriptionLifecycleTests.HidingAndShowingThePanelNeverChangesTheHookups",
+        "RackCad.Tests.WorkspaceBridgeSubscriptionLifecycleTests.IdleIsAttachedOnlyWhileHintsArePending",
+        "RackCad.Tests.WorkspaceBridgeSubscriptionLifecycleTests.IdleStaysAttachedWhileAnotherSessionStillHasPendingHints",
+        "RackCad.Tests.WorkspaceBridgeSubscriptionLifecycleTests.RepeatedPanelOpensNeverMultiplyTheHookups",
+        "RackCad.Tests.WorkspaceBridgeSubscriptionLifecycleTests.StopReleasesEveryHookupAndReturnsToTheInitialState",
+        "RackCad.Tests.WorkspaceBridgeSubscriptionLifecycleTests.TheFirstPanelOpenAttachesTheCollectionSourcesOnceAndNothingElse",
+        "RackCad.Tests.WorkspaceBridgeSubscriptionLifecycleTests.TheHookupsAreAlwaysTheExactFunctionOfTheLiveDocumentsAndPendingHints"
+      ]
+    },
+    {
+      "RunRef": "T2-GREEN-filter",
+      "Selected": 159,
+      "Passed": 159,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "T2-CORE-full",
+      "Selected": 12754,
+      "Passed": 12754,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    }
+  ],
+  "Evidence": [
+    "RED: 62 fallos, todos por aserciones xunit (Assert.True/Equal/NotEmpty/Single/Null); ninguno por compilacion; las 51 pruebas de T1 y varias guardas pasan.",
+    "Builds Release de Tests y UI.Tests: 0 errores y 0 lineas que casen warning (MSB|CS|NU|NETSDK); los avisos restantes (43 y 7) son analizadores xUnit, incluido un xUnit2031 nuevo en WorkspaceBridgeSourceGuardTests.cs(140).",
+    "Build local del Plugin (Release, -o bajo artifacts): 0 errores, 0 avisos CS/NU/NETSDK, resumen '2 Advertencia(s)' ambas MSB3277 como la linea base.",
+    "Guardas de texto sobre src/RackCad.Plugin/Workspace/ para INV-F1-T2-02, 03, 07, 08, 09, 12, 13 y 14 en WorkspaceBridgeSourceGuardTests, con autopruebas de cada familia; INV-02 barre todo src/.",
+    "No se uso AutoCAD ni se cargo ningun DLL; no se toco perfil, registro, TRUSTEDPATHS, SECURELOAD ni ACL; sin Smoke-1."
+  ],
+  "UnexpectedFindings": [
+    "En AutoCAD 2025 ImpliedSelectionChanged es un evento de Document (no de Editor); coincide con el Freeze D-04, que lo lista entre los eventos del documento."
+  ],
+  "KnownLimitations": [
+    "El Plugin se compilo localmente contra las DLL instaladas de AutoCAD 2025; la compilacion con referencias NuGet la confirma la CI del CurrentSha.",
+    "El veto de BeginDocumentClose siempre permite en T2 (no existe estado de borradores hasta F4); el suscriptor real no invoca Veto.",
+    "El drenaje no ejecuta lecturas del DWG en T2: AutoCadEventBridge solo publica DrainOutcome por el evento Drained; las lecturas y su consumidor llegan con F1-T3-HOST. El puente no se instancia en ningun sitio todavia (sin RACKPANEL).",
+    "La regla de escritura de IWorkspaceHostPort se verifica en T3; no se creo puerto de host/UI.",
+    "Fuera del alcance del Worker y pendientes: CI exacta del CurrentSha, verificacion del Controller, nc1..nc4, Owner Validation/ADR 0047 y Smoke-1 (fronteras S-01/S-10)."
+  ],
+  "Deviations": [],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "Verificacion del Controller sobre el CurrentSha exacto y comprobacion de la CI de push del CurrentSha (cuatro jobs requeridos).",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

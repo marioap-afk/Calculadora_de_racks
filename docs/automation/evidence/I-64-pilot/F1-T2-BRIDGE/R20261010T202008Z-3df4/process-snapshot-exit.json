@@ -1,0 +1,380 @@
+[
+  {
+    "Pid": 11460,
+    "ParentPid": 11568,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-03T03:29:50.9265140Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 7424,
+    "ParentPid": 1256,
+    "Name": "codex-windows-sandbox-service.exe",
+    "CreationDateUtc": "2026-10-07T15:28:59.5377070Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 29516,
+    "ParentPid": 20912,
+    "Name": "codex.exe",
+    "CreationDateUtc": "2026-10-09T16:53:11.5101970Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 30220,
+    "ParentPid": 29516,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-09T16:53:11.5222150Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 31792,
+    "ParentPid": 20912,
+    "Name": "codex-computer-use-swift.exe",
+    "CreationDateUtc": "2026-10-09T16:53:23.9475010Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 10940,
+    "ParentPid": 31792,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-09T16:53:23.9831660Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 12436,
+    "ParentPid": 29516,
+    "Name": "codex-code-mode-host.exe",
+    "CreationDateUtc": "2026-10-09T19:21:10.8987690Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 10140,
+    "ParentPid": 12436,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-09T19:21:11.0302030Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 23076,
+    "ParentPid": 20912,
+    "Name": "codex.exe",
+    "CreationDateUtc": "2026-10-09T22:21:17.3588890Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 11888,
+    "ParentPid": 23076,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-09T22:21:17.4239170Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 10244,
+    "ParentPid": 30660,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:41.6499600Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 27764,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:42.1392120Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 22580,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:42.7142330Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 31240,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:42.7986280Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 34120,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:43.1950500Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 20316,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:44.1693540Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 33384,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:49.6345950Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 16188,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:50.4027340Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 37512,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:59.6783410Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 20716,
+    "ParentPid": 37512,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-09T22:38:00.6105150Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 26968,
+    "ParentPid": 37512,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-09T22:38:01.0871840Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 38340,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:38:04.1293070Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 26484,
+    "ParentPid": 38340,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-09T22:38:04.1614020Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 37052,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:38:04.8490300Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 37552,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:38:04.9339230Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 18312,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-10T01:10:46.3458670Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 24884,
+    "ParentPid": 37512,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T01:10:46.7820400Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 22536,
+    "ParentPid": 18312,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T01:10:46.8518280Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 28920,
+    "ParentPid": 37512,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-10T01:10:47.7980970Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 9088,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-10T01:10:54.3870480Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 26444,
+    "ParentPid": 9088,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T01:10:54.5447390Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 34156,
+    "ParentPid": 37512,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T01:10:55.2969980Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 21588,
+    "ParentPid": 37512,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-10T01:10:56.1817450Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 8532,
+    "ParentPid": 29516,
+    "Name": "node.exe",
+    "CreationDateUtc": "2026-10-10T20:15:06.9142840Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 11904,
+    "ParentPid": 38236,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T20:15:06.9256930Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 32692,
+    "ParentPid": 8532,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T20:15:06.9471050Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 23456,
+    "ParentPid": 8712,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T20:15:06.9615360Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 13500,
+    "ParentPid": 22368,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T20:15:06.9706040Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 35252,
+    "ParentPid": 8712,
+    "Name": "node.exe",
+    "CreationDateUtc": "2026-10-10T20:15:07.1520280Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 33528,
+    "ParentPid": 22368,
+    "Name": "node.exe",
+    "CreationDateUtc": "2026-10-10T20:15:07.1608320Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 20216,
+    "ParentPid": 2916,
+    "Name": "dotnet.exe",
+    "CreationDateUtc": "2026-10-10T20:20:32.2215140Z",
+    "BuildServer": true
+  },
+  {
+    "Pid": 16940,
+    "ParentPid": 2916,
+    "Name": "dotnet.exe",
+    "CreationDateUtc": "2026-10-10T20:20:32.2282780Z",
+    "BuildServer": true
+  },
+  {
+    "Pid": 33536,
+    "ParentPid": 20216,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T20:20:32.3415780Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 21896,
+    "ParentPid": 16940,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T20:20:32.3436960Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 19504,
+    "ParentPid": 16940,
+    "Name": "dotnet.exe",
+    "CreationDateUtc": "2026-10-10T20:20:41.7549210Z",
+    "BuildServer": true
+  },
+  {
+    "Pid": 13760,
+    "ParentPid": 19504,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T20:20:41.7881570Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 10480,
+    "ParentPid": 20912,
+    "Name": "git.exe",
+    "CreationDateUtc": "2026-10-10T20:23:19.9450430Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 7000,
+    "ParentPid": 10480,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T20:23:20.0126350Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 24084,
+    "ParentPid": 10480,
+    "Name": "git.exe",
+    "CreationDateUtc": "2026-10-10T20:23:20.0622720Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 24860,
+    "ParentPid": 20912,
+    "Name": "git.exe",
+    "CreationDateUtc": "2026-10-10T20:23:38.5631620Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 1472,
+    "ParentPid": 24860,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T20:23:38.5715510Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 29768,
+    "ParentPid": 24860,
+    "Name": "git.exe",
+    "CreationDateUtc": "2026-10-10T20:23:38.6151900Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 27976,
+    "ParentPid": 38016,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T20:23:50.2755300Z",
+    "BuildServer": false
+  },
+  {
+    "Pid": 21440,
+    "ParentPid": 38016,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-10T20:23:50.4472050Z",
+    "BuildServer": false
+  }
+]
