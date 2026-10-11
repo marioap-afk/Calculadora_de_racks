@@ -3746,3 +3746,110 @@ REQUIRED** sobre `b35548fd` (CI 38169928014 4/4).
 **Relevos:**
 - Sin invocaciones de modelos.
 - HEAD = remoto = `b35548fd` antes de este commit; `main` `bb0d5522`.
+
+## 63. F1 — I-64-A-7 AGREED / ACTIVE: revisión del Architect, activación del Coordinator y mapeo final de INV-24
+
+**Órdenes (transcripciones literales):**
+- **Revisión:** «I-64 — COORDINATOR A-7 REVIEW ORDER», en
+  `docs/automation/evidence/I-64-pilot/F1-GATE/A-7/coordinator-a7-review-order.md` (SHA-256 `d6d9aa64…`, igual al de la entrada de
+  la corrida). Ordenó:
+  - una revisión formal del Architect sobre `6a574fc0`, en la celda `gpt-6.1-sol` / high / read-only, con las preguntas Q1..Q6;
+  - sin escrituras Git de la sesión durante la revisión;
+  - STOP en COORDINATOR_A7_ARCHITECT_REVIEW_REQUIRED.
+- **Activación:** «I-64 — COORDINATOR A-7 ACTIVATION», en
+  `docs/automation/evidence/I-64-pilot/F1-GATE/A-7/coordinator-a7-activation.md`.
+
+**Revisión del Architect `R20261011T202537Z-1990`:**
+- **Celda:** `gpt-6.1-sol` / high / read-only, perfil ARCHITECTURE_REVIEW. Efectiva `gpt-6.1-sol` / high, CLI 0.162.0-alpha.17.2.
+  - Binario: único `codex.exe` en `Codex/bin`, SHA-256 `D13914CE…`.
+  - Elegibilidad: medida en la sonda `R20261011T030925Z-a198`.
+  - `config.toml` en la instantánea C del conjunto aceptado A/B/C, a la entrada y a la salida.
+- **Cesión:** 20:25:55Z → 20:27:50Z UTC. La sesión no operó en la rama.
+  - A la entrada y a la salida: HEAD = remoto = `6a574fc0`, árbol limpio, `main` `bb0d5522`.
+  - Sin procesos ajenos ni de AutoCAD.
+- **Resultado:**
+  - salida 0, `turn.completed`, clasificación VALID (esquema válido, coherente, sujeto correcto);
+  - 16 órdenes, ninguna fallida ni de escritura, sin patrones de límite;
+  - SHA-256 de la salida `ef217105…`.
+- **Dictamen:** **AGREED, 0 REQUIRED, 0 OPTIONAL.**
+  - Q1..Q6 YES y conformes.
+  - M-04: AGREE.
+  - Owner: NOT REQUIRED (reasignación, no retiro, LIFECYCLE §8).
+  - INV-24 no se debilita.
+  - S2-16..S2-22 no chocan con S2-01..S2-15, cubren los siete casos y son suficientes y vinculantes.
+  - Apta para la activación del Coordinator.
+  - El propio dictamen dice que no activa A-7 ni declara gate, Candidato, cierre, integración ni aprobación del Owner.
+- **Términos de 16.10 en el texto libre:** «FINAL_CANDIDATE_SHA» (Q4) cita la regla del Freeze; «Candidato» (Limitations) es una
+  negación. Son citas, no declaraciones.
+- **Custodia:** en `docs/automation/evidence/I-64-pilot/F1-GATE/A-7/architect-review/R20261011T202537Z-1990/`, con
+  `custody-manifest.json`:
+  - **CUSTODIED 10**: el dictamen (`architect-review.json`, desde `output.json`), el esquema, la evaluación, `review-record.json`, el
+    prompt, las comprobaciones de `config.toml` y de procesos a la entrada y a la salida, y la orden de revisión;
+  - **EXCLUDED 7**, con SHA-256 y motivo: `events.jsonl` (contiene rutas locales), `stderr.txt` (aviso de 39 bytes) y cinco datos
+    operativos del lanzamiento cuyo valor consta en `review-record.json`;
+  - dos archivos escritos por PowerShell se custodian con CRLF→LF; constan el SHA-256 original y el custodiado.
+- **Presupuesto:** una revisión válida en la primera invocación; ninguna adicional.
+
+**Activación del Coordinator:**
+- La revisión se acepta como válida.
+- **I-64-A-7 = AGREED / ACTIVE.**
+  - M-04 = YES; autoridad Architect + Coordinator.
+  - Architect AGREED; Coordinator AGREED.
+  - Aprobación del Owner NOT REQUIRED; Owner INFORMED.
+- **Motivo:** OV-19 y la obligación del campo editable no se retiran, sustituyen ni debilitan; su verificación literal se reasigna y
+  sigue siendo obligatoria.
+- **F1 / Smoke-1:**
+  - S1-06a..e = NOT_APPLICABLE_BY_DESIGN, porque el Workspace de F1 no tiene, por diseño, campos de texto editables. **Nunca se
+    informan como PASS en F1.**
+  - SM-14a..e = SUPPLEMENTARY_EVIDENCE únicamente.
+  - S1-06f, S1-06g y S1-06h siguen obligatorias.
+- **F4 / Smoke-2:**
+  - S2-16..S2-22 son **MANDATORY / BINDING**; F4 no puede omitirlos sin otra A-n aceptada.
+  - Si un hito anterior del Owner tiene un campo de texto editable real del Workspace, pueden ejercitarse además allí, sin retirar su
+    asignación vinculante.
+- `docs/initiatives/I-64-A-7.md` no se edita (append-only). Su estado consta en `I-64.yml` (`f1_a7_status`) y en esta evidencia.
+
+**Mapeo final de INV-24** (paquete de cierre, versión 3, sección 4.1):
+- **INV-24, parte de F1 = SATISFIED UNDER I-64-A-7**, con:
+  - S1-06f/g/h, que siguen en Smoke-1;
+  - SM-14a..e como evidencia complementaria;
+  - los casos con campo editable diferidos y vinculantes a S2-16..S2-22.
+- No se afirma que INV-24 quede verificada del todo en F1.
+- **INV-24 en todo el ciclo de vida sigue OPEN** hasta que se ejecuten esos escenarios de host diferidos y su asignación OV final.
+  No bloquea F1 PASS una vez satisfecho el resto del gate.
+
+**Dibujos de Smoke-1** (el Coordinator confirma que los **dos** son obligatorios para Smoke-1 PASS; R-14 dispuesto):
+- **SIN IDENTIDAD** (T3D PR-13): un objeto que RackCad reconoce y puede leer, con un sobre lo bastante válido para clasificarse como
+  RackCad pero con el RackId en blanco. Un bloque genérico sin datos de RackCad no vale.
+- **DIAGNÓSTICO** (T3D PR-12): la condición del clasificador actual de definición ilegible, inválida o futura.
+- **De cada uno se registra:** archivo de origen; SHA-256; procedencia y propósito; título y texto exactos esperados; regla de no
+  guardarlo (SHA-256 igual en SM-41).
+- **Si falta cualquiera:** S1-04 = INCOMPLETE y Smoke-1 no puede ser PASS.
+- No se lanzó AutoCAD para crearlos.
+
+**Cambios documentales versionados en este commit** (sin cambios de producto):
+- **A-7:** transcripciones de las dos órdenes y custodia de la revisión del Architect (`F1-GATE/A-7/`).
+- **T3D** (`docs/initiatives/I-64-f1-t3d-smoke-1-procedure.md`):
+  - D-T3D-01 resuelto por A-7 AGREED / ACTIVE; PR-02 al día;
+  - PR-12 y PR-13 con los cinco campos y S1-04 = INCOMPLETE si falta un dibujo;
+  - sección 6.6 con la disposición activa y S2-16..S2-22 vinculantes;
+  - sección 9 y sección 12 (D-T3D-01 y D-T3D-03) al día.
+- **Plantilla del operador:** A-7 AGREED / ACTIVE y los campos de los dos dibujos.
+- **Paquete de cierre, versión 3:**
+  - historial de revisiones;
+  - sección 4.1 con el mapeo final;
+  - sección 5 con los dos dibujos;
+  - R-07, R-13 y R-14 dispuestos;
+  - sección 7: la siguiente acción es la revisión final del gate por el Coordinator.
+- **Estado** (`I-64.yml`): `f1_a7_status` AGREED / ACTIVE, `f1`, `f1_t3d_smoke_procedure_status`, `f1_blocked_next_task` y la acción
+  siguiente. `last_evidence_commit` sigue en `9af9ac75`.
+
+**Estado:**
+- F1 sigue IN PROGRESS. **F1 PASS no se declara** antes de la revisión final del gate por el Coordinator.
+- No se ejecutó AutoCAD ni Smoke-1, no se pidió el RELEASE de I-52 y no se inició F2. No hubo verificación de producto nueva.
+- `src/` y `tests/` siguen idénticos a `e0205b5a`.
+- Siguiente: STOP en **COORDINATOR_F1_GATE_CLOSE_REQUIRED**.
+
+**Relevos:**
+- Una invocación de modelo: el Architect `R20261011T202537Z-1990`, por orden expresa.
+- HEAD = remoto = `6a574fc0` antes de este commit; `main` `bb0d5522`.

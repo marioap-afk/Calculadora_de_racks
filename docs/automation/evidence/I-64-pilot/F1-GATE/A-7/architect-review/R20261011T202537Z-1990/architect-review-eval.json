@@ -1,0 +1,120 @@
+{
+  "RunId": "R20261011T202537Z-1990",
+  "ExitCode": 0,
+  "TerminalEvent": "turn.completed",
+  "ThreadId": "01a12ca4-bdc2-7f20-a07a-35cef1f4d2b8",
+  "Usage": {
+    "input_tokens": 462903,
+    "cached_input_tokens": 371072,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 5270,
+    "reasoning_output_tokens": 1062
+  },
+  "CommandCount": 16,
+  "NonZeroCommands": [],
+  "WriteLikeCommands": [],
+  "LimitPatterns": {
+    "rate limit": 0,
+    "usage limit": 0,
+    "limit reached": 0,
+    "credits": 0,
+    "quota": 0
+  },
+  "SessionLog": "rollout-2026-10-11T14-25-56-01a12ca4-bdc2-7f20-a07a-35cef1f4d2b8.jsonl",
+  "SessionLogSha256": "f18c44f53d9a6d7af19d2b95bd0ef6633d43170f3c95e08fdb50631633350082",
+  "ModelEffective": "gpt-6.1-sol",
+  "EffortEffective": "high",
+  "CliVersion": "0.162.0-alpha.17.2",
+  "OutputPresent": true,
+  "SchemaValid": true,
+  "OutputSha256": "ef217105a37f265bf4785cf29f310d3ec2b86920ce3c30870ce727c3e3df2cd2",
+  "NonAsciiBytes": 0,
+  "Verdict": "AGREED",
+  "RequiredCount": 0,
+  "OptionalCount": 0,
+  "RequiredFindings": [],
+  "OptionalFindings": [],
+  "Answers": {
+    "Q1": [
+      "YES",
+      true
+    ],
+    "Q2": [
+      "YES",
+      true
+    ],
+    "Q3": [
+      "YES",
+      true
+    ],
+    "Q4": [
+      "YES",
+      true
+    ],
+    "Q5": [
+      "YES",
+      true
+    ],
+    "Q6": [
+      "YES",
+      true
+    ]
+  },
+  "Flags": {
+    "M04Disposition": "AGREE",
+    "OwnerRequired": "NOT REQUIRED",
+    "Inv24Weakened": false,
+    "S2IdsCollide": false,
+    "S2Sufficient": true,
+    "S2Binding": true,
+    "SuitableForCoordinatorActivation": true
+  },
+  "S2Coverage": {
+    "TextWithSpaces": true,
+    "CtrlZOnText": true,
+    "CtrlCVOnText": true,
+    "DeleteIsolation": true,
+    "EscEnterIsolation": true,
+    "Dbmod": true,
+    "FocusNotReturnedAfterEdit": true
+  },
+  "Coherent": true,
+  "SubjectBlobs": {
+    "Amendment": {
+      "Path": "docs/initiatives/I-64-A-7.md",
+      "Blob": "f8c3d6cde7c2bb9bdfa3024d8a964309638e0b9c"
+    },
+    "Lifecycle": {
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "Blob": "6415c33bd2f86fa05444e00b630d7fed5e5d7a22"
+    },
+    "SmokeProcedure": {
+      "Path": "docs/initiatives/I-64-f1-t3d-smoke-1-procedure.md",
+      "Blob": "3292a7c2462c8760ede389c07a1b4004e001b723"
+    },
+    "GateClosePackage": {
+      "Path": "docs/automation/evidence/I-64-pilot/F1-GATE/gate-close-package.md",
+      "Blob": "ae2b7eff196199b090e37f3a2310a8b793db0d1d"
+    },
+    "CoordinatorGateCloseReview": {
+      "Path": "docs/automation/evidence/I-64-pilot/F1-GATE/coordinator-gate-close-review-1.md",
+      "Blob": "3b535bad25994847be0127a6bb5d99fc41fb962e"
+    },
+    "Freeze": {
+      "Path": "docs/initiatives/I-64-proposal-v5.md",
+      "Blob": "dc1924ff5a73a4e529fbc5f995621d29351a091b"
+    },
+    "CoordinatorReviewOrder": {
+      "Path": "artifacts/orchestration/I-64/A-7-review/R20261011T202537Z-1990/inputs/coordinator-a7-review-order.md",
+      "Sha256": "d6d9aa64e424d591652dc48e3b8602fea1b0f2ffcc0909089c0afbf863b1fc77"
+    }
+  },
+  "SubjectMismatches": [],
+  "SubjectMatches": true,
+  "GateTerms1610": [
+    "Candidato",
+    "FINAL_CANDIDATE_SHA"
+  ],
+  "ValidOutput": true,
+  "Classification": "VALID"
+}

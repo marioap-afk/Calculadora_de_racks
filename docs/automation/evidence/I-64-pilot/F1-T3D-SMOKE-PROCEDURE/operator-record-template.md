@@ -2,7 +2,7 @@
 
 Procedimiento: `docs/initiatives/I-64-f1-t3d-smoke-1-procedure.md`. Se copia a `<run>/operator/operator-record.md` y se llena durante
 la ejecución. Resultado por paso: `PASS`, `FAIL`, `NOT_EXECUTED` (con motivo), `NOT_APPLICABLE` (solo por decisión del Coordinator) o
-`NOT_APPLICABLE_BY_DESIGN` (solo S1-06a..e, y solo con I-64-A-7 aceptada). Sin rutas locales en este archivo.
+`NOT_APPLICABLE_BY_DESIGN` (solo S1-06a..e, por I-64-A-7 AGREED / ACTIVE). Sin rutas locales en este archivo.
 
 ```text
 RunId:                    <R...-xxxx>
@@ -13,9 +13,10 @@ Fin (UTC, SM-40):         <hora>
 I-52 RELEASE / acuse:     <referencia de la transcripción>
 PaletteKeyAcceptance:     ACCEPTED | NOT_ACCEPTED | NOT_RECORDED
 Carga única autorizada:   SI (por <I-52 / CAD manager>) | NO | NO_HUBO_AVISO
-I-64-A-7:                 <ACCEPTED: referencia>   (sin A-7 aceptada no hay Smoke-1)
-Dibujo Diagnostico:       SHA-256 <hash>   texto esperado: «Diagnóstico» / «No se pudo interpretar la definición del objeto seleccionado.»
-Dibujo Sin identidad:     SHA-256 <hash>   texto esperado: «Sin identidad» / «El objeto seleccionado no tiene identidad de rack.»
+I-64-A-7:                 AGREED / ACTIVE (Architect R20261011T202537Z-1990; activacion del Coordinator)
+Dibujo Diagnostico:       archivo de origen <nombre>; SHA-256 <hash>; procedencia y proposito <texto>; texto esperado: «Diagnóstico» / «No se pudo interpretar la definición del objeto seleccionado.»; nunca se guarda (SHA-256 igual en SM-41)
+Dibujo Sin identidad:     archivo de origen <nombre>; SHA-256 <hash>; procedencia y proposito <texto>; texto esperado: «Sin identidad» / «El objeto seleccionado no tiene identidad de rack.»; nunca se guarda (SHA-256 igual en SM-41)
+Sin cualquiera de los dos dibujos: S1-04 = INCOMPLETE y Smoke-1 no puede ser PASS
 ```
 
 | Paso | S1 / OV / INV | Resultado | Observado (textos literales del panel y de la línea de órdenes) | Valores (sesión, RackId, ms, DBMOD, entidades, filas) | Notas |
@@ -38,7 +39,7 @@ Dibujo Sin identidad:     SHA-256 <hash>   texto esperado: «Sin identidad» / �
 | SM-11 | S1-04 diagnóstico / INV-17 (D-T3D-03, obligatorio) | | | | |
 | SM-12 | S1-09 / esc. 2 / INV-01 | | | última secuencia antes de la espera=; filas entre la espera y panel.hide= | |
 | SM-13 | S1-06f | | | | |
-| S1-06a..e | INV-24 (A-7) | NOT_APPLICABLE_BY_DESIGN | | | solo con A-7 aceptada; nunca PASS |
+| S1-06a..e | INV-24 (A-7) | NOT_APPLICABLE_BY_DESIGN | | | por A-7; nunca PASS; obligacion vinculante en S2-16..S2-22 |
 | SM-14a..e | evidencia complementaria (A-7) | | | | SUPPLEMENTARY_EVIDENCE; no cuenta como S1-06a..e |
 | SM-14h | S1-06h | | | DBMOD= | |
 | SM-15 | S1-06g | | | | |

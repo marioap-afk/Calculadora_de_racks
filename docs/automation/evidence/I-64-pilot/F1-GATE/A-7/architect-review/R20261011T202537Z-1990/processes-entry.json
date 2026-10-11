@@ -1,0 +1,49 @@
+{
+  "CheckedUtc": "2026-10-11T20:28:02.7601523Z",
+  "CheckerPid": 15760,
+  "Rows": [
+    {
+      "Pid": 27556,
+      "ParentPid": 1256,
+      "Name": "codex-windows-sandbox-service.exe",
+      "CreationDateUtc": "2026-10-11T02:51:26.2747490Z",
+      "Classification": "nominal-exclusion",
+      "Reread": null,
+      "SessionOwned": false
+    },
+    {
+      "Pid": 37224,
+      "ParentPid": 28296,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-10-11T20:27:57.1707640Z",
+      "Classification": "own-tree",
+      "Reread": null,
+      "SessionOwned": false
+    },
+    {
+      "Pid": 12728,
+      "ParentPid": 37224,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-10-11T20:28:01.2467110Z",
+      "Classification": "own-tree",
+      "Reread": null,
+      "SessionOwned": false
+    },
+    {
+      "Pid": 15760,
+      "ParentPid": 12728,
+      "Name": "pwsh.exe",
+      "CreationDateUtc": "2026-10-11T20:28:01.4831000Z",
+      "Classification": "own-tree",
+      "Reread": null,
+      "SessionOwned": false
+    }
+  ],
+  "ReadableNonParticipants": 42,
+  "Participants": 0,
+  "ParticipantsSessionOwned": 0,
+  "ParticipantsForeign": 0,
+  "SessionPid": 18312,
+  "UnattributablePersistent": 0,
+  "UnattributableCleared": 0
+}

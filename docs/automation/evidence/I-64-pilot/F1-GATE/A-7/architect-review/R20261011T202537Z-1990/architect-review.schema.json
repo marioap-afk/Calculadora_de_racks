@@ -1,0 +1,508 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rackcad-i64-architect-review/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "Schema": {
+      "type": "string",
+      "enum": [
+        "rackcad-i64-architect-review/v1"
+      ]
+    },
+    "RunId": {
+      "type": "string",
+      "enum": [
+        "R20261011T202537Z-1990"
+      ]
+    },
+    "Mode": {
+      "type": "string",
+      "enum": [
+        "SEPARATE SESSION"
+      ]
+    },
+    "ReviewSubject": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "AmendmentId": {
+          "type": "string",
+          "enum": [
+            "A-7"
+          ]
+        },
+        "Freeze": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Path": {
+              "type": "string"
+            },
+            "Blob": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          },
+          "required": [
+            "Path",
+            "Blob"
+          ]
+        },
+        "Amendment": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Path": {
+              "type": "string"
+            },
+            "Blob": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          },
+          "required": [
+            "Path",
+            "Blob"
+          ]
+        },
+        "Lifecycle": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Path": {
+              "type": "string"
+            },
+            "Blob": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          },
+          "required": [
+            "Path",
+            "Blob"
+          ]
+        },
+        "SmokeProcedure": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Path": {
+              "type": "string"
+            },
+            "Blob": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          },
+          "required": [
+            "Path",
+            "Blob"
+          ]
+        },
+        "GateClosePackage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Path": {
+              "type": "string"
+            },
+            "Blob": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          },
+          "required": [
+            "Path",
+            "Blob"
+          ]
+        },
+        "CoordinatorGateCloseReview": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Path": {
+              "type": "string"
+            },
+            "Blob": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          },
+          "required": [
+            "Path",
+            "Blob"
+          ]
+        },
+        "CoordinatorReviewOrder": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Path": {
+              "type": "string"
+            },
+            "Sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "Path",
+            "Sha256"
+          ]
+        }
+      },
+      "required": [
+        "Commit",
+        "AmendmentId",
+        "Freeze",
+        "Amendment",
+        "Lifecycle",
+        "SmokeProcedure",
+        "GateClosePackage",
+        "CoordinatorGateCloseReview",
+        "CoordinatorReviewOrder"
+      ]
+    },
+    "Answers": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Q1": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Answer": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "Conforming": {
+              "type": "boolean"
+            },
+            "Evidence": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Answer",
+            "Conforming",
+            "Evidence"
+          ]
+        },
+        "Q2": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Answer": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "Conforming": {
+              "type": "boolean"
+            },
+            "Evidence": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Answer",
+            "Conforming",
+            "Evidence"
+          ]
+        },
+        "Q3": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Answer": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "Conforming": {
+              "type": "boolean"
+            },
+            "Evidence": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Answer",
+            "Conforming",
+            "Evidence"
+          ]
+        },
+        "Q4": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Answer": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "Conforming": {
+              "type": "boolean"
+            },
+            "Evidence": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Answer",
+            "Conforming",
+            "Evidence"
+          ]
+        },
+        "Q5": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Answer": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "Conforming": {
+              "type": "boolean"
+            },
+            "Evidence": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Answer",
+            "Conforming",
+            "Evidence"
+          ]
+        },
+        "Q6": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Answer": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "Conforming": {
+              "type": "boolean"
+            },
+            "Evidence": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Answer",
+            "Conforming",
+            "Evidence"
+          ]
+        }
+      },
+      "required": [
+        "Q1",
+        "Q2",
+        "Q3",
+        "Q4",
+        "Q5",
+        "Q6"
+      ]
+    },
+    "M04Disposition": {
+      "type": "string",
+      "enum": [
+        "AGREE",
+        "REQUIRED"
+      ]
+    },
+    "OwnerRequired": {
+      "type": "string",
+      "enum": [
+        "NOT REQUIRED",
+        "REQUIRED"
+      ]
+    },
+    "OwnerRequiredBasis": {
+      "type": "string"
+    },
+    "Inv24Weakened": {
+      "type": "boolean"
+    },
+    "Inv24Statement": {
+      "type": "string"
+    },
+    "S2IdsCollide": {
+      "type": "boolean"
+    },
+    "S2Coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "TextWithSpaces": {
+          "type": "boolean"
+        },
+        "CtrlZOnText": {
+          "type": "boolean"
+        },
+        "CtrlCVOnText": {
+          "type": "boolean"
+        },
+        "DeleteIsolation": {
+          "type": "boolean"
+        },
+        "EscEnterIsolation": {
+          "type": "boolean"
+        },
+        "Dbmod": {
+          "type": "boolean"
+        },
+        "FocusNotReturnedAfterEdit": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "TextWithSpaces",
+        "CtrlZOnText",
+        "CtrlCVOnText",
+        "DeleteIsolation",
+        "EscEnterIsolation",
+        "Dbmod",
+        "FocusNotReturnedAfterEdit"
+      ]
+    },
+    "S2Sufficient": {
+      "type": "boolean"
+    },
+    "S2Binding": {
+      "type": "boolean"
+    },
+    "S2Statement": {
+      "type": "string"
+    },
+    "Q6RequiredWording": {
+      "type": "string"
+    },
+    "SuitableForCoordinatorActivation": {
+      "type": "boolean"
+    },
+    "Findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "Id": {
+            "type": "string"
+          },
+          "Severity": {
+            "type": "string",
+            "enum": [
+              "REQUIRED",
+              "OPTIONAL"
+            ]
+          },
+          "Question": {
+            "type": "string",
+            "enum": [
+              "Q1",
+              "Q2",
+              "Q3",
+              "Q4",
+              "Q5",
+              "Q6"
+            ]
+          },
+          "Location": {
+            "type": "string"
+          },
+          "Defect": {
+            "type": "string"
+          },
+          "Authority": {
+            "type": "string"
+          },
+          "Correction": {
+            "type": "string"
+          },
+          "RequiresOwnerDecision": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "Id",
+          "Severity",
+          "Question",
+          "Location",
+          "Defect",
+          "Authority",
+          "Correction",
+          "RequiresOwnerDecision"
+        ]
+      }
+    },
+    "RequiredCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "OptionalCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "Verdict": {
+      "type": "string",
+      "enum": [
+        "AGREED",
+        "CHANGES REQUIRED",
+        "BLOCKED - OWNER DECISION"
+      ]
+    },
+    "Limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "Schema",
+    "RunId",
+    "Mode",
+    "ReviewSubject",
+    "Answers",
+    "M04Disposition",
+    "OwnerRequired",
+    "OwnerRequiredBasis",
+    "Inv24Weakened",
+    "Inv24Statement",
+    "S2IdsCollide",
+    "S2Coverage",
+    "S2Sufficient",
+    "S2Binding",
+    "S2Statement",
+    "Q6RequiredWording",
+    "SuitableForCoordinatorActivation",
+    "Findings",
+    "RequiredCount",
+    "OptionalCount",
+    "Verdict",
+    "Limitations"
+  ]
+}
