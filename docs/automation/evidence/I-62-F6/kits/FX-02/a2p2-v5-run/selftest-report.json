@@ -1,0 +1,1274 @@
+{
+ "Kit": "a2p2-v5",
+ "Mode": "CONTROLLER_V5",
+ "UtcStart": "2026-10-11T10:20:55Z",
+ "NoModelInvoked": true,
+ "CodexHomeRead": false,
+ "ProbeDirBasename": "tmp-v5-selftest",
+ "Steps": {
+  "stage": 0,
+  "unstage": 0
+ },
+ "Cases": [
+  {
+   "Case": "P0_set_encoding",
+   "U0Scenario": "SET_OK",
+   "Expected": "ALL_OPERATIONS_DEMONSTRATED",
+   "Verdict": "ALL_OPERATIONS_DEMONSTRATED",
+   "ExtraChecks": {
+    "Utf8Measurement.Method": true,
+    "NativeRoute.DefaultShell": true,
+    "Fidelity.AllFaithful": true
+   },
+   "Pass": true,
+   "FailedOperations": [],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "P1_default_fiel_y_OutputEncoding_rechazado",
+   "U0Scenario": "DEFAULT_OK_SET_REFUSED",
+   "Expected": "ALL_OPERATIONS_DEMONSTRATED",
+   "Verdict": "ALL_OPERATIONS_DEMONSTRATED",
+   "ExtraChecks": {
+    "Utf8Measurement.Method": true,
+    "Utf8Measurement.ConsoleOutputEncoding.Set": true,
+    "Utf8Measurement.ConsoleOutputEncoding.ErrorInRawOutput": true
+   },
+   "Pass": true,
+   "FailedOperations": [],
+   "FailedActions": [],
+   "Utf8Method": "DEFAULT",
+   "FidelityAllFaithful": true,
+   "Reasons": [],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "P2_otro_metodo_fiel",
+   "U0Scenario": "OTHER_OK",
+   "Expected": "ALL_OPERATIONS_DEMONSTRATED",
+   "Verdict": "ALL_OPERATIONS_DEMONSTRATED",
+   "ExtraChecks": {
+    "Utf8Measurement.Method": true,
+    "Utf8Measurement.DefaultOutput.CopyExact": true
+   },
+   "Pass": true,
+   "FailedOperations": [],
+   "FailedActions": [],
+   "Utf8Method": "OTHER",
+   "FidelityAllFaithful": true,
+   "Reasons": [],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "P3_merge_base_no_escribe",
+   "U0Scenario": "SET_OK",
+   "Expected": "ALL_OPERATIONS_DEMONSTRATED",
+   "Verdict": "ALL_OPERATIONS_DEMONSTRATED",
+   "ExtraChecks": {
+    "EventsCommandAudit.git_write": true
+   },
+   "Pass": true,
+   "FailedOperations": [],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "P4_trampas_de_busqueda",
+   "U0Scenario": "SET_OK",
+   "Expected": "ALL_OPERATIONS_DEMONSTRATED",
+   "Verdict": "ALL_OPERATIONS_DEMONSTRATED",
+   "ExtraChecks": {
+    "EventsCommandAudit.file_write": true,
+    "EventsCommandAudit.network": true
+   },
+   "Pass": true,
+   "FailedOperations": [],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "P5_fetch_fallido_solo_se_registra",
+   "U0Scenario": "SET_OK",
+   "Expected": "ALL_OPERATIONS_DEMONSTRATED",
+   "Verdict": "ALL_OPERATIONS_DEMONSTRATED",
+   "ExtraChecks": {
+    "EventsCommandAudit.git_write": true,
+    "EventsCommandAudit.git_write_completed": true
+   },
+   "Pass": true,
+   "FailedOperations": [],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "P6_ls_remote_fallido_solo_se_registra",
+   "U0Scenario": "SET_OK",
+   "Expected": "ALL_OPERATIONS_DEMONSTRATED",
+   "Verdict": "ALL_OPERATIONS_DEMONSTRATED",
+   "ExtraChecks": {
+    "EventsCommandAudit.network": true,
+    "EventsCommandAudit.network_completed": true
+   },
+   "Pass": true,
+   "FailedOperations": [],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "P7_ls_remote_rechazado_en_lote_con_salida_0",
+   "U0Scenario": "SET_OK",
+   "Expected": "ALL_OPERATIONS_DEMONSTRATED",
+   "Verdict": "ALL_OPERATIONS_DEMONSTRATED",
+   "ExtraChecks": {
+    "EventsCommandAudit.network": true,
+    "EventsCommandAudit.network_completed": true
+   },
+   "Pass": true,
+   "FailedOperations": [],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N01_utf8_ningun_metodo_fiel",
+   "U0Scenario": "NONE",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Operations.OP_U0_utf8": true,
+    "Utf8Measurement.Method": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_U0_utf8",
+    "OP_C_fidelidad_de_entradas"
+   ],
+   "FailedActions": [],
+   "Utf8Method": "NONE",
+   "FidelityAllFaithful": false,
+   "Reasons": [
+    "OP_U0_utf8: no demostrado",
+    "OP_C_fidelidad_de_entradas: no demostrado",
+    "fidelidad UTF-8: alguna clave de fidelidad o campo canónico con texto no ASCII no es exacto, o hay caracteres de sustitución o de control en la salida (3)"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N02_utf8_deformado_en_paso_posterior",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Fidelity.AllFaithful": true,
+    "Operations.OP_U0_utf8": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_C_fidelidad_de_entradas"
+   ],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": false,
+   "Reasons": [
+    "OP_C_fidelidad_de_entradas: no demostrado",
+    "fidelidad UTF-8: alguna clave de fidelidad o campo canónico con texto no ASCII no es exacto, o hay caracteres de sustitución o de control en la salida (0)"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N03_utf8_deformado_en_canonico",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Fidelity.AllFaithful": true,
+    "Actions.PLAN_delegation_v2": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_F_esquemas_canonicos"
+   ],
+   "FailedActions": [
+    "PLAN_delegation_v2"
+   ],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": false,
+   "Reasons": [
+    "OP_F_esquemas_canonicos: no demostrado",
+    "PLAN_delegation_v2: no demostrado",
+    "fidelidad UTF-8: alguna clave de fidelidad o campo canónico con texto no ASCII no es exacto, o hay caracteres de sustitución o de control en la salida (1)"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N04_escape_mal_formado",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Fidelity.AllFaithful": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_F_esquemas_canonicos"
+   ],
+   "FailedActions": [
+    "PLAN_delegation_v2"
+   ],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": false,
+   "Reasons": [
+    "OP_F_esquemas_canonicos: no demostrado",
+    "PLAN_delegation_v2: no demostrado",
+    "fidelidad UTF-8: alguna clave de fidelidad o campo canónico con texto no ASCII no es exacto, o hay caracteres de sustitución o de control en la salida (1)"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N05_u0_copia_corregida_y_yes_sin_respaldo",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Utf8Checks.a_copias_textuales_de_la_salida": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_U0_utf8"
+   ],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_U0_utf8: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N06_u0_error_no_textual",
+   "U0Scenario": "DEFAULT_OK_SET_REFUSED",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Utf8Checks.b_console_resultado_y_error_exactos": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_U0_utf8"
+   ],
+   "FailedActions": [],
+   "Utf8Method": "DEFAULT",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_U0_utf8: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N07_u0_puntos_de_codigo_erroneos",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Utf8Checks.cps_t1_exactos": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_U0_utf8"
+   ],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_U0_utf8: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N08_u0_metodo_incoherente",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Utf8Checks.metodo_coherente": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_U0_utf8"
+   ],
+   "FailedActions": [],
+   "Utf8Method": "DEFAULT",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_U0_utf8: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N09b_u0_a_y_b_en_el_mismo_comando",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Utf8Checks.comandos_citados_existen_y_a_distinto_de_b": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_U0_utf8"
+   ],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_U0_utf8: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N09c_u0_comando_citado_inexistente",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Utf8Checks.comandos_citados_existen_y_a_distinto_de_b": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_U0_utf8"
+   ],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_U0_utf8: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N09d_u0_cps_no_emitidos_por_la_shell",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Utf8Checks.cps_emitidos_por_la_shell_en_a": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_U0_utf8"
+   ],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_U0_utf8: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N09e_u0_metodo_default_sin_salida_fiel",
+   "U0Scenario": "DEFAULT_OK_SET_REFUSED",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Utf8Checks.d_respaldado_por_la_salida": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_U0_utf8"
+   ],
+   "FailedActions": [],
+   "Utf8Method": "DEFAULT",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_U0_utf8: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N09_u0_falta_clave",
+   "U0Scenario": "DEFAULT_OK_SET_REFUSED",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Utf8Checks.claves_presentes": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_U0_utf8"
+   ],
+   "FailedActions": [],
+   "Utf8Method": "DEFAULT",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_U0_utf8: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N10_falta_clave_AP1613_validate",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Operations.OP_E_mapa_I62": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_E_mapa_I62"
+   ],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_E_mapa_I62: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N11_falta_clave_AP1613_derive",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Operations.OP_E_mapa_I62": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_E_mapa_I62"
+   ],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_E_mapa_I62: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N12_hash_erroneo",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Operations.OP_B_git_y_hashes": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_B_git_y_hashes"
+   ],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_B_git_y_hashes: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N13_paso_omitido",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Operations.OP_D_trx_y_ci": true,
+    "EvidenceLinks.13": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_D_trx_y_ci"
+   ],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_D_trx_y_ci: no demostrado",
+    "pasos sin vínculo con un comando ejecutado (C<n>): [13]"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N14_comando_inexistente",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "EvidenceLinks.5": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_B_git_y_hashes"
+   ],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_B_git_y_hashes: no demostrado",
+    "pasos sin vínculo con un comando ejecutado (C<n>): [5]"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N15_paso_sin_comandos",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "EvidenceLinks.3": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_B_git_y_hashes"
+   ],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_B_git_y_hashes: no demostrado",
+    "pasos sin vínculo con un comando ejecutado (C<n>): [3]"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N16_AuthorityResolution_erroneo",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "AuthorityResolutionMatch": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_E_mapa_I62"
+   ],
+   "FailedActions": [
+    "VERIFY_controller_verification_v2"
+   ],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": false,
+   "Reasons": [
+    "OP_E_mapa_I62: no demostrado",
+    "VERIFY_controller_verification_v2: no demostrado",
+    "fidelidad UTF-8: alguna clave de fidelidad o campo canónico con texto no ASCII no es exacto, o hay caracteres de sustitución o de control en la salida (0)"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N17_check_erroneo",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Actions.VERIFY_controller_verification_v2": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_F_esquemas_canonicos"
+   ],
+   "FailedActions": [
+    "VERIFY_controller_verification_v2"
+   ],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_F_esquemas_canonicos: no demostrado",
+    "VERIFY_controller_verification_v2: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N18_canonico_invalido",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "PlanCanonicalChecks.schema_valid": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_F_esquemas_canonicos"
+   ],
+   "FailedActions": [
+    "PLAN_delegation_v2"
+   ],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "salida no válida contra el esquema de salida usado: /delegation_v2/MaxReworkLoops: 4 fuera del enum",
+    "OP_F_esquemas_canonicos: no demostrado",
+    "PLAN_delegation_v2: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": false,
+    "delegation_v2": false,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [
+    "/delegation_v2/MaxReworkLoops: 4 fuera del enum",
+    "/MaxReworkLoops: 4 fuera del enum"
+   ],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N19_MainSha_erroneo",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "PlanCanonicalChecks.field:MainSha": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_F_esquemas_canonicos"
+   ],
+   "FailedActions": [
+    "PLAN_delegation_v2"
+   ],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_F_esquemas_canonicos: no demostrado",
+    "PLAN_delegation_v2: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N20_routing_incoherente",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "PlanCanonicalChecks.routing:Effort_semantic": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_F_esquemas_canonicos"
+   ],
+   "FailedActions": [
+    "PLAN_delegation_v2"
+   ],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_F_esquemas_canonicos: no demostrado",
+    "PLAN_delegation_v2: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N21_F6_OBS_03_reaparece",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "NativeRoute.ShellLimitationPersists": true
+   },
+   "Pass": true,
+   "FailedOperations": [],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "F6-OBS-03 reaparece: el runtime no puede lanzar la shell que selecciona (CreateProcessAsUserW); la vía normal no es elegible aunque el modelo haya improvisado otra shell"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N22_escritura_completada",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Operations.OP_A_ejecucion": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_A_ejecucion"
+   ],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_A_ejecucion: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N23_redireccion_a_archivo",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Operations.OP_A_ejecucion": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_A_ejecucion"
+   ],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_A_ejecucion: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N24_fetch_completado",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Operations.OP_A_ejecucion": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_A_ejecucion"
+   ],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_A_ejecucion: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N25_ls_remote_completado",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Operations.OP_A_ejecucion": true,
+    "EventsCommandAudit.network_completed": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_A_ejecucion"
+   ],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_A_ejecucion: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N26_red_completada",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Operations.OP_A_ejecucion": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_A_ejecucion"
+   ],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_A_ejecucion: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N27_falta_shell",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "Operations.OP_A_ejecucion": true
+   },
+   "Pass": true,
+   "FailedOperations": [
+    "OP_A_ejecucion"
+   ],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "OP_A_ejecucion: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N28_tope_vencido",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {},
+   "Pass": true,
+   "FailedOperations": [],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "salida del proceso: exit=143 timed_out=yes"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N29_escritura_en_area_ignorada",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "IgnoredStatusUnchangedDuringRun": true
+   },
+   "Pass": true,
+   "FailedOperations": [],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "status --ignored cambió durante la sonda (escritura en el área ignorada)"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N30_identidad_inestable",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {
+    "IdentityStable": true
+   },
+   "Pass": true,
+   "FailedOperations": [],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "identidad no estable antes/después (A2-P2, regla 6: medición anulada)"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N31_origen_cambio",
+   "U0Scenario": "SET_OK",
+   "Expected": "REFERENCE_UNSTABLE",
+   "Verdict": "REFERENCE_UNSTABLE",
+   "ExtraChecks": {
+    "RemoteReferenceStable": true
+   },
+   "Pass": true,
+   "FailedOperations": [],
+   "FailedActions": [],
+   "Utf8Method": "SET_ENCODING",
+   "FidelityAllFaithful": true,
+   "Reasons": [
+    "referencia de Remote no establecida: ls-remote del origen (supervisión) distinto antes, después o en la comparación"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": true,
+    "delegation_v2": true,
+    "controller_verification_v2": true
+   },
+   "LocalSchemaErrors": [],
+   "JsonschemaValid": null
+  },
+  {
+   "Case": "N32_sin_salida",
+   "U0Scenario": "SET_OK",
+   "Expected": "NOT_DEMONSTRATED",
+   "Verdict": "NOT_DEMONSTRATED",
+   "ExtraChecks": {},
+   "Pass": true,
+   "FailedOperations": [
+    "OP_U0_utf8",
+    "OP_A_ejecucion",
+    "OP_B_git_y_hashes",
+    "OP_C_fidelidad_de_entradas",
+    "OP_D_trx_y_ci",
+    "OP_E_mapa_I62",
+    "OP_F_esquemas_canonicos"
+   ],
+   "FailedActions": [
+    "PLAN_delegation_v2",
+    "VERIFY_controller_verification_v2"
+   ],
+   "Utf8Method": null,
+   "FidelityAllFaithful": false,
+   "Reasons": [
+    "salida no válida contra el esquema de salida usado: /: falta steps; /: falta head_sha; /: falta delegation_v2",
+    "OP_U0_utf8: no demostrado",
+    "OP_A_ejecucion: no demostrado",
+    "OP_B_git_y_hashes: no demostrado",
+    "OP_C_fidelidad_de_entradas: no demostrado",
+    "OP_D_trx_y_ci: no demostrado"
+   ],
+   "LocalSchemaValid": {
+    "probe-schema": false,
+    "delegation_v2": false,
+    "controller_verification_v2": false
+   },
+   "LocalSchemaErrors": [
+    "/: falta steps",
+    "/: falta head_sha",
+    "/: falta delegation_v2",
+    "/: falta controller_verification_v2"
+   ],
+   "JsonschemaValid": null
+  }
+ ],
+ "StatusIgnored": {
+  "0-before-stage": [],
+  "1-after-stage": [
+   "!! artifacts/"
+  ],
+  "2-after-run": [
+   "!! artifacts/"
+  ],
+  "3-after-unstage": []
+ },
+ "StatusIgnoredRestored": true,
+ "SyntheticOutputChars": {
+  "SET_OK": 25332,
+  "DEFAULT_OK_SET_REFUSED": 25526,
+  "OTHER_OK": 25541,
+  "NONE": 25528
+ },
+ "JsonschemaAvailable": false,
+ "AllCasesPass": true,
+ "PositiveOutputsSchemaValid": true,
+ "StrictAudit": {
+  "probe-schema.controller-v5.json": {
+   "RootIsObjectWithoutAnyOf": true,
+   "StructuralIssues": [],
+   "Keywords": {
+    "additionalProperties": 48,
+    "description": 25,
+    "enum": 64,
+    "items": 27,
+    "minLength": 17,
+    "minimum": 6,
+    "pattern": 31,
+    "required": 48,
+    "title": 2,
+    "type": 263
+   },
+   "NotDocumentedAsSupported": [
+    "minLength"
+   ],
+   "DocumentedUnsupported": [],
+   "NotEmpiricallyAccepted": [],
+   "ObjectNestingDepth": 5,
+   "ObjectProperties": 235,
+   "EnumValues": 232,
+   "NamesAndEnumChars": 4128,
+   "WithinDocumentedLimits": true
+  }
+ },
+ "ReferenceHighlights": {
+  "Checks": {
+   "Termination": "pass",
+   "Handoff": "pass",
+   "Authority": "fail",
+   "Contract": "pass",
+   "Identity": "pass",
+   "Remote": "pass",
+   "Scope": "fail",
+   "CleanTree": "pass",
+   "Ci": "fail",
+   "Ci.RedPart": "pass",
+   "Tests": "fail",
+   "Tests.RedPart": "pass",
+   "Trailer": "fail",
+   "Routing": "pass",
+   "FreeText": "pass",
+   "Denials": "pass"
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Authority",
+  "MapVerdict": "MAP_INVALID",
+  "MvFailed": "MV-3,MV-4,MV-6,MV-7",
+  "EFF": "fbe25347799e5b801ef708454212335537448bd1",
+  "ClassifyP": "I62",
+  "StageHead": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+  "ScopeDiffCount": 15,
+  "KeysRequested": 158,
+  "U0": {
+   "T1": "# FX-U1 — decisiones y órdenes del Coordinator del fixture (SISTEMA BAJO PRUEBA)",
+   "T2": "Añadir a Fixture.Lib la operación Calculator.Subtract(int a, int b) con su prueba en Fixture.Tests: primero la prueba en RED y después la implementación en GREEN.",
+   "T1Cps": "U+2014 U+00F3",
+   "T2Cps": "U+00F1 U+00F3 U+00E9 U+00F3"
+  },
+  "FidelityKeys": [
+   "0:u0d:t1",
+   "0:u0d:t2",
+   "10:md-line",
+   "10:md-nonascii-count",
+   "10:md-nonascii-chars",
+   "11:yaml:automation_state.next_action",
+   "12:json:Objective.nonascii-count"
+  ]
+ },
+ "UtcEnd": "2026-10-11T10:21:24Z"
+}

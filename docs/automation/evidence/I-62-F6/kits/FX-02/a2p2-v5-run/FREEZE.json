@@ -1,0 +1,88 @@
+{
+ "Schema": "i62-a2p2-v5-freeze (supervisión, plano a)",
+ "Authority": "decisiones §73, puntos 4-7 (sonda 2 del bloque A2-P2 reasignada al Controller; celda codex-cli / gpt-6-luna / high; par d13914ce…/26.1007.2314.0/F909F480…; -C D:\\r62-fixture\\A2 por §55 U-03); Owner: OD-2 = A y BLOQUE-CODEX-CONSUMO = A (§69), 1 de 2 consumida",
+ "FrozenUtc": "2026-10-11T10:26:29Z",
+ "RunCopy": "scratchpad de la supervisión (a2p2-v5), byte a byte igual a este directorio; out/ no existe antes del lanzamiento",
+ "Mode": "CONTROLLER_V5",
+ "CanonicalSchemaMode": "VERBATIM",
+ "DryArmedPrompt": {
+  "Sha256": "6437e184bcd342eea8a87ec635455a7c7ae7b623a55156ad7b3a34c8c2b8d400",
+  "Chars": 21967,
+  "Clone": "temporal de fx/u1 95bdc29d (borrado)",
+  "NotProbe1": true
+ },
+ "SelfTests": {
+  "Comparator": "44/44 PASS",
+  "Gates": "29/29 PASS"
+ },
+ "Files": {
+  "README.md": {
+   "Bytes": 31610,
+   "Sha256": "a058e899cb7e24dcf23719cb63c555eb76aa366e6e65a4b262a95b6c3fa1a9bd"
+  },
+  "baseline-keynames-F909F480.json": {
+   "Bytes": 4291,
+   "Sha256": "076637c550ff0b3109447ef00263ff087749f0aaa71f299d524e43b8cf82b70b"
+  },
+  "bloque-consumo-line.txt": {
+   "Bytes": 322,
+   "Sha256": "953088c953075af184a017fcf48a98c5540ee0cc4e5123edf719fc969f57bf5b"
+  },
+  "cfg-fp.ps1": {
+   "Bytes": 1479,
+   "Sha256": "b1d833c0abc06fec6e27367b6df2715e7cdca321f0d6c6fbadb9f634e6a31bab"
+  },
+  "gates.env": {
+   "Bytes": 6699,
+   "Sha256": "fe08c6070e5ad741c81742cfeeae9a44518635360b1e132977c46ac2477eef79"
+  },
+  "gates.env.template": {
+   "Bytes": 6250,
+   "Sha256": "eb65107b707284fe78f610534b6a3e047dfa150adc4ec974aa4378be0105ab6d"
+  },
+  "od2-line.txt": {
+   "Bytes": 161,
+   "Sha256": "b76470163f86592dfda474d44c5e2051d1e05ead667362fb8428c32ef7d4ac96"
+  },
+  "probe-prompt.controller-v5.template.txt": {
+   "Bytes": 20175,
+   "Sha256": "4c01411f3e373500b5eeaabd4190187e7e1eceb778f847adb525978abfa32aa5"
+  },
+  "probe-schema.controller-v5.json": {
+   "Bytes": 37053,
+   "Sha256": "dac47c33158cb111e06725777745da0a9fc21b1dd657939b52e25cf73b955e42"
+  },
+  "probe-schema.controller-v5.strict-projection.json": {
+   "Bytes": 36603,
+   "Sha256": "cf686993430a3b64106285cef33410ae98101def5a9e23512104cef3b4ec0cb1"
+  },
+  "probe_tools.py": {
+   "Bytes": 147887,
+   "Sha256": "cf904a49d94ccbc54f923ce79a7c2f14f40bc9d7a60dc51910ff617f90d615df"
+  },
+  "procs-snapshot.ps1": {
+   "Bytes": 1236,
+   "Sha256": "f879db305dd296d30241cca75cf61ac0a5828077cd2be6277e4128f934afedaf"
+  },
+  "review-diff.txt": {
+   "Bytes": 8360,
+   "Sha256": "27e44f01a2dcc7c56548b52730dd3092c7dbcf5052aa4b4567981ba4809feb5f"
+  },
+  "run_probe.sh": {
+   "Bytes": 21224,
+   "Sha256": "d769aabace2abe0533f0a448f1e5dff0786d722c9b1549cec4e64098e3f2bff9"
+  },
+  "selftest-gates-report.json": {
+   "Bytes": 6285,
+   "Sha256": "c80227fc59b6933b9b613e58059d3fe7f705e12e124cae26beeadc9979745ae4"
+  },
+  "selftest-gates.sh": {
+   "Bytes": 10795,
+   "Sha256": "01c420e393c478fe9bedbef7c70004f8aa377ad2e42a15b018b0b00b155918e6"
+  },
+  "selftest-report.json": {
+   "Bytes": 32276,
+   "Sha256": "67984c4f9dc707bb84d673b2e538572e40a13d3feb6b07a52a8db03a52ee0f43"
+  }
+ }
+}

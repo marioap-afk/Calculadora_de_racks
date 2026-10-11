@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §73; evidencia §137) — A-5 AGREED; preparar la sonda 2 reasignada al Controller (PLAN y VERIFY conjunta, sin presión de tiempo, salida acotada, prueba UTF-8) con su preflight y ejecutarla una vez; preparar las disposiciones y solicitudes de B1; sin F6 GATE PASS"
+  next_action: "F6 (decisiones §73; evidencia §138-§139) — kit a2p2-v5 congelado (CONTROLLER_V5); lanzar una sola vez la sonda 2 reasignada al Controller con sus puertas, comparar y custodiar; B1 preparada (sin pedir); sin F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

@@ -3744,3 +3744,35 @@ solo desde artefactos custodiados.
 - **Sin pedir ni ejecutar nada:** la línea A5-FIXTURE-B1-REPO se pide con la disposición de construcción; A5-PRINCIPAL-FXU2-CONSUMO, cuando haya un
   Controller elegible y una disposición de apertura (§73.8). Sustituye al borrador anterior al acuerdo (`B1-fixture-request-draft-2026-10-11.md`), que
   se conserva.
+
+## 139. Sonda 2 reasignada (Controller, v5): kit revisado, congelado y custodiado antes del lanzamiento (decisiones §73, puntos 5 y 6)
+
+- **Kit** [`kits/FX-02/a2p2-v5-run`](I-62-F6/kits/FX-02/a2p2-v5-run/README.md), modo `CONTROLLER_V5`; congelado `2026-10-11T10:26:29Z` (`FREEZE.json` `be0cc9349516d215…`):
+  - texto `4c01411f`;
+  - esquema `dac47c33` (VERBATIM);
+  - comparador y oráculo `probe_tools.py` `cf904a49`;
+  - puertas `run_probe.sh` `d769aaba`;
+  - `gates.env` `fe08c607`, con los seis literales del registro, cada uno presente una sola vez.
+- **Diferencias con la sonda 1** (README §1):
+  - sin «Tiempo limitado» y con la instrucción de ejecutar los pasos 0-23;
+  - un paso 0 de UTF-8 que mide si `OutputEncoding` se puede fijar;
+  - 24 pasos y 158 claves (antes 32 y 175);
+  - `commands` solo con `C<n>`;
+  - sin negativos agregados ni `ls-remote`;
+  - `MainSha` = `origin/main` local, con la igualdad a `ls-remote` comprobada por la puerta.
+
+  Texto armado en seco: `6437e184bcd342ee…`, 21 967 caracteres; distinto de `f88d3313…`.
+- **Revisión de la supervisión** (README §12, `review-diff.txt`): `C<n>` numera las invocaciones de la shell, que es lo que indexa el comparador.
+  El texto mezclaba «comando» por orden con la agrupación en una invocación. No cambia ningún criterio, clave ni puerta. Esquemas regenerados (solo esa
+  descripción) y autoensayos repetidos: comparador **44/44**, puertas **29/29**.
+- **Supuestos de la medición registrados** (README §12):
+  - tamaño de respuesta ≈ 25 k, fijado por requisitos obligatorios;
+  - nc3 retirado con los negativos agregados (los de RAE §10 siguen en FX-02);
+  - lectura de A6 para `MainSha`;
+  - `ls-remote` completado = red.
+- **Preflight, parte previa al lanzamiento:**
+  - ninguna sesión abierta sobre `D:\r62-fixture\A2`;
+  - I-64 sin turno en curso a las 10:25Z (última actividad 10:14:31Z);
+  - la sonda solo lee el clon A2 del fixture, sin recursos compartidos con I-64.
+
+  Identidad, presupuesto, no repetición, aislamiento del clon y texto armado los comprueban las puertas al lanzar, una sola vez.
