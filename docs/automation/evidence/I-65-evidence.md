@@ -815,3 +815,36 @@ Custodia:
 | `F4-T1-PACKAGE-HARDENING-nc3/R20261011T165957Z-92bf/mutation.json` | `DA1F3B8B5E00512B…` | `511067defe3d` (fin de línea normalizado por Git) |
 | `F4-T1-PACKAGE-HARDENING-nc3/R20261011T165957Z-92bf/controller-verification.json` | `23DA85D288A4B71F…` | `b31a9c739eee` |
 | `F4-T1-PACKAGE-HARDENING-nc3/R20261011T165957Z-92bf/relay-record.json` | `4357D6576083D3A2…` | `396fa8a6721e` |
+
+## 38. F4-T2-SOURCE-ENTRY — intento 1: STOP del Worker (2026-10-11T17:33:42Z)
+
+Contrato sobre `AuthorityRevision` = `BaseSha` = `cd3fb69b`; `MainSha` `bb0d5522` sin cambio.
+
+| RunId | Fase | Participante | Resultado |
+|---|---|---|---|
+| `R20261011T171258Z-689c` | PLANNING | Codex `gpt-6-luna`/`high` | paquete válido; seis colecciones idénticas al contrato; A1-A8 en `pass`; `claude-sonnet-5-5`/`high` (Deep) |
+| `R20261011T171639Z-6ff1` | CONTROL nc4 | sin invocar | `REJECTED_BEFORE_INVOCATION`: A3 `fail`, el resto igual: **oráculo cumplido** |
+| `R20261011T171727Z-2e11` | WORK | subagente `claude-sonnet-5-5`/`high` (97 mensajes) | `BLOCKED`/`STOP` (C-09, C-01); **sin commits**; 11 min 31 s; 53 llamadas, 0 errores, sin Python |
+
+- **Causa:** la entrada exigida en `Systems/Cantilever` con el almacén de proyecto choca con la guarda existente
+  `CantileverSourceGuardTests.TheStationHasNoPersistenceAndNoView`; el Worker no la debilitó. Defecto del contrato (decisiones §29).
+- **Resolución:** CD-I65-F4-11 (decodificador inyectado; contrato reemitido), DEV-I65-F4-04 (STOP aplicado sin Controller), `attempts` = 2.
+- **Invocaciones de Codex en F4:** 8 de 28.
+
+Custodia:
+
+| Archivo (bajo `I-65-pilot/`) | SHA-256 transitorio | Blob |
+|---|---|---|
+| `F4-T2-SOURCE-ENTRY/R20261011T171258Z-689c/gate-contract.json` | `1789597844C3CBDB…` | `71fc75632e74` |
+| `F4-T2-SOURCE-ENTRY/R20261011T171258Z-689c/prompt.md` | `D72CBE8E797BB980…` | `208ba4a4b171` |
+| `F4-T2-SOURCE-ENTRY/R20261011T171258Z-689c/delegation.json` | `643A7021A547BED6…` | `440ffed2f466` |
+| `F4-T2-SOURCE-ENTRY/R20261011T171258Z-689c/acceptance.json` | `F63ED8E87F2A0609…` | `73d1783fc942` |
+| `F4-T2-SOURCE-ENTRY/R20261011T171258Z-689c/exactness.json` | `D0CBC2F19D9B1FBA…` | `de0f1687cb6b` (fin de línea normalizado por Git) |
+| `F4-T2-SOURCE-ENTRY/R20261011T171258Z-689c/relay-record.json` | `0BF028CE47F36FBE…` | `c9e827544659` |
+| `F4-T2-SOURCE-ENTRY-nc4/R20261011T171639Z-6ff1/delegation.json` | `0A7D2E5CF613A52C…` | `fba4a54dfb92` |
+| `F4-T2-SOURCE-ENTRY-nc4/R20261011T171639Z-6ff1/acceptance.json` | `3E2CF552A67987E0…` | `2df92c858dd3` |
+| `F4-T2-SOURCE-ENTRY-nc4/R20261011T171639Z-6ff1/relay-record.json` | `8074229875C0E4B5…` | `2d75264e502f` |
+| `F4-T2-SOURCE-ENTRY/R20261011T171727Z-2e11/prompt.md` | `4941E3B5E94236B4…` | `af3224554e3c` |
+| `F4-T2-SOURCE-ENTRY/R20261011T171727Z-2e11/worker-handoff.json` | `75924E79819E0121…` | `8387c6b1c3ed` |
+| `F4-T2-SOURCE-ENTRY/R20261011T171727Z-2e11/relay-record.json` | `A610515A9BEEA3B4…` | `423c49db9899` |
+| `F4-T2-SOURCE-ENTRY/R20261011T171727Z-2e11/analysis.md` | `98D8394B5DCA0F5C…` | (este commit) |

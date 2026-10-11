@@ -17,7 +17,7 @@ preparación revisado por el Architect ([I-65-f4-preparation.md](I-65-f4-prepara
 
 ## 1. Tareas, orden y presupuesto
 
-Cinco tareas delegadas, en serie (una delegación abierta a la vez), cada una con una cadena RED → GREEN, Controller Codex `gpt-6-luna`/`high`
+Cinco tareas delegadas (reparto de T4 y T5 ajustado por CD-I65-F4-09), en serie (una delegación abierta a la vez), cada una con una cadena RED → GREEN, Controller Codex `gpt-6-luna`/`high`
 (planificación y verificación) y Worker `claude-sonnet-5-5`/`high`:
 
 | Tarea | Resultado |
@@ -25,8 +25,8 @@ Cinco tareas delegadas, en serie (una delegación abierta a la vez), cada una co
 | F4-T1-PACKAGE-HARDENING | correcciones de la plantilla y del paquete heredadas de F3 (A65-F3-01, 02, 04, 05, 06, 07, 08, 09, 11; prueba T4-21) |
 | F4-T2-SOURCE-ENTRY | entrada neutral de una sola lectura del diseño persistido y endurecimiento de la fuente de F1 (A65-F1-03, 08, 09, 10, 11, 12) |
 | F4-T3-DUMP-AND-READERS | script fijo de volcado de solo lectura y lectores del proveedor (volcado, lectura de vuelta, huella del manifiesto) hacia tipos neutrales |
-| F4-T4-COMPARATOR | comparador neutral puro con informe determinista (D-11, INV-13, matriz §4 en lo que leen los volcados; A65-F3-10) |
-| F4-T5-TOOL-AND-COMMAND | herramienta de consola fuera del producto (script de volcado, comparación, inyección de fallos) y comando de línea del Plugin (D-13), con la distribución de la tabla y la ruta de G1 (A65-F3-12) |
+| F4-T4-COMPARATOR-AND-TOOL | comparador neutral puro con informe determinista (D-11, INV-13, matriz §4 en lo que leen los volcados; A65-F3-10) y herramienta de consola fuera del producto (script de volcado, comparación, inyección de fallos) |
+| F4-T5-PLUGIN-COMMAND | comando de línea del Plugin (D-13), con la tabla en la salida de compilación y la ruta de G1 (A65-F3-12) |
 
 Presupuesto de Codex del Owner: **28**. Por tarea: planificación 1, verificación 1, nc1-nc3 3 (nc4 no invoca) = 5; cinco tareas = 25; reserva
 3 (una planificación rechazada o una reverificación). Una invocación que excediera el tope no se lanza (P-07).
@@ -66,8 +66,10 @@ Presupuesto de Codex del Owner: **28**. Por tarea: planificación 1, verificaci�
 ## 3. F4-T2-SOURCE-ENTRY
 
 - **A65-F1-08:** una entrada neutral (Application, `Systems/Cantilever`) recibe el `RackId`, el `Kind`, el índice de estación, los **bytes**
-  del JSON `Design` tal como están persistidos en el sobre y los bytes del archivo de cargas; deserializa **esos** bytes y los hashea intactos
-  (D-12). Mismos bytes → misma `SourceFingerprint`; un cambio solo de espacios → huella distinta.
+  del JSON `Design` tal como están persistidos en el sobre, una **función de decodificación** de esos bytes que aporta quien llama (el comando
+  del Plugin, con el almacén de proyecto) y los bytes del archivo de cargas; aplica esa función a **esos** bytes y los hashea intactos (D-12).
+  La estación no depende de la persistencia (guarda `CantileverSourceGuardTests`, I-37C; CD-I65-F4-11). Mismos bytes → misma
+  `SourceFingerprint`; un cambio solo de espacios → huella distinta.
 - **A65-F1-09:** excepciones de la deserialización, de la fuente o del resolver → `Unavailable` con diagnóstico, sin modelo; el constructor
   rechaza (`Invalid`) un modelo vacío, apoyos duplicados por nudo e ids de supuesto ausentes.
 - **A65-F1-11:** un bloqueo de la línea completa tiene su propio código de diagnóstico, distinto del de una estación bloqueada.
@@ -94,7 +96,7 @@ Presupuesto de Codex del Owner: **28**. Por tarea: planificación 1, verificaci�
   estado de fallo → rechazo.
 - **Tipos neutrales** de lectura (sin identidad de proveedor, G1/G2) que consume el comparador.
 
-## 5. F4-T4-COMPARATOR
+## 5. F4-T4-COMPARATOR-AND-TOOL
 
 Comparador neutral puro (`CompareReadbacks`, D-13) del volcado del generado contra el del manual, con la lectura de vuelta y la huella del
 paquete: empareja nudos por posición (0.02 in; ambiguo → FAIL) y miembros por extremos; evalúa las filas de la matriz §4 que leen los
@@ -104,21 +106,25 @@ offsets, factores, axial y resortes, liberaciones y apoyos, cargas (valor 0.1 %,
 `NOT_EVALUATED` las filas de propiedades de sección y material (las evalúa la hoja firmada). Rechaza (`STALE`, `FAILED`, `Invalid`) según
 D-11 e INV-13. Informe JSON determinista. Las tolerancias son las del Freeze §4; **no se alteran** (OD-F4-04).
 
-## 6. F4-T5-TOOL-AND-COMMAND
-
 - **Herramienta de consola fuera del producto** (D-11; precedente `tools/RackCad.StructuralSections.Import`): proyecto nuevo bajo `tools/`,
   en la solución y referenciado por el proyecto de pruebas Core (que así lo compila y prueba en la CI); no entra al paquete del Plugin.
   Subórdenes: generar un script de volcado en una carpeta **nueva** (publicación atómica, nunca sobrescribe); comparar (paquete, volcado
   generado, volcado manual → informe y código de salida); generar los **paquetes de inyección de fallo** de OV-I65-05/06/07 a partir de un
   paquete válido, con una sola mutación semántica cada uno (sección inexistente; ejes esperados alterados; versión o función del núcleo
-  alteradas) y la carpeta embebida nueva, marcados en su manifiesto como inyección; el producto no puede emitirlos.
+  alteradas) y la carpeta embebida nueva, marcados en su manifiesto como inyección; el producto no puede emitirlos. Rutas: el proyecto nuevo
+  bajo `tools/`, una entrada en `RackCad.sln` y una `ProjectReference` en `tests/RackCad.Tests/RackCad.Tests.csproj` (CD-I65-F4-09).
+
+## 6. F4-T5-PLUGIN-COMMAND
+
 - **Comando de línea del Plugin** (D-13), un archivo nuevo en la ruta exacta de la lista de permiso de G1: selecciona un rack Cantilever,
   pide estación, archivo de cargas y carpeta nueva; lee el sobre **una vez** y usa la entrada de T2; lee la tabla distribuida con su lector
   (A65-F3-12: nunca otro perfil de material); publica en la carpeta embebida del paquete (A65-F3-07); captura toda excepción como
   `Unavailable`; lista diagnósticos. Prohibido: eventos de AutoCAD, `SetImpliedSelection`, WPF, `PaletteSet`, menús, código de ID30 o de
   `Plugin/Workspace`.
-- **Distribución de la tabla:** `src/RackCad.Plugin/RackCad.Plugin.csproj`, solo para añadir
-  `assets/structural-analysis/ram-elements/section-material-map.json` a la salida y al paquete del autoloader.
+- **Distribución de la tabla** (CD-I65-F4-10): `src/RackCad.Plugin/RackCad.Plugin.csproj`, solo para añadir
+  `assets/structural-analysis/ram-elements/section-material-map.json` a la **salida de compilación** (el DLL Debug que usa la validación
+  manual). El paquete del autoloader exigiría cambiar `deploy/verify-bundle.ps1`, fuera de las rutas autorizadas: queda diferido; sin la
+  tabla, el comando responde `Unavailable` con un diagnóstico visible.
 
 ## 7. Decisiones de ingeniería del Owner (orden de F4 §3-§4)
 

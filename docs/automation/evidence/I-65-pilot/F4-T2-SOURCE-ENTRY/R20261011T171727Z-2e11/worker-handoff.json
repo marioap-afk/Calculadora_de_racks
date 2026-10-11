@@ -1,0 +1,49 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F4-T2-SOURCE-ENTRY",
+  "RunId": "R20261011T171727Z-2e11",
+  "DelegationRunId": "R20261011T171258Z-689c",
+  "Initiative": "I-65",
+  "Gate": "F4",
+  "Attempt": 1,
+  "BaseSha": "cd3fb69b92390ba737d0034dc19cace83398efd5",
+  "RedSha": null,
+  "CurrentSha": "cd3fb69b92390ba737d0034dc19cace83398efd5",
+  "Branch": "architecture/interop-analisis-estructural",
+  "Worktree": "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-interop-analisis-estructural",
+  "Pushed": false,
+  "FilesChanged": [],
+  "WorkCompleted": "Parada antes del commit RED. Se leyeron las autoridades y los archivos del alcance, se implemento localmente la entrada (CantileverStructuralExport.cs), el endurecimiento de la fuente y del constructor, y se compilo y se corrio la seleccion StructuralAnalysis y las guardas de Cantilever. Al medir el efecto sobre las guardas existentes apareció un conflicto que el paquete no preve y que solo se resuelve debilitando o editando una guarda prohibida (C-09, C-01). No se hizo ningun commit ni push; el arbol de trabajo se restauro a BaseSha limpio. El trabajo local queda como parche de referencia en la carpeta work de esta corrida (no versionada).",
+  "TestsExecuted": [],
+  "TestResults": [],
+  "Evidence": [
+    "CONFLICTO (bloqueante). La guarda tests/RackCad.Tests/CantileverSourceGuardTests.cs, prueba TheStationHasNoPersistenceAndNoView (lineas 929-941), recorre TODOS los .cs de src/RackCad.Application/Systems/Cantilever y src/RackCad.Domain/Systems/Cantilever (sin comentarios) y exige que ninguno contenga las subcadenas Document, Xrecord, RackProject, ViewBuilder, Preview ni RackSystemKind. El paquete aceptado manda crear src/RackCad.Application/Systems/Cantilever/CantileverStructuralExport.cs y que deserialice con el almacen de proyecto existente (RackProjectStore, de Persistence). Ese nombre contiene la subcadena RackProject; no hay forma de nombrar el almacen sin ella. Medido: con la entrada escrita como manda el paquete, el filtro StructuralAnalysis + guardas Cantilever da exactamente un fallo de guarda: 'RackProject' esta fuera de alcance en I-37C. Lo incumplen: src/RackCad.Application/Systems/Cantilever/CantileverStructuralExport.cs. CantileverSourceGuardTests.cs esta en el ForbiddenWriteScope y CD-I65-F3-05 / el paquete solo autorizan ediciones de guarda por ruta exacta en otros archivos; las guardas de F4-T2 no incluyen esta. Eludirla por reflexion o por concatenacion de texto seria debilitarla en la practica y no lo hice.",
+    "Dos colisiones adicionales de la misma guarda, resolubles dentro del alcance y ya resueltas en el trabajo local: (a) el patron \\bRackEmbedDocument\\b de NothingHereReachesIntoALaterInitiative y la subcadena Document: se evitan comparando el kind del sobre contra la constante local \"cantilever\" (mismo valor que RackEmbedDocument.KindCantilever) en lugar de nombrar ese tipo; (b) TheLineIsTheONLYPlaceThatKnowsAboutIntervals prohibe la subcadena Interval en archivos de Cantilever que no sean los de la linea: el inventario de A65-F1-12 se hizo con las propiedades de la linea (Separators, SeparatorColumnPlates, Adapters, Braces) y no con los intervalos. Es una decision de implementacion que el Controller debe conocer: el inventario de separadores y arriostramientos queda a nivel de linea, no solo de los intervalos contiguos a la estacion.",
+    "Resto del trabajo local verificado antes de revertirlo: compila sin errores; con la entrada, la fuente y el constructor endurecidos, las pruebas de F1 y F3 (StructuralAnalysis*) y el golden de INV-06 de REF-CANT-01 siguieron en verde; fallaron solo las dos pruebas de BoundaryTests que encodan el comportamiento viejo de A65-F1-11 (UnaLineaBloqueadaPorElResolverEsUnsupportedSinModelo y UnaEstacionBloqueadaPorElResolverEsUnsupportedSinModelo, ambas esperan SOURCE-STATION-BLOCKED para una linea bloqueada; en el resolver, una estacion bloqueada bloquea siempre la linea) y la guarda del conflicto. Esas dos son las ediciones permitidas por el paquete. Codigos nuevos propuestos: SOURCE-LINE-BLOCKED, SOURCE-DESIGN-ABSENT, MODEL-NO-NODES, MODEL-NO-MEMBERS, SUPPORT-DUPLICATE, ASSUMPTION-UNKNOWN, PERALTE-AXIS-DEVIATION, STATION-PIECE-UNCLASSIFIED.",
+    "Clasificacion de piezas propuesta (CD-I65-F1-14), sin necesidad de decidir nada fuera del Freeze: modelados = miembro con rol Column y miembro con rol Arm; no modelados = miembro con rol Base, Separator, Brace o ColdRolledAdapter, toda placa (BaseFront, BaseRear, ColumnBottom, ArmMounting, ArmEnd, SeparatorColumn), cartela, troquel, adaptador y tensor (seccion o varilla redonda); cualquier valor no nombrado, incluido uno no definido del enum, queda sin clasificar y la estacion Unsupported. No se llego a medir el recuento por pieza de REF-CANT-01 porque la parada ocurrio antes del RED.",
+    "Las corridas de prueba de exploracion no se registraron con TRX en la carpeta de la corrida (fueron mediciones previas al RED, sin commit); por eso TestsExecuted y TestResults van vacios. No se invoco Python ni RAM Elements.",
+    "Estado del repositorio al entregar: HEAD = BaseSha cd3fb69b92390ba737d0034dc19cace83398efd5, git status limpio, origin sin cambios, sin commits ni pushes de esta entrega. Parche de referencia: artifacts/orchestration/I-65/F4-T2-SOURCE-ENTRY/1/R20261011T171727Z-2e11/work/impl-attempt-uncommitted.patch y CantileverStructuralExport.cs.txt en la misma carpeta (ignorados por Git)."
+  ],
+  "UnexpectedFindings": [
+    "El paquete (y I-65-f4-implementation.md §3) no tuvo en cuenta que las guardas de I-37C aplican a toda la carpeta Systems/Cantilever, incluida la entrada nueva. Es una colision entre la ruta mandada para la entrada y una guarda que el propio paquete declara intocable.",
+    "Una linea con una estacion bloqueada es siempre una linea bloqueada en el resolver (CantileverLineResolver agrega LineStationBlocked y devuelve la linea bloqueada), asi que con A65-F1-11 la rama de estacion bloqueada de la fuente solo se alcanza con una linea construida a mano; las dos pruebas existentes de BoundaryTests que hoy la ejercitan por el resolver cambian de codigo."
+  ],
+  "KnownLimitations": [
+    "Nada de F4-T2-SOURCE-ENTRY esta entregado: no hay RED, ni GREEN, ni pruebas nuevas, ni push."
+  ],
+  "Deviations": [],
+  "OpenQuestions": [
+    "Que resolucion elige el Coordinator para el conflicto con TheStationHasNoPersistenceAndNoView: (1) una enmienda que autorice una edicion de esa guarda por ruta exacta (eximir CantileverStructuralExport.cs solo de la subcadena RackProject, con autoprueba, al estilo de A65-F3-05), o (2) cambiar la ubicacion de la entrada a una carpeta no cubierta por las guardas de Cantilever manteniendo la regla de capas (la capa neutral no referencia Systems; Systems puede referenciar Persistence), o (3) cambiar la firma para que la entrada reciba el deserializador. Las opciones 2 y 3 cambian lo decidido en el contrato y requieren su A-n.",
+    "Confirmar que el inventario de A65-F1-12 a nivel de linea (separadores, arriostramientos, adaptadores y placas de columna de toda la linea) es aceptable, o decidir otra forma de acotarlo a la estacion sin nombrar intervalos en Systems/Cantilever."
+  ],
+  "WorkerStatus": "BLOCKED",
+  "Disposition": "STOP",
+  "TriggeredStopConditions": ["C-09", "C-01"],
+  "RecommendedNextAction": "Devolver al Coordinator el conflicto entre la ruta mandada para la entrada y TheStationHasNoPersistenceAndNoView. Tras la enmienda elegida, delegar de nuevo F4-T2-SOURCE-ENTRY (intento 2) con el alcance ajustado; el parche de referencia de esta corrida puede reutilizarse como punto de partida.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}
