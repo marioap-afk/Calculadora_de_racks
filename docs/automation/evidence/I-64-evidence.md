@@ -3630,3 +3630,50 @@ producto, sin AutoCAD, sin mutación del host y **sin ejecutar ningún paso**.
 - Sin invocaciones de modelos.
 - HEAD = remoto = `795c95c4` (CI 38168220998 4/4) antes de este commit; `main` `bb0d5522`.
 - Sin cambios en `src/`, `tests/`, archivos de proyecto, ROADMAP ni HANDOFF.
+
+## 61. F1 — Paquete de cierre del gate (preparado); STOP en COORDINATOR_F1_GATE_CLOSE_REQUIRED
+
+Sección nueva; las anteriores no se reescriben. Por orden de la revisión de T3C (§59). Sin invocaciones de modelos de producto; una
+investigación de solo lectura de la sesión (subagente sin escrituras) reunió los hechos, y la sesión comprobó cada SHA, corrida de CI,
+invariante de contrato y método de prueba citado antes de usarlo.
+
+**Paquete:** `docs/automation/evidence/I-64-pilot/F1-GATE/gate-close-package.md`.
+- **Identidad:** producto de F1 = el árbol `src/` y `tests/` de `e0205b5a`, idéntico en la punta documental `8fe54f76`. Suites
+  completas en la CI 38129212761: Core 13122/13122 y UI 1701 con 17 Skip.
+- **Cadena:**
+  - T1: `39f7caa4` (CI 37046833476) → `f593cb8b` tras el rebase; revalidación `0e9a` sobre `8e6a1b4e` (CI 38020256918); aceptación en
+    §40.
+  - T2: `e2f642b8` (CI 38085381131); PASS en §47.
+  - T3A: `ba52b3b9` (CI 38116594290); PASS en §52.
+  - T3B: `e0205b5a` (CI 38129212761); PASS en §57.
+  - T3C: `9af9ac75` (CI 38158957028); PASS en §59.
+  - T3D: `8fe54f76` (CI 38169083861); se revisa con este cierre.
+- **Resultado del gate:** cada resultado congelado de la fila F1 del Freeze, con su evidencia.
+- **Invariantes de cierre:** INV-01, 02, 03 (eventos), 07, 13, 14, 16, 17, 21, 22, 23, 25 (panel) y 33, cada uno con:
+  - la verificación del Freeze;
+  - los invariantes de contrato que lo llevan (INV-F1-T2-xx, INV-F1-T3A-xx, INV-F1-T3B-xx);
+  - las clases y métodos de prueba en `e0205b5a`, con la tarea que los creó;
+  - sus notas.
+- **Lo que queda para Smoke-1**, tras F1 PASS: INV-24, la parte de host de INV-21, el registro de INV-14 y los escenarios 1, 2, 3, 9
+  y 10.
+
+**Residuales para el Coordinator** (R-01..R-12 del paquete):
+- INV-07 no aparece citado en ningún contrato emitido, pero tiene pruebas en T1 y T3A;
+- discrepancia de INV-13 con `UiSystemBoundaryGuardTests`;
+- `SetModalRackCadActive` sin llamador (INV-23);
+- partes de INV-02 y de INV-25 que son de F3 y F4;
+- decisiones D-T3D-01..06;
+- `protocol_debt` activa para I-62;
+- `f1_resume_condition` con la redacción anterior a A-4;
+- ADR 0047 `propuesto` y fuera del índice;
+- T1 sin un `coordinator-close-review.md` propio;
+- nc2 y nc3 del Controller nunca superados, con cierres por A-4 y A-6.
+
+**Estado:**
+- F1 sigue IN PROGRESS. **F1 PASS no se declara**: lo decide el Coordinator.
+- No se ejecutó AutoCAD ni Smoke-1; no se pidió la Owner Validation; no se inició F2.
+- Siguiente: STOP en **COORDINATOR_F1_GATE_CLOSE_REQUIRED**.
+
+**Relevos:**
+- HEAD = remoto = `8fe54f76` (CI 38169083861 4/4) antes de este commit; `main` `bb0d5522`.
+- Sin cambios en `src/` ni `tests/`.
