@@ -48,6 +48,21 @@ namespace RackCad.Plugin.Workspace
             }
         }
 
+        /// <summary>The session of the active document, or none when no document is open.</summary>
+        public SessionId? ActiveSession => null;
+
+        public bool TryGetSession(SessionId id, out WorkspaceSession session)
+        {
+            session = null;
+            return false;
+        }
+
+        public RequestDecision Authorize(WorkspaceRequest request, long executingNativeInstanceId) => RequestDecision.Accepted;
+
+        public void RequestReconciliation()
+        {
+        }
+
         public void SetPanelVisible(bool visible) => _core.SetPanelVisible(visible);
 
         public void SetModalRackCadActive(bool active) => _core.SetModalRackCadActive(active);

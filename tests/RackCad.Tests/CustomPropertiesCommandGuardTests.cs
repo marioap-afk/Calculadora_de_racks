@@ -48,8 +48,11 @@ namespace RackCad.Tests
         /// <summary>Lo que I-55 G15 anade, EXACTAMENTE: el comando de OD-1 A y su unico alias.</summary>
         internal static readonly string[] G15Commands = { "RACKPROYECTAR", "RPY" };
 
-        /// <summary>El censo vigente: apertura, G7 y G15, cada nombre una vez.</summary>
-        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).ToArray();
+        /// <summary>Lo que I-64 F1-T3A anade, EXACTAMENTE: el comando del panel de trabajo, sin alias.</summary>
+        internal static readonly string[] F1PanelCommands = { "RACKPANEL" };
+
+        /// <summary>El censo vigente: apertura, G7, G15 y el panel de F1, cada nombre una vez.</summary>
+        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(F1PanelCommands).ToArray();
 
         // ================================================================ censo
 
