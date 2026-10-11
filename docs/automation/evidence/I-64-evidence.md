@@ -2730,3 +2730,50 @@ Sección nueva; las anteriores no se reescriben.
 - `config.toml` en la instantánea C antes y después del puente (`F909F480…`, 105 nombres).
 - HEAD = remoto = `a3751359` antes de este commit; `main` `bb0d5522`.
 - Sin cambios en `src/` ni `tests/`.
+
+## 47. F1-T2-BRIDGE — Revisión del cierre por el Coordinator: PASS; corrección documental del estado
+
+Sección nueva; las anteriores no se reescriben.
+
+**Revisión del Coordinator** (literal en `docs/automation/evidence/I-64-pilot/F1-T2-BRIDGE/coordinator-close-review.md`): **PASS**
+sobre `32d38688` (CI 38109192296 4/4).
+- **Registro:**
+  - F1-T2-BRIDGE = COMPLETE_UNDER_I64_SUBSTITUTE_PROTOCOL_EVIDENCE;
+  - ProductStatus = EXECUTION_VERIFIED / NONE;
+  - ProductVerifiedSha = `e2f642b86197441eea0838c8055c1db666606f11`;
+  - ProtocolClose = SATISFIED UNDER A-4 + A-6.
+- **Controles históricos, conservados tal cual:**
+
+  | Control | Resultado |
+  |---|---|
+  | nc1 | PASS |
+  | Controller nc2 | CONTROL NOT PASSED |
+  | I64-SCOPE-BRIDGE-01 | PASS |
+  | Controller nc3 | NOT PASSED / P-04 |
+  | I64-FREETEXT-BRIDGE-01 | PASS |
+  | nc4 | PASS |
+
+  No se repite ningún control de T2 y el producto de T2 no se reabre.
+- **F1 sigue IN PROGRESS;** no se declara F1 PASS. Siguiente tarea: F1-T3-HOST.
+
+**Corrección documental del estado** (`docs/automation/state/I-64.yml`, por orden de la revisión):
+- `last_evidence_commit` = `32d38688e121b6e48d7a26b63b6fb614c046ca6e`, el commit de cierre de T2.
+- **`protocol_debt.STATUS`:** la deuda sigue ACTIVA para la evolución global del protocolo y de I-62, y ya no bloquea I-64, porque A-4
+  (I64-SCOPE-BRIDGE-01) y A-6 (I64-FREETEXT-BRIDGE-01) son los mecanismos sustitutos autorizados y limitados a la unidad. Hallazgo,
+  dueño, fuente y traspaso sin cambios.
+- `f1_t2_bridge_status` registra la revisión PASS.
+- `f1_blocked_next_task` y la acción siguiente pasan a F1-T3-HOST.
+- Sin reescritura de historia.
+
+**Autorizado a continuación por la misma revisión:**
+1. una sonda mínima de solo lectura de `gpt-6-luna`/`high` con Codex CLI `0.162.0-alpha.17.2`;
+2. si da PASS, preparar sin emitir el contrato de gate de F1-T3-HOST, con la clasificación de enrutamiento y la comprobación de
+   propiedad y archivos calientes frente a I-52 e I-65;
+3. STOP en COORDINATOR_T3_GATE_CONTRACT_REQUIRED.
+
+No se invoca la planificación de T3.
+
+**Relevos:**
+- Sin invocaciones de modelos en esta sección.
+- HEAD = remoto = `32d38688` antes de este commit; `main` `bb0d5522`.
+- Sin cambios en `src/` ni `tests/`.
