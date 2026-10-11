@@ -42,7 +42,10 @@ namespace RackCad.Application.Systems.Cantilever
         /// <summary>The steepest arm the first version admits (IDL-10), in degrees from the horizontal.</summary>
         private const double MaximumArmInclinationDegrees = 10.0;
 
+        /// <summary>The canonical kind of the scope this source answers to; the entry translates the kind persisted in the envelope to it.</summary>
         internal const string KindName = "Cantilever";
+
+        private const string LineSubject = "line";
         private const string SideToken = "PositiveY";
         private const string FootId = "COL.FOOT";
         private const string TopId = "COL.TOP";
@@ -91,7 +94,13 @@ namespace RackCad.Application.Systems.Cantilever
                 CantileverCataloguePolicies.ColumnBase(_catalog),
                 CantileverCataloguePolicies.Arm(_catalog));
 
-            if (line.IsBlocked || scope.StationIndex >= line.Stations.Count || line.Stations[scope.StationIndex].Station.IsBlocked)
+            // A65-F1-11: a block of the whole line names the line; only a station that is blocked itself names "station-N".
+            if (line.IsBlocked)
+            {
+                return Refuse(Blocking(StructuralDiagnosticCodes.SourceLineBlocked, StructuralExportOutcome.Unsupported, LineSubject));
+            }
+
+            if (scope.StationIndex >= line.Stations.Count || line.Stations[scope.StationIndex].Station.IsBlocked)
             {
                 return Refuse(Blocking(StructuralDiagnosticCodes.SourceStationBlocked, StructuralExportOutcome.Unsupported, stationSubject));
             }
@@ -100,11 +109,17 @@ namespace RackCad.Application.Systems.Cantilever
             var station = placement.Station;
             var diagnostics = new List<StructuralDiagnostic>();
 
-            if (station.FaceMode == CantileverStationFaceMode.Double)
+            // A65-F1-12: every structural piece the resolver produces for the station is either modelled or one of the pieces
+            // CD-I65-F1-14 leaves out; a piece that is neither makes the station Unsupported.
+            diagnostics.AddRange(InventoryDiagnostics(
+                station.Members.Select(m => new KeyValuePair<string, CantileverMemberRole>(placement.ScopedId(m.Id).Value, m.Role))));
+
+            // When the inventory already refused the station, the face and the arrangement are not looked at.
+            if (diagnostics.Count == 0 && station.FaceMode == CantileverStationFaceMode.Double)
             {
                 diagnostics.Add(Blocking(StructuralDiagnosticCodes.StationFaceUnsupported, StructuralExportOutcome.Unsupported, stationSubject));
             }
-            else if (station.SingleSide != CantileverArmSide.PositiveY)
+            else if (diagnostics.Count == 0 && station.SingleSide != CantileverArmSide.PositiveY)
             {
                 diagnostics.Add(Blocking(StructuralDiagnosticCodes.StationSideUnsupported, StructuralExportOutcome.Unsupported, stationSubject));
             }
@@ -300,12 +315,19 @@ namespace RackCad.Application.Systems.Cantilever
                 var start = columnNodes[index - 1];
                 var finish = columnNodes[index];
 
+                if (!TryPerpendicular(columnPeralte, finish.Y - start.Y, finish.Z - start.Z, out var columnDepth))
+                {
+                    diagnostics.Add(Blocking(
+                        StructuralDiagnosticCodes.PeralteReorthogonalisation, StructuralExportOutcome.Unsupported, "COL." + index));
+                    continue;
+                }
+
                 members.Add(new StructuralSourceMember(
                     "COL." + index,
                     start.Id,
                     finish.Id,
                     column.Placement.SectionId,
-                    Perpendicular(columnPeralte, finish.Y - start.Y, finish.Z - start.Z),
+                    columnDepth,
                     StructuralMemberRole.Column,
                     column.PieceId,
                     StructuralMemberReleases.None(ContinuousConnection)));
@@ -325,12 +347,19 @@ namespace RackCad.Application.Systems.Cantilever
                 rigid[level] = ((piece.Placement.Frame.Origin.Y - start.Y) * piece.Placement.Frame.AxisZ.Y / armNorm)
                     + ((piece.Placement.Frame.Origin.Z - start.Z) * piece.Placement.Frame.AxisZ.Z / armNorm);
 
+                if (!TryPerpendicular(PeralteAxis(piece.Placement), tip.Y - start.Y, tip.Z - start.Z, out var armDepth))
+                {
+                    diagnostics.Add(Blocking(
+                        StructuralDiagnosticCodes.PeralteReorthogonalisation, StructuralExportOutcome.Unsupported, ArmId(level)));
+                    continue;
+                }
+
                 members.Add(new StructuralSourceMember(
                     ArmId(level),
                     jointNode[level],
                     tip.Id,
                     piece.Placement.SectionId,
-                    Perpendicular(PeralteAxis(piece.Placement), tip.Y - start.Y, tip.Z - start.Z),
+                    armDepth,
                     StructuralMemberRole.Arm,
                     piece.PieceId,
                     StructuralMemberReleases.None(ContinuousConnection)));
@@ -394,17 +423,78 @@ namespace RackCad.Application.Systems.Cantilever
             Unclassified = 3,
         }
 
-        /// <summary>Skeleton of the pure classification of a station piece by its role; it is completed in the next commit.</summary>
-        internal static StationPieceDisposition Classify(CantileverMemberRole role) => StationPieceDisposition.NotModelled;
+        /// <summary>
+        /// The pure classification of a station piece by its role (A65-F1-12, CD-I65-F1-14). The column and the body of the arm are
+        /// modelled. The base, the separators, the bracing and the end angles of a cold-rolled tie are the pieces CD-I65-F1-14
+        /// leaves out; the plates and the gussets are not members and are always left out. Any other role, including one defined
+        /// in the future, is unclassified and refuses the station: nothing structural is ignored without a decision.
+        /// </summary>
+        internal static StationPieceDisposition Classify(CantileverMemberRole role)
+        {
+            switch (role)
+            {
+                case CantileverMemberRole.Column:
+                case CantileverMemberRole.Arm:
+                    return StationPieceDisposition.Modelled;
 
-        /// <summary>Skeleton of the inventory check of a station; it is completed in the next commit.</summary>
-        internal static IReadOnlyList<StructuralDiagnostic> InventoryDiagnostics(IEnumerable<KeyValuePair<string, CantileverMemberRole>> pieces) =>
-            new StructuralDiagnostic[0];
+                case CantileverMemberRole.Base:
+                case CantileverMemberRole.Separator:
+                case CantileverMemberRole.Brace:
+                case CantileverMemberRole.ColdRolledAdapter:
+                    return StationPieceDisposition.NotModelled;
 
-        /// <summary>Skeleton of the bounded re-orthogonalisation of the depth axis; it is completed in the next commit.</summary>
+                default:
+                    return StationPieceDisposition.Unclassified;
+            }
+        }
+
+        /// <summary>One blocking finding per piece (id and role) that is neither modelled nor left out by CD-I65-F1-14.</summary>
+        internal static IReadOnlyList<StructuralDiagnostic> InventoryDiagnostics(IEnumerable<KeyValuePair<string, CantileverMemberRole>> pieces)
+        {
+            if (pieces == null)
+            {
+                throw new ArgumentNullException(nameof(pieces));
+            }
+
+            return pieces
+                .Where(piece => Classify(piece.Value) == StationPieceDisposition.Unclassified)
+                .Select(piece => Blocking(
+                    StructuralDiagnosticCodes.StationPieceUnclassified, StructuralExportOutcome.Unsupported, piece.Key))
+                .ToList();
+        }
+
+        /// <summary>
+        /// The depth axis made exactly perpendicular to the analytic axis of the member, which runs between two nodes in the plane
+        /// (A65-F1-10). The component that is removed is bounded by the angular tolerance of IDL-08: inside it only a
+        /// rounding-sized component goes away and the result is the one it always was; a larger one is not corrected in silence
+        /// and the caller refuses the station. A member with no length is left as it is, for the model builder to refuse.
+        /// </summary>
         internal static bool TryPerpendicular(StructuralDirection depth, double memberY, double memberZ, out StructuralDirection result)
         {
-            result = Perpendicular(depth, memberY, memberZ);
+            var length = Math.Sqrt((memberY * memberY) + (memberZ * memberZ));
+
+            if (!(length > 0))
+            {
+                result = depth;
+                return true;
+            }
+
+            var unitY = memberY / length;
+            var unitZ = memberZ / length;
+            var along = (depth.Y * unitY) + (depth.Z * unitZ);
+
+            if (Math.Abs(along) > Math.Sin(AngularToleranceDegrees * Math.PI / 180.0))
+            {
+                result = depth;
+                return false;
+            }
+
+            var x = depth.X;
+            var y = depth.Y - (along * unitY);
+            var z = depth.Z - (along * unitZ);
+            var norm = Math.Sqrt((x * x) + (y * y) + (z * z));
+
+            result = norm > 1e-6 ? new StructuralDirection((x / norm) + 0.0, (y / norm) + 0.0, (z / norm) + 0.0) : depth;
             return true;
         }
 
@@ -456,31 +546,6 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 diagnostics.Add(Blocking(StructuralDiagnosticCodes.ArmSlopeUnsupported, StructuralExportOutcome.Unsupported, subject));
             }
-        }
-
-        /// <summary>
-        /// The depth axis made exactly perpendicular to the analytic axis of the member, which runs between two nodes in the plane.
-        /// Inside the tolerances this only removes a rounding-sized component; a depth axis that lies along the member is left
-        /// as it is, for the model builder to refuse.
-        /// </summary>
-        private static StructuralDirection Perpendicular(StructuralDirection depth, double memberY, double memberZ)
-        {
-            var length = Math.Sqrt((memberY * memberY) + (memberZ * memberZ));
-
-            if (!(length > 0))
-            {
-                return depth;
-            }
-
-            var unitY = memberY / length;
-            var unitZ = memberZ / length;
-            var along = (depth.Y * unitY) + (depth.Z * unitZ);
-            var x = depth.X;
-            var y = depth.Y - (along * unitY);
-            var z = depth.Z - (along * unitZ);
-            var norm = Math.Sqrt((x * x) + (y * y) + (z * z));
-
-            return norm > 1e-6 ? new StructuralDirection((x / norm) + 0.0, (y / norm) + 0.0, (z / norm) + 0.0) : depth;
         }
 
         private static IReadOnlyList<AnalysisAssumption> Assumptions() => new[]

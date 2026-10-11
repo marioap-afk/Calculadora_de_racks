@@ -153,7 +153,21 @@ namespace RackCad.Application.StructuralAnalysis
                 return StructuralModelResult.Create(loads.Diagnostics, null);
             }
 
-            var description = source.Describe(scope, loads.LoadFile);
+            StructuralSourceDescription description;
+
+            try
+            {
+                description = source.Describe(scope, loads.LoadFile);
+            }
+            catch (OutOfMemoryException)
+            {
+                throw;
+            }
+            catch (Exception)
+            {
+                // A65-F1-09: a source that fails is not a model and not a crash; the caller gets the visible finding.
+                description = null;
+            }
 
             if (description == null)
             {
@@ -163,6 +177,9 @@ namespace RackCad.Application.StructuralAnalysis
             }
 
             var diagnostics = new List<StructuralDiagnostic>(description.Diagnostics);
+
+            CheckPopulation(description, diagnostics);
+
             var nodes = IndexNodes(description, diagnostics);
             var members = CheckMembers(description, nodes, diagnostics);
 
@@ -180,6 +197,51 @@ namespace RackCad.Application.StructuralAnalysis
         }
 
         // ---------------------------------------------------------------- structure
+
+        /// <summary>
+        /// A65-F1-09: what a source may not leave out or contradict. An empty model, two supports on one node and a reference to an
+        /// assumption that is not declared are findings of the description, never a model. A source that already refused with a
+        /// blocking finding carries nothing else, so the emptiness is not reported on top of it.
+        /// </summary>
+        private static void CheckPopulation(StructuralSourceDescription description, List<StructuralDiagnostic> diagnostics)
+        {
+            if (!description.Diagnostics.Any(d => d.IsBlocking))
+            {
+                if (description.Nodes.Count == 0)
+                {
+                    Blocking(diagnostics, StructuralDiagnosticCodes.ModelNoNodes, StructuralExportOutcome.Invalid, "model");
+                }
+
+                if (description.Members.Count == 0)
+                {
+                    Blocking(diagnostics, StructuralDiagnosticCodes.ModelNoMembers, StructuralExportOutcome.Invalid, "model");
+                }
+            }
+
+            var supported = new HashSet<string>(StringComparer.Ordinal);
+            var repeated = new HashSet<string>(StringComparer.Ordinal);
+
+            foreach (var support in description.Supports)
+            {
+                if (!supported.Add(support.NodeId) && repeated.Add(support.NodeId))
+                {
+                    Blocking(diagnostics, StructuralDiagnosticCodes.SupportDuplicateNode, StructuralExportOutcome.Invalid, support.NodeId);
+                }
+            }
+
+            var declared = new HashSet<string>(description.Assumptions.Select(a => a.Id), StringComparer.Ordinal);
+            var missing = new HashSet<string>(StringComparer.Ordinal);
+            var referenced = description.Supports.Select(s => s.AssumptionId)
+                .Concat(description.Members.Select(m => m.Releases.AssumptionId));
+
+            foreach (var id in referenced)
+            {
+                if (!declared.Contains(id) && missing.Add(id))
+                {
+                    Blocking(diagnostics, StructuralDiagnosticCodes.AssumptionUndeclared, StructuralExportOutcome.Invalid, id);
+                }
+            }
+        }
 
         private static Dictionary<string, StructuralNode> IndexNodes(StructuralSourceDescription description, List<StructuralDiagnostic> diagnostics)
         {
@@ -322,7 +384,7 @@ namespace RackCad.Application.StructuralAnalysis
                     continue;
                 }
 
-                if (definition.Family == StructuralSectionFamily.Channel || definition.Family == StructuralSectionFamily.Angle)
+                if (!IsSupportedFamily(definition.Family))
                 {
                     Blocking(diagnostics, StructuralDiagnosticCodes.SectionFamilyUnsupported, StructuralExportOutcome.Unsupported, id.Value);
                 }
@@ -350,6 +412,15 @@ namespace RackCad.Application.StructuralAnalysis
 
             return rows;
         }
+
+        /// <summary>
+        /// IDL-09 as an ALLOW-LIST (A65-F1-03): the wide flange, the rectangular hollow section and the American Standard beam.
+        /// Anything else is refused, including a family added to the catalogue later and a value the enum does not define.
+        /// </summary>
+        private static bool IsSupportedFamily(StructuralSectionFamily family) =>
+            family == StructuralSectionFamily.W
+            || family == StructuralSectionFamily.HssRectangular
+            || family == StructuralSectionFamily.S;
 
         private static StructuralSection DescribeSection(
             StructuralSectionId id, StructuralSectionProperties properties, List<StructuralDiagnostic> diagnostics)
