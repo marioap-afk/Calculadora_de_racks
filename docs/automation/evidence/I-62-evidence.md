@@ -3681,7 +3681,7 @@ solo desde artefactos custodiados.
 - **Mecanismos** ([análisis](I-62-F6/FX-02/s72/controller-options.md)):
   - **Omisiones:** las dos corridas pararon a los ~100 s de 600, con ~12-13 k tokens de salida (solo ~2,5 k de razonamiento), una respuesta de ~24,7 k
     caracteres y un texto de sonda que empezaba con «Tiempo limitado». Apunta al diseño de la medición, no al runtime.
-  - **UTF-8:** con `cmd.exe` el transporte es correcto (`type` entrega `0xf1`) y falla la salida del modelo (escapes ` f3`). Con el `pwsh` nativo
+  - **UTF-8:** con `cmd.exe` el transporte es correcto (`type` entrega `0xf1`) y falla la salida del modelo (escapes `\u0000f3`). Con el `pwsh` nativo
     el transporte falla (U+FFFD ya en la salida cruda del comando).
 - **Opciones:**
   - A, una celda alternativa ya autorizada: no existe;
